@@ -1,0 +1,29 @@
+< $PLAN9/src/mkhdr
+
+OFILES=\
+	gsmain.$O \
+	apithread.$O \
+	eval.$O \
+	load.$O \
+	inputalloc.$O \
+
+LIB=libglobalscript.a
+
+$GLOBALSCRIPT/lib/$LIB(%):N: %
+$GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
+	$AR rsc $GLOBALSCRIPT/lib/$LIB $newmember
+
+&:n:	&.$O
+	$AR rsc $GLOBALSCRIPT/lib/$LIB $stem.$O
+
+%.$O: $GLOBALSCRIPT/include/libglobalscript.h
+main.$O: gsinputfile.h
+load.$O: gsinputalloc.h gsinputfile.h
+inputalloc.$O: gsinputalloc.h
+
+all install:V: $GLOBALSCRIPT/lib/$LIB
+
+NUKEFILES=$NUKEFILES $GLOBALSCRIPT/lib/$LIB
+
+< $PLAN9/src/mkcommon
+< $GLOBALSCRIPT/src/mkcommon

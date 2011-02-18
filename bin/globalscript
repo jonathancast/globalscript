@@ -1,0 +1,8 @@
+#!/home/jcast/plan9/bin/rc
+
+if (~ $#GLOBALSCRIPT 0)
+	GLOBALSCRIPT=/home/jcast/globalscript
+if (! ~ $path(1) $GLOBALSCRIPT/bin)
+	path=($GLOBALSCRIPT/bin $path)
+
+~ $#* 0 || exec $*

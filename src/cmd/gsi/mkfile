@@ -1,0 +1,7 @@
+< $PLAN9/src/mkhdr
+
+OFILES=\
+	gsi.$O
+
+< $PLAN9/src/mkone
+< $GLOBALSCRIPT/src/mkcommon

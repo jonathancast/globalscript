@@ -1,0 +1,10 @@
+< $PLAN9/src/mkhdr
+
+OFILES=\
+	gsbc.$O \
+	syswarning.$O \
+
+TARG=gsbc
+
+< $PLAN9/src/mkone
+< $GLOBALSCRIPT/src/mkcommon

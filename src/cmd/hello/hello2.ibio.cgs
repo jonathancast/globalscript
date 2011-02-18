@@ -1,0 +1,8 @@
+#! /home/jcast/globalscript/bin/ibio
+
+type α :: *;
+for (
+    str :: list char = 'H' : 'e' : 'l' : 'l' : 'o' : ',' : ' ' : 'W' : 'o' : 'r' : 'l' : 'd' : '!' : '\n' : nil;
+) ibio.lib.mkm (λ (in :: ibio.iport.t char) (out :: ibio.oport.t char).
+    ibio.lib.write out (ibio.lib.putlist str)
+)

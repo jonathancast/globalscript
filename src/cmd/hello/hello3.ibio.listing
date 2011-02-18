@@ -1,0 +1,18 @@
+# Header
+0000	21 67 73 64 6f 63 62 63	# Magic number
+0008	00 00 00 ff				# Version
+000c	00 00 00 20				# Size of header
+0010	00 00 00 00				# Size of strings
+0014	00 00 00 00				# Size of code
+0018	00 00 00 00				# Size of data
+# Documents have the convention that location 0 in the code segment is the entry point
+# Strings
+001c	03 00 00 00 00			# Public undefined code symbol ibio.lib.mkm
+0021	00 00 04 7b
+0025	69 62 69 6f 23 6c 69 62 e3 6d 6b 6d 00
+0032	04 00 00 00 00			# Private undefined data symbol .body
+0037	00 00 01 d1
+003b	2e 62 6f 64 79 00
+0041	02 00 00 00 00			# Private undefined data symbol .body.c
+0046	00 00 02 57
+004a	2e 62 6f 64 79 2e 63 00

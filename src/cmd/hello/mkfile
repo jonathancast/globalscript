@@ -1,0 +1,5 @@
+< $PLAN9/src/mkcommon
+< $GLOBALSCRIPT/src/mkcommon
+
+test:V: test-hello3.ibio.bcgs
+

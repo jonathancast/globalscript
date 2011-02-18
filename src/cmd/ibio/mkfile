@@ -1,0 +1,12 @@
+< $PLAN9/src/mkhdr
+
+OFILES=\
+	ibio.$O\
+	ibiothreadmain.$O
+
+TARG=ibio
+
+< $PLAN9/src/mkone
+< $GLOBALSCRIPT/src/mkcommon
+
+$PROG: $GLOBALSCRIPT/lib/libglobalscript.a
