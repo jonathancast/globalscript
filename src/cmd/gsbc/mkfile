@@ -1,10 +1,15 @@
-< $PLAN9/src/mkhdr
+< $GOARCH.mk
 
-OFILES=\
-	gsbc.$O \
-	syswarning.$O \
+GO=${O}g
+GOLD=${O}l
 
-TARG=gsbc
+%.$O: %.go
+	$GO -o $target $stem.go
 
-< $PLAN9/src/mkone
-< $GLOBALSCRIPT/src/mkcommon
+$O.%: %.$O
+	$GOLD -o $target $stem.$O
+
+$GLOBALSCRIPT/bin/%: $O.%
+	cp $O.$stem $target
+
+install: $GLOBALSCRIPT/bin/gsbc
