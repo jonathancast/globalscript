@@ -1,0 +1,5 @@
+#! /home/jcast/globalscript/bin/ibio
+
+	.document
+op	.arg	ibio.lib.pptr char
+	EPRIM	ibio.lib.put op	'H'

@@ -13,3 +13,11 @@ $GLOBALSCRIPT/bin/%: $O.%
 	cp $O.$stem $target
 
 install: $GLOBALSCRIPT/bin/gsbc
+
+%.bcgs: $O.gsbc %.ags
+	$O.gsbc $stem.ags > $target
+
+%.bcgs-test: %.bcgs %.bcgs-expected
+	cmp -c $stem.bcgs $stem.gcgs-expected
+
+test: test1.bcgs-test
