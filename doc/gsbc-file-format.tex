@@ -29,7 +29,7 @@ NB: 2011-02-22: Ordering of sections differs between spec and loader; will need 
 \texttt{0x10} & Size of Strings (4 bytes) \\
 \end{tabular}
 
-(Total size of header (inclusive of \verb+#!+ line) will be between 0x1C and 0x6C lines).
+(Total size of header (inclusive of \verb+#!+ line) will be between 0x1C and 0x6C bytes).
 
 \section {Byte Codes}
 
@@ -41,21 +41,17 @@ NB: 2011-02-22: Ordering of sections differs between spec and loader; will need 
   04 & \texttt{CCALL} & Call a manifest closure \\
   05 & \texttt{EVAL} & Enter a thunk \\
   06 & \texttt{EEXEC} & Call a subprogram expression \\
-  07 & \texttt{EXEC} & Call a manifest subprogram \\
-  08 & \texttt{RETURN} & Return from a manifest block \\
-  09 & \texttt{PRIM} & Apply a primitive \\
-  0A & \texttt{TYALLOC} & Manufacture a type at runtime \\
-  & \multicolumn{2}{c}{Declarations} \\
-  & \texttt{.constr} & The code label for a \texttt{\%constr} \\
-  & \texttt{.arg} & Declare a formal parameter \\
-  & \texttt{.free} & Declare a free variable \\
-  & \texttt{.lambda} & Declare a manifest function \\
-  & \texttt{.lprog} & Declare a manifest sub-routine \\
-  & \texttt{.prog} & Declare a manifest subprogram \\
-  & \texttt{.proge} & Declares a block expression \\
-  & \texttt{.lproge} & Delcares a block expression-bodied lambda \\
-  & \texttt{.tyarg} & Declares a type parameter \\
-  & \texttt{.tyfree} & Declares a free type variable \\
+  07 & \texttt{EPRIM} & Call an API primitive \\
+  08 & \texttt{EXEC} & Call a manifest subprogram \\
+  09 & \texttt{FORCE} & Push an eager-binding continuation \\
+  0A & \texttt{JEEXEC} & Tail-call a subprogram expression \\
+  0B & \texttt{JEXEC} & Tail-call a manifest subprogram \\
+  0C & \texttt{JEPRIM} & Tail-call an API primitive \\
+  0D & \texttt{PRIM} & Apply a primitive \\
+  0E & \texttt{RETURN} & Return from a manifest block \\
+  0F & \texttt{TYALLOC} & Manufacture a type at runtime \\
+  10 & \texttt{UPDATE} & Push an update frame \\
+  11 & \texttt{YIELD} & Yield a constant \\
 \end{tabular}
 
 The final operation in a block must not take an address; the initial declaration must take an address.
@@ -63,6 +59,55 @@ The final operation in a block must not take an address; the initial declaration
 Otherwise, addresses are always optional.
 Addresses must be unique across the entire source file;
 only addresses of blocks annotated \texttt{.public} must be unique across all files.
+
+Byte code layout:
+
+\begin{tabular}{|l|l|}
+\hline
+  0 $\cdots$ 5 & 6 7 \\
+\hline
+  opcode & $\log_2$ word size \\
+  00--3F & 0 : 8-bit \\
+  & 1 : 16-bit \\
+  & 2 : 32-bit \\
+  & 3 : 64-bit \\
+\hline
+\end{tabular}
+
+\section{Blocks}
+
+\paragraph{Block-Beginning declarations}\
+
+\begin{tabular}{rl@{ --- }l}
+  0 & \texttt{.constr} & Declares a constructor \\
+  1 & \texttt{.cont} & Declares an eager-binding continuation \\
+  2 & \texttt{.cases} & Declares a case analysis continuation \\
+  3 & \texttt{.case} & Declares a specific branch of a case analysis continuation \\
+  4 & \texttt{.expr} & Declares a redex \\
+  5 & \texttt{.proge} & Declares a block expression \\
+  6 & \texttt{.prog} & Declare a manifest subprogram \\
+  C & \texttt{.lambda} & Declare a manifest function \\
+  D & \texttt{.lproge} & Delcares a block expression-bodied lambda \\
+  E & \texttt{.lprog} & Declare a manifest sub-routine \\
+\end{tabular}
+
+\paragraph{Other declarations}\
+
+\begin{tabular}{l@{ --- }l}
+  \texttt{.arg} & Declare a formal parameter \\
+  \texttt{.free} & Declare a free variable \\
+  \texttt{.tyarg} & Declares a type parameter \\
+  \texttt{.tyfree} & Declares a free type variable \\
+\end{tabular}
+
+\paragraph{Block structure}
+
+The first byte is the declaration code, with the same format as a byte code.
+Word length only applies to the initial byte code.
+This is followed by a count of the number of free variables,
+and for \texttt{.lambda}, \texttt{.lproge}, and \texttt{.lprog} blocks a count of the number of arguments.
+This is followed by the byte codes for the expression.
+Each byte code is unambiguously initial or final, so the end of the block is self-declaring.
 
 %% TODO
 %%
