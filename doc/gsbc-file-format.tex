@@ -1,0 +1,71 @@
+\documentclass{article}
+\title{Global Script Byte-Code File Format}
+\author{Jonathan Cast\\\texttt{<jonathanccast@fastmail.fm>}}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview}
+
+\begin{itemize}
+  \item Header
+  \item Code Segment
+  \item Data Segment
+  \item Strings
+\end{itemize}
+NB: 2011-02-22: Ordering of sections differs between spec and loader; will need to fix loader.  End NB
+
+\section{Header}
+
+\begin{tabular}{cl}
+  & Optional \verb+#!+ line (max 80 bytes (not chars)). \\
+  & Following offsets are relative to end of this line, if present.  \\
+\texttt{0x00} & Magic Number \verb+/!gs(pre|doc)bc/+ (8 bytes) \\
+\texttt{0x08} & File Format Version Number (4 bytes; Era.Major.Minor.Step) \\
+\texttt{0x0C} & Size of Headers (exclusive of \verb+#!+ line) (4 bytes) \\
+\texttt{0x10} & Size of Code (4 bytes) \\
+\texttt{0x14} & Size of Data (4 bytes) \\
+\texttt{0x10} & Size of Strings (4 bytes) \\
+\end{tabular}
+
+(Total size of header (inclusive of \verb+#!+ line) will be between 0x1C and 0x6C lines).
+
+\section {Byte Codes}
+
+\begin{tabular}{rl@{ --- }l}
+  00 & \texttt{ALLOC} & Append to data segment \\
+  01 & \texttt{ANALYZE} & Push an \texttt{analyze} frame \\
+  02 & \texttt{APP} & Push an argument frame \\
+  03 & \texttt{CALL} & Call a known function \\
+  04 & \texttt{CCALL} & Call a manifest closure \\
+  05 & \texttt{EVAL} & Enter a thunk \\
+  06 & \texttt{EEXEC} & Call a subprogram expression \\
+  07 & \texttt{EXEC} & Call a manifest subprogram \\
+  08 & \texttt{RETURN} & Return from a manifest block \\
+  09 & \texttt{PRIM} & Apply a primitive \\
+  0A & \texttt{TYALLOC} & Manufacture a type at runtime \\
+  & \multicolumn{2}{c}{Declarations} \\
+  & \texttt{.constr} & The code label for a \texttt{\%constr} \\
+  & \texttt{.arg} & Declare a formal parameter \\
+  & \texttt{.free} & Declare a free variable \\
+  & \texttt{.lambda} & Declare a manifest function \\
+  & \texttt{.lprog} & Declare a manifest sub-routine \\
+  & \texttt{.prog} & Declare a manifest subprogram \\
+  & \texttt{.proge} & Declares a block expression \\
+  & \texttt{.lproge} & Delcares a block expression-bodied lambda \\
+  & \texttt{.tyarg} & Declares a type parameter \\
+  & \texttt{.tyfree} & Declares a free type variable \\
+\end{tabular}
+
+The final operation in a block must not take an address; the initial declaration must take an address.
+\texttt{APP} and \texttt{ANALYZE} may not take an address.
+Otherwise, addresses are always optional.
+Addresses must be unique across the entire source file;
+only addresses of blocks annotated \texttt{.public} must be unique across all files.
+
+%% TODO
+%%
+%% * Convert to Global Script
+
+\end{document}
