@@ -15,9 +15,9 @@ $GLOBALSCRIPT/bin/%: $O.%
 install: $GLOBALSCRIPT/bin/gsbc
 
 %.bcgs: $O.gsbc %.ags
-	$O.gsbc $stem.ags > $target
+	./$O.gsbc $stem.ags > $target
 
 %.bcgs-test: %.bcgs %.bcgs-expected
-	cmp -c $stem.bcgs $stem.gcgs-expected
+	9 cmp -l $stem.bcgs $stem.bcgs-expected
 
 test: test1.bcgs-test
