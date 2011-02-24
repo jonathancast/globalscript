@@ -1,10 +1,18 @@
 0x00 (#! line) #! /home/jcast/globalscript/bin/ibio\n
 0x25 (signature) !gsdocbc
 ox2d (size of headers) 00 00 00 1c
-0x31 (size of code) ?? ?? ?? ??
-0x35 (size of data) ?? ?? ?? ??
+0x31 (size of code) 00 00 00 0b
+0x35 (size of data) 00 00 00 00
 0x39 (size of strings) ?? ?? ?? ??
 0x3d === Code Segment ===
-0x3d .document 
-0x?? === Data Segment ===
-0x?? === String Segment ===
+0x3d (.document)
+0x3d (.lprog, 1 argument, ibio.lib.write) 34 00 01 00
+0x41 (CHCONST 'H') 18 'H'
+0x43 (JEPRIM ibio.lib.put op .h) 38 03 00 01 02
+0x48 === Data Segment ===
+0x48 === String Segment ===
+0x48 (API type) 09
+0x49 (hash) 61
+0x50 (offset; unused) 00 00 00 00
+0x51 length E
+0x52 'ibio.lib.write'
