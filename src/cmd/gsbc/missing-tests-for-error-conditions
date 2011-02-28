@@ -1,0 +1,5 @@
+ * .document that isn't the first segment declaration
+ * .document that takes address
+ * .lprog that isn't in a good location for a block declaration
+ * .lprog that takes address and shouldn't
+ * .lprog that doesn't take address and should
