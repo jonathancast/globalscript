@@ -2,6 +2,6 @@
 
 	.document
 	.lprog	ibio.lib.write
-op	.arg	ibio.lib.pptr char
+op	.arg
 .h	CHCONST	'H'
 	JEPRIM	ibio.lib.put op	.h

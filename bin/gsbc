@@ -1,0 +1,36 @@
+#! /usr/bin/perl -w
+
+use strict;
+use feature 'switch';
+
+die "$0: no \$GLOBALSCRIPT set\n"
+    unless $ENV{GLOBALSCRIPT} && -d $ENV{GLOBALSCRIPT}
+;
+
+unshift @INC, $ENV{GLOBALSCRIPT}.'/src/cmd/gsbc';
+
+use AssembleFile;
+
+binmode STDOUT;
+
+our $filename;
+
+$SIG{__DIE__} = sub {
+    my ($err) = @_;
+    $err =~ s{at ([/\w.]+) line (\d+)}{at $1:$2}g;
+    die $err;
+};
+
+if (@ARGV) {
+    for (@ARGV) {
+        open my $fh, '<', $_ or die "$0:$_: open failed\n";
+        my $file = AssembleFile->new(filename => $_, filehandle => $fh);
+        $file->assemble();
+        close $fh or die "$0:$_: close failed\n";
+        $file->output();
+    }
+} else {
+    my $file = AssembleFile->new(filename => '/dev/stdin', filehandle => \*STDIN);
+    $file->assemble();
+    $file->output();
+}

@@ -1,21 +1,8 @@
-< $GOARCH.mk
+PMODULES=\
+	$GLOBALSCRIPT/src/cmd/gsbc/AssembleFile.pm\
 
-GO=${O}g
-GOLD=${O}l
-
-%.$O: %.go
-	$GO -o $target $stem.go
-
-$O.%: %.$O
-	$GOLD -o $target $stem.$O
-
-$GLOBALSCRIPT/bin/%: $O.%
-	cp $O.$stem $target
-
-install: $GLOBALSCRIPT/bin/gsbc
-
-%.bcgs: $O.gsbc %.ags
-	./$O.gsbc $stem.ags > $target
+%.bcgs: $GLOBALSCRIPT/bin/gsbc $PMODULES %.ags
+	gsbc $stem.ags > $target
 
 %.bcgs-test: %.bcgs %.bcgs-expected
 	9 cmp -l $stem.bcgs $stem.bcgs-expected

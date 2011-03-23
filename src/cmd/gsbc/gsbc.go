@@ -27,6 +27,8 @@ const (
     datasegment = iota;
 );
 
+type address int;
+
 func main() {
     defer func () {
         if r := recover(); r != nil {
@@ -137,6 +139,14 @@ func expectSegment(outfile *outfile, expsegment int) {
             fmtsegment(outfile.cursegment),
         ));
     }
+}
+
+func balkAtAddress(address string) {
+    die("balkAtAddress(\"%s\") next", address);
+}
+
+func expectBlockBreak(outfile *outfile) {
+    die("expectBlockBreak next");
 }
 
 func fmtsegment(seg int) string {
