@@ -58,6 +58,12 @@ class AssembleFile {
             all_code_objects => 'elements',
         },
     ;
+
+    has symbol_table =>
+        is => 'ro',
+        isa => 'SymbolTable',
+        default => sub { SymbolTable->new() },
+    ;
     
     method code_size()
     {
@@ -96,7 +102,7 @@ class AssembleFile {
                     $self->assert(!$self->expecting_label() || $label, "label required on directive $directive");
                     $self->assert(@args >= 1, "API type required on $directive");
                     $self->assert(@args <= 1, "too many arguments to $directive");
-                    $code_obj = LProg->new(apitype => $args[0]);
+                    $code_obj = LProg->new(symbol_table => $self->symbol_table(), apitype => $args[0]);
                 }
                 when('.arg') {
                     $self->assert($code_obj, "illegal directive $directive outside a basic block");
@@ -191,6 +197,8 @@ class AssembleFile {
 }
 
 role Lambda {
+    use List::Util qw/ max /;
+
     requires 'missing_statements';
 
     has arguments =>
@@ -200,6 +208,7 @@ role Lambda {
         default => sub { [] },
         handles => {
             _push_argument => 'push',
+            num_arguments => 'count',
         },
     ;
 
@@ -208,14 +217,26 @@ role Lambda {
         $self->missing_statements()
     }
 
-    method push_argument($label, $type)
+    method push_argument($label, Maybe $type)
     {
         $self->_push_argument({ label => $label, type => $type});
         $self->_remember_label($label);
     }
+
+    around word_size
+    {
+        my $argsize = $self->sizeof($self->num_arguments());
+        return max $argsize, $self->$orig();
+    }
 }
 
 class CodeObject {
+    has symbol_table =>
+        is => 'ro',
+        isa => 'SymbolTable',
+        required => 1,
+    ;
+
     has _labels =>
         traits => [qw/ Array /],
         is => 'ro',
@@ -237,7 +258,17 @@ class CodeObject {
             _store_label => 'set',
         },
     ;
-    
+
+    has free_variables =>
+        traits => ['Array'],
+        is => 'ro',
+        isa => 'ArrayRef[Str]',
+        default => sub { [] },
+        handles => {
+            num_free_variables => 'count',
+        },
+    ;
+
     method _remember_label($label)
     {
         my $num_labels = $self->_num_labels();
@@ -245,10 +276,40 @@ class CodeObject {
         $self->_store_label($label, $num_labels + 1);
         return $num_labels + 1;
     }
+
+    method word_size
+    {
+        $self->sizeof($self->num_free_variables());
+    }
+
+    method sizeof(Int $n)
+    {
+        return 1 unless $n >> 8;
+        return 2 unless $n >> 16;
+        return 4 unless $n >> 32;
+        return 8 unless $n >> 64;
+        die "Panic: Need a word size for $n, which is too large";
+    }
 }
 
-class LProg extends CodeObject with Lambda {
+role APIBlock
+{
+    has apitype =>
+        is => 'ro',
+        isa => 'Str',
+        required => 1,
+    ;
+
+    method type_symbol
+    {
+        return $self->symbol_table()->find_or_create_symbol($self->apitype());
+    }
+}
+
+class LProg extends CodeObject with APIBlock with Lambda
+{
     use List::Util qw/
+        max
         sum
     /;
 
@@ -260,10 +321,11 @@ class LProg extends CodeObject with Lambda {
         handles => {
             missing_statements => 'is_empty',
             _push_statement => 'push',
+            all_statements => 'elements',
         },
     ;
 
-    method push_statement($label, $statement)
+    method push_statement(Maybe $label, $statement)
     {
         $self->_remember_label($label) if defined($label);
         $self->_push_statement($statement);
@@ -271,7 +333,7 @@ class LProg extends CodeObject with Lambda {
 
     around word_size()
     {
-        my $typesize = $self->sizeof($self->type_symbol());
+        my $typesize = $self->sizeof($self->type_symbol()->offset());
         return max $typesize, $self->$orig();
     }
 
@@ -281,11 +343,90 @@ class LProg extends CodeObject with Lambda {
     }
 }
 
-class Statement {
+class Statement
+{
 }
 
-class ChConst extends Statement {
+class ChConst extends Statement
+{
+    use Encode;
+    use Moose::Util::TypeConstraints;
+
+    subtype 'Char'
+        => as 'Str'
+        => where { length($_) == 1 }
+        => message { "Characters must be single characters..." }
+    ;
+
+    has arg =>
+        is => 'ro',
+        isa => 'Char',
+        required => 1,
+    ;
+
+    method size
+    {
+        return 1 + length(encode_utf8($self->arg()));
+    }
 }
 
 class JEPrim extends Statement {
+}
+
+class SymbolTable {
+    has symbols =>
+        traits => ['Array'],
+        is => 'ro',
+        isa => 'ArrayRef[Symbol]',
+        default => sub { [] },
+        handles => {
+            first_symbol => 'first',
+            _push_symbol => 'push',
+        },
+    ;
+
+    has size =>
+        traits => ['Counter'],
+        is => 'ro',
+        isa => 'Int',
+        default => 0,
+        handles => {
+            _inc_size => 'inc',
+        },
+    ;
+
+    method find_or_create_symbol(Str $name)
+    {
+        my $symbol = $self->first_symbol(sub { $_->name() eq $name });
+        return $symbol ||= $self->_create_symbol($name);
+    }
+
+    method _create_symbol(Str $name)
+    {
+        my $symbol = Symbol->new(offset => $self->size(), name => $name);
+        $self->_inc_size($symbol->size());
+        $self->_push_symbol($symbol);
+        return $symbol;
+    }
+}
+
+class Symbol {
+    use Encode;
+
+    has name =>
+        is => 'ro',
+        isa => 'Str',
+        required => 1,
+    ;
+
+    has offset =>
+        is => 'ro',
+        isa => 'Int',
+        required => 1,
+    ;
+
+    method size
+    {
+        return 1 + 4+ length(encode("utf8", $self->name()));
+    }
 }
