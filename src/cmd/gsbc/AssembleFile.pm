@@ -36,7 +36,7 @@ class AssembleFile {
         default => 'prefix',
     ;
 
-    enum 'SectionLabel' => qw/
+    enum SectionLabel => qw/
         code
         data
     /;
@@ -56,6 +56,7 @@ class AssembleFile {
             num_code_objects => 'count',
             push_code_obj => 'push',
             all_code_objects => 'elements',
+            map_code_objects => 'map',
         },
     ;
 
@@ -63,11 +64,24 @@ class AssembleFile {
         is => 'ro',
         isa => 'SymbolTable',
         default => sub { SymbolTable->new() },
+        handles => [qw/
+            map_symbol
+        /],
     ;
     
     method code_size()
     {
         sum map { $_->size() } $self->all_code_objects()
+    }
+
+    method data_size()
+    {
+        0
+    }
+
+    method string_size()
+    {
+        sum $self->map_symbol(sub { $_->size() });
     }
 
     method assemble()
@@ -124,12 +138,16 @@ class AssembleFile {
                         when(/^[^\\']$/) {}
                         default { $self->assert('', "mal-formed argument to $directive"); }
                     }
-                    $code_obj->push_statement($label => ChConst->new(arg => $contents));
+                    $code_obj->push_statement($label => ChConst->new(
+                        symbol_table => $self->symbol_table(),
+                        arg => $contents,
+                    ));
                 }
                 when('JEPRIM') {
                     $self->assert(!$label, "illegal label $label on directive $directive");
                     $self->assert(@args >= 1, "missing argument to $directive");
                     my $stmt = JEPrim->new(
+                        symbol_table => $self->symbol_table(),
                         primitive => $args[0],
                         arguments => [ map {
                             $code_obj->lookup_label($_)
@@ -194,6 +212,20 @@ class AssembleFile {
         $self->output_data();
         $self->output_strings();
     }
+
+    method output_code()
+    {
+        $self->map_code_objects(sub { $_->output() });
+    }
+
+    method output_data
+    {
+    }
+
+    method output_strings
+    {
+        $self->map_symbol(sub { $_->output() });
+    }
 }
 
 role Lambda {
@@ -230,7 +262,44 @@ role Lambda {
     }
 }
 
-class CodeObject {
+role SizeBasics {
+    method sizeof(Int $n)
+    {
+        return 1 unless $n >> 8;
+        return 2 unless $n >> 16;
+        return 4 unless $n >> 32;
+        return 8 unless $n >> 64;
+        die "Panic: Need a word size for $n, which is too large";
+    }
+
+    method size_to_bitfield(Int $n)
+    {
+        return 0 unless $n > 8;
+        return 1 unless $n > 16;
+        return 2 unless $n > 32;
+        return 3 unless $n > 64;
+        die "Panic: Need a word size bitfield for $n, which is too large";
+    }
+
+    method packed_int(Int $n)
+    {
+        given ($self->word_size()) {
+            when ($_ <= 8) { return pack "C", $n }
+            when ($_ <= 16) { return pack "n", $n }
+            when ($_ <= 32) { return pack "N", $n }
+            when ($_ <= 64) {
+                my $hw = $n >> 32;
+                my $lw = $n & ((2 << 32) - 1);
+                return pack "NN", $hw, $lw;
+            }
+        }
+        die "Invalid word size @{[ $self->word_size() ]}";
+    }
+}
+
+class CodeObject with SizeBasics {
+    use constant LPROG => 0xe;
+
     has symbol_table =>
         is => 'ro',
         isa => 'SymbolTable',
@@ -281,15 +350,6 @@ class CodeObject {
     {
         $self->sizeof($self->num_free_variables());
     }
-
-    method sizeof(Int $n)
-    {
-        return 1 unless $n >> 8;
-        return 2 unless $n >> 16;
-        return 4 unless $n >> 32;
-        return 8 unless $n >> 64;
-        die "Panic: Need a word size for $n, which is too large";
-    }
 }
 
 role APIBlock
@@ -302,7 +362,7 @@ role APIBlock
 
     method type_symbol
     {
-        return $self->symbol_table()->find_or_create_symbol($self->apitype());
+        return $self->symbol_table()->find_or_create_symbol('api_type', $self->apitype(), 0);
     }
 }
 
@@ -322,6 +382,7 @@ class LProg extends CodeObject with APIBlock with Lambda
             missing_statements => 'is_empty',
             _push_statement => 'push',
             all_statements => 'elements',
+            map_statements => 'map',
         },
     ;
 
@@ -341,10 +402,28 @@ class LProg extends CodeObject with APIBlock with Lambda
     {
         1 + 3 * $self->word_size() + sum map { $_->size() } $self->all_statements()
     }
+
+    method output()
+    {
+        my $size = $self->size_to_bitfield($self->word_size());
+        print pack "C", ($self->LPROG() << 2 | $size);
+        print $self->packed_int($self->num_free_variables());
+        print $self->packed_int($self->num_arguments());
+        print $self->packed_int($self->type_symbol()->offset());
+        $self->map_statements(sub { $_->output() });
+    }
 }
 
-class Statement
+class Statement with SizeBasics
 {
+    use constant CHCONST => 0x06;
+    use constant JEPRIM => 0x0e;
+
+    has symbol_table =>
+        is => 'ro',
+        isa => 'SymbolTable',
+        required => 1,
+    ;
 }
 
 class ChConst extends Statement
@@ -368,9 +447,62 @@ class ChConst extends Statement
     {
         return 1 + length(encode_utf8($self->arg()));
     }
+
+    method output
+    {
+        print pack "C", ($self->CHCONST << 2);
+        print encode_utf8($self->arg());
+    }
 }
 
 class JEPrim extends Statement {
+    use List::Util qw/ max /;
+
+    has primitive =>
+        is => 'ro',
+        isa => 'Str',
+        required => 1,
+    ;
+
+    has arguments =>
+        traits => [qw/ Array /],
+        is => 'ro',
+        isa => 'ArrayRef[Int]',
+        required => 1,
+        handles => {
+            all_arguments => 'elements',
+            num_arguments => 'count',
+            map_arguments => 'map',
+        },
+    ;
+
+    method primitive_symbol
+    {
+        return $self->symbol_table()->find_or_create_symbol('api_type', $self->primitive(), 0);
+    }
+
+    method word_size()
+    {
+        return max map { $self->sizeof($_) }
+            $self->num_arguments(),
+            $self->primitive_symbol()->offset(),
+            $self->all_arguments(),
+        ;
+    }
+
+    method size
+    {
+        1 + $self->word_size() + $self->word_size() + $self->num_arguments() * $self->word_size()
+    }
+
+    method output
+    {
+        my $size = $self->size_to_bitfield($self->word_size());
+        print pack "C", ($self->JEPRIM << 2 | $size);
+        print $self->packed_int(1 + $self->num_arguments());
+        print $self->packed_int($self->primitive_symbol()->offset());
+        $self->map_arguments(sub { print $self->packed_int($_) });
+    }
 }
 
 class SymbolTable {
@@ -382,6 +514,7 @@ class SymbolTable {
         handles => {
             first_symbol => 'first',
             _push_symbol => 'push',
+            map_symbol => 'map',
         },
     ;
 
@@ -395,15 +528,15 @@ class SymbolTable {
         },
     ;
 
-    method find_or_create_symbol(Str $name)
+    method find_or_create_symbol(Str $type, Str $name, Int $value)
     {
         my $symbol = $self->first_symbol(sub { $_->name() eq $name });
-        return $symbol ||= $self->_create_symbol($name);
+        return $symbol ||= $self->_create_symbol($type, $name, $value);
     }
 
-    method _create_symbol(Str $name)
+    method _create_symbol(Str $type, Str $name, Int $value)
     {
-        my $symbol = Symbol->new(offset => $self->size(), name => $name);
+        my $symbol = Symbol->new(type => $type, offset => $self->size(), name => $name, value => $value);
         $self->_inc_size($symbol->size());
         $self->_push_symbol($symbol);
         return $symbol;
@@ -412,6 +545,19 @@ class SymbolTable {
 
 class Symbol {
     use Encode;
+    use Moose::Util::TypeConstraints;
+
+    enum SymbolType => qw/
+        public_code
+        public_data
+        api_type
+    /;
+
+    has type =>
+        is => 'ro',
+        isa => 'SymbolType',
+        required => 1,
+    ;
 
     has name =>
         is => 'ro',
@@ -425,8 +571,30 @@ class Symbol {
         required => 1,
     ;
 
+    has value =>
+        is => 'ro',
+        isa => 'Int',
+        required => 1,
+    ;
+
     method size
     {
-        return 1 + 4+ length(encode("utf8", $self->name()));
+        return 1 + 4 + 1 + length(encode("utf8", $self->name()));
+    }
+
+    method type_code
+    {
+        {
+            api_type => 9,
+        }->{$self->type()}
+        or die "Panic!  Unknown type ".$self->type();
+    }
+
+    method output
+    {
+        print pack "C", $self->type_code();
+        print pack "N", $self->value();
+        print pack "C", length(encode("utf8", $self->name()));
+        print pack "U*", length($self->name()), map { ord($_) } split //, $self->name();
     }
 }
