@@ -196,8 +196,8 @@ class AssembleFile {
     method output()
     {
         if ($self->shebang_line()) {
-            my $line = '#! '.$self->shebang_line();
-            print pack "U*", length($line), map { ord($_) } split //, $line;
+            my $line = '#! '.$self->shebang_line()."\n";
+            print pack "U*", map { ord($_) } split //, $line;
         }
         my $magic = {
             document => '!gsdocbc',
@@ -206,7 +206,6 @@ class AssembleFile {
         or die "could not find magic number for ".$self->filetype()
         ;
         print pack "U8", map { ord($_) } split //, $magic;
-        print pack "N", 0;
         print pack "N4", 0x1c, $self->code_size(), $self->data_size(), $self->string_size();
         $self->output_code();
         $self->output_data();
@@ -595,6 +594,6 @@ class Symbol {
         print pack "C", $self->type_code();
         print pack "N", $self->value();
         print pack "C", length(encode("utf8", $self->name()));
-        print pack "U*", length($self->name()), map { ord($_) } split //, $self->name();
+        print pack "U*", map { ord($_) } split //, $self->name();
     }
 }

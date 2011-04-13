@@ -8,3 +8,4 @@ PMODULES=\
 	9 cmp -l $stem.bcgs $stem.bcgs-expected
 
 test: test1.bcgs-test
+	:
