@@ -8,3 +8,9 @@
 \.ags\.ps$
 \.bcgs$
 \.listing\.ps$
+\.o$
+(^|/)o\.
+\.go\.ps$
+\.a$
+^bin/ibio$
+^lib$
