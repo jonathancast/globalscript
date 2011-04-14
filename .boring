@@ -13,4 +13,7 @@
 \.go\.ps$
 \.a$
 ^bin/ibio$
-^lib$
+mkfile\.ps$
+\.boring\.ps$
+\.c\.ps$
+\.ags-out$

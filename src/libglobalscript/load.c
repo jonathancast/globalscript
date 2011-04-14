@@ -25,7 +25,7 @@ gsloadfile(char *filename, gsheader *phdr)
     gsfiletype res;
     void *strings, *code, *data, *tmpptr;
     symtype ty;
-    if ((fd = open(filename, OREAD)) <0)
+    if ((fd = gsopenfile(filename, OREAD)) <0)
         gsfatal("open: %r");
     if ((res = gsreadfile(fd, filename, phdr, &strings, &code, &data)) < 0)
         return res;
@@ -180,3 +180,21 @@ char *lookup_string_name(void *strings, long strlen, long sym_num)
     return (char*)&((uchar*)strings)[sym_num + 0x09];
 }
 
+int gsopenfile(char *filename, int omode)
+{
+    char *ext = strrchr(filename, '.');
+    if (!ext) goto error;
+    if (!strcmp(ext, ".bcgs"))
+        return open(filename, omode);
+    if (!strcmp(ext, ".ags")
+        return gspopen(omode, "gsbc", filename, 0);
+error:
+    gsfatal("%s:extensions are mandatory in Global Script source files (sorry)", filename);
+}
+
+int gspopen(int omode, char *cmd, ...)
+{
+    va_list arg;
+
+    gsfatal("gspopen(%d, %s) next", omode, cmd);
+}

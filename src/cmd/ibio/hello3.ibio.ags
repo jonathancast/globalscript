@@ -1,0 +1,45 @@
+#! /home/jcast/globalscript/bin/ibio
+
+	.document
+.res	ALLOC	ibio.lib.mkm .body
+	RETURN	.res
+
+.body.c	.lprog ibio.lib.prim
+in	.arg	ibio.iport.t char
+out	.arg	ibio.oport.t char
+	EPRIM	ibio.lib.write char out put
+
+put	.lprog	ibio.lib.proutine
+op	.arg	ibio.lib.pptr char
+	EPRIM	ibio.lib.put op	'H'
+op1	EPRIM	ibio.lib.advance op
+	EPRIM	ibio.lib.put op1 'e'
+op2	EPRIM	ibio.lib.advance op1
+	EPRIM	ibio.lib.put op2 'l'
+op3	EPRIM	ibio.lib.advance op2
+	EPRIM	ibio.lib.put op3 'l'
+op4	EPRIM	ibio.lib.advance op3
+	EPRIM	ibio.lib.put op4 'o'
+op5	EPRIM	ibio.lib.advance op4
+	EPRIM	ibio.lib.put op5 ','
+op6	EPRIM	ibio.lib.advance op5
+	EPRIM	ibio.lib.put op6 ' '
+op7	EPRIM	ibio.lib.advance op6
+	EPRIM	ibio.lib.put op7 'W'
+op8	EPRIM	ibio.lib.advance op7
+	EPRIM	ibio.lib.put op8 'o'
+op9	EPRIM	ibio.lib.advance op8
+	EPRIM	ibio.lib.put op9 'r'
+op10	EPRIM	ibio.lib.advance op9
+	EPRIM	ibio.lib.put op10 'l'
+op11	EPRIM	ibio.lib.advance op10
+	EPRIM	ibio.lib.put op11 'd'
+op12	EPRIM	ibio.lib.advance op11
+	EPRIM	ibio.lib.put op12 '!'
+op13	EPRIM	ibio.lib.advance op12
+	EPRIM	ibio.lib.put op13 '\n'
+	EPRIM	ibio.lib.advance op13
+
+	.data
+
+.body	.body.c

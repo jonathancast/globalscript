@@ -10,3 +10,8 @@ TARG=ibio
 < $GLOBALSCRIPT/src/mkcommon
 
 $PROG: $GLOBALSCRIPT/lib/libglobalscript.a
+
+test:VN: test-hello3.ibio.ags
+
+%.ibio.ags-out: $PROG %.ibio.ags
+	./$PROG $stem.ibio.ags > $stem.ibio.ags-out
