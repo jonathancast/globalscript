@@ -17,6 +17,8 @@ typedef enum {
 
 static void *lookup_string(void *strings, long, long sym_num, void *code, long, void *data, long, symtype *pst);
 static char *lookup_string_name(void *strings, long, long sym_num);
+static int gsopenfile(char *filename, int omode, int *ppid);
+static int gspopen(int omode, int *ppid, char *cmd, char **argv);
 
 gsfiletype
 gsloadfile(char *filename, gsheader *phdr)
@@ -24,8 +26,10 @@ gsloadfile(char *filename, gsheader *phdr)
     int fd;
     gsfiletype res;
     void *strings, *code, *data, *tmpptr;
+    int pid;
     symtype ty;
-    if ((fd = gsopenfile(filename, OREAD)) <0)
+    Waitmsg *pwait;
+    if ((fd = gsopenfile(filename, OREAD, &pid)) <0)
         gsfatal("open: %r");
     if ((res = gsreadfile(fd, filename, phdr, &strings, &code, &data)) < 0)
         return res;
@@ -47,7 +51,12 @@ gsloadfile(char *filename, gsheader *phdr)
         default:
             gsfatal("%s: Cannot provide further processing for file type %x", filename, res);
     }
-    if (close(fd) < 0) gsfatal("close: %r");
+    if (close(fd) < 0) gsfatal("close %s: %r", filename);
+    if (pid) {
+        if (!(pwait = waitfor(pid))) gsfatal("waitfor(gsbc %s): %r", filename);
+        if (pwait->msg) gsfatal("%s: %s", filename, pwait->msg);
+        free(pwait);
+    }
     return res;
 }
 
@@ -173,28 +182,58 @@ lookup_string(void *strings, long strlen, long sym_num, void *code, long codelen
     return 0;
 }
 
-char *lookup_string_name(void *strings, long strlen, long sym_num)
+char *
+lookup_string_name(void *strings, long strlen, long sym_num)
 {
     if (sym_num >= strlen)
         gsfatal("bad string number: %lx >= %lx", sym_num, strlen);
     return (char*)&((uchar*)strings)[sym_num + 0x09];
 }
 
-int gsopenfile(char *filename, int omode)
+int
+gsopenfile(char *filename, int omode, int *ppid)
 {
+    *ppid = 0;
     char *ext = strrchr(filename, '.');
     if (!ext) goto error;
     if (!strcmp(ext, ".bcgs"))
         return open(filename, omode);
-    if (!strcmp(ext, ".ags")
-        return gspopen(omode, "gsbc", filename, 0);
+    if (!strcmp(ext, ".ags")) {
+        char *argv[] = {
+            "gsbc",
+            filename,
+            0,
+        };
+        return gspopen(omode, ppid, "gsbc", argv);
+    }
 error:
     gsfatal("%s:extensions are mandatory in Global Script source files (sorry)", filename);
+    return -1;
 }
 
-int gspopen(int omode, char *cmd, ...)
+int
+gspopen(int omode, int *ppid, char *cmd, char **argv)
 {
-    va_list arg;
-
-    gsfatal("gspopen(%d, %s) next", omode, cmd);
+    int fd[2];
+    if (pipe(fd) < 0)
+        return -1;
+    if ((*ppid = rfork(RFPROC | RFFDG)) < 0) {
+        close(fd[0]);
+        close(fd[1]);
+        return -1;
+    }
+    if (*ppid == 0) {
+        switch (omode) {
+        case OREAD:
+            close(1);
+            dup(fd[1], 1);
+            exec(cmd, argv);
+            exits("exec failed");
+        default:
+            gsfatal("gspopen(%d, %s, argv) next", omode, cmd);
+        }
+        exits("shouldn't have gotten here");
+    }
+    close(fd[1]);
+    return fd[0];
 }

@@ -3,11 +3,13 @@
 use strict;
 use feature 'switch';
 
-die "$0: no \$GLOBALSCRIPT set\n"
-    unless $ENV{GLOBALSCRIPT} && -d $ENV{GLOBALSCRIPT}
-;
+BEGIN {
+    die "$0: no \$GLOBALSCRIPT set\n"
+        unless $ENV{GLOBALSCRIPT} && -d $ENV{GLOBALSCRIPT}
+    ;
 
-unshift @INC, $ENV{GLOBALSCRIPT}.'/src/cmd/gsbc';
+    unshift @INC, $ENV{GLOBALSCRIPT}.'/src/cmd/gsbc';
+}
 
 use AssembleFile;
 
