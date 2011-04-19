@@ -109,6 +109,7 @@ then any arguments to the primitive.
 \begin{tabular}{l@{ --- }l}
   \texttt{.arg} & Declare a formal parameter \\
   \texttt{.free} & Declare a free variable \\
+  \texttt{.global} & Declare a free variable whose value is statically known \\
   \texttt{.tyarg} & Declares a type parameter \\
   \texttt{.tyfree} & Declares a free type variable \\
 \end{tabular}
@@ -119,11 +120,13 @@ The first byte is the declaration code, with the same format as a byte code.
 Word length only applies to the initial byte code.
 This is followed by
 \begin{itemize}
+\item a count of the number of free variables whose values are statically known,
 \item a count of the number of free variables,
 \item for \texttt{.lambda}, \texttt{.lproge}, and \texttt{.lprog} blocks a count of the number of arguments, and
 \item for \texttt{.proge}, \texttt{.prog}, \texttt{.lproge}, and \texttt{.lprog} blocks the symbol naming the block's API type.
 \end{itemize}
-This is followed by the byte codes for the expression.
+This is followed by the symbols naming the values of any free variables whose values are statically known.
+Then follows by the byte codes for the expression.
 Each byte code is unambiguously initial or final, so the end of the block is self-declaring.
 
 \section{Symbols}

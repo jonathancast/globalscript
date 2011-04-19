@@ -118,12 +118,25 @@ class AssembleFile {
                     $self->assert(@args <= 1, "too many arguments to $directive");
                     $code_obj = LProg->new(symbol_table => $self->symbol_table(), apitype => $args[0]);
                 }
+                when('.expr') {
+                    $self->assert(!$label || $self->expecting_label(), "illegal label $label on directive $directive");
+                    $self->assert(!$self->expecting_label() || $label, "label required on directive $directive");
+                    $self->assert(@args <= 1, "too many arguments to $directive");
+                    $code_obj = Expr->new(symbol_table => $self->symbol_table());
+                }
                 when('.arg') {
                     $self->assert($code_obj, "illegal directive $directive outside a basic block");
                     #$self->assert(@args >= 1, "type required on $directive");
                     $self->assert(@args <= 1, "too many arguments to $directive");
                     $self->assert($code_obj->expecting_arguments(), "un-expected directive $directive");
                     $code_obj->push_argument($label => $args[0]);
+                }
+                when('.global') {
+                    $self->assert($code_obj, "illegal directive $directive outside a basic block");
+                    $self->assert($label, "label required on directive $directive");
+                    $self->assert(@args >= 1, "value required on $directive");
+                    $self->assert(@args <= 1, "too many arguments to $directive");
+                    $code_obj->push_global($label => $args[0]);
                 }
                 when('CHCONST') {
                     $self->assert($code_obj, "illegal directive $directive outside a basic block");
@@ -158,6 +171,18 @@ class AssembleFile {
                     $self->finish_code_obj($code_obj) if $code_obj;
                     undef $code_obj;
                 }
+                when('ALLOC') {
+                    $self->assert(@args >= 1, "missing argument to $directive");
+                    my $stmt = Alloc->new(
+                        symbol_table => $self->symbol_table(),
+                        code_ref => $args[0],
+                        arguments => [ map {
+                            $code_obj->lookup_label($_)
+                            || $self->assert('', "unknown label $_")
+                        } @args[1..$#args] ],
+                    );
+                    $code_obj->push_statement($label => $stmt);
+                }
                 default {
                     $self->assert('', "Unknown directive '$directive'");
                 }
@@ -180,7 +205,7 @@ class AssembleFile {
 
     method assert($cond, $message)
     {
-        die sprintf("%s:%s:%d: %s\n", $0, $self->filename(), $., $message)
+        die sprintf("%s: %s:%d: %s\n", $0, $self->filename(), $., $message)
             unless $cond
         ;
     }
@@ -337,6 +362,16 @@ class CodeObject with SizeBasics {
         },
     ;
 
+    has global_variables =>
+        traits => ['Array'],
+        is => 'ro',
+        isa => 'ArrayRef[Str]',
+        default => sub { [] },
+        handles => {
+            num_global_variables => 'count',
+        },
+    ;
+
     method _remember_label($label)
     {
         my $num_labels = $self->_num_labels();
@@ -348,6 +383,13 @@ class CodeObject with SizeBasics {
     method word_size
     {
         $self->sizeof($self->num_free_variables());
+    }
+
+    method push_global($label, $value)
+    {
+        my $symbol = $self->symbol_table()->find_symbol($value);
+        $self->_push_argument({ label => $label, value => $symbol});
+        $self->_remember_label($label);
     }
 }
 
@@ -411,6 +453,10 @@ class LProg extends CodeObject with APIBlock with Lambda
         print $self->packed_int($self->type_symbol()->offset());
         $self->map_statements(sub { $_->output() });
     }
+}
+
+class Expr extends CodeObject
+{
 }
 
 class Statement with SizeBasics
@@ -531,6 +577,12 @@ class SymbolTable {
     {
         my $symbol = $self->first_symbol(sub { $_->name() eq $name });
         return $symbol ||= $self->_create_symbol($type, $name, $value);
+    }
+
+    method find_symbol(Str $type, Str $name)
+    {
+        my $symbol = $self->first_symbol(sub { $_->name() eq $name });
+        return $symobl || $self->_create_symbol($type, $name, undef);
     }
 
     method _create_symbol(Str $type, Str $name, Int $value)

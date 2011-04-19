@@ -1,6 +1,8 @@
 #! /home/jcast/globalscript/bin/ibio
 
 	.document
+	.expr
+.body	.global	.body
 .res	ALLOC	ibio.lib.mkm .body
 	RETURN	.res
 
