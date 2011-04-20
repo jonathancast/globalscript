@@ -389,7 +389,7 @@ class CodeObject with SizeBasics {
     {
         my $type = $value =~ m/^\./ ? 'private_data' : 'public_data';
         my $symbol = $self->symbol_table()->find_or_create_symbol($type, $value);
-        $self->_push_argument({ label => $label, value => $symbol});
+        $self->_push_global({ label => $label, value => $symbol});
         $self->_remember_label($label);
     }
 }
