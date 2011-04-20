@@ -387,7 +387,8 @@ class CodeObject with SizeBasics {
 
     method push_global($label, $value)
     {
-        my $symbol = $self->symbol_table()->find_symbol($value);
+        my $type = $value =~ m/^\./ ? 'private_data' : 'public_data';
+        my $symbol = $self->symbol_table()->find_or_create_symbol($type, $value);
         $self->_push_argument({ label => $label, value => $symbol});
         $self->_remember_label($label);
     }
@@ -573,19 +574,13 @@ class SymbolTable {
         },
     ;
 
-    method find_or_create_symbol(Str $type, Str $name, Int $value)
+    method find_or_create_symbol(Str $type, Str $name, Int $value?)
     {
         my $symbol = $self->first_symbol(sub { $_->name() eq $name });
         return $symbol ||= $self->_create_symbol($type, $name, $value);
     }
 
-    method find_symbol(Str $type, Str $name)
-    {
-        my $symbol = $self->first_symbol(sub { $_->name() eq $name });
-        return $symobl || $self->_create_symbol($type, $name, undef);
-    }
-
-    method _create_symbol(Str $type, Str $name, Int $value)
+    method _create_symbol(Str $type, Str $name, Maybe[Int] $value)
     {
         my $symbol = Symbol->new(type => $type, offset => $self->size(), name => $name, value => $value);
         $self->_inc_size($symbol->size());
@@ -602,6 +597,7 @@ class Symbol {
         public_code
         public_data
         api_type
+        private_data
     /;
 
     has type =>
@@ -622,10 +618,17 @@ class Symbol {
         required => 1,
     ;
 
+    method _value_set($new_value, $old_value?)
+    {
+        die "Panic! @{[ $self->name() ]} set when it already has a value"
+            if defined($old_value)
+        ;
+    }
+
     has value =>
-        is => 'ro',
-        isa => 'Int',
-        required => 1,
+        is => 'rw',
+        isa => 'Maybe[Int]',
+        trigger => \&_value_set,
     ;
 
     method size
