@@ -365,10 +365,11 @@ class CodeObject with SizeBasics {
     has global_variables =>
         traits => ['Array'],
         is => 'ro',
-        isa => 'ArrayRef[Str]',
+        isa => 'ArrayRef[HashRef]',
         default => sub { [] },
         handles => {
             num_global_variables => 'count',
+            _push_global => 'push',
         },
     ;
 
