@@ -10,7 +10,7 @@
 put	.global
 in	.arg
 out	.arg
-	EPRIM	ibio.lib.write out put
+	JEPRIM	ibio.lib.write out put
 
 put.c	.lprog	ibio.lib.proutine
 op	.arg
@@ -52,7 +52,7 @@ op12	EPRIM	ibio.lib.advance op11
 op13	EPRIM	ibio.lib.advance op12
 .nl	CHCONST '\n'
 	EPRIM	ibio.lib.put op13 .nl
-	EPRIM	ibio.lib.advance op13
+	JEPRIM	ibio.lib.advance op13
 
 	.data
 
