@@ -2,46 +2,59 @@
 
 	.document
 	.expr
-.body	.global	.body
+.body	.global
 .res	ALLOC	ibio.lib.mkm .body
 	RETURN	.res
 
 .body.c	.lprog ibio.lib.prim
-in	.arg	ibio.iport.t char
-out	.arg	ibio.oport.t char
-	EPRIM	ibio.lib.write char out put
+put	.global
+in	.arg
+out	.arg
+	EPRIM	ibio.lib.write out put
 
-put	.lprog	ibio.lib.proutine
-op	.arg	ibio.lib.pptr char
-	EPRIM	ibio.lib.put op	'H'
+put.c	.lprog	ibio.lib.proutine
+op	.arg
+.h	CHCONST	'H'
+	EPRIM	ibio.lib.put op	.h
 op1	EPRIM	ibio.lib.advance op
-	EPRIM	ibio.lib.put op1 'e'
+.e	CHCONST	'e'
+	EPRIM	ibio.lib.put op1 .e
 op2	EPRIM	ibio.lib.advance op1
-	EPRIM	ibio.lib.put op2 'l'
+.l	CHCONST 'l'
+	EPRIM	ibio.lib.put op2 .l
 op3	EPRIM	ibio.lib.advance op2
-	EPRIM	ibio.lib.put op3 'l'
+	EPRIM	ibio.lib.put op3 .l
 op4	EPRIM	ibio.lib.advance op3
-	EPRIM	ibio.lib.put op4 'o'
+.o	CHCONST	'o'
+	EPRIM	ibio.lib.put op4 .o
 op5	EPRIM	ibio.lib.advance op4
-	EPRIM	ibio.lib.put op5 ','
+.comma	CHCONST ','
+	EPRIM	ibio.lib.put op5 .comma
 op6	EPRIM	ibio.lib.advance op5
-	EPRIM	ibio.lib.put op6 ' '
+.space	CHCONST '\s'
+	EPRIM	ibio.lib.put op6 .space
 op7	EPRIM	ibio.lib.advance op6
-	EPRIM	ibio.lib.put op7 'W'
+.uW	CHCONST	'W'
+	EPRIM	ibio.lib.put op7 .uW
 op8	EPRIM	ibio.lib.advance op7
-	EPRIM	ibio.lib.put op8 'o'
+	EPRIM	ibio.lib.put op8 .o
 op9	EPRIM	ibio.lib.advance op8
-	EPRIM	ibio.lib.put op9 'r'
+.r	CHCONST	'r'
+	EPRIM	ibio.lib.put op9 .r
 op10	EPRIM	ibio.lib.advance op9
-	EPRIM	ibio.lib.put op10 'l'
+	EPRIM	ibio.lib.put op10 .l
 op11	EPRIM	ibio.lib.advance op10
-	EPRIM	ibio.lib.put op11 'd'
+.d	CHCONST 'd'
+	EPRIM	ibio.lib.put op11 .d
 op12	EPRIM	ibio.lib.advance op11
-	EPRIM	ibio.lib.put op12 '!'
+.bang	CHCONST '!'
+	EPRIM	ibio.lib.put op12 .bang
 op13	EPRIM	ibio.lib.advance op12
-	EPRIM	ibio.lib.put op13 '\n'
+.nl	CHCONST '\n'
+	EPRIM	ibio.lib.put op13 .nl
 	EPRIM	ibio.lib.advance op13
 
 	.data
 
 .body	.body.c
+put	put.c

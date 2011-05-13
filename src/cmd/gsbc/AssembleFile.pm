@@ -134,19 +134,24 @@ class AssembleFile {
                 when('.global') {
                     $self->assert($code_obj, "illegal directive $directive outside a basic block");
                     $self->assert($label, "label required on directive $directive");
-                    $self->assert(@args >= 1, "value required on $directive");
-                    $self->assert(@args <= 1, "too many arguments to $directive");
-                    $code_obj->push_global($label => $args[0]);
+                    $self->assert(@args <= 0, "too many arguments to $directive");
+                    $code_obj->push_global($label);
                 }
                 when('CHCONST') {
                     $self->assert($code_obj, "illegal directive $directive outside a basic block");
                     $self->assert(@args >= 1, "missing argument to $directive");
                     $self->assert(@args <= 1, "too many arguments to $directive");
-                    my ($contents) = $args[0] =~ m/^'([^'\\]+|\\')'$/;
+                    my ($contents) = $args[0] =~ m/^'([^'\\]+|\\.)'$/;
                     $self->assert($contents, "mal-formed argument to $directive");
                     given($contents) {
                         when('\\\'') {
                             $contents = "'";
+                        }
+                        when('\\s') {
+                            $contents = ' ';
+                        }
+                        when('\\n') {
+                            $contents = "\n";
                         }
                         when(/^[^\\']$/) {}
                         default { $self->assert('', "mal-formed argument to $directive"); }
@@ -156,7 +161,34 @@ class AssembleFile {
                         arg => $contents,
                     ));
                 }
+                when('ALLOC') {
+                    $self->assert($code_obj, "illegal directive $directive outside a basic block");
+                    $self->assert(@args >= 1, "missing argument to $directive");
+                    my $stmt = Alloc->new(
+                        symbol_table => $self->symbol_table(),
+                        code_ref => $self->symbol_table()->find_or_create_symbol('code', $args[0]),
+                        arguments => [ map {
+                            $code_obj->lookup_label($_)
+                            || $self->assert('', "unknown label $_")
+                        } @args[1..$#args] ],
+                    );
+                    $code_obj->push_statement($label => $stmt);
+                }
+                when('EPRIM') {
+                    $self->assert($code_obj, "illegal directive $directive outside a basic block");
+                    $self->assert(@args >= 1, "missing argument to $directive");
+                    my $stmt = EPrim->new(
+                        symbol_table => $self->symbol_table(),
+                        primitive => $args[0],
+                        arguments => [ map {
+                            $code_obj->lookup_label($_)
+                            || $self->assert('', "unknown label $_")
+                        } @args[1..$#args] ],
+                    );
+                    $code_obj->push_statement($label => $stmt);
+                }
                 when('JEPRIM') {
+                    $self->assert($code_obj, "illegal directive $directive outside a basic block");
                     $self->assert(!$label, "illegal label $label on directive $directive");
                     $self->assert(@args >= 1, "missing argument to $directive");
                     my $stmt = JEPrim->new(
@@ -171,17 +203,18 @@ class AssembleFile {
                     $self->finish_code_obj($code_obj) if $code_obj;
                     undef $code_obj;
                 }
-                when('ALLOC') {
+                when('RETURN') {
+                    $self->assert($code_obj, "illegal directive $directive outside a basic block");
+                    $self->assert(!$label, "illegal label $label on directive $directive");
                     $self->assert(@args >= 1, "missing argument to $directive");
-                    my $stmt = Alloc->new(
+                    $self->assert(@args <= 1, "too many arguments to $directive");
+                    my $stmt = Return->new(
                         symbol_table => $self->symbol_table(),
-                        code_ref => $args[0],
-                        arguments => [ map {
-                            $code_obj->lookup_label($_)
-                            || $self->assert('', "unknown label $_")
-                        } @args[1..$#args] ],
+                        value => $code_obj->lookup_label($args[0]),
                     );
-                    $code_obj->push_statement($label => $stmt);
+                    $code_obj->push_statement(undef, $stmt);
+                    $self->finish_code_obj($code_obj) if $code_obj;
+                    undef $code_obj;
                 }
                 default {
                     $self->assert('', "Unknown directive '$directive'");
@@ -373,6 +406,19 @@ class CodeObject with SizeBasics {
         },
     ;
 
+    has statements =>
+        traits => [qw/ Array /],
+        is => 'ro',
+        isa => 'ArrayRef[Statement]',
+        default => sub { [] },
+        handles => {
+            missing_statements => 'is_empty',
+            _push_statement => 'push',
+            all_statements => 'elements',
+            map_statements => 'map',
+        },
+    ;
+
     method _remember_label($label)
     {
         my $num_labels = $self->_num_labels();
@@ -386,12 +432,17 @@ class CodeObject with SizeBasics {
         $self->sizeof($self->num_free_variables());
     }
 
-    method push_global($label, $value)
+    method push_global($label)
     {
-        my $type = $value =~ m/^\./ ? 'private_data' : 'public_data';
-        my $symbol = $self->symbol_table()->find_or_create_symbol($type, $value);
+        my $symbol = $self->symbol_table()->find_or_create_symbol('data', $label);
         $self->_push_global({ label => $label, value => $symbol});
         $self->_remember_label($label);
+    }
+
+    method push_statement(Maybe $label, $statement)
+    {
+        $self->_remember_label($label) if defined($label);
+        $self->_push_statement($statement);
     }
 }
 
@@ -415,25 +466,6 @@ class LProg extends CodeObject with APIBlock with Lambda
         max
         sum
     /;
-
-    has statements =>
-        traits => [qw/ Array /],
-        is => 'ro',
-        isa => 'ArrayRef[Statement]',
-        default => sub { [] },
-        handles => {
-            missing_statements => 'is_empty',
-            _push_statement => 'push',
-            all_statements => 'elements',
-            map_statements => 'map',
-        },
-    ;
-
-    method push_statement(Maybe $label, $statement)
-    {
-        $self->_remember_label($label) if defined($label);
-        $self->_push_statement($statement);
-    }
 
     around word_size()
     {
@@ -502,6 +534,73 @@ class ChConst extends Statement
     }
 }
 
+class Alloc extends Statement
+{
+    use Encode;
+
+    has code_ref =>
+        is => 'ro',
+        isa => 'Symbol',
+        required => 1,
+    ;
+
+    has arguments =>
+        is => 'ro',
+        isa => 'ArrayRef[Str]',
+        required => 1,
+    ;
+}
+
+class EPrim extends Statement {
+    use List::Util qw/ max /;
+
+    has primitive =>
+        is => 'ro',
+        isa => 'Str',
+        required => 1,
+    ;
+
+    has arguments =>
+        traits => [qw/ Array /],
+        is => 'ro',
+        isa => 'ArrayRef[Int]',
+        required => 1,
+        handles => {
+            all_arguments => 'elements',
+            num_arguments => 'count',
+            map_arguments => 'map',
+        },
+    ;
+
+    method primitive_symbol
+    {
+        return $self->symbol_table()->find_or_create_symbol('api_type', $self->primitive(), 0);
+    }
+
+    method word_size()
+    {
+        return max map { $self->sizeof($_) }
+            $self->num_arguments(),
+            $self->primitive_symbol()->offset(),
+            $self->all_arguments(),
+        ;
+    }
+
+    method size
+    {
+        1 + $self->word_size() + $self->word_size() + $self->num_arguments() * $self->word_size()
+    }
+
+    method output
+    {
+        my $size = $self->size_to_bitfield($self->word_size());
+        print pack "C", ($self->EPRIM << 2 | $size);
+        print $self->packed_int(1 + $self->num_arguments());
+        print $self->packed_int($self->primitive_symbol()->offset());
+        $self->map_arguments(sub { print $self->packed_int($_) });
+    }
+}
+
 class JEPrim extends Statement {
     use List::Util qw/ max /;
 
@@ -552,6 +651,9 @@ class JEPrim extends Statement {
     }
 }
 
+class Return extends Statement {
+}
+
 class SymbolTable {
     has symbols =>
         traits => ['Array'],
@@ -577,7 +679,8 @@ class SymbolTable {
 
     method find_or_create_symbol(Str $type, Str $name, Int $value?)
     {
-        my $symbol = $self->first_symbol(sub { $_->name() eq $name });
+        $type = $self->_fix_type($type, $name);
+        my $symbol = $self->first_symbol(sub { $_->type() eq $type && $_->name() eq $name });
         return $symbol ||= $self->_create_symbol($type, $name, $value);
     }
 
@@ -588,6 +691,19 @@ class SymbolTable {
         $self->_push_symbol($symbol);
         return $symbol;
     }
+
+    method _fix_type(Str $type, Str $name)
+    {
+        given($type) {
+            when([qw/ code data /]) {
+                $type = $name =~ m/^\./
+                    ? "public_$type"
+                    : "private_$type"
+                ;
+            }
+        }
+        return $type;
+    }
 }
 
 class Symbol {
@@ -595,10 +711,11 @@ class Symbol {
     use Moose::Util::TypeConstraints;
 
     enum SymbolType => qw/
+        api_type
+        private_code
+        private_data
         public_code
         public_data
-        api_type
-        private_data
     /;
 
     has type =>
@@ -619,7 +736,7 @@ class Symbol {
         required => 1,
     ;
 
-    method _value_set($new_value, $old_value?)
+    method _value_set(Maybe[Int] $new_value, Maybe[Int] $old_value?)
     {
         die "Panic! @{[ $self->name() ]} set when it already has a value"
             if defined($old_value)
