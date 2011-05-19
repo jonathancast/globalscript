@@ -46,7 +46,9 @@ class AssembleFile {
         isa => 'SectionLabel',
         predicate => 'has_section',
     ;
-    
+
+    method is_data { $self->has_section() && $self->section() eq 'data' }
+
     has code_objects =>
         traits => [qw/ Array /],
         is => 'ro',
@@ -57,6 +59,14 @@ class AssembleFile {
             push_code_obj => 'push',
             all_code_objects => 'elements',
             map_code_objects => 'map',
+        },
+    ;
+
+    has data_objects =>
+        traits => [qw/ Array /],
+        default => sub { [] },
+        handles => {
+            push_data_obj => 'push',
         },
     ;
 
@@ -107,6 +117,13 @@ class AssembleFile {
             next unless $line =~ m/\S/;
             my ($label, $directive, @args) = split qr/\s+/, $line;
             given ($directive) {
+                when($self->is_data()) {
+                    $self->push_data_obj(DataObj->new(
+                        symbol_table => $self->symbol_table(),
+                        code_label => $directive,
+                        arguments => [ @args ],
+                    ));
+                }
                 when('.document') {
                     $self->assert(!$label, "illegal label $label on directive $directive");
                     $self->start_document();
@@ -216,6 +233,11 @@ class AssembleFile {
                     $self->finish_code_obj($code_obj) if $code_obj;
                     undef $code_obj;
                 }
+                when('.data') {
+                    $self->assert(!$label, "illegal label $label on directive $directive");
+                    $self->assert(!$code_obj, "illegal directive $directive inside a basic block");
+                    $self->start_data();
+                }
                 default {
                     $self->assert('', "Unknown directive '$directive'");
                 }
@@ -229,7 +251,12 @@ class AssembleFile {
         $self->section('code');
         $self->filetype('document');
     }
-    
+
+    method start_data()
+    {
+        $self->section('data');
+    }
+
     method finish_code_obj($code_obj)
     {
         $code_obj->finish() if $code_obj->can('finish');
@@ -491,6 +518,14 @@ class LProg extends CodeObject with APIBlock with Lambda
 
 class Expr extends CodeObject
 {
+    use List::Util qw/
+        sum
+    /;
+
+    method size()
+    {
+        1 + 2 * $self->word_size() + sum map { $_->size() } $self->all_statements()
+    }
 }
 
 class Statement with SizeBasics
@@ -537,6 +572,9 @@ class ChConst extends Statement
 class Alloc extends Statement
 {
     use Encode;
+    use List::Util qw/
+        max
+    /;
 
     has code_ref =>
         is => 'ro',
@@ -545,10 +583,25 @@ class Alloc extends Statement
     ;
 
     has arguments =>
+        traits => [qw/ Array /],
         is => 'ro',
-        isa => 'ArrayRef[Str]',
+        isa => 'ArrayRef[Int]',
         required => 1,
+        handles => {
+            arguments_count => 'count',
+            all_arguments => 'elements',
+        },
     ;
+
+    method word_size()
+    {
+        max map { $self->sizeof($_) } $self->code_ref()->offset(), $self->all_arguments()
+    }
+
+    method size()
+    {
+        (2 + $self->arguments_count()) * $self->word_size()
+    }
 }
 
 class EPrim extends Statement {
@@ -769,4 +822,7 @@ class Symbol {
         print pack "C", length(encode("utf8", $self->name()));
         print pack "U*", map { ord($_) } split //, $self->name();
     }
+}
+
+class DataObj {
 }

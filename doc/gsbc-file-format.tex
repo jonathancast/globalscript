@@ -84,6 +84,10 @@ numeric values in the range $i \in [n + 1, n + m + 1)$ refer to the $(i - n)$th 
 numeric values in the range $i \in [n + m + 1, n + m + p + 1)$ refer to the result of the $(i - n - m)$th generator.
 Forward references (references to later generators) are in general legal.
 
+\paragraph{\texttt{ALLOC}} is followed by a count of the number of arguments (including code lable),
+then the code label,
+then any free variables for the code label.
+
 \paragraph{\texttt{JEPRIM}/\texttt{EPRIM}} are followed by count of arguments (including primitive),
 then any arguments to the primitive.
 
