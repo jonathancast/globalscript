@@ -1,0 +1,160 @@
+module 'globalscript.std.list ∝ 〈
+    -- The type §gs{list.t α} is (one of the two) free (lazy) monoids over §gs{α};
+    -- expressions of this type thus have one the three forms
+    -- §begin{types}
+    --      ⊢ [] :: list.t α;
+    --    x :: α ⊢ [x] :: list.t α;
+    --    xn, ys, :: list.t α ⊢ xn <> ys :: list.t α;
+    -- §end{types}
+    -- with strictness chosen by the rules
+    -- §begin{itemize}
+    --    §item §gs{[] ≠ error},
+    --    §item §gs{[x] ≠ error}, for all §gs{x},
+    --    §item §gs{error <> ys = error},
+    --    §item §gs{[] <> ys} is strict is §gs{ys} (as it must be, being equal to §gs{ys}), and
+    --    §item §gs{[x] <> ys ≠ error}, for all §gs{x}, §gs{ys}.
+    -- §end{itemize}
+    -- The more general rule, §gs{([x] <> xn) <> ys ≠ error}, can be proven from associativity as follows:
+    -- §globalscript{([x] <> xn) <> ys = [x] <> (xn <> ys) ≠ error}
+
+    -- The (strict) free monoid over an alphabet type §gs{α}
+    -- is frequently referred to as the type of §emph{strings (of §gs{α})};
+    -- the (strict) free monoid over characters, §gs{list.t char},
+    -- is frequently referred to in programming languages as §emph{strings}.
+    -- Both usages are frequent in Global Script; §fn{prefix.gs} defines
+    -- > type 'string = list.t. char;
+    -- to support the latter in code.
+
+-- §section{Constructing Lists}
+
+    -- These rules require constructors for the forms §gs{[]} and §gs{[x] <> xn},
+    -- and it turns out these two constructors are sufficient as §gs{[x] = [x] <> []} by the right identity law.
+    -- 
+    -- We call these constructors §gs{nil} and §gs{:}:
+    〈..〉 = data 'α.
+        | nil
+        | α : t α
+    ;
+    -- and we can recover the original expression form §gs{[x]}, which we will write as §gs{singleton x}, as
+    sig singleton, pattern singleton, :: ∀ 'α. α → t α;
+    'singleton = λ 'x. x : nil;
+    match singleton = λ 's 'e 'xn. analyze xn
+        case 'x : nil. s x
+        case _. e
+    ;
+
+    -- The concatenation operator can be recovered in this form, as well:
+    sig <> :: ∀ 'α. t α → t α → t α;
+    ('<>) = λ 'xn 'ys. analyze xn
+        case nil.
+            -- > nil <> ys
+            -- > =
+            ys
+        case 'x:'xn1.
+            -- > (x:xn1) <> ys
+            -- > = ([x] <> xn1) <> ys -- definition of §gs{:}
+            -- > = [x] <> (xn1 <> ys) -- associativity
+            -- > =
+            x : (xn1 <> ys) -- definition of §gs{:}
+    ;
+    -- In general, a given list can be written as a composition in multiple ways,
+    -- but we can choose the case where the left list is a singleton (corresponding to §gs{:}) as follows:
+    match <> = λ 's 'e 'xn. analyze xn
+        case 'x:'xn1. s (singleton x) xn1
+        case _. e
+    ;
+
+-- §section{De-Constructing Lists}
+
+    -- The catamorphism on lists is §gs{foldr}.
+    -- The §emph{catamorphisms} on lists is defined in terms of the constructors §gs{:} and §gs{nil}:
+    -- §gs{foldr f z} replaces every instance of §gs{:} in the tree structure of the list with §gs{f},
+    -- and every instance of §gs{nil} with §gs{z}.
+    sig foldr :: ∀ 'α 'β. (α → β → β) → β → [α] → β;
+    'foldr = λ 'f 'z. for rec ('ffz = λ 'xn. analyze xn
+        case nil. z
+        case 'x:'xn1. f x (ffz xn1)
+    ) ffz;
+    
+    -- §gs{foldr} can also be characterized in terms of the monoid structure of the list:
+    -- > foldr 'f 'z nil = z
+    -- > foldr 'f 'z (singleton 'x) = f x z
+    -- > foldr 'f 'z ('xn <> 'ys) = foldr f (foldr f z ys) xn
+    -- ; however, this characterization is obviously less simple to understand.
+
+    -- See §gs{globalscript.std.list.lib.reducer} if §gs{foldr}'s argument order is inconvenient to you.
+
+    -- Two operations which are commonly defined on strings in other languages are §gs{foldl} and §gs{reverse}.
+    -- These two are inter-defined in Global Script, in that the elegant definition of §gs{foldl} uses §gs{reverse}
+    -- and the efficient definition of §gs{reverse} uses §gs{foldl}.
+    -- So, we import them from a sub-module:
+    〈..〉 ∝ 〈
+        sig reverse :: ∀ 'α. t α → t α;
+        sig foldl :: ∀ 'α 'β. (β → α → β) → β → t α → β;
+        'reverse = λ 'xn. analyze xn
+            case nil. nil
+            case singleton 'x. x
+            case 'xn1 <> 'xn2. reverse xn2 <> xn1
+            -- (So §gs{reverse} reverses the sense of the concatenations within its input list)
+        = λ 'xn. analyze xn
+            case nil. nil
+            case 'x:'xn1. xn1 <> [x]
+        ;
+        'foldl = λ 'f 'z. foldr (flip $ strict f) z · reverse;
+            -- §gs{foldl} processes the input list left-to-right, in the opposite order from §gs{foldr}.
+            -- In general, eager algorithms want to use §gs{foldl}, which is tail-recursive and so has better space behavior,
+            -- while lazy algorithms want to use §gs{foldr}, which allows the algorithm to take advantage of the laziness of §gs{f}.
+            -- For this reason, Global Script's §gs{foldr} function is lax (the order of evaluation depends on §gs{f}), while
+            -- Global Script's §gs{foldl} is strict (the order of evaluation is fixed by §gs{foldl}).
+
+            -- §gs{foldl} can also be expressed in terms of the monoid structure of lists:
+            -- > foldl 'f 'z nil
+            -- >    = foldr (flip $ strict f) z (reverse nil)
+            -- >    = foldr (flip $ strict f) z nil
+            -- >    = z
+            -- > ;
+            -- > foldl 'f 'z (singleton 'x)
+            -- >    = foldr (flip $ strict f) z (reverse $ singleton x)
+            -- >    = foldr (flip $ strict f) z (singleton x)
+            -- >    = flip (strict f) x z
+            -- >    = strict f z x
+            -- >    = for (!'z0 ∝ z) f z0 x
+            -- > ;
+            -- > foldl 'f 'z ('xn <> 'ys)
+            -- >     = foldr (flip $ strict f) z (reverse $ xn <> ys)
+            -- >     = foldr (flip $ strict f) z (reverse ys <> reverse xn)
+            -- >     = foldr (flip $ strict f) (foldr (flip $ strict f) (reverse xn)) (reverse ys)
+            -- >     = foldr (flip $ strict f) (foldl f xn) (reverse ys)
+            -- >     = foldl f (foldl f xn) ys
+            -- > ;
+            -- which gives, perhaps, a nicer-looking rule for concatenation.
+    〉
+    = 〈
+        'foldl = λ 'f. for rec ('ff = λ 'z 'xn. analyze xn
+            case nil.
+                -- > foldr (flip $ strict f) z (reverse nil)
+                -- > = foldr (flip $ strict f) z nil
+                z
+            case 'x:'xn1.
+                -- > foldl f z (singleton x <> xn1)
+                -- > = foldl f (foldl f z (singleton x)) xn1
+                foldl f (for (!'z0 ∝ z) f z0 x) xn1
+            -- A little thought should convince you that the above is strict in §gs{z}, and so can be written
+            = λ !'z 'xn. analyze xn
+                case nil. z
+                case 'x:'xn1. foldl f (f z x) xn1 -- since §gs{z} is evaluated at this point
+        ) ff;
+        'reverse = foldl (flip (:)) nil;
+        -- Why?  Well, because
+        -- > reverse
+        -- > = id · reverse
+        -- > = foldr (:) nil · reverse
+        -- > = foldr (flip $ flip (:)) nil · reverse
+        -- and
+        -- > foldl (flip (:)) nil
+        -- > = foldr (flip $ strict $ flip (:)) nil · reverse
+        -- and a bit of though shows that, in this context,
+        -- > flip $ strict $ flip (:) = flip $ flip (:)
+        -- since the relevant argument (the second argument to §gs{:}) is in practice always defined.
+    〉;
+〉;

@@ -526,6 +526,15 @@ class Expr extends CodeObject
     {
         1 + 2 * $self->word_size() + sum map { $_->size() } $self->all_statements()
     }
+
+    method output()
+    {
+        my $size = $self->size_to_bitfield($self->word_size());
+        print pack "C", ($self->EXPR() << 2 | $size);
+        print $self->packed_int($self->num_global_variables());
+        print $self->packed_int($self->num_free_variables());
+        $self->map_statements(sub { $_->output() });
+    }
 }
 
 class Statement with SizeBasics
@@ -705,6 +714,21 @@ class JEPrim extends Statement {
 }
 
 class Return extends Statement {
+    has value =>
+        is => 'ro',
+        isa => 'Int',
+        required => 1,
+    ;
+
+    method word_size
+    {
+        $self->sizeof($self->value())
+    }
+
+    method size
+    {
+        1 + $self->word_size()
+    }
 }
 
 class SymbolTable {
