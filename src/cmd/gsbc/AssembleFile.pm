@@ -382,6 +382,7 @@ role SizeBasics {
 }
 
 class CodeObject with SizeBasics {
+    use constant EXPR => 0x4;
     use constant LPROG => 0xe;
 
     has symbol_table =>
@@ -539,6 +540,7 @@ class Expr extends CodeObject
 
 class Statement with SizeBasics
 {
+    use constant ALLOC => 0x00;
     use constant CHCONST => 0x06;
     use constant JEPRIM => 0x0e;
 
@@ -597,7 +599,7 @@ class Alloc extends Statement
         isa => 'ArrayRef[Int]',
         required => 1,
         handles => {
-            arguments_count => 'count',
+            num_arguments => 'count',
             all_arguments => 'elements',
         },
     ;
@@ -609,7 +611,16 @@ class Alloc extends Statement
 
     method size()
     {
-        (2 + $self->arguments_count()) * $self->word_size()
+        (2 + $self->num_arguments()) * $self->word_size()
+    }
+
+    method output()
+    {
+        my $size = $self->size_to_bitfield($self->word_size());
+        print pack "C", ($self->ALLOC << 2 | $size);
+        print $self->packed_int(1 + $self->num_arguments());
+        print $self->packed_int($self->code_ref()->offset());
+        $self->map_arguments(sub { print $self->packed_int($_) });
     }
 }
 
