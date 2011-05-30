@@ -4,7 +4,7 @@
 	.expr
 .body	.global
 .res	ALLOC	ibio.lib.mkm .body
-	RETURN	.res
+	YIELD	.res
 
 .body.c	.lprog ibio.lib.prim
 put	.global

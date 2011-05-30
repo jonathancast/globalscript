@@ -67,6 +67,7 @@ class AssembleFile {
         default => sub { [] },
         handles => {
             push_data_obj => 'push',
+            map_data_objects => 'map',
         },
     ;
 
@@ -86,7 +87,7 @@ class AssembleFile {
 
     method data_size()
     {
-        0
+        sum $self->map_data_objects(sub { $_->size() })
     }
 
     method string_size()
@@ -118,6 +119,8 @@ class AssembleFile {
             my ($label, $directive, @args) = split qr/\s+/, $line;
             given ($directive) {
                 when($self->is_data()) {
+                    $self->assert($label, "label required on data entry");
+                    $self->symbol_table()->find_or_create_symbol('data', $label, $self->data_size());
                     $self->push_data_obj(DataObj->new(
                         symbol_table => $self->symbol_table(),
                         code_label => $directive,
@@ -226,6 +229,19 @@ class AssembleFile {
                     $self->assert(@args >= 1, "missing argument to $directive");
                     $self->assert(@args <= 1, "too many arguments to $directive");
                     my $stmt = Return->new(
+                        symbol_table => $self->symbol_table(),
+                        value => $code_obj->lookup_label($args[0]),
+                    );
+                    $code_obj->push_statement(undef, $stmt);
+                    $self->finish_code_obj($code_obj) if $code_obj;
+                    undef $code_obj;
+                }
+                when('YIELD') {
+                    $self->assert($code_obj, "illegal directive $directive outside a basic block");
+                    $self->assert(!$label, "illegal label $label on directive $directive");
+                    $self->assert(@args >= 1, "missing argument to $directive");
+                    $self->assert(@args <= 1, "too many arguments to $directive");
+                    my $stmt = Yield->new(
                         symbol_table => $self->symbol_table(),
                         value => $code_obj->lookup_label($args[0]),
                     );
@@ -484,7 +500,7 @@ role APIBlock
 
     method type_symbol
     {
-        return $self->symbol_table()->find_or_create_symbol('api_type', $self->apitype(), 0);
+        return $self->symbol_table()->find_or_create_symbol('api_type', $self->apitype());
     }
 }
 
@@ -542,7 +558,9 @@ class Statement with SizeBasics
 {
     use constant ALLOC => 0x00;
     use constant CHCONST => 0x06;
+    use constant EPRIM => 0x09;
     use constant JEPRIM => 0x0e;
+    use constant YIELD => 0x13;
 
     has symbol_table =>
         is => 'ro',
@@ -601,6 +619,7 @@ class Alloc extends Statement
         handles => {
             num_arguments => 'count',
             all_arguments => 'elements',
+            map_arguments => 'map',
         },
     ;
 
@@ -647,7 +666,7 @@ class EPrim extends Statement {
 
     method primitive_symbol
     {
-        return $self->symbol_table()->find_or_create_symbol('api_type', $self->primitive(), 0);
+        return $self->symbol_table()->find_or_create_symbol('api_type', $self->primitive());
     }
 
     method word_size()
@@ -697,7 +716,7 @@ class JEPrim extends Statement {
 
     method primitive_symbol
     {
-        return $self->symbol_table()->find_or_create_symbol('api_type', $self->primitive(), 0);
+        return $self->symbol_table()->find_or_create_symbol('api_type', $self->primitive());
     }
 
     method word_size()
@@ -742,6 +761,31 @@ class Return extends Statement {
     }
 }
 
+class Yield extends Statement {
+    has value =>
+        is => 'ro',
+        isa => 'Int',
+        required => 1,
+    ;
+
+    method word_size
+    {
+        $self->sizeof($self->value())
+    }
+
+    method size
+    {
+        1 + $self->word_size()
+    }
+
+    method output
+    {
+        my $size = $self->size_to_bitfield($self->word_size());
+        print pack "C", ($self->YIELD << 2 | $size);
+        print $self->packed_int($self->value());
+    }
+}
+
 class SymbolTable {
     has symbols =>
         traits => ['Array'],
@@ -769,6 +813,7 @@ class SymbolTable {
     {
         $type = $self->_fix_type($type, $name);
         my $symbol = $self->first_symbol(sub { $_->type() eq $type && $_->name() eq $name });
+        $symbol->value($value) if $symbol && defined($value);
         return $symbol ||= $self->_create_symbol($type, $name, $value);
     }
 
@@ -785,8 +830,8 @@ class SymbolTable {
         given($type) {
             when([qw/ code data /]) {
                 $type = $name =~ m/^\./
-                    ? "public_$type"
-                    : "private_$type"
+                    ? "private_$type"
+                    : "public_$type"
                 ;
             }
         }
@@ -826,7 +871,7 @@ class Symbol {
 
     method _value_set(Maybe[Int] $new_value, Maybe[Int] $old_value?)
     {
-        die "Panic! @{[ $self->name() ]} set when it already has a value"
+        confess "Panic! @{[ $self->name() ]} set when it already has a value"
             if defined($old_value)
         ;
     }
@@ -845,6 +890,9 @@ class Symbol {
     method type_code
     {
         {
+            private_code => 5,
+            public_data => 6,
+            private_data => 7,
             api_type => 9,
         }->{$self->type()}
         or die "Panic!  Unknown type ".$self->type();
@@ -853,6 +901,8 @@ class Symbol {
     method output
     {
         print pack "C", $self->type_code();
+        die "Un-known value for symbol ".$self->name()." of type ".$self->type()
+            unless defined($self->value());
         print pack "N", $self->value();
         print pack "C", length(encode("utf8", $self->name()));
         print pack "U*", map { ord($_) } split //, $self->name();
@@ -860,4 +910,18 @@ class Symbol {
 }
 
 class DataObj {
+    has arguments =>
+        traits => [qw/ Array /],
+        is => 'ro',
+        isa => 'ArrayRef[Symbol]',
+        required => 1,
+        handles => {
+            num_arguments => 'count',
+        },
+    ;
+
+    method size
+    {
+        4 + 4 * $self->num_arguments()
+    }
 }

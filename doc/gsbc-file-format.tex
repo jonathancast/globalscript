@@ -133,6 +133,14 @@ This is followed by the symbols naming the values of any free variables whose va
 Then follows by the byte codes for the expression.
 Each byte code is unambiguously initial or final, so the end of the block is self-declaring.
 
+\section{Data Section Items}
+
+These consist of:
+\begin{itemize}
+    \item The (code) symbol naming the code for this data item.
+    \item The (data) symbols naming the free variables of the code, in order of declaration.
+\end{itemize}
+
 \section{Symbols}
 
 \begin{tabular}{rl}
