@@ -82,12 +82,14 @@ class AssembleFile {
     
     method code_size()
     {
-        sum map { $_->size() } $self->all_code_objects()
+        sum 0, map { $_->size() } $self->all_code_objects()
     }
 
     method data_size()
     {
-        sum $self->map_data_objects(sub { $_->size() })
+        sum 0, $self->map_data_objects(sub { $_->size() })
+        # sum ≡ reduce { $a + $b }, so sum() = undef.
+        # Because List::Util is retarded
     }
 
     method string_size()
@@ -120,10 +122,16 @@ class AssembleFile {
             given ($directive) {
                 when($self->is_data()) {
                     $self->assert($label, "label required on data entry");
+                    unless (defined $self->data_size()) {
+                        $self->panic(qq{
+                            data_size somehow undefined!
+                            The data segment looks like:@{[ join("\n", $self->map_data_objects(sub { $_->dump() })) ]}
+                        });
+                    }
                     $self->symbol_table()->find_or_create_symbol('data', $label, $self->data_size());
                     $self->push_data_obj(DataObj->new(
                         symbol_table => $self->symbol_table(),
-                        code_label => $directive,
+                        code_symbol => $self->symbol_table->find_symbol('code', $directive),
                         arguments => [ @args ],
                     ));
                 }
@@ -132,15 +140,13 @@ class AssembleFile {
                     $self->start_document();
                 }
                 when('.lprog') {
-                    $self->assert(!$label || $self->expecting_label(), "illegal label $label on directive $directive");
-                    $self->assert(!$self->expecting_label() || $label, "label required on directive $directive");
+                    $self->code_label($label, $directive);
                     $self->assert(@args >= 1, "API type required on $directive");
                     $self->assert(@args <= 1, "too many arguments to $directive");
                     $code_obj = LProg->new(symbol_table => $self->symbol_table(), apitype => $args[0]);
                 }
                 when('.expr') {
-                    $self->assert(!$label || $self->expecting_label(), "illegal label $label on directive $directive");
-                    $self->assert(!$self->expecting_label() || $label, "label required on directive $directive");
+                    $self->code_label($label, $directive);
                     $self->assert(@args <= 1, "too many arguments to $directive");
                     $code_obj = Expr->new(symbol_table => $self->symbol_table());
                 }
@@ -273,6 +279,13 @@ class AssembleFile {
         $self->section('data');
     }
 
+    method code_label(Maybe[Str] $label, Str $directive)
+    {
+        $self->assert(!$label || $self->expecting_label(), "illegal label $label on directive $directive");
+        $self->assert(!$self->expecting_label() || $label, "label required on directive $directive");
+        $self->symbol_table()->find_or_create_symbol('code', $label, $self->code_size());
+    }
+
     method finish_code_obj($code_obj)
     {
         $code_obj->finish() if $code_obj->can('finish');
@@ -284,6 +297,12 @@ class AssembleFile {
         die sprintf("%s: %s:%d: %s\n", $0, $self->filename(), $., $message)
             unless $cond
         ;
+    }
+
+    method panic(Str $message)
+    {
+        $message =~ s/^\s+//mg;
+        die sprintf("%s: %s:%d: Panic: %spanicing", $0, $self->filename(), $., $message);
     }
 
     method expecting_label()
@@ -320,10 +339,12 @@ class AssembleFile {
 
     method output_data
     {
+        $self->map_data_objects(sub { $_->output() });
     }
 
     method output_strings
     {
+        $self->map_symbol(sub { $_->finalize() });
         $self->map_symbol(sub { $_->output() });
     }
 }
@@ -817,6 +838,14 @@ class SymbolTable {
         return $symbol ||= $self->_create_symbol($type, $name, $value);
     }
 
+    method find_symbol(Str $type, Str $name)
+    {
+        $type = $self->_fix_type($type, $name);
+        my $symbol = $self->first_symbol(sub { $_->type() eq $type && $_->name() eq $name });
+        die "Unknown symbol $name of type $type" unless $symbol;
+        return $symbol
+    }
+
     method _create_symbol(Str $type, Str $name, Maybe[Int] $value)
     {
         my $symbol = Symbol->new(type => $type, offset => $self->size(), name => $name, value => $value);
@@ -843,7 +872,11 @@ class Symbol {
     use Encode;
     use Moose::Util::TypeConstraints;
 
+    use List::Util qw/ sum /;
+
     enum SymbolType => qw/
+        external_code
+        external_data
         api_type
         private_code
         private_data
@@ -855,6 +888,7 @@ class Symbol {
         is => 'ro',
         isa => 'SymbolType',
         required => 1,
+        writer => '_type',
     ;
 
     has name =>
@@ -887,29 +921,72 @@ class Symbol {
         return 1 + 4 + 1 + length(encode("utf8", $self->name()));
     }
 
+    method finalize
+    {
+        return if defined $self->value();
+        given ($self->type()) {
+            when ('public_code') {
+                $self->_type('external_code');
+            }
+            when ('public_data') {
+                $self->_type('external_data');
+            }
+            when ('api_type') {}
+            default {
+                die "Un-known value for symbol ".$self->name()." of type ".$self->type()
+            }
+        }
+    }
+
+    method expecting_value
+    {
+        !grep { $_ eq $self->type() } qw/
+            external_code
+            external_data
+            api_type
+        /
+    }
+
     method type_code
     {
-        {
+        my $type_code = {
+            external_code => 0,
+            public_code => 4,
             private_code => 5,
             public_data => 6,
             private_data => 7,
             api_type => 9,
-        }->{$self->type()}
-        or die "Panic!  Unknown type ".$self->type();
+        }->{$self->type()};
+        die "Panic!  Unknown type ".$self->type() unless defined $type_code;
+        return $type_code;
     }
 
     method output
     {
         print pack "C", $self->type_code();
-        die "Un-known value for symbol ".$self->name()." of type ".$self->type()
-            unless defined($self->value());
-        print pack "N", $self->value();
-        print pack "C", length(encode("utf8", $self->name()));
-        print pack "U*", map { ord($_) } split //, $self->name();
+        my @bytes = map { ord($_) } split //, encode("utf8", $self->name());
+        die "Name @{[ $self->name() ]} exceeds 255 bytes; you need to extend the bytcode format to support this"
+            if @bytes >= 256;
+        my $checksum = sum(0, @bytes) % 256;
+        print pack "C", $checksum;
+        if ($self->expecting_value()) {
+            print pack "N", $self->value();
+        }
+        print pack "C", scalar(@bytes);
+        print pack "C*", @bytes;
     }
 }
 
 class DataObj {
+    has code_symbol =>
+        is => 'ro',
+        isa => 'Symbol',
+        required => 1,
+        handles => {
+            code_symbol_offset => 'offset',
+        },
+    ;
+
     has arguments =>
         traits => [qw/ Array /],
         is => 'ro',
@@ -917,11 +994,18 @@ class DataObj {
         required => 1,
         handles => {
             num_arguments => 'count',
+            map_arguments => 'map',
         },
     ;
 
     method size
     {
         4 + 4 * $self->num_arguments()
+    }
+
+    method output
+    {
+        print pack "N", $self->code_symbol_offset();
+        $self->map_arguments(sub { print pack "N", $_->offset() });
     }
 }
