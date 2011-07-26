@@ -3,7 +3,7 @@ BIN=$GLOBALSCRIPT/bin
 CFLAGS=$CFLAGS -I $GLOBALSCRIPT/include
 LDFLAGS=$LDFLAGS -L $GLOBALSCRIPT/lib/ -lglobalscript
 
-%.bcgs:D: %.ags
+%.bcgs:D: %.ags $GLOBALSCRIPT/bin/gsbc `{echo $GLOBALSCRIPT/src/cmd/gsbc/*.pm}
 	gsbc $prereq > $stem.bcgs
 
 %threadmain.c: %.threadmain $GLOBALSCRIPT/bin/apithreadcompile

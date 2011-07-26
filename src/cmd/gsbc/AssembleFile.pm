@@ -87,14 +87,12 @@ class AssembleFile {
 
     method data_size()
     {
-        sum 0, $self->map_data_objects(sub { $_->size() })
-        # sum ≡ reduce { $a + $b }, so sum() = undef.
-        # Because List::Util is retarded
+        sum $self->map_data_objects(sub { $_->size() })
     }
 
     method string_size()
     {
-        sum $self->map_symbol(sub { $_->size() });
+        sum 0, $self->map_symbol(sub { $_->size() });
     }
 
     method assemble()
@@ -949,9 +947,7 @@ class Symbol {
 
     method type_code
     {
-        my $type_code = {
-            external_code => 0,
-            public_code => 4,
+        {
             private_code => 5,
             public_data => 6,
             private_data => 7,
@@ -961,19 +957,22 @@ class Symbol {
         return $type_code;
     }
 
+    method value_required
+    {
+        given ($self->type()) {
+            when (m/^private_(?:code|data)$/) { return 1 }
+            default { return '' }
+        }
+    }
+
     method output
     {
         print pack "C", $self->type_code();
-        my @bytes = map { ord($_) } split //, encode("utf8", $self->name());
-        die "Name @{[ $self->name() ]} exceeds 255 bytes; you need to extend the bytcode format to support this"
-            if @bytes >= 256;
-        my $checksum = sum(0, @bytes) % 256;
-        print pack "C", $checksum;
-        if ($self->expecting_value()) {
-            print pack "N", $self->value();
-        }
-        print pack "C", scalar(@bytes);
-        print pack "C*", @bytes;
+        die "Un-known value for symbol ".$self->name()." of type ".$self->type()
+            unless defined($self->value());
+        print pack "N", $self->value();
+        print pack "C", length(encode("utf8", $self->name()));
+        print pack "U*", map { ord($_) } split //, $self->name();
     }
 }
 

@@ -15,3 +15,6 @@ test:VN: test-hello3.ibio.ags
 
 %.ibio.ags-out: $PROG $GLOBALSCRIPT/bin/gsbc `{echo $GLOBALSCRIPT/src/cmd/gsbc/*.pm} %.ibio.ags
 	./$PROG $stem.ibio.ags > $stem.ibio.ags-out
+
+%.ibio.listing: %.ibio.bcgs
+	od -Ax -c $stem.ibio.bcgs > $stem.ibio.listing
