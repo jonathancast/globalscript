@@ -67,7 +67,7 @@ gsfiletype
 gsreadfile(int fd, char *filename, gsheader *phdr, void **ppstrings, void **ppcode, void **ppdata)
 {
     uchar buffer[HDR_BUFFER_SIZE];
-    long length, rdlength, hdrlength;
+    unsigned long length, rdlength, hdrlength;
     gsfiletype type = gsfileunknown;
     char magic[9];
     if ((length = read(fd, buffer, HDR_BUFFER_SIZE)) < 0)
@@ -78,8 +78,10 @@ gsreadfile(int fd, char *filename, gsheader *phdr, void **ppstrings, void **ppco
         uchar *pb;
         for (pb = buffer; pb < buffer + length && *pb != '\n'; pb++)
             ;
+        pb++; /* swallow newline */
         if (pb >= buffer + length)
             gsfatal("%s: #! line too long; could not find end");
+        gswarning("%s: header offset is %x", filename, (int)(pb - buffer));
         length -= pb - buffer;
         memmove(buffer, pb, length);
     }
@@ -91,6 +93,7 @@ gsreadfile(int fd, char *filename, gsheader *phdr, void **ppstrings, void **ppco
             gsfatal("%s: could not read entire buffer", filename);
     }
     hdrlength = BIG_ENDIAN_32(&buffer[0x0c]);
+    gswarning("%s: Header size is %ux", filename, hdrlength);
     if (length < hdrlength) {
         if ((rdlength = read(fd, buffer + length, hdrlength - length)) < 0)
             gsfatal("%s: read(header): %r", filename);

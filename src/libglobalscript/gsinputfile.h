@@ -2,7 +2,7 @@
 #define _GSINPUTFILE_H_ 1
 
 #define BIG_ENDIAN_32(pb) \
-    (((pb)[0] << 24) | ((pb)[1] << 16) | ((pb)[2] << 8) | ((pb)[3]))
+    (((u32int)(pb)[0] << 24) | ((u32int)(pb)[1] << 16) | ((u32int)(pb)[2] << 8) | ((u32int)(pb)[3]))
 
 typedef enum {
     gsfileerror = -1,
