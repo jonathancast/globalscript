@@ -9,6 +9,7 @@
 void
 p9main(int argc, char **argv)
 {
+    gsfatal("%x", sizeof(blockheader));
     argv0 = *argv;
     int is_option = 0;
     char *cur_arg = *argv;
