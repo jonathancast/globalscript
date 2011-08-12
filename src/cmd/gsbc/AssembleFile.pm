@@ -324,7 +324,7 @@ class AssembleFile {
         or die "could not find magic number for ".$self->filetype()
         ;
         print pack "U8", map { ord($_) } split //, $magic;
-        print pack "N4", 0x00, 0x00, 0x00, 0x00;
+        print pack "C4", 0x00, 0x00, 0x00, 0x00;
         print pack "N4", 0x1c, $self->code_size(), $self->data_size(), $self->string_size();
         $self->output_code();
         $self->output_data();

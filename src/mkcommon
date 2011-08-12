@@ -4,7 +4,7 @@ CFLAGS=$CFLAGS -I $GLOBALSCRIPT/include
 LDFLAGS=$LDFLAGS -L $GLOBALSCRIPT/lib/ -lglobalscript
 
 %.bcgs:D: %.ags $GLOBALSCRIPT/bin/gsbc `{echo $GLOBALSCRIPT/src/cmd/gsbc/*.pm}
-	gsbc $prereq > $stem.bcgs
+	gsbc $stem.ags > $stem.bcgs
 
 %threadmain.c: %.threadmain $GLOBALSCRIPT/bin/apithreadcompile
 	apithreadcompile $stem.threadmain > $stem'threadmain.c'
