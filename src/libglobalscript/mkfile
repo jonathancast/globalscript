@@ -6,6 +6,7 @@ OFILES=\
 	eval.$O \
 	load.$O \
 	inputalloc.$O \
+	alloc.$O \
 
 LIB=libglobalscript.a
 
@@ -19,7 +20,8 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h
 main.$O: gsinputfile.h
 load.$O: gsinputalloc.h gsinputfile.h
-inputalloc.$O: gsinputalloc.h
+inputalloc.$O: gsinputalloc.h gsalloc.h
+alloc.$O: gsalloc.h
 
 all install:V: $GLOBALSCRIPT/lib/$LIB
 
