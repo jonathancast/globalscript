@@ -9,11 +9,11 @@
 void
 p9main(int argc, char **argv)
 {
-    gsfatal("%x", sizeof(blockheader));
     argv0 = *argv;
     int is_option = 0;
     char *cur_arg = *argv;
     gsvalue document = 0;
+    gswarning("sizeof(blockheader) = %x", sizeof(blockheader));
     FETCH_OPTION();
     while (argc) {
         if (!*cur_arg) FETCH_OPTION();
@@ -28,7 +28,7 @@ p9main(int argc, char **argv)
                     document = hdr.entry_point;
                     goto have_document;
                 case gsfileerror:
-                    gswarning("%s: non-fatal error when reading file");
+                    gswarning("%s: non-fatal error when reading file", cur_arg);
                     break;
                 default:
                     gsfatal("%s: loaded unknown file type %d", cur_arg, ft);

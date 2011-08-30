@@ -137,7 +137,7 @@ gsreadfile(int fd, char *filename, gsheader *phdr, void **ppstrings, void **ppco
     if ((rdlength = read(fd, *ppdata, phdr->data_length)) < 0)
         gsfatal("%s: read(data): %r", filename);
     if (rdlength < phdr->data_length)
-        gsfatal("%s: could not read entire data section into memory");
+        gsfatal("%s: could not read entire data section into memory; only got %x of %x octets", filename, rdlength, phdr->data_length);
     return type;
 }
 

@@ -23,6 +23,7 @@ gs_sys_input_alloc(unsigned long size)
     input_block *curblock, *prevblock;
     void *p;
 
+
     if (size == 0)
         return 0;
 
