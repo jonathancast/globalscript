@@ -917,11 +917,6 @@ class Symbol {
         trigger => \&_value_set,
     ;
 
-    method size
-    {
-        return 1 + 4 + 1 + length(encode("utf8", $self->name()));
-    }
-
     method finalize
     {
         return if defined $self->value();
@@ -970,8 +965,15 @@ class Symbol {
         }
     }
 
+    method size
+    {
+        return 1 + 1 + ($self->expecting_value() ? 4 : 0) + 1 + length(encode("utf8", $self->name()));
+    }
+
     method output
     {
+        warn $self->name();
+        warn $self->value() if $self->expecting_value();
         print pack "C", $self->type_code();
         my @bytes = map { ord($_) } split //, encode("utf8", $self->name());
         die "Name @{[ $self->name() ]} exceeds 255 bytes; you need to extend the bytcode format to support this"

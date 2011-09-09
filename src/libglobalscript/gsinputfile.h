@@ -18,10 +18,6 @@ struct gsheader
         uchar era, major, minor, step;
     } version;
     long strings_length, code_length, data_length;
-    union {
-        long s_entry_point;
-        gsvalue entry_point;
-    };
 };
 typedef struct gsheader gsheader;
 

@@ -25,9 +25,8 @@ gsloadfile(char *filename, gsheader *phdr)
 {
     int fd;
     gsfiletype res;
-    void *strings, *code, *data, *tmpptr;
+    void *strings, *code, *data;
     int pid;
-    symtype ty;
     Waitmsg *pwait;
     if ((fd = gsopenfile(filename, OREAD, &pid)) <0)
         gsfatal("open: %r");
@@ -38,15 +37,7 @@ gsloadfile(char *filename, gsheader *phdr)
     gsprocessdata(strings, phdr->strings_length, data, phdr->data_length);
     switch (res) {
         case gsfiledocument:
-            if (!(tmpptr = lookup_string(strings, phdr->strings_length, phdr->s_entry_point, code, phdr->code_length, data, phdr->data_length, &ty)))
-                gsfatal(
-                    "%s: cannot find entry point named %s",
-                    filename,
-                    lookup_string_name(strings, phdr->strings_length, phdr->s_entry_point)
-                );
-            if (ty != datasym)
-                gsfatal("%s: entry point not a data symbol", filename);
-            phdr->entry_point = (gsvalue)tmpptr;
+            gsfatal("%s: Create artificial thunk (or whatever) for program entry point now");
             break;
         default:
             gsfatal("%s: Cannot provide further processing for file type %x", filename, res);
@@ -113,31 +104,31 @@ gsreadfile(int fd, char *filename, gsheader *phdr, void **ppstrings, void **ppco
     phdr->version.major = buffer[9];
     phdr->version.minor = buffer[0xa];
     phdr->version.step = buffer[0xb];
-    phdr->strings_length = BIG_ENDIAN_32(&buffer[0x10]);
-    phdr->code_length = BIG_ENDIAN_32(&buffer[0x14]);
-    phdr->data_length = BIG_ENDIAN_32(&buffer[0x18]);
-    switch (type) {
-        case gsfiledocument:
-            phdr->s_entry_point = BIG_ENDIAN_32(&buffer[0x1c]);
-            break;
-    }
+    phdr->code_length = BIG_ENDIAN_32(&buffer[0x10]);
+    phdr->data_length = BIG_ENDIAN_32(&buffer[0x14]);
+    phdr->strings_length = BIG_ENDIAN_32(&buffer[0x18]);
+    gswarning("%x octets of code; %x octets of data; %x octets of strings", phdr->code_length, phdr->data_length, phdr->strings_length);
+    gswarning("Start of code is %x; start of data is %x; start of strings is %x", hdrlength, hdrlength + phdr->code_length, hdrlength + phdr->code_length + phdr->data_length);
+    /* Code */
+    *ppcode = gs_sys_input_alloc(phdr->code_length);
+    if ((rdlength = read(fd, *ppcode, phdr->code_length)) < 0)
+        gsfatal("%s: read(code): %r", filename);
+    if (rdlength < phdr->code_length)
+        gsfatal("%s: could not read entire code section into memory");
+    /* Data */
+    *ppdata = gs_sys_input_alloc(phdr->data_length);
+    if ((rdlength = read(fd, *ppdata, phdr->data_length)) < 0)
+        gsfatal("%s: read(data): %r", filename);
+    if (rdlength < phdr->data_length)
+        gsfatal("%s: could not read entire data section into memory; only got %x of %x octets", filename, rdlength, phdr->data_length);
+    /* Strings */
     *ppstrings = gs_sys_input_alloc(phdr->strings_length);
     if (length > hdrlength)
         memcpy(*ppstrings, buffer + hdrlength, length - hdrlength);
     if ((rdlength = read(fd, *ppstrings, phdr->strings_length - (length - hdrlength))) < 0)
         gsfatal("%s: read(strings): %r", filename);
     if (rdlength < phdr->strings_length - (length - hdrlength))
-        gsfatal("%s: could not read entire string section into memory");
-    *ppcode = gs_sys_input_alloc(phdr->code_length);
-    if ((rdlength = read(fd, *ppcode, phdr->code_length)) < 0)
-        gsfatal("%s: read(code): %r", filename);
-    if (rdlength < phdr->code_length)
-        gsfatal("%s: could not read entire code section into memory");
-    *ppdata = gs_sys_input_alloc(phdr->data_length);
-    if ((rdlength = read(fd, *ppdata, phdr->data_length)) < 0)
-        gsfatal("%s: read(data): %r", filename);
-    if (rdlength < phdr->data_length)
-        gsfatal("%s: could not read entire data section into memory; only got %x of %x octets", filename, rdlength, phdr->data_length);
+        gsfatal("%s: could not read entire string section into memory; only got %x of %x octets", filename, rdlength, phdr->strings_length);
     return type;
 }
 
