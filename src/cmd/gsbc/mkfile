@@ -1,11 +1,23 @@
 PMODULES=\
 	$GLOBALSCRIPT/src/cmd/gsbc/AssembleFile.pm\
 
-%.bcgs: $GLOBALSCRIPT/bin/gsbc $PMODULES %.ags
-	gsbc $stem.ags > $target
+stage1.bcgs: $GLOBALSCRIPT/bin/gsbc $PMODULES bcgs.ags
+	gsbc bcgs.ags > $target
 
-%.bcgs-test: %.bcgs %.bcgs-expected
-	9 cmp -l $stem.bcgs $stem.bcgs-expected
+stage2.bcgs: $GLOBALSCRIPT/bin/ibio stage1.bcgs bcgs.ags
+	$GLOBALSCRIPT/bin/ibio stage1.bcgs bcgs.ags > $target
 
-test: test1.bcgs-test
+stage3.bcgs: $GLOBALSCRIPT/bin/ibio stage2.bcgs bcgs.ags
+	$GLOBALSCRIPT/bin/ibio stage2.bcgs bcgs.ags > $target
+
+%.listing: %.bcgs
+	$GLOBALSCRIPT/bin/ibio -d $stem.bcgs > $target
+
+listing-test: stage2.listing stage3.listing
+	diff -c stage2.listing stage3.listing
+
+binaries-test: stage2.bcgs stage3.bcgs
+	cmp stage2.bcgs stage3.bcgs
+
+test: listing-test binaries-test
 	:

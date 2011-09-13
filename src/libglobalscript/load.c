@@ -39,6 +39,8 @@ gsloadfile(char *filename, gsheader *phdr)
         case gsfiledocument:
             gsfatal("%s: Create artificial thunk (or whatever) for program entry point now");
             break;
+        case gsfileprefix:
+            gsfatal("%s: No support for prefix files (currently)", filename);
         default:
             gsfatal("%s: Cannot provide further processing for file type %x", filename, res);
     }
