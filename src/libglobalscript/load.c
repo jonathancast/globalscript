@@ -21,11 +21,12 @@ static int gsopenfile(char *filename, int omode, int *ppid);
 static int gspopen(int omode, int *ppid, char *cmd, char **argv);
 
 gsfiletype
-gsloadfile(char *filename, gsheader *phdr)
+gsloadfile(char *filename, gsheader *phdr, gsvalue *pentry)
 {
     int fd;
     gsfiletype res;
     void *strings, *code, *data;
+    gscode gsentrycode;
     int pid;
     Waitmsg *pwait;
     if ((fd = gsopenfile(filename, OREAD, &pid)) <0)
@@ -37,7 +38,10 @@ gsloadfile(char *filename, gsheader *phdr)
     gsprocessdata(strings, phdr->strings_length, data, phdr->data_length);
     switch (res) {
         case gsfiledocument:
-            gsfatal("%s: Create artificial thunk (or whatever) for program entry point now");
+            if (!(gsentrycode = gsloadcodeobject(code)))
+                gsfatal("%s: Failed to load program entry point: %r", filename);
+            if (!(*pentry = gsmakethunk(gsentrycode, 0)))
+                gsfatal("%s: Failed to create thunk for program entry point: %r", filename);
             break;
         case gsfileprefix:
             gsfatal("%s: No support for prefix files (currently)", filename);
@@ -232,4 +236,11 @@ gspopen(int omode, int *ppid, char *cmd, char **argv)
     }
     close(fd[1]);
     return fd[0];
+}
+
+gscode
+gsloadcodeobject(void *pcode)
+{
+    gsfatal("gsloadcodeobject(pcode) next");
+    return 0;
 }

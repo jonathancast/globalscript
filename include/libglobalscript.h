@@ -12,6 +12,7 @@ void gswarning(char *err, ...);
 /* ========== Global Script Program Calculus ========== */
 
 typedef uintptr gsvalue;
+typedef uintptr gscode;
 
 typedef enum {
     gstyprim = 0,
@@ -26,7 +27,11 @@ typedef enum {
 #define GS_MAX_PTR 0x80000000
     /* NOTE: 32-bit specific ^^^ */
 
-gstypecode gseval(gsvalue);
+gsvalue gsmakethunk(gscode, ...);
+
+/* gstypecode gseval(gsvalue); */
+
+#define IS_PTR(v) ((gsvalue)(v) >= GS_MAX_PTR)
 
 /* ========== Memory Allocation and Management ========== */
 

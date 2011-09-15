@@ -21,6 +21,8 @@ struct gsheader
 };
 typedef struct gsheader gsheader;
 
-gsfiletype gsloadfile(char *filename, gsheader *phdr);
+gsfiletype gsloadfile(char *filename, gsheader *phdr, gsvalue *pentry);
+
+gscode gsloadcodeobject(void *addr);
 
 #endif

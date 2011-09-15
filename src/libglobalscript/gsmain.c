@@ -12,7 +12,7 @@ p9main(int argc, char **argv)
     argv0 = *argv;
     int is_option = 0;
     char *cur_arg = *argv;
-    gsvalue document = 0;
+    gsvalue entry_point = 0;
     gswarning("sizeof(blockheader) = %x", sizeof(blockheader));
     FETCH_OPTION();
     while (argc) {
@@ -22,10 +22,9 @@ p9main(int argc, char **argv)
             gsfatal("Invalid option flag %c", *cur_arg);
         } else {
             gsheader hdr;
-            gsfiletype ft = gsloadfile(cur_arg, &hdr);
+            gsfiletype ft = gsloadfile(cur_arg, &hdr, &entry_point);
             switch (ft) {
                 case gsfiledocument:
-                    document = hdr.entry_point;
                     goto have_document;
                 case gsfileerror:
                     gswarning("%s: non-fatal error when reading file", cur_arg);
