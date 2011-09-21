@@ -11,7 +11,7 @@ typedef enum {
     gsfileunknown = 0x40,
 } gsfiletype;
 
-struct gsheader
+struct gsinputheader
 {
     gsfiletype ty;
     struct {
@@ -19,9 +19,9 @@ struct gsheader
     } version;
     long strings_length, code_length, data_length;
 };
-typedef struct gsheader gsheader;
+typedef struct gsinputheader gsinputheader;
 
-gsfiletype gsloadfile(char *filename, gsheader *phdr, gsvalue *pentry);
+gsfiletype gsloadfile(char *filename, gsinputheader *phdr, gsvalue *pentry);
 
 gscode gsloadcodeobject(void *addr);
 

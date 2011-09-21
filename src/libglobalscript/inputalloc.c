@@ -72,3 +72,10 @@ gs_sys_input_block_alloc()
 
     return res;
 }
+
+static
+gstypecode
+gsinputsection(gsvalue v, gsvalue *pres)
+{
+    gsfatal("Cannot evaluate addresses in input sections (maybe you should be able to?");
+}

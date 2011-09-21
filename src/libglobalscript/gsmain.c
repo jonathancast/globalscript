@@ -21,7 +21,7 @@ p9main(int argc, char **argv)
         if (is_option) {
             gsfatal("Invalid option flag %c", *cur_arg);
         } else {
-            gsheader hdr;
+            gsinputheader hdr;
             gsfiletype ft = gsloadfile(cur_arg, &hdr, &entry_point);
             switch (ft) {
                 case gsfiledocument:

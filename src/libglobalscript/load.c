@@ -4,7 +4,7 @@
 #include "gsinputfile.h"
 #include "gsinputalloc.h"
 
-static gsfiletype gsreadfile(int fd, char *filename, gsheader *phdr, void **strings, void **code, void **data);
+static gsfiletype gsreadfile(int fd, char *filename, gsinputheader *phdr, void **strings, void **code, void **data);
 static void gsprocessstrings(void *strings, long);
 static void gsprocesscode(void *strings, long, void *code, long);
 static void gsprocessdata(void *strings, long, void *data, long);
@@ -21,7 +21,7 @@ static int gsopenfile(char *filename, int omode, int *ppid);
 static int gspopen(int omode, int *ppid, char *cmd, char **argv);
 
 gsfiletype
-gsloadfile(char *filename, gsheader *phdr, gsvalue *pentry)
+gsloadfile(char *filename, gsinputheader *phdr, gsvalue *pentry)
 {
     int fd;
     gsfiletype res;
@@ -61,7 +61,7 @@ gsloadfile(char *filename, gsheader *phdr, gsvalue *pentry)
 #define HDR_MIN_SIZE 0x1c
 
 gsfiletype
-gsreadfile(int fd, char *filename, gsheader *phdr, void **ppstrings, void **ppcode, void **ppdata)
+gsreadfile(int fd, char *filename, gsinputheader *phdr, void **ppstrings, void **ppcode, void **ppdata)
 {
     uchar buffer[HDR_BUFFER_SIZE];
     unsigned long length, rdlength, hdrlength;

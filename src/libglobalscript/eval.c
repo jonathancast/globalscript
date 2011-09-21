@@ -3,14 +3,47 @@
 #include <libglobalscript.h>
 #include "gsheap.h"
 
+typedef struct heapheader {
+    blockheader hdr;
+    struct heapheader *next;
+} heapheader;
+
+#define HP_BLOCK_SIZE (BLOCK_SIZE - sizeof(heapheader))
+
+static heapheader *hpblock;
 static void *hpptr;
 
+static void gsinitializeheap();
+
 gstypecode
-gseval(gsvalue val)
+gseval(gsvalue val, gsvalue *pres)
 {
     gsfatal("gseval(%x) next", val);
 
     return gstyenosys;
+}
+
+void gsreserveheap(ulong sz)
+{
+    if (!hpptr)
+        gsinitializeheap();
+
+    if (sz > HP_BLOCK_SIZE)
+        gsfatal("Cannot reserve %x bytes of memory; is larger than maximum heap size of %x", sz, HP_BLOCK_SIZE);
+
+    if (hpptr + sz > END_OF_BLOCK(hpblock)) {
+        heapheader *newblock;
+        newblock = gs_sys_block_alloc(gseval);
+        hpblock->next = newblock;
+        hpblock = newblock;
+        hpptr = (uchar*)hpblock + sizeof(heapheader);
+    }
+}
+
+void
+gsinitializeheap()
+{
+    gsfatal("gsinitializeheap next");
 }
 
 #define MAXARGS_IN_THUNK 0x100

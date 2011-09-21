@@ -35,17 +35,12 @@ gsvalue gsmakethunk(gscode, ...);
 
 /* ========== Memory Allocation and Management ========== */
 
-typedef enum {
-    gsbytecode = 0,
-    gstypes = 1,
-    gsheap = 2,
-    gsinputsection = 3,
-    gsfree = 54,
-} registered_block_type;
+typedef gstypecode (*registered_block_type)(gsvalue, gsvalue*);
 
-typedef struct {
+typedef struct blockheader {
     registered_block_type type;
 } blockheader;
+/* Note: blockheader should be one word exactly; is it? */
 
 #define BLOCK_SIZE (sizeof(gsvalue) * 0x40000)
 #define START_OF_BLOCK(p) ((void*)((uchar*)p + sizeof(*p)))

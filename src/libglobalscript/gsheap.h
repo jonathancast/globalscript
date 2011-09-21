@@ -2,4 +2,4 @@
 What is this, a sick joke?
 #endif   
 
-void gsreserveheap(long sz);
+void gsreserveheap(ulong sz);
