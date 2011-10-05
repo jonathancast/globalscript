@@ -4,6 +4,9 @@
 #define BIG_ENDIAN_32(pb) \
     (((u32int)(pb)[0] << 24) | ((u32int)(pb)[1] << 16) | ((u32int)(pb)[2] << 8) | ((u32int)(pb)[3]))
 
+int gsisdir(char *filename);
+void gsadddir(char *filename);
+
 typedef enum {
     gsfileerror = -1,
     gsfileprefix = 0,

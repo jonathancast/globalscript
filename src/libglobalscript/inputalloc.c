@@ -17,6 +17,8 @@ static input_block *gs_sys_input_block_alloc();
 
 #define FREE_SPACE(p) ((uchar*)END_OF_BLOCK(curblock) - (uchar*)curblock->extent)
 
+static gstypecode gsinputsection(gsvalue v, gsvalue *pres);
+
 void *
 gs_sys_input_alloc(unsigned long size)
 {
@@ -78,4 +80,5 @@ gstypecode
 gsinputsection(gsvalue v, gsvalue *pres)
 {
     gsfatal("Cannot evaluate addresses in input sections (maybe you should be able to?");
+    return gstyenosys;
 }

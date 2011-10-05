@@ -15,10 +15,21 @@ typedef enum {
     datasym,
 } symtype;
 
-static void *lookup_string(void *strings, long, long sym_num, void *code, long, void *data, long, symtype *pst);
-static char *lookup_string_name(void *strings, long, long sym_num);
 static int gsopenfile(char *filename, int omode, int *ppid);
 static int gspopen(int omode, int *ppid, char *cmd, char **argv);
+
+int
+gsisdir(char *filename)
+{
+    gsfatal("%s: gsisdir next", filename);
+    return 0;
+}
+
+void
+gsadddir(char *filename)
+{
+    gsfatal("%s: gsadddir next", filename);
+}
 
 gsfiletype
 gsloadfile(char *filename, gsinputheader *phdr, gsvalue *pentry)
@@ -160,34 +171,6 @@ gsprocessdata(void *strings, long strlen, void *data, long len)
     if (!data)
         return;
     gsfatal("gsprocessdata(%lx, %lx, %lx, %lx) next", (long)strings, strlen, (long)data, len);
-}
-
-void *
-lookup_string(void *strings, long strlen, long sym_num, void *code, long codelen, void *data, long datalen, symtype *pst)
-{
-    *pst = unksym;
-    if (sym_num >= strlen)
-        gsfatal("bad string number: %lx >= %lx", sym_num, strlen);
-    gsfatal(
-        "lookup_string(%lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx) next",
-        (long)strings,
-        strlen,
-        sym_num,
-        (long)code,
-        codelen,
-        (long)data,
-        datalen,
-        (long)pst
-    );
-    return 0;
-}
-
-char *
-lookup_string_name(void *strings, long strlen, long sym_num)
-{
-    if (sym_num >= strlen)
-        gsfatal("bad string number: %lx >= %lx", sym_num, strlen);
-    return (char*)&((uchar*)strings)[sym_num + 0x09];
 }
 
 int

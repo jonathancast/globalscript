@@ -6,6 +6,8 @@
 static void gs_sys_initialize_data_segment(void);
 static void gs_sys_expand_data_segment(void);
 
+static gstypecode gsfree(gsvalue, gsvalue *);
+
 typedef struct free_block {
     blockheader hdr;
     struct free_block *prev, *next;
@@ -92,4 +94,12 @@ gs_sys_expand_data_segment()
     first_free_block->next = last_free_block;
 
     return;
+}
+
+static
+gstypecode
+gsfree(gsvalue v, gsvalue *pv)
+{
+    gsfatal("Cannot evaluate free memory");
+    return gstyenosys;
 }

@@ -22,15 +22,19 @@ p9main(int argc, char **argv)
             gsfatal("Invalid option flag %c", *cur_arg);
         } else {
             gsinputheader hdr;
-            gsfiletype ft = gsloadfile(cur_arg, &hdr, &entry_point);
-            switch (ft) {
-                case gsfiledocument:
-                    goto have_document;
-                case gsfileerror:
-                    gswarning("%s: non-fatal error when reading file", cur_arg);
-                    break;
-                default:
-                    gsfatal("%s: loaded unknown file type %d", cur_arg, ft);
+            if (gsisdir(cur_arg)) {
+                gsadddir(cur_arg);
+            } else {
+                gsfiletype ft = gsloadfile(cur_arg, &hdr, &entry_point);
+                switch (ft) {
+                    case gsfiledocument:
+                        goto have_document;
+                    case gsfileerror:
+                        gswarning("%s: non-fatal error when reading file", cur_arg);
+                        break;
+                    default:
+                        gsfatal("%s: loaded unknown file type %d", cur_arg, ft);
+                }
             }
         }
     }

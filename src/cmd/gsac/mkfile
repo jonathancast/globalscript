@@ -1,0 +1,21 @@
+MKSHELL=$PLAN9/bin/rc
+
+CGS_SOURCES=`{echo cgs_src/*.cgs}
+STAGE0_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage0/%.gsac}
+STAGE1_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage1/%.gsac}
+STAGE2_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage2/%.gsac}
+
+test: $STAGE1_TARGETS $STAGE2_TARGETS
+	for (i in cgs_src/*.cgs) diff -c `{echo $i | sed 's,cgs_src/(.*).cgs,stage1/\1.gsac'} `{echo $i | sed 's,cgs_src/(.*).cgs,stage2/\1.gsac'}
+
+stage0/%.gsac: $GLOBALSCRIPT/bin/ibio $AGS_SOURCES ags_src/gsac.ags cgs_src/%.cgs
+	$GLOBALSCRIPT/bin/ibio ags_src ags_src/gsac.ags cgs_src/$stem.cgs > stage0/$stem.gsac
+
+stage1/%.gsac: $GLOBALSCRIPT/bin/ibio $STAGE0_TARGETS stage0/gsac.gsac cgs_src/%.cgs
+	$GLOBALSCRIPT/bin/ibio stage0 stage0/gsac.gsac cgs_src/$stem.cgs > stage1/$stem.gsac
+
+stage2/%.gsac: $GLOBALSCRIPT/bin/ibio $STAGE1_TARGETS stage0/gsac.gsac cgs_src/%.cgs
+	$GLOBALSCRIPT/bin/ibio stage1 stage1/gsac.gsac cgs_src/$stem.cgs > stage2/$stem.gsac
+
+clean:
+	rm -f stage0/*.gsac stage1/*.gsac stage2/*.gsac
