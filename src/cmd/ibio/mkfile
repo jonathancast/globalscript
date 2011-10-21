@@ -9,7 +9,7 @@ TARG=ibio
 < $PLAN9/src/mkone
 < $GLOBALSCRIPT/src/mkcommon
 
-$PROG: $GLOBALSCRIPT/lib/libglobalscript.a
+$PROG: $GLOBALSCRIPT/lib/libglobalscript.a $GLOBALSCRIPT/lib/libibio.a
 
 test:VN: test-hello3.ibio.ags
 

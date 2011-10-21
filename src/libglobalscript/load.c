@@ -1,6 +1,7 @@
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
+#include <libibio.h>
 #include "gsinputfile.h"
 #include "gsinputalloc.h"
 
@@ -21,8 +22,9 @@ static int gspopen(int omode, int *ppid, char *cmd, char **argv);
 int
 gsisdir(char *filename)
 {
-    gsfatal("%s: gsisdir next", filename);
-    return 0;
+    Dir *d;
+    d = ibio_stat(filename);
+    return d->mode & DMDIR;
 }
 
 void
