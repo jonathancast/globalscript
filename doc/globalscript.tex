@@ -1,0 +1,42 @@
+\documentclass{report}
+\title{Global Script Program Calculus}
+\author{Jonathan Cast\\\texttt{<jonathanccast@fastmail.fm>}}
+
+\usepackage{bussproofs}
+\usepackage{haskell}
+
+\newcommand\sequent\vdash
+\newcommand\type{\hskwd{type}}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Object Expressions}
+
+\section{Variables}
+
+\begin{prooftree}
+    \AxiomC{}
+    \RightLabel{$n \ge m$}
+    \UnaryInfC{
+        \<\hsalign{
+            \Gamma, x :: \forall\;'\alpha_0\;'\alpha_1\;\ldots{}\;'\alpha_n .\;\tau \sequent
+                \hsbody{
+                    x\;@(\type\;\tau_0)\;\ldots\;@(\type\;\tau_m) ::
+                        \tau[\alpha_0,\;\ldots,\;\alpha_n / \tau_0,\ldots,\;\tau_m,\;\tau_{m+1},\;\ldots,\;\tau_{n}]
+                }
+        }\>
+    }
+\end{prooftree}
+
+
+\chapter{Types}
+
+\chapter{Modules}
+
+\chapter{Overloading}
+
+\chapter{Standard Library}
+
+\end{document}
