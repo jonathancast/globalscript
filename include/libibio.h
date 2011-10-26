@@ -6,7 +6,10 @@ extern "C" {
 
 #include <libc.h>
 
-Dir *ibio_stat(char *filename);
+typedef void *iptr_t;
+
+
+struct ibio_dir *ibio_stat(char *filename);
 
 #if defined(__cplusplus)
 }

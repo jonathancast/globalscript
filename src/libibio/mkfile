@@ -15,6 +15,9 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 &:n:	&.$O
 	$AR rsc $GLOBALSCRIPT/lib/$LIB $stem.$O
 
+
+iostat.$O: iostat.h
+
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h $GLOBALSCRIPT/include/libibio.h
 
 all install:V: $GLOBALSCRIPT/lib/$LIB
