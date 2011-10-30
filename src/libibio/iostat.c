@@ -15,4 +15,5 @@ struct ibio_dir *
 ibio_parse_stat(iptr_t ip)
 {
     gsfatal("ibio_parse_stat next");
+    return 0;
 }

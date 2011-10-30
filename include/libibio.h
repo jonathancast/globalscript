@@ -4,10 +4,12 @@
 extern "C" {
 #endif   
 
-#include <libc.h>
-
 typedef void *iptr_t;
 
+struct ibio_dir {
+    long size;
+    Dir d;
+};
 
 struct ibio_dir *ibio_stat(char *filename);
 

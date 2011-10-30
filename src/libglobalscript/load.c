@@ -22,9 +22,9 @@ static int gspopen(int omode, int *ppid, char *cmd, char **argv);
 int
 gsisdir(char *filename)
 {
-    Dir *d;
+    struct ibio_dir *d;
     d = ibio_stat(filename);
-    return d->mode & DMDIR;
+    return d->d.mode & DMDIR;
 }
 
 void
