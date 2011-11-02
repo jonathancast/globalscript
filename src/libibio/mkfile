@@ -1,10 +1,12 @@
 < $PLAN9/src/mkhdr
 
 SYSTEM=unix
+CFLAGS=-I $SYSTEM
 
 OFILES=\
 	$SYSTEM/iodir.$O \
 	iostat.$O \
+	iochan.$O \
 
 LIB=libibio.a
 
@@ -15,7 +17,9 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 &:n:	&.$O
 	$AR rsc $GLOBALSCRIPT/lib/$LIB $stem.$O
 
+iochan.$O: iofile.h $SYSTEM/iosysconstants.h
 iostat.$O: iostat.h
+unix/iodir.$O: iofile.h iostat.h
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h $GLOBALSCRIPT/include/libibio.h
 
