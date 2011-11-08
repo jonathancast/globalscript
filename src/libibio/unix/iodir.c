@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include <libibio.h>
+#include "iosysconstants.h"
 #include "../iofile.h"
 #include "../iostat.h"
 
@@ -19,7 +20,7 @@ ibio_sys_stat(char *filename)
     struct ibio_channel *chan;
     void *buf;
     struct stat uxstat;
-    chan = ibio_get_channel_for_external_io();
+    chan = ibio_get_channel_for_external_io(ibio_iostat);
     buf = ibio_extend_external_io_buffer(chan, 0x10000);
     if (stat(filename, &uxstat) < 0)
         gsfatal("%s:unix stat failed: %r", filename);

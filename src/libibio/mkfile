@@ -5,8 +5,9 @@ CFLAGS=-I $SYSTEM
 
 OFILES=\
 	$SYSTEM/iodir.$O \
-	iostat.$O \
+	$SYSTEM/iosysconstants.$O \
 	iochan.$O \
+	iostat.$O \
 
 LIB=libibio.a
 

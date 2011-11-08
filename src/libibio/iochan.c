@@ -3,8 +3,8 @@
 #include <libglobalscript.h>
 #include <libibio.h>
 
-#include "iofile.h"
 #include "iosysconstants.h"
+#include "iofile.h"
 
 struct ibio_channel *
 ibio_get_channel_for_external_io(enum ibio_iochannel_type ty)
