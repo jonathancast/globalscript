@@ -15,12 +15,12 @@ static void *hpptr;
 
 static void gsinitializeheap();
 
-gstypecode
-gseval(gsvalue val, gsvalue *pres)
+gsvalue
+gseval(gsvalue val)
 {
     gsfatal("gseval(%x) next", val);
 
-    return gstyenosys;
+    return 0;
 }
 
 void gsreserveheap(ulong sz)

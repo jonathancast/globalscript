@@ -5,7 +5,7 @@
 
 #include "iosysconstants.h"
 
-int
+char *
 ibio_efmt_iochannel_type(char *result, char *end, enum ibio_iochannel_type ty)
 {
     switch (ty) {

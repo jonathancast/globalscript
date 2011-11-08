@@ -5,4 +5,4 @@ enum ibio_iochannel_type {
     ibio_iostat,
 };
 
-int ibio_efmt_iochannel_type(char *, char *, enum ibio_iochannel_type);
+char * ibio_efmt_iochannel_type(char *, char *, enum ibio_iochannel_type);

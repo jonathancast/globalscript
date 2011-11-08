@@ -35,7 +35,7 @@ gsvalue gsmakethunk(gscode, ...);
 
 /* ========== Memory Allocation and Management ========== */
 
-typedef gstypecode (*registered_block_type)(gsvalue, gsvalue*);
+typedef gsvalue (*registered_block_type)(gsvalue);
 
 typedef struct blockheader {
     registered_block_type type;
