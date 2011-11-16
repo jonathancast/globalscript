@@ -4,8 +4,6 @@
 #include "gsinputalloc.h"
 
 typedef struct input_block {
-    blockheader hdr;
-    struct input_block *next;
     void *extent;
 } input_block;
 
@@ -25,7 +23,6 @@ gs_sys_input_alloc(unsigned long size)
     input_block *curblock, *prevblock;
     void *p;
 
-
     if (size == 0)
         return 0;
 
@@ -35,7 +32,7 @@ gs_sys_input_alloc(unsigned long size)
         if (FREE_SPACE(curblock) >= size)
             break;
         prevblock = curblock;
-        curblock = curblock->next;
+        curblock = gs_next_block(curblock);
     }
 
     if (!curblock) {

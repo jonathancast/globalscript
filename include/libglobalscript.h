@@ -8,6 +8,7 @@ extern "C" {
 
 void gsfatal(char *err, ...);
 void gswarning(char *err, ...);
+void gsassert(int passed, char *err, ...);
 
 /* ========== Global Script Program Calculus ========== */
 
@@ -31,23 +32,24 @@ gsvalue gsmakethunk(gscode, ...);
 
 /* gstypecode gseval(gsvalue); */
 
-#define IS_PTR(v) ((gsvalue)(v) >= GS_MAX_PTR)
+#define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
 /* ========== Memory Allocation and Management ========== */
 
 typedef gsvalue (*registered_block_type)(gsvalue);
 
-typedef struct blockheader {
+struct gs_blockdesc {
     registered_block_type type;
-} blockheader;
-/* Note: blockheader should be one word exactly; is it? */
+};
 
 #define BLOCK_SIZE (sizeof(gsvalue) * 0x40000)
 #define START_OF_BLOCK(p) ((void*)((uchar*)p + sizeof(*p)))
 #define END_OF_BLOCK(p) ((void*)((uchar*)p + BLOCK_SIZE))
 
-void *gs_sys_block_alloc(registered_block_type);
+typedef void (*gs_block_allocator)(struct gs_blockdesc *, void *);
+
 void gs_sys_block_free(void *);
+void *gs_sys_next_block(void *, gs_block_allocator);
 
 /* ========== API ========== */
 
@@ -62,7 +64,7 @@ typedef struct apithread_info {
 } *apithread;
 
 typedef struct {
-    QLock *lock;
+    /* QLock *lock; */
     apithread curthread;
 } apithreadqueue;
 

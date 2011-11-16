@@ -4,16 +4,15 @@
 #include "gsheap.h"
 
 typedef struct heapheader {
-    blockheader hdr;
-    struct heapheader *next;
+    void *free_space;
 } heapheader;
 
 #define HP_BLOCK_SIZE (BLOCK_SIZE - sizeof(heapheader))
 
 static heapheader *hpblock;
-static void *hpptr;
+#define hpptr hpblock->free_space
 
-static void gsinitializeheap();
+static void gsinitheap(struct gs_blockdesc *, void *);
 
 gsvalue
 gseval(gsvalue val)
@@ -25,25 +24,19 @@ gseval(gsvalue val)
 
 void gsreserveheap(ulong sz)
 {
-    if (!hpptr)
-        gsinitializeheap();
+    if (!hpblock)
+        hpblock = gs_sys_next_block(0, gsinitheap)
+    ;
 
     if (sz > HP_BLOCK_SIZE)
         gsfatal("Cannot reserve %x bytes of memory; is larger than maximum heap size of %x", sz, HP_BLOCK_SIZE);
 
-    if (hpptr + sz > END_OF_BLOCK(hpblock)) {
-        heapheader *newblock;
-        newblock = gs_sys_block_alloc(gseval);
-        hpblock->next = newblock;
-        hpblock = newblock;
-        hpptr = (uchar*)hpblock + sizeof(heapheader);
-    }
-}
-
-void
-gsinitializeheap()
-{
-    gsfatal("gsinitializeheap next");
+    if (hpblock->free_space + sz > END_OF_BLOCK(hpblock))
+        hpblock = gs_sys_next_block(0, gsinitheap)
+    ;
+    while (hpblock->free_space + sz > END_OF_BLOCK(hpblock))
+        hpblock = gs_sys_next_block(hpblock, gsinitheap)
+    ;
 }
 
 #define MAXARGS_IN_THUNK 0x100

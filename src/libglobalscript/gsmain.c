@@ -13,7 +13,12 @@ p9main(int argc, char **argv)
     int is_option = 0;
     char *cur_arg = *argv;
     gsvalue entry_point = 0;
-    gswarning("sizeof(blockheader) = %x", sizeof(blockheader));
+    gsassert(
+        sizeof(struct gs_blockdesc) == sizeof(gsvalue) * 8,
+        "sizeof(struct gs_blockdesc) is %x, should be %x",
+        sizeof(struct gs_blockdesc),
+        sizeof(gsvalue)
+    );
     FETCH_OPTION();
     while (argc) {
         if (!*cur_arg) FETCH_OPTION();
