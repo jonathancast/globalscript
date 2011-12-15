@@ -70,3 +70,10 @@ gsmakethunk(gscode e, ...)
 
     return res;
 }
+
+static
+void
+gsinitheap(struct gs_blockdesc *pblock, void *p)
+{
+    gsfatal("gsinitheap next");
+}
