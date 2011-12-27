@@ -34,7 +34,7 @@ gsvalue gsmakethunk(gscode, ...);
 
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
-/* ========== Memory Allocation and Management ========== */
+/* ========== Simple Segment Manager ========== */
 
 typedef gsvalue (*registered_block_type)(gsvalue);
 
@@ -46,10 +46,8 @@ struct gs_blockdesc {
 #define START_OF_BLOCK(p) ((void*)((uchar*)p + sizeof(*p)))
 #define END_OF_BLOCK(p) ((void*)((uchar*)p + BLOCK_SIZE))
 
-typedef void (*gs_block_allocator)(struct gs_blockdesc *, void *);
-
-void gs_sys_block_free(void *);
-void *gs_sys_next_block(void *, gs_block_allocator);
+void *gs_sys_seg_alloc(registered_block_type ty);
+void gs_sys_seg_free(void *);
 
 /* ========== API ========== */
 

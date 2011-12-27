@@ -24,19 +24,7 @@ gseval(gsvalue val)
 
 void gsreserveheap(ulong sz)
 {
-    if (!hpblock)
-        hpblock = gs_sys_next_block(0, gsinitheap)
-    ;
-
-    if (sz > HP_BLOCK_SIZE)
-        gsfatal("Cannot reserve %x bytes of memory; is larger than maximum heap size of %x", sz, HP_BLOCK_SIZE);
-
-    if (hpblock->free_space + sz > END_OF_BLOCK(hpblock))
-        hpblock = gs_sys_next_block(0, gsinitheap)
-    ;
-    while (hpblock->free_space + sz > END_OF_BLOCK(hpblock))
-        hpblock = gs_sys_next_block(hpblock, gsinitheap)
-    ;
+    gsfatal("gsreserveheap(%x) next", sz);
 }
 
 #define MAXARGS_IN_THUNK 0x100

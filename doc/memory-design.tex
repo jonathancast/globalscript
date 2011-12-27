@@ -3,17 +3,71 @@
 \title{Memory Design -- ACE/API Global Script Implementation}
 \author{Jonathan Cast\\\texttt{jcast@globalscript.org}}
 
+\newcommand\textc[1]{\texttt{#1}}
+\newcommand\cfile[1]{\texttt{#1}}
+
 \begin{document}
 
 \maketitle
 
-The ACE memory manager (the Advanced Segment Manager :) controls some portion of the data segment starting at an address above that used for static C components.
+The ACE memory manager (the Simple Segment Manager) controls some portion of the data segment starting at an address above that used for static C components.
+The SSM lives in \cfile{libglobalscript/alloc.c}.
 It divides this memory into 256kw segments, each of which is assigned to a particular client.
+
+Terminology:
+\begin{itemize}
+    \item Segment --- a 256kw block of memory, managed by the ASM and provided to a particular ASM client.
+    \item Class --- a homogenous class of segments, employing the same set of routines for evaluation and garbage collection.
+    \item Sub-class --- a sub-set of the segments in a given class, assigned an arbitrary meaning by 
+\end{itemize}
+
+The SSM assigns segments to clients and maintains the evaluation and garbage collection data.
+The clients are responsible for managing the segments they own and returning them to the SSM when appropriate.
+The SSM itself acts as client for the free segments.
+
+% FIXME Move this to the proper document
+Evaluation looks like this:
+\begin{itemize}
+    \item The status function, which requests evaluation if necessary (fast) and reports the evaluation status of a cell.
+
+    The status function can return these results:
+    \begin{itemize}
+        \item Un-evaluated (cannot happen)
+        \item Evaluating
+        \item Blocked (return a universal scheduler blocking token)
+        \item Evaluated
+        \item Indirection (return a \textc{gsvalue} containing the location of the actual value)
+    \end{itemize}
+\end{itemize}
 
 Metadata associated to a segment:
 
 \begin{itemize}
-    \item 
+    \item Evaluation function
+    \item Trace function (for garbage collection)
+\end{itemize}
+
+Each segment begins with the metadata, so clients need to account for that!
+
+Free segments look like this (word offsets)
+
+\begin{itemize}
+    \item[0x00] Evalulation function is \textc{gsfree}.
+    \item[0x01] Trace function is \textc{gstracefree}.
+    \item[0x02] Pointer to the next free segment.
+\end{itemize}
+
+We keep a pointer to the least free segment.
+This pointer is almost always non-null; it is an error for \textc{gs\_sys\_seg\_alloc} to be called when it is null.
+
+The SSM has three entry points:
+\begin{itemize}
+    \item \textc{gs\_sys\_seg\_init} --- Called from \textc{main}; do not call
+    \item \textc{gs\_sys\_seg\_alloc} --- Retrieves the least segment from the free list, initializes it, and returns it.
+        Keep the arguments to this function synchronized with \textc{struct gs\_blockdesc}.
+        If this function would empty the free list, it attempts to expand the data segment; if that fails, it schedules an emergency garbage collection.
+        It is an error to call \textc{gs\_sys\_seg\_alloc} again before the garbage collection occurs.
+    \item \textc{gs\_sys\_seg\_free} --- Returns a segment to the free list.
 \end{itemize}
 
 \end{document}

@@ -32,13 +32,13 @@ gs_sys_input_alloc(unsigned long size)
         if (FREE_SPACE(curblock) >= size)
             break;
         prevblock = curblock;
-        curblock = gs_next_block(curblock);
+        gsfatal("gs_sys_input_alloc next");
     }
 
     if (!curblock) {
         curblock = gs_sys_input_block_alloc();
         if (prevblock)
-            prevblock->next = curblock;
+            gsfatal("Bad code; was prevblock->next = curblock");
         else
             first_free_block = curblock;
         if (FREE_SPACE(curblock) < size)
@@ -50,9 +50,9 @@ gs_sys_input_alloc(unsigned long size)
 
     if (FREE_SPACE(curblock) < REASONABLE_SIZE_MINIMUM) {
         if (prevblock)
-            prevblock->next = curblock->next;
+            gsfatal("Bad code; was prevblock->next = curblock->next");
         else
-            first_free_block = curblock->next;
+            gsfatal("Bad code; was first_free_block = curblock->next");
     }
 
     return p;
@@ -62,16 +62,14 @@ static
 input_block *
 gs_sys_input_block_alloc()
 {
-    input_block *res;
+/*    input_block *res; */
 
-    res = gs_sys_block_alloc(gsinputsection);
+    gsfatal("gs_sys_input_block_alloc next");
 
-    res->next = 0;
-    res->extent = START_OF_BLOCK(res);
-
-    return res;
+    return 0;
 }
 
+/*
 static
 gstypecode
 gsinputsection(gsvalue v, gsvalue *pres)
@@ -79,3 +77,4 @@ gsinputsection(gsvalue v, gsvalue *pres)
     gsfatal("Cannot evaluate addresses in input sections (maybe you should be able to?");
     return gstyenosys;
 }
+*/
