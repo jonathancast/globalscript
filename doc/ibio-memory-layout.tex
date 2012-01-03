@@ -1,0 +1,123 @@
+\documentclass{article}
+
+\usepackage{haskell}
+
+\title{Memory Design -- IBIO Implementation}
+\author{Jonathan Cast\\\texttt{jcast@globalscript.org}}
+
+\newcommand\textc[1]{\texttt{#1}}
+\newcommand\cfile[1]{\texttt{#1}}
+\newcommand\gssumtype[1]{.\Sigma\langle\hsbody{#1}\rangle}
+\newcommand\gsemptyuproduct{.u\Pi\langle\rangle}
+\newcommand\gsemptyproduct{.\Pi\langle\rangle}
+
+\begin{document}
+
+\maketitle
+
+\section{Procedure for Reading From a Unix File in IBIO}
+
+This is wrong;
+we need to use combinatorial acceptors to be able to distinguish
+between \<iptr\>s held by the input mechanism and \<iptr\>s held by Global Script.
+
+\begin{itemize}
+    \item The read thread drives
+    
+    Read threads have these operations:
+    \begin{haskell}
+        tag :: \forall '\alpha. iptr \alpha \to m \gssumtype{
+            symbol \gsemptyuproduct; \\
+            unix.eof \gsemptyuproduct; \\
+            ibio.eof \gsemptyuproduct;
+        }; \\
+        get :: \forall '\alpha. iptr \alpha \to m \alpha; \\
+        advance :: \forall '\alpha. iptr \alpha \to m (iptr \alpha); \\
+        accept :: \forall '\alpha. iptr \alpha \to m \gsemptyproduct;
+    \end{haskell}
+\end{itemize}
+
+\<tag\>, \<get\>, and \<advance\> all demand their argument; \<accept\> does not.
+Under the hood, an \<iptr.t\> is a pointer into the IBIO buffer.
+To demand an \<iptr.t\>, you follow this procedure:
+\begin{itemize}
+    \item Lock the buffer.
+    \item Check the \<iptr.t\>'s type.
+    
+    Four types:
+    \begin{itemize}
+        \item Points at a symbol.
+        
+        Nothing to do; un-lock the buffer.
+        
+        \item Points at a Unix EOF break.
+        
+        Nothing to do; un-lock the buffer.
+        
+        \item Points at an internal EOC.
+        
+        Huh?  Anyway, nothing to do; un-lock the buffer.
+        
+        \item Points at EOD, but not at an internal EOC.
+        
+        Continue.
+    \end{itemize}
+
+    \item Lock the UxIO buffer.
+    
+    \item Check for adequate input.
+    
+    If present, copy a single symbol into the IBIO buffer and
+\end{itemize}
+
+\section{Memory Layout}
+
+\subsection{Input from a Device}
+
+\begin{tabular}{ll}
+    UxIO & \begin{tabular}{|c|c|c|c|}
+        \hline
+        sched & perf & blank & bef \\
+        \hline
+    \end{tabular} \\
+    \\
+    IBIO & \begin{tabular}{|c|c|c|}
+        \hline
+        sched & perf & free \\
+        \hline
+    \end{tabular}
+\end{tabular}
+
+Scheduled input in the UxIO buffer can be ignored.
+Basically, it's free.
+Performed but not scheduled input is held in the UxIO buffer until scheduled.
+Thus:
+
+\begin{tabular}{ll}
+    UxIO & \begin{tabular}{|c|c|c|}
+        \hline
+        free & perf & free \\
+        \hline
+    \end{tabular}
+\end{tabular}
+
+So the UxIO channel needs
+\begin{itemize}
+    \item File descriptor
+    \item Beginning of pre-fetched input
+    \item End of pre-fected input
+\end{itemize}
+
+Or:
+
+\begin{tabular}{ll}
+    UxIO & \begin{tabular}{|c|c|c|}
+        \hline
+        perf & free & perf \\
+        \hline
+    \end{tabular}
+\end{tabular}
+
+Which can be detected because the `end' of the performed input is before the `beginning'.
+
+\end{document}
