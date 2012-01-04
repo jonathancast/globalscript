@@ -36,17 +36,19 @@ gsvalue gsmakethunk(gscode, ...);
 
 /* ========== Simple Segment Manager ========== */
 
-typedef gsvalue (*registered_block_type)(gsvalue);
+typedef struct gs_block_class {
+    gsvalue (*evaluator)(gsvalue);
+} *registered_block_class;
 
 struct gs_blockdesc {
-    registered_block_type type;
+    registered_block_class class;
 };
 
 #define BLOCK_SIZE (sizeof(gsvalue) * 0x40000)
 #define START_OF_BLOCK(p) ((void*)((uchar*)p + sizeof(*p)))
 #define END_OF_BLOCK(p) ((void*)((uchar*)p + BLOCK_SIZE))
 
-void *gs_sys_seg_alloc(registered_block_type ty);
+void *gs_sys_seg_alloc(registered_block_class cl);
 void gs_sys_seg_free(void *);
 
 /* ========== API ========== */

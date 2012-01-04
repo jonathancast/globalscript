@@ -12,7 +12,7 @@ ibio_stat(char *filename)
 }
 
 struct ibio_dir *
-ibio_parse_stat(iptr_t ip)
+ibio_parse_stat(struct uxio_channel * ip)
 {
     gsfatal("ibio_parse_stat next");
     return 0;

@@ -14,7 +14,7 @@ p9main(int argc, char **argv)
     char *cur_arg = *argv;
     gsvalue entry_point = 0;
     gsassert(
-        sizeof(struct gs_blockdesc) == sizeof(gsvalue) * 8,
+        sizeof(struct gs_blockdesc) == sizeof(gsvalue),
         "sizeof(struct gs_blockdesc) is %x, should be %x",
         sizeof(struct gs_blockdesc),
         sizeof(gsvalue)
@@ -74,4 +74,21 @@ gswarning(char *err, ...)
     va_end(arg);
 
     fprint(2, "%s: %s\n", argv0, buf);
+}
+
+void
+gsassert(int success, char *err, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+     if (success) return;
+     
+
+    va_start(arg, err);
+    vseprint(buf, buf+sizeof buf, err, arg);
+    va_end(arg);
+
+    fprint(2, "%s: %s\n", argv0, buf);
+    exits("asssert failed");
 }

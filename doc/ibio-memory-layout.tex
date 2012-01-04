@@ -120,4 +120,12 @@ Or:
 
 Which can be detected because the `end' of the performed input is before the `beginning'.
 
+So a full channel consists of:
+\begin{itemize}
+    \item An IBIO channel descriptor, which contains channel metadata and a pointer to the end of accepted input and either the end of scheduled input (for an external channel) or the end of scheduled output (for an internal channel).
+    \item An IBIO buffer, which is a linked list of 1kw memory regions.
+    \item (For external channels) a UxIO channel descriptor, which contains a file descriptor, pointers to the beginning and end of performed input, and possibly other data.
+    \item A UxIO buffer, which is a 64kB circular buffer used for reads.
+\end{itemize}
+
 \end{document}

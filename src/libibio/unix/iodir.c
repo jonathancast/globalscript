@@ -12,24 +12,22 @@
 #include "../iofile.h"
 #include "../iostat.h"
 
-static void ibio_unix_fill_stat(char *filename, struct stat *, struct ibio_channel *, void *);
+static void ibio_unix_fill_stat(char *filename, struct stat *, struct uxio_channel *);
 
-iptr_t
+struct uxio_channel *
 ibio_sys_stat(char *filename)
 {
-    struct ibio_channel *chan;
-    void *buf;
+    struct uxio_channel *chan;
     struct stat uxstat;
-    chan = ibio_get_channel_for_external_io(ibio_iostat);
-    buf = ibio_extend_external_io_buffer(chan, 0x10000);
+    chan = ibio_get_channel_for_external_io(-1, ibio_iostat);
     if (stat(filename, &uxstat) < 0)
         gsfatal("%s:unix stat failed: %r", filename);
-    ibio_unix_fill_stat(filename, &uxstat, chan, buf);
+    ibio_unix_fill_stat(filename, &uxstat, chan);
     gsfatal("unix ibio_sys_stat(%s) next", filename);
-    return ibio_initial_pos(chan);
+    return chan;
 }
 
 static void
-ibio_unix_fill_stat(char *filename, struct stat *puxstat, struct ibio_channel *chan, void *buf)
+ibio_unix_fill_stat(char *filename, struct stat *puxstat, struct uxio_channel *chan)
 {
 }

@@ -20,7 +20,7 @@ gs_sys_seg_init(void)
 }
 
 void *
-gs_sys_seg_alloc(registered_block_type ty)
+gs_sys_seg_alloc(registered_block_class cl)
 {
     gsfatal("gs_sys_seg_alloc next");
 

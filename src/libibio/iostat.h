@@ -1,3 +1,3 @@
-iptr_t ibio_sys_stat(char *filename);
+struct uxio_channel *ibio_sys_stat(char *filename);
 
-struct ibio_dir *ibio_parse_stat(iptr_t);
+struct ibio_dir *ibio_parse_stat(struct uxio_channel *);
