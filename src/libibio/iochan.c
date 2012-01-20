@@ -40,12 +40,36 @@ struct uxio_channel_buffer_segment {
 void *uxio_channel_descr_nursury;
 void *uxio_channel_buffer_nursury;
 
+static void ibio_alloc_new_uxio_channel_block();
+
 static
 struct uxio_channel *
 ibio_alloc_uxio_channel()
 {
-    gsfatal("ibio_alloc_uxio_channel next");
-    return 0;
+    struct uxio_channel_descr_segment *nursury_seg;
+    struct uxio_channel *pres, *pnext;
+    if (!uxio_channel_descr_nursury)
+        ibio_alloc_new_uxio_channel_block();
+
+    nursury_seg = (struct uxio_channel_descr_segment *)BLOCK_CONTAINING(uxio_channel_descr_nursury);
+    pres = (struct uxio_channel *)uxio_channel_descr_nursury;
+    pnext = pres + 1;
+    if ((uchar*)pnext >= (uchar*)END_OF_BLOCK(nursury_seg))
+        ibio_alloc_new_uxio_channel_block();
+    else
+        uxio_channel_descr_nursury = pnext;
+
+    return pres;
+}
+
+static
+void
+ibio_alloc_new_uxio_channel_block()
+{
+    struct uxio_channel_descr_segment *nursury_seg;
+    nursury_seg = gs_sys_seg_alloc(&uxio_channel_descr);
+    uxio_channel_descr_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
+    gsassert(!((uintptr)uxio_channel_descr_nursury % sizeof(gsvalue)), "uxio_channel_descr_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_descr_segment");
 }
 
 static

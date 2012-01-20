@@ -45,6 +45,7 @@ struct gs_blockdesc {
 };
 
 #define BLOCK_SIZE (sizeof(gsvalue) * 0x40000)
+#define BLOCK_CONTAINING(p) ((void*)((uintptr)p & (BLOCK_SIZE - 1)))
 #define START_OF_BLOCK(p) ((void*)((uchar*)p + sizeof(*p)))
 #define END_OF_BLOCK(p) ((void*)((uchar*)p + BLOCK_SIZE))
 
