@@ -22,6 +22,12 @@ gseval(gsvalue val)
     return 0;
 }
 
+gsvalue gsnoeval(gsvalue val)
+{
+    gsfatal("Tried to evaluate a gsvalue which doesn't point into an evaluable block!");
+    return 0;
+}
+
 void gsreserveheap(ulong sz)
 {
     gsfatal("gsreserveheap(%x) next", sz);

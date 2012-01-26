@@ -32,6 +32,8 @@ gsvalue gsmakethunk(gscode, ...);
 
 /* gstypecode gseval(gsvalue); */
 
+gsvalue gsnoeval(gsvalue);
+
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
 /* ========== Simple Segment Manager ========== */
