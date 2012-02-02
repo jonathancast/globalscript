@@ -9,6 +9,8 @@ LDFLAGS=$LDFLAGS -L $GLOBALSCRIPT/lib/ -lglobalscript
 %threadmain.c: %.threadmain $GLOBALSCRIPT/bin/apithreadcompile
 	apithreadcompile $stem.threadmain > $stem'threadmain.c'
 
+%threadmain.$O: $GLOBALSCRIPT/include/libglobalscript.h %.h
+
 %.ibio.bcgs-out:D: %.ibio.bcgs
 	ibio $stem.ibio.bcgs > $stem.ibio.bcgs-out
 

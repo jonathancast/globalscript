@@ -12,12 +12,12 @@ void
 ibiothreadmain(apithreadqueue *q)
 {
     while(1) {
-        qlock(q->lock);
-        gstypecode tc = gseval(q->curthread->pc->instr);
+        /* qlock(q->lock); */
+        gstypecode tc = gs_get_gsvalue_state(q->curthread->pc->instr);
         switch (tc) {
             default:
                 gsfatal("Unknown typecode; numeric value %x\n", tc);
         }
-        qunlock(q->lock);
+        /* qunlock(q->lock); */
     }
 }

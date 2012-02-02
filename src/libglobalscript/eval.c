@@ -14,6 +14,15 @@ static heapheader *hpblock;
 
 static void gsinitheap(struct gs_blockdesc *, void *);
 
+gstypecode
+gs_get_gsvalue_state(gsvalue val)
+{
+    gsfatal("gs_get_gsvalue_state(%x) next", val);
+
+    return 0;
+}
+
+
 gsvalue
 gseval(gsvalue val)
 {

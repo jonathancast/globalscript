@@ -18,3 +18,7 @@ test:VN: test-hello3.ibio.ags
 
 %.ibio.listing: %.ibio.bcgs
 	od -Ax -c $stem.ibio.bcgs > $stem.ibio.listing
+
+clean:VN:
+	rm -f ibiothreadmain.c
+	rm -f *.$O

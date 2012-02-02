@@ -32,6 +32,8 @@ gsvalue gsmakethunk(gscode, ...);
 
 /* gstypecode gseval(gsvalue); */
 
+gstypecode gs_get_gsvalue_state(gsvalue);
+
 gsvalue gsnoeval(gsvalue);
 
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
