@@ -18,6 +18,7 @@ struct gs_block_class free_block_class_descr = {
 };
 
 static void gs_sys_seg_extend(void);
+static void gs_sys_seg_setup_free_block(struct free_block *);
 
 void
 gs_sys_seg_init(void)
@@ -40,8 +41,7 @@ gs_sys_seg_init(void)
         gsfatal("brk failed! %r");
 
     first_free_block = (struct free_block *)bottom_of_data;
-    first_free_block->hdr.class = &free_block_class_descr;
-    first_free_block->next = 0;
+    gs_sys_seg_setup_free_block(first_free_block);
 }
 
 void *
@@ -78,6 +78,22 @@ static
 void
 gs_sys_seg_extend(void)
 {
-    gsfatal("gs_sys_seg_extend next");
+    struct free_block *pnext;
+
+    pnext = (struct free_block *)top_of_data;
+
+    if (brk((uchar*)top_of_data + BLOCK_SIZE) < 0)
+        gsfatal("Could not extend data segment: brk failed! %r");
+    top_of_data = (uchar*)top_of_data + BLOCK_SIZE;
+
+    gs_sys_seg_setup_free_block(pnext);
+    first_free_block = pnext;
 }
 
+static
+void
+gs_sys_seg_setup_free_block(struct free_block *pblock)
+{
+    pblock->hdr.class = &free_block_class_descr;
+    pblock->next = 0;
+}
