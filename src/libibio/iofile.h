@@ -1,5 +1,7 @@
 
 #define UXIO_IO_BUFFER_SIZE (1<<16)
+#define UXIO_BEGINNING_OF_IO_BUFFER_AREA(p) ((void*)((uintptr)p & (UXIO_IO_BUFFER_SIZE - 1)))
+#define UXIO_END_OF_IO_BUFFER(p) ((void*)((uchar*)UXIO_BEGINNING_OF_IO_BUFFER_AREA(p) + UXIO_IO_BUFFER_SIZE))
 
 struct uxio_channel {
     int fd;

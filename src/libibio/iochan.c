@@ -21,7 +21,7 @@ ibio_get_channel_for_external_io(int fd, enum ibio_iochannel_type ty)
     chan->fd = fd;
     chan->ty = ty;
     chan->free_beg = buf;
-    chan->free_end = (uchar*)buf + UXIO_IO_BUFFER_SIZE;
+    chan->free_end = UXIO_END_OF_IO_BUFFER(buf);
 
     return chan;
 }
@@ -40,7 +40,8 @@ struct uxio_channel_buffer_segment {
 void *uxio_channel_descr_nursury;
 void *uxio_channel_buffer_nursury;
 
-static void ibio_alloc_new_uxio_channel_block();
+static void ibio_alloc_new_uxio_channel_block(void);
+static void ibio_alloc_new_uxio_buffer_block(void);
 
 static
 struct uxio_channel *
@@ -76,7 +77,28 @@ static
 void *
 ibio_alloc_uxio_buffer()
 {
-    gsfatal("ibio_alloc_uxio_buffer next");
-    return 0;
+    struct uxio_channel_buffer_segment *nursury_seg;
+    void *pres, *pnext;
+    if (!uxio_channel_buffer_nursury)
+        ibio_alloc_new_uxio_buffer_block();
+
+    nursury_seg = (struct uxio_channel_buffer_segment *)BLOCK_CONTAINING(uxio_channel_buffer_nursury);
+    pres = (void *)uxio_channel_buffer_nursury;
+    pnext = UXIO_END_OF_IO_BUFFER(pres);
+    if ((uchar*)pnext >= (uchar*)END_OF_BLOCK(nursury_seg))
+        ibio_alloc_new_uxio_buffer_block();
+    else
+        uxio_channel_buffer_nursury = pnext;
+
+    return pres;
 }
 
+static
+void
+ibio_alloc_new_uxio_buffer_block(void)
+{
+    struct uxio_channel_buffer_segment *nursury_seg;
+    nursury_seg = gs_sys_seg_alloc(&uxio_channel_buffer);
+    uxio_channel_buffer_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
+    gsassert(!((uintptr)uxio_channel_buffer_nursury % sizeof(gsvalue)), "uxio_channel_buffer_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_buffer_segment");
+}
