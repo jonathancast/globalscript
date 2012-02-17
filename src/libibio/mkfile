@@ -20,7 +20,7 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 
 iochan.$O: iofile.h $SYSTEM/iosysconstants.h
 iostat.$O: iostat.h
-unix/iodir.$O: iofile.h iostat.h
+unix/iodir.$O: iofile.h iostat.h iomacros.h
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h $GLOBALSCRIPT/include/libibio.h
 

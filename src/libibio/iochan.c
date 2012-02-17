@@ -20,6 +20,7 @@ ibio_get_channel_for_external_io(int fd, enum ibio_iochannel_type ty)
 
     chan->fd = fd;
     chan->ty = ty;
+    chan->buf_beg = buf;
     chan->free_beg = buf;
     chan->free_end = UXIO_END_OF_IO_BUFFER(buf);
 
@@ -101,4 +102,39 @@ ibio_alloc_new_uxio_buffer_block(void)
     nursury_seg = gs_sys_seg_alloc(&uxio_channel_buffer);
     uxio_channel_buffer_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
     gsassert(!((uintptr)uxio_channel_buffer_nursury % sizeof(gsvalue)), "uxio_channel_buffer_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_buffer_segment");
+}
+
+ulong
+uxio_channel_size_of_available_data(struct uxio_channel *chan)
+{
+    if ((uchar*)chan->free_end >= (uchar*)chan->free_beg) {
+        return ((uchar*)chan->free_beg - (uchar*)chan->buf_beg)
+            + ((uchar*)UXIO_END_OF_IO_BUFFER((uchar*)chan->buf_beg)
+                - (uchar*)chan->free_end
+              )
+        ;
+    } else {
+        return (uchar*)chan->free_beg - (uchar*)chan->free_end;
+    }
+}
+
+void *
+uxio_save_space(struct uxio_channel *chan, ulong sz)
+{
+    void *res;
+    int i;
+    if (!sz)
+        gswarning("Reserving 0 octets (bytes)? on channel %d; resulting pointer will not be vaid so this is probably a concern somebody should track down & look into", chan->fd);
+    if ((uchar*)chan->free_end >= (uchar*)chan->free_beg) {
+        if (((uchar*)chan->free_end - (uchar*)chan->free_beg) < sz)
+            gsfatal("Out of space during read on channel %d", chan->fd);
+    } else {
+        if (((uchar*)UXIO_END_OF_IO_BUFFER(chan->free_beg) - (uchar*)chan->free_beg) < sz)
+            gsfatal("Out of space during read on channel %d", chan->fd);
+    }
+    res = chan->free_beg;
+    chan->free_beg = (uchar*)chan->free_beg + sz;
+    for (i = 0; i < sz; i++)
+        *((uchar*)res + i) = "\xDE\xAD\xBE\xEF"[i % 4];
+    return res;
 }
