@@ -53,7 +53,7 @@ gs_sys_seg_alloc(registered_block_class cl)
     if (!bottom_of_data)
         gs_sys_seg_init();
 
-    gsassert(!!first_free_block, "Out of memory");
+    gsassert(__FILE__, __LINE__, !!first_free_block, "Out of memory");
 
     pres = &first_free_block->hdr;
     pnext = first_free_block->next;

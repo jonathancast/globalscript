@@ -9,6 +9,11 @@ OFILES=\
 	iochan.$O \
 	iostat.$O \
 
+TEST_OFILES=\
+	test.$O \
+	$SYSTEM/test.$O \
+	test_iostat.$O \
+
 LIB=libibio.a
 
 $GLOBALSCRIPT/lib/$LIB(%):N: %
@@ -18,15 +23,24 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 &:n:	&.$O
 	$AR rsc $GLOBALSCRIPT/lib/$LIB $stem.$O
 
-iochan.$O: iofile.h $SYSTEM/iosysconstants.h
-iostat.$O: iostat.h
+iochan.$O: iofile.h $SYSTEM/iosysconstants.h iomacros.h
+iostat.$O: $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h
 unix/iodir.$O: iofile.h iostat.h iomacros.h
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h $GLOBALSCRIPT/include/libibio.h
 
-all install:V: $GLOBALSCRIPT/lib/$LIB
+all install:V: test $GLOBALSCRIPT/lib/$LIB
 
-NUKEFILES=$NUKEFILES $GLOBALSCRIPT/lib/$LIB
+test:V: $O.test
+    ./$O.test
+
+$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB # ${SHORTLIB:%=$LIBDIR/lib%.a}
+	$LD -o $target $prereq $LDFLAGS
+
+test.$O:	test_tests.h $SYSTEM/test_systemtests.h
+test_iostat.$O:	$SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h test_tests.h
+
+NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 
 %.$O:	%.c
 	$CC $CFLAGS -o $target $stem.c

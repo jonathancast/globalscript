@@ -16,3 +16,4 @@ struct uxio_channel *ibio_get_channel_for_external_io(int fd, enum ibio_iochanne
 ulong uxio_channel_size_of_available_data(struct uxio_channel *);
 
 void *uxio_save_space(struct uxio_channel *, ulong);
+long uxio_consume_space(struct uxio_channel *, void *, ulong);

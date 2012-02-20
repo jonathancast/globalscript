@@ -7,13 +7,14 @@
     (cur_arg = *++argv, --argc, is_option = (*cur_arg == '-'), (is_option ? cur_arg++ : 0)) \
 
 void
-p9main(int argc, char **argv)
+gsmain(int argc, char **argv)
 {
     argv0 = *argv;
     int is_option = 0;
     char *cur_arg = *argv;
     gsvalue entry_point = 0;
     gsassert(
+        __FILE__, __LINE__,
         sizeof(struct gs_blockdesc) == sizeof(gsvalue),
         "sizeof(struct gs_blockdesc) is %x, should be %x",
         sizeof(struct gs_blockdesc),
@@ -44,51 +45,9 @@ p9main(int argc, char **argv)
         }
     }
     gsfatal("p9main at end of command-line arguments next");
+    exits("no-document");
 have_document:
     gsfatal("p9main(argc, argv) next");
+    exits("");
 }
 
-/* Based on p9p's sysfatal function */
-void
-gsfatal(char *err, ...)
-{
-    char buf[0x100];
-    va_list arg;
-
-    va_start(arg, err);
-    vseprint(buf, buf+sizeof buf, err, arg);
-    va_end(arg);
-
-    fprint(2, "%s: %s\n", argv0, buf);
-    exits("fatal");
-}
-
-void
-gswarning(char *err, ...)
-{
-    char buf[0x100];
-    va_list arg;
-
-    va_start(arg, err);
-    vseprint(buf, buf+sizeof buf, err, arg);
-    va_end(arg);
-
-    fprint(2, "%s: %s\n", argv0, buf);
-}
-
-void
-gsassert(int success, char *err, ...)
-{
-    char buf[0x100];
-    va_list arg;
-
-     if (success) return;
-     
-
-    va_start(arg, err);
-    vseprint(buf, buf+sizeof buf, err, arg);
-    va_end(arg);
-
-    fprint(2, "%s: %s\n", argv0, buf);
-    exits("asssert failed");
-}

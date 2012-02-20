@@ -2,12 +2,16 @@
 
 OFILES=\
 	gsmain.$O \
+	gsfatal.$O \
 	apithread.$O \
 	eval.$O \
 	load.$O \
 	inputalloc.$O \
 	alloc.$O \
 	eval.$O \
+
+TEST_OFILES=\
+	test.$O \
 
 LIB=libglobalscript.a
 
@@ -25,9 +29,15 @@ inputalloc.$O: gsinputalloc.h gsalloc.h
 alloc.$O: gsalloc.h
 eval.$O: gsheap.h
 
-all install:V: $GLOBALSCRIPT/lib/$LIB
+all install:V: test $GLOBALSCRIPT/lib/$LIB
 
-NUKEFILES=$NUKEFILES $GLOBALSCRIPT/lib/$LIB
+test:V: $O.test
+    ./$O.test
+
+$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB # ${SHORTLIB:%=$LIBDIR/lib%.a}
+	$LD -o $target $prereq $LDFLAGS
+
+NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 
 < $PLAN9/src/mkcommon
 < $GLOBALSCRIPT/src/mkcommon

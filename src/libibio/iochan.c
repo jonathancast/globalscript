@@ -5,6 +5,7 @@
 
 #include "iosysconstants.h"
 #include "iofile.h"
+#include "iomacros.h"
 
 static struct uxio_channel *ibio_alloc_uxio_channel(void);
 static void *ibio_alloc_uxio_buffer(void);
@@ -71,7 +72,7 @@ ibio_alloc_new_uxio_channel_block()
     struct uxio_channel_descr_segment *nursury_seg;
     nursury_seg = gs_sys_seg_alloc(&uxio_channel_descr);
     uxio_channel_descr_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
-    gsassert(!((uintptr)uxio_channel_descr_nursury % sizeof(gsvalue)), "uxio_channel_descr_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_descr_segment");
+    gsassert(__FILE__, __LINE__, !((uintptr)uxio_channel_descr_nursury % sizeof(gsvalue)), "uxio_channel_descr_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_descr_segment");
 }
 
 static
@@ -101,7 +102,7 @@ ibio_alloc_new_uxio_buffer_block(void)
     struct uxio_channel_buffer_segment *nursury_seg;
     nursury_seg = gs_sys_seg_alloc(&uxio_channel_buffer);
     uxio_channel_buffer_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
-    gsassert(!((uintptr)uxio_channel_buffer_nursury % sizeof(gsvalue)), "uxio_channel_buffer_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_buffer_segment");
+    gsassert(__FILE__, __LINE__, !((uintptr)uxio_channel_buffer_nursury % sizeof(gsvalue)), "uxio_channel_buffer_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_buffer_segment");
 }
 
 ulong
@@ -137,4 +138,29 @@ uxio_save_space(struct uxio_channel *chan, ulong sz)
     for (i = 0; i < sz; i++)
         *((uchar*)res + i) = "\xDE\xAD\xBE\xEF"[i % 4];
     return res;
+}
+
+long
+uxio_consume_space(struct uxio_channel *chan, void *dest, ulong sz)
+{
+    uchar *p;
+    ulong n;
+
+    p = dest, n = sz;
+    while (n--) {
+        if ((uchar*)chan->free_end < (uchar*)UXIO_END_OF_IO_BUFFER(chan->buf_beg)) {
+            *p++ = *(uchar*)chan->free_end;
+            chan->free_end = (uchar*)chan->free_end + 1;
+        } else if ((uchar*)chan->buf_beg < (uchar*)chan->free_beg) {
+            *p++ = *(uchar*)chan->buf_beg;
+            chan->free_end = (uchar*)chan->buf_beg + 1;
+        } else {
+            return sz - n - 1;
+        }
+        if ((uchar*)chan->free_end == (uchar*)chan->free_beg) {
+            chan->free_beg = chan->buf_beg;
+            chan->free_end = UXIO_END_OF_IO_BUFFER(chan->buf_beg);
+        }
+    }
+    return sz;
 }

@@ -181,16 +181,8 @@ gsopenfile(char *filename, int omode, int *ppid)
     *ppid = 0;
     char *ext = strrchr(filename, '.');
     if (!ext) goto error;
-    if (!strcmp(ext, ".bcgs"))
+    if (!strcmp(ext, ".ags"))
         return open(filename, omode);
-    if (!strcmp(ext, ".ags")) {
-        char *argv[] = {
-            "gsbc",
-            filename,
-            0,
-        };
-        return gspopen(omode, ppid, "gsbc", argv);
-    }
 error:
     gsfatal("%s:extensions are mandatory in Global Script source files (sorry)", filename);
     return -1;
