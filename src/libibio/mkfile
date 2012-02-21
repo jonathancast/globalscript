@@ -1,7 +1,8 @@
 < $PLAN9/src/mkhdr
 
 SYSTEM=unix
-CFLAGS=-I $SYSTEM
+CFLAGS=-I $SYSTEM -g
+LDFLAGS=-g
 
 OFILES=\
 	$SYSTEM/iodir.$O \
@@ -13,6 +14,7 @@ TEST_OFILES=\
 	test.$O \
 	$SYSTEM/test.$O \
 	test_iostat.$O \
+	$SYSTEM/test_iodir.$O \
 
 LIB=libibio.a
 
@@ -25,7 +27,7 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 
 iochan.$O: iofile.h $SYSTEM/iosysconstants.h iomacros.h
 iostat.$O: $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h
-unix/iodir.$O: iofile.h iostat.h iomacros.h
+unix/iodir.$O: iofile.h iostat.h iomacros.h unix/iodir.h
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h $GLOBALSCRIPT/include/libibio.h
 
@@ -39,6 +41,7 @@ $O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB # ${SHORTLIB:%=$LIBDIR/lib%.a}
 
 test.$O:	test_tests.h $SYSTEM/test_systemtests.h
 test_iostat.$O:	$SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h test_tests.h
+unix/test_iodir.$O:	unix/iosysconstants.h iofile.h iomacros.h unix/iodir.h unix/test_systemtests.h
 
 NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 

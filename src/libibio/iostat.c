@@ -22,7 +22,7 @@ ibio_parse_stat(struct uxio_channel *ip)
 {
     struct ibio_dir dir, *res;
     void *resend;
-    uchar buf[2];
+    uchar buf[8];
     long n;
     u16int bufsize;
 

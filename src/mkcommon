@@ -21,3 +21,4 @@ clean:V:
 	rm -f *.bcgs
 	rm -f *threadmain.c
 	rm -f *.ibio.bgs-out
+	rm -f $NUKE_FILES

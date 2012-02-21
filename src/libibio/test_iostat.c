@@ -28,7 +28,7 @@ TEST_IOSTAT()
     struct ibio_dir *pdir;
     struct uxio_channel *chan;
 
-    gswarning("\t----\t TEST_IOSTAT\t----");
+    fprint(2, "%s\n", "----\t" __FILE__ "\t TEST_IOSTAT\t----");
 
     chan = fixture_sample_chan_with_file_entry();
     pdir = ibio_parse_stat(chan);
@@ -47,7 +47,7 @@ TEST_IOSTAT_DIR()
     struct ibio_dir *pdir;
     struct uxio_channel *chan;
 
-    gswarning("\t---- \t TEST_IOSTAT_DIR\t----");
+    fprint(2, "%s\n", "----\t" __FILE__ "\t TEST_IOSTAT_DIR\t----");
 
     chan = fixture_sample_chan_with_dir_entry();
     pdir = ibio_parse_stat(chan);

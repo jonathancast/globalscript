@@ -12,8 +12,7 @@
 #include "../iofile.h"
 #include "../iostat.h"
 #include "../iomacros.h"
-
-static void ibio_unix_fill_stat(char *filename, struct stat *, struct uxio_channel *);
+#include "iodir.h"
 
 struct uxio_channel *
 ibio_sys_stat(char *filename)
@@ -27,79 +26,34 @@ ibio_sys_stat(char *filename)
     return chan;
 }
 
-static
 void
 ibio_unix_fill_stat(char *filename, struct stat *puxstat, struct uxio_channel *chan)
 {
     int size;
+    u64int mode;
     void *psize, *p;
 
     size = 0;
     psize = uxio_save_space(chan, 2);
 
+    /* type */
     p = uxio_save_space(chan, 2), size += 2;
     PUT_LITTLE_ENDIAN_U16INT(p, 'M');
-
+    /* dev */
     p = uxio_save_space(chan, 4), size += 4;
-
+    /* qid.type */
     p = uxio_save_space(chan, 1), size += 1;
+    /* qid.vers */
+    p = uxio_save_space(chan, 4), size += 4;
+    /* qid.path */
+    p = uxio_save_space(chan, 8), size += 8;
+
+    /* mode */
+    p = uxio_save_space(chan, 4), size += 4;
+    mode = 0;
+    if (S_ISDIR(puxstat->st_mode)) mode |= DMDIR;
+    PUT_LITTLE_ENDIAN_U32INT(p, mode);
 
     PUT_LITTLE_ENDIAN_U16INT(psize, (u16int)size);
 }
 
-#ifdef IBIO_UNIX_ASSERT_STAT_VALID_CODE_THAT_SHOULD_GO_TO_A_UNIT_TEST_FILE
-static
-void
-ibio_unix_assert_stat_valid(struct uxio_channel *chan, char *filename)
-{
-    ulong size_of_data_stored, size_in_chan, size_of_data_tested;
-    size_of_data_stored = uxio_channel_size_of_available_data(chan);
-    size_of_data_tested = 0;
-
-    /* size */
-    gsassert(
-        __
-        size_of_data_stored >= size_of_data_tested + 2,
-        "unix ibio_unix_fill_stat(%s): Didn't read in even a size; read in %x octets!",
-        filename,
-        size_of_data_stored
-    );
-    size_in_chan = (uint)GET_LITTLE_ENDIAN_U16INT((uchar*)chan->buf_beg + size_of_data_tested);
-    gsassert(size_of_data_stored == size_in_chan + 2,
-        "unix ibio_unix_fill_stat(%s): Size (%x) doesn't match size of available data (%lx)",
-        filename,
-        size_in_chan + 2,
-        size_of_data_stored
-    );
-    size_of_data_tested += 2;
-
-    /* type */
-    gsassert(
-        size_of_data_stored >= size_of_data_tested + 2,
-        "unix ibio_unix_fill_stat(%s): Didn't read in a type; read in %x octets!",
-        filename,
-        size_of_data_stored
-    );
-    size_of_data_tested += 2;
-
-    /* dev */
-    gsassert(
-        size_of_data_stored >= size_of_data_tested + 4,
-        "unix ibio_unix_fill_stat(%s): Didn't read in a type; read in %x octets (should have been at least %x)!",
-        filename,
-        size_of_data_stored,
-        size_of_data_tested + 4
-    );
-    size_of_data_tested += 4;
-
-    /* qid.type */
-    gsassert(
-        size_of_data_stored >= size_of_data_tested + 1,
-        "unix ibio_unix_fill_stat(%s): Didn't read in a qid.type; read in %x octets (should have been at least %x)",
-        filename,
-        size_of_data_stored,
-        size_of_data_tested + 1
-    );
-    size_of_data_tested += 4;
-}
-#endif

@@ -94,3 +94,16 @@ gsassert_ulong_le(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...
 
     gsassert(srcfile, srcline, n0 <= n1, "Values inconsistent: %ux !<= %ux: %s", n0, n1, buf);
 }
+
+void
+gsassert_ulong_ge(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, err);
+    vseprint(buf, buf+sizeof buf, err, arg);
+    va_end(arg);
+
+    gsassert(srcfile, srcline, n0 >= n1, "Values inconsistent: %ux !>= %ux: %s", n0, n1, buf);
+}

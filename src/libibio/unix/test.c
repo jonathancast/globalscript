@@ -7,4 +7,5 @@
 void
 run_system_tests()
 {
+    test_iodir();
 }
