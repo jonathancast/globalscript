@@ -57,6 +57,7 @@ ibio_alloc_uxio_channel()
 {
     struct uxio_channel_descr_segment *nursury_seg;
     struct uxio_channel *pres, *pnext;
+
     if (!uxio_channel_descr_nursury)
         ibio_alloc_new_uxio_channel_block();
 
@@ -76,6 +77,7 @@ void
 ibio_alloc_new_uxio_channel_block()
 {
     struct uxio_channel_descr_segment *nursury_seg;
+
     nursury_seg = gs_sys_seg_alloc(&uxio_channel_descr);
     uxio_channel_descr_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
     gsassert(__FILE__, __LINE__, !((uintptr)uxio_channel_descr_nursury % sizeof(gsvalue)), "uxio_channel_descr_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_descr_segment");
@@ -87,6 +89,7 @@ ibio_alloc_uxio_buffer()
 {
     struct uxio_channel_buffer_segment *nursury_seg;
     void *pres, *pnext;
+
     if (!uxio_channel_buffer_nursury)
         ibio_alloc_new_uxio_buffer_block();
 
