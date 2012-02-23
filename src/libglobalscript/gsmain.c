@@ -42,6 +42,7 @@ gsmain(int argc, char **argv)
                         gsfatal("%s: loaded unknown file type %d", cur_arg, ft);
                 }
             }
+            FETCH_OPTION();
         }
     }
     gsfatal("p9main at end of command-line arguments next");
