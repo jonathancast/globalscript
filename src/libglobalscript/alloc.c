@@ -15,6 +15,7 @@ static struct free_block *first_free_block;
 
 struct gs_block_class free_block_class_descr = {
     gsnoeval,
+    "Free memory",
 };
 
 static void gs_sys_seg_extend(void);

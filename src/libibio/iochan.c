@@ -28,8 +28,14 @@ ibio_get_channel_for_external_io(int fd, enum ibio_iochannel_type ty)
     return chan;
 }
 
-struct gs_block_class uxio_channel_descr;
-struct gs_block_class uxio_channel_buffer;
+struct gs_block_class uxio_channel_descr = {
+    /* evaluator = */ gsnoeval,
+    /* description = */ "UXIO Channels",
+};
+struct gs_block_class uxio_channel_buffer = {
+    /* evaluator = */ gsnoeval,
+    /* description = */ "UXIO Buffers",
+};
 
 struct uxio_channel_descr_segment {
     struct gs_blockdesc desc; /* class = uxio_channel_descr */

@@ -94,7 +94,10 @@ ibio_parse_stat(struct uxio_channel *ip)
 
 void *ibio_dir_nursury;
 
-struct gs_block_class ibio_dir;
+struct gs_block_class ibio_dir = {
+    /* evaluator = */ gsnoeval,
+    /* description = */ "IBIO directory structures",
+};
 
 struct ibio_dir_segment {
     struct gs_blockdesc desc; /* class = ibio_dir */

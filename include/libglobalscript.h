@@ -49,6 +49,7 @@ gsvalue gsnoeval(gsvalue);
 
 typedef struct gs_block_class {
     gsvalue (*evaluator)(gsvalue);
+    char *description;
 } *registered_block_class;
 
 struct gs_blockdesc {
