@@ -30,7 +30,6 @@ gsisdir(char *filename)
 void
 gsadddir(char *filename)
 {
-    gsfatal("%s: gsadddir next", filename);
 }
 
 gsfiletype
