@@ -32,7 +32,7 @@ typedef enum {
     gstyenosys = 66,
 } gstypecode;
 
-#define GS_MAX_PTR 0x80000000
+#define GS_MAX_PTR 0x80000000UL
     /* NOTE: 32-bit specific ^^^ */
 
 gsvalue gsmakethunk(gscode, ...);
