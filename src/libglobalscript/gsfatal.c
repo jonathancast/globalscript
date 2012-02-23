@@ -79,7 +79,7 @@ gsassert_ulong_eq(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...
     vseprint(buf, buf+sizeof buf, err, arg);
     va_end(arg);
 
-    gsassert(srcfile, srcline, n0 == n1, "Values differ: %ux != %ux: %s", n0, n1, buf);
+    gsassert(srcfile, srcline, n0 == n1, "%s: %ux != %ux", buf, n0, n1);
 }
 
 void
@@ -92,7 +92,7 @@ gsassert_ulong_le(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...
     vseprint(buf, buf+sizeof buf, err, arg);
     va_end(arg);
 
-    gsassert(srcfile, srcline, n0 <= n1, "Values inconsistent: %ux !<= %ux: %s", n0, n1, buf);
+    gsassert(srcfile, srcline, n0 <= n1, "%s: %ux !<= %ux", buf, n0, n1);
 }
 
 void
@@ -105,5 +105,5 @@ gsassert_ulong_ge(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...
     vseprint(buf, buf+sizeof buf, err, arg);
     va_end(arg);
 
-    gsassert(srcfile, srcline, n0 >= n1, "Values inconsistent: %ux !>= %ux: %s", n0, n1, buf);
+    gsassert(srcfile, srcline, n0 >= n1, "%s: %ux !>= %ux", buf, n0, n1);
 }
