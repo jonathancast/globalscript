@@ -80,12 +80,26 @@ void
 gs_sys_seg_extend(void)
 {
     struct free_block *pnext;
+    struct gs_blockdesc *pblock;
+    void *new_top_of_data;
 
     pnext = (struct free_block *)top_of_data;
 
-    if (brk((uchar*)top_of_data + BLOCK_SIZE) < 0)
-        gsfatal("Could not extend data segment: brk failed! %r");
-    top_of_data = (uchar*)top_of_data + BLOCK_SIZE;
+    new_top_of_data = (uchar*)top_of_data + BLOCK_SIZE;
+    if ((uintptr)new_top_of_data > GS_MAX_PTR) {
+        gswarning("Out of memory in gs_sys_seg_extend; would grow memory past legal maximum extent %ux", GS_MAX_PTR);
+        for (pblock = (struct gs_blockdesc *)bottom_of_data; (uchar*)pblock < (uchar*)top_of_data; pblock = (struct gs_blockdesc *)((uchar*)pblock + BLOCK_SIZE)) {
+            gswarning("Block %ux is %s", pblock, pblock->class->description);
+        }
+        gsfatal("Out of memory in gs_sys_seg_extend; would grow memory past legal maximum extent %ux", GS_MAX_PTR);
+    }
+    if (brk(new_top_of_data) < 0)
+        gsfatal("Could not extend data segment: brk failed (allocated %ux to %ux, allocating %x)! %r",
+            (uintptr)bottom_of_data,
+            (uintptr)top_of_data,
+            BLOCK_SIZE
+        );
+    top_of_data = new_top_of_data;
 
     gs_sys_seg_setup_free_block(pnext);
     first_free_block = pnext;
