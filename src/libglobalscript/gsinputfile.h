@@ -1,6 +1,3 @@
-#ifndef _GSINPUTFILE_H_
-#define _GSINPUTFILE_H_ 1
-
 #define BIG_ENDIAN_32(pb) \
     (((u32int)(pb)[0] << 24) | ((u32int)(pb)[1] << 16) | ((u32int)(pb)[2] << 8) | ((u32int)(pb)[3]))
 
@@ -27,5 +24,3 @@ typedef struct gsinputheader gsinputheader;
 gsfiletype gsloadfile(char *filename, gsinputheader *phdr, gsvalue *pentry);
 
 gscode gsloadcodeobject(void *addr);
-
-#endif

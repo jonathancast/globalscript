@@ -4,8 +4,6 @@
 extern "C" {
 #endif   
 
-typedef void *iptr_t;
-
 struct ibio_dir {
     long size;
     Dir d;
