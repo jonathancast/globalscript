@@ -11,6 +11,26 @@ static struct uxio_channel *ibio_alloc_uxio_channel(void);
 static void *ibio_alloc_uxio_buffer(void);
 
 struct uxio_channel *
+ibio_device_open(char *filename, int omode)
+{
+    int fd;
+    enum ibio_iochannel_type ty;
+
+    if ((fd = open(filename, omode)) < 0)
+        return 0;
+
+    switch (omode & 0xf) {
+        case OREAD:
+            ty = ibio_ioread;
+            break;
+        default:
+            gsfatal("%s:%d: Unknown mode %x", __FILE__, __LINE__, omode & 0xf);
+    }
+
+    return ibio_get_channel_for_external_io(fd, ty);
+}
+
+struct uxio_channel *
 ibio_get_channel_for_external_io(int fd, enum ibio_iochannel_type ty)
 {
     struct uxio_channel *chan;

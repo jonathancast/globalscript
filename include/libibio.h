@@ -11,6 +11,8 @@ struct ibio_dir {
 
 struct ibio_dir *ibio_stat(char *filename);
 
+struct uxio_channel *ibio_device_open(char *filename, int omode);
+
 #if defined(__cplusplus)
 }
 #endif
