@@ -7,36 +7,30 @@
 #include "iofile.h"
 #include "iomacros.h"
 
-static struct uxio_channel *ibio_alloc_uxio_channel(void);
+static struct uxio_ichannel *ibio_alloc_uxio_ichannel(void);
 static void *ibio_alloc_uxio_buffer(void);
 
-struct uxio_channel *
-ibio_device_open(char *filename, int omode)
+struct uxio_ichannel *
+ibio_device_iopen(char *filename, int omode)
 {
     int fd;
-    enum ibio_iochannel_type ty;
+
+    omode &= ~(OREAD | OWRITE | ORDWR);
+    omode |= OREAD;
 
     if ((fd = open(filename, omode)) < 0)
         return 0;
 
-    switch (omode & 0xf) {
-        case OREAD:
-            ty = ibio_ioread;
-            break;
-        default:
-            gsfatal("%s:%d: Unknown mode %x", __FILE__, __LINE__, omode & 0xf);
-    }
-
-    return ibio_get_channel_for_external_io(fd, ty);
+    return ibio_get_channel_for_external_io(fd, ibio_ioread);
 }
 
-struct uxio_channel *
+struct uxio_ichannel *
 ibio_get_channel_for_external_io(int fd, enum ibio_iochannel_type ty)
 {
-    struct uxio_channel *chan;
+    struct uxio_ichannel *chan;
     void *buf;
 
-    chan = ibio_alloc_uxio_channel();
+    chan = ibio_alloc_uxio_ichannel();
     buf = ibio_alloc_uxio_buffer();
 
     chan->fd = fd;
@@ -72,17 +66,17 @@ static void ibio_alloc_new_uxio_channel_block(void);
 static void ibio_alloc_new_uxio_buffer_block(void);
 
 static
-struct uxio_channel *
-ibio_alloc_uxio_channel()
+struct uxio_ichannel *
+ibio_alloc_uxio_ichannel()
 {
     struct uxio_channel_descr_segment *nursury_seg;
-    struct uxio_channel *pres, *pnext;
+    struct uxio_ichannel *pres, *pnext;
 
     if (!uxio_channel_descr_nursury)
         ibio_alloc_new_uxio_channel_block();
 
     nursury_seg = (struct uxio_channel_descr_segment *)BLOCK_CONTAINING(uxio_channel_descr_nursury);
-    pres = (struct uxio_channel *)uxio_channel_descr_nursury;
+    pres = (struct uxio_ichannel *)uxio_channel_descr_nursury;
     pnext = pres + 1;
     if ((uchar*)pnext >= (uchar*)END_OF_BLOCK(nursury_seg))
         ibio_alloc_new_uxio_channel_block();
@@ -135,7 +129,7 @@ ibio_alloc_new_uxio_buffer_block(void)
 }
 
 ulong
-uxio_channel_size_of_available_data(struct uxio_channel *chan)
+uxio_channel_size_of_available_data(struct uxio_ichannel *chan)
 {
     if ((uchar*)chan->free_end >= (uchar*)chan->free_beg) {
         return ((uchar*)chan->free_beg - (uchar*)chan->buf_beg)
@@ -149,7 +143,7 @@ uxio_channel_size_of_available_data(struct uxio_channel *chan)
 }
 
 void *
-uxio_save_space(struct uxio_channel *chan, ulong sz)
+uxio_save_space(struct uxio_ichannel *chan, ulong sz)
 {
     void *res;
     int i;
@@ -170,7 +164,7 @@ uxio_save_space(struct uxio_channel *chan, ulong sz)
 }
 
 long
-uxio_consume_space(struct uxio_channel *chan, void *dest, ulong sz)
+uxio_consume_space(struct uxio_ichannel *chan, void *dest, ulong sz)
 {
     uchar *p;
     ulong n;

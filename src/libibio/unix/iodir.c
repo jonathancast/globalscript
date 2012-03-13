@@ -14,10 +14,10 @@
 #include "../iomacros.h"
 #include "iodir.h"
 
-struct uxio_channel *
+struct uxio_ichannel *
 ibio_sys_stat(char *filename)
 {
-    struct uxio_channel *chan;
+    struct uxio_ichannel *chan;
     struct stat uxstat;
     chan = ibio_get_channel_for_external_io(-1, ibio_iostat);
     if (stat(filename, &uxstat) < 0)
@@ -27,7 +27,7 @@ ibio_sys_stat(char *filename)
 }
 
 void
-ibio_unix_fill_stat(char *filename, struct stat *puxstat, struct uxio_channel *chan)
+ibio_unix_fill_stat(char *filename, struct stat *puxstat, struct uxio_ichannel *chan)
 {
     int size;
     u64int mode;

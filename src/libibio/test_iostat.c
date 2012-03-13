@@ -12,8 +12,8 @@
 static void TEST_IOSTAT_DIR(void);
 static void TEST_IOSTAT(void);
 
-static struct uxio_channel *fixture_sample_chan_with_file_entry(void);
-static struct uxio_channel *fixture_sample_chan_with_dir_entry(void);
+static struct uxio_ichannel *fixture_sample_chan_with_file_entry(void);
+static struct uxio_ichannel *fixture_sample_chan_with_dir_entry(void);
 
 void test_iostat()
 {
@@ -26,7 +26,7 @@ void
 TEST_IOSTAT()
 {
     struct ibio_dir *pdir;
-    struct uxio_channel *chan;
+    struct uxio_ichannel *chan;
 
     fprint(2, "%s\n", "----\t" __FILE__ "\t TEST_IOSTAT\t----");
 
@@ -45,7 +45,7 @@ void
 TEST_IOSTAT_DIR()
 {
     struct ibio_dir *pdir;
-    struct uxio_channel *chan;
+    struct uxio_ichannel *chan;
 
     fprint(2, "%s\n", "----\t" __FILE__ "\t TEST_IOSTAT_DIR\t----");
 
@@ -57,10 +57,10 @@ TEST_IOSTAT_DIR()
 }
 
 static
-struct uxio_channel *
+struct uxio_ichannel *
 fixture_sample_chan_with_file_entry()
 {
-    struct uxio_channel *res;
+    struct uxio_ichannel *res;
     void *psize, *p;
     long size;
 
@@ -89,10 +89,10 @@ fixture_sample_chan_with_file_entry()
 }
 
 static
-struct uxio_channel *
+struct uxio_ichannel *
 fixture_sample_chan_with_dir_entry()
 {
-    struct uxio_channel *res;
+    struct uxio_ichannel *res;
     void *psize, *p;
     long size;
 

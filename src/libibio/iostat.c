@@ -13,12 +13,12 @@ static struct ibio_dir *ibio_alloc_dir(ulong size);
 struct ibio_dir *
 ibio_stat(char *filename)
 {
-    struct uxio_channel *chan = ibio_sys_stat(filename);
+    struct uxio_ichannel *chan = ibio_sys_stat(filename);
     return ibio_parse_stat(chan);
 }
 
 struct ibio_dir *
-ibio_parse_stat(struct uxio_channel *ip)
+ibio_parse_stat(struct uxio_ichannel *ip)
 {
     struct ibio_dir dir, *res;
     void *resend;

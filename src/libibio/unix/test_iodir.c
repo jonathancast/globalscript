@@ -26,13 +26,13 @@ test_iodir()
     TEST_UNIX_FILL_STAT_DIR();
 }
 
-static struct uxio_channel *fixture_unix_stat_buffer_for_file(void);
+static struct uxio_ichannel *fixture_unix_stat_buffer_for_file(void);
 
 static
 void
 TEST_UNIX_FILL_STAT()
 {
-    struct uxio_channel *chan;
+    struct uxio_ichannel *chan;
     ulong size_of_data_stored;
     uchar buf[32];
     u32int mode;
@@ -61,13 +61,13 @@ TEST_UNIX_FILL_STAT()
     gsassert_ulong_eq(__FILE__, __LINE__, uxio_channel_size_of_available_data(chan), 0, "Didn't test entire channel as stored");
 }
 
-static struct uxio_channel *fixture_unix_stat_buffer_for_dir(void);
+static struct uxio_ichannel *fixture_unix_stat_buffer_for_dir(void);
 
 static
 void
 TEST_UNIX_FILL_STAT_DIR()
 {
-    struct uxio_channel *chan;
+    struct uxio_ichannel *chan;
     ulong size_of_data_stored;
     uchar buf[32];
     u32int mode;
@@ -95,10 +95,10 @@ TEST_UNIX_FILL_STAT_DIR()
 }
 
 static
-struct uxio_channel *
+struct uxio_ichannel *
 fixture_unix_stat_buffer_for_file()
 {
-    struct uxio_channel *chan;
+    struct uxio_ichannel *chan;
     struct stat uxstat;
 
     memset(&uxstat, 0, sizeof(uxstat));
@@ -110,10 +110,10 @@ fixture_unix_stat_buffer_for_file()
 }
 
 static
-struct uxio_channel *
+struct uxio_ichannel *
 fixture_unix_stat_buffer_for_dir()
 {
-    struct uxio_channel *chan;
+    struct uxio_ichannel *chan;
     struct stat uxstat;
 
     uxstat.st_mode = 0;
