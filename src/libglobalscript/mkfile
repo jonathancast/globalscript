@@ -39,6 +39,7 @@ $O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB # ${SHORTLIB:%=$LIBDIR/lib%.a}
 	$LD -o $target $prereq $LDFLAGS
 
 test.$O: test_tests.h
+test_macros.$O: test_tests.h
 
 NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 
