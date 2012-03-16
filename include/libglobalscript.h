@@ -27,6 +27,8 @@ typedef enum {
     gstythunk = 1,
     gstystack = 2,
     gstywhnf = 3,
+    gstyindir = 4,
+    gstyexternal = 5,
     gstyeooheap = 64,
     gstyeoostack = 65,
     gstyenosys = 66,
@@ -39,16 +41,15 @@ gsvalue gsmakethunk(gscode, ...);
 
 /* gstypecode gseval(gsvalue); */
 
-gstypecode gs_get_gsvalue_state(gsvalue);
-
-gsvalue gsnoeval(gsvalue);
+gstypecode gsnoeval(gsvalue);
 
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
 /* ========== Simple Segment Manager ========== */
 
 typedef struct gs_block_class {
-    gsvalue (*evaluator)(gsvalue);
+    gstypecode (*evaluator)(gsvalue);
+        /* §ccode{gstypecode} mayn't return §ccode{gstythunk} */
     char *description;
 } *registered_block_class;
 
