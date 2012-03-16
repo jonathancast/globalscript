@@ -12,6 +12,9 @@ struct ibio_dir {
 struct ibio_dir *ibio_stat(char *filename);
 
 struct uxio_ichannel *ibio_device_iopen(char *filename, int omode);
+long ibio_device_iclose(struct uxio_ichannel *);
+
+long ibio_device_getline(struct uxio_ichannel *chan, char *line, long max);
 
 #if defined(__cplusplus)
 }

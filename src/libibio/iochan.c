@@ -9,6 +9,7 @@
 
 static struct uxio_ichannel *ibio_alloc_uxio_ichannel(void);
 static void *ibio_alloc_uxio_buffer(void);
+static long uxio_refill_ichan_from_read(struct uxio_ichannel *);
 
 struct uxio_ichannel *
 ibio_device_iopen(char *filename, int omode)
@@ -22,6 +23,12 @@ ibio_device_iopen(char *filename, int omode)
         return 0;
 
     return ibio_get_channel_for_external_io(fd, ibio_ioread);
+}
+
+long
+ibio_device_iclose(struct uxio_ichannel *chan)
+{
+    return close(chan->fd);
 }
 
 struct uxio_ichannel *
@@ -186,4 +193,72 @@ uxio_consume_space(struct uxio_ichannel *chan, void *dest, ulong sz)
         }
     }
     return sz;
+}
+
+long
+ibio_device_getline(struct uxio_ichannel *chan, char *dest, long sz)
+{
+    char *p;
+    long n, m;
+    char ch;
+
+    p = dest; n = 0;
+    while (n < sz) {
+        if (
+            (char*)chan->free_beg == (char*)chan->buf_beg
+            && (char*)chan->free_end == (char*)UXIO_END_OF_IO_BUFFER(chan->buf_beg)
+        ) {
+            if ((m = uxio_refill_ichan_from_read(chan)) < 0)
+                return m;
+            if (m == 0) {
+                *p++ = 0;
+                return n + 1;
+            }
+        }
+        if ((char*)chan->free_end < (char*)UXIO_END_OF_IO_BUFFER(chan->buf_beg)) {
+            ch = *(char*)chan->free_end;
+            chan->free_end = (uchar*)chan->free_end + 1;
+        } else if ((char*)chan->buf_beg < (char*)chan->free_beg) {
+            ch = *(char*)chan->buf_beg;
+            chan->free_end = (char*)chan->buf_beg + 1;
+        } else {
+            return n;
+        }
+        if ((char*)chan->free_end == (char*)chan->free_beg) {
+            chan->free_beg = chan->buf_beg;
+            chan->free_end = UXIO_END_OF_IO_BUFFER(chan->buf_beg);
+        }
+        *p++ = ch;
+        n++;
+        if (ch == '\n' && n < sz) {
+            *p++ = 0;
+            return n + 1;
+        }
+    }
+    return n;
+}
+
+static
+char oobuffer[] = "oobuffer: Out of space in buffer on input";
+
+static
+long
+uxio_refill_ichan_from_read(struct uxio_ichannel *chan)
+{
+    long n, sz;
+
+    if ((uchar*)chan->free_end < (uchar*)chan->free_beg)
+        sz = (uchar*)UXIO_END_OF_IO_BUFFER(chan->buf_beg) - (uchar*)chan->free_beg;
+    else
+        sz = (uchar*)chan->free_end - (uchar*)chan->free_beg;
+    if (sz == 0) {
+        werrstr("%s", oobuffer);
+        return -1;
+    }
+    if ((n = read(chan->fd, chan->free_beg, sz)) < 0)
+        return n;
+    chan->free_beg = (uchar*)chan->free_beg + n;
+    if ((uchar*)chan->free_beg == (uchar*)UXIO_END_OF_IO_BUFFER(chan->buf_beg))
+        chan->free_beg = chan->buf_beg;
+    return n;
 }
