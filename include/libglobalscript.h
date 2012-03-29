@@ -29,6 +29,7 @@ typedef enum {
     gstywhnf = 3,
     gstyindir = 4,
     gstyexternal = 5,
+    gstyunboxed = 6,
     gstyeooheap = 64,
     gstyeoostack = 65,
     gstyenosys = 66,
@@ -42,6 +43,7 @@ gsvalue gsmakethunk(gscode, ...);
 /* gstypecode gseval(gsvalue); */
 
 gstypecode gsnoeval(gsvalue);
+gstypecode gsevalunboxed(gsvalue);
 
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
@@ -61,6 +63,8 @@ struct gs_blockdesc {
 #define BLOCK_CONTAINING(p) ((void*)((uintptr)(p) & ~(BLOCK_SIZE - 1)))
 #define START_OF_BLOCK(p) ((void*)((uchar*)(p) + sizeof(*p)))
 #define END_OF_BLOCK(p) ((void*)((uchar*)(p) + BLOCK_SIZE))
+
+#define GS_EVALUATOR(p) (IS_PTR(p) ? ((struct gs_block_class*)BLOCK_CONTAINING(p))->evaluator : gsevalunboxed)
 
 void *gs_sys_seg_alloc(registered_block_class cl);
 void gs_sys_seg_free(void *);
