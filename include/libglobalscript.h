@@ -35,6 +35,9 @@ typedef enum {
     gstyenosys = 66,
 } gstypecode;
 
+/* Define this yourself; this is your program's entry point */
+extern void gsrun(gsvalue);
+
 #define GS_MAX_PTR 0x80000000UL
     /* NOTE: 32-bit specific ^^^ */
 

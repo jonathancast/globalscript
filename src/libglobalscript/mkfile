@@ -9,6 +9,7 @@ OFILES=\
 	inputalloc.$O \
 	alloc.$O \
 	eval.$O \
+	ace.$O \
 
 TEST_OFILES=\
 	test.$O \
@@ -24,7 +25,7 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 	$AR rsc $GLOBALSCRIPT/lib/$LIB $stem.$O
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h
-gsmain.$O: gsinputfile.h
+gsmain.$O: gsinputfile.h ace.h
 load.$O: gsinputalloc.h gsinputfile.h $GLOBALSCRIPT/include/libibio.h
 inputalloc.$O: gsinputalloc.h gsalloc.h
 alloc.$O: gsalloc.h
