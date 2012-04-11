@@ -1,0 +1,36 @@
+< $PLAN9/src/mkhdr
+
+OFILES=\
+	predicates.$O \
+
+TEST_OFILES=\
+	test.$O \
+
+LIB=libtest.a
+
+$GLOBALSCRIPT/lib/$LIB(%):N: %
+$GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
+	$AR rsc $GLOBALSCRIPT/lib/$LIB $newmember
+
+&:n:	&.$O
+	$AR rsc $GLOBALSCRIPT/lib/$LIB $stem.$O
+
+%.$O: $GLOBALSCRIPT/include/libtest.h
+
+test.$O: test_tests.h
+
+all install:V: test $GLOBALSCRIPT/lib/$LIB
+
+test:V: $O.test
+	./$O.test
+
+$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB
+	$LD -o $target $prereq $LDFLAGS
+
+NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
+
+< $PLAN9/src/mkcommon
+
+PATH=$GLOBALSCRIPT/bin:$PATH
+BIN=$GLOBALSCRIPT/bin
+CFLAGS=$CFLAGS -I $GLOBALSCRIPT/include

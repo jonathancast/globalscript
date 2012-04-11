@@ -36,12 +36,12 @@ all install:V: test $GLOBALSCRIPT/lib/$LIB
 test:V: $O.test
     ./$O.test
 
-$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB # ${SHORTLIB:%=$LIBDIR/lib%.a}
+$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a
 	$LD -o $target $prereq $LDFLAGS
 
-test.$O:	test_tests.h $SYSTEM/test_systemtests.h
-test_iostat.$O:	$SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h test_tests.h
-unix/test_iodir.$O:	unix/iosysconstants.h iofile.h iomacros.h unix/iodir.h unix/test_systemtests.h
+test.$O:	$GLOBALSCRIPT/include/libtest.h test_tests.h $SYSTEM/test_systemtests.h
+test_iostat.$O:	$GLOBALSCRIPT/include/libtest.h $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h test_tests.h
+unix/test_iodir.$O:	$GLOBALSCRIPT/include/libtest.h unix/iosysconstants.h iofile.h iomacros.h unix/iodir.h unix/test_systemtests.h
 
 NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 

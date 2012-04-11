@@ -2,7 +2,6 @@
 #include <libc.h>
 #include <libglobalscript.h>
 #include "gsinputfile.h"
-#include "ace.h"
 
 #define FETCH_OPTION() \
     (cur_arg = *++argv, --argc, is_option = (*cur_arg == '-'), (is_option ? cur_arg++ : 0)) \
@@ -28,11 +27,10 @@ gsmain(int argc, char **argv)
         if (is_option) {
             gsfatal("Invalid option flag %c", *cur_arg);
         } else {
-            gsinputheader hdr;
             if (gsisdir(cur_arg)) {
                 gsadddir(cur_arg);
             } else {
-                gsfiletype ft = gsloadfile(cur_arg, &hdr, &entry_point);
+                gsfiletype ft = gsloadfile(cur_arg, "", &entry_point);
                 switch (ft) {
                     case gsfiledocument:
                         goto have_document;
@@ -46,15 +44,10 @@ gsmain(int argc, char **argv)
             FETCH_OPTION();
         }
     }
-    gsfatal("gsmain at end of command-line arguments next");
+    gsfatal("p9main at end of command-line arguments next");
     exits("no-document");
 have_document:
-    if (!gsentrypoint)
-        gsfatal("Do not in fact have a document; check gsloadfile");
-    if (ace_init() < 0)
-        gsfatal("ace_init failed: %r");
-    GS_SLOW_EVALUATE(gsentrypoint);
-    gsrun(gsentrypoint);
+    gsfatal("p9main(argc, argv) next");
     exits("");
 }
 

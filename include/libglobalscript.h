@@ -12,10 +12,6 @@ void gsfatal(char *err, ...);
 void gswarning(char *err, ...);
 
 void gsassert(char *srcfile, int srcline, int passed, char *err, ...);
-void gsdeny(char *srcfile, int srcline, int passed, char *err, ...);
-void gsassert_ulong_eq(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...);
-void gsassert_ulong_ge(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...);
-void gsassert_ulong_le(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...);
 
 /* ========== Global Script Program Calculus ========== */
 

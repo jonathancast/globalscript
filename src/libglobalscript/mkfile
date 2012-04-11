@@ -36,11 +36,11 @@ all install:V: test $GLOBALSCRIPT/lib/$LIB
 test:V: $O.test
     ./$O.test
 
-$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB # ${SHORTLIB:%=$LIBDIR/lib%.a}
+$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a
 	$LD -o $target $prereq $LDFLAGS
 
-test.$O: test_tests.h
-test_macros.$O: test_tests.h
+test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
+test_macros.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 
 NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 

@@ -1,7 +1,9 @@
 #include <u.h>
 #include <libc.h>
+#include <libtest.h>
 #include <libglobalscript.h>
 #include <libibio.h>
+
 #include "iosysconstants.h"
 #include "iofile.h"
 #include "iostat.h"
@@ -17,8 +19,8 @@ static struct uxio_ichannel *fixture_sample_chan_with_dir_entry(void);
 
 void test_iostat()
 {
-    TEST_IOSTAT();
-    TEST_IOSTAT_DIR();
+    RUNTESTS(TEST_IOSTAT);
+    RUNTESTS(TEST_IOSTAT_DIR);
 }
 
 static
@@ -28,16 +30,14 @@ TEST_IOSTAT()
     struct ibio_dir *pdir;
     struct uxio_ichannel *chan;
 
-    fprint(2, "%s\n", "----\t" __FILE__ "\t TEST_IOSTAT\t----");
-
     chan = fixture_sample_chan_with_file_entry();
     pdir = ibio_parse_stat(chan);
 
-    gsassert(__FILE__, __LINE__, !!pdir, "%s:%d: ibio_parse_stat returned null");
-    gsassert_ulong_eq(__FILE__, __LINE__, pdir->size, sizeof(*pdir),
+    ok(__FILE__, __LINE__, !!pdir, "%s:%d: ibio_parse_stat returned null");
+    ok_ulong_eq(__FILE__, __LINE__, pdir->size, sizeof(*pdir),
         "ibio_parse_stat()->size"
     );
-    gsdeny(__FILE__, __LINE__, pdir->d.mode & DMDIR, "ibio_parse_stat returned directory, but was not a directory");
+    not_ok(__FILE__, __LINE__, pdir->d.mode & DMDIR, "ibio_parse_stat returned directory, but was not a directory");
 }
 
 static
@@ -47,13 +47,11 @@ TEST_IOSTAT_DIR()
     struct ibio_dir *pdir;
     struct uxio_ichannel *chan;
 
-    fprint(2, "%s\n", "----\t" __FILE__ "\t TEST_IOSTAT_DIR\t----");
-
     chan = fixture_sample_chan_with_dir_entry();
     pdir = ibio_parse_stat(chan);
 
-    gsassert(__FILE__, __LINE__, !!pdir, "ibio_parse_stat returned null");
-    gsassert(__FILE__, __LINE__, pdir->d.mode & DMDIR, "ibio_parse_stat returned not directory, but was a directory");
+    ok(__FILE__, __LINE__, !!pdir, "ibio_parse_stat returned null");
+    ok(__FILE__, __LINE__, pdir->d.mode & DMDIR, "ibio_parse_stat returned not directory, but was a directory");
 }
 
 static

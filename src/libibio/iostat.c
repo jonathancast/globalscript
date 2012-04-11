@@ -34,7 +34,7 @@ ibio_parse_stat(struct uxio_ichannel *ip)
     else if (n < 2)
         gsfatal("%s:%d: Couldn't get size field; got %x octets", __FILE__, __LINE__, n);
     bufsize = GET_LITTLE_ENDIAN_U16INT(buf);
-    gsassert_ulong_le(__FILE__, __LINE__, bufsize, uxio_channel_size_of_available_data(ip), "Reported size larger than available data");
+    gsassert(__FILE__, __LINE__, bufsize >= uxio_channel_size_of_available_data(ip), "Reported size larger than available data");
 
     /* type */
     if ((n = uxio_consume_space(ip, &buf, 2)) < 0)
