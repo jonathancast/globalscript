@@ -14,6 +14,7 @@ OFILES=\
 TEST_OFILES=\
 	test.$O \
 	test_macros.$O \
+	test_load.$O \
 
 LIB=libglobalscript.a
 
@@ -41,6 +42,7 @@ $O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a
 
 test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 test_macros.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
+test_load.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 
 NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 
