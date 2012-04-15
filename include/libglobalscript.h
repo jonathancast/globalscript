@@ -35,7 +35,7 @@ typedef enum {
 extern void gsrun(gsvalue);
 
 #define GS_MAX_PTR 0x80000000UL
-    /* NOTE: 32-bit specific ^^^ */
+    /* NOTE: 32-bit specific ↑↑↑.  Thought: would §ccode{1UL << (sizeof(gsvalue) * 8 - 1)} work? */
 
 gsvalue gsmakethunk(gscode, ...);
 

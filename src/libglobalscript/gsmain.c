@@ -1,6 +1,7 @@
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
+
 #include "gsinputfile.h"
 
 #define FETCH_OPTION() \
