@@ -46,6 +46,8 @@ gstypecode gsevalunboxed(gsvalue);
 
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
+#define GS_SLOW_EVALUATE(v) (IS_PTR(v) ? (*GS_EVALUATOR(v))(v) : gstyunboxed)
+
 /* ========== Simple Segment Manager ========== */
 
 typedef struct gs_block_class {

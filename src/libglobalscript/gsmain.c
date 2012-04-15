@@ -3,6 +3,7 @@
 #include <libglobalscript.h>
 
 #include "gsinputfile.h"
+#include "ace.h"
 
 #define FETCH_OPTION() \
     (cur_arg = *++argv, --argc, is_option = (*cur_arg == '-'), (is_option ? cur_arg++ : 0)) \
@@ -45,10 +46,15 @@ gsmain(int argc, char **argv)
             FETCH_OPTION();
         }
     }
-    gsfatal("p9main at end of command-line arguments next");
+    gsfatal("gsmain at end of command-line arguments next");
     exits("no-document");
 have_document:
-    gsfatal("p9main(argc, argv) next");
+    if (!gsentrypoint)
+        gsfatal("Do not in fact have a document; check gsloadfile");
+    if (ace_init() < 0)
+        gsfatal("ace_init failed: %r");
+    GS_SLOW_EVALUATE(gsentrypoint);
+    gsrun(gsentrypoint);
     exits("");
 }
 
