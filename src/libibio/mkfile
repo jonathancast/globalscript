@@ -15,6 +15,7 @@ TEST_OFILES=\
 	$SYSTEM/test.$O \
 	test_iostat.$O \
 	$SYSTEM/test_iodir.$O \
+	test_iochan.$O \
 
 LIB=libibio.a
 

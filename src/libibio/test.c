@@ -14,5 +14,6 @@ p9main(int argc, char **argv)
     start_tests();
     run_system_tests();
     test_iostat();
+    test_iochan();
     exits("");
 }
