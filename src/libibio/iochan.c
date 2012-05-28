@@ -42,6 +42,7 @@ ibio_get_channel_for_external_io(int fd, enum ibio_iochannel_type ty)
 
     chan->fd = fd;
     chan->ty = ty;
+    chan->at_eof = 0;
     chan->buf_beg = buf;
     chan->free_beg = buf;
     chan->free_end = UXIO_END_OF_IO_BUFFER(buf);
@@ -260,5 +261,12 @@ uxio_refill_ichan_from_read(struct uxio_ichannel *chan)
     chan->free_beg = (uchar*)chan->free_beg + n;
     if ((uchar*)chan->free_beg == (uchar*)UXIO_END_OF_IO_BUFFER(chan->buf_beg))
         chan->free_beg = chan->buf_beg;
+    chan->at_eof = (n == 0);
     return n;
+}
+
+int
+ibio_idevice_at_eof(struct uxio_ichannel *chan)
+{
+    return chan->at_eof;
 }

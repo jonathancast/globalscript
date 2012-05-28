@@ -11,6 +11,56 @@ typedef enum {
     gsfileunknown = 0x40,
 } gsfiletype;
 
+gsfiletype gsloadfile(char *filename, gsvalue *pentry);
 
-gsfiletype gsloadfile(char *filename, gsinputheader *phdr, gsvalue *pentry);
+typedef enum {
+    gssymfilename,
+    gssymdatadirective,
+    gssymdatalable,
+    gssymcodedirective,
+    gssymcodeop,
+    gssymcodelable,
+    gssymtypelable,
+    gssymreglable,
+} gssymboltype;
 
+typedef struct gsstring_value {
+    ulong size;
+    gssymboltype type;
+    char name[];
+} *gsinterned_string;
+
+gsinterned_string gsintern_string(gssymboltype, char*);
+
+struct gsparsedfile_segment {
+    struct gsparsedfile_segment *next;
+};
+
+typedef struct gsparsedfile {
+    ulong size;
+    void *extent;
+    gsinterned_string name, relname;
+    gsfiletype type;
+    struct gsdatasection *data;
+    struct gscodesection *code;
+    struct gsparsedfile_segment first_seg;
+} gsparsedfile;
+
+struct gsdatasection {
+    ulong numitems;
+};
+
+struct gscodesection {
+    ulong numitems;
+};
+
+#define GSDATA_SECTION_FIRST_ITEM(p) ((struct gsparsedline*)((uchar*)p+sizeof(*p)))
+
+struct gsparsedline {
+    gsinterned_string file;
+    uint lineno;
+    ulong numarguments;
+    gsinterned_string label;
+    gsinterned_string directive;
+    gsinterned_string arguments[];
+};

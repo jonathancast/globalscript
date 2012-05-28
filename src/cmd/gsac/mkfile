@@ -14,7 +14,7 @@ stage0/%.gsac: $GLOBALSCRIPT/bin/ibio $AGS_SOURCES ags_src/gsac.ags cgs_src/%.cg
 stage1/%.gsac: $GLOBALSCRIPT/bin/ibio $STAGE0_TARGETS stage0/gsac.gsac cgs_src/%.cgs
 	$GLOBALSCRIPT/bin/ibio stage0 stage0/gsac.gsac cgs_src/$stem.cgs > stage1/$stem.gsac
 
-stage2/%.gsac: $GLOBALSCRIPT/bin/ibio $STAGE1_TARGETS stage0/gsac.gsac cgs_src/%.cgs
+stage2/%.gsac: $GLOBALSCRIPT/bin/ibio $STAGE1_TARGETS stage1/gsac.gsac cgs_src/%.cgs
 	$GLOBALSCRIPT/bin/ibio stage1 stage1/gsac.gsac cgs_src/$stem.cgs > stage2/$stem.gsac
 
 clean:

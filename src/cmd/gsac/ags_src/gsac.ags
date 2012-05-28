@@ -1,1 +1,11 @@
 	.document
+
+	.data
+
+	.closure	_epcode	_eptype
+
+	.code
+
+_epcode	.expr
+_abort	.gvar
+	.call	_abort	_unimpl.gsac

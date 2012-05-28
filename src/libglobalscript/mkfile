@@ -10,11 +10,13 @@ OFILES=\
 	alloc.$O \
 	eval.$O \
 	ace.$O \
+	symtable.$O \
 
 TEST_OFILES=\
 	test.$O \
 	test_macros.$O \
 	test_load.$O \
+	test_symtable.$O \
 
 LIB=libglobalscript.a
 
@@ -28,9 +30,10 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h
 gsmain.$O: gsinputfile.h ace.h
 load.$O: gsinputalloc.h gsinputfile.h $GLOBALSCRIPT/include/libibio.h
-inputalloc.$O: gsinputalloc.h gsalloc.h
+inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsalloc.h
 eval.$O: gsheap.h
+symtable.$O: gsinputfile.h
 
 all install:V: test $GLOBALSCRIPT/lib/$LIB
 
@@ -42,6 +45,7 @@ $O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a
 
 test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 test_macros.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
+test_symtable.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h test_tests.h
 test_load.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 
 NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB

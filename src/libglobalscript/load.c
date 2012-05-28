@@ -1,18 +1,11 @@
+/* §source.file{Loading String Code Files & Other Source Files */
+
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
 #include <libibio.h>
 #include "gsinputfile.h"
 #include "gsinputalloc.h"
-
-#define LINE_LENGTH 0x100
-#define NUM_FIELDS 0x20
-
-typedef enum {
-    unksym,
-    codesym,
-    datasym,
-} symtype;
 
 static struct uxio_ichannel *gsopenfile(char *filename, int omode, int *ppid);
 static struct uxio_channel *gspopen(int omode, int *ppid, char *cmd, char **argv);
@@ -33,18 +26,48 @@ gsadddir(char *filename)
 {
 }
 
-static long gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
+static gsparsedfile *gsreadfile(char *filename, char *relname, int skip_docs);
 
 gsfiletype
-gsloadfile(char *filename, gsinputheader *phdr, gsvalue *pentry)
+gsloadfile(char *filename, gsvalue *pentry)
+{
+    gsparsedfile *parsedfile;
+    struct gsfile_symtable *symtable;
+
+    parsedfile = gsreadfile(filename, "", 0);
+
+    switch (parsedfile->type) {
+        default:
+            gsfatal("%s: Set up gscurrent_symtable for files of type %d next", filename, parsedfile->type);
+    }
+
+    return parsedfile->type;
+}
+
+static long gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
+static long gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields);
+static long gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields);
+
+#define LINE_LENGTH 0x100
+#define NUM_FIELDS 0x20
+
+gsparsedfile *
+gsreadfile(char *filename, char *relname, int skip_docs)
 {
     struct uxio_ichannel *chan;
-    int pid;
     char line[LINE_LENGTH];
     char *fields[NUM_FIELDS];
+    gsparsedfile *parsedfile;
+    struct gsparsedfile_segment *pseg;
+    int pid;
     long n;
-    int lineno;
     gsfiletype type;
+    int lineno;
+    enum {
+        gsnosection,
+        gsdatasection,
+        gscodesection,
+    } section;
 
     if (!(chan = gsopenfile(filename, OREAD, &pid)))
         gsfatal("open: %r");
@@ -52,7 +75,7 @@ gsloadfile(char *filename, gsinputheader *phdr, gsvalue *pentry)
     lineno = 0;
 
     if ((n = gsgrabline(filename, chan, line, &lineno, fields)) < 0)
-        gsfatal("%s: Error in reading ilne: %r", filename);
+        gsfatal("%s: Error in reading line: %r", filename);
     if (n == 0) {
         if (lineno <= 1)
             gsfatal("%s: EOF before reading first line", filename);
@@ -64,15 +87,299 @@ gsloadfile(char *filename, gsinputheader *phdr, gsvalue *pentry)
     } else {
         gsfatal("%s:%d: Cannot understand directive '%s'", filename, lineno, fields[1]);
     }
+    if ((parsedfile = gsparsed_file_alloc(filename, relname, type)) < 0) {
+        gsfatal("%s:%d: Cannot allocate input file: %r", filename, lineno);
+    }
+    pseg = &parsedfile->first_seg;
 
-    while ((n = gsgrabline(filename, chan, line, &lineno, fields)) > 0);
+    section = gsnosection;
+
+    /*
+        We read in the first line of each item and pass it to the appropriate parse function.
+        The parse function is allowed to read in more lines if it needs them.
+        It is always un-ambiguous whether more lines are needed;
+        so when the parse function returns, we are ready to read in the next item (or section declaration).
+    */
+    while ((n = gsgrabline(filename, chan, line, &lineno, fields)) > 0) {
+        if (n < 2) gsfatal("%s:%d: Missing directive", filename, lineno);
+        if (!strcmp(fields[1], ".data")) {
+            section = gsdatasection;
+            parsedfile->data = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->data), &pseg);
+            parsedfile->data->numitems = 0;
+        } else if (!strcmp(fields[1], ".code")) {
+            section = gscodesection;
+            parsedfile->code = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->code), &pseg);
+            parsedfile->code->numitems = 0;
+        }
+        else switch (section) {
+            case gsnosection:
+                gsfatal("%s:%d: Missing section directive", filename, lineno);
+                break;
+            case gsdatasection:
+                if (gsparse_data_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n) < 0)
+                    gsfatal("%s:%d: Error in reading data item: %r", filename, lineno);
+                break;
+            case gscodesection:
+                if (gsparse_code_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n) < 0)
+                    gsfatal("%s:%d: Error in reading code item: %r", filename, lineno);
+                break;
+        }
+    }
     if (n < 0)
-        gsfatal("%s:%d: Error in reading line: %r", filename, lineno);
+        gsfatal("%s:%d: Error in reading data item: %r", filename, lineno);
+
+    if (!ibio_idevice_at_eof(chan))
+        gsfatal("%s:%d: Expected EOF", filename, lineno);
 
     if (gsclosefile(chan, pid) < 0)
         gsfatal("%s: Error in closing file: %r", filename);
 
-    return type;
+    return parsedfile;
+}
+
+enum gsdatadirective {
+    gsclosuredirective,
+    gsnumdatadirectives,
+};
+
+static gsinterned_string interned_data_directives[gsnumdatadirectives];
+static void gsparse_data_initialize_interned_data_directives(void);
+
+static char *data_directive_names[] = {
+    ".closure",
+};
+
+static
+long
+gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields)
+{
+    ulong size;
+    struct gsparsedline *parsedline;
+    int i;
+    enum gsdatadirective directive;
+
+    if (numfields < 2)
+        gsfatal("%s:%d: Missing directive", filename, *plineno);
+
+    size = sizeof(*parsedline) + sizeof(gsinterned_string) * (numfields - 2);
+    parsedline = gsparsed_file_extend(parsedfile, size, ppseg);
+    parsedfile->data->numitems++;
+
+    parsedline->file = parsedfile->name;
+    parsedline->lineno = *plineno;
+    parsedline->numarguments = numfields - 2;
+
+    if (*fields[0])
+        parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+    else
+        parsedline->label = 0;
+
+    if (!interned_data_directives[0])
+        gsparse_data_initialize_interned_data_directives();
+
+    parsedline->directive = gsintern_string(gssymdatadirective, fields[1]);
+
+    for (i = 0; i < gsnumdatadirectives; i++)
+        if (parsedline->directive == interned_data_directives[i]) {
+            directive = i;
+            goto found_directive;
+        }
+    
+    gsfatal("%s:%d: Unrecognized data directive %s", filename, *plineno, fields[1]);
+
+found_directive:    
+
+    switch (directive) {
+        case gsclosuredirective:
+            if (numfields < 2+0+1)
+                gsfatal("%s:%d: Missing code label", filename, *plineno);
+            parsedline->arguments[0] = gsintern_string(gssymcodelable, fields[2+0]);
+            if (numfields >= 2+1+1)
+                parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2+1]);
+            if (numfields > 2+1+1)
+                gsfatal("%s:%d: Data item %s has too many arguments; I don't know what they all are", filename, *plineno, fields[0]);
+            break;
+        default:
+            gsfatal("%s:%d: Unimplemented data directive %s", filename, *plineno, fields[1]);
+    }
+
+    return 1;
+}
+
+static
+void
+gsparse_data_initialize_interned_data_directives()
+{
+    int i;
+
+    for (i = 0; i < gsnumdatadirectives; i++)
+        interned_data_directives[i] = gsintern_string(gssymdatadirective, data_directive_names[i]);
+}
+
+enum gscodedirective {
+    gsexprdirective,
+    gsnumcodedirectives,
+};
+
+static gsinterned_string interned_code_directives[gsnumcodedirectives];
+static void gsparse_code_initialize_interned_code_directives(void);
+
+static char *code_directive_names[] = {
+    ".expr",
+};
+
+enum gscodeop {
+    gsgvarop,
+    gscallop,
+    gsnumcodeops,
+};
+
+static gsinterned_string interned_code_ops[gsnumcodeops];
+
+static void gsparse_code_initialize_interned_code_ops(void);
+
+static char *code_op_names[] = {
+    ".gvar",
+    ".call",
+};
+
+static long gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
+
+static
+long
+gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields)
+{
+    ulong size;
+    struct gsparsedline *parsedline;
+    int i;
+    enum gscodedirective directive;
+
+    if (numfields < 2)
+        gsfatal("%s:%d: Missing directive", filename, *plineno);
+
+    size = sizeof(*parsedline) * sizeof(gsinterned_string) * (numfields - 2);
+    parsedline = gsparsed_file_extend(parsedfile, size, ppseg);
+    parsedfile->code->numitems++;
+
+    parsedline->file = parsedfile->name;
+    parsedline->lineno = *plineno;
+    parsedline->numarguments = numfields - 2;
+
+    if (*fields[0])
+        parsedline->label = gsintern_string(gssymcodelable, fields[0]);
+    else
+        gsfatal("%s:%d: Missing code label", filename, *plineno);
+
+    if (!interned_code_directives[0])
+        gsparse_code_initialize_interned_code_directives();
+
+    parsedline->directive = gsintern_string(gssymcodedirective, fields[1]);
+
+    for (i = 0; i < gsnumcodedirectives; i++)
+        if (parsedline->directive == interned_code_directives[i]) {
+            directive = i;
+            goto found_directive;
+        }
+
+    gsfatal("%s:%d: Unrecognized code directive %s", filename, *plineno, fields[1]);
+
+found_directive:
+
+    switch (directive) {
+        case gsexprdirective:
+            return gsparse_code_ops(filename, parsedfile, ppseg, parsedline, chan, line, plineno, fields);
+        default:
+            gsfatal("%s:%d: Unimplemented code directive %s", filename, *plineno, fields[1]);
+    }
+
+    gsfatal("%s:%d: gsparse_code_item next", __FILE__, __LINE__);
+
+    return -1;
+}
+
+static
+long
+gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
+{
+    ulong size;
+    struct gsparsedline *parsedline;
+    int i;
+    long n;
+
+    while ((n = gsgrabline(filename, chan, line, plineno, fields)) > 0) {
+        enum gscodeop op;
+        if (n < 2)
+            gsfatal("%s:%d: Missing directive", filename, *plineno);
+
+        size = sizeof(*parsedline) * sizeof(gsinterned_string) * (n - 2);
+        parsedline = gsparsed_file_extend(parsedfile, size, ppseg);
+        parsedline->file = parsedfile->name;
+        parsedline->lineno = *plineno;
+        parsedline->numarguments = n - 2;
+
+        if (!interned_code_ops[0])
+            gsparse_code_initialize_interned_code_ops();
+
+        parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
+
+        for (i = 0; i < gsnumcodeops; i++)
+            if (interned_code_ops[i] == parsedline->directive) {
+                op = i;
+                goto found_op;
+            }
+
+        gsfatal("%s:%d: Un-recognized code op %s", filename, *plineno, fields[1]);
+
+    found_op:
+        switch (op) {
+            case gsgvarop:
+                if (*fields[0])
+                    parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+                else
+                    gsfatal("%s:%d: Missing label on .gvar op", filename, *plineno);
+                if (n > 2)
+                    gsfatal("%s:%d: Too many arguments to .gvar op", filename, *plineno);
+                break;
+            case gscallop:
+                if (*fields[0])
+                    gsfatal("%s:%d: Labels not allowed on terminal declarations", filename, *plineno);
+                else
+                    parsedline->label = 0;
+                if (n < 4)
+                    gsfatal("%s:%d: Not enough arguments to .call", filename, *plineno);
+                for (i = 2; i < n; i++)
+                    parsedline->arguments[i - 2] = gsintern_string(gssymreglable, fields[i]);
+                return 0;
+            default:
+                gsfatal("%s:%d: Unimplemented code op %s", filename, *plineno, fields[1]);
+        }
+    }
+    if (n < 0)
+        gsfatal("%s:%d: Error in reading code line: %r", filename, *plineno);
+    else
+        gsfatal("%s:%d: EOF in middle of reading expression", filename, codedirective->lineno);
+
+    return -1;
+}
+
+static
+void
+gsparse_code_initialize_interned_code_directives()
+{
+    int i;
+
+    for (i = 0; i < gsnumcodedirectives; i++)
+        interned_code_directives[i] = gsintern_string(gssymcodedirective, code_directive_names[i]);
+}
+
+static
+void
+gsparse_code_initialize_interned_code_ops()
+{
+    int i;
+
+    for (i = 0; i < gsnumcodeops; i++)
+        interned_code_ops[i] = gsintern_string(gssymcodeop, code_op_names[i]);
 }
 
 static
@@ -109,7 +416,7 @@ gsopenfile(char *filename, int omode, int *ppid)
     *ppid = 0;
     ext = strrchr(filename, '.');
     if (!ext) goto error;
-    if (!strcmp(ext, ".ags")) {
+    if (!strcmp(ext, ".ags") || !strcmp(ext, ".gsac")) {
         return ibio_device_iopen(filename, omode);
     }
 error:

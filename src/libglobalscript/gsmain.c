@@ -31,7 +31,7 @@ gsmain(int argc, char **argv)
             if (gsisdir(cur_arg)) {
                 gsadddir(cur_arg);
             } else {
-                gsfiletype ft = gsloadfile(cur_arg, "", &entry_point);
+                gsfiletype ft = gsloadfile(cur_arg, &entry_point);
                 switch (ft) {
                     case gsfiledocument:
                         goto have_document;

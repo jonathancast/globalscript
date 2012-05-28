@@ -6,6 +6,7 @@
 struct uxio_ichannel {
     int fd;
     enum ibio_iochannel_type ty;
+    int at_eof;
     void *buf_beg;
     void *free_beg;
     void *free_end;

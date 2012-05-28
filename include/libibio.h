@@ -15,6 +15,7 @@ struct uxio_ichannel *ibio_device_iopen(char *filename, int omode);
 long ibio_device_iclose(struct uxio_ichannel *);
 
 long ibio_device_getline(struct uxio_ichannel *chan, char *line, long max);
+int ibio_idevice_at_eof(struct uxio_ichannel *chan);
 
 #if defined(__cplusplus)
 }
