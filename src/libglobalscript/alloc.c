@@ -112,3 +112,36 @@ gs_sys_seg_setup_free_block(struct free_block *pblock)
     pblock->hdr.class = &free_block_class_descr;
     pblock->next = 0;
 }
+
+void *
+gs_sys_seg_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulong align)
+{
+    struct gs_blockdesc *nursury_block;
+    void *res;
+
+    if (!*pnursury) {
+        nursury_block = gs_sys_seg_alloc(cl);
+        *pnursury = (uchar*)nursury_block + sizeof(*nursury_block);
+        if ((uintptr)*pnursury % align)
+            *pnursury = (uchar*)*pnursury + align - ((uintptr)*pnursury % align);
+    } else {
+        nursury_block = START_OF_BLOCK(*pnursury);
+    }
+
+    if ((uchar*)*pnursury + sz > (uchar*)END_OF_BLOCK(nursury_block)) {
+        nursury_block = gs_sys_seg_alloc(cl);
+        *pnursury = (uchar*)nursury_block + sizeof(*nursury_block);
+        if ((uintptr)*pnursury % align)
+            *pnursury = (uchar*)*pnursury + align - ((uintptr)*pnursury % align);
+    }
+
+    res = *pnursury;
+    *pnursury = (uchar*)res + sz;
+    if ((uintptr)*pnursury % align)
+        *pnursury = (uchar*)*pnursury + align - ((uintptr)*pnursury % align);
+    if ((uchar*)*pnursury + sz >= (uchar*)END_OF_BLOCK(nursury_block))
+        *pnursury = 0;
+
+    return res;
+}
+

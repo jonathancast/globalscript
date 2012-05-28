@@ -68,6 +68,8 @@ struct gs_blockdesc {
 void *gs_sys_seg_alloc(registered_block_class cl);
 void gs_sys_seg_free(void *);
 
+void *gs_sys_seg_suballoc(registered_block_class, void**, ulong, ulong);
+
 /* ========== API ========== */
 
 typedef struct apiinstr
