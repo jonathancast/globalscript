@@ -1,0 +1,99 @@
+module 'test.gen.(
+    type prim.t = 't,
+    overload arbitrary,
+    promote,
+    constructor,
+) ∝ 〈
+    module 'prim ∝ newtype 'α.
+        list.t (list.t α)
+    ;
+    instance module monad.monoidal.c prim.t = monad.monoidal.byBind 〈
+        'unit 'x = prim.in $ list.singleton $ list.singleton x;
+        'a '>>= 'f = prim.in (prim.out a `bind.impl` prim.out ∘ f);
+        'bind.impl nil 'f = nil;
+        'bind.impl ('xn:'xns) 'f = foldr alternate.impl (nil : bind.impl xns f) (map f xn)
+        'empty = prim.in nil;
+        'a '<|> 'b = prim.in (prim.out a `alternate.impl` prim.out b);
+        'alternate.impl nil 'yss = yss;
+        'alternate.impl 'xns nil = xns;
+        'alternate.impl ('xn:'xns) ('ys:'yss) = (xn <> ys) : impl xns yss;
+    〉;
+    promote :: ∀ 'α. prim.t α → prim.t α;
+    'promote = prim.in ∘ (nil:) ∘ prim.out;
+
+    constructor :: ∀ 'α. α → prim.t α;
+    constructor = promote ∘ unit;
+
+    overload 'arbitrary 'α :: prim.t α;
+
+    instance arbitrary boolean.t = constructor true <|> constructor false;
+    instance arbitrary (list.t 'α) | arbitrary α =
+        constructor nil
+        <|> constructor (:) <*> arbitrary <*> arbitrary
+    ;
+    instance arbitrary natural = constructor 0 <|> promote (loop 1)
+        where
+            'loop !'n = constructor n <|> promote (loop (n + 1))
+    ;
+    instance arbitrary integer = constructor 0 <|> promote (loop 1)
+        where
+            'loop !'n = constructor n <|> constructor -n <|> promote (loop (n + 1))
+    ;
+
+    module 'simple.expr ∝ data.
+        | var (list.t rune)
+        | lambda (list.t rune) expr.t
+        | app expr.t expr.t
+        | eanalyze expr.t (list.t ecase.t)
+    ;
+    type 'ecase.t = 〈 epat.constr :: list.t rune; epat.args :: list.t (list.t rune); body :: expr.t; 〉;
+    instance arbitrary simple.expr.t =
+        constructor var <*> arbvar
+        <|> constructor lambda <*> arbvar <*> arbitrary
+        <|> constructor app <*> arbitrary <*> arbitrary
+        <|> constructor eanalyze <*> arbitrary <*> many arbcase
+    ;
+    'arbvar = constructor (:) <*> arblower <*> many arbalphanum;
+    'arblower = monad.monoidal.filter isLower arbitrary;
+    'arbalphanum = monad.monoid.filter isAlphaNum arbitrary;
+    'arbcase = for ('c ← arbvar; 'as ← many arbvar; 'e ← arbitrary;) unit 〈
+        'epat.constr ∝ c;
+        'epat.args ∝ as;
+        'body ∝ e;
+    〉;
+〉
+(where
+    monad.monoidal.filter :: ∀ 'm 'β 'α. instance module monad.monoidal.c m → instance if β →
+        (α → β) → m α → m α
+    ;
+    implicit monad.monoidal.filter (instance module monad.monoidal.c) (instance if);
+    'monad.monoidal.filter 'f (module 'm) 'a = for @(module m) ('x ← a) if m.empty (m.return x) (f x);
+
+    overload 'either 'c :: ∀ 'α 'β 'γ. (α → γ) → (β → γ) → c α β → γ;
+    instance either either.t = λ 'ek 'sk 'x. analyze x
+        case either.left 'e. ek e
+        case either.right 's. sk s
+    ;
+    overload 'maybe 'c :: ∀ 'α 'β. β → (α → β) → c α → β;
+    instance maybe (either.t 'α) = λ 'ek 'sk 'x. analyze x
+        case either.left _. ek
+        case either.right 's. sk s
+    ;
+    instance maybe maybe.t = λ 'ek 'sk 'x. analyze x
+        case maybe.nothing. ek
+        case maybe.just 's. sk s
+    ;
+    overload 'if 'c :: ∀ 'α. α → α → c → α;
+    instance if (either.t 'α 'β) = λ 'ek 'sk 'x. analyze x
+        case either.left _. ek
+        case either.right _. sk
+    ;
+    instance if (maybe.t 'α) = λ 'ek 'sk 'x. analyze x
+        case maybe.nothing. ek
+        case maybe.just _. sk
+    ;
+    instance if boolean.t = λ 'ek 'sk 'x. analyze x
+        case boolean.false ek
+        case boolean.true sk
+    ;
+)

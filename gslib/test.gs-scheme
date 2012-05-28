@@ -1,0 +1,118 @@
+module 'test.(
+    type property.t,
+) ∝ 〈
+    module 'truth.value ∝ data.
+        | refuted
+        | not.proven
+        | not.refuted
+        | proven
+    ;
+    -- NB: Derived total order for §gs{truth.value.t}
+    module 'property ∝ newtype. 〈
+        type t :: *;
+        module accumulator :: monoid.t t;
+        evaluator :: t → truth.value.t;
+        tests :: test.gen.t t;
+    〉;
+    property.true, property.false, :: property.t;
+    'property.true = property.in 〈
+        type 't = 〈〉;
+        module 'accumulator = monoid.record.empty;
+        'evaluator _ = proven;
+        'tests ∝ unit 〈〉;
+    〉;
+    'property.false = property.out 〈
+        type 't = 〈〉;
+        module 'accumulator = monoid.record.empty;
+        'evaluator _ = refuted;
+        'tests ∝ unit 〈〉;
+    〉;
+
+    delay :: truth.value.t → property.t → property.t;
+    'delay 't (property.in (module 'p)) = property.in 〈
+        type 't = maybe.t p.t;
+        'accumulator.id = nothing;
+        'accumulator.op nothing 'x = x;
+        'accumulator.op 'x nothing = x;
+        'accumulator.op (just 'x) (just 'y) = just (p.accumulator.op x y);
+        'evaluator = maybe t p.evaluator;
+        'tests ∝ unit nothing <|> promote p.tests;
+    〉;
+
+    -- ↓ Very buggy!  We actually need to pair together the delay monoid (as above) so
+    -- before starting a given side we don't incorporate any information from that side at all.
+    (∧), (∨), :: property.t → property.t → property.t;
+    property.in (module 'p0) '∧ property.in (module 'p1) = property.in 〈
+        type 't = 《 p0.t, p1.t, 》;
+        module 'accumulator ∝ monoid.record.field %0 (module p0.accumulator) $
+            monoid.record.field %1 (module p1.accumulator) $
+                monoid.record.empty
+        ;
+        'evaluator !《 'x0, 'x1, 》 = p0.evaluator x0 `total.order.min` p1.evaluator x1;
+        'tests = test.gen.interleave
+            ((λ 'x. 《 x, p1.accumulator.empty, 》) <$> p0.tests)
+            ((λ 'x. 《 p0.accumulator.empty, x, 》) <$> p1.tests)
+        ;
+    〉;
+    property.in (module 'p0) '∨ property.in (module 'p1) = property.in 〈
+        type 't = 《 p0.t, p1.t, 》
+        module 'accumulator ∝ monoid.record.field %0 (module p0.accumulator) $
+            monoid.record.field %1 (module p1.accumulator) $
+                monoid.record.empty
+        ;
+        'evaluator !《 'x0, 'x1, 》 = p0.evaluator x0 `total.order.max` p1.evaluator x1;
+        'tests = test.gen.interleave
+            ((λ 'x. 《 x, p1.accumulator.empty, 》) <$> p0.tests)
+            ((λ 'x. 《 p0.accumulator.empty, x, 》) <$> p1.tests)
+        ;
+    〉;
+
+    forall, exists, :: ∀ 'α. test.gen.t α → (α → property.t) → property.t;
+    implicit forall (instance arbitrary);
+    implicit exists (instance arbitrary);
+    'forall 'g 'p = loop (test.gen.prim.out (p <$> g))
+        (where
+            'loop nil = property.true;
+            'loop ('xn:'xns) = foldr (∧) (delay not.proven (loop xns)) xn;
+        )
+    ;
+    'exists 'g 'p = loop (test.gen.prim.out (p <$> g))
+        (where
+            'loop nil = property.false;
+            'loop ('xn:'xns) = foldr (∨) (delay not.refuted (loop xns)) xn;
+        )
+    ;
+
+    -- Bog-simple interpreter
+    bog.simple.runner :: ∀ 'm. instance module ibio.c m → property.t → m rune rune 〈〉;
+    implicit bog.simple.runner (instance module ibio.c m);
+    'bog.simple.runner (module 'i) (property.in (module 'p)) =
+        for @(module i) (
+            'c ← channel @(module i);
+            's ← parse @(module i) (many symbol) << @(module i) c;
+            _ ← print @(module i) (fmt s);
+        ) note.with @(module i) m/interrupt / (λ _. print @(module i) (singleton nothing) >> @(module i) c) $
+            loop p.accumulator.id (property.out p.tests) >> @(module i) c
+        (where
+            'fmt nil = qq{(no tests run)\n};
+            'fmt (just 't : 's) = r{.} : fmt1 t s;
+            'fmt (nothing : 's) = qq{(interrupt before first test)\n};
+            'fmt1 refuted _ = qq{refuted\n};
+            'fmt1 proven _ = qq{proven\n};
+            'fmt1 not.proven (nothing : _) = qq{keyboard interrupt; not proven\n};
+            'fmt1 not.refuted (nothing : _) = qq{keyboard interrupt; not refuted\n};
+            'fmt1 _ (just 't : 's) = r{.} : fmt1 t s;
+            'fmt1 not.proven nil = qq{not proven (after all tests?!)\n};
+            'fmt1 not.refuted nil = qq{not refuted (after all tests?!)\n};
+
+            'loop 't nil = unit @(module i) 〈〉;
+            'loop 't (nil:'tss) = loop t xns;
+            'loop 't0 (('t1:ts):'tss) =
+                print @(module i) (singleton $ just $ p.evaluator t2)
+                    *> @(module i) loop t2 (ts:tss)
+                where
+                    't2 ∝ p.accumulator.op t0 t1
+            ;
+        )
+    ;
+〉
