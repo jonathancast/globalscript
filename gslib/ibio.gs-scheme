@@ -1,0 +1,7 @@
+module 'ibio ∝ 〈
+    type 'm = ibio.prim.wrapped.t;
+    abort :: ∀ 'ι 'ο 'α. list.t rune → m ι ο α;
+    abort 's = ibio.prim.wrapped.in $ λ 'i 'o 'e.
+        ibio.prim.unwrapped.prim.abort s
+    ;
+〉
