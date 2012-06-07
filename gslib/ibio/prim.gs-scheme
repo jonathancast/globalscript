@@ -1,7 +1,7 @@
 module 'ibio.prim ∝ 〈
     module 'unwrapped ∝ api ibio.prim.basic
         | ∀ 's. (iptr.u s) read (iport.u s) (acceptor.u s 〈〉)
-        | ∀ 's. "Π〈〉 write (oport.u s) (list.t s)
+        | ∀ 's. 〈〉 write (oport.u s) (list.t s)
         | ∀ 'α. α abort (list.t rune)
     ;
     module 'wrapped ∝ newtype 'ι 'ο α.

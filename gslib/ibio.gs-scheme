@@ -4,4 +4,35 @@ module 'ibio ∝ 〈
     abort 's = ibio.prim.wrapped.in $ λ 'i 'o 'e.
         ibio.prim.unwrapped.prim.abort s
     ;
+
+    overload module 'io.c 'm | (∀ 'ι 'ο. module monad.c (m ι ο)) :: 〈
+        receive :: ∀ 's 'ο 'α. ibio.parser.t s α → m s ο α;
+        module in :: 〈
+            get :: ∀ 'ι 'ο. m ι ο (ibio.iport.t ι);
+            set :: ∀ 'ι0 'ι1 'ο 'α. ibio.iport.t ι0 → m ι0 ο α → m ι1 ο α;
+        〉;
+        ship :: ∀ 'ι 's. list.t s → m ι s 〈〉;
+        module out :: 〈
+            get :: ∀ 'ι 'ο. m ι ο (ibio.oport.t ο);
+            set :: ∀ 'ι 'ο0 'ο1 'α. ibio.oport.t ο0 → m ι ο0 α → m ι ο1 α;
+        〉;
+        module err :: 〈
+            get :: ∀ 'ι 'ο. m ι ο (ibio.oport.t rune);
+            set :: ∀ 'ι 'ο 'α. ibio.oport.t rune → m ι ο α → m ι ο α;
+        〉;
+    〉;
+    import io.c.(..);
+
+    overload 'in.fetch 'i 's :: i → ibio.iport.t s;
+    overload 'out.fetch 'o 's :: o → ibio.oport.t s;
+
+    (>>) :: ∀ 'm 'ι 'ο0 'ο1 'o 'α. instance module io.c m → instance out.fetch o ο0 →
+        m ι ο0 α → o → m ι ο1 α
+    ;
+    implicit (>>) (instance module io.c) (instance module out.fetch);
+    'a '>> @(module 'io) @'of 'o = out.set @(module io) (out.fetch @of o) a;
+
+    'a '<< @(module 'io) @'if 'i = in.set @(module io) (in.fetch @if i) a;
+
+    infix >>, <<, = infix ^;
 〉

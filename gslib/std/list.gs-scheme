@@ -18,12 +18,15 @@ module 'globalscript.std.list ∝ 〈
     -- §globalscript{([x] <> xn) <> ys = [x] <> (xn <> ys) ≠ error}
 
     -- The (strict) free monoid over an alphabet type §gs{α}
-    -- is frequently referred to as the type of §emph{strings (of §gs{α})};
-    -- the (strict) free monoid over characters, §gs{list.t char},
-    -- is frequently referred to in programming languages as §emph{strings}.
-    -- Both usages are frequent in Global Script; §fn{prefix.gs} defines
-    -- > type 'string = list.t. char;
-    -- to support the latter in code.
+    -- is frequently referred to as the type of §emph{strings (of §gs{α})}.
+    -- For this reason, total finite lists over a Global Script type §gs{α} are also often referred to as §emph{strings of §gs{α}};
+    -- this usage is especially frequent in IBIO programs.
+    -- The (strict) free monoid over characters,
+    -- is frequently referred to in programming languages simply as the type of §emph{strings}.
+    -- However, Global Script lacks a standard character type, in the sense of conventional programming languages.
+    -- Therefore, §emph{string},
+    -- without qualification as to the underlying alphabet,
+    -- will generally not be used as a type name in Global Script.
 
 -- §section{Constructing Lists}
 
@@ -36,7 +39,7 @@ module 'globalscript.std.list ∝ 〈
         | α : t α
     ;
     -- and we can recover the original expression form §gs{[x]}, which we will write as §gs{singleton x}, as
-    sig singleton, pattern singleton, :: ∀ 'α. α → t α;
+    singleton, view singleton, :: ∀ 'α. α → t α;
     'singleton = λ 'x. x : nil;
     match singleton = λ 's 'e 'xn. analyze xn
         case 'x : nil. s x
@@ -44,7 +47,7 @@ module 'globalscript.std.list ∝ 〈
     ;
 
     -- The concatenation operator can be recovered in this form, as well:
-    sig <> :: ∀ 'α. t α → t α → t α;
+    (<>) :: ∀ 'α. t α → t α → t α;
     ('<>) = λ 'xn 'ys. analyze xn
         case nil.
             -- > nil <> ys
@@ -59,7 +62,7 @@ module 'globalscript.std.list ∝ 〈
     ;
     -- In general, a given list can be written as a composition in multiple ways,
     -- but we can choose the case where the left list is a singleton (corresponding to §gs{:}) as follows:
-    match <> = λ 's 'e 'xn. analyze xn
+    match (<>) = λ 's 'e 'xn. analyze xn
         case 'x:'xn1. s (singleton x) xn1
         case _. e
     ;
@@ -70,7 +73,7 @@ module 'globalscript.std.list ∝ 〈
     -- The §emph{catamorphisms} on lists is defined in terms of the constructors §gs{:} and §gs{nil}:
     -- §gs{foldr f z} replaces every instance of §gs{:} in the tree structure of the list with §gs{f},
     -- and every instance of §gs{nil} with §gs{z}.
-    sig foldr :: ∀ 'α 'β. (α → β → β) → β → [α] → β;
+    foldr :: ∀ 'α 'β. (α → β → β) → β → [α] → β;
     'foldr = λ 'f 'z. for rec ('ffz = λ 'xn. analyze xn
         case nil. z
         case 'x:'xn1. f x (ffz xn1)
@@ -89,8 +92,8 @@ module 'globalscript.std.list ∝ 〈
     -- and the efficient definition of §gs{reverse} uses §gs{foldl}.
     -- So, we import them from a sub-module:
     〈..〉 ∝ 〈
-        sig reverse :: ∀ 'α. t α → t α;
-        sig foldl :: ∀ 'α 'β. (β → α → β) → β → t α → β;
+        reverse :: ∀ 'α. t α → t α;
+        foldl :: ∀ 'α 'β. (β → α → β) → β → t α → β;
         'reverse = λ 'xn. analyze xn
             case nil. nil
             case singleton 'x. x
@@ -145,14 +148,14 @@ module 'globalscript.std.list ∝ 〈
                 case 'x:'xn1. foldl f (f z x) xn1 -- since §gs{z} is evaluated at this point
         ) ff;
         'reverse = foldl (flip (:)) nil;
-        -- Why?  Well, because
+        -- ↑ Why?  Well, because
         -- > reverse
-        -- > = id · reverse
-        -- > = foldr (:) nil · reverse
-        -- > = foldr (flip $ flip (:)) nil · reverse
+        -- > = id ∘ reverse
+        -- > = foldr (:) nil ∘ reverse
+        -- > = foldr (flip $ flip (:)) nil ∘ reverse
         -- and
         -- > foldl (flip (:)) nil
-        -- > = foldr (flip $ strict $ flip (:)) nil · reverse
+        -- > = foldr (flip $ strict $ flip (:)) nil ∘ reverse
         -- and a bit of though shows that, in this context,
         -- > flip $ strict $ flip (:) = flip $ flip (:)
         -- since the relevant argument (the second argument to §gs{:}) is in practice always defined.
