@@ -3,6 +3,7 @@
 	.data
 
 	.closure	_epcode	_eptype
+_abort	.tyapp	ibio.abort	rune	rune	_empty.record
 
 	.code
 
@@ -10,3 +11,9 @@ _epcode	.expr
 _abort	.gvar
 	.app	_unimpl.gsac
 	.enter	_abort
+
+	.type
+
+_eptype	.tyexpr
+	.typeapp	rune	rune	_empty.record
+	.tyref	ibio.m

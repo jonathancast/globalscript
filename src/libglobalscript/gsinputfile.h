@@ -20,6 +20,8 @@ typedef enum {
     gssymcodedirective,
     gssymcodeop,
     gssymcodelable,
+    gssymtypedirective,
+    gssymtypeop,
     gssymtypelable,
     gssymreglable,
 } gssymboltype;
@@ -43,6 +45,7 @@ typedef struct gsparsedfile {
     gsfiletype type;
     struct gsdatasection *data;
     struct gscodesection *code;
+    struct gstypesection *types;
     struct gsparsedfile_segment first_seg;
 } gsparsedfile;
 
@@ -51,6 +54,10 @@ struct gsdatasection {
 };
 
 struct gscodesection {
+    ulong numitems;
+};
+
+struct gstypesection {
     ulong numitems;
 };
 

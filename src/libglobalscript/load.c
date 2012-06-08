@@ -46,6 +46,7 @@ gsloadfile(char *filename, gsvalue *pentry)
 static long gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
 static long gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 static long gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
+static long gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 
 #define LINE_LENGTH 0x100
 #define NUM_FIELDS 0x20
@@ -66,6 +67,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
         gsnosection,
         gsdatasection,
         gscodesection,
+        gstypesection,
     } section;
 
     if (!(chan = gsopenfile(filename, OREAD, &pid)))
@@ -103,14 +105,23 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
         if (n < 2) gsfatal("%s:%d: Missing directive", filename, lineno);
         if (!strcmp(fields[1], ".data")) {
             section = gsdatasection;
+            if (parsedfile->data)
+                gsfatal("%s:%d: We already did this section", filename, lineno);
             parsedfile->data = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->data), &pseg);
             parsedfile->data->numitems = 0;
         } else if (!strcmp(fields[1], ".code")) {
             section = gscodesection;
+            if (parsedfile->code)
+                gsfatal("%s:%d: We already did this section", filename, lineno);
             parsedfile->code = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->code), &pseg);
             parsedfile->code->numitems = 0;
-        }
-        else switch (section) {
+        } else if (!strcmp(fields[1], ".type")) {
+            section = gstypesection;
+            if (parsedfile->types)
+                gsfatal("%s:%d: We already did this section", filename, lineno);
+            parsedfile->types = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->types), &pseg);
+            parsedfile->types->numitems = 0;
+        } else switch (section) {
             case gsnosection:
                 gsfatal("%s:%d: Missing section directive", filename, lineno);
                 break;
@@ -122,6 +133,12 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
                 if (gsparse_code_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n, symtable) < 0)
                     gsfatal("%s:%d: Error in reading code item: %r", filename, lineno);
                 break;
+            case gstypesection:
+                if (gsparse_type_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n, symtable) < 0)
+                    gsfatal("%s:%d: Error in reading type item: %r", filename, lineno);
+                break;
+            default:
+                gsfatal("%s:%d: Parse items in sections %d next", __FILE__, __LINE__, section);
         }
     }
     if (n < 0)
@@ -138,6 +155,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
 
 enum gsdatadirective {
     gsclosuredirective,
+    gstyappdirective,
     gsnumdatadirectives,
 };
 
@@ -146,6 +164,7 @@ static void gsparse_data_initialize_interned_data_directives(void);
 
 static char *data_directive_names[] = {
     ".closure",
+    ".tyapp",
 };
 
 static
@@ -190,6 +209,13 @@ found_directive:
                 parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2+1]);
             if (numfields > 2+1+1)
                 gsfatal("%s:%d: Data item %s has too many arguments; I don't know what they all are", filename, *plineno, fields[0]);
+            break;
+        case gstyappdirective:
+            if (numfields < 2+0+1)
+                gsfatal("%s:%d: Missing polymorphic data label", filename, *plineno);
+            parsedline->arguments[0] = gsintern_string(gssymdatalable, fields[2+0]);
+            for (i = 1; numfields > 2+i; i++)
+                parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i]);
             break;
         default:
             gsfatal("%s:%d: Unimplemented data directive %s", filename, *plineno, fields[1]);
@@ -373,6 +399,161 @@ gsparse_code_initialize_interned_code_ops()
         interned_code_ops[i] = gsintern_string(gssymcodeop, code_op_names[i]);
 }
 
+static char *type_directive_names[] = {
+    ".tyexpr",
+};
+
+enum gstypedirective {
+    gstyexprdirective,
+    gsnumtypedirectives,
+};
+
+static gsinterned_string interned_type_directives[gsnumtypedirectives];
+static void gsparse_type_initialize_interned_type_directives(void);
+
+static long gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
+
+static
+long
+gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
+{
+    struct gsparsedline *parsedline;
+    int i;
+    enum gstypedirective directive;
+
+    parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, numfields);
+    parsedfile->types->numitems++;
+
+    if (*fields[0])
+        parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+    else
+        gsfatal("%s:%d: Missing type label", filename, *plineno);
+
+    gssymtable_add_type_item(symtable, parsedline->label, parsedfile, parsedline);
+
+    if (!interned_type_directives[0])
+        gsparse_type_initialize_interned_type_directives();
+
+    parsedline->directive = gsintern_string(gssymtypedirective, fields[1]);
+
+    for (i = 0; i < gsnumtypedirectives; i++)
+        if (parsedline->directive == interned_type_directives[i]) {
+            directive = i;
+            goto found_directive;
+        }
+
+    gsfatal("%s:%d: Unrecognized type directive %s", filename, *plineno, fields[1]);
+
+found_directive:
+
+    switch (directive) {
+        case gstyexprdirective:
+            return gsparse_type_ops(filename, parsedfile, ppseg, parsedline, chan, line, plineno, fields);
+        default:
+            gsfatal("%s:%d: Unimplemented type directive %s", filename, *plineno, fields[1]);
+    }
+
+    gsfatal("%s:%d: gsparse_type_item next", __FILE__, __LINE__);
+
+    return -1;
+}
+
+static
+void
+gsparse_type_initialize_interned_type_directives()
+{
+    int i;
+
+    for (i = 0; i < gsnumtypedirectives; i++)
+        interned_type_directives[i] = gsintern_string(gssymtypedirective, type_directive_names[i]);
+}
+
+static char *type_op_names[] = {
+    ".typeapp",
+    ".tyref",
+};
+
+enum gstypeop {
+    gstypeappop,
+    gstyrefop,
+    gsnumtypeops,
+};
+
+static gsinterned_string interned_type_ops[gsnumtypeops];
+
+static void gsparse_type_initialize_interned_type_ops(void);
+
+static
+long
+gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
+{
+    struct gsparsedline *parsedline;
+    int i;
+    long n;
+
+    while ((n = gsgrabline(filename, chan, line, plineno, fields)) > 0) {
+        enum gstypeop op;
+
+        parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, n);
+
+        if (!interned_type_ops[0])
+            gsparse_type_initialize_interned_type_ops();
+
+        parsedline->directive = gsintern_string(gssymtypeop, fields[1]);
+
+        for (i = 0; i < gsnumtypeops; i++)
+            if (interned_type_ops[i] == parsedline->directive) {
+                op = i;
+                goto found_op;
+            }
+
+        gsfatal("%s:%d: Un-recognized type op %s", filename, *plineno, fields[1]);
+
+    found_op:
+        switch (op) {
+            case gstypeappop:
+                if (*fields[0])
+                    gsfatal("%s:%d: Labels illegal on continuation ops");
+                else
+                    parsedline->label = 0;
+                if (n < 3)
+                    gswarning("%s:%d: Nullary applications don't do anything", filename, *plineno);
+                for (i = 2; i < n; i++)
+                    parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+                break;
+            case gstyrefop:
+                if (*fields[0])
+                    gsfatal("%s:%d: Labels illegal on terminal ops");
+                else
+                    parsedline->label = 0;
+                if (n < 3)
+                    gsfatal("%s:%d: Missing referent argument to .tyref", filename, *plineno);
+                parsedline->arguments[3 - 2] = gsintern_string(gssymtypelable, fields[3]);
+                if (n >= 4)
+                    gsfatal("%s:%d: Too many arguments to .tyref; I only know what the referent is", filename, *plineno);
+                return 0;
+            default:
+                gsfatal("%s:%d: %s:%d: Unimplemented type op %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
+        }
+    }
+    if (n < 0)
+        gsfatal("%s:%d: Error in reading type line: %r", filename, *plineno);
+    else
+        gsfatal("%s:%d: EOF in middle of reading type expression", filename, typedirective->lineno);
+
+    return -1;
+}
+
+static
+void
+gsparse_type_initialize_interned_type_ops(void)
+{
+    int i;
+
+    for (i = 0; i < gsnumtypeops; i++)
+        interned_type_ops[i] = gsintern_string(gssymtypeop, type_op_names[i]);
+}
+
 static
 long
 gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
@@ -485,6 +666,29 @@ gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string lab
     (*p)->key = label;
     (*p)->file = file;
     (*p)->value = pdata;
+    (*p)->next = 0;
+}
+
+void
+gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *ptype)
+{
+    struct gsfile_symtable_item **p;
+
+    for (p = &symtable->typeitems; *p; p = &(*p)->next)
+        if ((*p)->key == label)
+            gsfatal(
+                "%s:%d: Duplicate type item %s (duplicate of %s:%d)",
+                ptype->file->name,
+                ptype->lineno,
+                label->name,
+                (*p)->value->file->name,
+                (*p)->value->lineno
+            )
+    ;
+    *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
+    (*p)->key = label;
+    (*p)->file = file;
+    (*p)->value = ptype;
     (*p)->next = 0;
 }
 
