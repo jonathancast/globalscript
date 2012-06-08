@@ -26,7 +26,9 @@ gsadddir(char *filename)
 {
 }
 
-static gsparsedfile *gsreadfile(char *filename, char *relname, int skip_docs);
+static gsparsedfile *gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable *symtable);
+
+struct gsfile_symtable *gscurrent_symtable;
 
 gsfiletype
 gsloadfile(char *filename, gsvalue *pentry)
@@ -34,25 +36,22 @@ gsloadfile(char *filename, gsvalue *pentry)
     gsparsedfile *parsedfile;
     struct gsfile_symtable *symtable;
 
-    parsedfile = gsreadfile(filename, "", 0);
+    symtable = gscreatesymtable(gscurrent_symtable);
 
-    switch (parsedfile->type) {
-        default:
-            gsfatal("%s: Set up gscurrent_symtable for files of type %d next", filename, parsedfile->type);
-    }
+    parsedfile = gsreadfile(filename, "", 0, symtable);
 
     return parsedfile->type;
 }
 
 static long gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
-static long gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields);
-static long gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields);
+static long gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
+static long gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 
 #define LINE_LENGTH 0x100
 #define NUM_FIELDS 0x20
 
 gsparsedfile *
-gsreadfile(char *filename, char *relname, int skip_docs)
+gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable *symtable)
 {
     struct uxio_ichannel *chan;
     char line[LINE_LENGTH];
@@ -116,11 +115,11 @@ gsreadfile(char *filename, char *relname, int skip_docs)
                 gsfatal("%s:%d: Missing section directive", filename, lineno);
                 break;
             case gsdatasection:
-                if (gsparse_data_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n) < 0)
+                if (gsparse_data_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n, symtable) < 0)
                     gsfatal("%s:%d: Error in reading data item: %r", filename, lineno);
                 break;
             case gscodesection:
-                if (gsparse_code_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n) < 0)
+                if (gsparse_code_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n, symtable) < 0)
                     gsfatal("%s:%d: Error in reading code item: %r", filename, lineno);
                 break;
         }
@@ -151,7 +150,7 @@ static char *data_directive_names[] = {
 
 static
 long
-gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields)
+gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
     ulong size;
     struct gsparsedline *parsedline;
@@ -173,6 +172,8 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
         parsedline->label = gsintern_string(gssymdatalable, fields[0]);
     else
         parsedline->label = 0;
+
+    gssymtable_add_data_item(symtable, parsedline->label, parsedfile, parsedline);
 
     if (!interned_data_directives[0])
         gsparse_data_initialize_interned_data_directives();
@@ -247,7 +248,7 @@ static long gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gs
 
 static
 long
-gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields)
+gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
     ulong size;
     struct gsparsedline *parsedline;
@@ -269,6 +270,8 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
         parsedline->label = gsintern_string(gssymcodelable, fields[0]);
     else
         gsfatal("%s:%d: Missing code label", filename, *plineno);
+
+    gssymtable_add_code_item(symtable, parsedline->label, parsedfile, parsedline);
 
     if (!interned_code_directives[0])
         gsparse_code_initialize_interned_code_directives();
@@ -406,6 +409,163 @@ gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno,
             gsfatal("%s:%d: Missing directive", filename, *plineno);
         return n;
     }
+}
+
+struct gsfile_symtable {
+    struct gsfile_symtable *parent;
+    struct gsfile_symtable_item *dataitems, *codeitems, *typeitems;
+};
+
+/* NB: linear-time! */
+
+struct gsfile_symtable_item {
+    gsinterned_string key;
+    gsparsedfile *file;
+    struct gsparsedline *value;
+    struct gsfile_symtable_item *next;
+};
+
+static struct gs_block_class gssymtable_segment = {
+    /* evaluator = */ gsnoeval,
+    /* description = */ "Symbol tables",
+};
+
+static void *symtable_nursury;
+
+static struct gs_block_class gssymtable_item_segment = {
+    /* evaluator = */ gsnoeval,
+    /* description = */ "Symbol table entries",
+};
+
+static void *symtable_item_nursury;
+
+struct gsfile_symtable *
+gscreatesymtable(struct gsfile_symtable *prev_symtable)
+{
+    struct gsfile_symtable *newsymtable;
+
+    newsymtable = gs_sys_seg_suballoc(&gssymtable_segment, &symtable_nursury, sizeof(*newsymtable), sizeof(void*));
+
+    newsymtable->parent = prev_symtable;
+    newsymtable->dataitems = 0;
+    newsymtable->codeitems = 0;
+    newsymtable->typeitems = 0;
+
+    return newsymtable;
+}
+
+void
+gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pcode)
+{
+    struct gsfile_symtable_item **p;
+
+    for (p = &symtable->codeitems; *p; p = &(*p)->next)
+        if ((*p)->key == label)
+            gsfatal(
+                "%s:%d: Duplicate code item %s (duplicate of %s:%d)",
+                pcode->file->name,
+                pcode->lineno,
+                label->name,
+                (*p)->value->file->name,
+                (*p)->value->lineno
+            )
+    ;
+    *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
+    (*p)->key = label;
+    (*p)->file = file;
+    (*p)->value = pcode;
+    (*p)->next = 0;
+}
+
+void
+gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pdata)
+{
+    struct gsfile_symtable_item **p;
+
+    for (p = &symtable->dataitems; *p; p = &(*p)->next)
+        if ((*p)->key == label)
+            gsfatal(
+                "%s:%d: Duplicate data item %s (duplicate of %s:%d)",
+                pdata->file->name,
+                pdata->lineno,
+                label->name,
+                (*p)->value->file->name,
+                (*p)->value->lineno
+            )
+    ;
+    *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
+    (*p)->key = label;
+    (*p)->file = file;
+    (*p)->value = pdata;
+    (*p)->next = 0;
+}
+
+struct gsbc_item
+gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, gsinterned_string label)
+{
+    struct gsbc_item res;
+    char *strtype;
+    struct gsfile_symtable_item *p;
+
+    gsbc_item_empty(&res);
+
+    while (symtable) {
+        switch (label->type) {
+            case gssymdatalable:
+                for (p = symtable->dataitems; p; p = p->next) {
+                    if (p->key == label) {
+                        res.file = p->file;
+                        res.type = gssymdatalable;
+                        res.v.pdata = p->value;
+                        return res;
+                    }
+                }
+                break;
+            case gssymcodelable:
+                for (p = symtable->codeitems; p; p = p->next) {
+                    if (p->key == label) {
+                        res.file = p->file;
+                        res.type = gssymcodelable;
+                        res.v.pcode = p->value;
+                        return res;
+                    }
+                }
+                break;
+            case gssymtypelable:
+                for (p = symtable->typeitems; p; p = p->next) {
+                    if (p->key == label) {
+                        res.file = p->file;
+                        res.type = gssymtypelable;
+                        res.v.ptype = p->value;
+                        return res;
+                    }
+                }
+                break;
+            default:
+                gsfatal("%s:%d: Unknown symbol type %d", __FILE__, __LINE__, label->type);
+        }
+        symtable = symtable->parent;
+    }
+
+    strtype = 0;
+
+    switch (label->type) {
+        case gssymdatalable:
+            strtype = "data label";
+            break;
+        case gssymcodelable:
+            strtype = "code label";
+            break;
+        case gssymtypelable:
+            strtype = "type label";
+            break;
+        default:
+            gsfatal("%s:%d: Cannot translate symbol type %d to a string", __FILE__, __LINE__, label->type);
+    }
+
+    gsfatal("%s:%d: Unknown %s '%s'", filename, lineno, strtype, label->name);
+
+    return res;
 }
 
 struct uxio_ichannel *

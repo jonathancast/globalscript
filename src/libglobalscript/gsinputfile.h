@@ -64,3 +64,27 @@ struct gsparsedline {
     gsinterned_string directive;
     gsinterned_string arguments[];
 };
+
+struct gsparsedline *gsinput_next_line(struct gsparsedline *);
+
+struct gsbc_item {
+    gsparsedfile *file;
+    gssymboltype type;
+    union {
+        struct gsparsedline *pdata;
+        struct gsparsedline *pcode;
+        struct gsparsedline *ptype;
+    } v;
+};
+
+void gsbc_item_empty(struct gsbc_item *);
+
+struct gsfile_symtable;
+
+struct gsfile_symtable *gscreatesymtable(struct gsfile_symtable *prev_symtable);
+
+void gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pdata);
+void gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pcode);
+void gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *ptype);
+
+struct gsbc_item gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, gsinterned_string label);
