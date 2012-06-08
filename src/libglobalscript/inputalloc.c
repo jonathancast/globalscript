@@ -1,3 +1,5 @@
+/* §source.file{Allocating & Managing Parsed Source Files} */
+
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
@@ -11,6 +13,8 @@ struct input_block {
 static void *parsed_file_nursury;
 
 static void gsalloc_new_parsed_file_block(void);
+
+/* §section{Allocating a New File} */
 
 gsparsedfile *
 gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
@@ -37,6 +41,8 @@ gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
 
     return pres;
 }
+
+/* §section{Allocating Memory from a Parsed File} */
 
 struct gs_block_class gsparsed_file_desc = {
     /* evaluator = */ gsnoeval,
@@ -92,4 +98,33 @@ gsparsed_file_add_segment(gsparsedfile *parsedfile, struct gsparsedfile_segment 
     parsedfile->extent = (uchar*)new_segment + sizeof(*new_segment);
     (*ppseg)->next = new_segment;
     *ppseg = new_segment;
+}
+
+/* §subsection{Specifically Appending Lines to Source Files} */
+
+struct gsparsedline *
+gsparsed_file_addline(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, int lineno, ulong numfields)
+{
+    ulong size;
+    struct gsparsedline *res;
+
+    if (numfields < 2)
+        gsfatal("%s:%d: Missing directive", filename, lineno);
+
+    size = sizeof(*res) + sizeof(gsinterned_string) * (numfields - 2);
+    res = gsparsed_file_extend(parsedfile, size, ppseg);
+
+    res->file = parsedfile->name;
+    res->lineno = lineno;
+    res->numarguments = numfields - 2;
+
+    return res;
+}
+
+/* §section{Manipulating Parsed Source Files} */
+
+struct gsparsedline *
+gsinput_next_line(struct gsparsedline *p)
+{
+    return (struct gsparsedline *)((uchar*)p + sizeof(*p) + p->numarguments * sizeof(gsinterned_string));
 }

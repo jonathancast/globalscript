@@ -152,21 +152,12 @@ static
 long
 gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    ulong size;
     struct gsparsedline *parsedline;
     int i;
     enum gsdatadirective directive;
 
-    if (numfields < 2)
-        gsfatal("%s:%d: Missing directive", filename, *plineno);
-
-    size = sizeof(*parsedline) + sizeof(gsinterned_string) * (numfields - 2);
-    parsedline = gsparsed_file_extend(parsedfile, size, ppseg);
+    parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, numfields);
     parsedfile->data->numitems++;
-
-    parsedline->file = parsedfile->name;
-    parsedline->lineno = *plineno;
-    parsedline->numarguments = numfields - 2;
 
     if (*fields[0])
         parsedline->label = gsintern_string(gssymdatalable, fields[0]);
@@ -250,21 +241,12 @@ static
 long
 gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    ulong size;
     struct gsparsedline *parsedline;
     int i;
     enum gscodedirective directive;
 
-    if (numfields < 2)
-        gsfatal("%s:%d: Missing directive", filename, *plineno);
-
-    size = sizeof(*parsedline) * sizeof(gsinterned_string) * (numfields - 2);
-    parsedline = gsparsed_file_extend(parsedfile, size, ppseg);
+    parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, numfields);
     parsedfile->code->numitems++;
-
-    parsedline->file = parsedfile->name;
-    parsedline->lineno = *plineno;
-    parsedline->numarguments = numfields - 2;
 
     if (*fields[0])
         parsedline->label = gsintern_string(gssymcodelable, fields[0]);
@@ -304,21 +286,14 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    ulong size;
     struct gsparsedline *parsedline;
     int i;
     long n;
 
     while ((n = gsgrabline(filename, chan, line, plineno, fields)) > 0) {
         enum gscodeop op;
-        if (n < 2)
-            gsfatal("%s:%d: Missing directive", filename, *plineno);
 
-        size = sizeof(*parsedline) * sizeof(gsinterned_string) * (n - 2);
-        parsedline = gsparsed_file_extend(parsedfile, size, ppseg);
-        parsedline->file = parsedfile->name;
-        parsedline->lineno = *plineno;
-        parsedline->numarguments = n - 2;
+        parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, n);
 
         if (!interned_code_ops[0])
             gsparse_code_initialize_interned_code_ops();
