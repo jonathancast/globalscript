@@ -222,7 +222,8 @@ static char *code_directive_names[] = {
 
 enum gscodeop {
     gsgvarop,
-    gscallop,
+    gsappop,
+    gsenterop,
     gsnumcodeops,
 };
 
@@ -232,7 +233,8 @@ static void gsparse_code_initialize_interned_code_ops(void);
 
 static char *code_op_names[] = {
     ".gvar",
-    ".call",
+    ".app",
+    ".enter",
 };
 
 static long gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
@@ -312,24 +314,35 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_s
         switch (op) {
             case gsgvarop:
                 if (*fields[0])
-                    parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+                    parsedline->label = gsintern_string(gssymdatalable, fields[0]);
                 else
                     gsfatal("%s:%d: Missing label on .gvar op", filename, *plineno);
                 if (n > 2)
                     gsfatal("%s:%d: Too many arguments to .gvar op", filename, *plineno);
                 break;
-            case gscallop:
+            case gsappop:
                 if (*fields[0])
-                    gsfatal("%s:%d: Labels not allowed on terminal declarations", filename, *plineno);
+                    gsfatal("%s:%d: Labels illegal on continuation ops");
                 else
                     parsedline->label = 0;
-                if (n < 4)
-                    gsfatal("%s:%d: Not enough arguments to .call", filename, *plineno);
+                if (n < 3)
+                    gswarning("%s:%d: Nullary applications don't do anything", filename, *plineno);
                 for (i = 2; i < n; i++)
-                    parsedline->arguments[i - 2] = gsintern_string(gssymreglable, fields[i]);
+                    parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
+                break;
+            case gsenterop:
+                if (*fields[0])
+                    gsfatal("%s:%d: Labels illegal on terminal ops");
+                else
+                    parsedline->label = 0;
+                if (n < 3)
+                    gsfatal("%s:%d: Missing argument to .enter", filename, *plineno);
+                parsedline->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
+                if (n >= 4)
+                    gsfatal("%s:%d: Un-recognized arguments to .enter; I only know the code label to enter", filename, *plineno);
                 return 0;
             default:
-                gsfatal("%s:%d: Unimplemented code op %s", filename, *plineno, fields[1]);
+                gsfatal("%s:%d: %s:%d: Unimplemented code op %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
         }
     }
     if (n < 0)

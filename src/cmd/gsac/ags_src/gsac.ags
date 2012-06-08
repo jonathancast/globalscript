@@ -8,4 +8,5 @@
 
 _epcode	.expr
 _abort	.gvar
-	.call	_abort	_unimpl.gsac
+	.app	_unimpl.gsac
+	.enter	_abort
