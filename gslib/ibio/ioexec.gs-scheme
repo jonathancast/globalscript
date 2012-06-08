@@ -1,0 +1,5 @@
+module 'ibio.ioexec ∝ 〈
+    overload module 'c 'm | module ibio.c m :: 〈
+        exec :: ∀ 'ι 'ο 'α | ibio.system.c ι, instance ibio.system.c ο,. m ι ο α;
+    〉;
+〉

@@ -1,0 +1,67 @@
+module 'abort ∝ 〈
+    overload 'c 'm | module monad.c m :: 〈
+        abort :: ∀ 'α. list.t rune → m α;
+        bracket :: ∀ 'α 'β 'γ. m α → (α → m β) → (α → m γ) → m α;
+        
+    〉;
+〉
+
+
+IBIO sub-programs can (after scheduling some amount of IO)
+
+ * Terminate normally with a return value (of type α)
+ * Terminate ab-normally with an exception (a finite total list.t rune)
+ * Diverge
+ * Call exec (only if module ibio.ioexec.c m)
+
+(Sub-programs that schedule an infinite quantity of IO always diverge)
+
+ship $ cycle qq{y\n} -- Terminates normally
+
+mapM ship $ repeat qq{y\n} -- Diverges
+
+'twice 'a = a *> a
+
+type widget 'α :: *;
+
+module widget.byHorizontal, module widget.byVertical, :: instance applicative.c widget;
+
+for @(module widget.byHorizontal) (
+    'x0 ← w0;
+    'x1 ← w1;
+    'x2 ← w2;
+) [|
+    f x0 x1 x2
+|]
+
+
+type 'widget 'α = mouse.t → keyboard.t → 《 behavior graphic, α, 》;
+type 'mouse.t = 〈
+    pos :: behavior (maybe.t point2);
+    module button.left, module button.right, :: 〈
+        click :: event 〈〉;
+        up, down, :: event 〈〉;
+    〉;
+〉;
+
+overload 'switch 'α :: α → event α → α;
+instance switch (behavior 'α) = ...;
+
+switch.env.lift :: ∀ 'α 'β. instance switch β → instance switch (α → β);
+'switch.env.lift @'sw 'in 'e 'x = switch @sw (in x) (map ($ x) e);
+
+switch.record.empty :: instance switch 〈〉;
+'switch.record.empty 'in 'e = 〈〉;
+
+switch.record.field :: ∀ 'f 'α 'r0. f → instance switch α → instance switch r0 → instance switch (field.insert f α r0);
+'switch.record.field 'f 'sf 'sr 'in 'e =
+    field.insert f (sf (field.get f in) (map (field.get f) e)) $
+        sr (record.downcast in) (map record.downcast e)
+;
+
+instance switch (widget 'α) | switch α = switch.env.lift $ switch.env.lift $ switch.record.field %0 switch $
+    switch.record.field %1 switch $
+        switch.record.empty
+;
+
+instance ffix widget 'f (module 'm) (module 'k) = for rec (~《 'g, 'x, 》 ∝ f x (module m) (module k)) 《 g, x, 》;
