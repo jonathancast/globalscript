@@ -6,6 +6,7 @@
 #include <libibio.h>
 #include "gsinputfile.h"
 #include "gsinputalloc.h"
+#include "gsbytecompile.h"
 
 static struct uxio_ichannel *gsopenfile(char *filename, int omode, int *ppid);
 static struct uxio_channel *gspopen(int omode, int *ppid, char *cmd, char **argv);
@@ -39,6 +40,8 @@ gsloadfile(char *filename, gsvalue *pentry)
     symtable = gscreatesymtable(gscurrent_symtable);
 
     parsedfile = gsreadfile(filename, "", 0, symtable);
+
+    gsbytecompile(parsedfile, symtable, pentry);
 
     return parsedfile->type;
 }

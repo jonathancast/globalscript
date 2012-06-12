@@ -34,6 +34,8 @@ typedef struct gsstring_value {
 
 gsinterned_string gsintern_string(gssymboltype, char*);
 
+int gssymeq(gsinterned_string, gssymboltype, char*);
+
 struct gsparsedfile_segment {
     struct gsparsedfile_segment *next;
 };
