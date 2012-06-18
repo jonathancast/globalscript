@@ -11,7 +11,8 @@
 
 struct gsbc_scc {
     struct gsbc_item item;
-    struct gsbc_scc *next;
+    struct gsbc_scc *next_item;
+    struct gsbc_scc *next_scc;
 };
 
 static struct gsbc_scc *gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable);
@@ -57,7 +58,7 @@ struct gsbc_item_hash {
 
 static struct gsbc_item_hash *gsbc_alloc_item_hash(void);
 
-static void gsbc_top_sort_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc);
+static void gsbc_topsort_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc);
 
 static void gsbc_stack_initialize(struct gsbc_item_stack *);
 
@@ -87,7 +88,7 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
                 gsfatal("%s: Cannot compile file: no data section so no entry points", parsedfile->name->name);
             if (!parsedfile->data->numitems)
                 gsfatal("%s: Document lacks first data item; cannot find entry point", parsedfile->name->name);
-            gsbc_top_sort_item(symtable, preorders, &unassigned_items, &maybe_group_items, item, &pend, &c);
+            gsbc_topsort_item(symtable, preorders, &unassigned_items, &maybe_group_items, item, &pend, &c);
             return res;
         }
         default:
@@ -124,7 +125,23 @@ static void gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable
 
 static
 void
-gsbc_top_sort_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
+gsbc_topsort_outgoing_edge(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
+{
+    ulong n;
+
+    if (n = gsbc_preorder_get(preorders, item)) {
+        if (gsbc_stack_in(unassigned_items, item))
+            while (gsbc_preorder_get(preorders, gsbc_top(maybe_group_items)) > n)
+                gsbc_pop(maybe_group_items)
+        ;
+    } else {
+        gsbc_topsort_item(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc);
+    }
+}
+
+static
+void
+gsbc_topsort_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
     gsbc_preorder_update(preorders, item, (*pc)++);
     gsbc_push(unassigned_items, item);
@@ -153,106 +170,70 @@ gsbc_top_sort_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preo
         do {
             last = gsbc_pop(unassigned_items);
             *plast = gsbc_alloc_scc(last);
-            plast = &(*plast)->next;
+            plast = &(*plast)->next_item;
         } while (!gsbc_item_eq(last, item));
         **pend = pnew;
-        *pend = &pnew->next;
+        *pend = &pnew->next_scc;
         gsbc_pop(maybe_group_items);
     }
 }
 
 static
 void
-gsbc_subtop_sort(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
-{
-    ulong n;
-
-    if (n = gsbc_preorder_get(preorders, item)) {
-        if (gsbc_stack_in(unassigned_items, item))
-            while (gsbc_preorder_get(preorders, gsbc_top(maybe_group_items)) > n)
-                gsbc_pop(maybe_group_items)
-        ;
-    } else {
-        gsbc_top_sort_item(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc);
-    }
-}
-
-enum gsbc_data_directive {
-    gsdata_directive_closure,
-    gsnum_data_directives,
-};
-
-static enum gsbc_data_directive gsbc_lookup_data_directive(gsinterned_string);
-
-static
-void
 gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    enum gsbc_data_directive directive;
+    gsinterned_string directive = item.v.pdata->directive;
 
-    directive = gsbc_lookup_data_directive(item.v.pdata->directive);
-    switch (directive) {
-        case gsdata_directive_closure:
-            {
-                struct gsbc_item code, type;
-                code = gssymtable_lookup(
-                    item.v.pdata->file->name,
-                    item.v.pdata->lineno,
-                    symtable,
-                    item.v.pdata->arguments[0]
-                );
-                gsbc_subtop_sort(symtable, preorders, unassigned_items, maybe_group_items, code, pend, pc);
-                if (item.v.pdata->numarguments >= 2) {
-                    type = gssymtable_lookup(
-                        item.v.pdata->file->name,
-                        item.v.pdata->lineno,
-                        symtable,
-                        item.v.pdata->arguments[1]
-                    );
-                    gsbc_subtop_sort(symtable, preorders, unassigned_items, maybe_group_items, type, pend, pc);
-                }
-                if (item.v.pdata->numarguments > 2)
-                    gsfatal("%s:%d: Panic: data item %s:%s has more than two arguments; I don't know what to do!",
-                        __FILE__,
-                        __LINE__,
-                        item.file->name->name,
-                        item.v.pdata->label->name
-                    )
-                ;
-            }
-            break;
-            gsfatal("%s: gsbc_subtop_sort(closure) next", item.file->name->name);
-        default:
-            gsfatal("%s: gsbc_subtop_sort(directive = %s) next", item.file->name->name, item.v.pdata->directive->name);
+    if (gssymeq(directive, gssymdatadirective, ".closure")) {
+        struct gsbc_item code, type;
+        code = gssymtable_lookup(
+            item.v.pdata->file->name,
+            item.v.pdata->lineno,
+            symtable,
+            item.v.pdata->arguments[0]
+        );
+        gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, code, pend, pc);
+        if (item.v.pdata->numarguments >= 2) {
+            type = gssymtable_lookup(
+                item.v.pdata->file->name,
+                item.v.pdata->lineno,
+                symtable,
+                item.v.pdata->arguments[1]
+            );
+            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, type, pend, pc);
+        }
+        if (item.v.pdata->numarguments > 2)
+            gsfatal("%s:%d: Panic: data item %s:%s has more than two arguments; I don't know what to do!",
+                __FILE__,
+                __LINE__,
+                item.file->name->name,
+                item.v.pdata->label->name
+            )
+        ;
+    } else if (gssymeq(directive, gssymdatadirective, ".tyapp")) {
+        struct gsbc_item fn, tyarg;
+        int i;
+
+        fn = gssymtable_lookup(
+            item.v.pdata->file->name,
+            item.v.pdata->lineno,
+            symtable,
+            item.v.pdata->arguments[0]
+        );
+        gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, fn, pend, pc);
+
+        for (i = 1; i < item.v.pdata->numarguments; i++) {
+            tyarg = gssymtable_lookup(
+                item.v.pdata->file->name,
+                item.v.pdata->lineno,
+                symtable,
+                item.v.pdata->arguments[1]
+            );
+            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, tyarg, pend, pc);
+        }
+    } else {
+        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(data item; directive = %s) next", __FILE__, __LINE__, item.v.pdata->file->name, item.v.pdata->lineno, item.v.pdata->directive->name);
     }
-}
-
-struct {
-    char *name;
-    gsinterned_string interned;
-} gsbc_data_directive_table[] = {
-    /* gsdata_directive_closure = */ { ".closure", 0, },
-    { 0, 0, },
-};
-
-static
-enum gsbc_data_directive
-gsbc_lookup_data_directive(gsinterned_string dir)
-{
-    enum gsbc_data_directive i;
-
-    for (i = 0; i < gsnum_data_directives; i++) {
-        if (!gsbc_data_directive_table[i].name)
-            gsfatal("Missing items in gsbc_data_directive_table; only %d items", i);
-        if (!gsbc_data_directive_table[i].interned)
-            gsbc_data_directive_table[i].interned = gsintern_string(gssymdatadirective, gsbc_data_directive_table[i].name);
-        if (gsbc_data_directive_table[i].interned == dir)
-            return i;
-    }
-
-    gsfatal("%s: Unknown directive", dir->name);
-
-    return -1;
 }
 
 enum gsbc_code_directive {
@@ -288,7 +269,7 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
                         {
                             struct gsbc_item global;
                             global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
-                            gsbc_subtop_sort(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc);
+                            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
                         }
                         break;
                     default:
@@ -479,7 +460,8 @@ void
 gsbc_push(struct gsbc_item_stack *pstack, struct gsbc_item item)
 {
     if (pstack->size >= GSBC_ITEM_STACK_CAPACITY)
-        gsfatal("Expand stack next");
+        gsfatal("%s:%d: Expand stack next", __FILE__, __LINE__)
+    ;
 
     pstack->items[pstack->size++] = item;
 }
@@ -534,7 +516,8 @@ gsbc_alloc_scc(struct gsbc_item item)
     res = gs_sys_seg_suballoc(&gsbc_scc_segment, &gsbc_scc_nursury, sizeof(*res), sizeof(void*));
 
     res->item = item;
-    res->next = 0;
+    res->next_item = 0;
+    res->next_scc = 0;
 
     return res;
 }
