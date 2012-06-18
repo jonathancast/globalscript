@@ -586,6 +586,7 @@ gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno,
 struct gsfile_symtable {
     struct gsfile_symtable *parent;
     struct gsfile_symtable_item *dataitems, *codeitems, *typeitems;
+    struct gsfile_symtable_data_type_item *datatypes;
 };
 
 /* NB: linear-time! */
@@ -693,6 +694,31 @@ gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string lab
     (*p)->file = file;
     (*p)->value = ptype;
     (*p)->next = 0;
+}
+
+void
+gssymtable_set_expr_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbc_code_item_type *ptype)
+{
+    gsfatal("%s:%d: %s: gssymtable_set_expr_type next", __FILE__, __LINE__, label->name);
+}
+
+struct gsfile_symtable_data_type_item {
+    gsinterned_string key;
+    struct gsbc_data_item_type *value;
+    struct gsfile_symtable_data_type_item *next;
+};
+
+struct gsbc_data_item_type *
+gssymtable_get_data_type(struct gsfile_symtable *symtable, gsinterned_string label)
+{
+    struct gsfile_symtable_data_type_item *p;
+
+    for (p = symtable->datatypes; p; p = p->next) {
+        if (p->key == label)
+            return p->value;
+    }
+
+    return 0;
 }
 
 struct gsbc_item

@@ -8,6 +8,7 @@
 #include <libibio.h>
 #include "gsinputfile.h"
 #include "gsbytecompile.h"
+#include "gsheap.h"
 
 struct gsbc_scc {
     struct gsbc_item item;
@@ -16,19 +17,243 @@ struct gsbc_scc {
 };
 
 static struct gsbc_scc *gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable);
+static void gsbytecompile_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_scc *pscc, gsvalue *pentry);
 
 void
 gsbytecompile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, gsvalue *pentry)
 {
-    struct gsbc_scc *pscc;
+    struct gsbc_scc *pscc, *p;
 
     switch (parsedfile->type) {
         case gsfiledocument:
             pscc = gsbc_topsortfile(parsedfile, symtable);
+            for (p = pscc; p; p = p->next_scc) {
+                gsbytecompile_scc(parsedfile, symtable, p, pentry);
+            }
             gsfatal("%s: gsbytecompile(document) next", parsedfile->name->name);
         default:
             gsfatal("%s: Unknown file type %d in gsbytecompile", parsedfile->name->name, parsedfile->type);
     }
+}
+
+/* §section{Actual Byte-Compiler} */
+
+#define MAX_ITEMS_PER_SCC 0x100
+
+static void gsbc_typecheck(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_item *items, int, struct gsbc_item item);
+static ulong gsbytecompile_size_code_item(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_item item);
+
+static
+void
+gsbytecompile_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_scc *pscc, gsvalue *pentry)
+{
+    struct gsbc_scc *p;
+    struct gsbc_item items[MAX_ITEMS_PER_SCC];
+    ulong code_space_needed[MAX_ITEMS_PER_SCC], total_code_space_needed;
+    void *code_space;
+    int n, i;
+
+    n = 0;
+
+    for (p = pscc; p; p = p->next_item) {
+        if (n >= MAX_ITEMS_PER_SCC)
+            gsfatal("%s:%d: Too many items in this SCC; max 0x%x", p->item.v.pdata->file->name, p->item.v.pdata->lineno, MAX_ITEMS_PER_SCC)
+        ;
+        items[n++] = p->item;
+    }
+
+    for (i = 0; i < n; i++) {
+        gsbc_typecheck(parsedfile, symtable, items, n, items[i]);
+    }
+
+    total_code_space_needed = 0;
+    for (i = 0; i < n; i++) {
+        code_space_needed[i] = 0;
+        switch (items[i].type) {
+            case gssymcodelable:
+                code_space_needed[i] = gsbytecompile_size_code_item(parsedfile, symtable, items[i]);
+                total_code_space_needed += code_space_needed[i];
+                break;
+            default:
+                gsfatal("%s:%d: Size (type = %d) next", __FILE__, __LINE__, items[i].type);
+        }
+    }
+
+
+
+    if (total_code_space_needed >= BLOCK_SIZE - sizeof(struct gs_blockdesc))
+        gsfatal("%s:%d: SCC requires too much total byte code space; max 0x%x",
+            items[0].v.pdata->file->name,
+            items[0].v.pdata->lineno,
+            BLOCK_SIZE - sizeof(struct gs_blockdesc)
+        )
+    ;
+
+    code_space = gs_sys_seg_suballoc(&gsbytecode_desc, &gsbytecode_nursury, total_code_space_needed, sizeof(void*));
+
+    gsfatal("%s:%d: gsbytecompile_scc next", __FILE__, __LINE__);
+}
+
+/* §subsection{Type-checker} */
+
+static struct gsbc_code_item_type *gsbc_typecheck_code_expr(struct gsfile_symtable *, struct gsparsedline *);
+
+static
+void
+gsbc_typecheck(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_item *items, int nitems, struct gsbc_item item)
+{
+    switch (item.type) {
+        case gssymcodelable:
+            if (gssymeq(item.v.pcode->directive, gssymcodedirective, ".expr")) {
+                struct gsbc_code_item_type *type;
+
+                type = gsbc_typecheck_code_expr(symtable, gsinput_next_line(item.v.pcode));
+                if (item.v.pcode->label)
+                    gssymtable_set_expr_type(symtable, item.v.pcode->label, type);
+                ;
+            } else {
+                gsfatal("%s:%d: %s:%d: Cannot type check code items of type '%s' yet",
+                    __FILE__,
+                    __LINE__,
+                    item.v.pcode->file->name,
+                    item.v.pcode->lineno,
+                    item.v.pcode->directive->name
+                );
+            }
+            return;
+        default:
+            gsfatal("%s:%d: %s:%d: gsbc_typecheck next", __FILE__, __LINE__, item.v.pdata->file->name, item.v.pdata->lineno);
+    }
+}
+
+#define MAX_REGISTERS 0x100
+
+static
+struct gsbc_code_item_type *
+gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedline *p)
+{
+    enum {
+        rtgvar,
+    } regtype;
+    int nregs;
+/*    struct gsbc_code_item_type *regtypes[MAX_REGISTERS]; */
+
+    /*
+        Grar
+
+        Have to go forward to set up lexical environment then go backward to get type.
+        
+        Here's what let's do:
+        §begin{itemize}
+            §item Go forward
+            §item Keep a stack of the continuation ops as we go
+            §item Build the type when we reach the end
+            §item Then do another loop backward over the stack mutating the type as we go
+            §item Also do type-checking in this second loop
+        §end{itemize}
+    */
+    regtype = rtgvar;
+    for (; ; p = gsinput_next_line(p)) {
+        if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+            struct gsbc_data_item_type *varty;
+
+            if (regtype != rtgvar)
+                gsfatal("%s:%d: %s:%d: Illegal .gvar; next register should be %s",
+                    __FILE__,
+                    __LINE__,
+                    p->file->name,
+                    p->lineno,
+                    "unknown"
+                )
+            ;
+            if (nregs >= MAX_REGISTERS)
+                gsfatal("%s:%d: %s:%d: Too many registers; max 0x%x", __FILE__, __LINE__, p->file->name, p->lineno, MAX_REGISTERS);
+            if (varty = gssymtable_get_data_type(symtable, p->label)) {
+            } else {
+                gsfatal("%s:%d: %s:%d: Cannot find type of %s", __FILE__, __LINE__, p->file->name, p->lineno, p->label->name);
+            }
+/*            regtypes[nregs++] = varty; */
+            gsfatal("%s:%d: %s:%d: Type-check .gvar next", __FILE__, __LINE__, p->file->name, p->lineno);
+        } else {
+            gsfatal("%s:%d: %s:%d: Cannot type-check op %s yet", __FILE__, __LINE__, p->file->name, p->lineno, p->directive->name);
+        }
+    }
+
+    return 0;
+}
+
+/* §subsection{Sizing items} */
+
+static
+ulong
+gsbytecompile_size_code_item(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_item item)
+{
+    ulong size;
+    struct gsparsedline *p;
+    enum {
+        phgvars,
+        phbytecodes,
+    } phase;
+
+    size = 0;
+
+    size += 4; /* Header */
+    if (size % sizeof(ulong))
+        gsfatal("%s:%d: File format error: end of header isn't ulong-aligned", __FILE__, __LINE__)
+    ;
+    size += sizeof(ulong); /* Size */
+    if (size % sizeof(void*))
+        gsfatal("%s:%d: File format error: end of header isn't void*-aligned", __FILE__, __LINE__);
+
+    phase = phgvars;
+    for (p = gsinput_next_line(item.v.pcode); ; p = gsinput_next_line(p)) {
+    next_phase:
+        switch (phase) {
+            case phgvars:
+                if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+                    if (size % sizeof(void*))
+                        gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't void*-aligned",
+                            __FILE__,
+                            __LINE__,
+                            p->file->name,
+                            p->lineno
+                        )
+                    ;
+                    size += sizeof(void*);
+                } else {
+                    phase = phbytecodes;
+                    goto next_phase;
+                }
+                break;
+            case phbytecodes:
+                if (gssymeq(p->directive, gssymcodeop, ".app")) {
+                    size += 1; /* Byte code */
+                    size += 1; /* n */
+                    if (p->numarguments >= 0x100)
+                        gsfatal("%s:%d: .app continuations may not have more than 0xff arguments", p->file->name, p->lineno);
+                    size += p->numarguments;
+                } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
+                    size += 1; /* Byte code */
+                    size += 1; /* Argument */
+                    if (p->numarguments > 1)
+                        gsfatal("%s:%d: Too many arguments to .enter", p->file->name, p->lineno);
+                    goto done;
+                } else {
+                    gsfatal("%s:%d: %s:%d: Size '%s' generators next", __FILE__, __LINE__, p->file->name, p->lineno, p->directive->name);
+                }
+                break;
+            default:
+                gsfatal("%s:%d: Unknown phase %d", __FILE__, __LINE__, phase);
+        }
+    }
+
+done:
+
+    if (size % sizeof(void*))
+        size += sizeof(void*) - size
+    ;
+
+    return size;
 }
 
 /* §section{Topological Sort (to decide order to compile file in)} */

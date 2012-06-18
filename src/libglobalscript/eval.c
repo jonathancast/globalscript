@@ -25,3 +25,9 @@ gsvalue gsnoeval(gsvalue val)
     return 0;
 }
 
+struct gs_block_class gsbytecode_desc = {
+    /* evaluator = */ gsnoeval,
+    /* description = */ "Byte-code objects",
+};
+
+void *gsbytecode_nursury;

@@ -88,6 +88,9 @@ struct gsbc_item {
 
 void gsbc_item_empty(struct gsbc_item *);
 
+struct gsbc_code_item_type {
+};
+
 struct gsfile_symtable;
 
 struct gsfile_symtable *gscreatesymtable(struct gsfile_symtable *prev_symtable);
@@ -95,5 +98,9 @@ struct gsfile_symtable *gscreatesymtable(struct gsfile_symtable *prev_symtable);
 void gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pdata);
 void gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pcode);
 void gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *ptype);
+
+void gssymtable_set_expr_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbc_code_item_type *);
+
+struct gsbc_data_item_type *gssymtable_get_data_type(struct gsfile_symtable *symtable, gsinterned_string label);
 
 struct gsbc_item gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, gsinterned_string label);

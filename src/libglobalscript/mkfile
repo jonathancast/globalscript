@@ -35,7 +35,7 @@ inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsalloc.h
 eval.$O: gsheap.h
 symtable.$O: gsinputfile.h
-bytecompile.$O: gsinputfile.h gsbytecompile.h
+bytecompile.$O: gsinputfile.h gsbytecompile.h gsheap.h
 
 all install:V: test $GLOBALSCRIPT/lib/$LIB
 
