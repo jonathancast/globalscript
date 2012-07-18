@@ -34,10 +34,11 @@ TEST_IOSTAT()
     pdir = ibio_parse_stat(chan);
 
     ok(__FILE__, __LINE__, !!pdir, "%s:%d: ibio_parse_stat returned null");
-    ok_ulong_eq(__FILE__, __LINE__, pdir->size, sizeof(*pdir),
+    ok_ulong_eq(__FILE__, __LINE__, pdir->size, sizeof(*pdir) + sizeof("foo.txt"),
         "ibio_parse_stat()->size"
     );
     not_ok(__FILE__, __LINE__, pdir->d.mode & DMDIR, "ibio_parse_stat returned directory, but was not a directory");
+    ok_cstring_eq(__FILE__, __LINE__, pdir->d.name, "foo.txt", "ibio_parse_stat returned incorrect name");
 }
 
 static
@@ -52,6 +53,7 @@ TEST_IOSTAT_DIR()
 
     ok(__FILE__, __LINE__, !!pdir, "ibio_parse_stat returned null");
     ok(__FILE__, __LINE__, pdir->d.mode & DMDIR, "ibio_parse_stat returned not directory, but was a directory");
+    ok_cstring_eq(__FILE__, __LINE__, pdir->d.name, "foo", "ibio_parse_stat returned incorrect name");
 }
 
 static
@@ -62,7 +64,7 @@ fixture_sample_chan_with_file_entry()
     void *psize, *p;
     long size;
 
-    res = ibio_get_channel_for_external_io(-1, ibio_iostat);
+    res = ibio_get_channel_for_external_io(0, -1, ibio_iostat);
 
     size = 0;
     psize = uxio_save_space(res, 2);
@@ -81,6 +83,15 @@ fixture_sample_chan_with_file_entry()
     p = uxio_save_space(res, 4), size += 4;
     PUT_LITTLE_ENDIAN_U32INT(p, 0664);
 
+    /* padding for atime, mtime, and length */
+    p = uxio_save_space(res, 4 + 4 + 8), size += 4 + 4 + 8;
+
+    /* name */
+    p = uxio_save_space(res, 2), size += 2;
+    PUT_LITTLE_ENDIAN_U16INT(p, strlen("foo.txt"));
+    p = uxio_save_space(res, strlen("foo.txt")), size += strlen("foo.txt");
+    memcpy(p, "foo.txt", strlen("foo.txt"));
+
     PUT_LITTLE_ENDIAN_U16INT(psize, (u16int)size);
 
     return res;
@@ -94,7 +105,7 @@ fixture_sample_chan_with_dir_entry()
     void *psize, *p;
     long size;
 
-    res = ibio_get_channel_for_external_io(-1, ibio_iostat);
+    res = ibio_get_channel_for_external_io("", -1, ibio_iostat);
 
     size = 0;
     psize = uxio_save_space(res, 2);
@@ -112,6 +123,15 @@ fixture_sample_chan_with_dir_entry()
     /* mode */
     p = uxio_save_space(res, 4), size += 4;
     PUT_LITTLE_ENDIAN_U32INT(p, DMDIR | 0664);
+
+    /* padding for atime, mtime, and length */
+    p = uxio_save_space(res, 4 + 4 + 8), size += 4 + 4 + 8;
+
+    /* name */
+    p = uxio_save_space(res, 2), size += 2;
+    PUT_LITTLE_ENDIAN_U16INT(p, strlen("foo"));
+    p = uxio_save_space(res, strlen("foo")), size += strlen("foo");
+    memcpy(p, "foo", strlen("foo"));
 
     PUT_LITTLE_ENDIAN_U16INT(psize, (u16int)size);
 

@@ -18,13 +18,29 @@ ibio_stat(char *filename)
 }
 
 struct ibio_dir *
+ibio_read_stat(struct uxio_dir_ichannel *chan)
+{
+    long n;
+
+    if ((n = ibio_sys_read_stat(chan)) < 0)
+        gsfatal("ibio_sys_read_stat failed on channel %d: %r", chan->udir->fd);
+    else if (n == 0)
+        return 0;
+
+    return ibio_sys_parse_stat(chan);
+}
+
+#define NAMEMAX 0x100
+
+struct ibio_dir *
 ibio_parse_stat(struct uxio_ichannel *ip)
 {
     struct ibio_dir dir, *res;
     void *resend;
-    uchar buf[8];
-    long n;
+    uchar buf[32];
+    long n, namesize;
     u16int bufsize;
+    char name[NAMEMAX];
 
     memset(&dir, 0, sizeof(dir));
 
@@ -34,7 +50,7 @@ ibio_parse_stat(struct uxio_ichannel *ip)
     else if (n < 2)
         gsfatal("%s:%d: Couldn't get size field; got %x octets", __FILE__, __LINE__, n);
     bufsize = GET_LITTLE_ENDIAN_U16INT(buf);
-    gsassert(__FILE__, __LINE__, bufsize >= uxio_channel_size_of_available_data(ip), "Reported size larger than available data");
+    gsassert(__FILE__, __LINE__, bufsize == uxio_channel_size_of_available_data(ip), "Reported size %x different than available data %x", bufsize, uxio_channel_size_of_available_data(ip));
 
     /* type */
     if ((n = uxio_consume_space(ip, &buf, 2)) < 0)
@@ -79,11 +95,36 @@ ibio_parse_stat(struct uxio_ichannel *ip)
     bufsize -= 4;
     dir.d.mode = GET_LITTLE_ENDIAN_U32INT(buf);
 
-    dir.size = sizeof(struct ibio_dir);
-    res = ibio_alloc_dir(dir.size);
-    resend = (uchar*)res + dir.size;
+    /* padding for atime, mtime, and length */
+    if ((n = uxio_consume_space(ip, &buf, 4 + 4 + 8)) < 0)
+        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
+    else if (n < 4 + 4 + 8)
+        gsfatal("%s:%d: Couldn't get padding for atime, mtime, and length fields; got %x octets", __FILE__, __LINE__, n);
+    bufsize -= 4 + 4 + 8;
 
-    /* FIXME: put strings in dir then copy to *res */
+    /* name */
+    if ((n = uxio_consume_space(ip, &buf, 2)) < 0)
+        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
+    else if (n < 2)
+        gsfatal("%s:%d: Couldn't get size of name field; got %x octets", __FILE__, __LINE__, n);
+    bufsize -= 2;
+    namesize = GET_LITTLE_ENDIAN_U16INT(buf);
+    if (namesize >= NAMEMAX)
+        gsfatal("%s:%d: Name too long %x octets but we only allow %x octets", __FILE__, __LINE__, namesize, NAMEMAX);
+    if ((n = uxio_consume_space(ip, &name, namesize)) < 0)
+        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
+    else if (n < namesize)
+        gsfatal("%s:%d: Couldn't get name field; got %x octets; needed %x", __FILE__, __LINE__, n, namesize);
+    bufsize -= namesize;
+    name[namesize] = 0;
+
+    dir.size = sizeof(struct ibio_dir) + namesize + 1;
+    res = ibio_alloc_dir(dir.size);
+    resend = (uchar*)res + sizeof(struct ibio_dir);
+
+    memcpy(resend, name, namesize + 1);
+    dir.d.name = resend;
+    resend = (uchar*)res + namesize + 1;
 
     *res = dir;
 
@@ -110,7 +151,7 @@ struct ibio_dir *
 ibio_alloc_dir(ulong size)
 {
     struct ibio_dir_segment *nursury_seg;
-    struct ibio_dir *pres, *pnext;
+    void *pres, *pnext;
     if (!ibio_dir_nursury)
         ibio_alloc_new_dir_block();
 
@@ -118,8 +159,8 @@ ibio_alloc_dir(ulong size)
     gsassert(__FILE__, __LINE__, size < UXIO_IO_BUFFER_SIZE, "size supsiciously large: %x", size);
 
     nursury_seg = (struct ibio_dir_segment *)BLOCK_CONTAINING(ibio_dir_nursury);
-    pres = (struct ibio_dir *)ibio_dir_nursury;
-    pnext = pres + 1;
+    pres = ibio_dir_nursury;
+    pnext = (uchar*)pres + size;
     if ((uchar*)pnext >= (uchar*)END_OF_BLOCK(nursury_seg))
         ibio_alloc_new_dir_block();
     else

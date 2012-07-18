@@ -7,6 +7,7 @@ LDFLAGS=-g
 OFILES=\
 	$SYSTEM/iodir.$O \
 	$SYSTEM/iosysconstants.$O \
+	$SYSTEM/ioenv.$O \
 	iochan.$O \
 	iostat.$O \
 
@@ -29,6 +30,7 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 iochan.$O: iofile.h $SYSTEM/iosysconstants.h iomacros.h
 iostat.$O: $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h
 unix/iodir.$O: iofile.h iostat.h iomacros.h unix/iodir.h
+unix/ioenv.$O: unix/iosysconstants.h iofile.h
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h $GLOBALSCRIPT/include/libibio.h
 

@@ -36,8 +36,9 @@ TEST_UNIX_FILL_STAT()
     struct uxio_ichannel *chan;
     ulong size_of_data_stored;
     uchar buf[32];
+    char str[32];
     u32int mode;
-    long n;
+    long n, s;
 
     chan = fixture_unix_stat_buffer_for_file();
 
@@ -56,6 +57,19 @@ TEST_UNIX_FILL_STAT()
     ok_ulong_eq(__FILE__, __LINE__, n, 4, "Didn't read in a mode");
     mode = GET_LITTLE_ENDIAN_U32INT(buf);
     not_ok(__FILE__, __LINE__, mode & DMDIR, "Indicated file was a directory in stored data");
+
+    n = uxio_consume_space(chan, &buf, 4 + 4 + 8); /* atime + mtime + length */
+    ok_ulong_eq(__FILE__, __LINE__, n, 4 + 4 + 8, "Didn't read in padding between the mode and the name");
+
+    n = uxio_consume_space(chan, &buf, 2); /* name size */
+    ok_ulong_eq(__FILE__, __LINE__, n, 2, "Didn't read in a size for the name");
+    s = GET_LITTLE_ENDIAN_U16INT(buf);
+    ok_ulong_eq(__FILE__, __LINE__, s, strlen("foo.txt"), "Size wasn't correct for name");
+    n = uxio_consume_space(chan, &buf, s);
+    ok_ulong_eq(__FILE__, __LINE__, n, s, "Couldn't read in entire name");
+    memcpy(str, buf, s);
+    str[s] = 0;
+    ok_cstring_eq(__FILE__, __LINE__, str, "foo.txt", "Wrong name");
 
     ok_ulong_eq(__FILE__, __LINE__, uxio_channel_size_of_available_data(chan), 0, "Didn't test entire channel as stored");
 }
@@ -100,7 +114,7 @@ fixture_unix_stat_buffer_for_file()
 
     memset(&uxstat, 0, sizeof(uxstat));
 
-    chan = ibio_get_channel_for_external_io(-1, ibio_iostat);
+    chan = ibio_get_channel_for_external_io("", -1, ibio_iostat);
     ibio_unix_fill_stat("./foo.txt", &uxstat, chan);
 
     return chan;
@@ -116,7 +130,7 @@ fixture_unix_stat_buffer_for_dir()
     uxstat.st_mode = 0;
     uxstat.st_mode |= S_IFDIR;
 
-    chan = ibio_get_channel_for_external_io(-1, ibio_iostat);
+    chan = ibio_get_channel_for_external_io("", -1, ibio_iostat);
     ibio_unix_fill_stat("./foo", &uxstat, chan);
 
     return chan;
