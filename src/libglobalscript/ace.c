@@ -8,6 +8,6 @@ gsvalue gsentrypoint;
 int
 ace_init(void)
 {
-    gsfatal("ace_init next");
+    gsfatal_unimpl(__FILE__, __LINE__, "ace_init next");
     return -1;
 }

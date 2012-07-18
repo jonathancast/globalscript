@@ -9,94 +9,216 @@
 #include "gsinputfile.h"
 #include "gsbytecompile.h"
 #include "gsheap.h"
-
-struct gsbc_scc {
-    struct gsbc_item item;
-    struct gsbc_scc *next_item;
-    struct gsbc_scc *next_scc;
-};
-
-static struct gsbc_scc *gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable);
-static void gsbytecompile_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_scc *pscc, gsvalue *pentry);
+#include "gstopsort.h"
+#include "gstypealloc.h"
 
 void
-gsbytecompile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, gsvalue *pentry)
+gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, int n)
 {
-    struct gsbc_scc *pscc, *p;
+    uint total_size, offsets[MAX_ITEMS_PER_SCC];
+    int i, data_size;
+    void *base;
 
-    switch (parsedfile->type) {
-        case gsfiledocument:
-            pscc = gsbc_topsortfile(parsedfile, symtable);
-            for (p = pscc; p; p = p->next_scc) {
-                gsbytecompile_scc(parsedfile, symtable, p, pentry);
-            }
-            gsfatal("%s: gsbytecompile(document) next", parsedfile->name->name);
-        default:
-            gsfatal("%s: Unknown file type %d in gsbytecompile", parsedfile->name->name, parsedfile->type);
+    if (n > MAX_ITEMS_PER_SCC)
+        gsfatal("%s:%d: Too many items in SCC; 0x%x items; max 0x%x", __FILE__, __LINE__, n, MAX_ITEMS_PER_SCC);
+
+    data_size = sizeof(struct gsbco*);
+
+    total_size = 0;
+    for (i = 0; i < n; i++) {
+        int size;
+
+        offsets[i] = total_size;
+        size = items[i].type == gssymdatalable ? data_size : 0;
+        total_size += size;
+    }
+
+    if (total_size > BLOCK_SIZE)
+        gsfatal("%s:%d: Total size too large; 0x%x > 0x%x", __FILE__, __LINE__, total_size, BLOCK_SIZE)
+    ;
+
+    base = gsreserveheap(total_size);
+
+    for (i = 0; i < n; i++) {
+        if (items[i].type == gssymdatalable) {
+            heap[i] = (gsvalue)((uchar*)base + offsets[i]);
+            gssymtable_set_data(symtable, items[i].v.pdata->label, heap[i]);
+        }
     }
 }
 
-/* §section{Actual Byte-Compiler} */
+static int gsbc_size_item(struct gsbc_item item);
 
-#define MAX_ITEMS_PER_SCC 0x100
+void
+gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gsbco **bcos, int n)
+{
+    uint total_size, offsets[MAX_ITEMS_PER_SCC];
+    int i;
+    void *base;
 
-static void gsbc_typecheck(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_item *items, int, struct gsbc_item item);
-static ulong gsbytecompile_size_code_item(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_item item);
+    if (n > MAX_ITEMS_PER_SCC)
+        gsfatal("%s:%d: Too many items in SCC; 0x%x items; max 0x%x", __FILE__, __LINE__, n, MAX_ITEMS_PER_SCC);
+
+    total_size = 0;
+    for (i = 0; i < n; i++) {
+        int size;
+
+        offsets[i] = total_size;
+        size = items[i].type == gssymcodelable ? gsbc_size_item(items[i]) : 0;
+        total_size += size;
+    }
+
+    if (total_size > BLOCK_SIZE)
+        gsfatal("%s:%d: Total size too large; 0x%x > 0x%x", __FILE__, __LINE__, total_size, BLOCK_SIZE)
+    ;
+
+    base = gsreservebytecode(total_size);
+
+    for (i = 0; i < n; i++) {
+        if (items[i].type == gssymcodelable) {
+            bcos[i] = (struct gsbco*)((uchar*)base + offsets[i]);
+            gssymtable_set_code(symtable, items[i].v.pdata->label, bcos[i]);
+        }
+    }
+}
+
+static
+int
+gsbc_size_item(struct gsbc_item item)
+{
+    int size;
+    struct gsparsedline *p;
+    enum {
+        phgvars,
+        phbytecodes,
+    } phase;
+
+    size = sizeof(struct gsbco);
+
+    phase = phgvars;
+    for (p = gsinput_next_line(item.v.pcode); ; p = gsinput_next_line(p)) {
+        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_size_item");
+#if 0
+    next_phase:
+        switch (phase) {
+            case phgvars:
+                if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+                    if (size % sizeof(void*))
+                        gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't void*-aligned",
+                            __FILE__,
+                            __LINE__,
+                            p->file->name,
+                            p->lineno
+                        )
+                    ;
+                    size += sizeof(void*);
+                } else {
+                    phase = phbytecodes;
+                    goto next_phase;
+                }
+                break;
+            case phbytecodes:
+                if (gssymeq(p->directive, gssymcodeop, ".app")) {
+                    size += 1; /* Byte code */
+                    size += 1; /* n */
+                    if (p->numarguments >= 0x100)
+                        gsfatal("%s:%d: .app continuations may not have more than 0xff arguments", p->file->name, p->lineno);
+                    size += p->numarguments;
+                } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
+                    size += 1; /* Byte code */
+                    size += 1; /* Argument */
+                    if (p->numarguments > 1)
+                        gsfatal("%s:%d: Too many arguments to .enter", p->file->name, p->lineno);
+                    goto done;
+                } else {
+                    gsfatal("%s:%d: %s:%d: Size '%s' generators next", __FILE__, __LINE__, p->file->name, p->lineno, p->directive->name);
+                }
+                break;
+            default:
+                gsfatal("%s:%d: Unknown phase %d", __FILE__, __LINE__, phase);
+        }
+
+done:
+#endif
+    }
+
+    if (size % sizeof(void*))
+        size += sizeof(void*) - size
+    ;
+
+    return size;
+}
+
+/* §section{Actual Byte Compiler} */
+
+static void gsbc_bytecompile_data_item(struct gsparsedline *, gsvalue *, int, int);
+
+void
+gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, struct gsbco **bcos, int n)
+{
+    int i;
+
+    for (i = 0; i < n; i++) {
+        switch (items[i].type) {
+            case gssymtypelable:
+                break;
+            case gssymdatalable:
+                gsbc_bytecompile_data_item(items[i].v.pdata, heap, i, n);
+                break;
+            default:
+                gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.pcode, "gsbc_bytecompile_scc(type = %d)", items[i].type);
+        }
+    }
+}
+
+static struct gsbco *gsbc_undefined(void);
 
 static
 void
-gsbytecompile_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_scc *pscc, gsvalue *pentry)
+gsbc_bytecompile_data_item(struct gsparsedline *p, gsvalue *heap, int i, int n)
 {
-    struct gsbc_scc *p;
-    struct gsbc_item items[MAX_ITEMS_PER_SCC];
-    ulong code_space_needed[MAX_ITEMS_PER_SCC], total_code_space_needed;
-    void *code_space;
-    int n, i;
+    struct gsbco **hp;
 
-    n = 0;
+    hp = (struct gsbco **)heap[i];
 
-    for (p = pscc; p; p = p->next_item) {
-        if (n >= MAX_ITEMS_PER_SCC)
-            gsfatal("%s:%d: Too many items in this SCC; max 0x%x", p->item.v.pdata->file->name, p->item.v.pdata->lineno, MAX_ITEMS_PER_SCC)
-        ;
-        items[n++] = p->item;
+    if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
+        *hp = gsbc_undefined();
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, p, "Data directive %s next", p->directive->name);
     }
-
-    for (i = 0; i < n; i++) {
-        gsbc_typecheck(parsedfile, symtable, items, n, items[i]);
-    }
-
-    total_code_space_needed = 0;
-    for (i = 0; i < n; i++) {
-        code_space_needed[i] = 0;
-        switch (items[i].type) {
-            case gssymcodelable:
-                code_space_needed[i] = gsbytecompile_size_code_item(parsedfile, symtable, items[i]);
-                total_code_space_needed += code_space_needed[i];
-                break;
-            default:
-                gsfatal("%s:%d: Size (type = %d) next", __FILE__, __LINE__, items[i].type);
-        }
-    }
-
-
-
-    if (total_code_space_needed >= BLOCK_SIZE - sizeof(struct gs_blockdesc))
-        gsfatal("%s:%d: SCC requires too much total byte code space; max 0x%x",
-            items[0].v.pdata->file->name,
-            items[0].v.pdata->lineno,
-            BLOCK_SIZE - sizeof(struct gs_blockdesc)
-        )
-    ;
-
-    code_space = gs_sys_seg_suballoc(&gsbytecode_desc, &gsbytecode_nursury, total_code_space_needed, sizeof(void*));
-
-    gsfatal("%s:%d: gsbytecompile_scc next", __FILE__, __LINE__);
 }
+
+static struct gsbco *gsbc_undefined_constant;
+
+static
+struct gsbco *
+gsbc_undefined()
+{
+    if (!gsbc_undefined_constant) {
+        gsbc_undefined_constant = gsreservebytecode(sizeof(struct gsbco));
+        gsbc_undefined_constant->tag = gsbco_undefined;
+        gsbc_undefined_constant->size = sizeof(struct gsbco);
+    }
+
+    return gsbc_undefined_constant;
+}
+
+/* TODO: REMOVE BELOW THIS OR MOVE ABOVE THIS COMMENT */
+
+#if 0
+static void gsbc_typecheck(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_item *items, int, struct gsbc_item item);
+#endif
 
 /* §subsection{Type-checker} */
 
+#if 0
 static struct gsbc_code_item_type *gsbc_typecheck_code_expr(struct gsfile_symtable *, struct gsparsedline *);
+static struct gsbc_type *gsbc_typecheck_compile_type_expr(struct gsfile_symtable *, struct gsparsedline *);
+static struct gsbc_type_item_kind *gsbc_typecheck_kind_type(struct gsfile_symtable *, struct gsbc_type *);
+static struct gsbc_type *gsbc_typecheck_compile_prim_type(struct gsfile_symtable *, struct gsparsedline *);
+static struct gsbc_type_item_kind *gsbc_typecheck_check_prim_kind(struct gsfile_symtable *, struct gsbc_type *);
+static struct gsbc_type *gsbc_typecheck_compile_abstract_type(struct gsfile_symtable *, struct gsparsedline *);
+static struct gsbc_type_item_kind *gsbc_typecheck_check_abstract_kind(struct gsfile_symtable *, struct gsbc_type *);
 
 static
 void
@@ -121,12 +243,8 @@ gsbc_typecheck(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struc
                 );
             }
             return;
-        default:
-            gsfatal("%s:%d: %s:%d: gsbc_typecheck next", __FILE__, __LINE__, item.v.pdata->file->name, item.v.pdata->lineno);
     }
 }
-
-#define MAX_REGISTERS 0x100
 
 static
 struct gsbc_code_item_type *
@@ -182,79 +300,117 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedline *
     return 0;
 }
 
-/* §subsection{Sizing items} */
+static struct gsbc_type *gsbc_type_alloc();
+
+static struct gsbc_type_expr_summary *gsbc_typecheck_compile_type_ops(struct gsfile_symtable *, struct gsparsedline *);
 
 static
-ulong
-gsbytecompile_size_code_item(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_item item)
+struct gsbc_type *
+gsbc_typecheck_compile_type_expr(struct gsfile_symtable *symtable, struct gsparsedline *p)
 {
-    ulong size;
-    struct gsparsedline *p;
-    enum {
-        phgvars,
-        phbytecodes,
-    } phase;
+    struct gsbc_type *res;
 
-    size = 0;
+    res = gsbc_type_alloc();
+    res->node = gsbc_type_expr;
+    res->a.expr = gsbc_typecheck_compile_type_ops(symtable, p);
 
-    size += 4; /* Header */
-    if (size % sizeof(ulong))
-        gsfatal("%s:%d: File format error: end of header isn't ulong-aligned", __FILE__, __LINE__)
-    ;
-    size += sizeof(ulong); /* Size */
-    if (size % sizeof(void*))
-        gsfatal("%s:%d: File format error: end of header isn't void*-aligned", __FILE__, __LINE__);
+    return res;
+}
+#endif
 
-    phase = phgvars;
-    for (p = gsinput_next_line(item.v.pcode); ; p = gsinput_next_line(p)) {
-    next_phase:
-        switch (phase) {
-            case phgvars:
-                if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
-                    if (size % sizeof(void*))
-                        gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't void*-aligned",
-                            __FILE__,
-                            __LINE__,
-                            p->file->name,
-                            p->lineno
-                        )
-                    ;
-                    size += sizeof(void*);
-                } else {
-                    phase = phbytecodes;
-                    goto next_phase;
-                }
-                break;
-            case phbytecodes:
-                if (gssymeq(p->directive, gssymcodeop, ".app")) {
-                    size += 1; /* Byte code */
-                    size += 1; /* n */
-                    if (p->numarguments >= 0x100)
-                        gsfatal("%s:%d: .app continuations may not have more than 0xff arguments", p->file->name, p->lineno);
-                    size += p->numarguments;
-                } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
-                    size += 1; /* Byte code */
-                    size += 1; /* Argument */
-                    if (p->numarguments > 1)
-                        gsfatal("%s:%d: Too many arguments to .enter", p->file->name, p->lineno);
-                    goto done;
-                } else {
-                    gsfatal("%s:%d: %s:%d: Size '%s' generators next", __FILE__, __LINE__, p->file->name, p->lineno, p->directive->name);
-                }
-                break;
-            default:
-                gsfatal("%s:%d: Unknown phase %d", __FILE__, __LINE__, phase);
-        }
+#define TYPE_CHECKER_STACK_SIZE 0x100;
+
+#if 0
+static
+struct gsbc_type_item_kind *
+gsbc_typecheck_kind_type(struct gsfile_symtable *symtable, struct gsbc_type *type)
+{
+/*    struct gsbc_type_item_kind *res;*/
+
+    switch (type->node) {
+/*
+            case gsbc_type_prim: {
+                kind = gsbc_type_item_kind_alloc(0);
+                res->kind = type->a.prim.kind;
+                return res;
+            }
+*/
+        case gsbc_type_expr:
+            return gsbc_typecheck_kind_type_expr_summary(symtable, type->a.expr);
+        default:
+            gsfatal("%s:%d: gsbc_typecheck_kind_type(node = %d)", __FILE__, __LINE__, type->node);
     }
 
-done:
+    gsfatal("%s:%d: gsbc_typecheck_kind_type next", __FILE__, __LINE__);
 
-    if (size % sizeof(void*))
-        size += sizeof(void*) - size
-    ;
-
-    return size;
+    return 0;
 }
+
+static
+struct gsbc_type *
+gsbc_typecheck_compile_prim_type(struct gsfile_symtable *symtable, struct gsparsedline *ptype)
+{
+    struct gsbc_type *res;
+
+    if (ptype->numarguments < 3)
+        gsfatal("%s:%d: Missing primset, name or kind on primtype", ptype->file->name, ptype->lineno);
+
+    res = gsbc_type_alloc(0);
+    res->node = gsbc_type_prim;
+    res->file = ptype->file;
+    res->lineno = ptype->lineno;
+    res->a.prim.primset = gsprims_lookup_prim_set(ptype->arguments[0]->name);
+    if (!res->a.prim.primset)
+        gswarning("%s:%d: Warning: Unknown prim set %s", ptype->file->name, ptype->lineno, ptype->arguments[0]->name);
+    res->a.prim.name = ptype->arguments[1];
+    if (gssymeq(ptype->arguments[2], gssymkindexpr, "u"))
+        res->a.prim.kind = gsbc_unlifted_kind();
+    else
+        res->a.prim.kind = gssymtable_get_kind(symtable, ptype->arguments[2]);
+    if (!res->a.prim.kind)
+        gsfatal("%s:%d: Unknown kind %s", ptype->file->name, ptype->lineno, ptype->arguments[2]->name);
+
+    return res;
+}
+
+static struct gsbc_kind *gsbc_typecheck_compile_prim_kind(struct gsregistered_primkind *);
+
+static
+struct gsbc_kind *
+gsbc_typecheck_compile_prim_kind(struct gsregistered_primkind *prim)
+{
+    switch (prim->node) {
+        case gsprim_kind_unlifted:
+            return gsbc_unlifted_kind();
+        default:
+            gsfatal("%s:%d: gsbc_typecheck_compile_prim_type_kind(%d)", __FILE__, __LINE__, prim->node);
+    }
+
+    return 0;
+}
+
+static
+struct gsbc_type *
+gsbc_typecheck_compile_abstract_type(struct gsfile_symtable *symtable, struct gsparsedline *type)
+{
+    struct gsbc_type *res;
+
+    if (type->numarguments < 1)
+        gsfatal("%s:%d: Missing kind on abstype", type->file->name, type->lineno);
+
+    res = gsbc_type_alloc(0);
+    res->node = gsbc_type_abstract;
+    res->file = type->file;
+    res->lineno = type->lineno;
+    res->a.expr = gsbc_typecheck_compile_type_ops(symtable, gsinput_next_line(type));
+
+    gsfatal("%s:%d: gsbc_typecheck_compile_abstract_type next", __FILE__, __LINE__);
+    return 0;
+}
+
+/* §subsection{Sizing items} */
+
+#endif
 
 /* §section{Topological Sort (to decide order to compile file in)} */
 
@@ -287,7 +443,6 @@ static void gsbc_topsort_item(struct gsfile_symtable *symtable, struct gsbc_item
 
 static void gsbc_stack_initialize(struct gsbc_item_stack *);
 
-static
 struct gsbc_scc *
 gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
 {
@@ -304,6 +459,36 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
     gsbc_stack_initialize(&maybe_group_items);
 
     switch (parsedfile->type) {
+        case gsfileprefix: {
+            struct gsbc_item item;
+            int i;
+            item.file = parsedfile;
+            if (!parsedfile->data && !parsedfile->types)
+                gsfatal("%s: Cannot compile file: no data section so no entry points", parsedfile->name->name);
+            item.type = gssymdatalable;
+            item.v.pdata = 0;
+            if (parsedfile->data) for (i = 0; i < parsedfile->data->numitems; i++) {
+                if (item.v.pdata)
+                    gsfatal("%s: Topologically sort from second data item next", parsedfile->name->name);
+                item.v.pdata = GSDATA_SECTION_FIRST_ITEM(parsedfile->data);
+                if (gssymtable_get_scc(symtable, item))
+                    continue;
+                gsbc_topsort_item(symtable, preorders, &unassigned_items, &maybe_group_items, item, &pend, &c);
+            }
+            item.type = gssymtypelable;
+            item.v.ptype = 0;
+            if (parsedfile->types) for (i = 0; i < parsedfile->types->numitems; i++) {
+                if (item.v.ptype)
+                    item.v.ptype = gstype_section_next_item(item.v.ptype)
+                ; else
+                    item.v.ptype = GSTYPE_SECTION_FIRST_ITEM(parsedfile->types)
+                ;
+                if (gssymtable_get_scc(symtable, item))
+                    continue;
+                gsbc_topsort_item(symtable, preorders, &unassigned_items, &maybe_group_items, item, &pend, &c);
+            }
+            return res;
+        }
         case gsfiledocument: {
             struct gsbc_item item;
             item.file = parsedfile;
@@ -324,6 +509,48 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
     return res;
 }
 
+static struct gsparsedline *gstype_section_skip_type_expr(struct gsparsedline *);
+
+struct gsparsedline *
+gstype_section_next_item(struct gsparsedline *type)
+{
+    if (gssymeq(type->directive, gssymtypedirective, ".tyexpr")) {
+        return gstype_section_skip_type_expr(gsinput_next_line(type));
+    } else if (gssymeq(type->directive, gssymtypedirective, ".tyabstract")) {
+        return gstype_section_skip_type_expr(gsinput_next_line(type));
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, type, "gstype_section_next_item(%s)", type->directive->name);
+    }
+    return 0;
+}
+
+static struct gsparsedline *
+gstype_section_skip_type_expr(struct gsparsedline *p)
+{
+    for (;;) {
+        if (
+            gssymeq(p->directive, gssymtypeop, ".tygvar")
+            || gssymeq(p->directive, gssymtypeop, ".tycode")
+            || gssymeq(p->directive, gssymtypeop, ".tyarg")
+            || gssymeq(p->directive, gssymtypeop, ".tyfv")
+            || gssymeq(p->directive, gssymtypeop, ".tyforall")
+            || gssymeq(p->directive, gssymtypeop, ".tylift")
+            || gssymeq(p->directive, gssymtypeop, ".tylet")
+            || gssymeq(p->directive, gssymtypeop, ".typeapp")
+        )
+            p = gsinput_next_line(p);
+        else if (
+            gssymeq(p->directive, gssymtypeop, ".tyref")
+            || gssymeq(p->directive, gssymtypeop, ".tysum")
+        )
+            return gsinput_next_line(p);
+        else
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gstype_section_skip_type_expr(%s)", p->directive->name);
+    }
+
+    return 0;
+}
+
 static
 void
 gsbc_stack_initialize(struct gsbc_item_stack *pstack)
@@ -338,8 +565,6 @@ static int gsbc_stack_in(struct gsbc_item_stack *, struct gsbc_item);
 static struct gsbc_item gsbc_top(struct gsbc_item_stack *);
 static struct gsbc_item gsbc_pop(struct gsbc_item_stack *);
 static struct gsbc_scc *gsbc_alloc_scc(struct gsbc_item);
-static int gsbc_item_eq(struct gsbc_item, struct gsbc_item);
-
 static void gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc);
 
 static void gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc);
@@ -354,6 +579,8 @@ gsbc_topsort_outgoing_edge(struct gsfile_symtable *symtable, struct gsbc_item_ha
 {
     ulong n;
 
+    if (gssymtable_get_scc(symtable, item))
+        return;
     if (n = gsbc_preorder_get(preorders, item)) {
         if (gsbc_stack_in(unassigned_items, item))
             while (gsbc_preorder_get(preorders, gsbc_top(maybe_group_items)) > n)
@@ -388,7 +615,7 @@ gsbc_topsort_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preor
         maybe_group_items->size > 0
         && gsbc_item_eq(gsbc_top(maybe_group_items), item)
     ) {
-        struct gsbc_scc *pnew, **plast;
+        struct gsbc_scc *pnew, *p, **plast;
         struct gsbc_item last;
         plast = &pnew;
         gsbc_item_empty(&last);
@@ -397,6 +624,8 @@ gsbc_topsort_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preor
             *plast = gsbc_alloc_scc(last);
             plast = &(*plast)->next_item;
         } while (!gsbc_item_eq(last, item));
+        for (p = pnew; p; p = p->next_item)
+            gssymtable_set_scc(symtable, p->item, pnew);
         **pend = pnew;
         *pend = &pnew->next_scc;
         gsbc_pop(maybe_group_items);
@@ -456,6 +685,16 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
             );
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, tyarg, pend, pc);
         }
+    } else if (gssymeq(directive, gssymdatadirective, ".undefined")) {
+        struct gsbc_item ty;
+
+        ty = gssymtable_lookup(
+            item.v.pdata->file->name,
+            item.v.pdata->lineno,
+            symtable,
+            item.v.pdata->arguments[0]
+        );
+        gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, ty, pend, pc);
     } else {
         gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(data item; directive = %s) next", __FILE__, __LINE__, item.v.pdata->file->name, item.v.pdata->lineno, item.v.pdata->directive->name);
     }
@@ -503,7 +742,7 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
             }
             break;
         default:
-            gsfatal("%s: gsbc_subtop_sort(directive = %s) next", item.file->name->name, item.v.pcode->directive->name);
+            gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, item.v.pcode->file->name, item.v.pcode->lineno, item.v.pcode->directive->name);
     }
 
     gsfatal("%s:%d: gsbc_subtop_sort_code_item next", __FILE__, __LINE__);
@@ -566,27 +805,71 @@ gsbc_lookup_opcode(gsinterned_string dir)
     return -1;
 }
 
+static void gsbc_top_sort_subitems_of_type_expr(struct gsfile_symtable *, struct gsbc_item_hash *, struct gsbc_item_stack *, struct gsbc_item_stack *, struct gsbc_item, struct gsbc_scc ***, ulong *, struct gsparsedline *);
+
 static
 void
 gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
     gsinterned_string directive;
-    struct gsparsedline *p;
+    struct gsparsedline *ptype;
 
-    directive = item.v.ptype->directive;
+    ptype = item.v.ptype;
+    directive = ptype->directive;
     if (gssymeq(directive, gssymtypedirective, ".tyexpr")) {
-        for (p = gsinput_next_line(item.v.pcode); ; p = gsinput_next_line(p)) {
-            if (0) {
-            } else {
-                return;
-            }
-        }
-        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(type expressions) next", __FILE__, __LINE__, item.file->name->name, item.v.ptype->lineno);
+        gsbc_top_sort_subitems_of_type_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, gsinput_next_line(ptype));
+        return;
+    } else if (gssymeq(directive, gssymtypedirective, ".tyabstract")) {
+        gsbc_top_sort_subitems_of_type_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, gsinput_next_line(ptype));
+        return;
+    } else if (gssymeq(directive, gssymtypedirective, ".tydefinedprim")) {
+        struct gsregistered_primset *prims;
+        struct gsregistered_primtype *type;
+
+        if (ptype->numarguments < 1)
+            gsfatal("%s:%d: Missing primitive set name on .tydefinedprim", ptype->file->name, ptype->lineno);
+        if (!(prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)))
+            gsfatal("%s:%d: Unknown primitive set %s, which is really bad since it's supposed to contain defined types",
+                ptype->file->name,
+                ptype->lineno,
+                ptype->arguments[0]->name
+            )
+        ;
+        if (ptype->numarguments < 2)
+            gsfatal("%s:%d: Missing primitive type name on .tydefinedprim", ptype->file->name, ptype->lineno);
+        if (!(type = gsprims_lookup_type(prims, ptype->arguments[1]->name)))
+            gsfatal("%s:%d: Primitive set %s does not in fact contain a type %s", ptype->file->name, ptype->lineno, ptype->arguments[0]->name, ptype->arguments[1]->name);
+        if (type->prim_type_group != gsprim_type_defined)
+            gsfatal("%s:%d: Primite type %s in primitive set %s is not in fact a defined type", ptype->file->name, ptype->lineno, ptype->arguments[1]->name, ptype->arguments[0]->name);
+        if (ptype->numarguments < 3)
+            gsfatal("%s:%d: Missing kind on .tydefinedprim", ptype->file->name, ptype->lineno);
+        if (ptype->numarguments > 3)
+            gsfatal("%s:%d: Too many arguments to .tydefinedprim", ptype->file->name, ptype->lineno);
+        return;
     } else {
-        gsfatal("%s:%d: gsbc_subtop_sort(directive = %s) next", item.file->name->name, item.v.ptype->lineno, item.v.ptype->directive->name);
+        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, ptype->file->name, ptype->lineno, ptype->directive->name);
     }
 
-    gsfatal("%s:%d: gsbc_subtop_sort_type_item next", __FILE__, __LINE__);
+    gsfatal("%s:%d: %s:%d: gsbc_subtop_sort_type_item next", __FILE__, __LINE__, ptype->file->name, ptype->lineno);
+}
+
+static
+void
+gsbc_top_sort_subitems_of_type_expr(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc, struct gsparsedline *p)
+{
+    for (; ; p = gsinput_next_line(p)) {
+        if (gssymeq(p->directive, gssymtypeop, ".tygvar")) {
+            struct gsbc_item global;
+            global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
+            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
+        } else if (gssymeq(p->directive, gssymtypeop, ".tycode")) {
+            struct gsbc_item code;
+            code = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
+            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, code, pend, pc);
+        } else {
+            return;
+        }
+    }
 }
 
 static int gsbc_item_hash_lookup(struct gsbc_item_hash *, struct gsbc_item, union gsbc_item_hash_value*);
@@ -747,7 +1030,6 @@ gsbc_alloc_scc(struct gsbc_item item)
     return res;
 }
 
-static
 int
 gsbc_item_eq(struct gsbc_item item0, struct gsbc_item item1)
 {

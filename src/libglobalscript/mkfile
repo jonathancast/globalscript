@@ -12,12 +12,18 @@ OFILES=\
 	ace.$O \
 	symtable.$O \
 	bytecompile.$O \
+	primset.$O \
+	typealloc.$O \
+	typecheck.$O \
 
 TEST_OFILES=\
 	test.$O \
 	test_macros.$O \
 	test_load.$O \
 	test_symtable.$O \
+
+TEST_GSI_OFILES=\
+	test-gsi.$O \
 
 LIB=libglobalscript.a
 
@@ -29,18 +35,24 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 	$AR rsc $GLOBALSCRIPT/lib/$LIB $stem.$O
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h
-gsmain.$O: gsinputfile.h ace.h
-load.$O: gsinputalloc.h gsinputfile.h $GLOBALSCRIPT/include/libibio.h gsbytecompile.h
+gsmain.$O: gsinputfile.h gssetup.h ace.h
+load.$O: gsinputalloc.h gsinputfile.h $GLOBALSCRIPT/include/libibio.h gsbytecompile.h gstopsort.h gstypealloc.h gstypecheck.h
 inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsalloc.h
 eval.$O: gsheap.h
 symtable.$O: gsinputfile.h
-bytecompile.$O: gsinputfile.h gsbytecompile.h gsheap.h
+bytecompile.$O: gsinputfile.h gsbytecompile.h gsheap.h gstopsort.h gstypealloc.h
+primset.$O: gsinputfile.h gssetup.h
+typealloc.$O: gsinputfile.h gstypealloc.h
+typecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
 
 all install:V: test $GLOBALSCRIPT/lib/$LIB
 
-test:V: $O.test
+test:V: $O.test test-rc
     ./$O.test
+
+test-rc:V: rc/test $O.test-gsi test-gslib/undef.ags test-results/undef.ags-expected
+    ./rc/test
 
 $O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a
 	$LD -o $target $prereq $LDFLAGS
@@ -49,6 +61,9 @@ test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 test_macros.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 test_symtable.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h test_tests.h
 test_load.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
+
+$O.test-gsi:	$TEST_GSI_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libibio.a
+	$LD -o $target $prereq $LDFLAGS
 
 NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 

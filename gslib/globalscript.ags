@@ -1,0 +1,9 @@
+	.prefix
+
+	.type
+
+→	.tyabstract	*?^?^
+α	.tyarg	?
+β	.tyarg	?
+	.tylift
+	.tysum

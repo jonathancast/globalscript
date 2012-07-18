@@ -3,6 +3,7 @@
 #include <libglobalscript.h>
 
 #include "gsinputfile.h"
+#include "gssetup.h"
 #include "ace.h"
 
 #define FETCH_OPTION() \
@@ -14,7 +15,6 @@ gsmain(int argc, char **argv)
     argv0 = *argv;
     int is_option = 0;
     char *cur_arg = *argv;
-    gsvalue entry_point = 0;
     gsassert(
         __FILE__, __LINE__,
         sizeof(struct gs_blockdesc) == sizeof(gsvalue),
@@ -22,6 +22,8 @@ gsmain(int argc, char **argv)
         sizeof(struct gs_blockdesc),
         sizeof(gsvalue)
     );
+    gsadd_global_script_prim_sets();
+    gsadd_global_gslib();
     FETCH_OPTION();
     while (argc) {
         if (!*cur_arg) FETCH_OPTION();
@@ -32,7 +34,7 @@ gsmain(int argc, char **argv)
             if (gsisdir(cur_arg)) {
                 gsadddir(cur_arg);
             } else {
-                gsfiletype ft = gsloadfile(cur_arg, &entry_point);
+                gsfiletype ft = gsaddfile(cur_arg, &gsentrypoint);
                 switch (ft) {
                     case gsfiledocument:
                         goto have_document;
@@ -50,11 +52,10 @@ gsmain(int argc, char **argv)
     exits("no-document");
 have_document:
     if (!gsentrypoint)
-        gsfatal("Do not in fact have a document; check gsloadfile");
+        gsfatal_unimpl(__FILE__, __LINE__, "Do not in fact have a document; check gsaddfile");
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r");
     GS_SLOW_EVALUATE(gsentrypoint);
     gsrun(gsentrypoint);
     exits("");
 }
-

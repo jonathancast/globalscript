@@ -11,6 +11,8 @@ void gsmain(int argc, char **argv);
 void gsfatal(char *err, ...);
 void gswarning(char *err, ...);
 
+void gsfatal_unimpl(char *, int, char *, ...);
+
 void gsassert(char *srcfile, int srcline, int passed, char *err, ...);
 
 /* ========== Global Script Program Calculus ========== */
@@ -39,6 +41,8 @@ extern void gsrun(gsvalue);
 
 gsvalue gsmakethunk(gscode, ...);
 
+void *gsreserveheap(ulong);
+
 /* gstypecode gseval(gsvalue); */
 
 gstypecode gsnoeval(gsvalue);
@@ -47,6 +51,36 @@ gstypecode gsevalunboxed(gsvalue);
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
 #define GS_SLOW_EVALUATE(v) (IS_PTR(v) ? (*GS_EVALUATOR(v))(v) : gstyunboxed)
+
+/* §section{Primitives} */
+
+struct gsregistered_primset {
+    char *name;
+    struct gsregistered_primtype *types;
+};
+
+enum gsprim_type_group {
+    gsprim_type_defined,
+};
+
+struct gsregistered_primkind {
+    enum {
+        gsprim_kind_unlifted,
+    } node;
+};
+
+struct gsregistered_primtype {
+    char *name;
+    char *file;
+    int line;
+    enum gsprim_type_group prim_type_group;
+    struct gsregistered_primkind *kind;
+};
+
+void gsprims_register_prim_set(struct gsregistered_primset *);
+struct gsregistered_primset *gsprims_lookup_prim_set(char *name);
+
+struct gsregistered_primtype *gsprims_lookup_type(struct gsregistered_primset *, char*);
 
 /* ========== Simple Segment Manager ========== */
 

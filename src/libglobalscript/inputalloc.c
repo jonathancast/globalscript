@@ -91,6 +91,8 @@ gsparsed_file_add_segment(gsparsedfile *parsedfile, struct gsparsedfile_segment 
     struct input_block *nursury_seg;
     struct gsparsedfile_segment *new_segment;
 
+    gsfatal("%s:%d: %s: Pretty sure multi-segment files don't actually work yet", __FILE__, __LINE__, parsedfile->name->name);
+
     nursury_seg = gs_sys_seg_alloc(&gsparsed_file_desc);
     new_segment = (void*)(uchar*)nursury_seg + sizeof(*nursury_seg);
     new_segment->next = 0;
@@ -127,4 +129,62 @@ struct gsparsedline *
 gsinput_next_line(struct gsparsedline *p)
 {
     return (struct gsparsedline *)((uchar*)p + sizeof(*p) + p->numarguments * sizeof(gsinterned_string));
+}
+
+/* §section{Syntax-checking and complaining about source files} */
+
+void
+gsargcheck(struct gsparsedline *inpline, ulong argnum, char *fmt, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    if (inpline->numarguments > argnum)
+        return
+    ;
+
+    va_start(arg, fmt);
+    vseprint(buf, buf+sizeof buf, fmt, arg);
+    va_end(arg);
+
+    gsfatal("%s:%d: Missing argument %s to %s", inpline->file->name, inpline->lineno, buf, inpline->directive->name);
+}
+
+void
+gsfatal_unimpl_input(char *file, int lineno, struct gsparsedline *inpline, char *fmt, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, fmt);
+    vseprint(buf, buf+sizeof buf, fmt, arg);
+    va_end(arg);
+
+    gsfatal("%s:%d: %s:%d: %s next", file, lineno, inpline->file->name, inpline->lineno, buf);
+}
+
+void
+gsfatal_unimpl_at(char *file, int lineno, gsinterned_string infile, int inlineno, char *fmt, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, fmt);
+    vseprint(buf, buf+sizeof buf, fmt, arg);
+    va_end(arg);
+
+    gsfatal("%s:%d: %s:%d: %s next", file, lineno, infile->name, inlineno, buf);
+}
+
+void
+gsfatal_bad_input(struct gsparsedline *inpline, char *fmt, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, fmt);
+    vseprint(buf, buf+sizeof buf, fmt, arg);
+    va_end(arg);
+
+    gsfatal("%s:%d: %s", inpline->file->name, inpline->lineno, buf);
 }

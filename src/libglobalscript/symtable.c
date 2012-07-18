@@ -126,34 +126,70 @@ gshash_string(gssymboltype ty, char *nm)
 
 /* §subsection{Dynamic Allocation for the Interning Hash Table} */
 
-struct hash_block {
-    struct gs_blockdesc hdr;
-};
-
 struct gs_block_class gsstringhash_desc = {
     /* evaulator = */ gsnoeval,
     /* description = */ "Interning Hash",
 };
 
+void *gsstringhash_nursury;
+
 static
 void
 gsstring_initialize_intern_hash(void)
 {
-    struct hash_block *nursury_seg;
     struct gstring_hash_link **p;
 
-    nursury_seg = gs_sys_seg_alloc(&gsstringhash_desc);
     string_num_buckets = 0x40;
-    string_intern_hash = (struct gstring_hash_link **)((uchar*)nursury_seg + sizeof(*nursury_seg));
-    p = string_intern_hash;
-    while (p < string_intern_hash) *p++ = 0;
+    string_intern_hash = gs_sys_seg_suballoc(
+        &gsstringhash_desc,
+        &gsstringhash_nursury,
+        string_num_buckets * sizeof(*string_intern_hash),
+        sizeof(*string_intern_hash)
+    );
+
+    for (p = string_intern_hash; p < string_intern_hash + string_num_buckets; p++)
+        *p = 0
+    ;
 }
 
 static
 void
 gsstring_expand_hash_table()
 {
-    gsfatal("gsstring_expand_hash_table next");
+    ulong newnumbuckets;
+    struct gstring_hash_link **new_hash, **p, *p1, *p2;
+    ulong hash, n;
+
+    newnumbuckets = 2*string_num_buckets;
+
+    if (newnumbuckets * sizeof(*new_hash) > BLOCK_SIZE)
+        gsfatal("%s:%d: Out of memory for intern hash", __FILE__, __LINE__)
+    ;
+
+    new_hash = gs_sys_seg_suballoc(
+        &gsstringhash_desc,
+        &gsstringhash_nursury,
+        newnumbuckets * sizeof(*string_intern_hash),
+        sizeof(*string_intern_hash)
+    );
+
+    for (p = new_hash; p < new_hash + newnumbuckets; p++)
+        *p = 0
+    ;
+
+    for (p = string_intern_hash; p < string_intern_hash + string_num_buckets; p++) {
+        for (p1 = *p; p1; p1 = p1->next) {
+            hash = gshash_string(p1->string->type, p1->string->name);
+            n = hash % newnumbuckets;
+            p2 = gsstring_alloc_hash_link();
+            p2->string = p1->string;
+            p2->next = new_hash[n];
+            new_hash[n] = p2;
+        }
+    }
+
+    string_intern_hash = new_hash;
+    string_num_buckets = newnumbuckets;
 }
 
 /* §subsection{Dynamic Allocation for Interning Hash Table Alist Entries */

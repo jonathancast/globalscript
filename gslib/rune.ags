@@ -1,0 +1,10 @@
+	.prefix
+
+	.type
+
+rune.t	.tyexpr
+rune.prim.rune	.tygvar
+	.tylift
+	.tyref	rune.prim.rune
+
+rune.prim.rune	.tydefinedprim	rune.prim	rune	u

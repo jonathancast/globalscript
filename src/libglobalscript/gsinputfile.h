@@ -2,6 +2,7 @@
     (((u32int)(pb)[0] << 24) | ((u32int)(pb)[1] << 16) | ((u32int)(pb)[2] << 8) | ((u32int)(pb)[3]))
 
 int gsisdir(char *filename);
+void gsadd_global_gslib(void);
 void gsadddir(char *filename);
 
 typedef enum {
@@ -11,7 +12,7 @@ typedef enum {
     gsfileunknown = 0x40,
 } gsfiletype;
 
-gsfiletype gsloadfile(char *filename, gsvalue *pentry);
+gsfiletype gsaddfile(char *filename, gsvalue *pentry);
 
 typedef enum {
     gssymfilename,
@@ -23,7 +24,9 @@ typedef enum {
     gssymtypedirective,
     gssymtypeop,
     gssymtypelable,
-    gssymreglable,
+    gssymkindexpr,
+    gssymprimsetlable,
+    gssymconstrlable,
 } gssymboltype;
 
 typedef struct gsstring_value {
@@ -64,6 +67,9 @@ struct gstypesection {
 };
 
 #define GSDATA_SECTION_FIRST_ITEM(p) ((struct gsparsedline*)((uchar*)p+sizeof(*p)))
+#define GSTYPE_SECTION_FIRST_ITEM(p) ((struct gsparsedline*)((uchar*)p+sizeof(*p)))
+
+struct gsparsedline *gstype_section_next_item(struct gsparsedline *);
 
 struct gsparsedline {
     gsinterned_string file;
@@ -87,9 +93,17 @@ struct gsbc_item {
 };
 
 void gsbc_item_empty(struct gsbc_item *);
+int gsbc_item_eq(struct gsbc_item, struct gsbc_item);
 
 struct gsbc_code_item_type {
 };
+
+void gsfatal_unimpl_input(char *, int, struct gsparsedline *, char *, ...);
+void gsfatal_unimpl_at(char *, int, gsinterned_string, int, char *, ...);
+void gsfatal_bad_input(struct gsparsedline *, char *, ...);
+void gsargcheck(struct gsparsedline *, ulong, char *, ...);
+
+#define MAX_ITEMS_PER_SCC 0x100
 
 struct gsfile_symtable;
 
@@ -99,8 +113,24 @@ void gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_strin
 void gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pcode);
 void gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *ptype);
 
+void gsappend_symtable(struct gsfile_symtable *symtable0, struct gsfile_symtable *symtable1);
+
+struct gstype;
+struct gstype_item_kind;
+struct gsbco;
+
 void gssymtable_set_expr_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbc_code_item_type *);
+void gssymtable_set_type(struct gsfile_symtable *, gsinterned_string, struct gstype *);
+void gssymtable_set_type_expr_kind(struct gsfile_symtable *, gsinterned_string, struct gstype_item_kind *);
+void gssymtable_set_data(struct gsfile_symtable *, gsinterned_string, gsvalue);
+void gssymtable_set_code(struct gsfile_symtable *, gsinterned_string, struct gsbco *);
 
 struct gsbc_data_item_type *gssymtable_get_data_type(struct gsfile_symtable *symtable, gsinterned_string label);
+struct gstype_item_kind *gssymtable_get_type_expr_kind(struct gsfile_symtable *, gsinterned_string);
+struct gstype *gssymtable_get_type(struct gsfile_symtable *, gsinterned_string);
+struct gsbc_kind *gssymtable_get_kind(struct gsfile_symtable *, gsinterned_string);
 
 struct gsbc_item gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, gsinterned_string label);
+
+struct gsbc_scc *gssymtable_get_scc(struct gsfile_symtable *symtable, struct gsbc_item);
+void gssymtable_set_scc(struct gsfile_symtable *symtable, struct gsbc_item, struct gsbc_scc *);

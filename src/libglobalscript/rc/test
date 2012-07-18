@@ -1,0 +1,5 @@
+#! /home/jcast/plan9/bin/rc -e
+
+if (./$O.test-gsi ./test-gslib ./test-gslib/undef.ags > ./test-results/undef.ags-actual)
+    exit 1
+diff ./test-results/undef.ags-actual ./test-results/undef.ags-expected
