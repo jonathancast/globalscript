@@ -1,0 +1,7 @@
+module 'rune ∝ 〈
+    module 'prim ∝ primset{rune.prim
+        definedtype 'rune :: u;
+    };
+    type 't = ⌊ prime.rune ⌋;
+〉 (where
+)

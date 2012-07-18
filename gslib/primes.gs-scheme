@@ -1,0 +1,29 @@
+'primes.0 ∝ list 2 (repeat true)
+    (where
+        'list !'n (false : 'bs) = list (n+1) bs;
+        'list !'p (true : 'bs) = p : list (p + 1) (sieve 1 bs)
+            where
+                'sieve !'n ('b:'bs) = analyze n == p
+                    case false. b : sieve (n+1) bs
+                    case true. false : sieve 1 bs
+        ;
+    )
+;
+'primes.1 ∝ list 2 1 (repeat 1)
+    where
+        'list !'pr !'pe 'is = pr : list (pr + i) (length is2) is3
+            (where
+                'is1 ∝ take (pr * pe) is;
+                'is2 ∝ sieve 0 is1
+                    (where
+                        'sieve !_ nil = nil;
+                        'sieve !'n ('i:'is) = for (!'n1 ∝ n + i)
+                            analyze n1 `mod` pr == 0
+                                case true. sieve n1 is
+                                case false. i : sieve n1 is
+                        ;
+                    )
+                ;
+                !('i:is3) ∝ cycle is2;
+            )
+;

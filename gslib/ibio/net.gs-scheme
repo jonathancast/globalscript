@@ -1,0 +1,22 @@
+module 'net ∝ 〈
+    overload module 'c 'm :: 〈 . . . 〉;
+
+    type addr :: *;
+
+    type 'connection 's = 〈 data :: socket s; local :: addr; dir :: file.name; ctl :: socket rune; 〉;
+
+    dial :: ∀ 'm 's | ibio.external.io.c s. instance module c m → addr → m (connection s);
+    -- ↑ A typical call to §gs{dial} looks like
+    -- > module 'conn ← dial addr<tcp!www.google.com!80>;
+    -- in the scope of which
+    -- > conn.data :: socket rune;
+    -- > conn.local :: addr;
+    -- > conn.dir :: file.name;
+    -- > conn.ctl :: socket rune;
+
+    announce :: ∀ 'm. instance module c m → addr → m 〈 ctl :: socket rune; dir :: file.name; 〉;
+    listen :: ∀ 'm. instance module c m → file.name → m 〈 ctl :: socket rune; dir :: file.name; 〉;
+    accept :: ∀ 'm 's | ibio.external.io.c s. instance module c m → socket rune → file.name → m 〈 data :: socket s; 〉;
+    reject :: ∀ 'm. instance module c m → socket rune → file.name → list.t rune → m 〈〉;
+〉 (where
+)

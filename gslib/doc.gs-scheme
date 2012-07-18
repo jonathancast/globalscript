@@ -1,0 +1,59 @@
+'par 'rest = for (~《 'pcs, 'rest1, 》 ∝ paragraph.pieces.get rest) ?paragraphs (paragraph pcs:) rest1;
+'paragraph.pieces.get 'rest = 《
+    #paragraph.constituents rest,
+    &paragraph.constituents nil rest,
+》;
+
+'section 'title.frag 'rest = for ('title = title.cleanup title.frag; ~《 'scs, 'rest1, 》 ∝ section.pieces.get rest;)
+    ?sections (section title scs:) rest1
+;
+'section.pieces.get 'rest =
+    (λ 'r. 《
+        &subsections ((#subsections ∘ #1) r) $ #0 r,
+        &subsections nil $ #1 r,
+    》) $
+        subsection.pieces.get rest
+;
+
+'paragraphs.get 'rest = analyze rest
+    case &paragraph.constituents nil _. 《
+        &paragraphs (#paragraphs rest) 〈〉,
+        &paragraphs nil rest,
+    》
+    case _. error str{'\§section' must be followed by \§par}
+;
+
+'title.cleanup 'frag = for ('total = frag 〈 'paragraph.constituents ∝ nil; 〉) #paragraph.constitutents total;
+
+'chapter 'title.frag 'rest = for ('title = title.cleanup title.frag; ~《 'ccs, 'rest1, 》 ∝ chapter.pieces.get rest;)
+    ?chapters (chapter title ccs:) rest1
+;
+'chapter.pieces.get 'rest =
+    (λ 'r. 《
+        &sections (#sections $ #1 r) $ #0 r,
+        &sections nil $ #1 r,
+    》) $
+        section.pieces.get rest
+;
+
+overload module concatenat.c 'α :: 〈
+    empty :: α;
+    (<>) :: α → α → α;
+〉;
+concatenate.monoid :: ∀ 'α. instance module concatenate.c α → monoid.t α;
+implicit concatenate.monoid (instance module concatenate.c);
+'concatenate.monoid (module 'c) = 〈 'id = c.empty; 'op = c. <>; 〉;
+concatenate.byMonoid :: ∀ 'α. monoid.t α → instance module concatenate.c α;
+'concatenate.byMonoid (module 'mon) = 〈 'empty = mon.id; ('<>) = mon.op; 〉;
+
+concat :: ∀ 't 'α. instance module traversable.c t → instance module concatenable.c α → t α → α;
+implicit concat (instance module traversable.c) (instance module concatenable.c);
+'concat 't 'c = monoid.fold @t (concatenate.monoid @c);
+
+instance module concatenable.c (list.t 'α) = 〈
+    'empty = nil;
+    'xn '<> 'ys = fodlr (:) ys xn;
+〉 = 〈
+    'empty = nil;
+    ('<>) = flip (foldr (:));
+〉;
