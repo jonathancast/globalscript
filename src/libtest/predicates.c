@@ -103,3 +103,16 @@ ok_ulong_ge(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...)
 
     ok(srcfile, srcline, n0 >= n1, "%s: %ux !>= %ux", buf, n0, n1);
 }
+
+void
+ok_cstring_eq(char *srcfile, int srcline, char *s0, char *s1, char *err, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, err);
+    vseprint(buf, buf+sizeof buf, err, arg);
+    va_end(arg);
+
+    ok(srcfile, srcline, !strcmp(s0, s1), "%s: '%s' != '%s'", buf, s0, s1);
+}
