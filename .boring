@@ -21,3 +21,4 @@
 \.tex\.ps$
 ^bin/ibio$
 mkfile\.ps$
+\.ags-actual$
