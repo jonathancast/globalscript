@@ -13,6 +13,5 @@ p9main(int argc, char **argv)
     test_macros();
     test_symtable();
     test_load();
-    gsfatal("Remove gstypealloc.h include from bytecompile.c probably");
     exits("");
 }

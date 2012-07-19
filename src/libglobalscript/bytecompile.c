@@ -10,7 +10,6 @@
 #include "gsbytecompile.h"
 #include "gsheap.h"
 #include "gstopsort.h"
-#include "gstypealloc.h"
 
 void
 gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, int n)
