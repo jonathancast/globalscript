@@ -1282,6 +1282,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
     gstypes_process_type_declarations(symtable, items, kinds, n);
     gstypes_compile_types(symtable, items, types, n);
     gstypes_kind_check_scc(symtable, items, types, kinds, n);
+/* TODO: Type-check (data & code items)! */
 
     /* §section{Byte-compilation} */
 

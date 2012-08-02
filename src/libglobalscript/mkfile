@@ -15,6 +15,7 @@ OFILES=\
 	primset.$O \
 	typealloc.$O \
 	typecheck.$O \
+	bctopsort.$O \
 
 TEST_OFILES=\
 	test.$O \
@@ -41,10 +42,11 @@ inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsalloc.h
 eval.$O: gsheap.h
 symtable.$O: gsinputfile.h
-bytecompile.$O: gsinputfile.h gsbytecompile.h gsheap.h gstopsort.h gstypealloc.h
+bytecompile.$O: $GLOBALSCRIPT/include/libibio.h gsinputfile.h gsbytecompile.h gsheap.h gstopsort.h gstypealloc.h
 primset.$O: gsinputfile.h gssetup.h
 typealloc.$O: gsinputfile.h gstypealloc.h
 typecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
+bctopsort.$O: gsinputfile.h gstopsort.h
 
 all install:V: test $GLOBALSCRIPT/lib/$LIB
 

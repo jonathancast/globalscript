@@ -424,3 +424,59 @@ gsfatal_unimpl_type(char *file, int lineno, struct gstype *ty, char * err, ...)
         gsfatal("%s:%d: Panic: Un-implemented operation in release build: %s", ty->file->name, ty->lineno, buf)
     ;
 }
+
+#ifdef typechecking
+static
+struct gsbc_code_item_type *
+gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedline *p)
+{
+    enum {
+        rtgvar,
+    } regtype;
+    int nregs;
+/*    struct gsbc_code_item_type *regtypes[MAX_REGISTERS]; */
+
+    /*
+        Grar
+
+        Have to go forward to set up lexical environment then go backward to get type.
+        
+        Here's what let's do:
+        §begin{itemize}
+            §item Go forward
+            §item Keep a stack of the continuation ops as we go
+            §item Build the type when we reach the end
+            §item Then do another loop backward over the stack mutating the type as we go
+            §item Also do type-checking in this second loop
+        §end{itemize}
+    */
+    regtype = rtgvar;
+    for (; ; p = gsinput_next_line(p)) {
+        if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+            struct gsbc_data_item_type *varty;
+
+            if (regtype != rtgvar)
+                gsfatal("%s:%d: %s:%d: Illegal .gvar; next register should be %s",
+                    __FILE__,
+                    __LINE__,
+                    p->file->name,
+                    p->lineno,
+                    "unknown"
+                )
+            ;
+            if (nregs >= MAX_REGISTERS)
+                gsfatal("%s:%d: %s:%d: Too many registers; max 0x%x", __FILE__, __LINE__, p->file->name, p->lineno, MAX_REGISTERS);
+            if (varty = gssymtable_get_data_type(symtable, p->label)) {
+            } else {
+                gsfatal("%s:%d: %s:%d: Cannot find type of %s", __FILE__, __LINE__, p->file->name, p->lineno, p->label->name);
+            }
+/*            regtypes[nregs++] = varty; */
+            gsfatal("%s:%d: %s:%d: Type-check .gvar next", __FILE__, __LINE__, p->file->name, p->lineno);
+        } else {
+            gsfatal("%s:%d: %s:%d: Cannot type-check op %s yet", __FILE__, __LINE__, p->file->name, p->lineno, p->directive->name);
+        }
+    }
+
+    return 0;
+}
+#endif
