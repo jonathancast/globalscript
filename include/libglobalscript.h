@@ -4,7 +4,7 @@
 extern "C" {
 #endif   
 
-/* ========== Basic Thread Management Stuff ========== */
+/* §section{Basic Thread Management Stuff} */
 
 void gsmain(int argc, char **argv);
 
@@ -15,7 +15,7 @@ void gsfatal_unimpl(char *, int, char *, ...);
 
 void gsassert(char *srcfile, int srcline, int passed, char *err, ...);
 
-/* ========== Global Script Program Calculus ========== */
+/* §section{Global Script Program Calculus} */
 
 typedef uintptr gsvalue;
 typedef uintptr gscode;
@@ -82,7 +82,7 @@ struct gsregistered_primset *gsprims_lookup_prim_set(char *name);
 
 struct gsregistered_primtype *gsprims_lookup_type(struct gsregistered_primset *, char*);
 
-/* ========== Simple Segment Manager ========== */
+/* §section{Simple Segment Manager} */
 
 typedef struct gs_block_class {
     gstypecode (*evaluator)(gsvalue);
@@ -106,7 +106,7 @@ void gs_sys_seg_free(void *);
 
 void *gs_sys_seg_suballoc(registered_block_class, void**, ulong, ulong);
 
-/* ========== API ========== */
+/* §section{API} */
 
 typedef struct apiinstr
 {
