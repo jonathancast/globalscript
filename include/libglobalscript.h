@@ -43,8 +43,6 @@ gsvalue gsmakethunk(gscode, ...);
 
 void *gsreserveheap(ulong);
 
-/* gstypecode gseval(gsvalue); */
-
 gstypecode gsnoeval(gsvalue);
 gstypecode gsevalunboxed(gsvalue);
 

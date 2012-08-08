@@ -11,14 +11,6 @@ gs_get_gsvalue_state(gsvalue val)
     return 0;
 }
 
-gsvalue
-gseval(gsvalue val)
-{
-    gsfatal("gseval(%x) next", val);
-
-    return 0;
-}
-
 gsvalue gsnoeval(gsvalue val)
 {
     gsfatal("Tried to evaluate a gsvalue which doesn't point into an evaluable block!");
