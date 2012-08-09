@@ -4,6 +4,10 @@
 extern "C" {
 #endif   
 
+/* §section{A few pre-declarations since Global Script is idiotic} */
+
+struct gs_blockdesc;
+
 /* §section{Basic Thread Management Stuff} */
 
 void gsmain(int argc, char **argv);
@@ -14,6 +18,29 @@ void gswarning(char *err, ...);
 void gsfatal_unimpl(char *, int, char *, ...);
 
 void gsassert(char *srcfile, int srcline, int passed, char *err, ...);
+
+/* §section Internal error-reporting stuff */
+
+typedef enum {
+    gssymfilename,
+    gssymdatadirective,
+    gssymdatalable,
+    gssymcodedirective,
+    gssymcodeop,
+    gssymcodelable,
+    gssymtypedirective,
+    gssymtypeop,
+    gssymtypelable,
+    gssymkindexpr,
+    gssymprimsetlable,
+    gssymconstrlable,
+} gssymboltype;
+
+typedef struct gsstring_value {
+    ulong size;
+    gssymboltype type;
+    char name[];
+} *gsinterned_string;
 
 /* §section{Global Script Program Calculus} */
 
@@ -45,10 +72,21 @@ void *gsreserveheap(ulong);
 
 gstypecode gsnoeval(gsvalue);
 gstypecode gsevalunboxed(gsvalue);
+gstypecode gswhnfeval(gsvalue);
 
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
 #define GS_SLOW_EVALUATE(v) (IS_PTR(v) ? (*GS_EVALUATOR(v))(v) : gstyunboxed)
+
+int gsiserror_block(struct gs_blockdesc *);
+
+struct gserror {
+    gsinterned_string file;
+    int lineno;
+    enum {
+        gserror_undefined,
+    } type;
+};
 
 /* §section{Primitives} */
 
@@ -97,7 +135,7 @@ struct gs_blockdesc {
 #define START_OF_BLOCK(p) ((void*)((uchar*)(p) + sizeof(*p)))
 #define END_OF_BLOCK(p) ((void*)((uchar*)(p) + BLOCK_SIZE))
 
-#define GS_EVALUATOR(p) (IS_PTR(p) ? ((struct gs_block_class*)BLOCK_CONTAINING(p))->evaluator : gsevalunboxed)
+#define GS_EVALUATOR(p) (IS_PTR(p) ? ((struct gs_blockdesc*)BLOCK_CONTAINING(p))->class->evaluator : gsevalunboxed)
 
 void *gs_sys_seg_alloc(registered_block_class cl);
 void gs_sys_seg_free(void *);

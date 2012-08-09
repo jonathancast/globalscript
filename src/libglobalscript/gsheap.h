@@ -8,3 +8,5 @@ struct gsbco {
 };
 
 void *gsreservebytecode(ulong);
+
+void *gsreserveerrors(ulong);

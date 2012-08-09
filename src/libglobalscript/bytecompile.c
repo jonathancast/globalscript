@@ -9,42 +9,95 @@
 #include "gsheap.h"
 #include "gstopsort.h"
 
+static uint gsbc_heap_size_item(struct gsbc_item);
+static uint gsbc_error_size_item(struct gsbc_item);
+
 void
-gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, int n)
+gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, gsvalue *errors, int n)
 {
-    uint total_size, offsets[MAX_ITEMS_PER_SCC];
-    int i, data_size;
-    void *base;
+    uint total_heap_size, heap_offsets[MAX_ITEMS_PER_SCC], heap_size[MAX_ITEMS_PER_SCC],
+        total_error_size, error_offsets[MAX_ITEMS_PER_SCC], error_size[MAX_ITEMS_PER_SCC]
+    ;
+    int i;
+    void *heap_base, *error_base;
 
     if (n > MAX_ITEMS_PER_SCC)
         gsfatal("%s:%d: Too many items in SCC; 0x%x items; max 0x%x", __FILE__, __LINE__, n, MAX_ITEMS_PER_SCC);
 
-    data_size = sizeof(struct gsbco*);
-
-    total_size = 0;
+    total_heap_size = total_error_size = 0;
     for (i = 0; i < n; i++) {
-        int size;
+        heap_offsets[i] = total_heap_size;
+        heap_size[i] = gsbc_heap_size_item(items[i]);
+        total_heap_size += heap_size[i];
+        if (total_heap_size % sizeof(struct gsbco*))
+            total_heap_size += sizeof(struct gsbco*) - (total_heap_size % sizeof(struct gsbco*))
+        ;
 
-        offsets[i] = total_size;
-        size = items[i].type == gssymdatalable ? data_size : 0;
-        total_size += size;
+        error_offsets[i] = total_error_size;
+        error_size[i] = gsbc_error_size_item(items[i]);
+        total_error_size += error_size[i];
+        if (total_error_size % sizeof(gsinterned_string))
+            total_error_size += sizeof(gsinterned_string) - (total_error_size % sizeof(gsinterned_string))
+        ;
     }
 
-    if (total_size > BLOCK_SIZE)
-        gsfatal("%s:%d: Total size too large; 0x%x > 0x%x", __FILE__, __LINE__, total_size, BLOCK_SIZE)
+    if (total_heap_size > BLOCK_SIZE)
+        gsfatal("%s:%d: Total heap size too large; 0x%x > 0x%x", __FILE__, __LINE__, total_heap_size, BLOCK_SIZE)
+    ;
+    if (total_error_size > BLOCK_SIZE)
+        gsfatal("%s:%d: Total error size too large; 0x%x > 0x%x", __FILE__, __LINE__, total_error_size, BLOCK_SIZE)
     ;
 
-    base = gsreserveheap(total_size);
+    heap_base = gsreserveheap(total_heap_size);
+    error_base = gsreserveerrors(total_error_size);
 
     for (i = 0; i < n; i++) {
-        if (items[i].type == gssymdatalable) {
-            heap[i] = (gsvalue)((uchar*)base + offsets[i]);
+        heap[i] = errors[i] = 0;
+        if (heap_size[i]) {
+            heap[i] = (gsvalue)((uchar*)heap_base + heap_offsets[i]);
             gssymtable_set_data(symtable, items[i].v.pdata->label, heap[i]);
+        } else if (error_size[i]) {
+            errors[i] = (gsvalue)((uchar*)error_base + error_offsets[i]);
+            gssymtable_set_data(symtable, items[i].v.pdata->label, errors[i]);
         }
     }
 }
 
-static int gsbc_size_item(struct gsbc_item item);
+static
+uint
+gsbc_heap_size_item(struct gsbc_item item)
+{
+    struct gsparsedline *p;
+
+    if (item.type != gssymdatalable) return 0;
+
+    p = item.v.pdata;
+    if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
+        return 0;
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, item.v.pdata, "gsbc_heap_size_item(%s)", p->directive->name);
+    }
+    return 0;
+}
+
+static
+uint
+gsbc_error_size_item(struct gsbc_item item)
+{
+    struct gsparsedline *p;
+
+    if (item.type != gssymdatalable) return 0;
+
+    p = item.v.pdata;
+    if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
+        return sizeof(struct gserror);
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, item.v.pdata, "gsbc_heap_size_item(%s)", p->directive->name);
+    }
+    return 0;
+}
+
+static int gsbc_bytecode_size_item(struct gsbc_item item);
 
 void
 gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gsbco **bcos, int n)
@@ -61,7 +114,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
         int size;
 
         offsets[i] = total_size;
-        size = items[i].type == gssymcodelable ? gsbc_size_item(items[i]) : 0;
+        size = items[i].type == gssymcodelable ? gsbc_bytecode_size_item(items[i]) : 0;
         total_size += size;
     }
 
@@ -81,7 +134,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
 
 static
 int
-gsbc_size_item(struct gsbc_item item)
+gsbc_bytecode_size_item(struct gsbc_item item)
 {
     int size;
     struct gsparsedline *p;
@@ -148,10 +201,10 @@ done:
 
 /* §section{Actual Byte Compiler} */
 
-static void gsbc_bytecompile_data_item(struct gsparsedline *, gsvalue *, int, int);
+static void gsbc_bytecompile_data_item(struct gsparsedline *, gsvalue *, gsvalue *, int, int);
 
 void
-gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, struct gsbco **bcos, int n)
+gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, gsvalue *errors, struct gsbco **bcos, int n)
 {
     int i;
 
@@ -160,7 +213,7 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             case gssymtypelable:
                 break;
             case gssymdatalable:
-                gsbc_bytecompile_data_item(items[i].v.pdata, heap, i, n);
+                gsbc_bytecompile_data_item(items[i].v.pdata, heap, errors, i, n);
                 break;
             default:
                 gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.pcode, "gsbc_bytecompile_scc(type = %d)", items[i].type);
@@ -168,34 +221,18 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
     }
 }
 
-static struct gsbco *gsbc_undefined(void);
-
 static
 void
-gsbc_bytecompile_data_item(struct gsparsedline *p, gsvalue *heap, int i, int n)
+gsbc_bytecompile_data_item(struct gsparsedline *p, gsvalue *heap, gsvalue *errors, int i, int n)
 {
-    struct gsbco **hp;
-
-    hp = (struct gsbco **)heap[i];
-
     if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
-        *hp = gsbc_undefined();
+        struct gserror *er;
+
+        er = (struct gserror *)errors[i];
+        er->file = p->file;
+        er->lineno = p->lineno;
+        er->type = gserror_undefined;
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "Data directive %s next", p->directive->name);
     }
-}
-
-static struct gsbco *gsbc_undefined_constant;
-
-static
-struct gsbco *
-gsbc_undefined()
-{
-    if (!gsbc_undefined_constant) {
-        gsbc_undefined_constant = gsreservebytecode(sizeof(struct gsbco));
-        gsbc_undefined_constant->tag = gsbco_undefined;
-        gsbc_undefined_constant->size = sizeof(struct gsbco);
-    }
-
-    return gsbc_undefined_constant;
 }

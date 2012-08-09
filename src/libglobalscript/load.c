@@ -1,4 +1,4 @@
-/* §source.file{Loading String Code Files & Other Source Files */
+/* §source.file{Loading String Code Files & Other Source Files} */
 
 #include <u.h>
 #include <libc.h>
@@ -1259,10 +1259,8 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
     struct gsbc_item items[MAX_ITEMS_PER_SCC];
     struct gstype *types[MAX_ITEMS_PER_SCC];
     struct gstype_item_kind *kinds[MAX_ITEMS_PER_SCC];
-    gsvalue heap[MAX_ITEMS_PER_SCC];
+    gsvalue heap[MAX_ITEMS_PER_SCC], errors[MAX_ITEMS_PER_SCC];
     struct gsbco *bcos[MAX_ITEMS_PER_SCC];
-/*>    ulong code_space_needed[MAX_ITEMS_PER_SCC], total_code_space_needed;*/
-/*>    void *code_space;*/
     int n, i;
 
     n = 0;
@@ -1286,9 +1284,9 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 
     /* §section{Byte-compilation} */
 
-    gsbc_alloc_data_for_scc(symtable, items, heap, n);
+    gsbc_alloc_data_for_scc(symtable, items, heap, errors, n);
     gsbc_alloc_code_for_scc(symtable, items, bcos, n);
-    gsbc_bytecompile_scc(symtable, items, heap, bcos, n);
+    gsbc_bytecompile_scc(symtable, items, heap, errors, bcos, n);
 
     if (pentry) {
         for (i = 0; i < n; i++) {
@@ -1296,7 +1294,12 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
                 items[i].type == gssymdatalable
                 && items[i].v.pdata == GSDATA_SECTION_FIRST_ITEM(parsedfile->data)
             ) {
-                *pentry = heap[i];
+                if (heap[i])
+                    *pentry = heap[i];
+                else if (errors[i])
+                    *pentry = errors[i];
+                else
+                    gsfatal_unimpl(__FILE__, __LINE__, "%s: Entry point: couldn't find in any section");
                 goto have_entry;
             }
         }

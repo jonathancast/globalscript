@@ -14,27 +14,6 @@ typedef enum {
 
 gsfiletype gsaddfile(char *filename, gsvalue *pentry);
 
-typedef enum {
-    gssymfilename,
-    gssymdatadirective,
-    gssymdatalable,
-    gssymcodedirective,
-    gssymcodeop,
-    gssymcodelable,
-    gssymtypedirective,
-    gssymtypeop,
-    gssymtypelable,
-    gssymkindexpr,
-    gssymprimsetlable,
-    gssymconstrlable,
-} gssymboltype;
-
-typedef struct gsstring_value {
-    ulong size;
-    gssymboltype type;
-    char name[];
-} *gsinterned_string;
-
 gsinterned_string gsintern_string(gssymboltype, char*);
 
 int gssymeq(gsinterned_string, gssymboltype, char*);
