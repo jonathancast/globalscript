@@ -354,18 +354,6 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
     return 1;
 }
 
-enum gscodedirective {
-    gsexprdirective,
-    gsnumcodedirectives,
-};
-
-static gsinterned_string interned_code_directives[gsnumcodedirectives];
-static void gsparse_code_initialize_interned_code_directives(void);
-
-static char *code_directive_names[] = {
-    ".expr",
-};
-
 enum gscodeop {
     gsgvarop,
     gsappop,
@@ -390,8 +378,6 @@ long
 gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
     struct gsparsedline *parsedline;
-    int i;
-    enum gscodedirective directive;
 
     parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, numfields);
     parsedfile->code->numitems++;
@@ -403,26 +389,12 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
 
     gssymtable_add_code_item(symtable, parsedline->label, parsedfile, parsedline);
 
-    if (!interned_code_directives[0])
-        gsparse_code_initialize_interned_code_directives();
-
     parsedline->directive = gsintern_string(gssymcodedirective, fields[1]);
 
-    for (i = 0; i < gsnumcodedirectives; i++)
-        if (parsedline->directive == interned_code_directives[i]) {
-            directive = i;
-            goto found_directive;
-        }
-
-    gsfatal("%s:%d: Unrecognized code directive %s", filename, *plineno, fields[1]);
-
-found_directive:
-
-    switch (directive) {
-        case gsexprdirective:
-            return gsparse_code_ops(filename, parsedfile, ppseg, parsedline, chan, line, plineno, fields);
-        default:
-            gsfatal("%s:%d: Unimplemented code directive %s", filename, *plineno, fields[1]);
+    if (gssymeq(parsedline->directive, gssymcodedirective, ".expr")) {
+        return gsparse_code_ops(filename, parsedfile, ppseg, parsedline, chan, line, plineno, fields);
+    } else {
+        gsfatal("%s:%d: Unimplemented code directive %s", filename, *plineno, fields[1]);
     }
 
     gsfatal("%s:%d: gsparse_code_item next", __FILE__, __LINE__);
@@ -497,16 +469,6 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_s
         gsfatal("%s:%d: EOF in middle of reading expression", filename, codedirective->lineno);
 
     return -1;
-}
-
-static
-void
-gsparse_code_initialize_interned_code_directives()
-{
-    int i;
-
-    for (i = 0; i < gsnumcodedirectives; i++)
-        interned_code_directives[i] = gsintern_string(gssymcodedirective, code_directive_names[i]);
 }
 
 static
