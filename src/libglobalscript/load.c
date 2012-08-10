@@ -236,6 +236,11 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
             gsfatal("%s:%d: EOF before reading file directive", filename, lineno);
     }
     if (!strcmp(fields[1], ".document")) {
+        if (skip_docs) {
+            if (gsclosefile(chan, pid) < 0)
+                gsfatal("%s: Error in closing file: %r", filename);
+            return 0;
+        }
         type = gsfiledocument;
     } else if (!strcmp(fields[1], ".prefix")) {
         type = gsfileprefix;
