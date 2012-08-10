@@ -319,17 +319,12 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
     switch (directive) {
         case gscode_directive_expr:
             for (p = gsinput_next_line(item.v.pcode); ; p = gsinput_next_line(p)) {
-                opcode = gsbc_lookup_opcode(p->directive);
-                switch (opcode) {
-                    case gscode_op_gvar:
-                        {
-                            struct gsbc_item global;
-                            global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
-                            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
-                        }
-                        break;
-                    default:
-                        return;
+                if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+                    struct gsbc_item global;
+                    global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
+                    gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
+                } else {
+                    return;
                 }
             }
             break;
