@@ -1,0 +1,64 @@
+\documentclass{article}
+\title{Global Script String Code Specification}
+\author{Jonathan Cast\\\texttt{<jcast@globalscript.org>}}
+
+\usepackage{bussproofs}
+\usepackage{haskell}
+
+\newcommand\sequent\vdash
+\newcommand\bs{$\backslash$}
+
+\newcommand\ccode[1]{\texttt{#1}}
+\newcommand\stringcode[1]{\texttt{#1}}
+
+\newcommand\unimpl[1]{\footnote{\textbf{Unimplemented: }#1}}
+\newcommand\agsonly[1]{\footnote{\textbf{\texttt{.ags}-only: }#1}}
+
+\begin{document}
+
+\maketitle
+
+\section{Organization of a Program}
+
+Global Script programs are organized into a \emph{prefix},
+contained in some number of \emph{prefix files},
+ and a \emph{document}, contained in a single \emph{document file}.
+Essentially, prefix files contain library code, whereas document files contain code specific to a single program.
+At the source level, each prefix file consists of a single \emph{prefix generator};
+a document file consists of an expression
+--- the program's entry point or `\ccode{main}' ---
+and an optional $\hskwd{where}$ clause.
+For various reasons, string code syntax flattens both prefix and document files out into a sequence of \emph{items}.
+
+\section{Layout of a String Code File}
+
+\subsection{Lexical Syntax}
+
+\begin{itemize}
+    \item Each line consists of a sequence of fields separated by whitespace.
+
+    \item Lines may optionally be terminated by the character \stringcode{\#}, which begins a comment.
+
+    \item String constants and cahracter constants are un-quoted and may contain the standard C escapes as well as
+        \stringcode{\bs{}s}, which represents an ASCII space,
+        \stringcode{\bs{}h}, which represents a \stringcode{\#} character,
+        and a syntax for writing arbitrary UTF coding units using ASCII characters.
+        \unimpl{String and character literals are un-implemented.}
+        \agsonly{String literals are only supported for simplifying hand-written string code, for bootstrapping.}
+
+    \item If a line begins with whitespace, field 0 of that line is the empty string;
+        any run of linear whitespace is equivalent to a signle space and whitespace at the end of the line is ignored,
+        so empty fields are not possible except for field 0.
+
+    \item Lines consisting exclusively of whitespace and/or comments are ignored.
+
+    \item In general, field 0 of any line will be referred to as the \emph{label};
+        field 1 will be variously referred to as the \emph{directive} or the \emph{op}.
+        Labels of width 0 will be referred to as \emph{missing};
+        labels may be required or forbidden, depending on the op.
+        Any non-blank non-comment line must contain a field 1;
+        additional fields may be required or permitted depending on the directive or op;
+        they will be referred to as the \emph{arguments}.
+\end{itemize}
+
+\end{document}
