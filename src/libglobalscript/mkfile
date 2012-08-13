@@ -50,10 +50,12 @@ bctopsort.$O: gsinputfile.h gstopsort.h
 
 all install:V: test $GLOBALSCRIPT/lib/$LIB
 
-test:V: $O.test test-rc
+test:V: $O.test
     ./$O.test
 
-test-rc:V: rc/test $O.test-gsi test-gslib/undef.ags test-results/undef.ags-expected
+integration-test:V: test test-rc
+
+test-rc:V: rc/test $O.test-gsi
     ./rc/test
 
 $O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a

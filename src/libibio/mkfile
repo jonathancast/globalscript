@@ -36,6 +36,8 @@ unix/ioenv.$O: unix/iosysconstants.h iofile.h
 
 all install:V: test $GLOBALSCRIPT/lib/$LIB
 
+integration-test:V: test
+
 test:V: $O.test
     ./$O.test
 

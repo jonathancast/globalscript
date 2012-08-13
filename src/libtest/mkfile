@@ -24,6 +24,8 @@ all install:V: test $GLOBALSCRIPT/lib/$LIB
 test:V: $O.test
 	./$O.test
 
+integration-test:V: test
+
 $O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 	$LD -o $target $prereq $LDFLAGS
 

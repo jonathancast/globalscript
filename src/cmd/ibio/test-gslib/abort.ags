@@ -1,0 +1,10 @@
+	.document
+
+	.data
+
+	.closure	_epcode	_eptype
+
+	.code
+
+_epcode	.expr
+	.enter _abort

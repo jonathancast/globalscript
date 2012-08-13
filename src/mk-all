@@ -1,0 +1,13 @@
+#! /usr/local/plan9/bin/rc
+
+cd $GLOBALSCRIPT/src/libtest &&
+    mk install &&
+    cd ../libglobalscript/ &&
+    mk install &&
+    cd ../libibio/ &&
+    mk install &&
+    cd ../cmd/ibio/ &&
+    mk install &&
+    cd ../gsac &&
+    mk
+

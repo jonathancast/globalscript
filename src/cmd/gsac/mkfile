@@ -5,7 +5,12 @@ STAGE0_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage0/%.gsac}
 STAGE1_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage1/%.gsac}
 STAGE2_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage2/%.gsac}
 
-test: $STAGE1_TARGETS $STAGE2_TARGETS
+all: $STAGE2_TARGETS
+
+test:V:
+	:
+
+integration-test:V: $STAGE1_TARGETS $STAGE2_TARGETS
 	for (i in cgs_src/*.cgs) diff -c `{echo $i | sed 's,cgs_src/(.*).cgs,stage1/\1.gsac'} `{echo $i | sed 's,cgs_src/(.*).cgs,stage2/\1.gsac'}
 
 stage0/%.gsac: $GLOBALSCRIPT/bin/ibio $AGS_SOURCES ags_src/gsac.ags cgs_src/%.cgs

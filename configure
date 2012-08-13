@@ -1,0 +1,15 @@
+#! /bin/sh
+
+GLOBALSCRIPT=${GLOBALSCRIPT:-$PWD}
+
+u sed -i "s,/usr/local/plan9/,$PLAN9/,g" $GLOBALSCRIPT/src/test-all
+u sed -i "s,/usr/local/plan9/,$PLAN9/,g" $GLOBALSCRIPT/src/mk-all
+chmod a+x $GLOBALSCRIPT/src/test-all
+chmod a+x $GLOBALSCRIPT/src/mk-all
+
+chmod a+x $GLOBALSCRIPT/src/libglobalscript/rc/test
+chmod a+x $GLOBALSCRIPT/src/cmd/ibio/rc/test
+
+echo 'Append '
+echo 'GLOBALSCRIPT='$GLOBALSCRIPT
+echo 'to ~/.bashrc or run manually to use this source tree'

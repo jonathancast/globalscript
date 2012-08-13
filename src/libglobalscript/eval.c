@@ -20,6 +20,8 @@ gsnoeval(gsvalue val)
     return 0;
 }
 
+static struct gsbco *gsheap_lock(struct gsclosure *);
+
 gstypecode
 gsheapeval(gsvalue val)
 {

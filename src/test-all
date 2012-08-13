@@ -1,12 +1,12 @@
-#! /home/jcast/plan9/bin/rc
+#! /usr/local/plan9/bin/rc
 
 cd $GLOBALSCRIPT/src/libtest &&
-    mk install &&
+    mk integration-test && mk install &&
     cd ../libglobalscript/ &&
-    mk install &&
+    mk integration-test && mk install &&
     cd ../libibio/ &&
-    mk install &&
+    mk integration-test && mk install &&
     cd ../cmd/ibio/ &&
-    mk install &&
+    mk integration-test && mk install &&
     cd ../gsac/ &&
-    mk test
+    mk integration-test

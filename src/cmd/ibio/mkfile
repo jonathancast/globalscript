@@ -11,7 +11,15 @@ TARG=ibio
 
 $PROG: $GLOBALSCRIPT/lib/libglobalscript.a $GLOBALSCRIPT/lib/libibio.a
 
-test:VN: test-hello3.ibio.ags
+all install:V: test
+
+test:V: 
+    :
+
+integration-test:V: test-rc
+
+test-rc:V: rc/test $O.ibio test-gslib/abort.ags test-results/abort.ags-expected
+    ./rc/test
 
 %.ibio.ags-out: $PROG $GLOBALSCRIPT/bin/gsbc `{echo $GLOBALSCRIPT/src/cmd/gsbc/*.pm} %.ibio.ags
 	./$PROG $stem.ibio.ags > $stem.ibio.ags-out
