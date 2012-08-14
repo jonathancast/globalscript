@@ -299,20 +299,11 @@ enum gsbc_code_directive {
 
 static enum gsbc_code_directive gsbc_lookup_code_directive(gsinterned_string);
 
-enum gsbc_code_op {
-    gscode_op_gvar,
-    gscode_op_app,
-    gsnum_code_ops,
-};
-
-static enum gsbc_code_op gsbc_lookup_opcode(gsinterned_string);
-
 static
 void
 gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
     enum gsbc_code_directive directive;
-    enum gsbc_code_op opcode;
     struct gsparsedline *p;
 
     directive = gsbc_lookup_code_directive(item.v.pcode->directive);
@@ -359,35 +350,6 @@ gsbc_lookup_code_directive(gsinterned_string dir)
     }
 
     gsfatal("%s: Unknown code directive", dir->name);
-
-    return -1;
-}
-
-struct {
-    char *name;
-    gsinterned_string interned;
-} gsbc_code_op_table[] = {
-    /* gscode_op_gvar = */ { ".gvar", 0, },
-    /* gscode_op_app = */ { ".app", 0, },
-    { 0, 0, },
-};
-
-static
-enum gsbc_code_op
-gsbc_lookup_opcode(gsinterned_string dir)
-{
-    enum gsbc_code_op i;
-
-    for (i = 0; i < gsnum_code_ops; i++) {
-        if (!gsbc_code_op_table[i].name)
-            gsfatal("Missing items in gsbc_code_op_table; only %d items", i);
-        if (!gsbc_code_op_table[i].interned)
-            gsbc_code_op_table[i].interned = gsintern_string(gssymcodeop, gsbc_code_op_table[i].name);
-        if (gsbc_code_op_table[i].interned == dir)
-            return i;
-    }
-
-    gsfatal("%s:%d: Unknown code op '%s'", __FILE__, __LINE__, dir->name);
 
     return -1;
 }
