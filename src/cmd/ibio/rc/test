@@ -1,4 +1,4 @@
-#! /home/jcast/plan9/bin/rc -e
+#! /usr/local/plan9/bin/rc -e
 
 if (./$O.ibio ./test-gslib ./test-gslib/abort.ags >[2] ./test-results/abort.ags-actual) {
     echo 'ibio didn''t fail' >[2=1]
