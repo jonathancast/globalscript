@@ -7,6 +7,9 @@
 
 \newcommand\sequent\vdash
 \newcommand\type{\hskwd{type}}
+\newcommand\defn[1]{\emph{#1}}
+
+\newcommand\implicit{\hskwd{implicit}}
 
 \begin{document}
 
@@ -16,20 +19,88 @@
 
 \section{Variables}
 
+The judgment form for variables is
+\begin{equation}
+    \Gamma \sequent v :: \overline{\tau_i :: \kappa_i}; \overline{a_j :: \tau_j}; \tau
+\end{equation}
+($i \in [0, n)$, $j \in [n, n + m)$).
+\begin{itemize}
+    \item $\Gamma$ is the type environment,
+    \item $v$ is the variable term in question,
+    \item $\overline{\tau_i :: \kappa_i}$ is a sequence of \defn{default type arguments} and their kinds,
+    \item $\overline{a_j :: \tau_j}$ is a sequence of \defn{default arguments} and their types, and
+    \item $\tau$ is the (monomorphic) type of the variable term.
+\end{itemize}
+A \defn{variable term} is a simple variable
+followed by a sequence of \defn{explicit type arguments} of the form \<@(\type \tau)\>
+followed by a sequence of \defn{explicit arguments} of the form \<@e\>.
+
+\subsection{Variables Without \<\implicit\> Declarations}
+
 \begin{prooftree}
-    \AxiomC{}
-    \RightLabel{$n \ge m$}
+    \AxiomC{$\Gamma \sequent \overline{\tau_i :: \kappa_i}$}
     \UnaryInfC{
-        \<\hsalign{
-            \Gamma, x :: \forall\;'\alpha_0\;'\alpha_1\;\ldots{}\;'\alpha_n .\;\tau \sequent
-                \hsbody{
-                    x\;@(\type\;\tau_0)\;\ldots\;@(\type\;\tau_m) ::
-                        \tau[\alpha_0,\;\ldots,\;\alpha_n / \tau_0,\ldots,\;\tau_m,\;\tau_{m+1},\;\ldots,\;\tau_{n}]
-                }
-        }\>
+        \<\Gamma, x :: \forall\;\overline{'\alpha_i :: \kappa_i}. \tau \sequent x :: \overline{\tau_i :: \kappa_i}; ; \tau'\>
     }
 \end{prooftree}
+\begin{itemize}
+    \item $i \in [0, n)$;
+    \item $\Gamma$ does not contain an \<\implicit\> declaration for $x$;
+    \item $\tau'$ means $[\overline{\alpha_i\to\tau_i}]\tau$,
+        the result of substituting the type arguments for the $\forall$-bound variables in $\tau$.
+\end{itemize}
 
+\subsection{Variables With \<\implicit\> Declarations}
+
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent \overline{\tau_i :: \kappa_i}$}
+    \AxiomC{$\Gamma \sequent \overline{e_j :: \tau'_j}$}
+    \BinaryInfC{
+        \<\Gamma, x :: \forall\;\overline{'\alpha_i :: \kappa_i}. \overline{\tau_j} \to \tau, \implicit\;x\;\overline{e_j} \sequent x :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau'_j}; \tau'\>
+    }
+\end{prooftree}
+\begin{itemize}
+    \item $i \in [0, n)$, $j \in [n, n + m)$;
+    \item $\tau'_j$ means $[\overline{\alpha_i\to\tau_i}]\tau_j$,
+        the result of substituting the type arguments for the $\forall$-bound variables in $\tau_j$;
+    \item $\tau'$ means $[\overline{\alpha_i\to\tau_i}]\tau$,
+        the result of substituting the type arguments for the $\forall$-bound variables in $\tau$.
+\end{itemize}
+
+\subsection{Explicit Type Applications}
+
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent x :: \tau_0 :: \kappa_0, \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$}
+    \UnaryInfC{
+        \<\Gamma \sequent x\;@(\type\;\tau_0) :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau\>
+    }
+\end{prooftree}
+($i \in [1, n)$, $j \in [n, n + m)$).
+
+\subsection{Explicit Applications}
+
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent x :: \overline{\tau_i :: \kappa_i}; e_n :: \tau_n, \overline{e_j :: \tau_j}; \tau$}
+    \AxiomC{$\Gamma \sequent e :: \tau_n$}
+    \BinaryInfC{
+        $\Gamma \sequent x\;@e :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$
+    }
+\end{prooftree}
+($i \in [1, n)$, $j \in [n + 1, n + m)$).
+
+\subsection{Variables Used as Expressions}
+
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent x :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$}
+    \UnaryInfC{$\Gamma \sequent x :: \tau$}
+\end{prooftree}
+($i \in [1, n)$, $j \in [n, n + m)$).
+
+\subsection{TODOs}
+
+\begin{itemize}
+    \item Really shouldn't require explicit arguments to be well-typed unless they end up being used.
+\end{itemize}
 
 \chapter{Types}
 
