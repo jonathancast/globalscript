@@ -1,0 +1,15 @@
+module 'gsac.core ∝ 〈
+    'read 'fn = for (
+        -- In principle, we need to read in the pragmas as a sort of db.
+        -- I think we can get away with cheating & just reading the §code{file-class} pragmas §latin{ad-hoc} for now.
+        'mb ← receive (m/\s*/ *> optional (
+            m/file-class:\s+/ *> (
+                m/prefix/ *> unit ft.prefix
+                <|> m/document/ *> unit ft.document
+            ) <* m/\s*\n/
+        ));
+    ) analyze mb
+        case nothing. abend qq{§fn: no-file-type}
+        case just ft.prefix. prefix.read
+        case just ft.document. document.read
+〉

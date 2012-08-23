@@ -1,0 +1,15 @@
+abend qq{unimpl gsac}
+--------------------------------------------------------------------------------
+for ('as ← env.args.get) analyze as
+    case nil. abend qq{unimpl gsac no-args}
+    case _. abend qq{unimpl gsac args}
+--------------------------------------------------------------------------------
+for (
+    'as ← env.args.get;
+    'fs ← analyze as
+        case nil. unit <$> gsac.core.read;
+        case _. foreachM as $ λ 'a.
+            for ('f ← either abend unit =<< file.open o{r} a) gsace.core.read << f
+    ;
+) abend qq{unimpl gsac parsed-args}
+--------------------------------------------------------------------------------
