@@ -3,11 +3,20 @@
 \author{Jonathan Cast\\\texttt{<jonathanccast@fastmail.fm>}}
 
 \usepackage{bussproofs}
+\usepackage{latexsym}
 \usepackage{haskell}
 
 \newcommand\sequent\vdash
+\newcommand\provides\rhd
+
 \newcommand\type{\hskwd{type}}
+\newcommand\module{\hskwd{module}}
+\newcommand\view{\hskwd{view}}
+
 \newcommand\defn[1]{\emph{#1}}
+
+\newcommand\chapterref[1]{Chapter \ref{#1}}
+\newcommand\sectionref[1]{Section \ref{#1}}
 
 \newcommand\implicit{\hskwd{implicit}}
 
@@ -102,9 +111,110 @@ followed by a sequence of \defn{explicit arguments} of the form \<@e\>.
     \item Really shouldn't require explicit arguments to be well-typed unless they end up being used.
 \end{itemize}
 
+\section{Functions}
+
+\subsection{Function Literals}
+
+Lambda terms have the rule:\footnote{See \chapterref{patterns}, Patterns}
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent p :: \tau_1 \provides \Gamma'$}
+    \AxiomC{$\Gamma, \Gamma', \sequent e :: \tau_2$}
+    \BinaryInfC{$\Gamma \sequent \lambda{} p. e :: \tau_1 \to \tau_2$}
+\end{prooftree}
+The pattern $p$ must be a lax or strict (not monoidal) pattern; see \sectionref{pattern-classes}, Classes of Patterns.
+BUG: $\lambda$ takes \emph{multiple} patterns (0 or more).
+End BUG.
+
+\subsection{Applications}
+
+Applications have the rule:
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent e_1 :: \tau_1 \to \tau_2$}
+    \AxiomC{$\Gamma \sequent e_2 :: \tau_1$}
+    \BinaryInfC{$\Gamma \sequent e_1\hsap e_2 :: \tau_2$}
+\end{prooftree}
+
+\chapter{Patterns}
+\label{patterns}
+
+The judgment form for patterns is
+\begin{equation}
+    \Gamma \sequent \overline{p_i :: \tau_i} \provides \Gamma'
+\end{equation}
+
+\section{Concatenating Sequences of Patterns}
+
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent \overline{p_i :: \tau_i} \provides \Gamma'_1$}
+    \AxiomC{$\Gamma \sequent \overline{p_j :: \tau_j} \provides \Gamma'_2$}
+    \BinaryInfC{$\Gamma \sequent \overline{p_i :: \tau_i}, \overline{p_j :: \tau_j}, \provides \Gamma'_1, \Gamma'_2,$}
+\end{prooftree}
+($i \in [0, n)$, $j \in [n, n+m)$).
+The bound variables of the patterns must all be distinct.
+TODO: need a way to handle module patterns \<\module\;'m\>,
+for which the bound variables are selected to be distinct from any other patterns in the same sequence.
+The rule is basically: calculate the set of variables which \emph{could} be bound by any given pattern.
+Then each \<\module\;'m\> pattern brings into scope those variables which could be bound by it,
+and which cannot be bound by any other pattern.
+This only applies to $\module$ patterns with no export list,
+or whose export list contain $..$ .  See \chapterref{modules}, Modules.
+End TODO.
+
+\section{Classes of Patterns}
+\label{pattern-classes}
+
+\begin{itemize}
+    \item \defn{Lax} patterns TODO
+    \item \defn{Strict} patterns TODO
+    \item \defn{Monoidal} patterns
+    
+    Any pattern that's neither lax nor strict.
+\end{itemize}
+
+\section{Specific patterns}
+
+\paragraph{Pattern variables}
+Pattern variables have the syntactic form \<'x\>, the ASCII apostrophe followed by a variable name.
+Pattern variables where the variable is an infix operator need to be enclosed in parentheses, e.g., \<('+)\>
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent \tau :: *$}
+    \UnaryInfC{$\Gamma \sequent\; 'x :: \tau \provides x :: \tau$}
+\end{prooftree}
+
+\paragraph{Wildcard Patterns}
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent \tau :: *$}
+    \UnaryInfC{$\Gamma \sequent \_ :: \tau \provides$}
+\end{prooftree}
+
+\paragraph{Views}
+The typing judgment for views has the form $\Gamma \sequent \view\;v :: \overline{\tau_i}; \tau$, for $i \in [0, n)$.
+This means:
+\begin{itemize}
+    \item $v$ is a view,
+    \item $v$ has arrity $n$,
+    \item $v$'s arguments have types $\tau_i$, respectively, and
+    \item $v$'s result has type $\tau$.
+\end{itemize}
+Note that, if $v$ is both a view and a function, \emph{it need not have the same type in both cases}.
+Nor, if it does have the same type, need its definition as a view and as a function have any specific relation.
+Nevertheless giving them the same type and relating the definitions in some (documented) way is strongly recommended.
+Global Script does not draw a distinction between constructors and views.
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent \view\;v :: \overline{\tau_i}; \tau$}
+    \AxiomC{$\Gamma \sequent \overline{p_i :: \tau_i} \provides \Gamma'$}
+    \BinaryInfC{$\Gamma \sequent v\;\overline{p_i} :: \tau \provides \Gamma'$}
+\end{prooftree}
+TODO: How do you declare views?  How do views and constructors interract, exactly? End TODO.
+
+TODO: Existential types.  End TODO.
+
+Language TODO: Expression arguments to views (e.g., \<n+m\> patterns).  End TODO.
+
 \chapter{Types}
 
 \chapter{Modules}
+\label{modules}
 
 \chapter{Overloading}
 
