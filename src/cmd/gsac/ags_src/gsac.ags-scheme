@@ -1,0 +1,39 @@
+	.document
+
+	.data
+
+	.tycoerce	ibio.in	_real.entry
+_real.entry	.closure	_real.entry.c
+_un.no.args	.string	unimpl\sgsac\sno-args
+_un.args	.string	unimpl\sgsac\sargs
+
+	.code
+
+_real.entry.c	.leprog
+_real.entry.body	.gcode
+env.args.get	.gvar
+as	.ecall	env.args.get
+	.ejump _real.entry.body	as
+
+_real.entry.body	.expr
+_real.entry.cases	.gcont
+as	.fvar
+	.force	_real.entry.cases
+	.enter	as
+
+_real.entry.cases	.forcecont
+as0	.arg
+as1	.tycoerce	list.out	as0
+	.branch	as1
+	.case	nil
+	.app	_unimpl.no.args
+	.typeapp	_empty.record
+	.typeapp	rune
+	.typeapp	rune
+	.enter	abend
+	.case	_
+	.app	_unimpl.args
+	.typeapp	_empty.record
+	.typeapp	rune
+	.typeapp	rune
+	.enter	abend
