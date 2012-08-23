@@ -1,0 +1,38 @@
+§article Some Thoughts on Adding Support for Imperative Paradigm
+
+§author Jonathan Cast §email{jcast@globalscript.org}
+
+Note: this document is written in idmc syntax so we don't have to deal with the complications LaTeX would add to setting Global Script or when viewing the source.
+
+§display{§begin{gs}
+    -- Idea: put parentheses §emph{around} the while/if clauses, rather than around the generators:
+
+    (\while (just 'x ← receive (optional symbol))
+        _ ← ship (mkline $ mkdecimal x);
+    )
+
+    (while (p ← e) gs)
+
+    for while (p ← e0) (gs) e1
+    ≡ for rec (
+        'loop ∝ e0 >>= λ 'x. analyze x
+            case p. for (gs) loop
+            case _. e1
+        ;
+      ) loop
+
+    for if (p ← e0) (gs) e1
+    ≡ e0 >>= λ 'x. analyze x
+        case p. for (gs) e1
+        case _. e1
+
+    for if (p ← e0) (gs0) else (gs1) e1
+    ≡ e0 >>= λ 'x. analyze x
+        case p. for (gs0) e1
+        case _. for (gs1) e1
+
+    for if (p ∝ e0) (gs0) else (gs1) e1
+    ≡ analyze e0
+        case p. for (gs0) e1
+        case _. for (gs1) e1
+§end{gs}}
