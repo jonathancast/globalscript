@@ -164,7 +164,21 @@ End TODO.
 \label{pattern-classes}
 
 \begin{itemize}
-    \item \defn{Lax} patterns TODO
+    \item \defn{Lax} patterns are precisely these:
+        \begin{itemize}
+            \item Pattern variables \<'x\>;
+            \item Wildcard patterns \<\_\>;
+            \item Module patterns where:
+                \begin{itemize}
+                    \item there is no export list, e.g. \<\module\;'m\>,
+                    \item there is a simple export list, e.g. \<\module\;'m.(x, y, z,)\>,
+                    \item there is a complex export list,
+                        e.g. \<\module\;'m.\left(\hsalign[c]{x = p_0,\\y = p_1,\\z = p_2,}\right)\>,
+                        where all of the patterns given for the members are themselves lax;
+                    \end{itemize}
+                \item Lazy patterns \<\sim{}\!p\>; and
+                \item Parallel patterns \<\parallel\!p\>.
+        \end{itemize}
     \item \defn{Strict} patterns TODO
     \item \defn{Monoidal} patterns
     
