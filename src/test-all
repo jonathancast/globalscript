@@ -3,6 +3,10 @@
 cd $GLOBALSCRIPT/src/libtest &&
     mk integration-test && mk install &&
     cd ../libglobalscript/ &&
+    mk $GLOBALSCRIPT/lib/libglobalscript.a &&
+    cd ../libibio/ &&
+    mk $GLOBALSCRIPT/lib/libibio.a &&
+    cd ../libglobalscript/ &&
     mk integration-test && mk install &&
     cd ../libibio/ &&
     mk integration-test && mk install &&
