@@ -5,6 +5,7 @@
 #include <libglobalscript.h>
 #include "gsinputfile.h"
 #include "gstypealloc.h"
+#include "gstypecheck.h"
 
 static struct gs_block_class gstype_descr = {
     /* evaluator = */ gsnoeval,
@@ -12,50 +13,116 @@ static struct gs_block_class gstype_descr = {
 };
 static void *gstype_nursury;
 
+static void *gstype_alloc(ulong);
+
+static int gstypes_size_item(struct gsbc_item);
+static int gstypes_size_defn(struct gsbc_item);
+
 void
-gstypes_alloc_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, int n)
+gstypes_alloc_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gstype **defns, int n)
 {
-    uint total_size, offsets[MAX_ITEMS_PER_SCC];
-    int i, align, type_size;
+    uint total_size,
+        sizes[MAX_ITEMS_PER_SCC], offsets[MAX_ITEMS_PER_SCC],
+        defn_sizes[MAX_ITEMS_PER_SCC], defn_offsets[MAX_ITEMS_PER_SCC]
+    ;
+    int i, align;
     void *base;
 
     align = sizeof(types[0]->node);
-    type_size = sizeof(struct gstype);
-    if (type_size % align)
-        type_size += (align - type_size % align) 
-    ;
 
     if (n > MAX_ITEMS_PER_SCC)
         gsfatal("%s:%d: Too many items in SCC; 0x%x items; max 0x%x", __FILE__, __LINE__, n, MAX_ITEMS_PER_SCC);
 
     total_size = 0;
     for (i = 0; i < n; i++) {
-        int size;
-
-        offsets[i] = total_size;
-        size = items[i].type == gssymtypelable ? type_size : 0;
-        total_size += size;
+        sizes[i] = gstypes_size_item(items[i]);
+        defn_sizes[i] = gstypes_size_defn(items[i]);
+        if (sizes[i] % align)
+            sizes[i] += (align - sizes[i] % align) 
+        ;
+        if (defn_sizes[i] % align)
+            defn_sizes[i] += (align - defn_sizes[i] % align) 
+        ;
+        offsets[i] = sizes[i] ? total_size : 0;
+        defn_offsets[i] = defn_sizes[i] ? total_size + sizes[i] : 0;
+        
+        total_size += sizes[i] + defn_sizes[i];
     }
 
     if (total_size > BLOCK_SIZE)
         gsfatal("%s:%d: Total size too large; 0x%x > 0x%x", __FILE__, __LINE__, total_size, BLOCK_SIZE)
     ;
 
-    base = gs_sys_seg_suballoc(&gstype_descr, &gstype_nursury, total_size, align);
+    base = gstype_alloc(total_size);
 
     for (i = 0; i < n; i++) {
-        if (items[i].type == gssymtypelable) {
+        if (sizes[i]) {
             types[i] = (struct gstype *)((uchar*)base + offsets[i]);
             types[i]->node = gstype_uninitialized;
             gssymtable_set_type(symtable, items[i].v.ptype->label, types[i]);
+        } else {
+            types[i] = 0;
+        }
+        if (defn_sizes[i]) {
+            defns[i] = (struct gstype *)((uchar*)base + defn_offsets[i]);
+            defns[i]->node = gstype_uninitialized;
+            gssymtable_set_abstype(symtable, items[i].v.ptype->label, defns[i]);
+        } else {
+            defns[i] = 0;
         }
     }
 }
 
-static struct gstype_expr_summary *gstype_compile_type_ops(struct gsfile_symtable *, struct gsparsedline *);
+static
+int
+gstypes_size_item(struct gsbc_item item)
+{
+    switch (item.type) {
+        case gssymtypelable:
+            if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tydefinedprim")) {
+                return sizeof(struct gstype_prim);
+            } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyexpr")) {
+                return sizeof(struct gstype_indirection);
+            } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyabstract")) {
+                return sizeof(struct gstype_abstract);
+            } else {
+                gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size %s type items", item.v.ptype->directive->name);
+            }
+        case gssymdatalable:
+            return 0;
+        default:
+            gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size type item of type %d", item.type);
+    }
+    return 0;
+}
+
+static
+int
+gstypes_size_defn(struct gsbc_item item)
+{
+    switch (item.type) {
+        case gssymtypelable:
+            if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tydefinedprim")) {
+                return 0;
+            } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyexpr")) {
+                return 0;
+            } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyabstract")) {
+                return sizeof(struct gstype_indirection);
+            } else {
+                gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size abstype defn for %s type items", item.v.ptype->directive->name);
+            }
+        case gssymdatalable:
+            return 0;
+        default:
+            gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size abstype defn for item of type %d", item.type);
+    }
+    return 0;
+}
+
+static void gstype_compile_type_ops(struct gsfile_symtable *, struct gsparsedline *, struct gstype *);
 
 void
-gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **ptypes, int n)
+gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **ptypes, struct gstype **defns, int n)
 {
     int i;
 
@@ -76,23 +143,37 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                     res->lineno = ptype->lineno;
 
                     if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyabstract")) {
+                        struct gstype *defn;
+                        struct gstype_abstract *abs;
+
                         res->node = gstype_abstract;
-                        res->a.expr = gstype_compile_type_ops(symtable, gsinput_next_line(ptype));
+                        abs = (struct gstype_abstract *)res;
+                        abs->name = item.v.ptype->label;
+                        if (item.v.ptype->numarguments > 0)
+                            abs->kind = gskind_compile(ptype, ptype->arguments[0]);
+                        else
+                            abs->kind = 0;
+
+                        defn = defns[i];
+
+                        gstype_compile_type_ops(symtable, gsinput_next_line(ptype), defn);
                     } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyexpr")) {
-                        res->node = gstype_expr;
-                        res->a.expr = gstype_compile_type_ops(symtable, gsinput_next_line(ptype));
-                    } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tydefinedprim")) {
+                        gstype_compile_type_ops(symtable, gsinput_next_line(ptype), res);
+                    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tydefinedprim")) {
+                        struct gstype_prim *prim;
+
                         res->node = gstype_prim;
-                        res->a.prim.primset = gsprims_lookup_prim_set(ptype->arguments[0]->name);
-                        if (!res->a.prim.primset)
+                        prim = (struct gstype_prim *)res;
+                        prim->primset = gsprims_lookup_prim_set(ptype->arguments[0]->name);
+                        if (!prim->primset)
                             gswarning("%s:%d: Warning: Unknown prim set %s",
                                 ptype->file->name,
                                 ptype->lineno,
                                 ptype->arguments[0]->name
                             )
                         ;
-                        res->a.prim.name = ptype->arguments[1];
-                        res->a.prim.kind = gskind_compile(ptype, ptype->arguments[2]);
+                        prim->name = ptype->arguments[1];
+                        prim->kind = gskind_compile(ptype, ptype->arguments[2]);
                     } else {
                         gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "gstypes_compile_types(%s)", item.v.ptype->directive->name);
                     }
@@ -106,341 +187,391 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
     }
 }
 
-static struct gs_block_class gstype_expr_summary_descr = {
-    /* evaluator = */ gsnoeval,
-    /* description = */ "GSBC Type Expr Summary",
-};
-static void *gstype_expr_summary_nursury;
-
-static struct gs_block_class gstype_expr_descr = {
-    /* evaluator = */ gsnoeval,
-    /* descrption = */ "GSBC Type Expression",
-};
-static void *gstype_expr_nursury;
-
 #define MAX_REGISTERS 0x100
-#define MAX_CONTINUATIONS 0x100
 
-#define PUSH_CONTINUATION \
-    do { \
-        if (nconts >= MAX_CONTINUATIONS) \
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Continuation stack overflow (max # of continuations %x)", MAX_CONTINUATIONS); \
-        tyconts[nconts++] = p; \
-    } while (0)
-
-static
-struct gstype_expr_summary *
-gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedline *p)
-{
-    gsinterned_string regs[MAX_REGISTERS], codelables[MAX_REGISTERS];
-    struct gstype *tyglobals[MAX_REGISTERS];
-    struct gstype *codelabledests[MAX_REGISTERS];
-    struct gskind *fvkinds[MAX_REGISTERS], *argkinds[MAX_REGISTERS], *forallkinds[MAX_REGISTERS];
-    int let_bodies[MAX_REGISTERS], let_nfvs[MAX_REGISTERS], let_fvs[MAX_REGISTERS][MAX_REGISTERS];
-    struct gsparsedline *tyconts[MAX_CONTINUATIONS];
-    int nregs, nglobals, ncodelabels, nfvs, nargs, nforalls, nlets, nconts;
-    int i, j;
-    struct gstype_expr *expr, *oexpr;
-    struct gstype_expr_summary *res;
-    void *dest;
-    ulong size_fvs;
+struct gstype_compile_type_ops_closure {
+    int nregs;
+    gsinterned_string regs[MAX_REGISTERS];
+    struct gstype *regvalues[MAX_REGISTERS];
+    struct gsfile_symtable *symtable;
     enum {
         regglobal,
-        regcode,
-        regfv,
         regarg,
         regforall,
         reglet,
     } regclass;
+};
 
-    nregs = 0;
-    nglobals = 0;
-    ncodelabels = 0;
-    nfvs = 0;
-    nargs = 0;
-    nforalls = 0;
-    nlets = 0;
-    nconts = 0;
+static struct gstype *gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *, struct gsparsedline *);
 
-    regclass = regglobal;
-    for (; ; p = gsinput_next_line(p)) {
-        if (gssymeq(p->directive, gssymtypeop, ".tygvar")) {
-            if (nregs >= MAX_REGISTERS)
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
-            ;
-            if (regclass > regglobal)
-                gsfatal_bad_input(p, "Too late to add type globals")
-            ;
-            regs[nregs] = p->label;
-            tyglobals[nglobals] = gssymtable_get_type(symtable, p->label);
-            if (!tyglobals[nregs])
-                gsfatal_bad_input(p, "Couldn't find referent %s", p->label->name)
-            ;
-            nregs++, nglobals++;
-        } else if (gssymeq(p->directive, gssymtypeop, ".tycode")) {
-            if (ncodelabels >= MAX_REGISTERS)
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Code register overflow")
-            ;
-            if (regclass > regcode)
-                gsfatal_bad_input(p, "Too late to add code labels")
-            ;
-            regclass = regcode;
-            codelables[ncodelabels] = p->label;
-            codelabledests[ncodelabels] = gssymtable_get_type(symtable, p->label);
-            if (!codelabledests[ncodelabels])
-                gsfatal_bad_input(p, "Couldn't find referent %s", p->label->name)
-            ;
-            ncodelabels++;
-        } else if (gssymeq(p->directive, gssymtypeop, ".tyfv")) {
-            if (nregs >= MAX_REGISTERS)
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
-            ;
-            if (regclass > regfv)
-                gsfatal_bad_input(p, "Too late to add free type variables")
-            ;
-            regclass = regfv;
-            regs[nregs] = p->label;
-            gsargcheck(p, 0, "kind");
-            fvkinds[nfvs] = gskind_compile(p, p->arguments[0]);
-            nregs++, nfvs++;
-        } else if (gssymeq(p->directive, gssymtypeop, ".tyarg")) {
-            if (nregs >= MAX_REGISTERS)
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
-            ;
-            if (regclass > regarg)
-                gsfatal_bad_input(p, "Too late to add type arguments")
-            ;
-            regclass = regarg;
-            regs[nregs] = p->label;
-            gsargcheck(p, 0, "kind");
-            argkinds[nargs] = gskind_compile(p, p->arguments[0]);
-            nregs++, nargs++;
-        } else if (gssymeq(p->directive, gssymtypeop, ".tyforall")) {
-            if (nregs >= MAX_REGISTERS)
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
-            ;
-            if (regclass > regforall)
-                gsfatal_bad_input(p, "Too late to add foralls")
-            ;
-            regclass = regforall;
-            regs[nregs] = p->label;
-            gsargcheck(p, 0, "kind");
-            forallkinds[nforalls] = gskind_compile(p, p->arguments[0]);
-            nregs++, nforalls++;
-        } else if (gssymeq(p->directive, gssymtypeop, ".tylet")) {
-            int body = 0;
-            int fvs[MAX_REGISTERS];
+static
+void
+gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gstype *res)
+{
+    struct gstype_compile_type_ops_closure cl;
+    struct gstype_indirection *indir;
 
-            if (nregs >= MAX_REGISTERS)
+    cl.symtable = symtable;
+
+    cl.nregs = 0;
+
+    cl.regclass = regglobal;
+
+    res->node = gstype_indirection;
+    indir = (struct gstype_indirection *)res;
+
+    indir->referent = gstype_compile_type_ops_worker(&cl, p);
+}
+
+static struct gstype *gstypes_compile_type_var(gsinterned_string, int, gsinterned_string, struct gskind *);
+static struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
+
+static
+struct gstype *
+gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
+{
+    int i, j;
+    struct gstype *res;
+
+    if (gssymeq(p->directive, gssymtypeop, ".tygvar")) {
+        if (cl->nregs >= MAX_REGISTERS)
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
+        ;
+        if (cl->regclass > regglobal)
+            gsfatal_bad_input(p, "Too late to add type globals")
+        ;
+        cl->regclass = regglobal;
+        cl->regs[cl->nregs] = p->label;
+        cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
+        if (!cl->regvalues[cl->nregs])
+            gsfatal_bad_input(p, "Couldn't find referent %s", p->label->name)
+        ;
+        cl->nregs++;
+        return gstype_compile_type_ops_worker(cl, gsinput_next_line(p));
+    } else if (gssymeq(p->directive, gssymtypeop, ".tylambda")) {
+        struct gskind *kind;
+        struct gstype_lambda *lambda;
+
+        if (cl->nregs >= MAX_REGISTERS)
                 gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
             ;
-            if (regclass > reglet)
-                gsfatal_bad_input(p, "Too late to add type lets")
-            ;
-            regclass = reglet;
-            regs[nregs] = p->label;
+        if (cl->regclass > regarg)
+            gsfatal_bad_input(p, "Too late to add type arguments")
+        ;
+        cl->regclass = regarg;
+        cl->regs[cl->nregs] = p->label;
+        gsargcheck(p, 0, "kind");
+        kind = gskind_compile(p, p->arguments[0]);
+        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->file, p->lineno, p->label, kind);
+        cl->nregs++;
+        res = gstype_alloc(sizeof(struct gstype_lambda));
+        lambda = (struct gstype_lambda*)res;
+        res->node = gstype_lambda;
+        res->file = p->file;
+        res->lineno = p->lineno;
+        lambda->var = p->label;
+        lambda->kind = kind;
+        lambda->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(p));
+        return res;
+    } else if (gssymeq(p->directive, gssymtypeop, ".tyforall")) {
+        struct gskind *kind;
+        struct gstype_forall *forall;
 
-            gsargcheck(p, 0, "code label");
-            for (i = 0; i < ncodelabels; i++) {
-                if (codelables[i] == p->arguments[0]) {
-                    body = i;
-                    goto have_let_body;
+        if (cl->nregs >= MAX_REGISTERS)
+                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
+            ;
+        if (cl->regclass > regforall)
+            gsfatal_bad_input(p, "Too late to add forall arguments")
+        ;
+        cl->regclass = regforall;
+        cl->regs[cl->nregs] = p->label;
+        gsargcheck(p, 0, "kind");
+        kind = gskind_compile(p, p->arguments[0]);
+        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->file, p->lineno, p->label, kind);
+        cl->nregs++;
+        res = gstype_alloc(sizeof(struct gstype_forall));
+        forall = (struct gstype_forall*)res;
+        res->node = gstype_forall;
+        res->file = p->file;
+        res->lineno = p->lineno;
+        forall->var = p->label;
+        forall->kind = kind;
+        forall->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(p));
+        return res;
+    } else if (gssymeq(p->directive, gssymtypeop, ".tylet")) {
+        struct gstype *reg;
+
+        if (cl->nregs >= MAX_REGISTERS)
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
+        ;
+        if (cl->regclass > reglet)
+            gsfatal_bad_input(p, "Too late to add lets")
+        ;
+        cl->regclass = reglet;
+        cl->regs[cl->nregs] = p->label;
+        gsargcheck(p, 0, "base");
+        reg = 0;
+        for (i = 0; i < cl->nregs; i++) {
+            if (cl->regs[i] == p->arguments[0]) {
+                reg = cl->regvalues[i];
+                goto have_register_for_let_base;
+            }
+        }
+        gsfatal_bad_input(p, "Couldn't find base of let %s", p->arguments[0]->name);
+    have_register_for_let_base:
+        for (i = 1; i < p->numarguments; i++) {
+            struct gstype *fun, *arg;
+
+            fun = reg;
+            arg = 0;
+            for (j = 0; j < cl->nregs; j++) {
+                if (cl->regs[j] == p->arguments[i]) {
+                    arg = cl->regvalues[j];
+                    goto have_register_for_let_arg;
                 }
             }
-            gsfatal_bad_input(p, "Un-declared type expr code label %s", p->arguments[0]->name);
-        have_let_body:
-            for (i = 0; i < p->numarguments - 1; i++) {
-                for (j = 0; j < nregs; j++) {
-                    if (regs[j] == p->arguments[1 + i]) {
-                        fvs[i] = j;
-                        goto have_register_for_let;
-                    }
+            gsfatal_bad_input(p, "Couldn't find argument for let %s", p->arguments[i]->name);
+        have_register_for_let_arg:
+            reg = gstype_supply(p->file, p->lineno, fun, arg);
+        }
+        cl->regvalues[cl->nregs] = reg;
+        cl->nregs++;
+        return gstype_compile_type_ops_worker(cl, gsinput_next_line(p));
+    } else if (gssymeq(p->directive, gssymtypeop, ".tylift")) {
+        struct gstype_lift *lift;
+        res = gstype_alloc(sizeof(struct gstype_lift));
+        lift = (struct gstype_lift *)res;
+        res->node = gstype_lift;
+        res->file = p->file;
+        res->lineno = p->lineno;
+        lift->arg = gstype_compile_type_ops_worker(cl, gsinput_next_line(p));
+        return res;
+    } else if (gssymeq(p->directive, gssymtypeop, ".tyref")) {
+        struct gstype *reg;
+
+        gsargcheck(p, 0, "referent");
+        reg = 0;
+        for (i = 0; i < cl->nregs; i++) {
+            if (p->arguments[0] == cl->regs[i]) {
+                reg = cl->regvalues[i];
+                goto have_referent_register;
+            }
+        }
+        gsfatal_bad_input(p, "Cannot find register %s", p->arguments[0]->name);
+    have_referent_register:
+        res = reg;
+        for (i = 0; 1 + i < p->numarguments; i++) {
+            struct gstype *fun, *arg;
+            struct gstype_app *app;
+
+            fun = res;
+            arg = 0;
+            for (j = 0; j < cl->nregs; j++) {
+                if (p->arguments[1 + i] == cl->regs[j]) {
+                    arg = cl->regvalues[j];
+                    goto have_arg_register;
                 }
-                gsfatal_bad_input(p, "Cannot find type register %s", p->arguments[1 + i]->name);
-            have_register_for_let:
-                ;
             }
+            gsfatal_bad_input(p, "Cannot find register %s", p->arguments[1 + i]->name);
+        have_arg_register:
+            res = gstype_alloc(sizeof(struct gstype_app));
+            res->node = gstype_app;
+            res->file = p->file;
+            res->lineno = p->lineno;
+            app = (struct gstype_app *)res;
+            app->fun = fun;
+            app->arg = arg;
+        }
+        return res;
+    } else if (gssymeq(p->directive, gssymtypeop, ".tysum")) {
+        struct gstype_sum *sum;
+        int numconstrs;
 
-            let_bodies[nlets] = body;
-            let_nfvs[nlets] = p->numarguments - 1;
-            for (i = 0; i < p->numarguments - 1; i++) {
-                let_fvs[nlets][i] = fvs[i];
-            }
-
-            nregs++, nlets++;
-        } else if (gssymeq(p->directive, gssymtypeop, ".typeapp")) {
-            PUSH_CONTINUATION;
-        } else if (gssymeq(p->directive, gssymtypeop, ".tylift")) {
-            PUSH_CONTINUATION;
-        } else if (gssymeq(p->directive, gssymtypeop, ".tyref")) {
-            struct gstype_expr_ref *ref;
-
-            ref = gs_sys_seg_suballoc(&gstype_expr_descr, &gstype_expr_nursury, sizeof(*ref), sizeof(int));
-
-            ref->e.node = gstype_ref;
-            ref->e.file = p->file;
-            ref->e.lineno = p->lineno;
-            gsargcheck(p, 0, "referent");
-            for (i = 0; i < nregs; i++) {
-                if (regs[i] == p->arguments[0]) {
-                    ref->referent = i;
-                    goto have_register_for_ref;
-                }
-            }
-            gsfatal("%s:%d: Undeclared register %s", p->file->name, p->lineno, p->arguments[0]->name);
-        have_register_for_ref:
-            expr = (struct gstype_expr *)ref;
-            goto have_expr;
-        } else if (gssymeq(p->directive, gssymtypeop, ".tysum")) {
-            struct gstype_expr_sum *sum;
-
-            if (p->numarguments % 2)
+        if (p->numarguments % 2)
                 gsfatal_bad_input(p, "Cannot have odd number of arguments to .tysum");
-
-            sum = gs_sys_seg_suballoc(&gstype_expr_descr, &gstype_expr_nursury, sizeof(*sum) + p->numarguments / 2 * sizeof(*sum->constrs), sizeof(int));
-
-            sum->e.node = gstype_sum;
-            sum->e.file = p->file;
-            sum->e.lineno = p->lineno;
-
-            sum->numconstrs = p->numarguments / 2;
-            for (i = 0; i < p->numarguments; i += 2) {
-                for (j = 0; j < nregs; j++) {
-                    if (p->arguments[i + 1] == regs[j]) {
-                        sum->constrs[i].name = p->arguments[i];
-                        sum->constrs[i].arg = j;
-                        goto have_register_for_constr_arg;
-                    }
+        numconstrs = p->numarguments / 2;
+        res = gstype_alloc(sizeof(struct gstype_sum) + numconstrs * sizeof(struct gstype_constr));
+        sum = (struct gstype_sum *)res;
+        res->node = gstype_sum;
+        res->file = p->file;
+        res->lineno = p->lineno;
+        sum->numconstrs = numconstrs;
+        for (i = 0; i < p->numarguments; i += 2) {
+            for (j = 0; j < cl->nregs; j++) {
+                if (p->arguments[i + 1] == cl->regs[j]) {
+                    sum->constrs[i].name = p->arguments[i];
+                    sum->constrs[i].arg = j;
+                    goto have_register_for_constr_arg;
                 }
-                gsfatal_bad_input(p, "Undeclared register %s", p->arguments[i + 1]->name);
-            have_register_for_constr_arg:
-                ;
             }
-            expr = (struct gstype_expr *)sum;
-            goto have_expr;
-        } else {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Un-implemented type expression op %s", p->directive->name);
-        }
-    }
-
-have_expr:
-
-    while (nconts) {
-        p = tyconts[--nconts];
-        oexpr = expr;
-        if (gssymeq(p->directive, gssymtypeop, ".tylift")) {
-            struct gstype_expr_lift *lift;
-
-            lift = gs_sys_seg_suballoc(&gstype_expr_descr, &gstype_expr_nursury, sizeof(*lift), sizeof(int));
-
-            lift->e.node = gstype_lift;
-            lift->e.file = p->file;
-            lift->e.lineno = p->lineno;
-            lift->arg = oexpr;
-
-            expr = (struct gstype_expr *)lift;
-        } else if (gssymeq(p->directive, gssymtypeop, ".typeapp")) {
-            struct gstype_expr_app *app;
-            int args[MAX_REGISTERS];
-
-            if (p->numarguments > MAX_REGISTERS)
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Too many arguments to .typeapp; max 0x%x, but 0x%x supplied",
-                    MAX_REGISTERS,
-                    p->numarguments
-                )
+            gsfatal_bad_input(p, "Undeclared register %s", p->arguments[i + 1]->name);
+        have_register_for_constr_arg:
             ;
-            for (i = 0; i < p->numarguments; i++) {
-                for (j = 0; j < nregs; j++) {
-                    if (regs[j] == p->arguments[i]) {
-                        args[i] = j;
-                        goto have_register_for_arg;
-                    }
-                }
-                gsfatal("%s:%d: No such register %s", p->file->name, p->lineno, p->arguments[i]->name);
-            have_register_for_arg:
-                ;
-            }
-
-            app = gs_sys_seg_suballoc(&gstype_expr_descr, &gstype_expr_nursury, sizeof(*app) + p->numarguments * sizeof(app->args[0]), sizeof(int));
-
-            app->e.node = gstype_app;
-            app->e.file = p->file;
-            app->e.lineno = p->lineno;
-            app->numargs = p->numarguments;
-            for (i = 0; i < p->numarguments; i++)
-                app->args[i] = args[i];
-            app->fun = oexpr;
-
-            expr = (struct gstype_expr *)app;
-        } else {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "type expression continuation %s", p->directive->name);
         }
+        return res;
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gstype_compile_type_ops %s", p->directive->name);
     }
+    return 0;
+}
 
-    size_fvs = 0;
-    for (i = 0; i < nlets; i++) {
-        size_fvs += let_nfvs[i] * sizeof(*res->lets[0].fvs);
-    }
-    dest = gs_sys_seg_suballoc(
-        &gstype_expr_summary_descr,
-        &gstype_expr_summary_nursury,
-        sizeof(*res)
-            + nglobals * sizeof(*res->globals)
-            + nglobals * sizeof(*res->global_vars)
-            + ncodelabels * sizeof(*res->code_labels)
-            + ncodelabels * sizeof(*res->code_label_dests)
-            + nfvs * sizeof(*res->fvkinds)
-            + nargs * sizeof(*res->argkinds)
-            + nforalls * sizeof(*res->forallkinds)
-            + nlets * sizeof(*res->lets)
-            + size_fvs
-        ,
-        sizeof(int)
-    );
-    res = dest; dest = (uchar*)dest + sizeof(*res);
-    res->numregs = nregs;
-    res->numglobals = nglobals;
-    res->globals = dest; dest = (uchar*)dest + nglobals * sizeof(*res->globals);
-    res->global_vars = dest; dest = (uchar*)dest + nglobals * sizeof(*res->global_vars);
-    for (i = 0; i < nglobals; i++) {
-        res->globals[i] = tyglobals[i];
-        res->global_vars[i] = regs[i];
-    }
-    res->numcodelabels = ncodelabels;
-    res->code_labels = dest; dest = (uchar*)dest + ncodelabels * sizeof(*res->code_labels);
-    res->code_label_dests = dest; dest = (uchar*)dest + ncodelabels * sizeof(*res->code_label_dests);
-    for (i = 0; i < ncodelabels; i++) {
-        res->code_labels[i] = codelables[i];
-        res->code_label_dests[i] = codelabledests[i];
-    }
-    res->numfvs = nfvs;
-    res->fvkinds = dest; dest = (uchar*)dest + nfvs * sizeof(*res->fvkinds);
-    for (i = 0; i < nfvs; i++) {
-        res->fvkinds[i] = fvkinds[i];
-    }
-    res->numargs = nargs;
-    res->argkinds = dest; dest = (uchar*)dest + nargs * sizeof(*res->argkinds);
-    for (i = 0; i < nargs; i++) {
-        res->argkinds[i] = argkinds[i];
-    }
-    res->numforalls = nforalls;
-    res->forallkinds = dest; dest = (uchar*)dest + nforalls * sizeof(*res->forallkinds);
-    for (i = 0; i < nforalls; i++) {
-        res->forallkinds[i] = forallkinds[i];
-    }
-    res->numlets = nlets;
-    res->lets = dest; dest = (uchar*)dest + nlets * sizeof(*res->lets);
-    for (i = 0; i < nlets; i++) {
-        res->lets[i].numfvs = let_nfvs[i];
-        res->lets[i].body = let_bodies[i];
-        res->lets[i].fvs = dest; dest = (uchar*)dest + res->lets[i].numfvs * sizeof(*res->lets[i].fvs);
-    }
-    if (nregs > nglobals + nfvs + nargs + nforalls + nlets)
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "Registers after arguments next")
-    ;
-    res->code = expr;
+static
+struct gstype *
+gstypes_compile_type_var(gsinterned_string file, int lineno, gsinterned_string name, struct gskind *ky)
+{
+    struct gstype *res;
+    struct gstype_var *var;
+
+    res = gstype_alloc(sizeof(struct gstype_var));
+    var = (struct gstype_var *)res;
+
+    res->node = gstype_var;
+    res->file = file;
+    res->lineno = lineno;
+
+    var->name = name;
+    var->kind = ky;
 
     return res;
+}
+
+static struct gstype *gstypes_subst(gsinterned_string, int, struct gstype *, gsinterned_string, struct gstype *);
+
+static
+struct gstype *
+gstype_supply(gsinterned_string file, int lineno, struct gstype *fun, struct gstype *arg)
+{
+    switch (fun->node) {
+        case gstype_indirection: {
+            struct gstype_indirection *indir;
+            indir = (struct gstype_indirection *)fun;
+            return gstype_supply(file, lineno, indir->referent, arg);
+        }
+        case gstype_lambda: {
+            struct gstype_lambda *lambda;
+            struct gskind *argkind;
+
+            lambda = (struct gstype_lambda *)fun;
+
+            argkind = gstypes_calculate_kind(arg);
+
+            gstypes_kind_check(file, lineno, argkind, lambda->kind);
+
+            return gstypes_subst(file, lineno, lambda->body, lambda->var, arg);
+        }
+        default:
+            gsfatal_unimpl_type(__FILE__, __LINE__, fun, "supply (node = %d)", fun->node);
+    }
+    return 0;
+}
+
+static int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
+
+static
+struct gstype *
+gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterned_string varname, struct gstype *type1)
+{
+    char buf[0x100];
+
+    switch (type->node) {
+        case gstype_abstract:
+            return type;
+        case gstype_var: {
+            struct gstype_var *var;
+
+            var = (struct gstype_var *)type;
+
+            if (var->name == varname)
+                return type1;
+            else
+                return type;
+        }
+        case gstype_lambda: {
+            struct gstype_lambda *lambda, *reslambda;
+            struct gstype *resbody;
+            gsinterned_string nvar;
+            struct gstype *res;
+            int varno;
+
+            lambda = (struct gstype_lambda *)type;
+
+            if (lambda->var == varname)
+                return type;
+
+            resbody = lambda->body;
+            nvar = lambda->var;
+            varno = 0;
+            while (gstypes_is_ftyvar(nvar, type1) || gstypes_is_ftyvar(nvar, type)) {
+                if (seprint(buf, buf + sizeof(buf), "%s:%d", lambda->var->name, varno) >= buf + sizeof(buf))
+                    gsfatal_unimpl(__FILE__, __LINE__, "Buffer overflow printing %s:%d", lambda->var->name, varno)
+                ;
+                nvar = gsintern_string(gssymtypelable, buf);
+            }
+            if (nvar != lambda->var)
+                resbody = gstypes_subst(file, lineno, resbody, lambda->var, gstypes_compile_type_var(file, lineno, nvar, lambda->kind))
+            ;
+            resbody = gstypes_subst(file, lineno, resbody, varname, type1);
+            res = gstype_alloc(sizeof(struct gstype_lambda));
+            reslambda = (struct gstype_lambda *)res;
+            res->node = gstype_lambda;
+            res->file = type->file;
+            res->lineno = type->lineno;
+            reslambda->var = nvar;
+            reslambda->kind = lambda->kind;
+            reslambda->body = resbody;
+            return res;
+        }
+        case gstype_app: {
+            struct gstype_app *app, *resapp;
+            struct gstype *res;
+
+            app = (struct gstype_app *)type;
+            res = gstype_alloc(sizeof(struct gstype_app));
+            resapp = (struct gstype_app *)res;
+            res->node = gstype_app;
+            res->file = type->file;
+            res->lineno = type->lineno;
+            resapp->fun = gstypes_subst(file, lineno, app->fun, varname, type1);
+            resapp->arg = gstypes_subst(file, lineno, app->arg, varname, type1);
+
+            return res;
+        }
+        default:
+            gsfatal_unimpl_type(__FILE__, __LINE__, type, "subst (node = %d)", type->node);
+    }
+    return 0;
+}
+
+static
+int
+gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
+{
+    switch (type->node) {
+        case gstype_var: {
+            struct gstype_var *var;
+
+            var = (struct gstype_var *)type;
+            return var->name == varname;
+        }
+        case gstype_lambda: {
+            struct gstype_lambda *lambda;
+
+            lambda = (struct gstype_lambda *)type;
+            if (lambda->var == varname)
+                return 0;
+            return gstypes_is_ftyvar(varname, lambda->body);
+        }
+        default:
+            gsfatal_unimpl_type(__FILE__, __LINE__, type, "fv (varname = %s, node = %d)", varname->name, type->node);
+    }
+    return 0;
+}
+
+static
+void *
+gstype_alloc(ulong size)
+{
+    return gs_sys_seg_suballoc(&gstype_descr, &gstype_nursury, size, sizeof(void*));
 }
 
 #define MAX_STACK_SIZE 0x100

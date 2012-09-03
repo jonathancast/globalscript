@@ -3,6 +3,6 @@
 	.type
 
 list.t	.tyabstract	**^
-α	.tyarg	*
+α	.tylambda	*
 	.tylift
 	.tysum

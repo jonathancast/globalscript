@@ -7,14 +7,8 @@
 #include "gstypealloc.h"
 #include "gstypecheck.h"
 
-static struct gs_block_class gstype_item_kind_descr = {
-    /* evaluator = */ gsnoeval,
-    /* descrption = */ "GSBC Type Item Kind",
-};
-static void *gstype_item_kind_nursury;
-
 void
-gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype_item_kind **kinds, int n)
+gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gskind **kinds, int n)
 {
     int i;
 
@@ -29,41 +23,23 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
 
                     ptype = item.v.ptype;
                     if (gssymeq(ptype->directive, gssymtypedirective, ".tyabstract")) {
-                        struct gskind *ky;
-
                         gsargcheck(ptype, 0, "Kind");
 
-                        ky = gskind_compile(ptype, ptype->arguments[0]);
-                        kinds[i] = gs_sys_seg_suballoc(&gstype_item_kind_descr, &gstype_item_kind_nursury, sizeof(*kinds[i]), sizeof(struct gskind *));
-                        kinds[i]->numfvs = 0;
-                        kinds[i]->fvkinds = 0;
-                        kinds[i]->kind = ky;
+                        kinds[i] = gskind_compile(ptype, ptype->arguments[0]);
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
                     } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyexpr")) {
-                        struct gskind *ky;
-
                         if (ptype->numarguments > 0) {
-                            ky = gskind_compile(ptype, ptype->arguments[0]);
-                            kinds[i] = gs_sys_seg_suballoc(&gstype_item_kind_descr, &gstype_item_kind_nursury, sizeof(*kinds[i]), sizeof(struct gskind *));
-                            kinds[i]->numfvs = 0;
-                            kinds[i]->fvkinds = 0;
-                            kinds[i]->kind = ky;
+                            kinds[i] = gskind_compile(ptype, ptype->arguments[0]);
 
                             gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
                         } else {
                             kinds[i] = 0;
                         }
                     } else if (gssymeq(ptype->directive, gssymtypedirective, ".tydefinedprim")) {
-                        struct gskind *ky;
-
                         gsargcheck(ptype, 2, "Kind");
 
-                        ky = gskind_compile(ptype, ptype->arguments[2]);
-                        kinds[i] = gs_sys_seg_suballoc(&gstype_item_kind_descr, &gstype_item_kind_nursury, sizeof(*kinds[i]), sizeof(struct gskind *));
-                        kinds[i]->numfvs = 0;
-                        kinds[i]->fvkinds = 0;
-                        kinds[i]->kind = ky;
+                        kinds[i] = gskind_compile(ptype, ptype->arguments[2]);
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
                     } else {
@@ -79,10 +55,10 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
     }
 }
 
-static void gstypes_kind_check_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype_item_kind **, int, int);
+static void gstypes_kind_check_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
 
 void
-gstypes_kind_check_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gstype_item_kind **kinds, int n)
+gstypes_kind_check_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n)
 {
     int i;
 
@@ -91,59 +67,30 @@ gstypes_kind_check_scc(struct gsfile_symtable *symtable, struct gsbc_item *items
     ;
 }
 
-static struct gstype_item_kind *gstypes_kind_type_expr_summary(struct gsfile_symtable *, struct gstype *, struct gstype_expr_summary *);
-
-static void gstypes_type_item_kind_check(gsinterned_string, int, struct gstype_item_kind *, struct gstype_item_kind *);
-static void gstypes_kind_check(gsinterned_string, int, struct gskind *, struct gskind *);
-
 static
 void
-gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gstype_item_kind **kinds, int n, int i)
+gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
 {
     switch (items[i].type) {
         case gssymtypelable: {
             struct gstype *type;
+            struct gskind *calculated_kind;
 
             type = types[i];
 
+            calculated_kind = gstypes_calculate_kind(type);
+
+            if (kinds[i])
+                gstypes_kind_check(type->file, type->lineno, calculated_kind, kinds[i]);
+            else {
+                kinds[i] = calculated_kind;
+                gssymtable_set_type_expr_kind(symtable, items[i].v.ptype->label, calculated_kind);
+            }
+            return;
+
             switch (type->node) {
                 case gstype_abstract: {
-                    struct gstype_item_kind *calculated_kind;
-
-                    calculated_kind = gstypes_kind_type_expr_summary(symtable, type, type->a.expr);
-
-                    gstypes_type_item_kind_check(type->file, type->lineno, calculated_kind, kinds[i]);
-                    return;
-                }
-                case gstype_expr: {
-                    struct gstype_item_kind *calculated_kind;
-
-                    calculated_kind = gstypes_kind_type_expr_summary(symtable, type, type->a.expr);
-
-                    if (kinds[i])
-                        gstypes_type_item_kind_check(type->file, type->lineno, calculated_kind, kinds[i]);
-                    else {
-                        kinds[i] = calculated_kind;
-                        gssymtable_set_type_expr_kind(symtable, items[i].v.ptype->label, calculated_kind);
-                    }
-                    return;
-                }
-                case gstype_prim: {
-                    struct gsregistered_primtype *primtype;
-                    if (!type->a.prim.primset)
-                        return;
-                    if (!(primtype = gsprims_lookup_type(type->a.prim.primset, type->a.prim.name->name)))
-                        gsfatal("%s:%d: Primset %s lacks a type member %s",
-                            type->file->name,
-                            type->lineno,
-                            type->a.prim.primset->name,
-                            type->a.prim.name->name
-                        )
-                    ;
-                    if (!primtype->kind)
-                        gsfatal_unimpl(__FILE__, __LINE__, "Panic! Primitype type %s (%s:%d) lacks a declared kind", primtype->name, primtype->file, primtype->line);
-                    gstypes_kind_check(type->file, type->lineno, kinds[i]->kind, gstypes_compile_prim_kind(primtype->kind));
-                    return;
+                    gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: kind check abstract type next", type->file->name, type->lineno);
                 }
                 default:
                     gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.ptype, "gstypes_kind_check_scc(node = %d)", type->node);
@@ -157,226 +104,120 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static void gstypes_kind_type_expr_registers(struct gsfile_symtable *, struct gstype *, struct gstype_expr_summary *, struct gskind **);
-static struct gskind *gstypes_kind_type_expr(struct gsfile_symtable *, struct gstype_expr_summary *, struct gskind **, struct gstype_expr *);
+static void gstypes_kind_check_simple(gsinterned_string, int, struct gskind *);
 
-#define MAX_NUM_REGISTERS 0x100
-
-static
-struct gstype_item_kind *
-gstypes_kind_type_expr_summary(struct gsfile_symtable *symtable, struct gstype *e, struct gstype_expr_summary *esummary)
-{
-    struct gstype_item_kind *res;
-    struct gskind *kind, *kinds[MAX_NUM_REGISTERS];
-    int i;
-
-    res = gs_sys_seg_suballoc(
-        &gstype_item_kind_descr,
-        &gstype_item_kind_nursury,
-        sizeof(*res)
-            + esummary->numfvs * sizeof(*res->fvkinds)
-        ,
-        sizeof(struct gskind *)
-    );
-
-    res->numfvs = esummary->numfvs;
-    res->fvkinds = (void*)((uchar*)res + sizeof(*res));
-    for (i = 0; i < esummary->numfvs; i++) {
-        res->fvkinds[i] = esummary->fvkinds[i];
-    }
-
-    gstypes_kind_type_expr_registers(symtable, e, esummary, kinds);
-
-    kind = gstypes_kind_type_expr(symtable, esummary, kinds, esummary->code);
-
-    i = esummary->numargs;
-    while (i) {
-        kind = gskind_exponential_kind(kind, esummary->argkinds[--i]);
-    }
-
-    res->kind = kind;
-
-    return res;
-}
-
-static struct gskind *gstypes_kind_type_let(struct gsfile_symtable *, struct gstype *, struct gstype_expr_summary *, struct gskind **, int, struct gstype_expr_let *);
-
-static
-void
-gstypes_kind_type_expr_registers(struct gsfile_symtable *symtable, struct gstype *e, struct gstype_expr_summary *summary, struct gskind **kinds)
-{
-    int i, nregs;
-
-    for (i = 0, nregs = 0; i < summary->numglobals; i++, nregs++) {
-        struct gstype_item_kind *ky;
-
-        ky = gssymtable_get_type_expr_kind(symtable, summary->global_vars[i]);
-        if (!ky)
-            gsfatal("%s:%d: %s:%d: Panic! Couldn't find kind of global %s", __FILE__, __LINE__,
-                summary->code->file->name,
-                summary->code->lineno,
-                summary->global_vars[i]->name
-            )
-        ;
-
-        kinds[nregs] = ky->kind;
-    }
-
-    for (i = 0; i < summary->numfvs; i++, nregs++) {
-        kinds[nregs] = summary->fvkinds[i];
-    }
-
-    for (i = 0; i < summary->numargs; i++, nregs++) {
-        kinds[nregs] = summary->argkinds[i];
-    }
-
-    for (i = 0; i < summary->numforalls; i++, nregs++) {
-        kinds[nregs] = summary->forallkinds[i];
-    }
-
-    for (i = 0; i < summary->numlets; i++, nregs++) {
-        kinds[nregs] = gstypes_kind_type_let(symtable, e, summary, kinds, nregs, &summary->lets[i]);
-    }
-
-    if (nregs < summary->numregs)
-        gsfatal_unimpl_type(__FILE__, __LINE__, e, "Registers after lets")
-    ;
-}
-
-static
 struct gskind *
-gstypes_kind_type_let(struct gsfile_symtable *symtable, struct gstype *e, struct gstype_expr_summary *summary, struct gskind **regkinds, int nregs, struct gstype_expr_let *plet)
+gstypes_calculate_kind(struct gstype *type)
 {
-    struct gstype_item_kind *ky;
-    gsinterned_string code_label;
-    int i;
 
-    code_label = summary->code_labels[plet->body];
-    ky = gssymtable_get_type_expr_kind(symtable, code_label);
-    if (!ky)
-        gsfatal("%s:%d: %s:%d: Panic! Couldn't find kind of global %s", __FILE__, __LINE__,
-            e->file->name,
-            e->lineno,
-            summary->code_labels[plet->body]->name
-        )
-    ;
+    switch (type->node) {
+        case gstype_indirection: {
+            struct gstype_indirection *indir;
 
-    if (ky->numfvs < plet->numfvs) {
-        gsfatal("%s:%d: Too many free variables; supplied %s with %d free variables but its kind only has %d",
-            e->file->name,
-            e->lineno,
-            code_label->name,
-            plet->numfvs,
-            ky->numfvs
-        );
-    }
-    if (ky->numfvs > plet->numfvs) {
-        gsfatal("%s:%d: Not enough free variables; supplied %s with %d free variables but its kind needs %d",
-            e->file->name,
-            e->lineno,
-            code_label->name,
-            plet->numfvs,
-            ky->numfvs
-        );
-    }
+            indir = (struct gstype_indirection *)type;
+            return gstypes_calculate_kind(indir->referent);
+        }
+        case gstype_abstract: {
+            struct gstype_abstract *abs;
 
-    for (i = 0; i < plet->numfvs; i++) {
-        gstypes_kind_check(e->file, e->lineno, regkinds[plet->fvs[i]], ky->fvkinds[i]);
-    }
+            abs = (struct gstype_abstract *)type;
+            if (abs->kind)
+                return abs->kind;
+            gsfatal_unimpl_type(__FILE__, __LINE__, type, "Abstract types without declared kinds");
+        }
+        case gstype_prim: {
+            struct gstype_prim *prim;
+            struct gsregistered_primtype *primtype;
 
-    return ky->kind;
-}
+            prim = (struct gstype_prim *)type;
+            if (!prim->primset)
+                if (!prim->kind)
+                    gsfatal("%s:%d: Primitive %s seems to lack a declared kind", type->file->name, type->lineno, prim->name->name);
+                else
+                    return prim->kind
+                ;
+            if (!(primtype = gsprims_lookup_type(prim->primset, prim->name->name)))
+                gsfatal("%s:%d: Primset %s lacks a type member %s",
+                    type->file->name,
+                    type->lineno,
+                    prim->primset->name,
+                    prim->name->name
+                )
+            ;
+            if (!primtype->kind)
+                gsfatal_unimpl(__FILE__, __LINE__, "Panic! Primitype type %s (%s:%d) lacks a declared kind", primtype->name, primtype->file, primtype->line);
+            return gstypes_compile_prim_kind(primtype->kind);
+        }
+        case gstype_var: {
+            struct gstype_var *var;
 
-static
-struct gskind *
-gstypes_kind_type_expr(struct gsfile_symtable *symtable, struct gstype_expr_summary *summary, struct gskind **regkinds, struct gstype_expr *code)
-{
-    switch (code->node) {
+            var = (struct gstype_var *)type;
+
+            return var->kind;
+        }
+        case gstype_lambda: {
+            struct gstype_lambda *lambda;
+            struct gskind *kybody;
+
+            lambda = (struct gstype_lambda *)type;
+
+            kybody = gstypes_calculate_kind(lambda->body);
+            return gskind_exponential_kind(kybody, lambda->kind);
+        }
+        case gstype_forall: {
+            struct gstype_forall *forall;
+            struct gskind *kybody;
+
+            forall = (struct gstype_forall *)type;
+
+            kybody = gstypes_calculate_kind(forall->body);
+            gstypes_kind_check_simple(type->file, type->lineno, kybody);
+            return kybody;
+        }
         case gstype_lift: {
-            struct gstype_expr_lift *lift;
+            struct gstype_lift *lift;
             struct gskind *kyarg;
 
-            lift = (struct gstype_expr_lift *)code;
+            lift = (struct gstype_lift *)type;
 
-            kyarg = gstypes_kind_type_expr(symtable, summary, regkinds, lift->arg);
-            gstypes_kind_check(code->file, code->lineno, kyarg, gskind_unlifted_kind());
+            kyarg = gstypes_calculate_kind(lift->arg);
+            gstypes_kind_check(type->file, type->lineno, kyarg, gskind_unlifted_kind());
 
             return gskind_lifted_kind();
         }
         case gstype_app: {
-            struct gstype_expr_app *app;
-            struct gskind *kyarg, *kyfun;
-            int i;
+            struct gstype_app *app;
+            struct gskind *funkind, *argkind;
 
-            app = (struct gstype_expr_app *)code;
+            app = (struct gstype_app *)type;
+            funkind = gstypes_calculate_kind(app->fun);
+            argkind = gstypes_calculate_kind(app->arg);
 
-            kyfun = gstypes_kind_type_expr(symtable, summary, regkinds, app->fun);
-
-            for (i = 0; i < app->numargs; i++) {
-                switch (kyfun->node) {
-                    case gskind_exponential:
-                        kyarg = regkinds[app->args[i]];
-                        gstypes_kind_check(app->e.file, app->e.lineno, kyarg, kyfun->args[1]);
-                        kyfun = kyfun->args[0];
-                        break;
-                    default:
-                        gsfatal_unimpl(__FILE__, __LINE__, "gsbc_typecheck_kind_type_app (fun kind node = %d)", kyfun->node);
+            switch (funkind->node) {
+                case gskind_exponential: {
+                    gstypes_kind_check(type->file, type->lineno, argkind, funkind->args[1]);
+                    return funkind->args[0];
                 }
+                default:
+                    gsfatal_unimpl_type(__FILE__, __LINE__, type, "'function' kind (node = %d)", funkind->node);
             }
-            return kyfun;
-        }
-        case gstype_ref: {
-            struct gstype_expr_ref *ref;
-
-            ref = (struct gstype_expr_ref *)code;
-
-            return regkinds[ref->referent];
-        }
-        case gstype_sum: {
-            struct gstype_expr_sum *sum;
-            int i;
-
-            sum = (struct gstype_expr_sum *)code;
-
-            for (i = 0; i < sum->numconstrs; i++) {
-                gsfatal_unimpl_at(__FILE__, __LINE__, sum->e.file, sum->e.lineno, "gstypes_kind_type_expr(constr)");
-            }
-
-            return gskind_unlifted_kind();
         }
         default:
-            gsfatal("%s:%d: %s:%d: gsbc_typecheck_kind_type_expr(node = %d) next", __FILE__, __LINE__, code->file->name, code->lineno, code->node);
+            gsfatal_unimpl_type(__FILE__, __LINE__, type, "gstypes_calculate_kind(node = %d)", type->node);
     }
-
-    gsfatal("%s:%d: gsbc_typecheck_kind_type_expr next", __FILE__, __LINE__);
-
     return 0;
 }
 
-static
-void
-gstypes_type_item_kind_check(gsinterned_string file, int lineno, struct gstype_item_kind *kyactual, struct gstype_item_kind *kyexpected)
-{
-    gstypes_kind_check(file, lineno, kyactual->kind, kyexpected->kind);
-}
+#define MAX_NUM_REGISTERS 0x100
 
-static
+static void seprint_kind_name(char *, char *, struct gskind *);
+
 void
 gstypes_kind_check(gsinterned_string file, int lineno, struct gskind *kyactual, struct gskind *kyexpected)
 {
     char actual_name[0x100];
 
-    switch (kyactual->node) {
-        case gskind_unknown:
-            seprint(actual_name, actual_name + sizeof(actual_name), "?");
-            break;
-        case gskind_lifted:
-            seprint(actual_name, actual_name + sizeof(actual_name), "*");
-            break;
-        default:
-            seprint(actual_name, actual_name + sizeof(actual_name), "%s:%d: Unknown kind type %d", __FILE__, __LINE__, kyactual->node);
-            break;
-    }
+    seprint_kind_name(actual_name, actual_name + sizeof(actual_name), kyactual);
 
     switch (kyexpected->node) {
         case gskind_unknown:
@@ -399,6 +240,39 @@ gstypes_kind_check(gsinterned_string file, int lineno, struct gskind *kyactual, 
             return;
         default:
             gsfatal_unimpl_at(__FILE__, __LINE__, file, lineno, "gstypes_kind_check(expected = %d)", kyexpected->node);
+    }
+}
+
+static
+void
+gstypes_kind_check_simple(gsinterned_string file, int lineno, struct gskind *kyactual)
+{
+    char actual_name[0x100];
+
+    seprint_kind_name(actual_name, actual_name + sizeof(actual_name), kyactual);
+
+    switch (kyactual->node) {
+        case gskind_lifted:
+            return;
+        default:
+            gsfatal_unimpl_at(__FILE__, __LINE__, file, lineno, "gstypes_kind_check_simple(actual = %s)", actual_name);
+    }
+}
+
+static
+void
+seprint_kind_name(char *buf, char *ebuf, struct gskind *ky)
+{
+    switch (ky->node) {
+        case gskind_unknown:
+            seprint(buf, ebuf, "?");
+            break;
+        case gskind_lifted:
+            seprint(buf, ebuf, "*");
+            break;
+        default:
+            seprint(buf, ebuf, "%s:%d: Unknown kind type %d", __FILE__, __LINE__, ky->node);
+            break;
     }
 }
 

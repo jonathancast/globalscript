@@ -15,5 +15,4 @@ _abort	.gvar
 	.type
 
 _eptype	.tyexpr
-	.typeapp	rune	rune	_empty.record
-	.tyref	ibio.m
+	.tyref	ibio.m	rune	rune	_empty.record

@@ -7,36 +7,30 @@ ibio.abort	.undefined	_ibio.abort.type
 	.type
 
 ibio.m	.tyabstract	**^*^*^
-ι	.tyarg	*
-ο	.tyarg	*
-α	.tyarg	*
+ι	.tylambda	*
+ο	.tylambda	*
+α	.tylambda	*
 	.tylift
 	.tysum
 
 _ibio.abort.type	.tyexpr
 _ibio_list.t.rune	.tygvar
 →	.tygvar
-_ibio.abort.type_res	.tycode
+_ibio.abort.type_res	.tygvar
 ι	.tyforall	*
 ο	.tyforall	*
 α	.tyforall	*
 _res	.tylet	_ibio.abort.type_res	ι	ο	α
-	.typeapp	_res
-	.typeapp	_ibio_list.t.rune
-	.tyref	→
+	.tyref	→	_ibio_list.t.rune	_res
 
 _ibio.abort.type_res	.tyexpr
 ibio.m	.tygvar
-ι	.tyfv	*
-ο	.tyfv	*
-α	.tyfv	*
-	.typeapp	α
-	.typeapp	ο
-	.typeapp	ι
-	.tyref	ibio.m
+ι	.tylambda	*
+ο	.tylambda	*
+α	.tylambda	*
+	.tyref	ibio.m	ι	ο	α
 
 _ibio_list.t.rune	.tyexpr
 rune.t	.tygvar
 list.t	.tygvar
-	.typeapp	rune.t
-	.tyref	list.t
+	.tyref	list.t	rune.t

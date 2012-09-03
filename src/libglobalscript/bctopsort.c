@@ -124,9 +124,7 @@ gstype_section_skip_type_expr(struct gsparsedline *p)
     for (;;) {
         if (
             gssymeq(p->directive, gssymtypeop, ".tygvar")
-            || gssymeq(p->directive, gssymtypeop, ".tycode")
-            || gssymeq(p->directive, gssymtypeop, ".tyarg")
-            || gssymeq(p->directive, gssymtypeop, ".tyfv")
+            || gssymeq(p->directive, gssymtypeop, ".tylambda")
             || gssymeq(p->directive, gssymtypeop, ".tyforall")
             || gssymeq(p->directive, gssymtypeop, ".tylift")
             || gssymeq(p->directive, gssymtypeop, ".tylet")
@@ -411,10 +409,6 @@ gsbc_top_sort_subitems_of_type_expr(struct gsfile_symtable *symtable, struct gsb
             struct gsbc_item global;
             global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
-        } else if (gssymeq(p->directive, gssymtypeop, ".tycode")) {
-            struct gsbc_item code;
-            code = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
-            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, code, pend, pc);
         } else {
             return;
         }

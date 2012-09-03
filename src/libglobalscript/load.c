@@ -513,33 +513,16 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_s
                 gsfatal("%s:%d: Labels required on .tygvar", filename, *plineno);
             if (n > 2)
                 gsfatal("%s:%d: Too many arguments to .tygvar", filename, *plineno);
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".tycode")) {
+        } else if (gssymeq(parsedline->directive, gssymtypeop, ".tylambda")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);
             else
-                gsfatal("%s:%d: Labels required on .tycode", filename, *plineno);
-            if (n > 2)
-                gsfatal("%s:%d: Too many arguments to .tycode", filename, *plineno);
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".tyarg")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-            else
-                gsfatal("%s:%d: Labels required on .tyarg", filename, *plineno);
+                gsfatal("%s:%d: Labels required on .tylambda", filename, *plineno);
             if (n < 3)
-                gsfatal("%s:%d: Missing kind on .tyarg", filename, *plineno);
+                gsfatal("%s:%d: Missing kind on .tylambda", filename, *plineno);
             parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
             if (n > 3)
-                gsfatal("%s:%d: Too many arguments to .tyarg; I only know what the kind is", filename, *plineno);
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".tyfv")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-            else
-                gsfatal("%s:%d: Labels required on .tyfv", filename, *plineno);
-            if (n < 3)
-                gsfatal("%s:%d: Missing kind on .tyfv", filename, *plineno);
-            parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
-            if (n > 3)
-                gsfatal("%s:%d: Too many arguments to .tyfv; I only know what the kind is", filename, *plineno);
+                gsfatal("%s:%d: Too many arguments to .tylambda; I only know what the kind is", filename, *plineno);
         } else if (gssymeq(parsedline->directive, gssymtypeop, ".typeapp")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops");
@@ -588,8 +571,8 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_s
             if (n < 3)
                 gsfatal("%s:%d: Missing referent argument to .tyref", filename, *plineno);
             parsedline->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
-            if (n >= 4)
-                gsfatal("%s:%d: Too many arguments to .tyref; I only know what the referent is", filename, *plineno);
+            for (i = 3; i < n; i++)
+                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
             return 0;
         } else if (gssymeq(parsedline->directive, gssymtypeop, ".tysum")) {
             if (*fields[0])
@@ -643,6 +626,7 @@ gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno,
 
 enum gsfile_symtable_class {
     gsfile_data_values,
+    gsfile_abstype_defns,
     gsfile_num_classes,
 };
 
@@ -845,9 +829,17 @@ gssymtable_set_type(struct gsfile_symtable *symtable, gsinterned_string label, s
     (*p)->next = 0;
 }
 
+static void gssymtable_set(struct gsfile_symtable *, enum gsfile_symtable_class, gsinterned_string, void *);
+
+void
+gssymtable_set_abstype(struct gsfile_symtable *symtable, gsinterned_string label, struct gstype *defn)
+{
+    gssymtable_set(symtable, gsfile_abstype_defns, label, defn);
+}
+
 struct gsfile_symtable_type_kind_item {
     gsinterned_string key;
-    struct gstype_item_kind *value;
+    struct gskind *value;
     struct gsfile_symtable_type_kind_item *next;
 };
 
@@ -858,7 +850,7 @@ static struct gs_block_class symtable_type_kind_item_descr = {
 void *symtable_type_kind_item_nursury;
 
 void
-gssymtable_set_type_expr_kind(struct gsfile_symtable *symtable, gsinterned_string label, struct gstype_item_kind *kind)
+gssymtable_set_type_expr_kind(struct gsfile_symtable *symtable, gsinterned_string label, struct gskind *kind)
 {
     struct gsfile_symtable_type_kind_item **p;
 
@@ -871,8 +863,6 @@ gssymtable_set_type_expr_kind(struct gsfile_symtable *symtable, gsinterned_strin
     (*p)->value = kind;
     (*p)->next = 0;
 }
-
-static void gssymtable_set(struct gsfile_symtable *, enum gsfile_symtable_class, gsinterned_string, void *);
 
 void
 gssymtable_set_data(struct gsfile_symtable *symtable, gsinterned_string label, gsvalue v)
@@ -934,7 +924,7 @@ gssymtable_get_data_type(struct gsfile_symtable *symtable, gsinterned_string lab
     return 0;
 }
 
-struct gstype_item_kind *
+struct gskind *
 gssymtable_get_type_expr_kind(struct gsfile_symtable *symtable, gsinterned_string label)
 {
     struct gsfile_symtable_type_kind_item *p;
@@ -1180,8 +1170,8 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 {
     struct gsbc_scc *p;
     struct gsbc_item items[MAX_ITEMS_PER_SCC];
-    struct gstype *types[MAX_ITEMS_PER_SCC];
-    struct gstype_item_kind *kinds[MAX_ITEMS_PER_SCC];
+    struct gstype *types[MAX_ITEMS_PER_SCC], *defns[MAX_ITEMS_PER_SCC];
+    struct gskind *kinds[MAX_ITEMS_PER_SCC];
     gsvalue heap[MAX_ITEMS_PER_SCC], errors[MAX_ITEMS_PER_SCC];
     struct gsbco *bcos[MAX_ITEMS_PER_SCC];
     int n, i;
@@ -1199,9 +1189,9 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 
     /* §section{Type-checking} */
 
-    gstypes_alloc_for_scc(symtable, items, types, n);
+    gstypes_alloc_for_scc(symtable, items, types, defns, n);
     gstypes_process_type_declarations(symtable, items, kinds, n);
-    gstypes_compile_types(symtable, items, types, n);
+    gstypes_compile_types(symtable, items, types, defns, n);
     gstypes_kind_check_scc(symtable, items, types, kinds, n);
 /* TODO: Type-check (data & code items)! */
 

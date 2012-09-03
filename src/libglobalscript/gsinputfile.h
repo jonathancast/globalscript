@@ -95,18 +95,20 @@ void gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_strin
 void gsappend_symtable(struct gsfile_symtable *symtable0, struct gsfile_symtable *symtable1);
 
 struct gstype;
-struct gstype_item_kind;
+struct gskind;
 struct gsbco;
 
 void gssymtable_set_expr_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbc_code_item_type *);
 void gssymtable_set_type(struct gsfile_symtable *, gsinterned_string, struct gstype *);
-void gssymtable_set_type_expr_kind(struct gsfile_symtable *, gsinterned_string, struct gstype_item_kind *);
+void gssymtable_set_abstype(struct gsfile_symtable *, gsinterned_string, struct gstype *);
+void gssymtable_set_type_expr_kind(struct gsfile_symtable *, gsinterned_string, struct gskind *);
 void gssymtable_set_data(struct gsfile_symtable *, gsinterned_string, gsvalue);
 void gssymtable_set_code(struct gsfile_symtable *, gsinterned_string, struct gsbco *);
 
 struct gsbc_data_item_type *gssymtable_get_data_type(struct gsfile_symtable *symtable, gsinterned_string label);
-struct gstype_item_kind *gssymtable_get_type_expr_kind(struct gsfile_symtable *, gsinterned_string);
+struct gskind *gssymtable_get_type_expr_kind(struct gsfile_symtable *, gsinterned_string);
 struct gstype *gssymtable_get_type(struct gsfile_symtable *, gsinterned_string);
+struct gstype *gssymtable_get_abstype(struct gsfile_symtable *, gsinterned_string);
 struct gsbc_kind *gssymtable_get_kind(struct gsfile_symtable *, gsinterned_string);
 
 struct gsbc_item gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, gsinterned_string label);
