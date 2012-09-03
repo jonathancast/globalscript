@@ -7,7 +7,7 @@ LDFLAGS=$LDFLAGS -L $GLOBALSCRIPT/lib/ -lglobalscript
 	gsbc $stem.ags > $stem.bcgs
 
 %threadmain.c: %.threadmain $GLOBALSCRIPT/bin/apithreadcompile
-	apithreadcompile $stem.threadmain > $stem'threadmain.c'
+	$GLOBALSCRIPT/bin/apithreadcompile $stem.threadmain > $stem'threadmain.c'
 
 %threadmain.$O: $GLOBALSCRIPT/include/libglobalscript.h %.h
 
