@@ -1,3 +1,9 @@
+struct gsbc_code_item_type {
+    int numftyvs;
+    int numfvs;
+    struct gstype *result_type;
+};
+
 struct gstype {
     enum {
         gstype_uninitialized = -1,
@@ -82,6 +88,7 @@ struct gstype_sum {
 };
 
 void gsfatal_unimpl_type(char *, int, struct gstype *, char *, ...);
+void gsfatal_bad_type(gsinterned_string, int, struct gstype *, char *, ...);
 
 void gstypes_alloc_for_scc(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
 void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);

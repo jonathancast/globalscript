@@ -426,7 +426,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->label = 0;
             if (n < 3)
                 gsfatal("%s:%d: Missing argument to .enter", filename, *plineno);
-            parsedline->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
+            parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
             if (n >= 4)
                 gsfatal("%s:%d: Un-recognized arguments to .enter; I only know the code label to enter", filename, *plineno);
             return 0;
@@ -627,11 +627,14 @@ gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno,
 enum gsfile_symtable_class {
     gsfile_data_values,
     gsfile_abstype_defns,
+    gsfile_code_values,
+    gsfile_code_types,
     gsfile_num_classes,
 };
 
 char *gsfile_symtable_class_names[gsfile_num_classes] = {
     "Data (Heap) Values",
+    "Byte Code Objects",
 };
 
 struct gsfile_symtable {
@@ -875,6 +878,18 @@ gssymtable_set_data(struct gsfile_symtable *symtable, gsinterned_string label, g
     gssymtable_set(symtable, gsfile_data_values, label, (void*)v);
 }
 
+struct gsbc_code_item_type *
+gssymtable_get_code_type(struct gsfile_symtable *symtable, gsinterned_string label)
+{
+    return gssymtable_get(symtable, gsfile_code_types, label);
+}
+
+void
+gssymtable_set_code_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbc_code_item_type *v)
+{
+    return gssymtable_set(symtable, gsfile_code_types, label, v);
+}
+
 struct gsfile_symtable_entry {
     gsinterned_string key;
     void *value;
@@ -886,6 +901,21 @@ static struct gs_block_class symtable_entry_descr = {
     /* description = */ "Symbol table entries",
 };
 static void *symtable_entry_nursury;
+
+static
+void *
+gssymtable_get(struct gsfile_symtable *symtable, enum gsfile_symtable_class class, gsinterned_string label)
+{
+    struct gsfile_symtable_entry *p;
+
+    for (p = symtable->entries[class]; p; p = p->next) {
+        if (p->key == label)
+            return p->value
+        ;
+    }
+
+    return 0;
+}
 
 static
 void
@@ -912,21 +942,39 @@ gssymtable_set_code(struct gsfile_symtable *symtable, gsinterned_string label, s
 
 struct gsfile_symtable_data_type_item {
     gsinterned_string key;
-    struct gsbc_data_item_type *value;
+    struct gstype *value;
     struct gsfile_symtable_data_type_item *next;
 };
 
-struct gsbc_data_item_type *
+struct gstype *
 gssymtable_get_data_type(struct gsfile_symtable *symtable, gsinterned_string label)
 {
     struct gsfile_symtable_data_type_item *p;
 
     for (p = symtable->datatypes; p; p = p->next) {
         if (p->key == label)
-            return p->value;
+            return p->value
+        ;
     }
 
     return 0;
+}
+
+void
+gssymtable_set_data_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gstype *v)
+{
+    struct gsfile_symtable_data_type_item **p;
+
+    for (p = &symtable->datatypes; *p; p = &(*p)->next) {
+        if ((*p)->key == label)
+            gsfatal("%s: Already set type of data item", label->name)
+        ;
+    }
+
+    *p = gs_sys_seg_suballoc(&symtable_entry_descr, &symtable_entry_nursury, sizeof(**p), sizeof(gsinterned_string));
+    (*p)->key = label;
+    (*p)->value = v;
+    (*p)->next = 0;
 }
 
 struct gskind *
@@ -1201,7 +1249,8 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
     gstypes_process_type_declarations(symtable, items, kinds, n);
     gstypes_compile_types(symtable, items, types, defns, n);
     gstypes_kind_check_scc(symtable, items, types, kinds, n);
-/* TODO: Type-check (data & code items)! */
+    gstypes_process_type_signatures(symtable, items, n);
+    gstypes_type_check_scc(symtable, items, types, kinds, n);
 
     /* §section{Byte-compilation} */
 

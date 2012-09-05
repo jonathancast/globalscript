@@ -48,6 +48,7 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
                 }
                 break;
             case gssymdatalable:
+            case gssymcodelable:
                 break;
             default:
                 gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(type = %d) next", __FILE__, __LINE__, item.v.ptype->file->name, item.v.ptype->lineno, item.type);
@@ -98,6 +99,7 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
             return;
         }
         case gssymdatalable:
+        case gssymcodelable:
             return;
         default:
             gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.ptype, "gstypes_kind_check_scc(type = %d)", items[i].type);
@@ -299,58 +301,361 @@ gsfatal_unimpl_type(char *file, int lineno, struct gstype *ty, char * err, ...)
     ;
 }
 
-#ifdef typechecking
+void
+gsfatal_bad_type(gsinterned_string file, int lineno, struct gstype *ty, char *err, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, err);
+    vseprint(buf, buf+sizeof buf, err, arg);
+    va_end(arg);
+
+    gsfatal("%s:%d: Bad type %s:%d: %s", file->name, lineno, ty->file->name, ty->lineno, buf);
+}
+
+static
+void
+gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type)
+{
+    switch (type->node) {
+        case gstype_indirection: {
+            struct gstype_indirection *indir;
+
+            indir = (struct gstype_indirection *)type;
+            gsbc_typecheck_check_boxed(p, indir->referent);
+            return;
+        }
+        case gstype_lift:
+            return;
+        case gstype_prim:
+            return;
+        default:
+            gsfatal_unimpl_type(__FILE__, __LINE__, type, "%s:%d: gsbc_typecheck_check_boxed(node = %d)", p->file->name, p->lineno, type->node);
+    }
+}
+
+static void gstypes_process_data_type_signature(struct gsfile_symtable *, struct gsbc_item);
+
+void
+gstypes_process_type_signatures(struct gsfile_symtable *symtable, struct gsbc_item *items, int n)
+{
+    int i;
+
+    for (i = 0; i < n; i++) {
+        switch (items[i].type) {
+            case gssymdatalable:
+                gstypes_process_data_type_signature(symtable, items[i]);
+                break;
+            case gssymcodelable:
+            case gssymtypelable:
+                break;
+            default:
+                gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.ptype, "gstypes_process_data_type_signature(type = %d)", items[i].type);
+        }
+    }
+}
+
+static
+void
+gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsbc_item item)
+{
+    struct gsparsedline *pdata;
+
+    pdata = item.v.pdata;
+
+    if (gssymeq(pdata->directive, gssymdatadirective, ".undefined")) {
+        struct gstype *type;
+
+        gsargcheck(pdata, 0, "type");
+        type = gssymtable_get_type(symtable, pdata->arguments[0]);
+        if (!type)
+            gsfatal_bad_input(pdata, "Couldn't find type %s", pdata->arguments[0])
+        ;
+        if (pdata->label)
+            gssymtable_set_data_type(symtable, pdata->label, type)
+        ;
+    } else if (gssymeq(pdata->directive, gssymdatadirective, ".closure")) {
+        struct gstype *type;
+
+        if (pdata->numarguments < 2)
+            return;
+
+        type = gssymtable_get_type(symtable, pdata->arguments[1]);
+        if (!type)
+            gsfatal_bad_input(pdata, "Couldn't find type %s", pdata->arguments[1])
+        ;
+        if (pdata->label)
+            gssymtable_set_data_type(symtable, pdata->label, type)
+        ;
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, item.v.pdata, "gstypes_process_data_type_signature(%s)", pdata->directive->name);
+    }
+}
+
+static void gstypes_type_check_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
+
+void
+gstypes_type_check_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n)
+{
+    int i;
+
+    for (i = 0; i < n; i++)
+        gstypes_type_check_item(symtable, items, types, kinds, n, i)
+    ;
+}
+
+static void gstypes_type_check_data_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
+static void gstypes_type_check_code_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
+
+static
+void
+gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
+{
+    switch (items[i].type) {
+        case gssymtypelable:
+            return;
+        case gssymdatalable:
+            gstypes_type_check_data_item(symtable, items, types, kinds, n, i);
+            return;
+        case gssymcodelable:
+            gstypes_type_check_code_item(symtable, items, types, kinds, n, i);
+            return;
+        default:
+            gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.ptype, "gstypes_kind_check_scc(type = %d)", items[i].type);
+    }
+}
+
+static void gstypes_check_type(struct gsparsedline *, struct gstype *, struct gstype *);
+static void gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type);
+
+static
+void
+gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
+{
+    struct gsparsedline *pdata;
+
+    pdata = items[i].v.pdata;
+    if (gssymeq(pdata->directive, gssymdatadirective, ".undefined")) {
+        struct gstype *type;
+        struct gskind *kind;
+
+        gsargcheck(pdata, 0, "type");
+        type = gssymtable_get_type(symtable, pdata->arguments[0]);
+        if (!type)
+            gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "couldn't find type '%s'", pdata->arguments[0]->name)
+        ;
+        kind = gssymtable_get_type_expr_kind(symtable, pdata->arguments[0]);
+        if (!kind)
+            gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "couldn't find kind of '%s'", pdata->arguments[0]->name)
+        ;
+        gstypes_kind_check(pdata->file, pdata->lineno, kind, gskind_lifted_kind());
+    } else if (gssymeq(pdata->directive, gssymdatadirective, ".closure")) {
+        struct gsbc_code_item_type *code_type;
+
+        gsargcheck(pdata, 0, "code");
+        code_type = gssymtable_get_code_type(symtable, pdata->arguments[0]);
+        if (!code_type)
+            gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "Cannot find type of code item %s", pdata->arguments[0]->name)
+        ;
+        if (code_type->numftyvs)
+            gsfatal_bad_input(pdata, "Code for a global data item cannot have free type variables")
+        ;
+        if (code_type->numfvs)
+            gsfatal_bad_input(pdata, "Code for a global data item cannot have free variables")
+        ;
+
+        if (pdata->numarguments >= 2) {
+            struct gstype *declared_type;
+
+            declared_type = gssymtable_get_type(symtable, pdata->arguments[1]);
+            gstypes_check_type(pdata, code_type->result_type, declared_type);
+            gsbc_typecheck_check_boxed(pdata, declared_type);
+        } else {
+            gssymtable_set_type(symtable, pdata->label, code_type->result_type);
+            gsbc_typecheck_check_boxed(pdata, code_type->result_type);
+        }
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "gstypes_type_check_data_item(%s)", pdata->directive->name);
+    }
+}
+
+static struct gsbc_code_item_type *gsbc_typecheck_code_expr(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
+
+static
+void
+gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
+{
+    struct gsparsedline *pcode;
+    struct gsparsedfile_segment *pseg;
+
+    pseg = items[i].pseg;
+    pcode = items[i].v.pcode;
+
+    if (gssymeq(pcode->directive, gssymcodedirective, ".expr")) {
+        struct gsbc_code_item_type *type;
+
+        type = gsbc_typecheck_code_expr(symtable, &pseg, gsinput_next_line(&pseg, pcode));
+        gssymtable_set_code_type(symtable, pcode->label, type);
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, pcode, "gstypes_type_check_code_item(%s)", pcode->directive->name);
+    }
+}
+
+static struct gs_block_class gsbc_code_type_descr = {
+    /* evaluator = */ gsnoeval,
+    /* description = */ "Code item types",
+};
+static void *gsbc_code_type_nursury;
+
 static
 struct gsbc_code_item_type *
-gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedline *p)
+gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
     enum {
         rtgvar,
     } regtype;
+    int i;
     int nregs;
-/*    struct gsbc_code_item_type *regtypes[MAX_REGISTERS]; */
+    gsinterned_string regs[MAX_NUM_REGISTERS];
+    struct gstype *regtypes[MAX_NUM_REGISTERS];
+    struct gstype *calculated_type;
+    struct gsbc_code_item_type *res;
 
-    /*
-        Grar
-
-        Have to go forward to set up lexical environment then go backward to get type.
-        
-        Here's what let's do:
-        §begin{itemize}
-            §item Go forward
-            §item Keep a stack of the continuation ops as we go
-            §item Build the type when we reach the end
-            §item Then do another loop backward over the stack mutating the type as we go
-            §item Also do type-checking in this second loop
-        §end{itemize}
-    */
+    nregs = 0;
     regtype = rtgvar;
-    for (; ; p = gsinput_next_line(p)) {
+    for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
-            struct gsbc_data_item_type *varty;
-
-            if (regtype != rtgvar)
-                gsfatal("%s:%d: %s:%d: Illegal .gvar; next register should be %s",
-                    __FILE__,
-                    __LINE__,
-                    p->file->name,
-                    p->lineno,
-                    "unknown"
-                )
+            if (regtype > rtgvar)
+                gsfatal_bad_input(p, "Too late to add global variables")
             ;
-            if (nregs >= MAX_REGISTERS)
-                gsfatal("%s:%d: %s:%d: Too many registers; max 0x%x", __FILE__, __LINE__, p->file->name, p->lineno, MAX_REGISTERS);
-            if (varty = gssymtable_get_data_type(symtable, p->label)) {
-            } else {
-                gsfatal("%s:%d: %s:%d: Cannot find type of %s", __FILE__, __LINE__, p->file->name, p->lineno, p->label->name);
+            regtype = rtgvar;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers")
+            ;
+            regs[nregs] = p->label;
+            regtypes[nregs] = gssymtable_get_data_type(symtable, p->label);
+            if (!regtypes[nregs])
+                gsfatal_bad_input(p, "Couldn't find type for global %s", p->label->name)
+            ;
+            nregs++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
+            int reg = 0;
+
+            gsargcheck(p, 0, "var");
+            for (i = 0; i < nregs; i++) {
+                if (regs[i] == p->arguments[0]) {
+                    reg = i;
+                    goto have_reg;
+                }
             }
-/*            regtypes[nregs++] = varty; */
-            gsfatal("%s:%d: %s:%d: Type-check .gvar next", __FILE__, __LINE__, p->file->name, p->lineno);
+            gsfatal_bad_input(p, "No such register %s", p->arguments[0]->name);
+        have_reg:
+            calculated_type = regtypes[reg];
+            goto have_type;
         } else {
-            gsfatal("%s:%d: %s:%d: Cannot type-check op %s yet", __FILE__, __LINE__, p->file->name, p->lineno, p->directive->name);
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_code_expr(%s)", p->directive->name);
         }
     }
 
-    return 0;
+have_type:
+
+    res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, sizeof(*res), sizeof(int));
+    res->numftyvs = 0;
+    res->numfvs = 0;
+    res->result_type = calculated_type;
+
+    return res;
 }
-#endif
+
+static struct gstype *gstypes_clear_indirections(struct gstype *);
+
+static char *gstypes_eprint_type(char *, char *, struct gstype *);
+
+static
+void
+gstypes_check_type(struct gsparsedline *p, struct gstype *pactual, struct gstype *pexpected)
+{
+    char actual_buf[0x100];
+    char expected_buf[0x100];
+
+    pactual = gstypes_clear_indirections(pactual);
+    pexpected = gstypes_clear_indirections(pexpected);
+    
+    if (gstypes_eprint_type(actual_buf, actual_buf + sizeof(actual_buf), pactual) >= actual_buf + sizeof(actual_buf))
+        gsfatal("%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, p->file->name, p->lineno, pactual->file->name, pactual->lineno)
+    ;
+    if (gstypes_eprint_type(expected_buf, expected_buf + sizeof(expected_buf), pexpected) >= actual_buf + sizeof(actual_buf))
+        gsfatal("%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, p->file->name, p->lineno, pactual->file->name, pactual->lineno)
+    ;
+
+    if (pactual->node != pexpected->node)
+        gsfatal_bad_input(p, "I don't think %s (%s:%d) is %s (%s:%d)",
+            actual_buf, pactual->file->name, pactual->lineno, 
+            expected_buf, pexpected->file->name, pexpected->lineno
+        )
+    ;
+
+    switch (pexpected->node) {
+        case gstype_prim: {
+            struct gstype_prim *pactual_prim, *pexpected_prim;
+
+            pactual_prim = (struct gstype_prim *)pactual;
+            pexpected_prim = (struct gstype_prim *)pexpected;
+
+            if (pactual_prim->primset != pexpected_prim->primset)
+                gsfatal_bad_input(p, "I don't think primset %s is the same as primset %s", pactual_prim->primset->name, pexpected_prim->primset->name)
+            ;
+            if (pactual_prim->name != pexpected_prim->name)
+                gsfatal_bad_input(p, "I don't think prim %s is the same as prim %s", pactual_prim->name->name, pexpected_prim->name->name)
+            ;
+            return;
+        }
+        case gstype_lift: {
+            struct gstype_lift *pactual_lift, *pexpected_lift;
+
+            pactual_lift = (struct gstype_lift *)pactual;
+            pexpected_lift = (struct gstype_lift *)pexpected;
+
+            gstypes_check_type(p, pactual_lift->arg, pexpected_lift->arg);
+            return;
+        }
+        default:
+            gsfatal_unimpl_type(__FILE__, __LINE__, pexpected, "%s:%d: gstypes_check_type(node = %d)", p->file->name, p->lineno, pexpected->node);
+    }
+}
+
+static
+struct gstype *
+gstypes_clear_indirections(struct gstype *pty)
+{
+    if (pty->node == gstype_indirection) {
+        struct gstype_indirection *indir;
+
+        indir = (struct gstype_indirection *)pty;
+
+        return indir->referent;
+    } else {
+        return pty;
+    }
+}
+
+static
+char *
+gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
+{
+    switch (pty->node) {
+        case gstype_indirection: {
+            struct gstype_indirection *indir;
+
+            indir = (struct gstype_indirection *)pty;
+
+            res = seprint(res, eob, "\"indir ");
+            res = gstypes_eprint_type(res, eob, indir->referent);
+            return res;
+        }
+        default:
+            res = seprint(res, eob, "unknown type node %d", pty->node);
+            return res;
+    }
+}

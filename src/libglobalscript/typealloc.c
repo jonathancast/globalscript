@@ -89,6 +89,7 @@ gstypes_size_item(struct gsbc_item item)
                 gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size %s type items", item.v.ptype->directive->name);
             }
         case gssymdatalable:
+        case gssymcodelable:
             return 0;
         default:
             gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size type item of type %d", item.type);
@@ -112,6 +113,7 @@ gstypes_size_defn(struct gsbc_item item)
                 gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size abstype defn for %s type items", item.v.ptype->directive->name);
             }
         case gssymdatalable:
+        case gssymcodelable:
             return 0;
         default:
             gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size abstype defn for item of type %d", item.type);
@@ -182,6 +184,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                 }
                 break;
             case gssymdatalable:
+            case gssymcodelable:
                 break;
             default:
                 gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "gstypes_compile_types(type = %d)", item.type);
