@@ -119,7 +119,7 @@ gstypes_size_defn(struct gsbc_item item)
     return 0;
 }
 
-static void gstype_compile_type_ops(struct gsfile_symtable *, struct gsparsedline *, struct gstype *);
+static void gstype_compile_type_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gstype *);
 
 void
 gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **ptypes, struct gstype **defns, int n)
@@ -133,9 +133,11 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
         switch (item.type) {
             case gssymtypelable:
                 {
+                    struct gsparsedfile_segment *pseg;
                     struct gsparsedline *ptype;
                     struct gstype *res;
 
+                    pseg = item.pseg;
                     ptype = item.v.ptype;
                     res = ptypes[i];
 
@@ -156,9 +158,9 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
 
                         defn = defns[i];
 
-                        gstype_compile_type_ops(symtable, gsinput_next_line(ptype), defn);
+                        gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), defn);
                     } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyexpr")) {
-                        gstype_compile_type_ops(symtable, gsinput_next_line(ptype), res);
+                        gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), res);
                     } else if (gssymeq(ptype->directive, gssymtypedirective, ".tydefinedprim")) {
                         struct gstype_prim *prim;
 
@@ -194,6 +196,7 @@ struct gstype_compile_type_ops_closure {
     gsinterned_string regs[MAX_REGISTERS];
     struct gstype *regvalues[MAX_REGISTERS];
     struct gsfile_symtable *symtable;
+    struct gsparsedfile_segment **ppseg;
     enum {
         regglobal,
         regarg,
@@ -206,15 +209,14 @@ static struct gstype *gstype_compile_type_ops_worker(struct gstype_compile_type_
 
 static
 void
-gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gstype *res)
+gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gstype *res)
 {
     struct gstype_compile_type_ops_closure cl;
     struct gstype_indirection *indir;
 
-    cl.symtable = symtable;
-
     cl.nregs = 0;
-
+    cl.symtable = symtable;
+    cl.ppseg = ppseg;
     cl.regclass = regglobal;
 
     res->node = gstype_indirection;
@@ -247,7 +249,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             gsfatal_bad_input(p, "Couldn't find referent %s", p->label->name)
         ;
         cl->nregs++;
-        return gstype_compile_type_ops_worker(cl, gsinput_next_line(p));
+        return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
     } else if (gssymeq(p->directive, gssymtypeop, ".tylambda")) {
         struct gskind *kind;
         struct gstype_lambda *lambda;
@@ -271,7 +273,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         res->lineno = p->lineno;
         lambda->var = p->label;
         lambda->kind = kind;
-        lambda->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(p));
+        lambda->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
         return res;
     } else if (gssymeq(p->directive, gssymtypeop, ".tyforall")) {
         struct gskind *kind;
@@ -296,7 +298,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         res->lineno = p->lineno;
         forall->var = p->label;
         forall->kind = kind;
-        forall->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(p));
+        forall->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
         return res;
     } else if (gssymeq(p->directive, gssymtypeop, ".tylet")) {
         struct gstype *reg;
@@ -336,7 +338,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         }
         cl->regvalues[cl->nregs] = reg;
         cl->nregs++;
-        return gstype_compile_type_ops_worker(cl, gsinput_next_line(p));
+        return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
     } else if (gssymeq(p->directive, gssymtypeop, ".tylift")) {
         struct gstype_lift *lift;
         res = gstype_alloc(sizeof(struct gstype_lift));
@@ -344,7 +346,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         res->node = gstype_lift;
         res->file = p->file;
         res->lineno = p->lineno;
-        lift->arg = gstype_compile_type_ops_worker(cl, gsinput_next_line(p));
+        lift->arg = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
         return res;
     } else if (gssymeq(p->directive, gssymtypeop, ".tyref")) {
         struct gstype *reg;

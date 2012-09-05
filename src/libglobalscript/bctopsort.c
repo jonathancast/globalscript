@@ -64,6 +64,7 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
             if (parsedfile->data) for (i = 0; i < parsedfile->data->numitems; i++) {
                 if (item.v.pdata)
                     gsfatal("%s: Topologically sort from second data item next", parsedfile->name->name);
+                item.pseg = parsedfile->data->first_seg;
                 item.v.pdata = GSDATA_SECTION_FIRST_ITEM(parsedfile->data);
                 if (gssymtable_get_scc(symtable, item))
                     continue;
@@ -72,11 +73,12 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
             item.type = gssymtypelable;
             item.v.ptype = 0;
             if (parsedfile->types) for (i = 0; i < parsedfile->types->numitems; i++) {
-                if (item.v.ptype)
-                    item.v.ptype = gstype_section_next_item(item.v.ptype)
-                ; else
-                    item.v.ptype = GSTYPE_SECTION_FIRST_ITEM(parsedfile->types)
-                ;
+                if (item.v.ptype) {
+                    item.v.ptype = gstype_section_next_item(&item.pseg, item.v.ptype);
+                } else {
+                    item.pseg = parsedfile->types->first_seg;
+                    item.v.ptype = GSTYPE_SECTION_FIRST_ITEM(parsedfile->types);
+                }
                 if (gssymtable_get_scc(symtable, item))
                     continue;
                 gsbc_topsort_item(symtable, preorders, &unassigned_items, &maybe_group_items, item, &pend, &c);
@@ -103,23 +105,24 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
     return res;
 }
 
-static struct gsparsedline *gstype_section_skip_type_expr(struct gsparsedline *);
+static struct gsparsedline *gstype_section_skip_type_expr(struct gsparsedfile_segment **, struct gsparsedline *);
 
 struct gsparsedline *
-gstype_section_next_item(struct gsparsedline *type)
+gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedline *type)
 {
     if (gssymeq(type->directive, gssymtypedirective, ".tyexpr")) {
-        return gstype_section_skip_type_expr(gsinput_next_line(type));
+        return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
     } else if (gssymeq(type->directive, gssymtypedirective, ".tyabstract")) {
-        return gstype_section_skip_type_expr(gsinput_next_line(type));
+        return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, type, "gstype_section_next_item(%s)", type->directive->name);
     }
     return 0;
 }
 
-static struct gsparsedline *
-gstype_section_skip_type_expr(struct gsparsedline *p)
+static
+struct gsparsedline *
+gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
     for (;;) {
         if (
@@ -130,12 +133,12 @@ gstype_section_skip_type_expr(struct gsparsedline *p)
             || gssymeq(p->directive, gssymtypeop, ".tylet")
             || gssymeq(p->directive, gssymtypeop, ".typeapp")
         )
-            p = gsinput_next_line(p);
+            p = gsinput_next_line(ppseg, p);
         else if (
             gssymeq(p->directive, gssymtypeop, ".tyref")
             || gssymeq(p->directive, gssymtypeop, ".tysum")
         )
-            return gsinput_next_line(p);
+            return gsinput_next_line(ppseg, p);
         else
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "gstype_section_skip_type_expr(%s)", p->directive->name);
     }
@@ -303,11 +306,13 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
 {
     enum gsbc_code_directive directive;
     struct gsparsedline *p;
+    struct gsparsedfile_segment *pseg;
 
     directive = gsbc_lookup_code_directive(item.v.pcode->directive);
+    pseg = item.pseg;
     switch (directive) {
         case gscode_directive_expr:
-            for (p = gsinput_next_line(item.v.pcode); ; p = gsinput_next_line(p)) {
+            for (p = gsinput_next_line(&pseg, item.v.pcode); ; p = gsinput_next_line(&pseg, p)) {
                 if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
                     struct gsbc_item global;
                     global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
@@ -352,22 +357,24 @@ gsbc_lookup_code_directive(gsinterned_string dir)
     return -1;
 }
 
-static void gsbc_top_sort_subitems_of_type_expr(struct gsfile_symtable *, struct gsbc_item_hash *, struct gsbc_item_stack *, struct gsbc_item_stack *, struct gsbc_item, struct gsbc_scc ***, ulong *, struct gsparsedline *);
+static void gsbc_top_sort_subitems_of_type_expr(struct gsfile_symtable *, struct gsbc_item_hash *, struct gsbc_item_stack *, struct gsbc_item_stack *, struct gsbc_item, struct gsbc_scc ***, ulong *, struct gsparsedfile_segment **, struct gsparsedline *);
 
 static
 void
 gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
     gsinterned_string directive;
+    struct gsparsedfile_segment *pseg;
     struct gsparsedline *ptype;
 
+    pseg = item.pseg;
     ptype = item.v.ptype;
     directive = ptype->directive;
     if (gssymeq(directive, gssymtypedirective, ".tyexpr")) {
-        gsbc_top_sort_subitems_of_type_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, gsinput_next_line(ptype));
+        gsbc_top_sort_subitems_of_type_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, &pseg, gsinput_next_line(&pseg, ptype));
         return;
     } else if (gssymeq(directive, gssymtypedirective, ".tyabstract")) {
-        gsbc_top_sort_subitems_of_type_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, gsinput_next_line(ptype));
+        gsbc_top_sort_subitems_of_type_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, &pseg, gsinput_next_line(&pseg, ptype));
         return;
     } else if (gssymeq(directive, gssymtypedirective, ".tydefinedprim")) {
         struct gsregistered_primset *prims;
@@ -402,9 +409,9 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
 
 static
 void
-gsbc_top_sort_subitems_of_type_expr(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc, struct gsparsedline *p)
+gsbc_top_sort_subitems_of_type_expr(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    for (; ; p = gsinput_next_line(p)) {
+    for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymtypeop, ".tygvar")) {
             struct gsbc_item global;
             global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
@@ -600,6 +607,7 @@ gsbc_item_empty(struct gsbc_item *pitem)
 {
     pitem->file = 0;
     pitem->type = 0;
+    pitem->pseg = 0;
     pitem->v.pdata = 0;
 }
 

@@ -40,7 +40,7 @@ gsmain.$O: gsinputfile.h gssetup.h ace.h
 load.$O: gsinputalloc.h gsinputfile.h $GLOBALSCRIPT/include/libibio.h gsbytecompile.h gstopsort.h gstypealloc.h gstypecheck.h
 inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsalloc.h
-eval.$O: gsheap.h
+eval.$O: gsheap.h gsinputfile.h
 symtable.$O: gsinputfile.h
 bytecompile.$O: $GLOBALSCRIPT/include/libibio.h gsinputfile.h gsbytecompile.h gsheap.h gstopsort.h gstypealloc.h
 primset.$O: gsinputfile.h gssetup.h

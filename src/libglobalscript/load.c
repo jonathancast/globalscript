@@ -196,9 +196,9 @@ gsaddfile(char *filename, gsvalue *pentry)
 }
 
 static long gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
-static long gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
-static long gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
-static long gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
+static long gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
+static long gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
+static long gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 
 #define LINE_LENGTH 0x100
 #define NUM_FIELDS 0x20
@@ -210,7 +210,6 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
     char line[LINE_LENGTH];
     char *fields[NUM_FIELDS];
     gsparsedfile *parsedfile;
-    struct gsparsedfile_segment *pseg;
     int pid;
     long n;
     gsfiletype type;
@@ -251,7 +250,6 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
     if ((parsedfile = gsparsed_file_alloc(filename, relname, type)) < 0) {
         gsfatal("%s:%d: Cannot allocate input file: %r", filename, lineno);
     }
-    pseg = &parsedfile->first_seg;
 
     section = gsnosection;
 
@@ -267,34 +265,36 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
             section = gsdatasection;
             if (parsedfile->data)
                 gsfatal("%s:%d: We already did this section", filename, lineno);
-            parsedfile->data = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->data), &pseg);
+            parsedfile->data = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->data));
+            parsedfile->data->first_seg = parsedfile->last_seg;
             parsedfile->data->numitems = 0;
         } else if (!strcmp(fields[1], ".code")) {
             section = gscodesection;
             if (parsedfile->code)
                 gsfatal("%s:%d: We already did this section", filename, lineno);
-            parsedfile->code = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->code), &pseg);
+            parsedfile->code = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->code));
             parsedfile->code->numitems = 0;
         } else if (!strcmp(fields[1], ".type")) {
             section = gstypesection;
             if (parsedfile->types)
                 gsfatal("%s:%d: We already did this section", filename, lineno);
-            parsedfile->types = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->types), &pseg);
+            parsedfile->types = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->types));
+            parsedfile->types->first_seg = parsedfile->last_seg;
             parsedfile->types->numitems = 0;
         } else switch (section) {
             case gsnosection:
                 gsfatal("%s:%d: Missing section directive", filename, lineno);
                 break;
             case gsdatasection:
-                if (gsparse_data_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n, symtable) < 0)
+                if (gsparse_data_item(filename, parsedfile, chan, line, &lineno, fields, n, symtable) < 0)
                     gsfatal("%s:%d: Error in reading data item: %r", filename, lineno);
                 break;
             case gscodesection:
-                if (gsparse_code_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n, symtable) < 0)
+                if (gsparse_code_item(filename, parsedfile, chan, line, &lineno, fields, n, symtable) < 0)
                     gsfatal("%s:%d: Error in reading code item: %r", filename, lineno);
                 break;
             case gstypesection:
-                if (gsparse_type_item(filename, parsedfile, &pseg, chan, line, &lineno, fields, n, symtable) < 0)
+                if (gsparse_type_item(filename, parsedfile, chan, line, &lineno, fields, n, symtable) < 0)
                     gsfatal("%s:%d: Error in reading type item: %r", filename, lineno);
                 break;
             default:
@@ -315,12 +315,12 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
 
 static
 long
-gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
+gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
     struct gsparsedline *parsedline;
     int i;
 
-    parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, numfields);
+    parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, numfields);
     parsedfile->data->numitems++;
 
     if (*fields[0])
@@ -328,7 +328,7 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
     else
         parsedline->label = 0;
 
-    gssymtable_add_data_item(symtable, parsedline->label, parsedfile, parsedline);
+    gssymtable_add_data_item(symtable, parsedline->label, parsedfile, parsedfile->last_seg, parsedline);
 
     parsedline->directive = gsintern_string(gssymdatadirective, fields[1]);
 
@@ -359,15 +359,15 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
     return 1;
 }
 
-static long gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
+static long gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
 
 static
 long
-gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
+gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
     struct gsparsedline *parsedline;
 
-    parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, numfields);
+    parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, numfields);
     parsedfile->code->numitems++;
 
     if (*fields[0])
@@ -375,12 +375,12 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
     else
         gsfatal("%s:%d: Missing code label", filename, *plineno);
 
-    gssymtable_add_code_item(symtable, parsedline->label, parsedfile, parsedline);
+    gssymtable_add_code_item(symtable, parsedline->label, parsedfile, parsedfile->last_seg, parsedline);
 
     parsedline->directive = gsintern_string(gssymcodedirective, fields[1]);
 
     if (gssymeq(parsedline->directive, gssymcodedirective, ".expr")) {
-        return gsparse_code_ops(filename, parsedfile, ppseg, parsedline, chan, line, plineno, fields);
+        return gsparse_code_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
     } else {
         gsfatal("%s:%d: Unimplemented code directive %s", filename, *plineno, fields[1]);
     }
@@ -392,14 +392,14 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
 
 static
 long
-gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
+gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
     struct gsparsedline *parsedline;
     int i;
     long n;
 
     while ((n = gsgrabline(filename, chan, line, plineno, fields)) > 0) {
-        parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, n);
+        parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, n);
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
@@ -442,15 +442,15 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_s
     return -1;
 }
 
-static long gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
+static long gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
 
 static
 long
-gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
+gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
     struct gsparsedline *parsedline;
 
-    parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, numfields);
+    parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, numfields);
     parsedfile->types->numitems++;
 
     if (*fields[0])
@@ -458,14 +458,14 @@ gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
     else
         gsfatal("%s:%d: Missing type label", filename, *plineno);
 
-    gssymtable_add_type_item(symtable, parsedline->label, parsedfile, parsedline);
+    gssymtable_add_type_item(symtable, parsedline->label, parsedfile, parsedfile->last_seg, parsedline);
 
     parsedline->directive = gsintern_string(gssymtypedirective, fields[1]);
 
     if (gssymeq(parsedline->directive, gssymtypedirective, ".tyexpr")) {
         if (numfields > 2 + 0)
             gsfatal("%s:%d: Too many arguments to .tyexpr", filename, *plineno);
-        return gsparse_type_ops(filename, parsedfile, ppseg, parsedline, chan, line, plineno, fields);
+        return gsparse_type_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
     } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tydefinedprim")) {
         if (numfields < 2 + 1)
             gsfatal("%s:%d: Missing primitive group name", filename, *plineno);
@@ -483,7 +483,7 @@ gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
         parsedline->arguments[0] = gsintern_string(gssymkindexpr, fields[2 + 0]);
         if (numfields > 2 + 1)
             gsfatal("%s:%d: Too many arguments to .tyabstract", filename, *plineno);
-        return gsparse_type_ops(filename, parsedfile, ppseg, parsedline, chan, line, plineno, fields);
+        return gsparse_type_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
     } else {
         gsfatal("%s:%d: %s:%d: Unimplemented type directive %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
     }
@@ -495,14 +495,14 @@ gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_
 
 static
 long
-gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
+gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
     struct gsparsedline *parsedline;
     int i;
     long n;
 
     while ((n = gsgrabline(filename, chan, line, plineno, fields)) > 0) {
-        parsedline = gsparsed_file_addline(filename, parsedfile, ppseg, *plineno, n);
+        parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, n);
 
         parsedline->directive = gsintern_string(gssymtypeop, fields[1]);
 
@@ -650,6 +650,7 @@ struct gsfile_symtable {
 struct gsfile_symtable_item {
     gsinterned_string key;
     gsparsedfile *file;
+    struct gsparsedfile_segment *pseg;
     struct gsparsedline *value;
     struct gsfile_symtable_item *next;
 };
@@ -720,13 +721,14 @@ gsappend_items(struct gsfile_symtable_item **dest0, struct gsfile_symtable_item 
         *dest = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**dest), sizeof(gsinterned_string));
         (*dest)->key = src->key;
         (*dest)->file = src->file;
+        (*dest)->pseg = src->pseg;
         (*dest)->value = src->value;
         (*dest)->next = 0;
     }
 }
 
 void
-gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pcode)
+gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedfile_segment *pseg, struct gsparsedline *pcode)
 {
     struct gsfile_symtable_item **p;
 
@@ -744,12 +746,13 @@ gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string lab
     *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->file = file;
+    (*p)->pseg = pseg;
     (*p)->value = pcode;
     (*p)->next = 0;
 }
 
 void
-gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pdata)
+gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedfile_segment *pseg, struct gsparsedline *pdata)
 {
     struct gsfile_symtable_item **p;
 
@@ -767,12 +770,13 @@ gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string lab
     *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->file = file;
+    (*p)->pseg = pseg;
     (*p)->value = pdata;
     (*p)->next = 0;
 }
 
 void
-gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *ptype)
+gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedfile_segment *pseg, struct gsparsedline *ptype)
 {
     struct gsfile_symtable_item **p;
 
@@ -790,6 +794,7 @@ gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string lab
     *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->file = file;
+    (*p)->pseg = pseg;
     (*p)->value = ptype;
     (*p)->next = 0;
 }
@@ -985,6 +990,7 @@ gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, 
                     if (p->key == label) {
                         res.file = p->file;
                         res.type = gssymdatalable;
+                        res.pseg = p->pseg;
                         res.v.pdata = p->value;
                         return res;
                     }
@@ -995,6 +1001,7 @@ gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, 
                     if (p->key == label) {
                         res.file = p->file;
                         res.type = gssymcodelable;
+                        res.pseg = p->pseg;
                         res.v.pcode = p->value;
                         return res;
                     }
@@ -1005,6 +1012,7 @@ gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, 
                     if (p->key == label) {
                         res.file = p->file;
                         res.type = gssymtypelable;
+                        res.pseg = p->pseg;
                         res.v.ptype = p->value;
                         return res;
                     }

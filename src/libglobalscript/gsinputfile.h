@@ -20,20 +20,22 @@ int gssymeq(gsinterned_string, gssymboltype, char*);
 
 struct gsparsedfile_segment {
     struct gsparsedfile_segment *next;
+    void *extent;
 };
 
 typedef struct gsparsedfile {
     ulong size;
-    void *extent;
     gsinterned_string name, relname;
     gsfiletype type;
     struct gsdatasection *data;
     struct gscodesection *code;
     struct gstypesection *types;
+    struct gsparsedfile_segment *last_seg;
     struct gsparsedfile_segment first_seg;
 } gsparsedfile;
 
 struct gsdatasection {
+    struct gsparsedfile_segment *first_seg;
     ulong numitems;
 };
 
@@ -42,13 +44,14 @@ struct gscodesection {
 };
 
 struct gstypesection {
+    struct gsparsedfile_segment *first_seg;
     ulong numitems;
 };
 
 #define GSDATA_SECTION_FIRST_ITEM(p) ((struct gsparsedline*)((uchar*)p+sizeof(*p)))
 #define GSTYPE_SECTION_FIRST_ITEM(p) ((struct gsparsedline*)((uchar*)p+sizeof(*p)))
 
-struct gsparsedline *gstype_section_next_item(struct gsparsedline *);
+struct gsparsedline *gstype_section_next_item(struct gsparsedfile_segment **, struct gsparsedline *);
 
 struct gsparsedline {
     gsinterned_string file;
@@ -59,11 +62,12 @@ struct gsparsedline {
     gsinterned_string arguments[];
 };
 
-struct gsparsedline *gsinput_next_line(struct gsparsedline *);
+struct gsparsedline *gsinput_next_line(struct gsparsedfile_segment **, struct gsparsedline *);
 
 struct gsbc_item {
     gsparsedfile *file;
     gssymboltype type;
+    struct gsparsedfile_segment *pseg;
     union {
         struct gsparsedline *pdata;
         struct gsparsedline *pcode;
@@ -88,9 +92,9 @@ struct gsfile_symtable;
 
 struct gsfile_symtable *gscreatesymtable(struct gsfile_symtable *prev_symtable);
 
-void gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pdata);
-void gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *pcode);
-void gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedline *ptype);
+void gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedfile_segment *pseg, struct gsparsedline *pdata);
+void gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedfile_segment *pseg, struct gsparsedline *pcode);
+void gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedfile_segment *pseg, struct gsparsedline *ptype);
 
 void gsappend_symtable(struct gsfile_symtable *symtable0, struct gsfile_symtable *symtable1);
 

@@ -138,6 +138,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
 {
     int size;
     struct gsparsedline *p;
+    struct gsparsedfile_segment *pseg;
     enum {
         phgvars,
         phbytecodes,
@@ -146,7 +147,8 @@ gsbc_bytecode_size_item(struct gsbc_item item)
     size = sizeof(struct gsbco);
 
     phase = phgvars;
-    for (p = gsinput_next_line(item.v.pcode); ; p = gsinput_next_line(p)) {
+    pseg = item.pseg;
+    for (p = gsinput_next_line(&pseg, item.v.pcode); ; p = gsinput_next_line(&pseg, p)) {
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_size_item");
 #if 0
     next_phase:

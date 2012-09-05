@@ -30,12 +30,13 @@ gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
         gsalloc_new_parsed_file_block();
     pres = (gsparsedfile *)parsed_file_nursury;
     pres->size = sizeof(gsparsedfile);
-    pres->extent = (uchar*)parsed_file_nursury + sizeof(gsparsedfile);
     pres->name = gsintern_string(gssymfilename, filename);
     pres->relname = gsintern_string(gssymfilename, relname);
     pres->type = type;
     pres->data = 0;
     pres->code = 0;
+    pres->last_seg = &pres->first_seg;
+    pres->first_seg.extent = (uchar*)parsed_file_nursury + sizeof(gsparsedfile);
     pres->first_seg.next = 0;
     parsed_file_nursury = 0;
 
@@ -60,33 +61,35 @@ gsalloc_new_parsed_file_block()
     gsassert(__FILE__, __LINE__, !((uintptr)parsed_file_nursury % sizeof(ulong)), "parsed_file_nursury not ulong-aligned; check sizeof(struct input_block)");
 }
 
-static void gsparsed_file_add_segment(gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg);
+static void gsparsed_file_add_segment(gsparsedfile *parsedfile);
 
+/* ↓ It is part of the interface of this file that §c{parsedfile->last_seg} contains the allocated memory. */
 void *
-gsparsed_file_extend(gsparsedfile *parsedfile, ulong n, struct gsparsedfile_segment **ppseg)
+gsparsed_file_extend(gsparsedfile *parsedfile, ulong n)
 {
     struct input_block *nursury_seg;
     void *res;
+    struct gsparsedfile_segment *seg;
 
-    nursury_seg = BLOCK_CONTAINING(parsedfile->extent);
-    if ((uchar*)END_OF_BLOCK(nursury_seg) - (uchar*)parsedfile->extent < n) {
-        gsparsed_file_add_segment(parsedfile, ppseg);
-        nursury_seg = BLOCK_CONTAINING(parsedfile->extent);
+    seg = parsedfile->last_seg;
+    nursury_seg = BLOCK_CONTAINING(seg->extent);
+    if ((uchar*)END_OF_BLOCK(nursury_seg) - (uchar*)seg->extent < n) {
+        gsparsed_file_add_segment(parsedfile);
+        seg = parsedfile->last_seg;
+        nursury_seg = BLOCK_CONTAINING(seg->extent);
     }
 
-    res = parsedfile->extent;
+    res = seg->extent;
 
-    parsedfile->extent = (uchar*)parsedfile->extent + n;
-    if ((uintptr)parsedfile->extent % sizeof(void*))
-        parsedfile->extent = (uchar*)parsedfile->extent + sizeof(void*) - ((uintptr)parsedfile->extent % sizeof(void*));
-    if ((uchar*)END_OF_BLOCK(nursury_seg) < (uchar*)parsedfile->extent)
-        gsparsed_file_add_segment(parsedfile, ppseg);
+    seg->extent = (uchar*)seg->extent + n;
+    if ((uintptr)seg->extent % sizeof(void*))
+        seg->extent = (uchar*)seg->extent + sizeof(void*) - ((uintptr)seg->extent % sizeof(void*));
 
     return res;
 }
 
 void
-gsparsed_file_add_segment(gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg)
+gsparsed_file_add_segment(gsparsedfile *parsedfile)
 {
     struct input_block *nursury_seg;
     struct gsparsedfile_segment *new_segment;
@@ -95,17 +98,18 @@ gsparsed_file_add_segment(gsparsedfile *parsedfile, struct gsparsedfile_segment 
 
     nursury_seg = gs_sys_seg_alloc(&gsparsed_file_desc);
     new_segment = (void*)(uchar*)nursury_seg + sizeof(*nursury_seg);
+    new_segment->extent = (uchar*)new_segment + sizeof(*new_segment);
     new_segment->next = 0;
 
-    parsedfile->extent = (uchar*)new_segment + sizeof(*new_segment);
-    (*ppseg)->next = new_segment;
-    *ppseg = new_segment;
+    parsedfile->last_seg->next = new_segment;
+    parsedfile->last_seg = new_segment;
 }
 
 /* §subsection{Specifically Appending Lines to Source Files} */
 
+/* ↓ It is part of the interface of this file that §c{parsedfile->last_seg} contains the returned line. */
 struct gsparsedline *
-gsparsed_file_addline(char *filename, gsparsedfile *parsedfile, struct gsparsedfile_segment **ppseg, int lineno, ulong numfields)
+gsparsed_file_addline(char *filename, gsparsedfile *parsedfile, int lineno, ulong numfields)
 {
     ulong size;
     struct gsparsedline *res;
@@ -114,7 +118,7 @@ gsparsed_file_addline(char *filename, gsparsedfile *parsedfile, struct gsparsedf
         gsfatal("%s:%d: Missing directive", filename, lineno);
 
     size = sizeof(*res) + sizeof(gsinterned_string) * (numfields - 2);
-    res = gsparsed_file_extend(parsedfile, size, ppseg);
+    res = gsparsed_file_extend(parsedfile, size);
 
     res->file = parsedfile->name;
     res->lineno = lineno;
@@ -126,9 +130,16 @@ gsparsed_file_addline(char *filename, gsparsedfile *parsedfile, struct gsparsedf
 /* §section{Manipulating Parsed Source Files} */
 
 struct gsparsedline *
-gsinput_next_line(struct gsparsedline *p)
+gsinput_next_line(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    return (struct gsparsedline *)((uchar*)p + sizeof(*p) + p->numarguments * sizeof(gsinterned_string));
+    struct gsparsedline *pres;
+
+    pres = (struct gsparsedline *)((uchar*)p + sizeof(*p) + p->numarguments * sizeof(gsinterned_string));
+
+    if ((uchar*)pres >= (uchar*)(*ppseg)->extent)
+        gsfatal_unimpl_input(__FILE__, __LINE__, p, "Next line when changing segments");
+
+    return pres;
 }
 
 /* §section{Syntax-checking and complaining about source files} */
