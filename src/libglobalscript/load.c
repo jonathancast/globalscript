@@ -872,6 +872,8 @@ gssymtable_set_type_expr_kind(struct gsfile_symtable *symtable, gsinterned_strin
     (*p)->next = 0;
 }
 
+static void *gssymtable_get(struct gsfile_symtable *, enum gsfile_symtable_class, gsinterned_string);
+
 void
 gssymtable_set_data(struct gsfile_symtable *symtable, gsinterned_string label, gsvalue v)
 {
