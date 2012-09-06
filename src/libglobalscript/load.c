@@ -874,6 +874,12 @@ gssymtable_set_type_expr_kind(struct gsfile_symtable *symtable, gsinterned_strin
 
 static void *gssymtable_get(struct gsfile_symtable *, enum gsfile_symtable_class, gsinterned_string);
 
+gsvalue
+gssymtable_get_data(struct gsfile_symtable *symtable, gsinterned_string label)
+{
+    return (gsvalue)gssymtable_get(symtable, gsfile_data_values, label);
+}
+
 void
 gssymtable_set_data(struct gsfile_symtable *symtable, gsinterned_string label, gsvalue v)
 {
@@ -936,10 +942,16 @@ gssymtable_set(struct gsfile_symtable *symtable, enum gsfile_symtable_class clas
     (*p)->next = 0;
 }
 
+struct gsbco *
+gssymtable_get_code(struct gsfile_symtable *symtable, gsinterned_string label)
+{
+    return gssymtable_get(symtable, gsfile_code_values, label);
+}
+
 void
 gssymtable_set_code(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbco *v)
 {
-    gsfatal_unimpl(__FILE__, __LINE__, "gssymtable_set_code");
+    gssymtable_set(symtable, gsfile_code_values, label, v);
 }
 
 struct gsfile_symtable_data_type_item {

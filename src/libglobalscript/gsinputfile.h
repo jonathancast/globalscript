@@ -115,6 +115,8 @@ struct gskind *gssymtable_get_type_expr_kind(struct gsfile_symtable *, gsinterne
 struct gstype *gssymtable_get_type(struct gsfile_symtable *, gsinterned_string);
 struct gstype *gssymtable_get_abstype(struct gsfile_symtable *, gsinterned_string);
 struct gsbc_kind *gssymtable_get_kind(struct gsfile_symtable *, gsinterned_string);
+gsvalue gssymtable_get_data(struct gsfile_symtable *, gsinterned_string);
+struct gsbco *gssymtable_get_code(struct gsfile_symtable *, gsinterned_string);
 struct gsbc_code_item_type *gssymtable_get_code_type(struct gsfile_symtable *, gsinterned_string);
 
 struct gsbc_item gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, gsinterned_string label);

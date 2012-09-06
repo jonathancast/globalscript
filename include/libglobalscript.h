@@ -80,6 +80,20 @@ gstypecode gswhnfeval(gsvalue);
 
 int gsiserror_block(struct gs_blockdesc *);
 
+struct gsheap_item {
+    gsinterned_string file;
+    int lineno;
+    enum {
+        gsclosure,
+    } type;
+};
+
+struct gsclosure {
+    struct gsheap_item hp;
+    struct gsbco *code;
+    gsvalue fvs[];
+};
+
 struct gserror {
     gsinterned_string file;
     int lineno;

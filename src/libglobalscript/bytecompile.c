@@ -74,6 +74,8 @@ gsbc_heap_size_item(struct gsbc_item item)
     p = item.v.pdata;
     if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
         return 0;
+    } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
+        return sizeof(struct gsclosure) + sizeof(gsvalue);
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, item.v.pdata, "gsbc_heap_size_item(%s)", p->directive->name);
     }
@@ -91,8 +93,10 @@ gsbc_error_size_item(struct gsbc_item item)
     p = item.v.pdata;
     if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
         return sizeof(struct gserror);
+    } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
+        return 0;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, item.v.pdata, "gsbc_heap_size_item(%s)", p->directive->name);
+        gsfatal_unimpl_input(__FILE__, __LINE__, item.v.pdata, "gsbc_error_size_item(%s)", p->directive->name);
     }
     return 0;
 }
@@ -132,6 +136,8 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
+#define MAX_NUM_REGISTERS 0x100
+
 static
 int
 gsbc_bytecode_size_item(struct gsbc_item item)
@@ -143,13 +149,40 @@ gsbc_bytecode_size_item(struct gsbc_item item)
         phgvars,
         phbytecodes,
     } phase;
+    int nregs;
 
     size = sizeof(struct gsbco);
 
     phase = phgvars;
+    nregs = 0;
     pseg = item.pseg;
     for (p = gsinput_next_line(&pseg, item.v.pcode); ; p = gsinput_next_line(&pseg, p)) {
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_size_item");
+        if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+            if (phase > phgvars)
+                gsfatal_bad_input(p, "Too late to add global variables")
+            ;
+            phase = phgvars;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
+            if (size % sizeof(gsvalue))
+                gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't gsvalue-aligned",
+                    __FILE__,
+                    __LINE__,
+                    p->file->name,
+                    p->lineno
+                )
+            ;
+            size += sizeof(gsvalue);
+            nregs++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
+            size += 1; /* Byte code */
+            size += 1; /* Argument */
+            if (p->numarguments > 1)
+                gsfatal("%s:%d: Too many arguments to .enter", p->file->name, p->lineno);
+            goto done;
+        } else {
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_bytecode_size_item (%s)", p->directive->name);
+        }
 #if 0
     next_phase:
         switch (phase) {
@@ -190,9 +223,9 @@ gsbc_bytecode_size_item(struct gsbc_item item)
                 gsfatal("%s:%d: Unknown phase %d", __FILE__, __LINE__, phase);
         }
 
-done:
 #endif
     }
+done:
 
     if (size % sizeof(void*))
         size += sizeof(void*) - size
@@ -203,19 +236,25 @@ done:
 
 /* §section{Actual Byte Compiler} */
 
-static void gsbc_bytecompile_data_item(struct gsparsedline *, gsvalue *, gsvalue *, int, int);
+static void gsbc_bytecompile_data_item(struct gsfile_symtable *, struct gsparsedline *, gsvalue *, gsvalue *, int, int);
+static void gsbc_bytecompile_code_item(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco **, int, int);
 
 void
 gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, gsvalue *errors, struct gsbco **bcos, int n)
 {
     int i;
+    struct gsparsedfile_segment *pseg;
 
     for (i = 0; i < n; i++) {
         switch (items[i].type) {
             case gssymtypelable:
                 break;
             case gssymdatalable:
-                gsbc_bytecompile_data_item(items[i].v.pdata, heap, errors, i, n);
+                gsbc_bytecompile_data_item(symtable, items[i].v.pdata, heap, errors, i, n);
+                break;
+            case gssymcodelable:
+                pseg = items[i].pseg;
+                gsbc_bytecompile_code_item(symtable, &pseg, items[i].v.pcode, bcos, i, n);
                 break;
             default:
                 gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.pcode, "gsbc_bytecompile_scc(type = %d)", items[i].type);
@@ -225,7 +264,7 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
 
 static
 void
-gsbc_bytecompile_data_item(struct gsparsedline *p, gsvalue *heap, gsvalue *errors, int i, int n)
+gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline *p, gsvalue *heap, gsvalue *errors, int i, int n)
 {
     if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
         struct gserror *er;
@@ -234,7 +273,91 @@ gsbc_bytecompile_data_item(struct gsparsedline *p, gsvalue *heap, gsvalue *error
         er->file = p->file;
         er->lineno = p->lineno;
         er->type = gserror_undefined;
+    } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
+        struct gsheap_item *hp;
+        struct gsclosure *cl;
+
+        hp = (struct gsheap_item *)heap[i];
+        hp->file = p->file;
+        hp->lineno = p->lineno;
+        hp->type = gsclosure;
+        cl = (struct gsclosure *)heap[i];
+        gsargcheck(p, 0, "Code label");
+        cl->code = gssymtable_get_code(symtable, p->arguments[0]);
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "Data directive %s next", p->directive->name);
     }
+}
+
+static void gsbc_byte_compile_code_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco *);
+
+static
+void
+gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco **bcos, int i, int n)
+{
+    if (gssymeq(p->directive, gssymcodedirective, ".expr")) {
+        bcos[i]->tag = gsbc_expr;
+        gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, p, "Code directive %s next", p->directive->name);
+    }
+}
+
+static
+void
+gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco *pbco)
+{
+    enum {
+        rtgvars,
+        rtops,
+    } phase;
+    int i;
+    gsvalue *pglobal;
+    uchar *pcode;
+    int nregs, nglobals;
+    gsinterned_string regs[MAX_NUM_REGISTERS];
+
+    phase = rtgvars;
+    pcode = 0;
+    pglobal = (gsvalue*)((uchar*)pbco + sizeof(struct gsbco));
+    nregs = nglobals = 0;
+    for (; ; p = gsinput_next_line(ppseg, p)) {
+        if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+            if (phase > rtgvars)
+                gsfatal_bad_input(p, "Too late to add global variables")
+            ;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            ;
+            regs[nregs] = p->label;
+            *pglobal++ = gssymtable_get_data(symtable, p->label);
+            nregs++;
+            nglobals++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
+            int reg = 0;
+
+            phase = rtops;
+            if (!pcode)
+                pcode = (uchar*)pglobal
+            ;
+            gsargcheck(p, 0, "target");
+            for (i = 0; i < nregs; i++) {
+                if (regs[i] == p->arguments[0]) {
+                    reg = i;
+                    goto have_register;
+                }
+            }
+            gsfatal_bad_input(p, "Unknown register %s", p->arguments[0]->name);
+        have_register: ;
+            *pcode++ = gsbc_op_enter;
+            *pcode++ = (uchar)reg;
+            goto done;
+        } else {
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Code op %s next", p->directive->name);
+        }
+    }
+
+done:
+
+    pbco->numglobals = nglobals;
 }

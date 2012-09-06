@@ -2,9 +2,14 @@
 
 struct gsbco {
     enum {
-        gsbco_undefined,
+        gsbc_expr,
     } tag;
     ulong size;
+    ulong numglobals;
+};
+
+enum {
+    gsbc_op_enter,
 };
 
 void *gsreservebytecode(ulong);
