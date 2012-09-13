@@ -18,7 +18,7 @@ test:V:
 
 integration-test:V: test-rc
 
-test-rc:V: rc/test $O.ibio test-gslib/abort.ags test-results/abort.ags-expected
+test-rc:V: rc/test $O.ibio
     ./rc/test
 
 %.ibio.ags-out: $PROG $GLOBALSCRIPT/bin/gsbc `{echo $GLOBALSCRIPT/src/cmd/gsbc/*.pm} %.ibio.ags
