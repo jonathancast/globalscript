@@ -414,6 +414,23 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             ;
         }
         return res;
+    } else if (gssymeq(p->directive, gssymtypeop, ".typroduct")) {
+        struct gstype_product *prod;
+        int numfields;
+
+        if (p->numarguments % 2)
+                gsfatal_bad_input(p, "Cannot have odd number of arguments to .tysum");
+        numfields = p->numarguments / 2;
+        res = gstype_alloc(sizeof(struct gstype_product) + numfields * sizeof(struct gstype_field));
+        prod = (struct gstype_product *)res;
+        res->node = gstype_product;
+        res->file = p->file;
+        res->lineno = p->lineno;
+        prod->numfields = numfields;
+        for (i = 0; i < p->numarguments; i += 2) {
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Non-empty products");
+        }
+        return res;
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "gstype_compile_type_ops %s", p->directive->name);
     }

@@ -586,6 +586,18 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->arguments[i + 1] = gsintern_string(gssymtypelable, fields[2 + i + 1]);
             }
             return 0;
+        } else if (gssymeq(parsedline->directive, gssymtypeop, ".typroduct")) {
+            if (*fields[0])
+                gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
+            else
+                parsedline->label = 0;
+            if (n % 2)
+                gsfatal("%s:%d: Can't have odd number of arguments to .typroduct", filename, *plineno);
+            for (i = 0; 2 + i < n; i += 2) {
+                parsedline->arguments[i] = gsintern_string(gssymfieldlable, fields[2 + i]);
+                parsedline->arguments[i + 1] = gsintern_string(gssymtypelable, fields[2 + i + 1]);
+            }
+            return 0;
         } else {
             gsfatal("%s:%d: %s:%d: Unimplemented type op %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
         }

@@ -34,6 +34,7 @@ typedef enum {
     gssymkindexpr,
     gssymprimsetlable,
     gssymconstrlable,
+    gssymfieldlable,
 } gssymboltype;
 
 typedef struct gsstring_value {

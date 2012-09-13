@@ -111,6 +111,7 @@ static void gstypes_kind_check_simple(gsinterned_string, int, struct gskind *);
 struct gskind *
 gstypes_calculate_kind(struct gstype *type)
 {
+    int i;
 
     switch (type->node) {
         case gstype_indirection: {
@@ -203,6 +204,17 @@ gstypes_calculate_kind(struct gstype *type)
                 default:
                     gsfatal_unimpl_type(__FILE__, __LINE__, type, "'function' kind (node = %d)", funkind->node);
             }
+        }
+        case gstype_product: {
+            struct gstype_product *prod;
+
+            prod = (struct gstype_product *)type;
+
+            for (i = 0; i < prod->numfields; i++) {
+                gsfatal_unimpl_type(__FILE__, __LINE__, type, "check kind of field type");
+            }
+
+            return gskind_unlifted_kind();
         }
         default:
             gsfatal_unimpl_type(__FILE__, __LINE__, type, "gstypes_calculate_kind(node = %d)", type->node);

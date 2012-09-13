@@ -1,7 +1,17 @@
 #! /usr/local/plan9/bin/rc -e
 
+echo '-- undefined entry points --'
 if (./$O.test-gsi ./test-gslib ./test-gslib/undef.ags > ./test-results/undef.ags-actual) {
-    echo test-gsi succeeded >[1=2]
+    echo 'test-gsi succeeded; should have failed' >[1=2]
     exit 1
 }
 diff ./test-results/undef.ags-actual ./test-results/undef.ags-expected
+echo
+
+echo '-- undefined empty record values --'
+if (./$O.test-gsi ./test-gslib ./test-gslib/undef-empty-record.ags > ./test-results/undef-empt-record.ags-actual) {
+    echo 'test-gsi succeeded; should have failed' >[1=2]
+    exit 1
+}
+diff ./test-results/undef-empt-record.ags-actual ./test-results/undef-empt-record.ags-expected
+echo

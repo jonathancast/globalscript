@@ -1,0 +1,11 @@
+	.document
+
+	.data
+
+	.undefined	_empty.record
+
+	.type
+
+_empty.record	.tyexpr
+	.tylift
+	.typroduct
