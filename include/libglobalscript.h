@@ -19,6 +19,29 @@ void gsfatal_unimpl(char *, int, char *, ...);
 
 void gsassert(char *srcfile, int srcline, int passed, char *err, ...);
 
+/* §section Threading */
+
+#ifdef __UNIX__
+/* We always want to use the Plan 9 version of the locking routines;
+   so on Unix, use a local copy of those routines (§emph{not} the P9P versions).
+*/
+#define lock rp9lock
+#define unlock rp9unlock
+#define canlock rp9canlock
+#define Lock rp9Lock
+
+typedef
+struct Lock {
+	int	val;
+} Lock;
+
+extern int	_tas(int*);
+
+extern	void	lock(Lock*);
+extern	void	unlock(Lock*);
+extern	int	canlock(Lock*);
+#endif
+
 /* §section Internal error-reporting stuff */
 
 typedef enum {
@@ -43,7 +66,7 @@ typedef struct gsstring_value {
     char name[];
 } *gsinterned_string;
 
-/* §section{Global Script Program Calculus} */
+/* §section Global Script Program Calculus */
 
 typedef uintptr gsvalue;
 typedef uintptr gscode;

@@ -1,5 +1,9 @@
 < $PLAN9/src/mkhdr
 
+SYSTEM=unix
+
+< $SYSTEM/mkhdr
+
 OFILES=\
 	gsmain.$O \
 	gsfatal.$O \
@@ -16,6 +20,8 @@ OFILES=\
 	typealloc.$O \
 	typecheck.$O \
 	bctopsort.$O \
+	$SYSTEM/lock.$O \
+	$SYSTEM/$CPU/tas.$O \
 
 TEST_OFILES=\
 	test.$O \
@@ -69,7 +75,12 @@ test_load.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 $O.test-gsi:	$TEST_GSI_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libibio.a
 	$LD -o $target $prereq $LDFLAGS
 
+%.$O:	%.c
+	$CC $CFLAGS -o $target $stem.c
+
+%.$O:	%.s
+	$AS $ASFLAGS $stem.s
+
 NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 
-< $PLAN9/src/mkcommon
 < $GLOBALSCRIPT/src/mkcommon
