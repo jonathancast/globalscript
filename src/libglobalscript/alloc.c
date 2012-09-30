@@ -5,6 +5,8 @@
 #include <libglobalscript.h>
 #include "gsalloc.h"
 
+static Lock gs_allocator_lock;
+
 struct free_block {
     struct gs_blockdesc hdr;
     struct free_block *next;
@@ -18,7 +20,7 @@ struct gs_block_class free_block_class_descr = {
     "Free memory",
 };
 
-static void gs_sys_seg_extend(void);
+static void _gs_sys_seg_extend(void);
 static void gs_sys_seg_setup_free_block(struct free_block *);
 
 void
@@ -45,11 +47,14 @@ gs_sys_seg_init(void)
     gs_sys_seg_setup_free_block(first_free_block);
 }
 
+/* Needs to lock the program break */
 void *
 gs_sys_seg_alloc(registered_block_class cl)
 {
     struct gs_blockdesc *pres;
     struct free_block *pnext;
+
+    lock(&gs_allocator_lock);
 
     if (!bottom_of_data)
         gs_sys_seg_init();
@@ -62,9 +67,11 @@ gs_sys_seg_alloc(registered_block_class cl)
     if (pnext)
         first_free_block = pnext;
     else
-        gs_sys_seg_extend();
+        _gs_sys_seg_extend();
 
     pres->class = cl;
+
+    unlock(&gs_allocator_lock);
 
     return (void*)pres;
 }
@@ -75,9 +82,10 @@ gs_sys_seg_free(void *p)
     gsfatal("gs_sys_seg_free next");
 }
 
+/* Assumes the program break is locked */
 static
 void
-gs_sys_seg_extend(void)
+_gs_sys_seg_extend(void)
 {
     struct free_block *pnext;
     struct gs_blockdesc *pblock;
