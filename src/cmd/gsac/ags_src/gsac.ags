@@ -2,17 +2,18 @@
 
 	.data
 
-	.closure	_epcode	_eptype
-_abort	.tyapp	ibio.abort	rune	rune	_empty.record
+	.undefined	_eptype
 
 	.code
-
-_epcode	.expr
-_abort	.gvar
-	.app	_unimpl.gsac
-	.enter	_abort
 
 	.type
 
 _eptype	.tyexpr
-	.tyref	ibio.m	rune	rune	_empty.record
+ibio.m	.tygvar
+rune.t	.tygvar
+_empty.record	.tygvar
+	.tyref	ibio.m	rune.t	rune.t	_empty.record
+
+_empty.record	.tyexpr
+	.tylift
+	.typroduct
