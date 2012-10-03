@@ -1,0 +1,8 @@
+	.prefix
+
+	.type
+
+sequence.m	.tyabstract	**^
+α	.tylambda	*
+	.tylift
+	.tysum

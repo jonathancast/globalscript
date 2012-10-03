@@ -1,8 +1,7 @@
 < $PLAN9/src/mkhdr
 
 OFILES=\
-	ibio.$O\
-	ibiothreadmain.$O
+	ibio.$O \
 
 TARG=ibio
 

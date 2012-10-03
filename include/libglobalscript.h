@@ -42,6 +42,33 @@ extern	void	unlock(Lock*);
 extern	int	canlock(Lock*);
 #endif
 
+int gscreate_thread_pool(void (*)(void *), void *, ulong);
+
+/* §section RPC */
+
+struct gsrpc_queue;
+
+struct gsrpc {
+    Lock lock;
+    int tag;
+    enum {
+        gsrpc_failed = -1,
+        gsrpc_pending,
+        gsrpc_running,
+        gsrpc_succeeded,
+    } status;
+    char *err;
+};
+
+struct gsrpc_queue *gsqueue_alloc(void);
+
+struct gsrpc *gsqueue_rpc_alloc(ulong);
+
+struct gsrpc *gsqueue_get_rpc(struct gsrpc_queue *);
+void gsqueue_send_rpc(struct gsrpc_queue *, struct gsrpc *);
+
+typedef void (rpc_handler)(struct gsrpc *);
+
 /* §section Internal error-reporting stuff */
 
 typedef enum {
@@ -182,26 +209,28 @@ void *gs_sys_seg_suballoc(registered_block_class, void**, ulong, ulong);
 
 /* §section{API} */
 
-typedef struct apiinstr
-{
-    gsvalue instr;
-    gsvalue *dest;
-} apiinstr;
+struct api_thread;
 
-typedef struct apithread_info {
-    apiinstr *codebeg, *pc, *codeend;
-} *apithread;
+enum {
+    api_std_rpc_done,
+    api_std_rpc_abend,
+    api_std_rpc_numrpcs,
+};
+struct api_process_rpc_table {
+    char *name;
+    int numrpcs;
+    rpc_handler *handlers[];
+};
+rpc_handler api_main_process_unimpl_rpc;
 
-typedef struct {
-    /* QLock *lock; */
-    apithread curthread;
-} apithreadqueue;
+/* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
+void apisetupmainthread(struct api_process_rpc_table *, gsvalue);
 
-typedef void apithreadmain(apithreadqueue *q);
+/* If (and only if) the current thread is hard, these will send an abend message (message 1) to the corresponding process */
+void api_abend(struct api_thread *, char *, ...);
+void api_abend_unimpl(struct api_thread *, char *, int, char *, ...);
 
-extern apithread apithreadcreate(gsvalue prog, apithreadmain *threadmain, gsvalue *pres, int bindtoproc);
-
-extern void apibindtothread(apithread t);
+rpc_handler api_main_process_handle_rpc_abend;
 
 #if defined(__cplusplus)
 }

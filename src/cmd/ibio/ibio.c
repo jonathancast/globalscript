@@ -13,6 +13,5 @@ p9main(int argc, char **argv)
 void
 gsrun(gsvalue prog)
 {
-    apithread t = apithreadcreate(prog, ibiothreadmain, 0, 1);
-    apibindtothread(t);
+    gsfatal_unimpl(__FILE__, __LINE__, "gsrun");
 }

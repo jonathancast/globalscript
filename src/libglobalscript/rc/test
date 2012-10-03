@@ -1,4 +1,4 @@
-#! /usr/local/plan9/bin/rc -e
+#! /home/jcast/plan9/bin/rc -e
 
 echo '-- undefined entry points --'
 if (./$O.test-gsi ./test-gslib ./test-gslib/undef.ags > ./test-results/undef.ags-actual) {
@@ -14,4 +14,15 @@ if (./$O.test-gsi ./test-gslib ./test-gslib/undef-empty-record.ags > ./test-resu
     exit 1
 }
 diff ./test-results/undef-empt-record.ags-actual ./test-results/undef-empt-record.ags-expected
+echo
+
+echo '-- undefined API entry points --'
+if (./$O.test-gsexec ./test-gslib ./test-gslib/undef-api.ags >[2] ./test-results/undef-api.ags-actual) {
+    echo 'test-gsexec succeeded; should have failed' >[1=2]
+    exit 1
+}
+if (! grep -s './test-gslib/undef-api.ags:5: undefined' ./test-results/undef-api.ags-actual) {
+    echo 'Couldn''t find expected error message in output anywhere' >[1=2]
+    exit 1
+}
 echo

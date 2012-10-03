@@ -1,1 +1,0 @@
-extern apithreadmain ibiothreadmain;

@@ -8,5 +8,6 @@ gsvalue gsentrypoint;
 int
 ace_init(void)
 {
+    gswarning("%s:%d: ace_init: deferred", __FILE__, __LINE__);
     return 0;
 }

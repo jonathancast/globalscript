@@ -20,8 +20,10 @@ OFILES=\
 	typealloc.$O \
 	typecheck.$O \
 	bctopsort.$O \
+	gsrpc.$O \
 	$SYSTEM/lock.$O \
 	$SYSTEM/$CPU/tas.$O \
+	$SYSTEM/gssysthreads.$O \
 
 TEST_OFILES=\
 	test.$O \
@@ -31,6 +33,9 @@ TEST_OFILES=\
 
 TEST_GSI_OFILES=\
 	test-gsi.$O \
+
+TEST_GSEXEC_OFILES=\
+	test-gsexec.$O \
 
 LIB=libglobalscript.a
 
@@ -53,6 +58,7 @@ primset.$O: gsinputfile.h gssetup.h
 typealloc.$O: gsinputfile.h gstypealloc.h
 typecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
 bctopsort.$O: gsinputfile.h gstopsort.h
+api.$O: api.h
 
 all install:V: test $GLOBALSCRIPT/lib/$LIB
 
@@ -61,7 +67,7 @@ test:V: $O.test
 
 integration-test:V: test test-rc
 
-test-rc:V: rc/test $O.test-gsi
+test-rc:V: rc/test $O.test-gsi $O.test-gsexec
     ./rc/test
 
 $O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a
@@ -80,6 +86,9 @@ $O.test-gsi:	$TEST_GSI_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libibio.a
 
 %.$O:	%.s
 	$AS $ASFLAGS $stem.s
+
+$O.test-gsexec:	$TEST_GSEXEC_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libibio.a
+	$LD -o $target $prereq $LDFLAGS
 
 NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB
 

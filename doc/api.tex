@@ -1,0 +1,37 @@
+\documentclass{article}
+\title{API}
+\author{Jonathan Cast\\\texttt{jcast@gobalscript.org}}
+
+\newcommand\defn[1]{\emph{#1}}
+\newcommand\TODO[1]{\footnote{TODO: #1}}
+
+\begin{document}
+
+\maketitle
+
+``API'' stands for \defn{Advanced Procedural language Implementation}.
+This is how IBIO, Cord, maybe others implement procedural language-style monads (similar to Haskell's IO monad).
+Execution of API-based languages is divided into two phases:
+\begin{itemize}
+    \item \defn{Thread advancement} --- this means 
+    \item
+\end{itemize}
+
+We have five kinds of OS threads/processes:
+\begin{itemize}
+    \item The \defn{Unix process set} consists of one process per `hard' API thread.
+        A \defn{hard} API thread is not a thread that runs in its own process,
+        but rather one that has a process to which any system calls it makes are dispatched, usually.
+        The main thread starts out hard; other threads start out soft and are hardened `lazily'.
+        The main thread
+    \item The \defn{API thread pool} drives everything else that happens, including in the main processes.
+    \item The \defn{ACE thread pool} does Global Script evaluation;
+        it is started by the API thread pool and shut down when:
+        \begin{itemize}
+            \item The last API thread has exited
+            \item The last read thead/process has exited\TODO{IBIO read processes/read threads}
+            \item The last write thread/process has exited\TODO{IBIO write processes/write threads}
+        \end{itemize}
+\end{itemize}
+
+\end{document}
