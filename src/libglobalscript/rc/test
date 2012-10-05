@@ -1,4 +1,4 @@
-#! /home/jcast/plan9/bin/rc -e
+#! /usr/local/plan9/bin/rc -e
 
 echo '-- undefined entry points --'
 if (./$O.test-gsi ./test-gslib ./test-gslib/undef.ags > ./test-results/undef.ags-actual) {
