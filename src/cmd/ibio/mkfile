@@ -15,7 +15,7 @@ all install:V: test
 test:V: 
     :
 
-integration-test:V: test-rc
+integration-test:V: test test-rc
 
 test-rc:V: rc/test $O.ibio
     ./rc/test
