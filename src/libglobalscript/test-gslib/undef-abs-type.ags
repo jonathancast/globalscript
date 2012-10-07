@@ -7,7 +7,8 @@ _real.entry	.undefined	_bodytype
 
 	.type
 
-t	.tyabstract	*
+t	.tyabstract	**^
+α	.tylambda	*
 	.tylift
 	.typroduct
 
@@ -15,8 +16,13 @@ _bodytype	.tyexpr
 	.tylift
 	.typroduct
 
+_empty.record	.tyexpr
+	.tylift
+	.typroduct
+
 	.coercion
 
 _in	.tycoercion
 t	.tygvar
-	.tydefinition	t
+_empty.record	.tygvar
+	.tydefinition	t	_empty.record

@@ -226,7 +226,7 @@ gstypes_calculate_kind(struct gstype *type)
 
 #define MAX_NUM_REGISTERS 0x100
 
-static void seprint_kind_name(char *, char *, struct gskind *);
+static char *seprint_kind_name(char *, char *, struct gskind *);
 
 void
 gstypes_kind_check(gsinterned_string file, int lineno, struct gskind *kyactual, struct gskind *kyexpected)
@@ -276,19 +276,21 @@ gstypes_kind_check_simple(gsinterned_string file, int lineno, struct gskind *kya
 }
 
 static
-void
+char *
 seprint_kind_name(char *buf, char *ebuf, struct gskind *ky)
 {
     switch (ky->node) {
         case gskind_unknown:
-            seprint(buf, ebuf, "?");
-            break;
+            return seprint(buf, ebuf, "?");
         case gskind_lifted:
-            seprint(buf, ebuf, "*");
-            break;
+            return seprint(buf, ebuf, "*");
+        case gskind_exponential:
+            buf = seprint_kind_name(buf, ebuf, ky->args[0]);
+            buf = seprint_kind_name(buf, ebuf, ky->args[1]);
+            buf = seprint(buf, ebuf, "^");
+            return buf;
         default:
-            seprint(buf, ebuf, "%s:%d: Unknown kind type %d", __FILE__, __LINE__, ky->node);
-            break;
+            return seprint(buf, ebuf, "%s:%d: Unknown kind type %d", __FILE__, __LINE__, ky->node);
     }
 }
 
@@ -748,7 +750,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
     enum {
         rttygvar,
     } regtype;
-    int i;
+    int i, j;
     int nregs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
     struct gstype *regtypes[MAX_NUM_REGISTERS], *regdefns[MAX_NUM_REGISTERS];
@@ -794,11 +796,25 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
                 gsfatal_bad_input(p, "Register %s doesn't seem to be an abstract type", p->arguments[0]->name);
             source = gstypes_clear_indirections(regdefns[reg]);
 
-            if (source->node == gstype_lambda)
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, ".tydefinition with arguments");
+            for (i = 1; i < p->numarguments; i++) {
+                for (j = 0; j < nregs; j++) {
+                    if (regs[j] == p->arguments[i]) {
+                        reg = j;
+                        goto have_register_for_arg;
+                    }
+                }
+                gsfatal_bad_input(p, "Can't find type register for %s", p->arguments[i]->name);
+            have_register_for_arg:
+                if (!regtypes[reg])
+                    gsfatal_bad_input(p, "Register %s doesn't seem to be a type variable", p->arguments[i]->name)
+                ;
+                source = gstype_supply(p->file, p->lineno, source, regtypes[reg]);
+                dest = gstype_apply(p->file, p->lineno, dest, regtypes[reg]);
+            }
 
-            if (p->numarguments > 1)
-                gsfatal_bad_input(p, "Too many arguments to .tydefinition (abstract type has no arguments)");
+            if (source->node == gstype_lambda)
+                gsfatal_bad_input(p, "Not enough arguments to definition of %s", p->arguments[0]->name)
+            ;
 
             goto have_type;
         } else {

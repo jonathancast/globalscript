@@ -239,7 +239,6 @@ gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedfile_se
 }
 
 static struct gstype *gstypes_compile_type_var(gsinterned_string, int, gsinterned_string, struct gskind *);
-static struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
 
 static struct gstype *gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *, struct gsparsedline *, struct gstype *(*)(struct gstype_compile_type_ops_closure *, struct gsparsedline *));
 
@@ -366,7 +365,6 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         res = reg;
         for (i = 0; 1 + i < p->numarguments; i++) {
             struct gstype *fun, *arg;
-            struct gstype_app *app;
 
             fun = res;
             arg = 0;
@@ -378,13 +376,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             }
             gsfatal_bad_input(p, "Cannot find register %s", p->arguments[1 + i]->name);
         have_arg_register:
-            res = gstype_alloc(sizeof(struct gstype_app));
-            res->node = gstype_app;
-            res->file = p->file;
-            res->lineno = p->lineno;
-            app = (struct gstype_app *)res;
-            app->fun = fun;
-            app->arg = arg;
+            res = gstype_apply(p->file, p->lineno, fun, arg);
         }
         return res;
     } else if (gssymeq(p->directive, gssymtypeop, ".tysum")) {
@@ -559,9 +551,25 @@ gstypes_compile_type_var(gsinterned_string file, int lineno, gsinterned_string n
     return res;
 }
 
+struct gstype *
+gstype_apply(gsinterned_string file, int lineno, struct gstype *fun, struct gstype *arg)
+{
+    struct gstype *res;
+    struct gstype_app *app;
+
+    res = gstype_alloc(sizeof(struct gstype_app));
+    res->node = gstype_app;
+    res->file = file;
+    res->lineno = lineno;
+    app = (struct gstype_app *)res;
+    app->fun = fun;
+    app->arg = arg;
+
+    return res;
+}
+
 static struct gstype *gstypes_subst(gsinterned_string, int, struct gstype *, gsinterned_string, struct gstype *);
 
-static
 struct gstype *
 gstype_supply(gsinterned_string file, int lineno, struct gstype *fun, struct gstype *arg)
 {
@@ -596,6 +604,7 @@ struct gstype *
 gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterned_string varname, struct gstype *type1)
 {
     char buf[0x100];
+    int i;
 
     switch (type->node) {
         case gstype_abstract:
@@ -645,6 +654,20 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
             reslambda->body = resbody;
             return res;
         }
+        case gstype_lift: {
+            struct gstype_lift *lift, *reslift;
+            struct gstype *res;
+
+            lift = (struct gstype_lift *)type;
+            res = gstype_alloc(sizeof (struct gstype_lift));
+            reslift = (struct gstype_lift *)res;
+            res->node = gstype_lift;
+            res->file = type->file;
+            res->lineno = type->lineno;
+            reslift->arg = gstypes_subst(file, lineno, lift->arg, varname, type1);
+
+            return res;
+        }
         case gstype_app: {
             struct gstype_app *app, *resapp;
             struct gstype *res;
@@ -657,6 +680,23 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
             res->lineno = type->lineno;
             resapp->fun = gstypes_subst(file, lineno, app->fun, varname, type1);
             resapp->arg = gstypes_subst(file, lineno, app->arg, varname, type1);
+
+            return res;
+        }
+        case gstype_product: {
+            struct gstype_product *prod, *resprod;
+            struct gstype *res;
+
+            prod = (struct gstype_product *)type;
+            res = gstype_alloc(sizeof(struct gstype_product) + prod->numfields * sizeof(struct gstype_field));
+            resprod = (struct gstype_product *)res;
+            res->node = gstype_product;
+            res->file = type->file;
+            res->lineno = type->lineno;
+            resprod->numfields = prod->numfields;
+            for (i = 0; i < prod->numfields; i++) {
+                gsfatal_unimpl_type(__FILE__, __LINE__, type, "subst into field type");
+            }
 
             return res;
         }

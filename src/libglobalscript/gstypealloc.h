@@ -112,6 +112,9 @@ void gsfatal_bad_type(gsinterned_string, int, struct gstype *, char *, ...);
 void gstypes_alloc_for_scc(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
 void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
 
+struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
+struct gstype *gstype_apply(gsinterned_string, int, struct gstype *, struct gstype *);
+
 struct gskind {
     enum {
         gskind_unknown,
