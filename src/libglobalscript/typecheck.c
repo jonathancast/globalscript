@@ -49,6 +49,7 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
                 break;
             case gssymdatalable:
             case gssymcodelable:
+            case gssymcoercionlable:
                 break;
             default:
                 gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(type = %d) next", __FILE__, __LINE__, item.v->file->name, item.v->lineno, item.type);
@@ -100,6 +101,7 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
         }
         case gssymdatalable:
         case gssymcodelable:
+        case gssymcoercionlable:
             return;
         default:
             gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_kind_check_scc(type = %d)", items[i].type);
@@ -361,6 +363,7 @@ gstypes_process_type_signatures(struct gsfile_symtable *symtable, struct gsbc_it
                 break;
             case gssymcodelable:
             case gssymtypelable:
+            case gssymcoercionlable:
                 break;
             default:
                 gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_process_data_type_signature(type = %d)", items[i].type);
@@ -400,6 +403,8 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
         if (pdata->label)
             gssymtable_set_data_type(symtable, pdata->label, type)
         ;
+    } else if (gssymeq(pdata->directive, gssymdatadirective, ".cast")) {
+        return;
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gstypes_process_data_type_signature(%s)", pdata->directive->name);
     }
@@ -419,6 +424,7 @@ gstypes_type_check_scc(struct gsfile_symtable *symtable, struct gsbc_item *items
 
 static void gstypes_type_check_data_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
 static void gstypes_type_check_code_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
+static void gstypes_type_check_coercion_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
 
 static
 void
@@ -433,6 +439,9 @@ gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
         case gssymcodelable:
             gstypes_type_check_code_item(symtable, items, types, kinds, n, i);
             return;
+        case gssymcoercionlable:
+            gstypes_type_check_coercion_item(symtable, items, types, kinds, n, i);
+            return;
         default:
             gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_kind_check_scc(type = %d)", items[i].type);
     }
@@ -440,6 +449,10 @@ gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
 
 static void gstypes_check_type(struct gsparsedline *, struct gstype *, struct gstype *);
 static void gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type);
+
+struct gsbc_coercion_type {
+    struct gstype *source, *dest;
+};
 
 static
 void
@@ -480,13 +493,28 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         if (pdata->numarguments >= 2) {
             struct gstype *declared_type;
 
-            declared_type = gssymtable_get_type(symtable, pdata->arguments[1]);
+            declared_type = gssymtable_get_data_type(symtable, pdata->arguments[1]);
             gstypes_check_type(pdata, code_type->result_type, declared_type);
             gsbc_typecheck_check_boxed(pdata, declared_type);
         } else {
-            gssymtable_set_type(symtable, pdata->label, code_type->result_type);
+            gssymtable_set_data_type(symtable, pdata->label, code_type->result_type);
             gsbc_typecheck_check_boxed(pdata, code_type->result_type);
         }
+    } else if (gssymeq(pdata->directive, gssymdatadirective, ".cast")) {
+        struct gstype *src_type;
+        struct gsbc_coercion_type *coercion_type;
+
+        coercion_type = gssymtable_get_coercion_type(symtable, pdata->arguments[0]);
+        if (!coercion_type)
+            gsfatal_bad_input(pdata, "Couldn't find type of coercion %s", pdata->arguments[0]);
+
+        src_type = gssymtable_get_data_type(symtable, pdata->arguments[1]);
+        if (!src_type)
+            gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "Couldn't find type of %s", pdata->arguments[1]->name);
+
+        gstypes_check_type(pdata, src_type, coercion_type->source);
+
+        gssymtable_set_data_type(symtable, pdata->label, coercion_type->dest);
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "gstypes_type_check_data_item(%s)", pdata->directive->name);
     }
@@ -632,6 +660,20 @@ gstypes_check_type(struct gsparsedline *p, struct gstype *pactual, struct gstype
             gstypes_check_type(p, pactual_lift->arg, pexpected_lift->arg);
             return;
         }
+        case gstype_product: {
+            struct gstype_product *pactual_product, *pexpected_product;
+
+            pactual_product = (struct gstype_product *)pactual;
+            pexpected_product = (struct gstype_product *)pexpected;
+
+            if (pactual_product->numfields != pexpected_product->numfields)
+                gsfatal_bad_input(p, "I don't think %s is the same as %s; they have diferent numbers of fields", actual_buf, expected_buf)
+            ;
+            if (pexpected_product->numfields > 0)
+                gsfatal_unimpl_type(__FILE__, __LINE__, pexpected, "%s:%d: gstypes_check_type(check fields)", p->file->name, p->lineno)
+            ;
+            return;
+        }
         default:
             gsfatal_unimpl_type(__FILE__, __LINE__, pexpected, "%s:%d: gstypes_check_type(node = %d)", p->file->name, p->lineno, pexpected->node);
     }
@@ -670,4 +712,105 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             res = seprint(res, eob, "unknown type node %d", pty->node);
             return res;
     }
+}
+
+static struct gsbc_coercion_type *gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p);
+
+static
+void
+gstypes_type_check_coercion_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
+{
+    struct gsparsedline *pcoercion;
+    struct gsparsedfile_segment *pseg;
+
+    pseg = items[i].pseg;
+    pcoercion = items[i].v;
+    if (gssymeq(pcoercion->directive, gssymcoerciondirective, ".tycoercion")) {
+        struct gsbc_coercion_type *type;
+
+        type = gsbc_typecheck_coercion_expr(symtable, &pseg, gsinput_next_line(&pseg, pcoercion));
+        gssymtable_set_coercion_type(symtable, pcoercion->label, type);
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, pcoercion, "gstypes_type_check_coercion_item(%s)", pcoercion->directive->name);
+    }
+}
+
+static struct gs_block_class gsbc_coercion_type_descr = {
+    /* evaluator = */ gsnoeval,
+    /* description = */ "Coercion types",
+};
+void *gsbc_coercion_type_nursury;
+
+static
+struct gsbc_coercion_type *
+gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
+{
+    enum {
+        rttygvar,
+    } regtype;
+    int i;
+    int nregs;
+    gsinterned_string regs[MAX_NUM_REGISTERS];
+    struct gstype *regtypes[MAX_NUM_REGISTERS], *regdefns[MAX_NUM_REGISTERS];
+    struct gsbc_coercion_type *res;
+    struct gstype *dest, *source;
+
+    res = 0;
+
+    nregs = 0;
+    regtype = rttygvar;
+    for (; ; p = gsinput_next_line(ppseg, p)) {
+        if (gssymeq(p->directive, gssymcoercionop, ".tygvar")) {
+            if (regtype > rttygvar)
+                gsfatal_bad_input(p, "Too late to add type global variables");
+            regtype = rttygvar;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers")
+            ;
+            regs[nregs] = p->label;
+            regtypes[nregs] = gssymtable_get_type(symtable, p->label);
+            regdefns[nregs] = gssymtable_get_abstype(symtable, p->label);
+            if (!regtypes[nregs])
+                gsfatal_bad_input(p, "Couldn't find type for global %s", p->label->name)
+            ;
+            nregs++;
+        } else if (gssymeq(p->directive, gssymcoercionop, ".tydefinition")) {
+            int reg;
+
+            reg = -1;
+            for (i = 0; i < nregs; i++) {
+                if (regs[i] == p->arguments[0]) {
+                    reg = i;
+                    goto have_register_for_defn;
+                }
+            }
+            gsfatal_bad_input(p, "Can't find register for abstract type %s", p->arguments[0]->name);
+        have_register_for_defn:
+            if (!regtypes[reg])
+                gsfatal_bad_input(p, "Register %s doesn't seem to be a type variable", p->arguments[0]->name);
+            dest = gstypes_clear_indirections(regtypes[reg]);
+
+            if (!regdefns[reg])
+                gsfatal_bad_input(p, "Register %s doesn't seem to be an abstract type", p->arguments[0]->name);
+            source = gstypes_clear_indirections(regdefns[reg]);
+
+            if (source->node == gstype_lambda)
+                gsfatal_unimpl_input(__FILE__, __LINE__, p, ".tydefinition with arguments");
+
+            if (p->numarguments > 1)
+                gsfatal_bad_input(p, "Too many arguments to .tydefinition (abstract type has no arguments)");
+
+            goto have_type;
+        } else {
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_coercion_expr(%s)", p->directive->name);
+        }
+    }
+
+have_type:
+
+    res = gs_sys_seg_suballoc(&gsbc_coercion_type_descr, &gsbc_coercion_type_nursury, sizeof(*res), sizeof(void*));
+    res->source = source;
+    res->dest = dest;
+
+    return res;
 }

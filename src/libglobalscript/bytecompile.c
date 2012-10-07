@@ -11,9 +11,10 @@
 
 static uint gsbc_heap_size_item(struct gsbc_item);
 static uint gsbc_error_size_item(struct gsbc_item);
+static gsvalue gsbc_get_indir_item(struct gsfile_symtable *, struct gsbc_item);
 
 void
-gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, gsvalue *errors, int n)
+gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, gsvalue *errors, gsvalue *indir, int n)
 {
     uint total_heap_size, heap_offsets[MAX_ITEMS_PER_SCC], heap_size[MAX_ITEMS_PER_SCC],
         total_error_size, error_offsets[MAX_ITEMS_PER_SCC], error_size[MAX_ITEMS_PER_SCC]
@@ -39,6 +40,8 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
         if (total_error_size % sizeof(gsinterned_string))
             total_error_size += sizeof(gsinterned_string) - (total_error_size % sizeof(gsinterned_string))
         ;
+
+        indir[i] = gsbc_get_indir_item(symtable, items[i]);
     }
 
     if (total_heap_size > BLOCK_SIZE)
@@ -59,6 +62,8 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
         } else if (error_size[i]) {
             errors[i] = (gsvalue)((uchar*)error_base + error_offsets[i]);
             gssymtable_set_data(symtable, items[i].v->label, errors[i]);
+        } else if (indir[i]) {
+            gssymtable_set_data(symtable, items[i].v->label, indir[i]);
         }
     }
 }
@@ -76,6 +81,8 @@ gsbc_heap_size_item(struct gsbc_item item)
         return 0;
     } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
         return sizeof(struct gsclosure) + sizeof(gsvalue);
+    } else if (gssymeq(p->directive, gssymdatadirective, ".cast")) {
+        return 0;
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gsbc_heap_size_item(%s)", p->directive->name);
     }
@@ -95,8 +102,36 @@ gsbc_error_size_item(struct gsbc_item item)
         return sizeof(struct gserror);
     } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
         return 0;
+    } else if (gssymeq(p->directive, gssymdatadirective, ".cast")) {
+        return 0;
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gsbc_error_size_item(%s)", p->directive->name);
+    }
+    return 0;
+}
+
+static
+gsvalue
+gsbc_get_indir_item(struct gsfile_symtable *symtable, struct gsbc_item item)
+{
+    struct gsparsedline *p;
+    gsvalue res;
+
+    if (item.type != gssymdatalable) return 0;
+
+    p = item.v;
+    if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
+        return 0;
+    } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
+        return 0;
+    } else if (gssymeq(p->directive, gssymdatadirective, ".cast")) {
+        res = gssymtable_get_data(symtable, p->arguments[1]);
+        if (!res)
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Can't find cast referent %s", p->arguments[1]->name)
+        ;
+        return res;
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_error_size_item(%s)", p->directive->name);
     }
     return 0;
 }
@@ -248,6 +283,7 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
     for (i = 0; i < n; i++) {
         switch (items[i].type) {
             case gssymtypelable:
+            case gssymcoercionlable:
                 break;
             case gssymdatalable:
                 gsbc_bytecompile_data_item(symtable, items[i].v, heap, errors, i, n);
@@ -284,6 +320,8 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         cl = (struct gsclosure *)heap[i];
         gsargcheck(p, 0, "Code label");
         cl->code = gssymtable_get_code(symtable, p->arguments[0]);
+    } else if (gssymeq(p->directive, gssymdatadirective, ".cast")) {
+        ;
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "Data directive %s next", p->directive->name);
     }

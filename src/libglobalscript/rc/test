@@ -16,6 +16,27 @@ if (./$O.test-gsi ./test-gslib ./test-gslib/undef-empty-record.ags > ./test-resu
 diff ./test-results/undef-empt-record.ags-actual ./test-results/undef-empt-record.ags-expected
 echo
 
+echo '-- undefined values of abstract types --'
+if (./$O.test-gsi ./test-gslib ./test-gslib/undef-abs-type.ags > ./test-results/undef-abs-type.ags-actual) {
+    echo 'test-gsi succeeded; should have failed' >[1=2]
+    exit 1
+}
+diff ./test-results/undef-abs-type.ags-actual ./test-results/undef-abs-type.ags-expected
+echo
+
+echo '-- an abstract type is different from its definition --'
+if (./$O.test-gsi ./test-gslib ./test-gslib/invalid-abs-type.ags >[2] ./test-results/invalid-abs-type.ags-actual) {
+    echo 'test-gsi succeeded; should have failed' >[1=2]
+    cat ./test-results/invalid-abs-type.ags-actual >[1=2]
+    exit 1
+}
+if (! grep -s './test-gslib/invalid-abs-type.ags:[0-9]*: I don''t think' ./test-results/invalid-abs-type.ags-actual) {
+    echo 'Couldn''t find expected error message in output anywhere' >[1=2]
+    cat ./test-results/invalid-abs-type.ags-actual >[1=2]
+    exit 1
+}
+echo
+
 echo '-- undefined API entry points --'
 if (./$O.test-gsexec ./test-gslib ./test-gslib/undef-api.ags >[2] ./test-results/undef-api.ags-actual) {
     echo 'test-gsexec succeeded; should have failed' >[1=2]

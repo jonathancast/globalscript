@@ -199,6 +199,7 @@ static long gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, i
 static long gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 static long gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 static long gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
+static long gsparse_coercion_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 
 #define LINE_LENGTH 0x100
 #define NUM_FIELDS 0x20
@@ -219,6 +220,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
         gsdatasection,
         gscodesection,
         gstypesection,
+        gscoercionsection,
     } section;
 
     if (!(chan = gsopenfile(filename, OREAD, &pid)))
@@ -281,6 +283,13 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
             parsedfile->types = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->types));
             parsedfile->types->first_seg = parsedfile->last_seg;
             parsedfile->types->numitems = 0;
+        } else if (!strcmp(fields[1], ".coercion")) {
+            section = gscoercionsection;
+            if (parsedfile->coercions)
+                gsfatal("%s:%d: We already did this section", filename, lineno);
+            parsedfile->coercions = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->coercions));
+            parsedfile->coercions->first_seg = parsedfile->last_seg;
+            parsedfile->coercions->numitems = 0;
         } else switch (section) {
             case gsnosection:
                 gsfatal("%s:%d: Missing section directive", filename, lineno);
@@ -297,8 +306,12 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
                 if (gsparse_type_item(filename, parsedfile, chan, line, &lineno, fields, n, symtable) < 0)
                     gsfatal("%s:%d: Error in reading type item: %r", filename, lineno);
                 break;
+            case gscoercionsection:
+                if (gsparse_coercion_item(filename, parsedfile, chan, line, &lineno, fields, n, symtable) < 0)
+                    gsfatal("%s:%d: Error in reading coercion item: %r", filename, lineno);
+                break;
             default:
-                gsfatal("%s:%d: Parse items in sections %d next", __FILE__, __LINE__, section);
+                gsfatal("%s:%d: Parse items in section %d next", __FILE__, __LINE__, section);
         }
     }
     if (n < 0)
@@ -352,6 +365,15 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
         parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2+0]);
         if (numfields > 2+1)
             gsfatal("%s:%d: Undefined data item %s has too many arguments; I don't know what they all are", filename, *plineno, fields[0]);
+    } else if (gssymeq(parsedline->directive, gssymdatadirective, ".cast")) {
+        if (numfields < 2+1)
+            gsfatal("%s:%d: Missing coercion to apply");
+        parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
+        if (numfields < 2+2)
+            gsfatal("%s:%d: Missing target of coercion");
+        parsedline->arguments[1] = gsintern_string(gssymdatalable, fields[2+1]);
+        if (numfields > 2+2)
+            gsfatal("%s:%d: Too many arguments to .cast; I know about the coercion to apply and the data item to cast");
     } else {
         gsfatal("%s:%d: Unimplemented data directive %s", filename, *plineno, fields[1]);
     }
@@ -443,6 +465,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
 }
 
 static long gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
+static long gsparse_coerce_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
 
 static
 long
@@ -493,6 +516,8 @@ gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
     return -1;
 }
 
+static int gsparse_type_or_coercion_op(char *, struct gsparsedline *, int *, char **, long, gssymboltype);
+
 static
 long
 gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
@@ -506,13 +531,7 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
 
         parsedline->directive = gsintern_string(gssymtypeop, fields[1]);
 
-        if (gssymeq(parsedline->directive, gssymtypeop, ".tygvar")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-            else
-                gsfatal("%s:%d: Labels required on .tygvar", filename, *plineno);
-            if (n > 2)
-                gsfatal("%s:%d: Too many arguments to .tygvar", filename, *plineno);
+        if (gsparse_type_or_coercion_op(filename, parsedline, plineno, fields, n, gssymtypeop)) {
         } else if (gssymeq(parsedline->directive, gssymtypeop, ".tylambda")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);
@@ -612,6 +631,91 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
 
 static
 long
+gsparse_coercion_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
+{
+    struct gsparsedline *parsedline;
+
+    parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, numfields);
+    parsedfile->coercions->numitems++;
+
+    if (*fields[0])
+        parsedline->label = gsintern_string(gssymcoercionlable, fields[0]);
+    else
+        gsfatal("%s:%d: Missing type label", filename, *plineno);
+
+    gssymtable_add_coercion_item(symtable, parsedline->label, parsedfile, parsedfile->last_seg, parsedline);
+
+    parsedline->directive = gsintern_string(gssymcoerciondirective, fields[1]);
+
+    if (gssymeq(parsedline->directive, gssymcoerciondirective, ".tycoercion")) {
+        if (numfields > 2 + 0)
+            gsfatal("%s:%d: Too many arguments to .tycoercion", filename, *plineno);
+        return gsparse_coerce_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
+    } else {
+        gsfatal("%s:%d: %s:%d: Unimplemented coercion directive %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
+    }
+
+    gsfatal("%s:%d: gsparse_coercion_item next", __FILE__, __LINE__);
+
+    return -1;
+}
+
+static
+long
+gsparse_coerce_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
+{
+    struct gsparsedline *parsedline;
+    int i;
+    long n;
+
+    while ((n = gsgrabline(filename, chan, line, plineno, fields)) > 0) {
+        parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, n);
+
+        parsedline->directive = gsintern_string(gssymcoercionop, fields[1]);
+
+        if (gsparse_type_or_coercion_op(filename, parsedline, plineno, fields, n, gssymcoercionop)) {
+        } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tydefinition")) {
+            if (*fields[0])
+                gsfatal("%s:%d: Labels illegal on terminal op");
+            else
+                parsedline->label = 0;
+            if (n < 2 + 1)
+                gsfatal("%s:%d: Missing abstract type to cast to");
+            parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2 + 0]);
+            for (i = 0; 2 + i < n; i++)
+                parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2 + i]);
+            return 0;
+        } else {
+            gsfatal("%s:%d: %s:%d: Unimplemented coercion op %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
+        }
+    }
+    if (n < 0)
+        gsfatal("%s:%d: Error in reading type line: %r", filename, *plineno);
+    else
+        gsfatal("%s:%d: EOF in middle of reading type expression", filename, typedirective->lineno);
+
+    return -1;
+}
+
+static
+int
+gsparse_type_or_coercion_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n, gssymboltype op)
+{
+    if (gssymeq(parsedline->directive, op, ".tygvar")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+        else
+            gsfatal("%s:%d: Labels required on .tygvar", filename, *plineno);
+        if (n > 2)
+            gsfatal("%s:%d: Too many arguments to .tygvar", filename, *plineno);
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+static
+long
 gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
     long n;
@@ -641,6 +745,7 @@ enum gsfile_symtable_class {
     gsfile_abstype_defns,
     gsfile_code_values,
     gsfile_code_types,
+    gsfile_coercion_types,
     gsfile_num_classes,
 };
 
@@ -651,7 +756,7 @@ char *gsfile_symtable_class_names[gsfile_num_classes] = {
 
 struct gsfile_symtable {
     struct gsfile_symtable *parent;
-    struct gsfile_symtable_item *dataitems, *codeitems, *typeitems;
+    struct gsfile_symtable_item *dataitems, *codeitems, *typeitems, *coercionitems;
     struct gsfile_symtable_data_type_item *datatypes;
     struct gsfile_symtable_type_kind_item *typekinds;
     struct gsfile_symtable_scc_item *sccs;
@@ -695,6 +800,7 @@ gscreatesymtable(struct gsfile_symtable *prev_symtable)
     newsymtable->dataitems = 0;
     newsymtable->codeitems = 0;
     newsymtable->typeitems = 0;
+    newsymtable->coercionitems = 0;
     newsymtable->datatypes = 0;
     newsymtable->typekinds = 0;
     newsymtable->sccs = 0;
@@ -815,6 +921,30 @@ gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string lab
 }
 
 void
+gssymtable_add_coercion_item(struct gsfile_symtable *symtable, gsinterned_string label, gsparsedfile *file, struct gsparsedfile_segment *pseg, struct gsparsedline *ptype)
+{
+    struct gsfile_symtable_item **p;
+
+    for (p = &symtable->coercionitems; *p; p = &(*p)->next)
+        if ((*p)->key == label)
+            gsfatal(
+                "%s:%d: Duplicate type item %s (duplicate of %s:%d)",
+                ptype->file->name,
+                ptype->lineno,
+                label->name,
+                (*p)->value->file->name,
+                (*p)->value->lineno
+            )
+    ;
+    *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
+    (*p)->key = label;
+    (*p)->file = file;
+    (*p)->pseg = pseg;
+    (*p)->value = ptype;
+    (*p)->next = 0;
+}
+
+void
 gssymtable_set_expr_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbc_code_item_type *ptype)
 {
     gsfatal("%s:%d: %s: gssymtable_set_expr_type next", __FILE__, __LINE__, label->name);
@@ -849,7 +979,14 @@ gssymtable_set_type(struct gsfile_symtable *symtable, gsinterned_string label, s
     (*p)->next = 0;
 }
 
+static void *gssymtable_get(struct gsfile_symtable *, enum gsfile_symtable_class, gsinterned_string);
 static void gssymtable_set(struct gsfile_symtable *, enum gsfile_symtable_class, gsinterned_string, void *);
+
+struct gstype *
+gssymtable_get_abstype(struct gsfile_symtable *symtable, gsinterned_string label)
+{
+    return gssymtable_get(symtable, gsfile_abstype_defns, label);
+}
 
 void
 gssymtable_set_abstype(struct gsfile_symtable *symtable, gsinterned_string label, struct gstype *defn)
@@ -884,8 +1021,6 @@ gssymtable_set_type_expr_kind(struct gsfile_symtable *symtable, gsinterned_strin
     (*p)->next = 0;
 }
 
-static void *gssymtable_get(struct gsfile_symtable *, enum gsfile_symtable_class, gsinterned_string);
-
 gsvalue
 gssymtable_get_data(struct gsfile_symtable *symtable, gsinterned_string label)
 {
@@ -908,6 +1043,18 @@ void
 gssymtable_set_code_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbc_code_item_type *v)
 {
     return gssymtable_set(symtable, gsfile_code_types, label, v);
+}
+
+struct gsbc_coercion_type *
+gssymtable_get_coercion_type(struct gsfile_symtable *symtable, gsinterned_string label)
+{
+    return gssymtable_get(symtable, gsfile_coercion_types, label);
+}
+
+void
+gssymtable_set_coercion_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbc_coercion_type *v)
+{
+    return gssymtable_set(symtable, gsfile_coercion_types, label, v);
 }
 
 struct gsfile_symtable_entry {
@@ -1092,6 +1239,17 @@ gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, 
                     }
                 }
                 break;
+            case gssymcoercionlable:
+                for (p = symtable->coercionitems; p; p = p->next) {
+                    if (p->key == label) {
+                        res.file = p->file;
+                        res.type = gssymcoercionlable;
+                        res.pseg = p->pseg;
+                        res.v = p->value;
+                        return res;
+                    }
+                }
+                break;
             default:
                 gsfatal("%s:%d: Unknown symbol type %d", __FILE__, __LINE__, label->type);
         }
@@ -1109,6 +1267,9 @@ gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, 
             break;
         case gssymtypelable:
             strtype = "type label";
+            break;
+        case gssymcoercionlable:
+            strtype = "coercion label";
             break;
         default:
             gsfatal("%s:%d: Cannot translate symbol type %d to a string", __FILE__, __LINE__, label->type);
@@ -1254,7 +1415,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
     struct gsbc_item items[MAX_ITEMS_PER_SCC];
     struct gstype *types[MAX_ITEMS_PER_SCC], *defns[MAX_ITEMS_PER_SCC];
     struct gskind *kinds[MAX_ITEMS_PER_SCC];
-    gsvalue heap[MAX_ITEMS_PER_SCC], errors[MAX_ITEMS_PER_SCC];
+    gsvalue heap[MAX_ITEMS_PER_SCC], errors[MAX_ITEMS_PER_SCC], indir[MAX_ITEMS_PER_SCC];
     struct gsbco *bcos[MAX_ITEMS_PER_SCC];
     int n, i;
 
@@ -1280,7 +1441,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 
     /* §section{Byte-compilation} */
 
-    gsbc_alloc_data_for_scc(symtable, items, heap, errors, n);
+    gsbc_alloc_data_for_scc(symtable, items, heap, errors, indir, n);
     gsbc_alloc_code_for_scc(symtable, items, bcos, n);
     gsbc_bytecompile_scc(symtable, items, heap, errors, bcos, n);
 
@@ -1294,8 +1455,10 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
                     *pentry = heap[i];
                 else if (errors[i])
                     *pentry = errors[i];
+                else if (indir[i])
+                    *pentry = indir[i];
                 else
-                    gsfatal_unimpl(__FILE__, __LINE__, "%s: Entry point: couldn't find in any section");
+                    gsfatal_unimpl(__FILE__, __LINE__, "%s: Entry point: couldn't find in any SCC");
                 goto have_entry;
             }
         }

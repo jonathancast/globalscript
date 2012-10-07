@@ -35,6 +35,8 @@ gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
     pres->type = type;
     pres->data = 0;
     pres->code = 0;
+    pres->types = 0;
+    pres->coercions = 0;
     pres->last_seg = &pres->first_seg;
     pres->first_seg.extent = (uchar*)parsed_file_nursury + sizeof(gsparsedfile);
     pres->first_seg.next = 0;

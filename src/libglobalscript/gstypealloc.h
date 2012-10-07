@@ -18,6 +18,7 @@ struct gstype {
         gstype_ref,
         gstype_sum,
         gstype_product,
+        gstype_coerce_definition,
     } node;
     gsinterned_string file;
     uint lineno;
@@ -97,6 +98,12 @@ struct gstype_product {
     struct gstype e;
     int numfields;
     struct gstype_field fields[];
+};
+
+struct gstype_coerce_definition {
+    struct gstype e;
+    struct gstype *dest, *source;
+    int numargs;
 };
 
 void gsfatal_unimpl_type(char *, int, struct gstype *, char *, ...);

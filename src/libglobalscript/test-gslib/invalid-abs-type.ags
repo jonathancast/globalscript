@@ -1,0 +1,18 @@
+	.document
+
+	.data
+
+	.cast	_in	_real.entry
+_real.entry	.undefined	t
+
+	.type
+
+t	.tyabstract	*
+	.tylift
+	.typroduct
+
+	.coercion
+
+_in	.tycoercion
+t	.tygvar
+	.tydefinition	t

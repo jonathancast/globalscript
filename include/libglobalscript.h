@@ -85,6 +85,9 @@ typedef enum {
     gssymprimsetlable,
     gssymconstrlable,
     gssymfieldlable,
+    gssymcoerciondirective,
+    gssymcoercionlable,
+    gssymcoercionop,
 } gssymboltype;
 
 typedef struct gsstring_value {

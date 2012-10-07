@@ -85,9 +85,12 @@ gstypes_size_item(struct gsbc_item item)
                 return sizeof(struct gstype_indirection);
             } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
                 return sizeof(struct gstype_abstract);
+            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
+                return sizeof(struct gstype_indirection);
             } else {
                 gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size %s type items", item.v->directive->name);
             }
+        case gssymcoercionlable:
         case gssymdatalable:
         case gssymcodelable:
             return 0;
@@ -109,11 +112,14 @@ gstypes_size_defn(struct gsbc_item item)
                 return 0;
             } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
                 return sizeof(struct gstype_indirection);
+            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
+                return 0;
             } else {
                 gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size abstype defn for %s type items", item.v->directive->name);
             }
         case gssymdatalable:
         case gssymcodelable:
+        case gssymcoercionlable:
             return 0;
         default:
             gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size abstype defn for item of type %d", item.type);
@@ -122,6 +128,7 @@ gstypes_size_defn(struct gsbc_item item)
 }
 
 static void gstype_compile_type_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gstype *);
+static void gstype_compile_coercion_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gstype *);
 
 void
 gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **ptypes, struct gstype **defns, int n)
@@ -178,6 +185,8 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                         ;
                         prim->name = ptype->arguments[1];
                         prim->kind = gskind_compile(ptype, ptype->arguments[2]);
+                    } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
+                        gstype_compile_coercion_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), res);
                     } else {
                         gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gstypes_compile_types(%s)", item.v->directive->name);
                     }
@@ -185,6 +194,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                 break;
             case gssymdatalable:
             case gssymcodelable:
+            case gssymcoercionlable:
                 break;
             default:
                 gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gstypes_compile_types(type = %d)", item.type);
@@ -231,6 +241,8 @@ gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedfile_se
 static struct gstype *gstypes_compile_type_var(gsinterned_string, int, gsinterned_string, struct gskind *);
 static struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
 
+static struct gstype *gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *, struct gsparsedline *, struct gstype *(*)(struct gstype_compile_type_ops_closure *, struct gsparsedline *));
+
 static
 struct gstype *
 gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
@@ -238,21 +250,8 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
     int i, j;
     struct gstype *res;
 
-    if (gssymeq(p->directive, gssymtypeop, ".tygvar")) {
-        if (cl->nregs >= MAX_REGISTERS)
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
-        ;
-        if (cl->regclass > regglobal)
-            gsfatal_bad_input(p, "Too late to add type globals")
-        ;
-        cl->regclass = regglobal;
-        cl->regs[cl->nregs] = p->label;
-        cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
-        if (!cl->regvalues[cl->nregs])
-            gsfatal_bad_input(p, "Couldn't find referent %s", p->label->name)
-        ;
-        cl->nregs++;
-        return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
+    if (res = gstype_compile_type_or_coercion_op(cl, p, gstype_compile_type_ops_worker)) {
+        return res;
     } else if (gssymeq(p->directive, gssymtypeop, ".tylambda")) {
         struct gskind *kind;
         struct gstype_lambda *lambda;
@@ -435,6 +434,109 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "gstype_compile_type_ops %s", p->directive->name);
     }
     return 0;
+}
+
+static struct gstype *gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *, struct gsparsedline *);
+
+static
+void
+gstype_compile_coercion_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gstype *res)
+{
+    struct gstype_compile_type_ops_closure cl;
+    struct gstype_indirection *indir;
+
+    cl.nregs = 0;
+    cl.symtable = symtable;
+    cl.ppseg = ppseg;
+    cl.regclass = regglobal;
+
+    res->node = gstype_indirection;
+    indir = (struct gstype_indirection *)res;
+
+    indir->referent = gstype_compile_coercion_ops_worker(&cl, p);
+}
+
+static
+struct gstype *
+gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
+{
+    int i, j;
+    struct gstype *res;
+
+    if (res = gstype_compile_type_or_coercion_op(cl, p, gstype_compile_coercion_ops_worker)) {
+        return res;
+    } else if (gssymeq(p->directive, gssymtypeop, ".tydefinition")) {
+        struct gstype_coerce_definition *defn;
+        int numargs;
+
+        numargs = p->numarguments - 1;
+        res = gstype_alloc(sizeof(struct gstype_coerce_definition) + numargs * sizeof(struct gstype *));
+        defn = (struct gstype_coerce_definition *)res;
+        res->node = gstype_coerce_definition;
+        res->file = p->file;
+        res->lineno = p->lineno;
+
+        for (j = 0; j < cl->nregs; j++) {
+            if (cl->regs[j] == p->arguments[0]) {
+                defn->dest = cl->regvalues[j];
+                goto have_register_for_destn;
+            }
+        }
+        gsfatal_bad_input(p, "Couldn't find register %s", p->arguments[0]->name);
+    have_register_for_destn:
+        switch (defn->dest->node) {
+            case gstype_abstract: {
+                struct gstype_abstract *abs;
+
+                abs = (struct gstype_abstract *)defn->dest;
+
+                defn->source = gssymtable_get_abstype(cl->symtable, abs->name);
+                if (!defn->source)
+                    gsfatal_bad_input(p, "Couldn't find definition of abstract type %s", abs->name->name);
+
+                goto have_defn_for_source;
+            }
+            default:
+                gsfatal_unimpl_input(__FILE__, __LINE__, p, ".tydefinition with source a %d", defn->dest->node);
+        }
+    have_defn_for_source:
+        defn->numargs = numargs;
+        for (i = 1; i < p->numarguments; i ++) {
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Arguments to .tydefinition");
+        }
+        return res;
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gstype_compile_coercion_ops_worker %s", p->directive->name);
+    }
+    return 0;
+}
+
+static
+struct gstype *
+gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p, struct gstype *(*next)(struct gstype_compile_type_ops_closure *, struct gsparsedline *))
+{
+# if 0
+    struct gstype *res;
+#endif
+
+    if (gssymeq(p->directive, gssymtypeop, ".tygvar")) {
+        if (cl->nregs >= MAX_REGISTERS)
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
+        ;
+        if (cl->regclass > regglobal)
+            gsfatal_bad_input(p, "Too late to add type globals")
+        ;
+        cl->regclass = regglobal;
+        cl->regs[cl->nregs] = p->label;
+        cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
+        if (!cl->regvalues[cl->nregs])
+            gsfatal_bad_input(p, "Couldn't find referent %s", p->label->name)
+        ;
+        cl->nregs++;
+        return next(cl, gsinput_next_line(cl->ppseg, p));
+    } else {
+        return 0;
+    }
 }
 
 static
