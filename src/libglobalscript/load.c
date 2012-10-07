@@ -1065,7 +1065,7 @@ gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, 
                         res.file = p->file;
                         res.type = gssymdatalable;
                         res.pseg = p->pseg;
-                        res.v.pdata = p->value;
+                        res.v = p->value;
                         return res;
                     }
                 }
@@ -1076,7 +1076,7 @@ gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, 
                         res.file = p->file;
                         res.type = gssymcodelable;
                         res.pseg = p->pseg;
-                        res.v.pcode = p->value;
+                        res.v = p->value;
                         return res;
                     }
                 }
@@ -1087,7 +1087,7 @@ gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, 
                         res.file = p->file;
                         res.type = gssymtypelable;
                         res.pseg = p->pseg;
-                        res.v.ptype = p->value;
+                        res.v = p->value;
                         return res;
                     }
                 }
@@ -1150,7 +1150,7 @@ gssymtable_set_scc(struct gsfile_symtable *symtable, struct gsbc_item item, stru
 
     for (ppscc_item = &symtable->sccs; *ppscc_item; ppscc_item = &(*ppscc_item)->next) {
         if (gsbc_item_eq((*ppscc_item)->key, item))
-            gsfatal("%s:%d: Item already has SCC", item.v.pdata->file->name, item.v.pdata->lineno);
+            gsfatal("%s:%d: Item already has SCC", item.v->file->name, item.v->lineno);
     }
 
     *ppscc_item = gs_sys_seg_suballoc(&gsfile_symtable_scc_item_descr, &gsfile_symtable_scc_item_nursury, sizeof(**ppscc_item), sizeof(*ppscc_item));
@@ -1264,7 +1264,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 
     for (p = pscc; p; p = p->next_item) {
         if (n >= MAX_ITEMS_PER_SCC)
-            gsfatal("%s:%d: Too many items in this SCC; max 0x%x", p->item.v.pdata->file->name, p->item.v.pdata->lineno, MAX_ITEMS_PER_SCC)
+            gsfatal("%s:%d: Too many items in this SCC; max 0x%x", p->item.v->file->name, p->item.v->lineno, MAX_ITEMS_PER_SCC)
         ;
         items[n++] = p->item;
     }
@@ -1288,7 +1288,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
         for (i = 0; i < n; i++) {
             if (
                 items[i].type == gssymdatalable
-                && items[i].v.pdata == GSDATA_SECTION_FIRST_ITEM(parsedfile->data)
+                && items[i].v == GSDATA_SECTION_FIRST_ITEM(parsedfile->data)
             ) {
                 if (heap[i])
                     *pentry = heap[i];

@@ -59,14 +59,14 @@ gstypes_alloc_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items,
         if (sizes[i]) {
             types[i] = (struct gstype *)((uchar*)base + offsets[i]);
             types[i]->node = gstype_uninitialized;
-            gssymtable_set_type(symtable, items[i].v.ptype->label, types[i]);
+            gssymtable_set_type(symtable, items[i].v->label, types[i]);
         } else {
             types[i] = 0;
         }
         if (defn_sizes[i]) {
             defns[i] = (struct gstype *)((uchar*)base + defn_offsets[i]);
             defns[i]->node = gstype_uninitialized;
-            gssymtable_set_abstype(symtable, items[i].v.ptype->label, defns[i]);
+            gssymtable_set_abstype(symtable, items[i].v->label, defns[i]);
         } else {
             defns[i] = 0;
         }
@@ -79,20 +79,20 @@ gstypes_size_item(struct gsbc_item item)
 {
     switch (item.type) {
         case gssymtypelable:
-            if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tydefinedprim")) {
+            if (gssymeq(item.v->directive, gssymtypedirective, ".tydefinedprim")) {
                 return sizeof(struct gstype_prim);
-            } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyexpr")) {
+            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
                 return sizeof(struct gstype_indirection);
-            } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyabstract")) {
+            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
                 return sizeof(struct gstype_abstract);
             } else {
-                gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size %s type items", item.v.ptype->directive->name);
+                gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size %s type items", item.v->directive->name);
             }
         case gssymdatalable:
         case gssymcodelable:
             return 0;
         default:
-            gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size type item of type %d", item.type);
+            gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size type item of type %d", item.type);
     }
     return 0;
 }
@@ -103,20 +103,20 @@ gstypes_size_defn(struct gsbc_item item)
 {
     switch (item.type) {
         case gssymtypelable:
-            if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tydefinedprim")) {
+            if (gssymeq(item.v->directive, gssymtypedirective, ".tydefinedprim")) {
                 return 0;
-            } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyexpr")) {
+            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
                 return 0;
-            } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyabstract")) {
+            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
                 return sizeof(struct gstype_indirection);
             } else {
-                gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size abstype defn for %s type items", item.v.ptype->directive->name);
+                gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size abstype defn for %s type items", item.v->directive->name);
             }
         case gssymdatalable:
         case gssymcodelable:
             return 0;
         default:
-            gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "size abstype defn for item of type %d", item.type);
+            gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size abstype defn for item of type %d", item.type);
     }
     return 0;
 }
@@ -140,20 +140,20 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                     struct gstype *res;
 
                     pseg = item.pseg;
-                    ptype = item.v.ptype;
+                    ptype = item.v;
                     res = ptypes[i];
 
                     res->file = ptype->file;
                     res->lineno = ptype->lineno;
 
-                    if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyabstract")) {
+                    if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
                         struct gstype *defn;
                         struct gstype_abstract *abs;
 
                         res->node = gstype_abstract;
                         abs = (struct gstype_abstract *)res;
-                        abs->name = item.v.ptype->label;
-                        if (item.v.ptype->numarguments > 0)
+                        abs->name = item.v->label;
+                        if (item.v->numarguments > 0)
                             abs->kind = gskind_compile(ptype, ptype->arguments[0]);
                         else
                             abs->kind = 0;
@@ -161,7 +161,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                         defn = defns[i];
 
                         gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), defn);
-                    } else if (gssymeq(item.v.ptype->directive, gssymtypedirective, ".tyexpr")) {
+                    } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
                         gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), res);
                     } else if (gssymeq(ptype->directive, gssymtypedirective, ".tydefinedprim")) {
                         struct gstype_prim *prim;
@@ -179,7 +179,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                         prim->name = ptype->arguments[1];
                         prim->kind = gskind_compile(ptype, ptype->arguments[2]);
                     } else {
-                        gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "gstypes_compile_types(%s)", item.v.ptype->directive->name);
+                        gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gstypes_compile_types(%s)", item.v->directive->name);
                     }
                 }
                 break;
@@ -187,7 +187,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
             case gssymcodelable:
                 break;
             default:
-                gsfatal_unimpl_input(__FILE__, __LINE__, item.v.ptype, "gstypes_compile_types(type = %d)", item.type);
+                gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gstypes_compile_types(type = %d)", item.type);
         }
     }
 }

@@ -21,7 +21,7 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
                 {
                     struct gsparsedline *ptype;
 
-                    ptype = item.v.ptype;
+                    ptype = item.v;
                     if (gssymeq(ptype->directive, gssymtypedirective, ".tyabstract")) {
                         gsargcheck(ptype, 0, "Kind");
 
@@ -51,7 +51,7 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
             case gssymcodelable:
                 break;
             default:
-                gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(type = %d) next", __FILE__, __LINE__, item.v.ptype->file->name, item.v.ptype->lineno, item.type);
+                gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(type = %d) next", __FILE__, __LINE__, item.v->file->name, item.v->lineno, item.type);
         }
     }
 }
@@ -85,7 +85,7 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
                 gstypes_kind_check(type->file, type->lineno, calculated_kind, kinds[i]);
             else {
                 kinds[i] = calculated_kind;
-                gssymtable_set_type_expr_kind(symtable, items[i].v.ptype->label, calculated_kind);
+                gssymtable_set_type_expr_kind(symtable, items[i].v->label, calculated_kind);
             }
             return;
 
@@ -94,7 +94,7 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
                     gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: kind check abstract type next", type->file->name, type->lineno);
                 }
                 default:
-                    gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.ptype, "gstypes_kind_check_scc(node = %d)", type->node);
+                    gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_kind_check_scc(node = %d)", type->node);
             }
             return;
         }
@@ -102,7 +102,7 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
         case gssymcodelable:
             return;
         default:
-            gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.ptype, "gstypes_kind_check_scc(type = %d)", items[i].type);
+            gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_kind_check_scc(type = %d)", items[i].type);
     }
 }
 
@@ -363,7 +363,7 @@ gstypes_process_type_signatures(struct gsfile_symtable *symtable, struct gsbc_it
             case gssymtypelable:
                 break;
             default:
-                gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.ptype, "gstypes_process_data_type_signature(type = %d)", items[i].type);
+                gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_process_data_type_signature(type = %d)", items[i].type);
         }
     }
 }
@@ -374,7 +374,7 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
 {
     struct gsparsedline *pdata;
 
-    pdata = item.v.pdata;
+    pdata = item.v;
 
     if (gssymeq(pdata->directive, gssymdatadirective, ".undefined")) {
         struct gstype *type;
@@ -401,7 +401,7 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
             gssymtable_set_data_type(symtable, pdata->label, type)
         ;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, item.v.pdata, "gstypes_process_data_type_signature(%s)", pdata->directive->name);
+        gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gstypes_process_data_type_signature(%s)", pdata->directive->name);
     }
 }
 
@@ -434,7 +434,7 @@ gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
             gstypes_type_check_code_item(symtable, items, types, kinds, n, i);
             return;
         default:
-            gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.ptype, "gstypes_kind_check_scc(type = %d)", items[i].type);
+            gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_kind_check_scc(type = %d)", items[i].type);
     }
 }
 
@@ -447,7 +447,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 {
     struct gsparsedline *pdata;
 
-    pdata = items[i].v.pdata;
+    pdata = items[i].v;
     if (gssymeq(pdata->directive, gssymdatadirective, ".undefined")) {
         struct gstype *type;
         struct gskind *kind;
@@ -502,7 +502,7 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
     struct gsparsedfile_segment *pseg;
 
     pseg = items[i].pseg;
-    pcode = items[i].v.pcode;
+    pcode = items[i].v;
 
     if (gssymeq(pcode->directive, gssymcodedirective, ".expr")) {
         struct gsbc_code_item_type *type;

@@ -68,11 +68,7 @@ struct gsbc_item {
     gsparsedfile *file;
     gssymboltype type;
     struct gsparsedfile_segment *pseg;
-    union {
-        struct gsparsedline *pdata;
-        struct gsparsedline *pcode;
-        struct gsparsedline *ptype;
-    } v;
+    struct gsparsedline *v;
 };
 
 void gsbc_item_empty(struct gsbc_item *);

@@ -60,24 +60,24 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
             if (!parsedfile->data && !parsedfile->types)
                 gsfatal("%s: Cannot compile file: no data section so no entry points", parsedfile->name->name);
             item.type = gssymdatalable;
-            item.v.pdata = 0;
+            item.v = 0;
             if (parsedfile->data) for (i = 0; i < parsedfile->data->numitems; i++) {
-                if (item.v.pdata)
+                if (item.v)
                     gsfatal("%s: Topologically sort from second data item next", parsedfile->name->name);
                 item.pseg = parsedfile->data->first_seg;
-                item.v.pdata = GSDATA_SECTION_FIRST_ITEM(parsedfile->data);
+                item.v = GSDATA_SECTION_FIRST_ITEM(parsedfile->data);
                 if (gssymtable_get_scc(symtable, item))
                     continue;
                 gsbc_topsort_item(symtable, preorders, &unassigned_items, &maybe_group_items, item, &pend, &c);
             }
             item.type = gssymtypelable;
-            item.v.ptype = 0;
+            item.v = 0;
             if (parsedfile->types) for (i = 0; i < parsedfile->types->numitems; i++) {
-                if (item.v.ptype) {
-                    item.v.ptype = gstype_section_next_item(&item.pseg, item.v.ptype);
+                if (item.v) {
+                    item.v = gstype_section_next_item(&item.pseg, item.v);
                 } else {
                     item.pseg = parsedfile->types->first_seg;
-                    item.v.ptype = GSTYPE_SECTION_FIRST_ITEM(parsedfile->types);
+                    item.v = GSTYPE_SECTION_FIRST_ITEM(parsedfile->types);
                 }
                 if (gssymtable_get_scc(symtable, item))
                     continue;
@@ -89,7 +89,7 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
             struct gsbc_item item;
             item.file = parsedfile;
             item.type = gssymdatalable;
-            item.v.pdata = GSDATA_SECTION_FIRST_ITEM(parsedfile->data);
+            item.v = GSDATA_SECTION_FIRST_ITEM(parsedfile->data);
             if (!parsedfile->data)
                 gsfatal("%s: Cannot compile file: no data section so no entry points", parsedfile->name->name);
             if (!parsedfile->data->numitems)
@@ -229,32 +229,32 @@ static
 void
 gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    gsinterned_string directive = item.v.pdata->directive;
+    gsinterned_string directive = item.v->directive;
 
     if (gssymeq(directive, gssymdatadirective, ".closure")) {
         struct gsbc_item code, type;
         code = gssymtable_lookup(
-            item.v.pdata->file->name,
-            item.v.pdata->lineno,
+            item.v->file->name,
+            item.v->lineno,
             symtable,
-            item.v.pdata->arguments[0]
+            item.v->arguments[0]
         );
         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, code, pend, pc);
-        if (item.v.pdata->numarguments >= 2) {
+        if (item.v->numarguments >= 2) {
             type = gssymtable_lookup(
-                item.v.pdata->file->name,
-                item.v.pdata->lineno,
+                item.v->file->name,
+                item.v->lineno,
                 symtable,
-                item.v.pdata->arguments[1]
+                item.v->arguments[1]
             );
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, type, pend, pc);
         }
-        if (item.v.pdata->numarguments > 2)
+        if (item.v->numarguments > 2)
             gsfatal("%s:%d: Panic: data item %s:%s has more than two arguments; I don't know what to do!",
                 __FILE__,
                 __LINE__,
                 item.file->name->name,
-                item.v.pdata->label->name
+                item.v->label->name
             )
         ;
     } else if (gssymeq(directive, gssymdatadirective, ".tyapp")) {
@@ -262,19 +262,19 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         int i;
 
         fn = gssymtable_lookup(
-            item.v.pdata->file->name,
-            item.v.pdata->lineno,
+            item.v->file->name,
+            item.v->lineno,
             symtable,
-            item.v.pdata->arguments[0]
+            item.v->arguments[0]
         );
         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, fn, pend, pc);
 
-        for (i = 1; i < item.v.pdata->numarguments; i++) {
+        for (i = 1; i < item.v->numarguments; i++) {
             tyarg = gssymtable_lookup(
-                item.v.pdata->file->name,
-                item.v.pdata->lineno,
+                item.v->file->name,
+                item.v->lineno,
                 symtable,
-                item.v.pdata->arguments[1]
+                item.v->arguments[1]
             );
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, tyarg, pend, pc);
         }
@@ -282,14 +282,14 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         struct gsbc_item ty;
 
         ty = gssymtable_lookup(
-            item.v.pdata->file->name,
-            item.v.pdata->lineno,
+            item.v->file->name,
+            item.v->lineno,
             symtable,
-            item.v.pdata->arguments[0]
+            item.v->arguments[0]
         );
         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, ty, pend, pc);
     } else {
-        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(data item; directive = %s) next", __FILE__, __LINE__, item.v.pdata->file->name, item.v.pdata->lineno, item.v.pdata->directive->name);
+        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(data item; directive = %s) next", __FILE__, __LINE__, item.v->file->name, item.v->lineno, item.v->directive->name);
     }
 }
 
@@ -308,11 +308,11 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
 
-    directive = gsbc_lookup_code_directive(item.v.pcode->directive);
+    directive = gsbc_lookup_code_directive(item.v->directive);
     pseg = item.pseg;
     switch (directive) {
         case gscode_directive_expr:
-            for (p = gsinput_next_line(&pseg, item.v.pcode); ; p = gsinput_next_line(&pseg, p)) {
+            for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
                 if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
                     struct gsbc_item global;
                     global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
@@ -323,7 +323,7 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
             }
             break;
         default:
-            gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, item.v.pcode->file->name, item.v.pcode->lineno, item.v.pcode->directive->name);
+            gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, item.v->file->name, item.v->lineno, item.v->directive->name);
     }
 
     gsfatal("%s:%d: gsbc_subtop_sort_code_item next", __FILE__, __LINE__);
@@ -368,7 +368,7 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
     struct gsparsedline *ptype;
 
     pseg = item.pseg;
-    ptype = item.v.ptype;
+    ptype = item.v;
     directive = ptype->directive;
     if (gssymeq(directive, gssymtypedirective, ".tyexpr")) {
         gsbc_top_sort_subitems_of_type_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, &pseg, gsinput_next_line(&pseg, ptype));
@@ -587,13 +587,13 @@ gsbc_item_eq(struct gsbc_item item0, struct gsbc_item item1)
     if (item0.type != item1.type) return 0;
     switch (item0.type) {
         case gssymdatalable:
-            if (item0.v.pdata != item1.v.pdata) return 0;
+            if (item0.v != item1.v) return 0;
             break;
         case gssymcodelable:
-            if (item0.v.pcode != item1.v.pcode) return 0;
+            if (item0.v != item1.v) return 0;
             break;
         case gssymtypelable:
-            if (item0.v.ptype != item1.v.ptype) return 0;
+            if (item0.v != item1.v) return 0;
             break;
         default:
             gsfatal("%s:%d: gsbc_item_eq(type = %d)", __FILE__, __LINE__, item0.type);
@@ -608,7 +608,7 @@ gsbc_item_empty(struct gsbc_item *pitem)
     pitem->file = 0;
     pitem->type = 0;
     pitem->pseg = 0;
-    pitem->v.pdata = 0;
+    pitem->v = 0;
 }
 
 struct gs_block_class gsbc_item_hash_descr = {

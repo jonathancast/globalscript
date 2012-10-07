@@ -55,10 +55,10 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
         heap[i] = errors[i] = 0;
         if (heap_size[i]) {
             heap[i] = (gsvalue)((uchar*)heap_base + heap_offsets[i]);
-            gssymtable_set_data(symtable, items[i].v.pdata->label, heap[i]);
+            gssymtable_set_data(symtable, items[i].v->label, heap[i]);
         } else if (error_size[i]) {
             errors[i] = (gsvalue)((uchar*)error_base + error_offsets[i]);
-            gssymtable_set_data(symtable, items[i].v.pdata->label, errors[i]);
+            gssymtable_set_data(symtable, items[i].v->label, errors[i]);
         }
     }
 }
@@ -71,13 +71,13 @@ gsbc_heap_size_item(struct gsbc_item item)
 
     if (item.type != gssymdatalable) return 0;
 
-    p = item.v.pdata;
+    p = item.v;
     if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
         return 0;
     } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
         return sizeof(struct gsclosure) + sizeof(gsvalue);
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, item.v.pdata, "gsbc_heap_size_item(%s)", p->directive->name);
+        gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gsbc_heap_size_item(%s)", p->directive->name);
     }
     return 0;
 }
@@ -90,13 +90,13 @@ gsbc_error_size_item(struct gsbc_item item)
 
     if (item.type != gssymdatalable) return 0;
 
-    p = item.v.pdata;
+    p = item.v;
     if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
         return sizeof(struct gserror);
     } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
         return 0;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, item.v.pdata, "gsbc_error_size_item(%s)", p->directive->name);
+        gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gsbc_error_size_item(%s)", p->directive->name);
     }
     return 0;
 }
@@ -131,7 +131,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     for (i = 0; i < n; i++) {
         if (items[i].type == gssymcodelable) {
             bcos[i] = (struct gsbco*)((uchar*)base + offsets[i]);
-            gssymtable_set_code(symtable, items[i].v.pdata->label, bcos[i]);
+            gssymtable_set_code(symtable, items[i].v->label, bcos[i]);
         }
     }
 }
@@ -156,7 +156,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
     phase = phgvars;
     nregs = 0;
     pseg = item.pseg;
-    for (p = gsinput_next_line(&pseg, item.v.pcode); ; p = gsinput_next_line(&pseg, p)) {
+    for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
             if (phase > phgvars)
                 gsfatal_bad_input(p, "Too late to add global variables")
@@ -250,14 +250,14 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             case gssymtypelable:
                 break;
             case gssymdatalable:
-                gsbc_bytecompile_data_item(symtable, items[i].v.pdata, heap, errors, i, n);
+                gsbc_bytecompile_data_item(symtable, items[i].v, heap, errors, i, n);
                 break;
             case gssymcodelable:
                 pseg = items[i].pseg;
-                gsbc_bytecompile_code_item(symtable, &pseg, items[i].v.pcode, bcos, i, n);
+                gsbc_bytecompile_code_item(symtable, &pseg, items[i].v, bcos, i, n);
                 break;
             default:
-                gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v.pcode, "gsbc_bytecompile_scc(type = %d)", items[i].type);
+                gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gsbc_bytecompile_scc(type = %d)", items[i].type);
         }
     }
 }
