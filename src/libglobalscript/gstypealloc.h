@@ -113,6 +113,7 @@ int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 
 struct gstype *gstypes_compile_indir(gsinterned_string, int, struct gstype *);
 struct gstype *gstypes_compile_type_var(gsinterned_string, int, gsinterned_string, struct gskind *);
+struct gstype *gstypes_compile_lift(gsinterned_string, int, struct gstype *);
 
 struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
 struct gstype *gstype_apply(gsinterned_string, int, struct gstype *, struct gstype *);

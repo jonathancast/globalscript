@@ -356,14 +356,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->nregs++;
         return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
     } else if (gssymeq(p->directive, gssymtypeop, ".tylift")) {
-        struct gstype_lift *lift;
-        res = gstype_alloc(sizeof(struct gstype_lift));
-        lift = (struct gstype_lift *)res;
-        res->node = gstype_lift;
-        res->file = p->file;
-        res->lineno = p->lineno;
-        lift->arg = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
-        return res;
+        return gstypes_compile_lift(p->file, p->lineno, gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
     } else if (gssymeq(p->directive, gssymtypeop, ".tyref")) {
         struct gstype *reg;
 
@@ -441,6 +434,23 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "gstype_compile_type_ops %s", p->directive->name);
     }
     return 0;
+}
+
+struct gstype *
+gstypes_compile_lift(gsinterned_string file, int lineno, struct gstype *arg)
+{
+    struct gstype *res;
+    struct gstype_lift *lift;
+
+    res = gstype_alloc(sizeof(struct gstype_lift));
+    lift = (struct gstype_lift *)res;
+
+    res->node = gstype_lift;
+    res->file = file;
+    res->lineno = lineno;
+    lift->arg = arg;
+
+    return res;
 }
 
 static struct gstype *gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *, struct gsparsedline *);
@@ -741,6 +751,12 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
             if (lambda->var == varname)
                 return 0;
             return gstypes_is_ftyvar(varname, lambda->body);
+        }
+        case gstype_lift: {
+            struct gstype_lift *lift;
+
+            lift = (struct gstype_lift *)type;
+            return gstypes_is_ftyvar(varname, lift->arg);
         }
         default:
             gsfatal_unimpl_type(__FILE__, __LINE__, type, "fv (varname = %s, node = %d)", varname->name, type->node);
