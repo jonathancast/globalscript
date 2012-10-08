@@ -78,6 +78,7 @@ test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 test_macros.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 test_symtable.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h test_tests.h
 test_load.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
+test_typealloc.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h gstypealloc.h test_tests.h
 
 $O.test-gsi:	$TEST_GSI_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libibio.a
 	$LD -o $target $prereq $LDFLAGS

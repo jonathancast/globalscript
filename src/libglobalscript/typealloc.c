@@ -238,6 +238,23 @@ gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedfile_se
     indir->referent = gstype_compile_type_ops_worker(&cl, p);
 }
 
+struct gstype *
+gstypes_compile_indir(gsinterned_string file , int lineno, struct gstype *referent)
+{
+    struct gstype *res;
+    struct gstype_indirection *indir;
+
+    res = gstype_alloc(sizeof(struct gstype_indirection));
+    indir = (struct gstype_indirection *)res;
+
+    res->node = gstype_indirection;
+    res->file = file;
+    res->lineno = lineno;
+    indir->referent = referent;
+
+    return res;
+}
+
 static struct gstype *gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *, struct gsparsedline *, struct gstype *(*)(struct gstype_compile_type_ops_closure *, struct gsparsedline *));
 
 static
@@ -705,6 +722,12 @@ int
 gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
 {
     switch (type->node) {
+        case gstype_indirection: {
+            struct gstype_indirection *indir;
+
+            indir = (struct gstype_indirection *)type;
+            return gstypes_is_ftyvar(varname, indir->referent);
+        }
         case gstype_var: {
             struct gstype_var *var;
 

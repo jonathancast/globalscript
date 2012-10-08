@@ -21,7 +21,7 @@ void
 TEST_FV_VAR()
 {
     gsinterned_string file, x, y;
-    struct gstype *tyx, *tyy;
+    struct gstype *tyx, *tyy, *tyix, *tyiy;
 
     file = gsintern_string(gssymfilename, __FILE__);
 
@@ -33,5 +33,11 @@ TEST_FV_VAR()
 
     ok(__FILE__, __LINE__, gstypes_is_ftyvar(x, tyx), "'x' is not a free variable of 'x'");
     not_ok(__FILE__, __LINE__, gstypes_is_ftyvar(x, tyy), "'x' is a free variable of 'y'");
+
+    tyix = gstypes_compile_indir(file, __LINE__, tyx);
+    tyiy = gstypes_compile_indir(file, __LINE__, tyy);
+
+    ok(__FILE__, __LINE__, gstypes_is_ftyvar(x, tyix), "'x' is not a free variable of 'indir -> x'");
+    not_ok(__FILE__, __LINE__, gstypes_is_ftyvar(x, tyiy), "'x' is a free variable of 'indir -> y'");
 }
 
