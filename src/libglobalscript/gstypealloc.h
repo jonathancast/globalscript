@@ -109,11 +109,15 @@ struct gstype_coerce_definition {
 void gsfatal_unimpl_type(char *, int, struct gstype *, char *, ...);
 void gsfatal_bad_type(gsinterned_string, int, struct gstype *, char *, ...);
 
-void gstypes_alloc_for_scc(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
-void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
+int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
+
+struct gstype *gstypes_compile_type_var(gsinterned_string, int, gsinterned_string, struct gskind *);
 
 struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
 struct gstype *gstype_apply(gsinterned_string, int, struct gstype *, struct gstype *);
+
+void gstypes_alloc_for_scc(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
+void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
 
 struct gskind {
     enum {

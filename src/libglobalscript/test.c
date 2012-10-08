@@ -13,5 +13,6 @@ p9main(int argc, char **argv)
     test_macros();
     test_symtable();
     test_load();
+    test_typealloc();
     exits("");
 }

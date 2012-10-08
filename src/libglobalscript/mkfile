@@ -30,6 +30,7 @@ TEST_OFILES=\
 	test_macros.$O \
 	test_load.$O \
 	test_symtable.$O \
+	test_typealloc.$O \
 
 TEST_GSI_OFILES=\
 	test-gsi.$O \
@@ -70,7 +71,7 @@ integration-test:V: test test-rc
 test-rc:V: rc/test $O.test-gsi $O.test-gsexec
     ./rc/test
 
-$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a
+$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a $GLOBALSCRIPT/lib/libibio.a
 	$LD -o $target $prereq $LDFLAGS
 
 test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h

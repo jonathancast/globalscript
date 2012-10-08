@@ -238,8 +238,6 @@ gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedfile_se
     indir->referent = gstype_compile_type_ops_worker(&cl, p);
 }
 
-static struct gstype *gstypes_compile_type_var(gsinterned_string, int, gsinterned_string, struct gskind *);
-
 static struct gstype *gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *, struct gsparsedline *, struct gstype *(*)(struct gstype_compile_type_ops_closure *, struct gsparsedline *));
 
 static
@@ -531,7 +529,6 @@ gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, s
     }
 }
 
-static
 struct gstype *
 gstypes_compile_type_var(gsinterned_string file, int lineno, gsinterned_string name, struct gskind *ky)
 {
@@ -596,8 +593,6 @@ gstype_supply(gsinterned_string file, int lineno, struct gstype *fun, struct gst
     }
     return 0;
 }
-
-static int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 
 static
 struct gstype *
@@ -706,7 +701,6 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
     return 0;
 }
 
-static
 int
 gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
 {
