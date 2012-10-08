@@ -739,6 +739,23 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
 
             return res;
         }
+        case gstype_sum: {
+            struct gstype_sum *sum, *ressum;
+            struct gstype *res;
+
+            sum = (struct gstype_sum *)type;
+            res = gstype_alloc(sizeof(struct gstype_sum) + sum->numconstrs * sizeof(struct gstype_constr));
+            ressum = (struct gstype_sum *)res;
+            res->node = gstype_sum;
+            res->file = type->file;
+            res->lineno = type->lineno;
+            ressum->numconstrs = sum->numconstrs;
+            for (i = 0; i < sum->numconstrs; i++) {
+                gsfatal_unimpl_type(__FILE__, __LINE__, type, "subst into constr arg type");
+            }
+
+            return res;
+        }
         case gstype_product: {
             struct gstype_product *prod, *resprod;
             struct gstype *res;
@@ -773,6 +790,9 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
 
             indir = (struct gstype_indirection *)type;
             return gstypes_is_ftyvar(varname, indir->referent);
+        }
+        case gstype_prim: {
+            return 0;
         }
         case gstype_var: {
             struct gstype_var *var;

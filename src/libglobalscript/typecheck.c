@@ -207,6 +207,17 @@ gstypes_calculate_kind(struct gstype *type)
                     gsfatal_unimpl_type(__FILE__, __LINE__, type, "'function' kind (node = %d)", funkind->node);
             }
         }
+        case gstype_sum: {
+            struct gstype_sum *sum;
+
+            sum = (struct gstype_sum *)type;
+
+            for (i = 0; i < sum->numconstrs; i++) {
+                gsfatal_unimpl_type(__FILE__, __LINE__, type, "check kind of constr arg type");
+            }
+
+            return gskind_unlifted_kind();
+        }
         case gstype_product: {
             struct gstype_product *prod;
 
@@ -660,6 +671,20 @@ gstypes_check_type(struct gsparsedline *p, struct gstype *pactual, struct gstype
             pexpected_lift = (struct gstype_lift *)pexpected;
 
             gstypes_check_type(p, pactual_lift->arg, pexpected_lift->arg);
+            return;
+        }
+        case gstype_sum: {
+            struct gstype_sum *pactual_sum, *pexpected_sum;
+
+            pactual_sum = (struct gstype_sum *)pactual;
+            pexpected_sum = (struct gstype_sum *)pexpected;
+
+            if (pactual_sum->numconstrs != pexpected_sum->numconstrs)
+                gsfatal_bad_input(p, "I don't think %s is the same as %s; they have diferent numbers of constrs", actual_buf, expected_buf)
+            ;
+            if (pexpected_sum->numconstrs > 0)
+                gsfatal_unimpl_type(__FILE__, __LINE__, pexpected, "%s:%d: gstypes_check_type(check constrs)", p->file->name, p->lineno)
+            ;
             return;
         }
         case gstype_product: {
