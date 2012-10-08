@@ -96,7 +96,7 @@ gsadddir(char *filename)
     gscurrent_symtable = symtable;
 }
 
-static gsparsedfile *gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable *symtable);
+static gsparsedfile *gsreadfile(char *filename, char *relname, int skip_docs, int *, struct gsfile_symtable *symtable);
 
 static struct gs_block_class filename_desc = {
     /* evaluator = */ gsnoeval,
@@ -156,10 +156,15 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
             ext = strrchr(dir->d.name, '.');
             if (0) gswarning("%s:%d: Considering %s (%s) of type %s", __FILE__, __LINE__, newfilename, dir->d.name, ext);
             if (ext && !strcmp(ext, ".ags")) {
+                int is_doc;
+
                 file_symtable = gscreatesymtable(symtable);
-                file = gsreadfile(newfilename, newrelname, 1, file_symtable);
+                is_doc = 0;
+                file = gsreadfile(newfilename, newrelname, 1, &is_doc, file_symtable);
                 if (!file) {
-                    gswarning("%s:%d: Skipping %s: %r", __FILE__, __LINE__, newfilename);
+                    if (!is_doc)
+                        gswarning("%s:%d: Skipping %s: %r", __FILE__, __LINE__, newfilename)
+                    ;
                     continue;
                 } else {
                     gsappend_symtable(symtable, file_symtable);
@@ -188,7 +193,7 @@ gsaddfile(char *filename, gsvalue *pentry)
 
     symtable = gscreatesymtable(gscurrent_symtable);
 
-    parsedfile = gsreadfile(filename, "", 0, symtable);
+    parsedfile = gsreadfile(filename, "", 0, 0, symtable);
 
     gsloadfile(parsedfile, symtable, pentry);
 
@@ -205,7 +210,7 @@ static long gsparse_coercion_item(char *filename, gsparsedfile *parsedfile, stru
 #define NUM_FIELDS 0x20
 
 gsparsedfile *
-gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable *symtable)
+gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, struct gsfile_symtable *symtable)
 {
     struct uxio_ichannel *chan;
     char line[LINE_LENGTH];
@@ -240,6 +245,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, struct gsfile_symtable 
         if (skip_docs) {
             if (gsclosefile(chan, pid) < 0)
                 gsfatal("%s: Error in closing file: %r", filename);
+            *is_doc = 1;
             return 0;
         }
         type = gsfiledocument;
