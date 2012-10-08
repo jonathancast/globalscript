@@ -2,7 +2,7 @@
 
 	.data
 
-	.tycoerce	ibio.in	_real.entry
+	.cast	ibio.in	_real.entry
 _real.entry	.closure	_real.entry.c
 _un.no.args	.string	unimpl\sgsac\sno-args
 _un.args	.string	unimpl\sgsac\sargs

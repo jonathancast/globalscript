@@ -2,7 +2,8 @@
 
 	.data
 
-	.undefined	_eptype
+	.cast	_ep.in	_real.entry
+_real.entry	.undefined	_epbodytype
 
 	.code
 
@@ -14,6 +15,20 @@ rune.t	.tygvar
 _empty.record	.tygvar
 	.tyref	ibio.m	rune.t	rune.t	_empty.record
 
+_epbodytype	.tyexpr
+rune.t	.tygvar
+_empty.record	.tygvar
+	.tylift
+	.tysum
+
 _empty.record	.tyexpr
 	.tylift
 	.typroduct
+
+	.coercion
+
+_ep.in	.tycoercion
+ibio.m	.tygvar
+rune.t	.tygvar
+_empty.record	.tygvar
+	.tydefinition ibio.m	rune.t	rune.t	_empty.record
