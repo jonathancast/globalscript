@@ -388,31 +388,24 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         }
         return res;
     } else if (gssymeq(p->directive, gssymtypeop, ".tysum")) {
-        struct gstype_sum *sum;
-        int numconstrs;
+        struct gstype_constr constrs[MAX_REGISTERS];
+        int i;
+        int nconstrs;
 
         if (p->numarguments % 2)
-                gsfatal_bad_input(p, "Cannot have odd number of arguments to .tysum");
-        numconstrs = p->numarguments / 2;
-        res = gstype_alloc(sizeof(struct gstype_sum) + numconstrs * sizeof(struct gstype_constr));
-        sum = (struct gstype_sum *)res;
-        res->node = gstype_sum;
-        res->file = p->file;
-        res->lineno = p->lineno;
-        sum->numconstrs = numconstrs;
+            gsfatal_bad_input(p, "Cannot have odd number of arguments to .tysum")
+        ;
+        nconstrs = p->numarguments / 2;
+
+        if (nconstrs > MAX_REGISTERS)
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "sums with more than 0x%x constructors", MAX_REGISTERS)
+        ;
+
         for (i = 0; i < p->numarguments; i += 2) {
-            for (j = 0; j < cl->nregs; j++) {
-                if (p->arguments[i + 1] == cl->regs[j]) {
-                    sum->constrs[i].name = p->arguments[i];
-                    sum->constrs[i].arg = j;
-                    goto have_register_for_constr_arg;
-                }
-            }
-            gsfatal_bad_input(p, "Undeclared register %s", p->arguments[i + 1]->name);
-        have_register_for_constr_arg:
-            ;
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "constructors");
         }
-        return res;
+
+        return gstypes_compile_sumv(p->file, p->lineno, nconstrs, constrs);
     } else if (gssymeq(p->directive, gssymtypeop, ".typroduct")) {
         struct gstype_product *prod;
         int numfields;
@@ -449,6 +442,47 @@ gstypes_compile_lift(gsinterned_string file, int lineno, struct gstype *arg)
     res->file = file;
     res->lineno = lineno;
     lift->arg = arg;
+
+    return res;
+}
+
+struct gstype *
+gstypes_compile_sum(gsinterned_string file, int lineno, int nconstrs, ...)
+{
+    va_list arg;
+    struct gstype_constr constrs[MAX_REGISTERS];
+    int i;
+
+    if (nconstrs > MAX_REGISTERS)
+        gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Sums with more than 0x%x constructors", file->name, lineno, MAX_REGISTERS)
+    ;
+
+    va_start(arg, nconstrs);
+    for (i = 0; i < nconstrs; i++) {
+        gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Copy constructors out of gstypes_compile_sumv arguments", file->name, lineno);
+    }
+    va_end(arg);
+
+    return gstypes_compile_sumv(file, lineno, nconstrs, constrs);
+}
+
+struct gstype *
+gstypes_compile_sumv(gsinterned_string file, int lineno, int nconstrs, struct gstype_constr *constrs)
+{
+    struct gstype *res;
+    struct gstype_sum *sum;
+    int i;
+
+    res = gstype_alloc(sizeof(struct gstype_sum) + nconstrs * sizeof(struct gstype_constr));
+    sum = (struct gstype_sum *)res;
+
+    res->node = gstype_sum;
+    res->file = file;
+    res->lineno = lineno;
+    sum->numconstrs = nconstrs;
+    for (i = 0; i < nconstrs; i ++) {
+        gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: set constructors", file->name, lineno);
+    }
 
     return res;
 }
@@ -731,6 +765,8 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
 int
 gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
 {
+    int i;
+
     switch (type->node) {
         case gstype_indirection: {
             struct gstype_indirection *indir;
@@ -757,6 +793,16 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
 
             lift = (struct gstype_lift *)type;
             return gstypes_is_ftyvar(varname, lift->arg);
+        }
+        case gstype_sum: {
+            struct gstype_sum *sum;
+
+            sum = (struct gstype_sum *)type;
+            for (i = 0; i < sum->numconstrs; i++) {
+                gsfatal_unimpl_type(__FILE__, __LINE__, type, "tv (constr arg)");
+            }
+
+            return 0;
         }
         default:
             gsfatal_unimpl_type(__FILE__, __LINE__, type, "fv (varname = %s, node = %d)", varname->name, type->node);
