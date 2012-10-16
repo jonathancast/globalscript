@@ -1,15 +1,5 @@
 /* §section{(Byte-Code) Code Segment} */
 
-struct gsbco {
-    enum {
-        gsbc_expr,
-    } tag;
-    gsinterned_string file;
-    int lineno;
-    ulong size;
-    ulong numglobals;
-};
-
 struct gsbc {
     gsinterned_string file;
     int lineno;

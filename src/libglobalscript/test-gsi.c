@@ -67,6 +67,34 @@ gsprint(gsvalue prog)
                 gsfatal_unimpl(__FILE__, __LINE__, "gsprint(error type = %d)", p->type);
         }
         return -1;
+    } else if (gsisheap_block(block)) {
+        struct gsheap_item *hp;
+
+        hp = (struct gsheap_item *)prog;
+        switch (hp->type) {
+            case gsclosure: {
+                struct gsclosure *cl;
+                int nfvs, ncfvs, ncargs;
+
+                cl = (struct gsclosure *)hp;
+
+                nfvs = 0;
+                ncfvs = 0;
+                ncargs = cl->code->numargs;
+                if (nfvs < ncfvs + ncargs) {
+                    print("<function>");
+                    return 0;
+                } else {
+                    ace_down();
+                    gsfatal_unimpl(__FILE__, __LINE__, "gsprint(heap; nfvs = %d, ncfvs = %d, ncargs = %d)", nfvs, ncfvs, ncargs);
+                    return -1;
+                }
+            }
+            default:
+                ace_down();
+                gsfatal_unimpl(__FILE__, __LINE__, "gsprint(heap; type = %d)", hp->type);
+                return -1;
+        }
     } else {
         ace_down();
         gsfatal_unimpl(__FILE__, __LINE__, "gsprint(%s)", block->class->description);

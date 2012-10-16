@@ -487,6 +487,24 @@ gstypes_compile_sumv(gsinterned_string file, int lineno, int nconstrs, struct gs
     return res;
 }
 
+struct gstype *
+gstypes_compile_fun(gsinterned_string file, int lineno, struct gstype *tyarg, struct gstype *tyres)
+{
+    struct gstype *res;
+    struct gstype_fun *fun;
+
+    res = gstype_alloc(sizeof(struct gstype_fun));
+    fun = (struct gstype_fun *)res;
+
+    res->node = gstype_fun;
+    res->file = file;
+    res->lineno = lineno;
+    fun->tyarg = tyarg;
+    fun->tyres = tyres;
+
+    return res;
+}
+
 static struct gstype *gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *, struct gsparsedline *);
 
 static

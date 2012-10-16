@@ -46,11 +46,25 @@ gsheapeval(gsvalue val)
 
             switch (code->tag) {
                 case gsbc_expr:
-                    if (0) {/* fail if we don't have enough §emph{free variables} (can't happen) */
-                    } else if (0) { /* is a whnf if num free variables < code free variables + code arguments */
+                    {
+                        int fvs_in_cl;
+                        int fvs_for_code;
+                        int args_for_code;
+
+                        gswarning("%s:%d: Getting number of free variables in closure: deferred", __FILE__, __LINE__);
+                        fvs_in_cl = 0;
+                        gswarning("%s:%d: Getting number of free variables in bco: deferred", __FILE__, __LINE__);
+                        fvs_for_code = 0;
+                        args_for_code = code->numargs;
+                    if (fvs_in_cl < fvs_for_code) {
+                        gspoison(hp, code->file, code->lineno, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);
+                        res = gstywhnf;
+                    } else if (fvs_in_cl < fvs_for_code + args_for_code) {
+                        res = gstywhnf;
                     } else
                         res = ace_start_evaluation(val)
                     ;
+                    }
                     break;
                 default:
                     gswarning("%s:%d: Evalling something else", __FILE__, __LINE__);
@@ -144,6 +158,12 @@ gsremove_indirections(gsvalue val)
         val = in->target;
         unlock(&hp->lock);
     }
+}
+
+int
+gsisheap_block(struct gs_blockdesc *p)
+{
+    return p->class == &gsheap_descr;
 }
 
 struct gs_block_class gserrors_descr = {

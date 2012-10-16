@@ -15,6 +15,7 @@ struct gstype {
         gstype_forall,
         gstype_lift,
         gstype_app,
+        gstype_fun,
         gstype_ref,
         gstype_sum,
         gstype_product,
@@ -73,6 +74,12 @@ struct gstype_app {
     struct gstype *arg;
 };
 
+struct gstype_fun {
+    struct gstype e;
+    struct gstype *tyarg;
+    struct gstype *tyres;
+};
+
 struct gstype_ref {
     struct gstype e;
     int referent;
@@ -116,6 +123,7 @@ struct gstype *gstypes_compile_type_var(gsinterned_string, int, gsinterned_strin
 struct gstype *gstypes_compile_lift(gsinterned_string, int, struct gstype *);
 struct gstype *gstypes_compile_sum(gsinterned_string, int, int, ...);
 struct gstype *gstypes_compile_sumv(gsinterned_string, int, int, struct gstype_constr *);
+struct gstype *gstypes_compile_fun(gsinterned_string, int, struct gstype *, struct gstype *);
 
 struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
 struct gstype *gstype_apply(gsinterned_string, int, struct gstype *, struct gstype *);

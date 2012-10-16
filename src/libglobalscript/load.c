@@ -445,6 +445,15 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 gsfatal("%s:%d: Missing label on .gvar op", filename, *plineno);
             if (n > 2)
                 gsfatal("%s:%d: Too many arguments to .gvar op", filename, *plineno);
+        } else if (gssymeq(parsedline->directive, gssymcodeop, ".arg")) {
+            if (*fields[0])
+                parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+            else
+                gsfatal("%s:%d: Missing label on .arg op", filename, *plineno);
+            if (n < 3)
+                gsfatal("%s:%d: Missing type on .arg", filename, *plineno);
+            for (i = 2; i < n; i++)
+                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
         } else if (gssymeq(parsedline->directive, gssymcodeop, ".app")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops");

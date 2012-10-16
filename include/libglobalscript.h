@@ -146,6 +146,7 @@ gstypecode gswhnfeval(gsvalue);
 gsvalue gsremove_indirections(gsvalue);
 
 int gsiserror_block(struct gs_blockdesc *);
+int gsisheap_block(struct gs_blockdesc *);
 
 struct gsheap_item {
     Lock lock;
@@ -162,6 +163,16 @@ struct gsclosure {
     struct gsheap_item hp;
     struct gsbco *code;
     gsvalue fvs[];
+};
+
+struct gsbco {
+    enum {
+        gsbc_expr,
+    } tag;
+    gsinterned_string file;
+    int lineno;
+    ulong size;
+    ulong numglobals, numargs;
 };
 
 struct gsindirection {

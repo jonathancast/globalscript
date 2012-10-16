@@ -357,6 +357,8 @@ gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type)
             return;
         case gstype_prim:
             return;
+        case gstype_fun:
+            return;
         default:
             gsfatal_unimpl_type(__FILE__, __LINE__, type, "%s:%d: gsbc_typecheck_check_boxed(node = %d)", p->file->name, p->lineno, type->node);
     }
@@ -561,6 +563,8 @@ static struct gs_block_class gsbc_code_type_descr = {
 };
 static void *gsbc_code_type_nursury;
 
+static int gsbc_typecheck_find_register(struct gsparsedline *, gsinterned_string *, int, gsinterned_string);
+
 static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
@@ -568,6 +572,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     enum {
         rttygvar,
         rtgvar,
+        rtarg,
     } regtype;
     int i;
     int nregs;
@@ -575,11 +580,15 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     struct gstype *regtypes[MAX_NUM_REGISTERS];
     struct gstype *tyregs[MAX_NUM_REGISTERS];
     struct gskind *tyregkinds[MAX_NUM_REGISTERS];
+    int nargs;
+    struct gstype *argtypes[MAX_NUM_REGISTERS];
+    struct gsparsedline *arglines[MAX_NUM_REGISTERS];
     struct gstype *calculated_type;
     struct gskind *kind;
     struct gsbc_code_item_type *res;
 
     nregs = 0;
+    nargs = 0;
     regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
@@ -614,6 +623,32 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 gsfatal_bad_input(p, "Couldn't find type for global %s", p->label->name)
             ;
             nregs++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".arg")) {
+            int reg;
+            struct gstype *argtype;
+
+            if (regtype > rtarg)
+                gsfatal_bad_input(p, "Too late to add arguments")
+            ;
+            regtype = rtarg;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers")
+            ;
+            regs[nregs] = p->label;
+            gsargcheck(p, 0, "var");
+            reg = gsbc_typecheck_find_register(p, regs, nregs, p->arguments[0]);
+            argtype = tyregs[reg];
+            if (!argtype)
+                gsfatal_bad_input(p, "Register %s is not a type", p->arguments[0]);
+            for (i = 1; i < p->numarguments; i++) {
+                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Type arguments");
+            }
+            regtypes[nregs] = argtype;
+            nregs++;
+
+            argtypes[nargs] = argtype;
+            arglines[nargs] = p;
+            nargs++;
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
             int reg = 0;
 
@@ -629,17 +664,10 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             calculated_type = regtypes[reg];
             goto have_type;
         } else if (gssymeq(p->directive, gssymcodeop, ".undef")) {
-            int reg = 0;
+            int reg;
 
             gsargcheck(p, 0, "type");
-            for (i = 0; i < nregs; i++) {
-                if (regs[i] == p->arguments[0]) {
-                    reg = i;
-                    goto have_reg_for_undef;
-                }
-            }
-            gsfatal_bad_input(p, "No such register %s", p->arguments[0]->name);
-        have_reg_for_undef:
+            reg = gsbc_typecheck_find_register(p, regs, nregs, p->arguments[0]);
             calculated_type = tyregs[reg];
             kind = tyregkinds[reg];
             for (i = 1; i < p->numarguments; i++) {
@@ -654,12 +682,35 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
 
 have_type:
 
+    while (nargs--) {
+        struct gstype *ty;
+
+        ty = argtypes[nargs];
+        p = arglines[nargs];
+
+        calculated_type = gstypes_compile_fun(p->file, p->lineno, ty, calculated_type);
+    }
+
     res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, sizeof(*res), sizeof(int));
     res->numftyvs = 0;
     res->numfvs = 0;
     res->result_type = calculated_type;
 
     return res;
+}
+
+static
+int
+gsbc_typecheck_find_register(struct gsparsedline *p, gsinterned_string *regs, int nregs, gsinterned_string name)
+{
+    int i;
+
+    for (i = 0; i < nregs; i++) {
+        if (regs[i] == name)
+            return i;
+    }
+    gsfatal_bad_input(p, "No such register '%s'", name->name);
+    return -1;
 }
 
 static struct gstype *gstypes_clear_indirections(struct gstype *);

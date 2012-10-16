@@ -183,6 +183,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
     enum {
         phtygvars,
         phgvars,
+        phargs,
         phbytecodes,
     } phase;
     int nregs;
@@ -216,13 +217,23 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             size += sizeof(gsvalue);
             gswarning("%s:%d: size = 0x%x", __FILE__, __LINE__, size);
             nregs++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".arg")) {
+            if (phase > phargs)
+                gsfatal_bad_input(p, "Too late to add arguments")
+            ;
+            phase = phargs;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
+            nregs++;
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
+            phase = phbytecodes;
             size += GS_SIZE_BYTECODE(1);
             gswarning("%s:%d: size = 0x%x", __FILE__, __LINE__, size);
             if (p->numarguments > 1)
                 gsfatal("%s:%d: Too many arguments to .enter", p->file->name, p->lineno);
             goto done;
         } else if (gssymeq(p->directive, gssymcodeop, ".undef")) {
+            phase = phbytecodes;
             size += GS_SIZE_BYTECODE(0);
             goto done;
         } else {
@@ -345,18 +356,19 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     enum {
         rttygvars,
         rtgvars,
+        rtargs,
         rtops,
     } phase;
     int i;
     gsvalue *pglobal;
     struct gsbc *pcode;
-    int nregs, nglobals;
+    int nregs, nglobals, nargs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
 
     phase = rttygvars;
     pcode = 0;
     pglobal = (gsvalue*)((uchar*)pbco + sizeof(struct gsbco));
-    nregs = nglobals = 0;
+    nregs = nglobals = nargs = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (phase > rttygvars)
@@ -375,6 +387,13 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             *pglobal++ = gssymtable_get_data(symtable, p->label);
             nregs++;
             nglobals++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".arg")) {
+            if (phase > rtargs)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            ;
+            regs[nregs] = p->label;
+            nregs++;
+            nargs++;
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
             int reg = 0;
 
@@ -415,4 +434,5 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
 done:
 
     pbco->numglobals = nglobals;
+    pbco->numargs = nargs;
 }
