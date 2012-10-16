@@ -4,18 +4,26 @@
 extern "C" {
 #endif   
 
-/* §section{A few pre-declarations since Global Script is idiotic} */
+/* §section A few pre-declarations since Global Script is idiotic */
 
 struct gs_blockdesc;
+
+/* §section Some C Macros */
+
+#define MAX(a, b) ((a) < (b) ? (b) : (a))
 
 /* §section{Basic Thread Management Stuff} */
 
 void gsmain(int argc, char **argv);
 
+int gsdebug;
+
 void gsfatal(char *err, ...);
 void gswarning(char *err, ...);
 
 void gsfatal_unimpl(char *, int, char *, ...);
+
+void gswerrstr_unimpl(char *, int, char *, ...);
 
 void gsassert(char *srcfile, int srcline, int passed, char *err, ...);
 
@@ -67,6 +75,8 @@ struct gsrpc *gsqueue_rpc_alloc(ulong);
 struct gsrpc *gsqueue_get_rpc(struct gsrpc_queue *);
 void gsqueue_send_rpc(struct gsrpc_queue *, struct gsrpc *);
 
+void gsqueue_down(struct gsrpc_queue *);
+
 typedef void (rpc_handler)(struct gsrpc *);
 
 /* §section Internal error-reporting stuff */
@@ -111,7 +121,8 @@ typedef enum {
     gstyunboxed = 6,
     gstyeooheap = 64,
     gstyeoostack = 65,
-    gstyenosys = 66,
+    gstyeoothreads = 66,
+    gstyenosys = 67,
 } gstypecode;
 
 /* Define this yourself; this is your program's entry point */
@@ -132,13 +143,18 @@ gstypecode gswhnfeval(gsvalue);
 
 #define GS_SLOW_EVALUATE(v) (IS_PTR(v) ? (*GS_EVALUATOR(v))(v) : gstyunboxed)
 
+gsvalue gsremove_indirections(gsvalue);
+
 int gsiserror_block(struct gs_blockdesc *);
 
 struct gsheap_item {
+    Lock lock;
     gsinterned_string file;
     int lineno;
     enum {
         gsclosure,
+        gseval,
+        gsindirection,
     } type;
 };
 
@@ -148,12 +164,24 @@ struct gsclosure {
     gsvalue fvs[];
 };
 
+struct gsindirection {
+    struct gsheap_item hp;
+    gsvalue target;
+};
+
+struct gseval {
+    struct gsheap_item hp;
+    struct ace_thread *thread;
+};
+
 struct gserror {
     gsinterned_string file;
     int lineno;
     enum {
         gserror_undefined,
+        gserror_generated,
     } type;
+    char message[];
 };
 
 /* §section{Primitives} */
@@ -209,6 +237,11 @@ void *gs_sys_seg_alloc(registered_block_class cl);
 void gs_sys_seg_free(void *);
 
 void *gs_sys_seg_suballoc(registered_block_class, void**, ulong, ulong);
+
+/* §section ACE */
+
+void ace_up(void);
+void ace_down(void);
 
 /* §section{API} */
 

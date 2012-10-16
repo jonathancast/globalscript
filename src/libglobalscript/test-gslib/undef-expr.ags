@@ -1,0 +1,11 @@
+	.document
+
+	.data
+
+	.closure	_real.entry.c
+
+	.code
+
+_real.entry.c	.expr
+rune.t	.tygvar
+	.undef	rune.t

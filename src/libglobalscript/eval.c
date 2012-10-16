@@ -4,6 +4,7 @@
 
 #include "gsinputfile.h"
 #include "gsheap.h"
+#include "ace.h"
 
 gstypecode
 gs_get_gsvalue_state(gsvalue val)
@@ -20,14 +21,75 @@ gsnoeval(gsvalue val)
     return 0;
 }
 
-static struct gsbco *gsheap_lock(struct gsclosure *);
+static int gsheap_lock(struct gsheap_item *);
+static void gsheap_unlock(struct gsheap_item *);
 
 gstypecode
 gsheapeval(gsvalue val)
 {
-    gsfatal_unimpl(__FILE__, __LINE__, "gsheapeval(%x)", val);
+    gstypecode res;
+    struct gsheap_item *hp;
+    int type;
 
-    return 0;
+    hp = (struct gsheap_item *)val;
+    type = gsheap_lock(hp);
+
+    res = gstyenosys;
+
+    switch (type) {
+        case gsclosure: {
+            struct gsclosure *cl;
+            struct gsbco *code;
+
+            cl = (struct gsclosure *)hp;
+            code = cl->code;
+
+            switch (code->tag) {
+                case gsbc_expr:
+                    if (0) {/* fail if we don't have enough §emph{free variables} (can't happen) */
+                    } else if (0) { /* is a whnf if num free variables < code free variables + code arguments */
+                    } else
+                        res = ace_start_evaluation(val)
+                    ;
+                    break;
+                default:
+                    gswarning("%s:%d: Evalling something else", __FILE__, __LINE__);
+                    gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(closure %x; tag = %d)", val, code->tag);
+                    res = gstyenosys;
+                    break;
+            }
+        }
+        break;
+        case gseval:
+            res = gstystack;
+            break;
+        case gsindirection:
+            res = gstywhnf;
+            break;
+        default:
+            gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(%x; type = %d)", val, type);
+            res = gstyenosys;
+            break;
+    }
+
+    gsheap_unlock(hp);
+
+    return res;
+}
+
+static
+int
+gsheap_lock(struct gsheap_item *hp)
+{
+    lock(&hp->lock);
+    return hp->type;
+}
+
+static
+void
+gsheap_unlock(struct gsheap_item *hp)
+{
+    unlock(&hp->lock);
 }
 
 gstypecode
@@ -42,7 +104,7 @@ gswhnfeval(gsvalue val)
     return gstywhnf;
 }
 
-struct gs_block_class gsheap_descr = {
+static struct gs_block_class gsheap_descr = {
     /* evaluator = */ gsheapeval,
     /* description = */ "Global Script Heap",
 };
@@ -54,16 +116,126 @@ gsreserveheap(ulong sz)
     return gs_sys_seg_suballoc(&gsheap_descr, &gsheap_nursury, sz, sizeof(struct gsbco*));
 }
 
+gsvalue
+gsremove_indirections(gsvalue val)
+{
+    struct gs_blockdesc *block;
+    struct gsheap_item *hp;
+    struct gsindirection *in;
+
+    for (;;) {
+        block = BLOCK_CONTAINING(val);
+
+        if (block->class != &gsheap_descr)
+            return val
+        ;
+
+        hp = (struct gsheap_item *)val;
+
+        lock(&hp->lock);
+
+        if (hp->type != gsindirection) {
+            unlock(&hp->lock);
+            return val;
+        }
+
+        in = (struct gsindirection *)hp;
+
+        val = in->target;
+        unlock(&hp->lock);
+    }
+}
+
 struct gs_block_class gserrors_descr = {
     /* evaluator = */ gswhnfeval,
     /* description = */ "Erroneous Global Script Values",
 };
 static void *gserrors_nursury;
+static Lock gserrors_lock;
 
 void *
 gsreserveerrors(ulong sz)
 {
-    return gs_sys_seg_suballoc(&gserrors_descr, &gserrors_nursury, sz, sizeof(gsinterned_string));
+    void *res;
+
+    lock(&gserrors_lock);
+    res = gs_sys_seg_suballoc(&gserrors_descr, &gserrors_nursury, sz, sizeof(gsinterned_string));
+    unlock(&gserrors_lock);
+    return res;
+}
+
+struct gserror *
+gserror(gsinterned_string file, int lineno, char *fmt, ...)
+{
+    char buf[0x100];
+    va_list arg;
+    struct gserror *err;
+
+    va_start(arg, fmt);
+    vseprint(buf, buf+sizeof buf, fmt, arg);
+    va_end(arg);
+
+    err = gsreserveerrors(sizeof(*err) + strlen(buf) + 1);
+    err->file = file;
+    err->lineno = lineno;
+    err->type = gserror_generated;
+    strcpy(err->message, buf);
+
+    return err;
+}
+
+struct gserror *
+gserror_unimpl(char *file, int lineno, gsinterned_string srcfile, int srclineno, char *err, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, err);
+    vseprint(buf, buf+sizeof buf, err, arg);
+    va_end(arg);
+
+    if (gsdebug)
+        return gserror(srcfile, srclineno, "%s:%d: %s next", file, lineno, buf)
+    ; else
+        return gserror(srcfile, srclineno, "Panic: Un-implemented operation in release build: %s", buf)
+    ;
+}
+
+void
+gspoison(struct gsheap_item *hp, gsinterned_string srcfile, int srclineno, char *fmt, ...)
+{
+    struct gserror *err;
+    struct gsindirection *in;
+
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, fmt);
+    vseprint(buf, buf+sizeof buf, fmt, arg);
+    va_end(arg);
+
+    err = gserror(srcfile, srclineno, "%s", buf);
+
+    hp->type = gsindirection;
+    in = (struct gsindirection *)hp;
+    in->target = (gsvalue)err;
+}
+
+void
+gspoison_unimpl(struct gsheap_item *hp, char *file, int lineno, gsinterned_string srcfile, int srclineno, char *fmt, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, fmt);
+    vseprint(buf, buf+sizeof buf, fmt, arg);
+    va_end(arg);
+
+    if (gsdebug)
+        gspoison(hp, srcfile, srclineno, "%s:%d: %s next", file, lineno, buf)
+    ; else
+        gspoison(hp, srcfile, srclineno, "Panic: Un-implemented operation in release build: %s", buf)
+    ;
 }
 
 int

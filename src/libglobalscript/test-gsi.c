@@ -15,16 +15,29 @@ gsrun(gsvalue prog)
 {
     gstypecode st;
 
-    st = GS_SLOW_EVALUATE(prog);
+    do {
+        st = GS_SLOW_EVALUATE(prog);
 
-    switch (st) {
-        case gstywhnf:
-            if (gsprint(prog) < 0)
-                exits("error");
-            return;
-        default:
-            gsfatal_unimpl(__FILE__, __LINE__, "gsrun: st = %d", st);
-    }
+        switch (st) {
+            case gstywhnf:
+                if (gsprint(prog) < 0) {
+                    ace_down();
+                    exits("error");
+                }
+                ace_down();
+                return;
+            case gstystack:
+                sleep(1);
+                break;
+            case gstyenosys:
+                print("nosys %r\n");
+                ace_down();
+                exits("unimpl");
+            default:
+                ace_down();
+                gsfatal_unimpl(__FILE__, __LINE__, "gsrun: st = %d", st);
+        }
+    } while (1);
 
     gsfatal("%s:%d: gsrun next", __FILE__, __LINE__);
 }
@@ -35,15 +48,27 @@ gsprint(gsvalue prog)
 {
     struct gs_blockdesc *block;
 
+    prog = gsremove_indirections(prog);
+
     block = BLOCK_CONTAINING(prog);
 
     if (gsiserror_block(block)) {
         struct gserror *p;
 
         p = (struct gserror *)prog;
-        print("%s %s:%d\n", "undefined", p->file->name, p->lineno);
+        switch (p->type) {
+            case gserror_undefined:
+                print("%s %s:%d\n", "undefined", p->file->name, p->lineno);
+                break;
+            case gserror_generated:
+                print("%s:%d: %s\n", p->file->name, p->lineno, p->message);
+                break;
+            default:
+                gsfatal_unimpl(__FILE__, __LINE__, "gsprint(error type = %d)", p->type);
+        }
         return -1;
     } else {
+        ace_down();
         gsfatal_unimpl(__FILE__, __LINE__, "gsprint(%s)", block->class->description);
         return -1;
     }

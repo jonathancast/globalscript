@@ -336,7 +336,11 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
     switch (directive) {
         case gscode_directive_expr:
             for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
-                if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+                if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+                    struct gsbc_item global;
+                    global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
+                    gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
+                } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
                     struct gsbc_item global;
                     global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
                     gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);

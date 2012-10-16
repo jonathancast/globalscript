@@ -80,7 +80,7 @@ gsbc_heap_size_item(struct gsbc_item item)
     if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
         return 0;
     } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
-        return sizeof(struct gsclosure) + sizeof(gsvalue);
+        return MAX(sizeof(struct gsclosure), sizeof(struct gsindirection));
     } else if (gssymeq(p->directive, gssymdatadirective, ".cast")) {
         return 0;
     } else {
@@ -181,6 +181,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
     enum {
+        phtygvars,
         phgvars,
         phbytecodes,
     } phase;
@@ -188,11 +189,16 @@ gsbc_bytecode_size_item(struct gsbc_item item)
 
     size = sizeof(struct gsbco);
 
-    phase = phgvars;
+    phase = phtygvars;
     nregs = 0;
     pseg = item.pseg;
     for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
-        if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+        if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+            if (phase > phtygvars)
+                gsfatal_bad_input(p, "Too late to add type global variables");
+            phase = phtygvars;
+            /* type erasure */
+        } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
             if (phase > phgvars)
                 gsfatal_bad_input(p, "Too late to add global variables")
             ;
@@ -208,12 +214,16 @@ gsbc_bytecode_size_item(struct gsbc_item item)
                 )
             ;
             size += sizeof(gsvalue);
+            gswarning("%s:%d: size = 0x%x", __FILE__, __LINE__, size);
             nregs++;
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
-            size += 1; /* Byte code */
-            size += 1; /* Argument */
+            size += GS_SIZE_BYTECODE(1);
+            gswarning("%s:%d: size = 0x%x", __FILE__, __LINE__, size);
             if (p->numarguments > 1)
                 gsfatal("%s:%d: Too many arguments to .enter", p->file->name, p->lineno);
+            goto done;
+        } else if (gssymeq(p->directive, gssymcodeop, ".undef")) {
+            size += GS_SIZE_BYTECODE(0);
             goto done;
         } else {
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_bytecode_size_item (%s)", p->directive->name);
@@ -221,22 +231,6 @@ gsbc_bytecode_size_item(struct gsbc_item item)
 #if 0
     next_phase:
         switch (phase) {
-            case phgvars:
-                if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
-                    if (size % sizeof(void*))
-                        gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't void*-aligned",
-                            __FILE__,
-                            __LINE__,
-                            p->file->name,
-                            p->lineno
-                        )
-                    ;
-                    size += sizeof(void*);
-                } else {
-                    phase = phbytecodes;
-                    goto next_phase;
-                }
-                break;
             case phbytecodes:
                 if (gssymeq(p->directive, gssymcodeop, ".app")) {
                     size += 1; /* Byte code */
@@ -263,7 +257,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
 done:
 
     if (size % sizeof(void*))
-        size += sizeof(void*) - size
+        size += sizeof(void*) - size % sizeof(void*)
     ;
 
     return size;
@@ -314,6 +308,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         struct gsclosure *cl;
 
         hp = (struct gsheap_item *)heap[i];
+        memset(&hp->lock, 0, sizeof(hp->lock));
         hp->file = p->file;
         hp->lineno = p->lineno;
         hp->type = gsclosure;
@@ -335,6 +330,8 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
 {
     if (gssymeq(p->directive, gssymcodedirective, ".expr")) {
         bcos[i]->tag = gsbc_expr;
+        bcos[i]->file = p->file;
+        bcos[i]->lineno = p->lineno;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "Code directive %s next", p->directive->name);
@@ -346,24 +343,31 @@ void
 gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco *pbco)
 {
     enum {
+        rttygvars,
         rtgvars,
         rtops,
     } phase;
     int i;
     gsvalue *pglobal;
-    uchar *pcode;
+    struct gsbc *pcode;
     int nregs, nglobals;
     gsinterned_string regs[MAX_NUM_REGISTERS];
 
-    phase = rtgvars;
+    phase = rttygvars;
     pcode = 0;
     pglobal = (gsvalue*)((uchar*)pbco + sizeof(struct gsbco));
     nregs = nglobals = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+        if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+            if (phase > rttygvars)
+                gsfatal_bad_input(p, "Too late to add type global variables")
+            ;
+            phase = rttygvars;
+        } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
             if (phase > rtgvars)
                 gsfatal_bad_input(p, "Too late to add global variables")
             ;
+            phase = rtgvars;
             if (nregs >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
             ;
@@ -376,7 +380,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
 
             phase = rtops;
             if (!pcode)
-                pcode = (uchar*)pglobal
+                pcode = (struct gsbc *)pglobal
             ;
             gsargcheck(p, 0, "target");
             for (i = 0; i < nregs; i++) {
@@ -387,8 +391,21 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             }
             gsfatal_bad_input(p, "Unknown register %s", p->arguments[0]->name);
         have_register: ;
-            *pcode++ = gsbc_op_enter;
-            *pcode++ = (uchar)reg;
+            pcode->file = p->file;
+            pcode->lineno = p->lineno;
+            pcode->instr = gsbc_op_enter;
+            pcode->args[0] = (uchar)reg;
+            pcode = GS_NEXT_BYTECODE(pcode, 1);
+            goto done;
+        } else if (gssymeq(p->directive, gssymcodeop, ".undef")) {
+            phase = rtops;
+            if (!pcode)
+                pcode = (struct gsbc *)pglobal
+            ;
+            pcode->file = p->file;
+            pcode->lineno = p->lineno;
+            pcode->instr = gsbc_op_undef;
+            pcode = GS_NEXT_BYTECODE(pcode, 0);
             goto done;
         } else {
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "Code op %s next", p->directive->name);

@@ -3,9 +3,9 @@
 #include <libglobalscript.h>
 
 #ifdef SHOULD_DEBUG
-static int debug = SHOULD_DEBUG;
+int gsdebug = SHOULD_DEBUG;
 #else
-static int debug = 1;
+int gsdebug = 1;
 #endif
 
 /* Based on p9p's sysfatal function */
@@ -48,7 +48,7 @@ gsassert(char *srcfile, int srcline, int success, char *err, ...)
     vseprint(buf, buf+sizeof buf, err, arg);
     va_end(arg);
 
-    if (debug) {
+    if (gsdebug) {
         fprint(2, "%s: %s:%d: %s\n", argv0, srcfile, srcline, buf);
     } else {
         fprint(2, "%s: %s\n", argv0, buf);
@@ -57,7 +57,7 @@ gsassert(char *srcfile, int srcline, int success, char *err, ...)
 }
 
 void
-gsfatal_unimpl(char *file, int lineno, char * err, ...)
+gsfatal_unimpl(char *file, int lineno, char *err, ...)
 {
     char buf[0x100];
     va_list arg;
@@ -66,9 +66,26 @@ gsfatal_unimpl(char *file, int lineno, char * err, ...)
     vseprint(buf, buf+sizeof buf, err, arg);
     va_end(arg);
 
-    if (debug)
+    if (gsdebug)
         gsfatal("%s:%d: %s next", file, lineno, buf)
     ; else
         gsfatal("Panic: Un-implemented operation in release build: %s", buf)
+    ;
+}
+
+void
+gswerrstr_unimpl(char *file, int lineno, char *err, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, err);
+    vseprint(buf, buf+sizeof buf, err, arg);
+    va_end(arg);
+
+    if (gsdebug)
+        werrstr("%s:%d: unimpl %s", file, lineno, buf)
+    ; else
+        werrstr("unimpl %s", buf)
     ;
 }

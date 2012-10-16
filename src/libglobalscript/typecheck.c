@@ -566,19 +566,41 @@ struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
     enum {
+        rttygvar,
         rtgvar,
     } regtype;
     int i;
     int nregs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
     struct gstype *regtypes[MAX_NUM_REGISTERS];
+    struct gstype *tyregs[MAX_NUM_REGISTERS];
+    struct gskind *tyregkinds[MAX_NUM_REGISTERS];
     struct gstype *calculated_type;
+    struct gskind *kind;
     struct gsbc_code_item_type *res;
 
     nregs = 0;
-    regtype = rtgvar;
+    regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+        if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+            if (regtype > rttygvar)
+                gsfatal_bad_input(p, "Too late to add global type variables")
+            ;
+            regtype = rttygvar;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers")
+            ;
+            regs[nregs] = p->label;
+            tyregs[nregs] = gssymtable_get_type(symtable, p->label);
+            if (!tyregs[nregs])
+                gsfatal_bad_input(p, "Couldn't find type global %s", p->label->name)
+            ;
+            tyregkinds[nregs] = gssymtable_get_type_expr_kind(symtable, p->label);
+            if (!tyregkinds[nregs])
+                gsfatal_unimpl_input(__FILE__, __LINE__, p, "couldn't find kind of '%s'", p->label->name)
+            ;
+            nregs++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
             if (regtype > rtgvar)
                 gsfatal_bad_input(p, "Too late to add global variables")
             ;
@@ -599,12 +621,31 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             for (i = 0; i < nregs; i++) {
                 if (regs[i] == p->arguments[0]) {
                     reg = i;
-                    goto have_reg;
+                    goto have_reg_for_enter;
                 }
             }
             gsfatal_bad_input(p, "No such register %s", p->arguments[0]->name);
-        have_reg:
+        have_reg_for_enter:
             calculated_type = regtypes[reg];
+            goto have_type;
+        } else if (gssymeq(p->directive, gssymcodeop, ".undef")) {
+            int reg = 0;
+
+            gsargcheck(p, 0, "type");
+            for (i = 0; i < nregs; i++) {
+                if (regs[i] == p->arguments[0]) {
+                    reg = i;
+                    goto have_reg_for_undef;
+                }
+            }
+            gsfatal_bad_input(p, "No such register %s", p->arguments[0]->name);
+        have_reg_for_undef:
+            calculated_type = tyregs[reg];
+            kind = tyregkinds[reg];
+            for (i = 1; i < p->numarguments; i++) {
+                gsfatal_unimpl_input(__FILE__, __LINE__, p, "arguments to .undef type");
+            }
+            gstypes_kind_check(p->file, p->lineno, kind, gskind_lifted_kind());
             goto have_type;
         } else {
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_code_expr(%s)", p->directive->name);

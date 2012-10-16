@@ -4,6 +4,7 @@
 
 struct gsrpc_queue {
     Lock lock;
+    int refcount;
     struct gsrpc_queue_link *head, **tail;
     void *nursury;
 };
@@ -26,9 +27,21 @@ gsqueue_alloc()
 
     memset(res, 0, sizeof(*res));
 
+    res->refcount = 1;
+
     res->tail = &res->head;
 
     return res;
+}
+
+void
+gsqueue_down(struct gsrpc_queue *q)
+{
+    lock(&q->lock);
+
+    q->refcount--;
+
+    unlock(&q->lock);
 }
 
 static struct gs_block_class gsrpc_descr = {
@@ -65,6 +78,10 @@ gsqueue_get_rpc(struct gsrpc_queue *q)
 
     while (!res) {
         lock(&q->lock);
+        if (!q->refcount) {
+            unlock(&q->lock);
+            return 0;
+        }
         if (q->head) {
             res = q->head->rpc;
             q->head = q->head->next;

@@ -431,7 +431,14 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
-        if (gssymeq(parsedline->directive, gssymcodeop, ".gvar")) {
+        if (gssymeq(parsedline->directive, gssymcodeop, ".tygvar")) {
+            if (*fields[0])
+                parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+            else
+                gsfatal("%s:%d: Missing label on .tygvar op", filename, *plineno);
+            if (n > 2)
+                gsfatal("%s:%s: Too many arguments to .tygvar op", filename, *plineno);
+        } else if (gssymeq(parsedline->directive, gssymcodeop, ".gvar")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymdatalable, fields[0]);
             else
@@ -457,6 +464,17 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
             if (n >= 4)
                 gsfatal("%s:%d: Un-recognized arguments to .enter; I only know the code label to enter", filename, *plineno);
+            return 0;
+        } else if (gssymeq(parsedline->directive, gssymcodeop, ".undef")) {
+            if (*fields[0])
+                gsfatal("%s:%d: Labels illegal on terminal ops");
+            else
+                parsedline->label = 0;
+            if (n < 3)
+                gsfatal("%s:%d: Missing type on .undef", filename, *plineno);
+            parsedline->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
+            for (i = 3; i < n; i++)
+                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
             return 0;
         } else {
             gsfatal("%s:%d: %s:%d: Unimplemented code op %s", __FILE__, __LINE__, filename, *plineno, fields[1]);

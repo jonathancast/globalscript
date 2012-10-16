@@ -14,11 +14,11 @@ static struct api_thread *api_add_thread(struct gsrpc_queue *, gsvalue);
 static void api_take_thread(struct api_thread *);
 static void api_release_thread(struct api_thread *);
 
-struct gs_block_class api_thread_queue_descr = {
+static struct gs_block_class api_thread_queue_descr = {
     /* evaluator = */ gsnoeval,
     /* description = */ "API Thread Queue",
 };
-void *api_thread_queue_nursury;
+static void *api_thread_queue_nursury;
 
 static struct api_thread *api_try_schedule_thread(struct api_thread *);
 

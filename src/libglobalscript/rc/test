@@ -16,6 +16,14 @@ if (./$O.test-gsi ./test-gslib ./test-gslib/undef-empty-record.ags > ./test-resu
 diff ./test-results/undef-empt-record.ags-actual ./test-results/undef-empt-record.ags-expected
 echo
 
+echo '-- undefined expressions --'
+if (./$O.test-gsi ./test-gslib ./test-gslib/undef-expr.ags > ./test-results/undef-expr.ags-actual) {
+    echo 'test-gsi scuceeded; should have failed' >[1=2]
+    exit 1
+}
+diff ./test-results/undef-expr.ags-actual ./test-results/undef-expr.ags-expected
+echo
+
 echo '-- undefined values of abstract types --'
 if (./$O.test-gsi ./test-gslib ./test-gslib/undef-abs-type.ags > ./test-results/undef-abs-type.ags-actual) {
     echo 'test-gsi succeeded; should have failed' >[1=2]
