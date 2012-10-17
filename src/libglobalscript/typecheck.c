@@ -1,8 +1,9 @@
-/* §source.file{String-Code Type Checker} */
+/* §source.file String-Code Type Checker */
 
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
+
 #include "gsinputfile.h"
 #include "gstypealloc.h"
 #include "gstypecheck.h"
@@ -829,6 +830,8 @@ static
 char *
 gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
 {
+    int i;
+
     switch (pty->node) {
         case gstype_indirection: {
             struct gstype_indirection *indir;
@@ -839,8 +842,30 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             res = gstypes_eprint_type(res, eob, indir->referent);
             return res;
         }
+        case gstype_lift: {
+            struct gstype_lift *lift;
+
+            lift = (struct gstype_lift *)pty;
+
+            res = seprint(res, eob, "⌊");
+            res = gstypes_eprint_type(res, eob, lift->arg);
+            res = seprint(res, eob, "⌋");
+            return res;
+        }
+        case gstype_sum: {
+            struct gstype_sum *sum;
+
+            sum = (struct gstype_sum *)pty;
+
+            res = seprint(res, eob, "\"Σ〈");
+            for (i = 0; i < sum->numconstrs; i++) {
+                res = seprint(res, eob, "%s:%d: print constructors next", __FILE__, __LINE__);
+            }
+            res = seprint(res, eob, "〉");
+            return res;
+        }
         default:
-            res = seprint(res, eob, "unknown type node %d", pty->node);
+            res = seprint(res, eob, "%s:%d: unknown type node %d", __FILE__, __LINE__, pty->node);
             return res;
     }
 }
