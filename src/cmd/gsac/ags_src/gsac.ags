@@ -3,9 +3,13 @@
 	.data
 
 	.cast	_ep.in	_real.entry
-_real.entry	.undefined	_epbodytype
+_real.entry	.closure	_real.entry.c
 
 	.code
+
+_real.entry.c	.expr
+_epbodytype	.tygvar
+	.undef	_epbodytype
 
 	.type
 
@@ -16,7 +20,7 @@ _empty.record	.tygvar
 	.tyref	ibio.m	rune.t	rune.t	_empty.record
 
 _epbodytype	.tyexpr
-ibio.prim.m	.tygvar
+rune.t	.tygvar
 _empty.record	.tygvar
 	.tylift
 	.tyref	ibio.prim.m	_empty.record
