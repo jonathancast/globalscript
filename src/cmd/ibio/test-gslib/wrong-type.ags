@@ -1,0 +1,11 @@
+	.document
+
+	.data
+
+	.undefined	_eptype
+
+	.type
+
+_eptype	.tyexpr
+	.tylift
+	.tysum

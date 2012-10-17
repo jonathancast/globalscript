@@ -11,3 +11,15 @@ if (! grep -s './test-gslib/undef-api.ags:5: undefined' ./test-results/undef-api
     exit 1
 }
 echo
+
+echo '-- entry points that don''t use the newtype wrapper --'
+if (./$O.ibio ./test-gslib ./test-gslib/wrong-type.ags >[2] ./test-results/wrong-type.ags-actual) {
+    echo 'ibio succeeded; should have failed' >[1=2]
+    exit 1
+}
+if (! grep -s './test-gslib/wrong-type.ags: Bad type' ./test-results/wrong-type.ags-actual) {
+    echo 'Couldn''t find expected error message in output anywhere' >[1=2]
+    cat ./test-results/wrong-type.ags-actual >[1=2]
+    exit 1
+}
+echo
