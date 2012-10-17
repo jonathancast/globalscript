@@ -6,6 +6,7 @@
 #include "ace.h"
 
 gsvalue gsentrypoint;
+struct gstype *gsentrytype;
 
 struct ace_thread_pool_args {
 };

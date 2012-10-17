@@ -65,7 +65,7 @@ set_buf:
     gsadddir(buf);
 }
 
-static void gsloadfile(gsparsedfile *, struct gsfile_symtable *, gsvalue *);
+static void gsloadfile(gsparsedfile *, struct gsfile_symtable *, gsvalue *, struct gstype **);
 
 struct gsfile_symtable *gscurrent_symtable;
 
@@ -90,7 +90,7 @@ gsadddir(char *filename)
     gsaddir_recursive(filename, "", symtable, &pend);
 
     for (pfile = file_list; pfile; pfile = pfile->next) {
-        gsloadfile(pfile->file, symtable, 0);
+        gsloadfile(pfile->file, symtable, 0, 0);
     }
 
     gscurrent_symtable = symtable;
@@ -186,7 +186,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
 }
 
 gsfiletype
-gsaddfile(char *filename, gsvalue *pentry)
+gsaddfile(char *filename, gsvalue *pentry, struct gstype **ptype)
 {
     gsparsedfile *parsedfile;
     struct gsfile_symtable *symtable;
@@ -195,7 +195,7 @@ gsaddfile(char *filename, gsvalue *pentry)
 
     parsedfile = gsreadfile(filename, "", 0, 0, symtable);
 
-    gsloadfile(parsedfile, symtable, pentry);
+    gsloadfile(parsedfile, symtable, pentry, ptype);
 
     return parsedfile->type;
 }
@@ -1415,24 +1415,26 @@ gsac_tokenize(char *line, char **fields, long maxfields)
 
 /* Loader */
 
-static void gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_scc *pscc, gsvalue *pentry);
+static void gsload_scc(gsparsedfile *, struct gsfile_symtable *, struct gsbc_scc *, gsvalue *, struct gstype **);
 
 void
-gsloadfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, gsvalue *pentry)
+gsloadfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, gsvalue *pentry, struct gstype **ptype)
 {
     struct gsbc_scc *pscc, *p;
+    int contains_entry;
 
     switch (parsedfile->type) {
         case gsfileprefix:
             pscc = gsbc_topsortfile(parsedfile, symtable);
             for (p = pscc; p; p = p->next_scc) {
-                gsload_scc(parsedfile, symtable, p, 0);
+                gsload_scc(parsedfile, symtable, p, 0, 0);
             }
             return;
         case gsfiledocument:
             pscc = gsbc_topsortfile(parsedfile, symtable);
             for (p = pscc; p; p = p->next_scc) {
-                gsload_scc(parsedfile, symtable, p, p->next_scc ? 0 : pentry);
+                contains_entry = !p->next_scc;
+                gsload_scc(parsedfile, symtable, p, contains_entry ? pentry : 0, contains_entry ? ptype : 0);
             }
             return;
         default:
@@ -1442,7 +1444,7 @@ gsloadfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, gsvalue *
 
 static
 void
-gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_scc *pscc, gsvalue *pentry)
+gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_scc *pscc, gsvalue *pentry, struct gstype **ptype)
 {
     struct gsbc_scc *p;
     struct gsbc_item items[MAX_ITEMS_PER_SCC];
@@ -1469,8 +1471,8 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
     gstypes_process_type_declarations(symtable, items, kinds, n);
     gstypes_compile_types(symtable, items, types, defns, n);
     gstypes_kind_check_scc(symtable, items, types, kinds, n);
-    gstypes_process_type_signatures(symtable, items, n);
-    gstypes_type_check_scc(symtable, items, types, kinds, n);
+    gstypes_process_type_signatures(symtable, items, ptype, n);
+    gstypes_type_check_scc(symtable, items, types, kinds, ptype, n);
 
     /* §section{Byte-compilation} */
 
@@ -1492,6 +1494,11 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
                     *pentry = indir[i];
                 else
                     gsfatal_unimpl(__FILE__, __LINE__, "%s: Entry point: couldn't find in any SCC");
+                if (items[i].v->label) {
+                    gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "set *ptype");
+                } else
+                    /* Don't have to save §c{*ptype} in this case, because we handle that while doing the initial type-checking */
+                ;
                 goto have_entry;
             }
         }

@@ -12,7 +12,7 @@ typedef enum {
     gsfileunknown = 0x40,
 } gsfiletype;
 
-gsfiletype gsaddfile(char *filename, gsvalue *pentry);
+gsfiletype gsaddfile(char *filename, gsvalue *pentry, struct gstype **);
 
 gsinterned_string gsintern_string(gssymboltype, char*);
 

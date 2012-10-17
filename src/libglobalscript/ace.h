@@ -3,6 +3,7 @@ int ace_init(void);
 gstypecode ace_start_evaluation(gsvalue);
 
 extern gsvalue gsentrypoint;
+extern struct gstype *gsentrytype;
 
 #define NUM_ACE_THREADS 0x100
 

@@ -34,7 +34,7 @@ gsmain(int argc, char **argv)
             if (gsisdir(cur_arg)) {
                 gsadddir(cur_arg);
             } else {
-                gsfiletype ft = gsaddfile(cur_arg, &gsentrypoint);
+                gsfiletype ft = gsaddfile(cur_arg, &gsentrypoint, &gsentrytype);
                 switch (ft) {
                     case gsfiledocument:
                         goto have_document;
@@ -56,6 +56,6 @@ have_document:
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r");
     GS_SLOW_EVALUATE(gsentrypoint);
-    gsrun(gsentrypoint);
+    gsrun(gsentrypoint, gsentrytype);
     exits("");
 }

@@ -2,7 +2,7 @@
 
 echo '-- undefined entry points --'
 if (./$O.ibio ./test-gslib ./test-gslib/undef-api.ags >[2] ./test-results/undef-api.ags-actual) {
-    echo 'test-gsexec succeeded; should have failed' >[1=2]
+    echo 'ibio succeeded; should have failed' >[1=2]
     exit 1
 }
 if (! grep -s './test-gslib/undef-api.ags:5: undefined' ./test-results/undef-api.ags-actual) {

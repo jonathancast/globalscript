@@ -22,7 +22,7 @@ static struct api_process_rpc_table exec_table = {
 };
 
 void
-gsrun(gsvalue prog)
+gsrun(gsvalue prog, struct gstype *type)
 {
     apisetupmainthread(&exec_table, prog);
 }

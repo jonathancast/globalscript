@@ -364,17 +364,17 @@ gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type)
     }
 }
 
-static void gstypes_process_data_type_signature(struct gsfile_symtable *, struct gsbc_item);
+static void gstypes_process_data_type_signature(struct gsfile_symtable *, struct gsbc_item, struct gstype **);
 
 void
-gstypes_process_type_signatures(struct gsfile_symtable *symtable, struct gsbc_item *items, int n)
+gstypes_process_type_signatures(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **pentrytype, int n)
 {
     int i;
 
     for (i = 0; i < n; i++) {
         switch (items[i].type) {
             case gssymdatalable:
-                gstypes_process_data_type_signature(symtable, items[i]);
+                gstypes_process_data_type_signature(symtable, items[i], pentrytype);
                 break;
             case gssymcodelable:
             case gssymtypelable:
@@ -388,7 +388,7 @@ gstypes_process_type_signatures(struct gsfile_symtable *symtable, struct gsbc_it
 
 static
 void
-gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsbc_item item)
+gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsbc_item item, struct gstype **pentrytype)
 {
     struct gsparsedline *pdata;
 
@@ -404,6 +404,8 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
         ;
         if (pdata->label)
             gssymtable_set_data_type(symtable, pdata->label, type)
+        ; else if (pentrytype)
+            *pentrytype = type
         ;
     } else if (gssymeq(pdata->directive, gssymdatadirective, ".closure")) {
         struct gstype *type;
@@ -417,6 +419,8 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
         ;
         if (pdata->label)
             gssymtable_set_data_type(symtable, pdata->label, type)
+        ; else if (pentrytype)
+            *pentrytype = type
         ;
     } else if (gssymeq(pdata->directive, gssymdatadirective, ".cast")) {
         return;
@@ -425,31 +429,31 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
     }
 }
 
-static void gstypes_type_check_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
+static void gstypes_type_check_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, struct gstype **, int, int);
 
 void
-gstypes_type_check_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n)
+gstypes_type_check_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, struct gstype **pentrytype, int n)
 {
     int i;
 
     for (i = 0; i < n; i++)
-        gstypes_type_check_item(symtable, items, types, kinds, n, i)
+        gstypes_type_check_item(symtable, items, types, kinds, pentrytype, n, i)
     ;
 }
 
-static void gstypes_type_check_data_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
+static void gstypes_type_check_data_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, struct gstype **, int, int);
 static void gstypes_type_check_code_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
 static void gstypes_type_check_coercion_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
 
 static
 void
-gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
+gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, struct gstype **pentrytype, int n, int i)
 {
     switch (items[i].type) {
         case gssymtypelable:
             return;
         case gssymdatalable:
-            gstypes_type_check_data_item(symtable, items, types, kinds, n, i);
+            gstypes_type_check_data_item(symtable, items, types, kinds, pentrytype, n, i);
             return;
         case gssymcodelable:
             gstypes_type_check_code_item(symtable, items, types, kinds, n, i);
@@ -471,7 +475,7 @@ struct gsbc_coercion_type {
 
 static
 void
-gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
+gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, struct gstype **pentrytype, int n, int i)
 {
     struct gsparsedline *pdata;
 
@@ -512,7 +516,11 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             gstypes_check_type(pdata, code_type->result_type, declared_type);
             gsbc_typecheck_check_boxed(pdata, declared_type);
         } else {
-            gssymtable_set_data_type(symtable, pdata->label, code_type->result_type);
+            if (pdata->label)
+                gssymtable_set_data_type(symtable, pdata->label, code_type->result_type)
+            ; else if (pentrytype)
+                *pentrytype = code_type->result_type
+            ;
             gsbc_typecheck_check_boxed(pdata, code_type->result_type);
         }
     } else if (gssymeq(pdata->directive, gssymdatadirective, ".cast")) {
@@ -529,7 +537,11 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
         gstypes_check_type(pdata, src_type, coercion_type->source);
 
-        gssymtable_set_data_type(symtable, pdata->label, coercion_type->dest);
+        if (pdata->label)
+            gssymtable_set_data_type(symtable, pdata->label, coercion_type->dest)
+        ; else if (pentrytype)
+            *pentrytype = coercion_type->dest
+        ;
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "gstypes_type_check_data_item(%s)", pdata->directive->name);
     }
