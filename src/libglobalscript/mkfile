@@ -19,6 +19,7 @@ OFILES=\
 	primset.$O \
 	typealloc.$O \
 	typecheck.$O \
+	clienttypecheck.$O \
 	bctopsort.$O \
 	gsrpc.$O \
 	$SYSTEM/lock.$O \
@@ -59,6 +60,7 @@ bytecompile.$O: $GLOBALSCRIPT/include/libibio.h gsinputfile.h gsbytecompile.h gs
 primset.$O: gsinputfile.h gssetup.h
 typealloc.$O: gsinputfile.h gstypealloc.h
 typecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
+clienttypecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
 bctopsort.$O: gsinputfile.h gstopsort.h
 api.$O: api.h
 

@@ -108,6 +108,14 @@ typedef struct gsstring_value {
 
 /* §section Global Script Program Calculus */
 
+/* §subsection Client-level Type-checking */
+
+struct gstype;
+
+int gstype_expect_app(struct gstype *, struct gstype **, struct gstype **);
+
+/* §subsection Run-time Stuff */
+
 typedef uintptr gsvalue;
 typedef uintptr gscode;
 
@@ -124,8 +132,6 @@ typedef enum {
     gstyeoothreads = 66,
     gstyenosys = 67,
 } gstypecode;
-
-struct gstype;
 
 /* Define this yourself; this is your program's entry point */
 extern void gsrun(gsvalue, struct gstype *);

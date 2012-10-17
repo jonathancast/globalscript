@@ -116,6 +116,8 @@ struct gstype_coerce_definition {
 void gsfatal_unimpl_type(char *, int, struct gstype *, char *, ...);
 void gsfatal_bad_type(gsinterned_string, int, struct gstype *, char *, ...);
 
+char *gstypes_eprint_type(char *, char *, struct gstype *);
+
 int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 
 struct gstype *gstypes_compile_indir(gsinterned_string, int, struct gstype *);

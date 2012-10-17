@@ -726,10 +726,6 @@ gsbc_typecheck_find_register(struct gsparsedline *p, gsinterned_string *regs, in
     return -1;
 }
 
-static struct gstype *gstypes_clear_indirections(struct gstype *);
-
-static char *gstypes_eprint_type(char *, char *, struct gstype *);
-
 static
 void
 gstypes_check_type(struct gsparsedline *p, struct gstype *pactual, struct gstype *pexpected)
@@ -811,7 +807,6 @@ gstypes_check_type(struct gsparsedline *p, struct gstype *pactual, struct gstype
     }
 }
 
-static
 struct gstype *
 gstypes_clear_indirections(struct gstype *pty)
 {
@@ -826,7 +821,6 @@ gstypes_clear_indirections(struct gstype *pty)
     }
 }
 
-static
 char *
 gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
 {
