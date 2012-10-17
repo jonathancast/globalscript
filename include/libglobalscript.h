@@ -134,7 +134,7 @@ typedef enum {
 } gstypecode;
 
 /* Define this yourself; this is your program's entry point */
-extern void gsrun(gsvalue, struct gstype *);
+extern void gsrun(char *, gsvalue, struct gstype *);
 
 #define GS_MAX_PTR 0x80000000UL
     /* NOTE: 32-bit specific ↑↑↑.  Thought: would §ccode{1UL << (sizeof(gsvalue) * 8 - 1)} work? */

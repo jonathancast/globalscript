@@ -12,9 +12,13 @@
 void
 gsmain(int argc, char **argv)
 {
+    int is_option;
+    char *cur_arg;
+    char *docfilename;
+
     argv0 = *argv;
-    int is_option = 0;
-    char *cur_arg = *argv;
+    is_option = 0;
+    cur_arg = *argv;
     gsassert(
         __FILE__, __LINE__,
         sizeof(struct gs_blockdesc) == sizeof(gsvalue),
@@ -37,6 +41,7 @@ gsmain(int argc, char **argv)
                 gsfiletype ft = gsaddfile(cur_arg, &gsentrypoint, &gsentrytype);
                 switch (ft) {
                     case gsfiledocument:
+                        docfilename = cur_arg;
                         goto have_document;
                     case gsfileerror:
                         gswarning("%s: non-fatal error when reading file", cur_arg);
@@ -49,6 +54,7 @@ gsmain(int argc, char **argv)
         }
     }
     gsfatal("gsmain at end of command-line arguments next");
+    docfilename = 0;
     exits("no-document");
 have_document:
     if (!gsentrypoint)
@@ -56,6 +62,6 @@ have_document:
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r");
     GS_SLOW_EVALUATE(gsentrypoint);
-    gsrun(gsentrypoint, gsentrytype);
+    gsrun(docfilename, gsentrypoint, gsentrytype);
     exits("");
 }
