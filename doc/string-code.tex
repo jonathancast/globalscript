@@ -14,6 +14,9 @@
 \newcommand\unimpl[1]{\footnote{\textbf{Unimplemented: }#1}}
 \newcommand\agsonly[1]{\footnote{\textbf{\texttt{.ags}-only: }#1}}
 
+\newcommand\abstype{\hskwd{abstype}}
+\newcommand\primtype{\hskwd{primtype}}
+
 \begin{document}
 
 \maketitle
@@ -60,5 +63,38 @@ For various reasons, string code syntax flattens both prefix and document files 
         additional fields may be required or permitted depending on the directive or op;
         they will be referred to as the \emph{arguments}.
 \end{itemize}
+
+\section{Types}
+
+Free variables are handled by having type $\lambda$ nodes, and allowing
+\begin{verbatim}
+tv	.tylet	tf	x	y	z
+\end{verbatim}
+in type items, with arguments implemented by doing $\beta$-reduction directly on type trees.
+
+So we need to `apply' two kinds of things: \<\abstype\>s/\<\primtype\>s, and type functions.
+These are different things.
+No binary application at the type-level.
+\begin{verbatim}
+x	.tylet	tau	alpha	beta	gamma	# Apply to expression
+	.tyref	tau	alpha	beta	gamma	# Apply to prim/abs
+\end{verbatim}
+In certain kinds of type declarations, the second kind of application is also permitted:
+\begin{verbatim}
+x	.fv	tau	alpha	beta	gamma
+x	.arg	tau	alpha	beta	gamma
+\end{verbatim}
+if \verb+tau+ is an abstract or primitive type, but
+\begin{verbatim}
+t	.tylet	tau	alpha	beta	gamma
+x	.fv	t
+x	.arg	t
+\end{verbatim}
+if \verb+tau+ is a type expression.
+
+In both cases, the argument is declared in the type item using \verb+.tylambda+:
+\begin{verbatim}
+t	.tylambda	*
+\end{verbatim}
 
 \end{document}
