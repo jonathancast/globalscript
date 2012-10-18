@@ -30,7 +30,20 @@ gsrun(char *script, gsvalue prog, struct gstype *ty)
     struct gstype *tyw;
 
     tyw = ty;
-    if (gstype_expect_app(ty, &tyw, &result) < 0) {
+    if (gstype_expect_app(tyw, &tyw, &result) < 0) {
+        ace_down();
+        gsfatal("%s: Bad type: %r", script);
+    }
+    if (gstype_expect_app(tyw, &tyw, &output) < 0) {
+        ace_down();
+        gsfatal("%s: Bad type: %r", script);
+    }
+    if (gstype_expect_app(tyw, &tyw, &input) < 0) {
+        ace_down();
+        gsfatal("%s: Bad type: %r", script);
+    }
+    monad = tyw;
+    if (gstype_expect_abstract(monad, "ibio.m") < 0) {
         ace_down();
         gsfatal("%s: Bad type: %r", script);
     }

@@ -7,5 +7,18 @@
 	.type
 
 _eptype	.tyexpr
+_not.ibio.m	.tygvar
+rune.t	.tygvar
+_empty.record	.tygvar
+	.tyref	_not.ibio.m	rune.t	rune.t	_empty.record
+
+_not.ibio.m	.tyabstract	**^*^*^
+α	.tylambda	*
+β	.tylambda *
+γ	.tylambda *
 	.tylift
 	.tysum
+
+_empty.record	.tyexpr
+	.tylift
+	.typroduct

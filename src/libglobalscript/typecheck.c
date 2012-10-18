@@ -200,10 +200,11 @@ gstypes_calculate_kind(struct gstype *type)
             argkind = gstypes_calculate_kind(app->arg);
 
             switch (funkind->node) {
-                case gskind_exponential: {
+                case gskind_exponential:
                     gstypes_kind_check(type->file, type->lineno, argkind, funkind->args[1]);
                     return funkind->args[0];
-                }
+                case gskind_lifted:
+                    gsfatal_bad_type(type->file, type->lineno, type, "Wrong kind: Expected ^, got *");
                 default:
                     gsfatal_unimpl_type(__FILE__, __LINE__, type, "'function' kind (node = %d)", funkind->node);
             }

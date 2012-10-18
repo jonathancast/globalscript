@@ -112,6 +112,7 @@ typedef struct gsstring_value {
 
 struct gstype;
 
+int gstype_expect_abstract(struct gstype *, char *);
 int gstype_expect_app(struct gstype *, struct gstype **, struct gstype **);
 
 /* §subsection Run-time Stuff */
