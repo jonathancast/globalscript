@@ -727,13 +727,15 @@ static
 void
 gstypes_type_check_type_fail(struct gsparsedline *p, struct gstype *pactual, struct gstype *pexpected)
 {
-    if (gstypes_type_check(p->pos, pactual, pexpected) < 0)
-        gsfatal("%r")
+    char err[0x100];
+
+    if (gstypes_type_check(p->pos, pactual, pexpected, err, err + sizeof(err)) < 0)
+        gsfatal("%s", err)
     ;
 }
 
 int
-gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
+gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexpected, char *err, char *eerr)
 {
     char actual_buf[0x100];
     char expected_buf[0x100];
@@ -742,16 +744,16 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
     pexpected = gstypes_clear_indirections(pexpected);
     
     if (gstypes_eprint_type(actual_buf, actual_buf + sizeof(actual_buf), pactual) >= actual_buf + sizeof(actual_buf)) {
-        werrstr("%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, pos.file->name, pos.lineno, pactual->file->name, pactual->lineno);
+        seprint(err, eerr, "%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, pos.file->name, pos.lineno, pactual->file->name, pactual->lineno);
         return -1;
     }
     if (gstypes_eprint_type(expected_buf, expected_buf + sizeof(expected_buf), pexpected) >= actual_buf + sizeof(actual_buf)) {
-        werrstr("%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, pos.file->name, pos.lineno, pactual->file->name, pactual->lineno);
+        seprint(err, eerr, "%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, pos.file->name, pos.lineno, pactual->file->name, pactual->lineno);
         return -1;
     }
 
     if (pactual->node != pexpected->node) {
-        werrstr("%s:%d: I don't think %s (%s:%d) is %s (%s:%d)",
+        seprint(err, eerr, "%s:%d: I don't think %s (%s:%d) is %s (%s:%d)",
             pos.file->name, pos.lineno,
             actual_buf, pactual->file->name, pactual->lineno, 
             expected_buf, pexpected->file->name, pexpected->lineno
@@ -767,11 +769,11 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             pexpected_prim = (struct gstype_prim *)pexpected;
 
             if (pactual_prim->primset != pexpected_prim->primset) {
-                werrstr("%s:%d: I don't think primset %s is the same as primset %s", pos.file->name, pos.lineno, pactual_prim->primset->name, pexpected_prim->primset->name);
+                seprint(err, eerr, "%s:%d: I don't think primset %s is the same as primset %s", pos.file->name, pos.lineno, pactual_prim->primset->name, pexpected_prim->primset->name);
                 return -1;
             }
             if (pactual_prim->name != pexpected_prim->name) {
-                werrstr("%s:%d: I don't think prim %s is the same as prim %s", pos.file->name, pos.lineno, pactual_prim->name->name, pexpected_prim->name->name);
+                seprint(err, eerr, "%s:%d: I don't think prim %s is the same as prim %s", pos.file->name, pos.lineno, pactual_prim->name->name, pexpected_prim->name->name);
                 return -1;
             }
             return 0;
@@ -783,7 +785,7 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             pexpected_abstract = (struct gstype_abstract *)pexpected;
 
             if (pactual_abstract->name != pexpected_abstract->name) {
-                werrstr("%s:%d: I don't think abstype %s is the same as abstype %s", pos.file->name, pos.lineno, pactual_abstract->name->name, pexpected_abstract->name->name);
+                seprint(err, eerr, "%s:%d: I don't think abstype %s is the same as abstype %s", pos.file->name, pos.lineno, pactual_abstract->name->name, pexpected_abstract->name->name);
                 return -1;
             }
             return 0;
@@ -794,7 +796,7 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             pactual_lift = (struct gstype_lift *)pactual;
             pexpected_lift = (struct gstype_lift *)pexpected;
 
-            return gstypes_type_check(pos, pactual_lift->arg, pexpected_lift->arg);
+            return gstypes_type_check(pos, pactual_lift->arg, pexpected_lift->arg, err, eerr);
         }
         case gstype_app: {
             struct gstype_app *pactual_app, *pexpected_app;
@@ -802,9 +804,9 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             pactual_app = (struct gstype_app *)pactual;
             pexpected_app = (struct gstype_app *)pexpected;
 
-            if (gstypes_type_check(pos, pactual_app->fun, pexpected_app->fun) < 0)
+            if (gstypes_type_check(pos, pactual_app->fun, pexpected_app->fun, err, eerr) < 0)
                 return -1;
-            if (gstypes_type_check(pos, pactual_app->arg, pexpected_app->arg) < 0)
+            if (gstypes_type_check(pos, pactual_app->arg, pexpected_app->arg, err, eerr) < 0)
                 return -1;
             return 0;
         }
@@ -815,11 +817,11 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             pexpected_sum = (struct gstype_sum *)pexpected;
 
             if (pactual_sum->numconstrs != pexpected_sum->numconstrs) {
-                werrstr("%s:%d: I don't think %s is the same as %s; they have diferent numbers of constrs", pos.file->name, pos.lineno, actual_buf, expected_buf);
+                seprint(err, eerr, "%s:%d: I don't think %s is the same as %s; they have diferent numbers of constrs", pos.file->name, pos.lineno, actual_buf, expected_buf);
                 return -1;
             }
             if (pexpected_sum->numconstrs > 0) {
-                gswerrstr_unimpl(__FILE__, __LINE__, "%s:%d: %s:%d: gstypes_check_type(check constrs)", pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
+                seprint(err, eerr, "%s:%d: %s:%d: %s:%d: gstypes_check_type(check constrs)", __FILE__, __LINE__, pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
                 return -1;
             }
             return 0;
@@ -831,17 +833,17 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             pexpected_product = (struct gstype_product *)pexpected;
 
             if (pactual_product->numfields != pexpected_product->numfields) {
-                werrstr("%s:%d: I don't think %s is the same as %s; they have diferent numbers of fields", pos.file->name, pos.lineno, actual_buf, expected_buf);
+                seprint(err, eerr, "%s:%d: I don't think %s is the same as %s; they have diferent numbers of fields", pos.file->name, pos.lineno, actual_buf, expected_buf);
                 return -1;
             }
             if (pexpected_product->numfields > 0) {
-                gswerrstr_unimpl(__FILE__, __LINE__, "%s:%d: %s:%d: gstypes_check_type(check fields)", pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
+                seprint(err, eerr, "%s:%d: %s:%d: %s:%d: gstypes_check_type(check fields)", __FILE__, __LINE__, pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
                 return -1;
             }
             return 0;
         }
         default:
-            gswerrstr_unimpl(__FILE__, __LINE__, "gstypes_check_type(node = %d) %s:%d: %s:%d:", pexpected->node, pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
+            seprint(err, eerr, "gstypes_check_type(node = %d) %s:%d: %s:%d:", __FILE__, __LINE__, pexpected->node, pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
             return -1;
     }
 }

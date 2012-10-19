@@ -9,7 +9,7 @@
 #include "gstypecheck.h"
 
 gsvalue
-gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, struct gsfile_symtable *symtable, char *coercion_name, ...)
+gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, char *err, char *eerr, struct gsfile_symtable *symtable, char *coercion_name, ...)
 {
     struct gsbc_coercion_type *ct;
     va_list args;
@@ -35,7 +35,7 @@ gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, struct gsfile_symtab
 
     pos.file = ty->file;
     pos.lineno = ty->lineno;
-    if (gstypes_type_check(pos, ty, source) < 0)
+    if (gstypes_type_check(pos, ty, source, err, eerr) < 0)
         return 0
     ;
 

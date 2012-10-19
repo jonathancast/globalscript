@@ -28,6 +28,7 @@ gsrun(char *script, struct gsfile_symtable *symtable, gsvalue prog, struct gstyp
 {
     struct gstype *monad, *input, *output, *result;
     struct gstype *tyw;
+    char err[0x100];
 
     tyw = ty;
     if (
@@ -41,9 +42,9 @@ gsrun(char *script, struct gsfile_symtable *symtable, gsvalue prog, struct gstyp
         gsfatal("%s: Bad type: %r", script);
     }
 
-    if (!(prog = gscoerce(prog, ty, &tyw, symtable, "ibio.out", input, output, result, 0))) {
+    if (!(prog = gscoerce(prog, ty, &tyw, err, err + sizeof(err), symtable, "ibio.out", input, output, result, 0))) {
         ace_down();
-        gsfatal("%s: Couldn't cast down to primitive level: %r", script);
+        gsfatal("%s: Couldn't cast down to primitive level: %s", script, err);
     }
 
     apisetupmainthread(&exec_table, prog);
