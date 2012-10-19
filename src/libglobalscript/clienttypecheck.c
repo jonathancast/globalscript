@@ -38,14 +38,14 @@ gstype_expect_abstract(struct gstype *ty, char *name)
 }
 
 int
-gstype_expect_app(struct gstype *ty, struct gstype **tyfun, struct gstype **tyarg)
+gstype_expect_app(struct gstype *ty, struct gstype **tyfun, struct gstype **tyarg, char *err, char *eerr)
 {
     char ty_buf[0x100];
 
     ty = gstypes_clear_indirections(ty);
 
     if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
-        werrstr("%s:%d: buffer overflow printing type %s:%d", __FILE__, __LINE__, ty->file->name, ty->lineno);
+        seprint(err, eerr, "%s:%d: buffer overflow printing type %s:%d", __FILE__, __LINE__, ty->file->name, ty->lineno);
         return -1;
     }
 
@@ -58,7 +58,7 @@ gstype_expect_app(struct gstype *ty, struct gstype **tyfun, struct gstype **tyar
         *tyarg = app->arg;
         return 0;
     } else {
-        werrstr("I don't think %s is an application", ty_buf);
+        seprint(err, eerr, "I don't think %s is an application", ty_buf);
         return -1;
     }
 }
