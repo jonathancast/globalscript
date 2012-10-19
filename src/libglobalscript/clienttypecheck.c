@@ -9,14 +9,14 @@
 #include "gstypecheck.h"
 
 int
-gstype_expect_abstract(struct gstype *ty, char *name)
+gstype_expect_abstract(struct gstype *ty, char *name, char *err, char *eerr)
 {
     char ty_buf[0x100];
 
     ty = gstypes_clear_indirections(ty);
 
     if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
-        werrstr("%s:%d: buffer overflow printing type %s:%d", __FILE__, __LINE__, ty->file->name, ty->lineno);
+        seprint(err, eerr, "%s:%d: buffer overflow printing type %s:%d", __FILE__, __LINE__, ty->file->name, ty->lineno);
         return -1;
     }
 
@@ -26,13 +26,13 @@ gstype_expect_abstract(struct gstype *ty, char *name)
         abstract = (struct gstype_abstract *)ty;
 
         if (strcmp(abstract->name->name, name)) {
-            werrstr("I don't think %s is %s", abstract->name->name, name);
+            seprint(err, eerr, "I don't think %s is %s", abstract->name->name, name);
             return -1;
         } else {
             return 0;
         }
     } else {
-        werrstr("I don't think %s is an abstract type", ty_buf);
+        seprint(err, eerr, "I don't think %s is an abstract type", ty_buf);
         return -1;
     }
 }

@@ -35,16 +35,11 @@ gsrun(char *script, struct gsfile_symtable *symtable, gsvalue prog, struct gstyp
         gstype_expect_app(tyw, &tyw, &result, err, err + sizeof(err)) < 0
         || gstype_expect_app(tyw, &tyw, &output, err, err + sizeof(err)) < 0
         || gstype_expect_app(tyw, &tyw, &input, err, err + sizeof(err)) < 0
+        || !(monad = tyw)
+        || gstype_expect_abstract(monad, "ibio.m", err, err + sizeof(err)) < 0
     ) {
         ace_down();
         gsfatal("%s: Bad type: %s", script, err);
-    }
-    if (
-        !(monad = tyw)
-        || gstype_expect_abstract(monad, "ibio.m") < 0
-    ) {
-        ace_down();
-        gsfatal("%s: Bad type: %r", script);
     }
 
     if (!(prog = gscoerce(prog, ty, &tyw, err, err + sizeof(err), symtable, "ibio.out", input, output, result, 0))) {

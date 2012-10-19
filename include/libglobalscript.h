@@ -118,7 +118,7 @@ struct gspos {
 
 struct gstype;
 
-int gstype_expect_abstract(struct gstype *, char *);
+int gstype_expect_abstract(struct gstype *, char *, char *, char *);
 int gstype_expect_app(struct gstype *, struct gstype **, struct gstype **, char *, char *);
 
 /* §subsection Client-level Expression Manipulation */
