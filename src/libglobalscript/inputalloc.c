@@ -122,8 +122,8 @@ gsparsed_file_addline(char *filename, gsparsedfile *parsedfile, int lineno, ulon
     size = sizeof(*res) + sizeof(gsinterned_string) * (numfields - 2);
     res = gsparsed_file_extend(parsedfile, size);
 
-    res->file = parsedfile->name;
-    res->lineno = lineno;
+    res->pos.file = parsedfile->name;
+    res->pos.lineno = lineno;
     res->numarguments = numfields - 2;
 
     return res;
@@ -160,7 +160,7 @@ gsargcheck(struct gsparsedline *inpline, ulong argnum, char *fmt, ...)
     vseprint(buf, buf+sizeof buf, fmt, arg);
     va_end(arg);
 
-    gsfatal("%s:%d: Missing argument %s to %s", inpline->file->name, inpline->lineno, buf, inpline->directive->name);
+    gsfatal("%s:%d: Missing argument %s to %s", inpline->pos.file->name, inpline->pos.lineno, buf, inpline->directive->name);
 }
 
 void
@@ -173,7 +173,7 @@ gsfatal_unimpl_input(char *file, int lineno, struct gsparsedline *inpline, char 
     vseprint(buf, buf+sizeof buf, fmt, arg);
     va_end(arg);
 
-    gsfatal("%s:%d: %s:%d: %s next", file, lineno, inpline->file->name, inpline->lineno, buf);
+    gsfatal("%s:%d: %s:%d: %s next", file, lineno, inpline->pos.file->name, inpline->pos.lineno, buf);
 }
 
 void
@@ -199,5 +199,5 @@ gsfatal_bad_input(struct gsparsedline *inpline, char *fmt, ...)
     vseprint(buf, buf+sizeof buf, fmt, arg);
     va_end(arg);
 
-    gsfatal("%s:%d: %s", inpline->file->name, inpline->lineno, buf);
+    gsfatal("%s:%d: %s", inpline->pos.file->name, inpline->pos.lineno, buf);
 }

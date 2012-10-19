@@ -44,7 +44,7 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
                     } else {
-                        gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(%s) next", __FILE__, __LINE__, ptype->file->name, ptype->lineno, ptype->directive->name);
+                        gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(%s) next", __FILE__, __LINE__, ptype->pos.file->name, ptype->pos.lineno, ptype->directive->name);
                     }
                 }
                 break;
@@ -53,7 +53,7 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
             case gssymcoercionlable:
                 break;
             default:
-                gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(type = %d) next", __FILE__, __LINE__, item.v->file->name, item.v->lineno, item.type);
+                gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(type = %d) next", __FILE__, __LINE__, item.v->pos.file->name, item.v->pos.lineno, item.type);
         }
     }
 }
@@ -362,7 +362,7 @@ gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type)
         case gstype_fun:
             return;
         default:
-            gsfatal_unimpl_type(__FILE__, __LINE__, type, "%s:%d: gsbc_typecheck_check_boxed(node = %d)", p->file->name, p->lineno, type->node);
+            gsfatal_unimpl_type(__FILE__, __LINE__, type, "%s:%d: gsbc_typecheck_check_boxed(node = %d)", p->pos.file->name, p->pos.lineno, type->node);
     }
 }
 
@@ -491,7 +491,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         if (!kind)
             gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "couldn't find kind of '%s'", pdata->arguments[0]->name)
         ;
-        gstypes_kind_check(pdata->file, pdata->lineno, kind, gskind_lifted_kind());
+        gstypes_kind_check(pdata->pos.file, pdata->pos.lineno, kind, gskind_lifted_kind());
     } else if (gssymeq(pdata->directive, gssymdatadirective, ".closure")) {
         struct gsbc_code_item_type *code_type;
 
@@ -683,7 +683,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             for (i = 1; i < p->numarguments; i++) {
                 gsfatal_unimpl_input(__FILE__, __LINE__, p, "arguments to .undef type");
             }
-            gstypes_kind_check(p->file, p->lineno, kind, gskind_lifted_kind());
+            gstypes_kind_check(p->pos.file, p->pos.lineno, kind, gskind_lifted_kind());
             goto have_type;
         } else {
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_code_expr(%s)", p->directive->name);
@@ -698,7 +698,7 @@ have_type:
         ty = argtypes[nargs];
         p = arglines[nargs];
 
-        calculated_type = gstypes_compile_fun(p->file, p->lineno, ty, calculated_type);
+        calculated_type = gstypes_compile_fun(p->pos.file, p->pos.lineno, ty, calculated_type);
     }
 
     res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, sizeof(*res), sizeof(int));
@@ -727,13 +727,13 @@ static
 void
 gstypes_type_check_type_fail(struct gsparsedline *p, struct gstype *pactual, struct gstype *pexpected)
 {
-    if (gstypes_type_check(p->file, p->lineno, pactual, pexpected) < 0)
+    if (gstypes_type_check(p->pos, pactual, pexpected) < 0)
         gsfatal("%r")
     ;
 }
 
 int
-gstypes_type_check(gsinterned_string file, int lineno, struct gstype *pactual, struct gstype *pexpected)
+gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
 {
     char actual_buf[0x100];
     char expected_buf[0x100];
@@ -742,17 +742,17 @@ gstypes_type_check(gsinterned_string file, int lineno, struct gstype *pactual, s
     pexpected = gstypes_clear_indirections(pexpected);
     
     if (gstypes_eprint_type(actual_buf, actual_buf + sizeof(actual_buf), pactual) >= actual_buf + sizeof(actual_buf)) {
-        werrstr("%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, file->name, lineno, pactual->file->name, pactual->lineno);
+        werrstr("%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, pos.file->name, pos.lineno, pactual->file->name, pactual->lineno);
         return -1;
     }
     if (gstypes_eprint_type(expected_buf, expected_buf + sizeof(expected_buf), pexpected) >= actual_buf + sizeof(actual_buf)) {
-        werrstr("%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, file->name, lineno, pactual->file->name, pactual->lineno);
+        werrstr("%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, pos.file->name, pos.lineno, pactual->file->name, pactual->lineno);
         return -1;
     }
 
     if (pactual->node != pexpected->node) {
         werrstr("%s:%d: I don't think %s (%s:%d) is %s (%s:%d)",
-            file->name, lineno,
+            pos.file->name, pos.lineno,
             actual_buf, pactual->file->name, pactual->lineno, 
             expected_buf, pexpected->file->name, pexpected->lineno
         );
@@ -767,11 +767,11 @@ gstypes_type_check(gsinterned_string file, int lineno, struct gstype *pactual, s
             pexpected_prim = (struct gstype_prim *)pexpected;
 
             if (pactual_prim->primset != pexpected_prim->primset) {
-                werrstr("%s:%d: I don't think primset %s is the same as primset %s", file->name, lineno, pactual_prim->primset->name, pexpected_prim->primset->name);
+                werrstr("%s:%d: I don't think primset %s is the same as primset %s", pos.file->name, pos.lineno, pactual_prim->primset->name, pexpected_prim->primset->name);
                 return -1;
             }
             if (pactual_prim->name != pexpected_prim->name) {
-                werrstr("%s:%d: I don't think prim %s is the same as prim %s", file->name, lineno, pactual_prim->name->name, pexpected_prim->name->name);
+                werrstr("%s:%d: I don't think prim %s is the same as prim %s", pos.file->name, pos.lineno, pactual_prim->name->name, pexpected_prim->name->name);
                 return -1;
             }
             return 0;
@@ -783,7 +783,7 @@ gstypes_type_check(gsinterned_string file, int lineno, struct gstype *pactual, s
             pexpected_abstract = (struct gstype_abstract *)pexpected;
 
             if (pactual_abstract->name != pexpected_abstract->name) {
-                werrstr("%s:%d: I don't think abstype %s is the same as abstype %s", file->name, lineno, pactual_abstract->name->name, pexpected_abstract->name->name);
+                werrstr("%s:%d: I don't think abstype %s is the same as abstype %s", pos.file->name, pos.lineno, pactual_abstract->name->name, pexpected_abstract->name->name);
                 return -1;
             }
             return 0;
@@ -794,7 +794,7 @@ gstypes_type_check(gsinterned_string file, int lineno, struct gstype *pactual, s
             pactual_lift = (struct gstype_lift *)pactual;
             pexpected_lift = (struct gstype_lift *)pexpected;
 
-            return gstypes_type_check(file, lineno, pactual_lift->arg, pexpected_lift->arg);
+            return gstypes_type_check(pos, pactual_lift->arg, pexpected_lift->arg);
         }
         case gstype_app: {
             struct gstype_app *pactual_app, *pexpected_app;
@@ -802,9 +802,9 @@ gstypes_type_check(gsinterned_string file, int lineno, struct gstype *pactual, s
             pactual_app = (struct gstype_app *)pactual;
             pexpected_app = (struct gstype_app *)pexpected;
 
-            if (gstypes_type_check(file, lineno, pactual_app->fun, pexpected_app->fun) < 0)
+            if (gstypes_type_check(pos, pactual_app->fun, pexpected_app->fun) < 0)
                 return -1;
-            if (gstypes_type_check(file, lineno, pactual_app->arg, pexpected_app->arg) < 0)
+            if (gstypes_type_check(pos, pactual_app->arg, pexpected_app->arg) < 0)
                 return -1;
             return 0;
         }
@@ -815,11 +815,11 @@ gstypes_type_check(gsinterned_string file, int lineno, struct gstype *pactual, s
             pexpected_sum = (struct gstype_sum *)pexpected;
 
             if (pactual_sum->numconstrs != pexpected_sum->numconstrs) {
-                werrstr("%s:%d: I don't think %s is the same as %s; they have diferent numbers of constrs", file->name, lineno, actual_buf, expected_buf);
+                werrstr("%s:%d: I don't think %s is the same as %s; they have diferent numbers of constrs", pos.file->name, pos.lineno, actual_buf, expected_buf);
                 return -1;
             }
             if (pexpected_sum->numconstrs > 0) {
-                gswerrstr_unimpl(__FILE__, __LINE__, "%s:%d: %s:%d: gstypes_check_type(check constrs)", file->name, lineno, pexpected->file->name, pexpected->lineno);
+                gswerrstr_unimpl(__FILE__, __LINE__, "%s:%d: %s:%d: gstypes_check_type(check constrs)", pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
                 return -1;
             }
             return 0;
@@ -831,17 +831,17 @@ gstypes_type_check(gsinterned_string file, int lineno, struct gstype *pactual, s
             pexpected_product = (struct gstype_product *)pexpected;
 
             if (pactual_product->numfields != pexpected_product->numfields) {
-                werrstr("%s:%d: I don't think %s is the same as %s; they have diferent numbers of fields", file->name, lineno, actual_buf, expected_buf);
+                werrstr("%s:%d: I don't think %s is the same as %s; they have diferent numbers of fields", pos.file->name, pos.lineno, actual_buf, expected_buf);
                 return -1;
             }
             if (pexpected_product->numfields > 0) {
-                gswerrstr_unimpl(__FILE__, __LINE__, "%s:%d: %s:%d: gstypes_check_type(check fields)", file->name, lineno, pexpected->file->name, pexpected->lineno);
+                gswerrstr_unimpl(__FILE__, __LINE__, "%s:%d: %s:%d: gstypes_check_type(check fields)", pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
                 return -1;
             }
             return 0;
         }
         default:
-            gswerrstr_unimpl(__FILE__, __LINE__, "gstypes_check_type(node = %d) %s:%d: %s:%d:", pexpected->node, file->name, lineno, pexpected->file->name, pexpected->lineno);
+            gswerrstr_unimpl(__FILE__, __LINE__, "gstypes_check_type(node = %d) %s:%d: %s:%d:", pexpected->node, pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
             return -1;
     }
 }
@@ -983,7 +983,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
             regs[nregs] = p->label;
             gsargcheck(p, 0, "kind");
             kind = gskind_compile(p, p->arguments[0]);
-            regtypes[nregs] = gstypes_compile_type_var(p->file, p->lineno, p->label, kind);
+            regtypes[nregs] = gstypes_compile_type_var(p->pos.file, p->pos.lineno, p->label, kind);
             argkinds[nargs] = kind;
             arglines[nargs] = p;
             nregs++;
@@ -1031,8 +1031,8 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
                 if (!regtypes[reg])
                     gsfatal_bad_input(p, "Register %s doesn't seem to be a type variable", p->arguments[i]->name)
                 ;
-                source = gstype_supply(p->file, p->lineno, source, regtypes[reg]);
-                dest = gstype_apply(p->file, p->lineno, dest, regtypes[reg]);
+                source = gstype_supply(p->pos.file, p->pos.lineno, source, regtypes[reg]);
+                dest = gstype_apply(p->pos.file, p->pos.lineno, dest, regtypes[reg]);
             }
 
             if (source->node == gstype_lambda)
@@ -1069,8 +1069,8 @@ have_type:
 
         var = regs[nglobals + nargs];
         kind = argkinds[nargs];
-        file = arglines[nargs]->file;
-        lineno = arglines[nargs]->lineno;
+        file = arglines[nargs]->pos.file;
+        lineno = arglines[nargs]->pos.lineno;
 
         source = gstypes_compile_lambda(file, lineno, var, kind, source);
         dest = gstypes_compile_lambda(file, lineno, var, kind, dest);

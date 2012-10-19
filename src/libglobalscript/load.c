@@ -491,7 +491,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
     if (n < 0)
         gsfatal("%s:%d: Error in reading code line: %r", filename, *plineno);
     else
-        gsfatal("%s:%d: EOF in middle of reading expression", filename, codedirective->lineno);
+        gsfatal("%s:%d: EOF in middle of reading expression", filename, codedirective->pos.lineno);
 
     return -1;
 }
@@ -646,7 +646,7 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
     if (n < 0)
         gsfatal("%s:%d: Error in reading type line: %r", filename, *plineno);
     else
-        gsfatal("%s:%d: EOF in middle of reading type expression", filename, typedirective->lineno);
+        gsfatal("%s:%d: EOF in middle of reading type expression", filename, typedirective->pos.lineno);
 
     return -1;
 }
@@ -721,7 +721,7 @@ gsparse_coerce_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline
     if (n < 0)
         gsfatal("%s:%d: Error in reading type line: %r", filename, *plineno);
     else
-        gsfatal("%s:%d: EOF in middle of reading type expression", filename, typedirective->lineno);
+        gsfatal("%s:%d: EOF in middle of reading type expression", filename, typedirective->pos.lineno);
 
     return -1;
 }
@@ -870,12 +870,12 @@ gsappend_items(struct gsfile_symtable_item **dest0, struct gsfile_symtable_item 
         for (dest = dest0; *dest; dest = &(*dest)->next) {
             if (src->key == (*dest)->key) {
                 gsfatal("%s:%d: Duplicate %s item %s (duplicate of %s:%d)",
-                    src->value->file->name,
-                    src->value->lineno,
+                    src->value->pos.file->name,
+                    src->value->pos.lineno,
                     type,
                     src->key->name,
-                    (*dest)->value->file->name,
-                    (*dest)->value->lineno
+                    (*dest)->value->pos.file->name,
+                    (*dest)->value->pos.lineno
                 );
             }
         }
@@ -897,11 +897,11 @@ gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string lab
         if ((*p)->key == label)
             gsfatal(
                 "%s:%d: Duplicate code item %s (duplicate of %s:%d)",
-                pcode->file->name,
-                pcode->lineno,
+                pcode->pos.file->name,
+                pcode->pos.lineno,
                 label->name,
-                (*p)->value->file->name,
-                (*p)->value->lineno
+                (*p)->value->pos.file->name,
+                (*p)->value->pos.lineno
             )
     ;
     *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
@@ -921,11 +921,11 @@ gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string lab
         if ((*p)->key == label)
             gsfatal(
                 "%s:%d: Duplicate data item %s (duplicate of %s:%d)",
-                pdata->file->name,
-                pdata->lineno,
+                pdata->pos.file->name,
+                pdata->pos.lineno,
                 label->name,
-                (*p)->value->file->name,
-                (*p)->value->lineno
+                (*p)->value->pos.file->name,
+                (*p)->value->pos.lineno
             )
     ;
     *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
@@ -945,11 +945,11 @@ gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string lab
         if ((*p)->key == label)
             gsfatal(
                 "%s:%d: Duplicate type item %s (duplicate of %s:%d)",
-                ptype->file->name,
-                ptype->lineno,
+                ptype->pos.file->name,
+                ptype->pos.lineno,
                 label->name,
-                (*p)->value->file->name,
-                (*p)->value->lineno
+                (*p)->value->pos.file->name,
+                (*p)->value->pos.lineno
             )
     ;
     *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
@@ -969,11 +969,11 @@ gssymtable_add_coercion_item(struct gsfile_symtable *symtable, gsinterned_string
         if ((*p)->key == label)
             gsfatal(
                 "%s:%d: Duplicate type item %s (duplicate of %s:%d)",
-                ptype->file->name,
-                ptype->lineno,
+                ptype->pos.file->name,
+                ptype->pos.lineno,
                 label->name,
-                (*p)->value->file->name,
-                (*p)->value->lineno
+                (*p)->value->pos.file->name,
+                (*p)->value->pos.lineno
             )
     ;
     *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
@@ -1353,7 +1353,7 @@ gssymtable_set_scc(struct gsfile_symtable *symtable, struct gsbc_item item, stru
 
     for (ppscc_item = &symtable->sccs; *ppscc_item; ppscc_item = &(*ppscc_item)->next) {
         if (gsbc_item_eq((*ppscc_item)->key, item))
-            gsfatal("%s:%d: Item already has SCC", item.v->file->name, item.v->lineno);
+            gsfatal("%s:%d: Item already has SCC", item.v->pos.file->name, item.v->pos.lineno);
     }
 
     *ppscc_item = gs_sys_seg_suballoc(&gsfile_symtable_scc_item_descr, &gsfile_symtable_scc_item_nursury, sizeof(**ppscc_item), sizeof(*ppscc_item));
@@ -1469,7 +1469,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 
     for (p = pscc; p; p = p->next_item) {
         if (n >= MAX_ITEMS_PER_SCC)
-            gsfatal("%s:%d: Too many items in this SCC; max 0x%x", p->item.v->file->name, p->item.v->lineno, MAX_ITEMS_PER_SCC)
+            gsfatal("%s:%d: Too many items in this SCC; max 0x%x", p->item.v->pos.file->name, p->item.v->pos.lineno, MAX_ITEMS_PER_SCC)
         ;
         items[n++] = p->item;
     }

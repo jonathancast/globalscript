@@ -106,6 +106,12 @@ typedef struct gsstring_value {
     char name[];
 } *gsinterned_string;
 
+struct gspos {
+    gsinterned_string file;
+    int lineno;
+};
+/* §todo{This is find for string code files, but really should allow for core/Global Script source as well} */
+
 /* §section Global Script Program Calculus */
 
 /* §subsection Client-level Type-checking */

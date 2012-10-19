@@ -62,8 +62,7 @@ struct gsparsedline *gstype_section_next_item(struct gsparsedfile_segment **, st
 struct gsparsedline *gscoercion_section_next_item(struct gsparsedfile_segment **, struct gsparsedline *);
 
 struct gsparsedline {
-    gsinterned_string file;
-    uint lineno;
+    struct gspos pos;
     ulong numarguments;
     gsinterned_string label;
     gsinterned_string directive;

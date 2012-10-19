@@ -266,16 +266,16 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
     if (gssymeq(directive, gssymdatadirective, ".closure")) {
         struct gsbc_item code, type;
         code = gssymtable_lookup(
-            item.v->file->name,
-            item.v->lineno,
+            item.v->pos.file->name,
+            item.v->pos.lineno,
             symtable,
             item.v->arguments[0]
         );
         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, code, pend, pc);
         if (item.v->numarguments >= 2) {
             type = gssymtable_lookup(
-                item.v->file->name,
-                item.v->lineno,
+                item.v->pos.file->name,
+                item.v->pos.lineno,
                 symtable,
                 item.v->arguments[1]
             );
@@ -294,8 +294,8 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         int i;
 
         fn = gssymtable_lookup(
-            item.v->file->name,
-            item.v->lineno,
+            item.v->pos.file->name,
+            item.v->pos.lineno,
             symtable,
             item.v->arguments[0]
         );
@@ -303,8 +303,8 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
 
         for (i = 1; i < item.v->numarguments; i++) {
             tyarg = gssymtable_lookup(
-                item.v->file->name,
-                item.v->lineno,
+                item.v->pos.file->name,
+                item.v->pos.lineno,
                 symtable,
                 item.v->arguments[1]
             );
@@ -314,8 +314,8 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         struct gsbc_item ty;
 
         ty = gssymtable_lookup(
-            item.v->file->name,
-            item.v->lineno,
+            item.v->pos.file->name,
+            item.v->pos.lineno,
             symtable,
             item.v->arguments[0]
         );
@@ -324,21 +324,21 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         struct gsbc_item co, src;
 
         co = gssymtable_lookup(
-            item.v->file->name,
-            item.v->lineno,
+            item.v->pos.file->name,
+            item.v->pos.lineno,
             symtable,
             item.v->arguments[0]
         );
         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, co, pend, pc);
         src = gssymtable_lookup(
-            item.v->file->name,
-            item.v->lineno,
+            item.v->pos.file->name,
+            item.v->pos.lineno,
             symtable,
             item.v->arguments[1]
         );
         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, src, pend, pc);
     } else {
-        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(data item; directive = %s) next", __FILE__, __LINE__, item.v->file->name, item.v->lineno, item.v->directive->name);
+        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(data item; directive = %s) next", __FILE__, __LINE__, item.v->pos.file->name, item.v->pos.lineno, item.v->directive->name);
     }
 }
 
@@ -364,11 +364,11 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
             for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
                 if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
                     struct gsbc_item global;
-                    global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
+                    global = gssymtable_lookup(p->pos.file->name, p->pos.lineno, symtable, p->label);
                     gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
                 } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
                     struct gsbc_item global;
-                    global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
+                    global = gssymtable_lookup(p->pos.file->name, p->pos.lineno, symtable, p->label);
                     gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
                 } else {
                     return;
@@ -376,7 +376,7 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
             }
             break;
         default:
-            gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, item.v->file->name, item.v->lineno, item.v->directive->name);
+            gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, item.v->pos.file->name, item.v->pos.lineno, item.v->directive->name);
     }
 
     gsfatal("%s:%d: gsbc_subtop_sort_code_item next", __FILE__, __LINE__);
@@ -434,30 +434,30 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
         struct gsregistered_primtype *type;
 
         if (ptype->numarguments < 1)
-            gsfatal("%s:%d: Missing primitive set name on .tydefinedprim", ptype->file->name, ptype->lineno);
+            gsfatal("%s:%d: Missing primitive set name on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
         if (!(prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)))
             gsfatal("%s:%d: Unknown primitive set %s, which is really bad since it's supposed to contain defined types",
-                ptype->file->name,
-                ptype->lineno,
+                ptype->pos.file->name,
+                ptype->pos.lineno,
                 ptype->arguments[0]->name
             )
         ;
         if (ptype->numarguments < 2)
-            gsfatal("%s:%d: Missing primitive type name on .tydefinedprim", ptype->file->name, ptype->lineno);
+            gsfatal("%s:%d: Missing primitive type name on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
         if (!(type = gsprims_lookup_type(prims, ptype->arguments[1]->name)))
-            gsfatal("%s:%d: Primitive set %s does not in fact contain a type %s", ptype->file->name, ptype->lineno, ptype->arguments[0]->name, ptype->arguments[1]->name);
+            gsfatal("%s:%d: Primitive set %s does not in fact contain a type %s", ptype->pos.file->name, ptype->pos.lineno, ptype->arguments[0]->name, ptype->arguments[1]->name);
         if (type->prim_type_group != gsprim_type_defined)
-            gsfatal("%s:%d: Primite type %s in primitive set %s is not in fact a defined type", ptype->file->name, ptype->lineno, ptype->arguments[1]->name, ptype->arguments[0]->name);
+            gsfatal("%s:%d: Primite type %s in primitive set %s is not in fact a defined type", ptype->pos.file->name, ptype->pos.lineno, ptype->arguments[1]->name, ptype->arguments[0]->name);
         if (ptype->numarguments < 3)
-            gsfatal("%s:%d: Missing kind on .tydefinedprim", ptype->file->name, ptype->lineno);
+            gsfatal("%s:%d: Missing kind on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
         if (ptype->numarguments > 3)
-            gsfatal("%s:%d: Too many arguments to .tydefinedprim", ptype->file->name, ptype->lineno);
+            gsfatal("%s:%d: Too many arguments to .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
         return;
     } else {
-        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, ptype->file->name, ptype->lineno, ptype->directive->name);
+        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, ptype->pos.file->name, ptype->pos.lineno, ptype->directive->name);
     }
 
-    gsfatal("%s:%d: %s:%d: gsbc_subtop_sort_type_item next", __FILE__, __LINE__, ptype->file->name, ptype->lineno);
+    gsfatal("%s:%d: %s:%d: gsbc_subtop_sort_type_item next", __FILE__, __LINE__, ptype->pos.file->name, ptype->pos.lineno);
 }
 
 static
@@ -475,10 +475,10 @@ gsbc_top_sort_subitems_of_coercion_item(struct gsfile_symtable *symtable, struct
         gsbc_top_sort_subitems_of_type_or_coercion_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, &pseg, gsinput_next_line(&pseg, pcoercion), gssymcoercionop);
         return;
     } else {
-        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, pcoercion->file->name, pcoercion->lineno, pcoercion->directive->name);
+        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, pcoercion->pos.file->name, pcoercion->pos.lineno, pcoercion->directive->name);
     }
 
-    gsfatal("%s:%d: %s:%d: gsbc_subtop_sort_type_item next", __FILE__, __LINE__, pcoercion->file->name, pcoercion->lineno);
+    gsfatal("%s:%d: %s:%d: gsbc_subtop_sort_type_item next", __FILE__, __LINE__, pcoercion->pos.file->name, pcoercion->pos.lineno);
 }
 
 static
@@ -488,7 +488,7 @@ gsbc_top_sort_subitems_of_type_or_coercion_expr(struct gsfile_symtable *symtable
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, op, ".tygvar")) {
             struct gsbc_item global;
-            global = gssymtable_lookup(p->file->name, p->lineno, symtable, p->label);
+            global = gssymtable_lookup(p->pos.file->name, p->pos.lineno, symtable, p->label);
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
         } else {
             return;

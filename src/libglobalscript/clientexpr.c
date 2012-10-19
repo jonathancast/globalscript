@@ -14,6 +14,7 @@ gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, struct gsfile_symtab
     struct gsbc_coercion_type *ct;
     va_list args;
     struct gstype *source, *dest, *tyarg;
+    struct gspos pos;
 
     ct = gssymtable_get_coercion_type(symtable, gsintern_string(gssymcoercionlable, coercion_name));
 
@@ -32,7 +33,9 @@ gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, struct gsfile_symtab
     }
     va_end(args);
 
-    if (gstypes_type_check(ty->file, ty->lineno, ty, source) < 0)
+    pos.file = ty->file;
+    pos.lineno = ty->lineno;
+    if (gstypes_type_check(pos, ty, source) < 0)
         return 0
     ;
 

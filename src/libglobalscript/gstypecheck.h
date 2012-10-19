@@ -2,7 +2,7 @@ struct gstype *gstypes_clear_indirections(struct gstype *);
 
 void gstypes_process_type_declarations(struct gsfile_symtable *, struct gsbc_item *, struct gskind **, int);
 
-int gstypes_type_check(gsinterned_string, int, struct gstype *, struct gstype *);
+int gstypes_type_check(struct gspos, struct gstype *, struct gstype *);
 
 void gstypes_kind_check_scc(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int);
 

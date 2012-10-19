@@ -150,8 +150,8 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                     ptype = item.v;
                     res = ptypes[i];
 
-                    res->file = ptype->file;
-                    res->lineno = ptype->lineno;
+                    res->file = ptype->pos.file;
+                    res->lineno = ptype->pos.lineno;
 
                     if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
                         struct gstype *defn;
@@ -178,8 +178,8 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                         prim->primset = gsprims_lookup_prim_set(ptype->arguments[0]->name);
                         if (!prim->primset)
                             gswarning("%s:%d: Warning: Unknown prim set %s",
-                                ptype->file->name,
-                                ptype->lineno,
+                                ptype->pos.file->name,
+                                ptype->pos.lineno,
                                 ptype->arguments[0]->name
                             )
                         ;
@@ -280,13 +280,13 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
         kind = gskind_compile(p, p->arguments[0]);
-        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->file, p->lineno, p->label, kind);
+        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos.file, p->pos.lineno, p->label, kind);
         cl->nregs++;
         res = gstype_alloc(sizeof(struct gstype_lambda));
         lambda = (struct gstype_lambda*)res;
         res->node = gstype_lambda;
-        res->file = p->file;
-        res->lineno = p->lineno;
+        res->file = p->pos.file;
+        res->lineno = p->pos.lineno;
         lambda->var = p->label;
         lambda->kind = kind;
         lambda->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
@@ -305,13 +305,13 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
         kind = gskind_compile(p, p->arguments[0]);
-        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->file, p->lineno, p->label, kind);
+        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos.file, p->pos.lineno, p->label, kind);
         cl->nregs++;
         res = gstype_alloc(sizeof(struct gstype_forall));
         forall = (struct gstype_forall*)res;
         res->node = gstype_forall;
-        res->file = p->file;
-        res->lineno = p->lineno;
+        res->file = p->pos.file;
+        res->lineno = p->pos.lineno;
         forall->var = p->label;
         forall->kind = kind;
         forall->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
@@ -350,13 +350,13 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             }
             gsfatal_bad_input(p, "Couldn't find argument for let %s", p->arguments[i]->name);
         have_register_for_let_arg:
-            reg = gstype_supply(p->file, p->lineno, fun, arg);
+            reg = gstype_supply(p->pos.file, p->pos.lineno, fun, arg);
         }
         cl->regvalues[cl->nregs] = reg;
         cl->nregs++;
         return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
     } else if (gssymeq(p->directive, gssymtypeop, ".tylift")) {
-        return gstypes_compile_lift(p->file, p->lineno, gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
+        return gstypes_compile_lift(p->pos.file, p->pos.lineno, gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
     } else if (gssymeq(p->directive, gssymtypeop, ".tyref")) {
         struct gstype *reg;
 
@@ -384,7 +384,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             }
             gsfatal_bad_input(p, "Cannot find register %s", p->arguments[1 + i]->name);
         have_arg_register:
-            res = gstype_apply(p->file, p->lineno, fun, arg);
+            res = gstype_apply(p->pos.file, p->pos.lineno, fun, arg);
         }
         return res;
     } else if (gssymeq(p->directive, gssymtypeop, ".tysum")) {
@@ -405,7 +405,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "constructors");
         }
 
-        return gstypes_compile_sumv(p->file, p->lineno, nconstrs, constrs);
+        return gstypes_compile_sumv(p->pos.file, p->pos.lineno, nconstrs, constrs);
     } else if (gssymeq(p->directive, gssymtypeop, ".typroduct")) {
         struct gstype_product *prod;
         int numfields;
@@ -416,8 +416,8 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         res = gstype_alloc(sizeof(struct gstype_product) + numfields * sizeof(struct gstype_field));
         prod = (struct gstype_product *)res;
         res->node = gstype_product;
-        res->file = p->file;
-        res->lineno = p->lineno;
+        res->file = p->pos.file;
+        res->lineno = p->pos.lineno;
         prod->numfields = numfields;
         for (i = 0; i < p->numarguments; i += 2) {
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "Non-empty products");
@@ -561,8 +561,8 @@ gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *cl, s
         res = gstype_alloc(sizeof(struct gstype_coerce_definition) + numargs * sizeof(struct gstype *));
         defn = (struct gstype_coerce_definition *)res;
         res->node = gstype_coerce_definition;
-        res->file = p->file;
-        res->lineno = p->lineno;
+        res->file = p->pos.file;
+        res->lineno = p->pos.lineno;
 
         for (j = 0; j < cl->nregs; j++) {
             if (cl->regs[j] == p->arguments[0]) {
