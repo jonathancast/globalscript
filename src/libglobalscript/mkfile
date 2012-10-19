@@ -20,6 +20,7 @@ OFILES=\
 	typealloc.$O \
 	typecheck.$O \
 	clienttypecheck.$O \
+	clientexpr.$O \
 	bctopsort.$O \
 	gsrpc.$O \
 	$SYSTEM/lock.$O \
@@ -50,7 +51,7 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h
 gsmain.$O: gsinputfile.h gssetup.h ace.h
-load.$O: gsinputalloc.h gsinputfile.h $GLOBALSCRIPT/include/libibio.h gsbytecompile.h gstopsort.h gstypealloc.h gstypecheck.h
+load.$O: gsinputalloc.h gsinputfile.h $GLOBALSCRIPT/include/libibio.h gsbytecompile.h gstopsort.h gstypealloc.h gstypecheck.h ace.h
 inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsalloc.h
 eval.$O: gsheap.h gsinputfile.h ace.h
@@ -61,6 +62,7 @@ primset.$O: gsinputfile.h gssetup.h
 typealloc.$O: gsinputfile.h gstypealloc.h
 typecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
 clienttypecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
+clientexpr.$O: gsinputfile.h gstypealloc.h gstypecheck.h
 bctopsort.$O: gsinputfile.h gstopsort.h
 api.$O: api.h
 

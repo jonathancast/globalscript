@@ -115,9 +115,15 @@ struct gstype;
 int gstype_expect_abstract(struct gstype *, char *);
 int gstype_expect_app(struct gstype *, struct gstype **, struct gstype **);
 
+/* §subsection Client-level Expression Manipulation */
+
+struct gsfile_symtable;
+typedef uintptr gsvalue;
+
+gsvalue gscoerce(gsvalue, struct gstype *, struct gstype **, struct gsfile_symtable *, char *, ...);
+
 /* §subsection Run-time Stuff */
 
-typedef uintptr gsvalue;
 typedef uintptr gscode;
 
 typedef enum {
@@ -135,7 +141,7 @@ typedef enum {
 } gstypecode;
 
 /* Define this yourself; this is your program's entry point */
-extern void gsrun(char *, gsvalue, struct gstype *);
+extern void gsrun(char *, struct gsfile_symtable *, gsvalue, struct gstype *);
 
 #define GS_MAX_PTR 0x80000000UL
     /* NOTE: 32-bit specific ↑↑↑.  Thought: would §ccode{1UL << (sizeof(gsvalue) * 8 - 1)} work? */

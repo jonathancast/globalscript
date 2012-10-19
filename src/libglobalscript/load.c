@@ -10,6 +10,7 @@
 #include "gstopsort.h"
 #include "gstypealloc.h"
 #include "gstypecheck.h"
+#include "ace.h"
 
 static struct uxio_ichannel *gsopenfile(char *filename, int omode, int *ppid);
 #if 0
@@ -66,8 +67,6 @@ set_buf:
 }
 
 static void gsloadfile(gsparsedfile *, struct gsfile_symtable *, gsvalue *, struct gstype **);
-
-struct gsfile_symtable *gscurrent_symtable;
 
 struct gsfile_link {
     gsparsedfile *file;
@@ -565,16 +564,6 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
         parsedline->directive = gsintern_string(gssymtypeop, fields[1]);
 
         if (gsparse_type_or_coercion_op(filename, parsedline, plineno, fields, n, gssymtypeop)) {
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".tylambda")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-            else
-                gsfatal("%s:%d: Labels required on .tylambda", filename, *plineno);
-            if (n < 3)
-                gsfatal("%s:%d: Missing kind on .tylambda", filename, *plineno);
-            parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
-            if (n > 3)
-                gsfatal("%s:%d: Too many arguments to .tylambda; I only know what the kind is", filename, *plineno);
         } else if (gssymeq(parsedline->directive, gssymtypeop, ".typeapp")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops");
@@ -707,6 +696,13 @@ gsparse_coerce_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline
         parsedline->directive = gsintern_string(gssymcoercionop, fields[1]);
 
         if (gsparse_type_or_coercion_op(filename, parsedline, plineno, fields, n, gssymcoercionop)) {
+        } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tyinvert")) {
+            if (*fields[0])
+                gsfatal("%s:%d: Labels illegal on continuations");
+            else
+                parsedline->label = 0;
+            if (n > 2)
+                gsfatal("%s:%d: Too many arguments to .tyinvert");
         } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tydefinition")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal op");
@@ -741,6 +737,17 @@ gsparse_type_or_coercion_op(char *filename, struct gsparsedline *parsedline, int
             gsfatal("%s:%d: Labels required on .tygvar", filename, *plineno);
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .tygvar", filename, *plineno);
+        return 1;
+    } else if (gssymeq(parsedline->directive, op, ".tylambda")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+        else
+            gsfatal("%s:%d: Labels required on .tylambda", filename, *plineno);
+        if (n < 3)
+            gsfatal("%s:%d: Missing kind on .tylambda", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
+        if (n > 3)
+            gsfatal("%s:%d: Too many arguments to .tylambda; I only know what the kind is", filename, *plineno);
         return 1;
     } else {
         return 0;
@@ -1108,10 +1115,12 @@ gssymtable_get(struct gsfile_symtable *symtable, enum gsfile_symtable_class clas
 {
     struct gsfile_symtable_entry *p;
 
-    for (p = symtable->entries[class]; p; p = p->next) {
-        if (p->key == label)
-            return p->value
-        ;
+    for (; symtable; symtable = symtable->parent) {
+        for (p = symtable->entries[class]; p; p = p->next) {
+            if (p->key == label)
+                return p->value
+            ;
+        }
     }
 
     return 0;

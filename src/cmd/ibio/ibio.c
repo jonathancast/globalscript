@@ -24,7 +24,7 @@ static struct api_process_rpc_table exec_table = {
 };
 
 void
-gsrun(char *script, gsvalue prog, struct gstype *ty)
+gsrun(char *script, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *ty)
 {
     struct gstype *monad, *input, *output, *result;
     struct gstype *tyw;
@@ -39,6 +39,11 @@ gsrun(char *script, gsvalue prog, struct gstype *ty)
     ) {
         ace_down();
         gsfatal("%s: Bad type: %r", script);
+    }
+
+    if (!(prog = gscoerce(prog, ty, &tyw, symtable, "ibio.out", input, output, result, 0))) {
+        ace_down();
+        gsfatal("%s: Couldn't cast down to primitive level: %r", script);
     }
 
     apisetupmainthread(&exec_table, prog);

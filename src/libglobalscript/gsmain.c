@@ -62,6 +62,6 @@ have_document:
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r");
     GS_SLOW_EVALUATE(gsentrypoint);
-    gsrun(docfilename, gsentrypoint, gsentrytype);
+    gsrun(docfilename, gscurrent_symtable, gsentrypoint, gsentrytype);
     exits("");
 }

@@ -56,8 +56,10 @@ struct gscoercionsection {
 
 #define GSDATA_SECTION_FIRST_ITEM(p) ((struct gsparsedline*)((uchar*)p+sizeof(*p)))
 #define GSTYPE_SECTION_FIRST_ITEM(p) ((struct gsparsedline*)((uchar*)p+sizeof(*p)))
+#define GSCOERCION_SECTION_FIRST_ITEM(p) ((struct gsparsedline*)((uchar*)p+sizeof(*p)))
 
 struct gsparsedline *gstype_section_next_item(struct gsparsedfile_segment **, struct gsparsedline *);
+struct gsparsedline *gscoercion_section_next_item(struct gsparsedfile_segment **, struct gsparsedline *);
 
 struct gsparsedline {
     gsinterned_string file;

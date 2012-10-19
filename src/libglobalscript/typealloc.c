@@ -430,6 +430,25 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
 }
 
 struct gstype *
+gstypes_compile_lambda(gsinterned_string file, int lineno, gsinterned_string var, struct gskind *kind, struct gstype *body)
+{
+    struct gstype *res;
+    struct gstype_lambda *lambda;
+
+    res = gstype_alloc(sizeof(struct gstype_lambda));
+    lambda = (struct gstype_lambda *)res;
+
+    res->node = gstype_lambda;
+    res->file = file;
+    res->lineno = lineno;
+    lambda->var = var;
+    lambda->kind = kind;
+    lambda->body = body;
+
+    return res;
+}
+
+struct gstype *
 gstypes_compile_lift(gsinterned_string file, int lineno, struct gstype *arg)
 {
     struct gstype *res;
@@ -681,7 +700,15 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
     int i;
 
     switch (type->node) {
+        case gstype_indirection: {
+            struct gstype_indirection *indir;
+
+            indir = (struct gstype_indirection *)type;
+            return gstypes_subst(file, lineno, indir->referent, varname, type1);
+        }
         case gstype_abstract:
+            return type;
+        case gstype_prim:
             return type;
         case gstype_var: {
             struct gstype_var *var;

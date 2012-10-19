@@ -34,3 +34,13 @@ _ibio_list.t.rune	.tyexpr
 rune.t	.tygvar
 list.t	.tygvar
 	.tyref	list.t	rune.t
+
+	.coercion
+
+ibio.out	.tycoercion
+ibio.m	.tygvar
+ι	.tylambda	*
+ο	.tylambda	*
+α	.tylambda	*
+	.tyinvert
+	.tydefinition ibio.m	ι	ο	α

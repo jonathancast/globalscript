@@ -122,6 +122,7 @@ int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 
 struct gstype *gstypes_compile_indir(gsinterned_string, int, struct gstype *);
 struct gstype *gstypes_compile_type_var(gsinterned_string, int, gsinterned_string, struct gskind *);
+struct gstype *gstypes_compile_lambda(gsinterned_string, int, gsinterned_string, struct gskind *, struct gstype *);
 struct gstype *gstypes_compile_lift(gsinterned_string, int, struct gstype *);
 struct gstype *gstypes_compile_sum(gsinterned_string, int, int, ...);
 struct gstype *gstypes_compile_sumv(gsinterned_string, int, int, struct gstype_constr *);
@@ -132,6 +133,15 @@ struct gstype *gstype_apply(gsinterned_string, int, struct gstype *, struct gsty
 
 void gstypes_alloc_for_scc(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
 void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
+
+struct gsbc_coercion_arg {
+    gsinterned_string var;
+    struct gskind *kind;
+};
+
+struct gsbc_coercion_type {
+    struct gstype *source, *dest;
+};
 
 struct gskind {
     enum {

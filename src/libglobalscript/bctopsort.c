@@ -83,6 +83,19 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
                     continue;
                 gsbc_topsort_item(symtable, preorders, &unassigned_items, &maybe_group_items, item, &pend, &c);
             }
+            item.type = gssymcoercionlable;
+            item.v = 0;
+            if (parsedfile->coercions) for (i = 0; i < parsedfile->coercions->numitems; i++) {
+                if (item.v) {
+                    item.v = gscoercion_section_next_item(&item.pseg, item.v);
+                } else {
+                    item.pseg = parsedfile->coercions->first_seg;
+                    item.v = GSCOERCION_SECTION_FIRST_ITEM(parsedfile->coercions);
+                }
+                if (gssymtable_get_scc(symtable, item))
+                    continue;
+                gsbc_topsort_item(symtable, preorders, &unassigned_items, &maybe_group_items, item, &pend, &c);
+            }
             return res;
         }
         case gsfiledocument: {
@@ -116,6 +129,19 @@ gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedlin
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, type, "gstype_section_next_item(%s)", type->directive->name);
+    }
+    return 0;
+}
+
+struct gsparsedline *
+gscoercion_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedline *coercion)
+{
+    if (gssymeq(coercion->directive, gssymtypedirective, ".tyexpr")) {
+        return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, coercion));
+    } else if (gssymeq(coercion->directive, gssymtypedirective, ".tyabstract")) {
+        return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, coercion));
+    } else {
+        gsfatal_unimpl_input(__FILE__, __LINE__, coercion, "gscoercion_section_next_item(%s)", coercion->directive->name);
     }
     return 0;
 }

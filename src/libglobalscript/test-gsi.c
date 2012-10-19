@@ -11,7 +11,7 @@ p9main(int argc, char **argv)
 static int gsprint(gsvalue prog);
 
 void
-gsrun(char *doc, gsvalue prog, struct gstype *type)
+gsrun(char *doc, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *type)
 {
     gstypecode st;
 
