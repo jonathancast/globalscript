@@ -1,8 +1,7 @@
 /* §section{(Byte-Code) Code Segment} */
 
 struct gsbc {
-    gsinterned_string file;
-    int lineno;
+    struct gspos pos;
     uchar instr;
     uchar args[];
 };

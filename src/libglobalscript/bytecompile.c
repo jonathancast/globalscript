@@ -410,8 +410,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             }
             gsfatal_bad_input(p, "Unknown register %s", p->arguments[0]->name);
         have_register: ;
-            pcode->file = p->pos.file;
-            pcode->lineno = p->pos.lineno;
+            pcode->pos = p->pos;
             pcode->instr = gsbc_op_enter;
             pcode->args[0] = (uchar)reg;
             pcode = GS_NEXT_BYTECODE(pcode, 1);
@@ -421,8 +420,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             if (!pcode)
                 pcode = (struct gsbc *)pglobal
             ;
-            pcode->file = p->pos.file;
-            pcode->lineno = p->pos.lineno;
+            pcode->pos = p->pos;
             pcode->instr = gsbc_op_undef;
             pcode = GS_NEXT_BYTECODE(pcode, 0);
             goto done;

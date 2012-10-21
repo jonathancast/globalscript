@@ -79,8 +79,8 @@ ace_thread_pool_main(void *p)
                                 hp = (struct gsheap_item *)thread->base;
 
                                 err = gsreserveerrors(sizeof(*err));
-                                err->file = ip->file;
-                                err->lineno = ip->lineno;
+                                err->file = ip->pos.file;
+                                err->lineno = ip->pos.lineno;
                                 err->type = gserror_undefined;
 
                                 lock(&hp->lock);
@@ -101,7 +101,7 @@ ace_thread_pool_main(void *p)
                                 hp = (struct gsheap_item *)thread->base;
 
                                 lock(&hp->lock);
-                                gspoison_unimpl(hp, __FILE__, __LINE__, ip->file, ip->lineno, "run instruction %d", ip->instr);
+                                gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos.file, ip->pos.lineno, "run instruction %d", ip->instr);
                                 unlock(&hp->lock);
 
                                 ace_thread_queue->threads[i] = 0;
