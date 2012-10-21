@@ -20,7 +20,7 @@ _empty.record	.tygvar
 	.tyref	ibio.m	rune.t	rune.t	_empty.record
 
 _epbodytype	.tyexpr
-rune.t	.tygvar
+ibio.prim.m	.tygvar
 _empty.record	.tygvar
 	.tylift
 	.tyref	ibio.prim.m	_empty.record
