@@ -178,8 +178,7 @@ int gsisheap_block(struct gs_blockdesc *);
 
 struct gsheap_item {
     Lock lock;
-    gsinterned_string file;
-    int lineno;
+    struct gspos pos;
     enum {
         gsclosure,
         gseval,

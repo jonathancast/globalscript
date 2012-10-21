@@ -320,8 +320,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
 
         hp = (struct gsheap_item *)heap[i];
         memset(&hp->lock, 0, sizeof(hp->lock));
-        hp->file = p->pos.file;
-        hp->lineno = p->pos.lineno;
+        hp->pos = p->pos;
         hp->type = gsclosure;
         cl = (struct gsclosure *)heap[i];
         gsargcheck(p, 0, "Code label");
