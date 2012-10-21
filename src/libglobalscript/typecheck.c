@@ -5,6 +5,7 @@
 #include <libglobalscript.h>
 
 #include "gsinputfile.h"
+#include "gsregtables.h"
 #include "gstypealloc.h"
 #include "gstypecheck.h"
 
@@ -572,8 +573,6 @@ static struct gs_block_class gsbc_code_type_descr = {
 };
 static void *gsbc_code_type_nursury;
 
-static int gsbc_typecheck_find_register(struct gsparsedline *, gsinterned_string *, int, gsinterned_string);
-
 static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
@@ -645,7 +644,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             ;
             regs[nregs] = p->label;
             gsargcheck(p, 0, "var");
-            reg = gsbc_typecheck_find_register(p, regs, nregs, p->arguments[0]);
+            reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
             argtype = tyregs[reg];
             if (!argtype)
                 gsfatal_bad_input(p, "Register %s is not a type", p->arguments[0]);
@@ -676,7 +675,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             int reg;
 
             gsargcheck(p, 0, "type");
-            reg = gsbc_typecheck_find_register(p, regs, nregs, p->arguments[0]);
+            reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
             calculated_type = tyregs[reg];
             kind = tyregkinds[reg];
             for (i = 1; i < p->numarguments; i++) {
@@ -706,20 +705,6 @@ have_type:
     res->result_type = calculated_type;
 
     return res;
-}
-
-static
-int
-gsbc_typecheck_find_register(struct gsparsedline *p, gsinterned_string *regs, int nregs, gsinterned_string name)
-{
-    int i;
-
-    for (i = 0; i < nregs; i++) {
-        if (regs[i] == name)
-            return i;
-    }
-    gsfatal_bad_input(p, "No such register '%s'", name->name);
-    return -1;
 }
 
 static

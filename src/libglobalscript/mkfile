@@ -23,6 +23,7 @@ OFILES=\
 	clientexpr.$O \
 	bctopsort.$O \
 	gsrpc.$O \
+	regtables.$O \
 	$SYSTEM/lock.$O \
 	$SYSTEM/$CPU/tas.$O \
 	$SYSTEM/gssysthreads.$O \
@@ -60,10 +61,11 @@ symtable.$O: gsinputfile.h
 bytecompile.$O: $GLOBALSCRIPT/include/libibio.h gsinputfile.h gsbytecompile.h gsheap.h gstopsort.h gstypealloc.h
 primset.$O: gsinputfile.h gssetup.h
 typealloc.$O: gsinputfile.h gstypealloc.h
-typecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
+typecheck.$O: gsinputfile.h gsregtables.h gstypealloc.h gstypecheck.h
 clienttypecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
 clientexpr.$O: gsinputfile.h gstypealloc.h gstypecheck.h
 bctopsort.$O: gsinputfile.h gstopsort.h
+regtables.$O: gsinputfile.h gsregtables.h
 api.$O: api.h
 
 all install:V: test $GLOBALSCRIPT/lib/$LIB
