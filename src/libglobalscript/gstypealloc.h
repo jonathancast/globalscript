@@ -38,6 +38,7 @@ struct gstype_abstract {
 
 struct gstype_prim {
     struct gstype e;
+    enum gsprim_type_group primtypegroup;
     struct gsregistered_primset *primset;
     gsinterned_string name;
     struct gskind *kind;

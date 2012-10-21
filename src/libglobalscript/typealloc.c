@@ -175,6 +175,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
 
                         res->node = gstype_prim;
                         prim = (struct gstype_prim *)res;
+                        prim->primtypegroup = gsprim_type_defined;
                         prim->primset = gsprims_lookup_prim_set(ptype->arguments[0]->name);
                         if (!prim->primset)
                             gswarning("%s:%d: Warning: Unknown prim set %s",
