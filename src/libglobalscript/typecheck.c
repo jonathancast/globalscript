@@ -235,8 +235,6 @@ gstypes_calculate_kind(struct gstype *type)
     return 0;
 }
 
-#define MAX_NUM_REGISTERS 0x100
-
 static char *seprint_kind_name(char *, char *, struct gskind *);
 
 void

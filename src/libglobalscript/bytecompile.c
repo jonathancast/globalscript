@@ -4,7 +4,9 @@
 #include <libc.h>
 #include <libglobalscript.h>
 #include <libibio.h>
+
 #include "gsinputfile.h"
+#include "gsregtables.h"
 #include "gsbytecompile.h"
 #include "gsheap.h"
 #include "gstopsort.h"
@@ -170,8 +172,6 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
         }
     }
 }
-
-#define MAX_NUM_REGISTERS 0x100
 
 static
 int
