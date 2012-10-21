@@ -342,72 +342,33 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
     }
 }
 
-enum gsbc_code_directive {
-    gscode_directive_expr,
-    gsnum_code_directives,
-};
-
-static enum gsbc_code_directive gsbc_lookup_code_directive(gsinterned_string);
-
 static
 void
 gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    enum gsbc_code_directive directive;
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
 
-    directive = gsbc_lookup_code_directive(item.v->directive);
     pseg = item.pseg;
-    switch (directive) {
-        case gscode_directive_expr:
-            for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
-                if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
-                    struct gsbc_item global;
-                    global = gssymtable_lookup(p->pos.file->name, p->pos.lineno, symtable, p->label);
-                    gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
-                } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
-                    struct gsbc_item global;
-                    global = gssymtable_lookup(p->pos.file->name, p->pos.lineno, symtable, p->label);
-                    gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
-                } else {
-                    return;
-                }
+    if (gssymeq(item.v->directive, gssymcodedirective, ".expr")) {
+        for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
+            if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+                struct gsbc_item global;
+                global = gssymtable_lookup(p->pos.file->name, p->pos.lineno, symtable, p->label);
+                gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
+            } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+                struct gsbc_item global;
+                global = gssymtable_lookup(p->pos.file->name, p->pos.lineno, symtable, p->label);
+                gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
+            } else {
+                return;
             }
-            break;
-        default:
-            gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, item.v->pos.file->name, item.v->pos.lineno, item.v->directive->name);
+        }
+    } else {
+        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, item.v->pos.file->name, item.v->pos.lineno, item.v->directive->name);
     }
 
     gsfatal("%s:%d: gsbc_subtop_sort_code_item next", __FILE__, __LINE__);
-}
-
-struct {
-    char *name;
-    gsinterned_string interned;
-} gsbc_code_directive_table[] = {
-    /* gscode_directive_expr = */ { ".expr", 0, },
-    { 0, 0, },
-};
-
-static
-enum gsbc_code_directive
-gsbc_lookup_code_directive(gsinterned_string dir)
-{
-    enum gsbc_code_directive i;
-
-    for (i = 0; i < gsnum_code_directives; i++) {
-        if (!gsbc_code_directive_table[i].name)
-            gsfatal("Missing items in gsbc_code_directive_table; only %d items", i);
-        if (!gsbc_code_directive_table[i].interned)
-            gsbc_code_directive_table[i].interned = gsintern_string(gssymcodedirective, gsbc_code_directive_table[i].name);
-        if (gsbc_code_directive_table[i].interned == dir)
-            return i;
-    }
-
-    gsfatal("%s: Unknown code directive", dir->name);
-
-    return -1;
 }
 
 static void gsbc_top_sort_subitems_of_type_or_coercion_expr(struct gsfile_symtable *, struct gsbc_item_hash *, struct gsbc_item_stack *, struct gsbc_item_stack *, struct gsbc_item, struct gsbc_scc ***, ulong *, struct gsparsedfile_segment **, struct gsparsedline *, gssymboltype);
