@@ -86,7 +86,8 @@ api_thread_pool_main(void *arg)
     struct api_thread *mainthread, *thread;
     struct api_thread_pool_args *args;
 
-    int i;
+    int i, threadnum;
+    int ranthread, hadthread;
 
     args = (struct api_thread_pool_args *)arg;
 
@@ -95,29 +96,42 @@ api_thread_pool_main(void *arg)
     api_release_thread(mainthread);
 
     do {
-        thread = 0;
-        api_take_thread_queue();
-        for (i = 0; i < API_NUMTHREADS && !thread; i++) {
-            thread = api_try_schedule_thread(&api_thread_queue->threads[i]);
-        }
-        api_release_thread_queue();
-        if (thread) {
-            gstypecode st;
-            gsvalue instr;
-
-            instr = thread->code->instrs[thread->code->ip].instr;
-            st = GS_SLOW_EVALUATE(instr);
-
-            switch (st) {
-                case gstywhnf:
-                    api_exec_instr(thread, instr);
-                    break;
-                default:
-                    api_abend_unimpl(thread, __FILE__, __LINE__, "API thread advancement (state = %d)", st);
+        hadthread = ranthread = 0;
+        for (threadnum = 0; threadnum < API_NUMTHREADS; threadnum++) {
+            thread = 0;
+            api_take_thread_queue();
+            for (; threadnum < API_NUMTHREADS && !thread; threadnum++) {
+                thread = api_try_schedule_thread(&api_thread_queue->threads[threadnum]);
             }
-            api_release_thread(thread);
+            api_release_thread_queue();
+            if (thread) {
+                hadthread = 1;
+                gstypecode st;
+                gsvalue instr;
+
+                instr = thread->code->instrs[thread->code->ip].instr;
+                st = GS_SLOW_EVALUATE(instr);
+
+                switch (st) {
+                    case gstywhnf:
+                        api_exec_instr(thread, instr);
+                        ranthread = 1;
+                        break;
+                    case gstystack:
+                        break;
+                    default:
+                        api_abend_unimpl(thread, __FILE__, __LINE__, "API thread advancement (state = %d)", st);
+                        break;
+                }
+                api_release_thread(thread);
+            }
         }
-    } while (thread);
+        if (!ranthread)
+            sleep(1)
+        ;
+    } while (hadthread);
+
+    ace_down();
 }
 
 static
@@ -125,6 +139,8 @@ void
 api_exec_instr(struct api_thread *thread, gsvalue instr)
 {
     struct gs_blockdesc *block;
+
+    instr = gsremove_indirections(instr);
 
     block = BLOCK_CONTAINING(instr);
 

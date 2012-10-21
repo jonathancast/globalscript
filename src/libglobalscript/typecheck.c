@@ -354,6 +354,8 @@ gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type)
         }
         case gstype_lift:
             return;
+        case gstype_app:
+            return;
         case gstype_prim:
             return;
         case gstype_fun:
