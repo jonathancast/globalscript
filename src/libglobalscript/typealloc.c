@@ -81,6 +81,8 @@ gstypes_size_item(struct gsbc_item item)
         case gssymtypelable:
             if (gssymeq(item.v->directive, gssymtypedirective, ".tydefinedprim")) {
                 return sizeof(struct gstype_prim);
+            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyapiprim")) {
+                return sizeof(struct gstype_prim);
             } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
                 return sizeof(struct gstype_indirection);
             } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
@@ -107,6 +109,8 @@ gstypes_size_defn(struct gsbc_item item)
     switch (item.type) {
         case gssymtypelable:
             if (gssymeq(item.v->directive, gssymtypedirective, ".tydefinedprim")) {
+                return 0;
+            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyapiprim")) {
                 return 0;
             } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
                 return 0;
@@ -176,6 +180,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                         res->node = gstype_prim;
                         prim = (struct gstype_prim *)res;
                         prim->primtypegroup = gsprim_type_defined;
+                        prim->primsetname = ptype->arguments[0];
                         prim->primset = gsprims_lookup_prim_set(ptype->arguments[0]->name);
                         if (!prim->primset)
                             gswarning("%s:%d: Warning: Unknown prim set %s",
@@ -184,6 +189,16 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                                 ptype->arguments[0]->name
                             )
                         ;
+                        prim->name = ptype->arguments[1];
+                        prim->kind = gskind_compile(ptype, ptype->arguments[2]);
+                    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyapiprim")) {
+                        struct gstype_prim *prim;
+
+                        res->node = gstype_prim;
+                        prim = (struct gstype_prim *)res;
+                        prim->primtypegroup = gsprim_type_api;
+                        prim->primsetname = ptype->arguments[0];
+                        prim->primset = gsprims_lookup_prim_set(ptype->arguments[0]->name);
                         prim->name = ptype->arguments[1];
                         prim->kind = gskind_compile(ptype, ptype->arguments[2]);
                     } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {

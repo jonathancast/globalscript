@@ -106,6 +106,8 @@ typedef struct gsstring_value {
     char name[];
 } *gsinterned_string;
 
+gsinterned_string gsintern_string(gssymboltype, char*);
+
 struct gspos {
     gsinterned_string file;
     int lineno;
@@ -117,9 +119,14 @@ struct gspos {
 /* §subsection Client-level Type-checking */
 
 struct gstype;
+enum gsprim_type_group;
 
 int gstype_expect_abstract(struct gstype *, char *, char *, char *);
+int gstype_expect_prim(struct gstype *, enum gsprim_type_group, char *, char *, char *, char *);
+int gstype_expect_lift(struct gstype *, struct gstype **, char *, char *);
 int gstype_expect_app(struct gstype *, struct gstype **, struct gstype **, char *, char *);
+
+int gstypes_type_check(struct gspos, struct gstype *, struct gstype *, char *, char *);
 
 /* §subsection Client-level Expression Manipulation */
 
@@ -225,6 +232,7 @@ struct gsregistered_primset {
 
 enum gsprim_type_group {
     gsprim_type_defined,
+    gsprim_type_api,
 };
 
 struct gsregistered_primkind {

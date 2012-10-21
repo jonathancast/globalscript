@@ -43,6 +43,12 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
                         kinds[i] = gskind_compile(ptype, ptype->arguments[2]);
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
+                    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyapiprim")) {
+                        gsargcheck(ptype, 2, "Kind");
+
+                        kinds[i] = gskind_compile(ptype, ptype->arguments[2]);
+
+                        gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
                     } else {
                         gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(%s) next", __FILE__, __LINE__, ptype->pos.file->name, ptype->pos.lineno, ptype->directive->name);
                     }
@@ -90,22 +96,13 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
                 gssymtable_set_type_expr_kind(symtable, items[i].v->label, calculated_kind);
             }
             return;
-
-            switch (type->node) {
-                case gstype_abstract: {
-                    gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: kind check abstract type next", type->file->name, type->lineno);
-                }
-                default:
-                    gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_kind_check_scc(node = %d)", type->node);
-            }
-            return;
         }
         case gssymdatalable:
         case gssymcodelable:
         case gssymcoercionlable:
             return;
         default:
-            gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_kind_check_scc(type = %d)", items[i].type);
+            gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_kind_check_item(type = %d)", items[i].type);
     }
 }
 
@@ -873,8 +870,24 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
 
             indir = (struct gstype_indirection *)pty;
 
-            res = seprint(res, eob, "\"indir ");
             res = gstypes_eprint_type(res, eob, indir->referent);
+            return res;
+        }
+        case gstype_prim: {
+            struct gstype_prim *prim;
+
+            prim = (struct gstype_prim *)pty;
+
+            switch (prim->primtypegroup) {
+                case gsprim_type_api:
+                    res = seprint(res, eob, "\"apiprim ");
+                    break;
+                default:
+                    res = seprint(res, eob, "%s:%d: %d primitives next ", __FILE__, __LINE__, prim->primtypegroup);
+                    break;
+            }
+            res = seprint(res, eob, "%s ", prim->primsetname->name);
+            res = seprint(res, eob, "%s", prim->name->name);
             return res;
         }
         case gstype_lift: {
@@ -887,6 +900,17 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             res = seprint(res, eob, "⌋");
             return res;
         }
+        case gstype_app: {
+            struct gstype_app *app;
+
+            app = (struct gstype_app *)pty;
+
+            res = gstypes_eprint_type(res, eob, app->fun);
+            res = seprint(res, eob, " (");
+            res = gstypes_eprint_type(res, eob, app->arg);
+            res = seprint(res, eob, ")");
+            return res;
+        }
         case gstype_sum: {
             struct gstype_sum *sum;
 
@@ -895,6 +919,18 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             res = seprint(res, eob, "\"Σ〈");
             for (i = 0; i < sum->numconstrs; i++) {
                 res = seprint(res, eob, "%s:%d: print constructors next", __FILE__, __LINE__);
+            }
+            res = seprint(res, eob, "〉");
+            return res;
+        }
+        case gstype_product: {
+            struct gstype_product *product;
+
+            product = (struct gstype_product *)pty;
+
+            res = seprint(res, eob, "\"Π〈");
+            for (i = 0; i < product->numfields; i++) {
+                res = seprint(res, eob, "%s:%d: print fields next", __FILE__, __LINE__);
             }
             res = seprint(res, eob, "〉");
             return res;

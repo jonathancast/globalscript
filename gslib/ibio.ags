@@ -7,11 +7,12 @@ ibio.abort	.undefined	_ibio.abort.type
 	.type
 
 ibio.m	.tyabstract	**^*^*^
+ibio.prim.m	.tygvar
 ι	.tylambda	*
 ο	.tylambda	*
 α	.tylambda	*
 	.tylift
-	.tysum
+	.tyref	ibio.prim.m	α
 
 _ibio.abort.type	.tyexpr
 _ibio_list.t.rune	.tygvar

@@ -26,9 +26,13 @@ static struct api_process_rpc_table exec_table = {
 void
 gsrun(char *script, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *ty)
 {
-    struct gstype *monad, *input, *output, *result;
+    struct gstype *monad, *input, *output, *result, *primres;
     struct gstype *tyw;
+    struct gspos pos;
     char err[0x100];
+
+    pos.file = gsintern_string(gssymfilename, __FILE__);
+    pos.lineno = __LINE__;
 
     tyw = ty;
     if (
@@ -45,6 +49,16 @@ gsrun(char *script, struct gsfile_symtable *symtable, gsvalue prog, struct gstyp
     if (!(prog = gscoerce(prog, ty, &tyw, err, err + sizeof(err), symtable, "ibio.out", input, output, result, 0))) {
         ace_down();
         gsfatal("%s: Couldn't cast down to primitive level: %s", script, err);
+    }
+
+    if (
+        gstype_expect_lift(tyw, &tyw, err, err + sizeof(err)) < 0
+        || gstype_expect_app(tyw, &tyw, &primres, err, err + sizeof(err)) < 0
+        || gstypes_type_check(pos, primres, result, err, err + sizeof(err)) < 0
+        || gstype_expect_prim(tyw, gsprim_type_api, "ibio.prim", "ibio", err, err + sizeof(err)) < 0
+    ) {
+        ace_down();
+        gsfatal("%s: Bad type: %s", script, err);
     }
 
     apisetupmainthread(&exec_table, prog);

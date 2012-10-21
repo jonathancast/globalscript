@@ -532,6 +532,17 @@ gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
             gsfatal("%s:%d: Missing kind on primitive type", filename, *plineno);
         parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
         return 0;
+    } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tyapiprim")) {
+        if (numfields < 2 + 1)
+            gsfatal("%s:%d: Mising primitive group name", filename, *plineno);
+        parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);
+        if (numfields < 2 + 2)
+            gsfatal("%s:%d: Missing primitive type relative name", filename, *plineno);
+        parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2 + 1]);
+        if (numfields < 2 + 3)
+            gsfatal("%s:%d: Missing kind on primitive type", filename, *plineno);
+        parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
+        return 0;
     } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tyabstract")) {
         if (numfields < 2 + 1)
             gsfatal("%s:%d: Missing kind on .tyabstract", filename, *plineno);

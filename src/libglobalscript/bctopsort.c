@@ -57,8 +57,8 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
             struct gsbc_item item;
             int i;
             item.file = parsedfile;
-            if (!parsedfile->data && !parsedfile->types)
-                gsfatal("%s: Cannot compile file: no data section so no entry points", parsedfile->name->name);
+            if (!parsedfile->data && !parsedfile->types && !parsedfile->coercions)
+                gswarning("%s: Prefix file is empty", parsedfile->name->name);
             item.type = gssymdatalable;
             item.v = 0;
             if (parsedfile->data) for (i = 0; i < parsedfile->data->numitems; i++) {
@@ -453,6 +453,24 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
         if (ptype->numarguments > 3)
             gsfatal("%s:%d: Too many arguments to .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
         return;
+    } else if (gssymeq(directive, gssymtypedirective, ".tyapiprim")) {
+        struct gsregistered_primset *prims;
+        struct gsregistered_primtype *type;
+
+        if (ptype->numarguments < 1)
+            gsfatal("%s:%d: Missing primitive set name on .tyapiprim", ptype->pos.file->name, ptype->pos.lineno);
+        prims = gsprims_lookup_prim_set(ptype->arguments[0]->name);
+        if (prims) {
+            gsfatal_unimpl_input(__FILE__, __LINE__, ptype, ".tyapiprim (known primset)");
+        } else {
+            if (ptype->numarguments < 2)
+                gsfatal("%s:%d: Missing primitive type name on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
+            if (ptype->numarguments < 3)
+                gsfatal("%s:%d: Missing kind on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
+            if (ptype->numarguments > 3)
+                gsfatal("%s:%d: Too many arguments to .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
+            return;
+        }
     } else {
         gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, ptype->pos.file->name, ptype->pos.lineno, ptype->directive->name);
     }

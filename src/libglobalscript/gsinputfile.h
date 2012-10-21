@@ -14,8 +14,6 @@ typedef enum {
 
 gsfiletype gsaddfile(char *filename, gsvalue *pentry, struct gstype **);
 
-gsinterned_string gsintern_string(gssymboltype, char*);
-
 int gssymeq(gsinterned_string, gssymboltype, char*);
 
 struct gsparsedfile_segment {
