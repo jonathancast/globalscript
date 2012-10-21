@@ -2,7 +2,4 @@
 
 	.type
 
-sequence.m	.tyabstract	**^
-α	.tylambda	*
-	.tylift
-	.tysum
+sequence.m	.tyapiprim	test.sequence	m	u?^

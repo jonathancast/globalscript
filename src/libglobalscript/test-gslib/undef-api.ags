@@ -9,6 +9,7 @@
 _eptype	.tyexpr
 sequence.m	.tygvar
 _empty.record	.tygvar
+	.tylift
 	.tyref	sequence.m	_empty.record
 
 _empty.record	.tyexpr

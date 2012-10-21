@@ -408,8 +408,22 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
     parsedline->directive = gsintern_string(gssymcodedirective, fields[1]);
 
     if (gssymeq(parsedline->directive, gssymcodedirective, ".expr")) {
+        if (numfields > 2)
+            gsfatal("%s:%d: Too many arguments to .expr", filename, *plineno)
+        ;
         return gsparse_code_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
     } else if (gssymeq(parsedline->directive, gssymcodedirective, ".eprog")) {
+        if (numfields < 3)
+            gsfatal("%s:%d: Missing primset argument to .eprog", filename, *plineno)
+        ;
+        parsedline->arguments[2 - 2] = gsintern_string(gssymprimsetlable, fields[2]);
+        if (numfields < 4)
+            gsfatal("%s:%d: Missing prim argument to .eprog", filename, *plineno)
+        ;
+        parsedline->arguments[3 - 2] = gsintern_string(gssymtypelable, fields[3]);
+        if (numfields > 4)
+            gsfatal("%s:%d: Too many arguments to .eprog", filename, *plineno)
+        ;
         return gsparse_api_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
     } else {
         gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: code directive %s", filename, *plineno, fields[1]);

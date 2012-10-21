@@ -2,20 +2,23 @@
 
 	.data
 
-	.closure	_entry.c
+	.closure	_epcode	_eptype
 
 	.code
 
-_entry.c	.expr
-_eptype	.tygvar
-	.undef	_eptype
+_epcode	.eprog	test.sequence	m
+_epcode.body	.subcode
+	.body	_epcode.body
+
+_epcode.body	.expr
+_empty.record	.tygvar
+	.undef	_empty.record
 
 	.type
 
 _eptype	.tyexpr
 sequence.m	.tygvar
 _empty.record	.tygvar
-	.tylift
 	.tyref	sequence.m	_empty.record
 
 _empty.record	.tyexpr

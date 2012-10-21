@@ -291,6 +291,8 @@ seprint_kind_name(char *buf, char *ebuf, struct gskind *ky)
     switch (ky->node) {
         case gskind_unknown:
             return seprint(buf, ebuf, "?");
+        case gskind_unlifted:
+            return seprint(buf, ebuf, "u");
         case gskind_lifted:
             return seprint(buf, ebuf, "*");
         case gskind_exponential:
@@ -544,7 +546,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 }
 
 static struct gsbc_code_item_type *gsbc_typecheck_code_expr(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
-static struct gsbc_code_item_type *gsbc_typecheck_api_expr(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
+static struct gsbc_code_item_type *gsbc_typecheck_api_expr(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, gsinterned_string, gsinterned_string);
 
 static
 void
@@ -564,7 +566,13 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
     } else if (gssymeq(pcode->directive, gssymcodedirective, ".eprog")) {
         struct gsbc_code_item_type *type;
 
-        type = gsbc_typecheck_api_expr(symtable, &pseg, gsinput_next_line(&pseg, pcode));
+        if (pcode->numarguments < 1)
+            gsfatal_bad_input(pcode, "Not enough arguments to .eprog; missing primset")
+        ;
+        if (pcode->numarguments < 2)
+            gsfatal_bad_input(pcode, "Not enough arguments to .eprog; missing API monad name")
+        ;
+        type = gsbc_typecheck_api_expr(symtable, &pseg, gsinput_next_line(&pseg, pcode), pcode->arguments[0], pcode->arguments[1]);
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, pcode, "gstypes_type_check_code_item(%s)", pcode->directive->name);
@@ -711,9 +719,11 @@ have_type:
     return res;
 }
 
+static void gsbc_typecheck_check_api_statement_type(struct gspos, struct gstype *, gsinterned_string, gsinterned_string);
+
 static
 struct gsbc_code_item_type *
-gsbc_typecheck_api_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
+gsbc_typecheck_api_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
 {
     enum {
         rttygvar,
@@ -771,9 +781,7 @@ gsbc_typecheck_api_expr(struct gsfile_symtable *symtable, struct gsparsedfile_se
             if (nftyvs > cty->numftyvs)
                 gsfatal_bad_input(p, "Too many free type variables for %s; only need %d but have %d", p->arguments[0]->name, cty->numftyvs, nftyvs)
             ;
-            if (i < p->numarguments)
-                i++
-            ;
+            if (i < p->numarguments) i++;
             nfvs = p->numarguments - i;
             if (nfvs < cty->numfvs)
                 gsfatal_bad_input(p, "Not enough free variables for %s; need %d but have %d", p->arguments[0]->name, cty->numfvs, nfvs)
@@ -784,6 +792,7 @@ gsbc_typecheck_api_expr(struct gsfile_symtable *symtable, struct gsparsedfile_se
             for (; i < p->numarguments; i++) {
                 gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(.body free variables)");
             }
+            gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim);
             goto have_type;
         } else {
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(%s)", p->directive->name);
@@ -807,6 +816,65 @@ have_type:
     res->result_type = calculated_type;
 
     return res;
+}
+
+static
+void
+gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsinterned_string primsetname, gsinterned_string primname)
+{
+    for (;;) {
+        char buf[0x100];
+
+        if (gstypes_eprint_type(buf, buf + sizeof(buf), ty) >= buf + sizeof(buf))
+            gsfatal("%s:%d: %s:%d: buffer overflow printing type %s:%d", __FILE__, __LINE__, pos.file->name, pos.lineno, ty->file->name, ty->lineno)
+        ;
+
+        switch (ty->node) {
+            case gstype_indirection: {
+                struct gstype_indirection *indir;
+
+                indir = (struct gstype_indirection *)ty;
+                ty = indir->referent;
+                continue;
+            }
+            case gstype_prim: {
+                struct gstype_prim *prim;
+
+                prim = (struct gstype_prim *)ty;
+
+                if (prim->primtypegroup != gsprim_type_api)
+                    gsfatal("%s:%d: I don't think %s is an API primitive type", pos.file->name, pos.lineno, buf)
+                ;
+                if (prim->primsetname != primsetname)
+                    gsfatal("%s:%d: I don't think %s is a type in the %s primset", pos.file->name, pos.lineno, buf, primsetname->name)
+                ;
+                if (prim->name != primname)
+                    gsfatal("%s:%d: I don't think %s is the primtype %s %s", pos.file->name, pos.lineno, buf, primsetname->name, primname->name)
+                ;
+                return;
+            }
+            case gstype_lift: {
+                struct gstype_lift *lift;
+
+                lift = (struct gstype_lift *)ty;
+                ty = lift->arg;
+                continue;
+            }
+            case gstype_app: {
+                struct gstype_app *app;
+
+                app = (struct gstype_app *)ty;
+                ty = app->fun;
+                continue;
+            }
+            default:
+                gsfatal("%s:%d: I don't think %s is an appropriate type for a statement in the %s %s API monad",
+                    pos.file->name, pos.lineno,
+                    buf,
+                    primsetname->name, primname->name
+                );
+        }
+    }
 }
 
 static

@@ -6,7 +6,7 @@
 
 	.code
 
-_epcode	.eprog
+_epcode	.eprog	test.sequence	m
 _epcode.body	.subcode
 	.body	_epcode.body
 
@@ -19,6 +19,7 @@ _eptype	.tygvar
 _eptype	.tyexpr
 sequence.m	.tygvar
 _empty.record	.tygvar
+	.tylift
 	.tyref	sequence.m	_empty.record
 
 _empty.record	.tyexpr
