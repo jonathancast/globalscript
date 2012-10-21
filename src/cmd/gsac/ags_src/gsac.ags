@@ -7,7 +7,11 @@ _real.entry	.closure	_real.entry.c
 
 	.code
 
-_real.entry.c	.expr
+_real.entry.c	.eprog	ibio.prim	ibio
+_real.entry.body	.subcode
+	.body	_real.entry.body
+
+_real.entry.body	.expr
 _epbodytype	.tygvar
 	.undef	_epbodytype
 
