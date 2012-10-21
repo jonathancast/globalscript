@@ -1,0 +1,22 @@
+	.document
+
+	.data
+
+	.closure	_entry.c
+
+	.code
+
+_entry.c	.expr
+_eptype	.tygvar
+	.undef	_eptype
+
+	.type
+
+_eptype	.tyexpr
+sequence.m	.tygvar
+_empty.record	.tygvar
+	.tyref	sequence.m	_empty.record
+
+_empty.record	.tyexpr
+	.tylift
+	.typroduct
