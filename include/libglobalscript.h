@@ -197,8 +197,7 @@ struct gsbco {
     enum {
         gsbc_expr,
     } tag;
-    gsinterned_string file;
-    int lineno;
+    struct gspos pos;
     ulong size;
     ulong numglobals, numargs;
 };

@@ -57,7 +57,7 @@ gsheapeval(gsvalue val)
                         fvs_for_code = 0;
                         args_for_code = code->numargs;
                     if (fvs_in_cl < fvs_for_code) {
-                        gspoison(hp, code->file, code->lineno, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);
+                        gspoison(hp, code->pos.file, code->pos.lineno, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);
                         res = gstywhnf;
                     } else if (fvs_in_cl < fvs_for_code + args_for_code) {
                         res = gstywhnf;

@@ -178,7 +178,7 @@ have_thread:
         ip = (uchar*)ip + sizeof(gsvalue*) - (uintptr)ip % sizeof(gsvalue*)
     ;
     for (i = 0; i < code->numglobals; i++) {
-        gspoison_unimpl(hp, __FILE__, __LINE__, code->file, code->lineno, "ace_start_evaluation: copy in global variable");
+        gspoison_unimpl(hp, __FILE__, __LINE__, code->pos.file, code->pos.lineno, "ace_start_evaluation: copy in global variable");
         ip = (gsvalue*)ip + 1;
     }
     instr = (struct gsbc *)ip;

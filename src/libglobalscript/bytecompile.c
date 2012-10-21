@@ -341,8 +341,7 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
 {
     if (gssymeq(p->directive, gssymcodedirective, ".expr")) {
         bcos[i]->tag = gsbc_expr;
-        bcos[i]->file = p->pos.file;
-        bcos[i]->lineno = p->pos.lineno;
+        bcos[i]->pos = p->pos;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "Code directive %s next", p->directive->name);
