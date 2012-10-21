@@ -826,7 +826,7 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
         char buf[0x100];
 
         if (gstypes_eprint_type(buf, buf + sizeof(buf), ty) >= buf + sizeof(buf))
-            gsfatal("%s:%d: %s:%d: buffer overflow printing type %s:%d", __FILE__, __LINE__, pos.file->name, pos.lineno, ty->file->name, ty->lineno)
+            gsfatal("%s:%d: %P: buffer overflow printing type %s:%d", __FILE__, __LINE__, pos, ty->file->name, ty->lineno)
         ;
 
         switch (ty->node) {
@@ -843,13 +843,13 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
                 prim = (struct gstype_prim *)ty;
 
                 if (prim->primtypegroup != gsprim_type_api)
-                    gsfatal("%s:%d: I don't think %s is an API primitive type", pos.file->name, pos.lineno, buf)
+                    gsfatal("%P: I don't think %s is an API primitive type", pos, buf)
                 ;
                 if (prim->primsetname != primsetname)
-                    gsfatal("%s:%d: I don't think %s is a type in the %s primset", pos.file->name, pos.lineno, buf, primsetname->name)
+                    gsfatal("%P: I don't think %s is a type in the %s primset", pos, buf, primsetname->name)
                 ;
                 if (prim->name != primname)
-                    gsfatal("%s:%d: I don't think %s is the primtype %s %s", pos.file->name, pos.lineno, buf, primsetname->name, primname->name)
+                    gsfatal("%P: I don't think %s is the primtype %s %s", pos, buf, primsetname->name, primname->name)
                 ;
                 return;
             }
@@ -868,11 +868,7 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
                 continue;
             }
             default:
-                gsfatal("%s:%d: I don't think %s is an appropriate type for a statement in the %s %s API monad",
-                    pos.file->name, pos.lineno,
-                    buf,
-                    primsetname->name, primname->name
-                );
+                gsfatal("%P: I don't think %s is an appropriate type for a statement in the %s %s API monad", pos, buf, primsetname->name, primname->name);
         }
     }
 }

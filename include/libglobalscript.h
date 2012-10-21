@@ -113,7 +113,9 @@ struct gspos {
     gsinterned_string file;
     int lineno;
 };
-/* §todo{This is find for string code files, but really should allow for core/Global Script source as well} */
+/* §todo{This is fine for string code files, but really should allow for core/Global Script source as well} */
+
+#pragma varargck type "P" struct gspos
 
 /* §section Global Script Program Calculus */
 

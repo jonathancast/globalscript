@@ -9,6 +9,8 @@
 #define FETCH_OPTION() \
     (cur_arg = *++argv, --argc, is_option = (*cur_arg == '-'), (is_option ? cur_arg++ : 0)) \
 
+static int gsPfmt(Fmt *f);
+
 void
 gsmain(int argc, char **argv)
 {
@@ -26,6 +28,9 @@ gsmain(int argc, char **argv)
         sizeof(struct gs_blockdesc),
         sizeof(gsvalue)
     );
+
+    fmtinstall('P', gsPfmt);
+
     gsadd_global_script_prim_sets();
     gsadd_global_gslib();
     FETCH_OPTION();
@@ -64,4 +69,14 @@ have_document:
     GS_SLOW_EVALUATE(gsentrypoint);
     gsrun(docfilename, gscurrent_symtable, gsentrypoint, gsentrytype);
     exits("");
+}
+
+static
+int
+gsPfmt(Fmt *f)
+{
+    struct gspos pos;
+
+    pos = va_arg(f->args, struct gspos);
+    return fmtprint(f, "%s:%d", pos.file->name, pos.lineno);
 }
