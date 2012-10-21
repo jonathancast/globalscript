@@ -9,6 +9,7 @@ struct gsbc {
 enum {
     gsbc_op_undef,
     gsbc_op_enter,
+    gsbc_op_body,
 };
 
 #define GS_NTH_ARG_OFFSET(n) (offsetof(struct gsbc, args) + n)

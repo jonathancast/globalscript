@@ -66,6 +66,9 @@ gsheapeval(gsvalue val)
                     ;
                     }
                     break;
+                case gsbc_eprog:
+                    res = gstywhnf;
+                    break;
                 default:
                     gswarning("%s:%d: Evalling something else", __FILE__, __LINE__);
                     gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(closure %x; tag = %d)", val, code->tag);

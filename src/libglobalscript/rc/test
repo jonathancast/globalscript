@@ -57,6 +57,7 @@ echo
 echo '-- undefined API entry points --'
 if (./$O.test-gsexec ./test-gslib ./test-gslib/undef-api.ags >[2] ./test-results/undef-api.ags-actual) {
     echo 'test-gsexec succeeded; should have failed' >[1=2]
+    cat ./test-results/undef-api.ags-actual >[1=2]
     exit 1
 }
 if (! grep -s './test-gslib/undef-api.ags:5: undefined' ./test-results/undef-api.ags-actual) {
@@ -69,11 +70,25 @@ echo
 echo '-- undefined expression API entry points --'
 if (./$O.test-gsexec ./test-gslib ./test-gslib/undef-expr-api.ags >[2] ./test-results/undef-expr-api.ags-actual) {
     echo 'test-gsexec succeeded; should have failed' >[1=2]
+    cat ./test-results/undef-expr-api.ags-actual >[1=2]
     exit 1
 }
 if (! grep -s './test-gslib/undef-expr-api.ags:11: undefined' ./test-results/undef-expr-api.ags-actual) {
     echo 'Couldn''t find expected error message in output anywhere:' >[1=2]
     cat ./test-results/undef-expr-api.ags-actual >[1=2]
+    exit 1
+}
+echo
+
+echo '-- undefined ''block'' statement API entry points --'
+if (./$O.test-gsexec ./test-gslib ./test-gslib/undef-block-api.ags >[2] ./test-results/undef-block-api.ags-actual) {
+    echo 'test-gsexec succeeded; should have failed' >[1=2]
+    cat ./test-results/undef-block-api.ags-actual >[1=2]
+    exit 1
+}
+if (! grep -s './test-gslib/undef-block-api.ags:15: undefined' ./test-results/undef-block-api.ags-actual) {
+    echo 'Couldn''t find expected error message in output anywhere:' >[1=2]
+    cat ./test-results/undef-block-api.ags-actual >[1=2]
     exit 1
 }
 echo

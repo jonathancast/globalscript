@@ -178,20 +178,22 @@ int
 gsbc_bytecode_size_item(struct gsbc_item item)
 {
     int size;
+    int i;
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
     enum {
         phtygvars,
         phgvars,
+        phcode,
         phargs,
         phbytecodes,
     } phase;
-    int nregs;
+    int nregs, ncodes;
 
     size = sizeof(struct gsbco);
 
     phase = phtygvars;
-    nregs = 0;
+    nregs = ncodes = 0;
     pseg = item.pseg;
     for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
@@ -215,8 +217,24 @@ gsbc_bytecode_size_item(struct gsbc_item item)
                 )
             ;
             size += sizeof(gsvalue);
-            gswarning("%s:%d: size = 0x%x", __FILE__, __LINE__, size);
             nregs++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+            if (phase > phcode)
+                gsfatal_bad_input(p, "Too late to add sub-expressions")
+            ;
+            phase = phcode;
+            if (ncodes >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
+            ;
+            if (size % sizeof(struct gsbco *))
+                gsfatal("%s:%d: %s:%d: Fiel format error: we're at a .subcode generator but our location isn't struct gsbco *-aligned",
+                    __FILE__, __LINE__,
+                    p->pos.file->name,
+                    p->pos.lineno
+                )
+            ;
+            size += sizeof(struct gsbco *);
+            ncodes++;
         } else if (gssymeq(p->directive, gssymcodeop, ".arg")) {
             if (phase > phargs)
                 gsfatal_bad_input(p, "Too late to add arguments")
@@ -231,6 +249,18 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             gswarning("%s:%d: size = 0x%x", __FILE__, __LINE__, size);
             if (p->numarguments > 1)
                 gsfatal("%s:%d: Too many arguments to .enter", p->pos.file->name, p->pos.lineno);
+            goto done;
+        } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
+            int nfvs;
+
+            phase = phbytecodes;
+
+            /* Ignore free type variables & separator (type erasure) */
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+            nfvs = p->numarguments - i;
+
+            size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
             goto done;
         } else if (gssymeq(p->directive, gssymcodeop, ".undef")) {
             phase = phbytecodes;
@@ -333,6 +363,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
 }
 
 static void gsbc_byte_compile_code_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco *);
+static void gsbc_byte_compile_api_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco *);
 
 static
 void
@@ -342,8 +373,12 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
         bcos[i]->tag = gsbc_expr;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
+    } else if (gssymeq(p->directive, gssymcodedirective, ".eprog")) {
+        bcos[i]->tag = gsbc_eprog;
+        bcos[i]->pos = p->pos;
+        gsbc_byte_compile_api_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "Code directive %s next", p->directive->name);
+        gsfatal_unimpl_input(__FILE__, __LINE__, p, "Code directive %s", p->directive->name);
     }
 }
 
@@ -360,13 +395,13 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     int i;
     gsvalue *pglobal;
     struct gsbc *pcode;
-    int nregs, nglobals, nargs;
+    int nregs, nglobals, nsubexprs, nargs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
 
     phase = rttygvars;
     pcode = 0;
     pglobal = (gsvalue*)((uchar*)pbco + sizeof(struct gsbco));
-    nregs = nglobals = nargs = 0;
+    nregs = nglobals = nsubexprs = nargs = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (phase > rttygvars)
@@ -430,5 +465,82 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
 done:
 
     pbco->numglobals = nglobals;
+    pbco->numsubexprs = nsubexprs;
+    pbco->numargs = nargs;
+}
+
+static
+void
+gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco *pbco)
+{
+    enum {
+        rttygvars,
+        rtgvars,
+        rtcode,
+        rtargs,
+    } phase;
+    int i;
+    uchar *pout;
+    gsvalue *pglobal;
+    struct gsbco **psubcode;
+    struct gsbc *pcode;
+    int nregs, nglobals, ncodes, nargs;
+    gsinterned_string regs[MAX_NUM_REGISTERS];
+    gsinterned_string codes[MAX_NUM_REGISTERS];
+
+    phase = rttygvars;
+    pcode = 0;
+    pout = (uchar*)pbco + sizeof(struct gsbco);
+    nregs = nglobals = ncodes = nargs = 0;
+    for (; ; p = gsinput_next_line(ppseg, p)) {
+        if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+            if (phase > rtcode)
+                gsfatal_bad_input(p, "Too late to add sub-expressions")
+            ;
+            phase = rtcode;
+            if (ncodes >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
+            ;
+            codes[ncodes] = p->label;
+            psubcode = (struct gsbco **)pout;
+            *psubcode++ = gssymtable_get_code(symtable, p->label);
+            pout = (uchar*)psubcode;
+            ncodes++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
+            int creg = 0;
+            int nfvs, first_fv;
+
+            pcode = (struct gsbc *)pout;
+
+            creg = gsbc_find_register(p, codes, ncodes, p->arguments[0]);
+
+            pcode->pos = p->pos;
+            pcode->instr = gsbc_op_body;
+            pcode->args[0] = (uchar)creg;
+
+            /* §paragraph{Skipping free type variables} */
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+
+            nfvs = p->numarguments - i;
+            first_fv = i;
+            pcode->args[1] = (uchar)nfvs;
+            for (i = first_fv; i < p->numarguments; i++) {
+                gsfatal_unimpl_input(__FILE__, __LINE__, p, "store free variables");
+            }
+
+            pcode = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
+            pout = (uchar *)pcode;
+
+            goto done;
+        } else {
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "API op %s next", p->directive->name);
+        }
+    }
+
+done:
+
+    pbco->numglobals = nglobals;
+    pbco->numsubexprs = ncodes;
     pbco->numargs = nargs;
 }

@@ -2,6 +2,8 @@
 #include <libc.h>
 #include <libglobalscript.h>
 
+#include "gsregtables.h"
+#include "gsheap.h"
 #include "api.h"
 
 static struct api_thread_queue *api_thread_queue;
@@ -86,7 +88,7 @@ api_thread_pool_main(void *arg)
     struct api_thread *mainthread, *thread;
     struct api_thread_pool_args *args;
 
-    int i, threadnum;
+    int threadnum;
     int ranthread, hadthread;
 
     args = (struct api_thread_pool_args *)arg;
@@ -134,6 +136,8 @@ api_thread_pool_main(void *arg)
     ace_down();
 }
 
+static void api_unpack_block_statement(struct api_thread *, struct gsclosure *);
+
 static
 void
 api_exec_instr(struct api_thread *thread, gsvalue instr)
@@ -149,8 +153,110 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
 
         p = (struct gserror *)instr;
         api_abend(thread, "%s:%d: undefined", p->file->name, p->lineno);
+    } else if (gsisheap_block(block)) {
+        struct gsheap_item *hp;
+
+        hp = (struct gsheap_item *)instr;
+        switch (hp->type) {
+            case gsclosure: {
+                struct gsclosure *cl;
+
+                cl = (struct gsclosure *)hp;
+                switch (cl->code->tag) {
+                    case gsbc_eprog:
+                        api_unpack_block_statement(thread, cl);
+                        return;
+                    default:
+                        api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction excecution (%d closures)", cl->code->tag);
+                        return;
+                }
+            }
+            default:
+                api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction excecution (%d exprs)", hp->type);
+                return;
+        }
     } else {
         api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction excecution (%s)", block->class->description);
+    }
+}
+
+static
+void
+api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
+{
+    void *pin;
+    struct gsbco *code;
+    struct gsbco **psubexpr;
+    struct gsbc *pinstr;
+    struct gsbco *subexprs[MAX_NUM_REGISTERS];
+    int nstatements;
+    gsvalue rhss[MAX_NUM_REGISTERS];
+    int i;
+
+    code = cl->code;
+    pin = (uchar*)code + sizeof(*code);
+
+    for (i = 0; i < code->numglobals; i++) {
+        api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: get global variable");
+        return;
+    }
+
+    for (i = 0; i < code->numsubexprs; i++) {
+        psubexpr = (struct gsbco **)pin;
+        subexprs[i] = *psubexpr++;
+        pin = psubexpr;
+    }
+
+    /* Free variables */
+
+    for (i = 0; i < code->numargs; i++) {
+        api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: get argument");
+        return;
+    }
+
+    nstatements = 0;
+    for (;;) {
+        pinstr = (struct gsbc *)pin;
+        switch (pinstr->instr) {
+            case gsbc_op_body: {
+                struct gsbco *subexpr;
+                struct gsclosure *cl;
+
+                if (nstatements > MAX_NUM_REGISTERS) {
+                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many stateemnts (max 0x%x)", MAX_NUM_REGISTERS);
+                    return;
+                }
+
+                subexpr = subexprs[pinstr->args[0]];
+
+                cl = gsreserveheap(sizeof(*cl) + pinstr->args[1] * sizeof(gsvalue));
+
+                memset(&cl->hp.lock, 0, sizeof(cl->hp.lock));
+                cl->hp.pos = pinstr->pos;
+                cl->hp.type = gsclosure;
+                cl->code = subexpr;
+                for (i = 0; i < pinstr->args[1]; i++) {
+                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: free variables of .body");
+                    return;
+                }
+                rhss[nstatements] = (gsvalue)cl;
+                nstatements++;
+                goto got_statements;
+            }
+            default:
+                api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: %d opcodes", pinstr->instr);
+                return;
+        }
+        pinstr = GS_NEXT_BYTECODE(pinstr, 2 + pinstr->args[1]);
+        pin = pinstr;
+    }
+
+got_statements:
+    nstatements--;
+    thread->code->instrs[thread->code->ip].instr = rhss[nstatements];
+    while (nstatements--) {
+        api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: store binds");
+        return;
     }
 }
 

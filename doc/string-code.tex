@@ -97,4 +97,84 @@ In both cases, the argument is declared in the type item using \verb+.tylambda+:
 t	.tylambda	*
 \end{verbatim}
 
+\section{API Block Statements}
+
+These are similar to expressions;
+in fact, the data items use \verb+.closure+ like expressions do;
+only the code items are different.
+
+In Core, a block statement looks like
+\begin{haskell}
+    \hskwd{for}\;@(\hskwd{type} \hsinf{type}) \hsinf{gens}. \hsinf{body}
+\end{haskell}
+or
+\begin{haskell}
+    \hskwd{for}\;\hskwd{rec}\;@(\hskwd{type} \hsinf{type}) \hsinf{gens}. \hsinf{body}
+\end{haskell}
+The generators look like
+\begin{haskell*}
+    \hsinf{var} & = & \hsinf{expr}; \hscom{Let} \\
+    \lfloor\hsinf{var}\rfloor & \propto & \hsinf{expr}; \hscom{Strict let} \\
+    \hsinf{var} & \leftarrow & \hsinf{expr}; \hscom{Bind} \\
+\end{haskell*}
+; the body is an expression.
+
+String code only permits `let' generators at lifted types and `bind' generators in its `API block statement' construct;
+the others are compiled to \verb+.expr+s.
+\footnote{
+    Unlifted `let' generators and `strict let' generators bind variables of unlifted types,
+    and so cannot participate in recursion,
+    \emph{including forward references to bind generators}.
+    NB: That's not entirely true --- variables of unlifted but pointed type, like unlifted function types,
+    \emph{can} be recursively defined --- need to think about that more.
+}
+
+A block statement gets compiled to either a \verb+.prog+ or a \verb+.eprog+ block;
+technically, \verb+.eprog+ should be used for block statements beginning with
+let generators or
+bind generators with non-HNF RHSs;
+these should technically be reduxes,
+and only a block statement beginning with a bind generator with a non-\<unit\> RHS
+or a let generator with a forward reference to/past such a bind generator should be considered a WHNF.
+Probably we're going to ignore that for now.
+
+The syntax is
+\begin{verbatim}
+label	.prog	primset	primtype
+\end{verbatim}
+or
+\begin{verbatim}
+label	.eprog	primset	primtype
+\end{verbatim}
+That is followed by global variables, free variables, and arguments as for a \verb+.expr+.
+
+`Let' generators get compiled to
+\begin{verbatim}
+var	.alloc	code-label	fvs
+\end{verbatim}
+`Bind' generators get compiled to
+\begin{verbatim}
+var	.bind	code-label	fvs
+\end{verbatim}
+The body gets compiled to
+\begin{verbatim}
+	.body	code-label	fvs
+\end{verbatim}
+
+Another complication is that, in the expression \<\hskwd{for} @(\hskwd{type} m) x \leftarrow e_0. e_1\>,
+we have three possibilities for the types of \<e_0\> and \<e_1\>:
+\footnote{We assume that \<e_1\> has the same type as the expression as a whole.}
+\begin{enumerate}
+    \item \<e_0 :: m \alpha\>, \<e_1 :: m \beta\>;
+    \item \<e_0 :: m \alpha \>, \<e_1 :: \lfloor m \beta \rfloor\>; or
+    \item \<e_0 :: \lfloor m \alpha \rfloor\>, \<e_1 :: \lfloor m \beta \rfloor\>.
+    \footnote{
+        If the whole expression has an unlifted type, \<e_0\> cannot have a lifted type,
+        since \<\hskwd{for}\;@(\hskwd{type}\;m)\;x \leftarrow [].\;e_1\> is an evaluation context.
+    }
+\end{enumerate}
+
+There's no real difference between the implementation of these possibilities, though,
+so we can dis-regard them when compiling to string code.
+
 \end{document}

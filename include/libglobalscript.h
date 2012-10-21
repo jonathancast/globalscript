@@ -98,6 +98,7 @@ typedef enum {
     gssymcoerciondirective,
     gssymcoercionlable,
     gssymcoercionop,
+    gssymseparator,
 } gssymboltype;
 
 typedef struct gsstring_value {
@@ -195,10 +196,11 @@ struct gsclosure {
 struct gsbco {
     enum {
         gsbc_expr,
+        gsbc_eprog,
     } tag;
     struct gspos pos;
     ulong size;
-    ulong numglobals, numargs;
+    ulong numglobals, numsubexprs, numargs;
 };
 
 struct gsindirection {

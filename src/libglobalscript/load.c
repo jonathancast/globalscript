@@ -387,6 +387,7 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
 }
 
 static long gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
+static long gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
 
 static
 long
@@ -408,8 +409,10 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
 
     if (gssymeq(parsedline->directive, gssymcodedirective, ".expr")) {
         return gsparse_code_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
+    } else if (gssymeq(parsedline->directive, gssymcodedirective, ".eprog")) {
+        return gsparse_api_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
     } else {
-        gsfatal("%s:%d: Unimplemented code directive %s", filename, *plineno, fields[1]);
+        gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: code directive %s", filename, *plineno, fields[1]);
     }
 
     gsfatal("%s:%d: gsparse_code_item next", __FILE__, __LINE__);
@@ -495,6 +498,57 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
 
     return -1;
 }
+
+static
+long
+gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
+{
+    struct gsparsedline *parsedline;
+    int i;
+    long n;
+
+    while ((n = gsgrabline(filename, chan, line, plineno, fields)) > 0) {
+        parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, n);
+
+        parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
+
+        if (gssymeq(parsedline->directive, gssymcodeop, ".subcode")) {
+            if (*fields[0])
+                parsedline->label = gsintern_string(gssymcodelable, fields[0]);
+            else
+                gsfatal("%s:%d: Missing label on .subcode", filename, *plineno);
+            if (n > 2)
+                gsfatal("%s:%d: Too many arguments to .subcode", filename, *plineno);
+        } else if (gssymeq(parsedline->directive, gssymcodeop, ".body")) {
+            if (*fields[0])
+                gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
+            else
+                parsedline->label = 0;
+            if (n < 3)
+                gsfatal("%s:%d: Missing code label", filename, *plineno);
+            parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
+            for (i = 3; i < n && strcmp(fields[i], "|"); i++)
+                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+            ;
+            if (i < n)
+                parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i])
+            ;
+            for (i++; i < n; i++)
+                parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
+            ;
+            return 0;
+        } else {
+            gsfatal("%s:%d: %s:%d: Unimplemented api op %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
+        }
+    }
+    if (n < 0)
+        gsfatal("%s:%d: Error in reading API line: %r", filename, *plineno);
+    else
+        gsfatal("%s:%d: EOF in middle of reading API sub-program literal", filename, codedirective->pos.lineno);
+
+    return -1;
+}
+
 
 static long gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
 static long gsparse_coerce_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);

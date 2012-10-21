@@ -57,6 +57,7 @@ inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsalloc.h
 eval.$O: gsheap.h gsinputfile.h ace.h
 ace.$O: gsheap.h ace.h
+apithread.$O: gsregtables.h gsheap.h api.h
 symtable.$O: gsinputfile.h
 bytecompile.$O: $GLOBALSCRIPT/include/libibio.h gsinputfile.h gsregtables.h gsbytecompile.h gsheap.h gstopsort.h gstypealloc.h
 primset.$O: gsinputfile.h gssetup.h

@@ -508,7 +508,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         if (pdata->numarguments >= 2) {
             struct gstype *declared_type;
 
-            declared_type = gssymtable_get_data_type(symtable, pdata->arguments[1]);
+            declared_type = gssymtable_get_type(symtable, pdata->arguments[1]);
             gstypes_type_check_type_fail(pdata, code_type->result_type, declared_type);
             gsbc_typecheck_check_boxed(pdata, declared_type);
         } else {
@@ -544,6 +544,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 }
 
 static struct gsbc_code_item_type *gsbc_typecheck_code_expr(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
+static struct gsbc_code_item_type *gsbc_typecheck_api_expr(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
 
 static
 void
@@ -559,6 +560,11 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
         struct gsbc_code_item_type *type;
 
         type = gsbc_typecheck_code_expr(symtable, &pseg, gsinput_next_line(&pseg, pcode));
+        gssymtable_set_code_type(symtable, pcode->label, type);
+    } else if (gssymeq(pcode->directive, gssymcodedirective, ".eprog")) {
+        struct gsbc_code_item_type *type;
+
+        type = gsbc_typecheck_api_expr(symtable, &pseg, gsinput_next_line(&pseg, pcode));
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, pcode, "gstypes_type_check_code_item(%s)", pcode->directive->name);
@@ -683,6 +689,104 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             goto have_type;
         } else {
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_code_expr(%s)", p->directive->name);
+        }
+    }
+
+have_type:
+
+    while (nargs--) {
+        struct gstype *ty;
+
+        ty = argtypes[nargs];
+        p = arglines[nargs];
+
+        calculated_type = gstypes_compile_fun(p->pos.file, p->pos.lineno, ty, calculated_type);
+    }
+
+    res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, sizeof(*res), sizeof(int));
+    res->numftyvs = 0;
+    res->numfvs = 0;
+    res->result_type = calculated_type;
+
+    return res;
+}
+
+static
+struct gsbc_code_item_type *
+gsbc_typecheck_api_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
+{
+    enum {
+        rttygvar,
+        rtgvar,
+        rtcode,
+        rtarg,
+    } regtype;
+    int i;
+    int nregs, ncodes;
+    gsinterned_string regs[MAX_NUM_REGISTERS], coderegs[MAX_NUM_REGISTERS];
+    struct gstype *tyregs[MAX_NUM_REGISTERS];
+    struct gskind *tyregkinds[MAX_NUM_REGISTERS];
+    struct gsbc_code_item_type *codetypes[MAX_NUM_REGISTERS];
+    struct gstype *regtypes[MAX_NUM_REGISTERS];
+    int nargs;
+    struct gstype *argtypes[MAX_NUM_REGISTERS];
+    struct gsparsedline *arglines[MAX_NUM_REGISTERS];
+    struct gstype *calculated_type;
+    struct gskind *kind;
+    struct gsbc_code_item_type *res;
+
+    nregs = ncodes = nargs = 0;
+    regtype = rttygvar;
+    for (; ; p = gsinput_next_line(ppseg, p)) {
+        if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+            if (regtype > rtcode)
+                gsfatal_bad_input(p, "Too late to add sub-expressions")
+            ;
+            regtype = rtcode;
+            if (ncodes >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
+            ;
+            coderegs[ncodes] = p->label;
+            codetypes[ncodes] = gssymtable_get_code_type(symtable, p->label);
+            if (!codetypes[ncodes])
+                gsfatal_bad_input(p, "Can't find type of sub-expression %s", p->label->name)
+            ;
+            ncodes++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
+            int creg = 0;
+            struct gsbc_code_item_type *cty;
+            int nfvs, nftyvs;
+
+            gsargcheck(p, 0, "code");
+            creg = gsbc_find_register(p, coderegs, ncodes, p->arguments[0]);
+            cty = codetypes[creg];
+            calculated_type = cty->result_type;
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+                gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(.body type free variables)");
+            }
+            nftyvs = i - 1;
+            if (nftyvs < cty->numftyvs)
+                gsfatal_bad_input(p, "Not enough free type variables for %s; need %d but have %d", p->arguments[0]->name, cty->numftyvs, nftyvs)
+            ;
+            if (nftyvs > cty->numftyvs)
+                gsfatal_bad_input(p, "Too many free type variables for %s; only need %d but have %d", p->arguments[0]->name, cty->numftyvs, nftyvs)
+            ;
+            if (i < p->numarguments)
+                i++
+            ;
+            nfvs = p->numarguments - i;
+            if (nfvs < cty->numfvs)
+                gsfatal_bad_input(p, "Not enough free variables for %s; need %d but have %d", p->arguments[0]->name, cty->numfvs, nfvs)
+            ;
+            if (nfvs > cty->numfvs)
+                gsfatal_bad_input(p, "Too many free variables for %s; only need %d but have %d", p->arguments[0]->name, cty->numfvs, nfvs)
+            ;
+            for (; i < p->numarguments; i++) {
+                gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(.body free variables)");
+            }
+            goto have_type;
+        } else {
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(%s)", p->directive->name);
         }
     }
 
