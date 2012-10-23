@@ -708,7 +708,7 @@ have_type:
         ty = argtypes[nargs];
         p = arglines[nargs];
 
-        calculated_type = gstypes_compile_fun(p->pos.file, p->pos.lineno, ty, calculated_type);
+        calculated_type = gstypes_compile_fun(p->pos, ty, calculated_type);
     }
 
     res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, sizeof(*res), sizeof(int));
@@ -807,7 +807,7 @@ have_type:
         ty = argtypes[nargs];
         p = arglines[nargs];
 
-        calculated_type = gstypes_compile_fun(p->pos.file, p->pos.lineno, ty, calculated_type);
+        calculated_type = gstypes_compile_fun(p->pos, ty, calculated_type);
     }
 
     res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, sizeof(*res), sizeof(int));

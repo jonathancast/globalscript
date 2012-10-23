@@ -523,7 +523,7 @@ gstypes_compile_sumv(gsinterned_string file, int lineno, int nconstrs, struct gs
 }
 
 struct gstype *
-gstypes_compile_fun(gsinterned_string file, int lineno, struct gstype *tyarg, struct gstype *tyres)
+gstypes_compile_fun(struct gspos pos, struct gstype *tyarg, struct gstype *tyres)
 {
     struct gstype *res;
     struct gstype_fun *fun;
@@ -532,8 +532,8 @@ gstypes_compile_fun(gsinterned_string file, int lineno, struct gstype *tyarg, st
     fun = (struct gstype_fun *)res;
 
     res->node = gstype_fun;
-    res->file = file;
-    res->lineno = lineno;
+    res->file = pos.file;
+    res->lineno = pos.lineno;
     fun->tyarg = tyarg;
     fun->tyres = tyres;
 

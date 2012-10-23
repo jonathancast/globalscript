@@ -128,7 +128,7 @@ struct gstype *gstypes_compile_lambda(gsinterned_string, int, gsinterned_string,
 struct gstype *gstypes_compile_lift(gsinterned_string, int, struct gstype *);
 struct gstype *gstypes_compile_sum(gsinterned_string, int, int, ...);
 struct gstype *gstypes_compile_sumv(gsinterned_string, int, int, struct gstype_constr *);
-struct gstype *gstypes_compile_fun(gsinterned_string, int, struct gstype *, struct gstype *);
+struct gstype *gstypes_compile_fun(struct gspos, struct gstype *, struct gstype *);
 
 struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
 struct gstype *gstype_apply(gsinterned_string, int, struct gstype *, struct gstype *);
