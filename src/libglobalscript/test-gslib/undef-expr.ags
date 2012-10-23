@@ -7,5 +7,6 @@
 	.code
 
 _real.entry.c	.expr
+list.t	.tygvar
 rune.t	.tygvar
-	.undef	rune.t
+	.undef	list.t	rune.t

@@ -703,7 +703,22 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             calculated_type = tyregs[reg];
             kind = tyregkinds[reg];
             for (i = 1; i < p->numarguments; i++) {
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "arguments to .undef type");
+                int regarg;
+                struct gstype *argtype;
+                struct gskind *argkind;
+
+                regarg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
+                argtype = tyregs[regarg];
+                argkind = tyregkinds[regarg];
+
+                if (kind->node != gskind_exponential)
+                    gsfatal("%P: Too many arguments to %s", p->pos, p->arguments[0]->name)
+                ;
+
+                gstypes_kind_check(p->pos, argkind, kind->args[1]);
+
+                calculated_type = gstype_apply(p->pos, calculated_type, argtype);
+                kind = kind->args[0];
             }
             gstypes_kind_check(p->pos, kind, gskind_lifted_kind());
             goto have_type;
