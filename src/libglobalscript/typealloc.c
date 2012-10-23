@@ -400,7 +400,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             }
             gsfatal_bad_input(p, "Cannot find register %s", p->arguments[1 + i]->name);
         have_arg_register:
-            res = gstype_apply(p->pos.file, p->pos.lineno, fun, arg);
+            res = gstype_apply(p->pos, fun, arg);
         }
         return res;
     } else if (gssymeq(p->directive, gssymtypeop, ".tysum")) {
@@ -663,15 +663,15 @@ gstypes_compile_type_var(gsinterned_string file, int lineno, gsinterned_string n
 }
 
 struct gstype *
-gstype_apply(gsinterned_string file, int lineno, struct gstype *fun, struct gstype *arg)
+gstype_apply(struct gspos pos, struct gstype *fun, struct gstype *arg)
 {
     struct gstype *res;
     struct gstype_app *app;
 
     res = gstype_alloc(sizeof(struct gstype_app));
     res->node = gstype_app;
-    res->file = file;
-    res->lineno = lineno;
+    res->file = pos.file;
+    res->lineno = pos.lineno;
     app = (struct gstype_app *)res;
     app->fun = fun;
     app->arg = arg;
@@ -693,12 +693,16 @@ gstype_supply(gsinterned_string file, int lineno, struct gstype *fun, struct gst
         case gstype_lambda: {
             struct gstype_lambda *lambda;
             struct gskind *argkind;
+            struct gspos pos;
 
             lambda = (struct gstype_lambda *)fun;
 
+            pos.file = file;
+            pos.lineno = lineno;
+
             argkind = gstypes_calculate_kind(arg);
 
-            gstypes_kind_check(file, lineno, argkind, lambda->kind);
+            gstypes_kind_check(pos, argkind, lambda->kind);
 
             return gstypes_subst(file, lineno, lambda->body, lambda->var, arg);
         }

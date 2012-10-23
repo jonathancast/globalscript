@@ -1302,7 +1302,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
                     gsfatal_bad_input(p, "Register %s doesn't seem to be a type variable", p->arguments[i]->name)
                 ;
                 source = gstype_supply(p->pos.file, p->pos.lineno, source, regtypes[reg]);
-                dest = gstype_apply(p->pos.file, p->pos.lineno, dest, regtypes[reg]);
+                dest = gstype_apply(p->pos, dest, regtypes[reg]);
             }
 
             if (source->node == gstype_lambda)

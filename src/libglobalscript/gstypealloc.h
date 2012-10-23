@@ -131,7 +131,7 @@ struct gstype *gstypes_compile_sumv(gsinterned_string, int, int, struct gstype_c
 struct gstype *gstypes_compile_fun(struct gspos, struct gstype *, struct gstype *);
 
 struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
-struct gstype *gstype_apply(gsinterned_string, int, struct gstype *, struct gstype *);
+struct gstype *gstype_apply(struct gspos, struct gstype *, struct gstype *);
 
 void gstypes_alloc_for_scc(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
 void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
