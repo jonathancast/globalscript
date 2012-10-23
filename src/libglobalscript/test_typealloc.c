@@ -21,9 +21,11 @@ void
 TEST_FV_VAR()
 {
     gsinterned_string file, x, y, ux, uy;
+    struct gspos pos;
     struct gstype *tyx, *tyy, *tyix, *tyiy, *tyux, *tyuy, *tylux, *tyluy, *tyes;
 
     file = gsintern_string(gssymfilename, __FILE__);
+    pos.file = file;
 
     x = gsintern_string(gssymtypelable, "x");
     y = gsintern_string(gssymtypelable, "y");
@@ -46,8 +48,8 @@ TEST_FV_VAR()
     tyux = gstypes_compile_type_var(file, __LINE__, ux, gskind_unlifted_kind());
     tyuy = gstypes_compile_type_var(file, __LINE__, uy, gskind_unlifted_kind());
 
-    tylux = gstypes_compile_lift(file, __LINE__, tyux);
-    tyluy = gstypes_compile_lift(file, __LINE__, tyuy);
+    pos.lineno = __LINE__; tylux = gstypes_compile_lift(pos, tyux);
+    pos.lineno = __LINE__; tyluy = gstypes_compile_lift(pos, tyuy);
 
     ok(__FILE__, __LINE__, gstypes_is_ftyvar(ux, tylux), "'ux' is not a free variable of '⌊ux⌋'");
     not_ok(__FILE__, __LINE__, gstypes_is_ftyvar(ux, tyluy), "'ux' is a free variable of '⌊uy⌋'");

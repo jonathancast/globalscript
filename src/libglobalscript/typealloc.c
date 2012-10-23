@@ -372,7 +372,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->nregs++;
         return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
     } else if (gssymeq(p->directive, gssymtypeop, ".tylift")) {
-        return gstypes_compile_lift(p->pos.file, p->pos.lineno, gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
+        return gstypes_compile_lift(p->pos, gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
     } else if (gssymeq(p->directive, gssymtypeop, ".tyref")) {
         struct gstype *reg;
 
@@ -465,7 +465,7 @@ gstypes_compile_lambda(gsinterned_string file, int lineno, gsinterned_string var
 }
 
 struct gstype *
-gstypes_compile_lift(gsinterned_string file, int lineno, struct gstype *arg)
+gstypes_compile_lift(struct gspos pos, struct gstype *arg)
 {
     struct gstype *res;
     struct gstype_lift *lift;
@@ -474,8 +474,8 @@ gstypes_compile_lift(gsinterned_string file, int lineno, struct gstype *arg)
     lift = (struct gstype_lift *)res;
 
     res->node = gstype_lift;
-    res->file = file;
-    res->lineno = lineno;
+    res->file = pos.file;
+    res->lineno = pos.lineno;
     lift->arg = arg;
 
     return res;
