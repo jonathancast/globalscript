@@ -1,0 +1,31 @@
+	.document
+
+	.data
+
+	.closure	_epcode	_eptype
+
+	.code
+
+_epcode	.eprog	test.sequence	m
+_real.entry.0	.subcode
+as	.bind	_real.entry.0
+	.body	_real.entry.body
+
+_real.entry.0	.expr
+_empty.record	.tygvar
+	.undef	_empty.record
+
+_real.entry	.expr
+	.undef	_eptype
+
+	.type
+
+_eptype	.tyexpr
+sequence.m	.tygvar
+_empty.record	.tygvar
+	.tylift
+	.tyref	sequence.m	_empty.record
+
+_empty.record	.tyexpr
+	.tylift
+	.typroduct

@@ -105,3 +105,16 @@ if (! grep -s './test-gslib/undef-block-api.ags:15: undefined' ./test-results/un
     exit 1
 }
 echo
+
+echo '-- ''block'' statement API entry points with mis-typed binds --'
+if (./$O.test-gsexec ./test-gslib ./test-gslib/mistyped-bind-api.ags >[2] ./test-results/mistyped-bind-api.ags-actual) {
+    echo 'test-gsexec succeeded; should have failed' >[1=2]
+    cat ./test-results/mistyped-bind-api.ags-actual >[1=2]
+    exit 1
+}
+if (! grep -s './test-gslib/mistyped-bind-api.ags:11: I don''t think' ./test-results/mistyped-bind-api.ags-actual) {
+    echo 'Couldn''t find expected error message in output anywhere:' >[1=2]
+    cat ./test-results/mistyped-bind-api.ags-actual >[1=2]
+    exit 1
+}
+echo

@@ -533,6 +533,24 @@ gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *c
                 gsfatal("%s:%d: Missing label on .subcode", filename, *plineno);
             if (n > 2)
                 gsfatal("%s:%d: Too many arguments to .subcode", filename, *plineno);
+        } else if (gssymeq(parsedline->directive, gssymcodeop, ".bind")) {
+            if (*fields[0])
+                parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+            else
+                parsedline->label = 0;
+            if (n < 3)
+                gsfatal("%s:%d: Missing code label", filename, *plineno);
+            parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
+            for (i = 3; i < n && strcmp(fields[i], "|"); i++)
+                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+            ;
+            if (i < n) {
+                parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+                i++;
+            }
+            for (; i < n; i++)
+                parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
+            ;
         } else if (gssymeq(parsedline->directive, gssymcodeop, ".body")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
@@ -544,10 +562,11 @@ gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *c
             for (i = 3; i < n && strcmp(fields[i], "|"); i++)
                 parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
             ;
-            if (i < n)
-                parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i])
-            ;
-            for (i++; i < n; i++)
+            if (i < n) {
+                parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+                i++;
+            }
+            for (; i < n; i++)
                 parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
             ;
             return 0;

@@ -546,7 +546,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 }
 
 static struct gsbc_code_item_type *gsbc_typecheck_code_expr(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
-static struct gsbc_code_item_type *gsbc_typecheck_api_expr(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, gsinterned_string, gsinterned_string);
+static struct gsbc_code_item_type *gsbc_typecheck_api_expr(struct gspos, struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, gsinterned_string, gsinterned_string);
 
 static
 void
@@ -572,7 +572,7 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
         if (pcode->numarguments < 2)
             gsfatal_bad_input(pcode, "Not enough arguments to .eprog; missing API monad name")
         ;
-        type = gsbc_typecheck_api_expr(symtable, &pseg, gsinput_next_line(&pseg, pcode), pcode->arguments[0], pcode->arguments[1]);
+        type = gsbc_typecheck_api_expr(pcode->pos, symtable, &pseg, gsinput_next_line(&pseg, pcode), pcode->arguments[0], pcode->arguments[1]);
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, pcode, "gstypes_type_check_code_item(%s)", pcode->directive->name);
@@ -719,33 +719,34 @@ have_type:
     return res;
 }
 
-static void gsbc_typecheck_check_api_statement_type(struct gspos, struct gstype *, gsinterned_string, gsinterned_string);
+static struct gstype *gsbc_typecheck_check_api_statement_type(struct gspos, struct gstype *, gsinterned_string, gsinterned_string, int *);
+static int gsbc_typecheck_free_type_variables(struct gsparsedline *, struct gsbc_code_item_type *);
+static int gsbc_typecheck_free_variables(struct gsparsedline *, struct gsbc_code_item_type *, int);
 
 static
 struct gsbc_code_item_type *
-gsbc_typecheck_api_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
+gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
 {
     enum {
         rttygvar,
         rtgvar,
         rtcode,
         rtarg,
+        rtgen,
     } regtype;
-    int i;
-    int nregs, ncodes;
+    int nregs, ncodes, nargs, nbinds;
     gsinterned_string regs[MAX_NUM_REGISTERS], coderegs[MAX_NUM_REGISTERS];
     struct gstype *tyregs[MAX_NUM_REGISTERS];
     struct gskind *tyregkinds[MAX_NUM_REGISTERS];
     struct gsbc_code_item_type *codetypes[MAX_NUM_REGISTERS];
     struct gstype *regtypes[MAX_NUM_REGISTERS];
-    int nargs;
+    int first_rhs_lifted;
     struct gstype *argtypes[MAX_NUM_REGISTERS];
     struct gsparsedline *arglines[MAX_NUM_REGISTERS];
     struct gstype *calculated_type;
-    struct gskind *kind;
     struct gsbc_code_item_type *res;
 
-    nregs = ncodes = nargs = 0;
+    nregs = ncodes = nargs = nbinds = 0;
     regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
@@ -762,37 +763,46 @@ gsbc_typecheck_api_expr(struct gsfile_symtable *symtable, struct gsparsedfile_se
                 gsfatal_bad_input(p, "Can't find type of sub-expression %s", p->label->name)
             ;
             ncodes++;
-        } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
+        } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
-            int nfvs, nftyvs;
+            int nftyvs;
+
+            if (regtype > rtgen)
+                gsfatal_bad_input(p, "Too late to add generators")
+            ;
+            regtype = rtgen;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            ;
 
             gsargcheck(p, 0, "code");
             creg = gsbc_find_register(p, coderegs, ncodes, p->arguments[0]);
             cty = codetypes[creg];
             calculated_type = cty->result_type;
-            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(.body type free variables)");
-            }
-            nftyvs = i - 1;
-            if (nftyvs < cty->numftyvs)
-                gsfatal_bad_input(p, "Not enough free type variables for %s; need %d but have %d", p->arguments[0]->name, cty->numftyvs, nftyvs)
-            ;
-            if (nftyvs > cty->numftyvs)
-                gsfatal_bad_input(p, "Too many free type variables for %s; only need %d but have %d", p->arguments[0]->name, cty->numftyvs, nftyvs)
-            ;
-            if (i < p->numarguments) i++;
-            nfvs = p->numarguments - i;
-            if (nfvs < cty->numfvs)
-                gsfatal_bad_input(p, "Not enough free variables for %s; need %d but have %d", p->arguments[0]->name, cty->numfvs, nfvs)
-            ;
-            if (nfvs > cty->numfvs)
-                gsfatal_bad_input(p, "Too many free variables for %s; only need %d but have %d", p->arguments[0]->name, cty->numfvs, nfvs)
-            ;
-            for (; i < p->numarguments; i++) {
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(.body free variables)");
-            }
-            gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim);
+
+            nftyvs = gsbc_typecheck_free_type_variables(p, cty);
+            gsbc_typecheck_free_variables(p, cty, nftyvs);
+
+            regs[nregs] = p->label;
+            regtypes[nregs] = gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
+            gsfatal_unimpl_input(__FILE__, __LINE__, p, "bind generators next");
+            nregs++;
+            nbinds++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
+            int creg = 0;
+            struct gsbc_code_item_type *cty;
+            int nftyvs;
+
+            gsargcheck(p, 0, "code");
+            creg = gsbc_find_register(p, coderegs, ncodes, p->arguments[0]);
+            cty = codetypes[creg];
+            calculated_type = cty->result_type;
+
+            nftyvs = gsbc_typecheck_free_type_variables(p, cty);
+            gsbc_typecheck_free_variables(p, cty, nftyvs);
+
+            gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
             goto have_type;
         } else {
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(%s)", p->directive->name);
@@ -800,6 +810,16 @@ gsbc_typecheck_api_expr(struct gsfile_symtable *symtable, struct gsparsedfile_se
     }
 
 have_type:
+
+    calculated_type = gstypes_clear_indirections(calculated_type);
+
+    if (first_rhs_lifted) {
+        if (calculated_type->node != gstype_lift)
+            calculated_type = gstypes_compile_lift(pos, calculated_type)
+        ;
+    } else {
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Ensure API block statement has unlifted type", pos);
+    }
 
     while (nargs--) {
         struct gstype *ty;
@@ -819,58 +839,105 @@ have_type:
 }
 
 static
-void
-gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsinterned_string primsetname, gsinterned_string primname)
+int
+gsbc_typecheck_free_type_variables(struct gsparsedline *p, struct gsbc_code_item_type *cty)
 {
-    for (;;) {
-        char buf[0x100];
+    int i;
+    int nftyvs;
 
-        if (gstypes_eprint_type(buf, buf + sizeof(buf), ty) >= buf + sizeof(buf))
-            gsfatal("%s:%d: %P: buffer overflow printing type %s:%d", __FILE__, __LINE__, pos, ty->file->name, ty->lineno)
+    for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(.body type free variables)");
+    }
+    nftyvs = i - 1;
+    if (nftyvs < cty->numftyvs)
+        gsfatal_bad_input(p, "Not enough free type variables for %s; need %d but have %d", p->arguments[0]->name, cty->numftyvs, nftyvs)
+    ;
+    if (nftyvs > cty->numftyvs)
+        gsfatal_bad_input(p, "Too many free type variables for %s; only need %d but have %d", p->arguments[0]->name, cty->numftyvs, nftyvs)
+    ;
+    return nftyvs;
+}
+
+static
+int
+gsbc_typecheck_free_variables(struct gsparsedline *p, struct gsbc_code_item_type *cty, int nftyvs)
+{
+    int i;
+    int nfvs;
+
+    i = 1 + nftyvs;
+    if (i < p->numarguments) i++;
+    nfvs = p->numarguments - i;
+    if (nfvs < cty->numfvs)
+        gsfatal_bad_input(p, "Not enough free variables for %s; need %d but have %d", p->arguments[0]->name, cty->numfvs, nfvs)
+    ;
+    if (nfvs > cty->numfvs)
+        gsfatal_bad_input(p, "Too many free variables for %s; only need %d but have %d", p->arguments[0]->name, cty->numfvs, nfvs)
+    ;
+    for (; i < p->numarguments; i++) {
+        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(.body free variables)");
+    }
+    return nfvs;
+}
+
+static
+struct gstype *
+gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsinterned_string primsetname, gsinterned_string primname, int *plifted)
+{
+    char buf[0x100];
+    struct gstype *res;
+
+    ty = gstypes_clear_indirections(ty);
+
+    if (gstypes_eprint_type(buf, buf + sizeof(buf), ty) >= buf + sizeof(buf))
+        gsfatal("%s:%d: %P: buffer overflow printing type %s:%d", __FILE__, __LINE__, pos, ty->file->name, ty->lineno)
+    ;
+
+    if (ty->node == gstype_lift) {
+        struct gstype_lift *lift;
+
+        lift = (struct gstype_lift *)ty;
+        ty = lift->arg;
+
+        if (plifted)
+            *plifted = 1
         ;
+    }
 
-        switch (ty->node) {
-            case gstype_indirection: {
-                struct gstype_indirection *indir;
+    if (ty->node != gstype_app) {
+        gsfatal("%P: I don't think %s is a type application", pos, buf);
+    } else {
+        struct gstype_app *app;
 
-                indir = (struct gstype_indirection *)ty;
-                ty = indir->referent;
-                continue;
-            }
-            case gstype_prim: {
-                struct gstype_prim *prim;
+        app = (struct gstype_app *)ty;
+        res = app->arg;
 
-                prim = (struct gstype_prim *)ty;
-
-                if (prim->primtypegroup != gsprim_type_api)
-                    gsfatal("%P: I don't think %s is an API primitive type", pos, buf)
-                ;
-                if (prim->primsetname != primsetname)
-                    gsfatal("%P: I don't think %s is a type in the %s primset", pos, buf, primsetname->name)
-                ;
-                if (prim->name != primname)
-                    gsfatal("%P: I don't think %s is the primtype %s %s", pos, buf, primsetname->name, primname->name)
-                ;
-                return;
-            }
-            case gstype_lift: {
-                struct gstype_lift *lift;
-
-                lift = (struct gstype_lift *)ty;
-                ty = lift->arg;
-                continue;
-            }
-            case gstype_app: {
-                struct gstype_app *app;
-
-                app = (struct gstype_app *)ty;
-                ty = app->fun;
-                continue;
-            }
-            default:
-                gsfatal("%P: I don't think %s is an appropriate type for a statement in the %s %s API monad", pos, buf, primsetname->name, primname->name);
+        ty = app->fun;
+        while (ty->node == gstype_app) {
+            app = (struct gstype_app *)ty;
+            ty = app->fun;
         }
     }
+
+    if (ty->node != gstype_prim) {
+        gsfatal("%P: I don't think %s is an application of a primitive", pos, buf);
+    } else {
+        struct gstype_prim *prim;
+
+        prim = (struct gstype_prim *)ty;
+
+        if (prim->primtypegroup != gsprim_type_api)
+            gsfatal("%P: I don't think %s is an API primitive type", pos, buf)
+        ;
+        if (prim->primsetname != primsetname)
+            gsfatal("%P: I don't think %s is a type in the %s primset", pos, buf, primsetname->name)
+        ;
+        if (prim->name != primname)
+            gsfatal("%P: I don't think %s is the primtype %s %s", pos, buf, primsetname->name, primname->name)
+        ;
+    }
+
+    return res;
 }
 
 static
