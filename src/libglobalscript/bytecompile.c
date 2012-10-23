@@ -243,6 +243,21 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             if (nregs >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
             nregs++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
+            int nfvs;
+
+            phase = phbytecodes;
+
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
+            nregs++;
+
+            /* Ignore free type variables & separator (type erasure) */
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+            nfvs = p->numarguments - i;
+
+            size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
             phase = phbytecodes;
             size += GS_SIZE_BYTECODE(1);
@@ -478,6 +493,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
         rtgvars,
         rtcode,
         rtargs,
+        rtops,
     } phase;
     int i;
     uchar *pout;
@@ -506,6 +522,41 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             *psubcode++ = gssymtable_get_code(symtable, p->label);
             pout = (uchar*)psubcode;
             ncodes++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
+            int creg = 0;
+            int nfvs, first_fv;
+
+            phase = rtops;
+
+            pcode = (struct gsbc *)pout;
+
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+            ;
+
+            regs[nregs] = p->label;
+
+            nregs++;
+
+            creg = gsbc_find_register(p, codes, ncodes, p->arguments[0]);
+
+            pcode->pos = p->pos;
+            pcode->instr = gsbc_op_bind;
+            pcode->args[0] = (uchar)creg;
+
+            /* §paragraph{Skipping free type variables} */
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+
+            nfvs = p->numarguments - i;
+            first_fv = i;
+            pcode->args[1] = (uchar)nfvs;
+            for (i = first_fv; i < p->numarguments; i++) {
+                gsfatal_unimpl_input(__FILE__, __LINE__, p, "store free variables");
+            }
+
+            pcode = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
+            pout = (uchar *)pcode;
         } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
             int creg = 0;
             int nfvs, first_fv;

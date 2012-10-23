@@ -786,7 +786,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
 
             regs[nregs] = p->label;
             regtypes[nregs] = gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "bind generators next");
+
             nregs++;
             nbinds++;
         } else if (gssymeq(p->directive, gssymcodeop, ".body")) {

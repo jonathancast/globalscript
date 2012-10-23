@@ -218,6 +218,33 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
     for (;;) {
         pinstr = (struct gsbc *)pin;
         switch (pinstr->instr) {
+            case gsbc_op_bind: {
+                struct gsbco *subexpr;
+                struct gsclosure *cl;
+
+                if (nstatements > MAX_NUM_REGISTERS) {
+                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many stateemnts (max 0x%x)", MAX_NUM_REGISTERS);
+                    return;
+                }
+
+                subexpr = subexprs[pinstr->args[0]];
+
+                cl = gsreserveheap(sizeof(*cl) + pinstr->args[1] * sizeof(gsvalue));
+
+                memset(&cl->hp.lock, 0, sizeof(cl->hp.lock));
+                cl->hp.pos = pinstr->pos;
+                cl->hp.type = gsclosure;
+                cl->code = subexpr;
+                for (i = 0; i < pinstr->args[1]; i++) {
+                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: free variables of .bind");
+                    return;
+                }
+                rhss[nstatements] = (gsvalue)cl;
+                nstatements++;
+
+                pin = GS_NEXT_BYTECODE(pinstr, 2 + pinstr->args[1]);
+                continue;
+            }
             case gsbc_op_body: {
                 struct gsbco *subexpr;
                 struct gsclosure *cl;
@@ -255,8 +282,12 @@ got_statements:
     nstatements--;
     thread->code->instrs[thread->code->ip].instr = rhss[nstatements];
     while (nstatements--) {
-        api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: store binds");
-        return;
+        if (thread->code->ip <= 0) {
+            api_abend_unimpl(thread, __FILE__, __LINE__, "code segment overflow");
+            return;
+        }
+        thread->code->ip--;
+        thread->code->instrs[thread->code->ip].instr = rhss[nstatements];
     }
 }
 
