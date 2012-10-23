@@ -8,8 +8,14 @@ _real.entry	.closure	_real.entry.c
 	.code
 
 _real.entry.c	.eprog	ibio.prim	ibio
+_real.entry.0	.subcode
 _real.entry.body	.subcode
+as	.bind	_real.entry.0
 	.body	_real.entry.body
+
+_real.entry.0	.expr
+_get.args.type	.tygvar
+	.undef	_get.args.type
 
 _real.entry.body	.expr
 _epbodytype	.tygvar
@@ -32,6 +38,22 @@ _empty.record	.tygvar
 _empty.record	.tyexpr
 	.tylift
 	.typroduct
+
+_get.args.type	.tyexpr
+ibio.prim.m	.tygvar
+_get.args.result.type	.tygvar
+	.tylift
+	.tyref	ibio.prim.m	_get.args.result.type
+
+_get.args.result.type	.tyexpr
+list.t	.tygvar
+_get.args.result.elem.type	.tygvar
+	.tyref	list.t	_get.args.result.elem.type
+
+_get.args.result.elem.type	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tyref	list.t	rune.t
 
 	.coercion
 
