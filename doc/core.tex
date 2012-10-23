@@ -1,11 +1,237 @@
-\documentclass{report}
+\documentclass{article}
 \title{Global Script Core Specification}
 \author{Jonathan Cast\\\texttt{<jcast@globalscript.org>}}
+
+\usepackage{haskell}
+
+\newcommand\defn[1]{\emph{#1}}
+
+\newcommand\for{\hskwd{for}}
+\newcommand\type{\hskwd{type}}
+\newcommand\abstype{\hskwd{abstype}}
+
+\newcommand\analyze[2]{\hskwd{analyze}\;#1\hsbody{#2}}
+\newcommand\case{\hskwd{case}}
+
+\newcommand\crkwd[1]{\hskwd{"#1}}
+
+\newcommand\crgroup[1]{\left\langle#1\right\rangle}
+
+\newcommand\primintrtype{\crkwd{primintrtype}}
+\newcommand\primelimtype{\crkwd{primelimtype}}
+\newcommand\primdefinedtype{\crkwd{primdefinedtype}}
+\newcommand\primapitype{\crkwd{primapitype}}
+
+\newcommand\crsum{\crkwd{\Sigma}}
+\newcommand\constr{\crkwd{constr}}
+
+\newcommand\crusum{\crkwd{u\Sigma}}
+\newcommand\uconstr{\crkwd{uconstr}}
+
+\newcommand\crprod{\crkwd{\Pi}}
+\newcommand\cruprod{\crkwd{u\Pi}}
+
+\newcommand\lift[1]{\left\lfloor#1\right\rfloor}
 
 \begin{document}
 
 \maketitle
 
-Prefix files are sequences of generators; documents are an expression, semi-colon terminated, followed by a sequence of generators.
+A prefix files is a sequence of generators; a document is an expression, semi-colon terminated, followed by a sequence of generators.
+
+\section{Type System}
+
+\subsection{Basic Type Forms}
+
+\begin{itemize}
+    \item \defn{Primitive types} form the basis of the type system, and
+    allow clients,\footnote{A `client' is the implementation of a Global Script-based language.}
+    and the calculus itself,
+    to extend the type system.
+
+    \item \defn{Sum types} allow a choice of values from a number of separate types.
+        A value of a sum type contains a value from only one of the `component' types.
+
+    \item \defn{Product types} allow values from a number of types to be combined into a single value.
+        A value of a product type contains a value from all of the `component' types.
+
+    \item \defn{Function types} are normal exponentials;
+        the basic categorical exponential can be written \<\alpha \rightarrow \beta\>;
+        a literal of this type is written \<\lambda\;x :: \alpha. e\>.
+\end{itemize}
+
+There are two other wrinkles in the type system:
+\begin{itemize}
+    \item \defn{Type synonyms} can be used to give shorter names to a type:
+        \begin{haskell} \type t \alpha_0 \ldots \alpha_n = \tau[\alpha_0, \ldots, \alpha_n]; \end{haskell}
+
+    \item \defn{Abstract types} introduce new types distinct from exiting
+        \begin{haskell}  \abstype t \alpha_0 \ldots \alpha_n = tau[\alpha_0, \ldots, \alpha_n]; \end{haskell}
+        \<t\> is a distinct type from its definition,
+        although coercions between the two are possible within the scope of the definition.
+\end{itemize}
+
+\subsection{Classifications of Types}
+
+\paragraph{Pointed vs.~Un-pointed}
+A type is \defn{pointed} if it has a representation for non-termination, and \defn{un-pointed} otherwise.
+
+\paragraph{Lifted vs.~Unlifted}
+A type is \defn{lifted} if it consists of an \defn{unlifted} type with a new representation of non-termination added.
+All lifted types are pointed, but not all pointed types are lifted;
+if an un-lifted but pointed type is lifted,
+the resulting type has two distinct versions of 'non-termination'.
+
+Global Script Core only allows one level of lifting.
+In this implementation, lifting has no effect on representation;
+any representation of a value of an un-lifted type also represents the same value at the lifted type,
+and any value of lifted type which is in HNF is also a legal representation of the same value at the un-lifted type.
+
+In Core, lifted types have kind \<*\>, and un-lifted types have kind \<u\>.
+An abstract type can have a definition that is either a lifted type or an un-lifted type;
+it will have the same kind as its definition in either case.
+If \<t\> is a (0-arity) un-lifted abstract type, then \<\lift{t}\> is the corresponding lifted type.
+However, since a new abstract type is different from any existing type,
+if \<t\> is a (0-arity) lifted abstract type, then there is no type \<u\> such that \<t = \lift{u}\>.
+
+In Core, an expression of un-lifted type is guaranteed to terminate when evaluated;\footnote{
+    Even for types which are technically pointed;
+    an expression denoting the least element of an un-lifted pointed type
+    can be reduced to HNF in a finite number of steps.
+} a variable of un-lifted type is guaranteed to be bound to a fully-evaluated expression.
+An expression of lifted type may diverge when evaluated;
+a variable of lifted type may point to an un-evaluated thunk.
+
+When compiling a let binding \<x = e;\>, \<x\> and \<e\> must have the same type \<\tau\>.
+If \<\tau\> is lifted, the let binding is compiled to a thunk allocation.
+If \<\tau\> is un-lifted, the let binding is compiled to an eager evaluation of \<e\>,
+followed by binding of the result to \<x\>.
+Even though this uses eager evaluation, it is not a strict binding, since the evaluation of \<e\> is guaranteed to terminate.
+
+\paragraph{Boxed vs.~Unboxed}
+A type is \defn{boxed} if a value of the type is (always) represented as a pointer into dynamically allocated memory,
+and \defn{un-boxed} otherwise.
+Technically, the primitive types of (unlifted) characters (and runes) are un-boxed,
+since those values are represented as raw binary words rather than as pointers.
+However, since this Global Script implementation uses pointer tagging,
+and those values fit into the same machine words that are used to store pointers,
+Core doesn't care about the un-boxedness of those types.
+Instead, Core uses the term 'un-boxed' only in relation to sum and product types,
+where the boxed vs. un-boxed terminology determines the number of registers that need to be allocated for a value and
+the number of indirections in the representation of a value.
+No Core variable may have (what Core considers) an un-boxed type.
+
+\subsection{Primitive Types}
+
+Primitive types are always boxed\footnote{
+    A client is free to use pointer tagging to pack values of a primitive type into a machine word,
+    but as noted Core doesn't care about that meaning of `un-boxed'.
+} and un-lifted.
+
+This Global Script implementation splits primitive types into four forms:
+\begin{itemize}
+    \item An \defn{introduction type} is a type whose operations all return values of that type.
+        Because of this, a Global Script implementation that lacks a definition for that type\footnote{Due to not having the relevant client linked in.}
+        can be confident that the value of any expression of such a type cannot affect the behavior of the current program;
+        unknown introduction types are operationally indistinguishable from singletons.
+
+        In Core, an introduction type can be written
+        \begin{haskell} \primintrtype primset prim \end{haskell};
+        conceptually, \<primset\> groups primitives together into `modules',\footnote{In Global Script source, each primset does correspond to a specific structure expression.}
+        while \<prim\> picks out a specific type from that `module'.
+        Nevertheless, \<primset\> and \<prim\> are both Global Script identifiers (and so can contain \verb+.+ characters).
+
+    \item An \defn{elimination type} is a type whose operations are all functions of values of that type.
+        Because of this, a Global Script implementation that lacks a definition for that type
+        can be confident that no values of such a type\footnote{Primitive types are un-lifted, so recursion etc.~are not issues.} will occur during execution of the current program;
+        unknown elimination types are operationally indistinguishable from empty types.
+
+        In Core, an elimination type can be written
+        \begin{haskell} \primelimtype primset prim \end{haskell};
+        \<primset\> and \<prim\> are as before.
+
+    \item A \defn{defined type} is a primitive type that satisfies neither the definition of an introduction type nor the definition of an elimination type.
+        In consequence, a Global Script implementation processing core (or source) that refers to such a type must have an implementation of the type on hand to correctly implement the program.
+        A further consequence is that defined types must have a completely machine-independent semantics to avoid eliminating the machine-independence of the source language translated by Global Script implementations that do support them.
+
+        In Core, a defined type can be written
+        \begin{haskell} \primdefinedtype primset prim \end{haskell};
+        \<primset\> and \<prim\> are as before.
+
+    \item An \defn{API type} is a special case of the an type, used to define `imperative'/procedural languages such as IBIO and CORD.
+        API types have two special features:
+        \begin{itemize}
+            \item API types admit the expression form
+                \begin{haskell} \for @(\type \primapitype primset prim) x \leftarrow\; e_0.\; e_1 \end{haskell},
+                which defines the bind operation of a sequential execution monad for the API type.
+            \item \<\for\> expressions of the above form and primitive operations of the API type
+                have a special run-time representation used by the \verb+api*+ functions in \verb+libglobalscript+
+                to implement a separate `thread advancement' phase of execution.
+        \end{itemize}
+\end{itemize}
+
+\subsection{Sum and Product Types}
+
+Sum and product types are formed from indexed collections of Core types (indexed by Global Script variable names).
+They are somewhat un-usual in that each indexed collection \<\{\tau_v\}_{v\in\mathcal{V}}\> corresponds to four distinct (anonymous) Core types.
+For such a collection \<\{\tau_v\}_{v\in\mathcal{V}}\> there are thus eight possibilities total:
+\begin{itemize}
+    \item \defn{Un-lifted Boxed Sum Types}
+
+        \begin{haskell} \constr \tau @e c x :: \crsum\crgroup{ \overline{v \tau_v;} } \end{haskell}
+        where \<\tau = \crsum\crgroup{ \overline{v \tau_v;} }\> is the sum type and
+        \<e\>, which is optional if it can be inferred, is the evidence that \<\tau\> has a constructor \<c\>.\footnote{
+            We adopt the convention that \<\overline{M_i}\> is used to mean repetition of the term 
+        }
+
+        A variable of one of these types is bound to a pointer to a dynamically allocated cell
+        containing a constructor tag / argument pair.
+
+
+    \item \defn{Un-lifted Boxed Product Types}
+
+        \begin{haskell} \crprod\crgroup{ \overline{v = e_v;} } :: \crprod\crgroup{ \overline{v :: \tau_v;} } \end{haskell}
+
+        A variable of one of these types is bound to a pointer to a dynamically allocated cell
+        containing a vector of field values.
+
+    \item \defn{Un-lifted Un-Boxed Sum Types}
+
+        \begin{haskell} \uconstr \tau @e c x :: \crusum\crgroup{ \overline{v \tau_v;} } \end{haskell}
+
+        Variables of these types are illegal;
+        expressions of these types, unless used as \<\lambda\>-bodies,
+        must be eliminated directly using the syntax
+        \begin{haskell}
+            \analyze{e_{scrut} :: \tau}{
+                \case\;c_0\;@ev_0\;x_0.\;e_0 \\
+                \vdots \\
+                \case\;c_n\;@ev_n\;x_n.\;e_n
+            }
+        \end{haskell}
+        Each case is compiled into a corresponding continuation;
+        the expression as a whole is compiled into
+        code to push a vector of the individual continuations onto the stack,
+        followed by the code for \<e_{scrut}\>.
+
+        The constructor application \<\uconstr \tau @e c x\>, in turn,
+        is compiled into code to pop the vector of continuations off the stack and
+        jump to the correct continuation.
+
+    \item \defn{Un-lifted Un-Boxed Product Types}
+
+        \begin{haskell} \cruprod\crgroup{ \overline{v = e_v}; } :: \cruprod\crgroup{ \overline{v :: \tau_v;} }\end{haskell}
+
+        \begin{haskell} \for \cruprod\crgroup{ \overline{v = x_v;} } = e_0. e_1 \end{haskell}
+
+    \item \defn{Lifted Boxed Sum Types}
+    \item \defn{Lifted Boxed Product Types}
+    \item \defn{Lifted Un-Boxed Sum Types}
+    \item \defn{Lifted Un-Boxed Product Types}
+\end{itemize}
+
+\subsection{Function Types}
+
+\subsection{Type Synonyms and Abstract Types}
 
 \end{document}
