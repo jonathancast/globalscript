@@ -90,9 +90,13 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
 
             calculated_kind = gstypes_calculate_kind(type);
 
-            if (kinds[i])
-                gstypes_kind_check(type->file, type->lineno, calculated_kind, kinds[i]);
-            else {
+            if (kinds[i]) {
+                struct gspos pos;
+
+                pos.file = type->file;
+                pos.lineno = type->lineno;
+                gstypes_kind_check(pos, calculated_kind, kinds[i]);
+            } else {
                 kinds[i] = calculated_kind;
                 gssymtable_set_type_expr_kind(symtable, items[i].v->label, calculated_kind);
             }
@@ -181,25 +185,33 @@ gstypes_calculate_kind(struct gstype *type)
         case gstype_lift: {
             struct gstype_lift *lift;
             struct gskind *kyarg;
+            struct gspos pos;
 
             lift = (struct gstype_lift *)type;
 
+            pos.file = type->file;
+            pos.lineno = type->lineno;
+
             kyarg = gstypes_calculate_kind(lift->arg);
-            gstypes_kind_check(type->file, type->lineno, kyarg, gskind_unlifted_kind());
+            gstypes_kind_check(pos, kyarg, gskind_unlifted_kind());
 
             return gskind_lifted_kind();
         }
         case gstype_app: {
             struct gstype_app *app;
             struct gskind *funkind, *argkind;
+            struct gspos pos;
 
             app = (struct gstype_app *)type;
             funkind = gstypes_calculate_kind(app->fun);
             argkind = gstypes_calculate_kind(app->arg);
 
+            pos.file = type->file;
+            pos.lineno = type->lineno;
+
             switch (funkind->node) {
                 case gskind_exponential:
-                    gstypes_kind_check(type->file, type->lineno, argkind, funkind->args[1]);
+                    gstypes_kind_check(pos, argkind, funkind->args[1]);
                     return funkind->args[0];
                 case gskind_lifted:
                     gsfatal_bad_type(type->file, type->lineno, type, "Wrong kind: Expected ^, got *");
@@ -238,7 +250,7 @@ gstypes_calculate_kind(struct gstype *type)
 static char *seprint_kind_name(char *, char *, struct gskind *);
 
 void
-gstypes_kind_check(gsinterned_string file, int lineno, struct gskind *kyactual, struct gskind *kyexpected)
+gstypes_kind_check(struct gspos pos, struct gskind *kyactual, struct gskind *kyexpected)
 {
     char actual_name[0x100];
 
@@ -247,24 +259,24 @@ gstypes_kind_check(gsinterned_string file, int lineno, struct gskind *kyactual, 
     switch (kyexpected->node) {
         case gskind_unknown:
             if (kyactual->node != gskind_unknown && kyactual->node != gskind_unlifted && kyactual->node != gskind_lifted)
-                gsfatal("%s:%d: Incorrect kind: Expected '?'; got '%s'", file->name, lineno, actual_name);
+                gsfatal("%P: Incorrect kind: Expected '?'; got '%s'", pos, actual_name);
             return;
         case gskind_unlifted:
             if (kyactual->node != gskind_unlifted)
-                gsfatal("%s:%d: Incorrect kind: Expected 'u'; got '%s'", file->name, lineno, actual_name);
+                gsfatal("%P: Incorrect kind: Expected 'u'; got '%s'", pos, actual_name);
             return;
         case gskind_lifted:
             if (kyactual->node != gskind_lifted)
-                gsfatal("%s:%d: Incorrect kind: Expected '*'; got '%s'", file->name, lineno, actual_name);
+                gsfatal("%P: Incorrect kind: Expected '*'; got '%s'", pos, actual_name);
             return;
         case gskind_exponential:
             if (kyactual->node != gskind_exponential)
-                gsfatal("%s:%d: Incorrect kind: Expected '^'; got '%s'", file->name, lineno, actual_name);
-            gstypes_kind_check(file, lineno, kyactual->args[0], kyexpected->args[0]);
-            gstypes_kind_check(file, lineno, kyactual->args[1], kyexpected->args[1]);
+                gsfatal("%P: Incorrect kind: Expected '^'; got '%s'", pos, actual_name);
+            gstypes_kind_check(pos, kyactual->args[0], kyexpected->args[0]);
+            gstypes_kind_check(pos, kyactual->args[1], kyexpected->args[1]);
             return;
         default:
-            gsfatal_unimpl_at(__FILE__, __LINE__, file, lineno, "gstypes_kind_check(expected = %d)", kyexpected->node);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_kind_check(expected = %d)", pos, kyexpected->node);
     }
 }
 
@@ -491,7 +503,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         if (!kind)
             gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "couldn't find kind of '%s'", pdata->arguments[0]->name)
         ;
-        gstypes_kind_check(pdata->pos.file, pdata->pos.lineno, kind, gskind_lifted_kind());
+        gstypes_kind_check(pdata->pos, kind, gskind_lifted_kind());
     } else if (gssymeq(pdata->directive, gssymdatadirective, ".closure")) {
         struct gsbc_code_item_type *code_type;
 
@@ -693,7 +705,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             for (i = 1; i < p->numarguments; i++) {
                 gsfatal_unimpl_input(__FILE__, __LINE__, p, "arguments to .undef type");
             }
-            gstypes_kind_check(p->pos.file, p->pos.lineno, kind, gskind_lifted_kind());
+            gstypes_kind_check(p->pos, kind, gskind_lifted_kind());
             goto have_type;
         } else {
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_code_expr(%s)", p->directive->name);

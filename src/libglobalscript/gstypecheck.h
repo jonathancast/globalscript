@@ -6,7 +6,7 @@ void gstypes_kind_check_scc(struct gsfile_symtable *, struct gsbc_item *, struct
 
 struct gskind *gstypes_calculate_kind(struct gstype *);
 
-void gstypes_kind_check(gsinterned_string, int, struct gskind *, struct gskind *);
+void gstypes_kind_check(struct gspos, struct gskind *, struct gskind *);
 
 void gstypes_process_type_signatures(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int);
 
