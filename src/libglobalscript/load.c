@@ -442,6 +442,8 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
+    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymapp, gssymenter, gssymundef;
+
     struct gsparsedline *parsedline;
     int i;
     long n;
@@ -451,21 +453,21 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
-        if (gssymeq(parsedline->directive, gssymcodeop, ".tygvar")) {
+        if (gssymceq(parsedline->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);
             else
                 gsfatal("%s:%d: Missing label on .tygvar op", filename, *plineno);
             if (n > 2)
                 gsfatal("%s:%s: Too many arguments to .tygvar op", filename, *plineno);
-        } else if (gssymeq(parsedline->directive, gssymcodeop, ".gvar")) {
+        } else if (gssymceq(parsedline->directive, gssymgvar, gssymcodeop, ".gvar")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymdatalable, fields[0]);
             else
                 gsfatal("%s:%d: Missing label on .gvar op", filename, *plineno);
             if (n > 2)
                 gsfatal("%s:%d: Too many arguments to .gvar op", filename, *plineno);
-        } else if (gssymeq(parsedline->directive, gssymcodeop, ".arg")) {
+        } else if (gssymceq(parsedline->directive, gssymarg, gssymcodeop, ".arg")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymdatalable, fields[0]);
             else
@@ -474,7 +476,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 gsfatal("%s:%d: Missing type on .arg", filename, *plineno);
             for (i = 2; i < n; i++)
                 parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-        } else if (gssymeq(parsedline->directive, gssymcodeop, ".app")) {
+        } else if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".app")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops");
             else
@@ -483,7 +485,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 gswarning("%s:%d: Nullary applications don't do anything", filename, *plineno);
             for (i = 2; i < n; i++)
                 parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
-        } else if (gssymeq(parsedline->directive, gssymcodeop, ".enter")) {
+        } else if (gssymceq(parsedline->directive, gssymenter, gssymcodeop, ".enter")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops");
             else
@@ -494,7 +496,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             if (n >= 4)
                 gsfatal("%s:%d: Un-recognized arguments to .enter; I only know the code label to enter", filename, *plineno);
             return 0;
-        } else if (gssymeq(parsedline->directive, gssymcodeop, ".undef")) {
+        } else if (gssymceq(parsedline->directive, gssymundef, gssymcodeop, ".undef")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops");
             else
