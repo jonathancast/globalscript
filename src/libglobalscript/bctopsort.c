@@ -123,9 +123,11 @@ static struct gsparsedline *gstype_section_skip_type_expr(struct gsparsedfile_se
 struct gsparsedline *
 gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedline *type)
 {
-    if (gssymeq(type->directive, gssymtypedirective, ".tyexpr")) {
+    static gsinterned_string gssymtyexpr, gssymtyabstract;
+
+    if (gssymceq(type->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
-    } else if (gssymeq(type->directive, gssymtypedirective, ".tyabstract")) {
+    } else if (gssymceq(type->directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, type, "gstype_section_next_item(%s)", type->directive->name);
