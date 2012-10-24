@@ -335,6 +335,8 @@ static
 long
 gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
+    static gsinterned_string gssymclosure, gssymtyapp, gssymundefined, gssymcast;
+
     struct gsparsedline *parsedline;
     int i;
 
@@ -350,7 +352,7 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
 
     parsedline->directive = gsintern_string(gssymdatadirective, fields[1]);
 
-    if (gssymeq(parsedline->directive, gssymdatadirective, ".closure")) {
+    if (gssymceq(parsedline->directive, gssymclosure, gssymdatadirective, ".closure")) {
         if (numfields < 2+0+1)
             gsfatal("%s:%d: Missing code label", filename, *plineno);
         parsedline->arguments[0] = gsintern_string(gssymcodelable, fields[2+0]);
@@ -358,19 +360,19 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
             parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2+1]);
         if (numfields > 2+1+1)
             gsfatal("%s:%d: Data item %s has too many arguments; I don't know what they all are", filename, *plineno, fields[0]);
-    } else if (gssymeq(parsedline->directive, gssymdatadirective, ".tyapp")) {
+    } else if (gssymceq(parsedline->directive, gssymtyapp, gssymdatadirective, ".tyapp")) {
         if (numfields < 2+0+1)
             gsfatal("%s:%d: Missing polymorphic data label", filename, *plineno);
         parsedline->arguments[0] = gsintern_string(gssymdatalable, fields[2+0]);
         for (i = 1; numfields > 2+i; i++)
             parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i]);
-    } else if (gssymeq(parsedline->directive, gssymdatadirective, ".undefined")) {
+    } else if (gssymceq(parsedline->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         if (numfields < 2+1)
             gsfatal("%s:%d: Missing type label", filename, *plineno);
         parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2+0]);
         if (numfields > 2+1)
             gsfatal("%s:%d: Undefined data item %s has too many arguments; I don't know what they all are", filename, *plineno, fields[0]);
-    } else if (gssymeq(parsedline->directive, gssymdatadirective, ".cast")) {
+    } else if (gssymceq(parsedline->directive, gssymcast, gssymdatadirective, ".cast")) {
         if (numfields < 2+1)
             gsfatal("%s:%d: Missing coercion to apply");
         parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
@@ -393,6 +395,8 @@ static
 long
 gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
+    static gsinterned_string gssymexpr, gssymeprog;
+
     struct gsparsedline *parsedline;
 
     parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, numfields);
@@ -407,12 +411,12 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
 
     parsedline->directive = gsintern_string(gssymcodedirective, fields[1]);
 
-    if (gssymeq(parsedline->directive, gssymcodedirective, ".expr")) {
+    if (gssymceq(parsedline->directive, gssymexpr, gssymcodedirective, ".expr")) {
         if (numfields > 2)
             gsfatal("%s:%d: Too many arguments to .expr", filename, *plineno)
         ;
         return gsparse_code_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
-    } else if (gssymeq(parsedline->directive, gssymcodedirective, ".eprog")) {
+    } else if (gssymceq(parsedline->directive, gssymeprog, gssymcodedirective, ".eprog")) {
         if (numfields < 3)
             gsfatal("%s:%d: Missing primset argument to .eprog", filename, *plineno)
         ;
