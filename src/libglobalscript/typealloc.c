@@ -692,7 +692,7 @@ gstype_apply(struct gspos pos, struct gstype *fun, struct gstype *arg)
     return res;
 }
 
-static struct gstype *gstypes_subst(gsinterned_string, int, struct gstype *, gsinterned_string, struct gstype *);
+static struct gstype *gstypes_subst(struct gspos, struct gstype *, gsinterned_string, struct gstype *);
 
 struct gstype *
 gstype_supply(gsinterned_string file, int lineno, struct gstype *fun, struct gstype *arg)
@@ -717,7 +717,7 @@ gstype_supply(gsinterned_string file, int lineno, struct gstype *fun, struct gst
 
             gstypes_kind_check(pos, argkind, lambda->kind);
 
-            return gstypes_subst(file, lineno, lambda->body, lambda->var, arg);
+            return gstypes_subst(pos, lambda->body, lambda->var, arg);
         }
         default:
             gsfatal_unimpl_type(__FILE__, __LINE__, fun, "supply (node = %d)", fun->node);
@@ -727,7 +727,7 @@ gstype_supply(gsinterned_string file, int lineno, struct gstype *fun, struct gst
 
 static
 struct gstype *
-gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterned_string varname, struct gstype *type1)
+gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, struct gstype *type1)
 {
     char buf[0x100];
     int i;
@@ -737,7 +737,7 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
             struct gstype_indirection *indir;
 
             indir = (struct gstype_indirection *)type;
-            return gstypes_subst(file, lineno, indir->referent, varname, type1);
+            return gstypes_subst(pos, indir->referent, varname, type1);
         }
         case gstype_abstract:
             return type;
@@ -777,9 +777,9 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
                 nvar = gsintern_string(gssymtypelable, buf);
             }
             if (nvar != lambda->var)
-                resbody = gstypes_subst(file, lineno, resbody, lambda->var, gstypes_compile_type_var(file, lineno, nvar, lambda->kind))
+                resbody = gstypes_subst(pos, resbody, lambda->var, gstypes_compile_type_var(pos.file, pos.lineno, nvar, lambda->kind))
             ;
-            resbody = gstypes_subst(file, lineno, resbody, varname, type1);
+            resbody = gstypes_subst(pos, resbody, varname, type1);
             res = gstype_alloc(sizeof(struct gstype_lambda));
             reslambda = (struct gstype_lambda *)res;
             res->node = gstype_lambda;
@@ -800,7 +800,7 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
             res->node = gstype_lift;
             res->file = type->file;
             res->lineno = type->lineno;
-            reslift->arg = gstypes_subst(file, lineno, lift->arg, varname, type1);
+            reslift->arg = gstypes_subst(pos, lift->arg, varname, type1);
 
             return res;
         }
@@ -814,8 +814,8 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
             res->node = gstype_app;
             res->file = type->file;
             res->lineno = type->lineno;
-            resapp->fun = gstypes_subst(file, lineno, app->fun, varname, type1);
-            resapp->arg = gstypes_subst(file, lineno, app->arg, varname, type1);
+            resapp->fun = gstypes_subst(pos, app->fun, varname, type1);
+            resapp->arg = gstypes_subst(pos, app->arg, varname, type1);
 
             return res;
         }
