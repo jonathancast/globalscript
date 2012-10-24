@@ -2,6 +2,8 @@
 \title{Global Script Core Specification}
 \author{Jonathan Cast\\\texttt{<jcast@globalscript.org>}}
 
+\usepackage{latexsym}
+
 \usepackage{haskell}
 
 \newcommand\defn[1]{\emph{#1}}
@@ -33,6 +35,12 @@
 
 \newcommand\lift[1]{\left\lfloor#1\right\rfloor}
 
+\newcommand\crlambda{\hskwd{\lambda}}
+\newcommand\crllambda{\crkwd{l\lambda}}
+
+\newcommand\crdefn{\crkwd{defn}}
+\newcommand\crinvert{\crkwd{invert}}
+
 \begin{document}
 
 \maketitle
@@ -55,20 +63,14 @@ A prefix files is a sequence of generators; a document is an expression, semi-co
     \item \defn{Product types} allow values from a number of types to be combined into a single value.
         A value of a product type contains a value from all of the `component' types.
 
-    \item \defn{Function types} are normal exponentials;
-        the basic categorical exponential can be written \<\alpha \rightarrow \beta\>;
-        a literal of this type is written \<\lambda\;x :: \alpha. e\>.
+    \item \defn{Function types} allow a value to be written in terms of a parameter of an arbitrary type.
 \end{itemize}
 
 There are two other wrinkles in the type system:
 \begin{itemize}
-    \item \defn{Type synonyms} can be used to give shorter names to a type:
-        \begin{haskell} \type t \alpha_0 \ldots \alpha_n = \tau[\alpha_0, \ldots, \alpha_n]; \end{haskell}
+    \item \defn{Type synonyms} can be used to give shorter names to a type.
 
-    \item \defn{Abstract types} introduce new types distinct from exiting
-        \begin{haskell}  \abstype t \alpha_0 \ldots \alpha_n = tau[\alpha_0, \ldots, \alpha_n]; \end{haskell}
-        \<t\> is a distinct type from its definition,
-        although coercions between the two are possible within the scope of the definition.
+    \item \defn{Abstract types} introduce new types distinct from exiting types.
 \end{itemize}
 
 \subsection{Classifications of Types}
@@ -220,18 +222,145 @@ For such a collection \<\{\tau_v\}_{v\in\mathcal{V}}\> there are thus eight poss
 
     \item \defn{Un-lifted Un-Boxed Product Types}
 
-        \begin{haskell} \cruprod\crgroup{ \overline{v = e_v}; } :: \cruprod\crgroup{ \overline{v :: \tau_v;} }\end{haskell}
+        \begin{haskell} \cruprod\crgroup{ \overline{v = x_v}; } :: \cruprod\crgroup{ \overline{v :: \tau_v;} } \end{haskell}
 
-        \begin{haskell} \for \cruprod\crgroup{ \overline{v = x_v;} } = e_0. e_1 \end{haskell}
+        Variables of these types are illegal;
+        expressions of these types must be eliminated directly using the syntax
+        \begin{haskell} \for \cruprod\crgroup{ \overline{v = x_v;} } \propto e_0. e_1 \end{haskell}
+        The body \<e_1\> is compiled into a continuation which takes one argument per field \<v\>;
+        the expression as a whole is compiled into code that pushes that continuation onto the stack,
+        followed by the code for \<e_0\>.
+
+        The literal \<\cruprod\crgroup{ \overline{v = x_v;} }\>, in turn,
+        is compiled into code to pop the continuation off the stack and jump to it,
+        passing each each field value in the correct argument.
 
     \item \defn{Lifted Boxed Sum Types}
     \item \defn{Lifted Boxed Product Types}
+
+        The lifted boxed types are simple wrappers around the corresponding unlifted types;
+        the literals are
+        \begin{haskell} \lift{e} :: \lift{\tau} \end{haskell}
+        where \<e :: \tau\> and \<\tau\> is un-lifted.
+        For both sum and product types, elimination can be handled by
+        \begin{haskell} \for \lift{x} \propto e_0. e_1 \end{haskell}
+        This is compiled to code to push a continuation for \<e_1\> onto the stack,
+        followed by the code for \<e_0\>.
+
+        A variable binding for one of these types,
+        \begin{haskell} \for x = e_0. e_1 \end{haskell}
+        is compiled to code to allocate an (updateable) thunk for \<e_0\>, bound to \<x\>,
+        followed by the code for \<e_1\>.
+
+        Operationally, lifting has no effect on representation,
+        so a literal \<\lift{e}\> is compiled to the same code as \<e\> is.
+
     \item \defn{Lifted Un-Boxed Sum Types}
+
+        Literals of these types can be written
+        \begin{haskell} \lift{e} :: \lift{\tau} \end{haskell}
+        similar to the boxed versions.
+        Variables of these types are legal.
+        A variable binding
+        \begin{haskell} \for x = e_0. e_1 \end{haskell}
+        is compiled to code to allocate a (non-updateable) thunk for \<e_0\>, bound to \<x\>,
+        followed by the code for \<e_1\>.
+
+        These types have a special elimination syntax:
+        \begin{haskell}
+            \analyze{e_{scrut}}{
+                \case\;\lift{c_0\;x_0}. e_0; \\
+                \vdots \\
+                \case\;\lift{c_n\;x_n}. e_n; \\
+            }
+        \end{haskell}
+        This is compiled exactly the same way as the un-lifted un-boxed version.
+
     \item \defn{Lifted Un-Boxed Product Types}
+
+        Literals of these types can be written
+        \begin{haskell} \lift{e} :: \lift{\tau} \end{haskell}
+        similar to the boxed versions.
+        Variables of these types are legal.
+        A variable binding
+        \begin{haskell} \for x = e_0. e_1 \end{haskell}
+        is compiled to code to allocate a (non-updateable) thunk for \<e_0\>, bound to \<x\>,
+        followed by the code for \<e_1\>.
+
+        These types have a special elimination syntax:
+        \begin{haskell} \for \lift{\cruprod\crgroup{ \overline{v = x_v;} }} \propto e_0. e_1 \end{haskell}
+        This is compiled exactly the same way as the un-lifted un-boxed version.
 \end{itemize}
 
 \subsection{Function Types}
 
+Un-lifted function types have the form
+\begin{haskell} \tau_0 \rightarrow \tau_1 \end{haskell}
+Lifted function types have the form
+\begin{haskell} \lift{\tau_0 \rightarrow \tau_1} \end{haskell}
+
+A literal of un-lifted function type can be written
+\begin{haskell} (\crlambda x :: \tau_0. e) :: \tau_0 \rightarrow \tau_1 \end{haskell}
+and an un-lifted function can be eliminated by the syntax
+\begin{haskell} e_0 x \end{haskell}
+where \<e_0 :: \tau_0 \rightarrow \tau_1\> and \<x :: \tau_0\>.
+This is compiled to code which pushes an `application continuation' for argument \<x\> onto the stack,
+followed by the code for \<e_0\>.
+
+A literal of lifted function type can be written
+\begin{haskell} \lift{\crlambda x :: \tau_0. e} :: \lift{\tau_0 \rightarrow \tau_1} \end{haskell}
+or
+\begin{haskell} (\crllambda x :: \tau_0. e) :: \lift{\tau_0 \rightarrow \tau_1} \end{haskell}
+The second form is allowed because a mixed sequence of \<\crlambda\>s and \<\crllambda\>s
+is easier to compile into a single curried function than the equivalent using \<\lift{}\>.
+
+A lifted function can be eliminated by the syntax
+\begin{haskell} e_0 x \end{haskell}
+where \<e_0 :: \tau_0 \rightarrow \tau_1\>, \<x :: \tau_0\>, and \<\tau_1\> has a lifted kind.
+This is permitted because
+a) the body of a \<\crlambda\>-term whose result type is lifted could be a \<\crllambda\>, and
+b) it's easier to compile a sequence of applications of the form \<e_0 x y z\> into a single application continuation
+than to add term forms for the complex
+`too many arguments $\rightarrow$ save some on the stack and pass in the rest;
+right number of arguments $\rightarrow$ pass them in;
+too few arguments $\rightarrow$ build partial application in the heap'
+logic to Core.
+
 \subsection{Type Synonyms and Abstract Types}
+
+Type synonyms can be defined by
+\begin{haskell} \type t \overline{\alpha_i} = \tau[\overline{\alpha_i}]; \end{haskell}
+within the scope of this declaration, a saturated application of \<t\> is identical to the RHS;
+this mechanism only allows type expressions to be simplified or clarified.
+
+Abstract types can be defined by
+\begin{haskell}  \abstype t \overline{\alpha_i} = \tau[\overline{\alpha_i}]; \end{haskell}
+\<t\> is a distinct type from its definition.
+However, within the scope of the definition, a coercion
+\begin{haskell} \crdefn t :: \forall\;\overline{\alpha_i}. \tau[\overline{\alpha_i}] \cong t \overline{\alpha_i}; \end{haskell}
+which allows casts to the abstract type \<e \rhd \crdefn \overline{\alpha_i}\>
+and casts from the abstract type \<e \rhd \crinvert (\crdefn \overline{\alpha_i})\>.
+
+\<t\> has a lifted (result) kind iff \<\tau\> has a lifted kind;
+however, because in that case \<t\> is nevertheless distinct from \<\lift{\tau'}\> for all \<\tau'\>,
+you cannot force a value of \<t\> using the syntax
+\begin{haskell} \for \lift{x} \propto e_0. e_1 \end{haskell}
+(there would be no type to attribute to \<x\>).
+
+Instead, if \<e_0\> is an expression of some un-lifted (by kind) abstract type, the lazy and strict binding forms are
+\begin{haskell} \for x = \lift{e_0}. e_1 \end{haskell}
+and
+\begin{haskell} \for x = e_0. e_1 \end{haskell}
+respectively.
+
+If \<e_0\> is an expression of some lifted (by kind) abstract type, the lazy and strict binding forms are
+\begin{haskell} \for x = e_0. e_1 \end{haskell}
+and
+\begin{haskell} \for !x = e_0. e_1 \end{haskell}
+respectively.
+In the second case, \<x\> has a lifted type (the same type as \<e_0\>),
+so we lose the static `this is evaluated' information;
+I'm unsure yet how big a problem that is.
+I suspect that `\<x\> is evaluated' is probably only useful in cases where we know what type \<x\> has anyway.
 
 \end{document}
