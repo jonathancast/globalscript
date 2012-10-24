@@ -80,9 +80,12 @@ gstypes_size_item(struct gsbc_item item)
     switch (item.type) {
         case gssymtypelable:
             if (gssymeq(item.v->directive, gssymtypedirective, ".tydefinedprim")) {
-                return sizeof(struct gstype_prim);
+                return sizeof(struct gstype_knprim);
             } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyapiprim")) {
-                return sizeof(struct gstype_prim);
+                return gsprims_lookup_prim_set(item.v->arguments[0]->name)
+                    ? sizeof(struct gstype_knprim)
+                    : sizeof(struct gstype_unprim)
+                ;
             } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
                 return sizeof(struct gstype_indirection);
             } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
@@ -175,32 +178,42 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                     } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
                         gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), res);
                     } else if (gssymeq(ptype->directive, gssymtypedirective, ".tydefinedprim")) {
-                        struct gstype_prim *prim;
+                        struct gsregistered_primset *prims;
 
-                        res->node = gstype_prim;
-                        prim = (struct gstype_prim *)res;
-                        prim->primtypegroup = gsprim_type_defined;
-                        prim->primsetname = ptype->arguments[0];
-                        prim->primset = gsprims_lookup_prim_set(ptype->arguments[0]->name);
-                        if (!prim->primset)
-                            gswarning("%s:%d: Warning: Unknown prim set %s",
-                                ptype->pos.file->name,
-                                ptype->pos.lineno,
-                                ptype->arguments[0]->name
-                            )
-                        ;
-                        prim->name = ptype->arguments[1];
-                        prim->kind = gskind_compile(ptype, ptype->arguments[2]);
+                        if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
+                            struct gstype_knprim *prim;
+
+                            res->node = gstype_knprim;
+                            prim = (struct gstype_knprim *)res;
+                            prim->primtypegroup = gsprim_type_defined;
+                            prim->primset = prims;
+                            prim->primname = ptype->arguments[1];
+                            prim->kind = gskind_compile(ptype, ptype->arguments[2]);
+                        } else {
+                            gsfatal("%P: Unknown primset %s, which is bad because it supposedly contains defined primitive %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name);
+                        }
                     } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyapiprim")) {
-                        struct gstype_prim *prim;
+                        struct gsregistered_primset *prims;
 
-                        res->node = gstype_prim;
-                        prim = (struct gstype_prim *)res;
-                        prim->primtypegroup = gsprim_type_api;
-                        prim->primsetname = ptype->arguments[0];
-                        prim->primset = gsprims_lookup_prim_set(ptype->arguments[0]->name);
-                        prim->name = ptype->arguments[1];
-                        prim->kind = gskind_compile(ptype, ptype->arguments[2]);
+                        if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
+                            struct gstype_knprim *prim;
+
+                            res->node = gstype_knprim;
+                            prim = (struct gstype_knprim *)res;
+                            prim->primtypegroup = gsprim_type_api;
+                            prim->primset = prims;
+                            prim->primname = ptype->arguments[1];
+                            prim->kind = gskind_compile(ptype, ptype->arguments[2]);
+                        } else {
+                            struct gstype_unprim *prim;
+
+                            res->node = gstype_unprim;
+                            prim = (struct gstype_unprim *)res;
+                            prim->primtypegroup = gsprim_type_api;
+                            prim->primsetname = ptype->arguments[0];
+                            prim->primname = ptype->arguments[1];
+                            prim->kind = gskind_compile(ptype, ptype->arguments[2]);
+                        }
                     } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
                         gstype_compile_coercion_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), res);
                     } else {
@@ -728,7 +741,9 @@ gstypes_subst(gsinterned_string file, int lineno, struct gstype *type, gsinterne
         }
         case gstype_abstract:
             return type;
-        case gstype_prim:
+        case gstype_knprim:
+            return type;
+        case gstype_unprim:
             return type;
         case gstype_var: {
             struct gstype_var *var;
@@ -856,7 +871,7 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
             indir = (struct gstype_indirection *)type;
             return gstypes_is_ftyvar(varname, indir->referent);
         }
-        case gstype_prim: {
+        case gstype_knprim: {
             return 0;
         }
         case gstype_var: {

@@ -9,7 +9,8 @@ struct gstype {
         gstype_uninitialized = -1,
         gstype_indirection,
         gstype_abstract,
-        gstype_prim,
+        gstype_knprim,
+        gstype_unprim,
         gstype_var,
         gstype_lambda,
         gstype_forall,
@@ -36,12 +37,19 @@ struct gstype_abstract {
     struct gskind *kind;
 };
 
-struct gstype_prim {
+struct gstype_knprim {
+    struct gstype e;
+    enum gsprim_type_group primtypegroup;
+    struct gsregistered_primset *primset;
+    gsinterned_string primname;
+    struct gskind *kind;
+};
+
+struct gstype_unprim {
     struct gstype e;
     enum gsprim_type_group primtypegroup;
     gsinterned_string primsetname;
-    struct gsregistered_primset *primset;
-    gsinterned_string name;
+    gsinterned_string primname;
     struct gskind *kind;
 };
 

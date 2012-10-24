@@ -133,28 +133,33 @@ gstypes_calculate_kind(struct gstype *type)
                 return abs->kind;
             gsfatal_unimpl_type(__FILE__, __LINE__, type, "Abstract types without declared kinds");
         }
-        case gstype_prim: {
-            struct gstype_prim *prim;
+        case gstype_knprim: {
+            struct gstype_knprim *prim;
             struct gsregistered_primtype *primtype;
 
-            prim = (struct gstype_prim *)type;
-            if (!prim->primset)
-                if (!prim->kind)
-                    gsfatal("%s:%d: Primitive %s seems to lack a declared kind", type->file->name, type->lineno, prim->name->name);
-                else
-                    return prim->kind
-                ;
-            if (!(primtype = gsprims_lookup_type(prim->primset, prim->name->name)))
+            prim = (struct gstype_knprim *)type;
+            if (!(primtype = gsprims_lookup_type(prim->primset, prim->primname->name)))
                 gsfatal("%s:%d: Primset %s lacks a type member %s",
                     type->file->name,
                     type->lineno,
                     prim->primset->name,
-                    prim->name->name
+                    prim->primname->name
                 )
             ;
             if (!primtype->kind)
                 gsfatal_unimpl(__FILE__, __LINE__, "Panic! Primitype type %s (%s:%d) lacks a declared kind", primtype->name, primtype->file, primtype->line);
             return gstypes_compile_prim_kind(primtype->kind);
+        }
+        case gstype_unprim: {
+            struct gstype_unprim *prim;
+            struct gsregistered_primtype *primtype;
+
+            prim = (struct gstype_unprim *)type;
+            if (!prim->kind)
+                gsfatal("%s:%d: Primitive %s seems to lack a declared kind", type->file->name, type->lineno, prim->primname->name);
+            else
+                return prim->kind
+            ;
         }
         case gstype_var: {
             struct gstype_var *var;
@@ -369,7 +374,9 @@ gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type)
             return;
         case gstype_app:
             return;
-        case gstype_prim:
+        case gstype_knprim:
+            return;
+        case gstype_unprim:
             return;
         case gstype_fun:
             return;
@@ -946,12 +953,10 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
         }
     }
 
-    if (ty->node != gstype_prim) {
-        gsfatal("%P: I don't think %s is an application of a primitive", pos, buf);
-    } else {
-        struct gstype_prim *prim;
+    if (ty->node == gstype_unprim) {
+        struct gstype_unprim *prim;
 
-        prim = (struct gstype_prim *)ty;
+        prim = (struct gstype_unprim *)ty;
 
         if (prim->primtypegroup != gsprim_type_api)
             gsfatal("%P: I don't think %s is an API primitive type", pos, buf)
@@ -959,9 +964,11 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
         if (prim->primsetname != primsetname)
             gsfatal("%P: I don't think %s is a type in the %s primset", pos, buf, primsetname->name)
         ;
-        if (prim->name != primname)
+        if (prim->primname != primname)
             gsfatal("%P: I don't think %s is the primtype %s %s", pos, buf, primsetname->name, primname->name)
         ;
+    } else {
+        gsfatal("%P: I don't think %s is an application of a primitive", pos, buf);
     }
 
     return res;
@@ -1006,18 +1013,34 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
     }
 
     switch (pexpected->node) {
-        case gstype_prim: {
-            struct gstype_prim *pactual_prim, *pexpected_prim;
+        case gstype_knprim: {
+            struct gstype_knprim *pactual_prim, *pexpected_prim;
 
-            pactual_prim = (struct gstype_prim *)pactual;
-            pexpected_prim = (struct gstype_prim *)pexpected;
+            pactual_prim = (struct gstype_knprim *)pactual;
+            pexpected_prim = (struct gstype_knprim *)pexpected;
 
             if (pactual_prim->primset != pexpected_prim->primset) {
-                seprint(err, eerr, "%s:%d: I don't think primset %s is the same as primset %s", pos.file->name, pos.lineno, pactual_prim->primset->name, pexpected_prim->primset->name);
+                seprint(err, eerr, "%P: I don't think primset %s is the same as primset %s", pos, pactual_prim->primset->name, pexpected_prim->primset->name);
                 return -1;
             }
-            if (pactual_prim->name != pexpected_prim->name) {
-                seprint(err, eerr, "%s:%d: I don't think prim %s is the same as prim %s", pos.file->name, pos.lineno, pactual_prim->name->name, pexpected_prim->name->name);
+            if (pactual_prim->primname != pexpected_prim->primname) {
+                seprint(err, eerr, "%P: I don't think prim %s is the same as prim %s", pos, pactual_prim->primname->name, pexpected_prim->primname->name);
+                return -1;
+            }
+            return 0;
+        }
+        case gstype_unprim: {
+            struct gstype_unprim *pactual_prim, *pexpected_prim;
+
+            pactual_prim = (struct gstype_unprim *)pactual;
+            pexpected_prim = (struct gstype_unprim *)pexpected;
+
+            if (pactual_prim->primsetname != pexpected_prim->primsetname) {
+                seprint(err, eerr, "%P: I don't think primset %s is the same as primset %s", pos, pactual_prim->primsetname->name, pexpected_prim->primsetname->name);
+                return -1;
+            }
+            if (pactual_prim->primname != pexpected_prim->primname) {
+                seprint(err, eerr, "%P: I don't think prim %s is the same as prim %s", pos, pactual_prim->primname->name, pexpected_prim->primname->name);
                 return -1;
             }
             return 0;
@@ -1087,7 +1110,7 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             return 0;
         }
         default:
-            seprint(err, eerr, "gstypes_check_type(node = %d) %s:%d: %s:%d:", __FILE__, __LINE__, pexpected->node, pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
+            seprint(err, eerr, "%s:%d: gstypes_check_type(node = %d) %s:%d: %s:%d:", __FILE__, __LINE__, pexpected->node, pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
             return -1;
     }
 }
@@ -1120,10 +1143,10 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             res = gstypes_eprint_type(res, eob, indir->referent);
             return res;
         }
-        case gstype_prim: {
-            struct gstype_prim *prim;
+        case gstype_unprim: {
+            struct gstype_unprim *prim;
 
-            prim = (struct gstype_prim *)pty;
+            prim = (struct gstype_unprim *)pty;
 
             switch (prim->primtypegroup) {
                 case gsprim_type_api:
@@ -1134,7 +1157,7 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
                     break;
             }
             res = seprint(res, eob, "%s ", prim->primsetname->name);
-            res = seprint(res, eob, "%s", prim->name->name);
+            res = seprint(res, eob, "%s", prim->primname->name);
             return res;
         }
         case gstype_lift: {

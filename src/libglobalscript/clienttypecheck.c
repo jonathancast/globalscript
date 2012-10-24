@@ -49,10 +49,10 @@ gstype_expect_prim(struct gstype *ty, enum gsprim_type_group group, char *primse
         return -1;
     }
 
-    if (ty->node == gstype_prim) {
-        struct gstype_prim *prim;
+    if (ty->node == gstype_unprim) {
+        struct gstype_unprim *prim;
 
-        prim = (struct gstype_prim *)ty;
+        prim = (struct gstype_unprim *)ty;
 
         if (prim->primtypegroup != group) {
             seprint(err, eerr, "I don't think %s is a %s primitive type", ty_buf, "unknown primitive");
@@ -62,8 +62,8 @@ gstype_expect_prim(struct gstype *ty, enum gsprim_type_group group, char *primse
             seprint(err, eerr, "I don't think primset %s is the same as primset %s", prim->primsetname->name, primset);
             return -1;
         }
-        if (strcmp(prim->name->name, primname)) {
-            seprint(err, eerr, "I don't think prim %s in primset %s is the same as prim %s", prim->name->name, primset, primname);
+        if (strcmp(prim->primname->name, primname)) {
+            seprint(err, eerr, "I don't think prim %s in primset %s is the same as prim %s", prim->primname->name, primset, primname);
             return -1;
         }
         return 0;
