@@ -608,6 +608,8 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
+    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymenter, gssymundef;
+
     enum {
         rttygvar,
         rtgvar,
@@ -630,7 +632,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     nargs = 0;
     regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+        if (gssymceq(p->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
             if (regtype > rttygvar)
                 gsfatal_bad_input(p, "Too late to add global type variables")
             ;
@@ -648,7 +650,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 gsfatal_unimpl_input(__FILE__, __LINE__, p, "couldn't find kind of '%s'", p->label->name)
             ;
             nregs++;
-        } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+        } else if (gssymceq(p->directive, gssymgvar, gssymcodeop, ".gvar")) {
             if (regtype > rtgvar)
                 gsfatal_bad_input(p, "Too late to add global variables")
             ;
@@ -662,7 +664,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 gsfatal_bad_input(p, "Couldn't find type for global %s", p->label->name)
             ;
             nregs++;
-        } else if (gssymeq(p->directive, gssymcodeop, ".arg")) {
+        } else if (gssymceq(p->directive, gssymarg, gssymcodeop, ".arg")) {
             int reg;
             struct gstype *argtype;
 
@@ -688,7 +690,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             argtypes[nargs] = argtype;
             arglines[nargs] = p;
             nargs++;
-        } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
+        } else if (gssymceq(p->directive, gssymenter, gssymcodeop, ".enter")) {
             int reg = 0;
 
             gsargcheck(p, 0, "var");
@@ -702,7 +704,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
         have_reg_for_enter:
             calculated_type = regtypes[reg];
             goto have_type;
-        } else if (gssymeq(p->directive, gssymcodeop, ".undef")) {
+        } else if (gssymceq(p->directive, gssymundef, gssymcodeop, ".undef")) {
             int reg;
 
             gsargcheck(p, 0, "type");
