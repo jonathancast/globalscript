@@ -354,14 +354,14 @@ static
 void
 gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline *p, gsvalue *heap, gsvalue *errors, int i, int n)
 {
-    if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
+    if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gserror *er;
 
         er = (struct gserror *)errors[i];
         er->file = p->pos.file;
         er->lineno = p->pos.lineno;
         er->type = gserror_undefined;
-    } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
+    } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
         struct gsheap_item *hp;
         struct gsclosure *cl;
 
@@ -372,7 +372,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         cl = (struct gsclosure *)heap[i];
         gsargcheck(p, 0, "Code label");
         cl->code = gssymtable_get_code(symtable, p->arguments[0]);
-    } else if (gssymeq(p->directive, gssymdatadirective, ".cast")) {
+    } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
         ;
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "Data directive %s next", p->directive->name);
