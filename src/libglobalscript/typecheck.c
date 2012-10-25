@@ -495,10 +495,12 @@ static
 void
 gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, struct gstype **pentrytype, int n, int i)
 {
+    static gsinterned_string gssymundefined, gssymclosure, gssymcast;
+
     struct gsparsedline *pdata;
 
     pdata = items[i].v;
-    if (gssymeq(pdata->directive, gssymdatadirective, ".undefined")) {
+    if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;
         struct gskind *kind;
 
@@ -512,7 +514,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "couldn't find kind of '%s'", pdata->arguments[0]->name)
         ;
         gstypes_kind_check(pdata->pos, kind, gskind_lifted_kind());
-    } else if (gssymeq(pdata->directive, gssymdatadirective, ".closure")) {
+    } else if (gssymceq(pdata->directive, gssymclosure, gssymdatadirective, ".closure")) {
         struct gsbc_code_item_type *code_type;
 
         gsargcheck(pdata, 0, "code");
@@ -541,7 +543,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             ;
             gsbc_typecheck_check_boxed(pdata, code_type->result_type);
         }
-    } else if (gssymeq(pdata->directive, gssymdatadirective, ".cast")) {
+    } else if (gssymceq(pdata->directive, gssymcast, gssymdatadirective, ".cast")) {
         struct gstype *src_type;
         struct gsbc_coercion_type *coercion_type;
 
