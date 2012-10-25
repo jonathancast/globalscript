@@ -449,7 +449,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymapp, gssymenter, gssymundef;
+    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymapp, gssymenter, gssymyield, gssymundef;
 
     struct gsparsedline *parsedline;
     int i;
@@ -502,6 +502,17 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
             if (n >= 4)
                 gsfatal("%s:%d: Un-recognized arguments to .enter; I only know the code label to enter", filename, *plineno);
+            return 0;
+        } else if (gssymceq(parsedline->directive, gssymyield, gssymcodeop, ".yield")) {
+            if (*fields[0])
+                gsfatal("%s:%d: Labels illegal on terminal ops");
+            else
+                parsedline->label = 0;
+            if (n < 3)
+                gsfatal("%s:%d: Missing argument to .yield", filename, *plineno);
+            parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
+            if (n >= 4)
+                gsfatal("%s:%d: Un-recognized arguments to .yield; I only know the data label to return", filename, *plineno);
             return 0;
         } else if (gssymceq(parsedline->directive, gssymundef, gssymcodeop, ".undef")) {
             if (*fields[0])
