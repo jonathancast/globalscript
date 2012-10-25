@@ -107,7 +107,7 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static void gstypes_kind_check_simple(gsinterned_string, int, struct gskind *);
+static void gstypes_kind_check_simple(struct gspos, struct gskind *);
 
 struct gskind *
 gstypes_calculate_kind(struct gstype *type)
@@ -174,7 +174,7 @@ gstypes_calculate_kind(struct gstype *type)
             forall = (struct gstype_forall *)type;
 
             kybody = gstypes_calculate_kind(forall->body);
-            gstypes_kind_check_simple(type->pos.file, type->pos.lineno, kybody);
+            gstypes_kind_check_simple(type->pos, kybody);
             return kybody;
         }
         case gstype_lift: {
@@ -269,7 +269,7 @@ gstypes_kind_check(struct gspos pos, struct gskind *kyactual, struct gskind *kye
 
 static
 void
-gstypes_kind_check_simple(gsinterned_string file, int lineno, struct gskind *kyactual)
+gstypes_kind_check_simple(struct gspos pos, struct gskind *kyactual)
 {
     char actual_name[0x100];
 
@@ -279,7 +279,7 @@ gstypes_kind_check_simple(gsinterned_string file, int lineno, struct gskind *kya
         case gskind_lifted:
             return;
         default:
-            gsfatal_unimpl_at(__FILE__, __LINE__, file, lineno, "gstypes_kind_check_simple(actual = %s)", actual_name);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_kind_check_simple(actual = %s)", pos, actual_name);
     }
 }
 
