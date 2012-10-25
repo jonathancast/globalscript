@@ -22,8 +22,7 @@ struct gstype {
         gstype_product,
         gstype_coerce_definition,
     } node;
-    gsinterned_string file;
-    uint lineno;
+    struct gspos pos;
 };
 
 struct gstype_indirection {

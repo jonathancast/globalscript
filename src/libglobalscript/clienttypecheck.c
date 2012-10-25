@@ -16,7 +16,7 @@ gstype_expect_abstract(struct gstype *ty, char *name, char *err, char *eerr)
     ty = gstypes_clear_indirections(ty);
 
     if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
-        seprint(err, eerr, "%s:%d: buffer overflow printing type %s:%d", __FILE__, __LINE__, ty->file->name, ty->lineno);
+        seprint(err, eerr, "%s:%d: buffer overflow printing type %P", __FILE__, __LINE__, ty->pos);
         return -1;
     }
 
@@ -45,7 +45,7 @@ gstype_expect_prim(struct gstype *ty, enum gsprim_type_group group, char *primse
     ty = gstypes_clear_indirections(ty);
 
     if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
-        seprint(err, eerr, "%s:%d: buffer overflow printing type %s:%d", __FILE__, __LINE__, ty->file->name, ty->lineno);
+        seprint(err, eerr, "%s:%d: buffer overflow printing type %P", __FILE__, __LINE__, ty->pos);
         return -1;
     }
 
@@ -81,7 +81,7 @@ gstype_expect_lift(struct gstype *ty, struct gstype **tyarg, char *err, char *ee
     ty = gstypes_clear_indirections(ty);
 
     if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
-        seprint(err, eerr, "%s:%d: buffer overflow printing type %s:%d", __FILE__, __LINE__, ty->file->name, ty->lineno);
+        seprint(err, eerr, "%s:%d: buffer overflow printing type %P", __FILE__, __LINE__, ty->pos);
         return -1;
     }
 
@@ -106,7 +106,7 @@ gstype_expect_app(struct gstype *ty, struct gstype **tyfun, struct gstype **tyar
     ty = gstypes_clear_indirections(ty);
 
     if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
-        seprint(err, eerr, "%s:%d: buffer overflow printing type %s:%d", __FILE__, __LINE__, ty->file->name, ty->lineno);
+        seprint(err, eerr, "%s:%d: buffer overflow printing type %P", __FILE__, __LINE__, ty->pos);
         return -1;
     }
 

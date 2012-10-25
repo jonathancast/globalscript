@@ -157,8 +157,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                     ptype = item.v;
                     res = ptypes[i];
 
-                    res->file = ptype->pos.file;
-                    res->lineno = ptype->pos.lineno;
+                    res->pos = ptype->pos;
 
                     if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
                         struct gstype *defn;
@@ -277,8 +276,8 @@ gstypes_compile_indir(gsinterned_string file , int lineno, struct gstype *refere
     indir = (struct gstype_indirection *)res;
 
     res->node = gstype_indirection;
-    res->file = file;
-    res->lineno = lineno;
+    res->pos.file = file;
+    res->pos.lineno = lineno;
     indir->referent = referent;
 
     return res;
@@ -314,8 +313,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         res = gstype_alloc(sizeof(struct gstype_lambda));
         lambda = (struct gstype_lambda*)res;
         res->node = gstype_lambda;
-        res->file = p->pos.file;
-        res->lineno = p->pos.lineno;
+        res->pos = p->pos;
         lambda->var = p->label;
         lambda->kind = kind;
         lambda->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
@@ -339,8 +337,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         res = gstype_alloc(sizeof(struct gstype_forall));
         forall = (struct gstype_forall*)res;
         res->node = gstype_forall;
-        res->file = p->pos.file;
-        res->lineno = p->pos.lineno;
+        res->pos = p->pos;
         forall->var = p->label;
         forall->kind = kind;
         forall->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
@@ -445,8 +442,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         res = gstype_alloc(sizeof(struct gstype_product) + numfields * sizeof(struct gstype_field));
         prod = (struct gstype_product *)res;
         res->node = gstype_product;
-        res->file = p->pos.file;
-        res->lineno = p->pos.lineno;
+        res->pos = p->pos;
         prod->numfields = numfields;
         for (i = 0; i < p->numarguments; i += 2) {
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "Non-empty products");
@@ -468,8 +464,8 @@ gstypes_compile_lambda(gsinterned_string file, int lineno, gsinterned_string var
     lambda = (struct gstype_lambda *)res;
 
     res->node = gstype_lambda;
-    res->file = file;
-    res->lineno = lineno;
+    res->pos.file = file;
+    res->pos.lineno = lineno;
     lambda->var = var;
     lambda->kind = kind;
     lambda->body = body;
@@ -487,8 +483,7 @@ gstypes_compile_lift(struct gspos pos, struct gstype *arg)
     lift = (struct gstype_lift *)res;
 
     res->node = gstype_lift;
-    res->file = pos.file;
-    res->lineno = pos.lineno;
+    res->pos = pos;
     lift->arg = arg;
 
     return res;
@@ -525,8 +520,8 @@ gstypes_compile_sumv(gsinterned_string file, int lineno, int nconstrs, struct gs
     sum = (struct gstype_sum *)res;
 
     res->node = gstype_sum;
-    res->file = file;
-    res->lineno = lineno;
+    res->pos.file = file;
+    res->pos.lineno = lineno;
     sum->numconstrs = nconstrs;
     for (i = 0; i < nconstrs; i ++) {
         gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: set constructors", file->name, lineno);
@@ -545,8 +540,7 @@ gstypes_compile_fun(struct gspos pos, struct gstype *tyarg, struct gstype *tyres
     fun = (struct gstype_fun *)res;
 
     res->node = gstype_fun;
-    res->file = pos.file;
-    res->lineno = pos.lineno;
+    res->pos = pos;
     fun->tyarg = tyarg;
     fun->tyres = tyres;
 
@@ -590,8 +584,7 @@ gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *cl, s
         res = gstype_alloc(sizeof(struct gstype_coerce_definition) + numargs * sizeof(struct gstype *));
         defn = (struct gstype_coerce_definition *)res;
         res->node = gstype_coerce_definition;
-        res->file = p->pos.file;
-        res->lineno = p->pos.lineno;
+        res->pos = p->pos;
 
         for (j = 0; j < cl->nregs; j++) {
             if (cl->regs[j] == p->arguments[0]) {
@@ -666,8 +659,8 @@ gstypes_compile_type_var(gsinterned_string file, int lineno, gsinterned_string n
     var = (struct gstype_var *)res;
 
     res->node = gstype_var;
-    res->file = file;
-    res->lineno = lineno;
+    res->pos.file = file;
+    res->pos.lineno = lineno;
 
     var->name = name;
     var->kind = ky;
@@ -683,8 +676,7 @@ gstype_apply(struct gspos pos, struct gstype *fun, struct gstype *arg)
 
     res = gstype_alloc(sizeof(struct gstype_app));
     res->node = gstype_app;
-    res->file = pos.file;
-    res->lineno = pos.lineno;
+    res->pos = pos;
     app = (struct gstype_app *)res;
     app->fun = fun;
     app->arg = arg;
@@ -783,8 +775,7 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             res = gstype_alloc(sizeof(struct gstype_lambda));
             reslambda = (struct gstype_lambda *)res;
             res->node = gstype_lambda;
-            res->file = type->file;
-            res->lineno = type->lineno;
+            res->pos = type->pos;
             reslambda->var = nvar;
             reslambda->kind = lambda->kind;
             reslambda->body = resbody;
@@ -798,8 +789,7 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             res = gstype_alloc(sizeof (struct gstype_lift));
             reslift = (struct gstype_lift *)res;
             res->node = gstype_lift;
-            res->file = type->file;
-            res->lineno = type->lineno;
+            res->pos = type->pos;
             reslift->arg = gstypes_subst(pos, lift->arg, varname, type1);
 
             return res;
@@ -812,8 +802,7 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             res = gstype_alloc(sizeof(struct gstype_app));
             resapp = (struct gstype_app *)res;
             res->node = gstype_app;
-            res->file = type->file;
-            res->lineno = type->lineno;
+            res->pos = type->pos;
             resapp->fun = gstypes_subst(pos, app->fun, varname, type1);
             resapp->arg = gstypes_subst(pos, app->arg, varname, type1);
 
@@ -827,8 +816,7 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             res = gstype_alloc(sizeof(struct gstype_sum) + sum->numconstrs * sizeof(struct gstype_constr));
             ressum = (struct gstype_sum *)res;
             res->node = gstype_sum;
-            res->file = type->file;
-            res->lineno = type->lineno;
+            res->pos = type->pos;
             ressum->numconstrs = sum->numconstrs;
             for (i = 0; i < sum->numconstrs; i++) {
                 gsfatal_unimpl_type(__FILE__, __LINE__, type, "subst into constr arg type");
@@ -844,8 +832,7 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             res = gstype_alloc(sizeof(struct gstype_product) + prod->numfields * sizeof(struct gstype_field));
             resprod = (struct gstype_product *)res;
             res->node = gstype_product;
-            res->file = type->file;
-            res->lineno = type->lineno;
+            res->pos = type->pos;
             resprod->numfields = prod->numfields;
             for (i = 0; i < prod->numfields; i++) {
                 gsfatal_unimpl_type(__FILE__, __LINE__, type, "subst into field type");

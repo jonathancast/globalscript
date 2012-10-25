@@ -91,11 +91,7 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
             calculated_kind = gstypes_calculate_kind(type);
 
             if (kinds[i]) {
-                struct gspos pos;
-
-                pos.file = type->file;
-                pos.lineno = type->lineno;
-                gstypes_kind_check(pos, calculated_kind, kinds[i]);
+                gstypes_kind_check(type->pos, calculated_kind, kinds[i]);
             } else {
                 kinds[i] = calculated_kind;
                 gssymtable_set_type_expr_kind(symtable, items[i].v->label, calculated_kind);
@@ -139,12 +135,7 @@ gstypes_calculate_kind(struct gstype *type)
 
             prim = (struct gstype_knprim *)type;
             if (!(primtype = gsprims_lookup_type(prim->primset, prim->primname->name)))
-                gsfatal("%s:%d: Primset %s lacks a type member %s",
-                    type->file->name,
-                    type->lineno,
-                    prim->primset->name,
-                    prim->primname->name
-                )
+                gsfatal("%P: Primset %s lacks a type member %s", type->pos, prim->primset->name, prim->primname->name)
             ;
             if (!primtype->kind)
                 gsfatal_unimpl(__FILE__, __LINE__, "Panic! Primitype type %s (%s:%d) lacks a declared kind", primtype->name, primtype->file, primtype->line);
@@ -155,7 +146,7 @@ gstypes_calculate_kind(struct gstype *type)
 
             prim = (struct gstype_unprim *)type;
             if (!prim->kind)
-                gsfatal("%s:%d: Primitive %s seems to lack a declared kind", type->file->name, type->lineno, prim->primname->name);
+                gsfatal("%P: Primitive %s seems to lack a declared kind", type->pos, prim->primname->name);
             else
                 return prim->kind
             ;
@@ -183,42 +174,34 @@ gstypes_calculate_kind(struct gstype *type)
             forall = (struct gstype_forall *)type;
 
             kybody = gstypes_calculate_kind(forall->body);
-            gstypes_kind_check_simple(type->file, type->lineno, kybody);
+            gstypes_kind_check_simple(type->pos.file, type->pos.lineno, kybody);
             return kybody;
         }
         case gstype_lift: {
             struct gstype_lift *lift;
             struct gskind *kyarg;
-            struct gspos pos;
 
             lift = (struct gstype_lift *)type;
 
-            pos.file = type->file;
-            pos.lineno = type->lineno;
-
             kyarg = gstypes_calculate_kind(lift->arg);
-            gstypes_kind_check(pos, kyarg, gskind_unlifted_kind());
+            gstypes_kind_check(type->pos, kyarg, gskind_unlifted_kind());
 
             return gskind_lifted_kind();
         }
         case gstype_app: {
             struct gstype_app *app;
             struct gskind *funkind, *argkind;
-            struct gspos pos;
 
             app = (struct gstype_app *)type;
             funkind = gstypes_calculate_kind(app->fun);
             argkind = gstypes_calculate_kind(app->arg);
 
-            pos.file = type->file;
-            pos.lineno = type->lineno;
-
             switch (funkind->node) {
                 case gskind_exponential:
-                    gstypes_kind_check(pos, argkind, funkind->args[1]);
+                    gstypes_kind_check(type->pos, argkind, funkind->args[1]);
                     return funkind->args[0];
                 case gskind_lifted:
-                    gsfatal_bad_type(type->file, type->lineno, type, "Wrong kind: Expected ^, got *");
+                    gsfatal_bad_type(type->pos.file, type->pos.lineno, type, "Wrong kind: Expected ^, got *");
                 default:
                     gsfatal_unimpl_type(__FILE__, __LINE__, type, "'function' kind (node = %d)", funkind->node);
             }
@@ -338,9 +321,9 @@ gsfatal_unimpl_type(char *file, int lineno, struct gstype *ty, char * err, ...)
     va_end(arg);
 
     if (debug)
-        gsfatal("%s:%d: %s:%d: %s next", file, lineno, ty->file->name, ty->lineno, buf)
+        gsfatal("%s:%d: %P: %s next", file, lineno, ty->pos, buf)
     ; else
-        gsfatal("%s:%d: Panic: Un-implemented operation in release build: %s", ty->file->name, ty->lineno, buf)
+        gsfatal("%P: Panic: Un-implemented operation in release build: %s", ty->pos, buf)
     ;
 }
 
@@ -354,7 +337,7 @@ gsfatal_bad_type(gsinterned_string file, int lineno, struct gstype *ty, char *er
     vseprint(buf, buf+sizeof buf, err, arg);
     va_end(arg);
 
-    gsfatal("%s:%d: Bad type %s:%d: %s", file->name, lineno, ty->file->name, ty->lineno, buf);
+    gsfatal("%s:%d: Bad type %P: %s", file->name, lineno, ty->pos, buf);
 }
 
 static
@@ -929,7 +912,7 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
     ty = gstypes_clear_indirections(ty);
 
     if (gstypes_eprint_type(buf, buf + sizeof(buf), ty) >= buf + sizeof(buf))
-        gsfatal("%s:%d: %P: buffer overflow printing type %s:%d", __FILE__, __LINE__, pos, ty->file->name, ty->lineno)
+        gsfatal("%s:%d: %P: buffer overflow printing type %P", __FILE__, __LINE__, pos, ty->pos)
     ;
 
     if (ty->node == gstype_lift) {
@@ -1000,20 +983,16 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
     pexpected = gstypes_clear_indirections(pexpected);
     
     if (gstypes_eprint_type(actual_buf, actual_buf + sizeof(actual_buf), pactual) >= actual_buf + sizeof(actual_buf)) {
-        seprint(err, eerr, "%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, pos.file->name, pos.lineno, pactual->file->name, pactual->lineno);
+        seprint(err, eerr, "%s:%d: %P: buffer overflow printing actual type %P", __FILE__, __LINE__, pos, pactual->pos);
         return -1;
     }
     if (gstypes_eprint_type(expected_buf, expected_buf + sizeof(expected_buf), pexpected) >= actual_buf + sizeof(actual_buf)) {
-        seprint(err, eerr, "%s:%d: %s:%d: buffer overflow printing actual type %s:%d", __FILE__, __LINE__, pos.file->name, pos.lineno, pactual->file->name, pactual->lineno);
+        seprint(err, eerr, "%s:%d: %P: buffer overflow printing actual type %P", __FILE__, __LINE__, pos, pactual->pos);
         return -1;
     }
 
     if (pactual->node != pexpected->node) {
-        seprint(err, eerr, "%s:%d: I don't think %s (%s:%d) is %s (%s:%d)",
-            pos.file->name, pos.lineno,
-            actual_buf, pactual->file->name, pactual->lineno, 
-            expected_buf, pexpected->file->name, pexpected->lineno
-        );
+        seprint(err, eerr, "%P: I don't think %s (%P) is %s (%P)", pos, actual_buf, pactual->pos, expected_buf, pexpected->pos);
         return -1;
     }
 
@@ -1093,7 +1072,7 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
                 return -1;
             }
             if (pexpected_sum->numconstrs > 0) {
-                seprint(err, eerr, "%s:%d: %s:%d: %s:%d: gstypes_check_type(check constrs)", __FILE__, __LINE__, pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
+                seprint(err, eerr, "%s:%d: %P: %P: gstypes_check_type(check constrs)", __FILE__, __LINE__, pos, pexpected->pos);
                 return -1;
             }
             return 0;
@@ -1109,13 +1088,13 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
                 return -1;
             }
             if (pexpected_product->numfields > 0) {
-                seprint(err, eerr, "%s:%d: %s:%d: %s:%d: gstypes_check_type(check fields)", __FILE__, __LINE__, pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
+                seprint(err, eerr, "%s:%d: %P: %P: gstypes_check_type(check fields)", __FILE__, __LINE__, pos, pexpected->pos);
                 return -1;
             }
             return 0;
         }
         default:
-            seprint(err, eerr, "%s:%d: gstypes_check_type(node = %d) %s:%d: %s:%d:", __FILE__, __LINE__, pexpected->node, pos.file->name, pos.lineno, pexpected->file->name, pexpected->lineno);
+            seprint(err, eerr, "%s:%d: gstypes_check_type(node = %d) %P: %P", __FILE__, __LINE__, pexpected->node, pos, pexpected->pos);
             return -1;
     }
 }
