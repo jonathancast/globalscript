@@ -177,19 +177,6 @@ gsfatal_unimpl_input(char *file, int lineno, struct gsparsedline *inpline, char 
 }
 
 void
-gsfatal_unimpl_at(char *file, int lineno, gsinterned_string infile, int inlineno, char *fmt, ...)
-{
-    char buf[0x100];
-    va_list arg;
-
-    va_start(arg, fmt);
-    vseprint(buf, buf+sizeof buf, fmt, arg);
-    va_end(arg);
-
-    gsfatal("%s:%d: %s:%d: %s next", file, lineno, infile->name, inlineno, buf);
-}
-
-void
 gsfatal_bad_input(struct gsparsedline *inpline, char *fmt, ...)
 {
     char buf[0x100];
