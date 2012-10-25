@@ -128,7 +128,7 @@ struct gsbco *gssymtable_get_code(struct gsfile_symtable *, gsinterned_string);
 struct gsbc_code_item_type *gssymtable_get_code_type(struct gsfile_symtable *, gsinterned_string);
 struct gsbc_coercion_type *gssymtable_get_coercion_type(struct gsfile_symtable *, gsinterned_string);
 
-struct gsbc_item gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, gsinterned_string label);
+struct gsbc_item gssymtable_lookup(struct gspos, struct gsfile_symtable *symtable, gsinterned_string label);
 
 struct gsbc_scc *gssymtable_get_scc(struct gsfile_symtable *symtable, struct gsbc_item);
 void gssymtable_set_scc(struct gsfile_symtable *symtable, struct gsbc_item, struct gsbc_scc *);

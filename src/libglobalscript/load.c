@@ -1342,7 +1342,7 @@ gssymtable_get_kind(struct gsfile_symtable *symtable, gsinterned_string label)
 }
 
 struct gsbc_item
-gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, gsinterned_string label)
+gssymtable_lookup(struct gspos pos, struct gsfile_symtable *symtable, gsinterned_string label)
 {
     struct gsbc_item res;
     char *strtype;
@@ -1421,7 +1421,7 @@ gssymtable_lookup(char *filename, int lineno, struct gsfile_symtable *symtable, 
             gsfatal("%s:%d: Cannot translate symbol type %d to a string", __FILE__, __LINE__, label->type);
     }
 
-    gsfatal("%s:%d: Unknown %s '%s'", filename, lineno, strtype, label->name);
+    gsfatal("%P: Unknown %s '%s'", pos, strtype, label->name);
 
     return res;
 }
