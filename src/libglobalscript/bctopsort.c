@@ -159,7 +159,6 @@ gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gspars
             || gssymeq(p->directive, gssymtypeop, ".tyforall")
             || gssymeq(p->directive, gssymtypeop, ".tylift")
             || gssymeq(p->directive, gssymtypeop, ".tylet")
-            || gssymeq(p->directive, gssymtypeop, ".typeapp")
         )
             p = gsinput_next_line(ppseg, p);
         else if (

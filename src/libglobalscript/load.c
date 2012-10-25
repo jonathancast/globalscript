@@ -665,7 +665,7 @@ static
 long
 gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtypeapp, gssymtyforall, gssymtylet, gssymtylift, gssymtyref, gssymtysum, gssymtyproduct;
+    static gsinterned_string gssymtyforall, gssymtylet, gssymtylift, gssymtyref, gssymtysum, gssymtyproduct;
 
     struct gsparsedline *parsedline;
     int i;
@@ -677,16 +677,6 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
         parsedline->directive = gsintern_string(gssymtypeop, fields[1]);
 
         if (gsparse_type_or_coercion_op(filename, parsedline, plineno, fields, n, gssymtypeop)) {
-        } else if (gssymceq(parsedline->directive, gssymtypeapp, gssymtypeop, ".typeapp")) {
-            if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on continuation ops");
-            else
-                parsedline->label = 0;
-            if (n < 3)
-                gsfatal("%s:%d: Missing argument to .typeapp; types use binary application even in stringcode", filename, *plineno);
-            parsedline->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
-            if (n > 3)
-                gsfatal("%s:%d: Too many arguments to .typeapp; types use binary application even in stringcode", filename, *plineno);
         } else if (gssymceq(parsedline->directive, gssymtyforall, gssymtypeop, ".tyforall")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);
