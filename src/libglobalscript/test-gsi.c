@@ -95,6 +95,17 @@ gsprint(gsvalue prog)
                 gsfatal_unimpl(__FILE__, __LINE__, "gsprint(heap; type = %d)", hp->type);
                 return -1;
         }
+    } else if (gsisrecord_block(block)) {
+        struct gsrecord *record;
+        int i;
+
+        record = (struct gsrecord *)prog;
+        print("〈");
+        for (i = 0; i < record->numfields; i++) {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsprint(field)", record->pos);
+        }
+        print("〉\n");
+        return 0;
     } else {
         ace_down();
         gsfatal_unimpl(__FILE__, __LINE__, "gsprint(%s)", block->class->description);

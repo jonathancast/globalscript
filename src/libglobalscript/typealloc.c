@@ -531,6 +531,26 @@ gstypes_compile_sumv(gsinterned_string file, int lineno, int nconstrs, struct gs
 }
 
 struct gstype *
+gstype_compile_productv(struct gspos pos, int nfields, struct gstype_field *fields)
+{
+    struct gstype *res;
+    struct gstype_product *product;
+    int i;
+
+    res = gstype_alloc(sizeof(struct gstype_product) + nfields * sizeof(struct gstype_field));
+    product = (struct gstype_product *)res;
+
+    res->node = gstype_product;
+    res->pos = pos;
+    product->numfields = nfields;
+    for (i = 0; i < nfields; i++) {
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: set fields", pos);
+    }
+
+    return res;
+}
+
+struct gstype *
 gstypes_compile_fun(struct gspos pos, struct gstype *tyarg, struct gstype *tyres)
 {
     struct gstype *res;

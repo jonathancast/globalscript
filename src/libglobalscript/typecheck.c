@@ -393,13 +393,15 @@ static
 void
 gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsbc_item item, struct gstype **pentrytype)
 {
-    static gsinterned_string gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
 
     pdata = item.v;
 
-    if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
+    if (gssymceq(pdata->directive, gssymrecord, gssymdatadirective, ".record")) {
+        return;
+    } else if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;
 
         gsargcheck(pdata, 0, "type");
@@ -478,12 +480,28 @@ static
 void
 gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, struct gstype **pentrytype, int n, int i)
 {
-    static gsinterned_string gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
 
     pdata = items[i].v;
-    if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
+    if (gssymceq(pdata->directive, gssymrecord, gssymdatadirective, ".record")) {
+        struct gstype *type;
+        int j;
+        struct gstype_field *fields;
+
+        for (j = 0; j < pdata->numarguments; j += 2) {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_type_check_data_item(.record fields)", pdata->pos);
+        }
+
+        type = gstype_compile_productv(pdata->pos, 0, fields);
+
+        if (pdata->label)
+            gssymtable_set_data_type(symtable, pdata->label, type)
+        ; else if (pentrytype)
+            *pentrytype = type
+        ;
+    } else if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;
         struct gskind *kind;
 

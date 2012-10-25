@@ -335,7 +335,7 @@ static
 long
 gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymclosure, gssymtyapp, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymundefined, gssymcast;
 
     struct gsparsedline *parsedline;
     int i;
@@ -366,6 +366,13 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
         parsedline->arguments[0] = gsintern_string(gssymdatalable, fields[2+0]);
         for (i = 1; numfields > 2+i; i++)
             parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i]);
+    } else if (gssymceq(parsedline->directive, gssymrecord, gssymdatadirective, ".record")) {
+        if (numfields % 2)
+            gsfatal("%s:%d: Odd number of arguments to .record", filename, *plineno);
+        for (i = 0; numfields > 2 + i; i+= 2) {
+            parsedline->arguments[i] = gsintern_string(gssymdatalable, fields[2+i]);
+            parsedline->arguments[i+1] = gsintern_string(gssymdatalable, fields[2+i+1]);
+        }
     } else if (gssymceq(parsedline->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         if (numfields < 2+1)
             gsfatal("%s:%d: Missing type label", filename, *plineno);
@@ -1563,7 +1570,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
     struct gsbc_item items[MAX_ITEMS_PER_SCC];
     struct gstype *types[MAX_ITEMS_PER_SCC], *defns[MAX_ITEMS_PER_SCC];
     struct gskind *kinds[MAX_ITEMS_PER_SCC];
-    gsvalue heap[MAX_ITEMS_PER_SCC], errors[MAX_ITEMS_PER_SCC], indir[MAX_ITEMS_PER_SCC];
+    struct gsbc_data_locs data_locs;
     struct gsbco *bcos[MAX_ITEMS_PER_SCC];
     int n, i;
 
@@ -1589,9 +1596,9 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 
     /* §section{Byte-compilation} */
 
-    gsbc_alloc_data_for_scc(symtable, items, heap, errors, indir, n);
+    gsbc_alloc_data_for_scc(symtable, items, &data_locs, n);
     gsbc_alloc_code_for_scc(symtable, items, bcos, n);
-    gsbc_bytecompile_scc(symtable, items, heap, errors, bcos, n);
+    gsbc_bytecompile_scc(symtable, items, &data_locs, bcos, n);
 
     if (pentry) {
         for (i = 0; i < n; i++) {
@@ -1599,12 +1606,14 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
                 items[i].type == gssymdatalable
                 && items[i].v == GSDATA_SECTION_FIRST_ITEM(parsedfile->data)
             ) {
-                if (heap[i])
-                    *pentry = heap[i];
-                else if (errors[i])
-                    *pentry = errors[i];
-                else if (indir[i])
-                    *pentry = indir[i];
+                if (data_locs.heap[i])
+                    *pentry = data_locs.heap[i];
+                else if (data_locs.errors[i])
+                    *pentry = data_locs.errors[i];
+                else if (data_locs.indir[i])
+                    *pentry = data_locs.indir[i];
+                else if (data_locs.records[i])
+                    *pentry = data_locs.records[i];
                 else
                     gsfatal_unimpl(__FILE__, __LINE__, "%s: Entry point: couldn't find in any SCC");
                 if (items[i].v->label) {

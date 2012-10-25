@@ -279,3 +279,27 @@ gsreservebytecode(ulong sz)
 {
     return gs_sys_seg_suballoc(&gsbytecode_desc, &gsbytecode_nursury, sz, sizeof(void*));
 }
+
+struct gs_block_class gsrecords_descr = {
+    /* evaluator = */ gswhnfeval,
+    /* description = */ "Global Script Records",
+};
+static void *gsrecords_nursury;
+static Lock gsrecords_lock;
+
+void *
+gsreserverecords(ulong sz)
+{
+    void *res;
+
+    lock(&gsrecords_lock);
+    res = gs_sys_seg_suballoc(&gsrecords_descr, &gsrecords_nursury, sz, sizeof(gsinterned_string));
+    unlock(&gsrecords_lock);
+    return res;
+}
+
+int
+gsisrecord_block(struct gs_blockdesc *p)
+{
+    return p->class == &gsrecords_descr;
+}

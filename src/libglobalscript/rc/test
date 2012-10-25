@@ -9,11 +9,19 @@ diff ./test-results/undef.ags-actual ./test-results/undef.ags-expected
 echo
 
 echo '-- undefined empty record values --'
-if (./$O.test-gsi ./test-gslib ./test-gslib/undef-empty-record.ags > ./test-results/undef-empt-record.ags-actual) {
+if (./$O.test-gsi ./test-gslib ./test-gslib/undef-empty-record.ags > ./test-results/undef-empty-record.ags-actual) {
     echo 'test-gsi succeeded; should have failed' >[1=2]
     exit 1
 }
-diff ./test-results/undef-empt-record.ags-actual ./test-results/undef-empt-record.ags-expected
+diff ./test-results/undef-empty-record.ags-actual ./test-results/undef-empty-record.ags-expected
+echo
+
+echo '-- empty record values --'
+if (! ./$O.test-gsi ./test-gslib ./test-gslib/empty-record.ags > ./test-results/empty-record.ags-actual) {
+    echo 'test-gsi failed; should have succeeded' >[1=2]
+    exit 1
+}
+diff ./test-results/empty-record.ags-actual ./test-results/empty-record.ags-expected
 echo
 
 echo '-- undefined expressions --'

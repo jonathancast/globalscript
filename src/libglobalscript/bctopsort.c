@@ -263,7 +263,7 @@ static
 void
 gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymclosure, gssymtyapp, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymundefined, gssymcast;
 
     gsinterned_string directive = item.v->directive;
 
@@ -293,6 +293,14 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         for (i = 1; i < item.v->numarguments; i++) {
             tyarg = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[1]);
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, tyarg, pend, pc);
+        }
+    } else if (gssymceq(directive, gssymrecord, gssymdatadirective, ".record")) {
+        struct gsbc_item fieldvalue;
+        int i;
+
+        for (i = 0; i < item.v->numarguments; i += 2) {
+            fieldvalue = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[i + 1]);
+            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, fieldvalue, pend, pc);
         }
     } else if (gssymceq(directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gsbc_item ty;

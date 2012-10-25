@@ -27,3 +27,5 @@ struct gserror *gserror_unimpl(char *, int, gsinterned_string, int, char *, ...)
 
 void gspoison(struct gsheap_item *, gsinterned_string, int, char *, ...);
 void gspoison_unimpl(struct gsheap_item *, char *, int, gsinterned_string, int, char *, ...);
+
+void *gsreserverecords(ulong);

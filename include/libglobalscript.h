@@ -178,6 +178,7 @@ gsvalue gsremove_indirections(gsvalue);
 
 int gsiserror_block(struct gs_blockdesc *);
 int gsisheap_block(struct gs_blockdesc *);
+int gsisrecord_block(struct gs_blockdesc *);
 
 struct gsheap_item {
     Lock lock;
@@ -223,6 +224,11 @@ struct gserror {
         gserror_generated,
     } type;
     char message[];
+};
+
+struct gsrecord {
+    struct gspos pos;
+    int numfields;
 };
 
 /* §section{Primitives} */
