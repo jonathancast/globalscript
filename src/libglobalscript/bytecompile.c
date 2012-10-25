@@ -70,12 +70,12 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
+static gsinterned_string gssymundefined, gssymclosure, gssymcast;
+
 static
 uint
 gsbc_heap_size_item(struct gsbc_item item)
 {
-    static gsinterned_string gssymundefined, gssymclosure, gssymcast;
-
     struct gsparsedline *p;
 
     if (item.type != gssymdatalable) return 0;
@@ -102,11 +102,11 @@ gsbc_error_size_item(struct gsbc_item item)
     if (item.type != gssymdatalable) return 0;
 
     p = item.v;
-    if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
+    if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         return sizeof(struct gserror);
-    } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
+    } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
         return 0;
-    } else if (gssymeq(p->directive, gssymdatadirective, ".cast")) {
+    } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
         return 0;
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gsbc_error_size_item(%s)", p->directive->name);
