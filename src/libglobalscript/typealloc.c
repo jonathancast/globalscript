@@ -289,12 +289,14 @@ static
 struct gstype *
 gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
 {
+    static gsinterned_string gssymtylambda, gssymtyforall, gssymtylet, gssymtylift, gssymtyref, gssymtysum;
+
     int i, j;
     struct gstype *res;
 
     if (res = gstype_compile_type_or_coercion_op(cl, p, gstype_compile_type_ops_worker)) {
         return res;
-    } else if (gssymeq(p->directive, gssymtypeop, ".tylambda")) {
+    } else if (gssymceq(p->directive, gssymtylambda, gssymtypeop, ".tylambda")) {
         struct gskind *kind;
         struct gstype_lambda *lambda;
 
@@ -318,7 +320,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         lambda->kind = kind;
         lambda->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
         return res;
-    } else if (gssymeq(p->directive, gssymtypeop, ".tyforall")) {
+    } else if (gssymceq(p->directive, gssymtyforall, gssymtypeop, ".tyforall")) {
         struct gskind *kind;
         struct gstype_forall *forall;
 
@@ -342,7 +344,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         forall->kind = kind;
         forall->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
         return res;
-    } else if (gssymeq(p->directive, gssymtypeop, ".tylet")) {
+    } else if (gssymceq(p->directive, gssymtylet, gssymtypeop, ".tylet")) {
         struct gstype *reg;
 
         if (cl->nregs >= MAX_REGISTERS)
@@ -381,9 +383,9 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->regvalues[cl->nregs] = reg;
         cl->nregs++;
         return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
-    } else if (gssymeq(p->directive, gssymtypeop, ".tylift")) {
+    } else if (gssymceq(p->directive, gssymtylift, gssymtypeop, ".tylift")) {
         return gstypes_compile_lift(p->pos, gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
-    } else if (gssymeq(p->directive, gssymtypeop, ".tyref")) {
+    } else if (gssymceq(p->directive, gssymtyref, gssymtypeop, ".tyref")) {
         struct gstype *reg;
 
         gsargcheck(p, 0, "referent");
@@ -413,7 +415,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             res = gstype_apply(p->pos, fun, arg);
         }
         return res;
-    } else if (gssymeq(p->directive, gssymtypeop, ".tysum")) {
+    } else if (gssymceq(p->directive, gssymtysum, gssymtypeop, ".tysum")) {
         struct gstype_constr constrs[MAX_REGISTERS];
         int i;
         int nconstrs;
