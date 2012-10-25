@@ -665,6 +665,8 @@ static
 long
 gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
+    static gsinterned_string gssymtypeapp, gssymtyforall, gssymtylet, gssymtylift, gssymtyref, gssymtysum, gssymtyproduct;
+
     struct gsparsedline *parsedline;
     int i;
     long n;
@@ -675,7 +677,7 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
         parsedline->directive = gsintern_string(gssymtypeop, fields[1]);
 
         if (gsparse_type_or_coercion_op(filename, parsedline, plineno, fields, n, gssymtypeop)) {
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".typeapp")) {
+        } else if (gssymceq(parsedline->directive, gssymtypeapp, gssymtypeop, ".typeapp")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops");
             else
@@ -685,7 +687,7 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             parsedline->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
             if (n > 3)
                 gsfatal("%s:%d: Too many arguments to .typeapp; types use binary application even in stringcode", filename, *plineno);
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".tyforall")) {
+        } else if (gssymceq(parsedline->directive, gssymtyforall, gssymtypeop, ".tyforall")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);
             else
@@ -695,7 +697,7 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             parsedline->arguments[0] = gsintern_string(gssymkindexpr, fields[2]);
             if (n > 3)
                 gsfatal("%s:%d: Too many arguments to .tyforall", filename, *plineno);
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".tylet")) {
+        } else if (gssymceq(parsedline->directive, gssymtylet, gssymtypeop, ".tylet")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);
             else
@@ -708,14 +710,14 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             for (i = 0; 3 + i < n; i++) {
                 parsedline->arguments[1 + i] = gsintern_string(gssymtypelable, fields[3 + i]);
             }
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".tylift")) {
+        } else if (gssymceq(parsedline->directive, gssymtylift, gssymtypeop, ".tylift")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops", filename, *plineno);
             else
                 parsedline->label = 0;
             if (n > 2)
                 gsfatal("%s:%d: Too many arguments to .tylift", filename, *plineno);
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".tyref")) {
+        } else if (gssymceq(parsedline->directive, gssymtyref, gssymtypeop, ".tyref")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
             else
@@ -726,7 +728,7 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             for (i = 3; i < n; i++)
                 parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
             return 0;
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".tysum")) {
+        } else if (gssymceq(parsedline->directive, gssymtysum, gssymtypeop, ".tysum")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
             else
@@ -738,7 +740,7 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->arguments[i + 1] = gsintern_string(gssymtypelable, fields[2 + i + 1]);
             }
             return 0;
-        } else if (gssymeq(parsedline->directive, gssymtypeop, ".typroduct")) {
+        } else if (gssymceq(parsedline->directive, gssymtyproduct, gssymtypeop, ".typroduct")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
             else
