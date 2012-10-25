@@ -152,7 +152,6 @@ gstypes_calculate_kind(struct gstype *type)
         }
         case gstype_unprim: {
             struct gstype_unprim *prim;
-            struct gsregistered_primtype *primtype;
 
             prim = (struct gstype_unprim *)type;
             if (!prim->kind)
@@ -411,11 +410,13 @@ static
 void
 gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsbc_item item, struct gstype **pentrytype)
 {
+    static gsinterned_string gssymundefined, gssymclosure, gssymcast;
+
     struct gsparsedline *pdata;
 
     pdata = item.v;
 
-    if (gssymeq(pdata->directive, gssymdatadirective, ".undefined")) {
+    if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;
 
         gsargcheck(pdata, 0, "type");
@@ -428,7 +429,7 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
         ; else if (pentrytype)
             *pentrytype = type
         ;
-    } else if (gssymeq(pdata->directive, gssymdatadirective, ".closure")) {
+    } else if (gssymceq(pdata->directive, gssymclosure, gssymdatadirective, ".closure")) {
         struct gstype *type;
 
         if (pdata->numarguments < 2)
@@ -443,7 +444,7 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
         ; else if (pentrytype)
             *pentrytype = type
         ;
-    } else if (gssymeq(pdata->directive, gssymdatadirective, ".cast")) {
+    } else if (gssymceq(pdata->directive, gssymcast, gssymdatadirective, ".cast")) {
         return;
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gstypes_process_data_type_signature(%s)", pdata->directive->name);
