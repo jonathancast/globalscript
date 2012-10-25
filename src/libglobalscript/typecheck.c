@@ -473,7 +473,7 @@ gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static void gstypes_type_check_type_fail(struct gsparsedline *, struct gstype *, struct gstype *);
+static void gstypes_type_check_type_fail(struct gspos pos, struct gstype *, struct gstype *);
 static void gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type);
 
 static
@@ -534,7 +534,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             struct gstype *declared_type;
 
             declared_type = gssymtable_get_type(symtable, pdata->arguments[1]);
-            gstypes_type_check_type_fail(pdata, code_type->result_type, declared_type);
+            gstypes_type_check_type_fail(pdata->pos, code_type->result_type, declared_type);
             gsbc_typecheck_check_boxed(pdata, declared_type);
         } else {
             if (pdata->label)
@@ -556,7 +556,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         if (!src_type)
             gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "Couldn't find type of %s", pdata->arguments[1]->name);
 
-        gstypes_type_check_type_fail(pdata, src_type, coercion_type->source);
+        gstypes_type_check_type_fail(pdata->pos, src_type, coercion_type->source);
 
         if (pdata->label)
             gssymtable_set_data_type(symtable, pdata->label, coercion_type->dest)
@@ -982,11 +982,11 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
 
 static
 void
-gstypes_type_check_type_fail(struct gsparsedline *p, struct gstype *pactual, struct gstype *pexpected)
+gstypes_type_check_type_fail(struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
 {
     char err[0x100];
 
-    if (gstypes_type_check(p->pos, pactual, pexpected, err, err + sizeof(err)) < 0)
+    if (gstypes_type_check(pos, pactual, pexpected, err, err + sizeof(err)) < 0)
         gsfatal("%s", err)
     ;
 }
