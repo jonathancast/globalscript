@@ -124,11 +124,11 @@ gsbc_get_indir_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     if (item.type != gssymdatalable) return 0;
 
     p = item.v;
-    if (gssymeq(p->directive, gssymdatadirective, ".undefined")) {
+    if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         return 0;
-    } else if (gssymeq(p->directive, gssymdatadirective, ".closure")) {
+    } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
         return 0;
-    } else if (gssymeq(p->directive, gssymdatadirective, ".cast")) {
+    } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
         res = gssymtable_get_data(symtable, p->arguments[1]);
         if (!res)
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "Can't find cast referent %s", p->arguments[1]->name)
