@@ -3,6 +3,7 @@
 #include <libglobalscript.h>
 
 #include "gsheap.h"
+#include "gsregtables.h"
 #include "ace.h"
 
 gsvalue gsentrypoint;
@@ -50,7 +51,7 @@ void
 ace_thread_pool_main(void *p)
 {
     int have_clients, suspended_runnable_thread;
-    int i;
+    int i, j;
 
     have_clients = 1;
 
@@ -70,6 +71,60 @@ ace_thread_pool_main(void *p)
                     lock(&thread->lock);
                     ip = thread->ip;
                     switch (ip->instr) {
+                        case gsbc_op_record:
+                            {
+                                struct gsheap_item *hp;
+                                struct gsrecord *record;
+
+                                hp = (struct gsheap_item *)thread->base;
+
+                                record = gsreserverecords(sizeof(*record) + ip->args[0] * sizeof(gsvalue));
+                                record->pos = ip->pos;
+                                record->numfields = ip->args[0];
+                                for (j = 0; j < ip->args[0]; j++) {
+                                    lock(&hp->lock);
+                                    gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, ".record fields");
+                                    unlock(&hp->lock);
+                                    break;
+                                }
+
+                                if (thread->nregs >= MAX_NUM_REGISTERS) {
+                                    lock(&hp->lock);
+                                    gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "Too many registers");
+                                    unlock(&hp->lock);
+                                    break;
+                                }
+                                thread->regs[thread->nregs] = (gsvalue)record;
+                                thread->nregs++;
+                                thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[0]);
+                                suspended_runnable_thread = 1;
+                            }
+                            break;
+                        case gsbc_op_yield:
+                            {
+                                struct gsheap_item *hp;
+                                struct gsindirection *in;
+
+                                if (ip->args[0] >= thread->nregs) {
+                                    lock(&hp->lock);
+                                    gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
+                                    unlock(&hp->lock);
+                                    break;
+                                }
+
+                                hp = (struct gsheap_item *)thread->base;
+
+                                lock(&hp->lock);
+
+                                hp->type = gsindirection;
+                                in = (struct gsindirection *)hp;
+                                in->target = thread->regs[ip->args[0]];
+
+                                unlock(&hp->lock);
+
+                                ace_thread_queue->threads[i] = 0;
+                            }
+                            break;
                         case gsbc_op_undef:
                             {
                                 struct gsheap_item *hp;
@@ -171,6 +226,8 @@ ace_start_evaluation(gsvalue val)
 
 have_thread:
     thread->base = val;
+
+    thread->nregs = 0;
 
     code = cl->code;
     ip = (uchar*)code + sizeof(*code);

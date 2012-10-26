@@ -4,6 +4,7 @@
 
 #include "gsinputfile.h"
 #include "gsheap.h"
+#include "gsregtables.h"
 #include "ace.h"
 
 gstypecode

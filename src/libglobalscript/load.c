@@ -7,6 +7,7 @@
 #include "gsinputfile.h"
 #include "gsinputalloc.h"
 #include "gsbytecompile.h"
+#include "gsregtables.h"
 #include "gstopsort.h"
 #include "gstypealloc.h"
 #include "gstypecheck.h"
@@ -449,7 +450,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymapp, gssymenter, gssymyield, gssymundef;
+    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymapp, gssymrecord, gssymenter, gssymyield, gssymundef;
 
     struct gsparsedline *parsedline;
     int i;
@@ -483,6 +484,26 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 gsfatal("%s:%d: Missing type on .arg", filename, *plineno);
             for (i = 2; i < n; i++)
                 parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+        } else if (gssymceq(parsedline->directive, gssymrecord, gssymcodeop, ".record")) {
+            if (*fields[0])
+                parsedline->label = gsintern_string(gssymdatalable, fields[0])
+            ; else {
+                gswarning("%s:%d: Missing label on .record makes it a no-op", filename, *plineno);
+                parsedline->label = 0;
+            }
+            if (n % 2)
+                gsfatal("%s:%d: Odd number of arguments to .record", filename, *plineno);
+            for (i = 2; i < n; i += 2) {
+                parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
+                parsedline->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
+            }
+        } else if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".lift")) {
+            if (*fields[0])
+                gsfatal("%s:%d: Labels illegal on continuation ops");
+            else
+                parsedline->label = 0;
+            if (n > 2)
+                gsfatal("%s:%d: Too many arguments to .lift", filename, *plineno);
         } else if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".app")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops");
@@ -494,7 +515,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
         } else if (gssymceq(parsedline->directive, gssymenter, gssymcodeop, ".enter")) {
             if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on terminal ops");
+                gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
             else
                 parsedline->label = 0;
             if (n < 3)

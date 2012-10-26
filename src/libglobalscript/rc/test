@@ -24,6 +24,15 @@ if (! ./$O.test-gsi ./test-gslib ./test-gslib/empty-record.ags > ./test-results/
 diff ./test-results/empty-record.ags-actual ./test-results/empty-record.ags-expected
 echo
 
+echo '-- empty record expressions --'
+if (! ./$O.test-gsi ./test-gslib ./test-gslib/empty-record-expr.ags > ./test-results/empty-record-expr.ags-actual) {
+    echo 'test-gsi failed; should have succeeded' >[1=2]
+    cat ./test-results/empty-record-expr.ags-actual >[1=2]
+    exit 1
+}
+diff ./test-results/empty-record-expr.ags-actual ./test-results/empty-record-expr.ags-expected
+echo
+
 echo '-- undefined expressions --'
 if (./$O.test-gsi ./test-gslib ./test-gslib/undef-expr.ags > ./test-results/undef-expr.ags-actual) {
     echo 'test-gsi scuceeded; should have failed' >[1=2]

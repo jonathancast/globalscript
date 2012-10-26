@@ -612,12 +612,14 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymenter, gssymundef;
+    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymrecord, gssymlift, gssymenter, gssymundef;
 
     enum {
         rttygvar,
         rtgvar,
         rtarg,
+        rtlet,
+        rtconts,
     } regtype;
     int i;
     int nregs;
@@ -628,12 +630,13 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     int nargs;
     struct gstype *argtypes[MAX_NUM_REGISTERS];
     struct gsparsedline *arglines[MAX_NUM_REGISTERS];
+    int nconts;
+    struct gsparsedline *contlines[MAX_NUM_REGISTERS];
     struct gstype *calculated_type;
     struct gskind *kind;
     struct gsbc_code_item_type *res;
 
-    nregs = 0;
-    nargs = 0;
+    nregs = nargs = nconts = 0;
     regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymceq(p->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
@@ -694,6 +697,34 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             argtypes[nargs] = argtype;
             arglines[nargs] = p;
             nargs++;
+        } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
+            struct gstype_field *fields;
+
+            if (regtype > rtlet)
+                gsfatal_bad_input(p, "Too late to add allocations")
+            ;
+            regtype = rtlet;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers")
+            ;
+
+            for (i = 0; i < p->numarguments; i += 2) {
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr(.record fields)", p->pos);
+            }
+
+            regs[nregs] = p->label;
+            regtypes[nregs] = gstype_compile_productv(p->pos, 0, fields);
+            nregs++;
+        } else if (gssymceq(p->directive, gssymlift, gssymcodeop, ".lift")) {
+            if (regtype > rtconts)
+                gsfatal_bad_input(p, "Too late to add continuations")
+            ;
+            regtype = rtconts;
+            if (nconts >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many continuations")
+            ;
+            contlines[nconts] = p;
+            nconts++;
         } else if (gssymceq(p->directive, gssymenter, gssymcodeop, ".enter")) {
             int reg = 0;
 
@@ -754,6 +785,18 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     }
 
 have_type:
+
+    while (nconts--) {
+        p = contlines[nconts];
+        if (p->directive == gssymlift) {
+            struct gskind *ky;
+
+            gstypes_kind_check(p->pos, gstypes_calculate_kind(calculated_type), gskind_unlifted_kind());
+            calculated_type = gstypes_compile_lift(p->pos, calculated_type);
+        } else {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr(cont %s)", p->pos, p->directive->name);
+        }
+    }
 
     while (nargs--) {
         struct gstype *ty;

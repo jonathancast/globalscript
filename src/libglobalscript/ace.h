@@ -21,4 +21,6 @@ struct ace_thread {
     Lock lock;
     gsvalue base;
     struct gsbc *ip;
+    int nregs;
+    gsvalue regs[MAX_NUM_REGISTERS];
 };

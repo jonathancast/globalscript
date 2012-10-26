@@ -4,6 +4,7 @@
 
 #include "gsinputfile.h"
 #include "gssetup.h"
+#include "gsregtables.h"
 #include "ace.h"
 
 #define FETCH_OPTION() \

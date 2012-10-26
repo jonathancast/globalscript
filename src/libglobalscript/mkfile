@@ -51,12 +51,12 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 	$AR rsc $GLOBALSCRIPT/lib/$LIB $stem.$O
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h
-gsmain.$O: gsinputfile.h gssetup.h ace.h
-load.$O: gsinputalloc.h gsinputfile.h $GLOBALSCRIPT/include/libibio.h gsbytecompile.h gstopsort.h gstypealloc.h gstypecheck.h ace.h
+gsmain.$O: gsinputfile.h gssetup.h gsregtables.h ace.h
+load.$O: gsinputalloc.h gsinputfile.h $GLOBALSCRIPT/include/libibio.h gsbytecompile.h gsregtables.h gstopsort.h gstypealloc.h gstypecheck.h ace.h
 inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsalloc.h
-eval.$O: gsheap.h gsinputfile.h ace.h
-ace.$O: gsheap.h ace.h
+eval.$O: gsheap.h gsinputfile.h gsregtables.h ace.h
+ace.$O: gsheap.h gsregtables.h ace.h
 apithread.$O: gsregtables.h gsheap.h api.h
 symtable.$O: gsinputfile.h
 bytecompile.$O: $GLOBALSCRIPT/include/libibio.h gsinputfile.h gsregtables.h gsbytecompile.h gsheap.h gstopsort.h gstypealloc.h

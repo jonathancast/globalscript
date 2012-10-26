@@ -1,0 +1,12 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+	.code
+
+_epcode	.expr
+r	.record
+	.lift
+	.yield	r
