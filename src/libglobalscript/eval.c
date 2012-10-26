@@ -58,7 +58,7 @@ gsheapeval(gsvalue val)
                         fvs_for_code = 0;
                         args_for_code = code->numargs;
                     if (fvs_in_cl < fvs_for_code) {
-                        gspoison(hp, code->pos.file, code->pos.lineno, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);
+                        gspoison(hp, code->pos, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);
                         res = gstywhnf;
                     } else if (fvs_in_cl < fvs_for_code + args_for_code) {
                         res = gstywhnf;
@@ -226,7 +226,7 @@ gserror_unimpl(char *file, int lineno, gsinterned_string srcfile, int srclineno,
 }
 
 void
-gspoison(struct gsheap_item *hp, gsinterned_string srcfile, int srclineno, char *fmt, ...)
+gspoison(struct gsheap_item *hp, struct gspos srcpos, char *fmt, ...)
 {
     struct gserror *err;
     struct gsindirection *in;
@@ -238,7 +238,7 @@ gspoison(struct gsheap_item *hp, gsinterned_string srcfile, int srclineno, char 
     vseprint(buf, buf+sizeof buf, fmt, arg);
     va_end(arg);
 
-    err = gserror(srcfile, srclineno, "%s", buf);
+    err = gserror(srcpos.file, srcpos.lineno, "%s", buf);
 
     hp->type = gsindirection;
     in = (struct gsindirection *)hp;
@@ -256,9 +256,9 @@ gspoison_unimpl(struct gsheap_item *hp, char *file, int lineno, struct gspos src
     va_end(arg);
 
     if (gsdebug)
-        gspoison(hp, srcpos.file, srcpos.lineno, "%s:%d: %s next", file, lineno, buf)
+        gspoison(hp, srcpos, "%s:%d: %s next", file, lineno, buf)
     ; else
-        gspoison(hp, srcpos.file, srcpos.lineno, "Panic: Un-implemented operation in release build: %s", buf)
+        gspoison(hp, srcpos, "Panic: Un-implemented operation in release build: %s", buf)
     ;
 }
 
