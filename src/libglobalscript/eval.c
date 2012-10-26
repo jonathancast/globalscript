@@ -245,7 +245,7 @@ gspoison(struct gsheap_item *hp, gsinterned_string srcfile, int srclineno, char 
 }
 
 void
-gspoison_unimpl(struct gsheap_item *hp, char *file, int lineno, gsinterned_string srcfile, int srclineno, char *fmt, ...)
+gspoison_unimpl(struct gsheap_item *hp, char *file, int lineno, struct gspos srcpos, char *fmt, ...)
 {
     char buf[0x100];
     va_list arg;
@@ -255,9 +255,9 @@ gspoison_unimpl(struct gsheap_item *hp, char *file, int lineno, gsinterned_strin
     va_end(arg);
 
     if (gsdebug)
-        gspoison(hp, srcfile, srclineno, "%s:%d: %s next", file, lineno, buf)
+        gspoison(hp, srcpos.file, srcpos.lineno, "%s:%d: %s next", file, lineno, buf)
     ; else
-        gspoison(hp, srcfile, srclineno, "Panic: Un-implemented operation in release build: %s", buf)
+        gspoison(hp, srcpos.file, srcpos.lineno, "Panic: Un-implemented operation in release build: %s", buf)
     ;
 }
 

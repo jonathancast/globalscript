@@ -101,7 +101,7 @@ ace_thread_pool_main(void *p)
                                 hp = (struct gsheap_item *)thread->base;
 
                                 lock(&hp->lock);
-                                gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos.file, ip->pos.lineno, "run instruction %d", ip->instr);
+                                gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "run instruction %d", ip->instr);
                                 unlock(&hp->lock);
 
                                 ace_thread_queue->threads[i] = 0;
@@ -178,7 +178,7 @@ have_thread:
         ip = (uchar*)ip + sizeof(gsvalue*) - (uintptr)ip % sizeof(gsvalue*)
     ;
     for (i = 0; i < code->numglobals; i++) {
-        gspoison_unimpl(hp, __FILE__, __LINE__, code->pos.file, code->pos.lineno, "ace_start_evaluation: copy in global variable");
+        gspoison_unimpl(hp, __FILE__, __LINE__, code->pos, "ace_start_evaluation: copy in global variable");
         ip = (gsvalue*)ip + 1;
     }
     instr = (struct gsbc *)ip;
