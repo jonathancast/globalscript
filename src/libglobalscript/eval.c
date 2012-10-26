@@ -200,8 +200,8 @@ gserror(gsinterned_string file, int lineno, char *fmt, ...)
     va_end(arg);
 
     err = gsreserveerrors(sizeof(*err) + strlen(buf) + 1);
-    err->file = file;
-    err->lineno = lineno;
+    err->pos.file = file;
+    err->pos.lineno = lineno;
     err->type = gserror_generated;
     strcpy(err->message, buf);
 

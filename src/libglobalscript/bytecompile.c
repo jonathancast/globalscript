@@ -428,8 +428,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         struct gserror *er;
 
         er = (struct gserror *)plocs->errors[i];
-        er->file = p->pos.file;
-        er->lineno = p->pos.lineno;
+        er->pos = p->pos;
         er->type = gserror_undefined;
     } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
         struct gsheap_item *hp;

@@ -152,7 +152,7 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
         struct gserror *p;
 
         p = (struct gserror *)instr;
-        api_abend(thread, "%s:%d: undefined", p->file->name, p->lineno);
+        api_abend(thread, "%P: undefined", p->pos);
     } else if (gsisheap_block(block)) {
         struct gsheap_item *hp;
 

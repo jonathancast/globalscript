@@ -217,8 +217,7 @@ struct gseval {
 };
 
 struct gserror {
-    gsinterned_string file;
-    int lineno;
+    struct gspos pos;
     enum {
         gserror_undefined,
         gserror_generated,

@@ -58,10 +58,10 @@ gsprint(gsvalue prog)
         p = (struct gserror *)prog;
         switch (p->type) {
             case gserror_undefined:
-                print("%s %s:%d\n", "undefined", p->file->name, p->lineno);
+                print("%s %P\n", "undefined", p->pos);
                 break;
             case gserror_generated:
-                print("%s:%d: %s\n", p->file->name, p->lineno, p->message);
+                print("%P: %s\n", p->pos, p->message);
                 break;
             default:
                 gsfatal_unimpl(__FILE__, __LINE__, "gsprint(error type = %d)", p->type);

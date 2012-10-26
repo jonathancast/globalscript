@@ -134,8 +134,7 @@ ace_thread_pool_main(void *p)
                                 hp = (struct gsheap_item *)thread->base;
 
                                 err = gsreserveerrors(sizeof(*err));
-                                err->file = ip->pos.file;
-                                err->lineno = ip->pos.lineno;
+                                err->pos = ip->pos;
                                 err->type = gserror_undefined;
 
                                 lock(&hp->lock);
