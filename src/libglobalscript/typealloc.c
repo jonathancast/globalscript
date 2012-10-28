@@ -362,15 +362,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             struct gstype *fun, *arg;
 
             fun = reg;
-            arg = 0;
-            for (j = 0; j < cl->nregs; j++) {
-                if (cl->regs[j] == p->arguments[i]) {
-                    arg = cl->regvalues[j];
-                    goto have_register_for_let_arg;
-                }
-            }
-            gsfatal_bad_input(p, "Couldn't find argument for let %s", p->arguments[i]->name);
-        have_register_for_let_arg:
+            arg = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i])];
             reg = gstype_supply(p->pos.file, p->pos.lineno, fun, arg);
         }
         cl->regvalues[cl->nregs] = reg;
