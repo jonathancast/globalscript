@@ -189,7 +189,7 @@ gsreserveerrors(ulong sz)
 }
 
 struct gserror *
-gserror(gsinterned_string file, int lineno, char *fmt, ...)
+gserror(struct gspos pos, char *fmt, ...)
 {
     char buf[0x100];
     va_list arg;
@@ -200,8 +200,7 @@ gserror(gsinterned_string file, int lineno, char *fmt, ...)
     va_end(arg);
 
     err = gsreserveerrors(sizeof(*err) + strlen(buf) + 1);
-    err->pos.file = file;
-    err->pos.lineno = lineno;
+    err->pos = pos;
     err->type = gserror_generated;
     strcpy(err->message, buf);
 
@@ -213,15 +212,19 @@ gserror_unimpl(char *file, int lineno, gsinterned_string srcfile, int srclineno,
 {
     char buf[0x100];
     va_list arg;
+    struct gspos srcpos;
 
     va_start(arg, err);
     vseprint(buf, buf+sizeof buf, err, arg);
     va_end(arg);
 
+    srcpos.file = srcfile;
+    srcpos.lineno = srclineno;
+
     if (gsdebug)
-        return gserror(srcfile, srclineno, "%s:%d: %s next", file, lineno, buf)
+        return gserror(srcpos, "%P: %s next", file, lineno, buf)
     ; else
-        return gserror(srcfile, srclineno, "Panic: Un-implemented operation in release build: %s", buf)
+        return gserror(srcpos, "Panic: Un-implemented operation in release build: %s", buf)
     ;
 }
 
@@ -238,7 +241,7 @@ gspoison(struct gsheap_item *hp, struct gspos srcpos, char *fmt, ...)
     vseprint(buf, buf+sizeof buf, fmt, arg);
     va_end(arg);
 
-    err = gserror(srcpos.file, srcpos.lineno, "%s", buf);
+    err = gserror(srcpos, "%s", buf);
 
     hp->type = gsindirection;
     in = (struct gsindirection *)hp;
