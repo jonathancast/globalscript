@@ -362,7 +362,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
 
             fun = reg;
             arg = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i])];
-            reg = gstype_supply(p->pos.file, p->pos.lineno, fun, arg);
+            reg = gstype_supply(p->pos, fun, arg);
         }
         cl->regvalues[cl->nregs] = reg;
         cl->nregs++;
@@ -673,23 +673,19 @@ gstype_apply(struct gspos pos, struct gstype *fun, struct gstype *arg)
 static struct gstype *gstypes_subst(struct gspos, struct gstype *, gsinterned_string, struct gstype *);
 
 struct gstype *
-gstype_supply(gsinterned_string file, int lineno, struct gstype *fun, struct gstype *arg)
+gstype_supply(struct gspos pos, struct gstype *fun, struct gstype *arg)
 {
     switch (fun->node) {
         case gstype_indirection: {
             struct gstype_indirection *indir;
             indir = (struct gstype_indirection *)fun;
-            return gstype_supply(file, lineno, indir->referent, arg);
+            return gstype_supply(pos, indir->referent, arg);
         }
         case gstype_lambda: {
             struct gstype_lambda *lambda;
             struct gskind *argkind;
-            struct gspos pos;
 
             lambda = (struct gstype_lambda *)fun;
-
-            pos.file = file;
-            pos.lineno = lineno;
 
             argkind = gstypes_calculate_kind(arg);
 

@@ -138,7 +138,7 @@ struct gstype *gstypes_compile_sumv(struct gspos, int, struct gstype_constr *);
 struct gstype *gstype_compile_productv(struct gspos, int, struct gstype_field *);
 struct gstype *gstypes_compile_fun(struct gspos, struct gstype *, struct gstype *);
 
-struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
+struct gstype *gstype_supply(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstype_apply(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstype_instantiate(struct gspos, struct gstype *, struct gstype *);
 
