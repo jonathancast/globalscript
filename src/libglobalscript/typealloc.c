@@ -268,7 +268,7 @@ gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedfile_se
 }
 
 struct gstype *
-gstypes_compile_indir(gsinterned_string file , int lineno, struct gstype *referent)
+gstypes_compile_indir(struct gspos pos, struct gstype *referent)
 {
     struct gstype *res;
     struct gstype_indirection *indir;
@@ -277,8 +277,7 @@ gstypes_compile_indir(gsinterned_string file , int lineno, struct gstype *refere
     indir = (struct gstype_indirection *)res;
 
     res->node = gstype_indirection;
-    res->pos.file = file;
-    res->pos.lineno = lineno;
+    res->pos = pos;
     indir->referent = referent;
 
     return res;
