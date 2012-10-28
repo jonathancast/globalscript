@@ -431,7 +431,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
 }
 
 struct gstype *
-gstypes_compile_lambda(gsinterned_string file, int lineno, gsinterned_string var, struct gskind *kind, struct gstype *body)
+gstypes_compile_lambda(struct gspos pos, gsinterned_string var, struct gskind *kind, struct gstype *body)
 {
     struct gstype *res;
     struct gstype_lambda *lambda;
@@ -440,8 +440,7 @@ gstypes_compile_lambda(gsinterned_string file, int lineno, gsinterned_string var
     lambda = (struct gstype_lambda *)res;
 
     res->node = gstype_lambda;
-    res->pos.file = file;
-    res->pos.lineno = lineno;
+    res->pos = pos;
     lambda->var = var;
     lambda->kind = kind;
     lambda->body = body;

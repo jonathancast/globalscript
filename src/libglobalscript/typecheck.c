@@ -1581,16 +1581,12 @@ have_type:
     while (nargs--) {
         gsinterned_string var;
         struct gskind *kind;
-        gsinterned_string file;
-        int lineno;
 
         var = regs[nglobals + nargs];
         kind = argkinds[nargs];
-        file = arglines[nargs]->pos.file;
-        lineno = arglines[nargs]->pos.lineno;
 
-        source = gstypes_compile_lambda(file, lineno, var, kind, source);
-        dest = gstypes_compile_lambda(file, lineno, var, kind, dest);
+        source = gstypes_compile_lambda(arglines[nargs]->pos, var, kind, source);
+        dest = gstypes_compile_lambda(arglines[nargs]->pos, var, kind, dest);
     }
 
     res = gs_sys_seg_suballoc(&gsbc_coercion_type_descr, &gsbc_coercion_type_nursury, sizeof(*res), sizeof(void*));

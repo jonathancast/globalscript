@@ -131,7 +131,7 @@ int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 
 struct gstype *gstypes_compile_indir(struct gspos, struct gstype *);
 struct gstype *gstypes_compile_type_var(struct gspos, gsinterned_string, struct gskind *);
-struct gstype *gstypes_compile_lambda(gsinterned_string, int, gsinterned_string, struct gskind *, struct gstype *);
+struct gstype *gstypes_compile_lambda(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
 struct gstype *gstypes_compile_lift(struct gspos, struct gstype *);
 struct gstype *gstypes_compile_sum(gsinterned_string, int, int, ...);
 struct gstype *gstypes_compile_sumv(gsinterned_string, int, int, struct gstype_constr *);
