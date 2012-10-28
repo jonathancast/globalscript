@@ -27,7 +27,7 @@ void *gsreservebytecode(ulong);
 void *gsreserveerrors(ulong);
 
 struct gserror *gserror(struct gspos, char *, ...);
-struct gserror *gserror_unimpl(char *, int, gsinterned_string, int, char *, ...);
+struct gserror *gserror_unimpl(char *, int, struct gspos, char *, ...);
 
 void gspoison(struct gsheap_item *, struct gspos, char *, ...);
 void gspoison_unimpl(struct gsheap_item *, char *, int, struct gspos, char *, ...);

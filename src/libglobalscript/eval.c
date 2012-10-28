@@ -208,18 +208,14 @@ gserror(struct gspos pos, char *fmt, ...)
 }
 
 struct gserror *
-gserror_unimpl(char *file, int lineno, gsinterned_string srcfile, int srclineno, char *err, ...)
+gserror_unimpl(char *file, int lineno, struct gspos srcpos, char *err, ...)
 {
     char buf[0x100];
     va_list arg;
-    struct gspos srcpos;
 
     va_start(arg, err);
     vseprint(buf, buf+sizeof buf, err, arg);
     va_end(arg);
-
-    srcpos.file = srcfile;
-    srcpos.lineno = srclineno;
 
     if (gsdebug)
         return gserror(srcpos, "%P: %s next", file, lineno, buf)
