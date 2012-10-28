@@ -817,14 +817,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             int reg = 0;
 
             gsargcheck(p, 0, "var");
-            for (i = 0; i < nregs; i++) {
-                if (regs[i] == p->arguments[0]) {
-                    reg = i;
-                    goto have_reg_for_enter;
-                }
-            }
-            gsfatal_bad_input(p, "No such register %s", p->arguments[0]->name);
-        have_reg_for_enter:
+            reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
             calculated_type = regtypes[reg];
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Check type is lifted next", p->pos);
             goto have_type;
