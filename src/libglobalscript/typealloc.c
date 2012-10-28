@@ -380,15 +380,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         struct gstype *reg;
 
         gsargcheck(p, 0, "referent");
-        reg = 0;
-        for (i = 0; i < cl->nregs; i++) {
-            if (p->arguments[0] == cl->regs[i]) {
-                reg = cl->regvalues[i];
-                goto have_referent_register;
-            }
-        }
-        gsfatal_bad_input(p, "Cannot find register %s", p->arguments[0]->name);
-    have_referent_register:
+        reg = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[0])];
         res = reg;
         for (i = 0; 1 + i < p->numarguments; i++) {
             struct gstype *fun, *arg;
