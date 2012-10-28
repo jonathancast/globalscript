@@ -357,15 +357,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->regclass = reglet;
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "base");
-        reg = 0;
-        for (i = 0; i < cl->nregs; i++) {
-            if (cl->regs[i] == p->arguments[0]) {
-                reg = cl->regvalues[i];
-                goto have_register_for_let_base;
-            }
-        }
-        gsfatal_bad_input(p, "Couldn't find base of let %s", p->arguments[0]->name);
-    have_register_for_let_base:
+        reg = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[0])];
         for (i = 1; i < p->numarguments; i++) {
             struct gstype *fun, *arg;
 
