@@ -24,6 +24,7 @@ OFILES=\
 	bctopsort.$O \
 	gsrpc.$O \
 	regtables.$O \
+	runes.$O \
 	$SYSTEM/lock.$O \
 	$SYSTEM/$CPU/tas.$O \
 	$SYSTEM/gssysthreads.$O \

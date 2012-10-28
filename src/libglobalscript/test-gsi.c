@@ -14,6 +14,7 @@ gsadd_client_prim_sets()
 }
 
 static int gsprint(gsvalue prog);
+static int gsprint_unboxed(struct gstype *type, gsvalue prog);
 
 void
 gsrun(char *doc, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *type)
@@ -26,6 +27,14 @@ gsrun(char *doc, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *
         switch (st) {
             case gstywhnf:
                 if (gsprint(prog) < 0) {
+                    ace_down();
+                    exits("error");
+                }
+                ace_down();
+                return;
+            
+            case gstyunboxed:
+                if (gsprint_unboxed(type, prog) < 0) {
                     ace_down();
                     exits("error");
                 }
@@ -114,6 +123,29 @@ gsprint(gsvalue prog)
     } else {
         ace_down();
         gsfatal_unimpl(__FILE__, __LINE__, "gsprint(%s)", block->class->description);
+        return -1;
+    }
+}
+
+static
+int
+gsprint_unboxed(struct gstype *type, gsvalue prog)
+{
+    char err[0x100];
+
+    if (gstype_expect_prim(type, gsprim_type_defined, "rune.prim", "rune", err, err + sizeof(err)) >= 0) {
+        char buf[5];
+
+        if (!gsrunetochar(prog, buf, buf + sizeof(buf), err, err + sizeof(err))) {
+            ace_down();
+            gsfatal("%s", err);
+        }
+
+        print("%s\n", buf);
+        return 0;
+    } else {
+        ace_down();
+        gsfatal_unimpl(__FILE__, __LINE__, "gsprint_unboxed");
         return -1;
     }
 }

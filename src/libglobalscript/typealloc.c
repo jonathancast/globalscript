@@ -637,6 +637,32 @@ gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, s
 }
 
 struct gstype *
+gstypes_compile_prim(struct gspos pos, enum gsprim_type_group group, char *primsetname, char *primname, struct gskind *ky)
+{
+    struct gsregistered_primset *prims;
+    struct gstype *res;
+
+    if (prims = gsprims_lookup_prim_set(primsetname)) {
+        struct gstype_knprim *prim;
+
+        res = gstype_alloc(sizeof(struct gstype_knprim));
+        prim = (struct gstype_knprim *)res;
+
+        res->node = gstype_knprim;
+        res->pos = pos;
+        prim->primtypegroup = group;
+        prim->primset = prims;
+        prim->primname = gsintern_string(gssymtypelable, primname);
+        prim->kind = ky;
+
+        return res;
+    } else {
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_prim: unknown primset", pos);
+        return 0;
+    }
+}
+
+struct gstype *
 gstypes_compile_type_var(struct gspos pos, gsinterned_string name, struct gskind *ky)
 {
     struct gstype *res;

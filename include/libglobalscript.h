@@ -99,6 +99,7 @@ typedef enum {
     gssymcoercionlable,
     gssymcoercionop,
     gssymseparator,
+    gssymruneconstant,
 } gssymboltype;
 
 typedef struct gsstring_value {
@@ -141,6 +142,11 @@ struct gsfile_symtable;
 typedef uintptr gsvalue;
 
 gsvalue gscoerce(gsvalue, struct gstype *, struct gstype **, char *, char *, struct gsfile_symtable *, char *, ...);
+
+/* §subsection Runes */
+
+char *gschartorune(char *, gsvalue *, char *, char *);
+char *gsrunetochar(gsvalue, char *, char *, char *, char *);
 
 /* §subsection Run-time Stuff */
 

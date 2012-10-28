@@ -13,3 +13,4 @@
 \.pdf$
 ^bin/ibio$
 \.ags-actual$
+\.ags-errors$

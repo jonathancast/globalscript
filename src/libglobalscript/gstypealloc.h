@@ -130,6 +130,7 @@ char *gstypes_eprint_type(char *, char *, struct gstype *);
 int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 
 struct gstype *gstypes_compile_indir(struct gspos, struct gstype *);
+struct gstype *gstypes_compile_prim(struct gspos, enum gsprim_type_group, char *, char *, struct gskind *);
 struct gstype *gstypes_compile_type_var(struct gspos, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_lambda(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
 struct gstype *gstypes_compile_lift(struct gspos, struct gstype *);

@@ -336,7 +336,7 @@ static
 long
 gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymrune, gssymundefined, gssymcast;
 
     struct gsparsedline *parsedline;
     int i;
@@ -374,6 +374,12 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
             parsedline->arguments[i] = gsintern_string(gssymdatalable, fields[2+i]);
             parsedline->arguments[i+1] = gsintern_string(gssymdatalable, fields[2+i+1]);
         }
+    } else if (gssymceq(parsedline->directive, gssymrune, gssymdatadirective, ".rune")) {
+        if (numfields < 2+1)
+            gsfatal("%s:%d: Missing rune literal", filename, *plineno);
+        parsedline->arguments[0] = gsintern_string(gssymruneconstant, fields[2+0]);
+        if (numfields > 2+1)
+            gsfatal("%s:%d: Too many arguments to .rune; I know about the rune literal to use");
     } else if (gssymceq(parsedline->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         if (numfields < 2+1)
             gsfatal("%s:%d: Missing type label", filename, *plineno);

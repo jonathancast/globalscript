@@ -404,13 +404,15 @@ static
 void
 gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsbc_item item, struct gstype **pentrytype)
 {
-    static gsinterned_string gssymrecord, gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymrune, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
 
     pdata = item.v;
 
     if (gssymceq(pdata->directive, gssymrecord, gssymdatadirective, ".record")) {
+        return;
+    } else if (gssymceq(pdata->directive, gssymrune, gssymdatadirective, ".rune")) {
         return;
     } else if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;
@@ -491,7 +493,7 @@ static
 void
 gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, struct gstype **pentrytype, int n, int i)
 {
-    static gsinterned_string gssymrecord, gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymrune, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
 
@@ -511,6 +513,15 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             gssymtable_set_data_type(symtable, pdata->label, type)
         ; else if (pentrytype)
             *pentrytype = type
+        ;
+    } else if (gssymceq(pdata->directive, gssymrune, gssymdatadirective, ".rune")) {
+        struct gstype *rune;
+
+        rune = gstypes_compile_prim(pdata->pos, gsprim_type_defined, "rune.prim", "rune", gskind_unlifted_kind());
+        if (pdata->label)
+            gssymtable_set_data_type(symtable, pdata->label, rune)
+        ; else if (pentrytype)
+            *pentrytype = rune
         ;
     } else if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;

@@ -83,7 +83,7 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static gsinterned_string gssymundefined, gssymrecord, gssymclosure, gssymcast;
+static gsinterned_string gssymundefined, gssymrecord, gssymrune, gssymclosure, gssymcast;
 
 static
 uint
@@ -95,6 +95,8 @@ gsbc_heap_size_item(struct gsbc_item item)
 
     p = item.v;
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
+        return 0;
+    } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
         return 0;
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         return 0;
@@ -119,7 +121,9 @@ gsbc_error_size_item(struct gsbc_item item)
     p = item.v;
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
         return 0;
-    } if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
+    } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
+        return 0;
+    } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         return sizeof(struct gserror);
     } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
         return 0;
@@ -142,6 +146,8 @@ gsbc_record_size_item(struct gsbc_item item)
     p = item.v;
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
         return sizeof(struct gsrecord) + (p->numarguments / 2) * sizeof(gsvalue);
+    } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
+        return 0;
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         return 0;
     } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
@@ -153,6 +159,8 @@ gsbc_record_size_item(struct gsbc_item item)
     }
     return 0;
 }
+
+static char *gsbc_parse_rune_literal(struct gspos, char *, gsvalue *);
 
 static
 gsvalue
@@ -166,6 +174,15 @@ gsbc_get_indir_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     p = item.v;
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
         return 0;
+    } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
+        char *eos;
+
+        eos = gsbc_parse_rune_literal(p->pos, p->arguments[0]->name, &res);
+        if (*eos)
+            gsfatal("%P: %s: More than one rune in argument to .rune", p->pos, p->arguments[0]->name)
+        ;
+
+        return res;
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         return 0;
     } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
@@ -180,6 +197,30 @@ gsbc_get_indir_item(struct gsfile_symtable *symtable, struct gsbc_item item)
         gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_get_indir_item(%s)", p->directive->name);
     }
     return 0;
+}
+
+static
+char *
+gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
+{
+    int noctets;
+
+    *pv = 0;
+
+    if ((*s & 0x80) == 0) {
+        noctets = 1;
+    } else {
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_parse_rune_literal(%s)", pos, s);
+    }
+
+    while (noctets--) {
+        *pv <<= 8;
+        *pv |= *s++;
+    }
+
+    *pv |= GS_MAX_PTR;
+
+    return s;
 }
 
 static int gsbc_bytecode_size_item(struct gsbc_item item);
@@ -450,6 +491,8 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         if (p->numarguments > 0) {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: record fields", p->pos);
         }
+    } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
+        ;
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gserror *er;
 
