@@ -292,7 +292,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
 {
     static gsinterned_string gssymtylambda, gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyproduct;
 
-    int i, j;
+    int i;
     struct gstype *res;
 
     if (res = gstype_compile_type_or_coercion_op(cl, p, gstype_compile_type_ops_worker)) {
@@ -568,7 +568,7 @@ static
 struct gstype *
 gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
 {
-    int i, j;
+    int i;
     struct gstype *res;
 
     if (res = gstype_compile_type_or_coercion_op(cl, p, gstype_compile_coercion_ops_worker)) {
@@ -583,14 +583,7 @@ gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *cl, s
         res->node = gstype_coerce_definition;
         res->pos = p->pos;
 
-        for (j = 0; j < cl->nregs; j++) {
-            if (cl->regs[j] == p->arguments[0]) {
-                defn->dest = cl->regvalues[j];
-                goto have_register_for_destn;
-            }
-        }
-        gsfatal_bad_input(p, "Couldn't find register %s", p->arguments[0]->name);
-    have_register_for_destn:
+        defn->dest = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[0])];
         switch (defn->dest->node) {
             case gstype_abstract: {
                 struct gstype_abstract *abs;
