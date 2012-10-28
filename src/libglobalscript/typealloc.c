@@ -407,7 +407,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             gsfatal_unimpl_input(__FILE__, __LINE__, p, "constructors");
         }
 
-        return gstypes_compile_sumv(p->pos.file, p->pos.lineno, nconstrs, constrs);
+        return gstypes_compile_sumv(p->pos, nconstrs, constrs);
     } else if (gssymceq(p->directive, gssymtyproduct, gssymtypeop, ".typroduct")) {
         struct gstype_product *prod;
         int numfields;
@@ -481,11 +481,11 @@ gstypes_compile_sum(struct gspos pos, int nconstrs, ...)
     }
     va_end(arg);
 
-    return gstypes_compile_sumv(pos.file, pos.lineno, nconstrs, constrs);
+    return gstypes_compile_sumv(pos, nconstrs, constrs);
 }
 
 struct gstype *
-gstypes_compile_sumv(gsinterned_string file, int lineno, int nconstrs, struct gstype_constr *constrs)
+gstypes_compile_sumv(struct gspos pos, int nconstrs, struct gstype_constr *constrs)
 {
     struct gstype *res;
     struct gstype_sum *sum;
@@ -495,11 +495,10 @@ gstypes_compile_sumv(gsinterned_string file, int lineno, int nconstrs, struct gs
     sum = (struct gstype_sum *)res;
 
     res->node = gstype_sum;
-    res->pos.file = file;
-    res->pos.lineno = lineno;
+    res->pos = pos;
     sum->numconstrs = nconstrs;
     for (i = 0; i < nconstrs; i ++) {
-        gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: set constructors", file->name, lineno);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: set constructors", pos);
     }
 
     return res;
