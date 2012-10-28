@@ -1530,15 +1530,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
         } else if (gssymeq(p->directive, gssymcoercionop, ".tydefinition")) {
             int reg, global;
 
-            reg = -1;
-            for (i = 0; i < nregs; i++) {
-                if (regs[i] == p->arguments[0]) {
-                    reg = i;
-                    goto have_register_for_defn;
-                }
-            }
-            gsfatal_bad_input(p, "Can't find register for abstract type %s", p->arguments[0]->name);
-        have_register_for_defn:
+            reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
             if (reg >= nglobals)
                 gsfatal_bad_input(p, "Register %s isn't a global; can't really cast to/from definition of an abstract type unless we know what that definition is", p->arguments[0]->name)
             ;
