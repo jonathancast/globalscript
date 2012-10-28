@@ -386,15 +386,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             struct gstype *fun, *arg;
 
             fun = res;
-            arg = 0;
-            for (j = 0; j < cl->nregs; j++) {
-                if (p->arguments[1 + i] == cl->regs[j]) {
-                    arg = cl->regvalues[j];
-                    goto have_arg_register;
-                }
-            }
-            gsfatal_bad_input(p, "Cannot find register %s", p->arguments[1 + i]->name);
-        have_arg_register:
+            arg = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[1 + i])];
             res = gstype_apply(p->pos, fun, arg);
         }
         return res;
