@@ -1544,14 +1544,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
             source = gstypes_clear_indirections(globaldefns[global]);
 
             for (i = 1; i < p->numarguments; i++) {
-                for (j = 0; j < nregs; j++) {
-                    if (regs[j] == p->arguments[i]) {
-                        reg = j;
-                        goto have_register_for_arg;
-                    }
-                }
-                gsfatal_bad_input(p, "Can't find type register for %s", p->arguments[i]->name);
-            have_register_for_arg:
+                reg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
                 if (!regtypes[reg])
                     gsfatal_bad_input(p, "Register %s doesn't seem to be a type variable", p->arguments[i]->name)
                 ;
