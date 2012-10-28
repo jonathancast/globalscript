@@ -123,11 +123,15 @@ struct gspos {
 
 struct gstype;
 enum gsprim_type_group;
+struct gskind;
 
 int gstype_expect_abstract(struct gstype *, char *, char *, char *);
 int gstype_expect_prim(struct gstype *, enum gsprim_type_group, char *, char *, char *, char *);
+int gstype_expect_var(struct gstype *, gsinterned_string, char *, char *);
+int gstype_expect_forall(struct gstype *, gsinterned_string *, struct gstype **, char *, char *);
 int gstype_expect_lift(struct gstype *, struct gstype **, char *, char *);
 int gstype_expect_app(struct gstype *, struct gstype **, struct gstype **, char *, char *);
+int gstype_expect_fun(struct gstype *, struct gstype **, struct gstype **, char *, char *);
 
 int gstypes_type_check(struct gspos, struct gstype *, struct gstype *, char *, char *);
 
@@ -179,6 +183,8 @@ gsvalue gsremove_indirections(gsvalue);
 int gsiserror_block(struct gs_blockdesc *);
 int gsisheap_block(struct gs_blockdesc *);
 int gsisrecord_block(struct gs_blockdesc *);
+int gsiseprim_block(struct gs_blockdesc *);
+
 
 struct gsheap_item {
     Lock lock;
@@ -230,11 +236,18 @@ struct gsrecord {
     int numfields;
 };
 
+struct gseprim {
+    struct gspos pos;
+    int index;
+    gsvalue arguments[];
+};
+
 /* §section{Primitives} */
 
 struct gsregistered_primset {
     char *name;
     struct gsregistered_primtype *types;
+    struct gsregistered_prim *operations;
 };
 
 enum gsprim_type_group {
@@ -244,8 +257,11 @@ enum gsprim_type_group {
 
 struct gsregistered_primkind {
     enum {
+        gsprim_kind_unknown,
         gsprim_kind_unlifted,
+        gsprim_kind_exponent,
     } node;
+    struct gsregistered_primkind *base, *exponent;
 };
 
 struct gsregistered_primtype {
@@ -256,10 +272,27 @@ struct gsregistered_primtype {
     struct gsregistered_primkind *kind;
 };
 
+struct gsregistered_prim {
+    char *name;
+    char *file;
+    int line;
+    enum {
+        gsprim_operation_api,
+    } group;
+    char *apitype;
+    int (*check_type)(struct gstype *, char *, char *);
+    int index;
+};
+
+/* Define this yourself; this should register your program's primsets to */
+extern void gsadd_client_prim_sets(void);
+
 void gsprims_register_prim_set(struct gsregistered_primset *);
 struct gsregistered_primset *gsprims_lookup_prim_set(char *name);
 
 struct gsregistered_primtype *gsprims_lookup_type(struct gsregistered_primset *, char*);
+
+struct gsregistered_prim *gsprims_lookup_prim(struct gsregistered_primset *, char *);
 
 /* §section{Simple Segment Manager} */
 
@@ -306,13 +339,31 @@ struct api_process_rpc_table {
 };
 rpc_handler api_main_process_unimpl_rpc;
 
-/* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
-void apisetupmainthread(struct api_process_rpc_table *, gsvalue);
+enum api_prim_execution_state {
+    api_st_success,
+    api_st_error,
+};
 
-/* If (and only if) the current thread is hard, these will send an abend message (message 1) to the corresponding process */
+typedef enum api_prim_execution_state (api_prim_executor)(struct api_thread *, struct gseprim *);
+
+struct api_prim_table {
+    int numprims;
+    api_prim_executor *execs[];
+};
+
+api_prim_executor api_thread_handle_prim_unit;
+
+/* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
+void apisetupmainthread(struct api_process_rpc_table *, struct api_prim_table *, gsvalue);
+
+/* If (and only if) the current thread is hard, these will send a done message (§c{api_std_rpc_done}) to the corresponding process */
+void api_done(struct api_thread *);
+
+/* If (and only if) the current thread is hard, these will send an abend message (§c{api_std_rpc_abend}) to the corresponding process */
 void api_abend(struct api_thread *, char *, ...);
 void api_abend_unimpl(struct api_thread *, char *, int, char *, ...);
 
+rpc_handler api_main_process_handle_rpc_done;
 rpc_handler api_main_process_handle_rpc_abend;
 
 #if defined(__cplusplus)

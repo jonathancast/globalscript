@@ -33,6 +33,7 @@ gsmain(int argc, char **argv)
     fmtinstall('P', gsPfmt);
 
     gsadd_global_script_prim_sets();
+    gsadd_client_prim_sets();
     gsadd_global_gslib();
     FETCH_OPTION();
     while (argc) {

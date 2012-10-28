@@ -3,3 +3,9 @@
 	.type
 
 sequence.m	.tyapiprim	test.sequence	m	u?^
+
+sequence.unit.ty	.tyexpr
+sequence.m	.tygvar
+α	.tyforall	*
+	.tyfun	α
+	.tyref	sequence.m	α

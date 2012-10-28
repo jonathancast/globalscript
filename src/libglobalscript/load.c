@@ -450,7 +450,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymapp, gssymrecord, gssymenter, gssymyield, gssymundef;
+    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymrecord, gssymeprim, gssymapp, gssymenter, gssymyield, gssymundef;
 
     struct gsparsedline *parsedline;
     int i;
@@ -496,6 +496,33 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             for (i = 2; i < n; i += 2) {
                 parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
                 parsedline->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
+            }
+        } else if (gssymceq(parsedline->directive, gssymeprim, gssymcodeop, ".eprim")) {
+            if (*fields[0])
+                parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+            else
+                gsfatal("%s:%d: Missing label on allocation op", filename, *plineno);
+            if (n < 3)
+                gsfatal("%s:%d: Missing primset on .eprim", filename, *plineno);
+            parsedline->arguments[2 - 2] = gsintern_string(gssymprimsetlable, fields[2]);
+            if (n < 4)
+                gsfatal("%s:%d: Missing prim type name on .eprim", filename, *plineno);
+            parsedline->arguments[3 - 2] = gsintern_string(gssymtypelable, fields[3]);
+            if (n < 5)
+                gsfatal("%s:%d: Missing prim name on .eprim", filename, *plineno);
+            parsedline->arguments[4 - 2] = gsintern_string(gssymdatalable, fields[4]);
+            if (n < 6)
+                gsfatal("%s:%d: Missing declared type on .eprim", filename, *plineno);
+            parsedline->arguments[5 - 2] = gsintern_string(gssymtypelable, fields[5]);
+            for (i = 6; i < n && strcmp(fields[i], "|"); i++) {
+                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+            }
+            if (i < n) {
+                parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+                i++;
+            }
+            for (; i < n; i++) {
+                parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
             }
         } else if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".lift")) {
             if (*fields[0])
@@ -697,7 +724,7 @@ static
 long
 gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtyforall, gssymtylet, gssymtylift, gssymtyref, gssymtysum, gssymtyproduct;
+    static gsinterned_string gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyproduct;
 
     struct gsparsedline *parsedline;
     int i;
@@ -739,6 +766,16 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->label = 0;
             if (n > 2)
                 gsfatal("%s:%d: Too many arguments to .tylift", filename, *plineno);
+        } else if (gssymceq(parsedline->directive, gssymtyfun, gssymtypeop, ".tyfun")) {
+            if (*fields[0])
+                gsfatal("%s:%d: Labels illegal on continuation ops", filename, *plineno);
+            else
+                parsedline->label = 0;
+            if (n < 3)
+                gsfatal("%s:%d: Missing argument type to .tyfun", filename, *plineno);
+            parsedline->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
+            if (n > 3)
+                gsfatal("%s:%d: Too many arguments to .tyfun", filename, *plineno); 
         } else if (gssymceq(parsedline->directive, gssymtyref, gssymtypeop, ".tyref")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);

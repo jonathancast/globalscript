@@ -148,3 +148,11 @@ if (! grep -s './test-gslib/undef-bind-api.ags:17: undefined' ./test-results/und
     exit 1
 }
 echo
+
+echo '-- simple unit statements --'
+if (! ./$O.test-gsexec ./test-gslib ./test-gslib/simple-unit-api.ags >[2] ./test-results/simple-unit-api.ags-actual) {
+    echo 'test-gsexec failed; should have succeeded' >[1=2]
+    cat ./test-results/simple-unit-api.ags-actual >[1=2]
+    exit 1
+}
+echo

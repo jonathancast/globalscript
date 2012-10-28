@@ -67,8 +67,80 @@ gstype_expect_prim(struct gstype *ty, enum gsprim_type_group group, char *primse
             return -1;
         }
         return 0;
+    } else if (ty->node == gstype_knprim) {
+        struct gstype_knprim *prim;
+
+        prim = (struct gstype_knprim *)ty;
+
+        if (prim->primtypegroup != group) {
+            seprint(err, eerr, "I don't think %s is a %s primitive type", ty_buf, "unknown primitive");
+            return -1;
+        }
+        if (strcmp(prim->primset->name, primset)) {
+            seprint(err, eerr, "I don't think primset %s is the same as primset %s", prim->primset->name, primset);
+            return -1;
+        }
+        if (strcmp(prim->primname->name, primname)) {
+            seprint(err, eerr, "I don't think prim %s in primset %s is the same as prim %s", prim->primname->name, primset, primname);
+            return -1;
+        }
+        return 0;
     } else {
         seprint(err, eerr, "I don't think %s is a primitive type", ty_buf);
+        return -1;
+    }
+}
+
+int
+gstype_expect_var(struct gstype *ty, gsinterned_string v, char *err, char *eerr)
+{
+    char ty_buf[0x100];
+
+    ty = gstypes_clear_indirections(ty);
+
+    if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
+        seprint(err, eerr, "%s:%d: buffer overflow printing type %P", __FILE__, __LINE__, ty->pos);
+        return -1;
+    }
+
+    if (ty->node == gstype_var) {
+        struct gstype_var *var;
+
+        var = (struct gstype_var *)ty;
+
+        if (var->name != v) {
+            seprint(err, eerr, "I don't think %s is %s", var->name->name, v->name);
+            return -1;
+        }
+        return 0;
+    } else {
+        seprint(err, eerr, "I don't think %s is a type variable", ty_buf);
+        return -1;
+    }
+}
+
+int
+gstype_expect_forall(struct gstype *ty, gsinterned_string *pv, struct gstype **pbody, char *err, char *eerr)
+{
+    char ty_buf[0x100];
+
+    ty = gstypes_clear_indirections(ty);
+
+    if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
+        seprint(err, eerr, "%s:%d: buffer overflow printing type %P", __FILE__, __LINE__, ty->pos);
+        return -1;
+    }
+
+    if (ty->node == gstype_forall) {
+        struct gstype_forall *forall;
+
+        forall = (struct gstype_forall *)ty;
+
+        *pv = forall->var;
+        *pbody = forall->body;
+        return 0;
+    } else {
+        seprint(err, eerr, "I don't think %s is a ∀ type", ty_buf);
         return -1;
     }
 }
@@ -120,6 +192,32 @@ gstype_expect_app(struct gstype *ty, struct gstype **tyfun, struct gstype **tyar
         return 0;
     } else {
         seprint(err, eerr, "I don't think %s is an application", ty_buf);
+        return -1;
+    }
+}
+
+int
+gstype_expect_fun(struct gstype *ty, struct gstype **ptyarg, struct gstype **ptyres, char *err, char *eerr)
+{
+    char ty_buf[0x100];
+
+    ty = gstypes_clear_indirections(ty);
+
+    if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
+        seprint(err, eerr, "%s:%d: buffer overflow printing type %P", __FILE__, __LINE__, ty->pos);
+        return -1;
+    }
+
+    if (ty->node == gstype_fun) {
+        struct gstype_fun *fun;
+
+        fun = (struct gstype_fun *)ty;
+
+        *ptyarg = fun->tyarg;
+        *ptyres = fun->tyres;
+        return 0;
+    } else {
+        seprint(err, eerr, "I don't think %s is a function type", ty_buf);
         return -1;
     }
 }

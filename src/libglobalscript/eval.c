@@ -304,3 +304,27 @@ gsisrecord_block(struct gs_blockdesc *p)
 {
     return p->class == &gsrecords_descr;
 }
+
+struct gs_block_class gseprims_descr = {
+    /* evaluator = */ gswhnfeval,
+    /* description = */ "API Primitives",
+};
+static void *gseprims_nursury;
+static Lock gseprims_lock;
+
+void *
+gsreserveeprims(ulong sz)
+{
+    void *res;
+
+    lock(&gseprims_lock);
+    res = gs_sys_seg_suballoc(&gseprims_descr, &gseprims_nursury, sz, sizeof(gsinterned_string));
+    unlock(&gseprims_lock);
+    return res;
+}
+
+int
+gsiseprim_block(struct gs_blockdesc *p)
+{
+    return p->class == &gseprims_descr;
+}

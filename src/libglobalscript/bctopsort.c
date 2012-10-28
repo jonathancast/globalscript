@@ -123,12 +123,14 @@ static struct gsparsedline *gstype_section_skip_type_expr(struct gsparsedfile_se
 struct gsparsedline *
 gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedline *type)
 {
-    static gsinterned_string gssymtyexpr, gssymtyabstract;
+    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtyapiprim;
 
     if (gssymceq(type->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
     } else if (gssymceq(type->directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
+    } else if (gssymceq(type->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")) {
+        return gsinput_next_line(ppseg, type);
     } else {
         gsfatal_unimpl_input(__FILE__, __LINE__, type, "gstype_section_next_item(%s)", type->directive->name);
     }
@@ -402,18 +404,20 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
 
         if (ptype->numarguments < 1)
             gsfatal("%s:%d: Missing primitive set name on .tyapiprim", ptype->pos.file->name, ptype->pos.lineno);
+
         prims = gsprims_lookup_prim_set(ptype->arguments[0]->name);
-        if (prims) {
-            gsfatal_unimpl_input(__FILE__, __LINE__, ptype, ".tyapiprim (known primset)");
-        } else {
-            if (ptype->numarguments < 2)
-                gsfatal("%s:%d: Missing primitive type name on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
-            if (ptype->numarguments < 3)
-                gsfatal("%s:%d: Missing kind on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
-            if (ptype->numarguments > 3)
-                gsfatal("%s:%d: Too many arguments to .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
-            return;
-        }
+
+        if (ptype->numarguments < 2)
+            gsfatal("%s:%d: Missing primitive type name on .tyapiprim", ptype->pos.file->name, ptype->pos.lineno);
+
+        if (prims && !gsprims_lookup_type(prims, ptype->arguments[1]->name))
+            gsfatal("%P: Primitive set %s does not in fact contain a type %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name);
+
+        if (ptype->numarguments < 3)
+            gsfatal("%s:%d: Missing kind on .tyapiprim", ptype->pos.file->name, ptype->pos.lineno);
+        if (ptype->numarguments > 3)
+            gsfatal("%s:%d: Too many arguments to .tyapiprim", ptype->pos.file->name, ptype->pos.lineno);
+        return;
     } else {
         gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, ptype->pos.file->name, ptype->pos.lineno, ptype->directive->name);
     }

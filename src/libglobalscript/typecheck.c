@@ -139,7 +139,7 @@ gstypes_calculate_kind(struct gstype *type)
             ;
             if (!primtype->kind)
                 gsfatal_unimpl(__FILE__, __LINE__, "Panic! Primitype type %s (%s:%d) lacks a declared kind", primtype->name, primtype->file, primtype->line);
-            return gstypes_compile_prim_kind(primtype->kind);
+            return gstypes_compile_prim_kind(primtype->file, primtype->line, primtype->kind);
         }
         case gstype_unprim: {
             struct gstype_unprim *prim;
@@ -187,6 +187,16 @@ gstypes_calculate_kind(struct gstype *type)
             gstypes_kind_check(type->pos, kyarg, gskind_unlifted_kind());
 
             return gskind_lifted_kind();
+        }
+        case gstype_fun: {
+            struct gstype_fun *fun;
+
+            fun = (struct gstype_fun *)type;
+
+            gstypes_kind_check_simple(type->pos, gstypes_calculate_kind(fun->tyarg));
+            gstypes_kind_check_simple(type->pos, gstypes_calculate_kind(fun->tyres));
+
+            return gskind_unlifted_kind();
         }
         case gstype_app: {
             struct gstype_app *app;
@@ -276,6 +286,7 @@ gstypes_kind_check_simple(struct gspos pos, struct gskind *kyactual)
     seprint_kind_name(actual_name, actual_name + sizeof(actual_name), kyactual);
 
     switch (kyactual->node) {
+        case gskind_unlifted:
         case gskind_lifted:
             return;
         default:
@@ -602,6 +613,8 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
     }
 }
 
+static struct gstype *gsbc_typecheck_check_api_statement_type(struct gspos, struct gstype *, gsinterned_string, gsinterned_string, int *);
+
 static struct gs_block_class gsbc_code_type_descr = {
     /* evaluator = */ gsnoeval,
     /* description = */ "Code item types",
@@ -612,7 +625,7 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymrecord, gssymlift, gssymenter, gssymundef;
+    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymenter, gssymundef;
 
     enum {
         rttygvar,
@@ -698,7 +711,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             arglines[nargs] = p;
             nargs++;
         } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
-            struct gstype_field *fields;
+            struct gstype_field fields[MAX_NUM_REGISTERS];
 
             if (regtype > rtlet)
                 gsfatal_bad_input(p, "Too late to add allocations")
@@ -714,6 +727,81 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
 
             regs[nregs] = p->label;
             regtypes[nregs] = gstype_compile_productv(p->pos, 0, fields);
+            nregs++;
+        } else if (gssymceq(p->directive, gssymeprim, gssymcodeop, ".eprim")) {
+            struct gsregistered_primset *prims;
+            struct gstype *type;
+            int tyreg;
+
+            if (regtype > rtlet)
+                gsfatal("%P: To late to add allocations", p->pos)
+            ;
+            regtype = rtlet;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many registers", p->pos)
+            ;
+
+            gsargcheck(p, 4, "type");
+            tyreg = gsbc_find_register(p, regs, nregs, p->arguments[3]);
+            type = tyregs[tyreg];
+
+            gsargcheck(p, 0, "primset");
+            if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
+                struct gsregistered_primtype *primty;
+                struct gsregistered_prim *prim;
+
+                if (!(primty = gsprims_lookup_type(prims, p->arguments[1]->name)))
+                    gsfatal("%P: Primitive set %s has no primtype %s", p->pos, prims->name, p->arguments[1]->name)
+                ;
+
+                if (!(prim = gsprims_lookup_prim(prims, p->arguments[2]->name)))
+                    gsfatal("%P: Primitive set %s has no prim %s", p->pos, prims->name, p->arguments[2]->name)
+                ;
+
+                if (prim->group != gsprim_operation_api)
+                    gsfatal("%P: Primitive %s in primset %s is not an API primitive", p->pos, prim->name, prims->name)
+                ;
+
+                if (strcmp(prim->apitype, primty->name))
+                    gsfatal("%P: Primitive %s in primset %s does not belong to API type %s", p->pos, prim->name, prims->name, primty->name)
+                ;
+
+                if (prim->check_type) {
+                    char err[0x100];
+
+                    if (prim->check_type(type, err, err + sizeof(err)) < 0)
+                        gsfatal("%P: %s", p->pos, err)
+                    ;
+                }
+            }
+
+            for (i = 4; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+                int tyargreg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
+                type = gstype_instantiate(p->pos, type, tyregs[tyargreg]);
+            }
+            if (i < p->numarguments) i++;
+            for (; i < p->numarguments; i++) {
+                int argreg;
+                struct gstype *argtype;
+
+                argreg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
+                argtype = regtypes[argreg];
+
+                type = gstypes_clear_indirections(type);
+                if (type->node == gstype_fun) {
+                    struct gstype_fun *fun;
+
+                    fun = (struct gstype_fun *)type;
+                    gstypes_type_check_type_fail(p->pos, argtype, fun->tyarg);
+                    type = fun->tyres;
+                } else {
+                    gsfatal("%P: Too many arguments to %s", p->pos, p->arguments[2]->name);
+                }
+            }
+
+            regs[nregs] = p->label;
+            gsbc_typecheck_check_api_statement_type(p->pos, type, p->arguments[0], p->arguments[1], 0);
+            regtypes[nregs] = type;
             nregs++;
         } else if (gssymceq(p->directive, gssymlift, gssymcodeop, ".lift")) {
             if (regtype > rtconts)
@@ -815,7 +903,6 @@ have_type:
     return res;
 }
 
-static struct gstype *gsbc_typecheck_check_api_statement_type(struct gspos, struct gstype *, gsinterned_string, gsinterned_string, int *);
 static int gsbc_typecheck_free_type_variables(struct gsparsedline *, struct gsbc_code_item_type *);
 static int gsbc_typecheck_free_variables(struct gsparsedline *, struct gsbc_code_item_type *, int);
 
@@ -1000,6 +1087,8 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
         ;
     }
 
+    res = 0;
+
     if (ty->node != gstype_app) {
         gsfatal("%P: I don't think %s is a type application", pos, buf);
     } else {
@@ -1024,6 +1113,20 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
             gsfatal("%P: I don't think %s is an API primitive type", pos, buf)
         ;
         if (prim->primsetname != primsetname)
+            gsfatal("%P: I don't think %s is a type in the %s primset", pos, buf, primsetname->name)
+        ;
+        if (prim->primname != primname)
+            gsfatal("%P: I don't think %s is the primtype %s %s", pos, buf, primsetname->name, primname->name)
+        ;
+    } else if (ty->node == gstype_knprim) {
+        struct gstype_knprim *prim;
+
+        prim = (struct gstype_knprim *)ty;
+
+        if (prim->primtypegroup != gsprim_type_api)
+            gsfatal("%P: I don't think %s is an API primitive type", pos, buf)
+        ;
+        if (strcmp(prim->primset->name, primsetname->name))
             gsfatal("%P: I don't think %s is a type in the %s primset", pos, buf, primsetname->name)
         ;
         if (prim->primname != primname)
@@ -1187,6 +1290,8 @@ gstypes_clear_indirections(struct gstype *pty)
     }
 }
 
+static char *gstypes_eprint_kind(char *, char *, struct gskind *, int);
+
 char *
 gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
 {
@@ -1199,6 +1304,23 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             indir = (struct gstype_indirection *)pty;
 
             res = gstypes_eprint_type(res, eob, indir->referent);
+            return res;
+        }
+        case gstype_knprim: {
+            struct gstype_knprim *prim;
+
+            prim = (struct gstype_knprim *)pty;
+
+            switch (prim->primtypegroup) {
+                case gsprim_type_api:
+                    res = seprint(res, eob, "\"apiprim ");
+                    break;
+                default:
+                    res = seprint(res, eob, "%s:%d: %d primitives next ", __FILE__, __LINE__, prim->primtypegroup);
+                    break;
+            }
+            res = seprint(res, eob, "%s ", prim->primset->name);
+            res = seprint(res, eob, "%s", prim->primname->name);
             return res;
         }
         case gstype_unprim: {
@@ -1216,6 +1338,26 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             }
             res = seprint(res, eob, "%s ", prim->primsetname->name);
             res = seprint(res, eob, "%s", prim->primname->name);
+            return res;
+        }
+        case gstype_var: {
+            struct gstype_var *var;
+
+            var = (struct gstype_var *)pty;
+
+            res = seprint(res, eob, "%s", var->name->name);
+            return res;
+        }
+        case gstype_forall: {
+            struct gstype_forall *forall;
+
+            forall = (struct gstype_forall *)pty;
+
+            res = seprint(res, eob, "(∀ %s :: ", forall->var->name);
+            res = gstypes_eprint_kind(res, eob, forall->kind, 0);
+            res = seprint(res, eob, ". ");
+            res = gstypes_eprint_type(res, eob, forall->body);
+            res = seprint(res, eob, ")");
             return res;
         }
         case gstype_lift: {
@@ -1237,6 +1379,17 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             res = seprint(res, eob, " (");
             res = gstypes_eprint_type(res, eob, app->arg);
             res = seprint(res, eob, ")");
+            return res;
+        }
+        case gstype_fun: {
+            struct gstype_fun *fun;
+
+            fun = (struct gstype_fun *)pty;
+
+            res = seprint(res, eob, "(");
+            res = gstypes_eprint_type(res, eob, fun->tyarg);
+            res = seprint(res, eob, ") → ");
+            res = gstypes_eprint_type(res, eob, fun->tyres);
             return res;
         }
         case gstype_sum: {
@@ -1265,6 +1418,26 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
         }
         default:
             res = seprint(res, eob, "%s:%d: unknown type node %d", __FILE__, __LINE__, pty->node);
+            return res;
+    }
+}
+
+static
+char *
+gstypes_eprint_kind(char *res, char *eob, struct gskind *ky, int parens)
+{
+    switch (ky->node) {
+        case gskind_lifted:
+            res = seprint(res, eob, "*");
+            return res;
+        default:
+            if (parens)
+                res = seprint(res, eob, "(")
+            ;
+            res = seprint(res, eob, "%s:%d: unknown kind node %d", __FILE__, __LINE__, ky->node);
+            if (parens)
+                res = seprint(res, eob, ")")
+            ;
             return res;
     }
 }

@@ -1,0 +1,33 @@
+	.document
+
+	.data
+
+	.closure	_epcode	_eptype
+_empty.record	.closure	_empty.record.c
+
+	.code
+
+_epcode	.expr
+sequence.unit.ty	.tygvar
+_empty.record	.tygvar
+_empty.record	.gvar
+un	.eprim	test.sequence	m	unit	sequence.unit.ty	_empty.record	|	_empty.record
+	.lift
+	.yield	un
+
+_empty.record.c	.expr
+r	.record
+	.lift
+	.yield	r
+
+	.type
+
+_eptype	.tyexpr
+sequence.m	.tygvar
+_empty.record	.tygvar
+	.tylift
+	.tyref	sequence.m	_empty.record
+
+_empty.record	.tyexpr
+	.tylift
+	.typroduct

@@ -8,6 +8,8 @@ struct gsbc {
 
 enum {
     gsbc_op_record,
+    gsbc_op_unknown_eprim,
+    gsbc_op_eprim,
     gsbc_op_undef,
     gsbc_op_enter,
     gsbc_op_yield,
@@ -31,3 +33,5 @@ void gspoison(struct gsheap_item *, struct gspos, char *, ...);
 void gspoison_unimpl(struct gsheap_item *, char *, int, struct gspos, char *, ...);
 
 void *gsreserverecords(ulong);
+
+void *gsreserveeprims(ulong);

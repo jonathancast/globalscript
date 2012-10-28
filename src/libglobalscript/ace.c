@@ -70,6 +70,7 @@ ace_thread_pool_main(void *p)
 
                     lock(&thread->lock);
                     ip = thread->ip;
+                    gswarning("%s:%d: Trace %P", __FILE__, __LINE__, ip->pos);
                     switch (ip->instr) {
                         case gsbc_op_record:
                             {
@@ -100,19 +101,79 @@ ace_thread_pool_main(void *p)
                                 suspended_runnable_thread = 1;
                             }
                             break;
+                        case gsbc_op_unknown_eprim:
+                            {
+                                struct gsheap_item *hp;
+                                struct gseprim *prim;
+
+                                hp = (struct gsheap_item *)thread->base;
+
+                                prim = gsreserveeprims(sizeof(*prim));
+                                prim->pos = ip->pos;
+                                prim->index = -1;
+
+                                if (thread->nregs >= MAX_NUM_REGISTERS) {
+                                    lock(&hp->lock);
+                                    gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "Too many registers");
+                                    unlock(&hp->lock);
+                                    break;
+                                }
+                                thread->regs[thread->nregs] = (gsvalue)prim;
+                                thread->nregs++;
+                                thread->ip = GS_NEXT_BYTECODE(ip, 0);
+                                suspended_runnable_thread = 1;
+                            }
+                            break;
+                        case gsbc_op_eprim:
+                            {
+                                struct gsheap_item *hp;
+                                struct gseprim *prim;
+
+                                hp = (struct gsheap_item *)thread->base;
+
+                                prim = gsreserveeprims(sizeof(*prim) + ip->args[1] * sizeof(gsvalue));
+                                gswarning("%s:%d: Got prim", __FILE__, __LINE__);
+                                prim->pos = ip->pos;
+                                prim->index = ip->args[0];
+                                gswarning("%s:%d: Prim %d has %d arguments", __FILE__, __LINE__, (int)ip->args[0], (int)ip->args[1]);
+                                for (i = 0; i < ip->args[1]; i++) {
+                                    gswarning("%s:%d: Copying argument %d", __FILE__, __LINE__, i);
+                                    if (ip->args[2 + i] >= thread->nregs) {
+                                        lock(&hp->lock);
+                                        gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
+                                        unlock(&hp->lock);
+                                        goto eprim_failed;
+                                    }
+                                    prim->arguments[i] = thread->regs[ip->args[2 + 1]];
+                                }
+                                gswarning("%s:%d: Copied arguments", __FILE__, __LINE__);
+
+                                if (thread->nregs >= MAX_NUM_REGISTERS) {
+                                    lock(&hp->lock);
+                                    gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "Too many registers");
+                                    unlock(&hp->lock);
+                                    break;
+                                }
+                                thread->regs[thread->nregs] = (gsvalue)prim;
+                                thread->nregs++;
+                                thread->ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
+                                suspended_runnable_thread = 1;
+                            }
+                        eprim_failed:
+                            break;
                         case gsbc_op_yield:
                             {
                                 struct gsheap_item *hp;
                                 struct gsindirection *in;
 
+                                hp = (struct gsheap_item *)thread->base;
+
                                 if (ip->args[0] >= thread->nregs) {
                                     lock(&hp->lock);
-                                    gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
+                                    gspoison(hp, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
                                     unlock(&hp->lock);
                                     break;
                                 }
-
-                                hp = (struct gsheap_item *)thread->base;
 
                                 lock(&hp->lock);
 
@@ -211,19 +272,8 @@ ace_start_evaluation(gsvalue val)
     hp = (struct gsheap_item *)val;
     cl = (struct gsclosure *)hp;
 
-    lock(&ace_thread_queue->lock);
-    for (i = 0; i < NUM_ACE_THREADS; i++) {
-        if (!ace_thread_queue->threads[i]) {
-            thread = ace_thread_queue->threads[i] = ace_thread_alloc();
-            unlock(&ace_thread_queue->lock);
-            goto have_thread;
-        }
-    }
-    unlock(&ace_thread_queue->lock);
-    gswerrstr_unimpl(__FILE__, __LINE__, "oothreads");
-    return gstyeoothreads;
+    thread = ace_thread_alloc();
 
-have_thread:
     thread->base = val;
 
     thread->nregs = 0;
@@ -233,8 +283,15 @@ have_thread:
     if ((uintptr)ip % sizeof(gsvalue*))
         ip = (uchar*)ip + sizeof(gsvalue*) - (uintptr)ip % sizeof(gsvalue*)
     ;
+    gswarning("%s:%d: %P: code->numglobals = %d", __FILE__, __LINE__, code->pos, code->numglobals);
     for (i = 0; i < code->numglobals; i++) {
-        gspoison_unimpl(hp, __FILE__, __LINE__, code->pos, "ace_start_evaluation: copy in global variable");
+        if (thread->nregs >= MAX_NUM_REGISTERS) {
+            gspoison_unimpl(hp, __FILE__, __LINE__, code->pos, "Too many registers");
+            unlock(&thread->lock);
+            return gstywhnf;
+        }
+        thread->regs[thread->nregs] = *(gsvalue*)ip;
+        thread->nregs++;
         ip = (gsvalue*)ip + 1;
     }
     instr = (struct gsbc *)ip;
@@ -247,7 +304,17 @@ have_thread:
 
     unlock(&thread->lock);
 
-    return gstystack;
+    lock(&ace_thread_queue->lock);
+    for (i = 0; i < NUM_ACE_THREADS; i++) {
+        if (!ace_thread_queue->threads[i]) {
+            ace_thread_queue->threads[i] = thread;
+            unlock(&ace_thread_queue->lock);
+            return gstystack;
+        }
+    }
+    unlock(&ace_thread_queue->lock);
+    gswerrstr_unimpl(__FILE__, __LINE__, "oothreads");
+    return gstyeoothreads;
 }
 
 static Lock ace_thread_lock;

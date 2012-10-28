@@ -140,6 +140,7 @@ struct gstype *gstypes_compile_fun(struct gspos, struct gstype *, struct gstype 
 
 struct gstype *gstype_supply(gsinterned_string, int, struct gstype *, struct gstype *);
 struct gstype *gstype_apply(struct gspos, struct gstype *, struct gstype *);
+struct gstype *gstype_instantiate(struct gspos, struct gstype *, struct gstype *);
 
 void gstypes_alloc_for_scc(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
 void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
@@ -165,7 +166,7 @@ struct gskind {
 };
 
 struct gskind *gskind_compile(struct gsparsedline *, gsinterned_string);
-struct gskind *gstypes_compile_prim_kind(struct gsregistered_primkind *);
+struct gskind *gstypes_compile_prim_kind(char *, int, struct gsregistered_primkind *);
 
 struct gskind *gskind_unknown_kind(void);
 struct gskind *gskind_unlifted_kind(void);

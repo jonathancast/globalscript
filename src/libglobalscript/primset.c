@@ -70,6 +70,23 @@ gsprims_lookup_type(struct gsregistered_primset *prims, char *name)
     return 0;
 }
 
+struct gsregistered_prim *
+gsprims_lookup_prim(struct gsregistered_primset *prims, char *name)
+{
+    struct gsregistered_prim *p;
+
+    if (!prims->operations)
+        return 0
+    ;
+
+    for (p = prims->operations; p->name; p++) {
+        if (!strcmp(p->name, name))
+            return p;
+    }
+
+    return 0;
+}
+
 static struct gsregistered_primkind kyundefined = {
     /* node = */ gsprim_kind_unlifted,
 };

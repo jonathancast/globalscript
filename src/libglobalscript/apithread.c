@@ -11,7 +11,7 @@ static struct api_thread_queue *api_thread_queue;
 static void api_take_thread_queue(void);
 static void api_release_thread_queue(void);
 
-static struct api_thread *api_add_thread(struct gsrpc_queue *, gsvalue);
+static struct api_thread *api_add_thread(struct gsrpc_queue *, struct api_prim_table *, gsvalue);
 
 static void api_take_thread(struct api_thread *);
 static void api_release_thread(struct api_thread *);
@@ -26,13 +26,14 @@ static struct api_thread *api_try_schedule_thread(struct api_thread *);
 
 struct api_thread_pool_args {
     struct gsrpc_queue *rpc_queue;
+    struct api_prim_table *api_prim_table;
     gsvalue entry;
 };
 static void api_thread_pool_main(void *);
 
 /* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
 void
-apisetupmainthread(struct api_process_rpc_table *table, gsvalue entry)
+apisetupmainthread(struct api_process_rpc_table *table, struct api_prim_table *api_prim_table, gsvalue entry)
 {
     struct gsrpc *rpc;
     struct gsrpc_queue *rpc_queue;
@@ -49,6 +50,7 @@ apisetupmainthread(struct api_process_rpc_table *table, gsvalue entry)
     rpc_queue = gsqueue_alloc();
 
     api_thread_pool_args.rpc_queue = rpc_queue;
+    api_thread_pool_args.api_prim_table = api_prim_table;
     api_thread_pool_args.entry = entry;
     if ((api_pool = gscreate_thread_pool(api_thread_pool_main, &api_thread_pool_args, sizeof(api_thread_pool_args))) < 0)
         gsfatal("Couldn't create API thread pool: %r")
@@ -93,7 +95,7 @@ api_thread_pool_main(void *arg)
 
     args = (struct api_thread_pool_args *)arg;
 
-    mainthread = api_add_thread(args->rpc_queue, args->entry);
+    mainthread = api_add_thread(args->rpc_queue, args->api_prim_table, args->entry);
 
     api_release_thread(mainthread);
 
@@ -129,7 +131,8 @@ api_thread_pool_main(void *arg)
             }
         }
         if (!ranthread)
-            sleep(1)
+            if (sleep(1) < 0)
+                gswarning("%s:%d: sleep returned a negative number", __FILE__, __LINE__)
         ;
     } while (hadthread);
 
@@ -152,7 +155,17 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
         struct gserror *p;
 
         p = (struct gserror *)instr;
-        api_abend(thread, "%P: undefined", p->pos);
+        switch (p->type) {
+            case gserror_undefined:
+                api_abend(thread, "%P: undefined", p->pos);
+                break;
+            case gserror_generated:
+                api_abend(thread, "%P: %s", p->pos, p->message);
+                break;
+            default:
+                api_abend(thread, "%P: unknown error type %d", p->pos, p->type);
+                break;
+        }
     } else if (gsisheap_block(block)) {
         struct gsheap_item *hp;
 
@@ -167,18 +180,46 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                         api_unpack_block_statement(thread, cl);
                         return;
                     default:
-                        api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction excecution (%d closures)", cl->code->tag);
+                        api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%d closures)", cl->code->tag);
                         return;
                 }
             }
             default:
-                api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction excecution (%d exprs)", hp->type);
+                api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%d exprs)", hp->type);
                 return;
         }
+    } else if (gsiseprim_block(block)) {
+        struct gseprim *eprim;
+        struct api_prim_table *table;
+
+        eprim = (struct gseprim *)instr;
+        table = thread->api_prim_table;
+        if (eprim->index < 0) {
+            api_abend(thread, "%P: Unknown primitive", eprim->pos);
+        } else if (eprim->index >= table->numprims) {
+            api_abend(thread, "%P: Primitive out of bounds", eprim->pos);
+        } else {
+            enum api_prim_execution_state st;
+
+            st = table->execs[eprim->index](thread, eprim);
+            switch (st) {
+                case api_st_success:
+                    thread->code->ip++;
+                    if (thread->code->ip >= thread->code->size)
+                        api_done(thread)
+                    ;
+                    break;
+                default:
+                    api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution with state %d", st);
+                    break;
+            }
+        }
     } else {
-        api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction excecution (%s)", block->class->description);
+        api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%s)", block->class->description);
     }
 }
+
+static struct api_promise *api_alloc_promise(void);
 
 static
 void
@@ -191,6 +232,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
     struct gsbco *subexprs[MAX_NUM_REGISTERS];
     int nstatements;
     gsvalue rhss[MAX_NUM_REGISTERS];
+    struct api_promise *lhss[MAX_NUM_REGISTERS];
     int i;
 
     code = cl->code;
@@ -240,6 +282,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                     return;
                 }
                 rhss[nstatements] = (gsvalue)cl;
+                lhss[nstatements] = api_alloc_promise();
                 nstatements++;
 
                 pin = GS_NEXT_BYTECODE(pinstr, 2 + pinstr->args[1]);
@@ -288,6 +331,7 @@ got_statements:
         }
         thread->code->ip--;
         thread->code->instrs[thread->code->ip].instr = rhss[nstatements];
+        thread->code->instrs[thread->code->ip].presult = lhss[nstatements];
     }
 }
 
@@ -295,7 +339,7 @@ static struct api_code_segment *api_alloc_code_segment(struct api_thread *, gsva
 
 static
 struct api_thread *
-api_add_thread(struct gsrpc_queue *rpc_queue, gsvalue entry)
+api_add_thread(struct gsrpc_queue *rpc_queue, struct api_prim_table *api_prim_table, gsvalue entry)
 {
     int i;
     struct api_thread *thread;
@@ -321,6 +365,7 @@ have_thread:
     thread->hard = 1;
 
     thread->process_rpc_queue = rpc_queue;
+    thread->api_prim_table = api_prim_table;
 
     thread->code = api_alloc_code_segment(thread, entry);
 
@@ -361,10 +406,33 @@ api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
     res->size = end_of_instrs - start_of_instrs;
     res->ip = res->size - 1;
     res->instrs[res->ip].instr = entry;
+    res->instrs[res->ip].presult = api_alloc_promise();
     if (api_code_segment_nursury >= END_OF_BLOCK(api_code_segment_nursury_seg))
         api_code_segment_nursury = 0
     ;
     unlock(&api_code_segment_lock);
+    return res;
+}
+
+static Lock api_promise_segment_lock;
+static void *api_promise_segment_nursury;
+static struct gs_block_class api_promise_segment_descr = {
+    /* evaluator = */ gsnoeval,
+    /* description = */ "API promises",
+};
+
+static
+struct api_promise *
+api_alloc_promise()
+{
+    struct api_promise *res;
+
+    lock(&api_promise_segment_lock);
+    res = gs_sys_seg_suballoc(&api_promise_segment_descr, &api_promise_segment_nursury, sizeof(*res), sizeof(void*));
+    unlock(&api_promise_segment_lock);
+
+    memset(res, 0, sizeof(*res));
+
     return res;
 }
 
@@ -409,17 +477,25 @@ api_release_thread(struct api_thread *thread)
     unlock(&thread->lock);
 }
 
+struct api_done_rpc {
+    struct gsrpc rpc;
+};
+
 void
-api_abend_unimpl(struct api_thread *thread, char *srcfile, int lineno, char *msg, ...)
+api_done(struct api_thread *thread)
 {
-    char buf[0x100];
-    va_list arg;
+    struct gsrpc *rpc;
+    struct api_done_rpc *done;
 
-    va_start(arg, msg);
-    vseprint(buf, buf+sizeof buf, msg, arg);
-    va_end(arg);
+    if (thread->hard) {
+        rpc = gsqueue_rpc_alloc(sizeof(*done));
+        done = (struct api_done_rpc *)rpc;
+        rpc->tag = api_std_rpc_done;
+        gsqueue_send_rpc(thread->process_rpc_queue, rpc);
+    }
 
-    api_abend(thread, "%s:%d: %s next", srcfile, lineno, buf);
+    thread->active = 0;
+    gswarning("%s:%d: api_done: storing thread exit status: deferred", __FILE__, __LINE__);
 }
 
 struct api_abend_rpc {
@@ -452,6 +528,19 @@ api_abend(struct api_thread *thread, char *msg, ...)
 }
 
 void
+api_abend_unimpl(struct api_thread *thread, char *srcfile, int lineno, char *msg, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, msg);
+    vseprint(buf, buf+sizeof buf, msg, arg);
+    va_end(arg);
+
+    api_abend(thread, "%s:%d: %s next", srcfile, lineno, buf);
+}
+
+void
 api_main_process_unimpl_rpc(struct gsrpc *rpc)
 {
     int tag;
@@ -461,6 +550,19 @@ api_main_process_unimpl_rpc(struct gsrpc *rpc)
     rpc->err = "unimpl";
     unlock(&rpc->lock);
     gsfatal("Panic: unimplemented rpc %d in Unix pool", tag);
+}
+
+void
+api_main_process_handle_rpc_done(struct gsrpc *rpc)
+{
+    struct api_done_rpc *done;
+
+    done = (struct api_done_rpc *)rpc;
+
+    rpc->status = gsrpc_succeeded;
+    unlock(&rpc->lock);
+
+    exits("");
 }
 
 void
@@ -478,4 +580,19 @@ api_main_process_handle_rpc_abend(struct gsrpc *rpc)
 
     fprint(2, "%s\n", status);
     exits(status);
+}
+
+enum
+api_prim_execution_state
+api_thread_handle_prim_unit(struct api_thread *thread, struct gseprim *eprim)
+{
+    struct api_code_segment *code;
+    struct api_promise *pres;
+
+    code = thread->code;
+    pres = code->instrs[code->ip].presult;
+    lock(&pres->lock);
+    pres->value = eprim->arguments[1];
+    unlock(&pres->lock);
+    return api_st_success;
 }

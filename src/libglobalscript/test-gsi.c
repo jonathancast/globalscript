@@ -8,6 +8,11 @@ p9main(int argc, char **argv)
     gsmain(argc, argv);
 }
 
+void
+gsadd_client_prim_sets()
+{
+}
+
 static int gsprint(gsvalue prog);
 
 void

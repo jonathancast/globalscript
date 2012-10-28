@@ -11,14 +11,27 @@ p9main(int argc, char **argv)
 }
 
 enum {
+    ibio_numprims,
+};
+
+static struct api_prim_table ibio_prim_table = {
+    /* numprims = */ ibio_numprims,
+};
+
+void
+gsadd_client_prim_sets()
+{
+}
+
+enum {
     ibio_numrpcs = api_std_rpc_numrpcs,
 };
 
-static struct api_process_rpc_table exec_table = {
+static struct api_process_rpc_table ibio_rpc_table = {
     /* name = */ "IOLL Unix pool process",
     /* numrpcs = */ ibio_numrpcs,
     /* rpcs = */ {
-        /* api_std_rpc_done */ api_main_process_unimpl_rpc,
+        /* api_std_rpc_done */ api_main_process_handle_rpc_done,
         /* api_std_rpc_abend */ api_main_process_handle_rpc_abend,
     },
 };
@@ -61,5 +74,5 @@ gsrun(char *script, struct gsfile_symtable *symtable, gsvalue prog, struct gstyp
         gsfatal("%s: Bad type: %s", script, err);
     }
 
-    apisetupmainthread(&exec_table, prog);
+    apisetupmainthread(&ibio_rpc_table, &ibio_prim_table, prog);
 }

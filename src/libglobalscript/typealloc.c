@@ -4,6 +4,7 @@
 #include <libc.h>
 #include <libglobalscript.h>
 #include "gsinputfile.h"
+#include "gsregtables.h"
 #include "gstypealloc.h"
 #include "gstypecheck.h"
 
@@ -289,7 +290,7 @@ static
 struct gstype *
 gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtylambda, gssymtyforall, gssymtylet, gssymtylift, gssymtyref, gssymtysum;
+    static gsinterned_string gssymtylambda, gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyproduct;
 
     int i, j;
     struct gstype *res;
@@ -385,6 +386,12 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
     } else if (gssymceq(p->directive, gssymtylift, gssymtypeop, ".tylift")) {
         return gstypes_compile_lift(p->pos, gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
+    } else if (gssymceq(p->directive, gssymtyfun, gssymtypeop, ".tyfun")) {
+        int argreg;
+
+        gsargcheck(p, 0, "argument");
+        argreg = gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[0]);
+        return gstypes_compile_fun(p->pos, cl->regvalues[argreg], gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
     } else if (gssymceq(p->directive, gssymtyref, gssymtypeop, ".tyref")) {
         struct gstype *reg;
 
@@ -434,7 +441,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         }
 
         return gstypes_compile_sumv(p->pos.file, p->pos.lineno, nconstrs, constrs);
-    } else if (gssymeq(p->directive, gssymtypeop, ".typroduct")) {
+    } else if (gssymceq(p->directive, gssymtyproduct, gssymtypeop, ".typroduct")) {
         struct gstype_product *prod;
         int numfields;
 
@@ -739,6 +746,33 @@ gstype_supply(gsinterned_string file, int lineno, struct gstype *fun, struct gst
     return 0;
 }
 
+struct gstype *
+gstype_instantiate(struct gspos pos, struct gstype *fun, struct gstype *arg)
+{
+    switch (fun->node) {
+        case gstype_indirection: {
+            struct gstype_indirection *indir;
+            indir = (struct gstype_indirection *)fun;
+            return gstype_instantiate(pos, indir->referent, arg);
+        }
+        case gstype_forall: {
+            struct gstype_forall *forall;
+            struct gskind *argkind;
+
+            forall = (struct gstype_forall *)fun;
+
+            argkind = gstypes_calculate_kind(arg);
+
+            gstypes_kind_check(pos, argkind, forall->kind);
+
+            return gstypes_subst(pos, forall->body, forall->var, arg);
+        }
+        default:
+            gsfatal_unimpl_type(__FILE__, __LINE__, fun, "supply (node = %d)", fun->node);
+    }
+    return 0;
+}
+
 static
 struct gstype *
 gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, struct gstype *type1)
@@ -827,6 +861,20 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             res->pos = type->pos;
             resapp->fun = gstypes_subst(pos, app->fun, varname, type1);
             resapp->arg = gstypes_subst(pos, app->arg, varname, type1);
+
+            return res;
+        }
+        case gstype_fun: {
+            struct gstype_fun *fun, *resfun;
+            struct gstype *res;
+
+            fun = (struct gstype_fun *)type;
+            res = gstype_alloc(sizeof(struct gstype_fun));
+            resfun = (struct gstype_fun *)res;
+            res->node = gstype_fun;
+            res->pos = type->pos;
+            resfun->tyarg = gstypes_subst(pos, fun->tyarg, varname, type1);
+            resfun->tyres = gstypes_subst(pos, fun->tyres, varname, type1);
 
             return res;
         }
@@ -978,13 +1026,30 @@ gskind_compile(struct gsparsedline *inpline, gsinterned_string ki)
 }
 
 struct gskind *
-gstypes_compile_prim_kind(struct gsregistered_primkind *primky)
+gstypes_compile_prim_kind(char *file, int lineno, struct gsregistered_primkind *primky)
 {
     switch (primky->node) {
+        case gsprim_kind_unknown:
+            return gskind_unknown_kind();
         case gsprim_kind_unlifted:
             return gskind_unlifted_kind();
+        case gsprim_kind_exponent: {
+            struct gskind *base, *exponent;
+
+            if (!primky->base)
+                gsfatal("%s:%d: Missing base on exponential kind", file, lineno)
+            ;
+            base = gstypes_compile_prim_kind(file, lineno, primky->base);
+            
+            if (!primky->exponent)
+                gsfatal("%s:%d: Missing exponent on exponential kind", file, lineno)
+            ;
+            exponent = gstypes_compile_prim_kind(file, lineno, primky->exponent);
+
+            return gskind_exponential_kind(base, exponent);
+        }
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "gstypes_compile_prim_kind(node = %d)", primky->node);
+            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: gstypes_compile_prim_kind(node = %d)", file, lineno, primky->node);
     }
 
     return 0;
