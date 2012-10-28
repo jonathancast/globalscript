@@ -54,7 +54,7 @@ TEST_FV_VAR()
     ok(__FILE__, __LINE__, gstypes_is_ftyvar(ux, tylux), "'ux' is not a free variable of '⌊ux⌋'");
     not_ok(__FILE__, __LINE__, gstypes_is_ftyvar(ux, tyluy), "'ux' is a free variable of '⌊uy⌋'");
 
-    tyes = gstypes_compile_sum(file, __LINE__, 0);
+    pos.lineno = __LINE__; tyes = gstypes_compile_sum(pos, 0);
     not_ok(__FILE__, __LINE__, gstypes_is_ftyvar(x, tyes), "'x' is a free type variable of Σ〈〉");
 }
 

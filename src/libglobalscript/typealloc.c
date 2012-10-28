@@ -465,23 +465,23 @@ gstypes_compile_lift(struct gspos pos, struct gstype *arg)
 }
 
 struct gstype *
-gstypes_compile_sum(gsinterned_string file, int lineno, int nconstrs, ...)
+gstypes_compile_sum(struct gspos pos, int nconstrs, ...)
 {
     va_list arg;
     struct gstype_constr constrs[MAX_REGISTERS];
     int i;
 
     if (nconstrs > MAX_REGISTERS)
-        gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Sums with more than 0x%x constructors", file->name, lineno, MAX_REGISTERS)
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Sums with more than 0x%x constructors", pos, MAX_REGISTERS)
     ;
 
     va_start(arg, nconstrs);
     for (i = 0; i < nconstrs; i++) {
-        gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Copy constructors out of gstypes_compile_sumv arguments", file->name, lineno);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Copy constructors out of gstypes_compile_sumv arguments", pos);
     }
     va_end(arg);
 
-    return gstypes_compile_sumv(file, lineno, nconstrs, constrs);
+    return gstypes_compile_sumv(pos.file, pos.lineno, nconstrs, constrs);
 }
 
 struct gstype *
