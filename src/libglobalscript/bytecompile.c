@@ -617,14 +617,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 pcode = (struct gsbc *)pglobal
             ;
             gsargcheck(p, 0, "target");
-            for (i = 0; i < nregs; i++) {
-                if (regs[i] == p->arguments[0]) {
-                    reg = i;
-                    goto have_register;
-                }
-            }
-            gsfatal_bad_input(p, "Unknown register %s", p->arguments[0]->name);
-        have_register: ;
+            reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
             pcode->pos = p->pos;
             pcode->instr = gsbc_op_enter;
             pcode->args[0] = (uchar)reg;
