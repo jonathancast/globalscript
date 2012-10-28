@@ -30,8 +30,8 @@ TEST_FV_VAR()
     x = gsintern_string(gssymtypelable, "x");
     y = gsintern_string(gssymtypelable, "y");
 
-    tyx = gstypes_compile_type_var(file, __LINE__, x, gskind_lifted_kind());
-    tyy = gstypes_compile_type_var(file, __LINE__, y, gskind_lifted_kind());
+    pos.lineno = __LINE__; tyx = gstypes_compile_type_var(pos, x, gskind_lifted_kind());
+    pos.lineno = __LINE__; tyy = gstypes_compile_type_var(pos, y, gskind_lifted_kind());
 
     ok(__FILE__, __LINE__, gstypes_is_ftyvar(x, tyx), "'x' is not a free variable of 'x'");
     not_ok(__FILE__, __LINE__, gstypes_is_ftyvar(x, tyy), "'x' is a free variable of 'y'");
@@ -45,8 +45,8 @@ TEST_FV_VAR()
     ux = gsintern_string(gssymtypelable, "ux");
     uy = gsintern_string(gssymtypelable, "uy");
 
-    tyux = gstypes_compile_type_var(file, __LINE__, ux, gskind_unlifted_kind());
-    tyuy = gstypes_compile_type_var(file, __LINE__, uy, gskind_unlifted_kind());
+    pos.lineno = __LINE__; tyux = gstypes_compile_type_var(pos, ux, gskind_unlifted_kind());
+    pos.lineno = __LINE__; tyuy = gstypes_compile_type_var(pos, uy, gskind_unlifted_kind());
 
     pos.lineno = __LINE__; tylux = gstypes_compile_lift(pos, tyux);
     pos.lineno = __LINE__; tyluy = gstypes_compile_lift(pos, tyuy);

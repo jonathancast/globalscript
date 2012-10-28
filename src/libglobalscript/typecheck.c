@@ -1471,7 +1471,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
         rttyarg,
         rtcont,
     } regtype;
-    int i, j;
+    int i;
     int nregs, nglobals, nargs, nconts;
     gsinterned_string regs[MAX_NUM_REGISTERS];
     struct gstype *regtypes[MAX_NUM_REGISTERS];
@@ -1515,7 +1515,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
             regs[nregs] = p->label;
             gsargcheck(p, 0, "kind");
             kind = gskind_compile(p, p->arguments[0]);
-            regtypes[nregs] = gstypes_compile_type_var(p->pos.file, p->pos.lineno, p->label, kind);
+            regtypes[nregs] = gstypes_compile_type_var(p->pos, p->label, kind);
             argkinds[nargs] = kind;
             arglines[nargs] = p;
             nregs++;

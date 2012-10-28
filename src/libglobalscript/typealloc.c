@@ -310,7 +310,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
         kind = gskind_compile(p, p->arguments[0]);
-        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos.file, p->pos.lineno, p->label, kind);
+        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos, p->label, kind);
         cl->nregs++;
         res = gstype_alloc(sizeof(struct gstype_lambda));
         lambda = (struct gstype_lambda*)res;
@@ -334,7 +334,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
         kind = gskind_compile(p, p->arguments[0]);
-        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos.file, p->pos.lineno, p->label, kind);
+        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos, p->label, kind);
         cl->nregs++;
         res = gstype_alloc(sizeof(struct gstype_forall));
         forall = (struct gstype_forall*)res;
@@ -639,7 +639,7 @@ gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, s
 }
 
 struct gstype *
-gstypes_compile_type_var(gsinterned_string file, int lineno, gsinterned_string name, struct gskind *ky)
+gstypes_compile_type_var(struct gspos pos, gsinterned_string name, struct gskind *ky)
 {
     struct gstype *res;
     struct gstype_var *var;
@@ -648,8 +648,7 @@ gstypes_compile_type_var(gsinterned_string file, int lineno, gsinterned_string n
     var = (struct gstype_var *)res;
 
     res->node = gstype_var;
-    res->pos.file = file;
-    res->pos.lineno = lineno;
+    res->pos = pos;
 
     var->name = name;
     var->kind = ky;
@@ -785,7 +784,7 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
                 nvar = gsintern_string(gssymtypelable, buf);
             }
             if (nvar != lambda->var)
-                resbody = gstypes_subst(pos, resbody, lambda->var, gstypes_compile_type_var(pos.file, pos.lineno, nvar, lambda->kind))
+                resbody = gstypes_subst(pos, resbody, lambda->var, gstypes_compile_type_var(pos, nvar, lambda->kind))
             ;
             resbody = gstypes_subst(pos, resbody, varname, type1);
             res = gstype_alloc(sizeof(struct gstype_lambda));
