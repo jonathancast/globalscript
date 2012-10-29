@@ -132,7 +132,7 @@ gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedlin
     } else if (gssymceq(type->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")) {
         return gsinput_next_line(ppseg, type);
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, type, "gstype_section_next_item(%s)", type->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_section_next_item(%s)", type->pos, type->directive->name);
     }
     return 0;
 }
@@ -145,7 +145,7 @@ gscoercion_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparse
     } else if (gssymeq(coercion->directive, gssymtypedirective, ".tyabstract")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, coercion));
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, coercion, "gscoercion_section_next_item(%s)", coercion->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gscoercion_section_next_item(%s)", coercion->pos, coercion->directive->name);
     }
     return 0;
 }
@@ -169,7 +169,7 @@ gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gspars
         )
             return gsinput_next_line(ppseg, p);
         else
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gstype_section_skip_type_expr(%s)", p->directive->name);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_section_skip_type_expr(%s)", p->pos, p->directive->name);
     }
 
     return 0;

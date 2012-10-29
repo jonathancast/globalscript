@@ -103,7 +103,7 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
         case gssymcoercionlable:
             return;
         default:
-            gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_kind_check_item(type = %d)", items[i].type);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_kind_check_item(type = %d)", items[i].v->pos, items[i].type);
     }
 }
 
@@ -395,7 +395,7 @@ gstypes_process_type_signatures(struct gsfile_symtable *symtable, struct gsbc_it
             case gssymcoercionlable:
                 break;
             default:
-                gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_process_data_type_signature(type = %d)", items[i].type);
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_process_data_type_signature(type = %d)", items[i].v->pos, items[i].type);
         }
     }
 }
@@ -445,7 +445,7 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
     } else if (gssymceq(pdata->directive, gssymcast, gssymdatadirective, ".cast")) {
         return;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gstypes_process_data_type_signature(%s)", pdata->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_process_data_type_signature(%s)", item.v->pos, pdata->directive->name);
     }
 }
 
@@ -482,7 +482,7 @@ gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
             gstypes_type_check_coercion_item(symtable, items, types, kinds, n, i);
             return;
         default:
-            gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gstypes_kind_check_scc(type = %d)", items[i].type);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_kind_check_scc(type = %d)", items[i].v->pos, items[i].type);
     }
 }
 
@@ -530,11 +530,11 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         gsargcheck(pdata, 0, "type");
         type = gssymtable_get_type(symtable, pdata->arguments[0]);
         if (!type)
-            gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "couldn't find type '%s'", pdata->arguments[0]->name)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find type '%s'", pdata->pos, pdata->arguments[0]->name)
         ;
         kind = gssymtable_get_type_expr_kind(symtable, pdata->arguments[0]);
         if (!kind)
-            gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "couldn't find kind of '%s'", pdata->arguments[0]->name)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", pdata->pos, pdata->arguments[0]->name)
         ;
         gstypes_kind_check(pdata->pos, kind, gskind_lifted_kind());
     } else if (gssymceq(pdata->directive, gssymclosure, gssymdatadirective, ".closure")) {
@@ -543,7 +543,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         gsargcheck(pdata, 0, "code");
         code_type = gssymtable_get_code_type(symtable, pdata->arguments[0]);
         if (!code_type)
-            gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "Cannot find type of code item %s", pdata->arguments[0]->name)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Cannot find type of code item %s", pdata->pos, pdata->arguments[0]->name)
         ;
         if (code_type->numftyvs)
             gsfatal_bad_input(pdata, "Code for a global data item cannot have free type variables")
@@ -576,7 +576,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
         src_type = gssymtable_get_data_type(symtable, pdata->arguments[1]);
         if (!src_type)
-            gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "Couldn't find type of %s", pdata->arguments[1]->name);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Couldn't find type of %s", pdata->pos, pdata->arguments[1]->name);
 
         gstypes_type_check_type_fail(pdata->pos, src_type, coercion_type->source);
 
@@ -586,7 +586,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             *pentrytype = coercion_type->dest
         ;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, pdata, "gstypes_type_check_data_item(%s)", pdata->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_type_check_data_item(%s)", pdata->pos, pdata->directive->name);
     }
 }
 
@@ -620,7 +620,7 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
         type = gsbc_typecheck_api_expr(pcode->pos, symtable, &pseg, gsinput_next_line(&pseg, pcode), pcode->arguments[0], pcode->arguments[1]);
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, pcode, "gstypes_type_check_code_item(%s)", pcode->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_type_check_code_item(%s)", pcode->pos, pcode->directive->name);
     }
 }
 
@@ -678,7 +678,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             ;
             tyregkinds[nregs] = gssymtable_get_type_expr_kind(symtable, p->label);
             if (!tyregkinds[nregs])
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "couldn't find kind of '%s'", p->label->name)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", p->pos, p->label->name)
             ;
             nregs++;
         } else if (gssymceq(p->directive, gssymgvar, gssymcodeop, ".gvar")) {
@@ -713,7 +713,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             if (!argtype)
                 gsfatal_bad_input(p, "Register %s is not a type", p->arguments[0]);
             for (i = 1; i < p->numarguments; i++) {
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Type arguments");
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Type arguments", p->pos);
             }
             regtypes[nregs] = argtype;
             nregs++;
@@ -872,7 +872,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             gstypes_kind_check(p->pos, kind, gskind_lifted_kind());
             goto have_type;
         } else {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_code_expr(%s)", p->directive->name);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr(%s)", p->pos, p->directive->name);
         }
     }
 
@@ -992,7 +992,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
             gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
             goto have_type;
         } else {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(%s)", p->directive->name);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_api_expr(%s)", p->pos, p->directive->name);
         }
     }
 
@@ -1033,7 +1033,7 @@ gsbc_typecheck_free_type_variables(struct gsparsedline *p, struct gsbc_code_item
     int nftyvs;
 
     for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(.body type free variables)");
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_api_expr(.body type free variables)", p->pos);
     }
     nftyvs = i - 1;
     if (nftyvs < cty->numftyvs)
@@ -1062,7 +1062,7 @@ gsbc_typecheck_free_variables(struct gsparsedline *p, struct gsbc_code_item_type
         gsfatal_bad_input(p, "Too many free variables for %s; only need %d but have %d", p->arguments[0]->name, cty->numfvs, nfvs)
     ;
     for (; i < p->numarguments; i++) {
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_api_expr(.body free variables)");
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_api_expr(.body free variables)", p->pos);
     }
     return nfvs;
 }
@@ -1463,7 +1463,7 @@ gstypes_type_check_coercion_item(struct gsfile_symtable *symtable, struct gsbc_i
         type = gsbc_typecheck_coercion_expr(symtable, &pseg, gsinput_next_line(&pseg, pcoercion));
         gssymtable_set_coercion_type(symtable, pcoercion->label, type);
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, pcoercion, "gstypes_type_check_coercion_item(%s)", pcoercion->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_type_check_coercion_item(%s)", pcoercion->pos, pcoercion->directive->name);
     }
 }
 
@@ -1569,7 +1569,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
 
             goto have_type;
         } else {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_coercion_expr(%s)", p->directive->name);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_coercion_expr(%s)", p->pos, p->directive->name);
         }
     }
 
@@ -1585,7 +1585,7 @@ have_type:
             source = dest;
             dest = tmp;
         } else {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_typecheck_coercion_expr(cont %s)", p->directive->name);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_coercion_expr(cont %s)", p->pos, p->directive->name);
         }
     }
 

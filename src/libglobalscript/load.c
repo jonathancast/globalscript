@@ -1684,7 +1684,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
                 else
                     gsfatal_unimpl(__FILE__, __LINE__, "%s: Entry point: couldn't find in any SCC");
                 if (items[i].v->label) {
-                    gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "set *ptype");
+                    gsfatal_unimpl(__FILE__, __LINE__, "%P: set *ptype", items[i].v->pos);
                 } else
                     /* Don't have to save §c{*ptype} in this case, because we handle that while doing the initial type-checking */
                 ;

@@ -85,7 +85,6 @@ int gsbc_item_eq(struct gsbc_item, struct gsbc_item);
 
 struct gsbc_code_item_type;
 
-void gsfatal_unimpl_input(char *, int, struct gsparsedline *, char *, ...);
 void gsfatal_bad_input(struct gsparsedline *, char *, ...);
 void gsargcheck(struct gsparsedline *, ulong, char *, ...);
 

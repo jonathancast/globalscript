@@ -105,7 +105,7 @@ gsbc_heap_size_item(struct gsbc_item item)
     } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
         return 0;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gsbc_heap_size_item(%s)", p->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_heap_size_item(%s)", item.v->pos, p->directive->name);
     }
     return 0;
 }
@@ -130,7 +130,7 @@ gsbc_error_size_item(struct gsbc_item item)
     } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
         return 0;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gsbc_error_size_item(%s)", p->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_error_size_item(%s)", item.v->pos, p->directive->name);
     }
     return 0;
 }
@@ -190,11 +190,11 @@ gsbc_get_indir_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
         res = gssymtable_get_data(symtable, p->arguments[1]);
         if (!res)
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Can't find cast referent %s", p->arguments[1]->name)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Can't find cast referent %s", p->pos, p->arguments[1]->name)
         ;
         return res;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_get_indir_item(%s)", p->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_get_indir_item(%s)", p->pos, p->directive->name);
     }
     return 0;
 }
@@ -412,7 +412,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             size += GS_SIZE_BYTECODE(0);
             goto done;
         } else {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "gsbc_bytecode_size_item (%s)", p->directive->name);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_bytecode_size_item (%s)", p->pos, p->directive->name);
         }
 #if 0
     next_phase:
@@ -473,7 +473,7 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
                 gsbc_bytecompile_code_item(symtable, &pseg, items[i].v, bcos, i, n);
                 break;
             default:
-                gsfatal_unimpl_input(__FILE__, __LINE__, items[i].v, "gsbc_bytecompile_scc(type = %d)", items[i].type);
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_bytecompile_scc(type = %d)", items[i].v->pos, items[i].type);
         }
     }
 }
@@ -513,7 +513,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
     } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
         ;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "Data directive %s next", p->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Data directive %s next", p->pos, p->directive->name);
     }
 }
 
@@ -533,7 +533,7 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_api_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "Code directive %s", p->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: ode directive %s", p->pos, p->directive->name);
     }
 }
 
@@ -690,7 +690,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             pcode = GS_NEXT_BYTECODE(pcode, 0);
             goto done;
         } else {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Code op %s", p->directive->name);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Code op %s", p->pos, p->directive->name);
         }
     }
 
@@ -769,7 +769,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             first_fv = i;
             pcode->args[1] = (uchar)nfvs;
             for (i = first_fv; i < p->numarguments; i++) {
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "store free variables");
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: store free variables", p->pos);
             }
 
             pcode = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
@@ -794,7 +794,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             first_fv = i;
             pcode->args[1] = (uchar)nfvs;
             for (i = first_fv; i < p->numarguments; i++) {
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "store free variables");
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: store free variables", p->pos);
             }
 
             pcode = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
@@ -802,7 +802,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
 
             goto done;
         } else {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "API op %s next", p->directive->name);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: API op %s next", p->pos, p->directive->name);
         }
     }
 

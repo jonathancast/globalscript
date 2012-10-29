@@ -94,14 +94,14 @@ gstypes_size_item(struct gsbc_item item)
             } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
                 return sizeof(struct gstype_indirection);
             } else {
-                gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size %s type items", item.v->directive->name);
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: size %s type items", item.v->pos, item.v->directive->name);
             }
         case gssymcoercionlable:
         case gssymdatalable:
         case gssymcodelable:
             return 0;
         default:
-            gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size type item of type %d", item.type);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: size type item of type %d", item.v->pos, item.type);
     }
     return 0;
 }
@@ -123,14 +123,14 @@ gstypes_size_defn(struct gsbc_item item)
             } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
                 return 0;
             } else {
-                gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size abstype defn for %s type items", item.v->directive->name);
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: size abstype defn for %s type items", item.v->pos, item.v->directive->name);
             }
         case gssymdatalable:
         case gssymcodelable:
         case gssymcoercionlable:
             return 0;
         default:
-            gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "size abstype defn for item of type %d", item.type);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: size abstype defn for item of type %d", item.v->pos, item.type);
     }
     return 0;
 }
@@ -217,7 +217,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                     } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
                         gstype_compile_coercion_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), res);
                     } else {
-                        gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gstypes_compile_types(%s)", item.v->directive->name);
+                        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_types(%s)", item.v->pos, item.v->directive->name);
                     }
                 }
                 break;
@@ -226,7 +226,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
             case gssymcoercionlable:
                 break;
             default:
-                gsfatal_unimpl_input(__FILE__, __LINE__, item.v, "gstypes_compile_types(type = %d)", item.type);
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_types(type = %d)", item.v->pos, item.type);
         }
     }
 }
@@ -301,7 +301,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         struct gstype_lambda *lambda;
 
         if (cl->nregs >= MAX_REGISTERS)
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
             ;
         if (cl->regclass > regarg)
             gsfatal_bad_input(p, "Too late to add type arguments")
@@ -325,7 +325,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         struct gstype_forall *forall;
 
         if (cl->nregs >= MAX_REGISTERS)
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
             ;
         if (cl->regclass > regforall)
             gsfatal_bad_input(p, "Too late to add forall arguments")
@@ -348,7 +348,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         struct gstype *reg;
 
         if (cl->nregs >= MAX_REGISTERS)
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
         ;
         if (cl->regclass > reglet)
             gsfatal_bad_input(p, "Too late to add lets")
@@ -400,11 +400,11 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         nconstrs = p->numarguments / 2;
 
         if (nconstrs > MAX_REGISTERS)
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "sums with more than 0x%x constructors", MAX_REGISTERS)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: sums with more than 0x%x constructors", p->pos, MAX_REGISTERS)
         ;
 
         for (i = 0; i < p->numarguments; i += 2) {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "constructors");
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: constructors", p->pos);
         }
 
         return gstypes_compile_sumv(p->pos, nconstrs, constrs);
@@ -421,11 +421,11 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         res->pos = p->pos;
         prod->numfields = numfields;
         for (i = 0; i < p->numarguments; i += 2) {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Non-empty products");
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Non-empty products", p->pos);
         }
         return res;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gstype_compile_type_ops %s", p->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_compile_type_ops %s", p->pos, p->directive->name);
     }
     return 0;
 }
@@ -594,16 +594,16 @@ gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *cl, s
                 goto have_defn_for_source;
             }
             default:
-                gsfatal_unimpl_input(__FILE__, __LINE__, p, ".tydefinition with source a %d", defn->dest->node);
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: .tydefinition with source a %d", p->pos, defn->dest->node);
         }
     have_defn_for_source:
         defn->numargs = numargs;
         for (i = 1; i < p->numarguments; i ++) {
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Arguments to .tydefinition");
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Arguments to .tydefinition", p->pos);
         }
         return res;
     } else {
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "gstype_compile_coercion_ops_worker %s", p->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_compile_coercion_ops_worker %s", p->pos, p->directive->name);
     }
     return 0;
 }
@@ -618,7 +618,7 @@ gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, s
 
     if (gssymeq(p->directive, gssymtypeop, ".tygvar")) {
         if (cl->nregs >= MAX_REGISTERS)
-            gsfatal_unimpl_input(__FILE__, __LINE__, p, "Register overflow")
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
         ;
         if (cl->regclass > regglobal)
             gsfatal_bad_input(p, "Too late to add type globals")
@@ -992,7 +992,7 @@ gskind_compile(struct gsparsedline *inpline, gsinterned_string ki)
                 stack[stacksize++] = gskind_exponential_kind(base, exp);
                 break;
             default:
-                gsfatal_unimpl_input(__FILE__, __LINE__, inpline, "gskind_compile(%s)", p);
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: gskind_compile(%s)", inpline->pos, p);
         }
     }
 

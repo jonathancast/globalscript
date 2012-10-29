@@ -139,7 +139,7 @@ gsinput_next_line(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
     pres = (struct gsparsedline *)((uchar*)p + sizeof(*p) + p->numarguments * sizeof(gsinterned_string));
 
     if ((uchar*)pres >= (uchar*)(*ppseg)->extent)
-        gsfatal_unimpl_input(__FILE__, __LINE__, p, "Next line when changing segments");
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Next line when changing segments", p->pos);
 
     return pres;
 }
@@ -161,19 +161,6 @@ gsargcheck(struct gsparsedline *inpline, ulong argnum, char *fmt, ...)
     va_end(arg);
 
     gsfatal("%s:%d: Missing argument %s to %s", inpline->pos.file->name, inpline->pos.lineno, buf, inpline->directive->name);
-}
-
-void
-gsfatal_unimpl_input(char *file, int lineno, struct gsparsedline *inpline, char *fmt, ...)
-{
-    char buf[0x100];
-    va_list arg;
-
-    va_start(arg, fmt);
-    vseprint(buf, buf+sizeof buf, fmt, arg);
-    va_end(arg);
-
-    gsfatal("%s:%d: %s:%d: %s next", file, lineno, inpline->pos.file->name, inpline->pos.lineno, buf);
 }
 
 void
