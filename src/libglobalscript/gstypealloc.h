@@ -163,7 +163,7 @@ struct gskind {
     struct gskind *args[];
 };
 
-struct gskind *gskind_compile(struct gsparsedline *, gsinterned_string);
+struct gskind *gskind_compile(struct gspos, gsinterned_string);
 struct gskind *gstypes_compile_prim_kind(char *, int, struct gsregistered_primkind *);
 
 struct gskind *gskind_unknown_kind(void);

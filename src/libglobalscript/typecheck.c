@@ -27,12 +27,12 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
                     if (gssymeq(ptype->directive, gssymtypedirective, ".tyabstract")) {
                         gsargcheck(ptype, 0, "Kind");
 
-                        kinds[i] = gskind_compile(ptype, ptype->arguments[0]);
+                        kinds[i] = gskind_compile(ptype->pos, ptype->arguments[0]);
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
                     } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyexpr")) {
                         if (ptype->numarguments > 0) {
-                            kinds[i] = gskind_compile(ptype, ptype->arguments[0]);
+                            kinds[i] = gskind_compile(ptype->pos, ptype->arguments[0]);
 
                             gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
                         } else {
@@ -41,13 +41,13 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
                     } else if (gssymeq(ptype->directive, gssymtypedirective, ".tydefinedprim")) {
                         gsargcheck(ptype, 2, "Kind");
 
-                        kinds[i] = gskind_compile(ptype, ptype->arguments[2]);
+                        kinds[i] = gskind_compile(ptype->pos, ptype->arguments[2]);
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
                     } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyapiprim")) {
                         gsargcheck(ptype, 2, "Kind");
 
-                        kinds[i] = gskind_compile(ptype, ptype->arguments[2]);
+                        kinds[i] = gskind_compile(ptype->pos, ptype->arguments[2]);
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
                     } else {
@@ -1502,7 +1502,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
             ;
             regs[nregs] = p->label;
             gsargcheck(p, 0, "kind");
-            kind = gskind_compile(p, p->arguments[0]);
+            kind = gskind_compile(p->pos, p->arguments[0]);
             regtypes[nregs] = gstypes_compile_type_var(p->pos, p->label, kind);
             argkinds[nargs] = kind;
             arglines[nargs] = p;

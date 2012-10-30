@@ -70,7 +70,7 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
     if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
         struct gskind *kind;
 
-        kind = item.v->numarguments > 0 ? gskind_compile(ptype, ptype->arguments[0]) : 0;
+        kind = item.v->numarguments > 0 ? gskind_compile(ptype->pos, ptype->arguments[0]) : 0;
         types[i] = gstypes_compile_abstract(ptype->pos, item.v->label, kind);
     } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
         types[i] = gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), items, types, compiling, n);
@@ -80,7 +80,7 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
         if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
             struct gskind *kind;
 
-            kind = gskind_compile(ptype, ptype->arguments[2]);
+            kind = gskind_compile(ptype->pos, ptype->arguments[2]);
             types[i] = gstype_compile_knprim(ptype->pos, gsprim_type_defined, prims, ptype->arguments[1], kind);
         } else {
             gsfatal("%P: Unknown primset %s, which is bad because it supposedly contains defined primitive %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name);
@@ -91,12 +91,12 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
         if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
             struct gskind *kind;
 
-            kind = gskind_compile(ptype, ptype->arguments[2]);
+            kind = gskind_compile(ptype->pos, ptype->arguments[2]);
             types[i] = gstype_compile_knprim(ptype->pos, gsprim_type_api, prims, ptype->arguments[1], kind);
         } else {
             struct gskind *kind;
 
-            kind = gskind_compile(ptype, ptype->arguments[2]);
+            kind = gskind_compile(ptype->pos, ptype->arguments[2]);
             types[i] = gstype_compile_unprim(ptype->pos, gsprim_type_api, ptype->arguments[0], ptype->arguments[1], kind);
         }
     } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
@@ -218,7 +218,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->regclass = regarg;
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
-        kind = gskind_compile(p, p->arguments[0]);
+        kind = gskind_compile(p->pos, p->arguments[0]);
         cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos, p->label, kind);
         cl->nregs++;
         res = gstype_alloc(sizeof(struct gstype_lambda));
@@ -242,7 +242,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->regclass = regforall;
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
-        kind = gskind_compile(p, p->arguments[0]);
+        kind = gskind_compile(p->pos, p->arguments[0]);
         cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos, p->label, kind);
         cl->nregs++;
         res = gstype_alloc(sizeof(struct gstype_forall));
@@ -947,7 +947,7 @@ gstype_alloc(ulong size)
 #define MAX_STACK_SIZE 0x100
 
 struct gskind *
-gskind_compile(struct gsparsedline *inpline, gsinterned_string ki)
+gskind_compile(struct gspos pos, gsinterned_string ki)
 {
     struct gskind *stack[MAX_STACK_SIZE], *base, *exp;
     int stacksize;
@@ -977,20 +977,21 @@ gskind_compile(struct gsparsedline *inpline, gsinterned_string ki)
                 break;
             case '^':
                 if (stacksize < 2)
-                    gsfatal_bad_input(inpline, "Invalid kind: Missing argument(s) to ^");
+                    gsfatal("%P: Invalid kind: Missing argument(s) to ^", pos)
+                ;
                 exp = stack[--stacksize];
                 base = stack[--stacksize];
                 stack[stacksize++] = gskind_exponential_kind(base, exp);
                 break;
             default:
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: gskind_compile(%s)", inpline->pos, p);
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: gskind_compile(%s)", pos, p);
         }
     }
 
     if (stacksize < 1)
-        gsfatal_bad_input(inpline, "Invalid kind: Stack empty at end of kind expression");
+        gsfatal("%P: Invalid kind: Stack empty at end of kind expression", pos);
     if (stacksize > 1)
-        gsfatal_bad_input(inpline, "Invalid kind: Stack still has %d entries at end of kind expression", stacksize);
+        gsfatal("%P: Invalid kind: Stack still has %d entries at end of kind expression", pos, stacksize);
 
     return stack[0];
 }
