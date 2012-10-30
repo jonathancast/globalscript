@@ -351,30 +351,28 @@ gsfatal_bad_type(gsinterned_string file, int lineno, struct gstype *ty, char *er
     gsfatal("%s:%d: Bad type %P: %s", file->name, lineno, ty->pos, buf);
 }
 
+static void gsbc_typecheck_check_boxed(struct gspos, struct gstype *);
+
 static
 void
-gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type)
+gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
 {
     switch (type->node) {
         case gstype_indirection: {
             struct gstype_indirection *indir;
 
             indir = (struct gstype_indirection *)type;
-            gsbc_typecheck_check_boxed(p, indir->referent);
+            gsbc_typecheck_check_boxed(pos, indir->referent);
             return;
         }
         case gstype_lift:
-            return;
         case gstype_app:
-            return;
         case gstype_knprim:
-            return;
         case gstype_unprim:
-            return;
         case gstype_fun:
             return;
         default:
-            gsfatal_unimpl_type(__FILE__, __LINE__, type, "%s:%d: gsbc_typecheck_check_boxed(node = %d)", p->pos.file->name, p->pos.lineno, type->node);
+            gsfatal_unimpl_type(__FILE__, __LINE__, type, "%P: gsbc_typecheck_check_boxed(node = %d)", pos, type->node);
     }
 }
 
@@ -487,7 +485,6 @@ gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
 }
 
 static void gstypes_type_check_type_fail(struct gspos pos, struct gstype *, struct gstype *);
-static void gsbc_typecheck_check_boxed(struct gsparsedline *p, struct gstype *type);
 
 static
 void
@@ -567,14 +564,14 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
             declared_type = gssymtable_get_type(symtable, pdata->arguments[1]);
             gstypes_type_check_type_fail(pdata->pos, code_type->result_type, declared_type);
-            gsbc_typecheck_check_boxed(pdata, declared_type);
+            gsbc_typecheck_check_boxed(pdata->pos, declared_type);
         } else {
             if (pdata->label)
                 gssymtable_set_data_type(symtable, pdata->label, code_type->result_type)
             ; else if (pentrytype)
                 *pentrytype = code_type->result_type
             ;
-            gsbc_typecheck_check_boxed(pdata, code_type->result_type);
+            gsbc_typecheck_check_boxed(pdata->pos, code_type->result_type);
         }
     } else if (gssymceq(pdata->directive, gssymcast, gssymdatadirective, ".cast")) {
         struct gstype *src_type;
