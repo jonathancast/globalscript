@@ -16,131 +16,103 @@ static void *gstype_nursury;
 
 static void *gstype_alloc(ulong);
 
-static int gstypes_size_item(struct gsbc_item);
-static int gstypes_size_defn(struct gsbc_item);
+static void gstypes_compile_type(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int *, int, int);
+
+static struct gstype *gstype_compile_type_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbc_item *, struct gstype **, int *, int);
+static struct gstype *gstype_compile_coercion_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbc_item *, struct gstype **, int *, int);
 
 void
-gstypes_alloc_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gstype **defns, int n)
+gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, int n)
 {
-    uint total_size,
-        sizes[MAX_ITEMS_PER_SCC], offsets[MAX_ITEMS_PER_SCC],
-        defn_sizes[MAX_ITEMS_PER_SCC], defn_offsets[MAX_ITEMS_PER_SCC]
-    ;
-    int i, align;
-    void *base;
+    int i;
+    int compiling[MAX_ITEMS_PER_SCC];
 
-    align = sizeof(types[0]->node);
-
-    if (n > MAX_ITEMS_PER_SCC)
-        gsfatal("%s:%d: Too many items in SCC; 0x%x items; max 0x%x", __FILE__, __LINE__, n, MAX_ITEMS_PER_SCC);
-
-    total_size = 0;
     for (i = 0; i < n; i++) {
-        sizes[i] = gstypes_size_item(items[i]);
-        defn_sizes[i] = gstypes_size_defn(items[i]);
-        if (sizes[i] % align)
-            sizes[i] += (align - sizes[i] % align) 
-        ;
-        if (defn_sizes[i] % align)
-            defn_sizes[i] += (align - defn_sizes[i] % align) 
-        ;
-        offsets[i] = sizes[i] ? total_size : 0;
-        defn_offsets[i] = defn_sizes[i] ? total_size + sizes[i] : 0;
-        
-        total_size += sizes[i] + defn_sizes[i];
+        compiling[i] = 0;
+        types[i] = 0;
     }
 
-    if (total_size > BLOCK_SIZE)
-        gsfatal("%s:%d: Total size too large; 0x%x > 0x%x", __FILE__, __LINE__, total_size, BLOCK_SIZE)
-    ;
-
-    base = gstype_alloc(total_size);
-
     for (i = 0; i < n; i++) {
-        if (sizes[i]) {
-            types[i] = (struct gstype *)((uchar*)base + offsets[i]);
-            types[i]->node = gstype_uninitialized;
-            gssymtable_set_type(symtable, items[i].v->label, types[i]);
-        } else {
-            types[i] = 0;
-        }
-        if (defn_sizes[i]) {
-            defns[i] = (struct gstype *)((uchar*)base + defn_offsets[i]);
-            defns[i]->node = gstype_uninitialized;
-            gssymtable_set_abstype(symtable, items[i].v->label, defns[i]);
-        } else {
-            defns[i] = 0;
+        struct gsbc_item item;
+
+        item = items[i];
+        if (types[i])
+            continue
+        ;
+        switch (item.type) {
+            case gssymtypelable:
+                gstypes_compile_type(symtable, items, types, compiling, i, n);
+                break;
+            case gssymdatalable:
+            case gssymcodelable:
+            case gssymcoercionlable:
+                break;
+            default:
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_types(type = %d)", item.v->pos, item.type);
         }
     }
 }
 
 static
-int
-gstypes_size_item(struct gsbc_item item)
+void
+gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, int *compiling, int i, int n)
 {
-    switch (item.type) {
-        case gssymtypelable:
-            if (gssymeq(item.v->directive, gssymtypedirective, ".tydefinedprim")) {
-                return sizeof(struct gstype_knprim);
-            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyapiprim")) {
-                return gsprims_lookup_prim_set(item.v->arguments[0]->name)
-                    ? sizeof(struct gstype_knprim)
-                    : sizeof(struct gstype_unprim)
-                ;
-            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
-                return sizeof(struct gstype_indirection);
-            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
-                return sizeof(struct gstype_abstract);
-            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
-                return sizeof(struct gstype_indirection);
-            } else {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: size %s type items", item.v->pos, item.v->directive->name);
-            }
-        case gssymcoercionlable:
-        case gssymdatalable:
-        case gssymcodelable:
-            return 0;
-        default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: size type item of type %d", item.v->pos, item.type);
-    }
-    return 0;
-}
+    struct gsbc_item item;
+    struct gsparsedfile_segment *pseg;
+    struct gsparsedline *ptype;
 
-static
-int
-gstypes_size_defn(struct gsbc_item item)
-{
-    switch (item.type) {
-        case gssymtypelable:
-            if (gssymeq(item.v->directive, gssymtypedirective, ".tydefinedprim")) {
-                return 0;
-            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyapiprim")) {
-                return 0;
-            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
-                return 0;
-            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
-                return sizeof(struct gstype_indirection);
-            } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
-                return 0;
-            } else {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: size abstype defn for %s type items", item.v->pos, item.v->directive->name);
-            }
-        case gssymdatalable:
-        case gssymcodelable:
-        case gssymcoercionlable:
-            return 0;
-        default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: size abstype defn for item of type %d", item.v->pos, item.type);
-    }
-    return 0;
-}
+    compiling[i] = 1;
 
-static void gstype_compile_type_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gstype *);
-static void gstype_compile_coercion_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gstype *);
+    item = items[i];
+    pseg = item.pseg;
+    ptype = item.v;
+
+    if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
+        struct gskind *kind;
+
+        kind = item.v->numarguments > 0 ? gskind_compile(ptype, ptype->arguments[0]) : 0;
+        types[i] = gstypes_compile_abstract(ptype->pos, item.v->label, kind);
+    } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
+        types[i] = gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), items, types, compiling, n);
+    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tydefinedprim")) {
+        struct gsregistered_primset *prims;
+
+        if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
+            struct gskind *kind;
+
+            kind = gskind_compile(ptype, ptype->arguments[2]);
+            types[i] = gstype_compile_knprim(ptype->pos, gsprim_type_defined, prims, ptype->arguments[1], kind);
+        } else {
+            gsfatal("%P: Unknown primset %s, which is bad because it supposedly contains defined primitive %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name);
+        }
+    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyapiprim")) {
+        struct gsregistered_primset *prims;
+
+        if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
+            struct gskind *kind;
+
+            kind = gskind_compile(ptype, ptype->arguments[2]);
+            types[i] = gstype_compile_knprim(ptype->pos, gsprim_type_api, prims, ptype->arguments[1], kind);
+        } else {
+            struct gskind *kind;
+
+            kind = gskind_compile(ptype, ptype->arguments[2]);
+            types[i] = gstype_compile_unprim(ptype->pos, gsprim_type_api, ptype->arguments[0], ptype->arguments[1], kind);
+        }
+    } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
+        types[i] = gstype_compile_coercion_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), items, types, compiling, n);
+    } else {
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_types(%s)", item.v->pos, item.v->directive->name);
+    }
+
+    compiling[i] = 0;
+    gssymtable_set_type(symtable, item.v->label, types[i]);
+}
 
 void
-gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **ptypes, struct gstype **defns, int n)
+gstypes_compile_type_definitions(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **defns, int n)
 {
+    static gsinterned_string gssymtyabstract, gssymtydefinedprim, gssymtyapiprim, gssymtyexpr;
     int i;
 
     for (i = 0; i < n; i++) {
@@ -152,74 +124,23 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
                 {
                     struct gsparsedfile_segment *pseg;
                     struct gsparsedline *ptype;
-                    struct gstype *res;
 
                     pseg = item.pseg;
                     ptype = item.v;
-                    res = ptypes[i];
 
-                    res->pos = ptype->pos;
-
-                    if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
-                        struct gstype *defn;
-                        struct gstype_abstract *abs;
-
-                        res->node = gstype_abstract;
-                        abs = (struct gstype_abstract *)res;
-                        abs->name = item.v->label;
-                        if (item.v->numarguments > 0)
-                            abs->kind = gskind_compile(ptype, ptype->arguments[0]);
-                        else
-                            abs->kind = 0;
-
-                        defn = defns[i];
-
-                        gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), defn);
-                    } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
-                        gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), res);
-                    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tydefinedprim")) {
-                        struct gsregistered_primset *prims;
-
-                        if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
-                            struct gstype_knprim *prim;
-
-                            res->node = gstype_knprim;
-                            prim = (struct gstype_knprim *)res;
-                            prim->primtypegroup = gsprim_type_defined;
-                            prim->primset = prims;
-                            prim->primname = ptype->arguments[1];
-                            prim->kind = gskind_compile(ptype, ptype->arguments[2]);
-                        } else {
-                            gsfatal("%P: Unknown primset %s, which is bad because it supposedly contains defined primitive %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name);
-                        }
-                    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyapiprim")) {
-                        struct gsregistered_primset *prims;
-
-                        if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
-                            struct gstype_knprim *prim;
-
-                            res->node = gstype_knprim;
-                            prim = (struct gstype_knprim *)res;
-                            prim->primtypegroup = gsprim_type_api;
-                            prim->primset = prims;
-                            prim->primname = ptype->arguments[1];
-                            prim->kind = gskind_compile(ptype, ptype->arguments[2]);
-                        } else {
-                            struct gstype_unprim *prim;
-
-                            res->node = gstype_unprim;
-                            prim = (struct gstype_unprim *)res;
-                            prim->primtypegroup = gsprim_type_api;
-                            prim->primsetname = ptype->arguments[0];
-                            prim->primname = ptype->arguments[1];
-                            prim->kind = gskind_compile(ptype, ptype->arguments[2]);
-                        }
-                    } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
-                        gstype_compile_coercion_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), res);
+                    if (gssymceq(ptype->directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
+                        defns[i] = gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), 0, 0, 0, n);
+                    } else if (
+                        gssymceq(ptype->directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")
+                        || gssymceq(ptype->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
+                        || gssymceq(ptype->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")
+                    ) {
+                        continue;
                     } else {
-                        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_types(%s)", item.v->pos, item.v->directive->name);
+                        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_type_definitions(%s)", item.v->pos, item.v->directive->name);
                     }
                 }
+                gssymtable_set_abstype(symtable, item.v->label, defns[i]);
                 break;
             case gssymdatalable:
             case gssymcodelable:
@@ -245,26 +166,30 @@ struct gstype_compile_type_ops_closure {
         regforall,
         reglet,
     } regclass;
+    struct gsbc_item *items;
+    struct gstype **types;
+    int *compiling;
+    int scc_size;
 };
 
 static struct gstype *gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *, struct gsparsedline *);
 
 static
-void
-gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gstype *res)
+struct gstype *
+gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbc_item *items, struct gstype **types, int *compiling, int n)
 {
     struct gstype_compile_type_ops_closure cl;
-    struct gstype_indirection *indir;
 
     cl.nregs = 0;
     cl.symtable = symtable;
     cl.ppseg = ppseg;
     cl.regclass = regglobal;
+    cl.items = items;
+    cl.compiling = compiling;
+    cl.types = types;
+    cl.scc_size = n;
 
-    res->node = gstype_indirection;
-    indir = (struct gstype_indirection *)res;
-
-    indir->referent = gstype_compile_type_ops_worker(&cl, p);
+    return gstype_compile_type_ops_worker(&cl, p);
 }
 
 struct gstype *
@@ -289,7 +214,7 @@ static
 struct gstype *
 gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtylambda, gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyproduct;
+    static gsinterned_string gssymtylambda, gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyproduct, gssymtyubproduct;
 
     int i;
     struct gstype *res;
@@ -404,7 +329,14 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         ;
 
         for (i = 0; i < p->numarguments; i += 2) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: constructors", p->pos);
+            struct gstype *argtype;
+
+            constrs[i / 2].name = p->arguments[i];
+            argtype = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i + 1])];
+            if (!argtype)
+                gsfatal("%P: %s doesn't seem to be a type register", p->pos, p->arguments[i + 1]->name)
+            ;
+            constrs[i / 2].argtype = argtype;
         }
 
         return gstypes_compile_sumv(p->pos, nconstrs, constrs);
@@ -422,6 +354,30 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         prod->numfields = numfields;
         for (i = 0; i < p->numarguments; i += 2) {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Non-empty products", p->pos);
+        }
+        return res;
+    } else if (gssymceq(p->directive, gssymtyubproduct, gssymtypeop, ".tyubproduct")) {
+        struct gstype_ubproduct *prod;
+        int numfields;
+
+        if (p->numarguments % 2)
+            gsfatal_bad_input(p, "Cannot have odd number of arguments to .tyubproduct")
+        ;
+        numfields = p->numarguments / 2;
+        res = gstype_alloc(sizeof(struct gstype_ubproduct) + numfields * sizeof(struct gstype_field));
+        prod = (struct gstype_ubproduct *)res;
+        res->node = gstype_ubproduct;
+        res->pos = p->pos;
+        prod->numfields = numfields;
+        for (i = 0; i < p->numarguments; i += 2) {
+            struct gstype *fieldtype;
+
+            prod->fields[i / 2].name = p->arguments[0];
+            fieldtype = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i + 1])];
+            if (!fieldtype)
+                gsfatal("%P: %s doesn't seem to be a type register", p->pos, p->arguments[i + 1]->name)
+            ;
+            prod->fields[i / 2].type = fieldtype;
         }
         return res;
     } else {
@@ -498,7 +454,7 @@ gstypes_compile_sumv(struct gspos pos, int nconstrs, struct gstype_constr *const
     res->pos = pos;
     sum->numconstrs = nconstrs;
     for (i = 0; i < nconstrs; i ++) {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: set constructors", pos);
+        sum->constrs[i] = constrs[i];
     }
 
     return res;
@@ -544,21 +500,21 @@ gstypes_compile_fun(struct gspos pos, struct gstype *tyarg, struct gstype *tyres
 static struct gstype *gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *, struct gsparsedline *);
 
 static
-void
-gstype_compile_coercion_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gstype *res)
+struct gstype *
+gstype_compile_coercion_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbc_item *items, struct gstype **types, int *compiling, int n)
 {
     struct gstype_compile_type_ops_closure cl;
-    struct gstype_indirection *indir;
 
     cl.nregs = 0;
     cl.symtable = symtable;
     cl.ppseg = ppseg;
     cl.regclass = regglobal;
+    cl.items = items;
+    cl.compiling = compiling;
+    cl.types = types;
+    cl.scc_size = n;
 
-    res->node = gstype_indirection;
-    indir = (struct gstype_indirection *)res;
-
-    indir->referent = gstype_compile_coercion_ops_worker(&cl, p);
+    return gstype_compile_coercion_ops_worker(&cl, p);
 }
 
 static
@@ -612,11 +568,9 @@ static
 struct gstype *
 gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p, struct gstype *(*next)(struct gstype_compile_type_ops_closure *, struct gsparsedline *))
 {
-# if 0
-    struct gstype *res;
-#endif
-
     if (gssymeq(p->directive, gssymtypeop, ".tygvar")) {
+        int i;
+
         if (cl->nregs >= MAX_REGISTERS)
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
         ;
@@ -626,6 +580,18 @@ gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, s
         cl->regclass = regglobal;
         cl->regs[cl->nregs] = p->label;
         cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
+        if (!cl->regvalues[cl->nregs] && cl->types) {
+            for (i = 0; i < cl->scc_size; i++) {
+                if (cl->items[i].v->label == p->label) {
+                    if (cl->compiling[i])
+                        gsfatal("%P: Loop: already compiling %s", p->pos, p->label->name)
+                    ;
+                    gstypes_compile_type(cl->symtable, cl->items, cl->types, cl->compiling, i, cl->scc_size);
+                    cl->regvalues[cl->nregs] = cl->types[i];
+                    break;
+                }
+            }
+        }
         if (!cl->regvalues[cl->nregs])
             gsfatal_bad_input(p, "Couldn't find referent %s", p->label->name)
         ;
@@ -637,29 +603,71 @@ gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, s
 }
 
 struct gstype *
+gstypes_compile_abstract(struct gspos pos, gsinterned_string name, struct gskind *kind)
+{
+    struct gstype *res;
+    struct gstype_abstract *abstract;
+
+    res = gstype_alloc(sizeof(struct gstype_abstract));
+    abstract = (struct gstype_abstract *)res;
+
+    res->node = gstype_abstract;
+    res->pos = pos;
+    abstract->name = name;
+    abstract->kind = kind;
+
+    return res;
+}
+
+struct gstype *
 gstypes_compile_prim(struct gspos pos, enum gsprim_type_group group, char *primsetname, char *primname, struct gskind *ky)
 {
     struct gsregistered_primset *prims;
-    struct gstype *res;
 
     if (prims = gsprims_lookup_prim_set(primsetname)) {
-        struct gstype_knprim *prim;
-
-        res = gstype_alloc(sizeof(struct gstype_knprim));
-        prim = (struct gstype_knprim *)res;
-
-        res->node = gstype_knprim;
-        res->pos = pos;
-        prim->primtypegroup = group;
-        prim->primset = prims;
-        prim->primname = gsintern_string(gssymtypelable, primname);
-        prim->kind = ky;
-
-        return res;
+        return gstype_compile_knprim(pos, group, prims, gsintern_string(gssymtypelable, primname), ky);
     } else {
         gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_prim: unknown primset", pos);
         return 0;
     }
+}
+
+struct gstype *
+gstype_compile_knprim(struct gspos pos, enum gsprim_type_group group, struct gsregistered_primset *prims, gsinterned_string primname, struct gskind *ky)
+{
+    struct gstype *res;
+    struct gstype_knprim *prim;
+
+    res = gstype_alloc(sizeof(struct gstype_knprim));
+    prim = (struct gstype_knprim *)res;
+
+    res->node = gstype_knprim;
+    res->pos = pos;
+    prim->primtypegroup = group;
+    prim->primset = prims;
+    prim->primname = primname;
+    prim->kind = ky;
+
+    return res;
+}
+
+struct gstype *
+gstype_compile_unprim(struct gspos pos, enum gsprim_type_group group, gsinterned_string primset, gsinterned_string primname, struct gskind *ky)
+{
+    struct gstype *res;
+    struct gstype_unprim *prim;
+
+    res = gstype_alloc(sizeof(struct gstype_unprim));
+    prim = (struct gstype_unprim *)res;
+
+    res->node = gstype_unprim;
+    res->pos = pos;
+    prim->primtypegroup = group;
+    prim->primsetname = primset;
+    prim->primname = primname;
+    prim->kind = ky;
+
+    return res;
 }
 
 struct gstype *
@@ -686,6 +694,8 @@ gstype_apply(struct gspos pos, struct gstype *fun, struct gstype *arg)
     struct gstype *res;
     struct gstype_app *app;
 
+    gsbc_typecheck_check_boxed(pos, arg);
+
     res = gstype_alloc(sizeof(struct gstype_app));
     res->node = gstype_app;
     res->pos = pos;
@@ -701,6 +711,8 @@ static struct gstype *gstypes_subst(struct gspos, struct gstype *, gsinterned_st
 struct gstype *
 gstype_supply(struct gspos pos, struct gstype *fun, struct gstype *arg)
 {
+    gsbc_typecheck_check_boxed(pos, arg);
+
     switch (fun->node) {
         case gstype_indirection: {
             struct gstype_indirection *indir;
@@ -885,6 +897,23 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             resprod->numfields = prod->numfields;
             for (i = 0; i < prod->numfields; i++) {
                 gsfatal_unimpl_type(__FILE__, __LINE__, type, "subst into field type");
+            }
+
+            return res;
+        }
+        case gstype_ubproduct: {
+            struct gstype_ubproduct *prod, *resprod;
+            struct gstype *res;
+
+            prod = (struct gstype_ubproduct *)type;
+            res = gstype_alloc(sizeof(struct gstype_ubproduct) + prod->numfields * sizeof(struct gstype_field));
+            resprod = (struct gstype_ubproduct *)res;
+            res->node = gstype_ubproduct;
+            res->pos = type->pos;
+            resprod->numfields = prod->numfields;
+            for (i = 0; i < prod->numfields; i++) {
+                resprod->fields[i].name = prod->fields[i].name;
+                resprod->fields[i].type = gstypes_subst(pos, prod->fields[i].type, varname, type1);
             }
 
             return res;

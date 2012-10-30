@@ -730,7 +730,7 @@ static
 long
 gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyproduct;
+    static gsinterned_string gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyproduct, gssymtyubproduct;
 
     struct gsparsedline *parsedline;
     int i;
@@ -812,6 +812,18 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->label = 0;
             if (n % 2)
                 gsfatal("%s:%d: Can't have odd number of arguments to .typroduct", filename, *plineno);
+            for (i = 0; 2 + i < n; i += 2) {
+                parsedline->arguments[i] = gsintern_string(gssymfieldlable, fields[2 + i]);
+                parsedline->arguments[i + 1] = gsintern_string(gssymtypelable, fields[2 + i + 1]);
+            }
+            return 0;
+        } else if (gssymceq(parsedline->directive, gssymtyubproduct, gssymtypeop, ".tyubproduct")) {
+            if (*fields[0])
+                gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
+            else
+                parsedline->label = 0;
+            if (n % 2)
+                gsfatal("%s:%d: Can't have odd number of arguments to .tyubproduct", filename, *plineno);
             for (i = 0; 2 + i < n; i += 2) {
                 parsedline->arguments[i] = gsintern_string(gssymfieldlable, fields[2 + i]);
                 parsedline->arguments[i + 1] = gsintern_string(gssymtypelable, fields[2 + i + 1]);
@@ -1643,8 +1655,6 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 
     n = 0;
 
-    /* §section{} */
-
     for (p = pscc; p; p = p->next_item) {
         if (n >= MAX_ITEMS_PER_SCC)
             gsfatal("%s:%d: Too many items in this SCC; max 0x%x", p->item.v->pos.file->name, p->item.v->pos.lineno, MAX_ITEMS_PER_SCC)
@@ -1654,9 +1664,9 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 
     /* §section{Type-checking} */
 
-    gstypes_alloc_for_scc(symtable, items, types, defns, n);
     gstypes_process_type_declarations(symtable, items, kinds, n);
-    gstypes_compile_types(symtable, items, types, defns, n);
+    gstypes_compile_types(symtable, items, types, n);
+    gstypes_compile_type_definitions(symtable, items, defns, n);
     gstypes_kind_check_scc(symtable, items, types, kinds, n);
     gstypes_process_type_signatures(symtable, items, ptype, n);
     gstypes_type_check_scc(symtable, items, types, kinds, ptype, n);

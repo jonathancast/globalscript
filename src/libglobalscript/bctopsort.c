@@ -154,6 +154,8 @@ static
 struct gsparsedline *
 gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
+    static gsinterned_string gssymoptyubproduct;
+
     for (;;) {
         if (
             gssymeq(p->directive, gssymtypeop, ".tygvar")
@@ -166,6 +168,7 @@ gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gspars
         else if (
             gssymeq(p->directive, gssymtypeop, ".tyref")
             || gssymeq(p->directive, gssymtypeop, ".tysum")
+            || gssymceq(p->directive, gssymoptyubproduct, gssymtypeop, ".tyubproduct")
         )
             return gsinput_next_line(ppseg, p);
         else

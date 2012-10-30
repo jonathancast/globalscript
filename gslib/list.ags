@@ -3,6 +3,25 @@
 	.type
 
 list.t	.tyabstract	**^
+_cons_type	.tygvar
+_nil_type	.tygvar
 α	.tylambda	*
+_cons_type_α	.tylet	_cons_type	α
+_nil_type_α	.tylet	_nil_type	α
 	.tylift
-	.tysum
+	.tysum	:	_cons_type_α	nil	_nil_type_α
+
+_cons_type	.tyexpr
+_tail_type	.tygvar
+α	.tylambda	*
+_list_α	.tylet	_tail_type	α
+	.tyubproduct	0	α	1	_list_α
+
+_tail_type	.tyexpr
+list.t	.tygvar
+α	.tylambda	*
+	.tyref	list.t	α
+
+_nil_type	.tyexpr
+α	.tylambda	*
+	.tyubproduct

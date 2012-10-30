@@ -19,6 +19,7 @@ struct gstype {
         gstype_fun,
         gstype_sum,
         gstype_product,
+        gstype_ubproduct,
         gstype_coerce_definition,
     } node;
     struct gspos pos;
@@ -90,7 +91,7 @@ struct gstype_fun {
 
 struct gstype_constr {
     gsinterned_string name;
-    int arg;
+    struct gstype *argtype;
 };
 
 struct gstype_sum {
@@ -110,6 +111,12 @@ struct gstype_product {
     struct gstype_field fields[];
 };
 
+struct gstype_ubproduct {
+    struct gstype e;
+    int numfields;
+    struct gstype_field fields[];
+};
+
 struct gstype_coerce_definition {
     struct gstype e;
     struct gstype *dest, *source;
@@ -124,7 +131,10 @@ char *gstypes_eprint_type(char *, char *, struct gstype *);
 int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 
 struct gstype *gstypes_compile_indir(struct gspos, struct gstype *);
+struct gstype *gstypes_compile_abstract(struct gspos, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_prim(struct gspos, enum gsprim_type_group, char *, char *, struct gskind *);
+struct gstype *gstype_compile_knprim(struct gspos, enum gsprim_type_group, struct gsregistered_primset *, gsinterned_string, struct gskind *);
+struct gstype *gstype_compile_unprim(struct gspos, enum gsprim_type_group, gsinterned_string, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_type_var(struct gspos, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_lambda(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
 struct gstype *gstypes_compile_lift(struct gspos, struct gstype *);
@@ -137,8 +147,9 @@ struct gstype *gstype_supply(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstype_apply(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstype_instantiate(struct gspos, struct gstype *, struct gstype *);
 
-void gstypes_alloc_for_scc(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
-void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, int);
+void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int);
+void gstypes_compile_type_definitions(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int);
+
 
 struct gsbc_coercion_arg {
     gsinterned_string var;

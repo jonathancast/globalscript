@@ -238,6 +238,21 @@ gstypes_calculate_kind(struct gstype *type)
 
             return gskind_unlifted_kind();
         }
+        case gstype_ubproduct: {
+            struct gstype_ubproduct *prod;
+
+            prod = (struct gstype_ubproduct *)type;
+
+            for (i = 0; i < prod->numfields; i++) {
+                struct gskind *kind;
+
+                kind = gstypes_calculate_kind(prod->fields[i].type);
+                gstypes_kind_check_simple(type->pos, kind);
+                gsbc_typecheck_check_boxed(type->pos, prod->fields[i].type);
+            }
+
+            return gskind_unlifted_kind();
+        }
         default:
             gsfatal_unimpl_type(__FILE__, __LINE__, type, "gstypes_calculate_kind(node = %d)", type->node);
     }
@@ -351,9 +366,6 @@ gsfatal_bad_type(gsinterned_string file, int lineno, struct gstype *ty, char *er
     gsfatal("%s:%d: Bad type %P: %s", file->name, lineno, ty->pos, buf);
 }
 
-static void gsbc_typecheck_check_boxed(struct gspos, struct gstype *);
-
-static
 void
 gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
 {
@@ -369,6 +381,7 @@ gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
         case gstype_app:
         case gstype_knprim:
         case gstype_unprim:
+        case gstype_var:
         case gstype_fun:
             return;
         default:
