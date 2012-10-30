@@ -56,15 +56,19 @@ ace_thread_pool_main(void *p)
     have_clients = 1;
 
     while (have_clients) {
-        lock(&ace_thread_queue->lock);
-
         have_clients = ace_thread_queue->refcount > 0;
         suspended_runnable_thread = 0;
         if (have_clients) {
             for (i = 0; i < NUM_ACE_THREADS; i++) {
                 struct ace_thread *thread;
 
-                thread = ace_thread_queue->threads[i];
+                thread = 0;
+                lock(&ace_thread_queue->lock);
+                for (; i < NUM_ACE_THREADS && !thread; i++)
+                    thread = ace_thread_queue->threads[i]
+                ;
+                unlock(&ace_thread_queue->lock);
+
                 if (thread) {
                     struct gsbc *ip;
 
@@ -228,7 +232,6 @@ ace_thread_pool_main(void *p)
             }
         }
 
-        unlock(&ace_thread_queue->lock);
         if (!suspended_runnable_thread)
             sleep(1)
         ;
