@@ -64,9 +64,11 @@ ace_thread_pool_main(void *p)
 
                 thread = 0;
                 lock(&ace_thread_queue->lock);
-                for (; i < NUM_ACE_THREADS && !thread; i++)
-                    thread = ace_thread_queue->threads[i]
-                ;
+                while (i < NUM_ACE_THREADS && !thread) {
+                    gswarning("%s:%d: Trying to schedule tid %d", __FILE__, __LINE__, i);
+                    thread = ace_thread_queue->threads[i];
+                    if (!thread) i++;
+                }
                 unlock(&ace_thread_queue->lock);
 
                 if (thread) {
@@ -187,7 +189,9 @@ ace_thread_pool_main(void *p)
 
                                 unlock(&hp->lock);
 
+                                lock(&ace_thread_queue->lock);
                                 ace_thread_queue->threads[i] = 0;
+                                unlock(&ace_thread_queue->lock);
                             }
                             break;
                         case gsbc_op_undef:
@@ -210,7 +214,9 @@ ace_thread_pool_main(void *p)
 
                                 unlock(&hp->lock);
 
+                                lock(&ace_thread_queue->lock);
                                 ace_thread_queue->threads[i] = 0;
+                                unlock(&ace_thread_queue->lock);
                             }
                             break;
                         default:
@@ -223,7 +229,9 @@ ace_thread_pool_main(void *p)
                                 gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "run instruction %d", ip->instr);
                                 unlock(&hp->lock);
 
+                                lock(&ace_thread_queue->lock);
                                 ace_thread_queue->threads[i] = 0;
+                                unlock(&ace_thread_queue->lock);
                             }
                             break;
                     }
