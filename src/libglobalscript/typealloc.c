@@ -192,22 +192,6 @@ gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedfile_se
     return gstype_compile_type_ops_worker(&cl, p);
 }
 
-struct gstype *
-gstypes_compile_indir(struct gspos pos, struct gstype *referent)
-{
-    struct gstype *res;
-    struct gstype_indirection *indir;
-
-    res = gstype_alloc(sizeof(struct gstype_indirection));
-    indir = (struct gstype_indirection *)res;
-
-    res->node = gstype_indirection;
-    res->pos = pos;
-    indir->referent = referent;
-
-    return res;
-}
-
 static struct gstype *gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *, struct gsparsedline *, struct gstype *(*)(struct gstype_compile_type_ops_closure *, struct gsparsedline *));
 
 static
@@ -714,11 +698,6 @@ gstype_supply(struct gspos pos, struct gstype *fun, struct gstype *arg)
     gsbc_typecheck_check_boxed(pos, arg);
 
     switch (fun->node) {
-        case gstype_indirection: {
-            struct gstype_indirection *indir;
-            indir = (struct gstype_indirection *)fun;
-            return gstype_supply(pos, indir->referent, arg);
-        }
         case gstype_lambda: {
             struct gstype_lambda *lambda;
             struct gskind *argkind;
@@ -741,11 +720,6 @@ struct gstype *
 gstype_instantiate(struct gspos pos, struct gstype *fun, struct gstype *arg)
 {
     switch (fun->node) {
-        case gstype_indirection: {
-            struct gstype_indirection *indir;
-            indir = (struct gstype_indirection *)fun;
-            return gstype_instantiate(pos, indir->referent, arg);
-        }
         case gstype_forall: {
             struct gstype_forall *forall;
             struct gskind *argkind;
@@ -772,12 +746,6 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
     int i;
 
     switch (type->node) {
-        case gstype_indirection: {
-            struct gstype_indirection *indir;
-
-            indir = (struct gstype_indirection *)type;
-            return gstypes_subst(pos, indir->referent, varname, type1);
-        }
         case gstype_abstract:
             return type;
         case gstype_knprim:
@@ -930,12 +898,6 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
     int i;
 
     switch (type->node) {
-        case gstype_indirection: {
-            struct gstype_indirection *indir;
-
-            indir = (struct gstype_indirection *)type;
-            return gstypes_is_ftyvar(varname, indir->referent);
-        }
         case gstype_knprim: {
             return 0;
         }

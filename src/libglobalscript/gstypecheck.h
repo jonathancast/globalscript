@@ -1,5 +1,3 @@
-struct gstype *gstypes_clear_indirections(struct gstype *);
-
 void gstypes_process_type_declarations(struct gsfile_symtable *, struct gsbc_item *, struct gskind **, int);
 
 void gsbc_typecheck_check_boxed(struct gspos, struct gstype *);

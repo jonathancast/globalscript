@@ -115,12 +115,6 @@ gstypes_calculate_kind(struct gstype *type)
     int i;
 
     switch (type->node) {
-        case gstype_indirection: {
-            struct gstype_indirection *indir;
-
-            indir = (struct gstype_indirection *)type;
-            return gstypes_calculate_kind(indir->referent);
-        }
         case gstype_abstract: {
             struct gstype_abstract *abs;
 
@@ -370,13 +364,6 @@ void
 gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
 {
     switch (type->node) {
-        case gstype_indirection: {
-            struct gstype_indirection *indir;
-
-            indir = (struct gstype_indirection *)type;
-            gsbc_typecheck_check_boxed(pos, indir->referent);
-            return;
-        }
         case gstype_lift:
         case gstype_app:
         case gstype_knprim:
@@ -818,7 +805,6 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 argreg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
                 argtype = regtypes[argreg];
 
-                type = gstypes_clear_indirections(type);
                 if (type->node == gstype_fun) {
                     struct gstype_fun *fun;
 
@@ -1018,8 +1004,6 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
 
 have_type:
 
-    calculated_type = gstypes_clear_indirections(calculated_type);
-
     if (first_rhs_lifted) {
         if (calculated_type->node != gstype_lift)
             calculated_type = gstypes_compile_lift(pos, calculated_type)
@@ -1093,8 +1077,6 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
 {
     char buf[0x100];
     struct gstype *res;
-
-    ty = gstypes_clear_indirections(ty);
 
     if (gstypes_eprint_type(buf, buf + sizeof(buf), ty) >= buf + sizeof(buf))
         gsfatal("%s:%d: %P: buffer overflow printing type %P", __FILE__, __LINE__, pos, ty->pos)
@@ -1180,9 +1162,6 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
     char actual_buf[0x100];
     char expected_buf[0x100];
 
-    pactual = gstypes_clear_indirections(pactual);
-    pexpected = gstypes_clear_indirections(pexpected);
-    
     if (gstypes_eprint_type(actual_buf, actual_buf + sizeof(actual_buf), pactual) >= actual_buf + sizeof(actual_buf)) {
         seprint(err, eerr, "%s:%d: %P: buffer overflow printing actual type %P", __FILE__, __LINE__, pos, pactual->pos);
         return -1;
@@ -1300,20 +1279,6 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
     }
 }
 
-struct gstype *
-gstypes_clear_indirections(struct gstype *pty)
-{
-    if (pty->node == gstype_indirection) {
-        struct gstype_indirection *indir;
-
-        indir = (struct gstype_indirection *)pty;
-
-        return indir->referent;
-    } else {
-        return pty;
-    }
-}
-
 static char *gstypes_eprint_kind(char *, char *, struct gskind *, int);
 
 char *
@@ -1322,14 +1287,6 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
     int i;
 
     switch (pty->node) {
-        case gstype_indirection: {
-            struct gstype_indirection *indir;
-
-            indir = (struct gstype_indirection *)pty;
-
-            res = gstypes_eprint_type(res, eob, indir->referent);
-            return res;
-        }
         case gstype_knprim: {
             struct gstype_knprim *prim;
 
@@ -1568,11 +1525,11 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
             global = reg;
             if (!regtypes[reg])
                 gsfatal_bad_input(p, "Register %s doesn't seem to be a type variable", p->arguments[0]->name);
-            dest = gstypes_clear_indirections(regtypes[global]);
+            dest = regtypes[global];
 
             if (!globaldefns[global])
                 gsfatal_bad_input(p, "Register %s doesn't seem to be an abstract type", p->arguments[0]->name);
-            source = gstypes_clear_indirections(globaldefns[global]);
+            source = globaldefns[global];
 
             for (i = 1; i < p->numarguments; i++) {
                 reg = gsbc_find_register(p, regs, nregs, p->arguments[i]);

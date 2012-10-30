@@ -7,7 +7,6 @@ struct gsbc_code_item_type {
 struct gstype {
     enum {
         gstype_uninitialized = -1,
-        gstype_indirection,
         gstype_abstract,
         gstype_knprim,
         gstype_unprim,
@@ -23,11 +22,6 @@ struct gstype {
         gstype_coerce_definition,
     } node;
     struct gspos pos;
-};
-
-struct gstype_indirection {
-    struct gstype e;
-    struct gstype *referent;
 };
 
 struct gstype_abstract {
@@ -130,7 +124,6 @@ char *gstypes_eprint_type(char *, char *, struct gstype *);
 
 int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 
-struct gstype *gstypes_compile_indir(struct gspos, struct gstype *);
 struct gstype *gstypes_compile_abstract(struct gspos, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_prim(struct gspos, enum gsprim_type_group, char *, char *, struct gskind *);
 struct gstype *gstype_compile_knprim(struct gspos, enum gsprim_type_group, struct gsregistered_primset *, gsinterned_string, struct gskind *);

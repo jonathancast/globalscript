@@ -176,3 +176,14 @@ if (! ./$O.test-gsexec ./test-gslib ./test-gslib/simple-unit-api.ags >[2] ./test
     exit 1
 }
 echo
+
+if (grep -n gstypes_clear_indirections *.c *.h ../../include/libglobalscript.h)
+    exit 1
+
+if (grep -n gstypes_compile_indir *.c *.h ../../include/libglobalscript.h)
+    exit 1
+
+if (grep -n gstype_indirection *.c *.h ../../include/libglobalscript.h)
+    exit 1
+
+echo
