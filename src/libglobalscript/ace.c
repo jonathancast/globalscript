@@ -65,7 +65,6 @@ ace_thread_pool_main(void *p)
                 thread = 0;
                 lock(&ace_thread_queue->lock);
                 while (i < NUM_ACE_THREADS && !thread) {
-                    gswarning("%s:%d: Trying to schedule tid %d", __FILE__, __LINE__, i);
                     thread = ace_thread_queue->threads[i];
                     if (!thread) i++;
                 }

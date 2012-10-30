@@ -109,11 +109,15 @@ api_thread_pool_main(void *arg)
             }
             api_release_thread_queue();
             if (thread) {
-                hadthread = 1;
                 gstypecode st;
                 gsvalue instr;
+                struct api_code_segment *code;
 
-                instr = thread->code->instrs[thread->code->ip].instr;
+                hadthread = 1;
+
+                code = thread->code;
+
+                instr = code->instrs[code->ip].instr;
                 st = GS_SLOW_EVALUATE(instr);
 
                 switch (st) {
@@ -122,6 +126,9 @@ api_thread_pool_main(void *arg)
                         ranthread = 1;
                         break;
                     case gstystack:
+                        break;
+                    case gstyindir:
+                        code->instrs[code->ip].instr = gsremove_indirections(instr);
                         break;
                     default:
                         api_abend_unimpl(thread, __FILE__, __LINE__, "API thread advancement (state = %d)", st);
@@ -146,8 +153,6 @@ void
 api_exec_instr(struct api_thread *thread, gsvalue instr)
 {
     struct gs_blockdesc *block;
-
-    instr = gsremove_indirections(instr);
 
     block = BLOCK_CONTAINING(instr);
 

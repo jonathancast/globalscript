@@ -28,6 +28,9 @@ gsrun(char *doc, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *
         st = GS_SLOW_EVALUATE(prog);
 
         switch (st) {
+            case gstyindir:
+                prog = gsremove_indirections(prog);
+                break;
             case gstywhnf:
                 if (gsprint(type, prog) < 0) {
                     ace_down();
@@ -35,7 +38,6 @@ gsrun(char *doc, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *
                 }
                 ace_down();
                 return;
-            
             case gstyunboxed:
                 if (gsprint_unboxed(type, prog) < 0) {
                     ace_down();
@@ -64,8 +66,6 @@ int
 gsprint(struct gstype *type, gsvalue prog)
 {
     struct gs_blockdesc *block;
-
-    prog = gsremove_indirections(prog);
 
     block = BLOCK_CONTAINING(prog);
 

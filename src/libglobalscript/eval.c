@@ -82,7 +82,7 @@ gsheapeval(gsvalue val)
             res = gstystack;
             break;
         case gsindirection:
-            res = gstywhnf;
+            res = gstyindir;
             break;
         default:
             gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(%x; type = %d)", val, type);
