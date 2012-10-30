@@ -17,7 +17,6 @@ struct gstype {
         gstype_lift,
         gstype_app,
         gstype_fun,
-        gstype_ref,
         gstype_sum,
         gstype_product,
         gstype_coerce_definition,
@@ -87,11 +86,6 @@ struct gstype_fun {
     struct gstype e;
     struct gstype *tyarg;
     struct gstype *tyres;
-};
-
-struct gstype_ref {
-    struct gstype e;
-    int referent;
 };
 
 struct gstype_constr {
