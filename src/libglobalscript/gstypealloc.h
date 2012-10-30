@@ -6,7 +6,6 @@ struct gsbc_code_item_type {
 
 struct gstype {
     enum {
-        gstype_uninitialized = -1,
         gstype_abstract,
         gstype_knprim,
         gstype_unprim,
