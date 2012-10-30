@@ -759,7 +759,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 gsfatal("%P: Too many registers", p->pos)
             ;
 
-            gsargcheck(p, 4, "type");
+            gsargcheck(p, 3, "type");
             tyreg = gsbc_find_register(p, regs, nregs, p->arguments[3]);
             type = tyregs[tyreg];
 
