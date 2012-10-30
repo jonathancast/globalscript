@@ -191,7 +191,6 @@ int gsisheap_block(struct gs_blockdesc *);
 int gsisrecord_block(struct gs_blockdesc *);
 int gsiseprim_block(struct gs_blockdesc *);
 
-
 struct gsheap_item {
     Lock lock;
     struct gspos pos;

@@ -258,7 +258,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static gsinterned_string gssymopgvar, gssymoprecord, gssymopeprim, gssymoplift, gssymopyield;
+static gsinterned_string gssymoptyarg, gssymopgvar, gssymoprecord, gssymopeprim, gssymoplift, gssymopyield;
 
 static
 int
@@ -270,6 +270,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
     struct gsparsedfile_segment *pseg;
     enum {
         phtygvars,
+        phtyargs,
         phgvars,
         phcode,
         phargs,
@@ -288,6 +289,12 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             if (phase > phtygvars)
                 gsfatal_bad_input(p, "Too late to add type global variables");
             phase = phtygvars;
+            /* type erasure */
+        } else if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
+            if (phase > phtyargs)
+                gsfatal("%P: Too late to add type arguments", p->pos)
+            ;
+            phase = phtyargs;
             /* type erasure */
         } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
             if (phase > phgvars)
@@ -387,8 +394,6 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             /* no effect on representation */
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
             size += GS_SIZE_BYTECODE(1);
-            if (p->numarguments > 1)
-                gsfatal("%s:%d: Too many arguments to .enter", p->pos.file->name, p->pos.lineno);
             goto done;
         } else if (gssymceq(p->directive, gssymopyield, gssymcodeop, ".yield")) {
             size += GS_SIZE_BYTECODE(1);
@@ -414,31 +419,6 @@ gsbc_bytecode_size_item(struct gsbc_item item)
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_bytecode_size_item (%s)", p->pos, p->directive->name);
         }
-#if 0
-    next_phase:
-        switch (phase) {
-            case phbytecodes:
-                if (gssymeq(p->directive, gssymcodeop, ".app")) {
-                    size += 1; /* Byte code */
-                    size += 1; /* n */
-                    if (p->numarguments >= 0x100)
-                        gsfatal("%s:%d: .app continuations may not have more than 0xff arguments", p->file->name, p->lineno);
-                    size += p->numarguments;
-                } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
-                    size += 1; /* Byte code */
-                    size += 1; /* Argument */
-                    if (p->numarguments > 1)
-                        gsfatal("%s:%d: Too many arguments to .enter", p->file->name, p->lineno);
-                    goto done;
-                } else {
-                    gsfatal("%s:%d: %s:%d: Size '%s' generators next", __FILE__, __LINE__, p->file->name, p->lineno, p->directive->name);
-                }
-                break;
-            default:
-                gsfatal("%s:%d: Unknown phase %d", __FILE__, __LINE__, phase);
-        }
-
-#endif
     }
 done:
 
@@ -554,6 +534,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
 {
     enum {
         rttygvars,
+        rttyargs,
         rtgvars,
         rtargs,
         rtlets,
@@ -575,6 +556,11 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 gsfatal_bad_input(p, "Too late to add type global variables")
             ;
             phase = rttygvars;
+        } else if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
+            if (phase > rttyargs)
+                gsfatal("%P: Too late to add type global variables", p->pos)
+            ;
+            phase = rttyargs;
         } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
             if (phase > rtgvars)
                 gsfatal_bad_input(p, "Too late to add global variables")

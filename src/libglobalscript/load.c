@@ -456,7 +456,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtygvar, gssymgvar, gssymarg, gssymrecord, gssymeprim, gssymapp, gssymenter, gssymyield, gssymundef;
+    static gsinterned_string gssymtygvar, gssymtyarg, gssymgvar, gssymarg, gssymrecord, gssymeprim, gssymapp, gssymenter, gssymyield, gssymundef;
 
     struct gsparsedline *parsedline;
     int i;
@@ -473,7 +473,17 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             else
                 gsfatal("%s:%d: Missing label on .tygvar op", filename, *plineno);
             if (n > 2)
-                gsfatal("%s:%s: Too many arguments to .tygvar op", filename, *plineno);
+                gsfatal("%s:%d: Too many arguments to .tygvar op", filename, *plineno);
+        } else if (gssymceq(parsedline->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
+            if (*fields[0])
+                parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+            else
+                gsfatal("%s:%d: Missing label on .tyarg op", filename, *plineno);
+            if (n < 3)
+                gsfatal("%s:%d: Missing kind on .tyarg", filename, *plineno);
+            parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
+            if (n > 4)
+                gsfatal("%s:%d: Too many arguments to .tyarg", filename, *plineno);
         } else if (gssymceq(parsedline->directive, gssymgvar, gssymcodeop, ".gvar")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymdatalable, fields[0]);
@@ -554,8 +564,9 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             if (n < 3)
                 gsfatal("%s:%d: Missing argument to .enter", filename, *plineno);
             parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
-            if (n >= 4)
-                gsfatal("%s:%d: Un-recognized arguments to .enter; I only know the code label to enter", filename, *plineno);
+            for (i = 3; i < n; i++)
+                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+            ;
             return 0;
         } else if (gssymceq(parsedline->directive, gssymyield, gssymcodeop, ".yield")) {
             if (*fields[0])

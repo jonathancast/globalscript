@@ -46,6 +46,8 @@ ace_init()
     return 0;
 }
 
+static void gsupdate_heap(struct gsheap_item *, gsvalue);
+
 static
 void
 ace_thread_pool_main(void *p)
@@ -75,7 +77,6 @@ ace_thread_pool_main(void *p)
 
                     lock(&thread->lock);
                     ip = thread->ip;
-                    gswarning("%s:%d: Trace %P", __FILE__, __LINE__, ip->pos);
                     switch (ip->instr) {
                         case gsbc_op_record:
                             {
@@ -166,33 +167,6 @@ ace_thread_pool_main(void *p)
                             }
                         eprim_failed:
                             break;
-                        case gsbc_op_yield:
-                            {
-                                struct gsheap_item *hp;
-                                struct gsindirection *in;
-
-                                hp = (struct gsheap_item *)thread->base;
-
-                                if (ip->args[0] >= thread->nregs) {
-                                    lock(&hp->lock);
-                                    gspoison(hp, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
-                                    unlock(&hp->lock);
-                                    break;
-                                }
-
-                                lock(&hp->lock);
-
-                                hp->type = gsindirection;
-                                in = (struct gsindirection *)hp;
-                                in->target = thread->regs[ip->args[0]];
-
-                                unlock(&hp->lock);
-
-                                lock(&ace_thread_queue->lock);
-                                ace_thread_queue->threads[i] = 0;
-                                unlock(&ace_thread_queue->lock);
-                            }
-                            break;
                         case gsbc_op_undef:
                             {
                                 struct gsheap_item *hp;
@@ -211,6 +185,80 @@ ace_thread_pool_main(void *p)
                                 in = (struct gsindirection *)hp;
                                 in->target = (gsvalue)err;
 
+                                unlock(&hp->lock);
+
+                                lock(&ace_thread_queue->lock);
+                                ace_thread_queue->threads[i] = 0;
+                                unlock(&ace_thread_queue->lock);
+                            }
+                            break;
+                        case gsbc_op_enter:
+                            {
+                                struct gsheap_item *hp;
+                                gstypecode st;
+                                gsvalue prog;
+
+                                hp = (struct gsheap_item *)thread->base;
+
+                                if (ip->args[0] >= thread->nregs) {
+                                    lock(&hp->lock);
+                                    gspoison(hp, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
+                                    unlock(&hp->lock);
+                                    ace_thread_queue->threads[i] = 0;
+                                    break;
+                                }
+
+                                prog = thread->regs[ip->args[0]];
+                                st = GS_SLOW_EVALUATE(prog);
+
+                                gswarning("%s:%d: Trace .enter");
+                                switch (st) {
+                                    case gstystack:
+                                        break;
+                                    case gstyindir:
+                                        lock(&hp->lock);
+                                        gsupdate_heap(hp, gsremove_indirections(prog));
+                                        unlock(&hp->lock);
+
+                                        lock(&ace_thread_queue->lock);
+                                        ace_thread_queue->threads[i] = 0;
+                                        unlock(&ace_thread_queue->lock);
+
+                                        break;
+                                    default:
+                                        lock(&hp->lock);
+                                        gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
+                                        unlock(&hp->lock);
+
+                                        lock(&ace_thread_queue->lock);
+                                        ace_thread_queue->threads[i] = 0;
+                                        unlock(&ace_thread_queue->lock);
+
+                                        break;
+                                }
+                            }
+                            break;
+                        case gsbc_op_yield:
+                            {
+                                struct gsheap_item *hp;
+                                struct gsindirection *in;
+
+                                hp = (struct gsheap_item *)thread->base;
+
+                                if (ip->args[0] >= thread->nregs) {
+                                    lock(&hp->lock);
+                                    gspoison(hp, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
+                                    unlock(&hp->lock);
+
+                                    lock(&ace_thread_queue->lock);
+                                    ace_thread_queue->threads[i] = 0;
+                                    unlock(&ace_thread_queue->lock);
+
+                                    break;
+                                }
+
+                                lock(&hp->lock);
+                                gsupdate_heap(hp, thread->regs[ip->args[0]]);
                                 unlock(&hp->lock);
 
                                 lock(&ace_thread_queue->lock);
@@ -245,6 +293,17 @@ ace_thread_pool_main(void *p)
     }
 
     gswarning("%s:%d: ace_thread_pool_main terminating", __FILE__, __LINE__);
+}
+
+static
+void
+gsupdate_heap(struct gsheap_item *hp, gsvalue v)
+{
+    struct gsindirection *in;
+
+    hp->type = gsindirection;
+    in = (struct gsindirection *)hp;
+    in->target = v;
 }
 
 void ace_up()
@@ -293,7 +352,6 @@ ace_start_evaluation(gsvalue val)
     if ((uintptr)ip % sizeof(gsvalue*))
         ip = (uchar*)ip + sizeof(gsvalue*) - (uintptr)ip % sizeof(gsvalue*)
     ;
-    gswarning("%s:%d: %P: code->numglobals = %d", __FILE__, __LINE__, code->pos, code->numglobals);
     for (i = 0; i < code->numglobals; i++) {
         if (thread->nregs >= MAX_NUM_REGISTERS) {
             gspoison_unimpl(hp, __FILE__, __LINE__, code->pos, "Too many registers");

@@ -231,7 +231,6 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         return res;
     } else if (gssymceq(p->directive, gssymtyforall, gssymtypeop, ".tyforall")) {
         struct gskind *kind;
-        struct gstype_forall *forall;
 
         if (cl->nregs >= MAX_REGISTERS)
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
@@ -245,14 +244,9 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         kind = gskind_compile(p->pos, p->arguments[0]);
         cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos, p->label, kind);
         cl->nregs++;
-        res = gstype_alloc(sizeof(struct gstype_forall));
-        forall = (struct gstype_forall*)res;
-        res->node = gstype_forall;
-        res->pos = p->pos;
-        forall->var = p->label;
-        forall->kind = kind;
-        forall->body = gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
-        return res;
+        return gstypes_compile_forall(p->pos, p->label, kind,
+            gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p))
+        );
     } else if (gssymceq(p->directive, gssymtylet, gssymtypeop, ".tylet")) {
         struct gstype *reg;
 
@@ -384,6 +378,24 @@ gstypes_compile_lambda(struct gspos pos, gsinterned_string var, struct gskind *k
     lambda->var = var;
     lambda->kind = kind;
     lambda->body = body;
+
+    return res;
+}
+
+struct gstype *
+gstypes_compile_forall(struct gspos pos, gsinterned_string var, struct gskind *kind, struct gstype *body)
+{
+    struct gstype *res;
+    struct gstype_forall *forall;
+
+    res = gstype_alloc(sizeof(struct gstype_forall));
+    forall = (struct gstype_forall*)res;
+
+    res->node = gstype_forall;
+    res->pos = pos;
+    forall->var = var;
+    forall->kind = kind;
+    forall->body = body;
 
     return res;
 }

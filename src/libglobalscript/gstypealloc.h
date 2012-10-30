@@ -129,6 +129,7 @@ struct gstype *gstype_compile_knprim(struct gspos, enum gsprim_type_group, struc
 struct gstype *gstype_compile_unprim(struct gspos, enum gsprim_type_group, gsinterned_string, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_type_var(struct gspos, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_lambda(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
+struct gstype *gstypes_compile_forall(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
 struct gstype *gstypes_compile_lift(struct gspos, struct gstype *);
 struct gstype *gstypes_compile_sum(struct gspos, int, ...);
 struct gstype *gstypes_compile_sumv(struct gspos, int, struct gstype_constr *);
