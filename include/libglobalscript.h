@@ -240,6 +240,7 @@ struct gserror {
 struct gsrecord {
     struct gspos pos;
     int numfields;
+    gsvalue fields[];
 };
 
 struct gseprim {

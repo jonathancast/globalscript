@@ -2,6 +2,9 @@
 #include <libc.h>
 #include <libglobalscript.h>
 
+#include "gsinputfile.h"
+#include "gstypealloc.h"
+
 void
 p9main(int argc, char **argv)
 {
@@ -13,7 +16,7 @@ gsadd_client_prim_sets()
 {
 }
 
-static int gsprint(gsvalue prog);
+static int gsprint(struct gstype *type, gsvalue prog);
 static int gsprint_unboxed(struct gstype *type, gsvalue prog);
 
 void
@@ -26,7 +29,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *
 
         switch (st) {
             case gstywhnf:
-                if (gsprint(prog) < 0) {
+                if (gsprint(type, prog) < 0) {
                     ace_down();
                     exits("error");
                 }
@@ -58,7 +61,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *
 
 static
 int
-gsprint(gsvalue prog)
+gsprint(struct gstype *type, gsvalue prog)
 {
     struct gs_blockdesc *block;
 
@@ -111,12 +114,27 @@ gsprint(gsvalue prog)
         }
     } else if (gsisrecord_block(block)) {
         struct gsrecord *record;
+        struct gstype_product *product;
         int i;
 
+        product = 0;
+        if (type->node == gstype_lift) {
+            struct gstype_lift *lift = (struct gstype_lift *)type;
+
+            type = lift->arg;
+        }
+        if (type->node == gstype_product) {
+            product = (struct gstype_product *)type;
+        } else {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Print records of type %d", type->pos, type->node);
+        }
         record = (struct gsrecord *)prog;
         print("〈");
         for (i = 0; i < record->numfields; i++) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsprint(field)", record->pos);
+            if (i == 0)
+                print(" ")
+            ;
+            print("%s = <expr>; ", product->fields[i].name->name);
         }
         print("〉\n");
         return 0;

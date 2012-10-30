@@ -518,7 +518,7 @@ gstype_compile_productv(struct gspos pos, int nfields, struct gstype_field *fiel
     res->pos = pos;
     product->numfields = nfields;
     for (i = 0; i < nfields; i++) {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: set fields", pos);
+        product->fields[i] = fields[i];
     }
 
     return res;

@@ -484,12 +484,23 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
 {
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
         struct gsrecord *record;
+        int j;
 
         record = (struct gsrecord *)plocs->records[i];
         record->pos = p->pos;
         record->numfields = p->numarguments / 2;
-        if (p->numarguments > 0) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: record fields", p->pos);
+
+        for (j = 0; j < p->numarguments; j += 2) {
+            if (j > 0 && strcmp(p->arguments[j - 2]->name, p->arguments[j]->name) > 0)
+                gsfatal("%P: field %s should come after %s", p->pos, p->arguments[j - 2]->name, p->arguments[j]->name)
+            ;
+            if (j > 0 && strcmp(p->arguments[j - 2]->name, p->arguments[j]->name) == 0)
+                gsfatal("%P: duplicated field %s", p->pos, p->arguments[j - 2]->name)
+            ;
+            record->fields[j / 2] = gssymtable_get_data(symtable, p->arguments[j + 1]);
+            if (!record->fields[j / 2])
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: can't find data value %s", p->pos, p->arguments[j + 1]->name)
+            ;
         }
     } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
         ;

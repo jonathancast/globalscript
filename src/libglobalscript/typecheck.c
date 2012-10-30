@@ -501,13 +501,23 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
     if (gssymceq(pdata->directive, gssymrecord, gssymdatadirective, ".record")) {
         struct gstype *type;
         int j;
-        struct gstype_field *fields;
+        struct gstype_field fields[MAX_NUM_REGISTERS];
+        int numfields;
 
+        numfields = 0;
         for (j = 0; j < pdata->numarguments; j += 2) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_type_check_data_item(.record fields)", pdata->pos);
+            if (numfields >= MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many fields (max 0x%x)", pdata->pos, MAX_NUM_REGISTERS)
+            ;
+            fields[numfields].name = pdata->arguments[j];
+            fields[numfields].type = gssymtable_get_data_type(symtable, pdata->arguments[j + 1]);
+            if (!fields[numfields].type)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Can't find type of field value %s", pdata->pos, pdata->arguments[j + 1]->name)
+            ;
+            numfields++;
         }
 
-        type = gstype_compile_productv(pdata->pos, 0, fields);
+        type = gstype_compile_productv(pdata->pos, numfields, fields);
 
         if (pdata->label)
             gssymtable_set_data_type(symtable, pdata->label, type)

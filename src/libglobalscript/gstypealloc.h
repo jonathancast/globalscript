@@ -107,7 +107,7 @@ struct gstype_sum {
 
 struct gstype_field {
     gsinterned_string name;
-    int type;
+    struct gstype *type;
 };
 
 struct gstype_product {

@@ -1,0 +1,8 @@
+	.document
+
+	.data
+
+	.record	bar	_y	foo	_x
+_x	.rune	x
+_y	.rune	y
+
