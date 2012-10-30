@@ -160,7 +160,7 @@ gsargcheck(struct gsparsedline *inpline, ulong argnum, char *fmt, ...)
     vseprint(buf, buf+sizeof buf, fmt, arg);
     va_end(arg);
 
-    gsfatal("%s:%d: Missing argument %s to %s", inpline->pos.file->name, inpline->pos.lineno, buf, inpline->directive->name);
+    gsfatal("%P: Missing argument %s to %s", inpline->pos, buf, inpline->directive->name);
 }
 
 void
