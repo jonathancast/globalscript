@@ -1,0 +1,19 @@
+	.document
+
+	.data
+
+	.closure	_entry.c
+_real.entry	.closure	_real.entry.c
+
+	.code
+
+_entry.c	.expr
+_empty.record	.tygvar
+_real.entry	.gvar
+	.yield	_real.entry	_empty.record
+
+_real.entry.c	.expr
+rune.t	.tygvar
+α	.tyarg	*
+x	.arg	rune.t
+	.undef	α

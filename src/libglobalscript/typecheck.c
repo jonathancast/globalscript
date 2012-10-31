@@ -904,6 +904,15 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             gsargcheck(p, 0, "var");
             reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
             calculated_type = regtypes[reg];
+            for (i = 1; i < p->numarguments; i++) {
+                int regarg;
+
+                regarg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
+                if (!tyregs[regarg])
+                    gsfatal("%P: %s doesn't seem to be a type register", p->pos, p->arguments[i]->name)
+                ;
+                calculated_type = gstype_instantiate(p->pos, calculated_type, tyregs[regarg]);
+            }
 
             kind = gstypes_calculate_kind(calculated_type);
             gstypes_kind_check(p->pos, kind, gskind_unlifted_kind());

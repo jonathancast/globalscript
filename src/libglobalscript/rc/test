@@ -82,6 +82,7 @@ diff ./test-results/undef-expr.ags-actual ./test-results/undef-expr.ags-expected
 echo
 
 ok_diff_fail '-- enter undefined polymorphic value --' ./$O.test-gsi enter-polymorphic-undef.ags
+ok_diff '-- yield polymorphic empty lambda --' ./$O.test-gsi yield-polymorphic-empty-lambda.ags
 
 echo '-- lambdas with undefined bodies --'
 if (! ./$O.test-gsi ./test-gslib ./test-gslib/empty-lambda.ags > ./test-results/empty-lambda.ags-actual) {

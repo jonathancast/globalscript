@@ -585,8 +585,9 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             if (n < 3)
                 gsfatal("%s:%d: Missing argument to .yield", filename, *plineno);
             parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
-            if (n >= 4)
-                gsfatal("%s:%d: Un-recognized arguments to .yield; I only know the data label to return", filename, *plineno);
+            for (i = 3; i < n; i++)
+                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+            ;
             return 0;
         } else if (gssymceq(parsedline->directive, gssymundef, gssymcodeop, ".undef")) {
             if (*fields[0])

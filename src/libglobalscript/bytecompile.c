@@ -400,8 +400,6 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             goto done;
         } else if (gssymceq(p->directive, gssymopyield, gssymcodeop, ".yield")) {
             size += GS_SIZE_BYTECODE(1);
-            if (p->numarguments > 1)
-                gsfatal("%P: Too many arguments to .yield", p->pos);
             goto done;
         } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
             int nfvs;
