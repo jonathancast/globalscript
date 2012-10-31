@@ -652,7 +652,7 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtygvar, gssymtyarg, gssymgvar, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymenter, gssymundef;
+    static gsinterned_string gssymtygvar, gssymtyarg, gssymgvar, gssymarg, gssymlarg, gssymrecord, gssymeprim, gssymlift, gssymenter, gssymundef;
 
     enum {
         rttygvar,
@@ -678,6 +678,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     int nargs;
     struct gstype *argtypes[MAX_NUM_REGISTERS];
     struct gsparsedline *arglines[MAX_NUM_REGISTERS];
+    int arglifted[MAX_NUM_REGISTERS];
 
     int nconts;
     struct gsparsedline *contlines[MAX_NUM_REGISTERS];
@@ -743,7 +744,10 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 gsfatal_bad_input(p, "Couldn't find type for global %s", p->label->name)
             ;
             nregs++;
-        } else if (gssymceq(p->directive, gssymarg, gssymcodeop, ".arg")) {
+        } else if (
+            gssymceq(p->directive, gssymarg, gssymcodeop, ".arg")
+            || gssymceq(p->directive, gssymlarg, gssymcodeop, ".larg")
+        ) {
             int reg;
             struct gstype *argtype;
 
@@ -768,6 +772,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
 
             argtypes[nargs] = argtype;
             arglines[nargs] = p;
+            arglifted[nargs] = p->directive == gssymlarg;
             nargs++;
         } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
             struct gstype_field fields[MAX_NUM_REGISTERS];
@@ -955,6 +960,9 @@ have_type:
         p = arglines[nargs];
 
         calculated_type = gstypes_compile_fun(p->pos, ty, calculated_type);
+        if (arglifted[nargs])
+            calculated_type = gstypes_compile_lift(p->pos, calculated_type)
+        ;
     }
 
     while (ntyargs--) {
@@ -1299,6 +1307,18 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
                 return -1;
             return 0;
         }
+        case gstype_fun: {
+            struct gstype_fun *pactual_fun, *pexpected_fun;
+
+            pactual_fun = (struct gstype_fun *)pactual;
+            pexpected_fun = (struct gstype_fun *)pexpected;
+
+            if (gstypes_type_check(pos, pactual_fun->tyarg, pexpected_fun->tyarg, err, eerr) < 0)
+                return -1;
+            if (gstypes_type_check(pos, pactual_fun->tyres, pexpected_fun->tyres, err, eerr) < 0)
+                return -1;
+            return 0;
+        }
         case gstype_sum: {
             struct gstype_sum *pactual_sum, *pexpected_sum;
 
@@ -1351,6 +1371,9 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             prim = (struct gstype_knprim *)pty;
 
             switch (prim->primtypegroup) {
+                case gsprim_type_defined:
+                    res = seprint(res, eob, "\"definedprim ");
+                    break;
                 case gsprim_type_api:
                     res = seprint(res, eob, "\"apiprim ");
                     break;

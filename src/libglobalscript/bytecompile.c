@@ -258,7 +258,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static gsinterned_string gssymoptyarg, gssymopgvar, gssymoprecord, gssymopeprim, gssymoplift, gssymopyield;
+static gsinterned_string gssymoptyarg, gssymopgvar, gssymoparg, gssymoplarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopyield;
 
 static
 int
@@ -330,7 +330,10 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             ;
             size += sizeof(struct gsbco *);
             ncodes++;
-        } else if (gssymeq(p->directive, gssymcodeop, ".arg")) {
+        } else if (
+            gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
+            || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
+        ) {
             if (phase > phargs)
                 gsfatal_bad_input(p, "Too late to add arguments")
             ;
@@ -573,7 +576,10 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             *pglobal++ = gssymtable_get_data(symtable, p->label);
             nregs++;
             nglobals++;
-        } else if (gssymeq(p->directive, gssymcodeop, ".arg")) {
+        } else if (
+            gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
+            || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
+        ) {
             if (phase > rtargs)
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
             ;
