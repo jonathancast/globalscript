@@ -47,6 +47,8 @@ ace_init()
 }
 
 static void gsupdate_heap(struct gsheap_item *, gsvalue);
+
+static void ace_error_thread(struct ace_thread *, struct gserror *);
 static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
 static void ace_poison_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 static void ace_return(struct ace_thread *, gsvalue);
@@ -155,7 +157,7 @@ ace_thread_pool_main(void *p)
                                 err->pos = ip->pos;
                                 err->type = gserror_undefined;
 
-                                ace_return(thread, (gsvalue)err);
+                                ace_error_thread(thread, err);
                             }
                             break;
                         case gsbc_op_enter:
@@ -216,20 +218,14 @@ static void ace_remove_thread(struct ace_thread *);
 
 static
 void
-ace_poison_thread(struct ace_thread *thread, struct gspos srcpos, char *fmt, ...)
+ace_error_thread(struct ace_thread *thread, struct gserror *err)
 {
     struct gsheap_item *hp;
-    char buf[0x100];
-    va_list arg;
-
-    va_start(arg, fmt);
-    vseprint(buf, buf + sizeof(buf), fmt, arg);
-    va_end(arg);
 
     hp = (struct gsheap_item *)thread->base;
 
     lock(&hp->lock);
-    gspoison(hp, srcpos, "%s", buf);
+    gsupdate_heap(hp, (gsvalue)err);
     unlock(&hp->lock);
 
     ace_remove_thread(thread);
@@ -237,9 +233,8 @@ ace_poison_thread(struct ace_thread *thread, struct gspos srcpos, char *fmt, ...
 
 static
 void
-ace_poison_thread_unimpl(struct ace_thread *thread, char *file, int lineno, struct gspos srcpos, char *fmt, ...)
+ace_poison_thread(struct ace_thread *thread, struct gspos srcpos, char *fmt, ...)
 {
-    struct gsheap_item *hp;
     char buf[0x100];
     va_list arg;
 
@@ -247,13 +242,22 @@ ace_poison_thread_unimpl(struct ace_thread *thread, char *file, int lineno, stru
     vseprint(buf, buf + sizeof(buf), fmt, arg);
     va_end(arg);
 
-    hp = (struct gsheap_item *)thread->base;
+    ace_error_thread(thread, gserror(srcpos, "%s", buf));
+}
 
-    lock(&hp->lock);
-    gspoison_unimpl(hp, file, lineno, srcpos, "%s", buf);
-    unlock(&hp->lock);
+static
+void
+ace_poison_thread_unimpl(struct ace_thread *thread, char *file, int lineno, struct gspos srcpos, char *fmt, ...)
+{
+    char buf[0x100];
+    va_list arg;
+    struct gserror *err;
 
-    ace_remove_thread(thread);
+    va_start(arg, fmt);
+    vseprint(buf, buf + sizeof(buf), fmt, arg);
+    va_end(arg);
+
+    ace_error_thread(thread, gserror_unimpl(file, lineno, srcpos, "%s", buf));
 }
 
 static
