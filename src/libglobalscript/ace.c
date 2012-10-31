@@ -47,6 +47,9 @@ ace_init()
 }
 
 static void gsupdate_heap(struct gsheap_item *, gsvalue);
+static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
+static void ace_poison_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
+static void ace_return(struct ace_thread *, gsvalue);
 
 static
 void
@@ -80,25 +83,18 @@ ace_thread_pool_main(void *p)
                     switch (ip->instr) {
                         case gsbc_op_record:
                             {
-                                struct gsheap_item *hp;
                                 struct gsrecord *record;
-
-                                hp = (struct gsheap_item *)thread->base;
 
                                 record = gsreserverecords(sizeof(*record) + ip->args[0] * sizeof(gsvalue));
                                 record->pos = ip->pos;
                                 record->numfields = ip->args[0];
                                 for (j = 0; j < ip->args[0]; j++) {
-                                    lock(&hp->lock);
-                                    gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, ".record fields");
-                                    unlock(&hp->lock);
+                                    ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".record fields");
                                     break;
                                 }
 
                                 if (thread->nregs >= MAX_NUM_REGISTERS) {
-                                    lock(&hp->lock);
-                                    gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "Too many registers");
-                                    unlock(&hp->lock);
+                                    ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
                                     break;
                                 }
                                 thread->regs[thread->nregs] = (gsvalue)record;
@@ -109,19 +105,14 @@ ace_thread_pool_main(void *p)
                             break;
                         case gsbc_op_unknown_eprim:
                             {
-                                struct gsheap_item *hp;
                                 struct gseprim *prim;
-
-                                hp = (struct gsheap_item *)thread->base;
 
                                 prim = gsreserveeprims(sizeof(*prim));
                                 prim->pos = ip->pos;
                                 prim->index = -1;
 
                                 if (thread->nregs >= MAX_NUM_REGISTERS) {
-                                    lock(&hp->lock);
-                                    gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "Too many registers");
-                                    unlock(&hp->lock);
+                                    ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
                                     break;
                                 }
                                 thread->regs[thread->nregs] = (gsvalue)prim;
@@ -132,32 +123,21 @@ ace_thread_pool_main(void *p)
                             break;
                         case gsbc_op_eprim:
                             {
-                                struct gsheap_item *hp;
                                 struct gseprim *prim;
 
-                                hp = (struct gsheap_item *)thread->base;
-
                                 prim = gsreserveeprims(sizeof(*prim) + ip->args[1] * sizeof(gsvalue));
-                                gswarning("%s:%d: Got prim", __FILE__, __LINE__);
                                 prim->pos = ip->pos;
                                 prim->index = ip->args[0];
-                                gswarning("%s:%d: Prim %d has %d arguments", __FILE__, __LINE__, (int)ip->args[0], (int)ip->args[1]);
                                 for (i = 0; i < ip->args[1]; i++) {
-                                    gswarning("%s:%d: Copying argument %d", __FILE__, __LINE__, i);
                                     if (ip->args[2 + i] >= thread->nregs) {
-                                        lock(&hp->lock);
-                                        gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
-                                        unlock(&hp->lock);
+                                        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
                                         goto eprim_failed;
                                     }
                                     prim->arguments[i] = thread->regs[ip->args[2 + 1]];
                                 }
-                                gswarning("%s:%d: Copied arguments", __FILE__, __LINE__);
 
                                 if (thread->nregs >= MAX_NUM_REGISTERS) {
-                                    lock(&hp->lock);
-                                    gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "Too many registers");
-                                    unlock(&hp->lock);
+                                    ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
                                     break;
                                 }
                                 thread->regs[thread->nregs] = (gsvalue)prim;
@@ -169,116 +149,53 @@ ace_thread_pool_main(void *p)
                             break;
                         case gsbc_op_undef:
                             {
-                                struct gsheap_item *hp;
                                 struct gserror *err;
-                                struct gsindirection *in;
-
-                                hp = (struct gsheap_item *)thread->base;
 
                                 err = gsreserveerrors(sizeof(*err));
                                 err->pos = ip->pos;
                                 err->type = gserror_undefined;
 
-                                lock(&hp->lock);
-
-                                hp->type = gsindirection;
-                                in = (struct gsindirection *)hp;
-                                in->target = (gsvalue)err;
-
-                                unlock(&hp->lock);
-
-                                lock(&ace_thread_queue->lock);
-                                ace_thread_queue->threads[i] = 0;
-                                unlock(&ace_thread_queue->lock);
+                                ace_return(thread, (gsvalue)err);
                             }
                             break;
                         case gsbc_op_enter:
                             {
-                                struct gsheap_item *hp;
                                 gstypecode st;
                                 gsvalue prog;
 
-                                hp = (struct gsheap_item *)thread->base;
-
                                 if (ip->args[0] >= thread->nregs) {
-                                    lock(&hp->lock);
-                                    gspoison(hp, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
-                                    unlock(&hp->lock);
-                                    ace_thread_queue->threads[i] = 0;
+                                    ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
                                     break;
                                 }
 
                                 prog = thread->regs[ip->args[0]];
                                 st = GS_SLOW_EVALUATE(prog);
 
-                                gswarning("%s:%d: Trace .enter");
                                 switch (st) {
                                     case gstystack:
                                         break;
                                     case gstyindir:
-                                        lock(&hp->lock);
-                                        gsupdate_heap(hp, gsremove_indirections(prog));
-                                        unlock(&hp->lock);
-
-                                        lock(&ace_thread_queue->lock);
-                                        ace_thread_queue->threads[i] = 0;
-                                        unlock(&ace_thread_queue->lock);
-
+                                        ace_return(thread, gsremove_indirections(prog));
                                         break;
                                     default:
-                                        lock(&hp->lock);
-                                        gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
-                                        unlock(&hp->lock);
-
-                                        lock(&ace_thread_queue->lock);
-                                        ace_thread_queue->threads[i] = 0;
-                                        unlock(&ace_thread_queue->lock);
-
+                                        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
                                         break;
                                 }
                             }
                             break;
                         case gsbc_op_yield:
                             {
-                                struct gsheap_item *hp;
-                                struct gsindirection *in;
-
-                                hp = (struct gsheap_item *)thread->base;
-
                                 if (ip->args[0] >= thread->nregs) {
-                                    lock(&hp->lock);
-                                    gspoison(hp, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
-                                    unlock(&hp->lock);
-
-                                    lock(&ace_thread_queue->lock);
-                                    ace_thread_queue->threads[i] = 0;
-                                    unlock(&ace_thread_queue->lock);
-
+                                    ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
                                     break;
                                 }
 
-                                lock(&hp->lock);
-                                gsupdate_heap(hp, thread->regs[ip->args[0]]);
-                                unlock(&hp->lock);
-
-                                lock(&ace_thread_queue->lock);
-                                ace_thread_queue->threads[i] = 0;
-                                unlock(&ace_thread_queue->lock);
+                                ace_return(thread, thread->regs[ip->args[0]]);
                             }
                             break;
                         default:
                             {
-                                struct gsheap_item *hp;
-
-                                hp = (struct gsheap_item *)thread->base;
-
-                                lock(&hp->lock);
-                                gspoison_unimpl(hp, __FILE__, __LINE__, ip->pos, "run instruction %d", ip->instr);
-                                unlock(&hp->lock);
-
-                                lock(&ace_thread_queue->lock);
-                                ace_thread_queue->threads[i] = 0;
-                                unlock(&ace_thread_queue->lock);
+                                ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "run instruction %d", ip->instr);
                             }
                             break;
                     }
@@ -293,6 +210,69 @@ ace_thread_pool_main(void *p)
     }
 
     gswarning("%s:%d: ace_thread_pool_main terminating", __FILE__, __LINE__);
+}
+
+static
+void
+ace_poison_thread(struct ace_thread *thread, struct gspos srcpos, char *fmt, ...)
+{
+    struct gsheap_item *hp;
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, fmt);
+    vseprint(buf, buf + sizeof(buf), fmt, arg);
+    va_end(arg);
+
+    hp = (struct gsheap_item *)thread->base;
+
+    lock(&hp->lock);
+    gspoison(hp, srcpos, "%s", buf);
+    unlock(&hp->lock);
+
+    lock(&ace_thread_queue->lock);
+    ace_thread_queue->threads[thread->tid] = 0;
+    unlock(&ace_thread_queue->lock);
+}
+
+static
+void
+ace_poison_thread_unimpl(struct ace_thread *thread, char *file, int lineno, struct gspos srcpos, char *fmt, ...)
+{
+    struct gsheap_item *hp;
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, fmt);
+    vseprint(buf, buf + sizeof(buf), fmt, arg);
+    va_end(arg);
+
+    hp = (struct gsheap_item *)thread->base;
+
+    lock(&hp->lock);
+    gspoison_unimpl(hp, file, lineno, srcpos, "%s", buf);
+    unlock(&hp->lock);
+
+    lock(&ace_thread_queue->lock);
+    ace_thread_queue->threads[thread->tid] = 0;
+    unlock(&ace_thread_queue->lock);
+}
+
+static
+void
+ace_return(struct ace_thread *thread, gsvalue v)
+{
+    struct gsheap_item *hp;
+
+    hp = (struct gsheap_item *)thread->base;
+
+    lock(&hp->lock);
+    gsupdate_heap(hp, v);
+    unlock(&hp->lock);
+
+    lock(&ace_thread_queue->lock);
+    ace_thread_queue->threads[thread->tid] = 0;
+    unlock(&ace_thread_queue->lock);
 }
 
 static
@@ -377,6 +357,7 @@ ace_start_evaluation(gsvalue val)
         if (!ace_thread_queue->threads[i]) {
             ace_thread_queue->threads[i] = thread;
             unlock(&ace_thread_queue->lock);
+            thread->tid = i;
             return gstystack;
         }
     }

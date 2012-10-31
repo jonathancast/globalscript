@@ -19,6 +19,7 @@ struct ace_thread *ace_thread_alloc(void);
 
 struct ace_thread {
     Lock lock;
+    int tid;
     gsvalue base;
     struct gsbc *ip;
     int nregs;
