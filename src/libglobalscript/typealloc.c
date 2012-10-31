@@ -57,6 +57,8 @@ static
 void
 gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, int *compiling, int i, int n)
 {
+    static gsinterned_string gssymtyelimprim;
+
     struct gsbc_item item;
     struct gsparsedfile_segment *pseg;
     struct gsparsedline *ptype;
@@ -99,6 +101,20 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             kind = gskind_compile(ptype->pos, ptype->arguments[2]);
             types[i] = gstype_compile_unprim(ptype->pos, gsprim_type_api, ptype->arguments[0], ptype->arguments[1], kind);
         }
+    } else if (gssymceq(ptype->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")) {
+        struct gsregistered_primset *prims;
+
+        if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
+            struct gskind *kind;
+
+            kind = gskind_compile(ptype->pos, ptype->arguments[2]);
+            types[i] = gstype_compile_knprim(ptype->pos, gsprim_type_elim, prims, ptype->arguments[1], kind);
+        } else {
+            struct gskind *kind;
+
+            kind = gskind_compile(ptype->pos, ptype->arguments[2]);
+            types[i] = gstype_compile_unprim(ptype->pos, gsprim_type_elim, ptype->arguments[0], ptype->arguments[1], kind);
+        }
     } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
         types[i] = gstype_compile_coercion_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), items, types, compiling, n);
     } else {
@@ -112,7 +128,7 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
 void
 gstypes_compile_type_definitions(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **defns, int n)
 {
-    static gsinterned_string gssymtyabstract, gssymtydefinedprim, gssymtyapiprim, gssymtyexpr;
+    static gsinterned_string gssymtyabstract, gssymtydefinedprim, gssymtyapiprim, gssymtyelimprim, gssymtyexpr;
     int i;
 
     for (i = 0; i < n; i++) {
@@ -133,6 +149,7 @@ gstypes_compile_type_definitions(struct gsfile_symtable *symtable, struct gsbc_i
                     } else if (
                         gssymceq(ptype->directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")
                         || gssymceq(ptype->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
+                        || gssymceq(ptype->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")
                         || gssymceq(ptype->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")
                     ) {
                         continue;

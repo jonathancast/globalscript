@@ -422,6 +422,26 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
         if (ptype->numarguments > 3)
             gsfatal("%s:%d: Too many arguments to .tyapiprim", ptype->pos.file->name, ptype->pos.lineno);
         return;
+    } else if (gssymeq(directive, gssymtypedirective, ".tyelimprim")) {
+        struct gsregistered_primset *prims;
+
+        if (ptype->numarguments < 1)
+            gsfatal("%P: Missing primitive set name on .tyelimprim", ptype->pos);
+
+        prims = gsprims_lookup_prim_set(ptype->arguments[0]->name);
+
+        if (ptype->numarguments < 2)
+            gsfatal("%P: Missing primitive type name on .tyelimprim", ptype->pos);
+
+        if (prims && !gsprims_lookup_type(prims, ptype->arguments[1]->name))
+            gsfatal("%P: Primitive set %s does not in fact contain a type %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name)
+        ;
+
+        if (ptype->numarguments < 3)
+            gsfatal("%P: Missing kind on .tyelimprim", ptype->pos);
+        if (ptype->numarguments > 3)
+            gsfatal("%P: Too many arguments to .tyelimprim", ptype->pos);
+        return;
     } else {
         gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, ptype->pos.file->name, ptype->pos.lineno, ptype->directive->name);
     }

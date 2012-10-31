@@ -12,6 +12,8 @@
 void
 gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gskind **kinds, int n)
 {
+    static gsinterned_string gssymtyelimprim;
+
     int i;
 
     for (i = 0; i < n; i++) {
@@ -50,8 +52,14 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
                         kinds[i] = gskind_compile(ptype->pos, ptype->arguments[2]);
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
+                    } else if (gssymceq(ptype->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")) {
+                        gsargcheck(ptype, 2, "Kind");
+
+                        kinds[i] = gskind_compile(ptype->pos, ptype->arguments[2]);
+
+                        gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
                     } else {
-                        gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(%s) next", __FILE__, __LINE__, ptype->pos.file->name, ptype->pos.lineno, ptype->directive->name);
+                        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_process_type_declarations(%s)", ptype->pos, ptype->directive->name);
                     }
                 }
                 break;
