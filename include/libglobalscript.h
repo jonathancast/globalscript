@@ -204,6 +204,7 @@ struct gsheap_item {
 struct gsclosure {
     struct gsheap_item hp;
     struct gsbco *code;
+    uint numfvs;
     gsvalue fvs[];
 };
 

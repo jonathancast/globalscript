@@ -52,8 +52,7 @@ gsheapeval(gsvalue val)
                         int fvs_for_code;
                         int args_for_code;
 
-                        gswarning("%s:%d: Getting number of free variables in closure: deferred", __FILE__, __LINE__);
-                        fvs_in_cl = 0;
+                        fvs_in_cl = cl->numfvs;
                         gswarning("%s:%d: Getting number of free variables in bco: deferred", __FILE__, __LINE__);
                         fvs_for_code = 0;
                         args_for_code = code->numargs;

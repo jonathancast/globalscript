@@ -95,7 +95,7 @@ gsprint(struct gstype *type, gsvalue prog)
 
                 cl = (struct gsclosure *)hp;
 
-                nfvs = 0;
+                nfvs = cl->numfvs;
                 ncfvs = 0;
                 ncargs = cl->code->numargs;
                 if (nfvs < ncfvs + ncargs) {
