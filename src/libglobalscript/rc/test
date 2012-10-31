@@ -83,16 +83,7 @@ echo
 
 ok_diff_fail '-- enter undefined polymorphic value --' ./$O.test-gsi enter-polymorphic-undef.ags
 ok_diff '-- yield polymorphic empty lambda --' ./$O.test-gsi yield-polymorphic-empty-lambda.ags
-
-echo '-- lambdas with undefined bodies --'
-if (! ./$O.test-gsi ./test-gslib ./test-gslib/empty-lambda.ags > ./test-results/empty-lambda.ags-actual) {
-    echo 'test-gsi failed; should have succeeded' >[1=2]
-    cat ./test-results/empty-lambda.ags-actual
-    exit 1;
-}
-diff ./test-results/empty-lambda.ags-actual ./test-results/empty-lambda.ags-expected
-echo
-
+ok_diff '-- lambdas with undefined bodies --' ./$O.test-gsi empty-lambda.ags
 ok_diff '-- lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lifted-lambda.ags
 
 echo '-- undefined values of abstract types --'
