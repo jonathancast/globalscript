@@ -7,3 +7,7 @@
 β	.tylambda	?
 	.tylift
 	.tysum
+
+_empty.record	.tyexpr
+	.tylift
+	.typroduct
