@@ -212,6 +212,8 @@ ace_thread_pool_main(void *p)
     gswarning("%s:%d: ace_thread_pool_main terminating", __FILE__, __LINE__);
 }
 
+static void ace_remove_thread(struct ace_thread *);
+
 static
 void
 ace_poison_thread(struct ace_thread *thread, struct gspos srcpos, char *fmt, ...)
@@ -230,9 +232,7 @@ ace_poison_thread(struct ace_thread *thread, struct gspos srcpos, char *fmt, ...
     gspoison(hp, srcpos, "%s", buf);
     unlock(&hp->lock);
 
-    lock(&ace_thread_queue->lock);
-    ace_thread_queue->threads[thread->tid] = 0;
-    unlock(&ace_thread_queue->lock);
+    ace_remove_thread(thread);
 }
 
 static
@@ -253,9 +253,7 @@ ace_poison_thread_unimpl(struct ace_thread *thread, char *file, int lineno, stru
     gspoison_unimpl(hp, file, lineno, srcpos, "%s", buf);
     unlock(&hp->lock);
 
-    lock(&ace_thread_queue->lock);
-    ace_thread_queue->threads[thread->tid] = 0;
-    unlock(&ace_thread_queue->lock);
+    ace_remove_thread(thread);
 }
 
 static
@@ -270,9 +268,7 @@ ace_return(struct ace_thread *thread, gsvalue v)
     gsupdate_heap(hp, v);
     unlock(&hp->lock);
 
-    lock(&ace_thread_queue->lock);
-    ace_thread_queue->threads[thread->tid] = 0;
-    unlock(&ace_thread_queue->lock);
+    ace_remove_thread(thread);
 }
 
 static
@@ -284,6 +280,15 @@ gsupdate_heap(struct gsheap_item *hp, gsvalue v)
     hp->type = gsindirection;
     in = (struct gsindirection *)hp;
     in->target = v;
+}
+
+static
+void
+ace_remove_thread(struct ace_thread *thread)
+{
+    lock(&ace_thread_queue->lock);
+    ace_thread_queue->threads[thread->tid] = 0;
+    unlock(&ace_thread_queue->lock);
 }
 
 void ace_up()
