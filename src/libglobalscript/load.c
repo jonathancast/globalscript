@@ -1668,7 +1668,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 
     for (p = pscc; p; p = p->next_item) {
         if (n >= MAX_ITEMS_PER_SCC)
-            gsfatal("%s:%d: Too many items in this SCC; max 0x%x", p->item.v->pos.file->name, p->item.v->pos.lineno, MAX_ITEMS_PER_SCC)
+            gsfatal("%P: Too many items in this SCC; max 0x%x", p->item.v->pos, MAX_ITEMS_PER_SCC)
         ;
         items[n++] = p->item;
     }
