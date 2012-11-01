@@ -1312,7 +1312,7 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             pexpected_abstract = (struct gstype_abstract *)pexpected;
 
             if (pactual_abstract->name != pexpected_abstract->name) {
-                seprint(err, eerr, "%P: I don't think abstype %s is the same as abstype %s", pos, pactual_abstract->name->name, pexpected_abstract->name->name);
+                seprint(err, eerr, "%P: I don't think abstype %y is the same as abstype %y", pos, pactual_abstract->name, pexpected_abstract->name);
                 return -1;
             }
             return 0;

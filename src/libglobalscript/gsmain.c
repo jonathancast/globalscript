@@ -11,6 +11,7 @@
     (cur_arg = *++argv, --argc, is_option = (*cur_arg == '-'), (is_option ? cur_arg++ : 0)) \
 
 static int gsPfmt(Fmt *f);
+static int gsyfmt(Fmt *f);
 
 void
 gsmain(int argc, char **argv)
@@ -31,6 +32,7 @@ gsmain(int argc, char **argv)
     );
 
     fmtinstall('P', gsPfmt);
+    fmtinstall('y', gsyfmt);
 
     gsadd_global_script_prim_sets();
     gsadd_client_prim_sets();
@@ -81,4 +83,14 @@ gsPfmt(Fmt *f)
 
     pos = va_arg(f->args, struct gspos);
     return fmtprint(f, "%s:%d", pos.file->name, pos.lineno);
+}
+
+static
+int
+gsyfmt(Fmt *f)
+{
+    gsinterned_string sym;
+
+    sym = va_arg(f->args, gsinterned_string);
+    return fmtprint(f, "%s", sym->name);
 }

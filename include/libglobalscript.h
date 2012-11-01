@@ -117,6 +117,7 @@ struct gspos {
 /* §todo{This is fine for string code files, but really should allow for core/Global Script source as well} */
 
 #pragma varargck type "P" struct gspos
+#pragma varargck type "y" gsinterned_string
 
 /* §section Global Script Program Calculus */
 
