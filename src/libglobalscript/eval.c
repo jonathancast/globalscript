@@ -216,7 +216,7 @@ gserror_unimpl(char *file, int lineno, struct gspos srcpos, char *err, ...)
     va_end(arg);
 
     if (gsdebug)
-        return gserror(srcpos, "%P: %s next", file, lineno, buf)
+        return gserror(srcpos, "%s:%d: %s next", file, lineno, buf)
     ; else
         return gserror(srcpos, "Panic: Un-implemented operation in release build: %s", buf)
     ;
