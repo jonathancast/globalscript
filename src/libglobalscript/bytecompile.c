@@ -11,192 +11,118 @@
 #include "gsheap.h"
 #include "gstopsort.h"
 
-static uint gsbc_heap_size_item(struct gsbc_item);
-static uint gsbc_error_size_item(struct gsbc_item);
-static uint gsbc_record_size_item(struct gsbc_item);
-static gsvalue gsbc_get_indir_item(struct gsfile_symtable *, struct gsbc_item);
+enum gsbc_heap_section {
+    gsbc_non_data,
+    gsbc_indir,
+    gsbc_heap,
+    gsbc_errors,
+    gsbc_records,
+    gsbc_num_heap_sections,
+};
+
+static void gsbc_size_data_item(struct gsfile_symtable *, struct gsbc_item, enum gsbc_heap_section *, uint *, gsvalue *);
 
 void
-gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gsbc_data_locs *plocs, int n)
+gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, int n)
 {
-    uint total_heap_size, heap_offsets[MAX_ITEMS_PER_SCC], heap_size[MAX_ITEMS_PER_SCC],
-        total_error_size, error_offsets[MAX_ITEMS_PER_SCC], error_size[MAX_ITEMS_PER_SCC],
-        total_record_size, record_offsets[MAX_ITEMS_PER_SCC], record_size[MAX_ITEMS_PER_SCC]
-    ;
+    uint total_size[gsbc_num_heap_sections];
+    enum gsbc_heap_section sections[MAX_ITEMS_PER_SCC];
+    uint offsets[MAX_ITEMS_PER_SCC], sizes[MAX_ITEMS_PER_SCC];
+    gsvalue indirs[MAX_ITEMS_PER_SCC];
     int i;
-    void *heap_base, *error_base, *record_base;
+    enum gsbc_heap_section s;
+    void *bases[gsbc_num_heap_sections];
 
     if (n > MAX_ITEMS_PER_SCC)
         gsfatal("%s:%d: Too many items in SCC; 0x%x items; max 0x%x", __FILE__, __LINE__, n, MAX_ITEMS_PER_SCC);
 
-    total_heap_size = total_error_size = total_record_size = 0;
-    for (i = 0; i < n; i++) {
-        heap_offsets[i] = total_heap_size;
-        heap_size[i] = gsbc_heap_size_item(items[i]);
-        total_heap_size += heap_size[i];
-        if (total_heap_size % sizeof(struct gsbco*))
-            total_heap_size += sizeof(struct gsbco*) - (total_heap_size % sizeof(struct gsbco*))
-        ;
-
-        error_offsets[i] = total_error_size;
-        error_size[i] = gsbc_error_size_item(items[i]);
-        total_error_size += error_size[i];
-        if (total_error_size % sizeof(gsinterned_string))
-            total_error_size += sizeof(gsinterned_string) - (total_error_size % sizeof(gsinterned_string))
-        ;
-
-        record_offsets[i] = total_record_size;
-        record_size[i] = gsbc_record_size_item(items[i]);
-        total_record_size += record_size[i];
-        if (total_record_size % sizeof(gsinterned_string))
-            total_record_size += sizeof(gsinterned_string) - (total_record_size % sizeof(gsinterned_string))
-        ;
-
-        plocs->indir[i] = gsbc_get_indir_item(symtable, items[i]);
-    }
-
-    if (total_heap_size > BLOCK_SIZE)
-        gsfatal("%s:%d: Total heap size too large; 0x%x > 0x%x", __FILE__, __LINE__, total_heap_size, BLOCK_SIZE)
+    for (s = 0; s < gsbc_num_heap_sections; s++)
+        total_size[s] = 0
     ;
-    if (total_error_size > BLOCK_SIZE)
-        gsfatal("%s:%d: Total error size too large; 0x%x > 0x%x", __FILE__, __LINE__, total_error_size, BLOCK_SIZE)
-    ;
-
-    heap_base = gsreserveheap(total_heap_size);
-    error_base = gsreserveerrors(total_error_size);
-    record_base = gsreserverecords(total_record_size);
-
     for (i = 0; i < n; i++) {
-        plocs->heap[i] = plocs->errors[i] = plocs->records[i] = 0;
-        if (heap_size[i]) {
-            plocs->heap[i] = (gsvalue)((uchar*)heap_base + heap_offsets[i]);
-            gssymtable_set_data(symtable, items[i].v->label, plocs->heap[i]);
-        } else if (error_size[i]) {
-            plocs->errors[i] = (gsvalue)((uchar*)error_base + error_offsets[i]);
-            gssymtable_set_data(symtable, items[i].v->label, plocs->errors[i]);
-        } else if (record_size[i]) {
-            plocs->records[i] = (gsvalue)((uchar*)record_base + record_offsets[i]);
-            gssymtable_set_data(symtable, items[i].v->label, plocs->records[i]);
-        } else if (plocs->indir[i]) {
-            gssymtable_set_data(symtable, items[i].v->label, plocs->indir[i]);
+        gsbc_size_data_item(symtable, items[i], &sections[i], &sizes[i], &indirs[i]);
+
+        if (sections[i] != gsbc_non_data && sections[i] != gsbc_indir) {
+            offsets[i] = total_size[sections[i]];
+            total_size[sections[i]] += sizes[i];
+            if (total_size[sections[i]] % sizeof(void *))
+                total_size[sections[i]] += sizeof(void *) - (total_size[sections[i]] % sizeof(void *))
+            ;
         }
     }
-}
 
-static gsinterned_string gssymundefined, gssymrecord, gssymrune, gssymclosure, gssymcast;
-
-static
-uint
-gsbc_heap_size_item(struct gsbc_item item)
-{
-    struct gsparsedline *p;
-
-    if (item.type != gssymdatalable) return 0;
-
-    p = item.v;
-    if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
-        return 0;
-    } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
-        return 0;
-    } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
-        return 0;
-    } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
-        return MAX(sizeof(struct gsclosure), sizeof(struct gsindirection));
-    } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
-        return 0;
-    } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_heap_size_item(%s)", item.v->pos, p->directive->name);
+    for (s = 0; s < gsbc_num_heap_sections; s++) {
+        if (total_size[s] > BLOCK_SIZE)
+            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Total size too large for section %d; 0x%x > 0x%x", s, total_size[s], BLOCK_SIZE)
+        ;
     }
-    return 0;
-}
 
-static
-uint
-gsbc_error_size_item(struct gsbc_item item)
-{
-    struct gsparsedline *p;
+    bases[gsbc_heap] = gsreserveheap(total_size[gsbc_heap]);
+    bases[gsbc_errors] = gsreserveerrors(total_size[gsbc_errors]);
+    bases[gsbc_records] = gsreserverecords(total_size[gsbc_records]);
 
-    if (item.type != gssymdatalable) return 0;
-
-    p = item.v;
-    if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
-        return 0;
-    } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
-        return 0;
-    } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
-        return sizeof(struct gserror);
-    } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
-        return 0;
-    } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
-        return 0;
-    } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_error_size_item(%s)", item.v->pos, p->directive->name);
+    for (i = 0; i < n; i++) {
+        if (sections[i] == gsbc_non_data) {
+            heap[i] = 0;
+        } else if (sections[i] == gsbc_indir) {
+            heap[i] = indirs[i];
+        } else {
+            heap[i] = (gsvalue)((uchar*)bases[sections[i]] + offsets[i]);
+        }
+        if (heap[i])
+            gssymtable_set_data(symtable, items[i].v->label, heap[i])
+        ;
     }
-    return 0;
-}
-
-static
-uint
-gsbc_record_size_item(struct gsbc_item item)
-{
-    struct gsparsedline *p;
-
-    if (item.type != gssymdatalable) return 0;
-
-    p = item.v;
-    if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
-        return sizeof(struct gsrecord) + (p->numarguments / 2) * sizeof(gsvalue);
-    } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
-        return 0;
-    } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
-        return 0;
-    } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
-        return 0;
-    } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
-        return 0;
-    } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_record_size_item(%s)", p->pos, p->directive->name);
-    }
-    return 0;
 }
 
 static char *gsbc_parse_rune_literal(struct gspos, char *, gsvalue *);
 
+static gsinterned_string gssymundefined, gssymrecord, gssymrune, gssymclosure, gssymcast;
+
 static
-gsvalue
-gsbc_get_indir_item(struct gsfile_symtable *symtable, struct gsbc_item item)
+void
+gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enum gsbc_heap_section *psection, uint *psize, gsvalue *pindir)
 {
     struct gsparsedline *p;
-    gsvalue res;
 
-    if (item.type != gssymdatalable) return 0;
+    if (item.type != gssymdatalable) {
+        *psection = gsbc_non_data;
+        return;
+    }
 
     p = item.v;
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
-        return 0;
+        *psection = gsbc_records;
+        *psize = sizeof(struct gsrecord) + (p->numarguments / 2) * sizeof(gsvalue);
     } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
         char *eos;
+        gsvalue res;
 
         eos = gsbc_parse_rune_literal(p->pos, p->arguments[0]->name, &res);
         if (*eos)
             gsfatal("%P: %s: More than one rune in argument to .rune", p->pos, p->arguments[0]->name)
         ;
 
-        return res;
+        *psection = gsbc_indir;
+        *pindir = res;
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
-        return 0;
+        *psection = gsbc_errors;
+        *psize = sizeof(struct gserror);
     } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
-        return 0;
+        *psection = gsbc_heap;
+        *psize = MAX(sizeof(struct gsclosure), sizeof(struct gsindirection));
     } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
+        gsvalue res;
+
         res = gssymtable_get_data(symtable, p->arguments[1]);
         if (!res)
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Can't find cast referent %s", p->pos, p->arguments[1]->name)
         ;
-        return res;
+        *psection = gsbc_indir;
+        *pindir = res;
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_get_indir_item(%s)", p->pos, p->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_heap_size_item(%s)", item.v->pos, p->directive->name);
     }
-    return 0;
 }
 
 static
@@ -434,11 +360,11 @@ done:
 
 /* §section{Actual Byte Compiler} */
 
-static void gsbc_bytecompile_data_item(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_data_locs *, int, int);
+static void gsbc_bytecompile_data_item(struct gsfile_symtable *, struct gsparsedline *, gsvalue *, int, int);
 static void gsbc_bytecompile_code_item(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco **, int, int);
 
 void
-gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gsbc_data_locs *plocs, struct gsbco **bcos, int n)
+gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, struct gsbco **bcos, int n)
 {
     int i;
     struct gsparsedfile_segment *pseg;
@@ -449,7 +375,7 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             case gssymcoercionlable:
                 break;
             case gssymdatalable:
-                gsbc_bytecompile_data_item(symtable, items[i].v, plocs, i, n);
+                gsbc_bytecompile_data_item(symtable, items[i].v, heap, i, n);
                 break;
             case gssymcodelable:
                 pseg = items[i].pseg;
@@ -463,13 +389,13 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
 
 static
 void
-gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_data_locs *plocs, int i, int n)
+gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline *p, gsvalue *heap, int i, int n)
 {
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
         struct gsrecord *record;
         int j;
 
-        record = (struct gsrecord *)plocs->records[i];
+        record = (struct gsrecord *)heap[i];
         record->pos = p->pos;
         record->numfields = p->numarguments / 2;
 
@@ -490,14 +416,14 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gserror *er;
 
-        er = (struct gserror *)plocs->errors[i];
+        er = (struct gserror *)heap[i];
         er->pos = p->pos;
         er->type = gserror_undefined;
     } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
         struct gsheap_item *hp;
         struct gsclosure *cl;
 
-        hp = (struct gsheap_item *)plocs->heap[i];
+        hp = (struct gsheap_item *)heap[i];
         memset(&hp->lock, 0, sizeof(hp->lock));
         hp->pos = p->pos;
         hp->type = gsclosure;

@@ -1681,7 +1681,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
     struct gsbc_item items[MAX_ITEMS_PER_SCC];
     struct gstype *types[MAX_ITEMS_PER_SCC], *defns[MAX_ITEMS_PER_SCC];
     struct gskind *kinds[MAX_ITEMS_PER_SCC];
-    struct gsbc_data_locs data_locs;
+    gsvalue heap[MAX_ITEMS_PER_SCC];
     struct gsbco *bcos[MAX_ITEMS_PER_SCC];
     int n, i;
 
@@ -1705,9 +1705,9 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
 
     /* §section{Byte-compilation} */
 
-    gsbc_alloc_data_for_scc(symtable, items, &data_locs, n);
+    gsbc_alloc_data_for_scc(symtable, items, heap, n);
     gsbc_alloc_code_for_scc(symtable, items, bcos, n);
-    gsbc_bytecompile_scc(symtable, items, &data_locs, bcos, n);
+    gsbc_bytecompile_scc(symtable, items, heap, bcos, n);
 
     if (pentry) {
         for (i = 0; i < n; i++) {
@@ -1715,14 +1715,8 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
                 items[i].type == gssymdatalable
                 && items[i].v == GSDATA_SECTION_FIRST_ITEM(parsedfile->data)
             ) {
-                if (data_locs.heap[i])
-                    *pentry = data_locs.heap[i];
-                else if (data_locs.errors[i])
-                    *pentry = data_locs.errors[i];
-                else if (data_locs.indir[i])
-                    *pentry = data_locs.indir[i];
-                else if (data_locs.records[i])
-                    *pentry = data_locs.records[i];
+                if (heap[i])
+                    *pentry = heap[i];
                 else
                     gsfatal_unimpl(__FILE__, __LINE__, "%s: Entry point: couldn't find in any SCC");
                 if (items[i].v->label) {
