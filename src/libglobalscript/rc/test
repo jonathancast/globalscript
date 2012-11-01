@@ -40,6 +40,23 @@ fn ok_diff_fail {
     true
 }
 
+fn ok_grep_errors {
+    echo $1
+    if ($3 ./test-gslib ./test-gslib/$4 > ./test-results/$4^-actual >[2] ./test-results/$4^-errors) {
+        echo $3 'succeeded; should have failed' >[1=2]
+        cat ./test-results/$4^-errors >[1=2]
+        cat ./test-results/$4^-actual >[1=2]
+        exit 1
+    }
+    if (! grep -s $2 ./test-results/$4^-errors) {
+        echo 'Can''t find expected error message in output anywhere' >[1=2]
+        cat ./test-results/$4^-errors >[1=2]
+        cat ./test-results/$4^-actual >[1=2]
+        exit 1
+    }
+    true
+}
+
 echo '-- undefined entry points --'
 if (./$O.test-gsi ./test-gslib ./test-gslib/undef.ags > ./test-results/undef.ags-actual) {
     echo 'test-gsi succeeded; should have failed' >[1=2]
@@ -87,20 +104,7 @@ ok_diff '-- lambdas with undefined bodies --' ./$O.test-gsi empty-lambda.ags
 ok_diff '-- lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lifted-lambda.ags
 ok_diff_fail '-- applying lambdas with undefined bodies --' ./$O.test-gsi apply-empty-lambda.ags
 ok_diff_fail '-- undefined values of abstract types --' ./$O.test-gsi undef-abs-type.ags
-
-echo '-- an abstract type is different from its definition --'
-if (./$O.test-gsi ./test-gslib ./test-gslib/invalid-abs-type.ags >[2] ./test-results/invalid-abs-type.ags-actual) {
-    echo 'test-gsi succeeded; should have failed' >[1=2]
-    cat ./test-results/invalid-abs-type.ags-actual >[1=2]
-    exit 1
-}
-if (! grep -s './test-gslib/invalid-abs-type.ags:[0-9]*: I don''t think' ./test-results/invalid-abs-type.ags-actual) {
-    echo 'Couldn''t find expected error message in output anywhere' >[1=2]
-    cat ./test-results/invalid-abs-type.ags-actual >[1=2]
-    exit 1
-}
-echo
-
+ok_grep_errors '-- an abstract type is different from its definition --' './test-gslib/invalid-abs-type.ags:[0-9]*: I don''t think' ./$O.test-gsi invalid-abs-type.ags
 ok_diff '-- rune literals --' ./$O.test-gsi rune-literal.ags
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 
