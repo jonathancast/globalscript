@@ -267,7 +267,7 @@ static
 void
 gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymrune, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymundefined, gssymcast;
 
     gsinterned_string directive = item.v->directive;
 
@@ -305,6 +305,20 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         for (i = 0; i < item.v->numarguments; i += 2) {
             fieldvalue = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[i + 1]);
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, fieldvalue, pend, pc);
+        }
+    } else if (gssymceq(directive, gssymconstr, gssymdatadirective, ".constr")) {
+        struct gsbc_item type;
+        int i;
+
+        type = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[0]);
+        gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, type, pend, pc);
+
+        if (item.v->numarguments == 3) {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: .constr with one argument", item.v->pos);
+        } else {
+            for (i = 2; i < item.v->numarguments; i += 2) {
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: .constr with multiple arguments", item.v->pos);
+            }
         }
     } else if (gssymceq(directive, gssymrune, gssymdatadirective, ".rune")) {
     } else if (gssymceq(directive, gssymundefined, gssymdatadirective, ".undefined")) {

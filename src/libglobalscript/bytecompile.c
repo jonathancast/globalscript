@@ -7,6 +7,7 @@
 
 #include "gsinputfile.h"
 #include "gsregtables.h"
+#include "gstypealloc.h"
 #include "gsbytecompile.h"
 #include "gsheap.h"
 #include "gstopsort.h"
@@ -17,6 +18,7 @@ enum gsbc_heap_section {
     gsbc_heap,
     gsbc_errors,
     gsbc_records,
+    gsbc_constrs,
     gsbc_num_heap_sections,
 };
 
@@ -60,6 +62,7 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     bases[gsbc_heap] = gsreserveheap(total_size[gsbc_heap]);
     bases[gsbc_errors] = gsreserveerrors(total_size[gsbc_errors]);
     bases[gsbc_records] = gsreserverecords(total_size[gsbc_records]);
+    bases[gsbc_constrs] = gsreserveconstrs(total_size[gsbc_constrs]);
 
     for (i = 0; i < n; i++) {
         if (sections[i] == gsbc_non_data) {
@@ -77,7 +80,7 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
 
 static char *gsbc_parse_rune_literal(struct gspos, char *, gsvalue *);
 
-static gsinterned_string gssymundefined, gssymrecord, gssymrune, gssymclosure, gssymcast;
+static gsinterned_string gssymundefined, gssymrecord, gssymconstr, gssymrune, gssymclosure, gssymcast;
 
 static
 void
@@ -94,6 +97,13 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
         *psection = gsbc_records;
         *psize = sizeof(struct gsrecord) + (p->numarguments / 2) * sizeof(gsvalue);
+    } else if (gssymceq(p->directive, gssymconstr, gssymdatadirective, ".constr")) {
+        *psection = gsbc_constrs;
+        if (p->numarguments == 3) {
+            *psize = sizeof(struct gsconstr) + sizeof(gsvalue);
+        } else {
+            *psize = sizeof(struct gsconstr) + (p->numarguments / 2) * sizeof(gsvalue);
+        }
     } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
         char *eos;
         gsvalue res;
@@ -410,6 +420,30 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
             if (!record->fields[j / 2])
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: can't find data value %s", p->pos, p->arguments[j + 1]->name)
             ;
+        }
+    } else if (gssymceq(p->directive, gssymconstr, gssymdatadirective, ".constr")) {
+        struct gstype_sum *sum;
+        struct gsconstr *constr;
+        int j;
+
+        sum = (struct gstype_sum *)gssymtable_get_type(symtable, p->arguments[0]);
+
+        constr = (struct gsconstr *)heap[i];
+        constr->pos = p->pos;
+        for (j = 0; j < sum->numconstrs; j++) {
+            if (p->arguments[1] == sum->constrs[j].name) {
+                constr->constrnum = j;
+                goto have_constr;
+            }
+        }
+        gsfatal("%P: Sum type %y has no constructor %y", p->pos, p->arguments[0], p->arguments[1]);
+    have_constr:
+        if (p->numarguments == 3) {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Get constructor argument", p->pos);
+        } else {
+            for (j = 2; j < p->numarguments; j += 2) {
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Get constructor arguments", p->pos);
+            }
         }
     } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
         ;

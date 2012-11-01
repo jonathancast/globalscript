@@ -138,6 +138,29 @@ gsprint(struct gstype *type, gsvalue prog)
         }
         print("〉\n");
         return 0;
+    } else if (gsisconstr_block(block)) {
+        struct gsconstr *constr;
+        struct gstype_sum *sum;
+        int i;
+
+        sum = 0;
+        if (type->node == gstype_lift) {
+            struct gstype_lift *lift = (struct gstype_lift *)type;
+
+            type = lift->arg;
+        }
+        if (type->node == gstype_sum) {
+            sum = (struct gstype_sum *)type;
+        } else {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Print constructors of type %d", type->pos, type->node);
+        }
+        constr = (struct gsconstr *)prog;
+        print("%y", sum->constrs[constr->constrnum].name);
+        for (i = 0; i < constr->numargs; i++)
+            print(" <expr>")
+        ;
+        print("\n");
+        return 0;
     } else {
         ace_down();
         gsfatal_unimpl(__FILE__, __LINE__, "gsprint(%s)", block->class->description);

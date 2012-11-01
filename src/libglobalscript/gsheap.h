@@ -54,6 +54,10 @@ void gspoison_unimpl(struct gsheap_item *, char *, int, struct gspos, char *, ..
 
 void *gsreserverecords(ulong);
 
+/* §section Constructors */
+
+void *gsreserveconstrs(ulong);
+
 /* §section API Primitives */
 
 void *gsreserveeprims(ulong);

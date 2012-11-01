@@ -224,7 +224,11 @@ gstypes_calculate_kind(struct gstype *type)
             sum = (struct gstype_sum *)type;
 
             for (i = 0; i < sum->numconstrs; i++) {
-                gsfatal_unimpl_type(__FILE__, __LINE__, type, "check kind of constr arg type");
+                struct gskind *kind;
+
+                kind = gstypes_calculate_kind(sum->constrs[i].argtype);
+                gstypes_kind_check_simple(type->pos, kind);
+                gsbc_typecheck_check_boxed_or_product(type->pos, sum->constrs[i].argtype);
             }
 
             return gskind_unlifted_kind();
@@ -385,6 +389,24 @@ gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
     }
 }
 
+void
+gsbc_typecheck_check_boxed_or_product(struct gspos pos, struct gstype *type)
+{
+    switch (type->node) {
+        case gstype_knprim:
+        case gstype_unprim:
+        case gstype_var:
+        case gstype_forall:
+        case gstype_lift:
+        case gstype_app:
+        case gstype_fun:
+        case gstype_ubproduct:
+            return;
+        default:
+            gsfatal_unimpl_type(__FILE__, __LINE__, type, "%P: gsbc_typecheck_check_boxed_or_product(node = %d)", pos, type->node);
+    }
+}
+
 static void gstypes_process_data_type_signature(struct gsfile_symtable *, struct gsbc_item, struct gstype **);
 
 void
@@ -411,7 +433,7 @@ static
 void
 gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsbc_item item, struct gstype **pentrytype)
 {
-    static gsinterned_string gssymrecord, gssymrune, gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
 
@@ -419,6 +441,19 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
 
     if (gssymceq(pdata->directive, gssymrecord, gssymdatadirective, ".record")) {
         return;
+    } else if (gssymceq(pdata->directive, gssymconstr, gssymdatadirective, ".constr")) {
+        struct gstype *type;
+
+        gsargcheck(pdata, 0, "type");
+        type = gssymtable_get_type(symtable, pdata->arguments[0]);
+        if (!type)
+            gsfatal("%P: Couldn't find type %s", pdata->pos, pdata->arguments[0])
+        ;
+        if (pdata->label)
+            gssymtable_set_data_type(symtable, pdata->label, type)
+        ; else if (pentrytype)
+            *pentrytype = type
+        ;
     } else if (gssymceq(pdata->directive, gssymrune, gssymdatadirective, ".rune")) {
         return;
     } else if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
@@ -499,7 +534,7 @@ static
 void
 gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, struct gstype **pentrytype, int n, int i)
 {
-    static gsinterned_string gssymrecord, gssymrune, gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
 
@@ -530,6 +565,62 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         ; else if (pentrytype)
             *pentrytype = type
         ;
+    } else if (gssymceq(pdata->directive, gssymconstr, gssymdatadirective, ".constr")) {
+        struct gstype *type;
+        struct gstype_sum *sum;
+        struct gstype *argtype;
+        int constrnum;
+
+        gsargcheck(pdata, 0, "type");
+        type = gssymtable_get_type(symtable, pdata->arguments[0]);
+        if (!type)
+            gsfatal("%P: Couldn't find type %s", pdata->pos, pdata->arguments[0])
+        ;
+        if (type->node != gstype_sum)
+            gsfatal("%P: Type argument to .constr must be a sum type (not an abstract type)", pdata->pos)
+        ;
+        sum = (struct gstype_sum *)type;
+        for (i = 0; i < sum->numconstrs; i++) {
+            struct gstype_constr *constr, *prev_constr;
+
+            constr = &sum->constrs[i];
+            prev_constr = &sum->constrs[i - 1];
+            if (i > 0 && strcmp(prev_constr->name->name, constr->name->name) == 0)
+                gsfatal("%P: Duplicate constructor %s", pdata->pos, constr->name->name)
+            ;
+            if (i > 0 && strcmp(prev_constr->name->name, constr->name->name) > 0)
+                gsfatal("%P: Constructors in the wrong order: %s should be after %s", pdata->pos, prev_constr->name->name, constr->name->name)
+            ;
+        }
+
+        gsargcheck(pdata, 1, "constructor");
+        for (i = 0; i < sum->numconstrs; i++) {
+            if (sum->constrs[i].name == pdata->arguments[i]) {
+                constrnum = i;
+                argtype = sum->constrs[i].argtype;
+                goto have_constr;
+            }
+        }
+        gsfatal("%P: Type %s lacks a constructor %s", pdata->pos, pdata->arguments[0]->name, pdata->arguments[1]->name);
+    have_constr:
+        if (pdata->numarguments == 3) {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Check constructor arguments (one argument)", pdata->pos);
+        } else {
+            struct gstype_ubproduct *ubproduct;
+
+            if (argtype->node != gstype_ubproduct)
+                gsfatal("%P: Type of the argument to %y in %y not an un-boxed product, therefore you cannot supply multiple argumentst to %y",
+                    pdata->pos,
+                    pdata->arguments[1],
+                    pdata->arguments[0],
+                    pdata->arguments[1]
+                )
+            ;
+            ubproduct = (struct gstype_ubproduct *)argtype;
+            for (i = 2; i < pdata->numarguments; i += 2) {
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Check constructor arguments (multiple arguments)", pdata->pos);
+            }
+        }
     } else if (gssymceq(pdata->directive, gssymrune, gssymdatadirective, ".rune")) {
         struct gstype *rune;
 

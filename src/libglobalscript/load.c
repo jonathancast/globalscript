@@ -336,7 +336,7 @@ static
 long
 gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymrune, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymundefined, gssymcast;
 
     struct gsparsedline *parsedline;
     int i;
@@ -371,8 +371,24 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
         if (numfields % 2)
             gsfatal("%s:%d: Odd number of arguments to .record", filename, *plineno);
         for (i = 0; numfields > 2 + i; i+= 2) {
-            parsedline->arguments[i] = gsintern_string(gssymdatalable, fields[2+i]);
+            parsedline->arguments[i] = gsintern_string(gssymfieldlable, fields[2+i]);
             parsedline->arguments[i+1] = gsintern_string(gssymdatalable, fields[2+i+1]);
+        }
+    } else if (gssymceq(parsedline->directive, gssymconstr, gssymdatadirective, ".constr")) {
+        if (numfields < 2+1)
+            gsfatal("%s:%d: Missing sum type argument to .constr", filename, *plineno);
+        parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2+0]);
+        if (numfields < 2+2)
+            gsfatal("%s:%d: Missing constructor argument to .constr", filename, *plineno);
+        parsedline->arguments[1] = gsintern_string(gssymconstrlable, fields[2+1]);
+        if (numfields == 2+3) {
+            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: .constr with a single argument", filename, *plineno);
+        } else {
+            if ((numfields - (2+2)) % 2)
+                gsfatal("%s:%d: Odd number of arguments to .constr when field/value pairs expected", filename, *plineno);
+            for (i = 2; 2 + i < numfields; i += 2) {
+                gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: .constr arguments", filename, *plineno);
+            }
         }
     } else if (gssymceq(parsedline->directive, gssymrune, gssymdatadirective, ".rune")) {
         if (numfields < 2+1)
@@ -396,7 +412,7 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
         if (numfields > 2+2)
             gsfatal("%s:%d: Too many arguments to .cast; I know about the coercion to apply and the data item to cast");
     } else {
-        gsfatal("%s:%d: Unimplemented data directive %s", filename, *plineno, fields[1]);
+        gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Unimplemented data directive %s", filename, *plineno, fields[1]);
     }
 
     return 1;

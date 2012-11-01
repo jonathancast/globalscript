@@ -1,6 +1,7 @@
 void gstypes_process_type_declarations(struct gsfile_symtable *, struct gsbc_item *, struct gskind **, int);
 
 void gsbc_typecheck_check_boxed(struct gspos, struct gstype *);
+void gsbc_typecheck_check_boxed_or_product(struct gspos, struct gstype *);
 
 void gstypes_kind_check_scc(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int);
 

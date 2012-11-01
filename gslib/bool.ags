@@ -1,0 +1,14 @@
+	.prefix
+
+	.type
+
+bool.prim.u	.tyexpr
+_false.arg.ty	.tygvar
+_true.arg.ty	.tygvar
+	.tysum	false	_false.arg.ty	true	_true.arg.ty
+
+_false.arg.ty	.tyexpr
+	.tyubproduct
+
+_true.arg.ty	.tyexpr
+	.tyubproduct
