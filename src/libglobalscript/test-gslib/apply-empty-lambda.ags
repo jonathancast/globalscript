@@ -1,0 +1,21 @@
+	.document
+
+	.data
+
+	.closure	_entry.c
+_entry.body	.closure	_entry.body.c
+_x	.undefined	rune.t
+
+	.code
+
+_entry.c	.expr
+_entry.body	.gvar
+_x	.gvar
+	.app	_x
+	.yield	_entry.body
+
+_entry.body.c	.expr
+rune.t	.tygvar
+_empty.record	.tygvar
+x	.arg	rune.t
+	.undef	_empty.record

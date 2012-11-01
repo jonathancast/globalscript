@@ -24,4 +24,5 @@ struct ace_thread {
     struct gsbc *ip;
     int nregs;
     gsvalue regs[MAX_NUM_REGISTERS];
+    void *stacklimit, *stacktop, *stackbot;
 };

@@ -652,7 +652,7 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtygvar, gssymtyarg, gssymgvar, gssymarg, gssymlarg, gssymrecord, gssymeprim, gssymlift, gssymenter, gssymundef;
+    static gsinterned_string gssymtygvar, gssymtyarg, gssymgvar, gssymarg, gssymlarg, gssymrecord, gssymeprim, gssymlift, gssymapp, gssymenter, gssymundef;
 
     enum {
         rttygvar,
@@ -866,7 +866,10 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             gsbc_typecheck_check_api_statement_type(p->pos, type, p->arguments[0], p->arguments[1], 0);
             regtypes[nregs] = type;
             nregs++;
-        } else if (gssymceq(p->directive, gssymlift, gssymcodeop, ".lift")) {
+        } else if (
+            gssymceq(p->directive, gssymlift, gssymcodeop, ".lift")
+            || gssymceq(p->directive, gssymapp, gssymcodeop, ".app")
+        ) {
             if (regtype > rtconts)
                 gsfatal_bad_input(p, "Too late to add continuations")
             ;
@@ -957,6 +960,24 @@ have_type:
         if (p->directive == gssymlift) {
             gstypes_kind_check(p->pos, gstypes_calculate_kind(calculated_type), gskind_unlifted_kind());
             calculated_type = gstypes_compile_lift(p->pos, calculated_type);
+        } else if (p->directive == gssymapp) {
+            for (i = 0; i < p->numarguments; i++) {
+                int regarg;
+
+                regarg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
+                if (calculated_type->node == gstype_lift)
+                    gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr (app of lifted fun)", p->pos)
+                ;
+                if (calculated_type->node == gstype_fun) {
+                    struct gstype_fun *fun;
+
+                    fun = (struct gstype_fun *)calculated_type;
+                    gstypes_type_check_type_fail(p->pos, regtypes[regarg], fun->tyarg);
+                    calculated_type = fun->tyres;
+                } else
+                    gsfatal("%P: Too many arguments (max %d; got %d)", p->pos, i, p->numarguments)
+                ;
+            }
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr(cont %s)", p->pos, p->directive->name);
         }

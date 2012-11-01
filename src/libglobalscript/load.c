@@ -456,7 +456,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtygvar, gssymtyarg, gssymgvar, gssymlarg, gssymarg, gssymrecord, gssymeprim, gssymapp, gssymenter, gssymyield, gssymundef;
+    static gsinterned_string gssymtygvar, gssymtyarg, gssymgvar, gssymlarg, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymapp, gssymenter, gssymyield, gssymundef;
 
     struct gsparsedline *parsedline;
     int i;
@@ -549,7 +549,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             for (; i < n; i++) {
                 parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
             }
-        } else if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".lift")) {
+        } else if (gssymceq(parsedline->directive, gssymlift, gssymcodeop, ".lift")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops");
             else

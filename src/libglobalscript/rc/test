@@ -85,6 +85,7 @@ ok_diff_fail '-- enter undefined polymorphic value --' ./$O.test-gsi enter-polym
 ok_diff '-- yield polymorphic empty lambda --' ./$O.test-gsi yield-polymorphic-empty-lambda.ags
 ok_diff '-- lambdas with undefined bodies --' ./$O.test-gsi empty-lambda.ags
 ok_diff '-- lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lifted-lambda.ags
+ok_diff_fail '-- applying lambdas with undefined bodies --' ./$O.test-gsi apply-empty-lambda.ags
 
 echo '-- undefined values of abstract types --'
 if (./$O.test-gsi ./test-gslib ./test-gslib/undef-abs-type.ags > ./test-results/undef-abs-type.ags-actual) {

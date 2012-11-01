@@ -258,7 +258,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static gsinterned_string gssymoptyarg, gssymopgvar, gssymoparg, gssymoplarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopyield;
+static gsinterned_string gssymoptyarg, gssymopgvar, gssymoparg, gssymoplarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopapp, gssymopyield;
 
 static
 int
@@ -395,6 +395,8 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
         } else if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
             /* no effect on representation */
+        } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
+            size += GS_SIZE_BYTECODE(1 + p->numarguments); /* nargs + args */
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
             size += GS_SIZE_BYTECODE(1);
             goto done;
@@ -654,6 +656,21 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
         } else if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
             phase = rtops;
             /* no effect on representation */
+        } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
+            phase = rtops;
+            if (!pcode)
+                pcode = (struct gsbc *)pglobal
+            ;
+            pcode->pos = p->pos;
+            pcode->instr = gsbc_op_app;
+            pcode->args[0] = (uchar)p->numarguments;
+            for (i = 0; i < p->numarguments; i++) {
+                int regarg;
+
+                regarg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
+                pcode->args[1 + i] = (uchar)regarg;
+            }
+            pcode = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments);
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
             int reg = 0;
 

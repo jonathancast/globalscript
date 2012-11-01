@@ -1,4 +1,4 @@
-/* §section{(Byte-Code) Code Segment} */
+/* §section (Byte-Code) Code Segment */
 
 struct gsbc {
     struct gspos pos;
@@ -10,6 +10,7 @@ enum {
     gsbc_op_record,
     gsbc_op_unknown_eprim,
     gsbc_op_eprim,
+    gsbc_op_app,
     gsbc_op_undef,
     gsbc_op_enter,
     gsbc_op_yield,
@@ -24,6 +25,23 @@ enum {
 
 void *gsreservebytecode(ulong);
 
+/* §section Continuations */
+
+struct gsbc_cont {
+    enum {
+        gsbc_cont_app,
+    } node;
+    struct gspos pos;
+};
+
+struct gsbc_cont_app {
+    struct gsbc_cont cont;
+    int numargs;
+    gsvalue arguments[];
+};
+
+/* §section Errors */
+
 void *gsreserveerrors(ulong);
 
 struct gserror *gserror(struct gspos, char *, ...);
@@ -32,6 +50,10 @@ struct gserror *gserror_unimpl(char *, int, struct gspos, char *, ...);
 void gspoison(struct gsheap_item *, struct gspos, char *, ...);
 void gspoison_unimpl(struct gsheap_item *, char *, int, struct gspos, char *, ...);
 
+/* §section Records */
+
 void *gsreserverecords(ulong);
+
+/* §section API Primitives */
 
 void *gsreserveeprims(ulong);
