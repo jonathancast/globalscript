@@ -215,7 +215,7 @@ struct gsbco {
     } tag;
     struct gspos pos;
     ulong size;
-    ulong numglobals, numsubexprs, numargs;
+    ulong numglobals, numsubexprs, numfvs, numargs;
 };
 
 struct gsindirection {

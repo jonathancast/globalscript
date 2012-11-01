@@ -322,7 +322,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
                 gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
             ;
             if (size % sizeof(struct gsbco *))
-                gsfatal("%s:%d: %s:%d: Fiel format error: we're at a .subcode generator but our location isn't struct gsbco *-aligned",
+                gsfatal("%s:%d: %s:%d: File format error: we're at a .subcode generator but our location isn't struct gsbco *-aligned",
                     __FILE__, __LINE__,
                     p->pos.file->name,
                     p->pos.lineno
@@ -719,14 +719,14 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     gsvalue *pglobal;
     struct gsbco **psubcode;
     struct gsbc *pcode;
-    int nregs, nglobals, ncodes, nargs;
+    int nregs, nglobals, ncodes, nfvs, nargs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
     gsinterned_string codes[MAX_NUM_REGISTERS];
 
     phase = rttygvars;
     pcode = 0;
     pout = (uchar*)pbco + sizeof(struct gsbco);
-    nregs = nglobals = ncodes = nargs = 0;
+    nregs = nglobals = ncodes = nfvs = nargs = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (phase > rtcode)
@@ -813,4 +813,5 @@ done:
     pbco->numglobals = nglobals;
     pbco->numsubexprs = ncodes;
     pbco->numargs = nargs;
+    pbco->numfvs = nfvs;
 }

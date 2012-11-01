@@ -53,8 +53,7 @@ gsheapeval(gsvalue val)
                         int args_for_code;
 
                         fvs_in_cl = cl->numfvs;
-                        gswarning("%s:%d: Getting number of free variables in bco: deferred", __FILE__, __LINE__);
-                        fvs_for_code = 0;
+                        fvs_for_code = cl->numfvs;
                         args_for_code = code->numargs;
                     if (fvs_in_cl < fvs_for_code) {
                         gspoison(hp, code->pos, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);

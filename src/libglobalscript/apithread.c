@@ -254,7 +254,10 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
         pin = psubexpr;
     }
 
-    /* Free variables */
+    for (i = 0; i < code->numfvs; i++) {
+        api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: get free variable");
+        return;
+    }
 
     for (i = 0; i < code->numargs; i++) {
         api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: get argument");
@@ -299,7 +302,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 struct gsclosure *cl;
 
                 if (nstatements > MAX_NUM_REGISTERS) {
-                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many stateemnts (max 0x%x)", MAX_NUM_REGISTERS);
+                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many statements (max 0x%x)", MAX_NUM_REGISTERS);
                     return;
                 }
 
