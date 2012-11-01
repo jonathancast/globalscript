@@ -367,7 +367,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         for (i = 0; i < p->numarguments; i += 2) {
             struct gstype *fieldtype;
 
-            prod->fields[i / 2].name = p->arguments[0];
+            prod->fields[i / 2].name = p->arguments[i];
             fieldtype = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i + 1])];
             if (!fieldtype)
                 gsfatal("%P: %s doesn't seem to be a type register", p->pos, p->arguments[i + 1]->name)
@@ -877,7 +877,8 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             res->pos = type->pos;
             ressum->numconstrs = sum->numconstrs;
             for (i = 0; i < sum->numconstrs; i++) {
-                gsfatal_unimpl_type(__FILE__, __LINE__, type, "subst into constr arg type");
+                ressum->constrs[i].name = sum->constrs[i].name;
+                ressum->constrs[i].argtype = gstypes_subst(pos, sum->constrs[i].argtype, varname, type1);
             }
 
             return res;

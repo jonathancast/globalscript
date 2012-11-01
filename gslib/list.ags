@@ -3,12 +3,18 @@
 	.type
 
 list.t	.tyabstract	**^
+list.prim.u	.tygvar
+α	.tylambda	*
+_body	.tylet	list.prim.u	α
+	.tylift
+	.tyref	_body
+
+list.prim.u	.tyexpr
 _cons_type	.tygvar
 _nil_type	.tygvar
 α	.tylambda	*
 _cons_type_α	.tylet	_cons_type	α
 _nil_type_α	.tylet	_nil_type	α
-	.tylift
 	.tysum	:	_cons_type_α	nil	_nil_type_α
 
 _cons_type	.tyexpr

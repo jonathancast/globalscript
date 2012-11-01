@@ -1,0 +1,20 @@
+	.document
+
+	.data
+
+	.constr	_eptype	:	0	_ep.head	1	_ep.tail
+_ep.head	.undefined	rune.t
+_ep.tail	.undefined	_tail.ty
+
+	.type
+
+_eptype	.tyexpr
+list.prim.u	.tygvar
+rune.t	.tygvar
+_t	.tylet	list.prim.u	rune.t
+	.tyref	_t
+
+_tail.ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tyref	list.t	rune.t

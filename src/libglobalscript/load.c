@@ -387,7 +387,8 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
             if ((numfields - (2+2)) % 2)
                 gsfatal("%s:%d: Odd number of arguments to .constr when field/value pairs expected", filename, *plineno);
             for (i = 2; 2 + i < numfields; i += 2) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: .constr arguments", filename, *plineno);
+                parsedline->arguments[i] = gsintern_string(gssymfieldlable, fields[2+i]);
+                parsedline->arguments[i+1] = gsintern_string(gssymdatalable, fields[2+i+1]);
             }
         }
     } else if (gssymceq(parsedline->directive, gssymrune, gssymdatadirective, ".rune")) {

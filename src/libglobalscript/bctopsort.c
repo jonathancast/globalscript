@@ -317,7 +317,10 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
             gsfatal_unimpl(__FILE__, __LINE__, "%P: .constr with one argument", item.v->pos);
         } else {
             for (i = 2; i < item.v->numarguments; i += 2) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: .constr with multiple arguments", item.v->pos);
+                struct gsbc_item arg;
+
+                arg = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[i+1]);
+                gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, arg, pend, pc);
             }
         }
     } else if (gssymceq(directive, gssymrune, gssymdatadirective, ".rune")) {

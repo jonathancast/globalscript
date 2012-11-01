@@ -441,8 +441,9 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         if (p->numarguments == 3) {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Get constructor argument", p->pos);
         } else {
-            for (j = 2; j < p->numarguments; j += 2) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Get constructor arguments", p->pos);
+            constr->numargs = (p->numarguments - 2) / 2;
+            for (j = 0; 2+j < p->numarguments; j += 2) {
+                constr->arguments[j / 2] = gssymtable_get_data(symtable, p->arguments[2+j+1]);
             }
         }
     } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {

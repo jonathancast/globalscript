@@ -595,7 +595,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
         gsargcheck(pdata, 1, "constructor");
         for (i = 0; i < sum->numconstrs; i++) {
-            if (sum->constrs[i].name == pdata->arguments[i]) {
+            if (sum->constrs[i].name == pdata->arguments[1]) {
                 constrnum = i;
                 argtype = sum->constrs[i].argtype;
                 goto have_constr;
@@ -617,8 +617,23 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
                 )
             ;
             ubproduct = (struct gstype_ubproduct *)argtype;
-            for (i = 2; i < pdata->numarguments; i += 2) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Check constructor arguments (multiple arguments)", pdata->pos);
+            if ((pdata->numarguments - 2) / 2 != ubproduct->numfields)
+                gsfatal("%P: Wrong number of fields; got %d but expected %d", pdata->pos, (pdata->numarguments - 2) / 2, ubproduct->numfields)
+            ;
+            for (i = 0; 2+i < pdata->numarguments; i += 2) {
+                struct gstype *fieldtype;
+
+                if (i > 0 && strcmp(pdata->arguments[2+i-2]->name, pdata->arguments[2+i]->name) == 0)
+                    gsfatal("%P: Duplicate field %y", pdata->pos, pdata->arguments[2+i])
+                ;
+                if (i > 0 && strcmp(pdata->arguments[2+i-2]->name, pdata->arguments[2+i]->name) > 0)
+                    gsfatal("%P: Fields out of order; %y should come after %y", pdata->pos, pdata->arguments[2+i], pdata->arguments[2+i-2])
+                ;
+                if (pdata->arguments[2+i] != ubproduct->fields[i / 2].name)
+                    gsfatal("%P: Wrong field #%d; got %y but expected %y", pdata->pos, i / 2, pdata->arguments[2+i], ubproduct->fields[i / 2].name)
+                ;
+                fieldtype = gssymtable_get_data_type(symtable, pdata->arguments[2+i+1]);
+                gstypes_type_check_type_fail(pdata->pos, fieldtype, ubproduct->fields[i / 2].type);
             }
         }
     } else if (gssymceq(pdata->directive, gssymrune, gssymdatadirective, ".rune")) {
