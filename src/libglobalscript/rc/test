@@ -102,16 +102,7 @@ if (! grep -s './test-gslib/invalid-abs-type.ags:[0-9]*: I don''t think' ./test-
 echo
 
 ok_diff '-- rune literals --' ./$O.test-gsi rune-literal.ags
-
-echo '-- non-empty records --'
-if (! ./$O.test-gsi ./test-gslib ./test-gslib/record-literal.ags > ./test-results/record-literal.ags-actual >[2] ./test-results/record-literal.ags-errors) {
-    echo 'test-gsi failed; should have succeeded' >[1=2]
-    cat ./test-results/record-literal.ags-errors >[1=2]
-    cat ./test-results/record-literal.ags-actual >[1=2]
-    exit 1
-}
-diff ./test-results/record-literal.ags-actual ./test-results/record-literal.ags-expected
-echo
+ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 
 echo '-- undefined API entry points --'
 if (./$O.test-gsexec ./test-gslib ./test-gslib/undef-api.ags >[2] ./test-results/undef-api.ags-actual) {
