@@ -46,9 +46,7 @@ ace_init()
     return 0;
 }
 
-static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
 static void ace_poison_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
-static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 
 static int ace_alloc_record(struct ace_thread *, struct gsbc *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
@@ -56,6 +54,7 @@ static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
 static void ace_return_undef(struct ace_thread *);
 static int ace_enter(struct ace_thread *);
+static int ace_yield(struct ace_thread *);
 
 static
 void
@@ -116,21 +115,12 @@ ace_thread_pool_main(void *p)
                             ;
                             break;
                         case gsbc_op_yield:
-                            {
-                                if (ip->args[0] >= thread->nregs) {
-                                    ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
-                                    break;
-                                }
-
-                                if (ace_return(thread, ip->pos, thread->regs[ip->args[0]]) > 0)
-                                    suspended_runnable_thread = 1
-                                ;
-                            }
+                            if (ace_yield(thread))
+                                suspended_runnable_thread = 1
+                            ;
                             break;
                         default:
-                            {
-                                ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "run instruction %d", ip->instr);
-                            }
+                            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "run instruction %d", ip->instr);
                             break;
                     }
                     unlock(&thread->lock);
@@ -276,6 +266,9 @@ ace_return_undef(struct ace_thread *thread)
     ace_error_thread(thread, err);
 }
 
+static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
+static int ace_return(struct ace_thread *, struct gspos, gsvalue);
+
 static
 int
 ace_enter(struct ace_thread *thread)
@@ -306,6 +299,26 @@ ace_enter(struct ace_thread *thread)
             ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
             return 0;
     }
+}
+
+static
+int
+ace_yield(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+
+    ip = thread->ip;
+
+    if (ip->args[0] >= thread->nregs) {
+        ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
+        return 0;
+    }
+
+    if (ace_return(thread, ip->pos, thread->regs[ip->args[0]]) > 0)
+        return 1
+    ;
+
+    return 0;
 }
 
 static
