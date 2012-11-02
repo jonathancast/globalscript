@@ -26,7 +26,7 @@ ibio_read_stat(struct uxio_dir_ichannel *chan)
     else if (n == 0)
         return 0;
 
-    return ibio_sys_parse_stat(chan);
+    return gsbio_sys_parse_stat(chan);
 }
 
 #define NAMEMAX 0x100
