@@ -54,6 +54,7 @@ static void ace_poison_thread_unimpl(struct ace_thread *, char *, int, struct gs
 static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 
 static int ace_alloc_record(struct ace_thread *, struct gsbc *);
+static int ace_alloc_unknown_eprim(struct ace_thread *);
 
 static
 void
@@ -91,22 +92,9 @@ ace_thread_pool_main(void *p)
                             ;
                             break;
                         case gsbc_op_unknown_eprim:
-                            {
-                                struct gseprim *prim;
-
-                                prim = gsreserveeprims(sizeof(*prim));
-                                prim->pos = ip->pos;
-                                prim->index = -1;
-
-                                if (thread->nregs >= MAX_NUM_REGISTERS) {
-                                    ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
-                                    break;
-                                }
-                                thread->regs[thread->nregs] = (gsvalue)prim;
-                                thread->nregs++;
-                                thread->ip = GS_NEXT_BYTECODE(ip, 0);
-                                suspended_runnable_thread = 1;
-                            }
+                            if (ace_alloc_unknown_eprim(thread))
+                                suspended_runnable_thread = 1
+                            ;
                             break;
                         case gsbc_op_eprim:
                             {
@@ -250,6 +238,29 @@ ace_alloc_record(struct ace_thread *thread, struct gsbc *ip)
     thread->regs[thread->nregs] = (gsvalue)record;
     thread->nregs++;
     thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[0]);
+    return 1;
+}
+
+static
+int
+ace_alloc_unknown_eprim(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gseprim *prim;
+
+    ip = thread->ip;
+
+    prim = gsreserveeprims(sizeof(*prim));
+    prim->pos = ip->pos;
+    prim->index = -1;
+
+    if (thread->nregs >= MAX_NUM_REGISTERS) {
+        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        return 0;
+    }
+    thread->regs[thread->nregs] = (gsvalue)prim;
+    thread->nregs++;
+    thread->ip = GS_NEXT_BYTECODE(ip, 0);
     return 1;
 }
 
