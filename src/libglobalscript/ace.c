@@ -48,7 +48,7 @@ ace_init()
 
 static void ace_poison_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 
-static int ace_alloc_record(struct ace_thread *, struct gsbc *);
+static int ace_alloc_record(struct ace_thread *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
@@ -81,13 +81,10 @@ ace_thread_pool_main(void *p)
                 unlock(&ace_thread_queue->lock);
 
                 if (thread) {
-                    struct gsbc *ip;
-
                     lock(&thread->lock);
-                    ip = thread->ip;
-                    switch (ip->instr) {
+                    switch (thread->ip->instr) {
                         case gsbc_op_record:
-                            if (ace_alloc_record(thread, thread->ip))
+                            if (ace_alloc_record(thread))
                                 suspended_runnable_thread = 1
                             ;
                             break;
@@ -120,7 +117,7 @@ ace_thread_pool_main(void *p)
                             ;
                             break;
                         default:
-                            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "run instruction %d", ip->instr);
+                            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, thread->ip->pos, "run instruction %d", thread->ip->instr);
                             break;
                     }
                     unlock(&thread->lock);
@@ -138,10 +135,13 @@ ace_thread_pool_main(void *p)
 
 static
 int
-ace_alloc_record(struct ace_thread *thread, struct gsbc *ip)
+ace_alloc_record(struct ace_thread *thread)
 {
+    struct gsbc *ip;
     struct gsrecord *record;
     int j;
+
+    ip = thread->ip;
 
     record = gsreserverecords(sizeof(*record) + ip->args[0] * sizeof(gsvalue));
     record->pos = ip->pos;
