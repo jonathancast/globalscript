@@ -46,7 +46,6 @@ ace_init()
     return 0;
 }
 
-static void ace_error_thread(struct ace_thread *, struct gserror *);
 static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
 static void ace_poison_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 static int ace_return(struct ace_thread *, struct gspos, gsvalue);
@@ -55,13 +54,14 @@ static int ace_alloc_record(struct ace_thread *, struct gsbc *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
+static void ace_return_undef(struct ace_thread *);
 
 static
 void
 ace_thread_pool_main(void *p)
 {
     int have_clients, suspended_runnable_thread;
-    int i, j;
+    int i;
 
     have_clients = 1;
 
@@ -107,15 +107,7 @@ ace_thread_pool_main(void *p)
                             ;
                             break;
                         case gsbc_op_undef:
-                            {
-                                struct gserror *err;
-
-                                err = gsreserveerrors(sizeof(*err));
-                                err->pos = ip->pos;
-                                err->type = gserror_undefined;
-
-                                ace_error_thread(thread, err);
-                            }
+                            ace_return_undef(thread);
                             break;
                         case gsbc_op_enter:
                             {
@@ -285,6 +277,24 @@ ace_push_app(struct ace_thread *thread)
 
     thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[1]);
     return 1;
+}
+
+static void ace_error_thread(struct ace_thread *, struct gserror *);
+
+static
+void
+ace_return_undef(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gserror *err;
+
+    ip = thread->ip;
+
+    err = gsreserveerrors(sizeof(*err));
+    err->pos = ip->pos;
+    err->type = gserror_undefined;
+
+    ace_error_thread(thread, err);
 }
 
 static
