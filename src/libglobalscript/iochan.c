@@ -6,7 +6,7 @@
 #include "iofile.h"
 #include "iomacros.h"
 
-static struct uxio_ichannel *ibio_alloc_uxio_ichannel(void);
+static struct uxio_ichannel *gsbio_alloc_uxio_ichannel(void);
 static void *gsbio_alloc_uxio_buffer(void);
 static long uxio_refill_ichan_from_read(struct uxio_ichannel *);
 
@@ -48,7 +48,7 @@ ibio_get_channel_for_external_io(char *filename, int fd, enum ibio_iochannel_typ
     struct uxio_ichannel *chan;
     void *buf;
 
-    chan = ibio_alloc_uxio_ichannel();
+    chan = gsbio_alloc_uxio_ichannel();
     buf = gsbio_alloc_uxio_buffer();
 
     chan->fd = fd;
@@ -88,7 +88,7 @@ static void gsbio_alloc_new_uxio_buffer_block(void);
 
 static
 struct uxio_ichannel *
-ibio_alloc_uxio_ichannel()
+gsbio_alloc_uxio_ichannel()
 {
     struct uxio_channel_descr_segment *nursury_seg;
     struct uxio_ichannel *pres, *pnext;
