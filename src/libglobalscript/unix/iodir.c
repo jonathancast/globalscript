@@ -43,7 +43,7 @@ gsbio_dir_iopen(char *filename, int omode)
     if (!(res->udir = gsbio_device_iopen(filename, omode)))
         return 0;
 
-    if (!(res->p9dir = gsbio_get_channel_for_external_io(res->udir->filename, -1, ibio_ioread)))
+    if (!(res->p9dir = gsbio_get_channel_for_external_io(res->udir->filename, -1, gsbio_ioread)))
         return 0;
 
     return res;

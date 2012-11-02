@@ -30,7 +30,7 @@ gsbio_device_iopen(char *filename, int omode)
     );
     strcpy(nm, filename);
 
-    return gsbio_get_channel_for_external_io(nm, fd, ibio_ioread);
+    return gsbio_get_channel_for_external_io(nm, fd, gsbio_ioread);
 }
 
 long
