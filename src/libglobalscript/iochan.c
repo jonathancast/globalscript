@@ -273,7 +273,7 @@ uxio_refill_ichan_from_read(struct uxio_ichannel *chan)
 }
 
 int
-ibio_idevice_at_eof(struct uxio_ichannel *chan)
+gsbio_idevice_at_eof(struct uxio_ichannel *chan)
 {
     return chan->at_eof;
 }

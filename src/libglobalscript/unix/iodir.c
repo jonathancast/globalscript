@@ -23,7 +23,7 @@ ibio_sys_stat(char *filename)
     chan = ibio_get_channel_for_external_io("", -1, ibio_iostat);
     if (stat(filename, &uxstat) < 0)
         gsfatal("%s: unix stat failed: %r", filename);
-    ibio_unix_fill_stat(filename, &uxstat, chan);
+    gsbio_unix_fill_stat(filename, &uxstat, chan);
     return chan;
 }
 
@@ -98,7 +98,7 @@ ibio_sys_read_stat(struct uxio_dir_ichannel *chan)
     if (stat(nm, &st) < 0)
         gsfatal("%s: stat failed: %r", nm);
 
-    ibio_unix_fill_stat(nm, &st, chan->p9dir);
+    gsbio_unix_fill_stat(nm, &st, chan->p9dir);
     chan->udir->data_beg = (uchar*)chan->udir->data_beg + dir->d_reclen;
     if (chan->udir->data_end == chan->udir->data_beg)
         chan->udir->data_beg = chan->udir->data_end = chan->udir->buf_beg
@@ -114,7 +114,7 @@ ibio_sys_parse_stat(struct uxio_dir_ichannel *chan)
 }
 
 void
-ibio_unix_fill_stat(char *filename, struct stat *puxstat, struct uxio_ichannel *chan)
+gsbio_unix_fill_stat(char *filename, struct stat *puxstat, struct uxio_ichannel *chan)
 {
     int size;
     u64int mode;

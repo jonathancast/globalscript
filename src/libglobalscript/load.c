@@ -38,7 +38,7 @@ gsadd_global_gslib()
     char globalscript[FILE_NAME_SIZE_LIMIT], buf[FILE_NAME_SIZE_LIMIT];
     long n;
 
-    if (!(chan = ibio_envvar_iopen("GLOBALSCRIPT"))) {
+    if (!(chan = gsbio_envvar_iopen("GLOBALSCRIPT"))) {
         strncpy(globalscript, "", FILE_NAME_SIZE_LIMIT);
         goto set_buf;
     }
@@ -326,7 +326,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     if (n < 0)
         gsfatal("%s:%d: Error in reading data item: %r", filename, lineno);
 
-    if (!ibio_idevice_at_eof(chan))
+    if (!gsbio_idevice_at_eof(chan))
         gsfatal("%s:%d: Expected EOF", filename, lineno);
 
     if (gsclosefile(chan, pid) < 0)

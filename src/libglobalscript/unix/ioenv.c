@@ -9,7 +9,7 @@
 #include "../iofile.h"
 
 struct uxio_ichannel *
-ibio_envvar_iopen(char *name)
+gsbio_envvar_iopen(char *name)
 {
     struct uxio_ichannel *chan;
     char *value;
