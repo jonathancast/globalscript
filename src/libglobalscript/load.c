@@ -24,7 +24,7 @@ static long gsac_tokenize(char *, char **, long);
 int
 gsisdir(char *filename)
 {
-    struct ibio_dir *d;
+    struct gsbio_dir *d;
     d = gsbio_stat(filename);
     return d->d.mode & DMDIR;
 }
@@ -115,7 +115,7 @@ void
 gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtable, struct gsfile_link ***ppend)
 {
     struct uxio_dir_ichannel *chan;
-    struct ibio_dir *dir;
+    struct gsbio_dir *dir;
 
     if (!(chan = gsbio_dir_iopen(filename, OREAD)))
         gsfatal("open: %r")

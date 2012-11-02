@@ -107,7 +107,7 @@ gsbio_sys_read_stat(struct uxio_dir_ichannel *chan)
     return uxio_channel_size_of_available_data(chan->p9dir);
 }
 
-struct ibio_dir *
+struct gsbio_dir *
 gsbio_sys_parse_stat(struct uxio_dir_ichannel *chan)
 {
     return gsbio_parse_stat(chan->p9dir);

@@ -26,7 +26,7 @@ static
 void
 TEST_IOSTAT()
 {
-    struct ibio_dir *pdir;
+    struct gsbio_dir *pdir;
     struct uxio_ichannel *chan;
 
     chan = fixture_sample_chan_with_file_entry();
@@ -44,7 +44,7 @@ static
 void
 TEST_IOSTAT_DIR()
 {
-    struct ibio_dir *pdir;
+    struct gsbio_dir *pdir;
     struct uxio_ichannel *chan;
 
     chan = fixture_sample_chan_with_dir_entry();
