@@ -1,6 +1,6 @@
 enum gsbio_iochannel_type {
     gsbio_ioread,
-    ibio_iowrite,
+    gsbio_iowrite,
     gsbio_iorddir,
     gsbio_iostat,
     gsbio_iogetenv,
