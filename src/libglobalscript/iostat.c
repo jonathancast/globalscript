@@ -10,7 +10,7 @@
 static struct ibio_dir *gsbio_alloc_dir(ulong size);
 
 struct ibio_dir *
-ibio_stat(char *filename)
+gsbio_stat(char *filename)
 {
     struct uxio_ichannel *chan = gsbio_sys_stat(filename);
     return gsbio_parse_stat(chan);

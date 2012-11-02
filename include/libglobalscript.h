@@ -395,7 +395,7 @@ struct ibio_dir {
     Dir d;
 };
 
-struct ibio_dir *ibio_stat(char *filename);
+struct ibio_dir *gsbio_stat(char *filename);
 
 struct uxio_ichannel *ibio_device_iopen(char *filename, int omode);
 struct uxio_dir_ichannel *gsbio_dir_iopen(char *filename, int omode);

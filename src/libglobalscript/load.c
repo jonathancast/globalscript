@@ -25,7 +25,7 @@ int
 gsisdir(char *filename)
 {
     struct ibio_dir *d;
-    d = ibio_stat(filename);
+    d = gsbio_stat(filename);
     return d->d.mode & DMDIR;
 }
 
