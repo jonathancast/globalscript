@@ -47,6 +47,7 @@ ace_init()
 }
 
 static void ace_poison_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
+static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 
 static int ace_alloc_record(struct ace_thread *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
@@ -82,44 +83,67 @@ ace_thread_pool_main(void *p)
 
                 if (thread) {
                     lock(&thread->lock);
-                    switch (thread->ip->instr) {
-                        case gsbc_op_record:
-                            if (ace_alloc_record(thread))
-                                suspended_runnable_thread = 1
-                            ;
-                            break;
-                        case gsbc_op_unknown_eprim:
-                            if (ace_alloc_unknown_eprim(thread))
-                                suspended_runnable_thread = 1
-                            ;
-                            break;
-                        case gsbc_op_eprim:
-                            if (ace_alloc_eprim(thread))
-                                suspended_runnable_thread = 1
-                            ;
-                            break;
-                        case gsbc_op_app:
-                            if (ace_push_app(thread))
-                                suspended_runnable_thread = 1
-                            ;
-                            break;
-                        case gsbc_op_undef:
-                            ace_return_undef(thread);
-                            break;
-                        case gsbc_op_enter:
-                            if (ace_enter(thread))
-                                suspended_runnable_thread = 1
-                            ;
-                            break;
-                        case gsbc_op_yield:
-                            if (ace_yield(thread))
-                                suspended_runnable_thread = 1
-                            ;
-                            break;
-                        default:
-                            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, thread->ip->pos, "run instruction %d", thread->ip->instr);
-                            break;
+
+                    if (thread->blocked) {
+                        gsvalue prog;
+                        gstypecode st;
+
+                        prog = thread->blocked;
+                        st = GS_SLOW_EVALUATE(prog);
+
+                        switch (st) {
+                            case gstystack:
+                                break;
+                            case gstyindir:
+                                if (ace_return(thread, thread->blockedat, gsremove_indirections(prog)) > 0)
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            default:
+                                ace_poison_thread_unimpl(thread, __FILE__, __LINE__, thread->blockedat, ".enter (st = %d)", st);
+                                break;
+                        }
+                    } else {
+                        switch (thread->ip->instr) {
+                            case gsbc_op_record:
+                                if (ace_alloc_record(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_unknown_eprim:
+                                if (ace_alloc_unknown_eprim(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_eprim:
+                                if (ace_alloc_eprim(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_app:
+                                if (ace_push_app(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_undef:
+                                ace_return_undef(thread);
+                                break;
+                            case gsbc_op_enter:
+                                if (ace_enter(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_yield:
+                                if (ace_yield(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            default:
+                                ace_poison_thread_unimpl(thread, __FILE__, __LINE__, thread->ip->pos, "run instruction %d", thread->ip->instr);
+                                break;
+                        }
                     }
+
                     unlock(&thread->lock);
                 }
             }
@@ -267,7 +291,6 @@ ace_return_undef(struct ace_thread *thread)
 }
 
 static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
-static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 
 static
 int
@@ -289,6 +312,8 @@ ace_enter(struct ace_thread *thread)
 
     switch (st) {
         case gstystack:
+            thread->blocked = prog;
+            thread->blockedat = ip->pos;
             return 0;
         case gstyindir:
             if (ace_return(thread, ip->pos, gsremove_indirections(prog)) > 0)
@@ -546,6 +571,7 @@ ace_start_evaluation(gsvalue val)
         return gstywhnf;
     }
 
+    thread->blocked = 0;
     thread->ip = instr;
 
     ev = (struct gseval *)hp;
