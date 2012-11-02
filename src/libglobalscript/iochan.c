@@ -30,7 +30,7 @@ ibio_device_iopen(char *filename, int omode)
     );
     strcpy(nm, filename);
 
-    return ibio_get_channel_for_external_io(nm, fd, ibio_ioread);
+    return gsbio_get_channel_for_external_io(nm, fd, ibio_ioread);
 }
 
 long
@@ -43,7 +43,7 @@ ibio_device_iclose(struct uxio_ichannel *chan)
 }
 
 struct uxio_ichannel *
-ibio_get_channel_for_external_io(char *filename, int fd, enum ibio_iochannel_type ty)
+gsbio_get_channel_for_external_io(char *filename, int fd, enum ibio_iochannel_type ty)
 {
     struct uxio_ichannel *chan;
     void *buf;

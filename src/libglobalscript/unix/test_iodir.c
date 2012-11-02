@@ -113,7 +113,7 @@ fixture_unix_stat_buffer_for_file()
 
     memset(&uxstat, 0, sizeof(uxstat));
 
-    chan = ibio_get_channel_for_external_io("", -1, ibio_iostat);
+    chan = gsbio_get_channel_for_external_io("", -1, ibio_iostat);
     gsbio_unix_fill_stat("./foo.txt", &uxstat, chan);
 
     return chan;
@@ -129,7 +129,7 @@ fixture_unix_stat_buffer_for_dir()
     uxstat.st_mode = 0;
     uxstat.st_mode |= S_IFDIR;
 
-    chan = ibio_get_channel_for_external_io("", -1, ibio_iostat);
+    chan = gsbio_get_channel_for_external_io("", -1, ibio_iostat);
     gsbio_unix_fill_stat("./foo", &uxstat, chan);
 
     return chan;

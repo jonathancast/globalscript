@@ -63,7 +63,7 @@ fixture_sample_chan_with_file_entry()
     void *psize, *p;
     long size;
 
-    res = ibio_get_channel_for_external_io(0, -1, ibio_iostat);
+    res = gsbio_get_channel_for_external_io(0, -1, ibio_iostat);
 
     size = 0;
     psize = uxio_save_space(res, 2);
@@ -104,7 +104,7 @@ fixture_sample_chan_with_dir_entry()
     void *psize, *p;
     long size;
 
-    res = ibio_get_channel_for_external_io("", -1, ibio_iostat);
+    res = gsbio_get_channel_for_external_io("", -1, ibio_iostat);
 
     size = 0;
     psize = uxio_save_space(res, 2);

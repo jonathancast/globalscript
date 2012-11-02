@@ -20,7 +20,7 @@ gsbio_sys_stat(char *filename)
 {
     struct uxio_ichannel *chan;
     struct stat uxstat;
-    chan = ibio_get_channel_for_external_io("", -1, ibio_iostat);
+    chan = gsbio_get_channel_for_external_io("", -1, ibio_iostat);
     if (stat(filename, &uxstat) < 0)
         gsfatal("%s: unix stat failed: %r", filename);
     gsbio_unix_fill_stat(filename, &uxstat, chan);
@@ -43,7 +43,7 @@ gsbio_dir_iopen(char *filename, int omode)
     if (!(res->udir = ibio_device_iopen(filename, omode)))
         return 0;
 
-    if (!(res->p9dir = ibio_get_channel_for_external_io(res->udir->filename, -1, ibio_ioread)))
+    if (!(res->p9dir = gsbio_get_channel_for_external_io(res->udir->filename, -1, ibio_ioread)))
         return 0;
 
     return res;
