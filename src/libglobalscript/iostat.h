@@ -1,4 +1,4 @@
-struct uxio_ichannel *ibio_sys_stat(char *filename);
+struct uxio_ichannel *gsbio_sys_stat(char *filename);
 
 long gsbio_sys_read_stat(struct uxio_dir_ichannel *);
 

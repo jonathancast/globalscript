@@ -16,7 +16,7 @@
 #include "iodir.h"
 
 struct uxio_ichannel *
-ibio_sys_stat(char *filename)
+gsbio_sys_stat(char *filename)
 {
     struct uxio_ichannel *chan;
     struct stat uxstat;
