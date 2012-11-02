@@ -11,7 +11,7 @@ static void *gsbio_alloc_uxio_buffer(void);
 static long uxio_refill_ichan_from_read(struct uxio_ichannel *);
 
 struct uxio_ichannel *
-ibio_device_iopen(char *filename, int omode)
+gsbio_device_iopen(char *filename, int omode)
 {
     int fd;
     char *nm;

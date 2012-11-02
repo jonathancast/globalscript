@@ -40,7 +40,7 @@ gsbio_dir_iopen(char *filename, int omode)
 
     res = gs_sys_seg_suballoc(&uxio_dir_ichannel_desc, &uxio_dir_ichannel_nursury, sizeof(*res), sizeof(res->udir));
 
-    if (!(res->udir = ibio_device_iopen(filename, omode)))
+    if (!(res->udir = gsbio_device_iopen(filename, omode)))
         return 0;
 
     if (!(res->p9dir = gsbio_get_channel_for_external_io(res->udir->filename, -1, ibio_ioread)))

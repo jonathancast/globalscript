@@ -1621,7 +1621,7 @@ gsopenfile(char *filename, int omode, int *ppid)
     ext = strrchr(filename, '.');
     if (!ext) goto error;
     if (!strcmp(ext, ".ags") || !strcmp(ext, ".gsac")) {
-        return ibio_device_iopen(filename, omode);
+        return gsbio_device_iopen(filename, omode);
     }
 error:
     gsfatal("%s:extensions are mandatory in Global Script source files (sorry)", filename);
