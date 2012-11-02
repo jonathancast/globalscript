@@ -433,13 +433,18 @@ static
 void
 gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsbc_item item, struct gstype **pentrytype)
 {
-    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
 
     pdata = item.v;
 
     if (gssymceq(pdata->directive, gssymrecord, gssymdatadirective, ".record")) {
+        return;
+    } else if (
+        gssymceq(pdata->directive, gssymrune, gssymdatadirective, ".rune")
+        || gssymceq(pdata->directive, gssymstring, gssymdatadirective, ".string")
+    ) {
         return;
     } else if (gssymceq(pdata->directive, gssymconstr, gssymdatadirective, ".constr")) {
         struct gstype *type;
@@ -454,8 +459,6 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
         ; else if (pentrytype)
             *pentrytype = type
         ;
-    } else if (gssymceq(pdata->directive, gssymrune, gssymdatadirective, ".rune")) {
-        return;
     } else if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;
 
@@ -534,7 +537,7 @@ static
 void
 gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, struct gstype **pentrytype, int n, int i)
 {
-    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
 
@@ -602,6 +605,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             }
         }
         gsfatal("%P: Type %s lacks a constructor %s", pdata->pos, pdata->arguments[0]->name, pdata->arguments[1]->name);
+        argtype = 0;
     have_constr:
         if (pdata->numarguments == 3) {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Check constructor arguments (one argument)", pdata->pos);
@@ -644,6 +648,31 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             gssymtable_set_data_type(symtable, pdata->label, rune)
         ; else if (pentrytype)
             *pentrytype = rune
+        ;
+    } else if (gssymceq(pdata->directive, gssymstring, gssymdatadirective, ".string")) {
+        static gsinterned_string gssymtylist, gssymtyrune;
+        struct gstype *list, *rune, *string;
+
+         if (!gssymtylist)
+             gssymtylist = gsintern_string(gssymtypelable, "list.t")
+         ;
+         list = gssymtable_get_type(symtable, gssymtylist);
+
+         if (!gssymtyrune)
+             gssymtyrune = gsintern_string(gssymtypelable, "rune.t")
+         ;
+         rune = gssymtable_get_type(symtable, gssymtyrune);
+
+         string = gstype_apply(pdata->pos, list, rune);
+
+         if (pdata->numarguments > 1)
+             gstypes_type_check_type_fail(pdata->pos, gssymtable_get_data_type(symtable, pdata->arguments[1]), string)
+         ;
+
+        if (pdata->label)
+            gssymtable_set_data_type(symtable, pdata->label, string)
+        ; else if (pentrytype)
+            *pentrytype = string
         ;
     } else if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;
@@ -1501,6 +1530,14 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
     int i;
 
     switch (pty->node) {
+        case gstype_abstract: {
+            struct gstype_abstract *abstract;
+
+            abstract = (struct gstype_abstract *)pty;
+
+            res = seprint(res, eob, "%y", abstract->name);
+            return res;
+        }
         case gstype_knprim: {
             struct gstype_knprim *prim;
 

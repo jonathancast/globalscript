@@ -207,3 +207,36 @@ gstype_expect_fun(struct gstype *ty, struct gstype **ptyarg, struct gstype **pty
         return -1;
     }
 }
+
+struct gstype *
+gstype_get_definition(struct gspos pos, struct gsfile_symtable *symtable, struct gstype *ty)
+{
+    char ty_buf[0x100];
+
+    if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
+        gsfatal_unimpl(__FILE__, __LINE__, "buffer overflow printing type %P", ty->pos);
+        return 0;
+    }
+
+    if (ty->node == gstype_abstract) {
+        struct gstype_abstract *abstract;
+
+        abstract = (struct gstype_abstract *)ty;
+
+        return gssymtable_get_abstype(symtable, abstract->name);
+    } else if (ty->node == gstype_app) {
+        struct gstype_app *app;
+        struct gstype *fun_defn;
+
+        app = (struct gstype_app *)ty;
+
+        if (fun_defn = gstype_get_definition(pos, symtable, app->fun))
+            return gstype_supply(pos, fun_defn, app->arg)
+        ; else
+            return 0
+        ;
+    } else {
+        gsfatal_unimpl(__FILE__, __LINE__, "I don't think %s is an abstract type", ty_buf);
+        return 0;
+    }
+}

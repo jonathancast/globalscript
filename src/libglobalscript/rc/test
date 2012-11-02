@@ -109,6 +109,7 @@ ok_diff '-- rune literals --' ./$O.test-gsi rune-literal.ags
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 ok_diff '-- constructors --' ./$O.test-gsi constructor.ags
 ok_diff '-- constructors with arguments --' ./$O.test-gsi constructor-args.ags
+ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 
 echo '-- undefined API entry points --'
 if (./$O.test-gsexec ./test-gslib ./test-gslib/undef-api.ags >[2] ./test-results/undef-api.ags-actual) {

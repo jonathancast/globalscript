@@ -100,6 +100,7 @@ typedef enum {
     gssymcoercionop,
     gssymseparator,
     gssymruneconstant,
+    gssymstringconstant,
 } gssymboltype;
 
 typedef struct gsstring_value {
@@ -126,6 +127,7 @@ struct gspos {
 struct gstype;
 enum gsprim_type_group;
 struct gskind;
+struct gsfile_symtable;
 
 int gstype_expect_abstract(struct gstype *, char *, char *, char *);
 int gstype_expect_prim(struct gstype *, enum gsprim_type_group, char *, char *, char *, char *);
@@ -134,6 +136,8 @@ int gstype_expect_forall(struct gstype *, gsinterned_string *, struct gstype **,
 int gstype_expect_lift(struct gstype *, struct gstype **, char *, char *);
 int gstype_expect_app(struct gstype *, struct gstype **, struct gstype **, char *, char *);
 int gstype_expect_fun(struct gstype *, struct gstype **, struct gstype **, char *, char *);
+
+struct gstype *gstype_get_definition(struct gspos, struct gsfile_symtable *, struct gstype *);
 
 int gstypes_type_check(struct gspos, struct gstype *, struct gstype *, char *, char *);
 

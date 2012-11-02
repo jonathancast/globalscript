@@ -80,7 +80,7 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
 
 static char *gsbc_parse_rune_literal(struct gspos, char *, gsvalue *);
 
-static gsinterned_string gssymundefined, gssymrecord, gssymconstr, gssymrune, gssymclosure, gssymcast;
+static gsinterned_string gssymundefined, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymclosure, gssymcast;
 
 static
 void
@@ -115,6 +115,25 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
 
         *psection = gsbc_indir;
         *pindir = res;
+    } else if (gssymceq(p->directive, gssymstring, gssymdatadirective, ".string")) {
+        char *eos;
+        int len;
+        ulong size;
+
+        *psection = gsbc_constrs;
+        eos = p->arguments[0]->name;
+        len = 0;
+        while (*eos) {
+            gsvalue v;
+
+            eos = gsbc_parse_rune_literal(p->pos, eos, &v);
+            len++;
+        }
+        size = len * (sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
+        if (p->numarguments < 2)
+            size += sizeof(struct gsconstr)
+        ;
+        *psize = size;
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         *psection = gsbc_errors;
         *psize = sizeof(struct gserror);
@@ -448,6 +467,44 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         }
     } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
         ;
+    } else if (gssymceq(p->directive, gssymstring, gssymdatadirective, ".string")) {
+        char *eos;
+        gsvalue tail, *pptail;
+
+        eos = p->arguments[0]->name;
+        tail = heap[i];
+        pptail = 0;
+        while (*eos) {
+            struct gsconstr *cons;
+
+            cons = (struct gsconstr *)tail;
+
+            if (pptail)
+                *pptail = tail
+            ;
+            cons->pos = p->pos;
+            cons->constrnum = 0;
+            cons->numargs = 2;
+            eos = gsbc_parse_rune_literal(p->pos, eos, &cons->arguments[0]);
+            pptail = &cons->arguments[1];
+
+            tail = (gsvalue)((uchar*)tail + sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
+        }
+        if (p->numarguments >= 2) {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: .string with provided tail", p->pos);
+        } else {
+            struct gsconstr *gsnil;
+
+            gsnil = (struct gsconstr *)tail;
+
+            if (pptail)
+                *pptail = tail
+            ;
+
+            gsnil->pos = p->pos;
+            gsnil->constrnum = 1;
+            gsnil->numargs = 0;
+        }
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gserror *er;
 

@@ -1,4 +1,4 @@
-/* §source.file{Loading String Code Files & Other Source Files} */
+/* §source.file Loading String Code Files & Other Source Files */
 
 #include <u.h>
 #include <libc.h>
@@ -96,7 +96,7 @@ gsadddir(char *filename)
     gscurrent_symtable = symtable;
 }
 
-static gsparsedfile *gsreadfile(char *filename, char *relname, int skip_docs, int *, struct gsfile_symtable *symtable);
+static gsparsedfile *gsreadfile(char *filename, char *relname, int skip_docs, int *, int is_ags, struct gsfile_symtable *symtable);
 
 static struct gs_block_class filename_desc = {
     /* evaluator = */ gsnoeval,
@@ -160,7 +160,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
 
                 file_symtable = gscreatesymtable(symtable);
                 is_doc = 0;
-                file = gsreadfile(newfilename, newrelname, 1, &is_doc, file_symtable);
+                file = gsreadfile(newfilename, newrelname, 1, &is_doc, 1, file_symtable);
                 if (!file) {
                     if (!is_doc)
                         gswarning("%s:%d: Skipping %s: %r", __FILE__, __LINE__, newfilename)
@@ -190,10 +190,13 @@ gsaddfile(char *filename, gsvalue *pentry, struct gstype **ptype)
 {
     gsparsedfile *parsedfile;
     struct gsfile_symtable *symtable;
+    char *ext;
+
+    ext = strrchr(filename, '.');
 
     symtable = gscreatesymtable(gscurrent_symtable);
 
-    parsedfile = gsreadfile(filename, "", 0, 0, symtable);
+    parsedfile = gsreadfile(filename, "", 0, 0, ext && !strcmp(ext, ".ags"), symtable);
 
     gsloadfile(parsedfile, symtable, pentry, ptype);
 
@@ -201,7 +204,7 @@ gsaddfile(char *filename, gsvalue *pentry, struct gstype **ptype)
 }
 
 static long gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
-static long gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
+static long gsparse_data_item(char *filename, int is_ags, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 static long gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 static long gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 static long gsparse_coercion_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
@@ -210,7 +213,7 @@ static long gsparse_coercion_item(char *filename, gsparsedfile *parsedfile, stru
 #define NUM_FIELDS 0x20
 
 gsparsedfile *
-gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, struct gsfile_symtable *symtable)
+gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags, struct gsfile_symtable *symtable)
 {
     struct uxio_ichannel *chan;
     char line[LINE_LENGTH];
@@ -301,7 +304,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, struct gsf
                 gsfatal("%s:%d: Missing section directive", filename, lineno);
                 break;
             case gsdatasection:
-                if (gsparse_data_item(filename, parsedfile, chan, line, &lineno, fields, n, symtable) < 0)
+                if (gsparse_data_item(filename, is_ags, parsedfile, chan, line, &lineno, fields, n, symtable) < 0)
                     gsfatal("%s:%d: Error in reading data item: %r", filename, lineno);
                 break;
             case gscodesection:
@@ -334,9 +337,9 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, struct gsf
 
 static
 long
-gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
+gsparse_data_item(char *filename, int is_ags, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymundefined, gssymcast;
 
     struct gsparsedline *parsedline;
     int i;
@@ -397,6 +400,14 @@ gsparse_data_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
         parsedline->arguments[0] = gsintern_string(gssymruneconstant, fields[2+0]);
         if (numfields > 2+1)
             gsfatal("%s:%d: Too many arguments to .rune; I know about the rune literal to use");
+    } else if (is_ags && gssymceq(parsedline->directive, gssymstring, gssymdatadirective, ".string")) {
+        if (numfields < 2+1)
+            gsfatal("%s:%d: Missing string literal", filename, *plineno);
+        parsedline->arguments[0] = gsintern_string(gssymstringconstant, fields[2+0]);
+        if (numfields >= 2+2)
+            parsedline->arguments[1] = gsintern_string(gssymdatalable, fields[2+1]);
+        if (numfields > 2+2)
+            gsfatal("%s:%d: Too many arguments to .string");
     } else if (gssymceq(parsedline->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         if (numfields < 2+1)
             gsfatal("%s:%d: Missing type label", filename, *plineno);

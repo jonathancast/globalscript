@@ -16,7 +16,7 @@ gsadd_client_prim_sets()
 {
 }
 
-static int gsprint(struct gstype *type, gsvalue prog);
+static int gsprint(struct gstype *type, struct gsfile_symtable *, gsvalue prog);
 static int gsprint_unboxed(struct gstype *type, gsvalue prog);
 
 void
@@ -32,7 +32,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *
                 prog = gsremove_indirections(prog);
                 break;
             case gstywhnf:
-                if (gsprint(type, prog) < 0) {
+                if (gsprint(type, symtable, prog) < 0) {
                     ace_down();
                     exits("error");
                 }
@@ -63,7 +63,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *
 
 static
 int
-gsprint(struct gstype *type, gsvalue prog)
+gsprint(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
 {
     struct gs_blockdesc *block;
 
@@ -143,18 +143,22 @@ gsprint(struct gstype *type, gsvalue prog)
         struct gstype_sum *sum;
         int i;
 
-        sum = 0;
-        if (type->node == gstype_lift) {
-            struct gstype_lift *lift = (struct gstype_lift *)type;
-
-            type = lift->arg;
-        }
-        if (type->node == gstype_sum) {
-            sum = (struct gstype_sum *)type;
-        } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Print constructors of type %d", type->pos, type->node);
-        }
         constr = (struct gsconstr *)prog;
+
+        sum = 0;
+        while (type->node != gstype_sum) {
+            if (type->node == gstype_app)
+                type = gstype_get_definition(constr->pos, symtable, type)
+            ; else if (type->node == gstype_lift) {
+                struct gstype_lift *lift = (struct gstype_lift *)type;
+
+                type = lift->arg;
+            } else {
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Print constructors of type %d", type->pos, type->node);
+            }
+        }
+        sum = (struct gstype_sum *)type;
+
         print("%y", sum->constrs[constr->constrnum].name);
         for (i = 0; i < constr->numargs; i++)
             print(" <expr>")
