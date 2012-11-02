@@ -83,7 +83,7 @@ struct uxio_channel_buffer_segment {
 void *uxio_channel_descr_nursury;
 void *uxio_channel_buffer_nursury;
 
-static void ibio_alloc_new_uxio_channel_block(void);
+static void gsbio_alloc_new_uxio_channel_block(void);
 static void gsbio_alloc_new_uxio_buffer_block(void);
 
 static
@@ -94,13 +94,13 @@ ibio_alloc_uxio_ichannel()
     struct uxio_ichannel *pres, *pnext;
 
     if (!uxio_channel_descr_nursury)
-        ibio_alloc_new_uxio_channel_block();
+        gsbio_alloc_new_uxio_channel_block();
 
     nursury_seg = (struct uxio_channel_descr_segment *)BLOCK_CONTAINING(uxio_channel_descr_nursury);
     pres = (struct uxio_ichannel *)uxio_channel_descr_nursury;
     pnext = pres + 1;
     if ((uchar*)pnext >= (uchar*)END_OF_BLOCK(nursury_seg))
-        ibio_alloc_new_uxio_channel_block();
+        gsbio_alloc_new_uxio_channel_block();
     else
         uxio_channel_descr_nursury = pnext;
 
@@ -109,7 +109,7 @@ ibio_alloc_uxio_ichannel()
 
 static
 void
-ibio_alloc_new_uxio_channel_block()
+gsbio_alloc_new_uxio_channel_block()
 {
     struct uxio_channel_descr_segment *nursury_seg;
 
