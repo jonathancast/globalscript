@@ -46,8 +46,6 @@ ace_init()
     return 0;
 }
 
-static struct gsbc_cont *ace_stack_alloc(struct ace_thread *, struct gspos, ulong);
-
 static void ace_error_thread(struct ace_thread *, struct gserror *);
 static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
 static void ace_poison_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
@@ -56,6 +54,7 @@ static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 static int ace_alloc_record(struct ace_thread *, struct gsbc *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
+static int ace_push_app(struct ace_thread *);
 
 static
 void
@@ -103,29 +102,9 @@ ace_thread_pool_main(void *p)
                             ;
                             break;
                         case gsbc_op_app:
-                            {
-                                struct gsbc_cont *cont;
-                                struct gsbc_cont_app *app;
-
-                                cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont) + ip->args[0] * sizeof(gsvalue));
-                                app = (struct gsbc_cont_app *)cont;
-                                if (!cont) goto app_failed;
-
-                                cont->node = gsbc_cont_app;
-                                cont->pos = ip->pos;
-                                app->numargs = ip->args[0];
-                                for (j = 0; j < ip->args[0]; j++) {
-                                    if (ip->args[1 + j] >= thread->nregs) {
-                                        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".app argument too large");
-                                        goto app_failed;
-                                    }
-                                    app->arguments[j] = thread->regs[ip->args[1 + j]];
-                                }
-
-                                thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[1]);
-                                suspended_runnable_thread = 1;
-                            }
-                        app_failed:
+                            if (ace_push_app(thread))
+                                suspended_runnable_thread = 1
+                            ;
                             break;
                         case gsbc_op_undef:
                             {
@@ -273,6 +252,38 @@ ace_alloc_eprim(struct ace_thread *thread)
     thread->nregs++;
     thread->ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
 
+    return 1;
+}
+
+static struct gsbc_cont *ace_stack_alloc(struct ace_thread *, struct gspos, ulong);
+
+static
+int
+ace_push_app(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsbc_cont *cont;
+    struct gsbc_cont_app *app;
+    int j;
+
+    ip = thread->ip;
+
+    cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont) + ip->args[0] * sizeof(gsvalue));
+    app = (struct gsbc_cont_app *)cont;
+    if (!cont) return 0;
+
+    cont->node = gsbc_cont_app;
+    cont->pos = ip->pos;
+    app->numargs = ip->args[0];
+    for (j = 0; j < ip->args[0]; j++) {
+        if (ip->args[1 + j] >= thread->nregs) {
+            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".app argument too large");
+            return 0;
+        }
+        app->arguments[j] = thread->regs[ip->args[1 + j]];
+    }
+
+    thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[1]);
     return 1;
 }
 
