@@ -6,7 +6,7 @@ enum gsbio_iochannel_type {
     gsbio_iogetenv,
 };
 
-char * ibio_efmt_iochannel_type(char *, char *, enum gsbio_iochannel_type);
+char * gsbio_efmt_iochannel_type(char *, char *, enum gsbio_iochannel_type);
 
 struct uxio_dir_ichannel {
     struct uxio_ichannel *udir, *p9dir;
