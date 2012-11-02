@@ -7,7 +7,7 @@
 #include "iostat.h"
 #include "iomacros.h"
 
-static struct ibio_dir *ibio_alloc_dir(ulong size);
+static struct ibio_dir *gsbio_alloc_dir(ulong size);
 
 struct ibio_dir *
 ibio_stat(char *filename)
@@ -118,7 +118,7 @@ ibio_parse_stat(struct uxio_ichannel *ip)
     name[namesize] = 0;
 
     dir.size = sizeof(struct ibio_dir) + namesize + 1;
-    res = ibio_alloc_dir(dir.size);
+    res = gsbio_alloc_dir(dir.size);
     resend = (uchar*)res + sizeof(struct ibio_dir);
 
     memcpy(resend, name, namesize + 1);
@@ -147,7 +147,7 @@ static void gsbio_alloc_new_dir_block(void);
 
 static
 struct ibio_dir *
-ibio_alloc_dir(ulong size)
+gsbio_alloc_dir(ulong size)
 {
     struct ibio_dir_segment *nursury_seg;
     void *pres, *pnext;
