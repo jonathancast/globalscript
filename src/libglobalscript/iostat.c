@@ -21,8 +21,8 @@ ibio_read_stat(struct uxio_dir_ichannel *chan)
 {
     long n;
 
-    if ((n = ibio_sys_read_stat(chan)) < 0)
-        gsfatal("ibio_sys_read_stat failed on channel %d: %r", chan->udir->fd);
+    if ((n = gsbio_sys_read_stat(chan)) < 0)
+        gsfatal("gsbio_sys_read_stat failed on channel %d: %r", chan->udir->fd);
     else if (n == 0)
         return 0;
 

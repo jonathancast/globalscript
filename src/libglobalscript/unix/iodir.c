@@ -50,7 +50,7 @@ ibio_dir_iopen(char *filename, int omode)
 }
 
 long
-ibio_sys_read_stat(struct uxio_dir_ichannel *chan)
+gsbio_sys_read_stat(struct uxio_dir_ichannel *chan)
 {
     struct dirent *dir;
     ulong sz;
