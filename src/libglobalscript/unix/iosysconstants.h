@@ -3,7 +3,7 @@ enum gsbio_iochannel_type {
     ibio_iowrite,
     ibio_iorddir,
     gsbio_iostat,
-    ibio_iogetenv,
+    gsbio_iogetenv,
 };
 
 char * ibio_efmt_iochannel_type(char *, char *, enum gsbio_iochannel_type);

@@ -20,7 +20,7 @@ gsbio_envvar_iopen(char *name)
         return 0
     ;
 
-    chan = gsbio_get_channel_for_external_io("", -1, ibio_iogetenv);
+    chan = gsbio_get_channel_for_external_io("", -1, gsbio_iogetenv);
 
     eov = value;
     while (*eov) eov++;
