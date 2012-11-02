@@ -42,7 +42,7 @@ gsadd_global_gslib()
         strncpy(globalscript, "", FILE_NAME_SIZE_LIMIT);
         goto set_buf;
     }
-    if ((n = ibio_get_contents(chan, globalscript, FILE_NAME_SIZE_LIMIT)) < 0)
+    if ((n = gsbio_get_contents(chan, globalscript, FILE_NAME_SIZE_LIMIT)) < 0)
         gsfatal("Error reading $GLOBALSCRIPT: %r")
     ;
     if (n >= FILE_NAME_SIZE_LIMIT) {

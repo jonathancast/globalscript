@@ -191,7 +191,7 @@ uxio_consume_space(struct uxio_ichannel *chan, void *dest, ulong sz)
 }
 
 long
-ibio_get_contents(struct uxio_ichannel *chan, char *buf, long max)
+gsbio_get_contents(struct uxio_ichannel *chan, char *buf, long max)
 {
     char *p;
     long n, m;
