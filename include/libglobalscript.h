@@ -400,7 +400,7 @@ struct ibio_dir *gsbio_stat(char *filename);
 struct uxio_ichannel *ibio_device_iopen(char *filename, int omode);
 struct uxio_dir_ichannel *gsbio_dir_iopen(char *filename, int omode);
 struct uxio_ichannel *gsbio_envvar_iopen(char *name);
-long ibio_device_iclose(struct uxio_ichannel *);
+long gsbio_device_iclose(struct uxio_ichannel *);
 
 long gsbio_device_getline(struct uxio_ichannel *chan, char *line, long max);
 long gsbio_get_contents(struct uxio_ichannel *chan, char *buf, long max);

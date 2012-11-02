@@ -49,7 +49,7 @@ gsadd_global_gslib()
         globalscript[n - 1] = 0;
         gsfatal("%s:%d: $GLOBALSCRIPT too large (only read %s)", __FILE__, __LINE__, globalscript);
     }
-    if (ibio_device_iclose(chan) < 0)
+    if (gsbio_device_iclose(chan) < 0)
         gsfatal("Could not close $GLOBALSCRIPT fd: %r");
 
 set_buf:
@@ -1635,7 +1635,7 @@ gsclosefile(struct uxio_ichannel *chan, int pid)
     if (pid)
         gsfatal("gsclosefile for pipe next");
 
-    return ibio_device_iclose(chan);
+    return gsbio_device_iclose(chan);
 }
 
 static

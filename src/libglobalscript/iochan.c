@@ -34,7 +34,7 @@ ibio_device_iopen(char *filename, int omode)
 }
 
 long
-ibio_device_iclose(struct uxio_ichannel *chan)
+gsbio_device_iclose(struct uxio_ichannel *chan)
 {
     if (chan->fd < 0)
         return 0;
