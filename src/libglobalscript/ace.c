@@ -55,6 +55,7 @@ static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
 static void ace_return_undef(struct ace_thread *);
+static int ace_enter(struct ace_thread *);
 
 static
 void
@@ -110,31 +111,9 @@ ace_thread_pool_main(void *p)
                             ace_return_undef(thread);
                             break;
                         case gsbc_op_enter:
-                            {
-                                gstypecode st;
-                                gsvalue prog;
-
-                                if (ip->args[0] >= thread->nregs) {
-                                    ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
-                                    break;
-                                }
-
-                                prog = thread->regs[ip->args[0]];
-                                st = GS_SLOW_EVALUATE(prog);
-
-                                switch (st) {
-                                    case gstystack:
-                                        break;
-                                    case gstyindir:
-                                        if (ace_return(thread, ip->pos, gsremove_indirections(prog)) > 0)
-                                            suspended_runnable_thread = 1
-                                        ;
-                                        break;
-                                    default:
-                                        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
-                                        break;
-                                }
-                            }
+                            if (ace_enter(thread))
+                                suspended_runnable_thread = 1
+                            ;
                             break;
                         case gsbc_op_yield:
                             {
@@ -295,6 +274,38 @@ ace_return_undef(struct ace_thread *thread)
     err->type = gserror_undefined;
 
     ace_error_thread(thread, err);
+}
+
+static
+int
+ace_enter(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    gstypecode st;
+    gsvalue prog;
+
+    ip = thread->ip;
+
+    if (ip->args[0] >= thread->nregs) {
+        ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
+        return 0;
+    }
+
+    prog = thread->regs[ip->args[0]];
+    st = GS_SLOW_EVALUATE(prog);
+
+    switch (st) {
+        case gstystack:
+            return 0;
+        case gstyindir:
+            if (ace_return(thread, ip->pos, gsremove_indirections(prog)) > 0)
+                return 1
+            ;
+            return 0;
+        default:
+            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
+            return 0;
+    }
 }
 
 static
