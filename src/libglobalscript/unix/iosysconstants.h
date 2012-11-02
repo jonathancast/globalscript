@@ -2,7 +2,7 @@ enum ibio_iochannel_type {
     ibio_ioread,
     ibio_iowrite,
     ibio_iorddir,
-    ibio_iostat,
+    gsbio_iostat,
     ibio_iogetenv,
 };
 

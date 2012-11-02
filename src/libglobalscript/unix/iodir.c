@@ -20,7 +20,7 @@ gsbio_sys_stat(char *filename)
 {
     struct uxio_ichannel *chan;
     struct stat uxstat;
-    chan = gsbio_get_channel_for_external_io("", -1, ibio_iostat);
+    chan = gsbio_get_channel_for_external_io("", -1, gsbio_iostat);
     if (stat(filename, &uxstat) < 0)
         gsfatal("%s: unix stat failed: %r", filename);
     gsbio_unix_fill_stat(filename, &uxstat, chan);
