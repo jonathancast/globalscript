@@ -121,7 +121,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
         gsfatal("open: %r")
     ;
 
-    while (dir = ibio_read_stat(chan)) {
+    while (dir = gsbio_read_stat(chan)) {
         char *newfilename, *newrelname;
         char *ext;
         struct gsfile_symtable *file_symtable;

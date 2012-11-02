@@ -17,7 +17,7 @@ ibio_stat(char *filename)
 }
 
 struct ibio_dir *
-ibio_read_stat(struct uxio_dir_ichannel *chan)
+gsbio_read_stat(struct uxio_dir_ichannel *chan)
 {
     long n;
 
