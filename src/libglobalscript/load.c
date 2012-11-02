@@ -3,7 +3,7 @@
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
-#include <libibio.h>
+
 #include "gsinputfile.h"
 #include "gsinputalloc.h"
 #include "gsbytecompile.h"

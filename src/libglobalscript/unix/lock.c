@@ -1,6 +1,7 @@
 /* §source.file Copy of Plan 9's §fn{lock.c}, here so we can use these routines on Unix too */
 
 #include <u.h>
+#define NO_IO_ROUTINES 1
 #include <libglobalscript.h>
 
 void

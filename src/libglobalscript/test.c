@@ -4,6 +4,7 @@
 #include <libglobalscript.h>
 
 #include "test_tests.h"
+#include "test_systemtests.h"
 
 void
 p9main(int argc, char **argv)
@@ -14,5 +15,8 @@ p9main(int argc, char **argv)
     test_symtable();
     test_load();
     test_typealloc();
+    run_system_tests();
+    test_iostat();
+    test_iochan();
     exits("");
 }

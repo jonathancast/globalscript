@@ -3,12 +3,6 @@
 cd $GLOBALSCRIPT/src/libtest &&
     mk install &&
     cd ../libglobalscript/ &&
-    mk $GLOBALSCRIPT/lib/libglobalscript.a &&
-    cd ../libibio/ &&
-    mk $GLOBALSCRIPT/lib/libibio.a &&
-    cd ../libglobalscript/ &&
-    mk install &&
-    cd ../libibio/ &&
     mk install &&
     cd ../cmd/ibio/ &&
     mk install &&

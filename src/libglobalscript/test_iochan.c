@@ -2,7 +2,6 @@
 #include <libc.h>
 #include <libtest.h>
 #include <libglobalscript.h>
-#include <libibio.h>
 
 #include "test_tests.h"
 

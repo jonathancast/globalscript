@@ -1,6 +1,7 @@
 < $PLAN9/src/mkhdr
 
 SYSTEM=unix
+CFLAGS=-I $SYSTEM
 
 < $SYSTEM/mkhdr
 
@@ -25,9 +26,14 @@ OFILES=\
 	gsrpc.$O \
 	regtables.$O \
 	runes.$O \
+	iochan.$O \
+	iostat.$O \
 	$SYSTEM/lock.$O \
 	$SYSTEM/$CPU/tas.$O \
 	$SYSTEM/gssysthreads.$O \
+	$SYSTEM/iodir.$O \
+	$SYSTEM/iosysconstants.$O \
+	$SYSTEM/ioenv.$O \
 
 TEST_OFILES=\
 	test.$O \
@@ -35,6 +41,10 @@ TEST_OFILES=\
 	test_load.$O \
 	test_symtable.$O \
 	test_typealloc.$O \
+	$SYSTEM/test.$O \
+	test_iostat.$O \
+	$SYSTEM/test_iodir.$O \
+	test_iochan.$O \
 
 TEST_GSI_OFILES=\
 	test-gsi.$O \
@@ -53,14 +63,14 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h
 gsmain.$O: gsinputfile.h gssetup.h gsregtables.h ace.h
-load.$O: gsinputalloc.h gsinputfile.h $GLOBALSCRIPT/include/libibio.h gsbytecompile.h gsregtables.h gstopsort.h gstypealloc.h gstypecheck.h ace.h
+load.$O: gsinputalloc.h gsinputfile.h gsbytecompile.h gsregtables.h gstopsort.h gstypealloc.h gstypecheck.h ace.h
 inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsalloc.h
 eval.$O: gsheap.h gsinputfile.h gsregtables.h ace.h
 ace.$O: gsheap.h gsregtables.h ace.h
 apithread.$O: gsregtables.h gsheap.h api.h
 symtable.$O: gsinputfile.h
-bytecompile.$O: $GLOBALSCRIPT/include/libibio.h gsinputfile.h gsregtables.h gstypealloc.h gsbytecompile.h gsheap.h gstopsort.h gstypealloc.h
+bytecompile.$O: gsinputfile.h gsregtables.h gstypealloc.h gsbytecompile.h gsheap.h gstopsort.h gstypealloc.h
 primset.$O: gsinputfile.h gssetup.h
 typealloc.$O: gsinputfile.h gsregtables.h gstypealloc.h gstypecheck.h
 typecheck.$O: gsinputfile.h gsregtables.h gstypealloc.h gstypecheck.h
@@ -69,6 +79,10 @@ clientexpr.$O: gsinputfile.h gstypealloc.h gstypecheck.h
 bctopsort.$O: gsinputfile.h gstopsort.h
 regtables.$O: gsinputfile.h gsregtables.h
 api.$O: api.h
+iochan.$O: iofile.h $SYSTEM/iosysconstants.h iomacros.h
+iostat.$O: $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h
+unix/iodir.$O: iofile.h iostat.h iomacros.h unix/iodir.h
+unix/ioenv.$O: unix/iosysconstants.h iofile.h
 
 all install:V: test $GLOBALSCRIPT/lib/$LIB
 
@@ -80,18 +94,20 @@ integration-test:V: test test-rc
 test-rc:V: rc/test $O.test-gsi $O.test-gsexec
     ./rc/test
 
-$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a $GLOBALSCRIPT/lib/libibio.a
+$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a
 	$LD -o $target $prereq $LDFLAGS
 
-test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
+test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h $SYSTEM/test_systemtests.h
 test_macros.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 test_symtable.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h test_tests.h
 test_load.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 test_typealloc.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h gstypealloc.h test_tests.h
+test_iostat.$O:	$GLOBALSCRIPT/include/libtest.h $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h test_tests.h
+unix/test_iodir.$O:	$GLOBALSCRIPT/include/libtest.h unix/iosysconstants.h iofile.h iomacros.h unix/iodir.h unix/test_systemtests.h
 
 test-gsi.$O: gsinputfile.h gstypealloc.h
 
-$O.test-gsi:	$TEST_GSI_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libibio.a
+$O.test-gsi:	$TEST_GSI_OFILES $GLOBALSCRIPT/lib/$LIB
 	$LD -o $target $prereq $LDFLAGS
 
 %.$O:	%.c
@@ -100,7 +116,7 @@ $O.test-gsi:	$TEST_GSI_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libibio.a
 %.$O:	%.s
 	$AS $ASFLAGS $stem.s
 
-$O.test-gsexec:	$TEST_GSEXEC_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libibio.a
+$O.test-gsexec:	$TEST_GSEXEC_OFILES $GLOBALSCRIPT/lib/$LIB
 	$LD -o $target $prereq $LDFLAGS
 
 NUKEFILES=$NUKEFILES $TEST_OFILES $GLOBALSCRIPT/lib/$LIB

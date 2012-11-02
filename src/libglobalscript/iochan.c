@@ -1,7 +1,6 @@
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
-#include <libibio.h>
 
 #include "iosysconstants.h"
 #include "iofile.h"

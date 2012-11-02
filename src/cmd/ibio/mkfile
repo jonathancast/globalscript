@@ -8,7 +8,7 @@ TARG=ibio
 < $PLAN9/src/mkone
 < $GLOBALSCRIPT/src/mkcommon
 
-$PROG: $GLOBALSCRIPT/lib/libglobalscript.a $GLOBALSCRIPT/lib/libibio.a
+$PROG: $GLOBALSCRIPT/lib/libglobalscript.a
 
 all install:V: test
 

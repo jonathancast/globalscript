@@ -2,7 +2,6 @@
 #include <libc.h>
 #include <libtest.h>
 #include <libglobalscript.h>
-#include <libibio.h>
 
 #include "iosysconstants.h"
 #include "iofile.h"
