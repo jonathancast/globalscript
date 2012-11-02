@@ -43,7 +43,7 @@ gsbio_device_iclose(struct uxio_ichannel *chan)
 }
 
 struct uxio_ichannel *
-gsbio_get_channel_for_external_io(char *filename, int fd, enum ibio_iochannel_type ty)
+gsbio_get_channel_for_external_io(char *filename, int fd, enum gsbio_iochannel_type ty)
 {
     struct uxio_ichannel *chan;
     void *buf;

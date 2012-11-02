@@ -6,7 +6,7 @@
 #include "iosysconstants.h"
 
 char *
-gsbio_efmt_iochannel_type(char *result, char *end, enum ibio_iochannel_type ty)
+gsbio_efmt_iochannel_type(char *result, char *end, enum gsbio_iochannel_type ty)
 {
     switch (ty) {
     case gsbio_iostat:
