@@ -117,7 +117,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
     struct uxio_dir_ichannel *chan;
     struct ibio_dir *dir;
 
-    if (!(chan = ibio_dir_iopen(filename, OREAD)))
+    if (!(chan = gsbio_dir_iopen(filename, OREAD)))
         gsfatal("open: %r")
     ;
 

@@ -34,7 +34,7 @@ static struct gs_block_class uxio_dir_ichannel_desc = {
 static void *uxio_dir_ichannel_nursury;
 
 struct uxio_dir_ichannel *
-ibio_dir_iopen(char *filename, int omode)
+gsbio_dir_iopen(char *filename, int omode)
 {
     struct uxio_dir_ichannel *res;
 
