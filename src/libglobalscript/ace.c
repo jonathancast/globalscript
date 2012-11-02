@@ -53,6 +53,8 @@ static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
 static void ace_poison_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 
+static int ace_alloc_record(struct ace_thread *, struct gsbc *);
+
 static
 void
 ace_thread_pool_main(void *p)
@@ -84,27 +86,9 @@ ace_thread_pool_main(void *p)
                     ip = thread->ip;
                     switch (ip->instr) {
                         case gsbc_op_record:
-                            {
-                                struct gsrecord *record;
-
-                                record = gsreserverecords(sizeof(*record) + ip->args[0] * sizeof(gsvalue));
-                                record->pos = ip->pos;
-                                record->numfields = ip->args[0];
-                                for (j = 0; j < ip->args[0]; j++) {
-                                    ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".record fields");
-                                    goto record_failed;
-                                }
-
-                                if (thread->nregs >= MAX_NUM_REGISTERS) {
-                                    ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
-                                    break;
-                                }
-                                thread->regs[thread->nregs] = (gsvalue)record;
-                                thread->nregs++;
-                                thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[0]);
-                                suspended_runnable_thread = 1;
-                            }
-                        record_failed:
+                            if (ace_alloc_record(thread, thread->ip))
+                                suspended_runnable_thread = 1
+                            ;
                             break;
                         case gsbc_op_unknown_eprim:
                             {
@@ -242,6 +226,31 @@ ace_thread_pool_main(void *p)
     }
 
     gswarning("%s:%d: ace_thread_pool_main terminating", __FILE__, __LINE__);
+}
+
+static
+int
+ace_alloc_record(struct ace_thread *thread, struct gsbc *ip)
+{
+    struct gsrecord *record;
+    int j;
+
+    record = gsreserverecords(sizeof(*record) + ip->args[0] * sizeof(gsvalue));
+    record->pos = ip->pos;
+    record->numfields = ip->args[0];
+    for (j = 0; j < ip->args[0]; j++) {
+        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".record fields");
+        return 0;
+    }
+
+    if (thread->nregs >= MAX_NUM_REGISTERS) {
+        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        return 0;
+    }
+    thread->regs[thread->nregs] = (gsvalue)record;
+    thread->nregs++;
+    thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[0]);
+    return 1;
 }
 
 static
