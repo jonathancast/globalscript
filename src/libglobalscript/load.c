@@ -1012,7 +1012,7 @@ gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno,
 
     for (;;) {
         (*plineno)++;
-        if ((n = ibio_device_getline(chan, line, LINE_LENGTH)) < 0)
+        if ((n = gsbio_device_getline(chan, line, LINE_LENGTH)) < 0)
             gsfatal("%s: getline: %r", filename);
         if (n == LINE_LENGTH)
             gsfatal("%s:%d: line too long; max length %d", filename, *plineno, LINE_LENGTH - 2);

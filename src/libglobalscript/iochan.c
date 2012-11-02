@@ -217,7 +217,7 @@ ibio_get_contents(struct uxio_ichannel *chan, char *buf, long max)
 }
 
 long
-ibio_device_getline(struct uxio_ichannel *chan, char *dest, long sz)
+gsbio_device_getline(struct uxio_ichannel *chan, char *dest, long sz)
 {
     char *p;
     long n, m;
