@@ -55,6 +55,7 @@ static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 
 static int ace_alloc_record(struct ace_thread *, struct gsbc *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
+static int ace_alloc_eprim(struct ace_thread *);
 
 static
 void
@@ -97,30 +98,9 @@ ace_thread_pool_main(void *p)
                             ;
                             break;
                         case gsbc_op_eprim:
-                            {
-                                struct gseprim *prim;
-
-                                prim = gsreserveeprims(sizeof(*prim) + ip->args[1] * sizeof(gsvalue));
-                                prim->pos = ip->pos;
-                                prim->index = ip->args[0];
-                                for (j = 0; j < ip->args[1]; j++) {
-                                    if (ip->args[2 + j] >= thread->nregs) {
-                                        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
-                                        goto eprim_failed;
-                                    }
-                                    prim->arguments[j] = thread->regs[ip->args[2 + j]];
-                                }
-
-                                if (thread->nregs >= MAX_NUM_REGISTERS) {
-                                    ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
-                                    break;
-                                }
-                                thread->regs[thread->nregs] = (gsvalue)prim;
-                                thread->nregs++;
-                                thread->ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
-                                suspended_runnable_thread = 1;
-                            }
-                        eprim_failed:
+                            if (ace_alloc_eprim(thread))
+                                suspended_runnable_thread = 1
+                            ;
                             break;
                         case gsbc_op_app:
                             {
@@ -261,6 +241,38 @@ ace_alloc_unknown_eprim(struct ace_thread *thread)
     thread->regs[thread->nregs] = (gsvalue)prim;
     thread->nregs++;
     thread->ip = GS_NEXT_BYTECODE(ip, 0);
+    return 1;
+}
+
+static
+int
+ace_alloc_eprim(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gseprim *prim;
+    int j;
+
+    ip = thread->ip;
+
+    prim = gsreserveeprims(sizeof(*prim) + ip->args[1] * sizeof(gsvalue));
+    prim->pos = ip->pos;
+    prim->index = ip->args[0];
+    for (j = 0; j < ip->args[1]; j++) {
+        if (ip->args[2 + j] >= thread->nregs) {
+            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
+            return 0;
+        }
+        prim->arguments[j] = thread->regs[ip->args[2 + j]];
+    }
+
+    if (thread->nregs >= MAX_NUM_REGISTERS) {
+        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        return 0;
+    }
+    thread->regs[thread->nregs] = (gsvalue)prim;
+    thread->nregs++;
+    thread->ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
+
     return 1;
 }
 
