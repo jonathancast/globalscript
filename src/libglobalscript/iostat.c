@@ -13,7 +13,7 @@ struct ibio_dir *
 ibio_stat(char *filename)
 {
     struct uxio_ichannel *chan = gsbio_sys_stat(filename);
-    return ibio_parse_stat(chan);
+    return gsbio_parse_stat(chan);
 }
 
 struct ibio_dir *
@@ -32,7 +32,7 @@ ibio_read_stat(struct uxio_dir_ichannel *chan)
 #define NAMEMAX 0x100
 
 struct ibio_dir *
-ibio_parse_stat(struct uxio_ichannel *ip)
+gsbio_parse_stat(struct uxio_ichannel *ip)
 {
     struct ibio_dir dir, *res;
     void *resend;

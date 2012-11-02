@@ -30,14 +30,14 @@ TEST_IOSTAT()
     struct uxio_ichannel *chan;
 
     chan = fixture_sample_chan_with_file_entry();
-    pdir = ibio_parse_stat(chan);
+    pdir = gsbio_parse_stat(chan);
 
-    ok(__FILE__, __LINE__, !!pdir, "%s:%d: ibio_parse_stat returned null");
+    ok(__FILE__, __LINE__, !!pdir, "%s:%d: gsbio_parse_stat returned null");
     ok_ulong_eq(__FILE__, __LINE__, pdir->size, sizeof(*pdir) + sizeof("foo.txt"),
-        "ibio_parse_stat()->size"
+        "gsbio_parse_stat()->size"
     );
-    not_ok(__FILE__, __LINE__, pdir->d.mode & DMDIR, "ibio_parse_stat returned directory, but was not a directory");
-    ok_cstring_eq(__FILE__, __LINE__, pdir->d.name, "foo.txt", "ibio_parse_stat returned incorrect name");
+    not_ok(__FILE__, __LINE__, pdir->d.mode & DMDIR, "gsbio_parse_stat returned directory, but was not a directory");
+    ok_cstring_eq(__FILE__, __LINE__, pdir->d.name, "foo.txt", "gsbio_parse_stat returned incorrect name");
 }
 
 static
@@ -48,11 +48,11 @@ TEST_IOSTAT_DIR()
     struct uxio_ichannel *chan;
 
     chan = fixture_sample_chan_with_dir_entry();
-    pdir = ibio_parse_stat(chan);
+    pdir = gsbio_parse_stat(chan);
 
-    ok(__FILE__, __LINE__, !!pdir, "ibio_parse_stat returned null");
-    ok(__FILE__, __LINE__, pdir->d.mode & DMDIR, "ibio_parse_stat returned not directory, but was a directory");
-    ok_cstring_eq(__FILE__, __LINE__, pdir->d.name, "foo", "ibio_parse_stat returned incorrect name");
+    ok(__FILE__, __LINE__, !!pdir, "gsbio_parse_stat returned null");
+    ok(__FILE__, __LINE__, pdir->d.mode & DMDIR, "gsbio_parse_stat returned not directory, but was a directory");
+    ok_cstring_eq(__FILE__, __LINE__, pdir->d.name, "foo", "gsbio_parse_stat returned incorrect name");
 }
 
 static

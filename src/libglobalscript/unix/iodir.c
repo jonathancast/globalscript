@@ -110,7 +110,7 @@ gsbio_sys_read_stat(struct uxio_dir_ichannel *chan)
 struct ibio_dir *
 gsbio_sys_parse_stat(struct uxio_dir_ichannel *chan)
 {
-    return ibio_parse_stat(chan->p9dir);
+    return gsbio_parse_stat(chan->p9dir);
 }
 
 void
