@@ -159,16 +159,13 @@ typedef uintptr gscode;
 
 typedef enum {
     gstyprim = 0,
-    gstythunk = 1,
-    gstystack = 2,
-    gstywhnf = 3,
-    gstyindir = 4,
-    gstyexternal = 5,
-    gstyunboxed = 6,
-    gstyeooheap = 64,
-    gstyeoostack = 65,
-    gstyeoothreads = 66,
-    gstyenosys = 67,
+    gstythunk,
+    gstystack,
+    gstywhnf,
+    gstyindir,
+    gstyunboxed,
+    gstyenosys = 64,
+    gstyeoothreads,
 } gstypecode;
 
 /* Define this yourself; this is your program's entry point */
@@ -324,7 +321,7 @@ struct gsregistered_prim *gsprims_lookup_prim(struct gsregistered_primset *, cha
 
 typedef struct gs_block_class {
     gstypecode (*evaluator)(gsvalue);
-        /* §ccode{gstypecode} mayn't return §ccode{gstythunk} */
+        /* §ccode{evaluator} mayn't return §ccode{gstythunk} */
     char *description;
 } *registered_block_class;
 
