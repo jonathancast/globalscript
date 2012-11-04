@@ -711,6 +711,7 @@ gsparse_api_or_code_op(char *filename, struct gsparsedline *parsedline, int *pli
             gsfatal("%s:%d: Missing label on .tygvar op", filename, *plineno);
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .tygvar op", filename, *plineno);
+        return 1;
     } else if (gssymceq(parsedline->directive, gssymlarg, gssymcodeop, ".larg")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymdatalable, fields[0]);
