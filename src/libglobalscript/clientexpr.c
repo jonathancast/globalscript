@@ -7,6 +7,7 @@
 #include "gsinputfile.h"
 #include "gstypealloc.h"
 #include "gstypecheck.h"
+#include "gsheap.h"
 
 gsvalue
 gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, char *err, char *eerr, struct gsfile_symtable *symtable, char *coercion_name, ...)
@@ -38,4 +39,23 @@ gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, char *err, char *eer
 
     *pty = dest;
     return v; /* No change in representation! */
+}
+
+gsvalue
+gsapply(struct gspos pos, gsvalue fun, gsvalue arg)
+{
+    struct gsheap_item *res;
+    struct gsapplication *app;
+
+    res = gsreserveheap(MAX(sizeof(struct gsapplication) + 1*sizeof(gsvalue), sizeof(struct gsindirection)));
+
+    app = (struct gsapplication *)res;
+
+    res->pos = pos;
+    res->type = gsapplication;
+    app->fun = fun;
+    app->numargs = 1;
+    app->arguments[0] = arg;
+
+    return (gsvalue)res;
 }

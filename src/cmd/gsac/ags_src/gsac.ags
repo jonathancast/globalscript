@@ -8,8 +8,10 @@ _real.entry	.closure	_real.entry.c
 	.code
 
 _real.entry.c	.eprog	ibio.prim	ibio
+_real.entry.out.ty	.tygvar
 _real.entry.0	.subcode
 _real.entry.body	.subcode
+o	.larg	_real.entry.out.ty
 as	.bind	_real.entry.0
 	.body	_real.entry.body
 
@@ -34,6 +36,11 @@ ibio.prim.m	.tygvar
 _empty.record	.tygvar
 	.tylift
 	.tyref	ibio.prim.m	_empty.record
+
+_real.entry.out.ty	.tyexpr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+	.tyref	ibio.prim.oport	rune.t
 
 _empty.record	.tyexpr
 	.tylift

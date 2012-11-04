@@ -40,7 +40,9 @@ void
 gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty)
 {
     struct gstype *monad, *input, *output, *result, *primres;
+    struct gstype *tyow, *tyoa;
     struct gstype *tyw;
+    gsvalue stdout;
     char err[0x100];
 
     tyw = ty;
@@ -59,6 +61,24 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
         ace_down();
         gsfatal("%s: Couldn't cast down to primitive level: %s", script, err);
     }
+
+    if (
+        gstype_expect_lift(tyw, &tyw, err, err + sizeof(err)) < 0
+        || gstype_expect_fun(tyw, &tyow, &tyw, err, err + sizeof(err)) < 0
+        || gstype_expect_app(tyow, &tyow, &tyoa, err, err + sizeof(err)) < 0
+        || gstype_expect_prim(tyow, gsprim_type_elim, "ibio.prim", "oport", err, err + sizeof(err)) < 0
+        || gstypes_type_check(pos, tyoa, output, err, err + sizeof(err)) < 0
+    ) {
+        ace_down();
+        gsfatal("%s: Not a function of output channel? (%s)", script, err);
+    }
+
+    stdout = ibio_oport_fdopen(1, err, err + sizeof(err));
+    if (!stdout) {
+        ace_down();
+        gsfatal("%s: Couldn't open stdout: %s", script, err);
+    }
+    prog = gsapply(pos, prog, stdout);
 
     if (
         gstype_expect_lift(tyw, &tyw, err, err + sizeof(err)) < 0

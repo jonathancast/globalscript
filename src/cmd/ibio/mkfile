@@ -2,6 +2,7 @@
 
 OFILES=\
 	ibio.$O \
+	oport.$O \
 
 TARG=ibio
 
@@ -14,6 +15,7 @@ all install:V: test
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h
 ibio.$O: ibio.h
+oport.$O: ibio.h
 
 test:V: 
     :

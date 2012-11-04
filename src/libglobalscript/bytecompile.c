@@ -762,7 +762,12 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     pout = (uchar*)pbco + sizeof(struct gsbco);
     nregs = nglobals = ncodes = nfvs = nargs = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+        if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+            if (phase > rttygvars)
+                gsfatal_bad_input(p, "Too late to add type global variables")
+            ;
+            phase = rttygvars;
+        } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (phase > rtcode)
                 gsfatal_bad_input(p, "Too late to add sub-expressions")
             ;
@@ -775,6 +780,16 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             *psubcode++ = gssymtable_get_code(symtable, p->label);
             pout = (uchar*)psubcode;
             ncodes++;
+        } else if (
+            gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
+            || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
+        ) {
+            if (phase > rtargs)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            ;
+            regs[nregs] = p->label;
+            nregs++;
+            nargs++;
         } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
             int creg = 0;
             int nfvs, first_fv;

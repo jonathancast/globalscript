@@ -55,14 +55,17 @@ gsheapeval(gsvalue val)
                         fvs_in_cl = cl->numfvs;
                         fvs_for_code = cl->numfvs;
                         args_for_code = code->numargs;
-                    if (fvs_in_cl < fvs_for_code) {
-                        gspoison(hp, code->pos, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);
-                        res = gstywhnf;
-                    } else if (fvs_in_cl < fvs_for_code + args_for_code) {
-                        res = gstywhnf;
-                    } else
-                        res = ace_start_evaluation(val)
-                    ;
+                        if (fvs_in_cl < fvs_for_code) {
+                            gspoison(hp, hp->pos, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);
+                            res = gstyindir;
+                        } else if (fvs_in_cl > fvs_for_code + args_for_code) {
+                            gspoison(hp, hp->pos, "Code has %d free variables and arguments, but closure has %d arguments supplied", fvs_for_code + args_for_code, fvs_in_cl);
+                            return gstyindir;
+                        } else if (fvs_in_cl < fvs_for_code + args_for_code) {
+                            res = gstywhnf;
+                        } else {
+                            res = ace_start_evaluation(val);
+                        }
                     }
                     break;
                 case gsbc_eprog:
@@ -74,8 +77,11 @@ gsheapeval(gsvalue val)
                     res = gstyenosys;
                     break;
             }
+            break;
         }
-        break;
+        case gsapplication:
+            res = ace_start_evaluation(val);
+            break;
         case gseval:
             res = gstystack;
             break;
@@ -286,6 +292,22 @@ gsunimpl(char *file, int lineno, struct gspos srcpos, char *err, ...)
     strcpy(failure->message, buf);
 
     return failure;
+}
+
+char *
+gsimplementation_failure_format(char *buf, char *ebuf, struct gsimplementation_failure *failure)
+{
+    if (gsdebug) {
+        return seprint(buf, ebuf, "%P: %P: %s next", failure->cpos, failure->srcpos, failure->message);
+    } else {
+        return seprint(buf, ebuf, "Panic: Un-implmented operation in release build: %P: %s", failure->srcpos, failure->message);
+    }
+}
+
+int
+gsisimplementation_failure_block(struct gs_blockdesc *p)
+{
+    return p->class == &gsimplementation_errors_descr;
 }
 
 /* §section Byte Code */

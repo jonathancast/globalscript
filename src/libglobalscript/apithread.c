@@ -130,6 +130,9 @@ api_thread_pool_main(void *arg)
                     case gstyindir:
                         code->instrs[code->ip].instr = gsremove_indirections(instr);
                         break;
+                    case gstyenosys:
+                        api_abend(thread, "Un-implemented operation: %r");
+                        break;
                     default:
                         api_abend_unimpl(thread, __FILE__, __LINE__, "API thread advancement (state = %d)", st);
                         break;
@@ -171,6 +174,13 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                 api_abend(thread, "%P: unknown error type %d", p->pos, p->type);
                 break;
         }
+    } else if (gsisimplementation_failure_block(block)) {
+        struct gsimplementation_failure *p;
+        char buf[0x100];
+
+        p = (struct gsimplementation_failure *)instr;
+        gsimplementation_failure_format(buf, buf + sizeof(buf), p);
+        api_abend(thread, "%s", buf);
     } else if (gsisheap_block(block)) {
         struct gsheap_item *hp;
 
@@ -235,6 +245,10 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
     struct gsbco **psubexpr;
     struct gsbc *pinstr;
     struct gsbco *subexprs[MAX_NUM_REGISTERS];
+
+    int nregs;
+    gsvalue regs[MAX_NUM_REGISTERS];
+
     int nstatements;
     gsvalue rhss[MAX_NUM_REGISTERS];
     struct api_promise *lhss[MAX_NUM_REGISTERS];
@@ -242,6 +256,8 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
 
     code = cl->code;
     pin = (uchar*)code + sizeof(*code);
+
+    nregs = 0;
 
     for (i = 0; i < code->numglobals; i++) {
         api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: get global variable");
@@ -260,8 +276,12 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
     }
 
     for (i = 0; i < code->numargs; i++) {
-        api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: get argument");
-        return;
+        if (nregs >= MAX_NUM_REGISTERS) {
+            api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many registers (max 0x%x)", MAX_NUM_REGISTERS);
+            return;
+        }
+        regs[nregs] = cl->fvs[code->numfvs + i];
+        nregs++;
     }
 
     nstatements = 0;
@@ -534,7 +554,6 @@ api_abend(struct api_thread *thread, char *msg, ...)
     }
 
     thread->active = 0;
-    gswarning("%s:%d: api_abend: storing thread exit status: deferred", __FILE__, __LINE__);
 }
 
 void

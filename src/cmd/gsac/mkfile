@@ -1,5 +1,6 @@
 MKSHELL=$PLAN9/bin/rc
 
+AGS_SOURCES=`{echo ags_src/*.ags}
 CGS_SOURCES=`{echo cgs_src/*.cgs}
 STAGE0_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage0/%.gsac}
 STAGE1_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage1/%.gsac}

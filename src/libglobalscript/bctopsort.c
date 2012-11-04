@@ -163,6 +163,7 @@ gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gspars
             || gssymeq(p->directive, gssymtypeop, ".tyforall")
             || gssymeq(p->directive, gssymtypeop, ".tylift")
             || gssymeq(p->directive, gssymtypeop, ".tylet")
+            || gssymeq(p->directive, gssymtypeop, ".tyfun")
         )
             p = gsinput_next_line(ppseg, p);
         else if (
@@ -403,6 +404,8 @@ static
 void
 gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
+    static gsinterned_string gssymtyelimprim;
+
     gsinterned_string directive;
     struct gsparsedfile_segment *pseg;
     struct gsparsedline *ptype;
@@ -439,6 +442,25 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
             gsfatal("%s:%d: Missing kind on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
         if (ptype->numarguments > 3)
             gsfatal("%s:%d: Too many arguments to .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
+        return;
+    } else if (gssymceq(directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")) {
+        struct gsregistered_primset *prims;
+
+        if (ptype->numarguments < 1)
+            gsfatal("%P: Missing primitive set name on .tyelimprim", ptype->pos);
+
+        prims = gsprims_lookup_prim_set(ptype->arguments[0]->name);
+
+        if (ptype->numarguments < 2)
+            gsfatal("%P: Missing primitive type name on .tyelimprim", ptype->pos);
+
+        if (prims && !gsprims_lookup_type(prims, ptype->arguments[1]->name))
+            gsfatal("%P: Primitive set %s does not in fact contain a type %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name);
+
+        if (ptype->numarguments < 3)
+            gsfatal("%P: Missing kind on .tyelimprim", ptype->pos);
+        if (ptype->numarguments > 3)
+            gsfatal("%P: Too many arguments to .tyelimprim", ptype->pos);
         return;
     } else if (gssymeq(directive, gssymtypedirective, ".tyapiprim")) {
         struct gsregistered_primset *prims;

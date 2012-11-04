@@ -783,37 +783,55 @@ static struct gs_block_class gsbc_code_type_descr = {
 };
 static void *gsbc_code_type_nursury;
 
+enum gsbc_code_regtype {
+    rttygvar,
+    rttyarg,
+    rtgvar,
+    rtcode,
+    rtarg,
+    rtlet,
+    rtconts,
+    rtgen,
+};
+
+struct gsbc_typecheck_code_or_api_expr_closure {
+    enum gsbc_code_regtype regtype;
+
+    int nregs;
+    gsinterned_string regs[MAX_NUM_REGISTERS];
+
+    /* §section Type registers */
+    struct gstype *tyregs[MAX_NUM_REGISTERS];
+    struct gskind *tyregkinds[MAX_NUM_REGISTERS];
+
+    /* §section Data registers */
+    struct gstype *regtypes[MAX_NUM_REGISTERS];
+
+    /* §section Arguments */
+    int nargs;
+    struct gstype *argtypes[MAX_NUM_REGISTERS];
+    struct gsparsedline *arglines[MAX_NUM_REGISTERS];
+    int arglifted[MAX_NUM_REGISTERS];
+};
+
+static int gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
+
+static struct gstype *gsbc_typecheck_code_or_api_args(int, struct gstype **, struct gsparsedline **, int *, struct gstype *);
+
 static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtygvar, gssymtyarg, gssymgvar, gssymarg, gssymlarg, gssymrecord, gssymeprim, gssymlift, gssymapp, gssymenter, gssymundef;
+    static gsinterned_string gssymtyarg, gssymgvar, gssymrecord, gssymeprim, gssymlift, gssymapp, gssymenter, gssymundef;
 
-    enum {
-        rttygvar,
-        rttyarg,
-        rtgvar,
-        rtarg,
-        rtlet,
-        rtconts,
-    } regtype;
+    struct gsbc_typecheck_code_or_api_expr_closure cl;
+
     int i;
-
-    int nregs;
-    gsinterned_string regs[MAX_NUM_REGISTERS];
-    struct gstype *regtypes[MAX_NUM_REGISTERS];
-    struct gstype *tyregs[MAX_NUM_REGISTERS];
-    struct gskind *tyregkinds[MAX_NUM_REGISTERS];
 
     int ntyargs;
     gsinterned_string tyargnames[MAX_NUM_REGISTERS];
     struct gskind *tyargkinds[MAX_NUM_REGISTERS];
     struct gsparsedline *tyarglines[MAX_NUM_REGISTERS];
-
-    int nargs;
-    struct gstype *argtypes[MAX_NUM_REGISTERS];
-    struct gsparsedline *arglines[MAX_NUM_REGISTERS];
-    int arglifted[MAX_NUM_REGISTERS];
 
     int nconts;
     struct gsparsedline *contlines[MAX_NUM_REGISTERS];
@@ -822,101 +840,54 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     struct gskind *kind;
     struct gsbc_code_item_type *res;
 
-    nregs = nargs = nconts = ntyargs = 0;
-    regtype = rttygvar;
+    cl.nregs = cl.nargs = nconts = ntyargs = 0;
+    cl.regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymceq(p->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
-            if (regtype > rttygvar)
-                gsfatal_bad_input(p, "Too late to add global type variables")
-            ;
-            regtype = rttygvar;
-            if (nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers")
-            ;
-            regs[nregs] = p->label;
-            tyregs[nregs] = gssymtable_get_type(symtable, p->label);
-            if (!tyregs[nregs])
-                gsfatal_bad_input(p, "Couldn't find type global %s", p->label->name)
-            ;
-            tyregkinds[nregs] = gssymtable_get_type_expr_kind(symtable, p->label);
-            if (!tyregkinds[nregs])
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", p->pos, p->label->name)
-            ;
-            nregs++;
+        if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
             struct gskind *argkind;
 
-            if (regtype > rttyarg)
+            if (cl.regtype > rttyarg)
                 gsfatal_bad_input(p, "Too late to add arguments")
             ;
-            regtype = rttyarg;
-            if (nregs >= MAX_NUM_REGISTERS)
+            cl.regtype = rttyarg;
+            if (cl.nregs >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many registers")
             ;
-            regs[nregs] = p->label;
+            cl.regs[cl.nregs] = p->label;
             gsargcheck(p, 0, "kind");
             argkind = gskind_compile(p->pos, p->arguments[0]);
 
-            tyregkinds[nregs] = argkind;
-            tyregs[nregs] = gstypes_compile_type_var(p->pos, p->label, argkind);
-            nregs++;
+            cl.tyregkinds[cl.nregs] = argkind;
+            cl.tyregs[cl.nregs] = gstypes_compile_type_var(p->pos, p->label, argkind);
+            cl.nregs++;
 
             tyargnames[ntyargs] = p->label;
             tyargkinds[ntyargs] = argkind;
             tyarglines[ntyargs] = p;
             ntyargs++;
         } else if (gssymceq(p->directive, gssymgvar, gssymcodeop, ".gvar")) {
-            if (regtype > rtgvar)
+            if (cl.regtype > rtgvar)
                 gsfatal_bad_input(p, "Too late to add global variables")
             ;
-            regtype = rtgvar;
-            if (nregs >= MAX_NUM_REGISTERS)
+            cl.regtype = rtgvar;
+            if (cl.nregs >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many registers")
             ;
-            regs[nregs] = p->label;
-            regtypes[nregs] = gssymtable_get_data_type(symtable, p->label);
-            if (!regtypes[nregs])
+            cl.regs[cl.nregs] = p->label;
+            cl.regtypes[cl.nregs] = gssymtable_get_data_type(symtable, p->label);
+            if (!cl.regtypes[cl.nregs])
                 gsfatal_bad_input(p, "Couldn't find type for global %s", p->label->name)
             ;
-            nregs++;
-        } else if (
-            gssymceq(p->directive, gssymarg, gssymcodeop, ".arg")
-            || gssymceq(p->directive, gssymlarg, gssymcodeop, ".larg")
-        ) {
-            int reg;
-            struct gstype *argtype;
-
-            if (regtype > rtarg)
-                gsfatal_bad_input(p, "Too late to add arguments")
-            ;
-            regtype = rtarg;
-            if (nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers")
-            ;
-            regs[nregs] = p->label;
-            gsargcheck(p, 0, "var");
-            reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
-            argtype = tyregs[reg];
-            if (!argtype)
-                gsfatal_bad_input(p, "Register %s is not a type", p->arguments[0]);
-            for (i = 1; i < p->numarguments; i++) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Type arguments", p->pos);
-            }
-            regtypes[nregs] = argtype;
-            nregs++;
-
-            argtypes[nargs] = argtype;
-            arglines[nargs] = p;
-            arglifted[nargs] = p->directive == gssymlarg;
-            nargs++;
+            cl.nregs++;
         } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
             struct gstype_field fields[MAX_NUM_REGISTERS];
 
-            if (regtype > rtlet)
+            if (cl.regtype > rtlet)
                 gsfatal_bad_input(p, "Too late to add allocations")
             ;
-            regtype = rtlet;
-            if (nregs >= MAX_NUM_REGISTERS)
+            cl.regtype = rtlet;
+            if (cl.nregs >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many registers")
             ;
 
@@ -924,25 +895,25 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr(.record fields)", p->pos);
             }
 
-            regs[nregs] = p->label;
-            regtypes[nregs] = gstype_compile_productv(p->pos, 0, fields);
-            nregs++;
+            cl.regs[cl.nregs] = p->label;
+            cl.regtypes[cl.nregs] = gstype_compile_productv(p->pos, 0, fields);
+            cl.nregs++;
         } else if (gssymceq(p->directive, gssymeprim, gssymcodeop, ".eprim")) {
             struct gsregistered_primset *prims;
             struct gstype *type;
             int tyreg;
 
-            if (regtype > rtlet)
+            if (cl.regtype > rtlet)
                 gsfatal("%P: To late to add allocations", p->pos)
             ;
-            regtype = rtlet;
-            if (nregs >= MAX_NUM_REGISTERS)
+            cl.regtype = rtlet;
+            if (cl.nregs >= MAX_NUM_REGISTERS)
                 gsfatal("%P: Too many registers", p->pos)
             ;
 
             gsargcheck(p, 3, "type");
-            tyreg = gsbc_find_register(p, regs, nregs, p->arguments[3]);
-            type = tyregs[tyreg];
+            tyreg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[3]);
+            type = cl.tyregs[tyreg];
 
             gsargcheck(p, 0, "primset");
             if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
@@ -975,16 +946,16 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             }
 
             for (i = 4; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
-                int tyargreg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
-                type = gstype_instantiate(p->pos, type, tyregs[tyargreg]);
+                int tyargreg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
+                type = gstype_instantiate(p->pos, type, cl.tyregs[tyargreg]);
             }
             if (i < p->numarguments) i++;
             for (; i < p->numarguments; i++) {
                 int argreg;
                 struct gstype *argtype;
 
-                argreg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
-                argtype = regtypes[argreg];
+                argreg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
+                argtype = cl.regtypes[argreg];
 
                 if (type->node == gstype_fun) {
                     struct gstype_fun *fun;
@@ -997,18 +968,18 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 }
             }
 
-            regs[nregs] = p->label;
+            cl.regs[cl.nregs] = p->label;
             gsbc_typecheck_check_api_statement_type(p->pos, type, p->arguments[0], p->arguments[1], 0);
-            regtypes[nregs] = type;
-            nregs++;
+            cl.regtypes[cl.nregs] = type;
+            cl.nregs++;
         } else if (
             gssymceq(p->directive, gssymlift, gssymcodeop, ".lift")
             || gssymceq(p->directive, gssymapp, gssymcodeop, ".app")
         ) {
-            if (regtype > rtconts)
+            if (cl.regtype > rtconts)
                 gsfatal_bad_input(p, "Too late to add continuations")
             ;
-            regtype = rtconts;
+            cl.regtype = rtconts;
             if (nconts >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many continuations")
             ;
@@ -1019,16 +990,16 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             struct gskind *kind;
 
             gsargcheck(p, 0, "var");
-            reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
-            calculated_type = regtypes[reg];
+            reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
+            calculated_type = cl.regtypes[reg];
             for (i = 1; i < p->numarguments; i++) {
                 int regarg;
 
-                regarg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
-                if (!tyregs[regarg])
+                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
+                if (!cl.tyregs[regarg])
                     gsfatal("%P: %s doesn't seem to be a type register", p->pos, p->arguments[i]->name)
                 ;
-                calculated_type = gstype_instantiate(p->pos, calculated_type, tyregs[regarg]);
+                calculated_type = gstype_instantiate(p->pos, calculated_type, cl.tyregs[regarg]);
             }
 
             kind = gstypes_calculate_kind(calculated_type);
@@ -1040,16 +1011,16 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             struct gskind *kind;
 
             gsargcheck(p, 0, "var");
-            reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
-            calculated_type = regtypes[reg];
+            reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
+            calculated_type = cl.regtypes[reg];
             for (i = 1; i < p->numarguments; i++) {
                 int regarg;
 
-                regarg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
-                if (!tyregs[regarg])
+                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
+                if (!cl.tyregs[regarg])
                     gsfatal("%P: %s doesn't seem to be a type register", p->pos, p->arguments[i]->name)
                 ;
-                calculated_type = gstype_instantiate(p->pos, calculated_type, tyregs[regarg]);
+                calculated_type = gstype_instantiate(p->pos, calculated_type, cl.tyregs[regarg]);
             }
 
             kind = gstypes_calculate_kind(calculated_type);
@@ -1060,17 +1031,17 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             int reg;
 
             gsargcheck(p, 0, "type");
-            reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
-            calculated_type = tyregs[reg];
-            kind = tyregkinds[reg];
+            reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
+            calculated_type = cl.tyregs[reg];
+            kind = cl.tyregkinds[reg];
             for (i = 1; i < p->numarguments; i++) {
                 int regarg;
                 struct gstype *argtype;
                 struct gskind *argkind;
 
-                regarg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
-                argtype = tyregs[regarg];
-                argkind = tyregkinds[regarg];
+                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
+                argtype = cl.tyregs[regarg];
+                argkind = cl.tyregkinds[regarg];
 
                 if (kind->node != gskind_exponential)
                     gsfatal("%P: Too many arguments to %s", p->pos, p->arguments[0]->name)
@@ -1099,7 +1070,7 @@ have_type:
             for (i = 0; i < p->numarguments; i++) {
                 int regarg;
 
-                regarg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
+                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
                 if (calculated_type->node == gstype_lift)
                     gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr (app of lifted fun)", p->pos)
                 ;
@@ -1107,7 +1078,7 @@ have_type:
                     struct gstype_fun *fun;
 
                     fun = (struct gstype_fun *)calculated_type;
-                    gstypes_type_check_type_fail(p->pos, regtypes[regarg], fun->tyarg);
+                    gstypes_type_check_type_fail(p->pos, cl.regtypes[regarg], fun->tyarg);
                     calculated_type = fun->tyres;
                 } else
                     gsfatal("%P: Too many arguments (max %d; got %d)", p->pos, i, p->numarguments)
@@ -1118,17 +1089,7 @@ have_type:
         }
     }
 
-    while (nargs--) {
-        struct gstype *ty;
-
-        ty = argtypes[nargs];
-        p = arglines[nargs];
-
-        calculated_type = gstypes_compile_fun(p->pos, ty, calculated_type);
-        if (arglifted[nargs])
-            calculated_type = gstypes_compile_lift(p->pos, calculated_type)
-        ;
-    }
+    calculated_type = gsbc_typecheck_code_or_api_args(cl.nargs, cl.argtypes, cl.arglines, cl.arglifted, calculated_type);
 
     while (ntyargs--) {
         p = tyarglines[ntyargs];
@@ -1151,33 +1112,25 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
 {
-    enum {
-        rttygvar,
-        rtgvar,
-        rtcode,
-        rtarg,
-        rtgen,
-    } regtype;
-    int nregs, ncodes, nargs, nbinds;
-    gsinterned_string regs[MAX_NUM_REGISTERS], coderegs[MAX_NUM_REGISTERS];
-    struct gstype *tyregs[MAX_NUM_REGISTERS];
-    struct gskind *tyregkinds[MAX_NUM_REGISTERS];
+    struct gsbc_typecheck_code_or_api_expr_closure cl;
+
+    int ncodes, nbinds;
+    gsinterned_string coderegs[MAX_NUM_REGISTERS];
     struct gsbc_code_item_type *codetypes[MAX_NUM_REGISTERS];
-    struct gstype *regtypes[MAX_NUM_REGISTERS];
     int first_rhs_lifted;
-    struct gstype *argtypes[MAX_NUM_REGISTERS];
-    struct gsparsedline *arglines[MAX_NUM_REGISTERS];
+
     struct gstype *calculated_type;
     struct gsbc_code_item_type *res;
 
-    nregs = ncodes = nargs = nbinds = 0;
-    regtype = rttygvar;
+    cl.nregs = ncodes = cl.nargs = nbinds = 0;
+    cl.regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
-            if (regtype > rtcode)
+        if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
+        } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+            if (cl.regtype > rtcode)
                 gsfatal_bad_input(p, "Too late to add sub-expressions")
             ;
-            regtype = rtcode;
+            cl.regtype = rtcode;
             if (ncodes >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
             ;
@@ -1192,11 +1145,11 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
             struct gsbc_code_item_type *cty;
             int nftyvs;
 
-            if (regtype > rtgen)
+            if (cl.regtype > rtgen)
                 gsfatal_bad_input(p, "Too late to add generators")
             ;
-            regtype = rtgen;
-            if (nregs >= MAX_NUM_REGISTERS)
+            cl.regtype = rtgen;
+            if (cl.nregs >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
             ;
 
@@ -1208,10 +1161,10 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
             nftyvs = gsbc_typecheck_free_type_variables(p, cty);
             gsbc_typecheck_free_variables(p, cty, nftyvs);
 
-            regs[nregs] = p->label;
-            regtypes[nregs] = gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
+            cl.regs[cl.nregs] = p->label;
+            cl.regtypes[cl.nregs] = gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
 
-            nregs++;
+            cl.nregs++;
             nbinds++;
         } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
             int creg = 0;
@@ -1243,14 +1196,7 @@ have_type:
         gsfatal_unimpl(__FILE__, __LINE__, "%P: Ensure API block statement has unlifted type", pos);
     }
 
-    while (nargs--) {
-        struct gstype *ty;
-
-        ty = argtypes[nargs];
-        p = arglines[nargs];
-
-        calculated_type = gstypes_compile_fun(p->pos, ty, calculated_type);
-    }
+    calculated_type = gsbc_typecheck_code_or_api_args(cl.nargs, cl.argtypes, cl.arglines, cl.arglifted, calculated_type);
 
     res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, sizeof(*res), sizeof(int));
     res->numftyvs = 0;
@@ -1258,6 +1204,90 @@ have_type:
     res->result_type = calculated_type;
 
     return res;
+}
+
+static
+int
+gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+{
+    static gsinterned_string gssymtygvar, gssymarg, gssymlarg;
+
+    int i;
+
+    if (gssymceq(p->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
+        if (pcl->regtype > rttygvar)
+            gsfatal_bad_input(p, "Too late to add global type variables")
+        ;
+        pcl->regtype = rttygvar;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers")
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->tyregs[pcl->nregs] = gssymtable_get_type(symtable, p->label);
+        if (!pcl->tyregs[pcl->nregs])
+            gsfatal_bad_input(p, "Couldn't find type global %s", p->label->name)
+        ;
+        pcl->tyregkinds[pcl->nregs] = gssymtable_get_type_expr_kind(symtable, p->label);
+        if (!pcl->tyregkinds[pcl->nregs])
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", p->pos, p->label->name)
+        ;
+        pcl->nregs++;
+    } else if (
+        gssymceq(p->directive, gssymarg, gssymcodeop, ".arg")
+        || gssymceq(p->directive, gssymlarg, gssymcodeop, ".larg")
+    ) {
+        int reg;
+        struct gstype *argtype;
+
+        if (pcl->regtype > rtarg)
+            gsfatal_bad_input(p, "Too late to add arguments")
+        ;
+        pcl->regtype = rtarg;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers")
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+        gsargcheck(p, 0, "var");
+        reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
+        argtype = pcl->tyregs[reg];
+        if (!argtype)
+            gsfatal_bad_input(p, "Register %s is not a type", p->arguments[0]);
+        for (i = 1; i < p->numarguments; i++) {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Type arguments", p->pos);
+        }
+        pcl->regtypes[pcl->nregs] = argtype;
+        pcl->nregs++;
+
+        pcl->argtypes[pcl->nargs] = argtype;
+        pcl->arglines[pcl->nargs] = p;
+        pcl->arglifted[pcl->nargs] = p->directive == gssymlarg;
+        pcl->nargs++;
+
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+static
+struct gstype *
+gsbc_typecheck_code_or_api_args(int nargs, struct gstype **argtypes, struct gsparsedline **arglines, int *arglifted, struct gstype *calculated_type)
+{
+    struct gsparsedline *p;
+
+    while (nargs--) {
+        struct gstype *ty;
+
+        ty = argtypes[nargs];
+        p = arglines[nargs];
+
+        calculated_type = gstypes_compile_fun(p->pos, ty, calculated_type);
+        if (arglifted[nargs])
+            calculated_type = gstypes_compile_lift(p->pos, calculated_type)
+        ;
+    }
+
+    return calculated_type;
 }
 
 static
@@ -1566,6 +1596,9 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             switch (prim->primtypegroup) {
                 case gsprim_type_api:
                     res = seprint(res, eob, "\"apiprim ");
+                    break;
+                case gsprim_type_elim:
+                    res = seprint(res, eob, "\"elimprim ");
                     break;
                 default:
                     res = seprint(res, eob, "%s:%d: %d primitives next ", __FILE__, __LINE__, prim->primtypegroup);

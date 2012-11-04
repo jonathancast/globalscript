@@ -69,7 +69,14 @@ gsprint(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
 
     block = BLOCK_CONTAINING(prog);
 
-    if (gsiserror_block(block)) {
+    if (gsisimplementation_failure_block(block)) {
+        struct gsimplementation_failure *p;
+        char buf[0x100];
+
+        p = (struct gsimplementation_failure *)prog;
+        gsimplementation_failure_format(buf, buf + sizeof(buf), p);
+        print("%s", buf);
+    } else if (gsiserror_block(block)) {
         struct gserror *p;
 
         p = (struct gserror *)prog;

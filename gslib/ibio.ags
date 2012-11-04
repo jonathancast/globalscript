@@ -8,11 +8,20 @@ ibio.abort	.undefined	_ibio.abort.type
 
 ibio.m	.tyabstract	**^*^*^
 ibio.prim.m	.tygvar
+_ibio.out.type	.tygvar
 ι	.tylambda	*
 ο	.tylambda	*
 α	.tylambda	*
+op	.tylet	_ibio.out.type	ο
+	.tylift
+	.tyfun	op
 	.tylift
 	.tyref	ibio.prim.m	α
+
+_ibio.out.type	.tyexpr
+ibio.prim.oport	.tygvar
+ο	.tylambda	*
+	.tyref	ibio.prim.oport	ο
 
 _ibio.abort.type	.tyexpr
 _ibio_list.t.rune	.tygvar

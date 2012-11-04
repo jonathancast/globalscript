@@ -75,7 +75,7 @@ primset.$O: gsinputfile.h gssetup.h
 typealloc.$O: gsinputfile.h gsregtables.h gstypealloc.h gstypecheck.h
 typecheck.$O: gsinputfile.h gsregtables.h gstypealloc.h gstypecheck.h
 clienttypecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
-clientexpr.$O: gsinputfile.h gstypealloc.h gstypecheck.h
+clientexpr.$O: gsinputfile.h gstypealloc.h gstypecheck.h gsheap.h
 bctopsort.$O: gsinputfile.h gstopsort.h
 regtables.$O: gsinputfile.h gsregtables.h
 api.$O: api.h

@@ -148,6 +148,8 @@ typedef uintptr gsvalue;
 
 gsvalue gscoerce(gsvalue, struct gstype *, struct gstype **, char *, char *, struct gsfile_symtable *, char *, ...);
 
+gsvalue gsapply(struct gspos, gsvalue, gsvalue);
+
 /* §subsection Runes */
 
 char *gschartorune(char *, gsvalue *, char *, char *);
@@ -166,6 +168,7 @@ typedef enum {
     gstyunboxed,
     gstyenosys = 64,
     gstyeoothreads,
+    gstyeoostack,
 } gstypecode;
 
 /* Define this yourself; this is your program's entry point */
@@ -189,6 +192,7 @@ gstypecode gswhnfeval(gsvalue);
 gsvalue gsremove_indirections(gsvalue);
 
 int gsiserror_block(struct gs_blockdesc *);
+int gsisimplementation_failure_block(struct gs_blockdesc *);
 int gsisheap_block(struct gs_blockdesc *);
 int gsisrecord_block(struct gs_blockdesc *);
 int gsisconstr_block(struct gs_blockdesc *);
@@ -199,6 +203,7 @@ struct gsheap_item {
     struct gspos pos;
     enum {
         gsclosure,
+        gsapplication,
         gseval,
         gsindirection,
     } type;
@@ -221,14 +226,21 @@ struct gsbco {
     ulong numglobals, numsubexprs, numfvs, numargs;
 };
 
-struct gsindirection {
+struct gsapplication {
     struct gsheap_item hp;
-    gsvalue target;
+    gsvalue fun;
+    uint numargs;
+    gsvalue arguments[];
 };
 
 struct gseval {
     struct gsheap_item hp;
     struct ace_thread *thread;
+};
+
+struct gsindirection {
+    struct gsheap_item hp;
+    gsvalue target;
 };
 
 struct gserror {
@@ -244,6 +256,8 @@ struct gsimplementation_failure {
     struct gspos cpos, srcpos;
     char message[];
 };
+
+char *gsimplementation_failure_format(char *, char *, struct gsimplementation_failure *);
 
 struct gsrecord {
     struct gspos pos;

@@ -1,0 +1,1 @@
+gsvalue ibio_oport_fdopen(int, char *, char *);
