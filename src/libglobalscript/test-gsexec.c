@@ -8,23 +8,9 @@ p9main(int argc, char **argv)
     gsmain(argc, argv);
 }
 
-static struct gsregistered_primkind kyunl = {
-    /* node = */ gsprim_kind_unlifted,
-};
-
-static struct gsregistered_primkind kyunk = {
-    /* node = */ gsprim_kind_unknown,
-};
-
-static struct gsregistered_primkind kym = {
-    /* node = */ gsprim_kind_exponent,
-    /* base = */ &kyunl,
-    /* exponent = */ &kyunk,
-};
-
 static struct gsregistered_primtype test_sequence_types[] = {
     /* name, file, line, group, kind, */
-    { "m", __FILE__, __LINE__, gsprim_type_api, &kym, },
+    { "m", __FILE__, __LINE__, gsprim_type_api, "u?^", },
     { 0, },
 };
 

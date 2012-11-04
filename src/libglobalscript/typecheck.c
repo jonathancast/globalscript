@@ -132,6 +132,7 @@ gstypes_calculate_kind(struct gstype *type)
             gsfatal_unimpl_type(__FILE__, __LINE__, type, "Abstract types without declared kinds");
         }
         case gstype_knprim: {
+            struct gspos pos;
             struct gstype_knprim *prim;
             struct gsregistered_primtype *primtype;
 
@@ -141,7 +142,9 @@ gstypes_calculate_kind(struct gstype *type)
             ;
             if (!primtype->kind)
                 gsfatal_unimpl(__FILE__, __LINE__, "Panic! Primitype type %s (%s:%d) lacks a declared kind", primtype->name, primtype->file, primtype->line);
-            return gstypes_compile_prim_kind(primtype->file, primtype->line, primtype->kind);
+            pos.file = gsintern_string(gssymfilename, primtype->file);
+            pos.lineno = primtype->line;
+            return gskind_compile(pos, gsintern_string(gssymkindexpr, primtype->kind));
         }
         case gstype_unprim: {
             struct gstype_unprim *prim;

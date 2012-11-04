@@ -165,7 +165,6 @@ struct gskind {
 };
 
 struct gskind *gskind_compile(struct gspos, gsinterned_string);
-struct gskind *gstypes_compile_prim_kind(char *, int, struct gsregistered_primkind *);
 
 struct gskind *gskind_unknown_kind(void);
 struct gskind *gskind_unlifted_kind(void);

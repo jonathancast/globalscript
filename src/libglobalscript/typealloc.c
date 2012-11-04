@@ -1026,36 +1026,6 @@ gskind_compile(struct gspos pos, gsinterned_string ki)
     return stack[0];
 }
 
-struct gskind *
-gstypes_compile_prim_kind(char *file, int lineno, struct gsregistered_primkind *primky)
-{
-    switch (primky->node) {
-        case gsprim_kind_unknown:
-            return gskind_unknown_kind();
-        case gsprim_kind_unlifted:
-            return gskind_unlifted_kind();
-        case gsprim_kind_exponent: {
-            struct gskind *base, *exponent;
-
-            if (!primky->base)
-                gsfatal("%s:%d: Missing base on exponential kind", file, lineno)
-            ;
-            base = gstypes_compile_prim_kind(file, lineno, primky->base);
-            
-            if (!primky->exponent)
-                gsfatal("%s:%d: Missing exponent on exponential kind", file, lineno)
-            ;
-            exponent = gstypes_compile_prim_kind(file, lineno, primky->exponent);
-
-            return gskind_exponential_kind(base, exponent);
-        }
-        default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: gstypes_compile_prim_kind(node = %d)", file, lineno, primky->node);
-    }
-
-    return 0;
-}
-
 static struct gskind *gskind_alloc(int);
 
 static struct gskind *gskind_unknown_kind_constant;

@@ -292,21 +292,12 @@ enum gsprim_type_group {
     gsprim_type_api,
 };
 
-struct gsregistered_primkind {
-    enum {
-        gsprim_kind_unknown,
-        gsprim_kind_unlifted,
-        gsprim_kind_exponent,
-    } node;
-    struct gsregistered_primkind *base, *exponent;
-};
-
 struct gsregistered_primtype {
     char *name;
     char *file;
     int line;
     enum gsprim_type_group prim_type_group;
-    struct gsregistered_primkind *kind;
+    char *kind;
 };
 
 struct gsregistered_prim {

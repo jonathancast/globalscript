@@ -87,13 +87,9 @@ gsprims_lookup_prim(struct gsregistered_primset *prims, char *name)
     return 0;
 }
 
-static struct gsregistered_primkind kyundefined = {
-    /* node = */ gsprim_kind_unlifted,
-};
-
 static struct gsregistered_primtype rune_prim_types[] = {
     /* name, file, line, group, kind, */
-    { "rune", __FILE__, __LINE__, gsprim_type_defined, &kyundefined, },
+    { "rune", __FILE__, __LINE__, gsprim_type_defined, "u", },
     { 0, 0, },
 };
 
