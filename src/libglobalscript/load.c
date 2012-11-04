@@ -67,7 +67,7 @@ set_buf:
     gsadddir(buf);
 }
 
-static void gsloadfile(gsparsedfile *, struct gsfile_symtable *, gsvalue *, struct gstype **);
+static void gsloadfile(gsparsedfile *, struct gsfile_symtable *, struct gspos *, gsvalue *, struct gstype **);
 
 struct gsfile_link {
     gsparsedfile *file;
@@ -90,7 +90,7 @@ gsadddir(char *filename)
     gsaddir_recursive(filename, "", symtable, &pend);
 
     for (pfile = file_list; pfile; pfile = pfile->next) {
-        gsloadfile(pfile->file, symtable, 0, 0);
+        gsloadfile(pfile->file, symtable, 0, 0, 0);
     }
 
     gscurrent_symtable = symtable;
@@ -186,7 +186,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
 }
 
 gsfiletype
-gsaddfile(char *filename, gsvalue *pentry, struct gstype **ptype)
+gsaddfile(char *filename, struct gspos *pentrypos, gsvalue *pentry, struct gstype **ptype)
 {
     gsparsedfile *parsedfile;
     struct gsfile_symtable *symtable;
@@ -198,7 +198,7 @@ gsaddfile(char *filename, gsvalue *pentry, struct gstype **ptype)
 
     parsedfile = gsreadfile(filename, "", 0, 0, ext && !strcmp(ext, ".ags"), symtable);
 
-    gsloadfile(parsedfile, symtable, pentry, ptype);
+    gsloadfile(parsedfile, symtable, pentrypos, pentry, ptype);
 
     return parsedfile->type;
 }
@@ -1674,10 +1674,10 @@ gsac_tokenize(char *line, char **fields, long maxfields)
 
 /* Loader */
 
-static void gsload_scc(gsparsedfile *, struct gsfile_symtable *, struct gsbc_scc *, gsvalue *, struct gstype **);
+static void gsload_scc(gsparsedfile *, struct gsfile_symtable *, struct gsbc_scc *, struct gspos *, gsvalue *, struct gstype **);
 
 void
-gsloadfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, gsvalue *pentry, struct gstype **ptype)
+gsloadfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gspos *pentrypos, gsvalue *pentry, struct gstype **ptype)
 {
     struct gsbc_scc *pscc, *p;
     int contains_entry;
@@ -1686,14 +1686,14 @@ gsloadfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, gsvalue *
         case gsfileprefix:
             pscc = gsbc_topsortfile(parsedfile, symtable);
             for (p = pscc; p; p = p->next_scc) {
-                gsload_scc(parsedfile, symtable, p, 0, 0);
+                gsload_scc(parsedfile, symtable, p, 0, 0, 0);
             }
             return;
         case gsfiledocument:
             pscc = gsbc_topsortfile(parsedfile, symtable);
             for (p = pscc; p; p = p->next_scc) {
                 contains_entry = !p->next_scc;
-                gsload_scc(parsedfile, symtable, p, contains_entry ? pentry : 0, contains_entry ? ptype : 0);
+                gsload_scc(parsedfile, symtable, p, contains_entry ? pentrypos : 0, contains_entry ? pentry : 0, contains_entry ? ptype : 0);
             }
             return;
         default:
@@ -1703,7 +1703,7 @@ gsloadfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, gsvalue *
 
 static
 void
-gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_scc *pscc, gsvalue *pentry, struct gstype **ptype)
+gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_scc *pscc, struct gspos *pentrypos, gsvalue *pentry, struct gstype **ptype)
 {
     struct gsbc_scc *p;
     struct gsbc_item items[MAX_ITEMS_PER_SCC];
@@ -1743,6 +1743,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
                 items[i].type == gssymdatalable
                 && items[i].v == GSDATA_SECTION_FIRST_ITEM(parsedfile->data)
             ) {
+                *pentrypos = items[i].v->pos;
                 if (heap[i])
                     *pentry = heap[i];
                 else

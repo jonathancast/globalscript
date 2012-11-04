@@ -20,7 +20,7 @@ static int gsprint(struct gstype *type, struct gsfile_symtable *, gsvalue prog);
 static int gsprint_unboxed(struct gstype *type, gsvalue prog);
 
 void
-gsrun(char *doc, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *type)
+gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type)
 {
     gstypecode st;
 

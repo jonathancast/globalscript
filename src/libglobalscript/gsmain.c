@@ -19,6 +19,7 @@ gsmain(int argc, char **argv)
     int is_option;
     char *cur_arg;
     char *docfilename;
+    struct gspos gsentrypos;
 
     argv0 = *argv;
     is_option = 0;
@@ -47,7 +48,7 @@ gsmain(int argc, char **argv)
             if (gsisdir(cur_arg)) {
                 gsadddir(cur_arg);
             } else {
-                gsfiletype ft = gsaddfile(cur_arg, &gsentrypoint, &gsentrytype);
+                gsfiletype ft = gsaddfile(cur_arg, &gsentrypos, &gsentrypoint, &gsentrytype);
                 switch (ft) {
                     case gsfiledocument:
                         docfilename = cur_arg;
@@ -71,7 +72,7 @@ have_document:
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r");
     GS_SLOW_EVALUATE(gsentrypoint);
-    gsrun(docfilename, gscurrent_symtable, gsentrypoint, gsentrytype);
+    gsrun(docfilename, gscurrent_symtable, gsentrypos, gsentrypoint, gsentrytype);
     exits("");
 }
 

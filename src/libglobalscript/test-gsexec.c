@@ -97,7 +97,7 @@ static struct api_process_rpc_table exec_rpc_table = {
 };
 
 void
-gsrun(char *script, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *type)
+gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type)
 {
     apisetupmainthread(&exec_rpc_table, &exec_prim_table, prog);
 }

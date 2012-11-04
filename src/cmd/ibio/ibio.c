@@ -37,15 +37,11 @@ static struct api_process_rpc_table ibio_rpc_table = {
 };
 
 void
-gsrun(char *script, struct gsfile_symtable *symtable, gsvalue prog, struct gstype *ty)
+gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty)
 {
     struct gstype *monad, *input, *output, *result, *primres;
     struct gstype *tyw;
-    struct gspos pos;
     char err[0x100];
-
-    pos.file = gsintern_string(gssymfilename, __FILE__);
-    pos.lineno = __LINE__;
 
     tyw = ty;
     if (
