@@ -252,7 +252,7 @@ gsiserror_block(struct gs_blockdesc *p)
 
 struct gs_block_class gsimplementation_errors_descr = {
     /* evaluator = */ gswhnfeval,
-    /* description = */ "Erroneous Global Script Values",
+    /* description = */ "Global Script Implementation Errors",
 };
 static void *gsimplementation_errors_nursury;
 static Lock gsimplementation_errors_lock;
