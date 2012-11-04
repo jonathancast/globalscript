@@ -205,23 +205,6 @@ gserror(struct gspos pos, char *fmt, ...)
     return err;
 }
 
-struct gserror *
-gserror_unimpl(char *file, int lineno, struct gspos srcpos, char *err, ...)
-{
-    char buf[0x100];
-    va_list arg;
-
-    va_start(arg, err);
-    vseprint(buf, buf+sizeof buf, err, arg);
-    va_end(arg);
-
-    if (gsdebug)
-        return gserror(srcpos, "%s:%d: %s next", file, lineno, buf)
-    ; else
-        return gserror(srcpos, "Panic: Un-implemented operation in release build: %s", buf)
-    ;
-}
-
 void
 gspoison(struct gsheap_item *hp, struct gspos srcpos, char *fmt, ...)
 {
@@ -265,6 +248,48 @@ gsiserror_block(struct gs_blockdesc *p)
     return p->class == &gserrors_descr;
 }
 
+/* §section Global Script Implementation Errors */
+
+struct gs_block_class gsimplementation_errors_descr = {
+    /* evaluator = */ gswhnfeval,
+    /* description = */ "Erroneous Global Script Values",
+};
+static void *gsimplementation_errors_nursury;
+static Lock gsimplementation_errors_lock;
+
+void *
+gsreserveimplementation_errors(ulong sz)
+{
+    void *res;
+
+    lock(&gsimplementation_errors_lock);
+    res = gs_sys_seg_suballoc(&gsimplementation_errors_descr, &gsimplementation_errors_nursury, sz, sizeof(gsinterned_string));
+    unlock(&gsimplementation_errors_lock);
+    return res;
+}
+
+struct gsimplementation_failure *
+gsunimpl(char *file, int lineno, struct gspos srcpos, char *err, ...)
+{
+    struct gsimplementation_failure *failure;
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, err);
+    vseprint(buf, buf+sizeof buf, err, arg);
+    va_end(arg);
+
+    failure = gsreserveimplementation_errors(sizeof(*failure) + strlen(buf) + 1);
+    failure->cpos.file = gsintern_string(gssymfilename, file);
+    failure->cpos.lineno = lineno;
+    failure->srcpos = srcpos;
+    strcpy(failure->message, buf);
+
+    return failure;
+}
+
+/* §section Byte Code */
+
 struct gs_block_class gsbytecode_desc = {
     /* evaluator = */ gsnoeval,
     /* description = */ "Byte-code objects",
@@ -277,6 +302,8 @@ gsreservebytecode(ulong sz)
 {
     return gs_sys_seg_suballoc(&gsbytecode_desc, &gsbytecode_nursury, sz, sizeof(void*));
 }
+
+/* §section Records */
 
 struct gs_block_class gsrecords_descr = {
     /* evaluator = */ gswhnfeval,
@@ -302,6 +329,8 @@ gsisrecord_block(struct gs_blockdesc *p)
     return p->class == &gsrecords_descr;
 }
 
+/* §section Constructors */
+
 struct gs_block_class gsconstrs_descr = {
     /* evaluator = */ gswhnfeval,
     /* description = */ "Global Script Constructors",
@@ -325,6 +354,8 @@ gsisconstr_block(struct gs_blockdesc *p)
 {
     return p->class == &gsconstrs_descr;
 }
+
+/* §section API Primitives */
 
 struct gs_block_class gseprims_descr = {
     /* evaluator = */ gswhnfeval,

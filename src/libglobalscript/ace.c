@@ -46,7 +46,7 @@ ace_init()
     return 0;
 }
 
-static void ace_poison_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
+static void ace_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 
 static int ace_alloc_record(struct ace_thread *);
@@ -100,7 +100,7 @@ ace_thread_pool_main(void *p)
                                 ;
                                 break;
                             default:
-                                ace_poison_thread_unimpl(thread, __FILE__, __LINE__, thread->blockedat, ".enter (st = %d)", st);
+                                ace_thread_unimpl(thread, __FILE__, __LINE__, thread->blockedat, ".enter (st = %d)", st);
                                 break;
                         }
                     } else {
@@ -139,7 +139,7 @@ ace_thread_pool_main(void *p)
                                 ;
                                 break;
                             default:
-                                ace_poison_thread_unimpl(thread, __FILE__, __LINE__, thread->ip->pos, "run instruction %d", thread->ip->instr);
+                                ace_thread_unimpl(thread, __FILE__, __LINE__, thread->ip->pos, "run instruction %d", thread->ip->instr);
                                 break;
                         }
                     }
@@ -171,12 +171,12 @@ ace_alloc_record(struct ace_thread *thread)
     record->pos = ip->pos;
     record->numfields = ip->args[0];
     for (j = 0; j < ip->args[0]; j++) {
-        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".record fields");
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".record fields");
         return 0;
     }
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {
-        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
         return 0;
     }
     thread->regs[thread->nregs] = (gsvalue)record;
@@ -199,7 +199,7 @@ ace_alloc_unknown_eprim(struct ace_thread *thread)
     prim->index = -1;
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {
-        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
         return 0;
     }
     thread->regs[thread->nregs] = (gsvalue)prim;
@@ -223,14 +223,14 @@ ace_alloc_eprim(struct ace_thread *thread)
     prim->index = ip->args[0];
     for (j = 0; j < ip->args[1]; j++) {
         if (ip->args[2 + j] >= thread->nregs) {
-            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
             return 0;
         }
         prim->arguments[j] = thread->regs[ip->args[2 + j]];
     }
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {
-        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
         return 0;
     }
     thread->regs[thread->nregs] = (gsvalue)prim;
@@ -262,7 +262,7 @@ ace_push_app(struct ace_thread *thread)
     app->numargs = ip->args[0];
     for (j = 0; j < ip->args[0]; j++) {
         if (ip->args[1 + j] >= thread->nregs) {
-            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".app argument too large");
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".app argument too large");
             return 0;
         }
         app->arguments[j] = thread->regs[ip->args[1 + j]];
@@ -321,7 +321,7 @@ ace_enter(struct ace_thread *thread)
             ;
             return 0;
         default:
-            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
             return 0;
     }
 }
@@ -354,12 +354,12 @@ ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
 
     newtop = (uchar*)thread->stacktop - sz;
     if ((uintptr)newtop % sizeof(gsvalue)) {
-        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack mis-aligned (can't round down or we couldn't pop properly)");
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack mis-aligned (can't round down or we couldn't pop properly)");
         return 0;
     }
 
     if ((uchar*)newtop < (uchar*)thread->stacklimit) {
-        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack overflow");
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack overflow");
         return 0;
     }
 
@@ -400,9 +400,11 @@ ace_poison_thread(struct ace_thread *thread, struct gspos srcpos, char *fmt, ...
     ace_error_thread(thread, gserror(srcpos, "%s", buf));
 }
 
+static void ace_failure_thread(struct ace_thread *, struct gsimplementation_failure *);
+
 static
 void
-ace_poison_thread_unimpl(struct ace_thread *thread, char *file, int lineno, struct gspos srcpos, char *fmt, ...)
+ace_thread_unimpl(struct ace_thread *thread, char *file, int lineno, struct gspos srcpos, char *fmt, ...)
 {
     char buf[0x100];
     va_list arg;
@@ -411,7 +413,22 @@ ace_poison_thread_unimpl(struct ace_thread *thread, char *file, int lineno, stru
     vseprint(buf, buf + sizeof(buf), fmt, arg);
     va_end(arg);
 
-    ace_error_thread(thread, gserror_unimpl(file, lineno, srcpos, "%s", buf));
+    ace_failure_thread(thread, gsunimpl(file, lineno, srcpos, "%s", buf));
+}
+
+static
+void
+ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *err)
+{
+    struct gsheap_item *hp;
+
+    hp = (struct gsheap_item *)thread->base;
+
+    lock(&hp->lock);
+    gsupdate_heap(hp, (gsvalue)err);
+    unlock(&hp->lock);
+
+    ace_remove_thread(thread);
 }
 
 static void *ace_set_registers(struct ace_thread *, struct gsclosure *);
@@ -465,11 +482,11 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
                 needed_args = cl->code->numargs - (cl->numfvs - cl->code->numfvs);
 
                 if (app->numargs < needed_args) {
-                    ace_poison_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Partial applications");
+                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Partial applications");
                     unlock(&fun->lock);
                     return 0;
                 } else if (app->numargs > needed_args) {
-                    ace_poison_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Over-saturated applications");
+                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Over-saturated applications");
                     unlock(&fun->lock);
                     return 0;
                 } else {
@@ -478,14 +495,14 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
 
                     ip = ace_set_registers(thread, cl);
                     if (!ip) {
-                        ace_poison_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+                        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
                         unlock(&fun->lock);
                         return 0;
                     }
 
                     for (i = 0; i < app->numargs; i++) {
                         if (thread->nregs >= MAX_NUM_REGISTERS) {
-                            ace_poison_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+                            ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
                             unlock(&fun->lock);
                             return 0;
                         }
@@ -500,7 +517,7 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
                 return 1;
             }
             default:
-                ace_poison_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Return to %d continuations", cont->node);
+                ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Return to %d continuations", cont->node);
                 return 0;
         }
     }

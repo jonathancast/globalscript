@@ -40,7 +40,7 @@ struct gsbc_cont_app {
     gsvalue arguments[];
 };
 
-/* §section Errors */
+/* §section Global Script Run-time Errors */
 
 void *gsreserveerrors(ulong);
 
@@ -49,6 +49,12 @@ struct gserror *gserror_unimpl(char *, int, struct gspos, char *, ...);
 
 void gspoison(struct gsheap_item *, struct gspos, char *, ...);
 void gspoison_unimpl(struct gsheap_item *, char *, int, struct gspos, char *, ...);
+
+/* §section Global Script Implementation Errors */
+
+void *gsreserveimplementation_failures(ulong);
+
+struct gsimplementation_failure *gsunimpl(char *, int, struct gspos, char *, ...);
 
 /* §section Records */
 

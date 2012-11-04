@@ -243,6 +243,11 @@ struct gserror {
     char message[];
 };
 
+struct gsimplementation_failure {
+    struct gspos cpos, srcpos;
+    char message[];
+};
+
 struct gsrecord {
     struct gspos pos;
     int numfields;
