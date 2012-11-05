@@ -268,10 +268,20 @@ gstypes_calculate_kind(struct gstype *type)
     return 0;
 }
 
-static char *seprint_kind_name(char *, char *, struct gskind *);
-
 void
 gstypes_kind_check_fail(struct gspos pos, struct gskind *kyactual, struct gskind *kyexpected)
+{
+    char err[0x200];
+
+    if (gstypes_kind_check(pos, kyactual, kyexpected, err, err + sizeof(err)) < 0)
+        gsfatal("%s", err)
+    ;
+}
+
+static char *seprint_kind_name(char *, char *, struct gskind *);
+
+int
+gstypes_kind_check(struct gspos pos, struct gskind *kyactual, struct gskind *kyexpected, char *err, char *eerr)
 {
     char actual_name[0x100];
 
@@ -279,25 +289,38 @@ gstypes_kind_check_fail(struct gspos pos, struct gskind *kyactual, struct gskind
 
     switch (kyexpected->node) {
         case gskind_unknown:
-            if (kyactual->node != gskind_unknown && kyactual->node != gskind_unlifted && kyactual->node != gskind_lifted)
-                gsfatal("%P: Incorrect kind: Expected '?'; got '%s'", pos, actual_name);
-            return;
+            if (kyactual->node != gskind_unknown && kyactual->node != gskind_unlifted && kyactual->node != gskind_lifted) {
+                seprint(err, eerr, "%P: Incorrect kind: Expected '?'; got '%s'", pos, actual_name);
+                return -1;
+            }
+            return 0;
         case gskind_unlifted:
-            if (kyactual->node != gskind_unlifted)
-                gsfatal("%P: Incorrect kind: Expected 'u'; got '%s'", pos, actual_name);
-            return;
+            if (kyactual->node != gskind_unlifted) {
+                seprint(err, eerr, "%P: Incorrect kind: Expected 'u'; got '%s'", pos, actual_name);
+                return -1;
+            }
+            return 0;
         case gskind_lifted:
-            if (kyactual->node != gskind_lifted)
-                gsfatal("%P: Incorrect kind: Expected '*'; got '%s'", pos, actual_name);
-            return;
+            if (kyactual->node != gskind_lifted) {
+                seprint(err, eerr, "%P: Incorrect kind: Expected '*'; got '%s'", pos, actual_name);
+                return -1;
+            }
+            return 0;
         case gskind_exponential:
-            if (kyactual->node != gskind_exponential)
-                gsfatal("%P: Incorrect kind: Expected '^'; got '%s'", pos, actual_name);
-            gstypes_kind_check_fail(pos, kyactual->args[0], kyexpected->args[0]);
-            gstypes_kind_check_fail(pos, kyactual->args[1], kyexpected->args[1]);
-            return;
+            if (kyactual->node != gskind_exponential) {
+                seprint(err, eerr, "%P: Incorrect kind: Expected '^'; got '%s'", pos, actual_name);
+                return -1;
+            }
+            if (gstypes_kind_check(pos, kyactual->args[0], kyexpected->args[0], err, eerr) < 0)
+                return -1
+            ;
+            if (gstypes_kind_check(pos, kyactual->args[1], kyexpected->args[1], err, eerr) < 0)
+                return -1
+            ;
+            return 0;
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_kind_check_fail(expected = %d)", pos, kyexpected->node);
+            seprint(err, eerr, "%s:%d: %P: gstypes_kind_check(expected = %d)", __FILE__, __LINE__, pos, kyexpected->node);
+            return -1;
     }
 }
 
