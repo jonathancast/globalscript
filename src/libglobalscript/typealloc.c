@@ -755,7 +755,7 @@ gstype_supply(struct gspos pos, struct gstype *fun, struct gstype *arg)
 
             argkind = gstypes_calculate_kind(arg);
 
-            gstypes_kind_check(pos, argkind, lambda->kind);
+            gstypes_kind_check_fail(pos, argkind, lambda->kind);
 
             return gstypes_subst(pos, lambda->body, lambda->var, arg);
         }
@@ -777,7 +777,7 @@ gstype_instantiate(struct gspos pos, struct gstype *fun, struct gstype *arg)
 
             argkind = gstypes_calculate_kind(arg);
 
-            gstypes_kind_check(pos, argkind, forall->kind);
+            gstypes_kind_check_fail(pos, argkind, forall->kind);
 
             return gstypes_subst(pos, forall->body, forall->var, arg);
         }
