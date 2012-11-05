@@ -309,7 +309,7 @@ struct gsregistered_prim {
         gsprim_operation_api,
     } group;
     char *apitype;
-    int (*check_type)(struct gstype *, char *, char *);
+    char *type;
     int index;
 };
 

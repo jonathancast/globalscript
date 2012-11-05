@@ -14,16 +14,14 @@ static struct gsregistered_primtype test_sequence_types[] = {
     { 0, },
 };
 
-static int check_unit_type(struct gstype *, char *, char *);
-
 enum test_sequence_api_op {
     test_sequence_api_op_unit,
     num_test_sequence_api_ops,
 };
 
 static struct gsregistered_prim test_sequence_operations[] = {
-    /* name, file, line, group, check_type, index, */
-    { "unit", __FILE__, __LINE__, gsprim_operation_api, "m", check_unit_type, test_sequence_api_op_unit, },
+    /* name, file, line, group, type, index, */
+    { "unit", __FILE__, __LINE__, gsprim_operation_api, "m", "λ α * α \"apiprim test.sequence m α ` → ∀", test_sequence_api_op_unit, },
     { 0, },
 };
 
@@ -37,29 +35,6 @@ void
 gsadd_client_prim_sets()
 {
     gsprims_register_prim_set(&test_sequence_primset);
-}
-
-static
-int
-check_unit_type(struct gstype *ty, char *err, char *eerr)
-{
-    struct gstype *tyw;
-    gsinterned_string alpha;
-    struct gstype *arg, *res;
-
-    tyw = ty;
-    if (
-        gstype_expect_forall(tyw, &alpha, &tyw, err, eerr) < 0
-        || gstype_expect_fun(tyw, &arg, &tyw, err, eerr) < 0
-        || gstype_expect_var(arg, alpha, err, eerr) < 0
-        || gstype_expect_app(tyw, &tyw, &res, err, eerr) < 0
-        || gstype_expect_prim(tyw, gsprim_type_api, "test.sequence", "m", err, eerr) < 0
-        || gstype_expect_var(res, alpha, err, eerr) < 0
-    )
-        return -1
-    ;
-
-    return 0;
 }
 
 static struct api_prim_table exec_prim_table = {

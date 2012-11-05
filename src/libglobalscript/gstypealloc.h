@@ -141,9 +141,10 @@ struct gstype *gstype_supply(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstype_apply(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstype_instantiate(struct gspos, struct gstype *, struct gstype *);
 
+struct gstype *gstypes_subst(struct gspos, struct gstype *, gsinterned_string, struct gstype *);
+
 void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int);
 void gstypes_compile_type_definitions(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int);
-
 
 struct gsbc_coercion_arg {
     gsinterned_string var;

@@ -844,6 +844,8 @@ static int gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *, struct g
 
 static struct gstype *gsbc_typecheck_code_or_api_args(int, struct gstype **, struct gsparsedline **, int *, struct gstype *);
 
+static struct gstype *gsbc_typecheck_compile_prim_type(struct gspos, struct gsfile_symtable *, char *);
+
 static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
@@ -945,6 +947,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
                 struct gsregistered_primtype *primty;
                 struct gsregistered_prim *prim;
+                struct gstype *expected_type;
 
                 if (!(primty = gsprims_lookup_type(prims, p->arguments[1]->name)))
                     gsfatal("%P: Primitive set %s has no primtype %s", p->pos, prims->name, p->arguments[1]->name)
@@ -962,13 +965,8 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                     gsfatal("%P: Primitive %s in primset %s does not belong to API type %s", p->pos, prim->name, prims->name, primty->name)
                 ;
 
-                if (prim->check_type) {
-                    char err[0x100];
-
-                    if (prim->check_type(type, err, err + sizeof(err)) < 0)
-                        gsfatal("%P: %s", p->pos, err)
-                    ;
-                }
+                expected_type = gsbc_typecheck_compile_prim_type(p->pos, symtable, prim->type);
+                gstypes_type_check_type_fail(p->pos, type, expected_type);
             }
 
             for (i = 4; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
@@ -1317,6 +1315,172 @@ gsbc_typecheck_code_or_api_args(int nargs, struct gstype **argtypes, struct gspa
     return calculated_type;
 }
 
+static char *gsbc_typecheck_compile_prim_type_skip_ws(char *);
+static char *gsbc_typecheck_compile_prim_type_skip_token(char *);
+
+struct gsbc_typecheck_compile_prim_type_var {
+    gsinterned_string var;
+    struct gskind *kind;
+};
+
+static
+struct gstype *
+gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symtable, char *s)
+{
+    char buf[0x200];
+    int nvars;
+    struct gsbc_typecheck_compile_prim_type_var vars[MAX_NUM_REGISTERS];
+    int stacksize;
+    struct gstype *stack[MAX_NUM_REGISTERS];
+    int i;
+
+    if (strecpy(buf, buf + sizeof(buf), s) >= buf + sizeof(buf))
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Buffer overflow copying type: %s", pos, s)
+    ;
+
+    s = gsbc_typecheck_compile_prim_type_skip_ws(buf);
+    nvars = 0;
+    stacksize = 0;
+    while (*s) {
+        char *tok;
+
+        tok = s;
+        s = gsbc_typecheck_compile_prim_type_skip_token(s);
+
+        if (!strcmp("λ", tok)) {
+            if (nvars >= MAX_NUM_REGISTERS)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Too many λs in internal primtype; max 0x%x", pos, MAX_NUM_REGISTERS)
+            ;
+
+            if (!*s) gsfatal("%P: Can't parse %s: missing type var argument to λ", pos, buf);
+            tok = s;
+            s = gsbc_typecheck_compile_prim_type_skip_token(s);
+            vars[nvars].var = gsintern_string(gssymtypelable, tok);
+
+            if (!*s) gsfatal("%P: Can't parse %s: missing kind argument to λ", pos, buf);
+            tok = s;
+            s = gsbc_typecheck_compile_prim_type_skip_token(s);
+            vars[nvars].kind = gskind_compile(pos, gsintern_string(gssymkindexpr, tok));
+
+            nvars++;
+        } else if (!strcmp("\"apiprim", tok)) {
+            struct gsregistered_primset *prims;
+            struct gsregistered_primtype *primtype;
+            gsinterned_string primtypename;
+            struct gskind *primtypekind;
+
+            if (stacksize >= MAX_NUM_REGISTERS)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Stack overflow in internal primtype; max 0x%x", pos, MAX_NUM_REGISTERS)
+            ;
+
+            if (!*s) gsfatal("%P: Can't parse %s: missing primset argument to \"apiprim", pos, buf);
+            tok = s;
+            s = gsbc_typecheck_compile_prim_type_skip_token(s);
+            prims = gsprims_lookup_prim_set(tok);
+            if (!prims) gsfatal("%P: Primset %s not declared (in internal primtype)", pos, tok);
+
+            if (!*s) gsfatal("%P: Can't parse %s: missing primtype argument to \"apiprim", pos, buf);
+            tok = s;
+            s = gsbc_typecheck_compile_prim_type_skip_token(s);
+            primtype = gsprims_lookup_type(prims, tok);
+            if (!primtype) gsfatal("%P: Primset %s contains no primtype %s", pos, prims->name, tok);
+
+            primtypename = gsintern_string(gssymtypelable, primtype->name);
+            primtypekind = gskind_compile(pos, gsintern_string(gssymkindexpr, primtype->kind));
+            stack[stacksize++] = gstype_compile_knprim(pos, gsprim_type_api, prims, primtypename, primtypekind);
+        } else if (!strcmp("`", tok)) {
+            struct gstype *ty;
+
+            if (stacksize < 2)
+                gsfatal("%P: Stack underflow in parsing internal primtype", pos)
+            ;
+
+            ty = gstype_apply(pos, stack[stacksize - 2], stack[stacksize - 1]);
+            stacksize -= 2;
+            stack[stacksize++] = ty;
+        } else if (!strcmp("→", tok)) {
+            struct gstype *ty;
+
+            if (stacksize < 2)
+                gsfatal("%P: Stack underflow in parsing internal primtype", pos)
+            ;
+
+            ty = gstypes_compile_fun(pos, stack[stacksize - 2], stack[stacksize - 1]);
+            stacksize -= 2;
+            stack[stacksize++] = ty;
+        } else if (!strcmp("∀", tok)) {
+            struct gstype *ty;
+
+            if (stacksize < 1)
+                gsfatal("%P: Stack underflow in parsing internal primtype", pos)
+            ;
+
+            if (nvars < 1)
+                gsfatal("%P: Not enough λs in internal primtype", pos)
+            ;
+
+            ty = gstypes_compile_forall(pos, vars[nvars - 1].var, vars[nvars - 1].kind, stack[stacksize - 1]);
+            nvars--;
+            stacksize--;
+
+            stack[stacksize++] = ty;
+        } else {
+            gsinterned_string var;
+            struct gstype *ty;
+
+            if (stacksize >= MAX_NUM_REGISTERS)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Stack overflow in internal primtype; max 0x%x", pos, MAX_NUM_REGISTERS)
+            ;
+
+            ty = 0;
+            var = gsintern_string(gssymtypelable, tok);
+            for (i = nvars; i--; ) {
+                if (vars[i].var == var) {
+                    ty = gstypes_compile_type_var(pos, var, vars[i].kind);
+                    break;
+                }
+            }
+            if (!ty)
+                ty = gssymtable_get_type(symtable, var)
+            ;
+            if (!ty)
+                gsfatal("%P: Cannot find type variable %y (in internal primtype)", pos, var)
+            ;
+
+            stack[stacksize++] = ty;
+        }
+    }
+
+    if (nvars > 0) gsfatal("%P: Too many λs in internal primtype");
+
+    if (stacksize < 0) gsfatal("%P: Stack underflow at end of internal primtype", pos);
+    if (stacksize > 1) gsfatal("%P: Stack overflow at end of internal primtype", pos);
+
+    return stack[0];
+}
+
+static
+char *
+gsbc_typecheck_compile_prim_type_skip_ws(char *s)
+{
+    return s;
+}
+
+static
+char *
+gsbc_typecheck_compile_prim_type_skip_token(char *s)
+{
+    while (*s && !isspace(*s)) s++;
+
+    if (!*s)
+        return s
+    ;
+
+    *s = 0;
+
+    return gsbc_typecheck_compile_prim_type_skip_ws(s + 1);
+}
+
 static
 int
 gsbc_typecheck_free_type_variables(struct gsparsedline *p, struct gsbc_code_item_type *cty)
@@ -1465,6 +1629,18 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
     }
 
     switch (pexpected->node) {
+        case gstype_abstract: {
+            struct gstype_abstract *pactual_abstract, *pexpected_abstract;
+
+            pactual_abstract = (struct gstype_abstract *)pactual;
+            pexpected_abstract = (struct gstype_abstract *)pexpected;
+
+            if (pactual_abstract->name != pexpected_abstract->name) {
+                seprint(err, eerr, "%P: I don't think abstype %y is the same as abstype %y", pos, pactual_abstract->name, pexpected_abstract->name);
+                return -1;
+            }
+            return 0;
+        }
         case gstype_knprim: {
             struct gstype_knprim *pactual_prim, *pexpected_prim;
 
@@ -1497,17 +1673,46 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             }
             return 0;
         }
-        case gstype_abstract: {
-            struct gstype_abstract *pactual_abstract, *pexpected_abstract;
+        case gstype_var: {
+            struct gstype_var *pactual_var, *pexpected_var;
 
-            pactual_abstract = (struct gstype_abstract *)pactual;
-            pexpected_abstract = (struct gstype_abstract *)pexpected;
+            pactual_var = (struct gstype_var *)pactual;
+            pexpected_var = (struct gstype_var *)pexpected;
 
-            if (pactual_abstract->name != pexpected_abstract->name) {
-                seprint(err, eerr, "%P: I don't think abstype %y is the same as abstype %y", pos, pactual_abstract->name, pexpected_abstract->name);
+            if (pactual_var->name != pexpected_var->name) {
+                seprint(err, eerr, "%P: I don't think %y is the same as %y", pactual_var->name, pexpected_var->name);
                 return -1;
             }
             return 0;
+        }
+        case gstype_forall: {
+            struct gstype_forall *pactual_forall, *pexpected_forall;
+            struct gstype *actual_renamed_body, *expected_renamed_body;
+            char nm[0x100];
+            int n;
+            gsinterned_string var;
+            struct gstype *varty;
+
+            pactual_forall = (struct gstype_forall *)pactual;
+            pexpected_forall = (struct gstype_forall *)pexpected;
+
+            if (gstypes_kind_check(pos, pactual_forall->kind, pexpected_forall->kind, err, eerr) < 0)
+                return -1
+            ;
+
+            n = 0;
+            do {
+                if (seprint(nm, nm + sizeof(nm), "%y%d", pexpected_forall->var, n++) >= nm + sizeof(nm)) {
+                    seprint(err, eerr, "%s:%d: %P: Buffer overflow during α-renaming", __FILE__, __LINE__, pexpected->pos);
+                    return -1;
+                }
+                var = gsintern_string(gssymtypelable, nm);
+            } while (gstypes_is_ftyvar(var, pactual_forall->body) || gstypes_is_ftyvar(var, pexpected_forall->body));
+            varty = gstypes_compile_type_var(pos, var, pactual_forall->kind);
+            actual_renamed_body = gstypes_subst(pos, pactual_forall->body, pactual_forall->var, varty);
+            expected_renamed_body = gstypes_subst(pos, pexpected_forall->body, pexpected_forall->var, varty);
+
+            return gstypes_type_check(pos, actual_renamed_body, expected_renamed_body, err, eerr);
         }
         case gstype_lift: {
             struct gstype_lift *pactual_lift, *pexpected_lift;

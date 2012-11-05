@@ -739,8 +739,6 @@ gstype_apply(struct gspos pos, struct gstype *fun, struct gstype *arg)
     return res;
 }
 
-static struct gstype *gstypes_subst(struct gspos, struct gstype *, gsinterned_string, struct gstype *);
-
 struct gstype *
 gstype_supply(struct gspos pos, struct gstype *fun, struct gstype *arg)
 {
@@ -787,7 +785,6 @@ gstype_instantiate(struct gspos pos, struct gstype *fun, struct gstype *arg)
     return 0;
 }
 
-static
 struct gstype *
 gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, struct gstype *type1)
 {
@@ -970,6 +967,18 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
 
             lift = (struct gstype_lift *)type;
             return gstypes_is_ftyvar(varname, lift->arg);
+        }
+        case gstype_app: {
+            struct gstype_app *app;
+
+            app = (struct gstype_app *)type;
+            return gstypes_is_ftyvar(varname, app->fun) || gstypes_is_ftyvar(varname, app->arg);
+        }
+        case gstype_fun: {
+            struct gstype_fun *fun;
+
+            fun = (struct gstype_fun *)type;
+            return gstypes_is_ftyvar(varname, fun->tyarg) || gstypes_is_ftyvar(varname, fun->tyres);
         }
         case gstype_sum: {
             struct gstype_sum *sum;
