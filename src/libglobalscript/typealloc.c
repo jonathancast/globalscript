@@ -474,6 +474,26 @@ gstypes_compile_sumv(struct gspos pos, int nconstrs, struct gstype_constr *const
 }
 
 struct gstype *
+gstypes_compile_product(struct gspos pos, int nfields, ...)
+{
+    va_list arg;
+    struct gstype_field fields[MAX_REGISTERS];
+    int i;
+
+    if (nfields > MAX_REGISTERS)
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Products with more than 0x%x fields", pos, MAX_REGISTERS)
+    ;
+
+    va_start(arg, nfields);
+    for (i = 0; i < nfields; i++) {
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Copy fields out of gstypes_compile_product arguments", pos);
+    }
+    va_end(arg);
+
+    return gstype_compile_productv(pos, nfields, fields);
+}
+
+struct gstype *
 gstype_compile_productv(struct gspos pos, int nfields, struct gstype_field *fields)
 {
     struct gstype *res;

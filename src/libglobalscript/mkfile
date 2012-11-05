@@ -41,6 +41,7 @@ TEST_OFILES=\
 	test_load.$O \
 	test_symtable.$O \
 	test_typealloc.$O \
+	test_clienttypecheck.$O \
 	$SYSTEM/test.$O \
 	test_iostat.$O \
 	$SYSTEM/test_iodir.$O \
@@ -103,6 +104,7 @@ test_symtable.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h test_tests.h
 test_load.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 test_typealloc.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h gstypealloc.h test_tests.h
 test_iostat.$O:	$GLOBALSCRIPT/include/libtest.h $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h test_tests.h
+test_clienttypecheck.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h gstypealloc.h
 unix/test_iodir.$O:	$GLOBALSCRIPT/include/libtest.h unix/iosysconstants.h iofile.h iomacros.h unix/iodir.h unix/test_systemtests.h
 
 test-gsi.$O: gsinputfile.h gstypealloc.h

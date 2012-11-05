@@ -208,6 +208,33 @@ gstype_expect_fun(struct gstype *ty, struct gstype **ptyarg, struct gstype **pty
     }
 }
 
+int
+gstype_expect_product(struct gstype *ty, char *err, char *eerr, int nfields, ...)
+{
+    va_list arg;
+    char ty_buf[0x100];
+    int i;
+
+    if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
+        seprint(err, eerr, "%s:%d: buffer overflow printing type %P", __FILE__, __LINE__, ty->pos);
+        return -1;
+    }
+
+    if (ty->node == gstype_product) {
+        va_start(arg, nfields);
+        for (i = 0; i < nfields; i++) {
+            seprint(err, eerr, "%s:%d: %P: Check fields in gstype_expect_product next", __FILE__, __LINE__, ty->pos);
+            va_end(arg);
+            return -1;
+        }
+        va_end(arg);
+        return 0;
+    } else {
+        seprint(err, eerr, "I don't think %s is a product type", ty_buf);
+        return -1;
+    }
+}
+
 struct gstype *
 gstype_get_definition(struct gspos pos, struct gsfile_symtable *symtable, struct gstype *ty)
 {

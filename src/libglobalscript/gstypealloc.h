@@ -133,6 +133,7 @@ struct gstype *gstypes_compile_forall(struct gspos, gsinterned_string, struct gs
 struct gstype *gstypes_compile_lift(struct gspos, struct gstype *);
 struct gstype *gstypes_compile_sum(struct gspos, int, ...);
 struct gstype *gstypes_compile_sumv(struct gspos, int, struct gstype_constr *);
+struct gstype *gstype_compile_product(struct gspos, int, ...);
 struct gstype *gstype_compile_productv(struct gspos, int, struct gstype_field *);
 struct gstype *gstypes_compile_fun(struct gspos, struct gstype *, struct gstype *);
 

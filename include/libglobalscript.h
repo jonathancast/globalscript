@@ -136,6 +136,7 @@ int gstype_expect_forall(struct gstype *, gsinterned_string *, struct gstype **,
 int gstype_expect_lift(struct gstype *, struct gstype **, char *, char *);
 int gstype_expect_app(struct gstype *, struct gstype **, struct gstype **, char *, char *);
 int gstype_expect_fun(struct gstype *, struct gstype **, struct gstype **, char *, char *);
+int gstype_expect_product(struct gstype *, char *, char *, int, ...);
 
 struct gstype *gstype_get_definition(struct gspos, struct gsfile_symtable *, struct gstype *);
 
