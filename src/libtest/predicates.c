@@ -53,6 +53,19 @@ not_ok(char *srcfile, int srcline, int success, char *err, ...)
 }
 
 void
+ok_long_lt(char *srcfile, int srcline, long n0, long n1, char *err, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, err);
+    vseprint(buf, buf+sizeof buf, err, arg);
+    va_end(arg);
+
+    ok(srcfile, srcline, n0 < n1, "%s: %ux >= %ux", buf, n0, n1);
+}
+
+void
 ok_ulong_eq(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...)
 {
     char buf[0x100];

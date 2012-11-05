@@ -16,10 +16,14 @@ void test_teardown(void);
 
 void ok(char *srcfile, int srcline, int passed, char *err, ...);
 void not_ok(char *srcfile, int srcline, int passed, char *err, ...);
+
+void ok_long_lt(char *srcfile, int srcline, long, long, char *err, ...);
+
 void ok_ulong_eq(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...);
 void ok_ulong_ne(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...);
 void ok_ulong_ge(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...);
 void ok_ulong_le(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...);
+
 void ok_cstring_eq(char *srcfile, int srcline, char *s0, char *s1, char *err, ...);
 
 #if defined(__cplusplus)

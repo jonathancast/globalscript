@@ -5,6 +5,7 @@ OFILES=\
 
 TEST_OFILES=\
 	test.$O \
+	test_predicates.$O \
 
 LIB=libtest.a
 
