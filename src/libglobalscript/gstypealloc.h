@@ -116,7 +116,6 @@ struct gstype_coerce_definition {
     int numargs;
 };
 
-void gsfatal_unimpl_type(char *, int, struct gstype *, char *, ...);
 void gsfatal_bad_type(gsinterned_string, int, struct gstype *, char *, ...);
 
 char *gstypes_eprint_type(char *, char *, struct gstype *);

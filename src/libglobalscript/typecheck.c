@@ -129,7 +129,7 @@ gstypes_calculate_kind(struct gstype *type)
             abs = (struct gstype_abstract *)type;
             if (abs->kind)
                 return abs->kind;
-            gsfatal_unimpl_type(__FILE__, __LINE__, type, "Abstract types without declared kinds");
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Abstract types without declared kinds", type->pos);
         }
         case gstype_knprim: {
             struct gspos pos;
@@ -218,7 +218,7 @@ gstypes_calculate_kind(struct gstype *type)
                 case gskind_lifted:
                     gsfatal_bad_type(type->pos.file, type->pos.lineno, type, "Wrong kind: Expected ^, got *");
                 default:
-                    gsfatal_unimpl_type(__FILE__, __LINE__, type, "'function' kind (node = %d)", funkind->node);
+                    gsfatal_unimpl(__FILE__, __LINE__, "%P: 'function' kind (node = %d)", type->pos, funkind->node);
             }
         }
         case gstype_sum: {
@@ -242,7 +242,7 @@ gstypes_calculate_kind(struct gstype *type)
             prod = (struct gstype_product *)type;
 
             for (i = 0; i < prod->numfields; i++) {
-                gsfatal_unimpl_type(__FILE__, __LINE__, type, "check kind of field type");
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: check kind of field type", type->pos);
             }
 
             return gskind_unlifted_kind();
@@ -263,7 +263,7 @@ gstypes_calculate_kind(struct gstype *type)
             return gskind_unlifted_kind();
         }
         default:
-            gsfatal_unimpl_type(__FILE__, __LINE__, type, "gstypes_calculate_kind(node = %d)", type->node);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_calculate_kind(node = %d)", type->pos, type->node);
     }
     return 0;
 }
@@ -362,29 +362,6 @@ seprint_kind_name(char *buf, char *ebuf, struct gskind *ky)
     }
 }
 
-#ifdef SHOULD_DEBUG
-static int debug = SHOULD_DEBUG;
-#else
-static int debug = 1;
-#endif
-
-void
-gsfatal_unimpl_type(char *file, int lineno, struct gstype *ty, char * err, ...)
-{
-    char buf[0x100];
-    va_list arg;
-
-    va_start(arg, err);
-    vseprint(buf, buf+sizeof buf, err, arg);
-    va_end(arg);
-
-    if (debug)
-        gsfatal("%s:%d: %P: %s next", file, lineno, ty->pos, buf)
-    ; else
-        gsfatal("%P: Panic: Un-implemented operation in release build: %s", ty->pos, buf)
-    ;
-}
-
 void
 gsfatal_bad_type(gsinterned_string file, int lineno, struct gstype *ty, char *err, ...)
 {
@@ -411,7 +388,7 @@ gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
         case gstype_fun:
             return;
         default:
-            gsfatal_unimpl_type(__FILE__, __LINE__, type, "%P: gsbc_typecheck_check_boxed(node = %d)", pos, type->node);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: %P: gsbc_typecheck_check_boxed(node = %d)", pos, type->pos, type->node);
     }
 }
 
@@ -429,7 +406,7 @@ gsbc_typecheck_check_boxed_or_product(struct gspos pos, struct gstype *type)
         case gstype_ubproduct:
             return;
         default:
-            gsfatal_unimpl_type(__FILE__, __LINE__, type, "%P: gsbc_typecheck_check_boxed_or_product(node = %d)", pos, type->node);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: %P: gsbc_typecheck_check_boxed_or_product(node = %d)", pos, type->pos, type->node);
     }
 }
 

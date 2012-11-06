@@ -758,7 +758,7 @@ gstype_supply(struct gspos pos, struct gstype *fun, struct gstype *arg)
             return gstypes_subst(pos, lambda->body, lambda->var, arg);
         }
         default:
-            gsfatal_unimpl_type(__FILE__, __LINE__, fun, "supply (node = %d)", fun->node);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: supply (node = %d)", fun->pos, fun->node);
     }
     return 0;
 }
@@ -780,7 +780,7 @@ gstype_instantiate(struct gspos pos, struct gstype *fun, struct gstype *arg)
             return gstypes_subst(pos, forall->body, forall->var, arg);
         }
         default:
-            gsfatal_unimpl_type(__FILE__, __LINE__, fun, "supply (node = %d)", fun->node);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: supply (node = %d)", fun->pos, fun->node);
     }
     return 0;
 }
@@ -911,7 +911,7 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             res->pos = type->pos;
             resprod->numfields = prod->numfields;
             for (i = 0; i < prod->numfields; i++) {
-                gsfatal_unimpl_type(__FILE__, __LINE__, type, "subst into field type");
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: subst into field type", type->pos);
             }
 
             return res;
@@ -934,7 +934,7 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             return res;
         }
         default:
-            gsfatal_unimpl_type(__FILE__, __LINE__, type, "subst (node = %d)", type->node);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: subst (node = %d)", type->pos, type->node);
     }
     return 0;
 }
@@ -985,13 +985,13 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
 
             sum = (struct gstype_sum *)type;
             for (i = 0; i < sum->numconstrs; i++) {
-                gsfatal_unimpl_type(__FILE__, __LINE__, type, "tv (constr arg)");
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: fv (constr arg)", type->pos);
             }
 
             return 0;
         }
         default:
-            gsfatal_unimpl_type(__FILE__, __LINE__, type, "fv (varname = %s, node = %d)", varname->name, type->node);
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: fv (varname = %s, node = %d)", type->pos, varname->name, type->node);
     }
     return 0;
 }
