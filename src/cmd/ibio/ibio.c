@@ -40,7 +40,7 @@ void
 gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty)
 {
     struct gstype *monad, *input, *output, *result, *tybody;
-    struct gstype *tyow, *tyoa;
+    struct gstype *tyow;
     struct gstype *tyw;
     gsvalue stdout;
     char err[0x100];
@@ -72,11 +72,12 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     ));
     if (
         gstype_expect_lifted_fun(err, err + sizeof(err), tyw, &tyow, &tyw) < 0
-        || gstype_expect_app(err, err + sizeof(err), tyow, &tyow, &tyoa) < 0
         || gstypes_type_check(err, err + sizeof(err), pos, tyow,
-            gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^"))
+            gstype_apply(pos,
+                gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
+                output
+            )
         ) < 0
-        || gstypes_type_check(err, err + sizeof(err), pos, tyoa, output) < 0
         || gstypes_type_check(err, err + sizeof(err), pos, tyw, tybody) < 0
     ) {
         ace_down();
