@@ -45,6 +45,8 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     gsvalue stdout;
     char err[0x100];
 
+    /* §section Cast down from newtype wrapper */
+
     tyw = ty;
     if (
         gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &result) < 0
@@ -61,6 +63,8 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
         ace_down();
         gsfatal("%s: Couldn't cast down to primitive level: %s", script, err);
     }
+
+    /* §section Pass in output */
 
     if (
         gstype_expect_lift(err, err + sizeof(err), tyw, &tyw) < 0
@@ -80,6 +84,8 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     }
     prog = gsapply(pos, prog, stdout);
 
+    /* §section Paranoid check that the result is the API monad we epxect it to be */
+
     if (
         gstype_expect_lift(err, err + sizeof(err), tyw, &tyw) < 0
         || gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &primres) < 0
@@ -89,6 +95,8 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
         ace_down();
         gsfatal("%s: Bad type: %s", script, err);
     }
+
+    /* §section Set up the IBIO thread */
 
     apisetupmainthread(&ibio_rpc_table, &ibio_prim_table, prog);
 }
