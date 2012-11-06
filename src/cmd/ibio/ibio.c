@@ -87,10 +87,11 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 
     if (
         gstype_expect_lift(err, err + sizeof(err), tyw, &tyw) < 0
-        || gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &primres) < 0
-        || gstypes_type_check(err, err + sizeof(err), pos, primres, result) < 0
         || gstypes_type_check(err, err + sizeof(err), pos, tyw,
-            gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "?*^"))
+            gstype_apply(pos,
+                gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "?*^")),
+                result
+            )
         ) < 0
     ) {
         ace_down();
