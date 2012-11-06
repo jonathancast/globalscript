@@ -71,14 +71,15 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
         result
     ));
     if (
-        gstype_expect_lifted_fun(err, err + sizeof(err), tyw, &tyow, &tyw) < 0
-        || gstypes_type_check(err, err + sizeof(err), pos, tyow,
-            gstype_apply(pos,
-                gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
-                output
-            )
+        gstypes_type_check(err, err + sizeof(err), pos, tyw,
+            gstypes_compile_lift(pos, gstypes_compile_fun(pos,
+                gstype_apply(pos,
+                    gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
+                    output
+                ),
+                tybody
+            ))
         ) < 0
-        || gstypes_type_check(err, err + sizeof(err), pos, tyw, tybody) < 0
     ) {
         ace_down();
         gsfatal("%s: Panic!  Type after un-wrapping newtype wrapper incorrect (%s)", script, err);
