@@ -67,11 +67,10 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     /* §section Pass in output */
 
     if (
-        gstype_expect_lift(tyw, &tyw, err, err + sizeof(err)) < 0
-        || gstype_expect_fun(tyw, &tyow, &tyw, err, err + sizeof(err)) < 0
-        || gstype_expect_app(tyow, &tyow, &tyoa, err, err + sizeof(err)) < 0
-        || gstype_expect_prim(tyow, gsprim_type_elim, "ibio.prim", "oport", err, err + sizeof(err)) < 0
-        || gstypes_type_check(pos, tyoa, output, err, err + sizeof(err)) < 0
+        gstype_expect_lifted_fun(err, err + sizeof(err), tyw, &tyow, &tyw) < 0
+        || gstype_expect_app(err, err + sizeof(err), tyow, &tyow, &tyoa) < 0
+        || gstype_expect_prim(err, err + sizeof(err), tyow, gsprim_type_elim, "ibio.prim", "oport") < 0
+        || gstypes_type_check(err, err + sizeof(err), pos, tyoa, output) < 0
     ) {
         ace_down();
         gsfatal("%s: Not a function of output channel? (%s)", script, err);

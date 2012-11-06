@@ -209,7 +209,23 @@ gstype_expect_fun(char *err, char *eerr, struct gstype *ty, struct gstype **ptya
 }
 
 int
-gstype_expect_product(struct gstype *ty, char *err, char *eerr, int nfields, ...)
+gstype_expect_lifted_fun(char *err, char *eerr, struct gstype *ty, struct gstype **ptyarg, struct gstype **ptyres)
+{
+    struct gstype *tyw;
+
+    tyw = ty;
+    if (
+        gstype_expect_lift(err, eerr, tyw, &tyw) < 0
+        || gstype_expect_fun(err, eerr, tyw, ptyarg, ptyres) < 0
+    )
+        return -1
+    ;
+
+    return 0;
+}
+
+int
+gstype_expect_product(char *err, char *eerr, struct gstype *ty, int nfields, ...)
 {
     va_list arg;
     char ty_buf[0x100];
