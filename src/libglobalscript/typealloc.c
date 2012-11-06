@@ -490,11 +490,11 @@ gstypes_compile_product(struct gspos pos, int nfields, ...)
     }
     va_end(arg);
 
-    return gstype_compile_productv(pos, nfields, fields);
+    return gstypes_compile_productv(pos, nfields, fields);
 }
 
 struct gstype *
-gstype_compile_productv(struct gspos pos, int nfields, struct gstype_field *fields)
+gstypes_compile_productv(struct gspos pos, int nfields, struct gstype_field *fields)
 {
     struct gstype *res;
     struct gstype_product *product;

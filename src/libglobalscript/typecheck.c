@@ -587,7 +587,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             numfields++;
         }
 
-        type = gstype_compile_productv(pdata->pos, numfields, fields);
+        type = gstypes_compile_productv(pdata->pos, numfields, fields);
 
         if (pdata->label)
             gssymtable_set_data_type(symtable, pdata->label, type)
@@ -924,7 +924,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             }
 
             cl.regs[cl.nregs] = p->label;
-            cl.regtypes[cl.nregs] = gstype_compile_productv(p->pos, 0, fields);
+            cl.regtypes[cl.nregs] = gstypes_compile_productv(p->pos, 0, fields);
             cl.nregs++;
         } else if (gssymceq(p->directive, gssymeprim, gssymcodeop, ".eprim")) {
             struct gsregistered_primset *prims;
