@@ -386,6 +386,7 @@ gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
         case gstype_lift:
         case gstype_app:
         case gstype_fun:
+        case gstype_product:
             return;
         default:
             gsfatal_unimpl(__FILE__, __LINE__, "%P: %P: gsbc_typecheck_check_boxed(node = %d)", pos, type->pos, type->node);
@@ -907,6 +908,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             struct gsregistered_primset *prims;
             struct gstype *type;
             int tyreg;
+            int first_arg_pos;
 
             if (cl.regtype > rtlet)
                 gsfatal("%P: To late to add allocations", p->pos)
@@ -951,6 +953,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 type = gstype_instantiate(p->pos, type, cl.tyregs[tyargreg]);
             }
             if (i < p->numarguments) i++;
+            first_arg_pos = i;
             for (; i < p->numarguments; i++) {
                 int argreg;
                 struct gstype *argtype;
@@ -965,7 +968,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                     gstypes_type_check_type_fail(p->pos, argtype, fun->tyarg);
                     type = fun->tyres;
                 } else {
-                    gsfatal("%P: Too many arguments to %s", p->pos, p->arguments[2]->name);
+                    gsfatal("%P: Too many arguments to %s (max %d; got %d)", p->pos, p->arguments[2]->name, i - first_arg_pos, p->numarguments - first_arg_pos);
                 }
             }
 
@@ -1255,7 +1258,10 @@ gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *symtable, struct gspa
         if (!argtype)
             gsfatal_bad_input(p, "Register %s is not a type", p->arguments[0]);
         for (i = 1; i < p->numarguments; i++) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Type arguments", p->pos);
+            int regarg;
+
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            argtype = gstype_apply(p->pos, argtype, pcl->tyregs[regarg]);
         }
         pcl->regtypes[pcl->nregs] = argtype;
         pcl->nregs++;
@@ -1401,6 +1407,34 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
             stacksize--;
 
             stack[stacksize++] = ty;
+        } else if (!strcmp("〈", tok)) {
+            int nfields;
+            struct gstype_field fields[MAX_NUM_REGISTERS];
+
+            nfields = 0;
+            while (tok = s, s = gsbc_typecheck_compile_prim_type_skip_token(s), strcmp("〉", tok)) {
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Get fields in internal primtype next", pos);
+            }
+            if (nfields > MAX_NUM_REGISTERS)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Too many fields in internal primtype; max 0x%x", pos, MAX_NUM_REGISTERS)
+            ;
+
+            if (stacksize >= MAX_NUM_REGISTERS)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Stack overflow in internal primtype; max 0x%x", pos, MAX_NUM_REGISTERS)
+            ;
+
+            stack[stacksize++] = gstypes_compile_productv(pos, nfields, fields);
+        } else if (!strcmp("⌊⌋", tok)) {
+            struct gstype *type;
+
+            if (stacksize < 1)
+                gsfatal("%P: Stack underflow in parsing internal primtype", pos)
+            ;
+
+            type = gstypes_compile_lift(pos, stack[stacksize - 1]);
+            stacksize--;
+
+            stack[stacksize++] = type;
         } else {
             gsinterned_string var;
             struct gstype *ty;
@@ -1657,7 +1691,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_var = (struct gstype_var *)pexpected;
 
             if (pactual_var->name != pexpected_var->name) {
-                seprint(err, eerr, "%P: I don't think %y is the same as %y", pactual_var->name, pexpected_var->name);
+                seprint(err, eerr, "%P: I don't think %s is the same as %s", pos, pactual_var->name, pexpected_var->name);
                 return -1;
             }
             return 0;
@@ -1803,11 +1837,11 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             prim = (struct gstype_unprim *)pty;
 
             switch (prim->primtypegroup) {
-                case gsprim_type_api:
-                    res = seprint(res, eob, "\"apiprim ");
-                    break;
                 case gsprim_type_elim:
                     res = seprint(res, eob, "\"elimprim ");
+                    break;
+                case gsprim_type_api:
+                    res = seprint(res, eob, "\"apiprim ");
                     break;
                 default:
                     res = seprint(res, eob, "%s:%d: %d primitives next ", __FILE__, __LINE__, prim->primtypegroup);

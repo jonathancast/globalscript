@@ -123,13 +123,15 @@ static struct gsparsedline *gstype_section_skip_type_expr(struct gsparsedfile_se
 struct gsparsedline *
 gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedline *type)
 {
-    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtyapiprim;
+    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtyapiprim, gssymtyelimprim;
 
     if (gssymceq(type->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
     } else if (gssymceq(type->directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
     } else if (gssymceq(type->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")) {
+        return gsinput_next_line(ppseg, type);
+    } else if (gssymceq(type->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")) {
         return gsinput_next_line(ppseg, type);
     } else {
         gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_section_next_item(%s)", type->pos, type->directive->name);
@@ -154,7 +156,7 @@ static
 struct gsparsedline *
 gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymoptyubproduct;
+    static gsinterned_string gssymtyfun, gssymoptyubproduct;
 
     for (;;) {
         if (
@@ -163,7 +165,7 @@ gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gspars
             || gssymeq(p->directive, gssymtypeop, ".tyforall")
             || gssymeq(p->directive, gssymtypeop, ".tylift")
             || gssymeq(p->directive, gssymtypeop, ".tylet")
-            || gssymeq(p->directive, gssymtypeop, ".tyfun")
+            || gssymceq(p->directive, gssymtyfun, gssymtypeop, ".tyfun")
         )
             p = gsinput_next_line(ppseg, p);
         else if (

@@ -1,4 +1,4 @@
-/* §source.file{Compiling Types Into C Data Structures} */
+/* §source.file Compiling Types Into C Data Structures */
 
 #include <u.h>
 #include <libc.h>
@@ -778,8 +778,13 @@ gstype_instantiate(struct gspos pos, struct gstype *fun, struct gstype *arg)
 
             return gstypes_subst(pos, forall->body, forall->var, arg);
         }
-        default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: supply (node = %d)", fun->pos, fun->node);
+        default: {
+            char buf[0x100];
+            if (gstypes_eprint_type(buf, buf + sizeof(buf), fun) >= buf + sizeof(buf))
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: supply (node = %d)", fun->pos, fun->node);
+            ;
+            gsfatal("%P: Can't intantiate %s (%P), which isn't a polymorphic type", pos, buf, fun->pos);
+        }
     }
     return 0;
 }
@@ -944,9 +949,9 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
     int i;
 
     switch (type->node) {
-        case gstype_knprim: {
+        case gstype_abstract:
+        case gstype_knprim:
             return 0;
-        }
         case gstype_var: {
             struct gstype_var *var;
 
@@ -984,7 +989,17 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
 
             sum = (struct gstype_sum *)type;
             for (i = 0; i < sum->numconstrs; i++) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: fv (constr arg)", type->pos);
+               gsfatal_unimpl(__FILE__, __LINE__, "%P: fv (constr arg)", type->pos);
+            }
+
+            return 0;
+        }
+        case gstype_product: {
+            struct gstype_product *product;
+
+            product = (struct gstype_product *)type;
+            for (i = 0; i < product->numfields; i++) {
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: fv (field type)", type->pos);
             }
 
             return 0;
