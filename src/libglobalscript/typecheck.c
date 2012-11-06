@@ -1387,7 +1387,7 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
 
             primtypename = gsintern_string(gssymtypelable, primtype->name);
             primtypekind = gskind_compile(pos, gsintern_string(gssymkindexpr, primtype->kind));
-            stack[stacksize++] = gstype_compile_knprim(pos, gsprim_type_api, prims, primtypename, primtypekind);
+            stack[stacksize++] = gstypes_compile_knprim(pos, gsprim_type_api, prims, primtypename, primtypekind);
         } else if (!strcmp("`", tok)) {
             struct gstype *ty;
 

@@ -83,7 +83,7 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             struct gskind *kind;
 
             kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-            types[i] = gstype_compile_knprim(ptype->pos, gsprim_type_defined, prims, ptype->arguments[1], kind);
+            types[i] = gstypes_compile_knprim(ptype->pos, gsprim_type_defined, prims, ptype->arguments[1], kind);
         } else {
             gsfatal("%P: Unknown primset %s, which is bad because it supposedly contains defined primitive %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name);
         }
@@ -94,7 +94,7 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             struct gskind *kind;
 
             kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-            types[i] = gstype_compile_knprim(ptype->pos, gsprim_type_api, prims, ptype->arguments[1], kind);
+            types[i] = gstypes_compile_knprim(ptype->pos, gsprim_type_api, prims, ptype->arguments[1], kind);
         } else {
             struct gskind *kind;
 
@@ -108,7 +108,7 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             struct gskind *kind;
 
             kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-            types[i] = gstype_compile_knprim(ptype->pos, gsprim_type_elim, prims, ptype->arguments[1], kind);
+            types[i] = gstypes_compile_knprim(ptype->pos, gsprim_type_elim, prims, ptype->arguments[1], kind);
         } else {
             struct gskind *kind;
 
@@ -658,7 +658,7 @@ gstypes_compile_prim(struct gspos pos, enum gsprim_type_group group, char *prims
     struct gsregistered_primset *prims;
 
     if (prims = gsprims_lookup_prim_set(primsetname)) {
-        return gstype_compile_knprim(pos, group, prims, gsintern_string(gssymtypelable, primname), ky);
+        return gstypes_compile_knprim(pos, group, prims, gsintern_string(gssymtypelable, primname), ky);
     } else {
         gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_prim: unknown primset", pos);
         return 0;
@@ -666,7 +666,7 @@ gstypes_compile_prim(struct gspos pos, enum gsprim_type_group group, char *prims
 }
 
 struct gstype *
-gstype_compile_knprim(struct gspos pos, enum gsprim_type_group group, struct gsregistered_primset *prims, gsinterned_string primname, struct gskind *ky)
+gstypes_compile_knprim(struct gspos pos, enum gsprim_type_group group, struct gsregistered_primset *prims, gsinterned_string primname, struct gskind *ky)
 {
     struct gstype *res;
     struct gstype_knprim *prim;
