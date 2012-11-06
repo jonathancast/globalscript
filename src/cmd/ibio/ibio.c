@@ -83,16 +83,13 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     }
     prog = gsapply(pos, prog, stdout);
 
-    /* §section Paranoid check that the result is the API monad we epxect it to be */
+    /* §section Paranoid check that the result is the API monad we expect it to be */
 
-    tybody = gstype_apply(pos,
+    tybody = gstypes_compile_lift(pos, gstype_apply(pos,
         gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "?*^")),
         result
-    );
-    if (
-        gstype_expect_lift(err, err + sizeof(err), tyw, &tyw) < 0
-        || gstypes_type_check(err, err + sizeof(err), pos, tyw, tybody) < 0
-    ) {
+    ));
+    if (gstypes_type_check(err, err + sizeof(err), pos, tyw, tybody) < 0) {
         ace_down();
         gsfatal("%s: Bad type: %s", script, err);
     }
