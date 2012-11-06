@@ -133,6 +133,8 @@ struct gsregistered_primset;
 struct gstype_constr;
 struct gstype_field;
 
+struct gskind *gskind_compile_string(struct gspos, char *);
+
 struct gstype *gstypes_compile_abstract(struct gspos, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_prim(struct gspos, enum gsprim_type_group, char *, char *, struct gskind *);
 struct gstype *gstypes_compile_knprim(struct gspos, enum gsprim_type_group, struct gsregistered_primset *, gsinterned_string, struct gskind *);

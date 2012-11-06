@@ -89,7 +89,9 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
         gstype_expect_lift(err, err + sizeof(err), tyw, &tyw) < 0
         || gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &primres) < 0
         || gstypes_type_check(err, err + sizeof(err), pos, primres, result) < 0
-        || gstype_expect_prim(err, err + sizeof(err), tyw, gsprim_type_api, "ibio.prim", "ibio") < 0
+        || gstypes_type_check(err, err + sizeof(err), pos, tyw,
+            gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "?*^"))
+        ) < 0
     ) {
         ace_down();
         gsfatal("%s: Bad type: %s", script, err);

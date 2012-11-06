@@ -660,8 +660,7 @@ gstypes_compile_prim(struct gspos pos, enum gsprim_type_group group, char *prims
     if (prims = gsprims_lookup_prim_set(primsetname)) {
         return gstypes_compile_knprim(pos, group, prims, gsintern_string(gssymtypelable, primname), ky);
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_prim: unknown primset", pos);
-        return 0;
+        return gstypes_compile_unprim(pos, group, gsintern_string(gssymprimsetlable, primsetname), gsintern_string(gssymtypelable, primname), ky);
     }
 }
 
@@ -1004,6 +1003,12 @@ gstype_alloc(ulong size)
 }
 
 #define MAX_STACK_SIZE 0x100
+
+struct gskind *
+gskind_compile_string(struct gspos pos, char *s)
+{
+    return gskind_compile(pos, gsintern_string(gssymkindexpr, s));
+}
 
 struct gskind *
 gskind_compile(struct gspos pos, gsinterned_string ki)
