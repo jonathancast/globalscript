@@ -126,7 +126,7 @@ int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 struct gstype *gstypes_compile_abstract(struct gspos, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_prim(struct gspos, enum gsprim_type_group, char *, char *, struct gskind *);
 struct gstype *gstypes_compile_knprim(struct gspos, enum gsprim_type_group, struct gsregistered_primset *, gsinterned_string, struct gskind *);
-struct gstype *gstype_compile_unprim(struct gspos, enum gsprim_type_group, gsinterned_string, gsinterned_string, struct gskind *);
+struct gstype *gstypes_compile_unprim(struct gspos, enum gsprim_type_group, gsinterned_string, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_type_var(struct gspos, gsinterned_string, struct gskind *);
 struct gstype *gstypes_compile_lambda(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
 struct gstype *gstypes_compile_forall(struct gspos, gsinterned_string, struct gskind *, struct gstype *);

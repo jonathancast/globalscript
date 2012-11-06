@@ -99,7 +99,7 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             struct gskind *kind;
 
             kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-            types[i] = gstype_compile_unprim(ptype->pos, gsprim_type_api, ptype->arguments[0], ptype->arguments[1], kind);
+            types[i] = gstypes_compile_unprim(ptype->pos, gsprim_type_api, ptype->arguments[0], ptype->arguments[1], kind);
         }
     } else if (gssymceq(ptype->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")) {
         struct gsregistered_primset *prims;
@@ -113,7 +113,7 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             struct gskind *kind;
 
             kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-            types[i] = gstype_compile_unprim(ptype->pos, gsprim_type_elim, ptype->arguments[0], ptype->arguments[1], kind);
+            types[i] = gstypes_compile_unprim(ptype->pos, gsprim_type_elim, ptype->arguments[0], ptype->arguments[1], kind);
         }
     } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
         types[i] = gstype_compile_coercion_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), items, types, compiling, n);
@@ -685,7 +685,7 @@ gstypes_compile_knprim(struct gspos pos, enum gsprim_type_group group, struct gs
 }
 
 struct gstype *
-gstype_compile_unprim(struct gspos pos, enum gsprim_type_group group, gsinterned_string primset, gsinterned_string primname, struct gskind *ky)
+gstypes_compile_unprim(struct gspos pos, enum gsprim_type_group group, gsinterned_string primset, gsinterned_string primname, struct gskind *ky)
 {
     struct gstype *res;
     struct gstype_unprim *prim;
