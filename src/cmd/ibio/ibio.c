@@ -47,11 +47,11 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 
     tyw = ty;
     if (
-        gstype_expect_app(tyw, &tyw, &result, err, err + sizeof(err)) < 0
-        || gstype_expect_app(tyw, &tyw, &output, err, err + sizeof(err)) < 0
-        || gstype_expect_app(tyw, &tyw, &input, err, err + sizeof(err)) < 0
+        gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &result) < 0
+        || gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &output) < 0
+        || gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &input) < 0
         || !(monad = tyw)
-        || gstype_expect_abstract(monad, "ibio.m", err, err + sizeof(err)) < 0
+        || gstype_expect_abstract(err, err + sizeof(err), monad, "ibio.m") < 0
     ) {
         ace_down();
         gsfatal("%s: Bad type: %s", script, err);
@@ -63,11 +63,11 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     }
 
     if (
-        gstype_expect_lift(tyw, &tyw, err, err + sizeof(err)) < 0
-        || gstype_expect_fun(tyw, &tyow, &tyw, err, err + sizeof(err)) < 0
-        || gstype_expect_app(tyow, &tyow, &tyoa, err, err + sizeof(err)) < 0
-        || gstype_expect_prim(tyow, gsprim_type_elim, "ibio.prim", "oport", err, err + sizeof(err)) < 0
-        || gstypes_type_check(pos, tyoa, output, err, err + sizeof(err)) < 0
+        gstype_expect_lift(err, err + sizeof(err), tyw, &tyw) < 0
+        || gstype_expect_fun(err, err + sizeof(err), tyw, &tyow, &tyw) < 0
+        || gstype_expect_app(err, err + sizeof(err), tyow, &tyow, &tyoa) < 0
+        || gstype_expect_prim(err, err + sizeof(err), tyow, gsprim_type_elim, "ibio.prim", "oport") < 0
+        || gstypes_type_check(err, err + sizeof(err), pos, tyoa, output) < 0
     ) {
         ace_down();
         gsfatal("%s: Not a function of output channel? (%s)", script, err);
@@ -81,10 +81,10 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     prog = gsapply(pos, prog, stdout);
 
     if (
-        gstype_expect_lift(tyw, &tyw, err, err + sizeof(err)) < 0
-        || gstype_expect_app(tyw, &tyw, &primres, err, err + sizeof(err)) < 0
-        || gstypes_type_check(pos, primres, result, err, err + sizeof(err)) < 0
-        || gstype_expect_prim(tyw, gsprim_type_api, "ibio.prim", "ibio", err, err + sizeof(err)) < 0
+        gstype_expect_lift(err, err + sizeof(err), tyw, &tyw) < 0
+        || gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &primres) < 0
+        || gstypes_type_check(err, err + sizeof(err), pos, primres, result) < 0
+        || gstype_expect_prim(err, err + sizeof(err), tyw, gsprim_type_api, "ibio.prim", "ibio") < 0
     ) {
         ace_down();
         gsfatal("%s: Bad type: %s", script, err);

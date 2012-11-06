@@ -29,6 +29,6 @@ TEST_EXPECT_PRODUCT()
     pos.lineno = __LINE__; tyx = gstypes_compile_type_var(pos, gsintern_string(gssymtypelable, "x"), gskind_lifted_kind());
     pos.lineno = __LINE__; tyerec = gstypes_compile_product(pos, 0);
 
-    ok_long_lt(__FILE__, __LINE__, gstype_expect_product(tyx, err, err + sizeof(err), 0), 0, "gstype_expect_product succeeded on a var");
-    ok_long_eq(__FILE__, __LINE__, gstype_expect_product(tyerec, err, err + sizeof(err), 0), 0, "gstype_expect_product failed on an empty record: %s", err);
+    ok_long_lt(__FILE__, __LINE__, gstype_expect_product(err, err + sizeof(err), tyx, 0), 0, "gstype_expect_product succeeded on a var");
+    ok_long_eq(__FILE__, __LINE__, gstype_expect_product(err, err + sizeof(err), tyerec, 0), 0, "gstype_expect_product failed on an empty record: %s", err);
 }

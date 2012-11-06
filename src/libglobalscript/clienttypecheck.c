@@ -9,7 +9,7 @@
 #include "gstypecheck.h"
 
 int
-gstype_expect_abstract(struct gstype *ty, char *name, char *err, char *eerr)
+gstype_expect_abstract(char *err, char *eerr, struct gstype *ty, char *name)
 {
     char ty_buf[0x100];
 
@@ -36,7 +36,7 @@ gstype_expect_abstract(struct gstype *ty, char *name, char *err, char *eerr)
 }
 
 int
-gstype_expect_prim(struct gstype *ty, enum gsprim_type_group group, char *primset, char *primname, char *err, char *eerr)
+gstype_expect_prim(char *err, char *eerr, struct gstype *ty, enum gsprim_type_group group, char *primset, char *primname)
 {
     char ty_buf[0x100];
 
@@ -88,7 +88,7 @@ gstype_expect_prim(struct gstype *ty, enum gsprim_type_group group, char *primse
 }
 
 int
-gstype_expect_var(struct gstype *ty, gsinterned_string v, char *err, char *eerr)
+gstype_expect_var(char *err, char *eerr, struct gstype *ty, gsinterned_string v)
 {
     char ty_buf[0x100];
 
@@ -114,7 +114,7 @@ gstype_expect_var(struct gstype *ty, gsinterned_string v, char *err, char *eerr)
 }
 
 int
-gstype_expect_forall(struct gstype *ty, gsinterned_string *pv, struct gstype **pbody, char *err, char *eerr)
+gstype_expect_forall(char *err, char *eerr, struct gstype *ty, gsinterned_string *pv, struct gstype **pbody)
 {
     char ty_buf[0x100];
 
@@ -138,7 +138,7 @@ gstype_expect_forall(struct gstype *ty, gsinterned_string *pv, struct gstype **p
 }
 
 int
-gstype_expect_lift(struct gstype *ty, struct gstype **tyarg, char *err, char *eerr)
+gstype_expect_lift(char *err, char *eerr, struct gstype *ty, struct gstype **tyarg)
 {
     char ty_buf[0x100];
 
@@ -161,7 +161,7 @@ gstype_expect_lift(struct gstype *ty, struct gstype **tyarg, char *err, char *ee
 }
 
 int
-gstype_expect_app(struct gstype *ty, struct gstype **tyfun, struct gstype **tyarg, char *err, char *eerr)
+gstype_expect_app(char *err, char *eerr, struct gstype *ty, struct gstype **tyfun, struct gstype **tyarg)
 {
     char ty_buf[0x100];
 
@@ -185,7 +185,7 @@ gstype_expect_app(struct gstype *ty, struct gstype **tyfun, struct gstype **tyar
 }
 
 int
-gstype_expect_fun(struct gstype *ty, struct gstype **ptyarg, struct gstype **ptyres, char *err, char *eerr)
+gstype_expect_fun(char *err, char *eerr, struct gstype *ty, struct gstype **ptyarg, struct gstype **ptyres)
 {
     char ty_buf[0x100];
 
@@ -209,7 +209,7 @@ gstype_expect_fun(struct gstype *ty, struct gstype **ptyarg, struct gstype **pty
 }
 
 int
-gstype_expect_product(struct gstype *ty, char *err, char *eerr, int nfields, ...)
+gstype_expect_product(char *err, char *eerr, struct gstype *ty, int nfields, ...)
 {
     va_list arg;
     char ty_buf[0x100];

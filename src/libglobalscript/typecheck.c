@@ -1580,13 +1580,13 @@ gstypes_type_check_type_fail(struct gspos pos, struct gstype *pactual, struct gs
 {
     char err[0x100];
 
-    if (gstypes_type_check(pos, pactual, pexpected, err, err + sizeof(err)) < 0)
+    if (gstypes_type_check(err, err + sizeof(err), pos, pactual, pexpected) < 0)
         gsfatal("%s", err)
     ;
 }
 
 int
-gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexpected, char *err, char *eerr)
+gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
 {
     char actual_buf[0x100];
     char expected_buf[0x100];
@@ -1689,7 +1689,7 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             actual_renamed_body = gstypes_subst(pos, pactual_forall->body, pactual_forall->var, varty);
             expected_renamed_body = gstypes_subst(pos, pexpected_forall->body, pexpected_forall->var, varty);
 
-            return gstypes_type_check(pos, actual_renamed_body, expected_renamed_body, err, eerr);
+            return gstypes_type_check(err, eerr, pos, actual_renamed_body, expected_renamed_body);
         }
         case gstype_lift: {
             struct gstype_lift *pactual_lift, *pexpected_lift;
@@ -1697,7 +1697,7 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             pactual_lift = (struct gstype_lift *)pactual;
             pexpected_lift = (struct gstype_lift *)pexpected;
 
-            return gstypes_type_check(pos, pactual_lift->arg, pexpected_lift->arg, err, eerr);
+            return gstypes_type_check(err, eerr, pos, pactual_lift->arg, pexpected_lift->arg);
         }
         case gstype_app: {
             struct gstype_app *pactual_app, *pexpected_app;
@@ -1705,9 +1705,9 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             pactual_app = (struct gstype_app *)pactual;
             pexpected_app = (struct gstype_app *)pexpected;
 
-            if (gstypes_type_check(pos, pactual_app->fun, pexpected_app->fun, err, eerr) < 0)
+            if (gstypes_type_check(err, eerr, pos, pactual_app->fun, pexpected_app->fun) < 0)
                 return -1;
-            if (gstypes_type_check(pos, pactual_app->arg, pexpected_app->arg, err, eerr) < 0)
+            if (gstypes_type_check(err, eerr, pos, pactual_app->arg, pexpected_app->arg) < 0)
                 return -1;
             return 0;
         }
@@ -1717,9 +1717,9 @@ gstypes_type_check(struct gspos pos, struct gstype *pactual, struct gstype *pexp
             pactual_fun = (struct gstype_fun *)pactual;
             pexpected_fun = (struct gstype_fun *)pexpected;
 
-            if (gstypes_type_check(pos, pactual_fun->tyarg, pexpected_fun->tyarg, err, eerr) < 0)
+            if (gstypes_type_check(err, eerr, pos, pactual_fun->tyarg, pexpected_fun->tyarg) < 0)
                 return -1;
-            if (gstypes_type_check(pos, pactual_fun->tyres, pexpected_fun->tyres, err, eerr) < 0)
+            if (gstypes_type_check(err, eerr, pos, pactual_fun->tyres, pexpected_fun->tyres) < 0)
                 return -1;
             return 0;
         }

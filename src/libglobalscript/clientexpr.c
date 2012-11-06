@@ -33,7 +33,7 @@ gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, char *err, char *eer
     }
     va_end(args);
 
-    if (gstypes_type_check(ty->pos, ty, source, err, eerr) < 0)
+    if (gstypes_type_check(err, eerr, ty->pos, ty, source) < 0)
         return 0
     ;
 

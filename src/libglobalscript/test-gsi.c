@@ -76,6 +76,7 @@ gsprint(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
         p = (struct gsimplementation_failure *)prog;
         gsimplementation_failure_format(buf, buf + sizeof(buf), p);
         print("%s", buf);
+        return -1;
     } else if (gsiserror_block(block)) {
         struct gserror *p;
 
@@ -185,7 +186,7 @@ gsprint_unboxed(struct gstype *type, gsvalue prog)
 {
     char err[0x100];
 
-    if (gstype_expect_prim(type, gsprim_type_defined, "rune.prim", "rune", err, err + sizeof(err)) >= 0) {
+    if (gstype_expect_prim(err, err + sizeof(err), type, gsprim_type_defined, "rune.prim", "rune") >= 0) {
         char buf[5];
 
         if (!gsrunetochar(prog, buf, buf + sizeof(buf), err, err + sizeof(err))) {
