@@ -122,26 +122,6 @@ char *gstypes_eprint_type(char *, char *, struct gstype *);
 
 int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 
-struct gstype *gstypes_compile_abstract(struct gspos, gsinterned_string, struct gskind *);
-struct gstype *gstypes_compile_prim(struct gspos, enum gsprim_type_group, char *, char *, struct gskind *);
-struct gstype *gstypes_compile_knprim(struct gspos, enum gsprim_type_group, struct gsregistered_primset *, gsinterned_string, struct gskind *);
-struct gstype *gstypes_compile_unprim(struct gspos, enum gsprim_type_group, gsinterned_string, gsinterned_string, struct gskind *);
-struct gstype *gstypes_compile_type_var(struct gspos, gsinterned_string, struct gskind *);
-struct gstype *gstypes_compile_lambda(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
-struct gstype *gstypes_compile_forall(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
-struct gstype *gstypes_compile_lift(struct gspos, struct gstype *);
-struct gstype *gstypes_compile_sum(struct gspos, int, ...);
-struct gstype *gstypes_compile_sumv(struct gspos, int, struct gstype_constr *);
-struct gstype *gstypes_compile_product(struct gspos, int, ...);
-struct gstype *gstypes_compile_productv(struct gspos, int, struct gstype_field *);
-struct gstype *gstypes_compile_fun(struct gspos, struct gstype *, struct gstype *);
-
-struct gstype *gstype_supply(struct gspos, struct gstype *, struct gstype *);
-struct gstype *gstype_apply(struct gspos, struct gstype *, struct gstype *);
-struct gstype *gstype_instantiate(struct gspos, struct gstype *, struct gstype *);
-
-struct gstype *gstypes_subst(struct gspos, struct gstype *, gsinterned_string, struct gstype *);
-
 void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int);
 void gstypes_compile_type_definitions(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int);
 

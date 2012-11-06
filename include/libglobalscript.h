@@ -124,10 +124,36 @@ struct gspos {
 
 /* §subsection Client-level Type-checking */
 
+/* §subsubsection Constructors */
+
 struct gstype;
 enum gsprim_type_group;
 struct gskind;
-struct gsfile_symtable;
+struct gsregistered_primset;
+struct gstype_constr;
+struct gstype_field;
+
+struct gstype *gstypes_compile_abstract(struct gspos, gsinterned_string, struct gskind *);
+struct gstype *gstypes_compile_prim(struct gspos, enum gsprim_type_group, char *, char *, struct gskind *);
+struct gstype *gstypes_compile_knprim(struct gspos, enum gsprim_type_group, struct gsregistered_primset *, gsinterned_string, struct gskind *);
+struct gstype *gstypes_compile_unprim(struct gspos, enum gsprim_type_group, gsinterned_string, gsinterned_string, struct gskind *);
+struct gstype *gstypes_compile_type_var(struct gspos, gsinterned_string, struct gskind *);
+struct gstype *gstypes_compile_lambda(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
+struct gstype *gstypes_compile_forall(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
+struct gstype *gstypes_compile_lift(struct gspos, struct gstype *);
+struct gstype *gstypes_compile_sum(struct gspos, int, ...);
+struct gstype *gstypes_compile_sumv(struct gspos, int, struct gstype_constr *);
+struct gstype *gstypes_compile_product(struct gspos, int, ...);
+struct gstype *gstypes_compile_productv(struct gspos, int, struct gstype_field *);
+struct gstype *gstypes_compile_fun(struct gspos, struct gstype *, struct gstype *);
+
+struct gstype *gstype_supply(struct gspos, struct gstype *, struct gstype *);
+struct gstype *gstype_apply(struct gspos, struct gstype *, struct gstype *);
+struct gstype *gstype_instantiate(struct gspos, struct gstype *, struct gstype *);
+
+struct gstype *gstypes_subst(struct gspos, struct gstype *, gsinterned_string, struct gstype *);
+
+/* §subsubsection Views */
 
 int gstype_expect_abstract(char *, char *, struct gstype *, char *);
 int gstype_expect_prim(char *, char *, struct gstype *, enum gsprim_type_group, char *, char *);
@@ -138,6 +164,10 @@ int gstype_expect_app(char *, char *, struct gstype *, struct gstype **, struct 
 int gstype_expect_fun(char *, char *, struct gstype *, struct gstype **, struct gstype **);
 int gstype_expect_lifted_fun(char *, char *, struct gstype *, struct gstype **, struct gstype **);
 int gstype_expect_product(char *, char *, struct gstype *, int, ...);
+
+/* §subsubsection Etc. */
+
+struct gsfile_symtable;
 
 struct gstype *gstype_get_definition(struct gspos, struct gsfile_symtable *, struct gstype *);
 
