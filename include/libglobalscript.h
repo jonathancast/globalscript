@@ -129,14 +129,14 @@ enum gsprim_type_group;
 struct gskind;
 struct gsfile_symtable;
 
-int gstype_expect_abstract(char *, char *, struct gstype *, char *);
-int gstype_expect_prim(char *, char *, struct gstype *, enum gsprim_type_group, char *, char *);
-int gstype_expect_var(char *, char *, struct gstype *, gsinterned_string);
-int gstype_expect_forall(char *, char *, struct gstype *, gsinterned_string *, struct gstype **);
-int gstype_expect_lift(char *, char *, struct gstype *, struct gstype **);
-int gstype_expect_app(char *, char *, struct gstype *, struct gstype **, struct gstype **);
-int gstype_expect_fun(char *, char *, struct gstype *, struct gstype **, struct gstype **);
-int gstype_expect_product(char *, char *, struct gstype *, int, ...);
+int gstype_expect_abstract(struct gstype *, char *, char *, char *);
+int gstype_expect_prim(struct gstype *, enum gsprim_type_group, char *, char *, char *, char *);
+int gstype_expect_var(struct gstype *, gsinterned_string, char *, char *);
+int gstype_expect_forall(struct gstype *, gsinterned_string *, struct gstype **, char *, char *);
+int gstype_expect_lift(struct gstype *, struct gstype **, char *, char *);
+int gstype_expect_app(struct gstype *, struct gstype **, struct gstype **, char *, char *);
+int gstype_expect_fun(struct gstype *, struct gstype **, struct gstype **, char *, char *);
+int gstype_expect_product(struct gstype *, char *, char *, int, ...);
 
 struct gstype *gstype_get_definition(struct gspos, struct gsfile_symtable *, struct gstype *);
 

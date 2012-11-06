@@ -209,7 +209,7 @@ gstype_expect_fun(char *err, char *eerr, struct gstype *ty, struct gstype **ptya
 }
 
 int
-gstype_expect_product(char *err, char *eerr, struct gstype *ty, int nfields, ...)
+gstype_expect_product(struct gstype *ty, char *err, char *eerr, int nfields, ...)
 {
     va_list arg;
     char ty_buf[0x100];
