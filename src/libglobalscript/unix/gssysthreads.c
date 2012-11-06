@@ -45,8 +45,6 @@ gscreate_thread_pool(void (*fn)(void *), void *arg, ulong sz)
     pool_descr->fn = fn;
     pool_descr->arg = arg;
 
-    gswarning("%s:%d: parent stack near 0x%p", __FILE__, __LINE__, &top_of_stack);
-    gswarning("%s:%d: (have to take address of stack or will get really weird early termination bug)", __FILE__, __LINE__);
     return clone(
         gsthread_pool_main,
         top_of_stack,
