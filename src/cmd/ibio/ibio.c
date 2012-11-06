@@ -40,7 +40,6 @@ void
 gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty)
 {
     struct gstype *monad, *input, *output, *result, *tybody;
-    struct gstype *tyow;
     struct gstype *tyw;
     gsvalue stdout;
     char err[0x100];
@@ -66,21 +65,17 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 
     /* §section Paranoid check that the result is the API monad we expect it to be */
 
-    tybody = gstypes_compile_lift(pos, gstype_apply(pos,
-        gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "*?^")),
-        result
+    tybody = gstypes_compile_lift(pos, gstypes_compile_fun(pos,
+        gstype_apply(pos,
+            gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
+            output
+        ),
+        gstypes_compile_lift(pos, gstype_apply(pos,
+            gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "*?^")),
+            result
+        ))
     ));
-    if (
-        gstypes_type_check(err, err + sizeof(err), pos, tyw,
-            gstypes_compile_lift(pos, gstypes_compile_fun(pos,
-                gstype_apply(pos,
-                    gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
-                    output
-                ),
-                tybody
-            ))
-        ) < 0
-    ) {
+    if (gstypes_type_check(err, err + sizeof(err), pos, tyw, tybody) < 0) {
         ace_down();
         gsfatal("%s: Panic!  Type after un-wrapping newtype wrapper incorrect (%s)", script, err);
     }
