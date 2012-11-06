@@ -39,7 +39,7 @@ static struct api_process_rpc_table ibio_rpc_table = {
 void
 gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty)
 {
-    struct gstype *monad, *input, *output, *result, *primres;
+    struct gstype *monad, *input, *output, *result, *tybody;
     struct gstype *tyow, *tyoa;
     struct gstype *tyw;
     gsvalue stdout;
@@ -85,14 +85,13 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 
     /* §section Paranoid check that the result is the API monad we epxect it to be */
 
+    tybody = gstype_apply(pos,
+        gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "?*^")),
+        result
+    );
     if (
         gstype_expect_lift(err, err + sizeof(err), tyw, &tyw) < 0
-        || gstypes_type_check(err, err + sizeof(err), pos, tyw,
-            gstype_apply(pos,
-                gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "?*^")),
-                result
-            )
-        ) < 0
+        || gstypes_type_check(err, err + sizeof(err), pos, tyw, tybody) < 0
     ) {
         ace_down();
         gsfatal("%s: Bad type: %s", script, err);
