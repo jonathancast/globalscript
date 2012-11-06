@@ -64,17 +64,24 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
         gsfatal("%s: Couldn't cast down to primitive level: %s", script, err);
     }
 
-    /* §section Pass in output */
+    /* §section Paranoid check that the result is the API monad we expect it to be */
 
+    tybody = gstypes_compile_lift(pos, gstype_apply(pos,
+        gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "?*^")),
+        result
+    ));
     if (
         gstype_expect_lifted_fun(err, err + sizeof(err), tyw, &tyow, &tyw) < 0
         || gstype_expect_app(err, err + sizeof(err), tyow, &tyow, &tyoa) < 0
         || gstype_expect_prim(err, err + sizeof(err), tyow, gsprim_type_elim, "ibio.prim", "oport") < 0
         || gstypes_type_check(err, err + sizeof(err), pos, tyoa, output) < 0
+        || gstypes_type_check(err, err + sizeof(err), pos, tyw, tybody) < 0
     ) {
         ace_down();
-        gsfatal("%s: Not a function of output channel? (%s)", script, err);
+        gsfatal("%s: Panic!  Type after un-wrapping newtype wrapper incorrect (%s)", script, err);
     }
+
+    /* §section Pass in output */
 
     stdout = ibio_oport_fdopen(1, err, err + sizeof(err));
     if (!stdout) {
@@ -82,17 +89,6 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
         gsfatal("%s: Couldn't open stdout: %s", script, err);
     }
     prog = gsapply(pos, prog, stdout);
-
-    /* §section Paranoid check that the result is the API monad we expect it to be */
-
-    tybody = gstypes_compile_lift(pos, gstype_apply(pos,
-        gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "?*^")),
-        result
-    ));
-    if (gstypes_type_check(err, err + sizeof(err), pos, tyw, tybody) < 0) {
-        ace_down();
-        gsfatal("%s: Bad type: %s", script, err);
-    }
 
     /* §section Set up the IBIO thread */
 
