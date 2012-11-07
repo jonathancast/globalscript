@@ -37,13 +37,6 @@ gsadd_client_prim_sets()
     gsprims_register_prim_set(&test_sequence_primset);
 }
 
-static struct api_prim_table exec_prim_table = {
-    /* numprims = */ num_test_sequence_api_ops,
-    /* execs = */ {
-        /* test_sequence_api_op_unit = */ api_thread_handle_prim_unit,
-    },
-};
-
 enum {
     exec_numrpcs = api_std_rpc_numrpcs,
 };
@@ -57,8 +50,37 @@ static struct api_process_rpc_table exec_rpc_table = {
     },
 };
 
+static void *exec_setup_client_data(void);
+static enum api_prim_execution_state exec_thread_term_status(struct api_thread *);
+
+static struct api_thread_table exec_thread_table = {
+    /* setup_client_data = */ exec_setup_client_data,
+    /* thread_term_status = */ exec_thread_term_status,
+};
+
+static struct api_prim_table exec_prim_table = {
+    /* numprims = */ num_test_sequence_api_ops,
+    /* execs = */ {
+        /* test_sequence_api_op_unit = */ api_thread_handle_prim_unit,
+    },
+};
+
 void
 gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type)
 {
-    apisetupmainthread(&exec_rpc_table, &exec_prim_table, prog);
+    apisetupmainthread(&exec_rpc_table, &exec_thread_table, &exec_prim_table, prog);
+}
+
+static
+void *
+exec_setup_client_data()
+{
+    return 0;
+}
+
+static
+enum api_prim_execution_state
+exec_thread_term_status(struct api_thread *thread)
+{
+    return api_st_success;
 }

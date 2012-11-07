@@ -1,6 +1,44 @@
 	.prefix
 
+	.data
+
+ibio.prim.write	.closure	_ibio.prim.write.c
+
+	.code
+
+_ibio.prim.write.c	.expr
+_ibio.prim.write.ty	.tygvar
+ibio.prim.oport	.tygvar
+list.t	.tygvar
+ο	.tyarg	*
+o	.arg	ibio.prim.oport	ο
+s	.arg	list.t	ο
+w	.eprim	ibio.prim	ibio	write	_ibio.prim.write.ty	ο	|	o	s
+	.yield	w
+
 	.type
 
 ibio.prim.m	.tyapiprim	ibio.prim	ibio	u?^
 ibio.prim.oport	.tyelimprim	ibio.prim	oport	u*^
+
+_ibio.prim.write.ty	.tyexpr
+ibio.prim.m	.tygvar
+_empty.record	.tygvar
+_ibio.prim.write.ty.o.ty	.tygvar
+_ibio.prim.write.ty.s.ty	.tygvar
+ο	.tyforall	*
+_o.ty	.tylet	_ibio.prim.write.ty.o.ty	ο
+_s.ty	.tylet	_ibio.prim.write.ty.s.ty	ο
+	.tyfun	_o.ty
+	.tyfun	_s.ty
+	.tyref	ibio.prim.m	_empty.record
+
+_ibio.prim.write.ty.o.ty	.tyexpr
+ibio.prim.oport	.tygvar
+ο	.tylambda	*
+	.tyref	ibio.prim.oport	ο
+
+_ibio.prim.write.ty.s.ty	.tyexpr
+list.t	.tygvar
+ο	.tylambda	*
+	.tyref	list.t	ο

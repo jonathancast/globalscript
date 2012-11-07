@@ -161,15 +161,29 @@ gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
 
     *pv = 0;
 
-    if ((*s & 0x80) == 0) {
-        noctets = 1;
+    if (*s == '\\') {
+        switch (s[1]) {
+            case 's':
+                *pv = ' ';
+                break;
+            case 'n':
+                *pv = '\n';
+                break;
+            default:
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_parse_rune_literal(%s)", pos, s);
+        }
+        s += 2;
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_parse_rune_literal(%s)", pos, s);
-    }
+        if ((*s & 0x80) == 0) {
+            noctets = 1;
+        } else {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_parse_rune_literal(%s)", pos, s);
+        }
 
-    while (noctets--) {
-        *pv <<= 8;
-        *pv |= *s++;
+        while (noctets--) {
+            *pv <<= 8;
+            *pv |= *s++;
+        }
     }
 
     *pv |= GS_MAX_PTR;

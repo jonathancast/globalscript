@@ -1,0 +1,38 @@
+	.document
+
+	.data
+
+	.cast	_ep.in	_real.entry
+_real.entry	.closure	_real.entry.c
+_hello	.string	Hello,\sworld!\n
+
+	.code
+
+_real.entry.c	.expr
+rune.t	.tygvar
+_real.entry.out.type	.tygvar
+ibio.prim.write	.gvar
+_hello	.gvar
+o	.larg	_real.entry.out.type
+	.lift
+	.app	o	_hello
+	.yield	ibio.prim.write	rune.t
+
+	.type
+
+_real.entry.out.type	.tyexpr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+	.tyref	ibio.prim.oport	rune.t
+
+_empty.record	.tyexpr
+	.tylift
+	.typroduct
+
+	.coercion
+
+_ep.in	.tycoercion
+ibio.m	.tygvar
+rune.t	.tygvar
+_empty.record	.tygvar
+	.tydefinition ibio.m	rune.t	rune.t	_empty.record

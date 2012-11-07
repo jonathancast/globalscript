@@ -385,9 +385,18 @@ void *gs_sys_seg_suballoc(registered_block_class, void**, ulong, ulong);
 void ace_up(void);
 void ace_down(void);
 
-/* §section{API} */
+/* §section API */
 
 struct api_thread;
+
+struct api_thread_table {
+    void *(*setup_client_data)();
+    enum api_prim_execution_state (*thread_term_status)(struct api_thread *);
+};
+
+void *api_thread_client_data(struct api_thread *);
+void api_take_thread(struct api_thread *);
+void api_release_thread(struct api_thread *);
 
 enum {
     api_std_rpc_done,
@@ -404,6 +413,7 @@ rpc_handler api_main_process_unimpl_rpc;
 enum api_prim_execution_state {
     api_st_success,
     api_st_error,
+    api_st_blocked,
 };
 
 typedef enum api_prim_execution_state (api_prim_executor)(struct api_thread *, struct gseprim *);
@@ -415,8 +425,11 @@ struct api_prim_table {
 
 api_prim_executor api_thread_handle_prim_unit;
 
+typedef void (api_termination_callback)(void);
+void api_at_termination(api_termination_callback *);
+
 /* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
-void apisetupmainthread(struct api_process_rpc_table *, struct api_prim_table *, gsvalue);
+void apisetupmainthread(struct api_process_rpc_table *, struct api_thread_table *, struct api_prim_table *, gsvalue);
 
 /* If (and only if) the current thread is hard, these will send a done message (§c{api_std_rpc_done}) to the corresponding process */
 void api_done(struct api_thread *);

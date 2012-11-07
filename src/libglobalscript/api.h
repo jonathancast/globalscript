@@ -2,9 +2,19 @@
 
 struct api_thread {
     struct Lock lock;
-    int active, hard;
+    int hard;
+    enum {
+        api_thread_st_unused,
+        api_thread_st_active,
+        api_thread_st_terminating_on_done,
+        api_thread_st_terminating_on_abend,
+        api_thread_st_zombie,
+    } state;
     struct gsrpc_queue *process_rpc_queue;
+    struct api_thread_table *api_thread_table;
     struct api_prim_table *api_prim_table;
+    void *client_data;
+    char *status;
     struct api_code_segment *code;
 };
 

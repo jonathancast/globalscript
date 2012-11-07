@@ -10,18 +10,49 @@ p9main(int argc, char **argv)
     gsmain(argc, argv);
 }
 
+static struct gsregistered_primtype ibio_types[] = {
+    /* name, file, line, group, kind, */
+    { "ibio", __FILE__, __LINE__, gsprim_type_api, "u?^", },
+    { "oport", __FILE__, __LINE__, gsprim_type_elim, "u*^", },
+    { 0, },
+};
+
 enum {
+    ibio_prim_unit,
+    ibio_prim_write,
     ibio_numprims,
 };
 
 static struct api_prim_table ibio_prim_table = {
     /* numprims = */ ibio_numprims,
+    /* execs = */ {
+        /* ibio_prim_unit = */ api_thread_handle_prim_unit,
+        /* ibio_prim_write = */ ibio_handle_prim_write,
+    },
+};
+
+static struct gsregistered_prim ibio_operations[] = {
+    /* name, file, line, group, check_type, index, */
+    { "write", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ο * ibio.prim.oport ο ` list.t ο ` ibio.prim.m 〈 〉 ⌊⌋ ` → → ∀", ibio_prim_write, },
+    { 0, },
+};
+
+static struct gsregistered_primset ibio_primset = {
+    /* name = */ "ibio.prim",
+    /* types = */ ibio_types,
+    /* operations = */ ibio_operations,
 };
 
 void
 gsadd_client_prim_sets()
 {
+    gsprims_register_prim_set(&ibio_primset);
 }
+
+static struct api_thread_table ibio_thread_table = {
+    /* setup_client_data = */ ibio_thread_alloc_data,
+    /* thread_term_status = */ ibio_thread_term_status,
+};
 
 enum {
     ibio_numrpcs = api_std_rpc_numrpcs,
@@ -82,6 +113,11 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 
     /* §section Pass in output */
 
+    if (ibio_write_threads_init(err, err + sizeof(err)) < 0) {
+        ace_down();
+        gsfatal("%s: Couldn't initialize write thread pool: %s", script, err);
+    }
+
     stdout = ibio_oport_fdopen(1, err, err + sizeof(err));
     if (!stdout) {
         ace_down();
@@ -91,5 +127,5 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 
     /* §section Set up the IBIO thread */
 
-    apisetupmainthread(&ibio_rpc_table, &ibio_prim_table, prog);
+    apisetupmainthread(&ibio_rpc_table, &ibio_thread_table, &ibio_prim_table, prog);
 }

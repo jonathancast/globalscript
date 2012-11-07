@@ -1,5 +1,25 @@
 #! /usr/local/plan9/bin/rc -e
 
+fn ok_diff {
+    echo $1
+    if (! ./o.ibio ./test-gslib ./test-gslib/$2 > ./test-results/$2^-actual >[2] ./test-results/$2^-errors) {
+        echo $2 'failed; should have succeeded' >[1=2]
+        cat ./test-results/$2^-errors >[1=2]
+        cat ./test-results/$2^-actual >[1=2]
+        exit 1
+    }
+    if (! diff ./test-results/$2^-actual ./test-results/$2^-expected) {
+        echo $2 'produced incorrect output' >[1=2]
+        echo '--- Actual ---' >[1=2]
+        cat ./test-results/$2^-errors >[1=2]
+        cat ./test-results/$2^-actual >[1=2]
+        echo '--- Expected ---' >[1=2]
+        cat ./test-results/$2^-expected
+        exit 1
+    }
+    true
+}
+
 echo '-- undefined entry points --'
 if (./$O.ibio ./test-gslib ./test-gslib/undef-api.ags >[2] ./test-results/undef-api.ags-actual) {
     echo 'ibio succeeded; should have failed' >[1=2]
@@ -23,3 +43,5 @@ if (! grep -s './test-gslib/wrong-type.ags: Bad type' ./test-results/wrong-type.
     exit 1
 }
 echo
+
+ok_diff '-- Hello, world --' hello.ibio.ags
