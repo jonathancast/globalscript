@@ -1,5 +1,24 @@
-< $PLAN9/src/mkcommon
+< $PLAN9/src/mkhdr
+
+all:V: pure-all
+
+pure-all:V: $O.gstype
+
+pure-install:V: $GLOBALSCRIPT/bin/gstype
+
+pure-integration-test:V: rc/pure-test $O.gstype
+	./rc/pure-test
+
+$GLOBALSCRIPT/bin/%: $O.%
+	cp $prereq $target
+
+$O.%: %.$O $GLOBALSCRIPT/lib/libglobalscript.a
+	$LD $LDFLAGS -o $target $stem.$O -lglobalscript
+
+%.$O: %.c
+	$CC $CFLAGS -o $target $stem.c
+
+hello:V:
+	echo Hello, world
+
 < $GLOBALSCRIPT/src/mkcommon
-
-test:V: test-hello3.ibio.bcgs
-

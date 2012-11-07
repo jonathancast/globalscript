@@ -14,3 +14,4 @@
 ^bin/ibio$
 \.ags-actual$
 \.ags-errors$
+^bin/gstype$

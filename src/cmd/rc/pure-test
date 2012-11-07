@@ -1,0 +1,5 @@
+#! /usr/local/plan9/bin/rc -e
+
+. $GLOBALSCRIPT/bin/test-fns
+
+ok_diff '-- hello, world --' ./$O.gstype hello.type.ags

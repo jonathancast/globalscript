@@ -1,0 +1,5 @@
+	.document
+
+	.data
+
+	.string	Hello,\sWorld!\n

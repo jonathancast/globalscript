@@ -4,7 +4,9 @@ cd $GLOBALSCRIPT/src/libtest &&
     mk install &&
     cd ../libglobalscript/ &&
     mk install &&
-    cd ../cmd/ibio/ &&
+    cd ../cmd &&
+    mk pure-install &&
+    cd ibio/ &&
     mk install &&
     cd ../gsac &&
     mk
