@@ -576,14 +576,14 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
         rtops,
     } phase;
     int i;
+    void *pout;
     gsvalue *pglobal;
     struct gsbc *pcode;
     int nregs, nglobals, nsubexprs, nargs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
 
     phase = rttygvars;
-    pcode = 0;
-    pglobal = (gsvalue*)((uchar*)pbco + sizeof(struct gsbco));
+    pout = ((uchar*)pbco + sizeof(struct gsbco));
     nregs = nglobals = nsubexprs = nargs = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
@@ -605,7 +605,9 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
             ;
             regs[nregs] = p->label;
-            *pglobal++ = gssymtable_get_data(symtable, p->label);
+            pglobal = (gsvalue *)pout;
+            *pglobal = gssymtable_get_data(symtable, p->label);
+            pout = pglobal + 1;
             nregs++;
             nglobals++;
         } else if (
@@ -626,16 +628,14 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
             ;
             regs[nregs] = p->label;
-            if (!pcode)
-                pcode = (struct gsbc *)pglobal
-            ;
+            pcode = (struct gsbc *)pout;
             pcode->pos = p->pos;
             pcode->instr = gsbc_op_record;
             pcode->args[0] = p->numarguments / 2;
             for (i = 0; i < p->numarguments; i += 2) {
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: .record fields", p->pos);
             }
-            pcode = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments / 2);
+            pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments / 2);
             nregs++;
         } else if (gssymceq(p->directive, gssymopeprim, gssymcodeop, ".eprim")) {
             struct gsregistered_primset *prims;
@@ -650,9 +650,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             ;
             regs[nregs] = p->label;
 
-            if (!pcode)
-                pcode = (struct gsbc *)pglobal
-            ;
+            pcode = (struct gsbc *)pout;
             pcode->pos = p->pos;
             if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
                 int nargs, first_arg;
@@ -678,10 +676,10 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                     pcode->args[2 + i - first_arg] = (uchar)regarg;
                 }
 
-                pcode = GS_NEXT_BYTECODE(pcode, 2 + nargs);
+                pout = GS_NEXT_BYTECODE(pcode, 2 + nargs);
             } else {
                 pcode->instr = gsbc_op_unknown_eprim;
-                pcode = GS_NEXT_BYTECODE(pcode, 0);
+                pout = GS_NEXT_BYTECODE(pcode, 0);
             }
             nregs++;
         } else if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
@@ -689,9 +687,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             /* no effect on representation */
         } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
             phase = rtops;
-            if (!pcode)
-                pcode = (struct gsbc *)pglobal
-            ;
+            pcode = (struct gsbc *)pout;
             pcode->pos = p->pos;
             pcode->instr = gsbc_op_app;
             pcode->args[0] = (uchar)p->numarguments;
@@ -701,43 +697,37 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 regarg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
                 pcode->args[1 + i] = (uchar)regarg;
             }
-            pcode = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments);
+            pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments);
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
             int reg = 0;
 
             phase = rtops;
-            if (!pcode)
-                pcode = (struct gsbc *)pglobal
-            ;
+            pcode = (struct gsbc *)pout;
             gsargcheck(p, 0, "target");
             reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
             pcode->pos = p->pos;
             pcode->instr = gsbc_op_enter;
             pcode->args[0] = (uchar)reg;
-            pcode = GS_NEXT_BYTECODE(pcode, 1);
+            pout = GS_NEXT_BYTECODE(pcode, 1);
             goto done;
         } else if (gssymceq(p->directive, gssymopyield, gssymcodeop, ".yield")) {
             int reg;
 
             phase = rtops;
-            if (!pcode)
-                pcode = (struct gsbc *)pglobal
-            ;
+            pcode = (struct gsbc *)pout;
             gsargcheck(p, 0, "target");
             reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
             pcode->pos = p->pos;
             pcode->instr = gsbc_op_yield;
             pcode->args[0] = (uchar)reg;
-            pcode = GS_NEXT_BYTECODE(pcode, 1);
+            pout = GS_NEXT_BYTECODE(pcode, 1);
             goto done;
         } else if (gssymeq(p->directive, gssymcodeop, ".undef")) {
             phase = rtops;
-            if (!pcode)
-                pcode = (struct gsbc *)pglobal
-            ;
+            pcode = (struct gsbc *)pout;
             pcode->pos = p->pos;
             pcode->instr = gsbc_op_undef;
-            pcode = GS_NEXT_BYTECODE(pcode, 0);
+            pout = GS_NEXT_BYTECODE(pcode, 0);
             goto done;
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Code op %s", p->pos, p->directive->name);
