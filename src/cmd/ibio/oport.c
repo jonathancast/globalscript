@@ -71,6 +71,8 @@ ibio_write_thread_main(void *p)
         have_threads = ibio_write_thread_queue->numthreads > 0;
         unlock(&ibio_write_thread_queue->lock);
     } while (have_clients || have_threads);
+
+    ace_down();
 }
 
 static
@@ -311,6 +313,8 @@ ibio_write_process_main(void *p)
     ;
     ibio_write_thread_queue->numthreads--;
     unlock(&ibio_write_thread_queue->lock);
+
+    ace_down();
 }
 
 /* §section Associating list of current writes to thread */
