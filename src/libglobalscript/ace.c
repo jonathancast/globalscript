@@ -49,6 +49,7 @@ ace_init()
 static void ace_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 
+static int ace_alloc_thunk(struct ace_thread *);
 static int ace_alloc_record(struct ace_thread *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
@@ -110,6 +111,11 @@ ace_thread_pool_main(void *p)
                         }
                     } else {
                         switch (thread->ip->instr) {
+                            case gsbc_op_alloc:
+                                if (ace_alloc_thunk(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
                             case gsbc_op_record:
                                 if (ace_alloc_record(thread))
                                     suspended_runnable_thread = 1
@@ -160,6 +166,47 @@ ace_thread_pool_main(void *p)
     }
 
     gswarning("%s:%d: ace_thread_pool_main terminating", __FILE__, __LINE__);
+}
+
+static
+int
+ace_alloc_thunk(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsheap_item *hp;
+    struct gsclosure *cl;
+    int i;
+
+    ip = thread->ip;
+
+    hp = gsreserveheap(sizeof(struct gsclosure) + ip->args[1] * sizeof(gsvalue));
+    cl = (struct gsclosure *)hp;
+
+    memset(&hp->lock, 0, sizeof(hp->lock));
+    hp->pos = ip->pos;
+    hp->type = gsclosure;
+    if (ip->args[0] > thread->nsubexprs) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".alloc subexpr out of range");
+        return 0;
+    }
+    cl->code = thread->subexprs[ip->args[0]];
+    cl->numfvs = ip->args[1];
+    for (i = 0; i < ip->args[1]; i++) {
+        if (ip->args[1 + i] > thread->nregs) {
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".alloc free variable out of range");
+            return 0;
+        }
+        cl->fvs[i] = thread->regs[ip->args[1 + i]];
+    }
+    gswarning("%s:%d: %d", __FILE__, __LINE__, thread->nregs);
+    if (thread->nregs >= MAX_NUM_REGISTERS) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Register overflow in .alloc");
+        return 0;
+    }
+    thread->regs[thread->nregs] = (gsvalue)hp;
+    thread->nregs++;
+    thread->ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
+    return 1;
 }
 
 static
@@ -716,20 +763,33 @@ ace_set_registers(struct ace_thread *thread, struct gsclosure *cl)
     int i;
 
     thread->nregs = 0;
+    thread->nsubexprs = 0;
 
     code = cl->code;
     ip = (uchar*)code + sizeof(*code);
-    if ((uintptr)ip % sizeof(gsvalue*))
-        ip = (uchar*)ip + sizeof(gsvalue*) - (uintptr)ip % sizeof(gsvalue*)
+    if ((uintptr)ip % sizeof(struct gsbco *))
+        ip = (uchar*)ip + sizeof(struct gsbco *) - (uintptr)ip % sizeof(struct gsbco *)
+    ;
+    for (i = 0; i < code->numsubexprs; i++) {
+        if (thread->nsubexprs >= MAX_NUM_REGISTERS)
+            return 0
+        ;
+        thread->subexprs[thread->nsubexprs] = *(struct gsbco **)ip;
+        thread->nsubexprs++;
+        ip = (struct gsbco **)ip + 1;
+    }
+    if ((uintptr)ip % sizeof(gsvalue))
+        ip = (uchar*)ip + sizeof(gsvalue) - (uintptr)ip % sizeof(gsvalue)
     ;
     for (i = 0; i < code->numglobals; i++) {
-        if (thread->nregs >= MAX_NUM_REGISTERS) {
-            return 0;
-        }
-        thread->regs[thread->nregs] = *(gsvalue*)ip;
+        if (thread->nregs >= MAX_NUM_REGISTERS)
+            return 0
+        ;
+        thread->regs[thread->nregs] = *(gsvalue *)ip;
         thread->nregs++;
         ip = (gsvalue*)ip + 1;
     }
+    gswarning("%s:%d: %d", __FILE__, __LINE__, thread->nregs);
     return ip;
 }
 

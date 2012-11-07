@@ -309,6 +309,21 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             if (nregs >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
             nregs++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".alloc")) {
+            int nfvs;
+
+            phase = phbytecodes;
+
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
+            nregs++;
+
+            /* Ignore free type variables & separator (type erasure) */
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+            nfvs = p->numarguments - i;
+
+            size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
         } else if (gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")) {
             if (phase > phlets)
                 gsfatal_bad_input(p, "Too late to add allocations")
@@ -570,6 +585,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     enum {
         rttygvars,
         rttyargs,
+        rtsubexprs,
         rtgvars,
         rtargs,
         rtlets,
@@ -577,10 +593,12 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     } phase;
     int i;
     void *pout;
+    struct gsbco **psubcode;
     gsvalue *pglobal;
     struct gsbc *pcode;
     int nregs, nglobals, nsubexprs, nargs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
+    gsinterned_string subexprs[MAX_NUM_REGISTERS];
 
     phase = rttygvars;
     pout = ((uchar*)pbco + sizeof(struct gsbco));
@@ -596,6 +614,19 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 gsfatal("%P: Too late to add type global variables", p->pos)
             ;
             phase = rttyargs;
+        } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+            if (phase > rtsubexprs)
+                gsfatal_bad_input(p, "Too late to add sub-expressions")
+            ;
+            phase = rtsubexprs;
+            if (nsubexprs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
+            ;
+            subexprs[nsubexprs] = p->label;
+            psubcode = (struct gsbco **)pout;
+            *psubcode++ = gssymtable_get_code(symtable, p->label);
+            pout = (uchar*)psubcode;
+            nsubexprs++;
         } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
             if (phase > rtgvars)
                 gsfatal_bad_input(p, "Too late to add global variables")
@@ -620,6 +651,42 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             regs[nregs] = p->label;
             nregs++;
             nargs++;
+        } else if (gssymeq(p->directive, gssymcodeop, ".alloc")) {
+            int creg = 0;
+            int nfvs, first_fv;
+
+            if (phase > rtlets)
+                gsfatal_bad_input(p, "Too late to add allocations");
+            phase = rtlets;
+
+            pcode = (struct gsbc *)pout;
+
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+            ;
+
+            regs[nregs] = p->label;
+
+            nregs++;
+
+            creg = gsbc_find_register(p, subexprs, nsubexprs, p->arguments[0]);
+
+            pcode->pos = p->pos;
+            pcode->instr = gsbc_op_alloc;
+            pcode->args[0] = (uchar)creg;
+
+            /* §paragraph{Skipping free type variables} */
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+
+            nfvs = p->numarguments - i;
+            first_fv = i;
+            pcode->args[1] = (uchar)nfvs;
+            for (i = first_fv; i < p->numarguments; i++) {
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: store free variables", p->pos);
+            }
+
+            pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
         } else if (gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")) {
             if (phase > rtlets)
                 gsfatal_bad_input(p, "Too late to add allocations");

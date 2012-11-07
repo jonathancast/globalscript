@@ -75,7 +75,7 @@ gsprint(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
 
         p = (struct gsimplementation_failure *)prog;
         gsimplementation_failure_format(buf, buf + sizeof(buf), p);
-        print("%s", buf);
+        print("%s\n", buf);
         return -1;
     } else if (gsiserror_block(block)) {
         struct gserror *p;

@@ -82,11 +82,17 @@ echo
 
 ok_diff_fail '-- enter undefined polymorphic value --' ./$O.test-gsi enter-polymorphic-undef.ags
 ok_diff '-- yield polymorphic empty lambda --' ./$O.test-gsi yield-polymorphic-empty-lambda.ags
+
 ok_diff '-- lambdas with undefined bodies --' ./$O.test-gsi empty-lambda.ags
 ok_diff '-- lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lifted-lambda.ags
 ok_diff_fail '-- applying lambdas with undefined bodies --' ./$O.test-gsi apply-empty-lambda.ags
+
+ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
+ok_grep_errors '-- a let can be mis-typed --' './test-gslib/mistyped-let.ags:5: I don''t think' ./$O.test-gsi mistyped-let.ags
+
 ok_diff_fail '-- undefined values of abstract types --' ./$O.test-gsi undef-abs-type.ags
 ok_grep_errors '-- an abstract type is different from its definition --' './test-gslib/invalid-abs-type.ags:[0-9]*: I don''t think' ./$O.test-gsi invalid-abs-type.ags
+
 ok_diff '-- rune literals --' ./$O.test-gsi rune-literal.ags
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 ok_diff '-- constructors --' ./$O.test-gsi constructor.ags

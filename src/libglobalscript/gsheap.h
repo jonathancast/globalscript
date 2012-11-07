@@ -7,6 +7,7 @@ struct gsbc {
 };
 
 enum {
+    gsbc_op_alloc,
     gsbc_op_record,
     gsbc_op_unknown_eprim,
     gsbc_op_eprim,

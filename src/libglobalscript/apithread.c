@@ -334,15 +334,15 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
 
     nregs = 0;
 
-    for (i = 0; i < code->numglobals; i++) {
-        api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: get global variable");
-        return;
-    }
-
     for (i = 0; i < code->numsubexprs; i++) {
         psubexpr = (struct gsbco **)pin;
         subexprs[i] = *psubexpr++;
         pin = psubexpr;
+    }
+
+    for (i = 0; i < code->numglobals; i++) {
+        api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: get global variable");
+        return;
     }
 
     for (i = 0; i < code->numfvs; i++) {

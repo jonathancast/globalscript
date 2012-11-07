@@ -1,0 +1,16 @@
+	.document
+
+	.data
+
+	.closure	_entry.c	_empty.record
+
+	.code
+
+_entry.c	.expr
+_entry.head.c	.subcode
+x	.alloc	_entry.head.c
+	.enter	x
+
+_entry.head.c	.expr
+_empty.record	.tygvar
+	.undef	_empty.record

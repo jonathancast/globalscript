@@ -790,8 +790,8 @@ static void *gsbc_code_type_nursury;
 enum gsbc_code_regtype {
     rttygvar,
     rttyarg,
-    rtgvar,
     rtcode,
+    rtgvar,
     rtarg,
     rtlet,
     rtconts,
@@ -807,6 +807,11 @@ struct gsbc_typecheck_code_or_api_expr_closure {
     /* §section Type registers */
     struct gstype *tyregs[MAX_NUM_REGISTERS];
     struct gskind *tyregkinds[MAX_NUM_REGISTERS];
+    
+    /* §section Sub-Expressions */
+    int ncodes;
+    gsinterned_string coderegs[MAX_NUM_REGISTERS];
+    struct gsbc_code_item_type *codetypes[MAX_NUM_REGISTERS];
 
     /* §section Data registers */
     struct gstype *regtypes[MAX_NUM_REGISTERS];
@@ -824,11 +829,14 @@ static struct gstype *gsbc_typecheck_code_or_api_args(int, struct gstype **, str
 
 static struct gstype *gsbc_typecheck_compile_prim_type(struct gspos, struct gsfile_symtable *, char *);
 
+static int gsbc_typecheck_free_type_variables(struct gsparsedline *, struct gsbc_code_item_type *);
+static int gsbc_typecheck_free_variables(struct gsparsedline *, struct gsbc_code_item_type *, int);
+
 static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtyarg, gssymgvar, gssymrecord, gssymeprim, gssymlift, gssymapp, gssymenter, gssymundef;
+    static gsinterned_string gssymtyarg, gssymgvar, gssymalloc, gssymrecord, gssymeprim, gssymlift, gssymapp, gssymenter, gssymundef;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
@@ -846,7 +854,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     struct gskind *kind;
     struct gsbc_code_item_type *res;
 
-    cl.nregs = cl.nargs = nconts = ntyargs = 0;
+    cl.nregs = cl.nargs = cl.ncodes = nconts = ntyargs = 0;
     cl.regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
@@ -885,6 +893,34 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             if (!cl.regtypes[cl.nregs])
                 gsfatal_bad_input(p, "Couldn't find type for global %s", p->label->name)
             ;
+            cl.nregs++;
+        } else if (gssymceq(p->directive, gssymalloc, gssymcodeop, ".alloc")) {
+            int creg = 0;
+            struct gsbc_code_item_type *cty;
+            int nftyvs;
+
+            if (cl.regtype > rtlet)
+                gsfatal_bad_input(p, "Too late to add allocations")
+            ;
+            cl.regtype = rtlet;
+            if (cl.nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            ;
+
+            gsargcheck(p, 0, "code");
+            creg = gsbc_find_register(p, cl.coderegs, cl.ncodes, p->arguments[0]);
+            cty = cl.codetypes[creg];
+            calculated_type = cty->result_type;
+
+            nftyvs = gsbc_typecheck_free_type_variables(p, cty);
+            gsbc_typecheck_free_variables(p, cty, nftyvs);
+
+            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(calculated_type), gskind_lifted_kind());
+            gsbc_typecheck_check_boxed(p->pos, calculated_type);
+
+            cl.regs[cl.nregs] = p->label;
+            cl.regtypes[cl.nregs] = calculated_type;
+
             cl.nregs++;
         } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
             struct gstype_field fields[MAX_NUM_REGISTERS];
@@ -1109,41 +1145,22 @@ have_type:
     return res;
 }
 
-static int gsbc_typecheck_free_type_variables(struct gsparsedline *, struct gsbc_code_item_type *);
-static int gsbc_typecheck_free_variables(struct gsparsedline *, struct gsbc_code_item_type *, int);
-
 static
 struct gsbc_code_item_type *
 gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
 {
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
-    int ncodes, nbinds;
-    gsinterned_string coderegs[MAX_NUM_REGISTERS];
-    struct gsbc_code_item_type *codetypes[MAX_NUM_REGISTERS];
+    int nbinds;
     int first_rhs_lifted;
 
     struct gstype *calculated_type;
     struct gsbc_code_item_type *res;
 
-    cl.nregs = ncodes = cl.nargs = nbinds = 0;
+    cl.nregs = cl.ncodes = cl.nargs = nbinds = 0;
     cl.regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
-        } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
-            if (cl.regtype > rtcode)
-                gsfatal_bad_input(p, "Too late to add sub-expressions")
-            ;
-            cl.regtype = rtcode;
-            if (ncodes >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
-            ;
-            coderegs[ncodes] = p->label;
-            codetypes[ncodes] = gssymtable_get_code_type(symtable, p->label);
-            if (!codetypes[ncodes])
-                gsfatal_bad_input(p, "Can't find type of sub-expression %s", p->label->name)
-            ;
-            ncodes++;
         } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
@@ -1158,8 +1175,8 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
             ;
 
             gsargcheck(p, 0, "code");
-            creg = gsbc_find_register(p, coderegs, ncodes, p->arguments[0]);
-            cty = codetypes[creg];
+            creg = gsbc_find_register(p, cl.coderegs, cl.ncodes, p->arguments[0]);
+            cty = cl.codetypes[creg];
             calculated_type = cty->result_type;
 
             nftyvs = gsbc_typecheck_free_type_variables(p, cty);
@@ -1176,8 +1193,8 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
             int nftyvs;
 
             gsargcheck(p, 0, "code");
-            creg = gsbc_find_register(p, coderegs, ncodes, p->arguments[0]);
-            cty = codetypes[creg];
+            creg = gsbc_find_register(p, cl.coderegs, cl.ncodes, p->arguments[0]);
+            cty = cl.codetypes[creg];
             calculated_type = cty->result_type;
 
             nftyvs = gsbc_typecheck_free_type_variables(p, cty);
@@ -1236,6 +1253,21 @@ gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *symtable, struct gspa
             gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", p->pos, p->label->name)
         ;
         pcl->nregs++;
+        return 1;
+    } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+        if (pcl->regtype > rtcode)
+            gsfatal_bad_input(p, "Too late to add sub-expressions")
+        ;
+        pcl->regtype = rtcode;
+        if (pcl->ncodes >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
+        ;
+        pcl->coderegs[pcl->ncodes] = p->label;
+        pcl->codetypes[pcl->ncodes] = gssymtable_get_code_type(symtable, p->label);
+        if (!pcl->codetypes[pcl->ncodes])
+            gsfatal_bad_input(p, "Can't find type of sub-expression %s", p->label->name)
+        ;
+        pcl->ncodes++;
         return 1;
     } else if (
         gssymceq(p->directive, gssymarg, gssymcodeop, ".arg")

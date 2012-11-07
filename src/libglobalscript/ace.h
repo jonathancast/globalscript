@@ -24,7 +24,8 @@ struct ace_thread {
     gsvalue blocked;
     struct gspos blockedat;
     struct gsbc *ip;
-    int nregs;
+    int nregs, nsubexprs;
+    struct gsbco *subexprs[MAX_NUM_REGISTERS];
     gsvalue regs[MAX_NUM_REGISTERS];
     void *stacklimit, *stacktop, *stackbot;
 };
