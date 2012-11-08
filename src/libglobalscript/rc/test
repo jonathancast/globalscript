@@ -106,4 +106,6 @@ ok_grep_errors '-- block statements with mis-typed bodies --' './test-gslib/mist
 ok_grep_errors '-- undefined block statement API entry points --' './test-gslib/undef-block-api.ags:15: undefined' ./$O.test-gsexec undef-block-api.ags
 ok_grep_errors '-- block statement API entry points with mis-typed binds --' './test-gslib/mistyped-bind-api.ags:11: I don''t think' ./$O.test-gsexec mistyped-bind-api.ags
 ok_grep_errors '-- block statement API entry points with undefined binds --' './test-gslib/undef-bind-api.ags:17: undefined' ./$O.test-gsexec undef-bind-api.ags
+
 ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
+ok_diff '-- trivial use of alloc --' ./$O.test-gsexec simple-alloc-api.ags

@@ -1,0 +1,40 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+_empty.record	.closure	_empty.record.c
+
+	.code
+
+_epcode	.eprog	test.sequence	m
+_ep.a.c	.subcode
+_ep.body	.subcode
+a	.alloc	_ep.a.c
+	.body	_ep.body	|	a
+
+_ep.a.c	.expr
+sequence.unit.ty	.tygvar
+_empty.record	.tygvar
+_empty.record	.gvar
+un	.eprim	test.sequence	m	unit	sequence.unit.ty	_empty.record	|	_empty.record
+	.lift
+	.yield	un
+
+_ep.body	.expr
+_epcode.a.ty	.tygvar
+a	.fv	_epcode.a.ty
+	.enter	a
+
+_empty.record.c	.expr
+r	.record
+	.lift
+	.yield	r
+
+	.type
+
+_epcode.a.ty	.tyexpr
+sequence.m	.tygvar
+_empty.record	.tygvar
+	.tylift
+	.tyref	sequence.m	_empty.record

@@ -796,7 +796,6 @@ enum gsbc_code_regtype {
     rtarg,
     rtlet,
     rtconts,
-    rtgen,
 };
 
 struct gsbc_typecheck_code_or_api_expr_closure {
@@ -837,7 +836,7 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtyarg, gssymgvar, gssymfv, gssymalloc, gssymrecord, gssymeprim, gssymlift, gssymapp, gssymenter, gssymundef;
+    static gsinterned_string gssymtyarg, gssymgvar, gssymfv, gssymrecord, gssymeprim, gssymlift, gssymapp, gssymenter, gssymundef;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
@@ -930,34 +929,6 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             fvposs[nfvs] = p->pos;
             fvnames[nfvs] = p->label;
             nfvs++;
-        } else if (gssymceq(p->directive, gssymalloc, gssymcodeop, ".alloc")) {
-            int creg = 0;
-            struct gsbc_code_item_type *cty;
-            int nftyvs;
-
-            if (cl.regtype > rtlet)
-                gsfatal_bad_input(p, "Too late to add allocations")
-            ;
-            cl.regtype = rtlet;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
-            ;
-
-            gsargcheck(p, 0, "code");
-            creg = gsbc_find_register(p, cl.coderegs, cl.ncodes, p->arguments[0]);
-            cty = cl.codetypes[creg];
-            calculated_type = cty->result_type;
-
-            nftyvs = gsbc_typecheck_free_type_variables(p, cty);
-            gsbc_typecheck_free_variables(&cl, p, cty, nftyvs);
-
-            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(calculated_type), gskind_lifted_kind());
-            gsbc_typecheck_check_boxed(p->pos, calculated_type);
-
-            cl.regs[cl.nregs] = p->label;
-            cl.regtypes[cl.nregs] = calculated_type;
-
-            cl.nregs++;
         } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
             struct gstype_field fields[MAX_NUM_REGISTERS];
 
@@ -1211,10 +1182,10 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
             struct gsbc_code_item_type *cty;
             int nftyvs;
 
-            if (cl.regtype > rtgen)
+            if (cl.regtype > rtlet)
                 gsfatal_bad_input(p, "Too late to add generators")
             ;
-            cl.regtype = rtgen;
+            cl.regtype = rtlet;
             if (cl.nregs >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
             ;
@@ -1276,7 +1247,7 @@ static
 int
 gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymtygvar, gssymarg, gssymlarg;
+    static gsinterned_string gssymtygvar, gssymarg, gssymlarg, gssymalloc;
 
     int i;
 
@@ -1298,7 +1269,6 @@ gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *symtable, struct gspa
             gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", p->pos, p->label->name)
         ;
         pcl->nregs++;
-        return 1;
     } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
         if (pcl->regtype > rtcode)
             gsfatal_bad_input(p, "Too late to add sub-expressions")
@@ -1313,7 +1283,6 @@ gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *symtable, struct gspa
             gsfatal_bad_input(p, "Can't find type of sub-expression %s", p->label->name)
         ;
         pcl->ncodes++;
-        return 1;
     } else if (
         gssymceq(p->directive, gssymarg, gssymcodeop, ".arg")
         || gssymceq(p->directive, gssymlarg, gssymcodeop, ".larg")
@@ -1347,11 +1316,39 @@ gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *symtable, struct gspa
         pcl->arglines[pcl->nargs] = p;
         pcl->arglifted[pcl->nargs] = p->directive == gssymlarg;
         pcl->nargs++;
+    } else if (gssymceq(p->directive, gssymalloc, gssymcodeop, ".alloc")) {
+        int creg = 0;
+        struct gsbc_code_item_type *cty;
+        struct gstype *alloc_type;
+        int nftyvs;
 
-        return 1;
+        if (pcl->regtype > rtlet)
+            gsfatal_bad_input(p, "Too late to add allocations")
+        ;
+        pcl->regtype = rtlet;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+        ;
+
+        gsargcheck(p, 0, "code");
+        creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
+        cty = pcl->codetypes[creg];
+        alloc_type = cty->result_type;
+
+        nftyvs = gsbc_typecheck_free_type_variables(p, cty);
+        gsbc_typecheck_free_variables(pcl, p, cty, nftyvs);
+
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(alloc_type), gskind_lifted_kind());
+        gsbc_typecheck_check_boxed(p->pos, alloc_type);
+
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regtypes[pcl->nregs] = alloc_type;
+
+        pcl->nregs++;
     } else {
         return 0;
     }
+    return 1;
 }
 
 static

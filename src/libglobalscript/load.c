@@ -486,7 +486,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtyarg, gssymgvar, gssymfv, gssymarg, gssymalloc, gssymrecord, gssymeprim, gssymlift, gssymapp, gssymenter, gssymyield, gssymundef;
+    static gsinterned_string gssymtyarg, gssymgvar, gssymfv, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymapp, gssymenter, gssymyield, gssymundef;
 
     struct gsparsedline *parsedline;
     int i;
@@ -533,26 +533,6 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 gsfatal("%s:%d: Missing type on .arg", filename, *plineno);
             for (i = 2; i < n; i++)
                 parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-        } else if (gssymceq(parsedline->directive, gssymalloc, gssymcodeop, ".alloc")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymdatalable, fields[0])
-            ; else {
-                gswarning("%s:%d: Missing label on .alloc makes it a no-op", filename, *plineno);
-                parsedline->label = 0;
-            }
-            if (n < 3)
-                gsfatal("%s:%d: Missing subexpression on .alloc", filename, *plineno);
-            parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-            for (i = 3; i < n && strcmp(fields[i], "|"); i++) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-            }
-            if (i < n) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
-                i++;
-            }
-            for (; i < n; i++) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
-            }
         } else if (gssymceq(parsedline->directive, gssymrecord, gssymcodeop, ".record")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymdatalable, fields[0])
@@ -723,7 +703,7 @@ static
 int
 gsparse_api_or_code_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymtygvar, gssymsubcode, gssymlarg;
+    static gsinterned_string gssymtygvar, gssymsubcode, gssymlarg, gssymalloc;
     int i;
 
      if (gssymceq(parsedline->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
@@ -733,7 +713,6 @@ gsparse_api_or_code_op(char *filename, struct gsparsedline *parsedline, int *pli
             gsfatal("%s:%d: Missing label on .tygvar op", filename, *plineno);
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .tygvar op", filename, *plineno);
-        return 1;
     } else if (gssymceq(parsedline->directive, gssymsubcode, gssymcodeop, ".subcode")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymcodelable, fields[0]);
@@ -741,7 +720,6 @@ gsparse_api_or_code_op(char *filename, struct gsparsedline *parsedline, int *pli
             gsfatal("%s:%d: Missing label on .subcode", filename, *plineno);
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .subcode", filename, *plineno);
-        return 1;
     } else if (gssymceq(parsedline->directive, gssymlarg, gssymcodeop, ".larg")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymdatalable, fields[0]);
@@ -751,10 +729,30 @@ gsparse_api_or_code_op(char *filename, struct gsparsedline *parsedline, int *pli
             gsfatal("%s:%d: Missing type on .larg", filename, *plineno);
         for (i = 2; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-        return 1;
+    } else if (gssymceq(parsedline->directive, gssymalloc, gssymcodeop, ".alloc")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymdatalable, fields[0])
+        ; else {
+            gswarning("%s:%d: Missing label on .alloc makes it a no-op", filename, *plineno);
+            parsedline->label = 0;
+        }
+        if (n < 3)
+            gsfatal("%s:%d: Missing subexpression on .alloc", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
+        for (i = 3; i < n && strcmp(fields[i], "|"); i++) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+        }
+        if (i < n) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        for (; i < n; i++) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
+        }
     } else {
         return 0;
     }
+    return 1;
 }
 
 static long gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);

@@ -363,12 +363,40 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
     for (;;) {
         pinstr = (struct gsbc *)pin;
         switch (pinstr->instr) {
+            case gsbc_op_alloc: {
+                struct gsbco *subexpr;
+                struct gsclosure *cl;
+
+                if (nregs > MAX_NUM_REGISTERS) {
+                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many registers (max 0x%x)", MAX_NUM_REGISTERS);
+                    return;
+                }
+
+                subexpr = subexprs[pinstr->args[0]];
+
+                cl = gsreserveheap(sizeof(*cl) + pinstr->args[1] * sizeof(gsvalue));
+
+                memset(&cl->hp.lock, 0, sizeof(cl->hp.lock));
+                cl->hp.pos = pinstr->pos;
+                cl->hp.type = gsclosure;
+                cl->code = subexpr;
+                cl->numfvs = pinstr->args[1];
+                for (i = 0; i < pinstr->args[1]; i++) {
+                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: free variables of .alloc");
+                    return;
+                }
+                regs[nregs] = (gsvalue)cl;
+                nregs++;
+
+                pin = GS_NEXT_BYTECODE(pinstr, 2 + pinstr->args[1]);
+                continue;
+            }
             case gsbc_op_bind: {
                 struct gsbco *subexpr;
                 struct gsclosure *cl;
 
-                if (nstatements > MAX_NUM_REGISTERS) {
-                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many stateemnts (max 0x%x)", MAX_NUM_REGISTERS);
+                if (nregs > MAX_NUM_REGISTERS) {
+                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many registers (max 0x%x)", MAX_NUM_REGISTERS);
                     return;
                 }
 
@@ -387,7 +415,10 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 }
                 rhss[nstatements] = (gsvalue)cl;
                 lhss[nstatements] = api_alloc_promise();
+                regs[nregs] = (gsvalue)lhss[nstatements];
+
                 nstatements++;
+                nregs++;
 
                 pin = GS_NEXT_BYTECODE(pinstr, 2 + pinstr->args[1]);
                 continue;
@@ -411,11 +442,11 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 cl->code = subexpr;
                 cl->numfvs = pinstr->args[1];
                 for (i = 0; i < pinstr->args[1]; i++) {
-                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: free variables of .body");
-                    return;
+                    cl->fvs[i] = regs[pinstr->args[2 + i]];
                 }
                 rhss[nstatements] = (gsvalue)cl;
                 nstatements++;
+                nregs++;
                 goto got_statements;
             }
             default:
