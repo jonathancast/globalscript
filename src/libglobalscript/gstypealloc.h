@@ -1,6 +1,7 @@
 struct gsbc_code_item_type {
     int numftyvs;
     int numfvs;
+    struct gstype **fvtypes;
     struct gstype *result_type;
 };
 

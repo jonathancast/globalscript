@@ -1,0 +1,23 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+	.code
+
+_epcode	.expr
+_epcode.head.0.c	.subcode
+_epcode.head.1.c	.subcode
+x	.alloc	_epcode.head.0.c
+y	.alloc	_epcode.head.1.c	|	x
+	.enter	y
+
+_epcode.head.0.c	.expr
+_empty.record	.tygvar
+	.undef	_empty.record
+
+_epcode.head.1.c	.expr
+_empty.record	.tygvar
+x	.fv	_empty.record
+	.enter	x

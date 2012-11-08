@@ -226,7 +226,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static gsinterned_string gssymoptyarg, gssymopgvar, gssymoparg, gssymoplarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopapp, gssymopyield;
+static gsinterned_string gssymoptyarg, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopapp, gssymopyield;
 
 static
 int
@@ -239,8 +239,9 @@ gsbc_bytecode_size_item(struct gsbc_item item)
     enum {
         phtygvars,
         phtyargs,
-        phgvars,
         phcode,
+        phgvars,
+        phfvs,
         phargs,
         phlets,
         phbytecodes,
@@ -298,6 +299,14 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             ;
             size += sizeof(struct gsbco *);
             ncodes++;
+        } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
+            if (phase > phfvs)
+                gsfatal_bad_input(p, "Too late to add free variables")
+            ;
+            phase = phfvs;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
+            nregs++;
         } else if (
             gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
             || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
@@ -587,6 +596,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
         rttyargs,
         rtsubexprs,
         rtgvars,
+        rtfvs,
         rtargs,
         rtlets,
         rtops,
@@ -596,13 +606,13 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     struct gsbco **psubcode;
     gsvalue *pglobal;
     struct gsbc *pcode;
-    int nregs, nglobals, nsubexprs, nargs;
+    int nregs, nsubexprs, nglobals, nfvs, nargs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
     gsinterned_string subexprs[MAX_NUM_REGISTERS];
 
     phase = rttygvars;
     pout = ((uchar*)pbco + sizeof(struct gsbco));
-    nregs = nglobals = nsubexprs = nargs = 0;
+    nregs = nsubexprs = nglobals = nfvs = nargs = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (phase > rttygvars)
@@ -641,13 +651,28 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             pout = pglobal + 1;
             nregs++;
             nglobals++;
+        } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
+            if (phase > rtfvs)
+                gsfatal_bad_input(p, "Too late to add free variables")
+            ;
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            ;
+            phase = rtfvs;
+            regs[nregs] = p->label;
+            nregs++;
+            nfvs++;
         } else if (
             gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
             || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
         ) {
             if (phase > rtargs)
+                gsfatal_bad_input(p, "Too late to add argumetns")
+            ;
+            if (nregs >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
             ;
+            phase = rtargs;
             regs[nregs] = p->label;
             nregs++;
             nargs++;
@@ -683,7 +708,10 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             first_fv = i;
             pcode->args[1] = (uchar)nfvs;
             for (i = first_fv; i < p->numarguments; i++) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: store free variables", p->pos);
+                int regarg;
+
+                regarg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
+                pcode->args[2 + (i - first_fv)] = (uchar)regarg;
             }
 
             pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
@@ -803,8 +831,9 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
 
 done:
 
-    pbco->numglobals = nglobals;
     pbco->numsubexprs = nsubexprs;
+    pbco->numglobals = nglobals;
+    pbco->numfvs = nfvs;
     pbco->numargs = nargs;
 }
 

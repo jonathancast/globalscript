@@ -192,13 +192,12 @@ ace_alloc_thunk(struct ace_thread *thread)
     cl->code = thread->subexprs[ip->args[0]];
     cl->numfvs = ip->args[1];
     for (i = 0; i < ip->args[1]; i++) {
-        if (ip->args[1 + i] > thread->nregs) {
+        if (ip->args[2 + i] > thread->nregs) {
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".alloc free variable out of range");
             return 0;
         }
-        cl->fvs[i] = thread->regs[ip->args[1 + i]];
+        cl->fvs[i] = thread->regs[ip->args[2 + i]];
     }
-    gswarning("%s:%d: %d", __FILE__, __LINE__, thread->nregs);
     if (thread->nregs >= MAX_NUM_REGISTERS) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Register overflow in .alloc");
         return 0;
@@ -364,7 +363,6 @@ ace_enter(struct ace_thread *thread)
 
     switch (st) {
         case gstystack:
-            gswarning("%s:%d: %p %d", __FILE__, __LINE__, ip->pos.file, ip->pos.lineno);
             thread->blocked = prog;
             thread->blockedat = ip->pos;
             return 0;
@@ -557,6 +555,7 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
                     switch (cl->code->tag) {
                         case gsbc_expr:
                             ip = ace_set_registers(thread, cl);
+                            gswarning("%s:%d: %P", __FILE__, __LINE__, cl->hp.pos);
                             if (!ip) {
                                 ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
                                 unlock(&fun->lock);
@@ -789,7 +788,13 @@ ace_set_registers(struct ace_thread *thread, struct gsclosure *cl)
         thread->nregs++;
         ip = (gsvalue*)ip + 1;
     }
-    gswarning("%s:%d: %d", __FILE__, __LINE__, thread->nregs);
+    for (i = 0; i < cl->numfvs; i++) {
+        if (thread->nregs >= MAX_NUM_REGISTERS)
+            return 0
+        ;
+        thread->regs[thread->nregs] = cl->fvs[i];
+        thread->nregs++;
+    }
     return ip;
 }
 
