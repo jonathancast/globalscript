@@ -1235,6 +1235,9 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
             cl.regtypes[cl.nregs] = cont_arg_type;
             cl.nregs++;
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(p, &cl)) {
+            if (!cont_arg_type)
+                gsfatal("%P: No .karg in a .forcecont", p->pos)
+            ;
             goto have_type;
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_force_cont(%y)", p->pos, p->directive);
@@ -1242,10 +1245,6 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     }
 
 have_type:
-
-    if (!cont_arg_type)
-        gsfatal("%P: No .karg in a .forcecont", p->pos)
-    ;
 
     gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(calculated_type), gskind_lifted_kind());
 

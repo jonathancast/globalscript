@@ -48,6 +48,7 @@ ace_init()
 
 static void ace_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 static int ace_return(struct ace_thread *, struct gspos, gsvalue);
+static void ace_error_thread(struct ace_thread *, struct gserror *);
 
 static int ace_alloc_thunk(struct ace_thread *);
 static int ace_alloc_record(struct ace_thread *);
@@ -97,15 +98,24 @@ ace_thread_pool_main(void *p)
                             case gstystack:
                                 break;
                             case gstyindir:
-                                if (ace_return(thread, thread->blockedat, gsremove_indirections(prog)) > 0)
-                                    suspended_runnable_thread = 1
-                                ;
-                                break;
-                            case gstywhnf:
+                                prog = gsremove_indirections(prog);
+                                /* Fall through */
+                            case gstywhnf: {
+                                struct gs_blockdesc *block;
+
+                                block = BLOCK_CONTAINING(prog);
+                                if (gsiserror_block(block)) {
+                                    struct gserror *err;
+
+                                    err = (struct gserror *)prog;
+                                    ace_error_thread(thread, err);
+                                    break;
+                                }
                                 if (ace_return(thread, thread->blockedat, prog) > 0)
                                     suspended_runnable_thread = 1
                                 ;
                                 break;
+                            }
                             default:
                                 ace_thread_unimpl(thread, __FILE__, __LINE__, thread->blockedat, ".enter (st = %d)", st);
                                 break;
@@ -357,8 +367,6 @@ ace_push_force(struct ace_thread *thread)
     return 1;
 }
 
-static void ace_error_thread(struct ace_thread *, struct gserror *);
-
 static
 void
 ace_return_undef(struct ace_thread *thread)
@@ -381,6 +389,7 @@ static
 int
 ace_enter(struct ace_thread *thread)
 {
+    struct gs_blockdesc *block;
     struct gsbc *ip;
     gstypecode st;
     gsvalue prog;
@@ -401,7 +410,18 @@ ace_enter(struct ace_thread *thread)
             thread->blockedat = ip->pos;
             return 0;
         case gstyindir:
-            if (ace_return(thread, ip->pos, gsremove_indirections(prog)) > 0)
+            prog = gsremove_indirections(prog);
+
+            block = BLOCK_CONTAINING(prog);
+            if (gsiserror_block(block)) {
+                struct gserror *err;
+
+                err = (struct gserror *)prog;
+                ace_error_thread(thread, err);
+                return 0;
+            }
+
+            if (ace_return(thread, ip->pos, prog) > 0)
                 return 1
             ;
             return 0;
@@ -518,6 +538,9 @@ ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *e
 
 static void *ace_set_registers_from_closure(struct ace_thread *, struct gsclosure *);
 
+static int ace_return_to_app(struct ace_thread *, struct gsbc_cont *, gsvalue);
+static int ace_return_to_force(struct ace_thread *, struct gsbc_cont *, gsvalue);
+
 static
 int
 ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
@@ -538,115 +561,168 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
 
         cont = (struct gsbc_cont *)thread->stacktop;
         switch (cont->node) {
-            case gsbc_cont_app: {
-                struct gs_blockdesc *block;
-                struct gsheap_item *fun;
-                struct gsclosure *cl;
-                struct gsbc_cont_app *app;
-                int needed_args;
-
-                app = (struct gsbc_cont_app *)cont;
-
-                block = BLOCK_CONTAINING(v);
-                if (gsiserror_block(block)) {
-                    struct gserror *err;
-
-                    err = (struct gserror *)v;
-                    ace_error_thread(thread, err);
-                    return 0;
-                }
-
-                if (!gsisheap_block(block)) {
-                    ace_poison_thread(thread, cont->pos, "Applied function is a %s not a closure", block->class->description);
-                    return 0;
-                }
-
-                fun = (struct gsheap_item *)v;
-
-                lock(&fun->lock);
-
-                if (fun->type != gsclosure) {
-                    ace_poison_thread(thread, cont->pos, "Applied function %P is not a closure", fun->pos);
-                    unlock(&fun->lock);
-                    return 0;
-                }
-
-                cl = (struct gsclosure *)fun;
-                needed_args = cl->code->numargs - (cl->numfvs - cl->code->numfvs);
-
-                if (app->numargs < needed_args) {
-                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Partial applications");
-                    unlock(&fun->lock);
-                    return 0;
-                } else if (app->numargs > needed_args) {
-                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Over-saturated applications");
-                    unlock(&fun->lock);
-                    return 0;
-                } else {
-                    int i;
-                    void *ip;
-
-                    switch (cl->code->tag) {
-                        case gsbc_expr:
-                            ip = ace_set_registers_from_closure(thread, cl);
-                            if (!ip) {
-                                ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-                                unlock(&fun->lock);
-                                return 0;
-                            }
-
-                            for (i = 0; i < app->numargs; i++) {
-                                if (thread->nregs >= MAX_NUM_REGISTERS) {
-                                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-                                    unlock(&fun->lock);
-                                    return 0;
-                                }
-                                thread->regs[thread->nregs] = app->arguments[i];
-                                thread->nregs++;
-                            }
-                            thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
-                            thread->blocked = 0;
-                            thread->ip = (struct gsbc *)ip;
-                            break;
-                        case gsbc_eprog: {
-                            struct gsheap_item *hpres;
-                            struct gsclosure *res;
-
-                            hpres = gsreserveheap(sizeof(*res) + (cl->numfvs + app->numargs) * sizeof(gsvalue));
-                            res = (struct gsclosure *)hpres;
-
-                            memset(&hpres->lock, 0, sizeof(hpres->lock));
-                            hpres->pos = cont->pos;
-                            hpres->type = gsclosure;
-                            res->code = cl->code;
-                            res->numfvs = cl->numfvs + app->numargs;
-                            for (i = 0; i < cl->numfvs; i++)
-                                res->fvs[i] = cl->fvs[i]
-                            ;
-                            for (i = 0; i < app->numargs; i++)
-                                res->fvs[cl->numfvs + i] = app->arguments[i]
-                            ;
-
-                            unlock(&fun->lock);
-                            thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
-                            return ace_return(thread, cont->pos, (gsvalue)res);
-                        }
-                        default:
-                            ace_thread_unimpl(thread, __FILE__, __LINE__, fun->pos, "Apply code blocks of type %d", cl->code->tag);
-                            unlock(&fun->lock);
-                            return 0;
-                    }
-                }
-
-                unlock(&fun->lock);
-
-                return 1;
-            }
+            case gsbc_cont_app:
+                return ace_return_to_app(thread, cont, v);
+            case gsbc_cont_force:
+                return ace_return_to_force(thread, cont, v);
             default:
                 ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Return to %d continuations", cont->node);
                 return 0;
         }
     }
+}
+
+static
+int
+ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
+{
+    struct gs_blockdesc *block;
+    struct gsheap_item *fun;
+    struct gsclosure *cl;
+    struct gsbc_cont_app *app;
+    int needed_args;
+
+    app = (struct gsbc_cont_app *)cont;
+
+    block = BLOCK_CONTAINING(v);
+
+    if (!gsisheap_block(block)) {
+        ace_poison_thread(thread, cont->pos, "Applied function is a %s not a closure", block->class->description);
+        return 0;
+    }
+
+    fun = (struct gsheap_item *)v;
+
+    lock(&fun->lock);
+
+    if (fun->type != gsclosure) {
+        ace_poison_thread(thread, cont->pos, "Applied function %P is not a closure", fun->pos);
+        unlock(&fun->lock);
+        return 0;
+    }
+
+    cl = (struct gsclosure *)fun;
+    needed_args = cl->code->numargs - (cl->numfvs - cl->code->numfvs);
+
+    if (app->numargs < needed_args) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Partial applications");
+        unlock(&fun->lock);
+        return 0;
+    } else if (app->numargs > needed_args) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Over-saturated applications");
+        unlock(&fun->lock);
+        return 0;
+    } else {
+        int i;
+        void *ip;
+
+        switch (cl->code->tag) {
+            case gsbc_expr: {
+                int needed_args;
+
+                needed_args = cl->code->numfvs + cl->code->numargs - cl->numfvs;
+
+                if (needed_args < app->numargs) {
+                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Over-saturated applications");
+                    unlock(&fun->lock);
+                    return 0;
+                }
+                if (needed_args > app->numargs) {
+                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Under-saturated applications");
+                    unlock(&fun->lock);
+                    return 0;
+                }
+
+                ip = ace_set_registers_from_closure(thread, cl);
+                if (!ip) {
+                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+                    unlock(&fun->lock);
+                    return 0;
+                }
+
+                for (i = 0; i < app->numargs; i++) {
+                    if (thread->nregs >= MAX_NUM_REGISTERS) {
+                        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+                        unlock(&fun->lock);
+                        return 0;
+                    }
+                    thread->regs[thread->nregs] = app->arguments[i];
+                    thread->nregs++;
+                }
+                thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
+                thread->blocked = 0;
+                thread->ip = (struct gsbc *)ip;
+                break;
+            }
+            case gsbc_eprog: {
+                struct gsheap_item *hpres;
+                struct gsclosure *res;
+
+                hpres = gsreserveheap(sizeof(*res) + (cl->numfvs + app->numargs) * sizeof(gsvalue));
+                res = (struct gsclosure *)hpres;
+
+                memset(&hpres->lock, 0, sizeof(hpres->lock));
+                hpres->pos = cont->pos;
+                hpres->type = gsclosure;
+                res->code = cl->code;
+                res->numfvs = cl->numfvs + app->numargs;
+                for (i = 0; i < cl->numfvs; i++)
+                    res->fvs[i] = cl->fvs[i]
+                ;
+                for (i = 0; i < app->numargs; i++)
+                    res->fvs[cl->numfvs + i] = app->arguments[i]
+                ;
+
+                unlock(&fun->lock);
+                thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
+                return ace_return(thread, cont->pos, (gsvalue)res);
+            }
+            default:
+                ace_thread_unimpl(thread, __FILE__, __LINE__, fun->pos, "Apply code blocks of type %d", cl->code->tag);
+                unlock(&fun->lock);
+                return 0;
+        }
+    }
+
+    unlock(&fun->lock);
+
+    return 1;
+}
+
+static void *ace_set_registers_from_bco(struct ace_thread *, struct gsbco *);
+
+static
+int
+ace_return_to_force(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
+{
+    struct gsbc_cont_force *force;
+    void *ip;
+    int i;
+
+    force = (struct gsbc_cont_force *)cont;
+
+    ip = ace_set_registers_from_bco(thread, force->code);
+    if (!ip) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+        return 0;
+    }
+
+    for (i = 0; i < force->numfvs; i++) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "ace_return_to_force: force continuation free variables");
+        return 0;
+    }
+
+    if (thread->nregs >= MAX_NUM_REGISTERS) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+        return 0;
+    }
+    thread->regs[thread->nregs++] = v;
+
+    thread->blocked = 0;
+    thread->ip = (struct gsbc *)ip;
+    thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_force) + force->numfvs * sizeof(gsvalue);
+
+    return 1;
 }
 
 static
@@ -741,7 +817,7 @@ ace_start_evaluation(gsvalue val)
 
             thread->base = val;
 
-            cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont) + app->numargs * sizeof(gsvalue));
+            cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue));
             appcont = (struct gsbc_cont_app *)cont;
             if (!cont) {
                 unlock(&thread->lock);
@@ -785,8 +861,6 @@ ace_start_evaluation(gsvalue val)
     gswerrstr_unimpl(__FILE__, __LINE__, "oothreads");
     return gstyeoothreads;
 }
-
-static void *ace_set_registers_from_bco(struct ace_thread *, struct gsbco *);
 
 static
 void *

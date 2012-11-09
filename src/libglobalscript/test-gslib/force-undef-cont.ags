@@ -1,0 +1,20 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+	.code
+
+_epcode	.expr
+_epcode.c	.subcode
+r	.record
+	.force	_epcode.c
+	.lift
+	.yield	r
+
+_epcode.c	.forcecont
+_empty.record	.tygvar
+_ul.empty.record	.tygvar
+x	.karg	_ul.empty.record
+	.undef	_empty.record
