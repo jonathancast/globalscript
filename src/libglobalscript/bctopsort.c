@@ -156,7 +156,7 @@ static
 struct gsparsedline *
 gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtyfun, gssymoptyubproduct;
+    static gsinterned_string gssymtyfun, gssymoptyproduct, gssymoptyubproduct;
 
     for (;;) {
         if (
@@ -171,6 +171,7 @@ gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gspars
         else if (
             gssymeq(p->directive, gssymtypeop, ".tyref")
             || gssymeq(p->directive, gssymtypeop, ".tysum")
+            || gssymceq(p->directive, gssymoptyproduct, gssymtypeop, ".typroduct")
             || gssymceq(p->directive, gssymoptyubproduct, gssymtypeop, ".tyubproduct")
         )
             return gsinput_next_line(ppseg, p);
@@ -368,12 +369,15 @@ static
 void
 gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
+    static gsinterned_string gssymforcecont;
+
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
 
     pseg = item.pseg;
     if (
         gssymeq(item.v->directive, gssymcodedirective, ".expr")
+        || gssymceq(item.v->directive, gssymforcecont, gssymcodedirective, ".forcecont")
         || gssymeq(item.v->directive, gssymcodedirective, ".eprog")
     ) {
         for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {

@@ -226,7 +226,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static gsinterned_string gssymoptyarg, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopapp, gssymopyield;
+static gsinterned_string gssymoptyarg, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopapp, gssymopforce, gssymopyield;
 
 static
 int
@@ -310,6 +310,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
         } else if (
             gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
             || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
+            || gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")
         ) {
             if (phase > phargs)
                 gsfatal_bad_input(p, "Too late to add arguments")
@@ -389,6 +390,18 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             /* no effect on representation */
         } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
             size += GS_SIZE_BYTECODE(1 + p->numarguments); /* nargs + args */
+        } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
+            int nfvs;
+
+            phase = phbytecodes;
+
+            /* Ignore free type variables & separator (type erasure) */
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+            nfvs = p->numarguments - i;
+
+            size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
+            goto done;
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
             size += GS_SIZE_BYTECODE(1);
             goto done;
@@ -578,12 +591,16 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
         bcos[i]->tag = gsbc_expr;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
+    } else if (gssymeq(p->directive, gssymcodedirective, ".forcecont")) {
+        bcos[i]->tag = gsbc_forcecont;
+        bcos[i]->pos = p->pos;
+        gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else if (gssymeq(p->directive, gssymcodedirective, ".eprog")) {
         bcos[i]->tag = gsbc_eprog;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_api_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: ode directive %s", p->pos, p->directive->name);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: code directive %y", p->pos, p->directive);
     }
 }
 
@@ -674,6 +691,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
         } else if (
             gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
             || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
+            || gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")
         ) {
             if (cl.phase > rtargs)
                 gsfatal_bad_input(p, "Too late to add argumetns")
@@ -763,6 +781,43 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 pcode->args[1 + i] = (uchar)regarg;
             }
             cl.pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments);
+        } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
+            int creg = 0;
+            int nfvs, first_fv;
+
+            cl.phase = rtops;
+
+            pcode = (struct gsbc *)cl.pout;
+
+            if (cl.nregs >= MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+            ;
+
+            cl.regs[cl.nregs] = p->label;
+
+            cl.nregs++;
+
+            creg = gsbc_find_register(p, cl.subexprs, cl.nsubexprs, p->arguments[0]);
+
+            pcode->pos = p->pos;
+            pcode->instr = gsbc_op_force;
+            pcode->args[0] = (uchar)creg;
+
+            /* §paragraph{Skipping free type variables} */
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+
+            nfvs = p->numarguments - i;
+            first_fv = i;
+            pcode->args[1] = (uchar)nfvs;
+            for (i = first_fv; i < p->numarguments; i++) {
+                int regarg;
+
+                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
+                pcode->args[2 + (i - first_fv)] = (uchar)regarg;
+            }
+
+            cl.pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
         } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
             int reg = 0;
 

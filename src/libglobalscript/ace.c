@@ -54,6 +54,7 @@ static int ace_alloc_record(struct ace_thread *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
+static int ace_push_force(struct ace_thread *);
 static void ace_return_undef(struct ace_thread *);
 static int ace_enter(struct ace_thread *);
 static int ace_yield(struct ace_thread *);
@@ -133,6 +134,11 @@ ace_thread_pool_main(void *p)
                                 break;
                             case gsbc_op_app:
                                 if (ace_push_app(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_force:
+                                if (ace_push_force(thread))
                                     suspended_runnable_thread = 1
                                 ;
                                 break;
@@ -304,7 +310,7 @@ ace_push_app(struct ace_thread *thread)
 
     ip = thread->ip;
 
-    cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont) + ip->args[0] * sizeof(gsvalue));
+    cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont_app) + ip->args[0] * sizeof(gsvalue));
     app = (struct gsbc_cont_app *)cont;
     if (!cont) return 0;
 
@@ -320,6 +326,34 @@ ace_push_app(struct ace_thread *thread)
     }
 
     thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[1]);
+    return 1;
+}
+
+static
+int
+ace_push_force(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsbc_cont *cont;
+    struct gsbc_cont_force *force;
+    int i;
+
+    ip = thread->ip;
+
+    cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont_force) + ip->args[1] * sizeof(gsvalue));
+    force = (struct gsbc_cont_force *)cont;
+    if (!cont) return 0;
+
+    cont->node = gsbc_cont_force;
+    cont->pos = ip->pos;
+    force->code = thread->subexprs[ip->args[0]];
+    force->numfvs = ip->args[1];
+    for (i = 0; i < ip->args[1]; i++) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "free variables of .force continuation");
+        return 0;
+    }
+
+    thread->ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
     return 1;
 }
 
@@ -555,7 +589,6 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
                     switch (cl->code->tag) {
                         case gsbc_expr:
                             ip = ace_set_registers(thread, cl);
-                            gswarning("%s:%d: %P", __FILE__, __LINE__, cl->hp.pos);
                             if (!ip) {
                                 ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
                                 unlock(&fun->lock);
@@ -571,7 +604,7 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
                                 thread->regs[thread->nregs] = app->arguments[i];
                                 thread->nregs++;
                             }
-                            thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont) + app->numargs * sizeof(gsvalue);
+                            thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
                             thread->blocked = 0;
                             thread->ip = (struct gsbc *)ip;
                             break;
@@ -595,7 +628,7 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
                             ;
 
                             unlock(&fun->lock);
-                            thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont) + app->numargs * sizeof(gsvalue);
+                            thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
                             return ace_return(thread, cont->pos, (gsvalue)res);
                         }
                         default:

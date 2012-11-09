@@ -11,3 +11,6 @@
 _empty.record	.tyexpr
 	.tylift
 	.typroduct
+
+_ul.empty.record	.tyexpr
+	.typroduct

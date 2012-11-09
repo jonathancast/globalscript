@@ -1,0 +1,19 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+	.code
+
+_epcode	.expr
+_empty.record	.tygvar
+_epcode.c	.subcode
+	.force	_epcode.c
+	.undef	_empty.record
+
+_epcode.c	.forcecont
+_ul.empty.record	.tygvar
+_empty.record	.tygvar
+x	.karg	_ul.empty.record
+	.undef	_empty.record

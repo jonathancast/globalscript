@@ -1,6 +1,12 @@
 struct gsbc_code_item_type {
+    enum {
+        gsbc_code_item_expr,
+        gsbc_code_item_force_cont,
+        gsbc_code_item_eprog,
+    } type;
     int numftyvs;
     int numfvs;
+    struct gstype *cont_arg_type;
     struct gstype **fvtypes;
     struct gstype *result_type;
 };

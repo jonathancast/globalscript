@@ -12,6 +12,7 @@ enum {
     gsbc_op_unknown_eprim,
     gsbc_op_eprim,
     gsbc_op_app,
+    gsbc_op_force,
     gsbc_op_undef,
     gsbc_op_enter,
     gsbc_op_yield,
@@ -31,6 +32,7 @@ void *gsreservebytecode(ulong);
 struct gsbc_cont {
     enum {
         gsbc_cont_app,
+        gsbc_cont_force,
     } node;
     struct gspos pos;
 };
@@ -39,6 +41,12 @@ struct gsbc_cont_app {
     struct gsbc_cont cont;
     int numargs;
     gsvalue arguments[];
+};
+
+struct gsbc_cont_force {
+    struct gsbc_cont cont;
+    struct gsbco *code;
+    int numfvs;
 };
 
 /* §section Global Script Run-time Errors */

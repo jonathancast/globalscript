@@ -253,6 +253,7 @@ struct gsclosure {
 struct gsbco {
     enum {
         gsbc_expr,
+        gsbc_forcecont,
         gsbc_eprog,
     } tag;
     struct gspos pos;
