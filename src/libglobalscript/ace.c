@@ -516,7 +516,7 @@ ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *e
     ace_remove_thread(thread);
 }
 
-static void *ace_set_registers(struct ace_thread *, struct gsclosure *);
+static void *ace_set_registers_from_closure(struct ace_thread *, struct gsclosure *);
 
 static
 int
@@ -588,7 +588,7 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
 
                     switch (cl->code->tag) {
                         case gsbc_expr:
-                            ip = ace_set_registers(thread, cl);
+                            ip = ace_set_registers_from_closure(thread, cl);
                             if (!ip) {
                                 ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
                                 unlock(&fun->lock);
@@ -711,7 +711,7 @@ ace_start_evaluation(gsvalue val)
 
                     thread->base = val;
 
-                    instr = (struct gsbc *)ace_set_registers(thread, cl);
+                    instr = (struct gsbc *)ace_set_registers_from_closure(thread, cl);
 
                     if (!instr) {
                         gspoison_unimpl(hp, __FILE__, __LINE__, cl->code->pos, "Too many registers");
@@ -786,18 +786,37 @@ ace_start_evaluation(gsvalue val)
     return gstyeoothreads;
 }
 
+static void *ace_set_registers_from_bco(struct ace_thread *, struct gsbco *);
+
 static
 void *
-ace_set_registers(struct ace_thread *thread, struct gsclosure *cl)
+ace_set_registers_from_closure(struct ace_thread *thread, struct gsclosure *cl)
 {
     void *ip;
-    struct gsbco *code;
+    int i;
+
+    ip = ace_set_registers_from_bco(thread, cl->code);
+    if (!ip) return 0;
+    for (i = 0; i < cl->numfvs; i++) {
+        if (thread->nregs >= MAX_NUM_REGISTERS)
+            return 0
+        ;
+        thread->regs[thread->nregs] = cl->fvs[i];
+        thread->nregs++;
+    }
+    return ip;
+}
+
+static
+void *
+ace_set_registers_from_bco(struct ace_thread *thread, struct gsbco *code)
+{
+    void *ip;
     int i;
 
     thread->nregs = 0;
     thread->nsubexprs = 0;
 
-    code = cl->code;
     ip = (uchar*)code + sizeof(*code);
     if ((uintptr)ip % sizeof(struct gsbco *))
         ip = (uchar*)ip + sizeof(struct gsbco *) - (uintptr)ip % sizeof(struct gsbco *)
@@ -820,13 +839,6 @@ ace_set_registers(struct ace_thread *thread, struct gsclosure *cl)
         thread->regs[thread->nregs] = *(gsvalue *)ip;
         thread->nregs++;
         ip = (gsvalue*)ip + 1;
-    }
-    for (i = 0; i < cl->numfvs; i++) {
-        if (thread->nregs >= MAX_NUM_REGISTERS)
-            return 0
-        ;
-        thread->regs[thread->nregs] = cl->fvs[i];
-        thread->nregs++;
     }
     return ip;
 }
