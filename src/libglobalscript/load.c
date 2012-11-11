@@ -1270,6 +1270,7 @@ gsappend_symtable(struct gsfile_symtable *symtable0, struct gsfile_symtable *sym
     gsappend_items(&symtable0->codeitems, symtable1->codeitems, "code");
     gsappend_items(&symtable0->dataitems, symtable1->dataitems, "data");
     gsappend_items(&symtable0->typeitems, symtable1->typeitems, "type");
+    gsappend_items(&symtable0->coercionitems, symtable1->coercionitems, "coercion");
 }
 
 static
