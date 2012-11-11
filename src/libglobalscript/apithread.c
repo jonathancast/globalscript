@@ -574,11 +574,14 @@ api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
     return res;
 }
 
+static gstypecode api_promise_eval(gsvalue);
+static gsvalue api_promise_dereference(gsvalue);
+
 static Lock api_promise_segment_lock;
 static void *api_promise_segment_nursury;
 static struct gs_block_class api_promise_segment_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
+    /* evaluator = */ api_promise_eval,
+    /* indirection_dereferencer = */ api_promise_dereference,
     /* description = */ "API promises",
 };
 
@@ -595,6 +598,36 @@ api_alloc_promise()
     memset(res, 0, sizeof(*res));
 
     return res;
+}
+
+static
+gstypecode
+api_promise_eval(gsvalue val)
+{
+    struct api_promise *promise;
+    gstypecode res;
+
+    promise = (struct api_promise *)val;
+    lock(&promise->lock);
+    res = promise->value ? gstyindir : gstyblocked;
+    unlock(&promise->lock);
+
+    return res;
+}
+
+static
+gsvalue
+api_promise_dereference(gsvalue val)
+{
+    struct api_promise *promise;
+    gsvalue res;
+
+    promise = (struct api_promise *)val;
+    lock(&promise->lock);
+    res = promise->value;
+    unlock(&promise->lock);
+
+    return GS_REMOVE_INDIRECTIONS(res);
 }
 
 /* §section Helper Functions */

@@ -196,9 +196,9 @@ gsvalue gsemptyrecord(struct gspos);
 /* §subsection Run-time Stuff */
 
 typedef enum {
-    gstyprim = 0,
     gstythunk,
     gstystack,
+    gstyblocked,
     gstywhnf,
     gstyindir,
     gstyunboxed,
