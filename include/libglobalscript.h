@@ -189,9 +189,11 @@ gsvalue gsapply(struct gspos, gsvalue, gsvalue);
 char *gschartorune(char *, gsvalue *, char *, char *);
 char *gsrunetochar(gsvalue, char *, char *, char *, char *);
 
-/* §subsection Run-time Stuff */
+/* §subsection Records */
 
-typedef uintptr gscode;
+gsvalue gsemptyrecord(struct gspos);
+
+/* §subsection Run-time Stuff */
 
 typedef enum {
     gstyprim = 0,
@@ -210,8 +212,6 @@ extern void gsrun(char *, struct gsfile_symtable *, struct gspos, gsvalue, struc
 
 #define GS_MAX_PTR 0x80000000UL
     /* NOTE: 32-bit specific ↑↑↑.  Thought: would §ccode{1UL << (sizeof(gsvalue) * 8 - 1)} work? */
-
-gsvalue gsmakethunk(gscode, ...);
 
 void *gsreserveheap(ulong);
 
@@ -416,7 +416,7 @@ enum api_prim_execution_state {
     api_st_blocked,
 };
 
-typedef enum api_prim_execution_state (api_prim_executor)(struct api_thread *, struct gseprim *);
+typedef enum api_prim_execution_state (api_prim_executor)(struct api_thread *, struct gseprim *, gsvalue *);
 
 struct api_prim_table {
     int numprims;

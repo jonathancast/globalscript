@@ -148,7 +148,7 @@ static struct gs_block_class ibio_oport_segment_descr;
 static void ibio_oport_link_to_thread(struct api_thread *, struct ibio_oport *);
 
 enum api_prim_execution_state
-ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write)
+ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, gsvalue *pv)
 {
     gsvalue oportv, s;
     struct ibio_oport *oport;
@@ -184,6 +184,7 @@ ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write)
         ibio_oport_link_to_thread(thread, oport);
     }
     unlock(&oport->lock);
+    *pv = gsemptyrecord(write->pos);
     return api_st_success;
 }
 

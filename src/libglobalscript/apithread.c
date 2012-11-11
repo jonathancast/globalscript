@@ -225,6 +225,8 @@ api_at_termination(api_termination_callback *cb)
 
 static void api_unpack_block_statement(struct api_thread *, struct gsclosure *);
 
+static void api_update_promise(struct api_promise *, gsvalue);
+
 static
 void
 api_exec_instr(struct api_thread *thread, gsvalue instr)
@@ -289,10 +291,12 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
             api_abend(thread, "%P: Primitive out of bounds", eprim->pos);
         } else {
             enum api_prim_execution_state st;
+            gsvalue res;
 
-            st = table->execs[eprim->index](thread, eprim);
+            st = table->execs[eprim->index](thread, eprim, &res);
             switch (st) {
                 case api_st_success:
+                    api_update_promise(thread->code->instrs[thread->code->ip].presult, res);
                     thread->code->ip++;
                     if (thread->code->ip >= thread->code->size)
                         api_done(thread)
@@ -309,6 +313,15 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
     } else {
         api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%s)", block->class->description);
     }
+}
+
+static
+void
+api_update_promise(struct api_promise *promise, gsvalue v)
+{
+    lock(&promise->lock);
+    promise->value = v;
+    unlock(&promise->lock);
 }
 
 static struct api_promise *api_alloc_promise(void);
@@ -768,15 +781,8 @@ api_main_process_handle_rpc_abend(struct gsrpc *rpc)
 
 enum
 api_prim_execution_state
-api_thread_handle_prim_unit(struct api_thread *thread, struct gseprim *eprim)
+api_thread_handle_prim_unit(struct api_thread *thread, struct gseprim *eprim, gsvalue *res)
 {
-    struct api_code_segment *code;
-    struct api_promise *pres;
-
-    code = thread->code;
-    pres = code->instrs[code->ip].presult;
-    lock(&pres->lock);
-    pres->value = eprim->arguments[1];
-    unlock(&pres->lock);
+    *res = eprim->arguments[1];
     return api_st_success;
 }

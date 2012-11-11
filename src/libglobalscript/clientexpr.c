@@ -10,6 +10,18 @@
 #include "gsheap.h"
 
 gsvalue
+gsemptyrecord(struct gspos pos)
+{
+    struct gsrecord *res;
+
+    res = gsreserverecords(sizeof(struct gsrecord));
+    res->pos = pos;
+    res->numfields = 0;
+
+    return (gsvalue)res;
+}
+
+gsvalue
 gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, char *err, char *eerr, struct gsfile_symtable *symtable, char *coercion_name, ...)
 {
     struct gsbc_coercion_type *ct;
