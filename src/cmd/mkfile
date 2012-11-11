@@ -18,6 +18,8 @@ $O.%: %.$O $GLOBALSCRIPT/lib/libglobalscript.a
 %.$O: %.c
 	$CC $CFLAGS -o $target $stem.c
 
+%.$O: $GLOBALSCRIPT/include/libglobalscript.h
+
 hello:V:
 	echo Hello, world
 
