@@ -847,11 +847,13 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtyarg, gssymgvar, gssymfv, gssymrecord, gssymeprim, gssymlift, gssymforce, gssymapp, gssymenter;
+    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymfv, gssymrecord, gssymeprim, gssymlift, gssymcoerce, gssymforce, gssymapp, gssymenter;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
     int i;
+
+    struct gsbc_coercion_type *regcoerciontypes[MAX_NUM_REGISTERS];
 
     int nfvs;
     gsinterned_string fvnames[MAX_NUM_REGISTERS];
@@ -873,6 +875,20 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     cl.regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        } else if (gssymceq(p->directive, gssymcogvar, gssymcodeop, ".cogvar")) {
+            if (cl.regtype > rtgvar)
+                gsfatal_bad_input(p, "Too late to add global variables")
+            ;
+            cl.regtype = rtgvar;
+            if (cl.nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers")
+            ;
+            cl.regs[cl.nregs] = p->label;
+            regcoerciontypes[cl.nregs] = gssymtable_get_coercion_type(symtable, p->label);
+            if (!regcoerciontypes[cl.nregs])
+                gsfatal_bad_input(p, "Couldn't find type for coercion global %y", p->label)
+            ;
+            cl.nregs++;
         } else if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
             struct gskind *argkind;
@@ -1032,6 +1048,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             cl.nregs++;
         } else if (
             gssymceq(p->directive, gssymlift, gssymcodeop, ".lift")
+            || gssymceq(p->directive, gssymcoerce, gssymcodeop, ".coerce")
             || gssymceq(p->directive, gssymforce, gssymcodeop, ".force")
             || gssymceq(p->directive, gssymapp, gssymcodeop, ".app")
         ) {
@@ -1100,6 +1117,21 @@ have_type:
         if (p->directive == gssymlift) {
             gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(calculated_type), gskind_unlifted_kind());
             calculated_type = gstypes_compile_lift(p->pos, calculated_type);
+        } else if (p->directive == gssymcoerce) {
+            int coercionreg;
+            struct gstype *src_type;
+            struct gsbc_coercion_type *coercion_type;
+
+            coercionreg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
+            coercion_type = regcoerciontypes[coercionreg];
+            if (!coercion_type)
+                gsfatal("%P: Couldn't find type of coercion %y", p->pos, p->arguments[0])
+            ;
+            for (i = 1; i < p->numarguments; i++)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: type arguments to coercion next", p->pos)
+            ;
+            gstypes_type_check_type_fail(p->pos, calculated_type, coercion_type->source);
+            calculated_type = coercion_type->dest;
         } else if (p->directive == gssymforce) {
             int creg = 0;
             struct gsbc_code_item_type *cty;

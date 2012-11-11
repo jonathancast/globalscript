@@ -226,7 +226,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static gsinterned_string gssymoptyarg, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopapp, gssymopforce, gssymopyield;
+static gsinterned_string gssymoptyarg, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield;
 
 static
 int
@@ -264,6 +264,12 @@ gsbc_bytecode_size_item(struct gsbc_item item)
                 gsfatal("%P: Too late to add type arguments", p->pos)
             ;
             phase = phtyargs;
+            /* type erasure */
+        } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
+            if (phase > phgvars)
+                gsfatal("%P: Too late to add global variables", p->pos)
+            ;
+            phase = phgvars;
             /* type erasure */
         } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
             if (phase > phgvars)
@@ -387,6 +393,8 @@ gsbc_bytecode_size_item(struct gsbc_item item)
 
             size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
         } else if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
+            /* no effect on representation */
+        } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
             /* no effect on representation */
         } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
             size += GS_SIZE_BYTECODE(1 + p->numarguments); /* nargs + args */
@@ -663,6 +671,11 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             *psubcode++ = gssymtable_get_code(symtable, p->label);
             cl.pout = (uchar*)psubcode;
             cl.nsubexprs++;
+        } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
+            if (cl.phase > rtgvars)
+                gsfatal("%P: Too late to add global variables", p->pos)
+            ;
+            cl.phase = rtgvars;
         } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
             if (cl.phase > rtgvars)
                 gsfatal_bad_input(p, "Too late to add global variables")
@@ -766,6 +779,9 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             }
             cl.nregs++;
         } else if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
+            cl.phase = rtops;
+            /* no effect on representation */
+        } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
             cl.phase = rtops;
             /* no effect on representation */
         } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {

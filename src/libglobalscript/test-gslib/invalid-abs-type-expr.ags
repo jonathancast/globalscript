@@ -1,0 +1,32 @@
+	.document
+
+	.data
+
+	.closure	_epc
+
+	.code
+
+_epc	.expr
+t	.tygvar
+_empty.record	.tygvar
+_in	.cogvar
+	.coerce	_in
+	.undef	t	_empty.record
+
+	.type
+
+t	.tyabstract	**^
+α	.tylambda	*
+	.tylift
+	.typroduct
+
+_bodytype	.tyexpr
+	.tylift
+	.typroduct
+
+	.coercion
+
+_in	.tycoercion
+t	.tygvar
+_empty.record	.tygvar
+	.tydefinition	t	_empty.record
