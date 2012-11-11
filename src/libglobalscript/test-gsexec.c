@@ -64,7 +64,7 @@ static struct api_prim_table exec_prim_table = {
 };
 
 void
-gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type)
+gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type, int argc, char **argv)
 {
     apisetupmainthread(&exec_rpc_table, &exec_thread_table, 0, &exec_prim_table, prog);
 }

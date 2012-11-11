@@ -52,6 +52,7 @@ gsmain(int argc, char **argv)
                 switch (ft) {
                     case gsfiledocument:
                         docfilename = cur_arg;
+                        --argc, ++argv;
                         goto have_document;
                     case gsfileerror:
                         gswarning("%s: non-fatal error when reading file", cur_arg);
@@ -72,7 +73,7 @@ have_document:
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r");
     GS_SLOW_EVALUATE(gsentrypoint);
-    gsrun(docfilename, gscurrent_symtable, gsentrypos, gsentrypoint, gsentrytype);
+    gsrun(docfilename, gscurrent_symtable, gsentrypos, gsentrypoint, gsentrytype, argc, argv);
     exits("");
 }
 
