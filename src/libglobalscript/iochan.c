@@ -65,10 +65,12 @@ gsbio_get_channel_for_external_io(char *filename, int fd, enum gsbio_iochannel_t
 
 struct gs_block_class uxio_channel_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "UXIO Channels",
 };
 struct gs_block_class uxio_channel_buffer = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "UXIO Buffers",
 };
 

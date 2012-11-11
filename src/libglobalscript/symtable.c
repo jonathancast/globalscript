@@ -128,6 +128,7 @@ gshash_string(gssymboltype ty, char *nm)
 
 struct gs_block_class gsstringhash_desc = {
     /* evaulator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Interning Hash",
 };
 
@@ -231,6 +232,7 @@ gsstring_alloc_hash_link()
 
 struct gs_block_class gshash_link_desc = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Hash alist link for interned symbol hash",
 };
 
@@ -284,6 +286,7 @@ gsalloc_string(gssymboltype ty, char *nm)
 
 struct gs_block_class gsstring_desc = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Interned strings",
 };
 

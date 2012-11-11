@@ -10,8 +10,18 @@
 gstypecode
 gsnoeval(gsvalue val)
 {
-    gsfatal("Tried to evaluate a gsvalue which doesn't point into an evaluable block!");
-    return 0;
+    return gstyindir;
+}
+
+gsvalue
+gsnoindir(gsvalue val)
+{
+    struct gs_blockdesc *block;
+    struct gspos pos;
+
+    block = BLOCK_CONTAINING(val);
+    pos.file = gsintern_string(gssymfilename, __FILE__);
+    pos.lineno = __LINE__; return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsnoindir: %s", block->class->description);
 }
 
 static int gsheap_lock(struct gsheap_item *);
@@ -118,8 +128,17 @@ gswhnfeval(gsvalue val)
     return gstywhnf;
 }
 
+gsvalue
+gswhnfindir(gsvalue val)
+{
+    return val;
+}
+
+static gsvalue gsheapremove_indirections(gsvalue val);
+
 static struct gs_block_class gsheap_descr = {
     /* evaluator = */ gsheapeval,
+    /* indirection_dereferencer = */ gsheapremove_indirections,
     /* description = */ "Global Script Heap",
 };
 static void *gsheap_nursury;
@@ -130,8 +149,9 @@ gsreserveheap(ulong sz)
     return gs_sys_seg_suballoc(&gsheap_descr, &gsheap_nursury, sz, sizeof(struct gsbco*));
 }
 
+static
 gsvalue
-gsremove_indirections(gsvalue val)
+gsheapremove_indirections(gsvalue val)
 {
     struct gs_blockdesc *block;
     struct gsheap_item *hp;
@@ -141,7 +161,7 @@ gsremove_indirections(gsvalue val)
         block = BLOCK_CONTAINING(val);
 
         if (block->class != &gsheap_descr)
-            return val
+            return GS_REMOVE_INDIRECTIONS(val)
         ;
 
         hp = (struct gsheap_item *)val;
@@ -168,6 +188,7 @@ gsisheap_block(struct gs_blockdesc *p)
 
 struct gs_block_class gserrors_descr = {
     /* evaluator = */ gswhnfeval,
+    /* indirection_dereferencer = */ gswhnfindir,
     /* description = */ "Erroneous Global Script Values",
 };
 static void *gserrors_nursury;
@@ -250,6 +271,7 @@ gsiserror_block(struct gs_blockdesc *p)
 
 struct gs_block_class gsimplementation_errors_descr = {
     /* evaluator = */ gswhnfeval,
+    /* indirection_dereferencer = */ gswhnfindir,
     /* description = */ "Global Script Implementation Errors",
 };
 static void *gsimplementation_errors_nursury;
@@ -306,6 +328,7 @@ gsisimplementation_failure_block(struct gs_blockdesc *p)
 
 struct gs_block_class gsbytecode_desc = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gswhnfindir,
     /* description = */ "Byte-code objects",
 };
 
@@ -321,6 +344,7 @@ gsreservebytecode(ulong sz)
 
 struct gs_block_class gsrecords_descr = {
     /* evaluator = */ gswhnfeval,
+    /* indirection_dereferencer = */ gswhnfindir,
     /* description = */ "Global Script Records",
 };
 static void *gsrecords_nursury;
@@ -347,6 +371,7 @@ gsisrecord_block(struct gs_blockdesc *p)
 
 struct gs_block_class gsconstrs_descr = {
     /* evaluator = */ gswhnfeval,
+    /* indirection_dereferencer = */ gswhnfindir,
     /* description = */ "Global Script Constructors",
 };
 static void *gsconstrs_nursury;
@@ -373,6 +398,7 @@ gsisconstr_block(struct gs_blockdesc *p)
 
 struct gs_block_class gseprims_descr = {
     /* evaluator = */ gswhnfeval,
+    /* indirection_dereferencer = */ gswhnfindir,
     /* description = */ "API Primitives",
 };
 static void *gseprims_nursury;

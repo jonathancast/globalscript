@@ -20,6 +20,7 @@ static struct ibio_write_thread_queue {
 
 static struct gs_block_class ibio_write_thread_queue_descr = {
     /* evaluator = */ gswhnfeval,
+    /* indirection_dereferencer = */ gswhnfindir,
     /* description = */ "IBIO Write Thread Queue",
 };
 static void *ibio_write_thread_queue_nursury;
@@ -327,6 +328,7 @@ struct ibio_thread_to_oport_link {
 
 static struct gs_block_class ibio_thread_to_oport_link_descr = {
     /* evaluator = */ gswhnfeval,
+    /* indirection_dereferencer = */ gswhnfindir,
     /* description = */ "IBIO Oports",
 };
 static void *ibio_thread_to_oport_link_nursury;
@@ -376,6 +378,7 @@ ibio_oport_unlink_from_thread(struct api_thread *thread, struct ibio_oport *opor
 
 static struct gs_block_class ibio_oport_segment_descr = {
     /* evaluator = */ gswhnfeval,
+    /* indirection_dereferencer = */ gswhnfindir,
     /* description = */ "IBIO Oports",
 };
 static void *ibio_oport_segment_nursury;
@@ -407,6 +410,7 @@ ibio_alloc_oport()
 
 static struct gs_block_class ibio_oport_write_buffer_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "IBIO Write Buffers",
 };
 static void *ibio_oport_write_buffer_nursury;

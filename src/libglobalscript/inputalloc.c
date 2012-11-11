@@ -49,6 +49,7 @@ gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
 
 struct gs_block_class gsparsed_file_desc = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Parsed gsac files",
 };
 

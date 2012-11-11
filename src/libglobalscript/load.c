@@ -100,12 +100,14 @@ static gsparsedfile *gsreadfile(char *filename, char *relname, int skip_docs, in
 
 static struct gs_block_class filename_desc = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Filenames for gsaddir_recursive",
 };
 static void *filename_nursury;
 
 static struct gs_block_class file_link_desc = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "File list links for returning file list to gsaddir",
 };
 static void *file_link_nursury;
@@ -1241,6 +1243,7 @@ struct gsfile_symtable_item {
 
 static struct gs_block_class gssymtable_segment = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Symbol tables",
 };
 
@@ -1248,6 +1251,7 @@ static void *symtable_nursury;
 
 static struct gs_block_class gssymtable_item_segment = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Symbol table entries",
 };
 
@@ -1423,6 +1427,7 @@ struct gsfile_symtable_type_item {
 
 static struct gs_block_class gssymtable_type_item_segment = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Symbol table type entries",
 };
 
@@ -1467,6 +1472,7 @@ struct gsfile_symtable_type_kind_item {
 
 static struct gs_block_class symtable_type_kind_item_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Symbol table kind of type items",
 };
 void *symtable_type_kind_item_nursury;
@@ -1530,6 +1536,7 @@ struct gsfile_symtable_entry {
 
 static struct gs_block_class symtable_entry_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Symbol table entries",
 };
 static void *symtable_entry_nursury;
@@ -1755,6 +1762,7 @@ struct gsfile_symtable_scc_item {
 
 static struct gs_block_class gsfile_symtable_scc_item_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Symbol table track SCC items belong to",
 };
 static void *gsfile_symtable_scc_item_nursury;

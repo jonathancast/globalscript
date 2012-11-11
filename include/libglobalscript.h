@@ -216,14 +216,17 @@ extern void gsrun(char *, struct gsfile_symtable *, struct gspos, gsvalue, struc
 void *gsreserveheap(ulong);
 
 gstypecode gsnoeval(gsvalue);
+gsvalue gsnoindir(gsvalue);
+
 gstypecode gsevalunboxed(gsvalue);
+
 gstypecode gswhnfeval(gsvalue);
+gsvalue gswhnfindir(gsvalue);
 
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
 #define GS_SLOW_EVALUATE(v) (IS_PTR(v) ? (*GS_EVALUATOR(v))(v) : gstyunboxed)
-
-gsvalue gsremove_indirections(gsvalue);
+#define GS_REMOVE_INDIRECTIONS(v) ((*GS_INDIRECTION_DEREFENCER(v))(v))
 
 int gsiserror_block(struct gs_blockdesc *);
 int gsisimplementation_failure_block(struct gs_blockdesc *);
@@ -362,6 +365,7 @@ struct gsregistered_prim *gsprims_lookup_prim(struct gsregistered_primset *, cha
 typedef struct gs_block_class {
     gstypecode (*evaluator)(gsvalue);
         /* §ccode{evaluator} mayn't return §ccode{gstythunk} */
+    gsvalue (*indirection_dereferencer)(gsvalue);
     char *description;
 } *registered_block_class;
 
@@ -374,7 +378,8 @@ struct gs_blockdesc {
 #define START_OF_BLOCK(p) ((void*)((uchar*)(p) + sizeof(*p)))
 #define END_OF_BLOCK(p) ((void*)((uchar*)(p) + BLOCK_SIZE))
 
-#define GS_EVALUATOR(p) (IS_PTR(p) ? ((struct gs_blockdesc*)BLOCK_CONTAINING(p))->class->evaluator : gsevalunboxed)
+#define GS_EVALUATOR(p) (IS_PTR(p) ? ((struct gs_blockdesc *)BLOCK_CONTAINING(p))->class->evaluator : gsevalunboxed)
+#define GS_INDIRECTION_DEREFENCER(p) (((struct gs_blockdesc *)BLOCK_CONTAINING(p))->class->indirection_dereferencer)
 
 void *gs_sys_seg_alloc(registered_block_class cl);
 void gs_sys_seg_free(void *);

@@ -16,6 +16,7 @@ static struct gsregistered_primset_link *registered_primsets;
 
 static struct gs_block_class gsregistered_primset_link_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Registered primitive set descriptor links",
 };
 static void *gsregistered_primset_link_nursury;

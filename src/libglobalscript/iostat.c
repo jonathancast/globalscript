@@ -136,6 +136,7 @@ void *gsbio_dir_nursury;
 
 struct gs_block_class gsbio_dir = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "IBIO directory structures",
 };
 

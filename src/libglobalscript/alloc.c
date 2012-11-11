@@ -16,8 +16,9 @@ static void *bottom_of_data, *top_of_data;
 static struct free_block *first_free_block;
 
 struct gs_block_class free_block_class_descr = {
-    gsnoeval,
-    "Free memory",
+    /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
+    /* description = */ "Free memory",
 };
 
 static void _gs_sys_seg_extend(void);

@@ -12,6 +12,7 @@ struct gsrpc_queue {
 static Lock gsrpc_queue_memory_lock;
 static struct gs_block_class gsrpc_queue_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "RPC queue",
 };
 static void *gsrpc_queue_nursury;
@@ -46,6 +47,7 @@ gsqueue_down(struct gsrpc_queue *q)
 
 static struct gs_block_class gsrpc_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "RPC",
 };
 static void *gsrpc_nursury;
@@ -101,6 +103,7 @@ gsqueue_get_rpc(struct gsrpc_queue *q)
 
 static struct gs_block_class gsrpc_queue_link_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "RPC Queue Link",
 };
 

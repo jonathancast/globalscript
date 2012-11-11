@@ -16,6 +16,7 @@ static struct ace_thread_queue *ace_thread_queue;
 
 static struct gs_block_class ace_thread_queue_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "ACE Thread Queue",
 };
 static void *ace_thread_queue_nursury;
@@ -98,7 +99,7 @@ ace_thread_pool_main(void *p)
                             case gstystack:
                                 break;
                             case gstyindir:
-                                prog = gsremove_indirections(prog);
+                                prog = GS_REMOVE_INDIRECTIONS(prog);
                                 /* Fall through */
                             case gstywhnf: {
                                 struct gs_blockdesc *block;
@@ -410,7 +411,7 @@ ace_enter(struct ace_thread *thread)
             thread->blockedat = ip->pos;
             return 0;
         case gstyindir:
-            prog = gsremove_indirections(prog);
+            prog = GS_REMOVE_INDIRECTIONS(prog);
 
             block = BLOCK_CONTAINING(prog);
             if (gsiserror_block(block)) {
@@ -920,6 +921,7 @@ ace_set_registers_from_bco(struct ace_thread *thread, struct gsbco *code)
 static Lock ace_thread_lock;
 static struct gs_block_class ace_thread_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "ACE Thread",
 };
 static void *ace_thread_nursury;

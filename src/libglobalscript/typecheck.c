@@ -792,6 +792,7 @@ static struct gstype *gsbc_typecheck_check_api_statement_type(struct gspos, stru
 
 static struct gs_block_class gsbc_code_type_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Code item types",
 };
 static void *gsbc_code_type_nursury;
@@ -2284,6 +2285,7 @@ gstypes_type_check_coercion_item(struct gsfile_symtable *symtable, struct gsbc_i
 
 static struct gs_block_class gsbc_coercion_type_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "Coercion types",
 };
 void *gsbc_coercion_type_nursury;

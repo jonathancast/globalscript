@@ -17,6 +17,7 @@ static struct api_thread *api_add_thread(struct gsrpc_queue *, struct api_thread
 
 static struct gs_block_class api_thread_queue_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "API Thread Queue",
 };
 static void *api_thread_queue_nursury;
@@ -145,7 +146,7 @@ api_thread_pool_main(void *arg)
                             case gstystack:
                                 break;
                             case gstyindir:
-                                code->instrs[code->ip].instr = gsremove_indirections(instr);
+                                code->instrs[code->ip].instr = GS_REMOVE_INDIRECTIONS(instr);
                                 ranthread = 1;
                                 break;
                             case gstyenosys:
@@ -535,6 +536,7 @@ static Lock api_code_segment_lock;
 static void *api_code_segment_nursury;
 static struct gs_block_class api_code_segment_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "API code segments",
 };
 
@@ -576,6 +578,7 @@ static Lock api_promise_segment_lock;
 static void *api_promise_segment_nursury;
 static struct gs_block_class api_promise_segment_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "API promises",
 };
 
@@ -678,6 +681,7 @@ struct api_abend_rpc {
 
 static struct gs_block_class api_thread_status_descr = {
     /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
     /* description = */ "API Thread Status",
 };
 static void *api_thread_status_nursury;

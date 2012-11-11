@@ -29,7 +29,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
 
         switch (st) {
             case gstyindir:
-                prog = gsremove_indirections(prog);
+                prog = GS_REMOVE_INDIRECTIONS(prog);
                 break;
             case gstywhnf:
                 if (gsprint(type, symtable, prog) < 0) {
