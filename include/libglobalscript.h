@@ -391,7 +391,6 @@ void ace_down(void);
 struct api_thread;
 
 struct api_thread_table {
-    void *(*setup_client_data)();
     enum api_prim_execution_state (*thread_term_status)(struct api_thread *);
 };
 
@@ -430,7 +429,7 @@ typedef void (api_termination_callback)(void);
 void api_at_termination(api_termination_callback *);
 
 /* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
-void apisetupmainthread(struct api_process_rpc_table *, struct api_thread_table *, struct api_prim_table *, gsvalue);
+void apisetupmainthread(struct api_process_rpc_table *, struct api_thread_table *, void *, struct api_prim_table *, gsvalue);
 
 /* If (and only if) the current thread is hard, these will send a done message (§c{api_std_rpc_done}) to the corresponding process */
 void api_done(struct api_thread *);

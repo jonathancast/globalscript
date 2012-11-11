@@ -50,11 +50,9 @@ static struct api_process_rpc_table exec_rpc_table = {
     },
 };
 
-static void *exec_setup_client_data(void);
 static enum api_prim_execution_state exec_thread_term_status(struct api_thread *);
 
 static struct api_thread_table exec_thread_table = {
-    /* setup_client_data = */ exec_setup_client_data,
     /* thread_term_status = */ exec_thread_term_status,
 };
 
@@ -68,14 +66,7 @@ static struct api_prim_table exec_prim_table = {
 void
 gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type)
 {
-    apisetupmainthread(&exec_rpc_table, &exec_thread_table, &exec_prim_table, prog);
-}
-
-static
-void *
-exec_setup_client_data()
-{
-    return 0;
+    apisetupmainthread(&exec_rpc_table, &exec_thread_table, 0, &exec_prim_table, prog);
 }
 
 static

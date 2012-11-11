@@ -13,7 +13,7 @@ static struct api_thread_queue *api_thread_queue;
 static void api_take_thread_queue(void);
 static void api_release_thread_queue(void);
 
-static struct api_thread *api_add_thread(struct gsrpc_queue *, struct api_thread_table *api_thread_table, struct api_prim_table *, gsvalue);
+static struct api_thread *api_add_thread(struct gsrpc_queue *, struct api_thread_table *api_thread_table, void *, struct api_prim_table *, gsvalue);
 
 static struct gs_block_class api_thread_queue_descr = {
     /* evaluator = */ gsnoeval,
@@ -26,6 +26,7 @@ static struct api_thread *api_try_schedule_thread(struct api_thread *);
 struct api_thread_pool_args {
     struct gsrpc_queue *rpc_queue;
     struct api_thread_table *api_thread_table;
+    void *api_main_thread_data;
     struct api_prim_table *api_prim_table;
     gsvalue entry;
 };
@@ -35,7 +36,7 @@ static void api_thread_pool_main(void *);
 
 /* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
 void
-apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table *api_thread_table, struct api_prim_table *api_prim_table, gsvalue entry)
+apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table *api_thread_table, void *api_main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
 {
     struct gsrpc *rpc;
     struct gsrpc_queue *rpc_queue;
@@ -53,6 +54,7 @@ apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table 
 
     api_thread_pool_args.rpc_queue = rpc_queue;
     api_thread_pool_args.api_thread_table = api_thread_table;
+    api_thread_pool_args.api_main_thread_data = api_main_thread_data;
     api_thread_pool_args.api_prim_table = api_prim_table;
     api_thread_pool_args.entry = entry;
     if ((api_pool = gscreate_thread_pool(api_thread_pool_main, &api_thread_pool_args, sizeof(api_thread_pool_args))) < 0)
@@ -108,7 +110,7 @@ api_thread_pool_main(void *arg)
 
     args = (struct api_thread_pool_args *)arg;
 
-    mainthread = api_add_thread(args->rpc_queue, args->api_thread_table, args->api_prim_table, args->entry);
+    mainthread = api_add_thread(args->rpc_queue, args->api_thread_table, args->api_main_thread_data, args->api_prim_table, args->entry);
 
     api_release_thread(mainthread);
 
@@ -477,7 +479,7 @@ static struct api_code_segment *api_alloc_code_segment(struct api_thread *, gsva
 
 static
 struct api_thread *
-api_add_thread(struct gsrpc_queue *rpc_queue, struct api_thread_table *api_thread_table, struct api_prim_table *api_prim_table, gsvalue entry)
+api_add_thread(struct gsrpc_queue *rpc_queue, struct api_thread_table *api_thread_table, void *main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
 {
     int i;
     struct api_thread *thread;
@@ -505,7 +507,7 @@ have_thread:
     thread->process_rpc_queue = rpc_queue;
     thread->api_thread_table = api_thread_table;
     thread->api_prim_table = api_prim_table;
-    thread->client_data = api_thread_table->setup_client_data();
+    thread->client_data = main_thread_data;
     thread->status = 0;
 
     thread->code = api_alloc_code_segment(thread, entry);

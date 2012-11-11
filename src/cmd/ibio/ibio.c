@@ -50,7 +50,6 @@ gsadd_client_prim_sets()
 }
 
 static struct api_thread_table ibio_thread_table = {
-    /* setup_client_data = */ ibio_thread_alloc_data,
     /* thread_term_status = */ ibio_thread_term_status,
 };
 
@@ -127,5 +126,5 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 
     /* §section Set up the IBIO thread */
 
-    apisetupmainthread(&ibio_rpc_table, &ibio_thread_table, &ibio_prim_table, prog);
+    apisetupmainthread(&ibio_rpc_table, &ibio_thread_table, ibio_main_thread_alloc_data(), &ibio_prim_table, prog);
 }

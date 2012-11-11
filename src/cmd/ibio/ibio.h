@@ -4,7 +4,7 @@ struct ibio_thread_data {
     struct ibio_thread_to_oport_link *writing_to_oport;
 };
 
-void *ibio_thread_alloc_data(void);
+void *ibio_main_thread_alloc_data(void);
 enum api_prim_execution_state ibio_thread_term_status(struct api_thread *);
 
 /* §section Output */

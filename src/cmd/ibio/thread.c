@@ -14,7 +14,7 @@ static void *ibio_thread_data_nursury;
 static Lock ibio_thread_data_lock;
 
 void *
-ibio_thread_alloc_data()
+ibio_main_thread_alloc_data()
 {
     struct ibio_thread_data *res;
 
