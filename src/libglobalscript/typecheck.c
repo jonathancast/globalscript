@@ -1119,7 +1119,7 @@ have_type:
             calculated_type = gstypes_compile_lift(p->pos, calculated_type);
         } else if (p->directive == gssymcoerce) {
             int coercionreg;
-            struct gstype *src_type;
+            struct gstype *src_type, *dest_type;
             struct gsbc_coercion_type *coercion_type;
 
             coercionreg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
@@ -1127,11 +1127,17 @@ have_type:
             if (!coercion_type)
                 gsfatal("%P: Couldn't find type of coercion %y", p->pos, p->arguments[0])
             ;
-            for (i = 1; i < p->numarguments; i++)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: type arguments to coercion next", p->pos)
-            ;
-            gstypes_type_check_type_fail(p->pos, calculated_type, coercion_type->source);
-            calculated_type = coercion_type->dest;
+            src_type = coercion_type->source;
+            dest_type = coercion_type->dest;
+            for (i = 1; i < p->numarguments; i++) {
+                int regarg;
+
+                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
+                src_type = gstype_supply(p->pos, src_type, cl.tyregs[regarg]);
+                dest_type = gstype_supply(p->pos, dest_type, cl.tyregs[regarg]);
+            }
+            gstypes_type_check_type_fail(p->pos, calculated_type, src_type);
+            calculated_type = dest_type;
         } else if (p->directive == gssymforce) {
             int creg = 0;
             struct gsbc_code_item_type *cty;

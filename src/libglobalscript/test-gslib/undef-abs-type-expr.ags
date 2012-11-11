@@ -8,8 +8,9 @@
 
 _epc	.expr
 _bodytype	.tygvar
+_empty.record	.tygvar
 _in	.cogvar
-	.coerce	_in
+	.coerce	_in	_empty.record
 	.undef	_bodytype
 
 	.type
@@ -27,5 +28,5 @@ _bodytype	.tyexpr
 
 _in	.tycoercion
 t	.tygvar
-_empty.record	.tygvar
-	.tydefinition	t	_empty.record
+α	.tylambda	*
+	.tydefinition	t	α
