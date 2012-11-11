@@ -102,6 +102,12 @@ ace_thread_pool_main(void *p)
                                 prog = GS_REMOVE_INDIRECTIONS(prog);
                                 /* Fall through */
                             case gstywhnf: {
+                                if (ace_return(thread, thread->blockedat, prog) > 0)
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            }
+                            case gstyerr: {
                                 struct gs_blockdesc *block;
 
                                 block = BLOCK_CONTAINING(prog);
@@ -110,11 +116,10 @@ ace_thread_pool_main(void *p)
 
                                     err = (struct gserror *)prog;
                                     ace_error_thread(thread, err);
+                                } else {
+                                    ace_thread_unimpl(thread, __FILE__, __LINE__, thread->blockedat, ".enter (%s)", block->class->description);
                                     break;
                                 }
-                                if (ace_return(thread, thread->blockedat, prog) > 0)
-                                    suspended_runnable_thread = 1
-                                ;
                                 break;
                             }
                             default:

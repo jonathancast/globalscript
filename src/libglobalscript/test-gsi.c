@@ -17,6 +17,7 @@ gsadd_client_prim_sets()
 }
 
 static int gsprint(struct gstype *type, struct gsfile_symtable *, gsvalue prog);
+static void gsprint_error(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog);
 static int gsprint_unboxed(struct gstype *type, gsvalue prog);
 
 void
@@ -38,6 +39,10 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 }
                 ace_down();
                 return;
+            case gstyerr:
+                gsprint_error(type, symtable, prog);
+                ace_down();
+                exits("error");
             case gstyunboxed:
                 if (gsprint_unboxed(type, prog) < 0) {
                     ace_down();
@@ -76,21 +81,6 @@ gsprint(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
         p = (struct gsimplementation_failure *)prog;
         gsimplementation_failure_format(buf, buf + sizeof(buf), p);
         print("%s\n", buf);
-        return -1;
-    } else if (gsiserror_block(block)) {
-        struct gserror *p;
-
-        p = (struct gserror *)prog;
-        switch (p->type) {
-            case gserror_undefined:
-                print("%s %P\n", "undefined", p->pos);
-                break;
-            case gserror_generated:
-                print("%P: %s\n", p->pos, p->message);
-                break;
-            default:
-                gsfatal_unimpl(__FILE__, __LINE__, "gsprint(error type = %d)", p->type);
-        }
         return -1;
     } else if (gsisheap_block(block)) {
         struct gsheap_item *hp;
@@ -177,6 +167,35 @@ gsprint(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
         ace_down();
         gsfatal_unimpl(__FILE__, __LINE__, "gsprint(%s)", block->class->description);
         return -1;
+    }
+}
+
+static
+void
+gsprint_error(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
+{
+    struct gs_blockdesc *block;
+
+    block = BLOCK_CONTAINING(prog);
+
+    if (gsiserror_block(block)) {
+        struct gserror *p;
+
+        p = (struct gserror *)prog;
+        switch (p->type) {
+            case gserror_undefined:
+                print("%s %P\n", "undefined", p->pos);
+                break;
+            case gserror_generated:
+                print("%P: %s\n", p->pos, p->message);
+                break;
+            default:
+                gsfatal_unimpl(__FILE__, __LINE__, "gsprint(error type = %d)", p->type);
+        }
+        return -1;
+    } else {
+        ace_down();
+        gsfatal_unimpl(__FILE__, __LINE__, "gsprint_error(%s)", block->class->description);
     }
 }
 

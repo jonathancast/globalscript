@@ -186,9 +186,12 @@ gsisheap_block(struct gs_blockdesc *p)
     return p->class == &gsheap_descr;
 }
 
+static gstypecode gserrorseval(gsvalue);
+static gsvalue gserrorsindir(gsvalue);
+
 struct gs_block_class gserrors_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
+    /* evaluator = */ gserrorseval,
+    /* indirection_dereferencer = */ gserrorsindir,
     /* description = */ "Erroneous Global Script Values",
 };
 static void *gserrors_nursury;
@@ -203,6 +206,19 @@ gsreserveerrors(ulong sz)
     res = gs_sys_seg_suballoc(&gserrors_descr, &gserrors_nursury, sz, sizeof(gsinterned_string));
     unlock(&gserrors_lock);
     return res;
+}
+
+static
+gstypecode gserrorseval(gsvalue val)
+{
+    return gstyerr;
+}
+
+static
+gsvalue
+gserrorsindir(gsvalue val)
+{
+    return val;
 }
 
 struct gserror *

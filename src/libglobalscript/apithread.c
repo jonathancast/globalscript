@@ -90,6 +90,7 @@ apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table 
 /* §section Main loop */
 
 static void api_exec_instr(struct api_thread *, gsvalue);
+static void api_exec_err(struct api_thread *, gsvalue);
 
 static void api_send_done_rpc(struct api_thread *);
 static void api_send_abend_rpc(struct api_thread *, char *, ...);
@@ -142,6 +143,9 @@ api_thread_pool_main(void *arg)
                             case gstywhnf:
                                 api_exec_instr(thread, instr);
                                 ranthread = 1;
+                                break;
+                            case gstyerr:
+                                api_exec_err(thread, instr);
                                 break;
                             case gstystack:
                                 break;
@@ -236,22 +240,7 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
 
     block = BLOCK_CONTAINING(instr);
 
-    if (gsiserror_block(block)) {
-        struct gserror *p;
-
-        p = (struct gserror *)instr;
-        switch (p->type) {
-            case gserror_undefined:
-                api_abend(thread, "%P: undefined", p->pos);
-                break;
-            case gserror_generated:
-                api_abend(thread, "%P: %s", p->pos, p->message);
-                break;
-            default:
-                api_abend(thread, "%P: unknown error type %d", p->pos, p->type);
-                break;
-        }
-    } else if (gsisimplementation_failure_block(block)) {
+    if (gsisimplementation_failure_block(block)) {
         struct gsimplementation_failure *p;
         char buf[0x100];
 
@@ -310,6 +299,34 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                     api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution with state %d", st);
                     break;
             }
+        }
+    } else {
+        api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%s)", block->class->description);
+    }
+}
+
+static
+void
+api_exec_err(struct api_thread *thread, gsvalue instr)
+{
+    struct gs_blockdesc *block;
+
+    block = BLOCK_CONTAINING(instr);
+
+    if (gsiserror_block(block)) {
+        struct gserror *p;
+
+        p = (struct gserror *)instr;
+        switch (p->type) {
+            case gserror_undefined:
+                api_abend(thread, "%P: undefined", p->pos);
+                break;
+            case gserror_generated:
+                api_abend(thread, "%P: %s", p->pos, p->message);
+                break;
+            default:
+                api_abend(thread, "%P: unknown error type %d", p->pos, p->type);
+                break;
         }
     } else {
         api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%s)", block->class->description);
