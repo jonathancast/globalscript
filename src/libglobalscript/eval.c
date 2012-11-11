@@ -8,14 +8,6 @@
 #include "ace.h"
 
 gstypecode
-gs_get_gsvalue_state(gsvalue val)
-{
-    gsfatal("gs_get_gsvalue_state(%x) next", val);
-
-    return 0;
-}
-
-gstypecode
 gsnoeval(gsvalue val)
 {
     gsfatal("Tried to evaluate a gsvalue which doesn't point into an evaluable block!");
