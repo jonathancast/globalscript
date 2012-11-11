@@ -175,6 +175,7 @@ void
 gsprint_error(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
 {
     struct gs_blockdesc *block;
+    char buf[0x100];
 
     block = BLOCK_CONTAINING(prog);
 
@@ -182,17 +183,9 @@ gsprint_error(struct gstype *type, struct gsfile_symtable *symtable, gsvalue pro
         struct gserror *p;
 
         p = (struct gserror *)prog;
-        switch (p->type) {
-            case gserror_undefined:
-                print("%s %P\n", "undefined", p->pos);
-                break;
-            case gserror_generated:
-                print("%P: %s\n", p->pos, p->message);
-                break;
-            default:
-                gsfatal_unimpl(__FILE__, __LINE__, "gsprint(error type = %d)", p->type);
-        }
-        return -1;
+        gserror_format(buf, buf + sizeof(buf), p);
+        print("%s\n", buf);
+        return;
     } else {
         ace_down();
         gsfatal_unimpl(__FILE__, __LINE__, "gsprint_error(%s)", block->class->description);

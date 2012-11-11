@@ -277,6 +277,19 @@ gspoison_unimpl(struct gsheap_item *hp, char *file, int lineno, struct gspos src
     ;
 }
 
+char *
+gserror_format(char *buf, char *ebuf, struct gserror *p)
+{
+    switch (p->type) {
+        case gserror_undefined:
+            return seprint(buf, ebuf, "%s %P", "undefined", p->pos);
+        case gserror_generated:
+            return seprint(buf, ebuf, "%P: %s", p->pos, p->message);
+        default:
+            return seprint(buf, ebuf, "%s:%d: gsprint(error type = %d) next", __FILE__, __LINE__, p->type);
+    }
+}
+
 int
 gsiserror_block(struct gs_blockdesc *p)
 {

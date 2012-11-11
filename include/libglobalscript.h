@@ -291,6 +291,8 @@ struct gserror {
     char message[];
 };
 
+char *gserror_format(char *, char *, struct gserror *);
+
 struct gsimplementation_failure {
     struct gspos cpos, srcpos;
     char message[];
