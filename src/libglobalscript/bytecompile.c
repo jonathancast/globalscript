@@ -226,7 +226,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static gsinterned_string gssymoptyarg, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield;
+static gsinterned_string gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield;
 
 static
 int
@@ -239,6 +239,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
     enum {
         phtygvars,
         phtyargs,
+        phtylets,
         phcode,
         phgvars,
         phfvs,
@@ -264,6 +265,12 @@ gsbc_bytecode_size_item(struct gsbc_item item)
                 gsfatal("%P: Too late to add type arguments", p->pos)
             ;
             phase = phtyargs;
+            /* type erasure */
+        } else if (gssymceq(p->directive, gssymoptylet, gssymcodeop, ".tylet")) {
+            if (phase > phtylets)
+                gsfatal("%P: Too late to add type arguments", p->pos)
+            ;
+            phase = phtylets;
             /* type erasure */
         } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
             if (phase > phgvars)
@@ -616,6 +623,7 @@ struct gsbc_byte_compile_code_or_api_op_closure {
     enum {
         rttygvars,
         rttyargs,
+        rttylets,
         rtsubexprs,
         rtgvars,
         rtfvs,
@@ -655,9 +663,14 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             cl.phase = rttygvars;
         } else if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
             if (cl.phase > rttyargs)
-                gsfatal("%P: Too late to add type global variables", p->pos)
+                gsfatal("%P: Too late to add type arguments", p->pos)
             ;
             cl.phase = rttyargs;
+        } else if (gssymceq(p->directive, gssymoptylet, gssymcodeop, ".tylet")) {
+            if (cl.phase > rttylets)
+                gsfatal("%P: Too late to add type lets", p->pos)
+            ;
+            cl.phase = rttylets;
         } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
                 gsfatal_bad_input(p, "Too late to add sub-expressions")

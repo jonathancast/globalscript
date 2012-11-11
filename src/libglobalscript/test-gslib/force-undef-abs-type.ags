@@ -1,0 +1,44 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+	.code
+
+_epcode	.expr
+t	.tygvar
+_empty.record	.tygvar
+_epcode.cont	.subcode
+_t.out	.cogvar
+	.force	_epcode.cont
+	.coerce	_t.out	_empty.record
+	.undef	t	_empty.record
+
+_epcode.cont	.forcecont
+_t.body	.tygvar
+_empty.record	.tygvar
+a.ty	.tylet	_t.body	_empty.record
+a	.karg	a.ty
+	.undef	_empty.record
+
+	.type
+
+t	.tyabstract	**^
+_t.body	.tygvar
+α	.tylambda	*
+_body	.tylet	_t.body	α
+	.tylift
+	.tyref	_body
+
+_t.body	.tyexpr
+α	.tylambda	*
+	.tysum
+
+	.coercion
+
+_t.out	.tycoercion
+t	.tygvar
+α	.tylambda	*
+	.tyinvert
+	.tydefinition	t	α

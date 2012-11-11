@@ -386,6 +386,7 @@ gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
         case gstype_lift:
         case gstype_app:
         case gstype_fun:
+        case gstype_sum:
         case gstype_product:
             return;
         default:
@@ -798,6 +799,7 @@ static void *gsbc_code_type_nursury;
 enum gsbc_code_regtype {
     rttygvar,
     rttyarg,
+    rttylet,
     rtcode,
     rtgvar,
     rtfv,
@@ -1225,7 +1227,7 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymkarg;
+    static gsinterned_string gssymtylet, gssymkarg;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
@@ -1253,6 +1255,28 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     cont_arg_type = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        } else if (gssymceq(p->directive, gssymtylet, gssymcodeop, ".tylet")) {
+            struct gstype *ty;
+
+            if (cl.nregs >= MAX_NUM_REGISTERS)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
+            ;
+            if (cl.regtype > rttylet)
+                gsfatal_bad_input(p, "Too late to add lets")
+            ;
+            cl.regtype = rttylet;
+            cl.regs[cl.nregs] = p->label;
+            gsargcheck(p, 0, "base");
+            ty = cl.tyregs[gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0])];
+            for (i = 1; i < p->numarguments; i++) {
+                struct gstype *arg;
+
+                arg = cl.tyregs[gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i])];
+                ty = gstype_supply(p->pos, ty, arg);
+            }
+            cl.tyregs[cl.nregs] = ty;
+            cl.tyregkinds[cl.nregs] = gstypes_calculate_kind(ty);
+            cl.nregs++;
         } else if (gssymceq(p->directive, gssymkarg, gssymcodeop, ".karg")) {
             int reg;
 

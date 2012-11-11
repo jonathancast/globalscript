@@ -757,7 +757,7 @@ gstype_supply(struct gspos pos, struct gstype *fun, struct gstype *arg)
             return gstypes_subst(pos, lambda->body, lambda->var, arg);
         }
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: supply (node = %d)", fun->pos, fun->node);
+            gsfatal("%P: Too many arguments to %P", pos, fun->pos);
     }
     return 0;
 }

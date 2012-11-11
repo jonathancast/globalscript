@@ -672,7 +672,7 @@ static
 long
 gsparse_force_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymkarg;
+    static gsinterned_string gssymtylet, gssymkarg;
 
     struct gsparsedline *parsedline;
     long n;
@@ -683,6 +683,18 @@ gsparse_force_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsed
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gssymceq(parsedline->directive, gssymtylet, gssymcodeop, ".tylet")) {
+            if (*fields[0])
+                parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+            else
+                gsfatal("%s:%d: Labels required on .tylet", filename, *plineno);
+            if (n < 3)
+                gsfatal("%s:%d: Missing type label on .tylet", filename, *plineno);
+            if (n < 4)
+                gswarning("%s:%d: Consider using .tygvar instead", filename, *plineno);
+            for (i = 2; i < n; i++) {
+                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+            }
         } else if (gssymceq(parsedline->directive, gssymkarg, gssymcodeop, ".karg")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymdatalable, fields[0]);
