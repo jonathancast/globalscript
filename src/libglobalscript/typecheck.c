@@ -1675,16 +1675,24 @@ gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *pcl, int ba
         } else if (p->directive == gssymopapp) {
             for (i = 0; i < p->numarguments; i++) {
                 int regarg;
+                int lifted;
 
+                lifted = 0;
                 regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
-                if (calculated_type->node == gstype_lift)
-                    gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr (app of lifted fun)", p->pos)
-                ;
+                if (calculated_type->node == gstype_lift) {
+                    struct gstype_lift *lift;
+
+                    lift = (struct gstype_lift *)calculated_type;
+                    calculated_type = lift->arg;
+                }
                 if (calculated_type->node == gstype_fun) {
                     struct gstype_fun *fun;
 
                     fun = (struct gstype_fun *)calculated_type;
                     gstypes_type_check_type_fail(p->pos, pcl->regtypes[regarg], fun->tyarg);
+                    if (lifted)
+                        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(fun->tyres), gskind_lifted_kind())
+                    ;
                     calculated_type = fun->tyres;
                 } else
                     gsfatal("%P: Too many arguments (max %d; got %d)", p->pos, i, p->numarguments)
