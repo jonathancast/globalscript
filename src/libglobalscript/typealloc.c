@@ -515,6 +515,24 @@ gstypes_compile_productv(struct gspos pos, int nfields, struct gstype_field *fie
 }
 
 struct gstype *
+gstypes_compile_ubproductv(struct gspos pos, int nfields, struct gstype_field *fields)
+{
+    struct gstype *res;
+    struct gstype_ubproduct *product;
+    int i;
+
+    res = gstype_alloc(sizeof(struct gstype_ubproduct) + nfields * sizeof(struct gstype_field));
+    product = (struct gstype_ubproduct *)res;
+
+    res->node = gstype_ubproduct;
+    res->pos = pos;
+    product->numfields = nfields;
+    for (i = 0; i < nfields; i++) product->fields[i] = fields[i];
+
+    return res;
+}
+
+struct gstype *
 gstypes_compile_fun(struct gspos pos, struct gstype *tyarg, struct gstype *tyres)
 {
     struct gstype *res;

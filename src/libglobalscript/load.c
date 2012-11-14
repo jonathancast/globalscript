@@ -909,6 +909,8 @@ gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct u
     return 1;
 }
 
+static int gsparse_field_cont_arg(char *, struct gsparsedline *, int *, char **, long);
+
 static
 void
 gsparse_case(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, gsinterned_string constr, char *line, int *plineno, char **fields)
@@ -951,12 +953,41 @@ gsparse_case(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *cha
 
         if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return;
+        } else if (gsparse_field_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Unimplemented .constr op %y", filename, *plineno, parsedline->directive);
+            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Unimplemented .case op %y", filename, *plineno, parsedline->directive);
         }
     }
     gsfatal_unimpl(__FILE__, __LINE__, ".analyze: parse .constr");
+}
+
+static
+int
+gsparse_field_cont_arg(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
+{
+    static gsinterned_string gssymfkarg;
+
+    int i;
+
+    if (gssymceq(parsedline->directive, gssymfkarg, gssymcodeop, ".fkarg")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+        else
+            gsfatal("%P: Missing label on .fkarg", parsedline->pos);
+        if (n < 3)
+            gsfatal("%P: Missing field name on .fkarg", parsedline->pos);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymfieldlable, fields[2]);
+        if (n < 4)
+            gsfatal("%P: Missing type on .fkarg", parsedline->pos);
+        for (i = 3; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+    } else {
+        return 0;
+    }
+
+    return 1;
 }
 
 static long gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);

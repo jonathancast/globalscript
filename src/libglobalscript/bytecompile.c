@@ -246,7 +246,7 @@ struct gsbc_bytecode_size_code_closure {
 static int gsbc_bytecode_size_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopanalyze, gssymopcase;
 
 static
 int
@@ -464,7 +464,10 @@ static
 int
 gsbc_bytecode_size_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
-    if (gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")) {
+    if (
+        gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")
+        || gssymceq(p->directive, gssymopfkarg, gssymcodeop, ".fkarg")
+    ) {
         if (pcl->phase > phargs)
             gsfatal_bad_input(p, "Too late to add arguments")
         ;
@@ -719,6 +722,9 @@ struct gsbc_byte_compile_code_or_api_op_closure {
     gsinterned_string subexprs[MAX_NUM_REGISTERS];
 
     int nargs;
+
+    int nfields;
+    gsinterned_string fields[MAX_NUM_REGISTERS];
 };
 
 /* ↓ Deprecated */
@@ -740,7 +746,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
 
     cl.phase = rttygvars;
     cl.pout = ((uchar*)pbco + sizeof(struct gsbco));
-    cl.nregs = cl.nsubexprs = nglobals = nfvs = cl.nargs = 0;
+    cl.nregs = cl.nsubexprs = nglobals = nfvs = cl.nargs = cl.nfields = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_byte_compile_code_or_api_op(&cl, p)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
@@ -972,7 +978,10 @@ static
 int
 gsbc_byte_compile_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    if (gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")) {
+    if (
+        gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")
+        || gssymceq(p->directive, gssymopfkarg, gssymcodeop, ".fkarg")
+    ) {
         if (pcl->phase > rtargs)
             gsfatal_bad_input(p, "Too late to add arguments")
         ;
@@ -982,9 +991,16 @@ gsbc_byte_compile_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_c
         pcl->phase = rtargs;
         pcl->regs[pcl->nregs] = p->label;
         pcl->nregs++;
-        if (p->directive != gssymopkarg)
+        if (0) /* §ags{.arg} and §ags{.larg} */
             pcl->nargs++
         ;
+        if (p->directive == gssymopfkarg) {
+            if (pcl->nfields > 0) {
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_byte_compile_arg_code_op: check field order", p->pos);
+            }
+            pcl->fields[pcl->nfields] = p->arguments[0];
+            pcl->nfields++;
+        }
     } else {
         return 0;
     }
@@ -1037,6 +1053,7 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
 
             pcases[i] = (struct gsbc *)pcl->pout;
             nregs = pcl->nregs;
+            pcl->nfields = 0;
             gsbc_byte_compile_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }

@@ -109,6 +109,7 @@ ok_diff '-- constructors with arguments --' ./$O.test-gsi constructor-args.ags
 ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 
 ok_diff '-- analyze on boxed sums --' ./$O.test-gsi analyze-constructor.ags
+ok_diff '-- analyze on sums of unboxed products --' ./$O.test-gsi analyze-adt-constructor.ags
 
 ok_grep_errors '-- undefined API entry points --' './test-gslib/undef-api.ags:5: undefined' ./$O.test-gsexec undef-api.ags
 ok_grep_errors '-- undefined expression API entry points --' './test-gslib/undef-expr-api.ags:11: undefined' ./$O.test-gsexec undef-expr-api.ags

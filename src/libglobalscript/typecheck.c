@@ -1358,7 +1358,7 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
 static void gsbc_typecheck_check_num_constrs(struct gspos, long, long);
 static void gsbc_typecheck_check_constr(struct gspos, struct gspos, int, gsinterned_string, gsinterned_string, gsinterned_string, gsinterned_string);
 
-static struct gstype *gsbc_typecheck_case(struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *, struct gstype *constr_arg_type);
+static struct gstype *gsbc_typecheck_case(struct gspos, struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *, struct gstype *constr_arg_type);
 
 static
 struct gstype *
@@ -1433,9 +1433,11 @@ gsbc_typecheck_expr_terminal_op(struct gsparsedline **pp, struct gsparsedfile_se
         panalyze = *pp;
         for (constr = 0; constr < sum->numconstrs; constr++) {
             struct gstype *casetype;
+            struct gspos case_pos;
             int nregs;
 
             *pp = gsinput_next_line(ppseg, *pp);
+            case_pos = (*pp)->pos;
             if (!gssymceq((*pp)->directive, gssymcase, gssymcodeop, ".case"))
                 gsfatal("%P: Expected .case %y next", (*pp)->pos, panalyze->arguments[1 + constr])
             ;
@@ -1445,7 +1447,7 @@ gsbc_typecheck_expr_terminal_op(struct gsparsedline **pp, struct gsparsedfile_se
 
             nregs = pcl->nregs;
             *pp = gsinput_next_line(ppseg, *pp);
-            casetype = gsbc_typecheck_case(pp, ppseg, pcl, sum->constrs[constr].argtype);
+            casetype = gsbc_typecheck_case(case_pos, pp, ppseg, pcl, sum->constrs[constr].argtype);
             pcl->nregs = nregs;
 
             if (calculated_type)
@@ -1492,24 +1494,40 @@ gsbc_typecheck_check_constr(struct gspos analyzepos, struct gspos casepos, int c
     }
 }
 
+struct gsbc_typecheck_field_cont_closure {
+    int nfields;
+    struct gstype_field fields[MAX_NUM_REGISTERS];
+};
+static int gsbc_typecheck_field_cont_arg_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *, struct gsbc_typecheck_field_cont_closure *);
+
 static
 struct gstype *
-gsbc_typecheck_case(struct gsparsedline **pp, struct gsparsedfile_segment **ppseg, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gstype *constr_arg_type)
+gsbc_typecheck_case(struct gspos case_pos, struct gsparsedline **pp, struct gsparsedfile_segment **ppseg, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gstype *constr_arg_type)
 {
+    /* §paragraph{For constructors with boxed arguments} */
     struct gstype *cont_arg_type;
+    /* §paragraph{For constructors with un-boxed product arguments} */
+    struct gsbc_typecheck_field_cont_closure fcl;
 
     struct gstype *calculated_type;
 
-    struct gspos case_pos, karg_pos;
+    struct gspos karg_pos;
 
     cont_arg_type = 0;
-    case_pos = (*pp)->pos;
+    fcl.nfields = 0;
     calculated_type = 0;
     for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
         struct gsparsedline *p;
 
         p = *pp;
-        if (gsbc_typecheck_cont_arg_op(p, pcl, &cont_arg_type)) {
+        if (gsbc_typecheck_field_cont_arg_op(p, pcl, &fcl)) {
+            if (cont_arg_type)
+                gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
+            ;
+        } else if (gsbc_typecheck_cont_arg_op(p, pcl, &cont_arg_type)) {
+            if (fcl.nfields > 0)
+                gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
+            ;
             karg_pos = p->pos;
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(pp, ppseg, pcl)) {
             goto have_type;
@@ -1520,13 +1538,49 @@ gsbc_typecheck_case(struct gsparsedline **pp, struct gsparsedfile_segment **ppse
 
 have_type:
 
-    if (!cont_arg_type)
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_case(field args)", case_pos)
+    if (cont_arg_type)
+        gstypes_type_check_type_fail(karg_pos, cont_arg_type, constr_arg_type)
+    ; else
+        gstypes_type_check_type_fail(case_pos, gstypes_compile_ubproductv(case_pos, fcl.nfields, fcl.fields), constr_arg_type)
     ;
 
-    gstypes_type_check_type_fail(karg_pos, cont_arg_type, constr_arg_type);
-
     return calculated_type;
+}
+
+static
+int
+gsbc_typecheck_field_cont_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_field_cont_closure *pfcl)
+{
+    static gsinterned_string gssymfkarg;
+
+    int i;
+
+    if (gssymceq(p->directive, gssymfkarg, gssymcodeop, ".fkarg")) {
+        int reg;
+        struct gstype *type;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        if (pfcl->nfields >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many .fkargs; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pfcl->fields[pfcl->nfields].name = p->arguments[0];
+        reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1]);
+        type = pcl->tyregs[reg];
+        for (i = 2; i < p->numarguments; i++)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_field_cont_arg_op: type arguments", p->pos)
+        ;
+        gsbc_typecheck_check_boxed(p->pos, type);
+        pfcl->fields[pfcl->nfields].type = type;
+
+        pcl->nregs++;
+        pfcl->nfields++;
+    } else {
+        return 0;
+    }
+
+    return 1;
 }
 
 static
@@ -2061,6 +2115,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
 {
     char actual_buf[0x100];
     char expected_buf[0x100];
+    int i;
 
     if (gstypes_eprint_type(actual_buf, actual_buf + sizeof(actual_buf), pactual) >= actual_buf + sizeof(actual_buf)) {
         seprint(err, eerr, "%s:%d: %P: buffer overflow printing actual type %P", __FILE__, __LINE__, pos, pactual->pos);
@@ -2226,6 +2281,27 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             }
             return 0;
         }
+        case gstype_ubproduct: {
+            struct gstype_ubproduct *pactual_product, *pexpected_product;
+
+            pactual_product = (struct gstype_ubproduct *)pactual;
+            pexpected_product = (struct gstype_ubproduct *)pexpected;
+
+            if (pactual_product->numfields != pexpected_product->numfields) {
+                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have diferent numbers of fields", pos, actual_buf, expected_buf);
+                return -1;
+            }
+            for (i = 0; i < pexpected_product->numfields; i++) {
+                if (pactual_product->fields[i].name != pexpected_product->fields[i].name) {
+                    seprint(err, eerr, "%P: I don't think field %y is the same as %y", pos, pactual_product->fields[i].name, pexpected_product->fields[i].name);
+                    return -1;
+                }
+                if (gstypes_type_check(err, eerr, pos, pactual_product->fields[i].type, pexpected_product->fields[i].type) < 0)
+                    return -1
+                ;
+            }
+            return 0;
+        }
         default:
             seprint(err, eerr, "%s:%d: gstypes_check_type(node = %d) %P: %P", __FILE__, __LINE__, pexpected->node, pos, pexpected->pos);
             return -1;
@@ -2360,6 +2436,23 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             res = seprint(res, eob, "\"Π〈");
             for (i = 0; i < product->numfields; i++) {
                 res = seprint(res, eob, "%s:%d: print fields next", __FILE__, __LINE__);
+            }
+            res = seprint(res, eob, "〉");
+            return res;
+        }
+        case gstype_ubproduct: {
+            struct gstype_ubproduct *product;
+
+            product = (struct gstype_ubproduct *)pty;
+
+            res = seprint(res, eob, "\"uΠ〈");
+            for (i = 0; i < product->numfields; i++) {
+                if (i == 0)
+                    res = seprint(res, eob, " ")
+                ;
+                res = seprint(res, eob, "%y :: ", product->fields[i].name);
+                res = gstypes_eprint_type(res, eob, product->fields[i].type);
+                res = seprint(res, eob, "; ");
             }
             res = seprint(res, eob, "〉");
             return res;

@@ -143,11 +143,12 @@ struct gstype *gstypes_compile_type_var(struct gspos, gsinterned_string, struct 
 struct gstype *gstypes_compile_lambda(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
 struct gstype *gstypes_compile_forall(struct gspos, gsinterned_string, struct gskind *, struct gstype *);
 struct gstype *gstypes_compile_lift(struct gspos, struct gstype *);
+struct gstype *gstypes_compile_fun(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstypes_compile_sum(struct gspos, int, ...);
 struct gstype *gstypes_compile_sumv(struct gspos, int, struct gstype_constr *);
 struct gstype *gstypes_compile_product(struct gspos, int, ...);
 struct gstype *gstypes_compile_productv(struct gspos, int, struct gstype_field *);
-struct gstype *gstypes_compile_fun(struct gspos, struct gstype *, struct gstype *);
+struct gstype *gstypes_compile_ubproductv(struct gspos, int, struct gstype_field *);
 
 struct gstype *gstype_supply(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstype_apply(struct gspos, struct gstype *, struct gstype *);
