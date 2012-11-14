@@ -53,6 +53,11 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
             st = GS_SLOW_EVALUATE(s);
 
             switch (st) {
+                case gstystack:
+                    break;
+                case gstyindir:
+                    s= GS_REMOVE_INDIRECTIONS(s);
+                    break;
                 case gstywhnf: {
                     struct gsconstr *constr;
 
@@ -78,6 +83,19 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                             gsfatal_unimpl(__FILE__, __LINE__, "gsrun: constrnum = %d", constr->constrnum);
                     }
                     break;
+                }
+                case gstyerr: {
+                    struct gs_blockdesc *block;
+                    char buf[0x100];
+
+                    block = BLOCK_CONTAINING(s);
+                    if (gsiserror_block(block)) {
+                        gserror_format(buf, buf + sizeof(buf), (struct gserror *)s);
+                        fprint(2, "%s\n", buf);
+                        exits("err");
+                    } else {
+                        gsfatal_unimpl(__FILE__, __LINE__, "gsrun: %s", block->class->description);
+                    }
                 }
                 default:
                     ace_down();
