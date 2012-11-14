@@ -13,6 +13,7 @@ enum {
     gsbc_op_eprim,
     gsbc_op_app,
     gsbc_op_force,
+    gsbc_op_analyze,
     gsbc_op_undef,
     gsbc_op_enter,
     gsbc_op_yield,
@@ -24,6 +25,9 @@ enum {
 
 #define GS_SIZE_BYTECODE(n) (GS_NTH_ARG_OFFSET(n) + sizeof(gsinterned_string) - GS_NTH_ARG_OFFSET(n) % sizeof(gsinterned_string))
 #define GS_NEXT_BYTECODE(p, n) ((struct gsbc *)((uchar*)p + GS_SIZE_BYTECODE(n)))
+
+#define ACE_ANALYZE_SCRUTINEE(ip) ((ip)->args[0])
+#define ACE_ANALYZE_CASES(ip) ((struct gsbc **)GS_NEXT_BYTECODE(ip, 1))
 
 void *gsreservebytecode(ulong);
 

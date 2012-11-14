@@ -1,0 +1,30 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+x	.constr	t0	c0	x0
+x0	.rune	x
+y0	.rune	a
+y1	.rune	b
+
+	.code
+
+_epcode	.expr
+rune.prim.rune	.tygvar
+x	.gvar
+y0	.gvar
+y1	.gvar
+	.analyze	x	c0	c1
+	.case	c0
+x0	.karg	rune.prim.rune
+	.yield	y0
+	.case c1
+x1	.karg	rune.prim.rune
+	.yield	y1
+
+	.type
+
+t0	.tyexpr
+rune.prim.rune	.tygvar
+	.tysum	c0	rune.prim.rune	c1	rune.prim.rune

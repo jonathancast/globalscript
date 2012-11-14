@@ -318,7 +318,10 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, type, pend, pc);
 
         if (item.v->numarguments == 3) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: .constr with one argument", item.v->pos);
+            struct gsbc_item arg;
+
+            arg = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[2]);
+            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, arg, pend, pc);
         } else {
             for (i = 2; i < item.v->numarguments; i += 2) {
                 struct gsbc_item arg;

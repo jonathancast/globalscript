@@ -158,6 +158,10 @@ gsheapremove_indirections(gsvalue val)
     struct gsindirection *in;
 
     for (;;) {
+        if (!IS_PTR(val))
+            return val
+        ;
+
         block = BLOCK_CONTAINING(val);
 
         if (block->class != &gsheap_descr)

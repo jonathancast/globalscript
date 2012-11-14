@@ -613,7 +613,10 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         argtype = 0;
     have_constr:
         if (pdata->numarguments == 3) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Check constructor arguments (one argument)", pdata->pos);
+            struct gstype *actualtype;
+
+            actualtype = gssymtable_get_data_type(symtable, pdata->arguments[2]);
+            gstypes_type_check_type_fail(pdata->pos, actualtype, argtype);
         } else {
             struct gstype_ubproduct *ubproduct;
 
@@ -835,7 +838,7 @@ struct gsbc_typecheck_code_or_api_expr_closure {
 };
 
 static int gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
-static struct gstype *gsbc_typecheck_expr_terminal_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
+static struct gstype *gsbc_typecheck_expr_terminal_op(struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *);
 
 static int gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
 
@@ -1064,7 +1067,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             ;
             contlines[nconts] = p;
             nconts++;
-        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(p, &cl)) {
+        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(&p, ppseg, &cl)) {
             goto have_type;
         } else if (gssymceq(p->directive, gssymenter, gssymcodeop, ".enter")) {
             int reg;
@@ -1085,27 +1088,6 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
 
             kind = gstypes_calculate_kind(calculated_type);
             gstypes_kind_check_fail(p->pos, kind, gskind_lifted_kind());
-
-            goto have_type;
-        } else if (gssymeq(p->directive, gssymcodeop, ".yield")) {
-            int reg;
-            struct gskind *kind;
-
-            gsargcheck(p, 0, "var");
-            reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
-            calculated_type = cl.regtypes[reg];
-            for (i = 1; i < p->numarguments; i++) {
-                int regarg;
-
-                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                if (!cl.tyregs[regarg])
-                    gsfatal("%P: %s doesn't seem to be a type register", p->pos, p->arguments[i]->name)
-                ;
-                calculated_type = gstype_instantiate(p->pos, calculated_type, cl.tyregs[regarg]);
-            }
-
-            kind = gstypes_calculate_kind(calculated_type);
-            gstypes_kind_check_fail(p->pos, kind, gskind_unlifted_kind());
 
             goto have_type;
         } else {
@@ -1224,11 +1206,13 @@ have_type:
     return res;
 }
 
+static int gsbc_typecheck_cont_arg_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *, struct gstype **);
+
 static
 struct gsbc_code_item_type *
 gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtylet, gssymkarg;
+    static gsinterned_string gssymtylet;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
@@ -1278,26 +1262,8 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
             cl.tyregs[cl.nregs] = ty;
             cl.tyregkinds[cl.nregs] = gstypes_calculate_kind(ty);
             cl.nregs++;
-        } else if (gssymceq(p->directive, gssymkarg, gssymcodeop, ".karg")) {
-            int reg;
-
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-            ;
-            if (cont_arg_type)
-                gsfatal("%P: Duplicate continuation argument", p->pos)
-            ;
-            reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
-            cont_arg_type = cl.tyregs[reg];
-            for (i = 1; i < p->numarguments; i++)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_force_cont: arguments to type on .karg")
-            ;
-            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_unlifted_kind());
-            gsbc_typecheck_check_boxed(p->pos, cont_arg_type);
-            cl.regs[cl.nregs] = p->label;
-            cl.regtypes[cl.nregs] = cont_arg_type;
-            cl.nregs++;
-        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(p, &cl)) {
+        } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
+        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(&p, ppseg, &cl)) {
             if (!cont_arg_type)
                 gsfatal("%P: No .karg in a .forcecont", p->pos)
             ;
@@ -1327,11 +1293,43 @@ have_type:
 
 static
 int
+gsbc_typecheck_cont_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gstype **pcont_arg_type)
+{
+    static gsinterned_string gssymkarg;
+
+    int i;
+
+    if (gssymceq(p->directive, gssymkarg, gssymcodeop, ".karg")) {
+        int reg;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        if (*pcont_arg_type)
+            gsfatal("%P: Duplicate .karg continuation argument", p->pos)
+        ;
+        reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
+        *pcont_arg_type = pcl->tyregs[reg];
+        for (i = 1; i < p->numarguments; i++)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_force_cont: arguments to type on .karg")
+        ;
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(*pcont_arg_type), gskind_unlifted_kind());
+        gsbc_typecheck_check_boxed(p->pos, *pcont_arg_type);
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regtypes[pcl->nregs] = *pcont_arg_type;
+        pcl->nregs++;
+    } else {
+        return 0;
+    }
+
+    return 1;
+}
+
+static
+int
 gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
     static gsinterned_string gssymtygvar;
-
-    int i;
 
     if (gssymceq(p->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
         if (pcl->regtype > rttygvar)
@@ -1357,47 +1355,177 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
     return 1;
 }
 
+static void gsbc_typecheck_check_num_constrs(struct gspos, long, long);
+static void gsbc_typecheck_check_constr(struct gspos, struct gspos, int, gsinterned_string, gsinterned_string, gsinterned_string, gsinterned_string);
+
+static struct gstype *gsbc_typecheck_case(struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *, struct gstype *constr_arg_type);
+
 static
 struct gstype *
-gsbc_typecheck_expr_terminal_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+gsbc_typecheck_expr_terminal_op(struct gsparsedline **pp, struct gsparsedfile_segment **ppseg, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymundef;
+    static gsinterned_string gssymundef, gssymanalyze, gssymcase;
 
     int i;
 
     struct gstype *calculated_type;
 
     calculated_type = 0;
-    if (gssymceq(p->directive, gssymundef, gssymcodeop, ".undef")) {
+    if (gssymceq((*pp)->directive, gssymundef, gssymcodeop, ".undef")) {
         int reg;
         struct gskind *kind;
 
-        gsargcheck(p, 0, "type");
-        reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
+        gsargcheck(*pp, 0, "type");
+        reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
         calculated_type = pcl->tyregs[reg];
         kind = pcl->tyregkinds[reg];
-        for (i = 1; i < p->numarguments; i++) {
+        for (i = 1; i < (*pp)->numarguments; i++) {
             int regarg;
             struct gstype *argtype;
             struct gskind *argkind;
 
-            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            regarg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[i]);
             argtype = pcl->tyregs[regarg];
             argkind = pcl->tyregkinds[regarg];
 
             if (kind->node != gskind_exponential)
-                gsfatal("%P: Too many arguments to %s", p->pos, p->arguments[0]->name)
+                gsfatal("%P: Too many arguments to %y", (*pp)->pos, (*pp)->arguments[0])
             ;
 
-            gstypes_kind_check_fail(p->pos, argkind, kind->args[1]);
+            gstypes_kind_check_fail((*pp)->pos, argkind, kind->args[1]);
 
-            calculated_type = gstype_apply(p->pos, calculated_type, argtype);
+            calculated_type = gstype_apply((*pp)->pos, calculated_type, argtype);
             kind = kind->args[0];
         }
-        gstypes_kind_check_fail(p->pos, kind, gskind_lifted_kind());
+        gstypes_kind_check_fail((*pp)->pos, kind, gskind_lifted_kind());
+    } else if (gssymeq((*pp)->directive, gssymcodeop, ".yield")) {
+        int reg;
+        struct gskind *kind;
+
+        gsargcheck(*pp, 0, "var");
+        reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
+        calculated_type = pcl->regtypes[reg];
+        for (i = 1; i < (*pp)->numarguments; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[i]);
+            if (!pcl->tyregs[regarg])
+                gsfatal("%P: %s doesn't seem to be a type register", (*pp)->pos, (*pp)->arguments[i]->name)
+            ;
+            calculated_type = gstype_instantiate((*pp)->pos, calculated_type, pcl->tyregs[regarg]);
+        }
+
+        kind = gstypes_calculate_kind(calculated_type);
+        gstypes_kind_check_fail((*pp)->pos, kind, gskind_unlifted_kind());
+    } else if (gssymceq((*pp)->directive, gssymanalyze, gssymcodeop, ".analyze")) {
+        int reg;
+        struct gstype_sum *sum;
+        struct gsparsedline *panalyze;
+        int constr;
+
+        gsargcheck(*pp, 0, "scrutinee");
+        reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
+        if (pcl->regtypes[reg]->node != gstype_sum)
+            gsfatal("%P: Scrutinee to .analyze does not have a simple, known sum type", (*pp)->pos)
+        ;
+        sum = (struct gstype_sum *)pcl->regtypes[reg];
+        gsbc_typecheck_check_num_constrs((*pp)->pos, (*pp)->numarguments - 1, sum->numconstrs);
+        panalyze = *pp;
+        for (constr = 0; constr < sum->numconstrs; constr++) {
+            struct gstype *casetype;
+            int nregs;
+
+            *pp = gsinput_next_line(ppseg, *pp);
+            if (!gssymceq((*pp)->directive, gssymcase, gssymcodeop, ".case"))
+                gsfatal("%P: Expected .case %y next", (*pp)->pos, panalyze->arguments[1 + constr])
+            ;
+
+            gsargcheck(*pp, 0, "Constructor");
+            gsbc_typecheck_check_constr(panalyze->pos, (*pp)->pos, constr, constr > 0 ? sum->constrs[constr - 1].name : 0, (*pp)->arguments[0], panalyze->arguments[1 + constr], sum->constrs[constr].name);
+
+            nregs = pcl->nregs;
+            *pp = gsinput_next_line(ppseg, *pp);
+            casetype = gsbc_typecheck_case(pp, ppseg, pcl, sum->constrs[constr].argtype);
+            pcl->nregs = nregs;
+
+            if (calculated_type)
+                gstypes_type_check_type_fail(panalyze->pos, casetype, calculated_type)
+            ; else
+                calculated_type = casetype
+            ;
+        }
     } else {
         return 0;
     }
+    return calculated_type;
+}
+
+static
+void
+gsbc_typecheck_check_num_constrs(struct gspos pos, long nactual, long nexpected)
+{
+    if (nactual < nexpected)
+        gsfatal("%P: Too few cases for .analyze; got %d but sum type has %d", pos, nactual, nexpected)
+    ;
+    if (nactual > nexpected)
+        gsfatal("%P: Too many cases for .analyze; got %d but sum type has %d", pos, nactual, nexpected)
+    ;
+}
+
+static
+void
+gsbc_typecheck_check_constr(struct gspos analyzepos, struct gspos casepos, int constr, gsinterned_string prevconstr, gsinterned_string analyzeconstr, gsinterned_string caseconstr, gsinterned_string sumconstr)
+{
+    if (analyzeconstr != sumconstr)
+        gsfatal("%P: Wrong constructor #%d: got %y; sum type has %y", analyzepos, constr, analyzeconstr, sumconstr)
+    ;
+    if (analyzeconstr != caseconstr)
+        gsfatal("%P: Wrong constructor: got %y; .analyze has %y", casepos, caseconstr, analyzeconstr)
+    ;
+    if (prevconstr) {
+        if (prevconstr == analyzeconstr)
+            gsfatal("%P: Duplicate constructor %y", analyzepos)
+        ;
+        if (strcmp(prevconstr->name, analyzeconstr->name) > 0)
+            gsfatal("%P: Constructors out of order; %y should follow %y", analyzepos, prevconstr, analyzeconstr)
+        ;
+    }
+}
+
+static
+struct gstype *
+gsbc_typecheck_case(struct gsparsedline **pp, struct gsparsedfile_segment **ppseg, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gstype *constr_arg_type)
+{
+    struct gstype *cont_arg_type;
+
+    struct gstype *calculated_type;
+
+    struct gspos case_pos, karg_pos;
+
+    cont_arg_type = 0;
+    case_pos = (*pp)->pos;
+    calculated_type = 0;
+    for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
+        struct gsparsedline *p;
+
+        p = *pp;
+        if (gsbc_typecheck_cont_arg_op(p, pcl, &cont_arg_type)) {
+            karg_pos = p->pos;
+        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(pp, ppseg, pcl)) {
+            goto have_type;
+        } else {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_case(%y)", (*pp)->pos, (*pp)->directive);
+        }
+    }
+
+have_type:
+
+    if (!cont_arg_type)
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_case(field args)", case_pos)
+    ;
+
+    gstypes_type_check_type_fail(karg_pos, cont_arg_type, constr_arg_type);
+
     return calculated_type;
 }
 

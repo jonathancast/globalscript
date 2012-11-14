@@ -387,7 +387,7 @@ gsparse_data_item(char *filename, int is_ags, gsparsedfile *parsedfile, struct u
             gsfatal("%s:%d: Missing constructor argument to .constr", filename, *plineno);
         parsedline->arguments[1] = gsintern_string(gssymconstrlable, fields[2+1]);
         if (numfields == 2+3) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: .constr with a single argument", filename, *plineno);
+            parsedline->arguments[4 - 2] = gsintern_string(gssymdatalable, fields[4]);
         } else {
             if ((numfields - (2+2)) % 2)
                 gsfatal("%s:%d: Odd number of arguments to .constr when field/value pairs expected", filename, *plineno);
@@ -490,13 +490,13 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
 
 static int gsparse_code_type_fv_op(char *, struct gsparsedline *, int *, char **, long);
 static int gsparse_api_or_code_op(char *, struct gsparsedline *, int *, char **, long);
-static int gsparse_code_terminal_expr_op(char *, struct gsparsedline *, int *, char **, long);
+static int gsparse_code_terminal_expr_op(char *, gsparsedfile *, struct uxio_ichannel *, char *, struct gsparsedline *, int *, char **, long);
 
 static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymfv, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymcoerce, gssymforce, gssymapp, gssymenter, gssymyield;
+    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymfv, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymcoerce, gssymforce, gssymapp, gssymenter;
 
     struct gsparsedline *parsedline;
     int i;
@@ -632,7 +632,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 gswarning("%s:%d: Nullary applications don't do anything", filename, *plineno);
             for (i = 2; i < n; i++)
                 parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
-        } else if (gsparse_code_terminal_expr_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return 0;
         } else if (gssymceq(parsedline->directive, gssymenter, gssymcodeop, ".enter")) {
             if (*fields[0])
@@ -646,20 +646,8 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
             ;
             return 0;
-        } else if (gssymceq(parsedline->directive, gssymyield, gssymcodeop, ".yield")) {
-            if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on terminal ops");
-            else
-                parsedline->label = 0;
-            if (n < 3)
-                gsfatal("%s:%d: Missing argument to .yield", filename, *plineno);
-            parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
-            for (i = 3; i < n; i++)
-                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-            ;
-            return 0;
         } else {
-            gsfatal("%s:%d: %s:%d: Unimplemented code op %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
+            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Unimplemented code op %s", filename, *plineno, fields[1]);
         }
     }
     if (n < 0)
@@ -670,11 +658,13 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
     return -1;
 }
 
+static int gsparse_cont_arg(char *, struct gsparsedline *, int *, char **, long);
+
 static
 long
 gsparse_force_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtylet, gssymkarg;
+    static gsinterned_string gssymtylet;
 
     struct gsparsedline *parsedline;
     long n;
@@ -697,16 +687,8 @@ gsparse_force_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsed
             for (i = 2; i < n; i++) {
                 parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
             }
-        } else if (gssymceq(parsedline->directive, gssymkarg, gssymcodeop, ".karg")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-            else
-                gsfatal("%s:%d: Missing label on .karg op", filename, *plineno);
-            if (n < 3)
-                gsfatal("%s:%d: Missing type on .karg", filename, *plineno);
-            for (i = 2; i < n; i++)
-                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-        } else if (gsparse_code_terminal_expr_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_cont_arg(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return 0;
         } else {
             gsfatal("%s:%d: %s:%d: Unimplemented force continuation op %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
@@ -736,6 +718,30 @@ gsparse_code_type_fv_op(char *filename, struct gsparsedline *parsedline, int *pl
     } else {
         return 0;
     }
+    return 1;
+}
+
+static
+int
+gsparse_cont_arg(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
+{
+    static gsinterned_string gssymkarg;
+
+    int i;
+
+    if (gssymceq(parsedline->directive, gssymkarg, gssymcodeop, ".karg")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+        else
+            gsfatal("%s:%d: Missing label on .karg op", filename, *plineno);
+        if (n < 3)
+            gsfatal("%s:%d: Missing type on .karg", filename, *plineno);
+        for (i = 2; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+    } else {
+        return 0;
+    }
+
     return 1;
 }
 
@@ -852,11 +858,13 @@ gsparse_api_or_code_op(char *filename, struct gsparsedline *parsedline, int *pli
     return 1;
 }
 
+static void gsparse_case(char *, gsparsedfile *, struct uxio_ichannel *, gsinterned_string, char *, int *, char **);
+
 static
 int
-gsparse_code_terminal_expr_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
+gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymundef;
+    static gsinterned_string gssymundef, gssymyield, gsssymanalyze;
     int i;
 
     if (gssymceq(parsedline->directive, gssymundef, gssymcodeop, ".undef")) {
@@ -869,10 +877,86 @@ gsparse_code_terminal_expr_op(char *filename, struct gsparsedline *parsedline, i
         parsedline->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
         for (i = 3; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+    } else if (gssymceq(parsedline->directive, gssymyield, gssymcodeop, ".yield")) {
+        if (*fields[0])
+            gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
+        else
+            parsedline->label = 0;
+        if (n < 3)
+            gsfatal("%s:%d: Missing argument to .yield", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
+        for (i = 3; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+    } else if (gssymceq(parsedline->directive, gsssymanalyze, gssymcodeop, ".analyze")) {
+        struct gsparsedline *p;
+        int constrnum;
+
+        if (n < 3)
+            gsfatal("%s:%d: Missing scrutinee on .analyze", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
+        if (n < 4)
+            gsfatal("%s:%d: No constructors in .analyze (use .eanalyze for eliminating empty sums)", filename, *plineno);
+        for (i = 3; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i]);
+        p = parsedline;
+        for (constrnum = 0; 3 + constrnum < n; constrnum++) {
+            gsparse_case(filename, parsedfile, chan, parsedline->arguments[1 + constrnum], line, plineno, fields);
+        }
     } else {
         return 0;
     }
     return 1;
+}
+
+static
+void
+gsparse_case(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, gsinterned_string constr, char *line, int *plineno, char **fields)
+{
+    static gsinterned_string gssymcase;
+
+    struct gsparsedline *parsedline;
+    long n;
+
+    if ((n = gsgrabline(filename, chan, line, plineno, fields)) < 0)
+        gsfatal("%s:%d: Error in reading API line: %r", filename, *plineno)
+    ; else if (n == 0)
+        gsfatal("%s:%d: EOF when looking for .case", filename, *plineno - 1)
+    ;
+    parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, n);
+
+    parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
+
+    if (!gssymceq(parsedline->directive, gssymcase, gssymcodeop, ".case"))
+        gsfatal("%s:%d: Expecting .case", filename, *plineno);
+
+    if (*fields[0])
+        gsfatal("%s:%d: Labels illegal on .case");
+    else
+        parsedline->label = 0;
+
+    if (n < 3)
+        gsfatal("%s:%d: Missing constructor on .case", filename, *plineno);
+    parsedline->arguments[2 - 2] = gsintern_string(gssymconstrlable, fields[2]);
+    if (parsedline->arguments[2 - 2] != constr)
+        gsfatal("%s:%d: Wrong constructor; expected %y but got %y", filename, *plineno, constr, parsedline->arguments[2 - 2]);
+
+    if (n > 3)
+        gsfatal("%s:%d: Too many arguments to .case", filename, *plineno);
+
+    while ((n = gsgrabline(filename, chan, line, plineno, fields)) > 0) {
+        parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, n);
+
+        parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
+
+        if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
+            return;
+        } else if (gsparse_cont_arg(filename, parsedline, plineno, fields, n)) {
+        } else {
+            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Unimplemented .constr op %y", filename, *plineno, parsedline->directive);
+        }
+    }
+    gsfatal_unimpl(__FILE__, __LINE__, ".analyze: parse .constr");
 }
 
 static long gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
@@ -1834,24 +1918,28 @@ gsac_tokenize(char *line, char **fields, long maxfields)
     p = line;
     fields[0] = line;
     while (*p && !isspace(*p) && *p != '#')
-        p++;
+        p++
+    ;
     label_present = p > line;
-    if (*p)
-        *p++ = 0;
+    if (*p && *p != '#')
+        *p++ = 0
+    ;
 
     pfield = fields + 1;
     while (*p && *p != '#' && pfield < fields + maxfields) {
         while (*p && isspace(*p) && *p != '#')
-            p++;
+            p++
+        ;
         if (*p && *p != '#') {
             *pfield++ = p;
             while (*p && !isspace(*p) && *p != '#')
-                p++;
-            if (*p)
-                *p++ = 0;
+                p++
+            ;
+            if (*p) *p++ = 0;
             numfields++;
         }
     }
+    if (*p) *p++ = 0;
     return label_present || numfields ? numfields + 1 : 0;
 }
 

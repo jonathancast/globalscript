@@ -57,6 +57,7 @@ static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
 static int ace_push_force(struct ace_thread *);
+static int ace_perform_analyze(struct ace_thread *);
 static void ace_return_undef(struct ace_thread *);
 static int ace_enter(struct ace_thread *);
 static int ace_yield(struct ace_thread *);
@@ -155,6 +156,11 @@ ace_thread_pool_main(void *p)
                                 break;
                             case gsbc_op_force:
                                 if (ace_push_force(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_analyze:
+                                if (ace_perform_analyze(thread))
                                     suspended_runnable_thread = 1
                                 ;
                                 break;
@@ -373,6 +379,35 @@ ace_push_force(struct ace_thread *thread)
     return 1;
 }
 
+static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
+
+static
+int
+ace_perform_analyze(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsconstr *constr;
+    struct gsbc **cases;
+
+    int i;
+
+    ip = thread->ip;
+
+    constr = (struct gsconstr *)thread->regs[ACE_ANALYZE_SCRUTINEE(ip)];
+    cases = ACE_ANALYZE_CASES(ip);
+
+    thread->ip = ip = cases[constr->constrnum];
+    for (i = 0; i < constr->numargs; i++) {
+        if (thread->nregs >= MAX_NUM_REGISTERS) {
+            ace_poison_thread(thread, ip->pos, "Register overflow");
+            return 0;
+        }
+        thread->regs[thread->nregs++] = constr->arguments[i];
+    }
+
+    return 1;
+}
+
 static
 void
 ace_return_undef(struct ace_thread *thread)
@@ -388,8 +423,6 @@ ace_return_undef(struct ace_thread *thread)
 
     ace_error_thread(thread, err);
 }
-
-static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
 
 static
 int
