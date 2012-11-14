@@ -830,11 +830,18 @@ struct gsbc_typecheck_code_or_api_expr_closure {
     /* §section Data registers */
     struct gstype *regtypes[MAX_NUM_REGISTERS];
 
+    /* §section Coercion registers */
+    struct gsbc_coercion_type *regcoerciontypes[MAX_NUM_REGISTERS];
+
     /* §section Arguments */
     int nargs;
     struct gstype *argtypes[MAX_NUM_REGISTERS];
     struct gsparsedline *arglines[MAX_NUM_REGISTERS];
     int arglifted[MAX_NUM_REGISTERS];
+
+    /* §section Continuations */
+    int nconts;
+    struct gsparsedline *contlines[MAX_NUM_REGISTERS];
 };
 
 /* ↓ Deprecated */
@@ -843,7 +850,10 @@ static int gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *, struct g
 static int gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_data_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_alloc_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
+static int gsbc_typecheck_cont_push_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
 static struct gstype *gsbc_typecheck_expr_terminal_op(struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *);
+
+static struct gstype *gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *, int, struct gstype *);
 
 static struct gstype *gsbc_typecheck_code_or_api_args(int, struct gstype **, struct gsparsedline **, int *, struct gstype *);
 
@@ -856,13 +866,12 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymfv, gssymrecord, gssymeprim, gssymlift, gssymcoerce, gssymforce, gssymapp, gssymenter;
+    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymfv, gssymrecord, gssymeprim, gssymenter;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
     int i;
 
-    struct gsbc_coercion_type *regcoerciontypes[MAX_NUM_REGISTERS];
 
     int nfvs;
     gsinterned_string fvnames[MAX_NUM_REGISTERS];
@@ -874,13 +883,10 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     struct gskind *tyargkinds[MAX_NUM_REGISTERS];
     struct gsparsedline *tyarglines[MAX_NUM_REGISTERS];
 
-    int nconts;
-    struct gsparsedline *contlines[MAX_NUM_REGISTERS];
-
     struct gstype *calculated_type;
     struct gsbc_code_item_type *res;
 
-    cl.nregs = cl.nargs = nfvs = cl.ncodes = nconts = ntyargs = 0;
+    cl.nregs = cl.nargs = nfvs = cl.ncodes = cl.nconts = ntyargs = 0;
     cl.regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
@@ -893,9 +899,9 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 gsfatal_bad_input(p, "Too many registers")
             ;
             cl.regs[cl.nregs] = p->label;
-            regcoerciontypes[cl.nregs] = gssymtable_get_coercion_type(symtable, p->label);
-            if (!regcoerciontypes[cl.nregs])
-                gsfatal_bad_input(p, "Couldn't find type for coercion global %y", p->label)
+            cl.regcoerciontypes[cl.nregs] = gssymtable_get_coercion_type(symtable, p->label);
+            if (!cl.regcoerciontypes[cl.nregs])
+                gsfatal("%P: Couldn't find type for coercion global %y", p->pos, p->label)
             ;
             cl.nregs++;
         } else if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
@@ -1057,21 +1063,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             gsbc_typecheck_check_api_statement_type(p->pos, type, p->arguments[0], p->arguments[1], 0);
             cl.regtypes[cl.nregs] = type;
             cl.nregs++;
-        } else if (
-            gssymceq(p->directive, gssymlift, gssymcodeop, ".lift")
-            || gssymceq(p->directive, gssymcoerce, gssymcodeop, ".coerce")
-            || gssymceq(p->directive, gssymforce, gssymcodeop, ".force")
-            || gssymceq(p->directive, gssymapp, gssymcodeop, ".app")
-        ) {
-            if (cl.regtype > rtconts)
-                gsfatal_bad_input(p, "Too late to add continuations")
-            ;
-            cl.regtype = rtconts;
-            if (nconts >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many continuations")
-            ;
-            contlines[nconts] = p;
-            nconts++;
+        } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(&p, ppseg, &cl)) {
             goto have_type;
         } else if (gssymceq(p->directive, gssymenter, gssymcodeop, ".enter")) {
@@ -1102,86 +1094,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
 
 have_type:
 
-    while (nconts--) {
-        p = contlines[nconts];
-        if (p->directive == gssymlift) {
-            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(calculated_type), gskind_unlifted_kind());
-            calculated_type = gstypes_compile_lift(p->pos, calculated_type);
-        } else if (p->directive == gssymcoerce) {
-            int coercionreg;
-            struct gstype *src_type, *dest_type;
-            struct gsbc_coercion_type *coercion_type;
-
-            coercionreg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
-            coercion_type = regcoerciontypes[coercionreg];
-            if (!coercion_type)
-                gsfatal("%P: Couldn't find type of coercion %y", p->pos, p->arguments[0])
-            ;
-            src_type = coercion_type->source;
-            dest_type = coercion_type->dest;
-            for (i = 1; i < p->numarguments; i++) {
-                int regarg;
-
-                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                src_type = gstype_supply(p->pos, src_type, cl.tyregs[regarg]);
-                dest_type = gstype_supply(p->pos, dest_type, cl.tyregs[regarg]);
-            }
-            gstypes_type_check_type_fail(p->pos, calculated_type, src_type);
-            calculated_type = dest_type;
-        } else if (p->directive == gssymforce) {
-            int creg = 0;
-            struct gsbc_code_item_type *cty;
-            struct gstype *cont_type;
-            int nftyvs;
-
-            gsargcheck(p, 0, "code");
-            creg = gsbc_find_register(p, cl.coderegs, cl.ncodes, p->arguments[0]);
-            cty = cl.codetypes[creg];
-            cont_type = cty->result_type;
-
-            nftyvs = gsbc_typecheck_free_type_variables(p, cty);
-            gsbc_typecheck_free_variables(&cl, p, cty, nftyvs);
-
-            if (calculated_type->node != gstype_lift)
-                gsfatal("%P: The expression after .force must have a type literally of the form ⌊τ⌋ (not e.g. a lifted abstract type)", p->pos)
-            ;
-            {
-                struct gstype_lift *lift = (struct gstype_lift *)calculated_type;
-                calculated_type = lift->arg;
-            }
-
-            if (cty->type != gsbc_code_item_force_cont)
-                gsfatal("%P: continuation in .force is not a force continuation")
-            ;
-            for (i = 0; i < cty->numftyvs; i++)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Type-check force continuation free type variable next", p->pos)
-            ;
-            for (i = 0; i < cty->numfvs; i++)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Type-check force continuation free variable next", p->pos)
-            ;
-            calculated_type = cty->result_type;
-        } else if (p->directive == gssymapp) {
-            for (i = 0; i < p->numarguments; i++) {
-                int regarg;
-
-                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                if (calculated_type->node == gstype_lift)
-                    gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr (app of lifted fun)", p->pos)
-                ;
-                if (calculated_type->node == gstype_fun) {
-                    struct gstype_fun *fun;
-
-                    fun = (struct gstype_fun *)calculated_type;
-                    gstypes_type_check_type_fail(p->pos, cl.regtypes[regarg], fun->tyarg);
-                    calculated_type = fun->tyres;
-                } else
-                    gsfatal("%P: Too many arguments (max %d; got %d)", p->pos, i, p->numarguments)
-                ;
-            }
-        } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr(cont %s)", p->pos, p->directive->name);
-        }
-    }
+    calculated_type = gsbc_typecheck_conts(&cl, 0, calculated_type);
 
     calculated_type = gsbc_typecheck_code_or_api_args(cl.nargs, cl.argtypes, cl.arglines, cl.arglifted, calculated_type);
 
@@ -1232,14 +1145,11 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     struct gskind *tyargkinds[MAX_NUM_REGISTERS];
     struct gsparsedline *tyarglines[MAX_NUM_REGISTERS];
 
-    int nconts;
-    struct gsparsedline *contlines[MAX_NUM_REGISTERS];
-
     struct gstype *cont_arg_type;
     struct gstype *calculated_type;
     struct gsbc_code_item_type *res;
 
-    cl.nregs = cl.nargs = nfvs = cl.ncodes = nconts = ntyargs = 0;
+    cl.nregs = cl.nargs = nfvs = cl.ncodes = cl.nconts = ntyargs = 0;
     cl.regtype = rttygvar;
     cont_arg_type = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
@@ -1543,12 +1453,15 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsparsedline **pp, struct gspa
     /* §paragraph{For constructors with un-boxed product arguments} */
     struct gsbc_typecheck_field_cont_closure fcl;
 
+    int nconts;
+
     struct gstype *calculated_type;
 
     struct gspos karg_pos;
 
     cont_arg_type = 0;
     fcl.nfields = 0;
+    nconts = pcl->nconts;
     calculated_type = 0;
     for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
         struct gsparsedline *p;
@@ -1564,6 +1477,7 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsparsedline **pp, struct gspa
             ;
             karg_pos = p->pos;
         } else if (gsbc_typecheck_alloc_op(p, pcl)) {
+        } else if (gsbc_typecheck_cont_push_op(p, pcl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(pp, ppseg, pcl)) {
             goto have_type;
         } else {
@@ -1572,6 +1486,8 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsparsedline **pp, struct gspa
     }
 
 have_type:
+
+    calculated_type = gsbc_typecheck_conts(pcl, nconts, calculated_type);
 
     if (cont_arg_type)
         gstypes_type_check_type_fail(karg_pos, cont_arg_type, constr_arg_type)
@@ -1662,6 +1578,123 @@ gsbc_typecheck_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_ap
         return 0;
     }
     return 1;
+}
+
+static gsinterned_string gssymoplift, gssymopcoerce, gssymopforce, gssymopapp;
+
+static
+int
+gsbc_typecheck_cont_push_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+{
+    if (
+        gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
+        || gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")
+        || gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")
+        || gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")
+    ) {
+        if (pcl->regtype > rtconts)
+            gsfatal_bad_input(p, "Too late to add continuations")
+        ;
+        pcl->regtype = rtconts;
+        if (pcl->nconts >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many continuations")
+        ;
+        pcl->contlines[pcl->nconts] = p;
+        pcl->nconts++;
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+struct gstype *
+gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *pcl, int basenconts, struct gstype *calculated_type)
+{
+    struct gsparsedline *p;
+    int i;
+
+    while (pcl->nconts > basenconts) {
+        p = pcl->contlines[--pcl->nconts];
+        if (p->directive == gssymoplift) {
+            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(calculated_type), gskind_unlifted_kind());
+            calculated_type = gstypes_compile_lift(p->pos, calculated_type);
+        } else if (p->directive == gssymopcoerce) {
+            int coercionreg;
+            struct gstype *src_type, *dest_type;
+            struct gsbc_coercion_type *coercion_type;
+
+            coercionreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
+            coercion_type = pcl->regcoerciontypes[coercionreg];
+            if (!coercion_type)
+                gsfatal("%P: Couldn't find type of coercion %y", p->pos, p->arguments[0])
+            ;
+            src_type = coercion_type->source;
+            dest_type = coercion_type->dest;
+            for (i = 1; i < p->numarguments; i++) {
+                int regarg;
+
+                regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+                src_type = gstype_supply(p->pos, src_type, pcl->tyregs[regarg]);
+                dest_type = gstype_supply(p->pos, dest_type, pcl->tyregs[regarg]);
+            }
+            gstypes_type_check_type_fail(p->pos, calculated_type, src_type);
+            calculated_type = dest_type;
+        } else if (p->directive == gssymopforce) {
+            int creg = 0;
+            struct gsbc_code_item_type *cty;
+            struct gstype *cont_type;
+            int nftyvs;
+
+            gsargcheck(p, 0, "code");
+            creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
+            cty = pcl->codetypes[creg];
+            cont_type = cty->result_type;
+
+            nftyvs = gsbc_typecheck_free_type_variables(p, cty);
+            gsbc_typecheck_free_variables(pcl, p, cty, nftyvs);
+
+            if (calculated_type->node != gstype_lift)
+                gsfatal("%P: The expression after .force must have a type literally of the form ⌊τ⌋ (not e.g. a lifted abstract type)", p->pos)
+            ;
+            {
+                struct gstype_lift *lift = (struct gstype_lift *)calculated_type;
+                calculated_type = lift->arg;
+            }
+
+            if (cty->type != gsbc_code_item_force_cont)
+                gsfatal("%P: continuation in .force is not a force continuation")
+            ;
+            for (i = 0; i < cty->numftyvs; i++)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Type-check force continuation free type variable next", p->pos)
+            ;
+            for (i = 0; i < cty->numfvs; i++)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Type-check force continuation free variable next", p->pos)
+            ;
+            calculated_type = cty->result_type;
+        } else if (p->directive == gssymopapp) {
+            for (i = 0; i < p->numarguments; i++) {
+                int regarg;
+
+                regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+                if (calculated_type->node == gstype_lift)
+                    gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr (app of lifted fun)", p->pos)
+                ;
+                if (calculated_type->node == gstype_fun) {
+                    struct gstype_fun *fun;
+
+                    fun = (struct gstype_fun *)calculated_type;
+                    gstypes_type_check_type_fail(p->pos, pcl->regtypes[regarg], fun->tyarg);
+                    calculated_type = fun->tyres;
+                } else
+                    gsfatal("%P: Too many arguments (max %d; got %d)", p->pos, i, p->numarguments)
+                ;
+            }
+        } else {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr(cont %y)", p->pos, p->directive);
+        }
+    }
+    return calculated_type;
 }
 
 static
