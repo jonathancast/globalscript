@@ -303,8 +303,8 @@ gsiserror_block(struct gs_blockdesc *p)
 /* §section Global Script Implementation Errors */
 
 struct gs_block_class gsimplementation_errors_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
+    /* evaluator = */ gserrorseval,
+    /* indirection_dereferencer = */ gserrorsindir,
     /* description = */ "Global Script Implementation Errors",
 };
 static void *gsimplementation_errors_nursury;
