@@ -756,6 +756,7 @@ struct gsbc_byte_compile_code_or_api_op_closure {
 
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
+static int gsbc_byte_compile_cont_push_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_byte_compile_code_or_api_op_closure *);
 
 static
@@ -909,25 +910,13 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 cl.pout = GS_NEXT_BYTECODE(pcode, 0);
             }
             cl.nregs++;
+        } else if (gsbc_byte_compile_cont_push_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
             cl.phase = rtops;
             /* no effect on representation */
         } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
             cl.phase = rtops;
             /* no effect on representation */
-        } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
-            cl.phase = rtops;
-            pcode = (struct gsbc *)cl.pout;
-            pcode->pos = p->pos;
-            pcode->instr = gsbc_op_app;
-            pcode->args[0] = (uchar)p->numarguments;
-            for (i = 0; i < p->numarguments; i++) {
-                int regarg;
-
-                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                pcode->args[1 + i] = (uchar)regarg;
-            }
-            cl.pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments);
         } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
             int creg = 0;
             int nfvs, first_fv;
@@ -1083,6 +1072,32 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
     return 1;
 }
 
+static
+int
+gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    struct gsbc *pcode;
+    int i;
+
+    if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
+        pcl->phase = rtops;
+        pcode = (struct gsbc *)pcl->pout;
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_app;
+        pcode->args[0] = (uchar)p->numarguments;
+        for (i = 0; i < p->numarguments; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            pcode->args[1 + i] = (uchar)regarg;
+        }
+        pcl->pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments);
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
 static void gsbc_byte_compile_case(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_byte_compile_code_or_api_op_closure *);
 
 static
@@ -1158,6 +1173,7 @@ gsbc_byte_compile_case(struct gsparsedfile_segment **ppseg, struct gsparsedline 
     while (*pp = gsinput_next_line(ppseg, *pp)) {
         if (gsbc_byte_compile_arg_code_op(*pp, pcl)) {
         } else if (gsbc_byte_compile_alloc_op(*pp, pcl)) {
+        } else if (gsbc_byte_compile_cont_push_op(*pp, pcl)) {
         } else if (gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
             return;
         } else {
