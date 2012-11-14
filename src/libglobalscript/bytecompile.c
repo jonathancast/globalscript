@@ -245,6 +245,7 @@ struct gsbc_bytecode_size_code_closure {
 };
 static int gsbc_bytecode_size_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
+static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
 static gsinterned_string gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopundef, gssymopanalyze, gssymopcase;
@@ -396,12 +397,11 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             nfvs = p->numarguments - i;
 
             cl.size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
+        } else if (gsbc_bytecode_size_cont_push_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
             /* no effect on representation */
         } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
             /* no effect on representation */
-        } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
-            cl.size += GS_SIZE_BYTECODE(1 + p->numarguments); /* nargs + args */
         } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
             int nfvs;
 
@@ -494,6 +494,18 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
     return 1;
 }
 
+static
+int
+gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
+        pcl->size += GS_SIZE_BYTECODE(1 + p->numarguments); /* nargs + args */
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
 static void gsbc_bytecode_size_case(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
 static
@@ -538,6 +550,7 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
     while (*pp = gsinput_next_line(ppseg, *pp)) {
         if (gsbc_bytecode_size_arg_code_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_alloc_op(*pp, pcl)) {
+        } else if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
             return;
         } else {
