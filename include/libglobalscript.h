@@ -189,6 +189,11 @@ gsvalue gsapply(struct gspos, gsvalue, gsvalue);
 
 char *gschartorune(char *, gsvalue *, char *, char *);
 char *gsrunetochar(gsvalue, char *, char *, char *, char *);
+gsvalue gscstringtogsstring(struct gspos, char *);
+
+/* §subsection Lists */
+
+gsvalue gsarraytolist(struct gspos, int, gsvalue *);
 
 /* §subsection Records */
 
