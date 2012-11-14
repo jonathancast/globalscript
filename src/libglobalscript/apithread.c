@@ -415,8 +415,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 cl->code = subexpr;
                 cl->numfvs = pinstr->args[1];
                 for (i = 0; i < pinstr->args[1]; i++) {
-                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: free variables of .alloc");
-                    return;
+                    cl->fvs[i] = regs[pinstr->args[1+i]];
                 }
                 regs[nregs] = (gsvalue)cl;
                 nregs++;

@@ -71,3 +71,31 @@ gsapply(struct gspos pos, gsvalue fun, gsvalue arg)
 
     return (gsvalue)res;
 }
+
+gsvalue
+gsarraytolist(struct gspos pos, int n, gsvalue *p)
+{
+    gsvalue res;
+    struct gsconstr *c;
+    int i;
+
+    c = gsreserveconstrs(n * (sizeof(struct gsconstr) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr));
+    res = (gsvalue)c;
+
+    for (i = 0; i < n; i++) {
+        struct gsconstr *cnext;
+
+        c->pos = pos;
+        c->constrnum = 0;
+        c->numargs = 2;
+        c->arguments[0] = p[i];
+        cnext = (struct gsconstr *)((uchar*)c + sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
+        c->arguments[1] = (gsvalue)cnext;
+        c = cnext;
+    }
+    c->pos = pos;
+    c->constrnum = 1;
+    c->numargs = 0;
+
+    return res;
+}

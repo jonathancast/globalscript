@@ -837,10 +837,13 @@ struct gsbc_typecheck_code_or_api_expr_closure {
     int arglifted[MAX_NUM_REGISTERS];
 };
 
-static int gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
-static struct gstype *gsbc_typecheck_expr_terminal_op(struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *);
-
+/* ↓ Deprecated */
 static int gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
+
+static int gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
+static int gsbc_typecheck_data_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
+static int gsbc_typecheck_alloc_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
+static struct gstype *gsbc_typecheck_expr_terminal_op(struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *);
 
 static struct gstype *gsbc_typecheck_code_or_api_args(int, struct gstype **, struct gsparsedline **, int *, struct gstype *);
 
@@ -918,6 +921,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             tyargkinds[ntyargs] = argkind;
             tyarglines[ntyargs] = p;
             ntyargs++;
+        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymgvar, gssymcodeop, ".gvar")) {
             if (cl.regtype > rtgvar)
                 gsfatal_bad_input(p, "Too late to add global variables")
@@ -962,6 +966,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             fvposs[nfvs] = p->pos;
             fvnames[nfvs] = p->label;
             nfvs++;
+        } else if (gsbc_typecheck_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
             struct gstype_field fields[MAX_NUM_REGISTERS];
 
@@ -1154,7 +1159,6 @@ have_type:
             for (i = 0; i < cty->numfvs; i++)
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: Type-check force continuation free variable next", p->pos)
             ;
-            gstypes_type_check_type_fail(p->pos, calculated_type, cty->cont_arg_type);
             calculated_type = cty->result_type;
         } else if (p->directive == gssymapp) {
             for (i = 0; i < p->numarguments; i++) {
@@ -1262,6 +1266,7 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
             cl.tyregs[cl.nregs] = ty;
             cl.tyregkinds[cl.nregs] = gstypes_calculate_kind(ty);
             cl.nregs++;
+        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(&p, ppseg, &cl)) {
             if (!cont_arg_type)
@@ -1310,9 +1315,12 @@ gsbc_typecheck_cont_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or
         ;
         reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
         *pcont_arg_type = pcl->tyregs[reg];
-        for (i = 1; i < p->numarguments; i++)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_force_cont: arguments to type on .karg")
-        ;
+        for (i = 1; i < p->numarguments; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            *pcont_arg_type = gstype_apply(p->pos, *pcont_arg_type, pcl->tyregs[regarg]);
+        }
         gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(*pcont_arg_type), gskind_unlifted_kind());
         gsbc_typecheck_check_boxed(p->pos, *pcont_arg_type);
         pcl->regs[pcl->nregs] = p->label;
@@ -1349,6 +1357,32 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
             gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", p->pos, p->label->name)
         ;
         pcl->nregs++;
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+int
+gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+{
+    static gsinterned_string gssymopsubcode;
+
+    if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
+        if (pcl->regtype > rtcode)
+            gsfatal_bad_input(p, "Too late to add sub-expressions")
+        ;
+        pcl->regtype = rtcode;
+        if (pcl->ncodes >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many sub-expressions; max 0x%x", p, MAX_NUM_REGISTERS)
+        ;
+        pcl->coderegs[pcl->ncodes] = p->label;
+        pcl->codetypes[pcl->ncodes] = gssymtable_get_code_type(symtable, p->label);
+        if (!pcl->codetypes[pcl->ncodes])
+            gsfatal("%P: Can't find type of sub-expression %y", p->pos, p->label)
+        ;
+        pcl->ncodes++;
     } else {
         return 0;
     }
@@ -1529,6 +1563,7 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsparsedline **pp, struct gspa
                 gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
             ;
             karg_pos = p->pos;
+        } else if (gsbc_typecheck_alloc_op(p, pcl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(pp, ppseg, pcl)) {
             goto have_type;
         } else {
@@ -1565,6 +1600,7 @@ gsbc_typecheck_field_cont_arg_op(struct gsparsedline *p, struct gsbc_typecheck_c
         if (pfcl->nfields >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many .fkargs; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
+        pcl->regs[pcl->nregs] = p->label;
         pfcl->fields[pfcl->nfields].name = p->arguments[0];
         reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1]);
         type = pcl->tyregs[reg];
@@ -1576,6 +1612,7 @@ gsbc_typecheck_field_cont_arg_op(struct gsparsedline *p, struct gsbc_typecheck_c
         }
         gsbc_typecheck_check_boxed(p->pos, type);
         pfcl->fields[pfcl->nfields].type = type;
+        pcl->regtypes[pcl->nregs] = type;
 
         pcl->nregs++;
         pfcl->nfields++;
@@ -1583,6 +1620,47 @@ gsbc_typecheck_field_cont_arg_op(struct gsparsedline *p, struct gsbc_typecheck_c
         return 0;
     }
 
+    return 1;
+}
+
+static
+int
+gsbc_typecheck_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+{
+    static gsinterned_string gssymalloc;
+
+    if (gssymceq(p->directive, gssymalloc, gssymcodeop, ".alloc")) {
+        int creg = 0;
+        struct gsbc_code_item_type *cty;
+        struct gstype *alloc_type;
+        int nftyvs;
+
+        if (pcl->regtype > rtlet)
+            gsfatal_bad_input(p, "Too late to add allocations")
+        ;
+        pcl->regtype = rtlet;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+        ;
+
+        gsargcheck(p, 0, "code");
+        creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
+        cty = pcl->codetypes[creg];
+        alloc_type = cty->result_type;
+
+        nftyvs = gsbc_typecheck_free_type_variables(p, cty);
+        gsbc_typecheck_free_variables(pcl, p, cty, nftyvs);
+
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(alloc_type), gskind_lifted_kind());
+        gsbc_typecheck_check_boxed(p->pos, alloc_type);
+
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regtypes[pcl->nregs] = alloc_type;
+
+        pcl->nregs++;
+    } else {
+        return 0;
+    }
     return 1;
 }
 
@@ -1603,6 +1681,8 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_alloc_op(p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
@@ -1675,25 +1755,11 @@ static
 int
 gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymarg, gssymlarg, gssymalloc;
+    static gsinterned_string gssymarg, gssymlarg;
 
     int i;
 
-    if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
-        if (pcl->regtype > rtcode)
-            gsfatal_bad_input(p, "Too late to add sub-expressions")
-        ;
-        pcl->regtype = rtcode;
-        if (pcl->ncodes >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
-        ;
-        pcl->coderegs[pcl->ncodes] = p->label;
-        pcl->codetypes[pcl->ncodes] = gssymtable_get_code_type(symtable, p->label);
-        if (!pcl->codetypes[pcl->ncodes])
-            gsfatal_bad_input(p, "Can't find type of sub-expression %s", p->label->name)
-        ;
-        pcl->ncodes++;
-    } else if (
+    if (
         gssymceq(p->directive, gssymarg, gssymcodeop, ".arg")
         || gssymceq(p->directive, gssymlarg, gssymcodeop, ".larg")
     ) {
@@ -1726,35 +1792,6 @@ gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *symtable, struct gspa
         pcl->arglines[pcl->nargs] = p;
         pcl->arglifted[pcl->nargs] = p->directive == gssymlarg;
         pcl->nargs++;
-    } else if (gssymceq(p->directive, gssymalloc, gssymcodeop, ".alloc")) {
-        int creg = 0;
-        struct gsbc_code_item_type *cty;
-        struct gstype *alloc_type;
-        int nftyvs;
-
-        if (pcl->regtype > rtlet)
-            gsfatal_bad_input(p, "Too late to add allocations")
-        ;
-        pcl->regtype = rtlet;
-        if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
-        ;
-
-        gsargcheck(p, 0, "code");
-        creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
-        cty = pcl->codetypes[creg];
-        alloc_type = cty->result_type;
-
-        nftyvs = gsbc_typecheck_free_type_variables(p, cty);
-        gsbc_typecheck_free_variables(pcl, p, cty, nftyvs);
-
-        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(alloc_type), gskind_lifted_kind());
-        gsbc_typecheck_check_boxed(p->pos, alloc_type);
-
-        pcl->regs[pcl->nregs] = p->label;
-        pcl->regtypes[pcl->nregs] = alloc_type;
-
-        pcl->nregs++;
     } else {
         return 0;
     }
@@ -1984,7 +2021,7 @@ gsbc_typecheck_free_type_variables(struct gsparsedline *p, struct gsbc_code_item
     int nftyvs;
 
     for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_api_expr(.body type free variables)", p->pos);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_free_type_variables(type free variables)", p->pos);
     }
     nftyvs = i - 1;
     if (nftyvs < cty->numftyvs)
@@ -2106,7 +2143,7 @@ static
 void
 gstypes_type_check_type_fail(struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
 {
-    char err[0x100];
+    char err[0x300];
 
     if (gstypes_type_check(err, err + sizeof(err), pos, pactual, pexpected) < 0)
         gsfatal("%s", err)
@@ -2336,6 +2373,9 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
                 case gsprim_type_defined:
                     res = seprint(res, eob, "\"definedprim ");
                     break;
+                case gsprim_type_elim:
+                    res = seprint(res, eob, "\"elimprim ");
+                    break;
                 case gsprim_type_api:
                     res = seprint(res, eob, "\"apiprim ");
                     break;
@@ -2375,12 +2415,24 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             res = seprint(res, eob, "%s", var->name->name);
             return res;
         }
+        case gstype_lambda: {
+            struct gstype_lambda *lambda;
+
+            lambda = (struct gstype_lambda *)pty;
+
+            res = seprint(res, eob, "(λ %y :: ", lambda->var);
+            res = gstypes_eprint_kind(res, eob, lambda->kind, 0);
+            res = seprint(res, eob, ". ");
+            res = gstypes_eprint_type(res, eob, lambda->body);
+            res = seprint(res, eob, ")");
+            return res;
+        }
         case gstype_forall: {
             struct gstype_forall *forall;
 
             forall = (struct gstype_forall *)pty;
 
-            res = seprint(res, eob, "(∀ %s :: ", forall->var->name);
+            res = seprint(res, eob, "(∀ %y :: ", forall->var);
             res = gstypes_eprint_kind(res, eob, forall->kind, 0);
             res = seprint(res, eob, ". ");
             res = gstypes_eprint_type(res, eob, forall->body);
@@ -2426,7 +2478,12 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
 
             res = seprint(res, eob, "\"Σ〈");
             for (i = 0; i < sum->numconstrs; i++) {
-                res = seprint(res, eob, "%s:%d: print constructors next", __FILE__, __LINE__);
+                if (i == 0)
+                    res = seprint(res, eob, " ")
+                ;
+                res = seprint(res, eob, "%y ", sum->constrs[i].name);
+                res = gstypes_eprint_type(res, eob, sum->constrs[i].argtype);
+                res = seprint(res, eob, "; ");
             }
             res = seprint(res, eob, "〉");
             return res;

@@ -347,7 +347,7 @@ ace_push_app(struct ace_thread *thread)
         app->arguments[j] = thread->regs[ip->args[1 + j]];
     }
 
-    thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[1]);
+    thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[0]);
     return 1;
 }
 

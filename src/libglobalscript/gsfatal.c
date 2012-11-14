@@ -12,7 +12,7 @@ int gsdebug = 1;
 void
 gsfatal(char *err, ...)
 {
-    char buf[0x100];
+    char buf[0x200];
     va_list arg;
 
     va_start(arg, err);
