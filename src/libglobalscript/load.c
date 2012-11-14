@@ -501,7 +501,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymfv, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymcoerce, gssymforce, gssymenter;
+    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymfv, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymcoerce, gssymforce;
 
     struct gsparsedline *parsedline;
     int i;
@@ -633,18 +633,6 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
             }
         } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
-            return 0;
-        } else if (gssymceq(parsedline->directive, gssymenter, gssymcodeop, ".enter")) {
-            if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
-            else
-                parsedline->label = 0;
-            if (n < 3)
-                gsfatal("%s:%d: Missing argument to .enter", filename, *plineno);
-            parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
-            for (i = 3; i < n; i++)
-                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-            ;
             return 0;
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Unimplemented code op %s", filename, *plineno, fields[1]);
@@ -917,7 +905,7 @@ static
 int
 gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymundef, gssymyield, gsssymanalyze;
+    static gsinterned_string gssymundef, gssymyield, gssymenter, gsssymanalyze;
     int i;
 
     if (gssymceq(parsedline->directive, gssymundef, gssymcodeop, ".undef")) {
@@ -937,6 +925,17 @@ gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct u
             parsedline->label = 0;
         if (n < 3)
             gsfatal("%s:%d: Missing argument to .yield", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
+        for (i = 3; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+    } else if (gssymceq(parsedline->directive, gssymenter, gssymcodeop, ".enter")) {
+        if (*fields[0])
+            gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
+        else
+            parsedline->label = 0;
+        if (n < 3)
+            gsfatal("%s:%d: Missing argument to .enter", filename, *plineno);
         parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
         for (i = 3; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
