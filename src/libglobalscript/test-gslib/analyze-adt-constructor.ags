@@ -12,6 +12,8 @@ y1	.rune	b
 
 _epcode	.expr
 rune.prim.rune	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
 x	.gvar
 y0	.gvar
 y1	.gvar
@@ -20,7 +22,7 @@ y1	.gvar
 x0	.fkarg	0	rune.prim.rune
 	.yield	y0
 	.case	c1
-x1	.fkarg	0	rune.prim.rune
+x1	.fkarg	0	list.t	rune.t
 	.yield	y1
 
 	.type
@@ -35,5 +37,10 @@ rune.prim.rune	.tygvar
 	.tyubproduct	0	rune.prim.rune
 
 _t0.c1.ty	.tyexpr
-rune.prim.rune	.tygvar
-	.tyubproduct	0	rune.prim.rune
+_string.ty	.tygvar
+	.tyubproduct	0	_string.ty
+
+_string.ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tyref	list.t	rune.t

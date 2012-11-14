@@ -1568,9 +1568,12 @@ gsbc_typecheck_field_cont_arg_op(struct gsparsedline *p, struct gsbc_typecheck_c
         pfcl->fields[pfcl->nfields].name = p->arguments[0];
         reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1]);
         type = pcl->tyregs[reg];
-        for (i = 2; i < p->numarguments; i++)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_field_cont_arg_op: type arguments", p->pos)
-        ;
+        for (i = 2; i < p->numarguments; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            type = gstype_apply(p->pos, type, pcl->tyregs[regarg]);
+        }
         gsbc_typecheck_check_boxed(p->pos, type);
         pfcl->fields[pfcl->nfields].type = type;
 
