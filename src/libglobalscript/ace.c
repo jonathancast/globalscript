@@ -428,7 +428,6 @@ static
 int
 ace_enter(struct ace_thread *thread)
 {
-    struct gs_blockdesc *block;
     struct gsbc *ip;
     gstypecode st;
     gsvalue prog;
@@ -441,32 +440,27 @@ ace_enter(struct ace_thread *thread)
     }
 
     prog = thread->regs[ip->args[0]];
-    st = GS_SLOW_EVALUATE(prog);
 
-    switch (st) {
-        case gstystack:
-            thread->blocked = prog;
-            thread->blockedat = ip->pos;
-            return 0;
-        case gstyindir:
-            prog = GS_REMOVE_INDIRECTIONS(prog);
+    for (;;) {
+        st = GS_SLOW_EVALUATE(prog);
 
-            block = BLOCK_CONTAINING(prog);
-            if (gsiserror_block(block)) {
-                struct gserror *err;
-
-                err = (struct gserror *)prog;
-                ace_error_thread(thread, err);
+        switch (st) {
+            case gstystack:
+                thread->blocked = prog;
+                thread->blockedat = ip->pos;
                 return 0;
-            }
-
-            if (ace_return(thread, ip->pos, prog) > 0)
-                return 1
-            ;
-            return 0;
-        default:
-            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
-            return 0;
+            case gstyindir:
+                prog = GS_REMOVE_INDIRECTIONS(prog);
+                break;
+            case gstywhnf:
+                if (ace_return(thread, ip->pos, prog) > 0)
+                    return 1
+                ;
+                return 0;
+            default:
+                ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
+                return 0;
+        }
     }
 }
 
