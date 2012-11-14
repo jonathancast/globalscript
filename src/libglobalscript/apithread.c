@@ -786,6 +786,40 @@ api_abend_unimpl(struct api_thread *thread, char *srcfile, int lineno, char *msg
     api_abend(thread, "%s:%d: %s next", srcfile, lineno, buf);
 }
 
+void
+api_thread_post(struct api_thread *thread, char *msg, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, msg);
+    vseprint(buf, buf+sizeof buf, msg, arg);
+    va_end(arg);
+
+    lock(&thread->lock);
+    api_abend(thread, "%s", buf);
+    unlock(&thread->lock);
+}
+
+void
+api_thread_post_unimpl(struct api_thread *thread, char *file, int lineno, char *msg, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, msg);
+    vseprint(buf, buf+sizeof buf, msg, arg);
+    va_end(arg);
+
+    lock(&thread->lock);
+    if (gsdebug)
+        api_abend(thread, "%s:%d: %s next", file, lineno, buf)
+    ; else
+        api_abend(thread, "Panic!  Unimplemented operation '%s' in release build", buf)
+    ;
+    unlock(&thread->lock);
+}
+
 /* §section RPC handlers for main process */
 
 void

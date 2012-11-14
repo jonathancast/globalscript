@@ -452,6 +452,10 @@ void api_done(struct api_thread *);
 void api_abend(struct api_thread *, char *, ...);
 void api_abend_unimpl(struct api_thread *, char *, int, char *, ...);
 
+/* If (and only if) the destination thread is hard, these will send an abend message (§c{api_std_rpc_abend}) to the corresponding process */
+void api_thread_post(struct api_thread *, char *, ...);
+void api_thread_post_unimpl(struct api_thread *, char *, int, char *, ...);
+
 rpc_handler api_main_process_handle_rpc_done;
 rpc_handler api_main_process_handle_rpc_abend;
 
