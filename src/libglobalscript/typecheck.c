@@ -866,7 +866,7 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymfv, gssymrecord, gssymeprim, gssymenter;
+    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymfv, gssymrecord, gssymeprim;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
@@ -1065,27 +1065,6 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             cl.nregs++;
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(&p, ppseg, &cl)) {
-            goto have_type;
-        } else if (gssymceq(p->directive, gssymenter, gssymcodeop, ".enter")) {
-            int reg;
-            struct gskind *kind;
-
-            gsargcheck(p, 0, "var");
-            reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
-            calculated_type = cl.regtypes[reg];
-            for (i = 1; i < p->numarguments; i++) {
-                int regarg;
-
-                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                if (!cl.tyregs[regarg])
-                    gsfatal("%P: %s doesn't seem to be a type register", p->pos, p->arguments[i]->name)
-                ;
-                calculated_type = gstype_instantiate(p->pos, calculated_type, cl.tyregs[regarg]);
-            }
-
-            kind = gstypes_calculate_kind(calculated_type);
-            gstypes_kind_check_fail(p->pos, kind, gskind_lifted_kind());
-
             goto have_type;
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr(%s)", p->pos, p->directive->name);
@@ -1308,7 +1287,7 @@ static
 struct gstype *
 gsbc_typecheck_expr_terminal_op(struct gsparsedline **pp, struct gsparsedfile_segment **ppseg, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymundef, gssymanalyze, gssymcase;
+    static gsinterned_string gssymundef, gssymenter, gssymanalyze, gssymcase;
 
     int i;
 
@@ -1361,6 +1340,25 @@ gsbc_typecheck_expr_terminal_op(struct gsparsedline **pp, struct gsparsedfile_se
 
         kind = gstypes_calculate_kind(calculated_type);
         gstypes_kind_check_fail((*pp)->pos, kind, gskind_unlifted_kind());
+    } else if (gssymceq((*pp)->directive, gssymenter, gssymcodeop, ".enter")) {
+        int reg;
+        struct gskind *kind;
+
+        gsargcheck(*pp, 0, "var");
+        reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
+        calculated_type = pcl->regtypes[reg];
+        for (i = 1; i < (*pp)->numarguments; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[i]);
+            if (!pcl->tyregs[regarg])
+                gsfatal("%P: %y doesn't seem to be a type register", (*pp)->pos, (*pp)->arguments[i])
+            ;
+            calculated_type = gstype_instantiate((*pp)->pos, calculated_type, pcl->tyregs[regarg]);
+        }
+
+        kind = gstypes_calculate_kind(calculated_type);
+        gstypes_kind_check_fail((*pp)->pos, kind, gskind_lifted_kind());
     } else if (gssymceq((*pp)->directive, gssymanalyze, gssymcodeop, ".analyze")) {
         int reg;
         struct gstype_sum *sum;
