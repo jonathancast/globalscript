@@ -74,15 +74,7 @@ gsprint(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
 
     block = BLOCK_CONTAINING(prog);
 
-    if (gsisimplementation_failure_block(block)) {
-        struct gsimplementation_failure *p;
-        char buf[0x100];
-
-        p = (struct gsimplementation_failure *)prog;
-        gsimplementation_failure_format(buf, buf + sizeof(buf), p);
-        print("%s\n", buf);
-        return -1;
-    } else if (gsisheap_block(block)) {
+    if (gsisheap_block(block)) {
         struct gsheap_item *hp;
 
         hp = (struct gsheap_item *)prog;
@@ -186,6 +178,14 @@ gsprint_error(struct gstype *type, struct gsfile_symtable *symtable, gsvalue pro
         gserror_format(buf, buf + sizeof(buf), p);
         print("%s\n", buf);
         return;
+    } else if (gsisimplementation_failure_block(block)) {
+        struct gsimplementation_failure *p;
+        char buf[0x100];
+
+        p = (struct gsimplementation_failure *)prog;
+        gsimplementation_failure_format(buf, buf + sizeof(buf), p);
+        print("%s\n", buf);
+        return -1;
     } else {
         ace_down();
         gsfatal_unimpl(__FILE__, __LINE__, "gsprint_error(%s)", block->class->description);

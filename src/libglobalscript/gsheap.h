@@ -51,6 +51,7 @@ struct gsbc_cont_force {
     struct gsbc_cont cont;
     struct gsbco *code;
     int numfvs;
+    gsvalue fvs[];
 };
 
 /* §section Global Script Run-time Errors */

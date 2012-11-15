@@ -884,7 +884,7 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymfv, gssymrecord, gssymeprim;
+    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymrecord, gssymeprim;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
@@ -953,36 +953,6 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 gsfatal_bad_input(p, "Couldn't find type for global %s", p->label->name)
             ;
             cl.nregs++;
-        } else if (gssymceq(p->directive, gssymfv, gssymcodeop, ".fv")) {
-            int reg;
-            struct gstype *fvtype;
-
-            if (cl.regtype > rtfv)
-                gsfatal_bad_input(p, "Too late to add free variables")
-            ;
-            cl.regtype = rtfv;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers")
-            ;
-            cl.regs[cl.nregs] = p->label;
-            gsargcheck(p, 0, "type");
-            reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
-            fvtype = cl.tyregs[reg];
-            if (!fvtype)
-                gsfatal_bad_input(p, "Register %s is not a type", p->arguments[0]);
-            for (i = 1; i < p->numarguments; i++) {
-                int regarg;
-
-                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                fvtype = gstype_apply(p->pos, fvtype, cl.tyregs[regarg]);
-            }
-            cl.regtypes[cl.nregs] = fvtype;
-            cl.nregs++;
-
-            cl.fvtypes[cl.nfvs] = fvtype;
-            cl.fvposs[cl.nfvs] = p->pos;
-            cl.fvnames[cl.nfvs] = p->label;
-            cl.nfvs++;
         } else if (gsbc_typecheck_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
             struct gstype_field fields[MAX_NUM_REGISTERS];
@@ -1268,7 +1238,9 @@ static
 int
 gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymopsubcode;
+    static gsinterned_string gssymopsubcode, gssymopfv;
+
+    int i;
 
     if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
         if (pcl->regtype > rtcode)
@@ -1284,6 +1256,37 @@ gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline 
             gsfatal("%P: Can't find type of sub-expression %y", p->pos, p->label)
         ;
         pcl->ncodes++;
+    } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
+        int reg;
+        struct gstype *fvtype;
+
+        if (pcl->regtype > rtfv)
+            gsfatal("%P: Too late to add free variables", p->pos)
+        ;
+        pcl->regtype = rtfv;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers", p->pos)
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+        gsargcheck(p, 0, "type");
+        reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
+        fvtype = pcl->tyregs[reg];
+        if (!fvtype)
+            gsfatal("%P: Register %y is not a type", p->pos, p->arguments[0])
+        ;
+        for (i = 1; i < p->numarguments; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            fvtype = gstype_apply(p->pos, fvtype, pcl->tyregs[regarg]);
+        }
+        pcl->regtypes[pcl->nregs] = fvtype;
+        pcl->nregs++;
+
+        pcl->fvtypes[pcl->nfvs] = fvtype;
+        pcl->fvposs[pcl->nfvs] = p->pos;
+        pcl->fvnames[pcl->nfvs] = p->label;
+        pcl->nfvs++;
     } else {
         return 0;
     }

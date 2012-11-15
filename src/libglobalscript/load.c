@@ -501,7 +501,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymcogvar, gssymtyarg, gssymfv, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymcoerce, gssymforce;
+    static gsinterned_string gssymcogvar, gssymtyarg, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymcoerce, gssymforce;
 
     struct gsparsedline *parsedline;
     int i;
@@ -532,15 +532,6 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 gsfatal("%s:%d: Missing label on .cogvar op", filename, *plineno);
             if (n > 2)
                 gsfatal("%s:%d: Too many arguments to .cogvar op", filename, *plineno);
-        } else if (gssymceq(parsedline->directive, gssymfv, gssymcodeop, ".fv")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-            else
-                gsfatal("%s:%d: Missing label on .fv op", filename, *plineno);
-            if (n < 3)
-                gsfatal("%s:%d: Missing type on .fv", filename, *plineno);
-            for (i = 2; i < n; i++)
-                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
         } else if (gssymceq(parsedline->directive, gssymarg, gssymcodeop, ".arg")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymdatalable, fields[0]);
@@ -716,7 +707,9 @@ static
 int
 gsparse_value_fv_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymsubcode, gssymgvar;
+    static gsinterned_string gssymsubcode, gssymgvar, gssymfv;
+
+    int i;
 
     if (gssymceq(parsedline->directive, gssymsubcode, gssymcodeop, ".subcode")) {
         if (*fields[0])
@@ -732,6 +725,15 @@ gsparse_value_fv_op(char *filename, struct gsparsedline *parsedline, int *plinen
             gsfatal("%s:%d: Missing label on .gvar op", filename, *plineno);
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .gvar op", filename, *plineno);
+    } else if (gssymceq(parsedline->directive, gssymfv, gssymcodeop, ".fv")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+        else
+            gsfatal("%s:%d: Missing label on .fv op", filename, *plineno);
+        if (n < 3)
+            gsfatal("%s:%d: Missing type on .fv", filename, *plineno);
+        for (i = 2; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
     } else {
         return 0;
     }

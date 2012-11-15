@@ -371,8 +371,7 @@ ace_push_force(struct ace_thread *thread)
     force->code = thread->subexprs[ip->args[0]];
     force->numfvs = ip->args[1];
     for (i = 0; i < ip->args[1]; i++) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "free variables of .force continuation");
-        return 0;
+        force->fvs[i] = thread->regs[ip->args[2+i]];
     }
 
     thread->ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
@@ -741,8 +740,11 @@ ace_return_to_force(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v
     }
 
     for (i = 0; i < force->numfvs; i++) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "ace_return_to_force: force continuation free variables");
-        return 0;
+        if (thread->nregs >= MAX_NUM_REGISTERS) {
+            ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+            return 0;
+        }
+        thread->regs[thread->nregs++] = force->fvs[i];
     }
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {
