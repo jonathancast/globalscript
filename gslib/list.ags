@@ -31,3 +31,12 @@ list.t	.tygvar
 _nil_type	.tyexpr
 α	.tylambda	*
 	.tyubproduct
+
+
+	.coercion
+
+list.t.out	.tycoercion
+list.t	.tygvar
+α	.tylambda	*
+	.tyinvert
+	.tydefinition	list.t	α
