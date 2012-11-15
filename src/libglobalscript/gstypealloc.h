@@ -6,8 +6,10 @@ struct gsbc_code_item_type {
     } type;
     int numftyvs;
     int numfvs;
-    struct gstype *cont_arg_type;
+    gsinterned_string *tyfvs;
+    struct gskind **tyfvkinds;
     struct gstype **fvtypes;
+    struct gstype *cont_arg_type;
     struct gstype *result_type;
 };
 

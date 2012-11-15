@@ -1,0 +1,37 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+x	.closure	_x.code
+x0	.constr	_x0.ty	nil
+
+	.code
+
+_epcode	.expr
+rune.t	.tygvar
+_epcode.cont	.subcode
+x	.gvar
+	.force	_epcode.cont	rune.t
+	.enter	x
+
+_x.code	.expr
+x0	.gvar
+	.lift
+	.yield	x0
+
+_epcode.cont	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+α	.tyfv	*
+t	.tylet	list.prim.u	α
+x0	.karg	t
+	.undef	list.t	α
+
+	.type
+
+_x0.ty	.tyexpr
+list.prim.u	.tygvar
+rune.t	.tygvar
+t	.tylet	list.prim.u	rune.t
+	.tyref	t

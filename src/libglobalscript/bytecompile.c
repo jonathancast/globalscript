@@ -231,6 +231,7 @@ struct gsbc_bytecode_size_code_closure {
 
     enum {
         phtygvars,
+        phtyfvs,
         phtyargs,
         phtylets,
         phcode,
@@ -248,7 +249,7 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopundef, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopundef, gssymopanalyze, gssymopcase;
 
 static
 int
@@ -271,6 +272,12 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             if (cl.phase > phtygvars)
                 gsfatal_bad_input(p, "Too late to add type global variables");
             cl.phase = phtygvars;
+            /* type erasure */
+        } else if (gssymceq(p->directive, gssymoptyfv, gssymcodeop, ".tyfv")) {
+            if (cl.phase > phtyfvs)
+                gsfatal("%P: Too late to add type arguments", p->pos)
+            ;
+            cl.phase = phtyfvs;
             /* type erasure */
         } else if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
             if (cl.phase > phtyargs)
@@ -730,6 +737,7 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
 struct gsbc_byte_compile_code_or_api_op_closure {
     enum {
         rttygvars,
+        rttyfvs,
         rttyargs,
         rttylets,
         rtsubexprs,
@@ -779,6 +787,11 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 gsfatal_bad_input(p, "Too late to add type global variables")
             ;
             cl.phase = rttygvars;
+        } else if (gssymceq(p->directive, gssymoptyfv, gssymcodeop, ".tyfv")) {
+            if (cl.phase > rttyfvs)
+                gsfatal("%P: Too late to add free type variables", p->pos)
+            ;
+            cl.phase = rttyfvs;
         } else if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
             if (cl.phase > rttyargs)
                 gsfatal("%P: Too late to add type arguments", p->pos)

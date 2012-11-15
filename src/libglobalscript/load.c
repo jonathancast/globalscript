@@ -687,7 +687,7 @@ static
 int
 gsparse_code_type_fv_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymtygvar;
+    static gsinterned_string gssymtygvar, gssymtyfv;
 
     if (gssymceq(parsedline->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
         if (*fields[0])
@@ -696,6 +696,16 @@ gsparse_code_type_fv_op(char *filename, struct gsparsedline *parsedline, int *pl
             gsfatal("%s:%d: Missing label on .tygvar op", filename, *plineno);
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .tygvar op", filename, *plineno);
+    } else if (gssymceq(parsedline->directive, gssymtyfv, gssymcodeop, ".tyfv")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+        else
+            gsfatal("%s:%d: Missing label on .tyfv op", filename, *plineno);
+        if (n < 3)
+            gsfatal("%s:%d: Missing kind on .tyfv", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
+        if (n > 4)
+            gsfatal("%s:%d: Too many arguments to .tyfv", filename, *plineno);
     } else {
         return 0;
     }
