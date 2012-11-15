@@ -2151,7 +2151,7 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
             gsfatal_unimpl(__FILE__, __LINE__, "%P: α-rename other free type variables (if needed)", p->pos)
         ;
         for (j = 0; j < cty->numfvs; j++)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Substitute free type variable value in type of free variables", p->pos)
+            cty->fvtypes[j] = gstypes_subst(p->pos, cty->fvtypes[j], cty->tyfvs[i - 1], fvval)
         ;
         if (cty->cont_arg_type)
             cty->cont_arg_type = gstypes_subst(p->pos, cty->cont_arg_type, cty->tyfvs[i - 1], fvval)
@@ -2185,14 +2185,9 @@ gsbc_typecheck_free_variables(struct gsbc_typecheck_code_or_api_expr_closure *pc
     ;
     for (; i < p->numarguments; i++) {
         int fvreg;
-        struct gstype *fvtype;
 
         fvreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
-        fvtype = pcl->regtypes[fvreg];
-        if (nftyvs > 0)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_api_expr: substitute free type variables in expected type of free variable", p->pos)
-        ;
-        gstypes_type_check_type_fail(p->pos, fvtype, cty->fvtypes[i - firstfv]);
+        gstypes_type_check_type_fail(p->pos, pcl->regtypes[fvreg], cty->fvtypes[i - firstfv]);
     }
     return nfvs;
 }

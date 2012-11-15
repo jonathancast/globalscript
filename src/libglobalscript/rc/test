@@ -104,6 +104,7 @@ ok_diff_fail '-- force undefined values of abstract types --' ./$O.test-gsi forc
 
 ok_diff_fail '-- force with free variable in continuation --' ./$O.test-gsi force-with-fv.ags
 ok_diff_fail '-- force with free type variable in continuation --' ./$O.test-gsi force-with-type-fv.ags
+ok_diff_fail '-- force with free type variable and variable in continuation --' ./$O.test-gsi force-with-fv-and-type-fv.ags
 
 ok_diff '-- rune literals --' ./$O.test-gsi rune-literal.ags
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
