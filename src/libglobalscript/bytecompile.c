@@ -249,7 +249,7 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopundef, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopenter, gssymopundef, gssymopanalyze, gssymopcase;
 
 static
 int
@@ -1006,18 +1006,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             cl.pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
         } else if (gsbc_byte_compile_terminal_code_op(ppseg, &p, &cl)) {
             goto done;
-        } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
-            int reg = 0;
-
-            cl.phase = rtops;
-            pcode = (struct gsbc *)cl.pout;
-            gsargcheck(p, 0, "target");
-            reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0]);
-            pcode->pos = p->pos;
-            pcode->instr = gsbc_op_enter;
-            pcode->args[0] = (uchar)reg;
-            cl.pout = GS_NEXT_BYTECODE(pcode, 1);
-            goto done;
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Code op %s", p->pos, p->directive->name);
         }
@@ -1207,6 +1195,17 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
         reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
         pcode->pos = (*pp)->pos;
         pcode->instr = gsbc_op_yield;
+        pcode->args[0] = (uchar)reg;
+        pcl->pout = GS_NEXT_BYTECODE(pcode, 1);
+    } else if (gssymceq((*pp)->directive, gssymopenter, gssymcodeop, ".enter")) {
+        int reg = 0;
+
+        pcl->phase = rtops;
+        pcode = (struct gsbc *)pcl->pout;
+        gsargcheck(*pp, 0, "target");
+        reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
+        pcode->pos = (*pp)->pos;
+        pcode->instr = gsbc_op_enter;
         pcode->args[0] = (uchar)reg;
         pcl->pout = GS_NEXT_BYTECODE(pcode, 1);
     } else if (gssymceq((*pp)->directive, gssymopundef, gssymcodeop, ".undef")) {
