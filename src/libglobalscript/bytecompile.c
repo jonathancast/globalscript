@@ -542,6 +542,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             int nregs;
 
             nregs = pcl->nregs;
+            pcl->phase = phargs;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
@@ -1239,6 +1240,7 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
             pcases[i] = (struct gsbc *)pcl->pout;
             nregs = pcl->nregs;
             pcl->nfields = 0;
+            pcl->phase = rtargs;
             gsbc_byte_compile_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }

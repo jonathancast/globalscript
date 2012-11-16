@@ -1371,8 +1371,9 @@ gsbc_typecheck_expr_terminal_op(struct gsparsedline **pp, struct gsparsedfile_se
             gsargcheck(*pp, 0, "Constructor");
             gsbc_typecheck_check_constr(panalyze->pos, (*pp)->pos, constr, constr > 0 ? sum->constrs[constr - 1].name : 0, (*pp)->arguments[0], panalyze->arguments[1 + constr], sum->constrs[constr].name);
 
-            nregs = pcl->nregs;
             *pp = gsinput_next_line(ppseg, *pp);
+            nregs = pcl->nregs;
+            pcl->regtype = rtarg;
             casetype = gsbc_typecheck_case(case_pos, pp, ppseg, pcl, sum->constrs[constr].argtype);
             pcl->nregs = nregs;
 
