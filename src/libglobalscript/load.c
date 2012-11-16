@@ -1058,6 +1058,7 @@ gsparse_case(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *cha
         if (gsparse_field_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_thunk_alloc_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_value_alloc_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_push_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return;
