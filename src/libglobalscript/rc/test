@@ -111,6 +111,7 @@ ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 ok_diff '-- constructors --' ./$O.test-gsi constructor.ags
 ok_diff '-- constructors with arguments --' ./$O.test-gsi constructor-args.ags
 ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
+ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 
 ok_diff '-- cosntructors in expressions --' ./$O.test-gsi constr-in-expr.ags
 

@@ -244,12 +244,13 @@ struct gsbc_bytecode_size_code_closure {
 
     int nregs;
 };
+static int gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopenter, gssymopundef, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopenter, gssymopundef, gssymopanalyze, gssymopcase;
 
 static
 int
@@ -291,6 +292,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             ;
             cl.phase = phtylets;
             /* type erasure */
+        } else if (gsbc_bytecode_size_data_fv_code_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
             if (cl.phase > phgvars)
                 gsfatal("%P: Too late to add global variables", p->pos)
@@ -441,6 +443,29 @@ done:
     ;
 
     return cl.size;
+}
+
+static
+int
+gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
+        if (pcl->phase > phgvars)
+            gsfatal("%P: Too late to add global variables", p->pos)
+        ;
+        pcl->phase = phgvars;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        if (pcl->size % sizeof(gsvalue))
+            gsfatal_unimpl(__FILE__, __LINE__, "%p: File format error: we're at a .rune generator but our location isn't gsvalue-aligned", p->pos)
+        ;
+        pcl->size += sizeof(gsvalue);
+        pcl->nregs++;
+    } else {
+        return 0;
+    }
+    return 1;
 }
 
 static
@@ -766,12 +791,15 @@ struct gsbc_byte_compile_code_or_api_op_closure {
     int nsubexprs;
     gsinterned_string subexprs[MAX_NUM_REGISTERS];
 
+    int nglobals;
+
     int nargs;
 
     int nfields;
     gsinterned_string fields[MAX_NUM_REGISTERS];
 };
 
+static int gsbc_byte_compile_data_fv_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_cont_push_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
@@ -786,11 +814,11 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     struct gsbco **psubcode;
     gsvalue *pglobal;
     struct gsbc *pcode;
-    int nglobals, nfvs;
+    int nfvs;
 
     cl.phase = rttygvars;
     cl.pout = ((uchar*)pbco + sizeof(struct gsbco));
-    cl.ntyregs = cl.nregs = cl.nsubexprs = nglobals = nfvs = cl.nargs = cl.nfields = 0;
+    cl.ntyregs = cl.nregs = cl.nsubexprs = cl.nglobals = nfvs = cl.nargs = cl.nfields = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)
@@ -845,6 +873,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             }
             cl.tyregs[cl.ntyregs] = type;
             cl.ntyregs++;
+        } else if (gsbc_byte_compile_data_fv_code_op(p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
                 gsfatal_bad_input(p, "Too late to add sub-expressions")
@@ -876,7 +905,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             *pglobal = gssymtable_get_data(symtable, p->label);
             cl.pout = pglobal + 1;
             cl.nregs++;
-            nglobals++;
+            cl.nglobals++;
         } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
             if (cl.phase > rtfvs)
                 gsfatal_bad_input(p, "Too late to add free variables")
@@ -1014,9 +1043,42 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
 done:
 
     pbco->numsubexprs = cl.nsubexprs;
-    pbco->numglobals = nglobals;
+    pbco->numglobals = cl.nglobals;
     pbco->numfvs = nfvs;
     pbco->numargs = cl.nargs;
+}
+
+static
+int
+gsbc_byte_compile_data_fv_code_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    gsvalue *pglobal;
+
+    if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
+        char *eos;
+
+        if (pcl->phase > rtgvars)
+            gsfatal("%P: Too late to add global variables", p->pos)
+        ;
+        pcl->phase = rtgvars;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+
+        pglobal = (gsvalue *)pcl->pout;
+        eos = gsbc_parse_rune_literal(p->pos, p->arguments[0]->name, pglobal);
+        if (*eos)
+            gsfatal("%P: %y: More than one rune in argument to .rune", p->pos, p->arguments[0])
+        ;
+        pcl->pout = pglobal + 1;
+
+        pcl->nregs++;
+        pcl->nglobals++;
+    } else {
+        return 0;
+    }
+    return 1;
 }
 
 static
@@ -1279,12 +1341,12 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     int i;
     struct gsbco **psubcode;
     struct gsbc *pcode;
-    int nglobals, nfvs, nargs;
+    int nfvs, nargs;
 
     cl.phase = rttygvars;
     pcode = 0;
     cl.pout = (uchar*)pbco + sizeof(struct gsbco);
-    cl.nregs = nglobals = cl.nsubexprs = nfvs = nargs = 0;
+    cl.nregs = cl.nglobals = cl.nsubexprs = nfvs = nargs = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)
@@ -1393,7 +1455,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
 
 done:
 
-    pbco->numglobals = nglobals;
+    pbco->numglobals = cl.nglobals;
     pbco->numsubexprs = cl.nsubexprs;
     pbco->numargs = nargs;
     pbco->numfvs = nfvs;

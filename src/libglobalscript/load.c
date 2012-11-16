@@ -687,7 +687,7 @@ static
 int
 gsparse_value_fv_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymsubcode, gssymcogvar, gssymgvar, gssymfv;
+    static gsinterned_string gssymsubcode, gssymcogvar, gssymgvar, gssymrune, gssymfv;
 
     int i;
 
@@ -712,6 +712,16 @@ gsparse_value_fv_op(char *filename, struct gsparsedline *parsedline, int *plinen
             gsfatal("%s:%d: Missing label on .gvar op", filename, *plineno);
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .gvar op", filename, *plineno);
+    } else if (gssymceq(parsedline->directive, gssymrune, gssymcodeop, ".rune")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+        else
+            gsfatal("%s:%d: Missing label on .rune op", filename, *plineno);
+        if (n < 2+1)
+            gsfatal("%s:%d: Missing rune literal", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymruneconstant, fields[2]);
+        if (n > 2+1)
+            gsfatal("%s:%d: Too many arguments to .rune; I know about the rune literal to use");
     } else if (gssymceq(parsedline->directive, gssymfv, gssymcodeop, ".fv")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymdatalable, fields[0]);
