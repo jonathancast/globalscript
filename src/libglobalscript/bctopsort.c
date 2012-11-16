@@ -139,19 +139,6 @@ gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedlin
     return 0;
 }
 
-struct gsparsedline *
-gscoercion_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedline *coercion)
-{
-    if (gssymeq(coercion->directive, gssymtypedirective, ".tyexpr")) {
-        return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, coercion));
-    } else if (gssymeq(coercion->directive, gssymtypedirective, ".tyabstract")) {
-        return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, coercion));
-    } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gscoercion_section_next_item(%s)", coercion->pos, coercion->directive->name);
-    }
-    return 0;
-}
-
 static
 struct gsparsedline *
 gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
@@ -177,6 +164,46 @@ gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gspars
             return gsinput_next_line(ppseg, p);
         else
             gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_section_skip_type_expr(%s)", p->pos, p->directive->name);
+    }
+
+    return 0;
+}
+
+static struct gsparsedline *gscoercion_section_skip_coercion_expr(struct gsparsedfile_segment **, struct gsparsedline *);
+
+struct gsparsedline *
+gscoercion_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedline *coercion)
+{
+    static gsinterned_string gssymtycoercion;
+
+    if (gssymceq(coercion->directive, gssymtycoercion, gssymcoerciondirective, ".tycoercion")) {
+        return gscoercion_section_skip_coercion_expr(ppseg, gsinput_next_line(ppseg, coercion));
+    } else {
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gscoercion_section_next_item(%y)", coercion->pos, coercion->directive);
+    }
+    return 0;
+}
+
+static
+struct gsparsedline *
+gscoercion_section_skip_coercion_expr(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
+{
+    static gsinterned_string gssymtygvar, gssymtylambda, gssymtyinvert;
+    static gsinterned_string gssymtydefinition;
+
+    for (;;) {
+        if (
+            gssymceq(p->directive, gssymtygvar, gssymcoercionop, ".tygvar")
+            || gssymceq(p->directive, gssymtylambda, gssymcoercionop, ".tylambda")
+            || gssymceq(p->directive, gssymtyinvert, gssymcoercionop, ".tyinvert")
+        )
+            p = gsinput_next_line(ppseg, p);
+        else if (
+            gssymceq(p->directive, gssymtydefinition, gssymcoercionop, ".tydefinition")
+        )
+            return gsinput_next_line(ppseg, p);
+        else
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gscoercion_section_skip_coercion_expr(%y)", p->pos, p->directive);
     }
 
     return 0;
