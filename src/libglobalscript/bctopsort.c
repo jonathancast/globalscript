@@ -372,7 +372,7 @@ static
 void
 gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymforcecont, gssymtylet, gssymcogvar;
+    static gsinterned_string gssymforcecont, gssymtyarg, gssymtyfv, gssymtylet, gssymcogvar;
 
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
@@ -388,7 +388,11 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
                 struct gsbc_item global;
                 global = gssymtable_lookup(p->pos, symtable, p->label);
                 gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
-            } else if (gssymceq(p->directive, gssymtylet, gssymcodeop, ".tylet")) {
+            } else if (
+                gssymceq(p->directive, gssymtyarg, gssymcodeop, ".tyarg")
+                || gssymceq(p->directive, gssymtyfv, gssymcodeop, ".tyfv")
+                || gssymceq(p->directive, gssymtylet, gssymcodeop, ".tylet")
+            ) {
             } else if (gssymceq(p->directive, gssymcogvar, gssymcodeop, ".cogvar")) {
                 struct gsbc_item global;
                 global = gssymtable_lookup(p->pos, symtable, p->label);
