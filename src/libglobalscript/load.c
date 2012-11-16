@@ -502,7 +502,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymcogvar, gssymtyarg, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymcoerce, gssymforce;
+    static gsinterned_string gssymcogvar, gssymtyarg, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymforce;
 
     struct gsparsedline *parsedline;
     int i;
@@ -592,13 +592,6 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->label = 0;
             if (n > 2)
                 gsfatal("%s:%d: Too many arguments to .lift", filename, *plineno);
-        } else if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
-            if (n < 3)
-                gsfatal("%s:%d: Missing coercion to apply");
-            parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
-            for (i = 1; 2+i < n; i++) {
-                parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i]);
-            }
         } else if (gssymceq(parsedline->directive, gssymforce, gssymcodeop, ".force")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops");
@@ -844,11 +837,18 @@ static
 int
 gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymapp;
+    static gsinterned_string gssymcoerce, gssymapp;
 
     int i;
 
-    if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".app")) {
+    if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
+        if (n < 3)
+            gsfatal("%s:%d: Missing coercion to apply");
+        parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
+        for (i = 1; 2+i < n; i++) {
+            parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i]);
+        }
+    } else if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".app")) {
         if (*fields[0])
             gsfatal("%s:%d: Labels illegal on continuation ops");
         else
