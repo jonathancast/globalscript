@@ -249,7 +249,7 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopundef, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopundef, gssymopanalyze, gssymopcase;
 
 static
 int
@@ -495,6 +495,12 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         nfvs = p->numarguments - i;
 
         pcl->size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
+    } else if (gssymceq(p->directive, gssymopconstr, gssymcodeop, ".constr")) {
+        if (p->numarguments == 3)
+            pcl->size += GS_SIZE_BYTECODE(2 + 1)
+        ; else
+            pcl->size += GS_SIZE_BYTECODE(2 + (p->numarguments - 2) / 2)
+        ;
     } else {
         return 0;
     }
@@ -1085,15 +1091,12 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             gsfatal_bad_input(p, "Too late to add allocations");
         pcl->phase = rtlets;
 
-        pcode = (struct gsbc *)pcl->pout;
-
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
+        pcl->regs[pcl->nregs++] = p->label;
 
-        pcl->regs[pcl->nregs] = p->label;
-
-        pcl->nregs++;
+        pcode = (struct gsbc *)pcl->pout;
 
         creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[0]);
 
@@ -1116,6 +1119,42 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         }
 
         pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
+    } else if (gssymceq(p->directive, gssymopconstr, gssymcodeop, ".constr")) {
+        struct gstype_sum *sum;
+
+        if (pcl->phase > rtlets)
+            gsfatal_bad_input(p, "Too late to add allocations");
+        pcl->phase = rtlets;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->regs[pcl->nregs++] = p->label;
+
+        pcode = (struct gsbc *)pcl->pout;
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_constr;
+
+        sum = (struct gstype_sum *)pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[0])];
+
+        for (i = 0; i < sum->numconstrs; i++) {
+            if (p->arguments[1] == sum->constrs[i].name) {
+                ACE_CONSTR_CONSTRNUM(pcode) = i;
+                goto have_constr;
+            }
+        }
+        gsfatal("%P: Sum type %y has no constructor %y", p->pos, p->arguments[0], p->arguments[1]);
+    have_constr:
+        if (p->numarguments == 3) {
+            ACE_CONSTR_NUMARGS(pcode) = 1;
+            ACE_CONSTR_ARG(pcode, 0) = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[2]);
+        } else {
+            ACE_CONSTR_NUMARGS(pcode) = (p->numarguments - 2) / 2;
+            for (i = 0; 2+i < p->numarguments; i += 2) {
+                ACE_CONSTR_ARG(pcode, i / 2) = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[2+i+1]);
+            }
+        }
+        pcl->pout = ACE_CONSTR_SKIP(pcode);
     } else {
         return 0;
     }

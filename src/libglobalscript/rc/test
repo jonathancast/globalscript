@@ -112,6 +112,8 @@ ok_diff '-- constructors --' ./$O.test-gsi constructor.ags
 ok_diff '-- constructors with arguments --' ./$O.test-gsi constructor-args.ags
 ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 
+ok_diff '-- cosntructors in expressions --' ./$O.test-gsi constr-in-expr.ags
+
 ok_diff '-- analyze on boxed sums --' ./$O.test-gsi analyze-constructor.ags
 ok_diff '-- analyze on sums of unboxed products --' ./$O.test-gsi analyze-adt-constructor.ags
 

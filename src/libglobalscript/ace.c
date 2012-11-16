@@ -52,6 +52,7 @@ static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
 
 static int ace_alloc_thunk(struct ace_thread *);
+static int ace_alloc_constr(struct ace_thread *);
 static int ace_alloc_record(struct ace_thread *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
@@ -72,7 +73,9 @@ ace_thread_pool_main(void *p)
     have_clients = 1;
 
     while (have_clients) {
+        lock(&ace_thread_queue->lock);
         have_clients = ace_thread_queue->refcount > 0;
+        unlock(&ace_thread_queue->lock);
         suspended_runnable_thread = 0;
         if (have_clients) {
             for (i = 0; i < NUM_ACE_THREADS; i++) {
@@ -131,6 +134,11 @@ ace_thread_pool_main(void *p)
                         switch (thread->ip->instr) {
                             case gsbc_op_alloc:
                                 if (ace_alloc_thunk(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_constr:
+                                if (ace_alloc_constr(thread))
                                     suspended_runnable_thread = 1
                                 ;
                                 break;
@@ -233,6 +241,35 @@ ace_alloc_thunk(struct ace_thread *thread)
     thread->regs[thread->nregs] = (gsvalue)hp;
     thread->nregs++;
     thread->ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
+    return 1;
+}
+
+static
+int
+ace_alloc_constr(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsconstr *constr;
+    int i;
+
+    ip = thread->ip;
+
+    constr = gsreserveconstrs(sizeof(*constr) + ACE_CONSTR_NUMARGS(ip) * sizeof(gsvalue));
+    constr->pos = ip->pos;
+    constr->constrnum = ACE_CONSTR_CONSTRNUM(ip);
+    constr->numargs = ACE_CONSTR_NUMARGS(ip);
+    for (i = 0; i < ACE_CONSTR_NUMARGS(ip); i++)
+        constr->arguments[i] = thread->regs[ACE_CONSTR_ARG(ip, i)]
+    ;
+
+    if (thread->nregs >= MAX_NUM_REGISTERS) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        return 0;
+    }
+    thread->regs[thread->nregs++] = (gsvalue)constr;
+
+    thread->ip = ACE_CONSTR_SKIP(ip);
+
     return 1;
 }
 

@@ -537,6 +537,8 @@ gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
 }
 
 static void gstypes_type_check_type_fail(struct gspos pos, struct gstype *, struct gstype *);
+static int gsbc_find_constr_in_sum(struct gspos, gsinterned_string, struct gstype_sum *, gsinterned_string);
+static void gsbc_check_field_order(struct gspos, int, struct gstype_field *);
 
 static
 void
@@ -588,30 +590,10 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             gsfatal("%P: Type argument to .constr must be a sum type (not an abstract type)", pdata->pos)
         ;
         sum = (struct gstype_sum *)type;
-        for (i = 0; i < sum->numconstrs; i++) {
-            struct gstype_constr *constr, *prev_constr;
-
-            constr = &sum->constrs[i];
-            prev_constr = &sum->constrs[i - 1];
-            if (i > 0 && strcmp(prev_constr->name->name, constr->name->name) == 0)
-                gsfatal("%P: Duplicate constructor %s", pdata->pos, constr->name->name)
-            ;
-            if (i > 0 && strcmp(prev_constr->name->name, constr->name->name) > 0)
-                gsfatal("%P: Constructors in the wrong order: %s should be after %s", pdata->pos, prev_constr->name->name, constr->name->name)
-            ;
-        }
-
         gsargcheck(pdata, 1, "constructor");
-        for (i = 0; i < sum->numconstrs; i++) {
-            if (sum->constrs[i].name == pdata->arguments[1]) {
-                constrnum = i;
-                argtype = sum->constrs[i].argtype;
-                goto have_constr;
-            }
-        }
-        gsfatal("%P: Type %s lacks a constructor %s", pdata->pos, pdata->arguments[0]->name, pdata->arguments[1]->name);
-        argtype = 0;
-    have_constr:
+        constrnum = gsbc_find_constr_in_sum(pdata->pos, pdata->arguments[0], sum, pdata->arguments[1]);
+        argtype = sum->constrs[constrnum].argtype;
+
         if (pdata->numarguments == 3) {
             struct gstype *actualtype;
 
@@ -621,7 +603,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             struct gstype_ubproduct *ubproduct;
 
             if (argtype->node != gstype_ubproduct)
-                gsfatal("%P: Type of the argument to %y in %y not an un-boxed product, therefore you cannot supply multiple argumentst to %y",
+                gsfatal("%P: Type of the argument to %y in %y not an un-boxed product, therefore you cannot supply multiple arguments to %y",
                     pdata->pos,
                     pdata->arguments[1],
                     pdata->arguments[0],
@@ -629,18 +611,12 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
                 )
             ;
             ubproduct = (struct gstype_ubproduct *)argtype;
+            gsbc_check_field_order(pdata->pos, ubproduct->numfields, ubproduct->fields);
             if ((pdata->numarguments - 2) / 2 != ubproduct->numfields)
                 gsfatal("%P: Wrong number of fields; got %d but expected %d", pdata->pos, (pdata->numarguments - 2) / 2, ubproduct->numfields)
             ;
             for (i = 0; 2+i < pdata->numarguments; i += 2) {
                 struct gstype *fieldtype;
-
-                if (i > 0 && strcmp(pdata->arguments[2+i-2]->name, pdata->arguments[2+i]->name) == 0)
-                    gsfatal("%P: Duplicate field %y", pdata->pos, pdata->arguments[2+i])
-                ;
-                if (i > 0 && strcmp(pdata->arguments[2+i-2]->name, pdata->arguments[2+i]->name) > 0)
-                    gsfatal("%P: Fields out of order; %y should come after %y", pdata->pos, pdata->arguments[2+i], pdata->arguments[2+i-2])
-                ;
                 if (pdata->arguments[2+i] != ubproduct->fields[i / 2].name)
                     gsfatal("%P: Wrong field #%d; got %y but expected %y", pdata->pos, i / 2, pdata->arguments[2+i], ubproduct->fields[i / 2].name)
                 ;
@@ -1078,46 +1054,15 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtylet;
-
     struct gsbc_typecheck_code_or_api_expr_closure cl;
-
-    int i;
-
-    int ntyargs;
-    gsinterned_string tyargnames[MAX_NUM_REGISTERS];
-    struct gskind *tyargkinds[MAX_NUM_REGISTERS];
 
     struct gstype *cont_arg_type;
     struct gstype *calculated_type;
 
     gsbc_setup_code_expr_closure(&cl);
-    ntyargs = 0;
     cont_arg_type = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
-        } else if (gssymceq(p->directive, gssymtylet, gssymcodeop, ".tylet")) {
-            struct gstype *ty;
-
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
-            ;
-            if (cl.regtype > rttylet)
-                gsfatal_bad_input(p, "Too late to add lets")
-            ;
-            cl.regtype = rttylet;
-            cl.regs[cl.nregs] = p->label;
-            gsargcheck(p, 0, "base");
-            ty = cl.tyregs[gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[0])];
-            for (i = 1; i < p->numarguments; i++) {
-                struct gstype *arg;
-
-                arg = cl.tyregs[gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i])];
-                ty = gstype_supply(p->pos, ty, arg);
-            }
-            cl.tyregs[cl.nregs] = ty;
-            cl.tyregkinds[cl.nregs] = gstypes_calculate_kind(ty);
-            cl.nregs++;
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(&p, ppseg, &cl)) {
@@ -1186,7 +1131,9 @@ static
 int
 gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymtygvar, gssymtyfv;
+    static gsinterned_string gssymtygvar, gssymtyfv, gssymtylet;
+
+    int i;
 
     if (gssymceq(p->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
         if (pcl->regtype > rttygvar)
@@ -1228,6 +1175,28 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
         pcl->tyfvkinds[pcl->ntyfvs] = fvkind;
         pcl->tyfvposs[pcl->ntyfvs] = p->pos;
         pcl->ntyfvs++;
+    } else if (gssymceq(p->directive, gssymtylet, gssymcodeop, ".tylet")) {
+        struct gstype *ty;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
+        ;
+        if (pcl->regtype > rttylet)
+            gsfatal("%P: Too late to add type lets", p->pos)
+        ;
+        pcl->regtype = rttylet;
+        pcl->regs[pcl->nregs] = p->label;
+        gsargcheck(p, 0, "base");
+        ty = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0])];
+        for (i = 1; i < p->numarguments; i++) {
+            struct gstype *arg;
+
+            arg = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
+            ty = gstype_supply(p->pos, ty, arg);
+        }
+        pcl->tyregs[pcl->nregs] = ty;
+        pcl->tyregkinds[pcl->nregs] = gstypes_calculate_kind(ty);
+        pcl->nregs++;
     } else {
         return 0;
     }
@@ -1556,7 +1525,9 @@ static
 int
 gsbc_typecheck_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc;
+    static gsinterned_string gssymalloc, gssymconstr;
+
+    int i;
 
     if (gssymceq(p->directive, gssymalloc, gssymcodeop, ".alloc")) {
         int creg = 0;
@@ -1569,7 +1540,7 @@ gsbc_typecheck_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_ap
         ;
         pcl->regtype = rtlet;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
 
         gsargcheck(p, 0, "code");
@@ -1587,10 +1558,106 @@ gsbc_typecheck_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_ap
         pcl->regtypes[pcl->nregs] = alloc_type;
 
         pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymconstr, gssymcodeop, ".constr")) {
+        int tyreg;
+        int constrnum;
+        struct gstype *type, *argtype;
+        struct gstype_sum *sum;
+
+        if (pcl->regtype > rtlet)
+            gsfatal_bad_input(p, "Too late to add allocations")
+        ;
+        pcl->regtype = rtlet;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+
+        gsargcheck(p, 0, "Type");
+        tyreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
+        type = pcl->tyregs[tyreg];
+        if (type->node != gstype_sum)
+            gsfatal("%P: Type %y is not a sum type (maybe it's lifted, or abstract?)", p->pos, p->arguments[0])
+        ;
+        sum = (struct gstype_sum *)type;
+
+        gsargcheck(p, 1, "constructor");
+        constrnum = gsbc_find_constr_in_sum(p->pos, p->arguments[0], sum, p->arguments[1]);
+        argtype = sum->constrs[constrnum].argtype;
+
+        if (p->numarguments == 3)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_alloc_op: .constr with boxed argument", p->pos)
+        ; else {
+            int nfields;
+            struct gstype_field fields[MAX_NUM_REGISTERS];
+
+            if (p->numarguments % 2)
+                gsfatal("%P: Odd number of arguments to .constr when expecting field/constructor pairs", p->pos)
+            ;
+            nfields = 0;
+            for (i = 0; 2 + i * 2 < p->numarguments; i++) {
+                int argreg;
+
+                nfields++;
+                fields[i].name = p->arguments[2 + i * 2];
+                argreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[2 + i * 2 + 1]);
+                fields[i].type = pcl->regtypes[argreg];
+            }
+            gsbc_check_field_order(p->pos, nfields, fields);
+            gstypes_type_check_type_fail(p->pos, gstypes_compile_ubproductv(p->pos, nfields, fields), argtype);
+        }
+
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regtypes[pcl->nregs] = type;
+        pcl->nregs++;
     } else {
         return 0;
     }
     return 1;
+}
+
+static
+int
+gsbc_find_constr_in_sum(struct gspos pos, gsinterned_string tyname, struct gstype_sum *sum, gsinterned_string c)
+{
+    int i;
+
+    for (i = 1; i < sum->numconstrs; i++) {
+        struct gstype_constr *constr, *prev_constr;
+
+        constr = &sum->constrs[i];
+        prev_constr = &sum->constrs[i - 1];
+        if (prev_constr->name == constr->name)
+            gsfatal("%P: Duplicate constructor %y", pos, constr->name)
+        ;
+        if (strcmp(prev_constr->name->name, constr->name->name) > 0)
+            gsfatal("%P: Constructors in the wrong order: %y should be after %y", pos, prev_constr->name, constr->name)
+        ;
+    }
+
+    for (i = 0; i < sum->numconstrs; i++)
+        if (sum->constrs[i].name == c)
+            return i
+    ;
+
+    gsfatal("%P: Type %y lacks a constructor %y", pos, tyname, c);
+
+    return -1;
+}
+
+static
+void
+gsbc_check_field_order(struct gspos pos, int nfields, struct gstype_field *fields)
+{
+    int i;
+
+    for (i = 1; i < nfields; i ++) {
+        if (fields[i - 1].name == fields[i].name)
+            gsfatal("%P: Duplicate field %y", pos, fields[i].name)
+        ;
+        if (strcmp(fields[i - 1].name->name, fields[i].name->name) > 0)
+            gsfatal("%P: Fields out of order; %y should come after %y", pos, fields[i - 1], fields[i].name)
+        ;
+    }
 }
 
 static gsinterned_string gssymoplift, gssymopcoerce, gssymopforce, gssymopapp;
