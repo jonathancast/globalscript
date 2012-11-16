@@ -208,6 +208,7 @@ typedef enum {
     gstywhnf,
     gstyindir,
     gstyerr,
+    gstyimplerr,
     gstyunboxed,
     gstyenosys = 64,
     gstyeoothreads,

@@ -90,7 +90,7 @@ apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table 
 /* §section Main loop */
 
 static void api_exec_instr(struct api_thread *, gsvalue);
-static void api_exec_err(struct api_thread *, gsvalue);
+static void api_exec_err(struct api_thread *, gsvalue, gstypecode);
 
 static void api_send_done_rpc(struct api_thread *);
 static void api_send_abend_rpc(struct api_thread *, char *, ...);
@@ -145,7 +145,8 @@ api_thread_pool_main(void *arg)
                                 ranthread = 1;
                                 break;
                             case gstyerr:
-                                api_exec_err(thread, instr);
+                            case gstyimplerr:
+                                api_exec_err(thread, instr, st);
                                 break;
                             case gstystack:
                                 break;
@@ -307,29 +308,32 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
 
 static
 void
-api_exec_err(struct api_thread *thread, gsvalue instr)
+api_exec_err(struct api_thread *thread, gsvalue instr, gstypecode st)
 {
     struct gs_blockdesc *block;
 
     block = BLOCK_CONTAINING(instr);
+    switch (st) {
+        case gstyerr: {
+            struct gserror *p;
 
-    if (gsiserror_block(block)) {
-        struct gserror *p;
-
-        p = (struct gserror *)instr;
-        switch (p->type) {
-            case gserror_undefined:
-                api_abend(thread, "%P: undefined", p->pos);
-                break;
-            case gserror_generated:
-                api_abend(thread, "%P: %s", p->pos, p->message);
-                break;
-            default:
-                api_abend(thread, "%P: unknown error type %d", p->pos, p->type);
-                break;
+            p = (struct gserror *)instr;
+            switch (p->type) {
+                case gserror_undefined:
+                    api_abend(thread, "%P: undefined", p->pos);
+                    break;
+                case gserror_generated:
+                    api_abend(thread, "%P: %s", p->pos, p->message);
+                    break;
+                default:
+                    api_abend(thread, "%P: unknown error type %d", p->pos, p->type);
+                    break;
+            }
+            break;
         }
-    } else {
-        api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%s)", block->class->description);
+        default:
+            api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%s)", block->class->description);
+            break;
     }
 }
 

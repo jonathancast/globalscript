@@ -302,9 +302,12 @@ gsiserror_block(struct gs_blockdesc *p)
 
 /* §section Global Script Implementation Errors */
 
+static gstypecode gsimplerrorseval(gsvalue);
+static gsvalue gsimplerrorsindir(gsvalue);
+
 struct gs_block_class gsimplementation_errors_descr = {
-    /* evaluator = */ gserrorseval,
-    /* indirection_dereferencer = */ gserrorsindir,
+    /* evaluator = */ gsimplerrorseval,
+    /* indirection_dereferencer = */ gsimplerrorsindir,
     /* description = */ "Global Script Implementation Errors",
 };
 static void *gsimplementation_errors_nursury;
@@ -319,6 +322,19 @@ gsreserveimplementation_errors(ulong sz)
     res = gs_sys_seg_suballoc(&gsimplementation_errors_descr, &gsimplementation_errors_nursury, sz, sizeof(gsinterned_string));
     unlock(&gsimplementation_errors_lock);
     return res;
+}
+
+static
+gstypecode gsimplerrorseval(gsvalue val)
+{
+    return gstyimplerr;
+}
+
+static
+gsvalue
+gsimplerrorsindir(gsvalue val)
+{
+    return val;
 }
 
 struct gsimplementation_failure *

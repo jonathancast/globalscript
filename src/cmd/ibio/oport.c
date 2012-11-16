@@ -311,19 +311,13 @@ ibio_write_process_main(void *p)
                     break;
                 }
                 case gstyerr: {
-                    struct gs_blockdesc *block;
+                    struct gserror *err;
+                    char buf[0x100];
 
-                    block = BLOCK_CONTAINING(oport->writing);
-                    if (gsiserror_block(block)) {
-                        struct gserror *err;
-                        char buf[0x100];
+                    err = (struct gserror *)oport->writing;
+                    gserror_format(buf, buf + sizeof(buf), err);
+                    api_thread_post(oport->writing_thread, "write err: %s", buf);
 
-                        err = (struct gserror *)oport->writing;
-                        gserror_format(buf, buf + sizeof(buf), err);
-                        api_thread_post(oport->writing_thread, "write err: %s", buf);
-                    } else {
-                        api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: writing %s", block->class->description);
-                    }
                     active = oport->active = 0;
                     oport->writing = 0;
                     ibio_oport_unlink_from_thread(oport->writing_thread, oport);

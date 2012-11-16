@@ -40,6 +40,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 ace_down();
                 return;
             case gstyerr:
+            case gstyimplerr:
                 gsprint_error(type, symtable, prog);
                 ace_down();
                 exits("error");

@@ -112,18 +112,10 @@ ace_thread_pool_main(void *p)
                                 break;
                             }
                             case gstyerr: {
-                                struct gs_blockdesc *block;
+                                struct gserror *err;
 
-                                block = BLOCK_CONTAINING(prog);
-                                if (gsiserror_block(block)) {
-                                    struct gserror *err;
-
-                                    err = (struct gserror *)prog;
-                                    ace_error_thread(thread, err);
-                                } else {
-                                    ace_thread_unimpl(thread, __FILE__, __LINE__, thread->blockedat, ".enter (%s)", block->class->description);
-                                    break;
-                                }
+                                err = (struct gserror *)prog;
+                                ace_error_thread(thread, err);
                                 break;
                             }
                             default:

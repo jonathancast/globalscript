@@ -85,21 +85,22 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                     break;
                 }
                 case gstyerr: {
-                    struct gs_blockdesc *block;
                     char buf[0x100];
 
-                    block = BLOCK_CONTAINING(s);
-                    if (gsiserror_block(block)) {
-                        gserror_format(buf, buf + sizeof(buf), (struct gserror *)s);
-                        fprint(2, "%s\n", buf);
-                        exits("err");
-                    } else if (gsisimplementation_failure_block(block)) {
-                        gsimplementation_failure_format(buf, buf + sizeof(buf), (struct gsimplementation_failure *)s);
-                        fprint(2, "%s\n", buf);
-                        exits("unimpl");
-                    } else {
-                        gsfatal_unimpl(__FILE__, __LINE__, "gsrun: %s", block->class->description);
-                    }
+                    gserror_format(buf, buf + sizeof(buf), (struct gserror *)s);
+                    fprint(2, "%s\n", buf);
+                    exits("err");
+
+                    break;
+                }
+                case gstyimplerr: {
+                    char buf[0x100];
+
+                    gsimplementation_failure_format(buf, buf + sizeof(buf), (struct gsimplementation_failure *)s);
+                    fprint(2, "%s\n", buf);
+                    exits("unimpl");
+
+                    break;
                 }
                 default:
                     ace_down();
