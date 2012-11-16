@@ -967,9 +967,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             }
             cl.nregs++;
         } else if (gsbc_byte_compile_cont_push_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
-            cl.phase = rtops;
-            /* no effect on representation */
         } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
             int creg = 0;
             int nfvs, first_fv;
@@ -1165,7 +1162,10 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
     struct gsbc *pcode;
     int i;
 
-    if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
+    if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
+        pcl->phase = rtops;
+        /* no effect on representation */
+    } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
         pcl->phase = rtops;
         /* no effect on representation */
     } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
