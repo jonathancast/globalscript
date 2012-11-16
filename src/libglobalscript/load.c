@@ -1237,9 +1237,9 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->label = 0;
             if (n < 3)
                 gsfatal("%s:%d: Missing argument type to .tyfun", filename, *plineno);
-            parsedline->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
-            if (n > 3)
-                gsfatal("%s:%d: Too many arguments to .tyfun", filename, *plineno); 
+            for (i = 2; i < n; i++)
+                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+            ;
         } else if (gssymceq(parsedline->directive, gssymtyref, gssymtypeop, ".tyref")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);

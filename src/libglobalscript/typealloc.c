@@ -291,22 +291,28 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
     } else if (gssymceq(p->directive, gssymtylift, gssymtypeop, ".tylift")) {
         return gstypes_compile_lift(p->pos, gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
     } else if (gssymceq(p->directive, gssymtyfun, gssymtypeop, ".tyfun")) {
-        int argreg;
+        struct gstype *argty;
 
         gsargcheck(p, 0, "argument");
-        argreg = gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[0]);
-        return gstypes_compile_fun(p->pos, cl->regvalues[argreg], gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
+        argty = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[0])];
+        for (i = 1; i < p->numarguments; i++) {
+            struct gstype *tyarg;
+
+            tyarg = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i])];
+            argty = gstype_apply(p->pos, argty, tyarg);
+        }
+        return gstypes_compile_fun(p->pos, argty, gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p)));
     } else if (gssymceq(p->directive, gssymtyref, gssymtypeop, ".tyref")) {
         struct gstype *reg;
 
         gsargcheck(p, 0, "referent");
         reg = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[0])];
         res = reg;
-        for (i = 0; 1 + i < p->numarguments; i++) {
+        for (i = 1; i < p->numarguments; i++) {
             struct gstype *fun, *arg;
 
             fun = res;
-            arg = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[1 + i])];
+            arg = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i])];
             res = gstype_apply(p->pos, fun, arg);
         }
         return res;
