@@ -502,7 +502,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymcogvar, gssymtyarg, gssymarg, gssymrecord, gssymeprim, gssymlift, gssymforce;
+    static gsinterned_string gssymcogvar, gssymtyarg, gssymarg, gssymrecord, gssymeprim, gssymforce;
 
     struct gsparsedline *parsedline;
     int i;
@@ -585,13 +585,6 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
             }
         } else if (gsparse_cont_push_op(filename, parsedline, plineno, fields, n)) {
-        } else if (gssymceq(parsedline->directive, gssymlift, gssymcodeop, ".lift")) {
-            if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on continuation ops");
-            else
-                parsedline->label = 0;
-            if (n > 2)
-                gsfatal("%s:%d: Too many arguments to .lift", filename, *plineno);
         } else if (gssymceq(parsedline->directive, gssymforce, gssymcodeop, ".force")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops");
@@ -837,11 +830,18 @@ static
 int
 gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymcoerce, gssymapp;
+    static gsinterned_string gssymlift, gssymcoerce, gssymapp;
 
     int i;
 
-    if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
+    if (gssymceq(parsedline->directive, gssymlift, gssymcodeop, ".lift")) {
+        if (*fields[0])
+            gsfatal("%s:%d: Labels illegal on continuation ops");
+        else
+            parsedline->label = 0;
+        if (n > 2)
+            gsfatal("%s:%d: Too many arguments to .lift", filename, *plineno);
+    } else if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
         if (n < 3)
             gsfatal("%s:%d: Missing coercion to apply");
         parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
