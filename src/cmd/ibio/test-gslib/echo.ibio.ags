@@ -1,0 +1,180 @@
+	.document
+
+	.data
+
+	.cast	_ep.in	_real.entry
+_real.entry	.closure	_real.entry.c
+_cat.args	.closure	_cat.args.c
+_cat.args.w	.closure	_cat.args.w.c	_cat.args.w.ty
+_sp	.closure	_sp.c
+_nl	.string	\n
+
+	.code
+
+_real.entry.c	.eprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_real.entry.as	.subcode
+_real.entry.s	.subcode
+_real.entry.body	.subcode
+o	.larg	ibio.prim.oport	rune.t
+as	.bind	_real.entry.as
+s	.alloc	_real.entry.s	|	as
+	.body	_real.entry.body	|	o	s
+
+_real.entry.as	.expr
+_get.args.type	.tygvar
+ga	.eprim	ibio.prim	ibio	env.args.get	_get.args.type
+	.yield	ga
+
+_real.entry.s	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+_cat.args	.gvar
+as	.fv	list.t	_string.ty
+	.app	as
+	.yield	_cat.args
+
+_real.entry.body	.expr
+ibio.prim.oport	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+ibio.prim.write	.gvar
+o	.fv	ibio.prim.oport	rune.t
+s	.fv	list.t	rune.t
+	.app	o	s
+	.yield	ibio.prim.write	rune.t
+
+_cat.args.c	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+_cat.args.c.1	.subcode
+list.t.out	.cogvar
+as	.arg	list.t	_string.ty
+	.force	_cat.args.c.1
+	.coerce	list.t.out	_string.ty
+	.enter	as
+
+_cat.args.c.1	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+_string.ty	.tygvar
+rune.t	.tygvar
+as0.ty	.tylet	list.prim.u	_string.ty
+_cat.args.c.1.s2	.subcode
+list.<>	.gvar
+_nl	.gvar
+as0	.karg	as0.ty
+	.analyze	as0	:	nil
+	.case	:
+a0	.fkarg	0	_string.ty
+as1	.fkarg	1	list.t	_string.ty
+s2	.alloc	_cat.args.c.1.s2	|	as1
+	.app	a0	s2
+	.enter	list.<>	rune.t
+	.case	nil
+	.enter	_nl
+
+_cat.args.c.1.s2	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+_cat.args.w	.gvar
+as1	.fv	list.t	_string.ty
+	.app	as1
+	.enter	_cat.args.w
+
+_cat.args.w.c	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+_cat.args.w.c.1	.subcode
+list.t.out	.cogvar
+as	.larg	list.t	_string.ty
+	.force	_cat.args.w.c.1
+	.coerce	list.t.out	_string.ty
+	.enter	as
+
+_cat.args.w.c.1	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+_string.ty	.tygvar
+rune.t	.tygvar
+as0.ty	.tylet	list.prim.u	_string.ty
+t	.tylet	list.prim.u	rune.t
+_cat.args.w.c.1.1	.subcode
+_cat.args.w.c.1.2	.subcode
+list.t.in	.cogvar
+_sp	.gvar
+_nl	.gvar
+as0	.karg	as0.ty
+	.analyze	as0	:	nil
+	.case	:
+a0	.fkarg	0	_string.ty
+as1	.fkarg	1	list.t	_string.ty
+s0	.alloc	_cat.args.w.c.1.1	|	as1
+s1	.alloc	_cat.args.w.c.1.2	|	a0	s0
+s2	.constr	t	:	0	_sp	1	s1
+	.coerce	list.t.in	rune.t
+	.lift
+	.yield	s2
+	.case	nil
+	.enter	_nl
+
+_cat.args.w.c.1.1	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+_cat.args.w	.gvar
+as1	.fv	list.t	_string.ty
+	.app	as1
+	.enter	_cat.args.w
+
+_cat.args.w.c.1.2	.expr
+list.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+a0	.fv	list.t	rune.t
+s0	.fv	list.t	rune.t
+	.app a0	s0
+	.enter	list.<>	rune.t
+
+_sp.c	.expr
+_sp.0	.rune	\s
+	.lift
+	.yield	_sp.0
+
+	.type
+
+_epbodytype	.tyexpr
+ibio.prim.m	.tygvar
+_empty.record	.tygvar
+	.tylift
+	.tyref	ibio.prim.m	_empty.record
+
+_string.ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tyref	list.t	rune.t
+
+_get.args.type	.tyexpr
+ibio.prim.m	.tygvar
+_get.args.result.type	.tygvar
+	.tyref	ibio.prim.m	_get.args.result.type
+
+_get.args.result.type	.tyexpr
+list.t	.tygvar
+_string.ty	.tygvar
+	.tyref	list.t	_string.ty
+
+_cat.args.w.ty	.tyexpr
+list.t	.tygvar
+_string.ty	.tygvar
+	.tylift
+	.tyfun	list.t	_string.ty
+	.tyref	_string.ty
+
+	.coercion
+
+_ep.in	.tycoercion
+ibio.m	.tygvar
+rune.t	.tygvar
+_empty.record	.tygvar
+	.tydefinition ibio.m	rune.t	rune.t	_empty.record

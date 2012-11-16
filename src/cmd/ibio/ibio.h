@@ -1,11 +1,16 @@
 /* §section Threads */
 
 struct ibio_thread_data {
+    gsvalue cmd_args;
     struct ibio_thread_to_oport_link *writing_to_oport;
 };
 
-void *ibio_main_thread_alloc_data(void);
+void *ibio_main_thread_alloc_data(struct gspos, int, char **);
 enum api_prim_execution_state ibio_thread_term_status(struct api_thread *);
+
+/* §section Environment */
+
+api_prim_executor ibio_handle_prim_getargs;
 
 /* §section Output */
 

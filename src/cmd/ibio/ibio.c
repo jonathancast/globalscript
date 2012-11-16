@@ -20,6 +20,7 @@ static struct gsregistered_primtype ibio_types[] = {
 enum {
     ibio_prim_unit,
     ibio_prim_write,
+    ibio_prim_getargs,
     ibio_numprims,
 };
 
@@ -28,12 +29,14 @@ static struct api_prim_table ibio_prim_table = {
     /* execs = */ {
         /* ibio_prim_unit = */ api_thread_handle_prim_unit,
         /* ibio_prim_write = */ ibio_handle_prim_write,
+        /* ibio_prim_getargs = */ ibio_handle_prim_getargs,
     },
 };
 
 static struct gsregistered_prim ibio_operations[] = {
     /* name, file, line, group, check_type, index, */
     { "write", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ο * ibio.prim.oport ο ` list.t ο ` ibio.prim.m 〈 〉 ⌊⌋ ` → → ∀", ibio_prim_write, },
+    { "env.args.get", __FILE__, __LINE__, gsprim_operation_api, "ibio", "ibio.prim.m list.t list.t rune.t ` ` `", ibio_prim_getargs, },
     { 0, },
 };
 
@@ -126,5 +129,5 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 
     /* §section Set up the IBIO thread */
 
-    apisetupmainthread(&ibio_rpc_table, &ibio_thread_table, ibio_main_thread_alloc_data(), &ibio_prim_table, prog);
+    apisetupmainthread(&ibio_rpc_table, &ibio_thread_table, ibio_main_thread_alloc_data(pos, argc, argv), &ibio_prim_table, prog);
 }

@@ -1,0 +1,3 @@
+for @(type "apiprimtype ibio.prim ibio) as ← ibio.prim.getenv.
+for out = format as.
+    ibio.prim.write @(type rune.t) o out
