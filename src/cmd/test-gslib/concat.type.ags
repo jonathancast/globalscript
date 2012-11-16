@@ -1,0 +1,17 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+hello	.string	Hello,\s
+world	.string	World!\n
+
+	.code
+
+_epcode	.expr
+rune.t	.tygvar
+list.<>	.gvar
+hello	.gvar
+world	.gvar
+	.app	hello	world
+	.enter	list.<>	rune.t

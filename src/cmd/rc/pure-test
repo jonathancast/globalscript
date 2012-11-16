@@ -3,3 +3,4 @@
 . $GLOBALSCRIPT/bin/test-fns
 
 ok_diff '-- hello, world --' ./$O.gstype hello.type.ags
+ok_diff '-- concatenation --' ./$O.gstype concat.type.ags

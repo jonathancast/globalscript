@@ -1,5 +1,52 @@
 	.prefix
 
+	.data
+
+list.<>	.closure	_list.<>.code	_list.<>.ty
+
+	.code
+
+_list.<>.code	.expr
+list.t	.tygvar
+α	.tyarg	*
+_list.<>.code.cont	.subcode
+list.t.out	.cogvar
+xn	.larg	list.t	α
+ys	.larg	list.t	α
+	.force	_list.<>.code.cont	α	|	ys
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.<>.code.cont	.forcecont
+list.t	.tygvar
+list.prim.u	.tygvar
+α	.tyfv	*
+t	.tylet	list.prim.u	α
+_list.<>.code.rec	.subcode
+list.t.in	.cogvar
+ys	.fv	list.t	α
+xn0	.karg	t
+	.analyze	xn0	:	nil
+	.case	:
+x0	.fkarg	0	α
+xn1	.fkarg	1	list.t	α
+ys1	.alloc	_list.<>.code.rec	α	|	xn1	ys
+ys2	.constr	t	:	0	x0	1	ys1
+	.coerce	list.t.in	α
+	.lift
+	.yield	ys2
+	.case	nil
+	.enter	ys
+
+_list.<>.code.rec	.expr
+list.t	.tygvar
+α	.tyfv	*
+list.<>	.gvar
+xn	.fv	list.t	α
+ys	.fv	list.t	α
+	.app	xn	ys
+	.enter	list.<>	α
+
 	.type
 
 list.t	.tyabstract	**^
@@ -32,6 +79,14 @@ _nil_type	.tyexpr
 α	.tylambda	*
 	.tyubproduct
 
+_list.<>.ty	.tyexpr
+list.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	list.t	α
+	.tylift
+	.tyfun	list.t	α
+	.tyref	list.t	α
 
 	.coercion
 
@@ -39,4 +94,9 @@ list.t.out	.tycoercion
 list.t	.tygvar
 α	.tylambda	*
 	.tyinvert
+	.tydefinition	list.t	α
+
+list.t.in	.tycoercion
+list.t	.tygvar
+α	.tylambda	*
 	.tydefinition	list.t	α
