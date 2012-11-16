@@ -753,6 +753,10 @@ struct gsbc_byte_compile_code_or_api_op_closure {
     int nregs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
 
+    int ntyregs;
+    gsinterned_string tyregnames[MAX_NUM_REGISTERS];
+    struct gstype *tyregs[MAX_NUM_REGISTERS];
+
     int nsubexprs;
     gsinterned_string subexprs[MAX_NUM_REGISTERS];
 
@@ -780,28 +784,61 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
 
     cl.phase = rttygvars;
     cl.pout = ((uchar*)pbco + sizeof(struct gsbco));
-    cl.nregs = cl.nsubexprs = nglobals = nfvs = cl.nargs = cl.nfields = 0;
+    cl.ntyregs = cl.nregs = cl.nsubexprs = nglobals = nfvs = cl.nargs = cl.nfields = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)
                 gsfatal_bad_input(p, "Too late to add type global variables")
             ;
             cl.phase = rttygvars;
+            if (cl.ntyregs >= MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many type registers", p->pos)
+            ;
+            cl.tyregnames[cl.ntyregs] = p->label;
+            cl.tyregs[cl.ntyregs] = gssymtable_get_type(symtable, p->label);
+            cl.ntyregs++;
         } else if (gssymceq(p->directive, gssymoptyfv, gssymcodeop, ".tyfv")) {
             if (cl.phase > rttyfvs)
                 gsfatal("%P: Too late to add free type variables", p->pos)
             ;
             cl.phase = rttyfvs;
+            if (cl.ntyregs >= MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many type registers", p->pos)
+            ;
+            cl.tyregnames[cl.ntyregs] = p->label;
+            cl.tyregs[cl.ntyregs] = gstypes_compile_type_var(p->pos, p->label, gskind_compile(p->pos, p->arguments[0]));
+            cl.ntyregs++;
         } else if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
             if (cl.phase > rttyargs)
                 gsfatal("%P: Too late to add type arguments", p->pos)
             ;
             cl.phase = rttyargs;
+            if (cl.ntyregs >= MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many type registers", p->pos)
+            ;
+            cl.tyregnames[cl.ntyregs] = p->label;
+            cl.tyregs[cl.ntyregs] = gstypes_compile_type_var(p->pos, p->label, gskind_compile(p->pos, p->arguments[0]));
+            cl.ntyregs++;
         } else if (gssymceq(p->directive, gssymoptylet, gssymcodeop, ".tylet")) {
+            int reg;
+            struct gstype *type;
             if (cl.phase > rttylets)
                 gsfatal("%P: Too late to add type lets", p->pos)
             ;
             cl.phase = rttylets;
+            if (cl.ntyregs >= MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many type registers", p->pos)
+            ;
+            cl.tyregnames[cl.ntyregs] = p->label;
+            reg = gsbc_find_register(p, cl.tyregnames, cl.ntyregs, p->arguments[0]);
+            type = cl.tyregs[reg];
+            for (i = 1; i < p->numarguments; i++) {
+                int regarg;
+                regarg = gsbc_find_register(p, cl.tyregnames, cl.ntyregs, p->arguments[i]);
+                type = gstype_supply(p->pos, type, cl.tyregs[regarg]);
+            }
+            cl.tyregs[cl.ntyregs] = type;
+            cl.ntyregs++;
         } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
                 gsfatal_bad_input(p, "Too late to add sub-expressions")
@@ -1215,6 +1252,12 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
                 gsfatal_bad_input(p, "Too late to add type global variables")
             ;
             cl.phase = rttygvars;
+            if (cl.ntyregs >= MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many type registers", p->pos)
+            ;
+            cl.tyregnames[cl.ntyregs] = p->label;
+            cl.tyregs[cl.ntyregs] = gssymtable_get_type(symtable, p->label);
+            cl.ntyregs++;
         } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
                 gsfatal_bad_input(p, "Too late to add sub-expressions")
