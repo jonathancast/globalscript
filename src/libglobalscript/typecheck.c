@@ -860,7 +860,7 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymcogvar, gssymtyarg, gssymgvar, gssymrecord, gssymeprim;
+    static gsinterned_string gssymtyarg, gssymgvar, gssymrecord, gssymeprim;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
@@ -877,20 +877,6 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     ntyargs = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
-        } else if (gssymceq(p->directive, gssymcogvar, gssymcodeop, ".cogvar")) {
-            if (cl.regtype > rtgvar)
-                gsfatal_bad_input(p, "Too late to add global variables")
-            ;
-            cl.regtype = rtgvar;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers")
-            ;
-            cl.regs[cl.nregs] = p->label;
-            cl.regcoerciontypes[cl.nregs] = gssymtable_get_coercion_type(symtable, p->label);
-            if (!cl.regcoerciontypes[cl.nregs])
-                gsfatal("%P: Couldn't find type for coercion global %y", p->pos, p->label)
-            ;
-            cl.nregs++;
         } else if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
             struct gskind *argkind;
@@ -1207,7 +1193,7 @@ static
 int
 gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymopsubcode, gssymopfv;
+    static gsinterned_string gssymopsubcode, gssymcogvar, gssymopfv;
 
     int i;
 
@@ -1225,6 +1211,20 @@ gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline 
             gsfatal("%P: Can't find type of sub-expression %y", p->pos, p->label)
         ;
         pcl->ncodes++;
+    } else if (gssymceq(p->directive, gssymcogvar, gssymcodeop, ".cogvar")) {
+        if (pcl->regtype > rtgvar)
+            gsfatal_bad_input(p, "Too late to add global variables")
+        ;
+        pcl->regtype = rtgvar;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers")
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regcoerciontypes[pcl->nregs] = gssymtable_get_coercion_type(symtable, p->label);
+        if (!pcl->regcoerciontypes[pcl->nregs])
+            gsfatal("%P: Couldn't find type for coercion global %y", p->pos, p->label)
+        ;
+        pcl->nregs++;
     } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
         int reg;
         struct gstype *fvtype;
