@@ -1226,7 +1226,6 @@ gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline 
         ;
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymrune, gssymcodeop, ".rune")) {
-        struct gstype *rune;
         if (pcl->regtype > rtgvar)
             gsfatal_bad_input(p, "Too late to add global variables")
         ;

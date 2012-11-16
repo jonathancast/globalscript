@@ -177,7 +177,6 @@ gsprint_error(struct gstype *type, struct gsfile_symtable *symtable, gsvalue pro
         p = (struct gserror *)prog;
         gserror_format(buf, buf + sizeof(buf), p);
         print("%s\n", buf);
-        return;
     } else if (gsisimplementation_failure_block(block)) {
         struct gsimplementation_failure *p;
         char buf[0x100];
@@ -185,7 +184,6 @@ gsprint_error(struct gstype *type, struct gsfile_symtable *symtable, gsvalue pro
         p = (struct gsimplementation_failure *)prog;
         gsimplementation_failure_format(buf, buf + sizeof(buf), p);
         print("%s\n", buf);
-        return -1;
     } else {
         ace_down();
         gsfatal_unimpl(__FILE__, __LINE__, "gsprint_error(%s)", block->class->description);
