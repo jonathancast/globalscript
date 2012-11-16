@@ -418,9 +418,6 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             cl.size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
         } else if (gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
             goto done;
-        } else if (gssymeq(p->directive, gssymcodeop, ".enter")) {
-            cl.size += GS_SIZE_BYTECODE(1);
-            goto done;
         } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
             int nfvs;
 
@@ -528,6 +525,8 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
     int i;
 
     if (gssymceq((*pp)->directive, gssymopyield, gssymcodeop, ".yield")) {
+        pcl->size += GS_SIZE_BYTECODE(1);
+    } else if (gssymeq((*pp)->directive, gssymcodeop, ".enter")) {
         pcl->size += GS_SIZE_BYTECODE(1);
     } else if (gssymceq((*pp)->directive, gssymopundef, gssymcodeop, ".undef")) {
         pcl->size += GS_SIZE_BYTECODE(0);
