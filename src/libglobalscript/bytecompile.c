@@ -407,8 +407,6 @@ gsbc_bytecode_size_item(struct gsbc_item item)
         } else if (gsbc_bytecode_size_cont_push_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
             /* no effect on representation */
-        } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
-            /* no effect on representation */
         } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
             int nfvs;
 
@@ -511,7 +509,9 @@ static
 int
 gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
-    if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
+    if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
+        /* no effect on representation */
+    } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
         pcl->size += GS_SIZE_BYTECODE(1 + p->numarguments); /* nargs + args */
     } else {
         return 0;
