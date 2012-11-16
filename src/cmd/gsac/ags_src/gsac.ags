@@ -17,7 +17,8 @@ as	.bind	_real.entry.0
 
 _real.entry.0	.expr
 _get.args.type	.tygvar
-	.undef	_get.args.type
+ga	.eprim	ibio.prim	ibio	env.args.get	_get.args.type
+	.yield	ga
 
 _real.entry.body	.expr
 _epbodytype	.tygvar
@@ -49,7 +50,6 @@ _empty.record	.tyexpr
 _get.args.type	.tyexpr
 ibio.prim.m	.tygvar
 _get.args.result.type	.tygvar
-	.tylift
 	.tyref	ibio.prim.m	_get.args.result.type
 
 _get.args.result.type	.tyexpr
