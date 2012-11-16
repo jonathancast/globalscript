@@ -4,6 +4,7 @@
 
 	.cast	_ep.in	_real.entry
 _real.entry	.closure	_real.entry.c
+_process.args	.closure	_process.args.c	_process.args.ty
 
 	.code
 
@@ -13,7 +14,7 @@ _real.entry.0	.subcode
 _real.entry.body	.subcode
 o	.larg	_real.entry.out.ty
 as	.bind	_real.entry.0
-	.body	_real.entry.body
+	.body	_real.entry.body	|	as
 
 _real.entry.0	.expr
 _get.args.type	.tygvar
@@ -21,7 +22,29 @@ ga	.eprim	ibio.prim	ibio	env.args.get	_get.args.type
 	.yield	ga
 
 _real.entry.body	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+_process.args	.gvar
+as	.fv	list.t	_string.ty
+	.app	as
+	.enter	_process.args
+
+_process.args.c	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+_process.args.c.c	.subcode
+list.t.out	.cogvar
+as	.larg	list.t	_string.ty
+	.force	_process.args.c.c
+	.coerce	list.t.out	_string.ty
+	.enter	as
+
+_process.args.c.c	.forcecont
 _epbodytype	.tygvar
+list.prim.u	.tygvar
+_string.ty	.tygvar
+t	.tylet	list.prim.u	_string.ty
+as0	.karg	t
 	.undef	_epbodytype
 
 	.type
@@ -43,10 +66,6 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 	.tyref	ibio.prim.oport	rune.t
 
-_empty.record	.tyexpr
-	.tylift
-	.typroduct
-
 _get.args.type	.tyexpr
 ibio.prim.m	.tygvar
 _get.args.result.type	.tygvar
@@ -54,10 +73,20 @@ _get.args.result.type	.tygvar
 
 _get.args.result.type	.tyexpr
 list.t	.tygvar
-_get.args.result.elem.type	.tygvar
-	.tyref	list.t	_get.args.result.elem.type
+_string.ty	.tygvar
+	.tyref	list.t	_string.ty
 
-_get.args.result.elem.type	.tyexpr
+_process.args.ty	.tyexpr
+list.t	.tygvar
+_string.ty	.tygvar
+ibio.prim.m	.tygvar
+_empty.record	.tygvar
+	.tylift
+	.tyfun	list.t	_string.ty
+	.tylift
+	.tyref	ibio.prim.m	_empty.record
+
+_string.ty	.tyexpr
 list.t	.tygvar
 rune.t	.tygvar
 	.tyref	list.t	rune.t
