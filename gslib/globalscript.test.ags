@@ -1,0 +1,14 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+_succ	.string	No\stests
+
+	.code
+
+_epcode	.expr
+test.property.true	.gvar
+_succ	.gvar
+	.app	_succ
+	.enter	test.property.true

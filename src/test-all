@@ -6,6 +6,7 @@ cd $GLOBALSCRIPT/src/libtest &&
     mk integration-test && mk install &&
     cd ../cmd &&
     mk pure-integration-test && mk pure-install &&
+    ./rc/test-gslib &&
     cd ibio/ &&
     mk integration-test && mk install &&
     cd ../gsac/ &&

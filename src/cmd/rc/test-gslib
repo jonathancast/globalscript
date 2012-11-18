@@ -1,0 +1,19 @@
+#! /usr/local/plan9/bin/rc -e
+
+test_status=true
+
+fn run_tests {
+    for (i in $1/*) {
+        if (test -d $i)
+            run_tests $i
+        if (~ $i *.test.ags) {
+            if (! $GLOBALSCRIPT/bin/gstest $i)
+                test_status=false
+        }
+    }
+    true
+}
+
+run_tests $GLOBALSCRIPT/gslib
+
+exec $test_status
