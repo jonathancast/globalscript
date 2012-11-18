@@ -407,17 +407,6 @@ gsbc_bytecode_size_item(struct gsbc_item item)
 
             cl.size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
         } else if (gsbc_bytecode_size_cont_push_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
-            int nfvs;
-
-            cl.phase = phbytecodes;
-
-            /* Ignore free type variables & separator (type erasure) */
-            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-            if (i < p->numarguments) i++;
-            nfvs = p->numarguments - i;
-
-            cl.size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
         } else if (gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
             goto done;
         } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
@@ -529,12 +518,28 @@ static
 int
 gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
+    int i;
+
     if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
+        pcl->phase = phbytecodes;
         /* no effect on representation */
     } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
+        pcl->phase = phbytecodes;
         /* no effect on representation */
     } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
+        pcl->phase = phbytecodes;
         pcl->size += GS_SIZE_BYTECODE(1 + p->numarguments); /* nargs + args */
+    } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
+        int nfvs;
+
+        pcl->phase = phbytecodes;
+
+        /* Ignore free type variables & separator (type erasure) */
+        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+        if (i < p->numarguments) i++;
+        nfvs = p->numarguments - i;
+
+        pcl->size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
     } else {
         return 0;
     }
