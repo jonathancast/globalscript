@@ -150,6 +150,7 @@ struct gstype *gstypes_compile_sum(struct gspos, int, ...);
 struct gstype *gstypes_compile_sumv(struct gspos, int, struct gstype_constr *);
 struct gstype *gstypes_compile_product(struct gspos, int, ...);
 struct gstype *gstypes_compile_productv(struct gspos, int, struct gstype_field *);
+struct gstype *gstypes_compile_ubproduct(struct gspos, int, ...);
 struct gstype *gstypes_compile_ubproductv(struct gspos, int, struct gstype_field *);
 
 struct gstype *gstype_supply(struct gspos, struct gstype *, struct gstype *);
