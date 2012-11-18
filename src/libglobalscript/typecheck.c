@@ -379,6 +379,7 @@ void
 gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
 {
     switch (type->node) {
+        case gstype_abstract:
         case gstype_knprim:
         case gstype_unprim:
         case gstype_var:
@@ -389,6 +390,11 @@ gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
         case gstype_sum:
         case gstype_product:
             return;
+        case gstype_lambda: {
+            struct gstype_lambda *lambda;
+            lambda = (struct gstype_lambda *)type;
+            return gsbc_typecheck_check_boxed(pos, lambda->body);
+        }
         default:
             gsfatal_unimpl(__FILE__, __LINE__, "%P: %P: gsbc_typecheck_check_boxed(node = %d)", pos, type->pos, type->node);
     }

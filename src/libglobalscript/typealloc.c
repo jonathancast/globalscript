@@ -147,6 +147,7 @@ gstypes_compile_type_definitions(struct gsfile_symtable *symtable, struct gsbc_i
 
                     if (gssymceq(ptype->directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
                         defns[i] = gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), 0, 0, 0, n);
+                        gsbc_typecheck_check_boxed(ptype->pos, defns[i]);
                     } else if (
                         gssymceq(ptype->directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")
                         || gssymceq(ptype->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
