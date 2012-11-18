@@ -2,6 +2,11 @@
 
 	.type
 
+bool.t	.tyabstract	*
+bool.prim.u	.tygvar
+	.tylift
+	.tyref	bool.prim.u
+
 bool.prim.u	.tyexpr
 _false.arg.ty	.tygvar
 _true.arg.ty	.tygvar
