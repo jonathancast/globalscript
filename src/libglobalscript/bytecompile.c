@@ -1001,43 +1001,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             }
             cl.nregs++;
         } else if (gsbc_byte_compile_cont_push_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
-            int creg = 0;
-            int nfvs, first_fv;
-
-            cl.phase = rtops;
-
-            pcode = (struct gsbc *)cl.pout;
-
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-            ;
-
-            cl.regs[cl.nregs] = p->label;
-
-            cl.nregs++;
-
-            creg = gsbc_find_register(p, cl.subexprs, cl.nsubexprs, p->arguments[0]);
-
-            pcode->pos = p->pos;
-            pcode->instr = gsbc_op_force;
-            pcode->args[0] = (uchar)creg;
-
-            /* §paragraph{Skipping free type variables} */
-            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-            if (i < p->numarguments) i++;
-
-            nfvs = p->numarguments - i;
-            first_fv = i;
-            pcode->args[1] = (uchar)nfvs;
-            for (i = first_fv; i < p->numarguments; i++) {
-                int regarg;
-
-                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                pcode->args[2 + (i - first_fv)] = (uchar)regarg;
-            }
-
-            cl.pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
         } else if (gsbc_byte_compile_terminal_code_op(ppseg, &p, &cl)) {
             goto done;
         } else {
@@ -1236,6 +1199,43 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
             pcode->args[1 + i] = (uchar)regarg;
         }
         pcl->pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments);
+    } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
+        int creg = 0;
+        int nfvs, first_fv;
+
+        pcl->phase = rtops;
+
+        pcode = (struct gsbc *)pcl->pout;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+
+        pcl->regs[pcl->nregs] = p->label;
+
+        pcl->nregs++;
+
+        creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[0]);
+
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_force;
+        pcode->args[0] = (uchar)creg;
+
+        /* §paragraph{Skipping free type variables} */
+        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+        if (i < p->numarguments) i++;
+
+        nfvs = p->numarguments - i;
+        first_fv = i;
+        pcode->args[1] = (uchar)nfvs;
+        for (i = first_fv; i < p->numarguments; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            pcode->args[2 + (i - first_fv)] = (uchar)regarg;
+        }
+
+        pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
     } else {
         return 0;
     }
