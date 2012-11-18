@@ -3,6 +3,7 @@
 	.data
 
 test.property.true	.closure	_test.property.true.c
+test.property.label	.closure	_test.property.label.c
 
 	.code
 
@@ -16,6 +17,18 @@ c	.constr	test.property.prim.u	true	0	msg
 	.lift
 	.yield	c
 
+_test.property.label.c	.expr
+test.property.t	.tygvar
+test.property.prim.u	.tygvar
+_string.ty	.tygvar
+test.property.t.in	.cogvar
+label	.larg	_string.ty
+p	.larg	test.property.t
+c	.constr	test.property.prim.u	label	0	label	1	p
+	.coerce	test.property.t.in
+	.lift
+	.yield	c
+
 	.type
 
 test.property.t	.tyabstract	*
@@ -24,8 +37,14 @@ test.property.prim.u	.tygvar
 	.tyref	test.property.prim.u
 
 test.property.prim.u	.tyexpr
+_test.property.prim.u.label.ty	.tygvar
 _test.property.prim.u.true.ty	.tygvar
-	.tysum	true	_test.property.prim.u.true.ty
+	.tysum	label	_test.property.prim.u.label.ty	true	_test.property.prim.u.true.ty
+
+_test.property.prim.u.label.ty	.tyexpr
+_string.ty	.tygvar
+test.property.t	.tygvar
+	.tyubproduct	0	_string.ty	1	test.property.t
 
 _test.property.prim.u.true.ty	.tyexpr
 _string.ty	.tygvar

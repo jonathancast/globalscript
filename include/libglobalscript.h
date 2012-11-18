@@ -28,6 +28,7 @@ void gswerrstr_unimpl(char *, int, char *, ...);
 void gsassert(char *srcfile, int srcline, int passed, char *err, ...);
 
 #define UNIMPL(s) "%s:%d: " s " next", __FILE__, __LINE__
+#define UNIMPL_NL(s) "%s:%d: " s " next\n", __FILE__, __LINE__
 
 /* §section Threading */
 

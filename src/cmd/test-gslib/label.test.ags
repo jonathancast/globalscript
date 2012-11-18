@@ -1,0 +1,23 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+_label	.string	Sample\stest
+_true	.closure	_true.c
+_msg	.string	Simple\stest
+
+	.code
+
+_epcode	.expr
+test.property.label	.gvar
+_label	.gvar
+_true	.gvar
+	.app	_label	_true
+	.enter	test.property.label
+
+_true.c	.expr
+test.property.true	.gvar
+_msg	.gvar
+	.app	_msg
+	.enter	test.property.true

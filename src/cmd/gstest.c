@@ -20,6 +20,7 @@ enum test_state {
     test_succeeded,
 };
 
+static struct gstype *test_property_type(struct gspos);
 static struct gstype *test_expected_property_structure(struct gspos);
 
 static enum test_state test_evaluate(char *, char *, gsvalue);
@@ -31,9 +32,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
     enum test_state st;
     char err[0x100];
 
-    if (gstypes_type_check(err, err + sizeof(err), pos, type,
-        gstypes_compile_abstract(pos, gsintern_string(gssymtypelable, "test.property.t"), gskind_compile_string(pos, "*"))
-    ) < 0) {
+    if (gstypes_type_check(err, err + sizeof(err), pos, type, test_property_type(pos)) < 0) {
         fprint(2, "Type error: %s\n", err);
         ace_down();
         exits("type err");
@@ -86,6 +85,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
 static struct gstype *test_string_type(struct gspos);
 
 enum { /* Keep in sync with the below */
+    test_property_constr_label,
     test_property_constr_true,
 };
 
@@ -93,7 +93,11 @@ static
 struct gstype *
 test_expected_property_structure(struct gspos pos)
 {
-    return gstypes_compile_lift(pos, gstypes_compile_sum(pos, 1,
+    return gstypes_compile_lift(pos, gstypes_compile_sum(pos, 2,
+        gsintern_string(gssymconstrlable, "label"), gstypes_compile_ubproduct(pos, 2,
+            gsintern_string(gssymfieldlable, "0"), test_string_type(pos),
+            gsintern_string(gssymfieldlable, "1"), test_property_type(pos)
+        ),
         gsintern_string(gssymconstrlable, "true"), gstypes_compile_ubproduct(pos, 1,
             gsintern_string(gssymfieldlable, "0"), test_string_type(pos)
         )
@@ -121,7 +125,7 @@ test_evaluate(char *err, char *eerr, gsvalue v)
         case gstyindir:
             return test_evaluate(err, eerr, GS_REMOVE_INDIRECTIONS(v));
         default:
-            seprint(err, eerr, UNIMPL("test_evaluate: st = %d"), st);
+            seprint(err, eerr, UNIMPL_NL("test_evaluate: st = %d"), st);
             return test_impl_err;
     }
 }
@@ -131,15 +135,18 @@ enum test_state
 test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
 {
     switch (constr->constrnum) {
+        case test_property_constr_label:
+            return test_evaluate(err, eerr, constr->arguments[1]);
         case test_property_constr_true:
             return test_succeeded;
         default:
-            seprint(err, eerr, UNIMPL("test_evaluate_constr: constr = %d"), constr->constrnum);
+            seprint(err, eerr, UNIMPL_NL("test_evaluate_constr: constr = %d"), constr->constrnum);
             return test_impl_err;
     }
 }
 
 static void test_indent(int);
+static void test_print_label(int, gsvalue);
 
 static
 void
@@ -158,22 +165,85 @@ test_print(int depth, gsvalue v)
 
             constr = (struct gsconstr *)v;
             switch (constr->constrnum) {
+                case test_property_constr_label:
+                    test_print_label(depth, constr->arguments[0]);
+                    test_print(depth + 1, constr->arguments[1]);
+                    return;
                 case test_property_constr_true:
                     test_indent(depth);
                     print("Succeeded\n");
                     return;
                 default:
-                    fprint(2, UNIMPL("test_print: constr = %d"), constr->constrnum);
+                    fprint(2, UNIMPL_NL("test_print: constr = %d"), constr->constrnum);
                     ace_down();
                     exits("unimpl");
             }
         }
         default:
-            fprint(2, UNIMPL("test_print: st = %d"), st);
+            fprint(2, UNIMPL_NL("test_print: st = %d"), st);
             ace_down();
             exits("unimpl");
     }
+}
 
+static
+void test_print_label(int depth, gsvalue s)
+{
+    gsvalue c;
+    gstypecode st;
+    char err[0x100];
+
+    test_indent(depth);
+
+    c = 0;
+    for (;;) {
+        if (c) {
+            st = GS_SLOW_EVALUATE(c);
+            switch (st) {
+                case gstyunboxed: {
+                    char buf[5];
+                    if (!gsrunetochar(c, buf, buf + sizeof(buf), err, err + sizeof(err))) {
+                        fprint(2, "%s\n", err);
+                        ace_down();
+                        exits("unimpl");
+                    }
+                    print(buf);
+                    c = 0;
+                    break;
+                }
+                default:
+                    fprint(2, UNIMPL_NL("test_print_label(st = %d)"), st);
+                    ace_down();
+                    exits("unimpl");
+            }
+        } else {
+            st = GS_SLOW_EVALUATE(s);
+            switch (st) {
+                case gstywhnf: {
+                    struct gsconstr *constr;
+                    constr = (struct gsconstr *)s;
+                    switch (constr->constrnum) {
+                        case 0:
+                            c = constr->arguments[0];
+                            s = constr->arguments[1];
+                            break;
+                        case 1:
+                            print(":\n");
+                            return;
+                        default:
+                            fprint(2, UNIMPL_NL("test_print_label(constr = %d)"), constr->constrnum);
+                            ace_down();
+                            exits("unimpl");
+                    }
+                    break;
+                }
+                default:
+                    fprint(2, UNIMPL_NL("test_print_label(st = %d)"), st);
+                    ace_down();
+                    exits("unimpl");
+            }
+        }
+    }
 }
 
 void
@@ -191,4 +261,11 @@ struct gstype *
 test_string_type(struct gspos pos)
 {
     return gstypes_compile_list(pos, gstypes_compile_rune(pos));
+}
+
+static
+struct gstype *
+test_property_type(struct gspos pos)
+{
+    return gstypes_compile_abstract(pos, gsintern_string(gssymtypelable, "test.property.t"), gskind_compile_string(pos, "*"));
 }
