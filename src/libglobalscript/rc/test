@@ -22,23 +22,6 @@ fn ok_diff_fail {
     true
 }
 
-fn ok_grep_errors {
-    echo $1
-    if ($3 ./test-gslib ./test-gslib/$4 > ./test-results/$4^-actual >[2] ./test-results/$4^-errors) {
-        echo $3 'succeeded; should have failed' >[1=2]
-        cat ./test-results/$4^-errors >[1=2]
-        cat ./test-results/$4^-actual >[1=2]
-        exit 1
-    }
-    if (! grep -s $2 ./test-results/$4^-errors) {
-        echo 'Can''t find expected error message in output anywhere' >[1=2]
-        cat ./test-results/$4^-errors >[1=2]
-        cat ./test-results/$4^-actual >[1=2]
-        exit 1
-    }
-    true
-}
-
 echo '-- undefined entry points --'
 if (./$O.test-gsi ./test-gslib ./test-gslib/undef.ags > ./test-results/undef.ags-actual) {
     echo 'test-gsi succeeded; should have failed' >[1=2]
