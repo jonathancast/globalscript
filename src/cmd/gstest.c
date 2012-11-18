@@ -70,7 +70,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 sleep(1);
                 break;
             case test_succeeded:
-                print("Succeeded\n");
+                print("%s: Succeeded\n", doc);
                 ace_down();
                 exits("");
             default:
