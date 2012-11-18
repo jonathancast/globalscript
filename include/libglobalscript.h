@@ -159,6 +159,10 @@ struct gstype *gstype_instantiate(struct gspos, struct gstype *, struct gstype *
 
 struct gstype *gstypes_subst(struct gspos, struct gstype *, gsinterned_string, struct gstype *);
 
+/* §subsubsubsection Common stdlib types */
+
+struct gstype *gstypes_compile_rune(struct gspos);
+
 /* §subsubsection Views */
 
 int gstype_expect_abstract(char *, char *, struct gstype *, char *);
