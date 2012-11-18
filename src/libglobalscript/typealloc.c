@@ -454,7 +454,8 @@ gstypes_compile_sum(struct gspos pos, int nconstrs, ...)
 
     va_start(arg, nconstrs);
     for (i = 0; i < nconstrs; i++) {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Copy constructors out of gstypes_compile_sumv arguments", pos);
+        constrs[i].name = va_arg(arg, gsinterned_string);
+        constrs[i].argtype = va_arg(arg, struct gstype *);
     }
     va_end(arg);
 
