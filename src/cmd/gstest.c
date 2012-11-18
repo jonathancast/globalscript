@@ -23,6 +23,7 @@ enum test_state {
 static struct gstype *test_expected_property_structure(struct gspos);
 
 static enum test_state test_evaluate(char *, char *, gsvalue);
+static void test_print(int, struct gsconstr *);
 
 void
 gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type, int argc, char **argv)
@@ -70,7 +71,8 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 sleep(1);
                 break;
             case test_succeeded:
-                print("%s: Succeeded\n", doc);
+                print("%s:\n", doc);
+                test_print(1, (struct gsconstr *)prog);
                 ace_down();
                 exits("");
             default:
@@ -135,6 +137,26 @@ test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
             seprint(err, eerr, UNIMPL("test_evaluate_constr: constr = %d"), constr->constrnum);
             return test_impl_err;
     }
+}
+
+static void test_indent(int);
+
+static
+void
+test_print(int depth, struct gsconstr *constr)
+{
+    test_indent(depth);
+    print("Succeeded\n");
+}
+
+void
+test_indent(int depth)
+{
+    int i;
+
+    for (i = 0; i < depth; i++)
+        print("    ")
+    ;
 }
 
 static
