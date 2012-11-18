@@ -2,9 +2,15 @@
 
 	.type
 
-rune.t	.tyexpr
+rune.t	.tyabstract	*
 rune.prim.rune	.tygvar
 	.tylift
 	.tyref	rune.prim.rune
 
 rune.prim.rune	.tydefinedprim	rune.prim	rune	u
+
+	.coercion
+
+rune.t.in	.tycoercion
+rune.t	.tygvar
+	.tydefinition	rune.t

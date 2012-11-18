@@ -137,7 +137,9 @@ s0	.fv	list.t	rune.t
 	.enter	list.<>	rune.t
 
 _sp.c	.expr
+rune.t.in	.cogvar
 _sp.0	.rune	\s
+	.coerce	rune.t.in
 	.lift
 	.yield	_sp.0
 
