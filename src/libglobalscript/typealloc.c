@@ -535,7 +535,8 @@ gstypes_compile_ubproduct(struct gspos pos, int nfields, ...)
 
     va_start(arg, nfields);
     for (i = 0; i < nfields; i++) {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Copy fields out of gstypes_compile_product arguments", pos);
+        fields[i].name = va_arg(arg, gsinterned_string);
+        fields[i].type = va_arg(arg, struct gstype *);
     }
     va_end(arg);
 
