@@ -2,12 +2,6 @@
 
 	.type
 
-→	.tyabstract	*?^?^
-α	.tylambda	?
-β	.tylambda	?
-	.tylift
-	.tysum
-
 _empty.record	.tyexpr
 	.tylift
 	.typroduct
