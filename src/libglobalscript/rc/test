@@ -90,6 +90,7 @@ ok_diff_fail '-- force with free type variable in continuation --' ./$O.test-gsi
 ok_diff_fail '-- force with free type variable and variable in continuation --' ./$O.test-gsi force-with-fv-and-type-fv.ags
 
 ok_diff '-- rune literals --' ./$O.test-gsi rune-literal.ags
+ok_diff '-- three-byte rune literals --' ./$O.test-gsi three-byte-rune-literal.ags
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 ok_diff '-- constructors --' ./$O.test-gsi constructor.ags
 ok_diff '-- constructors with arguments --' ./$O.test-gsi constructor-args.ags
