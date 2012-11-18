@@ -502,7 +502,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtyarg, gssymarg, gssymrecord, gssymeprim, gssymforce;
+    static gsinterned_string gssymtyarg, gssymarg, gssymrecord, gssymeprim;
 
     struct gsparsedline *parsedline;
     int i;
@@ -578,24 +578,6 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
             }
         } else if (gsparse_cont_push_op(filename, parsedline, plineno, fields, n)) {
-        } else if (gssymceq(parsedline->directive, gssymforce, gssymcodeop, ".force")) {
-            if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on continuation ops");
-            else
-                parsedline->label = 0;
-            if (n < 3)
-                gsfatal("%s:%d: Missing continuation on .force", filename, *plineno);
-            parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-            for (i = 3; i < n && strcmp(fields[i], "|"); i++) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-            }
-            if (i < n) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
-                i++;
-            }
-            for (; i < n; i++) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
-            }
         } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return 0;
         } else {
@@ -840,7 +822,7 @@ static
 int
 gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymlift, gssymcoerce, gssymapp;
+    static gsinterned_string gssymlift, gssymcoerce, gssymapp, gssymforce;
 
     int i;
 
@@ -867,6 +849,24 @@ gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *pline
             gswarning("%s:%d: Nullary applications don't do anything", filename, *plineno);
         for (i = 2; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
+    } else if (gssymceq(parsedline->directive, gssymforce, gssymcodeop, ".force")) {
+        if (*fields[0])
+            gsfatal("%s:%d: Labels illegal on continuation ops");
+        else
+            parsedline->label = 0;
+        if (n < 3)
+            gsfatal("%s:%d: Missing continuation on .force", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
+        for (i = 3; i < n && strcmp(fields[i], "|"); i++) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+        }
+        if (i < n) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        for (; i < n; i++) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
+        }
     } else {
         return 0;
     }
