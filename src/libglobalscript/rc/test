@@ -2,26 +2,6 @@
 
 . $GLOBALSCRIPT/bin/test-fns
 
-fn ok_diff_fail {
-    echo $1
-    if ($2 ./test-gslib ./test-gslib/$3 > ./test-results/$3^-actual >[2] ./test-results/$3^-errors) {
-        echo $2 'succeeded; should have failed' >[1=2]
-        cat ./test-results/$3^-errors >[1=2]
-        cat ./test-results/$3^-actual >[1=2]
-        exit 1
-    }
-    if (! diff ./test-results/$3^-actual ./test-results/$3^-expected) {
-        echo $2 'produced incorrect output' >[1=2]
-        echo '--- Actual ---' >[1=2]
-        cat ./test-results/$3^-errors >[1=2]
-        cat ./test-results/$3^-actual >[1=2]
-        echo '--- Expected ---' >[1=2]
-        cat ./test-results/$3^-expected
-        exit 1
-    }
-    true
-}
-
 echo '-- undefined entry points --'
 if (./$O.test-gsi ./test-gslib ./test-gslib/undef.ags > ./test-results/undef.ags-actual) {
     echo 'test-gsi succeeded; should have failed' >[1=2]
