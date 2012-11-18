@@ -17,3 +17,10 @@ _false.arg.ty	.tyexpr
 
 _true.arg.ty	.tyexpr
 	.tyubproduct
+
+	.coercion
+
+bool.t.out	.tycoercion
+bool.t	.tygvar
+	.tyinvert
+	.tydefinition	bool.t
