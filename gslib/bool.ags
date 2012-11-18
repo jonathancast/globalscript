@@ -1,5 +1,19 @@
 	.prefix
 
+	.data
+
+bool.true	.closure	_bool.true.c
+
+	.code
+
+_bool.true.c	.expr
+bool.prim.u	.tygvar
+bool.t.in	.cogvar
+c	.constr	bool.prim.u	true
+	.coerce	bool.t.in
+	.lift
+	.yield	c
+
 	.type
 
 bool.t	.tyabstract	*
@@ -23,4 +37,8 @@ _true.arg.ty	.tyexpr
 bool.t.out	.tycoercion
 bool.t	.tygvar
 	.tyinvert
+	.tydefinition	bool.t
+
+bool.t.in	.tycoercion
+bool.t	.tygvar
 	.tydefinition	bool.t
