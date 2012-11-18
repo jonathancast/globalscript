@@ -1,0 +1,14 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+_msg	.string	Success\smessage
+
+	.code
+
+_epcode	.expr
+test.property.true	.gvar
+_msg	.gvar
+	.app	_msg
+	.enter	test.property.true

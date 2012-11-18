@@ -4,9 +4,9 @@ all:V: pure-all
 
 pure-all:V: $O.gstype
 
-pure-install:V: $GLOBALSCRIPT/bin/gstype
+pure-install:V: $GLOBALSCRIPT/bin/gstype $GLOBALSCRIPT/bin/gstest
 
-pure-integration-test:V: rc/pure-test $O.gstype
+pure-integration-test:V: rc/pure-test $O.gstype $O.gstest
 	./rc/pure-test
 
 $GLOBALSCRIPT/bin/%: $O.%
