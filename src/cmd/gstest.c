@@ -23,7 +23,7 @@ enum test_state {
 static struct gstype *test_expected_property_structure(struct gspos);
 
 static enum test_state test_evaluate(char *, char *, gsvalue);
-static void test_print(int, struct gsconstr *);
+static void test_print(int, gsvalue);
 
 void
 gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type, int argc, char **argv)
@@ -72,7 +72,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 break;
             case test_succeeded:
                 print("%s:\n", doc);
-                test_print(1, (struct gsconstr *)prog);
+                test_print(1, prog);
                 ace_down();
                 exits("");
             default:
@@ -143,10 +143,37 @@ static void test_indent(int);
 
 static
 void
-test_print(int depth, struct gsconstr *constr)
+test_print(int depth, gsvalue v)
 {
-    test_indent(depth);
-    print("Succeeded\n");
+    gstypecode st;
+
+    st = GS_SLOW_EVALUATE(v);
+
+    switch (st) {
+        case gstyindir:
+            test_print(depth, GS_REMOVE_INDIRECTIONS(v));
+            return;
+        case gstywhnf: {
+            struct gsconstr *constr;
+
+            constr = (struct gsconstr *)v;
+            switch (constr->constrnum) {
+                case test_property_constr_true:
+                    test_indent(depth);
+                    print("Succeeded\n");
+                    return;
+                default:
+                    fprint(2, UNIMPL("test_print: constr = %d"), constr->constrnum);
+                    ace_down();
+                    exits("unimpl");
+            }
+        }
+        default:
+            fprint(2, UNIMPL("test_print: st = %d"), st);
+            ace_down();
+            exits("unimpl");
+    }
+
 }
 
 void
