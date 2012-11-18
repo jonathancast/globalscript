@@ -63,9 +63,11 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
             item.v = 0;
             if (parsedfile->data) for (i = 0; i < parsedfile->data->numitems; i++) {
                 if (item.v)
-                    gsfatal("%s: Topologically sort from second data item next", parsedfile->name->name);
-                item.pseg = parsedfile->data->first_seg;
-                item.v = GSDATA_SECTION_FIRST_ITEM(parsedfile->data);
+                    item.v = gsinput_next_line(&item.pseg, item.v)
+                ; else {
+                    item.pseg = parsedfile->data->first_seg;
+                    item.v = GSDATA_SECTION_FIRST_ITEM(parsedfile->data);
+                }
                 if (gssymtable_get_scc(symtable, item))
                     continue;
                 gsbc_topsort_item(symtable, preorders, &unassigned_items, &maybe_group_items, item, &pend, &c);
