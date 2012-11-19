@@ -1,0 +1,98 @@
+analyze x0, x1, ..., xn
+    case p0, p1, ..., pn. e
+    case _. y
+
+
+analyze
+    case. e
+    case _. y
+≡ e
+
+
+analyze x0, x1, ..., xn
+    case py : pys, p1, p2, ..., pn. e
+    case _. y
+≡ match (:)
+    (λ 'y 'ys. analyze y, ys, x1, x2, ..., xn
+        case py, pys, p1, p2, ..., pn. e
+        case _. y
+    )
+    y
+    x0
+
+
+analyze x0, x1, ..., xn
+    case 'px0, p1, ..., pn. e
+    case _. y
+≡ for ('px0 ∝ x0) analyze x1, ..., xn
+    case p1, ..., pn. e
+    case _. y
+
+
+data 'α.
+    | nil
+    | α : list.t α
+:: 〈
+    abstype t :: * → *;
+    nil, view nil, :: ∀ 'α. t α;
+    (:), view (:) :: ∀ 'α. α → list.t α → t α;
+〉 ≡ Π〈
+    type u (α :: *) = "Σ〈 -- Not actually part of the de-sugaring but included to simplify the exposition
+        : "uΠ〈 0 :: α; 1 :: list.t α; 〉;
+        nil "uΠ〈〉;
+    〉;
+    abstype t (α :: *) :: * = ⌊u α⌋;
+    "coercion in = λ (type α :: *). "definition t α; -- Not actually part of the de-sugaring
+    "coercion out = λ (type α :: *). "reverse ("definition t α); -- Not actually part of the de-sugaring
+    nil = λ (type α :: *). ⌊ "constr (u α) nil "uΠ〈〉 "⊳ in α⌋;
+    : = λ (type α :: *). "lλ (x :: α). "lλ (xn :: list.t α). ⌊ "constr (u α) : "uΠ〈 0 = x; 1 = xn; 〉 "⊳ in α⌋;
+    match nil = λ (type α :: *). λ (type β :: *). "lλ (s :: β). "lλ (e :: β). "lλ (xn :: t α).
+        for ⌊ xn0 ⌋ ∝ xn "⊳ out α.
+            analyze xn0
+                case nil "uΠ〈〉. s
+                case _. e
+    ;
+    match : = λ (type α :: *). λ (type β :: *). "lλ (s :: ⌊ α → ⌊ list.t α → β ⌋ ⌋). "lλ (e :: β). "lλ (xn :: t α).
+        for ⌊ xn0 ⌋ ∝ xn "⊳ out α.
+            analyze xn0
+                case : "uΠ〈 0 = x; 1 = xn1; 〉. s x xn1
+                case _. e
+    ;
+〉
+
+
+module 'list ∝ ...; -- Expression as above
+≡ module list = ...; -- §cgs{list} fresh; ‘...’ means “de-sugaring of ‘...’ above”
+  type list.t = #type t list;
+  list.nil = #nil list;
+  list.: = # : list;
+  match list.nil = #match nil list;
+  match list.: = #match : list;
+
+
+analyze e0, e1, ..., e_{n-1}
+    case p00, p01, ..., p_{0,n-1}. e_{n+0}
+    .
+    .
+    .
+    case p_{m-1,0}, p_{m-1,1}, ..., p_{m-1,n-1}. e_{n+m-1}
+≡ for (
+    'x0 ∝ e0;
+    'x1 ∝ e1;
+    .
+    .
+    .
+    'x_{n-1} ∝ e_{n-1};
+    ym :: τ;
+    y_{m-1} ∝ analyze x0, x1, ..., x_{n-1}
+        case p_{m-1,0}, p_{m-1,1}, ..., p_{m-1,n-1}. e_{n+m-1}
+        case _. ym
+    ;
+    .
+    .
+    .
+    y0 ∝ analyze x0, x1, x_{n-1}
+        case p00, p01, ..., p_{0,n-1}. e_{n+0}
+        case _. y1
+    ;
+) y0
