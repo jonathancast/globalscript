@@ -1043,6 +1043,7 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
+        } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(&p, ppseg, &cl)) {
             if (!cont_arg_type)
                 gsfatal("%P: No .karg in a .forcecont", p->pos)
@@ -1054,6 +1055,8 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     }
 
 have_type:
+
+    calculated_type = gsbc_typecheck_conts(&cl, 0, calculated_type);
 
     gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(calculated_type), gskind_lifted_kind());
 

@@ -608,6 +608,7 @@ gsparse_force_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsed
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_arg(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_cont_push_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return 0;
         } else {
