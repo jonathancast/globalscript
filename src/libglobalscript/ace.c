@@ -193,7 +193,9 @@ ace_thread_pool_main(void *p)
         ;
     }
 
-    gswarning("%s:%d: ace_thread_pool_main terminating", __FILE__, __LINE__);
+    if (0)
+        gswarning("%s:%d: ace_thread_pool_main terminating", __FILE__, __LINE__)
+    ;
 }
 
 static
