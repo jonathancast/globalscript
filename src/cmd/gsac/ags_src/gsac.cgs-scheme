@@ -1,0 +1,20 @@
+"lλ (o :: ibio.oport.t rune.t). for @(type ibio.prim.m)
+    as ← for ga = "eprim ibio.prim ibio env.args.get get.args.ty. ga;
+. process.args symtable.empty as;
+
+process.args :: ⌊ symtable.t → ⌊ list.t string.t → ⌊ ibio.prim.m "Π〈〉 ⌋ ⌋ ⌋ =
+    "lλ (syms :: symtable.t). "lλ (as :: list.t string.t).
+        for ⌊ as0 ⌋ ∝ as "⊳ list.t.out string.t.
+            analyze as0
+                case nil "uΠ〈〉. §inf{string compile stdin}
+                case : "uΠ〈 0 = a0; 1 = as1; 〉.
+                    for ⌊ b0 ⌋ ∝ list.≡ rune.≡ a0 qq{-l}.
+                        analyze b0
+                            case false "uΠ〈〉. process.input.files syms as0
+                            case true "uΠ〈〉. for ⌊ as2 ⌋ ∝ as1 "⊳ list.t.out string.t.
+                                analyze as2
+                                    case nil "uΠ〈〉. ibio.prim.abend @(type "Π〈〉) qq{Missing argument to -l}
+                                    case : "uΠ〈 0 = a1; 1 = as3; 〉.
+                                        for @(type ibio.prim.m) syms1 ← read.prefix syms a1.
+                                            process.args syms1 as3
+;
