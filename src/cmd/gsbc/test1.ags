@@ -1,7 +1,0 @@
-#! /home/jcast/globalscript/bin/ibio
-
-	.document
-	.lprog	ibio.lib.write
-op	.arg
-.h	CHCONST	'H'
-	JEPRIM	ibio.lib.put op	.h
