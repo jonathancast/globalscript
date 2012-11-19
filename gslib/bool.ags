@@ -3,6 +3,7 @@
 	.data
 
 bool.true	.closure	_bool.true.c
+bool.false	.closure	_bool.false.c
 
 	.code
 
@@ -10,6 +11,14 @@ _bool.true.c	.expr
 bool.prim.u	.tygvar
 bool.t.in	.cogvar
 c	.constr	bool.prim.u	true
+	.coerce	bool.t.in
+	.lift
+	.yield	c
+
+_bool.false.c	.expr
+bool.prim.u	.tygvar
+bool.t.in	.cogvar
+c	.constr	bool.prim.u	false
 	.coerce	bool.t.in
 	.lift
 	.yield	c
