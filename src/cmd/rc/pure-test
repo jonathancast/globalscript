@@ -9,3 +9,6 @@ ok_grep_errors '-- ill-typed tests --' './test-gslib/mistyped.test.ags:5: I don'
 ok_diff '-- successful tests --' ./$O.gstest true.test.ags
 ok_diff_fail '-- unsuccessful tests --' ./$O.gstest false.test.ags
 ok_diff '-- labelled tests --' ./$O.gstest label.test.ags
+
+ok_diff '-- successful asserts --' ./$O.gstest successful-assert.test.ags
+ok_diff_fail '-- unsuccessful asserts --' ./$O.gstest unsuccessful-assert.test.ags

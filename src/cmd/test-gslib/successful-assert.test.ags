@@ -1,0 +1,17 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+_fail.msg	.string	Unsuccessful\sassert
+_succ.msg	.string	Successful\sassert
+
+	.code
+
+_epcode	.expr
+test.assert	.gvar
+_fail.msg	.gvar
+_succ.msg	.gvar
+bool.true	.gvar
+	.app	_fail.msg	_succ.msg	bool.true
+	.enter	test.assert

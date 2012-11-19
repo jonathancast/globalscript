@@ -1,0 +1,36 @@
+	.prefix
+
+	.data
+
+test.assert	.closure	_test.assert.c
+
+	.code
+
+_test.assert.c	.expr
+bool.t	.tygvar
+_string.ty	.tygvar
+_test.assert.c.c	.subcode
+bool.t.out	.cogvar
+f	.larg	_string.ty
+s	.larg	_string.ty
+b	.larg	bool.t
+	.force	_test.assert.c.c	|	f	s
+	.coerce	bool.t.out
+	.enter	b
+
+_test.assert.c.c	.forcecont
+test.property.t	.tygvar
+bool.prim.u	.tygvar
+_string.ty	.tygvar
+test.property.true	.gvar
+test.property.false	.gvar
+f	.fv	_string.ty
+s	.fv	_string.ty
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+	.case	false
+	.app	f
+	.enter	test.property.false
+	.case	true
+	.app	s
+	.enter	test.property.true
