@@ -79,7 +79,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 print("%s: Failed:\n", doc);
                 test_print(1, prog);
                 ace_down();
-                exits("");
+                exits("failed");
             default:
                 fprint(2, "%s:%d: Handle test state %d next\n", __FILE__, __LINE__, st);
                 ace_down();
