@@ -5,7 +5,11 @@
 bool.true	.closure	_bool.true.c
 bool.false	.closure	_bool.false.c
 
+bool.≡	.closure	_bool.≡.c
+
 	.code
+
+# §section Constructors
 
 _bool.true.c	.expr
 bool.prim.u	.tygvar
@@ -22,6 +26,45 @@ c	.constr	bool.prim.u	false
 	.coerce	bool.t.in
 	.lift
 	.yield	c
+
+# §section §gs{bool.≡}
+
+_bool.≡.c	.expr
+bool.t	.tygvar
+_bool.≡.k0	.subcode
+bool.t.out	.cogvar
+a	.larg	bool.t
+b	.larg	bool.t
+	.force	_bool.≡.k0	|	b
+	.coerce	bool.t.out
+	.enter	a
+
+_bool.≡.k0	.forcecont
+bool.t	.tygvar
+bool.prim.u	.tygvar
+_bool.≡.k1	.subcode
+bool.t.out	.cogvar
+b	.fv	bool.t
+a0	.karg	bool.prim.u
+	.force	_bool.≡.k1	|	a0
+	.coerce	bool.t.out
+	.enter	b
+
+_bool.≡.k1	.forcecont
+bool.t	.tygvar
+bool.prim.u	.tygvar
+bool.true	.gvar
+a0	.fv	bool.prim.u
+b0	.karg	bool.prim.u
+	.analyze	a0	false	true
+	.case	false
+		.analyze	b0	false	true
+		.case	false
+			.enter	bool.true
+		.case	true
+			.undef	bool.t
+	.case	true
+		.undef	bool.t
 
 	.type
 

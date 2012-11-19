@@ -1,0 +1,41 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_test.false.eq.false	.closure	_test.false.eq.false.c
+_test.false.eq.false.label	.string	false\s≡\sfalse
+_test.false.eq.false.test	.closure	_test.false.eq.false.test.c
+_test.false.eq.false.fail	.string	false\s≠\sfalse
+_test.false.eq.false.succ	.string	false\s≡\sfalse
+
+	.code
+
+_epcode	.expr
+_test.false.eq.false	.gvar
+	.enter	_test.false.eq.false
+
+# §section §gs{false ≡ false}
+
+_test.false.eq.false.c	.expr
+test.property.label	.gvar
+_test.false.eq.false.label	.gvar
+_test.false.eq.false.test	.gvar
+	.app	_test.false.eq.false.label	_test.false.eq.false.test
+	.enter	test.property.label
+
+_test.false.eq.false.test.c	.expr
+_test.false.eq.false.test_eq.c	.subcode
+test.assert	.gvar
+_test.false.eq.false.fail	.gvar
+_test.false.eq.false.succ	.gvar
+eq	.alloc	_test.false.eq.false.test_eq.c
+	.app	_test.false.eq.false.fail	_test.false.eq.false.succ	eq
+	.enter	test.assert
+
+_test.false.eq.false.test_eq.c	.expr
+bool.≡	.gvar
+bool.false	.gvar
+	.app	bool.false	bool.false
+	.enter	bool.≡
