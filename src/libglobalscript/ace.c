@@ -103,8 +103,8 @@ ace_thread_pool_main(void *p)
                             case gstystack:
                                 break;
                             case gstyindir:
-                                prog = GS_REMOVE_INDIRECTIONS(prog);
-                                /* Fall through */
+                                thread->blocked = GS_REMOVE_INDIRECTIONS(prog);
+                                break;
                             case gstywhnf: {
                                 if (ace_return(thread, thread->blockedat, prog) > 0)
                                     suspended_runnable_thread = 1
