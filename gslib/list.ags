@@ -2,9 +2,26 @@
 
 	.data
 
+list.nil	.closure	_list.nil.c
+
 list.<>	.closure	_list.<>.code	_list.<>.ty
+list.≡	.closure	_list.≡.code	_list.≡.ty
 
 	.code
+
+# §section Constructors
+
+_list.nil.c	.expr
+list.prim.u	.tygvar
+α	.tyarg	*
+t	.tylet	list.prim.u	α
+list.t.in	.cogvar
+c	.constr	t	nil
+	.coerce	list.t.in	α
+	.lift
+	.yield	c
+
+# §section §gs{list.<>}
 
 _list.<>.code	.expr
 list.t	.tygvar
@@ -47,7 +64,63 @@ ys	.fv	list.t	α
 	.app	xn	ys
 	.enter	list.<>	α
 
+# §section §gs{list.≡}
+
+_list.≡.code	.expr
+bool.t	.tygvar
+list.t	.tygvar
+_list.≡.arg.ty	.tygvar
+α	.tyarg	*
+at	.tylet	_list.≡.arg.ty	α
+_list.≡.k0	.subcode
+list.t.out	.cogvar
+c	.larg	at
+xn	.larg	list.t	α
+ys	.larg	list.t	α
+	.force	_list.≡.k0	α	|	ys
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.≡.k0	.forcecont
+bool.t	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+α	.tyfv	*
+t	.tylet	list.prim.u	α
+_list.≡.k1	.subcode
+list.t.out	.cogvar
+ys	.fv	list.t	α
+xn0	.karg	t
+	.force	_list.≡.k1	α	|	xn0
+	.coerce	list.t.out	α
+	.enter	ys
+
+_list.≡.k1	.forcecont
+bool.t	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+α	.tyfv	*
+t	.tylet	list.prim.u	α
+bool.true	.gvar
+xn0	.fv	t
+ys0	.karg	t
+	.analyze	xn0	:	nil
+		.case	:
+x		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	bool.t
+		.case	nil
+			.analyze	ys0	:	nil
+				.case	:
+y				.fkarg	0	α
+ys1				.fkarg	1	list.t	α
+					.undef	bool.t
+				.case	nil
+					.enter	bool.true
+
 	.type
+
+# §section §gs{list.t}
 
 list.t	.tyabstract	**^
 list.prim.u	.tygvar
@@ -79,6 +152,8 @@ _nil_type	.tyexpr
 α	.tylambda	*
 	.tyubproduct
 
+# §section §gs{list.<>}
+
 _list.<>.ty	.tyexpr
 list.t	.tygvar
 α	.tyforall	*
@@ -87,6 +162,31 @@ list.t	.tygvar
 	.tylift
 	.tyfun	list.t	α
 	.tyref	list.t	α
+
+# §section §gs{list.≡}
+
+_list.≡.ty	.tyexpr
+bool.t	.tygvar
+list.t	.tygvar
+_list.≡.arg.ty	.tygvar
+α	.tyforall	*
+at	.tylet	_list.≡.arg.ty	α
+	.tylift
+	.tyfun	at
+	.tylift
+	.tyfun	list.t	α
+	.tylift
+	.tyfun	list.t	α
+	.tyref	bool.t
+
+_list.≡.arg.ty	.tyexpr
+bool.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyfun	α
+	.tyref	bool.t
 
 	.coercion
 

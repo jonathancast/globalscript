@@ -1,0 +1,47 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_test.nil.eq.nil	.closure	_test.nil.eq.nil.c
+_test.nil.eq.nil.label	.string	nil\s≡\snil
+_test.nil.eq.nil.test	.closure	_test.nil.eq.nil.test.c
+_test.nil.eq.nil.test.succ	.string	nil\s≡\snil
+_test.nil.eq.nil.test.fail	.string	nil\s≠\snil
+
+	.code
+
+_epcode	.expr
+_test.nil.eq.nil	.gvar
+	.enter	_test.nil.eq.nil
+
+_test.nil.eq.nil.c	.expr
+test.property.label	.gvar
+_test.nil.eq.nil.label	.gvar
+_test.nil.eq.nil.test	.gvar
+	.app	_test.nil.eq.nil.label	_test.nil.eq.nil.test
+	.enter	test.property.label
+
+_test.nil.eq.nil.test.c	.expr
+_test.nil.eq.nil.test.c_eq.c	.subcode
+test.assert	.gvar
+_test.nil.eq.nil.test.succ	.gvar
+_test.nil.eq.nil.test.fail	.gvar
+eq	.alloc	_test.nil.eq.nil.test.c_eq.c
+	.app	_test.nil.eq.nil.test.fail	_test.nil.eq.nil.test.succ	eq
+	.enter	test.assert
+
+_test.nil.eq.nil.test.c_eq.c	.expr
+bool.t	.tygvar
+_test.nil.eq.nil.test.c_n.c	.subcode
+list.≡	.gvar
+bool.≡	.gvar
+n	.alloc	_test.nil.eq.nil.test.c_n.c
+	.app	bool.≡ n	n
+	.enter	list.≡ bool.t
+
+_test.nil.eq.nil.test.c_n.c	.expr
+bool.t	.tygvar
+list.nil	.gvar
+	.enter	list.nil	bool.t
