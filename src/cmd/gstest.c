@@ -18,6 +18,7 @@ enum test_state {
     test_prog_err,
     test_running,
     test_succeeded,
+    test_failed,
 };
 
 static struct gstype *test_property_type(struct gspos);
@@ -74,6 +75,11 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 test_print(1, prog);
                 ace_down();
                 exits("");
+            case test_failed:
+                print("%s: Failed:\n", doc);
+                test_print(1, prog);
+                ace_down();
+                exits("");
             default:
                 fprint(2, "%s:%d: Handle test state %d next\n", __FILE__, __LINE__, st);
                 ace_down();
@@ -85,6 +91,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
 static struct gstype *test_string_type(struct gspos);
 
 enum { /* Keep in sync with the below */
+    test_property_constr_false,
     test_property_constr_label,
     test_property_constr_true,
 };
@@ -93,7 +100,10 @@ static
 struct gstype *
 test_expected_property_structure(struct gspos pos)
 {
-    return gstypes_compile_lift(pos, gstypes_compile_sum(pos, 2,
+    return gstypes_compile_lift(pos, gstypes_compile_sum(pos, 3,
+        gsintern_string(gssymconstrlable, "false"), gstypes_compile_ubproduct(pos, 1,
+            gsintern_string(gssymfieldlable, "0"), test_string_type(pos)
+        ),
         gsintern_string(gssymconstrlable, "label"), gstypes_compile_ubproduct(pos, 2,
             gsintern_string(gssymfieldlable, "0"), test_string_type(pos),
             gsintern_string(gssymfieldlable, "1"), test_property_type(pos)
@@ -135,6 +145,8 @@ enum test_state
 test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
 {
     switch (constr->constrnum) {
+        case test_property_constr_false:
+            return test_failed;
         case test_property_constr_label:
             return test_evaluate(err, eerr, constr->arguments[1]);
         case test_property_constr_true:
@@ -147,6 +159,7 @@ test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
 
 static void test_indent(int);
 static void test_print_label(int, gsvalue);
+static void test_print_failure(int, gsvalue);
 
 static
 void
@@ -165,6 +178,9 @@ test_print(int depth, gsvalue v)
 
             constr = (struct gsconstr *)v;
             switch (constr->constrnum) {
+                case test_property_constr_false:
+                    test_print_failure(depth, constr->arguments[0]);
+                    return;
                 case test_property_constr_label:
                     test_print_label(depth, constr->arguments[0]);
                     test_print(depth + 1, constr->arguments[1]);
@@ -186,14 +202,43 @@ test_print(int depth, gsvalue v)
     }
 }
 
+static void test_print_string(gsvalue);
+
 static
 void test_print_label(int depth, gsvalue s)
+{
+    test_indent(depth);
+    test_print_string(s);
+    print(":\n");
+}
+
+static
+void
+test_print_failure(int depth, gsvalue s)
+{
+    test_indent(depth);
+    test_print_string(s);
+    print("\n");
+}
+
+static
+void
+test_indent(int depth)
+{
+    int i;
+
+    for (i = 0; i < depth; i++)
+        print("    ")
+    ;
+}
+
+static
+void
+test_print_string(gsvalue s)
 {
     gsvalue c;
     gstypecode st;
     char err[0x100];
-
-    test_indent(depth);
 
     c = 0;
     for (;;) {
@@ -228,7 +273,6 @@ void test_print_label(int depth, gsvalue s)
                             s = constr->arguments[1];
                             break;
                         case 1:
-                            print(":\n");
                             return;
                         default:
                             fprint(2, UNIMPL_NL("test_print_label(constr = %d)"), constr->constrnum);
@@ -244,16 +288,6 @@ void test_print_label(int depth, gsvalue s)
             }
         }
     }
-}
-
-void
-test_indent(int depth)
-{
-    int i;
-
-    for (i = 0; i < depth; i++)
-        print("    ")
-    ;
 }
 
 static

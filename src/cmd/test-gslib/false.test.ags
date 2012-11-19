@@ -1,0 +1,14 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+_msg	.string	Unsuccessful\stest
+
+	.code
+
+_epcode	.expr
+test.property.false	.gvar
+_msg	.gvar
+	.app	_msg
+	.enter	test.property.false
