@@ -50,6 +50,7 @@ ace_init()
 static void ace_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
+static void ace_failure_thread(struct ace_thread *, struct gsimplementation_failure *);
 
 static int ace_alloc_thunk(struct ace_thread *);
 static int ace_alloc_constr(struct ace_thread *);
@@ -112,10 +113,17 @@ ace_thread_pool_main(void *p)
                                 break;
                             }
                             case gstyerr: {
-                                struct gserror *err;
-
-                                err = (struct gserror *)prog;
-                                ace_error_thread(thread, err);
+                                ace_error_thread(thread, (struct gserror *)prog);
+                                break;
+                            }
+                            case gstyimplerr: {
+                                ace_failure_thread(thread, (struct gsimplementation_failure *)prog);
+                                break;
+                            }
+                            case gstyunboxed: {
+                                if (ace_return(thread, thread->blockedat, prog) > 0)
+                                    suspended_runnable_thread = 1
+                                ;
                                 break;
                             }
                             default:
@@ -567,8 +575,6 @@ ace_poison_thread(struct ace_thread *thread, struct gspos srcpos, char *fmt, ...
 
     ace_error_thread(thread, gserror(srcpos, "%s", buf));
 }
-
-static void ace_failure_thread(struct ace_thread *, struct gsimplementation_failure *);
 
 static
 void
