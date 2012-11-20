@@ -495,6 +495,11 @@ ace_enter(struct ace_thread *thread)
                     return 1
                 ;
                 return 0;
+            case gstyunboxed:
+                if (ace_return(thread, ip->pos, prog) > 0)
+                    return 1
+                ;
+                return 0;
             default:
                 ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
                 return 0;
