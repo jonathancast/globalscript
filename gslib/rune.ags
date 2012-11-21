@@ -1,5 +1,51 @@
 	.prefix
 
+	.data
+
+rune.≡	.closure	_rune.≡.c
+
+	.code
+
+_rune.≡.c	.expr
+rune.t	.tygvar
+_rune.≡.k0	.subcode
+rune.t.out	.cogvar
+x	.larg	rune.t
+y	.larg	rune.t
+	.force	_rune.≡.k0	|	y
+	.coerce	rune.t.out
+	.enter	x
+
+_rune.≡.k0	.forcecont
+rune.prim.rune	.tygvar
+rune.t	.tygvar
+_rune.≡.k1	.subcode
+rune.t.out	.cogvar
+y	.fv	rune.t
+x0	.karg	rune.prim.rune
+	.force	_rune.≡.k1	|	x0
+	.coerce	rune.t.out
+	.enter	y
+
+_rune.≡.k1	.forcecont
+bool.t	.tygvar
+rune.prim.rune	.tygvar
+_rune.prim.eq.t	.tygvar
+_rune.≡.k1.0	.subcode
+_rune.≡.k1.1	.subcode
+x0	.fv	rune.prim.rune
+y0	.karg	rune.prim.rune
+	.ubanalyze	0	_rune.≡.k1.0	1	_rune.≡.k1.1
+	.ubprim	rune.prim	eq	_rune.prim.eq.t	|	x0	y0
+
+_rune.≡.k1.0	.ubcasecont
+bool.t	.tygvar
+	.undef	bool.t
+
+_rune.≡.k1.1	.ubcasecont
+bool.true	.gvar
+	.enter	bool.true
+
 	.type
 
 rune.t	.tyabstract	*
@@ -9,8 +55,26 @@ rune.prim.rune	.tygvar
 
 rune.prim.rune	.tydefinedprim	rune.prim	rune	u
 
+# §section rune.≡
+
+_rune.prim.eq.t	.tyexpr
+rune.prim.rune	.tygvar
+_rune.prim.eq.res.t	.tygvar
+	.tyfun	rune.prim.rune
+	.tyfun	rune.prim.rune
+	.tyref	_rune.prim.eq.res.t
+
+_rune.prim.eq.res.t	.tyexpr
+_ub.empty.record	.tygvar
+	.tyubsum	0	_ub.empty.record	1	_ub.empty.record
+
 	.coercion
 
 rune.t.in	.tycoercion
 rune.t	.tygvar
+	.tydefinition	rune.t
+
+rune.t.out	.tycoercion
+rune.t	.tygvar
+	.tyinvert
 	.tydefinition	rune.t

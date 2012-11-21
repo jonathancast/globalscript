@@ -1,0 +1,47 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_test.x.eq.x	.closure	_test.x.eq.x.c
+_test.x.eq.x.label	.string	r/x/\s≡\sr/x/
+_test.x.eq.x.test	.closure	_test.x.eq.x.test.c
+_test.x.eq.x.fail	.string	r/x/\s≠\sr/x/
+_test.x.eq.x.succ	.string	r/x/\s≡\sr/x/
+_x	.closure	_x.c
+
+	.code
+
+_epcode	.expr
+_test.x.eq.x	.gvar
+	.enter	_test.x.eq.x
+
+_test.x.eq.x.c	.expr
+test.property.label	.gvar
+_test.x.eq.x.label	.gvar
+_test.x.eq.x.test	.gvar
+	.app	_test.x.eq.x.label	_test.x.eq.x.test
+	.enter	test.property.label
+
+_test.x.eq.x.test.c	.expr
+_test.x.eq.x_eq.c	.subcode
+test.assert	.gvar
+_test.x.eq.x.fail	.gvar
+_test.x.eq.x.succ	.gvar
+eq	.alloc	_test.x.eq.x_eq.c
+	.app	_test.x.eq.x.fail	_test.x.eq.x.succ	eq
+	.enter	test.assert
+
+_test.x.eq.x_eq.c	.expr
+rune.≡	.gvar
+_x	.gvar
+	.app	_x	_x
+	.enter	rune.≡
+
+_x.c	.expr
+rune.t.in	.cogvar
+x	.rune	x
+	.coerce	rune.t.in
+	.lift
+	.yield	x
