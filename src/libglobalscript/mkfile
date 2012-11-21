@@ -73,7 +73,7 @@ ace.$O: gsheap.h gsregtables.h ace.h
 apithread.$O: gsregtables.h gsheap.h api.h
 symtable.$O: gsinputfile.h
 bytecompile.$O: gsinputfile.h gsregtables.h gstypealloc.h gsbytecompile.h gsheap.h gstopsort.h gstypealloc.h
-primset.$O: gsinputfile.h gssetup.h
+primset.$O: gsinputfile.h gssetup.h gsregtables.h
 typealloc.$O: gsinputfile.h gsregtables.h gstypealloc.h gstypecheck.h
 typecheck.$O: gsinputfile.h gsregtables.h gstypealloc.h gstypecheck.h
 clienttypecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h

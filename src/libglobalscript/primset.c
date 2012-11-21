@@ -5,53 +5,28 @@
 #include <libglobalscript.h>
 #include "gsinputfile.h"
 #include "gssetup.h"
+#include "gsregtables.h"
 
-struct gsregistered_primset_link {
-    gsinterned_string key;
-    struct gsregistered_primset *value;
-    struct gsregistered_primset_link *next;
-};
-
-static struct gsregistered_primset_link *registered_primsets;
-
-static struct gs_block_class gsregistered_primset_link_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* description = */ "Registered primitive set descriptor links",
-};
-static void *gsregistered_primset_link_nursury;
+static struct gsregistered_primset *registered_primsets[MAX_NUM_REGISTERS];
+static int num_registered_primsets;
 
 void
 gsprims_register_prim_set(struct gsregistered_primset *value)
 {
-    struct gsregistered_primset_link **p;
-    gsinterned_string interned_name;
-
-    interned_name = gsintern_string(gssymprimsetlable, value->name);
-
-    for (p = &registered_primsets; *p; p = &(*p)->next) {
-        if ((*p)->key == interned_name)
-            gsfatal("%s: Duplicate registered primset", value->name);
-    }
-
-    *p = gs_sys_seg_suballoc(&gsregistered_primset_link_descr, &gsregistered_primset_link_nursury, sizeof(**p), sizeof(void*));
-
-    (*p)->key = interned_name;
-    (*p)->value = value;
-    (*p)->next = 0;
+    if (num_registered_primsets >= MAX_NUM_REGISTERS)
+        gsfatal(UNIMPL("Can only register up to 0x%x primsets"), MAX_NUM_REGISTERS)
+    ;
+    registered_primsets[num_registered_primsets++] = value;
 }
 
 struct gsregistered_primset *
 gsprims_lookup_prim_set(char *name)
 {
-    struct gsregistered_primset_link *p;
-    gsinterned_string interned_name;
+    int i;
 
-    interned_name = gsintern_string(gssymprimsetlable, name);
-
-    for (p = registered_primsets; p; p = p->next) {
-        if (p->key == interned_name)
-            return p->value
+    for (i = 0; i < num_registered_primsets; i++) {
+        if (!strcmp(registered_primsets[i]->name, name))
+            return registered_primsets[i]
         ;
     }
 
