@@ -129,11 +129,14 @@ test_evaluate(char *err, char *eerr, gsvalue v)
             return test_running;
         case gstywhnf:
             return test_evaluate_constr(err, eerr, (struct gsconstr *)v);
+        case gstyindir:
+            return test_evaluate(err, eerr, GS_REMOVE_INDIRECTIONS(v));
         case gstyerr:
             gserror_format(err, eerr, (struct gserror *)v);
             return test_prog_err;
-        case gstyindir:
-            return test_evaluate(err, eerr, GS_REMOVE_INDIRECTIONS(v));
+        case gstyimplerr:
+            gsimplementation_failure_format(err, eerr, (struct gsimplementation_failure *)v);
+            return test_impl_err;
         default:
             seprint(err, eerr, UNIMPL_NL("test_evaluate: st = %d"), st);
             return test_impl_err;
