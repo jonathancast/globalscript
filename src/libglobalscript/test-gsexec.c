@@ -25,10 +25,14 @@ static struct gsregistered_prim test_sequence_operations[] = {
     { 0, },
 };
 
+static gsubprim_handler *test_sequence_ubexec[] = {
+};
+
 static struct gsregistered_primset test_sequence_primset = {
     /* name = */ "test.sequence",
     /* types = */ test_sequence_types,
     /* operations = */ test_sequence_operations,
+    /* ubexec_table = */ test_sequence_ubexec,
 };
 
 void

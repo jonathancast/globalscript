@@ -149,6 +149,7 @@ struct gstype *gstypes_compile_lift(struct gspos, struct gstype *);
 struct gstype *gstypes_compile_fun(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstypes_compile_sum(struct gspos, int, ...);
 struct gstype *gstypes_compile_sumv(struct gspos, int, struct gstype_constr *);
+struct gstype *gstypes_compile_ubsumv(struct gspos, int, struct gstype_constr *);
 struct gstype *gstypes_compile_product(struct gspos, int, ...);
 struct gstype *gstypes_compile_productv(struct gspos, int, struct gstype_field *);
 struct gstype *gstypes_compile_ubproduct(struct gspos, int, ...);
@@ -274,6 +275,7 @@ struct gsbco {
     enum {
         gsbc_expr,
         gsbc_forcecont,
+        gsbc_ubcasecont,
         gsbc_eprog,
     } tag;
     struct gspos pos;
@@ -337,10 +339,14 @@ struct gseprim {
 
 /* §section{Primitives} */
 
+typedef int gsubprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *);
+int gsubprim_return(struct ace_thread *, struct gspos, int, int, ...);
+
 struct gsregistered_primset {
     char *name;
     struct gsregistered_primtype *types;
     struct gsregistered_prim *operations;
+    gsubprim_handler **ubexec_table;
 };
 
 enum gsprim_type_group {
@@ -357,13 +363,16 @@ struct gsregistered_primtype {
     char *kind;
 };
 
+enum gsprim_group {
+    gsprim_operation_unboxed,
+    gsprim_operation_api,
+};
+
 struct gsregistered_prim {
     char *name;
     char *file;
     int line;
-    enum {
-        gsprim_operation_api,
-    } group;
+    enum gsprim_group group;
     char *apitype;
     char *type;
     int index;
@@ -374,6 +383,8 @@ extern void gsadd_client_prim_sets(void);
 
 void gsprims_register_prim_set(struct gsregistered_primset *);
 struct gsregistered_primset *gsprims_lookup_prim_set(char *name);
+struct gsregistered_primset *gsprims_lookup_prim_set_by_index(int);
+int gsprims_prim_set_index(struct gsregistered_primset *);
 
 struct gsregistered_primtype *gsprims_lookup_type(struct gsregistered_primset *, char*);
 

@@ -125,7 +125,7 @@ static struct gsparsedline *gstype_section_skip_type_expr(struct gsparsedfile_se
 struct gsparsedline *
 gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedline *type)
 {
-    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtyapiprim, gssymtyelimprim;
+    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtyapiprim, gssymtyelimprim, gssymtydefinedprim;
 
     if (gssymceq(type->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
@@ -134,6 +134,8 @@ gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedlin
     } else if (gssymceq(type->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")) {
         return gsinput_next_line(ppseg, type);
     } else if (gssymceq(type->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")) {
+        return gsinput_next_line(ppseg, type);
+    } else if (gssymceq(type->directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")) {
         return gsinput_next_line(ppseg, type);
     } else {
         gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_section_next_item(%s)", type->pos, type->directive->name);
@@ -401,7 +403,7 @@ static
 void
 gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymforcecont, gssymtyarg, gssymtyfv, gssymtylet, gssymcogvar;
+    static gsinterned_string gssymforcecont, gssymubcasecont, gssymtyarg, gssymtyfv, gssymtylet, gssymcogvar;
 
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
@@ -410,6 +412,7 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
     if (
         gssymeq(item.v->directive, gssymcodedirective, ".expr")
         || gssymceq(item.v->directive, gssymforcecont, gssymcodedirective, ".forcecont")
+        || gssymceq(item.v->directive, gssymubcasecont, gssymcodedirective, ".ubcasecont")
         || gssymeq(item.v->directive, gssymcodedirective, ".eprog")
     ) {
         for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {

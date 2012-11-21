@@ -253,7 +253,7 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopyield, gssymopenter, gssymopundef, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymopundef, gssymopanalyze, gssymopcase;
 
 static
 int
@@ -543,6 +543,22 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
         nfvs = p->numarguments - i;
 
         pcl->size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
+    } else if (gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")) {
+        int ncases, nfvs;
+
+        pcl->phase = phbytecodes;
+
+        for (i = 0; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+        ncases = i / 2;
+
+        /* Ignore free type variables & separator (type erasure) */
+        if (i < p->numarguments) i++;
+        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+
+        if (i < p->numarguments) i++;
+        nfvs = p->numarguments - i;
+
+        pcl->size += ACE_UBANALYZE_SIZE(ncases, nfvs);
     } else {
         return 0;
     }
@@ -561,6 +577,21 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
         pcl->size += GS_SIZE_BYTECODE(1);
     } else if (gssymeq((*pp)->directive, gssymcodeop, ".enter")) {
         pcl->size += GS_SIZE_BYTECODE(1);
+    } else if (gssymceq((*pp)->directive, gssymopubprim, gssymcodeop, ".ubprim")) {
+        struct gsregistered_primset *prims;
+
+        if (prims = gsprims_lookup_prim_set((*pp)->arguments[0]->name)) {
+            int nargs;
+
+            /* Ignore free type variables & separator (type erasure) */
+            for (i = 3; i < (*pp)->numarguments && (*pp)->arguments[i]->type != gssymseparator; i++);
+            if (i < (*pp)->numarguments) i++;
+            nargs = (*pp)->numarguments - i;
+
+            pcl->size += ACE_UBPRIM_SIZE(nargs);
+        } else {
+            pcl->size += ACE_UNKNOWN_UBPRIM_SIZE();
+        }
     } else if (gssymceq((*pp)->directive, gssymopundef, gssymcodeop, ".undef")) {
         pcl->size += GS_SIZE_BYTECODE(0);
     } else if (gssymceq((*pp)->directive, gssymopanalyze, gssymcodeop, ".analyze")) {
@@ -756,12 +787,18 @@ static
 void
 gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco **bcos, int i, int n)
 {
+    static gsinterned_string gssymubcasecont;
+
     if (gssymeq(p->directive, gssymcodedirective, ".expr")) {
         bcos[i]->tag = gsbc_expr;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else if (gssymeq(p->directive, gssymcodedirective, ".forcecont")) {
         bcos[i]->tag = gsbc_forcecont;
+        bcos[i]->pos = p->pos;
+        gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
+    } else if (gssymceq(p->directive, gssymubcasecont, gssymcodedirective, ".ubcasecont")) {
+        bcos[i]->tag = gsbc_ubcasecont;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else if (gssymeq(p->directive, gssymcodedirective, ".eprog")) {
@@ -1210,14 +1247,6 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
 
         pcode = (struct gsbc *)pcl->pout;
 
-        if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-        ;
-
-        pcl->regs[pcl->nregs] = p->label;
-
-        pcl->nregs++;
-
         creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[0]);
 
         pcode->pos = p->pos;
@@ -1239,6 +1268,38 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
         }
 
         pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
+    } else if (gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")) {
+        int first_fv;
+
+        pcl->phase = rtops;
+
+        pcode = (struct gsbc *)pcl->pout;
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_ubanalzye;
+
+        for (i = 0; i < p->numarguments && p->arguments[i]->type != gssymseparator; i += 2) {
+            int creg;
+
+            if (i + 1 >= p->numarguments || p->arguments[i + 1]->type == gssymseparator)
+                gsfatal("%P: Missing continuation for final constructor", p->pos)
+            ;
+            creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[i + 1]);
+            ACE_UBANALYZE_CONT(pcode, i / 2) = creg;
+        }
+        ACE_UBANALYZE_NUMCONTS(pcode) = i / 2;
+
+        /* §paragraph{Skip free type variables} */
+        if (i < p->numarguments) i++;
+        for (; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+
+        if (i < p->numarguments) i++;
+        first_fv = i;
+        for (; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+            gsfatal(UNIMPL("%P: .ubanalyze: Store free variables"), p->pos);
+        }
+        ACE_UBANALYZE_NUMFVS(pcode) = i - first_fv;
+
+        pcl->pout = ACE_UBANALYZE_SKIP(pcode);
     } else {
         return 0;
     }
@@ -1259,7 +1320,6 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
     if (gssymceq((*pp)->directive, gssymopyield, gssymcodeop, ".yield")) {
         int reg;
 
-        pcl->phase = rtops;
         pcode = (struct gsbc *)pcl->pout;
         gsargcheck(*pp, 0, "target");
         reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
@@ -1270,7 +1330,6 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
     } else if (gssymceq((*pp)->directive, gssymopenter, gssymcodeop, ".enter")) {
         int reg = 0;
 
-        pcl->phase = rtops;
         pcode = (struct gsbc *)pcl->pout;
         gsargcheck(*pp, 0, "target");
         reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
@@ -1278,6 +1337,42 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
         pcode->instr = gsbc_op_enter;
         pcode->args[0] = (uchar)reg;
         pcl->pout = GS_NEXT_BYTECODE(pcode, 1);
+    } else if (gssymceq((*pp)->directive, gssymopubprim, gssymcodeop, ".ubprim")) {
+        struct gsregistered_primset *prims;
+
+        pcode = (struct gsbc *)pcl->pout;
+        pcode->pos = (*pp)->pos;
+
+        if (prims = gsprims_lookup_prim_set((*pp)->arguments[0]->name)) {
+            int nargs, first_arg;
+            struct gsregistered_prim *prim;
+
+            prim = gsprims_lookup_prim(prims, (*pp)->arguments[1]->name);
+
+            pcode->instr = gsbc_op_ubprim;
+
+            ACE_UBPRIM_PRIMSET_INDEX(pcode) = gsprims_prim_set_index(prims);
+            ACE_UBPRIM_INDEX(pcode) = prim->index;
+
+            /* §paragraph{Skipping free type variables} */
+            for (i = 3; i < (*pp)->numarguments && (*pp)->arguments[i]->type != gssymseparator; i++);
+            if (i < (*pp)->numarguments) i++;
+
+            nargs = (*pp)->numarguments - i;
+            first_arg = i;
+            ACE_UBPRIM_NARGS(pcode) = (uchar)nargs;
+            for (i = first_arg; i < (*pp)->numarguments; i++) {
+                int regarg;
+
+                regarg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[i]);
+                ACE_UBPRIM_ARG(pcode, i - first_arg) = (uchar)regarg;
+            }
+
+            pcl->pout = ACE_UBPRIM_SKIP(pcode);
+        } else {
+            pcode->instr = gsbc_op_unknown_ubprim;
+            pcl->pout = ACE_UNKNOWN_UBPRIM_SKIP(pcode);
+        }
     } else if (gssymceq((*pp)->directive, gssymopundef, gssymcodeop, ".undef")) {
         pcl->phase = rtops;
         pcode = (struct gsbc *)pcl->pout;

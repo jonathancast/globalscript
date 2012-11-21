@@ -14,10 +14,13 @@ enum {
     gsbc_op_eprim,
     gsbc_op_app,
     gsbc_op_force,
+    gsbc_op_ubanalzye,
     gsbc_op_analyze,
     gsbc_op_undef,
     gsbc_op_enter,
     gsbc_op_yield,
+    gsbc_op_ubprim,
+    gsbc_op_unknown_ubprim,
     gsbc_op_bind,
     gsbc_op_body,
 };
@@ -32,6 +35,24 @@ enum {
 #define ACE_CONSTR_ARG(ip, n) ((ip)->args[2 + (n)])
 #define ACE_CONSTR_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_CONSTR_NUMARGS(ip))
 
+#define ACE_UBANALYZE_SIZE(ncases, nfvs) GS_SIZE_BYTECODE(2 + ncases + nfvs)
+#define ACE_UBANALYZE_NUMCONTS(ip) ((ip)->args[0])
+#define ACE_UBANALYZE_CONT(ip, n) ((ip)->args[2 + (n)])
+#define ACE_UBANALYZE_NUMFVS(ip) ((ip)->args[1])
+#define ACE_UBANALYZE_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_UBANALYZE_NUMCONTS(ip) + ACE_UBANALYZE_NUMFVS(ip))
+
+#define ACE_UBANALYZE_STACK_SIZE(nconts, nfvs) (sizeof(struct gsbc_cont_ubanalyze) + nconts * sizeof(struct gsbco *) + nfvs * sizeof(gsvalue))
+
+#define ACE_UBPRIM_SIZE(nargs) GS_SIZE_BYTECODE(2 + nargs)
+#define ACE_UBPRIM_PRIMSET_INDEX(ip) ((ip)->args[0])
+#define ACE_UBPRIM_INDEX(ip) ((ip)->args[1])
+#define ACE_UBPRIM_NARGS(ip) ((ip)->args[2])
+#define ACE_UBPRIM_ARG(ip, n) ((ip)->args[3 + (n)])
+#define ACE_UBPRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_UBPRIM_NARGS(ip))
+
+#define ACE_UNKNOWN_UBPRIM_SIZE() GS_SIZE_BYTECODE(0)
+#define ACE_UNKNOWN_UBPRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 0)
+
 #define ACE_ANALYZE_SCRUTINEE(ip) ((ip)->args[0])
 #define ACE_ANALYZE_CASES(ip) ((struct gsbc **)GS_NEXT_BYTECODE(ip, 1))
 
@@ -43,6 +64,7 @@ struct gsbc_cont {
     enum {
         gsbc_cont_app,
         gsbc_cont_force,
+        gsbc_cont_ubanalyze,
     } node;
     struct gspos pos;
 };
@@ -58,6 +80,14 @@ struct gsbc_cont_force {
     struct gsbco *code;
     int numfvs;
     gsvalue fvs[];
+};
+
+struct gsbc_cont_ubanalyze {
+    struct gsbc_cont cont;
+    int numconts;
+    struct gsbco **conts;
+    int numfvs;
+    gsvalue *fvs;
 };
 
 /* §section Global Script Run-time Errors */

@@ -2,6 +2,7 @@ struct gsbc_code_item_type {
     enum {
         gsbc_code_item_expr,
         gsbc_code_item_force_cont,
+        gsbc_code_item_ubcase_cont,
         gsbc_code_item_eprog,
     } type;
     int numftyvs;
@@ -25,6 +26,7 @@ struct gstype {
         gstype_app,
         gstype_fun,
         gstype_sum,
+        gstype_ubsum,
         gstype_product,
         gstype_ubproduct,
         gstype_coerce_definition,
@@ -97,6 +99,12 @@ struct gstype_constr {
 };
 
 struct gstype_sum {
+    struct gstype e;
+    int numconstrs;
+    struct gstype_constr constrs[];
+};
+
+struct gstype_ubsum {
     struct gstype e;
     int numconstrs;
     struct gstype_constr constrs[];

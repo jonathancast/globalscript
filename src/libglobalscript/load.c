@@ -434,13 +434,14 @@ gsparse_data_item(char *filename, int is_ags, gsparsedfile *parsedfile, struct u
 
 static long gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
 static long gsparse_force_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
+static long gsparse_ubcase_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
 static long gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields);
 
 static
 long
 gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymexpr, gssymforcecont, gssymeprog;
+    static gsinterned_string gssymexpr, gssymforcecont, gssymubcasecont, gssymeprog;
 
     struct gsparsedline *parsedline;
 
@@ -466,6 +467,11 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
             gsfatal("%s:%d: Too many arguments to .forcecont", filename, *plineno)
         ;
         return gsparse_force_cont_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
+    } else if (gssymceq(parsedline->directive, gssymubcasecont, gssymcodedirective, ".ubcasecont")) {
+        if (numfields > 2)
+            gsfatal("%s:%d: Too many arguments to .ubcasecont", filename, *plineno)
+        ;
+        return gsparse_ubcase_cont_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
     } else if (gssymceq(parsedline->directive, gssymeprog, gssymcodedirective, ".eprog")) {
         if (numfields < 3)
             gsfatal("%s:%d: Missing primset argument to .eprog", filename, *plineno)
@@ -612,7 +618,34 @@ gsparse_force_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsed
         } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return 0;
         } else {
-            gsfatal("%s:%d: %s:%d: Unimplemented force continuation op %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
+            gsfatal(UNIMPL("%s:%d: Unimplemented force continuation op %s"), filename, *plineno, fields[1]);
+        }
+    }
+    if (n < 0)
+        gsfatal("%s:%d: Error in reading code line: %r", filename, *plineno);
+    else
+        gsfatal("%s:%d: EOF in middle of reading expression", filename, codedirective->pos.lineno);
+
+    return -1;
+}
+
+static
+long
+gsparse_ubcase_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
+{
+    struct gsparsedline *parsedline;
+    long n;
+
+    while ((n = gsgrabline(filename, chan, line, plineno, fields)) > 0) {
+        parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, n);
+
+        parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
+        if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
+            return 0;
+        } else {
+            gsfatal(UNIMPL("%s:%d: Unimplemented un-boxed case continuation op %s"), filename, *plineno, fields[1]);
         }
     }
     if (n < 0)
@@ -823,13 +856,13 @@ static
 int
 gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymlift, gssymcoerce, gssymapp, gssymforce;
+    static gsinterned_string gssymlift, gssymcoerce, gssymapp, gssymforce, gssymubanalyze;
 
     int i;
 
     if (gssymceq(parsedline->directive, gssymlift, gssymcodeop, ".lift")) {
         if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on continuation ops");
+            gsfatal("%s:%d: Labels illegal on continuation ops", filename, *plineno);
         else
             parsedline->label = 0;
         if (n > 2)
@@ -843,7 +876,7 @@ gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *pline
         }
     } else if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".app")) {
         if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on continuation ops");
+            gsfatal("%s:%d: Labels illegal on continuation ops", filename, *plineno);
         else
             parsedline->label = 0;
         if (n < 3)
@@ -852,7 +885,7 @@ gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *pline
             parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
     } else if (gssymceq(parsedline->directive, gssymforce, gssymcodeop, ".force")) {
         if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on continuation ops");
+            gsfatal("%s:%d: Labels illegal on continuation ops", filename, *plineno);
         else
             parsedline->label = 0;
         if (n < 3)
@@ -868,6 +901,21 @@ gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *pline
         for (; i < n; i++) {
             parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
         }
+    } else if (gssymceq(parsedline->directive, gssymubanalyze, gssymcodeop, ".ubanalyze")) {
+        if (*fields[0])
+            gsfatal("%s:%d: Labels illegal on continuation ops", filename, *plineno);
+        else
+            parsedline->label = 0;
+        for (i = 2; i < n && strcmp(fields[i], "|"); i += 2) {
+            if (i + 1 >= n)
+                gsfatal(UNIMPL("%s:%d: missing code lable on final continuation to .ubanalyze"), filename, *plineno);
+            parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i]);
+            parsedline->arguments[i + 1 - 2] = gsintern_string(gssymcodelable, fields[i + 1]);
+        }
+        if (i < n)
+            gsfatal(UNIMPL("%s:%d: type free variables to .ubanalyze"), filename, *plineno);
+        if (i < n)
+            gsfatal(UNIMPL("%s:%d: free variables to .ubanalyze"), filename, *plineno);
     } else {
         return 0;
     }
@@ -964,28 +1012,24 @@ gsparse_api_or_code_op(char *filename, struct gsparsedline *parsedline, int *pli
 
 static void gsparse_case(char *, gsparsedfile *, struct uxio_ichannel *, gsinterned_string, char *, int *, char **);
 
+static void gsparse_check_label_on_terminal_op(gsparsedfile *, struct gsparsedline *, char **);
+
 static
 int
 gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymundef, gssymyield, gssymenter, gsssymanalyze;
+    static gsinterned_string gssymundef, gssymyield, gssymenter, gssymubprim, gsssymanalyze;
     int i;
 
     if (gssymceq(parsedline->directive, gssymundef, gssymcodeop, ".undef")) {
-        if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on terminal ops");
-        else
-            parsedline->label = 0;
+        gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
         if (n < 3)
             gsfatal("%s:%d: Missing type on .undef", filename, *plineno);
         parsedline->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
         for (i = 3; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
     } else if (gssymceq(parsedline->directive, gssymyield, gssymcodeop, ".yield")) {
-        if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
-        else
-            parsedline->label = 0;
+        gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
         if (n < 3)
             gsfatal("%s:%d: Missing argument to .yield", filename, *plineno);
         parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
@@ -993,20 +1037,39 @@ gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct u
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
     } else if (gssymceq(parsedline->directive, gssymenter, gssymcodeop, ".enter")) {
-        if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
-        else
-            parsedline->label = 0;
+        gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
         if (n < 3)
             gsfatal("%s:%d: Missing argument to .enter", filename, *plineno);
         parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
         for (i = 3; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
+    } else if (gssymceq(parsedline->directive, gssymubprim, gssymcodeop, ".ubprim")) {
+        gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
+        if (n < 3)
+            gsfatal("%s:%d: Missing primset on .ubprim", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymprimsetlable, fields[2]);
+        if (n < 4)
+            gsfatal("%s:%d: Missing prim name on .ubprim", filename, *plineno);
+        parsedline->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
+        if (n < 5)
+            gsfatal("%s:%d: Missing declared type on .ubprim", filename, *plineno);
+        parsedline->arguments[4 - 2] = gsintern_string(gssymtypelable, fields[4]);
+        for (i = 5; i < n && strcmp(fields[i], "|"); i++) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+        }
+        if (i < n) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        for (; i < n; i++) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
+        }
     } else if (gssymceq(parsedline->directive, gsssymanalyze, gssymcodeop, ".analyze")) {
         struct gsparsedline *p;
         int constrnum;
 
+        gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
         if (n < 3)
             gsfatal("%s:%d: Missing scrutinee on .analyze", filename, *plineno);
         parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
@@ -1022,6 +1085,16 @@ gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct u
         return 0;
     }
     return 1;
+}
+
+static
+void
+gsparse_check_label_on_terminal_op(gsparsedfile *parsedfile, struct gsparsedline *parsedline, char **fields)
+{
+    if (*fields[0])
+        gsfatal("%P: Labels illegal on terminal ops", parsedline->pos);
+    else
+        parsedline->label = 0;
 }
 
 static int gsparse_field_cont_arg(char *, struct gsparsedline *, int *, char **, long);
@@ -1199,7 +1272,7 @@ static
 long
 gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyproduct, gssymtyubproduct;
+    static gsinterned_string gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
 
     struct gsparsedline *parsedline;
     int i;
@@ -1269,6 +1342,18 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
                 parsedline->label = 0;
             if (n % 2)
                 gsfatal("%s:%d: Can't have odd number of arguments to .tysum", filename, *plineno);
+            for (i = 0; 2 + i < n; i += 2) {
+                parsedline->arguments[i] = gsintern_string(gssymconstrlable, fields[2 + i]);
+                parsedline->arguments[i + 1] = gsintern_string(gssymtypelable, fields[2 + i + 1]);
+            }
+            return 0;
+        } else if (gssymceq(parsedline->directive, gssymtyubsum, gssymtypeop, ".tyubsum")) {
+            if (*fields[0])
+                gsfatal("%s:%d: Labels illegal on terminal ops", filename, *plineno);
+            else
+                parsedline->label = 0;
+            if (n % 2)
+                gsfatal("%s:%d: Can't have odd number of arguments to .tyubsum", filename, *plineno);
             for (i = 0; 2 + i < n; i += 2) {
                 parsedline->arguments[i] = gsintern_string(gssymconstrlable, fields[2 + i]);
                 parsedline->arguments[i + 1] = gsintern_string(gssymtypelable, fields[2 + i + 1]);

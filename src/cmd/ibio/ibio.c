@@ -33,9 +33,12 @@ static struct api_prim_table ibio_prim_table = {
     },
 };
 
+static gsubprim_handler *ibio_ubexec[] = {
+};
+
 static struct gsregistered_prim ibio_operations[] = {
     /* name, file, line, group, check_type, index, */
-    { "write", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ο * ibio.prim.oport ο ` list.t ο ` ibio.prim.m 〈 〉 ⌊⌋ ` → → ∀", ibio_prim_write, },
+    { "write", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ο * ibio.prim.oport ο ` list.t ο ` ibio.prim.m \"Π〈 〉 ⌊⌋ ` → → ∀", ibio_prim_write, },
     { "env.args.get", __FILE__, __LINE__, gsprim_operation_api, "ibio", "ibio.prim.m list.t list.t rune.t ` ` `", ibio_prim_getargs, },
     { 0, },
 };
@@ -44,6 +47,7 @@ static struct gsregistered_primset ibio_primset = {
     /* name = */ "ibio.prim",
     /* types = */ ibio_types,
     /* operations = */ ibio_operations,
+    /* ubexec_table */ ibio_ubexec,
 };
 
 void

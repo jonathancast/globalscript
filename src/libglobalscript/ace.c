@@ -59,10 +59,12 @@ static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
 static int ace_push_force(struct ace_thread *);
+static int ace_push_ubanalyze(struct ace_thread *);
 static int ace_perform_analyze(struct ace_thread *);
 static void ace_return_undef(struct ace_thread *);
 static int ace_enter(struct ace_thread *);
 static int ace_yield(struct ace_thread *);
+static int ace_ubprim(struct ace_thread *);
 
 static
 void
@@ -167,6 +169,11 @@ ace_thread_pool_main(void *p)
                                     suspended_runnable_thread = 1
                                 ;
                                 break;
+                            case gsbc_op_ubanalzye:
+                                if (ace_push_ubanalyze(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
                             case gsbc_op_analyze:
                                 if (ace_perform_analyze(thread))
                                     suspended_runnable_thread = 1
@@ -182,6 +189,11 @@ ace_thread_pool_main(void *p)
                                 break;
                             case gsbc_op_yield:
                                 if (ace_yield(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_ubprim:
+                                if (ace_ubprim(thread))
                                     suspended_runnable_thread = 1
                                 ;
                                 break;
@@ -417,6 +429,40 @@ ace_push_force(struct ace_thread *thread)
     return 1;
 }
 
+static
+int
+ace_push_ubanalyze(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsbc_cont *cont;
+    struct gsbc_cont_ubanalyze *ubanalyze;
+    int i;
+
+    ip = thread->ip;
+
+    cont = ace_stack_alloc(thread, ip->pos, ACE_UBANALYZE_STACK_SIZE(ACE_UBANALYZE_NUMCONTS(ip), ACE_UBANALYZE_NUMFVS(ip)));
+    ubanalyze = (struct gsbc_cont_ubanalyze *)cont;
+    if (!cont) return 0;
+
+    cont->node = gsbc_cont_ubanalyze;
+    cont->pos = ip->pos;
+    ubanalyze->numconts = ACE_UBANALYZE_NUMCONTS(ip);
+    ubanalyze->conts = (struct gsbco **)((uchar*)ubanalyze + sizeof(struct gsbc_cont_ubanalyze));
+    ubanalyze->numfvs = ACE_UBANALYZE_NUMFVS(ip);
+    ubanalyze->fvs = (gsvalue*)((uchar*)ubanalyze->conts + ACE_UBANALYZE_NUMCONTS(ip) * sizeof(struct gsbco *));
+
+    for (i = 0; i < ACE_UBANALYZE_NUMCONTS(ip); i++)
+        ubanalyze->conts[i] = thread->subexprs[ACE_UBANALYZE_CONT(ip, i)]
+    ;
+    for (i = 0; i < ACE_UBANALYZE_NUMFVS(ip); i++) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "ace_push_ubanalyze: set fv");
+        return 0;
+    }
+
+    thread->ip = ACE_UBANALYZE_SKIP(ip);
+    return 1;
+}
+
 static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
 
 static
@@ -525,6 +571,61 @@ ace_yield(struct ace_thread *thread)
     ;
 
     return 0;
+}
+
+static
+int
+ace_ubprim(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsregistered_primset *prims;
+    gsvalue args[MAX_NUM_REGISTERS];
+    int i;
+
+    ip = thread->ip;
+
+    for (i = 0; i < ACE_UBPRIM_NARGS(ip); i++)
+        args[i] = thread->regs[ACE_UBPRIM_ARG(ip, i)]
+    ;
+    prims = gsprims_lookup_prim_set_by_index(ACE_UBPRIM_PRIMSET_INDEX(ip));
+    return prims->ubexec_table[ACE_UBPRIM_INDEX(ip)](thread, ip->pos, ACE_UBPRIM_NARGS(ip), args);
+}
+
+static void *ace_set_registers_from_bco(struct ace_thread *, struct gsbco *);
+
+int
+gsubprim_return(struct ace_thread *thread, struct gspos pos, int constr, int nargs, ...)
+{
+    struct gsbc_cont *cont;
+    struct gsbc_cont_ubanalyze *ubanalyze;
+    struct gsbc *ip;
+    int i;
+
+    cont = thread->stacktop;
+    ubanalyze = (struct gsbc_cont_ubanalyze *)cont;
+
+    if (cont->node != gsbc_cont_ubanalyze) {
+        ace_poison_thread(thread, pos, "gsubprim_return: top of stack is a %d not a ubanalyze", cont->node);
+        return 0;
+    }
+
+    ip = ace_set_registers_from_bco(thread, ubanalyze->conts[constr]);
+    if (!ip) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "Too many registers");
+        return 0;
+    }
+    for (i = 0; i < ubanalyze->numfvs; i++) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "gsubprim_return: get free variable");
+        return 0;
+    }
+    for (i = 0; i < nargs; i++) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "gsubprim_return: set argument");
+        return 0;
+    }
+
+    thread->ip = ip;
+    thread->stacktop = (uchar*)thread->stacktop + ACE_UBANALYZE_STACK_SIZE(ubanalyze->numconts, ubanalyze->numfvs);
+    return 1;
 }
 
 static
@@ -762,8 +863,6 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
 
     return 1;
 }
-
-static void *ace_set_registers_from_bco(struct ace_thread *, struct gsbco *);
 
 static
 int

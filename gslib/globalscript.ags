@@ -8,3 +8,6 @@ _empty.record	.tyexpr
 
 _ul.empty.record	.tyexpr
 	.typroduct
+
+_ub.empty.record	.tyexpr
+	.tyubproduct

@@ -217,7 +217,7 @@ static
 struct gstype *
 gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtylambda, gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyproduct, gssymtyubproduct;
+    static gsinterned_string gssymtylambda, gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
 
     int i;
     struct gstype *res;
@@ -343,6 +343,32 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         }
 
         return gstypes_compile_sumv(p->pos, nconstrs, constrs);
+    } else if (gssymceq(p->directive, gssymtyubsum, gssymtypeop, ".tyubsum")) {
+        struct gstype_constr constrs[MAX_REGISTERS];
+        int i;
+        int nconstrs;
+
+        if (p->numarguments % 2)
+            gsfatal("%P: Cannot have odd number of arguments to .tyubsum", p->pos)
+        ;
+        nconstrs = p->numarguments / 2;
+
+        if (nconstrs > MAX_REGISTERS)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: sums with more than 0x%x constructors", p->pos, MAX_REGISTERS)
+        ;
+
+        for (i = 0; i < p->numarguments; i += 2) {
+            struct gstype *argtype;
+
+            constrs[i / 2].name = p->arguments[i];
+            argtype = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i + 1])];
+            if (!argtype)
+                gsfatal("%P: %s doesn't seem to be a type register", p->pos, p->arguments[i + 1]->name)
+            ;
+            constrs[i / 2].argtype = argtype;
+        }
+
+        return gstypes_compile_ubsumv(p->pos, nconstrs, constrs);
     } else if (gssymceq(p->directive, gssymtyproduct, gssymtypeop, ".typroduct")) {
         struct gstype_product *prod;
         int numfields;
@@ -473,6 +499,26 @@ gstypes_compile_sumv(struct gspos pos, int nconstrs, struct gstype_constr *const
     sum = (struct gstype_sum *)res;
 
     res->node = gstype_sum;
+    res->pos = pos;
+    sum->numconstrs = nconstrs;
+    for (i = 0; i < nconstrs; i ++) {
+        sum->constrs[i] = constrs[i];
+    }
+
+    return res;
+}
+
+struct gstype *
+gstypes_compile_ubsumv(struct gspos pos, int nconstrs, struct gstype_constr *constrs)
+{
+    struct gstype *res;
+    struct gstype_ubsum *sum;
+    int i;
+
+    res = gstype_alloc(sizeof(struct gstype_ubsum) + nconstrs * sizeof(struct gstype_constr));
+    sum = (struct gstype_ubsum *)res;
+
+    res->node = gstype_ubsum;
     res->pos = pos;
     sum->numconstrs = nconstrs;
     for (i = 0; i < nconstrs; i ++) {
