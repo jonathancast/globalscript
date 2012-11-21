@@ -9,6 +9,9 @@ pure-install:V: $GLOBALSCRIPT/bin/gstype $GLOBALSCRIPT/bin/gstest
 pure-integration-test:V: rc/pure-test $O.gstype $O.gstest
 	./rc/pure-test
 
+gslib-test:V: $GLOBALSCRIPT/bin/gstest
+	./rc/test-gslib
+
 $GLOBALSCRIPT/bin/%: $O.%
 	cp $prereq $target
 
