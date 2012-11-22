@@ -1,0 +1,7 @@
+	.document
+
+	.data
+
+	.list	rune.t	x	y
+x	.undefined	rune.t
+y	.undefined	rune.t

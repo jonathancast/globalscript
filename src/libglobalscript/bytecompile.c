@@ -79,7 +79,7 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
 
 static char *gsbc_parse_rune_literal(struct gspos, char *, gsvalue *);
 
-static gsinterned_string gssymundefined, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymclosure, gssymcast;
+static gsinterned_string gssymundefined, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymclosure, gssymcast;
 
 static
 void
@@ -133,6 +133,12 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
             size += sizeof(struct gsconstr)
         ;
         *psize = size;
+    } else if (gssymceq(p->directive, gssymlist, gssymdatadirective, ".list")) {
+        if (p->numarguments >= 2 && p->arguments[p->numarguments - 2]->type == gssymseparator)
+            gsfatal(UNIMPL("%P: Dotted .lists"), p->pos)
+        ;
+        *psection = gsbc_constrs;
+        *psize = p->numarguments * (sizeof(struct gsconstr) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr);
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         *psection = gsbc_errors;
         *psize = sizeof(struct gserror);
@@ -743,6 +749,42 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         if (p->numarguments >= 2) {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: .string with provided tail", p->pos);
         } else {
+            struct gsconstr *gsnil;
+
+            gsnil = (struct gsconstr *)tail;
+
+            if (pptail)
+                *pptail = tail
+            ;
+
+            gsnil->pos = p->pos;
+            gsnil->constrnum = 1;
+            gsnil->numargs = 0;
+        }
+    } else if (gssymceq(p->directive, gssymlist, gssymdatadirective, ".list")) {
+        gsvalue tail, *pptail;
+        int j;
+
+        tail = heap[i];
+        pptail = 0;
+        for (j = 0; j < p->numarguments && p->arguments[j]->type != gssymseparator; j++) {
+            struct gsconstr *cons;
+
+            cons = (struct gsconstr *)tail;
+            if (pptail)
+                *pptail = tail
+            ;
+
+            cons->pos = p->pos;
+            cons->constrnum = 0;
+            cons->numargs = 2;
+            cons->arguments[0] = gssymtable_get_data(symtable, p->arguments[j]);
+            pptail = &cons->arguments[1];
+            tail = (gsvalue)((uchar*)tail + sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
+        }
+        if (j < p->numarguments)
+            gsfatal(UNIMPL("%P: Dotted .lists next"), p->pos)
+        ; else {
             struct gsconstr *gsnil;
 
             gsnil = (struct gsconstr *)tail;

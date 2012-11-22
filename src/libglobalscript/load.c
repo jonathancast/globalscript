@@ -341,7 +341,7 @@ static
 long
 gsparse_data_item(char *filename, int is_ags, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymundefined, gssymcast;
 
     struct gsparsedline *parsedline;
     int i;
@@ -410,6 +410,14 @@ gsparse_data_item(char *filename, int is_ags, gsparsedfile *parsedfile, struct u
             parsedline->arguments[1] = gsintern_string(gssymdatalable, fields[2+1]);
         if (numfields > 2+2)
             gsfatal("%s:%d: Too many arguments to .string");
+    } else if (is_ags && gssymceq(parsedline->directive, gssymlist, gssymdatadirective, ".list")) {
+        if (numfields < 2+1)
+            gsfatal("%s:%d: Missing element type", filename, *plineno);
+        parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2+0]);
+        for (i = 1; 2 + i < numfields && strcmp(fields[2 + i], "|"); i++)
+            parsedline->arguments[i] = gsintern_string(gssymdatalable, fields[2+i]);
+        if (2 + i < numfields)
+            gsfatal(UNIMPL("%s:%d: Dotted .lists next"), filename, *plineno);
     } else if (gssymceq(parsedline->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         if (numfields < 2+1)
             gsfatal("%s:%d: Missing type label", filename, *plineno);
