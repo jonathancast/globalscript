@@ -194,6 +194,7 @@ at	.tylet	_list.≡.arg.ty	α
 _list.≡.cmp	.subcode
 _list.≡.rec	.subcode
 bool.true	.gvar
+bool.false	.gvar
 bool.∧	.gvar
 c	.fv	at
 xn0	.fv	t
@@ -211,7 +212,7 @@ b1					.alloc	_list.≡.rec	α	|	c	xn1	ys1
 					.app	b0	b1
 					.enter	bool.∧
 				.case	nil
-					.undef	bool.t
+					.enter	bool.false
 		.case	nil
 			.analyze	ys0	:	nil
 				.case	:
