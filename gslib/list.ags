@@ -184,7 +184,6 @@ xn0	.karg	t
 	.enter	ys
 
 _list.≡.k1	.forcecont
-bool.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 _list.≡.arg.ty	.tygvar
@@ -218,7 +217,7 @@ b1					.alloc	_list.≡.rec	α	|	c	xn1	ys1
 				.case	:
 y				.fkarg	0	α
 ys1				.fkarg	1	list.t	α
-					.undef	bool.t
+					.enter	bool.false
 				.case	nil
 					.enter	bool.true
 

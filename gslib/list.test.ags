@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil
+_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton
 
 _test.nil.eq.nil	.closure	_test.nil.eq.nil.c
 _test.nil.eq.nil.label	.string	nil\s≡\snil
@@ -23,6 +23,12 @@ _test.singleton.eq.nil_label	.string	[false]\s≠\snil
 _test.singleton.eq.nil_test	.closure	_test.singleton.eq.nil_test_c
 _test.singleton.eq.nil_test_succ	.string	[false]\s≠\snil
 _test.singleton.eq.nil_test_fail	.string	[false]\s≡\snil
+
+_test.nil.eq.singleton	.closure	_test.nil.eq.singleton_c
+_test.nil.eq.singleton_label	.string	nil\s≠\s[false]
+_test.nil.eq.singleton_test	.closure	_test.nil.eq.singleton_test_c
+_test.nil.eq.singleton_test_succ	.string	nil\s≠\s[false]
+_test.nil.eq.singleton_test_fail	.string	nil\s≡\s[false]
 
 _fixture.nil	.closure	_fixture.nil.c
 _fixture.singleton.false	.closure	_fixture.singleton.false.c
@@ -112,6 +118,33 @@ bool.≡	.gvar
 _fixture.singleton.false	.gvar
 _fixture.nil	.gvar
 	.app	bool.≡	_fixture.singleton.false	_fixture.nil
+	.enter	list.≡	bool.t
+
+# §section §gs{nil ≠ [false]}
+
+_test.nil.eq.singleton_c	.expr
+test.property.label	.gvar
+_test.nil.eq.singleton_label	.gvar
+_test.nil.eq.singleton_test	.gvar
+	.app	_test.nil.eq.singleton_label	_test.nil.eq.singleton_test
+	.enter	test.property.label
+
+_test.nil.eq.singleton_test_c	.expr
+_test.nil.eq.singleton_test_eq_c	.subcode
+test.deny	.gvar
+_test.nil.eq.singleton_test_succ	.gvar
+_test.nil.eq.singleton_test_fail	.gvar
+eq	.alloc	_test.nil.eq.singleton_test_eq_c
+	.app	_test.nil.eq.singleton_test_succ	_test.nil.eq.singleton_test_fail	eq
+	.enter	test.deny
+
+_test.nil.eq.singleton_test_eq_c	.expr
+bool.t	.tygvar
+list.≡	.gvar
+bool.≡	.gvar
+_fixture.nil	.gvar
+_fixture.singleton.false	.gvar
+	.app	bool.≡	_fixture.nil	_fixture.singleton.false
 	.enter	list.≡	bool.t
 
 # §section Test fixtures
