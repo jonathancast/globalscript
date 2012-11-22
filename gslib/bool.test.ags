@@ -3,6 +3,7 @@
 	.data
 
 	.closure	_epcode
+_tests	.list	test.property.t	_test.false.eq.false	_test.true.∧.true
 
 _test.false.eq.false	.closure	_test.false.eq.false.c
 _test.false.eq.false.label	.string	false\s≡\sfalse
@@ -19,11 +20,10 @@ _test.true.∧.true.test.success	.string	true\s∧\strue\sis\strue
 	.code
 
 _epcode	.expr
-test.property.∧	.gvar
-_test.false.eq.false	.gvar
-_test.true.∧.true	.gvar
-	.app	_test.false.eq.false	_test.true.∧.true
-	.enter	test.property.∧
+test.all	.gvar
+_tests	.gvar
+	.app	_tests
+	.enter	test.all
 
 # §section §gs{false ≡ false}
 
