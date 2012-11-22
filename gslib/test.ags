@@ -2,11 +2,15 @@
 
 	.data
 
-test.assert	.closure	_test.assert.c
+test.assert	.closure	_test.assert_c
+
+test.all	.closure	_test.all_c
 
 	.code
 
-_test.assert.c	.expr
+# §section §gs{test.assert}
+
+_test.assert_c	.expr
 bool.t	.tygvar
 _string.ty	.tygvar
 _test.assert.c.c	.subcode
@@ -34,3 +38,33 @@ b0	.karg	bool.prim.u
 	.case	true
 	.app	s
 	.enter	test.property.true
+
+# §section §gs{test.all}
+
+_test.all_c	.expr
+list.t	.tygvar
+test.property.t	.tygvar
+_test.all_k1	.subcode
+list.t.out	.cogvar
+ts	.larg	list.t	test.property.t
+	.force	_test.all_k1	|	ts
+	.coerce	list.t.out	test.property.t
+	.enter	ts
+
+_test.all_k1	.forcecont
+list.t	.tygvar
+list.prim.u	.tygvar
+test.property.t	.tygvar
+t	.tylet	list.prim.u	test.property.t
+list.foldr1	.gvar
+test.property.∧	.gvar
+ts	.fv	list.t	test.property.t
+ts0	.karg	t
+	.analyze	ts0	:	nil
+		.case	:
+t0		.fkarg	0	test.property.t
+ts1		.fkarg	1	list.t	test.property.t
+			.app	test.property.∧	ts
+			.enter	list.foldr1	test.property.t
+		.case	nil
+			.undef	test.property.t
