@@ -10,11 +10,22 @@ _test.nil.eq.nil.test	.closure	_test.nil.eq.nil.test.c
 _test.nil.eq.nil.test.succ	.string	nil\s≡\snil
 _test.nil.eq.nil.test.fail	.string	nil\s≠\snil
 
+_test.singleton.eq.singleton	.closure	_test.singleton.eq.singleton.c
+_test.singleton.eq.singleton.label	.string	[false]\s≡\s[false]
+_test.singleton.eq.singleton.test	.closure	_test.singleton.eq.singleton.test.c
+_test.singleton.eq.singleton.test.fail	.string	[false]\s≠\s[false]
+_test.singleton.eq.singleton.test.succ	.string	[false]\s≡\s[false]
+
 	.code
 
 _epcode	.expr
+test.property.∧	.gvar
 _test.nil.eq.nil	.gvar
-	.enter	_test.nil.eq.nil
+_test.singleton.eq.singleton	.gvar
+	.app	_test.nil.eq.nil	_test.singleton.eq.singleton
+	.enter	test.property.∧
+
+# §section §gs{nil ≡ nil}
 
 _test.nil.eq.nil.c	.expr
 test.property.label	.gvar
@@ -42,6 +53,47 @@ n	.alloc	_test.nil.eq.nil.test.c_n.c
 	.enter	list.≡ bool.t
 
 _test.nil.eq.nil.test.c_n.c	.expr
+bool.t	.tygvar
+list.nil	.gvar
+	.enter	list.nil	bool.t
+
+# §section §gs{[false] ≡ [false]}
+
+_test.singleton.eq.singleton.c	.expr
+test.property.label	.gvar
+_test.singleton.eq.singleton.label	.gvar
+_test.singleton.eq.singleton.test	.gvar
+	.app	_test.singleton.eq.singleton.label	_test.singleton.eq.singleton.test
+	.enter	test.property.label
+
+_test.singleton.eq.singleton.test.c	.expr
+_test.singleton.eq.singleton.test_eq.c	.subcode
+test.assert	.gvar
+_test.singleton.eq.singleton.test.fail	.gvar
+_test.singleton.eq.singleton.test.succ	.gvar
+eq	.alloc	_test.singleton.eq.singleton.test_eq.c
+	.app	_test.singleton.eq.singleton.test.fail	_test.singleton.eq.singleton.test.succ	eq
+	.enter	test.assert
+
+_test.singleton.eq.singleton.test_eq.c	.expr
+bool.t	.tygvar
+_test.singleton.eq.singleton.test_xn.c	.subcode
+list.≡	.gvar
+bool.≡	.gvar
+xn	.alloc	_test.singleton.eq.singleton.test_xn.c
+	.app	bool.≡	xn	xn
+	.enter	list.≡	bool.t
+
+_test.singleton.eq.singleton.test_xn.c	.expr
+bool.t	.tygvar
+_test.singleton.eq.singleton.test_xn_nil.c	.subcode
+list.:	.gvar
+bool.false	.gvar
+n	.alloc	_test.singleton.eq.singleton.test_xn_nil.c
+	.app	bool.false	n
+	.enter	list.:	bool.t
+
+_test.singleton.eq.singleton.test_xn_nil.c	.expr
 bool.t	.tygvar
 list.nil	.gvar
 	.enter	list.nil	bool.t

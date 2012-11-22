@@ -3,6 +3,7 @@
 	.data
 
 list.nil	.closure	_list.nil.c
+list.:	.closure	_list.:.c
 
 list.<>	.closure	_list.<>.code	_list.<>.ty
 list.≡	.closure	_list.≡.code	_list.≡.ty
@@ -17,6 +18,19 @@ list.prim.u	.tygvar
 t	.tylet	list.prim.u	α
 list.t.in	.cogvar
 c	.constr	t	nil
+	.coerce	list.t.in	α
+	.lift
+	.yield	c
+
+_list.:.c	.expr
+list.t	.tygvar
+list.prim.u	.tygvar
+α	.tyarg	*
+t	.tylet	list.prim.u	α
+list.t.in	.cogvar
+x	.larg	α
+xn	.larg	list.t	α
+c	.constr	t	:	0	x	1	xn
 	.coerce	list.t.in	α
 	.lift
 	.yield	c
@@ -77,7 +91,7 @@ list.t.out	.cogvar
 c	.larg	at
 xn	.larg	list.t	α
 ys	.larg	list.t	α
-	.force	_list.≡.k0	α	|	ys
+	.force	_list.≡.k0	α	|	c	ys
 	.coerce	list.t.out	α
 	.enter	xn
 
@@ -85,13 +99,16 @@ _list.≡.k0	.forcecont
 bool.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
+_list.≡.arg.ty	.tygvar
 α	.tyfv	*
 t	.tylet	list.prim.u	α
+at	.tylet	_list.≡.arg.ty	α
 _list.≡.k1	.subcode
 list.t.out	.cogvar
+c	.fv	at
 ys	.fv	list.t	α
 xn0	.karg	t
-	.force	_list.≡.k1	α	|	xn0
+	.force	_list.≡.k1	α	|	c	xn0
 	.coerce	list.t.out	α
 	.enter	ys
 
@@ -99,16 +116,31 @@ _list.≡.k1	.forcecont
 bool.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
+_list.≡.arg.ty	.tygvar
 α	.tyfv	*
 t	.tylet	list.prim.u	α
+at	.tylet	_list.≡.arg.ty	α
+_list.≡.cmp	.subcode
+_list.≡.rec	.subcode
 bool.true	.gvar
+bool.∧	.gvar
+c	.fv	at
 xn0	.fv	t
 ys0	.karg	t
 	.analyze	xn0	:	nil
 		.case	:
 x		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.undef	bool.t
+			.analyze	ys0	:	nil
+				.case	:
+y				.fkarg	0	α
+ys1				.fkarg	1	list.t	α
+b0					.alloc	_list.≡.cmp	α	|	c	x	y
+b1					.alloc	_list.≡.rec	α	|	c	xn1	ys1
+					.app	b0	b1
+					.enter	bool.∧
+				.case	nil
+					.undef	bool.t
 		.case	nil
 			.analyze	ys0	:	nil
 				.case	:
@@ -117,6 +149,28 @@ ys1				.fkarg	1	list.t	α
 					.undef	bool.t
 				.case	nil
 					.enter	bool.true
+
+_list.≡.cmp	.expr
+_list.≡.arg.ty	.tygvar
+α	.tyfv	*
+at	.tylet	_list.≡.arg.ty	α
+c	.fv	at
+x	.fv	α
+y	.fv	α
+	.app	x	y
+	.enter	c
+
+_list.≡.rec	.expr
+list.t	.tygvar
+_list.≡.arg.ty	.tygvar
+α	.tyfv	*
+at	.tylet	_list.≡.arg.ty	α
+list.≡	.gvar
+c	.fv	at
+xn1	.fv	list.t	α
+ys1	.fv	list.t	α
+	.app	c	xn1	ys1
+	.enter	list.≡	α
 
 	.type
 
