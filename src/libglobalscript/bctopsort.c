@@ -366,22 +366,22 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         static gsinterned_string gssymtylist, gssymtyrune;
         struct gsbc_item dest;
 
-         if (!gssymtylist)
-             gssymtylist = gsintern_string(gssymtypelable, "list.t")
-         ;
-         dest = gssymtable_lookup(item.v->pos, symtable, gssymtylist);
-         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, dest, pend, pc);
+        if (!gssymtylist)
+            gssymtylist = gsintern_string(gssymtypelable, "list.t")
+        ;
+        dest = gssymtable_lookup(item.v->pos, symtable, gssymtylist);
+        gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, dest, pend, pc);
 
-         if (!gssymtyrune)
-             gssymtyrune = gsintern_string(gssymtypelable, "rune.t")
-         ;
-         dest = gssymtable_lookup(item.v->pos, symtable, gssymtyrune);
-         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, dest, pend, pc);
+        if (!gssymtyrune)
+            gssymtyrune = gsintern_string(gssymtypelable, "rune.t")
+        ;
+        dest = gssymtable_lookup(item.v->pos, symtable, gssymtyrune);
+        gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, dest, pend, pc);
 
-         if (item.v->numarguments > 1) {
-             dest = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[1]);
-             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, dest, pend, pc);
-         }
+        if (item.v->numarguments > 1) {
+            dest = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[1]);
+            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, dest, pend, pc);
+        }
     } else if (gssymceq(directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gsbc_item ty;
 
