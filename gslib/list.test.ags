@@ -16,6 +16,7 @@ _test.singleton.eq.singleton.test	.closure	_test.singleton.eq.singleton.test.c
 _test.singleton.eq.singleton.test.fail	.string	[false]\s≠\s[false]
 _test.singleton.eq.singleton.test.succ	.string	[false]\s≡\s[false]
 
+_fixture.nil	.closure	_fixture.nil.c
 _fixture.singleton.false	.closure	_fixture.singleton.false.c
 
 	.code
@@ -47,17 +48,11 @@ eq	.alloc	_test.nil.eq.nil.test.c_eq.c
 
 _test.nil.eq.nil.test.c_eq.c	.expr
 bool.t	.tygvar
-_test.nil.eq.nil.test.c_n.c	.subcode
 list.≡	.gvar
 bool.≡	.gvar
-n	.alloc	_test.nil.eq.nil.test.c_n.c
-	.app	bool.≡ n	n
+_fixture.nil	.gvar
+	.app	bool.≡ _fixture.nil	_fixture.nil
 	.enter	list.≡ bool.t
-
-_test.nil.eq.nil.test.c_n.c	.expr
-bool.t	.tygvar
-list.nil	.gvar
-	.enter	list.nil	bool.t
 
 # §section §gs{[false] ≡ [false]}
 
@@ -87,16 +82,15 @@ _fixture.singleton.false	.gvar
 
 # §section Test fixtures
 
-_fixture.singleton.false.c	.expr
-bool.t	.tygvar
-_fixture.singleton.false_nil.c	.subcode
-list.:	.gvar
-bool.false	.gvar
-n	.alloc	_fixture.singleton.false_nil.c
-	.app	bool.false	n
-	.enter	list.:	bool.t
-
-_fixture.singleton.false_nil.c	.expr
+_fixture.nil.c	.expr
 bool.t	.tygvar
 list.nil	.gvar
 	.enter	list.nil	bool.t
+
+_fixture.singleton.false.c	.expr
+bool.t	.tygvar
+list.:	.gvar
+bool.false	.gvar
+_fixture.nil	.gvar
+	.app	bool.false	_fixture.nil
+	.enter	list.:	bool.t
