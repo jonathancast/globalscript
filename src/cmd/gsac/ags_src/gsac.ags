@@ -4,7 +4,9 @@
 
 	.cast	_ep.in	_real.entry
 _real.entry	.closure	_real.entry.c
+# ↓ Process §rc{-l} options
 _process.args	.closure	_process.args.c	_process.args.ty
+_flag.l	.string	-l
 
 	.code
 
@@ -29,6 +31,8 @@ as	.fv	list.t	_string.ty
 	.app	as
 	.enter	_process.args
 
+# §section Processing rc{-l} options
+
 _process.args.c	.expr
 list.t	.tygvar
 _string.ty	.tygvar
@@ -41,11 +45,60 @@ as	.larg	list.t	_string.ty
 
 _process.args.c.c	.forcecont
 _epbodytype	.tygvar
+list.t	.tygvar
 list.prim.u	.tygvar
 _string.ty	.tygvar
+bool.t	.tygvar
+rune.t	.tygvar
 t	.tylet	list.prim.u	_string.ty
+_process.args.c.c2	.subcode
+bool.t.out	.cogvar
+list.≡	.gvar
+rune.≡	.gvar
+_flag.l	.gvar
 as0	.karg	t
-	.undef	_epbodytype
+	.analyze as0	:	nil
+		.case	:
+a0		.fkarg	0	_string.ty
+as1		.fkarg	1	list.t	_string.ty
+			.force	_process.args.c.c2	|	as1
+			.coerce	bool.t.out
+			.app	rune.≡	a0	_flag.l
+			.enter	list.≡	rune.t
+		.case	nil
+			.undef	_epbodytype
+
+_process.args.c.c2	.forcecont
+list.t	.tygvar
+_string.ty	.tygvar
+bool.prim.u	.tygvar
+_epbodytype	.tygvar
+_process.args.c.c3	.subcode
+list.t.out	.cogvar
+as1	.fv	list.t	_string.ty
+is.l	.karg	bool.prim.u
+	.analyze	is.l	false	true
+		.case	false
+			.undef	_epbodytype
+		.case	true
+			.force	_process.args.c.c3
+			.coerce	list.t.out	_string.ty
+			.enter	as1
+
+_process.args.c.c3	.forcecont
+list.t	.tygvar
+list.prim.u	.tygvar
+_string.ty	.tygvar
+_epbodytype	.tygvar
+t	.tylet	list.prim.u	_string.ty
+as10	.karg	t
+	.analyze	as10	:	nil
+		.case	:
+a1		.fkarg	0	_string.ty
+as2		.fkarg	1	list.t	_string.ty
+			.undef	_epbodytype
+		.case	nil
+			.undef	_epbodytype
 
 	.type
 

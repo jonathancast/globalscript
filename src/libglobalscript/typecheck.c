@@ -2457,7 +2457,7 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
         struct gstype *fvval;
 
         if (i - 1 >= cty->numftyvs)
-            gsfatal("%P: Too many free type variables for %y; only need %d", p->arguments[0], cty->numftyvs)
+            gsfatal("%P: Too many free type variables for %y; only need %d", p->pos, p->arguments[0], cty->numftyvs)
         ;
         regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
         fvval = pcl->tyregs[regarg];
