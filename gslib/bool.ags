@@ -83,11 +83,12 @@ b1	.larg	bool.t
 _bool.∧.k	.forcecont
 bool.t	.tygvar
 bool.prim.u	.tygvar
+bool.false	.gvar
 b1	.fv	bool.t
 b00	.karg	bool.prim.u
 	.analyze	b00	false	true
 	.case	false
-		.undef	bool.t
+		.enter	bool.false
 	.case	true
 		.enter	b1
 
