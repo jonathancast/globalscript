@@ -7,6 +7,8 @@ bool.false	.closure	_bool.false.c
 
 bool.≡	.closure	_bool.≡.c
 
+bool.∧	.closure	_bool.∧.c
+
 	.code
 
 # §section Constructors
@@ -65,6 +67,29 @@ b0	.karg	bool.prim.u
 			.undef	bool.t
 	.case	true
 		.undef	bool.t
+
+# §section §gs{bool.∧}
+
+_bool.∧.c	.expr
+bool.t	.tygvar
+_bool.∧.k	.subcode
+bool.t.out	.cogvar
+b0	.larg	bool.t
+b1	.larg	bool.t
+	.force	_bool.∧.k	|	b1
+	.coerce	bool.t.out
+	.enter	b0
+
+_bool.∧.k	.forcecont
+bool.t	.tygvar
+bool.prim.u	.tygvar
+b1	.fv	bool.t
+b00	.karg	bool.prim.u
+	.analyze	b00	false	true
+	.case	false
+		.undef	bool.t
+	.case	true
+		.enter	b1
 
 	.type
 

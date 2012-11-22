@@ -10,11 +10,20 @@ _test.false.eq.false.test	.closure	_test.false.eq.false.test.c
 _test.false.eq.false.fail	.string	false\s≠\sfalse
 _test.false.eq.false.succ	.string	false\s≡\sfalse
 
+_test.true.∧.true	.closure	_test.true.∧.true.c
+_test.true.∧.true.label	.string	true\s∧\strue\sis\strue
+_test.true.∧.true.test	.closure	_test.true.∧.true.test.c
+_test.true.∧.true.test.fail	.string	true\s∧\strue\sis\sfalse
+_test.true.∧.true.test.success	.string	true\s∧\strue\sis\strue
+
 	.code
 
 _epcode	.expr
+test.property.∧	.gvar
 _test.false.eq.false	.gvar
-	.enter	_test.false.eq.false
+_test.true.∧.true	.gvar
+	.app	_test.false.eq.false	_test.true.∧.true
+	.enter	test.property.∧
 
 # §section §gs{false ≡ false}
 
@@ -39,3 +48,25 @@ bool.≡	.gvar
 bool.false	.gvar
 	.app	bool.false	bool.false
 	.enter	bool.≡
+
+_test.true.∧.true.c	.expr
+test.property.label	.gvar
+_test.true.∧.true.label	.gvar
+_test.true.∧.true.test	.gvar
+	.app	_test.true.∧.true.label	_test.true.∧.true.test
+	.enter	test.property.label
+
+_test.true.∧.true.test.c	.expr
+_test.true.∧.true.test._b.c	.subcode
+test.assert	.gvar
+_test.true.∧.true.test.fail	.gvar
+_test.true.∧.true.test.success	.gvar
+b	.alloc	_test.true.∧.true.test._b.c
+	.app	_test.true.∧.true.test.fail	_test.true.∧.true.test.success	b
+	.enter	test.assert
+
+_test.true.∧.true.test._b.c	.expr
+bool.∧	.gvar
+bool.true	.gvar
+	.app	bool.true	bool.true
+	.enter	bool.∧
