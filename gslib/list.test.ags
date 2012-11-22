@@ -4,6 +4,8 @@
 
 	.closure	_epcode
 
+_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton
+
 _test.nil.eq.nil	.closure	_test.nil.eq.nil.c
 _test.nil.eq.nil.label	.string	nil\s≡\snil
 _test.nil.eq.nil.test	.closure	_test.nil.eq.nil.test.c
@@ -22,11 +24,10 @@ _fixture.singleton.false	.closure	_fixture.singleton.false.c
 	.code
 
 _epcode	.expr
-test.property.∧	.gvar
-_test.nil.eq.nil	.gvar
-_test.singleton.eq.singleton	.gvar
-	.app	_test.nil.eq.nil	_test.singleton.eq.singleton
-	.enter	test.property.∧
+test.all	.gvar
+_tests	.gvar
+	.app	_tests
+	.enter	test.all
 
 # §section §gs{nil ≡ nil}
 
