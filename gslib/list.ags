@@ -5,6 +5,8 @@
 list.nil	.closure	_list.nil.c
 list.:	.closure	_list.:.c
 
+list.foldr1	.closure	_list.foldr1_code	_list.foldr1_ty
+
 list.<>	.closure	_list.<>.code	_list.<>.ty
 list.≡	.closure	_list.≡.code	_list.≡.ty
 
@@ -34,6 +36,75 @@ c	.constr	t	:	0	x	1	xn
 	.coerce	list.t.in	α
 	.lift
 	.yield	c
+
+# §section §gs{list.foldr1}
+
+_list.foldr1_code	.expr
+list.t	.tygvar
+_list.foldr1_ft	.tygvar
+α	.tyarg	*
+ft	.tylet	_list.foldr1_ft	α
+_list.foldr1_k1	.subcode
+list.t.out	.cogvar
+f	.larg	ft
+xn	.larg	list.t	α
+	.force	_list.foldr1_k1	α	|	f
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.foldr1_k1	.forcecont
+list.t	.tygvar
+list.prim.u	.tygvar
+_list.foldr1_ft	.tygvar
+α	.tyfv	*
+t	.tylet	list.prim.u	α
+ft	.tylet	_list.foldr1_ft	α
+_list.foldr1_k2	.subcode
+list.t.out	.cogvar
+f	.fv	ft
+xn0	.karg	t
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.force	_list.foldr1_k2	α	|	f	x0	xn1
+			.coerce	list.t.out	α
+			.enter	xn1
+		.case	nil
+			.undef	α
+
+_list.foldr1_k2	.forcecont
+list.t	.tygvar
+list.prim.u	.tygvar
+_list.foldr1_ft	.tygvar
+α	.tyfv	*
+t	.tylet	list.prim.u	α
+ft	.tylet	_list.foldr1_ft	α
+_list.foldr1_rec	.subcode
+f	.fv	ft
+x	.fv	α
+xn1	.fv	list.t	α
+xn1_0	.karg	t
+	.analyze	xn1_0	:	nil
+		.case	:
+x1		.fkarg	0	α
+xn2		.fkarg	1	list.t	 α
+y			.alloc	_list.foldr1_rec	α	|	f	xn1
+			.app	x	y
+			.enter	f
+		.case	nil
+			.enter	x
+
+_list.foldr1_rec	.expr
+list.t	.tygvar
+_list.foldr1_ft	.tygvar
+α	.tyfv	*
+ft	.tylet	_list.foldr1_ft	α
+list.foldr1	.gvar
+f	.fv	ft
+xn1	.fv	list.t	α
+	.app	f	xn1
+	.enter	list.foldr1	α
 
 # §section §gs{list.<>}
 
@@ -205,6 +276,27 @@ list.t	.tygvar
 _nil_type	.tyexpr
 α	.tylambda	*
 	.tyubproduct
+
+# §section §gs{list.foldr1}
+
+_list.foldr1_ty	.tyexpr
+_list.foldr1_ft	.tygvar
+list.t	.tygvar
+α	.tyforall	*
+at	.tylet	_list.foldr1_ft	α
+	.tylift
+	.tyfun	at
+	.tylift
+	.tyfun	list.t	α
+	.tyref	α
+
+_list.foldr1_ft	.tyexpr
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyfun	α
+	.tyref	α
 
 # §section §gs{list.<>}
 
