@@ -13,4 +13,7 @@ ok_diff '-- labelled tests --' ./$O.gstest label.test.ags
 ok_diff '-- successful asserts --' ./$O.gstest successful-assert.test.ags
 ok_diff_fail '-- unsuccessful asserts --' ./$O.gstest unsuccessful-assert.test.ags
 
+ok_diff '-- successful denies --' ./$O.gstest successful-deny.test.ags
+ok_diff_fail '-- unsuccessful denies --' ./$O.gstest unsuccessful-deny.test.ags
+
 ok_diff '-- successful test suites --' ./$O.gstest successful-test-suite.test.ags

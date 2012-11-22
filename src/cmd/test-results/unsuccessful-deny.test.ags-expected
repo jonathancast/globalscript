@@ -1,0 +1,2 @@
+./test-gslib/unsuccessful-deny.test.ags: Failed:
+    Condition is true

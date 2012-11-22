@@ -1,0 +1,17 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+_false.msg	.string	Condition\sis\sfalse
+_succ.msg	.string	Condition\sis\strue
+
+	.code
+
+_epcode	.expr
+test.deny	.gvar
+_false.msg	.gvar
+_succ.msg	.gvar
+bool.false	.gvar
+	.app	_false.msg	_succ.msg	bool.false
+	.enter	test.deny

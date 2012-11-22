@@ -3,6 +3,7 @@
 	.data
 
 test.assert	.closure	_test.assert_c
+test.deny	.closure	_test.deny_c
 
 test.all	.closure	_test.all_c
 
@@ -38,6 +39,36 @@ b0	.karg	bool.prim.u
 	.case	true
 	.app	s
 	.enter	test.property.true
+
+# §section §gs{test.deny}
+
+_test.deny_c	.expr
+_string.ty	.tygvar
+bool.t	.tygvar
+_test.deny_k	.subcode
+bool.t.out	.cogvar
+fm	.larg	_string.ty
+tm	.larg	_string.ty
+b	.larg	bool.t
+	.force	_test.deny_k	|	fm	tm
+	.coerce	bool.t.out
+	.enter	b
+
+_test.deny_k	.forcecont
+bool.prim.u	.tygvar
+_string.ty	.tygvar
+test.property.true	.gvar
+test.property.false	.gvar
+fm	.fv	_string.ty
+tm	.fv	_string.ty
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.app	fm
+			.enter	test.property.true
+		.case	true
+			.app	tm
+			.enter	test.property.false
 
 # §section §gs{test.all}
 
