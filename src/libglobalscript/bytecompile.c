@@ -767,7 +767,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
 
         tail = heap[i];
         pptail = 0;
-        for (j = 0; j < p->numarguments && p->arguments[j]->type != gssymseparator; j++) {
+        for (j = 1; j < p->numarguments && p->arguments[j]->type != gssymseparator; j++) {
             struct gsconstr *cons;
 
             cons = (struct gsconstr *)tail;
@@ -779,6 +779,9 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
             cons->constrnum = 0;
             cons->numargs = 2;
             cons->arguments[0] = gssymtable_get_data(symtable, p->arguments[j]);
+            if (!cons->arguments[0])
+                gsfatal(UNIMPL("%P: Cannot find address of data item %y"), p->pos, p->arguments[j])
+            ;
             pptail = &cons->arguments[1];
             tail = (gsvalue)((uchar*)tail + sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
         }
