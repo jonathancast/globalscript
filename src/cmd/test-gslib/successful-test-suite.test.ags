@@ -1,0 +1,54 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_test.0	.closure	_test.0.c
+_test.0.label	.string	First\stest
+_test.0.test	.closure	_test.0.test.c
+_test.0.test.msg	.string	First\stest\spassed
+
+_test.1	.closure	_test.1.c
+_test.1.label	.string	Second\stest
+_test.1.test	.closure	_test.1.test.c
+_test.1.test.msg	.string	Second\stest\spassed
+
+	.code
+
+_epcode	.expr
+test.property.∧	.gvar
+_test.0	.gvar
+_test.1	.gvar
+	.app	_test.0	_test.1
+	.enter	test.property.∧
+
+# §section test 0
+
+_test.0.c	.expr
+test.property.label	.gvar
+_test.0.label	.gvar
+_test.0.test	.gvar
+	.app	_test.0.label	_test.0.test
+	.enter	test.property.label
+
+_test.0.test.c	.expr
+test.property.true	.gvar
+_test.0.test.msg	.gvar
+	.app	_test.0.test.msg
+	.enter	test.property.true
+
+# §section test 1
+
+_test.1.c	.expr
+test.property.label	.gvar
+_test.1.label	.gvar
+_test.1.test	.gvar
+	.app	_test.1.label	_test.1.test
+	.enter	test.property.label
+
+_test.1.test.c	.expr
+test.property.true	.gvar
+_test.1.test.msg	.gvar
+	.app	_test.1.test.msg
+	.enter	test.property.true

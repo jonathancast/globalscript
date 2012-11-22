@@ -1,0 +1,5 @@
+./test-gslib/successful-test-suite.test.ags:
+    First test:
+        Succeeded
+    Second test:
+        Succeeded
