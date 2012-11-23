@@ -18,3 +18,4 @@ ok_diff_fail '-- unsuccessful denies --' ./$O.gstest unsuccessful-deny.test.ags
 
 ok_diff '-- successful test suites --' ./$O.gstest successful-test-suite.test.ags
 ok_diff_fail '-- test suite: first test fails --' ./$O.gstest test-suite-failing-first-test.test.ags
+ok_diff_fail '-- test suite: both tests fail --' ./$O.gstest test-suite-both-tests-fail.test.ags

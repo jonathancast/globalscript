@@ -174,6 +174,7 @@ test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
                         case test_running:
                             return st1;
                         case test_succeeded:
+                        case test_failed:
                             return test_failed;
                         default:
                             seprint(err, eerr, UNIMPL_NL("test_evaluate_constr: ∧: st1 = %d"), st1);

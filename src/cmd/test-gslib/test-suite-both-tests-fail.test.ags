@@ -1,0 +1,50 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_test.0	.closure	_test.0_c
+_test.0_label	.string	First\stest
+_test.0_test	.closure	_test.0_test_c
+_test.0_test_msg	.string	Test\sfailed
+
+_test.1	.closure	_test.1_c
+_test.1_label	.string	Second\stest
+_test.1_test	.closure	_test.1_test_c
+_test.1_test_msg	.string	Test\salso\sfailed
+
+	.code
+
+_epcode	.expr
+test.property.∧	.gvar
+_test.0	.gvar
+_test.1	.gvar
+	.app	_test.0	_test.1
+	.enter	test.property.∧
+
+_test.0_c	.expr
+test.property.label	.gvar
+_test.0_label	.gvar
+_test.0_test	.gvar
+	.app	_test.0_label	_test.0_test
+	.enter	test.property.label
+
+_test.0_test_c	.expr
+test.property.false	.gvar
+_test.0_test_msg	.gvar
+	.app	_test.0_test_msg
+	.enter	test.property.false
+
+_test.1_c	.expr
+test.property.label	.gvar
+_test.1_label	.gvar
+_test.1_test	.gvar
+	.app	_test.1_label	_test.1_test
+	.enter	test.property.label
+
+_test.1_test_c	.expr
+test.property.false	.gvar
+_test.1_test_msg	.gvar
+	.app	_test.1_test_msg
+	.enter	test.property.false
