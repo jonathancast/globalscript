@@ -67,7 +67,11 @@ b0	.karg	bool.prim.u
 		.case	true
 			.enter	bool.false
 	.case	true
-		.undef	bool.t
+		.analyze	b0	false	true
+		.case	false
+			.enter	bool.false
+		.case	true
+			.undef	bool.t
 
 # §section §gs{bool.∧}
 

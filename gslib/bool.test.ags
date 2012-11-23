@@ -3,7 +3,7 @@
 	.data
 
 	.closure	_epcode
-_tests	.list	test.property.t	_test.false.eq.false	_test.false.eq.true	_test.true.∧.true	_test.false.∧.false
+_tests	.list	test.property.t	_test.false.eq.false	_test.false.eq.true	_test.true.eq.false	_test.true.∧.true	_test.false.∧.false
 
 _test.false.eq.false	.closure	_test.false.eq.false.c
 _test.false.eq.false.label	.string	false\s≡\sfalse
@@ -16,6 +16,12 @@ _test.false.eq.true_label	.string	false\s≠\sfalse
 _test.false.eq.true_test	.closure	_test.false.eq.true_test_c
 _test.false.eq.true_test_false	.string	false\s≠\strue
 _test.false.eq.true_test_true	.string	false\s≡\strue
+
+_test.true.eq.false	.closure	_test.true.eq.false_c
+_test.true.eq.false_label	.string	true\s≠\sfalse
+_test.true.eq.false_test	.closure	_test.true.eq.false_test_c
+_test.true.eq.false_test_false	.string	true\s≠\sfalse
+_test.true.eq.false_test_true	.string	true\s≡\sfalse
 
 _test.true.∧.true	.closure	_test.true.∧.true.c
 _test.true.∧.true.label	.string	true\s∧\strue\sis\strue
@@ -84,6 +90,31 @@ bool.≡	.gvar
 bool.false	.gvar
 bool.true	.gvar
 	.app	bool.false	bool.true
+	.enter	bool.≡
+
+# §section §gs{true ≠ false}
+
+_test.true.eq.false_c	.expr
+test.property.label	.gvar
+_test.true.eq.false_label	.gvar
+_test.true.eq.false_test	.gvar
+	.app	_test.true.eq.false_label	_test.true.eq.false_test
+	.enter	test.property.label
+
+_test.true.eq.false_test_c	.expr
+_test.true.eq.false_test_eq_c	.subcode
+test.deny	.gvar
+_test.true.eq.false_test_false	.gvar
+_test.true.eq.false_test_true	.gvar
+eq	.alloc	_test.true.eq.false_test_eq_c
+	.app	_test.true.eq.false_test_false	_test.true.eq.false_test_true	eq
+	.enter	test.deny
+
+_test.true.eq.false_test_eq_c	.expr
+bool.≡	.gvar
+bool.true	.gvar
+bool.false	.gvar
+	.app	bool.true	bool.false
 	.enter	bool.≡
 
 # §section §gs{true ∧ true}
