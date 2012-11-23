@@ -18,6 +18,12 @@ w	.eprim	ibio.prim	ibio	write	_ibio.prim.write.ty	ο	|	o	s
 
 	.type
 
+ibio.prim.t	.tyexpr
+ibio.prim.m	.tygvar
+α	.tylambda	?
+	.tylift
+	.tyref	ibio.prim.m	α
+
 ibio.prim.m	.tyapiprim	ibio.prim	ibio	u?^
 ibio.prim.oport	.tyelimprim	ibio.prim	oport	u*^
 

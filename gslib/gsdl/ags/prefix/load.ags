@@ -6,12 +6,26 @@ gsdl.prefix.load	.closure	_gsdl.prefix.load_c
 
 	.code
 
-_gsdl.prefix.load_c	.expr
+_gsdl.prefix.load_c	.eprog	ibio.prim	ibio
 gsdl.symtable.t	.tygvar
 ibio.file.name.t	.tygvar
 _gsdl.prefix.load_ty	.tygvar
+_gsdl.prefix.load_isdir_c	.subcode
+_gsdl.prefix.load_body_c	.subcode
 s	.larg	gsdl.symtable.t
 fn	.larg	ibio.file.name.t
+is.dir	.bind	_gsdl.prefix.load_isdir_c	|	fn
+	.body	_gsdl.prefix.load_body_c
+
+_gsdl.prefix.load_isdir_c	.expr
+ibio.file.name.t	.tygvar
+ibio.file.isdir	.gvar
+fn	.fv	ibio.file.name.t
+	.app	fn
+	.enter	ibio.file.isdir
+
+_gsdl.prefix.load_body_c	.expr
+_gsdl.prefix.load_ty	.tygvar
 	.undef	_gsdl.prefix.load_ty
 
 	.type

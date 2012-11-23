@@ -4,7 +4,11 @@
 
 ibio.file.name.read	.closure	_ibio.file.name.read_c
 
+ibio.file.isdir	.closure	_ibio.file.isdir_c
+
 	.code
+
+# §section §gs{ibio.file.name.read}
 
 _ibio.file.name.read_c	.expr
 list.t	.tygvar
@@ -12,6 +16,16 @@ rune.t	.tygvar
 ibio.file.name.t	.tygvar
 s	.larg	list.t	rune.t
 	.undef	ibio.file.name.t
+
+# §section §gs{ibio.file.isdir}
+
+_ibio.file.isdir_c	.expr
+ibio.file.name.t	.tygvar
+ibio.prim.t	.tygvar
+bool.t	.tygvar
+tr	.tylet	ibio.prim.t	bool.t
+fn	.larg	ibio.file.name.t
+	.undef	tr
 
 	.type
 
