@@ -71,7 +71,7 @@ b0	.karg	bool.prim.u
 		.case	false
 			.enter	bool.false
 		.case	true
-			.undef	bool.t
+			.enter	bool.true
 
 # §section §gs{bool.∧}
 
