@@ -3,13 +3,19 @@
 	.data
 
 	.closure	_epcode
-_tests	.list	test.property.t	_test.false.eq.false	_test.true.∧.true	_test.false.∧.false
+_tests	.list	test.property.t	_test.false.eq.false	_test.false.eq.true	_test.true.∧.true	_test.false.∧.false
 
 _test.false.eq.false	.closure	_test.false.eq.false.c
 _test.false.eq.false.label	.string	false\s≡\sfalse
 _test.false.eq.false.test	.closure	_test.false.eq.false.test.c
 _test.false.eq.false.fail	.string	false\s≠\sfalse
 _test.false.eq.false.succ	.string	false\s≡\sfalse
+
+_test.false.eq.true	.closure	_test.false.eq.true_c
+_test.false.eq.true_label	.string	false\s≠\sfalse
+_test.false.eq.true_test	.closure	_test.false.eq.true_test_c
+_test.false.eq.true_test_false	.string	false\s≠\strue
+_test.false.eq.true_test_true	.string	false\s≡\strue
 
 _test.true.∧.true	.closure	_test.true.∧.true.c
 _test.true.∧.true.label	.string	true\s∧\strue\sis\strue
@@ -53,6 +59,31 @@ _test.false.eq.false.test_eq.c	.expr
 bool.≡	.gvar
 bool.false	.gvar
 	.app	bool.false	bool.false
+	.enter	bool.≡
+
+# §section §gs{false ≠ true}
+
+_test.false.eq.true_c	.expr
+test.property.label	.gvar
+_test.false.eq.true_label	.gvar
+_test.false.eq.true_test	.gvar
+	.app	_test.false.eq.true_label	_test.false.eq.true_test
+	.enter	test.property.label
+
+_test.false.eq.true_test_c	.expr
+_test.false.eq.true_test_eq_c	.subcode
+test.deny	.gvar
+_test.false.eq.true_test_false	.gvar
+_test.false.eq.true_test_true	.gvar
+eq	.alloc	_test.false.eq.true_test_eq_c
+	.app	_test.false.eq.true_test_false	_test.false.eq.true_test_true	eq
+	.enter	test.deny
+
+_test.false.eq.true_test_eq_c	.expr
+bool.≡	.gvar
+bool.false	.gvar
+bool.true	.gvar
+	.app	bool.false	bool.true
 	.enter	bool.≡
 
 # §section §gs{true ∧ true}

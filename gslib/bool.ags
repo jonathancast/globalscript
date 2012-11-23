@@ -56,6 +56,7 @@ _bool.≡.k1	.forcecont
 bool.t	.tygvar
 bool.prim.u	.tygvar
 bool.true	.gvar
+bool.false	.gvar
 a0	.fv	bool.prim.u
 b0	.karg	bool.prim.u
 	.analyze	a0	false	true
@@ -64,7 +65,7 @@ b0	.karg	bool.prim.u
 		.case	false
 			.enter	bool.true
 		.case	true
-			.undef	bool.t
+			.enter	bool.false
 	.case	true
 		.undef	bool.t
 

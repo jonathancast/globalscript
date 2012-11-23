@@ -164,6 +164,8 @@ test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
 
             st = test_evaluate(err, eerr, constr->arguments[0]);
             switch (st) {
+                case test_prog_err:
+                    return st;
                 case test_running:
                     return st;
                 case test_succeeded:
