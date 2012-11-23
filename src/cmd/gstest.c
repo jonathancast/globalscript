@@ -168,8 +168,21 @@ test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
                     return st;
                 case test_succeeded:
                     return test_evaluate(err, eerr, constr->arguments[1]);
+                case test_failed: {
+                    enum test_state st1 = test_evaluate(err, eerr, constr->arguments[1]);
+                    switch (st1) {
+                        case test_running:
+                            return st1;
+                        case test_succeeded:
+                            return test_failed;
+                        default:
+                            seprint(err, eerr, UNIMPL_NL("test_evaluate_constr: ∧: st1 = %d"), st1);
+                            return test_impl_err;
+                    }
+                    break;
+                }
                 default:
-                    seprint(err, eerr, UNIMPL_NL("test_evaluate_constr: ∧: st0 = %d"), st);
+                    seprint(err, eerr, UNIMPL_NL("test_evaluate_constr: ∧: st = %d"), st);
                     return test_impl_err;
             }
             break;

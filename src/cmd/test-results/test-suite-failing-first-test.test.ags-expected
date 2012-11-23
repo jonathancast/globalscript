@@ -1,0 +1,5 @@
+./test-gslib/test-suite-failing-first-test.test.ags: Failed:
+    First test:
+        Test failed
+    Second test:
+        Succeeded
