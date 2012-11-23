@@ -1,0 +1,23 @@
+	.prefix
+
+	.data
+
+gsdl.prefix.load	.closure	_gsdl.prefix.load_c
+
+	.code
+
+_gsdl.prefix.load_c	.expr
+gsdl.symtable.t	.tygvar
+ibio.file.name.t	.tygvar
+_gsdl.prefix.load_ty	.tygvar
+s	.larg	gsdl.symtable.t
+fn	.larg	ibio.file.name.t
+	.undef	_gsdl.prefix.load_ty
+
+	.type
+
+_gsdl.prefix.load_ty	.tyexpr
+ibio.prim.m	.tygvar
+gsdl.symtable.t	.tygvar
+	.tylift
+	.tyref	ibio.prim.m	gsdl.symtable.t

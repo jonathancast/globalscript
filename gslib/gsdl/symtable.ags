@@ -1,0 +1,11 @@
+	.prefix
+
+	.data
+
+gsdl.symtable.empty	.undefined	gsdl.symtable.t
+
+	.type
+
+gsdl.symtable.t	.tyabstract	*
+	.tylift
+	.tysum

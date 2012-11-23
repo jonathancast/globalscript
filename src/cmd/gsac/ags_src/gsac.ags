@@ -6,44 +6,56 @@
 _real.entry	.closure	_real.entry.c
 # ↓ Process §rc{-l} options
 _process.args	.closure	_process.args.c	_process.args.ty
+_process.prefix.arg	.closure	_process.prefix.arg_c
 _flag.l	.string	-l
 
 	.code
 
 _real.entry.c	.eprog	ibio.prim	ibio
 _real.entry.out.ty	.tygvar
-_real.entry.0	.subcode
-_real.entry.body	.subcode
+_real.entry_symtable_c	.subcode
+_real.entry_as_c	.subcode
+_real.entry_body_c	.subcode
 o	.larg	_real.entry.out.ty
-as	.bind	_real.entry.0
-	.body	_real.entry.body	|	as
+symtable	.alloc	_real.entry_symtable_c
+as	.bind	_real.entry_as_c
+	.body	_real.entry_body_c	|	symtable	as
 
-_real.entry.0	.expr
+_real.entry_symtable_c	.expr
+gsdl.symtable.empty	.gvar
+	.enter	gsdl.symtable.empty
+
+_real.entry_as_c	.expr
 _get.args.type	.tygvar
 ga	.eprim	ibio.prim	ibio	env.args.get	_get.args.type
 	.yield	ga
 
-_real.entry.body	.expr
+_real.entry_body_c	.expr
+gsdl.symtable.t	.tygvar
 list.t	.tygvar
 _string.ty	.tygvar
 _process.args	.gvar
+symtable	.fv	gsdl.symtable.t
 as	.fv	list.t	_string.ty
-	.app	as
+	.app	symtable	as
 	.enter	_process.args
 
 # §section Processing rc{-l} options
 
 _process.args.c	.expr
+gsdl.symtable.t	.tygvar
 list.t	.tygvar
 _string.ty	.tygvar
 _process.args.c.c	.subcode
 list.t.out	.cogvar
+symtable	.larg	gsdl.symtable.t
 as	.larg	list.t	_string.ty
-	.force	_process.args.c.c
+	.force	_process.args.c.c	|	symtable
 	.coerce	list.t.out	_string.ty
 	.enter	as
 
 _process.args.c.c	.forcecont
+gsdl.symtable.t	.tygvar
 _epbodytype	.tygvar
 list.t	.tygvar
 list.prim.u	.tygvar
@@ -56,12 +68,13 @@ bool.t.out	.cogvar
 list.≡	.gvar
 rune.≡	.gvar
 _flag.l	.gvar
+symtable	.fv	gsdl.symtable.t
 as0	.karg	t
 	.analyze as0	:	nil
 		.case	:
 a0		.fkarg	0	_string.ty
 as1		.fkarg	1	list.t	_string.ty
-			.force	_process.args.c.c2	|	as1
+			.force	_process.args.c.c2	|	symtable	as1
 			.coerce	bool.t.out
 			.app	rune.≡	a0	_flag.l
 			.enter	list.≡	rune.t
@@ -69,36 +82,83 @@ as1		.fkarg	1	list.t	_string.ty
 			.undef	_epbodytype
 
 _process.args.c.c2	.forcecont
+gsdl.symtable.t	.tygvar
 list.t	.tygvar
 _string.ty	.tygvar
 bool.prim.u	.tygvar
 _epbodytype	.tygvar
 _process.args.c.c3	.subcode
 list.t.out	.cogvar
+symtable	.fv	gsdl.symtable.t
 as1	.fv	list.t	_string.ty
 is.l	.karg	bool.prim.u
 	.analyze	is.l	false	true
 		.case	false
 			.undef	_epbodytype
 		.case	true
-			.force	_process.args.c.c3
+			.force	_process.args.c.c3	|	symtable
 			.coerce	list.t.out	_string.ty
 			.enter	as1
 
 _process.args.c.c3	.forcecont
+gsdl.symtable.t	.tygvar
 list.t	.tygvar
 list.prim.u	.tygvar
 _string.ty	.tygvar
 _epbodytype	.tygvar
 t	.tylet	list.prim.u	_string.ty
+_process.prefix.arg	.gvar
+symtable	.fv	gsdl.symtable.t
 as10	.karg	t
 	.analyze	as10	:	nil
 		.case	:
 a1		.fkarg	0	_string.ty
 as2		.fkarg	1	list.t	_string.ty
-			.undef	_epbodytype
+			.app	symtable	a1	as2
+			.enter	_process.prefix.arg
 		.case	nil
 			.undef	_epbodytype
+
+_process.prefix.arg_c	.eprog	ibio.prim	ibio
+gsdl.symtable.t	.tygvar
+_string.ty	.tygvar
+list.t	.tygvar
+_process.prefix.arg_fn_c	.subcode
+_process.prefix.arg_s1_c	.subcode
+_process.prefix.arg_body_c	.subcode
+symtable	.larg	gsdl.symtable.t
+a1	.larg	_string.ty
+as1	.larg	list.t	_string.ty
+fn	.alloc	_process.prefix.arg_fn_c	|	a1
+symtable1	.bind	_process.prefix.arg_s1_c	|	symtable	fn
+	.body	_process.prefix.arg_body_c	|	symtable1	as1
+
+_process.prefix.arg_fn_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+ibio.file.name.read	.gvar
+a1	.fv	list.t	rune.t
+	.app	a1
+	.enter	ibio.file.name.read
+
+_process.prefix.arg_s1_c	.expr
+gsdl.symtable.t	.tygvar
+ibio.file.name.t	.tygvar
+gsdl.prefix.load	.gvar
+symtable	.fv	gsdl.symtable.t
+fn	.fv	ibio.file.name.t
+	.app	symtable	fn
+	.enter	gsdl.prefix.load
+
+_process.prefix.arg_body_c	.expr
+gsdl.symtable.t	.tygvar
+list.t	.tygvar
+_string.ty	.tygvar
+_process.args	.gvar
+symtable1	.fv	gsdl.symtable.t
+as2	.fv	list.t	_string.ty
+	.app	symtable1	as2
+	.enter	_process.args
 
 	.type
 
@@ -130,10 +190,13 @@ _string.ty	.tygvar
 	.tyref	list.t	_string.ty
 
 _process.args.ty	.tyexpr
+gsdl.symtable.t	.tygvar
 list.t	.tygvar
 _string.ty	.tygvar
 ibio.prim.m	.tygvar
 _empty.record	.tygvar
+	.tylift
+	.tyfun	gsdl.symtable.t
 	.tylift
 	.tyfun	list.t	_string.ty
 	.tylift

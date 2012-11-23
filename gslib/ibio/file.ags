@@ -1,0 +1,20 @@
+	.prefix
+
+	.data
+
+ibio.file.name.read	.closure	_ibio.file.name.read_c
+
+	.code
+
+_ibio.file.name.read_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+s	.larg	list.t	rune.t
+	.undef	ibio.file.name.t
+
+	.type
+
+ibio.file.name.t	.tyabstract	*
+	.tylift
+	.tysum
