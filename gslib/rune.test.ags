@@ -4,6 +4,8 @@
 
 	.closure	_epcode
 
+_tests	.list	test.property.t	_test.x.eq.x
+
 _test.x.eq.x	.closure	_test.x.eq.x.c
 _test.x.eq.x.label	.string	r/x/\s≡\sr/x/
 _test.x.eq.x.test	.closure	_test.x.eq.x.test.c
@@ -14,8 +16,10 @@ _x	.closure	_x.c
 	.code
 
 _epcode	.expr
-_test.x.eq.x	.gvar
-	.enter	_test.x.eq.x
+test.all	.gvar
+_tests	.gvar
+	.app	_tests
+	.enter	test.all
 
 _test.x.eq.x.c	.expr
 test.property.label	.gvar
