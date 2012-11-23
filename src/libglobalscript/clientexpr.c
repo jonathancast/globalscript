@@ -40,8 +40,8 @@ gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, char *err, char *eer
 
     va_start(args, coercion_name);
     while (tyarg = va_arg(args, struct gstype *)) {
-        source = gstype_supply(ty->pos, source, tyarg);
-        dest = gstype_supply(ty->pos, dest, tyarg);
+        source = gstype_apply(ty->pos, source, tyarg);
+        dest = gstype_apply(ty->pos, dest, tyarg);
     }
     va_end(args);
 

@@ -284,7 +284,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
 
             fun = reg;
             arg = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i])];
-            reg = gstype_supply(p->pos, fun, arg);
+            reg = gstype_apply(p->pos, fun, arg);
         }
         cl->regvalues[cl->nregs] = reg;
         cl->nregs++;
@@ -817,27 +817,25 @@ gstypes_compile_type_var(struct gspos pos, gsinterned_string name, struct gskind
 struct gstype *
 gstype_apply(struct gspos pos, struct gstype *fun, struct gstype *arg)
 {
-    struct gstype *res;
-    struct gstype_app *app;
-
-    gsbc_typecheck_check_boxed(pos, arg);
-
-    res = gstype_alloc(sizeof(struct gstype_app));
-    res->node = gstype_app;
-    res->pos = pos;
-    app = (struct gstype_app *)res;
-    app->fun = fun;
-    app->arg = arg;
-
-    return res;
-}
-
-struct gstype *
-gstype_supply(struct gspos pos, struct gstype *fun, struct gstype *arg)
-{
     gsbc_typecheck_check_boxed(pos, arg);
 
     switch (fun->node) {
+        case gstype_abstract:
+        case gstype_knprim:
+        case gstype_unprim:
+        case gstype_app: {
+            struct gstype *res;
+            struct gstype_app *app;
+
+            res = gstype_alloc(sizeof(struct gstype_app));
+            res->node = gstype_app;
+            res->pos = pos;
+            app = (struct gstype_app *)res;
+            app->fun = fun;
+            app->arg = arg;
+
+            return res;
+        }
         case gstype_lambda: {
             struct gstype_lambda *lambda;
             struct gskind *argkind;
@@ -851,6 +849,7 @@ gstype_supply(struct gspos pos, struct gstype *fun, struct gstype *arg)
             return gstypes_subst(pos, lambda->body, lambda->var, arg);
         }
         default:
+            gsfatal(UNIMPL("%P: gstype_apply(node = %d)"), pos, fun->node);
             gsfatal("%P: Too many arguments to %P", pos, fun->pos);
     }
     return 0;

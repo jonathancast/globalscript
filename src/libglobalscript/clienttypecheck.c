@@ -274,7 +274,7 @@ gstype_get_definition(struct gspos pos, struct gsfile_symtable *symtable, struct
         app = (struct gstype_app *)ty;
 
         if (fun_defn = gstype_get_definition(pos, symtable, app->fun))
-            return gstype_supply(pos, fun_defn, app->arg)
+            return gstype_apply(pos, fun_defn, app->arg)
         ; else
             return 0
         ;

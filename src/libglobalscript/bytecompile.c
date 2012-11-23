@@ -959,7 +959,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             for (i = 1; i < p->numarguments; i++) {
                 int regarg;
                 regarg = gsbc_find_register(p, cl.tyregnames, cl.ntyregs, p->arguments[i]);
-                type = gstype_supply(p->pos, type, cl.tyregs[regarg]);
+                type = gstype_apply(p->pos, type, cl.tyregs[regarg]);
             }
             cl.tyregs[cl.ntyregs] = type;
             cl.ntyregs++;

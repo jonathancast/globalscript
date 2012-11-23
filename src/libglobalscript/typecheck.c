@@ -1262,7 +1262,7 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
             struct gstype *arg;
 
             arg = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
-            ty = gstype_supply(p->pos, ty, arg);
+            ty = gstype_apply(p->pos, ty, arg);
         }
         pcl->tyregs[pcl->nregs] = ty;
         pcl->tyregkinds[pcl->nregs] = gstypes_calculate_kind(ty);
@@ -1880,8 +1880,8 @@ gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *pcl, int ba
                 int regarg;
 
                 regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
-                src_type = gstype_supply(p->pos, src_type, pcl->tyregs[regarg]);
-                dest_type = gstype_supply(p->pos, dest_type, pcl->tyregs[regarg]);
+                src_type = gstype_apply(p->pos, src_type, pcl->tyregs[regarg]);
+                dest_type = gstype_apply(p->pos, dest_type, pcl->tyregs[regarg]);
             }
             gstypes_type_check_type_fail(p->pos, calculated_type, src_type);
             calculated_type = dest_type;
@@ -3170,7 +3170,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
                 if (!regtypes[reg])
                     gsfatal_bad_input(p, "Register %s doesn't seem to be a type variable", p->arguments[i]->name)
                 ;
-                source = gstype_supply(p->pos, source, regtypes[reg]);
+                source = gstype_apply(p->pos, source, regtypes[reg]);
                 dest = gstype_apply(p->pos, dest, regtypes[reg]);
             }
 

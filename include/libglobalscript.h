@@ -155,7 +155,6 @@ struct gstype *gstypes_compile_productv(struct gspos, int, struct gstype_field *
 struct gstype *gstypes_compile_ubproduct(struct gspos, int, ...);
 struct gstype *gstypes_compile_ubproductv(struct gspos, int, struct gstype_field *);
 
-struct gstype *gstype_supply(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstype_apply(struct gspos, struct gstype *, struct gstype *);
 struct gstype *gstype_instantiate(struct gspos, struct gstype *, struct gstype *);
 
