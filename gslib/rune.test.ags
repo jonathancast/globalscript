@@ -4,14 +4,22 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.x.eq.x
+_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y
 
 _test.x.eq.x	.closure	_test.x.eq.x.c
 _test.x.eq.x.label	.string	r/x/\s≡\sr/x/
 _test.x.eq.x.test	.closure	_test.x.eq.x.test.c
 _test.x.eq.x.fail	.string	r/x/\s≠\sr/x/
 _test.x.eq.x.succ	.string	r/x/\s≡\sr/x/
+
+_test.x.eq.y	.closure	_test.x.eq.y_c
+_test.x.eq.y_label	.string	r/x/\s≠\sr/y/
+_test.x.eq.y_test	.closure	_test.x.eq.y_test_c
+_test.x.eq.y_test_succ	.string	r/x/\s≠\sr/y/
+_test.x.eq.y_test_fail	.string	r/x/\s≡\sr/y/
+
 _x	.closure	_x.c
+_y	.closure	_y_c
 
 	.code
 
@@ -20,6 +28,8 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{r/x/ ≡ r/x/}
 
 _test.x.eq.x.c	.expr
 test.property.label	.gvar
@@ -43,9 +53,43 @@ _x	.gvar
 	.app	_x	_x
 	.enter	rune.≡
 
+# §section §gs{r/x/ ≠ r/y/}
+
+_test.x.eq.y_c	.expr
+test.property.label	.gvar
+_test.x.eq.y_label	.gvar
+_test.x.eq.y_test	.gvar
+	.app	_test.x.eq.y_label	_test.x.eq.y_test
+	.enter	test.property.label
+
+_test.x.eq.y_test_c	.expr
+_test.x.eq.y_eq_c	.subcode
+test.deny	.gvar
+_test.x.eq.y_test_succ	.gvar
+_test.x.eq.y_test_fail	.gvar
+eq	.alloc	_test.x.eq.y_eq_c
+	.app	_test.x.eq.y_test_succ	_test.x.eq.y_test_fail	eq
+	.enter	test.deny
+
+_test.x.eq.y_eq_c	.expr
+rune.≡	.gvar
+_x	.gvar
+_y	.gvar
+	.app	_x	_y
+	.enter	rune.≡
+
+# §section Fixtures
+
 _x.c	.expr
 rune.t.in	.cogvar
 x	.rune	x
 	.coerce	rune.t.in
 	.lift
 	.yield	x
+
+_y_c	.expr
+rune.t.in	.cogvar
+y	.rune	y
+	.coerce	rune.t.in
+	.lift
+	.yield	y
