@@ -1551,7 +1551,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
 
             pcode->pos = p->pos;
             pcode->instr = gsbc_op_bind;
-            pcode->args[0] = (uchar)creg;
+            ACE_BIND_CODE(pcode) = (uchar)creg;
 
             /* §paragraph{Skipping free type variables} */
             for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
@@ -1559,12 +1559,12 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
 
             nfvs = p->numarguments - i;
             first_fv = i;
-            pcode->args[1] = (uchar)nfvs;
-            for (i = first_fv; i < p->numarguments; i++) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: store free variables", p->pos);
-            }
+            ACE_BIND_NUMFVS(pcode) = (uchar)nfvs;
+            for (i = first_fv; i < p->numarguments; i++)
+                ACE_BIND_FV(pcode, i - first_fv) = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i])
+            ;
 
-            pcode = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
+            pcode = ACE_BIND_SKIP(pcode);
             cl.pout = (uchar *)pcode;
         } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
             int creg = 0;

@@ -56,6 +56,11 @@ enum {
 #define ACE_ANALYZE_SCRUTINEE(ip) ((ip)->args[0])
 #define ACE_ANALYZE_CASES(ip) ((struct gsbc **)GS_NEXT_BYTECODE(ip, 1))
 
+#define ACE_BIND_CODE(ip) ((ip)->args[0])
+#define ACE_BIND_NUMFVS(ip) ((ip)->args[1])
+#define ACE_BIND_FV(ip, i) ((ip)->args[2+(i)])
+#define ACE_BIND_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_BIND_NUMFVS(ip))
+
 void *gsreservebytecode(ulong);
 
 /* §section Continuations */
