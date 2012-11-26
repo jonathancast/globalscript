@@ -257,7 +257,11 @@ gstypes_calculate_kind(struct gstype *type)
             prod = (struct gstype_product *)type;
 
             for (i = 0; i < prod->numfields; i++) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: check kind of field type", type->pos);
+                struct gskind *kind;
+
+                kind = gstypes_calculate_kind(prod->fields[i].type);
+                gstypes_kind_check_simple(type->pos, kind);
+                gsbc_typecheck_check_boxed(type->pos, prod->fields[i].type);
             }
 
             return gskind_unlifted_kind();

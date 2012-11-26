@@ -363,28 +363,31 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             constrs[i / 2].name = p->arguments[i];
             argtype = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i + 1])];
             if (!argtype)
-                gsfatal("%P: %s doesn't seem to be a type register", p->pos, p->arguments[i + 1]->name)
+                gsfatal("%P: %y doesn't seem to be a type register", p->pos, p->arguments[i + 1])
             ;
             constrs[i / 2].argtype = argtype;
         }
 
         return gstypes_compile_ubsumv(p->pos, nconstrs, constrs);
     } else if (gssymceq(p->directive, gssymtyproduct, gssymtypeop, ".typroduct")) {
-        struct gstype_product *prod;
+        struct gstype_field fields[MAX_NUM_REGISTERS];
         int numfields;
 
         if (p->numarguments % 2)
-                gsfatal_bad_input(p, "Cannot have odd number of arguments to .tysum");
+            gsfatal("%P: Cannot have odd number of arguments to .typroduct", p->pos)
+        ;
         numfields = p->numarguments / 2;
-        res = gstype_alloc(sizeof(struct gstype_product) + numfields * sizeof(struct gstype_field));
-        prod = (struct gstype_product *)res;
-        res->node = gstype_product;
-        res->pos = p->pos;
-        prod->numfields = numfields;
         for (i = 0; i < p->numarguments; i += 2) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Non-empty products", p->pos);
+            struct gstype *fieldtype;
+
+            fields[i / 2].name = p->arguments[i];
+            fieldtype = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[i + 1])];
+            if (!fieldtype)
+                gsfatal("%P: %y doesn't seem to be a type register", p->pos, p->arguments[i + 1])
+            ;
+            fields[i / 2].type = fieldtype;
         }
-        return res;
+        return gstypes_compile_productv(p->pos, numfields, fields);
     } else if (gssymceq(p->directive, gssymtyubproduct, gssymtypeop, ".tyubproduct")) {
         struct gstype_ubproduct *prod;
         int numfields;
