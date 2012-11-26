@@ -40,6 +40,30 @@ fn ok_diff_fail {
     true
 }
 
+fn ok_diff_case {
+    nm=$1; shift
+    casenm=$1; shift
+    prog=$1; shift
+    script=$1; shift
+    echo $nm
+    if (! $prog ./test-gslib ./test-gslib/$script $* > ./test-results/$script^-^$casenm^-actual >[2] ./test-results/$script^-^$casenm^-errors) {
+        echo $prog $script 'failed; should have succeeded' >[1=2]
+        cat ./test-results/$script^-^$casenm^-errors >[1=2]
+        cat ./test-results/$script^-^$casenm^-actual >[1=2]
+        exit 1
+    }
+    if (! diff ./test-results/$script^-^$casenm^-actual ./test-results/$script^-^$casenm^-expected) {
+        echo $prog $script 'produced incorrect output' >[1=2]
+        echo '--- Actual ---' >[1=2]
+        cat ./test-results/$script^-^$casenm^-errors >[1=2]
+        cat ./test-results/$script^-^$casenm^-actual >[1=2]
+        echo '--- Expected ---' >[1=2]
+        cat ./test-results/$script^-^$casenm^-expected
+        exit 1
+    }
+    true
+}
+
 fn ok_grep_errors {
     echo $1
     if ($3 ./test-gslib ./test-gslib/$4 > ./test-results/$4^-actual >[2] ./test-results/$4^-errors) {
