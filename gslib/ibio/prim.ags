@@ -4,6 +4,8 @@
 
 ibio.prim.write	.closure	_ibio.prim.write.c
 
+ibio.prim.env.args.get	.closure	_ibio.prim.env.args.get_c
+
 	.code
 
 _ibio.prim.write.c	.expr
@@ -15,6 +17,16 @@ o	.arg	ibio.prim.oport	ο
 s	.arg	list.t	ο
 w	.eprim	ibio.prim	ibio	write	_ibio.prim.write.ty	ο	|	o	s
 	.yield	w
+
+_ibio.prim.env.args.get_c	.expr
+ibio.prim.m	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+string.t	.tylet	list.t	rune.t
+res.t	.tylet	list.t	string.t
+t	.tylet	ibio.prim.m	res.t
+ga	.eprim	ibio.prim	ibio	env.args.get	t
+	.yield	ga
 
 	.type
 
