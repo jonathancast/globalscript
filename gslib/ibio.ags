@@ -14,11 +14,6 @@ op	.tylet	ibio.prim.oport	ο
 	.tylift
 	.tyref	ibio.prim.m	α
 
-_ibio_list.t.rune	.tyexpr
-rune.t	.tygvar
-list.t	.tygvar
-	.tyref	list.t	rune.t
-
 	.coercion
 
 ibio.out	.tycoercion
