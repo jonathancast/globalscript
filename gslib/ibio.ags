@@ -4,20 +4,15 @@
 
 ibio.m	.tyabstract	**^*^*^
 ibio.prim.m	.tygvar
-_ibio.out.type	.tygvar
+ibio.prim.oport	.tygvar
 ι	.tylambda	*
 ο	.tylambda	*
 α	.tylambda	*
-op	.tylet	_ibio.out.type	ο
+op	.tylet	ibio.prim.oport	ο
 	.tylift
 	.tyfun	op
 	.tylift
 	.tyref	ibio.prim.m	α
-
-_ibio.out.type	.tyexpr
-ibio.prim.oport	.tygvar
-ο	.tylambda	*
-	.tyref	ibio.prim.oport	ο
 
 _ibio_list.t.rune	.tyexpr
 rune.t	.tygvar
