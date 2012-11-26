@@ -2815,9 +2815,14 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
                 seprint(err, eerr, "%s:%d: I don't think %s is the same as %s; they have diferent numbers of fields", pos.file->name, pos.lineno, actual_buf, expected_buf);
                 return -1;
             }
-            if (pexpected_product->numfields > 0) {
-                seprint(err, eerr, "%s:%d: %P: %P: gstypes_check_type(check fields)", __FILE__, __LINE__, pos, pexpected->pos);
-                return -1;
+            for (i = 0; i < pexpected_product->numfields; i++) {
+                if (pactual_product->fields[i].name != pexpected_product->fields[i].name) {
+                    seprint(err, eerr, "%P: I don't think field %y is the same as %y", pos, pactual_product->fields[i].name, pexpected_product->fields[i].name);
+                    return -1;
+                }
+                if (gstypes_type_check(err, eerr, pos, pactual_product->fields[i].type, pexpected_product->fields[i].type) < 0)
+                    return -1
+                ;
             }
             return 0;
         }
