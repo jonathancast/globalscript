@@ -12,7 +12,7 @@
 \.o$
 \.pdf$
 ^bin/ibio$
-\.ags-actual$
-\.ags-errors$
+\.ags-.*actual$
+\.ags-.*errors$
 ^bin/gstype$
 ^bin/gstest$
