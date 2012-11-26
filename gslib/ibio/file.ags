@@ -23,9 +23,8 @@ _ibio.file.isdir_c	.expr
 ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
 bool.t	.tygvar
-tr	.tylet	ibio.prim.t	bool.t
 fn	.larg	ibio.file.name.t
-	.undef	tr
+	.undef	ibio.prim.t	bool.t
 
 	.type
 
