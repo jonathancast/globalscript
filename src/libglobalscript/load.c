@@ -211,7 +211,7 @@ static long gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct u
 static long gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 static long gsparse_coercion_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 
-#define LINE_LENGTH 0x100
+#define LINE_LENGTH 0x400
 #define NUM_FIELDS 0x20
 
 gsparsedfile *
