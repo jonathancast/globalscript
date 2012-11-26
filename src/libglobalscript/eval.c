@@ -363,7 +363,7 @@ gsimplementation_failure_format(char *buf, char *ebuf, struct gsimplementation_f
     if (gsdebug) {
         return seprint(buf, ebuf, "%P: %P: %s next", failure->cpos, failure->srcpos, failure->message);
     } else {
-        return seprint(buf, ebuf, "Panic: Un-implmented operation in release build: %P: %s", failure->srcpos, failure->message);
+        return seprint(buf, ebuf, "Panic: Un-implemented operation in release build: %P: %s", failure->srcpos, failure->message);
     }
 }
 
