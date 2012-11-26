@@ -1,18 +1,20 @@
 fn ok_diff {
-    echo $1
-    if (! $2 ./test-gslib ./test-gslib/$3 > ./test-results/$3^-actual >[2] ./test-results/$3^-errors) {
-        echo $2 'failed; should have succeeded' >[1=2]
-        cat ./test-results/$3^-errors >[1=2]
-        cat ./test-results/$3^-actual >[1=2]
+    nm=$1; prog=$2; script=$3
+    shift; shift; shift
+    echo $nm
+    if (! $prog ./test-gslib ./test-gslib/$script $* > ./test-results/$script^-actual >[2] ./test-results/$script^-errors) {
+        echo $prog $script 'failed; should have succeeded' >[1=2]
+        cat ./test-results/$script^-errors >[1=2]
+        cat ./test-results/$script^-actual >[1=2]
         exit 1
     }
-    if (! diff ./test-results/$3^-actual ./test-results/$3^-expected) {
-        echo $2 'produced incorrect output' >[1=2]
+    if (! diff ./test-results/$script^-actual ./test-results/$script^-expected) {
+        echo $prog $script 'produced incorrect output' >[1=2]
         echo '--- Actual ---' >[1=2]
-        cat ./test-results/$3^-errors >[1=2]
-        cat ./test-results/$3^-actual >[1=2]
+        cat ./test-results/$script^-errors >[1=2]
+        cat ./test-results/$script^-actual >[1=2]
         echo '--- Expected ---' >[1=2]
-        cat ./test-results/$3^-expected
+        cat ./test-results/$script^-expected
         exit 1
     }
     true

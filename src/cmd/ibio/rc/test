@@ -1,26 +1,6 @@
 #! /usr/local/plan9/bin/rc -e
 
-fn ok_diff {
-    nm=$1; prog=$2
-    shift; shift
-    echo $nm
-    if (! ./o.ibio ./test-gslib ./test-gslib/$prog $* > ./test-results/$prog^-actual >[2] ./test-results/$prog^-errors) {
-        echo $prog 'failed; should have succeeded' >[1=2]
-        cat ./test-results/$prog^-errors >[1=2]
-        cat ./test-results/$prog^-actual >[1=2]
-        exit 1
-    }
-    if (! diff ./test-results/$prog^-actual ./test-results/$prog^-expected) {
-        echo $prog 'produced incorrect output' >[1=2]
-        echo '--- Actual ---' >[1=2]
-        cat ./test-results/$prog^-errors >[1=2]
-        cat ./test-results/$prog^-actual >[1=2]
-        echo '--- Expected ---' >[1=2]
-        cat ./test-results/$prog^-expected
-        exit 1
-    }
-    true
-}
+. $GLOBALSCRIPT/bin/test-fns
 
 echo '-- undefined entry points --'
 if (./$O.ibio ./test-gslib ./test-gslib/undef-api.ags >[2] ./test-results/undef-api.ags-actual) {
@@ -46,5 +26,5 @@ if (! grep -s './test-gslib/wrong-type.ags: Bad type' ./test-results/wrong-type.
 }
 echo
 
-ok_diff '-- Hello, world --' hello.ibio.ags
-ok_diff '-- echo command --' echo.ibio.ags Hello world
+ok_diff '-- Hello, world --' ./$O.ibio hello.ibio.ags
+ok_diff '-- echo command --' ./$O.ibio echo.ibio.ags Hello world
