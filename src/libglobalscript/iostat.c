@@ -13,6 +13,7 @@ struct gsbio_dir *
 gsbio_stat(char *filename)
 {
     struct uxio_ichannel *chan = gsbio_sys_stat(filename);
+    if (!chan) return 0;
     return gsbio_parse_stat(chan);
 }
 
