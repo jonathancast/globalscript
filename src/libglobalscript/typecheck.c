@@ -3024,7 +3024,12 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
 
             res = seprint(res, eob, "\"Π〈");
             for (i = 0; i < product->numfields; i++) {
-                res = seprint(res, eob, "%s:%d: print fields next", __FILE__, __LINE__);
+                if (i == 0)
+                    res = seprint(res, eob, " ")
+                ;
+                res = seprint(res, eob, "%y :: ", product->fields[i].name);
+                res = gstypes_eprint_type(res, eob, product->fields[i].type);
+                res = seprint(res, eob, "; ");
             }
             res = seprint(res, eob, "〉");
             return res;
