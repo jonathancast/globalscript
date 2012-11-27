@@ -775,7 +775,7 @@ api_send_abend_rpc(struct api_thread *thread, char *msg, ...)
     abend = (struct api_abend_rpc *)rpc;
     rpc->tag = api_std_rpc_abend;
     sprint(abend->status, "%s: %s", argv0, buf);
-    gsqueue_send_rpc(thread->process_rpc_queue, rpc);
+    api_send_rpc(thread, rpc);
 }
 
 void
@@ -823,6 +823,14 @@ api_thread_post_unimpl(struct api_thread *thread, char *file, int lineno, char *
         api_abend(thread, "Panic!  Unimplemented operation '%s' in release build", buf)
     ;
     unlock(&thread->lock);
+}
+
+/* §section Sending RPCS to main process */
+
+void
+api_send_rpc(struct api_thread *thread, struct gsrpc *rpc)
+{
+    gsqueue_send_rpc(thread->process_rpc_queue, rpc);
 }
 
 /* §section RPC handlers for main process */

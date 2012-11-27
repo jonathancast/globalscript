@@ -424,6 +424,7 @@ void ace_down(void);
 
 struct api_thread;
 
+/* §paragraph{Termination} */
 struct api_thread_table {
     enum api_prim_execution_state (*thread_term_status)(struct api_thread *);
 };
@@ -432,6 +433,7 @@ void *api_thread_client_data(struct api_thread *);
 void api_take_thread(struct api_thread *);
 void api_release_thread(struct api_thread *);
 
+/* §paragraph{RPCs, for executing part of primitives in the corresponding (or parent) kernel process} */
 enum {
     api_std_rpc_done,
     api_std_rpc_abend,
@@ -443,6 +445,7 @@ struct api_process_rpc_table {
     gsrpc_handler *handlers[];
 };
 gsrpc_handler api_main_process_unimpl_rpc;
+void api_send_rpc(struct api_thread *, struct gsrpc *);
 
 enum api_prim_execution_state {
     api_st_success,
