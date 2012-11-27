@@ -44,76 +44,108 @@ gsbio_parse_stat(struct uxio_ichannel *ip)
     memset(&dir, 0, sizeof(dir));
 
     /* size */
-    if ((n = uxio_consume_space(ip, &buf, 2)) < 0)
-        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
-    else if (n < 2)
-        gsfatal("%s:%d: Couldn't get size field; got %x octets", __FILE__, __LINE__, n);
+    if ((n = uxio_consume_space(ip, &buf, 2)) < 0) {
+        werrstr("uxio_consume_space failed on channel %d: %r", ip->fd);
+        return 0;
+    } else if (n < 2) {
+        werrstr(UNIMPL("Couldn't get size field; got %x octets"), n);
+        return 0;
+    }
     bufsize = GET_LITTLE_ENDIAN_U16INT(buf);
     gsassert(__FILE__, __LINE__, bufsize == uxio_channel_size_of_available_data(ip), "Reported size %x different than available data %x", bufsize, uxio_channel_size_of_available_data(ip));
 
     /* type */
-    if ((n = uxio_consume_space(ip, &buf, 2)) < 0)
-        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
-    else if (n < 2)
-        gsfatal("%s:%d: Couldn't get type field; got %x octets", __FILE__, __LINE__, n);
+    if ((n = uxio_consume_space(ip, &buf, 2)) < 0) {
+        werrstr("uxio_consume_space failed on channel %d: %r", ip->fd);
+        return 0;
+    } else if (n < 2) {
+        werrstr(UNIMPL("Couldn't get type field; got %x octets"), n);
+        return 0;
+    }
     bufsize -= 2;
 
     /* dev */
-    if ((n = uxio_consume_space(ip, &buf, 4)) < 0)
-        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
-    else if (n < 4)
-        gsfatal("%s:%d: Couldn't get dev field; got %x octets", __FILE__, __LINE__, n);
+    if ((n = uxio_consume_space(ip, &buf, 4)) < 0) {
+        werrstr("uxio_consume_space failed on channel %d: %r", ip->fd);
+        return 0;
+    } else if (n < 4) {
+        werrstr(UNIMPL("Couldn't get dev field; got %x octets"), n);
+        return 0;
+    }
     bufsize -= 4;
 
     /* qid.type */
-    if ((n = uxio_consume_space(ip, &buf, 1)) < 0)
-        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
-    else if (n < 1)
-        gsfatal("%s:%d: Couldn't get qid.type field; got %x octets", __FILE__, __LINE__, n);
+    if ((n = uxio_consume_space(ip, &buf, 1)) < 0) {
+        werrstr("uxio_consume_space failed on channel %d: %r", ip->fd);
+        return 0;
+    } else if (n < 1) {
+        werrstr(UNIMPL("Couldn't get qid.type field; got %x octets"), n);
+        return 0;
+    }
     bufsize -= 1;
 
     /* qid.vers */
-    if ((n = uxio_consume_space(ip, &buf, 4)) < 0)
-        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
-    else if (n < 4)
-        gsfatal("%s:%d: Couldn't get qid.vers field; got %x octets", __FILE__, __LINE__, n);
+    if ((n = uxio_consume_space(ip, &buf, 4)) < 0) {
+        werrstr("uxio_consume_space failed on channel %d: %r", ip->fd);
+        return 0;
+    } else if (n < 4) {
+        werrstr(UNIMPL("Couldn't get qid.vers field; got %x octets"), n);
+        return 0;
+    }
     bufsize -= 4;
 
     /* qid.path */
-    if ((n = uxio_consume_space(ip, &buf, 8)) < 0)
-        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
-    else if (n < 8)
-        gsfatal("%s:%d: Couldn't get qid.path field; got %x octets", __FILE__, __LINE__, n);
+    if ((n = uxio_consume_space(ip, &buf, 8)) < 0) {
+        werrstr("uxio_consume_space failed on channel %d: %r", ip->fd);
+        return 0;
+    } else if (n < 8) {
+        werrstr(UNIMPL("Couldn't get qid.path field; got %x octets"), n);
+        return 0;
+    }
     bufsize -= 8;
 
     /* mode */
-    if ((n = uxio_consume_space(ip, &buf, 4)) < 0)
-        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
-    else if (n < 4)
-        gsfatal("%s:%d: Couldn't get mode field; got %x octets", __FILE__, __LINE__, n);
+    if ((n = uxio_consume_space(ip, &buf, 4)) < 0) {
+        werrstr("uxio_consume_space failed on channel %d: %r", ip->fd);
+        return 0;
+    } else if (n < 4) {
+        werrstr(UNIMPL("Couldn't get mode field; got %x octets"), n);
+        return 0;
+    }
     bufsize -= 4;
     dir.d.mode = GET_LITTLE_ENDIAN_U32INT(buf);
 
     /* padding for atime, mtime, and length */
-    if ((n = uxio_consume_space(ip, &buf, 4 + 4 + 8)) < 0)
-        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
-    else if (n < 4 + 4 + 8)
-        gsfatal("%s:%d: Couldn't get padding for atime, mtime, and length fields; got %x octets", __FILE__, __LINE__, n);
+    if ((n = uxio_consume_space(ip, &buf, 4 + 4 + 8)) < 0) {
+        werrstr("uxio_consume_space failed on channel %d: %r", ip->fd);
+        return 0;
+    } else if (n < 4 + 4 + 8) {
+        werrstr(UNIMPL("Couldn't get padding for atime, mtime, and length fields; got %x octets"), n);
+        return 0;
+    }
     bufsize -= 4 + 4 + 8;
 
     /* name */
-    if ((n = uxio_consume_space(ip, &buf, 2)) < 0)
-        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
-    else if (n < 2)
-        gsfatal("%s:%d: Couldn't get size of name field; got %x octets", __FILE__, __LINE__, n);
+    if ((n = uxio_consume_space(ip, &buf, 2)) < 0) {
+        werrstr("uxio_consume_space failed on channel %d: %r", ip->fd);
+        return 0;
+    } else if (n < 2) {
+        werrstr(UNIMPL("Couldn't get size of name field; got %x octets"), n);
+        return 0;
+    }
     bufsize -= 2;
     namesize = GET_LITTLE_ENDIAN_U16INT(buf);
-    if (namesize >= NAMEMAX)
-        gsfatal("%s:%d: Name too long %x octets but we only allow %x octets", __FILE__, __LINE__, namesize, NAMEMAX);
-    if ((n = uxio_consume_space(ip, &name, namesize)) < 0)
-        gsfatal("uxio_consume_space failed on channel %d: %r", ip->fd);
-    else if (n < namesize)
-        gsfatal("%s:%d: Couldn't get name field; got %x octets; needed %x", __FILE__, __LINE__, n, namesize);
+    if (namesize >= NAMEMAX) {
+        werrstr(UNIMPL("Name too long %x octets but we only allow %x octets"), namesize, NAMEMAX);
+        return 0;
+    }
+    if ((n = uxio_consume_space(ip, &name, namesize)) < 0) {
+        werrstr("uxio_consume_space failed on channel %d: %r", ip->fd);
+        return 0;
+    } else if (n < namesize) {
+        werrstr(UNIMPL("Couldn't get name field; got %x octets; needed %x"), n, namesize);
+        return 0;
+    }
     bufsize -= namesize;
     name[namesize] = 0;
 
@@ -127,7 +159,10 @@ gsbio_parse_stat(struct uxio_ichannel *ip)
 
     *res = dir;
 
-    gsassert(__FILE__, __LINE__, bufsize == 0, "Didn't interpret %x octets of data", bufsize);
+    if (bufsize > 0) {
+        werrstr("Didn't interpret %x octets of data", bufsize);
+        return 0;
+    }
 
     return res;
 }
