@@ -1,9 +1,8 @@
 < $PLAN9/src/mkhdr
 
-SYSTEM=unix
-CFLAGS=-I $SYSTEM
+< $GLOBALSCRIPT/src/mkhdr
 
-< $SYSTEM/mkhdr
+CFLAGS=$CFLAGS -I $SYSTEM
 
 OFILES=\
 	gsmain.$O \

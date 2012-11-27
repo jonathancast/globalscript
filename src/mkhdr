@@ -1,0 +1,3 @@
+SYSTEM=unix
+
+< $GLOBALSCRIPT/src/$SYSTEM/mkhdr

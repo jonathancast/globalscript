@@ -1,3 +1,5 @@
+< $GLOBALSCRIPT/src/mkhdr
+
 MKSHELL=$PLAN9/bin/rc
 
 AGS_SOURCES=`{echo ags_src/*.ags}

@@ -409,7 +409,7 @@ ibio_alloc_oport()
 
     lock(&ibio_oport_segment_lock);
     res = gs_sys_seg_suballoc(&ibio_oport_segment_descr, &ibio_oport_segment_nursury, sizeof(*res), sizeof(void*));
-    lock(&ibio_oport_segment_lock);
+    unlock(&ibio_oport_segment_lock);
 
     memset(&res->lock, 0, sizeof(res->lock));
     lock(&res->lock);
