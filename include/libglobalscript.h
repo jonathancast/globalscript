@@ -197,7 +197,7 @@ gsvalue gsapply(struct gspos, gsvalue, gsvalue);
 /* §subsection Runes */
 
 char *gschartorune(char *, gsvalue *, char *, char *);
-char *gsrunetochar(gsvalue, char *, char *, char *, char *);
+char *gsrunetochar(gsvalue, char *, char *);
 gsvalue gscstringtogsstring(struct gspos, char *);
 
 /* §subsection Lists */

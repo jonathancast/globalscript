@@ -244,29 +244,17 @@ ibio_write_process_main(void *p)
                     c = GS_REMOVE_INDIRECTIONS(c);
                     break;
                 }
-                case gstyunboxed: {
-                    char err[0x100];
-                    char *e;
-
-                    e = gsrunetochar(c, oport->bufend, oport->bufextent, err, err + sizeof(err));
-                    if (e) {
-                        oport->bufend = e;
-                        if (((uchar*)oport->bufextent - (uchar*)oport->bufend) < 4) {
-                            api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: flushing buffer");
-                            active = oport->active = 0;
-                            oport->writing = c = 0;
-                            ibio_oport_unlink_from_thread(oport->writing_thread, oport);
-                        } else {
-                            c = 0;
-                        }
-                    } else {
-                        api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: Couldn't write rune to buffer: %s", err);
+                case gstyunboxed:
+                    oport->bufend = gsrunetochar(c, oport->bufend, oport->bufextent);
+                    if (((uchar*)oport->bufextent - (uchar*)oport->bufend) < 4) {
+                        api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: flushing buffer");
                         active = oport->active = 0;
                         oport->writing = c = 0;
                         ibio_oport_unlink_from_thread(oport->writing_thread, oport);
+                    } else {
+                        c = 0;
                     }
                     break;
-                }
                 default:
                     api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: writing head state %d", st);
                     active = oport->active = 0;

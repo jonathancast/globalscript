@@ -289,7 +289,6 @@ test_print_string(gsvalue s)
 {
     gsvalue c;
     gstypecode st;
-    char err[0x100];
 
     c = 0;
     for (;;) {
@@ -298,11 +297,8 @@ test_print_string(gsvalue s)
             switch (st) {
                 case gstyunboxed: {
                     char buf[5];
-                    if (!gsrunetochar(c, buf, buf + sizeof(buf), err, err + sizeof(err))) {
-                        fprint(2, "%s\n", err);
-                        ace_down();
-                        exits("unimpl");
-                    }
+
+                    gsrunetochar(c, buf, buf + sizeof(buf));
                     print(buf);
                     c = 0;
                     break;

@@ -58,7 +58,7 @@ gschartorune(char *s, gsvalue *pv, char *err, char *eerr)
 }
 
 char *
-gsrunetochar(gsvalue v, char *buf, char *ebuf, char *err, char *eerr)
+gsrunetochar(gsvalue v, char *buf, char *ebuf)
 {
     uint mask;
     int test_bit;

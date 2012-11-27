@@ -19,7 +19,6 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
     gsvalue c, s;
     gstypecode st;
     char buf[0x100], *o;
-    char err[0x100];
 
     s = prog;
     c = 0;
@@ -31,10 +30,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
 
             switch (st) {
                 case gstyunboxed: {
-                    if (!(o = gsrunetochar(c, o, buf + sizeof(buf), err, err + sizeof(err)))) {
-                        ace_down();
-                        gsfatal("Cannot format rune %p: %s", c, err);
-                    }
+                    o = gsrunetochar(c, o, buf + sizeof(buf));
                     if (o >= buf + sizeof(buf) - 4) {
                         if (write(1, buf, o - buf) != o - buf) {
                             ace_down();

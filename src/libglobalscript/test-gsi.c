@@ -204,10 +204,7 @@ gsprint_unboxed(struct gstype *type, gsvalue prog)
     if (gstype_expect_prim(err, err + sizeof(err), type, gsprim_type_defined, "rune.prim", "rune") >= 0) {
         char buf[5];
 
-        if (!gsrunetochar(prog, buf, buf + sizeof(buf), err, err + sizeof(err))) {
-            ace_down();
-            gsfatal("%s", err);
-        }
+        gsrunetochar(prog, buf, buf + sizeof(buf));
 
         print("%s\n", buf);
         return 0;
