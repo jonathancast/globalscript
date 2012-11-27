@@ -4,7 +4,7 @@
 extern "C" {
 #endif   
 
-/* §section A few pre-declarations since Global Script is idiotic */
+/* §section A few pre-declarations since C is idiotic */
 
 struct gs_blockdesc;
 
@@ -12,7 +12,7 @@ struct gs_blockdesc;
 
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 
-/* §section{Basic Thread Management Stuff} */
+/* §section Basic Thread Management Stuff */
 
 void gsmain(int argc, char **argv);
 
@@ -336,7 +336,7 @@ struct gseprim {
     gsvalue arguments[];
 };
 
-/* §section{Primitives} */
+/* §section Primitives */
 
 typedef int gsubprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *);
 int gsubprim_return(struct ace_thread *, struct gspos, int, int, ...);
@@ -389,7 +389,7 @@ struct gsregistered_primtype *gsprims_lookup_type(struct gsregistered_primset *,
 
 struct gsregistered_prim *gsprims_lookup_prim(struct gsregistered_primset *, char *);
 
-/* §section{Simple Segment Manager} */
+/* §section Simple Segment Manager */
 
 typedef struct gs_block_class {
     gstypecode (*evaluator)(gsvalue);
