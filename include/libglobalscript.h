@@ -450,7 +450,10 @@ enum api_prim_execution_state {
     api_st_blocked,
 };
 
-typedef enum api_prim_execution_state (api_prim_executor)(struct api_thread *, struct gseprim *, gsvalue *);
+struct api_prim_blocking {
+};
+
+typedef enum api_prim_execution_state (api_prim_executor)(struct api_thread *, struct gseprim *, struct api_prim_blocking **, gsvalue *);
 
 struct api_prim_table {
     int numprims;

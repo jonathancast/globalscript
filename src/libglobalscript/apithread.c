@@ -262,12 +262,12 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                         api_unpack_block_statement(thread, cl);
                         return;
                     default:
-                        api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%d closures)", cl->code->tag);
+                        api_abend(thread, UNIMPL("API instruction execution (%d closures)"), cl->code->tag);
                         return;
                 }
             }
             default:
-                api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%d exprs)", hp->type);
+                api_abend(thread, UNIMPL("API instruction execution (%d exprs)"), hp->type);
                 return;
         }
     } else if (gsiseprim_block(block)) {
@@ -284,11 +284,12 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
             enum api_prim_execution_state st;
             gsvalue res;
 
-            st = table->execs[eprim->index](thread, eprim, &res);
+            st = table->execs[eprim->index](thread, eprim, &thread->eprim_blocking, &res);
             switch (st) {
                 case api_st_success:
                     api_update_promise(thread->code->instrs[thread->code->ip].presult, res);
                     thread->code->ip++;
+                    thread->eprim_blocking = 0;
                     if (thread->code->ip >= thread->code->size)
                         api_done(thread)
                     ;
@@ -297,12 +298,12 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                     /* We assume the exec function called api_abend */
                     break;
                 default:
-                    api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution with state %d", st);
+                    api_abend(thread, UNIMPL("API instruction execution with state %d"), st);
                     break;
             }
         }
     } else {
-        api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%s)", block->class->description);
+        api_abend(thread, UNIMPL("API instruction execution (%s)"), block->class->description);
     }
 }
 
@@ -544,6 +545,7 @@ have_thread:
     thread->status = 0;
 
     thread->code = api_alloc_code_segment(thread, entry);
+    thread->eprim_blocking = 0;
 
     return thread;
 }
@@ -871,7 +873,7 @@ api_main_process_handle_rpc_abend(struct gsrpc *rpc)
 
 enum
 api_prim_execution_state
-api_thread_handle_prim_unit(struct api_thread *thread, struct gseprim *eprim, gsvalue *res)
+api_thread_handle_prim_unit(struct api_thread *thread, struct gseprim *eprim, struct api_prim_blocking **pblocking, gsvalue *res)
 {
     *res = eprim->arguments[1];
     return api_st_success;

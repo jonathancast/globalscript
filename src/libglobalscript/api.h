@@ -16,6 +16,7 @@ struct api_thread {
     void *client_data;
     char *status;
     struct api_code_segment *code;
+    struct api_prim_blocking *eprim_blocking;
 };
 
 struct api_instr {

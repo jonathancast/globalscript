@@ -7,7 +7,7 @@
 #include "ibio.h"
 
 enum api_prim_execution_state
-ibio_handle_prim_getargs(struct api_thread *thread, struct gseprim *eprim, gsvalue *res)
+ibio_handle_prim_getargs(struct api_thread *thread, struct gseprim *eprim, struct api_prim_blocking **pblocking, gsvalue *res)
 {
     struct ibio_thread_data *data;
 
