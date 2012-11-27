@@ -311,9 +311,6 @@ static
 void
 api_exec_err(struct api_thread *thread, gsvalue instr, gstypecode st)
 {
-    struct gs_blockdesc *block;
-
-    block = BLOCK_CONTAINING(instr);
     switch (st) {
         case gstyerr: {
             struct gserror *p;
@@ -333,7 +330,7 @@ api_exec_err(struct api_thread *thread, gsvalue instr, gstypecode st)
             break;
         }
         default:
-            api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%s)", block->class->description);
+            api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%d)", st);
             break;
     }
 }
