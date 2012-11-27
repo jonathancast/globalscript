@@ -80,7 +80,7 @@ void gsqueue_send_rpc(struct gsrpc_queue *, struct gsrpc *);
 
 void gsqueue_down(struct gsrpc_queue *);
 
-typedef void (rpc_handler)(struct gsrpc *);
+typedef void (gsrpc_handler)(struct gsrpc *);
 
 /* §section Internal error-reporting stuff */
 
@@ -440,9 +440,9 @@ enum {
 struct api_process_rpc_table {
     char *name;
     int numrpcs;
-    rpc_handler *handlers[];
+    gsrpc_handler *handlers[];
 };
-rpc_handler api_main_process_unimpl_rpc;
+gsrpc_handler api_main_process_unimpl_rpc;
 
 enum api_prim_execution_state {
     api_st_success,
@@ -479,8 +479,8 @@ void api_abend_unimpl(struct api_thread *, char *, int, char *, ...);
 void api_thread_post(struct api_thread *, char *, ...);
 void api_thread_post_unimpl(struct api_thread *, char *, int, char *, ...);
 
-rpc_handler api_main_process_handle_rpc_done;
-rpc_handler api_main_process_handle_rpc_abend;
+gsrpc_handler api_main_process_handle_rpc_done;
+gsrpc_handler api_main_process_handle_rpc_abend;
 
 /* §section Buffered I/O library */
 
