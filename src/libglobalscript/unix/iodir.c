@@ -125,6 +125,10 @@ gsbio_unix_fill_stat(char *filename, struct stat *puxstat, struct uxio_ichannel 
 
     endname = filename;
     while (*endname) endname++;
+    /* Strip trailing / */
+    if (endname - 1 > filename && endname[-1] == '/')
+        *--endname = 0
+    ;
     basename = endname;
     while (basename > filename && basename[-1] != '/') basename--;
 
