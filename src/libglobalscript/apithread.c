@@ -1,3 +1,5 @@
+/* §source.file Stat interface */
+
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
@@ -89,7 +91,7 @@ apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table 
 
 /* §section Main loop */
 
-static void api_exec_instr(struct api_thread *, gsvalue);
+static int api_exec_instr(struct api_thread *, gsvalue);
 static void api_exec_err(struct api_thread *, gsvalue, gstypecode);
 
 static void api_send_done_rpc(struct api_thread *);
@@ -108,7 +110,7 @@ api_thread_pool_main(void *arg)
     struct api_thread_pool_args *args;
 
     int threadnum;
-    int ranthread, hadthread;
+    int hadthread, suspended_runnable_thread;
 
     args = (struct api_thread_pool_args *)arg;
 
@@ -117,7 +119,7 @@ api_thread_pool_main(void *arg)
     api_release_thread(mainthread);
 
     do {
-        hadthread = ranthread = 0;
+        hadthread = suspended_runnable_thread = 0;
         for (threadnum = 0; threadnum < API_NUMTHREADS; threadnum++) {
             thread = 0;
             api_take_thread_queue();
@@ -141,8 +143,9 @@ api_thread_pool_main(void *arg)
 
                         switch (st) {
                             case gstywhnf:
-                                api_exec_instr(thread, instr);
-                                ranthread = 1;
+                                if (api_exec_instr(thread, instr) > 0)
+                                    suspended_runnable_thread = 1
+                                ;
                                 break;
                             case gstyerr:
                             case gstyimplerr:
@@ -152,7 +155,7 @@ api_thread_pool_main(void *arg)
                                 break;
                             case gstyindir:
                                 code->instrs[code->ip].instr = GS_REMOVE_INDIRECTIONS(instr);
-                                ranthread = 1;
+                                suspended_runnable_thread = 1;
                                 break;
                             case gstyenosys:
                                 api_abend(thread, "Un-implemented operation: %r");
@@ -201,7 +204,7 @@ api_thread_pool_main(void *arg)
                 api_release_thread(thread);
             }
         }
-        if (!ranthread)
+        if (!suspended_runnable_thread)
             if (sleep(1) < 0)
                 gswarning("%s:%d: sleep returned a negative number", __FILE__, __LINE__)
         ;
@@ -234,7 +237,7 @@ static void api_unpack_block_statement(struct api_thread *, struct gsclosure *);
 static void api_update_promise(struct api_promise *, gsvalue);
 
 static
-void
+int
 api_exec_instr(struct api_thread *thread, gsvalue instr)
 {
     struct gs_blockdesc *block;
@@ -248,6 +251,7 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
         p = (struct gsimplementation_failure *)instr;
         gsimplementation_failure_format(buf, buf + sizeof(buf), p);
         api_abend(thread, "%s", buf);
+        return 0;
     } else if (gsisheap_block(block)) {
         struct gsheap_item *hp;
 
@@ -260,15 +264,15 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                 switch (cl->code->tag) {
                     case gsbc_eprog:
                         api_unpack_block_statement(thread, cl);
-                        return;
+                        return 1;
                     default:
                         api_abend(thread, UNIMPL("API instruction execution (%d closures)"), cl->code->tag);
-                        return;
+                        return 0;
                 }
             }
             default:
                 api_abend(thread, UNIMPL("API instruction execution (%d exprs)"), hp->type);
-                return;
+                return 0;
         }
     } else if (gsiseprim_block(block)) {
         struct gseprim *eprim;
@@ -278,8 +282,10 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
         table = thread->api_prim_table;
         if (eprim->index < 0) {
             api_abend(thread, "%P: Unknown primitive", eprim->pos);
+            return 0;
         } else if (eprim->index >= table->numprims) {
             api_abend(thread, "%P: Primitive out of bounds", eprim->pos);
+            return 0;
         } else {
             enum api_prim_execution_state st;
             gsvalue res;
@@ -293,17 +299,21 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                     if (thread->code->ip >= thread->code->size)
                         api_done(thread)
                     ;
-                    break;
+                    return 1;
                 case api_st_error:
                     /* We assume the exec function called api_abend */
-                    break;
+                    return 0;
+                case api_st_blocked:
+                    /* Loop and try again next time */
+                    return 0;
                 default:
                     api_abend(thread, UNIMPL("API instruction execution with state %d"), st);
-                    break;
+                    return 0;
             }
         }
     } else {
         api_abend(thread, UNIMPL("API instruction execution (%s)"), block->class->description);
+        return 0;
     }
 }
 
