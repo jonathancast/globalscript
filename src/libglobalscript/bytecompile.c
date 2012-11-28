@@ -887,6 +887,8 @@ struct gsbc_byte_compile_code_or_api_op_closure {
 
     int nglobals;
 
+    int nfvs;
+
     int nargs;
 
     int nfields;
@@ -907,11 +909,10 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     int i;
     struct gsbco **psubcode;
     struct gsbc *pcode;
-    int nfvs;
 
     cl.phase = rttygvars;
     cl.pout = ((uchar*)pbco + sizeof(struct gsbco));
-    cl.ntyregs = cl.nregs = cl.nsubexprs = cl.nglobals = nfvs = cl.nargs = cl.nfields = 0;
+    cl.ntyregs = cl.nregs = cl.nsubexprs = cl.nglobals = cl.nfvs = cl.nargs = cl.nfields = 0;
     memset(cl.regtypes, 0, sizeof(cl.regtypes));
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
@@ -986,17 +987,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 gsfatal("%P: Too late to add global variables", p->pos)
             ;
             cl.phase = rtgvars;
-        } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
-            if (cl.phase > rtfvs)
-                gsfatal_bad_input(p, "Too late to add free variables")
-            ;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
-            ;
-            cl.phase = rtfvs;
-            cl.regs[cl.nregs] = p->label;
-            cl.nregs++;
-            nfvs++;
         } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (
             gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
@@ -1098,7 +1088,7 @@ done:
 
     pbco->numsubexprs = cl.nsubexprs;
     pbco->numglobals = cl.nglobals;
-    pbco->numfvs = nfvs;
+    pbco->numfvs = cl.nfvs;
     pbco->numargs = cl.nargs;
 }
 
@@ -1152,6 +1142,17 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
 
         pcl->nregs++;
         pcl->nglobals++;
+    } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
+        if (pcl->phase > rtfvs)
+            gsfatal_bad_input(p, "Too late to add free variables")
+        ;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+        ;
+        pcl->phase = rtfvs;
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->nregs++;
+        pcl->nfvs++;
     } else {
         return 0;
     }
@@ -1579,12 +1580,12 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     int i;
     struct gsbco **psubcode;
     struct gsbc *pcode;
-    int nfvs, nargs;
+    int nargs;
 
     cl.phase = rttygvars;
     pcode = 0;
     cl.pout = (uchar*)pbco + sizeof(struct gsbco);
-    cl.nregs = cl.nglobals = cl.nsubexprs = nfvs = nargs = 0;
+    cl.nregs = cl.nglobals = cl.nsubexprs = cl.nfvs = nargs = 0;
     memset(cl.regtypes, 0, sizeof(cl.regtypes));
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
@@ -1697,5 +1698,5 @@ done:
     pbco->numglobals = cl.nglobals;
     pbco->numsubexprs = cl.nsubexprs;
     pbco->numargs = nargs;
-    pbco->numfvs = nfvs;
+    pbco->numfvs = cl.nfvs;
 }
