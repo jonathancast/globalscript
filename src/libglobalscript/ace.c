@@ -104,6 +104,7 @@ ace_thread_pool_main(void *p)
 
                         switch (st) {
                             case gstystack:
+                            case gstyblocked:
                                 break;
                             case gstyindir:
                                 thread->blocked = GS_REMOVE_INDIRECTIONS(prog);
@@ -530,6 +531,7 @@ ace_enter(struct ace_thread *thread)
 
         switch (st) {
             case gstystack:
+            case gstyblocked:
                 thread->blocked = prog;
                 thread->blockedat = ip->pos;
                 return 0;
