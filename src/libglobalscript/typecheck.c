@@ -2628,7 +2628,7 @@ static
 void
 gstypes_type_check_type_fail(struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
 {
-    char err[0x300];
+    char err[0x400];
 
     if (gstypes_type_check(err, err + sizeof(err), pos, pactual, pexpected) < 0)
         gsfatal("%s", err)
@@ -2638,8 +2638,8 @@ gstypes_type_check_type_fail(struct gspos pos, struct gstype *pactual, struct gs
 int
 gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
 {
-    char actual_buf[0x100];
-    char expected_buf[0x100];
+    char actual_buf[0x400];
+    char expected_buf[0x400];
     int i;
 
     if (gstypes_eprint_type(actual_buf, actual_buf + sizeof(actual_buf), pactual) >= actual_buf + sizeof(actual_buf)) {
