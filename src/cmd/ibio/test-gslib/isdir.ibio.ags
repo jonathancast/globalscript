@@ -1,0 +1,108 @@
+	.document
+
+	.data
+
+	.cast	_ep.in	_real.entry
+_real.entry	.closure	_real.entry_c
+_directory	.string	directory\n
+_file	.string	file\n
+
+	.code
+
+_real.entry_c	.eprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_real.entry_as_c	.subcode
+_real.entry_b_c	.subcode
+_real.entry_body_c	.subcode
+o	.larg	ibio.prim.oport	rune.t
+as	.bind	_real.entry_as_c
+b	.bind	_real.entry_b_c	|	as
+	.body	_real.entry_body_c	|	o	b
+
+_real.entry_as_c	.expr
+ibio.prim.env.args.get	.gvar
+	.yield	ibio.prim.env.args.get
+
+_real.entry_b_c	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+_real.entry_b_k	.subcode
+list.t.out	.cogvar
+as	.fv	list.t	_string.ty
+	.force	_real.entry_b_k
+	.coerce	list.t.out	_string.ty
+	.enter	as
+
+_real.entry_b_k	.forcecont
+list.prim.u	.tygvar
+_string.ty	.tygvar
+list.t	.tygvar
+ibio.prim.t	.tygvar
+bool.t	.tygvar
+_real.entry_b_k_fn0_c	.subcode
+ibio.file.isdir	.gvar
+as0	.karg	list.prim.u	_string.ty
+	.analyze	as0	:	nil
+		.case	:
+a0		.fkarg	0	_string.ty
+as1		.fkarg	1	list.t	_string.ty
+fn0			.alloc	_real.entry_b_k_fn0_c	|	a0
+			.app	fn0
+			.enter	ibio.file.isdir
+		.case	nil
+			.undef	ibio.prim.t	bool.t
+
+_real.entry_b_k_fn0_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+ibio.file.name.read	.gvar	
+a0	.fv	list.t	rune.t
+	.app	a0
+	.enter	ibio.file.name.read
+
+_real.entry_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+bool.t	.tygvar
+_real.entry_body_k0	.subcode
+bool.t.out	.cogvar
+o	.fv	ibio.prim.oport	rune.t
+b	.fv	bool.t
+	.force	_real.entry_body_k0	|	o
+	.coerce	bool.t.out
+	.enter	b
+
+_real.entry_body_k0	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+bool.prim.u	.tygvar
+ibio.prim.write	.gvar
+_directory	.gvar
+_file	.gvar
+o	.fv	ibio.prim.oport	rune.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.lift
+			.app	o	_file
+			.yield	ibio.prim.write	rune.t
+		.case	true
+			.lift
+			.app	o	_directory
+			.yield	ibio.prim.write	rune.t
+
+	.coercion
+
+_ep.in	.tycoercion
+ibio.m	.tygvar
+rune.t	.tygvar
+_empty.record	.tygvar
+	.tydefinition ibio.m	rune.t	rune.t	_empty.record
+
+	.type
+
+_string.ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tyref	list.t	rune.t
