@@ -8,6 +8,7 @@ ok_diff_fail '-- undefined expressions --' ./$O.test-gsi undef-expr.ags
 
 ok_diff '-- empty record values --' ./$O.test-gsi empty-record.ags
 ok_diff '-- empty record expressions --' ./$O.test-gsi empty-record-expr.ags
+ok_diff '-- field extractions --' ./$O.test-gsi field-extraction.ags
 
 ok_diff_fail '-- enter undefined polymorphic value --' ./$O.test-gsi enter-polymorphic-undef.ags
 ok_diff '-- yield polymorphic empty lambda --' ./$O.test-gsi yield-polymorphic-empty-lambda.ags

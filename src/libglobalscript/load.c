@@ -821,40 +821,58 @@ gsparse_thunk_alloc_op(char *filename, struct gsparsedline *parsedline, int *pli
     return 1;
 }
 
+#define STORE_VALUE_ALLOC_OP_LABEL() \
+    do { \
+        if (*fields[0]) \
+            p->label = gsintern_string(gssymdatalable, fields[0]) \
+        ; else { \
+            gswarning("%P: Missing label on .constr makes it a no-op", p->pos); \
+            p->label = 0; \
+        } \
+    } while (0)
+
 static
 int
-gsparse_value_alloc_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
+gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymconstr;
+    static gsinterned_string gssymconstr, gssymfield;
 
     int i;
 
-    if (gssymceq(parsedline->directive, gssymconstr, gssymcodeop, ".constr")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0])
-        ; else {
-            gswarning("%P: Missing label on .constr makes it a no-op", parsedline->pos);
-            parsedline->label = 0;
-        }
+    if (gssymceq(p->directive, gssymconstr, gssymcodeop, ".constr")) {
+        STORE_VALUE_ALLOC_OP_LABEL();
         if (n < 3)
-            gsfatal("%P: Missing type on .constr", parsedline->pos)
+            gsfatal("%P: Missing type on .constr", p->pos)
         ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
+        p->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
         if (n < 4)
-            gsfatal("%P: Missing constructor on .constr", parsedline->pos)
+            gsfatal("%P: Missing constructor on .constr", p->pos)
         ;
-        parsedline->arguments[3 - 2] = gsintern_string(gssymconstrlable, fields[3]);
+        p->arguments[3 - 2] = gsintern_string(gssymconstrlable, fields[3]);
         if (n == 5)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsparse_value_alloc_op(.constr with simple argument)", parsedline->pos)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsparse_value_alloc_op(.constr with simple argument)", p->pos)
         ; else {
             if (n % 2)
-                gsfatal("%P: Odd number of arguments to .constr when expecting field/value pairs", parsedline->pos)
+                gsfatal("%P: Odd number of arguments to .constr when expecting field/value pairs", p->pos)
             ;
             for (i = 4; i < n; i += 2) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymfieldlable, fields[i]);
-                parsedline->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
+                p->arguments[i - 2] = gsintern_string(gssymfieldlable, fields[i]);
+                p->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
             }
         }
+    } else if (gssymceq(p->directive, gssymfield, gssymcodeop, ".field")) {
+        STORE_VALUE_ALLOC_OP_LABEL();
+        if (n < 3)
+            gsfatal("%P: Missing field on .field", p->pos)
+        ;
+        p->arguments[2 - 2] = gsintern_string(gssymfieldlable, fields[2]);
+        if (n < 4)
+            gsfatal("%P: Missing record on .field", p->pos)
+        ;
+        p->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
+        if (n > 4)
+            gsfatal("%P: Too many arguments to .field", p->pos)
+        ;
     } else {
         return 0;
     }

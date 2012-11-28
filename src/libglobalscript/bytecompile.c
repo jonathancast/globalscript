@@ -259,7 +259,7 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymopundef, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymopundef, gssymopanalyze, gssymopcase;
 
 static
 int
@@ -518,6 +518,8 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         ; else
             pcl->size += GS_SIZE_BYTECODE(2 + (p->numarguments - 2) / 2)
         ;
+    } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
+        pcl->size += ACE_FIELD_SIZE();
     } else {
         return 0;
     }
@@ -874,6 +876,7 @@ struct gsbc_byte_compile_code_or_api_op_closure {
 
     int nregs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
+    struct gstype *regtypes[MAX_NUM_REGISTERS];
 
     int ntyregs;
     gsinterned_string tyregnames[MAX_NUM_REGISTERS];
@@ -909,6 +912,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     cl.phase = rttygvars;
     cl.pout = ((uchar*)pbco + sizeof(struct gsbco));
     cl.ntyregs = cl.nregs = cl.nsubexprs = cl.nglobals = nfvs = cl.nargs = cl.nfields = 0;
+    memset(cl.regtypes, 0, sizeof(cl.regtypes));
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)
@@ -1098,6 +1102,16 @@ done:
     pbco->numargs = cl.nargs;
 }
 
+#define ADD_LABEL_TO_REGS_WITH_TYPE(ty) \
+    do { \
+        if (pcl->nregs >= MAX_NUM_REGISTERS) \
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS) \
+        ; \
+        pcl->regs[pcl->nregs] = p->label; \
+        pcl->regtypes[pcl->nregs] = (ty); \
+        pcl->nregs++; \
+    } while (0)
+
 static
 int
 gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
@@ -1112,12 +1126,11 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
         ;
-        pcl->regs[pcl->nregs] = p->label;
         pglobal = (gsvalue *)pcl->pout;
         *pglobal = gssymtable_get_data(symtable, p->label);
         pcl->pout = pglobal + 1;
-        pcl->nregs++;
         pcl->nglobals++;
+        ADD_LABEL_TO_REGS_WITH_TYPE(gssymtable_get_data_type(symtable, p->label));
     } else if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
         char *eos;
 
@@ -1184,6 +1197,29 @@ gsbc_byte_compile_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_c
     return 1;
 }
 
+static int gsbc_find_field_in_product(struct gstype_product *, gsinterned_string);
+
+#define CHECK_PHASE(ph, nm) \
+    do { \
+        if (pcl->phase > ph) \
+            gsfatal("Too late to add " nm, p->pos); \
+        pcl->phase = ph; \
+    } while (0)
+
+#define SETUP_PCODE() \
+    do { \
+        pcode = (struct gsbc *)pcl->pout; \
+        pcode->pos = p->pos; \
+    } while (0)
+
+#define ADD_LABEL_TO_REGS() \
+    do { \
+        if (pcl->nregs >= MAX_NUM_REGISTERS) \
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS) \
+        ; \
+        pcl->regs[pcl->nregs++] = p->label; \
+    } while (0)
+
 static
 int
 gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
@@ -1230,17 +1266,10 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
     } else if (gssymceq(p->directive, gssymopconstr, gssymcodeop, ".constr")) {
         struct gstype_sum *sum;
 
-        if (pcl->phase > rtlets)
-            gsfatal_bad_input(p, "Too late to add allocations");
-        pcl->phase = rtlets;
+        CHECK_PHASE(rtlets, "allocations");
+        ADD_LABEL_TO_REGS();
 
-        if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-        ;
-        pcl->regs[pcl->nregs++] = p->label;
-
-        pcode = (struct gsbc *)pcl->pout;
-        pcode->pos = p->pos;
+        SETUP_PCODE();
         pcode->instr = gsbc_op_constr;
 
         sum = (struct gstype_sum *)pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[0])];
@@ -1263,10 +1292,47 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             }
         }
         pcl->pout = ACE_CONSTR_SKIP(pcode);
+    } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
+        struct gstype *type;
+        struct gstype_product *product;
+        int regarg, fieldnum;
+
+        CHECK_PHASE(rtlets, "allocations");
+
+        SETUP_PCODE();
+        pcode->instr = gsbc_op_field;
+
+        regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1]);
+        ACE_FIELD_RECORD(pcode) = regarg;
+
+        type = pcl->regtypes[regarg];
+        if (!type) gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1]);
+        product = (struct gstype_product *)type;
+        fieldnum = gsbc_find_field_in_product(product, p->arguments[0]);
+        if (fieldnum < 0) gsfatal("%P: Type of %y has no field %y", p->pos, p->arguments[1], p->arguments[0]);
+
+        ACE_FIELD_FIELD(pcode) = fieldnum;
+
+        pcl->pout = ACE_FIELD_SKIP(pcode);
+
+        ADD_LABEL_TO_REGS_WITH_TYPE(product->fields[fieldnum].type);
     } else {
         return 0;
     }
     return 1;
+}
+
+static
+int
+gsbc_find_field_in_product(struct gstype_product *prod, gsinterned_string field)
+{
+    int i;
+
+    for (i = 0; i < prod->numfields; i++) {
+        if (prod->fields[i].name == field) return i;
+    }
+
+    return -1;
 }
 
 static
@@ -1506,6 +1572,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     pcode = 0;
     cl.pout = (uchar*)pbco + sizeof(struct gsbco);
     cl.nregs = cl.nglobals = cl.nsubexprs = nfvs = nargs = 0;
+    memset(cl.regtypes, 0, sizeof(cl.regtypes));
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)

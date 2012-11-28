@@ -1,0 +1,13 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+r0	.record	0	bool.false	1	bool.true
+
+	.code
+
+_epcode	.expr
+r0	.gvar
+b	.field	1	r0
+	.enter	b

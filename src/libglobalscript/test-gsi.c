@@ -16,7 +16,7 @@ gsadd_client_prim_sets()
 {
 }
 
-static int gsprint(struct gstype *type, struct gsfile_symtable *, gsvalue prog);
+static int gsprint(struct gspos pos, struct gstype *type, struct gsfile_symtable *, gsvalue prog);
 static void gsprint_error(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog);
 static int gsprint_unboxed(struct gstype *type, gsvalue prog);
 
@@ -33,7 +33,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 prog = GS_REMOVE_INDIRECTIONS(prog);
                 break;
             case gstywhnf:
-                if (gsprint(type, symtable, prog) < 0) {
+                if (gsprint(pos, type, symtable, prog) < 0) {
                     ace_down();
                     exits("error");
                 }
@@ -69,7 +69,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
 
 static
 int
-gsprint(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
+gsprint(struct gspos pos, struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
 {
     struct gs_blockdesc *block;
 
@@ -144,6 +144,8 @@ gsprint(struct gstype *type, struct gsfile_symtable *symtable, gsvalue prog)
                 struct gstype_lift *lift = (struct gstype_lift *)type;
 
                 type = lift->arg;
+            } else if (type->node == gstype_abstract) {
+                type = gstype_get_definition(pos, symtable, type);
             } else {
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: Print constructors of type %d", type->pos, type->node);
             }

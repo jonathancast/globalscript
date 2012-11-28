@@ -1694,11 +1694,28 @@ gsbc_typecheck_field_cont_arg_op(struct gsparsedline *p, struct gsbc_typecheck_c
     return 1;
 }
 
+static struct gstype *gsbc_find_field_in_product(struct gspos, struct gstype_product *, gsinterned_string);
+
+#define CHECK_PHASE(ph, nm) \
+    do { \
+        if (pcl->regtype > ph) \
+            gsfatal_bad_input(p, "Too late to add " nm) \
+        ; \
+        pcl->regtype = ph; \
+    } while (0)
+
+#define CHECK_NUM_REGS(nregs) \
+    do { \
+        if (nregs >= MAX_NUM_REGISTERS) \
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS) \
+        ; \
+    } while (0)
+
 static
 int
 gsbc_typecheck_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc, gssymconstr;
+    static gsinterned_string gssymalloc, gssymconstr, gssymfield;
 
     int i;
 
@@ -1708,13 +1725,8 @@ gsbc_typecheck_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_ap
         struct gstype *alloc_type;
         int nftyvs;
 
-        if (pcl->regtype > rtlet)
-            gsfatal_bad_input(p, "Too late to add allocations")
-        ;
-        pcl->regtype = rtlet;
-        if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-        ;
+        CHECK_PHASE(rtlet, "allocations");
+        CHECK_NUM_REGS(pcl->nregs);
 
         gsargcheck(p, 0, "code");
         creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
@@ -1782,6 +1794,26 @@ gsbc_typecheck_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_ap
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = type;
         pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymfield, gssymcodeop, ".field")) {
+        int reg;
+        struct gstype *type, *fieldtype;
+        struct gstype_product *product;
+
+        CHECK_PHASE(rtlet, "allocations");
+        CHECK_NUM_REGS(pcl->nregs);
+
+        gsargcheck(p, 0, "Field");
+        gsargcheck(p, 1, "Record");
+        reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1]);
+        type = pcl->regtypes[reg];
+        if (!type) gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1]);
+        if (type->node != gstype_product) gsfatal("%P: %y does not have a product type (maybe it's lifted?)", p->pos, p->arguments[1]);
+        product = (struct gstype_product *)type;
+        fieldtype = gsbc_find_field_in_product(p->pos, product, p->arguments[0]);
+        if (!fieldtype) gsfatal("%P: Type of %y has no field %y", p->pos, p->arguments[1], p->arguments[0]);
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regtypes[pcl->nregs] = fieldtype;
+        pcl->nregs++;
     } else {
         return 0;
     }
@@ -1831,6 +1863,21 @@ gsbc_check_field_order(struct gspos pos, int nfields, struct gstype_field *field
             gsfatal("%P: Fields out of order; %y should come after %y", pos, fields[i - 1], fields[i].name)
         ;
     }
+}
+
+static
+struct gstype *
+gsbc_find_field_in_product(struct gspos pos, struct gstype_product *prod, gsinterned_string field)
+{
+    int i;
+
+    for (i = 0; i < prod->numfields; i++) {
+        if (prod->fields[i].name == field)
+            return prod->fields[i].type
+        ;
+    }
+
+    return 0;
 }
 
 static gsinterned_string gssymoplift, gssymopcoerce, gssymopforce, gssymopubanalyze, gssymopapp;

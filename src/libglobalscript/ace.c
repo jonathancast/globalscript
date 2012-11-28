@@ -55,6 +55,7 @@ static void ace_failure_thread(struct ace_thread *, struct gsimplementation_fail
 static int ace_alloc_thunk(struct ace_thread *);
 static int ace_alloc_constr(struct ace_thread *);
 static int ace_alloc_record(struct ace_thread *);
+static int ace_extract_field(struct ace_thread *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
@@ -147,6 +148,11 @@ ace_thread_pool_main(void *p)
                                 break;
                             case gsbc_op_record:
                                 if (ace_alloc_record(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_field:
+                                if (ace_extract_field(thread))
                                     suspended_runnable_thread = 1
                                 ;
                                 break;
@@ -312,6 +318,22 @@ ace_alloc_record(struct ace_thread *thread)
     thread->regs[thread->nregs] = (gsvalue)record;
     thread->nregs++;
     thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[0]);
+    return 1;
+}
+
+static
+int
+ace_extract_field(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsrecord *record;
+
+    ip = thread->ip;
+
+    record = (struct gsrecord *)thread->regs[ACE_FIELD_RECORD(ip)];
+    thread->regs[thread->nregs] = record->fields[ACE_FIELD_FIELD(ip)];
+    thread->nregs++;
+    thread->ip = ACE_FIELD_SKIP(ip);
     return 1;
 }
 
