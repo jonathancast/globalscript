@@ -25,7 +25,14 @@ gstrue(struct gspos pos)
 gsvalue
 gsfalse(struct gspos pos)
 {
-    return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsfalse");
+    struct gsconstr *false;
+
+    false = gsreserveconstrs(sizeof(*false));
+    false->pos = pos;
+    false->constrnum = 0;
+    false->numargs = 0;
+
+    return (gsvalue)false;
 }
 
 gsvalue
