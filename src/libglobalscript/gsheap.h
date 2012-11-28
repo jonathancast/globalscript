@@ -35,6 +35,8 @@ enum {
 #define ACE_CONSTR_ARG(ip, n) ((ip)->args[2 + (n)])
 #define ACE_CONSTR_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_CONSTR_NUMARGS(ip))
 
+#define ACE_RECORD_FIELD(ip, n) ((ip)->args[1 + (n)])
+
 #define ACE_UBANALYZE_SIZE(ncases, nfvs) GS_SIZE_BYTECODE(2 + ncases + nfvs)
 #define ACE_UBANALYZE_NUMCONTS(ip) ((ip)->args[0])
 #define ACE_UBANALYZE_CONT(ip, n) ((ip)->args[2 + (n)])

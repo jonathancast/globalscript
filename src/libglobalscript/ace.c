@@ -301,10 +301,9 @@ ace_alloc_record(struct ace_thread *thread)
     record = gsreserverecords(sizeof(*record) + ip->args[0] * sizeof(gsvalue));
     record->pos = ip->pos;
     record->numfields = ip->args[0];
-    for (j = 0; j < ip->args[0]; j++) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".record fields");
-        return 0;
-    }
+    for (j = 0; j < ip->args[0]; j++)
+        record->fields[j] = thread->regs[ACE_RECORD_FIELD(ip, j)]
+    ;
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");

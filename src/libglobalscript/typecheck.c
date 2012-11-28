@@ -963,6 +963,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
         } else if (gsbc_typecheck_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
             struct gstype_field fields[MAX_NUM_REGISTERS];
+            int nfields;
 
             if (cl.regtype > rtlet)
                 gsfatal_bad_input(p, "Too late to add allocations")
@@ -972,12 +973,15 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
                 gsfatal_bad_input(p, "Too many registers")
             ;
 
+            nfields = p->numarguments / 2;
             for (i = 0; i < p->numarguments; i += 2) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr(.record fields)", p->pos);
+                int reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i + 1]);
+                fields[i / 2].name = p->arguments[i];
+                fields[i / 2].type = cl.regtypes[reg];
             }
 
             cl.regs[cl.nregs] = p->label;
-            cl.regtypes[cl.nregs] = gstypes_compile_productv(p->pos, 0, fields);
+            cl.regtypes[cl.nregs] = gstypes_compile_productv(p->pos, nfields, fields);
             cl.nregs++;
         } else if (gssymceq(p->directive, gssymeprim, gssymcodeop, ".eprim")) {
             struct gsregistered_primset *prims;

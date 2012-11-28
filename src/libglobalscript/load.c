@@ -562,7 +562,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             if (n % 2)
                 gsfatal("%s:%d: Odd number of arguments to .record", filename, *plineno);
             for (i = 2; i < n; i += 2) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
+                parsedline->arguments[i - 2] = gsintern_string(gssymfieldlable, fields[i]);
                 parsedline->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
             }
         } else if (gssymceq(parsedline->directive, gssymeprim, gssymcodeop, ".eprim")) {

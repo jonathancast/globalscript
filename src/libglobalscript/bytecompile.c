@@ -1021,7 +1021,18 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             pcode->instr = gsbc_op_record;
             pcode->args[0] = p->numarguments / 2;
             for (i = 0; i < p->numarguments; i += 2) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: .record fields", p->pos);
+                int reg;
+
+                if (i > 0) {
+                    if (p->arguments[i] == p->arguments[i - 2])
+                        gsfatal("%P: Duplicate field %y", p->pos, p->arguments[i])
+                    ;
+                    if (strcmp(p->arguments[i]->name, p->arguments[i - 2]->name) < 0)
+                        gsfatal("%P: Field %y should come before %y", p->pos, p->arguments[i], p->arguments[i - 2])
+                    ;
+                }
+                reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i + 1]);
+                ACE_RECORD_FIELD(pcode, i / 2) = reg;
             }
             cl.pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments / 2);
             cl.nregs++;
