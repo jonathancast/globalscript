@@ -1162,10 +1162,14 @@ static
 int
 gsbc_byte_compile_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
+    int i;
+
     if (
         gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")
         || gssymceq(p->directive, gssymopfkarg, gssymcodeop, ".fkarg")
     ) {
+        struct gstype *type;
+
         if (pcl->phase > rtargs)
             gsfatal_bad_input(p, "Too late to add arguments")
         ;
@@ -1173,8 +1177,17 @@ gsbc_byte_compile_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_c
             gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
         ;
         pcl->phase = rtargs;
-        pcl->regs[pcl->nregs] = p->label;
-        pcl->nregs++;
+
+        i = p->directive == gssymopfkarg ? 1 : 0;
+        type = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[i])];
+        for (i++; i < p->numarguments; i++) {
+            struct gstype *argtype;
+
+            argtype = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[i])];
+            type = gstype_apply(p->pos, type, argtype);
+        }
+        ADD_LABEL_TO_REGS_WITH_TYPE(type);
+
         if (0) /* §ags{.arg} and §ags{.larg} */
             pcl->nargs++
         ;
