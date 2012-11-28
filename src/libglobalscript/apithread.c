@@ -339,6 +339,13 @@ api_exec_err(struct api_thread *thread, gsvalue instr, gstypecode st)
             }
             break;
         }
+        case gstyimplerr: {
+            char err[0x100];
+
+            gsimplementation_failure_format(err, err + sizeof(err), (struct gsimplementation_failure *)instr);
+            api_abend(thread, "%s", err);
+            break;
+        }
         default:
             api_abend_unimpl(thread, __FILE__, __LINE__, "API instruction execution (%d)", st);
             break;
