@@ -10,6 +10,18 @@
 #include "gsheap.h"
 
 gsvalue
+gstrue(struct gspos pos)
+{
+    return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gstrue");
+}
+
+gsvalue
+gsfalse(struct gspos pos)
+{
+    return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsfalse");
+}
+
+gsvalue
 gsemptyrecord(struct gspos pos)
 {
     struct gsrecord *res;

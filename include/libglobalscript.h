@@ -194,6 +194,11 @@ gsvalue gscoerce(gsvalue, struct gstype *, struct gstype **, char *, char *, str
 
 gsvalue gsapply(struct gspos, gsvalue, gsvalue);
 
+/* §subsection Booleans */
+
+gsvalue gstrue(struct gspos);
+gsvalue gsfalse(struct gspos);
+
 /* §subsection Runes */
 
 char *gschartorune(char *, gsvalue *, char *, char *);
