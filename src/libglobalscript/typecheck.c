@@ -352,6 +352,7 @@ gstypes_kind_check_simple(struct gspos pos, struct gskind *kyactual)
     seprint_kind_name(actual_name, actual_name + sizeof(actual_name), kyactual);
 
     switch (kyactual->node) {
+        case gskind_unknown:
         case gskind_unlifted:
         case gskind_lifted:
             return;
