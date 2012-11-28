@@ -1107,6 +1107,7 @@ int
 gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
     gsvalue *pglobal;
+    int i;
 
     if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
         if (pcl->phase > rtgvars)
@@ -1143,6 +1144,8 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
         pcl->nregs++;
         pcl->nglobals++;
     } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
+        struct gstype *type;
+
         if (pcl->phase > rtfvs)
             gsfatal_bad_input(p, "Too late to add free variables")
         ;
@@ -1150,8 +1153,15 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
             gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
         ;
         pcl->phase = rtfvs;
-        pcl->regs[pcl->nregs] = p->label;
-        pcl->nregs++;
+
+        type = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[0])];
+        for (i = 1; i < p->numarguments; i++) {
+            struct gstype *argtype;
+
+            argtype = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[i])];
+            type = gstype_apply(p->pos, type, argtype);
+        }
+        ADD_LABEL_TO_REGS_WITH_TYPE(type);
         pcl->nfvs++;
     } else {
         return 0;
