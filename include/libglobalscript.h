@@ -212,6 +212,7 @@ gsvalue gsarraytolist(struct gspos, int, gsvalue *);
 /* §subsection Records */
 
 gsvalue gsemptyrecord(struct gspos);
+gsvalue gsrecordv(struct gspos, int, gsvalue *);
 
 /* §subsection Run-time Stuff */
 

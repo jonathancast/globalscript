@@ -34,6 +34,12 @@ gsemptyrecord(struct gspos pos)
 }
 
 gsvalue
+gsrecordv(struct gspos pos, int nfields, gsvalue *fields)
+{
+    return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsrecordv");
+}
+
+gsvalue
 gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, char *err, char *eerr, struct gsfile_symtable *symtable, char *coercion_name, ...)
 {
     struct gsbc_coercion_type *ct;
