@@ -889,7 +889,7 @@ struct gsbc_byte_compile_code_or_api_op_closure {
     gsinterned_string fields[MAX_NUM_REGISTERS];
 };
 
-static int gsbc_byte_compile_data_fv_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
+static int gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_cont_push_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
@@ -902,7 +902,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     struct gsbc_byte_compile_code_or_api_op_closure cl;
     int i;
     struct gsbco **psubcode;
-    gsvalue *pglobal;
     struct gsbc *pcode;
     int nfvs;
 
@@ -963,7 +962,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             }
             cl.tyregs[cl.ntyregs] = type;
             cl.ntyregs++;
-        } else if (gsbc_byte_compile_data_fv_code_op(p, &cl)) {
+        } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
                 gsfatal_bad_input(p, "Too late to add sub-expressions")
@@ -982,20 +981,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 gsfatal("%P: Too late to add global variables", p->pos)
             ;
             cl.phase = rtgvars;
-        } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
-            if (cl.phase > rtgvars)
-                gsfatal_bad_input(p, "Too late to add global variables")
-            ;
-            cl.phase = rtgvars;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
-            ;
-            cl.regs[cl.nregs] = p->label;
-            pglobal = (gsvalue *)cl.pout;
-            *pglobal = gssymtable_get_data(symtable, p->label);
-            cl.pout = pglobal + 1;
-            cl.nregs++;
-            cl.nglobals++;
         } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
             if (cl.phase > rtfvs)
                 gsfatal_bad_input(p, "Too late to add free variables")
@@ -1103,11 +1088,25 @@ done:
 
 static
 int
-gsbc_byte_compile_data_fv_code_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
     gsvalue *pglobal;
 
-    if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
+    if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
+        if (pcl->phase > rtgvars)
+            gsfatal_bad_input(p, "Too late to add global variables")
+        ;
+        pcl->phase = rtgvars;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+        pglobal = (gsvalue *)pcl->pout;
+        *pglobal = gssymtable_get_data(symtable, p->label);
+        pcl->pout = pglobal + 1;
+        pcl->nregs++;
+        pcl->nglobals++;
+    } else if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
         char *eos;
 
         if (pcl->phase > rtgvars)
