@@ -36,7 +36,17 @@ gsemptyrecord(struct gspos pos)
 gsvalue
 gsrecordv(struct gspos pos, int nfields, gsvalue *fields)
 {
-    return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsrecordv");
+    struct gsrecord *record;
+    int i;
+
+    record = gsreserverecords(sizeof(*record) + nfields * sizeof(gsvalue));
+
+    record->pos = pos;
+    record->numfields = nfields;
+    for (i = 0; i < nfields; i++)
+        record->fields[i] = fields[i]
+    ;
+    return (gsvalue)record;
 }
 
 gsvalue
