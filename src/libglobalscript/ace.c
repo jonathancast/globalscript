@@ -543,6 +543,9 @@ ace_enter(struct ace_thread *thread)
                     return 1
                 ;
                 return 0;
+            case gstyimplerr:
+                ace_failure_thread(thread, (struct gsimplementation_failure *)prog);
+                return 0;
             case gstyunboxed:
                 if (ace_return(thread, ip->pos, prog) > 0)
                     return 1
