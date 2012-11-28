@@ -1101,6 +1101,7 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
+        } else if (gsbc_typecheck_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
             if (!cont_arg_type)
