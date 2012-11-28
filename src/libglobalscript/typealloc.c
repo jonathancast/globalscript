@@ -3,6 +3,7 @@
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
+
 #include "gsinputfile.h"
 #include "gsregtables.h"
 #include "gstypealloc.h"
@@ -851,9 +852,10 @@ gstype_apply(struct gspos pos, struct gstype *fun, struct gstype *arg)
 
             return gstypes_subst(pos, lambda->body, lambda->var, arg);
         }
+        case gstype_var:
+            gsfatal("%P: Too many arguments to %P", pos, fun->pos);
         default:
             gsfatal(UNIMPL("%P: gstype_apply(node = %d)"), pos, fun->node);
-            gsfatal("%P: Too many arguments to %P", pos, fun->pos);
     }
     return 0;
 }
