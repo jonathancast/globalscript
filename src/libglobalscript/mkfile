@@ -28,6 +28,7 @@ OFILES=\
 	runes.$O \
 	iochan.$O \
 	iostat.$O \
+	stringbuilder.$O \
 	$SYSTEM/lock.$O \
 	$SYSTEM/$CPU/tas.$O \
 	$SYSTEM/gssysthreads.$O \
@@ -54,6 +55,8 @@ TEST_GSEXEC_OFILES=\
 	test-gsexec.$O \
 
 LIB=libglobalscript.a
+
+all: $GLOBALSCRIPT/lib/$LIB
 
 $GLOBALSCRIPT/lib/$LIB(%):N: %
 $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}

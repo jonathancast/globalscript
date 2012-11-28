@@ -516,6 +516,16 @@ struct gsbio_dir *gsbio_read_stat(struct uxio_dir_ichannel *);
 int gsbio_idevice_at_eof(struct uxio_ichannel *chan);
 #endif
 
+/* §section String Builders */
+
+struct gsstringbuilder {
+    char *start, *end, *extent;
+};
+
+struct gsstringbuilder gsreserve_string_builder(void);
+int gsextend_string_builder(struct gsstringbuilder *, ulong);
+void gsfinish_string_builder(struct gsstringbuilder *);
+
 #if defined(__cplusplus)
 }
 #endif
