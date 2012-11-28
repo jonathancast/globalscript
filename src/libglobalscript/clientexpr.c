@@ -12,7 +12,14 @@
 gsvalue
 gstrue(struct gspos pos)
 {
-    return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gstrue");
+    struct gsconstr *true;
+
+    true = gsreserveconstrs(sizeof(*true));
+    true->pos = pos;
+    true->constrnum = 1;
+    true->numargs = 0;
+
+    return (gsvalue)true;
 }
 
 gsvalue
