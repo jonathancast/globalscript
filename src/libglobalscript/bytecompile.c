@@ -259,7 +259,7 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopfv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymopundef, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopfv, gssymopefv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymopundef, gssymopanalyze, gssymopcase;
 
 static
 int
@@ -349,6 +349,16 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             cl.phase = phfvs;
             if (cl.nregs >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
+            cl.nregs++;
+        } else if (gssymceq(p->directive, gssymopefv, gssymcodeop, ".efv")) {
+            if (cl.phase > phfvs)
+                gsfatal_bad_input(p, "Too late to add free variables")
+            ;
+            cl.phase = phfvs;
+            if (cl.nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            ;
+            cl.size += ACE_EFV_SIZE();
             cl.nregs++;
         } else if (gsbc_bytecode_size_arg_code_op(p, &cl)) {
         } else if (
@@ -1092,6 +1102,13 @@ done:
     pbco->numargs = cl.nargs;
 }
 
+#define SETUP_PCODE(op) \
+    do { \
+        pcode = (struct gsbc *)pcl->pout; \
+        pcode->pos = p->pos; \
+        pcode->instr = op; \
+    } while (0)
+
 #define ADD_LABEL_TO_REGS_WITH_TYPE(ty) \
     do { \
         if (pcl->nregs >= MAX_NUM_REGISTERS) \
@@ -1107,6 +1124,7 @@ int
 gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
     gsvalue *pglobal;
+    struct gsbc *pcode;
     int i;
 
     if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
@@ -1143,7 +1161,10 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
 
         pcl->nregs++;
         pcl->nglobals++;
-    } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
+    } else if (
+        gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")
+        || gssymceq(p->directive, gssymopefv, gssymcodeop, ".efv")
+    ) {
         struct gstype *type;
 
         if (pcl->phase > rtfvs)
@@ -1153,6 +1174,12 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
             gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
         ;
         pcl->phase = rtfvs;
+
+        if (p->directive == gssymopefv) {
+            SETUP_PCODE(gsbc_op_efv);
+            ACE_EFV_REGNUM(pcode) = pcl->nregs;
+            pcl->pout = ACE_EFV_SKIP(pcode);
+        }
 
         type = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[0])];
         for (i = 1; i < p->numarguments; i++) {
@@ -1230,12 +1257,6 @@ static int gsbc_find_field_in_product(struct gstype_product *, gsinterned_string
         pcl->phase = ph; \
     } while (0)
 
-#define SETUP_PCODE() \
-    do { \
-        pcode = (struct gsbc *)pcl->pout; \
-        pcode->pos = p->pos; \
-    } while (0)
-
 #define ADD_LABEL_TO_REGS() \
     do { \
         if (pcl->nregs >= MAX_NUM_REGISTERS) \
@@ -1293,8 +1314,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         CHECK_PHASE(rtlets, "allocations");
         ADD_LABEL_TO_REGS();
 
-        SETUP_PCODE();
-        pcode->instr = gsbc_op_constr;
+        SETUP_PCODE(gsbc_op_constr);
 
         sum = (struct gstype_sum *)pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[0])];
 
@@ -1323,8 +1343,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
 
         CHECK_PHASE(rtlets, "allocations");
 
-        SETUP_PCODE();
-        pcode->instr = gsbc_op_field;
+        SETUP_PCODE(gsbc_op_field);
 
         regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1]);
         ACE_FIELD_RECORD(pcode) = regarg;

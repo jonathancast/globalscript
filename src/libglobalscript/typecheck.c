@@ -1287,7 +1287,7 @@ static
 int
 gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymopsubcode, gssymcogvar, gssymopgvar, gssymrune, gssymopfv;
+    static gsinterned_string gssymopsubcode, gssymcogvar, gssymopgvar, gssymrune, gssymopfv, gssymopefv;
 
     int i;
 
@@ -1347,7 +1347,10 @@ gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline 
             gsfatal("%P: Couldn't find type for global %y", p->pos, p->label)
         ;
         pcl->nregs++;
-    } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
+    } else if (
+        gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")
+        || gssymceq(p->directive, gssymopefv, gssymcodeop, ".efv")
+    ) {
         int reg;
         struct gstype *fvtype;
 
@@ -1371,6 +1374,9 @@ gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline 
             regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
             fvtype = gstype_apply(p->pos, fvtype, pcl->tyregs[regarg]);
         }
+        if (p->directive == gssymopefv)
+            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(fvtype), gskind_unlifted_kind())
+        ;
         pcl->regtypes[pcl->nregs] = fvtype;
         pcl->nregs++;
 

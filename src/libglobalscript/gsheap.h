@@ -7,6 +7,7 @@ struct gsbc {
 };
 
 enum {
+    gsbc_op_efv,
     gsbc_op_alloc,
     gsbc_op_constr,
     gsbc_op_record,
@@ -30,6 +31,10 @@ enum {
 
 #define GS_SIZE_BYTECODE(n) (GS_NTH_ARG_OFFSET(n) + sizeof(gsinterned_string) - GS_NTH_ARG_OFFSET(n) % sizeof(gsinterned_string))
 #define GS_NEXT_BYTECODE(p, n) ((struct gsbc *)((uchar*)p + GS_SIZE_BYTECODE(n)))
+
+#define ACE_EFV_SIZE() GS_SIZE_BYTECODE(1)
+#define ACE_EFV_REGNUM(ip) ((ip)->args[0])
+#define ACE_EFV_SKIP(ip) GS_NEXT_BYTECODE(ip, 1)
 
 #define ACE_CONSTR_CONSTRNUM(ip) ((ip)->args[0])
 #define ACE_CONSTR_NUMARGS(ip) ((ip)->args[1])

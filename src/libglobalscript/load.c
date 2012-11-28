@@ -713,7 +713,7 @@ static
 int
 gsparse_value_fv_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymsubcode, gssymcogvar, gssymgvar, gssymrune, gssymfv;
+    static gsinterned_string gssymsubcode, gssymcogvar, gssymgvar, gssymrune, gssymfv, gssymefv;
 
     int i;
 
@@ -755,6 +755,15 @@ gsparse_value_fv_op(char *filename, struct gsparsedline *parsedline, int *plinen
             gsfatal("%s:%d: Missing label on .fv op", filename, *plineno);
         if (n < 3)
             gsfatal("%s:%d: Missing type on .fv", filename, *plineno);
+        for (i = 2; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+    } else if (gssymceq(parsedline->directive, gssymefv, gssymcodeop, ".efv")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+        else
+            gsfatal("%s:%d: Missing label on .efv op", filename, *plineno);
+        if (n < 3)
+            gsfatal("%s:%d: Missing type on .efv", filename, *plineno);
         for (i = 2; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
     } else {

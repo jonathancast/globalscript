@@ -52,6 +52,7 @@ static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
 static void ace_failure_thread(struct ace_thread *, struct gsimplementation_failure *);
 
+static int ace_extract_efv(struct ace_thread *);
 static int ace_alloc_thunk(struct ace_thread *);
 static int ace_alloc_constr(struct ace_thread *);
 static int ace_alloc_record(struct ace_thread *);
@@ -136,6 +137,11 @@ ace_thread_pool_main(void *p)
                         }
                     } else {
                         switch (thread->ip->instr) {
+                            case gsbc_op_efv:
+                                if (ace_extract_efv(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
                             case gsbc_op_alloc:
                                 if (ace_alloc_thunk(thread))
                                     suspended_runnable_thread = 1
@@ -223,6 +229,39 @@ ace_thread_pool_main(void *p)
     if (0)
         gswarning("%s:%d: ace_thread_pool_main terminating", __FILE__, __LINE__)
     ;
+}
+
+static
+int
+ace_extract_efv(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    gstypecode st;
+    int nreg;
+
+    ip = thread->ip;
+
+    nreg = ACE_EFV_REGNUM(ip);
+
+    for (;;) {
+        st = GS_SLOW_EVALUATE(thread->regs[nreg]);
+
+        switch (st) {
+            case gstywhnf:
+                goto extracted_value;
+            case gstyindir:
+                thread->regs[nreg] = GS_REMOVE_INDIRECTIONS(thread->regs[nreg]);
+                break;
+            default:
+                ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "ace_extract_efv: st = %d", st);
+                return 0;
+        }
+    }
+
+extracted_value:
+
+    thread->ip = ACE_EFV_SKIP(ip);
+    return 1;
 }
 
 static
