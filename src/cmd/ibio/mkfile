@@ -7,6 +7,7 @@ OFILES=\
 	thread.$O \
 	env.$O \
 	oport.$O \
+	stat.$O \
 
 TARG=ibio
 
@@ -22,6 +23,7 @@ ibio.$O: ibio.h
 thread.$O: ibio.h
 env.$O: ibio.h
 oport.$O: ibio.h
+stat.$O: ibio.h
 
 test:V: 
     :

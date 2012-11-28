@@ -1,3 +1,10 @@
+/* §section RPCs for Unix Processes */
+
+enum {
+    ibio_uxproc_rpc_stat = api_std_rpc_numrpcs,
+    ibio_numrpcs,
+};
+
 /* §section Threads */
 
 struct ibio_thread_data {
@@ -11,6 +18,23 @@ enum api_prim_execution_state ibio_thread_term_status(struct api_thread *);
 /* §section Environment */
 
 api_prim_executor ibio_handle_prim_getargs;
+
+/* §section Stat */
+
+#define IBIO_DIR_TYPE \
+    "bool.t " \
+    "\"Π〈 " \
+        "mode.directory " \
+    "〉" \
+
+enum {
+    ibio_stat_mode_directory,
+    ibio_stat_num_fields,
+};
+
+api_prim_executor ibio_handle_prim_file_stat;
+
+gsrpc_handler ibio_main_process_handle_rpc_stat;
 
 /* §section Output */
 

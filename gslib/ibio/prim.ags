@@ -2,11 +2,22 @@
 
 	.data
 
+ibio.prim.unit	.closure	_ibio.prim.unit_c
+
 ibio.prim.write	.closure	_ibio.prim.write.c
 
 ibio.prim.env.args.get	.closure	_ibio.prim.env.args.get_c
 
+ibio.prim.file.stat	.closure	_ibio.prim.file.stat_c
+
 	.code
+
+_ibio.prim.unit_c	.expr
+_ibio.prim.unit_ty	.tygvar
+α	.tyarg	?
+x	.arg	α
+u	.eprim	ibio.prim	ibio	unit	_ibio.prim.unit_ty	α	|	x
+	.yield	u
 
 _ibio.prim.write.c	.expr
 _ibio.prim.write.ty	.tygvar
@@ -28,6 +39,14 @@ t	.tylet	ibio.prim.m	res.t
 ga	.eprim	ibio.prim	ibio	env.args.get	t
 	.yield	ga
 
+_ibio.prim.file.stat_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+_ibio.prim.file.stat_ty	.tygvar
+fn	.arg	list.t	rune.t
+st	.eprim	ibio.prim	ibio	file.stat	_ibio.prim.file.stat_ty	|	fn
+	.yield	st
+
 	.type
 
 ibio.prim.t	.tyexpr
@@ -39,24 +58,32 @@ ibio.prim.m	.tygvar
 ibio.prim.m	.tyapiprim	ibio.prim	ibio	u?^
 ibio.prim.oport	.tyelimprim	ibio.prim	oport	u*^
 
+_ibio.prim.unit_ty	.tyexpr
+ibio.prim.m	.tygvar
+α	.tyforall	?
+	.tyfun	α
+	.tyref	ibio.prim.m	α
+
 _ibio.prim.write.ty	.tyexpr
+ibio.prim.oport	.tygvar
+list.t	.tygvar
 ibio.prim.m	.tygvar
 _empty.record	.tygvar
-_ibio.prim.write.ty.o.ty	.tygvar
-_ibio.prim.write.ty.s.ty	.tygvar
 ο	.tyforall	*
-_o.ty	.tylet	_ibio.prim.write.ty.o.ty	ο
-_s.ty	.tylet	_ibio.prim.write.ty.s.ty	ο
+_o.ty	.tylet	ibio.prim.oport	ο
+_s.ty	.tylet	list.t	ο
 	.tyfun	_o.ty
 	.tyfun	_s.ty
 	.tyref	ibio.prim.m	_empty.record
 
-_ibio.prim.write.ty.o.ty	.tyexpr
-ibio.prim.oport	.tygvar
-ο	.tylambda	*
-	.tyref	ibio.prim.oport	ο
-
-_ibio.prim.write.ty.s.ty	.tyexpr
+_ibio.prim.file.stat_ty	.tyexpr
 list.t	.tygvar
-ο	.tylambda	*
-	.tyref	list.t	ο
+rune.t	.tygvar
+ibio.prim.m	.tygvar
+ibio.prim.dir.t	.tygvar
+	.tyfun	list.t	rune.t
+	.tyref	ibio.prim.m	ibio.prim.dir.t
+
+ibio.prim.dir.t	.tyexpr
+bool.t	.tygvar
+	.typroduct	mode.directory	bool.t

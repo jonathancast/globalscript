@@ -1,5 +1,113 @@
 	.prefix
 
+	.data
+
+ibio.dir.fromprim	.closure	_ibio.dir.fromprim_c	_ibio.dir.fromprim_ty
+
+	.code
+
+# §section §gs{ibio.dir.fromprim}
+
+_ibio.dir.fromprim_c	.expr
+ibio.prim.dir.t	.tygvar
+_ibio.dir.fromprim_at_c	.subcode
+_ibio.dir.fromprim_g_c	.subcode
+_ibio.dir.fromprim_l_c	.subcode
+_ibio.dir.fromprim_mao_c	.subcode
+_ibio.dir.fromprim_md_c	.subcode
+_ibio.dir.fromprim_me_c	.subcode
+_ibio.dir.fromprim_mge_c	.subcode
+_ibio.dir.fromprim_mgr_c	.subcode
+_ibio.dir.fromprim_mgw_c	.subcode
+_ibio.dir.fromprim_moe_c	.subcode
+_ibio.dir.fromprim_mor_c	.subcode
+_ibio.dir.fromprim_mow_c	.subcode
+_ibio.dir.fromprim_mone_c	.subcode
+_ibio.dir.fromprim_monr_c	.subcode
+_ibio.dir.fromprim_monw_c	.subcode
+d	.larg	ibio.prim.dir.t
+at	.alloc	_ibio.dir.fromprim_at_c
+g	.alloc	_ibio.dir.fromprim_g_c
+l	.alloc	_ibio.dir.fromprim_l_c
+mao	.alloc	_ibio.dir.fromprim_mao_c
+md	.alloc	_ibio.dir.fromprim_md_c	|	d
+me	.alloc	_ibio.dir.fromprim_me_c
+mge	.alloc	_ibio.dir.fromprim_mge_c
+mgr	.alloc	_ibio.dir.fromprim_mgr_c
+mgw	.alloc	_ibio.dir.fromprim_mgw_c
+moe	.alloc	_ibio.dir.fromprim_moe_c
+mor	.alloc	_ibio.dir.fromprim_mor_c
+mow	.alloc	_ibio.dir.fromprim_mow_c
+mone	.alloc	_ibio.dir.fromprim_mone_c
+monr	.alloc	_ibio.dir.fromprim_monr_c
+monw	.alloc	_ibio.dir.fromprim_monw_c
+st	.record	atime	at	gid	g	length	l	mode.append.only	mao	mode.directory	md	mode.exclusive	me	mode.group.execute	mge	mode.group.read	mgr	mode.group.write	mgw	mode.other.execute	moe	mode.other.read	mor	mode.other.write	mow	mode.owner.execute	mone	mode.owner.read	monr	mode.owner.write	monw
+	.lift
+	.yield	st
+
+_ibio.dir.fromprim_at_c	.expr
+time.t	.tygvar
+	.undef	time.t
+
+_ibio.dir.fromprim_g_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+	.undef	list.t	rune.t
+
+_ibio.dir.fromprim_l_c	.expr
+natural.t	.tygvar
+	.undef	natural.t
+
+_ibio.dir.fromprim_mao_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
+_ibio.dir.fromprim_md_c	.expr
+ibio.prim.dir.t	.tygvar
+d	.fv	ibio.prim.dir.t
+b	.field	mode.directory	d
+	.enter	b
+
+_ibio.dir.fromprim_me_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
+_ibio.dir.fromprim_mge_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
+_ibio.dir.fromprim_mgr_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
+_ibio.dir.fromprim_mgw_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
+_ibio.dir.fromprim_moe_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
+_ibio.dir.fromprim_mor_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
+_ibio.dir.fromprim_mow_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
+_ibio.dir.fromprim_mone_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
+_ibio.dir.fromprim_monr_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
+_ibio.dir.fromprim_monw_c	.expr
+bool.t	.tygvar
+	.undef	bool.t
+
 	.type
 
 ibio.m	.tyabstract	**^*^*^
@@ -13,6 +121,27 @@ op	.tylet	ibio.prim.oport	ο
 	.tyfun	op
 	.tylift
 	.tyref	ibio.prim.m	α
+
+_ibio.dir.fromprim_ty	.tyexpr
+ibio.prim.dir.t	.tygvar
+ibio.dir.t	.tygvar
+	.tylift
+	.tyfun	ibio.prim.dir.t
+	.tyref	ibio.dir.t
+
+ibio.dir.t	.tyexpr
+ibio.dir.u	.tygvar
+	.tylift
+	.tyref	ibio.dir.u
+
+ibio.dir.u	.tyexpr
+time.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+natural.t	.tygvar
+bool.t	.tygvar
+_string.ty	.tylet	list.t	rune.t
+	.typroduct	atime	time.t	gid	_string.ty	length	natural.t	mode.append.only	bool.t	mode.directory	bool.t	mode.exclusive	bool.t	mode.group.execute	bool.t	mode.group.read	bool.t	mode.group.write	bool.t	mode.other.execute	bool.t	mode.other.read	bool.t	mode.other.write	bool.t	mode.owner.execute	bool.t	mode.owner.read	bool.t	mode.owner.write	bool.t	mode.unix.dev	bool.t	mode.unix.link	bool.t	mode.unix.pipe	bool.t	mode.unix.socket	bool.t	mtime	time.t	muid	_string.ty	name	_string.ty	qid.path	integer.t	srvdev	natural.t	srvtype	natural.t	uid	_string.ty	vers	natural.t
 
 	.coercion
 

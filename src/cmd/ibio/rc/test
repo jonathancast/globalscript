@@ -7,3 +7,6 @@ ok_grep_errors '-- entry points that don''t use the newtype wrapper --' './test-
 
 ok_diff '-- Hello, world --' ./$O.ibio hello.ibio.ags
 ok_diff '-- echo command --' ./$O.ibio echo.ibio.ags Hello world
+
+ok_diff_case '-- stat (directory) --' directory ./$O.ibio stat.ibio.ags ./test-gslib
+ok_diff_case '-- stat (file) --' file ./$O.ibio stat.ibio.ags ./test-gslib/stat.ibio.ags

@@ -1,0 +1,7 @@
+	.prefix
+
+	.type
+
+time.t	.tyexpr
+	.tylift
+	.tysum

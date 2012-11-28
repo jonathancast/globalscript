@@ -1,0 +1,7 @@
+	.prefix
+
+	.type
+
+natural.t	.tyabstract	*
+	.tylift
+	.tysum

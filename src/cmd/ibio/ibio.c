@@ -21,6 +21,7 @@ enum {
     ibio_prim_unit,
     ibio_prim_write,
     ibio_prim_getargs,
+    ibio_prim_file_stat,
     ibio_numprims,
 };
 
@@ -30,6 +31,7 @@ static struct api_prim_table ibio_prim_table = {
         /* ibio_prim_unit = */ api_thread_handle_prim_unit,
         /* ibio_prim_write = */ ibio_handle_prim_write,
         /* ibio_prim_getargs = */ ibio_handle_prim_getargs,
+        /* ibio_prim_file_stat = */ ibio_handle_prim_file_stat,
     },
 };
 
@@ -38,8 +40,10 @@ static gsubprim_handler *ibio_ubexec[] = {
 
 static struct gsregistered_prim ibio_operations[] = {
     /* name, file, line, group, check_type, index, */
+    { "unit", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ α ? α ibio.prim.m α ` → ∀", ibio_prim_unit, },
     { "write", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ο * ibio.prim.oport ο ` list.t ο ` ibio.prim.m \"Π〈 〉 ⌊⌋ ` → → ∀", ibio_prim_write, },
     { "env.args.get", __FILE__, __LINE__, gsprim_operation_api, "ibio", "ibio.prim.m list.t list.t rune.t ` ` `", ibio_prim_getargs, },
+    { "file.stat", __FILE__, __LINE__, gsprim_operation_api, "ibio", "list.t rune.t ` ibio.prim.m " IBIO_DIR_TYPE " ` →", ibio_prim_file_stat, },
     { 0, },
 };
 
@@ -60,16 +64,13 @@ static struct api_thread_table ibio_thread_table = {
     /* thread_term_status = */ ibio_thread_term_status,
 };
 
-enum {
-    ibio_numrpcs = api_std_rpc_numrpcs,
-};
-
 static struct api_process_rpc_table ibio_rpc_table = {
     /* name = */ "IOLL Unix pool process",
     /* numrpcs = */ ibio_numrpcs,
     /* rpcs = */ {
         /* api_std_rpc_done */ api_main_process_handle_rpc_done,
         /* api_std_rpc_abend */ api_main_process_handle_rpc_abend,
+        /* ibio_uxproc_rpc_stat */ ibio_main_process_handle_rpc_stat,
     },
 };
 

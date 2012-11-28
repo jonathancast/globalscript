@@ -3,6 +3,9 @@
 	.data
 
 ibio.file.name.read	.closure	_ibio.file.name.read_c
+ibio.file.name.print	.closure	_ibio.file.name.print_c
+
+ibio.file.stat.prim	.closure	_ibio.file.stat.prim_c
 
 ibio.file.isdir	.closure	_ibio.file.isdir_c
 
@@ -13,9 +16,61 @@ ibio.file.isdir	.closure	_ibio.file.isdir_c
 _ibio.file.name.read_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-ibio.file.name.t	.tygvar
+ibio.file.name.in	.cogvar
 s	.larg	list.t	rune.t
-	.undef	ibio.file.name.t
+	.coerce	ibio.file.name.in
+	.enter	s
+
+# §section §gs{ibio.file.name.print}
+
+_ibio.file.name.print_c	.expr
+ibio.file.name.t	.tygvar
+ibio.file.name.out	.cogvar
+fn	.larg	ibio.file.name.t
+	.coerce	ibio.file.name.out
+	.enter	fn
+
+# §section §gs{ibio.file.stat}
+
+_ibio.file.stat.prim_c	.eprog	ibio.prim	ibio
+ibio.file.name.t	.tygvar
+_ibio.file.stat.prim_pst_c	.subcode
+_ibio.file.stat.prim_st_c	.subcode
+_ibio.file.stat.prim_body_c	.subcode
+fn	.larg	ibio.file.name.t
+pst	.bind	_ibio.file.stat.prim_pst_c	|	fn
+st	.alloc	_ibio.file.stat.prim_st_c	|	pst
+	.body	_ibio.file.stat.prim_body_c	|	st
+
+_ibio.file.stat.prim_pst_c	.expr
+ibio.file.name.t	.tygvar
+_ibio.file.stat.prim_pst_s_c	.subcode
+ibio.prim.file.stat	.gvar
+fn	.fv	ibio.file.name.t
+s	.alloc	_ibio.file.stat.prim_pst_s_c	|	fn
+	.app	s
+	.yield	ibio.prim.file.stat
+
+_ibio.file.stat.prim_pst_s_c	.expr
+ibio.file.name.t	.tygvar
+ibio.file.name.print	.gvar
+fn	.fv	ibio.file.name.t
+	.app	fn
+	.enter	ibio.file.name.print
+
+_ibio.file.stat.prim_st_c	.expr
+ibio.prim.dir.t	.tygvar
+ibio.dir.fromprim	.gvar
+pst	.efv	ibio.prim.dir.t
+	.app	pst
+	.enter	ibio.dir.fromprim
+
+_ibio.file.stat.prim_body_c	.expr
+ibio.dir.t	.tygvar
+ibio.prim.unit	.gvar
+st	.fv	ibio.dir.t
+	.app	st
+	.yield	ibio.prim.unit	ibio.dir.t
 
 # §section §gs{ibio.file.isdir}
 
@@ -29,5 +84,17 @@ fn	.larg	ibio.file.name.t
 	.type
 
 ibio.file.name.t	.tyabstract	*
-	.tylift
-	.tysum
+list.t	.tygvar
+rune.t	.tygvar
+	.tyref	list.t	rune.t
+
+	.coercion
+
+ibio.file.name.in	.tycoercion
+ibio.file.name.t	.tygvar
+	.tydefinition	ibio.file.name.t
+
+ibio.file.name.out	.tycoercion
+ibio.file.name.t	.tygvar
+	.tyinvert
+	.tydefinition	ibio.file.name.t
