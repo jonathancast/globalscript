@@ -945,6 +945,40 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             reslambda->body = resbody;
             return res;
         }
+        case gstype_forall: {
+            struct gstype_forall *forall, *resforall;
+            struct gstype *resbody;
+            gsinterned_string nvar;
+            struct gstype *res;
+            int varno;
+
+            forall = (struct gstype_forall *)type;
+
+            if (forall->var == varname)
+                return type;
+
+            resbody = forall->body;
+            nvar = forall->var;
+            varno = 0;
+            while (gstypes_is_ftyvar(nvar, type1) || gstypes_is_ftyvar(nvar, type)) {
+                if (seprint(buf, buf + sizeof(buf), "%y%d", forall->var, varno) >= buf + sizeof(buf))
+                    gsfatal(UNIMPL("Buffer overflow printing %y%d"), forall->var, varno)
+                ;
+                nvar = gsintern_string(gssymtypelable, buf);
+            }
+            if (nvar != forall->var)
+                resbody = gstypes_subst(pos, resbody, forall->var, gstypes_compile_type_var(pos, nvar, forall->kind))
+            ;
+            resbody = gstypes_subst(pos, resbody, varname, type1);
+            res = gstype_alloc(sizeof(struct gstype_forall));
+            resforall = (struct gstype_forall *)res;
+            res->node = gstype_forall;
+            res->pos = type->pos;
+            resforall->var = nvar;
+            resforall->kind = forall->kind;
+            resforall->body = resbody;
+            return res;
+        }
         case gstype_lift: {
             struct gstype_lift *lift, *reslift;
             struct gstype *res;
@@ -1064,6 +1098,15 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
             if (lambda->var == varname)
                 return 0;
             return gstypes_is_ftyvar(varname, lambda->body);
+        }
+        case gstype_forall: {
+            struct gstype_forall *forall;
+
+            forall = (struct gstype_forall *)type;
+            if (forall->var == varname)
+                return 0
+            ;
+            return gstypes_is_ftyvar(varname, forall->body);
         }
         case gstype_lift: {
             struct gstype_lift *lift;
