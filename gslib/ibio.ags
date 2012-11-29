@@ -6,6 +6,8 @@ ibio.from.either.prim	.closure	_ibio.from.either.prim_c
 
 ibio.dir.fromprim	.closure	_ibio.dir.fromprim_c	_ibio.dir.fromprim_ty
 
+ibio.mapM.prim	.closure	_ibio.mapM.prim_c	_ibio.mapM.prim_ty
+
 	.code
 
 # §section §gs{ibio.from.either.prim}
@@ -140,6 +142,31 @@ _ibio.dir.fromprim_monw_c	.expr
 bool.t	.tygvar
 	.undef	bool.t
 
+# §section §gs{ibio.mapM.prim}
+
+_ibio.mapM.prim_c	.expr
+_ibio.mapM.prim_f_ty	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+_ibio.mapM.prim_k	.subcode
+list.t.out	.cogvar
+f	.larg	_ibio.mapM.prim_f_ty	α	β
+xn	.larg	list.t	α
+	.force	_ibio.mapM.prim_k	α	β
+	.coerce	list.t.out	α
+	.enter	xn
+
+_ibio.mapM.prim_k	.forcecont
+list.prim.u	.tygvar
+ibio.prim.t	.tygvar
+list.t	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+res.ty	.tylet	list.t	β
+xn0	.karg	list.prim.u	α
+	.undef	ibio.prim.t	res.ty
+
 	.type
 
 ibio.m	.tyabstract	**^*^*^
@@ -174,6 +201,29 @@ natural.t	.tygvar
 bool.t	.tygvar
 _string.ty	.tylet	list.t	rune.t
 	.typroduct	atime	time.t	gid	_string.ty	length	natural.t	mode.append.only	bool.t	mode.directory	bool.t	mode.exclusive	bool.t	mode.group.execute	bool.t	mode.group.read	bool.t	mode.group.write	bool.t	mode.other.execute	bool.t	mode.other.read	bool.t	mode.other.write	bool.t	mode.owner.execute	bool.t	mode.owner.read	bool.t	mode.owner.write	bool.t	mode.unix.dev	bool.t	mode.unix.link	bool.t	mode.unix.pipe	bool.t	mode.unix.socket	bool.t	mtime	time.t	muid	_string.ty	name	_string.ty	qid.path	integer.t	srvdev	natural.t	srvtype	natural.t	uid	_string.ty	vers	natural.t
+
+# §section §gs{ibio.mapM.prim}
+
+_ibio.mapM.prim_ty	.tyexpr
+_ibio.mapM.prim_f_ty	.tygvar
+list.t	.tygvar
+ibio.prim.t	.tygvar
+α	.tyforall	*
+β	.tyforall	*
+res.ty	.tylet	list.t	β
+	.tylift
+	.tyfun	_ibio.mapM.prim_f_ty	α	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	ibio.prim.t	res.ty
+
+_ibio.mapM.prim_f_ty	.tyexpr
+ibio.prim.t	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	ibio.prim.t	β
 
 	.coercion
 
