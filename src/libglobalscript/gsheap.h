@@ -36,6 +36,11 @@ enum {
 #define ACE_EFV_REGNUM(ip) ((ip)->args[0])
 #define ACE_EFV_SKIP(ip) GS_NEXT_BYTECODE(ip, 1)
 
+#define ACE_ALLOC_CODE(ip) ((ip)->args[0])
+#define ACE_ALLOC_NUMFVS(ip) ((ip)->args[1])
+#define ACE_ALLOC_FV(ip, n) ((ip)->args[2+(n)])
+#define ACE_ALLOC_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_ALLOC_NUMFVS(ip))
+
 #define ACE_CONSTR_CONSTRNUM(ip) ((ip)->args[0])
 #define ACE_CONSTR_NUMARGS(ip) ((ip)->args[1])
 #define ACE_CONSTR_ARG(ip, n) ((ip)->args[2 + (n)])
