@@ -1048,7 +1048,8 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             res->pos = type->pos;
             resprod->numfields = prod->numfields;
             for (i = 0; i < prod->numfields; i++) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: subst into field type", type->pos);
+                resprod->fields[i].name = prod->fields[i].name;
+                resprod->fields[i].type = gstypes_subst(pos, prod->fields[i].type, varname, type1);
             }
 
             return res;
@@ -1141,9 +1142,10 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
             struct gstype_product *product;
 
             product = (struct gstype_product *)type;
-            for (i = 0; i < product->numfields; i++) {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: fv (field type)", type->pos);
-            }
+            for (i = 0; i < product->numfields; i++)
+                if (gstypes_is_ftyvar(varname, product->fields[i].type))
+                    return 1
+            ;
 
             return 0;
         }
