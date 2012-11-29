@@ -2560,9 +2560,11 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
         regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
         fvval = pcl->tyregs[regarg];
         gstypes_kind_check_fail(p->pos, pcl->tyregkinds[regarg], cty->tyfvkinds[i - 1]);
-        for (j = i - 1 + 1; j < cty->numftyvs; j++)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: α-rename other free type variables (if needed)", p->pos)
-        ;
+        for (j = i - 1 + 1; j < cty->numftyvs; j++) {
+            if (gstypes_is_ftyvar(cty->tyfvs[j], fvval))
+                gsfatal(UNIMPL("%P: α-rename other free type variables"), p->pos)
+            ;
+        }
         for (j = 0; j < cty->numfvs; j++)
             cty->fvtypes[j] = gstypes_subst(p->pos, cty->fvtypes[j], cty->tyfvs[i - 1], fvval)
         ;
