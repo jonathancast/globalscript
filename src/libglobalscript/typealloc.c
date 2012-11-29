@@ -1084,6 +1084,7 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
     switch (type->node) {
         case gstype_abstract:
         case gstype_knprim:
+        case gstype_unprim:
             return 0;
         case gstype_var: {
             struct gstype_var *var;
