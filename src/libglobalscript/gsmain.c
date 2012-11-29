@@ -7,23 +7,17 @@
 #include "gsregtables.h"
 #include "ace.h"
 
-#define FETCH_OPTION() \
-    (cur_arg = *++argv, --argc, is_option = (*cur_arg == '-'), (is_option ? cur_arg++ : 0)) \
-
 static int gsPfmt(Fmt *f);
 static int gsyfmt(Fmt *f);
 
 void
 gsmain(int argc, char **argv)
 {
-    int is_option;
     char *cur_arg;
     char *docfilename;
     struct gspos gsentrypos;
 
-    argv0 = *argv;
-    is_option = 0;
-    cur_arg = *argv;
+    argv0 = *argv++, argc--;
     gsassert(
         __FILE__, __LINE__,
         sizeof(struct gs_blockdesc) == sizeof(gsvalue),
@@ -38,12 +32,11 @@ gsmain(int argc, char **argv)
     gsadd_global_script_prim_sets();
     gsadd_client_prim_sets();
     gsadd_global_gslib();
-    FETCH_OPTION();
     while (argc) {
-        if (!*cur_arg) FETCH_OPTION();
-        if (!argc) break;
-        if (is_option) {
-            gsfatal("Invalid option flag %c", *cur_arg);
+        cur_arg = *argv++, argc--;
+        if (*cur_arg == '-') {
+            cur_arg++;
+            gsfatal("Invalid option flag %s", cur_arg);
         } else {
             if (gsisdir(cur_arg)) {
                 gsadddir(cur_arg);
@@ -61,7 +54,6 @@ gsmain(int argc, char **argv)
                         gsfatal("%s: loaded unknown file type %d", cur_arg, ft);
                 }
             }
-            FETCH_OPTION();
         }
     }
     gsfatal("gsmain at end of command-line arguments next");
