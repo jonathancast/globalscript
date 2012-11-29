@@ -2,9 +2,32 @@
 
 	.data
 
+ibio.from.either.prim	.closure	_ibio.from.either.prim_c
+
 ibio.dir.fromprim	.closure	_ibio.dir.fromprim_c	_ibio.dir.fromprim_ty
 
 	.code
+
+# §section §gs{ibio.from.either.prim}
+
+_ibio.from.either.prim_c	.expr
+either.t	.tygvar
+_string.ty	.tygvar
+α	.tyarg	*
+_ibio.from.either.prim_k	.subcode
+either.t.out	.cogvar
+e	.larg	either.t	_string.ty	α
+	.force	_ibio.from.either.prim_k	α
+	.coerce	either.t.out	_string.ty	α
+	.enter	e
+
+_ibio.from.either.prim_k	.forcecont
+either.prim.u	.tygvar
+_string.ty	.tygvar
+ibio.prim.t	.tygvar
+α	.tyfv	*
+e0	.karg	either.prim.u	_string.ty	α
+	.undef	ibio.prim.t	α
 
 # §section §gs{ibio.dir.fromprim}
 

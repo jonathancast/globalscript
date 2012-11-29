@@ -3,170 +3,206 @@
 	.data
 
 	.cast	_ep.in	_real.entry
-_real.entry	.closure	_real.entry.c
-# ↓ Process §rc{-l} options
-_process.args	.closure	_process.args.c	_process.args.ty
-_process.prefix.arg	.closure	_process.prefix.arg_c
+_real.entry	.closure	_real.entry_c
+
+_args.parse	.closure	_args.parse_c	_args.parse_ty
+_args.parsed.empty	.closure	_args.parsed.empty_c
 _flag.l	.string	-l
 
 	.code
 
-_real.entry.c	.eprog	ibio.prim	ibio
+_real.entry_c	.eprog	ibio.prim	ibio
 _real.entry.out.ty	.tygvar
-_real.entry_symtable_c	.subcode
-_real.entry_as_c	.subcode
-_real.entry_body_c	.subcode
+_real.entry_args_c	.subcode
+_real.entry_parsed.args_c	.subcode
+_real.entry_read.arguments_c	.subcode
+_real.entry_sccs_c	.subcode
+_real.entry_output_c	.subcode
+_real.entry_send.output_c	.subcode
 o	.larg	_real.entry.out.ty
-symtable	.alloc	_real.entry_symtable_c
-as	.bind	_real.entry_as_c
-	.body	_real.entry_body_c	|	symtable	as
+args	.bind	_real.entry_args_c
+parsed.args	.bind	_real.entry_parsed.args_c	|	args
+read.arguments	.bind	_real.entry_read.arguments_c
+sccs	.bind	_real.entry_sccs_c
+output	.bind	_real.entry_output_c
+	.body	_real.entry_send.output_c
 
-_real.entry_symtable_c	.expr
-gsdl.symtable.empty	.gvar
-	.enter	gsdl.symtable.empty
+_real.entry_args_c	.expr
+ibio.prim.env.args.get	.gvar
+	.yield	ibio.prim.env.args.get
 
-_real.entry_as_c	.expr
-_get.args.type	.tygvar
-ga	.eprim	ibio.prim	ibio	env.args.get	_get.args.type
-	.yield	ga
+# §section Split §gs{as} into (prefix arguments, component under test)
 
-_real.entry_body_c	.expr
-gsdl.symtable.t	.tygvar
+_real.entry_parsed.args_c	.expr
 list.t	.tygvar
 _string.ty	.tygvar
-_process.args	.gvar
-symtable	.fv	gsdl.symtable.t
-as	.fv	list.t	_string.ty
-	.app	symtable	as
-	.enter	_process.args
+_args.parsed.t	.tygvar
+_real.entry_parsed.args_pure_c	.subcode
+ibio.from.either.prim	.gvar
+args	.fv	list.t	_string.ty
+pa	.alloc	_real.entry_parsed.args_pure_c	|	args
+	.app	pa
+	.enter	ibio.from.either.prim	_args.parsed.t
 
-# §section Processing rc{-l} options
-
-_process.args.c	.expr
-gsdl.symtable.t	.tygvar
+_real.entry_parsed.args_pure_c	.expr
 list.t	.tygvar
 _string.ty	.tygvar
-_process.args.c.c	.subcode
+_args.parse	.gvar
+args	.fv	list.t	_string.ty
+	.app	args
+	.enter	_args.parse
+
+# §section §gs{_args.parse}
+
+_args.parse_c	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+_args.parse_k0	.subcode
 list.t.out	.cogvar
-symtable	.larg	gsdl.symtable.t
 as	.larg	list.t	_string.ty
-	.force	_process.args.c.c	|	symtable
+	.force	_args.parse_k0
 	.coerce	list.t.out	_string.ty
 	.enter	as
 
-_process.args.c.c	.forcecont
-gsdl.symtable.t	.tygvar
-_epbodytype	.tygvar
-list.t	.tygvar
+_args.parse_k0	.forcecont
 list.prim.u	.tygvar
 _string.ty	.tygvar
-bool.t	.tygvar
+list.t	.tygvar
 rune.t	.tygvar
-t	.tylet	list.prim.u	_string.ty
-_process.args.c.c2	.subcode
+either.t	.tygvar
+_args.parsed.t	.tygvar
+_args.parse_k1	.subcode
 bool.t.out	.cogvar
 list.≡	.gvar
 rune.≡	.gvar
 _flag.l	.gvar
-symtable	.fv	gsdl.symtable.t
-as0	.karg	t
-	.analyze as0	:	nil
+either.unit	.gvar
+_args.parsed.empty	.gvar
+as0	.karg	list.prim.u	_string.ty
+	.analyze	as0	:	nil
 		.case	:
 a0		.fkarg	0	_string.ty
 as1		.fkarg	1	list.t	_string.ty
-			.force	_process.args.c.c2	|	symtable	as1
+			.force	_args.parse_k1	|	as1
 			.coerce	bool.t.out
 			.app	rune.≡	a0	_flag.l
 			.enter	list.≡	rune.t
 		.case	nil
-			.undef	_epbodytype
+			.app	_args.parsed.empty
+			.enter	either.unit	_string.ty	_args.parsed.t
 
-_process.args.c.c2	.forcecont
-gsdl.symtable.t	.tygvar
+_args.parse_k1	.forcecont
 list.t	.tygvar
 _string.ty	.tygvar
 bool.prim.u	.tygvar
-_epbodytype	.tygvar
-_process.args.c.c3	.subcode
+_args.parsed.t	.tygvar
+_args.parse_file_pre_c	.subcode
+_args.parse_file_ap0_c	.subcode
+_args.parse_l.option_k	.subcode
 list.t.out	.cogvar
-symtable	.fv	gsdl.symtable.t
+either.map	.gvar
 as1	.fv	list.t	_string.ty
-is.l	.karg	bool.prim.u
-	.analyze	is.l	false	true
+is.l0	.karg	bool.prim.u
+	.analyze	is.l0	false	true
 		.case	false
-			.undef	_epbodytype
+pre			.alloc	_args.parse_file_pre_c
+ap0			.alloc	_args.parse_file_ap0_c	|	as1
+			.app	pre	ap0
+			.enter	either.map	_string.ty	_args.parsed.t	_args.parsed.t
 		.case	true
-			.force	_process.args.c.c3	|	symtable
+			.force	_args.parse_l.option_k
 			.coerce	list.t.out	_string.ty
 			.enter	as1
 
-_process.args.c.c3	.forcecont
-gsdl.symtable.t	.tygvar
+_args.parse_file_pre_c	.expr
+_args.parsed.t	.tygvar
+ap0	.larg	_args.parsed.t
+	.undef	_args.parsed.t
+
+_args.parse_file_ap0_c	.expr
 list.t	.tygvar
+_string.ty	.tygvar
+_args.parse	.gvar
+as1	.fv	list.t	_string.ty
+	.app	as1
+	.enter	_args.parse
+
+# paragraph{§gs{a0} is §sh{-l} flag}
+_args.parse_l.option_k	.forcecont
 list.prim.u	.tygvar
 _string.ty	.tygvar
-_epbodytype	.tygvar
-t	.tylet	list.prim.u	_string.ty
-_process.prefix.arg	.gvar
-symtable	.fv	gsdl.symtable.t
-as10	.karg	t
-	.analyze	as10	:	nil
+list.t	.tygvar
+either.t	.tygvar
+_args.parsed.t	.tygvar
+_args.parse_l.option_pre_c	.subcode
+_args.parse_l.option_ap0_c	.subcode
+either.map	.gvar
+as1.0	.karg	list.prim.u	_string.ty
+	.analyze	as1.0	:	nil
 		.case	:
 a1		.fkarg	0	_string.ty
 as2		.fkarg	1	list.t	_string.ty
-			.app	symtable	a1	as2
-			.enter	_process.prefix.arg
+pre			.alloc	_args.parse_l.option_pre_c
+ap0			.alloc	_args.parse_l.option_ap0_c	|	as2
+			.app	pre	ap0
+			.enter	either.map	_string.ty	_args.parsed.t	_args.parsed.t
 		.case	nil
-			.undef	_epbodytype
+			.undef	either.t	_string.ty	_args.parsed.t
 
-_process.prefix.arg_c	.eprog	ibio.prim	ibio
-gsdl.symtable.t	.tygvar
-_string.ty	.tygvar
-list.t	.tygvar
-_process.prefix.arg_fn_c	.subcode
-_process.prefix.arg_s1_c	.subcode
-_process.prefix.arg_body_c	.subcode
-symtable	.larg	gsdl.symtable.t
-a1	.larg	_string.ty
-as1	.larg	list.t	_string.ty
-fn	.alloc	_process.prefix.arg_fn_c	|	a1
-symtable1	.bind	_process.prefix.arg_s1_c	|	symtable	fn
-	.body	_process.prefix.arg_body_c	|	symtable1	as1
+# §paragraph{Prepend §gs{a1} to the list}
+_args.parse_l.option_pre_c	.expr
+_args.parsed.t	.tygvar
+ap0	.larg	_args.parsed.t
+	.undef	_args.parsed.t
 
-_process.prefix.arg_fn_c	.expr
-list.t	.tygvar
-rune.t	.tygvar
-ibio.file.name.read	.gvar
-a1	.fv	list.t	rune.t
-	.app	a1
-	.enter	ibio.file.name.read
-
-_process.prefix.arg_s1_c	.expr
-gsdl.symtable.t	.tygvar
-ibio.file.name.t	.tygvar
-gsdl.prefix.load	.gvar
-symtable	.fv	gsdl.symtable.t
-fn	.fv	ibio.file.name.t
-	.app	symtable	fn
-	.enter	gsdl.prefix.load
-
-_process.prefix.arg_body_c	.expr
-gsdl.symtable.t	.tygvar
+# §paragraph{Recursive call on §gs{as2}}
+_args.parse_l.option_ap0_c	.expr
 list.t	.tygvar
 _string.ty	.tygvar
-_process.args	.gvar
-symtable1	.fv	gsdl.symtable.t
+_args.parse	.gvar
 as2	.fv	list.t	_string.ty
-	.app	symtable1	as2
-	.enter	_process.args
+	.app	as2
+	.enter	_args.parse
+
+_args.parsed.empty_c	.expr
+_args.parsed.t	.tygvar
+	.undef	_args.parsed.t
+
+# §section Process §gs{parsed.args} into (List of (lists of (files, some of which have been parsed)), list of parsed files)
+
+_real.entry_read.arguments_c	.expr
+ibio.prim.t	.tygvar
+_real.entry_read.arguments_ty	.tygvar
+	.undef	ibio.prim.t	_real.entry_read.arguments_ty
+
+# §section Split §gs{read.arguments} into strongly-connected components
+
+# NB: §sh{.ags} files have been read in, and can be split here; §sh{.gsac} files have not, and should be treated as single nodes.
+# §sh{.gsac} files have type signatures/kind signatures on all symbols, and so cannot depend on anything
+
+_real.entry_sccs_c	.expr
+ibio.prim.t	.tygvar
+_real.entry_sccs_ty	.tygvar
+	.undef	ibio.prim.t	_real.entry_sccs_ty
+
+# §section Process §gs{sccs} to get (symtable, output)
+
+# NB: We will need to read in §gs{.gsac} files --- those that we need --- §emph{before} this step;
+# that can be deferred until a later stage.
+
+_real.entry_output_c	.expr
+ibio.prim.t	.tygvar
+_real.entry_output_ty	.tygvar
+	.undef	ibio.prim.t	_real.entry_output_ty
+
+# §section Write out §gs{output} on stdout
+
+_real.entry_send.output_c	.expr
+ibio.prim.t	.tygvar
+_empty.record	.tygvar
+	.undef	ibio.prim.t	_empty.record
 
 	.type
-
-_eptype	.tyexpr
-ibio.m	.tygvar
-rune.t	.tygvar
-_empty.record	.tygvar
-	.tyref	ibio.m	rune.t	rune.t	_empty.record
 
 _epbodytype	.tyexpr
 ibio.prim.m	.tygvar
@@ -179,15 +215,38 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 	.tyref	ibio.prim.oport	rune.t
 
-_get.args.type	.tyexpr
-ibio.prim.m	.tygvar
-_get.args.result.type	.tygvar
-	.tyref	ibio.prim.m	_get.args.result.type
+_args.parsed.t	.tyexpr
+	.tylift
+	.typroduct
 
-_get.args.result.type	.tyexpr
+_real.entry_read.arguments_ty	.tyexpr
+	.tylift
+	.typroduct
+
+_real.entry_sccs_ty	.tyexpr
+list.t	.tygvar
+_real.entry_sccs_scc_ty	.tygvar
+	.tyref	list.t	_real.entry_sccs_scc_ty
+
+_real.entry_sccs_scc_ty	.tyexpr
+graph.scc.t	.tygvar
+gsac.input.sorted.node.t	.tygvar
+	.tyref	graph.scc.t	gsac.input.sorted.node.t
+
+_real.entry_output_ty	.tyexpr
+gsdl.ags.file.t	.tygvar
+	.tyref	gsdl.ags.file.t
+
+_args.parse_ty	.tyexpr
 list.t	.tygvar
 _string.ty	.tygvar
-	.tyref	list.t	_string.ty
+either.t	.tygvar
+_args.parsed.t	.tygvar
+	.tylift
+	.tyfun	list.t	_string.ty
+	.tyref	either.t	_string.ty	_args.parsed.t
+
+# §cut Everything below this is obsolete
 
 _process.args.ty	.tyexpr
 gsdl.symtable.t	.tygvar

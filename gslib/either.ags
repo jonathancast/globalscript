@@ -1,0 +1,122 @@
+	.prefix
+
+	.data
+
+either.right	.closure	_either.right_c
+
+either.map	.closure	_either.map_c
+either.unit	.closure	_either.unit_c
+
+	.code
+
+# §section Constructors
+
+_either.right_c	.expr
+either.prim.u	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+t	.tylet	either.prim.u	α	β
+either.t.in	.cogvar
+x	.larg	β
+e0	.constr	t	right	0	x
+	.coerce	either.t.in	α	β
+	.lift
+	.yield	e0
+
+# §section §gs{either.map}
+
+_either.map_c	.expr
+_either.map_f_ty	.tygvar
+either.t	.tygvar
+α	.tyarg	*
+β0	.tyarg	*
+β1	.tyarg	*
+_either.map_k	.subcode
+either.t.out	.cogvar
+f	.larg	_either.map_f_ty	β0	β1
+e	.larg	either.t	α	β0
+	.force	_either.map_k	α	β0	β1
+	.coerce	either.t.out	α	β0
+	.enter	e
+
+_either.map_k	.forcecont
+either.prim.u	.tygvar
+either.t	.tygvar
+α	.tyfv	*
+β0	.tyfv	*
+β1	.tyfv	*
+_either.map_y_c	.subcode
+either.right	.gvar
+e0	.karg	either.prim.u	α	β0
+	.analyze	e0	right
+		.case	right
+x		.fkarg	0	β0
+y			.alloc	_either.map_y_c	β1
+			.app	y
+			.enter	either.right	α	β1
+
+_either.map_y_c	.expr
+β1	.tyfv	*
+	.undef	β1
+
+# §section §gs{either.unit}
+
+_either.unit_c	.expr
+α	.tyarg	*
+β	.tyarg	*
+either.right	.gvar
+x	.larg	β
+	.app	x
+	.enter	either.right	α	β
+
+	.type
+
+# §section §gs{either.t}
+
+either.t	.tyabstract	**^*^
+either.prim.t	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+	.tyref	either.prim.t	α	β
+
+either.prim.t	.tyexpr
+either.prim.u	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyref	either.prim.u	α	β
+
+either.prim.u	.tyexpr
+_either.prim.u_right_ty	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+right_ty	.tylet	_either.prim.u_right_ty	β
+	.tysum	right	right_ty
+
+_either.prim.u_right_ty	.tyexpr
+β	.tylambda	*
+	.tyubproduct	0	β
+
+# §section §gs{either.map}
+
+_either.map_f_ty	.tyexpr
+β0	.tylambda	*
+β1	.tylambda	*
+	.tylift
+	.tyfun	β0
+	.tyref	β1
+
+	.coercion
+
+either.t.in	.tycoercion
+either.t	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+	.tydefinition	either.t	α	β
+
+either.t.out	.tycoercion
+either.t	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+	.tyinvert
+	.tydefinition	either.t	α	β
