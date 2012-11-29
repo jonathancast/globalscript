@@ -356,6 +356,8 @@ gstypes_kind_check_simple(struct gspos pos, struct gskind *kyactual)
         case gskind_unlifted:
         case gskind_lifted:
             return;
+        case gskind_exponential:
+            gsfatal("%P: Not enough arguments; kind is %s", pos, actual_name);
         default:
             gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_kind_check_simple(actual = %s)", pos, actual_name);
     }
