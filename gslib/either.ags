@@ -35,11 +35,12 @@ _either.map_k	.subcode
 either.t.out	.cogvar
 f	.larg	_either.map_f_ty	β0	β1
 e	.larg	either.t	α	β0
-	.force	_either.map_k	α	β0	β1
+	.force	_either.map_k	α	β0	β1	|	f
 	.coerce	either.t.out	α	β0
 	.enter	e
 
 _either.map_k	.forcecont
+_either.map_f_ty	.tygvar
 either.prim.u	.tygvar
 either.t	.tygvar
 α	.tyfv	*
@@ -47,6 +48,7 @@ either.t	.tygvar
 β1	.tyfv	*
 _either.map_y_c	.subcode
 either.right	.gvar
+f	.fv	_either.map_f_ty	β0	β1
 e0	.karg	either.prim.u	α	β0
 	.analyze	e0	left	right
 		.case	left
@@ -54,13 +56,18 @@ e		.fkarg	0	α
 			.undef	either.t	α	β1
 		.case	right
 x		.fkarg	0	β0
-y			.alloc	_either.map_y_c	β1
+y			.alloc	_either.map_y_c	β0	β1	|	f	x
 			.app	y
 			.enter	either.right	α	β1
 
 _either.map_y_c	.expr
+_either.map_f_ty	.tygvar
+β0	.tyfv	*
 β1	.tyfv	*
-	.undef	β1
+f	.fv	_either.map_f_ty	β0	β1
+x	.fv	β0
+	.app	x
+	.enter	f
 
 # §section §gs{either.unit}
 
