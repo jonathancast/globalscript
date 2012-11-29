@@ -397,10 +397,9 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
         return;
     }
 
-    for (i = 0; i < code->numfvs; i++) {
-        api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: get free variable");
-        return;
-    }
+    for (i = 0; i < code->numfvs; i++)
+        regs[nregs++] = cl->fvs[i]
+    ;
 
     for (i = 0; i < code->numargs; i++) {
         if (nregs >= MAX_NUM_REGISTERS) {
