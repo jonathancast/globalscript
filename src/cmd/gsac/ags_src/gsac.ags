@@ -22,7 +22,7 @@ _real.entry_send.output_c	.subcode
 o	.larg	_real.entry.out.ty
 args	.bind	_real.entry_args_c
 parsed.args	.bind	_real.entry_parsed.args_c	|	args
-read.arguments	.bind	_real.entry_read.arguments_c
+read.arguments	.bind	_real.entry_read.arguments_c	|	parsed.args
 sccs	.bind	_real.entry_sccs_c
 output	.bind	_real.entry_output_c
 	.body	_real.entry_send.output_c
@@ -173,32 +173,48 @@ _args.parsed.t	.tygvar
 # ‘CUT’ = ‘component under translation’; ‘component’ = ‘strongly-connected component of the dependency graph’
 
 _real.entry_read.arguments_c	.eprog	ibio.prim	ibio
-_real.entry_read.arguments_ty	.tygvar
+_args.parsed.t	.tygvar
 _real.entry_read.arguments_prefix.files_c	.subcode
 _real.entry_read.arguments_prefix_c	.subcode
 _real.entry_read.arguments_cut.files_c	.subcode
 _real.entry_read.arguments_cut_c	.subcode
 _real.entry_read.arguments_res_c	.subcode
 _real.entry_read.arguments_body_c	.subcode
-prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c
-prefix	.bind	_real.entry_read.arguments_prefix_c
+parsed.args	.fv	_args.parsed.t
+prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c	|	parsed.args
+prefix	.bind	_real.entry_read.arguments_prefix_c	|	prefix.files
 cut.files	.alloc	_real.entry_read.arguments_cut.files_c
 cut	.bind	_real.entry_read.arguments_cut_c
 res	.alloc	_real.entry_read.arguments_res_c
 	.body	_real.entry_read.arguments_body_c
 
 _real.entry_read.arguments_prefix.files_c	.expr
+_args.parsed.t	.tygvar
+_real.entry_read.arguments_prefix.files_k	.subcode
+parsed.args	.fv	_args.parsed.t
+	.force	_real.entry_read.arguments_prefix.files_k
+	.enter	parsed.args
+
+_real.entry_read.arguments_prefix.files_k	.forcecont
+_args.parsed.u	.tygvar
 list.t	.tygvar
-_string.ty	.tygvar
-	.undef	list.t	_string.ty
+ibio.file.name.t	.tygvar
+pa0	.karg	_args.parsed.u
+pas	.field	0	pa0
+	.undef	list.t	ibio.file.name.t
 
 _real.entry_read.arguments_prefix_c	.expr
 ibio.prim.t	.tygvar
 list.t	.tygvar
 gsac.input.prefix.file.t	.tygvar
+ibio.file.name.t	.tygvar
 res.elem.ty	.tylet	list.t	gsac.input.prefix.file.t
 res.ty	.tylet	list.t	res.elem.ty
-	.undef	ibio.prim.t	res.ty
+ibio.mapM.prim	.gvar
+gsac.input.prefix.load	.gvar
+prefix.files	.fv	list.t	ibio.file.name.t
+	.app	gsac.input.prefix.load	prefix.files
+	.enter	ibio.mapM.prim	ibio.file.name.t	res.elem.ty
 
 _real.entry_read.arguments_cut.files_c	.expr
 list.t	.tygvar
@@ -262,8 +278,18 @@ rune.t	.tygvar
 	.tyref	ibio.prim.oport	rune.t
 
 _args.parsed.t	.tyexpr
+_args.parsed.u	.tygvar
 	.tylift
-	.typroduct
+	.tyref	_args.parsed.u
+
+_args.parsed.u	.tyexpr
+_args.parsed.u_0_ty	.tygvar
+	.typroduct	0	_args.parsed.u_0_ty
+
+_args.parsed.u_0_ty	.tyexpr
+list.t	.tygvar
+ibio.file.name.t	.tygvar
+	.tyref	list.t	ibio.file.name.t
 
 _real.entry_read.arguments_ty	.tyexpr
 	.tylift

@@ -1,5 +1,20 @@
 	.prefix
 
+	.data
+
+gsac.input.prefix.load	.closure	_gsac.input.prefix.load_c
+
+	.code
+
+_gsac.input.prefix.load_c	.expr
+ibio.file.name.t	.tygvar
+ibio.prim.t	.tygvar
+list.t	.tygvar
+gsac.input.prefix.file.t	.tygvar
+res.ty	.tylet	list.t	gsac.input.prefix.file.t
+a	.larg	ibio.file.name.t
+	.undef	ibio.prim.t	res.ty
+
 	.type
 
 gsac.input.prefix.file.t	.tyabstract	*
