@@ -26,8 +26,14 @@ either.prim.u	.tygvar
 _string.ty	.tygvar
 ibio.prim.t	.tygvar
 α	.tyfv	*
+ibio.prim.unit	.gvar
 e0	.karg	either.prim.u	_string.ty	α
-	.undef	ibio.prim.t	α
+	.analyze	e0	right
+		.case	right
+x		.fkarg	0	α
+			.lift
+			.app	x
+			.yield	ibio.prim.unit	α
 
 # §section §gs{ibio.dir.fromprim}
 
