@@ -48,7 +48,10 @@ either.t	.tygvar
 _either.map_y_c	.subcode
 either.right	.gvar
 e0	.karg	either.prim.u	α	β0
-	.analyze	e0	right
+	.analyze	e0	left	right
+		.case	left
+e		.fkarg	0	α
+			.undef	either.t	α	β1
 		.case	right
 x		.fkarg	0	β0
 y			.alloc	_either.map_y_c	β1
@@ -87,13 +90,19 @@ either.prim.u	.tygvar
 	.tyref	either.prim.u	α	β
 
 either.prim.u	.tyexpr
-_either.prim.u_right_ty	.tygvar
+_either.prim.u_left.ty	.tygvar
+_either.prim.u_right.ty	.tygvar
 α	.tylambda	*
 β	.tylambda	*
-right_ty	.tylet	_either.prim.u_right_ty	β
-	.tysum	right	right_ty
+left.ty	.tylet	_either.prim.u_left.ty	α
+right.ty	.tylet	_either.prim.u_right.ty	β
+	.tysum	left	left.ty	right	right.ty
 
-_either.prim.u_right_ty	.tyexpr
+_either.prim.u_left.ty	.tyexpr
+α	.tylambda	*
+	.tyubproduct	0	α
+
+_either.prim.u_right.ty	.tyexpr
 β	.tylambda	*
 	.tyubproduct	0	β
 

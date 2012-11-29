@@ -28,7 +28,10 @@ ibio.prim.t	.tygvar
 α	.tyfv	*
 ibio.prim.unit	.gvar
 e0	.karg	either.prim.u	_string.ty	α
-	.analyze	e0	right
+	.analyze	e0	left	right
+		.case	left
+e		.fkarg	0	_string.ty
+			.undef	ibio.prim.t	α
 		.case	right
 x		.fkarg	0	α
 			.lift
