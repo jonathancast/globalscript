@@ -2,6 +2,10 @@
 
 	.type
 
+gsac.input.prefix.file.t	.tyabstract	*
+	.tylift
+	.tysum
+
 gsac.input.sorted.node.t	.tyabstract	*
 	.tylift
 	.tysum

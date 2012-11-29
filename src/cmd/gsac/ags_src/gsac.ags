@@ -170,7 +170,53 @@ _args.parsed.t	.tygvar
 
 # §section Process §gs{parsed.args} into (List of (lists of (files, some of which have been parsed)), list of parsed files)
 
-_real.entry_read.arguments_c	.expr
+# ‘CUT’ = ‘component under translation’; ‘component’ = ‘strongly-connected component of the dependency graph’
+
+_real.entry_read.arguments_c	.eprog	ibio.prim	ibio
+_real.entry_read.arguments_ty	.tygvar
+_real.entry_read.arguments_prefix.files_c	.subcode
+_real.entry_read.arguments_prefix_c	.subcode
+_real.entry_read.arguments_cut.files_c	.subcode
+_real.entry_read.arguments_cut_c	.subcode
+_real.entry_read.arguments_res_c	.subcode
+_real.entry_read.arguments_body_c	.subcode
+prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c
+prefix	.bind	_real.entry_read.arguments_prefix_c
+cut.files	.alloc	_real.entry_read.arguments_cut.files_c
+cut	.bind	_real.entry_read.arguments_cut_c
+res	.alloc	_real.entry_read.arguments_res_c
+	.body	_real.entry_read.arguments_body_c
+
+_real.entry_read.arguments_prefix.files_c	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+	.undef	list.t	_string.ty
+
+_real.entry_read.arguments_prefix_c	.expr
+ibio.prim.t	.tygvar
+list.t	.tygvar
+gsac.input.prefix.file.t	.tygvar
+res.elem.ty	.tylet	list.t	gsac.input.prefix.file.t
+res.ty	.tylet	list.t	res.elem.ty
+	.undef	ibio.prim.t	res.ty
+
+_real.entry_read.arguments_cut.files_c	.expr
+list.t	.tygvar
+_string.ty	.tygvar
+	.undef	list.t	_string.ty
+
+_real.entry_read.arguments_cut_c	.expr
+ibio.prim.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+res.ty	.tylet	list.t	gsdl.cgs.file.t
+	.undef	ibio.prim.t	res.ty
+
+_real.entry_read.arguments_res_c	.expr
+_real.entry_read.arguments_ty	.tygvar
+	.undef	_real.entry_read.arguments_ty
+
+_real.entry_read.arguments_body_c	.expr
 ibio.prim.t	.tygvar
 _real.entry_read.arguments_ty	.tygvar
 	.undef	ibio.prim.t	_real.entry_read.arguments_ty
