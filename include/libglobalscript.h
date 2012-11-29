@@ -413,8 +413,9 @@ struct gs_blockdesc {
 #define START_OF_BLOCK(p) ((void*)((uchar*)(p) + sizeof(*p)))
 #define END_OF_BLOCK(p) ((void*)((uchar*)(p) + BLOCK_SIZE))
 
-#define GS_EVALUATOR(p) (IS_PTR(p) ? ((struct gs_blockdesc *)BLOCK_CONTAINING(p))->class->evaluator : gsevalunboxed)
-#define GS_INDIRECTION_DEREFENCER(p) (((struct gs_blockdesc *)BLOCK_CONTAINING(p))->class->indirection_dereferencer)
+#define CLASS_OF_BLOCK_CONTAINING(p) (((struct gs_blockdesc *)BLOCK_CONTAINING(p))->class)
+#define GS_EVALUATOR(p) (IS_PTR(p) ? CLASS_OF_BLOCK_CONTAINING(p)->evaluator : gsevalunboxed)
+#define GS_INDIRECTION_DEREFENCER(p) (CLASS_OF_BLOCK_CONTAINING(p)->indirection_dereferencer)
 
 void *gs_sys_seg_alloc(registered_block_class cl);
 void gs_sys_seg_free(void *);
