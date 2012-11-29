@@ -490,12 +490,11 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 cl->hp.type = gsclosure;
                 cl->code = subexpr;
                 cl->numfvs = pinstr->args[1];
-                for (i = 0; i < pinstr->args[1]; i++) {
-                    cl->fvs[i] = regs[pinstr->args[2 + i]];
-                }
+                for (i = 0; i < pinstr->args[1]; i++)
+                    cl->fvs[i] = regs[pinstr->args[2 + i]]
+                ;
                 rhss[nstatements] = (gsvalue)cl;
                 nstatements++;
-                nregs++;
                 goto got_statements;
             }
             default:
