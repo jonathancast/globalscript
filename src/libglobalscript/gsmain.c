@@ -45,7 +45,6 @@ gsmain(int argc, char **argv)
                 switch (ft) {
                     case gsfiledocument:
                         docfilename = cur_arg;
-                        --argc, ++argv;
                         goto have_document;
                     case gsfileerror:
                         gswarning("%s: non-fatal error when reading file", cur_arg);
