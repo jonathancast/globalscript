@@ -2840,7 +2840,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_sum = (struct gstype_sum *)pexpected;
 
             if (pactual_sum->numconstrs != pexpected_sum->numconstrs) {
-                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have diferent numbers of constrs", pos, actual_buf, expected_buf);
+                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have different numbers of constrs", pos, actual_buf, expected_buf);
                 return -1;
             }
             for (i = 0; i < pexpected_sum->numconstrs; i++) {
@@ -2861,7 +2861,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_sum = (struct gstype_ubsum *)pexpected;
 
             if (pactual_sum->numconstrs != pexpected_sum->numconstrs) {
-                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have diferent numbers of constrs", pos, actual_buf, expected_buf);
+                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have different numbers of constrs", pos, actual_buf, expected_buf);
                 return -1;
             }
             for (i = 0; i < pexpected_sum->numconstrs; i++) {
@@ -2882,7 +2882,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_product = (struct gstype_product *)pexpected;
 
             if (pactual_product->numfields != pexpected_product->numfields) {
-                seprint(err, eerr, "%s:%d: I don't think %s is the same as %s; they have diferent numbers of fields", pos.file->name, pos.lineno, actual_buf, expected_buf);
+                seprint(err, eerr, "%s:%d: I don't think %s is the same as %s; they have different numbers of fields", pos.file->name, pos.lineno, actual_buf, expected_buf);
                 return -1;
             }
             for (i = 0; i < pexpected_product->numfields; i++) {
@@ -2903,7 +2903,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_product = (struct gstype_ubproduct *)pexpected;
 
             if (pactual_product->numfields != pexpected_product->numfields) {
-                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have diferent numbers of fields", pos, actual_buf, expected_buf);
+                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have different numbers of fields", pos, actual_buf, expected_buf);
                 return -1;
             }
             for (i = 0; i < pexpected_product->numfields; i++) {
