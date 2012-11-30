@@ -161,7 +161,7 @@ as1.0	.karg	list.prim.u	_string.ty
 		.case	:
 a1		.fkarg	0	_string.ty
 as2		.fkarg	1	list.t	_string.ty
-pre			.alloc	_args.parse_l.option_pre_c
+pre			.alloc	_args.parse_l.option_pre_c	|	a1
 ap0			.alloc	_args.parse_l.option_ap0_c	|	as2
 			.app	pre	ap0
 			.enter	either.map	_string.ty	_args.parsed.t	_args.parsed.t
@@ -170,28 +170,43 @@ ap0			.alloc	_args.parse_l.option_ap0_c	|	as2
 
 # §paragraph{Prepend §gs{a1} to the list}
 _args.parse_l.option_pre_c	.expr
+_string.ty	.tygvar
 _args.parsed.t	.tygvar
 _args.parse_l.option_pre_k	.subcode
+a1	.fv	_string.ty
 ap0	.larg	_args.parsed.t
-	.force	_args.parse_l.option_pre_k
+	.force	_args.parse_l.option_pre_k	|	a1
 	.enter	ap0
 
 _args.parse_l.option_pre_k	.forcecont
+_string.ty	.tygvar
 _args.parsed.u	.tygvar
 _args.parsed.t	.tygvar
-_args.parse_l.option_pre_p1_c	.subcode
+_args.parse_l.option_pre_ps1_c	.subcode
+a1	.fv	_string.ty
 ap00	.karg	_args.parsed.u
 ps	.field	0	ap00
 cut	.field	1	ap00
-ps1	.alloc	_args.parse_l.option_pre_p1_c
+ps1	.alloc	_args.parse_l.option_pre_ps1_c	|	a1	ps
 ap1	.record	0	ps1	1	cut
 	.lift
 	.yield	ap1
 
-_args.parse_l.option_pre_p1_c	.expr
+_args.parse_l.option_pre_ps1_c	.expr
+_string.ty	.tygvar
 list.t	.tygvar
 ibio.file.name.t	.tygvar
-	.undef	list.t	ibio.file.name.t
+_args.parse_l.option_pre_ps1_fn_c	.subcode
+list.:	.gvar
+a1	.fv	_string.ty
+ps	.fv	list.t	ibio.file.name.t
+fn	.alloc	_args.parse_l.option_pre_ps1_fn_c
+	.app	fn	ps
+	.enter	list.:	ibio.file.name.t
+
+_args.parse_l.option_pre_ps1_fn_c	.expr
+ibio.file.name.t	.tygvar
+	.undef	ibio.file.name.t
 
 # §paragraph{Recursive call on §gs{as2}}
 _args.parse_l.option_ap0_c	.expr
@@ -254,7 +269,7 @@ list.t	.tygvar
 ibio.file.name.t	.tygvar
 pa0	.karg	_args.parsed.u
 pas	.field	0	pa0
-	.undef	list.t	ibio.file.name.t
+	.enter	pas
 
 _real.entry_read.arguments_prefix_c	.expr
 ibio.prim.t	.tygvar
