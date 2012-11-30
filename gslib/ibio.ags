@@ -153,11 +153,12 @@ _ibio.mapM.prim_k	.subcode
 list.t.out	.cogvar
 f	.larg	_ibio.mapM.prim_f_ty	α	β
 xn	.larg	list.t	α
-	.force	_ibio.mapM.prim_k	α	β
+	.force	_ibio.mapM.prim_k	α	β	|	f
 	.coerce	list.t.out	α
 	.enter	xn
 
 _ibio.mapM.prim_k	.forcecont
+_ibio.mapM.prim_f_ty	.tygvar
 list.prim.u	.tygvar
 ibio.prim.t	.tygvar
 list.t	.tygvar
@@ -165,31 +166,40 @@ list.t	.tygvar
 β	.tyfv	*
 res.ty	.tylet	list.t	β
 _ibio.mapM.prim_eys_c	.subcode
+f	.fv	_ibio.mapM.prim_f_ty	α	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-eys			.alloc	_ibio.mapM.prim_eys_c	β
+eys			.alloc	_ibio.mapM.prim_eys_c	α	β	|	f	x0
 			.enter	eys
 		.case	nil
 			.undef	ibio.prim.t	res.ty
 
 _ibio.mapM.prim_eys_c	.eprog	ibio.prim	ibio
+_ibio.mapM.prim_f_ty	.tygvar
+α	.tyfv	*
 β	.tyfv	*
 _ibio.mapM.prim_eys_y_c	.subcode
 _ibio.mapM.prim_eys_ys1_c	.subcode
 _ibio.mapM.prim_eys_ys_c	.subcode
 _ibio.mapM.prim_eys_body_c	.subcode
-y	.bind	_ibio.mapM.prim_eys_y_c	β
+f	.fv	_ibio.mapM.prim_f_ty	α	β
+x0	.fv	α
+y	.bind	_ibio.mapM.prim_eys_y_c	α	β	|	f	x0
 ys1	.bind	_ibio.mapM.prim_eys_ys1_c	β
 ys	.alloc	_ibio.mapM.prim_eys_ys_c	β
 	.body	_ibio.mapM.prim_eys_body_c	β
 
 _ibio.mapM.prim_eys_y_c	.expr
-ibio.prim.t	.tygvar
+_ibio.mapM.prim_f_ty	.tygvar
+α	.tyfv	*
 β	.tyfv	*
-	.undef	ibio.prim.t	β
+f	.fv	_ibio.mapM.prim_f_ty	α	β
+x0	.fv	α
+	.app	x0
+	.enter	f
 
 _ibio.mapM.prim_eys_ys1_c	.expr
 ibio.prim.t	.tygvar
