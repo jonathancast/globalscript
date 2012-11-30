@@ -6,7 +6,7 @@
 _real.entry	.closure	_real.entry_c
 
 _args.parse	.closure	_args.parse_c	_args.parse_ty
-_args.parsed.empty	.closure	_args.parsed.empty_c
+_args.parsed.empty	.closure	_args.parsed.empty_c	_args.parsed.t
 _flag.l	.string	-l
 
 	.code
@@ -116,8 +116,27 @@ ap0			.alloc	_args.parse_file_ap0_c	|	as1
 
 _args.parse_file_pre_c	.expr
 _args.parsed.t	.tygvar
+_args.parse_file_pre_k	.subcode
 ap0	.larg	_args.parsed.t
-	.undef	_args.parsed.t
+	.force	_args.parse_file_pre_k
+	.enter	ap0
+
+_args.parse_file_pre_k	.forcecont
+_args.parsed.u	.tygvar
+_args.parsed.t	.tygvar
+_args.parse_file_pre_cut1_c	.subcode
+ap00	.karg	_args.parsed.u
+ps	.field	0	ap00
+cut	.field	1	ap00
+cut1	.alloc	_args.parse_file_pre_cut1_c
+ap1	.record	0	ps	1	cut1
+	.lift
+	.yield	ap1
+
+_args.parse_file_pre_cut1_c	.expr
+list.t	.tygvar
+ibio.file.name.t	.tygvar
+	.undef	list.t	ibio.file.name.t
 
 _args.parse_file_ap0_c	.expr
 list.t	.tygvar
@@ -152,8 +171,27 @@ ap0			.alloc	_args.parse_l.option_ap0_c	|	as2
 # §paragraph{Prepend §gs{a1} to the list}
 _args.parse_l.option_pre_c	.expr
 _args.parsed.t	.tygvar
+_args.parse_l.option_pre_k	.subcode
 ap0	.larg	_args.parsed.t
-	.undef	_args.parsed.t
+	.force	_args.parse_l.option_pre_k
+	.enter	ap0
+
+_args.parse_l.option_pre_k	.forcecont
+_args.parsed.u	.tygvar
+_args.parsed.t	.tygvar
+_args.parse_l.option_pre_p1_c	.subcode
+ap00	.karg	_args.parsed.u
+ps	.field	0	ap00
+cut	.field	1	ap00
+ps1	.alloc	_args.parse_l.option_pre_p1_c
+ap1	.record	0	ps1	1	cut
+	.lift
+	.yield	ap1
+
+_args.parse_l.option_pre_p1_c	.expr
+list.t	.tygvar
+ibio.file.name.t	.tygvar
+	.undef	list.t	ibio.file.name.t
 
 # §paragraph{Recursive call on §gs{as2}}
 _args.parse_l.option_ap0_c	.expr
@@ -165,8 +203,23 @@ as2	.fv	list.t	_string.ty
 	.enter	_args.parse
 
 _args.parsed.empty_c	.expr
-_args.parsed.t	.tygvar
-	.undef	_args.parsed.t
+_args.parsed.empty_ps_c	.subcode
+_args.parsed.empty_cut_c	.subcode
+ps	.alloc	_args.parsed.empty_ps_c
+cut	.alloc	_args.parsed.empty_cut_c
+r	.record	0	ps	1	cut
+	.lift
+	.yield	r
+
+_args.parsed.empty_ps_c	.expr
+ibio.file.name.t	.tygvar
+list.nil	.gvar
+	.enter	list.nil	ibio.file.name.t
+
+_args.parsed.empty_cut_c	.expr
+ibio.file.name.t	.tygvar
+list.nil	.gvar
+	.enter	list.nil	ibio.file.name.t
 
 # §section Process §gs{parsed.args} into (List of (lists of (files, some of which have been parsed)), list of parsed files)
 
@@ -283,13 +336,11 @@ _args.parsed.u	.tygvar
 	.tyref	_args.parsed.u
 
 _args.parsed.u	.tyexpr
-_args.parsed.u_0_ty	.tygvar
-	.typroduct	0	_args.parsed.u_0_ty
-
-_args.parsed.u_0_ty	.tyexpr
 list.t	.tygvar
 ibio.file.name.t	.tygvar
-	.tyref	list.t	ibio.file.name.t
+0.ty	.tylet	list.t	ibio.file.name.t
+1.ty	.tylet	list.t	ibio.file.name.t
+	.typroduct	0	0.ty	1	1.ty
 
 _real.entry_read.arguments_ty	.tyexpr
 	.tylift
