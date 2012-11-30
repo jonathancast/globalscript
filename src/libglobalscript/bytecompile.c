@@ -905,6 +905,7 @@ struct gsbc_byte_compile_code_or_api_op_closure {
     gsinterned_string fields[MAX_NUM_REGISTERS];
 };
 
+static int gsbc_byte_compile_type_fv_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
@@ -925,7 +926,8 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     cl.ntyregs = cl.nregs = cl.nsubexprs = cl.nglobals = cl.nfvs = cl.nargs = cl.nfields = 0;
     memset(cl.regtypes, 0, sizeof(cl.regtypes));
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+        if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
+        } else if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)
                 gsfatal_bad_input(p, "Too late to add type global variables")
             ;
@@ -935,17 +937,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             ;
             cl.tyregnames[cl.ntyregs] = p->label;
             cl.tyregs[cl.ntyregs] = gssymtable_get_type(symtable, p->label);
-            cl.ntyregs++;
-        } else if (gssymceq(p->directive, gssymoptyfv, gssymcodeop, ".tyfv")) {
-            if (cl.phase > rttyfvs)
-                gsfatal("%P: Too late to add free type variables", p->pos)
-            ;
-            cl.phase = rttyfvs;
-            if (cl.ntyregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many type registers", p->pos)
-            ;
-            cl.tyregnames[cl.ntyregs] = p->label;
-            cl.tyregs[cl.ntyregs] = gstypes_compile_type_var(p->pos, p->label, gskind_compile(p->pos, p->arguments[0]));
             cl.ntyregs++;
         } else if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
             if (cl.phase > rttyargs)
@@ -1101,6 +1092,28 @@ done:
     pbco->numfvs = cl.nfvs;
     pbco->numargs = cl.nargs;
 }
+
+static
+int
+gsbc_byte_compile_type_fv_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymoptyfv, gssymcodeop, ".tyfv")) {
+        if (pcl->phase > rttyfvs)
+            gsfatal("%P: Too late to add free type variables", p->pos)
+        ;
+        pcl->phase = rttyfvs;
+        if (pcl->ntyregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many type registers", p->pos)
+        ;
+        pcl->tyregnames[pcl->ntyregs] = p->label;
+        pcl->tyregs[pcl->ntyregs] = gstypes_compile_type_var(p->pos, p->label, gskind_compile(p->pos, p->arguments[0]));
+        pcl->ntyregs++;
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
 
 #define SETUP_PCODE(op) \
     do { \
@@ -1617,7 +1630,8 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     cl.nregs = cl.nglobals = cl.nsubexprs = cl.nfvs = nargs = 0;
     memset(cl.regtypes, 0, sizeof(cl.regtypes));
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+        if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
+        } else if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)
                 gsfatal_bad_input(p, "Too late to add type global variables")
             ;
