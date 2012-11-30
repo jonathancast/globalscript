@@ -164,7 +164,50 @@ list.t	.tygvar
 α	.tyfv	*
 β	.tyfv	*
 res.ty	.tylet	list.t	β
+_ibio.mapM.prim_eys_c	.subcode
 xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+eys			.alloc	_ibio.mapM.prim_eys_c	β
+			.enter	eys
+		.case	nil
+			.undef	ibio.prim.t	res.ty
+
+_ibio.mapM.prim_eys_c	.eprog	ibio.prim	ibio
+β	.tyfv	*
+_ibio.mapM.prim_eys_y_c	.subcode
+_ibio.mapM.prim_eys_ys1_c	.subcode
+_ibio.mapM.prim_eys_ys_c	.subcode
+_ibio.mapM.prim_eys_body_c	.subcode
+y	.bind	_ibio.mapM.prim_eys_y_c	β
+ys1	.bind	_ibio.mapM.prim_eys_ys1_c	β
+ys	.alloc	_ibio.mapM.prim_eys_ys_c	β
+	.body	_ibio.mapM.prim_eys_body_c	β
+
+_ibio.mapM.prim_eys_y_c	.expr
+ibio.prim.t	.tygvar
+β	.tyfv	*
+	.undef	ibio.prim.t	β
+
+_ibio.mapM.prim_eys_ys1_c	.expr
+ibio.prim.t	.tygvar
+list.t	.tygvar
+β	.tyfv	*
+res.ty	.tylet	list.t	β
+	.undef	ibio.prim.t	res.ty
+
+_ibio.mapM.prim_eys_ys_c	.expr
+list.t	.tygvar
+β	.tyfv	*
+	.undef	list.t	β
+
+_ibio.mapM.prim_eys_body_c	.expr
+ibio.prim.t	.tygvar
+list.t	.tygvar
+β	.tyfv	*
+res.ty	.tylet	list.t	β
 	.undef	ibio.prim.t	res.ty
 
 	.type
