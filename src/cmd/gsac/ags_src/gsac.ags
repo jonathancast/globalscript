@@ -200,13 +200,16 @@ _args.parse_l.option_pre_ps1_fn_c	.subcode
 list.:	.gvar
 a1	.fv	_string.ty
 ps	.fv	list.t	ibio.file.name.t
-fn	.alloc	_args.parse_l.option_pre_ps1_fn_c
+fn	.alloc	_args.parse_l.option_pre_ps1_fn_c	|	a1
 	.app	fn	ps
 	.enter	list.:	ibio.file.name.t
 
 _args.parse_l.option_pre_ps1_fn_c	.expr
-ibio.file.name.t	.tygvar
-	.undef	ibio.file.name.t
+_string.ty	.tygvar
+ibio.file.name.read	.gvar
+a1	.fv	_string.ty
+	.app	a1
+	.enter	ibio.file.name.read
 
 # §paragraph{Recursive call on §gs{as2}}
 _args.parse_l.option_ap0_c	.expr
