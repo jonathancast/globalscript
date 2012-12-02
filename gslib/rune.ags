@@ -4,7 +4,13 @@
 
 rune.≡	.closure	_rune.≡.c
 
+rune.print	.closure	_rune.print_c
+_rune.print_prefix	.string	r/
+_rune.print_suffix	.string	/
+
 	.code
+
+# §section §gs{rune.≡}
 
 _rune.≡.c	.expr
 rune.t	.tygvar
@@ -45,6 +51,26 @@ bool.false	.gvar
 _rune.≡.k1.1	.ubcasecont
 bool.true	.gvar
 	.enter	bool.true
+
+# §section §gs{rune.print}
+
+_rune.print_c	.expr
+rune.t	.tygvar
+_rune.print_s1_c	.subcode
+list.<>	.gvar
+_rune.print_prefix	.gvar
+r	.larg	rune.t
+s1	.alloc	_rune.print_s1_c	|	r
+	.app	_rune.print_prefix	s1
+	.enter	list.<>	rune.t
+
+_rune.print_s1_c	.expr
+rune.t	.tygvar
+list.:	.gvar
+_rune.print_suffix	.gvar
+r	.fv	rune.t
+	.app	r	_rune.print_suffix
+	.enter	list.:	rune.t
 
 	.type
 
