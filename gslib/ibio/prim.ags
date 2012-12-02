@@ -57,6 +57,7 @@ ibio.prim.m	.tygvar
 
 ibio.prim.m	.tyapiprim	ibio.prim	ibio	u?^
 ibio.prim.oport	.tyelimprim	ibio.prim	oport	u*^
+ibio.prim.iport	.tyelimprim	ibio.prim	iport	u*^
 
 _ibio.prim.unit_ty	.tyexpr
 ibio.prim.m	.tygvar

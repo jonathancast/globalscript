@@ -13,6 +13,7 @@ p9main(int argc, char **argv)
 static struct gsregistered_primtype ibio_types[] = {
     /* name, file, line, group, kind, */
     { "ibio", __FILE__, __LINE__, gsprim_type_api, "u?^", },
+    { "iport", __FILE__, __LINE__, gsprim_type_elim, "u*^", },
     { "oport", __FILE__, __LINE__, gsprim_type_elim, "u*^", },
     { 0, },
 };
