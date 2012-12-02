@@ -6,6 +6,7 @@ test.assert	.closure	_test.assert_c
 test.deny	.closure	_test.deny_c
 
 test.all	.closure	_test.all_c
+_test.all_no.tests.label	.string	No\stests
 
 	.code
 
@@ -89,6 +90,8 @@ test.property.t	.tygvar
 t	.tylet	list.prim.u	test.property.t
 list.foldr1	.gvar
 test.property.∧	.gvar
+test.property.true	.gvar
+_test.all_no.tests.label	.gvar
 ts	.fv	list.t	test.property.t
 ts0	.karg	t
 	.analyze	ts0	:	nil
@@ -98,4 +101,5 @@ ts1		.fkarg	1	list.t	test.property.t
 			.app	test.property.∧	ts
 			.enter	list.foldr1	test.property.t
 		.case	nil
-			.undef	test.property.t
+			.app	_test.all_no.tests.label
+			.enter	test.property.true
