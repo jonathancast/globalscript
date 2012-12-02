@@ -1,0 +1,90 @@
+	.prefix
+
+	.data
+
+gsac.input.prefix.load	.closure	_gsac.input.prefix.load_c	_gsac.input.prefix.load_ty
+gsac.input.prefix.dir.load	.closure	_gsac.input.prefix.dir.load_c	_gsac.input.prefix.dir.load_ty
+
+	.code
+
+_gsac.input.prefix.load_c	.eprog	ibio.prim	ibio
+ibio.file.name.t	.tygvar
+_gsac.input.prefix.load_isd_c	.subcode
+_gsac.input.prefix.load_body_c	.subcode
+fn	.larg	ibio.file.name.t
+isd	.bind	_gsac.input.prefix.load_isd_c	|	fn
+	.body	_gsac.input.prefix.load_body_c	|	fn	isd
+
+_gsac.input.prefix.load_isd_c	.expr
+ibio.file.name.t	.tygvar
+ibio.file.isdir	.gvar
+fn	.fv	ibio.file.name.t
+	.app	fn
+	.enter	ibio.file.isdir
+
+_gsac.input.prefix.load_body_c	.expr
+ibio.file.name.t	.tygvar
+bool.t	.tygvar
+_gsac.input.prefix.load_body_k	.subcode
+bool.t.out	.cogvar
+fn	.fv	ibio.file.name.t
+isd	.fv	bool.t
+	.force	_gsac.input.prefix.load_body_k	|	fn
+	.coerce	bool.t.out
+	.enter	isd
+
+_gsac.input.prefix.load_body_k	.forcecont
+ibio.file.name.t	.tygvar
+bool.prim.u	.tygvar
+ibio.prim.t	.tygvar
+list.t	.tygvar
+gsac.input.prefix.file.t	.tygvar
+res.ty	.tylet	list.t	gsac.input.prefix.file.t
+gsac.input.prefix.dir.load	.gvar
+fn	.fv	ibio.file.name.t
+isd0	.karg	bool.prim.u
+	.analyze	isd0	false	true
+	.case	false
+		.undef	ibio.prim.t	res.ty
+	.case	true
+		.app	fn
+		.enter	gsac.input.prefix.dir.load
+
+_gsac.input.prefix.dir.load_c	.expr
+ibio.file.name.t	.tygvar
+ibio.prim.t	.tygvar
+list.t	.tygvar
+gsac.input.prefix.file.t	.tygvar
+res.ty	.tylet	list.t	gsac.input.prefix.file.t
+fn	.larg	ibio.file.name.t
+	.undef	ibio.prim.t	res.ty
+
+	.type
+
+gsac.input.prefix.file.t	.tyabstract	*
+	.tylift
+	.tysum
+
+gsac.input.sorted.node.t	.tyabstract	*
+	.tylift
+	.tysum
+
+_gsac.input.prefix.load_ty	.tyexpr
+ibio.file.name.t	.tygvar
+ibio.prim.t	.tygvar
+list.t	.tygvar
+gsac.input.prefix.file.t	.tygvar
+res.ty	.tylet	list.t	gsac.input.prefix.file.t
+	.tylift
+	.tyfun	ibio.file.name.t
+	.tyref	ibio.prim.t	res.ty
+
+_gsac.input.prefix.dir.load_ty	.tyexpr
+ibio.file.name.t	.tygvar
+ibio.prim.t	.tygvar
+list.t	.tygvar
+gsac.input.prefix.file.t	.tygvar
+res.ty	.tylet	list.t	gsac.input.prefix.file.t
+	.tylift
+	.tyfun	ibio.file.name.t
+	.tyref	ibio.prim.t	res.ty
