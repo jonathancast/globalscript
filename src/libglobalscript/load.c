@@ -178,6 +178,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
                 } 
                 continue;
             }
+            if (!strcmp(dir->d.name, "mkfile")) continue;
             if (ext && (
                 !strcmp(ext, ".gs-scheme")
                 || !strcmp(ext, ".cgs-scheme")
