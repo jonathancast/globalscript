@@ -295,6 +295,9 @@ test_print_string(gsvalue s)
         if (c) {
             st = GS_SLOW_EVALUATE(c);
             switch (st) {
+                case gstyindir:
+                    c = GS_REMOVE_INDIRECTIONS(c);
+                    break;
                 case gstyunboxed: {
                     char buf[5];
 
