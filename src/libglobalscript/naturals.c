@@ -4,6 +4,29 @@
 #include <libc.h>
 #include <libglobalscript.h>
 
+#include "gssetup.h"
+
+static struct gsregistered_primtype natural_prim_types[] = {
+    /* name, file, line, group, kind, */
+    { "natural", __FILE__, __LINE__, gsprim_type_defined, "u", },
+    { 0, },
+};
+
+static struct gsregistered_prim natural_prim_operations[] = {
+    /* name, file, line, group, apitype, type, index, */
+    { 0, },
+};
+
+static gsubprim_handler *natural_prim_ubexec[] = {
+};
+
+struct gsregistered_primset gsnatural_prim_set = {
+    /* name = */ "natural.prim",
+    /* types = */ natural_prim_types,
+    /* operations = */ natural_prim_operations,
+    /* ubexec_table = */ natural_prim_ubexec,
+};
+
 char *
 gsnaturaltochar(char *err, char *eerr, gsvalue v, char *buf, char *ebuf)
 {

@@ -84,6 +84,7 @@ clientexpr.$O: gsinputfile.h gstypealloc.h gstypecheck.h gsheap.h
 bctopsort.$O: gsinputfile.h gstopsort.h
 regtables.$O: gsinputfile.h gsregtables.h
 runes.$O: gsheap.h gssetup.h
+naturals.$O: gssetup.h
 api.$O: api.h
 iochan.$O: iofile.h $SYSTEM/iosysconstants.h iomacros.h
 iostat.$O: $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h

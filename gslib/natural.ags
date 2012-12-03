@@ -3,5 +3,8 @@
 	.type
 
 natural.t	.tyabstract	*
+natural.prim.u	.tygvar
 	.tylift
-	.tysum
+	.tyref	natural.prim.u
+
+natural.prim.u	.tydefinedprim	natural.prim	natural	u

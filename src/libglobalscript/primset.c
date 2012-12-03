@@ -88,4 +88,5 @@ void
 gsadd_global_script_prim_sets()
 {
     gsprims_register_prim_set(&gsrune_prim_set);
+    gsprims_register_prim_set(&gsnatural_prim_set);
 }
