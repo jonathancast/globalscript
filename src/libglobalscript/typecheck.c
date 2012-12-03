@@ -1263,11 +1263,19 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
     return 1;
 }
 
+#define CHECK_REGTYPE(rt, desc) \
+    do { \
+        if (pcl->regtype > rt) \
+            gsfatal("%P: Too late to add %s", p->pos, desc) \
+        ; \
+        pcl->regtype = rt; \
+    } while (0)
+
 static
 int
 gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymopsubcode, gssymcogvar, gssymopgvar, gssymrune, gssymopfv, gssymopefv;
+    static gsinterned_string gssymopsubcode, gssymcogvar, gssymopgvar, gssymrune, gssymnatural, gssymopfv, gssymopefv;
 
     int i;
 
@@ -1314,18 +1322,20 @@ gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline 
         ;
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymrune, gssymcodeop, ".rune")) {
-        if (pcl->regtype > rtgvar)
-            gsfatal_bad_input(p, "Too late to add global variables")
-        ;
-        pcl->regtype = rtgvar;
+        CHECK_REGTYPE(rtgvar, "global variables");
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers")
+            gsfatal("%P: Too many registers", p->pos)
         ;
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = gstypes_compile_prim(p->pos, gsprim_type_defined, "rune.prim", "rune", gskind_unlifted_kind());
-        if (!pcl->regtypes[pcl->nregs])
-            gsfatal("%P: Couldn't find type for global %y", p->pos, p->label)
+        pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymnatural, gssymcodeop, ".natural")) {
+        CHECK_REGTYPE(rtgvar, "global variables");
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers", p->pos)
         ;
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regtypes[pcl->nregs] = gstypes_compile_prim(p->pos, gsprim_type_defined, "natural.prim", "natural", gskind_unlifted_kind());
         pcl->nregs++;
     } else if (
         gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")

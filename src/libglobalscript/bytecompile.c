@@ -259,7 +259,7 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopfv, gssymopefv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymopundef, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymopundef, gssymopanalyze, gssymopcase;
 
 static
 int
@@ -451,15 +451,21 @@ done:
     return cl.size;
 }
 
+#define CHECK_PHASE(ph, nm) \
+    do { \
+        if (pcl->phase > ph) \
+            gsfatal("Too late to add " nm, p->pos); \
+        pcl->phase = ph; \
+    } while (0)
+
+void static gsbc_bytecode_size_check_natural_fits_in_one_word(struct gspos, gsinterned_string);
+
 static
 int
 gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
     if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
-        if (pcl->phase > phgvars)
-            gsfatal("%P: Too late to add global variables", p->pos)
-        ;
-        pcl->phase = phgvars;
+        CHECK_PHASE(phgvars, "global variables");
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
@@ -468,10 +474,48 @@ gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *p, struct gsbc_bytecode_
         ;
         pcl->size += sizeof(gsvalue);
         pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymopnatural, gssymcodeop, ".natural")) {
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        if (pcl->size % sizeof(gsvalue))
+            gsfatal_unimpl(__FILE__, __LINE__, "%p: File format error: we're at a .rune generator but our location isn't gsvalue-aligned", p->pos)
+        ;
+        gsbc_bytecode_size_check_natural_fits_in_one_word(p->pos, p->arguments[0]);
+        pcl->size += sizeof(gsvalue);
+        pcl->nregs++;
     } else {
         return 0;
     }
     return 1;
+}
+
+void
+static
+gsbc_bytecode_size_check_natural_fits_in_one_word(struct gspos pos, gsinterned_string d)
+{
+    static int max_before_division = (GS_MAX_PTR - 9) / 10;
+
+    char *s;
+    int n;
+
+    n = 0;
+    for (s = d->name; *s; s++) {
+        int dig;
+
+        if (!isdigit(*s))
+            gsfatal("%P: Invalid character '%c' in natural number literal", pos, *s)
+        ;
+        dig = *s - '0';
+        if (n > max_before_division)
+            gsfatal("%P: Natural number %y too large", pos, d)
+        ;
+        n *= 10;
+        if (n >= GS_MAX_PTR - dig)
+            gsfatal("%P: Natural number %y too large", pos, d)
+        ;
+        n += dig;
+    }
 }
 
 static
@@ -1132,6 +1176,8 @@ gsbc_byte_compile_type_fv_code_op(struct gsfile_symtable *symtable, struct gspar
         pcl->nregs++; \
     } while (0)
 
+static gsvalue gsbc_parse_natural_literal(struct gspos, char *);
+
 static
 int
 gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
@@ -1156,10 +1202,7 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
     } else if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
         char *eos;
 
-        if (pcl->phase > rtgvars)
-            gsfatal("%P: Too late to add global variables", p->pos)
-        ;
-        pcl->phase = rtgvars;
+        CHECK_PHASE(rtgvars, "global variables");
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
@@ -1170,6 +1213,18 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
         if (*eos)
             gsfatal("%P: %y: More than one rune in argument to .rune", p->pos, p->arguments[0])
         ;
+        pcl->pout = pglobal + 1;
+
+        pcl->nregs++;
+        pcl->nglobals++;
+    } else if (gssymceq(p->directive, gssymopnatural, gssymcodeop, ".natural")) {
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+
+        pglobal = (gsvalue *)pcl->pout;
+        *pglobal = gsbc_parse_natural_literal(p->pos, p->arguments[0]->name);
         pcl->pout = pglobal + 1;
 
         pcl->nregs++;
@@ -1207,6 +1262,22 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
         return 0;
     }
     return 1;
+}
+
+static
+gsvalue
+gsbc_parse_natural_literal(struct gspos pos, char *s)
+{
+    gsvalue n;
+
+    n = 0;
+    while (*s) {
+        n *= 10;
+        n += *s ++ - '0';
+    }
+
+    n |= GS_MAX_PTR;
+    return n;
 }
 
 static
@@ -1262,13 +1333,6 @@ gsbc_byte_compile_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_c
 }
 
 static int gsbc_find_field_in_product(struct gstype_product *, gsinterned_string);
-
-#define CHECK_PHASE(ph, nm) \
-    do { \
-        if (pcl->phase > ph) \
-            gsfatal("Too late to add " nm, p->pos); \
-        pcl->phase = ph; \
-    } while (0)
 
 #define ADD_LABEL_TO_REGS() \
     do { \

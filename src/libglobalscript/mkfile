@@ -26,6 +26,7 @@ OFILES=\
 	gsrpc.$O \
 	regtables.$O \
 	runes.$O \
+	naturals.$O \
 	iochan.$O \
 	iostat.$O \
 	stringbuilder.$O \

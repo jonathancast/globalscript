@@ -104,6 +104,7 @@ typedef enum {
     gssymseparator,
     gssymruneconstant,
     gssymstringconstant,
+    gssymnaturalconstant,
 } gssymboltype;
 
 typedef struct gsstring_value {
@@ -204,6 +205,10 @@ gsvalue gsfalse(struct gspos);
 char *gschartorune(char *, gsvalue *, char *, char *);
 char *gsrunetochar(gsvalue, char *, char *);
 gsvalue gscstringtogsstring(struct gspos, char *);
+
+/* §subsection Natural Numbers */
+
+char *gsnaturaltochar(char *, char *, gsvalue, char *, char *);
 
 /* §subsection Lists */
 

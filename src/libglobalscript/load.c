@@ -697,11 +697,20 @@ gsparse_code_type_fv_op(char *filename, struct gsparsedline *parsedline, int *pl
     return 1;
 }
 
+#define CHECK_GVAR_LABEL(op) \
+    do { \
+        if (*fields[0]) \
+            parsedline->label = gsintern_string(gssymdatalable, fields[0]) \
+        ; else \
+            gsfatal("%s:%d: Missing label on .rune op", filename, *plineno) \
+        ; \
+    } while (0)
+
 static
 int
 gsparse_value_fv_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymsubcode, gssymcogvar, gssymgvar, gssymrune, gssymfv, gssymefv;
+    static gsinterned_string gssymsubcode, gssymcogvar, gssymgvar, gssymrune, gssymnatural, gssymfv, gssymefv;
 
     int i;
 
@@ -727,15 +736,19 @@ gsparse_value_fv_op(char *filename, struct gsparsedline *parsedline, int *plinen
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .gvar op", filename, *plineno);
     } else if (gssymceq(parsedline->directive, gssymrune, gssymcodeop, ".rune")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .rune op", filename, *plineno);
+        CHECK_GVAR_LABEL(".rune");
         if (n < 2+1)
             gsfatal("%s:%d: Missing rune literal", filename, *plineno);
         parsedline->arguments[2 - 2] = gsintern_string(gssymruneconstant, fields[2]);
         if (n > 2+1)
             gsfatal("%s:%d: Too many arguments to .rune; I know about the rune literal to use");
+    } else if (gssymceq(parsedline->directive, gssymnatural, gssymcodeop, ".natural")) {
+        CHECK_GVAR_LABEL(".rune");
+        if (n < 2 + 1)
+            gsfatal("%s:%d: Missing natural number literal", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymnaturalconstant, fields[2]);
+        if (n > 2 + 1)
+            gsfatal("%s:%d: Too many arguments to .natural; I know about the natural literal to use");
     } else if (gssymceq(parsedline->directive, gssymfv, gssymcodeop, ".fv")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymdatalable, fields[0]);
