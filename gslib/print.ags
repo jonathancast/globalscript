@@ -1,0 +1,11 @@
+	.prefix
+
+	.type
+
+print.t	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	list.t	rune.t
