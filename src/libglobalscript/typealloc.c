@@ -882,7 +882,7 @@ gstype_instantiate(struct gspos pos, struct gstype *fun, struct gstype *arg)
             if (gstypes_eprint_type(buf, buf + sizeof(buf), fun) >= buf + sizeof(buf))
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: supply (node = %d)", fun->pos, fun->node);
             ;
-            gsfatal("%P: Can't intantiate %s (%P), which isn't a polymorphic type", pos, buf, fun->pos);
+            gsfatal("%P: Can't instantiate %s (%P), which isn't a polymorphic type", pos, buf, fun->pos);
         }
     }
     return 0;
