@@ -311,6 +311,8 @@ test_print_string(gsvalue s)
         } else {
             st = GS_SLOW_EVALUATE(s);
             switch (st) {
+                case gstystack:
+                    break;
                 case gstywhnf: {
                     struct gsconstr *constr;
                     constr = (struct gsconstr *)s;
@@ -327,6 +329,15 @@ test_print_string(gsvalue s)
                             exits("unimpl");
                     }
                     break;
+                }
+                case gstyindir:
+                    s = GS_REMOVE_INDIRECTIONS(s);
+                    break;
+                case gstyerr: {
+                    char buf[0x100];
+                    gserror_format(buf, buf + sizeof(buf), (struct gserror *)s);
+                    fprint(2, "%s\n", buf);
+                    return;
                 }
                 default:
                     fprint(2, UNIMPL_NL("test_print_label(st = %d)"), st);
