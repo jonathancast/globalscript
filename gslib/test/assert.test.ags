@@ -4,7 +4,13 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.assert.eq.x.x
+
+_test.assert.eq.x.x	.closure	_test.assert.eq.x.x_c
+_test.assert.eq.x.x_label	.string	test.assert.eq\srune.≡\sr/x/\sr/x/
+_test.assert.eq.x.x_test	.closure	_test.assert.eq.x.x_test_c
+
+_x	.closure	_x_c
 
 	.code
 
@@ -13,3 +19,30 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{assert.eq rune.≡ rune.print r/x r/x}
+
+_test.assert.eq.x.x_c	.expr
+test.property.label	.gvar
+_test.assert.eq.x.x_label	.gvar
+_test.assert.eq.x.x_test	.gvar
+	.app	_test.assert.eq.x.x_label	_test.assert.eq.x.x_test
+	.enter	test.property.label
+
+_test.assert.eq.x.x_test_c	.expr
+rune.t	.tygvar
+test.assert.eq	.gvar
+rune.≡	.gvar
+rune.print	.gvar
+_x	.gvar
+	.app	rune.≡	rune.print	_x	_x
+	.enter	test.assert.eq	rune.t
+
+# §section Fixtures
+
+_x_c	.expr
+rune.t.in	.cogvar
+x	.rune	x
+	.coerce	rune.t.in
+	.lift
+	.yield	x
