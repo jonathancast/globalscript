@@ -16,3 +16,5 @@
 \.ags-.*errors$
 ^bin/gstype$
 ^bin/gstest$
+stage0/.*\.gs$
+\.gscr$

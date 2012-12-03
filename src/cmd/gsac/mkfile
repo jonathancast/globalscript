@@ -2,11 +2,10 @@
 
 MKSHELL=$PLAN9/bin/rc
 
-AGS_SOURCES=`{echo ags_src/*.ags}
-CGS_SOURCES=`{echo cgs_src/*.cgs}
-STAGE0_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage0/%.gsac}
-STAGE1_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage1/%.gsac}
-STAGE2_TARGETS=${CGS_SOURCES:cgs_src/%.cgs=stage2/%.gsac}
+GS_SOURCES=`{echo gslib/*.gs}
+STAGE0_TARGETS=${GS_SOURCES:gslib/%.gs=stage0/%.gsac}
+STAGE1_TARGETS=${GS_SOURCES:gslib/%.gs=stage1/%.gsac}
+STAGE2_TARGETS=${GS_SOURCES:gslib/%.gs=stage2/%.gsac}
 
 all: $STAGE2_TARGETS
 
@@ -14,16 +13,42 @@ test:V:
 	:
 
 integration-test:V: $STAGE1_TARGETS $STAGE2_TARGETS
-	for (i in cgs_src/*.cgs) diff -c `{echo $i | sed 's,cgs_src/(.*).cgs,stage1/\1.gsac'} `{echo $i | sed 's,cgs_src/(.*).cgs,stage2/\1.gsac'}
+	for (i in gslib/*.gs) diff -c `{echo $i | sed 's,gslib/(.*).gs,stage1/\1.gsac'} `{echo $i | sed 's,cgs_src/(.*).cgs,stage2/\1.gsac'}
 
-stage0/%.gsac:D: $GLOBALSCRIPT/bin/ibio $AGS_SOURCES ags_src/gsac.ags cgs_src/%.cgs
-	$GLOBALSCRIPT/bin/ibio ags_src ags_src/gsac.ags -l $GLOBALSCRIPT/gslib -l cgs_src cgs_src/$stem.cgs > stage0/$stem.gsac
+# §section Stage 0
 
-stage1/%.gsac:D: $GLOBALSCRIPT/bin/ibio $STAGE0_TARGETS stage0/gsac.gsac cgs_src/%.cgs
-	$GLOBALSCRIPT/bin/ibio stage0 stage0/gsac.gsac -l $GLOBALSCRIPT/gslib -l cgs_src cgs_src/$stem.cgs > stage1/$stem.gsac
+stage0/%.gs:D: gslib/%.gs
+	cp gslib/$stem.gs stage0/$stem.gs
 
-stage2/%.gsac:D: $GLOBALSCRIPT/bin/ibio $STAGE1_TARGETS stage1/gsac.gsac cgs_src/%.cgs
-	$GLOBALSCRIPT/bin/ibio stage1 stage1/gsac.gsac -l $GLOBALSCRIPT/gslib -l cgs_src cgs_src/$stem.cgs > stage2/$stem.gsac
+stage0/%.gscr:D: stage0/%.gs
+	$GLOBALSCRIPT/bin/gsload -l $GLOBALSCRIPT/gslib -l stage0 stage0/$stem.gs > stage0/$stem.gscr
+
+stage0/%.gsac:D: stage0/%.gscr
+	$GLOBALSCRIPT/bin/gsac -l $GLOBALSCRIPT/gslib -l stage0 stage0/$stem.gs > stage0/$stem.gsac
+
+# §section Stage 1
+
+stage1/%.gs:D: gslib/%.gs
+	cp gslib/$stem.gs stage1/$stem.gs
+
+stage1/%.gscr:D: stage1/%.gs
+	$GLOBALSCRIPT/bin/gsload -l $GLOBALSCRIPT/gslib -l stage1 stage1/$stem.gs > stage1/$stem.gscr
+
+stage1/%.gsac:D: $STAGE0_TARGETS stage0/gsac.gsac stage1/%.gscr
+	$GLOBALSCRIPT/bin/ibio stage0 stage0/gsac.gsac -l $GLOBALSCRIPT/gslib -l stage1 stage1/$stem.gscr > stage1/$stem.gsac
+
+# §section Stage 2
+
+stage2/%.gs:D: gslib/%.gs
+	cp gslib/$stem.gs stage2/$stem.gs
+
+stage2/%.gscr:D: stage2/%.gs
+	$GLOBALSCRIPT/bin/gsload -l $GLOBALSCRIPT/gslib -l stage2 stage2/$stem.gs > stage2/$stem.gscr
+
+stage2/%.gsac:D: $STAGE1_TARGETS stage1/gsac.gsac stage2/%.gscr
+	$GLOBALSCRIPT/bin/ibio stage1 stage1/gsac.gsac -l $GLOBALSCRIPT/gslib -l stage2 stage2/$stem.gscr > stage2/$stem.gsac
+
+# §section Etc.
 
 clean:
-	rm -f stage0/*.gsac stage1/*.gsac stage2/*.gsac
+	rm -f stage0/* stage1/* stage2/*

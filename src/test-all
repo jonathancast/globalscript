@@ -1,13 +1,21 @@
 #! /usr/local/plan9/bin/rc
 
+# §paragraph{C Testing library}
 cd $GLOBALSCRIPT/src/libtest &&
     mk integration-test && mk install &&
+# §paragraph{IBIO & Its Pre-requisites}
     cd ../libglobalscript/ &&
     mk integration-test && mk install &&
     cd ../cmd &&
     mk pure-integration-test && mk pure-install &&
-    ./rc/test-gslib &&
     cd ibio/ &&
     mk integration-test && mk install &&
-    cd ../gsac/ &&
+# §paragraph{Bootstrap §fn{/gslib}}
+    cd ../../../gslib &&
+    mk core-libs &&
+    mk typed-libs &&
+    mk src-libs &&
+    && $GLOBALSCRIPT/src/cmd/rc/test-gslib &&
+# §paragaph{§sh{gsac}}
+    cd ../src/cmd/gsac &&
     mk integration-test

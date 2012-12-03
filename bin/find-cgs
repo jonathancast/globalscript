@@ -1,0 +1,15 @@
+#! /usr/local/plan9/bin/rc -e
+
+fn main {
+    for (i in $1/*) {
+        if (test -d $i)
+            main $i
+        for (j in $i/*.cgs)
+            if (test -f $j)
+                echo $j
+    }
+}
+
+if (~ $#* 0) *=.
+
+main $*

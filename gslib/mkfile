@@ -1,0 +1,15 @@
+< $GLOBALSCRIPT/src/mkhdr
+
+MKSHELL=$PLAN9/bin/rc
+
+CGS_SOURCES=`{$GLOBALSCRIPT/bin/find-cgs}
+GSAC_FROM_CORE_TARGETS=${CGS_SOURCES:%.cgs=%.gsac}
+
+core-libs:V: $GSAC_FROM_CORE_TARGETS
+	true
+
+typed-libs:V: $GSAC_FROM_TYPED_TARGETS
+	true
+
+src-libs:V: $GSAC_FROM_SRC_TARGETS
+	true
