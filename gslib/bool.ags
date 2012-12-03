@@ -9,6 +9,8 @@ bool.≡	.closure	_bool.≡.c
 
 bool.∧	.closure	_bool.∧.c
 
+bool.print	.closure	_bool.print_c	_bool.print_ty
+
 	.code
 
 # §section Constructors
@@ -97,6 +99,15 @@ b00	.karg	bool.prim.u
 	.case	true
 		.enter	b1
 
+# §section §gs{bool.print}
+
+_bool.print_c	.expr
+bool.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+b	.larg	bool.t
+	.undef	list.t	rune.t
+
 	.type
 
 bool.t	.tyabstract	*
@@ -114,6 +125,11 @@ _false.arg.ty	.tyexpr
 
 _true.arg.ty	.tyexpr
 	.tyubproduct
+
+_bool.print_ty	.tyexpr
+print.t	.tygvar
+bool.t	.tygvar
+	.tyref	print.t	bool.t
 
 	.coercion
 
