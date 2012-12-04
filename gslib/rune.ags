@@ -8,6 +8,10 @@ rune.print	.closure	_rune.print_c
 _rune.print_prefix	.string	r/
 _rune.print_suffix	.string	/
 
+rune.print.list	.closure	_rune.print.list_c
+_rune.print.list_prefix	.string	qq{
+_rune.print.list_suffix	.string	}
+
 	.code
 
 # §section §gs{rune.≡}
@@ -71,6 +75,28 @@ _rune.print_suffix	.gvar
 r	.fv	rune.t
 	.app	r	_rune.print_suffix
 	.enter	list.:	rune.t
+
+# §section §gs{rune.print.list}
+
+_rune.print.list_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+_rune.print.list_s1_c	.subcode
+list.<>	.gvar
+_rune.print.list_prefix	.gvar
+s	.larg	list.t	rune.t
+s1	.alloc	_rune.print.list_s1_c	|	s
+	.app	_rune.print.list_prefix	s1
+	.enter	list.<>	rune.t
+
+_rune.print.list_s1_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_rune.print.list_suffix	.gvar
+s	.fv	list.t	rune.t
+	.app	s	_rune.print.list_suffix
+	.enter	list.<>	rune.t
 
 	.type
 

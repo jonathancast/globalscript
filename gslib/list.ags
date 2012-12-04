@@ -7,7 +7,9 @@ list.:	.closure	_list.:.c
 
 list.foldr1	.closure	_list.foldr1_code	_list.foldr1_ty
 
+list.singleton	.closure	_list.singleton_c
 list.<>	.closure	_list.<>.code	_list.<>.ty
+
 list.≡	.closure	_list.≡.code	_list.≡.ty
 
 list.print	.closure	_list.print_c
@@ -109,6 +111,23 @@ f	.fv	ft
 xn1	.fv	list.t	α
 	.app	f	xn1
 	.enter	list.foldr1	α
+
+# §section §gs{list.singleton}
+
+_list.singleton_c	.expr
+α	.tyarg	*
+_list.singleton_n_c	.subcode
+list.:	.gvar
+x	.larg	α
+n	.alloc	_list.singleton_n_c	α
+	.app	x	n
+	.enter	list.:	α
+
+_list.singleton_n_c	.expr
+list.t	.tygvar
+α	.tyfv	*
+list.nil	.gvar
+	.enter	list.nil	α
 
 # §section §gs{list.<>}
 

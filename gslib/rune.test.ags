@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.print.x
+_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.print.x	_test.list.print.x
 
 _test.x.eq.x	.closure	_test.x.eq.x.c
 _test.x.eq.x.label	.string	r/x/\s≡\sr/x/
@@ -24,6 +24,13 @@ _test.print.x_test	.closure	_test.print.x_test_c
 _test.print.x_test_succ	.string	rune.print\sr/x/\s≡\sqq{r/x/}
 _test.print.x_test_fail	.string	rune.print\sr/x/\s≠\sqq{r/x/}
 _test.print.x_test_expected	.string	r/x/
+
+_test.list.print.x	.closure	_test.list.print.x_c
+_test.list.print.x_label	.string	rune.list.print\sqq{x}\s≡\sqq{qq{x}}
+_test.list.print.x_test	.closure	_test.list.print.x_test_c
+_test.list.print.x_test_succ	.string	rune.list.print\sqq{x}\s≡\sqq{qq{x}}
+_test.list.print.x_test_fail	.string	rune.list.print\sqq{x}\s≠\sqq{qq{x}}
+_test.list.print.x_test_expected	.string	qq{x}
 
 _x	.closure	_x.c
 _y	.closure	_y_c
@@ -118,6 +125,53 @@ rune.print	.gvar
 _x	.gvar
 	.app	_x
 	.enter	rune.print
+
+# §section §gs{list.pring qq\{x\}}
+
+_test.list.print.x_c	.expr
+test.property.label	.gvar
+_test.list.print.x_label	.gvar
+_test.list.print.x_test	.gvar
+	.app	_test.list.print.x_label	_test.list.print.x_test
+	.enter	test.property.label
+
+_test.list.print.x_test_c	.expr
+_test.list.print.x_test_x_c	.subcode
+_test.list.print.x_test_x.s_c	.subcode
+_test.list.print.x_test_eq_c	.subcode
+test.assert	.gvar
+_test.list.print.x_test_succ	.gvar
+_test.list.print.x_test_fail	.gvar
+x	.alloc	_test.list.print.x_test_x_c
+x.s	.alloc	_test.list.print.x_test_x.s_c	|	x
+eq	.alloc	_test.list.print.x_test_eq_c	|	x.s
+	.app	_test.list.print.x_test_succ	_test.list.print.x_test_fail	eq
+	.enter	test.assert
+
+_test.list.print.x_test_x_c	.expr
+rune.t	.tygvar
+list.singleton	.gvar
+_x	.gvar
+	.app	_x
+	.enter	list.singleton	rune.t
+
+_test.list.print.x_test_x.s_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+rune.print.list	.gvar
+x	.fv	list.t	rune.t
+	.app	x
+	.enter	rune.print.list
+
+_test.list.print.x_test_eq_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+list.≡	.gvar
+rune.≡	.gvar
+_test.list.print.x_test_expected	.gvar
+x.s	.fv	list.t	rune.t
+	.app	rune.≡	x.s	_test.list.print.x_test_expected
+	.enter	list.≡	rune.t
 
 # §section Fixtures
 
