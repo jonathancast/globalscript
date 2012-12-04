@@ -1,0 +1,6 @@
+	.prefix
+
+	.type
+
+record.unboxed.empty	.tyexpr
+	.tyubproduct
