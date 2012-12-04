@@ -2445,11 +2445,18 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
 
             nfields = 0;
             while (tok = s, s = gsbc_typecheck_compile_prim_type_skip_token(s), strcmp("〉", tok)) {
-                gsfatal(UNIMPL("%P: Get fields in internal primtype next"), pos);
+                if (nfields >= MAX_NUM_REGISTERS)
+                    gsfatal(UNIMPL("%P: Too many fields in internal primtype; max 0x%x"), pos, MAX_NUM_REGISTERS)
+                ;
+                fields[nfields++].name = gsintern_string(gssymfieldlable, tok);
             }
-            if (nfields > MAX_NUM_REGISTERS)
-                gsfatal(UNIMPL("%P: Too many fields in internal primtype; max 0x%x"), pos, MAX_NUM_REGISTERS)
+            if (stacksize < nfields)
+                gsfatal("%P: Stack underflow in internal primtype", pos)
             ;
+            for (i = 0; i < nfields; i++)
+                fields[i].type = stack[stacksize - nfields + i]
+            ;
+            stacksize -= nfields;
 
             if (stacksize >= MAX_NUM_REGISTERS)
                 gsfatal(UNIMPL("%P: Stack overflow in internal primtype; max 0x%x"), pos, MAX_NUM_REGISTERS)
