@@ -12,12 +12,20 @@ static struct gsregistered_primtype natural_prim_types[] = {
     { 0, },
 };
 
+enum {
+    natural_prim_ub_lt,
+};
+
 static struct gsregistered_prim natural_prim_operations[] = {
     /* name, file, line, group, apitype, type, index, */
+    { "<", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_lt, },
     { 0, },
 };
 
+static gsubprim_handler natural_prim_handle_lt;
+
 static gsubprim_handler *natural_prim_ubexec[] = {
+    natural_prim_handle_lt,
 };
 
 struct gsregistered_primset gsnatural_prim_set = {
@@ -26,6 +34,23 @@ struct gsregistered_primset gsnatural_prim_set = {
     /* operations = */ natural_prim_operations,
     /* ubexec_table = */ natural_prim_ubexec,
 };
+
+static
+int
+natural_prim_handle_lt(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
+{
+    if (
+        GS_SLOW_EVALUATE(args[0]) != gstyunboxed
+        || GS_SLOW_EVALUATE(args[1]) != gstyunboxed
+    )
+        return gsubprim_unimpl(thread, __FILE__, __LINE__, pos, "rune_prim_handle_eq: bignums")
+    ;
+    if (args[0] < args[1])
+        return gsubprim_return(thread, pos, 1, 0)
+    ; else
+        return gsubprim_return(thread, pos, 0, 0)
+    ;
+}
 
 char *
 gsnaturaltochar(char *err, char *eerr, gsvalue v, char *buf, char *ebuf)

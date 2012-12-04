@@ -4,7 +4,22 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.0.lt.4	_test.4.lt.0
+
+_test.0.lt.4	.closure	_test.0.lt.4_c
+_test.0.lt.4_label	.string	0\s<\s4
+_test.0.lt.4_test	.closure	_test.0.lt.4_test_c
+_test.0.lt.4_test_fail	.string	0\s≮\s4
+_test.0.lt.4_test_succ	.string	0\s<\s4
+
+_test.4.lt.0	.closure	_test.4.lt.0_c
+_test.4.lt.0_label	.string	4\s<\s0
+_test.4.lt.0_test	.closure	_test.4.lt.0_test_c
+_test.4.lt.0_test_succ	.string	4\s≮\s0
+_test.4.lt.0_test_fail	.string	4\s<\s0
+
+_0	.closure	_0_c
+_4	.closure	_4_c
 
 	.code
 
@@ -13,3 +28,69 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §gs{0 < 4}
+
+_test.0.lt.4_c	.expr
+test.property.label	.gvar
+_test.0.lt.4_label	.gvar
+_test.0.lt.4_test	.gvar
+	.app	_test.0.lt.4_label	_test.0.lt.4_test
+	.enter	test.property.label
+
+_test.0.lt.4_test_c	.expr
+_test.0.lt.4_test_lt_c	.subcode
+test.assert	.gvar
+_test.0.lt.4_test_fail	.gvar
+_test.0.lt.4_test_succ	.gvar
+lt	.alloc	_test.0.lt.4_test_lt_c
+	.app	_test.0.lt.4_test_fail	_test.0.lt.4_test_succ	lt
+	.enter	test.assert
+
+_test.0.lt.4_test_lt_c	.expr
+natural.<	.gvar
+_0	.gvar
+_4	.gvar
+	.app	_0	_4
+	.enter	natural.<
+
+# §gs{4 < 0}
+
+_test.4.lt.0_c	.expr
+test.property.label	.gvar
+_test.4.lt.0_label	.gvar
+_test.4.lt.0_test	.gvar
+	.app	_test.4.lt.0_label	_test.4.lt.0_test
+	.enter	test.property.label
+
+_test.4.lt.0_test_c	.expr
+_test.4.lt.0_test_lt_c	.subcode
+test.deny	.gvar
+_test.4.lt.0_test_succ	.gvar
+_test.4.lt.0_test_fail	.gvar
+lt	.alloc	_test.4.lt.0_test_lt_c
+	.app	_test.4.lt.0_test_succ	_test.4.lt.0_test_fail	lt
+	.enter	test.deny
+
+_test.4.lt.0_test_lt_c	.expr
+natural.<	.gvar
+_4	.gvar
+_0	.gvar
+	.app	_4	_0
+	.enter	natural.<
+
+# §section Test fixtures
+
+_0_c	.expr
+natural.t.in	.cogvar
+0	.natural	0
+	.coerce	natural.t.in
+	.lift
+	.yield	0
+
+_4_c	.expr
+natural.t.in	.cogvar
+4	.natural	4
+	.coerce	natural.t.in
+	.lift
+	.yield	4

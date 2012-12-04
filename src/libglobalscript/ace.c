@@ -693,6 +693,20 @@ gsubprim_return(struct ace_thread *thread, struct gspos pos, int constr, int nar
     return 1;
 }
 
+int
+gsubprim_unimpl(struct ace_thread *thread, char *srcfile, int srclineno, struct gspos pos, char *msg, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, msg);
+    vseprint(buf, buf + sizeof(buf), msg, arg);
+    va_end(arg);
+
+    ace_thread_unimpl(thread, srcfile, srclineno, pos, "%s", buf);
+    return 0;
+}
+
 static
 struct gsbc_cont *
 ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)

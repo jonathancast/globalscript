@@ -351,6 +351,7 @@ struct gseprim {
 
 typedef int gsubprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *);
 int gsubprim_return(struct ace_thread *, struct gspos, int, int, ...);
+int gsubprim_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 
 struct gsregistered_primset {
     char *name;

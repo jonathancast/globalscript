@@ -173,6 +173,7 @@ test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
                 case test_failed: {
                     enum test_state st1 = test_evaluate(err, eerr, constr->arguments[1]);
                     switch (st1) {
+                        case test_prog_err:
                         case test_running:
                             return st1;
                         case test_succeeded:
