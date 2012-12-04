@@ -19,6 +19,7 @@ ok_diff_fail '-- force with undefined continuation --' ./$O.test-gsi force-undef
 ok_diff '-- lambdas with undefined bodies --' ./$O.test-gsi empty-lambda.ags
 ok_diff '-- lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lifted-lambda.ags
 ok_diff_fail '-- applying lambdas with undefined bodies --' ./$O.test-gsi apply-empty-lambda.ags
+ok_diff '-- partial application of lambda with undefined body --' ./$O.test-gsi partial-apply-empty-lambda.ags
 
 ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
 ok_grep_errors '-- a let can be mis-typed --' './test-gslib/mistyped-let.ags:5: I don''t think' ./$O.test-gsi mistyped-let.ags

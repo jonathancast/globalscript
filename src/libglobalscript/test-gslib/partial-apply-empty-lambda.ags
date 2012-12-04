@@ -1,0 +1,21 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+_f	.closure	_f_c
+_x	.undefined	bool.t
+
+	.code
+
+_epcode	.expr
+_f	.gvar
+_x	.gvar
+	.app	_x
+	.enter	_f
+
+_f_c	.expr
+bool.t	.tygvar
+x	.larg	bool.t
+y	.larg	bool.t
+	.undef	bool.t

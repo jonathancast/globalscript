@@ -90,7 +90,7 @@ gsprint(struct gspos pos, struct gstype *type, struct gsfile_symtable *symtable,
                 ncfvs = 0;
                 ncargs = cl->code->numargs;
                 if (nfvs < ncfvs + ncargs) {
-                    print("<function>");
+                    print("<function>\n");
                     return 0;
                 } else {
                     ace_down();

@@ -816,6 +816,7 @@ static
 int
 ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
 {
+    int i;
     struct gs_blockdesc *block;
     struct gsheap_item *fun;
     struct gsclosure *cl;
@@ -845,9 +846,25 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
     needed_args = cl->code->numargs - (cl->numfvs - cl->code->numfvs);
 
     if (app->numargs < needed_args) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Partial applications");
-        unlock(&fun->lock);
-        return 0;
+        struct gsheap_item *res;
+        struct gsclosure *clres;
+
+        res = gsreserveheap(sizeof (struct gsclosure) + (cl->numfvs + app->numargs) * sizeof(gsvalue));
+        clres = (struct gsclosure *)res;
+
+        res->pos = cont->pos;
+        res->type = gsclosure;
+        clres->code = cl->code;
+        clres->numfvs = cl->numfvs + app->numargs;
+        for (i = 0; i < cl->numfvs; i++)
+            clres->fvs[i] = cl->fvs[i]
+        ;
+        for (i = cl->numfvs; i < cl->numfvs + app->numargs; i++)
+            clres->fvs[i] = app->arguments[i - cl->numfvs]
+        ;
+        thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
+
+        return ace_return(thread, cont->pos, (gsvalue)res);
     } else if (app->numargs > needed_args) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Over-saturated applications");
         unlock(&fun->lock);
