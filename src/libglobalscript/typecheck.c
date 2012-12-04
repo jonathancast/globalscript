@@ -1163,6 +1163,7 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
             goto have_type;
         } else {
@@ -1171,6 +1172,8 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
     }
 
 have_type:
+
+    calculated_type = gsbc_typecheck_conts(&cl, 0, calculated_type);
 
     if (!cont_arg_type)
         cont_arg_type = gstypes_compile_ubproductv(case_pos, fcl.nfields, fcl.fields)
