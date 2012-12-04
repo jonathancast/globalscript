@@ -2,10 +2,55 @@
 
 	.data
 
+natural.≡	.closure	_natural.≡_c
 natural.<	.closure	_natural.<_c
+
+natural.prim.≡	.closure	_natural.prim.≡_c
 natural.prim.<	.closure	_natural.prim.<_c
 
 	.code
+
+_natural.≡_c	.expr
+natural.t	.tygvar
+_natural.≡_k0	.subcode
+natural.t.out	.cogvar
+n0	.larg	natural.t
+n1	.larg	natural.t
+	.force	_natural.≡_k0	|	n1
+	.coerce	natural.t.out
+	.enter	n0
+
+_natural.≡_k0	.forcecont
+natural.t	.tygvar
+natural.prim.u	.tygvar
+_natural.≡_k1	.subcode
+natural.t.out	.cogvar
+n1	.fv	natural.t
+n0.0	.karg	natural.prim.u
+	.force	_natural.≡_k1	|	n0.0
+	.coerce	natural.t.out
+	.enter	n1
+
+_natural.≡_k1	.forcecont
+natural.prim.u	.tygvar
+_natural.≡_k2	.subcode
+_natural.≡_k3	.subcode
+natural.prim.≡	.gvar
+n0.0	.fv	natural.prim.u
+n1.0	.karg	natural.prim.u
+	.ubanalyze	0	_natural.≡_k2	1	_natural.≡_k3
+	.app	n0.0	n1.0
+	.yield	natural.prim.≡
+
+_natural.≡_k2	.ubcasecont
+bool.false	.gvar
+	.enter	bool.false
+
+_natural.≡_k3	.ubcasecont
+bool.true	.gvar
+	.enter	bool.true
+
+# §section §gs{natural.<}
 
 _natural.<_c	.expr
 natural.t	.tygvar
@@ -47,6 +92,15 @@ _natural.mkdecimal_k1	.ubcasecont
 bool.true	.gvar
 	.enter	bool.true
 
+# §section Primitives
+
+_natural.prim.≡_c	.expr
+natural.prim.u	.tygvar
+_natural.prim.≡_ty	.tygvar
+x	.arg	natural.prim.u
+y	.arg	natural.prim.u
+	.ubprim	natural.prim	≡	_natural.prim.≡_ty	|	x	y
+
 _natural.prim.<_c	.expr
 natural.prim.u	.tygvar
 _natural.prim.<_ty	.tygvar
@@ -62,6 +116,13 @@ natural.prim.u	.tygvar
 	.tyref	natural.prim.u
 
 natural.prim.u	.tydefinedprim	natural.prim	natural	u
+
+_natural.prim.≡_ty	.tyexpr
+natural.prim.u	.tygvar
+record.unboxed.empty	.tygvar
+	.tyfun	natural.prim.u
+	.tyfun	natural.prim.u
+	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
 
 _natural.prim.<_ty	.tyexpr
 natural.prim.u	.tygvar

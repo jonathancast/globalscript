@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.0.lt.4	_test.4.lt.0
+_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0
 
 _test.0.lt.4	.closure	_test.0.lt.4_c
 _test.0.lt.4_label	.string	0\s<\s4
@@ -18,6 +18,16 @@ _test.4.lt.0_test	.closure	_test.4.lt.0_test_c
 _test.4.lt.0_test_succ	.string	4\s≮\s0
 _test.4.lt.0_test_fail	.string	4\s<\s0
 
+_test.4.eq.4	.closure	_test.4.eq.4_c
+_test.4.eq.4_label	.string	4\s≡\s4
+_test.4.eq.4_test_fail	.string	4\s≠\s4
+_test.4.eq.4_test_succ	.string	4\s≡\s4
+
+_test.4.eq.0	.closure	_test.4.eq.0_c
+_test.4.eq.0_label	.string	4\s≡\s0
+_test.4.eq.0_test_succ	.string	4\s≠\s0
+_test.4.eq.0_test_fail	.string	4\s≡\s0
+
 _0	.closure	_0_c
 _4	.closure	_4_c
 
@@ -29,7 +39,58 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §gs{0 < 4}
+# §section §gs{4 ≡ 4}
+
+_test.4.eq.4_c	.expr
+_test.4.eq.4_test_c	.subcode
+test.property.label	.gvar
+_test.4.eq.4_label	.gvar
+test	.alloc	_test.4.eq.4_test_c
+	.app	_test.4.eq.4_label	test
+	.enter	test.property.label
+
+_test.4.eq.4_test_c	.expr
+_test.4.eq.4_test_eq_c	.subcode
+test.assert	.gvar
+_test.4.eq.4_test_fail	.gvar
+_test.4.eq.4_test_succ	.gvar
+eq	.alloc	_test.4.eq.4_test_eq_c
+	.app	_test.4.eq.4_test_fail	_test.4.eq.4_test_succ	eq
+	.enter	test.assert
+
+_test.4.eq.4_test_eq_c	.expr
+natural.≡	.gvar
+_4	.gvar
+	.app	_4	_4
+	.enter	natural.≡
+
+# §section §gs{4 ≡ 0}
+
+_test.4.eq.0_c	.expr
+_test.4.eq.0_test_c	.subcode
+test.property.label	.gvar
+_test.4.eq.0_label	.gvar
+test	.alloc	_test.4.eq.0_test_c
+	.app	_test.4.eq.0_label	test
+	.enter	test.property.label
+
+_test.4.eq.0_test_c	.expr
+_test.4.eq.0_test_eq_c	.subcode
+test.deny	.gvar
+_test.4.eq.0_test_succ	.gvar
+_test.4.eq.0_test_fail	.gvar
+eq	.alloc	_test.4.eq.0_test_eq_c
+	.app	_test.4.eq.0_test_succ	_test.4.eq.0_test_fail	eq
+	.enter	test.deny
+
+_test.4.eq.0_test_eq_c	.expr
+natural.≡	.gvar
+_4	.gvar
+_0	.gvar
+	.app	_4	_0
+	.enter	natural.≡
+
+# §section §gs{0 < 4}
 
 _test.0.lt.4_c	.expr
 test.property.label	.gvar
@@ -54,7 +115,7 @@ _4	.gvar
 	.app	_0	_4
 	.enter	natural.<
 
-# §gs{4 < 0}
+# §section §gs{4 < 0}
 
 _test.4.lt.0_c	.expr
 test.property.label	.gvar
