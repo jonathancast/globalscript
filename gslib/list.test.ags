@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton
+_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.print.nil
 
 _test.nil.eq.nil	.closure	_test.nil.eq.nil.c
 _test.nil.eq.nil.label	.string	nil\s≡\snil
@@ -29,6 +29,13 @@ _test.nil.eq.singleton_label	.string	nil\s≠\s[false]
 _test.nil.eq.singleton_test	.closure	_test.nil.eq.singleton_test_c
 _test.nil.eq.singleton_test_succ	.string	nil\s≠\s[false]
 _test.nil.eq.singleton_test_fail	.string	nil\s≡\s[false]
+
+_test.print.nil	.closure	_test.print.nil_c
+_test.print.nil_label	.string	list.print\snil\s≡\sqq{[]}
+_test.print.nil_test	.closure	_test.print.nil_test_c
+_test.print.nil_test_expected	.string	[]
+_test.print.nil_test_fail	.string	list.print\snil\s≠\sqq{[]}
+_test.print.nil_test_succ	.string	list.print\snil\s≡\sqq{[]}
 
 _fixture.nil	.closure	_fixture.nil.c
 _fixture.singleton.false	.closure	_fixture.singleton.false.c
@@ -146,6 +153,52 @@ _fixture.nil	.gvar
 _fixture.singleton.false	.gvar
 	.app	bool.≡	_fixture.nil	_fixture.singleton.false
 	.enter	list.≡	bool.t
+
+# §section §gs{print nil}
+
+_test.print.nil_c	.expr
+test.property.label	.gvar
+_test.print.nil_label	.gvar
+_test.print.nil_test	.gvar
+	.app	_test.print.nil_label	_test.print.nil_test
+	.enter	test.property.label
+
+_test.print.nil_test_c	.expr
+_test.print.nil_test_s0_c	.subcode
+_test.print.nil_test_eq_c	.subcode
+test.assert	.gvar
+_test.print.nil_test_fail	.gvar
+_test.print.nil_test_succ	.gvar
+s0	.alloc	_test.print.nil_test_s0_c
+eq	.alloc	_test.print.nil_test_eq_c	|	s0
+	.app	_test.print.nil_test_fail	_test.print.nil_test_succ	eq
+	.enter	test.assert
+
+_test.print.nil_test_s0_c	.expr
+bool.t	.tygvar
+_test.print.nil_test_s0_p0_c	.subcode
+list.print	.gvar
+_fixture.nil	.gvar
+p0	.alloc	_test.print.nil_test_s0_p0_c
+	.app	p0	_fixture.nil
+	.enter	list.print	bool.t
+
+_test.print.nil_test_s0_p0_c	.expr
+bool.t	.tygvar
+list.print.byDefault	.gvar
+bool.print	.gvar
+	.app	bool.print
+	.enter	list.print.byDefault	bool.t
+
+_test.print.nil_test_eq_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+list.≡	.gvar
+rune.≡	.gvar
+_test.print.nil_test_expected	.gvar
+s0	.fv	list.t	rune.t
+	.app	rune.≡	s0	_test.print.nil_test_expected
+	.enter	list.≡	rune.t
 
 # §section Test fixtures
 

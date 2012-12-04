@@ -10,6 +10,10 @@ list.foldr1	.closure	_list.foldr1_code	_list.foldr1_ty
 list.<>	.closure	_list.<>.code	_list.<>.ty
 list.≡	.closure	_list.≡.code	_list.≡.ty
 
+list.print	.closure	_list.print_c
+list.print.byDefault	.closure	_list.print.byDefault_c	_list.print.byDefault_ty
+_list.print.byDefault_nil.s	.string	[]
+
 	.code
 
 # §section Constructors
@@ -243,6 +247,46 @@ ys1	.fv	list.t	α
 	.app	c	xn1	ys1
 	.enter	list.≡	α
 
+# §section §gs{list.print}
+
+_list.print_c	.expr
+list.print.list.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+α	.tyarg	*
+p0	.larg	list.print.list.t	α
+xn	.larg	list.t	α
+	.app	xn
+	.enter	p0
+
+_list.print.byDefault_c	.expr
+print.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+α	.tyarg	*
+_list.print.byDefault_k	.subcode
+list.t.out	.cogvar
+p	.larg	print.t	α
+xn	.larg	list.t	α
+	.force	_list.print.byDefault_k	α
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.print.byDefault_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+α	.tyfv	*
+_list.print.byDefault_nil.s	.gvar
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	list.t	rune.t
+		.case	nil
+			.enter	_list.print.byDefault_nil.s
+
 	.type
 
 # §section §gs{list.t}
@@ -333,6 +377,24 @@ bool.t	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	bool.t
+
+# §section §gs{list.print}
+
+list.print.list.t	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	list.t	α
+	.tyref	list.t	rune.t
+
+_list.print.byDefault_ty	.tyexpr
+print.t	.tygvar
+list.print.list.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	print.t	α
+	.tyref	list.print.list.t	α
 
 	.coercion
 
