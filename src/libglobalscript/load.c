@@ -90,9 +90,9 @@ gsadddir(char *filename)
 
     gsaddir_recursive(filename, "", symtable, &pend);
 
-    for (pfile = file_list; pfile; pfile = pfile->next) {
-        gsloadfile(pfile->file, symtable, 0, 0, 0);
-    }
+    for (pfile = file_list; pfile; pfile = pfile->next)
+        gsloadfile(pfile->file, symtable, 0, 0, 0)
+    ;
 
     gscurrent_symtable = symtable;
 }
