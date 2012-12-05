@@ -10,6 +10,7 @@ bool.≡	.closure	_bool.≡.c
 bool.∧	.closure	_bool.∧.c
 
 bool.print	.closure	_bool.print_c	_bool.print_ty
+bool.print.list	.closure	_bool.print.list_c
 
 	.code
 
@@ -107,6 +108,13 @@ list.t	.tygvar
 rune.t	.tygvar
 b	.larg	bool.t
 	.undef	list.t	rune.t
+
+_bool.print.list_c	.expr
+bool.t	.tygvar
+list.print.byDefault	.gvar
+bool.print	.gvar
+	.app	bool.print
+	.enter	list.print.byDefault	bool.t
 
 	.type
 
