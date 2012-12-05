@@ -124,24 +124,52 @@ _list.map_k	.subcode
 list.t.out	.cogvar
 f	.larg	_list.map_f_ty	α	β
 xn	.larg	list.t	α
-	.force	_list.map_k	α	β
+	.force	_list.map_k	α	β	|	f
 	.coerce	list.t.out	α
 	.enter	xn
 
 _list.map_k	.forcecont
+_list.map_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 α	.tyfv	*
 β	.tyfv	*
+_list.map_y0_c	.subcode
+_list.map_ys1_c	.subcode
+list.:	.gvar
 list.nil	.gvar
+f	.fv	_list.map_f_ty	α	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.undef	list.t	β
+y0			.alloc	_list.map_y0_c	α	β	|	f	x0
+ys1			.alloc	_list.map_ys1_c	α	β	|	f	xn1
+			.app	y0	ys1
+			.enter	list.:	β
 		.case	nil
 			.enter	list.nil	β
+
+_list.map_y0_c	.expr
+_list.map_f_ty	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+f	.fv	_list.map_f_ty	α	β
+x0	.fv	α
+	.app	x0
+	.enter	f
+
+_list.map_ys1_c	.expr
+_list.map_f_ty	.tygvar
+list.t	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+list.map	.gvar
+f	.fv	_list.map_f_ty	α	β
+xn1	.fv	list.t	α
+	.app	f	xn1
+	.enter	list.map	α	β
 
 # §section §gs{list.singleton}
 

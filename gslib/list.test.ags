@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.print.nil	_test.map.nil
+_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.print.nil	_test.map.nil	_test.map.:
 
 _test.nil.eq.nil	.closure	_test.nil.eq.nil.c
 _test.nil.eq.nil.label	.string	nil\s≡\snil
@@ -38,10 +38,16 @@ _test.print.nil_test_fail	.string	list.print\snil\s≠\sqq{[]}
 _test.print.nil_test_succ	.string	list.print\snil\s≡\sqq{[]}
 
 _test.map.nil	.closure	_test.map.nil_c
-_test.map.nil_label	.string	map\sf\snil\s≡\snil
+_test.map.nil_label	.string	map\sf\snil
+
+_test.map.:	.closure	_test.map.:_c
+_test.map.:_label	.string	map\sf\s(_:_)
 
 _fixture.nil	.closure	_fixture.nil.c
 _fixture.singleton.false	.closure	_fixture.singleton.false.c
+
+_fixture.list.bool.≡	.closure	_fixture.list.bool.≡_c
+_fixture.list.bool.print	.closure	_fixture.list.bool.print_c
 
 	.code
 
@@ -217,30 +223,14 @@ _test.map.nil_test_c	.expr
 list.t	.tygvar
 bool.t	.tygvar
 list.ty	.tylet	list.t	bool.t
-_test.map.nil_test_eq_c	.subcode
-_test.map.nil_test_p_c	.subcode
 _test.map.nil_test_actual_c	.subcode
 test.assert.eq	.gvar
+_fixture.list.bool.≡	.gvar
+_fixture.list.bool.print	.gvar
 _fixture.nil	.gvar
-eq	.alloc	_test.map.nil_test_eq_c
-p	.alloc	_test.map.nil_test_p_c
 actual	.alloc	_test.map.nil_test_actual_c
-	.app	eq	p	actual	_fixture.nil
+	.app	_fixture.list.bool.≡	_fixture.list.bool.print	actual	_fixture.nil
 	.enter	test.assert.eq	list.ty
-
-_test.map.nil_test_eq_c	.expr
-bool.t	.tygvar
-list.≡	.gvar
-bool.≡	.gvar
-	.app	bool.≡
-	.enter	list.≡	bool.t
-
-_test.map.nil_test_p_c	.expr
-bool.t	.tygvar
-list.print	.gvar
-bool.print.list	.gvar
-	.app	bool.print.list
-	.enter	list.print	bool.t
 
 _test.map.nil_test_actual_c	.expr
 bool.t	.tygvar
@@ -249,6 +239,46 @@ bool.not	.gvar
 _fixture.nil	.gvar
 	.app	bool.not	_fixture.nil
 	.enter	list.map	bool.t	bool.t
+
+# §section §gs{map f (_:_)}
+
+_test.map.:_c	.expr
+_test.map.:_test_c	.subcode
+test.property.label	.gvar
+_test.map.:_label	.gvar
+test	.alloc	_test.map.:_test_c
+	.app	_test.map.:_label	test
+	.enter	test.property.label
+
+_test.map.:_test_c	.expr
+list.t	.tygvar
+bool.t	.tygvar
+list.ty	.tylet	list.t	bool.t
+_test.map.:_test_actual_c	.subcode
+_test.map.:_test_expected_c	.subcode
+test.assert.eq	.gvar
+_fixture.list.bool.≡	.gvar
+_fixture.list.bool.print	.gvar
+actual	.alloc	_test.map.:_test_actual_c
+expected	.alloc	_test.map.:_test_expected_c
+	.app	_fixture.list.bool.≡	_fixture.list.bool.print	actual	expected
+	.enter	test.assert.eq	list.ty
+
+_test.map.:_test_actual_c	.expr
+bool.t	.tygvar
+list.map	.gvar
+bool.not	.gvar
+_fixture.singleton.false	.gvar
+	.app	bool.not	_fixture.singleton.false
+	.enter	list.map	bool.t	bool.t
+
+_test.map.:_test_expected_c	.expr
+bool.t	.tygvar
+list.:	.gvar
+bool.true	.gvar
+_fixture.nil	.gvar
+	.app	bool.true	_fixture.nil
+	.enter	list.:	bool.t
 
 # §section Test fixtures
 
@@ -264,3 +294,17 @@ bool.false	.gvar
 _fixture.nil	.gvar
 	.app	bool.false	_fixture.nil
 	.enter	list.:	bool.t
+
+_fixture.list.bool.≡_c	.expr
+bool.t	.tygvar
+list.≡	.gvar
+bool.≡	.gvar
+	.app	bool.≡
+	.enter	list.≡	bool.t
+
+_fixture.list.bool.print_c	.expr
+bool.t	.tygvar
+list.print	.gvar
+bool.print.list	.gvar
+	.app	bool.print.list
+	.enter	list.print	bool.t
