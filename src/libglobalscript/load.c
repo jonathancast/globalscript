@@ -644,6 +644,8 @@ gsparse_ubcase_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparse
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_field_cont_arg(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_thunk_alloc_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_value_alloc_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_push_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return 0;
