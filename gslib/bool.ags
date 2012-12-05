@@ -116,8 +116,8 @@ bool.t	.tygvar
 bool.prim.u	.tygvar
 bool.false	.gvar
 b1	.fv	bool.t
-b00	.karg	bool.prim.u
-	.analyze	b00	false	true
+b0.0	.karg	bool.prim.u
+	.analyze	b0.0	false	true
 	.case	false
 		.enter	bool.false
 	.case	true
