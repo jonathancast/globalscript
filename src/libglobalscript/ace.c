@@ -317,6 +317,7 @@ ace_prim(struct ace_thread *thread)
     struct gsregistered_primset *prims;
     gsvalue args[MAX_NUM_REGISTERS];
     int i;
+    int res;
 
     ip = thread->ip;
 
@@ -324,7 +325,12 @@ ace_prim(struct ace_thread *thread)
         args[i] = thread->regs[ACE_PRIM_ARG(ip, i)]
     ;
     prims = gsprims_lookup_prim_set_by_index(ACE_PRIM_PRIMSET_INDEX(ip));
-    return prims->exec_table[ACE_PRIM_INDEX(ip)](thread, ip->pos, ACE_PRIM_NARGS(ip), args, &thread->regs[thread->nregs++]);
+
+    res = prims->exec_table[ACE_PRIM_INDEX(ip)](thread, ip->pos, ACE_PRIM_NARGS(ip), args, &thread->regs[thread->nregs++]);
+
+    thread->ip = ACE_PRIM_SKIP(ip);
+
+    return res;
 }
 
 static

@@ -46,7 +46,7 @@ enum {
 #define ACE_UNKNOWN_PRIM_SIZE() (0)
 #define ACE_UNKNOWN_PRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 0)
 
-#define ACE_PRIM_SIZE(nargs) (3 + (nargs))
+#define ACE_PRIM_SIZE(nargs) GS_SIZE_BYTECODE(3 + (nargs))
 #define ACE_PRIM_PRIMSET_INDEX(ip) ((ip)->args[0])
 #define ACE_PRIM_INDEX(ip) ((ip)->args[1])
 #define ACE_PRIM_NARGS(ip) ((ip)->args[2])
