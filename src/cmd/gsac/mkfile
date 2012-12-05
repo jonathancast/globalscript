@@ -2,53 +2,18 @@
 
 MKSHELL=$PLAN9/bin/rc
 
-GS_SOURCES=`{echo gslib/*.gs}
-STAGE0_TARGETS=${GS_SOURCES:gslib/%.gs=stage0/%.gsac}
-STAGE1_TARGETS=${GS_SOURCES:gslib/%.gs=stage1/%.gsac}
-STAGE2_TARGETS=${GS_SOURCES:gslib/%.gs=stage2/%.gsac}
+GSLIB_TARGETS=`{$PLAN9/bin/rc ./gslib-targets}
 
-all: $STAGE2_TARGETS
+<| $PLAN9/bin/rc ./gslib-deps
 
-test:V:
-	:
+interpreted:V:
+	true
 
-integration-test:V: $STAGE1_TARGETS $STAGE2_TARGETS
-	for (i in gslib/*.gs) diff -c `{echo $i | sed 's,gslib/(.*).gs,stage1/\1.gsac'} `{echo $i | sed 's,cgs_src/(.*).cgs,stage2/\1.gsac'}
+install-interpreted:V: interpreted
+	cp gsac.rc $GLOBALSCRIPT/bin/gsac
+	chmod a+x $GLOBALSCRIPT/bin/gsac
+	cp gsac-targets.rc $GLOBALSCRIPT/bin/gsac-targets
+	chmod a+x $GLOBALSCRIPT/bin/gsac-targets
 
-# §section Stage 0
-
-stage0/%.gs:D: gslib/%.gs
-	cp gslib/$stem.gs stage0/$stem.gs
-
-stage0/%.gscr:D: stage0/%.gs
-	$GLOBALSCRIPT/bin/gsload -l $GLOBALSCRIPT/gslib -l stage0 stage0/$stem.gs > stage0/$stem.gscr
-
-stage0/%.gsac:D: stage0/%.gscr
-	$GLOBALSCRIPT/bin/gsac -l $GLOBALSCRIPT/gslib -l stage0 stage0/$stem.gs > stage0/$stem.gsac
-
-# §section Stage 1
-
-stage1/%.gs:D: gslib/%.gs
-	cp gslib/$stem.gs stage1/$stem.gs
-
-stage1/%.gscr:D: stage1/%.gs
-	$GLOBALSCRIPT/bin/gsload -l $GLOBALSCRIPT/gslib -l stage1 stage1/$stem.gs > stage1/$stem.gscr
-
-stage1/%.gsac:D: $STAGE0_TARGETS stage0/gsac.gsac stage1/%.gscr
-	$GLOBALSCRIPT/bin/ibio stage0 stage0/gsac.gsac -l $GLOBALSCRIPT/gslib -l stage1 stage1/$stem.gscr > stage1/$stem.gsac
-
-# §section Stage 2
-
-stage2/%.gs:D: gslib/%.gs
-	cp gslib/$stem.gs stage2/$stem.gs
-
-stage2/%.gscr:D: stage2/%.gs
-	$GLOBALSCRIPT/bin/gsload -l $GLOBALSCRIPT/gslib -l stage2 stage2/$stem.gs > stage2/$stem.gscr
-
-stage2/%.gsac:D: $STAGE1_TARGETS stage1/gsac.gsac stage2/%.gscr
-	$GLOBALSCRIPT/bin/ibio stage1 stage1/gsac.gsac -l $GLOBALSCRIPT/gslib -l stage2 stage2/$stem.gscr > stage2/$stem.gsac
-
-# §section Etc.
-
-clean:
-	rm -f stage0/* stage1/* stage2/*
+effect:V: $GSLIB_TARGETS
+	true

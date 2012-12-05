@@ -1,0 +1,3 @@
+if (test -x $GLOBALSCRIPT/bin/gsac-deps)
+    exec $GLOBALSCRIPT/bin/gsac-deps $GLOBALSCRIPT/bin/gslib
+exec true

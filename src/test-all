@@ -10,12 +10,22 @@ cd $GLOBALSCRIPT/src/libtest &&
     mk pure-integration-test && mk pure-install &&
     cd ibio/ &&
     mk integration-test && mk install &&
-# §paragraph{Bootstrap §fn{/gslib}}
-    cd ../../../gslib &&
-    mk core-libs &&
-    mk typed-libs &&
-    mk src-libs &&
-    && $GLOBALSCRIPT/src/cmd/rc/test-gslib &&
-# §paragaph{§sh{gsac}}
-    cd ../src/cmd/gsac &&
-    mk integration-test
+    $GLOBALSCRIPT/src/cmd/rc/test-gslib &&
+# §paragraph{Interpreted Compiler}
+    cd ../gsac &&
+    mk interpreted && mk install-interpreted && mk effect &&
+    cd ../gscr &&
+    mk interpreted && mk install-interpreted && mk effect &&
+    cd ../gsty &&
+    mk interpreted && mk install-interpreted && mk effect &&
+    cd ../gsobj &&
+    mk interpreted && mk install-install && mk effect &&
+# §paragraph{Compiled Compiler}
+    cd ../gsac &&
+    mk compiled && mk install-compiled &&
+    cd ../gscr &&
+    mk compiled && mk install-compiled &&
+    cd ../gsty &&
+    mk compiled && mk install-compiled &&
+    cd ../gsobj &&
+    mk compiled && mk install-compiled
