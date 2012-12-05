@@ -848,11 +848,8 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
 
     fun = (struct gsheap_item *)v;
 
-    lock(&fun->lock);
-
     if (fun->type != gsclosure) {
         ace_poison_thread(thread, cont->pos, "Applied function %P is not a closure", fun->pos);
-        unlock(&fun->lock);
         return 0;
     }
 
@@ -881,7 +878,6 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
         return ace_return(thread, cont->pos, (gsvalue)res);
     } else if (app->numargs > needed_args) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Over-saturated applications");
-        unlock(&fun->lock);
         return 0;
     } else {
         int i;
@@ -895,26 +891,22 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
 
                 if (needed_args < app->numargs) {
                     ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Over-saturated applications");
-                    unlock(&fun->lock);
                     return 0;
                 }
                 if (needed_args > app->numargs) {
                     ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Under-saturated applications");
-                    unlock(&fun->lock);
                     return 0;
                 }
 
                 ip = ace_set_registers_from_closure(thread, cl);
                 if (!ip) {
                     ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-                    unlock(&fun->lock);
                     return 0;
                 }
 
                 for (i = 0; i < app->numargs; i++) {
                     if (thread->nregs >= MAX_NUM_REGISTERS) {
                         ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-                        unlock(&fun->lock);
                         return 0;
                     }
                     thread->regs[thread->nregs] = app->arguments[i];
@@ -944,18 +936,14 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
                     res->fvs[cl->numfvs + i] = app->arguments[i]
                 ;
 
-                unlock(&fun->lock);
                 thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
                 return ace_return(thread, cont->pos, (gsvalue)res);
             }
             default:
                 ace_thread_unimpl(thread, __FILE__, __LINE__, fun->pos, "Apply code blocks of type %d", cl->code->tag);
-                unlock(&fun->lock);
                 return 0;
         }
     }
-
-    unlock(&fun->lock);
 
     return 1;
 }
