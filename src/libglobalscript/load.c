@@ -628,6 +628,8 @@ gsparse_force_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsed
     return -1;
 }
 
+static int gsparse_field_cont_arg(char *, struct gsparsedline *, int *, char **, long);
+
 static
 long
 gsparse_ubcase_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
@@ -641,6 +643,7 @@ gsparse_ubcase_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparse
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_field_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_push_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return 0;
@@ -1149,8 +1152,6 @@ gsparse_check_label_on_terminal_op(gsparsedfile *parsedfile, struct gsparsedline
     else
         parsedline->label = 0;
 }
-
-static int gsparse_field_cont_arg(char *, struct gsparsedline *, int *, char **, long);
 
 static
 void
