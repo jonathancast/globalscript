@@ -19,3 +19,5 @@
 stage0/.*\.gs$
 \.gscr$
 bin/gsac-targets$
+bin/gsac-deps$
+bin/gsac$

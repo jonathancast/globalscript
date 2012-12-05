@@ -3,22 +3,5 @@ BIN=$GLOBALSCRIPT/bin
 CFLAGS=$CFLAGS -I $GLOBALSCRIPT/include
 LDFLAGS=$LDFLAGS -L $GLOBALSCRIPT/lib/ -lglobalscript
 
-%.bcgs:D: %.ags $GLOBALSCRIPT/bin/gsbc `{echo $GLOBALSCRIPT/src/cmd/gsbc/*.pm}
-	gsbc $stem.ags > $stem.bcgs
-
-%threadmain.c: %.threadmain $GLOBALSCRIPT/bin/apithreadcompile
-	$GLOBALSCRIPT/bin/apithreadcompile $stem.threadmain > $stem'threadmain.c'
-
-%threadmain.$O: $GLOBALSCRIPT/include/libglobalscript.h %.h
-
-%.ibio.bcgs-out:D: %.ibio.bcgs
-	ibio $stem.ibio.bcgs > $stem.ibio.bcgs-out
-
-test-%:V: %-out %-expected
-	diff $stem-out $stem-expected
-
-clean:V:
-	rm -f *.bcgs
-	rm -f *threadmain.c
-	rm -f *.ibio.bgs-out
-	rm -f $NUKE_FILES
+%.gsac:D: %.cgs
+	$GLOBALSCRIPT/bin/gsac -l $GLOBALSCRIPT/gslib -l ./gslib $stem.cgs > $stem.gsac

@@ -1,3 +1,0 @@
-#! /usr/local/plan9/bin/rc
-
-exec $GLOBALSCRIPT/bin/ibio $GLOBALSCRIPT/bin/gsac.ags $*
