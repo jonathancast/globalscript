@@ -62,7 +62,7 @@ gsheapeval(gsvalue val)
                             res = gstyindir;
                         } else if (fvs_in_cl > fvs_for_code + args_for_code) {
                             gspoison(hp, hp->pos, "Code has %d free variables and arguments, but closure has %d arguments supplied", fvs_for_code + args_for_code, fvs_in_cl);
-                            return gstyindir;
+                            res = gstyindir;
                         } else if (fvs_in_cl < fvs_for_code + args_for_code) {
                             res = gstywhnf;
                         } else {
