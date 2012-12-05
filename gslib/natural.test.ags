@@ -4,7 +4,17 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0
+_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0	_test.1.div.0	_test.2.div.3
+
+_test.4.eq.4	.closure	_test.4.eq.4_c
+_test.4.eq.4_label	.string	4\s≡\s4
+_test.4.eq.4_test_fail	.string	4\s≠\s4
+_test.4.eq.4_test_succ	.string	4\s≡\s4
+
+_test.4.eq.0	.closure	_test.4.eq.0_c
+_test.4.eq.0_label	.string	4\s≡\s0
+_test.4.eq.0_test_succ	.string	4\s≠\s0
+_test.4.eq.0_test_fail	.string	4\s≡\s0
 
 _test.0.lt.4	.closure	_test.0.lt.4_c
 _test.0.lt.4_label	.string	0\s<\s4
@@ -18,17 +28,26 @@ _test.4.lt.0_test	.closure	_test.4.lt.0_test_c
 _test.4.lt.0_test_succ	.string	4\s≮\s0
 _test.4.lt.0_test_fail	.string	4\s<\s0
 
-_test.4.eq.4	.closure	_test.4.eq.4_c
-_test.4.eq.4_label	.string	4\s≡\s4
-_test.4.eq.4_test_fail	.string	4\s≠\s4
-_test.4.eq.4_test_succ	.string	4\s≡\s4
+_test.1.div.0	.closure	_test.1.div.0_c
+_test.1.div.0_label	.string	1\s`divMod`\s0
+_test.1.div.0_test	.closure	_test.1.div.0_test_c
+_test.1.div.0_test_succ	.string	1\s`divMod`\s0\sreturns\sdivide\sby\s0
+_test.1.div.0_test_fail	.string	1\s`divMod`\s0\sreturns\squotient\sand\sremainder
 
-_test.4.eq.0	.closure	_test.4.eq.0_c
-_test.4.eq.0_label	.string	4\s≡\s0
-_test.4.eq.0_test_succ	.string	4\s≠\s0
-_test.4.eq.0_test_fail	.string	4\s≡\s0
+_test.2.div.3	.closure	_test.2.div.3_c
+_test.2.div.3_label	.string	2\s`divMod`\s3
+_test.2.div.3_test	.closure	_test.2.div.3_test_c
+_test.2.div.3_test_quot_fail	.string	2\s`div`\s3≠0
+_test.2.div.3_test_quot_succ	.string	2\s`div`\s3≡0
+_test.2.div.3_test_mod_fail	.string	2\s`mod`\s3≠2
+_test.2.div.3_test_mod_succ	.string	2\s`mod`\s3≡2
+
+_test.8.div.4	.closure	_test.8.div.4_c
+_test.8.div.4_label	.string	8\s`divMod`\s4
 
 _0	.closure	_0_c
+_2	.closure	_2_c
+_3	.closure	_3_c
 _4	.closure	_4_c
 
 	.code
@@ -140,6 +159,109 @@ _0	.gvar
 	.app	_4	_0
 	.enter	natural.<
 
+# §section §gs{1 `divMod` 0}
+
+_test.1.div.0_c	.expr
+test.property.label	.gvar
+_test.1.div.0_label	.gvar
+_test.1.div.0_test	.gvar
+	.app	_test.1.div.0_label	_test.1.div.0_test
+	.enter	test.property.label
+
+_test.1.div.0_test_c	.expr
+_test.1.div.0_test_k0	.subcode
+_test.1.div.0_test_k1	.subcode
+natural.prim.divMod	.gvar
+1	.natural	1
+0	.natural	0
+	.ubanalyze	0	_test.1.div.0_test_k0	1	_test.1.div.0_test_k1
+	.app	1	0
+	.yield	natural.prim.divMod
+
+_test.1.div.0_test_k0	.ubcasecont
+test.property.true	.gvar
+_test.1.div.0_test_succ	.gvar
+	.app	_test.1.div.0_test_succ
+	.enter	test.property.true
+
+_test.1.div.0_test_k1	.ubcasecont
+natural.prim.u	.tygvar
+test.property.false	.gvar
+_test.1.div.0_test_fail	.gvar
+div	.fkarg	0	natural.prim.u
+mod	.fkarg	1	natural.prim.u
+	.app	_test.1.div.0_test_fail
+	.enter	test.property.false
+
+# §section §gs{2 `divMod` 3}
+
+_test.2.div.3_c	.expr
+test.property.label	.gvar
+_test.2.div.3_label	.gvar
+_test.2.div.3_test	.gvar
+	.app	_test.2.div.3_label	_test.2.div.3_test
+	.enter	test.property.label
+
+_test.2.div.3_test_c	.expr
+_test.2.div.3_test_k	.subcode
+natural.divMod	.gvar
+_2	.gvar
+_3	.gvar
+	.force	_test.2.div.3_test_k
+	.app	_2	_3
+	.enter	natural.divMod
+
+_test.2.div.3_test_k	.forcecont
+_test.2.div.3_test_qm0_ty	.tygvar
+_test.2.div.3_test_quot_c	.subcode
+_test.2.div.3_test_mod_c	.subcode
+test.property.∧	.gvar
+qm0	.karg	_test.2.div.3_test_qm0_ty
+q	.field	0	qm0
+m	.field	1	qm0
+quot	.alloc	_test.2.div.3_test_quot_c	|	q
+mod	.alloc	_test.2.div.3_test_mod_c	|	m
+	.app	quot	mod
+	.enter	test.property.∧
+
+_test.2.div.3_test_quot_c	.expr
+natural.t	.tygvar
+_test.2.div.3_test_quot_eq_c	.subcode
+test.assert	.gvar
+_test.2.div.3_test_quot_fail	.gvar
+_test.2.div.3_test_quot_succ	.gvar
+q	.fv	natural.t
+eq	.alloc	_test.2.div.3_test_quot_eq_c	|	q
+	.app	_test.2.div.3_test_quot_fail	_test.2.div.3_test_quot_succ	eq
+	.enter	test.assert
+
+_test.2.div.3_test_quot_eq_c	.expr
+natural.t	.tygvar
+natural.≡	.gvar
+_0	.gvar
+q	.fv	natural.t
+	.app	q	_0
+	.enter	natural.≡
+
+_test.2.div.3_test_mod_c	.expr
+natural.t	.tygvar
+_test.2.div.3_test_mod_eq_c	.subcode
+test.assert	.gvar
+_test.2.div.3_test_mod_fail	.gvar
+_test.2.div.3_test_mod_succ	.gvar
+m	.fv	natural.t
+eq	.alloc	_test.2.div.3_test_mod_eq_c	|	m
+	.app	_test.2.div.3_test_mod_fail	_test.2.div.3_test_mod_succ	eq
+	.enter	test.assert
+
+_test.2.div.3_test_mod_eq_c	.expr
+natural.t	.tygvar
+natural.≡	.gvar
+_2	.gvar
+m	.fv	natural.t
+	.app	m	_2
+	.enter	natural.≡
+
 # §section Test fixtures
 
 _0_c	.expr
@@ -149,9 +271,29 @@ natural.t.in	.cogvar
 	.lift
 	.yield	0
 
+_2_c	.expr
+natural.t.in	.cogvar
+2	.natural	2
+	.coerce	natural.t.in
+	.lift
+	.yield	2
+
+_3_c	.expr
+natural.t.in	.cogvar
+3	.natural	3
+	.coerce	natural.t.in
+	.lift
+	.yield	3
+
 _4_c	.expr
 natural.t.in	.cogvar
 4	.natural	4
 	.coerce	natural.t.in
 	.lift
 	.yield	4
+
+	.type
+
+_test.2.div.3_test_qm0_ty	.tyexpr
+natural.t	.tygvar
+	.typroduct	0	natural.t	1	natural.t

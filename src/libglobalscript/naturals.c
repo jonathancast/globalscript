@@ -13,20 +13,27 @@ static struct gsregistered_primtype natural_prim_types[] = {
 };
 
 enum {
+    natural_prim_ub_divMod,
     natural_prim_ub_eq,
     natural_prim_ub_lt,
 };
 
 static struct gsregistered_prim natural_prim_operations[] = {
     /* name, file, line, group, apitype, type, index, */
+    { "divMod", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 natural.prim.u natural.prim.u \"uΠ〈 0 1 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_divMod, },
+
     { "≡", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_eq, },
     { "<", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_lt, },
+
     { 0, },
 };
 
+static gsubprim_handler natural_prim_handle_divMod;
 static gsubprim_handler natural_prim_handle_eq, natural_prim_handle_lt;
 
 static gsubprim_handler *natural_prim_ubexec[] = {
+    natural_prim_handle_divMod,
+
     natural_prim_handle_eq,
     natural_prim_handle_lt,
 };
@@ -37,6 +44,41 @@ struct gsregistered_primset gsnatural_prim_set = {
     /* operations = */ natural_prim_operations,
     /* ubexec_table = */ natural_prim_ubexec,
 };
+
+/* §section Arithmetic Primitives */
+
+static
+int
+natural_prim_handle_divMod(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
+{
+    gsvalue dividend, divisor;
+
+    dividend = args[0];
+    divisor = args[1];
+    if (
+        GS_SLOW_EVALUATE(dividend) != gstyunboxed
+        || GS_SLOW_EVALUATE(divisor) != gstyunboxed
+    )
+        return gsubprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_divMod: bignums")
+    ;
+
+    dividend &= ~GS_MAX_PTR;
+    divisor &= ~GS_MAX_PTR;
+
+    if (divisor == 0)
+        return gsubprim_return(thread, pos, 0, 0)
+    ; else {
+        gsvalue quotient, remainder;
+
+        quotient = dividend / divisor;
+        remainder = dividend % divisor;
+        quotient |= GS_MAX_PTR;
+        remainder |= GS_MAX_PTR;
+        return gsubprim_return(thread, pos, 1, 2, quotient, remainder);
+    }
+}
+
+/* §section Ordering Primitives */
 
 static
 int
@@ -71,6 +113,8 @@ natural_prim_handle_lt(struct ace_thread *thread, struct gspos pos, int nargs, g
         return gsubprim_return(thread, pos, 0, 0)
     ;
 }
+
+/* §section C-level Functions */
 
 char *
 gsnaturaltochar(char *err, char *eerr, gsvalue v, char *buf, char *ebuf)
