@@ -1144,6 +1144,8 @@ struct gsbc_typecheck_field_cont_closure {
     struct gstype_field fields[MAX_NUM_REGISTERS];
 };
 
+static int gsbc_typecheck_field_cont_arg_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *, struct gsbc_typecheck_field_cont_closure *);
+
 static
 struct gsbc_code_item_type *
 gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_pos, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
@@ -1163,6 +1165,11 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_field_cont_arg_op(p, &cl, &fcl)) {
+            if (cont_arg_type)
+                gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
+            ;
+        } else if (gsbc_typecheck_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
             goto have_type;
@@ -1596,8 +1603,6 @@ gsbc_typecheck_check_constr(struct gspos analyzepos, struct gspos casepos, int c
         ;
     }
 }
-
-static int gsbc_typecheck_field_cont_arg_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *, struct gsbc_typecheck_field_cont_closure *);
 
 static
 struct gstype *
