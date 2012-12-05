@@ -664,6 +664,7 @@ gsubprim_return(struct ace_thread *thread, struct gspos pos, int constr, int nar
     struct gsbc_cont *cont;
     struct gsbc_cont_ubanalyze *ubanalyze;
     struct gsbc *ip;
+    va_list arg;
     int i;
 
     cont = thread->stacktop;
@@ -683,10 +684,11 @@ gsubprim_return(struct ace_thread *thread, struct gspos pos, int constr, int nar
         ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "gsubprim_return: get free variable");
         return 0;
     }
-    for (i = 0; i < nargs; i++) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "gsubprim_return: set argument");
-        return 0;
-    }
+    va_start(arg, nargs);
+    for (i = 0; i < nargs; i++)
+        thread->regs[thread->nregs++] = va_arg(arg, gsvalue)
+    ;
+    va_end(arg);
 
     thread->ip = ip;
     thread->stacktop = (uchar*)thread->stacktop + ACE_UBANALYZE_STACK_SIZE(ubanalyze->numconts, ubanalyze->numfvs);
