@@ -12,6 +12,8 @@ natural.prim.divMod	.closure	_natural.prim.divMod_c
 natural.prim.≡	.closure	_natural.prim.≡_c
 natural.prim.<	.closure	_natural.prim.<_c
 
+natural.fmtdecimal	.closure	_natural.fmtdecimal_c	_natural.fmtdecimal_ty
+
 	.code
 
 # §section §gs{natural.divMod}
@@ -187,6 +189,90 @@ x	.arg	natural.prim.u
 y	.arg	natural.prim.u
 	.ubprim	natural.prim	<	_natural.prim.<_ty	|	x	y
 
+# §section §gs{natural.mkdecimal}
+
+_natural.fmtdecimal_c	.expr
+natural.t	.tygvar
+_natural.fmtdecimal_k	.subcode
+natural.t.out	.cogvar
+n	.larg	natural.t
+	.force	_natural.fmtdecimal_k
+	.coerce	natural.t.out
+	.enter	n
+
+_natural.fmtdecimal_k	.forcecont
+natural.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+_natural.fmtdecimal_k0	.subcode
+_natural.fmtdecimal_k1	.subcode
+natural.prim.divMod	.gvar
+10	.natural	10
+n0	.karg	natural.prim.u
+	.ubanalyze	0	_natural.fmtdecimal_k0	1	_natural.fmtdecimal_k1
+	.app	n0	10
+	.yield	natural.prim.divMod
+
+_natural.fmtdecimal_k0	.ubcasecont
+list.t	.tygvar
+rune.t	.tygvar
+	.undef	list.t	rune.t
+
+_natural.fmtdecimal_k1	.ubcasecont
+natural.prim.u	.tygvar
+rune.t	.tygvar
+_natural.fmtdecimal_q0.s_c	.subcode
+_natural.fmtdecimal_d0_c	.subcode
+list.<>	.gvar
+q0	.fkarg	0	natural.prim.u
+m0	.fkarg	1	natural.prim.u
+q0.s	.alloc	_natural.fmtdecimal_q0.s_c	|	q0
+d0	.alloc	_natural.fmtdecimal_d0_c	|	m0
+	.app	q0.s	d0
+	.enter	list.<>	rune.t
+
+_natural.fmtdecimal_q0.s_c	.expr
+natural.prim.u	.tygvar
+_natural.fmtdecimal_q0.s_k0	.subcode
+_natural.fmtdecimal_q0.s_k1	.subcode
+natural.prim.<	.gvar
+0	.natural	0
+q0	.fv	natural.prim.u
+	.ubanalyze	0	_natural.fmtdecimal_q0.s_k0	1	_natural.fmtdecimal_q0.s_k1
+	.app	0	q0
+	.yield	natural.prim.<
+
+_natural.fmtdecimal_q0.s_k0	.ubcasecont
+rune.t	.tygvar
+list.nil	.gvar
+	.enter	list.nil	rune.t
+
+_natural.fmtdecimal_q0.s_k1	.ubcasecont
+list.t	.tygvar
+rune.t	.tygvar
+	.undef	list.t	rune.t
+
+_natural.fmtdecimal_d0_c	.expr
+natural.prim.u	.tygvar
+rune.t	.tygvar
+_natural.fmtdecimal_d0_r_c	.subcode
+list.singleton	.gvar
+m0	.fv	natural.prim.u
+r	.alloc	_natural.fmtdecimal_d0_r_c	|	m0
+	.app	r
+	.enter	list.singleton	rune.t
+
+_natural.fmtdecimal_d0_r_c	.expr
+natural.prim.u	.tygvar
+rune.t.in	.cogvar
+rune.prim.advance	.gvar
+0	.rune	0
+m0	.fv	natural.prim.u
+	.coerce	rune.t.in
+	.lift
+	.app	0	m0
+	.yield	rune.prim.advance
+
 	.type
 
 natural.t	.tyabstract	*
@@ -200,6 +286,18 @@ _natural.divMod_res.ty	.tyexpr
 natural.t	.tygvar
 	.tylift
 	.typroduct	0	natural.t	1	natural.t
+
+# §section §Gs{natural.fmtdecimal}
+
+_natural.fmtdecimal_ty	.tyexpr
+natural.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	natural.t
+	.tyref	list.t	rune.t
+
+# §section Primitives
 
 _natural.prim.divMod_ty	.tyexpr
 natural.prim.u	.tygvar
