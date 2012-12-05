@@ -7,6 +7,7 @@ bool.false	.closure	_bool.false.c
 
 bool.≡	.closure	_bool.≡.c
 
+bool.not	.closure	_bool.not_c
 bool.∧	.closure	_bool.∧.c
 
 bool.print	.closure	_bool.print_c	_bool.print_ty
@@ -75,6 +76,13 @@ b0	.karg	bool.prim.u
 			.enter	bool.false
 		.case	true
 			.enter	bool.true
+
+# §section §gs{bool.not}
+
+_bool.not_c	.expr
+bool.t	.tygvar
+b	.larg	bool.t
+	.undef	bool.t
 
 # §section §gs{bool.∧}
 
