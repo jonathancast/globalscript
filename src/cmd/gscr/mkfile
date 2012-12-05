@@ -6,7 +6,6 @@ LOCAL_TARGETS=\
 	./gscr.gsac \
 	./gscr-targets.gsac \
 	./gscr-deps.gsac \
-	`{$GLOBALSCRIPT/bin/gsac-targets ./gslib} \
 
 interpreted:V: $LOCAL_TARGETS
 	true
