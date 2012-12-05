@@ -3051,6 +3051,9 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
             prim = (struct gstype_unprim *)pty;
 
             switch (prim->primtypegroup) {
+                case gsprim_type_defined:
+                    res = seprint(res, eob, "\"definedprim ");
+                    break;
                 case gsprim_type_elim:
                     res = seprint(res, eob, "\"elimprim ");
                     break;
