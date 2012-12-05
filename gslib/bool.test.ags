@@ -3,7 +3,7 @@
 	.data
 
 	.closure	_epcode
-_tests	.list	test.property.t	_test.false.eq.false	_test.false.eq.true	_test.true.eq.false	_test.true.eq.true	_test.true.∧.true	_test.false.∧.false
+_tests	.list	test.property.t	_test.false.eq.false	_test.false.eq.true	_test.true.eq.false	_test.true.eq.true	_test.not.false	_test.true.∧.true	_test.false.∧.false
 
 _test.false.eq.false	.closure	_test.false.eq.false.c
 _test.false.eq.false.label	.string	false\s≡\sfalse
@@ -28,6 +28,9 @@ _test.true.eq.true_label	.string	true\s≡\strue
 _test.true.eq.true_test	.closure	_test.true.eq.true_test_c
 _test.true.eq.true_test_false	.string	true\s≠\strue
 _test.true.eq.true_test_true	.string	true\s≡\strue
+
+_test.not.false	.closure	_test.not.false_c
+_test.not.false_false	.string	not\sfalse
 
 _test.true.∧.true	.closure	_test.true.∧.true.c
 _test.true.∧.true.label	.string	true\s∧\strue\sis\strue
@@ -146,6 +149,33 @@ bool.≡	.gvar
 bool.true	.gvar
 	.app	bool.true	bool.true
 	.enter	bool.≡
+
+# §section §gs{not false}
+
+_test.not.false_c	.expr
+_test.not.false_test_c	.subcode
+test.property.label	.gvar
+_test.not.false_false	.gvar
+test	.alloc	_test.not.false_test_c
+	.app	_test.not.false_false	test
+	.enter	test.property.label
+
+_test.not.false_test_c	.expr
+bool.t	.tygvar
+_test.not.false_test_actual_c	.subcode
+test.assert.eq	.gvar
+bool.≡	.gvar
+bool.print	.gvar
+bool.true	.gvar
+actual	.alloc	_test.not.false_test_actual_c
+	.app	bool.≡	bool.print	actual	bool.true
+	.enter	test.assert.eq	bool.t
+
+_test.not.false_test_actual_c	.expr
+bool.not	.gvar
+bool.false	.gvar
+	.app	bool.false
+	.enter	bool.not
 
 # §section §gs{true ∧ true}
 

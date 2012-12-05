@@ -81,8 +81,23 @@ b0	.karg	bool.prim.u
 
 _bool.not_c	.expr
 bool.t	.tygvar
+_bool.not_k	.subcode
+bool.t.out	.cogvar
 b	.larg	bool.t
-	.undef	bool.t
+	.force	_bool.not_k
+	.coerce	bool.t.out
+	.enter	b
+
+_bool.not_k	.forcecont
+bool.prim.u	.tygvar
+bool.t	.tygvar
+bool.true	.gvar
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.enter	bool.true
+		.case	true
+			.undef	bool.t
 
 # §section §gs{bool.∧}
 
