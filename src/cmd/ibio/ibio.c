@@ -36,6 +36,9 @@ static struct api_prim_table ibio_prim_table = {
     },
 };
 
+static gsprim_handler *ibio_exec[] = {
+};
+
 static gsubprim_handler *ibio_ubexec[] = {
 };
 
@@ -52,6 +55,7 @@ static struct gsregistered_primset ibio_primset = {
     /* name = */ "ibio.prim",
     /* types = */ ibio_types,
     /* operations = */ ibio_operations,
+    /* exec_table */ ibio_exec,
     /* ubexec_table */ ibio_ubexec,
 };
 

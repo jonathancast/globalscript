@@ -349,6 +349,8 @@ struct gseprim {
 
 /* §section Primitives */
 
+typedef int gsprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *, gsvalue *);
+
 typedef int gsubprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *);
 int gsubprim_return(struct ace_thread *, struct gspos, int, int, ...);
 int gsubprim_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
@@ -357,6 +359,7 @@ struct gsregistered_primset {
     char *name;
     struct gsregistered_primtype *types;
     struct gsregistered_prim *operations;
+    gsprim_handler **exec_table;
     gsubprim_handler **ubexec_table;
 };
 

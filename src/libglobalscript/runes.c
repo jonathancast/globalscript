@@ -13,6 +13,9 @@ static struct gsregistered_primtype rune_prim_types[] = {
     { 0, },
 };
 
+static gsprim_handler *rune_prim_exec[] = {
+};
+
 static gsubprim_handler rune_prim_handle_eq;
 
 enum {
@@ -33,6 +36,7 @@ struct gsregistered_primset gsrune_prim_set = {
     /* name = */ "rune.prim",
     /* types = */ rune_prim_types,
     /* operations = */ rune_prim_operations,
+    /* exec_table = */ rune_prim_exec,
     /* ubexec_table = */ rune_prim_ubexec,
 };
 

@@ -28,6 +28,9 @@ static struct gsregistered_prim natural_prim_operations[] = {
     { 0, },
 };
 
+static gsprim_handler *natural_prim_exec[] = {
+};
+
 static gsubprim_handler natural_prim_handle_divMod;
 static gsubprim_handler natural_prim_handle_eq, natural_prim_handle_lt;
 
@@ -42,6 +45,7 @@ struct gsregistered_primset gsnatural_prim_set = {
     /* name = */ "natural.prim",
     /* types = */ natural_prim_types,
     /* operations = */ natural_prim_operations,
+    /* exec_table = */ natural_prim_exec,
     /* ubexec_table = */ natural_prim_ubexec,
 };
 
