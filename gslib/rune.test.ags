@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.print.x	_test.list.print.x
+_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.print.x	_test.list.print.x	_test.rune.advance
 
 _test.x.eq.x	.closure	_test.x.eq.x.c
 _test.x.eq.x.label	.string	r/x/\s≡\sr/x/
@@ -32,8 +32,15 @@ _test.list.print.x_test_succ	.string	rune.list.print\sqq{x}\s≡\sqq{qq{x}}
 _test.list.print.x_test_fail	.string	rune.list.print\sqq{x}\s≠\sqq{qq{x}}
 _test.list.print.x_test_expected	.string	qq{x}
 
+_test.rune.advance	.closure	_test.rune.advance_c
+_test.rune.advance_label	.string	rune.advance
+
+_c	.closure	_c_c
+_g	.closure	_g_c
 _x	.closure	_x.c
 _y	.closure	_y_c
+
+_4	.closure	_4_c
 
 	.code
 
@@ -173,7 +180,49 @@ x.s	.fv	list.t	rune.t
 	.app	rune.≡	x.s	_test.list.print.x_test_expected
 	.enter	list.≡	rune.t
 
+# §section §gs{rune.advance}
+
+_test.rune.advance_c	.expr
+_test.rune.advance_test_c	.subcode
+test.property.label	.gvar
+_test.rune.advance_label	.gvar
+test	.alloc	_test.rune.advance_test_c
+	.app	_test.rune.advance_label	test
+	.enter	test.property.label
+
+_test.rune.advance_test_c	.expr
+rune.t	.tygvar
+_test.rune.advance_test_actual_c	.subcode
+test.assert.eq	.gvar
+rune.≡	.gvar
+rune.print	.gvar
+_g	.gvar
+actual	.alloc	_test.rune.advance_test_actual_c
+	.app	rune.≡	rune.print	actual	_g
+	.enter	test.assert.eq	rune.t
+
+_test.rune.advance_test_actual_c	.expr
+rune.advance	.gvar
+_c	.gvar
+_4	.gvar
+	.app	_c	_4
+	.enter	rune.advance
+
 # §section Fixtures
+
+_c_c	.expr
+rune.t.in	.cogvar
+c	.rune	c
+	.coerce	rune.t.in
+	.lift
+	.yield	c
+
+_g_c	.expr
+rune.t.in	.cogvar
+g	.rune	g
+	.coerce	rune.t.in
+	.lift
+	.yield	g
 
 _x.c	.expr
 rune.t.in	.cogvar
@@ -188,3 +237,10 @@ y	.rune	y
 	.coerce	rune.t.in
 	.lift
 	.yield	y
+
+_4_c	.expr
+natural.t.in	.cogvar
+4	.natural	4
+	.coerce	natural.t.in
+	.lift
+	.yield	4

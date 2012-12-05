@@ -47,13 +47,13 @@ ace_init()
     return 0;
 }
 
-static void ace_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 static int ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
 static void ace_failure_thread(struct ace_thread *, struct gsimplementation_failure *);
 
 static int ace_extract_efv(struct ace_thread *);
 static int ace_alloc_thunk(struct ace_thread *);
+static int ace_prim(struct ace_thread *);
 static int ace_alloc_constr(struct ace_thread *);
 static int ace_alloc_record(struct ace_thread *);
 static int ace_extract_field(struct ace_thread *);
@@ -144,6 +144,11 @@ ace_thread_pool_main(void *p)
                                 break;
                             case gsbc_op_alloc:
                                 if (ace_alloc_thunk(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_prim:
+                                if (ace_prim(thread))
                                     suspended_runnable_thread = 1
                                 ;
                                 break;
@@ -302,6 +307,24 @@ ace_alloc_thunk(struct ace_thread *thread)
     thread->nregs++;
     thread->ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
     return 1;
+}
+
+static
+int
+ace_prim(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsregistered_primset *prims;
+    gsvalue args[MAX_NUM_REGISTERS];
+    int i;
+
+    ip = thread->ip;
+
+    for (i = 0; i < ACE_PRIM_NARGS(ip); i++)
+        args[i] = thread->regs[ACE_PRIM_ARG(ip, i)]
+    ;
+    prims = gsprims_lookup_prim_set_by_index(ACE_PRIM_PRIMSET_INDEX(ip));
+    return prims->exec_table[ACE_PRIM_INDEX(ip)](thread, ip->pos, ACE_PRIM_NARGS(ip), args, &thread->regs[thread->nregs++]);
 }
 
 static
@@ -763,7 +786,6 @@ ace_poison_thread(struct ace_thread *thread, struct gspos srcpos, char *fmt, ...
     ace_error_thread(thread, gserror(srcpos, "%s", buf));
 }
 
-static
 void
 ace_thread_unimpl(struct ace_thread *thread, char *file, int lineno, struct gspos srcpos, char *fmt, ...)
 {

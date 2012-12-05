@@ -853,11 +853,39 @@ static
 int
 gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymconstr, gssymrecord, gssymfield;
+    static gsinterned_string gssymprim, gssymconstr, gssymrecord, gssymfield;
 
     int i;
 
-    if (gssymceq(p->directive, gssymconstr, gssymcodeop, ".constr")) {
+    if (gssymceq(p->directive, gssymprim, gssymcodeop, ".prim")) {
+        if (*fields[0])
+            p->label = gsintern_string(gssymdatalable, fields[0])
+        ; else
+            gsfatal("%P: Missing label on allocation op", p->pos)
+        ;
+        if (n < 3)
+            gsfatal("%P: Missing primset on .prim", p->pos)
+        ;
+        p->arguments[2 - 2] = gsintern_string(gssymprimsetlable, fields[2]);
+        if (n < 4)
+            gsfatal("%P: Missing prim name on .eprim", p->pos)
+        ;
+        p->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
+        if (n < 5)
+            gsfatal("%P: Missing declared type on .eprim", p->pos)
+        ;
+        p->arguments[4 - 2] = gsintern_string(gssymtypelable, fields[4]);
+        for (i = 5; i < n && strcmp(fields[i], "|"); i++)
+            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+        if (i < n) {
+            p->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        for (; i < n; i++)
+            p->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
+        ;
+    } else if (gssymceq(p->directive, gssymconstr, gssymcodeop, ".constr")) {
         STORE_VALUE_ALLOC_OP_LABEL();
         if (n < 3)
             gsfatal("%P: Missing type on .constr", p->pos)

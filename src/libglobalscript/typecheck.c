@@ -902,7 +902,7 @@ static int gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *, struct g
 
 static int gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_data_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
-static int gsbc_typecheck_alloc_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
+static int gsbc_typecheck_alloc_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
 static int gsbc_typecheck_cont_push_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
 static struct gstype *gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *, struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *);
 
@@ -963,7 +963,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             tyarglines[ntyargs] = p;
             ntyargs++;
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
-        } else if (gsbc_typecheck_alloc_op(p, &cl)) {
+        } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymeprim, gssymcodeop, ".eprim")) {
             struct gsregistered_primset *prims;
             struct gstype *type;
@@ -1081,7 +1081,7 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
-        } else if (gsbc_typecheck_alloc_op(p, &cl)) {
+        } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
             if (!cont_arg_type)
@@ -1169,7 +1169,7 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
             if (cont_arg_type)
                 gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
             ;
-        } else if (gsbc_typecheck_alloc_op(p, &cl)) {
+        } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
             goto have_type;
@@ -1636,7 +1636,7 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, str
                 gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
             ;
             karg_pos = p->pos;
-        } else if (gsbc_typecheck_alloc_op(p, pcl)) {
+        } else if (gsbc_typecheck_alloc_op(symtable, p, pcl)) {
         } else if (gsbc_typecheck_cont_push_op(p, pcl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)) {
             goto have_type;
@@ -1718,9 +1718,9 @@ static struct gstype *gsbc_find_field_in_product(struct gspos, struct gstype_pro
 
 static
 int
-gsbc_typecheck_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc, gssymconstr, gssymrecord, gssymfield;
+    static gsinterned_string gssymalloc, gssymprim, gssymconstr, gssymrecord, gssymfield;
 
     int i;
 
@@ -1747,6 +1747,64 @@ gsbc_typecheck_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_ap
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = alloc_type;
 
+        pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymprim, gssymcodeop, ".prim")) {
+        struct gsregistered_primset *prims;
+        struct gstype *type;
+        int first_arg_pos;
+
+        CHECK_PHASE(rtlet, "allocations");
+        CHECK_NUM_REGS(pcl->nregs);
+
+        gsargcheck(p, 2, "type");
+        type = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[2])];
+        gsbc_typecheck_validate_prim_type(p->pos, p->arguments[0], type);
+
+        gsargcheck(p, 0, "primset");
+        if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
+            struct gsregistered_prim *prim;
+            struct gstype *expected_type;
+
+            if (!(prim = gsprims_lookup_prim(prims, p->arguments[1]->name)))
+                gsfatal("%P: Primitive set %s has no prim %y", p->pos, prims->name, p->arguments[1])
+            ;
+
+            if (prim->group != gsprim_operation)
+                gsfatal("%P: Primitive %s in primset %s is not an API primitive", p->pos, prim->name, prims->name)
+            ;
+
+            expected_type = gsbc_typecheck_compile_prim_type(p->pos, symtable, prim->type);
+            gstypes_type_check_type_fail(p->pos, type, expected_type);
+        }
+
+        for (i = 3; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+            int tyargreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            type = gstype_instantiate(p->pos, type, pcl->tyregs[tyargreg]);
+        }
+        if (i < p->numarguments) i++;
+        first_arg_pos = i;
+        for (; i < p->numarguments; i++) {
+            int argreg;
+            struct gstype *argtype;
+
+            argreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            argtype = pcl->regtypes[argreg];
+
+            if (type->node == gstype_fun) {
+                struct gstype_fun *fun;
+
+                fun = (struct gstype_fun *)type;
+                gstypes_type_check_type_fail(p->pos, argtype, fun->tyarg);
+                type = fun->tyres;
+            } else {
+                gsfatal("%P: Too many arguments to %y (max %d; got %d)", p->pos, p->arguments[1], i - first_arg_pos, p->numarguments - first_arg_pos);
+            }
+        }
+
+        pcl->regs[pcl->nregs] = p->label;
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_unlifted_kind());
+        gsbc_typecheck_check_boxed(p->pos, type);
+        pcl->regtypes[pcl->nregs] = type;
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymconstr, gssymcodeop, ".constr")) {
         int tyreg;
@@ -2082,7 +2140,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
-        } else if (gsbc_typecheck_alloc_op(p, &cl)) {
+        } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;

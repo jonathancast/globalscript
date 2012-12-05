@@ -6,6 +6,8 @@
 
 #include "gsheap.h"
 #include "gssetup.h"
+#include "gsregtables.h"
+#include "ace.h"
 
 static struct gsregistered_primtype rune_prim_types[] = {
     /* name, file, line, group, kind, */
@@ -13,7 +15,14 @@ static struct gsregistered_primtype rune_prim_types[] = {
     { 0, },
 };
 
+static gsprim_handler rune_prim_handle_advance;
+
+enum {
+    rune_prim_advance,
+};
+
 static gsprim_handler *rune_prim_exec[] = {
+    rune_prim_handle_advance,
 };
 
 static gsubprim_handler rune_prim_handle_eq;
@@ -29,6 +38,7 @@ static gsubprim_handler *rune_prim_ubexec[] = {
 static struct gsregistered_prim rune_prim_operations[] = {
     /* name, file, line, group, apitype, type, index, */
     { "eq", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "rune.prim.rune rune.prim.rune \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", rune_prim_ub_eq, },
+    { "advance", __FILE__, __LINE__, gsprim_operation, 0, "rune.prim.rune natural.prim.u rune.prim.rune → →", rune_prim_advance, },
     { 0, },
 };
 
@@ -49,6 +59,40 @@ rune_prim_handle_eq(struct ace_thread *thread, struct gspos pos, int nargs, gsva
     ; else
         return gsubprim_return(thread, pos, 1, 0)
     ;
+}
+
+static
+int
+rune_prim_handle_advance(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args, gsvalue *res)
+{
+    gsvalue r, n;
+
+    r = args[0];
+    n = args[1];
+
+    if (IS_PTR(n)) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "rune_prim_handle_advance: bignum advances next");
+        return 0;
+    }
+
+    if (!(r & (GS_MAX_PTR >> 1)))
+        r &= ~GS_MAX_PTR
+    ;
+    n &= ~GS_MAX_PTR;
+
+    if (n >= 0x80) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "rune_prim_handle_advance: advance larger than ASCII range");
+        return 0;
+    }
+    if (r >= 0x80 - n) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "rune_prim_handle_advance: result outside of ASCII range");
+        return 0;
+    }
+
+    *res = r + n;
+    *res |= GS_MAX_PTR;
+
+    return 1;
 }
 
 gsvalue

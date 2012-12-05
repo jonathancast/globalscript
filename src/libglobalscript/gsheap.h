@@ -9,6 +9,8 @@ struct gsbc {
 enum {
     gsbc_op_efv,
     gsbc_op_alloc,
+    gsbc_op_unknown_prim,
+    gsbc_op_prim,
     gsbc_op_constr,
     gsbc_op_record,
     gsbc_op_field,
@@ -40,6 +42,16 @@ enum {
 #define ACE_ALLOC_NUMFVS(ip) ((ip)->args[1])
 #define ACE_ALLOC_FV(ip, n) ((ip)->args[2+(n)])
 #define ACE_ALLOC_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_ALLOC_NUMFVS(ip))
+
+#define ACE_UNKNOWN_PRIM_SIZE() (0)
+#define ACE_UNKNOWN_PRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 0)
+
+#define ACE_PRIM_SIZE(nargs) (3 + (nargs))
+#define ACE_PRIM_PRIMSET_INDEX(ip) ((ip)->args[0])
+#define ACE_PRIM_INDEX(ip) ((ip)->args[1])
+#define ACE_PRIM_NARGS(ip) ((ip)->args[2])
+#define ACE_PRIM_ARG(ip, n) ((ip)->args[3 + (n)])
+#define ACE_PRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 3 + ACE_PRIM_NARGS(ip))
 
 #define ACE_CONSTR_CONSTRNUM(ip) ((ip)->args[0])
 #define ACE_CONSTR_NUMARGS(ip) ((ip)->args[1])
@@ -118,7 +130,6 @@ struct gsbc_cont_ubanalyze {
 void *gsreserveerrors(ulong);
 
 struct gserror *gserror(struct gspos, char *, ...);
-struct gserror *gserror_unimpl(char *, int, struct gspos, char *, ...);
 
 void gspoison(struct gsheap_item *, struct gspos, char *, ...);
 void gspoison_unimpl(struct gsheap_item *, char *, int, struct gspos, char *, ...);

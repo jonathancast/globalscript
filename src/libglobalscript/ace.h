@@ -29,3 +29,5 @@ struct ace_thread {
     gsvalue regs[MAX_NUM_REGISTERS];
     void *stacklimit, *stacktop, *stackbot;
 };
+
+void ace_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);

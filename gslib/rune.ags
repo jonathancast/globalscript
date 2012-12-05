@@ -12,6 +12,10 @@ rune.print.list	.closure	_rune.print.list_c
 _rune.print.list_prefix	.string	qq{
 _rune.print.list_suffix	.string	}
 
+rune.advance	.closure	_rune.advance_c
+
+rune.prim.advance	.closure	_rune.prim.advance_c
+
 	.code
 
 # §section §gs{rune.≡}
@@ -98,6 +102,54 @@ s	.fv	list.t	rune.t
 	.app	s	_rune.print.list_suffix
 	.enter	list.<>	rune.t
 
+# §section §gs{rune.advance}
+
+_rune.advance_c	.expr
+rune.t	.tygvar
+natural.t	.tygvar
+_rune.advance_k0	.subcode
+rune.t.out	.cogvar
+r	.larg	rune.t
+n	.larg	natural.t
+	.force	_rune.advance_k0	|	n
+	.coerce	rune.t.out
+	.enter	r
+
+_rune.advance_k0	.forcecont
+natural.t	.tygvar
+rune.prim.rune	.tygvar
+_rune.advance_k1	.subcode
+natural.t.out	.cogvar
+n	.fv	natural.t
+r0	.karg	rune.prim.rune
+	.force	_rune.advance_k1	|	r0
+	.coerce	natural.t.out
+	.enter	n
+
+_rune.advance_k1	.forcecont
+rune.prim.rune	.tygvar
+natural.prim.u	.tygvar
+rune.t	.tygvar
+rune.t.in	.cogvar
+rune.prim.advance	.gvar
+r0	.fv	rune.prim.rune
+n0	.karg	natural.prim.u
+	.coerce	rune.t.in
+	.lift
+	.app	r0	n0
+	.yield	rune.prim.advance
+
+# §section Primitives
+
+_rune.prim.advance_c	.expr
+rune.prim.rune	.tygvar
+natural.prim.u	.tygvar
+_rune.prim.advance_ty	.tygvar
+r0	.arg	rune.prim.rune
+n0	.arg	natural.prim.u
+r1	.prim	rune.prim	advance	_rune.prim.advance_ty	|	r0	n0
+	.yield	r1
+
 	.type
 
 rune.t	.tyabstract	*
@@ -119,6 +171,15 @@ _rune.prim.eq.res.t	.tygvar
 _rune.prim.eq.res.t	.tyexpr
 _ub.empty.record	.tygvar
 	.tyubsum	0	_ub.empty.record	1	_ub.empty.record
+
+# §section Primitives
+
+_rune.prim.advance_ty	.tyexpr
+rune.prim.rune	.tygvar
+natural.prim.u	.tygvar
+	.tyfun	rune.prim.rune
+	.tyfun	natural.prim.u
+	.tyref	rune.prim.rune
 
 	.coercion
 
