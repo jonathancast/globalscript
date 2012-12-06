@@ -1,0 +1,55 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_tests	.list	test.property.t	_test.length.nil
+
+_test.length.nil	.closure	_test.length.nil_c
+_test.length.nil_label	.string	length\snil
+
+_fixture.nil	.closure	_fixture.nil_c
+
+	.code
+
+_epcode	.expr
+test.all	.gvar
+_tests	.gvar
+	.app	_tests
+	.enter	test.all
+
+# §section §gs{length nil}
+
+_test.length.nil_c	.expr
+_test.length.nil_test_c	.subcode
+test.property.label	.gvar
+_test.length.nil_label	.gvar
+test	.alloc	_test.length.nil_test_c
+	.app	_test.length.nil_label	test
+	.enter	test.property.label
+
+_test.length.nil_test_c	.expr
+natural.t	.tygvar
+_test.length.nil_test_actual_c	.subcode
+test.assert.eq	.gvar
+natural.≡	.gvar
+natural.print	.gvar
+_0	.gvar
+actual	.alloc	_test.length.nil_test_actual_c
+	.app	natural.≡	natural.print	actual	_0
+	.enter	test.assert.eq	natural.t
+
+_test.length.nil_test_actual_c	.expr
+bool.t	.tygvar
+list.lib.length	.gvar
+_fixture.nil	.gvar
+	.app	_fixture.nil
+	.enter	list.lib.length	bool.t
+
+# §section Test fixtures
+
+_fixture.nil_c	.expr
+bool.t	.tygvar
+list.nil	.gvar
+	.enter	list.nil	bool.t

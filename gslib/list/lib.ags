@@ -1,0 +1,35 @@
+	.prefix
+
+	.data
+
+list.lib.length	.closure	_list.lib.length_c
+
+_0	.closure	_0_c
+
+	.code
+
+_list.lib.length_c	.expr
+list.t	.tygvar
+natural.t	.tygvar
+α	.tyarg	*
+_list.lib.length_plus.1_c	.subcode
+list.foldl	.gvar
+_0	.gvar
+xn	.larg	list.t	α
+plus.1	.alloc	_list.lib.length_plus.1_c	α
+	.app	plus.1	_0	xn
+	.enter	list.foldl	α	natural.t
+
+_list.lib.length_plus.1_c	.expr
+natural.t	.tygvar
+α	.tyfv	*
+n	.larg	natural.t
+x	.larg	α
+	.undef	natural.t
+
+_0_c	.expr
+natural.t.in	.cogvar
+0	.natural	0
+	.coerce	natural.t.in
+	.lift
+	.yield	0

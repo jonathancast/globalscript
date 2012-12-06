@@ -14,6 +14,8 @@ natural.prim.<	.closure	_natural.prim.<_c
 
 natural.fmtdecimal	.closure	_natural.fmtdecimal_c	_natural.fmtdecimal_ty
 
+natural.print	.closure	_natural.print_c
+
 	.code
 
 # §section §gs{natural.divMod}
@@ -272,6 +274,12 @@ m0	.fv	natural.prim.u
 	.lift
 	.app	0	m0
 	.yield	rune.prim.advance
+
+# §section §gs{natural.print}
+
+_natural.print_c	.expr
+natural.fmtdecimal	.gvar
+	.enter	natural.fmtdecimal
 
 	.type
 

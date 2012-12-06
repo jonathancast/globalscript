@@ -7,6 +7,7 @@ list.:	.closure	_list.:.c
 
 list.foldr1	.closure	_list.foldr1_code	_list.foldr1_ty
 list.map	.closure	_list.map_c	_list.map_ty
+list.foldl	.closure	_list.foldl_c	_list.foldl_ty
 
 list.singleton	.closure	_list.singleton_c
 list.<>	.closure	_list.<>.code	_list.<>.ty
@@ -170,6 +171,47 @@ f	.fv	_list.map_f_ty	α	β
 xn1	.fv	list.t	α
 	.app	f	xn1
 	.enter	list.map	α	β
+
+# §section §gs{list.foldl}
+
+_list.foldl_c	.expr
+_list.foldl_f_ty	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+_list.foldl_k0	.subcode
+f	.larg	_list.foldl_f_ty	α	β
+z	.larg	β
+xn	.larg	list.t	α
+	.strict	_list.foldl_k0	α	β	|	xn
+	.enter	z
+
+_list.foldl_k0	.strictcont
+list.t	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+_list.foldl_k1	.subcode
+list.t.out	.cogvar
+xn	.fv	list.t	α
+z	.karg	β
+	.force	_list.foldl_k1	α	β	|	z
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.foldl_k1	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+z	.fv	β
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	β
+		.case	nil
+			.enter	z
 
 # §section §gs{list.singleton}
 
@@ -436,6 +478,30 @@ list.t	.tygvar
 _list.map_f_ty	.tyexpr
 α	.tylambda	*
 β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	β
+
+# §section §gs{list.foldl}
+
+_list.foldl_ty	.tyexpr
+_list.foldl_f_ty	.tygvar
+list.t	.tygvar
+α	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	_list.foldl_f_ty	α	β
+	.tylift
+	.tyfun	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	β
+
+_list.foldl_f_ty	.tyexpr
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	β
 	.tylift
 	.tyfun	α
 	.tyref	β
