@@ -1,6 +1,0 @@
-#! /home/jcast/globalscript/bin/ibio
-
--- > print :: ∀ 'm 'ι 'ο. {module ibio.c m} → [o] → m ι ο 〈〉;
-for (
-    str = 'H' : 'e' : 'l' : 'l' : 'o' : ',' : ' ' : 'W' : 'o' : 'r' : 'l' : 'd' : '!' : '\n' : [];
-) ibio.c.print ibio.lib.m char char ibio.lib.i str

@@ -1,9 +1,0 @@
-< $PLAN9/src/mkhdr
-
-< $GLOBALSCRIPT/src/mkhdr
-
-OFILES=\
-	gsi.$O
-
-< $PLAN9/src/mkone
-< $GLOBALSCRIPT/src/mkcommon

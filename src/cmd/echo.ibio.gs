@@ -2,8 +2,8 @@
 
 for (
     'opt.n ← env.option ch{n};
-    'as ← env.arguments;
-) print $ concat (intersperse qq{ } as) <> analyze opt.n
+    'as ← env.args.get;
+) send $ concat (intersperse qq{ } as) <> analyze opt.n
     case true. qq{}
     case false. qq{\n}
 (where
@@ -25,7 +25,6 @@ for (
     〉;
     'monad.asCategoryTheory = λ (module 'in). for (
         ('out.>>=) = λ 'a 'f. in.join (in.fmap f a);
-        module 'out = module in;
-    ) module out
-    ;
+        module 'out ∝ module in;
+    ) module out;
 )
