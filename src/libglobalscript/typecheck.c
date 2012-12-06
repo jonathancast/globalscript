@@ -783,6 +783,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
 static struct gsbc_code_item_type *gsbc_typecheck_code_expr(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
 static struct gsbc_code_item_type *gsbc_typecheck_force_cont(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
+static struct gsbc_code_item_type *gsbc_typecheck_strict_cont(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
 static struct gsbc_code_item_type *gsbc_typecheck_ubcase_cont(struct gsfile_symtable *, struct gspos, struct gsparsedfile_segment **, struct gsparsedline *);
 static struct gsbc_code_item_type *gsbc_typecheck_api_expr(struct gspos, struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, gsinterned_string, gsinterned_string);
 
@@ -790,7 +791,7 @@ static
 void
 gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
 {
-    static gsinterned_string gssymforcecont, gssymubcasecont;
+    static gsinterned_string gssymforcecont, gssymstrictcont, gssymubcasecont;
 
     struct gsparsedline *pcode;
     struct gsparsedfile_segment *pseg;
@@ -807,6 +808,11 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
         struct gsbc_code_item_type *type;
 
         type = gsbc_typecheck_force_cont(symtable, &pseg, gsinput_next_line(&pseg, pcode));
+        gssymtable_set_code_type(symtable, pcode->label, type);
+    } else if (gssymceq(pcode->directive, gssymstrictcont, gssymcodedirective, ".strictcont")) {
+        struct gsbc_code_item_type *type;
+
+        type = gsbc_typecheck_strict_cont(symtable, &pseg, gsinput_next_line(&pseg, pcode));
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else if (gssymceq(pcode->directive, gssymubcasecont, gssymcodedirective, ".ubcasecont")) {
         struct gsbc_code_item_type *type;
@@ -1081,6 +1087,7 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
+            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_unlifted_kind());
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
@@ -1100,6 +1107,42 @@ have_type:
     gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(calculated_type), gskind_lifted_kind());
 
     return gsbc_typecheck_compile_code_item_type(gsbc_code_item_force_cont, cont_arg_type, calculated_type, &cl);
+}
+
+static
+struct gsbc_code_item_type *
+gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
+{
+    struct gsbc_typecheck_code_or_api_expr_closure cl;
+
+    struct gstype *cont_arg_type;
+    struct gstype *calculated_type;
+
+    gsbc_setup_code_expr_closure(&cl);
+    cont_arg_type = 0;
+    for (; ; p = gsinput_next_line(ppseg, p)) {
+        if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
+            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_lifted_kind());
+        } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
+        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
+            if (!cont_arg_type)
+                gsfatal("%P: No .karg in a .strictcont", p->pos)
+            ;
+            goto have_type;
+        } else {
+            gsfatal(UNIMPL("%P: gsbc_typecheck_force_cont(%y)"), p->pos, p->directive);
+        }
+    }
+
+have_type:
+
+    calculated_type = gsbc_typecheck_conts(&cl, 0, calculated_type);
+
+    gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(calculated_type), gskind_lifted_kind());
+
+    return gsbc_typecheck_compile_code_item_type(gsbc_code_item_strict_cont, cont_arg_type, calculated_type, &cl);
 }
 
 static
@@ -1127,7 +1170,6 @@ gsbc_typecheck_cont_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or
             regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
             *pcont_arg_type = gstype_apply(p->pos, *pcont_arg_type, pcl->tyregs[regarg]);
         }
-        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(*pcont_arg_type), gskind_unlifted_kind());
         gsbc_typecheck_check_boxed(p->pos, *pcont_arg_type);
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = *pcont_arg_type;
@@ -1965,7 +2007,7 @@ gsbc_find_field_in_product(struct gspos pos, struct gstype_product *prod, gsinte
     return 0;
 }
 
-static gsinterned_string gssymoplift, gssymopcoerce, gssymopforce, gssymopubanalyze, gssymopapp;
+static gsinterned_string gssymoplift, gssymopcoerce, gssymopforce, gssymopstrict, gssymopubanalyze, gssymopapp;
 
 static
 int
@@ -1975,6 +2017,7 @@ gsbc_typecheck_cont_push_op(struct gsparsedline *p, struct gsbc_typecheck_code_o
         gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
         || gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")
         || gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")
+        || gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")
         || gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")
         || gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")
     ) {
@@ -2049,6 +2092,27 @@ gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *pcl, int ba
             gsbc_typecheck_free_variables(pcl, p, cty, nftyvs);
 
             gstypes_type_check_type_fail(p->pos, calculated_type_lift->arg, cty->cont_arg_type);
+
+            calculated_type = cty->result_type;
+        } else if (p->directive == gssymopstrict) {
+            int creg = 0;
+            struct gsbc_code_item_type *cty;
+            int nftyvs;
+
+            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(calculated_type), gskind_lifted_kind());
+
+            gsargcheck(p, 0, "code");
+            creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
+            cty = gsbc_typecheck_copy_code_item_type(pcl->codetypes[creg]);
+
+            if (cty->type != gsbc_code_item_strict_cont)
+                gsfatal("%P: continuation in .strict is not a strict continuation", p->pos)
+            ;
+
+            nftyvs = gsbc_typecheck_free_type_variables(pcl, p, cty);
+            gsbc_typecheck_free_variables(pcl, p, cty, nftyvs);
+
+            gstypes_type_check_type_fail(p->pos, calculated_type, cty->cont_arg_type);
 
             calculated_type = cty->result_type;
         } else if (p->directive == gssymopubanalyze) {

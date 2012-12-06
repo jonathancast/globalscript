@@ -259,7 +259,7 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopprim, gssymopconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymopundef, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopprim, gssymopconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymopundef, gssymopanalyze, gssymopcase;
 
 static
 int
@@ -633,6 +633,17 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
         nfvs = p->numarguments - i;
 
         pcl->size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
+    } else if (gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")) {
+        int nfvs;
+
+        pcl->phase = phconts;
+
+        /* Ignore free type variables & separator (type erasure) */
+        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+        if (i < p->numarguments) i++;
+        nfvs = p->numarguments - i;
+
+        pcl->size += ACE_STRICT_SIZE(nfvs);
     } else if (gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")) {
         int ncases, nfvs;
 
@@ -916,7 +927,7 @@ static
 void
 gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco **bcos, int i, int n)
 {
-    static gsinterned_string gssymubcasecont;
+    static gsinterned_string gssymstrictcont, gssymubcasecont;
 
     if (gssymeq(p->directive, gssymcodedirective, ".expr")) {
         bcos[i]->tag = gsbc_expr;
@@ -924,6 +935,10 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else if (gssymeq(p->directive, gssymcodedirective, ".forcecont")) {
         bcos[i]->tag = gsbc_forcecont;
+        bcos[i]->pos = p->pos;
+        gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
+    } else if (gssymceq(p->directive, gssymstrictcont, gssymcodedirective, ".strictcont")) {
+        bcos[i]->tag = gsbc_strictcont;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else if (gssymceq(p->directive, gssymubcasecont, gssymcodedirective, ".ubcasecont")) {
@@ -1573,6 +1588,35 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
         }
 
         pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
+    } else if (gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")) {
+        int creg = 0;
+        int nfvs, first_fv;
+
+        pcl->phase = rtops;
+
+        pcode = (struct gsbc *)pcl->pout;
+
+        creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[0]);
+
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_strict;
+        ACE_STRICT_CONT(pcode) = creg;
+
+        /* §paragraph{Skipping free type variables} */
+        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+        if (i < p->numarguments) i++;
+
+        nfvs = p->numarguments - i;
+        first_fv = i;
+        ACE_STRICT_NUMFVS(pcode) = nfvs;
+        for (i = first_fv; i < p->numarguments; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            ACE_STRICT_FV(pcode, i - first_fv) = regarg;
+        }
+
+        pcl->pout = ACE_STRICT_SKIP(pcode);
     } else if (gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")) {
         int first_fv;
 

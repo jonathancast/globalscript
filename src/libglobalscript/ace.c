@@ -61,6 +61,7 @@ static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
 static int ace_push_force(struct ace_thread *);
+static int ace_push_strict(struct ace_thread *);
 static int ace_push_ubanalyze(struct ace_thread *);
 static int ace_perform_analyze(struct ace_thread *);
 static void ace_return_undef(struct ace_thread *);
@@ -184,6 +185,11 @@ ace_thread_pool_main(void *p)
                                 break;
                             case gsbc_op_force:
                                 if (ace_push_force(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_strict:
+                                if (ace_push_strict(thread))
                                     suspended_runnable_thread = 1
                                 ;
                                 break;
@@ -521,6 +527,33 @@ ace_push_force(struct ace_thread *thread)
 
 static
 int
+ace_push_strict(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsbc_cont *cont;
+    struct gsbc_cont_strict *strict;
+    int i;
+
+    ip = thread->ip;
+
+    cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont_strict) + ACE_STRICT_NUMFVS(ip) * sizeof(gsvalue));
+    strict = (struct gsbc_cont_strict *)cont;
+    if (!cont) return 0;
+
+    cont->node = gsbc_cont_strict;
+    cont->pos = ip->pos;
+    strict->code = thread->subexprs[ACE_STRICT_CONT(ip)];
+    strict->numfvs = ACE_STRICT_NUMFVS(ip);
+    for (i = 0; i < ACE_STRICT_NUMFVS(ip); i++)
+        strict->fvs[i] = thread->regs[ACE_STRICT_FV(ip, i)]
+    ;
+
+    thread->ip = ACE_STRICT_SKIP(ip);
+    return 1;
+}
+
+static
+int
 ace_push_ubanalyze(struct ace_thread *thread)
 {
     struct gsbc *ip;
@@ -824,6 +857,7 @@ static void *ace_set_registers_from_closure(struct ace_thread *, struct gsclosur
 
 static int ace_return_to_app(struct ace_thread *, struct gsbc_cont *, gsvalue);
 static int ace_return_to_force(struct ace_thread *, struct gsbc_cont *, gsvalue);
+static int ace_return_to_strict(struct ace_thread *, struct gsbc_cont *, gsvalue);
 
 static
 int
@@ -849,6 +883,8 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
                 return ace_return_to_app(thread, cont, v);
             case gsbc_cont_force:
                 return ace_return_to_force(thread, cont, v);
+            case gsbc_cont_strict:
+                return ace_return_to_strict(thread, cont, v);
             default:
                 ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Return to %d continuations", cont->node);
                 return 0;
@@ -1011,6 +1047,43 @@ ace_return_to_force(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v
     thread->blocked = 0;
     thread->ip = (struct gsbc *)ip;
     thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_force) + force->numfvs * sizeof(gsvalue);
+
+    return 1;
+}
+
+static
+int
+ace_return_to_strict(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
+{
+    struct gsbc_cont_strict *strict;
+    void *ip;
+    int i;
+
+    strict = (struct gsbc_cont_strict *)cont;
+
+    ip = ace_set_registers_from_bco(thread, strict->code);
+    if (!ip) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+        return 0;
+    }
+
+    for (i = 0; i < strict->numfvs; i++) {
+        if (thread->nregs >= MAX_NUM_REGISTERS) {
+            ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+            return 0;
+        }
+        thread->regs[thread->nregs++] = strict->fvs[i];
+    }
+
+    if (thread->nregs >= MAX_NUM_REGISTERS) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+        return 0;
+    }
+    thread->regs[thread->nregs++] = v;
+
+    thread->blocked = 0;
+    thread->ip = (struct gsbc *)ip;
+    thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_strict) + strict->numfvs * sizeof(gsvalue);
 
     return 1;
 }

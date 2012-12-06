@@ -18,6 +18,7 @@ enum {
     gsbc_op_eprim,
     gsbc_op_app,
     gsbc_op_force,
+    gsbc_op_strict,
     gsbc_op_ubanalzye,
     gsbc_op_analyze,
     gsbc_op_undef,
@@ -65,6 +66,12 @@ enum {
 #define ACE_FIELD_RECORD(ip) ((ip)->args[1])
 #define ACE_FIELD_SKIP(ip) GS_NEXT_BYTECODE((ip), 2)
 
+#define ACE_STRICT_SIZE(nfvs) GS_SIZE_BYTECODE(2 + nfvs)
+#define ACE_STRICT_CONT(ip) ((ip)->args[0])
+#define ACE_STRICT_NUMFVS(ip) ((ip)->args[1])
+#define ACE_STRICT_FV(ip, n) ((ip)->args[2 + (n)])
+#define ACE_STRICT_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_STRICT_NUMFVS(ip))
+
 #define ACE_UBANALYZE_SIZE(ncases, nfvs) GS_SIZE_BYTECODE(2 + ncases + nfvs)
 #define ACE_UBANALYZE_NUMCONTS(ip) ((ip)->args[0])
 #define ACE_UBANALYZE_CONT(ip, n) ((ip)->args[2 + (n)])
@@ -99,6 +106,7 @@ struct gsbc_cont {
     enum {
         gsbc_cont_app,
         gsbc_cont_force,
+        gsbc_cont_strict,
         gsbc_cont_ubanalyze,
     } node;
     struct gspos pos;
@@ -111,6 +119,13 @@ struct gsbc_cont_app {
 };
 
 struct gsbc_cont_force {
+    struct gsbc_cont cont;
+    struct gsbco *code;
+    int numfvs;
+    gsvalue fvs[];
+};
+
+struct gsbc_cont_strict {
     struct gsbc_cont cont;
     struct gsbco *code;
     int numfvs;

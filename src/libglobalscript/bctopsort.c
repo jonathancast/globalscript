@@ -422,7 +422,7 @@ static
 void
 gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymforcecont, gssymubcasecont, gssymtyarg, gssymtyfv, gssymtylet, gssymcogvar;
+    static gsinterned_string gssymforcecont, gssymstrictcont, gssymubcasecont, gssymtyarg, gssymtyfv, gssymtylet, gssymcogvar;
 
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
@@ -431,6 +431,7 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
     if (
         gssymeq(item.v->directive, gssymcodedirective, ".expr")
         || gssymceq(item.v->directive, gssymforcecont, gssymcodedirective, ".forcecont")
+        || gssymceq(item.v->directive, gssymstrictcont, gssymcodedirective, ".strictcont")
         || gssymceq(item.v->directive, gssymubcasecont, gssymcodedirective, ".ubcasecont")
         || gssymeq(item.v->directive, gssymcodedirective, ".eprog")
     ) {

@@ -2,6 +2,7 @@ struct gsbc_code_item_type {
     enum {
         gsbc_code_item_expr,
         gsbc_code_item_force_cont,
+        gsbc_code_item_strict_cont,
         gsbc_code_item_ubcase_cont,
         gsbc_code_item_eprog,
     } type;

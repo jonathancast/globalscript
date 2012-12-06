@@ -16,6 +16,9 @@ ok_diff '-- yield polymorphic empty lambda --' ./$O.test-gsi yield-polymorphic-e
 ok_diff_fail '-- force undefined value --' ./$O.test-gsi force-undef.ags
 ok_diff_fail '-- force with undefined continuation --' ./$O.test-gsi force-undef-cont.ags
 
+ok_diff_fail '-- strict bind undefined value --' ./$O.test-gsi strict-undef.ags
+ok_diff_fail '-- strict with undefined continuation --' ./$O.test-gsi strict-undef-cont.ags
+
 ok_diff '-- lambdas with undefined bodies --' ./$O.test-gsi empty-lambda.ags
 ok_diff '-- lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lifted-lambda.ags
 ok_diff_fail '-- applying lambdas with undefined bodies --' ./$O.test-gsi apply-empty-lambda.ags

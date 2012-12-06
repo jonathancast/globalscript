@@ -285,6 +285,7 @@ struct gsbco {
     enum {
         gsbc_expr,
         gsbc_forcecont,
+        gsbc_strictcont,
         gsbc_ubcasecont,
         gsbc_eprog,
     } tag;

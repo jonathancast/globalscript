@@ -1,0 +1,22 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+	.code
+
+_epcode	.expr
+rune.t	.tygvar
+_epcode_k	.subcode
+	.strict	_epcode_k
+	.undef	rune.t
+
+_epcode_k	.strictcont
+rune.t	.tygvar
+rune.t.in	.cogvar
+x	.rune	x
+r	.karg	rune.t
+	.coerce	rune.t.in
+	.lift
+	.yield	x
