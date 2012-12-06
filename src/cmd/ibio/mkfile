@@ -6,6 +6,7 @@ OFILES=\
 	ibio.$O \
 	thread.$O \
 	env.$O \
+	iport.$O \
 	oport.$O \
 	stat.$O \
 

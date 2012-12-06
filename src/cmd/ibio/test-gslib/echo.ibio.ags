@@ -12,11 +12,13 @@ _nl	.string	\n
 	.code
 
 _real.entry.c	.eprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 _real.entry.as	.subcode
 _real.entry.s	.subcode
 _real.entry.body	.subcode
+i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry.as
 s	.alloc	_real.entry.s	|	as

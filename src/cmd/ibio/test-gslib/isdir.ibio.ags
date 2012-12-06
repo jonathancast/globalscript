@@ -10,11 +10,13 @@ _file	.string	file\n
 	.code
 
 _real.entry_c	.eprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 _real.entry_as_c	.subcode
 _real.entry_b_c	.subcode
 _real.entry_body_c	.subcode
+i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry_as_c
 b	.bind	_real.entry_b_c	|	as

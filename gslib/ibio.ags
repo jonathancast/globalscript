@@ -224,13 +224,15 @@ res.ty	.tylet	list.t	β
 
 ibio.m	.tyabstract	**^*^*^
 ibio.prim.m	.tygvar
+ibio.prim.iport	.tygvar
 ibio.prim.oport	.tygvar
 ι	.tylambda	*
 ο	.tylambda	*
 α	.tylambda	*
-op	.tylet	ibio.prim.oport	ο
 	.tylift
-	.tyfun	op
+	.tyfun	ibio.prim.iport	ι
+	.tylift
+	.tyfun	ibio.prim.oport	ο
 	.tylift
 	.tyref	ibio.prim.m	α
 

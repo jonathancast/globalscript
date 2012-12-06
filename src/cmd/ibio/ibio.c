@@ -84,7 +84,7 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 {
     struct gstype *monad, *input, *output, *result, *tybody;
     struct gstype *tyw;
-    gsvalue stdout;
+    gsvalue stdin, stdout;
     char err[0x100];
 
     /* §section Cast down from newtype wrapper */
@@ -110,18 +110,38 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 
     tybody = gstypes_compile_lift(pos, gstypes_compile_fun(pos,
         gstype_apply(pos,
-            gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
-            output
+            gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "iport", gskind_compile_string(pos, "u*^")),
+            input
         ),
-        gstypes_compile_lift(pos, gstype_apply(pos,
-            gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "*?^")),
-            result
+        gstypes_compile_lift(pos, gstypes_compile_fun(pos,
+            gstype_apply(pos,
+                gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
+                output
+            ),
+            gstypes_compile_lift(pos, gstype_apply(pos,
+                gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "*?^")),
+                result
+            ))
         ))
     ));
     if (gstypes_type_check(err, err + sizeof(err), pos, tyw, tybody) < 0) {
         ace_down();
         gsfatal("%s: Panic!  Type after un-wrapping newtype wrapper incorrect (%s)", script, err);
     }
+
+    /* §section Pass in input */
+
+    if (ibio_read_threads_init(err, err + sizeof(err)) < 0) {
+        ace_down();
+        gsfatal("%s: Couldn't initialize read thread pool: %s", script, err);
+    }
+
+    stdin = ibio_iport_fdopen(0, err, err + sizeof(err));
+    if (!stdin) {
+        ace_down();
+        gsfatal("%s: Couldn't open stdin: %s", script, err);
+    }
+    prog = gsapply(pos, prog, stdin);
 
     /* §section Pass in output */
 

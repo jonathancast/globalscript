@@ -36,6 +36,19 @@ api_prim_executor ibio_handle_prim_file_stat;
 
 gsrpc_handler ibio_main_process_handle_rpc_stat;
 
+/* §section Input */
+
+struct ibio_iport {
+    Lock lock;
+    int active;
+    /* §section Used for §gs{iport}s connected to external files */
+    int fd;
+};
+
+int ibio_read_threads_init(char *, char *);
+
+gsvalue ibio_iport_fdopen(int, char *, char *);
+
 /* §section Output */
 
 struct ibio_oport {
