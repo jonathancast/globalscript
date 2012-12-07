@@ -1150,9 +1150,20 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
             struct gstype_sum *sum;
 
             sum = (struct gstype_sum *)type;
-            for (i = 0; i < sum->numconstrs; i++) {
-               gsfatal_unimpl(__FILE__, __LINE__, "%P: fv (constr arg)", type->pos);
-            }
+            for (i = 0; i < sum->numconstrs; i++)
+                gsfatal(UNIMPL("%P: fv (constr arg)"), type->pos)
+            ;
+
+            return 0;
+        }
+        case gstype_ubsum: {
+            struct gstype_ubsum *sum;
+
+            sum = (struct gstype_ubsum *)type;
+            for (i = 0; i < sum->numconstrs; i++)
+                if (gstypes_is_ftyvar(varname, sum->constrs[i].argtype))
+                    return 1
+            ;
 
             return 0;
         }
