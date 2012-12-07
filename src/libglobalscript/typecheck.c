@@ -2682,9 +2682,14 @@ gsbc_typecheck_validate_prim_type(struct gspos pos, gsinterned_string primsetnam
         }
         case gstype_fun: {
             struct gstype_fun *fun = (struct gstype_fun *)type;
-            switch (fun->tyarg->node) {
+            struct gstype *arg = fun->tyarg;
+            while (arg->node == gstype_app) {
+                struct gstype_app *app = (struct gstype_app *)arg;
+                arg = app->fun;
+            }
+            switch (arg->node) {
                 case gstype_knprim: {
-                    struct gstype_knprim *prim = (struct gstype_knprim *)fun->tyarg;
+                    struct gstype_knprim *prim = (struct gstype_knprim *)arg;
                     if (strcmp(prim->primset->name, primsetname->name))
                         break
                     ;
@@ -2696,7 +2701,7 @@ gsbc_typecheck_validate_prim_type(struct gspos pos, gsinterned_string primsetnam
                     }
                 }
                 default:
-                    gsfatal(UNIMPL("%P: gsbc_typecheck_validate_prim_type(fun; arg node = %d)"), pos, fun->tyarg->node);
+                    gsfatal(UNIMPL("%P: gsbc_typecheck_validate_prim_type(fun; arg node = %d)"), pos, arg->node);
             }
             gsbc_typecheck_validate_prim_type(pos, primsetname, fun->tyres);
             return;
