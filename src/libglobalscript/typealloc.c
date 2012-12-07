@@ -1038,6 +1038,23 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
 
             return res;
         }
+        case gstype_ubsum: {
+            struct gstype_ubsum *sum, *ressum;
+            struct gstype *res;
+
+            sum = (struct gstype_ubsum *)type;
+            res = gstype_alloc(sizeof(struct gstype_ubsum) + sum->numconstrs * sizeof(struct gstype_constr));
+            ressum = (struct gstype_ubsum *)res;
+            res->node = gstype_ubsum;
+            res->pos = type->pos;
+            ressum->numconstrs = sum->numconstrs;
+            for (i = 0; i < sum->numconstrs; i++) {
+                ressum->constrs[i].name = sum->constrs[i].name;
+                ressum->constrs[i].argtype = gstypes_subst(pos, sum->constrs[i].argtype, varname, type1);
+            }
+
+            return res;
+        }
         case gstype_product: {
             struct gstype_product *prod, *resprod;
             struct gstype *res;
