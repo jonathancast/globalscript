@@ -2675,6 +2675,11 @@ void
 gsbc_typecheck_validate_prim_type(struct gspos pos, gsinterned_string primsetname, struct gstype *type)
 {
     switch (type->node) {
+        case gstype_forall: {
+            struct gstype_forall *forall = (struct gstype_forall *)type;
+            gsbc_typecheck_validate_prim_type(pos, primsetname, forall->body);
+            return;
+        }
         case gstype_fun: {
             struct gstype_fun *fun = (struct gstype_fun *)type;
             switch (fun->tyarg->node) {
