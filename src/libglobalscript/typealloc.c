@@ -1178,6 +1178,17 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
 
             return 0;
         }
+        case gstype_ubproduct: {
+            struct gstype_ubproduct *product;
+
+            product = (struct gstype_ubproduct *)type;
+            for (i = 0; i < product->numfields; i++)
+                if (gstypes_is_ftyvar(varname, product->fields[i].type))
+                    return 1
+            ;
+
+            return 0;
+        }
         default:
             gsfatal_unimpl(__FILE__, __LINE__, "%P: fv (varname = %s, node = %d)", type->pos, varname->name, type->node);
     }
