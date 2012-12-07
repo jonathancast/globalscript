@@ -2695,6 +2695,19 @@ gsbc_typecheck_validate_prim_type(struct gspos pos, gsinterned_string primsetnam
                     ;
                     switch (prim->primtypegroup) {
                         case gsprim_type_defined:
+                        case gsprim_type_elim:
+                            return;
+                        default:
+                            gsfatal(UNIMPL("%P: gsbc_typecheck_validate_prim_type(fun; arg prim group type = %d)"), pos, prim->primtypegroup);
+                    }
+                }
+                case gstype_unprim: {
+                    struct gstype_unprim *prim = (struct gstype_unprim *)arg;
+                    if (prim->primsetname != primsetname)
+                        break
+                    ;
+                    switch (prim->primtypegroup) {
+                        case gsprim_type_elim:
                             return;
                         default:
                             gsfatal(UNIMPL("%P: gsbc_typecheck_validate_prim_type(fun; arg prim group type = %d)"), pos, prim->primtypegroup);
