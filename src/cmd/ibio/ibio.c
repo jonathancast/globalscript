@@ -79,63 +79,30 @@ static struct api_process_rpc_table ibio_rpc_table = {
     },
 };
 
+static gsvalue ibio_downcast_ibio_m(char *, char *, char *, struct gsfile_symtable *, struct gspos, gsvalue, struct gstype *, struct gstype **, struct gstype **, struct gstype **);
+
 void
 gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty, int argc, char **argv)
 {
-    struct gstype *monad, *input, *output, *result, *tybody;
-    struct gstype *tyw;
+    struct gstype *input, *output, *result;
     gsvalue stdin, stdout;
     char err[0x100];
 
     /* §section Cast down from newtype wrapper */
 
-    tyw = ty;
-    if (
-        gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &result) < 0
-        || gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &output) < 0
-        || gstype_expect_app(err, err + sizeof(err), tyw, &tyw, &input) < 0
-        || !(monad = tyw)
-        || gstype_expect_abstract(err, err + sizeof(err), monad, "ibio.m") < 0
-    ) {
-        ace_down();
-        gsfatal("%s: Bad type: %s", script, err);
-    }
-
-    if (!(prog = gscoerce(prog, ty, &tyw, err, err + sizeof(err), symtable, "ibio.out", input, output, result, 0))) {
-        ace_down();
-        gsfatal("%s: Couldn't cast down to primitive level: %s", script, err);
-    }
-
-    /* §section Paranoid check that the result is the API monad we expect it to be */
-
-    tybody = gstypes_compile_lift(pos, gstypes_compile_fun(pos,
-        gstype_apply(pos,
-            gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "iport", gskind_compile_string(pos, "u*^")),
-            input
-        ),
-        gstypes_compile_lift(pos, gstypes_compile_fun(pos,
-            gstype_apply(pos,
-                gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
-                output
-            ),
-            gstypes_compile_lift(pos, gstype_apply(pos,
-                gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "*?^")),
-                result
-            ))
-        ))
-    ));
-    if (gstypes_type_check(err, err + sizeof(err), pos, tyw, tybody) < 0) {
-        ace_down();
-        gsfatal("%s: Panic!  Type after un-wrapping newtype wrapper incorrect (%s)", script, err);
-    }
+    prog = ibio_downcast_ibio_m(err, err + sizeof(err), script, symtable, pos, prog, ty, &input, &output, &result);
 
     /* §section Pass in input */
+
+    if (gstypes_type_check(err, err + sizeof(err), pos, input, gstypes_compile_rune(pos)) < 0) {
+        ace_down();
+        gsfatal("%s: Panic!  Non-rune.t input in main program (%s)", script, err);
+    }
 
     if (ibio_read_threads_init(err, err + sizeof(err)) < 0) {
         ace_down();
         gsfatal("%s: Couldn't initialize read thread pool: %s", script, err);
     }
-
     stdin = ibio_iport_fdopen(0, err, err + sizeof(err));
     if (!stdin) {
         ace_down();
@@ -144,6 +111,11 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     prog = gsapply(pos, prog, stdin);
 
     /* §section Pass in output */
+
+    if (gstypes_type_check(err, err + sizeof(err), pos, output, gstypes_compile_rune(pos)) < 0) {
+        ace_down();
+        gsfatal("%s: Panic!  Non-rune.t output in main program (%s)", script, err);
+    }
 
     if (ibio_write_threads_init(err, err + sizeof(err)) < 0) {
         ace_down();
@@ -160,4 +132,54 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     /* §section Set up the IBIO thread */
 
     apisetupmainthread(&ibio_rpc_table, &ibio_thread_table, ibio_main_thread_alloc_data(pos, argc, argv), &ibio_prim_table, prog);
+}
+
+static
+gsvalue
+ibio_downcast_ibio_m(char *err, char *eerr, char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty, struct gstype **pinput, struct gstype **poutput, struct gstype **presult)
+{
+    struct gstype *monad, *tybody;
+    struct gstype *tyw;
+
+    tyw = ty;
+    if (
+        gstype_expect_app(err, eerr, tyw, &tyw, presult) < 0
+        || gstype_expect_app(err, eerr, tyw, &tyw, poutput) < 0
+        || gstype_expect_app(err, eerr, tyw, &tyw, pinput) < 0
+        || !(monad = tyw)
+        || gstype_expect_abstract(err, eerr, monad, "ibio.m") < 0
+    ) {
+        ace_down();
+        gsfatal("%s: Bad type: %s", script, err);
+    }
+
+    if (!(prog = gscoerce(prog, ty, &tyw, err, eerr, symtable, "ibio.out", *pinput, *poutput, *presult, 0))) {
+        ace_down();
+        gsfatal("%s: Couldn't cast down to primitive level: %s", script, err);
+    }
+
+    /* §section Paranoid check that the result is the API monad we expect it to be */
+
+    tybody = gstypes_compile_lift(pos, gstypes_compile_fun(pos,
+        gstype_apply(pos,
+            gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "iport", gskind_compile_string(pos, "u*^")),
+            *pinput
+        ),
+        gstypes_compile_lift(pos, gstypes_compile_fun(pos,
+            gstype_apply(pos,
+                gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
+                *poutput
+            ),
+            gstypes_compile_lift(pos, gstype_apply(pos,
+                gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "*?^")),
+                *presult
+            ))
+        ))
+    ));
+    if (gstypes_type_check(err, eerr, pos, tyw, tybody) < 0) {
+        ace_down();
+        gsfatal("%s: Panic!  Type after un-wrapping newtype wrapper incorrect (%s)", script, err);
+    }
+
+    return prog;
 }
