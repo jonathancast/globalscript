@@ -450,7 +450,7 @@ gsbc_typecheck_check_boxed_or_product(struct gspos pos, struct gstype *type)
         case gstype_ubsum:
             gsfatal("%P: Invalid un-boxed sum type", pos);
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: %P: gsbc_typecheck_check_boxed_or_product(node = %d)", pos, type->pos, type->node);
+            gsfatal(UNIMPL("%P: %P: gsbc_typecheck_check_boxed_or_product(node = %d)"), pos, type->pos, type->node);
     }
 }
 
