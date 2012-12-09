@@ -1,0 +1,31 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_tests	.list	test.property.t	_test.undef
+
+_test.undef	.closure	_test.undef_c
+_test.undef_succ	.string	Succeeded
+
+	.code
+
+_epcode	.expr
+test.all	.gvar
+_tests	.gvar
+	.app	_tests
+	.enter	test.all
+
+_test.undef_c	.expr
+_test.undef_m_c	.subcode
+test.property.true	.gvar
+_test.undef_succ	.gvar
+m	.alloc	_test.undef_m_c
+	.app	_test.undef_succ
+	.enter	test.property.true
+
+_test.undef_m_c	.expr
+maybe.t	.tygvar
+rune.t	.tygvar
+	.undef	maybe.t	rune.t
