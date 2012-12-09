@@ -1151,7 +1151,8 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
 
             sum = (struct gstype_sum *)type;
             for (i = 0; i < sum->numconstrs; i++)
-                gsfatal(UNIMPL("%P: fv (constr arg)"), type->pos)
+                if (gstypes_is_ftyvar(varname, sum->constrs[i].argtype))
+                    return 1
             ;
 
             return 0;
