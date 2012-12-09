@@ -2881,11 +2881,11 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
     int i;
 
     if (gstypes_eprint_type(actual_buf, actual_buf + sizeof(actual_buf), pactual) >= actual_buf + sizeof(actual_buf)) {
-        seprint(err, eerr, "%s:%d: %P: buffer overflow printing actual type %P", __FILE__, __LINE__, pos, pactual->pos);
+        seprint(err, eerr, UNIMPL("%P: buffer overflow printing actual type %P"), pos, pactual->pos);
         return -1;
     }
     if (gstypes_eprint_type(expected_buf, expected_buf + sizeof(expected_buf), pexpected) >= actual_buf + sizeof(actual_buf)) {
-        seprint(err, eerr, "%s:%d: %P: buffer overflow printing actual type %P", __FILE__, __LINE__, pos, pactual->pos);
+        seprint(err, eerr, UNIMPL("%P: buffer overflow printing actual type %P"), pos, pactual->pos);
         return -1;
     }
 
@@ -2998,7 +2998,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             n = 0;
             do {
                 if (seprint(nm, nm + sizeof(nm), "%y%d", pexpected_forall->var, n++) >= nm + sizeof(nm)) {
-                    seprint(err, eerr, "%s:%d: %P: Buffer overflow during α-renaming", __FILE__, __LINE__, pexpected->pos);
+                    seprint(err, eerr, UNIMPL("%P: Buffer overflow during α-renaming"), pexpected->pos);
                     return -1;
                 }
                 var = gsintern_string(gssymtypelable, nm);
@@ -3090,7 +3090,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_product = (struct gstype_product *)pexpected;
 
             if (pactual_product->numfields != pexpected_product->numfields) {
-                seprint(err, eerr, "%s:%d: I don't think %s is the same as %s; they have different numbers of fields", pos.file->name, pos.lineno, actual_buf, expected_buf);
+                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have different numbers of fields", pos, actual_buf, expected_buf);
                 return -1;
             }
             for (i = 0; i < pexpected_product->numfields; i++) {
@@ -3126,7 +3126,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             return 0;
         }
         default:
-            seprint(err, eerr, "%s:%d: gstypes_check_type(node = %d) %P: %P", __FILE__, __LINE__, pexpected->node, pos, pexpected->pos);
+            seprint(err, eerr, UNIMPL("gstypes_check_type(node = %d) %P: %P"), pexpected->node, pos, pexpected->pos);
             return -1;
     }
 }
