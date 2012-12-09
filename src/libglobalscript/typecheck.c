@@ -73,30 +73,38 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
     }
 }
 
-static void gstypes_kind_check_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gskind **, int, int);
+static void gstypes_kind_check_item(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, struct gstype **, struct gskind **, int, int);
 
 void
-gstypes_kind_check_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n)
+gstypes_kind_check_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gstype **defns, struct gskind **kinds, int n)
 {
     int i;
 
     for (i = 0; i < n; i++)
-        gstypes_kind_check_item(symtable, items, types, kinds, n, i)
+        gstypes_kind_check_item(symtable, items, types, defns, kinds, n, i)
     ;
 }
 
 static
 void
-gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
+gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gstype **defns, struct gskind **kinds, int n, int i)
 {
     switch (items[i].type) {
         case gssymtypelable: {
-            struct gstype *type;
+            struct gstype *type, *defn;
             struct gskind *calculated_kind;
 
             type = types[i];
+            defn = defns[i];
 
             calculated_kind = gstypes_calculate_kind(type);
+
+            if (defn) {
+                struct gskind *defn_kind;
+
+                defn_kind = gstypes_calculate_kind(defn);
+                gstypes_kind_check_fail(type->pos, defn_kind, calculated_kind);
+            }
 
             if (kinds[i]) {
                 gstypes_kind_check_fail(type->pos, calculated_kind, kinds[i]);
@@ -104,6 +112,7 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
                 kinds[i] = calculated_kind;
                 gssymtable_set_type_expr_kind(symtable, items[i].v->label, calculated_kind);
             }
+
             return;
         }
         case gssymdatalable:

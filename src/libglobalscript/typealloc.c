@@ -155,6 +155,7 @@ gstypes_compile_type_definitions(struct gsfile_symtable *symtable, struct gsbc_i
                         || gssymceq(ptype->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")
                         || gssymceq(ptype->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")
                     ) {
+                        defns[i] = 0;
                         continue;
                     } else {
                         gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_type_definitions(%s)", item.v->pos, item.v->directive->name);

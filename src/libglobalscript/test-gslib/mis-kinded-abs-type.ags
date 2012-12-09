@@ -1,0 +1,16 @@
+	.document
+
+	.data
+
+	.undefined	_ty
+
+	.type
+
+_ty	.tyexpr
+_abs.t	.tygvar
+record.empty	.tygvar
+	.tyref	_abs.t	record.empty
+
+_abs.t	.tyabstract	**^
+	.tylift
+	.tysum

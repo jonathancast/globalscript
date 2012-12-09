@@ -28,6 +28,8 @@ ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
 ok_grep_errors '-- a let can be mis-typed --' './test-gslib/mistyped-let.ags:5: I don''t think' ./$O.test-gsi mistyped-let.ags
 ok_diff_fail '-- let with undefined FV --' ./$O.test-gsi undef-free-var.ags
 
+ok_grep_errors '-- abstract types with too few lambdas in definition --' './test-gslib/mis-kinded-abs-type.ags:14: Incorrect kind: ' ./$O.test-gsi mis-kinded-abs-type.ags
+
 ok_diff_fail '-- undefined values of abstract types --' ./$O.test-gsi undef-abs-type.ags
 ok_grep_errors '-- an abstract type is different from its definition --' './test-gslib/invalid-abs-type.ags:[0-9]*: I don''t think' ./$O.test-gsi invalid-abs-type.ags
 
