@@ -8,9 +8,9 @@ _real.entry	.closure	_real.entry.c
 	.code
 
 _entry.c	.expr
-_empty.record	.tygvar
+record.empty	.tygvar
 _real.entry	.gvar
-	.yield	_real.entry	_empty.record
+	.yield	_real.entry	record.empty
 
 _real.entry.c	.expr
 rune.t	.tygvar

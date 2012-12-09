@@ -8,9 +8,9 @@
 
 _epc	.expr
 _bodytype	.tygvar
-_empty.record	.tygvar
+record.empty	.tygvar
 _in	.cogvar
-	.coerce	_in	_empty.record
+	.coerce	_in	record.empty
 	.undef	_bodytype
 
 	.type

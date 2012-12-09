@@ -15,9 +15,9 @@ a	.alloc	_ep.a.c
 
 _ep.a.c	.expr
 sequence.unit.ty	.tygvar
-_empty.record	.tygvar
+record.empty	.tygvar
 _empty.record	.gvar
-un	.eprim	test.sequence	m	unit	sequence.unit.ty	_empty.record	|	_empty.record
+un	.eprim	test.sequence	m	unit	sequence.unit.ty	record.empty	|	_empty.record
 	.lift
 	.yield	un
 
@@ -35,6 +35,6 @@ r	.record
 
 _epcode.a.ty	.tyexpr
 sequence.m	.tygvar
-_empty.record	.tygvar
+record.empty	.tygvar
 	.tylift
-	.tyref	sequence.m	_empty.record
+	.tyref	sequence.m	record.empty

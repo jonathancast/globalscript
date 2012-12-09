@@ -8,10 +8,10 @@
 
 _epc	.expr
 t	.tygvar
-_empty.record	.tygvar
+record.empty	.tygvar
 _in	.cogvar
-	.coerce	_in	_empty.record
-	.undef	t	_empty.record
+	.coerce	_in	record.empty
+	.undef	t	record.empty
 
 	.type
 

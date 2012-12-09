@@ -14,7 +14,7 @@ r	.record
 	.yield	r
 
 _epcode.c	.forcecont
-_empty.record	.tygvar
-_ul.empty.record	.tygvar
-x	.karg	_ul.empty.record
-	.undef	_empty.record
+record.empty	.tygvar
+record.unlifted.empty	.tygvar
+x	.karg	record.unlifted.empty
+	.undef	record.empty

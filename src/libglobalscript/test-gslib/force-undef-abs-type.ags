@@ -8,19 +8,19 @@
 
 _epcode	.expr
 t	.tygvar
-_empty.record	.tygvar
+record.empty	.tygvar
 _epcode.cont	.subcode
 _t.out	.cogvar
 	.force	_epcode.cont
-	.coerce	_t.out	_empty.record
-	.undef	t	_empty.record
+	.coerce	_t.out	record.empty
+	.undef	t	record.empty
 
 _epcode.cont	.forcecont
 _t.body	.tygvar
-_empty.record	.tygvar
-a.ty	.tylet	_t.body	_empty.record
+record.empty	.tygvar
+a.ty	.tylet	_t.body	record.empty
 a	.karg	a.ty
-	.undef	_empty.record
+	.undef	record.empty
 
 	.type
 

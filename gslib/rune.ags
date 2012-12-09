@@ -169,8 +169,8 @@ _rune.prim.eq.res.t	.tygvar
 	.tyref	_rune.prim.eq.res.t
 
 _rune.prim.eq.res.t	.tyexpr
-_ub.empty.record	.tygvar
-	.tyubsum	0	_ub.empty.record	1	_ub.empty.record
+record.unboxed.empty	.tygvar
+	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
 
 # §section Primitives
 

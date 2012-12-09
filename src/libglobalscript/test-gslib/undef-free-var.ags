@@ -14,10 +14,10 @@ y	.alloc	_epcode.head.1.c	|	x
 	.enter	y
 
 _epcode.head.0.c	.expr
-_empty.record	.tygvar
-	.undef	_empty.record
+record.empty	.tygvar
+	.undef	record.empty
 
 _epcode.head.1.c	.expr
-_empty.record	.tygvar
-x	.fv	_empty.record
+record.empty	.tygvar
+x	.fv	record.empty
 	.enter	x

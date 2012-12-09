@@ -16,6 +16,6 @@ _x	.gvar
 
 _entry.body.c	.expr
 rune.t	.tygvar
-_empty.record	.tygvar
+record.empty	.tygvar
 x	.arg	rune.t
-	.undef	_empty.record
+	.undef	record.empty

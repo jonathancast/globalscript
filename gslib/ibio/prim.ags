@@ -69,13 +69,13 @@ _ibio.prim.write.ty	.tyexpr
 ibio.prim.oport	.tygvar
 list.t	.tygvar
 ibio.prim.m	.tygvar
-_empty.record	.tygvar
+record.empty	.tygvar
 ο	.tyforall	*
 _o.ty	.tylet	ibio.prim.oport	ο
 _s.ty	.tylet	list.t	ο
 	.tyfun	_o.ty
 	.tyfun	_s.ty
-	.tyref	ibio.prim.m	_empty.record
+	.tyref	ibio.prim.m	record.empty
 
 _ibio.prim.file.stat_ty	.tyexpr
 list.t	.tygvar

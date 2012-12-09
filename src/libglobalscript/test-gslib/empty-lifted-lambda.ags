@@ -8,15 +8,15 @@
 
 _epcode	.expr
 rune.t	.tygvar
-_empty.record	.tygvar
+record.empty	.tygvar
 x	.larg	rune.t
-	.undef	_empty.record
+	.undef	record.empty
 
 	.type
 
 _eptype	.tyexpr
 rune.t	.tygvar
-_empty.record	.tygvar
+record.empty	.tygvar
 	.tylift
 	.tyfun	rune.t
-	.tyref	_empty.record
+	.tyref	record.empty

@@ -2,7 +2,7 @@
 
 	.data
 
-	.closure	_entry.c	_empty.record
+	.closure	_entry.c	record.empty
 
 	.code
 
@@ -12,5 +12,5 @@ x	.alloc	_entry.head.c
 	.enter	x
 
 _entry.head.c	.expr
-_empty.record	.tygvar
-	.undef	_empty.record
+record.empty	.tygvar
+	.undef	record.empty

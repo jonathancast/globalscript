@@ -7,13 +7,13 @@
 	.code
 
 _epcode	.expr
-_empty.record	.tygvar
+record.empty	.tygvar
 _epcode.c	.subcode
 	.force	_epcode.c
-	.undef	_empty.record
+	.undef	record.empty
 
 _epcode.c	.forcecont
-_ul.empty.record	.tygvar
-_empty.record	.tygvar
-x	.karg	_ul.empty.record
-	.undef	_empty.record
+record.unlifted.empty	.tygvar
+record.empty	.tygvar
+x	.karg	record.unlifted.empty
+	.undef	record.empty

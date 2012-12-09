@@ -12,5 +12,5 @@ x	.alloc	_entry.head.c
 	.enter	x
 
 _entry.head.c	.expr
-_empty.record	.tygvar
-	.undef	_empty.record
+record.empty	.tygvar
+	.undef	record.empty
