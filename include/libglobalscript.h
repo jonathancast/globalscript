@@ -180,18 +180,20 @@ int gstype_expect_product(char *, char *, struct gstype *, int, ...);
 
 /* §subsubsection Etc. */
 
+struct gsstringbuilder;
+
 struct gsfile_symtable;
 
 struct gstype *gstype_get_definition(struct gspos, struct gsfile_symtable *, struct gstype *);
 
-int gstypes_type_check(char *, char *, struct gspos, struct gstype *, struct gstype *);
+int gstypes_type_check(struct gsstringbuilder *, struct gspos, struct gstype *, struct gstype *);
 
 /* §subsection Client-level Expression Manipulation */
 
 struct gsfile_symtable;
 typedef uintptr gsvalue;
 
-gsvalue gscoerce(gsvalue, struct gstype *, struct gstype **, char *, char *, struct gsfile_symtable *, char *, ...);
+gsvalue gscoerce(gsvalue, struct gstype *, struct gstype **, struct gsstringbuilder *, struct gsfile_symtable *, char *, ...);
 
 gsvalue gsapply(struct gspos, gsvalue, gsvalue);
 
@@ -535,7 +537,10 @@ struct gsstringbuilder {
 };
 
 struct gsstringbuilder gsreserve_string_builder(void);
+
 int gsextend_string_builder(struct gsstringbuilder *, ulong);
+void gsstring_builder_print(struct gsstringbuilder *, char *, ...);
+
 void gsfinish_string_builder(struct gsstringbuilder *);
 
 #if defined(__cplusplus)

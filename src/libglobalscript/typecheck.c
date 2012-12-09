@@ -299,17 +299,20 @@ gstypes_calculate_kind(struct gstype *type)
 void
 gstypes_kind_check_fail(struct gspos pos, struct gskind *kyactual, struct gskind *kyexpected)
 {
-    char err[0x200];
+    struct gsstringbuilder err;
 
-    if (gstypes_kind_check(pos, kyactual, kyexpected, err, err + sizeof(err)) < 0)
-        gsfatal("%s", err)
-    ;
+    err = gsreserve_string_builder();
+    if (gstypes_kind_check(pos, kyactual, kyexpected, &err) < 0) {
+        gsfinish_string_builder(&err);
+        gsfatal("%s", err);
+    }
+    gsfinish_string_builder(&err);
 }
 
 static char *seprint_kind_name(char *, char *, struct gskind *);
 
 int
-gstypes_kind_check(struct gspos pos, struct gskind *kyactual, struct gskind *kyexpected, char *err, char *eerr)
+gstypes_kind_check(struct gspos pos, struct gskind *kyactual, struct gskind *kyexpected, struct gsstringbuilder *err)
 {
     char actual_name[0x100];
 
@@ -318,36 +321,36 @@ gstypes_kind_check(struct gspos pos, struct gskind *kyactual, struct gskind *kye
     switch (kyexpected->node) {
         case gskind_unknown:
             if (kyactual->node != gskind_unknown && kyactual->node != gskind_unlifted && kyactual->node != gskind_lifted) {
-                seprint(err, eerr, "%P: Incorrect kind: Expected '?'; got '%s'", pos, actual_name);
+                gsstring_builder_print(err, "%P: Incorrect kind: Expected '?'; got '%s'", pos, actual_name);
                 return -1;
             }
             return 0;
         case gskind_unlifted:
             if (kyactual->node != gskind_unlifted) {
-                seprint(err, eerr, "%P: Incorrect kind: Expected 'u'; got '%s'", pos, actual_name);
+                gsstring_builder_print(err, "%P: Incorrect kind: Expected 'u'; got '%s'", pos, actual_name);
                 return -1;
             }
             return 0;
         case gskind_lifted:
             if (kyactual->node != gskind_lifted) {
-                seprint(err, eerr, "%P: Incorrect kind: Expected '*'; got '%s'", pos, actual_name);
+                gsstring_builder_print(err, "%P: Incorrect kind: Expected '*'; got '%s'", pos, actual_name);
                 return -1;
             }
             return 0;
         case gskind_exponential:
             if (kyactual->node != gskind_exponential) {
-                seprint(err, eerr, "%P: Incorrect kind: Expected '^'; got '%s'", pos, actual_name);
+                gsstring_builder_print(err, "%P: Incorrect kind: Expected '^'; got '%s'", pos, actual_name);
                 return -1;
             }
-            if (gstypes_kind_check(pos, kyactual->args[0], kyexpected->args[0], err, eerr) < 0)
+            if (gstypes_kind_check(pos, kyactual->args[0], kyexpected->args[0], err) < 0)
                 return -1
             ;
-            if (gstypes_kind_check(pos, kyactual->args[1], kyexpected->args[1], err, eerr) < 0)
+            if (gstypes_kind_check(pos, kyactual->args[1], kyexpected->args[1], err) < 0)
                 return -1
             ;
             return 0;
         default:
-            seprint(err, eerr, "%s:%d: %P: gstypes_kind_check(expected = %d)", __FILE__, __LINE__, pos, kyexpected->node);
+            gsstring_builder_print(err, UNIMPL("%P: gstypes_kind_check(expected = %d)"), pos, kyexpected->node);
             return -1;
     }
 }
@@ -2866,31 +2869,34 @@ static
 void
 gstypes_type_check_type_fail(struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
 {
-    char err[0x400];
+    struct gsstringbuilder err;
 
-    if (gstypes_type_check(err, err + sizeof(err), pos, pactual, pexpected) < 0)
-        gsfatal("%s", err)
-    ;
+    err = gsreserve_string_builder();
+    if (gstypes_type_check(&err, pos, pactual, pexpected) < 0) {
+        gsfinish_string_builder(&err);
+        gsfatal("%s", err.start);
+    }
+    gsfinish_string_builder(&err);
 }
 
 int
-gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
+gstypes_type_check(struct gsstringbuilder *err, struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
 {
     char actual_buf[0x400];
     char expected_buf[0x400];
     int i;
 
     if (gstypes_eprint_type(actual_buf, actual_buf + sizeof(actual_buf), pactual) >= actual_buf + sizeof(actual_buf)) {
-        seprint(err, eerr, UNIMPL("%P: buffer overflow printing actual type %P"), pos, pactual->pos);
+        gsstring_builder_print(err, UNIMPL("%P: buffer overflow printing actual type %P"), pos, pactual->pos);
         return -1;
     }
     if (gstypes_eprint_type(expected_buf, expected_buf + sizeof(expected_buf), pexpected) >= actual_buf + sizeof(actual_buf)) {
-        seprint(err, eerr, UNIMPL("%P: buffer overflow printing actual type %P"), pos, pactual->pos);
+        gsstring_builder_print(err, UNIMPL("%P: buffer overflow printing actual type %P"), pos, pactual->pos);
         return -1;
     }
 
     if (pactual->node != pexpected->node) {
-        seprint(err, eerr, "%P: I don't think %s (%P) is %s (%P)", pos, actual_buf, pactual->pos, expected_buf, pexpected->pos);
+        gsstring_builder_print(err, "%P: I don't think %s (%P) is %s (%P)", pos, actual_buf, pactual->pos, expected_buf, pexpected->pos);
         return -1;
     }
 
@@ -2902,7 +2908,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_abstract = (struct gstype_abstract *)pexpected;
 
             if (pactual_abstract->name != pexpected_abstract->name) {
-                seprint(err, eerr, "%P: I don't think abstype %y is the same as abstype %y", pos, pactual_abstract->name, pexpected_abstract->name);
+                gsstring_builder_print(err, "%P: I don't think abstype %y is the same as abstype %y", pos, pactual_abstract->name, pexpected_abstract->name);
                 return -1;
             }
             return 0;
@@ -2914,11 +2920,11 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_prim = (struct gstype_knprim *)pexpected;
 
             if (pactual_prim->primset != pexpected_prim->primset) {
-                seprint(err, eerr, "%P: I don't think primset %s is the same as primset %s", pos, pactual_prim->primset->name, pexpected_prim->primset->name);
+                gsstring_builder_print(err, "%P: I don't think primset %s is the same as primset %s", pos, pactual_prim->primset->name, pexpected_prim->primset->name);
                 return -1;
             }
             if (pactual_prim->primname != pexpected_prim->primname) {
-                seprint(err, eerr, "%P: I don't think prim %s is the same as prim %s", pos, pactual_prim->primname->name, pexpected_prim->primname->name);
+                gsstring_builder_print(err, "%P: I don't think prim %s is the same as prim %s", pos, pactual_prim->primname->name, pexpected_prim->primname->name);
                 return -1;
             }
             return 0;
@@ -2930,11 +2936,11 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_prim = (struct gstype_unprim *)pexpected;
 
             if (pactual_prim->primsetname != pexpected_prim->primsetname) {
-                seprint(err, eerr, "%P: I don't think primset %s is the same as primset %s", pos, pactual_prim->primsetname->name, pexpected_prim->primsetname->name);
+                gsstring_builder_print(err, "%P: I don't think primset %s is the same as primset %s", pos, pactual_prim->primsetname->name, pexpected_prim->primsetname->name);
                 return -1;
             }
             if (pactual_prim->primname != pexpected_prim->primname) {
-                seprint(err, eerr, "%P: I don't think prim %s is the same as prim %s", pos, pactual_prim->primname->name, pexpected_prim->primname->name);
+                gsstring_builder_print(err, "%P: I don't think prim %s is the same as prim %s", pos, pactual_prim->primname->name, pexpected_prim->primname->name);
                 return -1;
             }
             return 0;
@@ -2946,7 +2952,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_var = (struct gstype_var *)pexpected;
 
             if (pactual_var->name != pexpected_var->name) {
-                seprint(err, eerr, "%P: I don't think %s is the same as %s", pos, pactual_var->name, pexpected_var->name);
+                gsstring_builder_print(err, "%P: I don't think %s is the same as %s", pos, pactual_var->name, pexpected_var->name);
                 return -1;
             }
             return 0;
@@ -2962,14 +2968,14 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pactual_lambda = (struct gstype_lambda *)pactual;
             pexpected_lambda = (struct gstype_lambda *)pexpected;
 
-            if (gstypes_kind_check(pos, pactual_lambda->kind, pexpected_lambda->kind, err, eerr) < 0)
+            if (gstypes_kind_check(pos, pactual_lambda->kind, pexpected_lambda->kind, err) < 0)
                 return -1
             ;
 
             n = 0;
             do {
                 if (seprint(nm, nm + sizeof(nm), "%y%d", pexpected_lambda->var, n++) >= nm + sizeof(nm)) {
-                    seprint(err, eerr, UNIMPL("%P: Buffer overflow during α-renaming"), pexpected->pos);
+                    gsstring_builder_print(err, UNIMPL("%P: Buffer overflow during α-renaming"), pexpected->pos);
                     return -1;
                 }
                 var = gsintern_string(gssymtypelable, nm);
@@ -2978,7 +2984,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             actual_renamed_body = gstypes_subst(pos, pactual_lambda->body, pactual_lambda->var, varty);
             expected_renamed_body = gstypes_subst(pos, pexpected_lambda->body, pexpected_lambda->var, varty);
 
-            return gstypes_type_check(err, eerr, pos, actual_renamed_body, expected_renamed_body);
+            return gstypes_type_check(err, pos, actual_renamed_body, expected_renamed_body);
         }
         case gstype_forall: {
             struct gstype_forall *pactual_forall, *pexpected_forall;
@@ -2991,14 +2997,14 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pactual_forall = (struct gstype_forall *)pactual;
             pexpected_forall = (struct gstype_forall *)pexpected;
 
-            if (gstypes_kind_check(pos, pactual_forall->kind, pexpected_forall->kind, err, eerr) < 0)
+            if (gstypes_kind_check(pos, pactual_forall->kind, pexpected_forall->kind, err) < 0)
                 return -1
             ;
 
             n = 0;
             do {
                 if (seprint(nm, nm + sizeof(nm), "%y%d", pexpected_forall->var, n++) >= nm + sizeof(nm)) {
-                    seprint(err, eerr, UNIMPL("%P: Buffer overflow during α-renaming"), pexpected->pos);
+                    gsstring_builder_print(err, UNIMPL("%P: Buffer overflow during α-renaming"), pexpected->pos);
                     return -1;
                 }
                 var = gsintern_string(gssymtypelable, nm);
@@ -3007,7 +3013,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             actual_renamed_body = gstypes_subst(pos, pactual_forall->body, pactual_forall->var, varty);
             expected_renamed_body = gstypes_subst(pos, pexpected_forall->body, pexpected_forall->var, varty);
 
-            return gstypes_type_check(err, eerr, pos, actual_renamed_body, expected_renamed_body);
+            return gstypes_type_check(err, pos, actual_renamed_body, expected_renamed_body);
         }
         case gstype_lift: {
             struct gstype_lift *pactual_lift, *pexpected_lift;
@@ -3015,7 +3021,7 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pactual_lift = (struct gstype_lift *)pactual;
             pexpected_lift = (struct gstype_lift *)pexpected;
 
-            return gstypes_type_check(err, eerr, pos, pactual_lift->arg, pexpected_lift->arg);
+            return gstypes_type_check(err, pos, pactual_lift->arg, pexpected_lift->arg);
         }
         case gstype_app: {
             struct gstype_app *pactual_app, *pexpected_app;
@@ -3023,9 +3029,9 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pactual_app = (struct gstype_app *)pactual;
             pexpected_app = (struct gstype_app *)pexpected;
 
-            if (gstypes_type_check(err, eerr, pos, pactual_app->fun, pexpected_app->fun) < 0)
+            if (gstypes_type_check(err, pos, pactual_app->fun, pexpected_app->fun) < 0)
                 return -1;
-            if (gstypes_type_check(err, eerr, pos, pactual_app->arg, pexpected_app->arg) < 0)
+            if (gstypes_type_check(err, pos, pactual_app->arg, pexpected_app->arg) < 0)
                 return -1;
             return 0;
         }
@@ -3035,9 +3041,9 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pactual_fun = (struct gstype_fun *)pactual;
             pexpected_fun = (struct gstype_fun *)pexpected;
 
-            if (gstypes_type_check(err, eerr, pos, pactual_fun->tyarg, pexpected_fun->tyarg) < 0)
+            if (gstypes_type_check(err, pos, pactual_fun->tyarg, pexpected_fun->tyarg) < 0)
                 return -1;
-            if (gstypes_type_check(err, eerr, pos, pactual_fun->tyres, pexpected_fun->tyres) < 0)
+            if (gstypes_type_check(err, pos, pactual_fun->tyres, pexpected_fun->tyres) < 0)
                 return -1;
             return 0;
         }
@@ -3048,15 +3054,15 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_sum = (struct gstype_sum *)pexpected;
 
             if (pactual_sum->numconstrs != pexpected_sum->numconstrs) {
-                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have different numbers of constrs", pos, actual_buf, expected_buf);
+                gsstring_builder_print(err, "%P: I don't think %s is the same as %s; they have different numbers of constrs", pos, actual_buf, expected_buf);
                 return -1;
             }
             for (i = 0; i < pexpected_sum->numconstrs; i++) {
                 if (pactual_sum->constrs[i].name != pexpected_sum->constrs[i].name) {
-                    seprint(err, eerr, "%P: I don't think constructor %y (#%d), is the same as %y", pos, pactual_sum->constrs[i].name, i, pexpected_sum->constrs[i].name);
+                    gsstring_builder_print(err, "%P: I don't think constructor %y (#%d), is the same as %y", pos, pactual_sum->constrs[i].name, i, pexpected_sum->constrs[i].name);
                     return -1;
                 }
-                if (gstypes_type_check(err, eerr, pos, pactual_sum->constrs[i].argtype, pexpected_sum->constrs[i].argtype) < 0)
+                if (gstypes_type_check(err, pos, pactual_sum->constrs[i].argtype, pexpected_sum->constrs[i].argtype) < 0)
                     return -1
                 ;
             }
@@ -3069,15 +3075,15 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_sum = (struct gstype_ubsum *)pexpected;
 
             if (pactual_sum->numconstrs != pexpected_sum->numconstrs) {
-                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have different numbers of constrs", pos, actual_buf, expected_buf);
+                gsstring_builder_print(err, "%P: I don't think %s is the same as %s; they have different numbers of constrs", pos, actual_buf, expected_buf);
                 return -1;
             }
             for (i = 0; i < pexpected_sum->numconstrs; i++) {
                 if (pactual_sum->constrs[i].name != pexpected_sum->constrs[i].name) {
-                    seprint(err, eerr, "%P: I don't think constructor %y (#%d), is the same as %y", pos, pactual_sum->constrs[i].name, i, pexpected_sum->constrs[i].name);
+                    gsstring_builder_print(err, "%P: I don't think constructor %y (#%d), is the same as %y", pos, pactual_sum->constrs[i].name, i, pexpected_sum->constrs[i].name);
                     return -1;
                 }
-                if (gstypes_type_check(err, eerr, pos, pactual_sum->constrs[i].argtype, pexpected_sum->constrs[i].argtype) < 0)
+                if (gstypes_type_check(err, pos, pactual_sum->constrs[i].argtype, pexpected_sum->constrs[i].argtype) < 0)
                     return -1
                 ;
             }
@@ -3090,15 +3096,15 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_product = (struct gstype_product *)pexpected;
 
             if (pactual_product->numfields != pexpected_product->numfields) {
-                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have different numbers of fields", pos, actual_buf, expected_buf);
+                gsstring_builder_print(err, "%P: I don't think %s is the same as %s; they have different numbers of fields", pos, actual_buf, expected_buf);
                 return -1;
             }
             for (i = 0; i < pexpected_product->numfields; i++) {
                 if (pactual_product->fields[i].name != pexpected_product->fields[i].name) {
-                    seprint(err, eerr, "%P: I don't think field %y is the same as %y", pos, pactual_product->fields[i].name, pexpected_product->fields[i].name);
+                    gsstring_builder_print(err, "%P: I don't think field %y is the same as %y", pos, pactual_product->fields[i].name, pexpected_product->fields[i].name);
                     return -1;
                 }
-                if (gstypes_type_check(err, eerr, pos, pactual_product->fields[i].type, pexpected_product->fields[i].type) < 0)
+                if (gstypes_type_check(err, pos, pactual_product->fields[i].type, pexpected_product->fields[i].type) < 0)
                     return -1
                 ;
             }
@@ -3111,22 +3117,22 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             pexpected_product = (struct gstype_ubproduct *)pexpected;
 
             if (pactual_product->numfields != pexpected_product->numfields) {
-                seprint(err, eerr, "%P: I don't think %s is the same as %s; they have different numbers of fields", pos, actual_buf, expected_buf);
+                gsstring_builder_print(err, "%P: I don't think %s is the same as %s; they have different numbers of fields", pos, actual_buf, expected_buf);
                 return -1;
             }
             for (i = 0; i < pexpected_product->numfields; i++) {
                 if (pactual_product->fields[i].name != pexpected_product->fields[i].name) {
-                    seprint(err, eerr, "%P: I don't think field %y is the same as %y", pos, pactual_product->fields[i].name, pexpected_product->fields[i].name);
+                    gsstring_builder_print(err, "%P: I don't think field %y is the same as %y", pos, pactual_product->fields[i].name, pexpected_product->fields[i].name);
                     return -1;
                 }
-                if (gstypes_type_check(err, eerr, pos, pactual_product->fields[i].type, pexpected_product->fields[i].type) < 0)
+                if (gstypes_type_check(err, pos, pactual_product->fields[i].type, pexpected_product->fields[i].type) < 0)
                     return -1
                 ;
             }
             return 0;
         }
         default:
-            seprint(err, eerr, UNIMPL("gstypes_check_type(node = %d) %P: %P"), pexpected->node, pos, pexpected->pos);
+            gsstring_builder_print(err, UNIMPL("gstypes_check_type(node = %d) %P: %P"), pexpected->node, pos, pexpected->pos);
             return -1;
     }
 }

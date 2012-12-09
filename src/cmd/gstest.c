@@ -31,21 +31,28 @@ void
 gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type, int argc, char **argv)
 {
     enum test_state st;
-    char err[0x100];
+    struct gsstringbuilder err;
+    char errbuf[0x100];
 
-    if (gstypes_type_check(err, err + sizeof(err), pos, type, test_property_type(pos)) < 0) {
-        fprint(2, "Type error: %s\n", err);
+    err = gsreserve_string_builder();
+    if (gstypes_type_check(&err, pos, type, test_property_type(pos)) < 0) {
+        gsfinish_string_builder(&err);
+        fprint(2, "Type error: %s\n", err.start);
         ace_down();
         exits("type err");
     }
+    gsfinish_string_builder(&err);
 
-    if (gstypes_type_check(err, err + sizeof(err), pos, gstype_get_definition(pos, symtable, type),
+    err = gsreserve_string_builder();
+    if (gstypes_type_check(&err, pos, gstype_get_definition(pos, symtable, type),
         test_expected_property_structure(pos)
     ) < 0) {
-        fprint(2, "test.property.t has the wrong structure :%s\n", err);
+        gsfinish_string_builder(&err);
+        fprint(2, "test.property.t has the wrong structure :%s\n", err.start);
         ace_down();
         exits("type err");
     }
+    gsfinish_string_builder(&err);
 
     while (argc) {
         switch (**argv) {
@@ -57,14 +64,14 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
     }
 
     for (;;) {
-        st = test_evaluate(err, err + sizeof(err), prog);
+        st = test_evaluate(errbuf, errbuf + sizeof(errbuf), prog);
         switch (st) {
             case test_impl_err:
-                fprint(2, "Error in gstest: %s\n", err);
+                fprint(2, "Error in gstest: %s\n", err.start);
                 ace_down();
                 exits("unimpl");
             case test_prog_err:
-                fprint(2, "%s\n", err);
+                fprint(2, "%s\n", err.start);
                 ace_down();
                 exits("test err");
             case test_running:
@@ -81,7 +88,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 ace_down();
                 exits("failed");
             default:
-                fprint(2, "%s:%d: Handle test state %d next\n", __FILE__, __LINE__, st);
+                fprint(2, UNIMPL("Handle test state %d next\n"), st);
                 ace_down();
                 exits("unimpl");
         }

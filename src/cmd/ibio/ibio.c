@@ -86,46 +86,53 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 {
     struct gstype *input, *output, *result;
     gsvalue stdin, stdout;
-    char err[0x100];
+    struct gsstringbuilder err;
+    char errbuf[0x100];
 
     /* §section Cast down from newtype wrapper */
 
-    prog = ibio_downcast_ibio_m(err, err + sizeof(err), script, symtable, pos, prog, ty, &input, &output, &result);
+    prog = ibio_downcast_ibio_m(errbuf, errbuf + sizeof(errbuf), script, symtable, pos, prog, ty, &input, &output, &result);
 
     /* §section Pass in input */
 
-    if (gstypes_type_check(err, err + sizeof(err), pos, input, gstypes_compile_rune(pos)) < 0) {
+    err = gsreserve_string_builder();
+    if (gstypes_type_check(&err, pos, input, gstypes_compile_rune(pos)) < 0) {
+        gsfinish_string_builder(&err);
         ace_down();
-        gsfatal("%s: Panic!  Non-rune.t input in main program (%s)", script, err);
+        gsfatal("%s: Panic!  Non-rune.t input in main program (%s)", script, err.start);
     }
+    gsfinish_string_builder(&err);
 
-    if (ibio_read_threads_init(err, err + sizeof(err)) < 0) {
+    if (ibio_read_threads_init(errbuf, errbuf + sizeof(errbuf)) < 0) {
         ace_down();
-        gsfatal("%s: Couldn't initialize read thread pool: %s", script, err);
+        gsfatal("%s: Couldn't initialize read thread pool: %s", script, errbuf);
     }
-    stdin = ibio_iport_fdopen(0, err, err + sizeof(err));
+    stdin = ibio_iport_fdopen(0, errbuf, errbuf + sizeof(errbuf));
     if (!stdin) {
         ace_down();
-        gsfatal("%s: Couldn't open stdin: %s", script, err);
+        gsfatal("%s: Couldn't open stdin: %s", script, errbuf);
     }
     prog = gsapply(pos, prog, stdin);
 
     /* §section Pass in output */
 
-    if (gstypes_type_check(err, err + sizeof(err), pos, output, gstypes_compile_rune(pos)) < 0) {
+    err = gsreserve_string_builder();
+    if (gstypes_type_check(&err, pos, output, gstypes_compile_rune(pos)) < 0) {
+        gsfinish_string_builder(&err);
         ace_down();
-        gsfatal("%s: Panic!  Non-rune.t output in main program (%s)", script, err);
+        gsfatal("%s: Panic!  Non-rune.t output in main program (%s)", script, err.start);
     }
+    gsfinish_string_builder(&err);
 
-    if (ibio_write_threads_init(err, err + sizeof(err)) < 0) {
+    if (ibio_write_threads_init(errbuf, errbuf + sizeof(errbuf)) < 0) {
         ace_down();
         gsfatal("%s: Couldn't initialize write thread pool: %s", script, err);
     }
 
-    stdout = ibio_oport_fdopen(1, err, err + sizeof(err));
+    stdout = ibio_oport_fdopen(1, errbuf, errbuf + sizeof(errbuf));
     if (!stdout) {
         ace_down();
-        gsfatal("%s: Couldn't open stdout: %s", script, err);
+        gsfatal("%s: Couldn't open stdout: %s", script, errbuf);
     }
     prog = gsapply(pos, prog, stdout);
 
@@ -136,27 +143,31 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
 
 static
 gsvalue
-ibio_downcast_ibio_m(char *err, char *eerr, char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty, struct gstype **pinput, struct gstype **poutput, struct gstype **presult)
+ibio_downcast_ibio_m(char *errbuf, char *eerrbuf, char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty, struct gstype **pinput, struct gstype **poutput, struct gstype **presult)
 {
     struct gstype *monad, *tybody;
     struct gstype *tyw;
+    struct gsstringbuilder err;
 
     tyw = ty;
     if (
-        gstype_expect_app(err, eerr, tyw, &tyw, presult) < 0
-        || gstype_expect_app(err, eerr, tyw, &tyw, poutput) < 0
-        || gstype_expect_app(err, eerr, tyw, &tyw, pinput) < 0
+        gstype_expect_app(errbuf, eerrbuf, tyw, &tyw, presult) < 0
+        || gstype_expect_app(errbuf, eerrbuf, tyw, &tyw, poutput) < 0
+        || gstype_expect_app(errbuf, eerrbuf, tyw, &tyw, pinput) < 0
         || !(monad = tyw)
-        || gstype_expect_abstract(err, eerr, monad, "ibio.m") < 0
+        || gstype_expect_abstract(errbuf, eerrbuf, monad, "ibio.m") < 0
     ) {
         ace_down();
-        gsfatal("%s: Bad type: %s", script, err);
+        gsfatal("%s: Bad type: %s", script, errbuf);
     }
 
-    if (!(prog = gscoerce(prog, ty, &tyw, err, eerr, symtable, "ibio.out", *pinput, *poutput, *presult, 0))) {
+    err = gsreserve_string_builder();
+    if (!(prog = gscoerce(prog, ty, &tyw, &err, symtable, "ibio.out", *pinput, *poutput, *presult, 0))) {
+        gsfinish_string_builder(&err);
         ace_down();
         gsfatal("%s: Couldn't cast down to primitive level: %s", script, err);
     }
+    gsfinish_string_builder(&err);
 
     /* §section Paranoid check that the result is the API monad we expect it to be */
 
@@ -176,10 +187,13 @@ ibio_downcast_ibio_m(char *err, char *eerr, char *script, struct gsfile_symtable
             ))
         ))
     ));
-    if (gstypes_type_check(err, eerr, pos, tyw, tybody) < 0) {
+    err = gsreserve_string_builder();
+    if (gstypes_type_check(&err, pos, tyw, tybody) < 0) {
+        gsfinish_string_builder(&err);
         ace_down();
         gsfatal("%s: Panic!  Type after un-wrapping newtype wrapper incorrect (%s)", script, err);
     }
+    gsfinish_string_builder(&err);
 
     return prog;
 }

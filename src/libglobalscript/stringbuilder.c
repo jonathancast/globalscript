@@ -46,6 +46,16 @@ gsextend_string_builder(struct gsstringbuilder *sb, ulong sz)
 }
 
 void
+gsstring_builder_print(struct gsstringbuilder *buf, char *fmt, ...)
+{
+    va_list arg;
+
+    va_start(arg, fmt);
+    buf->end = vseprint(buf->end, buf->extent, fmt, arg);
+    va_end(arg);
+}
+
+void
 gsfinish_string_builder(struct gsstringbuilder *sb)
 {
     *sb->end++ = 0;

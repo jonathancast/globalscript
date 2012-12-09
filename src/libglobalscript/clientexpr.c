@@ -64,7 +64,7 @@ gsrecordv(struct gspos pos, int nfields, gsvalue *fields)
 }
 
 gsvalue
-gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, char *err, char *eerr, struct gsfile_symtable *symtable, char *coercion_name, ...)
+gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, struct gsstringbuilder *err, struct gsfile_symtable *symtable, char *coercion_name, ...)
 {
     struct gsbc_coercion_type *ct;
     va_list args;
@@ -87,7 +87,7 @@ gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, char *err, char *eer
     }
     va_end(args);
 
-    if (gstypes_type_check(err, eerr, ty->pos, ty, source) < 0)
+    if (gstypes_type_check(err, ty->pos, ty, source) < 0)
         return 0
     ;
 
