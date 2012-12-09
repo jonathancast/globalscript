@@ -2951,6 +2951,35 @@ gstypes_type_check(char *err, char *eerr, struct gspos pos, struct gstype *pactu
             }
             return 0;
         }
+        case gstype_lambda: {
+            struct gstype_lambda *pactual_lambda, *pexpected_lambda;
+            struct gstype *actual_renamed_body, *expected_renamed_body;
+            char nm[0x100];
+            int n;
+            gsinterned_string var;
+            struct gstype *varty;
+
+            pactual_lambda = (struct gstype_lambda *)pactual;
+            pexpected_lambda = (struct gstype_lambda *)pexpected;
+
+            if (gstypes_kind_check(pos, pactual_lambda->kind, pexpected_lambda->kind, err, eerr) < 0)
+                return -1
+            ;
+
+            n = 0;
+            do {
+                if (seprint(nm, nm + sizeof(nm), "%y%d", pexpected_lambda->var, n++) >= nm + sizeof(nm)) {
+                    seprint(err, eerr, UNIMPL("%P: Buffer overflow during α-renaming"), pexpected->pos);
+                    return -1;
+                }
+                var = gsintern_string(gssymtypelable, nm);
+            } while (gstypes_is_ftyvar(var, pactual_lambda->body) || gstypes_is_ftyvar(var, pexpected_lambda->body));
+            varty = gstypes_compile_type_var(pos, var, pexpected_lambda->kind);
+            actual_renamed_body = gstypes_subst(pos, pactual_lambda->body, pactual_lambda->var, varty);
+            expected_renamed_body = gstypes_subst(pos, pexpected_lambda->body, pexpected_lambda->var, varty);
+
+            return gstypes_type_check(err, eerr, pos, actual_renamed_body, expected_renamed_body);
+        }
         case gstype_forall: {
             struct gstype_forall *pactual_forall, *pexpected_forall;
             struct gstype *actual_renamed_body, *expected_renamed_body;
