@@ -87,7 +87,7 @@ ibio.acceptor.prim.<|>	.gvar
 p	.larg	ibio.acceptor.prim.cont.t	s	α	β
 k	.larg	ibio.acceptor.prim.kt	s	res.ty	β
 nr	.alloc	_ibio.acceptor.optional.prim_nr_c	s	α	β	|	k
-jr	.alloc	_ibio.acceptor.optional.prim_jr_c	s	α	β	|	p
+jr	.alloc	_ibio.acceptor.optional.prim_jr_c	s	α	β	|	p	k
 	.app	nr	jr
 	.enter	ibio.acceptor.prim.<|>	s	β
 
@@ -112,22 +112,37 @@ maybe.t	.tygvar
 
 _ibio.acceptor.optional.prim_jr_c	.expr
 ibio.acceptor.prim.cont.t	.tygvar
+ibio.acceptor.prim.kt	.tygvar
+maybe.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
+res.ty	.tylet	maybe.t	α
 _ibio.acceptor.optional.prim_jr_k1_c	.subcode
 p	.fv	ibio.acceptor.prim.cont.t	s	α	β
-k1	.alloc	_ibio.acceptor.optional.prim_jr_k1_c	s	α	β
+k	.fv	ibio.acceptor.prim.kt	s	res.ty	β
+k1	.alloc	_ibio.acceptor.optional.prim_jr_k1_c	s	α	β	|	k
 	.app	k1
 	.enter	p
 
 _ibio.acceptor.optional.prim_jr_k1_c	.expr
-ibio.acceptor.prim.t	.tygvar
+ibio.acceptor.prim.kt	.tygvar
+maybe.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
+res.ty	.tylet	maybe.t	α
+_ibio.acceptor.optional.prim_jr_k1_jx_c	.subcode
+k	.fv	ibio.acceptor.prim.kt	s	res.ty	β
 x	.larg	α
-	.undef	ibio.acceptor.prim.t	s	β
+jx	.alloc	_ibio.acceptor.optional.prim_jr_k1_jx_c	α
+	.app	jx
+	.enter	k
+
+_ibio.acceptor.optional.prim_jr_k1_jx_c	.expr
+maybe.t	.tygvar
+α	.tyfv	*
+	.undef	maybe.t	α
 
 # §section §gs{ibio.acceptor.prim.<|>}
 

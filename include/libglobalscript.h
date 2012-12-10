@@ -540,6 +540,7 @@ struct gsstringbuilder gsreserve_string_builder(void);
 
 int gsextend_string_builder(struct gsstringbuilder *, ulong);
 void gsstring_builder_print(struct gsstringbuilder *, char *, ...);
+void gsstring_builder_vprint(struct gsstringbuilder *, char *, va_list);
 
 void gsfinish_string_builder(struct gsstringbuilder *);
 

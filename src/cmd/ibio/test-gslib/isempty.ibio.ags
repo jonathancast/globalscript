@@ -5,6 +5,7 @@
 	.cast	_ep.in	_ep
 _ep	.closure	_ep_c
 _empty	.string	empty\n
+_not.empty	.string	not\sempty\n
 
 	.code
 
@@ -78,9 +79,8 @@ ip0	.karg	ibio.prim.iptr	rune.t
 	.yield	ibio.prim.iptr.iseof	rune.t
 
 _ep_s_k0	.ubcasecont
-list.t	.tygvar
-rune.t	.tygvar
-	.undef	list.t	rune.t
+_not.empty	.gvar
+	.enter	_not.empty
 
 _ep_s_k1	.ubcasecont
 _empty	.gvar

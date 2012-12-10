@@ -52,6 +52,15 @@ ibio_alloc_channel_segment()
     return res;
 }
 
+gsvalue *
+ibio_channel_segment_limit(struct ibio_channel_segment *seg)
+{
+    char *block;
+
+    block = (char*)seg - (uintptr)seg % IBIO_CHANNEL_SEGMENT_SIZE;
+    return (gsvalue*)block + IBIO_CHANNEL_SEGMENT_SIZE;
+}
+
 /* §section Evaluation */
 
 static
@@ -62,21 +71,27 @@ ibio_channel_eval(gsvalue v)
 
     seg = ibio_channel_segment_containing((gsvalue *)v);
 
+    lock(&seg->lock);
+
     /* Note: §ccode{v} is a §gs{iptr}; user has to de-reference it in GS */
-    if (v >= (uintptr)seg->items && v < (uintptr)seg->extent)
-        return gstywhnf
-    ;
+    if (v >= (uintptr)seg->items && v < (uintptr)seg->extent) {
+        unlock(&seg->lock);
+        return gstywhnf;
+    }
 
     if (v == (uintptr)seg->extent)
         if (seg->next) {
             /* Special representation for EOF */
+            unlock(&seg->lock);
             return gstywhnf;
         } else {
             /* This can happen with the result of §gs{read}, if the evaluation happens before we've decided whether it's a symbol or an EOF */
+            unlock(&seg->lock);
             return gstyblocked;
         }
     ;
 
+    unlock(&seg->lock);
     werrstr("invalid gsvalue %p", v);
     return gstyenosys;
 }

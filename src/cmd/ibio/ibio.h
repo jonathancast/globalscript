@@ -51,6 +51,22 @@ struct ibio_channel_segment *ibio_channel_segment_containing(gsvalue *);
 
 struct ibio_channel_segment *ibio_alloc_channel_segment(void);
 
+gsvalue *ibio_channel_segment_limit(struct ibio_channel_segment *);
+
+/* §section File I/O */
+
+struct ibio_external_io;
+
+typedef int ibio_external_canread(struct ibio_external_io *, void *, void *);
+typedef void *ibio_external_readsym(struct ibio_external_io *, char *, char *, void *, void *, gsvalue *);
+
+struct ibio_external_io {
+    ibio_external_canread *canread;
+    ibio_external_readsym *readsym;
+};
+
+struct ibio_external_io *ibio_rune_io(void);
+
 /* §section Input */
 
 void ibio_check_acceptor_type(char *, struct gsfile_symtable *, struct gspos);
@@ -64,12 +80,13 @@ struct ibio_iport {
     /* §section Used for §gs{iport}s connected to external files */
     int fd;
     long (*refill)(int, void *, long);
+    struct ibio_external_io *external;
     void *buf, *bufstart, *bufend, *bufextent;
 };
 
 int ibio_read_threads_init(char *, char *);
 
-gsvalue ibio_iport_fdopen(int, char *, char *);
+gsvalue ibio_iport_fdopen(int, struct ibio_external_io *, char *, char *);
 
 api_prim_executor ibio_handle_prim_read;
 

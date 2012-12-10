@@ -171,7 +171,7 @@ struct ibio_read_process_args {
 static void ibio_read_process_main(void *);
 
 gsvalue
-ibio_iport_fdopen(int fd, char *err, char *eerr)
+ibio_iport_fdopen(int fd, struct ibio_external_io *external, char *err, char *eerr)
 {
     struct ibio_iport *res;
     struct ibio_read_process_args args;
@@ -186,6 +186,7 @@ ibio_iport_fdopen(int fd, char *err, char *eerr)
 
     res->fd = fd;
     res->refill = read;
+    res->external = external;
     ibio_setup_iport_read_buffer(res);
 
     unlock(&chan->lock);
@@ -203,6 +204,8 @@ ibio_iport_fdopen(int fd, char *err, char *eerr)
 /* §section Reading from a file (read process) */
 
 static void ibio_iport_unlink_from_thread(struct api_thread *, struct ibio_iport *);
+
+static void ibio_shutdown_iport_on_read_symbol_unimpl(char *, int, struct ibio_iport *, struct ibio_channel_segment *, char *, ...);
 
 static
 void
@@ -271,43 +274,45 @@ ibio_read_process_main(void *p)
                             lock(&seg->lock);
 
                             if (pos < seg->extent) {
-                                unlock(&seg->lock);
-                                api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: symbol.bind: have symbol");
-                                active = iport->active = 0;
-                                iport->reading = 0;
-                                ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                                ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, iport, seg, "ibio_read_process_main: symbol.bind: have symbol");
+                                active = 0;
                             } else if (seg->next) {
-                                unlock(&seg->lock);
-                                api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: symbol.bind: eof");
-                                active = iport->active = 0;
-                                iport->reading = 0;
-                                ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                                ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, iport, seg, "ibio_read_process_main: symbol.bind: eof");
+                                active = 0;
                             } else if (iport->bufstart < iport->bufend) {
-                                unlock(&seg->lock);
-                                api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: symbol.bind: have bytes in buffer");
-                                active = iport->active = 0;
-                                iport->reading = 0;
-                                ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                                if (iport->external->canread(iport->external, iport->bufstart, iport->bufend)) {
+                                    gsvalue sym;
+                                    char err[0x100];
+
+                                    iport->bufstart = iport->external->readsym(iport->external, err, err + sizeof(err), iport->bufstart, iport->bufend, pos);
+                                    if (!iport->bufstart) {
+                                        ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, iport, seg, "ibio_read_process_main: symbol.bind: decoding error: %s");
+                                        active = 0;
+                                    }
+                                    sym = *pos;
+                                    pos = seg->extent++;
+                                    if (seg->extent >= ibio_channel_segment_limit(seg)) {
+                                        ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, iport, seg, "ibio_read_process_main: symbol.bind: allocate a new buffer");
+                                        active = 0;
+                                    }
+                                    iport->reading = gsapply(constr->pos, constr->arguments[0], sym);
+                                    unlock(&seg->lock);
+                                } else {
+                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, iport, seg, "ibio_read_process_main: symbol.bind: not enough data in buffer to read a symbol");
+                                    active = 0;
+                                }
                             } else {
                                 long n;
 
                                 n = iport->refill(iport->fd, iport->buf, (uchar*)iport->bufextent - (uchar*)iport->buf);
                                 if (n < 0) {
-                                    unlock(&seg->lock);
-                                    api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: read failed: %r");
-                                    active = iport->active = 0;
-                                    iport->reading = 0;
-                                    ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, iport, seg, "ibio_read_process_main: read failed: %r");
+                                    active = 0;
+                                    goto failed;
                                 }
                                 iport->bufstart = iport->buf;
                                 iport->bufend = (uchar*)iport->buf + n;
-                                if (n > 0) {
-                                    unlock(&seg->lock);
-                                    api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: symbol.bind: not at EOF");
-                                    active = iport->active = 0;
-                                    iport->reading = 0;
-                                    ibio_iport_unlink_from_thread(iport->reading_thread, iport);
-                                } else {
+                                if (n == 0) {
                                     struct ibio_channel_segment *newseg;
 
                                     newseg = ibio_alloc_channel_segment();
@@ -318,8 +323,12 @@ ibio_read_process_main(void *p)
                                     unlock(&seg->lock);
 
                                     iport->reading = constr->arguments[1];
+                                } else {
+                                    /* Loop and try again with the filled buffer */
+                                    unlock(&seg->lock);
                                 }
                             }
+                        failed:
                             break;
                         }
                         case ibio_acceptor_unit_plus:
@@ -371,6 +380,32 @@ ibio_read_process_main(void *p)
     unlock(&ibio_read_thread_queue->lock);
 
     ace_down();
+}
+
+static
+void
+ibio_shutdown_iport_on_read_symbol_unimpl(char *file, int lineno, struct ibio_iport *iport, struct ibio_channel_segment *seg, char *fmt, ...)
+{
+    struct ibio_channel_segment *newseg;
+    struct gsstringbuilder msg;
+    va_list arg;
+
+    newseg = ibio_alloc_channel_segment();
+    newseg->iport = iport;
+    seg->next = newseg;
+    unlock(&newseg->lock);
+    unlock(&seg->lock);
+
+    msg = gsreserve_string_builder();
+    va_start(arg, fmt);
+    gsstring_builder_vprint(&msg, fmt, arg);
+    va_end(arg);
+    gsfinish_string_builder(&msg);
+
+    api_thread_post_unimpl(iport->reading_thread, file, lineno, "%s", msg.start);
+    iport->active = 0;
+    iport->reading = 0;
+    ibio_iport_unlink_from_thread(iport->reading_thread, iport);
 }
 
 /* §section Reading (from API thread) */

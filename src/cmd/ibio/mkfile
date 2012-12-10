@@ -9,6 +9,7 @@ OFILES=\
 	channel.$O \
 	iport.$O \
 	oport.$O \
+	external.$O \
 	stat.$O \
 
 TARG=ibio
@@ -27,6 +28,7 @@ env.$O: ibio.h
 channel.$O: ibio.h
 iport.$O: ibio.h
 oport.$O: ibio.h
+external.$O: ibio.h
 stat.$O: ibio.h
 
 test:V: 

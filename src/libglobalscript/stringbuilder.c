@@ -51,8 +51,14 @@ gsstring_builder_print(struct gsstringbuilder *buf, char *fmt, ...)
     va_list arg;
 
     va_start(arg, fmt);
-    buf->end = vseprint(buf->end, buf->extent, fmt, arg);
+    gsstring_builder_vprint(buf, fmt, arg);
     va_end(arg);
+}
+
+void
+gsstring_builder_vprint(struct gsstringbuilder *buf, char *fmt, va_list arg)
+{
+    buf->end = vseprint(buf->end, buf->extent, fmt, arg);
 }
 
 void

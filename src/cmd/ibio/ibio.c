@@ -120,7 +120,7 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
         ace_down();
         gsfatal("%s: Couldn't initialize read thread pool: %s", script, errbuf);
     }
-    stdin = ibio_iport_fdopen(0, errbuf, errbuf + sizeof(errbuf));
+    stdin = ibio_iport_fdopen(0, ibio_rune_io(), errbuf, errbuf + sizeof(errbuf));
     if (!stdin) {
         ace_down();
         gsfatal("%s: Couldn't open stdin: %s", script, errbuf);
