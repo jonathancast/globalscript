@@ -1,0 +1,23 @@
+Command-line arguments
+  ↓
+(prefix arguments, cut)
+  ↓ ibio.m (gsac.input)
+(list of (list of files ⁽¹⁾), cut ⁽²⁾)
+  ↓
+list of SCCs ⁽³⁾
+  ↓ left fold in ibio.m
+(namespace, output)
+
+(1)
+
+    module 'inputfile ∝ data.
+        | ags gsdl.ags.prefix.file.t
+        | gsac ibio.file.name.t
+    ;
+
+(We ignore .gsac files w/ no source, unless named explicitly;
+we also ignore .cgs files newer than their .gsac)
+
+(2) CUT is parsed, so §gs{list.t gsdl.cgs.file.t}
+
+(3) SCCs are marked prefix/CUT so we know whether to output them
