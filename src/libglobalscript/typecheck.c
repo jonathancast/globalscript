@@ -917,11 +917,9 @@ struct gsbc_typecheck_code_or_api_expr_closure {
 
 static void gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *);
 
-/* ↓ Deprecated */
-static int gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
-
 static int gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_data_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
+static int gsbc_typecheck_data_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_alloc_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
 static int gsbc_typecheck_cont_push_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
 static struct gstype *gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *, struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *);
@@ -959,7 +957,6 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     ntyargs = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
-        } else if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
             struct gskind *argkind;
 
@@ -983,6 +980,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
             tyarglines[ntyargs] = p;
             ntyargs++;
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_data_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymeprim, gssymcodeop, ".eprim")) {
             struct gsregistered_primset *prims;
@@ -1440,6 +1438,53 @@ gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline 
         pcl->fvposs[pcl->nfvs] = p->pos;
         pcl->fvnames[pcl->nfvs] = p->label;
         pcl->nfvs++;
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+int
+gsbc_typecheck_data_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+{
+    static gsinterned_string gssymarg, gssymlarg;
+
+    int i;
+
+    if (
+        gssymceq(p->directive, gssymarg, gssymcodeop, ".arg")
+        || gssymceq(p->directive, gssymlarg, gssymcodeop, ".larg")
+    ) {
+        int reg;
+        struct gstype *argtype;
+
+        if (pcl->regtype > rtarg)
+            gsfatal_bad_input(p, "Too late to add arguments")
+        ;
+        pcl->regtype = rtarg;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers")
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+        gsargcheck(p, 0, "var");
+        reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
+        argtype = pcl->tyregs[reg];
+        if (!argtype)
+            gsfatal_bad_input(p, "Register %s is not a type", p->arguments[0]);
+        for (i = 1; i < p->numarguments; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            argtype = gstype_apply(p->pos, argtype, pcl->tyregs[regarg]);
+        }
+        pcl->regtypes[pcl->nregs] = argtype;
+        pcl->nregs++;
+
+        pcl->argtypes[pcl->nargs] = argtype;
+        pcl->arglines[pcl->nargs] = p;
+        pcl->arglifted[pcl->nargs] = p->directive == gssymlarg;
+        pcl->nargs++;
     } else {
         return 0;
     }
@@ -2216,8 +2261,8 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
     nbinds = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
-        } else if (gsbc_typecheck_code_or_api_expr_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_data_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
             int creg = 0;
@@ -2356,53 +2401,6 @@ gsbc_typecheck_alloc_code_item_type(int ntyfvs, int nfvs)
     res->fvtypes = (struct gstype **)((uchar*)res + end_of_tyfvkinds);
 
     return res;
-}
-
-static
-int
-gsbc_typecheck_code_or_api_expr_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
-{
-    static gsinterned_string gssymarg, gssymlarg;
-
-    int i;
-
-    if (
-        gssymceq(p->directive, gssymarg, gssymcodeop, ".arg")
-        || gssymceq(p->directive, gssymlarg, gssymcodeop, ".larg")
-    ) {
-        int reg;
-        struct gstype *argtype;
-
-        if (pcl->regtype > rtarg)
-            gsfatal_bad_input(p, "Too late to add arguments")
-        ;
-        pcl->regtype = rtarg;
-        if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers")
-        ;
-        pcl->regs[pcl->nregs] = p->label;
-        gsargcheck(p, 0, "var");
-        reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
-        argtype = pcl->tyregs[reg];
-        if (!argtype)
-            gsfatal_bad_input(p, "Register %s is not a type", p->arguments[0]);
-        for (i = 1; i < p->numarguments; i++) {
-            int regarg;
-
-            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
-            argtype = gstype_apply(p->pos, argtype, pcl->tyregs[regarg]);
-        }
-        pcl->regtypes[pcl->nregs] = argtype;
-        pcl->nregs++;
-
-        pcl->argtypes[pcl->nargs] = argtype;
-        pcl->arglines[pcl->nargs] = p;
-        pcl->arglifted[pcl->nargs] = p->directive == gssymlarg;
-        pcl->nargs++;
-    } else {
-        return 0;
-    }
-    return 1;
 }
 
 static
