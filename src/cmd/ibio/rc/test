@@ -13,3 +13,5 @@ ok_diff_case '-- stat (file) --' file ./$O.ibio stat.ibio.ags ./test-gslib/stat.
 
 ok_diff_case '-- isdir (directory) --' directory ./$O.ibio isdir.ibio.ags ./test-gslib
 ok_diff_case '-- isdir (file) --' file ./$O.ibio isdir.ibio.ags ./test-gslib/isdir.ibio.ags
+
+ok_diff_case '-- isempty (empty) --' empty ./$O.ibio isempty.ibio.ags < /dev/null

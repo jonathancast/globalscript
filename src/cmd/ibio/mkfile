@@ -6,6 +6,7 @@ OFILES=\
 	ibio.$O \
 	thread.$O \
 	env.$O \
+	channel.$O \
 	iport.$O \
 	oport.$O \
 	stat.$O \
@@ -23,6 +24,8 @@ all install:V: test
 ibio.$O: ibio.h
 thread.$O: ibio.h
 env.$O: ibio.h
+channel.$O: ibio.h
+iport.$O: ibio.h
 oport.$O: ibio.h
 stat.$O: ibio.h
 

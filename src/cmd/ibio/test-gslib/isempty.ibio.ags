@@ -1,0 +1,113 @@
+	.document
+
+	.data
+
+	.cast	_ep.in	_ep
+_ep	.closure	_ep_c
+_empty	.string	empty\n
+
+	.code
+
+_ep_c	.eprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+ibio.prim.oport	.tygvar
+_ep_ip_c	.subcode
+_ep_s_c	.subcode
+_ep_body_c	.subcode
+i	.larg	ibio.prim.iport	rune.t
+o	.larg	ibio.prim.oport	rune.t
+ip	.bind	_ep_ip_c	|	i
+s	.alloc	_ep_s_c	|	ip
+	.body	_ep_body_c	|	o	s
+
+_ep_ip_c	.expr
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+_ep_ip_os_c	.subcode
+ibio.prim.read	.gvar
+i	.fv	ibio.prim.iport	rune.t
+os	.alloc	_ep_ip_os_c
+	.app	i	os
+	.yield	ibio.prim.read	rune.t
+
+_ep_ip_os_c	.expr
+rune.t	.tygvar
+record.empty	.tygvar
+_ep_ip_os_sym_c	.subcode
+_ep_ip_os_sym_k	.subcode
+ibio.acceptor.optional.prim	.gvar
+sym	.alloc	_ep_ip_os_sym_c
+k	.alloc	_ep_ip_os_sym_k
+	.app	sym	k
+	.enter	ibio.acceptor.optional.prim	rune.t	rune.t	record.empty
+
+_ep_ip_os_sym_c	.expr
+ibio.acceptor.prim.kt	.tygvar
+ibio.acceptor.prim.t	.tygvar
+rune.t	.tygvar
+record.empty	.tygvar
+ibio.acceptor.symbol.prim	.gvar
+	.enter	ibio.acceptor.symbol.prim	rune.t	record.empty
+
+_ep_ip_os_sym_k	.expr
+ibio.acceptor.prim.kt	.tygvar
+rune.t	.tygvar
+maybe.t	.tygvar
+record.empty	.tygvar
+res.ty	.tylet	maybe.t	rune.t
+ibio.acceptor.prim.cont	.gvar
+	.enter	ibio.acceptor.prim.cont	rune.t	res.ty
+
+_ep_s_c	.expr
+_ep_s_ip_ty	.tygvar
+_ep_s_k	.subcode
+ip	.fv	_ep_s_ip_ty
+	.force	_ep_s_k
+	.enter	ip
+
+_ep_s_k	.forcecont
+ibio.prim.iptr	.tygvar
+rune.t	.tygvar
+_ep_s_k0	.subcode
+_ep_s_k1	.subcode
+ibio.prim.iptr.iseof	.gvar
+ip0	.karg	ibio.prim.iptr	rune.t
+	.ubanalyze	0	_ep_s_k0	1	_ep_s_k1
+	.app	ip0
+	.yield	ibio.prim.iptr.iseof	rune.t
+
+_ep_s_k0	.ubcasecont
+list.t	.tygvar
+rune.t	.tygvar
+	.undef	list.t	rune.t
+
+_ep_s_k1	.ubcasecont
+_empty	.gvar
+	.enter	_empty
+
+_ep_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+ibio.prim.write	.gvar
+o	.fv	ibio.prim.oport	rune.t
+s	.fv	list.t	rune.t
+	.app	o	s
+	.yield	ibio.prim.write	rune.t
+
+	.type
+
+_ep_s_ip_ty	.tyexpr
+ibio.prim.iptr	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyref	ibio.prim.iptr	rune.t
+
+	.coercion
+
+_ep.in	.tycoercion
+ibio.m	.tygvar
+rune.t	.tygvar
+record.empty	.tygvar
+	.tydefinition ibio.m	rune.t	rune.t	record.empty

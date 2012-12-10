@@ -1,8 +1,58 @@
+/* §source.file Input */
+
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
 
 #include "ibio.h"
+
+/* §section Acceptors */
+
+enum {
+    ibio_acceptor_fail,
+    ibio_acceptor_symbol_bind,
+    ibio_acceptor_unit_plus,
+};
+
+void
+ibio_check_acceptor_type(char *script, struct gsfile_symtable *symtable, struct gspos pos)
+{
+    gsinterned_string s, alpha;
+    struct gskind *lifted, *kind;
+    struct gstype *sv, *alphav;
+    struct gstype *abstract, *applied_abstract, *expected;
+    struct gsstringbuilder err;
+
+    err = gsreserve_string_builder();
+
+    s = gsintern_string(gssymtypelable, "s");
+    alpha = gsintern_string(gssymtypelable, "α");
+    lifted = gskind_compile_string(pos, "*");
+    kind = gskind_compile_string(pos, "**^*^");
+    sv = gstypes_compile_type_var(pos, s, lifted);
+    alphav = gstypes_compile_type_var(pos, alpha, lifted);
+    abstract = gstypes_compile_abstract(pos, gsintern_string(gssymtypelable, "ibio.acceptor.prim.t"), kind);
+    applied_abstract = gstype_apply(pos, gstype_apply(pos, abstract, sv), alphav);
+    expected = gstypes_compile_lambda(pos, s, lifted, gstypes_compile_lambda(pos, alpha, lifted,
+        gstypes_compile_lift(pos, gstypes_compile_sum(pos, 3,
+            gsintern_string(gssymconstrlable, "fail"), gstypes_compile_ubproduct(pos, 0),
+            gsintern_string(gssymconstrlable, "symbol.bind"), gstypes_compile_ubproduct(pos, 2,
+                gsintern_string(gssymfieldlable, "0"), gstypes_compile_lift(pos, gstypes_compile_fun(pos, sv, applied_abstract)),
+                gsintern_string(gssymfieldlable, "1"), applied_abstract
+            ),
+            gsintern_string(gssymconstrlable, "unit.plus"), gstypes_compile_ubproduct(pos, 2,
+                gsintern_string(gssymfieldlable, "0"), alphav,
+                gsintern_string(gssymfieldlable, "1"), applied_abstract
+            )
+        ))
+    ));
+    if (gstypes_type_check(&err, pos, gstype_get_definition(pos, symtable, abstract), expected) < 0) {
+        gsfinish_string_builder(&err);
+        ace_down();
+        gsfatal("%s: Panic!  ibio.acceptor.prim.t has the wrong structure: %s", script, err.start);
+    }
+    gsfinish_string_builder(&err);
+}
 
 /* §section Managing read threads */
 
@@ -109,7 +159,10 @@ ibio_read_threads_down()
 
 /* §section Opening files */
 
-static struct ibio_iport *ibio_alloc_iport(void);
+/* ↓ Caller must have channel argument locked */
+static struct ibio_iport *ibio_alloc_iport(struct ibio_channel_segment *);
+
+static void ibio_setup_iport_read_buffer(struct ibio_iport *);
 
 struct ibio_read_process_args {
     struct ibio_iport *iport;
@@ -123,13 +176,19 @@ ibio_iport_fdopen(int fd, char *err, char *eerr)
     struct ibio_iport *res;
     struct ibio_read_process_args args;
     int readpid;
+    struct ibio_channel_segment *chan;
 
-    res = ibio_alloc_iport();
+    chan = ibio_alloc_channel_segment();
+
+    res = ibio_alloc_iport(chan);
 
     args.iport = res;
 
     res->fd = fd;
+    res->refill = read;
+    ibio_setup_iport_read_buffer(res);
 
+    unlock(&chan->lock);
     unlock(&res->lock);
 
     /* Create read process tied to res */
@@ -143,6 +202,8 @@ ibio_iport_fdopen(int fd, char *err, char *eerr)
 
 /* §section Reading from a file (read process) */
 
+static void ibio_iport_unlink_from_thread(struct api_thread *, struct ibio_iport *);
+
 static
 void
 ibio_read_process_main(void *p)
@@ -152,6 +213,7 @@ ibio_read_process_main(void *p)
     int tid;
     int active, runnable;
     struct ibio_iport *iport;
+    gsvalue *pos;
 
     args = (struct ibio_read_process_args *)p;
 
@@ -178,11 +240,122 @@ ibio_read_process_main(void *p)
     }
     unlock(&iport->lock);
 
+    pos = 0;
     do {
         lock(&iport->lock);
-        active = iport->active;
-        runnable = 0;
+        active = iport->active || iport->reading;
+        runnable = !!iport->reading;
 
+        if (iport->reading) {
+            gstypecode st;
+
+            if (!pos) pos = iport->position;
+            st = GS_SLOW_EVALUATE(iport->reading);
+            switch (st) {
+                case gstystack:
+                    break;
+                case gstywhnf: {
+                    struct gsconstr *constr;
+
+                    constr = (struct gsconstr *)iport->reading;
+                    switch (constr->constrnum) {
+                        case ibio_acceptor_fail:
+                            iport->reading = 0;
+                            pos = 0;
+                            ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                            break;
+                        case ibio_acceptor_symbol_bind: {
+                            struct ibio_channel_segment *seg;
+
+                            seg = ibio_channel_segment_containing(pos);
+                            lock(&seg->lock);
+
+                            if (pos < seg->extent) {
+                                unlock(&seg->lock);
+                                api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: symbol.bind: have symbol");
+                                active = iport->active = 0;
+                                iport->reading = 0;
+                                ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                            } else if (seg->next) {
+                                unlock(&seg->lock);
+                                api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: symbol.bind: eof");
+                                active = iport->active = 0;
+                                iport->reading = 0;
+                                ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                            } else if (iport->bufstart < iport->bufend) {
+                                unlock(&seg->lock);
+                                api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: symbol.bind: have bytes in buffer");
+                                active = iport->active = 0;
+                                iport->reading = 0;
+                                ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                            } else {
+                                long n;
+
+                                n = iport->refill(iport->fd, iport->buf, (uchar*)iport->bufextent - (uchar*)iport->buf);
+                                if (n < 0) {
+                                    unlock(&seg->lock);
+                                    api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: read failed: %r");
+                                    active = iport->active = 0;
+                                    iport->reading = 0;
+                                    ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                                }
+                                iport->bufstart = iport->buf;
+                                iport->bufend = (uchar*)iport->buf + n;
+                                if (n > 0) {
+                                    unlock(&seg->lock);
+                                    api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: symbol.bind: not at EOF");
+                                    active = iport->active = 0;
+                                    iport->reading = 0;
+                                    ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                                } else {
+                                    struct ibio_channel_segment *newseg;
+
+                                    newseg = ibio_alloc_channel_segment();
+                                    newseg->iport = iport;
+                                    seg->next = newseg;
+                                    pos = newseg->items;
+                                    unlock(&newseg->lock);
+                                    unlock(&seg->lock);
+
+                                    iport->reading = constr->arguments[1];
+                                }
+                            }
+                            break;
+                        }
+                        case ibio_acceptor_unit_plus:
+                            iport->position = pos;
+                            iport->reading = constr->arguments[1];
+                            break;
+                        default:
+                            api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: constr = %d", constr->constrnum);
+                            active = iport->active = 0;
+                            iport->reading = 0;
+                            ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                            break;
+                    }
+                    break;
+                }
+                case gstyindir:
+                    iport->reading = GS_REMOVE_INDIRECTIONS(iport->reading);
+                    break;
+                case gstyerr: {
+                    char buf[0x100];
+
+                    gserror_format(buf, buf + sizeof(buf), (struct gserror *)iport->reading);
+                    api_thread_post(iport->reading_thread, "acceptor error: %s", buf);
+
+                    active = iport->active = 0;
+                    iport->reading = 0;
+                    ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                    break;
+                }
+                default:
+                    api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: st = %d", st);
+                    active = iport->active = 0;
+                    iport->reading = 0;
+                    ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+            }
+        }
         unlock(&iport->lock);
         if (active && !runnable)
             sleep(1)
@@ -200,6 +373,121 @@ ibio_read_process_main(void *p)
     ace_down();
 }
 
+/* §section Reading (from API thread) */
+
+static void ibio_iport_link_to_thread(struct api_thread *, struct ibio_iport *);
+
+enum api_prim_execution_state
+ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct api_prim_blocking **pblocking, gsvalue *pv)
+{
+    gsvalue res;
+    gsvalue acceptor;
+    struct ibio_iport *iport;
+
+    iport = (struct ibio_iport*)read->arguments[0];
+    acceptor = read->arguments[1];
+
+    res = 0;
+    lock(&iport->lock);
+    {
+        if (!iport->active) {
+            api_abend(thread, "read on inactive iport: %p", iport);
+            unlock(&iport->lock);
+            return api_st_error;
+        }
+        if (iport->reading) {
+            api_abend_unimpl(thread, __FILE__, __LINE__, "ibio_handle_prim_read: block on previous read");
+            unlock(&iport->lock);
+            return api_st_error;
+        }
+
+        iport->reading = acceptor;
+        iport->reading_thread = thread;
+        ibio_iport_link_to_thread(thread, iport);
+
+        res = (gsvalue)iport->position;
+    }
+    unlock(&iport->lock);
+
+    *pv = res;
+    return api_st_success;
+}
+
+/* §section Reading (Global Script-side) */
+
+int
+ibio_prim_iptr_handle_iseof(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
+{
+    struct ibio_channel_segment *seg;
+    gsvalue iptrv, *iptr;
+
+    iptrv = args[0];
+    iptr = (gsvalue *)iptrv;
+
+    seg = ibio_channel_segment_containing(iptr);
+
+    if (iptr < seg->extent)
+        return gsubprim_return(thread, pos, 0, 0)
+    ; else
+        return gsubprim_return(thread, pos, 1, 0)
+    ;
+}
+
+/* §section Associating list of current reads to thread */
+
+struct ibio_thread_to_iport_link {
+    struct ibio_thread_to_iport_link *next;
+    struct ibio_iport *iport;
+};
+
+static struct gs_block_class ibio_thread_to_iport_link_descr = {
+    /* evaluator = */ gswhnfeval,
+    /* indirection_dereferencer = */ gswhnfindir,
+    /* description = */ "IBIO Oports",
+};
+static void *ibio_thread_to_iport_link_nursury;
+static Lock ibio_thread_to_iport_link_lock;
+
+static
+void
+ibio_iport_link_to_thread(struct api_thread *thread, struct ibio_iport *iport)
+{
+    struct ibio_thread_data *data;
+    struct ibio_thread_to_iport_link *link;
+
+    data = api_thread_client_data(thread);
+
+    lock(&ibio_thread_to_iport_link_lock);
+    link = gs_sys_seg_suballoc(&ibio_thread_to_iport_link_descr, &ibio_thread_to_iport_link_nursury, sizeof(*link), sizeof(void*));
+    unlock(&ibio_thread_to_iport_link_lock);
+
+    link->next = data->reading_from_iport;
+    link->iport = iport;
+    data->reading_from_iport = link;
+}
+
+static
+void
+ibio_iport_unlink_from_thread(struct api_thread *thread, struct ibio_iport *iport)
+{
+    struct ibio_thread_data *data;
+    struct ibio_thread_to_iport_link **p;
+
+    api_take_thread(thread);
+
+    data = api_thread_client_data(thread);
+    for (p = &data->reading_from_iport; *p; p = &(*p)->next) {
+        if ((*p)->iport == iport) {
+            *p = (*p)->next;
+            api_release_thread(thread);
+            return;
+        }
+    }
+
+    gswarning("%s:%d: Thread %p not actually associated to iport %p", __FILE__, __LINE__, thread, iport);
+    api_release_thread(thread);
+}
+
 /* §section Allocation */
 
 static struct gs_block_class ibio_iport_segment_descr = {
@@ -212,7 +500,7 @@ static Lock ibio_iport_segment_lock;
 
 static
 struct ibio_iport *
-ibio_alloc_iport()
+ibio_alloc_iport(struct ibio_channel_segment *chan)
 {
     struct ibio_iport *res;
 
@@ -224,9 +512,51 @@ ibio_alloc_iport()
     lock(&res->lock);
     res->active = 1;
 
-    /* Output channel (linked list of segments) can be created dynamically */
+    res->reading = 0;
+    res->reading_thread = 0;
 
-    /* Put iport on list of read threads */
+    res->position = chan->items;
+    chan->iport = res;
 
     return res;
+}
+
+#define IBIO_READ_BUFFER_SIZE 0x10000
+
+static struct gs_block_class ibio_iport_read_buffer_descr = {
+    /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
+    /* description = */ "IBIO Read Buffers",
+};
+static void *ibio_iport_read_buffer_nursury;
+static Lock ibio_iport_read_buffer_lock;
+
+static
+void
+ibio_setup_iport_read_buffer(struct ibio_iport *iport)
+{
+    struct gs_blockdesc *nursury_block;
+    void *bufbase, *buf, *bufextent;
+
+    lock(&ibio_iport_read_buffer_lock);
+    {
+        buf = gs_sys_seg_suballoc(&ibio_iport_read_buffer_descr, &ibio_iport_read_buffer_nursury, 0x10, sizeof(uchar));
+        nursury_block = START_OF_BLOCK(buf);
+        bufbase = (uchar*)buf;
+        if ((uintptr)bufbase % IBIO_READ_BUFFER_SIZE)
+            bufbase = (uchar*)bufbase - ((uintptr)bufbase % IBIO_READ_BUFFER_SIZE)
+        ;
+        bufextent = (uchar*)bufbase + IBIO_READ_BUFFER_SIZE;
+        if ((uchar*)bufextent >= (uchar*)END_OF_BLOCK(nursury_block))
+            ibio_iport_read_buffer_nursury = 0
+        ; else
+            ibio_iport_read_buffer_nursury = bufextent
+        ;
+    }
+    unlock(&ibio_iport_read_buffer_lock);
+
+    iport->buf = buf;
+    iport->bufstart = buf;
+    iport->bufend = buf;
+    iport->bufextent = bufextent;
 }

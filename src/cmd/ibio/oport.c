@@ -311,6 +311,17 @@ ibio_write_process_main(void *p)
                     ibio_oport_unlink_from_thread(oport->writing_thread, oport);
                     break;
                 }
+                case gstyimplerr: {
+                    char buf[0x100];
+
+                    gsimplementation_failure_format(buf, buf + sizeof(buf), (struct gsimplementation_failure *)oport->writing);
+                    api_thread_post(oport->writing_thread, "write err: %s", buf);
+
+                    active = oport->active = 0;
+                    oport->writing = 0;
+                    ibio_oport_unlink_from_thread(oport->writing_thread, oport);
+                    break;
+                }
                 default:
                     api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: writing state %d", st);
                     active = oport->active = 0;

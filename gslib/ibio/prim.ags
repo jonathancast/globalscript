@@ -4,11 +4,14 @@
 
 ibio.prim.unit	.closure	_ibio.prim.unit_c
 
+ibio.prim.read	.closure	_ibio.prim.read_c
 ibio.prim.write	.closure	_ibio.prim.write.c
 
 ibio.prim.env.args.get	.closure	_ibio.prim.env.args.get_c
 
 ibio.prim.file.stat	.closure	_ibio.prim.file.stat_c
+
+ibio.prim.iptr.iseof	.closure	_ibio.prim.iptr.iseof_c
 
 	.code
 
@@ -18,6 +21,17 @@ _ibio.prim.unit_ty	.tygvar
 x	.arg	α
 u	.eprim	ibio.prim	ibio	unit	_ibio.prim.unit_ty	α	|	x
 	.yield	u
+
+_ibio.prim.read_c	.expr
+ibio.prim.iport	.tygvar
+ibio.acceptor.prim.t	.tygvar
+record.empty	.tygvar
+_ibio.prim.read_ty	.tygvar
+ι	.tyarg	*
+i	.arg	ibio.prim.iport	ι
+a	.arg	ibio.acceptor.prim.t	ι	record.empty
+r	.eprim	ibio.prim	ibio	read	_ibio.prim.read_ty	ι	|	i	a
+	.yield	r
 
 _ibio.prim.write.c	.expr
 _ibio.prim.write.ty	.tygvar
@@ -47,6 +61,13 @@ fn	.arg	list.t	rune.t
 st	.eprim	ibio.prim	ibio	file.stat	_ibio.prim.file.stat_ty	|	fn
 	.yield	st
 
+_ibio.prim.iptr.iseof_c	.expr
+ibio.prim.iptr	.tygvar
+_ibio.prim.iptr.iseof_ty	.tygvar
+s	.tyarg	*
+ip	.arg	ibio.prim.iptr	s
+	.ubprim	ibio.prim	iptr.iseof	_ibio.prim.iptr.iseof_ty	s	|	ip
+
 	.type
 
 ibio.prim.t	.tyexpr
@@ -58,6 +79,11 @@ ibio.prim.m	.tygvar
 ibio.prim.m	.tyapiprim	ibio.prim	ibio	u?^
 ibio.prim.oport	.tyelimprim	ibio.prim	oport	u*^
 ibio.prim.iport	.tyelimprim	ibio.prim	iport	u*^
+ibio.prim.iptr	.tyelimprim	ibio.prim	iptr	u*^
+
+ibio.prim.dir.t	.tyexpr
+bool.t	.tygvar
+	.typroduct	mode.directory	bool.t
 
 _ibio.prim.unit_ty	.tyexpr
 ibio.prim.m	.tygvar
@@ -65,16 +91,32 @@ ibio.prim.m	.tygvar
 	.tyfun	α
 	.tyref	ibio.prim.m	α
 
+_ibio.prim.read_ty	.tyexpr
+ibio.prim.iport	.tygvar
+ibio.acceptor.prim.t	.tygvar
+record.empty	.tygvar
+ibio.prim.m	.tygvar
+_ibio.prim.read_res_ty	.tygvar
+ι	.tyforall	*
+res.ty	.tylet	_ibio.prim.read_res_ty	ι
+	.tyfun	ibio.prim.iport	ι
+	.tyfun	ibio.acceptor.prim.t	ι	record.empty
+	.tyref	ibio.prim.m	res.ty
+
+_ibio.prim.read_res_ty	.tyexpr
+ibio.prim.iptr	.tygvar
+ι	.tylambda	*
+	.tylift
+	.tyref	ibio.prim.iptr	ι
+
 _ibio.prim.write.ty	.tyexpr
 ibio.prim.oport	.tygvar
 list.t	.tygvar
 ibio.prim.m	.tygvar
 record.empty	.tygvar
 ο	.tyforall	*
-_o.ty	.tylet	ibio.prim.oport	ο
-_s.ty	.tylet	list.t	ο
-	.tyfun	_o.ty
-	.tyfun	_s.ty
+	.tyfun	ibio.prim.oport	ο
+	.tyfun	list.t	ο
 	.tyref	ibio.prim.m	record.empty
 
 _ibio.prim.file.stat_ty	.tyexpr
@@ -85,6 +127,9 @@ ibio.prim.dir.t	.tygvar
 	.tyfun	list.t	rune.t
 	.tyref	ibio.prim.m	ibio.prim.dir.t
 
-ibio.prim.dir.t	.tyexpr
-bool.t	.tygvar
-	.typroduct	mode.directory	bool.t
+_ibio.prim.iptr.iseof_ty	.tyexpr
+ibio.prim.iptr	.tygvar
+record.unboxed.empty	.tygvar
+s	.tyforall	*
+	.tyfun	ibio.prim.iptr	s
+	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty

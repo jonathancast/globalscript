@@ -1,0 +1,319 @@
+	.prefix
+
+# Based on §emph{Parallel Parsing Processes} by Koen Claessen
+
+# §paragraph{Types are}
+# §begin{itemize}
+#   §item §gs{ibio.acceptor.prim.cont.t s α β = ibio.acceptor.prim.kt s α β → ibio.acceptor.prim.t s β} is the underlying type
+#   §item §gs{ibio.acceptor.prim.kt s α β = α → ibio.acceptor.prim.t s β} is the type of the continuation
+#   §item §gs{ibio.acceptor.prim.t s β} is the type of the continuation result
+# §end{itemize}
+
+	.data
+
+ibio.acceptor.prim.cont	.closure	_ibio.acceptor.prim.cont_c
+
+ibio.acceptor.prim.symbol.bind	.closure	_ibio.acceptor.prim.symbol.bind_c
+ibio.acceptor.prim.unit.plus	.closure	_ibio.acceptor.prim.unit.plus_c
+ibio.acceptor.prim.fail	.closure	_ibio.acceptor.prim.fail_c
+
+ibio.acceptor.symbol.prim	.closure	_ibio.acceptor.symbol.prim_c
+
+ibio.acceptor.optional.prim	.closure	_ibio.acceptor.optional.prim_c
+
+ibio.acceptor.prim.<|>	.closure	_ibio.acceptor.prim.<|>_c	_ibio.acceptor.prim.<|>_ty
+
+	.code
+
+# §section §gs{ibio.acceptor.prim.cont}
+
+_ibio.acceptor.prim.cont_c	.expr
+ibio.acceptor.prim.t	.tygvar
+record.empty	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+_ibio.acceptor.prim.cont_er_c	.subcode
+_ibio.acceptor.prim.cont_f_c	.subcode
+ibio.acceptor.prim.unit.plus	.gvar
+x	.larg	α
+er	.alloc	_ibio.acceptor.prim.cont_er_c
+f	.alloc	_ibio.acceptor.prim.cont_f_c	s
+	.app	er	f
+	.enter	ibio.acceptor.prim.unit.plus	s	record.empty
+
+_ibio.acceptor.prim.cont_er_c	.expr
+r	.record
+	.lift
+	.yield	r
+
+_ibio.acceptor.prim.cont_f_c	.expr
+record.empty	.tygvar
+s	.tyfv	*
+ibio.acceptor.prim.fail	.gvar
+	.enter	ibio.acceptor.prim.fail	s	record.empty
+
+# §section §gs{ibio.acceptor.symbol}
+
+_ibio.acceptor.symbol.prim_c	.expr
+ibio.acceptor.prim.kt	.tygvar
+s	.tyarg	*
+β	.tyarg	*
+_ibio.acceptor.symbol.prim_f_c	.subcode
+ibio.acceptor.prim.symbol.bind	.gvar
+k	.larg	ibio.acceptor.prim.kt	s	s	β
+f	.alloc	_ibio.acceptor.symbol.prim_f_c	s	β
+	.app	k	f
+	.enter	ibio.acceptor.prim.symbol.bind	s	β
+
+_ibio.acceptor.symbol.prim_f_c	.expr
+s	.tyfv	*
+β	.tyfv	*
+ibio.acceptor.prim.fail	.gvar
+	.enter	ibio.acceptor.prim.fail	s	β
+
+# §section §gs{ibio.acceptor.optional}
+
+_ibio.acceptor.optional.prim_c	.expr
+ibio.acceptor.prim.cont.t	.tygvar
+ibio.acceptor.prim.kt	.tygvar
+maybe.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+res.ty	.tylet	maybe.t	α
+_ibio.acceptor.optional.prim_nr_c	.subcode
+_ibio.acceptor.optional.prim_jr_c	.subcode
+ibio.acceptor.prim.<|>	.gvar
+p	.larg	ibio.acceptor.prim.cont.t	s	α	β
+k	.larg	ibio.acceptor.prim.kt	s	res.ty	β
+nr	.alloc	_ibio.acceptor.optional.prim_nr_c	s	α	β	|	k
+jr	.alloc	_ibio.acceptor.optional.prim_jr_c	s	α	β	|	p
+	.app	nr	jr
+	.enter	ibio.acceptor.prim.<|>	s	β
+
+_ibio.acceptor.optional.prim_nr_c	.expr
+ibio.acceptor.prim.kt	.tygvar
+ibio.acceptor.prim.t	.tygvar
+maybe.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+res.ty	.tylet	maybe.t	α
+_ibio.acceptor.optional.prim_nr_n_c	.subcode
+k	.fv	ibio.acceptor.prim.kt	s	res.ty	β
+n	.alloc	_ibio.acceptor.optional.prim_nr_n_c	α
+	.app	n
+	.enter	k
+
+_ibio.acceptor.optional.prim_nr_n_c	.expr
+maybe.t	.tygvar
+α	.tyfv	*
+	.undef	maybe.t	α
+
+_ibio.acceptor.optional.prim_jr_c	.expr
+ibio.acceptor.prim.cont.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+_ibio.acceptor.optional.prim_jr_k1_c	.subcode
+p	.fv	ibio.acceptor.prim.cont.t	s	α	β
+k1	.alloc	_ibio.acceptor.optional.prim_jr_k1_c	s	α	β
+	.app	k1
+	.enter	p
+
+_ibio.acceptor.optional.prim_jr_k1_c	.expr
+ibio.acceptor.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+x	.larg	α
+	.undef	ibio.acceptor.prim.t	s	β
+
+# §section §gs{ibio.acceptor.prim.<|>}
+
+_ibio.acceptor.prim.<|>_c	.expr
+ibio.acceptor.prim.t	.tygvar
+s	.tyarg	*
+β	.tyarg	*
+_ibio.acceptor.prim.<|>_k0	.subcode
+ibio.acceptor.prim.t.out	.cogvar
+p0	.larg	ibio.acceptor.prim.t	s	β
+p1	.larg	ibio.acceptor.prim.t	s	β
+	.force	_ibio.acceptor.prim.<|>_k0	s	β	|	p1
+	.coerce	ibio.acceptor.prim.t.out	s	β
+	.enter	p0
+
+_ibio.acceptor.prim.<|>_k0	.forcecont
+ibio.acceptor.prim.u	.tygvar
+ibio.acceptor.prim.t	.tygvar
+_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+_ibio.acceptor.prim.<|>_k0_unit.plus_p1.1_c	.subcode
+ibio.acceptor.prim.t.out	.cogvar
+ibio.acceptor.prim.unit.plus	.gvar
+p1	.fv	ibio.acceptor.prim.t	s	β
+p0.0	.karg	ibio.acceptor.prim.u	s	β
+	.analyze	p0.0	fail	symbol.bind	unit.plus
+		.case	fail
+			.enter	p1
+		.case	symbol.bind
+ks		.fkarg	0	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	β
+keof		.fkarg	1	ibio.acceptor.prim.t	s	β
+			.undef	ibio.acceptor.prim.t	s	β
+		.case	unit.plus
+x		.fkarg	0	β
+p0.1		.fkarg	1	ibio.acceptor.prim.t	s	β
+p1.1			.alloc	_ibio.acceptor.prim.<|>_k0_unit.plus_p1.1_c	s	β	|	p0.1	p1
+			.app	x	p1.1
+			.enter	ibio.acceptor.prim.unit.plus	s	β
+
+_ibio.acceptor.prim.<|>_k0_unit.plus_p1.1_c	.expr
+ibio.acceptor.prim.t	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+ibio.acceptor.prim.<|>	.gvar
+p0.1	.fv	ibio.acceptor.prim.t	s	β
+p1	.fv	ibio.acceptor.prim.t	s	β
+	.app	p0.1	p1
+	.enter	ibio.acceptor.prim.<|>	s	β
+
+# §section Constructors
+
+_ibio.acceptor.prim.symbol.bind_c	.expr
+_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	.tygvar
+ibio.acceptor.prim.t	.tygvar
+ibio.acceptor.prim.u	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+res.u	.tylet	ibio.acceptor.prim.u	s	α
+ibio.acceptor.prim.t.in	.cogvar
+sym	.larg	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	α
+eof	.larg	ibio.acceptor.prim.t	s	α
+r	.constr	res.u	symbol.bind	0	sym	1	eof
+	.coerce	ibio.acceptor.prim.t.in	s	α
+	.lift
+	.yield	r
+
+_ibio.acceptor.prim.unit.plus_c	.expr
+ibio.acceptor.prim.t	.tygvar
+ibio.acceptor.prim.u	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+res.u	.tylet	ibio.acceptor.prim.u	s	α
+ibio.acceptor.prim.t.in	.cogvar
+x	.larg	α
+p1	.larg	ibio.acceptor.prim.t	s	α
+r	.constr	res.u	unit.plus	0	x	1	p1
+	.coerce	ibio.acceptor.prim.t.in	s	α
+	.lift
+	.yield	r
+
+_ibio.acceptor.prim.fail_c	.expr
+ibio.acceptor.prim.u	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+res.u	.tylet	ibio.acceptor.prim.u	s	α
+ibio.acceptor.prim.t.in	.cogvar
+r	.constr	res.u	fail
+	.coerce	ibio.acceptor.prim.t.in	s	α
+	.lift
+	.yield	r
+
+	.type
+
+# §section §gs{ibio.acceptor.prim.cont.t}
+
+ibio.acceptor.prim.cont.t	.tyexpr
+ibio.acceptor.prim.kt	.tygvar
+ibio.acceptor.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	ibio.acceptor.prim.kt	s	α	β
+	.tyref	ibio.acceptor.prim.t	s	β
+
+# §section §gs{ibio.acceptor.prim.kt}
+
+ibio.acceptor.prim.kt	.tyexpr
+ibio.acceptor.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	ibio.acceptor.prim.t	s	β
+
+# §section §gs{ibio.acceptor.prim.t}
+
+ibio.acceptor.prim.t	.tyabstract	**^*^
+ibio.acceptor.prim.u	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+	.tylift
+	.tyref	ibio.acceptor.prim.u	s	α
+
+ibio.acceptor.prim.u	.tyexpr
+_ibio.acceptor.prim.t_symbol.bind_arg_ty	.tygvar
+_ibio.acceptor.prim.t_fail_arg_ty	.tygvar
+_ibio.acceptor.prim.t_unit.plus_arg_ty	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+symbol.bind_arg_ty	.tylet	_ibio.acceptor.prim.t_symbol.bind_arg_ty	s	α
+unit.plus_arg_ty	.tylet	_ibio.acceptor.prim.t_unit.plus_arg_ty	s	α
+	.tysum	fail	_ibio.acceptor.prim.t_fail_arg_ty	symbol.bind	symbol.bind_arg_ty	unit.plus	unit.plus_arg_ty
+
+_ibio.acceptor.prim.t_symbol.bind_arg_ty	.tyexpr
+_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	.tygvar
+ibio.acceptor.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+0_arg_ty	.tylet	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	α
+1_arg_ty	.tylet	ibio.acceptor.prim.t	s	α
+	.tyubproduct	0	0_arg_ty	1	1_arg_ty
+
+_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	.tyexpr
+ibio.acceptor.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+	.tylift
+	.tyfun	s
+	.tyref	ibio.acceptor.prim.t	s	α
+
+_ibio.acceptor.prim.t_fail_arg_ty	.tyexpr
+	.tyubproduct
+
+_ibio.acceptor.prim.t_unit.plus_arg_ty	.tyexpr
+ibio.acceptor.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+1_arg_ty	.tylet	ibio.acceptor.prim.t	s	α
+	.tyubproduct	0	α	1	1_arg_ty
+
+# §section §gs{ibio.acceptor.prim.<|>}
+
+_ibio.acceptor.prim.<|>_ty	.tyexpr
+ibio.acceptor.prim.t	.tygvar
+s	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	ibio.acceptor.prim.t	s	β
+	.tylift
+	.tyfun	ibio.acceptor.prim.t	s	β
+	.tyref	ibio.acceptor.prim.t	s	β
+
+	.coercion
+
+ibio.acceptor.prim.t.in	.tycoercion
+ibio.acceptor.prim.t	.tygvar
+s	.tylambda	*
+β	.tylambda	*
+	.tydefinition	ibio.acceptor.prim.t	s	β
+
+ibio.acceptor.prim.t.out	.tycoercion
+ibio.acceptor.prim.t	.tygvar
+s	.tylambda	*
+β	.tylambda	*
+	.tyinvert
+	.tydefinition	ibio.acceptor.prim.t	s	β

@@ -15,12 +15,14 @@ static struct gsregistered_primtype ibio_types[] = {
     { "ibio", __FILE__, __LINE__, gsprim_type_api, "u?^", },
     { "iport", __FILE__, __LINE__, gsprim_type_elim, "u*^", },
     { "oport", __FILE__, __LINE__, gsprim_type_elim, "u*^", },
+    { "iptr", __FILE__, __LINE__, gsprim_type_elim, "u*^", },
     { 0, },
 };
 
 enum {
     ibio_prim_unit,
     ibio_prim_write,
+    ibio_prim_read,
     ibio_prim_getargs,
     ibio_prim_file_stat,
     ibio_numprims,
@@ -31,6 +33,7 @@ static struct api_prim_table ibio_prim_table = {
     /* execs = */ {
         /* ibio_prim_unit = */ api_thread_handle_prim_unit,
         /* ibio_prim_write = */ ibio_handle_prim_write,
+        /* ibio_prim_read = */ ibio_handle_prim_read,
         /* ibio_prim_getargs = */ ibio_handle_prim_getargs,
         /* ibio_prim_file_stat = */ ibio_handle_prim_file_stat,
     },
@@ -39,15 +42,22 @@ static struct api_prim_table ibio_prim_table = {
 static gsprim_handler *ibio_exec[] = {
 };
 
+enum {
+    ibio_prim_iptr_iseof,
+};
+
 static gsubprim_handler *ibio_ubexec[] = {
+    ibio_prim_iptr_handle_iseof,
 };
 
 static struct gsregistered_prim ibio_operations[] = {
     /* name, file, line, group, check_type, index, */
     { "unit", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ α ? α ibio.prim.m α ` → ∀", ibio_prim_unit, },
     { "write", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ο * ibio.prim.oport ο ` list.t ο ` ibio.prim.m \"Π〈 〉 ⌊⌋ ` → → ∀", ibio_prim_write, },
+    { "read", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ι * ibio.prim.iport ι ` ibio.acceptor.prim.t ι ` \"Π〈 〉 ⌊⌋ ` ibio.prim.m ibio.prim.iptr ι ` ⌊⌋ ` → → ∀", ibio_prim_read, },
     { "env.args.get", __FILE__, __LINE__, gsprim_operation_api, "ibio", "ibio.prim.m list.t list.t rune.t ` ` `", ibio_prim_getargs, },
     { "file.stat", __FILE__, __LINE__, gsprim_operation_api, "ibio", "list.t rune.t ` ibio.prim.m " IBIO_DIR_TYPE " ` →", ibio_prim_file_stat, },
+    { "iptr.iseof", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "λ s * ibio.prim.iptr s ` \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → ∀", ibio_prim_iptr_iseof, },
     { 0, },
 };
 
@@ -88,6 +98,9 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     gsvalue stdin, stdout;
     struct gsstringbuilder err;
     char errbuf[0x100];
+
+    /* §section Check various types look like we expect */
+    ibio_check_acceptor_type(script, symtable, pos);
 
     /* §section Cast down from newtype wrapper */
 
