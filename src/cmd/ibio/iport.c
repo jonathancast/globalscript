@@ -271,7 +271,6 @@ ibio_read_process_main(void *p)
                             struct ibio_channel_segment *seg;
 
                             seg = ibio_channel_segment_containing(pos);
-                            lock(&seg->lock);
 
                             if (pos < seg->extent) {
                                 ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, iport, seg, "ibio_read_process_main: symbol.bind: have symbol");
@@ -461,11 +460,13 @@ ibio_prim_iptr_handle_iseof(struct ace_thread *thread, struct gspos pos, int nar
 
     seg = ibio_channel_segment_containing(iptr);
 
-    if (iptr < seg->extent)
-        return gsubprim_return(thread, pos, 0, 0)
-    ; else
-        return gsubprim_return(thread, pos, 1, 0)
-    ;
+    if (iptr < seg->extent) {
+        unlock(&seg->lock);
+        return gsubprim_return(thread, pos, 0, 0);
+    } else {
+        unlock(&seg->lock);
+        return gsubprim_return(thread, pos, 1, 0);
+    }
 }
 
 /* §section Associating list of current reads to thread */

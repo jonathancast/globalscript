@@ -71,8 +71,6 @@ ibio_channel_eval(gsvalue v)
 
     seg = ibio_channel_segment_containing((gsvalue *)v);
 
-    lock(&seg->lock);
-
     /* Note: §ccode{v} is a §gs{iptr}; user has to de-reference it in GS */
     if (v >= (uintptr)seg->items && v < (uintptr)seg->extent) {
         unlock(&seg->lock);
@@ -106,12 +104,15 @@ ibio_channel_remove_indir(gsvalue v)
 struct ibio_channel_segment *
 ibio_channel_segment_containing(gsvalue *p)
 {
+    struct ibio_channel_segment *res;
     void *block;
 
     block = (void*)((uchar*)p - ((uintptr)p % IBIO_CHANNEL_SEGMENT_SIZE));
-    if ((uintptr)block % BLOCK_SIZE)
-        return (struct ibio_channel_segment *)block
-    ; else
-        return (struct ibio_channel_segment *)START_OF_BLOCK((struct gs_blockdesc *)block)
+    res = (uintptr)block % BLOCK_SIZE
+        ? (struct ibio_channel_segment *)block
+        : (struct ibio_channel_segment *)START_OF_BLOCK((struct gs_blockdesc *)block)
     ;
+
+    lock(&res->lock);
+    return res;
 }
