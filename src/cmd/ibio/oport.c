@@ -289,10 +289,10 @@ ibio_write_process_main(void *p)
                                     api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: error when flushing buffer", n);
                                     active = oport->active = 0;
                                 }
-                                oport->writing = 0;
-                                ibio_oport_unlink_from_thread(oport->writing_thread, oport);
-                                oport->bufend = oport->buf;
                             }
+                            oport->writing = 0;
+                            ibio_oport_unlink_from_thread(oport->writing_thread, oport);
+                            oport->bufend = oport->buf;
                             break;
                         }
                     }
