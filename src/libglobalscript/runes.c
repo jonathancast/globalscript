@@ -59,9 +59,9 @@ int
 rune_prim_handle_eq(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
 {
     if (args[0] != args[1])
-        return gsubprim_return(thread, pos, 0, 0)
+        return gsprim_return_ubsum(thread, pos, 0, 0)
     ; else
-        return gsubprim_return(thread, pos, 1, 0)
+        return gsprim_return_ubsum(thread, pos, 1, 0)
     ;
 }
 

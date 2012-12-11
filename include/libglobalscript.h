@@ -357,12 +357,17 @@ struct gseprim {
 /* §section Primitives */
 
 typedef int gsprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *, gsvalue *);
-
 typedef int gsubprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *);
-int gsubprim_return(struct ace_thread *, struct gspos, int, int, ...);
-int gsubprim_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
+typedef int gslprim_handler(struct ace_thread *, struct gspos, int, gsvalue *);
 
-typedef int gslprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *);
+/* §ags{.lprim} and §ags{.ubprim} handlers must finish by returning a call to one of these functions: */
+
+struct gs_lprim_blocking {
+};
+
+int gsprim_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
+int gsprim_return(struct ace_thread *, struct gspos, gsvalue);
+int gsprim_return_ubsum(struct ace_thread *, struct gspos, int, int, ...);
 
 struct gsregistered_primset {
     char *name;

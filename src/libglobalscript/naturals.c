@@ -67,14 +67,14 @@ natural_prim_handle_divMod(struct ace_thread *thread, struct gspos pos, int narg
         GS_SLOW_EVALUATE(dividend) != gstyunboxed
         || GS_SLOW_EVALUATE(divisor) != gstyunboxed
     )
-        return gsubprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_divMod: bignums")
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_divMod: bignums")
     ;
 
     dividend &= ~GS_MAX_PTR;
     divisor &= ~GS_MAX_PTR;
 
     if (divisor == 0)
-        return gsubprim_return(thread, pos, 0, 0)
+        return gsprim_return_ubsum(thread, pos, 0, 0)
     ; else {
         gsvalue quotient, remainder;
 
@@ -82,7 +82,7 @@ natural_prim_handle_divMod(struct ace_thread *thread, struct gspos pos, int narg
         remainder = dividend % divisor;
         quotient |= GS_MAX_PTR;
         remainder |= GS_MAX_PTR;
-        return gsubprim_return(thread, pos, 1, 2, quotient, remainder);
+        return gsprim_return_ubsum(thread, pos, 1, 2, quotient, remainder);
     }
 }
 
@@ -96,12 +96,12 @@ natural_prim_handle_eq(struct ace_thread *thread, struct gspos pos, int nargs, g
         GS_SLOW_EVALUATE(args[0]) != gstyunboxed
         || GS_SLOW_EVALUATE(args[1]) != gstyunboxed
     )
-        return gsubprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_eq: bignums")
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_eq: bignums")
     ;
     if (args[0] == args[1])
-        return gsubprim_return(thread, pos, 1, 0)
+        return gsprim_return_ubsum(thread, pos, 1, 0)
     ; else
-        return gsubprim_return(thread, pos, 0, 0)
+        return gsprim_return_ubsum(thread, pos, 0, 0)
     ;
 }
 
@@ -113,12 +113,12 @@ natural_prim_handle_lt(struct ace_thread *thread, struct gspos pos, int nargs, g
         GS_SLOW_EVALUATE(args[0]) != gstyunboxed
         || GS_SLOW_EVALUATE(args[1]) != gstyunboxed
     )
-        return gsubprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_lt: bignums")
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_lt: bignums")
     ;
     if (args[0] < args[1])
-        return gsubprim_return(thread, pos, 1, 0)
+        return gsprim_return_ubsum(thread, pos, 1, 0)
     ; else
-        return gsubprim_return(thread, pos, 0, 0)
+        return gsprim_return_ubsum(thread, pos, 0, 0)
     ;
 }
 

@@ -467,10 +467,10 @@ ibio_prim_iptr_handle_iseof(struct ace_thread *thread, struct gspos pos, int nar
 
     if (iptr < seg->extent) {
         unlock(&seg->lock);
-        return gsubprim_return(thread, pos, 0, 0);
+        return gsprim_return_ubsum(thread, pos, 0, 0);
     } else {
         unlock(&seg->lock);
-        return gsubprim_return(thread, pos, 1, 0);
+        return gsprim_return_ubsum(thread, pos, 1, 0);
     }
 }
 

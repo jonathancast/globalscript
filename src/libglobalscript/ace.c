@@ -68,6 +68,7 @@ static void ace_return_undef(struct ace_thread *);
 static int ace_enter(struct ace_thread *);
 static int ace_yield(struct ace_thread *);
 static int ace_ubprim(struct ace_thread *);
+static int ace_lprim(struct ace_thread *);
 
 static
 void
@@ -218,6 +219,11 @@ ace_thread_pool_main(void *p)
                                 break;
                             case gsbc_op_ubprim:
                                 if (ace_ubprim(thread))
+                                    suspended_runnable_thread = 1
+                                ;
+                                break;
+                            case gsbc_op_lprim:
+                                if (ace_lprim(thread))
                                     suspended_runnable_thread = 1
                                 ;
                                 break;
@@ -717,10 +723,34 @@ ace_ubprim(struct ace_thread *thread)
     return prims->ubexec_table[ACE_UBPRIM_INDEX(ip)](thread, ip->pos, ACE_UBPRIM_NARGS(ip), args);
 }
 
+static
+int
+ace_lprim(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsregistered_primset *prims;
+    gsvalue args[MAX_NUM_REGISTERS];
+    int i;
+
+    ip = thread->ip;
+
+    for (i = 0; i < ACE_LPRIM_NARGS(ip); i++)
+        args[i] = thread->regs[ACE_LPRIM_ARG(ip, i)]
+    ;
+    prims = gsprims_lookup_prim_set_by_index(ACE_LPRIM_PRIMSET_INDEX(ip));
+    return prims->lexec_table[ACE_LPRIM_INDEX(ip)](thread, ip->pos, ACE_LPRIM_NARGS(ip), args);
+}
+
 static void *ace_set_registers_from_bco(struct ace_thread *, struct gsbco *);
 
 int
-gsubprim_return(struct ace_thread *thread, struct gspos pos, int constr, int nargs, ...)
+gsprim_return(struct ace_thread *thread, struct gspos pos, gsvalue v)
+{
+    return ace_return(thread, pos, v);
+}
+
+int
+gsprim_return_ubsum(struct ace_thread *thread, struct gspos pos, int constr, int nargs, ...)
 {
     struct gsbc_cont *cont;
     struct gsbc_cont_ubanalyze *ubanalyze;
@@ -756,7 +786,7 @@ gsubprim_return(struct ace_thread *thread, struct gspos pos, int constr, int nar
 }
 
 int
-gsubprim_unimpl(struct ace_thread *thread, char *srcfile, int srclineno, struct gspos pos, char *msg, ...)
+gsprim_unimpl(struct ace_thread *thread, char *srcfile, int srclineno, struct gspos pos, char *msg, ...)
 {
     char buf[0x100];
     va_list arg;
