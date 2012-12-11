@@ -244,6 +244,30 @@ ibio_write_process_main(void *p)
                     c = GS_REMOVE_INDIRECTIONS(c);
                     break;
                 }
+                case gstyerr: {
+                    struct gserror *err;
+                    char buf[0x100];
+
+                    err = (struct gserror *)c;
+                    gserror_format(buf, buf + sizeof(buf), err);
+                    api_thread_post(oport->writing_thread, "write err: %s", buf);
+
+                    active = oport->active = 0;
+                    oport->writing = 0;
+                    ibio_oport_unlink_from_thread(oport->writing_thread, oport);
+                    break;
+                }
+                case gstyimplerr: {
+                    char buf[0x100];
+
+                    gsimplementation_failure_format(buf, buf + sizeof(buf), (struct gsimplementation_failure *)c);
+                    api_thread_post(oport->writing_thread, "write err: %s", buf);
+
+                    active = oport->active = 0;
+                    oport->writing = 0;
+                    ibio_oport_unlink_from_thread(oport->writing_thread, oport);
+                    break;
+                }
                 case gstyunboxed:
                     oport->bufend = gsrunetochar(c, oport->bufend, oport->bufextent);
                     if (((uchar*)oport->bufextent - (uchar*)oport->bufend) < 4) {
