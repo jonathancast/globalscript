@@ -577,10 +577,9 @@ ace_push_ubanalyze(struct ace_thread *thread)
     for (i = 0; i < ACE_UBANALYZE_NUMCONTS(ip); i++)
         ubanalyze->conts[i] = thread->subexprs[ACE_UBANALYZE_CONT(ip, i)]
     ;
-    for (i = 0; i < ACE_UBANALYZE_NUMFVS(ip); i++) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "ace_push_ubanalyze: set fv");
-        return 0;
-    }
+    for (i = 0; i < ACE_UBANALYZE_NUMFVS(ip); i++)
+        ubanalyze->fvs[i] = thread->regs[ACE_UBANALYZE_FV(ip, i)]
+    ;
 
     thread->ip = ACE_UBANALYZE_SKIP(ip);
     return 1;
@@ -742,10 +741,9 @@ gsubprim_return(struct ace_thread *thread, struct gspos pos, int constr, int nar
         ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "Too many registers");
         return 0;
     }
-    for (i = 0; i < ubanalyze->numfvs; i++) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "gsubprim_return: get free variable");
-        return 0;
-    }
+    for (i = 0; i < ubanalyze->numfvs; i++)
+        thread->regs[thread->nregs++] = ubanalyze->fvs[i]
+    ;
     va_start(arg, nargs);
     for (i = 0; i < nargs; i++)
         thread->regs[thread->nregs++] = va_arg(arg, gsvalue)

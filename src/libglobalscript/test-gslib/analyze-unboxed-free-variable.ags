@@ -1,0 +1,37 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+_ep_k0	.subcode
+_ep_k1	.subcode
+natural.prim.≡	.gvar
+0	.natural	0
+1	.natural	1
+_x	.rune	x
+_y	.rune	y
+	.ubanalyze	0	_ep_k0	1	_ep_k1	|	|	_x	_y
+	.app	0	1
+	.yield	natural.prim.≡
+
+_ep_k0	.ubcasecont
+rune.prim.rune	.tygvar
+rune.t.in	.cogvar
+_x	.fv	rune.prim.rune
+_y	.fv	rune.prim.rune
+	.coerce	rune.t.in
+	.lift
+	.yield	_x
+
+_ep_k1	.ubcasecont
+rune.prim.rune	.tygvar
+rune.t.in	.cogvar
+_x	.fv	rune.prim.rune
+_y	.fv	rune.prim.rune
+	.coerce	rune.t.in
+	.lift
+	.yield	_y

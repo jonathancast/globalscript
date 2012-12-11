@@ -1658,9 +1658,9 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
 
         if (i < p->numarguments) i++;
         first_fv = i;
-        for (; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
-            gsfatal(UNIMPL("%P: .ubanalyze: Store free variables"), p->pos);
-        }
+        for (; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++)
+            ACE_UBANALYZE_FV(pcode, i - first_fv) = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])
+        ;
         ACE_UBANALYZE_NUMFVS(pcode) = i - first_fv;
 
         pcl->pout = ACE_UBANALYZE_SKIP(pcode);

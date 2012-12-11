@@ -203,7 +203,10 @@ gsprint_unboxed(struct gstype *type, gsvalue prog)
     if (gstype_expect_lift(err, err + sizeof(err), type, &tyw) >= 0)
         type = tyw
     ;
-    if (gstype_expect_prim(err, err + sizeof(err), type, gsprim_type_defined, "rune.prim", "rune") >= 0) {
+    if (
+        gstype_expect_abstract(err, err + sizeof(err), type, "rune.t") >= 0
+        || gstype_expect_prim(err, err + sizeof(err), type, gsprim_type_defined, "rune.prim", "rune") >= 0
+    ) {
         char buf[5];
 
         gsrunetochar(prog, buf, buf + sizeof(buf));
