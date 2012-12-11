@@ -362,12 +362,15 @@ typedef int gsubprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue
 int gsubprim_return(struct ace_thread *, struct gspos, int, int, ...);
 int gsubprim_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 
+typedef int gslprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *);
+
 struct gsregistered_primset {
     char *name;
     struct gsregistered_primtype *types;
     struct gsregistered_prim *operations;
     gsprim_handler **exec_table;
     gsubprim_handler **ubexec_table;
+    gslprim_handler **lexec_table;
 };
 
 enum gsprim_type_group {

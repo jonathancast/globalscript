@@ -50,6 +50,9 @@ static gsubprim_handler *ibio_ubexec[] = {
     ibio_prim_iptr_handle_iseof,
 };
 
+static gslprim_handler *ibio_lexec[] = {
+};
+
 static struct gsregistered_prim ibio_operations[] = {
     /* name, file, line, group, check_type, index, */
     { "unit", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ α ? α ibio.prim.m α ` → ∀", ibio_prim_unit, },
@@ -67,6 +70,7 @@ static struct gsregistered_primset ibio_primset = {
     /* operations = */ ibio_operations,
     /* exec_table */ ibio_exec,
     /* ubexec_table */ ibio_ubexec,
+    /* lexec_table */ ibio_lexec,
 };
 
 void

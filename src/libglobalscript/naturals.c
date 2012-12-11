@@ -41,12 +41,16 @@ static gsubprim_handler *natural_prim_ubexec[] = {
     natural_prim_handle_lt,
 };
 
+static gslprim_handler *natural_prim_lexec[] = {
+};
+
 struct gsregistered_primset gsnatural_prim_set = {
     /* name = */ "natural.prim",
     /* types = */ natural_prim_types,
     /* operations = */ natural_prim_operations,
     /* exec_table = */ natural_prim_exec,
     /* ubexec_table = */ natural_prim_ubexec,
+    /* lexec_table = */ natural_prim_lexec,
 };
 
 /* §section Arithmetic Primitives */

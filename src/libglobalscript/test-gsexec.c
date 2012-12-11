@@ -31,12 +31,16 @@ static gsprim_handler *test_sequence_exec[] = {
 static gsubprim_handler *test_sequence_ubexec[] = {
 };
 
+static gslprim_handler *test_sequence_lexec[] = {
+};
+
 static struct gsregistered_primset test_sequence_primset = {
     /* name = */ "test.sequence",
     /* types = */ test_sequence_types,
     /* operations = */ test_sequence_operations,
     /* exec_table = */ test_sequence_exec,
     /* ubexec_table = */ test_sequence_ubexec,
+    /* lexec_table = */ test_sequence_lexec,
 };
 
 void

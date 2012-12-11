@@ -35,6 +35,9 @@ static gsubprim_handler *rune_prim_ubexec[] = {
     rune_prim_handle_eq,
 };
 
+static gslprim_handler *rune_prim_lexec[] = {
+};
+
 static struct gsregistered_prim rune_prim_operations[] = {
     /* name, file, line, group, apitype, type, index, */
     { "eq", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "rune.prim.rune rune.prim.rune \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", rune_prim_ub_eq, },
@@ -48,6 +51,7 @@ struct gsregistered_primset gsrune_prim_set = {
     /* operations = */ rune_prim_operations,
     /* exec_table = */ rune_prim_exec,
     /* ubexec_table = */ rune_prim_ubexec,
+    /* lexec_table = */ rune_prim_lexec,
 };
 
 static
