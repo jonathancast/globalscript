@@ -24,6 +24,7 @@ struct ace_thread {
     enum {
         ace_thread_running,
         ace_thread_blocked,
+        ace_thread_lprim_blocked,
     } state;
     union {
         struct {
@@ -33,6 +34,10 @@ struct ace_thread {
             gsvalue on;
             struct gspos at;
         } blocked;
+        struct {
+            struct gslprim_blocking *on;
+            struct gspos at;
+        } lprim_blocked;
     } st;
     int nregs, nsubexprs;
     struct gsbco *subexprs[MAX_NUM_REGISTERS];

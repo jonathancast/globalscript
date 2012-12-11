@@ -360,14 +360,22 @@ typedef int gsprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *
 typedef int gsubprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *);
 typedef int gslprim_handler(struct ace_thread *, struct gspos, int, gsvalue *);
 
-/* §ags{.lprim} and §ags{.ubprim} handlers must finish by returning a call to one of these functions: */
+struct gslprim_blocking;
 
-struct gs_lprim_blocking {
+typedef int gslprim_resumption_handler(struct ace_thread *, struct gspos, struct gslprim_blocking *);
+
+struct gslprim_blocking {
+    gslprim_resumption_handler *resume;
 };
 
+void *gslprim_blocking_alloc(long, gslprim_resumption_handler *);
+
+/* §ags{.lprim} and §ags{.ubprim} handlers must finish by returning a call to one of these functions: */
 int gsprim_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
+int gsprim_error(struct ace_thread *, struct gserror *);
 int gsprim_return(struct ace_thread *, struct gspos, gsvalue);
 int gsprim_return_ubsum(struct ace_thread *, struct gspos, int, int, ...);
+int gsprim_block(struct ace_thread *, struct gspos, struct gslprim_blocking *);
 
 struct gsregistered_primset {
     char *name;

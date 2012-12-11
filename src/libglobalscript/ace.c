@@ -100,6 +100,12 @@ ace_thread_pool_main(void *p)
                     lock(&thread->lock);
 
                     switch (thread->state) {
+                        case ace_thread_lprim_blocked: {
+                            if (thread->st.lprim_blocked.on->resume(thread, thread->st.lprim_blocked.at, thread->st.lprim_blocked.on))
+                                suspended_runnable_thread = 1
+                            ;
+                            break;
+                        }
                         case ace_thread_blocked: {
                             gstypecode st;
 
@@ -806,6 +812,22 @@ gsprim_unimpl(struct ace_thread *thread, char *srcfile, int srclineno, struct gs
     return 0;
 }
 
+int
+gsprim_error(struct ace_thread *thread, struct gserror *error)
+{
+    ace_error_thread(thread, error);
+    return 0;
+}
+
+int
+gsprim_block(struct ace_thread *thread, struct gspos pos, struct gslprim_blocking *blocking)
+{
+    thread->state = ace_thread_lprim_blocked;
+    thread->st.lprim_blocked.at = pos;
+    thread->st.lprim_blocked.on = blocking;
+    return 0;
+}
+
 static
 struct gsbc_cont *
 ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
@@ -1356,4 +1378,28 @@ ace_thread_alloc()
     thread->stacklimit = (uchar*)thread + sizeof(*thread);
 
     return thread;
+}
+
+/* §section §ags{.lprim} Blocking Allocation */
+
+static struct gs_block_class gslprim_blocking_descr = {
+    /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
+    /* description = */ ".prim blocking information",
+};
+static void *gslprim_blocking_nursury;
+static Lock gslprim_blocking_lock;
+
+void *
+gslprim_blocking_alloc(long sz, gslprim_resumption_handler *resume)
+{
+    struct gslprim_blocking *res;
+
+    lock(&gslprim_blocking_lock);
+    res = gs_sys_seg_suballoc(&gslprim_blocking_descr, &gslprim_blocking_nursury, sz, sizeof(void*));
+    unlock(&gslprim_blocking_lock);
+
+    res->resume = resume;
+
+    return res;
 }
