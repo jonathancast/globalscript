@@ -2237,7 +2237,9 @@ gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *pcl, int ba
                         gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(fun->tyres), gskind_lifted_kind())
                     ;
                     calculated_type = fun->tyres;
-                } else
+                } else if (calculated_type->node == gstype_forall)
+                    gsfatal("%P: Too many arguments (type is polymorphic)", p->pos)
+                ; else
                     gsfatal("%P: Too many arguments (max %d; got %d)", p->pos, i, p->numarguments)
                 ;
             }
