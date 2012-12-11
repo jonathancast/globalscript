@@ -322,12 +322,16 @@ struct gserror {
     char message[];
 };
 
+struct gserror *gserror(struct gspos, char *, ...);
+
 char *gserror_format(char *, char *, struct gserror *);
 
 struct gsimplementation_failure {
     struct gspos cpos, srcpos;
     char message[];
 };
+
+struct gsimplementation_failure *gsunimpl(char *, int, struct gspos, char *, ...);
 
 char *gsimplementation_failure_format(char *, char *, struct gsimplementation_failure *);
 
