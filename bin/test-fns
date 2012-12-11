@@ -73,7 +73,7 @@ fn ok_grep_errors {
         exit 1
     }
     if (! grep -s $2 ./test-results/$4^-errors) {
-        echo 'Can''t find expected error message in output anywhere' >[1=2]
+        echo 'Can''t find expected error message '''^$2^''' in output anywhere' >[1=2]
         cat ./test-results/$4^-errors >[1=2]
         cat ./test-results/$4^-actual >[1=2]
         exit 1
