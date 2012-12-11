@@ -503,8 +503,82 @@ ibio_prim_iptr_handle_deref(struct ace_thread *thread, struct gspos pos, int nar
         unlock(&seg->lock);
         return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: points at EOF");
     } else {
+        /* Can't happen!  §ccode{iptr} is necessarily a §gs{iptr α} so fulfilled */
         unlock(&seg->lock);
         return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: still un-fulfilled");
+    }
+}
+
+static gslprim_resumption_handler ibio_prim_iptr_resume_next;
+
+struct ibio_prim_iptr_next_blocking {
+    struct gslprim_blocking gs;
+    gsvalue *iptr_res;
+};
+
+static int ibio_prim_iptr_next_return(struct ace_thread *, struct gspos, struct ibio_channel_segment *, gsvalue *, struct ibio_prim_iptr_next_blocking *);
+
+int
+ibio_prim_iptr_handle_next(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
+{
+    struct ibio_channel_segment *seg;
+    gsvalue iptrv, *iptr;
+
+    iptrv = args[0];
+    iptr = (gsvalue *)iptrv;
+
+    seg = ibio_channel_segment_containing(iptr);
+
+    if (iptr == seg->extent || iptr + 1 == ibio_channel_segment_limit(seg)) {
+        unlock(&seg->lock);
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_next: result in next segment");
+    } else {
+        return ibio_prim_iptr_next_return(thread, pos, seg, iptr + 1, 0);
+    }
+}
+
+int
+ibio_prim_iptr_resume_next(struct ace_thread *thread, struct gspos pos, struct gslprim_blocking *gsblocking)
+{
+    return ibio_prim_iptr_next_return(thread, pos, 0, 0, (struct ibio_prim_iptr_next_blocking *)gsblocking);
+}
+
+int
+ibio_prim_iptr_next_return(struct ace_thread *thread, struct gspos pos, struct ibio_channel_segment *seg, gsvalue *iptr_res, struct ibio_prim_iptr_next_blocking *blocking)
+{
+    if (!iptr_res) {
+        iptr_res = blocking->iptr_res;
+
+        seg = ibio_channel_segment_containing(iptr_res);
+    }
+
+    if (iptr_res < seg->extent) {
+        unlock(&seg->lock);
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: result points at symbol");
+    } else if (seg->next) {
+        unlock(&seg->lock);
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: result points at EOF");
+    } else if (seg->iport->error) {
+        gsvalue res;
+
+        res = seg->iport->error;
+        unlock(&seg->lock);
+        return gsprim_error(thread, (struct gserror *)res);
+    } else if (seg->iport->error) {
+        gsvalue res;
+
+        res = seg->iport->error;
+        unlock(&seg->lock);
+        return gsprim_error(thread, (struct gserror *)res);
+    } else {
+        unlock(&seg->lock);
+
+        if (!blocking) {
+            blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_next);
+            blocking->iptr_res = iptr_res;
+        }
+
+        return gsprim_block(thread, pos, (struct gslprim_blocking *)blocking);
     }
 }
 
