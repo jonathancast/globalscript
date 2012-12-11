@@ -21,6 +21,10 @@ struct ace_thread {
     Lock lock;
     int tid;
     gsvalue base;
+    enum {
+        ace_thread_running,
+        ace_thread_blocked,
+    } state;
     gsvalue blocked;
     struct gspos blockedat;
     struct gsbc *ip;
