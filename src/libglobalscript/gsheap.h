@@ -26,6 +26,8 @@ enum {
     gsbc_op_yield,
     gsbc_op_ubprim,
     gsbc_op_unknown_ubprim,
+    gsbc_op_lprim,
+    gsbc_op_unknown_lprim,
     gsbc_op_bind,
     gsbc_op_body,
 };
@@ -80,15 +82,25 @@ enum {
 
 #define ACE_UBANALYZE_STACK_SIZE(nconts, nfvs) (sizeof(struct gsbc_cont_ubanalyze) + nconts * sizeof(struct gsbco *) + nfvs * sizeof(gsvalue))
 
-#define ACE_UBPRIM_SIZE(nargs) GS_SIZE_BYTECODE(2 + nargs)
+#define ACE_UBPRIM_SIZE(nargs) GS_SIZE_BYTECODE(3 + nargs)
 #define ACE_UBPRIM_PRIMSET_INDEX(ip) ((ip)->args[0])
 #define ACE_UBPRIM_INDEX(ip) ((ip)->args[1])
 #define ACE_UBPRIM_NARGS(ip) ((ip)->args[2])
 #define ACE_UBPRIM_ARG(ip, n) ((ip)->args[3 + (n)])
-#define ACE_UBPRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_UBPRIM_NARGS(ip))
+#define ACE_UBPRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 3 + ACE_UBPRIM_NARGS(ip))
 
 #define ACE_UNKNOWN_UBPRIM_SIZE() GS_SIZE_BYTECODE(0)
 #define ACE_UNKNOWN_UBPRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 0)
+
+#define ACE_LPRIM_SIZE(nargs) GS_SIZE_BYTECODE(3 + nargs)
+#define ACE_LPRIM_PRIMSET_INDEX(ip) ((ip)->args[0])
+#define ACE_LPRIM_INDEX(ip) ((ip)->args[1])
+#define ACE_LPRIM_NARGS(ip) ((ip)->args[2])
+#define ACE_LPRIM_ARG(ip, n) ((ip)->args[3 + (n)])
+#define ACE_LPRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 3 + ACE_UBPRIM_NARGS(ip))
+
+#define ACE_UNKNOWN_LPRIM_SIZE() GS_SIZE_BYTECODE(0)
+#define ACE_UNKNOWN_LPRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 0)
 
 #define ACE_ANALYZE_SCRUTINEE(ip) ((ip)->args[0])
 #define ACE_ANALYZE_CASES(ip) ((struct gsbc **)GS_NEXT_BYTECODE(ip, 1))

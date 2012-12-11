@@ -1164,7 +1164,7 @@ static
 int
 gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymundef, gssymyield, gssymenter, gssymubprim, gsssymanalyze;
+    static gsinterned_string gssymundef, gssymyield, gssymenter, gssymubprim, gssymlprim, gsssymanalyze;
     int i;
 
     if (gssymceq(parsedline->directive, gssymundef, gssymcodeop, ".undef")) {
@@ -1211,6 +1211,30 @@ gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct u
         for (; i < n; i++) {
             parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
         }
+    } else if (gssymceq(parsedline->directive, gssymlprim, gssymcodeop, ".lprim")) {
+        gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
+        if (n < 3)
+            gsfatal("%s:%d: Missing primset on .lprim", filename, *plineno)
+        ;
+        parsedline->arguments[2 - 2] = gsintern_string(gssymprimsetlable, fields[2]);
+        if (n < 4)
+            gsfatal("%s:%d: Missing prim name on .lprim", filename, *plineno)
+        ;
+        parsedline->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
+        if (n < 5)
+            gsfatal("%s:%d: Missing declared type on .lprim", filename, *plineno)
+        ;
+        parsedline->arguments[4 - 2] = gsintern_string(gssymtypelable, fields[4]);
+        for (i = 5; i < n && strcmp(fields[i], "|"); i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+        if (i < n) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        for (; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
+        ;
     } else if (gssymceq(parsedline->directive, gsssymanalyze, gssymcodeop, ".analyze")) {
         struct gsparsedline *p;
         int constrnum;

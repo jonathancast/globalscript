@@ -1058,7 +1058,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
             goto have_type;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_code_expr(%s)", p->pos, p->directive->name);
+            gsfatal(UNIMPL("%P: gsbc_typecheck_code_expr(%y)"), p->pos, p->directive);
         }
     }
 
@@ -1504,7 +1504,7 @@ static
 struct gstype *
 gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparsedline **pp, struct gsparsedfile_segment **ppseg, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymundef, gssymenter, gssymubprim, gssymanalyze, gssymcase;
+    static gsinterned_string gssymundef, gssymenter, gssymubprim, gssymlprim, gssymanalyze, gssymcase;
 
     int i;
 
@@ -1629,6 +1629,58 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
         if (calculated_type->node != gstype_ubsum)
             gsfatal("%P: Result of .ubprim is not an unboxed sum type", (*pp)->pos)
         ;
+    } else if (gssymceq((*pp)->directive, gssymlprim, gssymcodeop, ".lprim")) {
+        struct gsregistered_primset *prims;
+        int tyreg;
+        int first_arg_pos;
+
+        gsargcheck(*pp, 2, "type");
+        tyreg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[2]);
+        calculated_type = pcl->tyregs[tyreg];
+        gsbc_typecheck_validate_prim_type((*pp)->pos, (*pp)->arguments[0], calculated_type);
+
+        gsargcheck(*pp, 0, "primset");
+        if (prims = gsprims_lookup_prim_set((*pp)->arguments[0]->name)) {
+            struct gsregistered_prim *prim;
+            struct gstype *expected_type;
+
+            if (!(prim = gsprims_lookup_prim(prims, (*pp)->arguments[1]->name)))
+                gsfatal("%P: Primitive set %s has no prim %y", (*pp)->pos, prims->name, (*pp)->arguments[1])
+            ;
+
+            if (prim->group != gsprim_operation_lifted)
+                gsfatal("%P: Primitive %s in primset %s is not a lifted primitive", (*pp)->pos, prim->name, prims->name)
+            ;
+
+            expected_type = gsbc_typecheck_compile_prim_type((*pp)->pos, symtable, prim->type);
+            gstypes_type_check_type_fail((*pp)->pos, calculated_type, expected_type);
+        }
+
+        for (i = 3; i < (*pp)->numarguments && (*pp)->arguments[i]->type != gssymseparator; i++) {
+            int tyargreg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[i]);
+            calculated_type = gstype_instantiate((*pp)->pos, calculated_type, pcl->tyregs[tyargreg]);
+        }
+        if (i < (*pp)->numarguments) i++;
+        first_arg_pos = i;
+        for (; i < (*pp)->numarguments; i++) {
+            int argreg;
+            struct gstype *argtype;
+
+            argreg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[i]);
+            argtype = pcl->regtypes[argreg];
+
+            if (calculated_type->node == gstype_fun) {
+                struct gstype_fun *fun;
+
+                fun = (struct gstype_fun *)calculated_type;
+                gstypes_type_check_type_fail((*pp)->pos, argtype, fun->tyarg);
+                calculated_type = fun->tyres;
+            } else {
+                gsfatal("%P: Too many arguments to %y (max %d; got %d)", (*pp)->pos, (*pp)->arguments[2], i - first_arg_pos, (*pp)->numarguments - first_arg_pos);
+            }
+        }
+        gstypes_kind_check_fail((*pp)->pos, gstypes_calculate_kind(calculated_type), gskind_lifted_kind());
+        gsbc_typecheck_check_boxed((*pp)->pos, calculated_type);
     } else if (gssymceq((*pp)->directive, gssymanalyze, gssymcodeop, ".analyze")) {
         int reg;
         struct gstype_sum *sum;

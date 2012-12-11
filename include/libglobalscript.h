@@ -387,6 +387,7 @@ struct gsregistered_primtype {
 enum gsprim_group {
     gsprim_operation,
     gsprim_operation_unboxed,
+    gsprim_operation_lifted,
     gsprim_operation_api,
 };
 
