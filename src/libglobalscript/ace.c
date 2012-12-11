@@ -485,16 +485,16 @@ ace_push_app(struct ace_thread *thread)
 
     cont->node = gsbc_cont_app;
     cont->pos = ip->pos;
-    app->numargs = ip->args[0];
-    for (j = 0; j < ip->args[0]; j++) {
-        if (ip->args[1 + j] >= thread->nregs) {
-            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".app argument too large");
+    app->numargs = ACE_APP_NUMARGS(ip);
+    for (j = 0; j < ACE_APP_NUMARGS(ip); j++) {
+        if (ACE_APP_ARG(ip, j) >= thread->nregs) {
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".app argument too large: arg #%d is %d (%d registers to this point)", j, ACE_APP_ARG(ip, j), thread->nregs);
             return 0;
         }
-        app->arguments[j] = thread->regs[ip->args[1 + j]];
+        app->arguments[j] = thread->regs[ACE_APP_ARG(ip, j)];
     }
 
-    thread->ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[0]);
+    thread->ip = ACE_APP_SKIP(ip);
     return 1;
 }
 

@@ -68,6 +68,11 @@ enum {
 #define ACE_FIELD_RECORD(ip) ((ip)->args[1])
 #define ACE_FIELD_SKIP(ip) GS_NEXT_BYTECODE((ip), 2)
 
+#define ACE_APP_SIZE(nargs) GS_SIZE_BYTECODE(1 + nargs)
+#define ACE_APP_NUMARGS(ip) ((ip)->args[0])
+#define ACE_APP_ARG(ip, n) ((ip)->args[1 + (n)])
+#define ACE_APP_SKIP(ip) GS_NEXT_BYTECODE((ip), 1 + ACE_APP_NUMARGS(ip))
+
 #define ACE_STRICT_SIZE(nfvs) GS_SIZE_BYTECODE(2 + nfvs)
 #define ACE_STRICT_CONT(ip) ((ip)->args[0])
 #define ACE_STRICT_NUMFVS(ip) ((ip)->args[1])

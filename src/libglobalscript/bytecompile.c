@@ -621,7 +621,7 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
         /* no effect on representation */
     } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
         pcl->phase = phconts;
-        pcl->size += GS_SIZE_BYTECODE(1 + p->numarguments); /* nargs + args */
+        pcl->size += ACE_APP_SIZE(p->numarguments);
     } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
         int nfvs;
 
@@ -1566,14 +1566,14 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
         pcode = (struct gsbc *)pcl->pout;
         pcode->pos = p->pos;
         pcode->instr = gsbc_op_app;
-        pcode->args[0] = (uchar)p->numarguments;
+        ACE_APP_NUMARGS(pcode) = p->numarguments;
         for (i = 0; i < p->numarguments; i++) {
             int regarg;
 
             regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
-            pcode->args[1 + i] = (uchar)regarg;
+            ACE_APP_ARG(pcode, i) = regarg;
         }
-        pcl->pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments);
+        pcl->pout = ACE_APP_SKIP(pcode);
     } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
         int creg = 0;
         int nfvs, first_fv;
