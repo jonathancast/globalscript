@@ -77,6 +77,7 @@ struct ibio_iport {
     gsvalue *position;
     gsvalue reading;
     struct api_thread *reading_thread;
+    gsvalue error;
     /* §section Used for §gs{iport}s connected to external files */
     int fd;
     long (*refill)(int, void *, long);

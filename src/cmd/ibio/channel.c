@@ -82,8 +82,10 @@ ibio_channel_eval(gsvalue v)
             /* Special representation for EOF */
             unlock(&seg->lock);
             return gstywhnf;
+        } else if (seg->iport->error) {
+            unlock(&seg->lock);
+            return gstyindir;
         } else {
-            /* This can happen with the result of §gs{read}, if the evaluation happens before we've decided whether it's a symbol or an EOF */
             unlock(&seg->lock);
             return gstyblocked;
         }
@@ -98,7 +100,28 @@ static
 gsvalue
 ibio_channel_remove_indir(gsvalue v)
 {
-    return v;
+    struct ibio_channel_segment *seg;
+
+    seg = ibio_channel_segment_containing((gsvalue *)v);
+
+    if (v == (uintptr)seg->extent) {
+        if (seg->next) {
+            unlock(&seg->lock);
+            return v;
+        } else if (seg->iport->error) {
+            gsvalue res;
+
+            res = seg->iport->error;
+            unlock(&seg->lock);
+            return res;
+        } else {
+            unlock(&seg->lock);
+            return v;
+        }
+    } else {
+        unlock(&seg->lock);
+        return v;
+    }
 }
 
 struct ibio_channel_segment *
