@@ -1058,10 +1058,20 @@ gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *pline
             parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i]);
             parsedline->arguments[i + 1 - 2] = gsintern_string(gssymcodelable, fields[i + 1]);
         }
-        if (i < n)
-            gsfatal(UNIMPL("%s:%d: type free variables to .ubanalyze"), filename, *plineno);
-        if (i < n)
-            gsfatal(UNIMPL("%s:%d: free variables to .ubanalyze"), filename, *plineno);
+        if (i < n) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        for (; i < n && strcmp(fields[i], "|"); i ++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+        if (i < n) {
+            parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        for (; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
+        ;
     } else {
         return 0;
     }

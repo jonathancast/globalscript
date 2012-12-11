@@ -61,6 +61,11 @@ ok_diff '-- constructors in expressions --' ./$O.test-gsi constr-in-expr.ags
 ok_diff '-- analyze on boxed sums --' ./$O.test-gsi analyze-constructor.ags
 ok_diff '-- analyze on sums of unboxed products --' ./$O.test-gsi analyze-adt-constructor.ags
 
+ok_grep_errors '-- analyze on un-boxed sum with un-bound free type variable --' './test-gslib/ubanalyze-unbound-type-variable.ags:14: Not enough free type variables' ./$O.test-gsi ubanalyze-unbound-type-variable.ags
+ok_grep_errors '-- analyze on un-boxed sum with excess free type variable --' './test-gslib/ubanalyze-excess-type-variable.ags:15: Too many free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
+ok_grep_errors '-- analyze on un-boxed sum with un-bound free variable --' './test-gslib/ubanalyze-unbound-variable.ags:16: Not enough free variables' ./$O.test-gsi ubanalyze-unbound-variable.ags
+ok_grep_errors '-- analyze on un-boxed sum with excess free variable --' './test-gslib/ubanalyze-excess-variable.ags:17: Too many free variables' ./$O.test-gsi ubanalyze-excess-variable.ags
+
 ok_grep_errors '-- undefined API entry points --' './test-gslib/undef-api.ags:5: undefined' ./$O.test-gsexec undef-api.ags
 ok_grep_errors '-- undefined expression API entry points --' './test-gslib/undef-expr-api.ags:11: undefined' ./$O.test-gsexec undef-expr-api.ags
 ok_grep_errors '-- block statements with mis-typed bodies --' './test-gslib/mistyped-block-api.ags:11: I don''t think' ./$O.test-gsexec mistyped-block-api.ags
