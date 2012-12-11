@@ -50,7 +50,12 @@ static gsubprim_handler *ibio_ubexec[] = {
     ibio_prim_iptr_handle_iseof,
 };
 
+enum {
+    ibio_prim_iptr_deref,
+};
+
 static gslprim_handler *ibio_lexec[] = {
+    ibio_prim_iptr_handle_deref,
 };
 
 static struct gsregistered_prim ibio_operations[] = {
@@ -61,6 +66,7 @@ static struct gsregistered_prim ibio_operations[] = {
     { "env.args.get", __FILE__, __LINE__, gsprim_operation_api, "ibio", "ibio.prim.m list.t list.t rune.t ` ` `", ibio_prim_getargs, },
     { "file.stat", __FILE__, __LINE__, gsprim_operation_api, "ibio", "list.t rune.t ` ibio.prim.m " IBIO_DIR_TYPE " ` →", ibio_prim_file_stat, },
     { "iptr.iseof", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "λ s * ibio.prim.iptr s ` \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → ∀", ibio_prim_iptr_iseof, },
+    { "iptr.deref", __FILE__, __LINE__, gsprim_operation_lifted, 0, "λ s * ibio.prim.iptr s ` s → ∀", ibio_prim_iptr_deref, },
     { 0, },
 };
 

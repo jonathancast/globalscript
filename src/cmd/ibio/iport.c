@@ -474,6 +474,40 @@ ibio_prim_iptr_handle_iseof(struct ace_thread *thread, struct gspos pos, int nar
     }
 }
 
+int
+ibio_prim_iptr_handle_deref(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
+{
+    struct ibio_channel_segment *seg;
+    gsvalue iptrv, *iptr;
+
+    iptrv = args[0];
+    iptr = (gsvalue *)iptrv;
+
+    seg = ibio_channel_segment_containing(iptr);
+
+    if (iptr < seg->extent) {
+        gsvalue v;
+        gstypecode st;
+
+        v = *iptr;
+        unlock(&seg->lock);
+
+        st = GS_SLOW_EVALUATE(v);
+        switch (st) {
+            case gstyunboxed:
+                return gsprim_return(thread, pos, v);
+            default:
+                return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: st = %d", st);
+        }
+    } else if (seg->next) {
+        unlock(&seg->lock);
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: points at EOF");
+    } else {
+        unlock(&seg->lock);
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: still un-fulfilled");
+    }
+}
+
 /* §section Associating list of current reads to thread */
 
 struct ibio_thread_to_iport_link {

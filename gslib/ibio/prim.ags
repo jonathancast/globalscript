@@ -12,6 +12,7 @@ ibio.prim.env.args.get	.closure	_ibio.prim.env.args.get_c
 ibio.prim.file.stat	.closure	_ibio.prim.file.stat_c
 
 ibio.prim.iptr.iseof	.closure	_ibio.prim.iptr.iseof_c
+ibio.prim.iptr.deref	.closure	_ibio.prim.iptr.deref_c
 
 	.code
 
@@ -67,6 +68,13 @@ _ibio.prim.iptr.iseof_ty	.tygvar
 s	.tyarg	*
 ip	.arg	ibio.prim.iptr	s
 	.ubprim	ibio.prim	iptr.iseof	_ibio.prim.iptr.iseof_ty	s	|	ip
+
+_ibio.prim.iptr.deref_c	.expr
+_ibio.prim.iptr.deref_ty	.tygvar
+ibio.prim.iptr	.tygvar
+s	.tyarg	*
+ip	.arg	ibio.prim.iptr	s
+	.lprim	ibio.prim	iptr.deref	_ibio.prim.iptr.deref_ty	s	|	ip
 
 	.type
 
@@ -133,3 +141,9 @@ record.unboxed.empty	.tygvar
 s	.tyforall	*
 	.tyfun	ibio.prim.iptr	s
 	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
+
+_ibio.prim.iptr.deref_ty	.tyexpr
+ibio.prim.iptr	.tygvar
+s	.tyforall	*
+	.tyfun	ibio.prim.iptr	s
+	.tyref	s

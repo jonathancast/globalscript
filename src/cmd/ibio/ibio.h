@@ -92,6 +92,7 @@ gsvalue ibio_iport_fdopen(int, struct ibio_external_io *, char *, char *);
 api_prim_executor ibio_handle_prim_read;
 
 gsubprim_handler ibio_prim_iptr_handle_iseof;
+gslprim_handler ibio_prim_iptr_handle_deref;
 
 /* §section Output */
 
