@@ -25,9 +25,15 @@ struct ace_thread {
         ace_thread_running,
         ace_thread_blocked,
     } state;
-    gsvalue blocked;
-    struct gspos blockedat;
-    struct gsbc *ip;
+    union {
+        struct {
+            struct gsbc *ip;
+        } running;
+        struct {
+            gsvalue on;
+            struct gspos at;
+        } blocked;
+    } st;
     int nregs, nsubexprs;
     struct gsbco *subexprs[MAX_NUM_REGISTERS];
     gsvalue regs[MAX_NUM_REGISTERS];
