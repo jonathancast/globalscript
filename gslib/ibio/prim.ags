@@ -13,6 +13,7 @@ ibio.prim.file.stat	.closure	_ibio.prim.file.stat_c
 
 ibio.prim.iptr.iseof	.closure	_ibio.prim.iptr.iseof_c
 ibio.prim.iptr.deref	.closure	_ibio.prim.iptr.deref_c
+ibio.prim.iptr.next	.closure	_ibio.prim.iptr.next_c
 
 	.code
 
@@ -70,11 +71,18 @@ ip	.arg	ibio.prim.iptr	s
 	.ubprim	ibio.prim	iptr.iseof	_ibio.prim.iptr.iseof_ty	s	|	ip
 
 _ibio.prim.iptr.deref_c	.expr
-_ibio.prim.iptr.deref_ty	.tygvar
 ibio.prim.iptr	.tygvar
+_ibio.prim.iptr.deref_ty	.tygvar
 s	.tyarg	*
 ip	.arg	ibio.prim.iptr	s
 	.lprim	ibio.prim	iptr.deref	_ibio.prim.iptr.deref_ty	s	|	ip
+
+_ibio.prim.iptr.next_c	.expr
+ibio.prim.iptr	.tygvar
+_ibio.prim.iptr.next_ty	.tygvar
+s	.tyarg	*
+ip	.arg	ibio.prim.iptr	s
+	.lprim	ibio.prim	iptr.next	_ibio.prim.iptr.next_ty	s	|	ip
 
 	.type
 
@@ -147,3 +155,10 @@ ibio.prim.iptr	.tygvar
 s	.tyforall	*
 	.tyfun	ibio.prim.iptr	s
 	.tyref	s
+
+_ibio.prim.iptr.next_ty	.tyexpr
+ibio.prim.iptr	.tygvar
+s	.tyforall	*
+	.tyfun	ibio.prim.iptr	s
+	.tylift
+	.tyref	ibio.prim.iptr	s
