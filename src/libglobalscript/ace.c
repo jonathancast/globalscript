@@ -1357,7 +1357,7 @@ ace_thread_alloc()
 
     lock(&ace_thread_lock);
         thread = gs_sys_seg_suballoc(&ace_thread_descr, &ace_thread_nursury, sizeof(*thread), sizeof(void*));
-        nursury_block = START_OF_BLOCK(thread);
+        nursury_block = BLOCK_CONTAINING(thread);
         stackbase = (uchar*)thread;
         if ((uintptr)stackbase % ACE_STACK_ARENA_SIZE)
             stackbase = (uchar*)stackbase - ((uintptr)stackbase % ACE_STACK_ARENA_SIZE)
