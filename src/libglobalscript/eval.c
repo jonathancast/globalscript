@@ -48,28 +48,27 @@ gsheapeval(gsvalue val)
             code = cl->code;
 
             switch (code->tag) {
-                case gsbc_expr:
-                    {
-                        int fvs_in_cl;
-                        int fvs_for_code;
-                        int args_for_code;
+                case gsbc_expr: {
+                    int fvs_in_cl;
+                    int fvs_for_code;
+                    int args_for_code;
 
-                        fvs_in_cl = cl->numfvs;
-                        fvs_for_code = cl->numfvs;
-                        args_for_code = code->numargs;
-                        if (fvs_in_cl < fvs_for_code) {
-                            gspoison(hp, hp->pos, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);
-                            res = gstyindir;
-                        } else if (fvs_in_cl > fvs_for_code + args_for_code) {
-                            gspoison(hp, hp->pos, "Code has %d free variables and arguments, but closure has %d arguments supplied", fvs_for_code + args_for_code, fvs_in_cl);
-                            res = gstyindir;
-                        } else if (fvs_in_cl < fvs_for_code + args_for_code) {
-                            res = gstywhnf;
-                        } else {
-                            res = ace_start_evaluation(val);
-                        }
+                    fvs_in_cl = cl->numfvs;
+                    fvs_for_code = cl->numfvs;
+                    args_for_code = code->numargs;
+                    if (fvs_in_cl < fvs_for_code) {
+                        gspoison(hp, hp->pos, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);
+                        res = gstyindir;
+                    } else if (fvs_in_cl > fvs_for_code + args_for_code) {
+                        gspoison(hp, hp->pos, "Code has %d free variables and arguments, but closure has %d arguments supplied", fvs_for_code + args_for_code, fvs_in_cl);
+                        res = gstyindir;
+                    } else if (fvs_in_cl < fvs_for_code + args_for_code) {
+                        res = gstywhnf;
+                    } else {
+                        res = ace_start_evaluation(val);
                     }
                     break;
+                }
                 case gsbc_eprog:
                     res = gstywhnf;
                     break;
