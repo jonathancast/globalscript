@@ -16,3 +16,5 @@ ok_diff_case '-- isdir (file) --' file ./$O.ibio isdir.ibio.ags ./test-gslib/isd
 
 ok_diff_case '-- isempty (empty) --' empty ./$O.ibio isempty.ibio.ags < /dev/null
 ok_diff_case '-- isempty (non-empty) --' non-empty ./$O.ibio isempty.ibio.ags < ./test-gslib/isempty.ibio.ags
+
+ok_diff '-- cat --' ./$O.ibio cat.ibio.ags < ./test-results/cat.ibio.ags-expected
