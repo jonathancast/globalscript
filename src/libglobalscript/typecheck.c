@@ -1182,6 +1182,7 @@ gsbc_typecheck_cont_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or
             regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
             *pcont_arg_type = gstype_apply(p->pos, *pcont_arg_type, pcl->tyregs[regarg]);
         }
+        gstypes_kind_check_simple(p->pos, gstypes_calculate_kind(*pcont_arg_type));
         gsbc_typecheck_check_boxed(p->pos, *pcont_arg_type);
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = *pcont_arg_type;
