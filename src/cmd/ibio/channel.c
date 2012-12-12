@@ -58,7 +58,7 @@ ibio_channel_segment_limit(struct ibio_channel_segment *seg)
     char *block;
 
     block = (char*)seg - (uintptr)seg % IBIO_CHANNEL_SEGMENT_SIZE;
-    return (gsvalue*)block + IBIO_CHANNEL_SEGMENT_SIZE;
+    return (gsvalue*)(block + IBIO_CHANNEL_SEGMENT_SIZE);
 }
 
 /* §section Evaluation */
