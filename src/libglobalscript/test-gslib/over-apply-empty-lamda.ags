@@ -1,0 +1,30 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+_x	.undefined	rune.t
+_y	.undefined	rune.t
+
+	.code
+
+_ep_c	.expr
+_ep_f_c	.subcode
+_x	.gvar
+_y	.gvar
+f	.alloc	_ep_f_c
+	.app	_x	_y
+	.enter	f
+
+_ep_f_c	.expr
+rune.t	.tygvar
+_ep_f1_c	.subcode
+x	.larg	rune.t
+f1	.alloc	_ep_f1_c	|	x
+	.enter	f1
+
+_ep_f1_c	.expr
+rune.t	.tygvar
+x	.fv	rune.t
+y	.larg	rune.t
+	.undef	rune.t

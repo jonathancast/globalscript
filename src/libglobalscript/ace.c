@@ -999,27 +999,13 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
         thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
 
         return ace_return(thread, cont->pos, (gsvalue)res);
-    } else if (app->numargs > needed_args) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Over-saturated applications");
-        return 0;
     } else {
         int i;
         void *ip;
 
         switch (cl->code->tag) {
             case gsbc_expr: {
-                int needed_args;
-
-                needed_args = cl->code->numfvs + cl->code->numargs - cl->numfvs;
-
-                if (needed_args < app->numargs) {
-                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Over-saturated applications");
-                    return 0;
-                }
-                if (needed_args > app->numargs) {
-                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Under-saturated applications");
-                    return 0;
-                }
+                void *bot_of_app_cont, *newstacktop;
 
                 ip = ace_set_registers_from_closure(thread, cl);
                 if (!ip) {
@@ -1027,7 +1013,7 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
                     return 0;
                 }
 
-                for (i = 0; i < app->numargs; i++) {
+                for (i = 0; i < needed_args; i++) {
                     if (thread->nregs >= MAX_NUM_REGISTERS) {
                         ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
                         return 0;
@@ -1035,7 +1021,23 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
                     thread->regs[thread->nregs] = app->arguments[i];
                     thread->nregs++;
                 }
-                thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
+
+                bot_of_app_cont = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
+
+                if (i < app->numargs) {
+                    struct gsbc_cont_app *newapp;
+
+                    newstacktop = (uchar*)bot_of_app_cont - sizeof(struct gsbc_cont_app) - (app->numargs - i) * sizeof(gsvalue);
+                    newapp = (struct gsbc_cont_app *)newstacktop;
+                    /* §ccode{newapp} has to be initialized from highest address to lowest */
+                    newapp->numargs = app->numargs - i;
+                    newapp->cont.pos = app->cont.pos;
+                    newapp->cont.node = gsbc_cont_app;
+                } else {
+                    newstacktop = bot_of_app_cont;
+                }
+
+                thread->stacktop = newstacktop;
                 thread->state = ace_thread_running;
                 thread->st.running.ip = (struct gsbc *)ip;
                 break;
