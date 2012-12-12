@@ -297,13 +297,13 @@ ibio_read_process_main(void *p)
                                     gsvalue sym;
                                     char err[0x100];
 
-                                    iport->bufstart = iport->external->readsym(iport->external, err, err + sizeof(err), iport->bufstart, iport->bufend, pos);
+                                    iport->bufstart = iport->external->readsym(iport->external, err, err + sizeof(err), iport->bufstart, iport->bufend, &sym);
                                     if (!iport->bufstart) {
                                         ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: decoding error: %s");
                                         active = 0;
                                     }
-                                    sym = *pos;
-                                    pos = seg->extent++;
+                                    *pos++ = sym;
+                                    seg->extent = pos;
                                     if (seg->extent >= ibio_channel_segment_limit(seg)) {
                                         ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: allocate a new buffer");
                                         active = 0;
