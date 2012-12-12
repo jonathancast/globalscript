@@ -58,17 +58,21 @@ gs_sys_seg_alloc(registered_block_class cl)
     lock(&gs_allocator_lock);
 
     if (!bottom_of_data)
-        gs_sys_seg_init();
+        gs_sys_seg_init()
+    ;
 
-    gsassert(__FILE__, __LINE__, !!first_free_block, "Out of memory");
+    if (!first_free_block)
+        gswarning("%s:%d: About to stop going because we're out of memory", __FILE__, __LINE__)
+    ;
 
     pres = &first_free_block->hdr;
     pnext = first_free_block->next;
 
     if (pnext)
-        first_free_block = pnext;
-    else
-        _gs_sys_seg_extend();
+        first_free_block = pnext
+    ; else
+        _gs_sys_seg_extend()
+    ;
 
     pres->class = cl;
 
@@ -122,6 +126,13 @@ gs_sys_seg_setup_free_block(struct free_block *pblock)
     pblock->next = 0;
 }
 
+#define ALIGN_TO(p, align) \
+    do { \
+        if ((uintptr)(p) % (align)) \
+            (p) = (uchar*)(p) + (align) - ((uintptr)(p) % (align)) \
+        ; \
+    } while (0)
+
 void *
 gs_sys_seg_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulong align)
 {
@@ -130,26 +141,24 @@ gs_sys_seg_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulong 
 
     if (!*pnursury) {
         nursury_block = gs_sys_seg_alloc(cl);
-        *pnursury = (uchar*)nursury_block + sizeof(*nursury_block);
-        if ((uintptr)*pnursury % align)
-            *pnursury = (uchar*)*pnursury + align - ((uintptr)*pnursury % align);
+        *pnursury = START_OF_BLOCK(nursury_block);
+        ALIGN_TO(*pnursury, align);
     } else {
         nursury_block = START_OF_BLOCK(*pnursury);
     }
 
     if ((uchar*)*pnursury + sz > (uchar*)END_OF_BLOCK(nursury_block)) {
         nursury_block = gs_sys_seg_alloc(cl);
-        *pnursury = (uchar*)nursury_block + sizeof(*nursury_block);
-        if ((uintptr)*pnursury % align)
-            *pnursury = (uchar*)*pnursury + align - ((uintptr)*pnursury % align);
+        *pnursury = START_OF_BLOCK(nursury_block);
+        ALIGN_TO(*pnursury, align);
     }
 
     res = *pnursury;
     *pnursury = (uchar*)res + sz;
-    if ((uintptr)*pnursury % align)
-        *pnursury = (uchar*)*pnursury + align - ((uintptr)*pnursury % align);
-    if ((uchar*)*pnursury + sz >= (uchar*)END_OF_BLOCK(nursury_block))
-        *pnursury = 0;
+    ALIGN_TO(*pnursury, align);
+    if ((uchar*)*pnursury >= (uchar*)END_OF_BLOCK(nursury_block))
+        *pnursury = 0
+    ;
 
     return res;
 }
