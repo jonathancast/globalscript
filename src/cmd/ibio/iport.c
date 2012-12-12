@@ -257,6 +257,7 @@ ibio_read_process_main(void *p)
             st = GS_SLOW_EVALUATE(iport->reading);
             switch (st) {
                 case gstystack:
+                    runnable = 0;
                     break;
                 case gstywhnf: {
                     struct gsconstr *constr;
