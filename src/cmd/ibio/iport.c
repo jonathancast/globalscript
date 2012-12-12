@@ -301,12 +301,14 @@ ibio_read_process_main(void *p)
                                     if (!iport->bufstart) {
                                         ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: decoding error: %s");
                                         active = 0;
+                                        goto failed;
                                     }
                                     *pos++ = sym;
                                     seg->extent = pos;
                                     if (seg->extent >= ibio_channel_segment_limit(seg)) {
                                         ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: allocate a new buffer");
                                         active = 0;
+                                        goto failed;
                                     }
                                     iport->reading = gsapply(constr->pos, constr->arguments[0], sym);
                                     unlock(&seg->lock);
