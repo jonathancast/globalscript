@@ -274,8 +274,20 @@ ibio_read_process_main(void *p)
                             seg = ibio_channel_segment_containing(pos);
 
                             if (pos < seg->extent) {
-                                ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: have symbol");
-                                active = 0;
+                                iport->reading = gsapply(constr->pos, constr->arguments[0], *pos);
+                                if (pos + 1 < seg->extent) {
+                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: can advance within segment");
+                                    active = 0;
+                                } else if (seg->next) {
+                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: have next segment to advance to");
+                                    active = 0;
+                                } else if (seg->extent < ibio_channel_segment_limit(seg)) {
+                                    pos++;
+                                    unlock(&seg->lock);
+                                } else {
+                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: cannot advance within segment");
+                                    active = 0;
+                                }
                             } else if (seg->next) {
                                 ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: eof");
                                 active = 0;
