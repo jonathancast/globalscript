@@ -3000,7 +3000,7 @@ gstypes_type_check(struct gsstringbuilder *err, struct gspos pos, struct gstype 
             pexpected_var = (struct gstype_var *)pexpected;
 
             if (pactual_var->name != pexpected_var->name) {
-                gsstring_builder_print(err, "%P: I don't think %s is the same as %s", pos, pactual_var->name, pexpected_var->name);
+                gsstring_builder_print(err, "%P: I don't think %y is the same as %y", pos, pactual_var->name, pexpected_var->name);
                 return -1;
             }
             return 0;
