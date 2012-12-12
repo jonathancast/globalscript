@@ -564,12 +564,9 @@ ibio_prim_iptr_next_return(struct ace_thread *thread, struct gspos pos, struct i
         seg = ibio_channel_segment_containing(iptr_res);
     }
 
-    if (iptr_res < seg->extent) {
+    if (iptr_res < seg->extent || seg->next) {
         unlock(&seg->lock);
-        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: result points at symbol");
-    } else if (seg->next) {
-        unlock(&seg->lock);
-        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: result points at EOF");
+        return gsprim_return(thread, pos, (gsvalue)iptr_res);
     } else if (seg->iport->error) {
         gsvalue res;
 
