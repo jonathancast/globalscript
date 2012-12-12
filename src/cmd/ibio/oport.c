@@ -234,11 +234,12 @@ ibio_write_process_main(void *p)
     do {
         lock(&oport->lock);
         active = oport->active || oport->writing;
-        runnable = 0;
+        runnable = 1;
         if (c) {
             st = GS_SLOW_EVALUATE(c);
             switch (st) {
                 case gstystack:
+                    runnable = 0;
                     break;
                 case gstyindir: {
                     c = GS_REMOVE_INDIRECTIONS(c);
