@@ -144,7 +144,7 @@ gs_sys_seg_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulong 
         *pnursury = START_OF_BLOCK(nursury_block);
         ALIGN_TO(*pnursury, align);
     } else {
-        nursury_block = START_OF_BLOCK(*pnursury);
+        nursury_block = BLOCK_CONTAINING(*pnursury);
     }
 
     if ((uchar*)*pnursury + sz > (uchar*)END_OF_BLOCK(nursury_block)) {
