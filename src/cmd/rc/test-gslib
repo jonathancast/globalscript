@@ -1,6 +1,4 @@
-#! /usr/local/plan9/bin/rc -e
-
-test_status=true
+#! /usr/local/plan9/bin/rc
 
 fn run_tests {
     for (i in $1/*) {
@@ -8,12 +6,18 @@ fn run_tests {
             run_tests $i
         if (~ $i *.test.ags) {
             if (! $GLOBALSCRIPT/bin/gstest $i)
-                test_status=false
+                failing_suites=($failing_suites $i)
         }
     }
-    true
 }
+
+failing_suites=()
 
 run_tests $GLOBALSCRIPT/gslib
 
-exec $test_status
+if (! ~ $#failing_suites 0) {
+    echo Errors in: >[1=2]
+    for (i in $failing_suites)
+        echo '	'^$i >[1=2]
+    exit $#failing_suites^' failures'
+}
