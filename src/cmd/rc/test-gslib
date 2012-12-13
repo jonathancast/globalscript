@@ -21,3 +21,4 @@ if (! ~ $#failing_suites 0) {
         echo '	'^$i >[1=2]
     exit $#failing_suites^' failures'
 }
+if not exit 0
