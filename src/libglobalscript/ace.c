@@ -358,7 +358,9 @@ ace_prim(struct ace_thread *thread)
 
     res = prims->exec_table[ACE_PRIM_INDEX(ip)](thread, ip->pos, ACE_PRIM_NARGS(ip), args, &thread->regs[thread->nregs++]);
 
-    thread->st.running.ip = ACE_PRIM_SKIP(ip);
+    if (res)
+        thread->st.running.ip = ACE_PRIM_SKIP(ip)
+    ;
 
     return res;
 }
