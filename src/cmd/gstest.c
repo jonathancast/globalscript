@@ -67,11 +67,11 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
         st = test_evaluate(errbuf, errbuf + sizeof(errbuf), prog);
         switch (st) {
             case test_impl_err:
-                fprint(2, "Error in gstest: %s\n", err.start);
+                fprint(2, "Error in gstest: %s\n", errbuf);
                 ace_down();
                 exits("unimpl");
             case test_prog_err:
-                fprint(2, "%s\n", err.start);
+                fprint(2, "%s\n", errbuf);
                 ace_down();
                 exits("test err");
             case test_running:
