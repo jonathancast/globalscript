@@ -1282,7 +1282,7 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
         struct gskind *fvkind;
 
         if (pcl->regtype > rttyfv)
-            gsfatal_bad_input(p, "Too late to add arguments")
+            gsfatal("%P: Too late to add free type variables", p->pos)
         ;
         pcl->regtype = rttyfv;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
