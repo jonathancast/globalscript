@@ -1898,7 +1898,9 @@ gsbc_typecheck_default(struct gspos default_pos, struct gsfile_symtable *symtabl
     nconts = pcl->nconts;
     calculated_type = 0;
     for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
-        if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)) {
+        if (gsbc_typecheck_alloc_op(symtable, *pp, pcl)) {
+        } else if (gsbc_typecheck_cont_push_op(*pp, pcl)) {
+        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)) {
             goto have_type;
         } else {
             gsfatal(UNIMPL("%P: gsbc_typecheck_default(%y)"), (*pp)->pos, (*pp)->directive);

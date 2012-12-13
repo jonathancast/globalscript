@@ -781,7 +781,9 @@ gsbc_bytecode_size_default(struct gsparsedfile_segment **ppseg, struct gsparsedl
         gsfatal("%P: Expected .default next", (*pp)->pos)
     ;
     while (*pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
+        if (gsbc_bytecode_size_alloc_op(*pp, pcl)) {
+        } else if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
+        } else if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
             return;
         } else {
             gsfatal(UNIMPL("%P: gsbc_bytecode_size_default(%y)"), (*pp)->pos, (*pp)->directive);
@@ -1940,7 +1942,9 @@ gsbc_byte_compile_default(struct gsparsedfile_segment **ppseg, struct gsparsedli
 {
     pcl->phase = rtargs;
     while (*pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
+        if (gsbc_byte_compile_alloc_op(*pp, pcl)) {
+        } else if (gsbc_byte_compile_cont_push_op(*pp, pcl)) {
+        } else if (gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
             return;
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Un-implemented .default code op %y", (*pp)->pos, (*pp)->directive);

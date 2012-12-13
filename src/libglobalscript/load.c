@@ -1383,7 +1383,9 @@ gsparse_default(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
-        if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
+        if (gsparse_value_alloc_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_cont_push_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return;
         } else {
             gsfatal(UNIMPL("%s:%d: Unimplemented .default op %y"), filename, *plineno, parsedline->directive);
