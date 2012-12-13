@@ -191,7 +191,7 @@ x	.arg	natural.prim.u
 y	.arg	natural.prim.u
 	.ubprim	natural.prim	<	_natural.prim.<_ty	|	x	y
 
-# §section §gs{natural.mkdecimal}
+# §section §gs{natural.fmtdecimal}
 
 _natural.fmtdecimal_c	.expr
 natural.t	.tygvar
@@ -240,19 +240,33 @@ _natural.fmtdecimal_q0.s_k1	.subcode
 natural.prim.<	.gvar
 0	.natural	0
 q0	.fv	natural.prim.u
-	.ubanalyze	0	_natural.fmtdecimal_q0.s_k0	1	_natural.fmtdecimal_q0.s_k1
+	.ubanalyze	0	_natural.fmtdecimal_q0.s_k0	1	_natural.fmtdecimal_q0.s_k1	|	|	q0
 	.app	0	q0
 	.yield	natural.prim.<
 
 _natural.fmtdecimal_q0.s_k0	.ubcasecont
+natural.prim.u	.tygvar
 rune.t	.tygvar
 list.nil	.gvar
+q0	.fv	natural.prim.u
 	.enter	list.nil	rune.t
 
 _natural.fmtdecimal_q0.s_k1	.ubcasecont
-list.t	.tygvar
-rune.t	.tygvar
-	.undef	list.t	rune.t
+natural.prim.u	.tygvar
+_natural.fmtdecimal_q0.s_k1_q	.subcode
+natural.fmtdecimal	.gvar
+q0	.fv	natural.prim.u
+q	.alloc	_natural.fmtdecimal_q0.s_k1_q	|	q0
+	.app	q
+	.enter	natural.fmtdecimal
+
+_natural.fmtdecimal_q0.s_k1_q	.expr
+natural.prim.u	.tygvar
+natural.t.in	.cogvar
+q0	.fv	natural.prim.u
+	.coerce	natural.t.in
+	.lift
+	.yield	q0
 
 _natural.fmtdecimal_d0_c	.expr
 natural.prim.u	.tygvar

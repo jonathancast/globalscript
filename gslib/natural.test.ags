@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0	_test.1.div.0	_test.2.div.3	_test.fmtdecimal.0
+_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0	_test.1.div.0	_test.2.div.3	_test.fmtdecimal.0	_test.fmtdecimal.11
 
 _test.4.eq.4	.closure	_test.4.eq.4_c
 _test.4.eq.4_label	.string	4\s≡\s4
@@ -43,14 +43,19 @@ _test.2.div.3_test_mod_fail	.string	2\s`mod`\s3≠2
 _test.2.div.3_test_mod_succ	.string	2\s`mod`\s3≡2
 
 _test.fmtdecimal.0	.closure	_test.fmtdecimal.0_c
-_test.fmtdecimal.0_label	.string	fmtdecimal\s0\s=\sqq{0}
+_test.fmtdecimal.0_label	.string	fmtdecimal\s0
 _test.fmtdecimal.0_test	.closure	_test.fmtdecimal.0_test_c
 _test.fmtdecimal.0_test_expected	.string	0
+
+_test.fmtdecimal.11	.closure	_test.fmtdecimal.11_c
+_test.fmtdecimal.11_label	.string	fmtdecimal\s11
+_test.fmtdecimal.11_test_expected	.string	11
 
 _0	.closure	_0_c
 _2	.closure	_2_c
 _3	.closure	_3_c
 _4	.closure	_4_c
+_11	.closure	_11_c
 _string.≡	.closure	_string.≡_c
 _string.print	.closure	_string.print_c
 
@@ -292,6 +297,31 @@ _0	.gvar
 	.app	_0
 	.enter	natural.fmtdecimal
 
+_test.fmtdecimal.11_c	.expr
+_test.fmtdecimal.11_test_c	.subcode
+test.property.label	.gvar
+_test.fmtdecimal.11_label	.gvar
+test	.alloc	_test.fmtdecimal.11_test_c
+	.app	_test.fmtdecimal.11_label	test
+	.enter	test.property.label
+
+_test.fmtdecimal.11_test_c	.expr
+_string.ty	.tygvar
+_test.fmtdecimal.11_test_11.s_c	.subcode
+test.assert.eq	.gvar
+_string.≡	.gvar
+_string.print	.gvar
+_test.fmtdecimal.11_test_expected	.gvar
+11.s	.alloc	_test.fmtdecimal.11_test_11.s_c
+	.app	_string.≡	_string.print	11.s	_test.fmtdecimal.11_test_expected
+	.enter	test.assert.eq	_string.ty
+
+_test.fmtdecimal.11_test_11.s_c	.expr
+natural.fmtdecimal	.gvar
+_11	.gvar
+	.app	_11
+	.enter	natural.fmtdecimal
+
 # §section Test fixtures
 
 _0_c	.expr
@@ -321,6 +351,13 @@ natural.t.in	.cogvar
 	.coerce	natural.t.in
 	.lift
 	.yield	4
+
+_11_c	.expr
+natural.t.in	.cogvar
+11	.natural	11
+	.coerce	natural.t.in
+	.lift
+	.yield	11
 
 _string.≡_c	.expr
 rune.t	.tygvar
