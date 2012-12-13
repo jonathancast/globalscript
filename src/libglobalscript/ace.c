@@ -64,6 +64,7 @@ static int ace_push_force(struct ace_thread *);
 static int ace_push_strict(struct ace_thread *);
 static int ace_push_ubanalyze(struct ace_thread *);
 static int ace_perform_analyze(struct ace_thread *);
+static int ace_perform_danalyze(struct ace_thread *);
 static void ace_return_undef(struct ace_thread *);
 static int ace_enter(struct ace_thread *);
 static int ace_yield(struct ace_thread *);
@@ -208,6 +209,11 @@ ace_thread_pool_main(void *p)
                                     break;
                                 case gsbc_op_analyze:
                                     if (ace_perform_analyze(thread))
+                                        suspended_runnable_thread = 1
+                                    ;
+                                    break;
+                                case gsbc_op_danalyze:
+                                    if (ace_perform_danalyze(thread))
                                         suspended_runnable_thread = 1
                                     ;
                                     break;
@@ -627,6 +633,44 @@ ace_perform_analyze(struct ace_thread *thread)
             return 0;
         }
         thread->regs[thread->nregs++] = constr->arguments[i];
+    }
+
+    return 1;
+}
+
+static
+int
+ace_perform_danalyze(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gsconstr *constr;
+    struct gsbc **cases;
+    int casenum;
+
+    int i;
+
+    ip = thread->st.running.ip;
+
+    constr = (struct gsconstr *)thread->regs[ACE_DANALYZE_SCRUTINEE(ip)];
+    cases = ACE_DANALYZE_CASES(ip);
+
+    casenum = 0;
+    for (i = 0; i < ACE_DANALYZE_NUMCONSTRS(ip); i++) {
+        if (ACE_DANALYZE_CONSTR(ip, i) == constr->constrnum) {
+            casenum = 1 + i;
+            break;
+        }
+    }
+
+    thread->st.running.ip = ip = cases[casenum];
+    if (casenum > 0) {
+        for (i = 0; i < constr->numargs; i++) {
+            if (thread->nregs >= MAX_NUM_REGISTERS) {
+                ace_poison_thread(thread, ip->pos, "Register overflow");
+                return 0;
+            }
+            thread->regs[thread->nregs++] = constr->arguments[i];
+        }
     }
 
     return 1;

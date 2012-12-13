@@ -1500,12 +1500,13 @@ static void gsbc_typecheck_check_num_constrs(struct gspos, long, long);
 static void gsbc_typecheck_check_constr(struct gspos, struct gspos, int, gsinterned_string, gsinterned_string, gsinterned_string, gsinterned_string);
 
 static struct gstype *gsbc_typecheck_case(struct gspos, struct gsfile_symtable *, struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *, struct gstype *constr_arg_type);
+static struct gstype *gsbc_typecheck_default(struct gspos, struct gsfile_symtable *, struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *);
 
 static
 struct gstype *
 gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparsedline **pp, struct gsparsedfile_segment **ppseg, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymundef, gssymenter, gssymubprim, gssymlprim, gssymanalyze, gssymcase;
+    static gsinterned_string gssymundef, gssymenter, gssymubprim, gssymlprim, gssymanalyze, gssymdanalyze, gssymcase, gssymdefault;
 
     int i;
 
@@ -1722,6 +1723,61 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
                 calculated_type = casetype
             ;
         }
+    } else if (gssymceq((*pp)->directive, gssymdanalyze, gssymcodeop, ".danalyze")) {
+        int reg;
+        struct gstype_sum *sum;
+        struct gsparsedline *panalyze;
+        struct gspos default_pos;
+        int prevconstr, casenum;
+        int nregs;
+
+        gsargcheck(*pp, 0, "scrutinee");
+        reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
+        if (pcl->regtypes[reg]->node != gstype_sum)
+            gsfatal(UNIMPL("%P: Scrutinee to .danalyze does not have a simple, known sum type"), (*pp)->pos)
+        ;
+        sum = (struct gstype_sum *)pcl->regtypes[reg];
+        panalyze = *pp;
+
+        *pp = gsinput_next_line(ppseg, *pp);
+        default_pos = (*pp)->pos;
+        if (!gssymceq((*pp)->directive, gssymdefault, gssymcodeop, ".default"))
+            gsfatal("%P: Expected .default next", (*pp)->pos)
+        ;
+
+        *pp = gsinput_next_line(ppseg, *pp);
+        nregs = pcl->nregs;
+        pcl->regtype = rtarg;
+        calculated_type = gsbc_typecheck_default(default_pos, symtable, pp, ppseg, pcl);
+        pcl->nregs = nregs;
+
+        prevconstr = -1;
+        for (casenum = 0; casenum < panalyze->numarguments - 1; casenum++) {
+            struct gstype *casetype;
+            struct gspos case_pos;
+            int constr;
+
+            *pp = gsinput_next_line(ppseg, *pp);
+            case_pos = (*pp)->pos;
+            if (!gssymceq((*pp)->directive, gssymcase, gssymcodeop, ".case"))
+                gsfatal("%P: Expected .case %y next", (*pp)->pos, panalyze->arguments[1 + casenum])
+            ;
+
+            gsargcheck(*pp, 0, "Constructor");
+            if (casenum > 0)
+                gsfatal(UNIMPL("%P: Check order of cases in a .danalyze"), case_pos)
+            ;
+            constr = gsbc_typecheck_find_constr(case_pos, prevconstr, sum, (*pp)->arguments[0]);
+
+            *pp = gsinput_next_line(ppseg, *pp);
+            nregs = pcl->nregs;
+            pcl->regtype = rtarg;
+            casetype = gsbc_typecheck_case(case_pos, symtable, pp, ppseg, pcl, sum->constrs[constr].argtype);
+            pcl->nregs = nregs;
+
+            gstypes_type_check_type_fail(panalyze->pos, casetype, calculated_type);
+            prevconstr = constr;
+        }
     } else {
         return 0;
     }
@@ -1758,6 +1814,23 @@ gsbc_typecheck_check_constr(struct gspos analyzepos, struct gspos casepos, int c
             gsfatal("%P: Constructors out of order; %y should follow %y", analyzepos, prevconstr, analyzeconstr)
         ;
     }
+}
+
+int
+gsbc_typecheck_find_constr(struct gspos case_pos, int prevconstr, struct gstype_sum *sum, gsinterned_string constrname)
+{
+    int constrnum;
+
+    for (constrnum = prevconstr + 1; constrnum < sum->numconstrs; constrnum++) {
+        if (constrnum > 0)
+            gsfatal(UNIMPL("%P: Check constr order"), case_pos)
+        ;
+        if (sum->constrs[constrnum].name == constrname)
+            return constrnum
+        ;
+    }
+    gsfatal("%P: Sum type has no constructor %y", case_pos, constrname);
+    return -1;
 }
 
 static
@@ -1812,6 +1885,32 @@ have_type:
     ;
 
     return calculated_type;
+}
+
+static
+struct gstype *
+gsbc_typecheck_default(struct gspos default_pos, struct gsfile_symtable *symtable, struct gsparsedline **pp, struct gsparsedfile_segment **ppseg, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+{
+    int nconts;
+
+    struct gstype *calculated_type;
+
+    nconts = pcl->nconts;
+    calculated_type = 0;
+    for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
+        if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)) {
+            goto have_type;
+        } else {
+            gsfatal(UNIMPL("%P: gsbc_typecheck_default(%y)"), (*pp)->pos, (*pp)->directive);
+        }
+    }
+
+have_type:
+
+    calculated_type = gsbc_typecheck_conts(pcl, nconts, calculated_type);
+
+    return calculated_type;
+
 }
 
 static

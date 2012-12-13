@@ -1167,6 +1167,7 @@ gsparse_api_or_code_op(char *filename, struct gsparsedline *parsedline, int *pli
 }
 
 static void gsparse_case(char *, gsparsedfile *, struct uxio_ichannel *, gsinterned_string, char *, int *, char **);
+static void gsparse_default(char *, gsparsedfile *, struct uxio_ichannel *, char *, int *, char **);
 
 static void gsparse_check_label_on_terminal_op(gsparsedfile *, struct gsparsedline *, char **);
 
@@ -1174,7 +1175,7 @@ static
 int
 gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymundef, gssymyield, gssymenter, gssymubprim, gssymlprim, gsssymanalyze;
+    static gsinterned_string gssymundef, gssymyield, gssymenter, gssymubprim, gssymlprim, gsssymanalyze, gsssymdanalyze;
     int i;
 
     if (gssymceq(parsedline->directive, gssymundef, gssymcodeop, ".undef")) {
@@ -1261,6 +1262,25 @@ gsparse_code_terminal_expr_op(char *filename, gsparsedfile *parsedfile, struct u
         for (constrnum = 0; 3 + constrnum < n; constrnum++) {
             gsparse_case(filename, parsedfile, chan, parsedline->arguments[1 + constrnum], line, plineno, fields);
         }
+    } else if (gssymceq(parsedline->directive, gsssymdanalyze, gssymcodeop, ".danalyze")) {
+        struct gsparsedline *p;
+        int constrnum;
+
+        gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
+        if (n < 3)
+            gsfatal("%s:%d: Missing scrutinee on .danalyze", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
+        if (n < 4)
+            gsfatal("%s:%d: Huh.  No constructors in .danalyze.  Why not just go to the default directly?", filename, *plineno);
+        for (i = 3; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i])
+        ;
+        p = parsedline;
+        gsparse_default(filename, parsedfile, chan, line, plineno, fields);
+        for (constrnum = 0; 3 + constrnum < n; constrnum++) {
+            gsparse_case(filename, parsedfile, chan, parsedline->arguments[1 + constrnum], line, plineno, fields)
+        ;
+        }
     } else {
         return 0;
     }
@@ -1329,6 +1349,47 @@ gsparse_case(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *cha
         }
     }
     gsfatal_unimpl(__FILE__, __LINE__, ".analyze: parse .case");
+}
+
+static
+void
+gsparse_default(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
+{
+    static gsinterned_string gssymdefault;
+
+    struct gsparsedline *parsedline;
+    long n;
+
+    if ((n = gsgrabline(filename, chan, line, plineno, fields)) < 0)
+        gsfatal("%s:%d: Error in reading line: %r", filename, *plineno)
+    ; else if (n == 0)
+        gsfatal("%s:%d: EOF when looking for .default", filename, *plineno - 1)
+    ;
+    parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, n);
+
+    parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
+
+    if (!gssymceq(parsedline->directive, gssymdefault, gssymcodeop, ".default"))
+        gsfatal("%s:%d: Expecting .default", filename, *plineno)
+    ;
+
+    if (*fields[0]) gsfatal("%s:%d: Labels illegal on .default");
+    else parsedline->label = 0;
+
+    if (n > 2) gsfatal("%s:%d: Too many arguments to .default", filename, *plineno);
+
+    while ((n = gsgrabline(filename, chan, line, plineno, fields)) > 0) {
+        parsedline = gsparsed_file_addline(filename, parsedfile, *plineno, n);
+
+        parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
+
+        if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
+            return;
+        } else {
+            gsfatal(UNIMPL("%s:%d: Unimplemented .default op %y"), filename, *plineno, parsedline->directive);
+        }
+    }
+    gsfatal(UNIMPL(".danalyze: parse .default"));
 }
 
 static

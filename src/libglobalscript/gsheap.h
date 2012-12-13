@@ -21,6 +21,7 @@ enum {
     gsbc_op_strict,
     gsbc_op_ubanalzye,
     gsbc_op_analyze,
+    gsbc_op_danalyze,
     gsbc_op_undef,
     gsbc_op_enter,
     gsbc_op_yield,
@@ -110,6 +111,12 @@ enum {
 
 #define ACE_ANALYZE_SCRUTINEE(ip) ((ip)->args[0])
 #define ACE_ANALYZE_CASES(ip) ((struct gsbc **)GS_NEXT_BYTECODE(ip, 1))
+
+#define ACE_DANALYZE_SIZE(nconstrs) (GS_SIZE_BYTECODE(2 + (nconstrs)) + (1 + (nconstrs)) * sizeof(struct gsbc *))
+#define ACE_DANALYZE_SCRUTINEE(ip) ((ip)->args[0])
+#define ACE_DANALYZE_NUMCONSTRS(ip) ((ip)->args[1])
+#define ACE_DANALYZE_CONSTR(ip, n) ((ip)->args[2 + (n)])
+#define ACE_DANALYZE_CASES(ip) ((struct gsbc **)GS_NEXT_BYTECODE(ip, 2 + ACE_DANALYZE_NUMCONSTRS(ip)))
 
 #define ACE_BIND_CODE(ip) ((ip)->args[0])
 #define ACE_BIND_NUMFVS(ip) ((ip)->args[1])

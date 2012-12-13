@@ -61,6 +61,7 @@ ok_diff '-- constructors in expressions --' ./$O.test-gsi constr-in-expr.ags
 
 ok_diff '-- analyze on boxed sums --' ./$O.test-gsi analyze-constructor.ags
 ok_diff '-- analyze on sums of unboxed products --' ./$O.test-gsi analyze-adt-constructor.ags
+ok_diff '-- analyze with default --' ./$O.test-gsi analyze-default.ags
 
 ok_grep_errors '-- analyze on un-boxed sum with un-bound free type variable --' './test-gslib/ubanalyze-unbound-type-variable.ags:14: Not enough free type variables' ./$O.test-gsi ubanalyze-unbound-type-variable.ags
 ok_grep_errors '-- analyze on un-boxed sum with excess free type variable --' './test-gslib/ubanalyze-excess-type-variable.ags:15: Too many free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags

@@ -1,0 +1,18 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+bool.prim.u	.tygvar
+x	.rune	x
+y	.rune	y
+c	.constr	bool.prim.u	true
+	.danalyze	c	false
+		.default
+			.yield	x
+		.case	false
+			.yield	y

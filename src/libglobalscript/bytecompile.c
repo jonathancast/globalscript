@@ -7,6 +7,7 @@
 #include "gsinputfile.h"
 #include "gsregtables.h"
 #include "gstypealloc.h"
+#include "gstypecheck.h"
 #include "gsbytecompile.h"
 #include "gsheap.h"
 #include "gstopsort.h"
@@ -259,7 +260,7 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopprim, gssymopconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymoplprim, gssymopundef, gssymopanalyze, gssymopcase;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopprim, gssymopconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymoplprim, gssymopundef, gssymopanalyze, gssymopdanalyze, gssymopcase, gssymopdefault;
 
 static
 int
@@ -667,6 +668,7 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
 }
 
 static void gsbc_bytecode_size_case(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
+static void gsbc_bytecode_size_default(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
 static
 int
@@ -725,6 +727,24 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
+    } else if (gssymceq((*pp)->directive, gssymopdanalyze, gssymcodeop, ".danalyze")) {
+        int nconstrs;
+        int nregs;
+
+        nconstrs = (*pp)->numarguments - 1;
+        pcl->size += ACE_DANALYZE_SIZE(nconstrs);
+
+        nregs = pcl->nregs;
+        pcl->phase = phargs;
+        gsbc_bytecode_size_default(ppseg, pp, pcl);
+        pcl->nregs = nregs;
+
+        for (i = 0; i < nconstrs; i++) {
+            nregs = pcl->nregs;
+            pcl->phase = phargs;
+            gsbc_bytecode_size_case(ppseg, pp, pcl);
+            pcl->nregs = nregs;
+        }
     } else {
         return 0;
     }
@@ -748,6 +768,23 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
             return;
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_bytecode_size_case(%y)", (*pp)->pos, (*pp)->directive);
+        }
+    }
+}
+
+static
+void
+gsbc_bytecode_size_default(struct gsparsedfile_segment **ppseg, struct gsparsedline **pp, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    *pp = gsinput_next_line(ppseg, *pp);
+    if (!gssymceq((*pp)->directive, gssymopdefault, gssymcodeop, ".default"))
+        gsfatal("%P: Expected .default next", (*pp)->pos)
+    ;
+    while (*pp = gsinput_next_line(ppseg, *pp)) {
+        if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
+            return;
+        } else {
+            gsfatal(UNIMPL("%P: gsbc_bytecode_size_default(%y)"), (*pp)->pos, (*pp)->directive);
         }
     }
 }
@@ -1479,14 +1516,17 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             pcl->pout = ACE_UNKNOWN_PRIM_SKIP(pcode);
         }
     } else if (gssymceq(p->directive, gssymopconstr, gssymcodeop, ".constr")) {
+        struct gstype *type;
         struct gstype_sum *sum;
 
         CHECK_PHASE(rtlets, "allocations");
-        ADD_LABEL_TO_REGS();
+
+        type = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[0])];
+        sum = (struct gstype_sum *)type;
+
+        ADD_LABEL_TO_REGS_WITH_TYPE(type);
 
         SETUP_PCODE(gsbc_op_constr);
-
-        sum = (struct gstype_sum *)pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[0])];
 
         for (i = 0; i < sum->numconstrs; i++) {
             if (p->arguments[1] == sum->constrs[i].name) {
@@ -1671,6 +1711,7 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
 }
 
 static void gsbc_byte_compile_case(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_byte_compile_code_or_api_op_closure *);
+static void gsbc_byte_compile_default(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_byte_compile_code_or_api_op_closure *);
 
 static
 int
@@ -1800,12 +1841,74 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
         for (i = 0; i < nconstrs; i++) {
             int nregs;
 
+            *pp = gsinput_next_line(ppseg, *pp);
+            if (!gssymceq((*pp)->directive, gssymopcase, gssymcodeop, ".case"))
+                gsfatal("%P: Expecting .case next")
+            ;
+
             pcases[i] = (struct gsbc *)pcl->pout;
             nregs = pcl->nregs;
             pcl->nfields = 0;
             pcl->phase = rtargs;
             gsbc_byte_compile_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
+        }
+    } else if (gssymceq((*pp)->directive, gssymopdanalyze, gssymcodeop, ".danalyze")) {
+        int nconstrs;
+        int reg;
+        int nregs;
+        int prevconstr;
+        struct gstype *type;
+        struct gstype_sum *sum;
+
+        nconstrs = (*pp)->numarguments - 1;
+
+        reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
+        type = pcl->regtypes[reg];
+        if (!type) gsfatal("%P: Cannot find type of %y", (*pp)->pos, (*pp)->arguments[0]);
+        sum = (struct gstype_sum *)type;
+
+        pcode = (struct gsbc *)pcl->pout;
+
+        pcode->pos = (*pp)->pos;
+        pcode->instr = gsbc_op_danalyze;
+
+        ACE_DANALYZE_SCRUTINEE(pcode) = reg;
+        ACE_DANALYZE_NUMCONSTRS(pcode) = (*pp)->numarguments - 1;
+
+        pcases = ACE_DANALYZE_CASES(pcode);
+
+        pcl->pout = (uchar*)pcases + (1 + nconstrs) * sizeof(struct gsbc *);
+
+        *pp = gsinput_next_line(ppseg, *pp);
+        if (!gssymceq((*pp)->directive, gssymopdefault, gssymcodeop, ".default"))
+            gsfatal("%P: Expecting .default next")
+        ;
+
+        pcases[0] = (struct gsbc *)pcl->pout;
+        nregs = pcl->nregs;
+        pcl->nfields = 0;
+        pcl->phase = rtargs;
+        gsbc_byte_compile_default(ppseg, pp, pcl);
+        pcl->nregs = nregs;
+
+        prevconstr = -1;
+        for (i = 0; i < nconstrs; i++) {
+            *pp = gsinput_next_line(ppseg, *pp);
+            if (!gssymceq((*pp)->directive, gssymopcase, gssymcodeop, ".case"))
+                gsfatal("%P: Expecting .case next")
+            ;
+
+            ACE_DANALYZE_CONSTR(pcode, i) = gsbc_typecheck_find_constr((*pp)->pos, prevconstr, sum, (*pp)->arguments[0]);
+
+            pcases[1 + i] = (struct gsbc *)pcl->pout;
+            nregs = pcl->nregs;
+            pcl->nfields = 0;
+            pcl->phase = rtargs;
+            gsbc_byte_compile_case(ppseg, pp, pcl);
+            pcl->nregs = nregs;
+
+            prevconstr = ACE_DANALYZE_CONSTR(pcode, i);
         }
     } else {
         return 0;
@@ -1818,11 +1921,6 @@ static
 void
 gsbc_byte_compile_case(struct gsparsedfile_segment **ppseg, struct gsparsedline **pp, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    *pp = gsinput_next_line(ppseg, *pp);
-    if (!gssymceq((*pp)->directive, gssymopcase, gssymcodeop, ".case"))
-        gsfatal("%P: Expecting .case next")
-    ;
-
     pcl->phase = rtargs;
     while (*pp = gsinput_next_line(ppseg, *pp)) {
         if (gsbc_byte_compile_arg_code_op(*pp, pcl)) {
@@ -1832,6 +1930,20 @@ gsbc_byte_compile_case(struct gsparsedfile_segment **ppseg, struct gsparsedline 
             return;
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Un-implemented .case code op %y", (*pp)->pos, (*pp)->directive);
+        }
+    }
+}
+
+static
+void
+gsbc_byte_compile_default(struct gsparsedfile_segment **ppseg, struct gsparsedline **pp, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    pcl->phase = rtargs;
+    while (*pp = gsinput_next_line(ppseg, *pp)) {
+        if (gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
+            return;
+        } else {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Un-implemented .default code op %y", (*pp)->pos, (*pp)->directive);
         }
     }
 }
