@@ -417,13 +417,17 @@ gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
         case gstype_knprim:
         case gstype_unprim:
         case gstype_var:
-        case gstype_forall:
         case gstype_lift:
         case gstype_app:
         case gstype_fun:
         case gstype_sum:
         case gstype_product:
             return;
+        case gstype_forall: {
+            struct gstype_forall *forall;
+            forall = (struct gstype_forall *)type;
+            return gsbc_typecheck_check_boxed(pos, forall->body);
+        }
         case gstype_lambda: {
             struct gstype_lambda *lambda;
             lambda = (struct gstype_lambda *)type;
@@ -441,12 +445,16 @@ gsbc_typecheck_check_boxed_or_product(struct gspos pos, struct gstype *type)
         case gstype_knprim:
         case gstype_unprim:
         case gstype_var:
-        case gstype_forall:
         case gstype_lift:
         case gstype_app:
         case gstype_fun:
         case gstype_ubproduct:
             return;
+        case gstype_forall: {
+            struct gstype_forall *forall;
+            forall = (struct gstype_forall *)type;
+            return gsbc_typecheck_check_boxed(pos, forall->body);
+        }
         case gstype_ubsum:
             gsfatal("%P: Invalid un-boxed sum type", pos);
         default:
