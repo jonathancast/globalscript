@@ -874,12 +874,12 @@ gsparse_thunk_alloc_op(char *filename, struct gsparsedline *parsedline, int *pli
     return 1;
 }
 
-#define STORE_VALUE_ALLOC_OP_LABEL() \
+#define STORE_VALUE_ALLOC_OP_LABEL(op) \
     do { \
         if (*fields[0]) \
             p->label = gsintern_string(gssymdatalable, fields[0]) \
         ; else { \
-            gswarning("%P: Missing label on .constr makes it a no-op", p->pos); \
+            gswarning("%P: Missing label on %s makes it a no-op", op, p->pos); \
             p->label = 0; \
         } \
     } while (0)
@@ -921,7 +921,7 @@ gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, cha
             p->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
         ;
     } else if (gssymceq(p->directive, gssymconstr, gssymcodeop, ".constr")) {
-        STORE_VALUE_ALLOC_OP_LABEL();
+        STORE_VALUE_ALLOC_OP_LABEL(".constr");
         if (n < 3)
             gsfatal("%P: Missing type on .constr", p->pos)
         ;
@@ -955,7 +955,7 @@ gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, cha
             p->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
         }
     } else if (gssymceq(p->directive, gssymfield, gssymcodeop, ".field")) {
-        STORE_VALUE_ALLOC_OP_LABEL();
+        STORE_VALUE_ALLOC_OP_LABEL(".field");
         if (n < 3)
             gsfatal("%P: Missing field on .field", p->pos)
         ;
