@@ -191,6 +191,16 @@ gstypes_calculate_kind(struct gstype *type)
             gstypes_kind_check_simple(type->pos, kybody);
             return kybody;
         }
+        case gstype_exists: {
+            struct gstype_exists *exists;
+            struct gskind *kybody;
+
+            exists = (struct gstype_exists *)type;
+
+            kybody = gstypes_calculate_kind(exists->body);
+            gstypes_kind_check_simple(type->pos, kybody);
+            return kybody;
+        }
         case gstype_lift: {
             struct gstype_lift *lift;
             struct gskind *kyarg;
@@ -434,7 +444,7 @@ gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
             return gsbc_typecheck_check_boxed(pos, lambda->body);
         }
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: %P: gsbc_typecheck_check_boxed(node = %d)", pos, type->pos, type->node);
+            gsfatal(UNIMPL("%P: %P: gsbc_typecheck_check_boxed(node = %d)"), pos, type->pos, type->node);
     }
 }
 
@@ -454,6 +464,11 @@ gsbc_typecheck_check_boxed_or_product(struct gspos pos, struct gstype *type)
             struct gstype_forall *forall;
             forall = (struct gstype_forall *)type;
             return gsbc_typecheck_check_boxed(pos, forall->body);
+        }
+        case gstype_exists: {
+            struct gstype_exists *exists;
+            exists = (struct gstype_exists *)type;
+            return gsbc_typecheck_check_boxed_or_product(pos, exists->body);
         }
         case gstype_ubsum:
             gsfatal("%P: Invalid un-boxed sum type", pos);
@@ -1985,7 +2000,7 @@ static
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc, gssymprim, gssymconstr, gssymrecord, gssymfield;
+    static gsinterned_string gssymalloc, gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield;
 
     int i;
 
@@ -2071,9 +2086,13 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         gsbc_typecheck_check_boxed(p->pos, type);
         pcl->regtypes[pcl->nregs] = type;
         pcl->nregs++;
-    } else if (gssymceq(p->directive, gssymconstr, gssymcodeop, ".constr")) {
+    } else if (
+        gssymceq(p->directive, gssymconstr, gssymcodeop, ".constr")
+        || gssymceq(p->directive, gssymexconstr, gssymcodeop, ".exconstr")
+    ) {
         int tyreg;
         int constrnum;
+        int first_val_arg;
         struct gstype *type, *argtype;
         struct gstype_sum *sum;
 
@@ -2097,22 +2116,40 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         constrnum = gsbc_find_constr_in_sum(p->pos, p->arguments[0], sum, p->arguments[1]);
         argtype = sum->constrs[constrnum].argtype;
 
-        if (p->numarguments == 3)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_alloc_op: .constr with boxed argument", p->pos)
+        first_val_arg = 2;
+        if (p->directive == gssymexconstr) {
+            for (i = first_val_arg; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+                struct gstype_exists *exists;
+                struct gstype *tyarg;
+
+                if (argtype->node != gstype_exists)
+                    gsfatal("%P: Too many existential type arguments to %y (max %d)", p->pos, p->arguments[1], i - first_val_arg)
+                ;
+                exists = (struct gstype_exists *)argtype;
+
+                tyarg = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
+                gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(tyarg), exists->kind);
+                argtype = gstypes_subst(p->pos, exists->body, exists->var, tyarg);
+            }
+            if (i < p->numarguments) i++;
+            first_val_arg = i;
+        }
+        if (p->numarguments == first_val_arg + 1)
+            gsfatal(UNIMPL("%P: gsbc_typecheck_alloc_op: %y with boxed argument"), p->pos, p->directive)
         ; else {
             int nfields;
             struct gstype_field fields[MAX_NUM_REGISTERS];
 
-            if (p->numarguments % 2)
+            if ((p->numarguments - first_val_arg) % 2)
                 gsfatal("%P: Odd number of arguments to .constr when expecting field/constructor pairs", p->pos)
             ;
             nfields = 0;
-            for (i = 0; 2 + i * 2 < p->numarguments; i++) {
+            for (i = 0; first_val_arg + i * 2 < p->numarguments; i++) {
                 int argreg;
 
                 nfields++;
-                fields[i].name = p->arguments[2 + i * 2];
-                argreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[2 + i * 2 + 1]);
+                fields[i].name = p->arguments[first_val_arg + i * 2];
+                argreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[first_val_arg + i * 2 + 1]);
                 fields[i].type = pcl->regtypes[argreg];
             }
             gsbc_check_field_order(p->pos, nfields, fields);

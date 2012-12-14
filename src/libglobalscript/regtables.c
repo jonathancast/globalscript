@@ -16,6 +16,6 @@ gsbc_find_register(struct gsparsedline *p, gsinterned_string *regs, int nregs, g
         if (regs[i] == name)
             return i;
     }
-    gsfatal_bad_input(p, "No such register '%s'", name->name);
+    gsfatal("%P: No such register '%y'", p->pos, name);
     return -1;
 }

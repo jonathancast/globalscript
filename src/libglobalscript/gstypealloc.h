@@ -23,6 +23,7 @@ struct gstype {
         gstype_var,
         gstype_lambda,
         gstype_forall,
+        gstype_exists,
         gstype_lift,
         gstype_app,
         gstype_fun,
@@ -71,6 +72,13 @@ struct gstype_lambda {
 };
 
 struct gstype_forall {
+    struct gstype e;
+    gsinterned_string var;
+    struct gskind *kind;
+    struct gstype *body;
+};
+
+struct gstype_exists {
     struct gstype e;
     gsinterned_string var;
     struct gskind *kind;

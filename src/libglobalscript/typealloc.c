@@ -185,6 +185,7 @@ struct gstype_compile_type_ops_closure {
         regglobal,
         regarg,
         regforall,
+        regexists,
         reglet,
     } regclass;
     struct gsbc_item *items;
@@ -219,7 +220,7 @@ static
 struct gstype *
 gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtylambda, gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
+    static gsinterned_string gssymtylambda, gssymtyforall, gssymtyexists, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
 
     int i;
     struct gstype *res;
@@ -266,6 +267,24 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos, p->label, kind);
         cl->nregs++;
         return gstypes_compile_forall(p->pos, p->label, kind,
+            gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p))
+        );
+    } else if (gssymceq(p->directive, gssymtyexists, gssymtypeop, ".tyexists")) {
+        struct gskind *kind;
+
+        if (cl->nregs >= MAX_REGISTERS)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
+            ;
+        if (cl->regclass > regexists)
+            gsfatal("%P: Too late to add forall arguments", p->pos)
+        ;
+        cl->regclass = regexists;
+        cl->regs[cl->nregs] = p->label;
+        gsargcheck(p, 0, "kind");
+        kind = gskind_compile(p->pos, p->arguments[0]);
+        cl->regvalues[cl->nregs] = gstypes_compile_type_var(p->pos, p->label, kind);
+        cl->nregs++;
+        return gstypes_compile_exists(p->pos, p->label, kind,
             gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p))
         );
     } else if (gssymceq(p->directive, gssymtylet, gssymtypeop, ".tylet")) {
@@ -452,6 +471,24 @@ gstypes_compile_forall(struct gspos pos, gsinterned_string var, struct gskind *k
     forall->var = var;
     forall->kind = kind;
     forall->body = body;
+
+    return res;
+}
+
+struct gstype *
+gstypes_compile_exists(struct gspos pos, gsinterned_string var, struct gskind *kind, struct gstype *body)
+{
+    struct gstype *res;
+    struct gstype_exists *exists;
+
+    res = gstype_alloc(sizeof(struct gstype_exists));
+    exists = (struct gstype_exists*)res;
+
+    res->node = gstype_exists;
+    res->pos = pos;
+    exists->var = var;
+    exists->kind = kind;
+    exists->body = body;
 
     return res;
 }

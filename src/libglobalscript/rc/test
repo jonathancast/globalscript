@@ -48,6 +48,7 @@ ok_diff '-- three-byte rune literals --' ./$O.test-gsi three-byte-rune-literal.a
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 ok_diff '-- constructors --' ./$O.test-gsi constructor.ags
 ok_diff '-- constructors with arguments --' ./$O.test-gsi constructor-args.ags
+ok_diff '-- constructors with existential type arguments --' ./$O.test-gsi constructor-existential-types.ags
 ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 

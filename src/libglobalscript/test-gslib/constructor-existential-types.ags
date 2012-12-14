@@ -1,0 +1,44 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+_r	.closure	_r_c
+
+	.code
+
+_ep_c	.expr
+_res.u	.tygvar
+rune.t	.tygvar
+rune.print	.gvar
+_r	.gvar
+c	.exconstr	_res.u	print	rune.t	|	0	rune.print	1	_r
+	.lift
+	.yield	c
+
+_r_c	.expr
+rune.t.in	.cogvar
+r	.rune	r
+	.coerce	rune.t.in
+	.lift
+	.yield	r
+
+	.type
+
+_res.u	.tyexpr
+_res.u_print.ty	.tygvar
+	.tysum	print	_res.u_print.ty
+
+_res.u_print.ty	.tyexpr
+_res.u_print.ty_0_ty	.tygvar
+α	.tyexists	*
+0_ty	.tylet	_res.u_print.ty_0_ty	α
+	.tyubproduct	0	0_ty	1	α
+
+_res.u_print.ty_0_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	list.t	rune.t

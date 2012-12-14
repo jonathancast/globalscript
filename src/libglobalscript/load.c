@@ -888,7 +888,7 @@ static
 int
 gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymprim, gssymconstr, gssymrecord, gssymfield;
+    static gsinterned_string gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield;
 
     int i;
 
@@ -937,6 +937,34 @@ gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, cha
                 gsfatal("%P: Odd number of arguments to .constr when expecting field/value pairs", p->pos)
             ;
             for (i = 4; i < n; i += 2) {
+                p->arguments[i - 2] = gsintern_string(gssymfieldlable, fields[i]);
+                p->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
+            }
+        }
+    } else if (gssymceq(p->directive, gssymexconstr, gssymcodeop, ".exconstr")) {
+        STORE_VALUE_ALLOC_OP_LABEL(".exconstr");
+        if (n < 3)
+            gsfatal("%P: Missing type on .constr", p->pos)
+        ;
+        p->arguments[2 - 2] = gsintern_string(gssymtypelable, fields[2]);
+        if (n < 4)
+            gsfatal("%P: Missing constructor on .constr", p->pos)
+        ;
+        p->arguments[3 - 2] = gsintern_string(gssymconstrlable, fields[3]);
+        for (i = 4; i < n && strcmp(fields[i], "|"); i++)
+            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+        if (i < n) {
+            p->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        if (n == i +1)
+            gsfatal(UNIMPL("%P: gsparse_value_alloc_op(.exconstr with simple argument)"), p->pos)
+        ; else {
+            if ((n - i) % 2)
+                gsfatal("%P: Odd number of arguments to .exconstr when expecting field/value pairs", p->pos)
+            ;
+            for (; i < n; i += 2) {
                 p->arguments[i - 2] = gsintern_string(gssymfieldlable, fields[i]);
                 p->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
             }
@@ -1513,7 +1541,7 @@ static
 long
 gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtyforall, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
+    static gsinterned_string gssymtyforall, gssymtyexists, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
 
     struct gsparsedline *parsedline;
     int i;
@@ -1535,6 +1563,19 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             parsedline->arguments[0] = gsintern_string(gssymkindexpr, fields[2]);
             if (n > 3)
                 gsfatal("%s:%d: Too many arguments to .tyforall", filename, *plineno);
+        } else if (gssymceq(parsedline->directive, gssymtyexists, gssymtypeop, ".tyexists")) {
+            if (*fields[0])
+                parsedline->label = gsintern_string(gssymtypelable, fields[0])
+            ; else
+                gsfatal("%s:%d: Labels required on .tyexists", filename, *plineno)
+            ;
+            if (n < 3)
+                gsfatal("%s:%d: Missing kind on .tyexists-bound type variable", filename, *plineno)
+            ;
+            parsedline->arguments[0] = gsintern_string(gssymkindexpr, fields[2]);
+            if (n > 3)
+                gsfatal("%s:%d: Too many arguments to .tyexists", filename, *plineno)
+            ;
         } else if (gssymceq(parsedline->directive, gssymtylet, gssymtypeop, ".tylet")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);

@@ -260,7 +260,7 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopprim, gssymopconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymoplprim, gssymopundef, gssymopanalyze, gssymopdanalyze, gssymopcase, gssymopdefault;
+static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv, gssymoparg, gssymoplarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymoplprim, gssymopundef, gssymopanalyze, gssymopdanalyze, gssymopcase, gssymopdefault;
 
 static
 int
@@ -440,7 +440,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             cl.size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
             goto done;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_bytecode_size_item (%s)", p->pos, p->directive->name);
+            gsfatal(UNIMPL("%P: gsbc_bytecode_size_item (%y)"), p->pos, p->directive);
         }
     }
 done:
@@ -594,11 +594,21 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         } else {
             pcl->size += ACE_UNKNOWN_PRIM_SIZE();
         }
-    } else if (gssymceq(p->directive, gssymopconstr, gssymcodeop, ".constr")) {
-        if (p->numarguments == 3)
+    } else if (
+        gssymceq(p->directive, gssymopconstr, gssymcodeop, ".constr")
+        || gssymceq(p->directive, gssymopexconstr, gssymcodeop, ".exconstr")
+    ) {
+        int first_val_arg = 2;
+        if (p->directive == gssymopexconstr) {
+            /* Skip type arguments */
+            for (i = first_val_arg; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+            first_val_arg = i;
+        }
+        if (p->numarguments == first_val_arg + 1)
             pcl->size += GS_SIZE_BYTECODE(2 + 1)
         ; else
-            pcl->size += GS_SIZE_BYTECODE(2 + (p->numarguments - 2) / 2)
+            pcl->size += GS_SIZE_BYTECODE(2 + (p->numarguments - first_val_arg) / 2)
         ;
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
         pcl->size += ACE_FIELD_SIZE();
@@ -1221,7 +1231,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
         } else if (gsbc_byte_compile_terminal_code_op(ppseg, &p, &cl)) {
             goto done;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Code op %s", p->pos, p->directive->name);
+            gsfatal(UNIMPL("%P: Code op %s"), p->pos, p->directive->name);
         }
     }
 
@@ -1517,9 +1527,13 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             pcode->instr = gsbc_op_unknown_prim;
             pcl->pout = ACE_UNKNOWN_PRIM_SKIP(pcode);
         }
-    } else if (gssymceq(p->directive, gssymopconstr, gssymcodeop, ".constr")) {
+    } else if (
+        gssymceq(p->directive, gssymopconstr, gssymcodeop, ".constr")
+        || gssymceq(p->directive, gssymopexconstr, gssymcodeop, ".exconstr")
+    ) {
         struct gstype *type;
         struct gstype_sum *sum;
+        int first_val_arg;
 
         CHECK_PHASE(rtlets, "allocations");
 
@@ -1538,13 +1552,21 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         }
         gsfatal("%P: Sum type %y has no constructor %y", p->pos, p->arguments[0], p->arguments[1]);
     have_constr:
-        if (p->numarguments == 3) {
+
+        first_val_arg = 2;
+        if (p->directive == gssymopexconstr) {
+            /* Skip type arguments */
+            for (i = first_val_arg; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+            first_val_arg = i;
+        }
+        if (p->numarguments == first_val_arg + 1) {
             ACE_CONSTR_NUMARGS(pcode) = 1;
             ACE_CONSTR_ARG(pcode, 0) = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[2]);
         } else {
-            ACE_CONSTR_NUMARGS(pcode) = (p->numarguments - 2) / 2;
-            for (i = 0; 2+i < p->numarguments; i += 2) {
-                ACE_CONSTR_ARG(pcode, i / 2) = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[2+i+1]);
+            ACE_CONSTR_NUMARGS(pcode) = (p->numarguments - first_val_arg) / 2;
+            for (i = 0; first_val_arg+i < p->numarguments; i += 2) {
+                ACE_CONSTR_ARG(pcode, i / 2) = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[first_val_arg+i+1]);
             }
         }
         pcl->pout = ACE_CONSTR_SKIP(pcode);
