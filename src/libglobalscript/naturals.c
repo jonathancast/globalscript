@@ -12,23 +12,13 @@ static struct gsregistered_primtype natural_prim_types[] = {
     { 0, },
 };
 
+static gsprim_handler *natural_prim_exec[] = {
+};
+
 enum {
     natural_prim_ub_divMod,
     natural_prim_ub_eq,
     natural_prim_ub_lt,
-};
-
-static struct gsregistered_prim natural_prim_operations[] = {
-    /* name, file, line, group, apitype, type, index, */
-    { "divMod", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 natural.prim.u natural.prim.u \"uΠ〈 0 1 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_divMod, },
-
-    { "≡", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_eq, },
-    { "<", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_lt, },
-
-    { 0, },
-};
-
-static gsprim_handler *natural_prim_exec[] = {
 };
 
 static gsubprim_handler natural_prim_handle_divMod;
@@ -42,6 +32,16 @@ static gsubprim_handler *natural_prim_ubexec[] = {
 };
 
 static gslprim_handler *natural_prim_lexec[] = {
+};
+
+static struct gsregistered_prim natural_prim_operations[] = {
+    /* name, file, line, group, apitype, type, index, */
+    { "divMod", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 natural.prim.u natural.prim.u \"uΠ〈 0 1 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_divMod, },
+
+    { "≡", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_eq, },
+    { "<", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_lt, },
+
+    { 0, },
 };
 
 struct gsregistered_primset gsnatural_prim_set = {
