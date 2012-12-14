@@ -291,7 +291,7 @@ gstypes_calculate_kind(struct gstype *type)
             return gskind_unlifted_kind();
         }
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_calculate_kind(node = %d)", type->pos, type->node);
+            gsfatal(UNIMPL("%P: gstypes_calculate_kind(node = %d)"), type->pos, type->node);
     }
     return 0;
 }
