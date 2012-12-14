@@ -1,5 +1,16 @@
 	.prefix
 
+	.data
+
+record.empty	.closure	_record.empty_c
+
+	.code
+
+_record.empty_c	.expr
+r	.record
+	.lift
+	.yield	r
+
 	.type
 
 record.empty	.tyexpr
