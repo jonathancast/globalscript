@@ -1017,6 +1017,40 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             resforall->body = resbody;
             return res;
         }
+        case gstype_exists: {
+            struct gstype_exists *exists, *resexists;
+            struct gstype *resbody;
+            gsinterned_string nvar;
+            struct gstype *res;
+            int varno;
+
+            exists = (struct gstype_exists *)type;
+
+            if (exists->var == varname)
+                return type;
+
+            resbody = exists->body;
+            nvar = exists->var;
+            varno = 0;
+            while (gstypes_is_ftyvar(nvar, type1) || gstypes_is_ftyvar(nvar, type)) {
+                if (seprint(buf, buf + sizeof(buf), "%y%d", exists->var, varno) >= buf + sizeof(buf))
+                    gsfatal(UNIMPL("Buffer overflow printing %y%d"), exists->var, varno)
+                ;
+                nvar = gsintern_string(gssymtypelable, buf);
+            }
+            if (nvar != exists->var)
+                resbody = gstypes_subst(pos, resbody, exists->var, gstypes_compile_type_var(pos, nvar, exists->kind))
+            ;
+            resbody = gstypes_subst(pos, resbody, varname, type1);
+            res = gstype_alloc(sizeof(struct gstype_exists));
+            resexists = (struct gstype_exists *)res;
+            res->node = gstype_exists;
+            res->pos = type->pos;
+            resexists->var = nvar;
+            resexists->kind = exists->kind;
+            resexists->body = resbody;
+            return res;
+        }
         case gstype_lift: {
             struct gstype_lift *lift, *reslift;
             struct gstype *res;
@@ -1127,7 +1161,7 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             return res;
         }
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: subst (node = %d)", type->pos, type->node);
+            gsfatal(UNIMPL("%P: subst (node = %d)"), type->pos, type->node);
     }
     return 0;
 }
