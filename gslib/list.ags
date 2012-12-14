@@ -183,35 +183,53 @@ _list.foldl_k0	.subcode
 f	.larg	_list.foldl_f_ty	α	β
 z	.larg	β
 xn	.larg	list.t	α
-	.strict	_list.foldl_k0	α	β	|	xn
+	.strict	_list.foldl_k0	α	β	|	f	xn
 	.enter	z
 
 _list.foldl_k0	.strictcont
+_list.foldl_f_ty	.tygvar
 list.t	.tygvar
 α	.tyfv	*
 β	.tyfv	*
 _list.foldl_k1	.subcode
 list.t.out	.cogvar
+f	.fv	_list.foldl_f_ty	α	β
 xn	.fv	list.t	α
 z	.karg	β
-	.force	_list.foldl_k1	α	β	|	z
+	.force	_list.foldl_k1	α	β	|	f	z
 	.coerce	list.t.out	α
 	.enter	xn
 
 _list.foldl_k1	.forcecont
+_list.foldl_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 α	.tyfv	*
 β	.tyfv	*
+_list.foldl_k1_z1_c	.subcode
+list.foldl	.gvar
+f	.fv	_list.foldl_f_ty	α	β
 z	.fv	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.undef	β
+z1			.alloc	_list.foldl_k1_z1_c	α	β	|	f	z	x0
+			.app	f	z1	xn1
+			.enter	list.foldl	α	β
 		.case	nil
 			.enter	z
+
+_list.foldl_k1_z1_c	.expr
+_list.foldl_f_ty	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+f	.fv	_list.foldl_f_ty	α	β
+z	.fv	β
+x0	.fv	α
+	.app	z	x0
+	.enter	f
 
 # §section §gs{list.singleton}
 

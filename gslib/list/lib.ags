@@ -23,9 +23,25 @@ plus.1	.alloc	_list.lib.length_plus.1_c	α
 _list.lib.length_plus.1_c	.expr
 natural.t	.tygvar
 α	.tyfv	*
+_list.lib.length_plus.1_k	.subcode
+natural.t.out	.cogvar
 n	.larg	natural.t
 x	.larg	α
-	.undef	natural.t
+	.force	_list.lib.length_plus.1_k
+	.coerce	natural.t.out
+	.enter	n
+
+_list.lib.length_plus.1_k	.forcecont
+natural.prim.u	.tygvar
+natural.t	.tygvar
+natural.t.in	.cogvar
+natural.prim.+	.gvar
+1	.natural	1
+n0	.karg	natural.prim.u
+	.coerce	natural.t.in
+	.lift
+	.app	n0	1
+	.yield	natural.prim.+
 
 _0_c	.expr
 natural.t.in	.cogvar
