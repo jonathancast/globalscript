@@ -147,13 +147,14 @@ static
 struct gsparsedline *
 gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtyfun, gssymoptyubsum, gssymoptyproduct, gssymoptyubproduct;
+    static gsinterned_string gssymtyexists, gssymtyfun, gssymoptyubsum, gssymoptyproduct, gssymoptyubproduct;
 
     for (;;) {
         if (
             gssymeq(p->directive, gssymtypeop, ".tygvar")
             || gssymeq(p->directive, gssymtypeop, ".tylambda")
             || gssymeq(p->directive, gssymtypeop, ".tyforall")
+            || gssymceq(p->directive, gssymtyexists, gssymtypeop, ".tyexists")
             || gssymeq(p->directive, gssymtypeop, ".tylift")
             || gssymeq(p->directive, gssymtypeop, ".tylet")
             || gssymceq(p->directive, gssymtyfun, gssymtypeop, ".tyfun")
@@ -168,7 +169,7 @@ gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gspars
         )
             return gsinput_next_line(ppseg, p);
         else
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_section_skip_type_expr(%s)", p->pos, p->directive->name);
+            gsfatal(UNIMPL("%P: gstype_section_skip_type_expr(%y)"), p->pos, p->directive);
     }
 
     return 0;
