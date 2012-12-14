@@ -1199,6 +1199,15 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
             ;
             return gstypes_is_ftyvar(varname, forall->body);
         }
+        case gstype_exists: {
+            struct gstype_exists *exists;
+
+            exists = (struct gstype_exists *)type;
+            if (exists->var == varname)
+                return 0
+            ;
+            return gstypes_is_ftyvar(varname, exists->body);
+        }
         case gstype_lift: {
             struct gstype_lift *lift;
 
@@ -1262,7 +1271,7 @@ gstypes_is_ftyvar(gsinterned_string varname, struct gstype *type)
             return 0;
         }
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: fv (varname = %s, node = %d)", type->pos, varname->name, type->node);
+            gsfatal(UNIMPL("%P: fv (varname = %y, node = %d)"), type->pos, varname, type->node);
     }
     return 0;
 }
