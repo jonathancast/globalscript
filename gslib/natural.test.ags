@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0	_test.1.div.0	_test.2.div.3	_test.fmtdecimal.0	_test.fmtdecimal.11
+_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0	_test_2.plus.3	_test.1.div.0	_test.2.div.3	_test.fmtdecimal.0	_test.fmtdecimal.11
 
 _test.4.eq.4	.closure	_test.4.eq.4_c
 _test.4.eq.4_label	.string	4\s≡\s4
@@ -27,6 +27,9 @@ _test.4.lt.0_label	.string	4\s<\s0
 _test.4.lt.0_test	.closure	_test.4.lt.0_test_c
 _test.4.lt.0_test_succ	.string	4\s≮\s0
 _test.4.lt.0_test_fail	.string	4\s<\s0
+
+_test_2.plus.3	.closure	_test_2.plus.3_c
+_test_2.plus.3_label	.string	2\s+\s3
 
 _test.1.div.0	.closure	_test.1.div.0_c
 _test.1.div.0_label	.string	1\s`divMod`\s0
@@ -55,6 +58,7 @@ _0	.closure	_0_c
 _2	.closure	_2_c
 _3	.closure	_3_c
 _4	.closure	_4_c
+_5	.closure	_5_c
 _11	.closure	_11_c
 _string.≡	.closure	_string.≡_c
 _string.print	.closure	_string.print_c
@@ -167,6 +171,34 @@ _4	.gvar
 _0	.gvar
 	.app	_4	_0
 	.enter	natural.<
+
+# §section §gs{2 + 3}
+
+_test_2.plus.3_c	.expr
+_test_2.plus.3_test_c	.subcode
+test.property.label	.gvar
+_test_2.plus.3_label	.gvar
+test	.alloc	_test_2.plus.3_test_c
+	.app	_test_2.plus.3_label	test
+	.enter	test.property.label
+
+_test_2.plus.3_test_c	.expr
+natural.t	.tygvar
+_test_2.plus.3_test_actual_c	.subcode
+test.assert.eq	.gvar
+natural.≡	.gvar
+natural.print	.gvar
+_5	.gvar
+actual	.alloc	_test_2.plus.3_test_actual_c
+	.app	natural.≡	natural.print	actual	_5
+	.enter	test.assert.eq	natural.t
+
+_test_2.plus.3_test_actual_c	.expr
+natural.+	.gvar
+_2	.gvar
+_3	.gvar
+	.app	_2	_3
+	.enter	natural.+
 
 # §section §gs{1 `divMod` 0}
 
@@ -351,6 +383,13 @@ natural.t.in	.cogvar
 	.coerce	natural.t.in
 	.lift
 	.yield	4
+
+_5_c	.expr
+natural.t.in	.cogvar
+5	.natural	5
+	.coerce	natural.t.in
+	.lift
+	.yield	5
 
 _11_c	.expr
 natural.t.in	.cogvar

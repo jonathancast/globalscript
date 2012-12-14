@@ -12,7 +12,14 @@ static struct gsregistered_primtype natural_prim_types[] = {
     { 0, },
 };
 
+enum {
+    natural_prim_plus,
+};
+
+static gsprim_handler natural_prim_handle_plus;
+
 static gsprim_handler *natural_prim_exec[] = {
+    natural_prim_handle_plus,
 };
 
 enum {
@@ -36,6 +43,7 @@ static gslprim_handler *natural_prim_lexec[] = {
 
 static struct gsregistered_prim natural_prim_operations[] = {
     /* name, file, line, group, apitype, type, index, */
+    { "+", __FILE__, __LINE__, gsprim_operation, 0, "natural.prim.u natural.prim.u natural.prim.u → →", natural_prim_plus, },
     { "divMod", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 natural.prim.u natural.prim.u \"uΠ〈 0 1 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_divMod, },
 
     { "≡", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_eq, },
@@ -54,6 +62,33 @@ struct gsregistered_primset gsnatural_prim_set = {
 };
 
 /* §section Arithmetic Primitives */
+
+
+static
+int
+natural_prim_handle_plus(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args, gsvalue *pres)
+{
+    gsvalue addend0, addend1, sum;
+
+    addend0 = args[0];
+    addend1 = args[1];
+    if (IS_PTR(addend0) || IS_PTR(addend1))
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_plus: bignums")
+    ;
+
+    addend0 &= ~GS_MAX_PTR;
+    addend1 &= ~GS_MAX_PTR;
+
+    if (addend0 >= GS_MAX_PTR - addend1)
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_plus: result is a bignum")
+    ;
+
+    sum = addend0 + addend1;
+    sum |= GS_MAX_PTR;
+
+    *pres = sum;
+    return 1;
+}
 
 static
 int
