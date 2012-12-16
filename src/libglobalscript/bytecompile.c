@@ -371,18 +371,6 @@ gsbc_bytecode_size_item(struct gsbc_item item)
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
             cl.nregs++;
         } else if (gsbc_bytecode_size_alloc_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")) {
-            if (cl.phase > phgens)
-                gsfatal_bad_input(p, "Too late to add allocations")
-            ;
-            cl.phase = phgens;
-
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
-            ;
-            cl.nregs++;
-
-            cl.size += GS_SIZE_BYTECODE(1 + p->numarguments / 2); /* numfields + fields */
         } else if (gssymceq(p->directive, gssymopeprim, gssymcodeop, ".eprim")) {
             struct gsregistered_primset *prims;
 
@@ -639,6 +627,18 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         ; else
             pcl->size += GS_SIZE_BYTECODE(2 + (p->numarguments - first_val_arg) / 2)
         ;
+    } else if (gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")) {
+        if (pcl->phase > phgens)
+            gsfatal("%P: Too late to add allocations", p->pos)
+        ;
+        pcl->phase = phgens;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->nregs++;
+
+        pcl->size += GS_SIZE_BYTECODE(1 + p->numarguments / 2); /* numfields + fields */
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
         pcl->size += ACE_FIELD_SIZE();
     } else {
@@ -808,7 +808,7 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
         } else if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
             return;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_bytecode_size_case(%y)", (*pp)->pos, (*pp)->directive);
+            gsfatal(UNIMPL("%P: gsbc_bytecode_size_case(%y)"), (*pp)->pos, (*pp)->directive);
         }
     }
 }
