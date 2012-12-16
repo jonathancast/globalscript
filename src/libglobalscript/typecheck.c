@@ -1845,9 +1845,14 @@ gsbc_typecheck_find_constr(struct gspos case_pos, int prevconstr, struct gstype_
     int constrnum;
 
     for (constrnum = prevconstr + 1; constrnum < sum->numconstrs; constrnum++) {
-        if (constrnum > 0)
-            gsfatal(UNIMPL("%P: Check constr order"), case_pos)
-        ;
+        if (constrnum > 0) {
+            if (sum->constrs[constrnum - 1].name == sum->constrs[constrnum].name)
+                gsfatal("%P: Duplicate constructor %y", sum->constrs[constrnum].name)
+            ;
+            if (strcmp(sum->constrs[constrnum - 1].name->name, sum->constrs[constrnum].name->name) > 0)
+                gsfatal("%P: Constructor %y should follow %y", sum->constrs[constrnum - 1].name, sum->constrs[constrnum].name)
+            ;
+        }
         if (sum->constrs[constrnum].name == constrname)
             return constrnum
         ;
