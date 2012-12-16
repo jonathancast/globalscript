@@ -510,10 +510,8 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
     return -1;
 }
 
-/* ↓ Deprecated */
-static int gsparse_api_or_code_op(char *, struct gsparsedline *, int *, char **, long);
-
 static int gsparse_code_type_fv_op(char *, struct gsparsedline *, int *, char **, long);
+static int gsparse_value_arg_op(char *, struct gsparsedline *, int *, char **, long);
 static int gsparse_value_fv_op(char *, struct gsparsedline *, int *, char **, long);
 static int gsparse_thunk_alloc_op(char *, struct gsparsedline *, int *, char **, long);
 static int gsparse_value_alloc_op(char *, struct gsparsedline *, int *, char **, long);
@@ -536,7 +534,6 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
-        } else if (gsparse_api_or_code_op(filename, parsedline, plineno, fields, n)) {
         } else if (gssymceq(parsedline->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);
@@ -547,6 +544,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
             if (n > 4)
                 gsfatal("%s:%d: Too many arguments to .tyarg", filename, *plineno);
+        } else if (gsparse_value_arg_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gssymceq(parsedline->directive, gssymarg, gssymcodeop, ".arg")) {
             if (*fields[0])
@@ -733,6 +731,29 @@ gsparse_code_type_fv_op(char *filename, struct gsparsedline *parsedline, int *pl
         for (i = 2; i < n; i++) {
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
         }
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+int
+gsparse_value_arg_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
+{
+    static gsinterned_string gssymlarg;
+
+    int i;
+
+    if (gssymceq(parsedline->directive, gssymlarg, gssymcodeop, ".larg")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+        else
+            gsfatal("%s:%d: Missing label on .larg op", filename, *plineno);
+        if (n < 3)
+            gsfatal("%s:%d: Missing type on .larg", filename, *plineno);
+        for (i = 2; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
     } else {
         return 0;
     }
@@ -1120,7 +1141,7 @@ gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *c
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
-        } else if (gsparse_api_or_code_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_value_arg_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_thunk_alloc_op(filename, parsedline, plineno, fields, n)) {
         } else if (gssymeq(parsedline->directive, gssymcodeop, ".bind")) {
@@ -1170,28 +1191,6 @@ gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *c
         gsfatal("%s:%d: EOF in middle of reading API sub-program literal", filename, codedirective->pos.lineno);
 
     return -1;
-}
-
-static
-int
-gsparse_api_or_code_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
-{
-    static gsinterned_string gssymlarg;
-    int i;
-
-     if (gssymceq(parsedline->directive, gssymlarg, gssymcodeop, ".larg")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .larg op", filename, *plineno);
-        if (n < 3)
-            gsfatal("%s:%d: Missing type on .larg", filename, *plineno);
-        for (i = 2; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-    } else {
-        return 0;
-    }
-    return 1;
 }
 
 static void gsparse_case(char *, gsparsedfile *, struct uxio_ichannel *, gsinterned_string, char *, int *, char **);
