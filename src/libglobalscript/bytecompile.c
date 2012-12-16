@@ -255,6 +255,7 @@ struct gsbc_bytecode_size_code_closure {
     int nregs;
 };
 static int gsbc_bytecode_size_type_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
+static int gsbc_bytecode_size_code_type_let_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
@@ -297,12 +298,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
             ;
             cl.phase = phtyargs;
             /* type erasure */
-        } else if (gssymceq(p->directive, gssymoptylet, gssymcodeop, ".tylet")) {
-            if (cl.phase > phtylets)
-                gsfatal("%P: Too late to add type arguments", p->pos)
-            ;
-            cl.phase = phtylets;
-            /* type erasure */
+        } else if (gsbc_bytecode_size_code_type_let_op(p, &cl)) {
         } else if (gsbc_bytecode_size_data_fv_code_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
             if (cl.phase > phgvars)
@@ -462,6 +458,22 @@ gsbc_bytecode_size_type_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode
             gsfatal("%P: Too late to add type arguments", p->pos)
         ;
         pcl->phase = phtyargs;
+        /* type erasure */
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+int
+gsbc_bytecode_size_code_type_let_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymoptylet, gssymcodeop, ".tylet")) {
+        if (pcl->phase > phtylets)
+            gsfatal("%P: Too late to add type allocations", p->pos)
+        ;
+        pcl->phase = phtylets;
         /* type erasure */
     } else {
         return 0;
