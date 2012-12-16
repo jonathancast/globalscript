@@ -2007,7 +2007,7 @@ gsbc_byte_compile_case(struct gsparsedfile_segment **ppseg, struct gsparsedline 
         } else if (gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
             return;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Un-implemented .case code op %y", (*pp)->pos, (*pp)->directive);
+            gsfatal(UNIMPL("%P: Un-implemented .case code op %y"), (*pp)->pos, (*pp)->directive);
         }
     }
 }
