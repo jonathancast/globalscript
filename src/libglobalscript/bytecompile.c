@@ -801,6 +801,7 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
     ;
     while (*pp = gsinput_next_line(ppseg, *pp)) {
         if (gsbc_bytecode_size_type_arg_code_op(*pp, pcl)) {
+        } else if (gsbc_bytecode_size_code_type_let_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_arg_code_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_alloc_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
