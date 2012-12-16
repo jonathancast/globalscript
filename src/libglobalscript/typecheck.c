@@ -2346,6 +2346,7 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
             int is_lifted;
 
             tyarg = pcl->regtypes[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
+            is_lifted = 0;
             if (type->node == gstype_lift) {
                 struct gstype_lift *lift = (struct gstype_lift *)type;
 
@@ -2358,11 +2359,12 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
             fun = (struct gstype_fun *)type;
             gstypes_type_check_type_fail(p->pos, tyarg, fun->tyarg);
             type = fun->tyres;
-            gsbc_typecheck_check_boxed(p->pos, type);
             if (is_lifted)
                 gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind())
             ;
         }
+        gsbc_typecheck_check_boxed(p->pos, type);
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = type;
         pcl->nregs++;
