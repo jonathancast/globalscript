@@ -29,6 +29,8 @@ ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
 ok_grep_errors '-- a let can be mis-typed --' './test-gslib/mistyped-let.ags:5: I don''t think' ./$O.test-gsi mistyped-let.ags
 ok_diff_fail '-- let with undefined FV --' ./$O.test-gsi undef-free-var.ags
 
+ok_diff_fail '-- alloc undefined with .undefined' ./$O.test-gsi undef-op.ags
+
 ok_grep_errors '-- abstract types with too few lambdas in definition --' './test-gslib/mis-kinded-abs-type.ags:14: Incorrect kind: ' ./$O.test-gsi mis-kinded-abs-type.ags
 
 ok_diff_fail '-- undefined values of abstract types --' ./$O.test-gsi undef-abs-type.ags

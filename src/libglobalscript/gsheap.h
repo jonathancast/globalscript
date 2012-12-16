@@ -14,6 +14,7 @@ enum {
     gsbc_op_constr,
     gsbc_op_record,
     gsbc_op_field,
+    gsbc_op_undefined,
     gsbc_op_unknown_eprim,
     gsbc_op_eprim,
     gsbc_op_app,
@@ -68,6 +69,9 @@ enum {
 #define ACE_FIELD_FIELD(ip) ((ip)->args[0])
 #define ACE_FIELD_RECORD(ip) ((ip)->args[1])
 #define ACE_FIELD_SKIP(ip) GS_NEXT_BYTECODE((ip), 2)
+
+#define ACE_UNDEFINED_SIZE() GS_SIZE_BYTECODE(0)
+#define ACE_UNDEFINED_SKIP(ip) GS_NEXT_BYTECODE((ip), 0)
 
 #define ACE_APP_SIZE(nargs) GS_SIZE_BYTECODE(1 + nargs)
 #define ACE_APP_NUMARGS(ip) ((ip)->args[0])

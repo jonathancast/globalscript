@@ -262,7 +262,24 @@ static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_byteco
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
-static gsinterned_string gssymoptyfv, gssymoptyarg, gssymoptylet, gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv, gssymoparg, gssymoplarg, gssymopexkarg, gssymopkarg, gssymopfkarg, gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymopfield, gssymopeprim, gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze, gssymopyield, gssymopenter, gssymopubprim, gssymoplprim, gssymopundef, gssymopanalyze, gssymopdanalyze, gssymopcase, gssymopdefault;
+/* Type free variables */
+static gsinterned_string gssymoptyfv;
+/* Type arguments */
+static gsinterned_string gssymoptyarg;
+/* Type allocations */
+static gsinterned_string gssymoptylet;
+/* Code/coercion/data free variables */
+static gsinterned_string gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv;
+/* Data arguments */
+static gsinterned_string gssymoparg, gssymoplarg, gssymopexkarg, gssymopkarg, gssymopfkarg;
+/* Allocation */
+static gsinterned_string gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymopfield, gssymopundefined, gssymopeprim;
+/* Continuations */
+static gsinterned_string gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze;
+/* Terminals */
+static gsinterned_string gssymopyield, gssymopenter, gssymopubprim, gssymoplprim, gssymopundef;
+/* Branching */
+static gsinterned_string gssymopanalyze, gssymopdanalyze, gssymopcase, gssymopdefault;
 
 static
 int
@@ -641,6 +658,8 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         pcl->size += GS_SIZE_BYTECODE(1 + p->numarguments / 2); /* numfields + fields */
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
         pcl->size += ACE_FIELD_SIZE();
+    } else if (gssymceq(p->directive, gssymopundefined, gssymcodeop, ".undefined")) {
+        pcl->size += ACE_UNDEFINED_SIZE();
     } else {
         return 0;
     }
@@ -1659,6 +1678,22 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         pcl->pout = ACE_FIELD_SKIP(pcode);
 
         ADD_LABEL_TO_REGS_WITH_TYPE(product->fields[fieldnum].type);
+    } else if (gssymceq(p->directive, gssymopundefined, gssymcodeop, ".undefined")) {
+        struct gstype *type, *tyarg;
+
+        CHECK_PHASE(rtlets, "allocations");
+
+        SETUP_PCODE(gsbc_op_undefined);
+
+        type = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[0])];
+        for (i = 1; i < p->numarguments; i++) {
+            tyarg = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[i])];
+            type = gstype_apply(p->pos, type, tyarg);
+        }
+
+        pcl->pout = ACE_UNDEFINED_SKIP(pcode);
+
+        ADD_LABEL_TO_REGS_WITH_TYPE(type);
     } else {
         return 0;
     }

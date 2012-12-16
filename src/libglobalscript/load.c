@@ -590,7 +590,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
         } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return 0;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Unimplemented code op %s", filename, *plineno, fields[1]);
+            gsfatal(UNIMPL("%s:%d: Unimplemented code op %s"), filename, *plineno, fields[1]);
         }
     }
     if (n < 0)
@@ -926,7 +926,7 @@ static
 int
 gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield;
+    static gsinterned_string gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield, gssymundefined;
 
     int i;
 
@@ -1032,6 +1032,14 @@ gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, cha
         p->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
         if (n > 4)
             gsfatal("%P: Too many arguments to .field", p->pos)
+        ;
+    } else if (gssymceq(p->directive, gssymundefined, gssymcodeop, ".undefined")) {
+        STORE_VALUE_ALLOC_OP_LABEL(".undefined");
+        if (n < 3)
+            gsfatal("%P: Missing type on .undefined", p->pos)
+        ;
+        for (i = 2; i < n; i++)
+            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
     } else {
         return 0;

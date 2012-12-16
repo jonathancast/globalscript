@@ -2106,7 +2106,7 @@ static
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc, gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield;
+    static gsinterned_string gssymalloc, gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield, gssymundefined;
 
     int i;
 
@@ -2306,6 +2306,22 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         if (!fieldtype) gsfatal("%P: Type of %y has no field %y", p->pos, p->arguments[1], p->arguments[0]);
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = fieldtype;
+        pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymundefined, gssymcodeop, ".undefined")) {
+        struct gstype *type, *tyarg;
+
+        CHECK_PHASE(rtlet, "allocations");
+        CHECK_NUM_REGS(pcl->nregs);
+
+        gsargcheck(p, 0, "Type");
+        type = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0])];
+        for (i = 1; i < p->numarguments; i++) {
+            tyarg = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
+            type = gstype_apply(p->pos, type, tyarg);
+        }
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regtypes[pcl->nregs] = type;
         pcl->nregs++;
     } else {
         return 0;

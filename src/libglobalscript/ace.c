@@ -57,6 +57,7 @@ static int ace_prim(struct ace_thread *);
 static int ace_alloc_constr(struct ace_thread *);
 static int ace_alloc_record(struct ace_thread *);
 static int ace_extract_field(struct ace_thread *);
+static int ace_alloc_undef(struct ace_thread *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
@@ -174,6 +175,11 @@ ace_thread_pool_main(void *p)
                                     break;
                                 case gsbc_op_field:
                                     if (ace_extract_field(thread))
+                                        suspended_runnable_thread = 1
+                                    ;
+                                    break;
+                                case gsbc_op_undefined:
+                                    if (ace_alloc_undef(thread))
                                         suspended_runnable_thread = 1
                                     ;
                                     break;
@@ -434,6 +440,25 @@ ace_extract_field(struct ace_thread *thread)
     thread->regs[thread->nregs] = record->fields[ACE_FIELD_FIELD(ip)];
     thread->nregs++;
     thread->st.running.ip = ACE_FIELD_SKIP(ip);
+    return 1;
+}
+
+static
+int
+ace_alloc_undef(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    struct gserror *err;
+
+    ip = thread->st.running.ip;
+
+    err = gsreserveerrors(sizeof(*err));
+    err->pos = ip->pos;
+    err->type = gserror_undefined;
+
+    thread->regs[thread->nregs] = (gsvalue)err;
+    thread->nregs++;
+    thread->st.running.ip = ACE_UNDEFINED_SKIP(ip);
     return 1;
 }
 
@@ -728,6 +753,9 @@ ace_enter(struct ace_thread *thread)
                 if (ace_return(thread, ip->pos, prog) > 0)
                     return 1
                 ;
+                return 0;
+            case gstyerr:
+                ace_error_thread(thread, (struct gserror*)prog);
                 return 0;
             case gstyimplerr:
                 ace_failure_thread(thread, (struct gsimplementation_failure *)prog);
