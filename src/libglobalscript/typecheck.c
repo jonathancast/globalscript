@@ -3215,6 +3215,35 @@ gstypes_type_check(struct gsstringbuilder *err, struct gspos pos, struct gstype 
 
             return gstypes_type_check(err, pos, actual_renamed_body, expected_renamed_body);
         }
+        case gstype_exists: {
+            struct gstype_exists *pactual_exists, *pexpected_exists;
+            struct gstype *actual_renamed_body, *expected_renamed_body;
+            char nm[0x100];
+            int n;
+            gsinterned_string var;
+            struct gstype *varty;
+
+            pactual_exists = (struct gstype_exists *)pactual;
+            pexpected_exists = (struct gstype_exists *)pexpected;
+
+            if (gstypes_kind_check(pos, pactual_exists->kind, pexpected_exists->kind, err) < 0)
+                return -1
+            ;
+
+            n = 0;
+            do {
+                if (seprint(nm, nm + sizeof(nm), "%y%d", pexpected_exists->var, n++) >= nm + sizeof(nm)) {
+                    gsstring_builder_print(err, UNIMPL("%P: Buffer overflow during α-renaming"), pexpected->pos);
+                    return -1;
+                }
+                var = gsintern_string(gssymtypelable, nm);
+            } while (gstypes_is_ftyvar(var, pactual_exists->body) || gstypes_is_ftyvar(var, pexpected_exists->body));
+            varty = gstypes_compile_type_var(pos, var, pactual_exists->kind);
+            actual_renamed_body = gstypes_subst(pos, pactual_exists->body, pactual_exists->var, varty);
+            expected_renamed_body = gstypes_subst(pos, pexpected_exists->body, pexpected_exists->var, varty);
+
+            return gstypes_type_check(err, pos, actual_renamed_body, expected_renamed_body);
+        }
         case gstype_lift: {
             struct gstype_lift *pactual_lift, *pexpected_lift;
 
