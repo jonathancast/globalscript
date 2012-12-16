@@ -948,6 +948,7 @@ struct gsbc_typecheck_code_or_api_expr_closure {
 static void gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *);
 
 static int gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
+static int gsbc_typecheck_code_type_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_data_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_data_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_alloc_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
@@ -987,6 +988,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     ntyargs = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
             struct gskind *argkind;
 
@@ -1127,6 +1129,7 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     cont_arg_type = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
             gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_unlifted_kind());
@@ -1164,6 +1167,7 @@ gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile
     cont_arg_type = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
             gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_lifted_kind());
@@ -1249,6 +1253,7 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
     fcl.nfields = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_field_cont_arg_op(p, &cl, &fcl)) {
             if (cont_arg_type)
@@ -1286,9 +1291,7 @@ static
 int
 gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymtygvar, gssymtyfv, gssymtylet;
-
-    int i;
+    static gsinterned_string gssymtygvar, gssymtyfv;
 
     if (gssymceq(p->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
         if (pcl->regtype > rttygvar)
@@ -1330,11 +1333,25 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
         pcl->tyfvkinds[pcl->ntyfvs] = fvkind;
         pcl->tyfvposs[pcl->ntyfvs] = p->pos;
         pcl->ntyfvs++;
-    } else if (gssymceq(p->directive, gssymtylet, gssymcodeop, ".tylet")) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+int
+gsbc_typecheck_code_type_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+{
+    static gsinterned_string gssymtylet;
+
+    int i;
+
+    if (gssymceq(p->directive, gssymtylet, gssymcodeop, ".tylet")) {
         struct gstype *ty;
 
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
+            gsfatal(UNIMPL("%P: Register overflow"), p->pos)
         ;
         if (pcl->regtype > rttylet)
             gsfatal("%P: Too late to add type lets", p->pos)
@@ -2548,6 +2565,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
     nbinds = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
