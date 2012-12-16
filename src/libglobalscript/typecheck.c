@@ -3108,7 +3108,7 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
         ;
         regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
         fvval = pcl->tyregs[regarg];
-        gstypes_kind_check_fail(p->pos, pcl->tyregkinds[regarg], cty->tyfvkinds[i - 1]);
+        gstypes_kind_check_fail(p->pos, pcl->tyregkinds[regarg], cty->tyfvkinds[i - firstftyv]);
         for (j = i - firstftyv + 1; j < cty->numftyvs; j++) {
             if (gstypes_is_ftyvar(cty->tyfvs[j], fvval))
                 gsfatal(UNIMPL("%P: α-rename other free type variables"), p->pos)
