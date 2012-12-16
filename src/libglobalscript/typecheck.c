@@ -1923,6 +1923,7 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, str
 
         p = *pp;
         if (gsbc_typecheck_cont_type_arg_op(p, pcl, &excl)) {
+        } else if (gsbc_typecheck_code_type_alloc_op(p, pcl)) {
         } else if (gsbc_typecheck_field_cont_arg_op(p, pcl, &fcl)) {
             if (cont_arg_type)
                 gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
