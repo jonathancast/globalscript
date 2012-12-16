@@ -2015,6 +2015,7 @@ gsbc_byte_compile_case(struct gsparsedfile_segment **ppseg, struct gsparsedline 
 {
     while (*pp = gsinput_next_line(ppseg, *pp)) {
         if (gsbc_byte_compile_type_arg_code_op(*pp, pcl)) {
+        } else if (gsbc_byte_compile_type_let_code_op(*pp, pcl)) {
         } else if (gsbc_byte_compile_arg_code_op(*pp, pcl)) {
         } else if (gsbc_byte_compile_alloc_op(*pp, pcl)) {
         } else if (gsbc_byte_compile_cont_push_op(*pp, pcl)) {
