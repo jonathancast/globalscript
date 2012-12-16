@@ -1385,6 +1385,7 @@ gsparse_case(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *cha
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
         if (gsparse_cont_type_arg(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_type_let_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_field_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_thunk_alloc_op(filename, parsedline, plineno, fields, n)) {
