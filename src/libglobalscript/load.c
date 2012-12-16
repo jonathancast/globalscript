@@ -511,6 +511,7 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
 }
 
 static int gsparse_code_type_fv_op(char *, struct gsparsedline *, int *, char **, long);
+static int gsparse_code_type_let_op(char *, struct gsparsedline *, int *, char **, long);
 static int gsparse_value_arg_op(char *, struct gsparsedline *, int *, char **, long);
 static int gsparse_value_fv_op(char *, struct gsparsedline *, int *, char **, long);
 static int gsparse_thunk_alloc_op(char *, struct gsparsedline *, int *, char **, long);
@@ -534,6 +535,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_type_let_op(filename, parsedline, plineno, fields, n)) {
         } else if (gssymceq(parsedline->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);
@@ -613,6 +615,7 @@ gsparse_force_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparsed
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_type_let_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_thunk_alloc_op(filename, parsedline, plineno, fields, n)) {
@@ -644,6 +647,7 @@ gsparse_strict_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparse
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_type_let_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_push_op(filename, parsedline, plineno, fields, n)) {
@@ -675,6 +679,7 @@ gsparse_ubcase_cont_ops(char *filename, gsparsedfile *parsedfile, struct gsparse
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_type_let_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_field_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_thunk_alloc_op(filename, parsedline, plineno, fields, n)) {
@@ -698,9 +703,7 @@ static
 int
 gsparse_code_type_fv_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymtygvar, gssymtyfv, gssymtylet;
-
-    int i;
+    static gsinterned_string gssymtygvar, gssymtyfv;
 
     if (gssymceq(parsedline->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
         if (*fields[0])
@@ -719,7 +722,21 @@ gsparse_code_type_fv_op(char *filename, struct gsparsedline *parsedline, int *pl
         parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
         if (n > 4)
             gsfatal("%s:%d: Too many arguments to .tyfv", filename, *plineno);
-    } else if (gssymceq(parsedline->directive, gssymtylet, gssymcodeop, ".tylet")) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+int
+gsparse_code_type_let_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
+{
+    static gsinterned_string gssymtylet;
+
+    int i;
+
+    if (gssymceq(parsedline->directive, gssymtylet, gssymcodeop, ".tylet")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0]);
         else
@@ -1141,6 +1158,7 @@ gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *c
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_type_let_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_arg_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_thunk_alloc_op(filename, parsedline, plineno, fields, n)) {
