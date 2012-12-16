@@ -1087,6 +1087,7 @@ struct gsbc_byte_compile_code_or_api_op_closure {
 };
 
 static int gsbc_byte_compile_type_fv_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
+static int gsbc_byte_compile_type_let_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_type_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
@@ -1131,26 +1132,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             cl.tyregnames[cl.ntyregs] = p->label;
             cl.tyregs[cl.ntyregs] = gstypes_compile_type_var(p->pos, p->label, gskind_compile(p->pos, p->arguments[0]));
             cl.ntyregs++;
-        } else if (gssymceq(p->directive, gssymoptylet, gssymcodeop, ".tylet")) {
-            int reg;
-            struct gstype *type;
-            if (cl.phase > rttylets)
-                gsfatal("%P: Too late to add type lets", p->pos)
-            ;
-            cl.phase = rttylets;
-            if (cl.ntyregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many type registers", p->pos)
-            ;
-            cl.tyregnames[cl.ntyregs] = p->label;
-            reg = gsbc_find_register(p, cl.tyregnames, cl.ntyregs, p->arguments[0]);
-            type = cl.tyregs[reg];
-            for (i = 1; i < p->numarguments; i++) {
-                int regarg;
-                regarg = gsbc_find_register(p, cl.tyregnames, cl.ntyregs, p->arguments[i]);
-                type = gstype_apply(p->pos, type, cl.tyregs[regarg]);
-            }
-            cl.tyregs[cl.ntyregs] = type;
-            cl.ntyregs++;
+        } else if (gsbc_byte_compile_type_let_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
@@ -1289,6 +1271,38 @@ gsbc_byte_compile_type_fv_code_op(struct gsfile_symtable *symtable, struct gspar
         ;
         pcl->tyregnames[pcl->ntyregs] = p->label;
         pcl->tyregs[pcl->ntyregs] = gstypes_compile_type_var(p->pos, p->label, gskind_compile(p->pos, p->arguments[0]));
+        pcl->ntyregs++;
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+int
+gsbc_byte_compile_type_let_code_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    int i;
+
+    if (gssymceq(p->directive, gssymoptylet, gssymcodeop, ".tylet")) {
+        int reg;
+        struct gstype *type;
+        if (pcl->phase > rttylets)
+            gsfatal("%P: Too late to add type lets", p->pos)
+        ;
+        pcl->phase = rttylets;
+        if (pcl->ntyregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many type registers", p->pos)
+        ;
+        pcl->tyregnames[pcl->ntyregs] = p->label;
+        reg = gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[0]);
+        type = pcl->tyregs[reg];
+        for (i = 1; i < p->numarguments; i++) {
+            int regarg;
+            regarg = gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[i]);
+            type = gstype_apply(p->pos, type, pcl->tyregs[regarg]);
+        }
+        pcl->tyregs[pcl->ntyregs] = type;
         pcl->ntyregs++;
     } else {
         return 0;
