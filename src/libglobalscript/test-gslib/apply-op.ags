@@ -1,0 +1,28 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+_id	.closure	_id_c
+_x	.closure	_x_c
+
+	.code
+
+_ep_c	.expr
+rune.t	.tygvar
+_id	.gvar
+_x	.gvar
+y	.apply	_id	rune.t	|	_x
+	.enter	y
+
+_id_c	.expr
+α	.tyarg	*
+x	.larg	α
+	.enter	x
+
+_x_c	.expr
+rune.t.in	.cogvar
+x	.rune	x
+	.coerce	rune.t.in
+	.lift
+	.yield	x

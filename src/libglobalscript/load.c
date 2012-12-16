@@ -926,7 +926,7 @@ static
 int
 gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield, gssymundefined;
+    static gsinterned_string gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield, gssymundefined, gssymapply;
 
     int i;
 
@@ -1040,6 +1040,22 @@ gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, cha
         ;
         for (i = 2; i < n; i++)
             p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+    } else if (gssymceq(p->directive, gssymapply, gssymcodeop, ".apply")) {
+        STORE_VALUE_ALLOC_OP_LABEL(".apply");
+        if (n < 3)
+            gsfatal("%P: Missing function on .undefined", p->pos)
+        ;
+        p->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
+        for (i = 3; i < n && strcmp(fields[i], "|"); i++)
+            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+        if (i < n) {
+            p->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        for (; i < n; i++)
+            p->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
         ;
     } else {
         return 0;

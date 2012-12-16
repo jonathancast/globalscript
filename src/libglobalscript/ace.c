@@ -58,6 +58,7 @@ static int ace_alloc_constr(struct ace_thread *);
 static int ace_alloc_record(struct ace_thread *);
 static int ace_extract_field(struct ace_thread *);
 static int ace_alloc_undef(struct ace_thread *);
+static int ace_alloc_apply(struct ace_thread *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
 static int ace_alloc_eprim(struct ace_thread *);
 static int ace_push_app(struct ace_thread *);
@@ -180,6 +181,11 @@ ace_thread_pool_main(void *p)
                                     break;
                                 case gsbc_op_undefined:
                                     if (ace_alloc_undef(thread))
+                                        suspended_runnable_thread = 1
+                                    ;
+                                    break;
+                                case gsbc_op_apply:
+                                    if (ace_alloc_apply(thread))
                                         suspended_runnable_thread = 1
                                     ;
                                     break;
@@ -459,6 +465,28 @@ ace_alloc_undef(struct ace_thread *thread)
     thread->regs[thread->nregs] = (gsvalue)err;
     thread->nregs++;
     thread->st.running.ip = ACE_UNDEFINED_SKIP(ip);
+    return 1;
+}
+
+static
+int
+ace_alloc_apply(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+    gsvalue fun;
+    int i;
+
+    ip = thread->st.running.ip;
+
+    fun = thread->regs[ACE_APPLY_FUN(ip)];
+
+    for (i = 0; i < ACE_APPLY_NUM_ARGS(ip); i++)
+        fun = gsapply(ip->pos, fun, thread->regs[ACE_APPLY_ARG(ip, i)])
+    ;
+
+    thread->regs[thread->nregs] = fun;
+    thread->nregs++;
+    thread->st.running.ip = ACE_APPLY_SKIP(ip);
     return 1;
 }
 
