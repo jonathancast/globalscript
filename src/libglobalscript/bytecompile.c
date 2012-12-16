@@ -1168,34 +1168,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             cl.nregs++;
             cl.nargs++;
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")) {
-            if (cl.phase > rtlets)
-                gsfatal_bad_input(p, "Too late to add allocations");
-            cl.phase = rtlets;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
-            ;
-            cl.regs[cl.nregs] = p->label;
-            pcode = (struct gsbc *)cl.pout;
-            pcode->pos = p->pos;
-            pcode->instr = gsbc_op_record;
-            pcode->args[0] = p->numarguments / 2;
-            for (i = 0; i < p->numarguments; i += 2) {
-                int reg;
-
-                if (i > 0) {
-                    if (p->arguments[i] == p->arguments[i - 2])
-                        gsfatal("%P: Duplicate field %y", p->pos, p->arguments[i])
-                    ;
-                    if (strcmp(p->arguments[i]->name, p->arguments[i - 2]->name) < 0)
-                        gsfatal("%P: Field %y should come before %y", p->pos, p->arguments[i], p->arguments[i - 2])
-                    ;
-                }
-                reg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i + 1]);
-                ACE_RECORD_FIELD(pcode, i / 2) = reg;
-            }
-            cl.pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments / 2);
-            cl.nregs++;
         } else if (gssymceq(p->directive, gssymopeprim, gssymcodeop, ".eprim")) {
             struct gsregistered_primset *prims;
 
@@ -1636,6 +1608,34 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             }
         }
         pcl->pout = ACE_CONSTR_SKIP(pcode);
+    } else if (gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")) {
+        if (pcl->phase > rtlets)
+            gsfatal("%P: Too late to add allocations", p->pos);
+        pcl->phase = rtlets;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+        pcode = (struct gsbc *)pcl->pout;
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_record;
+        pcode->args[0] = p->numarguments / 2;
+        for (i = 0; i < p->numarguments; i += 2) {
+            int reg;
+
+            if (i > 0) {
+                if (p->arguments[i] == p->arguments[i - 2])
+                    gsfatal("%P: Duplicate field %y", p->pos, p->arguments[i])
+                ;
+                if (strcmp(p->arguments[i]->name, p->arguments[i - 2]->name) < 0)
+                    gsfatal("%P: Field %y should come before %y", p->pos, p->arguments[i], p->arguments[i - 2])
+                ;
+            }
+            reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i + 1]);
+            ACE_RECORD_FIELD(pcode, i / 2) = reg;
+        }
+        pcl->pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments / 2);
+        pcl->nregs++;
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
         struct gstype *type;
         struct gstype_product *product;
