@@ -2447,11 +2447,11 @@ gsbc_typecheck_cont_push_op(struct gsparsedline *p, struct gsbc_typecheck_code_o
         || gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")
     ) {
         if (pcl->regtype > rtconts)
-            gsfatal_bad_input(p, "Too late to add continuations")
+            gsfatal("%P: Too late to add continuations", p->pos)
         ;
         pcl->regtype = rtconts;
         if (pcl->nconts >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many continuations")
+            gsfatal("%P: Too many continuations", p->pos)
         ;
         pcl->contlines[pcl->nconts] = p;
         pcl->nconts++;
