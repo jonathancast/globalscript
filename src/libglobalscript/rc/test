@@ -71,6 +71,9 @@ ok_grep_errors '-- analyze on un-boxed sum with excess free variable --' './test
 
 ok_diff '-- analyze on un-boxed sums --' ./$O.test-gsi analyze-unboxed-free-variable.ags
 
+ok_grep_errors '-- analyze on existential types with failing occurs check --' './test-gslib/analyze-failing-occurs-check.ags:21: .exkarg-bound type variable α free in type of .case body' ./$O.test-gsi analyze-failing-occurs-check.ags
+ok_diff_fail '-- analyze on existential types --' ./$O.test-gsi analyze-existential-type.ags
+
 ok_grep_errors '-- undefined API entry points --' './test-gslib/undef-api.ags:5: undefined' ./$O.test-gsexec undef-api.ags
 ok_grep_errors '-- undefined expression API entry points --' './test-gslib/undef-expr-api.ags:11: undefined' ./$O.test-gsexec undef-expr-api.ags
 ok_grep_errors '-- block statements with mis-typed bodies --' './test-gslib/mistyped-block-api.ags:11: I don''t think' ./$O.test-gsexec mistyped-block-api.ags

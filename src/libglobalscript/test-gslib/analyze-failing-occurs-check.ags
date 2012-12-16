@@ -1,0 +1,49 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+_ep_x_ty	.tygvar
+_ep_k	.subcode
+	.force	_ep_k
+	.undef	_ep_x_ty
+
+_ep_k	.forcecont
+_res.u	.tygvar
+_res.u_print.ty_0_ty	.tygvar
+x	.karg	_res.u
+	.analyze	x	print	
+		.case	print
+α		.exkarg	*
+pr		.fkarg	0	_res.u_print.ty_0_ty
+x1		.fkarg	1	α
+			.enter	x1
+
+	.type
+
+_res.u	.tyexpr
+_res.u_print.ty	.tygvar
+	.tysum	print	_res.u_print.ty
+
+_res.u_print.ty	.tyexpr
+_res.u_print.ty_0_ty	.tygvar
+α	.tyexists	*
+0_ty	.tylet	_res.u_print.ty_0_ty	α
+	.tyubproduct	0	0_ty	1	α
+
+_res.u_print.ty_0_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	list.t	rune.t
+
+_ep_x_ty	.tyexpr
+_res.u	.tygvar
+	.tylift
+	.tyref	_res.u

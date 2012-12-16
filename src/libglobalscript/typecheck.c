@@ -438,11 +438,18 @@ gsbc_typecheck_check_boxed(struct gspos pos, struct gstype *type)
             forall = (struct gstype_forall *)type;
             return gsbc_typecheck_check_boxed(pos, forall->body);
         }
+        case gstype_exists: {
+            struct gstype_exists *exists;
+            exists = (struct gstype_exists *)type;
+            return gsbc_typecheck_check_boxed(pos, exists->body);
+        }
         case gstype_lambda: {
             struct gstype_lambda *lambda;
             lambda = (struct gstype_lambda *)type;
             return gsbc_typecheck_check_boxed(pos, lambda->body);
         }
+        case gstype_ubproduct:
+            gsfatal("%P: Expected boxed type but got un-boxed product type", pos);
         default:
             gsfatal(UNIMPL("%P: %P: gsbc_typecheck_check_boxed(node = %d)"), pos, type->pos, type->node);
     }
@@ -463,7 +470,7 @@ gsbc_typecheck_check_boxed_or_product(struct gspos pos, struct gstype *type)
         case gstype_forall: {
             struct gstype_forall *forall;
             forall = (struct gstype_forall *)type;
-            return gsbc_typecheck_check_boxed(pos, forall->body);
+            return gsbc_typecheck_check_boxed_or_product(pos, forall->body);
         }
         case gstype_exists: {
             struct gstype_exists *exists;
@@ -1736,7 +1743,7 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
 
             *pp = gsinput_next_line(ppseg, *pp);
             nregs = pcl->nregs;
-            pcl->regtype = rtarg;
+            pcl->regtype = rttyarg;
             casetype = gsbc_typecheck_case(case_pos, symtable, pp, ppseg, pcl, sum->constrs[constr].argtype);
             pcl->nregs = nregs;
 
@@ -1861,10 +1868,23 @@ gsbc_typecheck_find_constr(struct gspos case_pos, int prevconstr, struct gstype_
     return -1;
 }
 
+struct gsbc_typecheck_existential_cont_closure {
+    int nargs;
+    struct gspos argpos[MAX_NUM_REGISTERS];
+    gsinterned_string argnames[MAX_NUM_REGISTERS];
+    struct gskind *argkinds[MAX_NUM_REGISTERS];
+};
+
+static void gsbc_typecheck_init_existential_cont_closure(struct gsbc_typecheck_existential_cont_closure *);
+static int gsbc_typecheck_cont_type_arg_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *, struct gsbc_typecheck_existential_cont_closure *);
+static struct gstype *gsbc_typecheck_exists_args(struct gsbc_typecheck_existential_cont_closure *, struct gstype *, struct gstype *);
+
 static
 struct gstype *
 gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, struct gsparsedline **pp, struct gsparsedfile_segment **ppseg, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gstype *constr_arg_type)
 {
+    /* §paragraph{For constructors with existential type arguments} */
+    struct gsbc_typecheck_existential_cont_closure excl;
     /* §paragraph{For constructors with boxed arguments} */
     struct gstype *cont_arg_type;
     /* §paragraph{For constructors with un-boxed product arguments} */
@@ -1880,11 +1900,13 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, str
     fcl.nfields = 0;
     nconts = pcl->nconts;
     calculated_type = 0;
+    gsbc_typecheck_init_existential_cont_closure(&excl);
     for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
         struct gsparsedline *p;
 
         p = *pp;
-        if (gsbc_typecheck_field_cont_arg_op(p, pcl, &fcl)) {
+        if (gsbc_typecheck_cont_type_arg_op(p, pcl, &excl)) {
+        } else if (gsbc_typecheck_field_cont_arg_op(p, pcl, &fcl)) {
             if (cont_arg_type)
                 gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
             ;
@@ -1906,13 +1928,74 @@ have_type:
 
     calculated_type = gsbc_typecheck_conts(pcl, nconts, calculated_type);
 
-    if (cont_arg_type)
-        gstypes_type_check_type_fail(karg_pos, cont_arg_type, constr_arg_type)
-    ; else
-        gstypes_type_check_type_fail(case_pos, gstypes_compile_ubproductv(case_pos, fcl.nfields, fcl.fields), constr_arg_type)
+    if (!cont_arg_type)
+        cont_arg_type = gstypes_compile_ubproductv(case_pos, fcl.nfields, fcl.fields)
     ;
 
+    cont_arg_type = gsbc_typecheck_exists_args(&excl, cont_arg_type, calculated_type);
+
+    gstypes_type_check_type_fail(case_pos, cont_arg_type, constr_arg_type);
+
     return calculated_type;
+}
+
+static
+void
+gsbc_typecheck_init_existential_cont_closure(struct gsbc_typecheck_existential_cont_closure *pexcl)
+{
+    pexcl->nargs = 0;
+}
+
+static
+int
+gsbc_typecheck_cont_type_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_existential_cont_closure *pexcl)
+{
+    static gsinterned_string gssymexkarg;
+
+    if (gssymceq(p->directive, gssymexkarg, gssymcodeop, ".exkarg")) {
+        struct gskind *argkind;
+
+        if (pcl->regtype > rttyarg)
+            gsfatal("%P: Too late to add arguments", p->pos)
+        ;
+        pcl->regtype = rttyarg;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers", p->pos)
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+        gsargcheck(p, 0, "kind");
+        argkind = gskind_compile(p->pos, p->arguments[0]);
+
+        pcl->tyregkinds[pcl->nregs] = argkind;
+        pcl->tyregs[pcl->nregs] = gstypes_compile_type_var(p->pos, p->label, argkind);
+        pcl->nregs++;
+
+        pexcl->argnames[pexcl->nargs] = p->label;
+        pexcl->argkinds[pexcl->nargs] = argkind;
+        pexcl->argpos[pexcl->nargs] = p->pos;
+        pexcl->nargs++;
+    } else {
+        return 0;
+    }
+
+    return 1;
+}
+
+static
+struct gstype *
+gsbc_typecheck_exists_args(struct gsbc_typecheck_existential_cont_closure *pexcl, struct gstype *cont_arg_type, struct gstype *calculated_type)
+{
+    while (pexcl->nargs--) {
+        struct gspos pos = pexcl->argpos[pexcl->nargs];
+        gsinterned_string var = pexcl->argnames[pexcl->nargs];
+
+        if (gstypes_is_ftyvar(var, calculated_type))
+            gsfatal("%P: .exkarg-bound type variable %y free in type of .case body", pos, var)
+        ;
+        cont_arg_type = gstypes_compile_exists(pos, var, pexcl->argkinds[pexcl->nargs], cont_arg_type);
+    }
+
+    return cont_arg_type;
 }
 
 static

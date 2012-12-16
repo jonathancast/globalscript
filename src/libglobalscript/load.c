@@ -1325,6 +1325,8 @@ gsparse_check_label_on_terminal_op(gsparsedfile *parsedfile, struct gsparsedline
         parsedline->label = 0;
 }
 
+static int gsparse_cont_type_arg(char *, struct gsparsedline *, int *, char **, long);
+
 static
 void
 gsparse_case(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, gsinterned_string constr, char *line, int *plineno, char **fields)
@@ -1365,7 +1367,8 @@ gsparse_case(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *cha
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
-        if (gsparse_field_cont_arg(filename, parsedline, plineno, fields, n)) {
+        if (gsparse_cont_type_arg(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_field_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_cont_arg(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_thunk_alloc_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_alloc_op(filename, parsedline, plineno, fields, n)) {
@@ -1420,6 +1423,33 @@ gsparse_default(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *
         }
     }
     gsfatal(UNIMPL(".danalyze: parse .default"));
+}
+
+static
+int
+gsparse_cont_type_arg(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
+{
+    static gsinterned_string gssymexkarg;
+
+    if (gssymceq(parsedline->directive, gssymexkarg, gssymcodeop, ".exkarg")) {
+        if (*fields[0]) {
+            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+        } else {
+            gswarning("%P: Missing label on .exkarg", parsedline->pos);
+            parsedline->label = 0;
+        }
+        if (n < 3)
+            gsfatal("%P: Missing kind on .exkarg", parsedline->pos)
+        ;
+        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
+        if (n > 4)
+            gsfatal("%P: Too many arguments to .exkarg", parsedline->pos)
+        ;
+    } else {
+        return 0;
+    }
+
+    return 1;
 }
 
 static
