@@ -57,6 +57,7 @@ static int ace_prim(struct ace_thread *);
 static int ace_alloc_constr(struct ace_thread *);
 static int ace_alloc_record(struct ace_thread *);
 static int ace_extract_field(struct ace_thread *);
+static int ace_alloc_lfield(struct ace_thread *);
 static int ace_alloc_undef(struct ace_thread *);
 static int ace_alloc_apply(struct ace_thread *);
 static int ace_alloc_unknown_eprim(struct ace_thread *);
@@ -176,6 +177,11 @@ ace_thread_pool_main(void *p)
                                     break;
                                 case gsbc_op_field:
                                     if (ace_extract_field(thread))
+                                        suspended_runnable_thread = 1
+                                    ;
+                                    break;
+                                case gsbc_op_lfield:
+                                    if (ace_alloc_lfield(thread))
                                         suspended_runnable_thread = 1
                                     ;
                                     break;
@@ -446,6 +452,19 @@ ace_extract_field(struct ace_thread *thread)
     thread->regs[thread->nregs] = record->fields[ACE_FIELD_FIELD(ip)];
     thread->nregs++;
     thread->st.running.ip = ACE_FIELD_SKIP(ip);
+    return 1;
+}
+
+static
+int
+ace_alloc_lfield(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+
+    ip = thread->st.running.ip;
+
+    thread->regs[thread->nregs++] = gslfield(ip->pos, ACE_LFIELD_FIELD(ip), thread->regs[ACE_LFIELD_RECORD(ip)]);
+    thread->st.running.ip = ACE_LFIELD_SKIP(ip);
     return 1;
 }
 

@@ -1,0 +1,21 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+_ep_r_c	.subcode
+r	.alloc	_ep_r_c
+y	.lfield	1	r
+	.enter	y
+
+_ep_r_c	.expr
+rune.t	.tygvar
+x	.undefined	rune.t
+y	.undefined	rune.t
+r	.record	0	x	1	y
+	.lift
+	.yield	r

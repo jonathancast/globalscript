@@ -941,7 +941,7 @@ static
 int
 gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield, gssymundefined, gssymapply;
+    static gsinterned_string gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
 
     int i;
 
@@ -1035,18 +1035,21 @@ gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, cha
             p->arguments[i - 2] = gsintern_string(gssymfieldlable, fields[i]);
             p->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
         }
-    } else if (gssymceq(p->directive, gssymfield, gssymcodeop, ".field")) {
-        STORE_VALUE_ALLOC_OP_LABEL(".field");
+    } else if (
+        gssymceq(p->directive, gssymfield, gssymcodeop, ".field")
+        || gssymceq(p->directive, gssymlfield, gssymcodeop, ".lfield")
+    ) {
+        STORE_VALUE_ALLOC_OP_LABEL(p->directive->name);
         if (n < 3)
-            gsfatal("%P: Missing field on .field", p->pos)
+            gsfatal("%P: Missing field on %y", p->pos, p->directive)
         ;
         p->arguments[2 - 2] = gsintern_string(gssymfieldlable, fields[2]);
         if (n < 4)
-            gsfatal("%P: Missing record on .field", p->pos)
+            gsfatal("%P: Missing record on %y", p->pos, p->directive)
         ;
         p->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
         if (n > 4)
-            gsfatal("%P: Too many arguments to .field", p->pos)
+            gsfatal("%P: Too many arguments to %y", p->pos, p->directive)
         ;
     } else if (gssymceq(p->directive, gssymundefined, gssymcodeop, ".undefined")) {
         STORE_VALUE_ALLOC_OP_LABEL(".undefined");

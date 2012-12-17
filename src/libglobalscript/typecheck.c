@@ -2134,7 +2134,7 @@ static
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc, gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield, gssymundefined, gssymapply;
+    static gsinterned_string gssymalloc, gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
 
     int i;
 
@@ -2315,7 +2315,10 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = gstypes_compile_productv(p->pos, nfields, fields);
         pcl->nregs++;
-    } else if (gssymceq(p->directive, gssymfield, gssymcodeop, ".field")) {
+    } else if (
+        gssymceq(p->directive, gssymfield, gssymcodeop, ".field")
+        || gssymceq(p->directive, gssymlfield, gssymcodeop, ".lfield")
+    ) {
         int reg;
         struct gstype *type, *fieldtype;
         struct gstype_product *product;
@@ -2328,10 +2331,24 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1]);
         type = pcl->regtypes[reg];
         if (!type) gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1]);
-        if (type->node != gstype_product) gsfatal("%P: %y does not have a product type (maybe it's lifted?)", p->pos, p->arguments[1]);
+
+        if (p->directive == gssymlfield) {
+            if (type->node != gstype_lift)
+                gsfatal("%P: %y does not have a lifted type (maybe it's an un-lifted product and you meant .field?)", p->pos, p->arguments[1])
+            ;
+            type = ((struct gstype_lift *)type)->arg;
+        }
+        if (type->node != gstype_product)
+            gsfatal("%P: %y does not have a product type (maybe it's lifted and you meant .lfield?)", p->pos, p->arguments[1])
+        ;
         product = (struct gstype_product *)type;
         fieldtype = gsbc_find_field_in_product(p->pos, product, p->arguments[0]);
         if (!fieldtype) gsfatal("%P: Type of %y has no field %y", p->pos, p->arguments[1], p->arguments[0]);
+
+        if (p->directive == gssymlfield)
+            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(fieldtype), gskind_lifted_kind())
+        ;
+
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = fieldtype;
         pcl->nregs++;

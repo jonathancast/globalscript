@@ -14,6 +14,7 @@ enum {
     gsbc_op_constr,
     gsbc_op_record,
     gsbc_op_field,
+    gsbc_op_lfield,
     gsbc_op_undefined,
     gsbc_op_apply,
     gsbc_op_unknown_eprim,
@@ -70,6 +71,11 @@ enum {
 #define ACE_FIELD_FIELD(ip) ((ip)->args[0])
 #define ACE_FIELD_RECORD(ip) ((ip)->args[1])
 #define ACE_FIELD_SKIP(ip) GS_NEXT_BYTECODE((ip), 2)
+
+#define ACE_LFIELD_SIZE() GS_SIZE_BYTECODE(2)
+#define ACE_LFIELD_FIELD(ip) ((ip)->args[0])
+#define ACE_LFIELD_RECORD(ip) ((ip)->args[1])
+#define ACE_LFIELD_SKIP(ip) GS_NEXT_BYTECODE((ip), 2)
 
 #define ACE_UNDEFINED_SIZE() GS_SIZE_BYTECODE(0)
 #define ACE_UNDEFINED_SKIP(ip) GS_NEXT_BYTECODE((ip), 0)
@@ -190,6 +196,10 @@ void *gsreserveimplementation_failures(ulong);
 /* §section Records */
 
 void *gsreserverecords(ulong);
+
+/* §section Field extraction thunks */
+
+gsvalue gslfield(struct gspos, int, gsvalue);
 
 /* §section Constructors */
 

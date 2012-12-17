@@ -404,6 +404,98 @@ gsisrecord_block(struct gs_blockdesc *p)
     return p->class == &gsrecords_descr;
 }
 
+/* §section Field extraction thunks */
+
+static gstypecode gs_lfield_eval(gsvalue);
+static gsvalue gs_lfield_indir(gsvalue);
+
+struct gs_block_class gslfields_descr = {
+    /* evaluator = */ gs_lfield_eval,
+    /* indirection_dereferencer = */ gs_lfield_indir,
+    /* description = */ "Global Script Records",
+};
+static void *gslfields_nursury;
+static Lock gslfields_lock;
+
+struct gslfield {
+    struct gspos pos;
+    int fieldno;
+    gsvalue record;
+};
+
+gsvalue
+gslfield(struct gspos pos, int fieldno, gsvalue record)
+{
+    struct gslfield *res;
+
+    lock(&gslfields_lock);
+    res = gs_sys_seg_suballoc(&gslfields_descr, &gslfields_nursury, sizeof(*res), sizeof(gsvalue));
+    unlock(&gslfields_lock);
+
+    res->pos = pos;
+    res->fieldno = fieldno;
+    res->record = record;
+
+    return (gsvalue)res;
+}
+
+static
+gstypecode
+gs_lfield_eval(gsvalue v)
+{
+    gstypecode st;
+    struct gslfield *lfield;
+    gsvalue record;
+
+    lfield = (struct gslfield *)v;
+
+    record = lfield->record;
+    for (;;) {
+        st = GS_SLOW_EVALUATE(record); /* §tODO Deadlock */
+        switch (st) {
+            case gstystack:
+                return gstyblocked;
+            case gstyindir:
+                record = GS_REMOVE_INDIRECTION(record);
+                break;
+            default:
+                return gstyindir;
+        }
+    }
+}
+
+static
+gsvalue
+gs_lfield_indir(gsvalue v)
+{
+    gstypecode st;
+    struct gslfield *lfield;
+    gsvalue vrecord;
+
+    lfield = (struct gslfield *)v;
+
+    vrecord = lfield->record;
+    for (;;) {
+        st = GS_SLOW_EVALUATE(vrecord); /* §tODO Deadlock */
+        switch (st) {
+            case gstywhnf: {
+                struct gsrecord *record;
+
+                record = (struct gsrecord *)vrecord;
+                return record->fields[lfield->fieldno];
+            }
+            case gstyindir:
+                vrecord = GS_REMOVE_INDIRECTION(vrecord);
+                break;
+            case gstyerr:
+            case gstyimplerr:
+                return vrecord;
+            default:
+                return (gsvalue)gsunimpl(__FILE__, __LINE__, lfield->pos, "gs_lfield_indir: st = %d", st);
+        }
+    }
+}
+
 /* §section Constructors */
 
 struct gs_block_class gsconstrs_descr = {

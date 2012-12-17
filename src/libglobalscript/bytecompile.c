@@ -273,7 +273,7 @@ static gsinterned_string gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural
 /* Data arguments */
 static gsinterned_string gssymoparg, gssymoplarg, gssymopexkarg, gssymopkarg, gssymopfkarg;
 /* Allocation */
-static gsinterned_string gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymopfield, gssymopundefined, gssymopapply, gssymopeprim;
+static gsinterned_string gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymopfield, gssymoplfield, gssymopundefined, gssymopapply, gssymopeprim;
 /* Continuations */
 static gsinterned_string gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze;
 /* Terminals */
@@ -662,6 +662,12 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         CHECK_REGISTERS();
 
         pcl->size += ACE_FIELD_SIZE();
+    } else if (gssymceq(p->directive, gssymoplfield, gssymcodeop, ".lfield")) {
+        CHECK_PHASE(phgens, "allocations");
+
+        CHECK_REGISTERS();
+
+        pcl->size += ACE_LFIELD_SIZE();
     } else if (gssymceq(p->directive, gssymopundefined, gssymcodeop, ".undefined")) {
         if (pcl->phase > phgens)
             gsfatal("%P: Too late to add allocations", p->pos)
@@ -1731,6 +1737,31 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         ACE_FIELD_FIELD(pcode) = fieldnum;
 
         pcl->pout = ACE_FIELD_SKIP(pcode);
+
+        ADD_LABEL_TO_REGS_WITH_TYPE(product->fields[fieldnum].type);
+    } else if (gssymceq(p->directive, gssymoplfield, gssymcodeop, ".field")) {
+        struct gstype *type;
+        struct gstype_product *product;
+        int regarg, fieldnum;
+
+        CHECK_PHASE(rtlets, "allocations");
+
+        SETUP_PCODE(gsbc_op_lfield);
+
+        regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1]);
+        ACE_LFIELD_RECORD(pcode) = regarg;
+
+        type = pcl->regtypes[regarg];
+        if (!type) gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1]);
+
+        product = (struct gstype_product *)((struct gstype_lift *)type)->arg;
+
+        fieldnum = gsbc_find_field_in_product(product, p->arguments[0]);
+        if (fieldnum < 0) gsfatal("%P: Type of %y has no field %y", p->pos, p->arguments[1], p->arguments[0]);
+
+        ACE_LFIELD_FIELD(pcode) = fieldnum;
+
+        pcl->pout = ACE_LFIELD_SKIP(pcode);
 
         ADD_LABEL_TO_REGS_WITH_TYPE(product->fields[fieldnum].type);
     } else if (gssymceq(p->directive, gssymopundefined, gssymcodeop, ".undefined")) {
