@@ -511,6 +511,7 @@ gsparse_code_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
 }
 
 static int gsparse_code_type_fv_op(char *, struct gsparsedline *, int *, char **, long);
+static int gsparse_code_type_arg_op(char *, struct gsparsedline *, int *, char **, long);
 static int gsparse_code_type_let_op(char *, struct gsparsedline *, int *, char **, long);
 static int gsparse_value_arg_op(char *, struct gsparsedline *, int *, char **, long);
 static int gsparse_value_fv_op(char *, struct gsparsedline *, int *, char **, long);
@@ -523,7 +524,7 @@ static
 long
 gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, int *plineno, char **fields)
 {
-    static gsinterned_string gssymtyarg, gssymarg, gssymeprim;
+    static gsinterned_string gssymarg, gssymeprim;
 
     struct gsparsedline *parsedline;
     int i;
@@ -535,17 +536,8 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_type_arg_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_code_type_let_op(filename, parsedline, plineno, fields, n)) {
-        } else if (gssymceq(parsedline->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-            else
-                gsfatal("%s:%d: Missing label on .tyarg op", filename, *plineno);
-            if (n < 3)
-                gsfatal("%s:%d: Missing kind on .tyarg", filename, *plineno);
-            parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
-            if (n > 4)
-                gsfatal("%s:%d: Too many arguments to .tyarg", filename, *plineno);
         } else if (gsparse_value_arg_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
         } else if (gssymceq(parsedline->directive, gssymarg, gssymcodeop, ".arg")) {
@@ -727,6 +719,29 @@ gsparse_code_type_fv_op(char *filename, struct gsparsedline *parsedline, int *pl
     }
     return 1;
 }
+
+static
+int
+gsparse_code_type_arg_op(char *filename, struct gsparsedline *parsedline, int *plineno, char **fields, long n)
+{
+    static gsinterned_string gssymtyarg;
+
+    if (gssymceq(parsedline->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+        else
+            gsfatal("%s:%d: Missing label on .tyarg op", filename, *plineno);
+        if (n < 3)
+            gsfatal("%s:%d: Missing kind on .tyarg", filename, *plineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
+        if (n > 4)
+            gsfatal("%s:%d: Too many arguments to .tyarg", filename, *plineno);
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
 
 static
 int
