@@ -1200,20 +1200,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             ;
             cl.phase = rtgvars;
         } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
-        } else if (
-            gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
-            || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
-        ) {
-            if (cl.phase > rtargs)
-                gsfatal_bad_input(p, "Too late to add arguments")
-            ;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
-            ;
-            cl.phase = rtargs;
-            cl.regs[cl.nregs] = p->label;
-            cl.nregs++;
-            cl.nargs++;
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopeprim, gssymcodeop, ".eprim")) {
             struct gsregistered_primset *prims;
@@ -1500,7 +1486,9 @@ gsbc_byte_compile_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_c
     int i;
 
     if (
-        gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")
+        gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
+        || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
+        || gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")
         || gssymceq(p->directive, gssymopfkarg, gssymcodeop, ".fkarg")
     ) {
         struct gstype *type;
@@ -1523,7 +1511,7 @@ gsbc_byte_compile_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_c
         }
         ADD_LABEL_TO_REGS_WITH_TYPE(type);
 
-        if (0) /* §ags{.arg} and §ags{.larg} */
+        if (p->directive == gssymoparg || p->directive == gssymoplarg )
             pcl->nargs++
         ;
         if (p->directive == gssymopfkarg) {
@@ -2244,16 +2232,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             *psubcode++ = gssymtable_get_code(symtable, p->label);
             cl.pout = (uchar*)psubcode;
             cl.nsubexprs++;
-        } else if (
-            gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
-            || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
-        ) {
-            if (cl.phase > rtargs)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
-            ;
-            cl.regs[cl.nregs] = p->label;
-            cl.nregs++;
-            cl.nargs++;
+        } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
             int creg = 0;
