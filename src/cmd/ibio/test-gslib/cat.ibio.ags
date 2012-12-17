@@ -11,62 +11,26 @@ _ep_c	.eprog	ibio.prim	ibio
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
 ibio.prim.oport	.tygvar
-_ep_ip_c	.subcode
 _ep_s_c	.subcode
 _ep_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
-ip	.bind	_ep_ip_c	|	i
-s	.alloc	_ep_s_c	|	ip
+s	.bind	_ep_s_c	|	i
 	.body	_ep_body_c	|	o	s
 
-_ep_ip_c	.expr
+_ep_s_c	.expr
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
-_ep_ip_ms_c	.subcode
-ibio.prim.read	.gvar
+list.t	.tygvar
+res.ty	.tylet	list.t	rune.t
+ibio.lex.receive	.gvar
+ibio.lex.receiver.many	.gvar
+ibio.lex.receiver.symbol	.gvar
 i	.fv	ibio.prim.iport	rune.t
-ms	.alloc	_ep_ip_ms_c
-	.app	i	ms
-	.yield	ibio.prim.read	rune.t
-
-_ep_ip_ms_c	.expr
-rune.t	.tygvar
-record.empty	.tygvar
-_ep_ip_ms_sym_c	.subcode
-_ep_ip_ms_k_c	.subcode
-ibio.acceptor.many.prim	.gvar
-sym	.alloc	_ep_ip_ms_sym_c
-k	.alloc	_ep_ip_ms_k_c
-	.app	sym	k
-	.enter	ibio.acceptor.many.prim	rune.t	rune.t	record.empty
-
-_ep_ip_ms_sym_c	.expr
-rune.t	.tygvar
-record.empty	.tygvar
-ibio.acceptor.symbol.prim	.gvar
-	.enter	ibio.acceptor.symbol.prim	rune.t	record.empty
-
-_ep_ip_ms_k_c	.expr
-list.t	.tygvar
-rune.t	.tygvar
-res.ty	.tylet	list.t	rune.t
-ibio.acceptor.prim.cont	.gvar
-	.enter	ibio.acceptor.prim.cont	rune.t	res.ty
-
-_ep_s_c	.expr
-ibio.prim.iptr.t	.tygvar
-rune.t	.tygvar
-list.t	.tygvar
-res.ty	.tylet	list.t	rune.t
-ibio.lex.lexer.match	.gvar
-ibio.lex.many	.gvar
-ibio.lex.symbol	.gvar
-ip	.fv	ibio.prim.iptr.t	rune.t
-sym	.apply	ibio.lex.symbol	rune.t
-ms	.apply	ibio.lex.many	rune.t	rune.t	|	sym
-	.app	ms	ip
-	.enter	ibio.lex.lexer.match	rune.t	res.ty
+sym	.apply	ibio.lex.receiver.symbol	rune.t
+ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
+	.app	ms	i
+	.enter	ibio.lex.receive	rune.t	res.ty
 
 _ep_body_c	.expr
 ibio.prim.oport	.tygvar
