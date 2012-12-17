@@ -1,0 +1,220 @@
+	.prefix
+
+	.data
+
+ibio.lex.lexer.match	.closure	_ibio.lex.lexer.match_c
+
+ibio.lex.symbol	.closure	_ibio.lex.symbol_c
+
+ibio.lex.many	.closure	_ibio.lex.many_c	_ibio.lex.many_ty
+
+	.code
+
+_ibio.lex.lexer.match_c	.expr
+ibio.lex.lexer.t	.tygvar
+ibio.prim.iptr.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+_ibio.lex.lexer.match_k	.subcode
+l	.larg	ibio.lex.lexer.t	s	α
+ip	.larg	ibio.prim.iptr.t	s
+	.force	_ibio.lex.lexer.match_k	s	α
+	.app	ip
+	.enter	l
+
+_ibio.lex.lexer.match_k	.forcecont
+_ibio.lex.lexer.t_res.u	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+p0	.karg	_ibio.lex.lexer.t_res.u	s	α
+x	.field	0	p0
+	.enter	x
+
+# §section §gs{ibio.lex.symbol}
+
+_ibio.lex.symbol_c	.expr
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr.t	.tygvar
+s	.tyarg	*
+β	.tyarg	*
+_ibio.lex.symbol_k	.subcode
+ek	.larg	β
+sk	.larg	_ibio.lex.lexeme.t_k.ty	s	s	β
+ip	.larg	ibio.prim.iptr.t	s
+	.force	_ibio.lex.symbol_k	s	β	|	ek	sk
+	.enter	ip
+
+_ibio.lex.symbol_k	.forcecont
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+_ibio.lex.symbol_k0	.subcode
+_ibio.lex.symbol_k1	.subcode
+ibio.prim.iptr.iseof	.gvar
+ek	.fv	β
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+ip0	.karg	ibio.prim.iptr	s
+	.ubanalyze	0	_ibio.lex.symbol_k0	1	_ibio.lex.symbol_k1	|	s	β	|	ip0	ek	sk
+	.app	ip0
+	.yield	ibio.prim.iptr.iseof	s
+
+_ibio.lex.symbol_k0	.ubcasecont
+ibio.prim.iptr	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+ibio.prim.iptr.deref	.gvar
+ibio.prim.iptr.next	.gvar
+ip0	.fv	ibio.prim.iptr	s
+ek	.fv	β
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+s	.apply	ibio.prim.iptr.deref	s	|	ip0
+ip1	.apply	ibio.prim.iptr.next	s	|	ip0
+	.app	s	ip1
+	.enter	sk
+
+_ibio.lex.symbol_k1	.ubcasecont
+ibio.prim.iptr	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+ip0	.fv	ibio.prim.iptr	s
+ek	.fv	β
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+	.enter	ek
+
+# §section §gs{ibio.lex.many}
+
+_ibio.lex.many_c	.expr
+ibio.lex.lexeme.t	.tygvar
+ibio.prim.iptr.t	.tygvar
+_ibio.lex.lexer.t_res.t	.tygvar
+list.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+res.ty	.tylet	list.t	α
+r.ty	.tylet	_ibio.lex.lexer.t_res.t	s	res.ty
+_ibio.lex.many_nilk_c	.subcode
+_ibio.lex.many_consk_c	.subcode
+l	.larg	ibio.lex.lexeme.t	s	α
+ip	.larg	ibio.prim.iptr.t	s
+nilk	.alloc	_ibio.lex.many_nilk_c	s	α	|	ip
+consk	.alloc	_ibio.lex.many_consk_c	s	α	|	l
+	.app	nilk	consk	ip
+	.enter	l	r.ty
+
+_ibio.lex.many_nilk_c	.expr
+ibio.prim.iptr.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+list.nil	.gvar
+ip	.fv	ibio.prim.iptr.t	s
+nil	.apply	list.nil	α
+r	.record	0	nil	1	ip
+	.lift
+	.yield	r
+
+_ibio.lex.many_consk_c	.expr
+ibio.lex.lexeme.t	.tygvar
+ibio.prim.iptr.t	.tygvar
+list.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+_ibio.lex.many_consk_xn0_c	.subcode
+list.:	.gvar
+ibio.lex.many	.gvar
+l	.fv	ibio.lex.lexeme.t	s	α
+x	.larg	α
+ip1	.larg	ibio.prim.iptr.t	s
+r0	.apply	ibio.lex.many	s	α	|	l	ip1
+xn0	.alloc	_ibio.lex.many_consk_xn0_c	s	α	|	r0
+xn1	.apply	list.:	α	|	x	xn0
+ip2	.undefined	ibio.prim.iptr.t	s
+r	.record	0	xn1	1	ip2
+	.lift
+	.yield	r
+
+_ibio.lex.many_consk_xn0_c	.expr
+_ibio.lex.lexer.t_res.t	.tygvar
+list.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+res.ty	.tylet	list.t	α
+_ibio.lex.many_consk_xn0_k	.subcode
+r0	.fv	_ibio.lex.lexer.t_res.t	s	res.ty
+	.force	_ibio.lex.many_consk_xn0_k	s	α
+	.enter	r0
+
+_ibio.lex.many_consk_xn0_k	.forcecont
+_ibio.lex.lexer.t_res.u	.tygvar
+list.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+res.ty	.tylet	list.t	α
+r0.0	.karg	_ibio.lex.lexer.t_res.u	s	res.ty
+xn0	.field	0	r0.0
+	.enter	xn0
+
+	.type
+
+ibio.lex.lexer.t	.tyexpr
+ibio.prim.iptr.t	.tygvar
+_ibio.lex.lexer.t_res.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+	.tylift
+	.tyfun	ibio.prim.iptr.t	s
+	.tyref	_ibio.lex.lexer.t_res.t	s	α
+
+_ibio.lex.lexer.t_res.t	.tyexpr
+_ibio.lex.lexer.t_res.u	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+	.tylift
+	.tyref	_ibio.lex.lexer.t_res.u	s	α
+
+_ibio.lex.lexer.t_res.u	.tyexpr
+ibio.prim.iptr.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+ip.ty	.tylet	ibio.prim.iptr.t	s
+	.typroduct	0	α	1	ip.ty
+
+ibio.lex.lexeme.t	.tyexpr
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+β	.tyforall	*
+	.tylift
+	.tyfun	β
+	.tylift
+	.tyfun	_ibio.lex.lexeme.t_k.ty	s	α	β
+	.tylift
+	.tyfun	ibio.prim.iptr.t	s
+	.tyref	β
+
+_ibio.lex.lexeme.t_k.ty	.tyexpr
+ibio.prim.iptr.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyfun	ibio.prim.iptr.t	s
+	.tyref	β
+
+# §section §gs{ibio.lex.many}
+
+_ibio.lex.many_ty	.tyexpr
+ibio.lex.lexeme.t	.tygvar
+ibio.lex.lexer.t	.tygvar
+list.t	.tygvar
+s	.tyforall	*
+α	.tyforall	*
+res.ty	.tylet	list.t	α
+	.tylift
+	.tyfun	ibio.lex.lexeme.t	s	α
+	.tyref	ibio.lex.lexer.t	s	res.ty

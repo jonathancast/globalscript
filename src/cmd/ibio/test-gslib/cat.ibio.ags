@@ -5,8 +5,6 @@
 	.cast	_ep.in	_ep
 _ep	.closure	_ep_c
 
-_ip2list	.closure	_ip2list_c	_ip2list_ty
-
 	.code
 
 _ep_c	.eprog	ibio.prim	ibio
@@ -57,19 +55,18 @@ ibio.acceptor.prim.cont	.gvar
 	.enter	ibio.acceptor.prim.cont	rune.t	res.ty
 
 _ep_s_c	.expr
-_ep_ip_ty	.tygvar
-_ep_s_k	.subcode
-ip	.fv	_ep_ip_ty
-	.force	_ep_s_k
-	.enter	ip
-
-_ep_s_k	.forcecont
-ibio.prim.iptr	.tygvar
+ibio.prim.iptr.t	.tygvar
 rune.t	.tygvar
-_ip2list	.gvar
-ip0	.karg	ibio.prim.iptr	rune.t
-	.app	ip0
-	.enter	_ip2list
+list.t	.tygvar
+res.ty	.tylet	list.t	rune.t
+ibio.lex.lexer.match	.gvar
+ibio.lex.many	.gvar
+ibio.lex.symbol	.gvar
+ip	.fv	ibio.prim.iptr.t	rune.t
+sym	.apply	ibio.lex.symbol	rune.t
+ms	.apply	ibio.lex.many	rune.t	rune.t	|	sym
+	.app	ms	ip
+	.enter	ibio.lex.lexer.match	rune.t	res.ty
 
 _ep_body_c	.expr
 ibio.prim.oport	.tygvar
@@ -80,81 +77,6 @@ o	.fv	ibio.prim.oport	rune.t
 s	.fv	list.t	rune.t
 	.app	o	s
 	.yield	ibio.prim.write	rune.t
-
-# §section §gs{_ip2list}
-
-_ip2list_c	.expr
-ibio.prim.iptr	.tygvar
-rune.t	.tygvar
-_ip2list_k0	.subcode
-_ip2list_k1	.subcode
-ibio.prim.iptr.iseof	.gvar
-ip	.larg	ibio.prim.iptr	rune.t
-	.ubanalyze	0	_ip2list_k0	1	_ip2list_k1	|	|	ip
-	.app	ip
-	.yield	ibio.prim.iptr.iseof	rune.t
-
-_ip2list_k0	.ubcasecont
-ibio.prim.iptr	.tygvar
-rune.t	.tygvar
-_ip2list_k0_c_c	.subcode
-_ip2list_k0_s_c	.subcode
-list.:	.gvar
-ip	.fv	ibio.prim.iptr	rune.t
-c	.alloc	_ip2list_k0_c_c	|	ip
-s	.alloc	_ip2list_k0_s_c	|	ip
-	.app	c	s
-	.enter	list.:	rune.t
-
-_ip2list_k0_c_c	.expr
-ibio.prim.iptr	.tygvar
-rune.t	.tygvar
-ibio.prim.iptr.deref	.gvar
-ip	.fv	ibio.prim.iptr	rune.t
-	.app	ip
-	.yield	ibio.prim.iptr.deref	rune.t
-
-_ip2list_k0_s_c	.expr
-ibio.prim.iptr	.tygvar
-rune.t	.tygvar
-_ip2list_k0_s_k	.subcode
-ibio.prim.iptr.next	.gvar
-ip	.fv	ibio.prim.iptr	rune.t
-	.force	_ip2list_k0_s_k
-	.app	ip
-	.yield	ibio.prim.iptr.next	rune.t
-
-_ip2list_k0_s_k	.forcecont
-ibio.prim.iptr	.tygvar
-rune.t	.tygvar
-list.t	.tygvar
-_ip2list	.gvar
-ip1	.karg	ibio.prim.iptr	rune.t
-	.app	ip1
-	.enter	_ip2list
-
-_ip2list_k1	.ubcasecont
-ibio.prim.iptr	.tygvar
-rune.t	.tygvar
-list.nil	.gvar
-ip	.fv	ibio.prim.iptr	rune.t
-	.enter	list.nil	rune.t
-
-	.type
-
-_ep_ip_ty	.tyexpr
-ibio.prim.iptr	.tygvar
-rune.t	.tygvar
-	.tylift
-	.tyref	ibio.prim.iptr	rune.t
-
-_ip2list_ty	.tyexpr
-ibio.prim.iptr	.tygvar
-rune.t	.tygvar
-list.t	.tygvar
-	.tylift
-	.tyfun	ibio.prim.iptr	rune.t
-	.tyref	list.t	rune.t
 
 	.coercion
 
