@@ -2656,6 +2656,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
     nbinds = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_arg_op(p, &cl)) {
@@ -2717,6 +2718,8 @@ have_type:
     }
 
     calculated_type = gsbc_typecheck_code_or_api_args(cl.nargs, cl.argtypes, cl.arglines, cl.arglifted, calculated_type);
+
+    calculated_type = gsbc_typecheck_code_type_arg(&cl, calculated_type);
 
     return gsbc_typecheck_compile_code_item_type(gsbc_code_item_eprog, 0, calculated_type, &cl);
 }
