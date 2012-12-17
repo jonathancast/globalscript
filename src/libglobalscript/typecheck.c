@@ -974,7 +974,6 @@ static int gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_
 static int gsbc_typecheck_free_variables(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int);
 
 static struct gsbc_code_item_type *gsbc_typecheck_compile_code_item_type(int, struct gstype *, struct gstype *, struct gsbc_typecheck_code_or_api_expr_closure *);
-static struct gsbc_code_item_type *gsbc_typecheck_copy_code_item_type(struct gsbc_code_item_type *);
 
 static
 struct gsbc_code_item_type *
@@ -2754,7 +2753,6 @@ gsbc_typecheck_compile_code_item_type(int type, struct gstype *cont_arg_type, st
     return res;
 }
 
-static
 struct gsbc_code_item_type *
 gsbc_typecheck_copy_code_item_type(struct gsbc_code_item_type *cty)
 {

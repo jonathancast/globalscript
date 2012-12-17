@@ -15,6 +15,8 @@ struct gsbc_code_item_type {
     struct gstype *result_type;
 };
 
+struct gsbc_code_item_type *gsbc_typecheck_copy_code_item_type(struct gsbc_code_item_type *);
+
 struct gstype {
     enum {
         gstype_abstract,

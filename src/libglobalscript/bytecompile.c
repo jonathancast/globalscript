@@ -1553,31 +1553,42 @@ int
 gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
     struct gsbc *pcode;
-    int i;
+    int i, j;
 
     if (gssymceq(p->directive, gssymopalloc, gssymcodeop, ".alloc")) {
         int creg = 0;
         int nfvs, first_fv;
+        struct gsbc_code_item_type *ctype;
 
         if (pcl->phase > rtlets)
-            gsfatal_bad_input(p, "Too late to add allocations");
+            gsfatal("%P: Too late to add allocations", p->pos)
+        ;
         pcl->phase = rtlets;
 
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
-        pcl->regs[pcl->nregs++] = p->label;
 
         pcode = (struct gsbc *)pcl->pout;
 
         creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[0]);
+        ctype = pcl->subexpr_types[creg];
+        if (!ctype) gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0]);
+        ctype = gsbc_typecheck_copy_code_item_type(ctype);
 
         pcode->pos = p->pos;
         pcode->instr = gsbc_op_alloc;
         pcode->args[0] = (uchar)creg;
 
         /* §paragraph{Skipping free type variables} */
-        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+            struct gstype *type = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[i])];
+            for (j = i - 1 + 1; j < ctype->numftyvs; j++)
+                if (gstypes_is_ftyvar(ctype->tyfvs[j], type))
+                    gsfatal("%P: %y has a free type variable %y which is free in the binding for %y; please don't do that", p->pos, p->arguments[0], ctype->tyfvs[j], p->arguments[i])
+            ;
+            ctype->result_type = gstypes_subst(p->pos, ctype->result_type, ctype->tyfvs[i - 1], type);
+        }
         if (i < p->numarguments) i++;
 
         nfvs = p->numarguments - i;
@@ -1590,6 +1601,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             pcode->args[2 + (i - first_fv)] = (uchar)regarg;
         }
 
+        ADD_LABEL_TO_REGS_WITH_TYPE(ctype->result_type);
         pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
     } else if (gssymceq(p->directive, gssymopprim, gssymcodeop, ".prim")) {
         struct gsregistered_primset *prims;
