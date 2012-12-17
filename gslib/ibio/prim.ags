@@ -97,6 +97,12 @@ ibio.prim.oport	.tyelimprim	ibio.prim	oport	u*^
 ibio.prim.iport	.tyelimprim	ibio.prim	iport	u*^
 ibio.prim.iptr	.tyelimprim	ibio.prim	iptr	u*^
 
+ibio.prim.iptr.t	.tyexpr
+ibio.prim.iptr	.tygvar
+s	.tylambda	*
+	.tylift
+	.tyref	ibio.prim.iptr	s
+
 ibio.prim.dir.t	.tyexpr
 bool.t	.tygvar
 	.typroduct	mode.directory	bool.t
@@ -112,18 +118,12 @@ ibio.prim.iport	.tygvar
 ibio.acceptor.prim.t	.tygvar
 record.empty	.tygvar
 ibio.prim.m	.tygvar
-_ibio.prim.read_res_ty	.tygvar
+ibio.prim.iptr.t	.tygvar
 ι	.tyforall	*
-res.ty	.tylet	_ibio.prim.read_res_ty	ι
+res.ty	.tylet	ibio.prim.iptr.t	ι
 	.tyfun	ibio.prim.iport	ι
 	.tyfun	ibio.acceptor.prim.t	ι	record.empty
 	.tyref	ibio.prim.m	res.ty
-
-_ibio.prim.read_res_ty	.tyexpr
-ibio.prim.iptr	.tygvar
-ι	.tylambda	*
-	.tylift
-	.tyref	ibio.prim.iptr	ι
 
 _ibio.prim.write.ty	.tyexpr
 ibio.prim.oport	.tygvar
