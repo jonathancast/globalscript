@@ -10,6 +10,7 @@
 #include "gstypecheck.h"
 #include "gsbytecompile.h"
 #include "gsheap.h"
+#include "gsbytecode.h"
 #include "gstopsort.h"
 
 enum gsbc_heap_section {

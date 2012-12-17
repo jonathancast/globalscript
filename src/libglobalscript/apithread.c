@@ -5,7 +5,7 @@
 #include <libglobalscript.h>
 
 #include "gsregtables.h"
-#include "gsheap.h"
+#include "gsbytecode.h"
 #include "api.h"
 
 /* §section Declarations */
