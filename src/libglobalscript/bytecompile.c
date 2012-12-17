@@ -2183,6 +2183,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             cl.tyregnames[cl.ntyregs] = p->label;
             cl.tyregs[cl.ntyregs] = gssymtable_get_type(symtable, p->label);
             cl.ntyregs++;
+        } else if (gsbc_byte_compile_type_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
