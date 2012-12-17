@@ -2673,7 +2673,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
             gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
             goto have_type;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_api_expr(%s)", p->pos, p->directive->name);
+            gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y)"), p->pos, p->directive);
         }
     }
 
