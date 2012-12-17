@@ -1197,6 +1197,7 @@ gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *c
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
         if (gsparse_code_type_fv_op(filename, parsedline, plineno, fields, n)) {
+        } else if (gsparse_code_type_arg_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_code_type_let_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_arg_op(filename, parsedline, plineno, fields, n)) {
         } else if (gsparse_value_fv_op(filename, parsedline, plineno, fields, n)) {
@@ -1239,7 +1240,7 @@ gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *c
             ;
             return 0;
         } else {
-            gsfatal("%s:%d: %s:%d: Unimplemented api op %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
+            gsfatal(UNIMPL("%s:%d: Unimplemented api op %s"), filename, *plineno, fields[1]);
         }
     }
     if (n < 0)
