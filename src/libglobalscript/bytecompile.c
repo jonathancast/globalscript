@@ -657,10 +657,7 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
 
         pcl->size += GS_SIZE_BYTECODE(1 + p->numarguments / 2); /* numfields + fields */
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
-        if (pcl->phase > phgens)
-            gsfatal("%P: Too late to add allocations", p->pos)
-        ;
-        pcl->phase = phgens;
+        CHECK_PHASE(phgens, "allocations");
 
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
