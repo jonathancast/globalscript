@@ -1176,17 +1176,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             cl.tyregnames[cl.ntyregs] = p->label;
             cl.tyregs[cl.ntyregs] = gssymtable_get_type(symtable, p->label);
             cl.ntyregs++;
-        } else if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
-            if (cl.phase > rttyargs)
-                gsfatal("%P: Too late to add type arguments", p->pos)
-            ;
-            cl.phase = rttyargs;
-            if (cl.ntyregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many type registers", p->pos)
-            ;
-            cl.tyregnames[cl.ntyregs] = p->label;
-            cl.tyregs[cl.ntyregs] = gstypes_compile_type_var(p->pos, p->label, gskind_compile(p->pos, p->arguments[0]));
-            cl.ntyregs++;
+        } else if (gsbc_byte_compile_type_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_type_let_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
@@ -1341,7 +1331,18 @@ static
 int
 gsbc_byte_compile_type_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    if (gssymceq(p->directive, gssymopexkarg, gssymcodeop, ".exkarg")) {
+    if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
+        if (pcl->phase > rttyargs)
+            gsfatal("%P: Too late to add type arguments", p->pos)
+        ;
+        pcl->phase = rttyargs;
+        if (pcl->ntyregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many type registers", p->pos)
+        ;
+        pcl->tyregnames[pcl->ntyregs] = p->label;
+        pcl->tyregs[pcl->ntyregs] = gstypes_compile_type_var(p->pos, p->label, gskind_compile(p->pos, p->arguments[0]));
+        pcl->ntyregs++;
+    } else if (gssymceq(p->directive, gssymopexkarg, gssymcodeop, ".exkarg")) {
         if (pcl->phase > rttyargs)
             gsfatal("%P: Too late to add type arguments", p->pos)
         ;
