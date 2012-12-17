@@ -152,7 +152,6 @@ static
 gsvalue
 gsheapremove_indirections(gsvalue val)
 {
-    struct gs_blockdesc *block;
     struct gsheap_item *hp;
     struct gsindirection *in;
 

@@ -588,7 +588,7 @@ gsparse_code_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
     if (n < 0)
         gsfatal("%s:%d: Error in reading code line: %r", filename, *plineno);
     else
-        gsfatal("%s:%d: EOF in middle of reading expression", filename, codedirective->pos.lineno);
+        gsfatal("%P: EOF in middle of reading expression", codedirective->pos);
 
     return -1;
 }
