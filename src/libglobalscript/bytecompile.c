@@ -659,10 +659,7 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
         CHECK_PHASE(phgens, "allocations");
 
-        if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-        ;
-        pcl->nregs++;
+        CHECK_REGISTERS();
 
         pcl->size += ACE_FIELD_SIZE();
     } else if (gssymceq(p->directive, gssymopundefined, gssymcodeop, ".undefined")) {
