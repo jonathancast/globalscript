@@ -1124,6 +1124,7 @@ struct gsbc_byte_compile_code_or_api_op_closure {
 
     int nsubexprs;
     gsinterned_string subexprs[MAX_NUM_REGISTERS];
+    struct gsbc_code_item_type *subexpr_types[MAX_NUM_REGISTERS];
 
     int nglobals;
 
@@ -1181,6 +1182,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
                 gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
             ;
             cl.subexprs[cl.nsubexprs] = p->label;
+            cl.subexpr_types[cl.nsubexprs] = gssymtable_get_code_type(symtable, p->label);
             psubcode = (struct gsbco **)cl.pout;
             *psubcode++ = gssymtable_get_code(symtable, p->label);
             cl.pout = (uchar*)psubcode;
@@ -1275,6 +1277,7 @@ gsbc_byte_compile_code_or_api_op_closure_init(struct gsbco *pbco, struct gsbc_by
     pcl->ntyregs = pcl->nregs = pcl->nsubexprs = pcl->nglobals = pcl->nfvs = pcl->nargs = pcl->nfields = 0;
     pcl->pout = (uchar*)pbco + sizeof(struct gsbco);
     memset(pcl->regtypes, 0, sizeof(pcl->regtypes));
+    memset(pcl->subexpr_types, 0, sizeof(pcl->subexpr_types));
 }
 
 static
@@ -2192,6 +2195,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
                 gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
             ;
             cl.subexprs[cl.nsubexprs] = p->label;
+            cl.subexpr_types[cl.nsubexprs] = gssymtable_get_code_type(symtable, p->label);
             psubcode = (struct gsbco **)cl.pout;
             *psubcode++ = gssymtable_get_code(symtable, p->label);
             cl.pout = (uchar*)psubcode;
