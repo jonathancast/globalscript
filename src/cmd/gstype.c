@@ -52,7 +52,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 case gstystack:
                     break;
                 case gstyindir:
-                    s= GS_REMOVE_INDIRECTIONS(s);
+                    s= GS_REMOVE_INDIRECTION(s);
                     break;
                 case gstywhnf: {
                     struct gsconstr *constr;

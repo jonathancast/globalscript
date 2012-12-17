@@ -156,31 +156,21 @@ gsheapremove_indirections(gsvalue val)
     struct gsheap_item *hp;
     struct gsindirection *in;
 
-    for (;;) {
-        if (!IS_PTR(val))
-            return val
-        ;
+    hp = (struct gsheap_item *)val;
 
-        block = BLOCK_CONTAINING(val);
+    lock(&hp->lock);
 
-        if (block->class != &gsheap_descr)
-            return GS_REMOVE_INDIRECTIONS(val)
-        ;
-
-        hp = (struct gsheap_item *)val;
-
-        lock(&hp->lock);
-
-        if (hp->type != gsindirection) {
-            unlock(&hp->lock);
-            return val;
-        }
-
-        in = (struct gsindirection *)hp;
-
-        val = in->target;
+    if (hp->type != gsindirection) {
         unlock(&hp->lock);
+        return val;
     }
+
+    in = (struct gsindirection *)hp;
+
+    val = in->target;
+    unlock(&hp->lock);
+
+    return val;
 }
 
 int

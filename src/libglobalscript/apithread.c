@@ -154,7 +154,7 @@ api_thread_pool_main(void *arg)
                             case gstystack:
                                 break;
                             case gstyindir:
-                                code->instrs[code->ip].instr = GS_REMOVE_INDIRECTIONS(instr);
+                                code->instrs[code->ip].instr = GS_REMOVE_INDIRECTION(instr);
                                 suspended_runnable_thread = 1;
                                 break;
                             case gstyenosys:
@@ -660,7 +660,7 @@ api_promise_dereference(gsvalue val)
     res = promise->value;
     unlock(&promise->lock);
 
-    return GS_REMOVE_INDIRECTIONS(res);
+    return res;
 }
 
 /* §section Helper Functions */

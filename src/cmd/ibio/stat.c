@@ -81,7 +81,7 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, stru
                     break;
                 }
                 case gstyindir:
-                    file_stat_blocking->s = GS_REMOVE_INDIRECTIONS(file_stat_blocking->s);
+                    file_stat_blocking->s = GS_REMOVE_INDIRECTION(file_stat_blocking->s);
                     break;
                 case gstyerr: {
                     char err[0x100];

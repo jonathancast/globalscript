@@ -257,7 +257,7 @@ gsvalue gswhnfindir(gsvalue);
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
 #define GS_SLOW_EVALUATE(v) (IS_PTR(v) ? (*GS_EVALUATOR(v))(v) : gstyunboxed)
-#define GS_REMOVE_INDIRECTIONS(v) ((*GS_INDIRECTION_DEREFENCER(v))(v))
+#define GS_REMOVE_INDIRECTION(v) ((*GS_INDIRECTION_DEREFENCER(v))(v))
 
 int gsiserror_block(struct gs_blockdesc *);
 int gsisimplementation_failure_block(struct gs_blockdesc *);

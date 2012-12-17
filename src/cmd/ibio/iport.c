@@ -359,7 +359,7 @@ ibio_read_process_main(void *p)
                     break;
                 }
                 case gstyindir:
-                    iport->reading = GS_REMOVE_INDIRECTIONS(iport->reading);
+                    iport->reading = GS_REMOVE_INDIRECTION(iport->reading);
                     break;
                 case gstyerr: {
                     struct gserror *err;

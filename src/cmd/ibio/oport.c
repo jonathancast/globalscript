@@ -242,7 +242,7 @@ ibio_write_process_main(void *p)
                     runnable = 0;
                     break;
                 case gstyindir: {
-                    c = GS_REMOVE_INDIRECTIONS(c);
+                    c = GS_REMOVE_INDIRECTION(c);
                     break;
                 }
                 case gstyerr: {
@@ -294,7 +294,7 @@ ibio_write_process_main(void *p)
                     runnable = 0;
                     break;
                 case gstyindir: {
-                    oport->writing = GS_REMOVE_INDIRECTIONS(oport->writing);
+                    oport->writing = GS_REMOVE_INDIRECTION(oport->writing);
                     break;
                 }
                 case gstywhnf: {

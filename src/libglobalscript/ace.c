@@ -119,7 +119,7 @@ ace_thread_pool_main(void *p)
                                 case gstyblocked:
                                     break;
                                 case gstyindir:
-                                    thread->st.blocked.on = GS_REMOVE_INDIRECTIONS(thread->st.blocked.on);
+                                    thread->st.blocked.on = GS_REMOVE_INDIRECTION(thread->st.blocked.on);
                                     break;
                                 case gstywhnf: {
                                     if (ace_return(thread, thread->st.blocked.at, thread->st.blocked.on) > 0)
@@ -297,7 +297,7 @@ ace_extract_efv(struct ace_thread *thread)
             case gstywhnf:
                 goto extracted_value;
             case gstyindir:
-                thread->regs[nreg] = GS_REMOVE_INDIRECTIONS(thread->regs[nreg]);
+                thread->regs[nreg] = GS_REMOVE_INDIRECTION(thread->regs[nreg]);
                 break;
             default:
                 ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "ace_extract_efv: st = %d", st);
@@ -775,7 +775,7 @@ ace_enter(struct ace_thread *thread)
                 thread->st.blocked.at = ip->pos;
                 return 0;
             case gstyindir:
-                prog = GS_REMOVE_INDIRECTIONS(prog);
+                prog = GS_REMOVE_INDIRECTION(prog);
                 break;
             case gstywhnf:
                 if (ace_return(thread, ip->pos, prog) > 0)

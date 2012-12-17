@@ -142,7 +142,7 @@ test_evaluate(char *err, char *eerr, gsvalue v)
         case gstywhnf:
             return test_evaluate_constr(err, eerr, (struct gsconstr *)v);
         case gstyindir:
-            return test_evaluate(err, eerr, GS_REMOVE_INDIRECTIONS(v));
+            return test_evaluate(err, eerr, GS_REMOVE_INDIRECTION(v));
         case gstyerr:
             gserror_format(err, eerr, (struct gserror *)v);
             return test_prog_err;
@@ -219,7 +219,7 @@ test_print(int depth, gsvalue v, int print_if_trivial)
 
     switch (st) {
         case gstyindir:
-            test_print(depth, GS_REMOVE_INDIRECTIONS(v), print_if_trivial);
+            test_print(depth, GS_REMOVE_INDIRECTION(v), print_if_trivial);
             return;
         case gstywhnf: {
             struct gsconstr *constr;
@@ -304,7 +304,7 @@ test_print_string(gsvalue s)
             st = GS_SLOW_EVALUATE(c);
             switch (st) {
                 case gstyindir:
-                    c = GS_REMOVE_INDIRECTIONS(c);
+                    c = GS_REMOVE_INDIRECTION(c);
                     break;
                 case gstyunboxed: {
                     char buf[5];
@@ -342,7 +342,7 @@ test_print_string(gsvalue s)
                     break;
                 }
                 case gstyindir:
-                    s = GS_REMOVE_INDIRECTIONS(s);
+                    s = GS_REMOVE_INDIRECTION(s);
                     break;
                 case gstyerr: {
                     char buf[0x100];
