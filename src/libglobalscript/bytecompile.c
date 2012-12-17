@@ -2274,7 +2274,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
 
             goto done;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: API op %s next", p->pos, p->directive->name);
+            gsfatal(UNIMPL("%P: API op %y"), p->pos, p->directive);
         }
     }
 
