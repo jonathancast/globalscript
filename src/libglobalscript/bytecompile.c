@@ -1135,6 +1135,8 @@ struct gsbc_byte_compile_code_or_api_op_closure {
     gsinterned_string fields[MAX_NUM_REGISTERS];
 };
 
+static void gsbc_byte_compile_code_or_api_op_closure_init(struct gsbco *, struct gsbc_byte_compile_code_or_api_op_closure *);
+
 static int gsbc_byte_compile_type_fv_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_type_let_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_type_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
@@ -1153,10 +1155,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     struct gsbco **psubcode;
     struct gsbc *pcode;
 
-    cl.phase = rttygvars;
-    cl.pout = ((uchar*)pbco + sizeof(struct gsbco));
-    cl.ntyregs = cl.nregs = cl.nsubexprs = cl.nglobals = cl.nfvs = cl.nargs = cl.nfields = 0;
-    memset(cl.regtypes, 0, sizeof(cl.regtypes));
+    gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
@@ -1266,6 +1265,16 @@ done:
     pbco->numglobals = cl.nglobals;
     pbco->numfvs = cl.nfvs;
     pbco->numargs = cl.nargs;
+}
+
+static
+void
+gsbc_byte_compile_code_or_api_op_closure_init(struct gsbco *pbco, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    pcl->phase = rttygvars;
+    pcl->ntyregs = pcl->nregs = pcl->nsubexprs = pcl->nglobals = pcl->nfvs = pcl->nargs = pcl->nfields = 0;
+    pcl->pout = (uchar*)pbco + sizeof(struct gsbco);
+    memset(pcl->regtypes, 0, sizeof(pcl->regtypes));
 }
 
 static
@@ -2157,13 +2166,8 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     int i;
     struct gsbco **psubcode;
     struct gsbc *pcode;
-    int nargs;
 
-    cl.phase = rttygvars;
-    pcode = 0;
-    cl.pout = (uchar*)pbco + sizeof(struct gsbco);
-    cl.nregs = cl.nglobals = cl.nsubexprs = cl.nfvs = nargs = 0;
-    memset(cl.regtypes, 0, sizeof(cl.regtypes));
+    gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
@@ -2201,7 +2205,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             ;
             cl.regs[cl.nregs] = p->label;
             cl.nregs++;
-            nargs++;
+            cl.nargs++;
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
             int creg = 0;
@@ -2277,6 +2281,6 @@ done:
 
     pbco->numglobals = cl.nglobals;
     pbco->numsubexprs = cl.nsubexprs;
-    pbco->numargs = nargs;
+    pbco->numargs = cl.nargs;
     pbco->numfvs = cl.nfvs;
 }
