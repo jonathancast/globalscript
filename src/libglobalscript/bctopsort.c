@@ -475,7 +475,7 @@ static
 void
 gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymtyelimprim;
+    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtydefinedprim, gssymtyelimprim, gssymtyapiprim;
 
     gsinterned_string directive;
     struct gsparsedfile_segment *pseg;
@@ -484,99 +484,60 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
     pseg = item.pseg;
     ptype = item.v;
     directive = ptype->directive;
-    if (gssymeq(directive, gssymtypedirective, ".tyexpr")) {
+    if (gssymceq(directive, gssymtyexpr, gssymtypedirective, ".tyexpr")) {
         gsbc_top_sort_subitems_of_type_or_coercion_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, &pseg, gsinput_next_line(&pseg, ptype), gssymtypeop);
         return;
-    } else if (gssymeq(directive, gssymtypedirective, ".tyabstract")) {
+    } else if (gssymceq(directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
         gsbc_top_sort_subitems_of_type_or_coercion_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, &pseg, gsinput_next_line(&pseg, ptype), gssymtypeop);
         return;
-    } else if (gssymeq(directive, gssymtypedirective, ".tydefinedprim")) {
+    } else if (
+        gssymceq(directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")
+        || gssymceq(directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")
+        || gssymceq(directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
+    ) {
         struct gsregistered_primset *prims;
         struct gsregistered_primtype *type;
 
         if (ptype->numarguments < 1)
-            gsfatal("%s:%d: Missing primitive set name on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
-        if (!(prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)))
-            gsfatal("%s:%d: Unknown primitive set %s, which is really bad since it's supposed to contain defined types",
-                ptype->pos.file->name,
-                ptype->pos.lineno,
-                ptype->arguments[0]->name
-            )
+            gsfatal("P: Missing primitive set name on %y", ptype->pos, directive)
+        ;
+        prims = gsprims_lookup_prim_set(ptype->arguments[0]->name);
+        if (directive == gssymtydefinedprim && !prims)
+            gsfatal("%P: Unknown primitive set %y, which is really bad since it's supposed to contain defined types", ptype->pos, ptype->arguments[0])
         ;
         if (ptype->numarguments < 2)
-            gsfatal("%s:%d: Missing primitive type name on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
-        if (!(type = gsprims_lookup_type(prims, ptype->arguments[1]->name)))
-            gsfatal("%s:%d: Primitive set %s does not in fact contain a type %s", ptype->pos.file->name, ptype->pos.lineno, ptype->arguments[0]->name, ptype->arguments[1]->name);
-        if (type->prim_type_group != gsprim_type_defined)
-            gsfatal("%s:%d: Primite type %s in primitive set %s is not in fact a defined type", ptype->pos.file->name, ptype->pos.lineno, ptype->arguments[1]->name, ptype->arguments[0]->name);
-        if (ptype->numarguments < 3)
-            gsfatal("%s:%d: Missing kind on .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
-        if (ptype->numarguments > 3)
-            gsfatal("%s:%d: Too many arguments to .tydefinedprim", ptype->pos.file->name, ptype->pos.lineno);
-        return;
-    } else if (gssymceq(directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")) {
-        struct gsregistered_primset *prims;
-
-        if (ptype->numarguments < 1)
-            gsfatal("%P: Missing primitive set name on .tyelimprim", ptype->pos);
-
-        prims = gsprims_lookup_prim_set(ptype->arguments[0]->name);
-
-        if (ptype->numarguments < 2)
-            gsfatal("%P: Missing primitive type name on .tyelimprim", ptype->pos);
-
-        if (prims && !gsprims_lookup_type(prims, ptype->arguments[1]->name))
-            gsfatal("%P: Primitive set %s does not in fact contain a type %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name);
-
-        if (ptype->numarguments < 3)
-            gsfatal("%P: Missing kind on .tyelimprim", ptype->pos);
-        if (ptype->numarguments > 3)
-            gsfatal("%P: Too many arguments to .tyelimprim", ptype->pos);
-        return;
-    } else if (gssymeq(directive, gssymtypedirective, ".tyapiprim")) {
-        struct gsregistered_primset *prims;
-
-        if (ptype->numarguments < 1)
-            gsfatal("%s:%d: Missing primitive set name on .tyapiprim", ptype->pos.file->name, ptype->pos.lineno);
-
-        prims = gsprims_lookup_prim_set(ptype->arguments[0]->name);
-
-        if (ptype->numarguments < 2)
-            gsfatal("%s:%d: Missing primitive type name on .tyapiprim", ptype->pos.file->name, ptype->pos.lineno);
-
-        if (prims && !gsprims_lookup_type(prims, ptype->arguments[1]->name))
-            gsfatal("%P: Primitive set %s does not in fact contain a type %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name);
-
-        if (ptype->numarguments < 3)
-            gsfatal("%s:%d: Missing kind on .tyapiprim", ptype->pos.file->name, ptype->pos.lineno);
-        if (ptype->numarguments > 3)
-            gsfatal("%s:%d: Too many arguments to .tyapiprim", ptype->pos.file->name, ptype->pos.lineno);
-        return;
-    } else if (gssymeq(directive, gssymtypedirective, ".tyelimprim")) {
-        struct gsregistered_primset *prims;
-
-        if (ptype->numarguments < 1)
-            gsfatal("%P: Missing primitive set name on .tyelimprim", ptype->pos);
-
-        prims = gsprims_lookup_prim_set(ptype->arguments[0]->name);
-
-        if (ptype->numarguments < 2)
-            gsfatal("%P: Missing primitive type name on .tyelimprim", ptype->pos);
-
-        if (prims && !gsprims_lookup_type(prims, ptype->arguments[1]->name))
-            gsfatal("%P: Primitive set %s does not in fact contain a type %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name)
+            gsfatal("%P: Missing primitive type name on %y", ptype->pos, directive)
         ;
-
+        if (prims && !(type = gsprims_lookup_type(prims, ptype->arguments[1]->name)))
+            gsfatal("%P: Primitive set %y does not in fact contain a type %y", ptype->pos, ptype->arguments[0], ptype->arguments[1])
+        ;
+        if (directive == gssymtydefinedprim) {
+            if (type->prim_type_group != gsprim_type_defined)
+                gsfatal("%P: Primitive type %y in primitive set %y is not in fact a defined type", ptype->pos, ptype->arguments[1], ptype->arguments[0])
+            ;
+        } else if (directive == gssymtyelimprim) {
+            if (type && type->prim_type_group != gsprim_type_elim)
+                gsfatal("%P: Primitive type %y in primitive set %y is not in fact an elimtype", ptype->pos, ptype->arguments[1], ptype->arguments[0])
+            ;
+        } else if (directive == gssymtyapiprim) {
+            if (type && type->prim_type_group != gsprim_type_api)
+                gsfatal("%P: Primitive type %y in primitive set %y is not in fact an apitype", ptype->pos, ptype->arguments[1], ptype->arguments[0])
+            ;
+        } else {
+            gsfatal(UNIMPL("%P: Check primtype group of %y against registered orimtype group"), ptype->pos, directive);
+        }
         if (ptype->numarguments < 3)
-            gsfatal("%P: Missing kind on .tyelimprim", ptype->pos);
+            gsfatal("%P: Missing kind on %y", ptype->pos, directive)
+        ;
         if (ptype->numarguments > 3)
-            gsfatal("%P: Too many arguments to .tyelimprim", ptype->pos);
+            gsfatal("%P: Too many arguments to %y", ptype->pos, directive)
+        ;
         return;
     } else {
-        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, ptype->pos.file->name, ptype->pos.lineno, ptype->directive->name);
+        gsfatal(UNIMPL("%P: gsbc_subtop_sort(directive = %y)"), ptype->pos, ptype->directive);
     }
 
-    gsfatal("%s:%d: %s:%d: gsbc_subtop_sort_type_item next", __FILE__, __LINE__, ptype->pos.file->name, ptype->pos.lineno);
+    gsfatal(UNIMPL("%P: gsbc_subtop_sort_type_item"), ptype->pos);
 }
 
 static
