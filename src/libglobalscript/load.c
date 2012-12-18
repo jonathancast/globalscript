@@ -1618,7 +1618,7 @@ gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel
             gsfatal("%s:%d: Too many arguments to .tyabstract", filename, *plineno);
         return gsparse_type_ops(filename, parsedfile, parsedline, chan, line, plineno, fields);
     } else {
-        gsfatal("%s:%d: %s:%d: Unimplemented type directive %s", __FILE__, __LINE__, filename, *plineno, fields[1]);
+        gsfatal(UNIMPL("%s:%d: Unimplemented type directive %s"), filename, *plineno, fields[1]);
     }
 
     gsfatal("%s:%d: gsparse_type_item next", __FILE__, __LINE__);
