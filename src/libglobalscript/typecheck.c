@@ -120,7 +120,7 @@ gstypes_kind_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
         case gssymcoercionlable:
             return;
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_kind_check_item(type = %d)", items[i].v->pos, items[i].type);
+            gsfatal(UNIMPL("%P: gstypes_kind_check_item(type = %d)"), items[i].v->pos, items[i].type);
     }
 }
 
@@ -136,9 +136,8 @@ gstypes_calculate_kind(struct gstype *type)
             struct gstype_abstract *abs;
 
             abs = (struct gstype_abstract *)type;
-            if (abs->kind)
-                return abs->kind;
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Abstract types without declared kinds", type->pos);
+            if (abs->kind) return abs->kind;
+            gsfatal(UNIMPL("%P: Abstract types without declared kinds"), type->pos);
         }
         case gstype_knprim: {
             struct gspos pos;
@@ -160,7 +159,7 @@ gstypes_calculate_kind(struct gstype *type)
 
             prim = (struct gstype_unprim *)type;
             if (!prim->kind)
-                gsfatal("%P: Primitive %s seems to lack a declared kind", type->pos, prim->primname->name);
+                gsfatal("%P: Primitive %y seems to lack a declared kind", type->pos, prim->primname);
             else
                 return prim->kind
             ;
