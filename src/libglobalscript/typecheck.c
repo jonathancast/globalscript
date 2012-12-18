@@ -3099,6 +3099,10 @@ static
 void
 gsbc_typecheck_validate_prim_type(struct gspos pos, gsinterned_string primsetname, struct gstype *type)
 {
+    while (type->node == gstype_app) {
+        struct gstype_app *app = (struct gstype_app *)type;
+        type = app->fun;
+    }
     switch (type->node) {
         case gstype_forall: {
             struct gstype_forall *forall = (struct gstype_forall *)type;
@@ -3138,11 +3142,37 @@ gsbc_typecheck_validate_prim_type(struct gspos pos, gsinterned_string primsetnam
                             gsfatal(UNIMPL("%P: gsbc_typecheck_validate_prim_type(fun; arg prim group type = %d)"), pos, prim->primtypegroup);
                     }
                 }
+                case gstype_lift:
+                    break;
                 default:
                     gsfatal(UNIMPL("%P: gsbc_typecheck_validate_prim_type(fun; arg node = %d)"), pos, arg->node);
             }
             gsbc_typecheck_validate_prim_type(pos, primsetname, fun->tyres);
             return;
+        }
+        case gstype_knprim: {
+            struct gstype_knprim *prim = (struct gstype_knprim *)type;
+            if (strcmp(prim->primset->name, primsetname->name))
+                gsfatal("%P: Invalid primitive type")
+            ;
+            switch (prim->primtypegroup) {
+                case gsprim_type_intr:
+                    return;
+                default:
+                    gsfatal(UNIMPL("%P: gsbc_typecheck_validate_prim_type(fun; result prim group type = %d)"), pos, prim->primtypegroup);
+            }
+        }
+        case gstype_unprim: {
+            struct gstype_unprim *prim = (struct gstype_unprim *)type;
+            if (prim->primsetname != primsetname)
+                gsfatal("%P: Invalid primitive type")
+            ;
+            switch (prim->primtypegroup) {
+                case gsprim_type_intr:
+                    return;
+                default:
+                    gsfatal(UNIMPL("%P: gsbc_typecheck_validate_prim_type(fun; result prim group type = %d)"), pos, prim->primtypegroup);
+            }
         }
         default:
             gsfatal(UNIMPL("%P: gsbc_typecheck_validate_prim_type(node = %d)"), pos, type->node);
