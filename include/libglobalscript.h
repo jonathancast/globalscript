@@ -389,6 +389,7 @@ struct gsregistered_primset {
 
 enum gsprim_type_group {
     gsprim_type_defined,
+    gsprim_type_intr,
     gsprim_type_elim,
     gsprim_type_api,
 };

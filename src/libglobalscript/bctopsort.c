@@ -125,13 +125,15 @@ static struct gsparsedline *gstype_section_skip_type_expr(struct gsparsedfile_se
 struct gsparsedline *
 gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedline *type)
 {
-    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtyapiprim, gssymtyelimprim, gssymtydefinedprim;
+    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtyapiprim, gssymtyintrprim, gssymtyelimprim, gssymtydefinedprim;
 
     if (gssymceq(type->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
     } else if (gssymceq(type->directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
     } else if (gssymceq(type->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")) {
+        return gsinput_next_line(ppseg, type);
+    } else if (gssymceq(type->directive, gssymtyintrprim, gssymtypedirective, ".tyintrprim")) {
         return gsinput_next_line(ppseg, type);
     } else if (gssymceq(type->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")) {
         return gsinput_next_line(ppseg, type);
@@ -475,7 +477,7 @@ static
 void
 gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtydefinedprim, gssymtyelimprim, gssymtyapiprim;
+    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtydefinedprim, gssymtyintrprim, gssymtyelimprim, gssymtyapiprim;
 
     gsinterned_string directive;
     struct gsparsedfile_segment *pseg;
@@ -492,13 +494,14 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
         return;
     } else if (
         gssymceq(directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")
+        || gssymceq(directive, gssymtyintrprim, gssymtypedirective, ".tyintrprim")
         || gssymceq(directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")
         || gssymceq(directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
     ) {
         struct gsregistered_primset *prims;
         struct gsregistered_primtype *type;
-        enum gsprim_type_group expected_prim_type_group;
-        char *expected_prim_type_group_descr;
+        enum gsprim_type_group expected_group;
+        char *expected_group_descr;
 
         if (ptype->numarguments < 1)
             gsfatal("P: Missing primitive set name on %y", ptype->pos, directive)
@@ -515,19 +518,22 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
             gsfatal("%P: Primitive set %y does not in fact contain a type %y", ptype->pos, ptype->arguments[0], ptype->arguments[1])
         ;
         if (directive == gssymtydefinedprim) {
-            expected_prim_type_group = gsprim_type_defined;
-            expected_prim_type_group_descr = "a defined type";
+            expected_group = gsprim_type_defined;
+            expected_group_descr = "a defined type";
+        } else if (directive == gssymtyintrprim) {
+            expected_group = gsprim_type_intr;
+            expected_group_descr = "an intrtype";
         } else if (directive == gssymtyelimprim) {
-            expected_prim_type_group = gsprim_type_elim;
-            expected_prim_type_group_descr = "an elimtype";
+            expected_group = gsprim_type_elim;
+            expected_group_descr = "an elimtype";
         } else if (directive == gssymtyapiprim) {
-            expected_prim_type_group = gsprim_type_api;
-            expected_prim_type_group_descr = "an apitype";
+            expected_group = gsprim_type_api;
+            expected_group_descr = "an apitype";
         } else {
             gsfatal(UNIMPL("%P: Check primtype group of %y against registered primtype group"), ptype->pos, directive);
         }
-        if (type && type->prim_type_group != expected_prim_type_group)
-            gsfatal("%P: Primitive type %y in primitive set %y is not in fact %s", ptype->pos, ptype->arguments[1], ptype->arguments[0], expected_prim_type_group_descr)
+        if (type && type->prim_type_group != expected_group)
+            gsfatal("%P: Primitive type %y in primitive set %y is not in fact %s", ptype->pos, ptype->arguments[1], ptype->arguments[0], expected_group_descr)
         ;
 
         if (ptype->numarguments < 3)

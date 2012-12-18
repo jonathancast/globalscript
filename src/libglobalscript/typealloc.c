@@ -59,7 +59,7 @@ static
 void
 gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, int *compiling, int i, int n)
 {
-    static gsinterned_string gssymtyabstract, gssymtyexpr, gssymtydefinedprim, gssymtyapiprim, gssymtyelimprim, gssymtycoercion;
+    static gsinterned_string gssymtyabstract, gssymtyexpr, gssymtydefinedprim, gssymtyintrprim, gssymtyelimprim, gssymtyapiprim, gssymtycoercion;
 
     struct gsbc_item item;
     struct gsparsedfile_segment *pseg;
@@ -80,8 +80,9 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
         types[i] = gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), items, types, compiling, n);
     } else if (
         gssymceq(ptype->directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")
-        || gssymceq(ptype->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
+        || gssymceq(ptype->directive, gssymtyintrprim, gssymtypedirective, ".tyintrprim")
         || gssymceq(ptype->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")
+        || gssymceq(ptype->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
     ) {
         struct gsregistered_primset *prims;
         struct gskind *kind;
@@ -95,23 +96,24 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
 
         if (ptype->directive == gssymtydefinedprim)
             group = gsprim_type_defined
-        ; else if (ptype->directive == gssymtyapiprim)
-            group = gsprim_type_api
+        ; else if (ptype->directive == gssymtyintrprim)
+            group = gsprim_type_intr
         ; else if (ptype->directive == gssymtyelimprim)
             group = gsprim_type_elim
+        ; else if (ptype->directive == gssymtyapiprim)
+            group = gsprim_type_api
         ; else
             gsfatal(UNIMPL("%P: Get group for %y"), ptype->pos, ptype->directive)
         ;
         kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-        if (prims) {
-            types[i] = gstypes_compile_knprim(ptype->pos, group, prims, ptype->arguments[1], kind);
-        } else {
-            types[i] = gstypes_compile_unprim(ptype->pos, group, ptype->arguments[0], ptype->arguments[1], kind);
-        }
+        types[i] = prims
+            ? gstypes_compile_knprim(ptype->pos, group, prims, ptype->arguments[1], kind)
+            : gstypes_compile_unprim(ptype->pos, group, ptype->arguments[0], ptype->arguments[1], kind)
+        ;
     } else if (gssymceq(item.v->directive, gssymtycoercion, gssymtypedirective, ".tycoercion")) {
         types[i] = gstype_compile_coercion_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), items, types, compiling, n);
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_types(%s)", item.v->pos, item.v->directive->name);
+        gsfatal(UNIMPL("%P: gstypes_compile_types(%y)"), item.v->pos, item.v->directive);
     }
 
     compiling[i] = 0;
@@ -121,7 +123,7 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
 void
 gstypes_compile_type_definitions(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **defns, int n)
 {
-    static gsinterned_string gssymtyabstract, gssymtydefinedprim, gssymtyapiprim, gssymtyelimprim, gssymtyexpr;
+    static gsinterned_string gssymtyabstract, gssymtydefinedprim, gssymtyintrprim, gssymtyelimprim, gssymtyapiprim, gssymtyexpr;
     int i;
 
     for (i = 0; i < n; i++) {
@@ -142,8 +144,9 @@ gstypes_compile_type_definitions(struct gsfile_symtable *symtable, struct gsbc_i
                         gsbc_typecheck_check_boxed(ptype->pos, defns[i]);
                     } else if (
                         gssymceq(ptype->directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")
-                        || gssymceq(ptype->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
+                        || gssymceq(ptype->directive, gssymtyintrprim, gssymtypedirective, ".tyintrprim")
                         || gssymceq(ptype->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")
+                        || gssymceq(ptype->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
                         || gssymceq(ptype->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")
                     ) {
                         defns[i] = 0;
