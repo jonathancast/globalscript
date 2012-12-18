@@ -357,8 +357,8 @@ struct gseprim {
 
 /* §section Primitives */
 
-typedef int gsprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *, gsvalue *);
-typedef int gsubprim_handler(struct ace_thread *, struct gspos pos, int, gsvalue *);
+typedef int gsprim_handler(struct ace_thread *, struct gspos, int, gsvalue *, gsvalue *);
+typedef int gsubprim_handler(struct ace_thread *, struct gspos, int, gsvalue *);
 typedef int gslprim_handler(struct ace_thread *, struct gspos, int, gsvalue *);
 
 struct gslprim_blocking;
