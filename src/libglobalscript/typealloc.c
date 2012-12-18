@@ -59,7 +59,7 @@ static
 void
 gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, int *compiling, int i, int n)
 {
-    static gsinterned_string gssymtyelimprim;
+    static gsinterned_string gssymtyabstract, gssymtyexpr, gssymtydefinedprim, gssymtyapiprim, gssymtyelimprim, gssymtycoercion;
 
     struct gsbc_item item;
     struct gsparsedfile_segment *pseg;
@@ -71,53 +71,44 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
     pseg = item.pseg;
     ptype = item.v;
 
-    if (gssymeq(item.v->directive, gssymtypedirective, ".tyabstract")) {
+    if (gssymceq(item.v->directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
         struct gskind *kind;
 
         kind = item.v->numarguments > 0 ? gskind_compile(ptype->pos, ptype->arguments[0]) : 0;
         types[i] = gstypes_compile_abstract(ptype->pos, item.v->label, kind);
-    } else if (gssymeq(item.v->directive, gssymtypedirective, ".tyexpr")) {
+    } else if (gssymceq(item.v->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")) {
         types[i] = gstype_compile_type_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), items, types, compiling, n);
-    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tydefinedprim")) {
+    } else if (
+        gssymceq(ptype->directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")
+        || gssymceq(ptype->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
+        || gssymceq(ptype->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")
+    ) {
         struct gsregistered_primset *prims;
+        struct gskind *kind;
+        enum gsprim_type_group group;
 
-        if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
-            struct gskind *kind;
+        prims = gsprims_lookup_prim_set(ptype->arguments[0]->name);
 
-            kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-            types[i] = gstypes_compile_knprim(ptype->pos, gsprim_type_defined, prims, ptype->arguments[1], kind);
+        if (ptype->directive == gssymtydefinedprim && !prims)
+            gsfatal("%P: Unknown primset %y, which is bad because it supposedly contains defined primtype %y", ptype->pos, ptype->arguments[0], ptype->arguments[1])
+        ;
+
+        if (ptype->directive == gssymtydefinedprim)
+            group = gsprim_type_defined
+        ; else if (ptype->directive == gssymtyapiprim)
+            group = gsprim_type_api
+        ; else if (ptype->directive == gssymtyelimprim)
+            group = gsprim_type_elim
+        ; else
+            gsfatal(UNIMPL("%P: Get group for %y"), ptype->pos, ptype->directive)
+        ;
+        kind = gskind_compile(ptype->pos, ptype->arguments[2]);
+        if (prims) {
+            types[i] = gstypes_compile_knprim(ptype->pos, group, prims, ptype->arguments[1], kind);
         } else {
-            gsfatal("%P: Unknown primset %s, which is bad because it supposedly contains defined primitive %s", ptype->pos, ptype->arguments[0]->name, ptype->arguments[1]->name);
+            types[i] = gstypes_compile_unprim(ptype->pos, group, ptype->arguments[0], ptype->arguments[1], kind);
         }
-    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyapiprim")) {
-        struct gsregistered_primset *prims;
-
-        if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
-            struct gskind *kind;
-
-            kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-            types[i] = gstypes_compile_knprim(ptype->pos, gsprim_type_api, prims, ptype->arguments[1], kind);
-        } else {
-            struct gskind *kind;
-
-            kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-            types[i] = gstypes_compile_unprim(ptype->pos, gsprim_type_api, ptype->arguments[0], ptype->arguments[1], kind);
-        }
-    } else if (gssymceq(ptype->directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")) {
-        struct gsregistered_primset *prims;
-
-        if (prims = gsprims_lookup_prim_set(ptype->arguments[0]->name)) {
-            struct gskind *kind;
-
-            kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-            types[i] = gstypes_compile_knprim(ptype->pos, gsprim_type_elim, prims, ptype->arguments[1], kind);
-        } else {
-            struct gskind *kind;
-
-            kind = gskind_compile(ptype->pos, ptype->arguments[2]);
-            types[i] = gstypes_compile_unprim(ptype->pos, gsprim_type_elim, ptype->arguments[0], ptype->arguments[1], kind);
-        }
-    } else if (gssymeq(item.v->directive, gssymtypedirective, ".tycoercion")) {
+    } else if (gssymceq(item.v->directive, gssymtycoercion, gssymtypedirective, ".tycoercion")) {
         types[i] = gstype_compile_coercion_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), items, types, compiling, n);
     } else {
         gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_types(%s)", item.v->pos, item.v->directive->name);
