@@ -151,15 +151,6 @@ gstypes_calculate_kind(struct gstype *type)
             if (!primtype->kind)
                 gsfatal(UNIMPL("Panic! Primitype type %s (%s:%d) lacks a declared kind"), primtype->name, primtype->file, primtype->line)
             ;
-            if (prim->primtypegroup != primtype->prim_type_group) {
-                char group_name[0x100];
-                switch (primtype->prim_type_group) {
-                    default:
-                        seprint(group_name, group_name + sizeof(group_name), "an 'unknown primitive type group (%d)'", primtype->prim_type_group);
-                        break;
-                }
-                gsfatal("%P: Prim %s in primset %s is actually %s", type->pos, primtype->name, prim->primset->name, group_name);
-            }
             pos.file = gsintern_string(gssymfilename, primtype->file);
             pos.lineno = primtype->line;
             return gskind_compile(pos, gsintern_string(gssymkindexpr, primtype->kind));
