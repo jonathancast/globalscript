@@ -497,6 +497,8 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
     ) {
         struct gsregistered_primset *prims;
         struct gsregistered_primtype *type;
+        enum gsprim_type_group expected_prim_type_group;
+        char *expected_prim_type_group_descr;
 
         if (ptype->numarguments < 1)
             gsfatal("P: Missing primitive set name on %y", ptype->pos, directive)
@@ -505,6 +507,7 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
         if (directive == gssymtydefinedprim && !prims)
             gsfatal("%P: Unknown primitive set %y, which is really bad since it's supposed to contain defined types", ptype->pos, ptype->arguments[0])
         ;
+
         if (ptype->numarguments < 2)
             gsfatal("%P: Missing primitive type name on %y", ptype->pos, directive)
         ;
@@ -512,23 +515,25 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
             gsfatal("%P: Primitive set %y does not in fact contain a type %y", ptype->pos, ptype->arguments[0], ptype->arguments[1])
         ;
         if (directive == gssymtydefinedprim) {
-            if (type->prim_type_group != gsprim_type_defined)
-                gsfatal("%P: Primitive type %y in primitive set %y is not in fact a defined type", ptype->pos, ptype->arguments[1], ptype->arguments[0])
-            ;
+            expected_prim_type_group = gsprim_type_defined;
+            expected_prim_type_group_descr = "a defined type";
         } else if (directive == gssymtyelimprim) {
-            if (type && type->prim_type_group != gsprim_type_elim)
-                gsfatal("%P: Primitive type %y in primitive set %y is not in fact an elimtype", ptype->pos, ptype->arguments[1], ptype->arguments[0])
-            ;
+            expected_prim_type_group = gsprim_type_elim;
+            expected_prim_type_group_descr = "an elimtype";
         } else if (directive == gssymtyapiprim) {
-            if (type && type->prim_type_group != gsprim_type_api)
-                gsfatal("%P: Primitive type %y in primitive set %y is not in fact an apitype", ptype->pos, ptype->arguments[1], ptype->arguments[0])
-            ;
+            expected_prim_type_group = gsprim_type_api;
+            expected_prim_type_group_descr = "an apitype";
         } else {
-            gsfatal(UNIMPL("%P: Check primtype group of %y against registered orimtype group"), ptype->pos, directive);
+            gsfatal(UNIMPL("%P: Check primtype group of %y against registered primtype group"), ptype->pos, directive);
         }
+        if (type && type->prim_type_group != expected_prim_type_group)
+            gsfatal("%P: Primitive type %y in primitive set %y is not in fact %s", ptype->pos, ptype->arguments[1], ptype->arguments[0], expected_prim_type_group_descr)
+        ;
+
         if (ptype->numarguments < 3)
             gsfatal("%P: Missing kind on %y", ptype->pos, directive)
         ;
+
         if (ptype->numarguments > 3)
             gsfatal("%P: Too many arguments to %y", ptype->pos, directive)
         ;
