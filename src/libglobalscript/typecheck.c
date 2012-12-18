@@ -559,7 +559,7 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
         gsargcheck(pdata, 0, "type");
         type = gssymtable_get_type(symtable, pdata->arguments[0]);
         if (!type)
-            gsfatal_bad_input(pdata, "Couldn't find type %s", pdata->arguments[0])
+            gsfatal("%P: Couldn't find type %y", pdata->pos, pdata->arguments[0])
         ;
         if (pdata->label)
             gssymtable_set_data_type(symtable, pdata->label, type)
@@ -574,7 +574,7 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
 
         type = gssymtable_get_type(symtable, pdata->arguments[1]);
         if (!type)
-            gsfatal_bad_input(pdata, "Couldn't find type %s", pdata->arguments[1])
+            gsfatal("%P: Couldn't find type %y", pdata->pos, pdata->arguments[1])
         ;
         if (pdata->label)
             gssymtable_set_data_type(symtable, pdata->label, type)
@@ -781,10 +781,10 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Cannot find type of code item %s", pdata->pos, pdata->arguments[0]->name)
         ;
         if (code_type->numftyvs)
-            gsfatal_bad_input(pdata, "Code for a global data item cannot have free type variables")
+            gsfatal("%P: ode for a global data item cannot have free type variables", pdata->pos)
         ;
         if (code_type->numfvs)
-            gsfatal_bad_input(pdata, "Code for a global data item cannot have free variables")
+            gsfatal("%P: Code for a global data item cannot have free variables", pdata->pos)
         ;
 
         if (pdata->numarguments >= 2) {
@@ -807,7 +807,8 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
         coercion_type = gssymtable_get_coercion_type(symtable, pdata->arguments[0]);
         if (!coercion_type)
-            gsfatal_bad_input(pdata, "Couldn't find type of coercion %s", pdata->arguments[0]->name);
+            gsfatal("%P: Couldn't find type of coercion %y", pdata->pos, pdata->arguments[0])
+        ;
 
         src_type = gssymtable_get_data_type(symtable, pdata->arguments[1]);
         if (!src_type)
@@ -867,10 +868,10 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
         struct gsbc_code_item_type *type;
 
         if (pcode->numarguments < 1)
-            gsfatal_bad_input(pcode, "Not enough arguments to .eprog; missing primset")
+            gsfatal("%P: Not enough arguments to .eprog; missing primset", pcode->pos)
         ;
         if (pcode->numarguments < 2)
-            gsfatal_bad_input(pcode, "Not enough arguments to .eprog; missing API monad name")
+            gsfatal("%P: Not enough arguments to .eprog; missing API monad name", pcode->pos)
         ;
         type = gsbc_typecheck_api_expr(pcode->pos, symtable, &pseg, gsinput_next_line(&pseg, pcode), pcode->arguments[0], pcode->arguments[1]);
         gssymtable_set_code_type(symtable, pcode->label, type);
@@ -1267,16 +1268,16 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
 
     if (gssymceq(p->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
         if (pcl->regtype > rttygvar)
-            gsfatal_bad_input(p, "Too late to add global type variables")
+            gsfatal("%P: Too late to add global type variables", p->pos)
         ;
         pcl->regtype = rttygvar;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers")
+            gsfatal("%P: Too many registers", p->pos)
         ;
         pcl->regs[pcl->nregs] = p->label;
         pcl->tyregs[pcl->nregs] = gssymtable_get_type(symtable, p->label);
         if (!pcl->tyregs[pcl->nregs])
-            gsfatal_bad_input(p, "Couldn't find type global %s", p->label->name)
+            gsfatal("Couldn't find type global %y", p->pos, p->label)
         ;
         pcl->tyregkinds[pcl->nregs] = gssymtable_get_type_expr_kind(symtable, p->label);
         if (!pcl->tyregkinds[pcl->nregs])
@@ -1291,7 +1292,7 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
         ;
         pcl->regtype = rttyfv;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers")
+            gsfatal("%P: Too many registers", p->pos)
         ;
         pcl->regs[pcl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
@@ -1421,11 +1422,11 @@ gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline 
 
     if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
         if (pcl->regtype > rtcode)
-            gsfatal_bad_input(p, "Too late to add sub-expressions")
+            gsfatal("%P: Too late to add sub-expressions", p->pos)
         ;
         pcl->regtype = rtcode;
         if (pcl->ncodes >= MAX_NUM_REGISTERS)
-            gsfatal("%P: Too many sub-expressions; max 0x%x", p, MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many sub-expressions; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         pcl->coderegs[pcl->ncodes] = p->label;
         pcl->codetypes[pcl->ncodes] = gssymtable_get_code_type(symtable, p->label);
@@ -1435,11 +1436,11 @@ gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline 
         pcl->ncodes++;
     } else if (gssymceq(p->directive, gssymcogvar, gssymcodeop, ".cogvar")) {
         if (pcl->regtype > rtgvar)
-            gsfatal_bad_input(p, "Too late to add global variables")
+            gsfatal("%P: Too late to add global variables", p->pos)
         ;
         pcl->regtype = rtgvar;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers")
+            gsfatal("%P: Too many registers", p->pos)
         ;
         pcl->regs[pcl->nregs] = p->label;
         pcl->regcoerciontypes[pcl->nregs] = gssymtable_get_coercion_type(symtable, p->label);
@@ -1536,18 +1537,19 @@ gsbc_typecheck_data_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or
         struct gstype *argtype;
 
         if (pcl->regtype > rtarg)
-            gsfatal_bad_input(p, "Too late to add arguments")
+            gsfatal("%P: Too late to add arguments", p->pos)
         ;
         pcl->regtype = rtarg;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers")
+            gsfatal("%P: Too many registers", p->pos)
         ;
         pcl->regs[pcl->nregs] = p->label;
         gsargcheck(p, 0, "var");
         reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
         argtype = pcl->tyregs[reg];
         if (!argtype)
-            gsfatal_bad_input(p, "Register %s is not a type", p->arguments[0]);
+            gsfatal("%P: Register %y is not a type", p->pos, p->arguments[0])\
+        ;
         for (i = 1; i < p->numarguments; i++) {
             int regarg;
 
@@ -2118,7 +2120,7 @@ static struct gstype *gsbc_find_field_in_product(struct gspos, struct gstype_pro
 #define CHECK_PHASE(ph, nm) \
     do { \
         if (pcl->regtype > ph) \
-            gsfatal_bad_input(p, "Too late to add " nm) \
+            gsfatal("%P: Too late to add %s", p->pos, nm) \
         ; \
         pcl->regtype = ph; \
     } while (0)
@@ -2231,7 +2233,7 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         struct gstype_sum *sum;
 
         if (pcl->regtype > rtlet)
-            gsfatal_bad_input(p, "Too late to add allocations")
+            gsfatal("%P: Too late to add allocations", p->pos)
         ;
         pcl->regtype = rtlet;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
@@ -2683,11 +2685,11 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
             int nftyvs;
 
             if (cl.regtype > rtlet)
-                gsfatal_bad_input(p, "Too late to add generators")
+                gsfatal("%P: Too late to add generators", p->pos)
             ;
             cl.regtype = rtlet;
             if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
             ;
 
             gsargcheck(p, 0, "code");
@@ -3173,7 +3175,7 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
     }
     nftyvs = firstftyv < p->numarguments ? i - firstftyv : 0;
     if (nftyvs < cty->numftyvs)
-        gsfatal_bad_input(p, "Not enough free type variables for %y; need %d but have %d", codelabel, cty->numftyvs, nftyvs)
+        gsfatal("%P: Not enough free type variables for %y; need %d but have %d", p->pos, codelabel, cty->numftyvs, nftyvs)
     ;
     return nftyvs;
 }
@@ -3187,10 +3189,10 @@ gsbc_typecheck_free_variables(struct gsbc_typecheck_code_or_api_expr_closure *pc
 
     nfvs = firstfv < p->numarguments ? p->numarguments - firstfv : 0;
     if (nfvs < cty->numfvs)
-        gsfatal_bad_input(p, "Not enough free variables for %y; need %d but have %d", codelabel, cty->numfvs, nfvs)
+        gsfatal("%P: Not enough free variables for %y; need %d but have %d", p->pos, codelabel, cty->numfvs, nfvs)
     ;
     if (nfvs > cty->numfvs)
-        gsfatal_bad_input(p, "Too many free variables for %y; only need %d but have %d", codelabel, cty->numfvs, nfvs)
+        gsfatal("%P: Too many free variables for %y; only need %d but have %d", p->pos, codelabel, cty->numfvs, nfvs)
     ;
     for (i = firstfv; i < p->numarguments; i++) {
         int fvreg;
@@ -3851,15 +3853,16 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, gssymcoercionop, ".tygvar")) {
             if (regtype > rttygvar)
-                gsfatal_bad_input(p, "Too late to add type global variables");
+                gsfatal("%P: Too late to add type global variables", p->pos)
+            ;
             regtype = rttygvar;
             if (nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers")
+                gsfatal("%P: Too many registers", p->pos)
             ;
             regs[nregs] = p->label;
             regtypes[nregs] = gssymtable_get_type(symtable, p->label);
             if (!regtypes[nregs])
-                gsfatal_bad_input(p, "Couldn't find type for global %s", p->label->name)
+                gsfatal("%P: Couldn't find type for global %y", p->pos, p->label)
             ;
             globaldefns[nglobals] = gssymtable_get_abstype(symtable, p->label);
             nregs++;
@@ -3868,11 +3871,11 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
             struct gskind *kind;
 
             if (regtype > rttyarg)
-                gsfatal_bad_input(p, "Too late to add type arguments")
+                gsfatal("%P: Too late to add type arguments", p->pos)
             ;
             regtype = rttyarg;
             if (nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers")
+                gsfatal("%P: Too many registers", p->pos)
             ;
             regs[nregs] = p->label;
             gsargcheck(p, 0, "kind");
@@ -3885,7 +3888,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
         } else if (gssymeq(p->directive, gssymcoercionop, ".tyinvert")) {
             regtype = rtcont;
             if (nconts >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many continuations")
+                gsfatal("%P: Too many continuations", p->pos)
             ;
             conts[nconts] = p;
             nconts++;
@@ -3894,28 +3897,30 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
 
             reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
             if (reg >= nglobals)
-                gsfatal_bad_input(p, "Register %s isn't a global; can't really cast to/from definition of an abstract type unless we know what that definition is", p->arguments[0]->name)
+                gsfatal("%P: Register %y isn't a global; can't really cast to/from definition of an abstract type unless we know what that definition is", p->arguments[0])
             ;
             global = reg;
             if (!regtypes[reg])
-                gsfatal_bad_input(p, "Register %s doesn't seem to be a type variable", p->arguments[0]->name);
+                gsfatal("%P: Register %y doesn't seem to be a type variable", p->pos, p->arguments[0])
+            ;
             dest = regtypes[global];
 
             if (!globaldefns[global])
-                gsfatal_bad_input(p, "Register %s doesn't seem to be an abstract type", p->arguments[0]->name);
+                gsfatal("%P: Register %y doesn't seem to be an abstract type", p->pos, p->arguments[0])
+            ;
             source = globaldefns[global];
 
             for (i = 1; i < p->numarguments; i++) {
                 reg = gsbc_find_register(p, regs, nregs, p->arguments[i]);
                 if (!regtypes[reg])
-                    gsfatal_bad_input(p, "Register %s doesn't seem to be a type variable", p->arguments[i]->name)
+                    gsfatal("%P: Register %y doesn't seem to be a type variable", p->pos, p->arguments[i])
                 ;
                 source = gstype_apply(p->pos, source, regtypes[reg]);
                 dest = gstype_apply(p->pos, dest, regtypes[reg]);
             }
 
             if (source->node == gstype_lambda)
-                gsfatal_bad_input(p, "Not enough arguments to definition of %s", p->arguments[0]->name)
+                gsfatal("%P: Not enough arguments to definition of %y", p->pos, p->arguments[0])
             ;
 
             goto have_type;
