@@ -44,103 +44,30 @@ x		.fkarg	0	α
 
 _ibio.dir.fromprim_c	.expr
 ibio.prim.dir.t	.tygvar
-_ibio.dir.fromprim_at_c	.subcode
-_ibio.dir.fromprim_g_c	.subcode
-_ibio.dir.fromprim_l_c	.subcode
-_ibio.dir.fromprim_mao_c	.subcode
-_ibio.dir.fromprim_md_c	.subcode
-_ibio.dir.fromprim_me_c	.subcode
-_ibio.dir.fromprim_mge_c	.subcode
-_ibio.dir.fromprim_mgr_c	.subcode
-_ibio.dir.fromprim_mgw_c	.subcode
-_ibio.dir.fromprim_moe_c	.subcode
-_ibio.dir.fromprim_mor_c	.subcode
-_ibio.dir.fromprim_mow_c	.subcode
-_ibio.dir.fromprim_mone_c	.subcode
-_ibio.dir.fromprim_monr_c	.subcode
-_ibio.dir.fromprim_monw_c	.subcode
+time.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+natural.t	.tygvar
+bool.t	.tygvar
 d	.larg	ibio.prim.dir.t
-at	.alloc	_ibio.dir.fromprim_at_c
-g	.alloc	_ibio.dir.fromprim_g_c
-l	.alloc	_ibio.dir.fromprim_l_c
-mao	.alloc	_ibio.dir.fromprim_mao_c
-md	.alloc	_ibio.dir.fromprim_md_c	|	d
-me	.alloc	_ibio.dir.fromprim_me_c
-mge	.alloc	_ibio.dir.fromprim_mge_c
-mgr	.alloc	_ibio.dir.fromprim_mgr_c
-mgw	.alloc	_ibio.dir.fromprim_mgw_c
-moe	.alloc	_ibio.dir.fromprim_moe_c
-mor	.alloc	_ibio.dir.fromprim_mor_c
-mow	.alloc	_ibio.dir.fromprim_mow_c
-mone	.alloc	_ibio.dir.fromprim_mone_c
-monr	.alloc	_ibio.dir.fromprim_monr_c
-monw	.alloc	_ibio.dir.fromprim_monw_c
+at	.undefined	time.t
+g	.undefined	list.t	rune.t
+l	.undefined	natural.t
+mao	.undefined	bool.t
+md	.field	mode.directory	d
+me	.undefined	bool.t
+mge	.undefined	bool.t
+mgr	.undefined	bool.t
+mgw	.undefined	bool.t
+moe	.undefined	bool.t
+mor	.undefined	bool.t
+mow	.undefined	bool.t
+mone	.undefined	bool.t
+monr	.undefined	bool.t
+monw	.undefined	bool.t
 st	.record	atime	at	gid	g	length	l	mode.append.only	mao	mode.directory	md	mode.exclusive	me	mode.group.execute	mge	mode.group.read	mgr	mode.group.write	mgw	mode.other.execute	moe	mode.other.read	mor	mode.other.write	mow	mode.owner.execute	mone	mode.owner.read	monr	mode.owner.write	monw
 	.lift
 	.yield	st
-
-_ibio.dir.fromprim_at_c	.expr
-time.t	.tygvar
-	.undef	time.t
-
-_ibio.dir.fromprim_g_c	.expr
-list.t	.tygvar
-rune.t	.tygvar
-	.undef	list.t	rune.t
-
-_ibio.dir.fromprim_l_c	.expr
-natural.t	.tygvar
-	.undef	natural.t
-
-_ibio.dir.fromprim_mao_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
-
-_ibio.dir.fromprim_md_c	.expr
-ibio.prim.dir.t	.tygvar
-d	.fv	ibio.prim.dir.t
-b	.field	mode.directory	d
-	.enter	b
-
-_ibio.dir.fromprim_me_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
-
-_ibio.dir.fromprim_mge_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
-
-_ibio.dir.fromprim_mgr_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
-
-_ibio.dir.fromprim_mgw_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
-
-_ibio.dir.fromprim_moe_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
-
-_ibio.dir.fromprim_mor_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
-
-_ibio.dir.fromprim_mow_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
-
-_ibio.dir.fromprim_mone_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
-
-_ibio.dir.fromprim_monr_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
-
-_ibio.dir.fromprim_monw_c	.expr
-bool.t	.tygvar
-	.undef	bool.t
 
 # §section §gs{ibio.mapM.prim}
 
