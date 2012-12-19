@@ -3675,6 +3675,9 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
                 case gsprim_type_defined:
                     res = seprint(res, eob, "\"definedprim ");
                     break;
+                case gsprim_type_intr:
+                    res = seprint(res, eob, "\"intrprim ");
+                    break;
                 case gsprim_type_elim:
                     res = seprint(res, eob, "\"elimprim ");
                     break;
