@@ -33,6 +33,8 @@ enum {
     ibio_stat_num_fields,
 };
 
+gsvalue ibio_parse_gsbio_dir(struct gspos, struct gsbio_dir *dir);
+
 api_prim_executor ibio_handle_prim_file_stat;
 
 gsrpc_handler ibio_main_process_handle_rpc_stat;

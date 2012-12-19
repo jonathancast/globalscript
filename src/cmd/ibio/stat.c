@@ -107,7 +107,6 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, stru
         } else {
             struct ibio_file_stat_rpc *statrpc = (struct ibio_file_stat_rpc *)file_stat_blocking->rpc;
             int status;
-            struct gsbio_dir *dir;
 
             lock(&statrpc->rpc.lock);
                 status = statrpc->rpc.status;
@@ -120,13 +119,7 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, stru
                 case gsrpc_pending:
                     return api_st_blocked;
                 case gsrpc_succeeded: {
-                    gsvalue fields[ibio_stat_num_fields];
-
-                    dir = statrpc->res;
-
-                    fields[ibio_stat_mode_directory] = dir->d.mode & DMDIR ? gstrue(stat->pos) : gsfalse(stat->pos);
-
-                    *pv = gsrecordv(stat->pos, ibio_stat_num_fields, fields);
+                    *pv = ibio_parse_gsbio_dir(stat->pos, statrpc->res);
                     return api_st_success;
                 }
                 default:
@@ -135,6 +128,16 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, stru
             }
         }
     }
+}
+
+gsvalue
+ibio_parse_gsbio_dir(struct gspos pos, struct gsbio_dir *dir)
+{
+    gsvalue fields[ibio_stat_num_fields];
+
+    fields[ibio_stat_mode_directory] = dir->d.mode & DMDIR ? gstrue(pos) : gsfalse(pos);
+
+    return gsrecordv(pos, ibio_stat_num_fields, fields);
 }
 
 void
