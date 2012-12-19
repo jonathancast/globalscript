@@ -123,19 +123,28 @@ gsbio_unix_parse_directory(char *filename, void *p9buf, void *p9bufend, void **n
     char *nm;
     struct stat st;
 
-    dir = ubuf;
+    while ((uchar*)ubuf < (uchar*)ubufend) {
+        dir = ubuf;
 
-    nm = gs_sys_seg_suballoc(&uxio_filename_class, &uxio_filename_nursury, strlen(filename) + strlen(dir->d_name) + 2, 1);
-    sprint(nm, "%s/%s", filename, dir->d_name);
+        if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, "..")) {
+            ubuf = (uchar*)ubuf + dir->d_reclen;
+            continue;
+        }
+        nm = gs_sys_seg_suballoc(&uxio_filename_class, &uxio_filename_nursury, strlen(filename) + strlen(dir->d_name) + 2, 1);
+        sprint(nm, "%s/%s", filename, dir->d_name);
 
-    if (stat(nm, &st) < 0) {
-        werrstr("%s: stat failed: %r", nm);
-        *newp9buf = 0;
+        if (stat(nm, &st) < 0) {
+            werrstr("%s: stat failed: %r", nm);
+            *newp9buf = 0;
+            return;
+        }
+
+        *newp9buf = gsbio_unix_dir_from_sys_stat(p9buf, p9bufend, nm, &st);
+        *newubuf = (uchar*)ubuf + dir->d_reclen;
         return;
     }
-
-    *newp9buf = gsbio_unix_dir_from_sys_stat(p9buf, p9bufend, nm, &st);
-    *newubuf = (uchar*)ubuf + dir->d_reclen;
+    *newp9buf = p9buf;
+    *newubuf = ubuf;
 }
 
 struct gsbio_dir *
