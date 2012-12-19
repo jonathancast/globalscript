@@ -93,7 +93,7 @@ struct ibio_uxio {
     ibio_uxio_refill *refill;
 };
 
-struct ibio_uxio *ibio_file_io(void);
+struct ibio_uxio *ibio_file_uxio(void);
 
 /* §section Input */
 
