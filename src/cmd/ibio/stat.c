@@ -36,9 +36,18 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, stru
     }
     for (;;) {
         if (file_stat_blocking->fn.gss) {
-            if (!ibio_gsstring_eval_advance(thread, stat->pos, &file_stat_blocking->fn))
-                return api_st_error
-            ;
+            enum ibio_gsstring_eval_state st;
+
+            st = ibio_gsstring_eval_advance(thread, stat->pos, &file_stat_blocking->fn);
+            switch (st) {
+                case ibio_gsstring_eval_blocked:
+                    return api_st_blocked;
+                case ibio_gsstring_eval_success:
+                    break;
+                default:
+                    api_abend(thread, UNIMPL("%P: ibio_handle_prim_file_stat: ibio_gsstring_eval_advance st %d"), stat->pos, st);
+                    return api_st_error;
+            }
         } else if (!file_stat_blocking->rpc) {
             struct gsrpc *rpc;
             struct ibio_file_stat_rpc *statrpc;

@@ -14,7 +14,7 @@ ibio_gsstring_eval_start(struct ibio_gsstring_eval *eval, gsvalue gss)
     eval->sb = gsreserve_string_builder();
 }
 
-int
+enum ibio_gsstring_eval_state
 ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct ibio_gsstring_eval *eval)
 {
     gstypecode st;
@@ -25,22 +25,22 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
         switch (st) {
             case gstyunboxed:
                 if (gsextend_string_builder(&eval->sb, 4) < 0) {
-                    api_abend(thread, "%P: OOM Saving file name", pos);
-                    return 0;
+                    api_abend(thread, "%P: OOM saving file name", pos);
+                    return ibio_gsstring_eval_error;
                 }
                 eval->sb.end = gsrunetochar(eval->gsc, eval->sb.end, eval->sb.extent);
                 eval->gsc = 0;
                 break;
             default:
                 api_abend(thread, UNIMPL("%P: ibio_handle_prim_file_stat: handle c st %d"), pos, st);
-                return 0;
+                return ibio_gsstring_eval_error;
         }
     } else if (eval->gss) {
         st = GS_SLOW_EVALUATE(eval->gss);
 
         switch (st) {
             case gstystack:
-                return 0;
+                return ibio_gsstring_eval_blocked;
             case gstywhnf: {
                 struct gsconstr *constr;
 
@@ -56,7 +56,7 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
                         break;
                     default:
                         api_abend(thread, UNIMPL("%P: %P: ibio_handle_prim_file_stat: handle s constr %d"), pos, constr->pos, constr->constrnum);
-                        return 0;
+                        return ibio_gsstring_eval_error;
                 }
                 break;
             }
@@ -68,13 +68,13 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
 
                 gserror_format(err, err + sizeof(err), (struct gserror *)eval->gss);
                 api_abend(thread, "%P: Error evaluating file name: %s", pos, err);
-                return 0;
+                return ibio_gsstring_eval_error;
             }
             default:
                 api_abend(thread, UNIMPL("%P: ibio_handle_prim_file_stat: handle s st %d"), pos, st);
-                return 0;
+                return ibio_gsstring_eval_error;
         }
     }
 
-    return 1;
+    return ibio_gsstring_eval_success;
 }
