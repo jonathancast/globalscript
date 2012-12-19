@@ -41,6 +41,8 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
 
             st = ibio_gsstring_eval_advance(thread, open->pos, &file_read_open_blocking->fn);
             switch (st) {
+                case ibio_gsstring_eval_error:
+                    return api_st_error;
                 case ibio_gsstring_eval_blocked:
                     return api_st_blocked;
                 case ibio_gsstring_eval_success:
