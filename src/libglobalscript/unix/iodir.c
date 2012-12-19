@@ -69,7 +69,7 @@ gsbio_sys_read_stat(struct uxio_dir_ichannel *chan)
 
     /*
         NB: Apparently this has to be done in a Linux-specific way;
-        this is cribbed from p9p's§fn<src/lib9/dirread.c:^/mygetdents/> (Linux version)
+        this is cribbed from p9p's §fn{src/lib9/dirread.c:^/mygetdents/} (Linux version)
     */
     if (!uxio_channel_size_of_available_data(chan->udir)) {
         if (fstat(chan->udir->fd, &st) < 0)
