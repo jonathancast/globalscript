@@ -943,6 +943,7 @@ struct gsbc_typecheck_code_or_api_expr_closure {
 
     /* §section Free variables */
     int nfvs;
+    int efv_bound[MAX_NUM_REGISTERS];
     gsinterned_string fvnames[MAX_NUM_REGISTERS];
     struct gspos fvposs[MAX_NUM_REGISTERS];
     struct gstype *fvtypes[MAX_NUM_REGISTERS];
@@ -1517,6 +1518,7 @@ gsbc_typecheck_data_fv_op(struct gsfile_symtable *symtable, struct gsparsedline 
         pcl->regtypes[pcl->nregs] = fvtype;
         pcl->nregs++;
 
+        pcl->efv_bound[pcl->nfvs] = p->directive == gssymopefv;
         pcl->fvtypes[pcl->nfvs] = fvtype;
         pcl->fvposs[pcl->nfvs] = p->pos;
         pcl->fvnames[pcl->nfvs] = p->label;
@@ -2665,6 +2667,8 @@ gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *pcl, int ba
     return calculated_type;
 }
 
+static void gsbc_check_api_free_variable_decls(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int *, int);
+
 static
 struct gsbc_code_item_type *
 gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
@@ -2673,11 +2677,13 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
 
     int nbinds;
     int first_rhs_lifted;
+    int bind_bound[MAX_NUM_REGISTERS];
 
     struct gstype *calculated_type;
 
     gsbc_setup_code_expr_closure(&cl);
     nbinds = 0;
+    memset(bind_bound, 0, sizeof(bind_bound));
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_code_type_arg_op(p, &cl)) {
@@ -2704,8 +2710,10 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
 
             nftyvs = gsbc_typecheck_free_type_variables(&cl, p, p->arguments[0], cty, 1);
             gsbc_typecheck_free_variables(&cl, p, p->arguments[0], cty, 1 + nftyvs + 1);
+            gsbc_check_api_free_variable_decls(&cl, p, p->arguments[0], cty, bind_bound, 1 + nftyvs + 1);
             calculated_type = cty->result_type;
 
+            bind_bound[cl.nregs] = 1;
             cl.regs[cl.nregs] = p->label;
             cl.regtypes[cl.nregs] = gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
 
@@ -2722,6 +2730,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
 
             nftyvs = gsbc_typecheck_free_type_variables(&cl, p, p->arguments[0], cty, 1);
             gsbc_typecheck_free_variables(&cl, p, p->arguments[0], cty, 1 + nftyvs + 1);
+            gsbc_check_api_free_variable_decls(&cl, p, p->arguments[0], cty, bind_bound, 1 + nftyvs + 1);
             calculated_type = cty->result_type;
 
             gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
@@ -2768,9 +2777,10 @@ gsbc_typecheck_compile_code_item_type(int type, struct gstype *cont_arg_type, st
     }
 
     res->numfvs = pcl->nfvs;
-    for (i = 0; i < pcl->nfvs; i++)
-        res->fvtypes[i] = pcl->fvtypes[i]
-    ;
+    for (i = 0; i < pcl->nfvs; i++) {
+        res->fvtypes[i] = pcl->fvtypes[i];
+        res->efv_bound[i] = pcl->efv_bound[i];
+    }
 
     res->cont_arg_type = cont_arg_type;
     res->result_type = calculated_type;
@@ -2795,9 +2805,10 @@ gsbc_typecheck_copy_code_item_type(struct gsbc_code_item_type *cty)
     }
 
     res->numfvs = cty->numfvs;
-    for (i = 0; i < cty->numfvs; i++)
-        res->fvtypes[i] = cty->fvtypes[i]
-    ;
+    for (i = 0; i < cty->numfvs; i++) {
+        res->efv_bound[i] = cty->efv_bound[i];
+        res->fvtypes[i] = cty->fvtypes[i];
+    }
 
     res->cont_arg_type = cty->cont_arg_type;
     res->result_type = cty->result_type;
@@ -2810,17 +2821,19 @@ struct gsbc_code_item_type *
 gsbc_typecheck_alloc_code_item_type(int ntyfvs, int nfvs)
 {
     struct gsbc_code_item_type *res;
-    ulong end_of_res, end_of_tyfvs, end_of_tyfvkinds, end_of_fvtypes;
+    ulong end_of_res, end_of_tyfvs, end_of_tyfvkinds, end_of_fvtypes, end_of_efv_bound;
 
     end_of_res = sizeof(*res);
     end_of_tyfvs = end_of_res + ntyfvs * sizeof(gsinterned_string);
     end_of_tyfvkinds = end_of_tyfvs + ntyfvs * sizeof(struct gskind *);
     end_of_fvtypes = end_of_tyfvkinds + nfvs * sizeof(struct gstype *);
+    end_of_efv_bound = end_of_fvtypes + nfvs * sizeof(int);
 
-    res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, end_of_fvtypes, sizeof(void *));
+    res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, end_of_efv_bound, sizeof(void *));
     res->tyfvs = (gsinterned_string*)((uchar*)res + end_of_res);
     res->tyfvkinds = (struct gskind **)((uchar*)res + end_of_tyfvs);
     res->fvtypes = (struct gstype **)((uchar*)res + end_of_tyfvkinds);
+    res->efv_bound = (int*)((uchar*)res + end_of_fvtypes);
 
     return res;
 }
@@ -3237,6 +3250,29 @@ gsbc_typecheck_free_variables(struct gsbc_typecheck_code_or_api_expr_closure *pc
         gstypes_type_check_type_fail(p->pos, pcl->regtypes[fvreg], cty->fvtypes[i - firstfv]);
     }
     return nfvs;
+}
+
+static
+void
+gsbc_check_api_free_variable_decls(struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsparsedline *p, gsinterned_string codelabel, struct gsbc_code_item_type *cty, int *bind_bound, int firstfv)
+{
+    int i;
+
+    for (i = firstfv; i < p->numarguments; i++) {
+        int fvreg;
+
+        fvreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+        if (bind_bound[fvreg]) {
+            if (!cty->efv_bound[i - firstfv]) {
+                struct gskind *kind;
+
+                kind = gstypes_calculate_kind(cty->fvtypes[i - firstfv]);
+                if (kind->node != gskind_lifted)
+                    gsfatal("%P: '%y' is .bind-bound but passed for a .fv-bound variable (should be .efv-bound)", p->pos, p->arguments[i])
+                ;
+            }
+        }
+    }
 }
 
 static

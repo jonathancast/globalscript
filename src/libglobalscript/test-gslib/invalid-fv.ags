@@ -1,0 +1,27 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.eprog	test.sequence	m
+_ep_x_c	.subcode
+_ep_body_c	.subcode
+x	.bind	_ep_x_c
+	.body	_ep_body_c	|	x
+
+_ep_x_c	.expr
+sequence.unit.ty	.tygvar
+rune.prim.rune	.tygvar
+x	.rune	x
+un	.eprim	test.sequence	m	unit	sequence.unit.ty	rune.prim.rune	|	x
+	.yield	un
+
+_ep_body_c	.expr
+sequence.unit.ty	.tygvar
+rune.prim.rune	.tygvar
+x	.fv	rune.prim.rune
+un	.eprim	test.sequence	m	unit	sequence.unit.ty	rune.prim.rune	|	x
+	.yield	un

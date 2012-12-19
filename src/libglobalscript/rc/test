@@ -89,3 +89,5 @@ ok_grep_errors '-- block statement API entry points with undefined binds --' './
 
 ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
 ok_diff '-- trivial use of alloc --' ./$O.test-gsexec simple-alloc-api.ags
+
+ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-gslib/invalid-fv.ags:13: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags

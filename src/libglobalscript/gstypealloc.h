@@ -11,6 +11,7 @@ struct gsbc_code_item_type {
     gsinterned_string *tyfvs;
     struct gskind **tyfvkinds;
     struct gstype **fvtypes;
+    int *efv_bound;
     struct gstype *cont_arg_type;
     struct gstype *result_type;
 };
