@@ -1,3 +1,13 @@
+/* §section Interface Down to GS */
+
+struct ibio_gsstring_eval {
+    gsvalue gss, gsc;
+    struct gsstringbuilder sb;
+};
+
+void ibio_gsstring_eval_start(struct ibio_gsstring_eval *, gsvalue);
+int ibio_gsstring_eval_advance(struct api_thread *, struct gspos, struct ibio_gsstring_eval *);
+
 /* §section RPCs for Unix Processes */
 
 enum {
