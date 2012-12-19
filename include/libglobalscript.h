@@ -538,20 +538,21 @@ struct gsbio_dir {
     Dir d;
 };
 
-struct gsbio_dir *gsbio_stat(char *filename);
+struct gsbio_dir *gsbio_stat(char *);
+int gsisdir(char *);
 
-struct uxio_ichannel *gsbio_device_iopen(char *filename, int omode);
-struct uxio_dir_ichannel *gsbio_dir_iopen(char *filename, int omode);
-struct uxio_ichannel *gsbio_envvar_iopen(char *name);
+struct uxio_ichannel *gsbio_device_iopen(char *, int);
+struct uxio_dir_ichannel *gsbio_dir_iopen(char *, int);
+struct uxio_ichannel *gsbio_envvar_iopen(char *);
 long gsbio_device_iclose(struct uxio_ichannel *);
 
-long gsbio_device_getline(struct uxio_ichannel *chan, char *line, long max);
-long gsbio_get_contents(struct uxio_ichannel *chan, char *buf, long max);
+long gsbio_device_getline(struct uxio_ichannel *, char *, long);
+long gsbio_get_contents(struct uxio_ichannel *, char *, long);
 
 struct gsbio_dir *gsbio_read_stat(struct uxio_dir_ichannel *);
 struct gsbio_dir *gsbio_parse_stat(u16int, void *);
 
-int gsbio_idevice_at_eof(struct uxio_ichannel *chan);
+int gsbio_idevice_at_eof(struct uxio_ichannel *);
 #endif
 
 /* §section String Builders */
