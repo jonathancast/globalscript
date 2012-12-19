@@ -556,6 +556,7 @@ int gsbio_idevice_at_eof(struct uxio_ichannel *);
 
 #ifdef __UNIX__
 long gsbio_unix_read_directory(int, void *, void *, vlong *);
+void gsbio_unix_parse_directory(char *, void *, void *, void **, void *, void *, void **);
 #endif
 
 #endif

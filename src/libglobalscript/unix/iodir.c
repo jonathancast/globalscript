@@ -55,10 +55,8 @@ gsbio_dir_iopen(char *filename, int omode)
 long
 gsbio_sys_read_stat(struct uxio_dir_ichannel *chan)
 {
-    struct dirent *dir;
     long n;
-    struct stat st;
-    char *nm;
+    void *newp9dirbuf, *newudirbuf;
 
     if (chan->udir->fd < 0)
         return 0
@@ -76,25 +74,15 @@ gsbio_sys_read_stat(struct uxio_dir_ichannel *chan)
         chan->udir->data_end = (uchar*)chan->udir->data_end + n;
     }
 
-    dir = (struct dirent*)chan->udir->data_beg;
-
-    nm = gs_sys_seg_suballoc(
-        &uxio_filename_class,
-        &uxio_filename_nursury,
-        strlen(chan->p9dir->filename) + strlen(dir->d_name) + 2,
-        1
-    );
-    sprint(nm, "%s/%s", chan->p9dir->filename, dir->d_name);
-
-    if (stat(nm, &st) < 0)
-        gsfatal("%s: stat failed: %r", nm);
-
-    gsbio_unix_fill_stat(nm, &st, chan->p9dir);
-    chan->udir->data_beg = (uchar*)chan->udir->data_beg + dir->d_reclen;
+    gsbio_unix_parse_directory(chan->p9dir->filename, chan->p9dir->data_end, UXIO_END_OF_IO_BUFFER(chan->p9dir->buf_beg), &newp9dirbuf, chan->udir->data_beg, chan->udir->data_end, &newudirbuf);
+    if (!newp9dirbuf)
+        return -1
+    ;
+    chan->p9dir->data_end = newp9dirbuf;
+    chan->udir->data_beg = newudirbuf;
     if (chan->udir->data_end == chan->udir->data_beg)
         chan->udir->data_beg = chan->udir->data_end = chan->udir->buf_beg
     ;
-
     return uxio_channel_size_of_available_data(chan->p9dir);
 }
 
@@ -126,6 +114,30 @@ gsbio_unix_read_directory(int fd, void *buf, void *end, vlong *poffset)
     return getdirentries(fd, buf, sz, poffset);
 }
 
+static void *gsbio_unix_dir_from_sys_stat(void *, void *, char *, struct stat *stat);
+
+void
+gsbio_unix_parse_directory(char *filename, void *p9buf, void *p9bufend, void **newp9buf, void *ubuf, void *ubufend, void **newubuf)
+{
+    struct dirent *dir;
+    char *nm;
+    struct stat st;
+
+    dir = ubuf;
+
+    nm = gs_sys_seg_suballoc(&uxio_filename_class, &uxio_filename_nursury, strlen(filename) + strlen(dir->d_name) + 2, 1);
+    sprint(nm, "%s/%s", filename, dir->d_name);
+
+    if (stat(nm, &st) < 0) {
+        werrstr("%s: stat failed: %r", nm);
+        *newp9buf = 0;
+        return;
+    }
+
+    *newp9buf = gsbio_unix_dir_from_sys_stat(p9buf, p9bufend, nm, &st);
+    *newubuf = (uchar*)ubuf + dir->d_reclen;
+}
+
 struct gsbio_dir *
 gsbio_sys_parse_stat(struct uxio_dir_ichannel *chan)
 {
@@ -135,9 +147,14 @@ gsbio_sys_parse_stat(struct uxio_dir_ichannel *chan)
 void
 gsbio_unix_fill_stat(char *filename, struct stat *puxstat, struct uxio_ichannel *chan)
 {
-    int size;
+    chan->data_end = gsbio_unix_dir_from_sys_stat(chan->data_end, UXIO_END_OF_IO_BUFFER(chan->buf_beg), filename, puxstat);
+}
+
+void *
+gsbio_unix_dir_from_sys_stat(void *buf, void *bufend, char *filename, struct stat *puxstat)
+{
     u64int mode;
-    void *psize, *p;
+    void *psize, *pdir;
     char *basename, *endname;
     char *str;
     int i;
@@ -151,39 +168,41 @@ gsbio_unix_fill_stat(char *filename, struct stat *puxstat, struct uxio_ichannel 
     basename = endname;
     while (basename > filename && basename[-1] != '/') basename--;
 
-    size = 0;
-    psize = uxio_save_space(chan, 2);
+    psize = buf;
+    buf = (uchar*)buf + 2;
+    pdir = buf;
 
     /* type */
-    p = uxio_save_space(chan, 2), size += 2;
-    PUT_LITTLE_ENDIAN_U16INT(p, 'M');
+    PUT_LITTLE_ENDIAN_U16INT(buf, 'M');
+    buf = (uchar*)buf + 2;
     /* dev */
-    p = uxio_save_space(chan, 4), size += 4;
+    buf = (uchar*)buf + 4;
     /* qid.type */
-    p = uxio_save_space(chan, 1), size += 1;
+    buf = (uchar*)buf + 1;
     /* qid.vers */
-    p = uxio_save_space(chan, 4), size += 4;
+    buf = (uchar*)buf + 4;
     /* qid.path */
-    p = uxio_save_space(chan, 8), size += 8;
+    buf = (uchar*)buf + 8;
 
     /* mode */
-    p = uxio_save_space(chan, 4), size += 4;
     mode = 0;
     if (S_ISDIR(puxstat->st_mode)) mode |= DMDIR;
-    PUT_LITTLE_ENDIAN_U32INT(p, mode);
+    PUT_LITTLE_ENDIAN_U32INT(buf, mode);
+    buf = (uchar*)buf + 4;
 
     /* Padding over atime, mtime, and length */
-    p = uxio_save_space(chan, 4 + 4 + 8), size += 4 + 4 + 8;
+    buf = (uchar*)buf + 4 + 4 + 8;
 
     /* name[s] */
-    p = uxio_save_space(chan, 2), size += 2;
-    PUT_LITTLE_ENDIAN_U16INT(p, endname - basename);
-    p = uxio_save_space(chan, endname - basename), size += endname - basename;
-    str = p;
+    PUT_LITTLE_ENDIAN_U16INT(buf, endname - basename);
+    buf = (uchar*)buf + 2;
+    str = buf;
     for (i = 0; i < endname - basename; i++)
         str[i] = basename[i]
     ;
+    buf = (uchar*)buf + (endname - basename);
 
-    PUT_LITTLE_ENDIAN_U16INT(psize, (u16int)size);
+    PUT_LITTLE_ENDIAN_U16INT(psize, (u16int)((uchar*)buf - (uchar*)pdir));
+    return buf;
 }
 
