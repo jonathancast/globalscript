@@ -21,4 +21,4 @@ struct uxio_ichannel *gsbio_get_channel_for_external_io(char *filename, int fd, 
 ulong uxio_channel_size_of_available_data(struct uxio_ichannel *);
 
 void *uxio_save_space(struct uxio_ichannel *, ulong);
-long uxio_consume_space(struct uxio_ichannel *, void *, ulong);
+long uxio_consume_space(struct uxio_ichannel *, void **, ulong);

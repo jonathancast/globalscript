@@ -549,6 +549,7 @@ long gsbio_device_getline(struct uxio_ichannel *chan, char *line, long max);
 long gsbio_get_contents(struct uxio_ichannel *chan, char *buf, long max);
 
 struct gsbio_dir *gsbio_read_stat(struct uxio_dir_ichannel *);
+struct gsbio_dir *gsbio_parse_stat(u16int, void *);
 
 int gsbio_idevice_at_eof(struct uxio_ichannel *chan);
 #endif

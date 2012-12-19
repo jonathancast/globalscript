@@ -34,7 +34,7 @@ TEST_UNIX_FILL_STAT()
 {
     struct uxio_ichannel *chan;
     ulong size_of_data_stored;
-    uchar buf[32];
+    void *buf;
     char str[32];
     u32int mode;
     long n, s;
@@ -81,7 +81,7 @@ TEST_UNIX_FILL_STAT_DIR()
 {
     struct uxio_ichannel *chan;
     ulong size_of_data_stored;
-    uchar buf[32];
+    void *buf;
     u32int mode;
     long n;
 

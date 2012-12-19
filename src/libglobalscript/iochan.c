@@ -174,22 +174,19 @@ uxio_save_space(struct uxio_ichannel *chan, ulong sz)
 }
 
 long
-uxio_consume_space(struct uxio_ichannel *chan, void *dest, ulong sz)
+uxio_consume_space(struct uxio_ichannel *chan, void **dest, ulong sz)
 {
-    uchar *p;
     ulong n;
 
-    p = dest, n = sz;
-    while (n--) {
-        if ((uchar*)chan->data_end > (uchar*)chan->data_beg) {
-            *p++ = *(uchar*)chan->data_beg;
-            chan->data_beg = (uchar*)chan->data_beg + 1;
-        } else {
-            chan->data_beg = chan->data_beg = chan->buf_beg;
-            return sz - n - 1;
-        }
+    *dest = chan->data_beg;
+    n = (uchar*)chan->data_end - (uchar*)chan->data_beg;
+    if (sz < n) {
+        chan->data_beg = (uchar*)chan->data_beg + sz;
+        return sz;
+    } else {
+        chan->data_beg = chan->data_end = chan->buf_beg;
+        return n;
     }
-    return sz;
 }
 
 long

@@ -30,7 +30,7 @@ TEST_IOSTAT()
     struct uxio_ichannel *chan;
 
     chan = fixture_sample_chan_with_file_entry();
-    pdir = gsbio_parse_stat(chan);
+    pdir = gsbio_consume_stat(chan);
 
     ok(__FILE__, __LINE__, !!pdir, "%s:%d: gsbio_parse_stat returned null");
     ok_ulong_eq(__FILE__, __LINE__, pdir->size, sizeof(*pdir) + sizeof("foo.txt"),
@@ -48,7 +48,7 @@ TEST_IOSTAT_DIR()
     struct uxio_ichannel *chan;
 
     chan = fixture_sample_chan_with_dir_entry();
-    pdir = gsbio_parse_stat(chan);
+    pdir = gsbio_consume_stat(chan);
 
     ok(__FILE__, __LINE__, !!pdir, "gsbio_parse_stat returned null");
     ok(__FILE__, __LINE__, pdir->d.mode & DMDIR, "gsbio_parse_stat returned not directory, but was a directory");
