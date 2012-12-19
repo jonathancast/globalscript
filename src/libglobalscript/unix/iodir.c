@@ -56,35 +56,23 @@ long
 gsbio_sys_read_stat(struct uxio_dir_ichannel *chan)
 {
     struct dirent *dir;
-    ulong sz;
     long n;
     struct stat st;
     char *nm;
 
     if (chan->udir->fd < 0)
-        return 0;
+        return 0
+    ;
 
     if (!chan->p9dir->filename || !*chan->p9dir->filename)
-        return 0;
+        return 0
+    ;
 
-    /*
-        NB: Apparently this has to be done in a Linux-specific way;
-        this is cribbed from p9p's §fn{src/lib9/dirread.c:^/mygetdents/} (Linux version)
-    */
     if (!uxio_channel_size_of_available_data(chan->udir)) {
-        if (fstat(chan->udir->fd, &st) < 0)
-            return -1;
-
-        if (st.st_blksize < 8192)
-            st.st_blksize = 8192;
-
-        sz = (uchar*)UXIO_END_OF_IO_BUFFER(chan->udir->buf_beg) - (uchar*)chan->udir->data_end;
-        if (st.st_blksize < sz)
-            sz = st.st_blksize;
-
-        if ((n = getdirentries(chan->udir->fd, (char*)chan->udir->data_end, sz, &chan->udir->offset)) <= 0)
-            return n;
-
+        n = gsbio_unix_read_directory(chan->udir->fd, chan->udir->data_end, UXIO_END_OF_IO_BUFFER(chan->udir->buf_beg), &chan->udir->offset);
+        if (n <= 0)
+            return n
+        ;
         chan->udir->data_end = (uchar*)chan->udir->data_end + n;
     }
 
@@ -108,6 +96,34 @@ gsbio_sys_read_stat(struct uxio_dir_ichannel *chan)
     ;
 
     return uxio_channel_size_of_available_data(chan->p9dir);
+}
+
+long
+gsbio_unix_read_directory(int fd, void *buf, void *end, vlong *poffset)
+{
+    /*
+        NB: Apparently this has to be done in a Linux-specific way;
+        this is cribbed from p9p's §fn{src/lib9/dirread.c:^/mygetdents/} (Linux version)
+
+        Obviously, if you want to port this to other Unices you'll need to add §ccode{#ifdef}s and other implementations here
+    */
+    struct stat st;
+    long sz;
+
+    if (fstat(fd, &st) < 0)
+        return -1
+    ;
+
+    if (st.st_blksize < 8192)
+        st.st_blksize = 8192
+    ;
+
+    sz = (uchar*)end - (uchar*)buf;
+    if (st.st_blksize < sz)
+        sz = st.st_blksize
+    ;
+
+    return getdirentries(fd, buf, sz, poffset);
 }
 
 struct gsbio_dir *
