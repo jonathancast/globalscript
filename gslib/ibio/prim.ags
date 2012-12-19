@@ -7,6 +7,9 @@ ibio.prim.unit	.closure	_ibio.prim.unit_c
 ibio.prim.read	.closure	_ibio.prim.read_c
 ibio.prim.write	.closure	_ibio.prim.write.c
 
+ibio.prim.file.read.open	.closure	_ibio.prim.file.read.open_c
+ibio.prim.external.io.dir	.closure	_ibio.prim.external.io.dir_c
+
 ibio.prim.env.args.get	.closure	_ibio.prim.env.args.get_c
 
 ibio.prim.file.stat	.closure	_ibio.prim.file.stat_c
@@ -44,6 +47,25 @@ o	.arg	ibio.prim.oport	ο
 s	.arg	list.t	ο
 w	.eprim	ibio.prim	ibio	write	_ibio.prim.write.ty	ο	|	o	s
 	.yield	w
+
+_ibio.prim.file.read.open_c	.expr
+ibio.prim.external.io	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+_ibio.prim.file.read.open_ty	.tygvar
+s	.tyarg	*
+e	.arg	ibio.prim.external.io	s
+fn	.arg	list.t	rune.t
+w	.eprim	ibio.prim	ibio	file.read.open	_ibio.prim.file.read.open_ty	s	|	e	fn
+	.yield	w
+
+_ibio.prim.external.io.dir_c	.expr
+_ibio.prim.external.io.dir_f_ty	.tygvar
+_ibio.prim.external.io.dir_ty	.tygvar
+s	.tyarg	*
+f	.arg	_ibio.prim.external.io.dir_f_ty	s
+eio	.prim	ibio.prim	external.io.dir	_ibio.prim.external.io.dir_ty	s	|	f
+	.yield	eio
 
 _ibio.prim.env.args.get_c	.expr
 ibio.prim.m	.tygvar
@@ -96,12 +118,19 @@ ibio.prim.m	.tyapiprim	ibio.prim	ibio	u?^
 ibio.prim.oport	.tyelimprim	ibio.prim	oport	u*^
 ibio.prim.iport	.tyelimprim	ibio.prim	iport	u*^
 ibio.prim.iptr	.tyelimprim	ibio.prim	iptr	u*^
+ibio.prim.external.io	.tyintrprim	ibio.prim	external.io	u*^
 
 ibio.prim.iptr.t	.tyexpr
 ibio.prim.iptr	.tygvar
 s	.tylambda	*
 	.tylift
 	.tyref	ibio.prim.iptr	s
+
+ibio.prim.external.io.t	.tyexpr
+ibio.prim.external.io	.tygvar
+s	.tylambda	*
+	.tylift
+	.tyref	ibio.prim.external.io	s
 
 ibio.prim.dir.t	.tyexpr
 bool.t	.tygvar
@@ -134,6 +163,32 @@ record.empty	.tygvar
 	.tyfun	ibio.prim.oport	ο
 	.tyfun	list.t	ο
 	.tyref	ibio.prim.m	record.empty
+
+_ibio.prim.file.read.open_ty	.tyexpr
+ibio.prim.external.io	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+ibio.prim.m	.tygvar
+ibio.prim.iport	.tygvar
+s	.tyforall	*
+res.ty	.tylet	ibio.prim.iport	s
+	.tyfun	ibio.prim.external.io	s
+	.tyfun	list.t	rune.t
+	.tyref	ibio.prim.m	res.ty
+
+_ibio.prim.external.io.dir_ty	.tyexpr
+_ibio.prim.external.io.dir_f_ty	.tygvar
+ibio.prim.external.io	.tygvar
+s	.tyforall	*
+	.tyfun	_ibio.prim.external.io.dir_f_ty	s
+	.tyref	ibio.prim.external.io	s
+
+_ibio.prim.external.io.dir_f_ty	.tyexpr
+ibio.prim.dir.t	.tygvar
+s	.tylambda	*
+	.tylift
+	.tyfun	ibio.prim.dir.t
+	.tyref	s
 
 _ibio.prim.file.stat_ty	.tyexpr
 list.t	.tygvar

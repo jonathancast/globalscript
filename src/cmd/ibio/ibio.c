@@ -16,6 +16,7 @@ static struct gsregistered_primtype ibio_types[] = {
     { "iport", __FILE__, __LINE__, gsprim_type_elim, "u*^", },
     { "oport", __FILE__, __LINE__, gsprim_type_elim, "u*^", },
     { "iptr", __FILE__, __LINE__, gsprim_type_elim, "u*^", },
+    { "external.io", __FILE__, __LINE__, gsprim_type_intr, "u*^", },
     { 0, },
 };
 
@@ -24,6 +25,7 @@ enum {
     ibio_prim_write,
     ibio_prim_read,
     ibio_prim_getargs,
+    ibio_prim_file_read_open,
     ibio_prim_file_stat,
     ibio_numprims,
 };
@@ -31,15 +33,21 @@ enum {
 static struct api_prim_table ibio_prim_table = {
     /* numprims = */ ibio_numprims,
     /* execs = */ {
-        /* ibio_prim_unit = */ api_thread_handle_prim_unit,
-        /* ibio_prim_write = */ ibio_handle_prim_write,
-        /* ibio_prim_read = */ ibio_handle_prim_read,
-        /* ibio_prim_getargs = */ ibio_handle_prim_getargs,
-        /* ibio_prim_file_stat = */ ibio_handle_prim_file_stat,
+        api_thread_handle_prim_unit,
+        ibio_handle_prim_write,
+        ibio_handle_prim_read,
+        ibio_handle_prim_getargs,
+        ibio_handle_prim_file_read_open,
+        ibio_handle_prim_file_stat,
     },
 };
 
+enum {
+    ibio_prim_external_io_dir,
+};
+
 static gsprim_handler *ibio_exec[] = {
+    ibio_prim_external_io_handle_dir,
 };
 
 enum {
@@ -66,6 +74,8 @@ static struct gsregistered_prim ibio_operations[] = {
     { "write", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ο * ibio.prim.oport ο ` list.t ο ` ibio.prim.m \"Π〈 〉 ⌊⌋ ` → → ∀", ibio_prim_write, },
     { "read", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ι * ibio.prim.iport ι ` ibio.acceptor.prim.t ι ` \"Π〈 〉 ⌊⌋ ` ibio.prim.m ibio.prim.iptr ι ` ⌊⌋ ` → → ∀", ibio_prim_read, },
     { "env.args.get", __FILE__, __LINE__, gsprim_operation_api, "ibio", "ibio.prim.m list.t list.t rune.t ` ` `", ibio_prim_getargs, },
+    { "file.read.open", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ s * ibio.prim.external.io s ` list.t rune.t ` ibio.prim.m ibio.prim.iport s ` ` → → ∀", ibio_prim_file_read_open, },
+    { "external.io.dir", __FILE__, __LINE__, gsprim_operation, 0, "λ s * ibio.prim.dir.t s → ⌊⌋ ibio.prim.external.io s ` → ∀", ibio_prim_external_io_dir, },
     { "file.stat", __FILE__, __LINE__, gsprim_operation_api, "ibio", "list.t rune.t ` ibio.prim.m " IBIO_DIR_TYPE " ` →", ibio_prim_file_stat, },
     { "iptr.iseof", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "λ s * ibio.prim.iptr s ` \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → ∀", ibio_prim_iptr_iseof, },
     { "iptr.deref", __FILE__, __LINE__, gsprim_operation_lifted, 0, "λ s * ibio.prim.iptr s ` s → ∀", ibio_prim_iptr_deref, },
@@ -99,6 +109,7 @@ static struct api_process_rpc_table ibio_rpc_table = {
         /* api_std_rpc_done */ api_main_process_handle_rpc_done,
         /* api_std_rpc_abend */ api_main_process_handle_rpc_abend,
         /* ibio_uxproc_rpc_stat */ ibio_main_process_handle_rpc_stat,
+        /* ibio_uxproc_rpc_file_read_open */ ibio_main_process_handle_rpc_file_read_open,
     },
 };
 

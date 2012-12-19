@@ -6,6 +6,8 @@ ibio.from.either.prim	.closure	_ibio.from.either.prim_c
 
 ibio.dir.fromprim	.closure	_ibio.dir.fromprim_c	_ibio.dir.fromprim_ty
 
+ibio.dir.external.io	.closure	_ibio.dir.external.io_c
+
 ibio.mapM.prim	.closure	_ibio.mapM.prim_c	_ibio.mapM.prim_ty
 
 	.code
@@ -68,6 +70,16 @@ monw	.undefined	bool.t
 st	.record	atime	at	gid	g	length	l	mode.append.only	mao	mode.directory	md	mode.exclusive	me	mode.group.execute	mge	mode.group.read	mgr	mode.group.write	mgw	mode.other.execute	moe	mode.other.read	mor	mode.other.write	mow	mode.owner.execute	mone	mode.owner.read	monr	mode.owner.write	monw
 	.lift
 	.yield	st
+
+# §section §gs{ibio.dir.external.io}
+
+_ibio.dir.external.io_c	.expr
+ibio.dir.t	.tygvar
+ibio.prim.external.io.dir	.gvar
+ibio.dir.fromprim	.gvar
+	.lift
+	.app	ibio.dir.fromprim
+	.yield	ibio.prim.external.io.dir	ibio.dir.t
 
 # §section §gs{ibio.mapM.prim}
 

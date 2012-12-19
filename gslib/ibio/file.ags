@@ -5,6 +5,8 @@
 ibio.file.name.read	.closure	_ibio.file.name.read_c
 ibio.file.name.print	.closure	_ibio.file.name.print_c
 
+ibio.file.read.open.prim	.closure	_ibio.file.read.open.prim_c
+
 ibio.file.stat.prim	.closure	_ibio.file.stat.prim_c
 
 ibio.file.isdir	.closure	_ibio.file.isdir_c
@@ -29,6 +31,31 @@ ibio.file.name.out	.cogvar
 fn	.larg	ibio.file.name.t
 	.coerce	ibio.file.name.out
 	.enter	fn
+
+# §section §gs{ibio.file.read.open.prim}
+
+_ibio.file.read.open.prim_c	.expr
+ibio.prim.external.io.t	.tygvar
+ibio.file.name.t	.tygvar
+s	.tyarg	*
+_ibio.file.read.open.prim_k	.subcode
+e	.larg	ibio.prim.external.io.t	s
+fn	.larg	ibio.file.name.t
+	.force	_ibio.file.read.open.prim_k	s	|	fn
+	.enter	e
+
+_ibio.file.read.open.prim_k	.forcecont
+ibio.file.name.t	.tygvar
+ibio.prim.external.io	.tygvar
+s	.tyfv	*
+ibio.prim.file.read.open	.gvar
+ibio.file.name.print	.gvar
+fn	.fv	ibio.file.name.t
+e0	.karg	ibio.prim.external.io	s
+fn.s	.apply	ibio.file.name.print	|	fn
+	.lift
+	.app	e0	fn.s
+	.yield	ibio.prim.file.read.open	s
 
 # §section §gs{ibio.file.stat}
 

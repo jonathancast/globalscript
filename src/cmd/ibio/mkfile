@@ -11,6 +11,7 @@ OFILES=\
 	oport.$O \
 	external.$O \
 	stat.$O \
+	file.$O \
 	gsstringeval.$O \
 	$SYSTEM/uxio.$O \
 
@@ -32,6 +33,7 @@ iport.$O: ibio.h
 oport.$O: ibio.h
 external.$O: ibio.h
 stat.$O: ibio.h
+file.$O: ibio.h
 gsstringeval.$O: ibio.h
 unix/uxio.$O: ibio.h
 

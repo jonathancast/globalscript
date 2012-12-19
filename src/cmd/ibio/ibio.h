@@ -18,6 +18,7 @@ enum ibio_gsstring_eval_state ibio_gsstring_eval_advance(struct api_thread *, st
 
 enum {
     ibio_uxproc_rpc_stat = api_std_rpc_numrpcs,
+    ibio_uxproc_rpc_file_read_open,
     ibio_numrpcs,
 };
 
@@ -84,16 +85,24 @@ struct ibio_external_io {
 };
 
 struct ibio_external_io *ibio_rune_io(void);
+struct ibio_external_io *ibio_dir_io(struct gspos, gsvalue);
 
 struct ibio_uxio;
 
-typedef int ibio_uxio_refill(struct ibio_uxio *, int, void *, long);
+typedef long ibio_uxio_refill(struct ibio_uxio *, int, void *, long);
 
 struct ibio_uxio {
     ibio_uxio_refill *refill;
 };
 
 struct ibio_uxio *ibio_file_uxio(void);
+struct ibio_uxio *ibio_dir_uxio(char *);
+
+gsprim_handler ibio_prim_external_io_handle_dir;
+
+api_prim_executor ibio_handle_prim_file_read_open;
+
+gsrpc_handler ibio_main_process_handle_rpc_file_read_open;
 
 /* §section Input */
 

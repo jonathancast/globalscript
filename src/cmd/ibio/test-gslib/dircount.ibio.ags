@@ -1,0 +1,124 @@
+	.document
+
+	.data
+
+	.cast	_real.entry.in	_real.entry
+_real.entry	.closure	_real.entry_c
+
+_nl	.string	\n
+
+	.code
+
+_real.entry_c	.eprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_real.entry_as_c	.subcode
+_real.entry_dfn_c	.subcode
+_real.entry_id_c	.subcode
+_real.entry_ds_c	.subcode
+_real.entry_n_c	.subcode
+_real.entry_body_c	.subcode
+i	.larg	ibio.prim.iport	rune.t
+o	.larg	ibio.prim.oport	rune.t
+as	.bind	_real.entry_as_c
+dfn	.alloc	_real.entry_dfn_c	|	as
+id	.bind	_real.entry_id_c	|	dfn
+ds	.bind	_real.entry_ds_c	|	id
+n	.alloc	_real.entry_n_c	|	ds
+	.body	_real.entry_body_c	|	o	n
+
+_real.entry_as_c	.expr
+ibio.prim.env.args.get	.gvar
+	.yield	ibio.prim.env.args.get
+
+_real.entry_dfn_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+_string.ty	.tylet	list.t	rune.t
+_real.entry_dfn_k	.subcode
+list.t.out	.cogvar
+as	.fv	list.t	_string.ty
+	.force	_real.entry_dfn_k
+	.coerce	list.t.out	_string.ty
+	.enter	as
+
+_real.entry_dfn_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+_string.ty	.tylet	list.t	rune.t
+ibio.file.name.read	.gvar
+as0	.karg	list.prim.u	_string.ty
+	.analyze	as0	:	nil
+		.case	:
+a0		.fkarg	0	_string.ty
+as1		.fkarg	1	list.t	_string.ty
+			.app	a0
+			.enter	ibio.file.name.read
+		.case	nil
+			.undef	ibio.file.name.t
+
+_real.entry_id_c	.expr
+ibio.file.name.t	.tygvar
+ibio.dir.t	.tygvar
+ibio.file.read.open.prim	.gvar
+ibio.dir.external.io	.gvar
+dfn	.fv	ibio.file.name.t
+	.app	ibio.dir.external.io	dfn
+	.enter	ibio.file.read.open.prim	ibio.dir.t
+
+_real.entry_ds_c	.expr
+ibio.prim.iport	.tygvar
+ibio.dir.t	.tygvar
+list.t	.tygvar
+ibio.prim.t	.tygvar
+res.ty	.tylet	list.t	ibio.dir.t
+ibio.lex.receive	.gvar
+ibio.lex.receiver.many	.gvar
+ibio.lex.receiver.symbol	.gvar
+id	.efv	ibio.prim.iport	ibio.dir.t
+sym	.apply	ibio.lex.receiver.symbol	ibio.dir.t
+ms	.apply	ibio.lex.receiver.many	ibio.dir.t	ibio.dir.t	|	sym
+	.app	ms	id
+	.enter	ibio.lex.receive	ibio.dir.t	res.ty
+
+_real.entry_n_c	.expr
+list.t	.tygvar
+ibio.dir.t	.tygvar
+list.lib.length	.gvar
+ds	.fv	list.t	ibio.dir.t
+	.app	ds
+	.enter	list.lib.length	ibio.dir.t
+
+_real.entry_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+natural.t	.tygvar
+_real.entry_body_n.s_c	.subcode
+ibio.prim.write	.gvar
+o	.fv	ibio.prim.oport	rune.t
+n	.fv	natural.t
+n.s	.alloc	_real.entry_body_n.s_c	|	n
+	.app	o	n.s
+	.yield	ibio.prim.write	rune.t
+
+_real.entry_body_n.s_c	.expr
+natural.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+natural.fmtdecimal	.gvar
+_nl	.gvar
+n	.fv	natural.t
+n.s.0	.apply	natural.fmtdecimal	|	n
+	.app	n.s.0	_nl
+	.enter	list.<>	rune.t
+
+	.coercion
+
+_real.entry.in	.tycoercion
+ibio.m	.tygvar
+rune.t	.tygvar
+record.empty	.tygvar
+	.tydefinition	ibio.m	rune.t	rune.t	record.empty

@@ -59,6 +59,85 @@ ibio_rune_readsym(struct ibio_external_io *io, char *err, char *eerr, void *star
     return gschartorune((char*)start, pres, err, eerr);
 }
 
+struct ibio_external_dir_io {
+    struct ibio_external_io io;
+    struct gspos pos;
+    gsvalue dirfromprim;
+};
+
+static ibio_external_canread ibio_dir_canread;
+static ibio_external_readsym ibio_dir_readsym;
+
+struct ibio_external_io *
+ibio_dir_io(struct gspos pos, gsvalue v)
+{
+    struct ibio_external_dir_io *res;
+
+    res = (struct ibio_external_dir_io *)ibio_alloc_external_io(sizeof(*res), ibio_dir_canread, ibio_dir_readsym);
+    res->pos = pos;
+    res->dirfromprim = v;
+
+    return (struct ibio_external_io *)res;
+}
+
+#define GET_LITTLE_ENDIAN_U16INT(p) ((u16int)*(uchar*)(p) + ((u16int)*((uchar*)(p)+1)<<8))
+
+static
+int ibio_dir_canread(struct ibio_external_io *io, void *start, void *end)
+{
+    u16int sz;
+
+    if ((uchar*)start + 2 > (uchar*)end)
+        return 0
+    ;
+
+    sz = GET_LITTLE_ENDIAN_U16INT(start);
+    return (uchar*)start + 2 + sz <= (uchar*)end;
+}
+
+static
+void *
+ibio_dir_readsym(struct ibio_external_io *io, char *err, char *eerr, void *start, void *end, gsvalue *pres)
+{
+    u16int sz;
+    struct gsbio_dir *dir;
+    gsvalue pd;
+    struct ibio_external_dir_io *dio;
+
+    dio = (struct ibio_external_dir_io *)io;
+
+    if ((uchar*)end - (uchar*)start < 2) {
+        seprint(err, eerr, "Not enough data to read a size");
+        return 0;
+    }
+
+    sz = GET_LITTLE_ENDIAN_U16INT(start);
+
+    if ((uchar*)end - (uchar*)start < 2 + sz) {
+        seprint(err, eerr, "Not enough data in buffer; need 0x%xB but have 0x%xB", 2 + sz, (uchar*)end - (uchar*)start);
+        return 0;
+    }
+
+    dir = gsbio_parse_stat(sz, (uchar*)start + 2);
+    pd = ibio_parse_gsbio_dir(dio->pos, dir);
+
+    *pres = gsapply(dio->pos, dio->dirfromprim, pd);
+    return (uchar*)start + 2 + sz;
+}
+
+/* §section Directories */
+
+int
+ibio_prim_external_io_handle_dir(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args, gsvalue *pres)
+{
+    struct ibio_external_io *res;
+
+    res = ibio_dir_io(pos, args[0]);
+
+    *pres = (gsvalue)res;
+    return 1;
+}
+
 /* §section Allocation */
 
 static struct gs_block_class ibio_external_io_descr ={
