@@ -67,6 +67,16 @@ struct ibio_external_io {
 
 struct ibio_external_io *ibio_rune_io(void);
 
+struct ibio_uxio;
+
+typedef int ibio_uxio_refill(struct ibio_uxio *, int, void *, long);
+
+struct ibio_uxio {
+    ibio_uxio_refill *refill;
+};
+
+struct ibio_uxio *ibio_file_io(void);
+
 /* §section Input */
 
 void ibio_check_acceptor_type(char *, struct gsfile_symtable *, struct gspos);
@@ -80,14 +90,14 @@ struct ibio_iport {
     gsvalue error;
     /* §section Used for §gs{iport}s connected to external files */
     int fd;
-    long (*refill)(int, void *, long);
+    struct ibio_uxio *uxio;
     struct ibio_external_io *external;
     void *buf, *bufstart, *bufend, *bufextent;
 };
 
 int ibio_read_threads_init(char *, char *);
 
-gsvalue ibio_iport_fdopen(int, struct ibio_external_io *, char *, char *);
+gsvalue ibio_iport_fdopen(int, struct ibio_uxio *, struct ibio_external_io *, char *, char *);
 
 api_prim_executor ibio_handle_prim_read;
 

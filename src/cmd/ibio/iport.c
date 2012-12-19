@@ -171,7 +171,7 @@ struct ibio_read_process_args {
 static void ibio_read_process_main(void *);
 
 gsvalue
-ibio_iport_fdopen(int fd, struct ibio_external_io *external, char *err, char *eerr)
+ibio_iport_fdopen(int fd, struct ibio_uxio *uxio, struct ibio_external_io *external, char *err, char *eerr)
 {
     struct ibio_iport *res;
     struct ibio_read_process_args args;
@@ -185,7 +185,7 @@ ibio_iport_fdopen(int fd, struct ibio_external_io *external, char *err, char *ee
     args.iport = res;
 
     res->fd = fd;
-    res->refill = read;
+    res->uxio = uxio;
     res->external = external;
     ibio_setup_iport_read_buffer(res);
 
@@ -319,7 +319,7 @@ ibio_read_process_main(void *p)
                             } else {
                                 long n;
 
-                                n = iport->refill(iport->fd, iport->buf, (uchar*)iport->bufextent - (uchar*)iport->buf);
+                                n = iport->uxio->refill(iport->uxio, iport->fd, iport->buf, (uchar*)iport->bufextent - (uchar*)iport->buf);
                                 if (n < 0) {
                                     ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: read failed: %r");
                                     active = 0;

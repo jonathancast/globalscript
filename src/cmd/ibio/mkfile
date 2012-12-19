@@ -11,6 +11,7 @@ OFILES=\
 	oport.$O \
 	external.$O \
 	stat.$O \
+	$SYSTEM/uxio.$O \
 
 TARG=ibio
 
@@ -30,6 +31,7 @@ iport.$O: ibio.h
 oport.$O: ibio.h
 external.$O: ibio.h
 stat.$O: ibio.h
+unix/uxio.$O: ibio.h
 
 test:V: 
     :
@@ -39,13 +41,10 @@ integration-test:V: test test-rc
 test-rc:V: rc/test $O.ibio
     ./rc/test
 
-%.ibio.ags-out: $PROG $GLOBALSCRIPT/bin/gsbc `{echo $GLOBALSCRIPT/src/cmd/gsbc/*.pm} %.ibio.ags
-	./$PROG $stem.ibio.ags > $stem.ibio.ags-out
-
-%.ibio.listing: %.ibio.bcgs
-	od -Ax -c $stem.ibio.bcgs > $stem.ibio.listing
-
 clean:VN:
 	rm -f ibiothreadmain.c
 	rm -f *.$O
 	rm -f $PROG
+
+%.$O:	%.c
+	$CC $CFLAGS -o $target $stem.c
