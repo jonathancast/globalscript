@@ -65,17 +65,19 @@ fn ok_diff_case {
 }
 
 fn ok_grep_errors {
-    echo $1
-    if ($3 ./test-gslib ./test-gslib/$4 > ./test-results/$4^-actual >[2] ./test-results/$4^-errors) {
-        echo $3 'succeeded; should have failed' >[1=2]
-        cat ./test-results/$4^-errors >[1=2]
-        cat ./test-results/$4^-actual >[1=2]
+    nm=$1; msg=$2; prog=$3; script=$4
+    shift; shift; shift; shift
+    echo $nm
+    if ($prog ./test-gslib ./test-gslib/$script $* > ./test-results/$script^-actual >[2] ./test-results/$script^-errors) {
+        echo $prog 'succeeded; should have failed' >[1=2]
+        cat ./test-results/$script^-errors >[1=2]
+        cat ./test-results/$script^-actual >[1=2]
         exit 1
     }
-    if (! grep -s $2 ./test-results/$4^-errors) {
-        echo 'Can''t find expected error message '''^$2^''' in output anywhere' >[1=2]
-        cat ./test-results/$4^-errors >[1=2]
-        cat ./test-results/$4^-actual >[1=2]
+    if (! grep -s $msg ./test-results/$script^-errors) {
+        echo 'Can''t find expected error message '''^$msg^''' in output anywhere' >[1=2]
+        cat ./test-results/$script^-errors >[1=2]
+        cat ./test-results/$script^-actual >[1=2]
         exit 1
     }
     true
