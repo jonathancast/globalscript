@@ -2,6 +2,8 @@
 
 MKSHELL=$PLAN9/bin/rc
 
+GSLIB_TARGETS=`{$PLAN9/bin/rc ./gslib-targets}
+
 interpreted:V:
 	true
 
@@ -12,3 +14,6 @@ install-interpreted:V: interpreted
 	chmod a+x $GLOBALSCRIPT/bin/gsac-targets
 	cp gsac-deps.rc $GLOBALSCRIPT/bin/gsac-deps
 	chmod a+x $GLOBALSCRIPT/bin/gsac-deps
+
+effect:V: $GSLIB_TARGETS
+	true

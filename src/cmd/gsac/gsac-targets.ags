@@ -1,0 +1,206 @@
+	.document
+
+	.data
+
+	.cast	_ep.in	_real.entry
+_real.entry	.closure	_real.entry_c
+
+_print.targets.in.dir	.closure	_print.targets.in.dir_c	_print.targets.in.dir_ty
+
+_cgs	.string	cgs
+
+	.code
+
+_real.entry_c	.eprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_real.entry_args_c	.subcode
+_real.entry_parsed.args_c	.subcode
+_real.entry_body_c	.subcode
+i	.larg	ibio.prim.iport	rune.t
+o	.larg	ibio.prim.oport	rune.t
+args	.bind	_real.entry_args_c
+parsed.args	.alloc	_real.entry_parsed.args_c	|	args
+	.body	_real.entry_body_c	|	parsed.args
+_real.entry_args_c	.expr
+ibio.prim.env.args.get	.gvar
+	.yield	ibio.prim.env.args.get
+
+_real.entry_parsed.args_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+_string.ty	.tylet	list.t	rune.t
+list.map	.gvar
+ibio.file.name.read	.gvar
+args	.fv	list.t	_string.ty
+	.app	ibio.file.name.read	args
+	.enter	list.map	_string.ty	ibio.file.name.t
+
+_real.entry_body_c	.expr
+list.t	.tygvar
+ibio.file.name.t	.tygvar
+record.empty	.tygvar
+ibio.mapM0.prim	.gvar
+_print.targets.in.dir	.gvar
+parsed.args	.fv	list.t	ibio.file.name.t
+	.app	_print.targets.in.dir	parsed.args
+	.enter	ibio.mapM0.prim	ibio.file.name.t	record.empty
+
+_print.targets.in.dir_c .eprog	ibio.prim	ibio
+ibio.file.name.t	.tygvar
+ibio.prim.t	.tygvar
+record.empty	.tygvar
+_print.targets.in.dir_id_c	.subcode
+_print.targets.in.dir_ds_c	.subcode
+_print.targets.in.dir_body_c	.subcode
+dirn	.larg	ibio.file.name.t
+id	.bind	_print.targets.in.dir_id_c	|	dirn
+ds	.bind	_print.targets.in.dir_ds_c	|	id
+	.body	_print.targets.in.dir_body_c	|	dirn	ds
+
+_print.targets.in.dir_id_c	.expr
+ibio.file.name.t	.tygvar
+ibio.dir.t	.tygvar
+ibio.file.read.open.prim	.gvar
+ibio.dir.external.io	.gvar
+dirn	.fv	ibio.file.name.t
+	.app	ibio.dir.external.io	dirn
+	.enter	ibio.file.read.open.prim	ibio.dir.t
+
+_print.targets.in.dir_ds_c	.expr
+ibio.prim.iport	.tygvar
+ibio.dir.t	.tygvar
+list.t	.tygvar
+ibio.prim.t	.tygvar
+res.ty	.tylet	list.t	ibio.dir.t
+ibio.lex.receive	.gvar
+ibio.lex.receiver.many	.gvar
+ibio.lex.receiver.symbol	.gvar
+id	.efv	ibio.prim.iport	ibio.dir.t
+sym	.apply	ibio.lex.receiver.symbol	ibio.dir.t
+ms	.apply	ibio.lex.receiver.many	ibio.dir.t	ibio.dir.t	|	sym
+	.app	ms	id
+	.enter	ibio.lex.receive	ibio.dir.t	res.ty
+
+_print.targets.in.dir_body_c	.expr
+ibio.file.name.t	.tygvar
+list.t	.tygvar
+ibio.dir.t	.tygvar
+record.empty	.tygvar
+_print.targets.in.dir_body_process.file_c	.subcode
+ibio.mapM0.prim	.gvar
+dirn	.fv	ibio.file.name.t
+ds	.fv	list.t	ibio.dir.t
+process.file	.alloc	_print.targets.in.dir_body_process.file_c	|	dirn
+	.app	process.file	ds
+	.enter	ibio.mapM0.prim	ibio.dir.t	record.empty
+
+_print.targets.in.dir_body_process.file_c	.expr
+ibio.file.name.t	.tygvar
+ibio.dir.t	.tygvar
+_print.targets.in.dir_body_process.file_k0	.subcode
+dirn	.fv	ibio.file.name.t
+d	.larg	ibio.dir.t
+	.force	_print.targets.in.dir_body_process.file_k0	|	dirn
+	.enter	d
+
+_print.targets.in.dir_body_process.file_k0	.forcecont
+ibio.file.name.t	.tygvar
+ibio.dir.u	.tygvar
+_print.targets.in.dir_body_process.file_k1	.subcode
+bool.t.out	.cogvar
+dirn	.fv	ibio.file.name.t
+d0	.karg	ibio.dir.u
+isd	.field	mode.directory	d0
+	.force	_print.targets.in.dir_body_process.file_k1	|	dirn	d0
+	.coerce	bool.t.out
+	.enter	isd
+
+_print.targets.in.dir_body_process.file_k1	.forcecont
+ibio.file.name.t	.tygvar
+ibio.dir.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+bool.prim.u	.tygvar
+string.ty	.tylet	list.t	rune.t
+_print.targets.in.dir_body_process.file_k_file_k	.subcode
+list.t.out	.cogvar
+ibio.file.name.components.get	.gvar
+list.reverse	.gvar
+ibio.file.name.</>	.gvar
+_print.targets.in.dir	.gvar
+dirn	.fv	ibio.file.name.t
+d0	.fv	ibio.dir.u
+isd0	.karg	bool.prim.u
+nm	.field	name	d0
+	.analyze	isd0	false	true
+		.case	false
+cos			.apply	ibio.file.name.components.get	|	nm
+exts			.lfield	exts	cos
+stxe			.apply	list.reverse	string.ty	|	exts			
+			.force	_print.targets.in.dir_body_process.file_k_file_k
+			.coerce	list.t.out	string.ty
+			.enter	stxe
+		.case	true
+dn1			.apply	ibio.file.name.</>	|	dirn	nm
+			.app	dn1
+			.enter	_print.targets.in.dir
+
+_print.targets.in.dir_body_process.file_k_file_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+ibio.prim.t	.tygvar
+record.empty	.tygvar
+string.ty	.tylet	list.t	rune.t
+_print.targets.in.dir_body_process.file_k_file_:_k	.subcode
+bool.t.out	.cogvar
+list.≡	.gvar
+rune.≡	.gvar
+_cgs	.gvar
+stxe0	.karg	list.prim.u	string.ty
+	.analyze	stxe0	:	nil
+		.case	:
+txe0		.fkarg	0	string.ty
+stxe1		.fkarg	1	list.t	string.ty
+			.force	_print.targets.in.dir_body_process.file_k_file_:_k
+			.coerce	bool.t.out
+			.app	rune.≡	txe0	_cgs
+			.enter	list.≡	rune.t
+		.case	nil
+			.undef	ibio.prim.t	record.empty
+
+_print.targets.in.dir_body_process.file_k_file_:_k	.forcecont
+bool.prim.u	.tygvar
+ibio.prim.t	.tygvar
+record.empty	.tygvar
+ibio.prim.unit	.gvar
+record.empty	.gvar
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.lift
+			.app	record.empty
+			.yield	ibio.prim.unit	record.empty
+		.case	true
+			.undef	ibio.prim.t	record.empty
+
+	.type
+
+_print.targets.in.dir_ty	.tyexpr
+ibio.file.name.t	.tygvar
+ibio.prim.t	.tygvar
+record.empty	.tygvar
+	.tylift
+	.tyfun	ibio.file.name.t
+	.tyref	ibio.prim.t	record.empty
+
+	.coercion
+
+_ep.in	.tycoercion
+ibio.m	.tygvar
+rune.t	.tygvar
+record.empty	.tygvar
+	.tydefinition ibio.m	rune.t	rune.t	record.empty

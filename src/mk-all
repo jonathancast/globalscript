@@ -13,4 +13,4 @@ cd $GLOBALSCRIPT/src/libtest &&
     $GLOBALSCRIPT/src/cmd/rc/test-gslib &&
 # §paragraph{Interpreted Compiler}
     cd ../gsac &&
-    mk interpreted && mk install-interpreted
+    mk interpreted && mk install-interpreted && mk effect
