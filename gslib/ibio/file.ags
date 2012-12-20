@@ -11,6 +11,8 @@ ibio.file.stat.prim	.closure	_ibio.file.stat.prim_c
 
 ibio.file.isdir	.closure	_ibio.file.isdir_c
 
+ibio.file.name.</>	.closure	_ibio.file.name.</>_c
+
 	.code
 
 # §section §gs{ibio.file.name.read}
@@ -137,6 +139,26 @@ ibio.prim.unit	.gvar
 id	.fv	bool.t
 	.app	id
 	.yield	ibio.prim.unit	bool.t
+
+# §section §gs{ibio.file.name.</>}
+
+_ibio.file.name.</>_c	.expr
+ibio.file.name.t	.tygvar
+_ibio.file.name.</>_res_c	.subcode
+ibio.file.name.print	.gvar
+ibio.file.name.read	.gvar
+dn	.larg	ibio.file.name.t
+fn	.larg	ibio.file.name.t
+dn0	.apply	ibio.file.name.print	|	dn
+fn0	.apply	ibio.file.name.print	|	fn
+res	.alloc	_ibio.file.name.</>_res_c
+	.app	res
+	.enter	ibio.file.name.read
+
+_ibio.file.name.</>_res_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+	.undef	list.t	rune.t
 
 	.type
 
