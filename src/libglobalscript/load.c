@@ -932,7 +932,7 @@ gsparse_thunk_alloc_op(char *filename, struct gsparsedline *parsedline, int *pli
         if (*fields[0]) \
             p->label = gsintern_string(gssymdatalable, fields[0]) \
         ; else { \
-            gswarning("%P: Missing label on %s makes it a no-op", op, p->pos); \
+            gswarning("%P: Missing label on %s makes it a no-op", p->pos, op); \
             p->label = 0; \
         } \
     } while (0)
