@@ -23,6 +23,9 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
         st = GS_SLOW_EVALUATE(eval->gsc);
 
         switch (st) {
+            case gstyindir:
+                eval->gsc = GS_REMOVE_INDIRECTION(eval->gsc);
+                break;
             case gstyunboxed:
                 if (gsextend_string_builder(&eval->sb, 4) < 0) {
                     api_abend(thread, "%P: OOM saving file name", pos);
