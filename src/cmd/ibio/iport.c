@@ -387,6 +387,9 @@ ibio_read_process_main(void *p)
         ;
     } while (active);
 
+    if (iport->fd > 2)
+        close(iport->fd)
+    ;
     lock(&ibio_read_thread_queue->lock);
     for (i = 0; i < IBIO_NUM_READ_THREADS; i++)
         if (ibio_read_thread_queue->iports[i] == iport)
