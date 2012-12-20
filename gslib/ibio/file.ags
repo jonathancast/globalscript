@@ -18,6 +18,7 @@ ibio.file.name.</>	.closure	_ibio.file.name.</>_c
 _ibio.file.name.</>_worker	.closure	_ibio.file.name.</>_worker_c	_ibio.file.name.</>_worker_ty
 
 _slash	.closure	_slash_c
+_dot	.closure	_dot_c
 
 	.code
 
@@ -160,9 +161,128 @@ fn0	.apply	ibio.file.name.print	|	fn
 _ibio.file.name.components.get_worker_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-_ibio.file.name.components.get_worker_res.ty	.tygvar
+_ibio.file.name.components.get_worker_k	.subcode
+list.t.out	.cogvar
 fn	.larg	list.t	rune.t
-	.undef	_ibio.file.name.components.get_worker_res.ty
+	.force	_ibio.file.name.components.get_worker_k
+	.coerce	list.t.out	rune.t
+	.enter	fn
+
+_ibio.file.name.components.get_worker_k	.forcecont
+list.prim.u	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+_ibio.file.name.components.get_worker_res.ty	.tygvar
+string.ty	.tylet	list.t	rune.t
+_ibio.file.name.components.get_worker_:_k	.subcode
+bool.t.out	.cogvar
+rune.≡	.gvar
+_slash	.gvar
+list.nil	.gvar
+fn0	.karg	list.prim.u	rune.t
+	.analyze	fn0	:	nil
+		.case	:
+c		.fkarg	0	rune.t
+fn1		.fkarg	1	list.t	rune.t
+			.force	_ibio.file.name.components.get_worker_:_k	|	c	fn1
+			.coerce	bool.t.out
+			.app	c	_slash
+			.enter	rune.≡
+		.case	nil
+ds			.apply	list.nil	string.ty
+es			.apply	list.nil	string.ty
+r			.apply	list.nil	rune.t
+cs			.record	dirs	ds	exts	es	root	r
+			.lift
+			.yield	cs
+
+_ibio.file.name.components.get_worker_:_k	.forcecont
+list.t	.tygvar
+rune.t	.tygvar
+bool.prim.u	.tygvar
+_ibio.file.name.components.get_worker_res.ty	.tygvar
+_ibio.file.name.components.get_worker_:_false_k	.subcode
+_ibio.file.name.components.get_worker	.gvar
+c	.fv	rune.t
+fn1	.fv	list.t	rune.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.force	_ibio.file.name.components.get_worker_:_false_k	|	c
+			.app	fn1
+			.enter	_ibio.file.name.components.get_worker
+		.case	true
+			.undef	_ibio.file.name.components.get_worker_res.ty
+
+_ibio.file.name.components.get_worker_:_false_k	.forcecont	# First character not r{/}
+_ibio.file.name.components.get_worker_res.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+_ibio.file.name.components.get_worker_:_false_k1	.subcode
+list.t.out	.cogvar
+c	.fv	rune.t
+cs1	.karg	_ibio.file.name.components.get_worker_res.u
+ds	.field	dirs	cs1
+	.force	_ibio.file.name.components.get_worker_:_false_k1	|	c	cs1	ds
+	.coerce	list.t.out	string.ty
+	.enter	ds
+
+_ibio.file.name.components.get_worker_:_false_k1	.forcecont
+rune.t	.tygvar
+_ibio.file.name.components.get_worker_res.u	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+_ibio.file.name.components.get_worker_res.ty	.tygvar
+string.ty	.tylet	list.t	rune.t
+_ibio.file.name.components.get_worker_:_false_nil_k	.subcode
+bool.t.out	.cogvar
+rune.≡	.gvar
+_dot	.gvar
+c	.fv	rune.t
+cs1	.fv	_ibio.file.name.components.get_worker_res.u
+ds	.fv	list.t	string.ty
+ds0	.karg	list.prim.u	string.ty
+	.analyze	ds0	:	nil
+		.case	:
+d0		.fkarg	0	string.ty
+ds1		.fkarg	1	list.t	string.ty
+			.undef	_ibio.file.name.components.get_worker_res.ty
+		.case	nil
+			.force	_ibio.file.name.components.get_worker_:_false_nil_k	|	c	cs1	ds
+			.coerce	bool.t.out
+			.app	c	_dot
+			.enter	rune.≡
+
+_ibio.file.name.components.get_worker_:_false_nil_k	.forcecont	# In the basename
+rune.t	.tygvar
+_ibio.file.name.components.get_worker_res.u	.tygvar
+list.t	.tygvar
+bool.prim.u	.tygvar
+_ibio.file.name.components.get_worker_res.ty	.tygvar
+string.ty	.tylet	list.t	rune.t
+list.:	.gvar
+list.nil	.gvar
+c	.fv	rune.t
+cs1	.fv	_ibio.file.name.components.get_worker_res.u
+ds	.fv	list.t	string.ty
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+es			.field	exts	cs1
+r1			.field	root	cs1
+r			.apply	list.:	rune.t	|	c	r1
+cs			.record	dirs	ds	exts	es	root	r
+			.lift
+			.yield	cs
+		.case	true
+es1			.field	exts	cs1
+r1			.field	root	cs1
+es			.apply	list.:	string.ty	|	r1	es1
+r			.apply	list.nil	rune.t
+cs			.record	dirs	ds	exts	es	root	r
+			.lift
+			.yield	cs
 
 # §section §gs{ibio.file.name.</>}
 
@@ -260,6 +380,13 @@ sl	.rune	/
 	.coerce	rune.t.in
 	.lift
 	.yield	sl
+
+_dot_c	.expr
+rune.t.in	.cogvar
+do	.rune	.
+	.coerce	rune.t.in
+	.lift
+	.yield	do
 
 	.type
 
