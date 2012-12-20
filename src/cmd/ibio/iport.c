@@ -489,6 +489,15 @@ ibio_prim_iptr_handle_iseof(struct ace_thread *thread, struct gspos pos, int nar
     }
 }
 
+/* §section §gs{ibio.prim.iptr.deref} */
+
+struct ibio_prim_iptr_deref_blocking {
+    struct gslprim_blocking gs;
+    gsvalue res;
+};
+
+static int ibio_prim_iptr_deref_return(struct ace_thread *, struct gspos, gsvalue, struct ibio_prim_iptr_deref_blocking *);
+
 int
 ibio_prim_iptr_handle_deref(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
 {
@@ -502,18 +511,11 @@ ibio_prim_iptr_handle_deref(struct ace_thread *thread, struct gspos pos, int nar
 
     if (iptr < seg->extent) {
         gsvalue v;
-        gstypecode st;
 
         v = *iptr;
         unlock(&seg->lock);
 
-        st = GS_SLOW_EVALUATE(v);
-        switch (st) {
-            case gstyunboxed:
-                return gsprim_return(thread, pos, v);
-            default:
-                return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: st = %d", st);
-        }
+        return ibio_prim_iptr_deref_return(thread, pos, v, 0);
     } else if (seg->next) {
         unlock(&seg->lock);
         return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: points at EOF");
@@ -523,6 +525,47 @@ ibio_prim_iptr_handle_deref(struct ace_thread *thread, struct gspos pos, int nar
         return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_handle_deref: still un-fulfilled");
     }
 }
+
+static
+int
+ibio_prim_iptr_resume_deref(struct ace_thread *thread, struct gspos pos, struct gslprim_blocking *gsblocking)
+{
+    return ibio_prim_iptr_deref_return(thread, pos, 0, (struct ibio_prim_iptr_deref_blocking *)gsblocking);
+}
+
+static
+int
+ibio_prim_iptr_deref_return(struct ace_thread *thread, struct gspos pos, gsvalue v, struct ibio_prim_iptr_deref_blocking *blocking)
+{
+    gstypecode st;
+
+    if (!v) v = blocking->res;
+
+    for (;;) {
+        st = GS_SLOW_EVALUATE(v);
+        switch (st) {
+            case gstystack: {
+                if (!blocking) {
+                    blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_deref);
+                    blocking->res = v;
+                }
+
+                return gsprim_block(thread, pos, (struct gslprim_blocking *)blocking);
+            }
+            case gstywhnf:
+                return gsprim_return(thread, pos, v);
+            case gstyindir:
+                blocking->res = v = GS_REMOVE_INDIRECTION(v);
+                break;
+            case gstyunboxed:
+                return gsprim_return(thread, pos, v);
+            default:
+                return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "ibio_prim_iptr_deref_return: st = %d", st);
+        }
+    }
+}
+
+/* §section §gs{ibio.prim.iptr.next} */
 
 static gslprim_resumption_handler ibio_prim_iptr_resume_next;
 
