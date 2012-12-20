@@ -11,6 +11,9 @@ ibio.file.stat.prim	.closure	_ibio.file.stat.prim_c
 
 ibio.file.isdir	.closure	_ibio.file.isdir_c
 
+ibio.file.name.components.get	.closure	_ibio.file.name.components.get_c
+_ibio.file.name.components.get_worker		.closure	_ibio.file.name.components.get_worker_c	_ibio.file.name.components.get_worker_ty
+
 ibio.file.name.</>	.closure	_ibio.file.name.</>_c
 _ibio.file.name.</>_worker	.closure	_ibio.file.name.</>_worker_c	_ibio.file.name.</>_worker_ty
 
@@ -143,6 +146,24 @@ id	.fv	bool.t
 	.app	id
 	.yield	ibio.prim.unit	bool.t
 
+# §section §gs{ibio.file.name.components.get}
+
+_ibio.file.name.components.get_c	.expr
+ibio.file.name.t	.tygvar
+ibio.file.name.print	.gvar
+_ibio.file.name.components.get_worker	.gvar
+fn	.larg	ibio.file.name.t
+fn0	.apply	ibio.file.name.print	|	fn
+	.app	fn0
+	.enter	_ibio.file.name.components.get_worker
+
+_ibio.file.name.components.get_worker_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+_ibio.file.name.components.get_worker_res.ty	.tygvar
+fn	.larg	list.t	rune.t
+	.undef	_ibio.file.name.components.get_worker_res.ty
+
 # §section §gs{ibio.file.name.</>}
 
 _ibio.file.name.</>_c	.expr
@@ -246,6 +267,28 @@ ibio.file.name.t	.tyabstract	*
 list.t	.tygvar
 rune.t	.tygvar
 	.tyref	list.t	rune.t
+
+# §section §gs{ibio.file.name.components.get}
+
+_ibio.file.name.components.get_worker_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+_ibio.file.name.components.get_worker_res.ty	.tygvar
+	.tylift
+	.tyfun	list.t	rune.t
+	.tyref	_ibio.file.name.components.get_worker_res.ty
+
+_ibio.file.name.components.get_worker_res.ty	.tyexpr
+_ibio.file.name.components.get_worker_res.u	.tygvar
+	.tylift
+	.tyref	_ibio.file.name.components.get_worker_res.u
+
+_ibio.file.name.components.get_worker_res.u	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+list.string.ty	.tylet	list.t	string.ty
+	.typroduct	dirs	list.string.ty	exts	list.string.ty	root	string.ty
 
 # §section §gs{ibio.file.name.</>}
 
