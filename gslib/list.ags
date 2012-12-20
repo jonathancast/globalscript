@@ -7,7 +7,9 @@ list.:	.closure	_list.:.c
 
 list.foldr1	.closure	_list.foldr1_code	_list.foldr1_ty
 list.map	.closure	_list.map_c	_list.map_ty
+
 list.foldl	.closure	_list.foldl_c	_list.foldl_ty
+list.reverse	.closure	_list.reverse_c
 
 list.singleton	.closure	_list.singleton_c
 list.<>	.closure	_list.<>.code	_list.<>.ty
@@ -174,6 +176,29 @@ xn1	.fv	list.t	α
 
 # §section §gs{list.foldl}
 
+# > list.foldl 'f 'z = list.foldr (flip $ strict f) z ∘ list.reverse;
+
+# > list.foldr 'f 'z (list.<> 'xn.0 'xn.1) = list.foldr f (list.foldr f z xn.1) xn.0;
+
+# > list.foldl 'f 'z nil = list.foldr (flip $ strict f) z (list.reverse nil)
+# >   = list.foldr (flip $ strict f) z nil
+# >   = z
+# > ;
+# > list.foldl 'f 'z (list.: 'x 'xn) = list.foldr (flip $ strict f) z (list.reverse (list.: x xn))
+# >   = list.foldr (flip $ strict f) z (list.reverse (list.<> (list.singleton x) xn))
+# >   = list.foldr (flip $ strict f) z (list.<> (list.reverse xn) (list.reverse (list.singleton x)))
+# >   = list.foldr (flip $ strict f) (list.foldr (flip $ strict f) z (list.reverse (list.singleton x))) (list.reverse xn)
+# >   = list.foldl f (list.foldr (flip $ strict f) z (list.reverse (list.singleton x))) xn
+# >   = list.foldl f (list.foldr (flip $ strict f) z (list.singleton x)) xn
+# >   = list.foldl f (list.foldr (flip $ strict f) z (list.: x nil)) xn
+# >   = list.foldl f (flip (strict f) x (list.foldr (flip $ strict f) z nil)) xn
+# >   = list.foldl f (flip (strict f) x z) xn
+# >   = list.foldl f ((strict f z) x) xn
+# >   = list.foldl f ((for (!'z0 ∝ z) f z0) x) xn
+# >   = list.foldl f (for (!'z0 ∝ z) f z0 x) xn
+# >   = for (!'z0 ∝ z) list.foldl f (f z0 x) xn -- Since §gs{list.fold} is strict in §gs{z}
+# > ;
+
 _list.foldl_c	.expr
 _list.foldl_f_ty	.tygvar
 list.t	.tygvar
@@ -230,6 +255,38 @@ z	.fv	β
 x0	.fv	α
 	.app	z	x0
 	.enter	f
+
+# §section §gs{list.reverse}
+
+# > list.reverse nil = nil;
+# > list.reverse (list.singleton 'x) = list.singleton x;
+# > list.reverse (list.<> 'xn.0 'xn.1) = list.<> (list.reverse xn.1) (list.reverse xn.0);
+
+# > list.reverse = id ∘ list.reverse
+# >   = list.foldr list.: list.nil ∘ list.reverse
+# >   = list.foldr (flip (flip list.:)) list.nil ∘ list.reverse
+# >   = list.foldr (flip (strict (flip list.:))) list.nil ∘ list.reverse -- Since the accumulator is defined whenever it's used
+# >   = list.foldl (flip list.:) list.nil
+# > ;
+
+_list.reverse_c	.expr
+list.t	.tygvar
+α	.tyarg	*
+list.α	.tylet	list.t	α
+_list.reverse_fcons_c	.subcode
+list.foldl	.gvar
+list.nil	.gvar
+fcons	.alloc	_list.reverse_fcons_c	α
+nil	.apply	list.nil	α
+	.app	fcons	nil
+	.enter	list.foldl	α	list.α
+
+_list.reverse_fcons_c	.expr
+list.t	.tygvar
+α	.tyfv	*
+xn	.larg	list.t	α
+x	.larg	α
+	.undef	list.t	α
 
 # §section §gs{list.singleton}
 
