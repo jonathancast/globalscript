@@ -9,6 +9,7 @@ ibio.dir.fromprim	.closure	_ibio.dir.fromprim_c	_ibio.dir.fromprim_ty
 ibio.dir.external.io	.closure	_ibio.dir.external.io_c
 
 ibio.mapM.prim	.closure	_ibio.mapM.prim_c	_ibio.mapM.prim_ty
+ibio.mapM0.prim	.closure	_ibio.mapM0.prim_c	_ibio.mapM0.prim_ty
 
 	.code
 
@@ -174,6 +175,66 @@ list.t	.tygvar
 res.ty	.tylet	list.t	β
 	.undef	ibio.prim.t	res.ty
 
+# §section §gs{ibio.mapM0.prim}
+
+_ibio.mapM0.prim_c	.expr
+_ibio.mapM.prim_f_ty	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+_ibio.mapM0.prim_k	.subcode
+list.t.out	.cogvar
+f	.larg	_ibio.mapM.prim_f_ty	α	β
+xn	.larg	list.t	α
+	.force	_ibio.mapM0.prim_k	α	β	|	f
+	.coerce	list.t.out	α
+	.enter	xn
+
+_ibio.mapM0.prim_k	.forcecont
+_ibio.mapM.prim_f_ty	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+ibio.prim.t	.tygvar
+record.empty	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+_ibio.mapM0.prim_k_:_e_c	.subcode
+f	.fv	_ibio.mapM.prim_f_ty	α	β
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+e			.alloc	_ibio.mapM0.prim_k_:_e_c	α	β	|	f	x0
+			.enter	e
+		.case	nil
+			.undef	ibio.prim.t	record.empty
+
+_ibio.mapM0.prim_k_:_e_c	.eprog	ibio.prim	ibio
+_ibio.mapM.prim_f_ty	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+_ibio.mapM0.prim_k_:_e_head_c	.subcode
+_ibio.mapM0.prim_k_:_e_body_c	.subcode
+f	.fv	_ibio.mapM.prim_f_ty	α	β
+x0	.fv	α
+	.bind	_ibio.mapM0.prim_k_:_e_head_c	α	β	|	f	x0
+	.body	_ibio.mapM0.prim_k_:_e_body_c
+
+_ibio.mapM0.prim_k_:_e_head_c	.expr
+_ibio.mapM.prim_f_ty	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+f	.fv	_ibio.mapM.prim_f_ty	α	β
+x0	.fv	α
+	.app	x0
+	.enter	f
+
+_ibio.mapM0.prim_k_:_e_body_c	.expr
+ibio.prim.t	.tygvar
+record.empty	.tygvar
+	.undef	ibio.prim.t	record.empty
+
 	.type
 
 ibio.m	.tyabstract	**^*^*^
@@ -235,6 +296,21 @@ ibio.prim.t	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	ibio.prim.t	β
+
+# §section §gs{ibio.mapM0.prim}
+
+_ibio.mapM0.prim_ty	.tyexpr
+_ibio.mapM.prim_f_ty	.tygvar
+list.t	.tygvar
+ibio.prim.t	.tygvar
+record.empty	.tygvar
+α	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	_ibio.mapM.prim_f_ty	α	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	ibio.prim.t	record.empty
 
 	.coercion
 
