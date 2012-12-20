@@ -214,7 +214,7 @@ static long gsparse_type_item(char *filename, gsparsedfile *parsedfile, struct u
 static long gsparse_coercion_item(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable);
 
 #define LINE_LENGTH 0x400
-#define NUM_FIELDS 0x20
+#define NUM_FIELDS 0x100
 
 gsparsedfile *
 gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags, struct gsfile_symtable *symtable)
@@ -1751,7 +1751,8 @@ gsparse_type_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *
             else
                 parsedline->label = 0;
             if (n % 2)
-                gsfatal("%s:%d: Can't have odd number of arguments to .typroduct", filename, *plineno);
+                gsfatal("%s:%d: Can't have odd number of arguments to .typroduct", filename, *plineno)
+            ;
             for (i = 0; 2 + i < n; i += 2) {
                 parsedline->arguments[i] = gsintern_string(gssymfieldlable, fields[2 + i]);
                 parsedline->arguments[i + 1] = gsintern_string(gssymtypelable, fields[2 + i + 1]);
@@ -1893,9 +1894,11 @@ gsgrabline(char *filename, struct uxio_ichannel *chan, char *line, int *plineno,
     for (;;) {
         (*plineno)++;
         if ((n = gsbio_device_getline(chan, line, LINE_LENGTH)) < 0)
-            gsfatal("%s: getline: %r", filename);
+            gsfatal("%s: getline: %r", filename)
+        ;
         if (n == LINE_LENGTH)
-            gsfatal("%s:%d: line too long; max length %d", filename, *plineno, LINE_LENGTH - 2);
+            gsfatal("%s:%d: line too long; max length %d", filename, *plineno, LINE_LENGTH - 2)
+        ;
         if (n <= 1)
             return 0;
         if ((n = gsac_tokenize(line, fields, NUM_FIELDS)) < 0)

@@ -51,6 +51,9 @@ list.t	.tygvar
 rune.t	.tygvar
 natural.t	.tygvar
 bool.t	.tygvar
+ibio.file.name.t	.tygvar
+integer.t	.tygvar
+_string.ty	.tylet	list.t	rune.t
 d	.larg	ibio.prim.dir.t
 at	.undefined	time.t
 g	.undefined	list.t	rune.t
@@ -67,7 +70,19 @@ mow	.undefined	bool.t
 mone	.undefined	bool.t
 monr	.undefined	bool.t
 monw	.undefined	bool.t
-st	.record	atime	at	gid	g	length	l	mode.append.only	mao	mode.directory	md	mode.exclusive	me	mode.group.execute	mge	mode.group.read	mgr	mode.group.write	mgw	mode.other.execute	moe	mode.other.read	mor	mode.other.write	mow	mode.owner.execute	mone	mode.owner.read	monr	mode.owner.write	monw
+mud	.undefined	bool.t
+mul	.undefined	bool.t
+mup	.undefined	bool.t
+mus	.undefined	bool.t
+mt	.undefined	time.t
+mu	.undefined	_string.ty
+nm	.undefined	ibio.file.name.t
+qpath	.undefined	integer.t
+sd	.undefined	natural.t
+sty	.undefined	natural.t
+uid	.undefined	_string.ty
+vers	.undefined	natural.t
+st	.record	atime	at	gid	g	length	l	mode.append.only	mao	mode.directory	md	mode.exclusive	me	mode.group.execute	mge	mode.group.read	mgr	mode.group.write	mgw	mode.other.execute	moe	mode.other.read	mor	mode.other.write	mow	mode.owner.execute	mone	mode.owner.read	monr	mode.owner.write	monw	mode.unix.dev	mud	mode.unix.link	mul	mode.unix.pipe	mul	mode.unix.socket	mus	mtime	mt	muid	mu	name	nm	qid.path	qpath	srvdev	sd	srvtype	sty	uid	uid	vers	vers
 	.lift
 	.yield	st
 
@@ -193,8 +208,10 @@ list.t	.tygvar
 rune.t	.tygvar
 natural.t	.tygvar
 bool.t	.tygvar
+ibio.file.name.t	.tygvar
+integer.t	.tygvar
 _string.ty	.tylet	list.t	rune.t
-	.typroduct	atime	time.t	gid	_string.ty	length	natural.t	mode.append.only	bool.t	mode.directory	bool.t	mode.exclusive	bool.t	mode.group.execute	bool.t	mode.group.read	bool.t	mode.group.write	bool.t	mode.other.execute	bool.t	mode.other.read	bool.t	mode.other.write	bool.t	mode.owner.execute	bool.t	mode.owner.read	bool.t	mode.owner.write	bool.t	mode.unix.dev	bool.t	mode.unix.link	bool.t	mode.unix.pipe	bool.t	mode.unix.socket	bool.t	mtime	time.t	muid	_string.ty	name	_string.ty	qid.path	integer.t	srvdev	natural.t	srvtype	natural.t	uid	_string.ty	vers	natural.t
+	.typroduct	atime	time.t	gid	_string.ty	length	natural.t	mode.append.only	bool.t	mode.directory	bool.t	mode.exclusive	bool.t	mode.group.execute	bool.t	mode.group.read	bool.t	mode.group.write	bool.t	mode.other.execute	bool.t	mode.other.read	bool.t	mode.other.write	bool.t	mode.owner.execute	bool.t	mode.owner.read	bool.t	mode.owner.write	bool.t	mode.unix.dev	bool.t	mode.unix.link	bool.t	mode.unix.pipe	bool.t	mode.unix.socket	bool.t	mtime	time.t	muid	_string.ty	name	ibio.file.name.t	qid.path	integer.t	srvdev	natural.t	srvtype	natural.t	uid	_string.ty	vers	natural.t
 
 # §section §gs{ibio.mapM.prim}
 

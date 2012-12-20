@@ -1,0 +1,7 @@
+	.prefix
+
+	.type
+
+integer.t	.tyexpr
+	.tylift
+	.tysum
