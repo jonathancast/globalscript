@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.print.nil	_test.map.nil	_test.map.:	_test.reverse.nil
+_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.print.nil	_test.map.nil	_test.map.:	_test.reverse.nil	_test.reverse.cons
 
 _test.nil.eq.nil	.closure	_test.nil.eq.nil.c
 _test.nil.eq.nil.label	.string	nil\s≡\snil
@@ -45,6 +45,9 @@ _test.map.:_label	.string	map\sf\s(_:_)
 
 _test.reverse.nil	.closure	_test.reverse.nil_c
 _test.reverse.nil_label	.string	reverse\snil
+
+_test.reverse.cons	.closure	_test.reverse.cons_c
+_test.reverse.cons_label	.string	reverse\s:
 
 _fixture.nil	.closure	_fixture.nil.c
 _fixture.singleton.false	.closure	_fixture.singleton.false.c
@@ -299,6 +302,33 @@ _fixture.nil	.gvar
 actual	.apply	list.reverse	bool.t	|	_fixture.nil
 test	.apply	test.assert.eq	list.bool	|	_fixture.list.bool.≡	_fixture.list.bool.print	actual	_fixture.nil
 	.app	_test.reverse.nil_label	test
+	.enter	test.property.label
+
+# §section §gs{reverse (false:true:nil)}
+
+_test.reverse.cons_c	.expr
+list.t	.tygvar
+bool.t	.tygvar
+list.bool	.tylet	list.t	bool.t
+test.property.label	.gvar
+_test.reverse.cons_label	.gvar
+test.assert.eq	.gvar
+_fixture.list.bool.≡	.gvar
+_fixture.list.bool.print	.gvar
+list.reverse	.gvar
+list.:	.gvar
+bool.false	.gvar
+bool.true	.gvar
+list.nil	.gvar
+bs2	.apply	list.nil	bool.t
+bs1	.apply	list.:	bool.t	|	bool.true	bs2
+bs	.apply	list.:	bool.t	|	bool.false	bs1
+actual	.apply	list.reverse	bool.t	|	bs
+exp2	.apply	list.nil	bool.t
+exp1	.apply	list.:	bool.t	|	bool.false	exp2
+expected	.apply	list.:	bool.t	|	bool.true	exp1
+test	.apply	test.assert.eq	list.bool	|	_fixture.list.bool.≡	_fixture.list.bool.print	actual	expected
+	.app	_test.reverse.cons_label	test
 	.enter	test.property.label
 
 # §section Test fixtures

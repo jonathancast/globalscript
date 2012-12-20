@@ -284,9 +284,11 @@ nil	.apply	list.nil	α
 _list.reverse_fcons_c	.expr
 list.t	.tygvar
 α	.tyfv	*
+list.:	.gvar
 xn	.larg	list.t	α
 x	.larg	α
-	.undef	list.t	α
+	.app	x	xn
+	.enter	list.:	α
 
 # §section §gs{list.singleton}
 
