@@ -4,8 +4,11 @@
 
 	.cast	_ep.in	_real.entry
 _real.entry	.closure	_real.entry_c
-_file	.string	file\n
-_directory	.string	directory\n
+
+_sp	.closure	_sp_c
+_eol	.string	\n
+_file	.string	file
+_directory	.string	directory
 
 	.code
 
@@ -15,12 +18,14 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 _real.entry_as_c	.subcode
 _real.entry_st_c	.subcode
+_real.entry_s_c	.subcode
 _real.entry_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry_as_c
 st	.bind	_real.entry_st_c	|	as
-	.body	_real.entry_body_c	|	o	st
+s	.alloc	_real.entry_s_c	|	st
+	.body	_real.entry_body_c	|	o	s
 
 _real.entry_as_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -63,47 +68,65 @@ a	.fv	list.t	rune.t
 	.app	a
 	.enter	ibio.file.name.read
 
-_real.entry_body_c	.expr
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
+_real.entry_s_c	.expr
 ibio.dir.t	.tygvar
-_real.entry_body_k0	.subcode
-o	.fv	ibio.prim.oport	rune.t
+_real.entry_s_k0	.subcode
 st	.fv	ibio.dir.t
-	.force	_real.entry_body_k0	|	o
+	.force	_real.entry_s_k0
 	.enter	st
 
-_real.entry_body_k0	.forcecont
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
+_real.entry_s_k0	.forcecont
 ibio.dir.u	.tygvar
-_real.entry_body_k1	.subcode
+_real.entry_s_k1	.subcode
 bool.t.out	.cogvar
-o	.fv	ibio.prim.oport	rune.t
 st0	.karg	ibio.dir.u
 b	.field	mode.directory	st0
-	.force	_real.entry_body_k1	|	o
+nm	.field	name	st0
+	.force	_real.entry_s_k1	|	nm
 	.coerce	bool.t.out
 	.enter	b
 
-_real.entry_body_k1	.forcecont
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
+_real.entry_s_k1	.forcecont
+ibio.file.name.t	.tygvar
 bool.prim.u	.tygvar
-ibio.prim.write	.gvar
+rune.t	.tygvar
+ibio.file.name.print	.gvar
+list.<>	.gvar
+_eol	.gvar
+list.:	.gvar
+_sp	.gvar
 _file	.gvar
 _directory	.gvar
-o	.fv	ibio.prim.oport	rune.t
+nm	.fv	ibio.file.name.t
 b0	.karg	bool.prim.u
+nm.s	.apply	ibio.file.name.print	|	nm
+s2	.apply	list.<>	rune.t	|	nm.s	_eol
+s1	.apply	list.:	rune.t	|	_sp	s2
 	.analyze	b0	false	true
 		.case	false
-			.lift
-			.app	o	_file
-			.yield	ibio.prim.write	rune.t
+			.app	_file	s1
+			.enter	list.<>	rune.t
 		.case	true
-			.lift
-			.app	o	_directory
-			.yield	ibio.prim.write	rune.t
+			.app	_directory	s1
+			.enter	list.<>	rune.t
+
+_real.entry_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+ibio.prim.write	.gvar
+o	.fv	ibio.prim.oport	rune.t
+s	.fv	list.t	rune.t
+	.lift
+	.app	o	s
+	.yield	ibio.prim.write	rune.t
+
+_sp_c	.expr
+rune.t.in	.cogvar
+sp	.rune	\s
+	.coerce	rune.t.in
+	.lift
+	.yield	sp
 
 	.coercion
 

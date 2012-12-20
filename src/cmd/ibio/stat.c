@@ -90,6 +90,7 @@ ibio_parse_gsbio_dir(struct gspos pos, struct gsbio_dir *dir)
     gsvalue fields[ibio_stat_num_fields];
 
     fields[ibio_stat_mode_directory] = dir->d.mode & DMDIR ? gstrue(pos) : gsfalse(pos);
+    fields[ibio_stat_name] = gscstringtogsstring(pos, dir->d.name);
 
     return gsrecordv(pos, ibio_stat_num_fields, fields);
 }

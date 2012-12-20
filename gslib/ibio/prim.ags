@@ -134,7 +134,10 @@ s	.tylambda	*
 
 ibio.prim.dir.t	.tyexpr
 bool.t	.tygvar
-	.typroduct	mode.directory	bool.t
+list.t	.tygvar
+rune.t	.tygvar
+_string.ty	.tylet	list.t	rune.t
+	.typroduct	mode.directory	bool.t	name	_string.ty
 
 _ibio.prim.unit_ty	.tyexpr
 ibio.prim.m	.tygvar

@@ -41,12 +41,15 @@ api_prim_executor ibio_handle_prim_getargs;
 
 #define IBIO_DIR_TYPE \
     "bool.t " \
+    "list.t rune.t ` " \
     "\"Π〈 " \
         "mode.directory " \
+        "name " \
     "〉" \
 
 enum {
     ibio_stat_mode_directory,
+    ibio_stat_name,
     ibio_stat_num_fields,
 };
 

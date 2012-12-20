@@ -52,9 +52,9 @@ list.t	.tygvar
 rune.t	.tygvar
 natural.t	.tygvar
 bool.t	.tygvar
-ibio.file.name.t	.tygvar
 integer.t	.tygvar
 _string.ty	.tylet	list.t	rune.t
+ibio.file.name.read	.gvar
 d	.larg	ibio.prim.dir.t
 at	.undefined	time.t
 g	.undefined	list.t	rune.t
@@ -77,7 +77,8 @@ mup	.undefined	bool.t
 mus	.undefined	bool.t
 mt	.undefined	time.t
 mu	.undefined	_string.ty
-nm	.undefined	ibio.file.name.t
+nm0	.field	name	d
+nm	.apply	ibio.file.name.read	|	nm0
 qpath	.undefined	integer.t
 sd	.undefined	natural.t
 sty	.undefined	natural.t
