@@ -49,11 +49,33 @@ parsed.args	.fv	list.t	ibio.file.name.t
 
 # §section §gs{_print.deps}
 
-_print.deps_c	.expr
+_print.deps_c	.eprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
+_print.deps_cgs.fn_c	.subcode
+_print.deps_cgs_c	.subcode
+_print.deps_body_c	.subcode
+fn	.larg	ibio.file.name.t
+cgs.fn	.alloc	_print.deps_cgs.fn_c	|	fn
+cgs	.bind	_print.deps_cgs_c	|	cgs.fn
+	.body	_print.deps_body_c
+
+_print.deps_cgs.fn_c	.expr
+ibio.file.name.t	.tygvar
+gsac.source.file.name	.gvar
+fn	.fv	ibio.file.name.t
+	.app	fn
+	.enter	gsac.source.file.name
+
+_print.deps_cgs_c	.expr
+ibio.file.name.t	.tygvar
+gsdl.cgs.file.read	.gvar
+cgs.fn	.fv	ibio.file.name.t
+	.app	cgs.fn
+	.enter	gsdl.cgs.file.read
+
+_print.deps_body_c	.expr
 ibio.prim.t	.tygvar
 record.empty	.tygvar
-fn	.larg	ibio.file.name.t
 	.undef	ibio.prim.t	record.empty
 
 	.coercion

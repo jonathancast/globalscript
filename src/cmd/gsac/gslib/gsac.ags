@@ -1,0 +1,14 @@
+	.prefix
+
+	.data
+
+gsac.source.file.name	.closure	_gsac.source.file.name_c
+
+	.code
+
+# §section §gs{gsac.source.file.name}
+
+_gsac.source.file.name_c	.expr
+ibio.file.name.t	.tygvar
+fn	.larg	ibio.file.name.t
+	.undef	ibio.file.name.t

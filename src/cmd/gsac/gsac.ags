@@ -408,5 +408,5 @@ rune.t	.tygvar
 _ep.in	.tycoercion
 ibio.m	.tygvar
 rune.t	.tygvar
-_empty.record	.tygvar
-	.tydefinition ibio.m	rune.t	rune.t	_empty.record
+record.empty	.tygvar
+	.tydefinition ibio.m	rune.t	rune.t	record.empty
