@@ -23,6 +23,7 @@ o	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
 parsed.args	.alloc	_real.entry_parsed.args_c	|	args
 	.body	_real.entry_body_c	|	parsed.args
+
 _real.entry_args_c	.expr
 ibio.prim.env.args.get	.gvar
 	.yield	ibio.prim.env.args.get

@@ -1,0 +1,65 @@
+	.document
+
+	.data
+
+	.cast	_ep.in	_real.entry
+_real.entry	.closure	_real.entry_c
+
+_print.deps	.closure	_print.deps_c
+
+	.code
+
+_real.entry_c	.eprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+ibio.prim.oport	.tygvar
+_real.entry_args_c	.subcode
+_real.entry_parsed.args_c	.subcode
+_real.entry_body_c	.subcode
+i	.larg	ibio.prim.iport	rune.t
+o	.larg	ibio.prim.oport	rune.t
+args	.bind	_real.entry_args_c
+parsed.args	.alloc	_real.entry_parsed.args_c	|	args
+	.body	_real.entry_body_c	|	parsed.args
+
+_real.entry_args_c	.expr
+ibio.prim.env.args.get	.gvar
+	.yield	ibio.prim.env.args.get
+
+_real.entry_parsed.args_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+_string.ty	.tylet	list.t	rune.t
+list.map	.gvar
+ibio.file.name.read	.gvar
+args	.fv	list.t	_string.ty
+	.app	ibio.file.name.read	args
+	.enter	list.map	_string.ty	ibio.file.name.t
+
+_real.entry_body_c	.expr
+list.t	.tygvar
+ibio.file.name.t	.tygvar
+record.empty	.tygvar
+ibio.mapM0.prim	.gvar
+_print.deps	.gvar
+parsed.args	.fv	list.t	ibio.file.name.t
+	.app	_print.deps	parsed.args
+	.enter	ibio.mapM0.prim	ibio.file.name.t	record.empty
+
+# §section §gs{_print.deps}
+
+_print.deps_c	.expr
+ibio.file.name.t	.tygvar
+ibio.prim.t	.tygvar
+record.empty	.tygvar
+fn	.larg	ibio.file.name.t
+	.undef	ibio.prim.t	record.empty
+
+	.coercion
+
+_ep.in	.tycoercion
+ibio.m	.tygvar
+rune.t	.tygvar
+record.empty	.tygvar
+	.tydefinition ibio.m	rune.t	rune.t	record.empty

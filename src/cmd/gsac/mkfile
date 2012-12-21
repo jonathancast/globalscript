@@ -4,6 +4,8 @@ MKSHELL=$PLAN9/bin/rc
 
 GSLIB_TARGETS=`{$PLAN9/bin/rc ./gslib-targets}
 
+<| $PLAN9/bin/rc ./gslib-deps $GSLIB_TARGETS
+
 interpreted:V:
 	true
 
