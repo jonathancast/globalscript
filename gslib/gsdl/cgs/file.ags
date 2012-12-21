@@ -6,21 +6,55 @@ gsdl.cgs.file.read	.closure	_gsdl.cgs.file.read_c
 
 	.code
 
+# §section §gs{gsdl.cgs.file.read}
+
 _gsdl.cgs.file.read_c	.eprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
+_gsdl.cgs.file.read_pos_c	.subcode
+_gsdl.cgs.file.read_parser_c	.subcode
+_gsdl.cgs.file.read_s_c	.subcode
 _gsdl.cgs.file.read_body_c	.subcode
 fn	.larg	ibio.file.name.t
-	.body	_gsdl.cgs.file.read_body_c
+pos	.alloc	_gsdl.cgs.file.read_pos_c
+parser	.alloc	_gsdl.cgs.file.read_parser_c
+s	.bind	_gsdl.cgs.file.read_s_c
+	.body	_gsdl.cgs.file.read_body_c	|	pos	parser	s
+
+_gsdl.cgs.file.read_pos_c	.expr
+parser.pos.t	.tygvar
+	.undef	parser.pos.t
+
+_gsdl.cgs.file.read_parser_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+	.undef	parser.t	rune.t	gsdl.cgs.file.t
+
+_gsdl.cgs.file.read_s_c	.expr
+ibio.prim.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+res.ty	.tylet	list.t	rune.t
+	.undef	ibio.prim.t	res.ty
 
 _gsdl.cgs.file.read_body_c	.expr
+parser.pos.t	.tygvar
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+list.t	.tygvar
 either.t	.tygvar
 parser.err.t	.tygvar
-gsdl.cgs.file.t	.tygvar
 _gsdl.cgs.file.read_body_k	.subcode
 either.t.out	.cogvar
+parser.parse	.gvar
+pos	.fv	parser.pos.t
+parser	.fv	parser.t	rune.t	gsdl.cgs.file.t
+s	.fv	list.t	rune.t
 	.force	_gsdl.cgs.file.read_body_k
 	.coerce	either.t.out	parser.err.t	gsdl.cgs.file.t
-	.undef	either.t	parser.err.t	gsdl.cgs.file.t
+	.app	pos	parser	s
+	.enter	parser.parse	rune.t	gsdl.cgs.file.t
 
 _gsdl.cgs.file.read_body_k	.forcecont
 either.prim.u	.tygvar
