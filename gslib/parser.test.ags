@@ -4,12 +4,17 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.unit
+_tests	.list	test.property.t	_test.unit	_test.pos.eq.x.x
 
 _test.unit	.closure	_test.unit_c
 _test.unit_label	.string	parser.unit
 _test.unit_test_fail.msg	.string	Constructor\sis\snot\sunit.plus
 _test.unit_test_succ.msg	.string	Constructor\sis\sunit.plus
+
+_test.pos.eq.x.x	.closure	_test.pos.eq.x.x_c
+_test.pos.eq.x.x_label	.string	parser.pos.≡\sx\sx
+_test.pos.eq.x.x_fail.msg	.string	pos.initial\sfn\s≠\spos.initial\sfn
+_test.pos.eq.x.x_succ.msg	.string	pos.initial\sfn\s≡\spos.initial\sfn
 
 	.code
 
@@ -62,3 +67,20 @@ x		.fkarg	0	record.empty
 p1		.fkarg	1	parser.prim.t	rune.t	record.empty
 			.app	_test.unit_test_succ.msg
 			.enter	test.property.true
+
+# §section §gs{parser.pos.≡ x x}
+
+_test.pos.eq.x.x_c	.expr
+test.property.label	.gvar
+_test.pos.eq.x.x_label	.gvar
+test.assert	.gvar
+_test.pos.eq.x.x_fail.msg	.gvar
+_test.pos.eq.x.x_succ.msg	.gvar
+parser.pos.≡	.gvar
+parser.pos.initial	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
+b	.apply	parser.pos.≡	|	pos	pos
+test	.apply	test.assert	|	_test.pos.eq.x.x_fail.msg	_test.pos.eq.x.x_succ.msg	b
+	.app	_test.pos.eq.x.x_label	test
+	.enter	test.property.label

@@ -5,6 +5,9 @@
 parser.test.assert.fails	.closure	_parser.test.assert.fails_c
 _parser.test.assert.fails_right_msg.prefix	.string	Parse\succeeded:\s
 
+parser.test.assert.fixtures.sample.file.name	.closure	_parser.test.assert.fixtures.sample.file.name_c
+_parser.test.assert.fixtures.sample.file.name_s	.string	./parse-data
+
 	.code
 
 # §section §gs{parser.test.assert.fails}
@@ -51,6 +54,14 @@ x.s			.apply	print	|	x
 msg			.apply	list.<>	rune.t	|	_parser.test.assert.fails_right_msg.prefix	x.s
 			.app	msg
 			.enter	test.property.false
+
+# §section §gs{parser.test.assert.fixtures.sample.file.name}
+
+_parser.test.assert.fixtures.sample.file.name_c	.expr
+ibio.file.name.read	.gvar
+_parser.test.assert.fixtures.sample.file.name_s	.gvar
+	.app	_parser.test.assert.fixtures.sample.file.name_s
+	.enter	ibio.file.name.read
 
 	.type
 

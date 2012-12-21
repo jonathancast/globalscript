@@ -10,6 +10,10 @@ parser.unit	.closure	_parser.unit_c
 
 parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
 
+parser.pos.≡	.closure	_parser.pos.≡_c
+
+parser.pos.initial	.closure	_parser.pos.initial_c
+
 	.code
 
 # §section §gs{parser.parse}
@@ -135,6 +139,24 @@ r	.constr	res.u	unit.plus	0	x	1	p
 	.lift
 	.yield	r
 
+# §section §gs{parser.pos.≡}
+
+_parser.pos.≡_c	.expr
+parser.pos.t	.tygvar
+bool.true	.gvar
+pos0	.larg	parser.pos.t
+pos1	.larg	parser.pos.t
+	.enter	bool.true
+
+# §section §gs{parser.pos.initial}
+
+_parser.pos.initial_c	.expr
+ibio.file.name.t	.tygvar
+fn	.larg	ibio.file.name.t
+r	.record
+	.lift
+	.yield	r
+
 	.type
 
 # §section §gs{parser.t}
@@ -183,6 +205,18 @@ s	.tylambda	*
 
 parser.err.t	.tyabstract	*
 	.tylift
+	.typroduct
+
+# §section §gs{parser.pos.t}
+
+parser.pos.t	.tyexpr
+parser.pos.u	.tygvar
+	.tylift
+	.tyref	parser.pos.u
+
+parser.pos.u	.tyexpr
+natural.t	.tygvar
+ibio.file.name.t	.tygvar
 	.typroduct
 
 # §section §gs{parser.parse}
