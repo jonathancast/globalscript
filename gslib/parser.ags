@@ -12,7 +12,10 @@ parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
 
 parser.err.≡	.closure	_parser.err.≡_c
 
-paser.err.simple.failure	.closure	_paser.err.simple.failure_c
+parser.err.print	.closure	_parser.err.print_c
+_parser.err.print_simple.failure_prefix	.string	simple.failure\s
+
+parser.err.simple.failure	.closure	_parser.err.simple.failure_c
 
 parser.pos.≡	.closure	_parser.pos.≡_c
 parser.pos.print	.closure	_parser.pos.print_c
@@ -186,9 +189,36 @@ pos1				.fkarg	0	parser.pos.t
 					.app	pos0	pos1
 					.enter	parser.pos.≡
 
+# §section §gs{parser.err.print}
+
+_parser.err.print_c	.expr
+parser.err.t	.tygvar
+_parser.err.print_k	.subcode
+parser.err.t.out	.cogvar
+e	.larg	parser.err.t
+	.force	_parser.err.print_k
+	.coerce	parser.err.t.out
+	.enter	e
+
+_parser.err.print_k	.forcecont
+parser.err.prim.u	.tygvar
+parser.pos.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_parser.err.print_simple.failure_prefix	.gvar
+parser.pos.print	.gvar
+e0	.karg	parser.err.prim.u
+	.analyze	e0	simple.failure
+		.case	simple.failure
+pos		.fkarg	0	parser.pos.t
+pos.s			.apply	parser.pos.print	|	pos
+			.app	_parser.err.print_simple.failure_prefix	pos.s
+			.enter	list.<>	rune.t
+
 # §section §gs{parser.err.t} constructors
 
-_paser.err.simple.failure_c	.expr
+_parser.err.simple.failure_c	.expr
 parser.pos.t	.tygvar
 parser.err.prim.u	.tygvar
 parser.err.t.in	.cogvar
