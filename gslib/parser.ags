@@ -8,7 +8,10 @@ parser.exec	.closure	_parser.exec_c
 
 parser.unit	.closure	_parser.unit_c
 
+parser.fail	.closure	_parser.fail_c
+
 parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
+parser.prim.fail	.closure	_parser.prim.fail_c
 
 parser.err.≡	.closure	_parser.err.≡_c
 
@@ -28,40 +31,54 @@ parser.pos.initial	.closure	_parser.pos.initial_c
 # §section §gs{parser.parse}
 
 _parser.parse_c	.expr
+parser.pos.t	.tygvar
 parser.t	.tygvar
 s	.tyarg	*
 α	.tyarg	*
 _parser.parse_work	.gvar
 parser.exec	.gvar
+pos	.larg	parser.pos.t
 p	.larg	parser.t	s	α
 p1	.apply	parser.exec	s	α	|	p
-	.app	p1
+	.app	pos	p1
 	.enter	_parser.parse_work	s	α
 
 _parser.parse_work_c	.expr
+parser.pos.t	.tygvar
 parser.prim.t	.tygvar
 list.t	.tygvar
 s	.tyarg	*
 α	.tyarg	*
 _parser.parse_work_k	.subcode
 parser.prim.t.out	.cogvar
+pos	.larg	parser.pos.t
 p	.larg	parser.prim.t	s	α
 s	.larg	list.t	s
-	.force	_parser.parse_work_k	s	α	|	s
+	.force	_parser.parse_work_k	s	α	|	pos	s
 	.coerce	parser.prim.t.out	s	α
 	.enter	p
 
 _parser.parse_work_k	.forcecont
+parser.pos.t	.tygvar
 list.t	.tygvar
 parser.prim.u	.tygvar
+either.t	.tygvar
+parser.err.t	.tygvar
 parser.prim.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 _parser.parse_work_unit.plus_k	.subcode
 list.t.out	.cogvar
+either.left	.gvar
+parser.err.simple.failure	.gvar
+pos	.fv	parser.pos.t
 s	.fv	list.t	s
 p0	.karg	parser.prim.u	s	α
-	.analyze	p0	unit.plus
+	.analyze	p0	fail	unit.plus
+		.case	fail
+sf			.apply	parser.err.simple.failure	|	pos
+			.app	sf
+			.enter	either.left	parser.err.t	α
 		.case	unit.plus
 x		.fkarg	0	α
 p1		.fkarg	1	parser.prim.t	s	α
@@ -110,10 +127,9 @@ fail	.undefined	parser.prim.t	s	α
 	.app	x	fail
 	.yield	parser.prim.unit.plus	s	α
 
-# §section Constructor-type Stuff
+# §section §gs{parser.unit}
 
 _parser.unit_c	.expr
-parser.t	.tygvar
 s	.tyarg	*
 α	.tyarg	*
 _parser.unit_res_c	.subcode
@@ -132,6 +148,18 @@ k	.larg	_parser.t_k_ty	s	α	β
 	.app	x
 	.enter	k
 
+# §section §gs{parser.fail}
+
+_parser.fail_c	.expr
+_parser.t_k_ty	.tygvar
+parser.prim.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+parser.prim.fail	.gvar
+k	.larg	_parser.t_k_ty	s	α	β
+	.enter	parser.prim.fail	s	β
+
 # §section Constructors
 
 _parser.prim.unit.plus_c	.expr
@@ -143,10 +171,21 @@ res.u	.tylet	parser.prim.u	s	α
 parser.prim.t.in	.cogvar
 x	.arg	α
 p	.arg	parser.prim.t	s	α
-r	.constr	res.u	unit.plus	0	x	1	p
+un	.constr	res.u	unit.plus	0	x	1	p
 	.coerce	parser.prim.t.in	s	α
 	.lift
-	.yield	r
+	.yield	un
+
+_parser.prim.fail_c	.expr
+parser.prim.u	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+res.u	.tylet	parser.prim.u	s	α
+parser.prim.t.in	.cogvar
+f	.constr	res.u	fail
+	.coerce	parser.prim.t.in	s	α
+	.lift
+	.yield	f
 
 # §section §gs{parser.err.≡}
 
@@ -285,11 +324,15 @@ s	.tylambda	*
 	.tyref	parser.prim.u	s	α
 
 parser.prim.u	.tyexpr
+_parser.prim.u_fail.ty	.tygvar
 _parser.prim.u_unit.plus.ty	.tygvar
 s	.tylambda	*
 α	.tylambda	*
 unit.plus.ty	.tylet	_parser.prim.u_unit.plus.ty	s	α
-	.tysum	unit.plus	unit.plus.ty
+	.tysum	fail	_parser.prim.u_fail.ty	unit.plus	unit.plus.ty
+
+_parser.prim.u_fail.ty	.tyexpr
+	.tyubproduct
 
 _parser.prim.u_unit.plus.ty	.tyexpr
 parser.prim.t	.tygvar
@@ -328,12 +371,15 @@ ibio.file.name.t	.tygvar
 # §section §gs{parser.parse}
 
 _parser.parse_work_ty	.tyexpr
+parser.pos.t	.tygvar
 parser.prim.t	.tygvar
 list.t	.tygvar
 either.t	.tygvar
 parser.err.t	.tygvar
 s	.tyforall	*
 α	.tyforall	*
+	.tylift
+	.tyfun	parser.pos.t
 	.tylift
 	.tyfun	parser.prim.t	s	α
 	.tylift

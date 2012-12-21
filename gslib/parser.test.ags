@@ -4,12 +4,10 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.unit	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.eq.x.x	_test.pos.print
+_tests	.list	test.property.t	_test.fail.nil	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.eq.x.x	_test.pos.print
 
-_test.unit	.closure	_test.unit_c
-_test.unit_label	.string	parser.unit
-_test.unit_test_fail.msg	.string	Constructor\sis\snot\sunit.plus
-_test.unit_test_succ.msg	.string	Constructor\sis\sunit.plus
+_test.fail.nil	.closure	_test.fail.nil_c
+_test.fail.nil_label	.string	parse\sfail\sqq{}
 
 _test.err.≡.simple.failure.simple.failure	.closure	_test.err.≡.simple.failure.simple.failure_c
 _test.err.≡.simple.failure.simple.failure_label	.string	simple.failure\s≡\ssimple.failure
@@ -37,49 +35,63 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{parser.unit}
+# §section §gs{parse fail qq{}}
 
-_test.unit_c	.expr
-_test.unit_test_c	.subcode
+_test.fail.nil_c	.expr
+rune.t	.tygvar
+record.empty	.tygvar
+_test.fail.nil_k_c	.subcode
 test.property.label	.gvar
-_test.unit_label	.gvar
-test	.alloc	_test.unit_test_c
-	.app	_test.unit_label	test
+_test.fail.nil_label	.gvar
+parser.test.assert.fails	.gvar
+record.empty.print	.gvar
+parser.fail	.gvar
+list.nil	.gvar
+fail	.apply	parser.fail	rune.t	record.empty
+nil	.apply	list.nil	rune.t
+k	.alloc	_test.fail.nil_k_c
+test	.apply	parser.test.assert.fails	rune.t	record.empty	|	record.empty.print	fail	nil	k
+	.app	_test.fail.nil_label	test
 	.enter	test.property.label
 
-_test.unit_test_c	.expr
-rune.t	.tygvar
-record.empty	.tygvar
-_test.unit_test_k	.subcode
-parser.prim.t.out	.cogvar
-parser.exec	.gvar
-parser.unit	.gvar
-record.empty	.gvar
-unit	.apply	parser.unit	rune.t	record.empty	|	record.empty
-	.force	_test.unit_test_k
-	.coerce	parser.prim.t.out	rune.t	record.empty
-	.app	unit
-	.enter	parser.exec	rune.t	record.empty
+_test.fail.nil_k_c	.expr
+parser.err.t	.tygvar
+test.assert.eq	.gvar
+parser.err.≡	.gvar
+parser.err.print	.gvar
+parser.err.simple.failure	.gvar
+parser.pos.initial	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+err	.larg	parser.err.t
+pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
+expected	.apply	parser.err.simple.failure	|	pos
+	.app	parser.err.≡	parser.err.print	err	expected
+	.enter	test.assert.eq	parser.err.t
 
-_test.unit_test_k	.forcecont
-parser.prim.u	.tygvar
-rune.t	.tygvar
-record.empty	.tygvar
-parser.prim.t	.tygvar
-test.property.false	.gvar
-_test.unit_test_fail.msg	.gvar
-test.property.true	.gvar
-_test.unit_test_succ.msg	.gvar
-u0	.karg	parser.prim.u	rune.t	record.empty
-	.danalyze	u0	unit.plus
-		.default
-			.app	_test.unit_test_fail.msg
-			.enter	test.property.false
-		.case	unit.plus
-x		.fkarg	0	record.empty
-p1		.fkarg	1	parser.prim.t	rune.t	record.empty
-			.app	_test.unit_test_succ.msg
-			.enter	test.property.true
+# §section §gs{simple.failure ≡ simple.failure}
+
+_test.err.≡.simple.failure.simple.failure_c	.expr
+test.property.label	.gvar
+_test.err.≡.simple.failure.simple.failure_label	.gvar
+test.assert	.gvar
+_test.err.≡.simple.failure.simple.failure_fail.msg	.gvar
+_test.err.≡.simple.failure.simple.failure_succ.msg	.gvar
+parser.err.≡	.gvar
+parser.err.simple.failure	.gvar
+parser.pos.initial	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
+sf	.apply	parser.err.simple.failure	|	pos
+b	.apply	parser.err.≡	|	sf	sf
+test	.apply	test.assert	|	_test.err.≡.simple.failure.simple.failure_fail.msg	_test.err.≡.simple.failure.simple.failure_succ.msg	b
+	.app	_test.err.≡.simple.failure.simple.failure_label	test
+	.enter	test.property.label
+
+# > test.property.label qq{...} $
+# >     test.assert qq{...} qq{...} $
+# >         parser.err.≡ sf sf
+# > where
+# >     'sf ∝ parser.err.simple.failure (parser.pos.initial parser.test.assert.fixtures.sample.file.name)
 
 # §section §gs{parser.err.print simple.failure}
 
@@ -107,31 +119,6 @@ sf.s	.apply	parser.err.print	|	sf
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	sf.s	_test.err.print.simple.failure_expected
 	.app	_test.err.print.simple.failure_label	test
 	.enter	test.property.label
-
-# §section §gs{simple.failure ≡ simple.failure}
-
-_test.err.≡.simple.failure.simple.failure_c	.expr
-test.property.label	.gvar
-_test.err.≡.simple.failure.simple.failure_label	.gvar
-test.assert	.gvar
-_test.err.≡.simple.failure.simple.failure_fail.msg	.gvar
-_test.err.≡.simple.failure.simple.failure_succ.msg	.gvar
-parser.err.≡	.gvar
-parser.err.simple.failure	.gvar
-parser.pos.initial	.gvar
-parser.test.assert.fixtures.sample.file.name	.gvar
-pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
-sf	.apply	parser.err.simple.failure	|	pos
-b	.apply	parser.err.≡	|	sf	sf
-test	.apply	test.assert	|	_test.err.≡.simple.failure.simple.failure_fail.msg	_test.err.≡.simple.failure.simple.failure_succ.msg	b
-	.app	_test.err.≡.simple.failure.simple.failure_label	test
-	.enter	test.property.label
-
-# > test.property.label qq{...} $
-# >     test.assert qq{...} qq{...} $
-# >         parser.err.≡ sf sf
-# > where
-# >     'sf ∝ parser.err.simple.failure (parser.pos.initial parser.test.assert.fixtures.sample.file.name)
 
 # §section §gs{parser.pos.≡ x x}
 

@@ -23,17 +23,21 @@ s	.tyarg	*
 _parser.test.assert.fails_k	.subcode
 either.t.out	.cogvar
 parser.parse	.gvar
+parser.pos.initial	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
 print	.larg	_parser.test.assert.fails_print_ty	α
 p	.larg	parser.t	s	α
 s	.larg	list.t	s
 k	.larg	_parser.test.assert.fails_k_ty
-	.force	_parser.test.assert.fails_k	α	|	print
+pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
+	.force	_parser.test.assert.fails_k	α	|	print	k
 	.coerce	either.t.out	parser.err.t	α
-	.app	p	s
+	.app	pos	p	s
 	.enter	parser.parse	s	α
 
 _parser.test.assert.fails_k	.forcecont
 _parser.test.assert.fails_print_ty	.tygvar
+_parser.test.assert.fails_k_ty	.tygvar
 either.prim.u	.tygvar
 parser.err.t	.tygvar
 test.property.t	.tygvar
@@ -43,11 +47,13 @@ test.property.false	.gvar
 list.<>	.gvar
 _parser.test.assert.fails_right_msg.prefix	.gvar
 print	.fv	_parser.test.assert.fails_print_ty	α
+k	.fv	_parser.test.assert.fails_k_ty
 e	.karg	either.prim.u	parser.err.t	α
 	.analyze	e	left	right
 		.case	left
 err		.fkarg	0	parser.err.t
-			.undef	test.property.t
+			.app	err
+			.enter	k
 		.case	right
 x		.fkarg	0	α
 x.s			.apply	print	|	x
