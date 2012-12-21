@@ -93,3 +93,8 @@ rune.t	.tygvar
 test.property.t.in	.tycoercion
 test.property.t	.tygvar
 	.tydefinition test.property.t
+
+test.property.out	.tycoercion
+test.property.t	.tygvar
+	.tyinvert
+	.tydefinition test.property.t

@@ -4,11 +4,16 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.assert.eq.x.x
+_tests	.list	test.property.t	_test.assert.eq.x.x	_test.assert.fails.true
 
 _test.assert.eq.x.x	.closure	_test.assert.eq.x.x_c
 _test.assert.eq.x.x_label	.string	test.assert.eq\srune.≡\sr/x/\sr/x/
 _test.assert.eq.x.x_test	.closure	_test.assert.eq.x.x_test_c
+
+_test.assert.fails.true	.closure	_test.assert.fails.true_c
+_test.assert.fails.true_label	.string	test.assert.fails\stest.property.true
+_test.assert.fails.true_msg	.string	Test\ssucceeds
+_test.assert.fails.true_expected.msg	.string	Test\spassed;\sshould\shave\sfailed:\sTest\ssucceeds
 
 _x	.closure	_x_c
 
@@ -37,6 +42,47 @@ rune.print	.gvar
 _x	.gvar
 	.app	rune.≡	rune.print	_x	_x
 	.enter	test.assert.eq	rune.t
+
+# §section §gs{assert.fails true}
+
+_test.assert.fails.true_c	.expr
+_test.assert.fails.true_k0_c	.subcode
+_test.assert.fails.true_k1_c	.subcode
+test.property.label	.gvar
+_test.assert.fails.true_label	.gvar
+test.assert.fails	.gvar
+test.property.true	.gvar
+_test.assert.fails.true_msg	.gvar
+true	.apply	test.property.true	|	_test.assert.fails.true_msg
+k0	.alloc	_test.assert.fails.true_k0_c
+assert	.apply	test.assert.fails	|	true	k0
+k1	.alloc	_test.assert.fails.true_k1_c
+test	.apply	test.assert.fails	|	assert	k1
+	.app	_test.assert.fails.true_label	test
+	.enter	test.property.label
+
+_test.assert.fails.true_k0_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+test.property.t	.tygvar
+s	.larg	list.t	rune.t
+	.undef	test.property.t
+
+_test.assert.fails.true_k1_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+test.assert.eq	.gvar
+list.≡	.gvar
+rune.≡	.gvar
+list.print	.gvar
+rune.print.list	.gvar
+_test.assert.fails.true_expected.msg	.gvar
+s	.larg	list.t	rune.t
+string.≡	.apply	list.≡	rune.t	|	rune.≡
+string.print	.apply	list.print	rune.t	|	rune.print.list
+	.app	string.≡	string.print	s	_test.assert.fails.true_expected.msg
+	.enter	test.assert.eq	string.ty
 
 # §section Fixtures
 

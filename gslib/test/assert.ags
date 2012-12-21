@@ -5,6 +5,9 @@
 test.assert.eq	.closure	_test.assert.eq_c
 _test.assert.eq_neq.s_neq	.string	\s≠\s
 
+test.assert.fails	.closure	_test.assert.fails_c
+_test.assert.fails_true_msg.prefix	.string	Test\spassed;\sshould\shave\sfailed:\s
+
 	.code
 
 # §section §gs{test.assert.eq}
@@ -82,7 +85,52 @@ y	.fv	α
 	.app	x	y
 	.enter	eq
 
+# §section §gs{test.assert.fails}
+
+_test.assert.fails_c	.expr
+test.property.t	.tygvar
+_test.assert.fails_k_ty	.tygvar
+_test.assert.fails_k	.subcode
+test.property.out	.cogvar
+p	.larg	test.property.t
+k	.larg	_test.assert.fails_k_ty
+	.force	_test.assert.fails_k	|	k
+	.coerce	test.property.out
+	.enter	p
+
+_test.assert.fails_k	.forcecont
+_test.assert.fails_k_ty	.tygvar
+test.property.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+test.property.t	.tygvar
+test.property.false	.gvar
+list.<>	.gvar
+_test.assert.fails_true_msg.prefix	.gvar
+k	.fv	_test.assert.fails_k_ty
+p0	.karg	test.property.prim.u
+	.analyze	p0	false	label	true	∧
+		.case	false
+msg		.fkarg	0	list.t	rune.t
+			.app	msg
+			.enter	k
+		.case	label
+lbl		.fkarg	0	list.t	rune.t
+p1		.fkarg	1	test.property.t
+			.undef	test.property.t
+		.case	true
+msg		.fkarg	0	list.t	rune.t
+msg.1			.apply	list.<>	rune.t	|	_test.assert.fails_true_msg.prefix	msg
+			.app	msg.1
+			.enter	test.property.false
+		.case	∧
+p1		.fkarg	0	test.property.t
+p2		.fkarg	1	test.property.t
+			.undef	test.property.t
+
 	.type
+
+# §section §gs{test.assert.eq}
 
 _test.assert.eq_eq_ty	.tyexpr
 bool.t	.tygvar
@@ -100,3 +148,13 @@ rune.t	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	list.t	rune.t
+
+# §section §gs{test.assert.fails}
+
+_test.assert.fails_k_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+test.property.t	.tygvar
+	.tylift
+	.tyfun	list.t	rune.t
+	.tyref	test.property.t
