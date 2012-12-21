@@ -2,6 +2,7 @@
 
 	.data
 
+either.left	.closure	_either.left_c
 either.right	.closure	_either.right_c
 
 either.map	.closure	_either.map_c
@@ -10,6 +11,18 @@ either.unit	.closure	_either.unit_c
 	.code
 
 # §section Constructors
+
+_either.left_c	.expr
+either.prim.u	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+t	.tylet	either.prim.u	α	β
+either.t.in	.cogvar
+x	.larg	α
+e0	.constr	t	left	0	x
+	.coerce	either.t.in	α	β
+	.lift
+	.yield	e0
 
 _either.right_c	.expr
 either.prim.u	.tygvar
