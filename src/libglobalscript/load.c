@@ -26,7 +26,7 @@ gsisdir(char *filename)
 {
     struct gsbio_dir *d;
     d = gsbio_stat(filename);
-    if (!d) gsfatal("%r");
+    if (!d) return 0;
     return d->d.mode & DMDIR;
 }
 
