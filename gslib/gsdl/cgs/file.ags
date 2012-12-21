@@ -1,5 +1,22 @@
 	.prefix
 
+	.data
+
+gsdl.cgs.file.read	.closure	_gsdl.cgs.file.read_c
+
+	.code
+
+_gsdl.cgs.file.read_c	.eprog	ibio.prim	ibio
+ibio.file.name.t	.tygvar
+_gsdl.cgs.file.read_body_c	.subcode
+fn	.larg	ibio.file.name.t
+	.body	_gsdl.cgs.file.read_body_c
+
+_gsdl.cgs.file.read_body_c	.expr
+ibio.prim.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+	.undef	ibio.prim.t	gsdl.cgs.file.t
+
 	.type
 
 gsdl.cgs.file.t	.tyabstract	*
