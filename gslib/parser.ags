@@ -15,6 +15,8 @@ parser.err.≡	.closure	_parser.err.≡_c
 paser.err.simple.failure	.closure	_paser.err.simple.failure_c
 
 parser.pos.≡	.closure	_parser.pos.≡_c
+parser.pos.print	.closure	_parser.pos.print_c
+_parser.pos.print_s	.string	〈〉
 
 parser.pos.initial	.closure	_parser.pos.initial_c
 
@@ -204,6 +206,14 @@ bool.true	.gvar
 pos0	.larg	parser.pos.t
 pos1	.larg	parser.pos.t
 	.enter	bool.true
+
+# §section §gs{parser.pos.print}
+
+_parser.pos.print_c	.expr
+parser.pos.t	.tygvar
+_parser.pos.print_s	.gvar
+pos	.larg	parser.pos.t
+	.enter	_parser.pos.print_s
 
 # §section §gs{parser.pos.initial}
 

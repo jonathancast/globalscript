@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.unit	_test.err.≡.simple.failure.simple.failure	_test.pos.eq.x.x
+_tests	.list	test.property.t	_test.unit	_test.err.≡.simple.failure.simple.failure	_test.pos.eq.x.x	_test.pos.print
 
 _test.unit	.closure	_test.unit_c
 _test.unit_label	.string	parser.unit
@@ -20,6 +20,10 @@ _test.pos.eq.x.x	.closure	_test.pos.eq.x.x_c
 _test.pos.eq.x.x_label	.string	parser.pos.≡\sx\sx
 _test.pos.eq.x.x_fail.msg	.string	pos.initial\sfn\s≠\spos.initial\sfn
 _test.pos.eq.x.x_succ.msg	.string	pos.initial\sfn\s≡\spos.initial\sfn
+
+_test.pos.print	.closure	_test.pos.print_c
+_test.pos.print_label	.string	pos.print\spos.initial
+_test.pos.print_expected	.string	〈〉
 
 	.code
 
@@ -114,3 +118,28 @@ test	.apply	test.assert	|	_test.err.≡.simple.failure.simple.failure_fail.msg	_
 # >         parser.err.≡ sf sf
 # > where
 # >     'sf ∝ parser.err.simple.failure (parser.pos.initial parser.test.assert.fixtures.sample.file.name)
+
+# §section §gs{parser.pos.print simple.failure}
+
+_test.pos.print_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+test.property.label	.gvar
+_test.pos.print_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+rune.≡	.gvar
+list.print	.gvar
+rune.print.list	.gvar
+parser.pos.print	.gvar
+parser.pos.initial	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+_test.pos.print_expected	.gvar
+string.≡	.apply	list.≡	rune.t	|	rune.≡
+string.print	.apply	list.print	rune.t	|	rune.print.list
+pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
+pos.s	.apply	parser.pos.print	|	pos
+test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	pos.s	_test.pos.print_expected
+	.app	_test.pos.print_label	test
+	.enter	test.property.label
