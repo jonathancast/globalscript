@@ -10,6 +10,10 @@ parser.unit	.closure	_parser.unit_c
 
 parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
 
+parser.err.≡	.closure	_parser.err.≡_c
+
+paser.err.simple.failure	.closure	_paser.err.simple.failure_c
+
 parser.pos.≡	.closure	_parser.pos.≡_c
 
 parser.pos.initial	.closure	_parser.pos.initial_c
@@ -139,6 +143,59 @@ r	.constr	res.u	unit.plus	0	x	1	p
 	.lift
 	.yield	r
 
+# §section §gs{parser.err.≡}
+
+_parser.err.≡_c	.expr
+parser.err.t	.tygvar
+_parser.err.≡_k0	.subcode
+parser.err.t.out	.cogvar
+e0	.larg	parser.err.t
+e1	.larg	parser.err.t
+	.force	_parser.err.≡_k0	|	e1
+	.coerce	parser.err.t.out
+	.enter	e0
+
+_parser.err.≡_k0	.forcecont
+parser.err.t	.tygvar
+parser.err.prim.u	.tygvar
+_parser.err.≡_k1	.subcode
+parser.err.t.out	.cogvar
+e1	.fv	parser.err.t
+e0.0	.karg	parser.err.prim.u
+	.force	_parser.err.≡_k1	|	e0.0
+	.coerce	parser.err.t.out
+	.enter	e1
+
+_parser.err.≡_k1	.forcecont
+parser.err.prim.u	.tygvar
+parser.pos.t	.tygvar
+bool.t	.tygvar
+parser.pos.≡	.gvar
+e0.0	.fv	parser.err.prim.u
+e1.0	.karg	parser.err.prim.u
+	.analyze	e0.0	simple.failure
+		.case	simple.failure
+pos0		.fkarg	0	parser.pos.t
+			.danalyze	e0.0	simple.failure
+				.default
+					.undef	bool.t
+				.case	simple.failure
+pos1				.fkarg	0	parser.pos.t
+					.app	pos0	pos1
+					.enter	parser.pos.≡
+
+# §section §gs{parser.err.t} constructors
+
+_paser.err.simple.failure_c	.expr
+parser.pos.t	.tygvar
+parser.err.prim.u	.tygvar
+parser.err.t.in	.cogvar
+pos	.arg	parser.pos.t
+c	.constr	parser.err.prim.u	simple.failure	0	pos
+	.coerce	parser.err.t.in
+	.lift
+	.yield	c
+
 # §section §gs{parser.pos.≡}
 
 _parser.pos.≡_c	.expr
@@ -204,8 +261,17 @@ s	.tylambda	*
 # §section §gs{parser.err.t}
 
 parser.err.t	.tyabstract	*
+parser.err.prim.u	.tygvar
 	.tylift
-	.typroduct
+	.tyref	parser.err.prim.u
+
+parser.err.prim.u	.tyexpr
+_parser.err.prim.u_simple.failure_ty	.tygvar
+	.tysum	simple.failure	_parser.err.prim.u_simple.failure_ty
+
+_parser.err.prim.u_simple.failure_ty	.tyexpr
+parser.pos.t	.tygvar
+	.tyubproduct	0	parser.pos.t
 
 # §section §gs{parser.pos.t}
 
@@ -248,3 +314,12 @@ s	.tylambda	*
 α	.tylambda	*
 	.tyinvert
 	.tydefinition	parser.prim.t	s	α
+
+parser.err.t.in	.tycoercion
+parser.err.t	.tygvar
+	.tydefinition	parser.err.t
+
+parser.err.t.out	.tycoercion
+parser.err.t	.tygvar
+	.tyinvert
+	.tydefinition	parser.err.t

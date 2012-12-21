@@ -4,12 +4,17 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.unit	_test.pos.eq.x.x
+_tests	.list	test.property.t	_test.unit	_test.err.≡.simple.failure.simple.failure	_test.pos.eq.x.x
 
 _test.unit	.closure	_test.unit_c
 _test.unit_label	.string	parser.unit
 _test.unit_test_fail.msg	.string	Constructor\sis\snot\sunit.plus
 _test.unit_test_succ.msg	.string	Constructor\sis\sunit.plus
+
+_test.err.≡.simple.failure.simple.failure	.closure	_test.err.≡.simple.failure.simple.failure_c
+_test.err.≡.simple.failure.simple.failure_label	.string	simple.failure\s≡\ssimple.failure
+_test.err.≡.simple.failure.simple.failure_fail.msg	.string	simple.failure\s≠\ssimple.failure
+_test.err.≡.simple.failure.simple.failure_succ.msg	.string	simple.failure\s≡\ssimple.failure
 
 _test.pos.eq.x.x	.closure	_test.pos.eq.x.x_c
 _test.pos.eq.x.x_label	.string	parser.pos.≡\sx\sx
@@ -84,3 +89,28 @@ b	.apply	parser.pos.≡	|	pos	pos
 test	.apply	test.assert	|	_test.pos.eq.x.x_fail.msg	_test.pos.eq.x.x_succ.msg	b
 	.app	_test.pos.eq.x.x_label	test
 	.enter	test.property.label
+
+# §section §gs{simple.failure ≡ simple.failure}
+
+_test.err.≡.simple.failure.simple.failure_c	.expr
+test.property.label	.gvar
+_test.err.≡.simple.failure.simple.failure_label	.gvar
+test.assert	.gvar
+_test.err.≡.simple.failure.simple.failure_fail.msg	.gvar
+_test.err.≡.simple.failure.simple.failure_succ.msg	.gvar
+parser.err.≡	.gvar
+paser.err.simple.failure	.gvar
+parser.pos.initial	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
+sf	.apply	paser.err.simple.failure	|	pos
+b	.apply	parser.err.≡	|	sf	sf
+test	.apply	test.assert	|	_test.err.≡.simple.failure.simple.failure_fail.msg	_test.err.≡.simple.failure.simple.failure_succ.msg	b
+	.app	_test.err.≡.simple.failure.simple.failure_label	test
+	.enter	test.property.label
+
+# > test.property.label qq{...} $
+# >     test.assert qq{...} qq{...} $
+# >         parser.err.≡ sf sf
+# > where
+# >     'sf ∝ parser.err.simple.failure (parser.pos.initial parser.test.assert.fixtures.sample.file.name)

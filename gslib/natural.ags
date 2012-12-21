@@ -2,6 +2,8 @@
 
 	.data
 
+natural.from.prim	.closure	_natural.from.prim_c
+
 natural.+	.closure	_natural.+_c
 natural.divMod	.closure	_natural.divMod_c
 
@@ -19,6 +21,16 @@ natural.fmtdecimal	.closure	_natural.fmtdecimal_c	_natural.fmtdecimal_ty
 natural.print	.closure	_natural.print_c
 
 	.code
+
+# §section §gs{natural.from.prim}
+
+_natural.from.prim_c	.expr
+natural.prim.u	.tygvar
+natural.t.in	.cogvar
+n0	.larg	natural.prim.u
+	.coerce	natural.t.in
+	.lift
+	.yield	n0
 
 # §section §gs{natural.+}
 
