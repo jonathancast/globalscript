@@ -4,7 +4,11 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.fails.unit.nil
+
+_test.fails.unit.nil	.closure	_test.fails.unit.nil_c
+_test.fails.unit.nil_label	.string	parser.test.assert.fails\s(unit\s〈〉)\snil
+_test.fails.unit.nil_expected.msg	.string	Parse\succeeded:\s〈〉
 
 	.code
 
@@ -13,3 +17,47 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+_test.fails.unit.nil_c	.expr
+rune.t	.tygvar
+record.empty	.tygvar
+_test.fails.unit.nil_k0_c	.subcode
+_test.fails.unit.nil_k1_c	.subcode
+test.property.label	.gvar
+_test.fails.unit.nil_label	.gvar
+test.assert.fails	.gvar
+parser.test.assert.fails	.gvar
+record.empty.print	.gvar
+parser.unit	.gvar
+record.empty	.gvar
+list.nil	.gvar
+unit	.apply	parser.unit	rune.t	record.empty	|	record.empty
+nil	.apply	list.nil	rune.t
+k0	.alloc	_test.fails.unit.nil_k0_c
+assert	.apply	parser.test.assert.fails	rune.t	record.empty	|	record.empty.print	unit	nil	k0
+k1	.alloc	_test.fails.unit.nil_k1_c
+test	.apply	test.assert.fails	|	assert	k1
+	.app	_test.fails.unit.nil_label	test
+	.enter	test.property.label
+
+_test.fails.unit.nil_k0_c	.expr
+parser.err.t	.tygvar
+test.property.t	.tygvar
+err	.larg	parser.err.t
+	.undef	test.property.t
+
+_test.fails.unit.nil_k1_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+test.assert.eq	.gvar
+list.≡	.gvar
+rune.≡	.gvar
+list.print	.gvar
+rune.print.list	.gvar
+_test.fails.unit.nil_expected.msg	.gvar
+msg	.larg	list.t	rune.t
+string.≡	.apply	list.≡	rune.t	|	rune.≡
+string.print	.apply	list.print	rune.t	|	rune.print.list
+	.app	string.≡	string.print	msg	_test.fails.unit.nil_expected.msg
+	.enter	test.assert.eq	string.ty

@@ -3,6 +3,8 @@
 	.data
 
 record.empty	.closure	_record.empty_c
+record.empty.print	.closure	_record.empty.print_c
+_record.empty.print_s	.string	〈〉
 
 	.code
 
@@ -10,6 +12,12 @@ _record.empty_c	.expr
 r	.record
 	.lift
 	.yield	r
+
+_record.empty.print_c	.expr
+record.empty	.tygvar
+_record.empty.print_s	.gvar
+r	.larg	record.empty
+	.enter	_record.empty.print_s
 
 	.type
 

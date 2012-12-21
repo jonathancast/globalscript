@@ -2,6 +2,8 @@
 
 	.data
 
+parser.parse	.closure	_parser.parse_c
+_parser.parse_work	.closure	_parser.parse_work_c	_parser.parse_work_ty
 parser.exec	.closure	_parser.exec_c
 
 parser.unit	.closure	_parser.unit_c
@@ -9,6 +11,69 @@ parser.unit	.closure	_parser.unit_c
 parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
 
 	.code
+
+# §section §gs{parser.parse}
+
+_parser.parse_c	.expr
+parser.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+_parser.parse_work	.gvar
+parser.exec	.gvar
+p	.larg	parser.t	s	α
+p1	.apply	parser.exec	s	α	|	p
+	.app	p1
+	.enter	_parser.parse_work	s	α
+
+_parser.parse_work_c	.expr
+parser.prim.t	.tygvar
+list.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+_parser.parse_work_k	.subcode
+parser.prim.t.out	.cogvar
+p	.larg	parser.prim.t	s	α
+s	.larg	list.t	s
+	.force	_parser.parse_work_k	s	α	|	s
+	.coerce	parser.prim.t.out	s	α
+	.enter	p
+
+_parser.parse_work_k	.forcecont
+list.t	.tygvar
+parser.prim.u	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+_parser.parse_work_unit.plus_k	.subcode
+list.t.out	.cogvar
+s	.fv	list.t	s
+p0	.karg	parser.prim.u	s	α
+	.analyze	p0	unit.plus
+		.case	unit.plus
+x		.fkarg	0	α
+p1		.fkarg	1	parser.prim.t	s	α
+			.force	_parser.parse_work_unit.plus_k	s	α	|	x
+			.coerce	list.t.out	s
+			.enter	s
+
+_parser.parse_work_unit.plus_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+either.t	.tygvar
+parser.err.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+either.right	.gvar
+x	.fv	α
+s0	.karg	list.prim.u	s
+	.analyze	s0	:	nil
+		.case	:
+c		.fkarg	0	s
+s1		.fkarg	1	list.t	s
+			.undef	either.t	parser.err.t	α
+		.case	nil
+			.app	x
+			.enter	either.right	parser.err.t	α
 
 # §section §gs{parser.exec}
 
@@ -119,6 +184,21 @@ s	.tylambda	*
 parser.err.t	.tyabstract	*
 	.tylift
 	.typroduct
+
+# §section §gs{parser.parse}
+
+_parser.parse_work_ty	.tyexpr
+parser.prim.t	.tygvar
+list.t	.tygvar
+either.t	.tygvar
+parser.err.t	.tygvar
+s	.tyforall	*
+α	.tyforall	*
+	.tylift
+	.tyfun	parser.prim.t	s	α
+	.tylift
+	.tyfun	list.t	s
+	.tyref	either.t	parser.err.t	α
 
 	.coercion
 
