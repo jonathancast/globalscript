@@ -1,0 +1,7 @@
+	.prefix
+
+	.type
+
+parser.err.t	.tyabstract	*
+	.tylift
+	.typroduct
