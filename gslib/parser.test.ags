@@ -4,7 +4,12 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.unit
+
+_test.unit	.closure	_test.unit_c
+_test.unit_label	.string	parser.unit
+_test.unit_test_fail.msg	.string	Constructor\sis\snot\sunit.plus
+_test.unit_test_succ.msg	.string	Constructor\sis\sunit.plus
 
 	.code
 
@@ -13,3 +18,47 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{parser.unit}
+
+_test.unit_c	.expr
+_test.unit_test_c	.subcode
+test.property.label	.gvar
+_test.unit_label	.gvar
+test	.alloc	_test.unit_test_c
+	.app	_test.unit_label	test
+	.enter	test.property.label
+
+_test.unit_test_c	.expr
+rune.t	.tygvar
+record.empty	.tygvar
+_test.unit_test_k	.subcode
+parser.prim.t.out	.cogvar
+parser.exec	.gvar
+parser.unit	.gvar
+record.empty	.gvar
+unit	.apply	parser.unit	rune.t	record.empty	|	record.empty
+	.force	_test.unit_test_k
+	.coerce	parser.prim.t.out	rune.t	record.empty
+	.app	unit
+	.enter	parser.exec	rune.t	record.empty
+
+_test.unit_test_k	.forcecont
+parser.prim.u	.tygvar
+rune.t	.tygvar
+record.empty	.tygvar
+parser.prim.t	.tygvar
+test.property.false	.gvar
+_test.unit_test_fail.msg	.gvar
+test.property.true	.gvar
+_test.unit_test_succ.msg	.gvar
+u0	.karg	parser.prim.u	rune.t	record.empty
+	.danalyze	u0	unit.plus
+		.default
+			.app	_test.unit_test_fail.msg
+			.enter	test.property.false
+		.case	unit.plus
+x		.fkarg	0	record.empty
+p1		.fkarg	1	parser.prim.t	rune.t	record.empty
+			.app	_test.unit_test_succ.msg
+			.enter	test.property.true

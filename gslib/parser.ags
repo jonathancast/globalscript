@@ -1,7 +1,136 @@
 	.prefix
 
+	.data
+
+parser.exec	.closure	_parser.exec_c
+
+parser.unit	.closure	_parser.unit_c
+
+parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
+
+	.code
+
+# §section §gs{parser.exec}
+
+_parser.exec_c	.expr
+parser.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+_parser.exec_k_c	.subcode
+p	.larg	parser.t	s	α
+k	.alloc	_parser.exec_k_c	s	α
+	.app	k
+	.enter	p	α
+
+_parser.exec_k_c	.expr
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+parser.prim.unit.plus	.gvar
+x	.larg	α
+fail	.undefined	parser.prim.t	s	α
+	.app	x	fail
+	.yield	parser.prim.unit.plus	s	α
+
+# §section Constructor-type Stuff
+
+_parser.unit_c	.expr
+parser.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+_parser.unit_res_c	.subcode
+x	.larg	α
+res	.alloc	_parser.unit_res_c	s	α	|	x
+	.enter	res
+
+_parser.unit_res_c	.expr
+_parser.t_k_ty	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyarg	*
+x	.fv	α
+k	.larg	_parser.t_k_ty	s	α	β
+	.app	x
+	.enter	k
+
+# §section Constructors
+
+_parser.prim.unit.plus_c	.expr
+parser.prim.t	.tygvar
+parser.prim.u	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+res.u	.tylet	parser.prim.u	s	α
+parser.prim.t.in	.cogvar
+x	.arg	α
+p	.arg	parser.prim.t	s	α
+r	.constr	res.u	unit.plus	0	x	1	p
+	.coerce	parser.prim.t.in	s	α
+	.lift
+	.yield	r
+
 	.type
+
+# §section §gs{parser.t}
+
+parser.t	.tyexpr
+_parser.t_k_ty	.tygvar
+parser.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+β	.tyforall	*
+	.tylift
+	.tyfun	_parser.t_k_ty	s	α	β
+	.tyref	parser.prim.t	s	β
+
+_parser.t_k_ty	.tyexpr
+parser.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	parser.prim.t	s	β
+
+parser.prim.t	.tyabstract	**^*^
+parser.prim.u	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+	.tylift
+	.tyref	parser.prim.u	s	α
+
+parser.prim.u	.tyexpr
+_parser.prim.u_unit.plus.ty	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+unit.plus.ty	.tylet	_parser.prim.u_unit.plus.ty	s	α
+	.tysum	unit.plus	unit.plus.ty
+
+_parser.prim.u_unit.plus.ty	.tyexpr
+parser.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+1.ty	.tylet	parser.prim.t	s	α
+	.tyubproduct	0	α	1	1.ty
+
+# §section §gs{parser.err.t}
 
 parser.err.t	.tyabstract	*
 	.tylift
 	.typroduct
+
+	.coercion
+
+parser.prim.t.in	.tycoercion
+parser.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+	.tydefinition	parser.prim.t	s	α
+
+parser.prim.t.out	.tycoercion
+parser.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+	.tyinvert
+	.tydefinition	parser.prim.t	s	α
