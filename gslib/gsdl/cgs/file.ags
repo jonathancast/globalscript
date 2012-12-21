@@ -13,8 +13,21 @@ fn	.larg	ibio.file.name.t
 	.body	_gsdl.cgs.file.read_body_c
 
 _gsdl.cgs.file.read_body_c	.expr
-ibio.prim.t	.tygvar
+either.t	.tygvar
+parser.err.t	.tygvar
 gsdl.cgs.file.t	.tygvar
+_gsdl.cgs.file.read_body_k	.subcode
+either.t.out	.cogvar
+	.force	_gsdl.cgs.file.read_body_k
+	.coerce	either.t.out	parser.err.t	gsdl.cgs.file.t
+	.undef	either.t	parser.err.t	gsdl.cgs.file.t
+
+_gsdl.cgs.file.read_body_k	.forcecont
+either.prim.u	.tygvar
+parser.err.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+ibio.prim.t	.tygvar
+ef0	.karg	either.prim.u	parser.err.t	gsdl.cgs.file.t
 	.undef	ibio.prim.t	gsdl.cgs.file.t
 
 	.type
