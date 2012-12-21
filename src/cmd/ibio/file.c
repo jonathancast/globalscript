@@ -126,7 +126,7 @@ ibio_file_sys_open(struct ibio_uxio **puxio, char *fn, int omode)
     if (gsisdir(fn))
         *puxio = ibio_dir_uxio(fn)
     ; else {
-        werrstr(UNIMPL("set *puxio for files"));
+        werrstr(UNIMPL("%s: set *puxio for files"), fn);
         return -1;
     }
 
