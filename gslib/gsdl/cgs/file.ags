@@ -16,18 +16,21 @@ _gsdl.cgs.file.read_parser_c	.subcode
 _gsdl.cgs.file.read_s_c	.subcode
 _gsdl.cgs.file.read_body_c	.subcode
 fn	.larg	ibio.file.name.t
-i	.bind	_gsdl.cgs.file.read_i_c
+i	.bind	_gsdl.cgs.file.read_i_c	|	fn
 pos	.alloc	_gsdl.cgs.file.read_pos_c
 parser	.alloc	_gsdl.cgs.file.read_parser_c
 s	.bind	_gsdl.cgs.file.read_s_c	|	i
 	.body	_gsdl.cgs.file.read_body_c	|	pos	parser	s
 
 _gsdl.cgs.file.read_i_c	.expr
+ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
-ibio.prim.iport	.tygvar
 rune.t	.tygvar
-res.ty	.tylet	ibio.prim.iport	rune.t
-	.undef	ibio.prim.t	res.ty
+ibio.file.read.open.prim	.gvar
+ibio.rune.external.io	.gvar
+fn	.fv	ibio.file.name.t
+	.app	ibio.rune.external.io	fn
+	.enter	ibio.file.read.open.prim	rune.t
 
 _gsdl.cgs.file.read_pos_c	.expr
 parser.pos.t	.tygvar
