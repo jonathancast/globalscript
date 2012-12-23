@@ -105,12 +105,12 @@ ibio_main_process_handle_rpc_file_read_open(struct gsrpc *rpc)
     uxio = gsisdir(openrpc->filename) ? ibio_dir_uxio(openrpc->filename) : ibio_file_uxio();
 
     if ((fd = open(openrpc->filename, OREAD)) < 0) {
-        ibio_rpc_fail(rpc, "%P: ibio_iport_fdopen: %r", openrpc->pos);
+        ibio_rpc_fail(rpc, "%P: %s: %r", openrpc->pos, openrpc->filename, openrpc->pos);
         return;
     }
 
     if (!(res = ibio_iport_fdopen(fd, uxio, openrpc->io, errbuf, errbuf + sizeof(errbuf)))) {
-        ibio_rpc_fail(rpc, "%P: ibio_iport_fdopen: %s", openrpc->pos, errbuf);
+        ibio_rpc_fail(rpc, "%P: %s: %s", openrpc->pos, openrpc->filename, errbuf);
         return;
     }
 
