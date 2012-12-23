@@ -89,8 +89,6 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
     }
 }
 
-static int ibio_file_sys_open(struct ibio_uxio **, char *, int);
-
 static void ibio_rpc_fail(struct gsrpc *, char *, ...);
 
 void
@@ -104,7 +102,9 @@ ibio_main_process_handle_rpc_file_read_open(struct gsrpc *rpc)
 
     openrpc = (struct ibio_file_read_open_rpc *)rpc;
 
-    if ((fd = ibio_file_sys_open(&uxio, openrpc->filename, OREAD)) < 0) {
+    uxio = gsisdir(openrpc->filename) ? ibio_dir_uxio(openrpc->filename) : ibio_file_uxio();
+
+    if ((fd = open(openrpc->filename, OREAD)) < 0) {
         ibio_rpc_fail(rpc, "%P: ibio_iport_fdopen: %r", openrpc->pos);
         return;
     }
@@ -117,20 +117,6 @@ ibio_main_process_handle_rpc_file_read_open(struct gsrpc *rpc)
     rpc->status = gsrpc_succeeded;
     openrpc->iport = res;
     unlock(&rpc->lock);
-}
-
-static
-int
-ibio_file_sys_open(struct ibio_uxio **puxio, char *fn, int omode)
-{
-    if (gsisdir(fn))
-        *puxio = ibio_dir_uxio(fn)
-    ; else {
-        werrstr(UNIMPL("%s: set *puxio for files"), fn);
-        return -1;
-    }
-
-    return open(fn, omode);
 }
 
 static

@@ -19,4 +19,6 @@ ok_diff_case '-- isempty (non-empty) --' non-empty ./$O.ibio isempty.ibio.ags < 
 
 ok_diff '-- cat --' ./$O.ibio cat.ibio.ags < ./test-results/cat.ibio.ags-expected
 
+ok_diff '-- cat (file) --' ./$O.ibio cat.ibio.ags ./test-results/cat.ibio.ags-expected < /dev/null
+
 ok_diff '-- dircount --' ./$O.ibio dircount.ibio.ags ./test-fixtures/for-dircount

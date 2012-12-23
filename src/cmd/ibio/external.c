@@ -10,6 +10,17 @@ static struct ibio_external_io *ibio_alloc_external_io(long, ibio_external_canre
 
 /* §section Runes */
 
+int
+ibio_prim_external_io_handle_rune(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args, gsvalue *pres)
+{
+    struct ibio_external_io *res;
+
+    res = ibio_rune_io();
+
+    *pres = (gsvalue)res;
+    return 1;
+}
+
 static struct ibio_external_io *ibio_rune_io_value;
 static Lock ibio_rune_io_lock;
 
@@ -57,6 +68,19 @@ void *
 ibio_rune_readsym(struct ibio_external_io *io, char *err, char *eerr, void *start, void *end, gsvalue *pres)
 {
     return gschartorune((char*)start, pres, err, eerr);
+}
+
+/* §section Directories */
+
+int
+ibio_prim_external_io_handle_dir(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args, gsvalue *pres)
+{
+    struct ibio_external_io *res;
+
+    res = ibio_dir_io(pos, args[0]);
+
+    *pres = (gsvalue)res;
+    return 1;
 }
 
 struct ibio_external_dir_io {
@@ -123,19 +147,6 @@ ibio_dir_readsym(struct ibio_external_io *io, char *err, char *eerr, void *start
 
     *pres = gsapply(dio->pos, dio->dirfromprim, pd);
     return (uchar*)start + 2 + sz;
-}
-
-/* §section Directories */
-
-int
-ibio_prim_external_io_handle_dir(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args, gsvalue *pres)
-{
-    struct ibio_external_io *res;
-
-    res = ibio_dir_io(pos, args[0]);
-
-    *pres = (gsvalue)res;
-    return 1;
 }
 
 /* §section Allocation */

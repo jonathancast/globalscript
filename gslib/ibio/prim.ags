@@ -179,6 +179,11 @@ res.ty	.tylet	ibio.prim.iport	s
 	.tyfun	list.t	rune.t
 	.tyref	ibio.prim.m	res.ty
 
+_ibio.prim.external.io.rune_ty	.tyexpr
+rune.t	.tygvar
+ibio.prim.external.io	.tygvar
+	.tyref	ibio.prim.external.io	rune.t
+
 _ibio.prim.external.io.dir_ty	.tyexpr
 _ibio.prim.external.io.dir_f_ty	.tygvar
 ibio.prim.external.io	.tygvar
