@@ -5,6 +5,7 @@
 gsdl.cgs.file.read	.closure	_gsdl.cgs.file.read_c
 
 gsdl.cgs.pragma.line	.closure	_gsdl.cgs.pragma.line_c
+gsdl.cgs.blank.line	.closure	_gsdl.cgs.blank.line_c
 
 _hs	.closure	_hs_c
 
@@ -53,9 +54,9 @@ ibio.lex.receive	.gvar
 ibio.lex.receiver.many	.gvar
 ibio.lex.receiver.<|>	.gvar
 gsdl.cgs.pragma.line	.gvar
+gsdl.cgs.blank.line	.gvar
 i	.efv	ibio.prim.iport	rune.t
-blankl	.undefined	ibio.lex.receiver.lexeme.t	rune.t	string.ty
-l	.apply	ibio.lex.receiver.<|>	rune.t	string.ty	|	gsdl.cgs.pragma.line	blankl
+l	.apply	ibio.lex.receiver.<|>	rune.t	string.ty	|	gsdl.cgs.pragma.line	gsdl.cgs.blank.line
 ml	.apply	ibio.lex.receiver.many	rune.t	string.ty	|	l
 	.app	ml	i
 	.enter	ibio.lex.receive	rune.t	res.ty
@@ -186,6 +187,17 @@ hash	.apply	ibio.lex.receiver.char	rune.t	|	rune.≡	_hs
 cons.hash	.apply	ibio.lex.receiver.lexeme.<*>	rune.t	rune.t	_gsdl.cgs.pragma.line_cons.hash_res.ty	|	cons.r	hash
 	.app	cons.hash	ibio.lex.receiver.line.non.empty
 	.enter	ibio.lex.receiver.lexeme.<*>	rune.t	string.ty	string.ty
+
+# §section §gs{gsdl.cgs.blank.line}
+
+_gsdl.cgs.blank.line_c	.expr
+ibio.lex.receiver.lexeme.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+	.undef	ibio.lex.receiver.lexeme.t	rune.t	string.ty
+
+# §section Random data
 
 _hs_c	.expr
 rune.t.in	.cogvar
