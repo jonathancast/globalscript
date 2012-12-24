@@ -278,17 +278,28 @@ _ibio.foldM.prim_k1	.subcode
 list.t.out	.cogvar
 xn	.fv	list.t	α
 z0	.karg	β
-	.force	_ibio.foldM.prim_k1	α	β
+	.force	_ibio.foldM.prim_k1	α	β	|	z0
 	.coerce	list.t.out	α
 	.enter	xn
 
 _ibio.foldM.prim_k1	.forcecont
 list.prim.u	.tygvar
+list.t	.tygvar
 ibio.prim.t	.tygvar
 α	.tyfv	*
 β	.tyfv	*
+ibio.prim.unit	.gvar
+z0	.fv	β
 xn0	.karg	list.prim.u	α
-	.undef	ibio.prim.t	β
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	ibio.prim.t	β
+		.case	nil
+			.lift
+			.app	z0
+			.yield	ibio.prim.unit	β
 
 	.type
 
