@@ -265,7 +265,7 @@ s	.tyarg	*
 _ibio.lex.<|>_res_c	.subcode
 l0	.larg	ibio.lex.lexeme.t	s	α
 l1	.larg	ibio.lex.lexeme.t	s	α
-res	.alloc	_ibio.lex.<|>_res_c	s	α	|	l0
+res	.alloc	_ibio.lex.<|>_res_c	s	α	|	l0	l1
 	.enter	res
 
 _ibio.lex.<|>_res_c	.expr
@@ -275,20 +275,14 @@ ibio.prim.iptr.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 β	.tyarg	*
-_ibio.lex.<|>_ek1_c	.subcode
 l0	.fv	ibio.lex.lexeme.t	s	α
+l1	.fv	ibio.lex.lexeme.t	s	α
 ek	.larg	β
 sk	.larg	_ibio.lex.lexeme.t_k.ty	s	α	β
 ip	.larg	ibio.prim.iptr.t	s
-ek1	.alloc	_ibio.lex.<|>_ek1_c	s	α	β
+ek1	.apply	l1	β	|	ek	sk	ip
 	.app	ek1	sk	ip
 	.enter	l0	β
-
-_ibio.lex.<|>_ek1_c	.expr
-s	.tyfv	*
-α	.tyfv	*
-β	.tyfv	*
-	.undef	β
 
 # §section §gs{ibio.lex.many}
 
