@@ -1,0 +1,20 @@
+	.prefix
+
+	.type
+
+order.total.t	.tyexpr
+order.total.ord.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyfun	α
+	.tyref	order.total.ord.t
+
+order.total.ord.t	.tyabstract	*
+order.total.ord.prim.u	.tygvar
+	.tylift
+	.tyref	order.total.ord.prim.u
+
+order.total.ord.prim.u	.tyexpr
+	.tysum
