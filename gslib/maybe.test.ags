@@ -4,10 +4,12 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.undef
+_tests	.list	test.property.t	_test.eq.just.nothing
 
-_test.undef	.closure	_test.undef_c
-_test.undef_succ	.string	Succeeded
+_test.eq.just.nothing	.closure	_test.eq.just.nothing_c
+_test.eq.just.nothing_label	.string	just\sfalse\s≡\snothing
+_test.eq.just.nothing_false	.string	just\sfalse\s≠\snothing
+_test.eq.just.nothing_true	.string	just\sfalse\s≡\snothing
 
 	.code
 
@@ -17,15 +19,23 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-_test.undef_c	.expr
-_test.undef_m_c	.subcode
-test.property.true	.gvar
-_test.undef_succ	.gvar
-m	.alloc	_test.undef_m_c
-	.app	_test.undef_succ
-	.enter	test.property.true
+# §section §gs{just x ≡ nothing}
 
-_test.undef_m_c	.expr
-maybe.t	.tygvar
-rune.t	.tygvar
-	.undef	maybe.t	rune.t
+_test.eq.just.nothing_c	.expr
+bool.t	.tygvar
+test.property.label	.gvar
+_test.eq.just.nothing_label	.gvar
+test.deny	.gvar
+_test.eq.just.nothing_false	.gvar
+_test.eq.just.nothing_true	.gvar
+maybe.≡	.gvar
+bool.≡	.gvar
+maybe.just	.gvar
+bool.false	.gvar
+maybe.nothing	.gvar
+justfalse	.apply	maybe.just	bool.t	|	bool.false
+nothing	.apply	maybe.nothing	bool.t
+eq	.apply	maybe.≡	bool.t	|	bool.≡	justfalse	nothing
+test	.apply	test.deny	|	_test.eq.just.nothing_false	_test.eq.just.nothing_true	eq
+	.app	_test.eq.just.nothing_label	test
+	.enter	test.property.label

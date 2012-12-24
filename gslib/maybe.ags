@@ -1,5 +1,83 @@
 	.prefix
 
+	.data
+
+maybe.nothing	.closure	_maybe.nothing_c
+maybe.just	.closure	_maybe.just_c
+
+maybe.≡	.closure	_maybe.≡_c
+
+	.code
+
+# §section Constructors
+
+_maybe.nothing_c	.expr
+maybe.prim.u	.tygvar
+α	.tyarg	*
+res.u	.tylet	maybe.prim.u	α
+maybe.t.in	.cogvar
+n	.constr	res.u	nothing
+	.coerce	maybe.t.in	α
+	.lift
+	.yield	n
+
+_maybe.just_c	.expr
+maybe.prim.u	.tygvar
+α	.tyarg	*
+res.u	.tylet	maybe.prim.u	α
+maybe.t.in	.cogvar
+x	.arg	α
+j	.constr	res.u	just	0	x
+	.coerce	maybe.t.in	α
+	.lift
+	.yield	j
+
+# §section §gs{maybe.≡}
+
+_maybe.≡_c	.expr
+_maybe.≡_eq_ty	.tygvar
+maybe.t	.tygvar
+α	.tyarg	*
+_maybe.≡_k0	.subcode
+maybe.t.out	.cogvar
+eq	.larg	_maybe.≡_eq_ty	α
+mb0	.larg	maybe.t	α
+mb1	.larg	maybe.t	α
+	.force	_maybe.≡_k0	α	|	mb1
+	.coerce	maybe.t.out	α
+	.enter	mb0
+
+_maybe.≡_k0	.forcecont
+maybe.t	.tygvar
+maybe.prim.u	.tygvar
+α	.tyfv	*
+_maybe.≡_k1	.subcode
+maybe.t.out	.cogvar
+mb1	.fv	maybe.t	α
+mb0.0	.karg	maybe.prim.u	α
+	.force	_maybe.≡_k1	α	|	mb0.0
+	.coerce	maybe.t.out	α
+	.enter	mb1
+
+_maybe.≡_k1	.forcecont
+maybe.prim.u	.tygvar
+bool.t	.tygvar
+α	.tyfv	*
+bool.false	.gvar
+mb0.0	.fv	maybe.prim.u	α
+mb1.0	.karg	maybe.prim.u	α
+	.analyze	mb0.0	just	nothing
+		.case	just
+x0		.fkarg	0	α
+			.analyze	mb1.0	just	nothing
+				.case	just
+x1				.fkarg	0	α
+					.undef	bool.t
+				.case	nothing
+					.enter	bool.false
+		.case	nothing
+			.undef	bool.t
+
 	.type
 
 maybe.t	.tyabstract	**^
@@ -9,10 +87,36 @@ maybe.prim.u	.tygvar
 	.tyref	maybe.prim.u	α
 
 maybe.prim.u	.tyexpr
+_maybe.prim.u_just_ty	.tygvar
+_maybe.prim.u_nothing_ty	.tygvar
 α	.tylambda	*
-	.tysum
+just_ty	.tylet	_maybe.prim.u_just_ty	α
+	.tysum	just	just_ty	nothing	_maybe.prim.u_nothing_ty
+
+_maybe.prim.u_just_ty	.tyexpr
+α	.tylambda	*
+	.tyubproduct	0	α
+
+_maybe.prim.u_nothing_ty	.tyexpr
+	.tyubproduct
+
+# §section §gs{maybe.≡}
+
+_maybe.≡_eq_ty	.tyexpr
+bool.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyfun	α
+	.tyref	bool.t
 
 	.coercion
+
+maybe.t.in	.tycoercion
+maybe.t	.tygvar
+α	.tylambda	*
+	.tydefinition	maybe.t	α
 
 maybe.t.out	.tycoercion
 maybe.t	.tygvar
