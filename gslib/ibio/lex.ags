@@ -8,6 +8,8 @@ ibio.lex.lexer.match	.closure	_ibio.lex.lexer.match_c
 
 ibio.lex.symbol	.closure	_ibio.lex.symbol_c
 
+ibio.lex.lexeme.<*>	.closure	_ibio.lex.lexeme.<*>_c
+
 ibio.lex.<|>	.closure	_ibio.lex.<|>_c
 
 ibio.lex.many	.closure	_ibio.lex.many_c	_ibio.lex.many_ty
@@ -107,6 +109,51 @@ ip0	.fv	ibio.prim.iptr	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 	.enter	ek
+
+# §section §gs{ibio.lex.lexeme.<*>}
+
+_ibio.lex.lexeme.<*>_c	.expr
+ibio.lex.lexeme.t	.tygvar
+_ibio.lex.lexeme.<*>_f_ty	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+f_ty	.tylet	_ibio.lex.lexeme.<*>_f_ty	α	β
+_ibio.lex.lexeme.<*>_res_c	.subcode
+lf	.larg	ibio.lex.lexeme.t	s	f_ty
+lx	.larg	ibio.lex.lexeme.t	s	α
+res	.alloc	_ibio.lex.lexeme.<*>_res_c	s	α	β	|	lf
+	.enter	res
+
+_ibio.lex.lexeme.<*>_res_c	.expr
+ibio.lex.lexeme.t	.tygvar
+_ibio.lex.lexeme.<*>_f_ty	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+γ	.tyarg	*
+f_ty	.tylet	_ibio.lex.lexeme.<*>_f_ty	α	β
+_ibio.lex.lexeme.<*>_sk1_c	.subcode
+lf	.fv	ibio.lex.lexeme.t	s	f_ty
+ek	.larg	γ
+sk	.larg	_ibio.lex.lexeme.t_k.ty	s	β	γ
+ip	.larg	ibio.prim.iptr.t	s
+sk1	.alloc	_ibio.lex.lexeme.<*>_sk1_c	s	α	β	γ
+	.app	ek	sk1	ip
+	.enter	lf	γ
+
+_ibio.lex.lexeme.<*>_sk1_c	.expr
+_ibio.lex.lexeme.<*>_f_ty	.tygvar
+ibio.prim.iptr.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+γ	.tyfv	*
+x	.larg	_ibio.lex.lexeme.<*>_f_ty	α	β
+ip1	.larg	ibio.prim.iptr.t	s
+	.undef	γ
 
 # §section §gs{ibio.lex.<|>}
 
@@ -389,9 +436,12 @@ s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
 _ibio.lex.receiver.lexeme.<*>_acc_c	.subcode
+ibio.lex.lexeme.<*>	.gvar
 rf	.larg	_ibio.lex.receiver.lexeme.<*>_rf_ty	s	α	β
 rx	.larg	ibio.lex.receiver.lexeme.t	s	α
-lex	.undefined	ibio.lex.lexeme.t	s	β
+lf	.lfield	0	rf
+lx	.lfield	0	rx
+lex	.apply	ibio.lex.lexeme.<*>	s	α	β	|	lf	lx
 af	.lfield	1	rf
 ax	.lfield	1	rx
 acc	.alloc	_ibio.lex.receiver.lexeme.<*>_acc_c	s	α	β	|	af	ax
@@ -401,13 +451,13 @@ res	.record	0	lex	1	acc
 
 _ibio.lex.receiver.lexeme.<*>_acc_c	.expr
 ibio.acceptor.prim.cont.t	.tygvar
-_ibio.lex.receiver.lexeme.<*>_f_ty	.tygvar
+_ibio.lex.lexeme.<*>_f_ty	.tygvar
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
-f.ty	.tylet	_ibio.lex.receiver.lexeme.<*>_f_ty	α	β
+f.ty	.tylet	_ibio.lex.lexeme.<*>_f_ty	α	β
 _ibio.lex.receiver.lexeme.<*>_acc_k1_c	.subcode
 af	.fv	ibio.acceptor.prim.cont.t	s	f.ty	record.empty
 ax	.fv	ibio.acceptor.prim.cont.t	s	α	record.empty
@@ -418,14 +468,14 @@ k1	.alloc	_ibio.lex.receiver.lexeme.<*>_acc_k1_c	s	α	β	|	ax
 
 _ibio.lex.receiver.lexeme.<*>_acc_k1_c	.expr
 ibio.acceptor.prim.cont.t	.tygvar
-_ibio.lex.receiver.lexeme.<*>_f_ty	.tygvar
+_ibio.lex.lexeme.<*>_f_ty	.tygvar
 record.empty	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
 _ibio.lex.receiver.lexeme.<*>_acc_k2_c	.subcode
 ax	.fv	ibio.acceptor.prim.cont.t	s	α	record.empty
-f	.larg	_ibio.lex.receiver.lexeme.<*>_f_ty	α	β
+f	.larg	_ibio.lex.lexeme.<*>_f_ty	α	β
 k2	.alloc	_ibio.lex.receiver.lexeme.<*>_acc_k2_c	s	α	β
 	.app	k2
 	.enter	ax
@@ -573,6 +623,15 @@ s	.tylambda	*
 	.tyfun	ibio.prim.iptr.t	s
 	.tyref	β
 
+# §section §gs{ibio.lex.lexeme.<*>}
+
+_ibio.lex.lexeme.<*>_f_ty	.tyexpr
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	β
+
 # §section §gs{ibio.lex.many}
 
 _ibio.lex.many_ty	.tyexpr
@@ -639,19 +698,12 @@ s	.tylambda	*
 
 _ibio.lex.receiver.lexeme.<*>_rf_ty	.tyexpr
 ibio.lex.receiver.lexeme.t	.tygvar
-_ibio.lex.receiver.lexeme.<*>_f_ty	.tygvar
+_ibio.lex.lexeme.<*>_f_ty	.tygvar
 s	.tylambda	*
 α	.tylambda	*
 β	.tylambda	*
-res.ty	.tylet	_ibio.lex.receiver.lexeme.<*>_f_ty	α	β
+res.ty	.tylet	_ibio.lex.lexeme.<*>_f_ty	α	β
 	.tyref	ibio.lex.receiver.lexeme.t	s	res.ty
-
-_ibio.lex.receiver.lexeme.<*>_f_ty	.tyexpr
-α	.tylambda	*
-β	.tylambda	*
-	.tylift
-	.tyfun	α
-	.tyref	β
 
 # §section §gs{ibio.lex.receiver.lexeme.lift.2}
 
