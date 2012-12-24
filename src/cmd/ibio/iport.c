@@ -271,7 +271,10 @@ ibio_read_process_main(void *p)
                             break;
                         case ibio_acceptor_symbol_bind: {
                             struct ibio_channel_segment *seg;
+                            gsvalue symk, eofk;
 
+                            symk = constr->arguments[0];
+                            eofk = constr->arguments[1];
                             seg = ibio_channel_segment_containing(pos);
 
                             if (pos < seg->extent) {
@@ -290,8 +293,10 @@ ibio_read_process_main(void *p)
                                     active = 0;
                                 }
                             } else if (seg->next) {
-                                ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: eof");
-                                active = 0;
+                                pos = seg->next->items;
+                                unlock(&seg->lock);
+
+                                iport->reading = eofk;
                             } else if (iport->bufstart < iport->bufend) {
                                 if (iport->external->canread(iport->external, iport->bufstart, iport->bufend)) {
                                     gsvalue sym;
@@ -299,7 +304,7 @@ ibio_read_process_main(void *p)
 
                                     iport->bufstart = iport->external->readsym(iport->external, err, err + sizeof(err), iport->bufstart, iport->bufend, &sym);
                                     if (!iport->bufstart) {
-                                        ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: decoding error: %s");
+                                        ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: decoding error: %s", err);
                                         active = 0;
                                         goto failed;
                                     }
@@ -310,7 +315,7 @@ ibio_read_process_main(void *p)
                                         active = 0;
                                         goto failed;
                                     }
-                                    iport->reading = gsapply(constr->pos, constr->arguments[0], sym);
+                                    iport->reading = gsapply(constr->pos, symk, sym);
                                     unlock(&seg->lock);
                                 } else {
                                     ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: not enough data in buffer to read a symbol");
@@ -337,7 +342,7 @@ ibio_read_process_main(void *p)
                                     unlock(&newseg->lock);
                                     unlock(&seg->lock);
 
-                                    iport->reading = constr->arguments[1];
+                                    iport->reading = eofk;
                                 } else {
                                     /* Loop and try again with the filled buffer */
                                     unlock(&seg->lock);
