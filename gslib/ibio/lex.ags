@@ -16,6 +16,8 @@ ibio.lex.receive	.closure	_ibio.lex.receive_c
 
 ibio.lex.receiver.symbol	.closure	_ibio.lex.receiver.symbol_c
 
+ibio.lex.receiver.<|>	.closure	_ibio.lex.receiver.<|>_c
+
 ibio.lex.receiver.many	.closure	_ibio.lex.receiver.many_c
 
 	.code
@@ -257,6 +259,16 @@ acc	.apply	ibio.acceptor.symbol.prim	s	record.empty
 r	.record	0	lex	1	acc
 	.lift
 	.yield	r
+
+# §section §gs{ibio.lex.receiver.<|>}
+
+_ibio.lex.receiver.<|>_c	.expr
+ibio.lex.receiver.lexeme.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+r0	.larg	ibio.lex.receiver.lexeme.t	s	α
+r1	.larg	ibio.lex.receiver.lexeme.t	s	α
+	.undef	ibio.lex.receiver.lexeme.t	s	α
 
 # §section §gs{ibio.lex.receiver.many}
 
