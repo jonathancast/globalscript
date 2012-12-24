@@ -264,11 +264,18 @@ r	.record	0	lex	1	acc
 
 _ibio.lex.receiver.<|>_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
+ibio.lex.lexeme.t	.tygvar
+ibio.acceptor.prim.cont.t	.tygvar
+record.empty	.tygvar
 s	.tyarg	*
 α	.tyarg	*
 r0	.larg	ibio.lex.receiver.lexeme.t	s	α
 r1	.larg	ibio.lex.receiver.lexeme.t	s	α
-	.undef	ibio.lex.receiver.lexeme.t	s	α
+lex	.undefined	ibio.lex.lexeme.t	s	α
+acc	.undefined	ibio.acceptor.prim.cont.t	s	α	record.empty
+res	.record	0	lex	1	acc
+	.lift
+	.yield	res
 
 # §section §gs{ibio.lex.receiver.many}
 
