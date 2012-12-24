@@ -20,7 +20,7 @@ _gsdl.cgs.file.read_s_c	.subcode
 _gsdl.cgs.file.read_body_c	.subcode
 fn	.larg	ibio.file.name.t
 i	.bind	_gsdl.cgs.file.read_i_c	|	fn
-pr.ls	.bind	_gsdl.cgs.file.read_pr.ls_c
+pr.ls	.bind	_gsdl.cgs.file.read_pr.ls_c	|	i
 pragmas.pos	.bind	_gsdl.cgs.file.read_pragmas.pos_c	|	pr.ls
 pragmas	.alloc	_gsdl.cgs.file.read_pragmas_c
 pos	.alloc	_gsdl.cgs.file.read_pos_c
@@ -39,12 +39,22 @@ fn	.fv	ibio.file.name.t
 	.enter	ibio.file.read.open.prim	rune.t
 
 _gsdl.cgs.file.read_pr.ls_c	.expr
-ibio.prim.t	.tygvar
-list.t	.tygvar
+ibio.prim.iport	.tygvar
 rune.t	.tygvar
+list.t	.tygvar
+ibio.lex.receiver.lexeme.t	.tygvar
 string.ty	.tylet	list.t	rune.t
 res.ty	.tylet	list.t	string.ty
-	.undef	ibio.prim.t	res.ty
+ibio.lex.receive	.gvar
+ibio.lex.receiver.many	.gvar
+ibio.lex.receiver.<|>	.gvar
+i	.efv	ibio.prim.iport	rune.t
+pragmal	.undefined	ibio.lex.receiver.lexeme.t	rune.t	string.ty
+blankl	.undefined	ibio.lex.receiver.lexeme.t	rune.t	string.ty
+l	.apply	ibio.lex.receiver.<|>	rune.t	string.ty	|	pragmal	blankl
+ml	.apply	ibio.lex.receiver.many	rune.t	string.ty	|	l
+	.app	ml	i
+	.enter	ibio.lex.receive	rune.t	res.ty
 
 _gsdl.cgs.file.read_pragmas.pos_c	.expr
 ibio.prim.t	.tygvar
