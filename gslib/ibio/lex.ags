@@ -8,6 +8,8 @@ ibio.lex.lexer.match	.closure	_ibio.lex.lexer.match_c
 
 ibio.lex.symbol	.closure	_ibio.lex.symbol_c
 
+ibio.lex.char	.closure	_ibio.lex.char_c
+
 ibio.lex.lexeme.unit	.closure	_ibio.lex.lexeme.unit_c
 ibio.lex.lexeme.<*>	.closure	_ibio.lex.lexeme.<*>_c
 
@@ -102,6 +104,64 @@ ip1	.apply	ibio.prim.iptr.next	s	|	ip0
 	.enter	sk
 
 _ibio.lex.symbol_k1	.ubcasecont
+ibio.prim.iptr	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+ip0	.fv	ibio.prim.iptr	s
+ek	.fv	β
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+	.enter	ek
+
+# §section §gs{ibio.lex.char}
+
+_ibio.lex.char_c	.expr
+_ibio.lex.receiver.char_eq_ty	.tygvar
+s	.tyarg	*
+_ibio.lex.char_res_c	.subcode
+eq	.larg	_ibio.lex.receiver.char_eq_ty	s
+c	.larg	s
+res	.alloc	_ibio.lex.char_res_c	s
+	.enter	res
+
+_ibio.lex.char_res_c	.expr
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr.t	.tygvar
+s	.tyfv	*
+β	.tyarg	*
+_ibio.lex.char_k	.subcode
+ek	.larg	β
+sk	.larg	_ibio.lex.lexeme.t_k.ty	s	s	β
+ip	.larg	ibio.prim.iptr.t	s
+	.force	_ibio.lex.char_k	s	β	|	ek	sk
+	.enter	ip
+
+_ibio.lex.char_k	.forcecont
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+_ibio.lex.char_k0	.subcode
+_ibio.lex.char_k1	.subcode
+ibio.prim.iptr.iseof	.gvar
+ek	.fv	β
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+ip0	.karg	ibio.prim.iptr	s
+	.ubanalyze	0	_ibio.lex.char_k0	1	_ibio.lex.char_k1	|	s	β	|	ip0	ek	sk
+	.app	ip0
+	.yield	ibio.prim.iptr.iseof	s
+
+_ibio.lex.char_k0	.ubcasecont	# Not EOF
+ibio.prim.iptr	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+ip0	.fv	ibio.prim.iptr	s
+ek	.fv	β
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+	.undef	β
+
+_ibio.lex.char_k1	.ubcasecont	# EOF
 ibio.prim.iptr	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 s	.tyfv	*
@@ -401,9 +461,10 @@ ibio.acceptor.prim.cont.t	.tygvar
 record.empty	.tygvar
 s	.tyarg	*
 _ibio.lex.receiver.char_acc_c	.subcode
+ibio.lex.char	.gvar
 eq	.larg	_ibio.lex.receiver.char_eq_ty	s
 c	.larg	s
-lex	.undefined	ibio.lex.lexeme.t	s	s
+lex	.apply	ibio.lex.char	s	|	eq	c
 acc	.alloc	_ibio.lex.receiver.char_acc_c	s
 res	.record	0	lex	1	acc
 	.lift
