@@ -4,6 +4,7 @@
 
 ibio.file.name.read	.closure	_ibio.file.name.read_c
 ibio.file.name.print	.closure	_ibio.file.name.print_c
+ibio.file.name.with	.closure	_ibio.file.name.with_c
 
 ibio.file.read.open.prim	.closure	_ibio.file.read.open.prim_c
 
@@ -13,6 +14,9 @@ ibio.file.isdir	.closure	_ibio.file.isdir_c
 
 ibio.file.name.components.get	.closure	_ibio.file.name.components.get_c
 _ibio.file.name.components.get_worker		.closure	_ibio.file.name.components.get_worker_c	_ibio.file.name.components.get_worker_ty
+
+ibio.file.name.extension.set	.closure	_ibio.file.name.extension.set_c
+_ibio.file.name.extension.set_worker	.closure	_ibio.file.name.extension.set_worker_c	_ibio.file.name.extension.set_worker_ty
 
 ibio.file.name.</>	.closure	_ibio.file.name.</>_c
 _ibio.file.name.</>_worker	.closure	_ibio.file.name.</>_worker_c	_ibio.file.name.</>_worker_ty
@@ -40,6 +44,20 @@ ibio.file.name.out	.cogvar
 fn	.larg	ibio.file.name.t
 	.coerce	ibio.file.name.out
 	.enter	fn
+
+# §section §gs{_ibio.file.name.with_c}
+
+_ibio.file.name.with_c	.expr
+_ibio.file.name.with_f_ty	.tygvar
+ibio.file.name.t	.tygvar
+ibio.file.name.print	.gvar
+ibio.file.name.read	.gvar
+f	.larg	_ibio.file.name.with_f_ty
+fn	.larg	ibio.file.name.t
+fn.0	.apply	ibio.file.name.print	|	fn
+fn.1	.apply	f	|	fn.0
+	.app	fn.1
+	.enter	ibio.file.name.read
 
 # §section §gs{ibio.file.read.open.prim}
 
@@ -284,6 +302,153 @@ cs			.record	dirs	ds	exts	es	root	r
 			.lift
 			.yield	cs
 
+# §section §gs{ibio.file.name.extension.set}
+
+_ibio.file.name.extension.set_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+_ibio.file.name.extension.set_id_c	.subcode
+ibio.file.name.with	.gvar
+_ibio.file.name.extension.set_worker	.gvar
+ext	.larg	list.t	rune.t
+id	.alloc	_ibio.file.name.extension.set_id_c
+w	.apply	_ibio.file.name.extension.set_worker	|	ext	id	id
+	.app	w
+	.enter	ibio.file.name.with
+
+_ibio.file.name.extension.set_id_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+s	.larg	list.t	rune.t
+	.enter	s
+
+_ibio.file.name.extension.set_worker_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+_ibio.file.name.extension.set_worker_f_ty	.tygvar
+_ibio.file.name.extension.set_worker_k	.subcode
+list.t.out	.cogvar
+ext	.larg	list.t	rune.t
+pre.0	.larg	_ibio.file.name.extension.set_worker_f_ty
+pre.1	.larg	_ibio.file.name.extension.set_worker_f_ty
+s	.larg	list.t	rune.t
+	.force	_ibio.file.name.extension.set_worker_k	|	ext	pre.0	pre.1
+	.coerce	list.t.out	rune.t
+	.enter	s
+
+_ibio.file.name.extension.set_worker_k	.forcecont
+list.t	.tygvar
+rune.t	.tygvar
+_ibio.file.name.extension.set_worker_f_ty	.tygvar
+list.prim.u	.tygvar
+_ibio.file.name.extension.set_worker_k1	.subcode
+bool.t.out	.cogvar
+rune.≡	.gvar
+_slash	.gvar
+ext	.fv	list.t	rune.t
+pre.0	.fv	_ibio.file.name.extension.set_worker_f_ty
+pre.1	.fv	_ibio.file.name.extension.set_worker_f_ty
+s0	.karg	list.prim.u	rune.t
+	.analyze	s0	:	nil
+		.case	:
+c		.fkarg	0	rune.t
+s1		.fkarg	1	list.t	rune.t
+			.force	_ibio.file.name.extension.set_worker_k1	|	ext	pre.0	pre.1	c	s1
+			.coerce	bool.t.out
+			.app	c	_slash
+			.enter	rune.≡
+		.case	nil
+			.app	ext
+			.enter	pre.0
+
+_ibio.file.name.extension.set_worker_k1	.forcecont
+bool.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+_ibio.file.name.extension.set_worker_f_ty	.tygvar
+_ibio.file.name.extension.set_worker_k2	.subcode
+_ibio.file.name.extension.set_worker_pre0.1_c	.subcode
+_ibio.file.name.extension.set_worker_id_c	.subcode
+bool.t.out	.cogvar
+rune.≡	.gvar
+_dot	.gvar
+_ibio.file.name.extension.set_worker	.gvar
+ext	.fv	list.t	rune.t
+pre.0	.fv	_ibio.file.name.extension.set_worker_f_ty
+pre.1	.fv	_ibio.file.name.extension.set_worker_f_ty
+c	.fv	rune.t
+s1	.fv	list.t	rune.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false	# §gs{c ≠ r{/}}
+			.force	_ibio.file.name.extension.set_worker_k2	|	ext	pre.0	pre.1	c	s1
+			.coerce	bool.t.out
+			.app	c	_dot
+			.enter	rune.≡
+		.case	true	# §gs{c ≡ r{/}}
+pre0.1			.alloc	_ibio.file.name.extension.set_worker_pre0.1_c	|	pre.0	pre.1	c
+id			.alloc	_ibio.file.name.extension.set_worker_id_c
+			.app	ext	pre0.1	id	s1
+			.enter	_ibio.file.name.extension.set_worker
+
+_ibio.file.name.extension.set_worker_k2	.forcecont
+bool.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+_ibio.file.name.extension.set_worker_f_ty	.tygvar
+_ibio.file.name.extension.set_worker_pre1.1_c	.subcode
+_ibio.file.name.extension.set_worker_pre0.1_c	.subcode
+_ibio.file.name.extension.set_worker_id_c	.subcode
+_ibio.file.name.extension.set_worker	.gvar
+ext	.fv	list.t	rune.t
+pre.0	.fv	_ibio.file.name.extension.set_worker_f_ty
+pre.1	.fv	_ibio.file.name.extension.set_worker_f_ty
+c	.fv	rune.t
+s1	.fv	list.t	rune.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false	# §gs{c ≠ r/./}
+pre1.1			.alloc	_ibio.file.name.extension.set_worker_pre1.1_c	|	pre.1	c
+			.app	ext	pre.0	pre1.1	s1
+			.enter	_ibio.file.name.extension.set_worker
+		.case	true	# §gs{c ≡ r/./}
+pre0.1			.alloc	_ibio.file.name.extension.set_worker_pre0.1_c	|	pre.0	pre.1	c
+id			.alloc	_ibio.file.name.extension.set_worker_id_c
+			.app	ext	pre0.1	id	s1
+			.enter	_ibio.file.name.extension.set_worker
+
+_ibio.file.name.extension.set_worker_pre1.1_c	.expr
+_ibio.file.name.extension.set_worker_f_ty	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+list.:	.gvar
+pre.1	.fv	_ibio.file.name.extension.set_worker_f_ty
+c	.fv	rune.t
+s1	.larg	list.t	rune.t
+s2	.apply	list.:	rune.t	|	c	s1
+	.app	s2
+	.enter	pre.1
+
+_ibio.file.name.extension.set_worker_pre0.1_c	.expr
+_ibio.file.name.extension.set_worker_f_ty	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+list.:	.gvar
+pre.0	.fv	_ibio.file.name.extension.set_worker_f_ty
+pre.1	.fv	_ibio.file.name.extension.set_worker_f_ty
+c	.fv	rune.t
+s1	.larg	list.t	rune.t
+s2	.apply	list.:	rune.t	|	c	s1
+s3	.apply	pre.1	|	s2
+	.app	s3
+	.enter	pre.0
+
+_ibio.file.name.extension.set_worker_id_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+s1	.larg	list.t	rune.t
+	.enter	s1
+
 # §section §gs{ibio.file.name.</>}
 
 _ibio.file.name.</>_c	.expr
@@ -395,6 +560,15 @@ list.t	.tygvar
 rune.t	.tygvar
 	.tyref	list.t	rune.t
 
+# §section §gs{ibio.file.name.with}
+
+_ibio.file.name.with_f_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	list.t	rune.t
+	.tyref	list.t	rune.t
+
 # §section §gs{ibio.file.name.components.get}
 
 _ibio.file.name.components.get_worker_ty	.tyexpr
@@ -416,6 +590,29 @@ rune.t	.tygvar
 string.ty	.tylet	list.t	rune.t
 list.string.ty	.tylet	list.t	string.ty
 	.typroduct	dirs	list.string.ty	exts	list.string.ty	root	string.ty
+
+# §section §gs{ibio.file.name.extension.set}
+
+_ibio.file.name.extension.set_worker_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+_ibio.file.name.extension.set_worker_f_ty	.tygvar
+	.tylift
+	.tyfun	list.t	rune.t
+	.tylift
+	.tyfun	_ibio.file.name.extension.set_worker_f_ty
+	.tylift
+	.tyfun	_ibio.file.name.extension.set_worker_f_ty
+	.tylift
+	.tyfun	list.t	rune.t
+	.tyref	list.t	rune.t
+
+_ibio.file.name.extension.set_worker_f_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	list.t	rune.t
+	.tyref	list.t	rune.t
 
 # §section §gs{ibio.file.name.</>}
 
