@@ -4,6 +4,9 @@
 
 gsdl.cgs.file.read	.closure	_gsdl.cgs.file.read_c
 
+gsdl.cgs.pragma.line	.closure	_gsdl.cgs.pragma.line_c
+_gsdl.cgs.pragma.line_acc	.closure	_gsdl.cgs.pragma.line_acc_c
+
 	.code
 
 # §section §gs{gsdl.cgs.file.read}
@@ -48,10 +51,10 @@ res.ty	.tylet	list.t	string.ty
 ibio.lex.receive	.gvar
 ibio.lex.receiver.many	.gvar
 ibio.lex.receiver.<|>	.gvar
+gsdl.cgs.pragma.line	.gvar
 i	.efv	ibio.prim.iport	rune.t
-pragmal	.undefined	ibio.lex.receiver.lexeme.t	rune.t	string.ty
 blankl	.undefined	ibio.lex.receiver.lexeme.t	rune.t	string.ty
-l	.apply	ibio.lex.receiver.<|>	rune.t	string.ty	|	pragmal	blankl
+l	.apply	ibio.lex.receiver.<|>	rune.t	string.ty	|	gsdl.cgs.pragma.line	blankl
 ml	.apply	ibio.lex.receiver.many	rune.t	string.ty	|	l
 	.app	ml	i
 	.enter	ibio.lex.receive	rune.t	res.ty
@@ -159,6 +162,27 @@ gsdl.cgs.file.t	.tygvar
 ibio.prim.t	.tygvar
 ef0	.karg	either.prim.u	parser.err.t	gsdl.cgs.file.t
 	.undef	ibio.prim.t	gsdl.cgs.file.t
+
+# §section §gs{gsdl.cgs.pragma.line}
+
+_gsdl.cgs.pragma.line_c	.expr
+ibio.lex.lexeme.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+_gsdl.cgs.pragma.line_acc	.gvar
+lex	.undefined	ibio.lex.lexeme.t	rune.t	string.ty
+res	.record	0	lex	1	_gsdl.cgs.pragma.line_acc
+	.lift
+	.yield	res
+
+_gsdl.cgs.pragma.line_acc_c	.expr
+ibio.acceptor.prim.cont.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+record.empty	.tygvar
+string.ty	.tylet	list.t	rune.t
+	.undef	ibio.acceptor.prim.cont.t	rune.t	string.ty	record.empty
 
 	.type
 
