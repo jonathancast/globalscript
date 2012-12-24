@@ -412,7 +412,7 @@ _ibio.lex.receiver.<|>_acc_c	.subcode
 r0	.larg	ibio.lex.receiver.lexeme.t	s	α
 r1	.larg	ibio.lex.receiver.lexeme.t	s	α
 lex	.undefined	ibio.lex.lexeme.t	s	α
-acc	.alloc	_ibio.lex.receiver.<|>_acc_c	s	α	|	r0
+acc	.alloc	_ibio.lex.receiver.<|>_acc_c	s	α	|	r0	r1
 res	.record	0	lex	1	acc
 	.lift
 	.yield	res
@@ -426,10 +426,12 @@ s	.tyfv	*
 α	.tyfv	*
 ibio.acceptor.prim.<|>	.gvar
 r0	.fv	ibio.lex.receiver.lexeme.t	s	α
+r1	.fv	ibio.lex.receiver.lexeme.t	s	α
 k	.larg	ibio.acceptor.prim.kt	s	α	record.empty
 a0	.lfield	1	r0
 a0r	.apply	a0	|	k
-a1r	.undefined	ibio.acceptor.prim.t	s	record.empty
+a1	.lfield	1	r1
+a1r	.apply	a1	|	k
 	.app	a0r	a1r
 	.enter	ibio.acceptor.prim.<|>	s	record.empty
 
