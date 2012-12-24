@@ -236,7 +236,8 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     } section;
 
     if (!(chan = gsopenfile(filename, OREAD, &pid)))
-        gsfatal("open: %r");
+        gsfatal("%s: open: %r", filename)
+    ;
 
     lineno = 0;
 
