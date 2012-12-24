@@ -408,14 +408,22 @@ x	.larg	α
 _ibio.lex.receiver.lexeme.lift.2_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
 _ibio.lex.receiver.lexeme.lift.2_f_ty	.tygvar
+_ibio.lex.receiver.lexeme.lift.2_fx_ty	.tygvar
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
 γ	.tyarg	*
-f	.larg	_ibio.lex.receiver.lexeme.lift.2_f_ty	α	β	γ
+f_ty	.tylet	_ibio.lex.receiver.lexeme.lift.2_f_ty	α	β	γ
+fx_ty	.tylet	_ibio.lex.receiver.lexeme.lift.2_fx_ty	β	γ
+ibio.lex.receiver.lexeme.<*>	.gvar
+ibio.lex.receiver.lexeme.unit	.gvar
+f	.larg	f_ty
 rx	.larg	ibio.lex.receiver.lexeme.t	s	α
 ry	.larg	ibio.lex.receiver.lexeme.t	s	β
-	.undef	ibio.lex.receiver.lexeme.t	s	γ
+rf	.apply	ibio.lex.receiver.lexeme.unit	s	f_ty	|	f
+rfx	.apply	ibio.lex.receiver.lexeme.<*>	s	α	fx_ty	|	rf	rx
+	.app	rfx	ry
+	.enter	ibio.lex.receiver.lexeme.<*>	s	β	γ
 
 # §section §gs{ibio.lex.receiver.<|>}
 
@@ -614,6 +622,13 @@ _ibio.lex.receiver.lexeme.lift.2_f_ty	.tyexpr
 γ	.tylambda	*
 	.tylift
 	.tyfun	α
+	.tylift
+	.tyfun	β
+	.tyref	γ
+
+_ibio.lex.receiver.lexeme.lift.2_fx_ty	.tyexpr
+β	.tylambda	*
+γ	.tylambda	*
 	.tylift
 	.tyfun	β
 	.tyref	γ
