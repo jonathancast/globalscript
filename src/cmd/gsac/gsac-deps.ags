@@ -5,7 +5,11 @@
 	.cast	_ep.in	_real.entry
 _real.entry	.closure	_real.entry_c
 
+_parse.args	.closure	_parse.args_c	_parse.args_ty
+
 _print.deps	.closure	_print.deps_c
+
+_l	.string	-l
 
 	.code
 
@@ -29,31 +33,129 @@ ibio.prim.env.args.get	.gvar
 _real.entry_parsed.args_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-ibio.file.name.t	.tygvar
 _string.ty	.tylet	list.t	rune.t
-list.map	.gvar
-ibio.file.name.read	.gvar
+_parse.args	.gvar
 args	.fv	list.t	_string.ty
-	.app	ibio.file.name.read	args
-	.enter	list.map	_string.ty	ibio.file.name.t
+	.app	args
+	.enter	_parse.args
 
 _real.entry_body_c	.expr
-list.t	.tygvar
+_parse.args_res_ty	.tygvar
 ibio.file.name.t	.tygvar
 record.empty	.tygvar
 ibio.mapM0.prim	.gvar
 _print.deps	.gvar
-parsed.args	.fv	list.t	ibio.file.name.t
-	.app	_print.deps	parsed.args
+parsed.args	.fv	_parse.args_res_ty
+prefixen	.lfield	0	parsed.args
+inps	.lfield	1	parsed.args
+pd	.apply	_print.deps	|	prefixen
+	.app	pd	inps
 	.enter	ibio.mapM0.prim	ibio.file.name.t	record.empty
+
+# §seciton §gs{_parse.args}
+
+_parse.args_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+_parse.args_k0	.subcode
+list.t.out	.cogvar
+as	.larg	list.t	string.ty
+	.force	_parse.args_k0
+	.coerce	list.t.out	string.ty
+	.enter	as
+
+_parse.args_k0	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+_parse.args_k1	.subcode
+bool.t.out	.cogvar
+list.≡	.gvar
+rune.≡	.gvar
+_l	.gvar
+list.nil	.gvar
+as0	.karg	list.prim.u	string.ty
+	.analyze	as0	:	nil
+		.case	:
+a0		.fkarg	0	list.t	rune.t
+as1		.fkarg	1	list.t	string.ty
+			.force	_parse.args_k1	|	a0	as1
+			.coerce	bool.t.out
+			.app	rune.≡	a0	_l
+			.enter	list.≡	rune.t
+		.case	nil
+nil			.apply	list.nil	ibio.file.name.t
+r			.record	0	nil	1	nil
+			.lift
+			.yield	r
+
+_parse.args_k1	.forcecont
+list.t	.tygvar
+rune.t	.tygvar
+bool.prim.u	.tygvar
+ibio.file.name.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+_parse.args_k2	.subcode
+list.t.out	.cogvar
+list.:	.gvar
+ibio.file.name.read	.gvar
+_parse.args	.gvar
+a0	.fv	list.t	rune.t
+as1	.fv	list.t	string.ty
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+res0			.apply	_parse.args	|	as1
+pfn			.lfield	0	res0
+fs0			.lfield	1	res0
+f0			.apply	ibio.file.name.read	|	a0
+fs1			.apply	list.:	ibio.file.name.t	|	f0	fs0
+res1			.record	0	pfn	1	fs1
+			.lift
+			.yield	res1
+		.case	true
+			.force	_parse.args_k2
+			.coerce	list.t.out	string.ty
+			.enter	as1
+
+_parse.args_k2	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+_parse.args_res_ty	.tygvar
+string.ty	.tylet	list.t	rune.t
+list.:	.gvar
+ibio.file.name.read	.gvar
+_parse.args	.gvar
+as1.0	.karg	list.prim.u	string.ty
+	.analyze	as1.0	:	nil
+		.case	:
+a1		.fkarg	0	list.t	rune.t
+as2		.fkarg	1	list.t	string.ty
+res0			.apply	_parse.args	|	as2
+pfn0			.lfield	0	res0
+fs			.lfield	1	res0
+pf0			.apply	ibio.file.name.read	|	a1
+pfn1			.apply	list.:	ibio.file.name.t	|	pf0	pfn0
+res1			.record	0	pfn1	1	fs
+			.lift
+			.yield	res1
+		.case	nil
+			.undef	_parse.args_res_ty
 
 # §section §gs{_print.deps}
 
 _print.deps_c	.eprog	ibio.prim	ibio
+list.t	.tygvar
 ibio.file.name.t	.tygvar
 _print.deps_cgs.fn_c	.subcode
 _print.deps_cgs_c	.subcode
 _print.deps_body_c	.subcode
+prefixen	.larg	list.t	ibio.file.name.t
 fn	.larg	ibio.file.name.t
 cgs.fn	.alloc	_print.deps_cgs.fn_c	|	fn
 cgs	.bind	_print.deps_cgs_c	|	cgs.fn
@@ -77,6 +179,26 @@ _print.deps_body_c	.expr
 ibio.prim.t	.tygvar
 record.empty	.tygvar
 	.undef	ibio.prim.t	record.empty
+
+	.type
+
+# §section §gs{parse.args}
+
+_parse.args_res_ty	.tyexpr
+list.t	.tygvar
+ibio.file.name.t	.tygvar
+names.ty	.tylet	list.t	ibio.file.name.t
+	.tylift
+	.typroduct	0	names.ty	1	names.ty
+
+_parse.args_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+_parse.args_res_ty	.tygvar
+string.ty	.tylet	list.t	rune.t
+	.tylift
+	.tyfun	list.t	string.ty
+	.tyref	_parse.args_res_ty
 
 	.coercion
 
