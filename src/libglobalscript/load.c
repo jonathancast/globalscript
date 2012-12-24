@@ -942,7 +942,7 @@ static
 int
 gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, char **fields, long n)
 {
-    static gsinterned_string gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
+    static gsinterned_string gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
 
     int i;
 
@@ -1023,15 +1023,19 @@ gsparse_value_alloc_op(char *filename, struct gsparsedline *p, int *plineno, cha
                 p->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
             }
         }
-    } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
+    } else if (
+        gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")
+        || gssymceq(p->directive, gssymlrecord, gssymcodeop, ".lrecord")
+    ) {
         if (*fields[0])
             p->label = gsintern_string(gssymdatalable, fields[0])
         ; else {
-            gswarning("%s:%d: Missing label on .record makes it a no-op", filename, *plineno);
+            gswarning("%s:%d: Missing label on %y makes it a no-op", filename, *plineno, p->directive);
             p->label = 0;
         }
         if (n % 2)
-            gsfatal("%s:%d: Odd number of arguments to .record", filename, *plineno);
+            gsfatal("%s:%d: Odd number of arguments to %y", filename, *plineno, p->directive)
+        ;
         for (i = 2; i < n; i += 2) {
             p->arguments[i - 2] = gsintern_string(gssymfieldlable, fields[i]);
             p->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);

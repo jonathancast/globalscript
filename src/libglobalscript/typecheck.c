@@ -2144,7 +2144,7 @@ static
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc, gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
+    static gsinterned_string gssymalloc, gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
 
     int i;
 
@@ -2303,7 +2303,11 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = type;
         pcl->nregs++;
-    } else if (gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")) {
+    } else if (
+        gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")
+        || gssymceq(p->directive, gssymlrecord, gssymcodeop, ".lrecord")
+    ) {
+        struct gstype *type;
         struct gstype_field fields[MAX_NUM_REGISTERS];
         int nfields;
 
@@ -2322,8 +2326,13 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
             fields[i / 2].type = pcl->regtypes[reg];
         }
 
+        type = gstypes_compile_productv(p->pos, nfields, fields);
+        if (p->directive == gssymlrecord)
+            type = gstypes_compile_lift(p->pos, type)
+        ;
+
         pcl->regs[pcl->nregs] = p->label;
-        pcl->regtypes[pcl->nregs] = gstypes_compile_productv(p->pos, nfields, fields);
+        pcl->regtypes[pcl->nregs] = type;
         pcl->nregs++;
     } else if (
         gssymceq(p->directive, gssymfield, gssymcodeop, ".field")

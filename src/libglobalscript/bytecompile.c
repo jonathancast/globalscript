@@ -277,7 +277,7 @@ static gsinterned_string gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural
 /* Data arguments */
 static gsinterned_string gssymoparg, gssymoplarg, gssymopexkarg, gssymopkarg, gssymopfkarg;
 /* Allocation */
-static gsinterned_string gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymopfield, gssymoplfield, gssymopundefined, gssymopapply, gssymopeprim;
+static gsinterned_string gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymoplrecord, gssymopfield, gssymoplfield, gssymopundefined, gssymopapply, gssymopeprim;
 /* Continuations */
 static gsinterned_string gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze;
 /* Terminals */
@@ -648,7 +648,10 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         ; else
             pcl->size += GS_SIZE_BYTECODE(2 + (p->numarguments - first_val_arg) / 2)
         ;
-    } else if (gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")) {
+    } else if (
+        gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")
+        || gssymceq(p->directive, gssymoplrecord, gssymcodeop, ".lrecord")
+    ) {
         if (pcl->phase > phgens)
             gsfatal("%P: Too late to add allocations", p->pos)
         ;
@@ -1680,7 +1683,10 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             }
         }
         pcl->pout = ACE_CONSTR_SKIP(pcode);
-    } else if (gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")) {
+    } else if (
+        gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")
+        || gssymceq(p->directive, gssymoplrecord, gssymcodeop, ".lrecord")
+    ) {
         if (pcl->phase > rtlets)
             gsfatal("%P: Too late to add allocations", p->pos);
         pcl->phase = rtlets;

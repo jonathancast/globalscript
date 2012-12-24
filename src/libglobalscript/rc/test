@@ -8,6 +8,7 @@ ok_diff_fail '-- undefined expressions --' ./$O.test-gsi undef-expr.ags
 
 ok_diff '-- empty record values --' ./$O.test-gsi empty-record.ags
 ok_diff '-- empty record expressions --' ./$O.test-gsi empty-record-expr.ags
+ok_diff '-- empty lifted record expressions --' ./$O.test-gsi empty-lrecord-expr.ags
 ok_diff '-- field extractions --' ./$O.test-gsi field-extraction.ags
 ok_diff_fail '-- lazy field extractions --' ./$O.test-gsi lazy-field-extraction.ags
 ok_diff_fail '-- lazy field extraction from undefined record --' ./$O.test-gsi lazy-field-extraction-undef-record.ags
