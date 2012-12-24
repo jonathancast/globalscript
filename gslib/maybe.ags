@@ -11,3 +11,11 @@ maybe.prim.u	.tygvar
 maybe.prim.u	.tyexpr
 α	.tylambda	*
 	.tysum
+
+	.coercion
+
+maybe.t.out	.tycoercion
+maybe.t	.tygvar
+α	.tylambda	*
+	.tyinvert
+	.tydefinition	maybe.t	α
