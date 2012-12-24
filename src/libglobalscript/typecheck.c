@@ -787,7 +787,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Cannot find type of code item %s", pdata->pos, pdata->arguments[0]->name)
         ;
         if (code_type->numftyvs)
-            gsfatal("%P: ode for a global data item cannot have free type variables", pdata->pos)
+            gsfatal("%P: Code for a global data item cannot have free type variables", pdata->pos)
         ;
         if (code_type->numfvs)
             gsfatal("%P: Code for a global data item cannot have free variables", pdata->pos)
