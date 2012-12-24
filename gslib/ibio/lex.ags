@@ -288,13 +288,13 @@ res	.record	0	lex	1	acc
 _ibio.lex.receiver.char_acc_c	.expr
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
-ibio.acceptor.prim.t	.tygvar
 s	.tyfv	*
 _ibio.lex.receiver.char_acc_sym.k1_c	.subcode
 ibio.acceptor.prim.symbol.bind	.gvar
+ibio.acceptor.prim.fail	.gvar
 k	.larg	ibio.acceptor.prim.kt	s	s	record.empty
 sym.k1	.alloc	_ibio.lex.receiver.char_acc_sym.k1_c	s
-eof.k1	.undefined	ibio.acceptor.prim.t	s	record.empty
+eof.k1	.apply	ibio.acceptor.prim.fail	s	record.empty
 	.app	sym.k1	eof.k1
 	.enter	ibio.acceptor.prim.symbol.bind	s	record.empty
 
