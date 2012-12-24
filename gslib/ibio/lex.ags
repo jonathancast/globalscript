@@ -146,7 +146,7 @@ f_ty	.tylet	_ibio.lex.lexeme.<*>_f_ty	α	β
 _ibio.lex.lexeme.<*>_res_c	.subcode
 lf	.larg	ibio.lex.lexeme.t	s	f_ty
 lx	.larg	ibio.lex.lexeme.t	s	α
-res	.alloc	_ibio.lex.lexeme.<*>_res_c	s	α	β	|	lf
+res	.alloc	_ibio.lex.lexeme.<*>_res_c	s	α	β	|	lf	lx
 	.enter	res
 
 _ibio.lex.lexeme.<*>_res_c	.expr
@@ -161,22 +161,39 @@ s	.tyfv	*
 f_ty	.tylet	_ibio.lex.lexeme.<*>_f_ty	α	β
 _ibio.lex.lexeme.<*>_sk1_c	.subcode
 lf	.fv	ibio.lex.lexeme.t	s	f_ty
+lx	.fv	ibio.lex.lexeme.t	s	α
 ek	.larg	γ
 sk	.larg	_ibio.lex.lexeme.t_k.ty	s	β	γ
 ip	.larg	ibio.prim.iptr.t	s
-sk1	.alloc	_ibio.lex.lexeme.<*>_sk1_c	s	α	β	γ
+sk1	.alloc	_ibio.lex.lexeme.<*>_sk1_c	s	α	β	γ	|	lx	ek
 	.app	ek	sk1	ip
 	.enter	lf	γ
 
 _ibio.lex.lexeme.<*>_sk1_c	.expr
+ibio.lex.lexeme.t	.tygvar
 _ibio.lex.lexeme.<*>_f_ty	.tygvar
 ibio.prim.iptr.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
 γ	.tyfv	*
-x	.larg	_ibio.lex.lexeme.<*>_f_ty	α	β
+_ibio.lex.lexeme.<*>_sk2_c	.subcode
+lx	.fv	ibio.lex.lexeme.t	s	α
+ek	.fv	γ
+f	.larg	_ibio.lex.lexeme.<*>_f_ty	α	β
 ip1	.larg	ibio.prim.iptr.t	s
+sk2	.alloc	_ibio.lex.lexeme.<*>_sk2_c	s	α	β	γ
+	.app	ek	sk2	ip1
+	.enter	lx	γ
+
+_ibio.lex.lexeme.<*>_sk2_c	.expr
+ibio.prim.iptr.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+γ	.tyfv	*
+x	.larg	α
+ip2	.larg	ibio.prim.iptr.t	s
 	.undef	γ
 
 # §section §gs{ibio.lex.<|>}
