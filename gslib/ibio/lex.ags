@@ -412,8 +412,7 @@ s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
 γ	.tyarg	*
-f.ty	.tylet	_ibio.lex.receiver.lexeme.lift.2_f_ty	α	β	γ
-f	.larg	ibio.lex.receiver.lexeme.t	s	f.ty
+f	.larg	_ibio.lex.receiver.lexeme.lift.2_f_ty	α	β	γ
 rx	.larg	ibio.lex.receiver.lexeme.t	s	α
 ry	.larg	ibio.lex.receiver.lexeme.t	s	β
 	.undef	ibio.lex.receiver.lexeme.t	s	γ
