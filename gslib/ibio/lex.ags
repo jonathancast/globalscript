@@ -8,6 +8,7 @@ ibio.lex.lexer.match	.closure	_ibio.lex.lexer.match_c
 
 ibio.lex.symbol	.closure	_ibio.lex.symbol_c
 
+ibio.lex.lexeme.unit	.closure	_ibio.lex.lexeme.unit_c
 ibio.lex.lexeme.<*>	.closure	_ibio.lex.lexeme.<*>_c
 
 ibio.lex.<|>	.closure	_ibio.lex.<|>_c
@@ -109,6 +110,29 @@ ip0	.fv	ibio.prim.iptr	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 	.enter	ek
+
+# §section §gs{ibio.lex.lexeme.unit}
+
+_ibio.lex.lexeme.unit_c	.expr
+s	.tyarg	*
+α	.tyarg	*
+_ibio.lex.lexeme.unit_res_c	.subcode
+x	.larg	α
+res	.alloc	_ibio.lex.lexeme.unit_res_c	s	α	|	x
+	.enter	res
+
+_ibio.lex.lexeme.unit_res_c	.expr
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyarg	*
+x	.fv	α
+ek	.larg	β
+sk	.larg	_ibio.lex.lexeme.t_k.ty	s	α	β
+ip	.larg	ibio.prim.iptr.t	s
+	.app	x	ip
+	.enter	sk
 
 # §section §gs{ibio.lex.lexeme.<*>}
 
@@ -406,8 +430,9 @@ record.empty	.tygvar
 s	.tyarg	*
 α	.tyarg	*
 _ibio.lex.receiver.lexeme.unit_acc_c	.subcode
+ibio.lex.lexeme.unit	.gvar
 x	.larg	α
-lex	.undefined	ibio.lex.lexeme.t	s	α
+lex	.apply	ibio.lex.lexeme.unit	s	α	|	x
 acc	.alloc	_ibio.lex.receiver.lexeme.unit_acc_c	s	α	|	x
 r	.record	0	lex	1	acc
 	.lift
