@@ -266,9 +266,9 @@ p0.0	.karg	ibio.acceptor.prim.u	s	β
 		.case	fail
 			.enter	p1
 		.case	symbol.bind
-ks		.fkarg	0	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	β
-keof		.fkarg	1	ibio.acceptor.prim.t	s	β
-			.force	_ibio.acceptor.prim.<|>_k1	s	β
+ks.0		.fkarg	0	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	β
+keof.0		.fkarg	1	ibio.acceptor.prim.t	s	β
+			.force	_ibio.acceptor.prim.<|>_k1	s	β	|	ks.0	keof.0
 			.coerce	ibio.acceptor.prim.t.out	s	β
 			.enter	p1
 		.case	unit.plus
@@ -281,9 +281,35 @@ p1.1			.alloc	_ibio.acceptor.prim.<|>_k0_unit.plus_p1.1_c	s	β	|	p0.1	p1
 _ibio.acceptor.prim.<|>_k1	.forcecont
 ibio.acceptor.prim.u	.tygvar
 ibio.acceptor.prim.t	.tygvar
+_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	.tygvar
 s	.tyfv	*
 β	.tyfv	*
+_ibio.acceptor.prim.<|>_ks.y_c	.subcode
+ibio.acceptor.prim.symbol.bind	.gvar
+ibio.acceptor.prim.<|>	.gvar
+ks.0	.fv	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	β
+keof.0	.fv	ibio.acceptor.prim.t	s	β
 p1.0	.karg	ibio.acceptor.prim.u	s	β
+	.analyze	p1.0	fail	symbol.bind	unit.plus
+		.case	fail
+			.undef	ibio.acceptor.prim.t	s	β
+		.case	symbol.bind
+ks.1		.fkarg	0	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	β
+keof.1		.fkarg	1	ibio.acceptor.prim.t	s	β
+ks.y			.alloc	_ibio.acceptor.prim.<|>_ks.y_c	s	β
+keof.y			.apply	ibio.acceptor.prim.<|>	s	β	|	keof.0	keof.1
+			.app	ks.y	keof.y
+			.enter	ibio.acceptor.prim.symbol.bind	s	β
+		.case	unit.plus
+x		.fkarg	0	β
+p1.1		.fkarg	1	ibio.acceptor.prim.t	s	β
+			.undef	ibio.acceptor.prim.t	s	β
+
+_ibio.acceptor.prim.<|>_ks.y_c	.expr
+ibio.acceptor.prim.t	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+sym	.larg	s
 	.undef	ibio.acceptor.prim.t	s	β
 
 _ibio.acceptor.prim.<|>_k0_unit.plus_p1.1_c	.expr
