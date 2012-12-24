@@ -12,6 +12,8 @@ ibio.dir.external.io	.closure	_ibio.dir.external.io_c
 ibio.mapM.prim	.closure	_ibio.mapM.prim_c	_ibio.mapM.prim_ty
 ibio.mapM0.prim	.closure	_ibio.mapM0.prim_c	_ibio.mapM0.prim_ty
 
+ibio.foldM.prim	.closure	_ibio.foldM.prim_c	_ibio.foldM.prim_ty
+
 	.code
 
 # §section §gs{ibio.from.either.prim}
@@ -254,6 +256,19 @@ xn1	.fv	list.t	α
 	.app	f	xn1
 	.enter	ibio.mapM0.prim	α	β
 
+# §section §gs{ibio.foldM.prim}
+
+_ibio.foldM.prim_c	.expr
+_ibio.foldM.prim_f_ty	.tygvar
+list.t	.tygvar
+ibio.prim.t	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+f	.larg	_ibio.foldM.prim_f_ty	α	β
+z	.larg	β
+xn	.larg	list.t	α
+	.undef	ibio.prim.t	β
+
 	.type
 
 ibio.m	.tyabstract	**^*^*^
@@ -330,6 +345,32 @@ record.empty	.tygvar
 	.tylift
 	.tyfun	list.t	α
 	.tyref	ibio.prim.t	record.empty
+
+# §section §gs{ibio.foldM.prim}
+
+_ibio.foldM.prim_ty	.tyexpr
+_ibio.foldM.prim_f_ty	.tygvar
+list.t	.tygvar
+ibio.prim.t	.tygvar
+α	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	_ibio.foldM.prim_f_ty	α	β
+	.tylift
+	.tyfun	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	ibio.prim.t	β
+
+_ibio.foldM.prim_f_ty	.tyexpr
+ibio.prim.t	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	β
+	.tylift
+	.tyfun	α
+	.tyref	ibio.prim.t	β
 
 	.coercion
 
