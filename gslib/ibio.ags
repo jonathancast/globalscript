@@ -261,12 +261,23 @@ xn1	.fv	list.t	α
 _ibio.foldM.prim_c	.expr
 _ibio.foldM.prim_f_ty	.tygvar
 list.t	.tygvar
-ibio.prim.t	.tygvar
 α	.tyarg	*
 β	.tyarg	*
+_ibio.foldM.prim_k	.subcode
+list.t.out	.cogvar
 f	.larg	_ibio.foldM.prim_f_ty	α	β
 z	.larg	β
 xn	.larg	list.t	α
+	.force	_ibio.foldM.prim_k	α	β
+	.coerce	list.t.out	α
+	.enter	xn
+
+_ibio.foldM.prim_k	.forcecont
+list.prim.u	.tygvar
+ibio.prim.t	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+xn0	.karg	list.prim.u	α
 	.undef	ibio.prim.t	β
 
 	.type
