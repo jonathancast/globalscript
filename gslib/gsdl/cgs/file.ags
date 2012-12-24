@@ -177,12 +177,14 @@ res	.record	0	lex	1	_gsdl.cgs.pragma.line_acc
 	.yield	res
 
 _gsdl.cgs.pragma.line_acc_c	.expr
-ibio.acceptor.prim.cont.t	.tygvar
+ibio.acceptor.prim.kt	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
 record.empty	.tygvar
+ibio.acceptor.prim.t	.tygvar
 string.ty	.tylet	list.t	rune.t
-	.undef	ibio.acceptor.prim.cont.t	rune.t	string.ty	record.empty
+k	.larg	ibio.acceptor.prim.kt	rune.t	string.ty	record.empty
+	.undef	ibio.acceptor.prim.t	rune.t	record.empty
 
 	.type
 
