@@ -270,11 +270,38 @@ r	.record	0	lex	1	acc
 
 _ibio.lex.receiver.char_c	.expr
 _ibio.lex.receiver.char_eq_ty	.tygvar
-ibio.lex.receiver.lexeme.t	.tygvar
+ibio.lex.lexeme.t	.tygvar
+ibio.acceptor.prim.cont.t	.tygvar
+record.empty	.tygvar
 s	.tyarg	*
+_ibio.lex.receiver.char_acc_c	.subcode
 eq	.larg	_ibio.lex.receiver.char_eq_ty	s
 c	.larg	s
-	.undef	ibio.lex.receiver.lexeme.t	s	s
+lex	.undefined	ibio.lex.lexeme.t	s	s
+acc	.alloc	_ibio.lex.receiver.char_acc_c	s
+res	.record	0	lex	1	acc
+	.lift
+	.yield	res
+
+_ibio.lex.receiver.char_acc_c	.expr
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+ibio.acceptor.prim.t	.tygvar
+s	.tyfv	*
+_ibio.lex.receiver.char_acc_sym.k1_c	.subcode
+ibio.acceptor.prim.symbol.bind	.gvar
+k	.larg	ibio.acceptor.prim.kt	s	s	record.empty
+sym.k1	.alloc	_ibio.lex.receiver.char_acc_sym.k1_c	s
+eof.k1	.undefined	ibio.acceptor.prim.t	s	record.empty
+	.app	sym.k1	eof.k1
+	.enter	ibio.acceptor.prim.symbol.bind	s	record.empty
+
+_ibio.lex.receiver.char_acc_sym.k1_c	.expr
+ibio.acceptor.prim.t	.tygvar
+record.empty	.tygvar
+s	.tyfv	*
+c1	.larg	s
+	.undef	ibio.acceptor.prim.t	s	record.empty
 
 # §section §gs{ibio.lex.receiver.line.non.empty}
 
