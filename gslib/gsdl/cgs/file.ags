@@ -73,7 +73,7 @@ _gsdl.cgs.file.read_pragmas.pos_insert_c	.subcode
 ibio.foldM.prim	.gvar
 pr.ls	.fv	list.t	string.ty
 insert	.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_c
-empty	.undefined	_gsdl.cgs.file.read_pragmas.pos_ty
+empty	.lrecord
 	.app	insert	empty	pr.ls
 	.enter	ibio.foldM.prim	string.ty	_gsdl.cgs.file.read_pragmas.pos_ty
 
