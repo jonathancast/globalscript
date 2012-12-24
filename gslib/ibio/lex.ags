@@ -16,6 +16,9 @@ ibio.lex.receive	.closure	_ibio.lex.receive_c
 
 ibio.lex.receiver.symbol	.closure	_ibio.lex.receiver.symbol_c
 
+ibio.lex.receiver.lexeme.unit	.closure	_ibio.lex.receiver.lexeme.unit_c
+ibio.lex.receiver.lexeme.<*>	.closure	_ibio.lex.receiver.lexeme.<*>_c
+
 ibio.lex.receiver.<|>	.closure	_ibio.lex.receiver.<|>_c
 
 ibio.lex.receiver.many	.closure	_ibio.lex.receiver.many_c
@@ -260,6 +263,27 @@ r	.record	0	lex	1	acc
 	.lift
 	.yield	r
 
+# §section §gs{ibio.lex.receiver.lexeme.unit}
+
+_ibio.lex.receiver.lexeme.unit_c	.expr
+ibio.lex.receiver.lexeme.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+x	.larg	α
+	.undef	ibio.lex.receiver.lexeme.t	s	α
+
+# §section §gs{ibio.lex.receiver.lexeme.<*>}
+
+_ibio.lex.receiver.lexeme.<*>_c	.expr
+_ibio.lex.receiver.lexeme.<*>_rf_ty	.tygvar
+ibio.lex.receiver.lexeme.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+rf	.larg	_ibio.lex.receiver.lexeme.<*>_rf_ty	s	α	β
+rx	.larg	ibio.lex.receiver.lexeme.t	s	α
+	.undef	ibio.lex.receiver.lexeme.t	s	β
+
 # §section §gs{ibio.lex.receiver.<|>}
 
 _ibio.lex.receiver.<|>_c	.expr
@@ -417,3 +441,21 @@ s	.tylambda	*
 lex.ty	.tylet	ibio.lex.lexeme.t	s	α
 acc.ty	.tylet	ibio.acceptor.prim.cont.t	s	α	record.empty
 	.typroduct	0	lex.ty	1	acc.ty
+
+# §section §gs{}
+
+_ibio.lex.receiver.lexeme.<*>_rf_ty	.tyexpr
+ibio.lex.receiver.lexeme.t	.tygvar
+_ibio.lex.receiver.lexeme.<*>_rf_res.ty	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+β	.tylambda	*
+res.ty	.tylet	_ibio.lex.receiver.lexeme.<*>_rf_res.ty	α	β
+	.tyref	ibio.lex.receiver.lexeme.t	s	res.ty
+
+_ibio.lex.receiver.lexeme.<*>_rf_res.ty	.tyexpr
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	β
