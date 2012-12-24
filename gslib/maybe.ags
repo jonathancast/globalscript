@@ -3,6 +3,11 @@
 	.type
 
 maybe.t	.tyabstract	**^
+maybe.prim.u	.tygvar
 α	.tylambda	*
 	.tylift
+	.tyref	maybe.prim.u	α
+
+maybe.prim.u	.tyexpr
+α	.tylambda	*
 	.tysum
