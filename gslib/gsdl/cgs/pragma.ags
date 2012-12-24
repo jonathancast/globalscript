@@ -1,0 +1,29 @@
+	.prefix
+
+	.data
+
+gsdl.cgs.pragma.gstype.get	.closure	_gsdl.cgs.pragma.gstype.get_c
+
+	.code
+
+_gsdl.cgs.pragma.gstype.get_c	.expr
+ibio.file.name.t	.tygvar
+ordered.map.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.pragma.t	.tygvar
+maybe.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+fn	.larg	ibio.file.name.t
+prs	.larg	ordered.map.t	string.ty	gsdl.cgs.pragma.t
+	.undef	maybe.t	string.ty
+
+	.type
+
+gsdl.cgs.pragma.t	.tyabstract	*
+gsdl.cgs.pragma.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.pragma.prim.u
+
+gsdl.cgs.pragma.prim.u	.tyexpr
+	.tysum
