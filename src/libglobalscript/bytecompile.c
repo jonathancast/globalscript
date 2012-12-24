@@ -174,11 +174,14 @@ gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
             case 's':
                 *pv = ' ';
                 break;
+            case 'h':
+                *pv = '#';
+                break;
             case 'n':
                 *pv = '\n';
                 break;
             default:
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_parse_rune_literal(%s)", pos, s);
+                gsfatal(UNIMPL("%P: gsbc_parse_rune_literal(%s)"), pos, s);
         }
         s += 2;
     } else {
