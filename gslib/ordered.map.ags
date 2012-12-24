@@ -1,0 +1,15 @@
+	.prefix
+
+	.type
+
+ordered.map.t	.tyabstract	**^*^
+ordered.map.u	.tygvar
+k	.tylambda	*
+v	.tylambda	*
+	.tylift
+	.tyref	ordered.map.u	k	v
+
+ordered.map.u	.tyexpr
+k	.tylambda	*
+v	.tylambda	*
+	.tysum
