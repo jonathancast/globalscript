@@ -7,6 +7,9 @@ maybe.just	.closure	_maybe.just_c
 
 maybe.≡	.closure	_maybe.≡_c
 
+maybe.print	.closure	_maybe.print_c
+_maybe.print_nothing.s	.string	nothing
+
 	.code
 
 # §section Constructors
@@ -78,6 +81,34 @@ x1				.fkarg	0	α
 		.case	nothing
 			.undef	bool.t
 
+# §section §gs{maybe.print}
+
+_maybe.print_c	.expr
+_maybe.print_pr_ty	.tygvar
+maybe.t	.tygvar
+α	.tyarg	*
+_maybe.print_k	.subcode
+maybe.t.out	.cogvar
+pr	.larg	_maybe.print_pr_ty	α
+mb	.larg	maybe.t	α
+	.force	_maybe.print_k	α
+	.coerce	maybe.t.out	α
+	.enter	mb
+
+_maybe.print_k	.forcecont
+maybe.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+α	.tyfv	*
+_maybe.print_nothing.s	.gvar
+mb0	.karg	maybe.prim.u	α
+	.analyze	mb0	just	nothing
+		.case	just
+x		.fkarg	0	α
+			.undef	list.t	rune.t
+		.case	nothing
+			.enter	_maybe.print_nothing.s
+
 	.type
 
 maybe.t	.tyabstract	**^
@@ -110,6 +141,16 @@ bool.t	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	bool.t
+
+# §section §gs{maybe.print}
+
+_maybe.print_pr_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	list.t	rune.t
 
 	.coercion
 
