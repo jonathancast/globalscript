@@ -5,7 +5,8 @@
 gsdl.cgs.file.read	.closure	_gsdl.cgs.file.read_c
 
 gsdl.cgs.pragma.line	.closure	_gsdl.cgs.pragma.line_c
-_gsdl.cgs.pragma.line_acc	.closure	_gsdl.cgs.pragma.line_acc_c
+
+_hs	.closure	_hs_c
 
 	.code
 
@@ -168,23 +169,30 @@ ef0	.karg	either.prim.u	parser.err.t	gsdl.cgs.file.t
 _gsdl.cgs.pragma.line_c	.expr
 ibio.lex.lexeme.t	.tygvar
 rune.t	.tygvar
+_gsdl.cgs.pragma.line_cons.hash_res.ty	.tygvar
+_gsdl.cgs.pragma.line_cons_res.ty	.tygvar
 list.t	.tygvar
 string.ty	.tylet	list.t	rune.t
-_gsdl.cgs.pragma.line_acc	.gvar
-lex	.undefined	ibio.lex.lexeme.t	rune.t	string.ty
-res	.record	0	lex	1	_gsdl.cgs.pragma.line_acc
-	.lift
-	.yield	res
+ibio.lex.receiver.lexeme.<*>	.gvar
+ibio.lex.receiver.lexeme.unit	.gvar
+list.:	.gvar
+ibio.lex.receiver.char	.gvar
+rune.≡	.gvar
+_hs	.gvar
+ibio.lex.receiver.line.non.empty	.gvar
+cons	.apply	list.:	rune.t
+cons.r	.apply	ibio.lex.receiver.lexeme.unit	rune.t	_gsdl.cgs.pragma.line_cons_res.ty	|	cons
+hash	.apply	ibio.lex.receiver.char	rune.t	|	rune.≡	_hs
+cons.hash	.apply	ibio.lex.receiver.lexeme.<*>	rune.t	rune.t	_gsdl.cgs.pragma.line_cons.hash_res.ty	|	cons.r	hash
+	.app	cons.hash	ibio.lex.receiver.line.non.empty
+	.enter	ibio.lex.receiver.lexeme.<*>	rune.t	string.ty	string.ty
 
-_gsdl.cgs.pragma.line_acc_c	.expr
-ibio.acceptor.prim.kt	.tygvar
-rune.t	.tygvar
-list.t	.tygvar
-record.empty	.tygvar
-ibio.acceptor.prim.t	.tygvar
-string.ty	.tylet	list.t	rune.t
-k	.larg	ibio.acceptor.prim.kt	rune.t	string.ty	record.empty
-	.undef	ibio.acceptor.prim.t	rune.t	record.empty
+_hs_c	.expr
+rune.t.in	.cogvar
+hs	.rune	\h
+	.coerce	rune.t.in
+	.lift
+	.yield	hs
 
 	.type
 
@@ -197,3 +205,21 @@ gsdl.cgs.file.t	.tyabstract	*
 _gsdl.cgs.file.read_pragmas.pos_ty	.tyexpr
 	.tylift
 	.typroduct
+
+# §section §gs{gsdl.cgs.pragma.line}
+
+_gsdl.cgs.pragma.line_cons_res.ty	.tyexpr
+rune.t	.tygvar
+list.t	.tygvar
+	.tylift
+	.tyfun	rune.t
+	.tylift
+	.tyfun	list.t	rune.t
+	.tyref	list.t	rune.t
+
+_gsdl.cgs.pragma.line_cons.hash_res.ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	list.t	rune.t
+	.tyref	list.t	rune.t
