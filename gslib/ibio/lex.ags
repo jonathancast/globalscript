@@ -288,11 +288,29 @@ string.ty	.tylet	list.t	rune.t
 # §section §gs{ibio.lex.receiver.lexeme.unit}
 
 _ibio.lex.receiver.lexeme.unit_c	.expr
-ibio.lex.receiver.lexeme.t	.tygvar
+ibio.lex.lexeme.t	.tygvar
+ibio.acceptor.prim.cont.t	.tygvar
+record.empty	.tygvar
 s	.tyarg	*
 α	.tyarg	*
+_ibio.lex.receiver.lexeme.unit_acc_c	.subcode
 x	.larg	α
-	.undef	ibio.lex.receiver.lexeme.t	s	α
+lex	.undefined	ibio.lex.lexeme.t	s	α
+acc	.alloc	_ibio.lex.receiver.lexeme.unit_acc_c	s	α	|	x
+r	.record	0	lex	1	acc
+	.lift
+	.yield	r
+
+_ibio.lex.receiver.lexeme.unit_acc_c	.expr
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+ibio.acceptor.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+x	.fv	α
+k	.larg	ibio.acceptor.prim.kt	s	α	record.empty
+	.app	x
+	.enter	k
 
 # §section §gs{ibio.lex.receiver.lexeme.<*>}
 
