@@ -1,0 +1,57 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_tests	.list	test.property.t	_test_get.empty
+
+_test_get.empty	.closure	_test_get.empty_c
+_test_get.empty_label	.string	get\sx\sempty
+
+_3	.closure	_3_c
+
+	.code
+
+_epcode	.expr
+test.all	.gvar
+_tests	.gvar
+	.app	_tests
+	.enter	test.all
+
+# §section §gs{get empty}
+
+_test_get.empty_c	.expr
+maybe.t	.tygvar
+bool.t	.tygvar
+natural.t	.tygvar
+mb.t	.tylet	maybe.t	bool.t
+test.property.label	.gvar
+_test_get.empty_label	.gvar
+test.assert.eq	.gvar
+maybe.≡	.gvar
+bool.≡	.gvar
+maybe.print	.gvar
+bool.print	.gvar
+ordered.map.get	.gvar
+_3	.gvar
+ordered.map.empty	.gvar
+natural.compare	.gvar
+maybe.nothing	.gvar
+mb.≡	.apply	maybe.≡	bool.t	|	bool.≡
+mb.print	.apply	maybe.print	bool.t	|	bool.print
+empty	.apply	ordered.map.empty	natural.t	bool.t
+actual	.apply	ordered.map.get	natural.t	bool.t	|	natural.compare	_3	empty
+nothing	.apply	maybe.nothing	bool.t
+test	.apply	test.assert.eq	mb.t	|	mb.≡	mb.print	actual	nothing
+	.app	_test_get.empty_label	test
+	.enter	test.property.label
+
+# §section Miscellaneous Data
+
+_3_c	.expr
+natural.t.in	.cogvar
+3	.natural	3
+	.coerce	natural.t.in
+	.lift
+	.yield	3

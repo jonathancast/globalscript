@@ -1,15 +1,97 @@
 	.prefix
 
+	.data
+
+ordered.map.empty	.closure	_ordered.map.empty_c
+ordered.map.get	.closure	_ordered.map.get_c	_ordered.map.get_ty
+
+	.code
+
+# §section §gs{ordered.map.empty}
+
+_ordered.map.empty_c	.expr
+ordered.map.prim.u	.tygvar
+k	.tyarg	*
+v	.tyarg	*
+res.u	.tylet	ordered.map.prim.u	k	v
+ordered.map.t.in	.cogvar
+e	.constr	res.u	empty
+	.coerce	ordered.map.t.in	k	v
+	.lift
+	.yield	e
+
+# §section §gs{ordered.map.get}
+
+_ordered.map.get_c	.expr
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+k	.tyarg	*
+v	.tyarg	*
+_ordered.map.get_k0	.subcode
+ordered.map.t.out	.cogvar
+ord	.larg	order.total.t	k
+key	.larg	k
+map	.larg	ordered.map.t	k	v
+	.force	_ordered.map.get_k0	k	v
+	.coerce	ordered.map.t.out	k	v
+	.enter	map
+
+_ordered.map.get_k0	.forcecont
+ordered.map.prim.u	.tygvar
+maybe.t	.tygvar
+k	.tyfv	*
+v	.tyfv	*
+maybe.nothing	.gvar
+map.0	.karg	ordered.map.prim.u	k	v
+	.analyze	map.0	empty
+		.case	empty
+			.enter	maybe.nothing	v
+
 	.type
 
 ordered.map.t	.tyabstract	**^*^
-ordered.map.u	.tygvar
+ordered.map.prim.u	.tygvar
 k	.tylambda	*
 v	.tylambda	*
 	.tylift
-	.tyref	ordered.map.u	k	v
+	.tyref	ordered.map.prim.u	k	v
 
-ordered.map.u	.tyexpr
+ordered.map.prim.u	.tyexpr
+_ordered.map.prim.u_empty_ty	.tygvar
 k	.tylambda	*
 v	.tylambda	*
-	.tysum
+	.tysum	empty	_ordered.map.prim.u_empty_ty
+
+_ordered.map.prim.u_empty_ty	.tyexpr
+	.tyubproduct
+
+# §section §gs{ordered.map.get}
+
+_ordered.map.get_ty	.tyexpr
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+maybe.t	.tygvar
+k	.tyforall	*
+v	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	k
+	.tylift
+	.tyfun	k
+	.tylift
+	.tyfun	ordered.map.t	k	v
+	.tyref	maybe.t	v
+
+	.coercion
+
+ordered.map.t.in	.tycoercion
+ordered.map.t	.tygvar
+k	.tylambda	*
+v	.tylambda	*
+	.tydefinition	ordered.map.t	k	v
+
+ordered.map.t.out	.tycoercion
+ordered.map.t	.tygvar
+k	.tylambda	*
+v	.tylambda	*
+	.tyinvert
+	.tydefinition	ordered.map.t	k	v
