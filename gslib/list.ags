@@ -15,6 +15,7 @@ list.singleton	.closure	_list.singleton_c
 list.<>	.closure	_list.<>.code	_list.<>.ty
 
 list.≡	.closure	_list.≡.code	_list.≡.ty
+list.compare	.closure	_list.compare_c	_list.compare_ty
 
 list.print	.closure	_list.print_c
 list.print.byDefault	.closure	_list.print.byDefault_c	_list.print.byDefault_ty
@@ -444,6 +445,16 @@ ys1	.fv	list.t	α
 	.app	c	xn1	ys1
 	.enter	list.≡	α
 
+# §section §gs{list.compare}
+
+_list.compare_c	.expr
+order.total.t	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+arg.ty	.tylet	list.t	α
+cmp	.larg	order.total.t	α
+	.undef	order.total.t	arg.ty
+
 # §section §gs{list.print}
 
 _list.print_c	.expr
@@ -618,6 +629,17 @@ bool.t	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	bool.t
+
+# §section §gs{list.compare}
+
+_list.compare_ty	.tyexpr
+order.total.t	.tygvar
+list.t	.tygvar
+α	.tyforall	*
+arg.ty	.tylet	list.t	α
+	.tylift
+	.tyfun	order.total.t	α
+	.tyref	order.total.t	arg.ty
 
 # §section §gs{list.print}
 
