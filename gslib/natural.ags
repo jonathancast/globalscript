@@ -10,6 +10,8 @@ natural.divMod	.closure	_natural.divMod_c
 natural.≡	.closure	_natural.≡_c
 natural.<	.closure	_natural.<_c
 
+natural.compare	.closure	_natural.compare_c
+
 natural.prim.+	.closure	_natural.prim.+_c
 natural.prim.divMod	.closure	_natural.prim.divMod_c
 
@@ -216,6 +218,15 @@ bool.false	.gvar
 _natural.<_k3	.ubcasecont
 bool.true	.gvar
 	.enter	bool.true
+
+# §section §gs{natural.compare}
+
+_natural.compare_c	.expr
+natural.t	.tygvar
+order.total.ord.t	.tygvar
+n0	.larg	natural.t
+n1	.larg	natural.t
+	.undef	order.total.ord.t
 
 # §section Primitives
 
