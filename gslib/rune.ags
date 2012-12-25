@@ -3,6 +3,7 @@
 	.data
 
 rune.≡	.closure	_rune.≡.c
+rune.compare	.closure	_rune.compare_c
 
 rune.print	.closure	_rune.print_c
 _rune.print_prefix	.string	r/
@@ -59,6 +60,13 @@ bool.false	.gvar
 _rune.≡.k1.1	.ubcasecont
 bool.true	.gvar
 	.enter	bool.true
+
+# §section §gs{rune.compare}
+
+_rune.compare_c	.expr
+order.total.t	.tygvar
+rune.t	.tygvar
+	.undef	order.total.t	rune.t
 
 # §section §gs{rune.print}
 
