@@ -67,6 +67,7 @@ maybe.prim.u	.tygvar
 bool.t	.tygvar
 α	.tyfv	*
 bool.false	.gvar
+bool.true	.gvar
 mb0.0	.fv	maybe.prim.u	α
 mb1.0	.karg	maybe.prim.u	α
 	.analyze	mb0.0	just	nothing
@@ -79,7 +80,12 @@ x1				.fkarg	0	α
 				.case	nothing
 					.enter	bool.false
 		.case	nothing
-			.undef	bool.t
+			.analyze	mb1.0	just	nothing
+				.case	just
+x1				.fkarg	0	α
+					.undef	bool.t
+				.case	nothing
+					.enter	bool.true
 
 # §section §gs{maybe.print}
 

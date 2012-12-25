@@ -4,12 +4,17 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.just.nothing	_test.print.nothing
+_tests	.list	test.property.t	_test.eq.just.nothing	_test.eq.nothing.nothing	_test.print.nothing
 
 _test.eq.just.nothing	.closure	_test.eq.just.nothing_c
 _test.eq.just.nothing_label	.string	just\sfalse\s≡\snothing
 _test.eq.just.nothing_false	.string	just\sfalse\s≠\snothing
 _test.eq.just.nothing_true	.string	just\sfalse\s≡\snothing
+
+_test.eq.nothing.nothing	.closure	_test.eq.nothing.nothing_c
+_test.eq.nothing.nothing_label	.string	nothing\s≡\snothing
+_test.eq.nothing.nothing_false	.string	nothing\s≠\snothing
+_test.eq.nothing.nothing_true	.string	nothing\s≡\snothing
 
 _test.print.nothing	.closure	_test.print.nothing_c
 _test.print.nothing_label	.string	print\snothing
@@ -42,6 +47,24 @@ nothing	.apply	maybe.nothing	bool.t
 eq	.apply	maybe.≡	bool.t	|	bool.≡	justfalse	nothing
 test	.apply	test.deny	|	_test.eq.just.nothing_false	_test.eq.just.nothing_true	eq
 	.app	_test.eq.just.nothing_label	test
+	.enter	test.property.label
+
+# §section §gs{nothing ≡ nothing}
+
+_test.eq.nothing.nothing_c	.expr
+bool.t	.tygvar
+test.property.label	.gvar
+_test.eq.nothing.nothing_label	.gvar
+test.assert	.gvar
+_test.eq.nothing.nothing_false	.gvar
+_test.eq.nothing.nothing_true	.gvar
+maybe.≡	.gvar
+bool.≡	.gvar
+maybe.nothing	.gvar
+nothing	.apply	maybe.nothing	bool.t
+eq	.apply	maybe.≡	bool.t	|	bool.≡	nothing	nothing
+test	.apply	test.assert	|	_test.eq.nothing.nothing_false	_test.eq.nothing.nothing_true	eq
+	.app	_test.eq.nothing.nothing_label	test
 	.enter	test.property.label
 
 # §section §gs{print nothing}
