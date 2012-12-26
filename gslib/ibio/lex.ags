@@ -455,12 +455,33 @@ ibio.lex.lexeme.t	.tygvar
 ibio.acceptor.prim.cont.t	.tygvar
 record.empty	.tygvar
 s	.tyarg	*
+_ibio.lex.receiver.pred_acc_c	.subcode
 pred	.larg	_ibio.lex.receiver.pred_pred_ty	s
 lex	.undefined	ibio.lex.lexeme.t	s	s
-acc	.undefined	ibio.acceptor.prim.cont.t	s	s	record.empty
+acc	.alloc	_ibio.lex.receiver.pred_acc_c	s
 res	.record	0	lex	1	acc
 	.lift
 	.yield	res
+
+_ibio.lex.receiver.pred_acc_c	.expr
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+ibio.acceptor.prim.t	.tygvar
+s	.tyfv	*
+_ibio.lex.receiver.pred_acc_k1_c	.subcode
+ibio.acceptor.prim.symbol.bind	.gvar
+k	.larg	ibio.acceptor.prim.kt	s	s	record.empty
+k1	.alloc	_ibio.lex.receiver.pred_acc_k1_c	s
+eofk	.undefined	ibio.acceptor.prim.t	s	record.empty
+	.app	k1	eofk
+	.enter	ibio.acceptor.prim.symbol.bind	s	record.empty
+
+_ibio.lex.receiver.pred_acc_k1_c	.expr
+ibio.acceptor.prim.t	.tygvar
+record.empty	.tygvar
+s	.tyfv	*
+sym	.larg	s
+	.undef	ibio.acceptor.prim.t	s	record.empty
 
 # §section §gs{ibio.lex.receiver.char}
 
@@ -515,15 +536,15 @@ c1	.larg	s
 _ibio.lex.receiver.char_acc_sym.k1_k	.forcecont
 ibio.acceptor.prim.kt	.tygvar
 bool.prim.u	.tygvar
-ibio.acceptor.prim.t	.tygvar
 record.empty	.tygvar
 s	.tyfv	*
+ibio.acceptor.prim.fail	.gvar
 c	.fv	s
 k	.fv	ibio.acceptor.prim.kt	s	s	record.empty
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.undef	ibio.acceptor.prim.t	s	record.empty
+			.enter	ibio.acceptor.prim.fail	s	record.empty
 		.case	true
 			.app	c
 			.enter	k
