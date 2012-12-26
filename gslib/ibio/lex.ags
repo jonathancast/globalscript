@@ -122,22 +122,26 @@ s	.tyarg	*
 _ibio.lex.char_res_c	.subcode
 eq	.larg	_ibio.lex.receiver.char_eq_ty	s
 c	.larg	s
-res	.alloc	_ibio.lex.char_res_c	s
+res	.alloc	_ibio.lex.char_res_c	s	|	eq	c
 	.enter	res
 
 _ibio.lex.char_res_c	.expr
+_ibio.lex.receiver.char_eq_ty	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 ibio.prim.iptr.t	.tygvar
 s	.tyfv	*
 β	.tyarg	*
 _ibio.lex.char_k	.subcode
+eq	.fv	_ibio.lex.receiver.char_eq_ty	s
+c	.fv	s
 ek	.larg	β
 sk	.larg	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip	.larg	ibio.prim.iptr.t	s
-	.force	_ibio.lex.char_k	s	β	|	ek	sk
+	.force	_ibio.lex.char_k	s	β	|	eq	c	ek	sk
 	.enter	ip
 
 _ibio.lex.char_k	.forcecont
+_ibio.lex.receiver.char_eq_ty	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 ibio.prim.iptr	.tygvar
 s	.tyfv	*
@@ -145,28 +149,62 @@ s	.tyfv	*
 _ibio.lex.char_k0	.subcode
 _ibio.lex.char_k1	.subcode
 ibio.prim.iptr.iseof	.gvar
+eq	.fv	_ibio.lex.receiver.char_eq_ty	s
+c	.fv	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip0	.karg	ibio.prim.iptr	s
-	.ubanalyze	0	_ibio.lex.char_k0	1	_ibio.lex.char_k1	|	s	β	|	ip0	ek	sk
+	.ubanalyze	0	_ibio.lex.char_k0	1	_ibio.lex.char_k1	|	s	β	|	eq	c	ip0	ek	sk
 	.app	ip0
 	.yield	ibio.prim.iptr.iseof	s
 
 _ibio.lex.char_k0	.ubcasecont	# Not EOF
+_ibio.lex.receiver.char_eq_ty	.tygvar
 ibio.prim.iptr	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 s	.tyfv	*
 β	.tyfv	*
+_ibio.lex.char_k0_k	.subcode
+bool.t.out	.cogvar
+ibio.prim.iptr.deref	.gvar
+eq	.fv	_ibio.lex.receiver.char_eq_ty	s
+c	.fv	s
 ip0	.fv	ibio.prim.iptr	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
-	.undef	β
+c1	.apply	ibio.prim.iptr.deref	s	|	ip0
+	.force	_ibio.lex.char_k0_k	s	β	|	c	ip0	sk
+	.coerce	bool.t.out
+	.app	c	c1
+	.enter	eq
+
+_ibio.lex.char_k0_k	.forcecont
+ibio.prim.iptr	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
+bool.prim.u	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+ibio.prim.iptr.next	.gvar
+c	.fv	s
+ip0	.fv	ibio.prim.iptr	s
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	β
+		.case	true
+ip1			.apply	ibio.prim.iptr.next	s	|	ip0
+			.app	c	ip1
+			.enter	sk
 
 _ibio.lex.char_k1	.ubcasecont	# EOF
+_ibio.lex.receiver.char_eq_ty	.tygvar
 ibio.prim.iptr	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 s	.tyfv	*
 β	.tyfv	*
+eq	.fv	_ibio.lex.receiver.char_eq_ty	s
+c	.fv	s
 ip0	.fv	ibio.prim.iptr	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
@@ -226,12 +264,13 @@ lx	.fv	ibio.lex.lexeme.t	s	α
 ek	.larg	γ
 sk	.larg	_ibio.lex.lexeme.t_k.ty	s	β	γ
 ip	.larg	ibio.prim.iptr.t	s
-sk1	.alloc	_ibio.lex.lexeme.<*>_sk1_c	s	α	β	γ	|	lx	ek
+sk1	.alloc	_ibio.lex.lexeme.<*>_sk1_c	s	α	β	γ	|	lx	sk	ek
 	.app	ek	sk1	ip
 	.enter	lf	γ
 
 _ibio.lex.lexeme.<*>_sk1_c	.expr
 ibio.lex.lexeme.t	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
 _ibio.lex.lexeme.<*>_f_ty	.tygvar
 ibio.prim.iptr.t	.tygvar
 s	.tyfv	*
@@ -240,22 +279,29 @@ s	.tyfv	*
 γ	.tyfv	*
 _ibio.lex.lexeme.<*>_sk2_c	.subcode
 lx	.fv	ibio.lex.lexeme.t	s	α
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	β	γ
 ek	.fv	γ
 f	.larg	_ibio.lex.lexeme.<*>_f_ty	α	β
 ip1	.larg	ibio.prim.iptr.t	s
-sk2	.alloc	_ibio.lex.lexeme.<*>_sk2_c	s	α	β	γ
+sk2	.alloc	_ibio.lex.lexeme.<*>_sk2_c	s	α	β	γ	|	sk	f
 	.app	ek	sk2	ip1
 	.enter	lx	γ
 
 _ibio.lex.lexeme.<*>_sk2_c	.expr
+_ibio.lex.lexeme.t_k.ty	.tygvar
+_ibio.lex.lexeme.<*>_f_ty	.tygvar
 ibio.prim.iptr.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
 γ	.tyfv	*
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	β	γ
+f	.fv	_ibio.lex.lexeme.<*>_f_ty	α	β
 x	.larg	α
 ip2	.larg	ibio.prim.iptr.t	s
-	.undef	γ
+fx	.apply	f	|	x
+	.app	fx	ip2
+	.enter	sk
 
 # §section §gs{ibio.lex.<|>}
 
@@ -497,14 +543,14 @@ _ibio.lex.receiver.pred_acc_k1_k	.forcecont
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
 bool.prim.u	.tygvar
-ibio.acceptor.prim.t	.tygvar
 s	.tyfv	*
+ibio.acceptor.prim.fail	.gvar
 k	.fv	ibio.acceptor.prim.kt	s	s	record.empty
 sym	.fv	s
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.undef	ibio.acceptor.prim.t	s	record.empty
+			.enter	ibio.acceptor.prim.fail	s	record.empty
 		.case	true
 			.app	sym
 			.enter	k
