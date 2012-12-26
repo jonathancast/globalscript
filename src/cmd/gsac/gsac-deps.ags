@@ -22,6 +22,7 @@ _real.entry_parsed.args_c	.subcode
 _real.entry_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
+eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
 parsed.args	.alloc	_real.entry_parsed.args_c	|	args
 	.body	_real.entry_body_c	|	parsed.args

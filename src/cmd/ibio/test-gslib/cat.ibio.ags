@@ -17,6 +17,7 @@ _ep_s_c	.subcode
 _ep_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
+eo	.larg	ibio.prim.oport	rune.t
 as	.bind	_ep_as_c
 if	.bind	_ep_if_c	|	i	as
 s	.bind	_ep_s_c	|	if

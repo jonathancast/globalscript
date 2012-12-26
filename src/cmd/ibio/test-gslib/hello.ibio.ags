@@ -16,6 +16,7 @@ ibio.prim.write	.gvar
 _hello	.gvar
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
+eo	.larg	ibio.prim.oport	rune.t
 	.lift
 	.app	o	_hello
 	.yield	ibio.prim.write	rune.t

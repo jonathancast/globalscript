@@ -307,6 +307,7 @@ ibio.m	.tyabstract	**^*^*^
 ibio.prim.m	.tygvar
 ibio.prim.iport	.tygvar
 ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ι	.tylambda	*
 ο	.tylambda	*
 α	.tylambda	*
@@ -314,6 +315,8 @@ ibio.prim.oport	.tygvar
 	.tyfun	ibio.prim.iport	ι
 	.tylift
 	.tyfun	ibio.prim.oport	ο
+	.tylift
+	.tyfun	ibio.prim.oport	rune.t
 	.tylift
 	.tyref	ibio.prim.m	α
 

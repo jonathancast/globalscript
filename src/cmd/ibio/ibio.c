@@ -122,7 +122,7 @@ void
 gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty, int argc, char **argv)
 {
     struct gstype *input, *output, *result;
-    gsvalue stdin, stdout;
+    gsvalue stdin, stdout, stderr;
     struct gsstringbuilder err;
     char errbuf[0x100];
 
@@ -176,6 +176,15 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
     }
     prog = gsapply(pos, prog, stdout);
 
+    /* §section Pass in stderr */
+
+    stderr = ibio_oport_fdopen(2, errbuf, errbuf + sizeof(errbuf));
+    if (!stderr) {
+        ace_down();
+        gsfatal("%s: Couldn't open stderr: %s", script, errbuf);
+    }
+    prog = gsapply(pos, prog, stderr);
+
     /* §section Set up the IBIO thread */
 
     apisetupmainthread(&ibio_rpc_table, &ibio_thread_table, ibio_main_thread_alloc_data(pos, argc, argv), &ibio_prim_table, prog);
@@ -221,9 +230,15 @@ ibio_downcast_ibio_m(char *errbuf, char *eerrbuf, char *script, struct gsfile_sy
                 gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
                 *poutput
             ),
-            gstypes_compile_lift(pos, gstype_apply(pos,
-                gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "*?^")),
-                *presult
+            gstypes_compile_lift(pos, gstypes_compile_fun(pos,
+                gstype_apply(pos,
+                    gstypes_compile_prim(pos, gsprim_type_elim, "ibio.prim", "oport", gskind_compile_string(pos, "u*^")),
+                    gstypes_compile_abstract(pos, gsintern_string(gssymtypelable, "rune.t"), gskind_compile_string(pos, "*"))
+                ),
+                gstypes_compile_lift(pos, gstype_apply(pos,
+                    gstypes_compile_prim(pos, gsprim_type_api, "ibio.prim", "ibio", gskind_compile_string(pos, "*?^")),
+                    *presult
+                ))
             ))
         ))
     ));

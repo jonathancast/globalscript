@@ -18,6 +18,7 @@ _real.entry_b_c	.subcode
 _real.entry_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
+eo	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry_as_c
 b	.bind	_real.entry_b_c	|	as
 	.body	_real.entry_body_c	|	o	b

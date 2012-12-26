@@ -22,6 +22,7 @@ _real.entry_s_c	.subcode
 _real.entry_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
+eo	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry_as_c
 st	.bind	_real.entry_st_c	|	as
 s	.alloc	_real.entry_s_c	|	st
