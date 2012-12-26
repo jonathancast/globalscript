@@ -315,6 +315,7 @@ ibio_write_process_main(void *p)
                                     active = oport->active = 0;
                                 }
                             }
+                            runnable = 0;
                             oport->writing = 0;
                             ibio_oport_unlink_from_thread(oport->writing_thread, oport);
                             oport->bufend = oport->buf;
@@ -354,6 +355,8 @@ ibio_write_process_main(void *p)
                     ibio_oport_unlink_from_thread(oport->writing_thread, oport);
                     break;
             }
+        } else {
+            runnable = 0;
         }
         unlock(&oport->lock);
         if (active && !runnable)
