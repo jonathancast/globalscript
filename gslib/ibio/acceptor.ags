@@ -292,7 +292,8 @@ keof.0	.fv	ibio.acceptor.prim.t	s	β
 p1.0	.karg	ibio.acceptor.prim.u	s	β
 	.analyze	p1.0	fail	symbol.bind	unit.plus
 		.case	fail
-			.undef	ibio.acceptor.prim.t	s	β
+			.app	ks.0	keof.0
+			.enter	ibio.acceptor.prim.symbol.bind	s	β
 		.case	symbol.bind
 ks.1		.fkarg	0	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	β
 keof.1		.fkarg	1	ibio.acceptor.prim.t	s	β
