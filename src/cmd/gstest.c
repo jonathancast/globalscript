@@ -303,6 +303,9 @@ test_print_string(gsvalue s)
         if (c) {
             st = GS_SLOW_EVALUATE(c);
             switch (st) {
+                case gstystack:
+                    sleep(1);
+                    break;
                 case gstyindir:
                     c = GS_REMOVE_INDIRECTION(c);
                     break;
@@ -323,6 +326,7 @@ test_print_string(gsvalue s)
             st = GS_SLOW_EVALUATE(s);
             switch (st) {
                 case gstystack:
+                    sleep(1);
                     break;
                 case gstywhnf: {
                     struct gsconstr *constr;
