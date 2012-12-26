@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.eq.x.x	_test.pos.print
+_tests	.list	test.property.t	_test.fail.nil	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.print
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -22,6 +22,13 @@ _test.pos.eq.x.x	.closure	_test.pos.eq.x.x_c
 _test.pos.eq.x.x_label	.string	parser.pos.≡\sx\sx
 _test.pos.eq.x.x_fail.msg	.string	pos.initial\sfn\s≠\spos.initial\sfn
 _test.pos.eq.x.x_succ.msg	.string	pos.initial\sfn\s≡\spos.initial\sfn
+
+_test.pos.eq.diff.file	.closure	_test.pos.eq.diff.file_c
+_test.pos.eq.diff.file_label	.string	parser.pos.≡\s(pos.initial\sfn<./foo>)\s(pos.initial\sfn<./bar>)
+_test.pos.eq.diff.file_false.msg	.string	pos.initial\sfn<./foo>\s≠\spos.initial\sfn<./bar>
+_test.pos.eq.diff.file_true.msg	.string	pos.initial\sfn<./foo>\s≡\spos.initial\sfn<./bar>
+_test.pos.eq.diff.file_foo.s	.string	./foo
+_test.pos.eq.diff.file_bar.s	.string	./bar
 
 _test.pos.print	.closure	_test.pos.print_c
 _test.pos.print_label	.string	pos.print\spos.initial
@@ -135,6 +142,28 @@ pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
 b	.apply	parser.pos.≡	|	pos	pos
 test	.apply	test.assert	|	_test.pos.eq.x.x_fail.msg	_test.pos.eq.x.x_succ.msg	b
 	.app	_test.pos.eq.x.x_label	test
+	.enter	test.property.label
+
+# §section §gs{parser.pos.≡ (pos.initial fn<./foo>) (pos.initial fn<./bar>)}
+
+_test.pos.eq.diff.file_c	.expr
+test.property.label	.gvar
+_test.pos.eq.diff.file_label	.gvar
+test.deny	.gvar
+_test.pos.eq.diff.file_false.msg	.gvar
+_test.pos.eq.diff.file_true.msg	.gvar
+parser.pos.≡	.gvar
+parser.pos.initial	.gvar
+ibio.file.name.read	.gvar
+_test.pos.eq.diff.file_foo.s	.gvar
+_test.pos.eq.diff.file_bar.s	.gvar
+foo.fn	.apply	ibio.file.name.read	|	_test.pos.eq.diff.file_foo.s
+foo.pos	.apply	parser.pos.initial	|	foo.fn
+bar.fn	.apply	ibio.file.name.read	|	_test.pos.eq.diff.file_bar.s
+bar.pos	.apply	parser.pos.initial	|	bar.fn
+b	.apply	parser.pos.≡	|	foo.pos	bar.pos
+test	.apply	test.deny	|	_test.pos.eq.diff.file_false.msg	_test.pos.eq.diff.file_true.msg	b
+	.app	_test.pos.eq.diff.file_label	test
 	.enter	test.property.label
 
 # §section §gs{parser.pos.print simple.failure}

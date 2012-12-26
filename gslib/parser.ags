@@ -271,10 +271,13 @@ c	.constr	parser.err.prim.u	simple.failure	0	pos
 
 _parser.pos.≡_c	.expr
 parser.pos.t	.tygvar
-bool.true	.gvar
+ibio.file.name.≡	.gvar
 pos0	.larg	parser.pos.t
 pos1	.larg	parser.pos.t
-	.enter	bool.true
+pos0.file	.lfield	file	pos0
+pos1.file	.lfield	file	pos1
+	.app	pos0.file	pos1.file
+	.enter	ibio.file.name.≡
 
 # §section §gs{parser.pos.print}
 
@@ -289,7 +292,7 @@ pos	.larg	parser.pos.t
 _parser.pos.initial_c	.expr
 ibio.file.name.t	.tygvar
 fn	.larg	ibio.file.name.t
-r	.record
+r	.record	file	fn
 	.lift
 	.yield	r
 
@@ -366,7 +369,7 @@ parser.pos.u	.tygvar
 parser.pos.u	.tyexpr
 natural.t	.tygvar
 ibio.file.name.t	.tygvar
-	.typroduct
+	.typroduct	file	ibio.file.name.t
 
 # §section §gs{parser.parse}
 
