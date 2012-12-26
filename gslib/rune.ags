@@ -5,6 +5,8 @@
 rune.≡	.closure	_rune.≡.c
 rune.compare	.closure	_rune.compare_c
 
+rune.≠	.closure	_rune.≠_c
+
 rune.print	.closure	_rune.print_c
 _rune.print_prefix	.string	r/
 _rune.print_suffix	.string	/
@@ -72,6 +74,18 @@ _rune.compare_c	.expr
 order.total.t	.tygvar
 rune.t	.tygvar
 	.undef	order.total.t	rune.t
+
+# §section §gs{rune.≠}
+
+_rune.≠_c	.expr
+rune.t	.tygvar
+bool.not	.gvar
+rune.≡	.gvar
+r0	.larg	rune.t
+r1	.larg	rune.t
+b	.apply	rune.≡	|	r0	r1
+	.app	b
+	.enter	bool.not
 
 # §section §gs{rune.print}
 
