@@ -5,6 +5,7 @@
 list.nil	.closure	_list.nil.c
 list.:	.closure	_list.:.c
 
+list.foldr	.closure	_list.foldr_c	_list.foldr_ty
 list.foldr1	.closure	_list.foldr1_code	_list.foldr1_ty
 list.map	.closure	_list.map_c	_list.map_ty
 
@@ -47,6 +48,42 @@ c	.constr	t	:	0	x	1	xn
 	.coerce	list.t.in	α
 	.lift
 	.yield	c
+
+# §section §gs{list.foldr}
+
+_list.foldr_c	.expr
+_list.foldr_f_ty	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+_list.foldr_k0	.subcode
+list.t.out	.cogvar
+f	.larg	_list.foldr_f_ty	α	β
+z	.larg	β
+xn	.larg	list.t	α
+	.force	_list.foldr_k0	α	β	|	f	z
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.foldr_k0	.forcecont
+_list.foldr_f_ty	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+list.foldr	.gvar
+f	.fv	_list.foldr_f_ty	α	β
+z	.fv	β
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+z1			.apply	list.foldr	α	β	|	f	z	xn1
+			.app	x0	z1
+			.enter	f
+		.case	nil
+			.enter	z
 
 # §section §gs{list.foldr1}
 
@@ -528,6 +565,30 @@ list.t	.tygvar
 _nil_type	.tyexpr
 α	.tylambda	*
 	.tyubproduct
+
+# §section §gs{list.foldr}
+
+_list.foldr_ty	.tyexpr
+_list.foldr_f_ty	.tygvar
+list.t	.tygvar
+α	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	_list.foldr_f_ty	α	β
+	.tylift
+	.tyfun	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	β
+
+_list.foldr_f_ty	.tyexpr
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyfun	β
+	.tyref	β
 
 # §section §gs{list.foldr1}
 
