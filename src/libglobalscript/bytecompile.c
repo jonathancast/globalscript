@@ -180,6 +180,9 @@ gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
             case 'n':
                 *pv = '\n';
                 break;
+            case '\\':
+                *pv = '\\';
+                break;
             default:
                 gsfatal(UNIMPL("%P: gsbc_parse_rune_literal(%s)"), pos, s);
         }
