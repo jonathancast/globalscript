@@ -25,7 +25,7 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
 parsed.args	.alloc	_real.entry_parsed.args_c	|	args
-	.body	_real.entry_body_c	|	parsed.args
+	.body	_real.entry_body_c	|	eo	parsed.args
 
 _real.entry_args_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -41,15 +41,18 @@ args	.fv	list.t	_string.ty
 	.enter	_parse.args
 
 _real.entry_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 _parse.args_res_ty	.tygvar
 ibio.file.name.t	.tygvar
 record.empty	.tygvar
 ibio.mapM0.prim	.gvar
 _print.deps	.gvar
+eo	.fv	ibio.prim.oport	rune.t
 parsed.args	.fv	_parse.args_res_ty
 prefixen	.lfield	0	parsed.args
 inps	.lfield	1	parsed.args
-pd	.apply	_print.deps	|	prefixen
+pd	.apply	_print.deps	|	eo	prefixen
 	.app	pd	inps
 	.enter	ibio.mapM0.prim	ibio.file.name.t	record.empty
 
@@ -151,15 +154,18 @@ res1			.record	0	pfn1	1	fs
 # §section §gs{_print.deps}
 
 _print.deps_c	.eprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 list.t	.tygvar
 ibio.file.name.t	.tygvar
 _print.deps_cgs.fn_c	.subcode
 _print.deps_cgs_c	.subcode
 _print.deps_body_c	.subcode
+eo	.larg	ibio.prim.oport	rune.t
 prefixen	.larg	list.t	ibio.file.name.t
 fn	.larg	ibio.file.name.t
 cgs.fn	.alloc	_print.deps_cgs.fn_c	|	fn
-cgs	.bind	_print.deps_cgs_c	|	cgs.fn
+cgs	.bind	_print.deps_cgs_c	|	eo	cgs.fn
 	.body	_print.deps_body_c
 
 _print.deps_cgs.fn_c	.expr
@@ -170,10 +176,13 @@ fn	.fv	ibio.file.name.t
 	.enter	gsac.source.file.name
 
 _print.deps_cgs_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 gsdl.cgs.file.read	.gvar
+eo	.fv	ibio.prim.oport	rune.t
 cgs.fn	.fv	ibio.file.name.t
-	.app	cgs.fn
+	.app	eo	cgs.fn
 	.enter	gsdl.cgs.file.read
 
 _print.deps_body_c	.expr

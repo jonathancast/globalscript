@@ -4,10 +4,13 @@ MKSHELL=$PLAN9/bin/rc
 
 GSLIB_TARGETS=`{$PLAN9/bin/rc ./gslib-targets}
 
-<| $PLAN9/bin/rc ./gslib-deps $GSLIB_TARGETS
+<| $PLAN9/bin/rc ./gslib-deps -l $GLOBALSCRIPT/gslib $GSLIB_TARGETS
 
 interpreted:V:
 	true
+
+integration-test-interpreted:V: interpreted
+	./rc/test-interpreted
 
 install-interpreted:V: interpreted
 	cp gsac.rc $GLOBALSCRIPT/bin/gsac

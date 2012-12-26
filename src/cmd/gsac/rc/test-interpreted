@@ -1,0 +1,7 @@
+#! /home/jcast/plan9/bin/rc -e
+
+. $GLOBALSCRIPT/bin/test-fns
+
+. $GLOBALSCRIPT/bin/globalscript
+
+ok_grep_script_errors '-- gsac-deps: Completely empty .cgs file --' deps-empty-cgs 'empty.cgs: No #type: prefix or #type: document pragma' ibio ./gslib ./gsac-deps.ags -l $GLOBALSCRIPT/gslib ./test-fixtures/empty.gsac

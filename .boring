@@ -12,8 +12,8 @@
 \.o$
 \.pdf$
 ^bin/ibio$
-\.ags-.*actual$
-\.ags-.*errors$
+test-results/.*actual$
+test-results/.*errors$
 ^bin/gstype$
 ^bin/gstest$
 stage0/.*\.gs$

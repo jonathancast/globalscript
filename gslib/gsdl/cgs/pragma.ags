@@ -3,6 +3,7 @@
 	.data
 
 gsdl.cgs.pragma.gstype.get	.closure	_gsdl.cgs.pragma.gstype.get_c
+_type	.string	type
 
 	.code
 
@@ -12,11 +13,36 @@ ordered.map.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
-maybe.t	.tygvar
 string.ty	.tylet	list.t	rune.t
+_gsdl.cgs.pragma.gstype.get_k	.subcode
+maybe.t.out	.cogvar
+ordered.map.get	.gvar
+list.compare	.gvar
+rune.compare	.gvar
+_type	.gvar
 fn	.larg	ibio.file.name.t
 prs	.larg	ordered.map.t	string.ty	gsdl.cgs.pragma.t
-	.undef	maybe.t	string.ty
+string.compare	.apply	list.compare	rune.t	|	rune.compare
+	.force	_gsdl.cgs.pragma.gstype.get_k
+	.coerce	maybe.t.out	gsdl.cgs.pragma.t
+	.app	string.compare	_type	prs
+	.enter	ordered.map.get	string.ty	gsdl.cgs.pragma.t
+
+_gsdl.cgs.pragma.gstype.get_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.pragma.t	.tygvar
+maybe.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+maybe.nothing	.gvar
+mb.0	.karg	maybe.prim.u	gsdl.cgs.pragma.t
+	.analyze	mb.0	just	nothing
+		.case	just
+pr		.fkarg	0	gsdl.cgs.pragma.t
+			.undef	maybe.t	string.ty
+		.case	nothing
+			.enter	maybe.nothing	string.ty
 
 	.type
 
