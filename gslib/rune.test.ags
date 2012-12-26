@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.print.x	_test.list.print.x	_test.rune.advance
+_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.print.x	_test.print.nl	_test.list.print.x	_test.rune.advance
 
 _test.x.eq.x	.closure	_test.x.eq.x.c
 _test.x.eq.x.label	.string	r/x/\s≡\sr/x/
@@ -24,6 +24,10 @@ _test.print.x_test	.closure	_test.print.x_test_c
 _test.print.x_test_succ	.string	rune.print\sr/x/\s≡\sqq{r/x/}
 _test.print.x_test_fail	.string	rune.print\sr/x/\s≠\sqq{r/x/}
 _test.print.x_test_expected	.string	r/x/
+
+_test.print.nl	.closure	_test.print.nl_c
+_test.print.nl_label	.string	rune.print\sr/\\n/
+_test.print.nl_expected	.string	r/\\n/
 
 _test.list.print.x	.closure	_test.list.print.x_c
 _test.list.print.x_label	.string	rune.list.print\sqq{x}\s≡\sqq{qq{x}}
@@ -133,7 +137,30 @@ _x	.gvar
 	.app	_x
 	.enter	rune.print
 
-# §section §gs{list.pring qq\{x\}}
+# §section §gs{rune.print r/\\n/}
+
+_test.print.nl_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+test.property.label	.gvar
+_test.print.nl_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+rune.≡	.gvar
+list.print	.gvar
+rune.print.list	.gvar
+rune.print	.gvar
+_nl	.gvar
+_test.print.nl_expected	.gvar
+string.≡	.apply	list.≡	rune.t	|	rune.≡
+string.print	.apply	list.print	rune.t	|	rune.print.list
+actual	.apply	rune.print	|	_nl
+test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	actual	_test.print.nl_expected
+	.app	_test.print.nl_label	test
+	.enter	test.property.label
+
+# §section §gs{list.print qq\{x\}}
 
 _test.list.print.x_c	.expr
 test.property.label	.gvar

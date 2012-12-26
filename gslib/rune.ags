@@ -13,9 +13,14 @@ rune.print.list	.closure	_rune.print.list_c
 _rune.print.list_prefix	.string	qq{
 _rune.print.list_suffix	.string	}
 
+_rune.togss	.closure	_rune.togss_c
+
 rune.advance	.closure	_rune.advance_c
 
 rune.prim.advance	.closure	_rune.prim.advance_c
+
+_n	.closure	_n_c
+_bs	.closure	_bs_c
 
 	.code
 
@@ -72,21 +77,14 @@ rune.t	.tygvar
 
 _rune.print_c	.expr
 rune.t	.tygvar
-_rune.print_s1_c	.subcode
 list.<>	.gvar
 _rune.print_prefix	.gvar
+_rune.togss	.gvar
+_rune.print_suffix	.gvar
 r	.larg	rune.t
-s1	.alloc	_rune.print_s1_c	|	r
+s1	.apply	_rune.togss	|	r	_rune.print_suffix
 	.app	_rune.print_prefix	s1
 	.enter	list.<>	rune.t
-
-_rune.print_s1_c	.expr
-rune.t	.tygvar
-list.:	.gvar
-_rune.print_suffix	.gvar
-r	.fv	rune.t
-	.app	r	_rune.print_suffix
-	.enter	list.:	rune.t
 
 # §section §gs{rune.print.list}
 
@@ -109,6 +107,41 @@ _rune.print.list_suffix	.gvar
 s	.fv	list.t	rune.t
 	.app	s	_rune.print.list_suffix
 	.enter	list.<>	rune.t
+
+# §section §gs{_rune.togss}
+
+_rune.togss_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+_rune.togss_k0	.subcode
+bool.t.out	.cogvar
+rune.≡	.gvar
+_nl	.gvar
+r	.larg	rune.t
+s	.larg	list.t	rune.t
+	.force	_rune.togss_k0	|	r	s
+	.coerce	bool.t.out
+	.app	r	_nl
+	.enter	rune.≡
+
+_rune.togss_k0	.forcecont
+rune.t	.tygvar
+list.t	.tygvar
+bool.prim.u	.tygvar
+list.:	.gvar
+_bs	.gvar
+_n	.gvar
+r	.fv	rune.t
+s	.fv	list.t	rune.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.app	r	s
+			.enter	list.:	rune.t
+		.case	true
+s1			.apply	list.:	rune.t	|	_n	s
+			.app	_bs	s1
+			.enter	list.:	rune.t
 
 # §section §gs{rune.advance}
 
@@ -157,6 +190,22 @@ r0	.arg	rune.prim.rune
 n0	.arg	natural.prim.u
 r1	.prim	rune.prim	advance	_rune.prim.advance_ty	|	r0	n0
 	.yield	r1
+
+# §section Random data
+
+_n_c	.expr
+rune.t.in	.cogvar
+n	.rune	n
+	.coerce	rune.t.in
+	.lift
+	.yield	n
+
+_bs_c	.expr
+rune.t.in	.cogvar
+bs	.rune	\\
+	.coerce	rune.t.in
+	.lift
+	.yield	bs
 
 	.type
 
