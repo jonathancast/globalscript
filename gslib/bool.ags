@@ -90,14 +90,14 @@ b	.larg	bool.t
 
 _bool.not_k	.forcecont
 bool.prim.u	.tygvar
-bool.t	.tygvar
 bool.true	.gvar
+bool.false	.gvar
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
 			.enter	bool.true
 		.case	true
-			.undef	bool.t
+			.enter	bool.false
 
 # §section §gs{bool.∧}
 
