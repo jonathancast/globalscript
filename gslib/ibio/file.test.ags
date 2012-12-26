@@ -4,7 +4,14 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.eq.foo.bar
+
+_test.eq.foo.bar	.closure	_test.eq.foo.bar_c
+_test.eq.foo.bar_label	.string	ibio.file.name.≡\sfn<./foo>\sfn<./bar>
+_test.eq.foo.bar_false.msg	.string	fn<./foo>\s≠fn<./bar>
+_test.eq.foo.bar_true.msg	.string	fn<./foo>\s≡fn<./bar>
+_test.eq.foo.bar_foo.fn.s	.string	./foo
+_test.eq.foo.bar_bar.fn.s	.string	./bar
 
 	.code
 
@@ -13,3 +20,22 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{fn<./foo> ≡ fn<./bar>}
+
+_test.eq.foo.bar_c	.expr
+test.property.label	.gvar
+_test.eq.foo.bar_label	.gvar
+test.deny	.gvar
+_test.eq.foo.bar_false.msg	.gvar
+_test.eq.foo.bar_true.msg	.gvar
+ibio.file.name.≡	.gvar
+ibio.file.name.read	.gvar
+_test.eq.foo.bar_foo.fn.s	.gvar
+_test.eq.foo.bar_bar.fn.s	.gvar
+foo.fn	.apply	ibio.file.name.read	|	_test.eq.foo.bar_foo.fn.s
+bar.fn	.apply	ibio.file.name.read	|	_test.eq.foo.bar_bar.fn.s
+eq	.apply	ibio.file.name.≡	|	foo.fn	bar.fn
+test	.apply	test.deny	|	_test.eq.foo.bar_false.msg	_test.eq.foo.bar_true.msg	eq
+	.app	_test.eq.foo.bar_label	test
+	.enter	test.property.label

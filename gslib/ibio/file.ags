@@ -6,6 +6,8 @@ ibio.file.name.read	.closure	_ibio.file.name.read_c
 ibio.file.name.print	.closure	_ibio.file.name.print_c
 ibio.file.name.with	.closure	_ibio.file.name.with_c
 
+ibio.file.name.≡	.closure	_ibio.file.name.≡_c
+
 ibio.file.read.open.prim	.closure	_ibio.file.read.open.prim_c
 
 ibio.file.stat.prim	.closure	_ibio.file.stat.prim_c
@@ -58,6 +60,21 @@ fn.0	.apply	ibio.file.name.print	|	fn
 fn.1	.apply	f	|	fn.0
 	.app	fn.1
 	.enter	ibio.file.name.read
+
+# §section §gs{ibio.file.name.≡}
+
+_ibio.file.name.≡_c	.expr
+ibio.file.name.t	.tygvar
+rune.t	.tygvar
+list.≡	.gvar
+rune.≡	.gvar
+ibio.file.name.print	.gvar
+fn0	.larg	ibio.file.name.t
+fn1	.larg	ibio.file.name.t
+fn0.s	.apply	ibio.file.name.print	|	fn0
+fn1.s	.apply	ibio.file.name.print	|	fn1
+	.app	rune.≡	fn0.s	fn1.s
+	.enter	list.≡	rune.t
 
 # §section §gs{ibio.file.read.open.prim}
 
