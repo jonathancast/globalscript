@@ -1,0 +1,100 @@
+	.prefix
+
+	.data
+
+string.fmtline	.closure	_string.fmtline_c	_string.fmtline_ty
+
+	.code
+
+# §section §gs{string.fmtline}
+
+_string.fmtline_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+_string.fmtline_k0	.subcode
+list.t.out	.cogvar
+s	.larg	list.t	rune.t
+	.force	_string.fmtline_k0
+	.coerce	list.t.out	rune.t
+	.enter	s
+
+_string.fmtline_k0	.forcecont
+list.prim.u	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+_string.fmtline_k1	.subcode
+list.t.out	.cogvar
+list.:	.gvar
+list.nil	.gvar
+_nl	.gvar
+s0	.karg	list.prim.u	rune.t
+	.analyze	s0	:	nil
+		.case	:
+c0		.fkarg	0	rune.t
+s1		.fkarg	1	list.t	rune.t
+			.force	_string.fmtline_k1	|	c0	s1
+			.coerce	list.t.out	rune.t
+			.enter	s1
+		.case	nil
+nil			.apply	list.nil	rune.t
+			.app	_nl	nil
+			.enter	list.:	rune.t
+
+_string.fmtline_k1	.forcecont
+rune.t	.tygvar
+list.t	.tygvar
+list.prim.u	.tygvar
+_string.fmtline_k2	.subcode
+bool.t.out	.cogvar
+list.:	.gvar
+string.fmtline	.gvar
+rune.≡	.gvar
+_nl	.gvar
+c0	.fv	rune.t
+s1	.fv	list.t	rune.t
+s1.0	.karg	list.prim.u	rune.t
+	.analyze	s1.0	:	nil
+		.case	:
+c1		.fkarg	0	rune.t
+s2		.fkarg	1	list.t	rune.t
+y.s.1			.apply	string.fmtline	|	s1
+			.app	c0	y.s.1
+			.enter	list.:	rune.t
+		.case	nil
+			.force	_string.fmtline_k2	|	c0	s1
+			.coerce	bool.t.out
+			.app	c0	_nl
+			.enter	rune.≡
+
+_string.fmtline_k2	.forcecont
+list.t	.tygvar
+rune.t	.tygvar
+bool.prim.u	.tygvar
+list.:	.gvar
+string.fmtline	.gvar
+list.nil	.gvar
+_nl	.gvar
+c0	.fv	rune.t
+s1	.fv	list.t	rune.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+nil			.apply	list.nil	rune.t
+y.s.1			.apply	list.:	rune.t	|	_nl	nil
+			.app	c0	y.s.1
+			.enter	list.:	rune.t
+		.case	true
+nil			.apply	list.nil	rune.t
+			.app	_nl	nil
+			.enter	list.:	rune.t
+
+	.type
+
+# §section §gs{string.fmtline}
+
+_string.fmtline_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	list.t	rune.t
+	.tyref	list.t	rune.t

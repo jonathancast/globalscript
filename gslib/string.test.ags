@@ -1,0 +1,69 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_tests	.list	test.property.t	_test.fmtline.line	_test.fmtline.partial.line
+
+_test.fmtline.line	.closure	_test.fmtline.line_c
+_test.fmtline.line_label	.string	fmtline\sqq{foo\\n}
+_test.fmtline.line_line.s	.string	foo\n
+
+_test.fmtline.partial.line	.closure	_test.fmtline.partial.line_c
+_test.fmtline.partial.line_label	.string	fmtline\sqq{foo}
+_test.fmtline.partial.line_partial.line.s	.string	foo
+_test.fmtline.partial.line_line.s	.string	foo\n
+
+	.code
+
+_epcode	.expr
+test.all	.gvar
+_tests	.gvar
+	.app	_tests
+	.enter	test.all
+
+# §section §gs{fmtline qq{foo\n}}
+
+_test.fmtline.line_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+test.property.label	.gvar
+_test.fmtline.line_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+rune.≡	.gvar
+list.print	.gvar
+rune.print.list	.gvar
+string.fmtline	.gvar
+_test.fmtline.line_line.s	.gvar
+string.≡	.apply	list.≡	rune.t	|	rune.≡
+string.print	.apply	list.print	rune.t	|	rune.print.list
+actual	.apply	string.fmtline	|	_test.fmtline.line_line.s
+test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	actual	_test.fmtline.line_line.s
+	.app	_test.fmtline.line_label	test
+	.enter	test.property.label
+
+# §section §gs{fmtline qq{foo\n}}
+
+_test.fmtline.partial.line_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+test.property.label	.gvar
+_test.fmtline.partial.line_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+rune.≡	.gvar
+list.print	.gvar
+rune.print.list	.gvar
+string.fmtline	.gvar
+_test.fmtline.partial.line_partial.line.s	.gvar
+_test.fmtline.partial.line_line.s	.gvar
+string.≡	.apply	list.≡	rune.t	|	rune.≡
+string.print	.apply	list.print	rune.t	|	rune.print.list
+actual	.apply	string.fmtline	|	_test.fmtline.partial.line_partial.line.s
+test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	actual	_test.fmtline.partial.line_line.s
+	.app	_test.fmtline.partial.line_label	test
+	.enter	test.property.label
