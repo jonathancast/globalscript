@@ -91,21 +91,15 @@ s1	.apply	_rune.togss	|	r	_rune.print_suffix
 _rune.print.list_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-_rune.print.list_s1_c	.subcode
+string.ty	.tylet	list.t	rune.t
 list.<>	.gvar
 _rune.print.list_prefix	.gvar
-s	.larg	list.t	rune.t
-s1	.alloc	_rune.print.list_s1_c	|	s
-	.app	_rune.print.list_prefix	s1
-	.enter	list.<>	rune.t
-
-_rune.print.list_s1_c	.expr
-list.t	.tygvar
-rune.t	.tygvar
-list.<>	.gvar
+list.foldr	.gvar
+_rune.togss	.gvar
 _rune.print.list_suffix	.gvar
-s	.fv	list.t	rune.t
-	.app	s	_rune.print.list_suffix
+s	.larg	list.t	rune.t
+s1	.apply	list.foldr	rune.t	string.ty	|	_rune.togss	_rune.print.list_suffix	s
+	.app	_rune.print.list_prefix	s1
 	.enter	list.<>	rune.t
 
 # §section §gs{_rune.togss}
