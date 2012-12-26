@@ -9,9 +9,14 @@ parser.exec	.closure	_parser.exec_c
 parser.unit	.closure	_parser.unit_c
 
 parser.fail	.closure	_parser.fail_c
+parser.fail.msg	.closure	_parser.fail.msg_c
 
 parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
 parser.prim.fail	.closure	_parser.prim.fail_c
+parser.prim.fail.msg	.closure	_parser.prim.fail.msg_c
+
+parser.err.fmt	.closure	_parser.err.fmt_c
+_parser.err.fmt_col.sp	.string	:\s
 
 parser.err.≡	.closure	_parser.err.≡_c
 
@@ -19,6 +24,9 @@ parser.err.print	.closure	_parser.err.print_c
 _parser.err.print_simple.failure_prefix	.string	simple.failure\s
 
 parser.err.simple.failure	.closure	_parser.err.simple.failure_c
+parser.err.message.failure	.closure	_parser.err.message.failure_c
+
+parser.pos.fmt	.closure	_parser.pos.fmt_c
 
 parser.pos.≡	.closure	_parser.pos.≡_c
 parser.pos.print	.closure	_parser.pos.print_c
@@ -62,6 +70,7 @@ _parser.parse_work_k	.forcecont
 parser.pos.t	.tygvar
 list.t	.tygvar
 parser.prim.u	.tygvar
+rune.t	.tygvar
 either.t	.tygvar
 parser.err.t	.tygvar
 parser.prim.t	.tygvar
@@ -71,13 +80,19 @@ _parser.parse_work_unit.plus_k	.subcode
 list.t.out	.cogvar
 either.left	.gvar
 parser.err.simple.failure	.gvar
+parser.err.message.failure	.gvar
 pos	.fv	parser.pos.t
 s	.fv	list.t	s
 p0	.karg	parser.prim.u	s	α
-	.analyze	p0	fail	unit.plus
+	.analyze	p0	fail	fail.msg	unit.plus
 		.case	fail
 sf			.apply	parser.err.simple.failure	|	pos
 			.app	sf
+			.enter	either.left	parser.err.t	α
+		.case	fail.msg
+msg		.fkarg	0	list.t	rune.t
+mf			.apply	parser.err.message.failure	|	msg	pos
+			.app	mf
 			.enter	either.left	parser.err.t	α
 		.case	unit.plus
 x		.fkarg	0	α
@@ -160,6 +175,31 @@ parser.prim.fail	.gvar
 k	.larg	_parser.t_k_ty	s	α	β
 	.enter	parser.prim.fail	s	β
 
+# §section Sgs{parser.fail.msg}
+
+_parser.fail.msg_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+_parser.fail.msg_res_c	.subcode
+msg	.larg	list.t	rune.t
+res	.alloc	_parser.fail.msg_res_c	s	α	|	msg
+	.enter	res
+
+_parser.fail.msg_res_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyarg	*
+parser.prim.fail.msg	.gvar
+msg	.fv	list.t	rune.t
+k	.larg	_parser.t_k_ty	s	α	β
+	.app	msg
+	.yield	parser.prim.fail.msg	s	β
+
 # §section Constructors
 
 _parser.prim.unit.plus_c	.expr
@@ -187,6 +227,52 @@ f	.constr	res.u	fail
 	.lift
 	.yield	f
 
+_parser.prim.fail.msg_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+parser.prim.u	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+res.u	.tylet	parser.prim.u	s	α
+parser.prim.t.in	.cogvar
+msg	.arg	list.t	rune.t
+f	.constr	res.u	fail.msg	0	msg
+	.coerce	parser.prim.t.in	s	α
+	.lift
+	.yield	f
+
+# §seciton §gs{parser.err.fmt}
+
+_parser.err.fmt_c	.expr
+parser.err.t	.tygvar
+_parser.err.fmt_k	.subcode
+parser.err.t.out	.cogvar
+e	.larg	parser.err.t
+	.force	_parser.err.fmt_k
+	.coerce	parser.err.t.out
+	.enter	e
+
+_parser.err.fmt_k	.forcecont
+parser.err.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+parser.pos.t	.tygvar
+list.<>	.gvar
+parser.pos.fmt	.gvar
+_parser.err.fmt_col.sp	.gvar
+e0	.karg	parser.err.prim.u
+	.analyze	e0	message.failure	simple.failure
+		.case	message.failure
+msg		.fkarg	0	list.t	rune.t
+pos		.fkarg	1	parser.pos.t
+pos.s			.apply	parser.pos.fmt	|	pos
+s1			.apply	list.<>	rune.t	|	_parser.err.fmt_col.sp	msg
+			.app	pos.s	s1
+			.enter	list.<>	rune.t
+		.case	simple.failure
+pos		.fkarg	0	parser.pos.t
+			.undef	list.t	rune.t
+
 # §section §gs{parser.err.≡}
 
 _parser.err.≡_c	.expr
@@ -212,12 +298,18 @@ e0.0	.karg	parser.err.prim.u
 
 _parser.err.≡_k1	.forcecont
 parser.err.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
 parser.pos.t	.tygvar
 bool.t	.tygvar
 parser.pos.≡	.gvar
 e0.0	.fv	parser.err.prim.u
 e1.0	.karg	parser.err.prim.u
-	.analyze	e0.0	simple.failure
+	.analyze	e0.0	message.failure	simple.failure
+		.case	message.failure
+msg0		.fkarg	0	list.t	rune.t
+pos0		.fkarg	1	parser.pos.t
+			.undef	bool.t
 		.case	simple.failure
 pos0		.fkarg	0	parser.pos.t
 			.danalyze	e0.0	simple.failure
@@ -248,7 +340,11 @@ list.<>	.gvar
 _parser.err.print_simple.failure_prefix	.gvar
 parser.pos.print	.gvar
 e0	.karg	parser.err.prim.u
-	.analyze	e0	simple.failure
+	.analyze	e0	message.failure	simple.failure
+		.case	message.failure
+msg		.fkarg	0	list.t	rune.t
+pos		.fkarg	1	parser.pos.t
+			.undef	list.t	rune.t
 		.case	simple.failure
 pos		.fkarg	0	parser.pos.t
 pos.s			.apply	parser.pos.print	|	pos
@@ -266,6 +362,31 @@ c	.constr	parser.err.prim.u	simple.failure	0	pos
 	.coerce	parser.err.t.in
 	.lift
 	.yield	c
+
+_parser.err.message.failure_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+parser.pos.t	.tygvar
+parser.err.prim.u	.tygvar
+parser.err.t.in	.cogvar
+msg	.arg	list.t	rune.t
+pos	.arg	parser.pos.t
+c	.constr	parser.err.prim.u	message.failure	0	msg	1	pos
+	.coerce	parser.err.t.in
+	.lift
+	.yield	c
+
+# §section §gs{parser.pos.fmt}
+
+_parser.pos.fmt_c	.expr
+parser.pos.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+ibio.file.name.print	.gvar
+pos	.larg	parser.pos.t
+fn	.lfield	file	pos
+	.app	fn
+	.enter	ibio.file.name.print
 
 # §section §gs{parser.pos.≡}
 
@@ -328,14 +449,21 @@ s	.tylambda	*
 
 parser.prim.u	.tyexpr
 _parser.prim.u_fail.ty	.tygvar
+_parser.prim.u_fail.msg.ty	.tygvar
 _parser.prim.u_unit.plus.ty	.tygvar
 s	.tylambda	*
 α	.tylambda	*
 unit.plus.ty	.tylet	_parser.prim.u_unit.plus.ty	s	α
-	.tysum	fail	_parser.prim.u_fail.ty	unit.plus	unit.plus.ty
+	.tysum	fail	_parser.prim.u_fail.ty	fail.msg	_parser.prim.u_fail.msg.ty	unit.plus	unit.plus.ty
 
 _parser.prim.u_fail.ty	.tyexpr
 	.tyubproduct
+
+_parser.prim.u_fail.msg.ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+	.tyubproduct	0	string.ty
 
 _parser.prim.u_unit.plus.ty	.tyexpr
 parser.prim.t	.tygvar
@@ -352,8 +480,16 @@ parser.err.prim.u	.tygvar
 	.tyref	parser.err.prim.u
 
 parser.err.prim.u	.tyexpr
+_parser.err.prim.u_message.failure_ty	.tygvar
 _parser.err.prim.u_simple.failure_ty	.tygvar
-	.tysum	simple.failure	_parser.err.prim.u_simple.failure_ty
+	.tysum	message.failure	_parser.err.prim.u_message.failure_ty	simple.failure	_parser.err.prim.u_simple.failure_ty
+
+_parser.err.prim.u_message.failure_ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+parser.pos.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+	.tyubproduct	0	string.ty	1	parser.pos.t
 
 _parser.err.prim.u_simple.failure_ty	.tyexpr
 parser.pos.t	.tygvar
