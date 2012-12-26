@@ -458,30 +458,56 @@ s	.tyarg	*
 _ibio.lex.receiver.pred_acc_c	.subcode
 pred	.larg	_ibio.lex.receiver.pred_pred_ty	s
 lex	.undefined	ibio.lex.lexeme.t	s	s
-acc	.alloc	_ibio.lex.receiver.pred_acc_c	s
+acc	.alloc	_ibio.lex.receiver.pred_acc_c	s	|	pred
 res	.record	0	lex	1	acc
 	.lift
 	.yield	res
 
 _ibio.lex.receiver.pred_acc_c	.expr
+_ibio.lex.receiver.pred_pred_ty	.tygvar
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
 ibio.acceptor.prim.t	.tygvar
 s	.tyfv	*
 _ibio.lex.receiver.pred_acc_k1_c	.subcode
 ibio.acceptor.prim.symbol.bind	.gvar
+pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
 k	.larg	ibio.acceptor.prim.kt	s	s	record.empty
-k1	.alloc	_ibio.lex.receiver.pred_acc_k1_c	s
+k1	.alloc	_ibio.lex.receiver.pred_acc_k1_c	s	|	pred	k
 eofk	.undefined	ibio.acceptor.prim.t	s	record.empty
 	.app	k1	eofk
 	.enter	ibio.acceptor.prim.symbol.bind	s	record.empty
 
 _ibio.lex.receiver.pred_acc_k1_c	.expr
-ibio.acceptor.prim.t	.tygvar
+_ibio.lex.receiver.pred_pred_ty	.tygvar
+ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
 s	.tyfv	*
+_ibio.lex.receiver.pred_acc_k1_k	.subcode
+bool.t.out	.cogvar
+pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
+k	.fv	ibio.acceptor.prim.kt	s	s	record.empty
 sym	.larg	s
-	.undef	ibio.acceptor.prim.t	s	record.empty
+	.force	_ibio.lex.receiver.pred_acc_k1_k	s	|	k	sym
+	.coerce	bool.t.out
+	.app	sym
+	.enter	pred
+
+_ibio.lex.receiver.pred_acc_k1_k	.forcecont
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+bool.prim.u	.tygvar
+ibio.acceptor.prim.t	.tygvar
+s	.tyfv	*
+k	.fv	ibio.acceptor.prim.kt	s	s	record.empty
+sym	.fv	s
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	ibio.acceptor.prim.t	s	record.empty
+		.case	true
+			.app	sym
+			.enter	k
 
 # §section §gs{ibio.lex.receiver.char}
 
