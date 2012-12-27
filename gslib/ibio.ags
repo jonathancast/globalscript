@@ -267,39 +267,72 @@ _ibio.foldM.prim_k0	.subcode
 f	.larg	_ibio.foldM.prim_f_ty	α	β
 z	.larg	β
 xn	.larg	list.t	α
-	.strict	_ibio.foldM.prim_k0	α	β	|	xn
+	.strict	_ibio.foldM.prim_k0	α	β	|	f	xn
 	.enter	z
 
 _ibio.foldM.prim_k0	.strictcont
+_ibio.foldM.prim_f_ty	.tygvar
 list.t	.tygvar
 α	.tyfv	*
 β	.tyfv	*
 _ibio.foldM.prim_k1	.subcode
 list.t.out	.cogvar
+f	.fv	_ibio.foldM.prim_f_ty	α	β
 xn	.fv	list.t	α
 z0	.karg	β
-	.force	_ibio.foldM.prim_k1	α	β	|	z0
+	.force	_ibio.foldM.prim_k1	α	β	|	f	z0
 	.coerce	list.t.out	α
 	.enter	xn
 
 _ibio.foldM.prim_k1	.forcecont
+_ibio.foldM.prim_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar
 α	.tyfv	*
 β	.tyfv	*
+_ibio.foldM.prim_:_res	.subcode
 ibio.prim.unit	.gvar
+f	.fv	_ibio.foldM.prim_f_ty	α	β
 z0	.fv	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.undef	ibio.prim.t	β
+res			.alloc	_ibio.foldM.prim_:_res	α	β	|	f	z0	x0
+			.enter	res
 		.case	nil
 			.lift
 			.app	z0
 			.yield	ibio.prim.unit	β
+
+_ibio.foldM.prim_:_res	.eprog	ibio.prim	ibio
+_ibio.foldM.prim_f_ty	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+_ibio.foldM.prim_:_res_z1_c	.subcode
+_ibio.foldM.prim_:_res_body_c	.subcode
+f	.fv	_ibio.foldM.prim_f_ty	α	β
+z0	.fv	β
+x0	.fv	α
+z1	.bind	_ibio.foldM.prim_:_res_z1_c	α	β	|	f	z0	x0
+	.body	_ibio.foldM.prim_:_res_body_c	β
+
+_ibio.foldM.prim_:_res_z1_c	.expr
+_ibio.foldM.prim_f_ty	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+f	.fv	_ibio.foldM.prim_f_ty	α	β
+z0	.fv	β
+x0	.fv	α
+	.app	z0	x0
+	.enter	f
+
+_ibio.foldM.prim_:_res_body_c	.expr
+ibio.prim.t	.tygvar
+β	.tyfv	*
+	.undef	ibio.prim.t	β
 
 	.type
 
