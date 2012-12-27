@@ -9,6 +9,7 @@ ibio.lex.lexer.match	.closure	_ibio.lex.lexer.match_c
 ibio.lex.symbol	.closure	_ibio.lex.symbol_c
 
 ibio.lex.char	.closure	_ibio.lex.char_c
+ibio.lex.pred	.closure	_ibio.lex.pred_c
 
 ibio.lex.lexeme.unit	.closure	_ibio.lex.lexeme.unit_c
 ibio.lex.lexeme.<*>	.closure	_ibio.lex.lexeme.<*>_c
@@ -209,6 +210,99 @@ ip0	.fv	ibio.prim.iptr	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 	.enter	ek
+
+# §section §gs{ibio.lex.pred}
+
+_ibio.lex.pred_c	.expr
+_ibio.lex.receiver.pred_pred_ty	.tygvar
+ibio.lex.lexeme.t	.tygvar
+s	.tyarg	*
+_ibio.lex.pred_res_c	.subcode
+pred	.larg	_ibio.lex.receiver.pred_pred_ty	s
+res	.alloc	_ibio.lex.pred_res_c	s	|	pred
+	.enter	res
+
+_ibio.lex.pred_res_c	.expr
+_ibio.lex.receiver.pred_pred_ty	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr.t	.tygvar
+s	.tyfv	*
+β	.tyarg	*
+_ibio.lex.pred_res_k	.subcode
+pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
+ek	.larg	β
+sk	.larg	_ibio.lex.lexeme.t_k.ty	s	s	β
+ip	.larg	ibio.prim.iptr.t	s
+	.force	_ibio.lex.pred_res_k	s	β	|	pred	ek	sk
+	.enter	ip
+
+_ibio.lex.pred_res_k	.forcecont
+_ibio.lex.receiver.pred_pred_ty	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+_ibio.lex.pred_res_k_k0	.subcode
+_ibio.lex.pred_res_k_k1	.subcode
+ibio.prim.iptr.iseof	.gvar
+pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
+ek	.fv	β
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+ip0	.karg	ibio.prim.iptr	s
+	.ubanalyze	0	_ibio.lex.pred_res_k_k0	1	_ibio.lex.pred_res_k_k1	|	s	β	|	pred	ek	sk	ip0
+	.app	ip0
+	.yield	ibio.prim.iptr.iseof	s
+
+_ibio.lex.pred_res_k_k0	.ubcasecont	# Not EOF
+_ibio.lex.receiver.pred_pred_ty	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+_ibio.lex.pred_res_k_k0_k	.subcode
+bool.t.out	.cogvar
+ibio.prim.iptr.deref	.gvar
+pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
+ek	.fv	β
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+ip0	.fv	ibio.prim.iptr	s
+s	.apply	ibio.prim.iptr.deref	s	|	ip0
+	.force	_ibio.lex.pred_res_k_k0_k	s	β	|	ek	sk	ip0	s
+	.coerce	bool.t.out
+	.app	s
+	.enter	pred
+
+_ibio.lex.pred_res_k_k0_k	.forcecont
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr	.tygvar
+bool.prim.u	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+ibio.prim.iptr.next	.gvar
+ek	.fv	β
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+ip0	.fv	ibio.prim.iptr	s
+s	.fv	s
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.enter	ek
+		.case	true
+ip1			.apply	ibio.prim.iptr.next	s	|	ip0
+			.app	s	ip1
+			.enter	sk
+
+_ibio.lex.pred_res_k_k1	.ubcasecont	# EOF
+_ibio.lex.receiver.pred_pred_ty	.tygvar
+_ibio.lex.lexeme.t_k.ty	.tygvar
+ibio.prim.iptr	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
+ek	.fv	β
+sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
+ip0	.fv	ibio.prim.iptr	s
+	.undef	β
 
 # §section §gs{ibio.lex.lexeme.unit}
 
@@ -497,13 +591,13 @@ r	.record	0	lex	1	acc
 
 _ibio.lex.receiver.pred_c	.expr
 _ibio.lex.receiver.pred_pred_ty	.tygvar
-ibio.lex.lexeme.t	.tygvar
 ibio.acceptor.prim.cont.t	.tygvar
 record.empty	.tygvar
 s	.tyarg	*
 _ibio.lex.receiver.pred_acc_c	.subcode
+ibio.lex.pred	.gvar
 pred	.larg	_ibio.lex.receiver.pred_pred_ty	s
-lex	.undefined	ibio.lex.lexeme.t	s	s
+lex	.apply	ibio.lex.pred	s	|	pred
 acc	.alloc	_ibio.lex.receiver.pred_acc_c	s	|	pred
 res	.record	0	lex	1	acc
 	.lift
