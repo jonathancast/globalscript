@@ -13,9 +13,9 @@ _type	.string	type
 
 _gsdl.cgs.pragma.parse_c	.expr
 rune.t	.tygvar
-gsdl.cgs.pragma.t	.tygvar
+_gsdl.cgs.pragma.parse_res_ty	.tygvar
 parser.fail	.gvar
-	.enter	parser.fail	rune.t	gsdl.cgs.pragma.t
+	.enter	parser.fail	rune.t	_gsdl.cgs.pragma.parse_res_ty
 
 # §section §gs{gsdl.cgs.pragma.gstype.get}
 
@@ -65,3 +65,15 @@ gsdl.cgs.pragma.prim.u	.tygvar
 
 gsdl.cgs.pragma.prim.u	.tyexpr
 	.tysum
+
+_gsdl.cgs.pragma.parse_res_ty	.tyexpr
+_gsdl.cgs.pragma.parse_res_u	.tygvar
+	.tylift
+	.tyref	_gsdl.cgs.pragma.parse_res_u
+
+_gsdl.cgs.pragma.parse_res_u	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.pragma.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+	.typroduct	0	string.ty	1	gsdl.cgs.pragma.t

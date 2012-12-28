@@ -135,7 +135,7 @@ _gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
 list.t	.tygvar
 bool.prim.u	.tygvar
 ibio.prim.t	.tygvar
-gsdl.cgs.pragma.t	.tygvar
+_gsdl.cgs.pragma.parse_res_ty	.tygvar
 parser.err.t	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_insert_k2	.subcode
 either.t.out	.cogvar
@@ -154,28 +154,28 @@ pos			.lfield	pos	p
 pragmas			.lfield	pragmas	p
 pos1			.apply	parser.pos.next.col	|	pos
 			.force	_gsdl.cgs.file.read_pragmas.pos_insert_k2	|	eo
-			.coerce	either.t.out	parser.err.t	gsdl.cgs.pragma.t
+			.coerce	either.t.out	parser.err.t	_gsdl.cgs.pragma.parse_res_ty
 			.app	pos1	gsdl.cgs.pragma.parse	l1
-			.enter	parser.parse	rune.t	gsdl.cgs.pragma.t
+			.enter	parser.parse	rune.t	_gsdl.cgs.pragma.parse_res_ty
 
 _gsdl.cgs.file.read_pragmas.pos_insert_k2	.forcecont
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 either.prim.u	.tygvar
 parser.err.t	.tygvar
-gsdl.cgs.pragma.t	.tygvar
+_gsdl.cgs.pragma.parse_res_ty	.tygvar
 ibio.prim.t	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
-e0	.karg	either.prim.u	parser.err.t	gsdl.cgs.pragma.t
+e0	.karg	either.prim.u	parser.err.t	_gsdl.cgs.pragma.parse_res_ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	parser.err.t
 res			.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	|	eo	err
 			.enter	res
 		.case	right
-pr		.fkarg	0	gsdl.cgs.pragma.t
+pr		.fkarg	0	_gsdl.cgs.pragma.parse_res_ty
 			.undef	ibio.prim.t	_gsdl.cgs.file.read_pragmas.pos_ty
 
 _gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	.eprog	ibio.prim	ibio
