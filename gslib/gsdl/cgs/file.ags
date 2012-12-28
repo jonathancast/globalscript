@@ -8,7 +8,6 @@ _gsdl.cgs.file.read_parser_no.typepragma.msg	.string	No\s\htype:\sprefix\sor\s\h
 gsdl.cgs.pragma.line	.closure	_gsdl.cgs.pragma.line_c
 gsdl.cgs.blank.line	.closure	_gsdl.cgs.blank.line_c	_gsdl.cgs.blank.line_ty
 
-_hs	.closure	_hs_c
 _sp	.closure	_sp_c
 _nl	.closure	_nl_c
 
@@ -32,7 +31,7 @@ eo	.larg	ibio.prim.oport	rune.t
 fn	.larg	ibio.file.name.t
 i	.bind	_gsdl.cgs.file.read_i_c	|	fn
 pr.ls	.bind	_gsdl.cgs.file.read_pr.ls_c	|	i
-pragmas.pos	.bind	_gsdl.cgs.file.read_pragmas.pos_c	|	pr.ls
+pragmas.pos	.bind	_gsdl.cgs.file.read_pragmas.pos_c	|	eo	fn	pr.ls
 pragmas	.alloc	_gsdl.cgs.file.read_pragmas_c	|	pragmas.pos
 pos	.alloc	_gsdl.cgs.file.read_pos_c	|	fn
 parser	.alloc	_gsdl.cgs.file.read_parser_c	|	fn	pragmas
@@ -68,29 +67,145 @@ ml	.apply	ibio.lex.receiver.many	rune.t	string.ty	|	l
 	.enter	ibio.lex.receive	rune.t	res.ty
 
 _gsdl.cgs.file.read_pragmas.pos_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
 list.t	.tygvar
-rune.t	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 string.ty	.tylet	list.t	rune.t
 _gsdl.cgs.file.read_pragmas.pos_insert_c	.subcode
 ibio.foldM.prim	.gvar
+parser.pos.initial	.gvar
 ordered.map.empty	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+fn	.fv	ibio.file.name.t
 pr.ls	.fv	list.t	string.ty
-insert	.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_c
+insert	.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_c	|	eo
+pos	.apply	parser.pos.initial	|	fn
 prs	.apply	ordered.map.empty	string.ty	gsdl.cgs.pragma.t
-empty	.lrecord	pragmas	prs
+empty	.lrecord	pos	pos	pragmas	prs
 	.app	insert	empty	pr.ls
 	.enter	ibio.foldM.prim	string.ty	_gsdl.cgs.file.read_pragmas.pos_ty
 
 _gsdl.cgs.file.read_pragmas.pos_insert_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
 list.t	.tygvar
-rune.t	.tygvar
-ibio.prim.t	.tygvar
+_gsdl.cgs.file.read_pragmas.pos_insert_k0	.subcode
+list.t.out	.cogvar
+eo	.fv	ibio.prim.oport	rune.t
 p	.larg	_gsdl.cgs.file.read_pragmas.pos_ty
 l	.larg	list.t	rune.t
+	.force	_gsdl.cgs.file.read_pragmas.pos_insert_k0	|	eo	p
+	.coerce	list.t.out	rune.t
+	.enter	l
+
+_gsdl.cgs.file.read_pragmas.pos_insert_k0	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
+list.t	.tygvar
+list.prim.u	.tygvar
+ibio.prim.t	.tygvar
+_gsdl.cgs.file.read_pragmas.pos_insert_k1	.subcode
+bool.t.out	.cogvar
+rune.≡	.gvar
+rune.number.sign	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+p	.fv	_gsdl.cgs.file.read_pragmas.pos_ty
+l0	.karg	list.prim.u	rune.t
+	.analyze	l0	:	nil
+		.case	:
+c		.fkarg	0	rune.t
+l1		.fkarg	1	list.t	rune.t
+			.force	_gsdl.cgs.file.read_pragmas.pos_insert_k1	|	eo	p	l1
+			.coerce	bool.t.out
+			.app	c	rune.number.sign
+			.enter	rune.≡
+		.case	nil
+			.undef	ibio.prim.t	_gsdl.cgs.file.read_pragmas.pos_ty
+
+_gsdl.cgs.file.read_pragmas.pos_insert_k1	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
+list.t	.tygvar
+bool.prim.u	.tygvar
+ibio.prim.t	.tygvar
+gsdl.cgs.pragma.t	.tygvar
+parser.err.t	.tygvar
+_gsdl.cgs.file.read_pragmas.pos_insert_k2	.subcode
+either.t.out	.cogvar
+parser.parse	.gvar
+parser.pos.next.col	.gvar
+gsdl.cgs.pragma.parse	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+p	.fv	_gsdl.cgs.file.read_pragmas.pos_ty
+l1	.fv	list.t	rune.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	ibio.prim.t	_gsdl.cgs.file.read_pragmas.pos_ty
+		.case	true
+pos			.lfield	pos	p
+pragmas			.lfield	pragmas	p
+pos1			.apply	parser.pos.next.col	|	pos
+			.force	_gsdl.cgs.file.read_pragmas.pos_insert_k2	|	eo
+			.coerce	either.t.out	parser.err.t	gsdl.cgs.pragma.t
+			.app	pos1	gsdl.cgs.pragma.parse	l1
+			.enter	parser.parse	rune.t	gsdl.cgs.pragma.t
+
+_gsdl.cgs.file.read_pragmas.pos_insert_k2	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+either.prim.u	.tygvar
+parser.err.t	.tygvar
+gsdl.cgs.pragma.t	.tygvar
+ibio.prim.t	.tygvar
+_gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
+_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+e0	.karg	either.prim.u	parser.err.t	gsdl.cgs.pragma.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	parser.err.t
+res			.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	|	eo	err
+			.enter	res
+		.case	right
+pr		.fkarg	0	gsdl.cgs.pragma.t
+			.undef	ibio.prim.t	_gsdl.cgs.file.read_pragmas.pos_ty
+
+_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	.eprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+parser.err.t	.tygvar
+_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_print_c	.subcode
+_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	parser.err.t
+	.bind	_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_print_c	|	eo	err
+	.body	_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_body_c
+
+_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_print_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+parser.err.t	.tygvar
+ibio.prim.write	.gvar
+string.fmtline	.gvar
+parser.err.fmt	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	parser.err.t
+s1	.apply	parser.err.fmt	|	err
+s2	.apply	string.fmtline	|	s1
+	.app	eo	s2
+	.yield	ibio.prim.write	rune.t
+
+_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_body_c	.expr
+ibio.prim.t	.tygvar
+_gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
 	.undef	ibio.prim.t	_gsdl.cgs.file.read_pragmas.pos_ty
 
 _gsdl.cgs.file.read_pragmas_c	.expr
@@ -239,11 +354,11 @@ ibio.lex.receiver.lexeme.unit	.gvar
 list.:	.gvar
 ibio.lex.receiver.char	.gvar
 rune.≡	.gvar
-_hs	.gvar
+rune.number.sign	.gvar
 ibio.lex.receiver.line.non.empty	.gvar
 cons	.apply	list.:	rune.t
 cons.r	.apply	ibio.lex.receiver.lexeme.unit	rune.t	_gsdl.cgs.pragma.line_cons_res.ty	|	cons
-hash	.apply	ibio.lex.receiver.char	rune.t	|	rune.≡	_hs
+hash	.apply	ibio.lex.receiver.char	rune.t	|	rune.≡	rune.number.sign
 cons.hash	.apply	ibio.lex.receiver.lexeme.<*>	rune.t	rune.t	_gsdl.cgs.pragma.line_cons.hash_res.ty	|	cons.r	hash
 	.app	cons.hash	ibio.lex.receiver.line.non.empty
 	.enter	ibio.lex.receiver.lexeme.<*>	rune.t	string.ty	string.ty
@@ -277,13 +392,6 @@ eolr	.apply	ibio.lex.receiver.lexeme.lift.2	rune.t	rune.t	string.ty	string.ty	|	
 
 # §section Random data
 
-_hs_c	.expr
-rune.t.in	.cogvar
-hs	.rune	\h
-	.coerce	rune.t.in
-	.lift
-	.yield	hs
-
 _sp_c	.expr
 rune.t.in	.cogvar
 sp	.rune	\s
@@ -315,10 +423,11 @@ _gsdl.cgs.file.read_pragmas.pos_u	.tyexpr
 ordered.map.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
+parser.pos.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 string.ty	.tylet	list.t	rune.t
 pragmas_ty	.tylet	ordered.map.t	string.ty	gsdl.cgs.pragma.t
-	.typroduct	pragmas	pragmas_ty
+	.typroduct	pos	parser.pos.t	pragmas	pragmas_ty
 
 # §section §gs{gsdl.cgs.pragma.line}
 
