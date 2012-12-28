@@ -2,6 +2,8 @@
 #include <libc.h>
 #include <libglobalscript.h>
 
+int listing;
+
 void
 p9main(int argc, char **argv)
 {
@@ -78,8 +80,10 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                 sleep(1);
                 break;
             case test_succeeded:
-                print("%s:\n", doc);
-                test_print(1, prog, 1);
+                if (listing) {
+                    print("%s:\n", doc);
+                    test_print(1, prog, 1);
+                }
                 ace_down();
                 exits("");
             case test_failed:
@@ -243,8 +247,12 @@ test_print(int depth, gsvalue v, int print_if_trivial)
                     enum test_state st0, st1;
                     st0 = test_evaluate(err, err + sizeof(err), constr->arguments[0]);
                     st1 = test_evaluate(err, err + sizeof(err), constr->arguments[1]);
-                    test_print(depth, constr->arguments[0], 0);
-                    test_print(depth, constr->arguments[1], print_if_trivial);
+                    if (listing || st0 != test_succeeded)
+                        test_print(depth, constr->arguments[0], 0)
+                    ;
+                    if (listing || st1 != test_succeeded)
+                        test_print(depth, constr->arguments[1], print_if_trivial)
+                    ;
                     return;
                 }
                 default:
