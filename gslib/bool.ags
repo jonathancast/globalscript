@@ -11,6 +11,7 @@ bool.not	.closure	_bool.not_c
 bool.∧	.closure	_bool.∧.c
 
 bool.print	.closure	_bool.print_c	_bool.print_ty
+_bool.print_true.s	.string	true
 bool.print.list	.closure	_bool.print.list_c
 
 	.code
@@ -127,10 +128,24 @@ b0.0	.karg	bool.prim.u
 
 _bool.print_c	.expr
 bool.t	.tygvar
+_bool.print_k	.subcode
+bool.t.out	.cogvar
+b	.larg	bool.t
+	.force	_bool.print_k
+	.coerce	bool.t.out
+	.enter	b
+
+_bool.print_k	.forcecont
+bool.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-b	.larg	bool.t
-	.undef	list.t	rune.t
+_bool.print_true.s	.gvar
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	list.t	rune.t
+		.case	true
+			.enter	_bool.print_true.s
 
 _bool.print.list_c	.expr
 bool.t	.tygvar
