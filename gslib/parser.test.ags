@@ -24,8 +24,8 @@ _test.err.≡.simple.failure.simple.failure_fail.msg	.string	simple.failure\s≠
 _test.err.≡.simple.failure.simple.failure_succ.msg	.string	simple.failure\s≡\ssimple.failure
 
 _test.err.print.simple.failure	.closure	_test.err.print.simple.failure_c
-_test.err.print.simple.failure_label	.string	err.print\ssimple.failure
-_test.err.print.simple.failure_expected	.string	simple.failure\s〈〉
+_test.err.print.simple.failure_label	.string	err.print\ssimple.failure\strue
+_test.err.print.simple.failure_expected	.string	simple.failure\strue\s〈〉
 
 _test.pos.eq.x.x	.closure	_test.pos.eq.x.x_c
 _test.pos.eq.x.x_label	.string	parser.pos.≡\sx\sx
@@ -82,11 +82,12 @@ test.assert.eq	.gvar
 parser.err.≡	.gvar
 parser.err.print	.gvar
 parser.err.simple.failure	.gvar
+bool.true	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
 err	.larg	parser.err.t
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
-expected	.apply	parser.err.simple.failure	|	pos
+expected	.apply	parser.err.simple.failure	|	pos	bool.true
 	.app	parser.err.≡	parser.err.print	err	expected
 	.enter	test.assert.eq	parser.err.t
 
@@ -144,13 +145,14 @@ list.print	.gvar
 rune.print.list	.gvar
 parser.err.fmt	.gvar
 parser.err.simple.failure	.gvar
+bool.true	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
 _test.err.fmt.simple.failure_expected	.gvar
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.print	.apply	list.print	rune.t	|	rune.print.list
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
-sf	.apply	parser.err.simple.failure	|	pos
+sf	.apply	parser.err.simple.failure	|	pos	bool.true
 actual	.apply	parser.err.fmt	|	sf
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	actual	_test.err.fmt.simple.failure_expected
 	.app	_test.err.fmt.simple.failure_label	test
@@ -166,10 +168,11 @@ _test.err.≡.simple.failure.simple.failure_fail.msg	.gvar
 _test.err.≡.simple.failure.simple.failure_succ.msg	.gvar
 parser.err.≡	.gvar
 parser.err.simple.failure	.gvar
+bool.true	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
-sf	.apply	parser.err.simple.failure	|	pos
+sf	.apply	parser.err.simple.failure	|	pos	bool.true
 b	.apply	parser.err.≡	|	sf	sf
 test	.apply	test.assert	|	_test.err.≡.simple.failure.simple.failure_fail.msg	_test.err.≡.simple.failure.simple.failure_succ.msg	b
 	.app	_test.err.≡.simple.failure.simple.failure_label	test
@@ -196,13 +199,14 @@ list.print	.gvar
 rune.print.list	.gvar
 parser.err.print	.gvar
 parser.err.simple.failure	.gvar
+bool.true	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
 _test.err.print.simple.failure_expected	.gvar
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.print	.apply	list.print	rune.t	|	rune.print.list
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
-sf	.apply	parser.err.simple.failure	|	pos
+sf	.apply	parser.err.simple.failure	|	pos	bool.true
 sf.s	.apply	parser.err.print	|	sf
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	sf.s	_test.err.print.simple.failure_expected
 	.app	_test.err.print.simple.failure_label	test

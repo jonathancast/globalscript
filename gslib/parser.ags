@@ -83,18 +83,21 @@ _parser.parse_work_unit.plus_k	.subcode
 list.t.out	.cogvar
 either.left	.gvar
 parser.err.simple.failure	.gvar
+list.null	.gvar
 parser.err.message.failure	.gvar
 pos	.fv	parser.pos.t
 s	.fv	list.t	s
 p0	.karg	parser.prim.u	s	α
 	.analyze	p0	fail	fail.msg	unit.plus
 		.case	fail
-sf			.apply	parser.err.simple.failure	|	pos
+eof			.apply	list.null	s	|	s
+sf			.apply	parser.err.simple.failure	|	pos	eof
 			.app	sf
 			.enter	either.left	parser.err.t	α
 		.case	fail.msg
 msg		.fkarg	0	list.t	rune.t
-mf			.apply	parser.err.message.failure	|	msg	pos
+eof			.apply	list.null	s	|	s
+mf			.apply	parser.err.message.failure	|	pos	eof	msg
 			.app	mf
 			.enter	either.left	parser.err.t	α
 		.case	unit.plus
@@ -257,26 +260,28 @@ e	.larg	parser.err.t
 
 _parser.err.fmt_k	.forcecont
 parser.err.prim.u	.tygvar
+parser.pos.t	.tygvar
+bool.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-parser.pos.t	.tygvar
 list.<>	.gvar
 parser.pos.fmt	.gvar
-bool.true	.gvar
 _parser.err.fmt_col.sp	.gvar
 _parser.err.fmt_parse.failure.s	.gvar
 e0	.karg	parser.err.prim.u
 	.analyze	e0	message.failure	simple.failure
 		.case	message.failure
-msg		.fkarg	0	list.t	rune.t
-pos		.fkarg	1	parser.pos.t
-pos.s			.apply	parser.pos.fmt	|	bool.true	pos
+pos		.fkarg	0	parser.pos.t
+eof		.fkarg	1	bool.t
+msg		.fkarg	2	list.t	rune.t
+pos.s			.apply	parser.pos.fmt	|	eof	pos
 s1			.apply	list.<>	rune.t	|	_parser.err.fmt_col.sp	msg
 			.app	pos.s	s1
 			.enter	list.<>	rune.t
 		.case	simple.failure
 pos		.fkarg	0	parser.pos.t
-pos.s			.apply	parser.pos.fmt	|	bool.true	pos
+eof		.fkarg	1	bool.t
+pos.s			.apply	parser.pos.fmt	|	eof	pos
 			.app	pos.s	_parser.err.fmt_parse.failure.s
 			.enter	list.<>	rune.t
 
@@ -305,25 +310,28 @@ e0.0	.karg	parser.err.prim.u
 
 _parser.err.≡_k1	.forcecont
 parser.err.prim.u	.tygvar
-list.t	.tygvar
-rune.t	.tygvar
 parser.pos.t	.tygvar
 bool.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
 parser.pos.≡	.gvar
 e0.0	.fv	parser.err.prim.u
 e1.0	.karg	parser.err.prim.u
 	.analyze	e0.0	message.failure	simple.failure
 		.case	message.failure
-msg0		.fkarg	0	list.t	rune.t
-pos0		.fkarg	1	parser.pos.t
+pos0		.fkarg	0	parser.pos.t
+eof0		.fkarg	1	bool.t
+msg0		.fkarg	2	list.t	rune.t
 			.undef	bool.t
 		.case	simple.failure
 pos0		.fkarg	0	parser.pos.t
+eof1		.fkarg	1	bool.t
 			.danalyze	e0.0	simple.failure
 				.default
 					.undef	bool.t
 				.case	simple.failure
 pos1				.fkarg	0	parser.pos.t
+eof1				.fkarg	1	bool.t
 					.app	pos0	pos1
 					.enter	parser.pos.≡
 
@@ -341,44 +349,57 @@ e	.larg	parser.err.t
 _parser.err.print_k	.forcecont
 parser.err.prim.u	.tygvar
 parser.pos.t	.tygvar
+bool.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 list.<>	.gvar
 _parser.err.print_simple.failure_prefix	.gvar
 parser.pos.print	.gvar
+list.:	.gvar
+rune.space	.gvar
+bool.print	.gvar
 e0	.karg	parser.err.prim.u
 	.analyze	e0	message.failure	simple.failure
 		.case	message.failure
-msg		.fkarg	0	list.t	rune.t
-pos		.fkarg	1	parser.pos.t
+pos		.fkarg	0	parser.pos.t
+eof		.fkarg	1	bool.t
+msg		.fkarg	2	list.t	rune.t
 			.undef	list.t	rune.t
 		.case	simple.failure
 pos		.fkarg	0	parser.pos.t
+eof		.fkarg	1	bool.t
 pos.s			.apply	parser.pos.print	|	pos
-			.app	_parser.err.print_simple.failure_prefix	pos.s
+eof.s			.apply	bool.print	|	eof
+s1			.apply	list.:	rune.t	|	rune.space	pos.s
+s2			.apply	list.<>	rune.t	|	eof.s	s1
+			.app	_parser.err.print_simple.failure_prefix	s2
 			.enter	list.<>	rune.t
 
 # §section §gs{parser.err.t} constructors
 
 _parser.err.simple.failure_c	.expr
 parser.pos.t	.tygvar
+bool.t	.tygvar
 parser.err.prim.u	.tygvar
 parser.err.t.in	.cogvar
 pos	.arg	parser.pos.t
-c	.constr	parser.err.prim.u	simple.failure	0	pos
+eof	.arg	bool.t
+c	.constr	parser.err.prim.u	simple.failure	0	pos	1	eof
 	.coerce	parser.err.t.in
 	.lift
 	.yield	c
 
 _parser.err.message.failure_c	.expr
+parser.pos.t	.tygvar
+bool.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-parser.pos.t	.tygvar
 parser.err.prim.u	.tygvar
 parser.err.t.in	.cogvar
-msg	.arg	list.t	rune.t
 pos	.arg	parser.pos.t
-c	.constr	parser.err.prim.u	message.failure	0	msg	1	pos
+eof	.arg	bool.t
+msg	.arg	list.t	rune.t
+c	.constr	parser.err.prim.u	message.failure	0	pos	1	eof	2	msg
 	.coerce	parser.err.t.in
 	.lift
 	.yield	c
@@ -529,15 +550,17 @@ _parser.err.prim.u_simple.failure_ty	.tygvar
 	.tysum	message.failure	_parser.err.prim.u_message.failure_ty	simple.failure	_parser.err.prim.u_simple.failure_ty
 
 _parser.err.prim.u_message.failure_ty	.tyexpr
+parser.pos.t	.tygvar
+bool.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-parser.pos.t	.tygvar
 string.ty	.tylet	list.t	rune.t
-	.tyubproduct	0	string.ty	1	parser.pos.t
+	.tyubproduct	0	parser.pos.t	1	bool.t	2	string.ty
 
 _parser.err.prim.u_simple.failure_ty	.tyexpr
 parser.pos.t	.tygvar
-	.tyubproduct	0	parser.pos.t
+bool.t	.tygvar
+	.tyubproduct	0	parser.pos.t	1	bool.t
 
 # §section §gs{parser.pos.t}
 
