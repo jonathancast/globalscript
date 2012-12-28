@@ -2,10 +2,22 @@
 
 	.data
 
+gsdl.cgs.pragma.parse	.closure	_gsdl.cgs.pragma.parse_c
+
 gsdl.cgs.pragma.gstype.get	.closure	_gsdl.cgs.pragma.gstype.get_c
 _type	.string	type
 
 	.code
+
+# §section §gs{gsdl.cgs.pragma.parse}
+
+_gsdl.cgs.pragma.parse_c	.expr
+rune.t	.tygvar
+gsdl.cgs.pragma.t	.tygvar
+parser.fail	.gvar
+	.enter	parser.fail	rune.t	gsdl.cgs.pragma.t
+
+# §section §gs{gsdl.cgs.pragma.gstype.get}
 
 _gsdl.cgs.pragma.gstype.get_c	.expr
 ibio.file.name.t	.tygvar
