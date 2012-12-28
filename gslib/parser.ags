@@ -104,25 +104,32 @@ mf			.apply	parser.err.message.failure	|	pos	eof	msg
 		.case	unit.plus
 x		.fkarg	0	α
 p1		.fkarg	1	parser.prim.t	s	α
-			.force	_parser.parse_work_unit.plus_k	s	α	|	x
+			.force	_parser.parse_work_unit.plus_k	s	α	|	pos	s	x	p1
 			.coerce	list.t.out	s
 			.enter	s
 
 _parser.parse_work_unit.plus_k	.forcecont
+parser.pos.t	.tygvar
+parser.prim.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 either.t	.tygvar
 parser.err.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
+_parser.parse_work	.gvar
 either.right	.gvar
+pos	.fv	parser.pos.t
+s	.fv	list.t	s
 x	.fv	α
+p1	.fv	parser.prim.t	s	α
 s0	.karg	list.prim.u	s
 	.analyze	s0	:	nil
 		.case	:
 c		.fkarg	0	s
 s1		.fkarg	1	list.t	s
-			.undef	either.t	parser.err.t	α
+			.app	pos	p1	s
+			.enter	_parser.parse_work	s	α
 		.case	nil
 			.app	x
 			.enter	either.right	parser.err.t	α
