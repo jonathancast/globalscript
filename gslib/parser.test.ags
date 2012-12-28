@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.print
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.print
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -34,6 +34,12 @@ _test.pos.eq.diff.file_false.msg	.string	pos.initial\sfn<./foo>\s≠\spos.initia
 _test.pos.eq.diff.file_true.msg	.string	pos.initial\sfn<./foo>\s≡\spos.initial\sfn<./bar>
 _test.pos.eq.diff.file_foo.s	.string	./foo
 _test.pos.eq.diff.file_bar.s	.string	./bar
+
+_test.pos.eq.diff.col	.closure	_test.pos.eq.diff.col_c
+_test.pos.eq.diff.col_label	.string	parser.pos.≡\s(pos.next.col\sx)\sx
+_test.pos.eq.diff.col_false.msg	.string	pos.next.col\sx\s≠\sx
+_test.pos.eq.diff.col_true.msg	.string	pos.next.col\sx\s≡\sx
+_test.pos.eq.diff.col_foo.s	.string	./foo
 
 _test.pos.print	.closure	_test.pos.print_c
 _test.pos.print_label	.string	pos.print\spos.initial
@@ -208,6 +214,27 @@ bar.pos	.apply	parser.pos.initial	|	bar.fn
 b	.apply	parser.pos.≡	|	foo.pos	bar.pos
 test	.apply	test.deny	|	_test.pos.eq.diff.file_false.msg	_test.pos.eq.diff.file_true.msg	b
 	.app	_test.pos.eq.diff.file_label	test
+	.enter	test.property.label
+
+# §section §gs{parser.pos.≡ (pos.next.col x) x}
+
+_test.pos.eq.diff.col_c	.expr
+test.property.label	.gvar
+_test.pos.eq.diff.col_label	.gvar
+test.deny	.gvar
+_test.pos.eq.diff.col_false.msg	.gvar
+_test.pos.eq.diff.col_true.msg	.gvar
+parser.pos.≡	.gvar
+parser.pos.next.col	.gvar
+parser.pos.initial	.gvar
+ibio.file.name.read	.gvar
+_test.pos.eq.diff.col_foo.s	.gvar
+foo.fn	.apply	ibio.file.name.read	|	_test.pos.eq.diff.col_foo.s
+foo.pos	.apply	parser.pos.initial	|	foo.fn
+foo.pos.1	.apply	parser.pos.next.col	|	foo.pos
+b	.apply	parser.pos.≡	|	foo.pos.1	foo.pos
+test	.apply	test.deny	|	_test.pos.eq.diff.col_false.msg	_test.pos.eq.diff.col_true.msg	b
+	.app	_test.pos.eq.diff.col_label	test
 	.enter	test.property.label
 
 # §section §gs{parser.pos.print simple.failure}

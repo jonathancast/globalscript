@@ -34,6 +34,8 @@ _parser.pos.print_s	.string	〈〉
 
 parser.pos.initial	.closure	_parser.pos.initial_c
 
+parser.pos.next.col	.closure	_parser.pos.next.col_c
+
 	.code
 
 # §section §gs{parser.parse}
@@ -392,13 +394,19 @@ fn	.lfield	file	pos
 
 _parser.pos.≡_c	.expr
 parser.pos.t	.tygvar
+bool.∧	.gvar
 ibio.file.name.≡	.gvar
+natural.≡	.gvar
 pos0	.larg	parser.pos.t
 pos1	.larg	parser.pos.t
 pos0.file	.lfield	file	pos0
+pos0.col	.lfield	col	pos0
 pos1.file	.lfield	file	pos1
-	.app	pos0.file	pos1.file
-	.enter	ibio.file.name.≡
+pos1.col	.lfield	col	pos1
+b0	.apply	ibio.file.name.≡	|	pos0.file	pos1.file
+b1	.apply	natural.≡	|	pos0.col	pos1.col
+	.app	b0	b1
+	.enter	bool.∧
 
 # §section §gs{parser.pos.print}
 
@@ -412,8 +420,22 @@ pos	.larg	parser.pos.t
 
 _parser.pos.initial_c	.expr
 ibio.file.name.t	.tygvar
+natural.0	.gvar
 fn	.larg	ibio.file.name.t
-r	.record	file	fn
+r	.record	col	natural.0	file	fn
+	.lift
+	.yield	r
+
+# §section §gs{parser.pos.next.col}
+_parser.pos.next.col_c	.expr
+parser.pos.t	.tygvar
+natural.+	.gvar
+natural.1	.gvar
+pos	.larg	parser.pos.t
+fn	.lfield	file	pos
+col	.lfield	col	pos
+col.1	.apply	natural.+	|	col	natural.1
+r	.record	col	col.1	file	fn
 	.lift
 	.yield	r
 
@@ -505,7 +527,7 @@ parser.pos.u	.tygvar
 parser.pos.u	.tyexpr
 natural.t	.tygvar
 ibio.file.name.t	.tygvar
-	.typroduct	file	ibio.file.name.t
+	.typroduct	col	natural.t	file	ibio.file.name.t
 
 # §section §gs{parser.parse}
 
