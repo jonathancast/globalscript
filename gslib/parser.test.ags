@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.print
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.print
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -26,6 +26,10 @@ _test.err.≡.simple.failure.simple.failure_succ.msg	.string	simple.failure\s≡
 _test.err.print.simple.failure	.closure	_test.err.print.simple.failure_c
 _test.err.print.simple.failure_label	.string	err.print\ssimple.failure\strue
 _test.err.print.simple.failure_expected	.string	simple.failure\strue\s〈〉
+
+_test.pos.fmt.not.eof	.closure	_test.pos.fmt.not.eof_c
+_test.pos.fmt.not.eof_label	.string	pos.fmt\sfalse\sinitial.pos
+_test.pos.fmt.not.eof_expected	.string	./parse-data:1:1
 
 _test.pos.eq.x.x	.closure	_test.pos.eq.x.x_c
 _test.pos.eq.x.x_label	.string	parser.pos.≡\sx\sx
@@ -210,6 +214,32 @@ sf	.apply	parser.err.simple.failure	|	pos	bool.true
 sf.s	.apply	parser.err.print	|	sf
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	sf.s	_test.err.print.simple.failure_expected
 	.app	_test.err.print.simple.failure_label	test
+	.enter	test.property.label
+
+# §section §gs{parser.pos.fmt false initial.pos}
+
+_test.pos.fmt.not.eof_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+test.property.label	.gvar
+_test.pos.fmt.not.eof_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+rune.≡	.gvar
+list.print	.gvar
+rune.print.list	.gvar
+parser.pos.fmt	.gvar
+bool.false	.gvar
+parser.pos.initial	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+_test.pos.fmt.not.eof_expected	.gvar
+string.≡	.apply	list.≡	rune.t	|	rune.≡
+string.print	.apply	list.print	rune.t	|	rune.print.list
+pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
+actual	.apply	parser.pos.fmt	|	bool.false	pos
+test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	actual	_test.pos.fmt.not.eof_expected
+	.app	_test.pos.fmt.not.eof_label	test
 	.enter	test.property.label
 
 # §section §gs{parser.pos.≡ x x}

@@ -28,6 +28,7 @@ parser.err.simple.failure	.closure	_parser.err.simple.failure_c
 parser.err.message.failure	.closure	_parser.err.message.failure_c
 
 parser.pos.fmt	.closure	_parser.pos.fmt_c
+_parser.pos.fmt_line.fake.s	.string	1
 
 parser.pos.≡	.closure	_parser.pos.≡_c
 parser.pos.print	.closure	_parser.pos.print_c
@@ -420,14 +421,26 @@ pos	.larg	parser.pos.t
 _parser.pos.fmt_k	.forcecont
 parser.pos.t	.tygvar
 bool.prim.u	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
 ibio.file.name.print	.gvar
+list.:	.gvar
+rune.colon	.gvar
+_parser.pos.fmt_line.fake.s	.gvar
+natural.fmtdecimal	.gvar
 pos	.fv	parser.pos.t
 eof0	.karg	bool.prim.u
 	.analyze	eof0	false	true
 		.case	false
 fn			.lfield	file	pos
-			.app	fn
-			.enter	ibio.file.name.print
+col			.lfield	col	pos
+fn.s			.apply	ibio.file.name.print	|	fn
+col.s			.apply	natural.fmtdecimal	|	col
+s3			.apply	list.:	rune.t	|	rune.colon	col.s
+s2			.apply	list.<>	rune.t	|	_parser.pos.fmt_line.fake.s	s3
+s1			.apply	list.:	rune.t	|	rune.colon	s2
+			.app	fn.s	s1
+			.enter	list.<>	rune.t
 		.case	true
 fn			.lfield	file	pos
 			.app	fn
@@ -463,9 +476,9 @@ pos	.larg	parser.pos.t
 
 _parser.pos.initial_c	.expr
 ibio.file.name.t	.tygvar
-natural.0	.gvar
+natural.1	.gvar
 fn	.larg	ibio.file.name.t
-r	.record	col	natural.0	file	fn
+r	.record	col	natural.1	file	fn
 	.lift
 	.yield	r
 
