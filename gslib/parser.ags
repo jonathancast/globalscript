@@ -17,6 +17,7 @@ parser.prim.fail.msg	.closure	_parser.prim.fail.msg_c
 
 parser.err.fmt	.closure	_parser.err.fmt_c
 _parser.err.fmt_col.sp	.string	:\s
+_parser.err.fmt_parse.failure.s	.string	:\sParse\sfailure
 
 parser.err.≡	.closure	_parser.err.≡_c
 
@@ -262,6 +263,7 @@ parser.pos.t	.tygvar
 list.<>	.gvar
 parser.pos.fmt	.gvar
 _parser.err.fmt_col.sp	.gvar
+_parser.err.fmt_parse.failure.s	.gvar
 e0	.karg	parser.err.prim.u
 	.analyze	e0	message.failure	simple.failure
 		.case	message.failure
@@ -273,7 +275,9 @@ s1			.apply	list.<>	rune.t	|	_parser.err.fmt_col.sp	msg
 			.enter	list.<>	rune.t
 		.case	simple.failure
 pos		.fkarg	0	parser.pos.t
-			.undef	list.t	rune.t
+pos.s			.apply	parser.pos.fmt	|	pos
+			.app	pos.s	_parser.err.fmt_parse.failure.s
+			.enter	list.<>	rune.t
 
 # §section §gs{parser.err.≡}
 
