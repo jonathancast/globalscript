@@ -23,6 +23,7 @@ rune.prim.advance	.closure	_rune.prim.advance_c
 
 _n	.closure	_n_c
 _bs	.closure	_bs_c
+rune.number.sign	.closure	_rune.number.sign_c
 
 	.code
 
@@ -214,6 +215,13 @@ bs	.rune	\\
 	.coerce	rune.t.in
 	.lift
 	.yield	bs
+
+_rune.number.sign_c	.expr
+rune.t.in	.cogvar
+hs	.rune	\h
+	.coerce	rune.t.in
+	.lift
+	.yield	hs
 
 	.type
 
