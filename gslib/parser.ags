@@ -262,6 +262,7 @@ rune.t	.tygvar
 parser.pos.t	.tygvar
 list.<>	.gvar
 parser.pos.fmt	.gvar
+bool.true	.gvar
 _parser.err.fmt_col.sp	.gvar
 _parser.err.fmt_parse.failure.s	.gvar
 e0	.karg	parser.err.prim.u
@@ -269,13 +270,13 @@ e0	.karg	parser.err.prim.u
 		.case	message.failure
 msg		.fkarg	0	list.t	rune.t
 pos		.fkarg	1	parser.pos.t
-pos.s			.apply	parser.pos.fmt	|	pos
+pos.s			.apply	parser.pos.fmt	|	bool.true	pos
 s1			.apply	list.<>	rune.t	|	_parser.err.fmt_col.sp	msg
 			.app	pos.s	s1
 			.enter	list.<>	rune.t
 		.case	simple.failure
 pos		.fkarg	0	parser.pos.t
-pos.s			.apply	parser.pos.fmt	|	pos
+pos.s			.apply	parser.pos.fmt	|	bool.true	pos
 			.app	pos.s	_parser.err.fmt_parse.failure.s
 			.enter	list.<>	rune.t
 
@@ -385,14 +386,31 @@ c	.constr	parser.err.prim.u	message.failure	0	msg	1	pos
 # §section §gs{parser.pos.fmt}
 
 _parser.pos.fmt_c	.expr
+bool.t	.tygvar
 parser.pos.t	.tygvar
-list.t	.tygvar
-rune.t	.tygvar
-ibio.file.name.print	.gvar
+_parser.pos.fmt_k	.subcode
+bool.t.out	.cogvar
+eof	.larg	bool.t
 pos	.larg	parser.pos.t
-fn	.lfield	file	pos
-	.app	fn
-	.enter	ibio.file.name.print
+	.force	_parser.pos.fmt_k	|	pos
+	.coerce	bool.t.out
+	.enter	eof
+
+_parser.pos.fmt_k	.forcecont
+parser.pos.t	.tygvar
+bool.prim.u	.tygvar
+ibio.file.name.print	.gvar
+pos	.fv	parser.pos.t
+eof0	.karg	bool.prim.u
+	.analyze	eof0	false	true
+		.case	false
+fn			.lfield	file	pos
+			.app	fn
+			.enter	ibio.file.name.print
+		.case	true
+fn			.lfield	file	pos
+			.app	fn
+			.enter	ibio.file.name.print
 
 # §section §gs{parser.pos.≡}
 
