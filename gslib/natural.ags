@@ -22,6 +22,9 @@ natural.fmtdecimal	.closure	_natural.fmtdecimal_c	_natural.fmtdecimal_ty
 
 natural.print	.closure	_natural.print_c
 
+natural.0	.closure	_natural.0_c
+natural.1	.closure	_natural.1_c
+
 	.code
 
 # §section §gs{natural.from.prim}
@@ -362,6 +365,22 @@ m0	.fv	natural.prim.u
 _natural.print_c	.expr
 natural.fmtdecimal	.gvar
 	.enter	natural.fmtdecimal
+
+# §section Simple literals
+
+_natural.0_c	.expr
+natural.t.in	.cogvar
+0	.natural	0
+	.coerce	natural.t.in
+	.lift
+	.yield	0
+
+_natural.1_c	.expr
+natural.t.in	.cogvar
+1	.natural	1
+	.coerce	natural.t.in
+	.lift
+	.yield	1
 
 	.type
 
