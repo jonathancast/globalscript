@@ -6,6 +6,7 @@ parser.parse	.closure	_parser.parse_c
 _parser.parse_work	.closure	_parser.parse_work_c	_parser.parse_work_ty
 parser.exec	.closure	_parser.exec_c
 
+parser.map	.closure	_parser.map_c
 parser.unit	.closure	_parser.unit_c
 
 parser.fail	.closure	_parser.fail_c
@@ -156,6 +157,18 @@ x	.larg	α
 fail	.apply	parser.prim.fail	s	α
 	.app	x	fail
 	.yield	parser.prim.unit.plus	s	α
+
+# §section §gs{parser.map}
+
+_parser.map_c	.expr
+_parser.map_f_ty	.tygvar
+parser.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+f	.larg	_parser.map_f_ty	α	β
+p0	.larg	parser.t	s	α
+	.undef	parser.t	s	β
 
 # §section §gs{parser.unit}
 
@@ -612,6 +625,15 @@ s	.tyforall	*
 	.tylift
 	.tyfun	list.t	s
 	.tyref	either.t	parser.err.t	α
+
+# §section §gs{_parser.map_f_ty}
+
+_parser.map_f_ty	.tyexpr
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	β
 
 	.coercion
 
