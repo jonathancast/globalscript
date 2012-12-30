@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.print
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.print
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -13,6 +13,9 @@ _test.fail.msg.nil	.closure	_test.fail.msg.nil_c
 _test.fail.msg.nil_label	.string	parse\sfail.msg\sqq{}
 _test.fail.msg.nil_sample.msg	.string	User-supplied\serror
 _test.fail.msg.nil_err.fmt.expected	.string	./parse-data:\sUser-supplied\serror
+
+_test.unit.nil	.closure	_test.unit.nil_c
+_test.unit.nil_label	.string	parse\s(unit\strue)\sqq{}
 
 _test.err.fmt.simple.failure	.closure	_test.err.fmt.simple.failure_c
 _test.err.fmt.simple.failure_label	.string	parser.err.fmt\ssimple.failure
@@ -133,6 +136,35 @@ string.print	.apply	list.print	rune.t	|	rune.print.list
 err.fmt	.apply	parser.err.fmt	|	err
 	.app	string.≡	string.print	err.fmt	_test.fail.msg.nil_err.fmt.expected
 	.enter	test.assert.eq	string.ty
+
+# §section §gs{parse unit qq{}}
+
+_test.unit.nil_c	.expr
+rune.t	.tygvar
+bool.t	.tygvar
+_test.unit.nil_k_c	.subcode
+test.property.label	.gvar
+_test.unit.nil_label	.gvar
+parser.test.assert.passes	.gvar
+parser.unit	.gvar
+bool.true	.gvar
+list.nil	.gvar
+parser	.apply	parser.unit	rune.t	bool.t	|	bool.true
+nil	.apply	list.nil	rune.t
+k	.alloc	_test.unit.nil_k_c
+test	.apply	parser.test.assert.passes	rune.t	bool.t	|	parser	nil	k
+	.app	_test.unit.nil_label	test
+	.enter	test.property.label
+
+_test.unit.nil_k_c	.expr
+bool.t	.tygvar
+test.assert.eq	.gvar
+bool.≡	.gvar
+bool.print	.gvar
+bool.true	.gvar
+x	.larg	bool.t
+	.app	bool.≡	bool.print	x	bool.true
+	.enter	test.assert.eq	bool.t
 
 # §section §gs{parser.err.fmt simple.failure}
 
