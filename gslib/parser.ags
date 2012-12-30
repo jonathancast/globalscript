@@ -151,8 +151,9 @@ parser.prim.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 parser.prim.unit.plus	.gvar
+parser.prim.fail	.gvar
 x	.larg	α
-fail	.undefined	parser.prim.t	s	α
+fail	.apply	parser.prim.fail	s	α
 	.app	x	fail
 	.yield	parser.prim.unit.plus	s	α
 
