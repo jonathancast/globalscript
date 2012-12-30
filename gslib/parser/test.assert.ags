@@ -5,6 +5,9 @@
 parser.test.assert.fails	.closure	_parser.test.assert.fails_c
 _parser.test.assert.fails_right_msg.prefix	.string	Parse\succeeded:\s
 
+parser.test.assert.passes	.closure	_parser.test.assert.passes_c
+_parser.test.assert.passes_left_msg.prefix	.string	Parse\sfailed:\s
+
 parser.test.assert.fixtures.sample.file.name	.closure	_parser.test.assert.fixtures.sample.file.name_c
 _parser.test.assert.fixtures.sample.file.name_s	.string	./parse-data
 
@@ -61,6 +64,51 @@ msg			.apply	list.<>	rune.t	|	_parser.test.assert.fails_right_msg.prefix	x.s
 			.app	msg
 			.enter	test.property.false
 
+# §section §gs{parser.test.assert.passes}
+
+_parser.test.assert.passes_c	.expr
+parser.t	.tygvar
+list.t	.tygvar
+_parser.test.assert.passes_k_ty	.tygvar
+parser.err.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+_parser.test.assert.passes_k	.subcode
+either.t.out	.cogvar
+parser.parse	.gvar
+parser.pos.initial	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+p	.larg	parser.t	s	α
+s	.larg	list.t	s
+k	.larg	_parser.test.assert.passes_k_ty	α
+pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
+	.force	_parser.test.assert.passes_k	α
+	.coerce	either.t.out	parser.err.t	α
+	.app	pos	p	s
+	.enter	parser.parse	s	α
+
+_parser.test.assert.passes_k	.forcecont
+either.prim.u	.tygvar
+test.property.t	.tygvar
+parser.err.t	.tygvar
+rune.t	.tygvar
+α	.tyfv	*
+test.property.false	.gvar
+list.<>	.gvar
+_parser.test.assert.passes_left_msg.prefix	.gvar
+parser.err.fmt	.gvar
+e0	.karg	either.prim.u	parser.err.t	α
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	parser.err.t
+err.s			.apply	parser.err.fmt	|	err
+msg			.apply	list.<>	rune.t	|	_parser.test.assert.passes_left_msg.prefix	err.s
+			.app	msg
+			.enter	test.property.false
+		.case	right
+x		.fkarg	0	α
+			.undef	test.property.t
+
 # §section §gs{parser.test.assert.fixtures.sample.file.name}
 
 _parser.test.assert.fixtures.sample.file.name_c	.expr
@@ -84,4 +132,13 @@ parser.err.t	.tygvar
 test.property.t	.tygvar
 	.tylift
 	.tyfun	parser.err.t
+	.tyref	test.property.t
+
+# §section §gs{parser.test.assert.passes}
+
+_parser.test.assert.passes_k_ty	.tyexpr
+test.property.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
 	.tyref	test.property.t
