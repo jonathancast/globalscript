@@ -82,12 +82,13 @@ p	.larg	parser.t	s	α
 s	.larg	list.t	s
 k	.larg	_parser.test.assert.passes_k_ty	α
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
-	.force	_parser.test.assert.passes_k	α
+	.force	_parser.test.assert.passes_k	α	|	k
 	.coerce	either.t.out	parser.err.t	α
 	.app	pos	p	s
 	.enter	parser.parse	s	α
 
 _parser.test.assert.passes_k	.forcecont
+_parser.test.assert.passes_k_ty	.tygvar
 either.prim.u	.tygvar
 test.property.t	.tygvar
 parser.err.t	.tygvar
@@ -97,6 +98,7 @@ test.property.false	.gvar
 list.<>	.gvar
 _parser.test.assert.passes_left_msg.prefix	.gvar
 parser.err.fmt	.gvar
+k	.fv	_parser.test.assert.passes_k_ty	α
 e0	.karg	either.prim.u	parser.err.t	α
 	.analyze	e0	left	right
 		.case	left
@@ -107,7 +109,8 @@ msg			.apply	list.<>	rune.t	|	_parser.test.assert.passes_left_msg.prefix	err.s
 			.enter	test.property.false
 		.case	right
 x		.fkarg	0	α
-			.undef	test.property.t
+			.app	x
+			.enter	k
 
 # §section §gs{parser.test.assert.fixtures.sample.file.name}
 
