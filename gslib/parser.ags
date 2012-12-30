@@ -166,9 +166,34 @@ parser.t	.tygvar
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
+_parser.map_res_c	.subcode
 f	.larg	_parser.map_f_ty	α	β
 p0	.larg	parser.t	s	α
-	.undef	parser.t	s	β
+res	.alloc	_parser.map_res_c	s	α	β	|	p0
+	.enter	res
+
+_parser.map_res_c	.expr
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+r	.tyarg	*
+_parser.map_k0_c	.subcode
+p0	.fv	parser.t	s	α
+k	.larg	_parser.t_k_ty	s	β	r
+k0	.alloc	_parser.map_k0_c	s	α	β	r
+	.app	k0
+	.enter	p0	r
+
+_parser.map_k0_c	.expr
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+x	.larg	α
+	.undef	parser.prim.t	s	r
 
 # §section §gs{parser.unit}
 
