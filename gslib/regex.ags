@@ -1,0 +1,13 @@
+	.prefix
+
+	.type
+
+regex.t	.tyabstract	**^
+regex.prim.u	.tygvar
+s	.tylambda	*
+	.tylift
+	.tyref	regex.prim.u	s
+
+regex.prim.u	.tyexpr
+s	.tylambda	*
+	.tysum
