@@ -80,3 +80,9 @@ regex.t	.tygvar
 s	.tylambda	*
 	.tyinvert
 	.tydefinition	regex.t	s
+
+regex.class.t.out	.tycoercion
+regex.class.t	.tygvar
+s	.tylambda	*
+	.tyinvert
+	.tydefinition	regex.class.t	s
