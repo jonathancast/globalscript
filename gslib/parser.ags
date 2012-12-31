@@ -8,9 +8,13 @@ parser.exec	.closure	_parser.exec_c
 
 parser.map	.closure	_parser.map_c
 parser.unit	.closure	_parser.unit_c
+parser.<*>	.closure	_parser.<*>_c
 
 parser.fail	.closure	_parser.fail_c
 parser.fail.msg	.closure	_parser.fail.msg_c
+
+parser.match	.closure	_parser.match_c
+_parser.match_worker	.closure	_parser.match_worker_c	_parser.match_worker_ty
 
 parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
 parser.prim.fail	.closure	_parser.prim.fail_c
@@ -216,6 +220,69 @@ k	.larg	_parser.t_k_ty	s	α	β
 	.app	x
 	.enter	k
 
+# §section §gs{parser.<*>}
+
+_parser.<*>_c	.expr
+parser.t	.tygvar
+_parser.<*>_f_ty	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+f_ty	.tylet	_parser.<*>_f_ty	α	β
+_parser.<*>_res_c	.subcode
+pf	.larg	parser.t	s	f_ty
+px	.larg	parser.t	s	α
+res	.alloc	_parser.<*>_res_c	s	α	β	|	pf	px
+	.enter	res
+
+_parser.<*>_res_c	.expr
+parser.t	.tygvar
+_parser.<*>_f_ty	.tygvar
+_parser.t_k_ty	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+r	.tyarg	*
+f_ty	.tylet	_parser.<*>_f_ty	α	β
+_parser.<*>_kf_c	.subcode
+pf	.fv	parser.t	s	f_ty
+px	.fv	parser.t	s	α
+k	.larg	_parser.t_k_ty	s	β	r
+kf	.alloc	_parser.<*>_kf_c	s	α	β	r	|	px	k
+	.app	kf
+	.enter	pf	r
+
+_parser.<*>_kf_c	.expr
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+_parser.<*>_f_ty	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.<*>_kx_c	.subcode
+px	.fv	parser.t	s	α
+k	.fv	_parser.t_k_ty	s	β	r
+f	.larg	_parser.<*>_f_ty	α	β
+kx	.alloc	_parser.<*>_kx_c	s	α	β	r	|	k	f
+	.app	kx
+	.enter	px	r
+
+_parser.<*>_kx_c	.expr
+_parser.t_k_ty	.tygvar
+_parser.<*>_f_ty	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+k	.fv	_parser.t_k_ty	s	β	r
+f	.fv	_parser.<*>_f_ty	α	β
+x	.larg	α
+fx	.apply	f	|	x
+	.app	fx
+	.enter	k
+
 # §section §gs{parser.fail}
 
 _parser.fail_c	.expr
@@ -252,6 +319,57 @@ msg	.fv	list.t	rune.t
 k	.larg	_parser.t_k_ty	s	α	β
 	.app	msg
 	.yield	parser.prim.fail.msg	s	β
+
+# §section §gs{parser.match}
+
+_parser.match_c	.expr
+regex.t	.tygvar
+parser.t	.tygvar
+list.t	.tygvar
+s	.tyarg	*
+res.ty	.tylet	list.t	s
+parser.<*>	.gvar
+_parser.match_worker	.gvar
+parser.unit	.gvar
+list.nil	.gvar
+re	.larg	regex.t	s
+w	.apply	_parser.match_worker	s	|	re
+nil	.apply	list.nil	s
+nil.p	.apply	parser.unit	s	res.ty	|	nil
+	.app	w	nil.p
+	.enter	parser.<*>	s	res.ty	res.ty
+
+_parser.match_worker_c	.expr
+regex.t	.tygvar
+s	.tyarg	*
+_parser.match_worker_k	.subcode
+regex.t.out	.cogvar
+re	.larg	regex.t	s
+	.force	_parser.match_worker_k	s
+	.coerce	regex.t.out	s
+	.enter	re
+
+_parser.match_worker_k	.forcecont
+regex.prim.u	.tygvar
+parser.t	.tygvar
+_parser.match_worker_res_ty	.tygvar
+s	.tyfv	*
+res_ty	.tylet	_parser.match_worker_res_ty	s
+_parser.match_worker_id_c	.subcode
+parser.unit	.gvar
+re0	.karg	regex.prim.u	s
+	.analyze	re0	empty
+		.case	empty
+id			.alloc	_parser.match_worker_id_c	s
+			.app	id
+			.enter	parser.unit	s	res_ty
+	# > :: parser.t	s	res_ty
+
+_parser.match_worker_id_c	.expr
+list.t	.tygvar
+s	.tyfv	*
+s	.larg	list.t	s
+	.enter	s
 
 # §section Constructors
 
@@ -651,7 +769,7 @@ s	.tyforall	*
 	.tyfun	list.t	s
 	.tyref	either.t	parser.err.t	α
 
-# §section §gs{_parser.map_f_ty}
+# §section §gs{parser.map}
 
 _parser.map_f_ty	.tyexpr
 α	.tylambda	*
@@ -659,6 +777,34 @@ _parser.map_f_ty	.tyexpr
 	.tylift
 	.tyfun	α
 	.tyref	β
+
+# §section §gs{parser.<*>}
+
+_parser.<*>_f_ty	.tyexpr
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	β
+
+# §section §gs{parser.match}
+
+_parser.match_worker_ty	.tyexpr
+regex.t	.tygvar
+parser.t	.tygvar
+_parser.match_worker_res_ty	.tygvar
+s	.tyforall	*
+res_ty	.tylet	_parser.match_worker_res_ty	s
+	.tylift
+	.tyfun	regex.t	s
+	.tyref	parser.t	s	res_ty
+
+_parser.match_worker_res_ty	.tyexpr
+list.t	.tygvar
+s	.tylambda	*
+	.tylift
+	.tyfun	list.t	s
+	.tyref	list.t	s
 
 	.coercion
 
