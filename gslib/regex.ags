@@ -28,13 +28,19 @@ s	.tylambda	*
 
 regex.prim.u	.tyexpr
 _regex.prim.u_empty_ty	.tygvar
+_regex.prim.u_range_ty	.tygvar
 _regex.prim.u_symbol_ty	.tygvar
 s	.tylambda	*
+range_ty	.tylet	_regex.prim.u_range_ty	s
 symbol_ty	.tylet	_regex.prim.u_symbol_ty	s
-	.tysum	empty	_regex.prim.u_empty_ty	symbol	symbol_ty
+	.tysum	empty	_regex.prim.u_empty_ty	range	range_ty	symbol	symbol_ty
 
 _regex.prim.u_empty_ty	.tyexpr
 	.tyubproduct
+
+_regex.prim.u_range_ty	.tyexpr
+s	.tylambda	*
+	.tyubproduct	0	s	1	s
 
 _regex.prim.u_symbol_ty	.tyexpr
 s	.tylambda	*
