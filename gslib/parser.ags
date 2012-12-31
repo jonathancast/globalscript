@@ -15,6 +15,7 @@ parser.fail.msg	.closure	_parser.fail.msg_c
 
 parser.match	.closure	_parser.match_c
 _parser.match_worker	.closure	_parser.match_worker_c	_parser.match_worker_ty
+_parser.match_worker_class	.closure	_parser.match_worker_class_c	_parser.match_worker_class_ty
 
 parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
 parser.prim.fail	.closure	_parser.prim.fail_c
@@ -357,12 +358,14 @@ _parser.match_worker_res_ty	.tygvar
 s	.tyfv	*
 res_ty	.tylet	_parser.match_worker_res_ty	s
 _parser.match_worker_id_c	.subcode
+_parser.match_worker_class	.gvar
 parser.unit	.gvar
 re0	.karg	regex.prim.u	s
 	.analyze	re0	class	empty	symbol
 		.case	class
 cl		.fkarg	0	regex.class.t	s
-			.undef	parser.t	s	res_ty
+			.app	cl
+			.enter	_parser.match_worker_class	s
 		.case	empty
 id			.alloc	_parser.match_worker_id_c	s
 			.app	id
@@ -377,6 +380,25 @@ list.t	.tygvar
 s	.tyfv	*
 s	.larg	list.t	s
 	.enter	s
+
+_parser.match_worker_class_c	.expr
+regex.class.t	.tygvar
+s	.tyarg	*
+_parser.match_worker_class_k	.subcode
+regex.class.t.out	.cogvar
+cl	.larg	regex.class.t	s
+	.force	_parser.match_worker_class_k	s
+	.coerce	regex.class.t.out	s
+	.enter	cl
+
+_parser.match_worker_class_k	.forcecont
+regex.class.prim.u	.tygvar
+parser.t	.tygvar
+_parser.match_worker_res_ty	.tygvar
+s	.tyfv	*
+res_ty	.tylet	_parser.match_worker_res_ty	s
+cl0	.karg	regex.class.prim.u	s
+	.undef	parser.t	s	res_ty
 
 # §section Constructors
 
@@ -812,6 +834,16 @@ s	.tylambda	*
 	.tylift
 	.tyfun	list.t	s
 	.tyref	list.t	s
+
+_parser.match_worker_class_ty	.tyexpr
+regex.class.t	.tygvar
+parser.t	.tygvar
+_parser.match_worker_res_ty	.tygvar
+s	.tyforall	*
+res_ty	.tylet	_parser.match_worker_res_ty	s
+	.tylift
+	.tyfun	regex.class.t	s
+	.tyref	parser.t	s	res_ty
 
 	.coercion
 
