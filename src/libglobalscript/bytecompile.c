@@ -1106,6 +1106,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         re = (struct gsconstr *)heap[i];
         re->pos = p->pos;
         re->constrnum = gstypes_find_constr_in_sum(p->pos, gssymtyregex, sum, gssymconstrsymbol);
+        re->numargs = 1;
         re->arguments[0] = v;
 
         if (*eos) gsfatal(UNIMPL("%P: Multi-character regexes"), p->pos);
