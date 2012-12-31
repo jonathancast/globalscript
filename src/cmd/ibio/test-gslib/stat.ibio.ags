@@ -91,7 +91,7 @@ _real.entry_s_k1	.forcecont
 ibio.file.name.t	.tygvar
 bool.prim.u	.tygvar
 rune.t	.tygvar
-ibio.file.name.print	.gvar
+ibio.file.name.out	.gvar
 list.<>	.gvar
 _eol	.gvar
 list.:	.gvar
@@ -100,7 +100,7 @@ _file	.gvar
 _directory	.gvar
 nm	.fv	ibio.file.name.t
 b0	.karg	bool.prim.u
-nm.s	.apply	ibio.file.name.print	|	nm
+nm.s	.apply	ibio.file.name.out	|	nm
 s2	.apply	list.<>	rune.t	|	nm.s	_eol
 s1	.apply	list.:	rune.t	|	_sp	s2
 	.analyze	b0	false	true

@@ -685,7 +685,7 @@ parser.pos.t	.tygvar
 bool.prim.u	.tygvar
 rune.t	.tygvar
 list.<>	.gvar
-ibio.file.name.print	.gvar
+ibio.file.name.out	.gvar
 list.:	.gvar
 rune.colon	.gvar
 _parser.pos.fmt_line.fake.s	.gvar
@@ -696,7 +696,7 @@ eof0	.karg	bool.prim.u
 		.case	false
 fn			.lfield	file	pos
 col			.lfield	col	pos
-fn.s			.apply	ibio.file.name.print	|	fn
+fn.s			.apply	ibio.file.name.out	|	fn
 col.s			.apply	natural.fmtdecimal	|	col
 s3			.apply	list.:	rune.t	|	rune.colon	col.s
 s2			.apply	list.<>	rune.t	|	_parser.pos.fmt_line.fake.s	s3
@@ -706,7 +706,7 @@ s1			.apply	list.:	rune.t	|	rune.colon	s2
 		.case	true
 fn			.lfield	file	pos
 			.app	fn
-			.enter	ibio.file.name.print
+			.enter	ibio.file.name.out
 
 # §section §gs{parser.pos.≡}
 
