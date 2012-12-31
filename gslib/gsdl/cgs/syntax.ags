@@ -1,0 +1,16 @@
+	.prefix
+
+	.data
+
+gsdl.cgs.syntax.gsid	.closure	_gsdl.cgs.syntax.gsid_c
+_gsdl.cgs.syntax.gsid_re	.regex	[a-z]
+
+	.code
+
+_gsdl.cgs.syntax.gsid_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+parser.match	.gvar
+_gsdl.cgs.syntax.gsid_re	.gvar
+	.app	_gsdl.cgs.syntax.gsid_re
+	.enter	parser.match	rune.t
