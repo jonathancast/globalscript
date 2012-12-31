@@ -83,13 +83,14 @@ _test.fail.nil_k_c	.subcode
 test.property.label	.gvar
 _test.fail.nil_label	.gvar
 parser.test.assert.fails	.gvar
+parser.rune.advance	.gvar
 record.empty.print	.gvar
 parser.fail	.gvar
 list.nil	.gvar
 fail	.apply	parser.fail	rune.t	record.empty
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.fail.nil_k_c
-test	.apply	parser.test.assert.fails	rune.t	record.empty	|	record.empty.print	fail	nil	k
+test	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	record.empty.print	fail	nil	k
 	.app	_test.fail.nil_label	test
 	.enter	test.property.label
 
@@ -117,6 +118,7 @@ _test.fail.msg.nil_k_c	.subcode
 test.property.label	.gvar
 _test.fail.msg.nil_label	.gvar
 parser.test.assert.fails	.gvar
+parser.rune.advance	.gvar
 record.empty.print	.gvar
 parser.fail.msg	.gvar
 _test.fail.msg.nil_sample.msg	.gvar
@@ -124,7 +126,7 @@ list.nil	.gvar
 parser	.apply	parser.fail.msg	rune.t	record.empty	|	_test.fail.msg.nil_sample.msg
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.fail.msg.nil_k_c
-test	.apply	parser.test.assert.fails	rune.t	record.empty	|	record.empty.print	parser	nil	k
+test	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	record.empty.print	parser	nil	k
 	.app	_test.fail.msg.nil_label	test
 	.enter	test.property.label
 
@@ -156,13 +158,14 @@ _test.unit.nil_k_c	.subcode
 test.property.label	.gvar
 _test.unit.nil_label	.gvar
 parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
 parser.unit	.gvar
 bool.true	.gvar
 list.nil	.gvar
 parser	.apply	parser.unit	rune.t	bool.t	|	bool.true
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.unit.nil_k_c
-test	.apply	parser.test.assert.passes	rune.t	bool.t	|	parser	nil	k
+test	.apply	parser.test.assert.passes	rune.t	bool.t	|	parser.rune.advance	parser	nil	k
 	.app	_test.unit.nil_label	test
 	.enter	test.property.label
 
@@ -184,13 +187,14 @@ _test.symbol.nil_k_c	.subcode
 test.property.label	.gvar
 _test.symbol.nil_label	.gvar
 parser.test.assert.fails	.gvar
+parser.rune.advance	.gvar
 rune.print	.gvar
 parser.symbol	.gvar
 list.nil	.gvar
 sym	.apply	parser.symbol	rune.t
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.symbol.nil_k_c
-test	.apply	parser.test.assert.fails	rune.t	rune.t	|	rune.print	sym	nil	k
+test	.apply	parser.test.assert.fails	rune.t	rune.t	|	parser.rune.advance	rune.print	sym	nil	k
 	.app	_test.symbol.nil_label	test
 	.enter	test.property.label
 
@@ -223,6 +227,7 @@ _test.match.empty.nil_k_c	.subcode
 test.property.label	.gvar
 _test.match.empty.nil_label	.gvar
 parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
 parser.match	.gvar
 regex.empty	.gvar
 list.nil	.gvar
@@ -230,7 +235,7 @@ empty	.apply	regex.empty	rune.t
 parser	.apply	parser.match	rune.t	|	empty
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.match.empty.nil_k_c
-test	.apply	parser.test.assert.passes	rune.t	string.ty	|	parser	nil	k
+test	.apply	parser.test.assert.passes	rune.t	string.ty	|	parser.rune.advance	parser	nil	k
 	.app	_test.match.empty.nil_label	test
 	.enter	test.property.label
 

@@ -16,6 +16,7 @@ _parser.test.assert.fixtures.sample.file.name_s	.string	./parse-data
 # §section §gs{parser.test.assert.fails}
 
 _parser.test.assert.fails_c	.expr
+parser.advance.t	.tygvar
 _parser.test.assert.fails_print_ty	.tygvar
 parser.t	.tygvar
 list.t	.tygvar
@@ -28,6 +29,7 @@ either.t.out	.cogvar
 parser.parse	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
+adv	.larg	parser.advance.t	s
 print	.larg	_parser.test.assert.fails_print_ty	α
 p	.larg	parser.t	s	α
 s	.larg	list.t	s
@@ -35,7 +37,7 @@ k	.larg	_parser.test.assert.fails_k_ty
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
 	.force	_parser.test.assert.fails_k	α	|	print	k
 	.coerce	either.t.out	parser.err.t	α
-	.app	pos	p	s
+	.app	adv	pos	p	s
 	.enter	parser.parse	s	α
 
 _parser.test.assert.fails_k	.forcecont
@@ -67,6 +69,7 @@ msg			.apply	list.<>	rune.t	|	_parser.test.assert.fails_right_msg.prefix	x.s
 # §section §gs{parser.test.assert.passes}
 
 _parser.test.assert.passes_c	.expr
+parser.advance.t	.tygvar
 parser.t	.tygvar
 list.t	.tygvar
 _parser.test.assert.passes_k_ty	.tygvar
@@ -78,13 +81,14 @@ either.t.out	.cogvar
 parser.parse	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
+adv	.larg	parser.advance.t	s
 p	.larg	parser.t	s	α
 s	.larg	list.t	s
 k	.larg	_parser.test.assert.passes_k_ty	α
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
 	.force	_parser.test.assert.passes_k	α	|	k
 	.coerce	either.t.out	parser.err.t	α
-	.app	pos	p	s
+	.app	adv	pos	p	s
 	.enter	parser.parse	s	α
 
 _parser.test.assert.passes_k	.forcecont
