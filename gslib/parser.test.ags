@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.match.empty.nil	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.print
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.match.empty.nil	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.print	_test.rune.advance.x
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -62,6 +62,9 @@ _test.pos.eq.diff.col_foo.s	.string	./foo
 _test.pos.print	.closure	_test.pos.print_c
 _test.pos.print_label	.string	pos.print\spos.initial
 _test.pos.print_expected	.string	〈\s'file\s∝\sfn<./parse-data>;\s'col\s∝\s1;\s〉
+
+_test.rune.advance.x	.closure	_test.rune.advance.x_c
+_test.rune.advance.x_label	.string	parser.rune.advance\sr/x/
 
 	.code
 
@@ -439,4 +442,25 @@ pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
 pos.s	.apply	parser.pos.print	|	pos
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	pos.s	_test.pos.print_expected
 	.app	_test.pos.print_label	test
+	.enter	test.property.label
+
+# §section §gs{parser.rune.advance r/x/}
+
+_test.rune.advance.x_c	.expr
+parser.pos.t	.tygvar
+test.property.label	.gvar
+_test.rune.advance.x_label	.gvar
+test.assert.eq	.gvar
+parser.pos.≡	.gvar
+parser.pos.print	.gvar
+parser.rune.advance	.gvar
+rune.latin.letter.x	.gvar
+parser.pos.initial	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+parser.pos.next.col	.gvar
+pos0	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
+actual	.apply	parser.rune.advance	|	rune.latin.letter.x	pos0
+expected	.apply	parser.pos.next.col	|	pos0
+test	.apply	test.assert.eq	parser.pos.t	|	parser.pos.≡	parser.pos.print	actual	expected
+	.app	_test.rune.advance.x_label	test
 	.enter	test.property.label

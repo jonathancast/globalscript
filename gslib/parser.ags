@@ -37,6 +37,8 @@ _parser.err.print_simple.failure_prefix	.string	simple.failure\s
 parser.err.simple.failure	.closure	_parser.err.simple.failure_c
 parser.err.message.failure	.closure	_parser.err.message.failure_c
 
+parser.rune.advance	.closure	_parser.rune.advance_c
+
 parser.pos.fmt	.closure	_parser.pos.fmt_c
 _parser.pos.fmt_line.fake.s	.string	1
 
@@ -671,6 +673,17 @@ c	.constr	parser.err.prim.u	message.failure	0	pos	1	eof	2	msg
 	.coerce	parser.err.t.in
 	.lift
 	.yield	c
+
+# §section §gs{parser.rune.advance}
+
+_parser.rune.advance_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+parser.pos.next.col	.gvar
+r	.larg	rune.t
+pos	.larg	parser.pos.t
+	.app	pos
+	.enter	parser.pos.next.col
 
 # §section §gs{parser.pos.fmt}
 

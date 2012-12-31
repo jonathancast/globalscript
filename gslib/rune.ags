@@ -26,6 +26,7 @@ _bs	.closure	_bs_c
 rune.space	.closure	_rune.space_c
 rune.number.sign	.closure	_rune.number.sign_c
 rune.colon	.closure	_rune.colon_c
+rune.latin.letter.x	.closure	_rune.latin.letter.x_c
 
 	.code
 
@@ -238,6 +239,13 @@ co	.rune	:
 	.coerce	rune.t.in
 	.lift
 	.yield	co
+
+_rune.latin.letter.x_c	.expr
+rune.t.in	.cogvar
+x	.rune	x
+	.coerce	rune.t.in
+	.lift
+	.yield	x
 
 	.type
 
