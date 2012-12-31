@@ -41,8 +41,13 @@ parser.pos.fmt	.closure	_parser.pos.fmt_c
 _parser.pos.fmt_line.fake.s	.string	1
 
 parser.pos.≡	.closure	_parser.pos.≡_c
+
 parser.pos.print	.closure	_parser.pos.print_c
-_parser.pos.print_s	.string	〈〉
+_parser.pos_prefix.s	.string	〈\s
+_parser.pos.print_file.s	.string	'file\s∝\s
+_parser.pos.print_col.s	.string	'col\s∝\s
+_parser.pos.print_semi.space.s	.string	;\s
+_parser.pos_suffix.s	.string	〉
 
 parser.pos.initial	.closure	_parser.pos.initial_c
 
@@ -730,9 +735,28 @@ b1	.apply	natural.≡	|	pos0.col	pos1.col
 
 _parser.pos.print_c	.expr
 parser.pos.t	.tygvar
-_parser.pos.print_s	.gvar
+rune.t	.tygvar
+list.<>	.gvar
+_parser.pos_prefix.s	.gvar
+_parser.pos.print_file.s	.gvar
+_parser.pos_suffix.s	.gvar
+ibio.file.name.print	.gvar
+_parser.pos.print_semi.space.s	.gvar
+_parser.pos.print_col.s	.gvar
+natural.print	.gvar
 pos	.larg	parser.pos.t
-	.enter	_parser.pos.print_s
+fn	.lfield	file	pos
+col	.lfield	col	pos
+fn.s	.apply	ibio.file.name.print	|	fn
+col.s	.apply	natural.print	|	col
+s5	.apply	list.<>	rune.t	|	_parser.pos.print_semi.space.s	_parser.pos_suffix.s
+s4	.apply	list.<>	rune.t	|	col.s	s5
+s3	.apply	list.<>	rune.t	|	_parser.pos.print_col.s	s4
+s2	.apply	list.<>	rune.t	|	_parser.pos.print_semi.space.s	s3
+s1	.apply	list.<>	rune.t	|	fn.s	s2
+s0	.apply	list.<>	rune.t	|	_parser.pos.print_file.s	s1
+	.app	_parser.pos_prefix.s	s0
+	.enter	list.<>	rune.t
 
 # §section §gs{parser.pos.initial}
 

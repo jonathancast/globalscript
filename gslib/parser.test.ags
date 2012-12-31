@@ -35,7 +35,7 @@ _test.err.≡.simple.failure.simple.failure_succ.msg	.string	simple.failure\s≡
 
 _test.err.print.simple.failure	.closure	_test.err.print.simple.failure_c
 _test.err.print.simple.failure_label	.string	err.print\ssimple.failure\strue
-_test.err.print.simple.failure_expected	.string	simple.failure\strue\s〈〉
+_test.err.print.simple.failure_expected	.string	simple.failure\strue\s〈\s'file\s∝\sfn<./parse-data>;\s'col\s∝\s1;\s〉
 
 _test.pos.fmt.not.eof	.closure	_test.pos.fmt.not.eof_c
 _test.pos.fmt.not.eof_label	.string	pos.fmt\sfalse\sinitial.pos
@@ -61,7 +61,7 @@ _test.pos.eq.diff.col_foo.s	.string	./foo
 
 _test.pos.print	.closure	_test.pos.print_c
 _test.pos.print_label	.string	pos.print\spos.initial
-_test.pos.print_expected	.string	〈〉
+_test.pos.print_expected	.string	〈\s'file\s∝\sfn<./parse-data>;\s'col\s∝\s1;\s〉
 
 	.code
 
@@ -416,7 +416,7 @@ test	.apply	test.deny	|	_test.pos.eq.diff.col_false.msg	_test.pos.eq.diff.col_tr
 	.app	_test.pos.eq.diff.col_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.pos.print simple.failure}
+# §section §gs{parser.pos.print pos.initial}
 
 _test.pos.print_c	.expr
 list.t	.tygvar
