@@ -398,7 +398,11 @@ _parser.match_worker_res_ty	.tygvar
 s	.tyfv	*
 res_ty	.tylet	_parser.match_worker_res_ty	s
 cl0	.karg	regex.class.prim.u	s
-	.undef	parser.t	s	res_ty
+	.analyze	cl0	range
+		.case	range
+c0		.fkarg	0	s
+c1		.fkarg	1	s
+			.undef	parser.t	s	res_ty
 
 # §section Constructors
 
