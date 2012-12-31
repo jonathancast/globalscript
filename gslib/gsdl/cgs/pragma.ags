@@ -11,17 +11,35 @@ _type	.string	type
 
 # §section §gs{gsdl.cgs.pragma.parse}
 
+# > for (
+# >     'nm ← gsdl.cgs.syntax.gsid;
+# >     'pr ← gsdl.cgs.syntax.lexeme m/:/ *> (gsdl.cgs.pragma.rc.like <$> quotes)
+# >         <|> gsdl.cgs.syntax.lexeme m/=/ *> (gsdl.cgs.pragma.json.like <$> json.parse)
+# >    ;
+# > ) [| 《 nm, pr, 》 |]
+
 _gsdl.cgs.pragma.parse_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+_gsdl.cgs.pragma.parse_res_ty	.tygvar
+string.ty	.tylet	list.t	rune.t
+_gsdl.cgs.pragma.parse_f_c	.subcode
+parser.map	.gvar
+gsdl.cgs.syntax.gsid	.gvar
+f	.alloc	_gsdl.cgs.pragma.parse_f_c
+	.app	f	gsdl.cgs.syntax.gsid
+	.enter	parser.map	rune.t	string.ty	_gsdl.cgs.pragma.parse_res_ty
+
+_gsdl.cgs.pragma.parse_f_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
-_gsdl.cgs.pragma.parse_res_ty	.tygvar
-parser.unit	.gvar
-nm	.undefined	list.t	rune.t
+nm	.larg	list.t	rune.t
 pr	.undefined	gsdl.cgs.pragma.t
-r	.lrecord	0	nm	1	pr
-	.app	r
-	.enter	parser.unit	rune.t	_gsdl.cgs.pragma.parse_res_ty
+r	.record	0	nm	1	pr
+	.lift
+	.yield	r
 
 # §section §gs{gsdl.cgs.pragma.gstype.get}
 
