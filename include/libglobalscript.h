@@ -104,6 +104,7 @@ typedef enum {
     gssymseparator,
     gssymruneconstant,
     gssymstringconstant,
+    gssymregexconstant,
     gssymnaturalconstant,
 } gssymboltype;
 

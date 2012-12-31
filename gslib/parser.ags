@@ -358,11 +358,14 @@ res_ty	.tylet	_parser.match_worker_res_ty	s
 _parser.match_worker_id_c	.subcode
 parser.unit	.gvar
 re0	.karg	regex.prim.u	s
-	.analyze	re0	empty
+	.analyze	re0	empty	symbol
 		.case	empty
 id			.alloc	_parser.match_worker_id_c	s
 			.app	id
 			.enter	parser.unit	s	res_ty
+		.case	symbol
+c		.fkarg	0	s
+			.undef	parser.t	s	res_ty
 	# > :: parser.t	s	res_ty
 
 _parser.match_worker_id_c	.expr

@@ -28,11 +28,17 @@ s	.tylambda	*
 
 regex.prim.u	.tyexpr
 _regex.prim.u_empty_ty	.tygvar
+_regex.prim.u_symbol_ty	.tygvar
 s	.tylambda	*
-	.tysum	empty	_regex.prim.u_empty_ty
+symbol_ty	.tylet	_regex.prim.u_symbol_ty	s
+	.tysum	empty	_regex.prim.u_empty_ty	symbol	symbol_ty
 
 _regex.prim.u_empty_ty	.tyexpr
 	.tyubproduct
+
+_regex.prim.u_symbol_ty	.tyexpr
+s	.tylambda	*
+	.tyubproduct	0	s
 
 	.coercion
 

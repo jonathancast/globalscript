@@ -81,7 +81,7 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
 
 static char *gsbc_parse_rune_literal(struct gspos, char *, gsvalue *);
 
-static gsinterned_string gssymundefined, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymclosure, gssymcast;
+static gsinterned_string gssymundefined, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymclosure, gssymcast;
 
 static
 void
@@ -141,6 +141,25 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
         ;
         *psection = gsbc_constrs;
         *psize = p->numarguments * (sizeof(struct gsconstr) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr);
+    } else if (gssymceq(p->directive, gssymregex, gssymdatadirective, ".regex")) {
+        int interp;
+        char *eos;
+        ulong size;
+        gsvalue v;
+
+        interp = 1;
+        size = 0;
+        eos = p->arguments[0]->name;
+
+        eos = gsbc_parse_rune_literal(p->pos, eos, &v);
+        size += sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
+
+        if (*eos) gsfatal(UNIMPL("%P: Multi-character regexes"), p->pos);
+
+        *psection = gsbc_constrs;
+        *psize = size;
+
+        if (interp < p->numarguments) gsfatal("%P: More interpolation values than locations", p->pos);
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         *psection = gsbc_errors;
         *psize = sizeof(struct gserror);
@@ -157,7 +176,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
         *psection = gsbc_indir;
         *pindir = res;
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_heap_size_item(%s)", item.v->pos, p->directive->name);
+        gsfatal(UNIMPL("%P: gsbc_heap_size_item(%y)"), item.v->pos, p->directive);
     }
 }
 
@@ -1055,6 +1074,43 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
             gsnil->constrnum = 1;
             gsnil->numargs = 0;
         }
+    } else if (gssymceq(p->directive, gssymregex, gssymdatadirective, ".regex")) {
+        static gsinterned_string gssymtyregex, gssymtyrune, gssymconstrsymbol;
+        struct gstype *type;
+        struct gstype_sum *sum;
+        int interp;
+        char *eos;
+        ulong size;
+        struct gsconstr *re;
+        gsvalue v;
+
+        if (!gssymtyregex) gssymtyregex = gsintern_string(gssymtypelable, "regex.t");
+        if (!gssymtyrune) gssymtyrune = gsintern_string(gssymtypelable, "rune.t");
+        if (!gssymconstrsymbol) gssymconstrsymbol = gsintern_string(gssymconstrlable, "symbol");
+
+        type = gssymtable_get_type(symtable, gssymtyregex);
+        if (!type || type->node != gstype_abstract) gsfatal("%P: regex.t is not an abstract type?!");
+        type = gstype_get_definition(p->pos, symtable, type);
+        if (!type || type->node != gstype_lambda) gsfatal("%P: regex.t does not have a type parameter?!");
+        type = gstype_apply(p->pos, type, gssymtable_get_type(symtable, gssymtyrune));
+        if (type->node != gstype_lift) gsfatal("%P: regex.t is not lifted?!", p->pos);
+        type = ((struct gstype_lift*)type)->arg;
+        if (type->node != gstype_sum) gsfatal("%P: regex.t is not a sum?!", p->pos);
+        sum = (struct gstype_sum*)type;
+
+        interp = 1;
+        size = 0;
+        eos = p->arguments[0]->name;
+
+        eos = gsbc_parse_rune_literal(p->pos, eos, &v);
+        re = (struct gsconstr *)heap[i];
+        re->pos = p->pos;
+        re->constrnum = gstypes_find_constr_in_sum(p->pos, gssymtyregex, sum, gssymconstrsymbol);
+        re->arguments[0] = v;
+
+        if (*eos) gsfatal(UNIMPL("%P: Multi-character regexes"), p->pos);
+
+        if (interp < p->numarguments) gsfatal("%P: More interpolation values than locations", p->pos);
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gserror *er;
 
@@ -1076,7 +1132,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
     } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
         ;
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Data directive %s next", p->pos, p->directive->name);
+        gsfatal(UNIMPL("%P: Data directive %y"), p->pos, p->directive);
     }
 }
 

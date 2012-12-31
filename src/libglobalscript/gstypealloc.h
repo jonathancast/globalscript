@@ -154,6 +154,8 @@ int gstypes_is_ftyvar(gsinterned_string, struct gstype *);
 void gstypes_compile_types(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int);
 void gstypes_compile_type_definitions(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int);
 
+int gstypes_find_constr_in_sum(struct gspos, gsinterned_string, struct gstype_sum *, gsinterned_string);
+
 struct gsbc_coercion_arg {
     gsinterned_string var;
     struct gskind *kind;

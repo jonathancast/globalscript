@@ -306,7 +306,7 @@ static
 void
 gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymcast;
 
     gsinterned_string directive = item.v->directive;
 
@@ -403,6 +403,27 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         }
         if (i < item.v->numarguments) {
             gsfatal(UNIMPL("%P: Dotted .lists next"), item.v->pos);
+        }
+    } else if (gssymceq(directive, gssymregex, gssymdatadirective, ".regex")) {
+        static gsinterned_string gssymtyregex, gssymtyrune;
+        struct gsbc_item dest;
+        int i;
+
+        if (!gssymtyregex)
+            gssymtyregex = gsintern_string(gssymtypelable, "regex.t")
+        ;
+        dest = gssymtable_lookup(item.v->pos, symtable, gssymtyregex);
+        gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, dest, pend, pc);
+
+        if (!gssymtyrune)
+            gssymtyrune = gsintern_string(gssymtypelable, "rune.t")
+        ;
+        dest = gssymtable_lookup(item.v->pos, symtable, gssymtyrune);
+        gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, dest, pend, pc);
+
+        for (i = 1; i < item.v->numarguments; i++) {
+            dest = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[i]);
+            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, dest, pend, pc);
         }
     } else if (gssymceq(directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gsbc_item ty;

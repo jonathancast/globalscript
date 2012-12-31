@@ -65,6 +65,8 @@ ok_grep_errors '-- natural number literals: negative number --' './test-gslib/na
 
 ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
 
+ok_diff '-- regex literals --' ./$O.test-gsi regex-literal.ags
+
 ok_diff '-- constructors in expressions --' ./$O.test-gsi constr-in-expr.ags
 
 ok_diff '-- analyze on boxed sums --' ./$O.test-gsi analyze-constructor.ags

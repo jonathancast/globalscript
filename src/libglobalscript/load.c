@@ -344,7 +344,7 @@ static
 long
 gsparse_data_item(char *filename, int is_ags, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, int *plineno, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymcast;
 
     struct gsparsedline *parsedline;
     int i;
@@ -415,12 +415,23 @@ gsparse_data_item(char *filename, int is_ags, gsparsedfile *parsedfile, struct u
             gsfatal("%s:%d: Too many arguments to .string");
     } else if (is_ags && gssymceq(parsedline->directive, gssymlist, gssymdatadirective, ".list")) {
         if (numfields < 2+1)
-            gsfatal("%s:%d: Missing element type", filename, *plineno);
+            gsfatal("%s:%d: Missing element type", filename, *plineno)
+        ;
         parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2+0]);
         for (i = 1; 2 + i < numfields && strcmp(fields[2 + i], "|"); i++)
-            parsedline->arguments[i] = gsintern_string(gssymdatalable, fields[2+i]);
+            parsedline->arguments[i] = gsintern_string(gssymdatalable, fields[2+i])
+        ;
         if (2 + i < numfields)
-            gsfatal(UNIMPL("%s:%d: Dotted .lists next"), filename, *plineno);
+            gsfatal(UNIMPL("%s:%d: Dotted .lists next"), filename, *plineno)
+        ;
+    } else if (is_ags && gssymceq(parsedline->directive, gssymregex, gssymdatadirective, ".regex")) {
+        if (numfields < 2 + 1)
+            gsfatal("%s:%d: Missing regex", filename, *plineno)
+        ;
+        parsedline->arguments[0] = gsintern_string(gssymregexconstant, fields[2+0]);
+        for (i = 1; 2 + i < numfields; i++)
+            parsedline->arguments[i] = gsintern_string(gssymdatalable, fields[2+i])
+        ;
     } else if (gssymceq(parsedline->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         if (numfields < 2+1)
             gsfatal("%s:%d: Missing type label", filename, *plineno);
@@ -437,7 +448,7 @@ gsparse_data_item(char *filename, int is_ags, gsparsedfile *parsedfile, struct u
         if (numfields > 2+2)
             gsfatal("%s:%d: Too many arguments to .cast; I know about the coercion to apply and the data item to cast");
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Unimplemented data directive %s", filename, *plineno, fields[1]);
+        gsfatal(UNIMPL("%s:%d: Unimplemented data directive %s"), filename, *plineno, fields[1]);
     }
 
     return 1;

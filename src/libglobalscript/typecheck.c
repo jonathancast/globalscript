@@ -516,7 +516,7 @@ static
 void
 gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsbc_item item, struct gstype **pentrytype)
 {
-    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
 
@@ -559,6 +559,20 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
         ; else if (pentrytype)
             *pentrytype = type
         ;
+    } else if (gssymceq(pdata->directive, gssymregex, gssymdatadirective, ".regex")) {
+        static gsinterned_string gssymtyregex, gssymtyrune;
+        struct gstype *regex, *rune;
+
+        if (!gssymtyregex) gssymtyregex = gsintern_string(gssymtypelable, "regex.t");
+        if (!gssymtyrune) gssymtyrune = gsintern_string(gssymtypelable, "rune.t");
+
+        regex = gssymtable_get_type(symtable, gssymtyregex);
+        rune = gssymtable_get_type(symtable, gssymtyrune);
+        if (pdata->label)
+            gssymtable_set_data_type(symtable, pdata->label, gstype_apply(pdata->pos, regex, rune))
+        ; else if (pentrytype)
+            *pentrytype = gstype_apply(pdata->pos, regex, rune)
+        ;
     } else if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;
 
@@ -590,7 +604,7 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
     } else if (gssymceq(pdata->directive, gssymcast, gssymdatadirective, ".cast")) {
         return;
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_process_data_type_signature(%s)", item.v->pos, pdata->directive->name);
+        gsfatal(UNIMPL("%P: gstypes_process_data_type_signature(%y)"), item.v->pos, pdata->directive);
     }
 }
 
@@ -632,14 +646,13 @@ gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
 }
 
 static void gstypes_type_check_type_fail(struct gspos pos, struct gstype *, struct gstype *);
-static int gsbc_find_constr_in_sum(struct gspos, gsinterned_string, struct gstype_sum *, gsinterned_string);
 static void gsbc_check_field_order(struct gspos, int, struct gstype_field *);
 
 static
 void
 gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, struct gstype **pentrytype, int n, int i)
 {
-    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
 
@@ -686,7 +699,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         ;
         sum = (struct gstype_sum *)type;
         gsargcheck(pdata, 1, "constructor");
-        constrnum = gsbc_find_constr_in_sum(pdata->pos, pdata->arguments[0], sum, pdata->arguments[1]);
+        constrnum = gstypes_find_constr_in_sum(pdata->pos, pdata->arguments[0], sum, pdata->arguments[1]);
         argtype = sum->constrs[constrnum].argtype;
 
         if (pdata->numarguments == 3) {
@@ -764,6 +777,20 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         if (i < pdata->numarguments)
             gsfatal(UNIMPL("%P: Dotted .lists"), pdata->pos)
         ;
+    } else if (gssymceq(pdata->directive, gssymregex, gssymdatadirective, ".regex")) {
+        static gsinterned_string gssymtyregex, gssymtyrune;
+        struct gstype *regex, *rune, *rerune;
+
+        if (!gssymtyregex) gssymtyregex = gsintern_string(gssymtypelable, "regex.t");
+        regex = gssymtable_get_type(symtable, gssymtyregex);
+
+        if (!gssymtyrune) gssymtyrune = gsintern_string(gssymtypelable, "rune.t");
+        rune = gssymtable_get_type(symtable, gssymtyrune);
+
+        rerune = gstype_apply(pdata->pos, regex, rune);
+        for (i = 1; i < pdata->numarguments; i++)
+            gsfatal(UNIMPL("%P: Check RE interpolation"), pdata->pos)
+        ;
     } else if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;
         struct gskind *kind;
@@ -828,7 +855,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             *pentrytype = coercion_type->dest
         ;
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_type_check_data_item(%s)", pdata->pos, pdata->directive->name);
+        gsfatal(UNIMPL("%P: gstypes_type_check_data_item(%y)"), pdata->pos, pdata->directive);
     }
 }
 
@@ -2257,7 +2284,7 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         sum = (struct gstype_sum *)type;
 
         gsargcheck(p, 1, "constructor");
-        constrnum = gsbc_find_constr_in_sum(p->pos, p->arguments[0], sum, p->arguments[1]);
+        constrnum = gstypes_find_constr_in_sum(p->pos, p->arguments[0], sum, p->arguments[1]);
         argtype = sum->constrs[constrnum].argtype;
 
         first_val_arg = 2;
@@ -2438,9 +2465,8 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
     return 1;
 }
 
-static
 int
-gsbc_find_constr_in_sum(struct gspos pos, gsinterned_string tyname, struct gstype_sum *sum, gsinterned_string c)
+gstypes_find_constr_in_sum(struct gspos pos, gsinterned_string tyname, struct gstype_sum *sum, gsinterned_string c)
 {
     int i;
 
