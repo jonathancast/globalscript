@@ -153,9 +153,10 @@ b0	.karg	bool.prim.u
 pos			.lfield	pos	p
 pragmas			.lfield	pragmas	p
 pos1			.apply	parser.pos.next.col	|	pos
+parser			.apply	gsdl.cgs.pragma.parse	# §todo{Should be §gs{gsdl.cgs.syntax.ws *> gsdl.cgs.pragma.parse}}
 			.force	_gsdl.cgs.file.read_pragmas.pos_insert_k2	|	eo
 			.coerce	either.t.out	parser.err.t	_gsdl.cgs.pragma.parse_res_ty
-			.app	pos1	gsdl.cgs.pragma.parse	l1
+			.app	pos1	parser	l1
 			.enter	parser.parse	rune.t	_gsdl.cgs.pragma.parse_res_ty
 
 _gsdl.cgs.file.read_pragmas.pos_insert_k2	.forcecont
