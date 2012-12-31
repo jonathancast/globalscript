@@ -40,3 +40,9 @@ regex.t.in	.tycoercion
 regex.t	.tygvar
 s	.tylambda	*
 	.tydefinition	regex.t	s
+
+regex.t.out	.tycoercion
+regex.t	.tygvar
+s	.tylambda	*
+	.tyinvert
+	.tydefinition	regex.t	s
