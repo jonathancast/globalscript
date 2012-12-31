@@ -115,10 +115,10 @@ x		.fkarg	0	α
 # §section §gs{parser.test.assert.fixtures.sample.file.name}
 
 _parser.test.assert.fixtures.sample.file.name_c	.expr
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 _parser.test.assert.fixtures.sample.file.name_s	.gvar
 	.app	_parser.test.assert.fixtures.sample.file.name_s
-	.enter	ibio.file.name.read
+	.enter	ibio.file.name.in
 
 	.type
 

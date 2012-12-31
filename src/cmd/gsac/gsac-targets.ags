@@ -35,9 +35,9 @@ rune.t	.tygvar
 ibio.file.name.t	.tygvar
 _string.ty	.tylet	list.t	rune.t
 list.map	.gvar
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 args	.fv	list.t	_string.ty
-	.app	ibio.file.name.read	args
+	.app	ibio.file.name.in	args
 	.enter	list.map	_string.ty	ibio.file.name.t
 
 _real.entry_body_c	.expr

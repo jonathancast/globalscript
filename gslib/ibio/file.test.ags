@@ -30,11 +30,11 @@ test.deny	.gvar
 _test.eq.foo.bar_false.msg	.gvar
 _test.eq.foo.bar_true.msg	.gvar
 ibio.file.name.≡	.gvar
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 _test.eq.foo.bar_foo.fn.s	.gvar
 _test.eq.foo.bar_bar.fn.s	.gvar
-foo.fn	.apply	ibio.file.name.read	|	_test.eq.foo.bar_foo.fn.s
-bar.fn	.apply	ibio.file.name.read	|	_test.eq.foo.bar_bar.fn.s
+foo.fn	.apply	ibio.file.name.in	|	_test.eq.foo.bar_foo.fn.s
+bar.fn	.apply	ibio.file.name.in	|	_test.eq.foo.bar_bar.fn.s
 eq	.apply	ibio.file.name.≡	|	foo.fn	bar.fn
 test	.apply	test.deny	|	_test.eq.foo.bar_false.msg	_test.eq.foo.bar_true.msg	eq
 	.app	_test.eq.foo.bar_label	test

@@ -2,7 +2,7 @@
 
 	.data
 
-ibio.file.name.read	.closure	_ibio.file.name.read_c
+ibio.file.name.in	.closure	_ibio.file.name.in_c
 ibio.file.name.print	.closure	_ibio.file.name.print_c
 ibio.file.name.with	.closure	_ibio.file.name.with_c
 
@@ -30,7 +30,7 @@ _dot	.closure	_dot_c
 
 # §section §gs{ibio.file.name.read}
 
-_ibio.file.name.read_c	.expr
+_ibio.file.name.in_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
 ibio.file.name.in	.cogvar
@@ -53,13 +53,13 @@ _ibio.file.name.with_c	.expr
 _ibio.file.name.with_f_ty	.tygvar
 ibio.file.name.t	.tygvar
 ibio.file.name.print	.gvar
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 f	.larg	_ibio.file.name.with_f_ty
 fn	.larg	ibio.file.name.t
 fn.0	.apply	ibio.file.name.print	|	fn
 fn.1	.apply	f	|	fn.0
 	.app	fn.1
-	.enter	ibio.file.name.read
+	.enter	ibio.file.name.in
 
 # §section §gs{ibio.file.name.≡}
 
@@ -472,14 +472,14 @@ _ibio.file.name.</>_c	.expr
 ibio.file.name.t	.tygvar
 ibio.file.name.print	.gvar
 _ibio.file.name.</>_worker	.gvar
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 dn	.larg	ibio.file.name.t
 fn	.larg	ibio.file.name.t
 dn0	.apply	ibio.file.name.print	|	dn
 fn0	.apply	ibio.file.name.print	|	fn
 res	.apply	_ibio.file.name.</>_worker	|	dn0	fn0
 	.app	res
-	.enter	ibio.file.name.read
+	.enter	ibio.file.name.in
 
 _ibio.file.name.</>_worker_c	.expr
 list.t	.tygvar

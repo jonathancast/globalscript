@@ -50,14 +50,14 @@ list.t	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
 _string.ty	.tylet	list.t	rune.t
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 as0	.karg	list.prim.u	_string.ty
 	.analyze	as0	:	nil
 		.case	:
 a0		.fkarg	0	_string.ty
 as1		.fkarg	1	list.t	_string.ty
 			.app	a0
-			.enter	ibio.file.name.read
+			.enter	ibio.file.name.in
 		.case	nil
 			.undef	ibio.file.name.t
 

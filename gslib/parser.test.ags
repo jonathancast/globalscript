@@ -383,12 +383,12 @@ _test.pos.eq.diff.file_false.msg	.gvar
 _test.pos.eq.diff.file_true.msg	.gvar
 parser.pos.≡	.gvar
 parser.pos.initial	.gvar
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 _test.pos.eq.diff.file_foo.s	.gvar
 _test.pos.eq.diff.file_bar.s	.gvar
-foo.fn	.apply	ibio.file.name.read	|	_test.pos.eq.diff.file_foo.s
+foo.fn	.apply	ibio.file.name.in	|	_test.pos.eq.diff.file_foo.s
 foo.pos	.apply	parser.pos.initial	|	foo.fn
-bar.fn	.apply	ibio.file.name.read	|	_test.pos.eq.diff.file_bar.s
+bar.fn	.apply	ibio.file.name.in	|	_test.pos.eq.diff.file_bar.s
 bar.pos	.apply	parser.pos.initial	|	bar.fn
 b	.apply	parser.pos.≡	|	foo.pos	bar.pos
 test	.apply	test.deny	|	_test.pos.eq.diff.file_false.msg	_test.pos.eq.diff.file_true.msg	b
@@ -406,9 +406,9 @@ _test.pos.eq.diff.col_true.msg	.gvar
 parser.pos.≡	.gvar
 parser.pos.next.col	.gvar
 parser.pos.initial	.gvar
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 _test.pos.eq.diff.col_foo.s	.gvar
-foo.fn	.apply	ibio.file.name.read	|	_test.pos.eq.diff.col_foo.s
+foo.fn	.apply	ibio.file.name.in	|	_test.pos.eq.diff.col_foo.s
 foo.pos	.apply	parser.pos.initial	|	foo.fn
 foo.pos.1	.apply	parser.pos.next.col	|	foo.pos
 b	.apply	parser.pos.≡	|	foo.pos.1	foo.pos

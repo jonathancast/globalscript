@@ -64,10 +64,10 @@ fn			.alloc	_real.entry_st_k_fn_c	|	a
 _real.entry_st_k_fn_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 a	.fv	list.t	rune.t
 	.app	a
-	.enter	ibio.file.name.read
+	.enter	ibio.file.name.in
 
 _real.entry_s_c	.expr
 ibio.dir.t	.tygvar

@@ -105,7 +105,7 @@ string.ty	.tylet	list.t	rune.t
 _parse.args_k2	.subcode
 list.t.out	.cogvar
 list.:	.gvar
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 _parse.args	.gvar
 a0	.fv	list.t	rune.t
 as1	.fv	list.t	string.ty
@@ -115,7 +115,7 @@ b0	.karg	bool.prim.u
 res0			.apply	_parse.args	|	as1
 pfn			.lfield	0	res0
 fs0			.lfield	1	res0
-f0			.apply	ibio.file.name.read	|	a0
+f0			.apply	ibio.file.name.in	|	a0
 fs1			.apply	list.:	ibio.file.name.t	|	f0	fs0
 res1			.record	0	pfn	1	fs1
 			.lift
@@ -133,7 +133,7 @@ ibio.file.name.t	.tygvar
 _parse.args_res_ty	.tygvar
 string.ty	.tylet	list.t	rune.t
 list.:	.gvar
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 _parse.args	.gvar
 as1.0	.karg	list.prim.u	string.ty
 	.analyze	as1.0	:	nil
@@ -143,7 +143,7 @@ as2		.fkarg	1	list.t	string.ty
 res0			.apply	_parse.args	|	as2
 pfn0			.lfield	0	res0
 fs			.lfield	1	res0
-pf0			.apply	ibio.file.name.read	|	a1
+pf0			.apply	ibio.file.name.in	|	a1
 pfn1			.apply	list.:	ibio.file.name.t	|	pf0	pfn0
 res1			.record	0	pfn1	1	fs
 			.lift

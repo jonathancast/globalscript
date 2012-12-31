@@ -59,10 +59,10 @@ fn0			.alloc	_real.entry_b_k_fn0_c	|	a0
 _real.entry_b_k_fn0_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-ibio.file.name.read	.gvar	
+ibio.file.name.in	.gvar
 a0	.fv	list.t	rune.t
 	.app	a0
-	.enter	ibio.file.name.read
+	.enter	ibio.file.name.in
 
 _real.entry_body_c	.expr
 ibio.prim.oport	.tygvar

@@ -48,7 +48,7 @@ ibio.prim.iport	.tygvar
 string.ty	.tylet	list.t	rune.t
 res.ty	.tylet	ibio.prim.iport	rune.t
 ibio.file.read.open.prim	.gvar
-ibio.file.name.read	.gvar
+ibio.file.name.in	.gvar
 ibio.rune.external.io	.gvar
 ibio.prim.unit	.gvar
 i	.fv	ibio.prim.iport	rune.t
@@ -57,7 +57,7 @@ as0	.karg	list.prim.u	string.ty
 		.case	:
 a0		.fkarg	0	list.t	rune.t
 as1		.fkarg	1	list.t	string.ty
-fn			.apply	ibio.file.name.read	|	a0
+fn			.apply	ibio.file.name.in	|	a0
 			.app	ibio.rune.external.io	fn
 			.enter	ibio.file.read.open.prim	rune.t
 		.case	nil
