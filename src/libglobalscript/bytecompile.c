@@ -154,6 +154,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
         switch (eos[0]) {
             case '[':
                 eos++;
+                size += sizeof(struct gsconstr) + sizeof(gsvalue);
 
                 eos = gsbc_parse_rune_literal(p->pos, eos, &v);
                 if (!*eos)
@@ -1097,16 +1098,20 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
             gsnil->numargs = 0;
         }
     } else if (gssymceq(p->directive, gssymregex, gssymdatadirective, ".regex")) {
-        static gsinterned_string gssymtyregex, gssymtyrune, gssymconstrsymbol, gssymconstrrange;
-        struct gstype *type;
-        struct gstype_sum *sum;
+        static gsinterned_string gssymtyregex, gssymtyrune, gssymconstrsymbol, gssymconstrclass;
+        static gsinterned_string gssymtyclass, gssymconstrrange;
+        struct gstype *type, *cltype;
+        struct gstype_sum *sum, *clsum;
         int interp;
         char *eos;
+        void *pout;
         struct gsconstr *re;
 
         if (!gssymtyregex) gssymtyregex = gsintern_string(gssymtypelable, "regex.t");
         if (!gssymtyrune) gssymtyrune = gsintern_string(gssymtypelable, "rune.t");
         if (!gssymconstrsymbol) gssymconstrsymbol = gsintern_string(gssymconstrlable, "symbol");
+        if (!gssymconstrclass) gssymconstrclass = gsintern_string(gssymconstrlable, "class");
+        if (!gssymtyclass) gssymtyclass = gsintern_string(gssymtypelable, "regex.class.t");
         if (!gssymconstrrange) gssymconstrrange = gsintern_string(gssymconstrlable, "range");
 
         type = gssymtable_get_type(symtable, gssymtyregex);
@@ -1119,12 +1124,32 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         if (type->node != gstype_sum) gsfatal("%P: regex.t is not a sum?!", p->pos);
         sum = (struct gstype_sum*)type;
 
+        cltype = gssymtable_get_type(symtable, gssymtyclass);
+        if (!cltype || cltype->node != gstype_abstract) gsfatal("%P: regex.class.t is not an abstract type?!");
+        cltype = gstype_get_definition(p->pos, symtable, cltype);
+        if (!cltype || cltype->node != gstype_lambda) gsfatal("%P: regex.class.t does not have a type parameter?!");
+        cltype = gstype_apply(p->pos, cltype, gssymtable_get_type(symtable, gssymtyrune));
+        if (cltype->node != gstype_lift) gsfatal("%P: regex.class.t is not lifted?!", p->pos);
+        cltype = ((struct gstype_lift*)cltype)->arg;
+        if (cltype->node != gstype_sum) gsfatal("%P: regex.class.t is not a sum?!", p->pos);
+        clsum = (struct gstype_sum*)cltype;
+
         interp = 1;
         eos = p->arguments[0]->name;
+        pout = (void*)heap[i];
 
         switch (*eos) {
             case '[': {
+                gsvalue *pclass;
+                struct gsconstr *cl;
                 gsvalue c0, c1;
+
+                re = (struct gsconstr *)pout;
+                re->pos = p->pos;
+                re->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrclass);
+                re->numargs = 1;
+                pclass = &re->arguments[0];
+                pout = (uchar*)re + sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
 
                 eos++;
                 if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
@@ -1136,12 +1161,14 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
                     else if (*eos == ']') gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
                     eos = gsbc_parse_rune_literal(p->pos, eos, &c1);
 
-                    re = (struct gsconstr *)heap[i];
-                    re->pos = p->pos;
-                    re->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrrange);
-                    re->numargs = 2;
-                    re->arguments[0] = c0;
-                    re->arguments[1] = c1;
+                    cl = (struct gsconstr *)pout;
+                    *pclass = (gsvalue)cl;
+                    cl->pos = p->pos;
+                    cl->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrrange);
+                    cl->numargs = 2;
+                    cl->arguments[0] = c0;
+                    cl->arguments[1] = c1;
+                    pout = (uchar*)cl + sizeof(struct gsconstr) + 2 * sizeof(gsvalue);
                 } else gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
                 if (*eos != ']') gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
                 eos++;
@@ -1151,11 +1178,12 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
                 gsvalue c;
 
                 eos = gsbc_parse_rune_literal(p->pos, eos, &c);
-                re = (struct gsconstr *)heap[i];
+                re = (struct gsconstr *)pout;
                 re->pos = p->pos;
                 re->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsymbol);
                 re->numargs = 1;
                 re->arguments[0] = c;
+                pout = (uchar*)re + sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
                 break;
             }
         }

@@ -20,6 +20,8 @@ r	.constr	res.u	empty
 
 	.type
 
+# §section §gs{regex.t}
+
 regex.t	.tyabstract	**^
 regex.prim.u	.tygvar
 s	.tylambda	*
@@ -27,24 +29,44 @@ s	.tylambda	*
 	.tyref	regex.prim.u	s
 
 regex.prim.u	.tyexpr
+_regex.prim.u_class_ty	.tygvar
 _regex.prim.u_empty_ty	.tygvar
-_regex.prim.u_range_ty	.tygvar
 _regex.prim.u_symbol_ty	.tygvar
 s	.tylambda	*
-range_ty	.tylet	_regex.prim.u_range_ty	s
+class_ty	.tylet	_regex.prim.u_class_ty	s
 symbol_ty	.tylet	_regex.prim.u_symbol_ty	s
-	.tysum	empty	_regex.prim.u_empty_ty	range	range_ty	symbol	symbol_ty
+	.tysum	class	class_ty	empty	_regex.prim.u_empty_ty	symbol	symbol_ty
+
+_regex.prim.u_class_ty	.tyexpr
+regex.class.t	.tygvar
+s	.tylambda	*
+0_ty	.tylet	regex.class.t	s
+	.tyubproduct	0	0_ty
 
 _regex.prim.u_empty_ty	.tyexpr
 	.tyubproduct
 
-_regex.prim.u_range_ty	.tyexpr
-s	.tylambda	*
-	.tyubproduct	0	s	1	s
-
 _regex.prim.u_symbol_ty	.tyexpr
 s	.tylambda	*
 	.tyubproduct	0	s
+
+# §section §gs{regex.class.t}
+
+regex.class.t	.tyabstract	**^
+regex.class.prim.u	.tygvar
+s	.tylambda	*
+	.tylift
+	.tyref	regex.class.prim.u	s
+
+regex.class.prim.u	.tyexpr
+_regex.class.prim.u_range_ty	.tygvar
+s	.tylambda	*
+range_ty	.tylet	_regex.class.prim.u_range_ty	s
+	.tysum	range	range_ty
+
+_regex.class.prim.u_range_ty	.tyexpr
+s	.tylambda	*
+	.tyubproduct	0	s	1	s
 
 	.coercion
 
