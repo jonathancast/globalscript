@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.match.empty.nil	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.print	_test.rune.advance.x
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.print.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.print	_test.rune.advance.x
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -20,6 +20,10 @@ _test.unit.nil_label	.string	parse\s(unit\strue)\sqq{}
 _test.symbol.nil	.closure	_test.symbol.nil_c
 _test.symbol.nil_label	.string	parse\ssymbol\sqq{}
 _test.symbol.nil_expected	.string	./parse-data:\sUn-expected\sEOF;\sexpected\ssymbol
+
+_test.symbol.cons	.closure	_test.symbol.cons_c
+_test.symbol.cons_label	.string	parse\ssymbol\sqq{n}
+_test.symbol.cons_string	.string	n
 
 _test.match.empty.nil	.closure	_test.match.empty.nil_c
 _test.match.empty.nil_label	.string	parse\sm//\sqq{}
@@ -216,6 +220,33 @@ string.print	.apply	list.print	rune.t	|	rune.print.list
 err.s	.apply	parser.err.fmt	|	err
 	.app	string.≡	string.print	err.s	_test.symbol.nil_expected
 	.enter	test.assert.eq	string.ty
+
+# §section §gs{parse symbol qq{n}}
+
+_test.symbol.cons_c	.expr
+rune.t	.tygvar
+_test.symbol.cons_k	.subcode
+test.property.label	.gvar
+_test.symbol.cons_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+parser.symbol	.gvar
+_test.symbol.cons_string	.gvar
+symbol	.apply	parser.symbol	rune.t
+k	.alloc	_test.symbol.cons_k
+test	.apply	parser.test.assert.passes	rune.t	rune.t	|	parser.rune.advance	symbol	_test.symbol.cons_string	k
+	.app	_test.symbol.cons_label	test
+	.enter	test.property.label
+
+_test.symbol.cons_k	.expr
+rune.t	.tygvar
+test.assert.eq	.gvar
+rune.≡	.gvar
+rune.print	.gvar
+rune.latin.letter.n	.gvar
+r	.larg	rune.t
+	.app	rune.≡	rune.print	r	rune.latin.letter.n
+	.enter	test.assert.eq	rune.t
 
 # §section §gs{parse m// qq{}}
 
