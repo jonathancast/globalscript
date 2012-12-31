@@ -23,6 +23,10 @@ _ibio.file.name.extension.set_worker	.closure	_ibio.file.name.extension.set_work
 ibio.file.name.</>	.closure	_ibio.file.name.</>_c
 _ibio.file.name.</>_worker	.closure	_ibio.file.name.</>_worker_c	_ibio.file.name.</>_worker_ty
 
+ibio.file.name.print	.closure	_ibio.file.name.print_c
+_ibio.file.name.print_prefix	.string	fn<
+_ibio.file.name.print_suffix	.string	>
+
 _slash	.closure	_slash_c
 _dot	.closure	_dot_c
 
@@ -553,6 +557,25 @@ fn1			.apply	list.:	rune.t	|	_slash	fn
 			.enter	list.:	rune.t
 		.case	true
 			.undef	list.t	rune.t
+
+# §section §gs{ibio.file.name.print}
+
+_ibio.file.name.print_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+ibio.file.name.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+list.<>	.gvar
+_ibio.file.name.print_prefix	.gvar
+list.foldr	.gvar
+rune.togss	.gvar
+_ibio.file.name.print_suffix	.gvar
+ibio.file.name.out	.gvar
+fn	.larg	ibio.file.name.t
+s	.apply	ibio.file.name.out	|	fn
+s1	.apply	list.foldr	rune.t	string.ty	|	rune.togss	_ibio.file.name.print_suffix	s
+	.app	_ibio.file.name.print_prefix	s1
+	.enter	list.<>	rune.t
 
 # §section Random data
 

@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.foo.bar
+_tests	.list	test.property.t	_test.eq.foo.bar	_test.print.foo
 
 _test.eq.foo.bar	.closure	_test.eq.foo.bar_c
 _test.eq.foo.bar_label	.string	ibio.file.name.≡\sfn<./foo>\sfn<./bar>
@@ -12,6 +12,11 @@ _test.eq.foo.bar_false.msg	.string	fn<./foo>\s≠fn<./bar>
 _test.eq.foo.bar_true.msg	.string	fn<./foo>\s≡fn<./bar>
 _test.eq.foo.bar_foo.fn.s	.string	./foo
 _test.eq.foo.bar_bar.fn.s	.string	./bar
+
+_test.print.foo	.closure	_test.print.foo_c
+_test.print.foo_label	.string	print\sfn<./foo>
+_test.print.foo_fn.s	.string	./foo
+_test.print.foo_expected	.string	fn<./foo>
 
 	.code
 
@@ -38,4 +43,29 @@ bar.fn	.apply	ibio.file.name.in	|	_test.eq.foo.bar_bar.fn.s
 eq	.apply	ibio.file.name.≡	|	foo.fn	bar.fn
 test	.apply	test.deny	|	_test.eq.foo.bar_false.msg	_test.eq.foo.bar_true.msg	eq
 	.app	_test.eq.foo.bar_label	test
+	.enter	test.property.label
+
+# §section §gs{print fn<./foo>}
+
+_test.print.foo_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+test.property.label	.gvar
+_test.print.foo_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+rune.≡	.gvar
+list.print	.gvar
+rune.print.list	.gvar
+ibio.file.name.print	.gvar
+ibio.file.name.in	.gvar
+_test.print.foo_fn.s	.gvar
+_test.print.foo_expected	.gvar
+string.≡	.apply	list.≡	rune.t	|	rune.≡
+string.print	.apply	list.print	rune.t	|	rune.print.list
+fn	.apply	ibio.file.name.in	|	_test.print.foo_fn.s
+actual	.apply	ibio.file.name.print	|	fn
+test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	actual	_test.print.foo_expected
+	.app	_test.print.foo_label	test
 	.enter	test.property.label
