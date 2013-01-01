@@ -6,6 +6,8 @@ order.total.ord.≡	.closure	_order.total.ord.≡_c
 
 order.total.ord.print	.closure	_order.total.ord.print_c
 
+order.total.ord.gt	.closure	_order.total.ord.gt_c
+
 	.code
 
 # §section §gs{order.total.ord.≡}
@@ -26,6 +28,16 @@ rune.t	.tygvar
 o	.larg	order.total.ord.t
 	.undef	list.t	rune.t
 
+# §section Constructors
+
+_order.total.ord.gt_c	.expr
+order.total.ord.prim.u	.tygvar
+order.total.ord.t.in	.cogvar
+c	.constr	order.total.ord.prim.u	gt
+	.coerce	order.total.ord.t.in
+	.lift
+	.yield	c
+
 	.type
 
 order.total.t	.tyexpr
@@ -43,9 +55,14 @@ order.total.ord.prim.u	.tygvar
 	.tyref	order.total.ord.prim.u
 
 order.total.ord.prim.u	.tyexpr
-	.tysum
+record.unboxed.empty	.tygvar
+	.tysum	gt	record.unboxed.empty
 
 	.coercion
+
+order.total.ord.t.in	.tycoercion
+order.total.ord.t	.tygvar
+	.tydefinition	order.total.ord.t
 
 order.total.ord.t.out	.tycoercion
 order.total.ord.t	.tygvar
