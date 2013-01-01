@@ -4,7 +4,25 @@
 
 string.fmtline	.closure	_string.fmtline_c	_string.fmtline_ty
 
+string.≡	.closure	_string.≡_c
+
+string.print	.closure	_string.print_c
+
 	.code
+
+_string.≡_c	.expr
+rune.t	.tygvar
+list.≡	.gvar
+rune.≡	.gvar
+	.app	rune.≡
+	.enter	list.≡	rune.t
+
+_string.print_c	.expr
+rune.t	.tygvar
+list.print	.gvar
+rune.print.list	.gvar
+	.app	rune.print.list
+	.enter	list.print	rune.t
 
 # §section §gs{string.fmtline}
 
@@ -89,6 +107,11 @@ nil			.apply	list.nil	rune.t
 			.enter	list.:	rune.t
 
 	.type
+
+string.t	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tyref	list.t	rune.t
 
 # §section §gs{string.fmtline}
 
