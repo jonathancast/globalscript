@@ -1,5 +1,18 @@
 	.prefix
 
+	.data
+
+order.total.ord.≡	.closure	_order.total.ord.≡_c
+
+	.code
+
+_order.total.ord.≡_c	.expr
+order.total.ord.t	.tygvar
+bool.t	.tygvar
+o0	.larg	order.total.ord.t
+o1	.larg	order.total.ord.t
+	.undef	bool.t
+
 	.type
 
 order.total.t	.tyexpr
