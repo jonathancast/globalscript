@@ -18,3 +18,10 @@ order.total.ord.prim.u	.tygvar
 
 order.total.ord.prim.u	.tyexpr
 	.tysum
+
+	.coercion
+
+order.total.ord.t.out	.tycoercion
+order.total.ord.t	.tygvar
+	.tyinvert
+	.tydefinition	order.total.ord.t
