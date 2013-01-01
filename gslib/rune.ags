@@ -7,6 +7,8 @@ rune.compare	.closure	_rune.compare_c
 
 rune.≠	.closure	_rune.≠_c
 
+rune.print	.closure	_rune.print_c
+
 rune.fmtgs	.closure	_rune.fmtgs_c
 _rune.fmtgs_prefix	.string	r/
 _rune.fmtgs_suffix	.string	/
@@ -126,6 +128,17 @@ r1	.larg	rune.t
 b	.apply	rune.≡	|	r0	r1
 	.app	b
 	.enter	bool.not
+
+# §section §gs{rune.print}
+
+_rune.print_c	.expr
+rune.t	.tygvar
+list.:	.gvar
+list.nil	.gvar
+r	.larg	rune.t
+nil	.apply	list.nil	rune.t
+	.app	r	nil
+	.enter	list.:	rune.t
 
 # §section §gs{rune.fmtgs}
 
