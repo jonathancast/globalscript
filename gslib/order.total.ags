@@ -4,7 +4,11 @@
 
 order.total.ord.≡	.closure	_order.total.ord.≡_c
 
+order.total.ord.print	.closure	_order.total.ord.print_c
+
 	.code
+
+# §section §gs{order.total.ord.≡}
 
 _order.total.ord.≡_c	.expr
 order.total.ord.t	.tygvar
@@ -12,6 +16,15 @@ bool.t	.tygvar
 o0	.larg	order.total.ord.t
 o1	.larg	order.total.ord.t
 	.undef	bool.t
+
+# §section §gs{order.total.ord.print}
+
+_order.total.ord.print_c	.expr
+order.total.ord.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+o	.larg	order.total.ord.t
+	.undef	list.t	rune.t
 
 	.type
 
