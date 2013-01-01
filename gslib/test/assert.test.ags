@@ -25,7 +25,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{assert.eq rune.≡ rune.print r/x r/x}
+# §section §gs{assert.eq rune.≡ rune.fmtgs r/x r/x}
 
 _test.assert.eq.x.x_c	.expr
 test.property.label	.gvar
@@ -38,9 +38,9 @@ _test.assert.eq.x.x_test_c	.expr
 rune.t	.tygvar
 test.assert.eq	.gvar
 rune.≡	.gvar
-rune.print	.gvar
+rune.fmtgs	.gvar
 _x	.gvar
-	.app	rune.≡	rune.print	_x	_x
+	.app	rune.≡	rune.fmtgs	_x	_x
 	.enter	test.assert.eq	rune.t
 
 # §section §gs{assert.fails true}
@@ -75,13 +75,13 @@ string.ty	.tylet	list.t	rune.t
 test.assert.eq	.gvar
 list.≡	.gvar
 rune.≡	.gvar
-list.print	.gvar
-rune.print.list	.gvar
+list.fmtgs	.gvar
+rune.fmtgs.list	.gvar
 _test.assert.fails.true_expected.msg	.gvar
 s	.larg	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
-string.print	.apply	list.print	rune.t	|	rune.print.list
-	.app	string.≡	string.print	s	_test.assert.fails.true_expected.msg
+string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
+	.app	string.≡	string.fmtgs	s	_test.assert.fails.true_expected.msg
 	.enter	test.assert.eq	string.ty
 
 # §section Fixtures

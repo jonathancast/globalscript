@@ -7,13 +7,13 @@ rune.compare	.closure	_rune.compare_c
 
 rune.≠	.closure	_rune.≠_c
 
-rune.print	.closure	_rune.print_c
-_rune.print_prefix	.string	r/
-_rune.print_suffix	.string	/
+rune.fmtgs	.closure	_rune.fmtgs_c
+_rune.fmtgs_prefix	.string	r/
+_rune.fmtgs_suffix	.string	/
 
-rune.print.list	.closure	_rune.print.list_c
-_rune.print.list_prefix	.string	qq{
-_rune.print.list_suffix	.string	}
+rune.fmtgs.list	.closure	_rune.fmtgs.list_c
+_rune.fmtgs.list_prefix	.string	qq{
+_rune.fmtgs.list_suffix	.string	}
 
 rune.togss	.closure	_rune.togss_c
 
@@ -127,33 +127,33 @@ b	.apply	rune.≡	|	r0	r1
 	.app	b
 	.enter	bool.not
 
-# §section §gs{rune.print}
+# §section §gs{rune.fmtgs}
 
-_rune.print_c	.expr
+_rune.fmtgs_c	.expr
 rune.t	.tygvar
 list.<>	.gvar
-_rune.print_prefix	.gvar
+_rune.fmtgs_prefix	.gvar
 rune.togss	.gvar
-_rune.print_suffix	.gvar
+_rune.fmtgs_suffix	.gvar
 r	.larg	rune.t
-s1	.apply	rune.togss	|	r	_rune.print_suffix
-	.app	_rune.print_prefix	s1
+s1	.apply	rune.togss	|	r	_rune.fmtgs_suffix
+	.app	_rune.fmtgs_prefix	s1
 	.enter	list.<>	rune.t
 
-# §section §gs{rune.print.list}
+# §section §gs{rune.fmtgs.list}
 
-_rune.print.list_c	.expr
+_rune.fmtgs.list_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
 string.ty	.tylet	list.t	rune.t
 list.<>	.gvar
-_rune.print.list_prefix	.gvar
+_rune.fmtgs.list_prefix	.gvar
 list.foldr	.gvar
 rune.togss	.gvar
-_rune.print.list_suffix	.gvar
+_rune.fmtgs.list_suffix	.gvar
 s	.larg	list.t	rune.t
-s1	.apply	list.foldr	rune.t	string.ty	|	rune.togss	_rune.print.list_suffix	s
-	.app	_rune.print.list_prefix	s1
+s1	.apply	list.foldr	rune.t	string.ty	|	rune.togss	_rune.fmtgs.list_suffix	s
+	.app	_rune.fmtgs.list_prefix	s1
 	.enter	list.<>	rune.t
 
 # §section §gs{_rune.togss}

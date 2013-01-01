@@ -1,0 +1,84 @@
+\documentclass{article}
+\title{Output Routines}
+\author{Jonathan Cast\\\texttt{<jcast@globalscript.org>}}
+
+\usepackage{haskell}
+
+\newcommand\instance{\hskwd{instance}}
+
+\begin{document}
+
+\maketitle
+
+Note: this is just a quick list of routines; I'll add rationale later.  End note.
+
+Note: not all the output routines listed here exist at any types yet.  End note.
+
+Note: many of the output routines listed here are overloaded;
+in general, the instance of \<f\> at a type \<m.t\> will be called \<m.f\> in hand-written \texttt{.ags} and \texttt{.cgs} files.
+
+Note: all the output routines listed here return \<list.t rune.t\>, which is probably the wrong type;
+but I expect it's fine for now.
+TODO: Change all the output routines to take \<difference.list.t rune.t\>,
+and change \<ibio.send\> to take \<difference.list.t o\>.
+End note.
+
+\section{Formatted Output}
+
+\subsection{\<fmtdecimal\>, \<fmtoctal\>, and \<fmthex\>}
+
+\begin{haskell}
+    fmtdecimal, fmtoctal, fmthex, :: '\alpha{} \to{} list.t rune.t;
+\end{haskell}
+$\alpha$ is e.g. \<natural.t\>, \<rational.t\>, etc.
+(\<real.t\> cannot be formatted without both a precedence and a non-determinism monad.)
+
+\subsection{\<fmtquote\>, \<fmtquotes\>}
+\begin{haskell}
+    fmtquote &:: list.t rune.t \to{} list.t rune.t; \\
+    fmtquotes &:: list.t (list.t rune.t) \to{} list.t rune.t;
+\end{haskell}
+These take a string or list of strings and returns the rc-quoted version.
+
+\<fmtquotes\> is:
+\begin{haskell}
+    'fmtquotes 'ts = list.concat \$ list.intersperse qq\{ \} \$ map fmtquote ts;
+\end{haskell}
+
+Note: with these types, you need to be very careful to segregate quoted and unquoted variables manually.  End note.
+
+\section{Macro-scale Output}
+
+\begin{haskell}
+    list.<> :: list.t rune.t \to{} list.t rune.t \to{} list.t rune.t;
+\end{haskell}
+It may seem obvious, but of course this routine, as well as string literals and interpolation, plays a large role in IBIO output.
+
+\begin{haskell}
+    fmtline &:: list.t rune.t \to{} list.t rune.t; \\
+    fmtlines &:: list.t (list.t rune.t) \to{} list.t rune.t;
+\end{haskell}
+\<fmtline\> ensures that the string given ends in a newline; \<fmtlines\> does the same for a list of strings.
+
+\section{Direct Output}
+
+\begin{haskell}
+    print :: '\alpha{} \to{} list.t rune.t;
+\end{haskell}
+This formats an \<\alpha\> the way it would normally appear in a file.
+So, e.g.,
+\begin{haskell}
+    \instance{} print rune.t 'r &= r : nil; \\
+    \instance{} print (list.t rune.t) 's &= s; \\
+    \instance{} print file.name.t 'fn &= fmtquote \$ file.name.out fn;
+\end{haskell}
+
+\section{Debugging Output}
+
+\begin{haskell}
+    fmtgs :: '\alpha{} \to{} list.t rune.t;
+\end{haskell}
+This returns (a) source syntax for the value, suitable for sending back to a Global Script REPL.
+This is the closest equivalent to Haskell's \<show\> function.
+
+\end{document}

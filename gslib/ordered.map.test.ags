@@ -31,19 +31,19 @@ _test_get.empty_label	.gvar
 test.assert.eq	.gvar
 maybe.≡	.gvar
 bool.≡	.gvar
-maybe.print	.gvar
-bool.print	.gvar
+maybe.fmtgs	.gvar
+bool.fmtgs	.gvar
 ordered.map.get	.gvar
 _3	.gvar
 ordered.map.empty	.gvar
 natural.compare	.gvar
 maybe.nothing	.gvar
 mb.≡	.apply	maybe.≡	bool.t	|	bool.≡
-mb.print	.apply	maybe.print	bool.t	|	bool.print
+mb.fmtgs	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs
 empty	.apply	ordered.map.empty	natural.t	bool.t
 actual	.apply	ordered.map.get	natural.t	bool.t	|	natural.compare	_3	empty
 nothing	.apply	maybe.nothing	bool.t
-test	.apply	test.assert.eq	mb.t	|	mb.≡	mb.print	actual	nothing
+test	.apply	test.assert.eq	mb.t	|	mb.≡	mb.fmtgs	actual	nothing
 	.app	_test_get.empty_label	test
 	.enter	test.property.label
 

@@ -89,9 +89,9 @@ module 'test.(
     'bog.simple.runner (module 'i) (property.in (module 'p)) =
         for @(module i) (
             'c ← channel @(module i);
-            's ← parse @(module i) (many symbol) << @(module i) c;
-            _ ← print @(module i) (fmt s);
-        ) note.with @(module i) m/interrupt / (λ _. print @(module i) (singleton nothing) >> @(module i) c) $
+            's ← receive @(module i) (many symbol) << @(module i) c;
+            _ ← send @(module i) (fmt s);
+        ) note.with @(module i) m/interrupt / (λ _. send @(module i) (singleton nothing) >> @(module i) c) $
             loop p.accumulator.id (property.out p.tests) >> @(module i) c
         (where
             'fmt nil = qq{(no tests run)\n};
@@ -108,7 +108,7 @@ module 'test.(
             'loop 't nil = unit @(module i) 〈〉;
             'loop 't (nil:'tss) = loop t xns;
             'loop 't0 (('t1:ts):'tss) =
-                print @(module i) (singleton $ just $ p.evaluator t2)
+                send @(module i) (singleton $ just $ p.evaluator t2)
                     *> @(module i) loop t2 (ts:tss)
                 where
                     't2 ∝ p.accumulator.op t0 t1

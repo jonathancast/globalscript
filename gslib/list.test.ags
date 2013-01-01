@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.print.nil	_test.map.nil	_test.map.:	_test.reverse.nil	_test.reverse.cons
+_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.fmtgs.nil	_test.map.nil	_test.map.:	_test.reverse.nil	_test.reverse.cons
 
 _test.nil.eq.nil	.closure	_test.nil.eq.nil.c
 _test.nil.eq.nil.label	.string	nil\s≡\snil
@@ -30,12 +30,12 @@ _test.nil.eq.singleton_test	.closure	_test.nil.eq.singleton_test_c
 _test.nil.eq.singleton_test_succ	.string	nil\s≠\s[false]
 _test.nil.eq.singleton_test_fail	.string	nil\s≡\s[false]
 
-_test.print.nil	.closure	_test.print.nil_c
-_test.print.nil_label	.string	list.print\snil\s≡\sqq{[]}
-_test.print.nil_test	.closure	_test.print.nil_test_c
-_test.print.nil_test_expected	.string	[]
-_test.print.nil_test_fail	.string	list.print\snil\s≠\sqq{[]}
-_test.print.nil_test_succ	.string	list.print\snil\s≡\sqq{[]}
+_test.fmtgs.nil	.closure	_test.fmtgs.nil_c
+_test.fmtgs.nil_label	.string	list.fmtgs\snil\s≡\sqq{[]}
+_test.fmtgs.nil_test	.closure	_test.fmtgs.nil_test_c
+_test.fmtgs.nil_test_expected	.string	[]
+_test.fmtgs.nil_test_fail	.string	list.fmtgs\snil\s≠\sqq{[]}
+_test.fmtgs.nil_test_succ	.string	list.fmtgs\snil\s≡\sqq{[]}
 
 _test.map.nil	.closure	_test.map.nil_c
 _test.map.nil_label	.string	map\sf\snil
@@ -53,7 +53,7 @@ _fixture.nil	.closure	_fixture.nil.c
 _fixture.singleton.false	.closure	_fixture.singleton.false.c
 
 _fixture.list.bool.≡	.closure	_fixture.list.bool.≡_c
-_fixture.list.bool.print	.closure	_fixture.list.bool.print_c
+_fixture.list.bool.fmtgs	.closure	_fixture.list.bool.fmtgs_c
 
 	.code
 
@@ -169,50 +169,44 @@ _fixture.singleton.false	.gvar
 	.app	bool.≡	_fixture.nil	_fixture.singleton.false
 	.enter	list.≡	bool.t
 
-# §section §gs{print nil}
+# §section §gs{fmtgs nil}
 
-_test.print.nil_c	.expr
+_test.fmtgs.nil_c	.expr
 test.property.label	.gvar
-_test.print.nil_label	.gvar
-_test.print.nil_test	.gvar
-	.app	_test.print.nil_label	_test.print.nil_test
+_test.fmtgs.nil_label	.gvar
+_test.fmtgs.nil_test	.gvar
+	.app	_test.fmtgs.nil_label	_test.fmtgs.nil_test
 	.enter	test.property.label
 
-_test.print.nil_test_c	.expr
-_test.print.nil_test_s0_c	.subcode
-_test.print.nil_test_eq_c	.subcode
+_test.fmtgs.nil_test_c	.expr
+_test.fmtgs.nil_test_s0_c	.subcode
+_test.fmtgs.nil_test_eq_c	.subcode
 test.assert	.gvar
-_test.print.nil_test_fail	.gvar
-_test.print.nil_test_succ	.gvar
-s0	.alloc	_test.print.nil_test_s0_c
-eq	.alloc	_test.print.nil_test_eq_c	|	s0
-	.app	_test.print.nil_test_fail	_test.print.nil_test_succ	eq
+_test.fmtgs.nil_test_fail	.gvar
+_test.fmtgs.nil_test_succ	.gvar
+s0	.alloc	_test.fmtgs.nil_test_s0_c
+eq	.alloc	_test.fmtgs.nil_test_eq_c	|	s0
+	.app	_test.fmtgs.nil_test_fail	_test.fmtgs.nil_test_succ	eq
 	.enter	test.assert
 
-_test.print.nil_test_s0_c	.expr
+_test.fmtgs.nil_test_s0_c	.expr
 bool.t	.tygvar
-_test.print.nil_test_s0_p0_c	.subcode
-list.print	.gvar
+list.fmtgs	.gvar
+list.fmtgs.byDefault	.gvar
+bool.fmtgs	.gvar
 _fixture.nil	.gvar
-p0	.alloc	_test.print.nil_test_s0_p0_c
+p0	.apply	list.fmtgs.byDefault	bool.t	|	bool.fmtgs
 	.app	p0	_fixture.nil
-	.enter	list.print	bool.t
+	.enter	list.fmtgs	bool.t
 
-_test.print.nil_test_s0_p0_c	.expr
-bool.t	.tygvar
-list.print.byDefault	.gvar
-bool.print	.gvar
-	.app	bool.print
-	.enter	list.print.byDefault	bool.t
-
-_test.print.nil_test_eq_c	.expr
+_test.fmtgs.nil_test_eq_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
 list.≡	.gvar
 rune.≡	.gvar
-_test.print.nil_test_expected	.gvar
+_test.fmtgs.nil_test_expected	.gvar
 s0	.fv	list.t	rune.t
-	.app	rune.≡	s0	_test.print.nil_test_expected
+	.app	rune.≡	s0	_test.fmtgs.nil_test_expected
 	.enter	list.≡	rune.t
 
 # §section §gs{map f nil}
@@ -232,10 +226,10 @@ list.ty	.tylet	list.t	bool.t
 _test.map.nil_test_actual_c	.subcode
 test.assert.eq	.gvar
 _fixture.list.bool.≡	.gvar
-_fixture.list.bool.print	.gvar
+_fixture.list.bool.fmtgs	.gvar
 _fixture.nil	.gvar
 actual	.alloc	_test.map.nil_test_actual_c
-	.app	_fixture.list.bool.≡	_fixture.list.bool.print	actual	_fixture.nil
+	.app	_fixture.list.bool.≡	_fixture.list.bool.fmtgs	actual	_fixture.nil
 	.enter	test.assert.eq	list.ty
 
 _test.map.nil_test_actual_c	.expr
@@ -264,10 +258,10 @@ _test.map.:_test_actual_c	.subcode
 _test.map.:_test_expected_c	.subcode
 test.assert.eq	.gvar
 _fixture.list.bool.≡	.gvar
-_fixture.list.bool.print	.gvar
+_fixture.list.bool.fmtgs	.gvar
 actual	.alloc	_test.map.:_test_actual_c
 expected	.alloc	_test.map.:_test_expected_c
-	.app	_fixture.list.bool.≡	_fixture.list.bool.print	actual	expected
+	.app	_fixture.list.bool.≡	_fixture.list.bool.fmtgs	actual	expected
 	.enter	test.assert.eq	list.ty
 
 _test.map.:_test_actual_c	.expr
@@ -296,11 +290,11 @@ test.property.label	.gvar
 _test.reverse.nil_label	.gvar
 test.assert.eq	.gvar
 _fixture.list.bool.≡	.gvar
-_fixture.list.bool.print	.gvar
+_fixture.list.bool.fmtgs	.gvar
 list.reverse	.gvar
 _fixture.nil	.gvar
 actual	.apply	list.reverse	bool.t	|	_fixture.nil
-test	.apply	test.assert.eq	list.bool	|	_fixture.list.bool.≡	_fixture.list.bool.print	actual	_fixture.nil
+test	.apply	test.assert.eq	list.bool	|	_fixture.list.bool.≡	_fixture.list.bool.fmtgs	actual	_fixture.nil
 	.app	_test.reverse.nil_label	test
 	.enter	test.property.label
 
@@ -314,7 +308,7 @@ test.property.label	.gvar
 _test.reverse.cons_label	.gvar
 test.assert.eq	.gvar
 _fixture.list.bool.≡	.gvar
-_fixture.list.bool.print	.gvar
+_fixture.list.bool.fmtgs	.gvar
 list.reverse	.gvar
 list.:	.gvar
 bool.false	.gvar
@@ -327,7 +321,7 @@ actual	.apply	list.reverse	bool.t	|	bs
 exp2	.apply	list.nil	bool.t
 exp1	.apply	list.:	bool.t	|	bool.false	exp2
 expected	.apply	list.:	bool.t	|	bool.true	exp1
-test	.apply	test.assert.eq	list.bool	|	_fixture.list.bool.≡	_fixture.list.bool.print	actual	expected
+test	.apply	test.assert.eq	list.bool	|	_fixture.list.bool.≡	_fixture.list.bool.fmtgs	actual	expected
 	.app	_test.reverse.cons_label	test
 	.enter	test.property.label
 
@@ -353,9 +347,9 @@ bool.≡	.gvar
 	.app	bool.≡
 	.enter	list.≡	bool.t
 
-_fixture.list.bool.print_c	.expr
+_fixture.list.bool.fmtgs_c	.expr
 bool.t	.tygvar
-list.print	.gvar
-bool.print.list	.gvar
-	.app	bool.print.list
-	.enter	list.print	bool.t
+list.fmtgs	.gvar
+bool.fmtgs.list	.gvar
+	.app	bool.fmtgs.list
+	.enter	list.fmtgs	bool.t

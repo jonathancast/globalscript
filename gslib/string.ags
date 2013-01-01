@@ -6,7 +6,7 @@ string.fmtline	.closure	_string.fmtline_c	_string.fmtline_ty
 
 string.≡	.closure	_string.≡_c
 
-string.print	.closure	_string.print_c
+string.fmtgs	.closure	_string.fmtgs_c
 
 	.code
 
@@ -17,12 +17,12 @@ rune.≡	.gvar
 	.app	rune.≡
 	.enter	list.≡	rune.t
 
-_string.print_c	.expr
+_string.fmtgs_c	.expr
 rune.t	.tygvar
-list.print	.gvar
-rune.print.list	.gvar
-	.app	rune.print.list
-	.enter	list.print	rune.t
+list.fmtgs	.gvar
+rune.fmtgs.list	.gvar
+	.app	rune.fmtgs.list
+	.enter	list.fmtgs	rune.t
 
 # §section §gs{string.fmtline}
 

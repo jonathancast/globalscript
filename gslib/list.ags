@@ -20,9 +20,9 @@ list.<>	.closure	_list.<>.code	_list.<>.ty
 list.≡	.closure	_list.≡.code	_list.≡.ty
 list.compare	.closure	_list.compare_c	_list.compare_ty
 
-list.print	.closure	_list.print_c
-list.print.byDefault	.closure	_list.print.byDefault_c	_list.print.byDefault_ty
-_list.print.byDefault_nil.s	.string	[]
+list.fmtgs	.closure	_list.fmtgs_c
+list.fmtgs.byDefault	.closure	_list.fmtgs.byDefault_c	_list.fmtgs.byDefault_ty
+_list.fmtgs.byDefault_nil.s	.string	[]
 
 	.code
 
@@ -523,37 +523,37 @@ arg.ty	.tylet	list.t	α
 cmp	.larg	order.total.t	α
 	.undef	order.total.t	arg.ty
 
-# §section §gs{list.print}
+# §section §gs{list.fmtgs}
 
-_list.print_c	.expr
-list.print.list.t	.tygvar
+_list.fmtgs_c	.expr
+list.fmtgs.list.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 α	.tyarg	*
-p0	.larg	list.print.list.t	α
+p0	.larg	list.fmtgs.list.t	α
 xn	.larg	list.t	α
 	.app	xn
 	.enter	p0
 
-_list.print.byDefault_c	.expr
-print.t	.tygvar
+_list.fmtgs.byDefault_c	.expr
+fmtgs.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 α	.tyarg	*
-_list.print.byDefault_k	.subcode
+_list.fmtgs.byDefault_k	.subcode
 list.t.out	.cogvar
-p	.larg	print.t	α
+p	.larg	fmtgs.t	α
 xn	.larg	list.t	α
-	.force	_list.print.byDefault_k	α
+	.force	_list.fmtgs.byDefault_k	α
 	.coerce	list.t.out	α
 	.enter	xn
 
-_list.print.byDefault_k	.forcecont
+_list.fmtgs.byDefault_k	.forcecont
 list.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 α	.tyfv	*
-_list.print.byDefault_nil.s	.gvar
+_list.fmtgs.byDefault_nil.s	.gvar
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
@@ -561,7 +561,7 @@ x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
 			.undef	list.t	rune.t
 		.case	nil
-			.enter	_list.print.byDefault_nil.s
+			.enter	_list.fmtgs.byDefault_nil.s
 
 	.type
 
@@ -733,9 +733,9 @@ arg.ty	.tylet	list.t	α
 	.tyfun	order.total.t	α
 	.tyref	order.total.t	arg.ty
 
-# §section §gs{list.print}
+# §section §gs{list.fmtgs}
 
-list.print.list.t	.tyexpr
+list.fmtgs.list.t	.tyexpr
 list.t	.tygvar
 rune.t	.tygvar
 α	.tylambda	*
@@ -743,13 +743,13 @@ rune.t	.tygvar
 	.tyfun	list.t	α
 	.tyref	list.t	rune.t
 
-_list.print.byDefault_ty	.tyexpr
-print.t	.tygvar
-list.print.list.t	.tygvar
+_list.fmtgs.byDefault_ty	.tyexpr
+fmtgs.t	.tygvar
+list.fmtgs.list.t	.tygvar
 α	.tyforall	*
 	.tylift
-	.tyfun	print.t	α
-	.tyref	list.print.list.t	α
+	.tyfun	fmtgs.t	α
+	.tyref	list.fmtgs.list.t	α
 
 	.coercion
 

@@ -165,10 +165,10 @@ bool.t	.tygvar
 _test.not.false_test_actual_c	.subcode
 test.assert.eq	.gvar
 bool.≡	.gvar
-bool.print	.gvar
+bool.fmtgs	.gvar
 bool.true	.gvar
 actual	.alloc	_test.not.false_test_actual_c
-	.app	bool.≡	bool.print	actual	bool.true
+	.app	bool.≡	bool.fmtgs	actual	bool.true
 	.enter	test.assert.eq	bool.t
 
 _test.not.false_test_actual_c	.expr

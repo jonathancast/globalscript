@@ -23,16 +23,16 @@ _ibio.file.name.extension.set_worker	.closure	_ibio.file.name.extension.set_work
 ibio.file.name.</>	.closure	_ibio.file.name.</>_c
 _ibio.file.name.</>_worker	.closure	_ibio.file.name.</>_worker_c	_ibio.file.name.</>_worker_ty
 
-ibio.file.name.print	.closure	_ibio.file.name.print_c
-_ibio.file.name.print_prefix	.string	fn<
-_ibio.file.name.print_suffix	.string	>
+ibio.file.name.fmtgs	.closure	_ibio.file.name.fmtgs_c
+_ibio.file.name.fmtgs_prefix	.string	fn<
+_ibio.file.name.fmtgs_suffix	.string	>
 
 _slash	.closure	_slash_c
 _dot	.closure	_dot_c
 
 	.code
 
-# §section §gs{ibio.file.name.read}
+# §section §gs{ibio.file.name.in}
 
 _ibio.file.name.in_c	.expr
 list.t	.tygvar
@@ -42,7 +42,7 @@ s	.larg	list.t	rune.t
 	.coerce	ibio.file.name.in
 	.enter	s
 
-# §section §gs{ibio.file.name.print}
+# §section §gs{ibio.file.name.out}
 
 _ibio.file.name.out_c	.expr
 ibio.file.name.t	.tygvar
@@ -558,23 +558,23 @@ fn1			.apply	list.:	rune.t	|	_slash	fn
 		.case	true
 			.undef	list.t	rune.t
 
-# §section §gs{ibio.file.name.print}
+# §section §gs{ibio.file.name.fmtgs}
 
-_ibio.file.name.print_c	.expr
+_ibio.file.name.fmtgs_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 ibio.file.name.t	.tygvar
 string.ty	.tylet	list.t	rune.t
 list.<>	.gvar
-_ibio.file.name.print_prefix	.gvar
+_ibio.file.name.fmtgs_prefix	.gvar
 list.foldr	.gvar
 rune.togss	.gvar
-_ibio.file.name.print_suffix	.gvar
+_ibio.file.name.fmtgs_suffix	.gvar
 ibio.file.name.out	.gvar
 fn	.larg	ibio.file.name.t
 s	.apply	ibio.file.name.out	|	fn
-s1	.apply	list.foldr	rune.t	string.ty	|	rune.togss	_ibio.file.name.print_suffix	s
-	.app	_ibio.file.name.print_prefix	s1
+s1	.apply	list.foldr	rune.t	string.ty	|	rune.togss	_ibio.file.name.fmtgs_suffix	s
+	.app	_ibio.file.name.fmtgs_prefix	s1
 	.enter	list.<>	rune.t
 
 # §section Random data

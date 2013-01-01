@@ -3,8 +3,8 @@
 	.data
 
 record.empty	.closure	_record.empty_c
-record.empty.print	.closure	_record.empty.print_c
-_record.empty.print_s	.string	〈〉
+record.empty.fmtgs	.closure	_record.empty.fmtgs_c
+_record.empty.fmtgs_s	.string	〈〉
 
 	.code
 
@@ -13,11 +13,11 @@ r	.record
 	.lift
 	.yield	r
 
-_record.empty.print_c	.expr
+_record.empty.fmtgs_c	.expr
 record.empty	.tygvar
-_record.empty.print_s	.gvar
+_record.empty.fmtgs_s	.gvar
 r	.larg	record.empty
-	.enter	_record.empty.print_s
+	.enter	_record.empty.fmtgs_s
 
 	.type
 

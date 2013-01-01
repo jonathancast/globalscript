@@ -10,9 +10,9 @@ _r	.closure	_r_c
 _ep_c	.expr
 _res.u	.tygvar
 rune.t	.tygvar
-rune.print	.gvar
+rune.fmtgs	.gvar
 _r	.gvar
-c	.exconstr	_res.u	print	rune.t	|	0	rune.print	1	_r
+c	.exconstr	_res.u	fmtgs	rune.t	|	0	rune.fmtgs	1	_r
 	.lift
 	.yield	c
 
@@ -26,16 +26,16 @@ r	.rune	r
 	.type
 
 _res.u	.tyexpr
-_res.u_print.ty	.tygvar
-	.tysum	print	_res.u_print.ty
+_res.u_fmtgs.ty	.tygvar
+	.tysum	fmtgs	_res.u_fmtgs.ty
 
-_res.u_print.ty	.tyexpr
-_res.u_print.ty_0_ty	.tygvar
+_res.u_fmtgs.ty	.tyexpr
+_res.u_fmtgs.ty_0_ty	.tygvar
 α	.tyexists	*
-0_ty	.tylet	_res.u_print.ty_0_ty	α
+0_ty	.tylet	_res.u_fmtgs.ty_0_ty	α
 	.tyubproduct	0	0_ty	1	α
 
-_res.u_print.ty_0_ty	.tyexpr
+_res.u_fmtgs.ty_0_ty	.tyexpr
 list.t	.tygvar
 rune.t	.tygvar
 α	.tylambda	*

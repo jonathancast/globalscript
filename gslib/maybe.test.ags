@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.just.nothing	_test.eq.nothing.nothing	_test.print.nothing
+_tests	.list	test.property.t	_test.eq.just.nothing	_test.eq.nothing.nothing	_test.fmtgs.nothing
 
 _test.eq.just.nothing	.closure	_test.eq.just.nothing_c
 _test.eq.just.nothing_label	.string	just\sfalse\s≡\snothing
@@ -16,9 +16,9 @@ _test.eq.nothing.nothing_label	.string	nothing\s≡\snothing
 _test.eq.nothing.nothing_false	.string	nothing\s≠\snothing
 _test.eq.nothing.nothing_true	.string	nothing\s≡\snothing
 
-_test.print.nothing	.closure	_test.print.nothing_c
-_test.print.nothing_label	.string	print\snothing
-_test.print.nothing_expected	.string	nothing
+_test.fmtgs.nothing	.closure	_test.fmtgs.nothing_c
+_test.fmtgs.nothing_label	.string	fmtgs\snothing
+_test.fmtgs.nothing_expected	.string	nothing
 
 	.code
 
@@ -67,28 +67,22 @@ test	.apply	test.assert	|	_test.eq.nothing.nothing_false	_test.eq.nothing.nothin
 	.app	_test.eq.nothing.nothing_label	test
 	.enter	test.property.label
 
-# §section §gs{print nothing}
+# §section §gs{fmtgs nothing}
 
-_test.print.nothing_c	.expr
-list.t	.tygvar
-rune.t	.tygvar
+_test.fmtgs.nothing_c	.expr
+string.t	.tygvar
 bool.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
-_test.print.nothing_label	.gvar
+_test.fmtgs.nothing_label	.gvar
 test.assert.eq	.gvar
-list.≡	.gvar
-rune.≡	.gvar
-list.print	.gvar
-rune.print.list	.gvar
-maybe.print	.gvar
-bool.print	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+maybe.fmtgs	.gvar
+bool.fmtgs	.gvar
 maybe.nothing	.gvar
-_test.print.nothing_expected	.gvar
-string.≡	.apply	list.≡	rune.t	|	rune.≡
-string.print	.apply	list.print	rune.t	|	rune.print.list
+_test.fmtgs.nothing_expected	.gvar
 nothing	.apply	maybe.nothing	bool.t
-actual	.apply	maybe.print	bool.t	|	bool.print	nothing
-test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	actual	_test.print.nothing_expected
-	.app	_test.print.nothing_label	test
+actual	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs	nothing
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.nothing_expected
+	.app	_test.fmtgs.nothing_label	test
 	.enter	test.property.label

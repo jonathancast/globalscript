@@ -20,7 +20,7 @@ natural.prim.<	.closure	_natural.prim.<_c
 
 natural.fmtdecimal	.closure	_natural.fmtdecimal_c	_natural.fmtdecimal_ty
 
-natural.print	.closure	_natural.print_c
+natural.fmtgs	.closure	_natural.fmtgs_c
 
 natural.0	.closure	_natural.0_c
 natural.1	.closure	_natural.1_c
@@ -360,9 +360,9 @@ m0	.fv	natural.prim.u
 	.app	0	m0
 	.yield	rune.prim.advance
 
-# §section §gs{natural.print}
+# §section §gs{natural.fmtgs}
 
-_natural.print_c	.expr
+_natural.fmtgs_c	.expr
 natural.fmtdecimal	.gvar
 	.enter	natural.fmtdecimal
 

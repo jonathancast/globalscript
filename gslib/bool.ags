@@ -10,9 +10,9 @@ bool.≡	.closure	_bool.≡.c
 bool.not	.closure	_bool.not_c
 bool.∧	.closure	_bool.∧.c
 
-bool.print	.closure	_bool.print_c	_bool.print_ty
-_bool.print_true.s	.string	true
-bool.print.list	.closure	_bool.print.list_c
+bool.fmtgs	.closure	_bool.fmtgs_c	_bool.fmtgs_ty
+_bool.fmtgs_true.s	.string	true
+bool.fmtgs.list	.closure	_bool.fmtgs.list_c
 
 	.code
 
@@ -124,35 +124,35 @@ b0.0	.karg	bool.prim.u
 	.case	true
 		.enter	b1
 
-# §section §gs{bool.print}
+# §section §gs{bool.fmtgs}
 
-_bool.print_c	.expr
+_bool.fmtgs_c	.expr
 bool.t	.tygvar
-_bool.print_k	.subcode
+_bool.fmtgs_k	.subcode
 bool.t.out	.cogvar
 b	.larg	bool.t
-	.force	_bool.print_k
+	.force	_bool.fmtgs_k
 	.coerce	bool.t.out
 	.enter	b
 
-_bool.print_k	.forcecont
+_bool.fmtgs_k	.forcecont
 bool.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-_bool.print_true.s	.gvar
+_bool.fmtgs_true.s	.gvar
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
 			.undef	list.t	rune.t
 		.case	true
-			.enter	_bool.print_true.s
+			.enter	_bool.fmtgs_true.s
 
-_bool.print.list_c	.expr
+_bool.fmtgs.list_c	.expr
 bool.t	.tygvar
-list.print.byDefault	.gvar
-bool.print	.gvar
-	.app	bool.print
-	.enter	list.print.byDefault	bool.t
+list.fmtgs.byDefault	.gvar
+bool.fmtgs	.gvar
+	.app	bool.fmtgs
+	.enter	list.fmtgs.byDefault	bool.t
 
 	.type
 
@@ -172,10 +172,10 @@ _false.arg.ty	.tyexpr
 _true.arg.ty	.tyexpr
 	.tyubproduct
 
-_bool.print_ty	.tyexpr
-print.t	.tygvar
+_bool.fmtgs_ty	.tyexpr
+fmtgs.t	.tygvar
 bool.t	.tygvar
-	.tyref	print.t	bool.t
+	.tyref	fmtgs.t	bool.t
 
 	.coercion
 

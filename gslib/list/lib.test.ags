@@ -40,10 +40,10 @@ natural.t	.tygvar
 _test.length.nil_test_actual_c	.subcode
 test.assert.eq	.gvar
 natural.≡	.gvar
-natural.print	.gvar
+natural.fmtgs	.gvar
 _0	.gvar
 actual	.alloc	_test.length.nil_test_actual_c
-	.app	natural.≡	natural.print	actual	_0
+	.app	natural.≡	natural.fmtgs	actual	_0
 	.enter	test.assert.eq	natural.t
 
 _test.length.nil_test_actual_c	.expr
@@ -68,10 +68,10 @@ natural.t	.tygvar
 _test.length.singleton_test_actual_c	.subcode
 test.assert.eq	.gvar
 natural.≡	.gvar
-natural.print	.gvar
+natural.fmtgs	.gvar
 _1	.gvar
 actual	.alloc	_test.length.singleton_test_actual_c
-	.app	natural.≡ natural.print	actual	_1
+	.app	natural.≡ natural.fmtgs	actual	_1
 	.enter	test.assert.eq	natural.t
 
 _test.length.singleton_test_actual_c	.expr

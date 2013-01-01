@@ -31,8 +31,8 @@ _parser.err.fmt_parse.failure.s	.string	:\sParse\sfailure
 
 parser.err.≡	.closure	_parser.err.≡_c
 
-parser.err.print	.closure	_parser.err.print_c
-_parser.err.print_simple.failure_prefix	.string	simple.failure\s
+parser.err.fmtgs	.closure	_parser.err.fmtgs_c
+_parser.err.fmtgs_simple.failure_prefix	.string	simple.failure\s
 
 parser.err.simple.failure	.closure	_parser.err.simple.failure_c
 parser.err.message.failure	.closure	_parser.err.message.failure_c
@@ -44,12 +44,12 @@ _parser.pos.fmt_line.fake.s	.string	1
 
 parser.pos.≡	.closure	_parser.pos.≡_c
 
-parser.pos.print	.closure	_parser.pos.print_c
-_parser.pos_prefix.s	.string	〈\s
-_parser.pos.print_file.s	.string	'file\s∝\s
-_parser.pos.print_col.s	.string	'col\s∝\s
-_parser.pos.print_semi.space.s	.string	;\s
-_parser.pos_suffix.s	.string	〉
+parser.pos.fmtgs	.closure	_parser.pos.fmtgs_c
+_parser.pos.fmtgs_prefix.s	.string	〈\s
+_parser.pos.fmtgs_file.s	.string	'file\s∝\s
+_parser.pos.fmtgs_col.s	.string	'col\s∝\s
+_parser.pos.fmtgs_semi.space.s	.string	;\s
+_parser.pos.fmtgs_suffix.s	.string	〉
 
 parser.pos.initial	.closure	_parser.pos.initial_c
 
@@ -618,29 +618,29 @@ eof1				.fkarg	1	bool.t
 					.app	pos0	pos1
 					.enter	parser.pos.≡
 
-# §section §gs{parser.err.print}
+# §section §gs{parser.err.fmtgs}
 
-_parser.err.print_c	.expr
+_parser.err.fmtgs_c	.expr
 parser.err.t	.tygvar
-_parser.err.print_k	.subcode
+_parser.err.fmtgs_k	.subcode
 parser.err.t.out	.cogvar
 e	.larg	parser.err.t
-	.force	_parser.err.print_k
+	.force	_parser.err.fmtgs_k
 	.coerce	parser.err.t.out
 	.enter	e
 
-_parser.err.print_k	.forcecont
+_parser.err.fmtgs_k	.forcecont
 parser.err.prim.u	.tygvar
 parser.pos.t	.tygvar
 bool.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 list.<>	.gvar
-_parser.err.print_simple.failure_prefix	.gvar
-parser.pos.print	.gvar
+_parser.err.fmtgs_simple.failure_prefix	.gvar
+parser.pos.fmtgs	.gvar
 list.:	.gvar
 rune.space	.gvar
-bool.print	.gvar
+bool.fmtgs	.gvar
 e0	.karg	parser.err.prim.u
 	.analyze	e0	message.failure	simple.failure
 		.case	message.failure
@@ -651,11 +651,11 @@ msg		.fkarg	2	list.t	rune.t
 		.case	simple.failure
 pos		.fkarg	0	parser.pos.t
 eof		.fkarg	1	bool.t
-pos.s			.apply	parser.pos.print	|	pos
-eof.s			.apply	bool.print	|	eof
+pos.s			.apply	parser.pos.fmtgs	|	pos
+eof.s			.apply	bool.fmtgs	|	eof
 s1			.apply	list.:	rune.t	|	rune.space	pos.s
 s2			.apply	list.<>	rune.t	|	eof.s	s1
-			.app	_parser.err.print_simple.failure_prefix	s2
+			.app	_parser.err.fmtgs_simple.failure_prefix	s2
 			.enter	list.<>	rune.t
 
 # §section §gs{parser.err.t} constructors
@@ -757,31 +757,31 @@ b1	.apply	natural.≡	|	pos0.col	pos1.col
 	.app	b0	b1
 	.enter	bool.∧
 
-# §section §gs{parser.pos.print}
+# §section §gs{parser.pos.fmtgs}
 
-_parser.pos.print_c	.expr
+_parser.pos.fmtgs_c	.expr
 parser.pos.t	.tygvar
 rune.t	.tygvar
 list.<>	.gvar
-_parser.pos_prefix.s	.gvar
-_parser.pos.print_file.s	.gvar
-_parser.pos_suffix.s	.gvar
-ibio.file.name.print	.gvar
-_parser.pos.print_semi.space.s	.gvar
-_parser.pos.print_col.s	.gvar
-natural.print	.gvar
+_parser.pos.fmtgs_prefix.s	.gvar
+_parser.pos.fmtgs_file.s	.gvar
+_parser.pos.fmtgs_suffix.s	.gvar
+ibio.file.name.fmtgs	.gvar
+_parser.pos.fmtgs_semi.space.s	.gvar
+_parser.pos.fmtgs_col.s	.gvar
+natural.fmtgs	.gvar
 pos	.larg	parser.pos.t
 fn	.lfield	file	pos
 col	.lfield	col	pos
-fn.s	.apply	ibio.file.name.print	|	fn
-col.s	.apply	natural.print	|	col
-s5	.apply	list.<>	rune.t	|	_parser.pos.print_semi.space.s	_parser.pos_suffix.s
+fn.s	.apply	ibio.file.name.fmtgs	|	fn
+col.s	.apply	natural.fmtgs	|	col
+s5	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_semi.space.s	_parser.pos.fmtgs_suffix.s
 s4	.apply	list.<>	rune.t	|	col.s	s5
-s3	.apply	list.<>	rune.t	|	_parser.pos.print_col.s	s4
-s2	.apply	list.<>	rune.t	|	_parser.pos.print_semi.space.s	s3
+s3	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_col.s	s4
+s2	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_semi.space.s	s3
 s1	.apply	list.<>	rune.t	|	fn.s	s2
-s0	.apply	list.<>	rune.t	|	_parser.pos.print_file.s	s1
-	.app	_parser.pos_prefix.s	s0
+s0	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_file.s	s1
+	.app	_parser.pos.fmtgs_prefix.s	s0
 	.enter	list.<>	rune.t
 
 # §section §gs{parser.pos.initial}

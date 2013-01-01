@@ -60,8 +60,6 @@ _3	.closure	_3_c
 _4	.closure	_4_c
 _5	.closure	_5_c
 _11	.closure	_11_c
-_string.≡	.closure	_string.≡_c
-_string.print	.closure	_string.print_c
 
 	.code
 
@@ -187,10 +185,10 @@ natural.t	.tygvar
 _test_2.plus.3_test_actual_c	.subcode
 test.assert.eq	.gvar
 natural.≡	.gvar
-natural.print	.gvar
+natural.fmtgs	.gvar
 _5	.gvar
 actual	.alloc	_test_2.plus.3_test_actual_c
-	.app	natural.≡	natural.print	actual	_5
+	.app	natural.≡	natural.fmtgs	actual	_5
 	.enter	test.assert.eq	natural.t
 
 _test_2.plus.3_test_actual_c	.expr
@@ -313,15 +311,15 @@ _test.fmtdecimal.0_test	.gvar
 	.enter	test.property.label
 
 _test.fmtdecimal.0_test_c	.expr
-_string.ty	.tygvar
+string.t	.tygvar
 _test.fmtdecimal.0_test_0.s_c	.subcode
 test.assert.eq	.gvar
-_string.≡	.gvar
-_string.print	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
 _test.fmtdecimal.0_test_expected	.gvar
 0.s	.alloc	_test.fmtdecimal.0_test_0.s_c
-	.app	_string.≡ _string.print	0.s	_test.fmtdecimal.0_test_expected
-	.enter	test.assert.eq	_string.ty
+	.app	string.≡ string.fmtgs	0.s	_test.fmtdecimal.0_test_expected
+	.enter	test.assert.eq	string.t
 
 _test.fmtdecimal.0_test_0.s_c	.expr
 natural.fmtdecimal	.gvar
@@ -338,15 +336,15 @@ test	.alloc	_test.fmtdecimal.11_test_c
 	.enter	test.property.label
 
 _test.fmtdecimal.11_test_c	.expr
-_string.ty	.tygvar
+string.t	.tygvar
 _test.fmtdecimal.11_test_11.s_c	.subcode
 test.assert.eq	.gvar
-_string.≡	.gvar
-_string.print	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
 _test.fmtdecimal.11_test_expected	.gvar
 11.s	.alloc	_test.fmtdecimal.11_test_11.s_c
-	.app	_string.≡	_string.print	11.s	_test.fmtdecimal.11_test_expected
-	.enter	test.assert.eq	_string.ty
+	.app	string.≡	string.fmtgs	11.s	_test.fmtdecimal.11_test_expected
+	.enter	test.assert.eq	string.t
 
 _test.fmtdecimal.11_test_11.s_c	.expr
 natural.fmtdecimal	.gvar
@@ -397,20 +395,6 @@ natural.t.in	.cogvar
 	.coerce	natural.t.in
 	.lift
 	.yield	11
-
-_string.≡_c	.expr
-rune.t	.tygvar
-list.≡	.gvar
-rune.≡	.gvar
-	.app	rune.≡
-	.enter	list.≡	rune.t
-
-_string.print_c	.expr
-rune.t	.tygvar
-list.print	.gvar
-rune.print.list	.gvar
-	.app	rune.print.list
-	.enter	list.print	rune.t
 
 	.type
 

@@ -2,7 +2,7 @@
 
 	.type
 
-print.t	.tyexpr
+fmtgs.t	.tyexpr
 list.t	.tygvar
 rune.t	.tygvar
 α	.tylambda	*

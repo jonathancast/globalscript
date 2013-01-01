@@ -34,14 +34,14 @@ _test.fails.unit.nil_label	.gvar
 test.assert.fails	.gvar
 parser.test.assert.fails	.gvar
 parser.rune.advance	.gvar
-record.empty.print	.gvar
+record.empty.fmtgs	.gvar
 parser.unit	.gvar
 record.empty	.gvar
 list.nil	.gvar
 unit	.apply	parser.unit	rune.t	record.empty	|	record.empty
 nil	.apply	list.nil	rune.t
 k0	.alloc	_test.fails.unit.nil_k0_c
-assert	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	record.empty.print	unit	nil	k0
+assert	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	record.empty.fmtgs	unit	nil	k0
 k1	.alloc	_test.fails.unit.nil_k1_c
 test	.apply	test.assert.fails	|	assert	k1
 	.app	_test.fails.unit.nil_label	test
@@ -56,18 +56,14 @@ err	.larg	parser.err.t
 _test.fails.unit.nil_k1_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
+string.t	.tygvar
 test.assert.eq	.gvar
-list.≡	.gvar
-rune.≡	.gvar
-list.print	.gvar
-rune.print.list	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
 _test.fails.unit.nil_expected.msg	.gvar
 msg	.larg	list.t	rune.t
-string.≡	.apply	list.≡	rune.t	|	rune.≡
-string.print	.apply	list.print	rune.t	|	rune.print.list
-	.app	string.≡	string.print	msg	_test.fails.unit.nil_expected.msg
-	.enter	test.assert.eq	string.ty
+	.app	string.≡	string.fmtgs	msg	_test.fails.unit.nil_expected.msg
+	.enter	test.assert.eq	string.t
 
 # §section §gs{assert.passes fail qq{}}
 
@@ -101,15 +97,11 @@ r	.larg	record.empty
 _test.passes.fail.nil_k1_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
+string.t	.tygvar
 test.assert.eq	.gvar
-list.≡	.gvar
-rune.≡	.gvar
-list.print	.gvar
-rune.print.list	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
 _test.passes.fail.nil_expected.msg	.gvar
 msg	.larg	list.t	rune.t
-string.≡	.apply	list.≡	rune.t	|	rune.≡
-string.print	.apply	list.print	rune.t	|	rune.print.list
-	.app	string.≡	string.print	msg	_test.passes.fail.nil_expected.msg
-	.enter	test.assert.eq	string.ty
+	.app	string.≡	string.fmtgs	msg	_test.passes.fail.nil_expected.msg
+	.enter	test.assert.eq	string.t

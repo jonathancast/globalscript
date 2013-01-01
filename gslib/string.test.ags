@@ -34,14 +34,14 @@ _test.fmtline.line_label	.gvar
 test.assert.eq	.gvar
 list.≡	.gvar
 rune.≡	.gvar
-list.print	.gvar
-rune.print.list	.gvar
+list.fmtgs	.gvar
+rune.fmtgs.list	.gvar
 string.fmtline	.gvar
 _test.fmtline.line_line.s	.gvar
 string.≡	.apply	list.≡	rune.t	|	rune.≡
-string.print	.apply	list.print	rune.t	|	rune.print.list
+string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 actual	.apply	string.fmtline	|	_test.fmtline.line_line.s
-test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	actual	_test.fmtline.line_line.s
+test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.fmtline.line_line.s
 	.app	_test.fmtline.line_label	test
 	.enter	test.property.label
 
@@ -56,14 +56,14 @@ _test.fmtline.partial.line_label	.gvar
 test.assert.eq	.gvar
 list.≡	.gvar
 rune.≡	.gvar
-list.print	.gvar
-rune.print.list	.gvar
+list.fmtgs	.gvar
+rune.fmtgs.list	.gvar
 string.fmtline	.gvar
 _test.fmtline.partial.line_partial.line.s	.gvar
 _test.fmtline.partial.line_line.s	.gvar
 string.≡	.apply	list.≡	rune.t	|	rune.≡
-string.print	.apply	list.print	rune.t	|	rune.print.list
+string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 actual	.apply	string.fmtline	|	_test.fmtline.partial.line_partial.line.s
-test	.apply	test.assert.eq	string.ty	|	string.≡	string.print	actual	_test.fmtline.partial.line_line.s
+test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.fmtline.partial.line_line.s
 	.app	_test.fmtline.partial.line_label	test
 	.enter	test.property.label

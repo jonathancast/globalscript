@@ -7,8 +7,8 @@ maybe.just	.closure	_maybe.just_c
 
 maybe.≡	.closure	_maybe.≡_c
 
-maybe.print	.closure	_maybe.print_c
-_maybe.print_nothing.s	.string	nothing
+maybe.fmtgs	.closure	_maybe.fmtgs_c
+_maybe.fmtgs_nothing.s	.string	nothing
 
 	.code
 
@@ -87,33 +87,33 @@ x1				.fkarg	0	α
 				.case	nothing
 					.enter	bool.true
 
-# §section §gs{maybe.print}
+# §section §gs{maybe.fmtgs}
 
-_maybe.print_c	.expr
-_maybe.print_pr_ty	.tygvar
+_maybe.fmtgs_c	.expr
+_maybe.fmtgs_pr_ty	.tygvar
 maybe.t	.tygvar
 α	.tyarg	*
-_maybe.print_k	.subcode
+_maybe.fmtgs_k	.subcode
 maybe.t.out	.cogvar
-pr	.larg	_maybe.print_pr_ty	α
+pr	.larg	_maybe.fmtgs_pr_ty	α
 mb	.larg	maybe.t	α
-	.force	_maybe.print_k	α
+	.force	_maybe.fmtgs_k	α
 	.coerce	maybe.t.out	α
 	.enter	mb
 
-_maybe.print_k	.forcecont
+_maybe.fmtgs_k	.forcecont
 maybe.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 α	.tyfv	*
-_maybe.print_nothing.s	.gvar
+_maybe.fmtgs_nothing.s	.gvar
 mb0	.karg	maybe.prim.u	α
 	.analyze	mb0	just	nothing
 		.case	just
 x		.fkarg	0	α
 			.undef	list.t	rune.t
 		.case	nothing
-			.enter	_maybe.print_nothing.s
+			.enter	_maybe.fmtgs_nothing.s
 
 	.type
 
@@ -148,9 +148,9 @@ bool.t	.tygvar
 	.tyfun	α
 	.tyref	bool.t
 
-# §section §gs{maybe.print}
+# §section §gs{maybe.fmtgs}
 
-_maybe.print_pr_ty	.tyexpr
+_maybe.fmtgs_pr_ty	.tyexpr
 list.t	.tygvar
 rune.t	.tygvar
 α	.tylambda	*
