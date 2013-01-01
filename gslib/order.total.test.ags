@@ -4,12 +4,16 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.gt.eq.gt
+_tests	.list	test.property.t	_test.gt.eq.gt	_test.print.gt
 
 _test.gt.eq.gt	.closure	_test.gt.eq.gt_c
 _test.gt.eq.gt_label	.string	ord.≡\sgt\sgt
 _test.gt.eq.gt_false	.string	gt\s≠\sgt
 _test.gt.eq.gt_true	.string	gt\s≡\sgt
+
+_test.print.gt	.closure	_test.print.gt_c
+_test.print.gt_label	.string	ord.print\sgt
+_test.print.gt_expected	.string	gt
 
 	.code
 
@@ -32,4 +36,21 @@ order.total.ord.gt	.gvar
 eq	.apply	order.total.ord.≡	|	order.total.ord.gt	order.total.ord.gt
 test	.apply	test.assert	|	_test.gt.eq.gt_false	_test.gt.eq.gt_true	eq
 	.app	_test.gt.eq.gt_label	test
+	.enter	test.property.label
+
+# §section §gs{print gt}
+
+_test.print.gt_c	.expr
+string.t	.tygvar
+test.property.label	.gvar
+_test.print.gt_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.print	.gvar
+order.total.ord.print	.gvar
+order.total.ord.gt	.gvar
+_test.print.gt_expected	.gvar
+actual	.apply	order.total.ord.print	|	order.total.ord.gt
+test	.apply	test.assert.eq	string.t	|	string.≡	string.print	actual	_test.print.gt_expected
+	.app	_test.print.gt_label	test
 	.enter	test.property.label
