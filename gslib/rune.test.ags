@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.print.x	_test.print.nl	_test.list.print.x	_test.list.print.nl	_test.rune.advance
+_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.compare.y.x	_test.print.x	_test.print.nl	_test.list.print.x	_test.list.print.nl	_test.rune.advance
 
 _test.x.eq.x	.closure	_test.x.eq.x.c
 _test.x.eq.x.label	.string	r/x/\s≡\sr/x/
@@ -17,6 +17,9 @@ _test.x.eq.y_label	.string	r/x/\s≠\sr/y/
 _test.x.eq.y_test	.closure	_test.x.eq.y_test_c
 _test.x.eq.y_test_succ	.string	r/x/\s≠\sr/y/
 _test.x.eq.y_test_fail	.string	r/x/\s≡\sr/y/
+
+_test.compare.y.x	.closure	_test.compare.y.x_c
+_test.compare.y.x_label	.string	compare\sr/y/\sr/y/
 
 _test.print.x	.closure	_test.print.x_c
 _test.print.x_label	.string	rune.print\sr/x/\s≡\sqq{r/x/}
@@ -107,6 +110,24 @@ _x	.gvar
 _y	.gvar
 	.app	_x	_y
 	.enter	rune.≡
+
+# §section §gs{compare r/y/ r/x/}
+
+_test.compare.y.x_c	.expr
+order.total.ord.t	.tygvar
+test.property.label	.gvar
+_test.compare.y.x_label	.gvar
+test.assert.eq	.gvar
+order.total.ord.≡	.gvar
+order.total.ord.print	.gvar
+rune.compare	.gvar
+rune.latin.letter.y	.gvar
+rune.latin.letter.x	.gvar
+order.total.ord.gt	.gvar
+actual	.apply	rune.compare	|	rune.latin.letter.y	rune.latin.letter.x
+test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.ord.print	actual	order.total.ord.gt
+	.app	_test.compare.y.x_label	test
+	.enter	test.property.label
 
 # §section §gs{print r/x/}
 

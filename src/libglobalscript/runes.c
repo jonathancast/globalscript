@@ -25,14 +25,16 @@ static gsprim_handler *rune_prim_exec[] = {
     rune_prim_handle_advance,
 };
 
-static gsubprim_handler rune_prim_handle_eq;
+static gsubprim_handler rune_prim_handle_eq, rune_prim_handle_gt;
 
 enum {
     rune_prim_ub_eq,
+    rune_prim_ub_gt,
 };
 
 static gsubprim_handler *rune_prim_ubexec[] = {
     rune_prim_handle_eq,
+    rune_prim_handle_gt,
 };
 
 static gslprim_handler *rune_prim_lexec[] = {
@@ -41,6 +43,7 @@ static gslprim_handler *rune_prim_lexec[] = {
 static struct gsregistered_prim rune_prim_operations[] = {
     /* name, file, line, group, apitype, type, index, */
     { "eq", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "rune.prim.rune rune.prim.rune \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", rune_prim_ub_eq, },
+    { "gt", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "rune.prim.rune rune.prim.rune \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", rune_prim_ub_gt, },
     { "advance", __FILE__, __LINE__, gsprim_operation, 0, "rune.prim.rune natural.prim.u rune.prim.rune → →", rune_prim_advance, },
     { 0, },
 };
@@ -59,6 +62,17 @@ int
 rune_prim_handle_eq(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
 {
     if (args[0] != args[1])
+        return gsprim_return_ubsum(thread, pos, 0, 0)
+    ; else
+        return gsprim_return_ubsum(thread, pos, 1, 0)
+    ;
+}
+
+static
+int
+rune_prim_handle_gt(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
+{
+    if (args[0] <= args[1])
         return gsprim_return_ubsum(thread, pos, 0, 0)
     ; else
         return gsprim_return_ubsum(thread, pos, 1, 0)

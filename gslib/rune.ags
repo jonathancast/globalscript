@@ -28,6 +28,7 @@ rune.number.sign	.closure	_rune.number.sign_c
 rune.colon	.closure	_rune.colon_c
 rune.latin.letter.n	.closure	_rune.latin.letter.n_c
 rune.latin.letter.x	.closure	_rune.latin.letter.x_c
+rune.latin.letter.y	.closure	_rune.latin.letter.y_c
 
 	.code
 
@@ -76,9 +77,43 @@ bool.true	.gvar
 # §section §gs{rune.compare}
 
 _rune.compare_c	.expr
-order.total.t	.tygvar
 rune.t	.tygvar
-	.undef	order.total.t	rune.t
+_rune.compare_k0	.subcode
+rune.t.out	.cogvar
+r0	.larg	rune.t
+r1	.larg	rune.t
+	.force	_rune.compare_k0	|	r1
+	.coerce	rune.t.out
+	.enter	r0
+
+_rune.compare_k0	.forcecont
+rune.t	.tygvar
+rune.prim.rune	.tygvar
+_rune.compare_k1	.subcode
+rune.t.out	.cogvar
+r1	.fv	rune.t
+r0.0	.karg	rune.prim.rune
+	.force	_rune.compare_k1	|	r0.0
+	.coerce	rune.t.out
+	.enter	r1
+
+_rune.compare_k1	.forcecont
+rune.prim.rune	.tygvar
+_rune.prim.gt.t	.tygvar
+_rune.compare_≮_k	.subcode
+_rune.compare_>_k	.subcode
+r0.0	.fv	rune.prim.rune
+r1.0	.karg	rune.prim.rune
+	.ubanalyze	0	_rune.compare_≮_k	1	_rune.compare_>_k
+	.ubprim	rune.prim	gt	_rune.prim.gt.t	|	r0.0	r1.0
+
+_rune.compare_≮_k	.ubcasecont
+order.total.ord.t	.tygvar
+	.undef	order.total.ord.t
+
+_rune.compare_>_k	.ubcasecont
+order.total.ord.gt	.gvar
+	.enter	order.total.ord.gt
 
 # §section §gs{rune.≠}
 
@@ -255,6 +290,13 @@ x	.rune	x
 	.lift
 	.yield	x
 
+_rune.latin.letter.y_c	.expr
+rune.t.in	.cogvar
+y	.rune	y
+	.coerce	rune.t.in
+	.lift
+	.yield	y
+
 	.type
 
 rune.t	.tyabstract	*
@@ -264,7 +306,7 @@ rune.prim.rune	.tygvar
 
 rune.prim.rune	.tydefinedprim	rune.prim	rune	u
 
-# §section rune.≡
+# §section §gs{rune.≡}
 
 _rune.prim.eq.t	.tyexpr
 rune.prim.rune	.tygvar
@@ -274,6 +316,19 @@ _rune.prim.eq.res.t	.tygvar
 	.tyref	_rune.prim.eq.res.t
 
 _rune.prim.eq.res.t	.tyexpr
+record.unboxed.empty	.tygvar
+	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
+
+# §section §gs{rune.>}
+
+_rune.prim.gt.t	.tyexpr
+rune.prim.rune	.tygvar
+_rune.prim.gt.res.t	.tygvar
+	.tyfun	rune.prim.rune
+	.tyfun	rune.prim.rune
+	.tyref	_rune.prim.gt.res.t
+
+_rune.prim.gt.res.t	.tyexpr
 record.unboxed.empty	.tygvar
 	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
 
