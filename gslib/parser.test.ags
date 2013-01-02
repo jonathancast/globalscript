@@ -29,16 +29,16 @@ _test.match.empty.nil	.closure	_test.match.empty.nil_c
 _test.match.empty.nil_label	.string	parse\sm//\sqq{}
 
 _test.match.range.above	.closure	_test.match.range.above_c
-_test.match.range.above_label	.string	parse\sm/[a-z]/\sqq{|}
+_test.match.range.above_label	.string	parse\sm/[a-z]/\sqq{\\{}
 _test.match.range.above_re	.regex	[a-z]
-_test.match.range.above_input	.string	|
-_test.match.range.above_expected	.string	./parse-data:1:1:\sUn-expected\s|
+_test.match.range.above_input	.string	{
+_test.match.range.above_expected	.string	./parse-data:1:1:\sUn-expected\s{
 
 _test.match.range.below	.closure	_test.match.range.below_c
-_test.match.range.below_label	.string	parse\sm/[a-z]/\sqq{6}
+_test.match.range.below_label	.string	parse\sm/[a-z]/\sqq{`}
 _test.match.range.below_re	.regex	[a-z]
-_test.match.range.below_input	.string	6
-_test.match.range.below_expected	.string	./parse-data:1:1:\sUn-expected\s6
+_test.match.range.below_input	.string	`
+_test.match.range.below_expected	.string	./parse-data:1:1:\sUn-expected\s`
 
 _test.err.fmt.simple.failure	.closure	_test.err.fmt.simple.failure_c
 _test.err.fmt.simple.failure_label	.string	parser.err.fmt\ssimple.failure
