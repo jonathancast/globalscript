@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.compare.y.x	_test.compare.x.y	_test.fmtgs.x	_test.fmtgs.nl	_test.list.fmtgs.x	_test.list.fmtgs.nl	_test.rune.advance
+_tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.compare.y.x	_test.compare.x.x	_test.compare.x.y	_test.fmtgs.x	_test.fmtgs.nl	_test.list.fmtgs.x	_test.list.fmtgs.nl	_test.rune.advance
 
 _test.x.eq.x	.closure	_test.x.eq.x.c
 _test.x.eq.x.label	.string	r/x/\s≡\sr/x/
@@ -20,6 +20,9 @@ _test.x.eq.y_test_fail	.string	r/x/\s≡\sr/y/
 
 _test.compare.y.x	.closure	_test.compare.y.x_c
 _test.compare.y.x_label	.string	compare\sr/y/\sr/x/
+
+_test.compare.x.x	.closure	_test.compare.x.x_c
+_test.compare.x.x_label	.string	compare\sr/x/\sr/x/
 
 _test.compare.x.y	.closure	_test.compare.x.y_c
 _test.compare.x.y_label	.string	compare\sr/x/\sr/y/
@@ -130,6 +133,23 @@ order.total.ord.gt	.gvar
 actual	.apply	rune.compare	|	rune.latin.letter.y	rune.latin.letter.x
 test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.ord.fmtgs	actual	order.total.ord.gt
 	.app	_test.compare.y.x_label	test
+	.enter	test.property.label
+
+# §section §gs{compare r/x/ r/x/}
+
+_test.compare.x.x_c	.expr
+order.total.ord.t	.tygvar
+test.property.label	.gvar
+_test.compare.x.x_label	.gvar
+test.assert.eq	.gvar
+order.total.ord.≡	.gvar
+order.total.ord.fmtgs	.gvar
+rune.compare	.gvar
+rune.latin.letter.x	.gvar
+order.total.ord.eq	.gvar
+actual	.apply	rune.compare	|	rune.latin.letter.x	rune.latin.letter.x
+test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.ord.fmtgs	actual	order.total.ord.eq
+	.app	_test.compare.x.x_label	test
 	.enter	test.property.label
 
 # §section §gs{compare r/x/ r/y/}

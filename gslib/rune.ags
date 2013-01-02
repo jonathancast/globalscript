@@ -120,8 +120,8 @@ r1.0	.fv	rune.prim.rune
 	.ubprim	rune.prim	lt	_rune.prim.lt.t	|	r0.0	r1.0
 
 _rune.compare_≯_≮_k	.ubcasecont
-order.total.ord.t	.tygvar
-	.undef	order.total.ord.t
+order.total.ord.eq	.gvar
+	.enter	order.total.ord.eq
 
 _rune.compare_<_k	.ubcasecont
 order.total.ord.lt	.gvar
