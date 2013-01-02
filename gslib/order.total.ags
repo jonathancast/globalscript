@@ -45,7 +45,11 @@ o0.0	.fv	order.total.ord.prim.u
 o1.0	.karg	order.total.ord.prim.u
 	.analyze	o0.0	eq	gt	lt
 		.case	eq
-			.undef	bool.t
+			.danalyze	o1.0	eq
+				.default
+					.undef	bool.t
+				.case	eq
+					.enter	bool.true
 		.case	gt
 			.danalyze	o1.0	gt
 				.default
