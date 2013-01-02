@@ -134,6 +134,8 @@ ibio_oport_fdopen(int fd, char *err, char *eerr)
 
     unlock(&res->lock);
 
+    ace_up();
+
     /* Create write process tied to res */
     if ((writepid = gscreate_thread_pool(ibio_write_process_main, &args, sizeof(args))) < 0) {
         seprint(err, eerr, "Couldn't create IBIO write process: %r");
@@ -211,24 +213,34 @@ ibio_write_process_main(void *p)
 
     tid = -1;
     lock(&ibio_write_thread_queue->lock);
-    for (i = 0; i < IBIO_NUM_WRITE_THREADS; i++)
-        if (!ibio_write_thread_queue->oports[i]) {
-            ibio_write_thread_queue->oports[i] = oport;
-            tid = i;
-            ibio_write_thread_queue->numthreads++;
-            break;
+    {
+        if (!ibio_write_thread_queue->refcount) {
+            unlock(&ibio_write_thread_queue->lock);
+            lock(&oport->lock);
+            oport->active = 0;
+            unlock(&oport->lock);
+
+            ace_down();
+            return;
         }
-    ;
+        for (i = 0; i < IBIO_NUM_WRITE_THREADS; i++)
+            if (!ibio_write_thread_queue->oports[i]) {
+                ibio_write_thread_queue->oports[i] = oport;
+                tid = i;
+                ibio_write_thread_queue->numthreads++;
+                break;
+            }
+        ;
+    }
     unlock(&ibio_write_thread_queue->lock);
 
-    lock(&oport->lock);
     if (tid < 0) {
+        lock(&oport->lock);
         gswarning("%s:%d: ibio_write_process_main: out of write threads", __FILE__, __LINE__);
         oport->active = 0;
         unlock(&oport->lock);
         return;
     }
-    unlock(&oport->lock);
 
     c = 0;
     do {
