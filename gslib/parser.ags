@@ -11,6 +11,7 @@ parser.exec	.closure	_parser.exec_c
 parser.map	.closure	_parser.map_c
 parser.unit	.closure	_parser.unit_c
 parser.<*>	.closure	_parser.<*>_c
+parser.lift2	.closure	_parser.lift2_c
 
 parser.fail	.closure	_parser.fail_c
 parser.fail.msg	.closure	_parser.fail.msg_c
@@ -447,7 +448,77 @@ parser.prim.fail	.gvar
 k	.larg	_parser.t_k_ty	s	α	β
 	.enter	parser.prim.fail	s	β
 
-# §section Sgs{parser.fail.msg}
+# §section §gs{parser.lift2}
+
+_parser.lift2_c	.expr
+_parser.lift2_f_ty	.tygvar
+parser.t	.tygvar
+s	.tyarg	*
+α0	.tyarg	*
+α1	.tyarg	*
+β	.tyarg	*
+_parser.lift2_res_c	.subcode
+f	.larg	_parser.lift2_f_ty	α0	α1	β
+px0	.larg	parser.t	s	α0
+px1	.larg	parser.t	s	α1
+res	.alloc	_parser.lift2_res_c	s	α0	α1	β	|	f	px0	px1
+	.enter	res
+
+_parser.lift2_res_c	.expr
+_parser.lift2_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+β	.tyfv	*
+r	.tyarg	*
+_parser.lift2_kx0_c	.subcode
+f	.fv	_parser.lift2_f_ty	α0	α1	β
+px0	.fv	parser.t	s	α0
+px1	.fv	parser.t	s	α1
+k	.larg	_parser.t_k_ty	s	β	r
+kx0	.alloc	_parser.lift2_kx0_c	s	α0	α1	β	r	|	f	px1	k
+	.app	kx0
+	.enter	px0	r
+
+_parser.lift2_kx0_c	.expr
+_parser.lift2_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.lift2_kx1_c	.subcode
+f	.fv	_parser.lift2_f_ty	α0	α1	β
+px1	.fv	parser.t	s	α1
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.larg	α0
+kx1	.alloc	_parser.lift2_kx1_c	s	α0	α1	β	r	|	f	k	x0
+	.app	kx1
+	.enter	px1	r
+
+_parser.lift2_kx1_c	.expr
+_parser.lift2_f_ty	.tygvar
+_parser.t_k_ty	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+f	.fv	_parser.lift2_f_ty	α0	α1	β
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.larg	α1
+f.x0.x1	.apply	f	|	x0	x1
+	.app	f.x0.x1
+	.enter	k
+
+# §section §gs{parser.fail.msg}
 
 _parser.fail.msg_c	.expr
 list.t	.tygvar
@@ -610,16 +681,20 @@ _parser.match_worker_k	.forcecont
 order.total.t	.tygvar
 regex.prim.u	.tygvar
 regex.class.t	.tygvar
+regex.t	.tygvar
 parser.t	.tygvar
 _parser.match_worker_res_ty	.tygvar
 s	.tyfv	*
 res_ty	.tylet	_parser.match_worker_res_ty	s
 _parser.match_worker_id_c	.subcode
+_parser.match_worker_co_c	.subcode
 _parser.match_worker_class	.gvar
 parser.unit	.gvar
+parser.lift2	.gvar
+_parser.match_worker	.gvar
 cmp	.fv	order.total.t	s
 re0	.karg	regex.prim.u	s
-	.analyze	re0	class	empty	symbol
+	.analyze	re0	class	empty	product	symbol
 		.case	class
 cl		.fkarg	0	regex.class.t	s
 			.app	cmp	cl
@@ -628,6 +703,14 @@ cl		.fkarg	0	regex.class.t	s
 id			.alloc	_parser.match_worker_id_c	s
 			.app	id
 			.enter	parser.unit	s	res_ty
+		.case	product
+re0.0		.fkarg	0	regex.t	s
+re0.1		.fkarg	1	regex.t	s
+co			.alloc	_parser.match_worker_co_c	s
+p0			.apply	_parser.match_worker	s	|	cmp	re0.0
+p1			.apply	_parser.match_worker	s	|	cmp	re0.1
+			.app	co	p0	p1
+			.enter	parser.lift2	s	res_ty	res_ty	res_ty
 		.case	symbol
 c		.fkarg	0	s
 			.undef	parser.t	s	res_ty
@@ -638,6 +721,18 @@ list.t	.tygvar
 s	.tyfv	*
 s	.larg	list.t	s
 	.enter	s
+
+_parser.match_worker_co_c	.expr
+_parser.match_worker_res_ty	.tygvar
+list.t	.tygvar
+s	.tyfv	*
+res_ty	.tylet	_parser.match_worker_res_ty	s
+f0	.larg	res_ty
+f1	.larg	res_ty
+s	.larg	list.t	s
+f1.s	.apply	f1	|	s
+	.app	f1.s
+	.enter	f0
 
 _parser.match_worker_class_c	.expr
 order.total.t	.tygvar
@@ -1228,6 +1323,18 @@ _parser.<*>_f_ty	.tyexpr
 β	.tylambda	*
 	.tylift
 	.tyfun	α
+	.tyref	β
+
+# §section §gs{parser.lift2}
+
+_parser.lift2_f_ty	.tyexpr
+α0	.tylambda	*
+α1	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α0
+	.tylift
+	.tyfun	α1
 	.tyref	β
 
 # §section §gs{parser.symbol.matching.bool}
