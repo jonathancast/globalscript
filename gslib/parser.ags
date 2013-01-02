@@ -318,10 +318,11 @@ s	.tyarg	*
 _parser.map_res_c	.subcode
 f	.larg	_parser.map_f_ty	α	β
 p0	.larg	parser.t	s	α
-res	.alloc	_parser.map_res_c	s	α	β	|	p0
+res	.alloc	_parser.map_res_c	s	α	β	|	f	p0
 	.enter	res
 
 _parser.map_res_c	.expr
+_parser.map_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
 s	.tyfv	*
@@ -329,20 +330,26 @@ s	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
 _parser.map_k0_c	.subcode
+f	.fv	_parser.map_f_ty	α	β
 p0	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	β	r
-k0	.alloc	_parser.map_k0_c	s	α	β	r
+k0	.alloc	_parser.map_k0_c	s	α	β	r	|	f	k
 	.app	k0
 	.enter	p0	r
 
 _parser.map_k0_c	.expr
-parser.prim.t	.tygvar
+_parser.map_f_ty	.tygvar
+_parser.t_k_ty	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
+f	.fv	_parser.map_f_ty	α	β
+k	.fv	_parser.t_k_ty	s	β	r
 x	.larg	α
-	.undef	parser.prim.t	s	r
+fx	.apply	f	|	x
+	.app	fx
+	.enter	k
 
 # §section §gs{parser.unit}
 
@@ -520,45 +527,51 @@ parser.prim.fail.msg	.gvar
 _parser.symbol_msg	.gvar
 pred	.fv	_parser.symbol.matching.bool_pred_ty	s
 k	.larg	_parser.t_k_ty	s	s	r
-sk	.alloc	_parser.symbol.matching.bool_sk_c	s	r	|	pred
+sk	.alloc	_parser.symbol.matching.bool_sk_c	s	r	|	pred	k
 fail	.apply	parser.prim.fail.msg	s	r	|	_parser.symbol_msg
 	.app	sk	fail
 	.yield	parser.prim.symbol	s	r
 
 _parser.symbol.matching.bool_sk_c	.expr
 _parser.symbol.matching.bool_pred_ty	.tygvar
+_parser.t_k_ty	.tygvar
 s	.tyfv	*
 r	.tyfv	*
 _parser.symbol.matching.bool_sk_k	.subcode
 bool.t.out	.cogvar
 pred	.fv	_parser.symbol.matching.bool_pred_ty	s
+k	.fv	_parser.t_k_ty	s	s	r
 c	.larg	s
-	.force	_parser.symbol.matching.bool_sk_k	s	r
+	.force	_parser.symbol.matching.bool_sk_k	s	r	|	k	c
 	.coerce	bool.t.out
 	.app	c
 	.enter	pred
 
 _parser.symbol.matching.bool_sk_k	.forcecont
+_parser.t_k_ty	.tygvar
 bool.prim.u	.tygvar
-either.t	.tygvar
 list.t	.tygvar
-rune.t	.tygvar
+string.t	.tygvar
 parser.prim.t	.tygvar
 s	.tyfv	*
 r	.tyfv	*
-string.ty	.tylet	list.t	rune.t
-list.string.ty	.tylet	list.t	string.ty
+list.string.t	.tylet	list.t	string.t
 parser.ty	.tylet	parser.prim.t	s	r
 either.left	.gvar
 list.nil	.gvar
+either.right	.gvar
+k	.fv	_parser.t_k_ty	s	s	r
+c	.fv	s
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-nil			.apply	list.nil	string.ty
+nil			.apply	list.nil	string.t
 			.app	nil
-			.enter	either.left	list.string.ty	parser.ty
+			.enter	either.left	list.string.t	parser.ty
 		.case	true
-			.undef	either.t	list.string.ty	parser.ty
+kc			.apply	k	|	c
+			.app	kc
+			.enter	either.right	list.string.t	parser.ty
 
 # §section §gs{parser.match}
 
@@ -697,12 +710,12 @@ o0	.karg	order.total.ord.prim.u
 
 _parser.match_worker_class_pred_k2	.forcecont
 order.total.ord.prim.u	.tygvar
-bool.t	.tygvar
+bool.true	.gvar
 bool.false	.gvar
 o0	.karg	order.total.ord.prim.u
 	.danalyze	o0	gt
 		.default
-			.undef	bool.t
+			.enter	bool.true
 		.case	gt
 			.enter	bool.false
 

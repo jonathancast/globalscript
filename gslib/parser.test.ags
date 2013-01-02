@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.match.range.above	_test.match.range.below	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -33,6 +33,11 @@ _test.match.range.above_label	.string	parse\sm/[a-z]/\sqq{\\{}
 _test.match.range.above_re	.regex	[a-z]
 _test.match.range.above_input	.string	{
 _test.match.range.above_expected	.string	./parse-data:1:1:\sUn-expected\s{
+
+_test.match.range.upper	.closure	_test.match.range.upper_c
+_test.match.range.upper_label	.string	parse\sm/[a-z]/\sqq{z}
+_test.match.range.upper_re	.regex	[a-z]
+_test.match.range.upper_input	.string	z
 
 _test.match.range.below	.closure	_test.match.range.below_c
 _test.match.range.below_label	.string	parse\sm/[a-z]/\sqq{`}
@@ -305,7 +310,7 @@ nil	.apply	list.nil	rune.t
 	.app	string.≡	string.fmtgs	s	nil
 	.enter	test.assert.eq	string.ty
 
-# §section §gs{parse m/[a-z]/ qq{|}}
+# §section §gs{parse m/[a-z]/ qq{\\\{}}
 
 _test.match.range.above_c	.expr
 rune.t	.tygvar
@@ -341,7 +346,39 @@ err.s	.apply	parser.err.fmt	|	err
 	.app	string.≡	string.fmtgs	err.s	_test.match.range.above_expected
 	.enter	test.assert.eq	string.t
 
-# §section §gs{parse m/[a-z]/ qq{6}}
+# §section §gs{parse m/[a-z]/ qq{z}}
+
+_test.match.range.upper_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+_test.match.range.upper_k_c	.subcode
+test.property.label	.gvar
+_test.match.range.upper_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+string.fmtgs	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_test.match.range.upper_re	.gvar
+_test.match.range.upper_input	.gvar
+parser	.apply	parser.match	rune.t	|	rune.compare	_test.match.range.upper_re
+k	.alloc	_test.match.range.upper_k_c
+test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	parser	_test.match.range.upper_input	k
+	.app	_test.match.range.upper_label	test
+	.enter	test.property.label
+
+_test.match.range.upper_k_c	.expr
+string.t	.tygvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+_test.match.range.upper_input	.gvar
+res	.larg	string.t
+	.app	string.≡	string.fmtgs	res	_test.match.range.upper_input
+	.enter	test.assert.eq	string.t
+
+# §section §gs{parse m/[a-z]/ qq{`}}
 
 _test.match.range.below_c	.expr
 rune.t	.tygvar
