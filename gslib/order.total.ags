@@ -6,6 +6,7 @@ order.total.ord.≡	.closure	_order.total.ord.≡_c
 
 order.total.ord.fmtgs	.closure	_order.total.ord.fmtgs_c
 _order.total.ord.fmtgs_gt.s	.string	gt
+_order.total.ord.fmtgs_lt.s	.string	lt
 
 order.total.ord.lt	.closure	_order.total.ord.lt_c
 order.total.ord.gt	.closure	_order.total.ord.gt_c
@@ -71,12 +72,13 @@ order.total.ord.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 _order.total.ord.fmtgs_gt.s	.gvar
+_order.total.ord.fmtgs_lt.s	.gvar
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	gt	lt
 		.case	gt
 			.enter	_order.total.ord.fmtgs_gt.s
 		.case	lt
-			.undef	list.t	rune.t
+			.enter	_order.total.ord.fmtgs_lt.s
 	# > :: list.t	rune.t
 
 # §section Constructors
