@@ -679,7 +679,9 @@ order.total.ord.prim.u	.tygvar
 bool.t	.tygvar
 bool.false	.gvar
 o0	.karg	order.total.ord.prim.u
-	.analyze	o0	gt
+	.danalyze	o0	gt
+		.default
+			.undef	bool.t
 		.case	gt
 			.enter	bool.false
 
