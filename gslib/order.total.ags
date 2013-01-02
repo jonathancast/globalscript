@@ -5,6 +5,7 @@
 order.total.ord.≡	.closure	_order.total.ord.≡_c
 
 order.total.ord.fmtgs	.closure	_order.total.ord.fmtgs_c
+_order.total.ord.fmtgs_eq.s	.string	eq
 _order.total.ord.fmtgs_gt.s	.string	gt
 _order.total.ord.fmtgs_lt.s	.string	lt
 
@@ -78,12 +79,13 @@ _order.total.ord.fmtgs_k	.forcecont
 order.total.ord.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
+_order.total.ord.fmtgs_eq.s	.gvar
 _order.total.ord.fmtgs_gt.s	.gvar
 _order.total.ord.fmtgs_lt.s	.gvar
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
 		.case	eq
-			.undef	list.t	rune.t
+			.enter	_order.total.ord.fmtgs_eq.s
 		.case	gt
 			.enter	_order.total.ord.fmtgs_gt.s
 		.case	lt
