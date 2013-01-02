@@ -473,12 +473,12 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
             struct gsregistered_primset *prims;
 
             if (cl.phase > phgens)
-                gsfatal_bad_input(p, "Too late to add allocations")
+                gsfatal("%P: Too late to add allocations", p->pos)
             ;
             cl.phase = phgens;
 
             if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
             ;
             cl.nregs++;
 
@@ -501,7 +501,8 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
             cl.phase = phgens;
 
             if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
+                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+            ;
             cl.nregs++;
 
             creg = gsbc_find_register(p, cl.codenames, cl.ncodes, p->arguments[0]);
@@ -645,11 +646,11 @@ gsbc_bytecode_size_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode_size
         || gssymceq(p->directive, gssymopfkarg, gssymcodeop, ".fkarg")
     ) {
         if (pcl->phase > phargs)
-            gsfatal_bad_input(p, "Too late to add arguments")
+            gsfatal("%P: Too late to add arguments", p->pos)
         ;
         pcl->phase = phargs;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         pcl->nregs++;
     } else {
@@ -1477,7 +1478,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
         if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)
-                gsfatal_bad_input(p, "Too late to add type global variables")
+                gsfatal("%P: Too late to add type global variables", p->pos)
             ;
             cl.phase = rttygvars;
             if (cl.ntyregs >= MAX_NUM_REGISTERS)
@@ -1491,11 +1492,11 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
-                gsfatal_bad_input(p, "Too late to add sub-expressions")
+                gsfatal("%P: Too late to add sub-expressions", p->pos)
             ;
             cl.phase = rtsubexprs;
             if (cl.nsubexprs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many sub-expressions; max 0x%x", p->pos, MAX_NUM_REGISTERS)
             ;
             cl.subexprs[cl.nsubexprs] = p->label;
             cl.subexpr_types[cl.nsubexprs] = gssymtable_get_code_type(symtable, p->label);
@@ -1514,12 +1515,12 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             struct gsregistered_primset *prims;
 
             if (cl.phase > rtlets)
-                gsfatal_bad_input(p, "Too late to add allocations")
+                gsfatal("%P: Too late to add allocations", p->pos)
             ;
             cl.phase = rtlets;
 
             if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
             ;
             cl.regs[cl.nregs] = p->label;
 
@@ -1696,11 +1697,11 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
 
     if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
         if (pcl->phase > rtgvars)
-            gsfatal_bad_input(p, "Too late to add global variables")
+            gsfatal("%P: Too late to add global variables", p->pos)
         ;
         pcl->phase = rtgvars;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         pglobal = (gsvalue *)pcl->pout;
         *pglobal = gssymtable_get_data(symtable, p->label);
@@ -1744,10 +1745,10 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
         struct gstype *type;
 
         if (pcl->phase > rtfvs)
-            gsfatal_bad_input(p, "Too late to add free variables")
+            gsfatal("%P: Too late to add free variables", p->pos)
         ;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         pcl->phase = rtfvs;
 
@@ -1803,10 +1804,10 @@ gsbc_byte_compile_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_c
         struct gstype *type;
 
         if (pcl->phase > rtargs)
-            gsfatal_bad_input(p, "Too late to add arguments")
+            gsfatal("%P: Too late to add arguments", p->pos)
         ;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         pcl->phase = rtargs;
 
@@ -2512,7 +2513,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
         if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)
-                gsfatal_bad_input(p, "Too late to add type global variables")
+                gsfatal("%P: Too late to add type global variables", p->pos)
             ;
             cl.phase = rttygvars;
             if (cl.ntyregs >= MAX_NUM_REGISTERS)
@@ -2525,11 +2526,11 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
-                gsfatal_bad_input(p, "Too late to add sub-expressions")
+                gsfatal("%P: Too late to add sub-expressions", p->pos)
             ;
             cl.phase = rtsubexprs;
             if (cl.nsubexprs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
+                gsfatal("%P: Too many sub-expressions; max 0x%x", p->pos, MAX_NUM_REGISTERS)
             ;
             cl.subexprs[cl.nsubexprs] = p->label;
             cl.subexpr_types[cl.nsubexprs] = gssymtable_get_code_type(symtable, p->label);

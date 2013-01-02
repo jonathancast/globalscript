@@ -229,7 +229,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
             ;
         if (cl->regclass > regarg)
-            gsfatal_bad_input(p, "Too late to add type arguments")
+            gsfatal("%P: Too late to add type arguments", p->pos)
         ;
         cl->regclass = regarg;
         cl->regs[cl->nregs] = p->label;
@@ -252,7 +252,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
             ;
         if (cl->regclass > regforall)
-            gsfatal_bad_input(p, "Too late to add forall arguments")
+            gsfatal("%P: Too late to add forall arguments", p->pos)
         ;
         cl->regclass = regforall;
         cl->regs[cl->nregs] = p->label;
@@ -288,7 +288,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
         ;
         if (cl->regclass > reglet)
-            gsfatal_bad_input(p, "Too late to add lets")
+            gsfatal("%P: Too late to add lets", p->pos)
         ;
         cl->regclass = reglet;
         cl->regs[cl->nregs] = p->label;
@@ -338,7 +338,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         int nconstrs;
 
         if (p->numarguments % 2)
-            gsfatal_bad_input(p, "Cannot have odd number of arguments to .tysum")
+            gsfatal("%P: Cannot have odd number of arguments to .tysum", p->pos)
         ;
         nconstrs = p->numarguments / 2;
 
@@ -408,7 +408,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         int numfields;
 
         if (p->numarguments % 2)
-            gsfatal_bad_input(p, "Cannot have odd number of arguments to .tyubproduct")
+            gsfatal("%P: Cannot have odd number of arguments to .tyubproduct", p->pos)
         ;
         numfields = p->numarguments / 2;
         res = gstype_alloc(sizeof(struct gstype_ubproduct) + numfields * sizeof(struct gstype_field));
@@ -708,7 +708,8 @@ gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *cl, s
 
                 defn->source = gssymtable_get_abstype(cl->symtable, abs->name);
                 if (!defn->source)
-                    gsfatal_bad_input(p, "Couldn't find definition of abstract type %s", abs->name->name);
+                    gsfatal("%P: Couldn't find definition of abstract type %y", p->pos, abs->name)
+                ;
 
                 goto have_defn_for_source;
             }
@@ -738,7 +739,7 @@ gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, s
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
         ;
         if (cl->regclass > regglobal)
-            gsfatal_bad_input(p, "Too late to add type globals")
+            gsfatal("%P: Too late to add type globals", p->pos)
         ;
         cl->regclass = regglobal;
         cl->regs[cl->nregs] = p->label;
@@ -756,7 +757,7 @@ gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, s
             }
         }
         if (!cl->regvalues[cl->nregs])
-            gsfatal_bad_input(p, "Couldn't find referent %s", p->label->name)
+            gsfatal("%P: Couldn't find referent %y", p->pos, p->label)
         ;
         cl->nregs++;
         return next(cl, gsinput_next_line(cl->ppseg, p));
