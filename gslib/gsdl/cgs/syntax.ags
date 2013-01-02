@@ -11,6 +11,7 @@ _gsdl.cgs.syntax.gsid_c	.expr
 parser.t	.tygvar
 rune.t	.tygvar
 parser.match	.gvar
+rune.compare	.gvar
 _gsdl.cgs.syntax.gsid_re	.gvar
-	.app	_gsdl.cgs.syntax.gsid_re
+	.app	rune.compare	_gsdl.cgs.syntax.gsid_re
 	.enter	parser.match	rune.t

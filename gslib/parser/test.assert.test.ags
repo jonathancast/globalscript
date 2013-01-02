@@ -34,6 +34,7 @@ _test.fails.unit.nil_label	.gvar
 test.assert.fails	.gvar
 parser.test.assert.fails	.gvar
 parser.rune.advance	.gvar
+rune.print	.gvar
 record.empty.fmtgs	.gvar
 parser.unit	.gvar
 record.empty	.gvar
@@ -41,7 +42,7 @@ list.nil	.gvar
 unit	.apply	parser.unit	rune.t	record.empty	|	record.empty
 nil	.apply	list.nil	rune.t
 k0	.alloc	_test.fails.unit.nil_k0_c
-assert	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	record.empty.fmtgs	unit	nil	k0
+assert	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	rune.print	record.empty.fmtgs	unit	nil	k0
 k1	.alloc	_test.fails.unit.nil_k1_c
 test	.apply	test.assert.fails	|	assert	k1
 	.app	_test.fails.unit.nil_label	test
@@ -77,12 +78,13 @@ _test.passes.fail.nil_label	.gvar
 test.assert.fails	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
+rune.print	.gvar
 parser.fail	.gvar
 list.nil	.gvar
 fail	.apply	parser.fail	rune.t	record.empty
 nil	.apply	list.nil	rune.t
 k0	.alloc	_test.passes.fail.nil_k0_c
-assert	.apply	parser.test.assert.passes	rune.t	record.empty	|	parser.rune.advance	fail	nil	k0
+assert	.apply	parser.test.assert.passes	rune.t	record.empty	|	parser.rune.advance	rune.print	fail	nil	k0
 k1	.alloc	_test.passes.fail.nil_k1_c
 test	.apply	test.assert.fails	|	assert	k1
 	.app	_test.passes.fail.nil_label	test

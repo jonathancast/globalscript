@@ -4,6 +4,8 @@
 
 parser.parse	.closure	_parser.parse_c
 _parser.parse_work	.closure	_parser.parse_work_c	_parser.parse_work_ty
+_parser.parse_work_symbol_:_unexpected_prefix.s	.string	Un-expected\s
+_parser.parse_work_expecting	.closure	_parser.parse_work_expecting_c	_parser.parse_work_expecting_ty
 parser.exec	.closure	_parser.exec_c
 
 parser.map	.closure	_parser.map_c
@@ -15,6 +17,7 @@ parser.fail.msg	.closure	_parser.fail.msg_c
 
 parser.symbol	.closure	_parser.symbol_c
 _parser.symbol_msg	.string	Un-expected\sEOF;\sexpected\ssymbol
+parser.symbol.matching.bool	.closure	_parser.symbol.matching.bool_c
 
 parser.match	.closure	_parser.match_c
 _parser.match_worker	.closure	_parser.match_worker_c	_parser.match_worker_ty
@@ -61,6 +64,7 @@ parser.pos.next.col	.closure	_parser.pos.next.col_c
 
 _parser.parse_c	.expr
 parser.advance.t	.tygvar
+print.t	.tygvar
 parser.pos.t	.tygvar
 parser.t	.tygvar
 s	.tyarg	*
@@ -68,14 +72,16 @@ s	.tyarg	*
 _parser.parse_work	.gvar
 parser.exec	.gvar
 adv	.larg	parser.advance.t	s
+pr	.larg	print.t	s
 pos	.larg	parser.pos.t
 p	.larg	parser.t	s	α
 p1	.apply	parser.exec	s	α	|	p
-	.app	adv	pos	p1
+	.app	adv	pr	pos	p1
 	.enter	_parser.parse_work	s	α
 
 _parser.parse_work_c	.expr
 parser.advance.t	.tygvar
+print.t	.tygvar
 parser.pos.t	.tygvar
 parser.prim.t	.tygvar
 list.t	.tygvar
@@ -84,15 +90,17 @@ s	.tyarg	*
 _parser.parse_work_k	.subcode
 parser.prim.t.out	.cogvar
 adv	.larg	parser.advance.t	s
+pr	.larg	print.t	s
 pos	.larg	parser.pos.t
 p	.larg	parser.prim.t	s	α
 s	.larg	list.t	s
-	.force	_parser.parse_work_k	s	α	|	adv	pos	s
+	.force	_parser.parse_work_k	s	α	|	adv	pr	pos	s
 	.coerce	parser.prim.t.out	s	α
 	.enter	p
 
 _parser.parse_work_k	.forcecont
 parser.advance.t	.tygvar
+print.t	.tygvar
 parser.pos.t	.tygvar
 list.t	.tygvar
 parser.prim.u	.tygvar
@@ -110,6 +118,7 @@ parser.err.simple.failure	.gvar
 list.null	.gvar
 parser.err.message.failure	.gvar
 adv	.fv	parser.advance.t	s
+pr	.fv	print.t	s
 pos	.fv	parser.pos.t
 s	.fv	list.t	s
 p0	.karg	parser.prim.u	s	α
@@ -128,28 +137,36 @@ mf			.apply	parser.err.message.failure	|	pos	eof	msg
 		.case	symbol
 sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	α
 ek		.fkarg	1	parser.prim.t	s	α
-			.force	_parser.parse_work_symbol_k	s	α	|	adv	pos	s	sk	ek
+			.force	_parser.parse_work_symbol_k	s	α	|	adv	pr	pos	s	sk	ek
 			.coerce	list.t.out	s
 			.enter	s
 		.case	unit.plus
 x		.fkarg	0	α
 p1		.fkarg	1	parser.prim.t	s	α
-			.force	_parser.parse_work_unit.plus_k	s	α	|	adv	pos	s	x	p1
+			.force	_parser.parse_work_unit.plus_k	s	α	|	adv	pr	pos	s	x	p1
 			.coerce	list.t.out	s
 			.enter	s
 	# > :: either.t	parser.err.t	α
 
 _parser.parse_work_symbol_k	.forcecont
 parser.advance.t	.tygvar
+print.t	.tygvar
 parser.pos.t	.tygvar
 list.t	.tygvar
 _parser.prim.u_symbol_0_ty	.tygvar
 parser.prim.t	.tygvar
 list.prim.u	.tygvar
+rune.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
+string.ty	.tylet	list.t	rune.t
+list.string.ty	.tylet	list.t	string.ty
+parser.ty	.tylet	parser.prim.t	s	α
+_parser.parse_work_symbol_:_k	.subcode
+either.t.out	.cogvar
 _parser.parse_work	.gvar
 adv	.fv	parser.advance.t	s
+pr	.fv	print.t	s
 pos	.fv	parser.pos.t
 s	.fv	list.t	s
 sk	.fv	_parser.prim.u_symbol_0_ty	s	α
@@ -159,16 +176,61 @@ s0	.karg	list.prim.u	s
 		.case	:
 c		.fkarg	0	s
 s1		.fkarg	1	list.t	s
-pos1			.apply	adv	|	c	pos
-skc			.apply	sk	|	c
-			.app	adv	pos1	skc	s1
-			.enter	_parser.parse_work	s	α
+			.force	_parser.parse_work_symbol_:_k	s	α	|	adv	pr	pos	c	s1
+			.coerce	either.t.out	list.string.ty	parser.ty
+			.app	c
+			.enter	sk
 		.case	nil
-			.app	adv	pos	ek	s
+			.app	adv	pr	pos	ek	s
+			.enter	_parser.parse_work	s	α
+
+_parser.parse_work_symbol_:_k	.forcecont
+parser.advance.t	.tygvar
+print.t	.tygvar
+parser.pos.t	.tygvar
+either.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+parser.prim.t	.tygvar
+either.t	.tygvar
+parser.err.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+string.ty	.tylet	list.t	rune.t
+list.string.ty	.tylet	list.t	string.ty
+parser.ty	.tylet	parser.prim.t	s	α
+either.left	.gvar
+parser.err.message.failure	.gvar
+bool.false	.gvar
+list.<>	.gvar
+_parser.parse_work_symbol_:_unexpected_prefix.s	.gvar
+_parser.parse_work_expecting	.gvar
+_parser.parse_work	.gvar
+adv	.fv	parser.advance.t	s
+pr	.fv	print.t	s
+pos	.fv	parser.pos.t
+c	.fv	s
+s1	.fv	list.t	s
+e0	.karg	either.prim.u	list.string.ty	parser.ty
+	.analyze	e0	left	right
+		.case	left
+exps		.fkarg	0	list.t	string.ty
+c.s			.apply	pr	|	c
+unexpected			.apply	list.<>	rune.t	|	_parser.parse_work_symbol_:_unexpected_prefix.s	c.s
+expecting			.apply	_parser.parse_work_expecting	|	exps
+msg			.apply	list.<>	rune.t	|	unexpected	expecting
+err			.apply	parser.err.message.failure	|	pos	bool.false	msg
+			.app	err
+			.enter	either.left	parser.err.t	α
+		.case	right
+p		.fkarg	0	parser.prim.t	s	α
+pos1			.apply	adv	|	c	pos
+			.app	adv	pr	pos1	p	s1
 			.enter	_parser.parse_work	s	α
 
 _parser.parse_work_unit.plus_k	.forcecont
 parser.advance.t	.tygvar
+print.t	.tygvar
 parser.pos.t	.tygvar
 parser.prim.t	.tygvar
 list.prim.u	.tygvar
@@ -180,6 +242,7 @@ s	.tyfv	*
 _parser.parse_work	.gvar
 either.right	.gvar
 adv	.fv	parser.advance.t	s
+pr	.fv	print.t	s
 pos	.fv	parser.pos.t
 s	.fv	list.t	s
 x	.fv	α
@@ -189,11 +252,37 @@ s0	.karg	list.prim.u	s
 		.case	:
 c		.fkarg	0	s
 s1		.fkarg	1	list.t	s
-			.app	adv	pos	p1	s
+			.app	adv	pr	pos	p1	s
 			.enter	_parser.parse_work	s	α
 		.case	nil
 			.app	x
 			.enter	either.right	parser.err.t	α
+
+_parser.parse_work_expecting_c	.expr
+list.t	.tygvar
+string.t	.tygvar
+rune.t	.tygvar
+_parser.parse_work_expecting_k	.subcode
+list.t.out	.cogvar
+exps	.larg	list.t	string.t
+	.force	_parser.parse_work_expecting_k
+	.coerce	list.t.out	string.t
+	.enter	exps
+
+_parser.parse_work_expecting_k	.forcecont
+list.prim.u	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+list.nil	.gvar
+exps0	.karg	list.prim.u	string.t
+	.analyze	exps0	:	nil
+		.case	:
+e0		.fkarg	0	list.t	rune.t
+es1		.fkarg	1	list.t	string.t
+			.undef	list.t	rune.t
+		.case	nil
+			.enter	list.nil	rune.t
 
 # §section §gs{parser.exec}
 
@@ -383,17 +472,98 @@ _parser.t_k_ty	.tygvar
 parser.prim.t	.tygvar
 s	.tyarg	*
 r	.tyarg	*
+_parser.symbol_sk_c	.subcode
 parser.prim.symbol	.gvar
 parser.prim.fail.msg	.gvar
 _parser.symbol_msg	.gvar
 k	.larg	_parser.t_k_ty	s	s	r
+sk	.alloc	_parser.symbol_sk_c	s	r	|	k
 fail	.apply	parser.prim.fail.msg	s	r	|	_parser.symbol_msg
-	.app	k	fail
+	.app	sk	fail
 	.yield	parser.prim.symbol	s	r
+
+_parser.symbol_sk_c	.expr
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+r	.tyfv	*
+string.ty	.tylet	list.t	rune.t
+list.string.ty	.tylet	list.t	string.ty
+parser.ty	.tylet	parser.prim.t	s	r
+either.right	.gvar
+k	.fv	_parser.t_k_ty	s	s	r
+c	.larg	s
+kc	.apply	k	|	c
+	.app	kc
+	.enter	either.right	list.string.ty	parser.ty
+
+# §section §gs{parser.symbol.matching.bool}
+
+_parser.symbol.matching.bool_c	.expr
+_parser.symbol.matching.bool_pred_ty	.tygvar
+s	.tyarg	*
+_parser.symbol.matching.bool_res_c	.subcode
+pred	.larg	_parser.symbol.matching.bool_pred_ty	s
+res	.alloc	_parser.symbol.matching.bool_res_c	s	|	pred
+	.enter	res
+
+_parser.symbol.matching.bool_res_c	.expr
+_parser.symbol.matching.bool_pred_ty	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+r	.tyarg	*
+_parser.symbol.matching.bool_sk_c	.subcode
+parser.prim.symbol	.gvar
+parser.prim.fail.msg	.gvar
+_parser.symbol_msg	.gvar
+pred	.fv	_parser.symbol.matching.bool_pred_ty	s
+k	.larg	_parser.t_k_ty	s	s	r
+sk	.alloc	_parser.symbol.matching.bool_sk_c	s	r	|	pred
+fail	.apply	parser.prim.fail.msg	s	r	|	_parser.symbol_msg
+	.app	sk	fail
+	.yield	parser.prim.symbol	s	r
+
+_parser.symbol.matching.bool_sk_c	.expr
+_parser.symbol.matching.bool_pred_ty	.tygvar
+s	.tyfv	*
+r	.tyfv	*
+_parser.symbol.matching.bool_sk_k	.subcode
+bool.t.out	.cogvar
+pred	.fv	_parser.symbol.matching.bool_pred_ty	s
+c	.larg	s
+	.force	_parser.symbol.matching.bool_sk_k	s	r
+	.coerce	bool.t.out
+	.app	c
+	.enter	pred
+
+_parser.symbol.matching.bool_sk_k	.forcecont
+bool.prim.u	.tygvar
+either.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+r	.tyfv	*
+string.ty	.tylet	list.t	rune.t
+list.string.ty	.tylet	list.t	string.ty
+parser.ty	.tylet	parser.prim.t	s	r
+either.left	.gvar
+list.nil	.gvar
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+nil			.apply	list.nil	string.ty
+			.app	nil
+			.enter	either.left	list.string.ty	parser.ty
+		.case	true
+			.undef	either.t	list.string.ty	parser.ty
 
 # §section §gs{parser.match}
 
 _parser.match_c	.expr
+order.total.t	.tygvar
 regex.t	.tygvar
 parser.t	.tygvar
 list.t	.tygvar
@@ -403,24 +573,28 @@ parser.<*>	.gvar
 _parser.match_worker	.gvar
 parser.unit	.gvar
 list.nil	.gvar
+cmp	.larg	order.total.t	s
 re	.larg	regex.t	s
-w	.apply	_parser.match_worker	s	|	re
+w	.apply	_parser.match_worker	s	|	cmp	re
 nil	.apply	list.nil	s
 nil.p	.apply	parser.unit	s	res.ty	|	nil
 	.app	w	nil.p
 	.enter	parser.<*>	s	res.ty	res.ty
 
 _parser.match_worker_c	.expr
+order.total.t	.tygvar
 regex.t	.tygvar
 s	.tyarg	*
 _parser.match_worker_k	.subcode
 regex.t.out	.cogvar
+cmp	.larg	order.total.t	s
 re	.larg	regex.t	s
-	.force	_parser.match_worker_k	s
+	.force	_parser.match_worker_k	s	|	cmp
 	.coerce	regex.t.out	s
 	.enter	re
 
 _parser.match_worker_k	.forcecont
+order.total.t	.tygvar
 regex.prim.u	.tygvar
 regex.class.t	.tygvar
 parser.t	.tygvar
@@ -430,11 +604,12 @@ res_ty	.tylet	_parser.match_worker_res_ty	s
 _parser.match_worker_id_c	.subcode
 _parser.match_worker_class	.gvar
 parser.unit	.gvar
+cmp	.fv	order.total.t	s
 re0	.karg	regex.prim.u	s
 	.analyze	re0	class	empty	symbol
 		.case	class
 cl		.fkarg	0	regex.class.t	s
-			.app	cl
+			.app	cmp	cl
 			.enter	_parser.match_worker_class	s
 		.case	empty
 id			.alloc	_parser.match_worker_id_c	s
@@ -452,27 +627,61 @@ s	.larg	list.t	s
 	.enter	s
 
 _parser.match_worker_class_c	.expr
+order.total.t	.tygvar
 regex.class.t	.tygvar
 s	.tyarg	*
 _parser.match_worker_class_k	.subcode
 regex.class.t.out	.cogvar
+cmp	.larg	order.total.t	s
 cl	.larg	regex.class.t	s
-	.force	_parser.match_worker_class_k	s
+	.force	_parser.match_worker_class_k	s	|	cmp
 	.coerce	regex.class.t.out	s
 	.enter	cl
 
 _parser.match_worker_class_k	.forcecont
+order.total.t	.tygvar
 regex.class.prim.u	.tygvar
 parser.t	.tygvar
 _parser.match_worker_res_ty	.tygvar
 s	.tyfv	*
 res_ty	.tylet	_parser.match_worker_res_ty	s
+_parser.match_worker_class_pred_c	.subcode
+parser.map	.gvar
+list.:	.gvar
+parser.symbol.matching.bool	.gvar
+cmp	.fv	order.total.t	s
 cl0	.karg	regex.class.prim.u	s
 	.analyze	cl0	range
 		.case	range
 c0		.fkarg	0	s
 c1		.fkarg	1	s
-			.undef	parser.t	s	res_ty
+cons			.apply	list.:	s
+pred			.alloc	_parser.match_worker_class_pred_c	s	|	cmp	c1
+sym			.apply	parser.symbol.matching.bool	s	|	pred
+			.app	cons	sym
+			.enter	parser.map	s	s	res_ty
+
+_parser.match_worker_class_pred_c	.expr
+order.total.t	.tygvar
+s	.tyfv	*
+_parser.match_worker_class_pred_k1	.subcode
+order.total.ord.t.out	.cogvar
+cmp	.fv	order.total.t	s
+c1	.fv	s
+c	.larg	s
+	.force	_parser.match_worker_class_pred_k1
+	.coerce	order.total.ord.t.out
+	.app	c	c1
+	.enter	cmp
+
+_parser.match_worker_class_pred_k1	.forcecont
+order.total.ord.prim.u	.tygvar
+bool.t	.tygvar
+bool.false	.gvar
+o0	.karg	order.total.ord.prim.u
+	.analyze	o0	gt
+		.case	gt
+			.enter	bool.false
 
 # §section Constructors
 
@@ -874,12 +1083,18 @@ s	.tylambda	*
 	.tyubproduct	0	0_ty	1	1_ty
 
 _parser.prim.u_symbol_0_ty	.tyexpr
+either.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
 parser.prim.t	.tygvar
 s	.tylambda	*
 α	.tylambda	*
+string.ty	.tylet	list.t	rune.t
+list.string.ty	.tylet	list.t	string.ty
+parser.ty	.tylet	parser.prim.t	s	α
 	.tylift
 	.tyfun	s
-	.tyref	parser.prim.t	s	α
+	.tyref	either.t	list.string.ty	parser.ty
 
 # §section §gs{parser.err.t}
 
@@ -933,6 +1148,7 @@ s	.tylambda	*
 
 _parser.parse_work_ty	.tyexpr
 parser.advance.t	.tygvar
+print.t	.tygvar
 parser.pos.t	.tygvar
 parser.prim.t	.tygvar
 list.t	.tygvar
@@ -943,12 +1159,22 @@ s	.tyforall	*
 	.tylift
 	.tyfun	parser.advance.t	s
 	.tylift
+	.tyfun	print.t	s
+	.tylift
 	.tyfun	parser.pos.t
 	.tylift
 	.tyfun	parser.prim.t	s	α
 	.tylift
 	.tyfun	list.t	s
 	.tyref	either.t	parser.err.t	α
+
+_parser.parse_work_expecting_ty	.tyexpr
+list.t	.tygvar
+string.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	list.t	string.t
+	.tyref	list.t	rune.t
 
 # §section §gs{parser.map}
 
@@ -968,14 +1194,26 @@ _parser.<*>_f_ty	.tyexpr
 	.tyfun	α
 	.tyref	β
 
+# §section §gs{parser.symbol.matching.bool}
+
+_parser.symbol.matching.bool_pred_ty	.tyexpr
+bool.t	.tygvar
+s	.tylambda	*
+	.tylift
+	.tyfun	s
+	.tyref	bool.t
+
 # §section §gs{parser.match}
 
 _parser.match_worker_ty	.tyexpr
+order.total.t	.tygvar
 regex.t	.tygvar
 parser.t	.tygvar
 _parser.match_worker_res_ty	.tygvar
 s	.tyforall	*
 res_ty	.tylet	_parser.match_worker_res_ty	s
+	.tylift
+	.tyfun	order.total.t	s
 	.tylift
 	.tyfun	regex.t	s
 	.tyref	parser.t	s	res_ty
@@ -988,11 +1226,14 @@ s	.tylambda	*
 	.tyref	list.t	s
 
 _parser.match_worker_class_ty	.tyexpr
+order.total.t	.tygvar
 regex.class.t	.tygvar
 parser.t	.tygvar
 _parser.match_worker_res_ty	.tygvar
 s	.tyforall	*
 res_ty	.tylet	_parser.match_worker_res_ty	s
+	.tylift
+	.tyfun	order.total.t	s
 	.tylift
 	.tyfun	regex.class.t	s
 	.tyref	parser.t	s	res_ty

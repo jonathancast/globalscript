@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.match.range.above	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -27,6 +27,12 @@ _test.symbol.cons_string	.string	n
 
 _test.match.empty.nil	.closure	_test.match.empty.nil_c
 _test.match.empty.nil_label	.string	parse\sm//\sqq{}
+
+_test.match.range.above	.closure	_test.match.range.above_c
+_test.match.range.above_label	.string	parse\sm/[a-z]/\sqq{|}
+_test.match.range.above_re	.regex	[a-z]
+_test.match.range.above_input	.string	|
+_test.match.range.above_expected	.string	./parse-data:1:1:\sUn-expected\s|
 
 _test.err.fmt.simple.failure	.closure	_test.err.fmt.simple.failure_c
 _test.err.fmt.simple.failure_label	.string	parser.err.fmt\ssimple.failure
@@ -88,13 +94,14 @@ test.property.label	.gvar
 _test.fail.nil_label	.gvar
 parser.test.assert.fails	.gvar
 parser.rune.advance	.gvar
+rune.print	.gvar
 record.empty.fmtgs	.gvar
 parser.fail	.gvar
 list.nil	.gvar
 fail	.apply	parser.fail	rune.t	record.empty
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.fail.nil_k_c
-test	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	record.empty.fmtgs	fail	nil	k
+test	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	rune.print	record.empty.fmtgs	fail	nil	k
 	.app	_test.fail.nil_label	test
 	.enter	test.property.label
 
@@ -123,6 +130,7 @@ test.property.label	.gvar
 _test.fail.msg.nil_label	.gvar
 parser.test.assert.fails	.gvar
 parser.rune.advance	.gvar
+rune.print	.gvar
 record.empty.fmtgs	.gvar
 parser.fail.msg	.gvar
 _test.fail.msg.nil_sample.msg	.gvar
@@ -130,7 +138,7 @@ list.nil	.gvar
 parser	.apply	parser.fail.msg	rune.t	record.empty	|	_test.fail.msg.nil_sample.msg
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.fail.msg.nil_k_c
-test	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	record.empty.fmtgs	parser	nil	k
+test	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	rune.print	record.empty.fmtgs	parser	nil	k
 	.app	_test.fail.msg.nil_label	test
 	.enter	test.property.label
 
@@ -163,13 +171,14 @@ test.property.label	.gvar
 _test.unit.nil_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
+rune.print	.gvar
 parser.unit	.gvar
 bool.true	.gvar
 list.nil	.gvar
 parser	.apply	parser.unit	rune.t	bool.t	|	bool.true
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.unit.nil_k_c
-test	.apply	parser.test.assert.passes	rune.t	bool.t	|	parser.rune.advance	parser	nil	k
+test	.apply	parser.test.assert.passes	rune.t	bool.t	|	parser.rune.advance	rune.print	parser	nil	k
 	.app	_test.unit.nil_label	test
 	.enter	test.property.label
 
@@ -192,13 +201,14 @@ test.property.label	.gvar
 _test.symbol.nil_label	.gvar
 parser.test.assert.fails	.gvar
 parser.rune.advance	.gvar
+rune.print	.gvar
 rune.fmtgs	.gvar
 parser.symbol	.gvar
 list.nil	.gvar
 sym	.apply	parser.symbol	rune.t
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.symbol.nil_k_c
-test	.apply	parser.test.assert.fails	rune.t	rune.t	|	parser.rune.advance	rune.fmtgs	sym	nil	k
+test	.apply	parser.test.assert.fails	rune.t	rune.t	|	parser.rune.advance	rune.print	rune.fmtgs	sym	nil	k
 	.app	_test.symbol.nil_label	test
 	.enter	test.property.label
 
@@ -230,11 +240,12 @@ test.property.label	.gvar
 _test.symbol.cons_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
+rune.print	.gvar
 parser.symbol	.gvar
 _test.symbol.cons_string	.gvar
 symbol	.apply	parser.symbol	rune.t
 k	.alloc	_test.symbol.cons_k
-test	.apply	parser.test.assert.passes	rune.t	rune.t	|	parser.rune.advance	symbol	_test.symbol.cons_string	k
+test	.apply	parser.test.assert.passes	rune.t	rune.t	|	parser.rune.advance	rune.print	symbol	_test.symbol.cons_string	k
 	.app	_test.symbol.cons_label	test
 	.enter	test.property.label
 
@@ -251,22 +262,23 @@ r	.larg	rune.t
 # §section §gs{parse m// qq{}}
 
 _test.match.empty.nil_c	.expr
+string.t	.tygvar
 rune.t	.tygvar
-list.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 _test.match.empty.nil_k_c	.subcode
 test.property.label	.gvar
 _test.match.empty.nil_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
+rune.print	.gvar
 parser.match	.gvar
+rune.compare	.gvar
 regex.empty	.gvar
 list.nil	.gvar
 empty	.apply	regex.empty	rune.t
-parser	.apply	parser.match	rune.t	|	empty
+parser	.apply	parser.match	rune.t	|	rune.compare	empty
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.match.empty.nil_k_c
-test	.apply	parser.test.assert.passes	rune.t	string.ty	|	parser.rune.advance	parser	nil	k
+test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	parser	nil	k
 	.app	_test.match.empty.nil_label	test
 	.enter	test.property.label
 
@@ -286,6 +298,42 @@ string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 nil	.apply	list.nil	rune.t
 	.app	string.≡	string.fmtgs	s	nil
 	.enter	test.assert.eq	string.ty
+
+# §section §gs{parse m/[a-z]/ qq{|}}
+
+_test.match.range.above_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+string.ty	.tylet	list.t	rune.t
+_test.match.range.above_k_c	.subcode
+test.property.label	.gvar
+_test.match.range.above_label	.gvar
+parser.test.assert.fails	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+string.fmtgs	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_test.match.range.above_re	.gvar
+_test.match.range.above_input	.gvar
+parser	.apply	parser.match	rune.t	|	rune.compare	_test.match.range.above_re
+k	.alloc	_test.match.range.above_k_c
+test	.apply	parser.test.assert.fails	rune.t	string.ty	|	parser.rune.advance	rune.print	string.fmtgs	parser	_test.match.range.above_input	k
+	.app	_test.match.range.above_label	test
+	.enter	test.property.label
+
+_test.match.range.above_k_c	.expr
+parser.err.t	.tygvar
+string.t	.tygvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+parser.err.fmt	.gvar
+_test.match.range.above_expected	.gvar
+err	.larg	parser.err.t
+err.s	.apply	parser.err.fmt	|	err
+	.app	string.≡	string.fmtgs	err.s	_test.match.range.above_expected
+	.enter	test.assert.eq	string.t
 
 # §section §gs{parser.err.fmt simple.failure}
 
