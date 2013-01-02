@@ -265,15 +265,18 @@ gsalloc_string(gssymboltype ty, char *nm)
     ulong size;
 
     if (!string_nursury)
-        gsalloc_new_string_block();
+        gsalloc_new_string_block()
+    ;
 
     size = sizeof(*res) + strlen(nm) + 1;
     if (size % sizeof(ulong))
-        size += sizeof(ulong) - (size % sizeof(ulong));
+        size += sizeof(ulong) - (size % sizeof(ulong))
+    ;
 
     string_nursury_seg = BLOCK_CONTAINING(string_nursury);
     if ((uchar*)END_OF_BLOCK(string_nursury_seg) - (uchar*)string_nursury < size)
-        gsalloc_new_string_block();
+        gsalloc_new_string_block()
+    ;
 
     res = string_nursury;
     res->size = size;
