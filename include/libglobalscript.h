@@ -46,8 +46,6 @@ struct Lock {
 	int	val;
 } Lock;
 
-extern int	_tas(int*);
-
 extern	void	lock(Lock*);
 extern	void	unlock(Lock*);
 extern	int	canlock(Lock*);

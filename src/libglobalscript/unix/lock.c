@@ -4,6 +4,8 @@
 #define NO_IO_ROUTINES 1
 #include <libglobalscript.h>
 
+extern int	_tas(int*);
+
 void
 lock(Lock *lk)
 {
