@@ -4,7 +4,12 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.gt.eq.gt	_test.fmtgs.gt
+_tests	.list	test.property.t	_test.lt.eq.lt	_test.gt.eq.gt	_test.fmtgs.gt
+
+_test.lt.eq.lt	.closure	_test.lt.eq.lt_c
+_test.lt.eq.lt_label	.string	ord.≡\slt\slt
+_test.lt.eq.lt_false	.string	lt\s≠\slt
+_test.lt.eq.lt_true	.string	lt\s≡\slt
 
 _test.gt.eq.gt	.closure	_test.gt.eq.gt_c
 _test.gt.eq.gt_label	.string	ord.≡\sgt\sgt
@@ -22,6 +27,21 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{lt ≡ lt}
+
+_test.lt.eq.lt_c	.expr
+test.property.label	.gvar
+_test.lt.eq.lt_label	.gvar
+test.assert	.gvar
+_test.lt.eq.lt_false	.gvar
+_test.lt.eq.lt_true	.gvar
+order.total.ord.≡	.gvar
+order.total.ord.lt	.gvar
+eq	.apply	order.total.ord.≡	|	order.total.ord.lt	order.total.ord.lt
+test	.apply	test.assert	|	_test.lt.eq.lt_false	_test.lt.eq.lt_true	eq
+	.app	_test.lt.eq.lt_label	test
+	.enter	test.property.label
 
 # §section §gs{gt ≡ gt}
 
