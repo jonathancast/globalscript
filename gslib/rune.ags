@@ -102,19 +102,36 @@ r0.0	.karg	rune.prim.rune
 _rune.compare_k1	.forcecont
 rune.prim.rune	.tygvar
 _rune.prim.gt.t	.tygvar
-_rune.compare_≮_k	.subcode
+_rune.compare_≯_k	.subcode
 _rune.compare_>_k	.subcode
 r0.0	.fv	rune.prim.rune
 r1.0	.karg	rune.prim.rune
-	.ubanalyze	0	_rune.compare_≮_k	1	_rune.compare_>_k
+	.ubanalyze	0	_rune.compare_≯_k	1	_rune.compare_>_k	|	|	r0.0	r1.0
 	.ubprim	rune.prim	gt	_rune.prim.gt.t	|	r0.0	r1.0
 
-_rune.compare_≮_k	.ubcasecont
+_rune.compare_≯_k	.ubcasecont
+rune.prim.rune	.tygvar
+_rune.prim.lt.t	.tygvar
+_rune.compare_≯_≮_k	.subcode
+_rune.compare_<_k	.subcode
+r0.0	.fv	rune.prim.rune
+r1.0	.fv	rune.prim.rune
+	.ubanalyze	0	_rune.compare_≯_≮_k	1	_rune.compare_<_k
+	.ubprim	rune.prim	lt	_rune.prim.lt.t	|	r0.0	r1.0
+
+_rune.compare_≯_≮_k	.ubcasecont
 order.total.ord.t	.tygvar
 	.undef	order.total.ord.t
 
+_rune.compare_<_k	.ubcasecont
+order.total.ord.lt	.gvar
+	.enter	order.total.ord.lt
+
 _rune.compare_>_k	.ubcasecont
+rune.prim.rune	.tygvar
 order.total.ord.gt	.gvar
+r0.0	.fv	rune.prim.rune
+r1.0	.fv	rune.prim.rune
 	.enter	order.total.ord.gt
 
 # §section §gs{rune.≠}
@@ -318,6 +335,19 @@ rune.prim.rune	.tygvar
 	.tyref	rune.prim.rune
 
 rune.prim.rune	.tydefinedprim	rune.prim	rune	u
+
+# §section §gs{rune.<}
+
+_rune.prim.lt.t	.tyexpr
+rune.prim.rune	.tygvar
+_rune.prim.lt.res.t	.tygvar
+	.tyfun	rune.prim.rune
+	.tyfun	rune.prim.rune
+	.tyref	_rune.prim.lt.res.t
+
+_rune.prim.lt.res.t	.tyexpr
+record.unboxed.empty	.tygvar
+	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
 
 # §section §gs{rune.≡}
 
