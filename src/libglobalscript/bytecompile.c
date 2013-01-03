@@ -223,6 +223,9 @@ gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
             case 'h':
                 *pv = '#';
                 break;
+            case 't':
+                *pv = '\t';
+                break;
             case 'n':
                 *pv = '\n';
                 break;
