@@ -84,15 +84,23 @@ s	.tylambda	*
 
 regex.class.prim.u	.tyexpr
 _regex.class.prim.u_range_ty	.tygvar
+_regex.class.prim.u_sum_ty	.tygvar
 _regex.class.prim.u_symbol_ty	.tygvar
 s	.tylambda	*
 range_ty	.tylet	_regex.class.prim.u_range_ty	s
+sum_ty	.tylet	_regex.class.prim.u_sum_ty	s
 symbol_ty	.tylet	_regex.class.prim.u_symbol_ty	s
-	.tysum	range	range_ty	symbol	symbol_ty
+	.tysum	range	range_ty	sum	sum_ty	symbol	symbol_ty
 
 _regex.class.prim.u_range_ty	.tyexpr
 s	.tylambda	*
 	.tyubproduct	0	s	1	s
+
+_regex.class.prim.u_sum_ty	.tyexpr
+regex.class.t	.tygvar
+s	.tylambda	*
+class_ty	.tylet	regex.class.t	s
+	.tyubproduct	0	class_ty	1	class_ty
 
 _regex.class.prim.u_symbol_ty	.tyexpr
 s	.tylambda	*

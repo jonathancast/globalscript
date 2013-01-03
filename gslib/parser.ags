@@ -920,8 +920,9 @@ cl	.larg	regex.class.t	s
 _parser.match_worker_class_k	.forcecont
 order.total.t	.tygvar
 regex.class.prim.u	.tygvar
-parser.t	.tygvar
 _parser.match_worker_res_ty	.tygvar
+regex.class.t	.tygvar
+parser.t	.tygvar
 s	.tyfv	*
 res_ty	.tylet	_parser.match_worker_res_ty	s
 _parser.match_worker_class_pred_c	.subcode
@@ -930,7 +931,7 @@ list.:	.gvar
 parser.symbol.matching.bool	.gvar
 cmp	.fv	order.total.t	s
 cl0	.karg	regex.class.prim.u	s
-	.analyze	cl0	range	symbol
+	.analyze	cl0	range	sum	symbol
 		.case	range
 c0		.fkarg	0	s
 c1		.fkarg	1	s
@@ -939,6 +940,10 @@ pred			.alloc	_parser.match_worker_class_pred_c	s	|	cmp	c0	c1
 sym			.apply	parser.symbol.matching.bool	s	|	pred
 			.app	cons	sym
 			.enter	parser.map	s	s	res_ty
+		.case	sum
+cl0.0		.fkarg	0	regex.class.t	s
+cl0.1		.fkarg	1	regex.class.t	s
+			.undef	parser.t	s	res_ty
 		.case	symbol
 c		.fkarg	0	s
 			.undef	parser.t	s	res_ty
