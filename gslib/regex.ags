@@ -76,13 +76,19 @@ s	.tylambda	*
 
 regex.class.prim.u	.tyexpr
 _regex.class.prim.u_range_ty	.tygvar
+_regex.class.prim.u_symbol_ty	.tygvar
 s	.tylambda	*
 range_ty	.tylet	_regex.class.prim.u_range_ty	s
-	.tysum	range	range_ty
+symbol_ty	.tylet	_regex.class.prim.u_symbol_ty	s
+	.tysum	range	range_ty	symbol	symbol_ty
 
 _regex.class.prim.u_range_ty	.tyexpr
 s	.tylambda	*
 	.tyubproduct	0	s	1	s
+
+_regex.class.prim.u_symbol_ty	.tyexpr
+s	.tylambda	*
+	.tyubproduct	0	s
 
 	.coercion
 

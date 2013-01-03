@@ -927,7 +927,7 @@ list.:	.gvar
 parser.symbol.matching.bool	.gvar
 cmp	.fv	order.total.t	s
 cl0	.karg	regex.class.prim.u	s
-	.analyze	cl0	range
+	.analyze	cl0	range	symbol
 		.case	range
 c0		.fkarg	0	s
 c1		.fkarg	1	s
@@ -936,6 +936,10 @@ pred			.alloc	_parser.match_worker_class_pred_c	s	|	cmp	c0	c1
 sym			.apply	parser.symbol.matching.bool	s	|	pred
 			.app	cons	sym
 			.enter	parser.map	s	s	res_ty
+		.case	symbol
+c		.fkarg	0	s
+			.undef	parser.t	s	res_ty
+	# > :: parser.t s res_ty
 
 _parser.match_worker_class_pred_c	.expr
 order.total.t	.tygvar

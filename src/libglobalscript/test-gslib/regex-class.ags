@@ -3,7 +3,7 @@
 	.data
 
 	.closure	_ep_c
-_re	.regex	[a-z]
+_re	.regex	[a]
 
 	.code
 
@@ -18,8 +18,8 @@ _re	.gvar
 
 _ep_k	.forcecont
 regex.prim.u	.tygvar
-regex.class.t	.tygvar
 rune.t	.tygvar
+regex.class.t	.tygvar
 regex.t	.tygvar
 _ep_k1	.subcode
 regex.t.out	.cogvar

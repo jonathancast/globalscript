@@ -66,6 +66,7 @@ ok_grep_errors '-- natural number literals: negative number --' './test-gslib/na
 ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
 
 ok_diff '-- regex literals --' ./$O.test-gsi regex-literal.ags
+ok_diff '-- regex character class --' ./$O.test-gsi regex-class.ags
 ok_diff '-- regex character class ranges --' ./$O.test-gsi regex-class-range.ags
 ok_diff '-- regex products --' ./$O.test-gsi regex-product.ags
 ok_diff '-- regex stars --' ./$O.test-gsi regex-star.ags
