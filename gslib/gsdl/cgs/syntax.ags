@@ -3,7 +3,7 @@
 	.data
 
 gsdl.cgs.syntax.gsid	.closure	_gsdl.cgs.syntax.gsid_c
-_gsdl.cgs.syntax.gsid_re	.regex	[a-z]
+_gsdl.cgs.syntax.gsid_re	.regex	[a-z][a-z]*
 
 	.code
 
