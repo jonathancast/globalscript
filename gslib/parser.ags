@@ -837,12 +837,12 @@ c1	.larg	s
 
 _parser.match_worker_symbol_pred_k	.forcecont
 order.total.ord.prim.u	.tygvar
-bool.t	.tygvar
+bool.false	.gvar
 bool.true	.gvar
 o0	.karg	order.total.ord.prim.u
 	.danalyze	o0	eq
 		.default
-			.undef	bool.t
+			.enter	bool.false
 		.case	eq
 			.enter	bool.true
 
