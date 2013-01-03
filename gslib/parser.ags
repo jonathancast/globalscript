@@ -824,7 +824,7 @@ parser.symbol.matching.bool	.gvar
 cmp	.fv	order.total.t	s
 re	.fv	regex.t	s
 re0	.karg	regex.prim.u	s
-	.analyze	re0	class	empty	product	star	symbol
+	.analyze	re0	class	empty	neg.class	product	star	symbol
 		.case	class
 cl		.fkarg	0	regex.class.t	s
 			.app	cmp	cl
@@ -833,6 +833,9 @@ cl		.fkarg	0	regex.class.t	s
 id			.alloc	_parser.match_worker_id_c	s
 			.app	id
 			.enter	parser.unit	s	res_ty
+		.case	neg.class
+cl		.fkarg	0	regex.class.t	s
+			.undef	parser.t	s	res_ty
 		.case	product
 re0.0		.fkarg	0	regex.t	s
 re0.1		.fkarg	1	regex.t	s

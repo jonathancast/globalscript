@@ -156,6 +156,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
                 case '[':
                     eos++;
                     size += sizeof(struct gsconstr) + sizeof(gsvalue);
+                    if (*eos == '^') eos++;
 
                     eos = gsbc_parse_rune_literal(p->pos, eos, &v);
                     if (!*eos)
@@ -1100,7 +1101,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
             gsnil->numargs = 0;
         }
     } else if (gssymceq(p->directive, gssymregex, gssymdatadirective, ".regex")) {
-        static gsinterned_string gssymtyregex, gssymtyrune, gssymconstrsymbol, gssymconstrclass, gssymconstrstar, gssymconstrproduct, gssymconstrempty;
+        static gsinterned_string gssymtyregex, gssymtyrune, gssymconstrsymbol, gssymconstrclass, gssymconstrnegclass, gssymconstrstar, gssymconstrproduct, gssymconstrempty;
         static gsinterned_string gssymtyclass, gssymconstrrange;
         struct gstype *type, *cltype;
         struct gstype_sum *sum, *clsum;
@@ -1114,6 +1115,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         if (!gssymtyrune) gssymtyrune = gsintern_string(gssymtypelable, "rune.t");
         if (!gssymconstrsymbol) gssymconstrsymbol = gsintern_string(gssymconstrlable, "symbol");
         if (!gssymconstrclass) gssymconstrclass = gsintern_string(gssymconstrlable, "class");
+        if (!gssymconstrnegclass) gssymconstrnegclass = gsintern_string(gssymconstrlable, "neg.class");
         if (!gssymconstrstar) gssymconstrstar = gsintern_string(gssymconstrlable, "star");
         if (!gssymtyclass) gssymtyclass = gsintern_string(gssymtypelable, "regex.class.t");
         if (!gssymconstrrange) gssymconstrrange = gsintern_string(gssymconstrlable, "range");
@@ -1165,15 +1167,23 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
                     gsvalue *pclass;
                     struct gsconstr *cl;
                     gsvalue c0, c1;
+                    int negated;
+
+                    eos++;
+
+                    negated = *eos == '^';
+                    if (negated) eos++;
 
                     re = (struct gsconstr *)pout;
                     re->pos = p->pos;
-                    re->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrclass);
+                    re->constrnum = negated
+                        ? gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrnegclass)
+                        : gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrclass)
+                    ;
                     re->numargs = 1;
                     pclass = &re->arguments[0];
                     pout = (uchar*)re + sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
 
-                    eos++;
                     if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
                     eos = gsbc_parse_rune_literal(p->pos, eos, &c0);
                     if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
