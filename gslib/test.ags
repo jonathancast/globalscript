@@ -2,6 +2,9 @@
 
 	.data
 
+test.true	.closure	_test.true_c
+_test.true_s	.string	Test\ssucceeded
+
 test.assert	.closure	_test.assert_c
 test.deny	.closure	_test.deny_c
 
@@ -9,6 +12,14 @@ test.all	.closure	_test.all_c
 _test.all_no.tests.label	.string	No\stests
 
 	.code
+
+# §section §gs{test.true}
+
+_test.true_c	.expr
+test.property.true	.gvar
+_test.true_s	.gvar
+	.app	_test.true_s
+	.enter	test.property.true
 
 # §section §gs{test.assert}
 
