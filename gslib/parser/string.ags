@@ -1,0 +1,24 @@
+	.prefix
+
+	.data
+
+parser.string.quotes	.closure	_parser.string.quotes_c
+
+	.code
+
+# §section §gs{parser.string.quotes}
+
+_parser.string.quotes_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+list.string.t	.tylet	list.t	string.t
+parser.<|>	.gvar
+parser.unit	.gvar
+list.nil	.gvar
+nil	.apply	list.nil	string.t
+pnil	.apply	parser.unit	rune.t	list.string.t	|	nil
+pcons	.undefined	parser.t	rune.t	list.string.t
+	.app	pnil	pcons
+	.enter	parser.<|>	rune.t	list.string.t
