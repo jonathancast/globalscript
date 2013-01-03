@@ -68,6 +68,7 @@ ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
 ok_diff '-- regex literals --' ./$O.test-gsi regex-literal.ags
 ok_diff '-- regex character class ranges --' ./$O.test-gsi regex-class-range.ags
 ok_diff '-- regex products --' ./$O.test-gsi regex-product.ags
+ok_diff '-- regex stars --' ./$O.test-gsi regex-star.ags
 
 ok_diff '-- constructors in expressions --' ./$O.test-gsi constr-in-expr.ags
 

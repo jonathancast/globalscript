@@ -694,7 +694,7 @@ parser.lift2	.gvar
 _parser.match_worker	.gvar
 cmp	.fv	order.total.t	s
 re0	.karg	regex.prim.u	s
-	.analyze	re0	class	empty	product	symbol
+	.analyze	re0	class	empty	product	star	symbol
 		.case	class
 cl		.fkarg	0	regex.class.t	s
 			.app	cmp	cl
@@ -711,6 +711,9 @@ p0			.apply	_parser.match_worker	s	|	cmp	re0.0
 p1			.apply	_parser.match_worker	s	|	cmp	re0.1
 			.app	co	p0	p1
 			.enter	parser.lift2	s	res_ty	res_ty	res_ty
+		.case	star
+re0.0		.fkarg	0	regex.t	s
+			.undef	parser.t	s	res_ty
 		.case	symbol
 c		.fkarg	0	s
 			.undef	parser.t	s	res_ty

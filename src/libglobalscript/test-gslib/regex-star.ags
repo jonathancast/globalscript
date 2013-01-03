@@ -1,0 +1,30 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+_re	.regex	a*
+
+	.code
+
+_ep_c	.expr
+rune.t	.tygvar
+_ep_k	.subcode
+regex.t.out	.cogvar
+_re	.gvar
+	.force	_ep_k
+	.coerce	regex.t.out	rune.t
+	.enter	_re
+
+_ep_k	.forcecont
+regex.prim.u	.tygvar
+regex.t	.tygvar
+rune.t	.tygvar
+re0	.karg	regex.prim.u	rune.t
+	.danalyze	re0	product
+		.default
+			.undef	regex.t	rune.t
+		.case	product
+re0.0		.fkarg	0	regex.t	rune.t
+re0.1		.fkarg	1	regex.t	rune.t
+			.enter	re0.1

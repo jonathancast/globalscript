@@ -177,6 +177,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
                     size += sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
                     break;
             }
+            if (*eos == '*') size += sizeof(struct gsconstr) + sizeof(gsvalue);
             if (*eos) size += sizeof(struct gsconstr) + 2*sizeof(gsvalue);
         }
 
@@ -1099,7 +1100,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
             gsnil->numargs = 0;
         }
     } else if (gssymceq(p->directive, gssymregex, gssymdatadirective, ".regex")) {
-        static gsinterned_string gssymtyregex, gssymtyrune, gssymconstrsymbol, gssymconstrclass, gssymconstrproduct, gssymconstrempty;
+        static gsinterned_string gssymtyregex, gssymtyrune, gssymconstrsymbol, gssymconstrclass, gssymconstrstar, gssymconstrproduct, gssymconstrempty;
         static gsinterned_string gssymtyclass, gssymconstrrange;
         struct gstype *type, *cltype;
         struct gstype_sum *sum, *clsum;
@@ -1113,6 +1114,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         if (!gssymtyrune) gssymtyrune = gsintern_string(gssymtypelable, "rune.t");
         if (!gssymconstrsymbol) gssymconstrsymbol = gsintern_string(gssymconstrlable, "symbol");
         if (!gssymconstrclass) gssymconstrclass = gsintern_string(gssymconstrlable, "class");
+        if (!gssymconstrstar) gssymconstrstar = gsintern_string(gssymconstrlable, "star");
         if (!gssymtyclass) gssymtyclass = gsintern_string(gssymtypelable, "regex.class.t");
         if (!gssymconstrrange) gssymconstrrange = gsintern_string(gssymconstrlable, "range");
         if (!gssymconstrproduct) gssymconstrproduct = gsintern_string(gssymconstrlable, "product");
@@ -1208,6 +1210,21 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
 
                     break;
                 }
+            }
+
+            if (*eos == '*') {
+                struct gsconstr *st;
+
+                st = (struct gsconstr *)pout;
+                st->pos = p->pos;
+                st->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrstar);
+                st->numargs = 1;
+                st->arguments[0] = (gsvalue)re;
+                pout = (uchar*)st + sizeof(*st) + sizeof(gsvalue);
+
+                eos++;
+
+                re = st;
             }
 
             if (*eos) {
