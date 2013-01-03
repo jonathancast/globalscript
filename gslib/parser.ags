@@ -462,7 +462,7 @@ s	.tyarg	*
 _parser.*>_res_c	.subcode
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
-res	.alloc	_parser.*>_res_c	s	α0	α1	|	p0
+res	.alloc	_parser.*>_res_c	s	α0	α1	|	p0	p1
 	.enter	res
 
 _parser.*>_res_c	.expr
@@ -474,19 +474,24 @@ s	.tyfv	*
 r	.tyarg	*
 _parser.*>_k0_c	.subcode
 p0	.fv	parser.t	s	α0
+p1	.fv	parser.t	s	α1
 k	.larg	_parser.t_k_ty	s	α1	r
-k0	.alloc	_parser.*>_k0_c	s	α0	α1	r
+k0	.alloc	_parser.*>_k0_c	s	α0	α1	r	|	p1	k
 	.app	k0
 	.enter	p0	r
 
 _parser.*>_k0_c	.expr
-parser.prim.t	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 r	.tyfv	*
+p1	.fv	parser.t	s	α1
+k	.fv	_parser.t_k_ty	s	α1	r
 x0	.larg	α0
-	.undef	parser.prim.t	s	r
+	.app	k
+	.enter	p1	r
 
 # §section §gs{parser.lift2}
 
