@@ -3,13 +3,15 @@
 	.data
 
 parser.string.quotes	.closure	_parser.string.quotes_c
+_parser.string.quotes_loop	.closure	_parser.string.quotes_loop_c
+parser.string.quote	.closure	_parser.string.quote_c
+_parser.string.quote_re	.regex	[^'\s\n\t][^'\s\n\t]*
 
 	.code
 
 # §section §gs{parser.string.quotes}
 
 _parser.string.quotes_c	.expr
-parser.t	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
@@ -17,8 +19,31 @@ list.string.t	.tylet	list.t	string.t
 parser.<|>	.gvar
 parser.unit	.gvar
 list.nil	.gvar
+parser.lift2	.gvar
+list.:	.gvar
+parser.string.quote	.gvar
+_parser.string.quotes_loop	.gvar
 nil	.apply	list.nil	string.t
 pnil	.apply	parser.unit	rune.t	list.string.t	|	nil
-pcons	.undefined	parser.t	rune.t	list.string.t
+cons	.apply	list.:	string.t
+pcons	.apply	parser.lift2	rune.t	string.t	list.string.t	list.string.t	|	cons	parser.string.quote	_parser.string.quotes_loop
 	.app	pnil	pcons
 	.enter	parser.<|>	rune.t	list.string.t
+
+_parser.string.quotes_loop_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+list.string.t	.tylet	list.t	string.t
+	.undef	parser.t	rune.t	list.string.t
+
+# §section §gs{parser.string.quote}
+
+_parser.string.quote_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_parser.string.quote_re	.gvar
+	.app	rune.compare	_parser.string.quote_re
+	.enter	parser.match	rune.t
