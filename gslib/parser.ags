@@ -12,6 +12,7 @@ parser.map	.closure	_parser.map_c
 parser.unit	.closure	_parser.unit_c
 parser.<*>	.closure	_parser.<*>_c
 parser.*>	.closure	_parser.*>_c
+parser.<*	.closure	_parser.<*_c
 parser.lift2	.closure	_parser.lift2_c
 
 parser.fail	.closure	_parser.fail_c
@@ -492,6 +493,42 @@ k	.fv	_parser.t_k_ty	s	α1	r
 x0	.larg	α0
 	.app	k
 	.enter	p1	r
+
+# §section §gs{parser.<*}
+
+_parser.<*_c	.expr
+parser.t	.tygvar
+s	.tyarg	*
+α0	.tyarg	*
+α1	.tyarg	*
+_parser.<*_res_c	.subcode
+p0	.larg	parser.t	s	α0
+p1	.larg	parser.t	s	α1
+res	.alloc	_parser.<*_res_c	s	α0	α1	|	p0
+	.enter	res
+
+_parser.<*_res_c	.expr
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+r	.tyarg	*
+_parser.<*_k0_c	.subcode
+p0	.fv	parser.t	s	α0
+k	.larg	_parser.t_k_ty	s	α0	r
+k0	.alloc	_parser.<*_k0_c	s	α0	α1	r
+	.app	k0
+	.enter	p0	r
+
+_parser.<*_k0_c	.expr
+parser.prim.t	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+r	.tyfv	*
+x0	.larg	α0
+	.undef	parser.prim.t	s	r
 
 # §section §gs{parser.lift2}
 
