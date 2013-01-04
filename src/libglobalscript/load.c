@@ -1453,7 +1453,7 @@ gsparse_case(char *filename, gsparsedfile *parsedfile, struct uxio_ichannel *cha
         } else if (gsparse_code_terminal_expr_op(filename, parsedfile, chan, line, parsedline, plineno, fields, n)) {
             return;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Unimplemented .case op %y", filename, *plineno, parsedline->directive);
+            gsfatal(UNIMPL("%s:%d: Unimplemented .case op %y"), filename, *plineno, parsedline->directive);
         }
     }
     gsfatal_unimpl(__FILE__, __LINE__, ".analyze: parse .case");
