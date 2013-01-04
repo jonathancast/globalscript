@@ -1,0 +1,11 @@
+	.prefix
+
+	.type
+
+gsdl.cgs.document.t	.tyabstract	*
+gsdl.cgs.document.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.document.prim.u
+
+gsdl.cgs.document.prim.u	.tyexpr
+	.tysum
