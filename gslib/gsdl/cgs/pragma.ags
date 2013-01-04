@@ -92,17 +92,52 @@ _gsdl.cgs.pragma.gstype.get_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 maybe.t	.tygvar
-list.t	.tygvar
-rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
+#list.t	.tygvar
+#rune.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.pragma.gstype.get_just_k	.subcode
+gsdl.cgs.pragma.t.out	.cogvar
 maybe.nothing	.gvar
 mb.0	.karg	maybe.prim.u	gsdl.cgs.pragma.t
 	.analyze	mb.0	just	nothing
 		.case	just
 pr		.fkarg	0	gsdl.cgs.pragma.t
-			.undef	maybe.t	string.ty
+			.force	_gsdl.cgs.pragma.gstype.get_just_k
+			.coerce	gsdl.cgs.pragma.t.out
+			.enter	pr
 		.case	nothing
-			.enter	maybe.nothing	string.ty
+			.enter	maybe.nothing	string.t
+
+_gsdl.cgs.pragma.gstype.get_just_k	.forcecont
+gsdl.cgs.pragma.prim.u	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.pragma.gstype.get_just_rc.like_k	.subcode
+list.t.out	.cogvar
+pr0	.karg	gsdl.cgs.pragma.prim.u
+	.analyze	pr0	rc.like
+		.case	rc.like
+as		.fkarg	0	list.t	string.t
+			.force	_gsdl.cgs.pragma.gstype.get_just_rc.like_k
+			.coerce	list.t.out	string.t
+			.enter	as
+	# > :: maybe.t	string.t
+
+_gsdl.cgs.pragma.gstype.get_just_rc.like_k	.forcecont
+list.prim.u	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+maybe.t	.tygvar
+maybe.just	.gvar
+as0	.karg	list.prim.u	string.t
+	.analyze	as0	:	nil
+		.case	:
+a0		.fkarg	0	string.t
+as1		.fkarg	1	list.t	string.t
+			.app	a0
+			.yield	maybe.just	string.t
+		.case	nil
+			.undef	maybe.t	string.t
 
 # §section Constructors
 
@@ -154,4 +189,9 @@ string.ty	.tylet	list.t	rune.t
 
 gsdl.cgs.pragma.t.in	.tycoercion
 gsdl.cgs.pragma.t	.tygvar
+	.tydefinition	gsdl.cgs.pragma.t
+
+gsdl.cgs.pragma.t.out	.tycoercion
+gsdl.cgs.pragma.t	.tygvar
+	.tyinvert
 	.tydefinition	gsdl.cgs.pragma.t
