@@ -227,9 +227,43 @@ bool.true	.gvar
 _natural.compare_c	.expr
 natural.t	.tygvar
 order.total.ord.t	.tygvar
+_natural.compare_k0	.subcode
+natural.t.out	.cogvar
 n0	.larg	natural.t
 n1	.larg	natural.t
+	.force	_natural.compare_k0	|	n1
+	.coerce	natural.t.out
+	.enter	n0
+
+_natural.compare_k0	.forcecont
+natural.t	.tygvar
+natural.prim.u	.tygvar
+_natural.compare_k1	.subcode
+natural.t.out	.cogvar
+n1	.fv	natural.t
+n0.0	.karg	natural.prim.u
+	.force	_natural.compare_k1	|	n0.0
+	.coerce	natural.t.out
+	.enter	n1
+
+_natural.compare_k1	.forcecont
+natural.prim.u	.tygvar
+_natural.compare_≠_k	.subcode
+_natural.compare_≡_k	.subcode
+natural.prim.≡	.gvar
+n0.0	.fv	natural.prim.u
+n1.0	.karg	natural.prim.u
+	.ubanalyze	0	_natural.compare_≠_k	1	_natural.compare_≡_k
+	.app	n0.0	n1.0
+	.yield	natural.prim.≡
+
+_natural.compare_≠_k	.ubcasecont
+order.total.ord.t	.tygvar
 	.undef	order.total.ord.t
+
+_natural.compare_≡_k	.ubcasecont
+order.total.ord.eq	.gvar
+	.enter	order.total.ord.eq
 
 # §section Primitives
 

@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0	_test_2.plus.3	_test.1.div.0	_test.2.div.3	_test.fmtdecimal.0	_test.fmtdecimal.11
+_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0	_test.compare.4.4	_test_2.plus.3	_test.1.div.0	_test.2.div.3	_test.fmtdecimal.0	_test.fmtdecimal.11
 
 _test.4.eq.4	.closure	_test.4.eq.4_c
 _test.4.eq.4_label	.string	4\s≡\s4
@@ -27,6 +27,9 @@ _test.4.lt.0_label	.string	4\s<\s0
 _test.4.lt.0_test	.closure	_test.4.lt.0_test_c
 _test.4.lt.0_test_succ	.string	4\s≮\s0
 _test.4.lt.0_test_fail	.string	4\s<\s0
+
+_test.compare.4.4	.closure	_test.compare.4.4_c
+_test.compare.4.4_label	.string	natural.compare\s4\s4
 
 _test_2.plus.3	.closure	_test_2.plus.3_c
 _test_2.plus.3_label	.string	2\s+\s3
@@ -169,6 +172,23 @@ _4	.gvar
 _0	.gvar
 	.app	_4	_0
 	.enter	natural.<
+
+# §section §gs{compare 4 4}
+
+_test.compare.4.4_c	.expr
+order.total.ord.t	.tygvar
+test.property.label	.gvar
+_test.compare.4.4_label	.gvar
+test.assert.eq	.gvar
+order.total.ord.≡	.gvar
+order.total.ord.fmtgs	.gvar
+natural.compare	.gvar
+_4	.gvar
+order.total.ord.eq	.gvar
+actual	.apply	natural.compare	|	_4	_4
+test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.ord.fmtgs	actual	order.total.ord.eq
+	.app	_test.compare.4.4_label	test
+	.enter	test.property.label
 
 # §section §gs{2 + 3}
 
