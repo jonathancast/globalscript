@@ -300,7 +300,7 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-res			.alloc	_ibio.foldM.prim_:_res	α	β	|	f	z0	x0
+res			.alloc	_ibio.foldM.prim_:_res	α	β	|	f	z0	x0	xn1
 			.enter	res
 		.case	nil
 			.lift
@@ -309,6 +309,7 @@ res			.alloc	_ibio.foldM.prim_:_res	α	β	|	f	z0	x0
 
 _ibio.foldM.prim_:_res	.eprog	ibio.prim	ibio
 _ibio.foldM.prim_f_ty	.tygvar
+list.t	.tygvar
 α	.tyfv	*
 β	.tyfv	*
 _ibio.foldM.prim_:_res_z1_c	.subcode
@@ -316,8 +317,9 @@ _ibio.foldM.prim_:_res_body_c	.subcode
 f	.fv	_ibio.foldM.prim_f_ty	α	β
 z0	.fv	β
 x0	.fv	α
+xn1	.fv	list.t	α
 z1	.bind	_ibio.foldM.prim_:_res_z1_c	α	β	|	f	z0	x0
-	.body	_ibio.foldM.prim_:_res_body_c	β
+	.body	_ibio.foldM.prim_:_res_body_c	α	β	|	f	xn1	z1
 
 _ibio.foldM.prim_:_res_z1_c	.expr
 _ibio.foldM.prim_f_ty	.tygvar
@@ -330,9 +332,16 @@ x0	.fv	α
 	.enter	f
 
 _ibio.foldM.prim_:_res_body_c	.expr
-ibio.prim.t	.tygvar
+_ibio.foldM.prim_f_ty	.tygvar
+list.t	.tygvar
+α	.tyfv	*
 β	.tyfv	*
-	.undef	ibio.prim.t	β
+ibio.foldM.prim	.gvar
+f	.fv	_ibio.foldM.prim_f_ty	α	β
+xn1	.fv	list.t	α
+z1	.fv	β
+	.app	f	z1	xn1
+	.enter	ibio.foldM.prim	α	β
 
 	.type
 
