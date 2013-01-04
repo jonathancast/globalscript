@@ -519,9 +519,33 @@ _list.compare_c	.expr
 order.total.t	.tygvar
 list.t	.tygvar
 α	.tyarg	*
-arg.ty	.tylet	list.t	α
+_list.compare_k0	.subcode
+list.t.out	.cogvar
 cmp	.larg	order.total.t	α
-	.undef	order.total.t	arg.ty
+xn0	.larg	list.t	α
+xn1	.larg	list.t	α
+	.force	_list.compare_k0	α	|	xn1
+	.coerce	list.t.out	α
+	.enter	xn0
+
+_list.compare_k0	.forcecont
+list.t	.tygvar
+list.prim.u	.tygvar
+α	.tyfv	*
+_list.compare_k1	.subcode
+list.t.out	.cogvar
+xn1	.fv	list.t	α
+xn0.0	.karg	list.prim.u	α
+	.force	_list.compare_k1	α
+	.coerce	list.t.out	α
+	.enter	xn1
+
+_list.compare_k1	.forcecont
+list.prim.u	.tygvar
+order.total.ord.t	.tygvar
+α	.tyfv	*
+xn1.0	.karg	list.prim.u	α
+	.undef	order.total.ord.t
 
 # §section §gs{list.fmtgs}
 
