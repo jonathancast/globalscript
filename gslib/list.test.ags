@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.fmtgs.nil	_test.map.nil	_test.map.:	_test.reverse.nil	_test.reverse.cons
+_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.compare.singleton.singleton	_test.fmtgs.nil	_test.map.nil	_test.map.:	_test.reverse.nil	_test.reverse.cons
 
 _test.nil.eq.nil	.closure	_test.nil.eq.nil.c
 _test.nil.eq.nil.label	.string	nil\s≡\snil
@@ -29,6 +29,9 @@ _test.nil.eq.singleton_label	.string	nil\s≠\s[false]
 _test.nil.eq.singleton_test	.closure	_test.nil.eq.singleton_test_c
 _test.nil.eq.singleton_test_succ	.string	nil\s≠\s[false]
 _test.nil.eq.singleton_test_fail	.string	nil\s≡\s[false]
+
+_test.compare.singleton.singleton	.closure	_test.compare.singleton.singleton_c
+_test.compare.singleton.singleton_label	.string	list.compare\s[false]\s[false]
 
 _test.fmtgs.nil	.closure	_test.fmtgs.nil_c
 _test.fmtgs.nil_label	.string	list.fmtgs\snil\s≡\sqq{[]}
@@ -168,6 +171,25 @@ _fixture.nil	.gvar
 _fixture.singleton.false	.gvar
 	.app	bool.≡	_fixture.nil	_fixture.singleton.false
 	.enter	list.≡	bool.t
+
+# §section §gs{list.compare [false] [false]}
+
+_test.compare.singleton.singleton_c	.expr
+order.total.ord.t	.tygvar
+bool.t	.tygvar
+test.property.label	.gvar
+_test.compare.singleton.singleton_label	.gvar
+test.assert.eq	.gvar
+order.total.ord.≡	.gvar
+order.total.ord.fmtgs	.gvar
+list.compare	.gvar
+bool.compare	.gvar
+_fixture.singleton.false	.gvar
+order.total.ord.eq	.gvar
+actual	.apply	list.compare	bool.t	|	bool.compare	_fixture.singleton.false	_fixture.singleton.false
+test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.ord.fmtgs	actual	order.total.ord.eq
+	.app	_test.compare.singleton.singleton_label	test
+	.enter	test.property.label
 
 # §section §gs{fmtgs nil}
 

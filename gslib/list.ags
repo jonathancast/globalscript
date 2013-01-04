@@ -524,27 +524,34 @@ list.t.out	.cogvar
 cmp	.larg	order.total.t	α
 xn0	.larg	list.t	α
 xn1	.larg	list.t	α
-	.force	_list.compare_k0	α	|	xn1
+	.force	_list.compare_k0	α	|	cmp	xn1
 	.coerce	list.t.out	α
 	.enter	xn0
 
 _list.compare_k0	.forcecont
+order.total.t	.tygvar
 list.t	.tygvar
 list.prim.u	.tygvar
 α	.tyfv	*
 _list.compare_k1	.subcode
 list.t.out	.cogvar
+cmp	.fv	order.total.t	α
 xn1	.fv	list.t	α
 xn0.0	.karg	list.prim.u	α
-	.force	_list.compare_k1	α	|	xn0.0
+	.force	_list.compare_k1	α	|	cmp	xn0.0
 	.coerce	list.t.out	α
 	.enter	xn1
 
 _list.compare_k1	.forcecont
+order.total.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 order.total.ord.t	.tygvar
 α	.tyfv	*
+_list.compare_:_:_k	.subcode
+order.total.ord.t.out	.cogvar
+order.total.ord.eq	.gvar
+cmp	.fv	order.total.t	α
 xn0.0	.fv	list.prim.u	α
 xn1.0	.karg	list.prim.u	α
 	.analyze	xn0.0	:	nil
@@ -555,10 +562,39 @@ xn0.1		.fkarg	1	list.t	α
 				.case	:
 x1				.fkarg	0	α
 xn1.1				.fkarg	1	list.t	α
-					.undef	order.total.ord.t
+					.force	_list.compare_:_:_k	α	|	cmp	xn0.1	xn1.1
+					.coerce	order.total.ord.t.out
+					.app	x0	x1
+					.enter	cmp
 				.case	nil
 					.undef	order.total.ord.t
 		.case	nil
+			.analyze	xn1.0	:	nil
+				.case	:
+x1				.fkarg	0	α
+xn1.1				.fkarg	1	list.t	α
+					.undef	order.total.ord.t
+				.case	nil
+					.enter	order.total.ord.eq
+
+_list.compare_:_:_k	.forcecont
+order.total.t	.tygvar
+list.t	.tygvar
+order.total.ord.prim.u	.tygvar
+order.total.ord.t	.tygvar
+α	.tyfv	*
+list.compare	.gvar
+cmp	.fv	order.total.t	α
+xn0.1	.fv	list.t	α
+xn1.1	.fv	list.t	α
+o0	.karg	order.total.ord.prim.u
+	.analyze	o0	eq	gt	lt
+		.case	eq
+			.app	cmp	xn0.1	xn1.1
+			.enter	list.compare	α
+		.case	gt
+			.undef	order.total.ord.t
+		.case	lt
 			.undef	order.total.ord.t
 
 # §section §gs{list.fmtgs}
