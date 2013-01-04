@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.match.star	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.match.star	_test.match.neg.in.class	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -49,6 +49,11 @@ _test.match.star	.closure	_test.match.star_c
 _test.match.star_label	.string	parse\sm/a*/\sqq{aa}
 _test.match.star_re	.regex	a*
 _test.match.star_input	.string	aa
+
+_test.match.neg.in.class	.closure	_test.match.neg.in.class_c
+_test.match.neg.in.class_label	.string	parser\sm/[^a]/\sqq{a}
+_test.match.neg.in.class_re	.regex	[^a]
+_test.match.neg.in.class_input	.string	a
 
 _test.err.fmt.simple.failure	.closure	_test.err.fmt.simple.failure_c
 _test.err.fmt.simple.failure_label	.string	parser.err.fmt\ssimple.failure
@@ -448,6 +453,34 @@ _test.match.star_input	.gvar
 s	.larg	string.t
 	.app	string.≡	string.fmtgs	s	_test.match.star_input
 	.enter	test.assert.eq	string.t
+
+# §section §gs{parse m/[^a] qq{a}}
+
+_test.match.neg.in.class_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+_test.match.neg.in.class_k_c	.subcode
+test.property.label	.gvar
+_test.match.neg.in.class_label	.gvar
+parser.test.assert.fails	.gvar
+parser.rune.advance		.gvar
+rune.print	.gvar
+string.fmtgs	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_test.match.neg.in.class_re	.gvar
+_test.match.neg.in.class_input	.gvar
+parser	.apply	parser.match	rune.t	|	rune.compare	_test.match.neg.in.class_re
+k	.alloc	_test.match.neg.in.class_k_c
+test	.apply	parser.test.assert.fails	rune.t	string.t	|	parser.rune.advance	rune.print	string.fmtgs	parser	_test.match.neg.in.class_input	k
+	.app	_test.match.neg.in.class_label	test
+	.enter	test.property.label
+
+_test.match.neg.in.class_k_c	.expr
+parser.err.t	.tygvar
+test.true	.gvar
+err	.larg	parser.err.t
+	.enter	test.true
 
 # §section §gs{parser.err.fmt simple.failure}
 

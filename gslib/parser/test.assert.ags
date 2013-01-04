@@ -3,7 +3,7 @@
 	.data
 
 parser.test.assert.fails	.closure	_parser.test.assert.fails_c
-_parser.test.assert.fails_right_msg.prefix	.string	Parse\succeeded:\s
+_parser.test.assert.fails_right_msg.prefix	.string	Parse\ssucceeded:\s
 
 parser.test.assert.passes	.closure	_parser.test.assert.passes_c
 _parser.test.assert.passes_left_msg.prefix	.string	Parse\sfailed:\s

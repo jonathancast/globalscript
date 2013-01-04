@@ -811,6 +811,7 @@ _parser.match_worker_res_ty	.tygvar
 s	.tyfv	*
 res_ty	.tylet	_parser.match_worker_res_ty	s
 _parser.match_worker_id_c	.subcode
+_parser.match_worker_neg.class_pred_c	.subcode
 _parser.match_worker_co_c	.subcode
 _parser.match_worker_symbol_pred_c	.subcode
 _parser.match_worker_class	.gvar
@@ -838,7 +839,11 @@ id			.alloc	_parser.match_worker_id_c	s
 			.enter	parser.unit	s	res_ty
 		.case	neg.class
 cl		.fkarg	0	regex.class.t	s
-			.undef	parser.t	s	res_ty
+cons			.apply	list.:	s
+pred			.alloc	_parser.match_worker_neg.class_pred_c	s	|	cmp	cl
+sym			.apply	parser.symbol.matching.bool	s	|	pred
+			.app	cons	sym
+			.enter	parser.map	s	s	res_ty
 		.case	product
 re0.0		.fkarg	0	regex.t	s
 re0.1		.fkarg	1	regex.t	s
@@ -871,6 +876,19 @@ list.t	.tygvar
 s	.tyfv	*
 s	.larg	list.t	s
 	.enter	s
+
+_parser.match_worker_neg.class_pred_c	.expr
+order.total.t	.tygvar
+regex.class.t	.tygvar
+s	.tyfv	*
+bool.not	.gvar
+_parser.match_worker_class	.gvar
+cmp	.fv	order.total.t	s
+cl	.fv	regex.class.t	s
+c	.larg	s
+b	.apply	_parser.match_worker_class	s	|	cmp	cl	c
+	.app	b
+	.enter	bool.not
 
 _parser.match_worker_co_c	.expr
 _parser.match_worker_res_ty	.tygvar
@@ -928,6 +946,7 @@ regex.class.t	.tygvar
 bool.t	.tygvar
 s	.tyfv	*
 _parser.match_worker_class_range_k1	.subcode
+_parser.match_worker_class_symbol_k	.subcode
 order.total.ord.t.out	.cogvar
 parser.map	.gvar
 list.:	.gvar
@@ -948,8 +967,11 @@ cl0.0		.fkarg	0	regex.class.t	s
 cl0.1		.fkarg	1	regex.class.t	s
 			.undef	bool.t
 		.case	symbol
-c		.fkarg	0	s
-			.undef	bool.t
+c0		.fkarg	0	s
+			.force	_parser.match_worker_class_symbol_k
+			.coerce	order.total.ord.t.out
+			.app	c	c0
+			.enter	cmp
 	# > :: parser.t s res_ty
 
 _parser.match_worker_class_range_k1	.forcecont
@@ -982,6 +1004,17 @@ o0	.karg	order.total.ord.prim.u
 			.enter	bool.true
 		.case	gt
 			.enter	bool.false
+
+_parser.match_worker_class_symbol_k	.forcecont
+order.total.ord.prim.u	.tygvar
+bool.t	.tygvar
+bool.true	.gvar
+o0	.karg	order.total.ord.prim.u
+	.danalyze	o0	eq
+		.default
+			.undef	bool.t
+		.case	eq
+			.enter	bool.true
 
 # §section §gs{parser.prim.<|>}
 
