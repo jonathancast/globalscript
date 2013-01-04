@@ -46,28 +46,32 @@ maybe.t.out	.cogvar
 eq	.larg	_maybe.≡_eq_ty	α
 mb0	.larg	maybe.t	α
 mb1	.larg	maybe.t	α
-	.force	_maybe.≡_k0	α	|	mb1
+	.force	_maybe.≡_k0	α	|	eq	mb1
 	.coerce	maybe.t.out	α
 	.enter	mb0
 
 _maybe.≡_k0	.forcecont
+_maybe.≡_eq_ty	.tygvar
 maybe.t	.tygvar
 maybe.prim.u	.tygvar
 α	.tyfv	*
 _maybe.≡_k1	.subcode
 maybe.t.out	.cogvar
+eq	.fv	_maybe.≡_eq_ty	α
 mb1	.fv	maybe.t	α
 mb0.0	.karg	maybe.prim.u	α
-	.force	_maybe.≡_k1	α	|	mb0.0
+	.force	_maybe.≡_k1	α	|	eq	mb0.0
 	.coerce	maybe.t.out	α
 	.enter	mb1
 
 _maybe.≡_k1	.forcecont
+_maybe.≡_eq_ty	.tygvar
 maybe.prim.u	.tygvar
 bool.t	.tygvar
 α	.tyfv	*
 bool.false	.gvar
 bool.true	.gvar
+eq	.fv	_maybe.≡_eq_ty	α
 mb0.0	.fv	maybe.prim.u	α
 mb1.0	.karg	maybe.prim.u	α
 	.analyze	mb0.0	just	nothing
@@ -76,7 +80,8 @@ x0		.fkarg	0	α
 			.analyze	mb1.0	just	nothing
 				.case	just
 x1				.fkarg	0	α
-					.undef	bool.t
+					.app	x0	x1
+					.enter	eq
 				.case	nothing
 					.enter	bool.false
 		.case	nothing

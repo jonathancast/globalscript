@@ -4,12 +4,17 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.just.nothing	_test.eq.nothing.nothing	_test.fmtgs.nothing
+_tests	.list	test.property.t	_test.eq.just.nothing	_test.eq.just.just	_test.eq.nothing.nothing	_test.fmtgs.nothing
 
 _test.eq.just.nothing	.closure	_test.eq.just.nothing_c
 _test.eq.just.nothing_label	.string	just\sfalse\s≡\snothing
 _test.eq.just.nothing_false	.string	just\sfalse\s≠\snothing
 _test.eq.just.nothing_true	.string	just\sfalse\s≡\snothing
+
+_test.eq.just.just	.closure	_test.eq.just.just_c
+_test.eq.just.just_label	.string	just\sfalse\s≡\sjust\strue
+_test.eq.just.just_false	.string	just\sfalse\s≠\sjust\strue
+_test.eq.just.just_true	.string	just\sfalse\s≡\sjust\strue
 
 _test.eq.nothing.nothing	.closure	_test.eq.nothing.nothing_c
 _test.eq.nothing.nothing_label	.string	nothing\s≡\snothing
@@ -47,6 +52,27 @@ nothing	.apply	maybe.nothing	bool.t
 eq	.apply	maybe.≡	bool.t	|	bool.≡	justfalse	nothing
 test	.apply	test.deny	|	_test.eq.just.nothing_false	_test.eq.just.nothing_true	eq
 	.app	_test.eq.just.nothing_label	test
+	.enter	test.property.label
+
+# §section §gs{just false ≡ just true}
+
+_test.eq.just.just_c	.expr
+bool.t	.tygvar
+test.property.label	.gvar
+_test.eq.just.just_label	.gvar
+test.deny	.gvar
+_test.eq.just.just_false	.gvar
+_test.eq.just.just_true	.gvar
+maybe.≡	.gvar
+bool.≡	.gvar
+maybe.just	.gvar
+bool.true	.gvar
+bool.false	.gvar
+just.true	.apply	maybe.just	bool.t	|	bool.true
+just.false	.apply	maybe.just	bool.t	|	bool.false
+eq	.apply	maybe.≡	bool.t	|	bool.≡	just.true	just.false
+test	.apply	test.deny	|	_test.eq.just.just_false	_test.eq.just.just_true	eq
+	.app	_test.eq.just.just_label	test
 	.enter	test.property.label
 
 # §section §gs{nothing ≡ nothing}
