@@ -1,9 +1,15 @@
 	.prefix
 
+# Note: this library doesn't balance its binary trees;
+# that will need to be fixed but I want to see what the performance looks like directly first.
+
 	.data
 
 ordered.map.empty	.closure	_ordered.map.empty_c
+ordered.map.insert	.closure	_ordered.map.insert_c
 ordered.map.get	.closure	_ordered.map.get_c	_ordered.map.get_ty
+
+ordered.map.prim.branch	.closure	_ordered.map.prim.branch_c
 
 	.code
 
@@ -20,6 +26,46 @@ e	.constr	res.u	empty
 	.lift
 	.yield	e
 
+# §section §gs{ordered.map.insert}
+
+_ordered.map.insert_c	.expr
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+k	.tyarg	*
+v	.tyarg	*
+_ordered.map.insert_k	.subcode
+ordered.map.t.out	.cogvar
+cmp	.larg	order.total.t	k
+k	.larg	k
+v	.larg	v
+map	.larg	ordered.map.t	k	v
+	.force	_ordered.map.insert_k	k	v	|	k	v
+	.coerce	ordered.map.t.out	k	v
+	.enter	map
+
+_ordered.map.insert_k	.forcecont
+ordered.map.prim.u	.tygvar
+ordered.map.t	.tygvar
+k	.tyfv	*
+v	.tyfv	*
+ordered.map.prim.branch	.gvar
+ordered.map.empty	.gvar
+k	.fv	k
+v	.fv	v
+map.0	.karg	ordered.map.prim.u	k	v
+	.analyze	map.0	branch	empty
+		.case	branch
+k1		.fkarg	0	k
+v1		.fkarg	1	v
+map.l		.fkarg	2	ordered.map.t	k	v
+map.r		.fkarg	3	ordered.map.t	k	v
+			.undef	ordered.map.t	k	v
+		.case	empty
+empty			.apply	ordered.map.empty	k	v
+			.app	k	v	empty	empty
+			.enter	ordered.map.prim.branch	k	v
+	# > ordered.map.t	k	v
+
 # §section §gs{ordered.map.get}
 
 _ordered.map.get_c	.expr
@@ -32,20 +78,70 @@ ordered.map.t.out	.cogvar
 ord	.larg	order.total.t	k
 key	.larg	k
 map	.larg	ordered.map.t	k	v
-	.force	_ordered.map.get_k0	k	v
+	.force	_ordered.map.get_k0	k	v	|	ord	key
 	.coerce	ordered.map.t.out	k	v
 	.enter	map
 
 _ordered.map.get_k0	.forcecont
+order.total.t	.tygvar
 ordered.map.prim.u	.tygvar
+ordered.map.t	.tygvar
+k	.tyfv	*
+v	.tyfv	*
+_ordered.map.get_branch_k	.subcode
+order.total.ord.t.out	.cogvar
+maybe.nothing	.gvar
+ord	.fv	order.total.t	k
+key	.fv	k
+map.0	.karg	ordered.map.prim.u	k	v
+	.analyze	map.0	branch	empty
+		.case	branch
+key1		.fkarg	0	k
+v		.fkarg	1	v
+map.l		.fkarg	2	ordered.map.t	k	v
+map.r		.fkarg	3	ordered.map.t	k	v
+			.force	_ordered.map.get_branch_k	k	v	|	v
+			.coerce	order.total.ord.t.out
+			.app	key	key1
+			.enter	ord
+		.case	empty
+			.enter	maybe.nothing	v
+	# > :: maybe.t	v
+
+_ordered.map.get_branch_k	.forcecont
+order.total.ord.prim.u	.tygvar
 maybe.t	.tygvar
 k	.tyfv	*
 v	.tyfv	*
-maybe.nothing	.gvar
-map.0	.karg	ordered.map.prim.u	k	v
-	.analyze	map.0	empty
-		.case	empty
-			.enter	maybe.nothing	v
+maybe.just	.gvar
+v	.fv	v
+o0	.karg	order.total.ord.prim.u
+	.analyze	o0	eq	gt	lt
+		.case	eq
+			.app	v
+			.yield	maybe.just	v
+		.case	gt
+			.undef	maybe.t	v
+		.case	lt
+			.undef	maybe.t	v
+
+# §section Constructors
+
+_ordered.map.prim.branch_c	.expr
+ordered.map.prim.u	.tygvar
+ordered.map.t	.tygvar
+k	.tyarg	*
+v	.tyarg	*
+res.u	.tylet	ordered.map.prim.u	k	v
+ordered.map.t.in	.cogvar
+k	.larg	k
+v	.larg	v
+map0	.larg	ordered.map.t	k	v
+map1	.larg	ordered.map.t	k	v
+e	.constr	res.u	branch	0	k	1	v	2	map0	3	map1
+	.coerce	ordered.map.t.in	k	v
+	.lift
+	.yield	e
 
 	.type
 
@@ -57,10 +153,19 @@ v	.tylambda	*
 	.tyref	ordered.map.prim.u	k	v
 
 ordered.map.prim.u	.tyexpr
+_ordered.map.prim.u_branch_ty	.tygvar
 _ordered.map.prim.u_empty_ty	.tygvar
 k	.tylambda	*
 v	.tylambda	*
-	.tysum	empty	_ordered.map.prim.u_empty_ty
+branch_ty	.tylet	_ordered.map.prim.u_branch_ty	k	v
+	.tysum	branch	branch_ty	empty	_ordered.map.prim.u_empty_ty
+
+_ordered.map.prim.u_branch_ty	.tyexpr
+ordered.map.t	.tygvar
+k	.tylambda	*
+v	.tylambda	*
+map_ty	.tylet	ordered.map.t	k	v
+	.tyubproduct	0	k	1	v	2	map_ty	3	map_ty
 
 _ordered.map.prim.u_empty_ty	.tyexpr
 	.tyubproduct
