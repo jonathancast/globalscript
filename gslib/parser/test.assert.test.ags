@@ -8,7 +8,7 @@ _tests	.list	test.property.t	_test.fails.unit.nil	_test.passes.fail.nil
 
 _test.fails.unit.nil	.closure	_test.fails.unit.nil_c
 _test.fails.unit.nil_label	.string	parser.test.assert.fails\s(unit\s〈〉)\snil
-_test.fails.unit.nil_expected.msg	.string	Parse\succeeded:\s〈〉
+_test.fails.unit.nil_expected.msg	.string	Parse\ssucceeded:\s〈〉
 
 _test.passes.fail.nil	.closure	_test.passes.fail.nil_c
 _test.passes.fail.nil_label	.string	parser.test.assert.passes\sfail\snil
