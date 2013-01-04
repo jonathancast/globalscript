@@ -140,13 +140,14 @@ b1	.larg	bool.t
 _bool.∨_k	.forcecont
 bool.t	.tygvar
 bool.prim.u	.tygvar
+bool.true	.gvar
 b1	.fv	bool.t
 b0.0	.karg	bool.prim.u
 	.analyze	b0.0	false	true
 		.case	false
 			.enter	b1
 		.case	true
-			.undef	bool.t
+			.enter	bool.true
 
 # §section §gs{bool.fmtgs}
 
