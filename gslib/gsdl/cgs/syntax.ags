@@ -2,13 +2,27 @@
 
 	.data
 
+gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
+_gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
+
 gsdl.cgs.syntax.gsid	.closure	_gsdl.cgs.syntax.gsid_c
 _gsdl.cgs.syntax.gsid_re	.regex	[a-z][a-z]*
 
 	.code
 
+# §section §gs{gsdl.cgs.syntax.ws}
+
+_gsdl.cgs.syntax.ws_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.ws_re	.gvar
+	.app	rune.compare	_gsdl.cgs.syntax.ws_re
+	.enter	parser.match	rune.t
+
+# §section §gs{gsdl.cgs.syntax.gsid}
+
 _gsdl.cgs.syntax.gsid_c	.expr
-parser.t	.tygvar
 rune.t	.tygvar
 parser.match	.gvar
 rune.compare	.gvar
