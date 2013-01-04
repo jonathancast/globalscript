@@ -5,6 +5,7 @@
 string.fmtline	.closure	_string.fmtline_c	_string.fmtline_ty
 
 string.≡	.closure	_string.≡_c
+string.compare	.closure	_string.compare_c
 
 string.fmtgs	.closure	_string.fmtgs_c
 
@@ -16,6 +17,13 @@ list.≡	.gvar
 rune.≡	.gvar
 	.app	rune.≡
 	.enter	list.≡	rune.t
+
+_string.compare_c	.expr
+rune.t	.tygvar
+list.compare	.gvar
+rune.compare	.gvar
+	.app	rune.compare
+	.enter	list.compare	rune.t
 
 _string.fmtgs_c	.expr
 rune.t	.tygvar
