@@ -536,16 +536,24 @@ _list.compare_k1	.subcode
 list.t.out	.cogvar
 xn1	.fv	list.t	α
 xn0.0	.karg	list.prim.u	α
-	.force	_list.compare_k1	α
+	.force	_list.compare_k1	α	|	xn0.0
 	.coerce	list.t.out	α
 	.enter	xn1
 
 _list.compare_k1	.forcecont
 list.prim.u	.tygvar
+list.t	.tygvar
 order.total.ord.t	.tygvar
 α	.tyfv	*
+xn0.0	.fv	list.prim.u	α
 xn1.0	.karg	list.prim.u	α
-	.undef	order.total.ord.t
+	.analyze	xn0.0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn0.1		.fkarg	1	list.t	α
+			.undef	order.total.ord.t
+		.case	nil
+			.undef	order.total.ord.t
 
 # §section §gs{list.fmtgs}
 
