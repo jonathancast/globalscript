@@ -129,8 +129,18 @@ b0.0	.karg	bool.prim.u
 
 _bool.∨_c	.expr
 bool.t	.tygvar
+_bool.∨_k	.subcode
+bool.t.out	.cogvar
 b0	.larg	bool.t
 b1	.larg	bool.t
+	.force	_bool.∨_k
+	.coerce	bool.t.out
+	.enter	b0
+
+_bool.∨_k	.forcecont
+bool.prim.u	.tygvar
+bool.t	.tygvar
+b0.0	.karg	bool.prim.u
 	.undef	bool.t
 
 # §section §gs{bool.fmtgs}
