@@ -1147,7 +1147,10 @@ s	.tyfv	*
 α	.tyfv	*
 list.string.t	.tylet	list.t	string.t
 parser.ty	.tylet	parser.prim.t	s	α
+either.left	.gvar
+list.<>	.gvar
 either.right	.gvar
+parser.prim.<|>	.gvar
 e0.0	.fv	either.prim.u	list.string.t	parser.ty
 e1.0	.karg	either.prim.u	list.string.t	parser.ty
 	.analyze	e0.0	left	right
@@ -1156,7 +1159,9 @@ exp0		.fkarg	0	list.t	string.t
 			.analyze	e1.0	left	right
 				.case	left
 exp1				.fkarg	0	list.t	string.t
-					.undef	either.t	list.string.t	parser.ty
+exp2					.apply	list.<>	string.t	|	exp0	exp1
+					.app	exp2
+					.enter	either.left	list.string.t	parser.ty
 				.case	right
 p1.1				.fkarg	0	parser.prim.t	s	α
 					.app	p1.1
@@ -1170,7 +1175,9 @@ exp1				.fkarg	0	list.t	string.t
 					.enter	either.right	list.string.t	parser.ty
 				.case	right
 p1.1				.fkarg	0	parser.prim.t	s	α
-					.undef	either.t	list.string.t	parser.ty
+p2					.apply	parser.prim.<|>	s	α	|	p0.1	p1.1
+					.app	p2
+					.enter	either.right	list.string.t	parser.ty
 
 # §section Constructors
 
