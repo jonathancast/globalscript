@@ -51,34 +51,15 @@ b	.larg	bool.t
 _bool.≡.k0	.forcecont
 bool.t	.tygvar
 bool.prim.u	.tygvar
-_bool.≡.k1	.subcode
-bool.t.out	.cogvar
+bool.not	.gvar
 b	.fv	bool.t
 a0	.karg	bool.prim.u
-	.force	_bool.≡.k1	|	a0
-	.coerce	bool.t.out
-	.enter	b
-
-_bool.≡.k1	.forcecont
-bool.t	.tygvar
-bool.prim.u	.tygvar
-bool.true	.gvar
-bool.false	.gvar
-a0	.fv	bool.prim.u
-b0	.karg	bool.prim.u
 	.analyze	a0	false	true
 	.case	false
-		.analyze	b0	false	true
-		.case	false
-			.enter	bool.true
-		.case	true
-			.enter	bool.false
+		.app	b
+		.enter	bool.not
 	.case	true
-		.analyze	b0	false	true
-		.case	false
-			.enter	bool.false
-		.case	true
-			.enter	bool.true
+		.enter	b
 
 # §section §gs{bool.compare}
 
