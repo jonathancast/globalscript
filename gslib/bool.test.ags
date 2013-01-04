@@ -173,29 +173,19 @@ test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.o
 # §section §gs{not false}
 
 _test.not.false_c	.expr
-_test.not.false_test_c	.subcode
+bool.t	.tygvar
 test.property.label	.gvar
 _test.not.false_false	.gvar
-test	.alloc	_test.not.false_test_c
-	.app	_test.not.false_false	test
-	.enter	test.property.label
-
-_test.not.false_test_c	.expr
-bool.t	.tygvar
-_test.not.false_test_actual_c	.subcode
 test.assert.eq	.gvar
 bool.≡	.gvar
 bool.fmtgs	.gvar
-bool.true	.gvar
-actual	.alloc	_test.not.false_test_actual_c
-	.app	bool.≡	bool.fmtgs	actual	bool.true
-	.enter	test.assert.eq	bool.t
-
-_test.not.false_test_actual_c	.expr
 bool.not	.gvar
 bool.false	.gvar
-	.app	bool.false
-	.enter	bool.not
+bool.true	.gvar
+actual	.apply	bool.not	|	bool.false
+test	.apply	test.assert.eq	bool.t	|	bool.≡	bool.fmtgs	actual	bool.true
+	.app	_test.not.false_false	test
+	.enter	test.property.label	
 
 # §section §gs{true ∧ true}
 
