@@ -9,6 +9,7 @@ bool.≡	.closure	_bool.≡.c
 
 bool.not	.closure	_bool.not_c
 bool.∧	.closure	_bool.∧.c
+bool.∨	.closure	_bool.∨_c
 
 bool.fmtgs	.closure	_bool.fmtgs_c	_bool.fmtgs_ty
 _bool.fmtgs_true.s	.string	true
@@ -123,6 +124,14 @@ b0.0	.karg	bool.prim.u
 		.enter	bool.false
 	.case	true
 		.enter	b1
+
+# §section §gs{bool.∨}
+
+_bool.∨_c	.expr
+bool.t	.tygvar
+b0	.larg	bool.t
+b1	.larg	bool.t
+	.undef	bool.t
 
 # §section §gs{bool.fmtgs}
 
