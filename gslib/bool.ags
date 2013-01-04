@@ -133,15 +133,20 @@ _bool.∨_k	.subcode
 bool.t.out	.cogvar
 b0	.larg	bool.t
 b1	.larg	bool.t
-	.force	_bool.∨_k
+	.force	_bool.∨_k	|	b1
 	.coerce	bool.t.out
 	.enter	b0
 
 _bool.∨_k	.forcecont
-bool.prim.u	.tygvar
 bool.t	.tygvar
+bool.prim.u	.tygvar
+b1	.fv	bool.t
 b0.0	.karg	bool.prim.u
-	.undef	bool.t
+	.analyze	b0.0	false	true
+		.case	false
+			.enter	b1
+		.case	true
+			.undef	bool.t
 
 # §section §gs{bool.fmtgs}
 
