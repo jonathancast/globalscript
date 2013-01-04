@@ -6,6 +6,7 @@ bool.true	.closure	_bool.true.c
 bool.false	.closure	_bool.false.c
 
 bool.≡	.closure	_bool.≡.c
+bool.compare	.closure	_bool.compare_c
 
 bool.not	.closure	_bool.not_c
 bool.∧	.closure	_bool.∧.c
@@ -78,6 +79,46 @@ b0	.karg	bool.prim.u
 			.enter	bool.false
 		.case	true
 			.enter	bool.true
+
+# §section §gs{bool.compare}
+
+_bool.compare_c	.expr
+bool.t	.tygvar
+order.total.ord.t	.tygvar
+_bool.compare_k0	.subcode
+bool.t.out	.cogvar
+b0	.larg	bool.t
+b1	.larg	bool.t
+	.force	_bool.compare_k0	|	b1
+	.coerce	bool.t.out
+	.enter	b0
+
+_bool.compare_k0	.forcecont
+bool.t	.tygvar
+bool.prim.u	.tygvar
+_bool.compare_k1	.subcode
+bool.t.out	.cogvar
+b1	.fv	bool.t
+b0.0	.karg	bool.prim.u
+	.force	_bool.compare_k1	|	b0.0
+	.coerce	bool.t.out
+	.enter	b1
+
+_bool.compare_k1	.forcecont
+bool.prim.u	.tygvar
+order.total.ord.t	.tygvar
+order.total.ord.eq	.gvar
+b0.0	.fv	bool.prim.u
+b1.0	.karg	bool.prim.u
+	.analyze	b0.0	false	true
+		.case	false
+			.analyze	b1.0	false	true
+				.case	false
+					.enter	order.total.ord.eq
+				.case	true
+					.undef	order.total.ord.t
+		.case	true
+			.undef	order.total.ord.t
 
 # §section §gs{bool.not}
 

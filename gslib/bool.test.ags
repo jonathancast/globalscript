@@ -3,7 +3,7 @@
 	.data
 
 	.closure	_epcode
-_tests	.list	test.property.t	_test.false.eq.false	_test.false.eq.true	_test.true.eq.false	_test.true.eq.true	_test.not.false	_test.true.∧.true	_test.false.∧.false
+_tests	.list	test.property.t	_test.false.eq.false	_test.false.eq.true	_test.true.eq.false	_test.true.eq.true	_test.compare.false.false	_test.not.false	_test.true.∧.true	_test.false.∧.false
 
 _test.false.eq.false	.closure	_test.false.eq.false.c
 _test.false.eq.false.label	.string	false\s≡\sfalse
@@ -28,6 +28,9 @@ _test.true.eq.true_label	.string	true\s≡\strue
 _test.true.eq.true_test	.closure	_test.true.eq.true_test_c
 _test.true.eq.true_test_false	.string	true\s≠\strue
 _test.true.eq.true_test_true	.string	true\s≡\strue
+
+_test.compare.false.false	.closure	_test.compare.false.false_c
+_test.compare.false.false_label	.string	bool.compare\sfalse\sfalse
 
 _test.not.false	.closure	_test.not.false_c
 _test.not.false_false	.string	not\sfalse
@@ -149,6 +152,23 @@ bool.≡	.gvar
 bool.true	.gvar
 	.app	bool.true	bool.true
 	.enter	bool.≡
+
+# §section §gs{bool.compare false false}
+
+_test.compare.false.false_c	.expr
+order.total.ord.t	.tygvar
+test.property.label	.gvar
+_test.compare.false.false_label	.gvar
+test.assert.eq	.gvar
+order.total.ord.≡	.gvar
+order.total.ord.fmtgs	.gvar
+bool.compare	.gvar
+bool.false	.gvar
+order.total.ord.eq	.gvar
+actual	.apply	bool.compare	|	bool.false	bool.false
+test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.ord.fmtgs	actual	order.total.ord.eq
+	.app	_test.compare.false.false_label	test
+	.enter	test.property.label
 
 # §section §gs{not false}
 
