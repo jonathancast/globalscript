@@ -3,7 +3,9 @@
 	.data
 
 parser.string.quotes	.closure	_parser.string.quotes_c
-_parser.string.quotes_loop	.closure	_parser.string.quotes_loop_c
+_parser.string.quotes_loop	.closure	_parser.string.quotes_loop_c	_parser.string.quotes_loop_ty
+_parser.string.quotes_loop_ws.re	.regex	[\s\t][\s\t]*
+
 parser.string.quote	.closure	_parser.string.quote_c
 _parser.string.quote_re	.regex	[^'\s\n\t][^'\s\n\t]*
 
@@ -36,7 +38,26 @@ rune.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 list.string.t	.tylet	list.t	string.t
-	.undef	parser.t	rune.t	list.string.t
+parser.<|>	.gvar
+parser.unit	.gvar
+list.nil	.gvar
+parser.lift2	.gvar
+list.:	.gvar
+parser.*>	.gvar
+_parser.string.quotes_loop	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_parser.string.quotes_loop_ws.re	.gvar
+nil	.apply	list.nil	string.t
+pnil	.apply	parser.unit	rune.t	list.string.t	|	nil
+cons	.apply	list.:	string.t
+quote.0	.apply	parser.match	rune.t	|	rune.compare	_parser.string.quotes_loop_ws.re
+quote.1	.undefined	parser.t	rune.t	string.t
+quote	.apply	parser.*>	rune.t	string.t	string.t	|	quote.0	quote.1
+pcons	.apply	parser.lift2	rune.t	string.t	list.string.t	list.string.t	|	cons	quote	_parser.string.quotes_loop
+	.app	pnil	pcons
+	.enter	parser.<|>	rune.t	list.string.t
+	# > parser.t	rune.t	list.string.t
 
 # §section §gs{parser.string.quote}
 
@@ -47,3 +68,13 @@ rune.compare	.gvar
 _parser.string.quote_re	.gvar
 	.app	rune.compare	_parser.string.quote_re
 	.enter	parser.match	rune.t
+
+	.type
+
+_parser.string.quotes_loop_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+list.string.t	.tylet	list.t	string.t
+	.tyref	parser.t	rune.t	list.string.t
