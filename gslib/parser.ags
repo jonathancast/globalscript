@@ -518,31 +518,36 @@ _parser.<*_k0_c	.subcode
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
 k	.larg	_parser.t_k_ty	s	α0	r
-k0	.alloc	_parser.<*_k0_c	s	α0	α1	r	|	p1
+k0	.alloc	_parser.<*_k0_c	s	α0	α1	r	|	p1	k
 	.app	k0
 	.enter	p0	r
 
 _parser.<*_k0_c	.expr
 parser.t	.tygvar
+_parser.t_k_ty	.tygvar
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 r	.tyfv	*
 _parser.<*_k1_c	.subcode
 p1	.fv	parser.t	s	α1
+k	.fv	_parser.t_k_ty	s	α0	r
 x0	.larg	α0
-k1	.alloc	_parser.<*_k1_c	s	α0	α1	r
+k1	.alloc	_parser.<*_k1_c	s	α0	α1	r	|	k	x0
 	.app	k1
 	.enter	p1	r
 
 _parser.<*_k1_c	.expr
-parser.prim.t	.tygvar
+_parser.t_k_ty	.tygvar
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 r	.tyfv	*
+k	.fv	_parser.t_k_ty	s	α0	r
+x0	.fv	α0
 x1	.larg	α1
-	.undef	parser.prim.t	s	r
+	.app	x0
+	.enter	k
 
 # §section §gs{parser.lift2}
 
