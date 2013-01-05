@@ -1,5 +1,19 @@
 	.prefix
 
+	.data
+
+gsdl.cgs.document.parser	.closure	_gsdl.cgs.document.parser_c
+_gsdl.cgs.document.parser_msg.s	.string	Expecting\sexpression
+	.code
+
+_gsdl.cgs.document.parser_c	.expr
+rune.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+parser.fail.msg	.gvar
+_gsdl.cgs.document.parser_msg.s	.gvar
+	.app	_gsdl.cgs.document.parser_msg.s
+	.enter	parser.fail.msg	rune.t	gsdl.cgs.document.t
+
 	.type
 
 gsdl.cgs.document.t	.tyabstract	*
