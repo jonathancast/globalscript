@@ -3,7 +3,10 @@
 	.data
 
 gsdl.cgs.file.read	.closure	_gsdl.cgs.file.read_c
+_gsdl.cgs.file.read_parser_document.s	.string	document
 _gsdl.cgs.file.read_parser_no.typepragma.msg	.string	No\s\htype:\sprefix\sor\s\htype:\sdocument\spragma
+
+gsdl.cgs.file.document	.closure	_gsdl.cgs.file.document_c
 
 gsdl.cgs.pragma.line	.closure	_gsdl.cgs.pragma.line_c
 gsdl.cgs.blank.line	.closure	_gsdl.cgs.blank.line_c	_gsdl.cgs.blank.line_ty
@@ -258,21 +261,47 @@ pragmas	.fv	ordered.map.t	string.ty	gsdl.cgs.pragma.t
 
 _gsdl.cgs.file.read_parser_k	.forcecont
 maybe.prim.u	.tygvar
-list.t	.tygvar
+string.t	.tygvar
 rune.t	.tygvar
-parser.t	.tygvar
 gsdl.cgs.file.t	.tygvar
-string.ty	.tylet	list.t	rune.t
+_gsdl.cgs.file.read_parser_k1	.subcode
+bool.t.out	.cogvar
+string.≡	.gvar
+_gsdl.cgs.file.read_parser_document.s	.gvar
 parser.fail.msg	.gvar
 _gsdl.cgs.file.read_parser_no.typepragma.msg	.gvar
-mb0	.karg	maybe.prim.u	string.ty
+mb0	.karg	maybe.prim.u	string.t
 	.analyze	mb0	just	nothing
 		.case	just
-ty		.fkarg	0	string.ty
-			.undef	parser.t	rune.t	gsdl.cgs.file.t
+ty		.fkarg	0	string.t
+			.force	_gsdl.cgs.file.read_parser_k1
+			.coerce	bool.t.out
+			.app	ty	_gsdl.cgs.file.read_parser_document.s
+			.enter	string.≡
 		.case	nothing
 			.app	_gsdl.cgs.file.read_parser_no.typepragma.msg
 			.enter	parser.fail.msg	rune.t	gsdl.cgs.file.t
+
+_gsdl.cgs.file.read_parser_k1	.forcecont
+bool.prim.u	.tygvar
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+string.t	.tygvar
+parser.map	.gvar
+gsdl.cgs.file.document	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.ws	.gvar
+gsdl.cgs.document.parser	.gvar
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	parser.t	rune.t	gsdl.cgs.file.t
+		.case	true
+parser			.apply	parser.*>	rune.t	string.t	gsdl.cgs.document.t	|	gsdl.cgs.syntax.ws	gsdl.cgs.document.parser
+			.app	gsdl.cgs.file.document	parser
+			.enter	parser.map	rune.t	gsdl.cgs.document.t	gsdl.cgs.file.t
 
 _gsdl.cgs.file.read_s_c	.expr
 ibio.prim.iport	.tygvar
@@ -360,6 +389,18 @@ ibio.prim.t	.tygvar
 gsdl.cgs.file.t	.tygvar
 	.undef	ibio.prim.t	gsdl.cgs.file.t
 
+# §section §gs{gsdl.cgs.file.document.t} Constructors
+
+_gsdl.cgs.file.document_c	.expr
+gsdl.cgs.document.t	.tygvar
+gsdl.cgs.file.prim.u	.tygvar
+gsdl.cgs.file.t.in	.cogvar
+d	.larg	gsdl.cgs.document.t
+c	.constr	gsdl.cgs.file.prim.u	document	0	d
+	.coerce	gsdl.cgs.file.t.in
+	.lift
+	.yield	c
+
 # §section §gs{gsdl.cgs.pragma.line}
 
 _gsdl.cgs.pragma.line_c	.expr
@@ -428,11 +469,22 @@ nl	.rune	\n
 
 	.type
 
-gsdl.cgs.file.t	.tyabstract	*
-	.tylift
-	.tysum
+# §section §gs{gsdl.cgs.file.t}
 
-# §section §gs{gsdl.cgs.file.read_pragmas.pos}
+gsdl.cgs.file.t	.tyabstract	*
+gsdl.cgs.file.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.file.prim.u
+
+gsdl.cgs.file.prim.u	.tyexpr
+_gsdl.cgs.file.prim.u_document_ty	.tygvar
+	.tysum	document	_gsdl.cgs.file.prim.u_document_ty
+
+_gsdl.cgs.file.prim.u_document_ty	.tyexpr
+gsdl.cgs.document.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.document.t
+	
+# §section §gs{gsdl.cgs.file.read}
 
 _gsdl.cgs.file.read_pragmas.pos_ty	.tyexpr
 _gsdl.cgs.file.read_pragmas.pos_u	.tygvar
@@ -473,3 +525,9 @@ rune.t	.tygvar
 list.t	.tygvar
 string.ty	.tylet	list.t	rune.t
 	.tyref	ibio.lex.receiver.lexeme.t	rune.t	string.ty
+
+	.coercion
+
+gsdl.cgs.file.t.in	.tycoercion
+gsdl.cgs.file.t	.tygvar
+	.tydefinition	gsdl.cgs.file.t
