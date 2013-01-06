@@ -265,8 +265,8 @@ n1.0	.karg	natural.prim.u
 	.yield	natural.prim.>
 
 _natural.>_k2	.ubcasecont
-bool.t	.tygvar
-	.undef	bool.t
+bool.false	.gvar
+	.enter	bool.false
 
 _natural.>_k3	.ubcasecont
 bool.true	.gvar
