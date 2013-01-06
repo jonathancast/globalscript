@@ -36,7 +36,7 @@ i	.bind	_gsdl.cgs.file.read_i_c	|	fn
 pr.ls	.bind	_gsdl.cgs.file.read_pr.ls_c	|	i
 pragmas.pos	.bind	_gsdl.cgs.file.read_pragmas.pos_c	|	eo	fn	pr.ls
 pragmas	.alloc	_gsdl.cgs.file.read_pragmas_c	|	pragmas.pos
-pos	.alloc	_gsdl.cgs.file.read_pos_c	|	fn
+pos	.alloc	_gsdl.cgs.file.read_pos_c	|	pragmas.pos
 parser	.alloc	_gsdl.cgs.file.read_parser_c	|	fn	pragmas
 s	.bind	_gsdl.cgs.file.read_s_c	|	i
 	.body	_gsdl.cgs.file.read_body_c	|	eo	pos	parser	s
@@ -142,18 +142,26 @@ _gsdl.cgs.pragma.parse_res_ty	.tygvar
 parser.err.t	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_insert_k2	.subcode
 either.t.out	.cogvar
+ibio.prim.unit	.gvar
 parser.parse	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 parser.pos.next.col	.gvar
 gsdl.cgs.pragma.parse	.gvar
+parser.pos.next.line	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 p	.fv	_gsdl.cgs.file.read_pragmas.pos_ty
 l1	.fv	list.t	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.undef	ibio.prim.t	_gsdl.cgs.file.read_pragmas.pos_ty
+pos			.lfield	pos	p
+prs			.lfield	pragmas	p
+pos1			.apply	parser.pos.next.line	|	pos
+pr.pos.1			.lrecord	pos	pos1	pragmas	prs
+			.lift
+			.app	pr.pos.1
+			.yield	ibio.prim.unit	_gsdl.cgs.file.read_pragmas.pos_ty
 		.case	true
 pos			.lfield	pos	p
 pragmas			.lfield	pragmas	p
@@ -177,6 +185,7 @@ gsdl.cgs.pragma.t	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	.subcode
 ibio.prim.unit	.gvar
+parser.pos.next.line	.gvar
 ordered.map.insert	.gvar
 string.compare	.gvar
 eo	.fv	ibio.prim.oport	rune.t
@@ -189,9 +198,10 @@ res			.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	|	eo	err
 			.enter	res
 		.case	right
 k.pr		.fkarg	0	_gsdl.cgs.pragma.parse_res_ty
+pos			.lfield	pos	p
+pos1			.apply	parser.pos.next.line	|	pos
 k			.lfield	0	k.pr
 pr			.lfield	1	k.pr
-pos1			.undefined	parser.pos.t
 prs			.lfield	pragmas	p
 prs1			.apply	ordered.map.insert	string.t	gsdl.cgs.pragma.t	|	string.compare	k	pr	prs
 pr.pos.1			.lrecord	pos	pos1	pragmas	prs1
@@ -236,11 +246,10 @@ ps	.lfield	pragmas	pragmas.pos
 	.enter	ps
 
 _gsdl.cgs.file.read_pos_c	.expr
-ibio.file.name.t	.tygvar
-parser.pos.initial	.gvar
-fn	.fv	ibio.file.name.t
-	.app	fn
-	.enter	parser.pos.initial
+_gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
+pragmas.pos	.fv	_gsdl.cgs.file.read_pragmas.pos_ty
+pos	.lfield	pos	pragmas.pos
+	.enter	pos
 
 _gsdl.cgs.file.read_parser_c	.expr
 ibio.file.name.t	.tygvar
