@@ -57,6 +57,7 @@ parser.pos.≡	.closure	_parser.pos.≡_c
 parser.pos.fmtgs	.closure	_parser.pos.fmtgs_c
 _parser.pos.fmtgs_prefix.s	.string	〈\s
 _parser.pos.fmtgs_file.s	.string	'file\s∝\s
+_parser.pos.fmtgs_line.s	.string	'line\s∝\s
 _parser.pos.fmtgs_col.s	.string	'col\s∝\s
 _parser.pos.fmtgs_semi.space.s	.string	;\s
 _parser.pos.fmtgs_suffix.s	.string	〉
@@ -1534,16 +1535,22 @@ _parser.pos.fmtgs_file.s	.gvar
 _parser.pos.fmtgs_suffix.s	.gvar
 ibio.file.name.fmtgs	.gvar
 _parser.pos.fmtgs_semi.space.s	.gvar
+_parser.pos.fmtgs_line.s	.gvar
 _parser.pos.fmtgs_col.s	.gvar
 natural.fmtgs	.gvar
 pos	.larg	parser.pos.t
 fn	.lfield	file	pos
+line	.lfield	line	pos
 col	.lfield	col	pos
 fn.s	.apply	ibio.file.name.fmtgs	|	fn
+line.s	.apply	natural.fmtgs	|	line
 col.s	.apply	natural.fmtgs	|	col
-s5	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_semi.space.s	_parser.pos.fmtgs_suffix.s
-s4	.apply	list.<>	rune.t	|	col.s	s5
-s3	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_col.s	s4
+s8	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_semi.space.s	_parser.pos.fmtgs_suffix.s
+s7	.apply	list.<>	rune.t	|	col.s	s8
+s6	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_col.s	s7
+s5	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_semi.space.s	s6
+s4	.apply	list.<>	rune.t	|	line.s	s5
+s3	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_line.s	s4
 s2	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_semi.space.s	s3
 s1	.apply	list.<>	rune.t	|	fn.s	s2
 s0	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_file.s	s1
@@ -1556,7 +1563,7 @@ _parser.pos.initial_c	.expr
 ibio.file.name.t	.tygvar
 natural.1	.gvar
 fn	.larg	ibio.file.name.t
-r	.record	col	natural.1	file	fn
+r	.record	col	natural.1	file	fn	line	natural.1
 	.lift
 	.yield	r
 
@@ -1567,9 +1574,10 @@ natural.+	.gvar
 natural.1	.gvar
 pos	.larg	parser.pos.t
 fn	.lfield	file	pos
+line	.lfield	line	pos
 col	.lfield	col	pos
 col.1	.apply	natural.+	|	col	natural.1
-r	.record	col	col.1	file	fn
+r	.record	col	col.1	file	fn	line	line
 	.lift
 	.yield	r
 
@@ -1688,7 +1696,7 @@ parser.pos.u	.tygvar
 parser.pos.u	.tyexpr
 natural.t	.tygvar
 ibio.file.name.t	.tygvar
-	.typroduct	col	natural.t	file	ibio.file.name.t
+	.typroduct	col	natural.t	file	ibio.file.name.t	line	natural.t
 
 # §section §gs{parser.advance.t}
 

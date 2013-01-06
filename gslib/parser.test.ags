@@ -71,7 +71,7 @@ _test.err.≡.simple.failure.simple.failure_succ.msg	.string	simple.failure\s≡
 
 _test.err.fmtgs.simple.failure	.closure	_test.err.fmtgs.simple.failure_c
 _test.err.fmtgs.simple.failure_label	.string	err.fmtgs\ssimple.failure\strue
-_test.err.fmtgs.simple.failure_expected	.string	simple.failure\strue\s〈\s'file\s∝\sfn<./parse-data>;\s'col\s∝\s1;\s〉
+_test.err.fmtgs.simple.failure_expected	.string	simple.failure\strue\s〈\s'file\s∝\sfn<./parse-data>;\s'line\s∝\s1;\s'col\s∝\s1;\s〉
 
 _test.pos.fmt.not.eof	.closure	_test.pos.fmt.not.eof_c
 _test.pos.fmt.not.eof_label	.string	pos.fmt\sfalse\sinitial.pos
@@ -101,7 +101,7 @@ _test.pos.eq.diff.col_foo.s	.string	./foo
 
 _test.pos.fmtgs	.closure	_test.pos.fmtgs_c
 _test.pos.fmtgs_label	.string	pos.fmtgs\spos.initial
-_test.pos.fmtgs_expected	.string	〈\s'file\s∝\sfn<./parse-data>;\s'col\s∝\s1;\s〉
+_test.pos.fmtgs_expected	.string	〈\s'file\s∝\sfn<./parse-data>;\s'line\s∝\s1;\s'col\s∝\s1;\s〉
 
 _test.rune.advance.x	.closure	_test.rune.advance.x_c
 _test.rune.advance.x_label	.string	parser.rune.advance\sr/x/
