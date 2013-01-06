@@ -1271,7 +1271,7 @@ s	.constr	res.u	symbol	0	sk	1	ek
 	.lift
 	.yield	s
 
-# §seciton §gs{parser.err.fmt}
+# §section §gs{parser.err.fmt}
 
 _parser.err.fmt_c	.expr
 parser.err.t	.tygvar
