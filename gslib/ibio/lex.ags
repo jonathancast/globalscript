@@ -174,7 +174,7 @@ ip0	.fv	ibio.prim.iptr	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 c1	.apply	ibio.prim.iptr.deref	s	|	ip0
-	.force	_ibio.lex.char_k0_k	s	β	|	c	ip0	sk
+	.force	_ibio.lex.char_k0_k	s	β	|	c	ip0	ek	sk
 	.coerce	bool.t.out
 	.app	c	c1
 	.enter	eq
@@ -188,11 +188,12 @@ s	.tyfv	*
 ibio.prim.iptr.next	.gvar
 c	.fv	s
 ip0	.fv	ibio.prim.iptr	s
+ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.undef	β
+			.enter	ek
 		.case	true
 ip1			.apply	ibio.prim.iptr.next	s	|	ip0
 			.app	c	ip1
