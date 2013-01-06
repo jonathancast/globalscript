@@ -41,9 +41,9 @@ _test.length.nil_test_actual_c	.subcode
 test.assert.eq	.gvar
 natural.≡	.gvar
 natural.fmtgs	.gvar
-_0	.gvar
+natural.0	.gvar
 actual	.alloc	_test.length.nil_test_actual_c
-	.app	natural.≡	natural.fmtgs	actual	_0
+	.app	natural.≡	natural.fmtgs	actual	natural.0
 	.enter	test.assert.eq	natural.t
 
 _test.length.nil_test_actual_c	.expr
