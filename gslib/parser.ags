@@ -1517,12 +1517,16 @@ natural.≡	.gvar
 pos0	.larg	parser.pos.t
 pos1	.larg	parser.pos.t
 pos0.file	.lfield	file	pos0
+pos0.line	.lfield	line	pos0
 pos0.col	.lfield	col	pos0
 pos1.file	.lfield	file	pos1
+pos1.line	.lfield	line	pos1
 pos1.col	.lfield	col	pos1
 b0	.apply	ibio.file.name.≡	|	pos0.file	pos1.file
-b1	.apply	natural.≡	|	pos0.col	pos1.col
-	.app	b0	b1
+b1	.apply	natural.≡	|	pos0.line	pos1.line
+b2	.apply	natural.≡	|	pos0.col	pos1.col
+b3	.apply	bool.∧	|	b1	b2
+	.app	b0	b3
 	.enter	bool.∧
 
 # §section §gs{parser.pos.fmtgs}

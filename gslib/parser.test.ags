@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.match.star	_test.match.neg.in.class	_test.match.multi.char.class	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.fmt.next.line	_test.pos.fmt.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.match.star	_test.match.neg.in.class	_test.match.multi.char.class	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.fmt.next.line	_test.pos.fmt.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.line	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -96,6 +96,12 @@ _test.pos.eq.diff.file_false.msg	.string	pos.initial\sfn<./foo>\s≠\spos.initia
 _test.pos.eq.diff.file_true.msg	.string	pos.initial\sfn<./foo>\s≡\spos.initial\sfn<./bar>
 _test.pos.eq.diff.file_foo.s	.string	./foo
 _test.pos.eq.diff.file_bar.s	.string	./bar
+
+_test.pos.eq.diff.line	.closure	_test.pos.eq.diff.line_c
+_test.pos.eq.diff.line_label	.string	parser.pos.≡\s(pos.next.line\sx)\sx
+_test.pos.eq.diff.line_false.msg	.string	pos.next.line\sx\s≠\sx
+_test.pos.eq.diff.line_true.msg	.string	pos.next.line\sx\s≡\sx
+_test.pos.eq.diff.line_foo.s	.string	./foo
 
 _test.pos.eq.diff.col	.closure	_test.pos.eq.diff.col_c
 _test.pos.eq.diff.col_label	.string	parser.pos.≡\s(pos.next.col\sx)\sx
@@ -715,6 +721,27 @@ bar.pos	.apply	parser.pos.initial	|	bar.fn
 b	.apply	parser.pos.≡	|	foo.pos	bar.pos
 test	.apply	test.deny	|	_test.pos.eq.diff.file_false.msg	_test.pos.eq.diff.file_true.msg	b
 	.app	_test.pos.eq.diff.file_label	test
+	.enter	test.property.label
+
+# §section §gs{parser.pos.≡ (pos.next.line x) x}
+
+_test.pos.eq.diff.line_c	.expr
+test.property.label	.gvar
+_test.pos.eq.diff.line_label	.gvar
+test.deny	.gvar
+_test.pos.eq.diff.line_false.msg	.gvar
+_test.pos.eq.diff.line_true.msg	.gvar
+parser.pos.≡	.gvar
+parser.pos.next.line	.gvar
+parser.pos.initial	.gvar
+ibio.file.name.in	.gvar
+_test.pos.eq.diff.line_foo.s	.gvar
+foo.fn	.apply	ibio.file.name.in	|	_test.pos.eq.diff.line_foo.s
+foo.pos	.apply	parser.pos.initial	|	foo.fn
+foo.pos.1	.apply	parser.pos.next.line	|	foo.pos
+b	.apply	parser.pos.≡	|	foo.pos.1	foo.pos
+test	.apply	test.deny	|	_test.pos.eq.diff.line_false.msg	_test.pos.eq.diff.line_true.msg	b
+	.app	_test.pos.eq.diff.line_label	test
 	.enter	test.property.label
 
 # §section §gs{parser.pos.≡ (pos.next.col x) x}
