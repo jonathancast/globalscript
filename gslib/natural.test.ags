@@ -63,13 +63,6 @@ _test.fmtdecimal.11	.closure	_test.fmtdecimal.11_c
 _test.fmtdecimal.11_label	.string	fmtdecimal\s11
 _test.fmtdecimal.11_test_expected	.string	11
 
-_0	.closure	_0_c
-_2	.closure	_2_c
-_3	.closure	_3_c
-_4	.closure	_4_c
-_5	.closure	_5_c
-_11	.closure	_11_c
-
 	.code
 
 _epcode	.expr
@@ -99,8 +92,8 @@ eq	.alloc	_test.4.eq.4_test_eq_c
 
 _test.4.eq.4_test_eq_c	.expr
 natural.≡	.gvar
-_4	.gvar
-	.app	_4	_4
+natural.4	.gvar
+	.app	natural.4	natural.4
 	.enter	natural.≡
 
 # §section §gs{4 ≡ 0}
@@ -124,9 +117,9 @@ eq	.alloc	_test.4.eq.0_test_eq_c
 
 _test.4.eq.0_test_eq_c	.expr
 natural.≡	.gvar
-_4	.gvar
+natural.4	.gvar
 _0	.gvar
-	.app	_4	_0
+	.app	natural.4	_0
 	.enter	natural.≡
 
 # §section §gs{0 < 4}
@@ -150,8 +143,8 @@ lt	.alloc	_test.0.lt.4_test_lt_c
 _test.0.lt.4_test_lt_c	.expr
 natural.<	.gvar
 _0	.gvar
-_4	.gvar
-	.app	_0	_4
+natural.4	.gvar
+	.app	_0	natural.4
 	.enter	natural.<
 
 # §section §gs{4 < 0}
@@ -174,9 +167,9 @@ lt	.alloc	_test.4.lt.0_test_lt_c
 
 _test.4.lt.0_test_lt_c	.expr
 natural.<	.gvar
-_4	.gvar
+natural.4	.gvar
 _0	.gvar
-	.app	_4	_0
+	.app	natural.4	_0
 	.enter	natural.<
 
 # §section §gs{4 > 0}
@@ -205,9 +198,9 @@ test.assert.eq	.gvar
 order.total.ord.≡	.gvar
 order.total.ord.fmtgs	.gvar
 natural.compare	.gvar
-_4	.gvar
+natural.4	.gvar
 order.total.ord.eq	.gvar
-actual	.apply	natural.compare	|	_4	_4
+actual	.apply	natural.compare	|	natural.4	natural.4
 test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.ord.fmtgs	actual	order.total.ord.eq
 	.app	_test.compare.4.4_label	test
 	.enter	test.property.label
@@ -228,16 +221,16 @@ _test_2.plus.3_test_actual_c	.subcode
 test.assert.eq	.gvar
 natural.≡	.gvar
 natural.fmtgs	.gvar
-_5	.gvar
+natural.5	.gvar
 actual	.alloc	_test_2.plus.3_test_actual_c
-	.app	natural.≡	natural.fmtgs	actual	_5
+	.app	natural.≡	natural.fmtgs	actual	natural.5
 	.enter	test.assert.eq	natural.t
 
 _test_2.plus.3_test_actual_c	.expr
 natural.+	.gvar
-_2	.gvar
-_3	.gvar
-	.app	_2	_3
+natural.2	.gvar
+natural.3	.gvar
+	.app	natural.2	natural.3
 	.enter	natural.+
 
 # §section §gs{1 `divMod` 0}
@@ -286,10 +279,10 @@ _test.2.div.3_test	.gvar
 _test.2.div.3_test_c	.expr
 _test.2.div.3_test_k	.subcode
 natural.divMod	.gvar
-_2	.gvar
-_3	.gvar
+natural.2	.gvar
+natural.3	.gvar
 	.force	_test.2.div.3_test_k
-	.app	_2	_3
+	.app	natural.2	natural.3
 	.enter	natural.divMod
 
 _test.2.div.3_test_k	.forcecont
@@ -338,9 +331,9 @@ eq	.alloc	_test.2.div.3_test_mod_eq_c	|	m
 _test.2.div.3_test_mod_eq_c	.expr
 natural.t	.tygvar
 natural.≡	.gvar
-_2	.gvar
+natural.2	.gvar
 m	.fv	natural.t
-	.app	m	_2
+	.app	m	natural.2
 	.enter	natural.≡
 
 # §section §gs{natural.fmtdecimal 0}
@@ -390,53 +383,9 @@ _test.fmtdecimal.11_test_expected	.gvar
 
 _test.fmtdecimal.11_test_11.s_c	.expr
 natural.fmtdecimal	.gvar
-_11	.gvar
-	.app	_11
+natural.11	.gvar
+	.app	natural.11
 	.enter	natural.fmtdecimal
-
-# §section Test fixtures
-
-_0_c	.expr
-natural.t.in	.cogvar
-0	.natural	0
-	.coerce	natural.t.in
-	.lift
-	.yield	0
-
-_2_c	.expr
-natural.t.in	.cogvar
-2	.natural	2
-	.coerce	natural.t.in
-	.lift
-	.yield	2
-
-_3_c	.expr
-natural.t.in	.cogvar
-3	.natural	3
-	.coerce	natural.t.in
-	.lift
-	.yield	3
-
-_4_c	.expr
-natural.t.in	.cogvar
-4	.natural	4
-	.coerce	natural.t.in
-	.lift
-	.yield	4
-
-_5_c	.expr
-natural.t.in	.cogvar
-5	.natural	5
-	.coerce	natural.t.in
-	.lift
-	.yield	5
-
-_11_c	.expr
-natural.t.in	.cogvar
-11	.natural	11
-	.coerce	natural.t.in
-	.lift
-	.yield	11
 
 	.type
 

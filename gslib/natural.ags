@@ -26,7 +26,11 @@ natural.fmtgs	.closure	_natural.fmtgs_c
 
 natural.0	.closure	_natural.0_c
 natural.1	.closure	_natural.1_c
+natural.2	.closure	_natural.2_c
+natural.3	.closure	_natural.3_c
 natural.4	.closure	_natural.4_c
+natural.5	.closure	_natural.5_c
+natural.11	.closure	_natural.11_c
 
 	.code
 
@@ -469,12 +473,40 @@ natural.t.in	.cogvar
 	.lift
 	.yield	1
 
+_natural.2_c	.expr
+natural.t.in	.cogvar
+2	.natural	2
+	.coerce	natural.t.in
+	.lift
+	.yield	2
+
+_natural.3_c	.expr
+natural.t.in	.cogvar
+3	.natural	3
+	.coerce	natural.t.in
+	.lift
+	.yield	3
+
 _natural.4_c	.expr
 natural.t.in	.cogvar
 4	.natural	4
 	.coerce	natural.t.in
 	.lift
 	.yield	4
+
+_natural.5_c	.expr
+natural.t.in	.cogvar
+5	.natural	5
+	.coerce	natural.t.in
+	.lift
+	.yield	5
+
+_natural.11_c	.expr
+natural.t.in	.cogvar
+11	.natural	11
+	.coerce	natural.t.in
+	.lift
+	.yield	11
 
 	.type
 
