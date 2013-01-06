@@ -49,7 +49,6 @@ parser.err.message.failure	.closure	_parser.err.message.failure_c
 parser.rune.advance	.closure	_parser.rune.advance_c
 
 parser.pos.fmt	.closure	_parser.pos.fmt_c
-_parser.pos.fmt_line.fake.s	.string	1
 _parser.pos.fmt_eof.suffix.s	.string	:\sat\sEOF
 
 parser.pos.≡	.closure	_parser.pos.≡_c
@@ -64,6 +63,7 @@ _parser.pos.fmtgs_suffix.s	.string	〉
 
 parser.pos.initial	.closure	_parser.pos.initial_c
 
+parser.pos.next.line	.closure	_parser.pos.next.line_c
 parser.pos.next.col	.closure	_parser.pos.next.col_c
 
 	.code
@@ -1462,7 +1462,6 @@ list.<>	.gvar
 ibio.file.name.out	.gvar
 list.:	.gvar
 rune.colon	.gvar
-_parser.pos.fmt_line.fake.s	.gvar
 natural.fmtdecimal	.gvar
 natural.>	.gvar
 natural.1	.gvar
@@ -1471,11 +1470,13 @@ eof0	.karg	bool.prim.u
 	.analyze	eof0	false	true
 		.case	false
 fn			.lfield	file	pos
+line			.lfield	line	pos
 col			.lfield	col	pos
 fn.s			.apply	ibio.file.name.out	|	fn
+line.s			.apply	natural.fmtdecimal	|	line
 col.s			.apply	natural.fmtdecimal	|	col
 s3			.apply	list.:	rune.t	|	rune.colon	col.s
-s2			.apply	list.<>	rune.t	|	_parser.pos.fmt_line.fake.s	s3
+s2			.apply	list.<>	rune.t	|	line.s	s3
 s1			.apply	list.:	rune.t	|	rune.colon	s2
 			.app	fn.s	s1
 			.enter	list.<>	rune.t
@@ -1564,6 +1565,21 @@ ibio.file.name.t	.tygvar
 natural.1	.gvar
 fn	.larg	ibio.file.name.t
 r	.record	col	natural.1	file	fn	line	natural.1
+	.lift
+	.yield	r
+
+# §section §gs{parser.pos.next.line}
+
+_parser.pos.next.line_c	.expr
+parser.pos.t	.tygvar
+natural.+	.gvar
+natural.1	.gvar
+pos	.larg	parser.pos.t
+fn	.lfield	file	pos
+line	.lfield	line	pos
+col	.lfield	col	pos
+line.1	.apply	natural.+	|	line	natural.1
+r	.record	col	col	file	fn	line	line.1
 	.lift
 	.yield	r
 

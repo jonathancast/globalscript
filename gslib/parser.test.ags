@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.match.star	_test.match.neg.in.class	_test.match.multi.char.class	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.fmt.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.match.star	_test.match.neg.in.class	_test.match.multi.char.class	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.fmt.next.line	_test.pos.fmt.eof	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -76,6 +76,10 @@ _test.err.fmtgs.simple.failure_expected	.string	simple.failure\strue\s〈\s'file
 _test.pos.fmt.not.eof	.closure	_test.pos.fmt.not.eof_c
 _test.pos.fmt.not.eof_label	.string	pos.fmt\sfalse\sinitial.pos
 _test.pos.fmt.not.eof_expected	.string	./parse-data:1:1
+
+_test.pos.fmt.next.line	.closure	_test.pos.fmt.next.line_c
+_test.pos.fmt.next.line_label	.string	pos.fmt\sfalse\s(parser.pos.next.line\sinitial.pos)
+_test.pos.fmt.next.line_expected	.string	./parse-data:2:1
 
 _test.pos.fmt.eof	.closure	_test.pos.fmt.eof_c
 _test.pos.fmt.eof_label	.string	pos.fmt\strue\sinitial.pos
@@ -628,6 +632,28 @@ pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
 actual	.apply	parser.pos.fmt	|	bool.false	pos
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.pos.fmt.not.eof_expected
 	.app	_test.pos.fmt.not.eof_label	test
+	.enter	test.property.label
+
+# §section §gs{parser.pos.fmt false (next.line initial.pos)}
+
+_test.pos.fmt.next.line_c	.expr
+string.t	.tygvar
+test.property.label	.gvar
+_test.pos.fmt.next.line_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+parser.pos.fmt	.gvar
+bool.false	.gvar
+parser.pos.next.line	.gvar
+parser.pos.initial	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+_test.pos.fmt.next.line_expected	.gvar
+pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
+pos1	.apply	parser.pos.next.line	|	pos
+actual	.apply	parser.pos.fmt	|	bool.false	pos1
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.pos.fmt.next.line_expected
+	.app	_test.pos.fmt.next.line_label	test
 	.enter	test.property.label
 
 # §section §gs{parser.pos.fmt true initial.pos}
