@@ -26,16 +26,18 @@ enum {
     natural_prim_ub_divMod,
     natural_prim_ub_eq,
     natural_prim_ub_lt,
+    natural_prim_ub_gt,
 };
 
 static gsubprim_handler natural_prim_handle_divMod;
-static gsubprim_handler natural_prim_handle_eq, natural_prim_handle_lt;
+static gsubprim_handler natural_prim_handle_eq, natural_prim_handle_lt, natural_prim_handle_gt;
 
 static gsubprim_handler *natural_prim_ubexec[] = {
     natural_prim_handle_divMod,
 
     natural_prim_handle_eq,
     natural_prim_handle_lt,
+    natural_prim_handle_gt,
 };
 
 static gslprim_handler *natural_prim_lexec[] = {
@@ -48,6 +50,7 @@ static struct gsregistered_prim natural_prim_operations[] = {
 
     { "≡", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_eq, },
     { "<", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_lt, },
+    { ">", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_gt, },
 
     { 0, },
 };
@@ -151,6 +154,23 @@ natural_prim_handle_lt(struct ace_thread *thread, struct gspos pos, int nargs, g
         return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_lt: bignums")
     ;
     if (args[0] < args[1])
+        return gsprim_return_ubsum(thread, pos, 1, 0)
+    ; else
+        return gsprim_return_ubsum(thread, pos, 0, 0)
+    ;
+}
+
+static
+int
+natural_prim_handle_gt(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
+{
+    if (
+        GS_SLOW_EVALUATE(args[0]) != gstyunboxed
+        || GS_SLOW_EVALUATE(args[1]) != gstyunboxed
+    )
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_gt: bignums")
+    ;
+    if (args[0] > args[1])
         return gsprim_return_ubsum(thread, pos, 1, 0)
     ; else
         return gsprim_return_ubsum(thread, pos, 0, 0)
