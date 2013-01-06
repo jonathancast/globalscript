@@ -50,6 +50,7 @@ parser.rune.advance	.closure	_parser.rune.advance_c
 
 parser.pos.fmt	.closure	_parser.pos.fmt_c
 _parser.pos.fmt_line.fake.s	.string	1
+_parser.pos.fmt_eof.suffix.s	.string	:\sat\sEOF
 
 parser.pos.≡	.closure	_parser.pos.≡_c
 
@@ -1454,12 +1455,16 @@ _parser.pos.fmt_k	.forcecont
 parser.pos.t	.tygvar
 bool.prim.u	.tygvar
 rune.t	.tygvar
+_parser.pos.fmt_true_k	.subcode
+bool.t.out	.cogvar
 list.<>	.gvar
 ibio.file.name.out	.gvar
 list.:	.gvar
 rune.colon	.gvar
 _parser.pos.fmt_line.fake.s	.gvar
 natural.fmtdecimal	.gvar
+natural.>	.gvar
+natural.1	.gvar
 pos	.fv	parser.pos.t
 eof0	.karg	bool.prim.u
 	.analyze	eof0	false	true
@@ -1474,9 +1479,31 @@ s1			.apply	list.:	rune.t	|	rune.colon	s2
 			.app	fn.s	s1
 			.enter	list.<>	rune.t
 		.case	true
+col			.lfield	col	pos
+			.force	_parser.pos.fmt_true_k	|	pos
+			.coerce	bool.t.out
+			.app	col	natural.1
+			.enter	natural.>
+
+_parser.pos.fmt_true_k	.forcecont
+parser.pos.t	.tygvar
+bool.prim.u	.tygvar
+rune.t	.tygvar
+ibio.file.name.out	.gvar
+list.<>	.gvar
+_parser.pos.fmt_eof.suffix.s	.gvar
+pos	.fv	parser.pos.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
 fn			.lfield	file	pos
 			.app	fn
 			.enter	ibio.file.name.out
+		.case	true
+fn			.lfield	file	pos
+fn.s			.apply	ibio.file.name.out	|	fn
+			.app	fn.s	_parser.pos.fmt_eof.suffix.s
+			.enter	list.<>	rune.t
 
 # §section §gs{parser.pos.≡}
 
