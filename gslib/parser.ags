@@ -1463,6 +1463,7 @@ ibio.file.name.out	.gvar
 list.:	.gvar
 rune.colon	.gvar
 natural.fmtdecimal	.gvar
+bool.∨	.gvar
 natural.>	.gvar
 natural.1	.gvar
 pos	.fv	parser.pos.t
@@ -1481,11 +1482,14 @@ s1			.apply	list.:	rune.t	|	rune.colon	s2
 			.app	fn.s	s1
 			.enter	list.<>	rune.t
 		.case	true
+line			.lfield	line	pos
 col			.lfield	col	pos
+b0			.apply	natural.>	|	line	natural.1
+b1			.apply	natural.>	|	col	natural.1
 			.force	_parser.pos.fmt_true_k	|	pos
 			.coerce	bool.t.out
-			.app	col	natural.1
-			.enter	natural.>
+			.app	b0	b1
+			.enter	bool.∨
 
 _parser.pos.fmt_true_k	.forcecont
 parser.pos.t	.tygvar
