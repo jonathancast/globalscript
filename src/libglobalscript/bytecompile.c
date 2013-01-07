@@ -239,11 +239,13 @@ gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
     } else {
         if ((*s & 0x80) == 0) {
             noctets = 1;
+        } else if ((*s & 0xe0) == 0xc0) {
+            noctets = 2;
         } else if ((*s & 0xf0) == 0xe0) {
             noctets = 3;
         } else {
             noctets = 0;
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_parse_rune_literal(%s)", pos, s);
+            gsfatal(UNIMPL("%P: gsbc_parse_rune_literal(%s)"), pos, s);
         }
 
         while (noctets--) {
