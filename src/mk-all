@@ -10,7 +10,6 @@ cd $GLOBALSCRIPT/src/libtest &&
     mk pure-install &&
     cd ibio/ &&
     mk install &&
-    $GLOBALSCRIPT/src/cmd/rc/test-gslib &&
 # §paragraph{Interpreted Compiler}
     cd ../gsac &&
     mk interpreted && mk install-interpreted && mk effect
