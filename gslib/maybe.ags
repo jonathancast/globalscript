@@ -8,6 +8,7 @@ maybe.just	.closure	_maybe.just_c
 maybe.≡	.closure	_maybe.≡_c
 
 maybe.fmtgs	.closure	_maybe.fmtgs_c
+_maybe.fmtgs_just.s	.string	just
 _maybe.fmtgs_nothing.s	.string	nothing
 
 	.code
@@ -102,21 +103,30 @@ _maybe.fmtgs_k	.subcode
 maybe.t.out	.cogvar
 pr	.larg	_maybe.fmtgs_pr_ty	α
 mb	.larg	maybe.t	α
-	.force	_maybe.fmtgs_k	α
+	.force	_maybe.fmtgs_k	α	|	pr
 	.coerce	maybe.t.out	α
 	.enter	mb
 
 _maybe.fmtgs_k	.forcecont
+fmtgs.t	.tygvar
 maybe.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 α	.tyfv	*
+list.<>	.gvar
+list.:	.gvar
+rune.space	.gvar
+_maybe.fmtgs_just.s	.gvar
 _maybe.fmtgs_nothing.s	.gvar
+pr	.fv	fmtgs.t	α
 mb0	.karg	maybe.prim.u	α
 	.analyze	mb0	just	nothing
 		.case	just
 x		.fkarg	0	α
-			.undef	list.t	rune.t
+s2			.apply	pr	|	x
+s1			.apply	list.:	rune.t	|	rune.space	s2
+			.app	_maybe.fmtgs_just.s	s1
+			.enter	list.<>	rune.t
 		.case	nothing
 			.enter	_maybe.fmtgs_nothing.s
 

@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.just.nothing	_test.eq.just.just	_test.eq.nothing.nothing	_test.fmtgs.nothing
+_tests	.list	test.property.t	_test.eq.just.nothing	_test.eq.just.just	_test.eq.nothing.nothing	_test.fmtgs.nothing	_test.fmtgs.just
 
 _test.eq.just.nothing	.closure	_test.eq.just.nothing_c
 _test.eq.just.nothing_label	.string	just\sfalse\s≡\snothing
@@ -24,6 +24,10 @@ _test.eq.nothing.nothing_true	.string	nothing\s≡\snothing
 _test.fmtgs.nothing	.closure	_test.fmtgs.nothing_c
 _test.fmtgs.nothing_label	.string	fmtgs\snothing
 _test.fmtgs.nothing_expected	.string	nothing
+
+_test.fmtgs.just	.closure	_test.fmtgs.just_c
+_test.fmtgs.just_label	.string	fmtgs\s(just\strue)
+_test.fmtgs.just_expected	.string	just\strue
 
 	.code
 
@@ -111,4 +115,25 @@ nothing	.apply	maybe.nothing	bool.t
 actual	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs	nothing
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.nothing_expected
 	.app	_test.fmtgs.nothing_label	test
+	.enter	test.property.label
+
+# §section §gs{fmtgs (just true)}
+
+_test.fmtgs.just_c	.expr
+string.t	.tygvar
+bool.t	.tygvar
+test.property.label	.gvar
+_test.fmtgs.just_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+maybe.fmtgs	.gvar
+bool.fmtgs	.gvar
+maybe.just	.gvar
+bool.true	.gvar
+_test.fmtgs.just_expected	.gvar
+just.true	.apply	maybe.just	bool.t	|	bool.true
+actual	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs	just.true
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.just_expected
+	.app	_test.fmtgs.just_label	test
 	.enter	test.property.label
