@@ -1,6 +1,27 @@
 	.prefix
 
+	.data
+
+gsdl.cgs.gstype.product	.closure	_gsdl.cgs.gstype.product_c
+
+	.code
+
+# §section Constructors
+
+_gsdl.cgs.gstype.product_c	.expr
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+fields	.larg	list.t	gsdl.cgs.gstype.field.t
+c	.constr	gsdl.cgs.gstype.prim.u	product	0	fields
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
 	.type
+
+# §section §gs{}
 
 gsdl.cgs.gstype.t	.tyabstract	*
 gsdl.cgs.gstype.prim.u	.tygvar
@@ -8,4 +29,27 @@ gsdl.cgs.gstype.prim.u	.tygvar
 	.tyref	gsdl.cgs.gstype.prim.u
 
 gsdl.cgs.gstype.prim.u	.tyexpr
+_gsdl.cgs.gstype.prim.u_product_ty	.tygvar
+	.tysum	product	_gsdl.cgs.gstype.prim.u_product_ty
+
+_gsdl.cgs.gstype.prim.u_product_ty	.tyexpr
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+0_ty	.tylet	list.t	gsdl.cgs.gstype.field.t
+	.tyubproduct	0	0_ty
+
+# §section §gs{gsdl.cgs.gstype.field.t}
+
+gsdl.cgs.gstype.field.t	.tyabstract	*
+gsdl.cgs.gstype.field.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gstype.field.prim.u
+
+gsdl.cgs.gstype.field.prim.u	.tyexpr
 	.tysum
+
+	.coercion
+
+gsdl.cgs.gstype.t.in	.tycoercion
+gsdl.cgs.gstype.t	.tygvar
+	.tydefinition	gsdl.cgs.gstype.t
