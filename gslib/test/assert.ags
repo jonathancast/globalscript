@@ -16,80 +16,26 @@ _test.assert.eq_c	.expr
 test.property.t	.tygvar
 _test.assert.eq_eq_ty	.tygvar
 fmtgs.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
 α	.tyarg	*
-_test.assert.eq_x.s_c	.subcode
-_test.assert.eq_y.s_c	.subcode
-_test.assert.eq_neq.s_c	.subcode
-_test.assert.eq_eq.s_c	.subcode
-_test.assert.eq_eq.b_c	.subcode
 test.assert	.gvar
+list.nil	.gvar
+list.<>	.gvar
+_test.assert.eq_neq.s_neq	.gvar
 eq	.larg	_test.assert.eq_eq_ty	α
 p	.larg	fmtgs.t	α
 x	.larg	α
 y	.larg	α
-x.s	.alloc	_test.assert.eq_x.s_c	α	|	p	x
-y.s	.alloc	_test.assert.eq_y.s_c	α	|	p	y
-neq.s	.alloc	_test.assert.eq_neq.s_c	|	x.s	y.s
-eq.s	.alloc	_test.assert.eq_eq.s_c
-eq.b	.alloc	_test.assert.eq_eq.b_c	α	|	eq	x	y
+nil	.apply	list.nil	rune.t
+x.s	.apply	p	|	x	nil
+y.s	.apply	p	|	y	nil
+s1	.apply	list.<>	rune.t	|	_test.assert.eq_neq.s_neq	y.s
+neq.s	.apply	list.<>	rune.t	|	x.s	s1
+eq.s	.undefined	list.t	rune.t
+eq.b	.apply	eq	|	x	y
 	.app	neq.s	eq.s	eq.b
 	.enter	test.assert
-
-_test.assert.eq_x.s_c	.expr
-fmtgs.t	.tygvar
-rune.t	.tygvar
-α	.tyfv	*
-list.nil	.gvar
-p	.fv	fmtgs.t	α
-x	.fv	α
-nil	.apply	list.nil	rune.t
-	.app	x	nil
-	.enter	p
-
-_test.assert.eq_y.s_c	.expr
-fmtgs.t	.tygvar
-rune.t	.tygvar
-α	.tyfv	*
-list.nil	.gvar
-p	.fv	fmtgs.t	α
-y	.fv	α
-nil	.apply	list.nil	rune.t
-	.app	y	nil
-	.enter	p
-
-_test.assert.eq_neq.s_c	.expr
-list.t	.tygvar
-rune.t	.tygvar
-_test.assert.eq_neq.s_s1_c	.subcode
-list.<>	.gvar
-x.s	.fv	list.t	rune.t
-y.s	.fv	list.t	rune.t
-s1	.alloc	_test.assert.eq_neq.s_s1_c	|	y.s
-	.app	x.s	s1
-	.enter	list.<>	rune.t
-
-_test.assert.eq_neq.s_s1_c	.expr
-list.t	.tygvar
-rune.t	.tygvar
-list.<>	.gvar
-_test.assert.eq_neq.s_neq	.gvar
-y.s	.fv	list.t	rune.t
-	.app	_test.assert.eq_neq.s_neq	y.s
-	.enter	list.<>	rune.t
-
-_test.assert.eq_eq.s_c	.expr
-list.t	.tygvar
-rune.t	.tygvar
-	.undef	list.t	rune.t
-
-_test.assert.eq_eq.b_c	.expr
-_test.assert.eq_eq_ty	.tygvar
-α	.tyfv	*
-eq	.fv	_test.assert.eq_eq_ty	α
-x	.fv	α
-y	.fv	α
-	.app	x	y
-	.enter	eq
 
 # §section §gs{test.assert.fails}
 
