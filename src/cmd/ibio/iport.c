@@ -304,7 +304,8 @@ ibio_read_process_main(void *p)
 
                                     iport->bufstart = iport->external->readsym(iport->external, err, err + sizeof(err), iport->bufstart, iport->bufend, &sym);
                                     if (!iport->bufstart) {
-                                        ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: decoding error: %s", err);
+                                        api_thread_post(iport->reading_thread, "input decoding error: %s", err);
+                                        ibio_shutdown_iport(iport, pos);
                                         active = 0;
                                         goto failed;
                                     }
