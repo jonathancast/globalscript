@@ -7,6 +7,8 @@ diff.list.<>	.closure	_diff.list.<>_c
 
 diff.list.prepend	.closure	_diff.list.prepend_c
 
+diff.list.fromlist	.closure	_diff.list.fromlist_c
+
 	.code
 
 # §section §gs{diff.list.:}
@@ -48,6 +50,17 @@ xn1	.larg	diff.list.t	α
 ys0	.larg	list.t	α
 ys1	.apply	xn1	|	ys0
 	.app	xn0	ys1
+	.enter	list.<>	α
+
+# §section §gs{diff.list.fromlist}
+
+_diff.list.fromlist_c	.expr
+list.t	.tygvar
+α	.tyarg	*
+list.<>	.gvar
+xn0	.larg	list.t	α
+ys0	.larg	list.t	α
+	.app	xn0	ys0
 	.enter	list.<>	α
 
 	.type
