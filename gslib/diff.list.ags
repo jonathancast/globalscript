@@ -1,5 +1,25 @@
 	.prefix
 
+	.data
+
+diff.list.:	.closure	_diff.list.:_c
+
+	.code
+
+# §section §gs{diff.list.:}
+
+_diff.list.:_c	.expr
+diff.list.t	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+list.:	.gvar
+x	.larg	α
+xn	.larg	diff.list.t	α
+xn1	.larg	list.t	α
+ys1	.apply	xn	|	xn1
+	.app	x	ys1
+	.enter	list.:	α
+
 	.type
 
 diff.list.t	.tyexpr
