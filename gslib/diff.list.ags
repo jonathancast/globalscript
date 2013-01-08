@@ -2,6 +2,7 @@
 
 	.data
 
+diff.list.nil	.closure	_diff.list.nil_c
 diff.list.:	.closure	_diff.list.:_c
 diff.list.<>	.closure	_diff.list.<>_c
 
@@ -10,6 +11,14 @@ diff.list.prepend	.closure	_diff.list.prepend_c
 diff.list.fromlist	.closure	_diff.list.fromlist_c
 
 	.code
+
+# §section §gs{diff.list.nil}
+
+_diff.list.nil_c	.expr
+list.t	.tygvar
+α	.tyarg	*
+ys0	.larg	list.t	α
+	.enter	ys0
 
 # §section §gs{diff.list.:}
 
@@ -20,8 +29,8 @@ list.t	.tygvar
 list.:	.gvar
 x	.larg	α
 xn	.larg	diff.list.t	α
-xn1	.larg	list.t	α
-ys1	.apply	xn	|	xn1
+ys0	.larg	list.t	α
+ys1	.apply	xn	|	ys0
 	.app	x	ys1
 	.enter	list.:	α
 
