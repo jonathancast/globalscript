@@ -2,11 +2,48 @@
 
 	.data
 
+gsdl.cgs.gstype.fmtgs	.closure	_gsdl.cgs.gstype.fmtgs_c
+_gsdl.cgs.gstype.fmtgs_product.s	.string	product
+
 gsdl.cgs.gstype.product	.closure	_gsdl.cgs.gstype.product_c
+
+gsdl.cgs.gstype.field.fmtgs	.closure	_gsdl.cgs.gstype.field.fmtgs_c	_gsdl.cgs.gstype.field.fmtgs_ty
+gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
 	.code
 
-# §section Constructors
+# §section §gs{gsdl.cgs.gstype.fmtgs}
+
+_gsdl.cgs.gstype.fmtgs_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.fmtgs_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.gstype.fmtgs_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsdl.cgs.gstype.fmtgs_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_gsdl.cgs.gstype.fmtgs_product.s	.gvar
+list.:	.gvar
+rune.space	.gvar
+list.fmtgs	.gvar
+gsdl.cgs.gstype.field.fmtgs.list	.gvar
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	ty0	product
+		.case	product
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+s2			.apply	list.fmtgs	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.fmtgs.list	fs
+s1			.apply	list.:	rune.t	|	rune.space	s2
+			.app	_gsdl.cgs.gstype.fmtgs_product.s	s1
+			.enter	list.<>	rune.t
+
+# §section §gs{gstype} Constructors
 
 _gsdl.cgs.gstype.product_c	.expr
 list.t	.tygvar
@@ -18,6 +55,24 @@ c	.constr	gsdl.cgs.gstype.prim.u	product	0	fields
 	.coerce	gsdl.cgs.gstype.t.in
 	.lift
 	.yield	c
+
+# §section §gs{gsdl.cgs.gstype.field.fmtgs}
+
+_gsdl.cgs.gstype.field.fmtgs_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+rune.t	.tygvar
+list.nil	.gvar
+f0	.larg	gsdl.cgs.gstype.field.t
+	.enter	list.nil	rune.t
+
+# §section §gs{gsdl.cgs.gstype.field.fmtgs.list}
+
+_gsdl.cgs.gstype.field.fmtgs.list_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+list.fmtgs.byDefault	.gvar
+gsdl.cgs.gstype.field.fmtgs	.gvar
+	.app	gsdl.cgs.gstype.field.fmtgs
+	.enter	list.fmtgs.byDefault	gsdl.cgs.gstype.field.t
 
 	.type
 
@@ -48,8 +103,20 @@ gsdl.cgs.gstype.field.prim.u	.tygvar
 gsdl.cgs.gstype.field.prim.u	.tyexpr
 	.tysum
 
+# §section §gs{gsdl.cgs.gstype.field.fmtgs}
+
+_gsdl.cgs.gstype.field.fmtgs_ty	.tyexpr
+fmtgs.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+	.tyref	fmtgs.t	gsdl.cgs.gstype.field.t
+
 	.coercion
 
 gsdl.cgs.gstype.t.in	.tycoercion
 gsdl.cgs.gstype.t	.tygvar
+	.tydefinition	gsdl.cgs.gstype.t
+
+gsdl.cgs.gstype.t.out	.tycoercion
+gsdl.cgs.gstype.t	.tygvar
+	.tyinvert
 	.tydefinition	gsdl.cgs.gstype.t

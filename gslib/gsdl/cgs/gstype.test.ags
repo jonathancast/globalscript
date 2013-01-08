@@ -4,7 +4,11 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.fmtgs.product
+
+_test.fmtgs.product	.closure	_test.fmtgs.product_c
+_test.fmtgs.product_label	.string	fmtgs\s(product\s[])
+_test.fmtgs.product_expected	.string	product\s[]
 
 	.code
 
@@ -13,3 +17,24 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{fmtgs (product [])}
+
+_test.fmtgs.product_c	.expr
+string.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+test.property.label	.gvar
+_test.fmtgs.product_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+gsdl.cgs.gstype.fmtgs	.gvar
+gsdl.cgs.gstype.product	.gvar
+list.nil	.gvar
+_test.fmtgs.product_expected	.gvar
+nil	.apply	list.nil	gsdl.cgs.gstype.field.t
+empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
+actual	.apply	gsdl.cgs.gstype.fmtgs	|	empty.prod
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.product_expected
+	.app	_test.fmtgs.product_label	test
+	.enter	test.property.label
