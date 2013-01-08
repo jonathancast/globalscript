@@ -4,7 +4,12 @@
 
 gsdl.cgs.document.parser	.closure	_gsdl.cgs.document.parser_c
 _gsdl.cgs.document.parser_msg.s	.string	Expecting\sexpression
+
+gsdl.cgs.document.≡	.closure	_gsdl.cgs.document.≡_c
+
 	.code
+
+# §section §gs{gsdl.cgs.document.parser}
 
 _gsdl.cgs.document.parser_c	.expr
 rune.t	.tygvar
@@ -13,6 +18,15 @@ parser.fail.msg	.gvar
 _gsdl.cgs.document.parser_msg.s	.gvar
 	.app	_gsdl.cgs.document.parser_msg.s
 	.enter	parser.fail.msg	rune.t	gsdl.cgs.document.t
+
+# §section §gs{gsdl.cgs.document.≡}
+
+_gsdl.cgs.document.≡_c	.expr
+gsdl.cgs.document.t	.tygvar
+bool.true	.gvar
+doc0	.larg	gsdl.cgs.document.t
+doc1	.larg	gsdl.cgs.document.t
+	.enter	bool.true
 
 	.type
 
