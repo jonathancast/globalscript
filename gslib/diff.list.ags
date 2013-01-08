@@ -1,0 +1,10 @@
+	.prefix
+
+	.type
+
+diff.list.t	.tyexpr
+list.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	list.t	α
+	.tyref	list.t	α
