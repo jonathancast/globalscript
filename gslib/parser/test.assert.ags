@@ -51,8 +51,9 @@ test.property.t	.tygvar
 rune.t	.tygvar
 α	.tyfv	*
 test.property.false	.gvar
-list.<>	.gvar
+diff.list.prepend	.gvar
 _parser.test.assert.fails_right_msg.prefix	.gvar
+list.nil	.gvar
 fmtgs	.fv	fmtgs.t	α
 k	.fv	_parser.test.assert.fails_k_ty
 e	.karg	either.prim.u	parser.err.t	α
@@ -63,8 +64,9 @@ err		.fkarg	0	parser.err.t
 			.enter	k
 		.case	right
 x		.fkarg	0	α
+nil			.apply	list.nil	rune.t
 x.s			.apply	fmtgs	|	x
-msg			.apply	list.<>	rune.t	|	_parser.test.assert.fails_right_msg.prefix	x.s
+msg			.apply	diff.list.prepend	rune.t	|	_parser.test.assert.fails_right_msg.prefix	x.s	nil
 			.app	msg
 			.enter	test.property.false
 

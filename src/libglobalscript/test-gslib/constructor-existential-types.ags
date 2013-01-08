@@ -30,15 +30,7 @@ _res.u_fmtgs.ty	.tygvar
 	.tysum	fmtgs	_res.u_fmtgs.ty
 
 _res.u_fmtgs.ty	.tyexpr
-_res.u_fmtgs.ty_0_ty	.tygvar
+fmtgs.t	.tygvar
 α	.tyexists	*
-0_ty	.tylet	_res.u_fmtgs.ty_0_ty	α
+0_ty	.tylet	fmtgs.t	α
 	.tyubproduct	0	0_ty	1	α
-
-_res.u_fmtgs.ty_0_ty	.tyexpr
-list.t	.tygvar
-rune.t	.tygvar
-α	.tylambda	*
-	.tylift
-	.tyfun	α
-	.tyref	list.t	rune.t

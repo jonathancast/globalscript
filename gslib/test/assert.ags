@@ -15,7 +15,7 @@ _test.assert.fails_true_msg.prefix	.string	Test\spassed;\sshould\shave\sfailed:\
 _test.assert.eq_c	.expr
 test.property.t	.tygvar
 _test.assert.eq_eq_ty	.tygvar
-_test.assert.eq_p_ty	.tygvar
+fmtgs.t	.tygvar
 α	.tyarg	*
 _test.assert.eq_x.s_c	.subcode
 _test.assert.eq_y.s_c	.subcode
@@ -24,7 +24,7 @@ _test.assert.eq_eq.s_c	.subcode
 _test.assert.eq_eq.b_c	.subcode
 test.assert	.gvar
 eq	.larg	_test.assert.eq_eq_ty	α
-p	.larg	_test.assert.eq_p_ty	α
+p	.larg	fmtgs.t	α
 x	.larg	α
 y	.larg	α
 x.s	.alloc	_test.assert.eq_x.s_c	α	|	p	x
@@ -36,19 +36,25 @@ eq.b	.alloc	_test.assert.eq_eq.b_c	α	|	eq	x	y
 	.enter	test.assert
 
 _test.assert.eq_x.s_c	.expr
-_test.assert.eq_p_ty	.tygvar
+fmtgs.t	.tygvar
+rune.t	.tygvar
 α	.tyfv	*
-p	.fv	_test.assert.eq_p_ty	α
+list.nil	.gvar
+p	.fv	fmtgs.t	α
 x	.fv	α
-	.app	x
+nil	.apply	list.nil	rune.t
+	.app	x	nil
 	.enter	p
 
 _test.assert.eq_y.s_c	.expr
-_test.assert.eq_p_ty	.tygvar
+fmtgs.t	.tygvar
+rune.t	.tygvar
 α	.tyfv	*
-p	.fv	_test.assert.eq_p_ty	α
+list.nil	.gvar
+p	.fv	fmtgs.t	α
 y	.fv	α
-	.app	y
+nil	.apply	list.nil	rune.t
+	.app	y	nil
 	.enter	p
 
 _test.assert.eq_neq.s_c	.expr
@@ -140,14 +146,6 @@ bool.t	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	bool.t
-
-_test.assert.eq_p_ty	.tyexpr
-list.t	.tygvar
-rune.t	.tygvar
-α	.tylambda	*
-	.tylift
-	.tyfun	α
-	.tyref	list.t	rune.t
 
 # §section §gs{test.assert.fails}
 

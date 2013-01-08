@@ -1376,10 +1376,12 @@ parser.pos.t	.tygvar
 bool.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-list.<>	.gvar
+diff.list.t	.tygvar
+diff.list.prepend	.gvar
 _parser.err.fmtgs_simple.failure_prefix	.gvar
+diff.list.<>	.gvar
 parser.pos.fmtgs	.gvar
-list.:	.gvar
+diff.list.:	.gvar
 rune.space	.gvar
 bool.fmtgs	.gvar
 e0	.karg	parser.err.prim.u
@@ -1388,16 +1390,16 @@ e0	.karg	parser.err.prim.u
 pos		.fkarg	0	parser.pos.t
 eof		.fkarg	1	bool.t
 msg		.fkarg	2	list.t	rune.t
-			.undef	list.t	rune.t
+			.undef	diff.list.t	rune.t
 		.case	simple.failure
 pos		.fkarg	0	parser.pos.t
 eof		.fkarg	1	bool.t
 pos.s			.apply	parser.pos.fmtgs	|	pos
 eof.s			.apply	bool.fmtgs	|	eof
-s1			.apply	list.:	rune.t	|	rune.space	pos.s
-s2			.apply	list.<>	rune.t	|	eof.s	s1
+s1			.apply	diff.list.:	rune.t	|	rune.space	pos.s
+s2			.apply	diff.list.<>	rune.t	|	eof.s	s1
 			.app	_parser.err.fmtgs_simple.failure_prefix	s2
-			.enter	list.<>	rune.t
+			.enter	diff.list.prepend	rune.t
 
 # §section §gs{parser.err.t} constructors
 
@@ -1538,15 +1540,17 @@ b3	.apply	bool.∧	|	b1	b2
 _parser.pos.fmtgs_c	.expr
 parser.pos.t	.tygvar
 rune.t	.tygvar
-list.<>	.gvar
+diff.list.<>	.gvar
 _parser.pos.fmtgs_prefix.s	.gvar
 _parser.pos.fmtgs_file.s	.gvar
-_parser.pos.fmtgs_suffix.s	.gvar
 ibio.file.name.fmtgs	.gvar
+diff.list.prepend	.gvar
 _parser.pos.fmtgs_semi.space.s	.gvar
 _parser.pos.fmtgs_line.s	.gvar
-_parser.pos.fmtgs_col.s	.gvar
 natural.fmtgs	.gvar
+_parser.pos.fmtgs_col.s	.gvar
+diff.list.fromlist	.gvar
+_parser.pos.fmtgs_suffix.s	.gvar
 pos	.larg	parser.pos.t
 fn	.lfield	file	pos
 line	.lfield	line	pos
@@ -1554,17 +1558,18 @@ col	.lfield	col	pos
 fn.s	.apply	ibio.file.name.fmtgs	|	fn
 line.s	.apply	natural.fmtgs	|	line
 col.s	.apply	natural.fmtgs	|	col
-s8	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_semi.space.s	_parser.pos.fmtgs_suffix.s
-s7	.apply	list.<>	rune.t	|	col.s	s8
-s6	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_col.s	s7
-s5	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_semi.space.s	s6
-s4	.apply	list.<>	rune.t	|	line.s	s5
-s3	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_line.s	s4
-s2	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_semi.space.s	s3
-s1	.apply	list.<>	rune.t	|	fn.s	s2
-s0	.apply	list.<>	rune.t	|	_parser.pos.fmtgs_file.s	s1
+s9	.apply	diff.list.fromlist	rune.t	|	_parser.pos.fmtgs_suffix.s
+s8	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_semi.space.s	s9
+s7	.apply	diff.list.<>	rune.t	|	col.s	s8
+s6	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_col.s	s7
+s5	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_semi.space.s	s6
+s4	.apply	diff.list.<>	rune.t	|	line.s	s5
+s3	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_line.s	s4
+s2	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_semi.space.s	s3
+s1	.apply	diff.list.<>	rune.t	|	fn.s	s2
+s0	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_file.s	s1
 	.app	_parser.pos.fmtgs_prefix.s	s0
-	.enter	list.<>	rune.t
+	.enter	diff.list.prepend	rune.t
 
 # §section §gs{parser.pos.initial}
 

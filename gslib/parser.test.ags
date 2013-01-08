@@ -606,6 +606,7 @@ rune.fmtgs.list	.gvar
 parser.err.fmtgs	.gvar
 parser.err.simple.failure	.gvar
 bool.true	.gvar
+list.nil	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
 _test.err.fmtgs.simple.failure_expected	.gvar
@@ -613,7 +614,8 @@ string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
 sf	.apply	parser.err.simple.failure	|	pos	bool.true
-sf.s	.apply	parser.err.fmtgs	|	sf
+snil	.apply	list.nil	rune.t
+sf.s	.apply	parser.err.fmtgs	|	sf	snil
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	sf.s	_test.err.fmtgs.simple.failure_expected
 	.app	_test.err.fmtgs.simple.failure_label	test
 	.enter	test.property.label
@@ -807,11 +809,13 @@ rune.fmtgs.list	.gvar
 parser.pos.fmtgs	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
+list.nil	.gvar
 _test.pos.fmtgs_expected	.gvar
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
-pos.s	.apply	parser.pos.fmtgs	|	pos
+snil	.apply	list.nil	rune.t
+pos.s	.apply	parser.pos.fmtgs	|	pos	snil
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	pos.s	_test.pos.fmtgs_expected
 	.app	_test.pos.fmtgs_label	test
 	.enter	test.property.label

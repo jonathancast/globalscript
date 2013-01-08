@@ -199,9 +199,12 @@ x.s	.alloc	_test.fmtgs.x_test_eq_x.s_c
 	.enter	list.≡	rune.t
 
 _test.fmtgs.x_test_eq_x.s_c	.expr
+rune.t	.tygvar
 rune.fmtgs	.gvar
 _x	.gvar
-	.app	_x
+list.nil	.gvar
+snil	.apply	list.nil	rune.t
+	.app	_x	snil
 	.enter	rune.fmtgs
 
 # §section §gs{rune.fmtgs r/\\n/}
@@ -219,10 +222,12 @@ list.fmtgs	.gvar
 rune.fmtgs.list	.gvar
 rune.fmtgs	.gvar
 _nl	.gvar
+list.nil	.gvar
 _test.fmtgs.nl_expected	.gvar
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
-actual	.apply	rune.fmtgs	|	_nl
+snil	.apply	list.nil	rune.t
+actual	.apply	rune.fmtgs	|	_nl	snil
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.fmtgs.nl_expected
 	.app	_test.fmtgs.nl_label	test
 	.enter	test.property.label
@@ -260,8 +265,10 @@ _test.list.fmtgs.x_test_x.s_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
 rune.fmtgs.list	.gvar
+list.nil	.gvar
 x	.fv	list.t	rune.t
-	.app	x
+snil	.apply	list.nil	rune.t
+	.app	x	snil
 	.enter	rune.fmtgs.list
 
 _test.list.fmtgs.x_test_eq_c	.expr
@@ -288,10 +295,12 @@ rune.≡	.gvar
 list.fmtgs	.gvar
 rune.fmtgs.list	.gvar
 _test.list.fmtgs.nl_nl	.gvar
+list.nil	.gvar
 _test.list.fmtgs.nl_expected	.gvar
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
-actual	.apply	rune.fmtgs.list	|	_test.list.fmtgs.nl_nl
+snil	.apply	list.nil	rune.t
+actual	.apply	rune.fmtgs.list	|	_test.list.fmtgs.nl_nl	snil
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.list.fmtgs.nl_expected
 	.app	_test.list.fmtgs.nl_label	test
 	.enter	test.property.label

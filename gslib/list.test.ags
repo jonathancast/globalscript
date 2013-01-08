@@ -213,12 +213,15 @@ eq	.alloc	_test.fmtgs.nil_test_eq_c	|	s0
 
 _test.fmtgs.nil_test_s0_c	.expr
 bool.t	.tygvar
+rune.t	.tygvar
 list.fmtgs	.gvar
 list.fmtgs.byDefault	.gvar
 bool.fmtgs	.gvar
 _fixture.nil	.gvar
+list.nil	.gvar
 p0	.apply	list.fmtgs.byDefault	bool.t	|	bool.fmtgs
-	.app	p0	_fixture.nil
+snil	.apply	list.nil	rune.t
+	.app	p0	_fixture.nil	snil
 	.enter	list.fmtgs	bool.t
 
 _test.fmtgs.nil_test_eq_c	.expr

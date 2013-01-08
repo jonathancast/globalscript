@@ -454,8 +454,14 @@ m0	.fv	natural.prim.u
 # §section §gs{natural.fmtgs}
 
 _natural.fmtgs_c	.expr
+natural.t	.tygvar
+rune.t	.tygvar
+diff.list.fromlist	.gvar
 natural.fmtdecimal	.gvar
-	.enter	natural.fmtdecimal
+n	.larg	natural.t
+n.s	.apply	natural.fmtdecimal	|	n
+	.app	n.s
+	.enter	diff.list.fromlist	rune.t
 
 # §section Simple literals
 

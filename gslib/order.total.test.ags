@@ -90,6 +90,7 @@ test	.apply	test.assert	|	_test.gt.eq.gt_false	_test.gt.eq.gt_true	eq
 
 _test.fmtgs.lt_c	.expr
 string.t	.tygvar
+rune.t	.tygvar
 test.property.label	.gvar
 _test.fmtgs.lt_label	.gvar
 test.assert.eq	.gvar
@@ -97,8 +98,10 @@ string.≡	.gvar
 string.fmtgs	.gvar
 order.total.ord.fmtgs	.gvar
 order.total.ord.lt	.gvar
+list.nil	.gvar
 _test.fmtgs.lt_expected	.gvar
-actual	.apply	order.total.ord.fmtgs	|	order.total.ord.lt
+snil	.apply	list.nil	rune.t
+actual	.apply	order.total.ord.fmtgs	|	order.total.ord.lt	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.lt_expected
 	.app	_test.fmtgs.lt_label	test
 	.enter	test.property.label
@@ -107,6 +110,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 
 _test.fmtgs.eq_c	.expr
 string.t	.tygvar
+rune.t	.tygvar
 test.property.label	.gvar
 _test.fmtgs.eq_label	.gvar
 test.assert.eq	.gvar
@@ -114,8 +118,10 @@ string.≡	.gvar
 string.fmtgs	.gvar
 order.total.ord.fmtgs	.gvar
 order.total.ord.eq	.gvar
+list.nil	.gvar
 _test.fmtgs.eq_expected	.gvar
-actual	.apply	order.total.ord.fmtgs	|	order.total.ord.eq
+snil	.apply	list.nil	rune.t
+actual	.apply	order.total.ord.fmtgs	|	order.total.ord.eq	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.eq_expected
 	.app	_test.fmtgs.eq_label	test
 	.enter	test.property.label
@@ -124,6 +130,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 
 _test.fmtgs.gt_c	.expr
 string.t	.tygvar
+rune.t	.tygvar
 test.property.label	.gvar
 _test.fmtgs.gt_label	.gvar
 test.assert.eq	.gvar
@@ -131,8 +138,10 @@ string.≡	.gvar
 string.fmtgs	.gvar
 order.total.ord.fmtgs	.gvar
 order.total.ord.gt	.gvar
+list.nil	.gvar
 _test.fmtgs.gt_expected	.gvar
-actual	.apply	order.total.ord.fmtgs	|	order.total.ord.gt
+snil	.apply	list.nil	rune.t
+actual	.apply	order.total.ord.fmtgs	|	order.total.ord.gt	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.gt_expected
 	.app	_test.fmtgs.gt_label	test
 	.enter	test.property.label

@@ -49,6 +49,7 @@ test	.apply	test.deny	|	_test.eq.foo.bar_false.msg	_test.eq.foo.bar_true.msg	eq
 
 _test.fmtgs.foo_c	.expr
 string.t	.tygvar
+rune.t	.tygvar
 test.property.label	.gvar
 _test.fmtgs.foo_label	.gvar
 test.assert.eq	.gvar
@@ -57,9 +58,11 @@ string.fmtgs	.gvar
 ibio.file.name.fmtgs	.gvar
 ibio.file.name.in	.gvar
 _test.fmtgs.foo_fn.s	.gvar
+list.nil	.gvar
 _test.fmtgs.foo_expected	.gvar
 fn	.apply	ibio.file.name.in	|	_test.fmtgs.foo_fn.s
-actual	.apply	ibio.file.name.fmtgs	|	fn
+snil	.apply	list.nil	rune.t
+actual	.apply	ibio.file.name.fmtgs	|	fn	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.foo_expected
 	.app	_test.fmtgs.foo_label	test
 	.enter	test.property.label

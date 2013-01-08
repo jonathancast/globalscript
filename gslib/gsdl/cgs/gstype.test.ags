@@ -23,6 +23,7 @@ _tests	.gvar
 _test.fmtgs.product_c	.expr
 string.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+rune.t	.tygvar
 test.property.label	.gvar
 _test.fmtgs.product_label	.gvar
 test.assert.eq	.gvar
@@ -34,7 +35,8 @@ list.nil	.gvar
 _test.fmtgs.product_expected	.gvar
 nil	.apply	list.nil	gsdl.cgs.gstype.field.t
 empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
-actual	.apply	gsdl.cgs.gstype.fmtgs	|	empty.prod
+snil	.apply	list.nil	rune.t
+actual	.apply	gsdl.cgs.gstype.fmtgs	|	empty.prod	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.product_expected
 	.app	_test.fmtgs.product_label	test
 	.enter	test.property.label

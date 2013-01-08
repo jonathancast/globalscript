@@ -28,9 +28,9 @@ gsdl.cgs.gstype.prim.u	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 rune.t	.tygvar
-list.<>	.gvar
+diff.list.prepend	.gvar
 _gsdl.cgs.gstype.fmtgs_product.s	.gvar
-list.:	.gvar
+diff.list.:	.gvar
 rune.space	.gvar
 list.fmtgs	.gvar
 gsdl.cgs.gstype.field.fmtgs.list	.gvar
@@ -39,9 +39,9 @@ ty0	.karg	gsdl.cgs.gstype.prim.u
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 s2			.apply	list.fmtgs	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.fmtgs.list	fs
-s1			.apply	list.:	rune.t	|	rune.space	s2
+s1			.apply	diff.list.:	rune.t	|	rune.space	s2
 			.app	_gsdl.cgs.gstype.fmtgs_product.s	s1
-			.enter	list.<>	rune.t
+			.enter	diff.list.prepend	rune.t
 
 # §section §gs{gstype} Constructors
 
@@ -61,9 +61,9 @@ c	.constr	gsdl.cgs.gstype.prim.u	product	0	fields
 _gsdl.cgs.gstype.field.fmtgs_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
 rune.t	.tygvar
-list.nil	.gvar
+diff.list.nil	.gvar
 f0	.larg	gsdl.cgs.gstype.field.t
-	.enter	list.nil	rune.t
+	.enter	diff.list.nil	rune.t
 
 # §section §gs{gsdl.cgs.gstype.field.fmtgs.list}
 

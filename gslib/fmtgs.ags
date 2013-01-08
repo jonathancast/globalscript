@@ -3,9 +3,9 @@
 	.type
 
 fmtgs.t	.tyexpr
-list.t	.tygvar
+diff.list.t	.tygvar
 rune.t	.tygvar
 α	.tylambda	*
 	.tylift
 	.tyfun	α
-	.tyref	list.t	rune.t
+	.tyref	diff.list.t	rune.t

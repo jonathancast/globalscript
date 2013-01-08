@@ -44,7 +44,7 @@ xn0	.larg	diff.list.t	α
 xn1	.larg	diff.list.t	α
 ys0	.larg	list.t	α
 ys1	.apply	xn1	|	ys0
-	.app	ys0
+	.app	ys1
 	.enter	xn0
 
 # §section §gs{diff.list.prepend}

@@ -625,17 +625,20 @@ xn	.larg	list.t	α
 _list.fmtgs.byDefault_k	.forcecont
 list.prim.u	.tygvar
 list.t	.tygvar
+diff.list.t	.tygvar
 rune.t	.tygvar
 α	.tyfv	*
+diff.list.fromlist	.gvar
 _list.fmtgs.byDefault_nil.s	.gvar
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.undef	list.t	rune.t
+			.undef	diff.list.t	rune.t
 		.case	nil
-			.enter	_list.fmtgs.byDefault_nil.s
+			.app	_list.fmtgs.byDefault_nil.s
+			.enter	diff.list.fromlist	rune.t
 
 	.type
 
@@ -810,12 +813,11 @@ arg.ty	.tylet	list.t	α
 # §section §gs{list.fmtgs}
 
 list.fmtgs.list.t	.tyexpr
+fmtgs.t	.tygvar
 list.t	.tygvar
-rune.t	.tygvar
 α	.tylambda	*
-	.tylift
-	.tyfun	list.t	α
-	.tyref	list.t	rune.t
+list.α	.tylet	list.t	α
+	.tyref	fmtgs.t	list.α
 
 _list.fmtgs.byDefault_ty	.tyexpr
 fmtgs.t	.tygvar

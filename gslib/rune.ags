@@ -161,30 +161,41 @@ nil	.apply	list.nil	rune.t
 
 _rune.fmtgs_c	.expr
 rune.t	.tygvar
-list.<>	.gvar
+diff.list.prepend	.gvar
 _rune.fmtgs_prefix	.gvar
+diff.list.<>	.gvar
 rune.togss	.gvar
+diff.list.fromlist	.gvar
 _rune.fmtgs_suffix	.gvar
 r	.larg	rune.t
-s1	.apply	rune.togss	|	r	_rune.fmtgs_suffix
+s2	.apply	diff.list.fromlist	rune.t	|	_rune.fmtgs_suffix
+r.s	.apply	rune.togss	|	r
+s1	.apply	diff.list.<>	rune.t	|	r.s	s2
 	.app	_rune.fmtgs_prefix	s1
-	.enter	list.<>	rune.t
+	.enter	diff.list.prepend	rune.t
 
 # §section §gs{rune.fmtgs.list}
 
 _rune.fmtgs.list_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
-list.<>	.gvar
+diff.list.t	.tygvar
+diff.string.ty	.tylet	diff.list.t	rune.t
+diff.list.prepend	.gvar
 _rune.fmtgs.list_prefix	.gvar
 list.foldr	.gvar
-rune.togss	.gvar
+diff.list.<>	.gvar
+diff.list.fromlist	.gvar
 _rune.fmtgs.list_suffix	.gvar
+list.map	.gvar
+rune.togss	.gvar
 s	.larg	list.t	rune.t
-s1	.apply	list.foldr	rune.t	string.ty	|	rune.togss	_rune.fmtgs.list_suffix	s
+<>	.apply	diff.list.<>	rune.t
+s2	.apply	diff.list.fromlist	rune.t	|	_rune.fmtgs.list_suffix
+s1s	.apply	list.map	rune.t	diff.string.ty	|	rune.togss	s
+s1	.apply	list.foldr	diff.string.ty	diff.string.ty	|	<>	s2	s1s
 	.app	_rune.fmtgs.list_prefix	s1
-	.enter	list.<>	rune.t
+	.enter	diff.list.prepend	rune.t
 
 # §section §gs{_rune.togss}
 

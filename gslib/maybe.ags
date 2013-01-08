@@ -96,12 +96,12 @@ x1				.fkarg	0	α
 # §section §gs{maybe.fmtgs}
 
 _maybe.fmtgs_c	.expr
-_maybe.fmtgs_pr_ty	.tygvar
+fmtgs.t	.tygvar
 maybe.t	.tygvar
 α	.tyarg	*
 _maybe.fmtgs_k	.subcode
 maybe.t.out	.cogvar
-pr	.larg	_maybe.fmtgs_pr_ty	α
+pr	.larg	fmtgs.t	α
 mb	.larg	maybe.t	α
 	.force	_maybe.fmtgs_k	α	|	pr
 	.coerce	maybe.t.out	α
@@ -113,10 +113,11 @@ maybe.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 α	.tyfv	*
-list.<>	.gvar
-list.:	.gvar
+diff.list.prepend	.gvar
+diff.list.:	.gvar
 rune.space	.gvar
 _maybe.fmtgs_just.s	.gvar
+diff.list.fromlist	.gvar
 _maybe.fmtgs_nothing.s	.gvar
 pr	.fv	fmtgs.t	α
 mb0	.karg	maybe.prim.u	α
@@ -124,11 +125,12 @@ mb0	.karg	maybe.prim.u	α
 		.case	just
 x		.fkarg	0	α
 s2			.apply	pr	|	x
-s1			.apply	list.:	rune.t	|	rune.space	s2
+s1			.apply	diff.list.:	rune.t	|	rune.space	s2
 			.app	_maybe.fmtgs_just.s	s1
-			.enter	list.<>	rune.t
+			.enter	diff.list.prepend	rune.t
 		.case	nothing
-			.enter	_maybe.fmtgs_nothing.s
+			.app	_maybe.fmtgs_nothing.s
+			.enter	diff.list.fromlist	rune.t
 
 	.type
 
