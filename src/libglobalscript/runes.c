@@ -161,15 +161,24 @@ char *
 gschartorune(char *s, gsvalue *pv, char *err, char *eerr)
 {
     gsvalue v;
+    int nbytes;
 
     v = 0;
 
-    if (!*s) {
-    } else if (!(*s & 0x80)) {
-        v = (uchar)*s++;
+    if (!(*s & 0x80)) {
+        nbytes = 1;
+    } else if (((uchar)*s & 0xe0) == 0xc0) {
+        nbytes = 2;
+    } else if (((uchar)*s & 0xf0) == 0xe0) {
+        nbytes = 3;
     } else {
-        seprint(err, eerr, "%s:%d: gschartorune(%s) next", __FILE__, __LINE__, s);
+        nbytes = 0;
+        seprint(err, eerr, UNIMPL("gschartorune(%s)"), s);
         return 0;
+    }
+    while (nbytes--) {
+        v |= (uchar)*s++;
+        if (nbytes) v = v << 8;
     }
 
     v |= GS_MAX_PTR;
