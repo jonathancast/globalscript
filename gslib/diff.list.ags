@@ -3,6 +3,7 @@
 	.data
 
 diff.list.:	.closure	_diff.list.:_c
+diff.list.<>	.closure	_diff.list.<>_c
 
 	.code
 
@@ -19,6 +20,19 @@ xn1	.larg	list.t	α
 ys1	.apply	xn	|	xn1
 	.app	x	ys1
 	.enter	list.:	α
+
+# §section §gs{diff.list.<>}
+
+_diff.list.<>_c	.expr
+diff.list.t	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+xn0	.larg	diff.list.t	α
+xn1	.larg	diff.list.t	α
+ys0	.larg	list.t	α
+ys1	.apply	xn1	|	ys0
+	.app	ys0
+	.enter	xn0
 
 	.type
 
