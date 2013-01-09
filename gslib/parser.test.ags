@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.many.fail.nil	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.match.star	_test.match.neg.in.class	_test.match.multi.char.class	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.fmt.next.line	_test.pos.fmt.eof	_test.pos.fmt.eof.next.line	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.line	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.many.fail.nil	_test.match	_test.err	_test.pos	_test.rune.advance.x
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -27,6 +27,13 @@ _test.symbol.cons_string	.string	n
 
 _test.many.fail.nil	.closure	_test.many.fail.nil_c
 _test.many.fail.nil_label	.string	parse\s(many\sfail)\sqq{}
+
+# §section §gs{parser.match}
+
+_test.match	.closure	_test.match_c
+_test.match_label	.string	parser.match
+
+_tests.match	.list	test.property.t	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.match.star	_test.match.neg.in.class	_test.match.multi.char.class
 
 _test.match.empty.nil	.closure	_test.match.empty.nil_c
 _test.match.empty.nil_label	.string	parse\sm//\sqq{}
@@ -63,6 +70,13 @@ _test.match.multi.char.class_label	.string	parser\sm/[ab]/\sqq{b}
 _test.match.multi.char.class_re	.regex	[ab]
 _test.match.multi.char.class_input	.string	b
 
+# §section §gs{parser.err}
+
+_tests.err	.list	test.property.t	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure
+
+_test.err	.closure	_test.err_c
+_test.err_label	.string	parser.err
+
 _test.err.fmt.simple.failure	.closure	_test.err.fmt.simple.failure_c
 _test.err.fmt.simple.failure_label	.string	parser.err.fmt\ssimple.failure
 _test.err.fmt.simple.failure_expected	.string	./parse-data:\sParse\sfailure
@@ -75,6 +89,13 @@ _test.err.≡.simple.failure.simple.failure_succ.msg	.string	simple.failure\s≡
 _test.err.fmtgs.simple.failure	.closure	_test.err.fmtgs.simple.failure_c
 _test.err.fmtgs.simple.failure_label	.string	err.fmtgs\ssimple.failure\strue
 _test.err.fmtgs.simple.failure_expected	.string	simple.failure\strue\s〈\s'file\s∝\sfn<./parse-data>;\s'line\s∝\s1;\s'col\s∝\s1;\s〉
+
+# §section §gs{parser.pos}
+
+_tests.pos	.list	test.property.t	_test.pos.fmt.not.eof	_test.pos.fmt.next.line	_test.pos.fmt.eof	_test.pos.fmt.eof.next.line	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.line	_test.pos.eq.diff.col	_test.pos.fmtgs	
+
+_test.pos	.closure	_test.pos_c
+_test.pos_label	.string	parser.pos
 
 _test.pos.fmt.not.eof	.closure	_test.pos.fmt.not.eof_c
 _test.pos.fmt.not.eof_label	.string	pos.fmt\sfalse\sinitial.pos
@@ -119,9 +140,6 @@ _test.pos.eq.diff.col_foo.s	.string	./foo
 _test.pos.fmtgs	.closure	_test.pos.fmtgs_c
 _test.pos.fmtgs_label	.string	pos.fmtgs\spos.initial
 _test.pos.fmtgs_expected	.string	〈\s'file\s∝\sfn<./parse-data>;\s'line\s∝\s1;\s'col\s∝\s1;\s〉
-
-_test.rune.advance.x	.closure	_test.rune.advance.x_c
-_test.rune.advance.x_label	.string	parser.rune.advance\sr/x/
 
 	.code
 
@@ -346,6 +364,17 @@ list.bool.fmtgs	.apply	list.fmtgs	bool.t	|	bool.fmtgs.list
 expected	.apply	list.nil	bool.t
 	.app	list.bool.≡	list.bool.fmtgs	actual	expected
 	.enter	test.assert.eq	list.bool.t
+
+# §section §gs{_test.match}
+
+_test.match_c	.expr
+test.property.label	.gvar
+_test.match_label	.gvar
+test.all	.gvar
+_tests.match	.gvar
+test	.apply	test.all	|	_tests.match
+	.app	_test.match_label	test
+	.enter	test.property.label
 
 # §section §gs{parse m// qq{}}
 
@@ -580,6 +609,17 @@ s	.larg	string.t
 	.app	string.≡	string.fmtgs	s	_test.match.multi.char.class_input
 	.enter	test.assert.eq	string.t
 
+# §section §gs{_test.err}
+
+_test.err_c	.expr
+test.all	.gvar
+_tests.err	.gvar
+test.property.label	.gvar
+_test.err_label	.gvar
+test	.apply	test.all	|	_tests.err
+	.app	_test.err_label	test
+	.enter	test.property.label
+
 # §section §gs{parser.err.fmt simple.failure}
 
 _test.err.fmt.simple.failure_c	.expr
@@ -663,6 +703,17 @@ snil	.apply	list.nil	rune.t
 sf.s	.apply	parser.err.fmtgs	|	sf	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	sf.s	_test.err.fmtgs.simple.failure_expected
 	.app	_test.err.fmtgs.simple.failure_label	test
+	.enter	test.property.label
+
+# §section §gs{_test.pos}
+
+_test.pos_c	.expr
+test.property.label	.gvar
+_test.pos_label	.gvar
+test.all	.gvar
+_tests.pos	.gvar
+test	.apply	test.all	|	_tests.pos
+	.app	_test.pos_label	test
 	.enter	test.property.label
 
 # §section §gs{parser.pos.fmt false initial.pos}
