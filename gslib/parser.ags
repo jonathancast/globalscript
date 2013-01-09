@@ -719,10 +719,11 @@ s	.tyarg	*
 α	.tyarg	*
 res.ty	.tylet	list.t	α
 _parser.many_pnil_c	.subcode
+_parser.many_pcons_c	.subcode
 parser.<|>	.gvar
 p	.larg	parser.t	s	α
 pnil	.alloc	_parser.many_pnil_c	s	α
-pcons	.undefined	parser.t	s	res.ty
+pcons	.alloc	_parser.many_pcons_c	s	α	|	p
 	.app	pnil	pcons
 	.enter	parser.<|>	s	res.ty
 
@@ -739,6 +740,29 @@ k	.larg	_parser.t_k_ty	s	res.ty	r
 nil	.apply	list.nil	α
 	.app	nil
 	.enter	k
+
+_parser.many_pcons_c	.expr
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+r	.tyarg	*
+res.ty	.tylet	list.t	α
+_parser.many_pcons_k1_c	.subcode
+p	.fv	parser.t	s	α
+k	.larg	_parser.t_k_ty	s	res.ty	r
+k1	.alloc	_parser.many_pcons_k1_c	s	α	r
+	.app	k1
+	.enter	p	r
+
+_parser.many_pcons_k1_c	.expr
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+r	.tyfv	*
+x	.larg	α
+	.undef	parser.prim.t	s	r
 
 # §section §gs{parser.symbol.matching.bool}
 

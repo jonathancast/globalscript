@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.many.fail.nil	_test.match	_test.err	_test.pos	_test.rune.advance.x
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -27,6 +27,13 @@ _test.symbol.cons_string	.string	n
 
 _test.many.fail.nil	.closure	_test.many.fail.nil_c
 _test.many.fail.nil_label	.string	parse\s(many\sfail)\sqq{}
+
+_test.many.fail.cons	.closure	_test.many.fail.cons_c
+_test.many.fail.cons_label	.string	parse\s(many\sfail)\sqq{x}
+_test.many.fail.cons_input	.string	x
+
+_test.rune.advance.x	.closure	_test.rune.advance.x_c
+_test.rune.advance.x_label	.string	parser.rune.advance\sr/x/
 
 # §section §gs{parser.match}
 
@@ -364,6 +371,38 @@ list.bool.fmtgs	.apply	list.fmtgs	bool.t	|	bool.fmtgs.list
 expected	.apply	list.nil	bool.t
 	.app	list.bool.≡	list.bool.fmtgs	actual	expected
 	.enter	test.assert.eq	list.bool.t
+
+# §section §gs{parse (many fail) qq{x}}
+
+_test.many.fail.cons_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+bool.t	.tygvar
+list.bool.t	.tylet	list.t	bool.t
+_test.many.fail.cons_k_c	.subcode
+test.property.label	.gvar
+_test.many.fail.cons_label	.gvar
+parser.test.assert.fails	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+list.fmtgs	.gvar
+bool.fmtgs.list	.gvar
+parser.many	.gvar
+parser.fail	.gvar
+_test.many.fail.cons_input	.gvar
+list.bool.fmtgs	.apply	list.fmtgs	bool.t	|	bool.fmtgs.list
+fail	.apply	parser.fail	rune.t	bool.t
+parser	.apply	parser.many	rune.t	bool.t	|	fail
+k	.alloc	_test.many.fail.cons_k_c
+test	.apply	parser.test.assert.fails	rune.t	list.bool.t	|	parser.rune.advance	rune.print	list.bool.fmtgs	parser	_test.many.fail.cons_input	k
+	.app	_test.many.fail.cons_label	test
+	.enter	test.property.label
+
+_test.many.fail.cons_k_c	.expr
+parser.err.t	.tygvar
+test.true	.gvar
+err	.larg	parser.err.t
+	.enter	test.true
 
 # §section §gs{_test.match}
 
