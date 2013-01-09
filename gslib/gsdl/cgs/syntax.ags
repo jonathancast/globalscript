@@ -8,6 +8,9 @@ _gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
 gsdl.cgs.syntax.gsid	.closure	_gsdl.cgs.syntax.gsid_c
 _gsdl.cgs.syntax.gsid_re	.regex	[a-z][a-z]*
 
+gsdl.cgs.syntax.rbracket	.closure	_gsdl.cgs.syntax.rbracket_c
+_gsdl.cgs.syntax.rbracket_re	.regex	〉
+
 	.code
 
 # §section §gs{gsdl.cgs.syntax.ws}
@@ -29,3 +32,17 @@ rune.compare	.gvar
 _gsdl.cgs.syntax.gsid_re	.gvar
 	.app	rune.compare	_gsdl.cgs.syntax.gsid_re
 	.enter	parser.match	rune.t
+
+# §section §gs{gsdl.cgs.syntax.rbracket}
+
+_gsdl.cgs.syntax.rbracket_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+parser.<*	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.rbracket_re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.rbracket_re
+	.app	m	gsdl.cgs.syntax.ws
+	.enter	parser.<*	rune.t	string.t	string.t
