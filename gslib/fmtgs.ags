@@ -7,6 +7,7 @@ fmtgs.prec	.closure	_fmtgs.prec_c
 fmtgs.prec.higher	.closure	_fmtgs.prec.higher_c
 
 fmtgs.prec.arg	.closure	_fmtgs.prec.arg_c
+fmtgs.prec.app	.closure	_fmtgs.prec.app_c
 
 	.code
 
@@ -31,11 +32,19 @@ _fmtgs.prec_k	.forcecont
 bool.prim.u	.tygvar
 diff.list.t	.tygvar
 rune.t	.tygvar
+diff.list.:	.gvar
+rune.left.paren	.gvar
+diff.list.<>	.gvar
+diff.list.singleton	.gvar
+rune.right.paren	.gvar
 ds	.fv	diff.list.t	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.undef	diff.list.t	rune.t
+ds2			.apply	diff.list.singleton	rune.t	|	rune.right.paren
+ds1			.apply	diff.list.<>	rune.t	|	ds	ds2
+			.app	rune.left.paren	ds1
+			.enter	diff.list.:	rune.t
 		.case	true
 			.enter	ds
 
@@ -66,11 +75,20 @@ _fmtgs.prec.higher_k1	.forcecont
 fmtgs.prec.prim.u	.tygvar
 bool.t	.tygvar
 bool.true	.gvar
+bool.false	.gvar
 p0.0	.fv	fmtgs.prec.prim.u
 p1.0	.karg	fmtgs.prec.prim.u
-	.analyze	p0.0	arg
+	.analyze	p0.0	app	arg
+		.case	app
+			.analyze	p1.0	app	arg
+				.case	app
+					.undef	bool.t
+				.case	arg
+					.enter	bool.false
 		.case	arg
-			.analyze	p1.0	arg
+			.analyze	p1.0	app	arg
+				.case	app
+					.undef	bool.t
 				.case	arg
 					.enter	bool.true
 	# > :: bool.t
@@ -81,6 +99,14 @@ _fmtgs.prec.arg_c	.expr
 fmtgs.prec.prim.u	.tygvar
 fmtgs.prec.t.in	.cogvar
 c	.constr	fmtgs.prec.prim.u	arg
+	.coerce	fmtgs.prec.t.in
+	.lift
+	.yield	c
+
+_fmtgs.prec.app_c	.expr
+fmtgs.prec.prim.u	.tygvar
+fmtgs.prec.t.in	.cogvar
+c	.constr	fmtgs.prec.prim.u	app
 	.coerce	fmtgs.prec.t.in
 	.lift
 	.yield	c
@@ -106,7 +132,7 @@ fmtgs.prec.prim.u	.tygvar
 
 fmtgs.prec.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
-	.tysum	arg	record.unboxed.empty
+	.tysum	app	record.unboxed.empty	arg	record.unboxed.empty
 
 	.coercion
 
