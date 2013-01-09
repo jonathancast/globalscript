@@ -76,7 +76,7 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
                         }
                         default:
                             ace_down();
-                            gsfatal_unimpl(__FILE__, __LINE__, "gsrun: constrnum = %d", constr->constrnum);
+                            gsfatal(UNIMPL("gsrun: constrnum = %d"), constr->constrnum);
                     }
                     break;
                 }
