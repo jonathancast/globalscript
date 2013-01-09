@@ -1173,7 +1173,8 @@ ek	.fv	parser.prim.t	s	α
 p1.0	.karg	parser.prim.u	s	α
 	.analyze	p1.0	fail	fail.msg	symbol	unit.plus
 		.case	fail
-			.undef	parser.prim.t	s	α
+			.app	sk	ek
+			.yield	parser.prim.symbol	s	α
 		.case	fail.msg
 msg		.fkarg	0	list.t	rune.t
 			.undef	parser.prim.t	s	α
