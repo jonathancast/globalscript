@@ -4,7 +4,11 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.prec.arg.arg
+
+_test.prec.arg.arg	.closure	_test.prec.arg.arg_c
+_test.prec.arg.arg_label	.string	prec\sprec.arg\s_\sprec.arg\s_
+_test.prec.arg.arg_expected	.string	foo
 
 	.code
 
@@ -13,3 +17,25 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{prec prec.arg _ prec.arg _}
+
+_test.prec.arg.arg_c	.expr
+string.t	.tygvar
+rune.t	.tygvar
+test.property.label	.gvar
+_test.prec.arg.arg_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.fromlist	.gvar
+_test.prec.arg.arg_expected	.gvar
+list.nil	.gvar
+ds	.apply	diff.list.fromlist	rune.t	|	_test.prec.arg.arg_expected
+snil	.apply	list.nil	rune.t
+actual	.apply	fmtgs.prec	|	fmtgs.prec.arg	ds	fmtgs.prec.arg	snil
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.prec.arg.arg_expected
+	.app	_test.prec.arg.arg_label	test
+	.enter	test.property.label

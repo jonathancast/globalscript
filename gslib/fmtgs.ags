@@ -1,6 +1,93 @@
 	.prefix
 
+	.data
+
+fmtgs.prec	.closure	_fmtgs.prec_c
+
+fmtgs.prec.higher	.closure	_fmtgs.prec.higher_c
+
+fmtgs.prec.arg	.closure	_fmtgs.prec.arg_c
+
+	.code
+
+# §section §gs{fmtgs.prec}
+
+_fmtgs.prec_c	.expr
+fmtgs.prec.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+_fmtgs.prec_k	.subcode
+bool.t.out	.cogvar
+fmtgs.prec.higher	.gvar
+p0	.larg	fmtgs.prec.t
+ds	.larg	diff.list.t	rune.t
+p1	.larg	fmtgs.prec.t
+	.force	_fmtgs.prec_k	|	ds
+	.coerce	bool.t.out
+	.app	p0	p1
+	.enter	fmtgs.prec.higher
+
+_fmtgs.prec_k	.forcecont
+bool.prim.u	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+ds	.fv	diff.list.t	rune.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	diff.list.t	rune.t
+		.case	true
+			.enter	ds
+
+# §section §gs{fmtgs.prec.higher}
+
+_fmtgs.prec.higher_c	.expr
+fmtgs.prec.t	.tygvar
+_fmtgs.prec.higher_k0	.subcode
+fmtgs.prec.t.out	.cogvar
+p0	.larg	fmtgs.prec.t
+p1	.larg	fmtgs.prec.t
+	.force	_fmtgs.prec.higher_k0	|	p1
+	.coerce	fmtgs.prec.t.out
+	.enter	p0
+
+_fmtgs.prec.higher_k0	.forcecont
+fmtgs.prec.t	.tygvar
+fmtgs.prec.prim.u	.tygvar
+_fmtgs.prec.higher_k1	.subcode
+fmtgs.prec.t.out	.cogvar
+p1	.fv	fmtgs.prec.t
+p0.0	.karg	fmtgs.prec.prim.u
+	.force	_fmtgs.prec.higher_k1	|	p0.0
+	.coerce	fmtgs.prec.t.out
+	.enter	p1
+
+_fmtgs.prec.higher_k1	.forcecont
+fmtgs.prec.prim.u	.tygvar
+bool.t	.tygvar
+bool.true	.gvar
+p0.0	.fv	fmtgs.prec.prim.u
+p1.0	.karg	fmtgs.prec.prim.u
+	.analyze	p0.0	arg
+		.case	arg
+			.analyze	p1.0	arg
+				.case	arg
+					.enter	bool.true
+	# > :: bool.t
+
+# §section §gs{fmtgs.prec} Constructors
+
+_fmtgs.prec.arg_c	.expr
+fmtgs.prec.prim.u	.tygvar
+fmtgs.prec.t.in	.cogvar
+c	.constr	fmtgs.prec.prim.u	arg
+	.coerce	fmtgs.prec.t.in
+	.lift
+	.yield	c
+
 	.type
+
+# §section §gs{fmtgs.t}
 
 fmtgs.t	.tyexpr
 diff.list.t	.tygvar
@@ -9,3 +96,25 @@ rune.t	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	diff.list.t	rune.t
+
+# §section §gs{fmtgs.prec.t}
+
+fmtgs.prec.t	.tyabstract	*
+fmtgs.prec.prim.u	.tygvar
+	.tylift
+	.tyref	fmtgs.prec.prim.u
+
+fmtgs.prec.prim.u	.tyexpr
+record.unboxed.empty	.tygvar
+	.tysum	arg	record.unboxed.empty
+
+	.coercion
+
+fmtgs.prec.t.in	.tycoercion
+fmtgs.prec.t	.tygvar
+	.tydefinition	fmtgs.prec.t
+
+fmtgs.prec.t.out	.tycoercion
+fmtgs.prec.t	.tygvar
+	.tyinvert
+	.tydefinition	fmtgs.prec.t
