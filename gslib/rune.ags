@@ -23,8 +23,7 @@ rune.advance	.closure	_rune.advance_c
 
 rune.prim.advance	.closure	_rune.prim.advance_c
 
-_n	.closure	_n_c
-_bs	.closure	_bs_c
+rune.backslash	.closure	_rune.backslash_c
 rune.space	.closure	_rune.space_c
 rune.number.sign	.closure	_rune.number.sign_c
 rune.colon	.closure	_rune.colon_c
@@ -218,8 +217,8 @@ rune.t	.tygvar
 list.t	.tygvar
 bool.prim.u	.tygvar
 list.:	.gvar
-_bs	.gvar
-_n	.gvar
+rune.backslash	.gvar
+rune.latin.letter.n	.gvar
 r	.fv	rune.t
 s	.fv	list.t	rune.t
 b0	.karg	bool.prim.u
@@ -228,8 +227,8 @@ b0	.karg	bool.prim.u
 			.app	r	s
 			.enter	list.:	rune.t
 		.case	true
-s1			.apply	list.:	rune.t	|	_n	s
-			.app	_bs	s1
+s1			.apply	list.:	rune.t	|	rune.latin.letter.n	s
+			.app	rune.backslash	s1
 			.enter	list.:	rune.t
 
 # §section §gs{rune.advance}
@@ -282,14 +281,7 @@ r1	.prim	rune.prim	advance	_rune.prim.advance_ty	|	r0	n0
 
 # §section Random data
 
-_n_c	.expr
-rune.t.in	.cogvar
-n	.rune	n
-	.coerce	rune.t.in
-	.lift
-	.yield	n
-
-_bs_c	.expr
+_rune.backslash_c	.expr
 rune.t.in	.cogvar
 bs	.rune	\\
 	.coerce	rune.t.in
