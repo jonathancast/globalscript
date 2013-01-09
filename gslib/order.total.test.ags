@@ -98,10 +98,11 @@ string.≡	.gvar
 string.fmtgs	.gvar
 order.total.ord.fmtgs	.gvar
 order.total.ord.lt	.gvar
+fmtgs.prec.app	.gvar
 list.nil	.gvar
 _test.fmtgs.lt_expected	.gvar
 snil	.apply	list.nil	rune.t
-actual	.apply	order.total.ord.fmtgs	|	order.total.ord.lt	snil
+actual	.apply	order.total.ord.fmtgs	|	order.total.ord.lt	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.lt_expected
 	.app	_test.fmtgs.lt_label	test
 	.enter	test.property.label
@@ -118,10 +119,11 @@ string.≡	.gvar
 string.fmtgs	.gvar
 order.total.ord.fmtgs	.gvar
 order.total.ord.eq	.gvar
+fmtgs.prec.app	.gvar
 list.nil	.gvar
 _test.fmtgs.eq_expected	.gvar
 snil	.apply	list.nil	rune.t
-actual	.apply	order.total.ord.fmtgs	|	order.total.ord.eq	snil
+actual	.apply	order.total.ord.fmtgs	|	order.total.ord.eq	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.eq_expected
 	.app	_test.fmtgs.eq_label	test
 	.enter	test.property.label
@@ -138,10 +140,11 @@ string.≡	.gvar
 string.fmtgs	.gvar
 order.total.ord.fmtgs	.gvar
 order.total.ord.gt	.gvar
+fmtgs.prec.app	.gvar
 list.nil	.gvar
 _test.fmtgs.gt_expected	.gvar
 snil	.apply	list.nil	rune.t
-actual	.apply	order.total.ord.fmtgs	|	order.total.ord.gt	snil
+actual	.apply	order.total.ord.fmtgs	|	order.total.ord.gt	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.gt_expected
 	.app	_test.fmtgs.gt_label	test
 	.enter	test.property.label

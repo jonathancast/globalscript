@@ -1376,7 +1376,9 @@ parser.pos.t	.tygvar
 bool.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-diff.list.t	.tygvar
+fmtgs.printer.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.app	.gvar
 diff.list.prepend	.gvar
 _parser.err.fmtgs_simple.failure_prefix	.gvar
 diff.list.<>	.gvar
@@ -1384,22 +1386,24 @@ parser.pos.fmtgs	.gvar
 diff.list.:	.gvar
 rune.space	.gvar
 bool.fmtgs	.gvar
+fmtgs.prec.arg	.gvar
 e0	.karg	parser.err.prim.u
 	.analyze	e0	message.failure	simple.failure
 		.case	message.failure
 pos		.fkarg	0	parser.pos.t
 eof		.fkarg	1	bool.t
 msg		.fkarg	2	list.t	rune.t
-			.undef	diff.list.t	rune.t
+			.undef	fmtgs.printer.t
 		.case	simple.failure
 pos		.fkarg	0	parser.pos.t
 eof		.fkarg	1	bool.t
-pos.s			.apply	parser.pos.fmtgs	|	pos
-eof.s			.apply	bool.fmtgs	|	eof
+pos.s			.apply	parser.pos.fmtgs	|	pos	fmtgs.prec.arg
+eof.s			.apply	bool.fmtgs	|	eof	fmtgs.prec.arg
 s1			.apply	diff.list.:	rune.t	|	rune.space	pos.s
 s2			.apply	diff.list.<>	rune.t	|	eof.s	s1
-			.app	_parser.err.fmtgs_simple.failure_prefix	s2
-			.enter	diff.list.prepend	rune.t
+ds			.apply	diff.list.prepend	rune.t	|	_parser.err.fmtgs_simple.failure_prefix	s2
+			.app	fmtgs.prec.app	ds
+			.enter	fmtgs.prec
 
 # §section §gs{parser.err.t} constructors
 
@@ -1540,10 +1544,13 @@ b3	.apply	bool.∧	|	b1	b2
 _parser.pos.fmtgs_c	.expr
 parser.pos.t	.tygvar
 rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
 diff.list.<>	.gvar
 _parser.pos.fmtgs_prefix.s	.gvar
 _parser.pos.fmtgs_file.s	.gvar
 ibio.file.name.fmtgs	.gvar
+fmtgs.prec.app	.gvar
 diff.list.prepend	.gvar
 _parser.pos.fmtgs_semi.space.s	.gvar
 _parser.pos.fmtgs_line.s	.gvar
@@ -1555,9 +1562,9 @@ pos	.larg	parser.pos.t
 fn	.lfield	file	pos
 line	.lfield	line	pos
 col	.lfield	col	pos
-fn.s	.apply	ibio.file.name.fmtgs	|	fn
-line.s	.apply	natural.fmtgs	|	line
-col.s	.apply	natural.fmtgs	|	col
+fn.s	.apply	ibio.file.name.fmtgs	|	fn	fmtgs.prec.app
+line.s	.apply	natural.fmtgs	|	line	fmtgs.prec.app
+col.s	.apply	natural.fmtgs	|	col	fmtgs.prec.app
 s9	.apply	diff.list.fromlist	rune.t	|	_parser.pos.fmtgs_suffix.s
 s8	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_semi.space.s	s9
 s7	.apply	diff.list.<>	rune.t	|	col.s	s8
@@ -1568,8 +1575,9 @@ s3	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_line.s	s4
 s2	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_semi.space.s	s3
 s1	.apply	diff.list.<>	rune.t	|	fn.s	s2
 s0	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_file.s	s1
-	.app	_parser.pos.fmtgs_prefix.s	s0
-	.enter	diff.list.prepend	rune.t
+ds	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_prefix.s	s0
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
 
 # §section §gs{parser.pos.initial}
 

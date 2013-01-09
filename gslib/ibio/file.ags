@@ -565,6 +565,8 @@ rune.t	.tygvar
 diff.list.t	.tygvar
 ibio.file.name.t	.tygvar
 diff.string.ty	.tylet	diff.list.t	rune.t
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
 diff.list.prepend	.gvar
 _ibio.file.name.fmtgs_prefix	.gvar
 list.foldr	.gvar
@@ -580,8 +582,9 @@ s	.apply	ibio.file.name.out	|	fn
 s2	.apply	diff.list.fromlist	rune.t	|	_ibio.file.name.fmtgs_suffix
 s1s	.apply	list.map	rune.t	diff.string.ty	|	rune.togss	s
 s1	.apply	list.foldr	diff.string.ty	diff.string.ty	|	<>	s2	s1s
-	.app	_ibio.file.name.fmtgs_prefix	s1
-	.enter	diff.list.prepend	rune.t
+ds	.apply	diff.list.prepend	rune.t	|	_ibio.file.name.fmtgs_prefix	s1
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
 
 # §section Random data
 

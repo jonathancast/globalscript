@@ -79,6 +79,8 @@ _order.total.ord.fmtgs_k	.forcecont
 order.total.ord.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
 diff.list.fromlist	.gvar
 _order.total.ord.fmtgs_eq.s	.gvar
 _order.total.ord.fmtgs_gt.s	.gvar
@@ -86,14 +88,17 @@ _order.total.ord.fmtgs_lt.s	.gvar
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
 		.case	eq
-			.app	_order.total.ord.fmtgs_eq.s
-			.enter	diff.list.fromlist	rune.t
+ds			.apply	diff.list.fromlist	rune.t	|	_order.total.ord.fmtgs_eq.s
+			.app	fmtgs.prec.arg	ds
+			.enter	fmtgs.prec
 		.case	gt
-			.app	_order.total.ord.fmtgs_gt.s
-			.enter	diff.list.fromlist	rune.t
+ds			.apply	diff.list.fromlist	rune.t	|	_order.total.ord.fmtgs_gt.s
+			.app	fmtgs.prec.arg	ds
+			.enter	fmtgs.prec
 		.case	lt
-			.app	_order.total.ord.fmtgs_lt.s
-			.enter	diff.list.fromlist	rune.t
+ds			.apply	diff.list.fromlist	rune.t	|	_order.total.ord.fmtgs_lt.s
+			.app	fmtgs.prec.arg	ds
+			.enter	fmtgs.prec
 	# > :: list.t	rune.t
 
 # §section Constructors

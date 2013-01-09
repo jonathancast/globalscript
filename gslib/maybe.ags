@@ -113,10 +113,13 @@ maybe.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 α	.tyfv	*
+fmtgs.prec	.gvar
+fmtgs.prec.app	.gvar
 diff.list.prepend	.gvar
+_maybe.fmtgs_just.s	.gvar
 diff.list.:	.gvar
 rune.space	.gvar
-_maybe.fmtgs_just.s	.gvar
+fmtgs.prec.arg	.gvar
 diff.list.fromlist	.gvar
 _maybe.fmtgs_nothing.s	.gvar
 pr	.fv	fmtgs.t	α
@@ -124,13 +127,15 @@ mb0	.karg	maybe.prim.u	α
 	.analyze	mb0	just	nothing
 		.case	just
 x		.fkarg	0	α
-s2			.apply	pr	|	x
+s2			.apply	pr	|	x	fmtgs.prec.arg
 s1			.apply	diff.list.:	rune.t	|	rune.space	s2
-			.app	_maybe.fmtgs_just.s	s1
-			.enter	diff.list.prepend	rune.t
+ds			.apply	diff.list.prepend	rune.t	|	_maybe.fmtgs_just.s	s1
+			.app	fmtgs.prec.app	ds
+			.enter	fmtgs.prec
 		.case	nothing
-			.app	_maybe.fmtgs_nothing.s
-			.enter	diff.list.fromlist	rune.t
+ds			.apply	diff.list.fromlist	rune.t	|	_maybe.fmtgs_nothing.s
+			.app	fmtgs.prec.arg	ds
+			.enter	fmtgs.prec
 
 	.type
 

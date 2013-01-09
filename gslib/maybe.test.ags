@@ -111,11 +111,12 @@ string.fmtgs	.gvar
 maybe.fmtgs	.gvar
 bool.fmtgs	.gvar
 maybe.nothing	.gvar
+fmtgs.prec.app	.gvar
 list.nil	.gvar
 _test.fmtgs.nothing_expected	.gvar
 nothing	.apply	maybe.nothing	bool.t
 snil	.apply	list.nil	rune.t
-actual	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs	nothing	snil
+actual	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs	nothing	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.nothing_expected
 	.app	_test.fmtgs.nothing_label	test
 	.enter	test.property.label
@@ -135,11 +136,12 @@ maybe.fmtgs	.gvar
 bool.fmtgs	.gvar
 maybe.just	.gvar
 bool.true	.gvar
+fmtgs.prec.app	.gvar
 list.nil	.gvar
 _test.fmtgs.just_expected	.gvar
 just.true	.apply	maybe.just	bool.t	|	bool.true
 snil	.apply	list.nil	rune.t
-actual	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs	just.true	snil
+actual	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs	just.true	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.just_expected
 	.app	_test.fmtgs.just_label	test
 	.enter	test.property.label

@@ -34,11 +34,12 @@ diff.list.:	.gvar
 rune.space	.gvar
 list.fmtgs	.gvar
 gsdl.cgs.gstype.field.fmtgs.list	.gvar
+fmtgs.prec.arg	.gvar
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0	product
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
-s2			.apply	list.fmtgs	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.fmtgs.list	fs
+s2			.apply	list.fmtgs	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.fmtgs.list	fs	fmtgs.prec.arg
 s1			.apply	diff.list.:	rune.t	|	rune.space	s2
 			.app	_gsdl.cgs.gstype.fmtgs_product.s	s1
 			.enter	diff.list.prepend	rune.t
@@ -61,9 +62,13 @@ c	.constr	gsdl.cgs.gstype.prim.u	product	0	fields
 _gsdl.cgs.gstype.field.fmtgs_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
 rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
 diff.list.nil	.gvar
 f0	.larg	gsdl.cgs.gstype.field.t
-	.enter	diff.list.nil	rune.t
+ds	.apply	diff.list.nil	rune.t
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
 
 # §section §gs{gsdl.cgs.gstype.field.fmtgs.list}
 

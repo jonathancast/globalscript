@@ -184,17 +184,20 @@ b	.larg	bool.t
 
 _bool.fmtgs_k	.forcecont
 bool.prim.u	.tygvar
-diff.list.t	.tygvar
+fmtgs.printer.t	.tygvar
 rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
 diff.list.fromlist	.gvar
 _bool.fmtgs_true.s	.gvar
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.undef	diff.list.t	rune.t
+			.undef	fmtgs.printer.t
 		.case	true
-			.app	_bool.fmtgs_true.s
-			.enter	diff.list.fromlist	rune.t
+ds			.apply	diff.list.fromlist	rune.t	|	_bool.fmtgs_true.s
+			.app	fmtgs.prec.arg	ds
+			.enter	fmtgs.prec
 
 _bool.fmtgs.list_c	.expr
 bool.t	.tygvar

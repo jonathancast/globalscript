@@ -22,14 +22,15 @@ list.t	.tygvar
 test.assert	.gvar
 list.nil	.gvar
 list.<>	.gvar
+fmtgs.prec.app	.gvar
 _test.assert.eq_neq.s_neq	.gvar
 eq	.larg	_test.assert.eq_eq_ty	α
 p	.larg	fmtgs.t	α
 x	.larg	α
 y	.larg	α
 nil	.apply	list.nil	rune.t
-x.s	.apply	p	|	x	nil
-y.s	.apply	p	|	y	nil
+x.s	.apply	p	|	x	fmtgs.prec.app	nil
+y.s	.apply	p	|	y	fmtgs.prec.app	nil
 s1	.apply	list.<>	rune.t	|	_test.assert.eq_neq.s_neq	y.s
 neq.s	.apply	list.<>	rune.t	|	x.s	s1
 eq.s	.undefined	list.t	rune.t

@@ -16,11 +16,14 @@ r	.record
 _record.empty.fmtgs_c	.expr
 record.empty	.tygvar
 rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
 diff.list.fromlist	.gvar
 _record.empty.fmtgs_s	.gvar
 r	.larg	record.empty
-	.app	_record.empty.fmtgs_s
-	.enter	diff.list.fromlist	rune.t
+ds	.apply	diff.list.fromlist	rune.t	|	_record.empty.fmtgs_s
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
 
 	.type
 

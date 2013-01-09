@@ -165,13 +165,14 @@ list.fmtgs	.gvar
 list.fmtgs.byDefault	.gvar
 bool.fmtgs	.gvar
 _fixture.nil	.gvar
+fmtgs.prec.app	.gvar
 list.nil	.gvar
 list.≡	.gvar
 rune.≡	.gvar
 _test.fmtgs.nil_test_expected	.gvar
 p0	.apply	list.fmtgs.byDefault	bool.t	|	bool.fmtgs
 snil	.apply	list.nil	rune.t
-s0	.apply	list.fmtgs	bool.t	|	p0	_fixture.nil	snil
+s0	.apply	list.fmtgs	bool.t	|	p0	_fixture.nil	fmtgs.prec.app	snil
 eq	.apply	list.≡	rune.t	|	rune.≡	s0	_test.fmtgs.nil_test_expected
 test	.apply	test.assert	|	_test.fmtgs.nil_test_fail	_test.fmtgs.nil_test_succ	eq
 	.app	_test.fmtgs.nil_label	test

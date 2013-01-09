@@ -82,13 +82,13 @@ p1.0	.karg	fmtgs.prec.prim.u
 		.case	app
 			.analyze	p1.0	app	arg
 				.case	app
-					.undef	bool.t
+					.enter	bool.true
 				.case	arg
 					.enter	bool.false
 		.case	arg
 			.analyze	p1.0	app	arg
 				.case	app
-					.undef	bool.t
+					.enter	bool.true
 				.case	arg
 					.enter	bool.true
 	# > :: bool.t
@@ -116,11 +116,18 @@ c	.constr	fmtgs.prec.prim.u	app
 # §section §gs{fmtgs.t}
 
 fmtgs.t	.tyexpr
-diff.list.t	.tygvar
-rune.t	.tygvar
+fmtgs.printer.t	.tygvar
 α	.tylambda	*
 	.tylift
 	.tyfun	α
+	.tyref	fmtgs.printer.t
+
+fmtgs.printer.t	.tyexpr
+fmtgs.prec.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	fmtgs.prec.t
 	.tyref	diff.list.t	rune.t
 
 # §section §gs{fmtgs.prec.t}

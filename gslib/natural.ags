@@ -456,12 +456,15 @@ m0	.fv	natural.prim.u
 _natural.fmtgs_c	.expr
 natural.t	.tygvar
 rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
 diff.list.fromlist	.gvar
 natural.fmtdecimal	.gvar
 n	.larg	natural.t
 n.s	.apply	natural.fmtdecimal	|	n
-	.app	n.s
-	.enter	diff.list.fromlist	rune.t
+ds	.apply	diff.list.fromlist	rune.t	|	n.s
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
 
 # §section Simple literals
 
