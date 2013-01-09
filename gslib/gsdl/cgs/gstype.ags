@@ -28,6 +28,8 @@ gsdl.cgs.gstype.prim.u	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.app	.gvar
 diff.list.prepend	.gvar
 _gsdl.cgs.gstype.fmtgs_product.s	.gvar
 diff.list.:	.gvar
@@ -41,8 +43,10 @@ ty0	.karg	gsdl.cgs.gstype.prim.u
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 s2			.apply	list.fmtgs	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.fmtgs.list	fs	fmtgs.prec.arg
 s1			.apply	diff.list.:	rune.t	|	rune.space	s2
-			.app	_gsdl.cgs.gstype.fmtgs_product.s	s1
-			.enter	diff.list.prepend	rune.t
+ds			.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.gstype.fmtgs_product.s	s1
+			.app	fmtgs.prec.app	ds
+			.enter	fmtgs.prec
+	# > :: fmtgs.printer.t
 
 # §section §gs{gstype} Constructors
 

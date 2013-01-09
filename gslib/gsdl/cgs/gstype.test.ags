@@ -32,11 +32,12 @@ string.fmtgs	.gvar
 gsdl.cgs.gstype.fmtgs	.gvar
 gsdl.cgs.gstype.product	.gvar
 list.nil	.gvar
+fmtgs.prec.app	.gvar
 _test.fmtgs.product_expected	.gvar
 nil	.apply	list.nil	gsdl.cgs.gstype.field.t
 empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
 snil	.apply	list.nil	rune.t
-actual	.apply	gsdl.cgs.gstype.fmtgs	|	empty.prod	snil
+actual	.apply	gsdl.cgs.gstype.fmtgs	|	empty.prod	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.product_expected
 	.app	_test.fmtgs.product_label	test
 	.enter	test.property.label
