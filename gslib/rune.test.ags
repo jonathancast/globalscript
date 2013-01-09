@@ -49,13 +49,6 @@ _test.list.fmtgs.nl_expected	.string	qq{\\n}
 _test.rune.advance	.closure	_test.rune.advance_c
 _test.rune.advance_label	.string	rune.advance
 
-_c	.closure	_c_c
-_g	.closure	_g_c
-_x	.closure	_x.c
-_y	.closure	_y_c
-
-_4	.closure	_4_c
-
 	.code
 
 _epcode	.expr
@@ -73,8 +66,8 @@ test.assert	.gvar
 _test.x.eq.x.fail	.gvar
 _test.x.eq.x.succ	.gvar
 rune.≡	.gvar
-_x	.gvar
-eq	.apply	rune.≡	|	_x	_x
+rune.latin.letter.x	.gvar
+eq	.apply	rune.≡	|	rune.latin.letter.x	rune.latin.letter.x
 test	.apply	test.assert	|	_test.x.eq.x.fail	_test.x.eq.x.succ	eq
 	.app	_test.x.eq.x.label	test
 	.enter	test.property.label
@@ -88,9 +81,9 @@ test.deny	.gvar
 _test.x.eq.y_test_succ	.gvar
 _test.x.eq.y_test_fail	.gvar
 rune.≡	.gvar
-_x	.gvar
-_y	.gvar
-eq	.apply	rune.≡	|	_x	_y
+rune.latin.letter.x	.gvar
+rune.latin.letter.y	.gvar
+eq	.apply	rune.≡	|	rune.latin.letter.x	rune.latin.letter.y
 test	.apply	test.deny	|	_test.x.eq.y_test_succ	_test.x.eq.y_test_fail	eq
 	.app	_test.x.eq.y_label	test
 	.enter	test.property.label
@@ -161,10 +154,10 @@ list.≡	.gvar
 rune.≡	.gvar
 _test.fmtgs.x_test_expected	.gvar
 rune.fmtgs	.gvar
-_x	.gvar
+rune.latin.letter.x	.gvar
 list.nil	.gvar
 snil	.apply	list.nil	rune.t
-x.s	.apply	rune.fmtgs	|	_x	snil
+x.s	.apply	rune.fmtgs	|	rune.latin.letter.x	snil
 eq	.apply	list.≡	rune.t	|	rune.≡	x.s	_test.fmtgs.x_test_expected
 test	.apply	test.assert	|	_test.fmtgs.x_test_succ	_test.fmtgs.x_test_fail	eq
 	.app	_test.fmtgs.x_label	test
@@ -211,8 +204,8 @@ list.nil	.gvar
 list.≡	.gvar
 rune.≡	.gvar
 _test.list.fmtgs.x_test_expected	.gvar
-_x	.gvar
-x	.apply	list.singleton	rune.t	|	_x
+rune.latin.letter.x	.gvar
+x	.apply	list.singleton	rune.t	|	rune.latin.letter.x
 snil	.apply	list.nil	rune.t
 x.s	.apply	rune.fmtgs.list	|	x	snil
 eq	.apply	list.≡	rune.t	|	rune.≡	x.s	_test.list.fmtgs.x_test_expected
@@ -253,48 +246,11 @@ _test.rune.advance_label	.gvar
 test.assert.eq	.gvar
 rune.≡	.gvar
 rune.fmtgs	.gvar
-_g	.gvar
+rune.latin.letter.g	.gvar
 rune.advance	.gvar
-_c	.gvar
-_4	.gvar
-actual	.apply	rune.advance	|	_c	_4
-test	.apply	test.assert.eq	rune.t	|	rune.≡	rune.fmtgs	actual	_g
+rune.latin.letter.c	.gvar
+natural.4	.gvar
+actual	.apply	rune.advance	|	rune.latin.letter.c	natural.4
+test	.apply	test.assert.eq	rune.t	|	rune.≡	rune.fmtgs	actual	rune.latin.letter.g
 	.app	_test.rune.advance_label	test
 	.enter	test.property.label
-
-# §section Fixtures
-
-_c_c	.expr
-rune.t.in	.cogvar
-c	.rune	c
-	.coerce	rune.t.in
-	.lift
-	.yield	c
-
-_g_c	.expr
-rune.t.in	.cogvar
-g	.rune	g
-	.coerce	rune.t.in
-	.lift
-	.yield	g
-
-_x.c	.expr
-rune.t.in	.cogvar
-x	.rune	x
-	.coerce	rune.t.in
-	.lift
-	.yield	x
-
-_y_c	.expr
-rune.t.in	.cogvar
-y	.rune	y
-	.coerce	rune.t.in
-	.lift
-	.yield	y
-
-_4_c	.expr
-natural.t.in	.cogvar
-4	.natural	4
-	.coerce	natural.t.in
-	.lift
-	.yield	4
