@@ -4,6 +4,7 @@
 
 diff.list.nil	.closure	_diff.list.nil_c
 diff.list.:	.closure	_diff.list.:_c
+diff.list.singleton	.closure	_diff.list.singleton_c
 diff.list.<>	.closure	_diff.list.<>_c
 
 diff.list.prepend	.closure	_diff.list.prepend_c
@@ -32,6 +33,17 @@ xn	.larg	diff.list.t	α
 ys0	.larg	list.t	α
 ys1	.apply	xn	|	ys0
 	.app	x	ys1
+	.enter	list.:	α
+
+# §section §gs{diff.list.singleton}
+
+_diff.list.singleton_c	.expr
+list.t	.tygvar
+α	.tyarg	*
+list.:	.gvar
+x	.larg	α
+ys0	.larg	list.t	α
+	.app	x	ys0
 	.enter	list.:	α
 
 # §section §gs{diff.list.<>}
