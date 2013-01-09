@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.match.star	_test.match.neg.in.class	_test.match.multi.char.class	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.fmt.next.line	_test.pos.fmt.eof	_test.pos.fmt.eof.next.line	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.line	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.many.fail.nil	_test.match.empty.nil	_test.match.range.above	_test.match.range.upper	_test.match.range.below	_test.match.star	_test.match.neg.in.class	_test.match.multi.char.class	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure	_test.pos.fmt.not.eof	_test.pos.fmt.next.line	_test.pos.fmt.eof	_test.pos.fmt.eof.next.line	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.line	_test.pos.eq.diff.col	_test.pos.fmtgs	_test.rune.advance.x
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -24,6 +24,9 @@ _test.symbol.nil_expected	.string	./parse-data:\sUn-expected\sEOF;\sexpected\ssy
 _test.symbol.cons	.closure	_test.symbol.cons_c
 _test.symbol.cons_label	.string	parse\ssymbol\sqq{n}
 _test.symbol.cons_string	.string	n
+
+_test.many.fail.nil	.closure	_test.many.fail.nil_c
+_test.many.fail.nil_label	.string	parse\s(many\sfail)\sqq{}
 
 _test.match.empty.nil	.closure	_test.match.empty.nil_c
 _test.match.empty.nil_label	.string	parse\sm//\sqq{}
@@ -302,6 +305,47 @@ rune.latin.letter.n	.gvar
 r	.larg	rune.t
 	.app	rune.≡	rune.fmtgs	r	rune.latin.letter.n
 	.enter	test.assert.eq	rune.t
+
+# §section §gs{parse (many fail) qq{}}
+
+_test.many.fail.nil_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+bool.t	.tygvar
+list.bool.t	.tylet	list.t	bool.t
+_test.many.fail.nil_k_c	.subcode
+test.property.label	.gvar
+_test.many.fail.nil_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+parser.many	.gvar
+parser.fail	.gvar
+list.nil	.gvar
+fail	.apply	parser.fail	rune.t	bool.t
+parser	.apply	parser.many	rune.t	bool.t	|	fail
+nil	.apply	list.nil	rune.t
+k	.alloc	_test.many.fail.nil_k_c
+test	.apply	parser.test.assert.passes	rune.t	list.bool.t	|	parser.rune.advance	rune.print	parser	nil	k
+	.app	_test.many.fail.nil_label	test
+	.enter	test.property.label
+
+_test.many.fail.nil_k_c	.expr
+list.t	.tygvar
+bool.t	.tygvar
+list.bool.t	.tylet	list.t	bool.t
+test.assert.eq	.gvar
+list.≡	.gvar
+bool.≡	.gvar
+list.fmtgs	.gvar
+bool.fmtgs.list	.gvar
+list.nil	.gvar
+actual	.larg	list.bool.t
+list.bool.≡	.apply	list.≡	bool.t	|	bool.≡
+list.bool.fmtgs	.apply	list.fmtgs	bool.t	|	bool.fmtgs.list
+expected	.apply	list.nil	bool.t
+	.app	list.bool.≡	list.bool.fmtgs	actual	expected
+	.enter	test.assert.eq	list.bool.t
 
 # §section §gs{parse m// qq{}}
 

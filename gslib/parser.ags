@@ -19,6 +19,8 @@ parser.fail	.closure	_parser.fail_c
 parser.fail.msg	.closure	_parser.fail.msg_c
 parser.<|>	.closure	_parser.<|>_c
 
+parser.many	.closure	_parser.many_c	_parser.many_ty
+
 parser.symbol	.closure	_parser.symbol_c
 _parser.symbol_msg	.string	Un-expected\sEOF;\sexpected\ssymbol
 parser.symbol.matching.bool	.closure	_parser.symbol.matching.bool_c
@@ -707,6 +709,36 @@ c	.larg	s
 kc	.apply	k	|	c
 	.app	kc
 	.enter	either.right	list.string.ty	parser.ty
+
+# §section §gs{parser.many}
+
+_parser.many_c	.expr
+parser.t	.tygvar
+list.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+res.ty	.tylet	list.t	α
+_parser.many_pnil_c	.subcode
+parser.<|>	.gvar
+p	.larg	parser.t	s	α
+pnil	.alloc	_parser.many_pnil_c	s	α
+pcons	.undefined	parser.t	s	res.ty
+	.app	pnil	pcons
+	.enter	parser.<|>	s	res.ty
+
+_parser.many_pnil_c	.expr
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+r	.tyarg	*
+res.ty	.tylet	list.t	α
+list.nil	.gvar
+k	.larg	_parser.t_k_ty	s	res.ty	r
+nil	.apply	list.nil	α
+	.app	nil
+	.enter	k
 
 # §section §gs{parser.symbol.matching.bool}
 
@@ -1816,6 +1848,18 @@ s	.tylambda	*
 	.tylift
 	.tyfun	s
 	.tyref	bool.t
+
+# §section §gs{parser.many}
+
+_parser.many_ty	.tyexpr
+parser.t	.tygvar
+list.t	.tygvar
+s	.tyforall	*
+α	.tyforall	*
+res.ty	.tylet	list.t	α
+	.tylift
+	.tyfun	parser.t	s	α
+	.tyref	parser.t	s	res.ty
 
 # §section §gs{parser.match}
 
