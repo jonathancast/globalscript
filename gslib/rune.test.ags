@@ -8,13 +8,11 @@ _tests	.list	test.property.t	_test.x.eq.x	_test.x.eq.y	_test.compare.y.x	_test.c
 
 _test.x.eq.x	.closure	_test.x.eq.x.c
 _test.x.eq.x.label	.string	r/x/\s≡\sr/x/
-_test.x.eq.x.test	.closure	_test.x.eq.x.test.c
 _test.x.eq.x.fail	.string	r/x/\s≠\sr/x/
 _test.x.eq.x.succ	.string	r/x/\s≡\sr/x/
 
 _test.x.eq.y	.closure	_test.x.eq.y_c
 _test.x.eq.y_label	.string	r/x/\s≠\sr/y/
-_test.x.eq.y_test	.closure	_test.x.eq.y_test_c
 _test.x.eq.y_test_succ	.string	r/x/\s≠\sr/y/
 _test.x.eq.y_test_fail	.string	r/x/\s≡\sr/y/
 
@@ -29,7 +27,6 @@ _test.compare.x.y_label	.string	compare\sr/x/\sr/y/
 
 _test.fmtgs.x	.closure	_test.fmtgs.x_c
 _test.fmtgs.x_label	.string	rune.fmtgs\sr/x/\s≡\sqq{r/x/}
-_test.fmtgs.x_test	.closure	_test.fmtgs.x_test_c
 _test.fmtgs.x_test_succ	.string	rune.fmtgs\sr/x/\s≡\sqq{r/x/}
 _test.fmtgs.x_test_fail	.string	rune.fmtgs\sr/x/\s≠\sqq{r/x/}
 _test.fmtgs.x_test_expected	.string	r/x/
@@ -40,7 +37,6 @@ _test.fmtgs.nl_expected	.string	r/\\n/
 
 _test.list.fmtgs.x	.closure	_test.list.fmtgs.x_c
 _test.list.fmtgs.x_label	.string	rune.list.fmtgs\sqq{x}\s≡\sqq{qq{x}}
-_test.list.fmtgs.x_test	.closure	_test.list.fmtgs.x_test_c
 _test.list.fmtgs.x_test_succ	.string	rune.list.fmtgs\sqq{x}\s≡\sqq{qq{x}}
 _test.list.fmtgs.x_test_fail	.string	rune.list.fmtgs\sqq{x}\s≠\sqq{qq{x}}
 _test.list.fmtgs.x_test_expected	.string	qq{x}
@@ -73,49 +69,31 @@ _tests	.gvar
 _test.x.eq.x.c	.expr
 test.property.label	.gvar
 _test.x.eq.x.label	.gvar
-_test.x.eq.x.test	.gvar
-	.app	_test.x.eq.x.label	_test.x.eq.x.test
-	.enter	test.property.label
-
-_test.x.eq.x.test.c	.expr
-_test.x.eq.x_eq.c	.subcode
 test.assert	.gvar
 _test.x.eq.x.fail	.gvar
 _test.x.eq.x.succ	.gvar
-eq	.alloc	_test.x.eq.x_eq.c
-	.app	_test.x.eq.x.fail	_test.x.eq.x.succ	eq
-	.enter	test.assert
-
-_test.x.eq.x_eq.c	.expr
 rune.≡	.gvar
 _x	.gvar
-	.app	_x	_x
-	.enter	rune.≡
+eq	.apply	rune.≡	|	_x	_x
+test	.apply	test.assert	|	_test.x.eq.x.fail	_test.x.eq.x.succ	eq
+	.app	_test.x.eq.x.label	test
+	.enter	test.property.label
 
 # §section §gs{r/x/ ≠ r/y/}
 
 _test.x.eq.y_c	.expr
 test.property.label	.gvar
 _test.x.eq.y_label	.gvar
-_test.x.eq.y_test	.gvar
-	.app	_test.x.eq.y_label	_test.x.eq.y_test
-	.enter	test.property.label
-
-_test.x.eq.y_test_c	.expr
-_test.x.eq.y_eq_c	.subcode
 test.deny	.gvar
 _test.x.eq.y_test_succ	.gvar
 _test.x.eq.y_test_fail	.gvar
-eq	.alloc	_test.x.eq.y_eq_c
-	.app	_test.x.eq.y_test_succ	_test.x.eq.y_test_fail	eq
-	.enter	test.deny
-
-_test.x.eq.y_eq_c	.expr
 rune.≡	.gvar
 _x	.gvar
 _y	.gvar
-	.app	_x	_y
-	.enter	rune.≡
+eq	.apply	rune.≡	|	_x	_y
+test	.apply	test.deny	|	_test.x.eq.y_test_succ	_test.x.eq.y_test_fail	eq
+	.app	_test.x.eq.y_label	test
+	.enter	test.property.label
 
 # §section §gs{compare r/y/ r/x/}
 
@@ -173,39 +151,24 @@ test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.o
 # §section §gs{fmtgs r/x/}
 
 _test.fmtgs.x_c	.expr
+rune.t	.tygvar
 test.property.label	.gvar
 _test.fmtgs.x_label	.gvar
-_test.fmtgs.x_test	.gvar
-	.app	_test.fmtgs.x_label	_test.fmtgs.x_test
-	.enter	test.property.label
-
-_test.fmtgs.x_test_c	.expr
-_test.fmtgs.x_test_eq_c	.subcode
 test.assert	.gvar
 _test.fmtgs.x_test_succ	.gvar
 _test.fmtgs.x_test_fail	.gvar
-eq	.alloc	_test.fmtgs.x_test_eq_c
-	.app	_test.fmtgs.x_test_succ	_test.fmtgs.x_test_fail	eq
-	.enter	test.assert
-
-_test.fmtgs.x_test_eq_c	.expr
-rune.t	.tygvar
-_test.fmtgs.x_test_eq_x.s_c	.subcode
 list.≡	.gvar
 rune.≡	.gvar
 _test.fmtgs.x_test_expected	.gvar
-x.s	.alloc	_test.fmtgs.x_test_eq_x.s_c
-	.app	rune.≡	x.s	_test.fmtgs.x_test_expected
-	.enter	list.≡	rune.t
-
-_test.fmtgs.x_test_eq_x.s_c	.expr
-rune.t	.tygvar
 rune.fmtgs	.gvar
 _x	.gvar
 list.nil	.gvar
 snil	.apply	list.nil	rune.t
-	.app	_x	snil
-	.enter	rune.fmtgs
+x.s	.apply	rune.fmtgs	|	_x	snil
+eq	.apply	list.≡	rune.t	|	rune.≡	x.s	_test.fmtgs.x_test_expected
+test	.apply	test.assert	|	_test.fmtgs.x_test_succ	_test.fmtgs.x_test_fail	eq
+	.app	_test.fmtgs.x_label	test
+	.enter	test.property.label
 
 # §section §gs{rune.fmtgs r/\\n/}
 
@@ -235,51 +198,27 @@ test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.fmtg
 # §section §gs{list.fmtgs qq\{x\}}
 
 _test.list.fmtgs.x_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
 test.property.label	.gvar
 _test.list.fmtgs.x_label	.gvar
-_test.list.fmtgs.x_test	.gvar
-	.app	_test.list.fmtgs.x_label	_test.list.fmtgs.x_test
-	.enter	test.property.label
-
-_test.list.fmtgs.x_test_c	.expr
-_test.list.fmtgs.x_test_x_c	.subcode
-_test.list.fmtgs.x_test_x.s_c	.subcode
-_test.list.fmtgs.x_test_eq_c	.subcode
 test.assert	.gvar
 _test.list.fmtgs.x_test_succ	.gvar
 _test.list.fmtgs.x_test_fail	.gvar
-x	.alloc	_test.list.fmtgs.x_test_x_c
-x.s	.alloc	_test.list.fmtgs.x_test_x.s_c	|	x
-eq	.alloc	_test.list.fmtgs.x_test_eq_c	|	x.s
-	.app	_test.list.fmtgs.x_test_succ	_test.list.fmtgs.x_test_fail	eq
-	.enter	test.assert
-
-_test.list.fmtgs.x_test_x_c	.expr
-rune.t	.tygvar
 list.singleton	.gvar
-_x	.gvar
-	.app	_x
-	.enter	list.singleton	rune.t
-
-_test.list.fmtgs.x_test_x.s_c	.expr
-list.t	.tygvar
-rune.t	.tygvar
 rune.fmtgs.list	.gvar
 list.nil	.gvar
-x	.fv	list.t	rune.t
-snil	.apply	list.nil	rune.t
-	.app	x	snil
-	.enter	rune.fmtgs.list
-
-_test.list.fmtgs.x_test_eq_c	.expr
-list.t	.tygvar
-rune.t	.tygvar
 list.≡	.gvar
 rune.≡	.gvar
 _test.list.fmtgs.x_test_expected	.gvar
-x.s	.fv	list.t	rune.t
-	.app	rune.≡	x.s	_test.list.fmtgs.x_test_expected
-	.enter	list.≡	rune.t
+_x	.gvar
+x	.apply	list.singleton	rune.t	|	_x
+snil	.apply	list.nil	rune.t
+x.s	.apply	rune.fmtgs.list	|	x	snil
+eq	.apply	list.≡	rune.t	|	rune.≡	x.s	_test.list.fmtgs.x_test_expected
+test	.apply	test.assert	|	_test.list.fmtgs.x_test_succ	_test.list.fmtgs.x_test_fail	eq
+	.app	_test.list.fmtgs.x_label	test
+	.enter	test.property.label
 
 # §section §gs{rune.list.fmtgs qq{\\n}}
 
@@ -308,30 +247,20 @@ test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.list
 # §section §gs{rune.advance}
 
 _test.rune.advance_c	.expr
-_test.rune.advance_test_c	.subcode
+rune.t	.tygvar
 test.property.label	.gvar
 _test.rune.advance_label	.gvar
-test	.alloc	_test.rune.advance_test_c
-	.app	_test.rune.advance_label	test
-	.enter	test.property.label
-
-_test.rune.advance_test_c	.expr
-rune.t	.tygvar
-_test.rune.advance_test_actual_c	.subcode
 test.assert.eq	.gvar
 rune.≡	.gvar
 rune.fmtgs	.gvar
 _g	.gvar
-actual	.alloc	_test.rune.advance_test_actual_c
-	.app	rune.≡	rune.fmtgs	actual	_g
-	.enter	test.assert.eq	rune.t
-
-_test.rune.advance_test_actual_c	.expr
 rune.advance	.gvar
 _c	.gvar
 _4	.gvar
-	.app	_c	_4
-	.enter	rune.advance
+actual	.apply	rune.advance	|	_c	_4
+test	.apply	test.assert.eq	rune.t	|	rune.≡	rune.fmtgs	actual	_g
+	.app	_test.rune.advance_label	test
+	.enter	test.property.label
 
 # §section Fixtures
 
