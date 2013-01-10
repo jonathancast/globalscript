@@ -1,8 +1,13 @@
 	.prefix
 
+# Note: this library doesn't balance its binary trees;
+# that will need to be fixed but I want to see what the performance looks like directly first.
+
 	.data
 
 ordered.set.tolist	.closure	_ordered.set.tolist_c	_ordered.set.tolist_ty
+
+ordered.set.empty	.closure	_ordered.set.empty_c
 
 	.code
 
@@ -27,6 +32,18 @@ list.t	.tygvar	# Temp
 s0	.karg	ordered.set.prim.u	α
 	.undef	list.t	α
 
+# §section §gs{ordered.set.empty}
+
+_ordered.set.empty_c	.expr
+ordered.set.prim.u	.tygvar
+α	.tyarg	*
+res.u	.tylet	ordered.set.prim.u	α
+ordered.set.t.in	.cogvar
+c	.constr	res.u	empty
+	.coerce	ordered.set.t.in	α
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{ordered.set.t}
@@ -38,8 +55,9 @@ ordered.set.prim.u	.tygvar
 	.tyref	ordered.set.prim.u	α
 
 ordered.set.prim.u	.tyexpr
+record.unboxed.empty	.tygvar
 α	.tylambda	*
-	.tysum
+	.tysum	empty	record.unboxed.empty
 
 # §section §gs{ordered.set.tolist}
 
@@ -55,6 +73,11 @@ list.t	.tygvar
 	.tyref	list.t	α
 
 	.coercion
+
+ordered.set.t.in	.tycoercion
+ordered.set.t	.tygvar
+α	.tylambda	*
+	.tydefinition	ordered.set.t	α
 
 ordered.set.t.out	.tycoercion
 ordered.set.t	.tygvar
