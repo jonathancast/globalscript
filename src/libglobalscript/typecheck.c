@@ -1356,7 +1356,7 @@ gsbc_typecheck_code_type_arg_op(struct gsparsedline *p, struct gsbc_typecheck_co
         struct gskind *argkind;
 
         if (pcl->regtype > rttyarg)
-            gsfatal("%P: oo late to add arguments", p->pos)
+            gsfatal("%P: Too late to add arguments", p->pos)
         ;
         pcl->regtype = rttyarg;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
