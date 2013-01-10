@@ -17,13 +17,42 @@ _gsdl.cgs.document.fmtgs_suffix	.string	〉
 
 # §section §gs{gsdl.cgs.document.parser}
 
+# >     for (
+# >         'e ← expr.parser;
+# >         'mb.ty ← optional (lexeme m/::/ *> gstype.parser) <* lexeme m/;/;
+# >         'gs ← many generator.parser;
+# >     ) [| 〈 'expr ∝ just e; 'gstype ∝ mb.ty; 'gens ∝ gs; 〉 |]
+# > <|> for (
+# >         'ty ← lexeme m/::/ *> (gstype.parser <* lexeme m/;/);
+# >         'gs ← many generator.parser;
+# >     ) [| 〈 'expr ∝ nothing; 'gstype ∝ just ty; 'gens ∝ gs; 〉 |]
 _gsdl.cgs.document.parser_c	.expr
 rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.document.t	.tygvar
-parser.fail.msg	.gvar
-_gsdl.cgs.document.parser_msg.s	.gvar
-	.app	_gsdl.cgs.document.parser_msg.s
-	.enter	parser.fail.msg	rune.t	gsdl.cgs.document.t
+string.t	.tygvar
+#parser.t	.tygvar
+_gsdl.cgs.document.parser_f_c	.subcode
+parser.map	.gvar
+parser.<*	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.oftype	.gvar
+gsdl.cgs.gstype.parser	.gvar
+gsdl.cgs.syntax.semi	.gvar
+f	.alloc	_gsdl.cgs.document.parser_f_c
+ty_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser
+ty_p	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	ty_p1	gsdl.cgs.syntax.semi
+	.app	f	ty_p
+	.enter	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.document.t
+
+_gsdl.cgs.document.parser_f_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+maybe.just	.gvar
+ty	.larg	gsdl.cgs.gstype.t
+mbty	.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
+r	.record	gstype	mbty
+	.lift
+	.yield	r
 
 # §section §gs{gsdl.cgs.document.≡}
 

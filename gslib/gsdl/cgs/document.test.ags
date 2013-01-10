@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.fmtgs
+_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.fmtgs	_test.parse.empty.document
 
 _test.eq.gstype.nothing.just	.closure	_test.eq.gstype.nothing.just_c
 _test.eq.gstype.nothing.just_label	.string	〈\s'gstype\s∝\snothing;\s〉\s≡\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
@@ -14,6 +14,10 @@ _test.eq.gstype.nothing.just_true	.string	〈\s'gstype\s∝\snothing;\s〉\s≡\
 _test.fmtgs	.closure	_test.fmtgs_c
 _test.fmtgs_label	.string	document.fmtgs\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
 _test.fmtgs_expected	.string	〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
+
+_test.parse.empty.document	.closure	_test.parse.empty.document_c
+_test.parse.empty.document_label	.string	parse\sdocument.parser\sqq{::\s"Π〈〉;}
+_test.parse.empty.document_input	.string	::\s"Π〈〉;
 
 	.code
 
@@ -76,3 +80,39 @@ actual	.apply	gsdl.cgs.document.fmtgs	|	doc	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs_expected
 	.app	_test.fmtgs_label	test
 	.enter	test.property.label
+
+# §section §gs{parse qq{:: "Π〈〉}}
+
+_test.parse.empty.document_c	.expr
+rune.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+_test.parse.empty.document_k_c	.subcode
+test.property.label	.gvar
+_test.parse.empty.document_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.cgs.document.parser	.gvar
+_test.parse.empty.document_input	.gvar
+k	.alloc	_test.parse.empty.document_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.document.t	|	parser.rune.advance	rune.print	gsdl.cgs.document.parser	_test.parse.empty.document_input	k
+	.app	_test.parse.empty.document_label	test
+	.enter	test.property.label
+
+_test.parse.empty.document_k_c	.expr
+gsdl.cgs.document.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+test.assert.eq	.gvar
+gsdl.cgs.document.≡	.gvar
+gsdl.cgs.document.fmtgs	.gvar
+maybe.just	.gvar
+gsdl.cgs.gstype.product	.gvar
+list.nil	.gvar
+actual	.larg	gsdl.cgs.document.t
+nil	.apply	list.nil	gsdl.cgs.gstype.field.t
+empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
+just.empty.prod	.apply	maybe.just	gsdl.cgs.gstype.t	|	empty.prod
+expected	.lrecord	gstype	just.empty.prod
+	.app	gsdl.cgs.document.≡	gsdl.cgs.document.fmtgs	actual	expected
+	.enter	test.assert.eq	gsdl.cgs.document.t
