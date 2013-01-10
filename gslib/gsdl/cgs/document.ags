@@ -60,10 +60,18 @@ r	.record	gstype	mbty
 
 _gsdl.cgs.document.freevars_c	.expr
 gsdl.cgs.document.t	.tygvar
-ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
+gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+maybe.maybe	.gvar
+ordered.set.empty	.gvar
+gsdl.cgs.gstype.freevars	.gvar
 doc	.larg	gsdl.cgs.document.t
-	.undef	ordered.set.t	gsdl.cgs.symbol.t
+empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
+mb.ty	.lfield	gstype doc
+	.app	empty	gsdl.cgs.gstype.freevars	mb.ty
+	.enter	maybe.maybe	gsdl.cgs.gstype.t	res.ty
 
 # §section §gs{gsdl.cgs.document.≡}
 
