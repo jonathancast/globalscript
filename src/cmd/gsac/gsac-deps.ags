@@ -212,10 +212,21 @@ fvs	.larg	list.t	gsdl.cgs.symbol.t
 _print.deps_body_w_k	.forcecont
 list.prim.u	.tygvar
 gsdl.cgs.symbol.t	.tygvar
-ibio.prim.t	.tygvar
+list.t	.tygvar
 record.empty	.tygvar
+ibio.prim.t	.tygvar	# Temp
+ibio.prim.unit	.gvar
+record.empty	.gvar
 fvs0	.karg	list.prim.u	gsdl.cgs.symbol.t
-	.undef	ibio.prim.t	record.empty
+	.analyze	fvs0	:	nil
+		.case	:
+fv0		.fkarg	0	gsdl.cgs.symbol.t
+fvs1		.fkarg	1	list.t	gsdl.cgs.symbol.t
+			.undef	ibio.prim.t	record.empty
+		.case	nil
+			.lift
+			.app	record.empty
+			.yield	ibio.prim.unit	record.empty
 
 	.type
 
