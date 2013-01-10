@@ -6,6 +6,8 @@ gsdl.cgs.file.read	.closure	_gsdl.cgs.file.read_c
 _gsdl.cgs.file.read_parser_document.s	.string	document
 _gsdl.cgs.file.read_parser_no.typepragma.msg	.string	No\s\htype:\sprefix\sor\s\htype:\sdocument\spragma
 
+gsdl.cgs.file.freevars	.closure	_gsdl.cgs.file.freevars_c
+
 gsdl.cgs.file.document	.closure	_gsdl.cgs.file.document_c
 
 gsdl.cgs.pragma.line	.closure	_gsdl.cgs.pragma.line_c
@@ -400,6 +402,15 @@ _gsdl.cgs.file.read_body_left_res_body_c	.expr
 ibio.prim.t	.tygvar
 gsdl.cgs.file.t	.tygvar
 	.undef	ibio.prim.t	gsdl.cgs.file.t
+
+# §section §gs{gsdl.cgs.file.freevars}
+
+_gsdl.cgs.file.freevars_c	.expr
+gsdl.cgs.file.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+file	.larg	gsdl.cgs.file.t
+	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.file.document.t} Constructors
 
