@@ -89,7 +89,7 @@ x1				.fkarg	0	α
 			.analyze	mb1.0	just	nothing
 				.case	just
 x1				.fkarg	0	α
-					.undef	bool.t
+					.enter	bool.false
 				.case	nothing
 					.enter	bool.true
 
