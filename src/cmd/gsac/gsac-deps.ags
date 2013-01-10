@@ -167,7 +167,7 @@ prefixen	.larg	list.t	ibio.file.name.t
 fn	.larg	ibio.file.name.t
 cgs.fn	.alloc	_print.deps_cgs.fn_c	|	fn
 cgs	.bind	_print.deps_cgs_c	|	eo	cgs.fn
-	.body	_print.deps_body_c
+	.body	_print.deps_body_c	|	cgs
 
 _print.deps_cgs.fn_c	.expr
 ibio.file.name.t	.tygvar
@@ -187,13 +187,14 @@ cgs.fn	.fv	ibio.file.name.t
 	.enter	gsdl.cgs.file.read
 
 _print.deps_body_c	.expr
+gsdl.cgs.file.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
-ordered.set.t	.tygvar	#	Temp
-list.t	.tygvar	# Temp
 _print.deps_body_w	.gvar
 ordered.set.tolist	.gvar
 gsdl.cgs.symbol.compare	.gvar
-fvs	.undefined	ordered.set.t	gsdl.cgs.symbol.t
+gsdl.cgs.file.freevars	.gvar
+cgs	.fv	gsdl.cgs.file.t
+fvs	.apply	gsdl.cgs.file.freevars	|	cgs
 fvs.l	.apply	ordered.set.tolist	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	fvs
 	.app	fvs.l
 	.enter	_print.deps_body_w
