@@ -8,6 +8,7 @@ _real.entry	.closure	_real.entry_c
 _parse.args	.closure	_parse.args_c	_parse.args_ty
 
 _print.deps	.closure	_print.deps_c
+_print.deps_body_w	.closure	_print.deps_body_w_c	_print.deps_body_w_ty
 
 _l	.string	-l
 
@@ -186,8 +187,19 @@ cgs.fn	.fv	ibio.file.name.t
 	.enter	gsdl.cgs.file.read
 
 _print.deps_body_c	.expr
+list.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	# Temp
+_print.deps_body_w	.gvar
+fvs.l	.undefined	list.t	gsdl.cgs.symbol.t
+	.app	fvs.l
+	.enter	_print.deps_body_w
+
+_print.deps_body_w_c	.expr
+list.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
 ibio.prim.t	.tygvar
 record.empty	.tygvar
+fvs	.larg	list.t	gsdl.cgs.symbol.t
 	.undef	ibio.prim.t	record.empty
 
 	.type
@@ -209,6 +221,17 @@ string.ty	.tylet	list.t	rune.t
 	.tylift
 	.tyfun	list.t	string.ty
 	.tyref	_parse.args_res_ty
+
+# §section §gs{print.deps}
+
+_print.deps_body_w_ty	.tyexpr
+list.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ibio.prim.t	.tygvar
+record.empty	.tygvar
+	.tylift
+	.tyfun	list.t	gsdl.cgs.symbol.t
+	.tyref	ibio.prim.t	record.empty
 
 	.coercion
 
