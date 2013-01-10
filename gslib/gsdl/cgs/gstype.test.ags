@@ -4,11 +4,16 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fmtgs.product	_test.parser.empty.product
+_tests	.list	test.property.t	_test.fmtgs.product	_test.lift.eq.product	_test.parser.empty.product
 
 _test.fmtgs.product	.closure	_test.fmtgs.product_c
 _test.fmtgs.product_label	.string	fmtgs\s(product\s[])
 _test.fmtgs.product_expected	.string	product\s[]
+
+_test.lift.eq.product	.closure	_test.lift.eq.product_c
+_test.lift.eq.product_label	.string	lift\s(product\snil)\s≡\sproduct\snil
+_test.lift.eq.product_false	.string	lift\s(product\snil)\s≠\sproduct\snil
+_test.lift.eq.product_true	.string	lift\s(product\snil)\s≡\sproduct\snil
 
 _test.parser.empty.product	.closure	_test.parser.empty.product_c
 _test.parser.empty.product_label	.string	parse\sqq{"Π〈〉}
@@ -44,6 +49,27 @@ snil	.apply	list.nil	rune.t
 actual	.apply	gsdl.cgs.gstype.fmtgs	|	empty.prod	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.product_expected
 	.app	_test.fmtgs.product_label	test
+	.enter	test.property.label
+
+# §section §gs{lift (product nil) ≡ product nil}
+
+_test.lift.eq.product_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+test.property.label	.gvar
+_test.lift.eq.product_label	.gvar
+test.deny	.gvar
+_test.lift.eq.product_false	.gvar
+_test.lift.eq.product_true	.gvar
+gsdl.cgs.gstype.≡	.gvar
+gsdl.cgs.gstype.lift	.gvar
+gsdl.cgs.gstype.product	.gvar
+list.nil	.gvar
+nil	.apply	list.nil	gsdl.cgs.gstype.field.t
+empty.product	.apply	gsdl.cgs.gstype.product	|	nil
+lift.empty.product	.apply	gsdl.cgs.gstype.lift	|	empty.product
+eq	.apply	gsdl.cgs.gstype.≡	|	lift.empty.product	empty.product
+test	.apply	test.deny	|	_test.lift.eq.product_false	_test.lift.eq.product_true	eq
+	.app	_test.lift.eq.product_label	test
 	.enter	test.property.label
 
 # §section §gs{parse qq{"Π〈〉}}
