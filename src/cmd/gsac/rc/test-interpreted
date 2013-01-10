@@ -6,3 +6,5 @@
 
 ok_grep_script_errors '-- gsac-deps: Completely empty .cgs file --' deps-empty-cgs 'empty.cgs: No #type: prefix or #type: document pragma' ibio ./gslib ./gsac-deps.ags -l $GLOBALSCRIPT/gslib ./test-fixtures/empty.gsac
 ok_grep_script_errors '-- gsac-deps: Document with no entry point --' deps-no-entry 'no-entry.cgs: at EOF: Un-expected EOF; expected symbol' ibio ./gslib ./gsac-deps.ags -l $GLOBALSCRIPT/gslib ./test-fixtures/no-entry.gsac
+
+ok_diff_script '-- gsac-deps: Empty document --' deps-empty-doc ibio ./gslib ./gsac-deps.ags -l ./test-fixtures/gslib ./test-fixtures/empty-doc.gsac
