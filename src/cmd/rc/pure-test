@@ -2,6 +2,8 @@
 
 . $GLOBALSCRIPT/bin/test-fns
 
+ok_grep_errors '-- ill-typed gstype programs --' './test-gslib/mistyped.type.ags: Bad type: I don''t think' ./$O.gstype mistyped.type.ags
+
 ok_diff '-- hello, world --' ./$O.gstype hello.type.ags
 ok_diff '-- concatenation --' ./$O.gstype concat.type.ags
 
