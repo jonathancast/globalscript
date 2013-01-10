@@ -45,10 +45,29 @@ _maybe.maybe_sk_ty	.tygvar
 maybe.t	.tygvar
 α	.tyarg	*
 β	.tyarg	*
+_maybe.maybe_k	.subcode
+maybe.t.out	.cogvar
 fk	.larg	β
 sk	.larg	_maybe.maybe_sk_ty	α	β
 mb	.larg	maybe.t	α
-	.undef	β
+	.force	_maybe.maybe_k	α	β	|	sk
+	.coerce	maybe.t.out	α
+	.enter	mb
+
+_maybe.maybe_k	.forcecont
+_maybe.maybe_sk_ty	.tygvar
+maybe.prim.u	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+sk	.fv	_maybe.maybe_sk_ty	α	β
+mb0	.karg	maybe.prim.u	α
+	.analyze	mb0	just	nothing
+		.case	just
+x		.fkarg	0	α
+			.app	x
+			.enter	sk
+		.case	nothing
+			.undef	β
 
 # §section §gs{maybe.≡}
 
