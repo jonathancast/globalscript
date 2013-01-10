@@ -8,6 +8,7 @@
 ordered.set.tolist	.closure	_ordered.set.tolist_c	_ordered.set.tolist_ty
 
 ordered.set.empty	.closure	_ordered.set.empty_c
+ordered.set.union	.closure	_ordered.set.union_c	_ordered.set.union_ty
 
 	.code
 
@@ -44,6 +45,17 @@ c	.constr	res.u	empty
 	.lift
 	.yield	c
 
+# §section §gs{ordered.set.union}
+
+_ordered.set.union_c	.expr
+order.total.t	.tygvar
+ordered.set.t	.tygvar
+α	.tyarg	*
+cmp	.larg	order.total.t	α
+s0	.larg	ordered.set.t	α
+s1	.larg	ordered.set.t	α
+	.undef	ordered.set.t	α
+
 	.type
 
 # §section §gs{ordered.set.t}
@@ -71,6 +83,20 @@ list.t	.tygvar
 	.tylift
 	.tyfun	ordered.set.t	α
 	.tyref	list.t	α
+
+# §section §gs{ordered.set.union}
+
+_ordered.set.union_ty	.tyexpr
+order.total.t	.tygvar
+ordered.set.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	α
+	.tylift
+	.tyfun	ordered.set.t	α
+	.tylift
+	.tyfun	ordered.set.t	α
+	.tyref	ordered.set.t	α
 
 	.coercion
 
