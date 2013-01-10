@@ -83,6 +83,28 @@ fn ok_grep_errors {
     true
 }
 
+fn ok_diff_script {
+    nm=$1; casenm=$2
+    shift; shift
+    echo $nm
+    if (! $* > ./test-results/$casenm^-actual >[2] ./test-results/$casenm^-errors) {
+        echo $* 'failed; should have succeeded' >[1=2]
+        cat ./test-results/$casenm^-errors >[1=2]
+        cat ./test-results/$casenm^-actual >[1=2]
+        exit 1
+    }
+    if (! diff ./test-results/$casenm^-actual ./test-results/$casenm^-expected) {
+        echo 'Incorrect output:' >[1=2]
+        echo '--- Actual ---' >[1=2]
+        cat ./test-results/$casenm^-errors >[1=2]
+        cat ./test-results/$casenm^-actual >[1=2]
+        echo '--- Expected ---' >[1=2]
+        cat ./test-results/$casenm^-expected
+        exit 1
+    }
+    true
+}
+
 fn ok_grep_script_errors {
     nm = $1; casenm=$2; msg=$3
     shift; shift; shift
