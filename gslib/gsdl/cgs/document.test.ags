@@ -4,7 +4,12 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fmtgs
+_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.fmtgs
+
+_test.eq.gstype.nothing.just	.closure	_test.eq.gstype.nothing.just_c
+_test.eq.gstype.nothing.just_label	.string	〈\s'gstype\s∝\snothing;\s〉\s≡\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
+_test.eq.gstype.nothing.just_false	.string	〈\s'gstype\s∝\snothing;\s〉\s≠\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
+_test.eq.gstype.nothing.just_true	.string	〈\s'gstype\s∝\snothing;\s〉\s≡\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
 
 _test.fmtgs	.closure	_test.fmtgs_c
 _test.fmtgs_label	.string	document.fmtgs\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
@@ -17,6 +22,32 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{〈 'gstype ∝ nothing; 〉 ≡ 〈 'gstype ∝ just (product []); 〉}
+
+_test.eq.gstype.nothing.just_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+test.property.label	.gvar
+_test.eq.gstype.nothing.just_label	.gvar
+test.deny	.gvar
+_test.eq.gstype.nothing.just_false	.gvar
+_test.eq.gstype.nothing.just_true	.gvar
+gsdl.cgs.document.≡	.gvar
+maybe.nothing	.gvar
+maybe.just	.gvar
+gsdl.cgs.gstype.product	.gvar
+list.nil	.gvar
+nothing	.apply	maybe.nothing	gsdl.cgs.gstype.t
+doc0	.lrecord	gstype	nothing
+nil	.apply	list.nil	gsdl.cgs.gstype.field.t
+empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
+just.empty.prod	.apply	maybe.just	gsdl.cgs.gstype.t	|	empty.prod
+doc1	.lrecord	gstype	just.empty.prod
+b	.apply	gsdl.cgs.document.≡	|	doc0	doc1
+test	.apply	test.deny	|	_test.eq.gstype.nothing.just_false	_test.eq.gstype.nothing.just_true	b
+	.app	_test.eq.gstype.nothing.just_label	test
+	.enter	test.property.label
 
 # §section §gs{document.fmtgs 〈 'gstype ∝ just (product list.nil); 〉}
 

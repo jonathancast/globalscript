@@ -29,10 +29,15 @@ _gsdl.cgs.document.parser_msg.s	.gvar
 
 _gsdl.cgs.document.≡_c	.expr
 gsdl.cgs.document.t	.tygvar
-bool.true	.gvar
+gsdl.cgs.gstype.t	.tygvar
+maybe.≡	.gvar
+gsdl.cgs.gstype.≡	.gvar
 doc0	.larg	gsdl.cgs.document.t
 doc1	.larg	gsdl.cgs.document.t
-	.enter	bool.true
+mb.ty0	.lfield	gstype	doc0
+mb.ty1	.lfield	gstype	doc1
+	.app	gsdl.cgs.gstype.≡	mb.ty0	mb.ty1
+	.enter	maybe.≡	gsdl.cgs.gstype.t
 
 # §section §gs{gsdl.cgs.document.fmtgs}
 
