@@ -9,9 +9,11 @@ ordered.set.tolist	.closure	_ordered.set.tolist_c	_ordered.set.tolist_ty
 # §section §gs{ordered.set.tolist}
 
 _ordered.set.tolist_c	.expr
+order.total.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar	# Temp
 α	.tyarg	*
+cmp	.larg	order.total.t	α
 s	.larg	ordered.set.t	α
 	.undef	list.t	α
 
@@ -33,9 +35,12 @@ ordered.set.prim.u	.tyexpr
 # §section §gs{ordered.set.tolist}
 
 _ordered.set.tolist_ty	.tyexpr
+order.total.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 α	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	α
 	.tylift
 	.tyfun	ordered.set.t	α
 	.tyref	list.t	α
