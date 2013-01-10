@@ -11,10 +11,20 @@ ordered.set.tolist	.closure	_ordered.set.tolist_c	_ordered.set.tolist_ty
 _ordered.set.tolist_c	.expr
 order.total.t	.tygvar
 ordered.set.t	.tygvar
-list.t	.tygvar	# Temp
 α	.tyarg	*
+_ordered.set.tolist_k	.subcode
+ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 s	.larg	ordered.set.t	α
+	.force	_ordered.set.tolist_k	α
+	.coerce	ordered.set.t.out	α
+	.enter	s
+
+_ordered.set.tolist_k	.forcecont
+ordered.set.prim.u	.tygvar
+list.t	.tygvar	# Temp
+α	.tyfv	*
+s0	.karg	ordered.set.prim.u	α
 	.undef	list.t	α
 
 	.type
@@ -31,7 +41,6 @@ ordered.set.prim.u	.tyexpr
 α	.tylambda	*
 	.tysum
 
-
 # §section §gs{ordered.set.tolist}
 
 _ordered.set.tolist_ty	.tyexpr
@@ -44,3 +53,11 @@ list.t	.tygvar
 	.tylift
 	.tyfun	ordered.set.t	α
 	.tyref	list.t	α
+
+	.coercion
+
+ordered.set.t.out	.tycoercion
+ordered.set.t	.tygvar
+α	.tylambda	*
+	.tyinvert
+	.tydefinition	ordered.set.t	α
