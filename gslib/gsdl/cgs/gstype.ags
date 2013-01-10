@@ -7,6 +7,8 @@ _gsdl.cgs.gstype.parser_pi.re	.regex	"Π〈
 _gsdl.cgs.gstype.parser_lift.p_lb.re	.regex	⌊
 _gsdl.cgs.gstype.parser_lift.p_rb.re	.regex	⌋
 
+gsdl.cgs.gstype.freevars	.closure	_gsdl.cgs.gstype.freevars_c	_gsdl.cgs.gstype.freevars_ty
+
 gsdl.cgs.gstype.≡	.closure	_gsdl.cgs.gstype.≡_c
 
 gsdl.cgs.gstype.fmtgs	.closure	_gsdl.cgs.gstype.fmtgs_c
@@ -90,6 +92,15 @@ ty_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.ws	ty
 ty_p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	lb_p	ty_p1
 	.app	gsdl.cgs.gstype.lift	ty_p
 	.enter	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t
+
+# §section §gs{gsdl.cgs.gstype.freevars}
+
+_gsdl.cgs.gstype.freevars_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ty	.larg	gsdl.cgs.gstype.t
+	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gstype.≡}
 
@@ -277,6 +288,16 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
+
+# §section §gs{gsdl.cgs.gstype.freevars}
+
+_gsdl.cgs.gstype.freevars_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gstype.field.fmtgs}
 
