@@ -19,6 +19,8 @@ gsdl.cgs.gstype.product	.closure	_gsdl.cgs.gstype.product_c
 
 gsdl.cgs.gstype.field.parser	.closure	_gsdl.cgs.gstype.field.parser_c
 
+gsdl.cgs.gstype.field.freevars	.closure	_gsdl.cgs.gstype.field.freevars_c
+
 gsdl.cgs.gstype.field.fmtgs	.closure	_gsdl.cgs.gstype.field.fmtgs_c	_gsdl.cgs.gstype.field.fmtgs_ty
 gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
@@ -97,10 +99,42 @@ ty_p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	lb_p	ty_p1
 
 _gsdl.cgs.gstype.freevars_c	.expr
 gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.freevars_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.gstype.freevars_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsdl.cgs.gstype.freevars_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
-ty	.larg	gsdl.cgs.gstype.t
-	.undef	ordered.set.t	gsdl.cgs.symbol.t
+res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+gsdl.cgs.gstype.freevars	.gvar
+list.foldr	.gvar
+ordered.set.union	.gvar
+gsdl.cgs.symbol.compare	.gvar
+ordered.set.empty	.gvar
+list.map	.gvar
+gsdl.cgs.gstype.field.freevars	.gvar
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	ty0	lift	product
+		.case	lift
+ty1		.fkarg	0	gsdl.cgs.gstype.t
+			.app	ty1
+			.enter	gsdl.cgs.gstype.freevars
+		.case	product
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+un			.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
+empty			.apply	ordered.set.empty	gsdl.cgs.symbol.t
+fvss			.apply	list.map	gsdl.cgs.gstype.field.t	res.ty	|	gsdl.cgs.gstype.field.freevars	fs
+			.app	un	empty	fvss
+			.enter	list.foldr	res.ty	res.ty
+	# > :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gstype.≡}
 
@@ -224,6 +258,15 @@ rune.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 parser.fail	.gvar
 	.enter	parser.fail	rune.t	gsdl.cgs.gstype.field.t
+
+# §section §gs{gsdl.cgs.gstype.field.freevars}
+
+_gsdl.cgs.gstype.field.freevars_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+ordered.set.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	# Temp
+f	.larg	gsdl.cgs.gstype.field.t
+	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gstype.field.fmtgs}
 
