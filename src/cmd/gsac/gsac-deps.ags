@@ -197,9 +197,19 @@ fvs.l	.undefined	list.t	gsdl.cgs.symbol.t
 _print.deps_body_w_c	.expr
 list.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
+_print.deps_body_w_k	.subcode
+list.t.out	.cogvar
+fvs	.larg	list.t	gsdl.cgs.symbol.t
+	.force	_print.deps_body_w_k
+	.coerce	list.t.out	gsdl.cgs.symbol.t
+	.enter	fvs
+
+_print.deps_body_w_k	.forcecont
+list.prim.u	.tygvar
+gsdl.cgs.symbol.t	.tygvar
 ibio.prim.t	.tygvar
 record.empty	.tygvar
-fvs	.larg	list.t	gsdl.cgs.symbol.t
+fvs0	.karg	list.prim.u	gsdl.cgs.symbol.t
 	.undef	ibio.prim.t	record.empty
 
 	.type
