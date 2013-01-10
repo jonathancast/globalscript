@@ -5,6 +5,8 @@
 maybe.nothing	.closure	_maybe.nothing_c
 maybe.just	.closure	_maybe.just_c
 
+maybe.maybe	.closure	_maybe.maybe_c
+
 maybe.≡	.closure	_maybe.≡_c
 
 maybe.fmtgs	.closure	_maybe.fmtgs_c
@@ -35,6 +37,18 @@ j	.constr	res.u	just	0	x
 	.coerce	maybe.t.in	α
 	.lift
 	.yield	j
+
+# §section §gs{maybe.maybe}
+
+_maybe.maybe_c	.expr
+_maybe.maybe_sk_ty	.tygvar
+maybe.t	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+fk	.larg	α
+sk	.larg	_maybe.maybe_sk_ty	α	β
+mb	.larg	maybe.t	α
+	.undef	β
 
 # §section §gs{maybe.≡}
 
@@ -158,6 +172,15 @@ _maybe.prim.u_just_ty	.tyexpr
 
 _maybe.prim.u_nothing_ty	.tyexpr
 	.tyubproduct
+
+# §section §gs{maybe.maybe}
+
+_maybe.maybe_sk_ty	.tyexpr
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	β
 
 # §section §gs{maybe.≡}
 
