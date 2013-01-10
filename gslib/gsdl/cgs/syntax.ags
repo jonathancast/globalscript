@@ -2,6 +2,8 @@
 
 	.data
 
+gsdl.cgs.syntax.var.parser	.closure	_gsdl.cgs.syntax.var.parser_c
+
 gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
 _gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
 
@@ -18,6 +20,14 @@ gsdl.cgs.syntax.semi	.closure	_gsdl.cgs.syntax.semi_c
 _gsdl.cgs.syntax.semi_re	.regex	;
 
 	.code
+
+# §section §gs{gsdl.cgs.syntax.var.parser}
+
+_gsdl.cgs.syntax.var.parser_c	.expr
+rune.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+parser.fail	.gvar	# Temp
+	.enter	parser.fail	rune.t	gsdl.cgs.syntax.var.t
 
 # §section §gs{gsdl.cgs.syntax.ws}
 
@@ -80,3 +90,22 @@ gsdl.cgs.syntax.ws	.gvar
 m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.semi_re
 	.app	m	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
+
+	.type
+
+# §section §gs{gsdl.cgs.syntax.var.t}
+
+gsdl.cgs.syntax.var.t	.tyexpr
+list.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+	.tyref	list.t	gsdl.cgs.syntax.var.component.t
+
+# §section §gs{gsdl.cgs.syntax.var.component.t}
+
+gsdl.cgs.syntax.var.component.t	.tyabstract	*
+gsdl.cgs.syntax.var.component.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.syntax.var.component.prim.u
+
+gsdl.cgs.syntax.var.component.prim.u	.tyexpr
+	.tysum
