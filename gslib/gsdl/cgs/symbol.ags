@@ -1,0 +1,13 @@
+	.prefix
+
+	.type
+
+# §section §gs{gsdl.cgs.symbol.t}
+
+gsdl.cgs.symbol.t	.tyabstract	*
+gsdl.cgs.symbol.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.symbol.prim.u
+
+gsdl.cgs.symbol.prim.u	.tyexpr
+	.tysum
