@@ -1,5 +1,18 @@
 	.prefix
 
+	.data
+
+gsdl.cgs.symbol.compare	.closure	_gsdl.cgs.symbol.compare_c
+
+	.code
+
+_gsdl.cgs.symbol.compare_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+order.total.ord.t	.tygvar
+s0	.larg	gsdl.cgs.symbol.t
+s1	.larg	gsdl.cgs.symbol.t
+	.undef	order.total.ord.t
+
 	.type
 
 # §section §gs{gsdl.cgs.symbol.t}
