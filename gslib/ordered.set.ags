@@ -1,0 +1,41 @@
+	.prefix
+
+	.data
+
+ordered.set.tolist	.closure	_ordered.set.tolist_c	_ordered.set.tolist_ty
+
+	.code
+
+# §section §gs{ordered.set.tolist}
+
+_ordered.set.tolist_c	.expr
+ordered.set.t	.tygvar
+list.t	.tygvar	# Temp
+α	.tyarg	*
+s	.larg	ordered.set.t	α
+	.undef	list.t	α
+
+	.type
+
+# §section §gs{ordered.set.t}
+
+ordered.set.t	.tyabstract	**^
+ordered.set.prim.u	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyref	ordered.set.prim.u	α
+
+ordered.set.prim.u	.tyexpr
+α	.tylambda	*
+	.tysum
+
+
+# §section §gs{ordered.set.tolist}
+
+_ordered.set.tolist_ty	.tyexpr
+ordered.set.t	.tygvar
+list.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	ordered.set.t	α
+	.tyref	list.t	α
