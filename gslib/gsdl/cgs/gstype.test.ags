@@ -4,11 +4,15 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fmtgs.product
+_tests	.list	test.property.t	_test.fmtgs.product	_test.parser.empty.product
 
 _test.fmtgs.product	.closure	_test.fmtgs.product_c
 _test.fmtgs.product_label	.string	fmtgs\s(product\s[])
 _test.fmtgs.product_expected	.string	product\s[]
+
+_test.parser.empty.product	.closure	_test.parser.empty.product_c
+_test.parser.empty.product_label	.string	parse\sqq{"Π〈〉}
+_test.parser.empty.product_input	.string	"Π〈〉
 
 	.code
 
@@ -41,3 +45,35 @@ actual	.apply	gsdl.cgs.gstype.fmtgs	|	empty.prod	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.product_expected
 	.app	_test.fmtgs.product_label	test
 	.enter	test.property.label
+
+# §section §gs{parse qq{"Π〈〉}}
+
+_test.parser.empty.product_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_test.parser.empty.product_k_c	.subcode
+test.property.label	.gvar
+_test.parser.empty.product_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.cgs.gstype.parser	.gvar
+_test.parser.empty.product_input	.gvar
+k	.alloc	_test.parser.empty.product_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gstype.t	|	parser.rune.advance	rune.print	gsdl.cgs.gstype.parser	_test.parser.empty.product_input	k
+	.app	_test.parser.empty.product_label	test
+	.enter	test.property.label
+
+_test.parser.empty.product_k_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+test.assert.eq	.gvar
+gsdl.cgs.gstype.≡	.gvar
+gsdl.cgs.gstype.fmtgs	.gvar
+gsdl.cgs.gstype.product	.gvar
+list.nil	.gvar
+actual	.larg	gsdl.cgs.gstype.t
+nil	.apply	list.nil	gsdl.cgs.gstype.field.t
+expected	.apply	gsdl.cgs.gstype.product	|	nil
+	.app	gsdl.cgs.gstype.≡	gsdl.cgs.gstype.fmtgs	actual	expected
+	.enter	test.assert.eq	gsdl.cgs.gstype.t

@@ -2,15 +2,63 @@
 
 	.data
 
+gsdl.cgs.gstype.parser	.closure	_gsdl.cgs.gstype.parser_c
+_gsdl.cgs.gstype.parser_pi.re	.regex	"Π〈
+
+gsdl.cgs.gstype.≡	.closure	_gsdl.cgs.gstype.≡_c
+
 gsdl.cgs.gstype.fmtgs	.closure	_gsdl.cgs.gstype.fmtgs_c
 _gsdl.cgs.gstype.fmtgs_product.s	.string	product
 
 gsdl.cgs.gstype.product	.closure	_gsdl.cgs.gstype.product_c
 
+gsdl.cgs.gstype.field.parser	.closure	_gsdl.cgs.gstype.field.parser_c
+
 gsdl.cgs.gstype.field.fmtgs	.closure	_gsdl.cgs.gstype.field.fmtgs_c	_gsdl.cgs.gstype.field.fmtgs_ty
 gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
 	.code
+
+# §section §gs{gsdl.cgs.gstype.parser}
+
+# > for (
+# >     'fs ← m/"Π〈/ *> cgs.syntax.ws *> many field.parser <* cgs.syntax.rbracket;
+# > ) [| product fs |]
+_gsdl.cgs.gstype.parser_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+#parser.t	.tygvar
+list.field.t	.tylet	list.t	gsdl.cgs.gstype.field.t
+parser.map	.gvar
+gsdl.cgs.gstype.product	.gvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.gstype.parser_pi.re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+parser.many	.gvar
+gsdl.cgs.gstype.field.parser	.gvar
+parser.<*	.gvar
+gsdl.cgs.syntax.rbracket	.gvar
+pi_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser_pi.re
+mfp	.apply	parser.many	rune.t	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.parser
+fs_p2	.apply	parser.<*	rune.t	list.field.t	string.t	|	mfp	gsdl.cgs.syntax.rbracket
+fs_p1	.apply	parser.*>	rune.t	string.t	list.field.t	|	gsdl.cgs.syntax.ws	fs_p2
+fs_p	.apply	parser.*>	rune.t	string.t	list.field.t	|	pi_p	fs_p1
+	.app	gsdl.cgs.gstype.product	fs_p
+	.enter	parser.map	rune.t	list.field.t	gsdl.cgs.gstype.t
+
+# §section §gs{gsdl.cgs.gstype.≡}
+
+_gsdl.cgs.gstype.≡_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+bool.true	.gvar
+ty0	.larg	gsdl.cgs.gstype.t
+ty1	.larg	gsdl.cgs.gstype.t
+	.enter	bool.true
 
 # §section §gs{gsdl.cgs.gstype.fmtgs}
 
@@ -60,6 +108,14 @@ c	.constr	gsdl.cgs.gstype.prim.u	product	0	fields
 	.coerce	gsdl.cgs.gstype.t.in
 	.lift
 	.yield	c
+
+# §section §gs{gsdl.cgs.gstype.field.parser}
+
+_gsdl.cgs.gstype.field.parser_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+parser.fail	.gvar
+	.enter	parser.fail	rune.t	gsdl.cgs.gstype.field.t
 
 # §section §gs{gsdl.cgs.gstype.field.fmtgs}
 
