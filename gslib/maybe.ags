@@ -45,7 +45,7 @@ _maybe.maybe_sk_ty	.tygvar
 maybe.t	.tygvar
 α	.tyarg	*
 β	.tyarg	*
-fk	.larg	α
+fk	.larg	β
 sk	.larg	_maybe.maybe_sk_ty	α	β
 mb	.larg	maybe.t	α
 	.undef	β
