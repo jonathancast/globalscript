@@ -409,8 +409,26 @@ _gsdl.cgs.file.freevars_c	.expr
 gsdl.cgs.file.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
+_gsdl.cgs.file.freevars_k	.subcode
+gsdl.cgs.file.t.out	.cogvar
 file	.larg	gsdl.cgs.file.t
-	.undef	ordered.set.t	gsdl.cgs.symbol.t
+	.force	_gsdl.cgs.file.freevars_k
+	.coerce	gsdl.cgs.file.t.out
+	.enter	file
+
+_gsdl.cgs.file.freevars_k	.forcecont
+gsdl.cgs.file.prim.u	.tygvar
+gsdl.cgs.document.t	.tygvar
+ordered.set.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	# Temp
+gsdl.cgs.document.freevars	.gvar
+file.0	.karg	gsdl.cgs.file.prim.u
+	.analyze	file.0	document
+		.case	document
+doc		.fkarg	0	gsdl.cgs.document.t
+			.app	doc
+			.enter	gsdl.cgs.document.freevars
+	# > :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.file.document.t} Constructors
 
@@ -553,4 +571,9 @@ string.ty	.tylet	list.t	rune.t
 
 gsdl.cgs.file.t.in	.tycoercion
 gsdl.cgs.file.t	.tygvar
+	.tydefinition	gsdl.cgs.file.t
+
+gsdl.cgs.file.t.out	.tycoercion
+gsdl.cgs.file.t	.tygvar
+	.tyinvert
 	.tydefinition	gsdl.cgs.file.t
