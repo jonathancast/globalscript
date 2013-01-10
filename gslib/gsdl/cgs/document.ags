@@ -5,6 +5,8 @@
 gsdl.cgs.document.parser	.closure	_gsdl.cgs.document.parser_c
 _gsdl.cgs.document.parser_msg.s	.string	Expecting\sexpression
 
+gsdl.cgs.document.freevars	.closure	_gsdl.cgs.document.freevars_c
+
 gsdl.cgs.document.≡	.closure	_gsdl.cgs.document.≡_c
 
 gsdl.cgs.document.fmtgs	.closure	_gsdl.cgs.document.fmtgs_c
@@ -53,6 +55,15 @@ mbty	.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
 r	.record	gstype	mbty
 	.lift
 	.yield	r
+
+# §section §gs{gsdl.cgs.document.freevars}
+
+_gsdl.cgs.document.freevars_c	.expr
+gsdl.cgs.document.t	.tygvar
+ordered.set.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	# Temp
+doc	.larg	gsdl.cgs.document.t
+	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.document.≡}
 
