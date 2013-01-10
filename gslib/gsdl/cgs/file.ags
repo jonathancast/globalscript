@@ -357,6 +357,7 @@ parser.err.t	.tygvar
 gsdl.cgs.file.t	.tygvar
 ibio.prim.t	.tygvar
 _gsdl.cgs.file.read_body_left_res_c	.subcode
+ibio.prim.unit	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 ef0	.karg	either.prim.u	parser.err.t	gsdl.cgs.file.t
 	.analyze	ef0	left	right
@@ -366,7 +367,9 @@ res			.alloc	_gsdl.cgs.file.read_body_left_res_c	|	eo	err
 			.enter	res
 		.case	right
 file		.fkarg	0	gsdl.cgs.file.t
-			.undef	ibio.prim.t	gsdl.cgs.file.t
+			.lift
+			.app	file
+			.yield	ibio.prim.unit	gsdl.cgs.file.t
 
 _gsdl.cgs.file.read_body_left_res_c	.eprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
