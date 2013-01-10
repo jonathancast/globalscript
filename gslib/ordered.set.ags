@@ -30,8 +30,12 @@ _ordered.set.tolist_k	.forcecont
 ordered.set.prim.u	.tygvar
 list.t	.tygvar	# Temp
 α	.tyfv	*
+list.nil	.gvar
 s0	.karg	ordered.set.prim.u	α
-	.undef	list.t	α
+	.analyze	s0	empty
+		.case	empty
+			.enter	list.nil	α
+	# > :: list.t	α
 
 # §section §gs{ordered.set.empty}
 
