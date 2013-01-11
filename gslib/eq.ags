@@ -1,0 +1,12 @@
+	.prefix
+
+	.type
+
+eq.t	.tyexpr
+bool.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyfun	α
+	.tyref	bool.t
