@@ -627,11 +627,16 @@ rec.ty	.tylet	parser.prim.t	s	r
 _parser.neg.lookahead_res_kx_c	.subcode
 parser.prim.lookahead	.gvar
 parser.prim.neg	.gvar
+parser.prim.unit.plus	.gvar
+record.empty	.gvar
+parser.prim.fail	.gvar
 p	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	record.empty	r
 kx	.alloc	_parser.neg.lookahead_res_kx_c	s	α
 p1.0	.apply	p	record.empty	|	kx
-p1.1	.undefined	parser.prim.t	s	rec.ty
+p1.2	.apply	k	|	record.empty
+fail	.apply	parser.prim.fail	s	rec.ty
+p1.1	.apply	parser.prim.unit.plus	s	rec.ty	|	p1.2	fail
 p1	.apply	parser.prim.neg	s	rec.ty	|	p1.0	p1.1
 	.app	p1
 	.yield	parser.prim.lookahead	s	r
@@ -1621,7 +1626,8 @@ e0	.karg	either.prim.u	list.string.ty	parser.in.ty
 	.analyze	e0	left	right
 		.case	left
 exp		.fkarg	0	list.t	string.t
-			.undef	either.t	list.string.ty	parser.ty
+			.app	p1
+			.enter	either.right	list.string.ty	parser.ty
 		.case	right
 p0.1		.fkarg	0	parser.prim.t	s	record.empty
 p2			.apply	parser.prim.neg	s	α	|	p0.1	p1
