@@ -3,6 +3,7 @@
 	.data
 
 gsdl.cgs.syntax.var.parser	.closure	_gsdl.cgs.syntax.var.parser_c
+gsdl.cgs.syntax.var.component.alphanum.parser	.closure	_gsdl.cgs.syntax.var.component.alphanum.parser_c
 
 gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
 _gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
@@ -25,9 +26,38 @@ _gsdl.cgs.syntax.semi_re	.regex	;
 
 _gsdl.cgs.syntax.var.parser_c	.expr
 rune.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
+parser.lift2	.gvar
+list.:	.gvar
+gsdl.cgs.syntax.var.component.alphanum.parser	.gvar
 parser.fail	.gvar	# Temp
-	.enter	parser.fail	rune.t	gsdl.cgs.syntax.var.t
+cons	.apply	list.:	gsdl.cgs.syntax.var.component.t
+tail_p	.apply	parser.fail	rune.t	gsdl.cgs.syntax.var.t
+	.app	cons	gsdl.cgs.syntax.var.component.alphanum.parser	tail_p
+	.enter	parser.lift2	rune.t	gsdl.cgs.syntax.var.component.t	gsdl.cgs.syntax.var.t	gsdl.cgs.syntax.var.t
+
+# §section §gs{gsdl.cgs.syntax.var.component.alphanum.parser}
+
+_gsdl.cgs.syntax.var.component.alphanum.parser_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+_gsdl.cgs.syntax.var.component.alphanum.parser_k_c	.subcode
+parser.>>=	.gvar
+parser.fail	.gvar	# Temp
+id_p	.apply	parser.fail	rune.t	string.t
+k	.alloc	_gsdl.cgs.syntax.var.component.alphanum.parser_k_c
+	.app	id_p	k
+	.enter	parser.>>=	rune.t	string.t	gsdl.cgs.syntax.var.component.t
+
+_gsdl.cgs.syntax.var.component.alphanum.parser_k_c	.expr
+string.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+parser.fail	.gvar	# Temp
+id	.larg	string.t
+	.enter	parser.fail	rune.t	gsdl.cgs.syntax.var.component.t
 
 # §section §gs{gsdl.cgs.syntax.ws}
 
