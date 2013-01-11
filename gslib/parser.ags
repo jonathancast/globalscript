@@ -17,6 +17,8 @@ parser.lift2	.closure	_parser.lift2_c
 
 parser.>>=	.closure	_parser.>>=_c
 
+parser.neg.lookahead	.closure	_parser.neg.lookahead_c
+
 parser.fail	.closure	_parser.fail_c
 parser.fail.msg	.closure	_parser.fail.msg_c
 parser.<|>	.closure	_parser.<|>_c
@@ -483,6 +485,16 @@ s	.tyfv	*
 r	.tyfv	*
 x	.larg	α
 	.undef	parser.prim.t	s	r
+
+# §section §gs{parser.neg.lookahead}
+
+_parser.neg.lookahead_c	.expr
+parser.t	.tygvar
+record.empty	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+p	.larg	parser.t	s	α
+	.undef	parser.t	s	record.empty
 
 # §section §gs{parser.fail}
 
