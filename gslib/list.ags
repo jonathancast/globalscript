@@ -20,6 +20,8 @@ list.<>	.closure	_list.<>.code	_list.<>.ty
 list.≡	.closure	_list.≡.code	_list.≡.ty
 list.compare	.closure	_list.compare_c	_list.compare_ty
 
+list.elem	.closure	_list.elem_c	_list.elem_ty
+
 list.fmtgs	.closure	_list.fmtgs_c
 list.fmtgs.byDefault	.closure	_list.fmtgs.byDefault_c	_list.fmtgs.byDefault_ty
 _list.fmtgs.byDefault_nil.s	.string	[]
@@ -597,6 +599,18 @@ o0	.karg	order.total.ord.prim.u
 		.case	lt
 			.undef	order.total.ord.t
 
+# §section §gs{list.elem}
+
+_list.elem_c	.expr
+eq.t	.tygvar
+list.t	.tygvar
+bool.t	.tygvar
+α	.tyarg	*
+eq	.larg	eq.t	α
+x	.larg	α
+xn	.larg	list.t	α
+	.undef	bool.t
+
 # §section §gs{list.fmtgs}
 
 _list.fmtgs_c	.expr
@@ -812,6 +826,21 @@ arg.ty	.tylet	list.t	α
 	.tylift
 	.tyfun	order.total.t	α
 	.tyref	order.total.t	arg.ty
+
+# §section §gs{list.elem}
+
+_list.elem_ty	.tyexpr
+eq.t	.tygvar
+list.t	.tygvar
+bool.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	eq.t	α
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyfun	list.t	α
+	.tyref	bool.t
 
 # §section §gs{list.fmtgs}
 
