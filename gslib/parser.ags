@@ -36,6 +36,8 @@ _parser.match_worker_class	.closure	_parser.match_worker_class_c	_parser.match_w
 
 parser.prim.<|>	.closure	_parser.prim.<|>_c	_parser.prim.<|>_ty
 
+parser.prim.neg	.closure	_parser.prim.neg_c	_parser.prim.neg_ty
+
 parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
 parser.prim.fail	.closure	_parser.prim.fail_c
 parser.prim.fail.msg	.closure	_parser.prim.fail.msg_c
@@ -556,23 +558,37 @@ s	.tyarg	*
 α	.tyarg	*
 _parser.neg.lookahead_res_c	.subcode
 p	.larg	parser.t	s	α
-res	.alloc	_parser.neg.lookahead_res_c	s	α
+res	.alloc	_parser.neg.lookahead_res_c	s	α	|	p
 	.enter	res
 
 _parser.neg.lookahead_res_c	.expr
+parser.t	.tygvar
 _parser.t_k_ty	.tygvar
 record.empty	.tygvar
-#parser.t	.tygvar
 parser.prim.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 r	.tyarg	*
 rec.ty	.tylet	parser.prim.t	s	r
+_parser.neg.lookahead_res_kx_c	.subcode
 parser.prim.lookahead	.gvar
+parser.prim.neg	.gvar
+p	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	record.empty	r
-p1	.undefined	parser.prim.t	s	rec.ty
+kx	.alloc	_parser.neg.lookahead_res_kx_c	s	α
+p1.0	.apply	p	record.empty	|	kx
+p1.1	.undefined	parser.prim.t	s	rec.ty
+p1	.apply	parser.prim.neg	s	rec.ty	|	p1.0	p1.1
 	.app	p1
 	.yield	parser.prim.lookahead	s	r
+
+_parser.neg.lookahead_res_kx_c	.expr
+parser.prim.t	.tygvar
+record.empty	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+x	.larg	α
+	.undef	parser.prim.t	s	record.empty
 
 # §section §gs{parser.fail}
 
@@ -1456,6 +1472,30 @@ p2					.apply	parser.prim.<|>	s	α	|	p0.1	p1.1
 					.app	p2
 					.enter	either.right	list.string.t	parser.ty
 
+# §section §gs{parser.prim.neg}
+
+_parser.prim.neg_c	.expr
+parser.prim.t	.tygvar
+record.empty	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+_parser.prim.neg_k	.subcode
+parser.prim.t.out	.cogvar
+p0	.larg	parser.prim.t	s	record.empty
+p1	.larg	parser.prim.t	s	α
+	.force	_parser.prim.neg_k	s	α
+	.coerce	parser.prim.t.out	s	record.empty
+	.enter	p0
+
+_parser.prim.neg_k	.forcecont
+parser.prim.u	.tygvar
+record.empty	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+p0.0	.karg	parser.prim.u	s	record.empty
+	.undef	parser.prim.t	s	α
+
 # §section Constructors
 
 _parser.prim.unit.plus_c	.expr
@@ -2163,6 +2203,19 @@ s	.tyforall	*
 α	.tyforall	*
 	.tylift
 	.tyfun	parser.prim.t	s	α
+	.tylift
+	.tyfun	parser.prim.t	s	α
+	.tyref	parser.prim.t	s	α
+
+# §section §gs{parser.prim.neg}
+
+_parser.prim.neg_ty	.tyexpr
+parser.prim.t	.tygvar
+record.empty	.tygvar
+s	.tyforall	*
+α	.tyforall	*
+	.tylift
+	.tyfun	parser.prim.t	s	record.empty
 	.tylift
 	.tyfun	parser.prim.t	s	α
 	.tyref	parser.prim.t	s	α
