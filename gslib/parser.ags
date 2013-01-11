@@ -455,9 +455,34 @@ _parser.>>=_k_ty	.tygvar
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
+_parser.>>=_res_c	.subcode
 p	.larg	parser.t	s	α
-k	.larg	_parser.>>=_k_ty	s	α	β
-	.undef	parser.t	s	β
+f	.larg	_parser.>>=_k_ty	s	α	β
+res	.alloc	_parser.>>=_res_c	s	α	β	|	p
+	.enter	res
+
+_parser.>>=_res_c	.expr
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+r	.tyarg	*
+_parser.>>=_res_kx_c	.subcode
+p	.fv	parser.t	s	α
+k	.larg	_parser.t_k_ty	s	β	r
+kx	.alloc	_parser.>>=_res_kx_c	s	α	β	r
+	.app	kx
+	.enter	p	r
+
+_parser.>>=_res_kx_c	.expr
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+x	.larg	α
+	.undef	parser.prim.t	s	r
 
 # §section §gs{parser.fail}
 
