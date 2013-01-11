@@ -640,8 +640,12 @@ parser.prim.t	.tygvar
 record.empty	.tygvar
 s	.tyfv	*
 α	.tyfv	*
+parser.prim.unit.plus	.gvar
+record.empty	.gvar
 x	.larg	α
-	.undef	parser.prim.t	s	record.empty
+fail	.undefined	parser.prim.t	s	record.empty
+	.app	record.empty	fail
+	.yield	parser.prim.unit.plus	s	record.empty
 
 # §section §gs{parser.fail}
 
@@ -1552,6 +1556,7 @@ s	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	record.empty
 _parser.prim.neg_symbol_sk1_c	.subcode
 parser.prim.symbol	.gvar
+parser.prim.fail	.gvar
 p1	.fv	parser.prim.t	s	α
 p0.0	.karg	parser.prim.u	s	record.empty
 	.analyze	p0.0	fail	fail.msg	lookahead	symbol	unit.plus
@@ -1573,7 +1578,7 @@ fk1			.undefined	parser.prim.t	s	α
 		.case	unit.plus
 x		.fkarg	0	record.empty
 p0.1		.fkarg	1	parser.prim.t	s	record.empty
-			.undef	parser.prim.t	s	α
+			.enter	parser.prim.fail	s	α
 	# > :: parser.prim.t	s	α
 
 _parser.prim.neg_symbol_sk1_c	.expr
