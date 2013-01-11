@@ -139,6 +139,8 @@ gsdl.cgs.symbol.compare	.gvar
 ordered.set.empty	.gvar
 list.map	.gvar
 gsdl.cgs.gstype.field.freevars	.gvar
+ordered.set.singleton	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0	lift	product	var
 		.case	lift
@@ -154,7 +156,9 @@ fvss			.apply	list.map	gsdl.cgs.gstype.field.t	res.ty	|	gsdl.cgs.gstype.field.fr
 			.enter	list.foldr	res.ty	res.ty
 		.case	var
 v		.fkarg	0	gsdl.cgs.syntax.var.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+sym			.apply	gsdl.cgs.symbol.tyvar	|	v
+			.app	gsdl.cgs.symbol.compare	sym
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
 	# > :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gstype.≡}
