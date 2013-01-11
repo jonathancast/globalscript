@@ -8,6 +8,7 @@
 ordered.set.tolist	.closure	_ordered.set.tolist_c	_ordered.set.tolist_ty
 
 ordered.set.empty	.closure	_ordered.set.empty_c
+ordered.set.singleton	.closure	_ordered.set.singleton_c
 ordered.set.union	.closure	_ordered.set.union_c	_ordered.set.union_ty
 
 	.code
@@ -48,6 +49,16 @@ c	.constr	res.u	empty
 	.coerce	ordered.set.t.in	α
 	.lift
 	.yield	c
+
+# §section §gs{ordered.set.singleton}
+
+_ordered.set.singleton_c	.expr
+order.total.t	.tygvar
+ordered.set.t	.tygvar	# Temp
+α	.tyarg	*
+cmp	.larg	order.total.t	α
+x	.larg	α
+	.undef	ordered.set.t	α
 
 # §section §gs{ordered.set.union}
 
