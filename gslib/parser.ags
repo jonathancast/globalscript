@@ -360,7 +360,7 @@ s0	.karg	list.prim.u	s
 		.case	:
 c		.fkarg	0	s
 s1		.fkarg	1	list.t	s
-			.force	_parser.parse_work_lookahead_symbol_:_k	s	α
+			.force	_parser.parse_work_lookahead_symbol_:_k	s	α	|	s1
 			.coerce	either.t.out	list.string.ty	parser.ty
 			.app	c
 			.enter	sk
@@ -377,8 +377,17 @@ s	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	α
 list.string.ty	.tylet	list.t	string.t
 parser.ty	.tylet	parser.prim.t	s	rec.ty
+_parser.parse_work_lookahead	.gvar
+s1	.fv	list.t	s
 e0	.karg	either.prim.u	list.string.ty	parser.ty
-	.undef	parser.prim.t	s	α
+	.analyze	e0	left	right
+		.case	left
+exp		.fkarg	0	list.t	string.t
+			.undef	parser.prim.t	s	α
+		.case	right
+p0.1		.fkarg	0	parser.prim.t	s	rec.ty
+			.app	p0.1	s1
+			.enter	_parser.parse_work_lookahead	s	α
 
 _parser.parse_work_expecting_c	.expr
 list.t	.tygvar
