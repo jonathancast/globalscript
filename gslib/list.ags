@@ -604,12 +604,30 @@ o0	.karg	order.total.ord.prim.u
 _list.elem_c	.expr
 eq.t	.tygvar
 list.t	.tygvar
-bool.t	.tygvar
 α	.tyarg	*
+_list.elem_k	.subcode
+list.t.out	.cogvar
 eq	.larg	eq.t	α
 x	.larg	α
 xn	.larg	list.t	α
-	.undef	bool.t
+	.force	_list.elem_k	α
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.elem_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+bool.t	.tygvar	# Temp
+α	.tyfv	*
+bool.false	.gvar
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	bool.t
+		.case	nil
+			.enter	bool.false
 
 # §section §gs{list.fmtgs}
 
