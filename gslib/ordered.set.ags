@@ -11,6 +11,8 @@ ordered.set.empty	.closure	_ordered.set.empty_c
 ordered.set.singleton	.closure	_ordered.set.singleton_c
 ordered.set.union	.closure	_ordered.set.union_c	_ordered.set.union_ty
 
+ordered.set.prim.branch	.closure	_ordered.set.prim.branch_c
+
 	.code
 
 # §section §gs{ordered.set.tolist}
@@ -29,11 +31,17 @@ s	.larg	ordered.set.t	α
 
 _ordered.set.tolist_k	.forcecont
 ordered.set.prim.u	.tygvar
+ordered.set.t	.tygvar
 list.t	.tygvar	# Temp
 α	.tyfv	*
 list.nil	.gvar
 s0	.karg	ordered.set.prim.u	α
-	.analyze	s0	empty
+	.analyze	s0	branch	empty
+		.case	branch
+x		.fkarg	0	α
+sl		.fkarg	1	ordered.set.t	α
+sr		.fkarg	2	ordered.set.t	α
+			.undef	list.t	α
 		.case	empty
 			.enter	list.nil	α
 	# > :: list.t	α
@@ -56,9 +64,13 @@ _ordered.set.singleton_c	.expr
 order.total.t	.tygvar
 ordered.set.t	.tygvar	# Temp
 α	.tyarg	*
+ordered.set.prim.branch	.gvar
+ordered.set.empty	.gvar
 cmp	.larg	order.total.t	α
 x	.larg	α
-	.undef	ordered.set.t	α
+empty	.apply	ordered.set.empty	α
+	.app	x	empty	empty
+	.yield	ordered.set.prim.branch	α
 
 # §section §gs{ordered.set.union}
 
@@ -70,6 +82,22 @@ cmp	.larg	order.total.t	α
 s0	.larg	ordered.set.t	α
 s1	.larg	ordered.set.t	α
 	.undef	ordered.set.t	α
+
+# §section §gs{tygvar}
+
+_ordered.set.prim.branch_c	.expr
+ordered.set.t	.tygvar
+ordered.set.prim.u	.tygvar
+α	.tyarg	*
+res.u	.tylet	ordered.set.prim.u	α
+ordered.set.t.in	.cogvar
+x	.arg	α
+l	.arg	ordered.set.t	α
+r	.arg	ordered.set.t	α
+c	.constr	res.u	branch	0	x	1	l	2	r
+	.coerce	ordered.set.t.in	α
+	.lift
+	.yield	c
 
 	.type
 
@@ -83,8 +111,16 @@ ordered.set.prim.u	.tygvar
 
 ordered.set.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
+_ordered.set.prim.u_branch_ty	.tygvar
 α	.tylambda	*
-	.tysum	empty	record.unboxed.empty
+branch_ty	.tylet	_ordered.set.prim.u_branch_ty	α
+	.tysum	branch	branch_ty	empty	record.unboxed.empty
+
+_ordered.set.prim.u_branch_ty	.tyexpr
+ordered.set.t	.tygvar
+α	.tylambda	*
+set.ty	.tylet	ordered.set.t	α
+	.tyubproduct	0	α	1	set.ty	2	set.ty
 
 # §section §gs{ordered.set.tolist}
 
