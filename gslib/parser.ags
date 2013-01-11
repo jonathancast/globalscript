@@ -1527,7 +1527,7 @@ _parser.prim.neg_k	.subcode
 parser.prim.t.out	.cogvar
 p0	.larg	parser.prim.t	s	record.empty
 p1	.larg	parser.prim.t	s	α
-	.force	_parser.prim.neg_k	s	α
+	.force	_parser.prim.neg_k	s	α	|	p1
 	.coerce	parser.prim.t.out	s	record.empty
 	.enter	p0
 
@@ -1541,7 +1541,9 @@ parser.prim.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	record.empty
+_parser.prim.neg_symbol_sk1_c	.subcode
 parser.prim.symbol	.gvar
+p1	.fv	parser.prim.t	s	α
 p0.0	.karg	parser.prim.u	s	record.empty
 	.analyze	p0.0	fail	fail.msg	lookahead	symbol	unit.plus
 		.case	fail
@@ -1555,7 +1557,7 @@ p0.1		.fkarg	0	parser.prim.t	s	rec.ty
 		.case	symbol
 sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	record.empty
 fk		.fkarg	1	parser.prim.t	s	record.empty
-sk1			.undefined	_parser.prim.u_symbol_0_ty	s	α
+sk1			.alloc	_parser.prim.neg_symbol_sk1_c	s	α	|	p1	sk
 fk1			.undefined	parser.prim.t	s	α
 			.app	sk1	fk1
 			.yield	parser.prim.symbol	s	α
@@ -1564,6 +1566,52 @@ x		.fkarg	0	record.empty
 p0.1		.fkarg	1	parser.prim.t	s	record.empty
 			.undef	parser.prim.t	s	α
 	# > :: parser.prim.t	s	α
+
+_parser.prim.neg_symbol_sk1_c	.expr
+_parser.prim.u_symbol_0_ty	.tygvar
+record.empty	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+list.string.ty	.tylet	list.t	string.t
+parser.in.ty	.tylet	parser.prim.t	s	record.empty
+_parser.prim.neg_symbol_sk1_k	.subcode
+either.t.out	.cogvar
+p1	.fv	parser.prim.t	s	α
+sk	.fv	_parser.prim.u_symbol_0_ty	s	record.empty
+c	.larg	s
+	.force	_parser.prim.neg_symbol_sk1_k	s	α	|	p1
+	.coerce	either.t.out	list.string.ty	parser.in.ty
+	.app	c
+	.enter	sk
+
+_parser.prim.neg_symbol_sk1_k	.forcecont
+either.prim.u	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+parser.prim.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+list.string.ty	.tylet	list.t	string.t
+parser.in.ty	.tylet	parser.prim.t	s	record.empty
+parser.ty	.tylet	parser.prim.t	s	α
+either.right	.gvar
+parser.prim.neg	.gvar
+p1	.fv	parser.prim.t	s	α
+e0	.karg	either.prim.u	list.string.ty	parser.in.ty
+	.analyze	e0	left	right
+		.case	left
+exp		.fkarg	0	list.t	string.t
+			.undef	either.t	list.string.ty	parser.ty
+		.case	right
+p0.1		.fkarg	0	parser.prim.t	s	record.empty
+p2			.apply	parser.prim.neg	s	α	|	p0.1	p1
+			.app	p2
+			.enter	either.right	list.string.ty	parser.ty
 
 # §section Constructors
 
