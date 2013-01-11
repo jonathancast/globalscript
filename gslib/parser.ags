@@ -1490,11 +1490,36 @@ p1	.larg	parser.prim.t	s	α
 _parser.prim.neg_k	.forcecont
 parser.prim.u	.tygvar
 record.empty	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+_parser.prim.u_symbol_0_ty	.tygvar
 parser.prim.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
+rec.ty	.tylet	parser.prim.t	s	record.empty
+parser.prim.symbol	.gvar
 p0.0	.karg	parser.prim.u	s	record.empty
-	.undef	parser.prim.t	s	α
+	.analyze	p0.0	fail	fail.msg	lookahead	symbol	unit.plus
+		.case	fail
+			.undef	parser.prim.t	s	α
+		.case	fail.msg
+msg		.fkarg	0	list.t	rune.t
+			.undef	parser.prim.t	s	α
+		.case	lookahead
+p0.1		.fkarg	0	parser.prim.t	s	rec.ty
+			.undef	parser.prim.t	s	α
+		.case	symbol
+sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	record.empty
+fk		.fkarg	1	parser.prim.t	s	record.empty
+sk1			.undefined	_parser.prim.u_symbol_0_ty	s	α
+fk1			.undefined	parser.prim.t	s	α
+			.app	sk1	fk1
+			.yield	parser.prim.symbol	s	α
+		.case	unit.plus
+x		.fkarg	0	record.empty
+p0.1		.fkarg	1	parser.prim.t	s	record.empty
+			.undef	parser.prim.t	s	α
+	# > :: parser.prim.t	s	α
 
 # §section Constructors
 
