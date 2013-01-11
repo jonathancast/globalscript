@@ -4,7 +4,11 @@
 
 gsdl.cgs.symbol.compare	.closure	_gsdl.cgs.symbol.compare_c
 
+gsdl.cgs.symbol.tyvar	.closure	_gsdl.cgs.symbol.tyvar_c
+
 	.code
+
+# §section §gs{gsdl.cgs.symbol.compare}
 
 _gsdl.cgs.symbol.compare_c	.expr
 gsdl.cgs.symbol.t	.tygvar
@@ -12,6 +16,18 @@ order.total.ord.t	.tygvar
 s0	.larg	gsdl.cgs.symbol.t
 s1	.larg	gsdl.cgs.symbol.t
 	.undef	order.total.ord.t
+
+# §section §gs{gsdl.cgs.symbol.t} Constructors
+
+_gsdl.cgs.symbol.tyvar_c	.expr
+gsdl.cgs.syntax.var.t	.tygvar
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.cgs.symbol.t.in	.cogvar
+v	.arg	gsdl.cgs.syntax.var.t
+c	.constr	gsdl.cgs.symbol.prim.u	tyvar	0	v
+	.coerce	gsdl.cgs.symbol.t.in
+	.lift
+	.yield	c
 
 	.type
 
@@ -23,4 +39,15 @@ gsdl.cgs.symbol.prim.u	.tygvar
 	.tyref	gsdl.cgs.symbol.prim.u
 
 gsdl.cgs.symbol.prim.u	.tyexpr
-	.tysum
+_gsdl.cgs.symbol.prim.u_tyvar_ty	.tygvar
+	.tysum	tyvar	_gsdl.cgs.symbol.prim.u_tyvar_ty
+
+_gsdl.cgs.symbol.prim.u_tyvar_ty	.tyexpr
+gsdl.cgs.syntax.var.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.syntax.var.t
+
+	.coercion
+
+gsdl.cgs.symbol.t.in	.tycoercion
+gsdl.cgs.symbol.t	.tygvar
+	.tydefinition	gsdl.cgs.symbol.t
