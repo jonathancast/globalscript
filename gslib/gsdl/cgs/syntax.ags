@@ -10,6 +10,7 @@ _gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
 
 gsdl.cgs.syntax.gsid	.closure	_gsdl.cgs.syntax.gsid_c
 _gsdl.cgs.syntax.gsid_re	.regex	[a-z][a-z]*
+_gsdl.cgs.syntax.gsid.ch_re	.regex	[a-z]		# Sync with above!
 
 gsdl.cgs.syntax.oftype	.closure	_gsdl.cgs.syntax.oftype_c
 _gsdl.cgs.syntax.oftype_re	.regex	::
@@ -52,9 +53,10 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.cgs.syntax.gsid_re	.gvar
 parser.neg.lookahead	.gvar
+_gsdl.cgs.syntax.gsid.ch_re	.gvar
 parser.fail	.gvar	# Temp
 id_p0	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.gsid_re
-id_p1.1	.undefined	parser.t	rune.t	string.t
+id_p1.1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.gsid.ch_re
 id_p1	.apply	parser.neg.lookahead	rune.t	string.t	|	id_p1.1
 id_p	.apply	parser.<*	rune.t	string.t	record.empty	|	id_p0	id_p1
 k	.alloc	_gsdl.cgs.syntax.var.component.alphanum.parser_k_c
