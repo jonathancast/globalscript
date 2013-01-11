@@ -15,6 +15,8 @@ parser.*>	.closure	_parser.*>_c
 parser.<*	.closure	_parser.<*_c
 parser.lift2	.closure	_parser.lift2_c
 
+parser.>>=	.closure	_parser.>>=_c
+
 parser.fail	.closure	_parser.fail_c
 parser.fail.msg	.closure	_parser.fail.msg_c
 parser.<|>	.closure	_parser.<|>_c
@@ -444,6 +446,18 @@ x	.larg	α
 fx	.apply	f	|	x
 	.app	fx
 	.enter	k
+
+# §section §gs{parser.>>=}
+
+_parser.>>=_c	.expr
+parser.t	.tygvar
+_parser.>>=_k_ty	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+p	.larg	parser.t	s	α
+k	.larg	_parser.>>=_k_ty	s	α	β
+	.undef	parser.t	s	β
 
 # §section §gs{parser.fail}
 
@@ -1854,6 +1868,17 @@ _parser.<*>_f_ty	.tyexpr
 	.tylift
 	.tyfun	α
 	.tyref	β
+
+# §section §gs{parser.>>=}
+
+_parser.>>=_k_ty	.tyexpr
+parser.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α	
+	.tyref	parser.t	s	β
 
 # §section §gs{parser.lift2}
 
