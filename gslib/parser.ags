@@ -1226,7 +1226,7 @@ msg		.fkarg	0	list.t	rune.t
 			.enter	p1
 		.case	lookahead
 p0.1		.fkarg	0	parser.prim.t	s	rec.ty
-			.force	_parser.prim.<|>_lookahead_k	s	α
+			.force	_parser.prim.<|>_lookahead_k	s	α	|	p1	p0.1
 			.coerce	parser.prim.t.out	s	α
 			.enter	p1
 		.case	symbol
@@ -1286,6 +1286,9 @@ s	.tyfv	*
 α	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	α
 parser.prim.lookahead	.gvar
+parser.prim.unit.plus	.gvar
+p1	.fv	parser.prim.t	s	α
+p0.1	.fv	parser.prim.t	s	rec.ty
 p1.0	.karg	parser.prim.u	s	α
 	.analyze	p1.0	fail	fail.msg	lookahead	symbol	unit.plus
 		.case	fail
@@ -1299,7 +1302,7 @@ p1.1		.fkarg	0	parser.prim.t	s	rec.ty
 		.case	symbol
 sk1		.fkarg	0	_parser.prim.u_symbol_0_ty	s	α
 ek1		.fkarg	1	parser.prim.t	s	α
-p2			.undefined	parser.prim.t	s	rec.ty
+p2			.apply	parser.prim.unit.plus	s	rec.ty	|	p1	p0.1
 			.app	p2
 			.yield	parser.prim.lookahead	s	α
 		.case	unit.plus
