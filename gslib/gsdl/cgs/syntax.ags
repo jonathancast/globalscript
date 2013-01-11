@@ -24,6 +24,8 @@ _gsdl.cgs.syntax.semi_re	.regex	;
 
 gsdl.cgs.syntax.keywords	.list	string.t
 
+gsdl.cgs.syntax.var.component.alphanum	.closure	_gsdl.cgs.syntax.var.component.alphanum_c
+
 	.code
 
 # §section §gs{gsdl.cgs.syntax.var.parser}
@@ -82,18 +84,28 @@ list.elem	.gvar
 string.≡	.gvar
 gsdl.cgs.syntax.keywords	.gvar
 id	.larg	string.t
-	.force	_gsdl.cgs.syntax.var.component.alphanum.parser_k_k
+	.force	_gsdl.cgs.syntax.var.component.alphanum.parser_k_k	|	id
 	.coerce	bool.t.out
 	.app	string.≡	id	gsdl.cgs.syntax.keywords
 	.enter	list.elem	string.t
 
 _gsdl.cgs.syntax.var.component.alphanum.parser_k_k	.forcecont
+string.t	.tygvar
 bool.prim.u	.tygvar
-rune.t	.tygvar	# Temp
+rune.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar	# Temp
-parser.fail	.gvar	# Temp
+parser.unit	.gvar
+gsdl.cgs.syntax.var.component.alphanum	.gvar
+parser.fail	.gvar
+id	.fv	string.t
 b0	.karg	bool.prim.u
-	.enter	parser.fail	rune.t	gsdl.cgs.syntax.var.component.t
+	.analyze	b0	false	true	# §gs{b0} = ‘is keyword’
+		.case	false
+c			.apply	gsdl.cgs.syntax.var.component.alphanum	|	id
+			.app	c
+			.enter	parser.unit	rune.t	gsdl.cgs.syntax.var.component.t
+		.case	true
+			.enter	parser.fail	rune.t	gsdl.cgs.syntax.var.component.t
 
 # §section §gs{gsdl.cgs.syntax.ws}
 
@@ -157,6 +169,18 @@ m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.semi_re
 	.app	m	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
 
+# §section §gs{gsdl.cgs.syntax.var.component.t} Constructors
+
+_gsdl.cgs.syntax.var.component.alphanum_c	.expr
+string.t	.tygvar
+gsdl.cgs.syntax.var.component.prim.u	.tygvar
+gsdl.cgs.syntax.var.component.t.in	.cogvar
+s	.arg	string.t
+c	.constr	gsdl.cgs.syntax.var.component.prim.u	alphanum	0	s
+	.coerce	gsdl.cgs.syntax.var.component.t.in
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{gsdl.cgs.syntax.var.t}
@@ -174,4 +198,15 @@ gsdl.cgs.syntax.var.component.prim.u	.tygvar
 	.tyref	gsdl.cgs.syntax.var.component.prim.u
 
 gsdl.cgs.syntax.var.component.prim.u	.tyexpr
-	.tysum
+_gsdl.cgs.syntax.var.component.prim.u_alphanum_ty	.tygvar
+	.tysum	alphanum	_gsdl.cgs.syntax.var.component.prim.u_alphanum_ty
+
+_gsdl.cgs.syntax.var.component.prim.u_alphanum_ty	.tyexpr
+string.t	.tygvar
+	.tyubproduct	0	string.t
+
+	.coercion
+
+gsdl.cgs.syntax.var.component.t.in	.tycoercion
+gsdl.cgs.syntax.var.component.t	.tygvar
+	.tydefinition	gsdl.cgs.syntax.var.component.t
