@@ -3,6 +3,7 @@
 	.data
 
 gsdl.cgs.syntax.var.parser	.closure	_gsdl.cgs.syntax.var.parser_c
+_gsdl.cgs.syntax.var.parser_dot.re	.regex	\.
 gsdl.cgs.syntax.var.component.alphanum.parser	.closure	_gsdl.cgs.syntax.var.component.alphanum.parser_c
 
 gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
@@ -21,6 +22,8 @@ _gsdl.cgs.syntax.rbracket_re	.regex	〉
 gsdl.cgs.syntax.semi	.closure	_gsdl.cgs.syntax.semi_c
 _gsdl.cgs.syntax.semi_re	.regex	;
 
+gsdl.cgs.syntax.keywords	.list	string.t
+
 	.code
 
 # §section §gs{gsdl.cgs.syntax.var.parser}
@@ -29,12 +32,20 @@ _gsdl.cgs.syntax.var.parser_c	.expr
 rune.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
+string.t	.tygvar
 parser.lift2	.gvar
 list.:	.gvar
 gsdl.cgs.syntax.var.component.alphanum.parser	.gvar
+parser.many	.gvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.var.parser_dot.re	.gvar
 parser.fail	.gvar	# Temp
 cons	.apply	list.:	gsdl.cgs.syntax.var.component.t
-tail_p	.apply	parser.fail	rune.t	gsdl.cgs.syntax.var.t
+dot_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.var.parser_dot.re
+tail_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.syntax.var.component.t	|	dot_p	gsdl.cgs.syntax.var.component.alphanum.parser
+tail_p	.apply	parser.many	rune.t	gsdl.cgs.syntax.var.component.t	|	tail_p1
 	.app	cons	gsdl.cgs.syntax.var.component.alphanum.parser	tail_p
 	.enter	parser.lift2	rune.t	gsdl.cgs.syntax.var.component.t	gsdl.cgs.syntax.var.t	gsdl.cgs.syntax.var.t
 
@@ -65,10 +76,23 @@ k	.alloc	_gsdl.cgs.syntax.var.component.alphanum.parser_k_c
 
 _gsdl.cgs.syntax.var.component.alphanum.parser_k_c	.expr
 string.t	.tygvar
-rune.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
-parser.fail	.gvar	# Temp
+_gsdl.cgs.syntax.var.component.alphanum.parser_k_k	.subcode
+bool.t.out	.cogvar
+list.elem	.gvar
+string.≡	.gvar
+gsdl.cgs.syntax.keywords	.gvar
 id	.larg	string.t
+	.force	_gsdl.cgs.syntax.var.component.alphanum.parser_k_k
+	.coerce	bool.t.out
+	.app	string.≡	id	gsdl.cgs.syntax.keywords
+	.enter	list.elem	string.t
+
+_gsdl.cgs.syntax.var.component.alphanum.parser_k_k	.forcecont
+bool.prim.u	.tygvar
+rune.t	.tygvar	# Temp
+gsdl.cgs.syntax.var.component.t	.tygvar	# Temp
+parser.fail	.gvar	# Temp
+b0	.karg	bool.prim.u
 	.enter	parser.fail	rune.t	gsdl.cgs.syntax.var.component.t
 
 # §section §gs{gsdl.cgs.syntax.ws}
