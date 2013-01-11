@@ -964,20 +964,46 @@ s	.tyfv	*
 α	.tyfv	*
 r	.tyarg	*
 res.ty	.tylet	list.t	α
-_parser.many_pcons_k1_c	.subcode
+_parser.many_pcons_kx_c	.subcode
 p	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	res.ty	r
-k1	.alloc	_parser.many_pcons_k1_c	s	α	r
-	.app	k1
+kx	.alloc	_parser.many_pcons_kx_c	s	α	r	|	p	k
+	.app	kx
 	.enter	p	r
 
-_parser.many_pcons_k1_c	.expr
+_parser.many_pcons_kx_c	.expr
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+r	.tyfv	*
+res.ty	.tylet	list.t	α
+_parser.many_pcons_kxn_c	.subcode
+parser.many	.gvar
+p	.fv	parser.t	s	α
+k	.fv	_parser.t_k_ty	s	res.ty	r
+x	.larg	α
+mp	.apply	parser.many	s	α	|	p
+kxn	.alloc	_parser.many_pcons_kxn_c	s	α	r	|	k	x
+	.app	kxn
+	.enter	mp	r
+
+_parser.many_pcons_kxn_c	.expr
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
 parser.prim.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 r	.tyfv	*
-x	.larg	α
-	.undef	parser.prim.t	s	r
+res.ty	.tylet	list.t	α
+list.:	.gvar
+k	.fv	_parser.t_k_ty	s	res.ty	r
+x	.fv	α
+xn	.larg	list.t	α
+xxn	.apply	list.:	α	|	x	xn
+	.app	xxn
+	.enter	k
 
 # §section §gs{parser.symbol.matching.bool}
 
