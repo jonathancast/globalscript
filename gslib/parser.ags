@@ -314,13 +314,14 @@ rec.ty	.tylet	parser.prim.t	s	α
 rec.rec.ty	.tylet	parser.prim.t	s	rec.ty
 _parser.parse_work_lookahead_symbol_k	.subcode
 list.t.out	.cogvar
+parser.prim.fail	.gvar
 parser.prim.<|>	.gvar
 _parser.parse_work_lookahead	.gvar
 s	.fv	list.t	s
 p0	.karg	parser.prim.u	s	rec.ty
 	.analyze	p0	fail	fail.msg	lookahead	symbol	unit.plus
 		.case	fail
-			.undef	parser.prim.t	s	α
+			.enter	parser.prim.fail	s	α
 		.case	fail.msg
 msg		.fkarg	0	list.t	rune.t
 			.undef	parser.prim.t	s	α
