@@ -39,6 +39,7 @@ parser.prim.unit.plus	.closure	_parser.prim.unit.plus_c
 parser.prim.fail	.closure	_parser.prim.fail_c
 parser.prim.fail.msg	.closure	_parser.prim.fail.msg_c
 parser.prim.symbol	.closure	_parser.prim.symbol_c
+parser.prim.lookahead	.closure	_parser.prim.lookahead_c
 
 parser.err.fmt	.closure	_parser.err.fmt_c
 _parser.err.fmt_col.sp	.string	:\s
@@ -122,8 +123,10 @@ rune.t	.tygvar
 parser.err.t	.tygvar
 parser.prim.t	.tygvar
 _parser.prim.u_symbol_0_ty	.tygvar
+either.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
+rec.ty	.tylet	parser.prim.t	s	α
 _parser.parse_work_symbol_k	.subcode
 _parser.parse_work_unit.plus_k	.subcode
 list.t.out	.cogvar
@@ -136,7 +139,7 @@ pr	.fv	print.t	s
 pos	.fv	parser.pos.t
 s	.fv	list.t	s
 p0	.karg	parser.prim.u	s	α
-	.analyze	p0	fail	fail.msg	symbol	unit.plus
+	.analyze	p0	fail	fail.msg	lookahead	symbol	unit.plus
 		.case	fail
 eof			.apply	list.null	s	|	s
 sf			.apply	parser.err.simple.failure	|	pos	eof
@@ -148,6 +151,9 @@ eof			.apply	list.null	s	|	s
 mf			.apply	parser.err.message.failure	|	pos	eof	msg
 			.app	mf
 			.enter	either.left	parser.err.t	α
+		.case	lookahead
+p1		.fkarg	0	parser.prim.t	s	rec.ty
+			.undef	either.t	parser.err.t	α
 		.case	symbol
 sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	α
 ek		.fkarg	1	parser.prim.t	s	α
@@ -490,11 +496,27 @@ x	.larg	α
 
 _parser.neg.lookahead_c	.expr
 parser.t	.tygvar
-record.empty	.tygvar
 s	.tyarg	*
 α	.tyarg	*
+_parser.neg.lookahead_res_c	.subcode
 p	.larg	parser.t	s	α
-	.undef	parser.t	s	record.empty
+res	.alloc	_parser.neg.lookahead_res_c	s	α
+	.enter	res
+
+_parser.neg.lookahead_res_c	.expr
+_parser.t_k_ty	.tygvar
+record.empty	.tygvar
+#parser.t	.tygvar
+parser.prim.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+r	.tyarg	*
+rec.ty	.tylet	parser.prim.t	s	r
+parser.prim.lookahead	.gvar
+k	.larg	_parser.t_k_ty	s	record.empty	r
+p1	.undefined	parser.prim.t	s	rec.ty
+	.app	p1
+	.yield	parser.prim.lookahead	s	r
 
 # §section §gs{parser.fail}
 
@@ -1154,19 +1176,26 @@ rune.t	.tygvar
 _parser.prim.u_symbol_0_ty	.tygvar
 s	.tyfv	*
 α	.tyfv	*
+rec.ty	.tylet	parser.prim.t	s	α
 _parser.prim.<|>_fail.msg_k1	.subcode
+_parser.prim.<|>_lookahead_k	.subcode
 _parser.prim.<|>_symbol_k1	.subcode
 parser.prim.t.out	.cogvar
 parser.prim.unit.plus	.gvar
 parser.prim.<|>	.gvar
 p1	.fv	parser.prim.t	s	α
 p0.0	.karg	parser.prim.u	s	α
-	.analyze	p0.0	fail	fail.msg	symbol	unit.plus
+	.analyze	p0.0	fail	fail.msg	lookahead	symbol	unit.plus
 		.case	fail
 			.enter	p1
 		.case	fail.msg
 msg		.fkarg	0	list.t	rune.t
 			.force	_parser.prim.<|>_fail.msg_k1	s	α
+			.coerce	parser.prim.t.out	s	α
+			.enter	p1
+		.case	lookahead
+p0.1		.fkarg	0	parser.prim.t	s	rec.ty
+			.force	_parser.prim.<|>_lookahead_k	s	α
 			.coerce	parser.prim.t.out	s	α
 			.enter	p1
 		.case	symbol
@@ -1181,6 +1210,7 @@ p0.1		.fkarg	1	parser.prim.t	s	α
 p2			.apply	parser.prim.<|>	s	α	|	p0.1	p1
 			.app	x	p2
 			.yield	parser.prim.unit.plus	s	α
+	# > :: parser.prim.t	s	α
 
 _parser.prim.<|>_fail.msg_k1	.forcecont
 parser.prim.u	.tygvar
@@ -1189,16 +1219,20 @@ string.t	.tygvar
 _parser.prim.u_symbol_0_ty	.tygvar
 s	.tyfv	*
 α	.tyfv	*
+rec.ty	.tylet	parser.prim.t	s	α
 parser.prim.t.in	.cogvar
 parser.prim.fail.msg	.gvar
 p1.0	.karg	parser.prim.u	s	α
-	.analyze	p1.0	fail	fail.msg	symbol	unit.plus
+	.analyze	p1.0	fail	fail.msg	lookahead	symbol	unit.plus
 		.case	fail
 			.undef	parser.prim.t	s	α
 		.case	fail.msg
 msg.1		.fkarg	0	string.t
 			.app	msg.1
 			.yield	parser.prim.fail.msg	s	α
+		.case	lookahead
+p1.1		.fkarg	0	parser.prim.t	s	rec.ty
+			.undef	parser.prim.t	s	α
 		.case	symbol
 sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	α
 ek		.fkarg	1	parser.prim.t	s	α
@@ -1209,6 +1243,36 @@ ek		.fkarg	1	parser.prim.t	s	α
 x		.fkarg	0	α
 p1.1		.fkarg	1	parser.prim.t	s	α
 			.undef	parser.prim.t	s	α
+	# > :: parser.prim.t	s	α
+
+_parser.prim.<|>_lookahead_k	.forcecont
+parser.prim.u	.tygvar
+list.t	.tygvar
+parser.prim.t	.tygvar
+rune.t	.tygvar
+_parser.prim.u_symbol_0_ty	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+rec.ty	.tylet	parser.prim.t	s	α
+p1.0	.karg	parser.prim.u	s	α
+	.analyze	p1.0	fail	fail.msg	lookahead	symbol	unit.plus
+		.case	fail
+			.undef	parser.prim.t	s	α
+		.case	fail.msg
+msg		.fkarg	0	list.t	rune.t
+			.undef	parser.prim.t	s	α
+		.case	lookahead
+p1.1		.fkarg	0	parser.prim.t	s	rec.ty
+			.undef	parser.prim.t	s	α
+		.case	symbol
+sk1		.fkarg	0	_parser.prim.u_symbol_0_ty	s	α
+ek1		.fkarg	1	parser.prim.t	s	α
+			.undef	parser.prim.t	s	α
+		.case	unit.plus
+x		.fkarg	0	α
+p1.1		.fkarg	1	parser.prim.t	s	α
+			.undef	parser.prim.t	s	α
+	# > :: parser.prim.t	s	α
 
 _parser.prim.<|>_symbol_k1	.forcecont
 _parser.prim.u_symbol_0_ty	.tygvar
@@ -1218,18 +1282,22 @@ list.t	.tygvar
 rune.t	.tygvar
 s	.tyfv	*
 α	.tyfv	*
+rec.ty	.tylet	parser.prim.t	s	α
 _parser.prim.<|>_symbol_sk2_c	.subcode
 parser.prim.symbol	.gvar
 parser.prim.<|>	.gvar
 sk	.fv	_parser.prim.u_symbol_0_ty	s	α
 ek	.fv	parser.prim.t	s	α
 p1.0	.karg	parser.prim.u	s	α
-	.analyze	p1.0	fail	fail.msg	symbol	unit.plus
+	.analyze	p1.0	fail	fail.msg	lookahead	symbol	unit.plus
 		.case	fail
 			.app	sk	ek
 			.yield	parser.prim.symbol	s	α
 		.case	fail.msg
 msg		.fkarg	0	list.t	rune.t
+			.undef	parser.prim.t	s	α
+		.case	lookahead
+p1.1		.fkarg	0	parser.prim.t	s	rec.ty
 			.undef	parser.prim.t	s	α
 		.case	symbol
 sk1		.fkarg	0	_parser.prim.u_symbol_0_ty	s	α
@@ -1242,6 +1310,7 @@ ek2			.apply	parser.prim.<|>	s	α	|	ek	ek1
 x		.fkarg	0	α
 p1.1		.fkarg	1	parser.prim.t	s	α
 			.undef	parser.prim.t	s	α
+	# > :: parser.prim.t	s	α
 
 _parser.prim.<|>_symbol_sk2_c	.expr
 _parser.prim.u_symbol_0_ty	.tygvar
@@ -1380,6 +1449,20 @@ s	.constr	res.u	symbol	0	sk	1	ek
 	.coerce	parser.prim.t.in	s	α
 	.lift
 	.yield	s
+
+_parser.prim.lookahead_c	.expr
+parser.prim.t	.tygvar
+parser.prim.u	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+rec.ty	.tylet	parser.prim.t	s	α
+res.u	.tylet	parser.prim.u	s	α
+parser.prim.t.in	.cogvar
+p	.arg	parser.prim.t	s	rec.ty
+l	.constr	res.u	lookahead	0	p
+	.coerce	parser.prim.t.in	s	α
+	.lift
+	.yield	l
 
 # §section §gs{parser.err.fmt}
 
@@ -1761,13 +1844,15 @@ s	.tylambda	*
 parser.prim.u	.tyexpr
 _parser.prim.u_fail.ty	.tygvar
 _parser.prim.u_fail.msg.ty	.tygvar
+_parser.prim.u_lookahead.ty	.tygvar
 _parser.prim.u_symbol.ty	.tygvar
 _parser.prim.u_unit.plus.ty	.tygvar
 s	.tylambda	*
 α	.tylambda	*
+lookahead.ty	.tylet	_parser.prim.u_lookahead.ty	s	α
 symbol.ty	.tylet	_parser.prim.u_symbol.ty	s	α
 unit.plus.ty	.tylet	_parser.prim.u_unit.plus.ty	s	α
-	.tysum	fail	_parser.prim.u_fail.ty	fail.msg	_parser.prim.u_fail.msg.ty	symbol	symbol.ty	unit.plus	unit.plus.ty
+	.tysum	fail	_parser.prim.u_fail.ty	fail.msg	_parser.prim.u_fail.msg.ty	lookahead	lookahead.ty	symbol	symbol.ty	unit.plus	unit.plus.ty
 
 _parser.prim.u_fail.ty	.tyexpr
 	.tyubproduct
@@ -1777,6 +1862,14 @@ list.t	.tygvar
 rune.t	.tygvar
 string.ty	.tylet	list.t	rune.t
 	.tyubproduct	0	string.ty
+
+_parser.prim.u_lookahead.ty	.tyexpr
+parser.prim.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+rec.ty	.tylet	parser.prim.t	s	α
+0.ty	.tylet	parser.prim.t	s	rec.ty
+	.tyubproduct	0	0.ty
 
 _parser.prim.u_unit.plus.ty	.tyexpr
 parser.prim.t	.tygvar
