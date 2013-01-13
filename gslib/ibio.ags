@@ -131,31 +131,36 @@ list.t	.tygvar
 β	.tyfv	*
 res.ty	.tylet	list.t	β
 _ibio.mapM.prim_eys_c	.subcode
+ibio.prim.unit	.gvar
+list.nil	.gvar
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-eys			.alloc	_ibio.mapM.prim_eys_c	α	β	|	f	x0
+eys			.alloc	_ibio.mapM.prim_eys_c	α	β	|	f	x0	xn1
 			.enter	eys
 		.case	nil
-			.undef	ibio.prim.t	res.ty
+nil			.apply	list.nil	β
+			.lift
+			.app	nil
+			.yield	ibio.prim.unit	res.ty
 
 _ibio.mapM.prim_eys_c	.eprog	ibio.prim	ibio
 _ibio.mapM.prim_f_ty	.tygvar
+list.t	.tygvar
 α	.tyfv	*
 β	.tyfv	*
 _ibio.mapM.prim_eys_y_c	.subcode
 _ibio.mapM.prim_eys_ys1_c	.subcode
-_ibio.mapM.prim_eys_ys_c	.subcode
 _ibio.mapM.prim_eys_body_c	.subcode
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 x0	.fv	α
+xn1	.fv	list.t	α
 y	.bind	_ibio.mapM.prim_eys_y_c	α	β	|	f	x0
-ys1	.bind	_ibio.mapM.prim_eys_ys1_c	β
-ys	.alloc	_ibio.mapM.prim_eys_ys_c	β
-	.body	_ibio.mapM.prim_eys_body_c	β
+ys1	.bind	_ibio.mapM.prim_eys_ys1_c	α	β	|	f	xn1
+	.body	_ibio.mapM.prim_eys_body_c	β	|	y	ys1
 
 _ibio.mapM.prim_eys_y_c	.expr
 _ibio.mapM.prim_f_ty	.tygvar
@@ -167,23 +172,29 @@ x0	.fv	α
 	.enter	f
 
 _ibio.mapM.prim_eys_ys1_c	.expr
-ibio.prim.t	.tygvar
+_ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
+α	.tyfv	*
 β	.tyfv	*
-res.ty	.tylet	list.t	β
-	.undef	ibio.prim.t	res.ty
-
-_ibio.mapM.prim_eys_ys_c	.expr
-list.t	.tygvar
-β	.tyfv	*
-	.undef	list.t	β
+ibio.mapM.prim	.gvar
+f	.fv	_ibio.mapM.prim_f_ty	α	β
+xn1	.fv	list.t	α
+	.app	f	xn1
+	.enter	ibio.mapM.prim	α	β
 
 _ibio.mapM.prim_eys_body_c	.expr
 ibio.prim.t	.tygvar
 list.t	.tygvar
 β	.tyfv	*
 res.ty	.tylet	list.t	β
-	.undef	ibio.prim.t	res.ty
+ibio.prim.unit	.gvar
+list.:	.gvar
+y	.fv	β
+ys	.fv	list.t	β
+ys1	.apply	list.:	β	|	y	ys
+	.lift
+	.app	ys1
+	.yield	ibio.prim.unit	res.ty
 
 # §section §gs{ibio.mapM0.prim}
 
