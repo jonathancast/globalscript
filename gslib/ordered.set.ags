@@ -5,7 +5,8 @@
 
 	.data
 
-ordered.set.tolist	.closure	_ordered.set.tolist_c	_ordered.set.tolist_ty
+ordered.set.tolist	.closure	_ordered.set.tolist_c
+_ordered.set.tolist_w	.closure	_ordered.set.tolist_w_c	_ordered.set.tolist_w_ty
 
 ordered.set.empty	.closure	_ordered.set.empty_c
 ordered.set.singleton	.closure	_ordered.set.singleton_c
@@ -21,29 +22,50 @@ _ordered.set.tolist_c	.expr
 order.total.t	.tygvar
 ordered.set.t	.tygvar
 α	.tyarg	*
-_ordered.set.tolist_k	.subcode
+_ordered.set.tolist_w	.gvar
+list.nil	.gvar
+cmp	.larg	order.total.t	α
+s	.larg	ordered.set.t	α
+nil	.apply	list.nil	α
+	.app	cmp	s	nil
+	.enter	_ordered.set.tolist_w	α
+
+_ordered.set.tolist_w_c	.expr
+order.total.t	.tygvar
+ordered.set.t	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+_ordered.set.tolist_w_k	.subcode
 ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 s	.larg	ordered.set.t	α
-	.force	_ordered.set.tolist_k	α
+ys	.larg	list.t	α
+	.force	_ordered.set.tolist_w_k	α	|	cmp	ys
 	.coerce	ordered.set.t.out	α
 	.enter	s
 
-_ordered.set.tolist_k	.forcecont
+_ordered.set.tolist_w_k	.forcecont
+order.total.t	.tygvar
+list.t	.tygvar
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
-list.t	.tygvar	# Temp
 α	.tyfv	*
-list.nil	.gvar
+_ordered.set.tolist_w	.gvar
+list.:	.gvar
+cmp	.fv	order.total.t	α
+ys	.fv	list.t	α
 s0	.karg	ordered.set.prim.u	α
 	.analyze	s0	branch	empty
 		.case	branch
 x		.fkarg	0	α
 sl		.fkarg	1	ordered.set.t	α
 sr		.fkarg	2	ordered.set.t	α
-			.undef	list.t	α
+ys2			.apply	_ordered.set.tolist_w	α	|	cmp	sr	ys
+ys1			.apply	list.:	α	|	x	ys2
+			.app	cmp	sl	ys1
+			.enter	_ordered.set.tolist_w	α
 		.case	empty
-			.enter	list.nil	α
+			.enter	ys
 	# > :: list.t	α
 
 # §section §gs{ordered.set.empty}
@@ -124,7 +146,7 @@ set.ty	.tylet	ordered.set.t	α
 
 # §section §gs{ordered.set.tolist}
 
-_ordered.set.tolist_ty	.tyexpr
+_ordered.set.tolist_w_ty	.tyexpr
 order.total.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
@@ -133,6 +155,8 @@ list.t	.tygvar
 	.tyfun	order.total.t	α
 	.tylift
 	.tyfun	ordered.set.t	α
+	.tylift
+	.tyfun	list.t	α
 	.tyref	list.t	α
 
 # §section §gs{ordered.set.union}
