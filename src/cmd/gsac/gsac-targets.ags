@@ -141,7 +141,7 @@ nm	.field	name	d0
 		.case	false
 cos			.apply	ibio.file.name.components.get	|	nm
 exts			.lfield	exts	cos
-stxe			.apply	list.reverse	string.ty	|	exts			
+stxe			.apply	list.reverse	string.ty	|	exts
 			.force	_print.targets.in.dir_body_process.file_k_file_k
 			.coerce	list.t.out	string.ty
 			.enter	stxe
