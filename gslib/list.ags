@@ -267,6 +267,7 @@ list.t	.tygvar
 α	.tyfv	*
 _list.filter_:_k	.subcode
 bool.t.out	.cogvar
+list.nil	.gvar
 pred	.fv	_list.filter_pred_ty	α
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
@@ -278,7 +279,7 @@ xn1		.fkarg	1	list.t	α
 			.app	x0
 			.enter	pred
 		.case	nil
-			.undef	list.t	α
+			.enter	list.nil	α
 
 _list.filter_:_k	.forcecont
 _list.filter_pred_ty	.tygvar
