@@ -256,15 +256,35 @@ _list.filter_k	.subcode
 list.t.out	.cogvar
 pred	.larg	_list.filter_pred_ty	α
 xn	.larg	list.t	α
-	.force	_list.filter_k	α
+	.force	_list.filter_k	α	|	pred
 	.coerce	list.t.out	α
 	.enter	xn
 
 _list.filter_k	.forcecont
+_list.filter_pred_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 α	.tyfv	*
+_list.filter_:_k	.subcode
+bool.t.out	.cogvar
+pred	.fv	_list.filter_pred_ty	α
 xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.force	_list.filter_:_k	α
+			.coerce	bool.t.out
+			.app	x0
+			.enter	pred
+		.case	nil
+			.undef	list.t	α
+
+_list.filter_:_k	.forcecont
+bool.prim.u	.tygvar
+list.t	.tygvar
+α	.tyfv	*
+b0	.karg	bool.prim.u
 	.undef	list.t	α
 
 # §section §gs{list.foldl}
