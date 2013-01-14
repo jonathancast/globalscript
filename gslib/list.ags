@@ -273,7 +273,7 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.force	_list.filter_:_k	α
+			.force	_list.filter_:_k	α	|	pred	x0	xn1
 			.coerce	bool.t.out
 			.app	x0
 			.enter	pred
@@ -281,11 +281,23 @@ xn1		.fkarg	1	list.t	α
 			.undef	list.t	α
 
 _list.filter_:_k	.forcecont
-bool.prim.u	.tygvar
+_list.filter_pred_ty	.tygvar
 list.t	.tygvar
+bool.prim.u	.tygvar
 α	.tyfv	*
+list.:	.gvar
+list.filter	.gvar
+pred	.fv	_list.filter_pred_ty	α
+x0	.fv	α
+xn1	.fv	list.t	α
 b0	.karg	bool.prim.u
-	.undef	list.t	α
+ys1	.apply	list.filter	α	|	pred	xn1
+	.analyze	b0	false	true
+		.case	false
+			.undef	list.t	α
+		.case	true
+			.app	x0	ys1
+			.enter	list.:	α
 
 # §section §gs{list.foldl}
 
