@@ -37,6 +37,7 @@ rune.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 string.t	.tygvar
+parser.<*	.gvar
 parser.lift2	.gvar
 list.:	.gvar
 gsdl.cgs.syntax.var.component.alphanum.parser	.gvar
@@ -45,13 +46,14 @@ parser.*>	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.cgs.syntax.var.parser_dot.re	.gvar
-parser.fail	.gvar	# Temp
+gsdl.cgs.syntax.ws	.gvar
 cons	.apply	list.:	gsdl.cgs.syntax.var.component.t
 dot_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.var.parser_dot.re
 tail_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.syntax.var.component.t	|	dot_p	gsdl.cgs.syntax.var.component.alphanum.parser
 tail_p	.apply	parser.many	rune.t	gsdl.cgs.syntax.var.component.t	|	tail_p1
-	.app	cons	gsdl.cgs.syntax.var.component.alphanum.parser	tail_p
-	.enter	parser.lift2	rune.t	gsdl.cgs.syntax.var.component.t	gsdl.cgs.syntax.var.t	gsdl.cgs.syntax.var.t
+cons_p	.apply	parser.lift2	rune.t	gsdl.cgs.syntax.var.component.t	gsdl.cgs.syntax.var.t	gsdl.cgs.syntax.var.t	|	cons	gsdl.cgs.syntax.var.component.alphanum.parser	tail_p
+	.app	cons_p	gsdl.cgs.syntax.ws
+	.enter	parser.<*	rune.t	gsdl.cgs.syntax.var.t	string.t
 
 # §section §gs{gsdl.cgs.syntax.var.component.alphanum.parser}
 
