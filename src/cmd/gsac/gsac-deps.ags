@@ -837,10 +837,10 @@ rune.t	.tygvar
 bool.prim.u	.tygvar
 ibio.file.name.t	.tygvar
 ordered.set.t	.tygvar
-ibio.prim.t	.tygvar	# Temp
-res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
+res.ty	.tylet	ordered.set.t	ibio.file.name.t
 _process.var_rec_file_:_true_k	.subcode
 bool.t.out	.cogvar
+ibio.prim.unit	.gvar
 ordered.set.elem	.gvar
 ibio.file.name.compare	.gvar
 ibio.file.name.</>	.gvar
@@ -852,7 +852,9 @@ fn1	.fv	ibio.file.name.t
 b0	.karg	bool.prim.u	# Is this file a match?
 	.analyze	b0	false	true
 		.case	false
-			.undef	ibio.prim.t	res.ty
+			.lift
+			.app	ds
+			.yield	ibio.prim.unit	res.ty
 		.case	true
 fn			.apply	ibio.file.name.</>	|	dirn	fn1
 			.force	_process.var_rec_file_:_true_k	|	o	ds	gsac.fn	fn
