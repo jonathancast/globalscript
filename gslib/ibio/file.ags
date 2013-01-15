@@ -558,7 +558,8 @@ fn1			.apply	list.:	rune.t	|	_slash	fn
 			.app	c	fn1
 			.enter	list.:	rune.t
 		.case	true
-			.undef	list.t	rune.t
+			.app	_slash	fn
+			.enter	list.:	rune.t
 
 # §section §gs{ibio.file.name.compare}
 
