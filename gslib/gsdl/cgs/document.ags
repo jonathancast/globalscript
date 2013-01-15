@@ -39,10 +39,10 @@ parser.map	.gvar
 parser.<*	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.oftype	.gvar
-gsdl.cgs.gstype.parser	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
 gsdl.cgs.syntax.semi	.gvar
 f	.alloc	_gsdl.cgs.document.parser_f_c
-ty_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser
+ty_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.arg
 ty_p	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	ty_p1	gsdl.cgs.syntax.semi
 	.app	f	ty_p
 	.enter	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.document.t

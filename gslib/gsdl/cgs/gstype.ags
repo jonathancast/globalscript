@@ -2,10 +2,10 @@
 
 	.data
 
-gsdl.cgs.gstype.parser	.closure	_gsdl.cgs.gstype.parser_c	_gsdl.cgs.gstype.parser_ty
-_gsdl.cgs.gstype.parser_pi.re	.regex	"Π〈
-_gsdl.cgs.gstype.parser_lift.p_lb.re	.regex	⌊
-_gsdl.cgs.gstype.parser_lift.p_rb.re	.regex	⌋
+gsdl.cgs.gstype.parser.arg	.closure	_gsdl.cgs.gstype.parser.arg_c	_gsdl.cgs.gstype.parser.arg_ty
+_gsdl.cgs.gstype.parser.arg_pi.re	.regex	"Π〈
+_gsdl.cgs.gstype.parser.arg_lift.p_lb.re	.regex	⌊
+_gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.regex	⌋
 
 gsdl.cgs.gstype.freevars	.closure	_gsdl.cgs.gstype.freevars_c	_gsdl.cgs.gstype.freevars_ty
 
@@ -27,18 +27,18 @@ gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
 	.code
 
-# §section §gs{gsdl.cgs.gstype.parser}
+# §section §gs{gsdl.cgs.gstype.parser.arg}
 
-_gsdl.cgs.gstype.parser_c	.expr
+_gsdl.cgs.gstype.parser.arg_c	.expr
 rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-_gsdl.cgs.gstype.parser_var.p_c	.subcode
-_gsdl.cgs.gstype.parser_prod.p_c	.subcode
-_gsdl.cgs.gstype.parser_lift.p_c	.subcode
+_gsdl.cgs.gstype.parser.arg_var.p_c	.subcode
+_gsdl.cgs.gstype.parser.arg_prod.p_c	.subcode
+_gsdl.cgs.gstype.parser.arg_lift.p_c	.subcode
 parser.<|>	.gvar
-var.p	.alloc	_gsdl.cgs.gstype.parser_var.p_c
-prod.p	.alloc	_gsdl.cgs.gstype.parser_prod.p_c
-lift.p	.alloc	_gsdl.cgs.gstype.parser_lift.p_c
+var.p	.alloc	_gsdl.cgs.gstype.parser.arg_var.p_c
+prod.p	.alloc	_gsdl.cgs.gstype.parser.arg_prod.p_c
+lift.p	.alloc	_gsdl.cgs.gstype.parser.arg_lift.p_c
 p1	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	prod.p	lift.p
 	.app	var.p	p1
 	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
@@ -46,7 +46,7 @@ p1	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	prod.p	lift.p
 # > for (
 # >     'v ← cgs.syntax.var
 # > ) [| var v |]
-_gsdl.cgs.gstype.parser_var.p_c	.expr
+_gsdl.cgs.gstype.parser.arg_var.p_c	.expr
 rune.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -59,7 +59,7 @@ gsdl.cgs.syntax.var.parser	.gvar
 # > for (
 # >     'fs ← m/"Π〈/ *> cgs.syntax.ws *> many field.parser <* cgs.syntax.rbracket;
 # > ) [| product fs |]
-_gsdl.cgs.gstype.parser_prod.p_c	.expr
+_gsdl.cgs.gstype.parser.arg_prod.p_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
@@ -71,13 +71,13 @@ gsdl.cgs.gstype.product	.gvar
 parser.*>	.gvar
 parser.match	.gvar
 rune.compare	.gvar
-_gsdl.cgs.gstype.parser_pi.re	.gvar
+_gsdl.cgs.gstype.parser.arg_pi.re	.gvar
 gsdl.cgs.syntax.ws	.gvar
 parser.many	.gvar
 gsdl.cgs.gstype.field.parser	.gvar
 parser.<*	.gvar
 gsdl.cgs.syntax.rbracket	.gvar
-pi_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser_pi.re
+pi_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_pi.re
 mfp	.apply	parser.many	rune.t	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.parser
 fs_p2	.apply	parser.<*	rune.t	list.field.t	string.t	|	mfp	gsdl.cgs.syntax.rbracket
 fs_p1	.apply	parser.*>	rune.t	string.t	list.field.t	|	gsdl.cgs.syntax.ws	fs_p2
@@ -88,7 +88,7 @@ fs_p	.apply	parser.*>	rune.t	string.t	list.field.t	|	pi_p	fs_p1
 # > for (
 # >     'ty ← m/⌊/ *> cgs.syntax.ws *> gsdl.cgs.gstype.parser <* m/⌋/ <* cgs.syntax.ws;
 # > ) [| lift ty |]
-_gsdl.cgs.gstype.parser_lift.p_c	.expr
+_gsdl.cgs.gstype.parser.arg_lift.p_c	.expr
 rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
@@ -96,17 +96,17 @@ parser.map	.gvar
 gsdl.cgs.gstype.lift	.gvar
 parser.*>	.gvar
 parser.match	.gvar
-_gsdl.cgs.gstype.parser_lift.p_lb.re	.gvar
+_gsdl.cgs.gstype.parser.arg_lift.p_lb.re	.gvar
 rune.compare	.gvar
 gsdl.cgs.syntax.ws	.gvar
 parser.<*	.gvar
-gsdl.cgs.gstype.parser	.gvar
-_gsdl.cgs.gstype.parser_lift.p_rb.re	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
+_gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.gvar
 parser.fail	.gvar	# Temp
-lb_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser_lift.p_lb.re
-rb_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser_lift.p_rb.re
+lb_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_lift.p_lb.re
+rb_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_lift.p_rb.re
 ty_p3	.apply	parser.<*	rune.t	string.t	string.t	|	rb_p	gsdl.cgs.syntax.ws
-ty_p2	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	gsdl.cgs.gstype.parser	ty_p3
+ty_p2	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	gsdl.cgs.gstype.parser.arg	ty_p3
 ty_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.ws	ty_p2
 ty_p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	lb_p	ty_p1
 	.app	gsdl.cgs.gstype.lift	ty_p
@@ -373,9 +373,9 @@ gsdl.cgs.gstype.field.prim.u	.tygvar
 gsdl.cgs.gstype.field.prim.u	.tyexpr
 	.tysum
 
-# §section §gs{gsdl.cgs.gstype.parser}
+# §section §gs{gsdl.cgs.gstype.parser.arg}
 
-_gsdl.cgs.gstype.parser_ty	.tyexpr
+_gsdl.cgs.gstype.parser.arg_ty	.tyexpr
 parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
