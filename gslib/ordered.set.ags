@@ -169,20 +169,32 @@ _ordered.set.union_c	.expr
 order.total.t	.tygvar
 ordered.set.t	.tygvar
 α	.tyarg	*
-_ordered.set.union_k	.subcode
+_ordered.set.union_k0	.subcode
 ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 s0	.larg	ordered.set.t	α
 s1	.larg	ordered.set.t	α
-	.force	_ordered.set.union_k	α
+	.force	_ordered.set.union_k0	α	|	s1
 	.coerce	ordered.set.t.out	α
 	.enter	s0
 
-_ordered.set.union_k	.forcecont
+_ordered.set.union_k0	.forcecont
+ordered.set.t	.tygvar
+ordered.set.prim.u	.tygvar
+α	.tyfv	*
+_ordered.set.union_k1	.subcode
+ordered.set.t.out	.cogvar
+s1	.fv	ordered.set.t	α
+s0.0	.karg	ordered.set.prim.u	α
+	.force	_ordered.set.union_k1	α
+	.coerce	ordered.set.t.out	α
+	.enter	s1
+
+_ordered.set.union_k1	.forcecont
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
 α	.tyfv	*
-s0.0	.karg	ordered.set.prim.u	α
+s1.0	.karg	ordered.set.prim.u	α
 	.undef	ordered.set.t	α
 
 # §section §gs{tygvar}
