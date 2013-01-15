@@ -30,6 +30,10 @@ void gsassert(char *srcfile, int srcline, int passed, char *err, ...);
 #define UNIMPL(s) "%s:%d: " s " next", __FILE__, __LINE__
 #define UNIMPL_NL(s) "%s:%d: " s " next\n", __FILE__, __LINE__
 
+/* §section Command-line Arguments You Might Be Interested In */
+
+extern int gsflag_stat_collection;
+
 /* §section Threading */
 
 #ifdef __UNIX__

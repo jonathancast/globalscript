@@ -111,12 +111,17 @@ api_thread_pool_main(void *arg)
 
     int threadnum;
     int hadthread, suspended_runnable_thread;
+    vlong thread_lifetime;
+    vlong loops, instrs, loops_waiting;
 
     args = (struct api_thread_pool_args *)arg;
 
     mainthread = api_add_thread(args->rpc_queue, args->api_thread_table, args->api_main_thread_data, args->api_prim_table, args->entry);
 
     api_release_thread(mainthread);
+
+    thread_lifetime = 0;
+    loops = instrs = loops_waiting = 0;
 
     do {
         hadthread = suspended_runnable_thread = 0;
@@ -128,6 +133,7 @@ api_thread_pool_main(void *arg)
             }
             api_release_thread_queue();
             if (thread) {
+                loops++;
                 hadthread = 1;
 
                 switch (thread->state) {
@@ -143,6 +149,7 @@ api_thread_pool_main(void *arg)
 
                         switch (st) {
                             case gstywhnf:
+                                instrs++;
                                 if (api_exec_instr(thread, instr) > 0)
                                     suspended_runnable_thread = 1
                                 ;
@@ -152,6 +159,7 @@ api_thread_pool_main(void *arg)
                                 api_exec_err(thread, instr, st);
                                 break;
                             case gstystack:
+                                loops_waiting++;
                                 break;
                             case gstyindir:
                                 code->instrs[code->ip].instr = GS_REMOVE_INDIRECTION(instr);
@@ -170,6 +178,10 @@ api_thread_pool_main(void *arg)
                     case api_thread_st_terminating_on_abend: {
                         enum api_prim_execution_state st;
 
+                        if (gsflag_stat_collection && !thread->prog_term_time) {
+                            thread->prog_term_time = nsec();
+                            thread_lifetime += thread->prog_term_time - thread->start_time;
+                        }
                         st = thread->api_thread_table->thread_term_status(thread);
                         switch (st) {
                             case api_st_success:
@@ -215,6 +227,12 @@ api_thread_pool_main(void *arg)
         api_at_termination_queue[api_at_termination_queue_length]();
     }
     unlock(&api_at_termination_queue_lock);
+
+    if (gsflag_stat_collection) {
+        fprint(2, "# API threads: %d\n", api_thread_queue->numthreads);
+        fprint(2, "API thread total lifetime: %llds %lldms\n", thread_lifetime / 1000 / 1000 / 1000, (thread_lifetime / 1000 / 1000) % 1000);
+        fprint(2, "# API thread iterations: %lld (%0.2g%% instructions, %0.2g%% waiting)\n", loops, ((double)instrs / loops) * 100, ((double)loops_waiting / loops) * 100);
+    }
 
     ace_down();
 }
@@ -537,16 +555,21 @@ api_add_thread(struct gsrpc_queue *rpc_queue, struct api_thread_table *api_threa
         api_take_thread(&api_thread_queue->threads[i]);
         if (api_thread_queue->threads[i].state == api_thread_st_unused) {
             thread = &api_thread_queue->threads[i];
+            api_thread_queue->numthreads++;
             goto have_thread;
         } else {
             api_release_thread(&api_thread_queue->threads[i]);
         }
     }
-    gsfatal_unimpl(__FILE__, __LINE__, "thread queue overflow");
+    gsfatal(UNIMPL("thread queue overflow"));
 
 have_thread:
     api_release_thread_queue();
 
+    if (gsflag_stat_collection) {
+        thread->start_time = nsec();
+        thread->prog_term_time = 0;
+    }
     thread->state = api_thread_st_active;
     thread->hard = 1;
 

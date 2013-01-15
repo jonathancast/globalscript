@@ -10,6 +10,8 @@
 static int gsPfmt(Fmt *f);
 static int gsyfmt(Fmt *f);
 
+int gsflag_stat_collection;
+
 void
 gsmain(int argc, char **argv)
 {
@@ -36,7 +38,11 @@ gsmain(int argc, char **argv)
         cur_arg = *argv++, argc--;
         if (*cur_arg == '-') {
             cur_arg++;
-            gsfatal("Invalid option flag %s", cur_arg);
+            if (!strcmp(cur_arg, "stat")) {
+                gsflag_stat_collection = 1;
+            } else {
+                gsfatal("Invalid option flag %s", cur_arg);
+            }
         } else {
             if (gsisdir(cur_arg)) {
                 gsadddir(cur_arg);

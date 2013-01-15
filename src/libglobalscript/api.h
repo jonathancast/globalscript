@@ -3,6 +3,7 @@
 struct api_thread {
     struct Lock lock;
     int hard;
+    vlong start_time, prog_term_time;
     enum {
         api_thread_st_unused,
         api_thread_st_active,
@@ -36,5 +37,6 @@ struct api_promise {
 
 struct api_thread_queue {
     struct Lock lock;
+    int numthreads;
     struct api_thread threads[API_NUMTHREADS];
 };
