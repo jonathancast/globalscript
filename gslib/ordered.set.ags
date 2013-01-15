@@ -174,27 +174,59 @@ ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 s0	.larg	ordered.set.t	α
 s1	.larg	ordered.set.t	α
-	.force	_ordered.set.union_k0	α	|	s1
+	.force	_ordered.set.union_k0	α	|	cmp	s1
 	.coerce	ordered.set.t.out	α
 	.enter	s0
 
 _ordered.set.union_k0	.forcecont
+order.total.t	.tygvar
 ordered.set.t	.tygvar
 ordered.set.prim.u	.tygvar
 α	.tyfv	*
 _ordered.set.union_k1	.subcode
 ordered.set.t.out	.cogvar
+cmp	.fv	order.total.t	α
 s1	.fv	ordered.set.t	α
 s0.0	.karg	ordered.set.prim.u	α
-	.force	_ordered.set.union_k1	α
+	.force	_ordered.set.union_k1	α	|	cmp	s0.0
 	.coerce	ordered.set.t.out	α
 	.enter	s1
 
 _ordered.set.union_k1	.forcecont
+order.total.t	.tygvar
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
 α	.tyfv	*
+_ordered.set.union_branch_branch_k	.subcode
+order.total.ord.t.out	.cogvar
+cmp	.fv	order.total.t	α
+s0.0	.fv	ordered.set.prim.u	α
 s1.0	.karg	ordered.set.prim.u	α
+	.analyze	s0.0	branch	empty
+		.case	branch
+x0		.fkarg	0	α
+sl0		.fkarg	1	ordered.set.t	α
+sr0		.fkarg	2	ordered.set.t	α
+			.analyze	s1.0	branch	empty
+				.case	branch
+x1				.fkarg	0	α
+sl1				.fkarg	1	ordered.set.t	α
+sr1				.fkarg	2	ordered.set.t	α
+					.force	_ordered.set.union_branch_branch_k	α
+					.coerce	order.total.ord.t.out
+					.app	x0	x1
+					.enter	cmp
+				.case	empty
+					.undef	ordered.set.t	α
+		.case	empty
+			.undef	ordered.set.t	α
+	# > :: ordered.set.t	α
+
+_ordered.set.union_branch_branch_k	.forcecont
+order.total.ord.prim.u	.tygvar
+ordered.set.t	.tygvar
+α	.tyfv	*
+o0	.karg	order.total.ord.prim.u
 	.undef	ordered.set.t	α
 
 # §section §gs{tygvar}
