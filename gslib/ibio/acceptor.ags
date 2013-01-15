@@ -212,7 +212,7 @@ ibio.acceptor.many.prim	.gvar
 p	.fv	ibio.acceptor.prim.cont.t	s	α	β
 k	.fv	ibio.acceptor.prim.kt	s	res.ty	β
 x	.larg	α
-k1	.alloc	_ibio.acceptor.many.prim_cr_k1_c	s	α	β	|	k
+k1	.alloc	_ibio.acceptor.many.prim_cr_k1_c	s	α	β	|	k	x
 	.app	p k1
 	.enter	ibio.acceptor.many.prim	s	α	β
 
@@ -224,17 +224,13 @@ s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
 res.ty	.tylet	list.t	α
-_ibio.acceptor.many.prim_cr_k1_xn_c	.subcode
+list.:	.gvar
 k	.fv	ibio.acceptor.prim.kt	s	res.ty	β
+x	.fv	α
 xn1	.larg	list.t	α
-xn	.alloc	_ibio.acceptor.many.prim_cr_k1_xn_c	α
+xn	.apply	list.:	α	|	x	xn1
 	.app	xn
 	.enter	k
-
-_ibio.acceptor.many.prim_cr_k1_xn_c	.expr
-list.t	.tygvar
-α	.tyfv	*
-	.undef	list.t	α
 
 # §section §gs{ibio.acceptor.prim.<|>}
 
