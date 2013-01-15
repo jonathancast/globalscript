@@ -7,6 +7,7 @@ CFLAGS=$CFLAGS -I $SYSTEM
 OFILES=\
 	gsmain.$O \
 	gsfatal.$O \
+	gsoptions.$O \
 	apithread.$O \
 	eval.$O \
 	load.$O \

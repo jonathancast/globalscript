@@ -10,8 +10,6 @@
 static int gsPfmt(Fmt *f);
 static int gsyfmt(Fmt *f);
 
-int gsflag_stat_collection;
-
 void
 gsmain(int argc, char **argv)
 {
