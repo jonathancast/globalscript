@@ -24,6 +24,8 @@ _gsdl.cgs.syntax.semi_re	.regex	;
 
 gsdl.cgs.syntax.keywords	.list	string.t
 
+gsdl.cgs.syntax.var.component.print	.closure	_gsdl.cgs.syntax.var.component.print_c
+
 gsdl.cgs.syntax.var.component.alphanum	.closure	_gsdl.cgs.syntax.var.component.alphanum_c
 
 	.code
@@ -169,6 +171,27 @@ m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.semi_re
 	.app	m	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
 
+# §section §gs{gsdl.cgs.syntax.var.component.print}
+
+_gsdl.cgs.syntax.var.component.print_c	.expr
+gsdl.cgs.syntax.var.component.t	.tygvar
+_gsdl.cgs.syntax.var.component.print_k	.subcode
+gsdl.cgs.syntax.var.component.t.out	.cogvar
+c	.larg	gsdl.cgs.syntax.var.component.t
+	.force	_gsdl.cgs.syntax.var.component.print_k
+	.coerce	gsdl.cgs.syntax.var.component.t.out
+	.enter	c
+
+_gsdl.cgs.syntax.var.component.print_k	.forcecont
+gsdl.cgs.syntax.var.component.prim.u	.tygvar
+string.t	.tygvar
+c0	.karg	gsdl.cgs.syntax.var.component.prim.u
+	.analyze	c0	alphanum
+		.case	alphanum
+s		.fkarg	0	string.t
+			.enter	s
+	# > :: string.t
+
 # §section §gs{gsdl.cgs.syntax.var.component.t} Constructors
 
 _gsdl.cgs.syntax.var.component.alphanum_c	.expr
@@ -209,4 +232,9 @@ string.t	.tygvar
 
 gsdl.cgs.syntax.var.component.t.in	.tycoercion
 gsdl.cgs.syntax.var.component.t	.tygvar
+	.tydefinition	gsdl.cgs.syntax.var.component.t
+
+gsdl.cgs.syntax.var.component.t.out	.tycoercion
+gsdl.cgs.syntax.var.component.t	.tygvar
+	.tyinvert
 	.tydefinition	gsdl.cgs.syntax.var.component.t
