@@ -12,6 +12,7 @@ extern struct gstype *gsentrytype;
 struct ace_thread_queue {
     Lock lock;
     int refcount;
+    vlong numthreads;
     struct ace_thread *threads[NUM_ACE_THREADS];
 };
 

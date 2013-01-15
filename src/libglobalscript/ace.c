@@ -81,15 +81,20 @@ ace_thread_pool_main(void *p)
 {
     int have_clients, suspended_runnable_thread;
     int i;
+    vlong outer_loops, numthreads_total, num_instrs, num_blocked, num_bocked_threads;
+    vlong start_time, end_time;
 
     have_clients = 1;
 
+    outer_loops = numthreads_total = num_instrs = num_blocked = num_bocked_threads = 0;
+    start_time = nsec();
     while (have_clients) {
         lock(&ace_thread_queue->lock);
         have_clients = ace_thread_queue->refcount > 0;
         unlock(&ace_thread_queue->lock);
         suspended_runnable_thread = 0;
         if (have_clients) {
+            outer_loops++;
             for (i = 0; i < NUM_ACE_THREADS; i++) {
                 struct ace_thread *thread;
 
@@ -102,6 +107,7 @@ ace_thread_pool_main(void *p)
                 unlock(&ace_thread_queue->lock);
 
                 if (thread) {
+                    numthreads_total++;
                     lock(&thread->lock);
 
                     switch (thread->state) {
@@ -114,10 +120,12 @@ ace_thread_pool_main(void *p)
                         case ace_thread_blocked: {
                             gstypecode st;
 
+                            num_blocked++;
                             st = GS_SLOW_EVALUATE(thread->st.blocked.on);
 
                             switch (st) {
                                 case gstystack:
+                                    num_bocked_threads++;
                                 case gstyblocked:
                                     break;
                                 case gstyindir:
@@ -150,6 +158,7 @@ ace_thread_pool_main(void *p)
                             break;
                         }
                         case ace_thread_running: {
+                            num_instrs++;
                             switch (thread->st.running.ip->instr) {
                                 case gsbc_op_efv:
                                     if (ace_extract_efv(thread))
@@ -279,10 +288,16 @@ ace_thread_pool_main(void *p)
             sleep(1)
         ;
     }
+    end_time = nsec();
 
-    if (0)
-        gswarning("%s:%d: ace_thread_pool_main terminating", __FILE__, __LINE__)
-    ;
+    if (gsflag_stat_collection) {
+        fprint(2, "# ACE threads: %d\n", ace_thread_queue->numthreads);
+        fprint(2, "# ACE outer loops: %lld\n", outer_loops);
+        fprint(2, "Avg # ACE threads: %02g\n", (double)numthreads_total / outer_loops);
+        fprint(2, "ACE threads: %0.2g%% instructions, %0.2g%% blocked, %0.2g%% blocked on threads\n", ((double)num_instrs / numthreads_total) * 100, ((double)num_blocked / numthreads_total) * 100, ((double)num_bocked_threads / numthreads_total) * 100);
+        fprint(2, "ACE Run time: %llds %lldms\n", (end_time - start_time) / 1000 / 1000 / 1000, ((end_time - start_time) / 1000 / 1000) % 1000);
+        fprint(2, "Avg unit of work: %gμs\n", (double)(end_time - start_time) / numthreads_total / 1000);
+    }
 }
 
 static
@@ -1397,6 +1412,7 @@ ace_start_evaluation(gsvalue val)
     for (i = 0; i < NUM_ACE_THREADS; i++) {
         if (!ace_thread_queue->threads[i]) {
             ace_thread_queue->threads[i] = thread;
+            ace_thread_queue->numthreads++;
             unlock(&ace_thread_queue->lock);
             thread->tid = i;
             return gstystack;
