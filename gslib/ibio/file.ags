@@ -23,6 +23,8 @@ _ibio.file.name.extension.set_worker	.closure	_ibio.file.name.extension.set_work
 ibio.file.name.</>	.closure	_ibio.file.name.</>_c
 _ibio.file.name.</>_worker	.closure	_ibio.file.name.</>_worker_c	_ibio.file.name.</>_worker_ty
 
+ibio.file.name.compare	.closure	_ibio.file.name.compare_c
+
 ibio.file.name.fmtgs	.closure	_ibio.file.name.fmtgs_c
 _ibio.file.name.fmtgs_prefix	.string	fn<
 _ibio.file.name.fmtgs_suffix	.string	>
@@ -557,6 +559,19 @@ fn1			.apply	list.:	rune.t	|	_slash	fn
 			.enter	list.:	rune.t
 		.case	true
 			.undef	list.t	rune.t
+
+# §section §gs{ibio.file.name.compare}
+
+_ibio.file.name.compare_c	.expr
+ibio.file.name.t	.tygvar
+string.compare	.gvar
+ibio.file.name.out	.gvar
+fn0	.larg	ibio.file.name.t
+fn1	.larg	ibio.file.name.t
+fn0.s	.apply	ibio.file.name.out	|	fn0
+fn1.s	.apply	ibio.file.name.out	|	fn1
+	.app	fn0.s	fn1.s
+	.enter	string.compare
 
 # §section §gs{ibio.file.name.fmtgs}
 
