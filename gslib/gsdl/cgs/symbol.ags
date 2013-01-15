@@ -2,11 +2,36 @@
 
 	.data
 
+gsdl.cgs.symbol.components.get	.closure	_gsdl.cgs.symbol.components.get_c
+
 gsdl.cgs.symbol.compare	.closure	_gsdl.cgs.symbol.compare_c
 
 gsdl.cgs.symbol.tyvar	.closure	_gsdl.cgs.symbol.tyvar_c
 
 	.code
+
+# §section §gs{gsdl.cgs.symbol.components.get}
+
+_gsdl.cgs.symbol.components.get_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+_gsdl.cgs.symbol.components.get_k	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
+s	.larg	gsdl.cgs.symbol.t
+	.force	_gsdl.cgs.symbol.components.get_k
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s
+
+_gsdl.cgs.symbol.components.get_k	.forcecont
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+list.t	.tygvar	# Temp
+gsdl.cgs.syntax.var.component.t	.tygvar	# Temp
+s0	.karg	gsdl.cgs.symbol.prim.u
+	.analyze	s0	tyvar
+		.case	tyvar
+v		.fkarg	0	gsdl.cgs.syntax.var.t
+			.enter	v
+	# > :: list.t	gsdl.cgs.syntax.var.component.t
 
 # §section §gs{gsdl.cgs.symbol.compare}
 
@@ -50,4 +75,9 @@ gsdl.cgs.syntax.var.t	.tygvar
 
 gsdl.cgs.symbol.t.in	.tycoercion
 gsdl.cgs.symbol.t	.tygvar
+	.tydefinition	gsdl.cgs.symbol.t
+
+gsdl.cgs.symbol.t.out	.tycoercion
+gsdl.cgs.symbol.t	.tygvar
+	.tyinvert
 	.tydefinition	gsdl.cgs.symbol.t
