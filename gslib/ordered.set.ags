@@ -5,6 +5,8 @@
 
 	.data
 
+ordered.set.elem	.closure	_ordered.set.elem_c	_ordered.set.elem_ty
+
 ordered.set.tolist	.closure	_ordered.set.tolist_c
 _ordered.set.tolist_w	.closure	_ordered.set.tolist_w_c	_ordered.set.tolist_w_ty
 
@@ -15,6 +17,37 @@ ordered.set.union	.closure	_ordered.set.union_c	_ordered.set.union_ty
 ordered.set.prim.branch	.closure	_ordered.set.prim.branch_c
 
 	.code
+
+# §section §gs{ordered.set.elem}
+
+_ordered.set.elem_c	.expr
+order.total.t	.tygvar
+ordered.set.t	.tygvar
+α	.tyarg	*
+_ordered.set.elem_k	.subcode
+ordered.set.t.out	.cogvar
+cmp	.larg	order.total.t	α
+x	.larg	α
+s	.larg	ordered.set.t	α
+	.force	_ordered.set.elem_k	α
+	.coerce	ordered.set.t.out	α
+	.enter	s
+
+_ordered.set.elem_k	.forcecont
+ordered.set.prim.u	.tygvar
+ordered.set.t	.tygvar
+bool.t	.tygvar	# Temp
+α	.tyfv	*
+bool.false	.gvar
+s0	.karg	ordered.set.prim.u	α	# s0 :: ordered.set.prim.u	α
+	.analyze	s0	branch	empty
+		.case	branch
+x1		.fkarg	0	α
+sl		.fkarg	1	ordered.set.t	α
+sr		.fkarg	2	ordered.set.t	α
+			.undef	bool.t
+		.case	empty
+			.enter	bool.false
 
 # §section §gs{ordered.set.tolist}
 
@@ -143,6 +176,21 @@ ordered.set.t	.tygvar
 α	.tylambda	*
 set.ty	.tylet	ordered.set.t	α
 	.tyubproduct	0	α	1	set.ty	2	set.ty
+
+# §section §gs{ordered.set.elem}
+
+_ordered.set.elem_ty	.tyexpr
+order.total.t	.tygvar
+ordered.set.t	.tygvar
+bool.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	α
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyfun	ordered.set.t	α
+	.tyref	bool.t
 
 # §section §gs{ordered.set.tolist}
 
