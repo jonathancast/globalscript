@@ -52,7 +52,7 @@ s0	.karg	ordered.set.prim.u	α	# s0 :: ordered.set.prim.u	α
 x1		.fkarg	0	α
 sl		.fkarg	1	ordered.set.t	α
 sr		.fkarg	2	ordered.set.t	α
-			.force	_ordered.set.elem_branch_k
+			.force	_ordered.set.elem_branch_k	α	|	cmp	x	sl
 			.coerce	order.total.ord.t.out
 			.app	x	x1
 			.enter	cmp
@@ -61,10 +61,24 @@ sr		.fkarg	2	ordered.set.t	α
 	# > :: bool.t
 
 _ordered.set.elem_branch_k	.forcecont
+order.total.t	.tygvar
+ordered.set.t	.tygvar
 order.total.ord.prim.u	.tygvar
 bool.t	.tygvar	# Temp
+α	.tyfv	*
+ordered.set.elem	.gvar
+cmp	.fv	order.total.t	α
+x	.fv	α
+sl	.fv	ordered.set.t	α
 o0	.karg	order.total.ord.prim.u
-	.undef	bool.t
+	.analyze	o0	eq	gt	lt
+		.case	eq
+			.undef	bool.t
+		.case	gt
+			.undef	bool.t
+		.case	lt
+			.app	cmp	x	sl
+			.enter	ordered.set.elem	α
 
 # §section §gs{ordered.set.tolist}
 
