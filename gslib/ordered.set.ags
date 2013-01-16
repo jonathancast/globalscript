@@ -219,7 +219,9 @@ o0	.karg	order.total.ord.prim.u
 		.case	eq
 			.undef	ordered.set.t	α
 		.case	gt
-			.undef	ordered.set.t	α
+sr1			.apply	ordered.set.insert	α	|	cmp	x	sr
+			.app	x1	sl	sr1
+			.yield	ordered.set.prim.branch	α
 		.case	lt
 sl1			.apply	ordered.set.insert	α	|	cmp	x	sl
 			.app	x1	sl1	sr
