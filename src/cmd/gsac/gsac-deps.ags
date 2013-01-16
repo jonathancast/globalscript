@@ -626,11 +626,12 @@ dirn	.larg	ibio.file.name.t
 sdirn	.larg	ibio.file.name.t
 cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
 dncs	.larg	list.t	string.t
-	.force	_prefix.expand_w_dir_w_kcs	|	dncs
+	.force	_prefix.expand_w_dir_w_kcs	|	sdirn	dncs
 	.coerce	list.t.out	gsdl.cgs.syntax.var.component.t
 	.enter	cs
 
 _prefix.expand_w_dir_w_kcs	.forcecont
+ibio.file.name.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 list.prim.u	.tygvar
@@ -639,19 +640,21 @@ ibio.prim.t	.tygvar	# Temp
 _prefix.t	.tygvar	# Temp
 _prefix.expand_w_dir_w_kdncs	.subcode
 list.t.out	.cogvar
+sdirn	.fv	ibio.file.name.t
 dncs	.fv	list.t	string.t
 cs0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
 	.analyze	cs0	:	nil
 		.case	:
 c0		.fkarg	0	gsdl.cgs.syntax.var.component.t
 cs1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
-			.force	_prefix.expand_w_dir_w_kdncs	|	c0
+			.force	_prefix.expand_w_dir_w_kdncs	|	sdirn	c0
 			.coerce	list.t.out	string.t
 			.enter	dncs
 		.case	nil
 			.undef	ibio.prim.t	_prefix.t
 
 _prefix.expand_w_dir_w_kdncs	.forcecont
+ibio.file.name.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 list.prim.u	.tygvar
 string.t	.tygvar
@@ -662,6 +665,7 @@ _prefix.expand_w_dir_w_:_:_k	.subcode
 bool.t.out	.cogvar
 string.≡	.gvar
 gsdl.cgs.syntax.var.component.print	.gvar
+sdirn	.fv	ibio.file.name.t
 c0	.fv	gsdl.cgs.syntax.var.component.t
 dncs0	.karg	list.prim.u	string.t
 	.analyze	dncs0	:	nil
@@ -669,7 +673,7 @@ dncs0	.karg	list.prim.u	string.t
 dnc0		.fkarg	0	string.t
 dncs1		.fkarg	1	list.t	string.t
 sc0			.apply	gsdl.cgs.syntax.var.component.print	|	c0
-			.force	_prefix.expand_w_dir_w_:_:_k
+			.force	_prefix.expand_w_dir_w_:_:_k	|	sdirn
 			.coerce	bool.t.out
 			.app	sc0	dnc0
 			.enter	string.≡
@@ -677,11 +681,22 @@ sc0			.apply	gsdl.cgs.syntax.var.component.print	|	c0
 			.undef	ibio.prim.t	_prefix.t
 
 _prefix.expand_w_dir_w_:_:_k	.forcecont
+ibio.file.name.t	.tygvar
 bool.prim.u	.tygvar
+_prefix.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
-_prefix.t	.tygvar	# Temp
+ibio.prim.unit	.gvar
+_prefix.dir	.gvar
+sdirn	.fv	ibio.file.name.t
 b0	.karg	bool.prim.u
-	.undef	ibio.prim.t	_prefix.t
+	.analyze	b0	false	true
+		.case	false
+p1			.apply	_prefix.dir	|	sdirn
+			.lift
+			.app	p1
+			.yield	ibio.prim.unit	_prefix.t
+		.case	true
+			.undef	ibio.prim.t	_prefix.t
 
 # §section §gs{_prefix.readdir}
 
