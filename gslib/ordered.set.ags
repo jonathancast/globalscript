@@ -273,7 +273,7 @@ sr0		.fkarg	2	ordered.set.t	α
 x1				.fkarg	0	α
 sl1				.fkarg	1	ordered.set.t	α
 sr1				.fkarg	2	ordered.set.t	α
-					.force	_ordered.set.union_branch_branch_k	α	|	cmp	x0	sl0	sr0	x1	sl1
+					.force	_ordered.set.union_branch_branch_k	α	|	cmp	x0	sl0	sr0	x1	sl1	sr1
 					.coerce	order.total.ord.t.out
 					.app	x0	x1
 					.enter	cmp
@@ -299,6 +299,7 @@ sl0	.fv	ordered.set.t	α
 sr0	.fv	ordered.set.t	α
 x1	.fv	α
 sl1	.fv	ordered.set.t	α
+sr1	.fv	ordered.set.t	α
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
 		.case	eq
@@ -306,14 +307,13 @@ o0	.karg	order.total.ord.prim.u
 		.case	gt
 sr0.split			.apply	_ordered.set.union_split	α	|	cmp	x1	sr0
 s2.1			.lfield	0	sr0.split
-s2.2			.undefined	ordered.set.t	α	# ${ y | y ∈ sr0, x0 < x1 < y, }$
+s2.2			.lfield	1	sr0.split
 sl1.split			.apply	_ordered.set.union_split	α	|	cmp	x0	sl1
 s2.3			.lfield	0	sl1.split
 s2.4			.lfield	1	sl1.split
-s2.5			.undefined	ordered.set.t	α	# ${ y | y ∈ sr1, x0 < x1 < y, }$
 s3.0			.apply	ordered.set.union	α	|	cmp	sl0	s2.3	# ${ y | y ∈ s0 ∪ s1, y < x0 < x1, }$
 s3.1			.apply	ordered.set.union	α	|	cmp	s2.1	s2.4	# ${ y | y ∈ s0 ∪ s1, x0 < y < x1, }$
-s3.2			.apply	ordered.set.union	α	|	cmp	s2.2	s2.5	# ${ y | y ∈ s0 ∪ s1, x0 < x1 < y, }$
+s3.2			.apply	ordered.set.union	α	|	cmp	s2.2	sr1	# ${ y | y ∈ s0 ∪ s1, x0 < x1 < y, }$
 s4.0			.apply	ordered.set.prim.branch	α	|	x0	s3.0	s3.1	# ${ y | y ∈ s0 ∪ s1, y < x1, }$
 			.app	x1	s4.0	s3.2
 			.yield	ordered.set.prim.branch	α
