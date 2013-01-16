@@ -14,6 +14,7 @@ ordered.set.empty	.closure	_ordered.set.empty_c
 ordered.set.singleton	.closure	_ordered.set.singleton_c
 ordered.set.insert	.closure	_ordered.set.insert_c	_ordered.set.insert_ty
 ordered.set.union	.closure	_ordered.set.union_c	_ordered.set.union_ty
+_ordered.set.union_split	.closure	_ordered.set.union_split_c	_ordered.set.union_split_ty
 
 ordered.set.prim.branch	.closure	_ordered.set.prim.branch_c
 
@@ -199,6 +200,7 @@ ordered.set.t	.tygvar
 α	.tyfv	*
 _ordered.set.union_branch_branch_k	.subcode
 order.total.ord.t.out	.cogvar
+ordered.set.t.in	.cogvar
 cmp	.fv	order.total.t	α
 s0.0	.fv	ordered.set.prim.u	α
 s1.0	.karg	ordered.set.prim.u	α
@@ -212,22 +214,84 @@ sr0		.fkarg	2	ordered.set.t	α
 x1				.fkarg	0	α
 sl1				.fkarg	1	ordered.set.t	α
 sr1				.fkarg	2	ordered.set.t	α
-					.force	_ordered.set.union_branch_branch_k	α
+					.force	_ordered.set.union_branch_branch_k	α	|	cmp	x0	sl0	sr0	x1	sl1
 					.coerce	order.total.ord.t.out
 					.app	x0	x1
 					.enter	cmp
 				.case	empty
 					.undef	ordered.set.t	α
 		.case	empty
-			.undef	ordered.set.t	α
+			.coerce	ordered.set.t.in	α
+			.lift
+			.yield	s1.0
 	# > :: ordered.set.t	α
 
 _ordered.set.union_branch_branch_k	.forcecont
-order.total.ord.prim.u	.tygvar
+order.total.t	.tygvar
 ordered.set.t	.tygvar
+order.total.ord.prim.u	.tygvar
 α	.tyfv	*
+ordered.set.prim.branch	.gvar
+ordered.set.union	.gvar
+_ordered.set.union_split	.gvar
+cmp	.fv	order.total.t	α
+x0	.fv	α
+sl0	.fv	ordered.set.t	α
+sr0	.fv	ordered.set.t	α
+x1	.fv	α
+sl1	.fv	ordered.set.t	α
 o0	.karg	order.total.ord.prim.u
-	.undef	ordered.set.t	α
+	.analyze	o0	eq	gt	lt
+		.case	eq
+			.undef	ordered.set.t	α
+		.case	gt
+sr0.split			.apply	_ordered.set.union_split	α	|	cmp	x1	sr0
+s2.1			.lfield	0	sr0.split
+s2.2			.undefined	ordered.set.t	α	# ${ y | y ∈ sr0, x0 < x1 < y, }$
+sl1.split			.apply	_ordered.set.union_split	α	|	cmp	x0	sl1
+s2.3			.lfield	0	sl1.split
+s2.4			.lfield	1	sl1.split
+s2.5			.undefined	ordered.set.t	α	# ${ y | y ∈ sr1, x0 < x1 < y, }$
+s3.0			.apply	ordered.set.union	α	|	cmp	sl0	s2.3	# ${ y | y ∈ s0 ∪ s1, y < x0 < x1, }$
+s3.1			.apply	ordered.set.union	α	|	cmp	s2.1	s2.4	# ${ y | y ∈ s0 ∪ s1, x0 < y < x1, }$
+s3.2			.undefined	ordered.set.t	α	# ${ y | y ∈ s0 ∪ s1, x0 < x1 < y, }$ -- $= s2.2 ∪ s2.5$
+s4.0			.apply	ordered.set.prim.branch	α	|	x0	s3.0	s3.1	# ${ y | y ∈ s0 ∪ s1, y < x1, }$
+			.app	x1	s4.0	s3.2
+			.yield	ordered.set.prim.branch	α
+		.case	lt
+			.undef	ordered.set.t	α
+
+_ordered.set.union_split_c	.expr
+order.total.t	.tygvar
+ordered.set.t	.tygvar
+α	.tyarg	*
+_ordered.set.union_split_k	.subcode
+ordered.set.t.out	.cogvar
+cmp	.larg	order.total.t	α
+x	.larg	α
+s	.larg	ordered.set.t	α
+	.force	_ordered.set.union_split_k	α
+	.coerce	ordered.set.t.out	α
+	.enter	s
+
+_ordered.set.union_split_k	.forcecont
+ordered.set.prim.u	.tygvar
+ordered.set.t	.tygvar
+_ordered.set.union_split_res.ty	.tygvar	# Temp
+α	.tyfv	*
+ordered.set.empty	.gvar
+s0	.karg	ordered.set.prim.u	α
+	.analyze	s0	branch	empty
+		.case	branch
+x1		.fkarg	0	α
+sl		.fkarg	1	ordered.set.t	α
+s2		.fkarg	2	ordered.set.t	α
+			.undef	_ordered.set.union_split_res.ty	α
+		.case	empty
+empty			.apply	ordered.set.empty	α
+r			.record	0	empty	1	empty
+			.lift
+			.yield	r
 
 # §section §gs{tygvar}
 
@@ -325,6 +389,26 @@ ordered.set.t	.tygvar
 	.tylift
 	.tyfun	ordered.set.t	α
 	.tyref	ordered.set.t	α
+
+_ordered.set.union_split_ty	.tyexpr
+order.total.t	.tygvar
+ordered.set.t	.tygvar
+_ordered.set.union_split_res.ty	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	α
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyfun	ordered.set.t	α
+	.tyref	_ordered.set.union_split_res.ty	α
+
+_ordered.set.union_split_res.ty	.tyexpr
+ordered.set.t	.tygvar
+α	.tylambda	*
+set.ty	.tylet	ordered.set.t	α
+	.tylift
+	.typroduct	0	set.ty	1	set.ty
 
 	.coercion
 
