@@ -295,7 +295,7 @@ b0	.karg	bool.prim.u
 ys1	.apply	list.filter	α	|	pred	xn1
 	.analyze	b0	false	true
 		.case	false
-			.undef	list.t	α
+			.enter	ys1
 		.case	true
 			.app	x0	ys1
 			.enter	list.:	α
