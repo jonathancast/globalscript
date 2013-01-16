@@ -169,16 +169,20 @@ ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 x	.larg	α
 s	.larg	ordered.set.t	α
-	.force	_ordered.set.insert_k	α	|	x
+	.force	_ordered.set.insert_k	α	|	cmp	x
 	.coerce	ordered.set.t.out	α
 	.enter	s
 
 _ordered.set.insert_k	.forcecont
+order.total.t	.tygvar
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
 α	.tyfv	*
+_ordered.set.insert_branch_k	.subcode
+order.total.ord.t.out	.cogvar
 ordered.set.prim.branch	.gvar
 ordered.set.empty	.gvar
+cmp	.fv	order.total.t	α
 x	.fv	α
 s0	.karg	ordered.set.prim.u	α
 	.analyze	s0	branch	empty
@@ -186,12 +190,38 @@ s0	.karg	ordered.set.prim.u	α
 x1		.fkarg	0	α
 sl		.fkarg	1	ordered.set.t	α
 sr		.fkarg	2	ordered.set.t	α
-			.undef	ordered.set.t	α
+			.force	_ordered.set.insert_branch_k	α	|	cmp	x	x1	sl	sr
+			.coerce	order.total.ord.t.out
+			.app	x	x1
+			.enter	cmp
 		.case	empty
 empty			.apply	ordered.set.empty	α
 			.app	x	empty	empty
 			.yield	ordered.set.prim.branch	α
 	# > :: ordered.set.t	α
+
+_ordered.set.insert_branch_k	.forcecont
+order.total.t	.tygvar
+ordered.set.t	.tygvar
+order.total.ord.prim.u	.tygvar
+α	.tyfv	*
+ordered.set.prim.branch	.gvar
+ordered.set.insert	.gvar
+cmp	.fv	order.total.t	α
+x	.fv	α
+x1	.fv	α
+sl	.fv	ordered.set.t	α
+sr	.fv	ordered.set.t	α
+o0	.karg	order.total.ord.prim.u
+	.analyze	o0	eq	gt	lt
+		.case	eq
+			.undef	ordered.set.t	α
+		.case	gt
+			.undef	ordered.set.t	α
+		.case	lt
+sl1			.apply	ordered.set.insert	α	|	cmp	x	sl
+			.app	x1	sl1	sr
+			.yield	ordered.set.prim.branch	α
 
 # §section §gs{ordered.set.union}
 
@@ -283,7 +313,7 @@ s2.4			.lfield	1	sl1.split
 s2.5			.undefined	ordered.set.t	α	# ${ y | y ∈ sr1, x0 < x1 < y, }$
 s3.0			.apply	ordered.set.union	α	|	cmp	sl0	s2.3	# ${ y | y ∈ s0 ∪ s1, y < x0 < x1, }$
 s3.1			.apply	ordered.set.union	α	|	cmp	s2.1	s2.4	# ${ y | y ∈ s0 ∪ s1, x0 < y < x1, }$
-s3.2			.undefined	ordered.set.t	α	# ${ y | y ∈ s0 ∪ s1, x0 < x1 < y, }$ -- $= s2.2 ∪ s2.5$
+s3.2			.apply	ordered.set.union	α	|	cmp	s2.2	s2.5	# ${ y | y ∈ s0 ∪ s1, x0 < x1 < y, }$
 s4.0			.apply	ordered.set.prim.branch	α	|	x0	s3.0	s3.1	# ${ y | y ∈ s0 ∪ s1, y < x1, }$
 			.app	x1	s4.0	s3.2
 			.yield	ordered.set.prim.branch	α
