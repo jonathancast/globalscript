@@ -920,6 +920,7 @@ ibio.prim.t	.tygvar	# Temp
 res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
 _process.var_rec_file_k	.subcode
 list.t.out	.cogvar
+ibio.prim.unit	.gvar
 o	.fv	ibio.prim.oport	rune.t
 gsac.fn	.fv	ibio.file.name.t
 dirn	.fv	ibio.file.name.t
@@ -929,7 +930,9 @@ p0	.karg	_prefix.prim.u
 	.analyze	p0	dir	file	loaded.dir
 		.case	dir
 dirn1		.fkarg	0	ibio.file.name.t
-			.undef	ibio.prim.t	res.ty
+			.lift
+			.app	ds
+			.yield	ibio.prim.unit	res.ty
 		.case	file
 fn1		.fkarg	0	ibio.file.name.t
 			.force	_process.var_rec_file_k	|	o	gsac.fn	dirn	ds	fn1
