@@ -83,10 +83,10 @@ _test.parser.empty.product_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
-gsdl.cgs.gstype.parser	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
 _test.parser.empty.product_input	.gvar
 k	.alloc	_test.parser.empty.product_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gstype.t	|	parser.rune.advance	rune.print	gsdl.cgs.gstype.parser	_test.parser.empty.product_input	k
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gstype.t	|	parser.rune.advance	rune.print	gsdl.cgs.gstype.parser.arg	_test.parser.empty.product_input	k
 	.app	_test.parser.empty.product_label	test
 	.enter	test.property.label
 
