@@ -243,6 +243,7 @@ rune.t	.tygvar
 bool.prim.u	.tygvar
 _ibio.file.name.components.get_worker_res.ty	.tygvar
 _ibio.file.name.components.get_worker_:_false_k	.subcode
+_ibio.file.name.components.get_worker_:_true_k	.subcode
 _ibio.file.name.components.get_worker	.gvar
 c	.fv	rune.t
 fn1	.fv	list.t	rune.t
@@ -253,7 +254,9 @@ b0	.karg	bool.prim.u
 			.app	fn1
 			.enter	_ibio.file.name.components.get_worker
 		.case	true
-			.undef	_ibio.file.name.components.get_worker_res.ty
+			.force	_ibio.file.name.components.get_worker_:_true_k
+			.app	fn1
+			.enter	_ibio.file.name.components.get_worker
 
 _ibio.file.name.components.get_worker_:_false_k	.forcecont	# First character not r{/}
 _ibio.file.name.components.get_worker_res.u	.tygvar
@@ -273,22 +276,29 @@ _ibio.file.name.components.get_worker_:_false_k1	.forcecont
 rune.t	.tygvar
 _ibio.file.name.components.get_worker_res.u	.tygvar
 list.prim.u	.tygvar
+string.t	.tygvar
 list.t	.tygvar
 _ibio.file.name.components.get_worker_res.ty	.tygvar
-string.ty	.tylet	list.t	rune.t
 _ibio.file.name.components.get_worker_:_false_nil_k	.subcode
 bool.t.out	.cogvar
+list.:	.gvar
 rune.≡	.gvar
 _dot	.gvar
 c	.fv	rune.t
 cs1	.fv	_ibio.file.name.components.get_worker_res.u
-ds	.fv	list.t	string.ty
-ds0	.karg	list.prim.u	string.ty
+ds	.fv	list.t	string.t
+ds0	.karg	list.prim.u	string.t
 	.analyze	ds0	:	nil
 		.case	:
-d0		.fkarg	0	string.ty
-ds1		.fkarg	1	list.t	string.ty
-			.undef	_ibio.file.name.components.get_worker_res.ty
+d0		.fkarg	0	string.t
+ds1		.fkarg	1	list.t	string.t
+ds2.0			.undefined	string.t
+ds2			.apply	list.:	string.t	|	ds2.0	ds1
+es			.undefined	list.t	string.t
+r			.field	root	cs1
+res			.record	dirs	ds2	exts	es	root	r
+			.lift
+			.yield	res
 		.case	nil
 			.force	_ibio.file.name.components.get_worker_:_false_nil_k	|	c	cs1	ds
 			.coerce	bool.t.out
@@ -324,6 +334,23 @@ r			.apply	list.nil	rune.t
 cs			.record	dirs	ds	exts	es	root	r
 			.lift
 			.yield	cs
+
+_ibio.file.name.components.get_worker_:_true_k	.forcecont	# First character r{/}
+_ibio.file.name.components.get_worker_res.u	.tygvar
+string.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar	# Temp
+list.:	.gvar
+list.nil	.gvar
+cs1	.karg	_ibio.file.name.components.get_worker_res.u
+nil	.apply	list.nil	rune.t
+ds	.undefined	list.t	string.t
+ds1	.apply	list.:	string.t	|	nil	ds
+es	.undefined	list.t	string.t
+r	.field	root	cs1
+res	.record	dirs	ds1	exts	es	root	r
+	.lift
+	.yield	res
 
 # §section §gs{ibio.file.name.extension.set}
 
