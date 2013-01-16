@@ -310,7 +310,7 @@ o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
 		.case	eq
 s2.0			.apply	ordered.set.union	α	|	cmp	sl0	sl1
-s2.1			.undefined	ordered.set.t	α
+s2.1			.apply	ordered.set.union	α	|	cmp	sr0	sr1
 			.app	x0	s2.0	s2.1
 			.yield	ordered.set.prim.branch	α
 		.case	gt	# §gs{x1 < x0}
@@ -327,12 +327,16 @@ s3.2			.apply	ordered.set.union	α	|	cmp	sr1.r	sr0	# ${ y | x1 < x0 < y, }$
 			.app	x0		s4	sr0
 			.yield	ordered.set.prim.branch	α
 		.case	lt	# §gs{x0 < x1}
-sl1.s			.apply	_ordered.set.union_split	α	|	cmp	x1	sl1
+sl1.s			.apply	_ordered.set.union_split	α	|	cmp	x0	sl1
 sl1.l			.lfield	0	sl1.s
+sl1.r			.lfield	1	sl1.s
+sr0.s			.apply	_ordered.set.union_split	α	|	cmp	x1	sr0
+sr0.l			.lfield	0	sr0.s
+sr0.r			.lfield	1	sr0.s
 s3.0			.apply	ordered.set.union	α	|	cmp	sl0	sl1.l
-s3.1			.undefined	ordered.set.t	α
+s3.1			.apply	ordered.set.union	α	|	cmp	sr0.l	sl1.r
 s4			.apply	ordered.set.prim.branch	α	|	x0	s3.0	s3.1
-s3.2			.undefined	ordered.set.t	α
+s3.2			.apply	ordered.set.union	α	|	cmp	sr0.r	sr1
 			.app	x1	s4	s3.2
 			.yield	ordered.set.prim.branch	α
 
