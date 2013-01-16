@@ -37,10 +37,41 @@ v		.fkarg	0	gsdl.cgs.syntax.var.t
 
 _gsdl.cgs.symbol.compare_c	.expr
 gsdl.cgs.symbol.t	.tygvar
-order.total.ord.t	.tygvar
+_gsdl.cgs.symbol.compare_k0	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
 s0	.larg	gsdl.cgs.symbol.t
 s1	.larg	gsdl.cgs.symbol.t
-	.undef	order.total.ord.t
+	.force	_gsdl.cgs.symbol.compare_k0	|	s1
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s0
+
+_gsdl.cgs.symbol.compare_k0	.forcecont
+gsdl.cgs.symbol.t	.tygvar
+gsdl.cgs.symbol.prim.u	.tygvar
+_gsdl.cgs.symbol.compare_k1	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
+s1	.fv	gsdl.cgs.symbol.t
+s0.0	.karg	gsdl.cgs.symbol.prim.u
+	.force	_gsdl.cgs.symbol.compare_k1	|	s0.0
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s1
+
+_gsdl.cgs.symbol.compare_k1	.forcecont
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+order.total.ord.t	.tygvar	# Temp
+gsdl.cgs.syntax.var.compare	.gvar
+s0.0	.fv	gsdl.cgs.symbol.prim.u
+s1.0	.karg	gsdl.cgs.symbol.prim.u
+	.analyze	s0.0	tyvar
+		.case	tyvar
+v0		.fkarg	0	gsdl.cgs.syntax.var.t
+			.analyze	s1.0	tyvar
+				.case	tyvar
+v1				.fkarg	0	gsdl.cgs.syntax.var.t
+					.app	v0	v1
+					.enter	gsdl.cgs.syntax.var.compare
+	# > :: order.total.ord.t
 
 # §section §gs{gsdl.cgs.symbol.t} Constructors
 
