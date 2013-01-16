@@ -12,6 +12,7 @@ _flag.l	.string	-l
 	.code
 
 _real.entry_c	.eprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 _real.entry_args_c	.subcode
@@ -20,7 +21,9 @@ _real.entry_read.arguments_c	.subcode
 _real.entry_sccs_c	.subcode
 _real.entry_output_c	.subcode
 _real.entry_send.output_c	.subcode
+i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
+eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
 parsed.args	.bind	_real.entry_parsed.args_c	|	args
 read.arguments	.bind	_real.entry_read.arguments_c	|	parsed.args
@@ -206,18 +209,18 @@ fn	.alloc	_args.parse_l.option_pre_ps1_fn_c	|	a1
 	.enter	list.:	ibio.file.name.t
 
 _args.parse_l.option_pre_ps1_fn_c	.expr
-_string.ty	.tygvar
-ibio.file.name.read	.gvar
-a1	.fv	_string.ty
+string.t	.tygvar
+ibio.file.name.in	.gvar
+a1	.fv	string.t
 	.app	a1
-	.enter	ibio.file.name.read
+	.enter	ibio.file.name.in
 
 # §paragraph{Recursive call on §gs{as2}}
 _args.parse_l.option_ap0_c	.expr
 list.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 _args.parse	.gvar
-as2	.fv	list.t	_string.ty
+as2	.fv	list.t	string.t
 	.app	as2
 	.enter	_args.parse
 
@@ -290,8 +293,8 @@ prefix.files	.fv	list.t	ibio.file.name.t
 
 _real.entry_read.arguments_cut.files_c	.expr
 list.t	.tygvar
-_string.ty	.tygvar
-	.undef	list.t	_string.ty
+string.t	.tygvar
+	.undef	list.t	string.t
 
 _real.entry_read.arguments_cut_c	.expr
 ibio.prim.t	.tygvar
@@ -333,16 +336,16 @@ _real.entry_output_ty	.tygvar
 
 _real.entry_send.output_c	.expr
 ibio.prim.t	.tygvar
-_empty.record	.tygvar
-	.undef	ibio.prim.t	_empty.record
+record.empty	.tygvar
+	.undef	ibio.prim.t	record.empty
 
 	.type
 
 _epbodytype	.tyexpr
 ibio.prim.m	.tygvar
-_empty.record	.tygvar
+record.empty	.tygvar
 	.tylift
-	.tyref	ibio.prim.m	_empty.record
+	.tyref	ibio.prim.m	record.empty
 
 _args.parsed.t	.tyexpr
 _args.parsed.u	.tygvar
@@ -376,32 +379,27 @@ gsdl.ags.file.t	.tygvar
 
 _args.parse_ty	.tyexpr
 list.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 either.t	.tygvar
 _args.parsed.t	.tygvar
 	.tylift
-	.tyfun	list.t	_string.ty
-	.tyref	either.t	_string.ty	_args.parsed.t
+	.tyfun	list.t	string.t
+	.tyref	either.t	string.t	_args.parsed.t
 
 # §cut Everything below this is obsolete
 
 _process.args.ty	.tyexpr
 gsdl.symtable.t	.tygvar
 list.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 ibio.prim.m	.tygvar
 _empty.record	.tygvar
 	.tylift
 	.tyfun	gsdl.symtable.t
 	.tylift
-	.tyfun	list.t	_string.ty
+	.tyfun	list.t	string.t
 	.tylift
 	.tyref	ibio.prim.m	_empty.record
-
-_string.ty	.tyexpr
-list.t	.tygvar
-rune.t	.tygvar
-	.tyref	list.t	rune.t
 
 	.coercion
 
