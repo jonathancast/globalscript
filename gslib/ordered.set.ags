@@ -52,7 +52,7 @@ s0	.karg	ordered.set.prim.u	α	# s0 :: ordered.set.prim.u	α
 x1		.fkarg	0	α
 sl		.fkarg	1	ordered.set.t	α
 sr		.fkarg	2	ordered.set.t	α
-			.force	_ordered.set.elem_branch_k	α	|	cmp	x	sl
+			.force	_ordered.set.elem_branch_k	α	|	cmp	x	sl	sr
 			.coerce	order.total.ord.t.out
 			.app	x	x1
 			.enter	cmp
@@ -70,12 +70,14 @@ ordered.set.elem	.gvar
 cmp	.fv	order.total.t	α
 x	.fv	α
 sl	.fv	ordered.set.t	α
+sr	.fv	ordered.set.t	α
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
 		.case	eq
 			.undef	bool.t
 		.case	gt
-			.undef	bool.t
+			.app	cmp	x	sr
+			.enter	ordered.set.elem	α
 		.case	lt
 			.app	cmp	x	sl
 			.enter	ordered.set.elem	α
