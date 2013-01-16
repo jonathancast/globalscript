@@ -31,25 +31,40 @@ ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 x	.larg	α
 s	.larg	ordered.set.t	α
-	.force	_ordered.set.elem_k	α
+	.force	_ordered.set.elem_k	α	|	cmp	x
 	.coerce	ordered.set.t.out	α
 	.enter	s
 
 _ordered.set.elem_k	.forcecont
+order.total.t	.tygvar
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
 bool.t	.tygvar	# Temp
 α	.tyfv	*
+_ordered.set.elem_branch_k	.subcode
+order.total.ord.t.out	.cogvar
 bool.false	.gvar
+cmp	.fv	order.total.t	α
+x	.fv	α
 s0	.karg	ordered.set.prim.u	α	# s0 :: ordered.set.prim.u	α
 	.analyze	s0	branch	empty
 		.case	branch
 x1		.fkarg	0	α
 sl		.fkarg	1	ordered.set.t	α
 sr		.fkarg	2	ordered.set.t	α
-			.undef	bool.t
+			.force	_ordered.set.elem_branch_k
+			.coerce	order.total.ord.t.out
+			.app	x	x1
+			.enter	cmp
 		.case	empty
 			.enter	bool.false
+	# > :: bool.t
+
+_ordered.set.elem_branch_k	.forcecont
+order.total.ord.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+o0	.karg	order.total.ord.prim.u
+	.undef	bool.t
 
 # §section §gs{ordered.set.tolist}
 
