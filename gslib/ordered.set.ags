@@ -314,11 +314,12 @@ sl0.l			.lfield	0	sl0.s
 sl0.r			.lfield	0	sl0.s
 sr1.s			.apply	_ordered.set.union_split	α	|	cmp	x0	sr1
 sr1.l			.lfield	0	sr1.s
+sr1.r			.lfield	0	sr1.s
 s3.0			.apply	ordered.set.union	α	|	cmp	sl1	sl0.l	# ${ y | y < x1 < x0, }$
 s3.1			.apply	ordered.set.union	α	|	cmp	sl0.r	sr1.l	# ${ y | x1 < y < x0, }$
 s4			.apply	ordered.set.prim.branch	α	|	x1	s3.0	s3.1
-s3.2			.undefined	ordered.set.t	α	# ${ y | x1 < x0 < y, }$
-			.app	x0		s4	s3.2
+s3.2			.apply	ordered.set.union	α	|	cmp	sr1.r	sr0	# ${ y | x1 < x0 < y, }$
+			.app	x0		s4	sr0
 			.yield	ordered.set.prim.branch	α
 		.case	lt
 			.undef	ordered.set.t	α
