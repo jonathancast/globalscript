@@ -697,11 +697,11 @@ _prefix.readdir_body_pred_k0	.forcecont
 ibio.dir.t	.tygvar
 bool.prim.u	.tygvar
 string.t	.tygvar
-bool.t	.tygvar	# Temp
 _prefix.readdir_body_pred_k1	.subcode
 list.t.out	.cogvar
 list.reverse	.gvar
 ibio.file.name.components.get	.gvar
+bool.true	.gvar
 d	.fv	ibio.dir.t
 b0	.karg	bool.prim.u	# Is directory
 	.analyze	b0	false	true
@@ -714,7 +714,7 @@ stxe			.apply	list.reverse	string.t	|	exts
 			.coerce	list.t.out	string.t
 			.enter	stxe
 		.case	true
-			.undef	bool.t
+			.enter	bool.true
 
 _prefix.readdir_body_pred_k1	.forcecont
 list.prim.u	.tygvar
