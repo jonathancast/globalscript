@@ -641,6 +641,7 @@ order.total.ord.prim.u	.tygvar
 order.total.ord.t	.tygvar
 α	.tyfv	*
 list.compare	.gvar
+order.total.ord.gt	.gvar
 cmp	.fv	order.total.t	α
 xn0.1	.fv	list.t	α
 xn1.1	.fv	list.t	α
@@ -650,7 +651,7 @@ o0	.karg	order.total.ord.prim.u
 			.app	cmp	xn0.1	xn1.1
 			.enter	list.compare	α
 		.case	gt
-			.undef	order.total.ord.t
+			.enter	order.total.ord.gt
 		.case	lt
 			.undef	order.total.ord.t
 
