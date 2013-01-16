@@ -453,6 +453,7 @@ ibio.file.name.t	.tygvar
 _prefix.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _prefix.expand_dir_res_c	.subcode
+_prefix.expand_loaded.dir_res_c	.subcode
 cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
 p0	.karg	_prefix.prim.u
 	.analyze	p0	dir	file	loaded.dir
@@ -466,8 +467,11 @@ fn		.fkarg	0	ibio.file.name.t
 		.case	loaded.dir
 dirn		.fkarg	0	ibio.file.name.t
 dcs		.fkarg	1	list.t	_prefix.t
-			.undef	ibio.prim.t	_prefix.t
+res			.alloc	_prefix.expand_loaded.dir_res_c	|	cs	dirn	dcs
+			.enter	res
 	# > :: ibio.prim.t	_prefix.t
+
+# §subsection §gs{_prefix.expand_dir_res}
 
 _prefix.expand_dir_res_c	.eprog	ibio.prim	ibio
 list.t	.tygvar
@@ -515,6 +519,50 @@ p1	.apply	_prefix.loaded.dir	|	dirn	dcs2
 	.lift
 	.app	p1
 	.yield	ibio.prim.unit	_prefix.t
+
+# §subsection §gs{_prefix.expand_loaded.dir_res}
+
+_prefix.expand_loaded.dir_res_c	.eprog	ibio.prim	ibio
+list.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+ibio.file.name.t	.tygvar
+_prefix.t	.tygvar
+_prefix.expand_loaded.dir_res_dcs1_c	.subcode
+_prefix.expand_loaded.dir_res_body_c	.subcode
+cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+dirn	.fv	ibio.file.name.t
+dcs	.fv	list.t	_prefix.t
+dcs1	.bind	_prefix.expand_loaded.dir_res_dcs1_c	|	cs	dirn	dcs
+	.body	_prefix.expand_loaded.dir_res_body_c	|	dirn	dcs1
+
+_prefix.expand_loaded.dir_res_dcs1_c	.expr
+list.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+ibio.file.name.t	.tygvar
+_prefix.t	.tygvar
+ibio.mapM.prim	.gvar
+_prefix.expand_w	.gvar
+cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+dirn	.fv	ibio.file.name.t
+dcs	.fv	list.t	_prefix.t
+f	.apply	_prefix.expand_w	|	dirn	cs
+	.app	f	dcs
+	.enter	ibio.mapM.prim	_prefix.t	_prefix.t
+
+_prefix.expand_loaded.dir_res_body_c	.expr
+ibio.file.name.t	.tygvar
+list.t	.tygvar
+_prefix.t	.tygvar
+ibio.prim.unit	.gvar
+_prefix.loaded.dir	.gvar
+dirn	.fv	ibio.file.name.t
+dcs1	.fv	list.t	_prefix.t
+p1	.apply	_prefix.loaded.dir	|	dirn	dcs1
+	.lift
+	.app	p1
+	.yield	ibio.prim.unit	_prefix.t
+
+# §subsection §gs{_prefix.expand_w}
 
 _prefix.expand_w_c	.expr
 ibio.file.name.t	.tygvar

@@ -1,0 +1,2 @@
+./test-fixtures/empty-list-doc.gsac: ./test-fixtures/gslib/bool.ags
+./test-fixtures/empty-list-doc.gsac: ./test-fixtures/gslib/list.ags
