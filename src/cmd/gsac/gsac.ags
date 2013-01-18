@@ -26,10 +26,10 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
 parsed.args	.bind	_real.entry_parsed.args_c	|	args
-read.arguments	.bind	_real.entry_read.arguments_c	|	parsed.args
-sccs	.bind	_real.entry_sccs_c
+read.arguments	.bind	_real.entry_read.arguments_c	|	eo	parsed.args
+sccs	.bind	_real.entry_sccs_c	|	read.arguments
 output	.bind	_real.entry_output_c
-	.body	_real.entry_send.output_c
+	.body	_real.entry_send.output_c	|	o
 
 _real.entry_args_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -128,19 +128,14 @@ ap0	.larg	_args.parsed.t
 _args.parse_file_pre_k	.forcecont
 _args.parsed.u	.tygvar
 _args.parsed.t	.tygvar
-_args.parse_file_pre_cut1_c	.subcode
+list.t	.tygvar	# Temp
+ibio.file.name.t	.tygvar	# Temp
 ap00	.karg	_args.parsed.u
 ps	.field	0	ap00
 cut	.field	1	ap00
-cut1	.alloc	_args.parse_file_pre_cut1_c
-ap1	.record	0	ps	1	cut1
+ap1	.record	0	ps	1	cut
 	.lift
 	.yield	ap1
-
-_args.parse_file_pre_cut1_c	.expr
-list.t	.tygvar
-ibio.file.name.t	.tygvar
-	.undef	list.t	ibio.file.name.t
 
 _args.parse_file_ap0_c	.expr
 list.t	.tygvar
@@ -248,6 +243,8 @@ list.nil	.gvar
 # ‘CUT’ = ‘component under translation’; ‘component’ = ‘strongly-connected component of the dependency graph’
 
 _real.entry_read.arguments_c	.eprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 _args.parsed.t	.tygvar
 _real.entry_read.arguments_prefix.files_c	.subcode
 _real.entry_read.arguments_prefix_c	.subcode
@@ -255,11 +252,12 @@ _real.entry_read.arguments_cut.files_c	.subcode
 _real.entry_read.arguments_cut_c	.subcode
 _real.entry_read.arguments_res_c	.subcode
 _real.entry_read.arguments_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
 parsed.args	.fv	_args.parsed.t
 prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c	|	parsed.args
 prefix	.bind	_real.entry_read.arguments_prefix_c	|	prefix.files
-cut.files	.alloc	_real.entry_read.arguments_cut.files_c
-cut	.bind	_real.entry_read.arguments_cut_c
+cut.files	.alloc	_real.entry_read.arguments_cut.files_c	|	parsed.args
+cut	.bind	_real.entry_read.arguments_cut_c	|	eo	cut.files
 res	.alloc	_real.entry_read.arguments_res_c
 	.body	_real.entry_read.arguments_body_c
 
@@ -292,16 +290,24 @@ prefix.files	.fv	list.t	ibio.file.name.t
 	.enter	ibio.mapM.prim	ibio.file.name.t	res.elem.ty
 
 _real.entry_read.arguments_cut.files_c	.expr
-list.t	.tygvar
-string.t	.tygvar
-	.undef	list.t	string.t
+_args.parsed.t	.tygvar
+parsed.args	.fv	_args.parsed.t
+fs	.lfield	1	parsed.args
+	.enter	fs
 
 _real.entry_read.arguments_cut_c	.expr
-ibio.prim.t	.tygvar
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 list.t	.tygvar
+ibio.file.name.t	.tygvar
 gsdl.cgs.file.t	.tygvar
-res.ty	.tylet	list.t	gsdl.cgs.file.t
-	.undef	ibio.prim.t	res.ty
+ibio.mapM.prim	.gvar
+gsdl.cgs.file.read	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+cut.files	.fv	list.t	ibio.file.name.t
+f	.apply	gsdl.cgs.file.read	|	eo
+	.app	f	cut.files
+	.enter	ibio.mapM.prim	ibio.file.name.t	gsdl.cgs.file.t
 
 _real.entry_read.arguments_res_c	.expr
 _real.entry_read.arguments_ty	.tygvar
@@ -309,8 +315,12 @@ _real.entry_read.arguments_ty	.tygvar
 
 _real.entry_read.arguments_body_c	.expr
 ibio.prim.t	.tygvar
-_real.entry_read.arguments_ty	.tygvar
-	.undef	ibio.prim.t	_real.entry_read.arguments_ty
+_real.entry_read.arguments_ty	.tygvar	# Temp
+ibio.prim.unit	.gvar
+res	.lrecord
+	.lift
+	.app	res
+	.yield	ibio.prim.unit	_real.entry_read.arguments_ty
 
 # §section Split §gs{read.arguments} into strongly-connected components
 
@@ -318,9 +328,21 @@ _real.entry_read.arguments_ty	.tygvar
 # §sh{.gsac} files have type signatures/kind signatures on all symbols, and so cannot depend on anything
 
 _real.entry_sccs_c	.expr
-ibio.prim.t	.tygvar
-_real.entry_sccs_ty	.tygvar
-	.undef	ibio.prim.t	_real.entry_sccs_ty
+_real.entry_read.arguments_ty	.tygvar
+_real.entry_sccs_k	.subcode
+read.arguments	.fv	_real.entry_read.arguments_ty
+	.force	_real.entry_sccs_k
+	.enter	read.arguments
+
+_real.entry_sccs_k	.forcecont
+_real.entry_read.arguments_u	.tygvar
+_real.entry_sccs_ty	.tygvar	# Temp
+ibio.prim.unit	.gvar
+as0	.karg	_real.entry_read.arguments_u
+res	.undefined	_real.entry_sccs_ty
+	.lift
+	.app	res
+	.yield	ibio.prim.unit	_real.entry_sccs_ty
 
 # §section Process §gs{sccs} to get (symtable, output)
 
@@ -328,16 +350,28 @@ _real.entry_sccs_ty	.tygvar
 # that can be deferred until a later stage.
 
 _real.entry_output_c	.expr
-ibio.prim.t	.tygvar
-_real.entry_output_ty	.tygvar
-	.undef	ibio.prim.t	_real.entry_output_ty
+ibio.prim.t	.tygvar	# Temp
+gsdl.ags.file.t	.tygvar	# Temp
+ibio.prim.unit	.gvar
+res	.undefined	gsdl.ags.file.t
+	.lift
+	.app	res
+	.yield	ibio.prim.unit	gsdl.ags.file.t
 
 # §section Write out §gs{output} on stdout
 
 _real.entry_send.output_c	.expr
-ibio.prim.t	.tygvar
-record.empty	.tygvar
-	.undef	ibio.prim.t	record.empty
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+ibio.prim.t	.tygvar	# Temp
+record.empty	.tygvar	# Temp
+ibio.prim.write	.gvar
+o	.fv	ibio.prim.oport	rune.t
+out.s	.undefined	string.t
+	.lift
+	.app	o	out.s
+	.yield	ibio.prim.write	rune.t
 
 	.type
 
@@ -360,7 +394,11 @@ ibio.file.name.t	.tygvar
 	.typroduct	0	0.ty	1	1.ty
 
 _real.entry_read.arguments_ty	.tyexpr
+_real.entry_read.arguments_u	.tygvar
 	.tylift
+	.tyref	_real.entry_read.arguments_u
+
+_real.entry_read.arguments_u	.tyexpr
 	.typroduct
 
 _real.entry_sccs_ty	.tyexpr
@@ -373,10 +411,6 @@ graph.scc.t	.tygvar
 gsac.input.sorted.node.t	.tygvar
 	.tyref	graph.scc.t	gsac.input.sorted.node.t
 
-_real.entry_output_ty	.tyexpr
-gsdl.ags.file.t	.tygvar
-	.tyref	gsdl.ags.file.t
-
 _args.parse_ty	.tyexpr
 list.t	.tygvar
 string.t	.tygvar
@@ -385,21 +419,6 @@ _args.parsed.t	.tygvar
 	.tylift
 	.tyfun	list.t	string.t
 	.tyref	either.t	string.t	_args.parsed.t
-
-# §cut Everything below this is obsolete
-
-_process.args.ty	.tyexpr
-gsdl.symtable.t	.tygvar
-list.t	.tygvar
-string.t	.tygvar
-ibio.prim.m	.tygvar
-_empty.record	.tygvar
-	.tylift
-	.tyfun	gsdl.symtable.t
-	.tylift
-	.tyfun	list.t	string.t
-	.tylift
-	.tyref	ibio.prim.m	_empty.record
 
 	.coercion
 
