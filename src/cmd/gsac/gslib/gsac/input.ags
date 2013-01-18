@@ -50,14 +50,21 @@ isd0	.karg	bool.prim.u
 		.app	fn
 		.enter	gsac.input.prefix.dir.load
 
-_gsac.input.prefix.dir.load_c	.expr
+_gsac.input.prefix.dir.load_c	.eprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
-ibio.prim.t	.tygvar
-list.t	.tygvar
-gsac.input.prefix.file.t	.tygvar
-res.ty	.tylet	list.t	gsac.input.prefix.file.t
-fn	.larg	ibio.file.name.t
-	.undef	ibio.prim.t	res.ty
+_gsac.input.prefix.dir.load_body_c	.subcode
+dirn	.larg	ibio.file.name.t
+	.body	_gsac.input.prefix.dir.load_body_c
+
+_gsac.input.prefix.dir.load_body_c	.expr
+list.t	.tygvar	# Temp
+gsac.input.prefix.file.t	.tygvar	# Temp
+res.ty	.tylet	list.t	gsac.input.prefix.file.t	# Temp
+ibio.prim.unit	.gvar	# Temp
+files	.undefined	list.t	gsac.input.prefix.file.t
+	.lift
+	.app	files
+	.yield	ibio.prim.unit	res.ty
 
 	.type
 
