@@ -2634,6 +2634,7 @@ gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *pcl, int ba
             calculated_type = cty->result_type;
         } else if (p->directive == gssymopubanalyze) {
             int nconstrs;
+            int j;
             struct gstype_constr constrs[MAX_NUM_REGISTERS];
             struct gsbc_code_item_type *conttypes[MAX_NUM_REGISTERS];
 
@@ -2660,13 +2661,29 @@ gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *pcl, int ba
 
                 nftyvs = gsbc_typecheck_free_type_variables(pcl, p, p->arguments[i * 2 + 1], conttypes[i], nconstrs * 2 + 1);
                 gsbc_typecheck_free_variables(pcl, p, p->arguments[i * 2 + 1], conttypes[i], nconstrs * 2 + 1 + nftyvs + 1);
+
                 constrs[i].argtype = conttypes[i]->cont_arg_type;
             }
             gstypes_type_check_type_fail(p->pos, calculated_type, gstypes_compile_ubsumv(p->pos, nconstrs, constrs));
             calculated_type = conttypes[0]->result_type;
-            for (i = 1; i < nconstrs; i++)
-                gstypes_type_check_type_fail(p->pos, conttypes[i]->result_type, calculated_type)
-            ;
+            for (i = 1; i < nconstrs; i++) {
+                if (conttypes[0]->numfvs != conttypes[i]->numfvs)
+                    gsfatal("%P: Mis-matched number of free variables: %y has %d but %y has %d",
+                        p->pos,
+                        p->arguments[2*0 + 1], conttypes[0]->numfvs,
+                        p->arguments[2*i + 1], conttypes[i]->numfvs
+                    )
+                ;
+                for (j = 0; j < conttypes[0]->numfvs; j++)
+                    if (conttypes[0]->fvs[j] != conttypes[i]->fvs[j])
+                        gsfatal("%P: Mis-matched free variable #%d: %y has %y but %y has %y",
+                            p->pos, j,
+                            p->arguments[2*0 + 1], conttypes[0]->fvs[j],
+                            p->arguments[2*i + 1], conttypes[i]->fvs[j]
+                        )
+                ;
+                gstypes_type_check_type_fail(p->pos, conttypes[i]->result_type, calculated_type);
+            }
         } else if (p->directive == gssymopapp) {
             for (i = 0; i < p->numarguments; i++) {
                 int regarg;

@@ -84,6 +84,9 @@ ok_grep_errors '-- analyze on un-boxed sum with un-bound free type variable --' 
 ok_grep_errors '-- analyze on un-boxed sum with excess free type variable --' './test-gslib/ubanalyze-excess-type-variable.ags:15: Too many free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
 ok_grep_errors '-- analyze on un-boxed sum with excess free variable --' './test-gslib/ubanalyze-excess-variable.ags:17: Too many free variables' ./$O.test-gsi ubanalyze-excess-variable.ags
 
+ok_grep_errors '-- analyze on un-boxed sum with mis-matched number of free variables --' './test-gslib/ubanalyze-mismatched-free-variable-number.ags:17: Mis-matched number of free variables' ./$O.test-gsi ubanalyze-mismatched-free-variable-number.ags
+ok_grep_errors '-- analyze on un-boxed sum with mis-matched names of free variables --' './test-gslib/ubanalyze-mismatched-free-variable-name.ags:19: Mis-matched free variable' ./$O.test-gsi ubanalyze-mismatched-free-variable-name.ags
+
 ok_diff '-- analyze on un-boxed sums --' ./$O.test-gsi analyze-unboxed-free-variable.ags
 
 ok_grep_errors '-- analyze on existential types with failing occurs check --' './test-gslib/analyze-failing-occurs-check.ags:21: .exkarg-bound type variable α free in type of .case body' ./$O.test-gsi analyze-failing-occurs-check.ags
