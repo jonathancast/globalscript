@@ -818,16 +818,20 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
 
         pcl->size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
     } else if (gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")) {
-        int nfvs;
+        int creg;
+        struct gsbc_code_item_type *cty;
 
         pcl->phase = phconts;
 
         /* Ignore free type variables & separator (type erasure) */
         for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-        if (i < p->numarguments) i++;
-        nfvs = p->numarguments - i;
 
-        pcl->size += ACE_STRICT_SIZE(nfvs);
+        creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
+        if (!(cty = pcl->codetypes[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+        ;
+
+        pcl->size += ACE_STRICT_SIZE(cty->numfvs);
     } else if (gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")) {
         int creg;
         struct gsbc_code_item_type *cty;
@@ -2156,7 +2160,7 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
         pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + cty->numfvs);
     } else if (gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")) {
         int creg = 0;
-        int nfvs, first_fv;
+        struct gsbc_code_item_type *cty;
 
         pcl->phase = rtops;
 
@@ -2170,16 +2174,17 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
 
         /* §paragraph{Skipping free type variables} */
         for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-        if (i < p->numarguments) i++;
 
-        nfvs = p->numarguments - i;
-        first_fv = i;
-        ACE_STRICT_NUMFVS(pcode) = nfvs;
-        for (i = first_fv; i < p->numarguments; i++) {
+        if (!(cty = pcl->subexpr_types[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+        ;
+
+        ACE_STRICT_NUMFVS(pcode) = cty->numfvs;
+        for (i = 0; i < cty->numfvs; i++) {
             int regarg;
 
-            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
-            ACE_STRICT_FV(pcode, i - first_fv) = regarg;
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i]);
+            ACE_STRICT_FV(pcode, i) = regarg;
         }
 
         pcl->pout = ACE_STRICT_SKIP(pcode);
