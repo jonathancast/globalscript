@@ -14,7 +14,7 @@ rune.t	.tygvar
 _epcode.cont	.subcode
 x	.gvar
 y	.gvar
-	.force	_epcode.cont	rune.t	|	y
+	.force	_epcode.cont	rune.t
 	.enter	x
 
 _epcode.cont	.forcecont

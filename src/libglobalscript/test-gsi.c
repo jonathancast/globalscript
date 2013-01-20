@@ -147,7 +147,7 @@ gsprint(struct gspos pos, struct gstype *type, struct gsfile_symtable *symtable,
             } else if (type->node == gstype_abstract) {
                 type = gstype_get_definition(pos, symtable, type);
             } else {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Print constructors of type %d", type->pos, type->node);
+                gsfatal(UNIMPL("%P: Print constructors of type %d"), type->pos, type->node);
             }
         }
         sum = (struct gstype_sum *)type;

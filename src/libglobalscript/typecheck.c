@@ -1006,7 +1006,7 @@ static struct gstype *gsbc_typecheck_code_type_arg(struct gsbc_typecheck_code_or
 static struct gstype *gsbc_typecheck_compile_prim_type(struct gspos, struct gsfile_symtable *, char *);
 
 static int gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int);
-static int gsbc_typecheck_free_variables(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int);
+static void gsbc_typecheck_free_variables(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int);
 
 static struct gsbc_code_item_type *gsbc_typecheck_compile_code_item_type(int, struct gstype *, struct gstype *, struct gsbc_typecheck_code_or_api_expr_closure *);
 
@@ -3269,29 +3269,28 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
 }
 
 static
-int
+void
 gsbc_typecheck_free_variables(struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsparsedline *p, gsinterned_string codelabel, struct gsbc_code_item_type *cty, int firstfv)
 {
     int i;
     int nfvs;
 
     nfvs = firstfv < p->numarguments ? p->numarguments - firstfv : 0;
-    if (nfvs < cty->numfvs)
+    if (nfvs > 0 && nfvs < cty->numfvs)
         gsfatal("%P: Not enough free variables for %y; need %d but have %d", p->pos, codelabel, cty->numfvs, nfvs)
     ;
     if (nfvs > cty->numfvs)
         gsfatal("%P: Too many free variables for %y; only need %d but have %d", p->pos, codelabel, cty->numfvs, nfvs)
     ;
-    for (i = firstfv; i < p->numarguments; i++) {
+    for (i = 0; i < cty->numfvs; i++) {
         int fvreg;
 
-        if (p->arguments[i] != cty->fvs[i - firstfv])
-            gsfatal("%P: Bad free variable value: %y but sub-code item has %y", p->pos, p->arguments[i], cty->fvs[i - firstfv])
+        if (nfvs > 0 && p->arguments[firstfv + i] != cty->fvs[i])
+            gsfatal("%P: Bad free variable value: %y but sub-code item has %y", p->pos, p->arguments[firstfv + i], cty->fvs[i])
         ;
-        fvreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
-        gstypes_type_check_type_fail(p->pos, pcl->regtypes[fvreg], cty->fvtypes[i - firstfv]);
+        fvreg = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i]);
+        gstypes_type_check_type_fail(p->pos, pcl->regtypes[fvreg], cty->fvtypes[i]);
     }
-    return nfvs;
 }
 
 static

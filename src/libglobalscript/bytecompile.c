@@ -262,7 +262,7 @@ gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
     return s;
 }
 
-static int gsbc_bytecode_size_item(struct gsbc_item item);
+static int gsbc_bytecode_size_item(struct gsfile_symtable *, struct gsbc_item item);
 
 void
 gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gsbco **bcos, int n)
@@ -279,7 +279,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
         int size;
 
         offsets[i] = total_size;
-        size = items[i].type == gssymcodelable ? gsbc_bytecode_size_item(items[i]) : 0;
+        size = items[i].type == gssymcodelable ? gsbc_bytecode_size_item(symtable, items[i]) : 0;
         total_size += size;
     }
 
@@ -314,6 +314,10 @@ struct gsbc_bytecode_size_code_closure {
     } phase;
 
     int nregs;
+
+    int ncodes;
+    gsinterned_string codenames[MAX_NUM_REGISTERS];
+    struct gsbc_code_item_type *codetypes[MAX_NUM_REGISTERS];
 };
 static int gsbc_bytecode_size_type_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_code_type_let_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
@@ -344,19 +348,22 @@ static gsinterned_string gssymopanalyze, gssymopdanalyze, gssymopcase, gssymopde
 
 static
 int
-gsbc_bytecode_size_item(struct gsbc_item item)
+gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
 {
     struct gsbc_bytecode_size_code_closure cl;
 
     int i;
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
-    int ncodes;
 
     cl.size = sizeof(struct gsbco);
 
     cl.phase = phtygvars;
-    cl.nregs = ncodes = 0;
+    cl.nregs = cl.ncodes = 0;
+    for (i = 0; i < MAX_NUM_REGISTERS; i++) {
+        cl.codenames[i] = 0;
+        cl.codetypes[i] = 0;
+    }
     pseg = item.pseg;
     for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
         if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
@@ -406,7 +413,7 @@ gsbc_bytecode_size_item(struct gsbc_item item)
                 gsfatal_bad_input(p, "Too late to add sub-expressions")
             ;
             cl.phase = phcode;
-            if (ncodes >= MAX_NUM_REGISTERS)
+            if (cl.ncodes >= MAX_NUM_REGISTERS)
                 gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
             ;
             if (cl.size % sizeof(struct gsbco *))
@@ -417,7 +424,9 @@ gsbc_bytecode_size_item(struct gsbc_item item)
                 )
             ;
             cl.size += sizeof(struct gsbco *);
-            ncodes++;
+            cl.codenames[cl.ncodes] = p->label;
+            cl.codetypes[cl.ncodes] = gssymtable_get_code_type(symtable, p->label);
+            cl.ncodes++;
         } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
             if (cl.phase > phfvs)
                 gsfatal_bad_input(p, "Too late to add free variables")
@@ -790,6 +799,17 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
         for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
         if (i < p->numarguments) i++;
         nfvs = p->numarguments - i;
+
+        if (!nfvs) {
+            int creg;
+            struct gsbc_code_item_type *cty;
+
+            creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
+            if (!(cty = pcl->codetypes[creg]))
+                gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+            ;
+            nfvs = cty->numfvs;
+        }
 
         pcl->size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
     } else if (gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")) {
@@ -2096,7 +2116,7 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
         pcl->pout = ACE_APP_SKIP(pcode);
     } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
         int creg = 0;
-        int nfvs, first_fv;
+        struct gsbc_code_item_type *cty;
 
         pcl->phase = rtops;
 
@@ -2112,17 +2132,19 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
         for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
         if (i < p->numarguments) i++;
 
-        nfvs = p->numarguments - i;
-        first_fv = i;
-        pcode->args[1] = (uchar)nfvs;
-        for (i = first_fv; i < p->numarguments; i++) {
+        if (!(cty = pcl->subexpr_types[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+        ;
+
+        pcode->args[1] = (uchar)cty->numfvs;
+        for (i = 0; i < cty->numfvs; i++) {
             int regarg;
 
-            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
-            pcode->args[2 + (i - first_fv)] = (uchar)regarg;
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i]);
+            pcode->args[2 + i] = (uchar)regarg;
         }
 
-        pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
+        pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + cty->numfvs);
     } else if (gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")) {
         int creg = 0;
         int nfvs, first_fv;

@@ -82,7 +82,6 @@ ok_diff '-- analyze with default --' ./$O.test-gsi analyze-default.ags
 
 ok_grep_errors '-- analyze on un-boxed sum with un-bound free type variable --' './test-gslib/ubanalyze-unbound-type-variable.ags:14: Not enough free type variables' ./$O.test-gsi ubanalyze-unbound-type-variable.ags
 ok_grep_errors '-- analyze on un-boxed sum with excess free type variable --' './test-gslib/ubanalyze-excess-type-variable.ags:15: Too many free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
-ok_grep_errors '-- analyze on un-boxed sum with un-bound free variable --' './test-gslib/ubanalyze-unbound-variable.ags:16: Not enough free variables' ./$O.test-gsi ubanalyze-unbound-variable.ags
 ok_grep_errors '-- analyze on un-boxed sum with excess free variable --' './test-gslib/ubanalyze-excess-variable.ags:17: Too many free variables' ./$O.test-gsi ubanalyze-excess-variable.ags
 
 ok_diff '-- analyze on un-boxed sums --' ./$O.test-gsi analyze-unboxed-free-variable.ags
