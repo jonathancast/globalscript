@@ -1,7 +1,39 @@
 	.prefix
 
+	.data
+
+gsdl.ags.file.print	.closure	_gsdl.ags.file.print_c
+
+	.code
+
+_gsdl.ags.file.print_c	.expr
+gsdl.ags.file.t	.tygvar
+_gsdl.ags.file.print_k	.subcode
+gsdl.ags.file.t.out	.cogvar
+file	.larg	gsdl.ags.file.t
+	.force	_gsdl.ags.file.print_k
+	.coerce	gsdl.ags.file.t.out
+	.enter	file
+
+_gsdl.ags.file.print_k	.forcecont
+gsdl.ags.file.prim.u	.tygvar
+string.t	.tygvar	# Temp
+file0	.karg	gsdl.ags.file.prim.u
+	.undef	string.t
+
 	.type
 
 gsdl.ags.file.t	.tyabstract	*
+gsdl.ags.file.prim.u	.tygvar
 	.tylift
+	.tyref	gsdl.ags.file.prim.u
+
+gsdl.ags.file.prim.u	.tyexpr
 	.typroduct
+
+	.coercion
+
+gsdl.ags.file.t.out	.tycoercion
+gsdl.ags.file.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.file.t
