@@ -829,7 +829,9 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
 
         pcl->size += ACE_STRICT_SIZE(nfvs);
     } else if (gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")) {
-        int ncases, nfvs;
+        int creg;
+        struct gsbc_code_item_type *cty;
+        int ncases;
 
         pcl->phase = phconts;
 
@@ -840,10 +842,15 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
         if (i < p->numarguments) i++;
         for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
 
-        if (i < p->numarguments) i++;
-        nfvs = p->numarguments - i;
+        if (ncases == 0)
+            gsfatal("%P: Illegal .ubanalyze with no constructors; use .ubeanalyze if you need to eliminate an expression of empty un-boxed sum type", p->pos)
+        ;
+        creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[1]);
+        if (!(cty = pcl->codetypes[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1])
+        ;
 
-        pcl->size += ACE_UBANALYZE_SIZE(ncases, nfvs);
+        pcl->size += ACE_UBANALYZE_SIZE(ncases, cty->numfvs);
     } else {
         return 0;
     }
@@ -2177,14 +2184,14 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
 
         pcl->pout = ACE_STRICT_SKIP(pcode);
     } else if (gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")) {
-        int first_fv;
-
+        struct gsbc_code_item_type *cty;
         pcl->phase = rtops;
 
         pcode = (struct gsbc *)pcl->pout;
         pcode->pos = p->pos;
         pcode->instr = gsbc_op_ubanalzye;
 
+        cty = 0;
         for (i = 0; i < p->numarguments && p->arguments[i]->type != gssymseparator; i += 2) {
             int creg;
 
@@ -2192,20 +2199,25 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
                 gsfatal("%P: Missing continuation for final constructor", p->pos)
             ;
             creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[i + 1]);
+            if (i == 0)
+                if (!(cty = pcl->subexpr_types[creg]))
+                    gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[i + 1])
+            ;
             ACE_UBANALYZE_CONT(pcode, i / 2) = creg;
         }
+        if (i == 0)
+            gsfatal("%P: Illegal .ubanalyze with no constructors; use .ubeanalyze if you need to eliminate an expression of empty un-boxed sum type", p->pos)
+        ;
         ACE_UBANALYZE_NUMCONTS(pcode) = i / 2;
 
         /* §paragraph{Skip free type variables} */
         if (i < p->numarguments) i++;
         for (; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
 
-        if (i < p->numarguments) i++;
-        first_fv = i;
-        for (; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++)
-            ACE_UBANALYZE_FV(pcode, i - first_fv) = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])
+        for (i = 0; i < cty->numfvs; i++)
+            ACE_UBANALYZE_FV(pcode, i) = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i])
         ;
-        ACE_UBANALYZE_NUMFVS(pcode) = i - first_fv;
+        ACE_UBANALYZE_NUMFVS(pcode) = cty->numfvs;
 
         pcl->pout = ACE_UBANALYZE_SKIP(pcode);
     } else {
