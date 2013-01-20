@@ -484,7 +484,8 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
                 cl.size += GS_SIZE_BYTECODE(0);
             }
         } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
-            int nfvs;
+            int creg;
+            struct gsbc_code_item_type *cty;
 
             cl.phase = phgens;
 
@@ -494,22 +495,29 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
 
             /* Ignore free type variables & separator (type erasure) */
             for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-            if (i < p->numarguments) i++;
-            nfvs = p->numarguments - i;
 
-            cl.size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
+            creg = gsbc_find_register(p, cl.codenames, cl.ncodes, p->arguments[0]);
+            if (!(cty = cl.codetypes[creg]))
+                gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+            ;
+
+            cl.size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
         } else if (gsbc_bytecode_size_cont_push_op(p, &cl)) {
         } else if (gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
             goto done;
         } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
-            int nfvs;
+            int creg;
+            struct gsbc_code_item_type *cty;
 
             /* Ignore free type variables & separator (type erasure) */
             for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-            if (i < p->numarguments) i++;
-            nfvs = p->numarguments - i;
 
-            cl.size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
+            creg = gsbc_find_register(p, cl.codenames, cl.ncodes, p->arguments[0]);
+            if (!(cty = cl.codetypes[creg]))
+                gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+            ;
+
+            cl.size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
             goto done;
         } else {
             gsfatal(UNIMPL("%P: gsbc_bytecode_size_item (%y)"), p->pos, p->directive);
@@ -2517,7 +2525,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
         } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
             int creg = 0;
-            int nfvs, first_fv;
+            struct gsbc_code_item_type *cty;
 
             cl.phase = rtlets;
 
@@ -2539,20 +2547,21 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
 
             /* §paragraph{Skipping free type variables} */
             for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-            if (i < p->numarguments) i++;
 
-            nfvs = p->numarguments - i;
-            first_fv = i;
-            ACE_BIND_NUMFVS(pcode) = (uchar)nfvs;
-            for (i = first_fv; i < p->numarguments; i++)
-                ACE_BIND_FV(pcode, i - first_fv) = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i])
+            if (!(cty = cl.subexpr_types[creg]))
+                gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+            ;
+
+            ACE_BIND_NUMFVS(pcode) = (uchar)cty->numfvs;
+            for (i = 0; i < cty->numfvs; i++)
+                ACE_BIND_FV(pcode, i) = gsbc_find_register(p, cl.regs, cl.nregs, cty->fvs[i])
             ;
 
             pcode = ACE_BIND_SKIP(pcode);
             cl.pout = (uchar *)pcode;
         } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
             int creg = 0;
-            int nfvs, first_fv;
+            struct gsbc_code_item_type *cty;
 
             pcode = (struct gsbc *)cl.pout;
 
@@ -2564,19 +2573,19 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
 
             /* §paragraph{Skipping free type variables} */
             for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-            if (i < p->numarguments) i++;
 
-            nfvs = p->numarguments - i;
-            first_fv = i;
-            pcode->args[1] = (uchar)nfvs;
-            for (i = first_fv; i < p->numarguments; i++) {
+            if (!(cty = cl.subexpr_types[creg]))
+                gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+            ;
+            pcode->args[1] = (uchar)cty->numfvs;
+            for (i = 0; i < cty->numfvs; i++) {
                 int regarg;
 
-                regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                pcode->args[2 + (i - first_fv)] = (uchar)regarg;
+                regarg = gsbc_find_register(p, cl.regs, cl.nregs, cty->fvs[i]);
+                pcode->args[2 + i] = (uchar)regarg;
             }
 
-            pcode = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
+            pcode = GS_NEXT_BYTECODE(pcode, 2 + cty->numfvs);
             cl.pout = (uchar *)pcode;
 
             goto done;
