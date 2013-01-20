@@ -10,7 +10,7 @@ _epcode	.expr
 _epcode.head.0.c	.subcode
 _epcode.head.1.c	.subcode
 x	.alloc	_epcode.head.0.c
-y	.alloc	_epcode.head.1.c	|	x
+y	.alloc	_epcode.head.1.c
 	.enter	y
 
 _epcode.head.0.c	.expr

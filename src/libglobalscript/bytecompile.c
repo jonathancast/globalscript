@@ -661,7 +661,8 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
     int i;
 
     if (gssymceq(p->directive, gssymopalloc, gssymcodeop, ".alloc")) {
-        int nfvs;
+        int creg;
+        struct gsbc_code_item_type *cty;
 
         if (pcl->phase > phgens)
             gsfatal("%P: Too late to add allocations", p->pos)
@@ -676,9 +677,13 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         /* Ignore free type variables & separator (type erasure) */
         for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
         if (i < p->numarguments) i++;
-        nfvs = p->numarguments - i;
 
-        pcl->size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
+        creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
+        if (!(cty = pcl->codetypes[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+        ;
+
+        pcl->size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
     } else if (gssymceq(p->directive, gssymopprim, gssymcodeop, ".prim")) {
         struct gsregistered_primset *prims;
 
@@ -1809,7 +1814,6 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
 
     if (gssymceq(p->directive, gssymopalloc, gssymcodeop, ".alloc")) {
         int creg = 0;
-        int nfvs, first_fv;
         struct gsbc_code_item_type *ctype;
 
         if (pcl->phase > rtlets)
@@ -1843,18 +1847,16 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         }
         if (i < p->numarguments) i++;
 
-        nfvs = p->numarguments - i;
-        first_fv = i;
-        pcode->args[1] = (uchar)nfvs;
-        for (i = first_fv; i < p->numarguments; i++) {
+        pcode->args[1] = (uchar)ctype->numfvs;
+        for (i = 0; i < ctype->numfvs; i++) {
             int regarg;
 
-            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
-            pcode->args[2 + (i - first_fv)] = (uchar)regarg;
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, ctype->fvs[i]);
+            pcode->args[2 + i] = (uchar)regarg;
         }
 
         ADD_LABEL_TO_REGS_WITH_TYPE(ctype->result_type);
-        pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + nfvs);
+        pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + ctype->numfvs);
     } else if (gssymceq(p->directive, gssymopprim, gssymcodeop, ".prim")) {
         struct gsregistered_primset *prims;
 
