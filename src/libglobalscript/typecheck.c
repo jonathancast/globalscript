@@ -3281,6 +3281,9 @@ gsbc_typecheck_free_variables(struct gsbc_typecheck_code_or_api_expr_closure *pc
     for (i = firstfv; i < p->numarguments; i++) {
         int fvreg;
 
+        if (p->arguments[i] != cty->fvs[i - firstfv])
+            gsfatal("%P: Bad free variable value: %y but sub-code item has %y", p->pos, p->arguments[i], cty->fvs[i - firstfv])
+        ;
         fvreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
         gstypes_type_check_type_fail(p->pos, pcl->regtypes[fvreg], cty->fvtypes[i - firstfv]);
     }

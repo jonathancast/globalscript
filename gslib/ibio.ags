@@ -190,10 +190,10 @@ res.ty	.tylet	list.t	β
 ibio.prim.unit	.gvar
 list.:	.gvar
 y	.fv	β
-ys	.fv	list.t	β
-ys1	.apply	list.:	β	|	y	ys
+ys1	.fv	list.t	β
+ys	.apply	list.:	β	|	y	ys1
 	.lift
-	.app	ys1
+	.app	ys
 	.yield	ibio.prim.unit	res.ty
 
 # §section §gs{ibio.mapM0.prim}

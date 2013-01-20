@@ -164,7 +164,7 @@ t	.tylet	list.prim.u	α
 ft	.tylet	_list.foldr1_ft	α
 _list.foldr1_rec	.subcode
 f	.fv	ft
-x	.fv	α
+x0	.fv	α
 xn1	.fv	list.t	α
 xn1_0	.karg	t
 	.analyze	xn1_0	:	nil
@@ -172,10 +172,10 @@ xn1_0	.karg	t
 x1		.fkarg	0	α
 xn2		.fkarg	1	list.t	 α
 y			.alloc	_list.foldr1_rec	α	|	f	xn1
-			.app	x	y
+			.app	x0	y
 			.enter	f
 		.case	nil
-			.enter	x
+			.enter	x0
 
 _list.foldr1_rec	.expr
 list.t	.tygvar
@@ -471,9 +471,9 @@ _list.<>.code.rec	.expr
 list.t	.tygvar
 α	.tyfv	*
 list.<>	.gvar
-xn	.fv	list.t	α
+xn1	.fv	list.t	α
 ys	.fv	list.t	α
-	.app	xn	ys
+	.app	xn1	ys
 	.enter	list.<>	α
 
 # §section §gs{list.≡}
