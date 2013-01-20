@@ -1005,7 +1005,7 @@ static struct gstype *gsbc_typecheck_code_type_arg(struct gsbc_typecheck_code_or
 
 static struct gstype *gsbc_typecheck_compile_prim_type(struct gspos, struct gsfile_symtable *, char *);
 
-static int gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int);
+static void gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int);
 static void gsbc_typecheck_free_variables(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *);
 
 static struct gsbc_code_item_type *gsbc_typecheck_compile_code_item_type(int, struct gstype *, struct gstype *, struct gsbc_typecheck_code_or_api_expr_closure *);
@@ -2179,7 +2179,6 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         int creg = 0;
         struct gsbc_code_item_type *cty;
         struct gstype *alloc_type;
-        int nftyvs;
 
         CHECK_PHASE(rtlet, "allocations");
         CHECK_NUM_REGS(pcl->nregs);
@@ -2188,7 +2187,7 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
         cty = gsbc_typecheck_copy_code_item_type(pcl->codetypes[creg]);
 
-        nftyvs = gsbc_typecheck_free_type_variables(pcl, p, p->arguments[0], cty, 1);
+        gsbc_typecheck_free_type_variables(pcl, p, p->arguments[0], cty, 1);
         gsbc_typecheck_free_variables(pcl, p, p->arguments[0], cty);
         alloc_type = cty->result_type;
 
@@ -2769,7 +2768,6 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
         } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
-            int nftyvs;
 
             gsargcheck(p, 0, "code");
             creg = gsbc_find_register(p, cl.coderegs, cl.ncodes, p->arguments[0]);
@@ -3244,7 +3242,7 @@ gsbc_typecheck_validate_prim_type(struct gspos pos, gsinterned_string primsetnam
 }
 
 static
-int
+void
 gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsparsedline *p, gsinterned_string codelabel, struct gsbc_code_item_type *cty, int firstftyv)
 {
     int i, j;
@@ -3277,7 +3275,6 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
     if (nftyvs < cty->numftyvs)
         gsfatal("%P: Not enough free type variables for %y; need %d but have %d", p->pos, codelabel, cty->numftyvs, nftyvs)
     ;
-    return nftyvs;
 }
 
 static
