@@ -2813,6 +2813,7 @@ gsbc_typecheck_compile_code_item_type(int type, struct gstype *cont_arg_type, st
 
     res->numfvs = pcl->nfvs;
     for (i = 0; i < pcl->nfvs; i++) {
+        res->fvs[i] = pcl->fvnames[i];
         res->fvtypes[i] = pcl->fvtypes[i];
         res->efv_bound[i] = pcl->efv_bound[i];
     }
@@ -2841,6 +2842,7 @@ gsbc_typecheck_copy_code_item_type(struct gsbc_code_item_type *cty)
 
     res->numfvs = cty->numfvs;
     for (i = 0; i < cty->numfvs; i++) {
+        res->fvs[i] = cty->fvs[i];
         res->efv_bound[i] = cty->efv_bound[i];
         res->fvtypes[i] = cty->fvtypes[i];
     }
@@ -2856,18 +2858,20 @@ struct gsbc_code_item_type *
 gsbc_typecheck_alloc_code_item_type(int ntyfvs, int nfvs)
 {
     struct gsbc_code_item_type *res;
-    ulong end_of_res, end_of_tyfvs, end_of_tyfvkinds, end_of_fvtypes, end_of_efv_bound;
+    ulong end_of_res, end_of_tyfvs, end_of_tyfvkinds, end_of_fvs, end_of_fvtypes, end_of_efv_bound;
 
     end_of_res = sizeof(*res);
     end_of_tyfvs = end_of_res + ntyfvs * sizeof(gsinterned_string);
     end_of_tyfvkinds = end_of_tyfvs + ntyfvs * sizeof(struct gskind *);
-    end_of_fvtypes = end_of_tyfvkinds + nfvs * sizeof(struct gstype *);
+    end_of_fvs = end_of_tyfvkinds + nfvs * sizeof(gsinterned_string);
+    end_of_fvtypes = end_of_fvs + nfvs * sizeof(struct gstype *);
     end_of_efv_bound = end_of_fvtypes + nfvs * sizeof(int);
 
     res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, end_of_efv_bound, sizeof(void *));
     res->tyfvs = (gsinterned_string*)((uchar*)res + end_of_res);
     res->tyfvkinds = (struct gskind **)((uchar*)res + end_of_tyfvs);
-    res->fvtypes = (struct gstype **)((uchar*)res + end_of_tyfvkinds);
+    res->fvs = (gsinterned_string*)((uchar*)res + end_of_tyfvkinds);
+    res->fvtypes = (struct gstype **)((uchar*)res + end_of_fvs);
     res->efv_bound = (int*)((uchar*)res + end_of_fvtypes);
 
     return res;
