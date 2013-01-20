@@ -39,20 +39,20 @@ ibio.prim.env.args.get	.gvar
 
 _real.entry_parsed.args_c	.expr
 list.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 _args.parsed.t	.tygvar
 _real.entry_parsed.args_pure_c	.subcode
 ibio.from.either.prim	.gvar
-args	.fv	list.t	_string.ty
+args	.fv	list.t	string.t
 pa	.alloc	_real.entry_parsed.args_pure_c	|	args
 	.app	pa
 	.enter	ibio.from.either.prim	_args.parsed.t
 
 _real.entry_parsed.args_pure_c	.expr
 list.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 _args.parse	.gvar
-args	.fv	list.t	_string.ty
+args	.fv	list.t	string.t
 	.app	args
 	.enter	_args.parse
 
@@ -60,17 +60,17 @@ args	.fv	list.t	_string.ty
 
 _args.parse_c	.expr
 list.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 _args.parse_k0	.subcode
 list.t.out	.cogvar
-as	.larg	list.t	_string.ty
+as	.larg	list.t	string.t
 	.force	_args.parse_k0
-	.coerce	list.t.out	_string.ty
+	.coerce	list.t.out	string.t
 	.enter	as
 
 _args.parse_k0	.forcecont
 list.prim.u	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 either.t	.tygvar
@@ -82,22 +82,22 @@ rune.≡	.gvar
 _flag.l	.gvar
 either.unit	.gvar
 _args.parsed.empty	.gvar
-as0	.karg	list.prim.u	_string.ty
+as0	.karg	list.prim.u	string.t
 	.analyze	as0	:	nil
 		.case	:
-a0		.fkarg	0	_string.ty
-as1		.fkarg	1	list.t	_string.ty
+a0		.fkarg	0	string.t
+as1		.fkarg	1	list.t	string.t
 			.force	_args.parse_k1	|	as1
 			.coerce	bool.t.out
 			.app	rune.≡	a0	_flag.l
 			.enter	list.≡	rune.t
 		.case	nil
 			.app	_args.parsed.empty
-			.enter	either.unit	_string.ty	_args.parsed.t
+			.enter	either.unit	string.t	_args.parsed.t
 
 _args.parse_k1	.forcecont
 list.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 bool.prim.u	.tygvar
 _args.parsed.t	.tygvar
 _args.parse_file_pre_c	.subcode
@@ -105,17 +105,17 @@ _args.parse_file_ap0_c	.subcode
 _args.parse_l.option_k	.subcode
 list.t.out	.cogvar
 either.map	.gvar
-as1	.fv	list.t	_string.ty
+as1	.fv	list.t	string.t
 is.l0	.karg	bool.prim.u
 	.analyze	is.l0	false	true
 		.case	false
 pre			.alloc	_args.parse_file_pre_c
 ap0			.alloc	_args.parse_file_ap0_c	|	as1
 			.app	pre	ap0
-			.enter	either.map	_string.ty	_args.parsed.t	_args.parsed.t
+			.enter	either.map	string.t	_args.parsed.t	_args.parsed.t
 		.case	true
 			.force	_args.parse_l.option_k
-			.coerce	list.t.out	_string.ty
+			.coerce	list.t.out	string.t
 			.enter	as1
 
 _args.parse_file_pre_c	.expr
@@ -139,50 +139,50 @@ ap1	.record	0	ps	1	cut
 
 _args.parse_file_ap0_c	.expr
 list.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 _args.parse	.gvar
-as1	.fv	list.t	_string.ty
+as1	.fv	list.t	string.t
 	.app	as1
 	.enter	_args.parse
 
 # paragraph{§gs{a0} is §sh{-l} flag}
 _args.parse_l.option_k	.forcecont
 list.prim.u	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 list.t	.tygvar
 either.t	.tygvar
 _args.parsed.t	.tygvar
 _args.parse_l.option_pre_c	.subcode
 _args.parse_l.option_ap0_c	.subcode
 either.map	.gvar
-as1.0	.karg	list.prim.u	_string.ty
+as1.0	.karg	list.prim.u	string.t
 	.analyze	as1.0	:	nil
 		.case	:
-a1		.fkarg	0	_string.ty
-as2		.fkarg	1	list.t	_string.ty
+a1		.fkarg	0	string.t
+as2		.fkarg	1	list.t	string.t
 pre			.alloc	_args.parse_l.option_pre_c	|	a1
 ap0			.alloc	_args.parse_l.option_ap0_c	|	as2
 			.app	pre	ap0
-			.enter	either.map	_string.ty	_args.parsed.t	_args.parsed.t
+			.enter	either.map	string.t	_args.parsed.t	_args.parsed.t
 		.case	nil
-			.undef	either.t	_string.ty	_args.parsed.t
+			.undef	either.t	string.t	_args.parsed.t
 
 # §paragraph{Prepend §gs{a1} to the list}
 _args.parse_l.option_pre_c	.expr
-_string.ty	.tygvar
+string.t	.tygvar
 _args.parsed.t	.tygvar
 _args.parse_l.option_pre_k	.subcode
-a1	.fv	_string.ty
+a1	.fv	string.t
 ap0	.larg	_args.parsed.t
 	.force	_args.parse_l.option_pre_k	|	a1
 	.enter	ap0
 
 _args.parse_l.option_pre_k	.forcecont
-_string.ty	.tygvar
+string.t	.tygvar
 _args.parsed.u	.tygvar
 _args.parsed.t	.tygvar
 _args.parse_l.option_pre_ps1_c	.subcode
-a1	.fv	_string.ty
+a1	.fv	string.t
 ap00	.karg	_args.parsed.u
 ps	.field	0	ap00
 cut	.field	1	ap00
@@ -192,12 +192,12 @@ ap1	.record	0	ps1	1	cut
 	.yield	ap1
 
 _args.parse_l.option_pre_ps1_c	.expr
-_string.ty	.tygvar
+string.t	.tygvar
 list.t	.tygvar
 ibio.file.name.t	.tygvar
 _args.parse_l.option_pre_ps1_fn_c	.subcode
 list.:	.gvar
-a1	.fv	_string.ty
+a1	.fv	string.t
 ps	.fv	list.t	ibio.file.name.t
 fn	.alloc	_args.parse_l.option_pre_ps1_fn_c	|	a1
 	.app	fn	ps
