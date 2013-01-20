@@ -25,11 +25,11 @@ _test.true_s	.gvar
 
 _test.assert_c	.expr
 bool.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 _test.assert.c.c	.subcode
 bool.t.out	.cogvar
-f	.larg	_string.ty
-s	.larg	_string.ty
+f	.larg	string.t
+s	.larg	string.t
 b	.larg	bool.t
 	.force	_test.assert.c.c	|	f	s
 	.coerce	bool.t.out
@@ -38,11 +38,11 @@ b	.larg	bool.t
 _test.assert.c.c	.forcecont
 test.property.t	.tygvar
 bool.prim.u	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 test.property.true	.gvar
 test.property.false	.gvar
-f	.fv	_string.ty
-s	.fv	_string.ty
+f	.fv	string.t
+s	.fv	string.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 	.case	false
@@ -55,12 +55,12 @@ b0	.karg	bool.prim.u
 # §section §gs{test.deny}
 
 _test.deny_c	.expr
-_string.ty	.tygvar
+string.t	.tygvar
 bool.t	.tygvar
 _test.deny_k	.subcode
 bool.t.out	.cogvar
-fm	.larg	_string.ty
-tm	.larg	_string.ty
+fm	.larg	string.t
+tm	.larg	string.t
 b	.larg	bool.t
 	.force	_test.deny_k	|	fm	tm
 	.coerce	bool.t.out
@@ -68,11 +68,11 @@ b	.larg	bool.t
 
 _test.deny_k	.forcecont
 bool.prim.u	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 test.property.true	.gvar
 test.property.false	.gvar
-fm	.fv	_string.ty
-tm	.fv	_string.ty
+fm	.fv	string.t
+tm	.fv	string.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false

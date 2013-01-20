@@ -20,25 +20,25 @@ ibio.foldM.prim	.closure	_ibio.foldM.prim_c	_ibio.foldM.prim_ty
 
 _ibio.from.either.prim_c	.expr
 either.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 α	.tyarg	*
 _ibio.from.either.prim_k	.subcode
 either.t.out	.cogvar
-e	.larg	either.t	_string.ty	α
+e	.larg	either.t	string.t	α
 	.force	_ibio.from.either.prim_k	α
-	.coerce	either.t.out	_string.ty	α
+	.coerce	either.t.out	string.t	α
 	.enter	e
 
 _ibio.from.either.prim_k	.forcecont
 either.prim.u	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 ibio.prim.t	.tygvar
 α	.tyfv	*
 ibio.prim.unit	.gvar
-e0	.karg	either.prim.u	_string.ty	α
+e0	.karg	either.prim.u	string.t	α
 	.analyze	e0	left	right
 		.case	left
-e		.fkarg	0	_string.ty
+e		.fkarg	0	string.t
 			.undef	ibio.prim.t	α
 		.case	right
 x		.fkarg	0	α

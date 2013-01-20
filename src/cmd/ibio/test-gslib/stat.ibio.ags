@@ -34,27 +34,27 @@ ibio.prim.env.args.get	.gvar
 
 _real.entry_st_c	.expr
 list.t	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 _real.entry_st_k	.subcode
 list.t.out	.cogvar
-as	.fv	list.t	_string.ty
+as	.fv	list.t	string.t
 	.force	_real.entry_st_k
-	.coerce	list.t.out	_string.ty
+	.coerce	list.t.out	string.t
 	.enter	as
 
 _real.entry_st_k	.forcecont
 list.prim.u	.tygvar
-_string.ty	.tygvar
+string.t	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar
 ibio.dir.t	.tygvar
 _real.entry_st_k_fn_c	.subcode
 ibio.file.stat.prim	.gvar
-as0	.karg	list.prim.u	_string.ty
+as0	.karg	list.prim.u	string.t
 	.analyze	as0	:	nil
 		.case	:
-a		.fkarg	0	_string.ty
-as1		.fkarg	1	list.t	_string.ty
+a		.fkarg	0	string.t
+as1		.fkarg	1	list.t	string.t
 fn			.alloc	_real.entry_st_k_fn_c	|	a
 			.app	fn
 			.enter	ibio.file.stat.prim
