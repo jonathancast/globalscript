@@ -82,8 +82,11 @@ gsdl.ags.file.prim.u	.tygvar
 	.tyref	gsdl.ags.file.prim.u
 
 gsdl.ags.file.prim.u	.tyexpr
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.file.filetype.t	.tygvar
-	.typroduct	filetype	gsdl.ags.file.filetype.t
+datasection.ty	.tylet	list.t	gsdl.ags.dataitem.t
+	.typroduct	datasection	datasection.ty	filetype	gsdl.ags.file.filetype.t
 
 gsdl.ags.file.filetype.t	.tyabstract	*
 gsdl.ags.file.filetype.prim.u	.tygvar
