@@ -28,6 +28,7 @@ string.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 gsdl.ags.file.t	.tygvar
 either.t	.tygvar	# Temp
+gsdl.ags.file.filetype.t	.tygvar	# Temp
 either.right	.gvar
 e0	.karg	either.prim.u	string.t	gsdl.cgs.document.t
 	.analyze	e0	left	right
@@ -36,7 +37,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.ags.file.t
 		.case	right
 doc1		.fkarg	0	gsdl.cgs.document.t
-res			.undefined	gsdl.ags.file.t
+ty			.undefined	gsdl.ags.file.filetype.t
+res			.lrecord	filetype	ty
 			.app	res
 			.enter	either.right	string.t	gsdl.ags.file.t
 

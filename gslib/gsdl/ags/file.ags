@@ -27,4 +27,13 @@ gsdl.ags.file.prim.u	.tygvar
 	.tyref	gsdl.ags.file.prim.u
 
 gsdl.ags.file.prim.u	.tyexpr
-	.typroduct
+gsdl.ags.file.filetype.t	.tygvar
+	.typroduct	filetype	gsdl.ags.file.filetype.t
+
+gsdl.ags.file.filetype.t	.tyabstract	*
+gsdl.ags.file.filetype.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.file.filetype.prim.u
+
+gsdl.ags.file.filetype.prim.u	.tyexpr
+	.tysum
