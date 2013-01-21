@@ -1,0 +1,34 @@
+	.prefix
+
+	.data
+
+gsdl.cgs.gskind.unlifted	.closure	_gsdl.cgs.gskind.unlifted_c
+
+	.code
+
+# §section Constructors
+
+_gsdl.cgs.gskind.unlifted_c	.expr
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t.in	.cogvar
+c	.constr	gsdl.cgs.gskind.prim.u	unlifted
+	.coerce	gsdl.cgs.gskind.t.in
+	.lift
+	.yield	c
+
+	.type
+
+gsdl.cgs.gskind.t	.tyabstract	*
+gsdl.cgs.gskind.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gskind.prim.u
+
+gsdl.cgs.gskind.prim.u	.tyexpr
+record.unboxed.empty	.tygvar
+	.tysum	unlifted	record.unboxed.empty
+
+	.coercion
+
+gsdl.cgs.gskind.t.in	.tycoercion
+gsdl.cgs.gskind.t	.tygvar
+	.tydefinition	gsdl.cgs.gskind.t
