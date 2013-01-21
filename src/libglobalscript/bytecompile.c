@@ -804,27 +804,17 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
         pcl->phase = phconts;
         pcl->size += ACE_APP_SIZE(p->numarguments);
     } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
-        int nfvs;
+        int creg;
+        struct gsbc_code_item_type *cty;
 
         pcl->phase = phconts;
 
-        /* Ignore free type variables & separator (type erasure) */
-        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-        if (i < p->numarguments) i++;
-        nfvs = p->numarguments - i;
+        creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
+        if (!(cty = pcl->codetypes[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+        ;
 
-        if (!nfvs) {
-            int creg;
-            struct gsbc_code_item_type *cty;
-
-            creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
-            if (!(cty = pcl->codetypes[creg]))
-                gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
-            ;
-            nfvs = cty->numfvs;
-        }
-
-        pcl->size += GS_SIZE_BYTECODE(2 + nfvs); /* Code reg + nfvs + fvs */
+        pcl->size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
     } else if (gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")) {
         int creg;
         struct gsbc_code_item_type *cty;
@@ -2148,10 +2138,6 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
         pcode->pos = p->pos;
         pcode->instr = gsbc_op_force;
         pcode->args[0] = (uchar)creg;
-
-        /* §paragraph{Skipping free type variables} */
-        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-        if (i < p->numarguments) i++;
 
         if (!(cty = pcl->subexpr_types[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])

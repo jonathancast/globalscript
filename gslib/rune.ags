@@ -45,7 +45,7 @@ _rune.≡.k0	.subcode
 rune.t.out	.cogvar
 x	.larg	rune.t
 y	.larg	rune.t
-	.force	_rune.≡.k0	|	y
+	.force	_rune.≡.k0
 	.coerce	rune.t.out
 	.enter	x
 
@@ -56,7 +56,7 @@ _rune.≡.k1	.subcode
 rune.t.out	.cogvar
 y	.fv	rune.t
 x0	.karg	rune.prim.rune
-	.force	_rune.≡.k1	|	x0
+	.force	_rune.≡.k1
 	.coerce	rune.t.out
 	.enter	y
 
@@ -87,7 +87,7 @@ _rune.compare_k0	.subcode
 rune.t.out	.cogvar
 r0	.larg	rune.t
 r1	.larg	rune.t
-	.force	_rune.compare_k0	|	r1
+	.force	_rune.compare_k0
 	.coerce	rune.t.out
 	.enter	r0
 
@@ -98,7 +98,7 @@ _rune.compare_k1	.subcode
 rune.t.out	.cogvar
 r1	.fv	rune.t
 r0.0	.karg	rune.prim.rune
-	.force	_rune.compare_k1	|	r0.0
+	.force	_rune.compare_k1
 	.coerce	rune.t.out
 	.enter	r1
 
@@ -217,7 +217,7 @@ rune.≡	.gvar
 _nl	.gvar
 r	.larg	rune.t
 s	.larg	list.t	rune.t
-	.force	_rune.togss_k0	|	r	s
+	.force	_rune.togss_k0
 	.coerce	bool.t.out
 	.app	r	_nl
 	.enter	rune.≡
@@ -250,7 +250,7 @@ _rune.advance_k0	.subcode
 rune.t.out	.cogvar
 r	.larg	rune.t
 n	.larg	natural.t
-	.force	_rune.advance_k0	|	n
+	.force	_rune.advance_k0
 	.coerce	rune.t.out
 	.enter	r
 
@@ -261,7 +261,7 @@ _rune.advance_k1	.subcode
 natural.t.out	.cogvar
 n	.fv	natural.t
 r0	.karg	rune.prim.rune
-	.force	_rune.advance_k1	|	r0
+	.force	_rune.advance_k1
 	.coerce	natural.t.out
 	.enter	n
 

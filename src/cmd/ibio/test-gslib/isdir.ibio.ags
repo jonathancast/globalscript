@@ -72,7 +72,7 @@ _real.entry_body_k0	.subcode
 bool.t.out	.cogvar
 o	.fv	ibio.prim.oport	rune.t
 b	.fv	bool.t
-	.force	_real.entry_body_k0	|	o
+	.force	_real.entry_body_k0
 	.coerce	bool.t.out
 	.enter	b
 

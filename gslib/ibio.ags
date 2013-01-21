@@ -118,7 +118,7 @@ _ibio.mapM.prim_k	.subcode
 list.t.out	.cogvar
 f	.larg	_ibio.mapM.prim_f_ty	α	β
 xn	.larg	list.t	α
-	.force	_ibio.mapM.prim_k	α	β	|	f
+	.force	_ibio.mapM.prim_k	α	β
 	.coerce	list.t.out	α
 	.enter	xn
 
@@ -207,7 +207,7 @@ _ibio.mapM0.prim_k	.subcode
 list.t.out	.cogvar
 f	.larg	_ibio.mapM.prim_f_ty	α	β
 xn	.larg	list.t	α
-	.force	_ibio.mapM0.prim_k	α	β	|	f
+	.force	_ibio.mapM0.prim_k	α	β
 	.coerce	list.t.out	α
 	.enter	xn
 
@@ -291,7 +291,7 @@ list.t.out	.cogvar
 f	.fv	_ibio.foldM.prim_f_ty	α	β
 xn	.fv	list.t	α
 z0	.karg	β
-	.force	_ibio.foldM.prim_k1	α	β	|	f	z0
+	.force	_ibio.foldM.prim_k1	α	β
 	.coerce	list.t.out	α
 	.enter	xn
 

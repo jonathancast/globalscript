@@ -39,7 +39,7 @@ cmp	.larg	order.total.t	k
 k	.larg	k
 v	.larg	v
 map	.larg	ordered.map.t	k	v
-	.force	_ordered.map.insert_k	k	v	|	k	v
+	.force	_ordered.map.insert_k	k	v
 	.coerce	ordered.map.t.out	k	v
 	.enter	map
 
@@ -78,7 +78,7 @@ ordered.map.t.out	.cogvar
 ord	.larg	order.total.t	k
 key	.larg	k
 map	.larg	ordered.map.t	k	v
-	.force	_ordered.map.get_k0	k	v	|	ord	key
+	.force	_ordered.map.get_k0	k	v
 	.coerce	ordered.map.t.out	k	v
 	.enter	map
 
@@ -100,7 +100,7 @@ key1		.fkarg	0	k
 v		.fkarg	1	v
 map.l		.fkarg	2	ordered.map.t	k	v
 map.r		.fkarg	3	ordered.map.t	k	v
-			.force	_ordered.map.get_branch_k	k	v	|	v
+			.force	_ordered.map.get_branch_k	k	v
 			.coerce	order.total.ord.t.out
 			.app	key	key1
 			.enter	ord

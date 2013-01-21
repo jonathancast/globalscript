@@ -83,7 +83,7 @@ bool.t.out	.cogvar
 st0	.karg	ibio.dir.u
 b	.field	mode.directory	st0
 nm	.field	name	st0
-	.force	_real.entry_s_k1	|	nm
+	.force	_real.entry_s_k1
 	.coerce	bool.t.out
 	.enter	b
 

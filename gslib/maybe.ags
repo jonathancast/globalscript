@@ -50,7 +50,7 @@ maybe.t.out	.cogvar
 fk	.larg	β
 sk	.larg	_maybe.maybe_sk_ty	α	β
 mb	.larg	maybe.t	α
-	.force	_maybe.maybe_k	α	β	|	sk
+	.force	_maybe.maybe_k	α	β
 	.coerce	maybe.t.out	α
 	.enter	mb
 
@@ -80,7 +80,7 @@ maybe.t.out	.cogvar
 eq	.larg	_maybe.≡_eq_ty	α
 mb0	.larg	maybe.t	α
 mb1	.larg	maybe.t	α
-	.force	_maybe.≡_k0	α	|	eq	mb1
+	.force	_maybe.≡_k0	α
 	.coerce	maybe.t.out	α
 	.enter	mb0
 
@@ -94,7 +94,7 @@ maybe.t.out	.cogvar
 eq	.fv	_maybe.≡_eq_ty	α
 mb1	.fv	maybe.t	α
 mb0.0	.karg	maybe.prim.u	α
-	.force	_maybe.≡_k1	α	|	eq	mb0.0
+	.force	_maybe.≡_k1	α
 	.coerce	maybe.t.out	α
 	.enter	mb1
 
@@ -136,7 +136,7 @@ _maybe.fmtgs_k	.subcode
 maybe.t.out	.cogvar
 pr	.larg	fmtgs.t	α
 mb	.larg	maybe.t	α
-	.force	_maybe.fmtgs_k	α	|	pr
+	.force	_maybe.fmtgs_k	α
 	.coerce	maybe.t.out	α
 	.enter	mb
 

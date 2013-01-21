@@ -41,7 +41,7 @@ _gsdl.cgs.symbol.compare_k0	.subcode
 gsdl.cgs.symbol.t.out	.cogvar
 s0	.larg	gsdl.cgs.symbol.t
 s1	.larg	gsdl.cgs.symbol.t
-	.force	_gsdl.cgs.symbol.compare_k0	|	s1
+	.force	_gsdl.cgs.symbol.compare_k0
 	.coerce	gsdl.cgs.symbol.t.out
 	.enter	s0
 
@@ -52,7 +52,7 @@ _gsdl.cgs.symbol.compare_k1	.subcode
 gsdl.cgs.symbol.t.out	.cogvar
 s1	.fv	gsdl.cgs.symbol.t
 s0.0	.karg	gsdl.cgs.symbol.prim.u
-	.force	_gsdl.cgs.symbol.compare_k1	|	s0.0
+	.force	_gsdl.cgs.symbol.compare_k1
 	.coerce	gsdl.cgs.symbol.t.out
 	.enter	s1
 

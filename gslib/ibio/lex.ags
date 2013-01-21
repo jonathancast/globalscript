@@ -72,7 +72,7 @@ _ibio.lex.symbol_k	.subcode
 ek	.larg	β
 sk	.larg	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip	.larg	ibio.prim.iptr.t	s
-	.force	_ibio.lex.symbol_k	s	β	|	ek	sk
+	.force	_ibio.lex.symbol_k	s	β
 	.enter	ip
 
 _ibio.lex.symbol_k	.forcecont
@@ -138,7 +138,7 @@ c	.fv	s
 ek	.larg	β
 sk	.larg	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip	.larg	ibio.prim.iptr.t	s
-	.force	_ibio.lex.char_k	s	β	|	eq	c	ek	sk
+	.force	_ibio.lex.char_k	s	β
 	.enter	ip
 
 _ibio.lex.char_k	.forcecont
@@ -174,7 +174,7 @@ ip0	.fv	ibio.prim.iptr	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 c1	.apply	ibio.prim.iptr.deref	s	|	ip0
-	.force	_ibio.lex.char_k0_k	s	β	|	c	ip0	ek	sk
+	.force	_ibio.lex.char_k0_k	s	β
 	.coerce	bool.t.out
 	.app	c	c1
 	.enter	eq
@@ -234,7 +234,7 @@ pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
 ek	.larg	β
 sk	.larg	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip	.larg	ibio.prim.iptr.t	s
-	.force	_ibio.lex.pred_res_k	s	β	|	pred	ek	sk
+	.force	_ibio.lex.pred_res_k	s	β
 	.enter	ip
 
 _ibio.lex.pred_res_k	.forcecont
@@ -268,7 +268,7 @@ ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip0	.fv	ibio.prim.iptr	s
 s	.apply	ibio.prim.iptr.deref	s	|	ip0
-	.force	_ibio.lex.pred_res_k_k0_k	s	β	|	ek	sk	ip0	s
+	.force	_ibio.lex.pred_res_k_k0_k	s	β
 	.coerce	bool.t.out
 	.app	s
 	.enter	pred
@@ -522,7 +522,7 @@ s	.tyfv	*
 _ibio.lex.receive_ip_k	.subcode
 rec	.fv	ibio.lex.receiver.t	s	α
 i	.fv	ibio.prim.iport	s
-	.force	_ibio.lex.receive_ip_k	s	α	|	i
+	.force	_ibio.lex.receive_ip_k	s	α
 	.enter	rec
 
 _ibio.lex.receive_ip_k	.forcecont
@@ -552,7 +552,7 @@ s	.tyfv	*
 _ibio.lex.receive_x_k	.subcode
 rec	.fv	ibio.lex.receiver.t	s	α
 ip	.fv	ibio.prim.iptr.t	s
-	.force	_ibio.lex.receive_x_k	s	α	|	ip
+	.force	_ibio.lex.receive_x_k	s	α
 	.enter	rec
 
 _ibio.lex.receive_x_k	.forcecont
@@ -629,7 +629,7 @@ bool.t.out	.cogvar
 pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
 k	.fv	ibio.acceptor.prim.kt	s	s	record.empty
 sym	.larg	s
-	.force	_ibio.lex.receiver.pred_acc_k1_k	s	|	k	sym
+	.force	_ibio.lex.receiver.pred_acc_k1_k	s
 	.coerce	bool.t.out
 	.app	sym
 	.enter	pred
@@ -695,7 +695,7 @@ eq	.fv	_ibio.lex.receiver.char_eq_ty	s
 c	.fv	s
 k	.fv	ibio.acceptor.prim.kt	s	s	record.empty
 c1	.larg	s
-	.force	_ibio.lex.receiver.char_acc_sym.k1_k	s	|	c	k
+	.force	_ibio.lex.receiver.char_acc_sym.k1_k	s
 	.coerce	bool.t.out
 	.app	c	c1
 	.enter	eq

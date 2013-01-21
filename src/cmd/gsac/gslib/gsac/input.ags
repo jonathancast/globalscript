@@ -29,7 +29,7 @@ _gsac.input.prefix.load_body_k	.subcode
 bool.t.out	.cogvar
 fn	.fv	ibio.file.name.t
 isd	.fv	bool.t
-	.force	_gsac.input.prefix.load_body_k	|	fn
+	.force	_gsac.input.prefix.load_body_k
 	.coerce	bool.t.out
 	.enter	isd
 

@@ -104,7 +104,7 @@ list.t.out	.cogvar
 eo	.fv	ibio.prim.oport	rune.t
 p	.larg	_gsdl.cgs.file.read_pragmas.pos_ty
 l	.larg	list.t	rune.t
-	.force	_gsdl.cgs.file.read_pragmas.pos_insert_k0	|	eo	p
+	.force	_gsdl.cgs.file.read_pragmas.pos_insert_k0
 	.coerce	list.t.out	rune.t
 	.enter	l
 
@@ -126,7 +126,7 @@ l0	.karg	list.prim.u	rune.t
 		.case	:
 c		.fkarg	0	rune.t
 l1		.fkarg	1	list.t	rune.t
-			.force	_gsdl.cgs.file.read_pragmas.pos_insert_k1	|	eo	p	l1
+			.force	_gsdl.cgs.file.read_pragmas.pos_insert_k1
 			.coerce	bool.t.out
 			.app	c	rune.number.sign
 			.enter	rune.≡
@@ -169,7 +169,7 @@ pos			.lfield	pos	p
 pragmas			.lfield	pragmas	p
 pos1			.apply	parser.pos.next.col	|	pos
 parser			.apply	gsdl.cgs.pragma.parse	# §todo{Should be §gs{gsdl.cgs.syntax.ws *> gsdl.cgs.pragma.parse}}
-			.force	_gsdl.cgs.file.read_pragmas.pos_insert_k2	|	eo	p
+			.force	_gsdl.cgs.file.read_pragmas.pos_insert_k2
 			.coerce	either.t.out	parser.err.t	_gsdl.cgs.pragma.parse_res_ty
 			.app	parser.rune.advance	rune.print	pos1	parser	l1
 			.enter	parser.parse	rune.t	_gsdl.cgs.pragma.parse_res_ty
@@ -346,7 +346,7 @@ eo	.fv	ibio.prim.oport	rune.t
 pos	.fv	parser.pos.t
 parser	.fv	parser.t	rune.t	gsdl.cgs.file.t
 s	.fv	list.t	rune.t
-	.force	_gsdl.cgs.file.read_body_k	|	eo
+	.force	_gsdl.cgs.file.read_body_k
 	.coerce	either.t.out	parser.err.t	gsdl.cgs.file.t
 	.app	parser.rune.advance	rune.print	pos	parser	s
 	.enter	parser.parse	rune.t	gsdl.cgs.file.t

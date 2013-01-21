@@ -47,7 +47,7 @@ _test.assert.fails_k	.subcode
 test.property.out	.cogvar
 p	.larg	test.property.t
 k	.larg	_test.assert.fails_k_ty
-	.force	_test.assert.fails_k	|	k
+	.force	_test.assert.fails_k
 	.coerce	test.property.out
 	.enter	p
 

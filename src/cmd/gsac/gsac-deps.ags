@@ -121,7 +121,7 @@ as0	.karg	list.prim.u	string.ty
 		.case	:
 a0		.fkarg	0	list.t	rune.t
 as1		.fkarg	1	list.t	string.ty
-			.force	_parse.args_k1	|	a0	as1
+			.force	_parse.args_k1
 			.coerce	bool.t.out
 			.app	rune.≡	a0	_l
 			.enter	list.≡	rune.t
@@ -210,7 +210,7 @@ _prefix.parse_body_k0	.subcode
 bool.t.out	.cogvar
 fn	.fv	ibio.file.name.t
 isd	.fv	bool.t
-	.force	_prefix.parse_body_k0	|	fn
+	.force	_prefix.parse_body_k0
 	.coerce	bool.t.out
 	.enter	isd
 
@@ -308,7 +308,7 @@ gsac.fn	.larg	ibio.file.name.t
 pr	.larg	list.t	_prefix.t
 ds	.larg	ordered.set.t	ibio.file.name.t
 fvs	.larg	list.t	gsdl.cgs.symbol.t
-	.force	_print.deps_body_w_k	|	o	gsac.fn	pr	ds
+	.force	_print.deps_body_w_k
 	.coerce	list.t.out	gsdl.cgs.symbol.t
 	.enter	fvs
 
@@ -442,7 +442,7 @@ _prefix.expand_k0	.subcode
 _prefix.t.out	.cogvar
 cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
 p	.larg	_prefix.t
-	.force	_prefix.expand_k0	|	cs
+	.force	_prefix.expand_k0
 	.coerce	_prefix.t.out
 	.enter	p
 
@@ -575,7 +575,7 @@ _prefix.t.out	.cogvar
 dirn	.larg	ibio.file.name.t
 cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
 p	.larg	_prefix.t
-	.force	_prefix.expand_w_k	|	dirn	cs	p
+	.force	_prefix.expand_w_k
 	.coerce	_prefix.t.out
 	.enter	p
 
@@ -626,7 +626,7 @@ dirn	.larg	ibio.file.name.t
 sdirn	.larg	ibio.file.name.t
 cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
 dncs	.larg	list.t	string.t
-	.force	_prefix.expand_w_dir_w_kcs	|	sdirn	dncs
+	.force	_prefix.expand_w_dir_w_kcs
 	.coerce	list.t.out	gsdl.cgs.syntax.var.component.t
 	.enter	cs
 
@@ -647,7 +647,7 @@ cs0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
 		.case	:
 c0		.fkarg	0	gsdl.cgs.syntax.var.component.t
 cs1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
-			.force	_prefix.expand_w_dir_w_kdncs	|	sdirn	c0
+			.force	_prefix.expand_w_dir_w_kdncs
 			.coerce	list.t.out	string.t
 			.enter	dncs
 		.case	nil
@@ -673,7 +673,7 @@ dncs0	.karg	list.prim.u	string.t
 dnc0		.fkarg	0	string.t
 dncs1		.fkarg	1	list.t	string.t
 sc0			.apply	gsdl.cgs.syntax.var.component.print	|	c0
-			.force	_prefix.expand_w_dir_w_:_:_k	|	sdirn
+			.force	_prefix.expand_w_dir_w_:_:_k
 			.coerce	bool.t.out
 			.app	sc0	dnc0
 			.enter	string.≡
@@ -760,7 +760,7 @@ _prefix.readdir_body_topr_k	.subcode
 bool.t.out	.cogvar
 d	.larg	ibio.dir.t
 isd	.lfield	mode.directory	d
-	.force	_prefix.readdir_body_topr_k	|	d
+	.force	_prefix.readdir_body_topr_k
 	.coerce	bool.t.out
 	.enter	isd
 
@@ -786,7 +786,7 @@ _prefix.readdir_body_pred_k0	.subcode
 bool.t.out	.cogvar
 d	.larg	ibio.dir.t
 isd	.lfield	mode.directory	d
-	.force	_prefix.readdir_body_pred_k0	|	d
+	.force	_prefix.readdir_body_pred_k0
 	.coerce	bool.t.out
 	.enter	isd
 
@@ -848,7 +848,7 @@ gsac.fn	.larg	ibio.file.name.t
 cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
 ds	.larg	ordered.set.t	ibio.file.name.t
 pr	.larg	_prefix.t
-	.force	_process.var_k0	|	o	gsac.fn	cs	ds
+	.force	_process.var_k0
 	.coerce	_prefix.t.out
 	.enter	pr
 
@@ -903,7 +903,7 @@ dirn	.larg	ibio.file.name.t
 cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
 ds	.larg	ordered.set.t	ibio.file.name.t
 p	.larg	_prefix.t
-	.force	_process.var_rec_k	|	o	gsac.fn	dirn	cs	ds
+	.force	_process.var_rec_k
 	.coerce	_prefix.t.out
 	.enter	p
 
@@ -935,7 +935,7 @@ dirn1		.fkarg	0	ibio.file.name.t
 			.yield	ibio.prim.unit	res.ty
 		.case	file
 fn1		.fkarg	0	ibio.file.name.t
-			.force	_process.var_rec_file_k	|	o	gsac.fn	dirn	ds	fn1
+			.force	_process.var_rec_file_k
 			.coerce	list.t.out	gsdl.cgs.syntax.var.component.t
 			.enter	cs
 		.case	loaded.dir
@@ -972,7 +972,7 @@ cs1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
 sc0			.apply	gsdl.cgs.syntax.var.component.print	|	c0
 fcs			.apply	ibio.file.name.components.get	|	fn1
 sb			.lfield	root	fcs
-			.force	_process.var_rec_file_:_k	|	o	dirn	ds	gsac.fn	fn1
+			.force	_process.var_rec_file_:_k
 			.coerce	bool.t.out
 			.app	sc0	sb
 			.enter	string.≡
@@ -1005,7 +1005,7 @@ b0	.karg	bool.prim.u	# Is this file a match?
 			.yield	ibio.prim.unit	res.ty
 		.case	true
 fn			.apply	ibio.file.name.</>	|	dirn	fn1
-			.force	_process.var_rec_file_:_true_k	|	o	ds	gsac.fn	fn
+			.force	_process.var_rec_file_:_true_k
 			.coerce	bool.t.out
 			.app	ibio.file.name.compare	fn	ds
 			.enter	ordered.set.elem	ibio.file.name.t

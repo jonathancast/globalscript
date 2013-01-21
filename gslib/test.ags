@@ -31,7 +31,7 @@ bool.t.out	.cogvar
 f	.larg	string.t
 s	.larg	string.t
 b	.larg	bool.t
-	.force	_test.assert.c.c	|	f	s
+	.force	_test.assert.c.c
 	.coerce	bool.t.out
 	.enter	b
 
@@ -62,7 +62,7 @@ bool.t.out	.cogvar
 fm	.larg	string.t
 tm	.larg	string.t
 b	.larg	bool.t
-	.force	_test.deny_k	|	fm	tm
+	.force	_test.deny_k
 	.coerce	bool.t.out
 	.enter	b
 
@@ -90,7 +90,7 @@ test.property.t	.tygvar
 _test.all_k1	.subcode
 list.t.out	.cogvar
 ts	.larg	list.t	test.property.t
-	.force	_test.all_k1	|	ts
+	.force	_test.all_k1
 	.coerce	list.t.out	test.property.t
 	.enter	ts
 

@@ -58,7 +58,7 @@ s0	.karg	list.prim.u	rune.t
 		.case	:
 c0		.fkarg	0	rune.t
 s1		.fkarg	1	list.t	rune.t
-			.force	_string.fmtline_k1	|	c0	s1
+			.force	_string.fmtline_k1
 			.coerce	list.t.out	rune.t
 			.enter	s1
 		.case	nil
@@ -87,7 +87,7 @@ y.s.1			.apply	string.fmtline	|	s1
 			.app	c0	y.s.1
 			.enter	list.:	rune.t
 		.case	nil
-			.force	_string.fmtline_k2	|	c0	s1
+			.force	_string.fmtline_k2
 			.coerce	bool.t.out
 			.app	c0	_nl
 			.enter	rune.≡

@@ -23,7 +23,7 @@ _order.total.ord.≡_k0	.subcode
 order.total.ord.t.out	.cogvar
 o0	.larg	order.total.ord.t
 o1	.larg	order.total.ord.t
-	.force	_order.total.ord.≡_k0	|	o1
+	.force	_order.total.ord.≡_k0
 	.coerce	order.total.ord.t.out
 	.enter	o0
 
@@ -34,7 +34,7 @@ _order.total.ord.≡_k1	.subcode
 order.total.ord.t.out	.cogvar
 o1	.fv	order.total.ord.t
 o0.0	.karg	order.total.ord.prim.u
-	.force	_order.total.ord.≡_k1	|	o0.0
+	.force	_order.total.ord.≡_k1
 	.coerce	order.total.ord.t.out
 	.enter	o1
 

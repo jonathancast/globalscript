@@ -44,7 +44,7 @@ _bool.≡.k0	.subcode
 bool.t.out	.cogvar
 a	.larg	bool.t
 b	.larg	bool.t
-	.force	_bool.≡.k0	|	b
+	.force	_bool.≡.k0
 	.coerce	bool.t.out
 	.enter	a
 
@@ -70,7 +70,7 @@ _bool.compare_k0	.subcode
 bool.t.out	.cogvar
 b0	.larg	bool.t
 b1	.larg	bool.t
-	.force	_bool.compare_k0	|	b1
+	.force	_bool.compare_k0
 	.coerce	bool.t.out
 	.enter	b0
 
@@ -81,7 +81,7 @@ _bool.compare_k1	.subcode
 bool.t.out	.cogvar
 b1	.fv	bool.t
 b0.0	.karg	bool.prim.u
-	.force	_bool.compare_k1	|	b0.0
+	.force	_bool.compare_k1
 	.coerce	bool.t.out
 	.enter	b1
 
@@ -131,7 +131,7 @@ _bool.∧.k	.subcode
 bool.t.out	.cogvar
 b0	.larg	bool.t
 b1	.larg	bool.t
-	.force	_bool.∧.k	|	b1
+	.force	_bool.∧.k
 	.coerce	bool.t.out
 	.enter	b0
 
@@ -155,7 +155,7 @@ _bool.∨_k	.subcode
 bool.t.out	.cogvar
 b0	.larg	bool.t
 b1	.larg	bool.t
-	.force	_bool.∨_k	|	b1
+	.force	_bool.∨_k
 	.coerce	bool.t.out
 	.enter	b0
 

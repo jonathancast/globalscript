@@ -210,7 +210,7 @@ _gsdl.cgs.gstype.≡_k0	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 ty0	.larg	gsdl.cgs.gstype.t
 ty1	.larg	gsdl.cgs.gstype.t
-	.force	_gsdl.cgs.gstype.≡_k0	|	ty1
+	.force	_gsdl.cgs.gstype.≡_k0
 	.coerce	gsdl.cgs.gstype.t.out
 	.enter	ty0
 
@@ -221,7 +221,7 @@ _gsdl.cgs.gstype.≡_k1	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 ty1	.fv	gsdl.cgs.gstype.t
 ty0.0	.karg	gsdl.cgs.gstype.prim.u
-	.force	_gsdl.cgs.gstype.≡_k1	|	ty0.0
+	.force	_gsdl.cgs.gstype.≡_k1
 	.coerce	gsdl.cgs.gstype.t.out
 	.enter	ty1
 

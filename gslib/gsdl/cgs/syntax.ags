@@ -92,7 +92,7 @@ list.elem	.gvar
 string.≡	.gvar
 gsdl.cgs.syntax.keywords	.gvar
 id	.larg	string.t
-	.force	_gsdl.cgs.syntax.var.component.alphanum.parser_k_k	|	id
+	.force	_gsdl.cgs.syntax.var.component.alphanum.parser_k_k
 	.coerce	bool.t.out
 	.app	string.≡	id	gsdl.cgs.syntax.keywords
 	.enter	list.elem	string.t
@@ -195,7 +195,7 @@ _gsdl.cgs.syntax.var.component.compare_k0	.subcode
 gsdl.cgs.syntax.var.component.t.out	.cogvar
 c0	.larg	gsdl.cgs.syntax.var.component.t
 c1	.larg	gsdl.cgs.syntax.var.component.t
-	.force	_gsdl.cgs.syntax.var.component.compare_k0	|	c1
+	.force	_gsdl.cgs.syntax.var.component.compare_k0
 	.coerce	gsdl.cgs.syntax.var.component.t.out
 	.enter	c0
 
@@ -206,7 +206,7 @@ _gsdl.cgs.syntax.var.component.compare_k1	.subcode
 gsdl.cgs.syntax.var.component.t.out	.cogvar
 c1	.fv	gsdl.cgs.syntax.var.component.t
 c0.0	.karg	gsdl.cgs.syntax.var.component.prim.u
-	.force	_gsdl.cgs.syntax.var.component.compare_k1	|	c0.0
+	.force	_gsdl.cgs.syntax.var.component.compare_k1
 	.coerce	gsdl.cgs.syntax.var.component.t.out
 	.enter	c1
 

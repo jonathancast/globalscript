@@ -23,7 +23,7 @@ fmtgs.prec.higher	.gvar
 p0	.larg	fmtgs.prec.t
 ds	.larg	diff.list.t	rune.t
 p1	.larg	fmtgs.prec.t
-	.force	_fmtgs.prec_k	|	ds
+	.force	_fmtgs.prec_k
 	.coerce	bool.t.out
 	.app	p0	p1
 	.enter	fmtgs.prec.higher
@@ -56,7 +56,7 @@ _fmtgs.prec.higher_k0	.subcode
 fmtgs.prec.t.out	.cogvar
 p0	.larg	fmtgs.prec.t
 p1	.larg	fmtgs.prec.t
-	.force	_fmtgs.prec.higher_k0	|	p1
+	.force	_fmtgs.prec.higher_k0
 	.coerce	fmtgs.prec.t.out
 	.enter	p0
 
@@ -67,7 +67,7 @@ _fmtgs.prec.higher_k1	.subcode
 fmtgs.prec.t.out	.cogvar
 p1	.fv	fmtgs.prec.t
 p0.0	.karg	fmtgs.prec.prim.u
-	.force	_fmtgs.prec.higher_k1	|	p0.0
+	.force	_fmtgs.prec.higher_k1
 	.coerce	fmtgs.prec.t.out
 	.enter	p1
 

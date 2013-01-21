@@ -105,7 +105,7 @@ ibio.dir.t	.tygvar
 _print.targets.in.dir_body_process.file_k0	.subcode
 dirn	.fv	ibio.file.name.t
 d	.larg	ibio.dir.t
-	.force	_print.targets.in.dir_body_process.file_k0	|	dirn
+	.force	_print.targets.in.dir_body_process.file_k0
 	.enter	d
 
 _print.targets.in.dir_body_process.file_k0	.forcecont
@@ -116,7 +116,7 @@ bool.t.out	.cogvar
 dirn	.fv	ibio.file.name.t
 d0	.karg	ibio.dir.u
 isd	.field	mode.directory	d0
-	.force	_print.targets.in.dir_body_process.file_k1	|	dirn	d0
+	.force	_print.targets.in.dir_body_process.file_k1
 	.coerce	bool.t.out
 	.enter	isd
 

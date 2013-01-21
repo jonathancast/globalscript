@@ -13,7 +13,7 @@ _epcode	.expr
 _epcode.cont	.subcode
 x	.gvar
 y	.gvar
-	.force	_epcode.cont	|	y
+	.force	_epcode.cont
 	.enter x
 
 _epcode.cont	.forcecont

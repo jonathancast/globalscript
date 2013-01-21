@@ -95,7 +95,7 @@ list.t.out	.cogvar
 f	.larg	_list.foldr_f_ty	α	β
 z	.larg	β
 xn	.larg	list.t	α
-	.force	_list.foldr_k0	α	β	|	f	z
+	.force	_list.foldr_k0	α	β
 	.coerce	list.t.out	α
 	.enter	xn
 
@@ -130,7 +130,7 @@ _list.foldr1_k1	.subcode
 list.t.out	.cogvar
 f	.larg	ft
 xn	.larg	list.t	α
-	.force	_list.foldr1_k1	α	|	f
+	.force	_list.foldr1_k1	α
 	.coerce	list.t.out	α
 	.enter	xn
 
@@ -149,7 +149,7 @@ xn0	.karg	t
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.force	_list.foldr1_k2	α	|	f	x0	xn1
+			.force	_list.foldr1_k2	α
 			.coerce	list.t.out	α
 			.enter	xn1
 		.case	nil
@@ -199,7 +199,7 @@ _list.map_k	.subcode
 list.t.out	.cogvar
 f	.larg	_list.map_f_ty	α	β
 xn	.larg	list.t	α
-	.force	_list.map_k	α	β	|	f
+	.force	_list.map_k	α	β
 	.coerce	list.t.out	α
 	.enter	xn
 
@@ -256,7 +256,7 @@ _list.filter_k	.subcode
 list.t.out	.cogvar
 pred	.larg	_list.filter_pred_ty	α
 xn	.larg	list.t	α
-	.force	_list.filter_k	α	|	pred
+	.force	_list.filter_k	α
 	.coerce	list.t.out	α
 	.enter	xn
 
@@ -274,7 +274,7 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.force	_list.filter_:_k	α	|	pred	x0	xn1
+			.force	_list.filter_:_k	α
 			.coerce	bool.t.out
 			.app	x0
 			.enter	pred
@@ -347,7 +347,7 @@ list.t.out	.cogvar
 f	.fv	_list.foldl_f_ty	α	β
 xn	.fv	list.t	α
 z	.karg	β
-	.force	_list.foldl_k1	α	β	|	f	z
+	.force	_list.foldl_k1	α	β
 	.coerce	list.t.out	α
 	.enter	xn
 
@@ -442,7 +442,7 @@ _list.<>.code.cont	.subcode
 list.t.out	.cogvar
 xn	.larg	list.t	α
 ys	.larg	list.t	α
-	.force	_list.<>.code.cont	α	|	ys
+	.force	_list.<>.code.cont	α
 	.coerce	list.t.out	α
 	.enter	xn
 
@@ -489,7 +489,7 @@ list.t.out	.cogvar
 c	.larg	at
 xn	.larg	list.t	α
 ys	.larg	list.t	α
-	.force	_list.≡.k0	α	|	c	ys
+	.force	_list.≡.k0	α
 	.coerce	list.t.out	α
 	.enter	xn
 
@@ -506,7 +506,7 @@ list.t.out	.cogvar
 c	.fv	at
 ys	.fv	list.t	α
 xn0	.karg	t
-	.force	_list.≡.k1	α	|	c	xn0
+	.force	_list.≡.k1	α
 	.coerce	list.t.out	α
 	.enter	ys
 
@@ -581,7 +581,7 @@ list.t.out	.cogvar
 cmp	.larg	order.total.t	α
 xn0	.larg	list.t	α
 xn1	.larg	list.t	α
-	.force	_list.compare_k0	α	|	cmp	xn1
+	.force	_list.compare_k0	α
 	.coerce	list.t.out	α
 	.enter	xn0
 
@@ -595,7 +595,7 @@ list.t.out	.cogvar
 cmp	.fv	order.total.t	α
 xn1	.fv	list.t	α
 xn0.0	.karg	list.prim.u	α
-	.force	_list.compare_k1	α	|	cmp	xn0.0
+	.force	_list.compare_k1	α
 	.coerce	list.t.out	α
 	.enter	xn1
 
@@ -619,7 +619,7 @@ xn0.1		.fkarg	1	list.t	α
 				.case	:
 x1				.fkarg	0	α
 xn1.1				.fkarg	1	list.t	α
-					.force	_list.compare_:_:_k	α	|	cmp	xn0.1	xn1.1
+					.force	_list.compare_:_:_k	α
 					.coerce	order.total.ord.t.out
 					.app	x0	x1
 					.enter	cmp

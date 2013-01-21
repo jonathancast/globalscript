@@ -37,7 +37,7 @@ p	.larg	parser.t	s	α
 s	.larg	list.t	s
 k	.larg	_parser.test.assert.fails_k_ty
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
-	.force	_parser.test.assert.fails_k	α	|	fmtgs	k
+	.force	_parser.test.assert.fails_k	α
 	.coerce	either.t.out	parser.err.t	α
 	.app	adv	pr	pos	p	s
 	.enter	parser.parse	s	α
@@ -93,7 +93,7 @@ p	.larg	parser.t	s	α
 s	.larg	list.t	s
 k	.larg	_parser.test.assert.passes_k_ty	α
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
-	.force	_parser.test.assert.passes_k	α	|	k
+	.force	_parser.test.assert.passes_k	α
 	.coerce	either.t.out	parser.err.t	α
 	.app	adv	pr	pos	p	s
 	.enter	parser.parse	s	α

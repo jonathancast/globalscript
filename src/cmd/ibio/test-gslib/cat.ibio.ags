@@ -36,7 +36,7 @@ _ep_if_k	.subcode
 list.t.out	.cogvar
 i	.fv	ibio.prim.iport	rune.t
 as	.fv	list.t	string.ty
-	.force	_ep_if_k	|	i
+	.force	_ep_if_k
 	.coerce	list.t.out	string.ty
 	.enter	as
 
