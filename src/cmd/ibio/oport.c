@@ -263,7 +263,7 @@ ibio_write_process_main(void *p)
 
                     err = (struct gserror *)c;
                     gserror_format(buf, buf + sizeof(buf), err);
-                    api_thread_post(oport->writing_thread, "write err: %s", buf);
+                    api_thread_post(oport->writing_thread, "write rune err: %s", buf);
 
                     active = oport->active = 0;
                     oport->writing = 0;
@@ -274,7 +274,7 @@ ibio_write_process_main(void *p)
                     char buf[0x100];
 
                     gsimplementation_failure_format(buf, buf + sizeof(buf), (struct gsimplementation_failure *)c);
-                    api_thread_post(oport->writing_thread, "write err: %s", buf);
+                    api_thread_post(oport->writing_thread, "write rune implementation err: %s", buf);
 
                     active = oport->active = 0;
                     oport->writing = 0;
@@ -340,9 +340,17 @@ ibio_write_process_main(void *p)
                     struct gserror *err;
                     char buf[0x100];
 
+                    if ((uchar*)oport->bufend > (uchar*)oport->buf) {
+                        long n = (uchar*)oport->bufend - (uchar*)oport->buf;
+                        if (write(oport->fd, oport->buf, n) != n) {
+                            api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: error when flushing buffer", n);
+                            active = oport->active = 0;
+                        }
+                    }
+
                     err = (struct gserror *)oport->writing;
                     gserror_format(buf, buf + sizeof(buf), err);
-                    api_thread_post(oport->writing_thread, "write err: %s", buf);
+                    api_thread_post(oport->writing_thread, "write string err: %s", buf);
 
                     active = oport->active = 0;
                     oport->writing = 0;
@@ -353,7 +361,7 @@ ibio_write_process_main(void *p)
                     char buf[0x100];
 
                     gsimplementation_failure_format(buf, buf + sizeof(buf), (struct gsimplementation_failure *)oport->writing);
-                    api_thread_post(oport->writing_thread, "write err: %s", buf);
+                    api_thread_post(oport->writing_thread, "write string implementation err: %s", buf);
 
                     active = oport->active = 0;
                     oport->writing = 0;
