@@ -40,7 +40,12 @@ ky0.0	.fv	gsdl.cgs.gskind.prim.u
 ky1.0	.karg	gsdl.cgs.gskind.prim.u
 	.analyze	ky1.0	lifted	unlifted
 		.case	lifted
-			.undef	either.t	string.t	record.empty
+			.danalyze	ky0.0	lifted
+				.default
+					.undef	either.t	string.t	record.empty
+				.case	lifted
+					.app	record.empty
+					.enter	either.right	string.t	record.empty
 		.case	unlifted
 			.danalyze	ky0.0	unlifted
 				.default
