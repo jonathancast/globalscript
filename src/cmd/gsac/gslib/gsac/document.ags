@@ -1,0 +1,116 @@
+	.prefix
+
+	.data
+
+gsac.document.compile	.closure	_gsac.document.compile_c
+
+gsac.document.annotate	.closure	_gsac.document.annotate_c
+
+	.code
+
+# §section §gs{gsac.document.compile}
+
+_gsac.document.compile_c	.expr
+gsdl.cgs.document.t	.tygvar
+string.t	.tygvar
+_gsac.document.compile_k	.subcode
+either.t.out	.cogvar
+gsac.document.annotate	.gvar
+doc	.larg	gsdl.cgs.document.t
+	.force	_gsac.document.compile_k
+	.coerce	either.t.out	string.t	gsdl.cgs.document.t
+	.app	doc
+	.enter	gsac.document.annotate
+
+_gsac.document.compile_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+gsdl.ags.file.t	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+e0	.karg	either.prim.u	string.t	gsdl.cgs.document.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.ags.file.t
+		.case	right
+doc1		.fkarg	0	gsdl.cgs.document.t
+res			.undefined	gsdl.ags.file.t
+			.app	res
+			.enter	either.right	string.t	gsdl.ags.file.t
+
+# §section §gs{gsac.document.annotate}
+
+_gsac.document.annotate_c	.expr
+gsdl.cgs.document.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsac.document.annotate_gstype_k	.subcode
+maybe.t.out	.cogvar
+doc	.larg	gsdl.cgs.document.t
+gsty	.lfield	gstype	doc
+	.force	_gsac.document.annotate_gstype_k
+	.coerce	maybe.t.out	gsdl.cgs.gstype.t
+	.enter	gsty
+
+_gsac.document.annotate_gstype_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar	# Temp
+gsdl.cgs.document.t	.tygvar	# Temp
+_gsac.document.annotate_gstype_just_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.kindcheck	.gvar
+mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
+	.analyze	mbty0	just	nothing
+		.case	just
+ty		.fkarg	0	gsdl.cgs.gstype.t
+			.force	_gsac.document.annotate_gstype_just_k
+			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
+			.app	ty
+			.enter	gsac.gstype.kindcheck
+		.case	nothing
+			.undef	either.t	string.t	gsdl.cgs.document.t
+
+_gsac.document.annotate_gstype_just_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+gsdl.cgs.document.t	.tygvar	# Temp
+_gsac.document.annotate_gstype_just_right_k	.subcode
+either.t.out	.cogvar
+gsac.gskind.check	.gvar
+gsdl.cgs.gskind.lifted	.gvar
+eky0	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
+	.analyze	eky0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.document.t
+		.case	right
+ky		.fkarg	0	gsdl.cgs.gskind.t
+			.force	_gsac.document.annotate_gstype_just_right_k
+			.coerce	either.t.out	string.t	record.empty
+			.app	ky	gsdl.cgs.gskind.lifted
+			.enter	gsac.gskind.check
+
+_gsac.document.annotate_gstype_just_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+gsdl.cgs.document.t	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+e0	.karg	either.prim.u	string.t	record.empty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.document.t
+		.case	right
+r		.fkarg	0	record.empty
+res			.undefined	gsdl.cgs.document.t
+			.app	res
+			.enter	either.right	string.t	gsdl.cgs.document.t
