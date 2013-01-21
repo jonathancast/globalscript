@@ -4,6 +4,8 @@
 
 gsdl.ags.file.print	.closure	_gsdl.ags.file.print_c
 _gsdl.ags.file.print.filetype	.closure	_gsdl.ags.file.print.filetype_c
+_gsdl.ags.file.print.filetype_doc.s	.string	\t.document\n\n
+_gsdl.ags.file.print.datasection	.closure	_gsdl.ags.file.print.datasection_c
 
 gsdl.ags.file.filetype.gsdocument	.closure	_gsdl.ags.file.filetype.gsdocument_c
 
@@ -38,9 +40,28 @@ ty	.field	filetype	file0
 	.enter	ty
 
 _gsdl.ags.file.print.filetype_k	.forcecont
+gsdl.ags.file.prim.u	.tygvar
 gsdl.ags.file.filetype.prim.u	.tygvar
+rune.t	.tygvar
 string.t	.tygvar	# Temp
+list.<>	.gvar
+_gsdl.ags.file.print.filetype_doc.s	.gvar
+_gsdl.ags.file.print.datasection	.gvar
+file0	.fv	gsdl.ags.file.prim.u
 ty0	.karg	gsdl.ags.file.filetype.prim.u
+k	.apply	_gsdl.ags.file.print.datasection	|	file0
+	.analyze	ty0	gsdocument
+		.case	gsdocument
+			.app	_gsdl.ags.file.print.filetype_doc.s	k
+			.enter	list.<>	rune.t
+	# > :: string.t
+
+# §subsection §gs{_gsdl.ags.file.print.datasection}
+
+_gsdl.ags.file.print.datasection_c	.expr
+gsdl.ags.file.prim.u	.tygvar
+string.t	.tygvar	# Temp
+file0	.arg	gsdl.ags.file.prim.u
 	.undef	string.t
 
 # §section §gs{gsdl.ags.file.filetype.t} Constructors
