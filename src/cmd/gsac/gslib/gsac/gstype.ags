@@ -1,0 +1,171 @@
+	.prefix
+
+	.data
+
+gsac.gstype.kindcheck	.closure	_gsac.gstype.kindcheck_c	_gsac.gstype.kindcheck_ty
+gsac.gstype.fields.kindcheck	.closure	_gsac.gstype.fields.kindcheck_c	_gsac.gstype.fields.kindcheck_ty
+
+	.code
+
+# §section §gs{gsac.gstype.check}
+
+_gsac.gstype.kindcheck_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+_gsac.gstype.kindcheck_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsac.gstype.kindcheck_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsac.gstype.kindcheck_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+record.empty	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gstype.kindcheck_lift_k	.subcode
+_gsac.gstype.kindcheck_product_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.kindcheck	.gvar
+gsac.gstype.fields.kindcheck	.gvar
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	ty0	app	lift	product	var
+		.case	app
+tyf		.fkarg	0	gsdl.cgs.gstype.t
+tyx		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
+		.case	lift
+ty1		.fkarg	0	gsdl.cgs.gstype.t
+			.force	_gsac.gstype.kindcheck_lift_k
+			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
+			.app	ty1
+			.enter	gsac.gstype.kindcheck
+		.case	product
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.force	_gsac.gstype.kindcheck_product_k
+			.coerce	either.t.out	string.t	record.empty
+			.app	fs
+			.enter	gsac.gstype.fields.kindcheck
+		.case	var
+v		.fkarg	0	gsdl.cgs.syntax.var.t
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
+	# > :: either.t	string.t	gsdl.cgs.gskind.t
+
+_gsac.gstype.kindcheck_lift_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gstype.kindcheck_lift_right_k	.subcode
+either.t.out	.cogvar
+gsac.gskind.check	.gvar
+gsdl.cgs.gskind.unlifted	.gvar
+e0	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
+		.case	right
+ky		.fkarg	0	gsdl.cgs.gskind.t
+			.force	_gsac.gstype.kindcheck_lift_right_k
+			.coerce	either.t.out	string.t	record.empty
+			.app	ky	gsdl.cgs.gskind.unlifted
+			.enter	gsac.gskind.check
+
+_gsac.gstype.kindcheck_lift_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+gsdl.cgs.gskind.lifted	.gvar
+e0	.karg	either.prim.u	string.t	record.empty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
+		.case	right
+r		.fkarg	0	record.empty
+			.app	gsdl.cgs.gskind.lifted
+			.enter	either.right	string.t	gsdl.cgs.gskind.t
+
+_gsac.gstype.kindcheck_product_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+gsdl.cgs.gskind.t	.tygvar	# Temp
+either.right	.gvar
+gsdl.cgs.gskind.unlifted	.gvar
+e0	.karg	either.prim.u	string.t	record.empty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
+		.case	right
+r		.fkarg	0	record.empty
+			.app	gsdl.cgs.gskind.unlifted
+			.enter	either.right	string.t	gsdl.cgs.gskind.t
+
+# §section §gs{gsac.gstype.fields.kindcheck}
+
+_gsac.gstype.fields.kindcheck_c	.expr
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+_gsac.gstype.fields.kindcheck_k	.subcode
+list.t.out	.cogvar
+fs	.larg	list.t	gsdl.cgs.gstype.field.t
+	.force	_gsac.gstype.fields.kindcheck_k
+	.coerce	list.t.out	gsdl.cgs.gstype.field.t
+	.enter	fs
+
+_gsac.gstype.fields.kindcheck_k	.forcecont
+list.prim.u	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+record.empty	.gvar
+fs0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
+	.analyze	fs0	:	nil
+		.case	:
+f0		.fkarg	0	gsdl.cgs.gstype.field.t
+fs1		.fkarg	1	list.t	gsdl.cgs.gstype.field.t
+			.undef	either.t	string.t	record.empty
+		.case	nil
+			.app	record.empty
+			.enter	either.right	string.t	record.empty
+
+	.type
+
+# §section §gs{gsac.gstype.kindcheck}
+
+_gsac.gstype.kindcheck_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	either.t	string.t	gsdl.cgs.gskind.t
+
+# §section §gs{gsac.gstype.fields.kindcheck}
+
+_gsac.gstype.fields.kindcheck_ty	.tyexpr
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+	.tylift
+	.tyfun	list.t	gsdl.cgs.gstype.field.t
+	.tyref	either.t	string.t	record.empty
