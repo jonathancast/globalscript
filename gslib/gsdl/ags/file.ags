@@ -3,8 +3,11 @@
 	.data
 
 gsdl.ags.file.print	.closure	_gsdl.ags.file.print_c
+_gsdl.ags.file.print.filetype	.closure	_gsdl.ags.file.print.filetype_c
 
 	.code
+
+# §section §gs{gsdl.ags.file.print}
 
 _gsdl.ags.file.print_c	.expr
 gsdl.ags.file.t	.tygvar
@@ -15,8 +18,27 @@ file	.larg	gsdl.ags.file.t
 
 _gsdl.ags.file.print_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
-string.t	.tygvar	# Temp
+_gsdl.ags.file.print.filetype	.gvar
 file0	.karg	gsdl.ags.file.prim.u
+	.app	file0
+	.yield	_gsdl.ags.file.print.filetype
+
+# §subsection §gs{_gsdl.ags.file.print.filetype}
+
+_gsdl.ags.file.print.filetype_c	.expr
+gsdl.ags.file.prim.u	.tygvar
+_gsdl.ags.file.print.filetype_k	.subcode
+gsdl.ags.file.filetype.t.out	.cogvar
+file0	.arg	gsdl.ags.file.prim.u
+ty	.field	filetype	file0
+	.force	_gsdl.ags.file.print.filetype_k
+	.coerce	gsdl.ags.file.filetype.t.out
+	.enter	ty
+
+_gsdl.ags.file.print.filetype_k	.forcecont
+gsdl.ags.file.filetype.prim.u	.tygvar
+string.t	.tygvar	# Temp
+ty0	.karg	gsdl.ags.file.filetype.prim.u
 	.undef	string.t
 
 	.type
@@ -37,3 +59,10 @@ gsdl.ags.file.filetype.prim.u	.tygvar
 
 gsdl.ags.file.filetype.prim.u	.tyexpr
 	.tysum
+
+	.coercion
+
+gsdl.ags.file.filetype.t.out	.tycoercion
+gsdl.ags.file.filetype.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.file.filetype.t
