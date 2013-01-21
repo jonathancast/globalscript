@@ -3,6 +3,7 @@
 	.data
 
 gsdl.cgs.gskind.unlifted	.closure	_gsdl.cgs.gskind.unlifted_c
+gsdl.cgs.gskind.lifted	.closure	_gsdl.cgs.gskind.lifted_c
 
 	.code
 
@@ -16,6 +17,14 @@ c	.constr	gsdl.cgs.gskind.prim.u	unlifted
 	.lift
 	.yield	c
 
+_gsdl.cgs.gskind.lifted_c	.expr
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t.in	.cogvar
+c	.constr	gsdl.cgs.gskind.prim.u	lifted
+	.coerce	gsdl.cgs.gskind.t.in
+	.lift
+	.yield	c
+
 	.type
 
 gsdl.cgs.gskind.t	.tyabstract	*
@@ -25,7 +34,7 @@ gsdl.cgs.gskind.prim.u	.tygvar
 
 gsdl.cgs.gskind.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
-	.tysum	unlifted	record.unboxed.empty
+	.tysum	lifted	record.unboxed.empty	unlifted	record.unboxed.empty
 
 	.coercion
 
