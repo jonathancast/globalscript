@@ -5,6 +5,8 @@
 gsdl.ags.file.print	.closure	_gsdl.ags.file.print_c
 _gsdl.ags.file.print.filetype	.closure	_gsdl.ags.file.print.filetype_c
 
+gsdl.ags.file.filetype.gsdocument	.closure	_gsdl.ags.file.filetype.gsdocument_c
+
 	.code
 
 # §section §gs{gsdl.ags.file.print}
@@ -41,6 +43,16 @@ string.t	.tygvar	# Temp
 ty0	.karg	gsdl.ags.file.filetype.prim.u
 	.undef	string.t
 
+# §section §gs{gsdl.ags.file.filetype.t} Constructors
+
+_gsdl.ags.file.filetype.gsdocument_c	.expr
+gsdl.ags.file.filetype.prim.u	.tygvar
+gsdl.ags.file.filetype.t.in	.cogvar
+c	.constr	gsdl.ags.file.filetype.prim.u	gsdocument
+	.coerce	gsdl.ags.file.filetype.t.in
+	.lift
+	.yield	c
+
 	.type
 
 gsdl.ags.file.t	.tyexpr
@@ -58,9 +70,14 @@ gsdl.ags.file.filetype.prim.u	.tygvar
 	.tyref	gsdl.ags.file.filetype.prim.u
 
 gsdl.ags.file.filetype.prim.u	.tyexpr
-	.tysum
+record.unboxed.empty	.tygvar
+	.tysum	gsdocument	record.unboxed.empty
 
 	.coercion
+
+gsdl.ags.file.filetype.t.in	.tycoercion
+gsdl.ags.file.filetype.t	.tygvar
+	.tydefinition	gsdl.ags.file.filetype.t
 
 gsdl.ags.file.filetype.t.out	.tycoercion
 gsdl.ags.file.filetype.t	.tygvar
