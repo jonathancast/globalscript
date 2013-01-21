@@ -28,8 +28,8 @@ args	.bind	_real.entry_args_c
 parsed.args	.bind	_real.entry_parsed.args_c	|	args
 read.arguments	.bind	_real.entry_read.arguments_c	|	eo	parsed.args
 sccs	.bind	_real.entry_sccs_c	|	read.arguments
-output	.bind	_real.entry_output_c
-	.body	_real.entry_send.output_c	|	o
+output	.bind	_real.entry_output_c	|	read.arguments
+	.body	_real.entry_send.output_c	|	o	output
 
 _real.entry_args_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -105,6 +105,7 @@ _args.parse_file_ap0_c	.subcode
 _args.parse_l.option_k	.subcode
 list.t.out	.cogvar
 either.map	.gvar
+a0	.fv	string.t
 as1	.fv	list.t	string.t
 is.l0	.karg	bool.prim.u
 	.analyze	is.l0	false	true
@@ -119,20 +120,27 @@ ap0			.alloc	_args.parse_file_ap0_c	|	as1
 			.enter	as1
 
 _args.parse_file_pre_c	.expr
+string.t	.tygvar
 _args.parsed.t	.tygvar
 _args.parse_file_pre_k	.subcode
+a0	.fv	string.t
 ap0	.larg	_args.parsed.t
 	.force	_args.parse_file_pre_k
 	.enter	ap0
 
 _args.parse_file_pre_k	.forcecont
+string.t	.tygvar
 _args.parsed.u	.tygvar
-_args.parsed.t	.tygvar
+ibio.file.name.t	.tygvar
 list.t	.tygvar	# Temp
-ibio.file.name.t	.tygvar	# Temp
+list.:	.gvar
+ibio.file.name.in	.gvar
+a0	.fv	string.t
 ap00	.karg	_args.parsed.u
 ps	.field	0	ap00
-cut	.field	1	ap00
+cut1	.field	1	ap00
+cut0	.apply	ibio.file.name.in	|	a0
+cut	.apply	list.:	ibio.file.name.t	|	cut0	cut1
 ap1	.record	0	ps	1	cut
 	.lift
 	.yield	ap1
@@ -250,7 +258,6 @@ _real.entry_read.arguments_prefix.files_c	.subcode
 _real.entry_read.arguments_prefix_c	.subcode
 _real.entry_read.arguments_cut.files_c	.subcode
 _real.entry_read.arguments_cut_c	.subcode
-_real.entry_read.arguments_res_c	.subcode
 _real.entry_read.arguments_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 parsed.args	.fv	_args.parsed.t
@@ -258,8 +265,7 @@ prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c	|	parsed.args
 prefix	.bind	_real.entry_read.arguments_prefix_c	|	prefix.files
 cut.files	.alloc	_real.entry_read.arguments_cut.files_c	|	parsed.args
 cut	.bind	_real.entry_read.arguments_cut_c	|	eo	cut.files
-res	.alloc	_real.entry_read.arguments_res_c
-	.body	_real.entry_read.arguments_body_c
+	.body	_real.entry_read.arguments_body_c	|	cut
 
 _real.entry_read.arguments_prefix.files_c	.expr
 _args.parsed.t	.tygvar
@@ -309,15 +315,13 @@ f	.apply	gsdl.cgs.file.read	|	eo
 	.app	f	cut.files
 	.enter	ibio.mapM.prim	ibio.file.name.t	gsdl.cgs.file.t
 
-_real.entry_read.arguments_res_c	.expr
-_real.entry_read.arguments_ty	.tygvar
-	.undef	_real.entry_read.arguments_ty
-
 _real.entry_read.arguments_body_c	.expr
-ibio.prim.t	.tygvar
-_real.entry_read.arguments_ty	.tygvar	# Temp
+list.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+_real.entry_read.arguments_ty	.tygvar
 ibio.prim.unit	.gvar
-res	.lrecord
+cut	.fv	list.t	gsdl.cgs.file.t
+res	.lrecord	cut	cut
 	.lift
 	.app	res
 	.yield	ibio.prim.unit	_real.entry_read.arguments_ty
@@ -350,25 +354,105 @@ res	.undefined	_real.entry_sccs_ty
 # that can be deferred until a later stage.
 
 _real.entry_output_c	.expr
+_real.entry_read.arguments_ty	.tygvar
+gsdl.cgs.file.t	.tygvar
+_real.entry_output_k	.subcode
+list.t.out	.cogvar
+read.arguments	.fv	_real.entry_read.arguments_ty
+cut	.lfield	cut	read.arguments
+	.force	_real.entry_output_k
+	.coerce	list.t.out	gsdl.cgs.file.t
+	.enter	cut
+
+_real.entry_output_k	.forcecont
+list.prim.u	.tygvar
+gsdl.cgs.file.t	.tygvar
+list.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 gsdl.ags.file.t	.tygvar	# Temp
+_real.entry_output_k1	.subcode
+list.t.out	.cogvar
+cut0	.karg	list.prim.u	gsdl.cgs.file.t
+	.analyze	cut0	:	nil
+		.case	:
+cut0.0		.fkarg	0	gsdl.cgs.file.t
+cut1		.fkarg	1	list.t	gsdl.cgs.file.t
+			.force	_real.entry_output_k1
+			.coerce	list.t.out	gsdl.cgs.file.t
+			.enter	cut1
+		.case	nil
+			.undef	ibio.prim.t	gsdl.ags.file.t
+
+_real.entry_output_k1	.forcecont
+gsdl.cgs.file.t	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.file.t	.tygvar	# Temp
+_real.entry_output_k1_nil_k	.subcode
 ibio.prim.unit	.gvar
-res	.undefined	gsdl.ags.file.t
-	.lift
-	.app	res
-	.yield	ibio.prim.unit	gsdl.ags.file.t
+gsdl.cgs.file.t.out	.cogvar
+cut0.0	.fv	gsdl.cgs.file.t
+cut1.0	.karg	list.prim.u	gsdl.cgs.file.t
+	.analyze	cut1.0	:	nil
+		.case	:
+cut1.0.0		.fkarg	0	gsdl.cgs.file.t
+cut2		.fkarg	1	list.t	gsdl.cgs.file.t
+res			.undefined	gsdl.ags.file.t
+			.lift
+			.app	res
+			.yield	ibio.prim.unit	gsdl.ags.file.t
+		.case	nil
+			.force	_real.entry_output_k1_nil_k
+			.coerce	gsdl.cgs.file.t.out
+			.enter	cut0.0
+
+_real.entry_output_k1_nil_k	.forcecont
+gsdl.cgs.file.prim.u	.tygvar
+gsdl.cgs.document.t	.tygvar
+string.t	.tygvar
+gsdl.ags.file.t	.tygvar
+either.t	.tygvar	# Temp
+_real.entry_output_k1_nil_doc_k	.subcode
+either.t.out	.cogvar
+gsac.document.compile	.gvar
+f0	.karg	gsdl.cgs.file.prim.u
+	.analyze	f0	document
+		.case	document
+doc		.fkarg	0	gsdl.cgs.document.t
+			.force	_real.entry_output_k1_nil_doc_k
+			.coerce	either.t.out	string.t	gsdl.ags.file.t
+			.app	doc
+			.enter	gsac.document.compile
+	# > :: ibio.prim.t	gsdl.ags.file.t
+
+_real.entry_output_k1_nil_doc_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.ags.file.t	.tygvar
+ibio.prim.t	.tygvar	# Temp
+ibio.prim.unit	.gvar
+res0	.karg	either.prim.u	string.t	gsdl.ags.file.t
+	.analyze	res0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	ibio.prim.t	gsdl.ags.file.t
+		.case	right
+res		.fkarg	0	gsdl.ags.file.t
+			.lift
+			.app	res
+			.yield	ibio.prim.unit	gsdl.ags.file.t
 
 # §section Write out §gs{output} on stdout
 
 _real.entry_send.output_c	.expr
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
-string.t	.tygvar
-ibio.prim.t	.tygvar	# Temp
-record.empty	.tygvar	# Temp
+gsdl.ags.file.t	.tygvar
 ibio.prim.write	.gvar
+gsdl.ags.file.print	.gvar
 o	.fv	ibio.prim.oport	rune.t
-out.s	.undefined	string.t
+output	.fv	gsdl.ags.file.t
+out.s	.apply	gsdl.ags.file.print	|	output
 	.lift
 	.app	o	out.s
 	.yield	ibio.prim.write	rune.t
@@ -399,7 +483,10 @@ _real.entry_read.arguments_u	.tygvar
 	.tyref	_real.entry_read.arguments_u
 
 _real.entry_read.arguments_u	.tyexpr
-	.typroduct
+list.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+cut_ty	.tylet	list.t	gsdl.cgs.file.t
+	.typroduct	cut	cut_ty
 
 _real.entry_sccs_ty	.tyexpr
 list.t	.tygvar
