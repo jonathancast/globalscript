@@ -1,0 +1,64 @@
+	.prefix
+
+	.data
+
+gsac.gskind.check	.closure	_gsac.gskind.check_c	_gsac.gskind.check_ty
+
+	.code
+
+# §section §gs{gsac.gskind.check}
+
+_gsac.gskind.check_c	.expr
+gsdl.cgs.gskind.t	.tygvar
+_gsac.gskind.check_k0	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+ky0	.larg	gsdl.cgs.gskind.t
+ky1	.larg	gsdl.cgs.gskind.t
+	.force	_gsac.gskind.check_k0
+	.coerce	gsdl.cgs.gskind.t.out
+	.enter	ky0
+
+_gsac.gskind.check_k0	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gskind.prim.u	.tygvar
+_gsac.gskind.check_k1	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+ky1	.fv	gsdl.cgs.gskind.t
+ky0.0	.karg	gsdl.cgs.gskind.prim.u
+	.force	_gsac.gskind.check_k1
+	.coerce	gsdl.cgs.gskind.t.out
+	.enter	ky1
+
+_gsac.gskind.check_k1	.forcecont
+gsdl.cgs.gskind.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+record.empty	.gvar
+ky0.0	.fv	gsdl.cgs.gskind.prim.u
+ky1.0	.karg	gsdl.cgs.gskind.prim.u
+	.analyze	ky1.0	unlifted
+		.case	unlifted
+			.danalyze	ky0.0	unlifted
+				.default
+					.undef	either.t	string.t	record.empty
+				.case	unlifted
+					.app	record.empty
+					.enter	either.right	string.t	record.empty
+	# > :: either.t	string.t	record.empty
+
+	.type
+
+# §section §gs{gsac.gskind.check}
+
+_gsac.gskind.check_ty	.tyexpr
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gskind.t
+	.tylift
+	.tyfun	gsdl.cgs.gskind.t
+	.tyref	either.t	string.t	record.empty

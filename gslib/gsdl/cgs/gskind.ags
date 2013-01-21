@@ -32,3 +32,8 @@ record.unboxed.empty	.tygvar
 gsdl.cgs.gskind.t.in	.tycoercion
 gsdl.cgs.gskind.t	.tygvar
 	.tydefinition	gsdl.cgs.gskind.t
+
+gsdl.cgs.gskind.t.out	.tycoercion
+gsdl.cgs.gskind.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gskind.t
