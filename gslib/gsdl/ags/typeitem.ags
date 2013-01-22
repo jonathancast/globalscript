@@ -1,0 +1,11 @@
+	.prefix
+
+	.type
+
+gsdl.ags.typeitem.t	.tyabstract	*
+gsdl.ags.typeitem.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.typeitem.prim.u
+
+gsdl.ags.typeitem.prim.u	.tyexpr
+	.tysum
