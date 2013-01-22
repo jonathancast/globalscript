@@ -25,10 +25,10 @@ i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
-parsed.args	.bind	_real.entry_parsed.args_c	|	args
-read.arguments	.bind	_real.entry_read.arguments_c	|	eo	parsed.args
-sccs	.bind	_real.entry_sccs_c	|	read.arguments
-output	.bind	_real.entry_output_c	|	read.arguments
+parsed.args	.bind	_real.entry_parsed.args_c
+read.arguments	.bind	_real.entry_read.arguments_c
+sccs	.bind	_real.entry_sccs_c
+output	.bind	_real.entry_output_c
 	.body	_real.entry_send.output_c	|	o	output
 
 _real.entry_args_c	.expr
@@ -262,9 +262,9 @@ _real.entry_read.arguments_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 parsed.args	.fv	_args.parsed.t
 prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c
-prefix	.bind	_real.entry_read.arguments_prefix_c	|	prefix.files
+prefix	.bind	_real.entry_read.arguments_prefix_c
 cut.files	.alloc	_real.entry_read.arguments_cut.files_c
-cut	.bind	_real.entry_read.arguments_cut_c	|	eo	cut.files
+cut	.bind	_real.entry_read.arguments_cut_c
 	.body	_real.entry_read.arguments_body_c	|	cut
 
 _real.entry_read.arguments_prefix.files_c	.expr
