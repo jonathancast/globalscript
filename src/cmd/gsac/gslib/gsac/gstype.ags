@@ -5,6 +5,8 @@
 gsac.gstype.kindcheck	.closure	_gsac.gstype.kindcheck_c	_gsac.gstype.kindcheck_ty
 gsac.gstype.fields.kindcheck	.closure	_gsac.gstype.fields.kindcheck_c	_gsac.gstype.fields.kindcheck_ty
 
+gsac.gstype.compileToVar	.closure	_gsac.gstype.compileToVar_c	_gsac.gstype.compileToVar_ty
+
 	.code
 
 # §section §gs{gsac.gstype.kindcheck}
@@ -145,6 +147,34 @@ fs1		.fkarg	1	list.t	gsdl.cgs.gstype.field.t
 			.app	record.empty
 			.enter	either.right	string.t	record.empty
 
+# §section §gs{gsac.gstype.compileToVar}
+
+_gsac.gstype.compileToVar_c	.expr
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsac.gstype.compileToVar_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+nm0	.larg	string.t
+ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsac.gstype.compileToVar_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsac.gstype.compileToVar_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.danalyze	ty0	var
+		.default
+			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+		.case	var
+v		.fkarg	0	gsdl.cgs.syntax.var.t
+			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+	# > :: either.t	string.t	_gsac.gstype.compileToVar_res.ty
+
 	.type
 
 # §section §gs{gsac.gstype.kindcheck}
@@ -169,3 +199,28 @@ record.empty	.tygvar
 	.tylift
 	.tyfun	list.t	gsdl.cgs.gstype.field.t
 	.tyref	either.t	string.t	record.empty
+
+# §section §gs{gsac.gstype.compileToVar}
+
+_gsac.gstype.compileToVar_ty	.tyexpr
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
+	.tylift
+	.tyfun	string.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+
+_gsac.gstype.compileToVar_res.ty	.tyexpr
+_gsac.gstype.compileToVar_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gstype.compileToVar_res.u
+
+_gsac.gstype.compileToVar_res.u	.tyexpr
+string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+tyexprs_ty	.tylet	list.t	gsdl.ags.typeitem.t
+	.typroduct	nm	string.t	tyexprs	tyexprs_ty
