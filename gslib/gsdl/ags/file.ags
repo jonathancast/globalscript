@@ -49,7 +49,8 @@ _gsdl.ags.file.print.filetype_doc.s	.gvar
 _gsdl.ags.file.print.datasection	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 ty0	.karg	gsdl.ags.file.filetype.prim.u
-k	.apply	_gsdl.ags.file.print.datasection	|	file0
+ds	.field	datasection	file0
+k	.apply	_gsdl.ags.file.print.datasection	|	file0	ds
 	.analyze	ty0	gsdocument
 		.case	gsdocument
 			.app	_gsdl.ags.file.print.filetype_doc.s	k
@@ -60,8 +61,21 @@ k	.apply	_gsdl.ags.file.print.datasection	|	file0
 
 _gsdl.ags.file.print.datasection_c	.expr
 gsdl.ags.file.prim.u	.tygvar
-string.t	.tygvar	# Temp
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+_gsdl.ags.file.print.datasection_k	.subcode
+list.t.out	.cogvar
 file0	.arg	gsdl.ags.file.prim.u
+ds	.arg	list.t	gsdl.ags.dataitem.t
+	.force	_gsdl.ags.file.print.datasection_k
+	.coerce	list.t.out	gsdl.ags.dataitem.t
+	.enter	ds
+
+_gsdl.ags.file.print.datasection_k	.forcecont
+list.prim.u	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+string.t	.tygvar	# Temp
+ds0	.karg	list.prim.u	gsdl.ags.dataitem.t
 	.undef	string.t
 
 # §section §gs{gsdl.ags.file.filetype.t} Constructors
