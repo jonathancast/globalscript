@@ -41,7 +41,7 @@ pragmas	.alloc	_gsdl.cgs.file.read_pragmas_c
 pos	.alloc	_gsdl.cgs.file.read_pos_c
 parser	.alloc	_gsdl.cgs.file.read_parser_c
 s	.bind	_gsdl.cgs.file.read_s_c
-	.body	_gsdl.cgs.file.read_body_c	|	eo	pos	parser	s
+	.body	_gsdl.cgs.file.read_body_c
 
 _gsdl.cgs.file.read_i_c	.expr
 ibio.file.name.t	.tygvar

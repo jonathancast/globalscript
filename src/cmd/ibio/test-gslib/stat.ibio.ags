@@ -26,7 +26,7 @@ eo	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry_as_c
 st	.bind	_real.entry_st_c
 s	.alloc	_real.entry_s_c
-	.body	_real.entry_body_c	|	o	s
+	.body	_real.entry_body_c
 
 _real.entry_as_c	.expr
 ibio.prim.env.args.get	.gvar

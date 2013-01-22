@@ -27,7 +27,7 @@ dfn	.alloc	_real.entry_dfn_c
 id	.bind	_real.entry_id_c
 ds	.bind	_real.entry_ds_c
 n	.alloc	_real.entry_n_c
-	.body	_real.entry_body_c	|	o	n
+	.body	_real.entry_body_c
 
 _real.entry_as_c	.expr
 ibio.prim.env.args.get	.gvar

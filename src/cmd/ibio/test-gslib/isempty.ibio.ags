@@ -21,7 +21,7 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 ip	.bind	_ep_ip_c
 s	.alloc	_ep_s_c
-	.body	_ep_body_c	|	o	s
+	.body	_ep_body_c
 
 _ep_ip_c	.expr
 ibio.prim.iport	.tygvar

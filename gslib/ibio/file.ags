@@ -117,7 +117,7 @@ _ibio.file.stat.prim_body_c	.subcode
 fn	.larg	ibio.file.name.t
 pst	.bind	_ibio.file.stat.prim_pst_c
 st	.alloc	_ibio.file.stat.prim_st_c
-	.body	_ibio.file.stat.prim_body_c	|	st
+	.body	_ibio.file.stat.prim_body_c
 
 _ibio.file.stat.prim_pst_c	.expr
 ibio.file.name.t	.tygvar
@@ -159,7 +159,7 @@ _ibio.file.isdir_body_c	.subcode
 fn	.larg	ibio.file.name.t
 st	.bind	_ibio.file.isdir_st
 id	.alloc	_ibio.file.isdir_id_c
-	.body	_ibio.file.isdir_body_c	|	id
+	.body	_ibio.file.isdir_body_c
 
 _ibio.file.isdir_st	.expr
 ibio.file.name.t	.tygvar

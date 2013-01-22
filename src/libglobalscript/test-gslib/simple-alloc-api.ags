@@ -11,7 +11,7 @@ _epcode	.eprog	test.sequence	m
 _ep.a.c	.subcode
 _ep.body	.subcode
 a	.alloc	_ep.a.c
-	.body	_ep.body	|	a
+	.body	_ep.body
 
 _ep.a.c	.expr
 sequence.unit.ty	.tygvar

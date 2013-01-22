@@ -23,7 +23,7 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
 parsed.args	.alloc	_real.entry_parsed.args_c
-	.body	_real.entry_body_c	|	parsed.args
+	.body	_real.entry_body_c
 
 _real.entry_args_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -60,7 +60,7 @@ _print.targets.in.dir_body_c	.subcode
 dirn	.larg	ibio.file.name.t
 id	.bind	_print.targets.in.dir_id_c
 ds	.bind	_print.targets.in.dir_ds_c
-	.body	_print.targets.in.dir_body_c	|	dirn	ds
+	.body	_print.targets.in.dir_body_c
 
 _print.targets.in.dir_id_c	.expr
 ibio.file.name.t	.tygvar

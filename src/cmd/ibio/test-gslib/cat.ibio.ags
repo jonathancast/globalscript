@@ -21,7 +21,7 @@ eo	.larg	ibio.prim.oport	rune.t
 as	.bind	_ep_as_c
 if	.bind	_ep_if_c
 s	.bind	_ep_s_c
-	.body	_ep_body_c	|	o	s
+	.body	_ep_body_c
 
 _ep_as_c	.expr
 ibio.prim.env.args.get	.gvar

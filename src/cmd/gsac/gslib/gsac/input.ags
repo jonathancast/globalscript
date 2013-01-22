@@ -13,7 +13,7 @@ _gsac.input.prefix.load_isd_c	.subcode
 _gsac.input.prefix.load_body_c	.subcode
 fn	.larg	ibio.file.name.t
 isd	.bind	_gsac.input.prefix.load_isd_c
-	.body	_gsac.input.prefix.load_body_c	|	fn	isd
+	.body	_gsac.input.prefix.load_body_c
 
 _gsac.input.prefix.load_isd_c	.expr
 ibio.file.name.t	.tygvar

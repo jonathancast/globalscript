@@ -10,7 +10,7 @@ _ep_c	.eprog	test.sequence	m
 _ep_x_c	.subcode
 _ep_body_c	.subcode
 x	.bind	_ep_x_c
-	.body	_ep_body_c	|	x
+	.body	_ep_body_c
 
 _ep_x_c	.expr
 sequence.unit.ty	.tygvar

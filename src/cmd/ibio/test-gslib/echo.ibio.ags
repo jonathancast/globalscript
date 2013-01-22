@@ -23,7 +23,7 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry.as
 s	.alloc	_real.entry.s
-	.body	_real.entry.body	|	o	s
+	.body	_real.entry.body
 
 _real.entry.as	.expr
 _get.args.type	.tygvar

@@ -1219,15 +1219,8 @@ gsparse_api_ops(char *filename, gsparsedfile *parsedfile, struct gsparsedline *c
             if (n < 3)
                 gsfatal("%s:%d: Missing code label", filename, *plineno);
             parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-            for (i = 3; i < n && strcmp(fields[i], "|"); i++)
+            for (i = 3; i < n; i++)
                 parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-            ;
-            if (i < n) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
-                i++;
-            }
-            for (; i < n; i++)
-                parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
             ;
             return 0;
         } else {

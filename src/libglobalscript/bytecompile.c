@@ -506,9 +506,6 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
             int creg;
             struct gsbc_code_item_type *cty;
 
-            /* Ignore free type variables & separator (type erasure) */
-            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-
             creg = gsbc_find_register(p, cl.codenames, cl.ncodes, p->arguments[0]);
             if (!(cty = cl.codetypes[creg]))
                 gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
@@ -2539,9 +2536,6 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             pcode->pos = p->pos;
             pcode->instr = gsbc_op_body;
             pcode->args[0] = (uchar)creg;
-
-            /* §paragraph{Skipping free type variables} */
-            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
 
             if (!(cty = cl.subexpr_types[creg]))
                 gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
