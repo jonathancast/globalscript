@@ -3248,7 +3248,7 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
     int i, j;
     int nftyvs;
 
-    for (i = firstftyv; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+    for (i = firstftyv; i < p->numarguments; i++) {
         int regarg;
         struct gstype *fvval;
 
