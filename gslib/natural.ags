@@ -402,7 +402,7 @@ _natural.fmtdecimal_q0.s_k1	.subcode
 natural.prim.<	.gvar
 0	.natural	0
 q0	.fv	natural.prim.u
-	.ubanalyze	0	_natural.fmtdecimal_q0.s_k0	1	_natural.fmtdecimal_q0.s_k1	|	|	q0
+	.ubanalyze	0	_natural.fmtdecimal_q0.s_k0	1	_natural.fmtdecimal_q0.s_k1
 	.app	0	q0
 	.yield	natural.prim.<
 

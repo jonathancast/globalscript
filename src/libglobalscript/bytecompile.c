@@ -827,10 +827,6 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
         for (i = 0; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
         ncases = i / 2;
 
-        /* Ignore free type variables & separator (type erasure) */
-        if (i < p->numarguments) i++;
-        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-
         if (ncases == 0)
             gsfatal("%P: Illegal .ubanalyze with no constructors; use .ubeanalyze if you need to eliminate an expression of empty un-boxed sum type", p->pos)
         ;
@@ -2191,10 +2187,6 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
             gsfatal("%P: Illegal .ubanalyze with no constructors; use .ubeanalyze if you need to eliminate an expression of empty un-boxed sum type", p->pos)
         ;
         ACE_UBANALYZE_NUMCONTS(pcode) = i / 2;
-
-        /* §paragraph{Skip free type variables} */
-        if (i < p->numarguments) i++;
-        for (; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
 
         for (i = 0; i < cty->numfvs; i++)
             ACE_UBANALYZE_FV(pcode, i) = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i])

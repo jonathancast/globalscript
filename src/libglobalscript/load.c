@@ -1165,15 +1165,8 @@ gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *pline
             parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
             i++;
         }
-        for (; i < n && strcmp(fields[i], "|"); i ++)
+        for (; i < n; i ++)
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-        if (i < n) {
-            parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
-            i++;
-        }
-        for (; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
         ;
     } else {
         return 0;

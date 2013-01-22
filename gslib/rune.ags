@@ -109,7 +109,7 @@ _rune.compare_≯_k	.subcode
 _rune.compare_>_k	.subcode
 r0.0	.fv	rune.prim.rune
 r1.0	.karg	rune.prim.rune
-	.ubanalyze	0	_rune.compare_≯_k	1	_rune.compare_>_k	|	|	r0.0	r1.0
+	.ubanalyze	0	_rune.compare_≯_k	1	_rune.compare_>_k
 	.ubprim	rune.prim	gt	_rune.prim.gt.t	|	r0.0	r1.0
 
 _rune.compare_≯_k	.ubcasecont

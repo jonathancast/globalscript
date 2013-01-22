@@ -86,7 +86,7 @@ ibio.prim.iptr.iseof	.gvar
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip0	.karg	ibio.prim.iptr	s
-	.ubanalyze	0	_ibio.lex.symbol_k0	1	_ibio.lex.symbol_k1	|	s	β	|	ip0	ek	sk
+	.ubanalyze	0	_ibio.lex.symbol_k0	1	_ibio.lex.symbol_k1	|	s	β
 	.app	ip0
 	.yield	ibio.prim.iptr.iseof	s
 
@@ -155,7 +155,7 @@ c	.fv	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip0	.karg	ibio.prim.iptr	s
-	.ubanalyze	0	_ibio.lex.char_k0	1	_ibio.lex.char_k1	|	s	β	|	eq	c	ip0	ek	sk
+	.ubanalyze	0	_ibio.lex.char_k0	1	_ibio.lex.char_k1	|	s	β
 	.app	ip0
 	.yield	ibio.prim.iptr.iseof	s
 
@@ -250,7 +250,7 @@ pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip0	.karg	ibio.prim.iptr	s
-	.ubanalyze	0	_ibio.lex.pred_res_k_k0	1	_ibio.lex.pred_res_k_k1	|	s	β	|	pred	ek	sk	ip0
+	.ubanalyze	0	_ibio.lex.pred_res_k_k0	1	_ibio.lex.pred_res_k_k1	|	s	β
 	.app	ip0
 	.yield	ibio.prim.iptr.iseof	s
 
