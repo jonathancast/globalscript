@@ -19,7 +19,7 @@ _ep_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
-ip	.bind	_ep_ip_c	|	i
+ip	.bind	_ep_ip_c
 s	.alloc	_ep_s_c
 	.body	_ep_body_c	|	o	s
 

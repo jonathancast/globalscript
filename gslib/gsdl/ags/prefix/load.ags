@@ -14,7 +14,7 @@ _gsdl.prefix.load_isdir_c	.subcode
 _gsdl.prefix.load_body_c	.subcode
 s	.larg	gsdl.symtable.t
 fn	.larg	ibio.file.name.t
-is.dir	.bind	_gsdl.prefix.load_isdir_c	|	fn
+is.dir	.bind	_gsdl.prefix.load_isdir_c
 	.body	_gsdl.prefix.load_body_c
 
 _gsdl.prefix.load_isdir_c	.expr

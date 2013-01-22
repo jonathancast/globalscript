@@ -12,7 +12,7 @@ ibio.file.name.t	.tygvar
 _gsac.input.prefix.load_isd_c	.subcode
 _gsac.input.prefix.load_body_c	.subcode
 fn	.larg	ibio.file.name.t
-isd	.bind	_gsac.input.prefix.load_isd_c	|	fn
+isd	.bind	_gsac.input.prefix.load_isd_c
 	.body	_gsac.input.prefix.load_body_c	|	fn	isd
 
 _gsac.input.prefix.load_isd_c	.expr

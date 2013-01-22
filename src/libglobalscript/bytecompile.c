@@ -493,9 +493,6 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
                 gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
             cl.nregs++;
 
-            /* Ignore free type variables & separator (type erasure) */
-            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-
             creg = gsbc_find_register(p, cl.codenames, cl.ncodes, p->arguments[0]);
             if (!(cty = cl.codetypes[creg]))
                 gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
@@ -2519,9 +2516,6 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             pcode->pos = p->pos;
             pcode->instr = gsbc_op_bind;
             ACE_BIND_CODE(pcode) = (uchar)creg;
-
-            /* §paragraph{Skipping free type variables} */
-            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
 
             if (!(cty = cl.subexpr_types[creg]))
                 gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])

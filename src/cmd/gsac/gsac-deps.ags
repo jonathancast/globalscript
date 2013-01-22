@@ -45,7 +45,7 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
 parsed.args	.alloc	_real.entry_parsed.args_c
-pr1	.bind	_real.entry_pr1_c	|	parsed.args
+pr1	.bind	_real.entry_pr1_c
 	.body	_real.entry_body_c	|	o	eo	parsed.args	pr1
 
 _real.entry_args_c	.expr
@@ -193,7 +193,7 @@ ibio.file.name.t	.tygvar
 _prefix.parse_isd_c	.subcode
 _prefix.parse_body_c	.subcode
 fn	.larg	ibio.file.name.t
-isd	.bind	_prefix.parse_isd_c	|	fn
+isd	.bind	_prefix.parse_isd_c
 	.body	_prefix.parse_body_c	|	fn	isd
 
 _prefix.parse_isd_c	.expr
@@ -250,7 +250,7 @@ eo	.larg	ibio.prim.oport	rune.t
 prefixen	.larg	list.t	_prefix.t
 fn	.larg	ibio.file.name.t
 cgs.fn	.alloc	_print.deps_cgs.fn_c
-cgs	.bind	_print.deps_cgs_c	|	eo	cgs.fn
+cgs	.bind	_print.deps_cgs_c
 	.body	_print.deps_body_c	|	o	fn	prefixen	cgs
 
 _print.deps_cgs.fn_c	.expr
@@ -365,8 +365,8 @@ ds	.fv	ordered.set.t	ibio.file.name.t
 fv0	.fv	gsdl.cgs.symbol.t
 fvs1	.fv	list.t	gsdl.cgs.symbol.t
 cs	.alloc	_print.deps_body_w_:_res_cs_c
-pr1	.bind	_print.deps_body_w_:_res_pr1_c	|	cs	pr
-nds	.bind	_print.deps_body_w_:_res_nds_c	|	o	gsac.fn	ds	cs	pr1
+pr1	.bind	_print.deps_body_w_:_res_pr1_c
+nds	.bind	_print.deps_body_w_:_res_nds_c
 	.body	_print.deps_body_w_:_res_body_c	|	o	gsac.fn	fvs1	pr1	nds
 
 _print.deps_body_w_:_res_cs_c	.expr
@@ -483,8 +483,8 @@ _prefix.expand_dir_res_dcs2_c	.subcode
 _prefix.expand_dir_res_body_c	.subcode
 cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
 dirn	.fv	ibio.file.name.t
-dcs1	.bind	_prefix.expand_dir_res_dcs1_c	|	dirn
-dcs2	.bind	_prefix.expand_dir_res_dcs2_c	|	cs	dirn	dcs1
+dcs1	.bind	_prefix.expand_dir_res_dcs1_c
+dcs2	.bind	_prefix.expand_dir_res_dcs2_c
 	.body	_prefix.expand_dir_res_body_c	|	dirn	dcs2
 
 _prefix.expand_dir_res_dcs1_c	.expr
@@ -533,7 +533,7 @@ _prefix.expand_loaded.dir_res_body_c	.subcode
 cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
 dirn	.fv	ibio.file.name.t
 dcs	.fv	list.t	_prefix.t
-dcs1	.bind	_prefix.expand_loaded.dir_res_dcs1_c	|	cs	dirn	dcs
+dcs1	.bind	_prefix.expand_loaded.dir_res_dcs1_c
 	.body	_prefix.expand_loaded.dir_res_body_c	|	dirn	dcs1
 
 _prefix.expand_loaded.dir_res_dcs1_c	.expr
@@ -706,8 +706,8 @@ _prefix.readdir_id_c	.subcode
 _prefix.readdir_ds1_c	.subcode
 _prefix.readdir_body_c	.subcode
 dirn	.larg	ibio.file.name.t
-id	.bind	_prefix.readdir_id_c	|	dirn
-ds1	.bind	_prefix.readdir_ds1_c	|	id
+id	.bind	_prefix.readdir_id_c
+ds1	.bind	_prefix.readdir_ds1_c
 	.body	_prefix.readdir_body_c	|	ds1
 
 _prefix.readdir_id_c	.expr
@@ -1042,7 +1042,7 @@ o	.fv	ibio.prim.oport	rune.t
 ds	.fv	ordered.set.t	ibio.file.name.t
 gsac.fn	.fv	ibio.file.name.t
 fn	.fv	ibio.file.name.t
-	.bind	_process.var_rec_file_:_true_res_emit_c	|	o	gsac.fn	fn
+	.bind	_process.var_rec_file_:_true_res_emit_c
 	.body	_process.var_rec_file_:_true_res_body_c	|	ds	fn
 
 _process.var_rec_file_:_true_res_emit_c	.expr

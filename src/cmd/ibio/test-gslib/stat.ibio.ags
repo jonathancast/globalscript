@@ -24,7 +24,7 @@ i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry_as_c
-st	.bind	_real.entry_st_c	|	as
+st	.bind	_real.entry_st_c
 s	.alloc	_real.entry_s_c
 	.body	_real.entry_body_c	|	o	s
 

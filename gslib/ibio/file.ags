@@ -115,7 +115,7 @@ _ibio.file.stat.prim_pst_c	.subcode
 _ibio.file.stat.prim_st_c	.subcode
 _ibio.file.stat.prim_body_c	.subcode
 fn	.larg	ibio.file.name.t
-pst	.bind	_ibio.file.stat.prim_pst_c	|	fn
+pst	.bind	_ibio.file.stat.prim_pst_c
 st	.alloc	_ibio.file.stat.prim_st_c
 	.body	_ibio.file.stat.prim_body_c	|	st
 
@@ -157,7 +157,7 @@ _ibio.file.isdir_st	.subcode
 _ibio.file.isdir_id_c	.subcode
 _ibio.file.isdir_body_c	.subcode
 fn	.larg	ibio.file.name.t
-st	.bind	_ibio.file.isdir_st	|	fn
+st	.bind	_ibio.file.isdir_st
 id	.alloc	_ibio.file.isdir_id_c
 	.body	_ibio.file.isdir_body_c	|	id
 

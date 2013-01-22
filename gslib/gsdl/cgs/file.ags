@@ -34,13 +34,13 @@ _gsdl.cgs.file.read_s_c	.subcode
 _gsdl.cgs.file.read_body_c	.subcode
 eo	.larg	ibio.prim.oport	rune.t
 fn	.larg	ibio.file.name.t
-i	.bind	_gsdl.cgs.file.read_i_c	|	fn
-pr.ls	.bind	_gsdl.cgs.file.read_pr.ls_c	|	i
-pragmas.pos	.bind	_gsdl.cgs.file.read_pragmas.pos_c	|	eo	fn	pr.ls
+i	.bind	_gsdl.cgs.file.read_i_c
+pr.ls	.bind	_gsdl.cgs.file.read_pr.ls_c
+pragmas.pos	.bind	_gsdl.cgs.file.read_pragmas.pos_c
 pragmas	.alloc	_gsdl.cgs.file.read_pragmas_c
 pos	.alloc	_gsdl.cgs.file.read_pos_c
 parser	.alloc	_gsdl.cgs.file.read_parser_c
-s	.bind	_gsdl.cgs.file.read_s_c	|	i
+s	.bind	_gsdl.cgs.file.read_s_c
 	.body	_gsdl.cgs.file.read_body_c	|	eo	pos	parser	s
 
 _gsdl.cgs.file.read_i_c	.expr
@@ -219,7 +219,7 @@ _gsdl.cgs.file.read_pragmas.pos_insert_k2_left_print_c	.subcode
 _gsdl.cgs.file.read_pragmas.pos_insert_k2_left_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	parser.err.t
-	.bind	_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_print_c	|	eo	err
+	.bind	_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_print_c
 	.body	_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_body_c
 
 _gsdl.cgs.file.read_pragmas.pos_insert_k2_left_print_c	.expr
@@ -381,7 +381,7 @@ _gsdl.cgs.file.read_body_left_res_print_c	.subcode
 _gsdl.cgs.file.read_body_left_res_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	parser.err.t
-	.bind	_gsdl.cgs.file.read_body_left_res_print_c	|	eo	err
+	.bind	_gsdl.cgs.file.read_body_left_res_print_c
 	.body	_gsdl.cgs.file.read_body_left_res_body_c
 
 _gsdl.cgs.file.read_body_left_res_print_c	.expr

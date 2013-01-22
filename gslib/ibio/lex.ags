@@ -510,7 +510,7 @@ _ibio.lex.receive_x_c	.subcode
 _ibio.lex.receive_body_c	.subcode
 rec	.larg	ibio.lex.receiver.t	s	α
 i	.larg	ibio.prim.iport	s
-ip	.bind	_ibio.lex.receive_ip_c	s	α	|	rec	i
+ip	.bind	_ibio.lex.receive_ip_c	s	α
 x	.alloc	_ibio.lex.receive_x_c	s	α
 	.body	_ibio.lex.receive_body_c	α	|	x
 
