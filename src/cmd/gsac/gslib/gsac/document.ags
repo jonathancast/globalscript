@@ -26,12 +26,9 @@ _gsac.document.compile_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.document.t	.tygvar
-gsdl.ags.file.t	.tygvar
 either.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
-gsdl.ags.dataitem.t	.tygvar	# Temp
-either.right	.gvar
-gsdl.ags.file.filetype.gsdocument	.gvar
+gsdl.ags.file.t	.tygvar	# Temp
+_gsac.document.compile_right_k	.subcode
 e0	.karg	either.prim.u	string.t	gsdl.cgs.document.t
 	.analyze	e0	left	right
 		.case	left
@@ -39,10 +36,22 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.ags.file.t
 		.case	right
 doc1		.fkarg	0	gsdl.cgs.document.t
-ds			.undefined	list.t	gsdl.ags.dataitem.t
-res			.lrecord	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument
-			.app	res
-			.enter	either.right	string.t	gsdl.ags.file.t
+			.force	_gsac.document.compile_right_k
+			.enter	doc1
+
+_gsac.document.compile_right_k	.forcecont
+gsdl.cgs.document.prim.u	.tygvar
+string.t	.tygvar
+gsdl.ags.file.t	.tygvar
+list.t	.tygvar	# Temp
+gsdl.ags.dataitem.t	.tygvar	# Temp
+either.right	.gvar
+gsdl.ags.file.filetype.gsdocument	.gvar
+doc0	.karg	gsdl.cgs.document.prim.u
+ds	.undefined	list.t	gsdl.ags.dataitem.t
+res	.lrecord	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument
+	.app	res
+	.enter	either.right	string.t	gsdl.ags.file.t
 
 # §section §gs{gsac.document.annotate}
 
