@@ -44,7 +44,7 @@ _args.parsed.t	.tygvar
 _real.entry_parsed.args_pure_c	.subcode
 ibio.from.either.prim	.gvar
 args	.fv	list.t	string.t
-pa	.alloc	_real.entry_parsed.args_pure_c	|	args
+pa	.alloc	_real.entry_parsed.args_pure_c
 	.app	pa
 	.enter	ibio.from.either.prim	_args.parsed.t
 
@@ -111,7 +111,7 @@ is.l0	.karg	bool.prim.u
 	.analyze	is.l0	false	true
 		.case	false
 pre			.alloc	_args.parse_file_pre_c
-ap0			.alloc	_args.parse_file_ap0_c	|	as1
+ap0			.alloc	_args.parse_file_ap0_c
 			.app	pre	ap0
 			.enter	either.map	string.t	_args.parsed.t	_args.parsed.t
 		.case	true
@@ -168,8 +168,8 @@ as1.0	.karg	list.prim.u	string.t
 		.case	:
 a1		.fkarg	0	string.t
 as2		.fkarg	1	list.t	string.t
-pre			.alloc	_args.parse_l.option_pre_c	|	a1
-ap0			.alloc	_args.parse_l.option_ap0_c	|	as2
+pre			.alloc	_args.parse_l.option_pre_c
+ap0			.alloc	_args.parse_l.option_ap0_c
 			.app	pre	ap0
 			.enter	either.map	string.t	_args.parsed.t	_args.parsed.t
 		.case	nil
@@ -194,7 +194,7 @@ a1	.fv	string.t
 ap00	.karg	_args.parsed.u
 ps	.field	0	ap00
 cut	.field	1	ap00
-ps1	.alloc	_args.parse_l.option_pre_ps1_c	|	a1	ps
+ps1	.alloc	_args.parse_l.option_pre_ps1_c
 ap1	.record	0	ps1	1	cut
 	.lift
 	.yield	ap1
@@ -207,7 +207,7 @@ _args.parse_l.option_pre_ps1_fn_c	.subcode
 list.:	.gvar
 a1	.fv	string.t
 ps	.fv	list.t	ibio.file.name.t
-fn	.alloc	_args.parse_l.option_pre_ps1_fn_c	|	a1
+fn	.alloc	_args.parse_l.option_pre_ps1_fn_c
 	.app	fn	ps
 	.enter	list.:	ibio.file.name.t
 
@@ -261,9 +261,9 @@ _real.entry_read.arguments_cut_c	.subcode
 _real.entry_read.arguments_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 parsed.args	.fv	_args.parsed.t
-prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c	|	parsed.args
+prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c
 prefix	.bind	_real.entry_read.arguments_prefix_c	|	prefix.files
-cut.files	.alloc	_real.entry_read.arguments_cut.files_c	|	parsed.args
+cut.files	.alloc	_real.entry_read.arguments_cut.files_c
 cut	.bind	_real.entry_read.arguments_cut_c	|	eo	cut.files
 	.body	_real.entry_read.arguments_body_c	|	cut
 
