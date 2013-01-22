@@ -29,7 +29,7 @@ parsed.args	.bind	_real.entry_parsed.args_c
 read.arguments	.bind	_real.entry_read.arguments_c
 sccs	.bind	_real.entry_sccs_c
 output	.bind	_real.entry_output_c
-	.body	_real.entry_send.output_c	|	o	output
+	.body	_real.entry_send.output_c
 
 _real.entry_args_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -265,7 +265,7 @@ prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c
 prefix	.bind	_real.entry_read.arguments_prefix_c
 cut.files	.alloc	_real.entry_read.arguments_cut.files_c
 cut	.bind	_real.entry_read.arguments_cut_c
-	.body	_real.entry_read.arguments_body_c	|	cut
+	.body	_real.entry_read.arguments_body_c
 
 _real.entry_read.arguments_prefix.files_c	.expr
 _args.parsed.t	.tygvar
