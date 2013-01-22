@@ -7,7 +7,7 @@ gsac.gstype.fields.kindcheck	.closure	_gsac.gstype.fields.kindcheck_c	_gsac.gsty
 
 	.code
 
-# §section §gs{gsac.gstype.check}
+# §section §gs{gsac.gstype.kindcheck}
 
 _gsac.gstype.kindcheck_c	.expr
 gsdl.cgs.gstype.t	.tygvar
