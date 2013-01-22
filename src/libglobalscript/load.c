@@ -1147,15 +1147,8 @@ gsparse_cont_push_op(char *filename, struct gsparsedline *parsedline, int *pline
             gsfatal("%s:%d: Missing continuation on .force", filename, *plineno)
         ;
         parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-        for (i = 3; i < n && strcmp(fields[i], "|"); i++)
+        for (i = 3; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-        if (i < n) {
-            parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
-            i++;
-        }
-        for (; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
         ;
     } else if (gssymceq(parsedline->directive, gssymubanalyze, gssymcodeop, ".ubanalyze")) {
         if (*fields[0])

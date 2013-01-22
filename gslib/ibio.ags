@@ -278,7 +278,7 @@ _ibio.foldM.prim_k0	.subcode
 f	.larg	_ibio.foldM.prim_f_ty	α	β
 z	.larg	β
 xn	.larg	list.t	α
-	.strict	_ibio.foldM.prim_k0	α	β	|	f	xn
+	.strict	_ibio.foldM.prim_k0	α	β
 	.enter	z
 
 _ibio.foldM.prim_k0	.strictcont

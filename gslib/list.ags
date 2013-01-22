@@ -334,7 +334,7 @@ _list.foldl_k0	.subcode
 f	.larg	_list.foldl_f_ty	α	β
 z	.larg	β
 xn	.larg	list.t	α
-	.strict	_list.foldl_k0	α	β	|	f	xn
+	.strict	_list.foldl_k0	α	β
 	.enter	z
 
 _list.foldl_k0	.strictcont
