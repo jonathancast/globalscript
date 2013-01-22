@@ -25,7 +25,7 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry_as_c
 st	.bind	_real.entry_st_c	|	as
-s	.alloc	_real.entry_s_c	|	st
+s	.alloc	_real.entry_s_c
 	.body	_real.entry_body_c	|	o	s
 
 _real.entry_as_c	.expr
@@ -55,7 +55,7 @@ as0	.karg	list.prim.u	string.t
 		.case	:
 a		.fkarg	0	string.t
 as1		.fkarg	1	list.t	string.t
-fn			.alloc	_real.entry_st_k_fn_c	|	a
+fn			.alloc	_real.entry_st_k_fn_c
 			.app	fn
 			.enter	ibio.file.stat.prim
 		.case	nil

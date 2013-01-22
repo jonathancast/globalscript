@@ -88,8 +88,8 @@ _ibio.acceptor.optional.prim_jr_c	.subcode
 ibio.acceptor.prim.<|>	.gvar
 p	.larg	ibio.acceptor.prim.cont.t	s	α	β
 k	.larg	ibio.acceptor.prim.kt	s	res.ty	β
-nr	.alloc	_ibio.acceptor.optional.prim_nr_c	s	α	β	|	k
-jr	.alloc	_ibio.acceptor.optional.prim_jr_c	s	α	β	|	p	k
+nr	.alloc	_ibio.acceptor.optional.prim_nr_c	s	α	β
+jr	.alloc	_ibio.acceptor.optional.prim_jr_c	s	α	β
 	.app	nr	jr
 	.enter	ibio.acceptor.prim.<|>	s	β
 
@@ -123,7 +123,7 @@ res.ty	.tylet	maybe.t	α
 _ibio.acceptor.optional.prim_jr_k1_c	.subcode
 p	.fv	ibio.acceptor.prim.cont.t	s	α	β
 k	.fv	ibio.acceptor.prim.kt	s	res.ty	β
-k1	.alloc	_ibio.acceptor.optional.prim_jr_k1_c	s	α	β	|	k
+k1	.alloc	_ibio.acceptor.optional.prim_jr_k1_c	s	α	β
 	.app	k1
 	.enter	p
 
@@ -161,8 +161,8 @@ _ibio.acceptor.many.prim_cr_c	.subcode
 ibio.acceptor.prim.<|>	.gvar
 p	.larg	ibio.acceptor.prim.cont.t	s	α	β
 k	.larg	ibio.acceptor.prim.kt	s	res.ty	β
-nr	.alloc	_ibio.acceptor.many.prim_nr_c	s	α	β	|	k
-cr	.alloc	_ibio.acceptor.many.prim_cr_c	s	α	β	|	p	k
+nr	.alloc	_ibio.acceptor.many.prim_nr_c	s	α	β
+cr	.alloc	_ibio.acceptor.many.prim_cr_c	s	α	β
 	.app	nr	cr
 	.enter	ibio.acceptor.prim.<|>	s	β
 
@@ -195,7 +195,7 @@ res.ty	.tylet	list.t	α
 _ibio.acceptor.many.prim_cr_k0_c	.subcode
 p	.fv	ibio.acceptor.prim.cont.t	s	α	β
 k	.fv	ibio.acceptor.prim.kt	s	res.ty	β
-k0	.alloc	_ibio.acceptor.many.prim_cr_k0_c	s	α	β	|	p	k
+k0	.alloc	_ibio.acceptor.many.prim_cr_k0_c	s	α	β
 	.app	k0
 	.enter	p
 
@@ -212,7 +212,7 @@ ibio.acceptor.many.prim	.gvar
 p	.fv	ibio.acceptor.prim.cont.t	s	α	β
 k	.fv	ibio.acceptor.prim.kt	s	res.ty	β
 x	.larg	α
-k1	.alloc	_ibio.acceptor.many.prim_cr_k1_c	s	α	β	|	k	x
+k1	.alloc	_ibio.acceptor.many.prim_cr_k1_c	s	α	β
 	.app	p k1
 	.enter	ibio.acceptor.many.prim	s	α	β
 
@@ -270,7 +270,7 @@ keof.0		.fkarg	1	ibio.acceptor.prim.t	s	β
 		.case	unit.plus
 x		.fkarg	0	β
 p0.1		.fkarg	1	ibio.acceptor.prim.t	s	β
-p1.1			.alloc	_ibio.acceptor.prim.<|>_k0_unit.plus_p1.1_c	s	β	|	p0.1	p1
+p1.1			.alloc	_ibio.acceptor.prim.<|>_k0_unit.plus_p1.1_c	s	β
 			.app	x	p1.1
 			.enter	ibio.acceptor.prim.unit.plus	s	β
 
@@ -293,7 +293,7 @@ p1.0	.karg	ibio.acceptor.prim.u	s	β
 		.case	symbol.bind
 ks.1		.fkarg	0	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	β
 keof.1		.fkarg	1	ibio.acceptor.prim.t	s	β
-ks.y			.alloc	_ibio.acceptor.prim.<|>_ks.y_c	s	β	|	ks.0	ks.1
+ks.y			.alloc	_ibio.acceptor.prim.<|>_ks.y_c	s	β
 keof.y			.apply	ibio.acceptor.prim.<|>	s	β	|	keof.0	keof.1
 			.app	ks.y	keof.y
 			.enter	ibio.acceptor.prim.symbol.bind	s	β

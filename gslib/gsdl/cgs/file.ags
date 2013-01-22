@@ -37,9 +37,9 @@ fn	.larg	ibio.file.name.t
 i	.bind	_gsdl.cgs.file.read_i_c	|	fn
 pr.ls	.bind	_gsdl.cgs.file.read_pr.ls_c	|	i
 pragmas.pos	.bind	_gsdl.cgs.file.read_pragmas.pos_c	|	eo	fn	pr.ls
-pragmas	.alloc	_gsdl.cgs.file.read_pragmas_c	|	pragmas.pos
-pos	.alloc	_gsdl.cgs.file.read_pos_c	|	pragmas.pos
-parser	.alloc	_gsdl.cgs.file.read_parser_c	|	fn	pragmas
+pragmas	.alloc	_gsdl.cgs.file.read_pragmas_c
+pos	.alloc	_gsdl.cgs.file.read_pos_c
+parser	.alloc	_gsdl.cgs.file.read_parser_c
 s	.bind	_gsdl.cgs.file.read_s_c	|	i
 	.body	_gsdl.cgs.file.read_body_c	|	eo	pos	parser	s
 
@@ -87,7 +87,7 @@ ordered.map.empty	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
 pr.ls	.fv	list.t	string.ty
-insert	.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_c	|	eo
+insert	.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_c
 pos	.apply	parser.pos.initial	|	fn
 prs	.apply	ordered.map.empty	string.ty	gsdl.cgs.pragma.t
 empty	.lrecord	pos	pos	pragmas	prs
@@ -196,7 +196,7 @@ e0	.karg	either.prim.u	parser.err.t	_gsdl.cgs.pragma.parse_res_ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	parser.err.t
-res			.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	|	eo	err
+res			.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c
 			.enter	res
 		.case	right
 k.pr		.fkarg	0	_gsdl.cgs.pragma.parse_res_ty
@@ -365,7 +365,7 @@ ef0	.karg	either.prim.u	parser.err.t	gsdl.cgs.file.t
 	.analyze	ef0	left	right
 		.case	left
 err		.fkarg	0	parser.err.t
-res			.alloc	_gsdl.cgs.file.read_body_left_res_c	|	eo	err
+res			.alloc	_gsdl.cgs.file.read_body_left_res_c
 			.enter	res
 		.case	right
 file		.fkarg	0	gsdl.cgs.file.t

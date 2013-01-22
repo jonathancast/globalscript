@@ -50,7 +50,7 @@ as0	.karg	list.prim.u	_string.ty
 		.case	:
 a0		.fkarg	0	_string.ty
 as1		.fkarg	1	list.t	_string.ty
-fn0			.alloc	_real.entry_b_k_fn0_c	|	a0
+fn0			.alloc	_real.entry_b_k_fn0_c
 			.app	fn0
 			.enter	ibio.file.isdir
 		.case	nil

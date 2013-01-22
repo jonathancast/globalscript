@@ -123,8 +123,8 @@ _natural.divMod_q_c	.subcode
 _natural.divMod_m_c	.subcode
 q0	.fkarg	0	natural.prim.u
 m0	.fkarg	1	natural.prim.u
-q	.alloc	_natural.divMod_q_c	|	q0
-m	.alloc	_natural.divMod_m_c	|	m0
+q	.alloc	_natural.divMod_q_c
+m	.alloc	_natural.divMod_m_c
 r	.record	0	q	1	m
 	.lift
 	.yield	r
@@ -390,8 +390,8 @@ _natural.fmtdecimal_d0_c	.subcode
 list.<>	.gvar
 q0	.fkarg	0	natural.prim.u
 m0	.fkarg	1	natural.prim.u
-q0.s	.alloc	_natural.fmtdecimal_q0.s_c	|	q0
-d0	.alloc	_natural.fmtdecimal_d0_c	|	m0
+q0.s	.alloc	_natural.fmtdecimal_q0.s_c
+d0	.alloc	_natural.fmtdecimal_d0_c
 	.app	q0.s	d0
 	.enter	list.<>	rune.t
 
@@ -418,7 +418,7 @@ natural.prim.u	.tygvar
 _natural.fmtdecimal_q0.s_k1_q	.subcode
 natural.fmtdecimal	.gvar
 q0	.fv	natural.prim.u
-q	.alloc	_natural.fmtdecimal_q0.s_k1_q	|	q0
+q	.alloc	_natural.fmtdecimal_q0.s_k1_q
 	.app	q
 	.enter	natural.fmtdecimal
 
@@ -436,7 +436,7 @@ rune.t	.tygvar
 _natural.fmtdecimal_d0_r_c	.subcode
 list.singleton	.gvar
 m0	.fv	natural.prim.u
-r	.alloc	_natural.fmtdecimal_d0_r_c	|	m0
+r	.alloc	_natural.fmtdecimal_d0_r_c
 	.app	r
 	.enter	list.singleton	rune.t
 

@@ -682,10 +682,6 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         ;
         pcl->nregs++;
 
-        /* Ignore free type variables & separator (type erasure) */
-        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-        if (i < p->numarguments) i++;
-
         creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
         if (!(cty = pcl->codetypes[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
@@ -1846,7 +1842,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         pcode->args[0] = (uchar)creg;
 
         /* §paragraph{Skipping free type variables} */
-        for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+        for (i = 1; i < p->numarguments; i++) {
             struct gstype *type = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[i])];
             for (j = i - 1 + 1; j < ctype->numftyvs; j++)
                 if (gstypes_is_ftyvar(ctype->tyfvs[j], type))
@@ -1854,7 +1850,6 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             ;
             ctype->result_type = gstypes_subst(p->pos, ctype->result_type, ctype->tyfvs[i - 1], type);
         }
-        if (i < p->numarguments) i++;
 
         pcode->args[1] = (uchar)ctype->numfvs;
         for (i = 0; i < ctype->numfvs; i++) {

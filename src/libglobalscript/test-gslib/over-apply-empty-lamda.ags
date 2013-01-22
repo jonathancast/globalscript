@@ -20,7 +20,7 @@ _ep_f_c	.expr
 rune.t	.tygvar
 _ep_f1_c	.subcode
 x	.larg	rune.t
-f1	.alloc	_ep_f1_c	|	x
+f1	.alloc	_ep_f1_c
 	.enter	f1
 
 _ep_f1_c	.expr

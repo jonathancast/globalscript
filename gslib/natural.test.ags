@@ -293,8 +293,8 @@ test.property.∧	.gvar
 qm0	.karg	_test.2.div.3_test_qm0_ty
 q	.field	0	qm0
 m	.field	1	qm0
-quot	.alloc	_test.2.div.3_test_quot_c	|	q
-mod	.alloc	_test.2.div.3_test_mod_c	|	m
+quot	.alloc	_test.2.div.3_test_quot_c
+mod	.alloc	_test.2.div.3_test_mod_c
 	.app	quot	mod
 	.enter	test.property.∧
 
@@ -305,7 +305,7 @@ test.assert	.gvar
 _test.2.div.3_test_quot_fail	.gvar
 _test.2.div.3_test_quot_succ	.gvar
 q	.fv	natural.t
-eq	.alloc	_test.2.div.3_test_quot_eq_c	|	q
+eq	.alloc	_test.2.div.3_test_quot_eq_c
 	.app	_test.2.div.3_test_quot_fail	_test.2.div.3_test_quot_succ	eq
 	.enter	test.assert
 
@@ -324,7 +324,7 @@ test.assert	.gvar
 _test.2.div.3_test_mod_fail	.gvar
 _test.2.div.3_test_mod_succ	.gvar
 m	.fv	natural.t
-eq	.alloc	_test.2.div.3_test_mod_eq_c	|	m
+eq	.alloc	_test.2.div.3_test_mod_eq_c
 	.app	_test.2.div.3_test_mod_fail	_test.2.div.3_test_mod_succ	eq
 	.enter	test.assert
 
