@@ -9,3 +9,19 @@ gsdl.ags.typeitem.prim.u	.tygvar
 
 gsdl.ags.typeitem.prim.u	.tyexpr
 	.tysum
+
+gsdl.ags.typeitem.expr.t	.tyabstract	*
+gsdl.ags.typeitem.expr.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.typeitem.expr.prim.u
+
+gsdl.ags.typeitem.expr.prim.u	.tyexpr
+	.tysum
+
+gsdl.ags.typeitem.field.t	.tyexpr
+gsdl.ags.typeitem.field.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.typeitem.field.prim.u
+
+gsdl.ags.typeitem.field.prim.u	.tyexpr
+	.typroduct
