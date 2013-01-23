@@ -81,9 +81,11 @@ gsdl.ags.file.t	.tygvar
 list.t	.tygvar	# Temp
 gsdl.ags.dataitem.t	.tygvar	# Temp
 either.right	.gvar
+list.singleton	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
-ds	.undefined	list.t	gsdl.ags.dataitem.t
+d	.undefined	gsdl.ags.dataitem.t
+ds	.apply	list.singleton	gsdl.ags.dataitem.t	|	d
 res	.lrecord	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument
 	.app	res
 	.enter	either.right	string.t	gsdl.ags.file.t
