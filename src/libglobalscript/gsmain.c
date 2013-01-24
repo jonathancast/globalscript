@@ -14,6 +14,7 @@ void
 gsmain(int argc, char **argv)
 {
     char *cur_arg;
+    struct gsfile_symtable *symtable;
     char *docfilename;
     struct gspos gsentrypos;
 
@@ -29,9 +30,11 @@ gsmain(int argc, char **argv)
     fmtinstall('P', gsPfmt);
     fmtinstall('y', gsyfmt);
 
+    symtable = 0;
+
     gsadd_global_script_prim_sets();
     gsadd_client_prim_sets();
-    gsadd_global_gslib();
+    gsadd_global_gslib(&symtable);
     while (argc) {
         cur_arg = *argv++, argc--;
         if (*cur_arg == '-') {
@@ -43,9 +46,9 @@ gsmain(int argc, char **argv)
             }
         } else {
             if (gsisdir(cur_arg)) {
-                gsadddir(cur_arg);
+                gsadddir(cur_arg, &symtable);
             } else {
-                gsfiletype ft = gsaddfile(cur_arg, &gsentrypos, &gsentrypoint, &gsentrytype);
+                gsfiletype ft = gsaddfile(cur_arg, &symtable, &gsentrypos, &gsentrypoint, &gsentrytype);
                 switch (ft) {
                     case gsfiledocument:
                         docfilename = cur_arg;
@@ -68,7 +71,7 @@ have_document:
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r");
     GS_SLOW_EVALUATE(gsentrypoint);
-    gsrun(docfilename, gscurrent_symtable, gsentrypos, gsentrypoint, gsentrytype, argc, argv);
+    gsrun(docfilename, symtable, gsentrypos, gsentrypoint, gsentrytype, argc, argv);
     exits("");
 }
 

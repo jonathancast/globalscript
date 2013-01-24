@@ -33,7 +33,7 @@ gsisdir(char *filename)
 #define FILE_NAME_SIZE_LIMIT 0x100
 
 void
-gsadd_global_gslib()
+gsadd_global_gslib(struct gsfile_symtable **psymtable)
 {
     struct uxio_ichannel *chan;
     char globalscript[FILE_NAME_SIZE_LIMIT], buf[FILE_NAME_SIZE_LIMIT];
@@ -65,7 +65,7 @@ set_buf:
         )
     ;
 
-    gsadddir(buf);
+    gsadddir(buf, psymtable);
 }
 
 static void gsloadfile(gsparsedfile *, struct gsfile_symtable *, struct gspos *, gsvalue *, struct gstype **);
@@ -78,12 +78,12 @@ struct gsfile_link {
 static void gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtable, struct gsfile_link ***);
 
 void
-gsadddir(char *filename)
+gsadddir(char *filename, struct gsfile_symtable **psymtable)
 {
     struct gsfile_symtable *symtable;
     struct gsfile_link *pfile, *file_list, **pend;
 
-    symtable = gscreatesymtable(gscurrent_symtable);
+    symtable = gscreatesymtable(*psymtable);
 
     file_list = 0;
     pend = &file_list;
@@ -94,7 +94,7 @@ gsadddir(char *filename)
         gsloadfile(pfile->file, symtable, 0, 0, 0)
     ;
 
-    gscurrent_symtable = symtable;
+    *psymtable = symtable;
 }
 
 static gsparsedfile *gsreadfile(char *filename, char *relname, int skip_docs, int *, int is_ags, struct gsfile_symtable *symtable);
@@ -190,7 +190,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
 }
 
 gsfiletype
-gsaddfile(char *filename, struct gspos *pentrypos, gsvalue *pentry, struct gstype **ptype)
+gsaddfile(char *filename, struct gsfile_symtable **psymtable, struct gspos *pentrypos, gsvalue *pentry, struct gstype **ptype)
 {
     gsparsedfile *parsedfile;
     struct gsfile_symtable *symtable;
@@ -198,11 +198,13 @@ gsaddfile(char *filename, struct gspos *pentrypos, gsvalue *pentry, struct gstyp
 
     ext = strrchr(filename, '.');
 
-    symtable = gscreatesymtable(gscurrent_symtable);
+    symtable = gscreatesymtable(*psymtable);
 
     parsedfile = gsreadfile(filename, "", 0, 0, ext && !strcmp(ext, ".ags"), symtable);
 
     gsloadfile(parsedfile, symtable, pentrypos, pentry, ptype);
+
+    *psymtable = symtable;
 
     return parsedfile->type;
 }

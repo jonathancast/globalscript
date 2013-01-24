@@ -2,8 +2,6 @@ int ace_init(void);
 
 gstypecode ace_start_evaluation(gsvalue);
 
-struct gsfile_symtable *gscurrent_symtable;
-
 extern gsvalue gsentrypoint;
 extern struct gstype *gsentrytype;
 
