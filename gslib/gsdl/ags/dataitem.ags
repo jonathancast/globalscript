@@ -1,5 +1,21 @@
 	.prefix
 
+	.data
+
+gsdl.ags.dataitem.undefined	.closure	_gsdl.ags.dataitem.undefined_c
+
+	.code
+
+_gsdl.ags.dataitem.undefined_c	.expr
+string.t	.tygvar
+gsdl.ags.dataitem.prim.u	.tygvar
+gsdl.ags.dataitem.t.in	.cogvar
+ty	.arg	string.t
+c	.constr	gsdl.ags.dataitem.prim.u	undefined	0	ty
+	.coerce	gsdl.ags.dataitem.t.in
+	.lift
+	.yield	c
+
 	.type
 
 gsdl.ags.dataitem.t	.tyabstract	*
@@ -8,9 +24,18 @@ gsdl.ags.dataitem.prim.u	.tygvar
 	.tyref	gsdl.ags.dataitem.prim.u
 
 gsdl.ags.dataitem.prim.u	.tyexpr
-	.tysum
+_gsdl.ags.dataitem.prim.u_undefined_ty	.tygvar
+	.tysum	undefined	_gsdl.ags.dataitem.prim.u_undefined_ty
+
+_gsdl.ags.dataitem.prim.u_undefined_ty	.tyexpr
+string.t	.tygvar
+	.tyubproduct	0	string.t
 
 	.coercion
+
+gsdl.ags.dataitem.t.in	.tycoercion
+gsdl.ags.dataitem.t	.tygvar
+	.tydefinition	gsdl.ags.dataitem.t
 
 gsdl.ags.dataitem.t.out	.tycoercion
 gsdl.ags.dataitem.t	.tygvar
