@@ -256,8 +256,8 @@ ty	.larg	gsdl.cgs.gstype.t
 	.enter	ty
 
 _gsac.gstype.compileToVar_k	.forcecont
-gsdl.cgs.gstype.prim.u	.tygvar
 string.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 either.t	.tygvar	# Temp
@@ -265,6 +265,7 @@ _gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
 _gsac.gstype.compileToVar_k1	.subcode
 either.t.out	.cogvar
 _gsac.gstype.compile_w	.gvar
+nm0	.fv	string.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.danalyze	ty0	var
 		.default
@@ -278,12 +279,15 @@ v		.fkarg	0	gsdl.cgs.syntax.var.t
 	# > :: either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
 _gsac.gstype.compileToVar_k1	.forcecont
-either.prim.u	.tygvar
 string.t	.tygvar
+either.prim.u	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
-_gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
+diff.list.t	.tygvar	# Temp
+gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
+nm0	.fv	string.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -291,7 +295,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
 		.case	right
 res1		.fkarg	0	_gsac.gstype.compile_res.ty
-res			.undefined	_gsac.gstype.compileToVar_res.ty
+tyes			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	nm	nm0	tyexprs	tyes
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compileToVar_res.ty
 
