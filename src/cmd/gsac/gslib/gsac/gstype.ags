@@ -287,6 +287,7 @@ either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
+diff.list.:	.gvar
 nm0	.fv	string.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.analyze	e0	left	right
@@ -295,7 +296,9 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
 		.case	right
 res1		.fkarg	0	_gsac.gstype.compile_res.ty
-tyes			.undefined	diff.list.t	gsdl.ags.typeitem.t
+tyes1			.undefined	diff.list.t	gsdl.ags.typeitem.t
+tye0			.undefined	gsdl.ags.typeitem.t
+tyes			.apply	diff.list.:	gsdl.ags.typeitem.t	|	tye0	tyes1
 res			.lrecord	nm	nm0	tyexprs	tyes
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compileToVar_res.ty
