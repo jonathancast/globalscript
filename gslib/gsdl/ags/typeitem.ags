@@ -25,3 +25,10 @@ gsdl.ags.typeitem.field.prim.u	.tygvar
 
 gsdl.ags.typeitem.field.prim.u	.tyexpr
 	.typroduct
+
+	.coercion
+
+gsdl.ags.typeitem.t.out	.tycoercion
+gsdl.ags.typeitem.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.typeitem.t
