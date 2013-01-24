@@ -9,3 +9,10 @@ gsdl.ags.dataitem.prim.u	.tygvar
 
 gsdl.ags.dataitem.prim.u	.tyexpr
 	.tysum
+
+	.coercion
+
+gsdl.ags.dataitem.t.out	.tycoercion
+gsdl.ags.dataitem.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.dataitem.t
