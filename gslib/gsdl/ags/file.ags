@@ -113,17 +113,25 @@ ds1		.fkarg	1	list.t	gsdl.ags.dataitem.t
 			.undef	string.t
 
 _gsdl.ags.file.print.dataitems_:_k	.forcecont
+gsdl.ags.file.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.dataitem.prim.u	.tygvar
 string.t	.tygvar
 rune.t	.tygvar
+_gsdl.ags.file.print.dataitems	.gvar
 list.<>	.gvar
 _gsdl.ags.file.print.dataitems_:_undef.s	.gvar
+list.:	.gvar
+rune.new.line	.gvar
+file0	.fv	gsdl.ags.file.prim.u
+ds1	.fv	list.t	gsdl.ags.dataitem.t
 d0.0	.karg	gsdl.ags.dataitem.prim.u
-#s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds1
+s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds1
 	.analyze	d0.0	undefined
 		.case	undefined
 ty		.fkarg	0	string.t
-s0.2			.undefined	string.t
+s0.2			.apply	list.:	rune.t	|	rune.new.line	s1
 s0.1			.apply	list.<>	rune.t	|	ty	s0.2
 			.app	_gsdl.ags.file.print.dataitems_:_undef.s	s0.1
 			.enter	list.<>	rune.t
