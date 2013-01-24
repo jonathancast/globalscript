@@ -3,9 +3,14 @@
 	.data
 
 gsdl.ags.file.print	.closure	_gsdl.ags.file.print_c
+
 _gsdl.ags.file.print.filetype	.closure	_gsdl.ags.file.print.filetype_c
 _gsdl.ags.file.print.filetype_doc.s	.string	\t.document\n\n
+
 _gsdl.ags.file.print.datasection	.closure	_gsdl.ags.file.print.datasection_c
+_gsdl.ags.file.print.datasection_gsdata.s	.string	\t.data\n\n
+
+_gsdl.ags.file.print.dataitems	.closure	_gsdl.ags.file.print.dataitems_c	_gsdl.ags.file.print.dataitems_ty
 
 gsdl.ags.file.filetype.gsdocument	.closure	_gsdl.ags.file.filetype.gsdocument_c
 
@@ -63,19 +68,54 @@ _gsdl.ags.file.print.datasection_c	.expr
 gsdl.ags.file.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
-_gsdl.ags.file.print.datasection_k	.subcode
+rune.t	.tygvar
+list.<>	.gvar
+_gsdl.ags.file.print.datasection_gsdata.s	.gvar
+_gsdl.ags.file.print.dataitems	.gvar
+file0	.arg	gsdl.ags.file.prim.u
+ds	.arg	list.t	gsdl.ags.dataitem.t
+s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds
+	.app	_gsdl.ags.file.print.datasection_gsdata.s	s1
+	.enter	list.<>	rune.t
+
+_gsdl.ags.file.print.dataitems_c	.expr
+gsdl.ags.file.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+_gsdl.ags.file.print.dataitems_k	.subcode
 list.t.out	.cogvar
 file0	.arg	gsdl.ags.file.prim.u
 ds	.arg	list.t	gsdl.ags.dataitem.t
-	.force	_gsdl.ags.file.print.datasection_k
+	.force	_gsdl.ags.file.print.dataitems_k
 	.coerce	list.t.out	gsdl.ags.dataitem.t
 	.enter	ds
 
-_gsdl.ags.file.print.datasection_k	.forcecont
+_gsdl.ags.file.print.dataitems_k	.forcecont
+gsdl.ags.file.prim.u	.tygvar
 list.prim.u	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+list.t	.tygvar
 string.t	.tygvar	# Temp
+_gsdl.ags.file.print.dataitems_:_k	.subcode
+gsdl.ags.dataitem.t.out	.cogvar
+_gsdl.ags.file.print.dataitems	.gvar
+file0	.fv	gsdl.ags.file.prim.u
 ds0	.karg	list.prim.u	gsdl.ags.dataitem.t
+	.analyze	ds0	:	nil
+		.case	:
+d0		.fkarg	0	gsdl.ags.dataitem.t
+ds1		.fkarg	1	list.t	gsdl.ags.dataitem.t
+			.force	_gsdl.ags.file.print.dataitems_:_k
+			.coerce	gsdl.ags.dataitem.t.out
+			.enter	d0
+		.case	nil
+			.undef	string.t
+
+_gsdl.ags.file.print.dataitems_:_k	.forcecont
+gsdl.ags.dataitem.prim.u	.tygvar
+string.t	.tygvar	# Temp
+d0.0	.karg	gsdl.ags.dataitem.prim.u
+#s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds1
 	.undef	string.t
 
 # §section §gs{gsdl.ags.file.filetype.t} Constructors
@@ -110,6 +150,17 @@ gsdl.ags.file.filetype.prim.u	.tygvar
 gsdl.ags.file.filetype.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
 	.tysum	gsdocument	record.unboxed.empty
+
+# §section §gs{gsdl.ags.file.print}
+
+_gsdl.ags.file.print.dataitems_ty	.tyexpr
+gsdl.ags.file.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+string.t	.tygvar
+	.tyfun	gsdl.ags.file.prim.u
+	.tyfun	list.t	gsdl.ags.dataitem.t
+	.tyref	string.t
 
 	.coercion
 
