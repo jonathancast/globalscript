@@ -9,6 +9,7 @@ _gsdl.ags.file.print.filetype_doc.s	.string	\t.document\n\n
 
 _gsdl.ags.file.print.datasection	.closure	_gsdl.ags.file.print.datasection_c
 _gsdl.ags.file.print.datasection_gsdata.s	.string	\t.data\n\n
+_gsdl.ags.file.print.dataitems_:_undef.s	.string	\t.undefined\t
 
 _gsdl.ags.file.print.dataitems	.closure	_gsdl.ags.file.print.dataitems_c	_gsdl.ags.file.print.dataitems_ty
 
@@ -113,10 +114,20 @@ ds1		.fkarg	1	list.t	gsdl.ags.dataitem.t
 
 _gsdl.ags.file.print.dataitems_:_k	.forcecont
 gsdl.ags.dataitem.prim.u	.tygvar
-string.t	.tygvar	# Temp
+string.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_gsdl.ags.file.print.dataitems_:_undef.s	.gvar
 d0.0	.karg	gsdl.ags.dataitem.prim.u
 #s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds1
-	.undef	string.t
+	.analyze	d0.0	undefined
+		.case	undefined
+ty		.fkarg	0	string.t
+s0.2			.undefined	string.t
+s0.1			.apply	list.<>	rune.t	|	ty	s0.2
+			.app	_gsdl.ags.file.print.dataitems_:_undef.s	s0.1
+			.enter	list.<>	rune.t
+	# > :: string.t
 
 # §section §gs{gsdl.ags.file.filetype.t} Constructors
 
