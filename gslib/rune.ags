@@ -23,6 +23,7 @@ rune.advance	.closure	_rune.advance_c
 
 rune.prim.advance	.closure	_rune.prim.advance_c
 
+rune.new.line	.closure	_rune.new.line_c
 rune.backslash	.closure	_rune.backslash_c
 rune.space	.closure	_rune.space_c
 rune.number.sign	.closure	_rune.number.sign_c
@@ -290,6 +291,13 @@ r1	.prim	rune.prim	advance	_rune.prim.advance_ty	|	r0	n0
 	.yield	r1
 
 # §section Random data
+
+_rune.new.line_c	.expr
+rune.t.in	.cogvar
+nl	.rune	\n
+	.coerce	rune.t.in
+	.lift
+	.yield	nl
 
 _rune.backslash_c	.expr
 rune.t.in	.cogvar
