@@ -78,17 +78,26 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 gsdl.ags.file.t	.tygvar
+either.t	.tygvar
 list.t	.tygvar	# Temp
 gsdl.ags.dataitem.t	.tygvar	# Temp
 either.right	.gvar
 list.singleton	.gvar
+gsdl.ags.dataitem.undefined	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
-d	.undefined	gsdl.ags.dataitem.t
-ds	.apply	list.singleton	gsdl.ags.dataitem.t	|	d
-res	.lrecord	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument
-	.app	res
-	.enter	either.right	string.t	gsdl.ags.file.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.ags.file.t
+		.case	right
+res1		.fkarg	0	_gsac.gstype.compileToVar_res.ty
+v			.lfield	nm	res1
+d			.apply	gsdl.ags.dataitem.undefined	|	v
+ds			.apply	list.singleton	gsdl.ags.dataitem.t	|	d
+res			.lrecord	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument
+			.app	res
+			.enter	either.right	string.t	gsdl.ags.file.t
 
 # §section §gs{gsac.document.annotate}
 
