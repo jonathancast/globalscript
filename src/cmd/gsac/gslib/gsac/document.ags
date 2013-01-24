@@ -86,6 +86,7 @@ either.right	.gvar
 list.singleton	.gvar
 gsdl.ags.dataitem.undefined	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
+diff.list.tolist	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -94,9 +95,10 @@ err		.fkarg	0	string.t
 		.case	right
 res1		.fkarg	0	_gsac.gstype.compileToVar_res.ty
 v			.lfield	nm	res1
+dts			.lfield	tyexprs	res1
 d			.apply	gsdl.ags.dataitem.undefined	|	v
 ds			.apply	list.singleton	gsdl.ags.dataitem.t	|	d
-ts			.undefined	list.t	gsdl.ags.typeitem.t
+ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	dts
 res			.lrecord	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	ts
 			.app	res
 			.enter	either.right	string.t	gsdl.ags.file.t
