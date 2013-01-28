@@ -140,6 +140,7 @@ struct ibio_oport {
     Lock lock;
     int active;
     gsvalue writing;
+    struct ibio_oport_write_blocker *waiting_to_write, **waiting_to_write_end;
     struct api_thread *writing_thread;
     /* §section Used for §gs{oport}s connected to external files */
     int fd;

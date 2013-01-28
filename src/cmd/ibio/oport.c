@@ -150,45 +150,96 @@ ibio_oport_fdopen(int fd, char *err, char *eerr)
 static struct gs_block_class ibio_oport_segment_descr;
 static void ibio_oport_link_to_thread(struct api_thread *, struct ibio_oport *);
 
+struct ibio_write_blocking {
+    struct api_prim_blocking bl;
+    gsvalue s;
+    struct ibio_oport *oport;
+    struct ibio_oport_write_blocker *blocking;
+};
+
+static struct gs_block_class ibio_write_blocking_class = {
+    /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
+    /* description = */ "IBIO Write Blocking Queue Link",
+};
+static void *ibio_write_blocking_nursury;
+static Lock ibio_write_blocking_lock;
+
+struct ibio_oport_write_blocker {
+    struct ibio_oport_write_blocker *next;
+};
+
 enum api_prim_execution_state
 ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, struct api_prim_blocking **pblocking, gsvalue *pv)
 {
-    gsvalue oportv, s;
-    struct ibio_oport *oport;
+    struct ibio_write_blocking *write_blocking;
+
     struct gs_blockdesc *block;
 
-    oportv = write->arguments[0];
-    s = write->arguments[1];
+    if (*pblocking) {
+        write_blocking = (struct ibio_write_blocking *)*pblocking;
+    } else {
+        gsvalue oportv;
 
-    /* §c{oportv} is a WHNF by the types */
-    block = BLOCK_CONTAINING(oportv);
-    if (block->class != &ibio_oport_segment_descr) {
-        api_abend(thread, "ibio_handle_prim_write: o is a %s not an oport", block->class->description);
+        *pblocking = api_blocking_alloc(sizeof(struct ibio_write_blocking));
+        write_blocking = (struct ibio_write_blocking *)*pblocking;
+        oportv = write->arguments[0];
+        write_blocking->s = write->arguments[1];
+
+        /* §c{oportv} is a WHNF by the types */
+        block = BLOCK_CONTAINING(oportv);
+        if (block->class != &ibio_oport_segment_descr) {
+            api_abend(thread, "ibio_handle_prim_write: o is a %s not an oport", block->class->description);
+            return api_st_error;
+        }
+
+        write_blocking->oport = (struct ibio_oport *)oportv;
+        write_blocking->blocking = 0;
+    }
+
+    lock(&write_blocking->oport->lock);
+
+    if (!write_blocking->oport->active) {
+        api_abend(thread, "write on inactive oport: %p", write_blocking->oport);
+        unlock(&write_blocking->oport->lock);
         return api_st_error;
     }
-
-    oport = (struct ibio_oport *)oportv;
-
-    lock(&oport->lock);
-    {
-        if (!oport->active) {
-            api_abend(thread, "write on inactive oport: %p", oport);
-            unlock(&oport->lock);
-            return api_st_error;
+    if (!write_blocking->oport->writing) {
+        if (write_blocking->blocking) {
+            if (write_blocking->blocking == write_blocking->oport->waiting_to_write) {
+                write_blocking->oport->waiting_to_write = write_blocking->oport->waiting_to_write->next;
+                if (!write_blocking->oport->waiting_to_write)
+                    write_blocking->oport->waiting_to_write_end = &write_blocking->oport->waiting_to_write
+                ;
+            } else {
+                api_abend_unimpl(thread, __FILE__, __LINE__, "ibio_handle_prim_write: still blocking on previous write(s)");
+                unlock(&write_blocking->oport->lock);
+                return api_st_error;
+            }
         }
-        if (oport->writing) {
-            api_abend_unimpl(thread, __FILE__, __LINE__, "ibio_handle_prim_write: block on previous write next");
-            unlock(&oport->lock);
-            return api_st_error;
-        }
+        write_blocking->oport->writing = write_blocking->s;
+        write_blocking->oport->writing_thread = thread;
+        ibio_oport_link_to_thread(thread, write_blocking->oport);
 
-        oport->writing = s;
-        oport->writing_thread = thread;
-        ibio_oport_link_to_thread(thread, oport);
+        unlock(&write_blocking->oport->lock);
+        *pv = gsemptyrecord(write->pos);
+        return api_st_success;
+    } else if (!write_blocking->blocking) {
+        lock(&ibio_write_blocking_lock);
+        write_blocking->blocking = *write_blocking->oport->waiting_to_write_end =
+            gs_sys_seg_suballoc(&ibio_write_blocking_class, &ibio_write_blocking_nursury, sizeof(struct ibio_oport_write_blocker), sizeof(void*))
+            
+        ;
+        unlock(&ibio_write_blocking_lock);
+
+        write_blocking->oport->waiting_to_write_end = &write_blocking->blocking->next;
+        write_blocking->blocking->next = 0;
+        unlock(&write_blocking->oport->lock);
+        return api_st_blocked;
+    } else {
+        unlock(&write_blocking->oport->lock);
+        return api_st_blocked;
     }
-    unlock(&oport->lock);
-    *pv = gsemptyrecord(write->pos);
-    return api_st_success;
 }
 
 /* §section Writing to a file (write process) */
@@ -474,6 +525,8 @@ ibio_alloc_oport()
     lock(&res->lock);
     res->active = 1;
     res->writing = 0;
+    res->waiting_to_write = 0;
+    res->waiting_to_write_end = &res->waiting_to_write;
 
     /* Output channel (linked list of segments) can be created dynamically */
 
