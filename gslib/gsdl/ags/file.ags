@@ -174,8 +174,25 @@ tys	.arg	list.t	gsdl.ags.typeitem.t
 _gsdl.ags.file.print.typeitems_k	.forcecont
 list.prim.u	.tygvar
 gsdl.ags.typeitem.t	.tygvar
+list.t	.tygvar
 string.t	.tygvar	# Temp
+_gsdl.ags.file.print.typeitems_:_k	.subcode
+gsdl.ags.typeitem.t.out	.cogvar
 tys0	.karg	list.prim.u	gsdl.ags.typeitem.t
+	.analyze	tys0	:	nil
+		.case	:
+ty0		.fkarg	0	gsdl.ags.typeitem.t
+tys1		.fkarg	1	list.t	gsdl.ags.typeitem.t
+			.force	_gsdl.ags.file.print.typeitems_:_k
+			.coerce	gsdl.ags.typeitem.t.out
+			.enter	ty0
+		.case	nil
+			.undef	string.t
+
+_gsdl.ags.file.print.typeitems_:_k	.forcecont
+gsdl.ags.typeitem.prim.u	.tygvar
+string.t	.tygvar	# Temp
+ty0.0	.karg	gsdl.ags.typeitem.prim.u
 	.undef	string.t
 
 # §section §gs{gsdl.ags.file.filetype.t} Constructors
