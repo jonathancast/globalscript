@@ -8,6 +8,7 @@ _gsdl.ags.typeitem.print_kindsig.print	.closure	_gsdl.ags.typeitem.print_kindsig
 _gsdl.ags.typeitem.print_kindsig.print_nokind.s	.string	\n
 
 gsdl.ags.typeitem.expr.print	.closure	_gsdl.ags.typeitem.expr.print_c	_gsdl.ags.typeitem.expr.print_ty
+_gsdl.ags.typeitem.expr.print_tylift.s	.string	\t.tylift\n
 
 gsdl.ags.typeitem.tyexpr	.closure	_gsdl.ags.typeitem.tyexpr_c
 
@@ -95,10 +96,20 @@ exp	.arg	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.expr.print_k	.forcecont
 gsdl.ags.typeitem.expr.prim.u	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
 diff.list.t	.tygvar	# Temp
 rune.t	.tygvar	# Temp
+diff.list.prepend	.gvar
+_gsdl.ags.typeitem.expr.print_tylift.s	.gvar
+gsdl.ags.typeitem.expr.print	.gvar
 exp0	.karg	gsdl.ags.typeitem.expr.prim.u
-	.undef	diff.list.t	rune.t
+	.analyze	exp0	lift
+		.case	lift
+exp1		.fkarg	0	gsdl.ags.typeitem.expr.t
+s1			.apply	gsdl.ags.typeitem.expr.print	|	exp1
+			.app	_gsdl.ags.typeitem.expr.print_tylift.s	s1
+			.enter	diff.list.prepend	rune.t
+	# > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.typeitem.t} Constructors
 
