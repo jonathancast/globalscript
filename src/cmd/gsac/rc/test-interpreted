@@ -9,3 +9,5 @@ ok_grep_script_errors '-- gsac-deps: Document with no entry point --' deps-no-en
 
 ok_diff_script '-- gsac-deps: Empty document --' deps-empty-doc ibio ./gslib ./gsac-deps.ags -l ./test-fixtures/gslib ./test-fixtures/empty-doc.gsac
 ok_diff_script '-- gsac-deps: Empty list.t document --' deps-empty-list-doc ibio ./gslib ./gsac-deps.ags -l ./test-fixtures/gslib ./test-fixtures/empty-list-doc.gsac
+
+ok_diff_script '-- gsac: Empty document --' gsac-empty-doc ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/empty-doc.cgs
