@@ -176,9 +176,10 @@ gsdl.ags.file.prim.u	.tygvar
 list.prim.u	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 list.t	.tygvar
-string.t	.tygvar	# Temp
+rune.t	.tygvar
 gsdl.ags.typeitem.print	.gvar
 _gsdl.ags.file.print.typeitems	.gvar
+list.nil	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 tys0	.karg	list.prim.u	gsdl.ags.typeitem.t
 	.analyze	tys0	:	nil
@@ -189,7 +190,7 @@ s1			.apply	_gsdl.ags.file.print.typeitems	|	file0	tys1
 			.app	ty0	s1
 			.enter	gsdl.ags.typeitem.print
 		.case	nil
-			.undef	string.t
+			.enter	list.nil	rune.t
 
 # §section §gs{gsdl.ags.file.filetype.t} Constructors
 
