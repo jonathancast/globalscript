@@ -11,6 +11,8 @@ gsdl.ags.typeitem.expr.print	.closure	_gsdl.ags.typeitem.expr.print_c	_gsdl.ags.
 
 gsdl.ags.typeitem.tyexpr	.closure	_gsdl.ags.typeitem.tyexpr_c
 
+gsdl.ags.typeitem.expr.lift	.closure	_gsdl.ags.typeitem.expr.lift_c
+
 	.code
 
 # §ection §gs{gsdl.ags.typeitem.print}
@@ -115,6 +117,18 @@ c	.constr	gsdl.ags.typeitem.prim.u	tyexpr	0	nm	1	mbky	2	e
 	.lift
 	.yield	c
 
+# §section §gs{gsdl.ags.typeitem.expr.t} Constructors
+
+_gsdl.ags.typeitem.expr.lift_c	.expr
+gsdl.ags.typeitem.expr.t	.tygvar
+gsdl.ags.typeitem.expr.prim.u	.tygvar
+gsdl.ags.typeitem.expr.t.in	.cogvar
+e0	.arg	gsdl.ags.typeitem.expr.t
+c	.constr	gsdl.ags.typeitem.expr.prim.u	lift	0	e0
+	.coerce	gsdl.ags.typeitem.expr.t.in
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{gsdl.ags.typeitem.t}
@@ -144,7 +158,12 @@ gsdl.ags.typeitem.expr.prim.u	.tygvar
 	.tyref	gsdl.ags.typeitem.expr.prim.u
 
 gsdl.ags.typeitem.expr.prim.u	.tyexpr
-	.tysum
+_gsdl.ags.typeitem.expr.prim.u_lift_ty	.tygvar
+	.tysum	lift	_gsdl.ags.typeitem.expr.prim.u_lift_ty
+
+_gsdl.ags.typeitem.expr.prim.u_lift_ty	.tyexpr
+gsdl.ags.typeitem.expr.t	.tygvar
+	.tyubproduct	0	gsdl.ags.typeitem.expr.t
 
 # §section §gs{gsdl.ags.typeitem.field.t}
 
@@ -185,6 +204,10 @@ gsdl.ags.typeitem.t.out	.tycoercion
 gsdl.ags.typeitem.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.ags.typeitem.t
+
+gsdl.ags.typeitem.expr.t.in	.tycoercion
+gsdl.ags.typeitem.expr.t	.tygvar
+	.tydefinition	gsdl.ags.typeitem.expr.t
 
 gsdl.ags.typeitem.expr.t.out	.tycoercion
 gsdl.ags.typeitem.expr.t	.tygvar
