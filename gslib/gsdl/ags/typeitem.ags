@@ -2,9 +2,101 @@
 
 	.data
 
+gsdl.ags.typeitem.print	.closure	_gsdl.ags.typeitem.print_c
+_gsdl.ags.typeitem.print_tyexpr.s	.string	\t.tyexpr
+_gsdl.ags.typeitem.print_kindsig.print	.closure	_gsdl.ags.typeitem.print_kindsig.print_c
+_gsdl.ags.typeitem.print_kindsig.print_nokind.s	.string	\n
+
+gsdl.ags.typeitem.expr.print	.closure	_gsdl.ags.typeitem.expr.print_c	_gsdl.ags.typeitem.expr.print_ty
+
 gsdl.ags.typeitem.tyexpr	.closure	_gsdl.ags.typeitem.tyexpr_c
 
 	.code
+
+# §ection §gs{gsdl.ags.typeitem.print}
+
+_gsdl.ags.typeitem.print_c	.expr
+gsdl.ags.typeitem.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar
+_gsdl.ags.typeitem.print_k	.subcode
+gsdl.ags.typeitem.t.out	.cogvar
+ty	.larg	gsdl.ags.typeitem.t
+	.force	_gsdl.ags.typeitem.print_k
+	.coerce	gsdl.ags.typeitem.t.out
+	.enter	ty
+
+_gsdl.ags.typeitem.print_k	.forcecont
+gsdl.ags.typeitem.prim.u	.tygvar
+string.t	.tygvar
+maybe.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+list.t	.tygvar	# Temp
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+diff.list.prepend	.gvar
+_gsdl.ags.typeitem.print_tyexpr.s	.gvar
+diff.list.<>	.gvar
+_gsdl.ags.typeitem.print_kindsig.print	.gvar
+gsdl.ags.typeitem.expr.print	.gvar
+ty0	.karg	gsdl.ags.typeitem.prim.u
+	.analyze	ty0	tyexpr
+		.case	tyexpr
+nm		.fkarg	0	string.t
+mb.ky		.fkarg	1	maybe.t	gsdl.ags.typeitem.gskind.t
+exp		.fkarg	2	gsdl.ags.typeitem.expr.t
+mb.ky.s			.apply	_gsdl.ags.typeitem.print_kindsig.print	|	mb.ky
+exp.s			.apply	gsdl.ags.typeitem.expr.print	|	exp
+s2			.apply	diff.list.<>	rune.t	|	mb.ky.s	exp.s
+s1			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.typeitem.print_tyexpr.s	s2
+			.app	nm	s1
+			.enter	diff.list.prepend	rune.t
+	# > :: diff.list.t	rune.t
+
+_gsdl.ags.typeitem.print_kindsig.print_c	.expr
+maybe.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+_gsdl.ags.typeitem.print_kindsig.print_k	.subcode
+maybe.t.out	.cogvar
+mb.ky	.arg	maybe.t	gsdl.ags.typeitem.gskind.t
+	.force	_gsdl.ags.typeitem.print_kindsig.print_k
+	.coerce	maybe.t.out	gsdl.ags.typeitem.gskind.t
+	.enter	mb.ky
+
+_gsdl.ags.typeitem.print_kindsig.print_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+diff.list.fromlist	.gvar
+_gsdl.ags.typeitem.print_kindsig.print_nokind.s	.gvar
+mb.ky0	.karg	maybe.prim.u	gsdl.ags.typeitem.gskind.t
+	.analyze	mb.ky0	just	nothing
+		.case	just
+ky		.fkarg	0	gsdl.ags.typeitem.gskind.t
+			.undef	diff.list.t	rune.t
+		.case	nothing
+			.app	_gsdl.ags.typeitem.print_kindsig.print_nokind.s
+			.enter	diff.list.fromlist	rune.t
+
+# §section §gs{gsdl.ags.typeitem.expr.print}
+
+_gsdl.ags.typeitem.expr.print_c	.expr
+gsdl.ags.typeitem.expr.t	.tygvar
+_gsdl.ags.typeitem.expr.print_k	.subcode
+gsdl.ags.typeitem.expr.t.out	.cogvar
+exp	.arg	gsdl.ags.typeitem.expr.t
+	.force	_gsdl.ags.typeitem.expr.print_k
+	.coerce	gsdl.ags.typeitem.expr.t.out
+	.enter	exp
+
+_gsdl.ags.typeitem.expr.print_k	.forcecont
+gsdl.ags.typeitem.expr.prim.u	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+exp0	.karg	gsdl.ags.typeitem.expr.prim.u
+	.undef	diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.typeitem.t} Constructors
 
@@ -74,6 +166,15 @@ gsdl.ags.typeitem.gskind.prim.u	.tygvar
 gsdl.ags.typeitem.gskind.prim.u	.tyexpr
 	.tysum
 
+# §section §gs{gsdl.ags.typeitem.expr.print}
+
+_gsdl.ags.typeitem.expr.print_ty	.tyexpr
+gsdl.ags.typeitem.expr.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+	.tyfun	gsdl.ags.typeitem.expr.t
+	.tyref	diff.list.t	rune.t
+
 	.coercion
 
 gsdl.ags.typeitem.t.in	.tycoercion
@@ -84,3 +185,8 @@ gsdl.ags.typeitem.t.out	.tycoercion
 gsdl.ags.typeitem.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.ags.typeitem.t
+
+gsdl.ags.typeitem.expr.t.out	.tycoercion
+gsdl.ags.typeitem.expr.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.typeitem.expr.t
