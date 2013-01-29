@@ -354,7 +354,11 @@ list.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.fields.compile_res.ty	.tygvar
 either.t	.tygvar	# Temp
+diff.list.t	.tygvar	# Temp
+gsdl.ags.typeitem.t	.tygvar	# Temp
+gsdl.ags.typeitem.field.t	.tygvar	# Temp
 either.right	.gvar
+diff.list.nil	.gvar
 fs0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
 	.analyze	fs0	:	nil
 		.case	:
@@ -362,7 +366,9 @@ f0		.fkarg	0	gsdl.cgs.gstype.field.t
 fs1		.fkarg	1	list.t	gsdl.cgs.gstype.field.t
 			.undef	either.t	string.t	_gsac.gstype.fields.compile_res.ty
 		.case	nil
-res			.undefined	_gsac.gstype.fields.compile_res.ty
+tyes			.undefined	diff.list.t	gsdl.ags.typeitem.t
+fs			.apply	diff.list.nil	gsdl.ags.typeitem.field.t
+res			.lrecord	fields	fs	tyexprs	tyes
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.fields.compile_res.ty
 
@@ -482,7 +488,7 @@ gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 tyexprs_ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 fields_ty	.tylet	diff.list.t	gsdl.ags.typeitem.field.t
-	.typroduct	tyexprs	tyexprs_ty	fields	fields_ty
+	.typroduct	fields	fields_ty	tyexprs	tyexprs_ty
 
 # §section §gs{gsac.gstype.gskind.compile}
 
