@@ -124,8 +124,7 @@ gsparsed_file_addline(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, u
     size = sizeof(*res) + sizeof(gsinterned_string) * (numfields - 2);
     res = gsparsed_file_extend(parsedfile, size);
 
-    res->pos.file = parsedfile->name;
-    res->pos.lineno = pos->real_lineno;
+    res->pos = pos->artificial;
     res->numarguments = numfields - 2;
 
     return res;

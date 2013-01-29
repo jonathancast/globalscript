@@ -1,6 +1,8 @@
 struct gsparse_input_pos {
+    int is_artificial;
     char *real_filename;
     int real_lineno;
+    struct gspos artificial;
 };
 
 gsparsedfile *gsparsed_file_alloc(char *filename, char *relname, gsfiletype type);

@@ -6,6 +6,8 @@ ok_diff_fail '-- undefined entry points --' ./$O.test-gsi undef.ags
 ok_diff_fail '-- undefined empty record values --' ./$O.test-gsi undef-empty-record.ags
 ok_diff_fail '-- undefined expressions --' ./$O.test-gsi undef-expr.ags
 
+ok_diff_fail '-- undefined entry points (declared position) --' ./$O.test-gsi undef-declared-pos.ags
+
 ok_diff '-- empty record values --' ./$O.test-gsi empty-record.ags
 ok_diff '-- empty record expressions --' ./$O.test-gsi empty-record-expr.ags
 ok_diff '-- empty lifted record expressions --' ./$O.test-gsi empty-lrecord-expr.ags

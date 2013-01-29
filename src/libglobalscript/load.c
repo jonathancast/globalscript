@@ -243,6 +243,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
 
     pos.real_filename = filename;
     pos.real_lineno = 0;
+    pos.is_artificial = 0;
 
     if ((n = gsgrabline(&pos, chan, line, fields)) < 0)
         gsfatal("%s: Error in reading line: %r", filename);
@@ -278,7 +279,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         It is always un-ambiguous whether more lines are needed;
         so when the parse function returns, we are ready to read in the next item (or section declaration).
     */
-    while ((n = gsgrabline(&pos, chan, line, fields)) > 0) {
+    while ((pos.is_artificial = 0, n = gsgrabline(&pos, chan, line, fields)) > 0) {
         if (n < 2) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
         if (!strcmp(fields[1], ".data")) {
             section = gsdatasection;
@@ -1969,6 +1970,25 @@ gsgrabline(struct gsparse_input_pos *pos, struct uxio_ichannel *chan, char *line
         if (n == 1)
             gsfatal("%s:%d: Missing directive", pos->real_filename, pos->real_lineno)
         ;
+        if (!strcmp(fields[1], ".line")) {
+            pos->is_artificial = 1;
+            if (n < 3)
+                gsfatal("%s:%d: Missing source file name", pos->real_filename, pos->real_lineno)
+            ;
+            pos->artificial.file = gsintern_string(gssymfilename, fields[2]);
+            if (n < 4)
+                gsfatal("%s:%d: Missing source line #", pos->real_filename, pos->real_lineno)
+            ;
+            pos->artificial.lineno = atoi(fields[3]);
+            if (n > 4)
+                gsfatal("%s:%d: Too many arguments to .line", pos->real_filename, pos->real_lineno)
+            ;
+            continue;
+        }
+        if (!pos->is_artificial) {
+            pos->artificial.file = gsintern_string(gssymfilename, pos->real_filename);
+            pos->artificial.lineno = pos->real_lineno;
+        }
         return n;
     }
 }
