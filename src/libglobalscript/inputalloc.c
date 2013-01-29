@@ -112,19 +112,20 @@ gsparsed_file_add_segment(gsparsedfile *parsedfile)
 
 /* ↓ It is part of the interface of this file that §c{parsedfile->last_seg} contains the returned line. */
 struct gsparsedline *
-gsparsed_file_addline(char *filename, gsparsedfile *parsedfile, int lineno, ulong numfields)
+gsparsed_file_addline(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, ulong numfields)
 {
     ulong size;
     struct gsparsedline *res;
 
     if (numfields < 2)
-        gsfatal("%s:%d: Missing directive", filename, lineno);
+        gsfatal("%s:%d: Missing directive", pos->real_filename, pos->real_lineno)
+    ;
 
     size = sizeof(*res) + sizeof(gsinterned_string) * (numfields - 2);
     res = gsparsed_file_extend(parsedfile, size);
 
     res->pos.file = parsedfile->name;
-    res->pos.lineno = lineno;
+    res->pos.lineno = pos->real_lineno;
     res->numarguments = numfields - 2;
 
     return res;
