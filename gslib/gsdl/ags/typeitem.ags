@@ -12,6 +12,7 @@ _gsdl.ags.typeitem.expr.print_tylift.s	.string	\t.tylift\n
 _gsdl.ags.typeitem.expr.print_typroduct.s	.string	\t.typroduct
 
 _gsdl.ags.typeitem.expr.print_fields.print	.closure	_gsdl.ags.typeitem.expr.print_fields.print_c	_gsdl.ags.typeitem.expr.print_fields.print_ty
+_gsdl.ags.typeitem.expr.print_fields.print_nl.s	.string	\n
 
 gsdl.ags.typeitem.tyexpr	.closure	_gsdl.ags.typeitem.tyexpr_c
 
@@ -139,10 +140,20 @@ fs	.arg	list.t	gsdl.ags.typeitem.field.t
 _gsdl.ags.typeitem.expr.print_fields.print_k	.forcecont
 list.prim.u	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
 diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+diff.list.fromlist	.gvar
+_gsdl.ags.typeitem.expr.print_fields.print_nl.s	.gvar
 fs0	.karg	list.prim.u	gsdl.ags.typeitem.field.t
-	.undef	diff.list.t	rune.t
+	.analyze	fs0	:	nil
+		.case	:
+f0		.fkarg	0	gsdl.ags.typeitem.field.t
+fs1		.fkarg	1	list.t	gsdl.ags.typeitem.field.t
+			.undef	diff.list.t	rune.t
+		.case	nil
+			.app	_gsdl.ags.typeitem.expr.print_fields.print_nl.s
+			.enter	diff.list.fromlist	rune.t
 
 # §section §gs{gsdl.ags.typeitem.t} Constructors
 
