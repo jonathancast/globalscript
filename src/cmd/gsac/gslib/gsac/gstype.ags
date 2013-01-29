@@ -240,14 +240,15 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.fields.compile_res.ty	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
+gsdl.ags.typeitem.field.t	.tygvar
 either.t	.tygvar	# Temp
 gsdl.ags.typeitem.expr.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
-gsdl.ags.typeitem.field.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.ags.typeitem.expr.product	.gvar
+diff.list.tolist	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.fields.compile_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -255,7 +256,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	right
 fs.res		.fkarg	0	_gsac.gstype.fields.compile_res.ty
-res0.fs			.undefined	list.t	gsdl.ags.typeitem.field.t
+res0.fs.d			.lfield	fields	fs.res
+res0.fs			.apply	diff.list.tolist	gsdl.ags.typeitem.field.t	|	res0.fs.d
 res0			.apply	gsdl.ags.typeitem.expr.product	|	res0.fs
 tyes			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord		res	res0	tyexprs	tyes
