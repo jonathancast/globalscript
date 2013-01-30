@@ -7,7 +7,7 @@ gsac.gstype.fields.kindcheck	.closure	_gsac.gstype.fields.kindcheck_c	_gsac.gsty
 
 gsac.gstype.compile	.closure	_gsac.gstype.compile_c	_gsac.gstype.compile_ty
 _gsac.gstype.compile_w	.closure	_gsac.gstype.compile_w_c	_gsac.gstype.compile_w_ty
-gsac.gstype.compileToVar	.closure	_gsac.gstype.compileToVar_c	_gsac.gstype.compileToVar_ty
+gsac.gstype.compileToGlobalVar	.closure	_gsac.gstype.compileToGlobalVar_c	_gsac.gstype.compileToGlobalVar_ty
 
 gsac.gstype.fields.compile	.closure	_gsac.gstype.fields.compile_c	_gsac.gstype.fields.compile_ty
 
@@ -257,48 +257,48 @@ res			.lrecord		res	res0	tyexprs	tyes
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
-# §section §gs{gsac.gstype.compileToVar}
+# §section §gs{gsac.gstype.compileToGlobalVar}
 
 # > either.t string.t ⊕ writer.m (diff.list.t gsdl.ags.typeitem.t)
-_gsac.gstype.compileToVar_c	.expr
+_gsac.gstype.compileToGlobalVar_c	.expr
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-_gsac.gstype.compileToVar_k	.subcode
+_gsac.gstype.compileToGlobalVar_k	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 nm0	.larg	string.t
 ty	.larg	gsdl.cgs.gstype.t
-	.force	_gsac.gstype.compileToVar_k
+	.force	_gsac.gstype.compileToGlobalVar_k
 	.coerce	gsdl.cgs.gstype.t.out
 	.enter	ty
 
-_gsac.gstype.compileToVar_k	.forcecont
+_gsac.gstype.compileToGlobalVar_k	.forcecont
 string.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 either.t	.tygvar	# Temp
-_gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
-_gsac.gstype.compileToVar_k1	.subcode
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar	# Temp
+_gsac.gstype.compileToGlobalVar_k1	.subcode
 either.t.out	.cogvar
 _gsac.gstype.compile_w	.gvar
 nm0	.fv	string.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.danalyze	ty0	var
 		.default
-			.force	_gsac.gstype.compileToVar_k1
+			.force	_gsac.gstype.compileToGlobalVar_k1
 			.coerce	either.t.out	string.t	_gsac.gstype.compile_res.ty
 			.app	ty0
 			.enter	_gsac.gstype.compile_w
 		.case	var
 v		.fkarg	0	gsdl.cgs.syntax.var.t
-			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+			.undef	either.t	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 	# > :: either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
-_gsac.gstype.compileToVar_k1	.forcecont
+_gsac.gstype.compileToGlobalVar_k1	.forcecont
 string.t	.tygvar
 either.prim.u	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
-_gsac.gstype.compileToVar_res.ty	.tygvar
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
@@ -313,7 +313,7 @@ e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+			.undef	either.t	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 		.case	right
 res1		.fkarg	0	_gsac.gstype.compile_res.ty
 nothing			.apply	maybe.nothing	gsdl.ags.typeitem.gskind.t
@@ -323,7 +323,7 @@ tyes1			.lfield	tyexprs	res1
 tyes			.apply	diff.list.:	gsdl.ags.typeitem.t	|	tye0	tyes1
 res			.lrecord	nm	nm0	tyexprs	tyes
 			.app	res
-			.enter	either.right	string.t	_gsac.gstype.compileToVar_res.ty
+			.enter	either.right	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 
 # §section §gs{gsac.gstype.fields.compile}
 
@@ -430,25 +430,25 @@ gsdl.ags.typeitem.t	.tygvar
 tyexprs_ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 	.typroduct	res	gsdl.ags.typeitem.expr.t	tyexprs	tyexprs_ty
 
-# §section §gs{gsac.gstype.compileToVar}
+# §section §gs{gsac.gstype.compileToGlobalVar}
 
-_gsac.gstype.compileToVar_ty	.tyexpr
+_gsac.gstype.compileToGlobalVar_ty	.tyexpr
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar
-_gsac.gstype.compileToVar_res.ty	.tygvar
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 	.tylift
 	.tyfun	string.t
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
-	.tyref	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+	.tyref	either.t	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 
-_gsac.gstype.compileToVar_res.ty	.tyexpr
-_gsac.gstype.compileToVar_res.u	.tygvar
+_gsac.gstype.compileToGlobalVar_res.ty	.tyexpr
+_gsac.gstype.compileToGlobalVar_res.u	.tygvar
 	.tylift
-	.tyref	_gsac.gstype.compileToVar_res.u
+	.tyref	_gsac.gstype.compileToGlobalVar_res.u
 
-_gsac.gstype.compileToVar_res.u	.tyexpr
+_gsac.gstype.compileToGlobalVar_res.u	.tyexpr
 string.t	.tygvar
 diff.list.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar

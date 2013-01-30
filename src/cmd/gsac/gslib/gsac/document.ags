@@ -56,12 +56,12 @@ gsdl.cgs.document.prim.u	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
-_gsac.gstype.compileToVar_res.ty	.tygvar
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
 gsdl.ags.file.t	.tygvar	# Temp	
 _gsac.document.compile_right_just_k	.subcode
 either.t.out	.cogvar
-gsac.gstype.compileToVar	.gvar
+gsac.gstype.compileToGlobalVar	.gvar
 _gsac.document.compile_right_just_ep.ty.s	.gvar
 doc0	.fv	gsdl.cgs.document.prim.u
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
@@ -69,9 +69,9 @@ mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.document.compile_right_just_k
-			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
+			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 			.app	_gsac.document.compile_right_just_ep.ty.s	ty
-			.enter	gsac.gstype.compileToVar
+			.enter	gsac.gstype.compileToGlobalVar
 		.case	nothing
 			.undef	either.t	string.t	gsdl.ags.file.t
 
@@ -79,7 +79,7 @@ _gsac.document.compile_right_just_k	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
-_gsac.gstype.compileToVar_res.ty	.tygvar
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.file.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 either.t	.tygvar	# Temp
@@ -91,13 +91,13 @@ gsdl.ags.dataitem.undefined	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
 diff.list.tolist	.gvar
 doc0	.fv	gsdl.cgs.document.prim.u
-e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.ags.file.t
 		.case	right
-res1		.fkarg	0	_gsac.gstype.compileToVar_res.ty
+res1		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
 pos			.field	pos	doc0
 v			.lfield	nm	res1
 dts			.lfield	tyexprs	res1
