@@ -25,8 +25,8 @@ i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
-parsed.args	.bind	_real.entry_parsed.args_c
-read.arguments	.bind	_real.entry_read.arguments_c
+parsed.args	.bind	_real.entry_parsed.args_c	# §gs{《 §gsinf{List of prefix arguments}, §gsinf{List of CUT arguments}, 》}
+read.arguments	.bind	_real.entry_read.arguments_c	# Same as §gs{parsed.args} but read in
 sccs	.bind	_real.entry_sccs_c
 output	.bind	_real.entry_output_c
 	.body	_real.entry_send.output_c
