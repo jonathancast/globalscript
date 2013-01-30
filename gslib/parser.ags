@@ -62,7 +62,7 @@ parser.err.message.failure	.closure	_parser.err.message.failure_c
 parser.rune.advance	.closure	_parser.rune.advance_c
 
 parser.pos.fmt	.closure	_parser.pos.fmt_c
-_parser.pos.fmt_eof.suffix.s	.string	:\sat\sEOF
+_parser.pos.fmt_eof.suffix.s	.string	:$
 
 parser.pos.≡	.closure	_parser.pos.≡_c
 

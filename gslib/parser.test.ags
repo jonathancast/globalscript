@@ -114,11 +114,11 @@ _test.pos.fmt.next.line_expected	.string	./parse-data:2:1
 
 _test.pos.fmt.eof	.closure	_test.pos.fmt.eof_c
 _test.pos.fmt.eof_label	.string	pos.fmt\strue\sinitial.pos
-_test.pos.fmt.eof_expected	.string	./parse-data:\sat\sEOF
+_test.pos.fmt.eof_expected	.string	./parse-data:$
 
 _test.pos.fmt.eof.next.line	.closure	_test.pos.fmt.eof.next.line_c
 _test.pos.fmt.eof.next.line_label	.string	pos.fmt\strue\s(next.line\sinitial.pos)
-_test.pos.fmt.eof.next.line_expected	.string	./parse-data:\sat\sEOF
+_test.pos.fmt.eof.next.line_expected	.string	./parse-data:$
 
 _test.pos.eq.x.x	.closure	_test.pos.eq.x.x_c
 _test.pos.eq.x.x_label	.string	parser.pos.≡\sx\sx
