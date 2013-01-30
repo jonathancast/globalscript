@@ -285,9 +285,9 @@ pas	.field	0	pa0
 _real.entry_read.arguments_prefix_c	.expr
 ibio.prim.t	.tygvar
 list.t	.tygvar
-gsac.input.prefix.file.t	.tygvar
+gsac.input.prefix.t	.tygvar
 ibio.file.name.t	.tygvar
-res.elem.ty	.tylet	list.t	gsac.input.prefix.file.t
+res.elem.ty	.tylet	list.t	gsac.input.prefix.t
 res.ty	.tylet	list.t	res.elem.ty
 ibio.mapM.prim	.gvar
 gsac.input.prefix.load	.gvar
