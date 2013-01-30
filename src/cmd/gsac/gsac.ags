@@ -287,13 +287,11 @@ ibio.prim.t	.tygvar
 list.t	.tygvar
 gsac.input.prefix.t	.tygvar
 ibio.file.name.t	.tygvar
-res.elem.ty	.tylet	list.t	gsac.input.prefix.t
-res.ty	.tylet	list.t	res.elem.ty
 ibio.mapM.prim	.gvar
 gsac.input.prefix.load	.gvar
 prefix.files	.fv	list.t	ibio.file.name.t
 	.app	gsac.input.prefix.load	prefix.files
-	.enter	ibio.mapM.prim	ibio.file.name.t	res.elem.ty
+	.enter	ibio.mapM.prim	ibio.file.name.t	gsac.input.prefix.t
 
 _real.entry_read.arguments_cut.files_c	.expr
 _args.parsed.t	.tygvar

@@ -36,16 +36,14 @@ isd	.fv	bool.t
 _gsac.input.prefix.load_body_k	.forcecont
 ibio.file.name.t	.tygvar
 bool.prim.u	.tygvar
-ibio.prim.t	.tygvar
-list.t	.tygvar
-gsac.input.prefix.t	.tygvar
-res.ty	.tylet	list.t	gsac.input.prefix.t
+ibio.prim.t	.tygvar	# Temp
+gsac.input.prefix.t	.tygvar	# Temp
 gsac.input.prefix.dir.load	.gvar
 fn	.fv	ibio.file.name.t
 isd0	.karg	bool.prim.u
 	.analyze	isd0	false	true
 	.case	false
-		.undef	ibio.prim.t	res.ty
+		.undef	ibio.prim.t	gsac.input.prefix.t
 	.case	true
 		.app	fn
 		.enter	gsac.input.prefix.dir.load
@@ -61,10 +59,10 @@ list.t	.tygvar	# Temp
 gsac.input.prefix.t	.tygvar	# Temp
 res.ty	.tylet	list.t	gsac.input.prefix.t	# Temp
 ibio.prim.unit	.gvar	# Temp
-files	.undefined	list.t	gsac.input.prefix.t
+files	.undefined	gsac.input.prefix.t
 	.lift
 	.app	files
-	.yield	ibio.prim.unit	res.ty
+	.yield	ibio.prim.unit	gsac.input.prefix.t
 
 	.type
 
@@ -83,19 +81,15 @@ gsac.input.sorted.node.t	.tyabstract	*
 _gsac.input.prefix.load_ty	.tyexpr
 ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
-list.t	.tygvar
 gsac.input.prefix.t	.tygvar
-res.ty	.tylet	list.t	gsac.input.prefix.t
 	.tylift
 	.tyfun	ibio.file.name.t
-	.tyref	ibio.prim.t	res.ty
+	.tyref	ibio.prim.t	gsac.input.prefix.t
 
 _gsac.input.prefix.dir.load_ty	.tyexpr
 ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
-list.t	.tygvar
 gsac.input.prefix.t	.tygvar
-res.ty	.tylet	list.t	gsac.input.prefix.t
 	.tylift
 	.tyfun	ibio.file.name.t
-	.tyref	ibio.prim.t	res.ty
+	.tyref	ibio.prim.t	gsac.input.prefix.t
