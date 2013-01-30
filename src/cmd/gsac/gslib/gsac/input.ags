@@ -68,9 +68,13 @@ files	.undefined	list.t	gsac.input.prefix.t
 
 	.type
 
-gsac.input.prefix.t	.tyabstract	*
+gsac.input.prefix.t	.tyexpr
+gsac.input.prefix.prim.u	.tygvar
 	.tylift
-	.tysum
+	.tyref	gsac.input.prefix.prim.u
+
+gsac.input.prefix.prim.u	.tyexpr
+	.typroduct
 
 gsac.input.sorted.node.t	.tyabstract	*
 	.tylift
