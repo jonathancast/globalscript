@@ -52,6 +52,7 @@ mbty	.field	gstype	doc0
 	.enter	mbty
 
 _gsac.document.compile_right_k1	.forcecont
+gsdl.cgs.document.prim.u	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
@@ -62,6 +63,7 @@ _gsac.document.compile_right_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.compileToVar	.gvar
 _gsac.document.compile_right_just_ep.ty.s	.gvar
+doc0	.fv	gsdl.cgs.document.prim.u
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
 		.case	just
@@ -74,6 +76,7 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	gsdl.ags.file.t
 
 _gsac.document.compile_right_just_k	.forcecont
+gsdl.cgs.document.prim.u	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
@@ -87,6 +90,7 @@ list.singleton	.gvar
 gsdl.ags.dataitem.undefined	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
 diff.list.tolist	.gvar
+doc0	.fv	gsdl.cgs.document.prim.u
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -94,9 +98,10 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.ags.file.t
 		.case	right
 res1		.fkarg	0	_gsac.gstype.compileToVar_res.ty
+pos			.field	pos	doc0
 v			.lfield	nm	res1
 dts			.lfield	tyexprs	res1
-d			.apply	gsdl.ags.dataitem.undefined	|	v
+d			.apply	gsdl.ags.dataitem.undefined	|	pos	v
 ds			.apply	list.singleton	gsdl.ags.dataitem.t	|	d
 ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	dts
 res			.lrecord	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	ts
@@ -117,15 +122,16 @@ gsty	.lfield	gstype	doc
 	.enter	gsty
 
 _gsac.document.annotate_gstype_k	.forcecont
+gsdl.cgs.document.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.document.t	.tygvar	# Temp
 _gsac.document.annotate_gstype_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.kindcheck	.gvar
+doc	.fv	gsdl.cgs.document.t
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
 		.case	just
@@ -138,17 +144,18 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	gsdl.cgs.document.t
 
 _gsac.document.annotate_gstype_just_k	.forcecont
+gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.document.t	.tygvar	# Temp
 _gsac.document.annotate_gstype_just_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check	.gvar
 gsdl.cgs.gskind.lifted	.gvar
+doc	.fv	gsdl.cgs.document.t
 ty	.fv	gsdl.cgs.gstype.t
 eky0	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
 	.analyze	eky0	left	right
@@ -163,14 +170,16 @@ ky		.fkarg	0	gsdl.cgs.gskind.t
 			.enter	gsac.gskind.check
 
 _gsac.document.annotate_gstype_just_right_k	.forcecont
+gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
-gsdl.cgs.document.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
 maybe.just	.gvar
+doc	.fv	gsdl.cgs.document.t
 ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
@@ -180,6 +189,7 @@ err		.fkarg	0	string.t
 		.case	right
 r		.fkarg	0	record.empty
 mbty			.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
-res			.lrecord	gstype	mbty
+pos			.lfield	pos	doc
+res			.lrecord	gstype	mbty	pos	pos
 			.app	res
 			.enter	either.right	string.t	gsdl.cgs.document.t

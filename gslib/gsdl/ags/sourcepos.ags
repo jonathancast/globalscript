@@ -1,0 +1,35 @@
+	.prefix
+
+	.data
+
+gsdl.ags.sourcepos.print	.closure	_gsdl.ags.sourcepos.print_c
+_gsdl.ags.sourcepos.print_line.s	.string	\t.line\t
+_gsdl.ags.sourcepos.print_sp.s	.string	\s
+
+	.code
+
+# §section §gs{gsdl.ags.sourcepos.print}
+
+_gsdl.ags.sourcepos.print_c	.expr
+gsdl.sourcepos.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar	# Temp
+list.t	.tygvar	# Temp
+diff.list.prepend	.gvar
+_gsdl.ags.sourcepos.print_line.s	.gvar
+_gsdl.ags.sourcepos.print_sp.s	.gvar
+ibio.file.name.out	.gvar
+natural.fmtdecimal	.gvar
+diff.list.singleton	.gvar
+rune.new.line	.gvar
+pos	.larg	gsdl.sourcepos.t
+pos.file	.lfield	file	pos
+pos.file.s	.apply	ibio.file.name.out	|	pos.file
+line	.lfield	0.line	pos
+line.s	.apply	natural.fmtdecimal	|	line
+s3	.apply	diff.list.singleton	rune.t	|	rune.new.line
+s2	.apply	diff.list.prepend	rune.t	|	line.s	s3
+s1	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.sourcepos.print_sp.s	s2
+s0	.apply	diff.list.prepend	rune.t	|	pos.file.s	s1
+	.app	_gsdl.ags.sourcepos.print_line.s	s0
+	.enter	diff.list.prepend	rune.t

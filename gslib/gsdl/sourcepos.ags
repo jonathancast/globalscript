@@ -1,0 +1,31 @@
+	.prefix
+
+	.data
+
+gsdl.sourcepos	.closure	_gsdl.sourcepos_c
+
+	.code
+
+# §section §gs{gsdl.sourcepos}
+
+_gsdl.sourcepos_c	.expr
+parser.pos.t	.tygvar
+pos0	.larg	parser.pos.t
+pos1	.larg	parser.pos.t
+file	.lfield	file	pos0
+0.line	.lfield	line	pos0
+r	.record	0.line	0.line	file	file
+	.lift
+	.yield	r
+
+	.type
+
+gsdl.sourcepos.t	.tyexpr
+gsdl.sourcepos.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.sourcepos.prim.u
+
+gsdl.sourcepos.prim.u	.tyexpr
+natural.t	.tygvar
+ibio.file.name.t	.tygvar
+	.typroduct	0.line	natural.t	file	ibio.file.name.t

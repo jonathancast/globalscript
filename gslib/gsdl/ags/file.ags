@@ -125,9 +125,11 @@ gsdl.ags.file.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.dataitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 rune.t	.tygvar
 _gsdl.ags.file.print.dataitems	.gvar
+gsdl.ags.sourcepos.print	.gvar
 list.<>	.gvar
 _gsdl.ags.file.print.dataitems_:_undef.s	.gvar
 list.:	.gvar
@@ -138,11 +140,13 @@ d0.0	.karg	gsdl.ags.dataitem.prim.u
 s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds1
 	.analyze	d0.0	undefined
 		.case	undefined
-ty		.fkarg	0	string.t
-s0.2			.apply	list.:	rune.t	|	rune.new.line	s1
-s0.1			.apply	list.<>	rune.t	|	ty	s0.2
-			.app	_gsdl.ags.file.print.dataitems_:_undef.s	s0.1
-			.enter	list.<>	rune.t
+pos		.fkarg	0	gsdl.sourcepos.t
+ty		.fkarg	1	string.t
+s0.3			.apply	list.:	rune.t	|	rune.new.line	s1
+s0.2			.apply	list.<>	rune.t	|	ty	s0.3
+s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print.dataitems_:_undef.s	s0.2
+			.app	pos	s0.1
+			.enter	gsdl.ags.sourcepos.print
 	# > :: string.t
 
 _gsdl.ags.file.print.typesection_c	.expr

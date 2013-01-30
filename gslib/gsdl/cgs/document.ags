@@ -31,28 +31,37 @@ _gsdl.cgs.document.fmtgs_suffix	.string	〉
 _gsdl.cgs.document.parser_c	.expr
 rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+parser.pos.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 string.t	.tygvar
-#parser.t	.tygvar
+#parser.t	.tygvar	# Temp
 _gsdl.cgs.document.parser_f_c	.subcode
-parser.map	.gvar
+parser.lift2	.gvar
+parser.pos.get	.gvar
 parser.<*	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.oftype	.gvar
 gsdl.cgs.gstype.parser.app	.gvar
 gsdl.cgs.syntax.semi	.gvar
 f	.alloc	_gsdl.cgs.document.parser_f_c
+pos.get	.apply	parser.pos.get	rune.t
 ty_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.app
 ty_p	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	ty_p1	gsdl.cgs.syntax.semi
-	.app	f	ty_p
-	.enter	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.document.t
+	.app	f	pos.get	ty_p
+	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.cgs.gstype.t	gsdl.cgs.document.t
 
 _gsdl.cgs.document.parser_f_c	.expr
+parser.pos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.sourcepos.t	.tygvar	# Temp
 maybe.just	.gvar
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
 ty	.larg	gsdl.cgs.gstype.t
 mbty	.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
-r	.record	gstype	mbty
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+r	.record	gstype	mbty	pos	pos
 	.lift
 	.yield	r
 
@@ -126,5 +135,6 @@ gsdl.cgs.document.prim.u	.tygvar
 gsdl.cgs.document.prim.u	.tyexpr
 maybe.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 gstype_ty	.tylet	maybe.t	gsdl.cgs.gstype.t
-	.typroduct	gstype gstype_ty
+	.typroduct	gstype gstype_ty	pos	gsdl.sourcepos.t

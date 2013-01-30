@@ -7,11 +7,13 @@ gsdl.ags.dataitem.undefined	.closure	_gsdl.ags.dataitem.undefined_c
 	.code
 
 _gsdl.ags.dataitem.undefined_c	.expr
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 gsdl.ags.dataitem.prim.u	.tygvar
 gsdl.ags.dataitem.t.in	.cogvar
+pos	.arg	gsdl.sourcepos.t
 ty	.arg	string.t
-c	.constr	gsdl.ags.dataitem.prim.u	undefined	0	ty
+c	.constr	gsdl.ags.dataitem.prim.u	undefined	0	pos	1	ty
 	.coerce	gsdl.ags.dataitem.t.in
 	.lift
 	.yield	c
@@ -28,8 +30,9 @@ _gsdl.ags.dataitem.prim.u_undefined_ty	.tygvar
 	.tysum	undefined	_gsdl.ags.dataitem.prim.u_undefined_ty
 
 _gsdl.ags.dataitem.prim.u_undefined_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
-	.tyubproduct	0	string.t
+	.tyubproduct	0	gsdl.sourcepos.t	1	string.t
 
 	.coercion
 
