@@ -1524,7 +1524,8 @@ gsparse_default(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
-        if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
+        if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
+        } else if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
         } else if (gsparse_cont_push_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
             return;
