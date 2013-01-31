@@ -110,133 +110,131 @@ ace_thread_pool_main(void *p)
             ;
         } while (!thread);
 
-        if (thread) {
-            numthreads_total++;
-            lock(&thread->lock);
+        numthreads_total++;
+        lock(&thread->lock);
 
-            switch (thread->state) {
-                case ace_thread_lprim_blocked: {
-                    thread->st.lprim_blocked.on->resume(thread, thread->st.lprim_blocked.at, thread->st.lprim_blocked.on);
-                    break;
-                }
-                case ace_thread_blocked: {
-                    gstypecode st;
-
-                    num_blocked++;
-                    st = GS_SLOW_EVALUATE(thread->st.blocked.on);
-
-                    switch (st) {
-                        case gstystack:
-                            num_bocked_threads++;
-                        case gstyblocked:
-                            break;
-                        case gstyindir:
-                            thread->st.blocked.on = GS_REMOVE_INDIRECTION(thread->st.blocked.on);
-                            break;
-                        case gstywhnf: {
-                            ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
-                            break;
-                        }
-                        case gstyerr: {
-                            ace_error_thread(thread, (struct gserror *)thread->st.blocked.on);
-                            break;
-                        }
-                        case gstyimplerr: {
-                            ace_failure_thread(thread, (struct gsimplementation_failure *)thread->st.blocked.on);
-                            break;
-                        }
-                        case gstyunboxed: {
-                            ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
-                            break;
-                        }
-                        default:
-                            ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter (st = %d)", st);
-                            break;
-                    }
-                    break;
-                }
-                case ace_thread_running: {
-                    num_instrs++;
-                    switch (thread->st.running.ip->instr) {
-                        case gsbc_op_efv:
-                            ace_extract_efv(thread);
-                            break;
-                        case gsbc_op_alloc:
-                            ace_alloc_thunk(thread);
-                            break;
-                        case gsbc_op_prim:
-                            ace_prim(thread);
-                            break;
-                        case gsbc_op_constr:
-                            ace_alloc_constr(thread);
-                            break;
-                        case gsbc_op_record:
-                            ace_alloc_record(thread);
-                            break;
-                        case gsbc_op_field:
-                            ace_extract_field(thread);
-                            break;
-                        case gsbc_op_lfield:
-                            ace_alloc_lfield(thread);
-                            break;
-                        case gsbc_op_undefined:
-                            ace_alloc_undef(thread);
-                            break;
-                        case gsbc_op_apply:
-                            ace_alloc_apply(thread);
-                            break;
-                        case gsbc_op_unknown_eprim:
-                            ace_alloc_unknown_eprim(thread);
-                            break;
-                        case gsbc_op_eprim:
-                            ace_alloc_eprim(thread);
-                            break;
-                        case gsbc_op_app:
-                            ace_push_app(thread);
-                            break;
-                        case gsbc_op_force:
-                            ace_push_force(thread);
-                            break;
-                        case gsbc_op_strict:
-                            ace_push_strict(thread);
-                            break;
-                        case gsbc_op_ubanalzye:
-                            ace_push_ubanalyze(thread);
-                            break;
-                        case gsbc_op_analyze:
-                            ace_perform_analyze(thread);
-                            break;
-                        case gsbc_op_danalyze:
-                            ace_perform_danalyze(thread);
-                            break;
-                        case gsbc_op_undef:
-                            ace_return_undef(thread);
-                            break;
-                        case gsbc_op_enter:
-                            ace_enter(thread);
-                            break;
-                        case gsbc_op_yield:
-                            ace_yield(thread);
-                            break;
-                        case gsbc_op_ubprim:
-                            ace_ubprim(thread);
-                            break;
-                        case gsbc_op_lprim:
-                            ace_lprim(thread);
-                            break;
-                        default:
-                            ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "run instruction %d", thread->st.running.ip->instr);
-                            break;
-                    }
-                    break;
-                }
-                default:
-                    ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "ace_thread_pool_main: state %d", thread->state);
-                    break;
+        switch (thread->state) {
+            case ace_thread_lprim_blocked: {
+                thread->st.lprim_blocked.on->resume(thread, thread->st.lprim_blocked.at, thread->st.lprim_blocked.on);
+                break;
             }
+            case ace_thread_blocked: {
+                gstypecode st;
 
-            unlock(&thread->lock);
+                num_blocked++;
+                st = GS_SLOW_EVALUATE(thread->st.blocked.on);
+
+                switch (st) {
+                    case gstystack:
+                        num_bocked_threads++;
+                    case gstyblocked:
+                        break;
+                    case gstyindir:
+                        thread->st.blocked.on = GS_REMOVE_INDIRECTION(thread->st.blocked.on);
+                        break;
+                    case gstywhnf: {
+                        ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
+                        break;
+                    }
+                    case gstyerr: {
+                        ace_error_thread(thread, (struct gserror *)thread->st.blocked.on);
+                        break;
+                    }
+                    case gstyimplerr: {
+                        ace_failure_thread(thread, (struct gsimplementation_failure *)thread->st.blocked.on);
+                        break;
+                    }
+                    case gstyunboxed: {
+                        ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
+                        break;
+                    }
+                    default:
+                        ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter (st = %d)", st);
+                        break;
+                }
+                break;
+            }
+            case ace_thread_running: {
+                num_instrs++;
+                switch (thread->st.running.ip->instr) {
+                    case gsbc_op_efv:
+                        ace_extract_efv(thread);
+                        break;
+                    case gsbc_op_alloc:
+                        ace_alloc_thunk(thread);
+                        break;
+                    case gsbc_op_prim:
+                        ace_prim(thread);
+                        break;
+                    case gsbc_op_constr:
+                        ace_alloc_constr(thread);
+                        break;
+                    case gsbc_op_record:
+                        ace_alloc_record(thread);
+                        break;
+                    case gsbc_op_field:
+                        ace_extract_field(thread);
+                        break;
+                    case gsbc_op_lfield:
+                        ace_alloc_lfield(thread);
+                        break;
+                    case gsbc_op_undefined:
+                        ace_alloc_undef(thread);
+                        break;
+                    case gsbc_op_apply:
+                        ace_alloc_apply(thread);
+                        break;
+                    case gsbc_op_unknown_eprim:
+                        ace_alloc_unknown_eprim(thread);
+                        break;
+                    case gsbc_op_eprim:
+                        ace_alloc_eprim(thread);
+                        break;
+                    case gsbc_op_app:
+                        ace_push_app(thread);
+                        break;
+                    case gsbc_op_force:
+                        ace_push_force(thread);
+                        break;
+                    case gsbc_op_strict:
+                        ace_push_strict(thread);
+                        break;
+                    case gsbc_op_ubanalzye:
+                        ace_push_ubanalyze(thread);
+                        break;
+                    case gsbc_op_analyze:
+                        ace_perform_analyze(thread);
+                        break;
+                    case gsbc_op_danalyze:
+                        ace_perform_danalyze(thread);
+                        break;
+                    case gsbc_op_undef:
+                        ace_return_undef(thread);
+                        break;
+                    case gsbc_op_enter:
+                        ace_enter(thread);
+                        break;
+                    case gsbc_op_yield:
+                        ace_yield(thread);
+                        break;
+                    case gsbc_op_ubprim:
+                        ace_ubprim(thread);
+                        break;
+                    case gsbc_op_lprim:
+                        ace_lprim(thread);
+                        break;
+                    default:
+                        ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "run instruction %d", thread->st.running.ip->instr);
+                        break;
+                }
+                break;
+            }
+            default:
+                ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "ace_thread_pool_main: state %d", thread->state);
+                break;
         }
+
+        unlock(&thread->lock);
     }
 no_clients:
     end_time = nsec();
