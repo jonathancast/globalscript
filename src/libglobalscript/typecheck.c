@@ -3267,7 +3267,7 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
     gsinterned_string ftyvs[MAX_NUM_REGISTERS];
 
     nftyvs = firstftyv < p->numarguments ? p->numarguments - firstftyv : 0;
-    if (nftyvs < cty->numftyvs)
+    if (nftyvs && nftyvs < cty->numftyvs)
         gsfatal("%P: Not enough free type variables for %y; need %d but have %d", p->pos, codelabel, cty->numftyvs, nftyvs)
     ;
     if (nftyvs > cty->numftyvs)
@@ -3281,7 +3281,7 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
         int regarg;
         struct gstype *fvval;
 
-        if (p->arguments[firstftyv + i] != ftyvs[i])
+        if (nftyvs && p->arguments[firstftyv + i] != ftyvs[i])
             gsfatal("%P: Wrong free type variable value: code item has %y but reference has %y", p->pos, p->arguments[firstftyv + i], ftyvs[i])
         ;
         regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, ftyvs[i]);
