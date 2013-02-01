@@ -83,7 +83,7 @@ ok_diff '-- analyze on sums of unboxed products --' ./$O.test-gsi analyze-adt-co
 ok_diff '-- analyze with default --' ./$O.test-gsi analyze-default.ags
 
 ok_grep_errors '-- analyze on un-boxed sum with un-bound free type variable --' './test-gslib/ubanalyze-unbound-type-variable.ags:14: Not enough free type variables' ./$O.test-gsi ubanalyze-unbound-type-variable.ags
-ok_grep_errors '-- analyze on un-boxed sum with excess free type variable --' './test-gslib/ubanalyze-excess-type-variable.ags:15: Too many free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
+ok_grep_errors '-- analyze on un-boxed sum with excess free type variable --' './test-gslib/ubanalyze-excess-type-variable.ags:16: Too many free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
 
 ok_grep_errors '-- analyze on un-boxed sum with mis-matched number of free variables --' './test-gslib/ubanalyze-mismatched-free-variable-number.ags:17: Mis-matched number of free variables' ./$O.test-gsi ubanalyze-mismatched-free-variable-number.ags
 ok_grep_errors '-- analyze on un-boxed sum with mis-matched names of free variables --' './test-gslib/ubanalyze-mismatched-free-variable-name.ags:19: Mis-matched free variable' ./$O.test-gsi ubanalyze-mismatched-free-variable-name.ags
