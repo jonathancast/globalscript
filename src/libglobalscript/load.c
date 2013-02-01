@@ -1215,20 +1215,13 @@ gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedl
             gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
         else
             parsedline->label = 0;
-        for (i = 2; i < n && strcmp(fields[i], "|"); i += 2) {
+        for (i = 2; i < n; i += 2) {
             if (i + 1 >= n)
-                gsfatal(UNIMPL("%s:%d: missing code lable on final continuation to .ubanalyze"), pos->real_filename, pos->real_lineno)
+                gsfatal("%s:%d: missing code lable on final continuation to .ubanalyze", pos->real_filename, pos->real_lineno)
             ;
             parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i]);
             parsedline->arguments[i + 1 - 2] = gsintern_string(gssymcodelable, fields[i + 1]);
         }
-        if (i < n) {
-            parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
-            i++;
-        }
-        for (; i < n; i ++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
     } else {
         return 0;
     }
