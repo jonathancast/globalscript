@@ -171,7 +171,7 @@ xn1_0	.karg	t
 		.case	:
 x1		.fkarg	0	α
 xn2		.fkarg	1	list.t	 α
-y			.alloc	_list.foldr1_rec	α
+y			.alloc	_list.foldr1_rec
 			.app	x0	y
 			.enter	f
 		.case	nil
@@ -219,8 +219,8 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-y0			.alloc	_list.map_y0_c	α	β
-ys1			.alloc	_list.map_ys1_c	α	β
+y0			.alloc	_list.map_y0_c
+ys1			.alloc	_list.map_ys1_c
 			.app	y0	ys1
 			.enter	list.:	β
 		.case	nil
@@ -366,7 +366,7 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-z1			.alloc	_list.foldl_k1_z1_c	α	β
+z1			.alloc	_list.foldl_k1_z1_c
 			.app	f	z1	xn1
 			.enter	list.foldl	α	β
 		.case	nil
@@ -402,7 +402,7 @@ list.α	.tylet	list.t	α
 _list.reverse_fcons_c	.subcode
 list.foldl	.gvar
 list.nil	.gvar
-fcons	.alloc	_list.reverse_fcons_c	α
+fcons	.alloc	_list.reverse_fcons_c
 nil	.apply	list.nil	α
 	.app	fcons	nil
 	.enter	list.foldl	α	list.α
@@ -423,7 +423,7 @@ _list.singleton_c	.expr
 _list.singleton_n_c	.subcode
 list.:	.gvar
 x	.larg	α
-n	.alloc	_list.singleton_n_c	α
+n	.alloc	_list.singleton_n_c
 	.app	x	n
 	.enter	list.:	α
 
@@ -459,7 +459,7 @@ xn0	.karg	t
 	.case	:
 x0	.fkarg	0	α
 xn1	.fkarg	1	list.t	α
-ys1	.alloc	_list.<>.code.rec	α
+ys1	.alloc	_list.<>.code.rec
 ys2	.constr	t	:	0	x0	1	ys1
 	.coerce	list.t.in	α
 	.lift
@@ -533,8 +533,8 @@ xn1		.fkarg	1	list.t	α
 				.case	:
 y				.fkarg	0	α
 ys1				.fkarg	1	list.t	α
-b0					.alloc	_list.≡.cmp	α
-b1					.alloc	_list.≡.rec	α
+b0					.alloc	_list.≡.cmp
+b1					.alloc	_list.≡.rec
 					.app	b0	b1
 					.enter	bool.∧
 				.case	nil

@@ -437,7 +437,7 @@ s	.tyarg	*
 α	.tyarg	*
 _parser.exec_k_c	.subcode
 p	.larg	parser.t	s	α
-k	.alloc	_parser.exec_k_c	s	α
+k	.alloc	_parser.exec_k_c
 	.app	k
 	.enter	p	α
 
@@ -463,7 +463,7 @@ s	.tyarg	*
 _parser.map_res_c	.subcode
 f	.larg	_parser.map_f_ty	α	β
 p0	.larg	parser.t	s	α
-res	.alloc	_parser.map_res_c	s	α	β
+res	.alloc	_parser.map_res_c
 	.enter	res
 
 _parser.map_res_c	.expr
@@ -478,7 +478,7 @@ _parser.map_k0_c	.subcode
 f	.fv	_parser.map_f_ty	α	β
 p0	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	β	r
-k0	.alloc	_parser.map_k0_c	s	α	β	r
+k0	.alloc	_parser.map_k0_c
 	.app	k0
 	.enter	p0	r
 
@@ -503,7 +503,7 @@ s	.tyarg	*
 α	.tyarg	*
 _parser.unit_res_c	.subcode
 x	.larg	α
-res	.alloc	_parser.unit_res_c	s	α
+res	.alloc	_parser.unit_res_c
 	.enter	res
 
 _parser.unit_res_c	.expr
@@ -529,7 +529,7 @@ f_ty	.tylet	_parser.<*>_f_ty	α	β
 _parser.<*>_res_c	.subcode
 pf	.larg	parser.t	s	f_ty
 px	.larg	parser.t	s	α
-res	.alloc	_parser.<*>_res_c	s	α	β
+res	.alloc	_parser.<*>_res_c
 	.enter	res
 
 _parser.<*>_res_c	.expr
@@ -546,7 +546,7 @@ _parser.<*>_kf_c	.subcode
 pf	.fv	parser.t	s	f_ty
 px	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	β	r
-kf	.alloc	_parser.<*>_kf_c	s	α	β	r
+kf	.alloc	_parser.<*>_kf_c
 	.app	kf
 	.enter	pf	r
 
@@ -562,7 +562,7 @@ _parser.<*>_kx_c	.subcode
 px	.fv	parser.t	s	α
 k	.fv	_parser.t_k_ty	s	β	r
 f	.larg	_parser.<*>_f_ty	α	β
-kx	.alloc	_parser.<*>_kx_c	s	α	β	r
+kx	.alloc	_parser.<*>_kx_c
 	.app	kx
 	.enter	px	r
 
@@ -591,7 +591,7 @@ s	.tyarg	*
 _parser.>>=_res_c	.subcode
 p	.larg	parser.t	s	α
 f	.larg	_parser.>>=_k_ty	s	α	β
-res	.alloc	_parser.>>=_res_c	s	α	β
+res	.alloc	_parser.>>=_res_c
 	.enter	res
 
 _parser.>>=_res_c	.expr
@@ -606,7 +606,7 @@ _parser.>>=_res_kx_c	.subcode
 p	.fv	parser.t	s	α
 f	.fv	_parser.>>=_k_ty	s	α	β
 k	.larg	_parser.t_k_ty	s	β	r
-kx	.alloc	_parser.>>=_res_kx_c	s	α	β	r
+kx	.alloc	_parser.>>=_res_kx_c
 	.app	kx
 	.enter	p	r
 
@@ -632,7 +632,7 @@ s	.tyarg	*
 α	.tyarg	*
 _parser.neg.lookahead_res_c	.subcode
 p	.larg	parser.t	s	α
-res	.alloc	_parser.neg.lookahead_res_c	s	α
+res	.alloc	_parser.neg.lookahead_res_c
 	.enter	res
 
 _parser.neg.lookahead_res_c	.expr
@@ -652,7 +652,7 @@ record.empty	.gvar
 parser.prim.fail	.gvar
 p	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	record.empty	r
-kx	.alloc	_parser.neg.lookahead_res_kx_c	s	α
+kx	.alloc	_parser.neg.lookahead_res_kx_c
 p1.0	.apply	p	record.empty	|	kx
 p1.2	.apply	k	|	record.empty
 fail	.apply	parser.prim.fail	s	rec.ty
@@ -707,7 +707,7 @@ s	.tyarg	*
 _parser.*>_res_c	.subcode
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
-res	.alloc	_parser.*>_res_c	s	α0	α1
+res	.alloc	_parser.*>_res_c
 	.enter	res
 
 _parser.*>_res_c	.expr
@@ -721,7 +721,7 @@ _parser.*>_k0_c	.subcode
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
 k	.larg	_parser.t_k_ty	s	α1	r
-k0	.alloc	_parser.*>_k0_c	s	α0	α1	r
+k0	.alloc	_parser.*>_k0_c
 	.app	k0
 	.enter	p0	r
 
@@ -748,7 +748,7 @@ s	.tyarg	*
 _parser.<*_res_c	.subcode
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
-res	.alloc	_parser.<*_res_c	s	α0	α1
+res	.alloc	_parser.<*_res_c
 	.enter	res
 
 _parser.<*_res_c	.expr
@@ -762,7 +762,7 @@ _parser.<*_k0_c	.subcode
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
 k	.larg	_parser.t_k_ty	s	α0	r
-k0	.alloc	_parser.<*_k0_c	s	α0	α1	r
+k0	.alloc	_parser.<*_k0_c
 	.app	k0
 	.enter	p0	r
 
@@ -777,7 +777,7 @@ _parser.<*_k1_c	.subcode
 p1	.fv	parser.t	s	α1
 k	.fv	_parser.t_k_ty	s	α0	r
 x0	.larg	α0
-k1	.alloc	_parser.<*_k1_c	s	α0	α1	r
+k1	.alloc	_parser.<*_k1_c
 	.app	k1
 	.enter	p1	r
 
@@ -806,7 +806,7 @@ _parser.lift2_res_c	.subcode
 f	.larg	_parser.lift2_f_ty	α0	α1	β
 px0	.larg	parser.t	s	α0
 px1	.larg	parser.t	s	α1
-res	.alloc	_parser.lift2_res_c	s	α0	α1	β
+res	.alloc	_parser.lift2_res_c
 	.enter	res
 
 _parser.lift2_res_c	.expr
@@ -823,7 +823,7 @@ f	.fv	_parser.lift2_f_ty	α0	α1	β
 px0	.fv	parser.t	s	α0
 px1	.fv	parser.t	s	α1
 k	.larg	_parser.t_k_ty	s	β	r
-kx0	.alloc	_parser.lift2_kx0_c	s	α0	α1	β	r
+kx0	.alloc	_parser.lift2_kx0_c
 	.app	kx0
 	.enter	px0	r
 
@@ -842,7 +842,7 @@ f	.fv	_parser.lift2_f_ty	α0	α1	β
 px1	.fv	parser.t	s	α1
 k	.fv	_parser.t_k_ty	s	β	r
 x0	.larg	α0
-kx1	.alloc	_parser.lift2_kx1_c	s	α0	α1	β	r
+kx1	.alloc	_parser.lift2_kx1_c
 	.app	kx1
 	.enter	px1	r
 
@@ -872,7 +872,7 @@ s	.tyarg	*
 α	.tyarg	*
 _parser.fail.msg_res_c	.subcode
 msg	.larg	list.t	rune.t
-res	.alloc	_parser.fail.msg_res_c	s	α
+res	.alloc	_parser.fail.msg_res_c
 	.enter	res
 
 _parser.fail.msg_res_c	.expr
@@ -897,7 +897,7 @@ s	.tyarg	*
 _parser.<|>_res_c	.subcode
 p0	.larg	parser.t	s	α
 p1	.larg	parser.t	s	α
-res	.alloc	_parser.<|>_res_c	s	α
+res	.alloc	_parser.<|>_res_c
 	.enter	res
 
 _parser.<|>_res_c	.expr
@@ -928,7 +928,7 @@ parser.prim.symbol	.gvar
 parser.prim.fail.msg	.gvar
 _parser.symbol_msg	.gvar
 k	.larg	_parser.t_k_ty	s	s	r
-sk	.alloc	_parser.symbol_sk_c	s	r
+sk	.alloc	_parser.symbol_sk_c
 fail	.apply	parser.prim.fail.msg	s	r	|	_parser.symbol_msg
 	.app	sk	fail
 	.yield	parser.prim.symbol	s	r
@@ -962,8 +962,8 @@ _parser.many_pnil_c	.subcode
 _parser.many_pcons_c	.subcode
 parser.<|>	.gvar
 p	.larg	parser.t	s	α
-pnil	.alloc	_parser.many_pnil_c	s	α
-pcons	.alloc	_parser.many_pcons_c	s	α
+pnil	.alloc	_parser.many_pnil_c
+pcons	.alloc	_parser.many_pcons_c
 	.app	pnil	pcons
 	.enter	parser.<|>	s	res.ty
 
@@ -992,7 +992,7 @@ res.ty	.tylet	list.t	α
 _parser.many_pcons_kx_c	.subcode
 p	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	res.ty	r
-kx	.alloc	_parser.many_pcons_kx_c	s	α	r
+kx	.alloc	_parser.many_pcons_kx_c
 	.app	kx
 	.enter	p	r
 
@@ -1010,7 +1010,7 @@ p	.fv	parser.t	s	α
 k	.fv	_parser.t_k_ty	s	res.ty	r
 x	.larg	α
 mp	.apply	parser.many	s	α	|	p
-kxn	.alloc	_parser.many_pcons_kxn_c	s	α	r
+kxn	.alloc	_parser.many_pcons_kxn_c
 	.app	kxn
 	.enter	mp	r
 
@@ -1037,7 +1037,7 @@ _parser.symbol.matching.bool_pred_ty	.tygvar
 s	.tyarg	*
 _parser.symbol.matching.bool_res_c	.subcode
 pred	.larg	_parser.symbol.matching.bool_pred_ty	s
-res	.alloc	_parser.symbol.matching.bool_res_c	s
+res	.alloc	_parser.symbol.matching.bool_res_c
 	.enter	res
 
 _parser.symbol.matching.bool_res_c	.expr
@@ -1051,7 +1051,7 @@ parser.prim.fail.msg	.gvar
 _parser.symbol_msg	.gvar
 pred	.fv	_parser.symbol.matching.bool_pred_ty	s
 k	.larg	_parser.t_k_ty	s	s	r
-sk	.alloc	_parser.symbol.matching.bool_sk_c	s	r
+sk	.alloc	_parser.symbol.matching.bool_sk_c
 fail	.apply	parser.prim.fail.msg	s	r	|	_parser.symbol_msg
 	.app	sk	fail
 	.yield	parser.prim.symbol	s	r
@@ -1163,28 +1163,28 @@ sym			.apply	parser.symbol.matching.bool	s	|	pred
 			.app	cons	sym
 			.enter	parser.map	s	s	res_ty
 		.case	empty
-id			.alloc	_parser.match_worker_id_c	s
+id			.alloc	_parser.match_worker_id_c
 			.app	id
 			.enter	parser.unit	s	res_ty
 		.case	neg.class
 cl		.fkarg	0	regex.class.t	s
 cons			.apply	list.:	s
-pred			.alloc	_parser.match_worker_neg.class_pred_c	s
+pred			.alloc	_parser.match_worker_neg.class_pred_c
 sym			.apply	parser.symbol.matching.bool	s	|	pred
 			.app	cons	sym
 			.enter	parser.map	s	s	res_ty
 		.case	product
 re0.0		.fkarg	0	regex.t	s
 re0.1		.fkarg	1	regex.t	s
-co			.alloc	_parser.match_worker_co_c	s
+co			.alloc	_parser.match_worker_co_c
 p0			.apply	_parser.match_worker	s	|	cmp	re0.0
 p1			.apply	_parser.match_worker	s	|	cmp	re0.1
 			.app	co	p0	p1
 			.enter	parser.lift2	s	res_ty	res_ty	res_ty
 		.case	star
 re0.0		.fkarg	0	regex.t	s
-co			.alloc	_parser.match_worker_co_c	s
-id			.alloc	_parser.match_worker_id_c	s
+co			.alloc	_parser.match_worker_co_c
+id			.alloc	_parser.match_worker_id_c
 p0			.apply	parser.unit	s	res_ty	|	id
 p1.0			.apply	_parser.match_worker	s	|	cmp	re0.0
 p1.1			.apply	_parser.match_worker	s	|	cmp	re
@@ -1194,7 +1194,7 @@ p1			.apply	parser.lift2	s	res_ty	res_ty	res_ty	|	co	p1.0	p1.1
 		.case	symbol
 c		.fkarg	0	s
 cons			.apply	list.:	s
-pred			.alloc	_parser.match_worker_symbol_pred_c	s
+pred			.alloc	_parser.match_worker_symbol_pred_c
 sym			.apply	parser.symbol.matching.bool	s	|	pred
 			.app	cons	sym
 			.enter	parser.map	s	s	res_ty
@@ -1502,7 +1502,7 @@ k0	.fv	_parser.prim.u_pos.get_0_ty	s	α
 p1.0	.karg	parser.prim.u	s	α
 	.danalyze	p1.0	pos.get
 		.default
-k2			.alloc	_parser.prim.<|>_pos.get_default_k2_c	s	α
+k2			.alloc	_parser.prim.<|>_pos.get_default_k2_c
 			.app	k2
 			.yield	parser.prim.pos.get	s	α
 		.case	pos.get
@@ -1555,7 +1555,7 @@ k		.fkarg	0	_parser.prim.u_pos.get_0_ty	s	α
 		.case	symbol
 sk1		.fkarg	0	_parser.prim.u_symbol_0_ty	s	α
 ek1		.fkarg	1	parser.prim.t	s	α
-sk2			.alloc	_parser.prim.<|>_symbol_sk2_c	s	α
+sk2			.alloc	_parser.prim.<|>_symbol_sk2_c
 ek2			.apply	parser.prim.<|>	s	α	|	ek	ek1
 			.app	sk2	ek2
 			.yield	parser.prim.symbol	s	α
@@ -1693,7 +1693,7 @@ k		.fkarg	0	_parser.prim.u_pos.get_0_ty	s	record.empty
 		.case	symbol
 sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	record.empty
 fk		.fkarg	1	parser.prim.t	s	record.empty
-sk1			.alloc	_parser.prim.neg_symbol_sk1_c	s	α
+sk1			.alloc	_parser.prim.neg_symbol_sk1_c
 fk1			.undefined	parser.prim.t	s	α
 			.app	sk1	fk1
 			.yield	parser.prim.symbol	s	α

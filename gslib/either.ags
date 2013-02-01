@@ -69,7 +69,7 @@ e		.fkarg	0	α
 			.undef	either.t	α	β1
 		.case	right
 x		.fkarg	0	β0
-y			.alloc	_either.map_y_c	β0	β1
+y			.alloc	_either.map_y_c
 			.app	y
 			.enter	either.right	α	β1
 
