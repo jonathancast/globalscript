@@ -31,7 +31,7 @@ ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 x	.larg	α
 s	.larg	ordered.set.t	α
-	.force	_ordered.set.elem_k	α
+	.force	_ordered.set.elem_k
 	.coerce	ordered.set.t.out	α
 	.enter	s
 
@@ -52,7 +52,7 @@ s0	.karg	ordered.set.prim.u	α	# s0 :: ordered.set.prim.u	α
 x1		.fkarg	0	α
 sl		.fkarg	1	ordered.set.t	α
 sr		.fkarg	2	ordered.set.t	α
-			.force	_ordered.set.elem_branch_k	α
+			.force	_ordered.set.elem_branch_k
 			.coerce	order.total.ord.t.out
 			.app	x	x1
 			.enter	cmp
@@ -106,7 +106,7 @@ ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 s	.larg	ordered.set.t	α
 ys	.larg	list.t	α
-	.force	_ordered.set.tolist_w_k	α
+	.force	_ordered.set.tolist_w_k
 	.coerce	ordered.set.t.out	α
 	.enter	s
 
@@ -171,7 +171,7 @@ ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 x	.larg	α
 s	.larg	ordered.set.t	α
-	.force	_ordered.set.insert_k	α
+	.force	_ordered.set.insert_k
 	.coerce	ordered.set.t.out	α
 	.enter	s
 
@@ -192,7 +192,7 @@ s0	.karg	ordered.set.prim.u	α
 x1		.fkarg	0	α
 sl		.fkarg	1	ordered.set.t	α
 sr		.fkarg	2	ordered.set.t	α
-			.force	_ordered.set.insert_branch_k	α
+			.force	_ordered.set.insert_branch_k
 			.coerce	order.total.ord.t.out
 			.app	x	x1
 			.enter	cmp
@@ -238,7 +238,7 @@ ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 s0	.larg	ordered.set.t	α
 s1	.larg	ordered.set.t	α
-	.force	_ordered.set.union_k0	α
+	.force	_ordered.set.union_k0
 	.coerce	ordered.set.t.out	α
 	.enter	s0
 
@@ -252,7 +252,7 @@ ordered.set.t.out	.cogvar
 cmp	.fv	order.total.t	α
 s1	.fv	ordered.set.t	α
 s0.0	.karg	ordered.set.prim.u	α
-	.force	_ordered.set.union_k1	α
+	.force	_ordered.set.union_k1
 	.coerce	ordered.set.t.out	α
 	.enter	s1
 
@@ -277,7 +277,7 @@ sr0		.fkarg	2	ordered.set.t	α
 x1				.fkarg	0	α
 sl1				.fkarg	1	ordered.set.t	α
 sr1				.fkarg	2	ordered.set.t	α
-					.force	_ordered.set.union_branch_branch_k	α
+					.force	_ordered.set.union_branch_branch_k
 					.coerce	order.total.ord.t.out
 					.app	x0	x1
 					.enter	cmp
@@ -349,7 +349,7 @@ ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 x	.larg	α
 s	.larg	ordered.set.t	α
-	.force	_ordered.set.union_split_k	α
+	.force	_ordered.set.union_split_k
 	.coerce	ordered.set.t.out	α
 	.enter	s
 

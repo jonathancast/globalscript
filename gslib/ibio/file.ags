@@ -91,7 +91,7 @@ s	.tyarg	*
 _ibio.file.read.open.prim_k	.subcode
 e	.larg	ibio.prim.external.io.t	s
 fn	.larg	ibio.file.name.t
-	.force	_ibio.file.read.open.prim_k	s
+	.force	_ibio.file.read.open.prim_k
 	.enter	e
 
 _ibio.file.read.open.prim_k	.forcecont

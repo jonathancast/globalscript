@@ -13,7 +13,7 @@ rune.t	.tygvar
 α	.tylet	rune.t
 _epcode.cont	.subcode
 x	.gvar
-	.force	_epcode.cont	α
+	.force	_epcode.cont
 	.enter	x
 
 _x.code	.expr

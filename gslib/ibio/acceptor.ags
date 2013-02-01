@@ -242,7 +242,7 @@ _ibio.acceptor.prim.<|>_k0	.subcode
 ibio.acceptor.prim.t.out	.cogvar
 p0	.larg	ibio.acceptor.prim.t	s	β
 p1	.larg	ibio.acceptor.prim.t	s	β
-	.force	_ibio.acceptor.prim.<|>_k0	s	β
+	.force	_ibio.acceptor.prim.<|>_k0
 	.coerce	ibio.acceptor.prim.t.out	s	β
 	.enter	p0
 
@@ -264,7 +264,7 @@ p0.0	.karg	ibio.acceptor.prim.u	s	β
 		.case	symbol.bind
 ks.0		.fkarg	0	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	β
 keof.0		.fkarg	1	ibio.acceptor.prim.t	s	β
-			.force	_ibio.acceptor.prim.<|>_k1	s	β
+			.force	_ibio.acceptor.prim.<|>_k1
 			.coerce	ibio.acceptor.prim.t.out	s	β
 			.enter	p1
 		.case	unit.plus

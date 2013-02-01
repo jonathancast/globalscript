@@ -1199,9 +1199,9 @@ gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedl
             gsfatal("%s:%d: Missing continuation on .force", pos->real_filename, pos->real_lineno)
         ;
         parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-        for (i = 3; i < n; i++) {
-            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-        }
+        if (n > 3)
+            gsfatal("%s:%d: Too many arguments to .force", pos->real_filename, pos->real_lineno)
+        ;
     } else if (gssymceq(parsedline->directive, gssymstrict, gssymcodeop, ".strict")) {
         NO_LABEL_ON_CONT();
         if (n < 3)

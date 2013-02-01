@@ -115,7 +115,7 @@ pr	.larg	print.t	s
 pos	.larg	parser.pos.t
 p	.larg	parser.prim.t	s	α
 s	.larg	list.t	s
-	.force	_parser.parse_work_k	s	α
+	.force	_parser.parse_work_k
 	.coerce	parser.prim.t.out	s	α
 	.enter	p
 
@@ -173,13 +173,13 @@ p1			.apply	k	|	pos
 		.case	symbol
 sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	α
 ek		.fkarg	1	parser.prim.t	s	α
-			.force	_parser.parse_work_symbol_k	s	α
+			.force	_parser.parse_work_symbol_k
 			.coerce	list.t.out	s
 			.enter	s
 		.case	unit.plus
 x		.fkarg	0	α
 p1		.fkarg	1	parser.prim.t	s	α
-			.force	_parser.parse_work_unit.plus_k	s	α
+			.force	_parser.parse_work_unit.plus_k
 			.coerce	list.t.out	s
 			.enter	s
 	# > :: either.t	parser.err.t	α
@@ -212,7 +212,7 @@ s0	.karg	list.prim.u	s
 		.case	:
 c		.fkarg	0	s
 s1		.fkarg	1	list.t	s
-			.force	_parser.parse_work_symbol_:_k	s	α
+			.force	_parser.parse_work_symbol_:_k
 			.coerce	either.t.out	list.string.ty	parser.ty
 			.app	c
 			.enter	sk
@@ -307,7 +307,7 @@ _parser.parse_work_lookahead_k	.subcode
 parser.prim.t.out	.cogvar
 p	.larg	parser.prim.t	s	rec.ty
 s	.larg	list.t	s
-	.force	_parser.parse_work_lookahead_k	s	α
+	.force	_parser.parse_work_lookahead_k
 	.coerce	parser.prim.t.out	s	rec.ty
 	.enter	p
 
@@ -344,7 +344,7 @@ k		.fkarg	0	_parser.prim.u_pos.get_0_ty	s	rec.ty
 		.case	symbol
 sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	rec.ty
 ek		.fkarg	1	parser.prim.t	s	rec.ty
-			.force	_parser.parse_work_lookahead_symbol_k	s	α
+			.force	_parser.parse_work_lookahead_symbol_k
 			.coerce	list.t.out	s
 			.enter	s
 		.case	unit.plus
@@ -374,7 +374,7 @@ s0	.karg	list.prim.u	s
 		.case	:
 c		.fkarg	0	s
 s1		.fkarg	1	list.t	s
-			.force	_parser.parse_work_lookahead_symbol_:_k	s	α
+			.force	_parser.parse_work_lookahead_symbol_:_k
 			.coerce	either.t.out	list.string.ty	parser.ty
 			.app	c
 			.enter	sk
@@ -1066,7 +1066,7 @@ bool.t.out	.cogvar
 pred	.fv	_parser.symbol.matching.bool_pred_ty	s
 k	.fv	_parser.t_k_ty	s	s	r
 c	.larg	s
-	.force	_parser.symbol.matching.bool_sk_k	s	r
+	.force	_parser.symbol.matching.bool_sk_k
 	.coerce	bool.t.out
 	.app	c
 	.enter	pred
@@ -1126,7 +1126,7 @@ _parser.match_worker_k	.subcode
 regex.t.out	.cogvar
 cmp	.larg	order.total.t	s
 re	.larg	regex.t	s
-	.force	_parser.match_worker_k	s
+	.force	_parser.match_worker_k
 	.coerce	regex.t.out	s
 	.enter	re
 
@@ -1264,7 +1264,7 @@ regex.class.t.out	.cogvar
 cmp	.larg	order.total.t	s
 cl	.larg	regex.class.t	s
 c	.larg	s
-	.force	_parser.match_worker_class_k	s
+	.force	_parser.match_worker_class_k
 	.coerce	regex.class.t.out	s
 	.enter	cl
 
@@ -1286,7 +1286,7 @@ cl0	.karg	regex.class.prim.u	s
 		.case	range
 c0		.fkarg	0	s
 c1		.fkarg	1	s
-                    	.force	_parser.match_worker_class_range_k1	s
+                    	.force	_parser.match_worker_class_range_k1
                     	.coerce	order.total.ord.t.out
                     	.app	c	c1
                     	.enter	cmp
@@ -1357,7 +1357,7 @@ _parser.prim.<|>_k0	.subcode
 parser.prim.t.out	.cogvar
 p0	.larg	parser.prim.t	s	α
 p1	.larg	parser.prim.t	s	α
-	.force	_parser.prim.<|>_k0	s	α
+	.force	_parser.prim.<|>_k0
 	.coerce	parser.prim.t.out	s	α
 	.enter	p0
 
@@ -1385,23 +1385,23 @@ p0.0	.karg	parser.prim.u	s	α
 			.enter	p1
 		.case	fail.msg
 msg		.fkarg	0	list.t	rune.t
-			.force	_parser.prim.<|>_fail.msg_k1	s	α
+			.force	_parser.prim.<|>_fail.msg_k1
 			.coerce	parser.prim.t.out	s	α
 			.enter	p1
 		.case	lookahead
 p0.1		.fkarg	0	parser.prim.t	s	rec.ty
-			.force	_parser.prim.<|>_lookahead_k	s	α
+			.force	_parser.prim.<|>_lookahead_k
 			.coerce	parser.prim.t.out	s	α
 			.enter	p1
 		.case	pos.get
 k0		.fkarg	0	_parser.prim.u_pos.get_0_ty	s	α
-			.force	_parser.prim.<|>_pos.get_k1	s	α
+			.force	_parser.prim.<|>_pos.get_k1
 			.coerce	parser.prim.t.out	s	α
 			.enter	p1
 		.case	symbol
 sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	α
 ek		.fkarg	1	parser.prim.t	s	α
-			.force	_parser.prim.<|>_symbol_k1	s	α
+			.force	_parser.prim.<|>_symbol_k1
 			.coerce	parser.prim.t.out	s	α
 			.enter	p1
 		.case	unit.plus
@@ -1580,7 +1580,7 @@ either.t.out	.cogvar
 sk	.fv	_parser.prim.u_symbol_0_ty	s	α
 sk1	.fv	_parser.prim.u_symbol_0_ty	s	α
 c	.larg	s
-	.force	_parser.prim.<|>_symbol_sk2_k0	s	α
+	.force	_parser.prim.<|>_symbol_sk2_k0
 	.coerce	either.t.out	list.string.t	parser.ty
 	.app	c
 	.enter	sk
@@ -1600,7 +1600,7 @@ either.t.out	.cogvar
 sk1	.fv	_parser.prim.u_symbol_0_ty	s	α
 c	.fv	s
 e0.0	.karg	either.prim.u	list.string.t	parser.ty
-	.force	_parser.prim.<|>_symbol_sk2_k1	s	α
+	.force	_parser.prim.<|>_symbol_sk2_k1
 	.coerce	either.t.out	list.string.t	parser.ty
 	.app	c
 	.enter	sk1
@@ -1658,7 +1658,7 @@ _parser.prim.neg_k	.subcode
 parser.prim.t.out	.cogvar
 p0	.larg	parser.prim.t	s	record.empty
 p1	.larg	parser.prim.t	s	α
-	.force	_parser.prim.neg_k	s	α
+	.force	_parser.prim.neg_k
 	.coerce	parser.prim.t.out	s	record.empty
 	.enter	p0
 
@@ -1718,7 +1718,7 @@ either.t.out	.cogvar
 p1	.fv	parser.prim.t	s	α
 sk	.fv	_parser.prim.u_symbol_0_ty	s	record.empty
 c	.larg	s
-	.force	_parser.prim.neg_symbol_sk1_k	s	α
+	.force	_parser.prim.neg_symbol_sk1_k
 	.coerce	either.t.out	list.string.ty	parser.in.ty
 	.app	c
 	.enter	sk

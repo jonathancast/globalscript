@@ -48,7 +48,7 @@ _either.map_k	.subcode
 either.t.out	.cogvar
 f	.larg	_either.map_f_ty	β0	β1
 e	.larg	either.t	α	β0
-	.force	_either.map_k	α	β0	β1
+	.force	_either.map_k
 	.coerce	either.t.out	α	β0
 	.enter	e
 
