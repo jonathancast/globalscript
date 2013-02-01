@@ -158,8 +158,8 @@ _ibio.mapM.prim_eys_body_c	.subcode
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 x0	.fv	α
 xn1	.fv	list.t	α
-y	.bind	_ibio.mapM.prim_eys_y_c	α	β
-ys1	.bind	_ibio.mapM.prim_eys_ys1_c	α	β
+y	.bind	_ibio.mapM.prim_eys_y_c
+ys1	.bind	_ibio.mapM.prim_eys_ys1_c
 	.body	_ibio.mapM.prim_eys_body_c	β
 
 _ibio.mapM.prim_eys_y_c	.expr
@@ -244,7 +244,7 @@ _ibio.mapM0.prim_k_:_e_body_c	.subcode
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 x0	.fv	α
 xn1	.fv	list.t	α
-	.bind	_ibio.mapM0.prim_k_:_e_head_c	α	β
+	.bind	_ibio.mapM0.prim_k_:_e_head_c
 	.body	_ibio.mapM0.prim_k_:_e_body_c	α	β
 
 _ibio.mapM0.prim_k_:_e_head_c	.expr
@@ -329,7 +329,7 @@ f	.fv	_ibio.foldM.prim_f_ty	α	β
 z0	.fv	β
 x0	.fv	α
 xn1	.fv	list.t	α
-z1	.bind	_ibio.foldM.prim_:_res_z1_c	α	β
+z1	.bind	_ibio.foldM.prim_:_res_z1_c
 	.body	_ibio.foldM.prim_:_res_body_c	α	β
 
 _ibio.foldM.prim_:_res_z1_c	.expr
