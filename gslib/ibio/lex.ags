@@ -512,7 +512,7 @@ rec	.larg	ibio.lex.receiver.t	s	α
 i	.larg	ibio.prim.iport	s
 ip	.bind	_ibio.lex.receive_ip_c
 x	.alloc	_ibio.lex.receive_x_c
-	.body	_ibio.lex.receive_body_c	α
+	.body	_ibio.lex.receive_body_c
 
 _ibio.lex.receive_ip_c	.expr
 ibio.lex.receiver.t	.tygvar

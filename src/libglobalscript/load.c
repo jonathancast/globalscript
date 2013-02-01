@@ -1268,8 +1268,8 @@ gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
                 gsfatal("%s:%d: Missing code label", pos->real_filename, pos->real_lineno)
             ;
             parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-            for (i = 3; i < n; i++)
-                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+            if (n > 3)
+                gsfatal("%s:%d: Too many arguments to .body", pos->real_filename, pos->real_lineno)
             ;
             return 0;
         } else {
