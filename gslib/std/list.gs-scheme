@@ -28,7 +28,7 @@ module 'globalscript.std.list ∝ 〈
     -- without qualification as to the underlying alphabet,
     -- will generally not be used as a type name in Global Script.
 
--- §section{Constructing Lists}
+-- §section Constructing Lists
 
     -- These rules require constructors for the forms §gs{[]} and §gs{[x] <> xn},
     -- and it turns out these two constructors are sufficient as §gs{[x] = [x] <> []} by the right identity law.
@@ -67,7 +67,7 @@ module 'globalscript.std.list ∝ 〈
         case _. e
     ;
 
--- §section{De-Constructing Lists}
+-- §section De-Constructing Lists
 
     -- The catamorphism on lists is §gs{foldr}.
     -- The §emph{catamorphisms} on lists is defined in terms of the constructors §gs{:} and §gs{nil}:

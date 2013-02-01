@@ -968,7 +968,7 @@ gsbc_bytecode_size_default(struct gsparsedfile_segment **ppseg, struct gsparsedl
     }
 }
 
-/* §section{Actual Byte Compiler} */
+/* §section Actual Byte Compiler */
 
 static void gsbc_bytecompile_data_item(struct gsfile_symtable *, struct gsparsedline *, gsvalue *, int, int);
 static void gsbc_bytecompile_code_item(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco **, int, int);

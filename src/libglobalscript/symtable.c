@@ -5,7 +5,7 @@
 #include <libglobalscript.h>
 #include "gsinputfile.h"
 
-/* §section{Symbol Equality} */
+/* §section Symbol Equality */
 
 int
 gssymeq(gsinterned_string sy0, gssymboltype ty, char *str)
@@ -17,7 +17,7 @@ gssymeq(gsinterned_string sy0, gssymboltype ty, char *str)
     return sy0 == sy1;
 }
 
-/* §section{Interning Symbols} */
+/* §section Interning Symbols */
 
 static gsinterned_string gsget_string(gssymboltype ty, char *nm);
 static gsinterned_string gsalloc_string(gssymboltype ty, char *nm);
@@ -37,7 +37,7 @@ gsintern_string(gssymboltype ty, char *nm)
     return res;
 }
 
-/* §subsection{Internals} */
+/* §subsection Internals */
 
 static ulong gshash_string();
 

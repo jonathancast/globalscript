@@ -14,7 +14,7 @@ static void *parsed_file_nursury;
 
 static void gsalloc_new_parsed_file_block(void);
 
-/* §section{Allocating a New File} */
+/* §section Allocating a New File */
 
 gsparsedfile *
 gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
@@ -45,7 +45,7 @@ gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
     return pres;
 }
 
-/* §section{Allocating Memory from a Parsed File} */
+/* §section Allocating Memory from a Parsed File */
 
 struct gs_block_class gsparsed_file_desc = {
     /* evaluator = */ gsnoeval,
@@ -130,7 +130,7 @@ gsparsed_file_addline(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, u
     return res;
 }
 
-/* §section{Manipulating Parsed Source Files} */
+/* §section Manipulating Parsed Source Files */
 
 struct gsparsedline *
 gsinput_next_line(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
@@ -145,7 +145,7 @@ gsinput_next_line(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
     return pres;
 }
 
-/* §section{Syntax-checking and complaining about source files} */
+/* §section Syntax-checking and complaining about source files */
 
 void
 gsargcheck(struct gsparsedline *inpline, ulong argnum, char *fmt, ...)

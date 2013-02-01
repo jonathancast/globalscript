@@ -2682,7 +2682,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
         items[n++] = p->item;
     }
 
-    /* §section{Type-checking} */
+    /* §section Type-checking */
 
     gstypes_process_type_declarations(symtable, items, kinds, n);
     gstypes_compile_types(symtable, items, types, n);
@@ -2691,7 +2691,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
     gstypes_process_type_signatures(symtable, items, ptype, n);
     gstypes_type_check_scc(symtable, items, types, kinds, ptype, n);
 
-    /* §section{Byte-compilation} */
+    /* §section Byte-compilation */
 
     gsbc_alloc_data_for_scc(symtable, items, heap, n);
     gsbc_alloc_code_for_scc(symtable, items, bcos, n);
