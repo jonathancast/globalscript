@@ -1233,7 +1233,6 @@ long
 gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
     struct gsparsedline *parsedline;
-    int i;
     long n;
 
     while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
