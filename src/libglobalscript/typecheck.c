@@ -2653,6 +2653,23 @@ gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *pcl, int ba
             if (nconstrs < 1)
                 gsfatal("%P: Cannot use .ubanalyze to branch on the empty sum type; use .ubeanalyze if you have a need to do this instead", p->pos)
             ;
+            for (i = 1; i < nconstrs; i++) {
+                if (conttypes[0]->numftyvs != conttypes[i]->numftyvs)
+                    gsfatal("%P: Mis-matched number of free type variables: %y has %d but %y has %d",
+                        p->pos,
+                        p->arguments[2*0 + 1], conttypes[0]->numftyvs,
+                        p->arguments[2*i + 1], conttypes[i]->numftyvs
+                    )
+                ;
+                for (j = 0; j < conttypes[0]->numftyvs; j++)
+                    if (conttypes[0]->tyfvs[j] != conttypes[i]->tyfvs[j])
+                        gsfatal("%P: Mis-matched free type variable #%d: %y has %y but %y has %y",
+                            p->pos, j,
+                            p->arguments[2*0 + 1], conttypes[0]->tyfvs[j],
+                            p->arguments[2*i + 1], conttypes[i]->tyfvs[j]
+                        )
+                ;
+            }
             for (i = 0; i < nconstrs; i++) {
                 gsbc_typecheck_free_type_variables(pcl, p, p->arguments[i * 2 + 1], conttypes[i], nconstrs * 2 + 1);
                 gsbc_typecheck_free_variables(pcl, p, p->arguments[i * 2 + 1], conttypes[i]);
