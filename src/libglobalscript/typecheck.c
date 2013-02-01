@@ -3248,33 +3248,34 @@ gsbc_typecheck_free_type_variables(struct gsbc_typecheck_code_or_api_expr_closur
     int i, j;
     int nftyvs;
 
-    for (i = firstftyv; i < p->numarguments; i++) {
+    nftyvs = firstftyv < p->numarguments ? p->numarguments - firstftyv : 0;
+    if (nftyvs < cty->numftyvs)
+        gsfatal("%P: Not enough free type variables for %y; need %d but have %d", p->pos, codelabel, cty->numftyvs, nftyvs)
+    ;
+    if (nftyvs > cty->numftyvs)
+        gsfatal("%P: Too many free type variables for %y; only need %d", p->pos, codelabel, cty->numftyvs)
+    ;
+
+    for (i = 0; i < cty->numftyvs; i++) {
         int regarg;
         struct gstype *fvval;
 
-        if (i - firstftyv >= cty->numftyvs)
-            gsfatal("%P: Too many free type variables for %y; only need %d", p->pos, codelabel, cty->numftyvs)
-        ;
-        regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+        regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[firstftyv + i]);
         fvval = pcl->tyregs[regarg];
-        gstypes_kind_check_fail(p->pos, pcl->tyregkinds[regarg], cty->tyfvkinds[i - firstftyv]);
-        for (j = i - firstftyv + 1; j < cty->numftyvs; j++) {
+        gstypes_kind_check_fail(p->pos, pcl->tyregkinds[regarg], cty->tyfvkinds[i]);
+        for (j = i + 1; j < cty->numftyvs; j++) {
             if (gstypes_is_ftyvar(cty->tyfvs[j], fvval))
                 gsfatal(UNIMPL("%P: α-rename other free type variables"), p->pos)
             ;
         }
         for (j = 0; j < cty->numfvs; j++)
-            cty->fvtypes[j] = gstypes_subst(p->pos, cty->fvtypes[j], cty->tyfvs[i - firstftyv], fvval)
+            cty->fvtypes[j] = gstypes_subst(p->pos, cty->fvtypes[j], cty->tyfvs[i], fvval)
         ;
         if (cty->cont_arg_type)
-            cty->cont_arg_type = gstypes_subst(p->pos, cty->cont_arg_type, cty->tyfvs[i - firstftyv], fvval)
+            cty->cont_arg_type = gstypes_subst(p->pos, cty->cont_arg_type, cty->tyfvs[i], fvval)
         ;
-        cty->result_type = gstypes_subst(p->pos, cty->result_type, cty->tyfvs[i - firstftyv], fvval);
+        cty->result_type = gstypes_subst(p->pos, cty->result_type, cty->tyfvs[i], fvval);
     }
-    nftyvs = firstftyv < p->numarguments ? i - firstftyv : 0;
-    if (nftyvs < cty->numftyvs)
-        gsfatal("%P: Not enough free type variables for %y; need %d but have %d", p->pos, codelabel, cty->numftyvs, nftyvs)
-    ;
 }
 
 static
