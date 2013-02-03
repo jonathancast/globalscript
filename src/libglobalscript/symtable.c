@@ -1,4 +1,4 @@
-/* §source.file{Symbol Tables} */
+/* §source.file Symbol Tables */
 
 #include <u.h>
 #include <libc.h>
