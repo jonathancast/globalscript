@@ -113,17 +113,18 @@ gsstore_string(gssymboltype ty, char *nm, gsinterned_string addr)
 
 /* §subsection Common Functions */
 
+/* ↓ §ccode{djb2} algorithm from §url{http://www.cse.yorku.ca/~oz/hash.html} */
 static
 ulong
 gshash_string(gssymboltype ty, char *nm)
 {
-    ulong hash = 0;
+    ulong hash = 5381;
     char *p;
 
-    hash = ty;
+    hash = hash * 33 + ty;
     p = nm;
     while (*p)
-        hash += *p++
+        hash = hash * 33 + *p++
     ;
 
     return hash;
