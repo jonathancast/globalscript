@@ -1,6 +1,0 @@
-	.document
-
-	.data
-
-	.line	./test-gslib/undef.cgs 3
-	.undefined	rune.t

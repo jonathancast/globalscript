@@ -1973,11 +1973,10 @@ gsgrabline(struct gsparse_input_pos *pos, struct uxio_ichannel *chan, char *line
                 gsfatal("%s:%d: Missing source line #", pos->real_filename, pos->real_lineno)
             ;
             pos->artificial.lineno = atoi(fields[3]);
-            if (n > 4)
-                pos->artificial.columnno = atoi(fields[4])
-            ; else
-                pos->artificial.columnno = 0
+            if (n < 5)
+                gsfatal("%s:%d: Missing source column #", pos->real_filename, pos->real_lineno)
             ;
+            pos->artificial.columnno = atoi(fields[4]);
             if (n > 5)
                 gsfatal("%s:%d: Too many arguments to .line", pos->real_filename, pos->real_lineno)
             ;
