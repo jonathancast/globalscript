@@ -24,6 +24,8 @@
 
 \maketitle
 
+\tableofcontents
+
 \chapter{Object Expressions}
 
 \section{Variables}
@@ -44,7 +46,7 @@ A \defn{variable term} is a simple variable
 followed by a sequence of \defn{explicit type arguments} of the form \<@(\type \tau)\>
 followed by a sequence of \defn{explicit arguments} of the form \<@e\>.
 
-\subsection{Variables Without \<\implicit\> Declarations}
+\subsection{Variables Without implicit Declarations}
 
 \begin{prooftree}
     \AxiomC{$\Gamma \sequent \overline{\tau_i :: \kappa_i}$}
@@ -59,7 +61,7 @@ followed by a sequence of \defn{explicit arguments} of the form \<@e\>.
         the result of substituting the type arguments for the $\forall$-bound variables in $\tau$.
 \end{itemize}
 
-\subsection{Variables With \<\implicit\> Declarations}
+\subsection{Variables With implicit Declarations}
 
 \begin{prooftree}
     \AxiomC{$\Gamma \sequent \overline{\tau_i :: \kappa_i}$}
