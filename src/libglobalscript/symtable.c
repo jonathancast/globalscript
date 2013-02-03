@@ -29,7 +29,8 @@ gsintern_string(gssymboltype ty, char *nm)
     gsinterned_string res;
 
     if (res = gsget_string(ty, nm))
-        return res;
+        return res
+    ;
 
     res = gsalloc_string(ty, nm);
     gsstore_string(ty, nm, res);
@@ -65,21 +66,22 @@ gsget_string(gssymboltype ty, char *nm)
     hash = gshash_string(ty, nm);
 
     if (!string_num_buckets)
-        gsstring_initialize_intern_hash();
+        gsstring_initialize_intern_hash()
+    ;
 
     n = hash % string_num_buckets;
-    for (p = string_intern_hash[n]; p; p = p->next) {
+    for (p = string_intern_hash[n]; p; p = p->next)
         if (
             p->string->type == ty
             && !strncmp(p->string->name, nm, ((char*)p->string + p->string->size) - p->string->name)
         )
-            return p->string;
-    }
+            return p->string
+    ;
 
     return 0;
 }
 
-/* §subsection{Retrieving Interned Strings} */
+/* §subsection Retrieving Interned Strings */
 
 static struct gstring_hash_link *gsstring_alloc_hash_link(void);
 
@@ -91,11 +93,13 @@ gsstore_string(gssymboltype ty, char *nm, gsinterned_string addr)
     struct gstring_hash_link *p;
 
     if (!string_num_buckets)
-        gsstring_initialize_intern_hash();
+        gsstring_initialize_intern_hash()
+    ;
 
     string_hash_size++;
     if (string_hash_size > string_num_buckets >> 1)
-        gsstring_expand_hash_table();
+        gsstring_expand_hash_table()
+    ;
 
     hash = gshash_string(ty, nm);
 
@@ -107,7 +111,7 @@ gsstore_string(gssymboltype ty, char *nm, gsinterned_string addr)
     string_intern_hash[n] = p;
 }
 
-/* §subsection{Common Functions} */
+/* §subsection Common Functions */
 
 static
 ulong
@@ -119,12 +123,13 @@ gshash_string(gssymboltype ty, char *nm)
     hash = ty;
     p = nm;
     while (*p)
-        hash += *p++;
+        hash += *p++
+    ;
 
     return hash;
 }
 
-/* §subsection{Dynamic Allocation for the Interning Hash Table} */
+/* §subsection Dynamic Allocation for the Interning Hash Table */
 
 struct gs_block_class gsstringhash_desc = {
     /* evaulator = */ gsnoeval,
@@ -193,7 +198,7 @@ gsstring_expand_hash_table()
     string_num_buckets = newnumbuckets;
 }
 
-/* §subsection{Dynamic Allocation for Interning Hash Table Alist Entries */
+/* §subsection Dynamic Allocation for Interning Hash Table Alist Entries */
 
 void *hash_link_nursury;
 
@@ -247,7 +252,7 @@ gsalloc_new_hash_link_block()
     gsassert(__FILE__, __LINE__, !((uintptr)hash_link_nursury % sizeof(void*)), "hash_link_nursury not void*-aligned; check sizeof(struct string_block)");
 }
 
-/* §subsection{Dynamic Allocation for Strings} */
+/* §subsection Dynamic Allocation for Strings */
 
 static void *string_nursury;
 
