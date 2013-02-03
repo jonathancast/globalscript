@@ -2,7 +2,7 @@
 
 	.data
 
-	.line	./test-fixtures/empty-doc.cgs 3
+	.line	./test-fixtures/empty-doc.cgs 3 1
 	.undefined	_ep_ty
 
 	.type

@@ -14,7 +14,8 @@ pos0	.larg	parser.pos.t
 pos1	.larg	parser.pos.t
 file	.lfield	file	pos0
 0.line	.lfield	line	pos0
-r	.record	0.line	0.line	file	file
+0.col	.lfield	col	pos0
+r	.record	0.col	0.col	0.line	0.line	file	file
 	.lift
 	.yield	r
 
@@ -28,4 +29,4 @@ gsdl.sourcepos.prim.u	.tygvar
 gsdl.sourcepos.prim.u	.tyexpr
 natural.t	.tygvar
 ibio.file.name.t	.tygvar
-	.typroduct	0.line	natural.t	file	ibio.file.name.t
+	.typroduct	0.col	natural.t	0.line	natural.t	file	ibio.file.name.t

@@ -19,6 +19,8 @@ diff.list.prepend	.gvar
 _gsdl.ags.sourcepos.print_line.s	.gvar
 _gsdl.ags.sourcepos.print_sp.s	.gvar
 ibio.file.name.out	.gvar
+diff.list.:	.gvar
+rune.space	.gvar
 natural.fmtdecimal	.gvar
 diff.list.singleton	.gvar
 rune.new.line	.gvar
@@ -26,8 +28,12 @@ pos	.larg	gsdl.sourcepos.t
 pos.file	.lfield	file	pos
 pos.file.s	.apply	ibio.file.name.out	|	pos.file
 line	.lfield	0.line	pos
+col	.lfield	0.col	pos
 line.s	.apply	natural.fmtdecimal	|	line
-s3	.apply	diff.list.singleton	rune.t	|	rune.new.line
+col.s	.apply	natural.fmtdecimal	|	col
+s5	.apply	diff.list.singleton	rune.t	|	rune.new.line
+s4	.apply	diff.list.prepend	rune.t	|	col.s	s5
+s3	.apply	diff.list.:	rune.t	|	rune.space	s4
 s2	.apply	diff.list.prepend	rune.t	|	line.s	s3
 s1	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.sourcepos.print_sp.s	s2
 s0	.apply	diff.list.prepend	rune.t	|	pos.file.s	s1

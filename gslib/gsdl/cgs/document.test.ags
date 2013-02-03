@@ -45,7 +45,7 @@ maybe.just	.gvar
 gsdl.cgs.gstype.product	.gvar
 list.nil	.gvar
 nothing	.apply	maybe.nothing	gsdl.cgs.gstype.t
-pos	.lrecord	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
 doc0	.lrecord	gstype	nothing	pos	pos
 nil	.apply	list.nil	gsdl.cgs.gstype.field.t
 empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
@@ -79,7 +79,7 @@ _test.fmtgs_expected	.gvar
 nil	.apply	list.nil	gsdl.cgs.gstype.field.t
 empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
 just.empty.prod	.apply	maybe.just	gsdl.cgs.gstype.t	|	empty.prod
-pos	.lrecord	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
 doc	.lrecord	gstype	just.empty.prod	pos	pos
 snil	.apply	list.nil	rune.t
 actual	.apply	gsdl.cgs.document.fmtgs	|	doc	fmtgs.prec.app	snil
@@ -121,7 +121,7 @@ actual	.larg	gsdl.cgs.document.t
 nil	.apply	list.nil	gsdl.cgs.gstype.field.t
 empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
 just.empty.prod	.apply	maybe.just	gsdl.cgs.gstype.t	|	empty.prod
-pos	.lrecord	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
 expected	.lrecord	gstype	just.empty.prod	pos	pos
 	.app	gsdl.cgs.document.≡	gsdl.cgs.document.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.cgs.document.t
