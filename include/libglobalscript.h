@@ -120,7 +120,7 @@ gsinterned_string gsintern_string(gssymboltype, char*);
 
 struct gspos {
     gsinterned_string file;
-    int lineno;
+    int lineno, columnno;
 };
 /* §todo{This is fine for string code files, but really should allow for core/Global Script source as well} */
 

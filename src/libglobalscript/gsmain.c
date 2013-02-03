@@ -82,7 +82,10 @@ gsPfmt(Fmt *f)
     struct gspos pos;
 
     pos = va_arg(f->args, struct gspos);
-    return fmtprint(f, "%s:%d", pos.file->name, pos.lineno);
+    return pos.columnno > 0
+        ? fmtprint(f, "%s:%d:%d", pos.file->name, pos.lineno, pos.columnno)
+        : fmtprint(f, "%s:%d", pos.file->name, pos.lineno)
+    ;
 }
 
 static
