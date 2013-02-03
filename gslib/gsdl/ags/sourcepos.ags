@@ -4,7 +4,6 @@
 
 gsdl.ags.sourcepos.print	.closure	_gsdl.ags.sourcepos.print_c
 _gsdl.ags.sourcepos.print_line.s	.string	\t.line\t
-_gsdl.ags.sourcepos.print_sp.s	.string	\s
 
 	.code
 
@@ -17,7 +16,6 @@ diff.list.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
 diff.list.prepend	.gvar
 _gsdl.ags.sourcepos.print_line.s	.gvar
-_gsdl.ags.sourcepos.print_sp.s	.gvar
 ibio.file.name.out	.gvar
 diff.list.:	.gvar
 rune.space	.gvar
@@ -35,7 +33,7 @@ s5	.apply	diff.list.singleton	rune.t	|	rune.new.line
 s4	.apply	diff.list.prepend	rune.t	|	col.s	s5
 s3	.apply	diff.list.:	rune.t	|	rune.space	s4
 s2	.apply	diff.list.prepend	rune.t	|	line.s	s3
-s1	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.sourcepos.print_sp.s	s2
+s1	.apply	diff.list.:	rune.t	|	rune.space	s2
 s0	.apply	diff.list.prepend	rune.t	|	pos.file.s	s1
 	.app	_gsdl.ags.sourcepos.print_line.s	s0
 	.enter	diff.list.prepend	rune.t
