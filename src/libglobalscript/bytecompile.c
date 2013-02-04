@@ -692,7 +692,7 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
             int nargs;
 
-            /* Ignore free type variables & separator (type erasure) */
+            /* Ignore type arguments & separator (type erasure) */
             for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
             if (i < p->numarguments) i++;
             nargs = p->numarguments - i;
@@ -1851,10 +1851,10 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
     } else if (gssymceq(p->directive, gssymopprim, gssymcodeop, ".prim")) {
         struct gsregistered_primset *prims;
 
-        CHECK_PHASE (rtlets, "allocations");
+        CHECK_PHASE(rtlets, "allocations");
         ADD_LABEL_TO_REGS();
 
-        SETUP_PCODE(gsbc_op_constr);
+        SETUP_PCODE(0);
         if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
             int nargs, first_arg;
             struct gsregistered_prim *prim;
