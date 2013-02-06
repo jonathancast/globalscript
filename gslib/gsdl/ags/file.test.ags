@@ -4,7 +4,10 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fmtgs
+_tests	.list	test.property.t	_test.parser.nil	_test.fmtgs
+
+_test.parser.nil	.closure	_test.parser.nil_c
+_test.parser.nil_label	.string	file.parser\sqq{}
 
 _test.fmtgs	.closure	_test.fmtgs_c
 _test.fmtgs_label	.string	fmtgs\s〈\s'filetype\s∝\sgsdocument;\s'datasection\s∝\s[];\s'typesection\s∝\s[];\s〉
@@ -17,6 +20,32 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{parser =~ qq{}}
+
+_test.parser.nil_c	.expr
+rune.t	.tygvar
+gsdl.ags.file.t	.tygvar
+_test.parser.nil_k0_c	.subcode
+test.property.label	.gvar
+_test.parser.nil_label	.gvar
+parser.test.assert.fails	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.file.fmtgs	.gvar
+gsdl.ags.file.parser	.gvar
+list.nil	.gvar
+nil	.apply	list.nil	rune.t
+k0	.alloc	_test.parser.nil_k0_c
+test	.apply	parser.test.assert.fails	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	gsdl.ags.file.fmtgs	gsdl.ags.file.parser	nil	k0
+	.app	_test.parser.nil_label	test
+	.enter	test.property.label
+
+_test.parser.nil_k0_c	.expr
+parser.err.t	.tygvar
+test.true	.gvar
+err	.larg	parser.err.t
+	.enter	test.true
 
 # §section §gs{fmtgs 〈 'filetype ∝ gsdocument; 'datasection ∝ []; 'typesection ∝ []; 〉}
 

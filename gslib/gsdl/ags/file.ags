@@ -18,6 +18,8 @@ _gsdl.ags.file.print.typesection_gstype.s	.string	\n\t.type\n\n
 
 _gsdl.ags.file.print.typeitems	.closure	_gsdl.ags.file.print.typeitems_c	_gsdl.ags.file.print.typeitems_ty
 
+gsdl.ags.file.parser	.closure	_gsdl.ags.file.parser_c
+
 gsdl.ags.file.fmtgs	.closure	_gsdl.ags.file.fmtgs_c
 _gsdl.ags.file.fmtgs_prefix.s	.string	〈\s
 _gsdl.ags.file.fmtgs_filetype.s	.string	'filetype\s∝\s
@@ -206,6 +208,14 @@ s1			.apply	_gsdl.ags.file.print.typeitems	|	file0	tys1
 			.enter	gsdl.ags.typeitem.print
 		.case	nil
 			.enter	list.nil	rune.t
+
+# §section §gs{gsdl.ags.file.parser}
+
+_gsdl.ags.file.parser_c	.expr
+rune.t	.tygvar
+gsdl.ags.file.t	.tygvar
+parser.fail	.gvar
+	.enter	parser.fail	rune.t	gsdl.ags.file.t
 
 # §section §gs{gsdl.ags.file.fmtgs}
 
