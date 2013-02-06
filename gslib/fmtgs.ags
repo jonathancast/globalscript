@@ -6,6 +6,8 @@ fmtgs.prec	.closure	_fmtgs.prec_c
 
 fmtgs.prec.higher	.closure	_fmtgs.prec.higher_c
 
+fmtgs.prec.max	.closure	_fmtgs.prec.max_c
+
 fmtgs.prec.arg	.closure	_fmtgs.prec.arg_c
 fmtgs.prec.app	.closure	_fmtgs.prec.app_c
 
@@ -92,6 +94,12 @@ p1.0	.karg	fmtgs.prec.prim.u
 				.case	arg
 					.enter	bool.true
 	# > :: bool.t
+
+# §section §gs{fmtgs.prec.max}
+
+_fmtgs.prec.max_c	.expr
+fmtgs.prec.app	.gvar
+	.enter	fmtgs.prec.app
 
 # §section §gs{fmtgs.prec} Constructors
 
