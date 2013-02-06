@@ -4,7 +4,11 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.fmtgs
+
+_test.fmtgs	.closure	_test.fmtgs_c
+_test.fmtgs_label	.string	fmtgs\s〈\s'filetype\s∝\sgsdocument;\s'datasection\s∝\s[];\s'typesection\s∝\s[];\s〉
+_test.fmtgs_expected	.string	〈\s'filetype\s∝\sgsdocument;\s'datasection\s∝\s[];\s'typesection\s∝\s[];\s〉
 
 	.code
 
@@ -13,3 +17,29 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{fmtgs 〈 'filetype ∝ gsdocument; 'datasection ∝ []; 'typesection ∝ []; 〉}
+
+_test.fmtgs_c	.expr
+string.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+rune.t	.tygvar
+test.property.label	.gvar
+_test.fmtgs_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+gsdl.ags.file.fmtgs	.gvar
+list.nil	.gvar
+gsdl.ags.file.filetype.gsdocument	.gvar
+fmtgs.prec.arg	.gvar
+_test.fmtgs_expected	.gvar
+ds	.apply	list.nil	gsdl.ags.dataitem.t
+tys	.apply	list.nil	gsdl.ags.typeitem.t
+file	.lrecord	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	tys
+nil	.apply	list.nil	rune.t
+file.s	.apply	gsdl.ags.file.fmtgs	|	file	fmtgs.prec.arg	nil
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	file.s	_test.fmtgs_expected
+	.app	_test.fmtgs_label	test
+	.enter	test.property.label

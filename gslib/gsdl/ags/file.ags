@@ -18,6 +18,17 @@ _gsdl.ags.file.print.typesection_gstype.s	.string	\n\t.type\n\n
 
 _gsdl.ags.file.print.typeitems	.closure	_gsdl.ags.file.print.typeitems_c	_gsdl.ags.file.print.typeitems_ty
 
+gsdl.ags.file.fmtgs	.closure	_gsdl.ags.file.fmtgs_c
+_gsdl.ags.file.fmtgs_prefix.s	.string	〈\s
+_gsdl.ags.file.fmtgs_filetype.s	.string	'filetype\s∝\s
+_gsdl.ags.file.fmtgs_semi.sp.s	.string	;\s
+_gsdl.ags.file.fmtgs_datasection.s	.string	'datasection\s∝\s
+_gsdl.ags.file.fmtgs_typesection.s	.string	'typesection\s∝\s
+_gsdl.ags.file.fmtgs_suffix.s	.string	〉
+
+gsdl.ags.file.filetype.fmtgs	.closure	_gsdl.ags.file.filetype.fmtgs_c
+_gsdl.ags.file.filetype.fmtgs_gsdocument.s	.string	gsdocument
+
 gsdl.ags.file.filetype.gsdocument	.closure	_gsdl.ags.file.filetype.gsdocument_c
 
 	.code
@@ -195,6 +206,78 @@ s1			.apply	_gsdl.ags.file.print.typeitems	|	file0	tys1
 			.enter	gsdl.ags.typeitem.print
 		.case	nil
 			.enter	list.nil	rune.t
+
+# §section §gs{gsdl.ags.file.fmtgs}
+
+_gsdl.ags.file.fmtgs_c	.expr
+gsdl.ags.file.t	.tygvar
+rune.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+fmtgs.t	.tygvar	# Temp
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.prepend	.gvar
+_gsdl.ags.file.fmtgs_prefix.s	.gvar
+_gsdl.ags.file.fmtgs_filetype.s	.gvar
+diff.list.<>	.gvar
+gsdl.ags.file.filetype.fmtgs	.gvar
+fmtgs.prec.max	.gvar
+_gsdl.ags.file.fmtgs_semi.sp.s	.gvar
+_gsdl.ags.file.fmtgs_datasection.s	.gvar
+list.fmtgs.byDefault	.gvar
+diff.list.fromlist	.gvar
+_gsdl.ags.file.fmtgs_typesection.s	.gvar
+_gsdl.ags.file.fmtgs_suffix.s	.gvar
+file	.larg	gsdl.ags.file.t
+ty	.lfield	filetype	file
+ty.s	.apply	gsdl.ags.file.filetype.fmtgs	|	ty	fmtgs.prec.max
+das.fmtgs	.undefined	fmtgs.t	gsdl.ags.dataitem.t
+das	.lfield	datasection	file
+das.s	.apply	list.fmtgs.byDefault	gsdl.ags.dataitem.t	|	das.fmtgs	das	fmtgs.prec.max
+tys.fmtgs	.undefined	fmtgs.t	gsdl.ags.typeitem.t
+tys	.lfield	typesection	file
+tys.s	.apply	list.fmtgs.byDefault	gsdl.ags.typeitem.t	|	tys.fmtgs	tys	fmtgs.prec.max
+ds10	.apply	diff.list.fromlist	rune.t	|	_gsdl.ags.file.fmtgs_suffix.s
+ds9	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_semi.sp.s	ds10
+ds8	.apply	diff.list.<>	rune.t	|	tys.s	ds9
+ds7	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_typesection.s	ds8
+ds6	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_semi.sp.s	ds7
+ds5	.apply	diff.list.<>	rune.t	|	das.s	ds6
+ds4	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_datasection.s	ds5
+ds3	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_semi.sp.s	ds4
+ds2	.apply	diff.list.<>	rune.t	|	ty.s	ds3
+ds1	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_filetype.s	ds2
+ds	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_prefix.s	ds1
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
+
+# §section §gs{gsdl.ags.file.filetype.fmtgs}
+
+_gsdl.ags.file.filetype.fmtgs_c	.expr
+gsdl.ags.file.filetype.t	.tygvar
+_gsdl.ags.file.filetype.fmtgs_k	.subcode
+gsdl.ags.file.filetype.t.out	.cogvar
+ty	.larg	gsdl.ags.file.filetype.t
+	.force	_gsdl.ags.file.filetype.fmtgs_k
+	.coerce	gsdl.ags.file.filetype.t.out
+	.enter	ty
+
+_gsdl.ags.file.filetype.fmtgs_k	.forcecont
+gsdl.ags.file.filetype.prim.u	.tygvar
+rune.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.fromlist	.gvar
+_gsdl.ags.file.filetype.fmtgs_gsdocument.s	.gvar
+ty0	.karg	gsdl.ags.file.filetype.prim.u
+	.analyze	ty0	gsdocument
+		.case	gsdocument
+ds			.apply	diff.list.fromlist	rune.t	|	_gsdl.ags.file.filetype.fmtgs_gsdocument.s
+			.app	fmtgs.prec.arg	ds
+			.enter	fmtgs.prec
+	# > :: fmtgs.printer.t
 
 # §section §gs{gsdl.ags.file.filetype.t} Constructors
 
