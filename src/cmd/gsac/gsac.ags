@@ -283,14 +283,18 @@ pas	.field	0	pa0
 	.enter	pas
 
 _real.entry_read.arguments_prefix_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.prim.t	.tygvar
 list.t	.tygvar
 gsac.input.prefix.t	.tygvar
 ibio.file.name.t	.tygvar
 ibio.mapM.prim	.gvar
 gsac.input.prefix.load	.gvar
+eo	.fv	ibio.prim.oport	rune.t
 prefix.files	.fv	list.t	ibio.file.name.t
-	.app	gsac.input.prefix.load	prefix.files
+load	.apply	gsac.input.prefix.load	|	eo
+	.app	load	prefix.files
 	.enter	ibio.mapM.prim	ibio.file.name.t	gsac.input.prefix.t
 
 _real.entry_read.arguments_cut.files_c	.expr

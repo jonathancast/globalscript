@@ -3,14 +3,24 @@
 	.data
 
 gsac.input.prefix.load	.closure	_gsac.input.prefix.load_c	_gsac.input.prefix.load_ty
+
 gsac.input.prefix.dir.load	.closure	_gsac.input.prefix.dir.load_c	_gsac.input.prefix.dir.load_ty
+_gsac.input.prefix.dir.load_files.loaded_f_ags.s	.string	ags
+
+gsac.input.prefix.file.load	.closure	_gsac.input.prefix.file.load_c
+_gsac.input.prefix.file.load_body_left_write_nl.s	.string	\n
 
 	.code
 
+# §section §gs{gsac.input.prefix.load}
+
 _gsac.input.prefix.load_c	.eprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 _gsac.input.prefix.load_isd_c	.subcode
 _gsac.input.prefix.load_body_c	.subcode
+eo	.larg	ibio.prim.oport	rune.t
 fn	.larg	ibio.file.name.t
 isd	.bind	_gsac.input.prefix.load_isd_c
 	.body	_gsac.input.prefix.load_body_c
@@ -23,10 +33,13 @@ fn	.fv	ibio.file.name.t
 	.enter	ibio.file.isdir
 
 _gsac.input.prefix.load_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 bool.t	.tygvar
 _gsac.input.prefix.load_body_k	.subcode
 bool.t.out	.cogvar
+eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
 isd	.fv	bool.t
 	.force	_gsac.input.prefix.load_body_k
@@ -34,35 +47,331 @@ isd	.fv	bool.t
 	.enter	isd
 
 _gsac.input.prefix.load_body_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 bool.prim.u	.tygvar
 ibio.prim.t	.tygvar	# Temp
 gsac.input.prefix.t	.tygvar	# Temp
 gsac.input.prefix.dir.load	.gvar
+eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
 isd0	.karg	bool.prim.u
 	.analyze	isd0	false	true
 	.case	false
 		.undef	ibio.prim.t	gsac.input.prefix.t
 	.case	true
-		.app	fn
+		.app	eo	fn
 		.enter	gsac.input.prefix.dir.load
 
+# §section §gs{gsac.input.prefix.dir.load}
+
 _gsac.input.prefix.dir.load_c	.eprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
+_gsac.input.prefix.dir.load_id_c	.subcode
+_gsac.input.prefix.dir.load_ds_c	.subcode
+_gsac.input.prefix.dir.load_files.loaded_c	.subcode
 _gsac.input.prefix.dir.load_body_c	.subcode
+eo	.larg	ibio.prim.oport	rune.t
 dirn	.larg	ibio.file.name.t
+id	.bind	_gsac.input.prefix.dir.load_id_c
+ds	.bind	_gsac.input.prefix.dir.load_ds_c
+files.loaded	.bind	_gsac.input.prefix.dir.load_files.loaded_c
 	.body	_gsac.input.prefix.dir.load_body_c
 
-_gsac.input.prefix.dir.load_body_c	.expr
-list.t	.tygvar	# Temp
+_gsac.input.prefix.dir.load_id_c	.expr
+ibio.file.name.t	.tygvar
+ibio.dir.t	.tygvar
+ibio.file.read.open.prim	.gvar
+ibio.dir.external.io	.gvar
+dirn	.fv	ibio.file.name.t
+	.app	ibio.dir.external.io	dirn
+	.enter	ibio.file.read.open.prim	ibio.dir.t
+
+_gsac.input.prefix.dir.load_ds_c	.expr
+ibio.prim.iport	.tygvar
+ibio.dir.t	.tygvar
+list.t	.tygvar
+res.ty	.tylet	list.t	ibio.dir.t
+ibio.lex.receive	.gvar
+ibio.lex.receiver.many	.gvar
+ibio.lex.receiver.symbol	.gvar
+id	.efv	ibio.prim.iport	ibio.dir.t
+sym	.apply	ibio.lex.receiver.symbol	ibio.dir.t
+ms	.apply	ibio.lex.receiver.many	ibio.dir.t	ibio.dir.t	|	sym
+	.app	ms	id
+	.enter	ibio.lex.receive	ibio.dir.t	res.ty
+
+_gsac.input.prefix.dir.load_files.loaded_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+list.t	.tygvar
+ibio.dir.t	.tygvar
+gsac.input.prefix.t	.tygvar
+_gsac.input.prefix.dir.load_files.loaded_f_c	.subcode
+ibio.mapM.prim	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+dirn	.fv	ibio.file.name.t
+ds	.fv	list.t	ibio.dir.t
+f	.alloc	_gsac.input.prefix.dir.load_files.loaded_f_c
+	.app	f	ds
+	.enter	ibio.mapM.prim	ibio.dir.t	gsac.input.prefix.t
+
+_gsac.input.prefix.dir.load_files.loaded_f_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+ibio.dir.t	.tygvar
+_gsac.input.prefix.dir.load_files.loaded_f_k	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+dirn	.fv	ibio.file.name.t
+d	.larg	ibio.dir.t
+	.force	_gsac.input.prefix.dir.load_files.loaded_f_k
+	.enter	d
+
+_gsac.input.prefix.dir.load_files.loaded_f_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+ibio.dir.u	.tygvar
+_gsac.input.prefix.dir.load_files.loaded_f_k1	.subcode
+bool.t.out	.cogvar
+eo	.fv	ibio.prim.oport	rune.t
+dirn	.fv	ibio.file.name.t
+d0	.karg	ibio.dir.u
+isdir	.field	mode.directory	d0
+	.force	_gsac.input.prefix.dir.load_files.loaded_f_k1
+	.coerce	bool.t.out
+	.enter	isdir
+
+_gsac.input.prefix.dir.load_files.loaded_f_k1	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+ibio.dir.u	.tygvar
+bool.prim.u	.tygvar
+string.t	.tygvar
+_ibio.file.name.components.get_worker_res.ty	.tygvar
+ibio.prim.t	.tygvar	# Temp
 gsac.input.prefix.t	.tygvar	# Temp
-res.ty	.tylet	list.t	gsac.input.prefix.t	# Temp
-ibio.prim.unit	.gvar	# Temp
-files	.undefined	gsac.input.prefix.t
+_gsac.input.prefix.dir.load_files.loaded_f_false_k	.subcode
+list.t.out	.cogvar
+ibio.file.name.</>	.gvar
+list.reverse	.gvar
+ibio.file.name.components.get	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+dirn	.fv	ibio.file.name.t
+d0	.fv	ibio.dir.u
+isdir.0	.karg	bool.prim.u
+nm	.field	name	d0
+fn	.apply	ibio.file.name.</>	|	dirn	nm
+	.analyze	isdir.0	false	true
+		.case	false
+cos			.apply	ibio.file.name.components.get	|	nm
+exts			.lfield	exts	cos
+stxe			.apply	list.reverse	string.t	|	exts
+			.force	_gsac.input.prefix.dir.load_files.loaded_f_false_k
+			.coerce	list.t.out	string.t
+			.enter	stxe
+		.case	true
+			.undef	ibio.prim.t	gsac.input.prefix.t
+
+_gsac.input.prefix.dir.load_files.loaded_f_false_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+list.prim.u	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+ibio.prim.t	.tygvar	# Temp
+gsac.input.prefix.t	.tygvar	# Temp
+_gsac.input.prefix.dir.load_files.loaded_f_false_k1	.subcode
+bool.t.out	.cogvar
+string.≡	.gvar
+_gsac.input.prefix.dir.load_files.loaded_f_ags.s	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+fn	.fv	ibio.file.name.t
+stxe.0	.karg	list.prim.u	string.t
+	.analyze	stxe.0	:	nil
+		.case	:
+ext0		.fkarg	0	string.t
+stxe.1		.fkarg	1	list.t	string.t
+			.force	_gsac.input.prefix.dir.load_files.loaded_f_false_k1
+			.coerce	bool.t.out
+			.app	ext0	_gsac.input.prefix.dir.load_files.loaded_f_ags.s
+			.enter	string.≡
+		.case	nil
+			.undef	ibio.prim.t	gsac.input.prefix.t
+
+_gsac.input.prefix.dir.load_files.loaded_f_false_k1	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+bool.prim.u	.tygvar
+ibio.prim.t	.tygvar	# Temp
+gsac.input.prefix.t	.tygvar	# Temp
+gsac.input.prefix.file.load	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+fn	.fv	ibio.file.name.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	ibio.prim.t	gsac.input.prefix.t
+		.case	true
+			.app	eo	fn
+			.enter	gsac.input.prefix.file.load
+
+_gsac.input.prefix.dir.load_body_c	.expr
+list.t	.tygvar
+gsac.input.prefix.t	.tygvar
+ibio.prim.unit	.gvar
+files.loaded	.fv	list.t	gsac.input.prefix.t
+res	.undefined	gsac.input.prefix.t
 	.lift
-	.app	files
+	.app	res
 	.yield	ibio.prim.unit	gsac.input.prefix.t
+
+# §section §gs{gsac.input.prefix.file.load}
+
+_gsac.input.prefix.file.load_c	.eprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+_gsac.input.prefix.file.load_if_c	.subcode
+_gsac.input.prefix.file.load_s_c	.subcode
+_gsac.input.prefix.file.load_body_c	.subcode
+eo	.larg	ibio.prim.oport	rune.t
+fn	.larg	ibio.file.name.t
+if	.bind	_gsac.input.prefix.file.load_if_c
+s	.bind	_gsac.input.prefix.file.load_s_c
+	.body	_gsac.input.prefix.file.load_body_c
+
+_gsac.input.prefix.file.load_if_c	.expr
+ibio.file.name.t	.tygvar
+rune.t	.tygvar
+ibio.file.read.open.prim	.gvar
+ibio.rune.external.io	.gvar
+fn	.fv	ibio.file.name.t
+	.app	ibio.rune.external.io	fn
+	.enter	ibio.file.read.open.prim	rune.t
+
+_gsac.input.prefix.file.load_s_c	.expr
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+res.ty	.tylet	list.t	rune.t
+ibio.lex.receive	.gvar
+ibio.lex.receiver.many	.gvar
+ibio.lex.receiver.symbol	.gvar
+if	.efv	ibio.prim.iport	rune.t
+sym	.apply	ibio.lex.receiver.symbol	rune.t
+ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
+	.app	ms	if
+	.enter	ibio.lex.receive	rune.t	res.ty
+
+_gsac.input.prefix.file.load_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+list.t	.tygvar
+gsdl.ags.file.t	.tygvar
+parser.err.t	.tygvar
+parser.pos.t	.tygvar	# Temp
+_gsac.input.prefix.file.load_body_k	.subcode
+either.t.out	.cogvar
+parser.parse	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+parser.pos.initial	.gvar
+gsdl.ags.file.parser	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+fn	.fv	ibio.file.name.t
+s	.fv	list.t	rune.t
+pos	.apply	parser.pos.initial	|	fn
+	.force	_gsac.input.prefix.file.load_body_k
+	.coerce	either.t.out	parser.err.t	gsdl.ags.file.t
+	.app	parser.rune.advance	rune.print	pos	gsdl.ags.file.parser	s
+	.enter	parser.parse	rune.t	gsdl.ags.file.t
+
+_gsac.input.prefix.file.load_body_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+either.prim.u	.tygvar
+parser.err.t	.tygvar
+gsdl.ags.file.t	.tygvar
+_gsac.input.prefix.file.load_body_left_c	.subcode
+_gsac.input.prefix.file.load_body_right_k	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+e0	.karg	either.prim.u	parser.err.t	gsdl.ags.file.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	parser.err.t
+res			.alloc	_gsac.input.prefix.file.load_body_left_c
+			.enter	res
+		.case	right
+file		.fkarg	0	gsdl.ags.file.t
+			.force	_gsac.input.prefix.file.load_body_right_k
+			.enter	file
+
+_gsac.input.prefix.file.load_body_left_c	.eprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+parser.err.t	.tygvar
+_gsac.input.prefix.file.load_body_left_write_c	.subcode
+_gsac.input.prefix.file.load_body_left_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	parser.err.t
+	.bind	_gsac.input.prefix.file.load_body_left_write_c
+	.body	_gsac.input.prefix.file.load_body_left_body_c
+
+_gsac.input.prefix.file.load_body_left_write_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+parser.err.t	.tygvar
+ibio.prim.write	.gvar
+list.<>	.gvar
+parser.err.fmt	.gvar
+_gsac.input.prefix.file.load_body_left_write_nl.s	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	parser.err.t
+s1	.apply	parser.err.fmt	|	err
+s	.apply	list.<>	rune.t	|	s1	_gsac.input.prefix.file.load_body_left_write_nl.s
+	.app	eo	s
+	.yield	ibio.prim.write	rune.t
+
+_gsac.input.prefix.file.load_body_left_body_c	.expr
+ibio.prim.t	.tygvar	# Temp
+gsac.input.prefix.t	.tygvar	# Temp
+	.undef	ibio.prim.t	gsac.input.prefix.t
+
+_gsac.input.prefix.file.load_body_right_k	.forcecont
+gsdl.ags.file.prim.u	.tygvar
+_gsac.input.prefix.file.load_body_right_k1	.subcode
+gsdl.ags.file.filetype.t.out	.cogvar
+file0	.karg	gsdl.ags.file.prim.u
+ty	.field	filetype	file0
+	.force	_gsac.input.prefix.file.load_body_right_k1
+	.coerce	gsdl.ags.file.filetype.t.out
+	.enter	ty
+
+_gsac.input.prefix.file.load_body_right_k1	.forcecont
+gsdl.ags.file.filetype.prim.u	.tygvar
+ibio.prim.t	.tygvar	# Temp
+gsac.input.prefix.t	.tygvar	# Temp
+ibio.prim.unit	.gvar
+ty0	.karg	gsdl.ags.file.filetype.prim.u
+	.analyze	ty0	gsdocument	gsprefix
+		.case	gsdocument
+			.undef	ibio.prim.t	gsac.input.prefix.t
+		.case	gsprefix
+res			.undefined	gsac.input.prefix.t
+			.lift
+			.app	res
+			.yield	ibio.prim.unit	gsac.input.prefix.t
+	# > :: ibio.prim.t	gsac.input.prefix.t
 
 	.type
 
@@ -78,18 +387,30 @@ gsac.input.sorted.node.t	.tyabstract	*
 	.tylift
 	.tysum
 
+# §section §gs{gsac.input.prefix.load}
+
 _gsac.input.prefix.load_ty	.tyexpr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
 gsac.input.prefix.t	.tygvar
 	.tylift
+	.tyfun	ibio.prim.oport	rune.t
+	.tylift
 	.tyfun	ibio.file.name.t
 	.tyref	ibio.prim.t	gsac.input.prefix.t
 
+# §section §gs{gsac.input.prefix.dir.load}
+
 _gsac.input.prefix.dir.load_ty	.tyexpr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
 gsac.input.prefix.t	.tygvar
+	.tylift
+	.tyfun	ibio.prim.oport	rune.t
 	.tylift
 	.tyfun	ibio.file.name.t
 	.tyref	ibio.prim.t	gsac.input.prefix.t
