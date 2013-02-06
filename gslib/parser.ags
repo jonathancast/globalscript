@@ -2024,16 +2024,12 @@ _parser.pos.fmt_k	.forcecont
 parser.pos.t	.tygvar
 bool.prim.u	.tygvar
 rune.t	.tygvar
-_parser.pos.fmt_true_k	.subcode
-bool.t.out	.cogvar
 list.<>	.gvar
 ibio.file.name.out	.gvar
 list.:	.gvar
 rune.colon	.gvar
 natural.fmtdecimal	.gvar
-bool.∨	.gvar
-natural.>	.gvar
-natural.1	.gvar
+_parser.pos.fmt_eof.suffix.s	.gvar
 pos	.fv	parser.pos.t
 eof0	.karg	bool.prim.u
 	.analyze	eof0	false	true
@@ -2049,30 +2045,6 @@ s2			.apply	list.<>	rune.t	|	line.s	s3
 s1			.apply	list.:	rune.t	|	rune.colon	s2
 			.app	fn.s	s1
 			.enter	list.<>	rune.t
-		.case	true
-line			.lfield	line	pos
-col			.lfield	col	pos
-b0			.apply	natural.>	|	line	natural.1
-b1			.apply	natural.>	|	col	natural.1
-			.force	_parser.pos.fmt_true_k
-			.coerce	bool.t.out
-			.app	b0	b1
-			.enter	bool.∨
-
-_parser.pos.fmt_true_k	.forcecont
-parser.pos.t	.tygvar
-bool.prim.u	.tygvar
-rune.t	.tygvar
-ibio.file.name.out	.gvar
-list.<>	.gvar
-_parser.pos.fmt_eof.suffix.s	.gvar
-pos	.fv	parser.pos.t
-b0	.karg	bool.prim.u
-	.analyze	b0	false	true
-		.case	false
-fn			.lfield	file	pos
-			.app	fn
-			.enter	ibio.file.name.out
 		.case	true
 fn			.lfield	file	pos
 fn.s			.apply	ibio.file.name.out	|	fn

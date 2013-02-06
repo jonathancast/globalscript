@@ -12,7 +12,7 @@ _test.fails.unit.nil_expected.msg	.string	Parse\ssucceeded:\s〈〉
 
 _test.passes.fail.nil	.closure	_test.passes.fail.nil_c
 _test.passes.fail.nil_label	.string	parser.test.assert.passes\sfail\snil
-_test.passes.fail.nil_expected.msg	.string	Parse\sfailed:\s./parse-data:\sParse\sfailure
+_test.passes.fail.nil_expected.msg	.string	Parse\sfailed:\s./parse-data:$:\sParse\sfailure
 
 	.code
 
