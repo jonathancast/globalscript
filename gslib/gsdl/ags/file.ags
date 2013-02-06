@@ -28,10 +28,14 @@ _gsdl.ags.file.fmtgs_datasection.s	.string	'datasection\s∝\s
 _gsdl.ags.file.fmtgs_typesection.s	.string	'typesection\s∝\s
 _gsdl.ags.file.fmtgs_suffix.s	.string	〉
 
+gsdl.ags.file.filetype.parser	.closure	_gsdl.ags.file.filetype.parser_c
+_gsdl.ags.file.filetype.parser_gsprefix.re	.regex	\t.prefix\n
+
 gsdl.ags.file.filetype.fmtgs	.closure	_gsdl.ags.file.filetype.fmtgs_c
 _gsdl.ags.file.filetype.fmtgs_gsdocument.s	.string	gsdocument
 
 gsdl.ags.file.filetype.gsdocument	.closure	_gsdl.ags.file.filetype.gsdocument_c
+gsdl.ags.file.filetype.gsprefix	.closure	_gsdl.ags.file.filetype.gsprefix_c
 
 	.code
 
@@ -75,10 +79,12 @@ file0	.fv	gsdl.ags.file.prim.u
 ty0	.karg	gsdl.ags.file.filetype.prim.u
 ds	.field	datasection	file0
 k	.apply	_gsdl.ags.file.print.datasection	|	file0	ds
-	.analyze	ty0	gsdocument
+	.analyze	ty0	gsdocument	gsprefix
 		.case	gsdocument
 			.app	_gsdl.ags.file.print.filetype_doc.s	k
 			.enter	list.<>	rune.t
+		.case	gsprefix
+			.undef	string.t
 	# > :: string.t
 
 # §subsection §gs{_gsdl.ags.file.print.datasection}
@@ -213,9 +219,27 @@ s1			.apply	_gsdl.ags.file.print.typeitems	|	file0	tys1
 
 _gsdl.ags.file.parser_c	.expr
 rune.t	.tygvar
+gsdl.ags.file.filetype.t	.tygvar
 gsdl.ags.file.t	.tygvar
-parser.fail	.gvar
-	.enter	parser.fail	rune.t	gsdl.ags.file.t
+_gsdl.ags.file.parser_f_c	.subcode
+parser.map	.gvar
+gsdl.ags.file.filetype.parser	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.file.parser_f_c
+	.app	f	gsdl.ags.file.filetype.parser
+	.enter	parser.map	rune.t	gsdl.ags.file.filetype.t	gsdl.ags.file.t
+
+_gsdl.ags.file.parser_f_c	.expr
+gsdl.ags.file.filetype.t	.tygvar
+list.t	.tygvar	# Temp
+gsdl.ags.dataitem.t	.tygvar	# Temp
+gsdl.ags.typeitem.t	.tygvar	# Temp
+ty	.larg	gsdl.ags.file.filetype.t
+das	.undefined	list.t	gsdl.ags.dataitem.t
+tys	.undefined	list.t	gsdl.ags.typeitem.t
+res	.record	datasection	das	filetype	ty	typesection	tys
+	.lift
+	.yield	res
 
 # §section §gs{gsdl.ags.file.fmtgs}
 
@@ -262,6 +286,24 @@ ds	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_prefix.s	ds1
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
 
+# §section §gs{gsdl.ags.file.filetype.parser}
+
+_gsdl.ags.file.filetype.parser_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+gsdl.ags.file.filetype.t	.tygvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.file.filetype.parser_gsprefix.re	.gvar
+parser.unit	.gvar
+gsdl.ags.file.filetype.gsprefix	.gvar
+parser.fail	.gvar	# Temp
+m.gsprefix	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.file.filetype.parser_gsprefix.re
+unit.gsprefix	.apply	parser.unit	rune.t	gsdl.ags.file.filetype.t	|	gsdl.ags.file.filetype.gsprefix
+	.app	m.gsprefix	unit.gsprefix
+	.enter	parser.*>	rune.t	string.t	gsdl.ags.file.filetype.t
+
 # §section §gs{gsdl.ags.file.filetype.fmtgs}
 
 _gsdl.ags.file.filetype.fmtgs_c	.expr
@@ -282,11 +324,13 @@ fmtgs.prec.arg	.gvar
 diff.list.fromlist	.gvar
 _gsdl.ags.file.filetype.fmtgs_gsdocument.s	.gvar
 ty0	.karg	gsdl.ags.file.filetype.prim.u
-	.analyze	ty0	gsdocument
+	.analyze	ty0	gsdocument	gsprefix
 		.case	gsdocument
 ds			.apply	diff.list.fromlist	rune.t	|	_gsdl.ags.file.filetype.fmtgs_gsdocument.s
 			.app	fmtgs.prec.arg	ds
 			.enter	fmtgs.prec
+		.case	gsprefix
+			.undef	fmtgs.printer.t
 	# > :: fmtgs.printer.t
 
 # §section §gs{gsdl.ags.file.filetype.t} Constructors
@@ -295,6 +339,14 @@ _gsdl.ags.file.filetype.gsdocument_c	.expr
 gsdl.ags.file.filetype.prim.u	.tygvar
 gsdl.ags.file.filetype.t.in	.cogvar
 c	.constr	gsdl.ags.file.filetype.prim.u	gsdocument
+	.coerce	gsdl.ags.file.filetype.t.in
+	.lift
+	.yield	c
+
+_gsdl.ags.file.filetype.gsprefix_c	.expr
+gsdl.ags.file.filetype.prim.u	.tygvar
+gsdl.ags.file.filetype.t.in	.cogvar
+c	.constr	gsdl.ags.file.filetype.prim.u	gsprefix
 	.coerce	gsdl.ags.file.filetype.t.in
 	.lift
 	.yield	c
@@ -322,7 +374,7 @@ gsdl.ags.file.filetype.prim.u	.tygvar
 
 gsdl.ags.file.filetype.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
-	.tysum	gsdocument	record.unboxed.empty
+	.tysum	gsdocument	record.unboxed.empty	gsprefix	record.unboxed.empty
 
 # §section §gs{gsdl.ags.file.print}
 
