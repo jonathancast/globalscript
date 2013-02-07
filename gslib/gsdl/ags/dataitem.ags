@@ -2,9 +2,43 @@
 
 	.data
 
+gsdl.ags.dataitem.segment.parser	.closure	_gsdl.ags.dataitem.segment.parser_c
+_gsdl.ags.dataitem.segment.parser_gsdata.re	.regex	\t.data
+
 gsdl.ags.dataitem.undefined	.closure	_gsdl.ags.dataitem.undefined_c
 
 	.code
+
+# §section §gs{gsdl.ags.dataitem.segment.parser}
+
+_gsdl.ags.dataitem.segment.parser_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+parser.t	.tygvar	# Temp
+res.ty	.tylet	list.t	gsdl.ags.dataitem.t
+parser.<|>	.gvar
+parser.unit	.gvar
+list.nil	.gvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.dataitem.segment.parser_gsdata.re	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.many	.gvar
+parser.fail	.gvar	# Temp
+nil	.apply	list.nil	gsdl.ags.dataitem.t
+nil.p	.apply	parser.unit	rune.t	res.ty	|	nil
+gsdata.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.dataitem.segment.parser_gsdata.re
+gsdata.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdata.p1	gsdl.ags.syntax.whitespace
+d.p	.apply	parser.fail	rune.t	gsdl.ags.dataitem.t
+das.p	.apply	parser.many	rune.t	gsdl.ags.dataitem.t	|	d.p
+seg.p	.apply	parser.*>	rune.t	string.t	res.ty	|	gsdata.p	das.p
+	.app	nil.p	seg.p
+	.enter	parser.<|>	rune.t	res.ty
+
+# §section §gs{gsdl.ags.dataitem.t} Constructors
 
 _gsdl.ags.dataitem.undefined_c	.expr
 gsdl.sourcepos.t	.tygvar

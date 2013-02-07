@@ -4,7 +4,14 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.parse.missing.gsdata.segment	_test.parse.empty.gsdata.segment
+
+_test.parse.missing.gsdata.segment	.closure	_test.parse.missing.gsdata.segment_c
+_test.parse.missing.gsdata.segment_label	.string	segment.parser\s=~\sqq{}
+
+_test.parse.empty.gsdata.segment	.closure	_test.parse.empty.gsdata.segment_c
+_test.parse.empty.gsdata.segment_label	.string	segment.parser\s=~\sqq{\\t.data\\n}
+_test.parse.empty.gsdata.segment_input	.string	\t.data\n
 
 	.code
 
@@ -13,3 +20,82 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{segment.parser =~ qq{}}
+
+_test.parse.missing.gsdata.segment_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
+_test.parse.missing.gsdata.segment_k_c	.subcode
+test.property.label	.gvar
+_test.parse.missing.gsdata.segment_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.dataitem.segment.parser	.gvar
+list.nil	.gvar
+nil	.apply	list.nil	rune.t
+k	.alloc	_test.parse.missing.gsdata.segment_k_c
+test	.apply	parser.test.assert.passes	rune.t	datasegment_ty	|	parser.rune.advance	rune.print	gsdl.ags.dataitem.segment.parser	nil	k
+	.app	_test.parse.missing.gsdata.segment_label	test
+	.enter	test.property.label
+
+_test.parse.missing.gsdata.segment_k_c	.expr
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+eq.t	.tygvar
+fmtgs.t	.tygvar
+datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
+test.assert.eq	.gvar
+list.≡	.gvar
+list.fmtgs.byDefault	.gvar
+list.nil	.gvar
+das	.larg	list.t	gsdl.ags.dataitem.t
+d.≡	.undefined	eq.t	gsdl.ags.dataitem.t
+ds.≡	.apply	list.≡	gsdl.ags.dataitem.t	|	d.≡
+d.fmtgs	.undefined	fmtgs.t	gsdl.ags.dataitem.t
+ds.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.dataitem.t	|	d.fmtgs
+nil	.apply	list.nil	gsdl.ags.dataitem.t
+	.app	ds.≡	ds.fmtgs	das	nil
+	.enter	test.assert.eq	datasegment_ty
+
+# §section §gs{segment.parser =~ qq{\\t.data\\n}}
+
+_test.parse.empty.gsdata.segment_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
+_test.parse.empty.gsdata.segment_k_c	.subcode
+test.property.label	.gvar
+_test.parse.empty.gsdata.segment_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.dataitem.segment.parser	.gvar
+_test.parse.empty.gsdata.segment_input	.gvar
+k	.alloc	_test.parse.empty.gsdata.segment_k_c
+test	.apply	parser.test.assert.passes	rune.t	datasegment_ty	|	parser.rune.advance	rune.print	gsdl.ags.dataitem.segment.parser	_test.parse.empty.gsdata.segment_input	k
+	.app	_test.parse.empty.gsdata.segment_label	test
+	.enter	test.property.label
+
+_test.parse.empty.gsdata.segment_k_c	.expr
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+eq.t	.tygvar
+fmtgs.t	.tygvar
+datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
+test.assert.eq	.gvar
+list.≡	.gvar
+list.fmtgs.byDefault	.gvar
+list.nil	.gvar
+das	.larg	list.t	gsdl.ags.dataitem.t
+d.≡	.undefined	eq.t	gsdl.ags.dataitem.t
+ds.≡	.apply	list.≡	gsdl.ags.dataitem.t	|	d.≡
+d.fmtgs	.undefined	fmtgs.t	gsdl.ags.dataitem.t
+ds.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.dataitem.t	|	d.fmtgs
+nil	.apply	list.nil	gsdl.ags.dataitem.t
+	.app	ds.≡	ds.fmtgs	das	nil
+	.enter	test.assert.eq	datasegment_ty
