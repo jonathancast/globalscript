@@ -7,6 +7,8 @@ _gsdl.ags.dataitem.segment.parser_gsdata.re	.regex	\t.data
 
 gsdl.ags.dataitem.parser	.closure	_gsdl.ags.dataitem.parser_c
 
+gsdl.ags.dataitem.≡	.closure	_gsdl.ags.dataitem.≡_c	_gsdl.ags.dataitem.≡_ty
+
 gsdl.ags.dataitem.undefined	.closure	_gsdl.ags.dataitem.undefined_c
 
 	.code
@@ -47,6 +49,51 @@ gsdl.ags.dataitem.t	.tygvar	# Temp
 parser.fail	.gvar	# Temp
 	.enter	parser.fail	rune.t	gsdl.ags.dataitem.t
 
+# §section §gs{gsdl.ags.dataitem.≡}
+
+_gsdl.ags.dataitem.≡_c	.expr
+gsdl.ags.dataitem.t	.tygvar
+_gsdl.ags.dataitem.≡_k0	.subcode
+gsdl.ags.dataitem.t.out	.cogvar
+di0	.larg	gsdl.ags.dataitem.t
+di1	.larg	gsdl.ags.dataitem.t
+	.force	_gsdl.ags.dataitem.≡_k0
+	.coerce	gsdl.ags.dataitem.t.out
+	.enter	di0
+
+_gsdl.ags.dataitem.≡_k0	.forcecont
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.dataitem.prim.u	.tygvar
+_gsdl.ags.dataitem.≡_k1	.subcode
+gsdl.ags.dataitem.t.out	.cogvar
+di1	.fv	gsdl.ags.dataitem.t
+di0.0	.karg	gsdl.ags.dataitem.prim.u
+	.force	_gsdl.ags.dataitem.≡_k1
+	.coerce	gsdl.ags.dataitem.t.out
+	.enter	di1
+
+_gsdl.ags.dataitem.≡_k1	.forcecont
+gsdl.ags.dataitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+bool.t	.tygvar	# Temp
+string.≡	.gvar
+di0.0	.fv	gsdl.ags.dataitem.prim.u
+di1.0	.karg	gsdl.ags.dataitem.prim.u
+	.analyze	di0.0	undefined
+		.case	undefined
+pos0		.fkarg	0	gsdl.sourcepos.t
+ty0		.fkarg	1	string.t
+			.danalyze	di1.0	undefined
+				.default
+					.undef	bool.t
+				.case	undefined
+pos1				.fkarg	0	gsdl.sourcepos.t
+ty1				.fkarg	1	string.t
+					.app	ty0	ty1
+					.enter	string.≡
+	# > :: bool.t
+
 # §section §gs{gsdl.ags.dataitem.t} Constructors
 
 _gsdl.ags.dataitem.undefined_c	.expr
@@ -76,6 +123,13 @@ _gsdl.ags.dataitem.prim.u_undefined_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	string.t
+
+# §section §gs{gsdl.ags.dataitem.≡}
+
+_gsdl.ags.dataitem.≡_ty	.tyexpr
+eq.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+	.tyref	eq.t	gsdl.ags.dataitem.t
 
 	.coercion
 

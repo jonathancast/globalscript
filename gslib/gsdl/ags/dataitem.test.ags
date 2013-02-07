@@ -4,7 +4,19 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse
+_tests	.list	test.property.t	_test.eq	_test.parse
+
+# §section §gs{≡}
+
+_test.eq	.closure	_test.eq_c
+_tests.eq	.list	test.property.t	_test.eq.undefined.diff.ty
+
+_test.eq.undefined.diff.ty	.closure	_test.eq.undefined.diff.ty_c
+_test.eq.undefined.diff.ty_label	.string	undefined\sqq{foo}\s≡\sundefined\sqq{bar}
+_test.eq.undefined.diff.ty_false	.string	undefined\sqq{foo}\s≠\sundefined\sqq{bar}
+_test.eq.undefined.diff.ty_true	.string	undefined\sqq{foo}\s≡\sundefined\sqq{bar}
+_test.eq.undefined.diff.ty_foo.s	.string	foo
+_test.eq.undefined.diff.ty_bar.s	.string	bar
 
 # §section Parsers
 
@@ -25,6 +37,35 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{≡}
+
+_test.eq_c	.expr
+test.all	.gvar
+_tests.eq	.gvar
+	.app	_tests.eq
+	.enter	test.all
+
+# §subsection §gs{undefined qq{foo} ≡ undefined qq{bar}}
+
+_test.eq.undefined.diff.ty_c	.expr
+gsdl.sourcepos.t	.tygvar
+test.property.label	.gvar
+_test.eq.undefined.diff.ty_label	.gvar
+test.deny	.gvar
+_test.eq.undefined.diff.ty_false	.gvar
+_test.eq.undefined.diff.ty_true	.gvar
+gsdl.ags.dataitem.≡	.gvar
+gsdl.ags.dataitem.undefined	.gvar
+_test.eq.undefined.diff.ty_foo.s	.gvar
+_test.eq.undefined.diff.ty_bar.s	.gvar
+pos0	.undefined	gsdl.sourcepos.t
+u.foo	.apply	gsdl.ags.dataitem.undefined	|	pos0	_test.eq.undefined.diff.ty_foo.s
+u.bar	.apply	gsdl.ags.dataitem.undefined	|	pos0	_test.eq.undefined.diff.ty_bar.s
+eq	.apply	gsdl.ags.dataitem.≡	|	u.foo	u.bar
+test	.apply	test.deny	|	_test.eq.undefined.diff.ty_false	_test.eq.undefined.diff.ty_true	eq
+	.app	_test.eq.undefined.diff.ty_label	test
+	.enter	test.property.label
 
 # §section Parsers
 
