@@ -29,7 +29,7 @@ _gsdl.ags.file.fmtgs_typesection.s	.string	'typesection\s∝\s
 _gsdl.ags.file.fmtgs_suffix.s	.string	〉
 
 gsdl.ags.file.filetype.parser	.closure	_gsdl.ags.file.filetype.parser_c
-_gsdl.ags.file.filetype.parser_gsprefix.re	.regex	\t.prefix\n
+_gsdl.ags.file.filetype.parser_gsprefix.re	.regex	\t.prefix
 
 gsdl.ags.file.filetype.fmtgs	.closure	_gsdl.ags.file.filetype.fmtgs_c
 _gsdl.ags.file.filetype.fmtgs_gsdocument.s	.string	gsdocument
@@ -292,17 +292,20 @@ _gsdl.ags.file.filetype.parser_c	.expr
 rune.t	.tygvar
 string.t	.tygvar
 gsdl.ags.file.filetype.t	.tygvar
+parser.<*	.gvar
 parser.*>	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.file.filetype.parser_gsprefix.re	.gvar
 parser.unit	.gvar
 gsdl.ags.file.filetype.gsprefix	.gvar
+gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
 m.gsprefix	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.file.filetype.parser_gsprefix.re
 unit.gsprefix	.apply	parser.unit	rune.t	gsdl.ags.file.filetype.t	|	gsdl.ags.file.filetype.gsprefix
-	.app	m.gsprefix	unit.gsprefix
-	.enter	parser.*>	rune.t	string.t	gsdl.ags.file.filetype.t
+p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.file.filetype.t	|	m.gsprefix	unit.gsprefix
+	.app	p1	gsdl.ags.syntax.whitespace
+	.enter	parser.<*	rune.t	gsdl.ags.file.filetype.t	string.t
 
 # §section §gs{gsdl.ags.file.filetype.fmtgs}
 

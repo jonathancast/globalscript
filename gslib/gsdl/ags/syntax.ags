@@ -1,0 +1,16 @@
+	.prefix
+
+	.data
+
+gsdl.ags.syntax.whitespace	.closure	_gsdl.ags.syntax.whitespace_c
+_gsdl.ags.syntax.whitespace_re	.regex	\n*
+
+	.code
+
+_gsdl.ags.syntax.whitespace_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.syntax.whitespace_re	.gvar
+	.app	rune.compare	_gsdl.ags.syntax.whitespace_re
+	.enter	parser.match	rune.t
