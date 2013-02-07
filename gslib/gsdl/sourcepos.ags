@@ -4,6 +4,14 @@
 
 gsdl.sourcepos	.closure	_gsdl.sourcepos_c
 
+gsdl.sourcepos.fmtgs	.closure	_gsdl.sourcepos.fmtgs_c
+_gsdl.sourcepos.fmtgs_prefix.s	.string	〈\s
+_gsdl.sourcepos.fmtgs_file.s	.string	'file\s∝\s
+_gsdl.sourcepos.fmtgs_semi.sp	.string	;\s
+_gsdl.sourcepos.fmtgs_0.line.s	.string	'0.line\s∝\s
+_gsdl.sourcepos.fmtgs_0.col.s	.string	'0.col\s∝\s
+_gsdl.sourcepos.fmtgs_suffix.s	.string	〉
+
 	.code
 
 # §section §gs{gsdl.sourcepos}
@@ -18,6 +26,46 @@ file	.lfield	file	pos0
 r	.record	0.col	0.col	0.line	0.line	file	file
 	.lift
 	.yield	r
+
+# §section §gs{gsdl.sourcepos.fmtgs}
+
+_gsdl.sourcepos.fmtgs_c	.expr
+gsdl.sourcepos.t	.tygvar
+rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.prepend	.gvar
+_gsdl.sourcepos.fmtgs_prefix.s	.gvar
+_gsdl.sourcepos.fmtgs_file.s	.gvar
+diff.list.<>	.gvar
+ibio.file.name.fmtgs	.gvar
+fmtgs.prec.max	.gvar
+_gsdl.sourcepos.fmtgs_semi.sp	.gvar
+_gsdl.sourcepos.fmtgs_0.line.s	.gvar
+natural.fmtdecimal	.gvar
+_gsdl.sourcepos.fmtgs_0.col.s	.gvar
+diff.list.fromlist	.gvar
+_gsdl.sourcepos.fmtgs_suffix.s	.gvar
+pos	.larg	gsdl.sourcepos.t
+fn	.lfield	file	pos
+fn.s	.apply	ibio.file.name.fmtgs	|	fn	fmtgs.prec.max
+0.line	.lfield	0.line	pos
+0.line.s	.apply	natural.fmtdecimal	|	0.line
+0.col	.lfield	0.col	pos
+0.col.s	.apply	natural.fmtdecimal	|	0.col
+ds10	.apply	diff.list.fromlist	rune.t	|	_gsdl.sourcepos.fmtgs_suffix.s
+ds9	.apply	diff.list.prepend	rune.t	|	_gsdl.sourcepos.fmtgs_semi.sp	ds10
+ds8	.apply	diff.list.prepend	rune.t	|	0.col.s	ds9
+ds7	.apply	diff.list.prepend	rune.t	|	_gsdl.sourcepos.fmtgs_0.col.s	ds8
+ds6	.apply	diff.list.prepend	rune.t	|	_gsdl.sourcepos.fmtgs_semi.sp	ds7
+ds5	.apply	diff.list.prepend	rune.t	|	0.line.s	ds6
+ds4	.apply	diff.list.prepend	rune.t	|	_gsdl.sourcepos.fmtgs_0.line.s	ds5
+ds3	.apply	diff.list.prepend	rune.t	|	_gsdl.sourcepos.fmtgs_semi.sp	ds4
+ds2	.apply	diff.list.<>	rune.t	|	fn.s	ds3
+ds1	.apply	diff.list.prepend	rune.t	|	_gsdl.sourcepos.fmtgs_file.s	ds2
+ds	.apply	diff.list.prepend	rune.t	|	_gsdl.sourcepos.fmtgs_prefix.s	ds1
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
 
 	.type
 

@@ -4,7 +4,12 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.fmtgs
+
+_test.fmtgs	.closure	_test.fmtgs_c
+_test.fmtgs_label	.string	fmtgs\s〈\s'file\s∝\sfn<./foo>;\s'0.line\s∝1;\s'0.col\s∝\s1;\s〉
+_test.fmtgs_file.s	.string	./foo
+_test.fmtgs_expected	.string	〈\s'file\s∝\sfn<./foo>;\s'0.line\s∝\s1;\s'0.col\s∝\s1;\s〉
 
 	.code
 
@@ -13,3 +18,28 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{〈 'file ∝ fn<./foo>; '0.line ∝1; '0.col ∝ 1; 〉}
+
+_test.fmtgs_c	.expr
+string.t	.tygvar
+rune.t	.tygvar
+test.property.label	.gvar
+_test.fmtgs_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+gsdl.sourcepos.fmtgs	.gvar
+natural.1	.gvar
+ibio.file.name.in	.gvar
+_test.fmtgs_file.s	.gvar
+fmtgs.prec.arg	.gvar
+list.nil	.gvar
+_test.fmtgs_expected	.gvar
+fn	.apply	ibio.file.name.in	|	_test.fmtgs_file.s
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	fn
+nil	.apply	list.nil	rune.t
+actual	.apply	gsdl.sourcepos.fmtgs	|	pos	fmtgs.prec.arg	nil
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs_expected
+	.app	_test.fmtgs_label	test
+	.enter	test.property.label
