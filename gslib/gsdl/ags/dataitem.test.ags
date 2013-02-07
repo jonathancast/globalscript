@@ -4,7 +4,12 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse.missing.gsdata.segment	_test.parse.empty.gsdata.segment
+_tests	.list	test.property.t	_test.parse
+
+# §section Parsers
+
+_test.parse	.closure	_test.parse_c
+_tests.parse	.list	test.property.t	_test.parse.missing.gsdata.segment	_test.parse.empty.gsdata.segment
 
 _test.parse.missing.gsdata.segment	.closure	_test.parse.missing.gsdata.segment_c
 _test.parse.missing.gsdata.segment_label	.string	segment.parser\s=~\sqq{}
@@ -21,7 +26,15 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{segment.parser =~ qq{}}
+# §section Parsers
+
+_test.parse_c	.expr
+test.all	.gvar
+_tests.parse	.gvar
+	.app	_tests.parse
+	.enter	test.all
+
+# §subsection §gs{segment.parser =~ qq{}}
 
 _test.parse.missing.gsdata.segment_c	.expr
 rune.t	.tygvar
@@ -61,7 +74,7 @@ nil	.apply	list.nil	gsdl.ags.dataitem.t
 	.app	ds.≡	ds.fmtgs	das	nil
 	.enter	test.assert.eq	datasegment_ty
 
-# §section §gs{segment.parser =~ qq{\\t.data\\n}}
+# §subsection §gs{segment.parser =~ qq{\\t.data\\n}}
 
 _test.parse.empty.gsdata.segment_c	.expr
 rune.t	.tygvar
