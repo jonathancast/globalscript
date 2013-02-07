@@ -220,22 +220,26 @@ s1			.apply	_gsdl.ags.file.print.typeitems	|	file0	tys1
 _gsdl.ags.file.parser_c	.expr
 rune.t	.tygvar
 gsdl.ags.file.filetype.t	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.file.t	.tygvar
+_dataitems_ty	.tylet	list.t	gsdl.ags.dataitem.t
 _gsdl.ags.file.parser_f_c	.subcode
-parser.map	.gvar
+parser.lift2	.gvar
 gsdl.ags.file.filetype.parser	.gvar
+gsdl.ags.dataitem.segment.parser	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.file.parser_f_c
-	.app	f	gsdl.ags.file.filetype.parser
-	.enter	parser.map	rune.t	gsdl.ags.file.filetype.t	gsdl.ags.file.t
+	.app	f	gsdl.ags.file.filetype.parser	gsdl.ags.dataitem.segment.parser
+	.enter	parser.lift2	rune.t	gsdl.ags.file.filetype.t	_dataitems_ty	gsdl.ags.file.t
 
 _gsdl.ags.file.parser_f_c	.expr
 gsdl.ags.file.filetype.t	.tygvar
-list.t	.tygvar	# Temp
-gsdl.ags.dataitem.t	.tygvar	# Temp
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar	# Temp
 ty	.larg	gsdl.ags.file.filetype.t
-das	.undefined	list.t	gsdl.ags.dataitem.t
+das	.larg	list.t	gsdl.ags.dataitem.t
 tys	.undefined	list.t	gsdl.ags.typeitem.t
 res	.record	datasection	das	filetype	ty	typesection	tys
 	.lift
