@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -34,6 +34,9 @@ _test.many.fail.cons_input	.string	x
 
 _test.rune.advance.x	.closure	_test.rune.advance.x_c
 _test.rune.advance.x_label	.string	parser.rune.advance\sr/x/
+
+_test.rune.advance.nl	.closure	_test.rune.advance.nl_c
+_test.rune.advance.nl_label	.string	parser.rune.advance\sr/\\n/
 
 # §section §gs{parser.match}
 
@@ -974,4 +977,26 @@ actual	.apply	parser.rune.advance	|	rune.latin.letter.x	pos0
 expected	.apply	parser.pos.next.col	|	pos0
 test	.apply	test.assert.eq	parser.pos.t	|	parser.pos.≡	parser.pos.fmtgs	actual	expected
 	.app	_test.rune.advance.x_label	test
+	.enter	test.property.label
+
+# §section §gs{parser.rune.advance r/\\n/}
+
+_test.rune.advance.nl_c	.expr
+parser.pos.t	.tygvar
+test.property.label	.gvar
+_test.rune.advance.nl_label	.gvar
+test.assert.eq	.gvar
+parser.pos.≡	.gvar
+parser.pos.fmtgs	.gvar
+parser.rune.advance	.gvar
+rune.new.line	.gvar
+natural.9	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+natural.1	.gvar
+natural.2	.gvar
+pos0	.lrecord	col	natural.9	file	parser.test.assert.fixtures.sample.file.name	line	natural.1
+actual	.apply	parser.rune.advance	|	rune.new.line	pos0
+expected	.lrecord	col	natural.1	file	parser.test.assert.fixtures.sample.file.name	line	natural.2
+test	.apply	test.assert.eq	parser.pos.t	|	parser.pos.≡	parser.pos.fmtgs	actual	expected
+	.app	_test.rune.advance.nl_label	test
 	.enter	test.property.label

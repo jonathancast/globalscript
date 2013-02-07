@@ -2001,11 +2001,31 @@ c	.constr	parser.err.prim.u	message.failure	0	pos	1	eof	2	msg
 _parser.rune.advance_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
-parser.pos.next.col	.gvar
+_parser.rune.advance_k	.subcode
+bool.t.out	.cogvar
+rune.≡	.gvar
+rune.new.line	.gvar
 r	.larg	rune.t
 pos	.larg	parser.pos.t
-	.app	pos
-	.enter	parser.pos.next.col
+	.force	_parser.rune.advance_k
+	.coerce	bool.t.out
+	.app	r	rune.new.line
+	.enter	rune.≡
+
+_parser.rune.advance_k	.forcecont
+parser.pos.t	.tygvar
+bool.prim.u	.tygvar
+parser.pos.next.col	.gvar
+parser.pos.next.line	.gvar
+pos	.fv	parser.pos.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.app	pos
+			.enter	parser.pos.next.col
+		.case	true
+			.app	pos
+			.enter	parser.pos.next.line
 
 # §section §gs{parser.pos.fmt}
 
@@ -2134,7 +2154,7 @@ fn	.lfield	file	pos
 line	.lfield	line	pos
 col	.lfield	col	pos
 line.1	.apply	natural.+	|	line	natural.1
-r	.record	col	col	file	fn	line	line.1
+r	.record	col	natural.1	file	fn	line	line.1
 	.lift
 	.yield	r
 
