@@ -440,40 +440,84 @@ ibio_shutdown_iport(struct ibio_iport *iport, gsvalue *pos)
 
 static void ibio_iport_link_to_thread(struct api_thread *, struct ibio_iport *);
 
+struct ibio_read_blocking {
+    struct api_prim_blocking bl;
+    struct ibio_iport *iport;
+    gsvalue acceptor;
+    struct ibio_iport_read_blocker *blocking;
+};
+
+static struct gs_block_class ibio_read_blocking_class = {
+    /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
+    /* description = */ "IBIO Read Blocking Queue Link",
+};
+static void *ibio_read_blocking_nursury;
+static Lock ibio_read_blocking_lock;
+
+struct ibio_iport_read_blocker {
+    struct ibio_iport_read_blocker *next;
+};
+
 enum api_prim_execution_state
 ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct api_prim_blocking **pblocking, gsvalue *pv)
 {
     gsvalue res;
-    gsvalue acceptor;
-    struct ibio_iport *iport;
+    struct ibio_read_blocking *read_blocking;
 
-    iport = (struct ibio_iport*)read->arguments[0];
-    acceptor = read->arguments[1];
+    if (*pblocking) {
+        read_blocking = (struct ibio_read_blocking *)*pblocking;
+    } else {
+        *pblocking = api_blocking_alloc(sizeof(struct ibio_read_blocking));
+        read_blocking = (struct ibio_read_blocking *)*pblocking;
+        read_blocking->iport = (struct ibio_iport*)read->arguments[0];
+        read_blocking->acceptor = read->arguments[1];
+        read_blocking->blocking = 0;
+    }
 
     res = 0;
-    lock(&iport->lock);
-    {
-        if (!iport->active) {
-            api_abend(thread, "read on inactive iport: %p", iport);
-            unlock(&iport->lock);
-            return api_st_error;
-        }
-        if (iport->reading) {
-            api_abend_unimpl(thread, __FILE__, __LINE__, "ibio_handle_prim_read: block on previous read");
-            unlock(&iport->lock);
-            return api_st_error;
-        }
+    lock(&read_blocking->iport->lock);
 
-        iport->reading = acceptor;
-        iport->reading_thread = thread;
-        ibio_iport_link_to_thread(thread, iport);
-
-        res = (gsvalue)iport->position;
+    if (!read_blocking->iport->active) {
+        api_abend(thread, "read on inactive iport: %p", read_blocking->iport);
+        unlock(&read_blocking->iport->lock);
+        return api_st_error;
     }
-    unlock(&iport->lock);
+    if (!read_blocking->iport->reading) {
+        if (read_blocking->blocking) {
+            if (read_blocking->blocking == read_blocking->iport->waiting_to_read) {
+                read_blocking->iport->waiting_to_read = read_blocking->iport->waiting_to_read->next;
+                if (!read_blocking->iport->waiting_to_read)
+                    read_blocking->iport->waiting_to_read_end = &read_blocking->iport->waiting_to_read
+                ;
+            } else {
+                unlock(&read_blocking->iport->lock);
+                return api_st_blocked;
+            }
+        }
+        read_blocking->iport->reading = read_blocking->acceptor;
+        read_blocking->iport->reading_thread = thread;
+        ibio_iport_link_to_thread(thread, read_blocking->iport);
 
-    *pv = res;
-    return api_st_success;
+        res = (gsvalue)read_blocking->iport->position;
+
+        unlock(&read_blocking->iport->lock);
+        *pv = res;
+        return api_st_success;
+    } else if (!read_blocking->blocking) {
+        lock(&ibio_read_blocking_lock);
+        read_blocking->blocking = *read_blocking->iport->waiting_to_read_end = gs_sys_seg_suballoc(&ibio_read_blocking_class, &ibio_read_blocking_nursury, sizeof(struct ibio_iport_read_blocker), sizeof(void *));
+        unlock(&ibio_read_blocking_lock);
+
+        read_blocking->iport->waiting_to_read_end = &read_blocking->blocking->next;
+        read_blocking->blocking->next = 0;
+
+        unlock(&read_blocking->iport->lock);
+        return api_st_blocked;
+    } else {
+        unlock(&read_blocking->iport->lock);
+        return api_st_blocked;
+    }
 }
 
 /* §section Reading (Global Script-side) */
@@ -728,6 +772,8 @@ ibio_alloc_iport(struct ibio_channel_segment *chan)
 
     res->reading = 0;
     res->reading_thread = 0;
+    res->waiting_to_read = 0;
+    res->waiting_to_read_end = &res->waiting_to_read;
 
     res->position = chan->items;
     chan->iport = res;
