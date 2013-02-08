@@ -145,6 +145,7 @@ list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.dataitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
+maybe.t	.tygvar
 string.t	.tygvar
 rune.t	.tygvar
 _gsdl.ags.file.print.dataitems	.gvar
@@ -157,7 +158,12 @@ file0	.fv	gsdl.ags.file.prim.u
 ds1	.fv	list.t	gsdl.ags.dataitem.t
 d0.0	.karg	gsdl.ags.dataitem.prim.u
 s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds1
-	.analyze	d0.0	undefined
+	.analyze	d0.0	closure	undefined
+		.case	closure
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	maybe.t	string.t
+ty		.fkarg	2	maybe.t	string.t
+			.undef	string.t
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	string.t
