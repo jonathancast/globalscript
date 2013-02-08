@@ -162,7 +162,8 @@ s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds1
 		.case	closure
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	string.t
-ty		.fkarg	2	maybe.t	string.t
+co		.fkarg	2	string.t
+ty		.fkarg	3	maybe.t	string.t
 			.undef	string.t
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t

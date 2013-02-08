@@ -89,7 +89,8 @@ di1.0	.karg	gsdl.ags.dataitem.prim.u
 		.case	closure
 pos0		.fkarg	0	gsdl.sourcepos.t
 nm0		.fkarg	1	maybe.t	string.t
-ty0		.fkarg	2	maybe.t	string.t
+co0		.fkarg	2	string.t
+ty0		.fkarg	3	maybe.t	string.t
 			.undef	bool.t
 		.case	undefined
 pos0		.fkarg	0	gsdl.sourcepos.t
@@ -137,7 +138,8 @@ di0	.karg	gsdl.ags.dataitem.prim.u
 		.case	closure
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	string.t
-ty		.fkarg	2	maybe.t	string.t
+co		.fkarg	2	string.t
+ty		.fkarg	3	maybe.t	string.t
 			.undef	fmtgs.printer.t
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -173,8 +175,9 @@ gsdl.ags.dataitem.prim.u	.tygvar
 gsdl.ags.dataitem.t.in	.cogvar
 pos	.arg	gsdl.sourcepos.t
 nm	.arg	maybe.t	string.t
+co	.arg	string.t
 ty	.arg	maybe.t	string.t
-c	.constr	gsdl.ags.dataitem.prim.u	closure	0	pos	1	nm	2	ty
+c	.constr	gsdl.ags.dataitem.prim.u	closure	0	pos	1	nm	2	co	3	ty
 	.coerce	gsdl.ags.dataitem.t.in
 	.lift
 	.yield	c
@@ -196,7 +199,7 @@ gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 string.t	.tygvar
 mb.string.ty	.tylet	maybe.t	string.t
-	.tyubproduct	0	gsdl.sourcepos.t	1	mb.string.ty	2	mb.string.ty
+	.tyubproduct	0	gsdl.sourcepos.t	1	mb.string.ty	2	string.t	3	mb.string.ty
 
 _gsdl.ags.dataitem.prim.u_undefined_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
