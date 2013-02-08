@@ -9,6 +9,9 @@ gsdl.ags.dataitem.parser	.closure	_gsdl.ags.dataitem.parser_c
 
 gsdl.ags.dataitem.≡	.closure	_gsdl.ags.dataitem.≡_c	_gsdl.ags.dataitem.≡_ty
 
+gsdl.ags.dataitem.fmtgs	.closure	_gsdl.ags.dataitem.fmtgs_c	_gsdl.ags.dataitem.fmtgs_ty
+_gsdl.ags.dataitem.fmtgs_undefined.s	.string	undefined\s
+
 gsdl.ags.dataitem.undefined	.closure	_gsdl.ags.dataitem.undefined_c
 
 	.code
@@ -94,6 +97,47 @@ ty1				.fkarg	1	string.t
 					.enter	string.≡
 	# > :: bool.t
 
+# §section §gs{gsdl.ags.dataitem.fmtgs}
+
+_gsdl.ags.dataitem.fmtgs_c	.expr
+gsdl.ags.dataitem.t	.tygvar
+_gsdl.ags.dataitem.fmtgs_k	.subcode
+gsdl.ags.dataitem.t.out	.cogvar
+di	.larg	gsdl.ags.dataitem.t
+	.force	_gsdl.ags.dataitem.fmtgs_k
+	.coerce	gsdl.ags.dataitem.t.out
+	.enter	di
+
+_gsdl.ags.dataitem.fmtgs_k	.forcecont
+gsdl.ags.dataitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+rune.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+fmtgs.prec	.gvar
+fmtgs.prec.app	.gvar
+diff.list.prepend	.gvar
+_gsdl.ags.dataitem.fmtgs_undefined.s	.gvar
+diff.list.<>	.gvar
+gsdl.sourcepos.fmtgs	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.:	.gvar
+rune.space	.gvar
+string.fmtgs	.gvar
+di0	.karg	gsdl.ags.dataitem.prim.u
+	.analyze	di0	undefined
+		.case	undefined
+pos		.fkarg	0	gsdl.sourcepos.t
+ty		.fkarg	1	string.t
+pos.s			.apply	gsdl.sourcepos.fmtgs	|	pos	fmtgs.prec.arg
+ty.s			.apply	string.fmtgs	|	ty	fmtgs.prec.arg
+ds2			.apply	diff.list.:	rune.t	|	rune.space	ty.s
+ds1			.apply	diff.list.<>	rune.t	|	pos.s	ds2
+ds			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.dataitem.fmtgs_undefined.s	ds1
+			.app	fmtgs.prec.app	ds
+			.enter	fmtgs.prec
+	# > :: fmtgs.printer.t
+
 # §section §gs{gsdl.ags.dataitem.t} Constructors
 
 _gsdl.ags.dataitem.undefined_c	.expr
@@ -130,6 +174,13 @@ _gsdl.ags.dataitem.≡_ty	.tyexpr
 eq.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 	.tyref	eq.t	gsdl.ags.dataitem.t
+
+# §section §gs{gsdl.ags.dataitem.fmtgs}
+
+_gsdl.ags.dataitem.fmtgs_ty	.tyexpr
+fmtgs.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+	.tyref	fmtgs.t	gsdl.ags.dataitem.t
 
 	.coercion
 
