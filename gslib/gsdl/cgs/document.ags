@@ -3,7 +3,6 @@
 	.data
 
 gsdl.cgs.document.parser	.closure	_gsdl.cgs.document.parser_c
-_gsdl.cgs.document.parser_msg.s	.string	Expecting\sexpression
 
 gsdl.cgs.document.freevars	.closure	_gsdl.cgs.document.freevars_c
 
