@@ -380,6 +380,19 @@ ibio_read_process_main(void *p)
                     active = 0;
                     break;
                 }
+                case gstyimplerr: {
+                    struct gsimplementation_failure *err;
+                    char buf[0x100];
+
+                    err = (struct gsimplementation_failure *)iport->reading;
+                    gsimplementation_failure_format(buf, buf + sizeof(buf), err);
+                    api_thread_post(iport->reading_thread, "unimplemented acceptor: %s", buf);
+                    iport->error = (gsvalue)err;
+
+                    ibio_shutdown_iport(iport, pos);
+                    active = 0;
+                    break;
+                }
                 default:
                     api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: st = %d", st);
                     ibio_shutdown_iport(iport, pos);
