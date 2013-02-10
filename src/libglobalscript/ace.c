@@ -80,10 +80,10 @@ void
 ace_thread_pool_main(void *p)
 {
     int tid, last_tid;
-    vlong outer_loops, numthreads_total, num_instrs, num_blocked, num_bocked_threads;
+    vlong outer_loops, numthreads_total, num_instrs, num_blocked, num_blocked_threads;
     vlong start_time, end_time;
 
-    outer_loops = numthreads_total = num_instrs = num_blocked = num_bocked_threads = 0;
+    outer_loops = numthreads_total = num_instrs = num_blocked = num_blocked_threads = 0;
     start_time = nsec();
     tid = 0;
     for (;;) {
@@ -126,7 +126,7 @@ ace_thread_pool_main(void *p)
 
                 switch (st) {
                     case gstystack:
-                        num_bocked_threads++;
+                        num_blocked_threads++;
                     case gstyblocked:
                         break;
                     case gstyindir:
@@ -243,7 +243,7 @@ no_clients:
         fprint(2, "# ACE threads: %d\n", ace_thread_queue->numthreads);
         fprint(2, "# ACE outer loops: %lld\n", outer_loops);
         fprint(2, "Avg # ACE threads: %02g\n", (double)numthreads_total / outer_loops);
-        fprint(2, "ACE threads: %0.2g%% instructions, %0.2g%% blocked, %0.2g%% blocked on threads\n", ((double)num_instrs / numthreads_total) * 100, ((double)num_blocked / numthreads_total) * 100, ((double)num_bocked_threads / numthreads_total) * 100);
+        fprint(2, "ACE threads: %0.2g%% instructions, %0.2g%% blocked, %0.2g%% blocked on threads\n", ((double)num_instrs / numthreads_total) * 100, ((double)num_blocked / numthreads_total) * 100, ((double)num_blocked_threads / numthreads_total) * 100);
         fprint(2, "ACE Run time: %llds %lldms\n", (end_time - start_time) / 1000 / 1000 / 1000, ((end_time - start_time) / 1000 / 1000) % 1000);
         fprint(2, "Avg unit of work: %gμs\n", (double)(end_time - start_time) / numthreads_total / 1000);
     }
