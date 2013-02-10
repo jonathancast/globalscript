@@ -15,6 +15,7 @@ parser.<*>	.closure	_parser.<*>_c
 parser.*>	.closure	_parser.*>_c
 parser.<*	.closure	_parser.<*_c
 parser.lift2	.closure	_parser.lift2_c
+parser.lift3	.closure	_parser.lift3_c
 
 parser.>>=	.closure	_parser.>>=_c
 
@@ -579,6 +580,61 @@ x	.larg	α
 fx	.apply	f	|	x
 	.app	fx
 	.enter	k
+
+# §section §gs{parser.lift3}
+
+_parser.lift3_c	.expr
+_parser.lift3_f_ty	.tygvar
+parser.t	.tygvar
+s	.tyarg	*
+α0	.tyarg	*
+α1	.tyarg	*
+α2	.tyarg	*
+β	.tyarg	*
+_parser.lift3_res_c	.subcode
+f	.larg	_parser.lift3_f_ty	s	α0	α1	α2	β
+p0	.larg	parser.t	s	α0
+p1	.larg	parser.t	s	α1
+p2	.larg	parser.t	s	α2
+res	.alloc	_parser.lift3_res_c
+	.enter	res
+
+_parser.lift3_res_c	.expr
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+β	.tyfv	*
+r	.tyarg	*
+_parser.lift3_k0_c	.subcode
+p0	.fv	parser.t	s	α0
+p1	.fv	parser.t	s	α1
+k	.larg	_parser.t_k_ty	s	β	r
+k0	.alloc	_parser.lift3_k0_c
+	.app	k0
+	.enter	p0	r
+
+_parser.lift3_k0_c	.expr
+parser.t	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+r	.tyfv	*
+_parser.lift3_k1_c	.subcode
+p1	.fv	parser.t	s	α1
+x0	.larg	α0
+k1	.alloc	_parser.lift3_k1_c
+	.app	k1
+	.enter	p1	r
+
+_parser.lift3_k1_c	.expr
+parser.prim.t	.tygvar	# Temp
+s	.tyfv	*
+α1	.tyfv	*
+r	.tyfv	*
+x1	.larg	α1
+	.undef	parser.prim.t	s	r
 
 # §section §gs{parser.>>=}
 
@@ -2391,6 +2447,22 @@ _parser.<*>_f_ty	.tyexpr
 β	.tylambda	*
 	.tylift
 	.tyfun	α
+	.tyref	β
+
+# §section §gs{parser.lift3}
+
+_parser.lift3_f_ty	.tyexpr
+s	.tylambda	*
+α0	.tylambda	*
+α1	.tylambda	*
+α2	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α0
+	.tylift
+	.tyfun	α1
+	.tylift
+	.tyfun	α2
 	.tyref	β
 
 # §section §gs{parser.>>=}
