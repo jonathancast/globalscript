@@ -27,6 +27,7 @@ parser.fail	.closure	_parser.fail_c
 parser.fail.msg	.closure	_parser.fail.msg_c
 parser.<|>	.closure	_parser.<|>_c
 
+parser.optional	.closure	_parser.optional_c
 parser.many	.closure	_parser.many_c	_parser.many_ty
 
 parser.symbol	.closure	_parser.symbol_c
@@ -1005,6 +1006,32 @@ c	.larg	s
 kc	.apply	k	|	c
 	.app	kc
 	.enter	either.right	list.string.ty	parser.ty
+
+# §section §gs{parser.optional}
+
+_parser.optional_c	.expr
+parser.t	.tygvar
+maybe.t	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+res.ty	.tylet	maybe.t	α
+_parser.optional_just_c	.subcode
+parser.<|>	.gvar
+parser.map	.gvar
+parser.fail	.gvar	# Temp
+p	.larg	parser.t	s	α
+nothing.p	.apply	parser.fail	s	res.ty
+just	.alloc	_parser.optional_just_c
+just.p	.apply	parser.map	s	α	res.ty	|	just	p
+	.app	nothing.p	just.p
+	.enter	parser.<|>	s	res.ty
+
+_parser.optional_just_c	.expr
+α	.tyfv	*
+maybe.just	.gvar
+x	.larg	α
+	.app	x
+	.yield	maybe.just	α
 
 # §section §gs{parser.many}
 
