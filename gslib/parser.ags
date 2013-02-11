@@ -606,11 +606,13 @@ _parser.t_k_ty	.tygvar
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
+α2	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
 _parser.lift3_k0_c	.subcode
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
+p2	.fv	parser.t	s	α2
 k	.larg	_parser.t_k_ty	s	β	r
 k0	.alloc	_parser.lift3_k0_c
 	.app	k0
@@ -621,20 +623,35 @@ parser.t	.tygvar
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
+α2	.tyfv	*
 r	.tyfv	*
 _parser.lift3_k1_c	.subcode
 p1	.fv	parser.t	s	α1
+p2	.fv	parser.t	s	α2
 x0	.larg	α0
 k1	.alloc	_parser.lift3_k1_c
 	.app	k1
 	.enter	p1	r
 
 _parser.lift3_k1_c	.expr
-parser.prim.t	.tygvar	# Temp
+parser.t	.tygvar
 s	.tyfv	*
 α1	.tyfv	*
+α2	.tyfv	*
 r	.tyfv	*
+_parser.lift3_k2_c	.subcode
+p2	.fv	parser.t	s	α2
 x1	.larg	α1
+k2	.alloc	_parser.lift3_k2_c
+	.app	k2
+	.enter	p2	r
+
+_parser.lift3_k2_c	.expr
+parser.prim.t	.tygvar	# Temp
+s	.tyfv	*
+α2	.tyfv	*
+r	.tyfv	*
+x2	.larg	α2
 	.undef	parser.prim.t	s	r
 
 # §section §gs{parser.>>=}
