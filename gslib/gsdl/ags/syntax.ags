@@ -5,6 +5,9 @@
 gsdl.ags.syntax.whitespace	.closure	_gsdl.ags.syntax.whitespace_c
 _gsdl.ags.syntax.whitespace_re	.regex	\n*
 
+gsdl.ags.syntax.columnsep	.closure	_gsdl.ags.syntax.columnsep_c
+_gsdl.ags.syntax.columnsep_re	.regex	\t
+
 gsdl.ags.syntax.id	.closure	_gsdl.ags.syntax.id_c
 _gsdl.ags.syntax.id_re	.regex	[a-z][a-z]*
 
@@ -18,6 +21,16 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.syntax.whitespace_re	.gvar
 	.app	rune.compare	_gsdl.ags.syntax.whitespace_re
+	.enter	parser.match	rune.t
+
+# §section §gs{gsdl.ags.syntax.columnsep}
+
+_gsdl.ags.syntax.columnsep_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.syntax.columnsep_re	.gvar
+	.app	rune.compare	_gsdl.ags.syntax.columnsep_re
 	.enter	parser.match	rune.t
 
 # §section §gs{gsdl.ags.syntax.id}
