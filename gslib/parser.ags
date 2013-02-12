@@ -1244,17 +1244,18 @@ _parser.match_worker_neg.class_pred_c	.subcode
 _parser.match_worker_co_c	.subcode
 _parser.match_worker_symbol_pred_c	.subcode
 _parser.match_worker_class	.gvar
+parser.symbol.matching.bool	.gvar
+parser.map	.gvar
 parser.unit	.gvar
+parser.fail	.gvar
 parser.lift2	.gvar
 _parser.match_worker	.gvar
 parser.<|>	.gvar
-parser.map	.gvar
 list.:	.gvar
-parser.symbol.matching.bool	.gvar
 cmp	.fv	order.total.t	s
 re	.fv	regex.t	s
 re0	.karg	regex.prim.u	s
-	.analyze	re0	class	empty	neg.class	product	star	symbol
+	.analyze	re0	class	empty	neg.class	null	product	star	sum	symbol
 		.case	class
 cl		.fkarg	0	regex.class.t	s
 cons			.apply	list.:	s
@@ -1273,6 +1274,8 @@ pred			.alloc	_parser.match_worker_neg.class_pred_c
 sym			.apply	parser.symbol.matching.bool	s	|	pred
 			.app	cons	sym
 			.enter	parser.map	s	s	res_ty
+		.case	null
+			.enter	parser.fail	s	res_ty
 		.case	product
 re0.0		.fkarg	0	regex.t	s
 re0.1		.fkarg	1	regex.t	s
@@ -1289,6 +1292,13 @@ p0			.apply	parser.unit	s	res_ty	|	id
 p1.0			.apply	_parser.match_worker	s	|	cmp	re0.0
 p1.1			.apply	_parser.match_worker	s	|	cmp	re
 p1			.apply	parser.lift2	s	res_ty	res_ty	res_ty	|	co	p1.0	p1.1
+			.app	p0	p1
+			.enter	parser.<|>	s	res_ty
+		.case	sum
+re0.0		.fkarg	0	regex.t	s
+re0.1		.fkarg	1	regex.t	s
+p0			.apply	_parser.match_worker	s	|	cmp	re0.0
+p1			.apply	_parser.match_worker	s	|	cmp	re0.1
 			.app	p0	p1
 			.enter	parser.<|>	s	res_ty
 		.case	symbol

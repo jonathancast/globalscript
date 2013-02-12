@@ -32,16 +32,19 @@ regex.prim.u	.tyexpr
 _regex.prim.u_class_ty	.tygvar
 _regex.prim.u_empty_ty	.tygvar
 _regex.prim.u_neg.class_ty	.tygvar
+record.unboxed.empty	.tygvar
 _regex.prim.u_product_ty	.tygvar
 _regex.prim.u_star_ty	.tygvar
+_regex.prim.u_sum_ty	.tygvar
 _regex.prim.u_symbol_ty	.tygvar
 s	.tylambda	*
 class_ty	.tylet	_regex.prim.u_class_ty	s
 neg.class_ty	.tylet	_regex.prim.u_neg.class_ty	s
 product_ty	.tylet	_regex.prim.u_product_ty	s
 star_ty	.tylet	_regex.prim.u_star_ty	s
+sum_ty	.tylet	_regex.prim.u_sum_ty	s
 symbol_ty	.tylet	_regex.prim.u_symbol_ty	s
-	.tysum	class	class_ty	empty	_regex.prim.u_empty_ty	neg.class	neg.class_ty	product	product_ty	star	star_ty	symbol	symbol_ty
+	.tysum	class	class_ty	empty	_regex.prim.u_empty_ty	neg.class	neg.class_ty	null	record.unboxed.empty	product	product_ty	star	star_ty	sum	sum_ty	symbol	symbol_ty
 
 _regex.prim.u_class_ty	.tyexpr
 regex.class.t	.tygvar
@@ -69,6 +72,12 @@ regex.t	.tygvar
 s	.tylambda	*
 regex.ty	.tylet	regex.t	s
 	.tyubproduct	0	regex.ty
+
+_regex.prim.u_sum_ty	.tyexpr
+regex.t	.tygvar
+s	.tylambda	*
+regex.ty	.tylet	regex.t	s
+	.tyubproduct	0	regex.ty	1	regex.ty
 
 _regex.prim.u_symbol_ty	.tyexpr
 s	.tylambda	*

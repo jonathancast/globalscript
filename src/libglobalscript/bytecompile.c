@@ -148,7 +148,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
         gsvalue v;
 
         interp = 1;
-        size = sizeof(struct gsconstr) + 2*sizeof(gsvalue) + sizeof(struct gsconstr); /* product + empty */
+        size = sizeof(struct gsconstr) + 2*sizeof(gsvalue) + sizeof(struct gsconstr); /* sum + null */
         eos = p->arguments[0]->name;
 
         while (*eos) {
@@ -1127,7 +1127,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
             gsnil->numargs = 0;
         }
     } else if (gssymceq(p->directive, gssymregex, gssymdatadirective, ".regex")) {
-        static gsinterned_string gssymtyregex, gssymtyrune, gssymconstrsymbol, gssymconstrclass, gssymconstrnegclass, gssymconstrstar, gssymconstrsum, gssymconstrproduct, gssymconstrempty;
+        static gsinterned_string gssymtyregex, gssymtyrune, gssymconstrsymbol, gssymconstrclass, gssymconstrnegclass, gssymconstrstar, gssymconstrsum, gssymconstrproduct, gssymconstrempty, gssymconstrnull;
         static gsinterned_string gssymtyclass, gssymconstrrange;
         struct gstype *type, *cltype;
         struct gstype_sum *sum, *clsum;
@@ -1148,6 +1148,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         if (!gssymconstrsum) gssymconstrsum = gsintern_string(gssymconstrlable, "sum");
         if (!gssymconstrproduct) gssymconstrproduct = gsintern_string(gssymconstrlable, "product");
         if (!gssymconstrempty) gssymconstrempty = gsintern_string(gssymconstrlable, "empty");
+        if (!gssymconstrnull) gssymconstrnull = gsintern_string(gssymconstrlable, "null");
 
         type = gssymtable_get_type(symtable, gssymtyregex);
         if (!type || type->node != gstype_abstract) gsfatal("%P: regex.t is not an abstract type?!");
@@ -1175,14 +1176,14 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
 
         pr = (struct gsconstr *)pout;
         pr->pos = p->pos;
-        pr->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrproduct);
+        pr->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsum);
         pr->numargs = 2;
         pout = (uchar*)pr + sizeof(*pr) + 2*sizeof(gsvalue);
 
         re = (struct gsconstr *)pout;
         pr->arguments[0] = (gsvalue)re;
         re->pos = p->pos;
-        re->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrempty);
+        re->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrnull);
         re->numargs = 0;
         pout = (uchar*)re + sizeof(*re);
 

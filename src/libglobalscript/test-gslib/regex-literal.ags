@@ -21,10 +21,10 @@ regex.prim.u	.tygvar
 regex.t	.tygvar
 rune.t	.tygvar
 re0	.karg	regex.prim.u	rune.t
-	.danalyze	re0	product
+	.danalyze	re0	sum
 		.default
 			.undef	regex.t	rune.t
-		.case	product
+		.case	sum
 re0.0		.fkarg	0	regex.t	rune.t
 re0.1		.fkarg	1	regex.t	rune.t
 			.enter	re0.1
