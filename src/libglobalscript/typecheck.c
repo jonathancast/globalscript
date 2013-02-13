@@ -788,9 +788,13 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         rune = gssymtable_get_type(symtable, gssymtyrune);
 
         rerune = gstype_apply(pdata->pos, regex, rune);
-        for (i = 1; i < pdata->numarguments; i++)
-            gsfatal(UNIMPL("%P: Check RE interpolation"), pdata->pos)
-        ;
+        for (i = 1; i < pdata->numarguments; i++) {
+            struct gstype *ty;
+
+            ty = gssymtable_get_data_type(symtable, pdata->arguments[i]);
+            if (!ty) gsfatal("%P: Cannot find type of %y", pdata->pos, pdata->arguments[i]);
+            gstypes_type_check_type_fail(pdata->pos, ty, rerune);
+        }
     } else if (gssymceq(pdata->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         struct gstype *type;
         struct gskind *kind;
