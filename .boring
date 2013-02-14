@@ -21,3 +21,4 @@ stage0/.*\.gs$
 bin/gsac-targets$
 bin/gsac-deps$
 bin/gsac$
+\.toc$
