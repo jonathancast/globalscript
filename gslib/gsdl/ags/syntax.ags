@@ -11,7 +11,9 @@ _gsdl.ags.syntax.columnsep_re	.regex	\t
 gsdl.ags.syntax.id	.closure	_gsdl.ags.syntax.id_c
 _gsdl.ags.syntax.id_re	.regex	§§§*	_gsdl.ags.syntax.id_underscore.re	_gsdl.ags.syntax.id_id.re	_gsdl.ags.syntax.id_t.re
 _gsdl.ags.syntax.id_underscore.re	.regex	_|
-_gsdl.ags.syntax.id_id.re	.regex	[a-z][a-z]*
+_gsdl.ags.syntax.id_id.re	.regex	§§*	_gsdl.ags.syntax.id_id_component.re	_gsdl.ags.syntax.id_id_t.re
+_gsdl.ags.syntax.id_id_t.re	.regex	.§	_gsdl.ags.syntax.id_id_component.re
+_gsdl.ags.syntax.id_id_component.re	.regex	[a-z][a-z]*
 _gsdl.ags.syntax.id_t.re	.regex	_§	_gsdl.ags.syntax.id_id.re
 
 	.code

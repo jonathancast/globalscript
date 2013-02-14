@@ -4,7 +4,11 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.parse.two.components
+
+_test.parse.two.components	.closure	_test.parse.two.components_c
+_test.parse.two.components_label	.string	syntax.id\s=~\sqq{fmtgs.prec}
+_test.parse.two.components_input	.string	fmtgs.prec
 
 	.code
 
@@ -13,3 +17,31 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{qq{fmtgs.prec} =~ syntax.id}
+
+_test.parse.two.components_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+_test.parse.two.components_k_c	.subcode
+test.property.label	.gvar
+_test.parse.two.components_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.syntax.id	.gvar
+_test.parse.two.components_input	.gvar
+k	.alloc	_test.parse.two.components_k_c
+test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.id	_test.parse.two.components_input	k
+	.app	_test.parse.two.components_label	test
+	.enter	test.property.label
+
+_test.parse.two.components_k_c	.expr
+string.t	.tygvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+_test.parse.two.components_input	.gvar
+res	.larg	string.t
+	.app	string.≡	string.fmtgs	res	_test.parse.two.components_input
+	.enter	test.assert.eq	string.t
