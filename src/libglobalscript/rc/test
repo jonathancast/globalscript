@@ -76,6 +76,7 @@ ok_diff '-- regex multi-character classes --' ./$O.test-gsi regex-multi-char-cla
 ok_diff '-- regex products --' ./$O.test-gsi regex-product.ags
 ok_diff '-- regex stars --' ./$O.test-gsi regex-star.ags
 ok_diff '-- regex interpolations --' ./$O.test-gsi regex-interp.ags
+ok_diff '-- regex sums --' ./$O.test-gsi regex-sum.ags
 
 ok_diff '-- constructors in expressions --' ./$O.test-gsi constr-in-expr.ags
 

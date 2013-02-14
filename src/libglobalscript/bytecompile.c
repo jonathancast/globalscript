@@ -152,36 +152,45 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
         eos = p->arguments[0]->name;
 
         while (*eos) {
-            if (*eos == '[') {
+            if (*eos == '|') {
+                size += sizeof(struct gsconstr) + 2*sizeof(gsvalue);
                 eos++;
-                size += sizeof(struct gsconstr) + sizeof(gsvalue);
-                if (*eos == '^') eos++;
-
-                while (*eos != ']') {
-                    eos = gsbc_parse_rune_literal(p->pos, eos, &v);
-                    if (!*eos)
-                        gsfatal(UNIMPL("%P: %s: Character classes"), p->pos, eos)
-                    ; else if (*eos == '-') {
-                        eos++;
-                        if (!*eos) gsfatal(UNIMPL("%P: %s: Character classes"), p->pos, eos);
-                        eos = gsbc_parse_rune_literal(p->pos, eos, &v);
-                        size += sizeof(struct gsconstr) + 2 * sizeof(gsvalue);
-                    } else {
-                        size += sizeof(struct gsconstr) + sizeof(gsvalue);
-                    }
-                    if (*eos != ']') size += sizeof(struct gsconstr) + 2 * sizeof(gsvalue);
-                }
-                eos++;
-            } else if (eos[0] == '\xc2' && eos[1] == '\xa7') { /* \§ */
-                eos += 2;
-                if (interp >= p->numarguments) gsfatal("%P: More interpolation locations than values", p->pos);
-                interp++;
+                if (!*eos) size += sizeof(struct gsconstr);
             } else {
-                eos = gsbc_parse_rune_literal(p->pos, eos, &v);
-                size += sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
+                if (*eos == '[') {
+                    eos++;
+                    size += sizeof(struct gsconstr) + sizeof(gsvalue);
+                    if (*eos == '^') eos++;
+
+                    while (*eos != ']') {
+                        eos = gsbc_parse_rune_literal(p->pos, eos, &v);
+                        if (!*eos)
+                            gsfatal(UNIMPL("%P: %s: Character classes"), p->pos, eos)
+                        ; else if (*eos == '-') {
+                            eos++;
+                            if (!*eos) gsfatal(UNIMPL("%P: %s: Character classes"), p->pos, eos);
+                            eos = gsbc_parse_rune_literal(p->pos, eos, &v);
+                            size += sizeof(struct gsconstr) + 2 * sizeof(gsvalue);
+                        } else {
+                            size += sizeof(struct gsconstr) + sizeof(gsvalue);
+                        }
+                        if (*eos != ']') size += sizeof(struct gsconstr) + 2 * sizeof(gsvalue);
+                    }
+                    eos++;
+                } else if (eos[0] == '\xc2' && eos[1] == '\xa7') { /* \§ */
+                    eos += 2;
+                    if (interp >= p->numarguments) gsfatal("%P: More interpolation locations than values", p->pos);
+                    interp++;
+                } else {
+                    eos = gsbc_parse_rune_literal(p->pos, eos, &v);
+                    size += sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
+                }
+                if (*eos == '*') {
+                    size += sizeof(struct gsconstr) + sizeof(gsvalue);
+                    eos++;
+                }
+                if (*eos && *eos != '|') size += sizeof(struct gsconstr) + 2*sizeof(gsvalue);
             }
-            if (*eos == '*') size += sizeof(struct gsconstr) + sizeof(gsvalue);
-            if (*eos) size += sizeof(struct gsconstr) + 2*sizeof(gsvalue);
         }
 
         *psection = gsbc_constrs;
@@ -1135,9 +1144,8 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         int interp;
         char *eos;
         void *pout;
-        struct gsconstr *reco, *pr;
-        gsvalue re;
-        gsvalue *pfactor;
+        struct gsconstr *reco, *resum;
+        gsvalue term, *pfactor, *paddend;
 
         if (!gssymtyregex) gssymtyregex = gsintern_string(gssymtypelable, "regex.t");
         if (!gssymtyrune) gssymtyrune = gsintern_string(gssymtypelable, "rune.t");
@@ -1176,131 +1184,160 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         eos = p->arguments[0]->name;
         pout = (void*)heap[i];
 
-        pr = (struct gsconstr *)pout;
-        pr->pos = p->pos;
-        pr->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsum);
-        pr->numargs = 2;
-        pout = (uchar*)pr + sizeof(*pr) + 2*sizeof(gsvalue);
+        resum = (struct gsconstr *)pout;
+        resum->pos = p->pos;
+        resum->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsum);
+        resum->numargs = 2;
+        pout = (uchar*)resum + sizeof(*resum) + 2*sizeof(gsvalue);
 
         reco = (struct gsconstr *)pout;
-        pr->arguments[0] = (gsvalue)reco;
+        resum->arguments[0] = (gsvalue)reco;
         reco->pos = p->pos;
         reco->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrnull);
         reco->numargs = 0;
         pout = (uchar*)reco + sizeof(*reco);
 
-        pfactor = &pr->arguments[1];
+        term = 0;
+        pfactor = &term;
+
+        paddend = &resum->arguments[1];
 
         while (*eos) {
-            if (*eos == '[') {
-                gsvalue *pclass;
-                struct gsconstr *cl;
-                gsvalue c0, c1;
-                int negated;
+            if (*eos == '|') {
+                resum = (struct gsconstr *)pout;
+                resum->pos = p->pos;
+                resum->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsum);
+                resum->numargs = 2;
+                if (term) resum->arguments[0] = term;
+                else gsfatal(UNIMPL("%P: Regex sums with empty left operand"), p->pos);
+
+                *paddend = (gsvalue)resum;
 
                 eos++;
-
-                negated = *eos == '^';
-                if (negated) eos++;
-
-                reco = (struct gsconstr *)pout;
-                reco->pos = p->pos;
-                reco->constrnum = negated
-                    ? gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrnegclass)
-                    : gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrclass)
-                ;
-                reco->numargs = 1;
-                pclass = &reco->arguments[0];
-                pout = (uchar*)reco + sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
-
-                while (*eos != ']') {
-                    if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
-                    eos = gsbc_parse_rune_literal(p->pos, eos, &c0);
-                    if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
-                    else if (*eos == '-') {
-                        eos++;
-                        if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
-                        else if (*eos == ']') gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
-                        eos = gsbc_parse_rune_literal(p->pos, eos, &c1);
-
-                        cl = (struct gsconstr *)pout;
-                        cl->pos = p->pos;
-                        cl->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrrange);
-                        cl->numargs = 2;
-                        cl->arguments[0] = c0;
-                        cl->arguments[1] = c1;
-                        pout = (uchar*)cl + sizeof(struct gsconstr) + 2 * sizeof(gsvalue);
-                    } else {
-                        cl = (struct gsconstr *)pout;
-                        cl->pos = p->pos;
-                        cl->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrsymbol);
-                        cl->numargs = 1;
-                        cl->arguments[0] = c0;
-                        pout = (uchar*)cl + sizeof(struct gsconstr) + sizeof(gsvalue);
-                    }
-                    if (*eos != ']') {
-                        struct gsconstr *sum;
-
-                        sum = (struct gsconstr *)pout;
-                        sum->pos = p->pos;
-                        sum->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrsum);
-                        sum->numargs = 2;
-                        sum->arguments[0] = (gsvalue)cl;
-                        *pclass = (gsvalue)sum;
-                        pclass = &sum->arguments[1];
-                        pout = (uchar*)sum + sizeof(*sum) + 2*sizeof(gsvalue);
-                    } else {
-                        *pclass = (gsvalue)cl;
-                    }
+                if (*eos) {
+                    paddend = &resum->arguments[1];
+                    term = 0;
+                    pfactor = &term;
+                } else {
+                    gsfatal(UNIMPL("%P: Regex sums with empty right operand"), p->pos);
                 }
-                eos++;
-                re = (gsvalue) reco;
-            } else if (eos[0] == '\xc2' && eos[1] == '\xa7') { /* \§ */
-                eos += 2;
-                if (interp >= p->numarguments) gsfatal("%P: More interpolation locations than values", p->pos);
-                re = gssymtable_get_data(symtable, p->arguments[interp]);
-                interp++;
+                pout = (uchar*)resum + sizeof(*resum) + 2*sizeof(gsvalue);
             } else {
-                gsvalue c;
+                gsvalue re;
 
-                eos = gsbc_parse_rune_literal(p->pos, eos, &c);
-                reco = (struct gsconstr *)pout;
-                reco->pos = p->pos;
-                reco->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsymbol);
-                reco->numargs = 1;
-                reco->arguments[0] = c;
-                pout = (uchar*)reco + sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
-                re = (gsvalue)reco;
-            }
+                if (*eos == '[') {
+                    gsvalue *pclass;
+                    struct gsconstr *cl;
+                    gsvalue c0, c1;
+                    int negated;
 
-            if (*eos == '*') {
-                struct gsconstr *st;
+                    eos++;
 
-                st = (struct gsconstr *)pout;
-                st->pos = p->pos;
-                st->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrstar);
-                st->numargs = 1;
-                st->arguments[0] = re;
-                pout = (uchar*)st + sizeof(*st) + sizeof(gsvalue);
+                    negated = *eos == '^';
+                    if (negated) eos++;
 
-                eos++;
+                    reco = (struct gsconstr *)pout;
+                    reco->pos = p->pos;
+                    reco->constrnum = negated
+                        ? gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrnegclass)
+                        : gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrclass)
+                    ;
+                    reco->numargs = 1;
+                    pclass = &reco->arguments[0];
+                    pout = (uchar*)reco + sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
 
-                re = (gsvalue)st;
-            }
+                    while (*eos != ']') {
+                        if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
+                        eos = gsbc_parse_rune_literal(p->pos, eos, &c0);
+                        if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
+                        else if (*eos == '-') {
+                            eos++;
+                            if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
+                            else if (*eos == ']') gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
+                            eos = gsbc_parse_rune_literal(p->pos, eos, &c1);
 
-            if (*eos) {
-                pr = (struct gsconstr *)pout;
-                pr->pos = p->pos;
-                pr->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrproduct);
-                pr->numargs = 2;
-                pr->arguments[0] = re;
-                *pfactor = (gsvalue)pr;
-                pfactor = &pr->arguments[1];
-                pout = (uchar*)pr + sizeof(*pr) + 2*sizeof(gsvalue);
-            } else {
-                *pfactor = (gsvalue)re;
+                            cl = (struct gsconstr *)pout;
+                            cl->pos = p->pos;
+                            cl->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrrange);
+                            cl->numargs = 2;
+                            cl->arguments[0] = c0;
+                            cl->arguments[1] = c1;
+                            pout = (uchar*)cl + sizeof(struct gsconstr) + 2 * sizeof(gsvalue);
+                        } else {
+                            cl = (struct gsconstr *)pout;
+                            cl->pos = p->pos;
+                            cl->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrsymbol);
+                            cl->numargs = 1;
+                            cl->arguments[0] = c0;
+                            pout = (uchar*)cl + sizeof(struct gsconstr) + sizeof(gsvalue);
+                        }
+                        if (*eos != ']') {
+                            struct gsconstr *sum;
+
+                            sum = (struct gsconstr *)pout;
+                            sum->pos = p->pos;
+                            sum->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrsum);
+                            sum->numargs = 2;
+                            sum->arguments[0] = (gsvalue)cl;
+                            *pclass = (gsvalue)sum;
+                            pclass = &sum->arguments[1];
+                            pout = (uchar*)sum + sizeof(*sum) + 2*sizeof(gsvalue);
+                        } else {
+                            *pclass = (gsvalue)cl;
+                        }
+                    }
+                    eos++;
+                    re = (gsvalue)reco;
+                } else if (eos[0] == '\xc2' && eos[1] == '\xa7') { /* \§ */
+                    eos += 2;
+                    if (interp >= p->numarguments) gsfatal("%P: More interpolation locations than values", p->pos);
+                    re = gssymtable_get_data(symtable, p->arguments[interp]);
+                    interp++;
+                } else {
+                    gsvalue c;
+
+                    eos = gsbc_parse_rune_literal(p->pos, eos, &c);
+                    reco = (struct gsconstr *)pout;
+                    reco->pos = p->pos;
+                    reco->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsymbol);
+                    reco->numargs = 1;
+                    reco->arguments[0] = c;
+                    pout = (uchar*)reco + sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
+                    re = (gsvalue)reco;
+                }
+
+                if (*eos == '*') {
+                    struct gsconstr *st;
+
+                    st = (struct gsconstr *)pout;
+                    st->pos = p->pos;
+                    st->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrstar);
+                    st->numargs = 1;
+                    st->arguments[0] = re;
+                    pout = (uchar*)st + sizeof(*st) + sizeof(gsvalue);
+
+                    eos++;
+
+                    re = (gsvalue)st;
+                }
+
+                if (*eos && *eos != '|') {
+                    struct gsconstr *pr;
+
+                    pr = (struct gsconstr *)pout;
+                    pr->pos = p->pos;
+                    pr->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrproduct);
+                    pr->numargs = 2;
+                    pr->arguments[0] = re;
+                    *pfactor = (gsvalue)pr;
+                    pfactor = &pr->arguments[1];
+                    pout = (uchar*)pr + sizeof(*pr) + 2*sizeof(gsvalue);
+                } else {
+                    *pfactor = (gsvalue)re;
+                }
             }
         }
+        if (term) *paddend = term;
 
         if (interp < p->numarguments) gsfatal("%P: More interpolation values than locations", p->pos);
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
