@@ -601,6 +601,7 @@ res	.alloc	_parser.lift3_res_c
 	.enter	res
 
 _parser.lift3_res_c	.expr
+_parser.lift3_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
 s	.tyfv	*
@@ -610,6 +611,7 @@ s	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
 _parser.lift3_k0_c	.subcode
+f	.fv	_parser.lift3_f_ty	s	α0	α1	α2	β
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
 p2	.fv	parser.t	s	α2
@@ -619,6 +621,7 @@ k0	.alloc	_parser.lift3_k0_c
 	.enter	p0	r
 
 _parser.lift3_k0_c	.expr
+_parser.lift3_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
 s	.tyfv	*
@@ -628,6 +631,7 @@ s	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
 _parser.lift3_k1_c	.subcode
+f	.fv	_parser.lift3_f_ty	s	α0	α1	α2	β
 p1	.fv	parser.t	s	α1
 p2	.fv	parser.t	s	α2
 k	.fv	_parser.t_k_ty	s	β	r
@@ -637,15 +641,19 @@ k1	.alloc	_parser.lift3_k1_c
 	.enter	p1	r
 
 _parser.lift3_k1_c	.expr
+_parser.lift3_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
 s	.tyfv	*
+α0	.tyfv	*
 α1	.tyfv	*
 α2	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
 _parser.lift3_k2_c	.subcode
+f	.fv	_parser.lift3_f_ty	s	α0	α1	α2	β
 p2	.fv	parser.t	s	α2
+x0	.fv	α0
 k	.fv	_parser.t_k_ty	s	β	r
 x1	.larg	α1
 k2	.alloc	_parser.lift3_k2_c
@@ -653,14 +661,20 @@ k2	.alloc	_parser.lift3_k2_c
 	.enter	p2	r
 
 _parser.lift3_k2_c	.expr
+_parser.lift3_f_ty	.tygvar
 _parser.t_k_ty	.tygvar
 s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
 α2	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
+f	.fv	_parser.lift3_f_ty	s	α0	α1	α2	β
 k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.fv	α1
 x2	.larg	α2
-y	.undefined	β
+y	.apply	f	|	x0	x1	x2
 	.app	y
 	.enter	k
 
