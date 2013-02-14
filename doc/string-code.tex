@@ -10,6 +10,7 @@
 
 \newcommand\ccode[1]{\texttt{#1}}
 \newcommand\stringcode[1]{\texttt{#1}}
+\newcommand\shellcode[1]{\texttt{#1}}
 
 \newcommand\unimpl[1]{\footnote{\textbf{Unimplemented: }#1}}
 \newcommand\agsonly[1]{\footnote{\textbf{\texttt{.ags}-only: }#1}}
@@ -176,5 +177,22 @@ we have three possibilities for the types of \<e_0\> and \<e_1\>:
 
 There's no real difference between the implementation of these possibilities, though,
 so we can dis-regard them when compiling to string code.
+
+\section{\stringcode{.regex} Literals}\agsonly{Regex literals are only supported for simplifying hand-written string code, for bootstrapping.}
+
+We have interpolation support in string code regex literals.
+To use, put \stringcode{§} (with no name) in the literal
+and then follow the literal with the variable to use for each interpolation:
+\begin{verbatim}
+foo.re .regex §|§ _foo.re_long.expression.1.re _foo_re_long.expression.2.re
+_foo.re_long.expression.1.re .regex long|complicated\sexpression
+...
+\end{verbatim}
+
+You can interpolate any top-level data item, not just \stringcode{.regex} literals.
+
+\stringcode{.regex} won't support any grouping operator,
+so interpolation will be the only way to override the default precedence order.
+Interpolations aren't supported inside classes yet but they will be.
 
 \end{document}
