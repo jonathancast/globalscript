@@ -151,11 +151,12 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
         size = sizeof(struct gsconstr) + 2*sizeof(gsvalue) + sizeof(struct gsconstr); /* sum + null */
         eos = p->arguments[0]->name;
 
+        if (*eos == '|') size += sizeof(struct gsconstr);
         while (*eos) {
             if (*eos == '|') {
                 size += sizeof(struct gsconstr) + 2*sizeof(gsvalue);
                 eos++;
-                if (!*eos) size += sizeof(struct gsconstr);
+                if (!*eos || *eos == '|') size += sizeof(struct gsconstr);
             } else {
                 if (*eos == '[') {
                     eos++;
@@ -1208,20 +1209,28 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
                 resum->pos = p->pos;
                 resum->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsum);
                 resum->numargs = 2;
-                if (term) resum->arguments[0] = term;
-                else gsfatal(UNIMPL("%P: Regex sums with empty left operand"), p->pos);
+                if (term)
+                    resum->arguments[0] = term
+                ; else
+                    gsfatal(UNIMPL("%P: Regex sums with empty left operand"), p->pos)
+                ;
+                term = 0;
+                pfactor = &term;
+                pout = (uchar*)resum + sizeof(*resum) + 2*sizeof(gsvalue);
 
                 *paddend = (gsvalue)resum;
 
                 eos++;
                 if (*eos) {
                     paddend = &resum->arguments[1];
-                    term = 0;
-                    pfactor = &term;
                 } else {
-                    gsfatal(UNIMPL("%P: Regex sums with empty right operand"), p->pos);
+                    reco = (struct gsconstr *)pout;
+                    reco->pos = p->pos;
+                    reco->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrempty);
+                    reco->numargs = 0;
+                    pout = (uchar*)reco + sizeof(*reco);
+                    resum->arguments[1] = (gsvalue)reco;
                 }
-                pout = (uchar*)resum + sizeof(*resum) + 2*sizeof(gsvalue);
             } else {
                 gsvalue re;
 
