@@ -1,0 +1,15 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_tests	.list	test.property.t
+
+	.code
+
+_epcode	.expr
+test.all	.gvar
+_tests	.gvar
+	.app	_tests
+	.enter	test.all
