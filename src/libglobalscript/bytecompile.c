@@ -1209,14 +1209,20 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
                 resum->pos = p->pos;
                 resum->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsum);
                 resum->numargs = 2;
-                if (term)
-                    resum->arguments[0] = term
-                ; else
-                    gsfatal(UNIMPL("%P: Regex sums with empty left operand"), p->pos)
-                ;
+                pout = (uchar*)resum + sizeof(*resum) + 2*sizeof(gsvalue);
+
+                if (term) {
+                    resum->arguments[0] = term;
+                } else {
+                    reco = (struct gsconstr *)pout;
+                    reco->pos = p->pos;
+                    reco->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrempty);
+                    reco->numargs = 0;
+                    pout = (uchar*)reco + sizeof(*reco);
+                    resum->arguments[0] = (gsvalue)reco;
+                }
                 term = 0;
                 pfactor = &term;
-                pout = (uchar*)resum + sizeof(*resum) + 2*sizeof(gsvalue);
 
                 *paddend = (gsvalue)resum;
 
