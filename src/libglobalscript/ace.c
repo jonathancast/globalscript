@@ -122,6 +122,7 @@ ace_thread_pool_main(void *p)
                         gstypecode st;
 
                         num_blocked++;
+                    again:
                         st = GS_SLOW_EVALUATE(thread->st.blocked.on);
 
                         switch (st) {
@@ -131,6 +132,7 @@ ace_thread_pool_main(void *p)
                                 break;
                             case gstyindir:
                                 thread->st.blocked.on = GS_REMOVE_INDIRECTION(thread->st.blocked.on);
+                                goto again;
                                 break;
                             case gstywhnf: {
                                 ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
