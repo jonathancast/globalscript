@@ -5,7 +5,7 @@ gstypecode ace_start_evaluation(gsvalue);
 extern gsvalue gsentrypoint;
 extern struct gstype *gsentrytype;
 
-#define NUM_ACE_THREADS 0x100
+#define NUM_ACE_THREADS 0x50
 
 struct ace_thread_queue {
     Lock lock;

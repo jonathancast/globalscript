@@ -81,22 +81,23 @@ ace_thread_pool_main(void *p)
 {
     int tid, last_tid;
     vlong outer_loops, numthreads_total, num_instrs, num_blocked, num_blocked_threads;
-    vlong start_time, end_time;
+    vlong start_time, end_time, finding_thread_time, finding_thread_start_time;
 
     outer_loops = numthreads_total = num_instrs = num_blocked = num_blocked_threads = 0;
     start_time = nsec();
+    finding_thread_time = 0;
     tid = 0;
     for (;;) {
         struct ace_thread *thread;
         outer_loops++;
 
         last_tid = tid;
+        finding_thread_start_time = nsec();
         do {
             tid = (tid + 1) % NUM_ACE_THREADS;
 
             if (0) if (gsflag_stat_collection) gswarning("%s:%d: Locking for tid %d", __FILE__, __LINE__, tid);
             lock(&ace_thread_queue->lock);
-                if (gsflag_stat_collection) gswarning("%s:%d: ace refcount = %d", __FILE__, __LINE__, ace_thread_queue->refcount);
                 if (ace_thread_queue->refcount <= 0) {
                     unlock(&ace_thread_queue->lock);
                     goto no_clients;
@@ -106,6 +107,7 @@ ace_thread_pool_main(void *p)
             if (0) if (gsflag_stat_collection) gswarning("%s:%d: Un-locking for tid %d", __FILE__, __LINE__, tid);
 
             if (thread) {
+                numthreads_total++;
                 lock(&thread->lock);
                 switch (thread->state) {
                     case ace_thread_lprim_blocked: {
@@ -169,8 +171,7 @@ ace_thread_pool_main(void *p)
                 sleep(1)
             ;
         } while (!thread);
-
-        numthreads_total++;
+        if (gsflag_stat_collection) finding_thread_time += nsec() - finding_thread_start_time;
 
         num_instrs++;
         switch (thread->st.running.ip->instr) {
@@ -254,8 +255,9 @@ no_clients:
         fprint(2, "# ACE threads: %d\n", ace_thread_queue->numthreads);
         fprint(2, "# ACE outer loops: %lld\n", outer_loops);
         fprint(2, "Avg # ACE threads: %02g\n", (double)numthreads_total / outer_loops);
-        fprint(2, "ACE threads: %0.2g%% instructions, %0.2g%% blocked, %0.2g%% blocked on threads\n", ((double)num_instrs / numthreads_total) * 100, ((double)num_blocked / numthreads_total) * 100, ((double)num_blocked_threads / numthreads_total) * 100);
+        fprint(2, "ACE threads: %2.2g%% instructions, %2.2g%% blocked, %2.2g%% blocked on threads\n", ((double)num_instrs / numthreads_total) * 100, ((double)num_blocked / numthreads_total) * 100, ((double)num_blocked_threads / numthreads_total) * 100);
         fprint(2, "ACE Run time: %llds %lldms\n", (end_time - start_time) / 1000 / 1000 / 1000, ((end_time - start_time) / 1000 / 1000) % 1000);
+        fprint(2, "ACE Finding thread time: %llds %lldms\n", finding_thread_time / 1000 / 1000 / 1000, (finding_thread_time / 1000 / 1000) % 1000);
         fprint(2, "Avg unit of work: %gμs\n", (double)(end_time - start_time) / numthreads_total / 1000);
     }
 }
