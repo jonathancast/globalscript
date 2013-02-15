@@ -25,6 +25,7 @@ _gsdl.ags.file.fmtgs_prefix.s	.string	〈\s
 _gsdl.ags.file.fmtgs_filetype.s	.string	'filetype\s∝\s
 _gsdl.ags.file.fmtgs_semi.sp.s	.string	;\s
 _gsdl.ags.file.fmtgs_datasection.s	.string	'datasection\s∝\s
+_gsdl.ags.file.fmtgs_codesection.s	.string	'codesection\s∝\s
 _gsdl.ags.file.fmtgs_typesection.s	.string	'typesection\s∝\s
 _gsdl.ags.file.fmtgs_suffix.s	.string	〉
 
@@ -261,6 +262,7 @@ _gsdl.ags.file.fmtgs_c	.expr
 gsdl.ags.file.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 fmtgs.t	.tygvar	# Temp
 fmtgs.prec	.gvar
@@ -274,22 +276,29 @@ fmtgs.prec.max	.gvar
 _gsdl.ags.file.fmtgs_semi.sp.s	.gvar
 _gsdl.ags.file.fmtgs_datasection.s	.gvar
 list.fmtgs.byDefault	.gvar
-diff.list.fromlist	.gvar
+_gsdl.ags.file.fmtgs_codesection.s	.gvar
 _gsdl.ags.file.fmtgs_typesection.s	.gvar
 _gsdl.ags.file.fmtgs_suffix.s	.gvar
+diff.list.fromlist	.gvar
 file	.larg	gsdl.ags.file.t
 ty	.lfield	filetype	file
 ty.s	.apply	gsdl.ags.file.filetype.fmtgs	|	ty	fmtgs.prec.max
 das.fmtgs	.undefined	fmtgs.t	gsdl.ags.dataitem.t
 das	.lfield	datasection	file
 das.s	.apply	list.fmtgs.byDefault	gsdl.ags.dataitem.t	|	das.fmtgs	das	fmtgs.prec.max
+cos.fmtgs	.undefined	fmtgs.t	gsdl.ags.codeitem.t
+cos	.lfield	codesection	file
+cos.s	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.t	|	cos.fmtgs	cos	fmtgs.prec.max
 tys.fmtgs	.undefined	fmtgs.t	gsdl.ags.typeitem.t
 tys	.lfield	typesection	file
 tys.s	.apply	list.fmtgs.byDefault	gsdl.ags.typeitem.t	|	tys.fmtgs	tys	fmtgs.prec.max
-ds10	.apply	diff.list.fromlist	rune.t	|	_gsdl.ags.file.fmtgs_suffix.s
+ds13	.apply	diff.list.fromlist	rune.t	|	_gsdl.ags.file.fmtgs_suffix.s
+ds12	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_semi.sp.s	ds13
+ds11	.apply	diff.list.<>	rune.t	|	tys.s	ds12
+ds10	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_typesection.s	ds11
 ds9	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_semi.sp.s	ds10
-ds8	.apply	diff.list.<>	rune.t	|	tys.s	ds9
-ds7	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_typesection.s	ds8
+ds8	.apply	diff.list.<>	rune.t	|	cos.s	ds9
+ds7	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_codesection.s	ds8
 ds6	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_semi.sp.s	ds7
 ds5	.apply	diff.list.<>	rune.t	|	das.s	ds6
 ds4	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_datasection.s	ds5
