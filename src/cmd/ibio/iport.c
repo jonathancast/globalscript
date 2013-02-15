@@ -314,32 +314,23 @@ ibio_read_process_main(void *p)
                                     if (seg->extent >= ibio_channel_segment_limit(seg)) {
                                         struct ibio_channel_segment *newseg;
 
-                                        if (seg == iport->last_accessed_seg) {
-                                            newseg = ibio_alloc_channel_segment();
-                                            newseg->iport = iport;
-                                            seg->next = newseg;
+                                        while (!(
+                                            iport->waiting_to_read
+                                            || 1 /* §todo{Need to check if thread is waiting on output instead} */
+                                            || iport->last_accessed_seg == seg
+                                        )) {
                                             unlock(&seg->lock);
-                                            pos = newseg->items;
-                                            unlock(&newseg->lock);
-                                        } else {
-                                            newseg = ibio_alloc_channel_segment();
-                                            newseg->iport = iport;
-                                            seg->next = newseg;
-                                            pos = newseg->items;
-                                            unlock(&seg->lock);
-
-                                            seg = newseg;
-                                            newseg = ibio_alloc_channel_segment();
-                                            newseg->iport = iport;
-                                            seg->next = newseg;
-                                            pos = newseg->items;
-                                            unlock(&seg->lock);
-                                            unlock(&newseg->lock);
-
-                                            ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: allocate a new segment (need to wait for program to catch up)");
-                                            active = 0;
-                                            goto failed;
+                                            unlock(&iport->lock);
+                                            sleep(1);
+                                            lock(&iport->lock);
+                                            lock(&seg->lock);
                                         }
+                                        newseg = ibio_alloc_channel_segment();
+                                        newseg->iport = iport;
+                                        seg->next = newseg;
+                                        unlock(&seg->lock);
+                                        pos = newseg->items;
+                                        unlock(&newseg->lock);
                                     }
                                     iport->reading = gsapply(constr->pos, symk, sym);
                                     unlock(&seg->lock);
