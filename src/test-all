@@ -8,10 +8,10 @@ cd $GLOBALSCRIPT/src/libtest &&
     mk integration-test && mk install &&
     cd ../cmd &&
     mk pure-integration-test && mk pure-install &&
-    cd ibio/ &&
-    mk integration-test && mk install &&
-    cd ../../../gslib &&
+    cd ../../gslib &&
     $GLOBALSCRIPT/src/cmd/rc/test-gslib &&
+    cd ../src/cmd/ibio/ &&
+    mk integration-test && mk install &&
 # §paragraph{Interpreted Compiler}
-    cd ../src/cmd/gsac &&
+    cd ../gsac &&
     mk interpreted && mk integration-test-interpreted && mk install-interpreted && mk effect
