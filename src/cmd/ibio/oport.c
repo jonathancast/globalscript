@@ -254,6 +254,8 @@ ibio_write_process_main(void *p)
     int i;
     int tid;
     int active, runnable;
+    int nloops;
+    vlong buftime;
     gstypecode st;
     struct ibio_oport *oport;
     gsvalue c;
@@ -294,7 +296,10 @@ ibio_write_process_main(void *p)
     }
 
     c = 0;
+    nloops = 0;
+    buftime = 0;
     do {
+        if (buftime) nloops++;
         lock(&oport->lock);
         active = oport->active || oport->writing;
         runnable = 1;
@@ -341,6 +346,8 @@ ibio_write_process_main(void *p)
                         ibio_oport_unlink_from_thread(oport->writing_thread, oport);
                     } else {
                         c = 0;
+                        nloops = 0;
+                        buftime = nsec();
                     }
                     break;
                 default:
@@ -355,6 +362,16 @@ ibio_write_process_main(void *p)
             switch (st) {
                 case gstystack:
                     runnable = 0;
+                    if (nloops > 1024 && nsec() - buftime > 1000 * 1000) {
+                        long n = (uchar*)oport->bufend > (uchar*)oport->buf;
+                        if (write(oport->fd, oport->buf, n) != n) {
+                            api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: error when flushing buffer", n);
+                            active = oport->active = 0;
+                        }
+                        oport->bufend = oport->buf;
+                        nloops = 0;
+                        buftime = 0;
+                    }
                     break;
                 case gstyindir: {
                     oport->writing = GS_REMOVE_INDIRECTION(oport->writing);
@@ -377,6 +394,8 @@ ibio_write_process_main(void *p)
                                     api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: error when flushing buffer", n);
                                     active = oport->active = 0;
                                 }
+                                nloops = 0;
+                                buftime = 0;
                             }
                             runnable = 0;
                             oport->writing = 0;
