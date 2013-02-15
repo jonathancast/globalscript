@@ -2,11 +2,26 @@
 
 	.data
 
+gsdl.ags.codeitem.segment.parser	.closure	_gsdl.ags.codeitem.segment.parser_c
+
 gsdl.ags.codeitem.≡	.closure	_gsdl.ags.codeitem.≡_c
 
 gsdl.ags.codeitem.fmtgs	.closure	_gsdl.ags.codeitem.fmtgs_c
 
 	.code
+
+# §section §gs{gsdl.ags.codeitem.segment.parser}
+
+_gsdl.ags.codeitem.segment.parser_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+res.ty	.tylet	list.t	gsdl.ags.codeitem.t
+parser.unit	.gvar
+list.nil	.gvar
+nil	.apply	list.nil	gsdl.ags.codeitem.t
+	.app	nil
+	.enter	parser.unit	rune.t	res.ty
 
 # §section §gs{gsdl.ags.codeitem.≡}
 
