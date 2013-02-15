@@ -1641,6 +1641,7 @@ _parser.prim.<|>_symbol_k1	.subcode
 parser.prim.t.out	.cogvar
 parser.prim.unit.plus	.gvar
 parser.prim.<|>	.gvar
+p0	.fv	parser.prim.t	s	α
 p1	.fv	parser.prim.t	s	α
 p0.0	.karg	parser.prim.u	s	α
 	.analyze	p0.0	fail	fail.msg	lookahead	pos.get	symbol	unit.plus
@@ -1724,6 +1725,8 @@ s	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	α
 parser.prim.lookahead	.gvar
 parser.prim.unit.plus	.gvar
+parser.prim.<|>	.gvar
+p0	.fv	parser.prim.t	s	α
 p1	.fv	parser.prim.t	s	α
 p0.1	.fv	parser.prim.t	s	rec.ty
 p1.0	.karg	parser.prim.u	s	α
@@ -1748,7 +1751,9 @@ p2			.apply	parser.prim.unit.plus	s	rec.ty	|	p1	p0.1
 		.case	unit.plus
 x		.fkarg	0	α
 p1.1		.fkarg	1	parser.prim.t	s	α
-			.undef	parser.prim.t	s	α
+p2			.apply	parser.prim.<|>	s	α	|	p0	p1.1
+			.app	x	p2
+			.yield	parser.prim.unit.plus	s	α
 	# > :: parser.prim.t	s	α
 
 _parser.prim.<|>_pos.get_k1	.forcecont
