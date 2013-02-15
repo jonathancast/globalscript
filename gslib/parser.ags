@@ -1804,6 +1804,8 @@ rec.ty	.tylet	parser.prim.t	s	α
 _parser.prim.<|>_symbol_sk2_c	.subcode
 parser.prim.symbol	.gvar
 parser.prim.<|>	.gvar
+parser.prim.unit.plus	.gvar
+p0	.fv	parser.prim.t	s	α
 sk	.fv	_parser.prim.u_symbol_0_ty	s	α
 ek	.fv	parser.prim.t	s	α
 p1.0	.karg	parser.prim.u	s	α
@@ -1830,7 +1832,9 @@ ek2			.apply	parser.prim.<|>	s	α	|	ek	ek1
 		.case	unit.plus
 x		.fkarg	0	α
 p1.1		.fkarg	1	parser.prim.t	s	α
-			.undef	parser.prim.t	s	α
+p2			.apply	parser.prim.<|>	s	α	|	p0	p1.1
+			.app	x	p2
+			.yield	parser.prim.unit.plus	s	α
 	# > :: parser.prim.t	s	α
 
 _parser.prim.<|>_symbol_sk2_c	.expr
