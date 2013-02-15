@@ -81,11 +81,13 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.file.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 either.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
+list.nil	.gvar
 list.singleton	.gvar
 gsdl.ags.dataitem.undefined	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
@@ -101,10 +103,11 @@ res1		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
 pos			.field	pos	doc0
 v			.lfield	nm	res1
 dts			.lfield	tyexprs	res1
+cs			.apply	list.nil	gsdl.ags.codeitem.t
 d			.apply	gsdl.ags.dataitem.undefined	|	pos	v
 ds			.apply	list.singleton	gsdl.ags.dataitem.t	|	d
 ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	dts
-res			.lrecord	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	ts
+res			.lrecord	codesection	cs	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	ts
 			.app	res
 			.enter	either.right	string.t	gsdl.ags.file.t
 

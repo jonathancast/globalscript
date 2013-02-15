@@ -244,11 +244,14 @@ _gsdl.ags.file.parser_f_c	.expr
 gsdl.ags.file.filetype.t	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar	# Temp
+list.nil	.gvar
 ty	.larg	gsdl.ags.file.filetype.t
 das	.larg	list.t	gsdl.ags.dataitem.t
+cos	.apply	list.nil	gsdl.ags.codeitem.t
 tys	.undefined	list.t	gsdl.ags.typeitem.t
-res	.record	datasection	das	filetype	ty	typesection	tys
+res	.record	codesection	cos	datasection	das	filetype	ty	typesection	tys
 	.lift
 	.yield	res
 
@@ -374,12 +377,14 @@ gsdl.ags.file.prim.u	.tygvar
 
 gsdl.ags.file.prim.u	.tyexpr
 list.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.file.filetype.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
+codesection.ty	.tylet	list.t	gsdl.ags.codeitem.t
 datasection.ty	.tylet	list.t	gsdl.ags.dataitem.t
 typesection.ty	.tylet	list.t	gsdl.ags.typeitem.t
-	.typroduct	datasection	datasection.ty	filetype	gsdl.ags.file.filetype.t	typesection	typesection.ty
+	.typroduct	codesection	codesection.ty	datasection	datasection.ty	filetype	gsdl.ags.file.filetype.t	typesection	typesection.ty
 
 gsdl.ags.file.filetype.t	.tyabstract	*
 gsdl.ags.file.filetype.prim.u	.tygvar
