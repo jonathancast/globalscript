@@ -160,6 +160,10 @@ ace_thread_pool_main(void *p)
                     }
                     case ace_thread_running:
                         break;
+                    case ace_thread_finished:
+                        unlock(&thread->lock);
+                        thread = 0;
+                        break;
                     default:
                         ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "ace_thread_pool_main: state %d", thread->state);
                         unlock(&thread->lock);
@@ -1252,6 +1256,7 @@ static
 void
 ace_remove_thread(struct ace_thread *thread)
 {
+    thread->state = ace_thread_finished;
     lock(&ace_thread_queue->lock);
     ace_thread_queue->threads[thread->tid] = 0;
     unlock(&ace_thread_queue->lock);

@@ -24,6 +24,7 @@ struct ace_thread {
         ace_thread_running,
         ace_thread_blocked,
         ace_thread_lprim_blocked,
+        ace_thread_finished,
     } state;
     union {
         struct {
