@@ -8,6 +8,7 @@ _tests	.list	test.property.t	_test.parser.nil	_test.parser.empty.prefix	_test.fm
 
 _test.parser.nil	.closure	_test.parser.nil_c
 _test.parser.nil_label	.string	file.parser\sqq{}
+_test.parser.nil_ds_label	.string	data\ssegment
 
 _test.parser.empty.prefix	.closure	_test.parser.empty.prefix_c
 _test.parser.empty.prefix_label	.string	file.parser\sqq{\\t.prefix\\n\\n}
@@ -71,9 +72,25 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.file.t	|	parser.rune.advan
 
 _test.parser.empty.prefix_k0_c	.expr
 gsdl.ags.file.t	.tygvar
-test.true	.gvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+list.dataitem.ty	.tylet	list.t	gsdl.ags.dataitem.t
+test.property.label	.gvar
+_test.parser.nil_ds_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+gsdl.ags.dataitem.≡	.gvar
+list.fmtgs.byDefault	.gvar
+gsdl.ags.dataitem.fmtgs	.gvar
+list.nil	.gvar
 file	.larg	gsdl.ags.file.t
-	.enter	test.true
+list.dataitem.≡	.apply	list.≡	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.≡
+list.dataitem.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.fmtgs
+ds	.lfield	datasection	file
+ds.nil	.apply	list.nil	gsdl.ags.dataitem.t
+ds.test	.apply	test.assert.eq	list.dataitem.ty	|	list.dataitem.≡	list.dataitem.fmtgs	ds	ds.nil
+	.app	_test.parser.nil_ds_label	ds.test
+	.enter	test.property.label
 
 # §section §gs{fmtgs 〈 'filetype ∝ gsdocument; 'datasection ∝ []; 'typesection ∝ []; 〉}
 
