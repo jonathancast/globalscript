@@ -4,7 +4,12 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.parse
+
+# §section Parsers
+
+_test.parse	.closure	_test.parse_c
+_tests.parse	.list	test.property.t
 
 	.code
 
@@ -12,4 +17,12 @@ _epcode	.expr
 test.all	.gvar
 _tests	.gvar
 	.app	_tests
+	.enter	test.all
+
+# §section Parsers
+
+_test.parse_c	.expr
+test.all	.gvar
+_tests.parse	.gvar
+	.app	_tests.parse
 	.enter	test.all
