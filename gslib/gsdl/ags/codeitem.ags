@@ -11,6 +11,15 @@ gsdl.ags.codeitem.≡	.closure	_gsdl.ags.codeitem.≡_c
 
 gsdl.ags.codeitem.fmtgs	.closure	_gsdl.ags.codeitem.fmtgs_c
 
+gsdl.ags.codeitem.segment.expr.parser	.closure	_gsdl.ags.codeitem.segment.expr.parser_c
+_gsdl.ags.codeitem.segment.expr.parser_enter.p_enter.re	.regex	.enter
+
+gsdl.ags.codeitem.expr.≡	.closure	_gsdl.ags.codeitem.expr.≡_c
+
+gsdl.ags.codeitem.expr.fmtgs	.closure	_gsdl.ags.codeitem.expr.fmtgs_c
+
+gsdl.ags.codeitem.expr.enter	.closure	_gsdl.ags.codeitem.expr.enter_c
+
 	.code
 
 # §section §gs{gsdl.ags.codeitem.segment.parser}
@@ -66,6 +75,135 @@ fmtgs.printer.t	.tygvar	# Temp
 ci	.larg	gsdl.ags.codeitem.t
 	.undef	fmtgs.printer.t
 
+# §section §gs{gsdl.ags.codeitem.segment.expr.parser}
+
+_gsdl.ags.codeitem.segment.expr.parser_c	.expr
+_gsdl.ags.codeitem.segment.expr.parser_enter.p_c	.subcode
+enter.p	.alloc	_gsdl.ags.codeitem.segment.expr.parser_enter.p_c
+	.enter	enter.p
+
+_gsdl.ags.codeitem.segment.expr.parser_enter.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+list.string.ty	.tylet	list.t	string.t
+_gsdl.ags.codeitem.segment.expr.parser_enter.p_f_c	.subcode
+parser.lift3	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.segment.expr.parser_enter.p_enter.re	.gvar
+gsdl.ags.syntax.id	.gvar
+parser.<*	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.many	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.codeitem.segment.expr.parser_enter.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+enter.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.segment.expr.parser_enter.p_enter.re
+v.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+v.p1	.apply	parser.*>	rune.t	string.t	string.t	|	enter.p	v.p2
+v.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	v.p1
+tyas.p1.1	.apply	parser.fail	rune.t	string.t
+tyas.p1	.apply	parser.many	rune.t	string.t	|	tyas.p1.1
+tyas.p	.apply	parser.<*	rune.t	list.string.ty	string.t	|	tyas.p1	gsdl.ags.syntax.whitespace
+	.app	f	pos.get	v.p	tyas.p
+	.enter	parser.lift3	rune.t	parser.pos.t	string.t	list.string.ty	gsdl.ags.codeitem.expr.t
+
+_gsdl.ags.codeitem.segment.expr.parser_enter.p_f_c	.expr
+parser.pos.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.expr.enter	.gvar
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
+v	.larg	string.t
+tyas	.larg	list.t	string.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+	.app	pos	v	tyas
+	.yield	gsdl.ags.codeitem.expr.enter
+
+# §section §gs{gsdl.ags.codeitem.expr.≡}
+
+_gsdl.ags.codeitem.expr.≡_c	.expr
+gsdl.ags.codeitem.expr.t	.tygvar
+_gsdl.ags.codeitem.expr.≡_k0	.subcode
+gsdl.ags.codeitem.expr.t.out	.cogvar
+e0	.larg	gsdl.ags.codeitem.expr.t
+e1	.larg	gsdl.ags.codeitem.expr.t
+	.force	_gsdl.ags.codeitem.expr.≡_k0
+	.coerce	gsdl.ags.codeitem.expr.t.out
+	.enter	e0
+
+_gsdl.ags.codeitem.expr.≡_k0	.forcecont
+gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.codeitem.expr.prim.u	.tygvar
+_gsdl.ags.codeitem.expr.≡_k1	.subcode
+gsdl.ags.codeitem.expr.t.out	.cogvar
+e1	.fv	gsdl.ags.codeitem.expr.t
+e0.0	.karg	gsdl.ags.codeitem.expr.prim.u
+	.force	_gsdl.ags.codeitem.expr.≡_k1
+	.coerce	gsdl.ags.codeitem.expr.t.out
+	.enter	e1
+
+_gsdl.ags.codeitem.expr.≡_k1	.forcecont
+gsdl.ags.codeitem.expr.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+bool.t	.tygvar	# Temp
+bool.∧	.gvar
+string.≡	.gvar
+list.≡	.gvar
+e0.0	.fv	gsdl.ags.codeitem.expr.prim.u
+e1.0	.karg	gsdl.ags.codeitem.expr.prim.u
+	.analyze	e0.0	enter
+		.case	enter
+pos0		.fkarg	0	gsdl.sourcepos.t
+v0		.fkarg	1	string.t
+tyas0		.fkarg	2	list.t	string.t
+			.danalyze	e1.0	enter
+				.default
+					.undef	bool.t
+				.case	enter
+pos1				.fkarg	0	gsdl.sourcepos.t
+v1				.fkarg	1	string.t
+tyas1				.fkarg	2	list.t	string.t
+v.eq					.apply	string.≡	|	v0	v1
+tyas.eq					.apply	list.≡	string.t	|	string.≡	tyas0	tyas1
+					.app	v.eq	tyas.eq
+					.enter	bool.∧
+	# > :: bool.t
+
+# §section §gs{gsdl.ags.codeitem.expr.fmtgs}
+
+_gsdl.ags.codeitem.expr.fmtgs_c	.expr
+gsdl.ags.codeitem.expr.t	.tygvar
+fmtgs.printer.t	.tygvar
+e	.larg	gsdl.ags.codeitem.expr.t
+	.undef	fmtgs.printer.t
+
+# §section §gs{gsdl.ags.codeitem.expr.t} Constructors
+
+_gsdl.ags.codeitem.expr.enter_c	.expr
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.expr.prim.u	.tygvar
+gsdl.ags.codeitem.expr.t.in	.cogvar
+pos	.arg	gsdl.sourcepos.t
+v	.arg	string.t
+tyas	.arg	list.t	string.t
+c	.constr	gsdl.ags.codeitem.expr.prim.u	enter	0	pos	1	v	2	tyas
+	.coerce	gsdl.ags.codeitem.expr.t.in
+	.lift
+	.yield	c
+
 	.type
 
 gsdl.ags.codeitem.t	.tyabstract	*
@@ -76,10 +214,31 @@ gsdl.ags.codeitem.prim.u	.tygvar
 gsdl.ags.codeitem.prim.u	.tyexpr
 	.tysum
 
+# §section §gs{gsdl.ags.codeitem.expr.t}
+
 gsdl.ags.codeitem.expr.t	.tyabstract	*
 gsdl.ags.codeitem.expr.prim.u	.tygvar
 	.tylift
 	.tyref	gsdl.ags.codeitem.expr.prim.u
 
 gsdl.ags.codeitem.expr.prim.u	.tyexpr
-	.tysum
+_gsdl.ags.codeitem.expr.prim.u_enter_ty	.tygvar
+	.tysum	enter	_gsdl.ags.codeitem.expr.prim.u_enter_ty
+
+_gsdl.ags.codeitem.expr.prim.u_enter_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+2_ty	.tylet	list.t	string.t
+	.tyubproduct	0	gsdl.sourcepos.t	1	string.t	2	2_ty
+
+	.coercion
+
+gsdl.ags.codeitem.expr.t.in	.tycoercion
+gsdl.ags.codeitem.expr.t	.tygvar
+	.tydefinition	gsdl.ags.codeitem.expr.t
+
+gsdl.ags.codeitem.expr.t.out	.tycoercion
+gsdl.ags.codeitem.expr.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.codeitem.expr.t
