@@ -3,7 +3,7 @@
 	.data
 
 gsdl.ags.syntax.whitespace	.closure	_gsdl.ags.syntax.whitespace_c
-_gsdl.ags.syntax.whitespace_re	.regex	\n*
+_gsdl.ags.syntax.whitespace_re	.regex	\n\n*
 
 gsdl.ags.syntax.columnsep	.closure	_gsdl.ags.syntax.columnsep_c
 _gsdl.ags.syntax.columnsep_re	.regex	\t
