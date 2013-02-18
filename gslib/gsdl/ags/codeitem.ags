@@ -75,3 +75,11 @@ gsdl.ags.codeitem.prim.u	.tygvar
 
 gsdl.ags.codeitem.prim.u	.tyexpr
 	.tysum
+
+gsdl.ags.codeitem.expr.t	.tyabstract	*
+gsdl.ags.codeitem.expr.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.codeitem.expr.prim.u
+
+gsdl.ags.codeitem.expr.prim.u	.tyexpr
+	.tysum
