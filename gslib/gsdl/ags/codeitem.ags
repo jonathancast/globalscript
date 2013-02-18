@@ -3,6 +3,9 @@
 	.data
 
 gsdl.ags.codeitem.segment.parser	.closure	_gsdl.ags.codeitem.segment.parser_c
+_gsdl.ags.codeitem.segment.parser_header.kwre	.regex	.code
+
+gsdl.ags.codeitem.parser	.closure	_gsdl.ags.codeitem.parser_c
 
 gsdl.ags.codeitem.≡	.closure	_gsdl.ags.codeitem.≡_c
 
@@ -16,12 +19,35 @@ _gsdl.ags.codeitem.segment.parser_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
+string.t	.tygvar
 res.ty	.tylet	list.t	gsdl.ags.codeitem.t
+parser.<|>	.gvar
 parser.unit	.gvar
 list.nil	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.segment.parser_header.kwre	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.many	.gvar
+gsdl.ags.codeitem.parser	.gvar
+parser.fail	.gvar	# Temp
 nil	.apply	list.nil	gsdl.ags.codeitem.t
-	.app	nil
-	.enter	parser.unit	rune.t	res.ty
+missing.p	.apply	parser.unit	rune.t	res.ty	|	nil
+header.kwp	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.segment.parser_header.kwre
+header.p1	.apply	parser.*>	rune.t	string.t	string.t	|	header.kwp	gsdl.ags.syntax.whitespace
+header.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	header.p1
+items.p	.apply	parser.many	rune.t	gsdl.ags.codeitem.t	|	gsdl.ags.codeitem.parser
+present.p	.apply	parser.*>	rune.t	string.t	res.ty	|	header.p	items.p
+	.app	missing.p	present.p
+	.enter	parser.<|>	rune.t	res.ty
+
+_gsdl.ags.codeitem.parser_c	.expr
+rune.t	.tygvar	# Temp
+gsdl.ags.codeitem.t	.tygvar	# Temp
+parser.fail	.gvar	# Temp
+	.enter	parser.fail	rune.t	gsdl.ags.codeitem.t
 
 # §section §gs{gsdl.ags.codeitem.≡}
 
