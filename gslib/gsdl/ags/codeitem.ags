@@ -11,8 +11,8 @@ gsdl.ags.codeitem.≡	.closure	_gsdl.ags.codeitem.≡_c
 
 gsdl.ags.codeitem.fmtgs	.closure	_gsdl.ags.codeitem.fmtgs_c
 
-gsdl.ags.codeitem.segment.expr.parser	.closure	_gsdl.ags.codeitem.segment.expr.parser_c
-_gsdl.ags.codeitem.segment.expr.parser_enter.p_enter.re	.regex	.enter
+gsdl.ags.codeitem.expr.parser	.closure	_gsdl.ags.codeitem.expr.parser_c
+_gsdl.ags.codeitem.expr.parser_enter.p_enter.re	.regex	.enter
 
 gsdl.ags.codeitem.expr.≡	.closure	_gsdl.ags.codeitem.expr.≡_c
 
@@ -75,36 +75,36 @@ fmtgs.printer.t	.tygvar	# Temp
 ci	.larg	gsdl.ags.codeitem.t
 	.undef	fmtgs.printer.t
 
-# §section §gs{gsdl.ags.codeitem.segment.expr.parser}
+# §section §gs{gsdl.ags.codeitem.expr.parser}
 
-_gsdl.ags.codeitem.segment.expr.parser_c	.expr
-_gsdl.ags.codeitem.segment.expr.parser_enter.p_c	.subcode
-enter.p	.alloc	_gsdl.ags.codeitem.segment.expr.parser_enter.p_c
+_gsdl.ags.codeitem.expr.parser_c	.expr
+_gsdl.ags.codeitem.expr.parser_enter.p_c	.subcode
+enter.p	.alloc	_gsdl.ags.codeitem.expr.parser_enter.p_c
 	.enter	enter.p
 
-_gsdl.ags.codeitem.segment.expr.parser_enter.p_c	.expr
+_gsdl.ags.codeitem.expr.parser_enter.p_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 list.string.ty	.tylet	list.t	string.t
-_gsdl.ags.codeitem.segment.expr.parser_enter.p_f_c	.subcode
+_gsdl.ags.codeitem.expr.parser_enter.p_f_c	.subcode
 parser.lift3	.gvar
 parser.pos.get	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
 rune.compare	.gvar
-_gsdl.ags.codeitem.segment.expr.parser_enter.p_enter.re	.gvar
+_gsdl.ags.codeitem.expr.parser_enter.p_enter.re	.gvar
 gsdl.ags.syntax.id	.gvar
 parser.<*	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.many	.gvar
 parser.fail	.gvar	# Temp
-f	.alloc	_gsdl.ags.codeitem.segment.expr.parser_enter.p_f_c
+f	.alloc	_gsdl.ags.codeitem.expr.parser_enter.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
-enter.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.segment.expr.parser_enter.p_enter.re
+enter.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.expr.parser_enter.p_enter.re
 v.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 v.p1	.apply	parser.*>	rune.t	string.t	string.t	|	enter.p	v.p2
 v.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	v.p1
@@ -114,7 +114,7 @@ tyas.p	.apply	parser.<*	rune.t	list.string.ty	string.t	|	tyas.p1	gsdl.ags.syntax
 	.app	f	pos.get	v.p	tyas.p
 	.enter	parser.lift3	rune.t	parser.pos.t	string.t	list.string.ty	gsdl.ags.codeitem.expr.t
 
-_gsdl.ags.codeitem.segment.expr.parser_enter.p_f_c	.expr
+_gsdl.ags.codeitem.expr.parser_enter.p_f_c	.expr
 parser.pos.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar

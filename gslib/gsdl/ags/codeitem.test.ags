@@ -84,10 +84,10 @@ _test.parse_expr.enter_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
-gsdl.ags.codeitem.segment.expr.parser	.gvar
+gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.enter_input	.gvar
 k	.alloc	_test.parse_expr.enter_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.segment.expr.parser	_test.parse_expr.enter_input	k
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.enter_input	k
 	.app	_test.parse_expr.enter_label	test
 	.enter	test.property.label
 
