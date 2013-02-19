@@ -9,11 +9,17 @@ _tests	.list	test.property.t	_test.parse
 # §section Parsers
 
 _test.parse	.closure	_test.parse_c
-_tests.parse	.list	test.property.t	_test.parse_segment.empty	_test.parse_expr.enter
+_tests.parse	.list	test.property.t	_test.parse_segment.empty	_test.parse_expr	_test.parse_expr.enter
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.code\\n}\s=~\ssegment.parser
 _test.parse_segment.empty_input	.string	\t.code\n
+
+_test.parse_expr	.closure	_test.parse_expr_c
+_test.parse_expr_label	.string	qq{_foo_c\\t.expr\\n\\t.enter\\tbar\\n}\s=~\sparser
+_test.parse_expr_input	.string	_foo_c\t.expr\n\t.enter\tbar\n
+_test.parse_expr_k_foo.c.s	.string	_foo_c
+_test.parse_expr_k_bar.s	.string	bar
 
 _test.parse_expr.enter	.closure	_test.parse_expr.enter_c
 _test.parse_expr.enter_label	.string	qq{\\t.enter\\tfoo\\n}\s=~\sexpr.parser
@@ -72,6 +78,45 @@ cs.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.t	|	gsdl.ags.codeitem.fmt
 nil	.apply	list.nil	gsdl.ags.codeitem.t
 	.app	cs.≡	cs.fmtgs	cos	nil
 	.enter	test.assert.eq	codesegment_ty
+
+# §section §gs{qq{_foo_c\\t.expr\\n\\t.enter\\tbar\\n} =~ parser}
+
+_test.parse_expr_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_test.parse_expr_k_c	.subcode
+test.property.label	.gvar
+_test.parse_expr_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+_test.parse_expr_input	.gvar
+k	.alloc	_test.parse_expr_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.parser	_test.parse_expr_input	k
+	.app	_test.parse_expr_label	test
+	.enter	test.property.label
+
+_test.parse_expr_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+string.t	.tygvar
+gsdl.sourcepos.t	.tygvar	# Temp
+test.assert.eq	.gvar
+gsdl.ags.codeitem.≡	.gvar
+gsdl.ags.codeitem.fmtgs	.gvar
+gsdl.ags.codeitem.expr	.gvar
+_test.parse_expr_k_foo.c.s	.gvar
+gsdl.ags.codeitem.expr.enter	.gvar
+_test.parse_expr_k_bar.s	.gvar
+list.nil	.gvar
+actual	.larg	gsdl.ags.codeitem.t
+pos	.undefined	gsdl.sourcepos.t
+ds	.lrecord
+tyas	.apply	list.nil	string.t
+expected.expr	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.parse_expr_k_bar.s	tyas
+expected	.apply	gsdl.ags.codeitem.expr	|	pos	_test.parse_expr_k_foo.c.s	ds	expected.expr
+	.app	gsdl.ags.codeitem.≡	gsdl.ags.codeitem.fmtgs	actual	expected
+	.enter	test.assert.eq	gsdl.ags.codeitem.t
 
 # §section §gs{qq{\\t.enter\\tfoo\\n} =~ expr.parser}
 

@@ -6,10 +6,13 @@ gsdl.ags.codeitem.segment.parser	.closure	_gsdl.ags.codeitem.segment.parser_c
 _gsdl.ags.codeitem.segment.parser_header.kwre	.regex	.code
 
 gsdl.ags.codeitem.parser	.closure	_gsdl.ags.codeitem.parser_c
+_gsdl.ags.codeitem.parser_expr.p_expr.re	.regex	.expr
 
 gsdl.ags.codeitem.≡	.closure	_gsdl.ags.codeitem.≡_c
 
 gsdl.ags.codeitem.fmtgs	.closure	_gsdl.ags.codeitem.fmtgs_c
+
+gsdl.ags.codeitem.expr	.closure	_gsdl.ags.codeitem.expr_c
 
 gsdl.ags.codeitem.expr.parser	.closure	_gsdl.ags.codeitem.expr.parser_c
 _gsdl.ags.codeitem.expr.parser_enter.p_enter.re	.regex	.enter
@@ -53,19 +56,109 @@ present.p	.apply	parser.*>	rune.t	string.t	res.ty	|	header.p	items.p
 	.enter	parser.<|>	rune.t	res.ty
 
 _gsdl.ags.codeitem.parser_c	.expr
-rune.t	.tygvar	# Temp
-gsdl.ags.codeitem.t	.tygvar	# Temp
+_gsdl.ags.codeitem.parser_expr.p_c	.subcode
+expr.p	.alloc	_gsdl.ags.codeitem.parser_expr.p_c
+	.enter	expr.p
+
+_gsdl.ags.codeitem.parser_expr.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+string.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_gsdl.ags.codeitem.parser_expr.p_f_c	.subcode
+parser.lift3	.gvar
+parser.pos.get	.gvar
+gsdl.ags.syntax.id	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.parser_expr.p_expr.re	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+gsdl.ags.codeitem.expr.parser	.gvar
 parser.fail	.gvar	# Temp
-	.enter	parser.fail	rune.t	gsdl.ags.codeitem.t
+f	.alloc	_gsdl.ags.codeitem.parser_expr.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+enter.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.parser_expr.p_expr.re
+e.p2	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.expr.t	|	gsdl.ags.syntax.whitespace	gsdl.ags.codeitem.expr.parser
+e.p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.expr.t	|	enter.p	e.p2
+e.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.expr.t	|	gsdl.ags.syntax.columnsep	e.p1
+	.app	f	pos.get	gsdl.ags.syntax.id	e.p
+	.enter	parser.lift3	rune.t	parser.pos.t	string.t	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.t
+
+_gsdl.ags.codeitem.parser_expr.p_f_c	.expr
+parser.pos.t	.tygvar
+string.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.codeitem.expr	.gvar
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
+nm	.larg	string.t
+e	.larg	gsdl.ags.codeitem.expr.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+ds	.lrecord
+	.app	pos	nm	ds	e
+	.yield	gsdl.ags.codeitem.expr
 
 # §section §gs{gsdl.ags.codeitem.≡}
 
 _gsdl.ags.codeitem.≡_c	.expr
 gsdl.ags.codeitem.t	.tygvar
-bool.t	.tygvar	# Temp
+_gsdl.ags.codeitem.≡_k0	.subcode
+gsdl.ags.codeitem.t.out	.cogvar
 ci0	.larg	gsdl.ags.codeitem.t
 ci1	.larg	gsdl.ags.codeitem.t
-	.undef	bool.t
+	.force	_gsdl.ags.codeitem.≡_k0
+	.coerce	gsdl.ags.codeitem.t.out
+	.enter	ci0
+
+_gsdl.ags.codeitem.≡_k0	.forcecont
+gsdl.ags.codeitem.prim.u	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_gsdl.ags.codeitem.≡_k1	.subcode
+gsdl.ags.codeitem.t.out	.cogvar
+ci1	.fv	gsdl.ags.codeitem.t
+ci0.0	.karg	gsdl.ags.codeitem.prim.u
+	.force	_gsdl.ags.codeitem.≡_k1
+	.coerce	gsdl.ags.codeitem.t.out
+	.enter	ci1
+
+_gsdl.ags.codeitem.≡_k1	.forcecont
+gsdl.ags.codeitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+_gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+bool.t	.tygvar	# Temp
+bool.∧	.gvar
+string.≡	.gvar
+gsdl.ags.codeitem.expr.≡	.gvar
+bool.true	.gvar	# Temp
+ci0.0	.fv	gsdl.ags.codeitem.prim.u
+ci1.0	.karg	gsdl.ags.codeitem.prim.u
+	.analyze	ci0.0	expr
+		.case	expr
+pos0		.fkarg	0	gsdl.sourcepos.t
+nm0		.fkarg	1	string.t
+ds0		.fkarg	2	_gsdl.ags.codeitem.prim.u_expr_decls_ty
+e0		.fkarg	3	gsdl.ags.codeitem.expr.t
+			.danalyze	ci1.0	expr
+				.default
+					.undef	bool.t
+				.case	expr
+pos1				.fkarg	0	gsdl.sourcepos.t
+nm1				.fkarg	1	string.t
+ds1				.fkarg	2	_gsdl.ags.codeitem.prim.u_expr_decls_ty
+e1				.fkarg	3	gsdl.ags.codeitem.expr.t
+nm.eq					.apply	string.≡	|	nm0	nm1
+ds.eq					.apply	bool.true
+e.eq					.apply	gsdl.ags.codeitem.expr.≡	|	e0	e1
+eq1					.apply	bool.∧	|	ds.eq	e.eq
+					.app	nm.eq	eq1
+					.enter	bool.∧
+	# > :: bool.t
 
 # §section §gs{gsdl.ags.codeitem.fmtgs}
 
@@ -74,6 +167,24 @@ gsdl.ags.codeitem.t	.tygvar
 fmtgs.printer.t	.tygvar	# Temp
 ci	.larg	gsdl.ags.codeitem.t
 	.undef	fmtgs.printer.t
+
+# §section §gs{gsdl.ags.codeitem.t} Constructors
+
+_gsdl.ags.codeitem.expr_c	.expr
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+gsdl.ags.codeitem.prim.u	.tygvar
+_gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.codeitem.t.in	.cogvar
+pos	.arg	gsdl.sourcepos.t
+nm	.arg	string.t
+ds	.arg	_gsdl.ags.codeitem.prim.u_expr_decls_ty
+e	.arg	gsdl.ags.codeitem.expr.t
+c	.constr	gsdl.ags.codeitem.prim.u	expr	0	pos	1	nm	2	ds	3	e
+	.coerce	gsdl.ags.codeitem.t.in
+	.lift
+	.yield	c
 
 # §section §gs{gsdl.ags.codeitem.expr.parser}
 
@@ -206,13 +317,31 @@ c	.constr	gsdl.ags.codeitem.expr.prim.u	enter	0	pos	1	v	2	tyas
 
 	.type
 
+# §section §gs{gsdl.ags.codeitem.t}
+
 gsdl.ags.codeitem.t	.tyabstract	*
 gsdl.ags.codeitem.prim.u	.tygvar
 	.tylift
 	.tyref	gsdl.ags.codeitem.prim.u
 
 gsdl.ags.codeitem.prim.u	.tyexpr
-	.tysum
+_gsdl.ags.codeitem.prim.u_expr_ty	.tygvar
+	.tysum	expr	_gsdl.ags.codeitem.prim.u_expr_ty
+
+_gsdl.ags.codeitem.prim.u_expr_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+_gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	string.t	2	_gsdl.ags.codeitem.prim.u_expr_decls_ty	3	gsdl.ags.codeitem.expr.t
+
+_gsdl.ags.codeitem.prim.u_expr_decls_ty	.tyexpr
+_gsdl.ags.codeitem.prim.u_expr_decls_u	.tygvar
+	.tylift
+	.tyref	_gsdl.ags.codeitem.prim.u_expr_decls_u
+
+_gsdl.ags.codeitem.prim.u_expr_decls_u	.tyexpr
+	.typroduct
 
 # §section §gs{gsdl.ags.codeitem.expr.t}
 
@@ -233,6 +362,15 @@ list.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	string.t	2	2_ty
 
 	.coercion
+
+gsdl.ags.codeitem.t.in	.tycoercion
+gsdl.ags.codeitem.t	.tygvar
+	.tydefinition	gsdl.ags.codeitem.t
+
+gsdl.ags.codeitem.t.out	.tycoercion
+gsdl.ags.codeitem.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.codeitem.t
 
 gsdl.ags.codeitem.expr.t.in	.tycoercion
 gsdl.ags.codeitem.expr.t	.tygvar
