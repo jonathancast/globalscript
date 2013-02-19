@@ -166,6 +166,7 @@ gsdl.ags.codeitem.expr.t	.tygvar
 bool.t	.tygvar	# Temp
 bool.∧	.gvar
 string.≡	.gvar
+list.≡	.gvar
 gsdl.ags.codeitem.expr.≡	.gvar
 bool.true	.gvar	# Temp
 ci0.0	.fv	gsdl.ags.codeitem.prim.u
@@ -185,7 +186,9 @@ nm1				.fkarg	1	string.t
 ds1				.fkarg	2	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 e1				.fkarg	3	gsdl.ags.codeitem.expr.t
 nm.eq					.apply	string.≡	|	nm0	nm1
-ds.eq					.apply	bool.true
+tygvs0					.lfield	tygvs	ds0
+tygvs1					.lfield	tygvs	ds1
+ds.eq					.apply	list.≡	string.t	|	string.≡	tygvs0	tygvs1
 e.eq					.apply	gsdl.ags.codeitem.expr.≡	|	e0	e1
 eq1					.apply	bool.∧	|	ds.eq	e.eq
 					.app	nm.eq	eq1

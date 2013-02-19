@@ -36,7 +36,15 @@ _test.parse_expr.enter_k_foo.s	.string	foo
 # §section §gs{≡}
 
 _test.eq	.closure	_test.eq_c
-_tests.eq	.list	test.property.t
+_tests.eq	.list	test.property.t	_test.eq_codeitem.expr.diff.tygvars
+
+_test.eq_codeitem.expr.diff.tygvars	.closure	_test.eq_codeitem.expr.diff.tygvars_c
+_test.eq_codeitem.expr.diff.tygvars_label	.string	ags.codeitem.≡\sexpr\sexpr\swith\sdifferent\stygvars
+_test.eq_codeitem.expr.diff.tygvars_false.s	.string	ags.coditem.expr\snm\s〈\s'tygvars\s∝\snil;\s〉\se\s≠\sags.coditem.expr\snm\s〈\s'tygvars\s∝\s[\sqq{foo},\s];\s〉\se
+_test.eq_codeitem.expr.diff.tygvars_true.s	.string	ags.coditem.expr\snm\s〈\s'tygvars\s∝\snil;\s〉\se\s≡\sags.coditem.expr\snm\s〈\s'tygvars\s∝\s[\sqq{foo},\s];\s〉\se
+_test.eq_codeitem.expr.diff.tygvars_foo.c.s	.string	_foo_c
+_test.eq_codeitem.expr.diff.tygvars_bar.s	.string	bar
+_test.eq_codeitem.expr.diff.tygvars_foo.s	.string	foo
 
 	.code
 
@@ -232,3 +240,35 @@ test.all	.gvar
 _tests.eq	.gvar
 	.app	_tests.eq
 	.enter	test.all
+
+# §subsection §gs{ags.codeitem.≡ expr expr} with different §ags{.tygvar}s
+
+_test.eq_codeitem.expr.diff.tygvars_c	.expr
+string.t	.tygvar
+gsdl.sourcepos.t	.tygvar	# Temp
+test.property.label	.gvar
+_test.eq_codeitem.expr.diff.tygvars_label	.gvar
+test.deny	.gvar
+_test.eq_codeitem.expr.diff.tygvars_false.s	.gvar
+_test.eq_codeitem.expr.diff.tygvars_true.s	.gvar
+gsdl.ags.codeitem.≡	.gvar
+gsdl.ags.codeitem.expr	.gvar
+_test.eq_codeitem.expr.diff.tygvars_foo.c.s	.gvar
+list.nil	.gvar
+gsdl.ags.codeitem.expr.enter	.gvar
+_test.eq_codeitem.expr.diff.tygvars_bar.s	.gvar
+list.:	.gvar
+_test.eq_codeitem.expr.diff.tygvars_foo.s	.gvar
+pos	.undefined	gsdl.sourcepos.t
+tygvs0	.apply	list.nil	string.t
+decls0	.lrecord	tygvs	tygvs0
+tyas	.apply	list.nil	string.t
+exp	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.eq_codeitem.expr.diff.tygvars_bar.s	tyas
+ci0	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.tygvars_foo.c.s decls0	exp
+tygvs1	.apply	list.:	string.t	|	_test.eq_codeitem.expr.diff.tygvars_foo.s	tygvs0
+decls1	.lrecord	tygvs	tygvs1
+ci1	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.tygvars_foo.c.s decls1	exp
+eq	.apply	gsdl.ags.codeitem.≡	|	ci0	ci1
+test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.tygvars_false.s	_test.eq_codeitem.expr.diff.tygvars_true.s	eq
+	.app	_test.eq_codeitem.expr.diff.tygvars_label	test
+	.enter	test.property.label
