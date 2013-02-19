@@ -82,10 +82,7 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.codeitem.parser_expr.p_expr.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
-
 _gsdl.ags.codeitem.expr.p_decls.parser	.gvar
-
-
 gsdl.ags.codeitem.expr.parser	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.codeitem.parser_expr.p_f_c

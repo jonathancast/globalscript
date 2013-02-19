@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse
+_tests	.list	test.property.t	_test.parse	_test.eq
 
 # §section Parsers
 
@@ -33,6 +33,11 @@ _test.parse_expr.enter_label	.string	qq{\\t.enter\\tfoo\\n}\s=~\sexpr.parser
 _test.parse_expr.enter_input	.string	\t.enter\tfoo\n
 _test.parse_expr.enter_k_foo.s	.string	foo
 
+# §section §gs{≡}
+
+_test.eq	.closure	_test.eq_c
+_tests.eq	.list	test.property.t
+
 	.code
 
 _epcode	.expr
@@ -49,7 +54,7 @@ _tests.parse	.gvar
 	.app	_tests.parse
 	.enter	test.all
 
-# §section §gs{qq{\\t.code\\n}=~ segment.parser}
+# §subsection §gs{qq{\\t.code\\n}=~ segment.parser}
 
 _test.parse_segment.empty_c	.expr
 rune.t	.tygvar
@@ -86,7 +91,7 @@ nil	.apply	list.nil	gsdl.ags.codeitem.t
 	.app	cs.≡	cs.fmtgs	cos	nil
 	.enter	test.assert.eq	codesegment_ty
 
-# §section §gs{qq{_foo_c\\t.expr\\n\\t.enter\\tbar\\n} =~ parser}
+# §subsection §gs{qq{_foo_c\\t.expr\\n\\t.enter\\tbar\\n} =~ parser}
 
 _test.parse_expr_c	.expr
 rune.t	.tygvar
@@ -126,7 +131,7 @@ expected	.apply	gsdl.ags.codeitem.expr	|	pos	_test.parse_expr_k_foo.c.s	ds	expec
 	.app	gsdl.ags.codeitem.≡	gsdl.ags.codeitem.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.ags.codeitem.t
 
-# §section §gs{qq{_foo_c\\t.expr\\nbar.t\\t.tygvar\\n\\t.enter\\tbaz\\n} =~ parser}
+# §subsection §gs{qq{_foo_c\\t.expr\\nbar.t\\t.tygvar\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.tygvar_c	.expr
 rune.t	.tygvar
@@ -185,7 +190,7 @@ tygvs.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
 			.app	tygvs.≡	tygvs.fmtgs	tygvs	_test.parse_expr.tygvar_k_tygvs.expected
 			.enter	test.assert.eq	list.string.ty
 
-# §section §gs{qq{\\t.enter\\tfoo\\n} =~ expr.parser}
+# §subsection §gs{qq{\\t.enter\\tfoo\\n} =~ expr.parser}
 
 _test.parse_expr.enter_c	.expr
 rune.t	.tygvar
@@ -219,3 +224,11 @@ nil	.apply	list.nil	string.t
 expected	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.parse_expr.enter_k_foo.s	nil
 	.app	gsdl.ags.codeitem.expr.≡	gsdl.ags.codeitem.expr.fmtgs	 actual	expected
 	.enter	test.assert.eq	gsdl.ags.codeitem.expr.t
+
+# §section §gs{≡}
+
+_test.eq_c	.expr
+test.all	.gvar
+_tests.eq	.gvar
+	.app	_tests.eq
+	.enter	test.all
