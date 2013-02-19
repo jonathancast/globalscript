@@ -129,8 +129,10 @@ f	.alloc	_gsdl.ags.codeitem.expr.p_decls.parser_f_c
 _gsdl.ags.codeitem.expr.p_decls.parser_f_c	.expr
 list.t	.tygvar
 string.t	.tygvar
+list.nil	.gvar	# Temp
 tygvs	.larg	list.t	string.t
-r	.record	tygvs	tygvs
+subcodes	.apply	list.nil	string.t
+r	.record	subcodes	subcodes	tygvs	tygvs
 	.lift
 	.yield	r
 
@@ -186,9 +188,13 @@ nm1				.fkarg	1	string.t
 ds1				.fkarg	2	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 e1				.fkarg	3	gsdl.ags.codeitem.expr.t
 nm.eq					.apply	string.≡	|	nm0	nm1
+subcodes0					.lfield	subcodes	ds0
+subcodes1					.lfield	subcodes	ds1
+subcodes.eq					.apply	list.≡	string.t	|	string.≡	subcodes0	subcodes1
 tygvs0					.lfield	tygvs	ds0
 tygvs1					.lfield	tygvs	ds1
-ds.eq					.apply	list.≡	string.t	|	string.≡	tygvs0	tygvs1
+tygvs.eq					.apply	list.≡	string.t	|	string.≡	tygvs0	tygvs1
+ds.eq					.apply	bool.∧	|	subcodes.eq	tygvs.eq
 e.eq					.apply	gsdl.ags.codeitem.expr.≡	|	e0	e1
 eq1					.apply	bool.∧	|	ds.eq	e.eq
 					.app	nm.eq	eq1
@@ -401,7 +407,7 @@ _gsdl.ags.codeitem.prim.u_expr_decls_u	.tyexpr
 list.t	.tygvar
 string.t	.tygvar
 list.string.ty	.tylet	list.t	string.t
-	.typroduct	tygvs	list.string.ty
+	.typroduct	subcodes	list.string.ty	tygvs	list.string.ty
 
 # §section §gs{gsdl.ags.codeitem.expr.t}
 
