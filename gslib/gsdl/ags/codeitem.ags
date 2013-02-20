@@ -27,6 +27,8 @@ _gsdl.ags.codeitem.gvars.parser_gvar.kw.re	.regex	.gvar
 
 gsdl.ags.codeitem.expr	.closure	_gsdl.ags.codeitem.expr_c
 
+gsdl.ags.codeitem.arg.≡	.closure	_gsdl.ags.codeitem.arg.≡_c
+
 gsdl.ags.codeitem.expr.parser	.closure	_gsdl.ags.codeitem.expr.parser_c
 _gsdl.ags.codeitem.expr.parser_enter.p_enter.re	.regex	.enter
 
@@ -337,6 +339,18 @@ c	.constr	gsdl.ags.codeitem.prim.u	expr	0	pos	1	nm	2	ds	3	e
 	.lift
 	.yield	c
 
+# §section §gs{gsdl.ags.codeitem.arg.≡}
+
+_gsdl.ags.codeitem.arg.≡_c	.expr
+gsdl.ags.codeitem.arg.t	.tygvar
+string.≡	.gvar
+arg0	.larg	gsdl.ags.codeitem.arg.t
+arg1	.larg	gsdl.ags.codeitem.arg.t
+name0	.lfield	name	arg0
+name1	.lfield	name	arg1
+	.app	name0	name1
+	.enter	string.≡
+
 # §section §gs{gsdl.ags.codeitem.expr.parser}
 
 _gsdl.ags.codeitem.expr.parser_c	.expr
@@ -496,6 +510,17 @@ list.t	.tygvar
 string.t	.tygvar
 list.string.ty	.tylet	list.t	string.t
 	.typroduct	cogvars	list.string.ty	gvars	list.string.ty	subcodes	list.string.ty	tygvs	list.string.ty
+
+# §section §gs{gsdl.ags.codeitem.arg.t}
+
+gsdl.ags.codeitem.arg.t	.tyexpr
+gsdl.ags.codeitem.arg.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.codeitem.arg.u
+
+gsdl.ags.codeitem.arg.u	.tyexpr
+string.t	.tygvar
+	.typroduct	name	string.t
 
 # §section §gs{gsdl.ags.codeitem.expr.t}
 
