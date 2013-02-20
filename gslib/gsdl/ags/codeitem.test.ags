@@ -57,7 +57,7 @@ _test.parse_expr.enter_k_foo.s	.string	foo
 # §section §gs{≡}
 
 _test.eq	.closure	_test.eq_c
-_tests.eq	.list	test.property.t	_test.eq_codeitem.expr.diff.tygvars	_test.eq_codeitem.expr.diff.subcodes	_test.eq_codeitem.expr.diff.cogvars	_test.eq_codeitem.expr.diff.gvars	_test.eq_arg.diff.name	_test.eq_arg.diff.lifted
+_tests.eq	.list	test.property.t	_test.eq_codeitem.expr.diff.tygvars	_test.eq_codeitem.expr.diff.subcodes	_test.eq_codeitem.expr.diff.cogvars	_test.eq_codeitem.expr.diff.gvars	_test.eq_arg.diff.name	_test.eq_arg.diff.lifted	_test.eq_arg.diff.ty
 
 _test.eq_codeitem.expr.diff.tygvars	.closure	_test.eq_codeitem.expr.diff.tygvars_c
 _test.eq_codeitem.expr.diff.tygvars_label	.string	ags.codeitem.≡\sexpr\sexpr\swith\sdifferent\stygvars
@@ -97,12 +97,22 @@ _test.eq_arg.diff.name_false	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\str
 _test.eq_arg.diff.name_true	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'ty\s∝\sqq{bar.t};\s〉\s≡\s〈\s'name\s∝\sqq{baz};\s'lifted\s∝\strue;\s'ty\s∝\sqq{bar.t};\s〉
 _test.eq_arg.diff.name_foo.s	.string	foo
 _test.eq_arg.diff.name_baz.s	.string	baz
+_test.eq_arg.diff.name_bar.t.s	.string	bar.t
 
 _test.eq_arg.diff.lifted	.closure	_test.eq_arg.diff.lifted_c
 _test.eq_arg.diff.lifted_label	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'ty\s∝\sqq{bar.t};\s〉\s≡\s〈\s'name\s∝\sqq{foo};\s'lifted\s∝\sfalse;\s'ty\s∝\sqq{bar.t};\s〉
 _test.eq_arg.diff.lifted_false	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'ty\s∝\sqq{bar.t};\s〉\s≠\s〈\s'name\s∝\sqq{foo};\s'lifted\s∝\sfalse;\s'ty\s∝\sqq{bar.t};\s〉
 _test.eq_arg.diff.lifted_true	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'ty\s∝\sqq{bar.t};\s〉\s≡\s〈\s'name\s∝\sqq{foo};\s'lifted\s∝\sfalse;\s'ty\s∝\sqq{bar.t};\s〉
 _test.eq_arg.diff.lifted_foo.s	.string	foo
+_test.eq_arg.diff.lifted_bar.t.s	.string	bar.t
+
+_test.eq_arg.diff.ty	.closure	_test.eq_arg.diff.ty_c
+_test.eq_arg.diff.ty_label	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'ty\s∝\sqq{bar.t};\s〉\s≡\s〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'ty\s∝\sqq{baz.t};\s〉
+_test.eq_arg.diff.ty_false	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'ty\s∝\sqq{bar.t};\s〉\s≠\s〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'ty\s∝\sqq{baz.t};\s〉
+_test.eq_arg.diff.ty_true	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'ty\s∝\sqq{bar.t};\s〉\s≡\s〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'ty\s∝\sqq{baz.t};\s〉
+_test.eq_arg.diff.ty_foo.s	.string	foo
+_test.eq_arg.diff.ty_bar.t.s	.string	bar.t
+_test.eq_arg.diff.ty_baz.t.s	.string	baz.t
 
 	.code
 
@@ -609,11 +619,12 @@ test.deny	.gvar
 _test.eq_arg.diff.name_false	.gvar
 _test.eq_arg.diff.name_true	.gvar
 gsdl.ags.codeitem.arg.≡	.gvar
+_test.eq_arg.diff.name_bar.t.s	.gvar
 bool.true	.gvar
 _test.eq_arg.diff.name_foo.s	.gvar
 _test.eq_arg.diff.name_baz.s	.gvar
-arg0	.lrecord	lifted	bool.true	name	_test.eq_arg.diff.name_foo.s
-arg1	.lrecord	lifted	bool.true	name	_test.eq_arg.diff.name_baz.s
+arg0	.lrecord	gstype	_test.eq_arg.diff.name_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.name_foo.s
+arg1	.lrecord	gstype	_test.eq_arg.diff.name_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.name_baz.s
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
 test	.apply	test.deny	|	_test.eq_arg.diff.name_false	_test.eq_arg.diff.name_true	eq
 	.app	_test.eq_arg.diff.name_label	test
@@ -628,12 +639,33 @@ test.deny	.gvar
 _test.eq_arg.diff.lifted_false	.gvar
 _test.eq_arg.diff.lifted_true	.gvar
 gsdl.ags.codeitem.arg.≡	.gvar
+_test.eq_arg.diff.lifted_bar.t.s	.gvar
 bool.true	.gvar
 _test.eq_arg.diff.lifted_foo.s	.gvar
 bool.false	.gvar
-arg0	.lrecord	lifted	bool.true	name	_test.eq_arg.diff.lifted_foo.s
-arg1	.lrecord	lifted	bool.false	name	_test.eq_arg.diff.lifted_foo.s
+arg0	.lrecord	gstype	_test.eq_arg.diff.lifted_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.lifted_foo.s
+arg1	.lrecord	gstype	_test.eq_arg.diff.lifted_bar.t.s	lifted	bool.false	name	_test.eq_arg.diff.lifted_foo.s
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
 test	.apply	test.deny	|	_test.eq_arg.diff.lifted_false	_test.eq_arg.diff.lifted_true	eq
 	.app	_test.eq_arg.diff.lifted_label	test
+	.enter	test.property.label
+
+# §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉 ≡ 〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{baz.t}; 〉}
+
+_test.eq_arg.diff.ty_c	.expr
+test.property.label	.gvar
+_test.eq_arg.diff.ty_label	.gvar
+test.deny	.gvar
+_test.eq_arg.diff.ty_false	.gvar
+_test.eq_arg.diff.ty_true	.gvar
+gsdl.ags.codeitem.arg.≡	.gvar
+_test.eq_arg.diff.ty_bar.t.s	.gvar
+bool.true	.gvar
+_test.eq_arg.diff.ty_foo.s	.gvar
+_test.eq_arg.diff.ty_baz.t.s	.gvar
+arg0	.lrecord	gstype	_test.eq_arg.diff.ty_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.ty_foo.s
+arg1	.lrecord	gstype	_test.eq_arg.diff.ty_baz.t.s	lifted	bool.true	name	_test.eq_arg.diff.ty_foo.s
+eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
+test	.apply	test.deny	|	_test.eq_arg.diff.ty_false	_test.eq_arg.diff.ty_true	eq
+	.app	_test.eq_arg.diff.ty_label	test
 	.enter	test.property.label
