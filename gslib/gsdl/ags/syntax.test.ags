@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse.comment	_test.parse.two.components
+_tests	.list	test.property.t	_test.parse.comment	_test.parse.two.components	_test.parse.digit.in.alphanum
 
 _test.parse.comment	.closure	_test.parse.comment_c
 _test.parse.comment_label	.string	qq{\\n\h\sComment\\n}\s=~\swhitespace
@@ -13,6 +13,10 @@ _test.parse.comment_input	.string	\n\h\sComment\n
 _test.parse.two.components	.closure	_test.parse.two.components_c
 _test.parse.two.components_label	.string	qq{fmtgs.prec}\s=~\ssyntax.id
 _test.parse.two.components_input	.string	fmtgs.prec
+
+_test.parse.digit.in.alphanum	.closure	_test.parse.digit.in.alphanum_c
+_test.parse.digit.in.alphanum_label	.string	qq{p0}\s=~\ssyntax.id
+_test.parse.digit.in.alphanum_input	.string	p0
 
 	.code
 
@@ -73,4 +77,32 @@ string.fmtgs	.gvar
 _test.parse.two.components_input	.gvar
 res	.larg	string.t
 	.app	string.≡	string.fmtgs	res	_test.parse.two.components_input
+	.enter	test.assert.eq	string.t
+
+# §section §gs{qq{p0} =~ syntax.id}
+
+_test.parse.digit.in.alphanum_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+_test.parse.digit.in.alphanum_k_c	.subcode
+test.property.label	.gvar
+_test.parse.digit.in.alphanum_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.syntax.id	.gvar
+_test.parse.digit.in.alphanum_input	.gvar
+k	.alloc	_test.parse.digit.in.alphanum_k_c
+test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.id	_test.parse.digit.in.alphanum_input	k
+	.app	_test.parse.digit.in.alphanum_label	test
+	.enter	test.property.label
+
+_test.parse.digit.in.alphanum_k_c	.expr
+string.t	.tygvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+_test.parse.digit.in.alphanum_input	.gvar
+actual	.larg	string.t
+	.app	string.≡	string.fmtgs	actual	_test.parse.digit.in.alphanum_input
 	.enter	test.assert.eq	string.t
