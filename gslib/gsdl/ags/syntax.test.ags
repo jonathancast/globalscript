@@ -11,7 +11,7 @@ _test.parse.comment_label	.string	qq{\\n\h\sComment\\n}\s=~\swhitespace
 _test.parse.comment_input	.string	\n\h\sComment\n
 
 _test.parse.two.components	.closure	_test.parse.two.components_c
-_test.parse.two.components_label	.string	syntax.id\s=~\sqq{fmtgs.prec}
+_test.parse.two.components_label	.string	qq{fmtgs.prec}\s=~\ssyntax.id
 _test.parse.two.components_input	.string	fmtgs.prec
 
 	.code
