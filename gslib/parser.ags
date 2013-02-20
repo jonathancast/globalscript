@@ -17,6 +17,7 @@ parser.<*	.closure	_parser.<*_c
 parser.lift2	.closure	_parser.lift2_c
 parser.lift3	.closure	_parser.lift3_c
 parser.lift4	.closure	_parser.lift4_c
+parser.lift5	.closure	_parser.lift5_c
 
 parser.>>=	.closure	_parser.>>=_c
 
@@ -806,6 +807,26 @@ x3	.larg	α3
 y	.apply	f	|	x0	x1	x2	x3
 	.app	y
 	.enter	k
+
+# §section §gs{parser.lift5}
+
+_parser.lift5_c	.expr
+_parser.lift5_f_ty	.tygvar
+parser.t	.tygvar
+s	.tyarg	*
+α0	.tyarg	*
+α1	.tyarg	*
+α2	.tyarg	*
+α3	.tyarg	*
+α4	.tyarg	*
+β	.tyarg	*
+f	.larg	_parser.lift5_f_ty	α0	α1	α2	α3	α4	β
+p0	.larg	parser.t	s	α0
+p1	.larg	parser.t	s	α1
+p2	.larg	parser.t	s	α2
+p3	.larg	parser.t	s	α3
+p4	.larg	parser.t	s	α4
+	.undef	parser.t	s	β
 
 # §section §gs{parser.>>=}
 
@@ -2716,6 +2737,26 @@ s	.tylambda	*
 	.tyfun	α2
 	.tylift
 	.tyfun	α3
+	.tyref	β
+
+
+_parser.lift5_f_ty	.tyexpr
+α0	.tylambda	*
+α1	.tylambda	*
+α2	.tylambda	*
+α3	.tylambda	*
+α4	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α0
+	.tylift
+	.tyfun	α1
+	.tylift
+	.tyfun	α2
+	.tylift
+	.tyfun	α3
+	.tylift
+	.tyfun	α4
 	.tyref	β
 
 # §section §gs{parser.>>=}
