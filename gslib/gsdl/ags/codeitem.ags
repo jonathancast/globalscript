@@ -343,13 +343,19 @@ c	.constr	gsdl.ags.codeitem.prim.u	expr	0	pos	1	nm	2	ds	3	e
 
 _gsdl.ags.codeitem.arg.≡_c	.expr
 gsdl.ags.codeitem.arg.t	.tygvar
+bool.∧	.gvar
 string.≡	.gvar
+bool.≡	.gvar
 arg0	.larg	gsdl.ags.codeitem.arg.t
 arg1	.larg	gsdl.ags.codeitem.arg.t
 name0	.lfield	name	arg0
 name1	.lfield	name	arg1
-	.app	name0	name1
-	.enter	string.≡
+lifted0	.lfield	lifted	arg0
+lifted1	.lfield	lifted	arg1
+name.eq	.apply	string.≡	|	name0	name1
+lifted.eq	.apply	bool.≡	|	lifted0	lifted1
+	.app	name.eq	lifted.eq
+	.enter	bool.∧
 
 # §section §gs{gsdl.ags.codeitem.expr.parser}
 
@@ -519,8 +525,9 @@ gsdl.ags.codeitem.arg.u	.tygvar
 	.tyref	gsdl.ags.codeitem.arg.u
 
 gsdl.ags.codeitem.arg.u	.tyexpr
+bool.t	.tygvar
 string.t	.tygvar
-	.typroduct	name	string.t
+	.typroduct	lifted	bool.t	name	string.t
 
 # §section §gs{gsdl.ags.codeitem.expr.t}
 
