@@ -27,7 +27,12 @@ _gsdl.ags.codeitem.gvars.parser_gvar.kw.re	.regex	.gvar
 
 gsdl.ags.codeitem.expr	.closure	_gsdl.ags.codeitem.expr_c
 
+gsdl.ags.codeitem.args.parser	.closure	_gsdl.ags.codeitem.args.parser_c
+_gsdl.ags.codeitem.args.parser_larg.kw.re	.regex	.larg
+
 gsdl.ags.codeitem.arg.≡	.closure	_gsdl.ags.codeitem.arg.≡_c
+
+gsdl.ags.codeitem.arg.fmtgs	.closure	_gsdl.ags.codeitem.arg.fmtgs_c
 
 gsdl.ags.codeitem.expr.parser	.closure	_gsdl.ags.codeitem.expr.parser_c
 _gsdl.ags.codeitem.expr.parser_enter.p_enter.re	.regex	.enter
@@ -128,17 +133,20 @@ _gsdl.ags.codeitem.expr.p_decls.parser_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
+gsdl.ags.codeitem.arg.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
 list.string.ty	.tylet	list.t	string.t
+list.arg.ty	.tylet	list.t	gsdl.ags.codeitem.arg.t
 _gsdl.ags.codeitem.expr.p_decls.parser_f_c	.subcode
-parser.lift4	.gvar
+parser.lift5	.gvar
 gsdl.ags.codeitem.tygvars.parser	.gvar
 gsdl.ags.codeitem.subcodes.parser	.gvar
 gsdl.ags.codeitem.cogvars.parser	.gvar
 gsdl.ags.codeitem.gvars.parser	.gvar
+gsdl.ags.codeitem.args.parser	.gvar
 f	.alloc	_gsdl.ags.codeitem.expr.p_decls.parser_f_c
-	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.cogvars.parser	gsdl.ags.codeitem.gvars.parser
-	.enter	parser.lift4	rune.t	list.string.ty	list.string.ty	list.string.ty	list.string.ty	_gsdl.ags.codeitem.prim.u_expr_decls_ty
+	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.cogvars.parser	gsdl.ags.codeitem.gvars.parser	gsdl.ags.codeitem.args.parser
+	.enter	parser.lift5	rune.t	list.string.ty	list.string.ty	list.string.ty	list.string.ty	list.arg.ty	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 
 _gsdl.ags.codeitem.expr.p_decls.parser_f_c	.expr
 list.t	.tygvar
@@ -149,7 +157,7 @@ tygvs	.larg	list.t	string.t
 subcodes	.larg	list.t	string.t
 cogvars	.larg	list.t	string.t
 gvars	.larg	list.t	string.t
-args	.apply	list.nil	gsdl.ags.codeitem.arg.t
+args	.larg	list.t	gsdl.ags.codeitem.arg.t
 r	.record	args	args	cogvars	cogvars	gvars	gvars	subcodes	subcodes	tygvs	tygvs
 	.lift
 	.yield	r
@@ -347,6 +355,48 @@ c	.constr	gsdl.ags.codeitem.prim.u	expr	0	pos	1	nm	2	ds	3	e
 	.lift
 	.yield	c
 
+# §section §gs{gsdl.ags.codeitem.args.parser}
+
+_gsdl.ags.codeitem.args.parser_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.arg.t	.tygvar
+string.t	.tygvar
+bool.t	.tygvar
+_gsdl.ags.codeitem.args.parser_f_c	.subcode
+parser.many	.gvar
+parser.<*	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.lift3	.gvar
+gsdl.ags.syntax.id	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.args.parser_larg.kw.re	.gvar
+parser.unit	.gvar
+bool.true	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.codeitem.args.parser_f_c
+larg.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.args.parser_larg.kw.re	# > m/.larg/
+true.p	.apply	parser.unit	rune.t	bool.t	|	bool.true	# > unit true
+arg.lifted.p1	.apply	parser.*>	rune.t	string.t	bool.t	|	larg.kw.p	true.p	# > m/.larg/ *> unit true -- Change to §gs{m/.larg/ *> unit true <|> m/.arg/ *> unit false} to add support for .arg
+arg.lifted.p	.apply	parser.*>	rune.t	string.t	bool.t	|	gsdl.ags.syntax.columnsep	arg.lifted.p1
+arg.ty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+arg.p1	.apply	parser.lift3	rune.t	string.t	bool.t	string.t	gsdl.ags.codeitem.arg.t	|	f	gsdl.ags.syntax.id	arg.lifted.p	arg.ty.p
+arg.p	.apply	parser.<*	rune.t	gsdl.ags.codeitem.arg.t	string.t	|	arg.p1	gsdl.ags.syntax.whitespace
+	.app	arg.p
+	.enter	parser.many	rune.t	gsdl.ags.codeitem.arg.t
+
+_gsdl.ags.codeitem.args.parser_f_c	.expr
+string.t	.tygvar
+bool.t	.tygvar
+nm	.larg	string.t
+lifted	.larg	bool.t
+ty	.larg	string.t
+r	.record	gstype	ty	lifted	lifted	name	nm
+	.lift
+	.yield	r
+
 # §section §gs{gsdl.ags.codeitem.arg.≡}
 
 _gsdl.ags.codeitem.arg.≡_c	.expr
@@ -368,6 +418,14 @@ gstype.eq	.apply	string.≡	|	gstype0	gstype1
 eq.1	.apply	bool.∧	|	lifted.eq	gstype.eq
 	.app	name.eq	eq.1
 	.enter	bool.∧
+
+# §section §gs{gsdl.ags.codeitem.arg.fmtgs}
+
+_gsdl.ags.codeitem.arg.fmtgs_c	.expr
+gsdl.ags.codeitem.arg.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+arg	.larg	gsdl.ags.codeitem.arg.t
+	.undef	fmtgs.printer.t
 
 # §section §gs{gsdl.ags.codeitem.expr.parser}
 

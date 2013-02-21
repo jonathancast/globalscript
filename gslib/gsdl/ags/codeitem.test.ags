@@ -9,7 +9,7 @@ _tests	.list	test.property.t	_test.parse	_test.eq
 # §section Parsers
 
 _test.parse	.closure	_test.parse_c
-_tests.parse	.list	test.property.t	_test.parse_segment.empty	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.enter
+_tests.parse	.list	test.property.t	_test.parse_segment.empty	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.larg	_test.parse_expr.enter
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.code\\n}\s=~\ssegment.parser
@@ -48,6 +48,13 @@ _test.parse_expr.gvar_input	.string	_foo_c\t.expr\nbar\t.gvar\n\t.enter\tbaz\n
 _test.parse_expr.gvar_k_wrong.constr.s	.string	Parse\sresult\snot\san\s.expr
 _test.parse_expr.gvar_k_gvars.expected	.list	string.t	_test.parse_expr.gvar_k_gvars.expected_0
 _test.parse_expr.gvar_k_gvars.expected_0	.string	bar
+
+_test.parse_expr.larg	.closure	_test.parse_expr.larg_c
+_test.parse_expr.larg_label	.string	qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\n\\t.enter\\tbaz\\n}\s=~\sparser
+_test.parse_expr.larg_input	.string	_foo_c\t.expr\nbar\t.larg\tbar.t\n\t.enter\tbaz\n
+_test.parse_expr.larg_k_wrong.constr.s	.string	Parse\sresult\snot\san\s.expr
+_test.parse_expr.larg_k_bar.s	.string	bar
+_test.parse_expr.larg_k_bar.t.s	.string	bar.t
 
 _test.parse_expr.enter	.closure	_test.parse_expr.enter_c
 _test.parse_expr.enter_label	.string	qq{\\t.enter\\tfoo\\n}\s=~\sexpr.parser
@@ -453,6 +460,73 @@ gvars.≡			.apply	list.≡	string.t	|	string.≡
 gvars.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
 			.app	gvars.≡	gvars.fmtgs	gvars	_test.parse_expr.gvar_k_gvars.expected
 			.enter	test.assert.eq	list.string.ty
+
+# §subsection §gs{qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\n\\t.enter\\tbaz\\n} =~ parser}
+
+_test.parse_expr.larg_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_test.parse_expr.larg_k_c	.subcode
+test.property.label	.gvar
+_test.parse_expr.larg_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+_test.parse_expr.larg_input	.gvar
+k	.alloc	_test.parse_expr.larg_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.parser	_test.parse_expr.larg_input	k
+	.app	_test.parse_expr.larg_label	test
+	.enter	test.property.label
+
+_test.parse_expr.larg_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+_test.parse_expr.larg_k_k	.subcode
+gsdl.ags.codeitem.t.out	.cogvar
+ci	.larg	gsdl.ags.codeitem.t
+	.force	_test.parse_expr.larg_k_k
+	.coerce	gsdl.ags.codeitem.t.out
+	.enter	ci
+
+_test.parse_expr.larg_k_k	.forcecont
+gsdl.ags.codeitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+_gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.arg.t	.tygvar
+list.arg.ty	.tylet	list.t	gsdl.ags.codeitem.arg.t
+test.property.false	.gvar
+_test.parse_expr.larg_k_wrong.constr.s	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+gsdl.ags.codeitem.arg.≡	.gvar
+list.fmtgs.byDefault	.gvar
+gsdl.ags.codeitem.arg.fmtgs	.gvar
+list.:	.gvar
+_test.parse_expr.larg_k_bar.t.s	.gvar
+bool.true	.gvar
+_test.parse_expr.larg_k_bar.s	.gvar
+list.nil	.gvar
+ci0	.karg	gsdl.ags.codeitem.prim.u
+	.danalyze	ci0	expr
+		.default
+			.app	_test.parse_expr.larg_k_wrong.constr.s
+			.enter	test.property.false
+		.case	expr
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	string.t
+ds		.fkarg	2	_gsdl.ags.codeitem.prim.u_expr_decls_ty
+e		.fkarg	3	gsdl.ags.codeitem.expr.t
+args			.lfield	args	ds
+args.≡			.apply	list.≡	gsdl.ags.codeitem.arg.t	|	gsdl.ags.codeitem.arg.≡
+args.fmtgs			.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.arg.t	|	gsdl.ags.codeitem.arg.fmtgs
+arg0			.lrecord	gstype	_test.parse_expr.larg_k_bar.t.s	lifted	bool.true	name	_test.parse_expr.larg_k_bar.s
+nil			.apply	list.nil	gsdl.ags.codeitem.arg.t
+expected			.apply	list.:	gsdl.ags.codeitem.arg.t	|	arg0	nil
+			.app	args.≡	args.fmtgs	args	expected
+			.enter	test.assert.eq	list.arg.ty
 
 # §subsection §gs{qq{\\t.enter\\tfoo\\n} =~ expr.parser}
 
