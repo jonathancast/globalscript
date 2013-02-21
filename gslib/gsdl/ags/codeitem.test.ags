@@ -9,7 +9,7 @@ _tests	.list	test.property.t	_test.parse	_test.eq
 # §section Parsers
 
 _test.parse	.closure	_test.parse_c
-_tests.parse	.list	test.property.t	_test.parse_segment.empty	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.larg	_test.parse_expr.force	_test.parse_expr.coerce	_test.parse_expr.enter
+_tests.parse	.list	test.property.t	_test.parse_segment.empty	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.larg	_test.parse_expr.force	_test.parse_expr.coerce	_test.parse_expr.app	_test.parse_expr.enter
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.code\\n}\s=~\ssegment.parser
@@ -69,6 +69,13 @@ _test.parse_expr.coerce_label	.string	qq{\\t.coerce\\tbar.t.out\\n\\t.enter\\tfo
 _test.parse_expr.coerce_input	.string	\t.coerce\tbar.t.out\n\t.enter\tfoo\n
 _test.parse_expr.coerce_k_k_wrong.constr.s	.string	Parse\sresult\sis\snot\sa\s.coerce\sconstructor
 _test.parse_expr.coerce_k_co.expected.s	.string	bar.t.out
+
+_test.parse_expr.app	.closure	_test.parse_expr.app_c
+_test.parse_expr.app_label	.string	qq{\\t.app\\tbar\\n\\t.enter\\tfoo\\n}\s=~\sexpr.parser
+_test.parse_expr.app_input	.string	\t.app\tbar\n\t.enter\tfoo\n
+_test.parse_expr.app_k_k_wrong.constr.s	.string	Parse\sresult\sis\snot\san\s.app\sconstructor
+_test.parse_expr.app_k_as.expected	.list	string.t	_test.parse_expr.app_k_as.expected_0
+_test.parse_expr.app_k_as.expected_0	.string	bar
 
 _test.parse_expr.enter	.closure	_test.parse_expr.enter_c
 _test.parse_expr.enter_label	.string	qq{\\t.enter\\tfoo\\n}\s=~\sexpr.parser
@@ -653,6 +660,62 @@ coas		.fkarg	2	list.t	string.t
 e		.fkarg	3	gsdl.ags.codeitem.expr.t
 			.app	string.≡	string.fmtgs	co	_test.parse_expr.coerce_k_co.expected.s
 			.enter	test.assert.eq	string.t
+
+# §subsection §gs{qq{\\t.app\\tbar\\n\\t.enter\\tfoo\\n} =~ expr.parser}
+
+_test.parse_expr.app_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+_test.parse_expr.app_k_c	.subcode
+test.property.label	.gvar
+_test.parse_expr.app_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.expr.parser	.gvar
+_test.parse_expr.app_input	.gvar
+k	.alloc	_test.parse_expr.app_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.app_input	k
+	.app	_test.parse_expr.app_label	test
+	.enter	test.property.label
+
+_test.parse_expr.app_k_c	.expr
+gsdl.ags.codeitem.expr.t	.tygvar
+_test.parse_expr.app_k_k	.subcode
+gsdl.ags.codeitem.expr.t.out	.cogvar
+ci	.larg	gsdl.ags.codeitem.expr.t
+	.force	_test.parse_expr.app_k_k
+	.coerce	gsdl.ags.codeitem.expr.t.out
+	.enter	ci
+
+_test.parse_expr.app_k_k	.forcecont
+gsdl.ags.codeitem.expr.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+list.string.ty	.tylet	list.t	string.t
+test.property.false	.gvar
+_test.parse_expr.app_k_k_wrong.constr.s	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+string.≡	.gvar
+list.fmtgs.byDefault	.gvar
+string.fmtgs	.gvar
+_test.parse_expr.app_k_as.expected	.gvar
+ci0	.karg	gsdl.ags.codeitem.expr.prim.u
+	.danalyze	ci0	app
+		.default
+			.app	_test.parse_expr.app_k_k_wrong.constr.s
+			.enter	test.property.false
+		.case	app
+pos		.fkarg	0	gsdl.sourcepos.t
+as		.fkarg	1	list.t	string.t
+e		.fkarg	2	gsdl.ags.codeitem.expr.t
+list.string.≡			.apply	list.≡	string.t	|	string.≡
+list.string.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
+			.app	list.string.≡	list.string.fmtgs	as	_test.parse_expr.app_k_as.expected
+			.enter	test.assert.eq	list.string.ty
 
 # §subsection §gs{qq{\\t.enter\\tfoo\\n} =~ expr.parser}
 
