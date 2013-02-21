@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parser.nil	_test.parser.empty.prefix	_test.fmtgs
+_tests	.list	test.property.t	_test.parser.nil	_test.parser.empty.prefix	_test.parser.empty.doc	_test.fmtgs
 
 _test.parser.nil	.closure	_test.parser.nil_c
 _test.parser.nil_label	.string	file.parser\sqq{}
@@ -14,6 +14,10 @@ _test.parser.nil_cs_label	.string	code\ssegment
 _test.parser.empty.prefix	.closure	_test.parser.empty.prefix_c
 _test.parser.empty.prefix_label	.string	file.parser\sqq{\\t.prefix\\n\\n}
 _test.parser.empty.prefix_input	.string	\t.prefix\n\n
+
+_test.parser.empty.doc	.closure	_test.parser.empty.doc_c
+_test.parser.empty.doc_label	.string	file.parser\sqq{\\t.document\\n\\n}
+_test.parser.empty.doc_input	.string	\t.document\n\n
 
 _test.fmtgs	.closure	_test.fmtgs_c
 _test.fmtgs_label	.string	fmtgs\s〈\s'filetype\s∝\sgsdocument;\s'datasection\s∝\s[];\s'codesection\s∝\s[];\s'typesection\s∝\s[];\s〉
@@ -105,6 +109,36 @@ cs.test.0	.apply	test.assert.eq	list.codeitem.ty	|	list.codeitem.≡	list.codeit
 cs.test	.apply	test.property.label	|	_test.parser.nil_cs_label	cs.test.0
 	.app	ds.test	cs.test
 	.enter	test.property.∧
+
+# §section §gs{parser =~ qq{\\t.document\\n}}
+
+_test.parser.empty.doc_c	.expr
+rune.t	.tygvar
+gsdl.ags.file.t	.tygvar
+_test.parser.empty.doc_k0_c	.subcode
+test.property.label	.gvar
+_test.parser.empty.doc_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.file.parser	.gvar
+_test.parser.empty.doc_input	.gvar
+k0	.alloc	_test.parser.empty.doc_k0_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	gsdl.ags.file.parser	_test.parser.empty.doc_input	k0
+	.app	_test.parser.empty.doc_label	test
+	.enter	test.property.label
+
+_test.parser.empty.doc_k0_c	.expr
+gsdl.ags.file.t	.tygvar
+gsdl.ags.file.filetype.t	.tygvar
+test.assert.eq	.gvar
+gsdl.ags.file.filetype.≡	.gvar
+gsdl.ags.file.filetype.fmtgs	.gvar
+gsdl.ags.file.filetype.gsdocument	.gvar
+file	.larg	gsdl.ags.file.t
+filety	.lfield	filetype	file
+	.app	gsdl.ags.file.filetype.≡	gsdl.ags.file.filetype.fmtgs	filety	gsdl.ags.file.filetype.gsdocument
+	.enter	test.assert.eq	gsdl.ags.file.filetype.t
 
 # §section §gs{fmtgs 〈 'filetype ∝ gsdocument; 'datasection ∝ []; 'typesection ∝ []; 〉}
 

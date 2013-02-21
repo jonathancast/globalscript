@@ -31,6 +31,9 @@ _gsdl.ags.file.fmtgs_suffix.s	.string	〉
 
 gsdl.ags.file.filetype.parser	.closure	_gsdl.ags.file.filetype.parser_c
 _gsdl.ags.file.filetype.parser_gsprefix.re	.regex	\t.prefix
+_gsdl.ags.file.filetype.parser_gsdocument.re	.regex	.document
+
+gsdl.ags.file.filetype.≡	.closure	_gsdl.ags.file.filetype.≡_c
 
 gsdl.ags.file.filetype.fmtgs	.closure	_gsdl.ags.file.filetype.fmtgs_c
 _gsdl.ags.file.filetype.fmtgs_gsdocument.s	.string	gsdocument
@@ -318,19 +321,68 @@ rune.t	.tygvar
 string.t	.tygvar
 gsdl.ags.file.filetype.t	.tygvar
 parser.<*	.gvar
+parser.<|>	.gvar
 parser.*>	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.file.filetype.parser_gsprefix.re	.gvar
 parser.unit	.gvar
 gsdl.ags.file.filetype.gsprefix	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+_gsdl.ags.file.filetype.parser_gsdocument.re	.gvar
+gsdl.ags.file.filetype.gsdocument	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
 m.gsprefix	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.file.filetype.parser_gsprefix.re
 unit.gsprefix	.apply	parser.unit	rune.t	gsdl.ags.file.filetype.t	|	gsdl.ags.file.filetype.gsprefix
-p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.file.filetype.t	|	m.gsprefix	unit.gsprefix
+prefix.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.file.filetype.t	|	m.gsprefix	unit.gsprefix
+m.gsdoc	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.file.filetype.parser_gsdocument.re
+unit.gsdoc	.apply	parser.unit	rune.t	gsdl.ags.file.filetype.t	|	gsdl.ags.file.filetype.gsdocument
+doc.p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.file.filetype.t	|	m.gsdoc	unit.gsdoc
+doc.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.file.filetype.t	|	gsdl.ags.syntax.columnsep	doc.p1
+p1	.apply	parser.<|>	rune.t	gsdl.ags.file.filetype.t	|	prefix.p	doc.p
 	.app	p1	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.file.filetype.t	string.t
+
+# §section §gs{gsdl.ags.file.filetype.≡}
+
+_gsdl.ags.file.filetype.≡_c	.expr
+gsdl.ags.file.filetype.t	.tygvar
+_gsdl.ags.file.filetype.≡_k0	.subcode
+gsdl.ags.file.filetype.t.out	.cogvar
+ft0	.larg	gsdl.ags.file.filetype.t
+ft1	.larg	gsdl.ags.file.filetype.t
+	.force	_gsdl.ags.file.filetype.≡_k0
+	.coerce	gsdl.ags.file.filetype.t.out
+	.enter	ft0
+
+_gsdl.ags.file.filetype.≡_k0	.forcecont
+gsdl.ags.file.filetype.t	.tygvar
+gsdl.ags.file.filetype.prim.u	.tygvar
+_gsdl.ags.file.filetype.≡_k1	.subcode
+gsdl.ags.file.filetype.t.out	.cogvar
+ft1	.fv	gsdl.ags.file.filetype.t
+ft0.0	.karg	gsdl.ags.file.filetype.prim.u
+	.force	_gsdl.ags.file.filetype.≡_k1
+	.coerce	gsdl.ags.file.filetype.t.out
+	.enter	ft1
+
+_gsdl.ags.file.filetype.≡_k1	.forcecont
+gsdl.ags.file.filetype.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+bool.true	.gvar
+ft0.0	.fv	gsdl.ags.file.filetype.prim.u
+ft1.0	.karg	gsdl.ags.file.filetype.prim.u
+	.analyze	ft0.0	gsdocument	gsprefix
+		.case	gsdocument
+			.danalyze	ft1.0	gsdocument
+				.default
+					.undef	bool.t
+				.case	gsdocument
+					.enter	bool.true
+		.case	gsprefix
+			.undef	bool.t
+	# > :: bool.t
 
 # §section §gs{gsdl.ags.file.filetype.fmtgs}
 
