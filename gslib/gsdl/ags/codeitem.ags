@@ -489,7 +489,7 @@ coas.p1	.apply	parser.fail	rune.t	string.t	# > columnsep *> id
 coas.p	.apply	parser.many	rune.t	string.t	|	coas.p1
 e.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.expr.t	|	gsdl.ags.syntax.whitespace	gsdl.ags.codeitem.expr.parser
 	.app	f	pos.get	co.p	coas.p	e.p
-	.enter	parser.lift4	rune.t	parser.pos.t	string.t	list.string.ty	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.expr.t	# f <$> pos.get <*> co.p <*> coas.p <*> e.p
+	.enter	parser.lift4	rune.t	parser.pos.t	string.t	list.string.ty	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.expr.t
 
 _gsdl.ags.codeitem.expr.parser_coerce.p_f_c	.expr
 parser.pos.t	.tygvar
