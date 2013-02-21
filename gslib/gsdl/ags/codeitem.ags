@@ -390,10 +390,12 @@ arg.p	.apply	parser.<*	rune.t	gsdl.ags.codeitem.arg.t	string.t	|	arg.p1	gsdl.ags
 _gsdl.ags.codeitem.args.parser_f_c	.expr
 string.t	.tygvar
 bool.t	.tygvar
+list.nil	.gvar	# Temp
 nm	.larg	string.t
 lifted	.larg	bool.t
 ty	.larg	string.t
-r	.record	gstype	ty	lifted	lifted	name	nm
+tyargs	.apply	list.nil	string.t
+r	.record	gstype	ty	lifted	lifted	name	nm	tyargs	tyargs
 	.lift
 	.yield	r
 
@@ -401,9 +403,11 @@ r	.record	gstype	ty	lifted	lifted	name	nm
 
 _gsdl.ags.codeitem.arg.≡_c	.expr
 gsdl.ags.codeitem.arg.t	.tygvar
+string.t	.tygvar
 bool.∧	.gvar
 string.≡	.gvar
 bool.≡	.gvar
+list.≡	.gvar
 arg0	.larg	gsdl.ags.codeitem.arg.t
 arg1	.larg	gsdl.ags.codeitem.arg.t
 name0	.lfield	name	arg0
@@ -415,7 +419,11 @@ lifted.eq	.apply	bool.≡	|	lifted0	lifted1
 gstype0	.lfield	gstype	arg0
 gstype1	.lfield	gstype	arg1
 gstype.eq	.apply	string.≡	|	gstype0	gstype1
-eq.1	.apply	bool.∧	|	lifted.eq	gstype.eq
+tyargs0	.lfield	tyargs	arg0
+tyargs1	.lfield	tyargs	arg1
+tyargs.eq	.apply	list.≡	string.t	|	string.≡	tyargs0	tyargs1
+eq.2	.apply	bool.∧	|	gstype.eq	tyargs.eq
+eq.1	.apply	bool.∧	|	lifted.eq	eq.2
 	.app	name.eq	eq.1
 	.enter	bool.∧
 
@@ -599,7 +607,9 @@ gsdl.ags.codeitem.arg.u	.tygvar
 gsdl.ags.codeitem.arg.u	.tyexpr
 bool.t	.tygvar
 string.t	.tygvar
-	.typroduct	gstype	string.t	lifted	bool.t	name	string.t
+list.t	.tygvar
+list.string.t	.tylet	list.t	string.t
+	.typroduct	gstype	string.t	lifted	bool.t	name	string.t	tyargs	list.string.t
 
 # §section §gs{gsdl.ags.codeitem.expr.t}
 

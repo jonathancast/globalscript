@@ -55,6 +55,7 @@ _test.parse_expr.larg_input	.string	_foo_c\t.expr\nbar\t.larg\tbar.t\n\t.enter\t
 _test.parse_expr.larg_k_wrong.constr.s	.string	Parse\sresult\snot\san\s.expr
 _test.parse_expr.larg_k_bar.s	.string	bar
 _test.parse_expr.larg_k_bar.t.s	.string	bar.t
+_test.parse_expr.larg_k_tyargs	.list	string.t
 
 _test.parse_expr.enter	.closure	_test.parse_expr.enter_c
 _test.parse_expr.enter_label	.string	qq{\\t.enter\\tfoo\\n}\s=~\sexpr.parser
@@ -64,7 +65,7 @@ _test.parse_expr.enter_k_foo.s	.string	foo
 # §section §gs{≡}
 
 _test.eq	.closure	_test.eq_c
-_tests.eq	.list	test.property.t	_test.eq_codeitem.expr.diff.tygvars	_test.eq_codeitem.expr.diff.subcodes	_test.eq_codeitem.expr.diff.cogvars	_test.eq_codeitem.expr.diff.gvars	_test.eq_codeitem.expr.diff.args	_test.eq_arg.diff.name	_test.eq_arg.diff.lifted	_test.eq_arg.diff.ty
+_tests.eq	.list	test.property.t	_test.eq_codeitem.expr.diff.tygvars	_test.eq_codeitem.expr.diff.subcodes	_test.eq_codeitem.expr.diff.cogvars	_test.eq_codeitem.expr.diff.gvars	_test.eq_codeitem.expr.diff.args	_test.eq_arg.diff.name	_test.eq_arg.diff.lifted	_test.eq_arg.diff.ty	_test.eq_arg.diff.tyargs
 
 _test.eq_codeitem.expr.diff.tygvars	.closure	_test.eq_codeitem.expr.diff.tygvars_c
 _test.eq_codeitem.expr.diff.tygvars_label	.string	ags.codeitem.≡\sexpr\sexpr\swith\sdifferent\stygvars
@@ -129,6 +130,15 @@ _test.eq_arg.diff.ty_true	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;
 _test.eq_arg.diff.ty_foo.s	.string	foo
 _test.eq_arg.diff.ty_bar.t.s	.string	bar.t
 _test.eq_arg.diff.ty_baz.t.s	.string	baz.t
+
+_test.eq_arg.diff.tyargs	.closure	_test.eq_arg.diff.tyargs_c
+_test.eq_arg.diff.tyargs_label	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'gstype\s∝\sqq{bar.t};\s'tyargs\s∝\s[];\s〉\s≡\s〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'gstype\s∝\sqq{bar.t};\s'tyargs\s∝\s[\sqq{quux.t},\s];\s〉
+_test.eq_arg.diff.tyargs_false	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'gstype\s∝\sqq{bar.t};\s'tyargs\s∝\s[];\s〉\s≠\s〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'gstype\s∝\sqq{bar.t};\s'tyargs\s∝\s[\sqq{quux.t},\s];\s〉
+_test.eq_arg.diff.tyargs_true	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'gstype\s∝\sqq{bar.t};\s'tyargs\s∝\s[];\s〉\s≡\s〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'gstype\s∝\sqq{bar.t};\s'tyargs\s∝\s[\sqq{quux.t},\s];\s〉
+_test.eq_arg.diff.tyargs_foo.s	.string	foo
+_test.eq_arg.diff.tyargs_bar.t.s	.string	bar.t
+_test.eq_arg.diff.tyargs_baz.t.s	.string	baz.t
+_test.eq_arg.diff.tyargs_quux.t.s	.string	quux.t
 
 	.code
 
@@ -508,6 +518,7 @@ list.:	.gvar
 _test.parse_expr.larg_k_bar.t.s	.gvar
 bool.true	.gvar
 _test.parse_expr.larg_k_bar.s	.gvar
+_test.parse_expr.larg_k_tyargs	.gvar
 list.nil	.gvar
 ci0	.karg	gsdl.ags.codeitem.prim.u
 	.danalyze	ci0	expr
@@ -522,7 +533,7 @@ e		.fkarg	3	gsdl.ags.codeitem.expr.t
 args			.lfield	args	ds
 args.≡			.apply	list.≡	gsdl.ags.codeitem.arg.t	|	gsdl.ags.codeitem.arg.≡
 args.fmtgs			.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.arg.t	|	gsdl.ags.codeitem.arg.fmtgs
-arg0			.lrecord	gstype	_test.parse_expr.larg_k_bar.t.s	lifted	bool.true	name	_test.parse_expr.larg_k_bar.s
+arg0			.lrecord	gstype	_test.parse_expr.larg_k_bar.t.s	lifted	bool.true	name	_test.parse_expr.larg_k_bar.s	tyargs	_test.parse_expr.larg_k_tyargs
 nil			.apply	list.nil	gsdl.ags.codeitem.arg.t
 expected			.apply	list.:	gsdl.ags.codeitem.arg.t	|	arg0	nil
 			.app	args.≡	args.fmtgs	args	expected
@@ -731,7 +742,7 @@ nil	.apply	list.nil	string.t
 decls0	.lrecord	args	args.nil	cogvars	nil	gvars	nil	subcodes	nil	tygvs	nil
 exp	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.eq_codeitem.expr.diff.args_bar.s	nil
 ci0	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.args_foo.c.s decls0	exp
-arg0	.lrecord	gstype	_test.eq_codeitem.expr.diff.args_x.t.s	lifted	bool.true	name	_test.eq_codeitem.expr.diff.args_x.s
+arg0	.lrecord	gstype	_test.eq_codeitem.expr.diff.args_x.t.s	lifted	bool.true	name	_test.eq_codeitem.expr.diff.args_x.s	tyargs	nil
 args1	.apply	list.:	gsdl.ags.codeitem.arg.t	|	arg0	args.nil
 decls1	.lrecord	args	args1	cogvars	nil	gvars	nil	subcodes	nil	tygvs	nil
 ci1	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.args_foo.c.s decls1	exp
@@ -743,6 +754,7 @@ test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.args_false.s	_test.eq_codeit
 # §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉 ≡ 〈 'name ∝ qq{baz}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉}
 
 _test.eq_arg.diff.name_c	.expr
+string.t	.tygvar
 test.property.label	.gvar
 _test.eq_arg.diff.name_label	.gvar
 test.deny	.gvar
@@ -752,9 +764,11 @@ gsdl.ags.codeitem.arg.≡	.gvar
 _test.eq_arg.diff.name_bar.t.s	.gvar
 bool.true	.gvar
 _test.eq_arg.diff.name_foo.s	.gvar
+list.nil	.gvar
 _test.eq_arg.diff.name_baz.s	.gvar
-arg0	.lrecord	gstype	_test.eq_arg.diff.name_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.name_foo.s
-arg1	.lrecord	gstype	_test.eq_arg.diff.name_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.name_baz.s
+nil	.apply	list.nil	string.t
+arg0	.lrecord	gstype	_test.eq_arg.diff.name_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.name_foo.s	tyargs	nil
+arg1	.lrecord	gstype	_test.eq_arg.diff.name_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.name_baz.s	tyargs	nil
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
 test	.apply	test.deny	|	_test.eq_arg.diff.name_false	_test.eq_arg.diff.name_true	eq
 	.app	_test.eq_arg.diff.name_label	test
@@ -763,6 +777,7 @@ test	.apply	test.deny	|	_test.eq_arg.diff.name_false	_test.eq_arg.diff.name_true
 # §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉  〈 'name ∝ qq{foo}; 'lifted ∝ false; 'ty ∝ qq{bar.t}; 〉}
 
 _test.eq_arg.diff.lifted_c	.expr
+string.t	.tygvar
 test.property.label	.gvar
 _test.eq_arg.diff.lifted_label	.gvar
 test.deny	.gvar
@@ -772,9 +787,11 @@ gsdl.ags.codeitem.arg.≡	.gvar
 _test.eq_arg.diff.lifted_bar.t.s	.gvar
 bool.true	.gvar
 _test.eq_arg.diff.lifted_foo.s	.gvar
+list.nil	.gvar
 bool.false	.gvar
-arg0	.lrecord	gstype	_test.eq_arg.diff.lifted_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.lifted_foo.s
-arg1	.lrecord	gstype	_test.eq_arg.diff.lifted_bar.t.s	lifted	bool.false	name	_test.eq_arg.diff.lifted_foo.s
+nil	.apply	list.nil	string.t
+arg0	.lrecord	gstype	_test.eq_arg.diff.lifted_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.lifted_foo.s	tyargs	nil
+arg1	.lrecord	gstype	_test.eq_arg.diff.lifted_bar.t.s	lifted	bool.false	name	_test.eq_arg.diff.lifted_foo.s	tyargs	nil
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
 test	.apply	test.deny	|	_test.eq_arg.diff.lifted_false	_test.eq_arg.diff.lifted_true	eq
 	.app	_test.eq_arg.diff.lifted_label	test
@@ -783,6 +800,7 @@ test	.apply	test.deny	|	_test.eq_arg.diff.lifted_false	_test.eq_arg.diff.lifted_
 # §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉 ≡ 〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{baz.t}; 〉}
 
 _test.eq_arg.diff.ty_c	.expr
+string.t	.tygvar
 test.property.label	.gvar
 _test.eq_arg.diff.ty_label	.gvar
 test.deny	.gvar
@@ -792,10 +810,37 @@ gsdl.ags.codeitem.arg.≡	.gvar
 _test.eq_arg.diff.ty_bar.t.s	.gvar
 bool.true	.gvar
 _test.eq_arg.diff.ty_foo.s	.gvar
+list.nil	.gvar
 _test.eq_arg.diff.ty_baz.t.s	.gvar
-arg0	.lrecord	gstype	_test.eq_arg.diff.ty_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.ty_foo.s
-arg1	.lrecord	gstype	_test.eq_arg.diff.ty_baz.t.s	lifted	bool.true	name	_test.eq_arg.diff.ty_foo.s
+nil	.apply	list.nil	string.t
+arg0	.lrecord	gstype	_test.eq_arg.diff.ty_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.ty_foo.s	tyargs	nil
+arg1	.lrecord	gstype	_test.eq_arg.diff.ty_baz.t.s	lifted	bool.true	name	_test.eq_arg.diff.ty_foo.s	tyargs	nil
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
 test	.apply	test.deny	|	_test.eq_arg.diff.ty_false	_test.eq_arg.diff.ty_true	eq
 	.app	_test.eq_arg.diff.ty_label	test
+	.enter	test.property.label
+
+# §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'gstype ∝ qq{bar.t}; 'tyargs ∝ []; 〉 ≡ 〈 'name ∝ qq{foo}; 'lifted ∝ true; 'gstype ∝ qq{bar.t}; 'tyargs ∝ [ qq{quux.t}, ]; 〉}
+
+_test.eq_arg.diff.tyargs_c	.expr
+string.t	.tygvar
+test.property.label	.gvar
+_test.eq_arg.diff.tyargs_label	.gvar
+test.deny	.gvar
+_test.eq_arg.diff.tyargs_false	.gvar
+_test.eq_arg.diff.tyargs_true	.gvar
+gsdl.ags.codeitem.arg.≡	.gvar
+_test.eq_arg.diff.tyargs_bar.t.s	.gvar
+bool.true	.gvar
+_test.eq_arg.diff.tyargs_foo.s	.gvar
+list.nil	.gvar
+list.:	.gvar
+_test.eq_arg.diff.tyargs_quux.t.s	.gvar
+nil	.apply	list.nil	string.t
+arg0	.lrecord	gstype	_test.eq_arg.diff.tyargs_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.tyargs_foo.s	tyargs	nil
+tyargs1	.apply	list.:	string.t	|	_test.eq_arg.diff.tyargs_quux.t.s	nil
+arg1	.lrecord	gstype	_test.eq_arg.diff.tyargs_bar.t.s	lifted	bool.true	name	_test.eq_arg.diff.tyargs_foo.s	tyargs	tyargs1
+eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
+test	.apply	test.deny	|	_test.eq_arg.diff.tyargs_false	_test.eq_arg.diff.tyargs_true	eq
+	.app	_test.eq_arg.diff.tyargs_label	test
 	.enter	test.property.label
