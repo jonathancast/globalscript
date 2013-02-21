@@ -50,12 +50,13 @@ _test.parse_expr.gvar_k_gvars.expected	.list	string.t	_test.parse_expr.gvar_k_gv
 _test.parse_expr.gvar_k_gvars.expected_0	.string	bar
 
 _test.parse_expr.larg	.closure	_test.parse_expr.larg_c
-_test.parse_expr.larg_label	.string	qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\n\\t.enter\\tbaz\\n}\s=~\sparser
-_test.parse_expr.larg_input	.string	_foo_c\t.expr\nbar\t.larg\tbar.t\n\t.enter\tbaz\n
+_test.parse_expr.larg_label	.string	qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\tquux.t\\n\\t.enter\\tbaz\\n}\s=~\sparser
+_test.parse_expr.larg_input	.string	_foo_c\t.expr\nbar\t.larg\tbar.t\tquux.t\n\t.enter\tbaz\n
 _test.parse_expr.larg_k_wrong.constr.s	.string	Parse\sresult\snot\san\s.expr
 _test.parse_expr.larg_k_bar.s	.string	bar
 _test.parse_expr.larg_k_bar.t.s	.string	bar.t
-_test.parse_expr.larg_k_tyargs	.list	string.t
+_test.parse_expr.larg_k_tyargs	.list	string.t	_test.parse_expr.larg_k_tyargs_0
+_test.parse_expr.larg_k_tyargs_0	.string	quux.t
 
 _test.parse_expr.enter	.closure	_test.parse_expr.enter_c
 _test.parse_expr.enter_label	.string	qq{\\t.enter\\tfoo\\n}\s=~\sexpr.parser
