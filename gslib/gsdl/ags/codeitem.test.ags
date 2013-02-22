@@ -648,7 +648,7 @@ ci	.larg	gsdl.ags.codeitem.t
 pos	.undefined	gsdl.sourcepos.t
 nil	.apply	list.nil	string.t
 karg	.lrecord	gstype	_test.parse_forcecont_k_x.u.s	name	_test.parse_forcecont_k_x0.s	tyargs	nil
-decls	.lrecord	karg	karg	tygvars	nil
+decls	.lrecord	gvars	nil	karg	karg	tygvars	nil
 e	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.parse_forcecont_k_y.s	nil
 expected	.apply	gsdl.ags.codeitem.forcecont	|	pos	_test.parse_forcecont_k_foo.k.s	decls	e
 	.app	gsdl.ags.codeitem.≡	gsdl.ags.codeitem.fmtgs	ci	expected

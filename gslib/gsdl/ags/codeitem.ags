@@ -242,21 +242,23 @@ gsdl.ags.codeitem.karg.t	.tygvar
 _gsdl.ags.codeitem.prim.u_forcecont_decls_ty	.tygvar
 list.string.ty	.tylet	list.t	string.t
 _gsdl.ags.codeitem.parser_forcecont.p_decls.p_f_c	.subcode
-parser.lift2	.gvar
+parser.lift3	.gvar
 gsdl.ags.codeitem.tygvars.parser	.gvar
+gsdl.ags.codeitem.gvars.parser	.gvar
 gsdl.ags.codeitem.karg.parser	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.codeitem.parser_forcecont.p_decls.p_f_c
-	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.karg.parser
-	.enter	parser.lift2	rune.t	list.string.ty	gsdl.ags.codeitem.karg.t	_gsdl.ags.codeitem.prim.u_forcecont_decls_ty
+	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.gvars.parser	gsdl.ags.codeitem.karg.parser
+	.enter	parser.lift3	rune.t	list.string.ty	list.string.ty	gsdl.ags.codeitem.karg.t	_gsdl.ags.codeitem.prim.u_forcecont_decls_ty
 
 _gsdl.ags.codeitem.parser_forcecont.p_decls.p_f_c	.expr
 list.t	.tygvar
 string.t	.tygvar
 gsdl.ags.codeitem.karg.t	.tygvar
 tygvs	.larg	list.t	string.t
+gvs	.larg	list.t	string.t
 ka	.larg	gsdl.ags.codeitem.karg.t
-r	.record	karg	ka	tygvars	tygvs
+r	.record	gvars	gvs	karg	ka	tygvars	tygvs
 	.lift
 	.yield	r
 
@@ -1031,7 +1033,7 @@ gsdl.ags.codeitem.karg.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 list.string.ty	.tylet	list.t	string.t
-	.typroduct	karg	gsdl.ags.codeitem.karg.t	tygvars	list.string.ty
+	.typroduct	gvars	list.string.ty	karg	gsdl.ags.codeitem.karg.t	tygvars	list.string.ty
 
 # §section §gs{gsdl.ags.codeitem.arg.t}
 
