@@ -454,6 +454,7 @@ gs_lfield_eval(gsvalue v)
         st = GS_SLOW_EVALUATE(record); /* §tODO Deadlock */
         switch (st) {
             case gstystack:
+            case gstyblocked:
                 return gstyblocked;
             case gstyindir:
                 record = GS_REMOVE_INDIRECTION(record);
@@ -478,6 +479,10 @@ gs_lfield_indir(gsvalue v)
     for (;;) {
         st = GS_SLOW_EVALUATE(vrecord); /* §tODO Deadlock */
         switch (st) {
+            case gstystack:
+                return (gsvalue)gsunimpl(__FILE__, __LINE__, lfield->pos, "gs_lfield_indir: Got state 'stack' even though we should only be called for indirections", st);
+            case gstyblocked:
+                return (gsvalue)gsunimpl(__FILE__, __LINE__, lfield->pos, "gs_lfield_indir: Got state 'blocked' even though we should only be called for indirections", st);
             case gstywhnf: {
                 struct gsrecord *record;
 
@@ -491,7 +496,7 @@ gs_lfield_indir(gsvalue v)
             case gstyimplerr:
                 return vrecord;
             default:
-                return (gsvalue)gsunimpl(__FILE__, __LINE__, lfield->pos, "gs_lfield_indir: st = %d", st);
+                return (gsvalue)gsunimpl(__FILE__, __LINE__, lfield->pos, "gs_lfield_indir: st = %d (could also be missing in gs_lfield_eval)", st);
         }
     }
 }
