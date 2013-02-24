@@ -71,16 +71,19 @@ _test.parse_expr.larg_k_tyargs_0	.string	quux.t
 # §subsection §ags{.forcecont} Code Items
 
 _test.parse_forcecont.items	.closure	_test.parse_forcecont.items_c
-_tests.parse_forcecont.items	.list	test.property.t	_test.parse_forcecont
+_tests.parse_forcecont.items	.list	test.property.t	_test.parse_forcecont	_test.parse_forcecont.fv
 
 _test.parse_forcecont	.closure	_test.parse_forcecont_c
 _test.parse_forcecont_label	.string	qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\n\\t.enter\\ty\\n}\s=~\sparser
 _test.parse_forcecont_input	.string	_foo_k\t.forcecont\nx0\t.karg\tx.u\n\t.enter\ty\n
-_test.parse_forcecont_k_wrong.constr.s	.string	Parse\sresult\sis\snot\sa\s.forcecont\sconstructor
 _test.parse_forcecont_k_foo.k.s	.string	_foo_k
 _test.parse_forcecont_k_x0.s	.string	x0
 _test.parse_forcecont_k_x.u.s	.string	x.u
 _test.parse_forcecont_k_y.s	.string	y
+
+_test.parse_forcecont.fv	.closure	_test.parse_forcecont.fv_c
+_test.parse_forcecont.fv_label	.string	qq{_foo_k\\t.forcecont\\nbar\\t.fv\\tbar.t\\nx0\\t.karg\\tx.u\\n\\t.enter\\ty\\n}\s=~\sparser
+_test.parse_forcecont.fv_input	.string	_foo_k\t.forcecont\nbar\t.fv\tbar.t\nx0\t.karg\tx.u\n\t.enter\ty\n
 
 # §subsection String Code Expressions
 
@@ -633,6 +636,7 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.a
 _test.parse_forcecont_k_c	.expr
 gsdl.ags.codeitem.t	.tygvar
 gsdl.sourcepos.t	.tygvar
+gsdl.ags.codeitem.fv.t	.tygvar
 string.t	.tygvar
 test.assert.eq	.gvar
 gsdl.ags.codeitem.≡	.gvar
@@ -646,13 +650,38 @@ gsdl.ags.codeitem.expr.enter	.gvar
 _test.parse_forcecont_k_y.s	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 pos	.undefined	gsdl.sourcepos.t
+nil.fvs	.apply	list.nil	gsdl.ags.codeitem.fv.t
 nil	.apply	list.nil	string.t
 karg	.lrecord	gstype	_test.parse_forcecont_k_x.u.s	name	_test.parse_forcecont_k_x0.s	tyargs	nil
-decls	.lrecord	gvars	nil	karg	karg	tygvars	nil
+decls	.lrecord	fvs	nil.fvs	gvars	nil	karg	karg	tygvars	nil
 e	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.parse_forcecont_k_y.s	nil
 expected	.apply	gsdl.ags.codeitem.forcecont	|	pos	_test.parse_forcecont_k_foo.k.s	decls	e
 	.app	gsdl.ags.codeitem.≡	gsdl.ags.codeitem.fmtgs	ci	expected
 	.enter	test.assert.eq	gsdl.ags.codeitem.t
+
+# §subsubsection §ags{.forcecont}s with §ags{.fv}s
+
+_test.parse_forcecont.fv_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_test.parse_forcecont.fv_k_c	.subcode
+test.property.label	.gvar
+_test.parse_forcecont.fv_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+_test.parse_forcecont.fv_input	.gvar
+k	.alloc	_test.parse_forcecont.fv_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.parser	_test.parse_forcecont.fv_input	k
+	.app	_test.parse_forcecont.fv_label	test
+	.enter	test.property.label
+
+_test.parse_forcecont.fv_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+test.true	.gvar
+ci	.larg	gsdl.ags.codeitem.t
+	.enter	test.true
 
 # §subsection String Code Expressions
 
