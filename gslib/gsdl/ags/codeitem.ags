@@ -527,7 +527,7 @@ fv.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.fvs.parser_
 nm.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	fv.kw.p
 nm.p	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	nm.p1
 ty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-tyas.p1	.apply	parser.fail	rune.t	string.t	# > columnsep *> id
+tyas.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tyas.p	.apply	parser.many	rune.t	string.t	|	tyas.p1
 fv.p1	.apply	parser.lift3	rune.t	string.t	string.t	list.string.ty	gsdl.ags.codeitem.fv.t	|	f	nm.p	ty.p	tyas.p
 fv.p	.apply	parser.<*	rune.t	gsdl.ags.codeitem.fv.t	string.t	|	fv.p1	gsdl.ags.syntax.whitespace
