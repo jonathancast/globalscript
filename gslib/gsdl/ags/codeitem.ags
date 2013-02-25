@@ -954,7 +954,7 @@ enter.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.expr.parser
 v.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 v.p1	.apply	parser.*>	rune.t	string.t	string.t	|	enter.p	v.p2
 v.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	v.p1
-tyas.p1.1	.apply	parser.fail	rune.t	string.t
+tyas.p1.1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tyas.p1	.apply	parser.many	rune.t	string.t	|	tyas.p1.1
 tyas.p	.apply	parser.<*	rune.t	list.string.ty	string.t	|	tyas.p1	gsdl.ags.syntax.whitespace
 	.app	f	pos.get	v.p	tyas.p
