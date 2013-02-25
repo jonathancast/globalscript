@@ -88,7 +88,7 @@ _test.parse_forcecont.fv_input	.string	_foo_k\t.forcecont\nbar\t.fv\tbar.t\nx0\t
 # §subsection String Code Expressions
 
 _test.parse_exprs	.closure	_test.parse_exprs_c
-_tests.parse_exprs	.list	test.property.t	_test.parse_expr.force	_test.parse_expr.coerce	_test.parse_expr.app	_test.parse_expr.enter
+_tests.parse_exprs	.list	test.property.t	_test.parse_expr.force	_test.parse_expr.coerce	_test.parse_expr.app	_test.parse_expr.enter	_test.parse_expr.analyze
 
 _test.parse_expr.force	.closure	_test.parse_expr.force_c
 _test.parse_expr.force_label	.string	qq{\\t.force\\t_foo_k\\n\\t.enter\\tfoo\\n}\s=~\sexpr.parser
@@ -113,6 +113,10 @@ _test.parse_expr.enter	.closure	_test.parse_expr.enter_c
 _test.parse_expr.enter_label	.string	qq{\\t.enter\\tfoo\\n}\s=~\sexpr.parser
 _test.parse_expr.enter_input	.string	\t.enter\tfoo\n
 _test.parse_expr.enter_k_foo.s	.string	foo
+
+_test.parse_expr.analyze	.closure	_test.parse_expr.analyze_c
+_test.parse_expr.analyze_label	.string	qq{\\t.analyze\\tfoo\\tbar\\n\\t.case\\tbar\\n\\t.enter\\tbaz\\n}\s=~\sexpr.parser
+_test.parse_expr.analyze_input	.string	\t.analyze\tfoo\tbar\n\t.case\tbar\n\t.enter\tbaz\n
 
 # §section §gs{≡}
 
@@ -883,6 +887,30 @@ nil	.apply	list.nil	string.t
 expected	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.parse_expr.enter_k_foo.s	nil
 	.app	gsdl.ags.codeitem.expr.≡	gsdl.ags.codeitem.expr.fmtgs	 actual	expected
 	.enter	test.assert.eq	gsdl.ags.codeitem.expr.t
+
+# §subsubsection §gs{qq{\\t.analyze\\tfoo\\n} =~ expr.parser}
+
+_test.parse_expr.analyze_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+_test.parse_expr.analyze_k_c	.subcode
+test.property.label	.gvar
+_test.parse_expr.analyze_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.expr.parser	.gvar
+_test.parse_expr.analyze_input	.gvar
+k	.alloc	_test.parse_expr.analyze_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.analyze_input	k
+	.app	_test.parse_expr.analyze_label	test
+	.enter	test.property.label
+
+_test.parse_expr.analyze_k_c	.expr
+gsdl.ags.codeitem.expr.t	.tygvar
+test.true	.gvar
+e	.larg	gsdl.ags.codeitem.expr.t
+	.enter	test.true
 
 # §section §gs{≡}
 
