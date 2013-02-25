@@ -672,19 +672,44 @@ xn	.larg	list.t	α
 	.enter	xn
 
 _list.elem_k	.forcecont
+eq.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
-bool.t	.tygvar	# Temp
 α	.tyfv	*
+_list.elem_:_k	.subcode
+bool.t.out	.cogvar
 bool.false	.gvar
+eq	.fv	eq.t	α
+x	.fv	α
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.undef	bool.t
+			.force	_list.elem_:_k
+			.coerce	bool.t.out
+			.app	x	x0
+			.enter	eq
 		.case	nil
 			.enter	bool.false
+
+_list.elem_:_k	.forcecont
+eq.t	.tygvar
+list.t	.tygvar
+bool.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+α	.tyfv	*
+list.elem	.gvar
+eq	.fv	eq.t	α
+x	.fv	α
+xn1	.fv	list.t	α
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.app	eq	x	xn1
+			.enter	list.elem	α
+		.case	true
+			.undef	bool.t
 
 # §section §gs{list.fmtgs}
 
