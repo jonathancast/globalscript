@@ -44,6 +44,9 @@ _gsdl.ags.codeitem.karg.parser_karg.re	.regex	.karg
 
 gsdl.ags.codeitem.karg.≡	.closure	_gsdl.ags.codeitem.karg.≡_c
 
+gsdl.ags.codeitem.lets.parser	.closure	_gsdl.ags.codeitem.lets.parser_c
+_gsdl.ags.codeitem.lets.parser_apply.p_apply.kw.re	.regex	.apply
+
 gsdl.ags.codeitem.expr.parser	.closure	_gsdl.ags.codeitem.expr.parser_c	_gsdl.ags.codeitem.expr.parser_ty
 _gsdl.ags.codeitem.expr.parser_gsanalyze.p_gsanalyze.kw.re	.regex	.analyze
 _gsdl.ags.codeitem.expr.parser_app.p_app.re	.regex	.app
@@ -697,6 +700,60 @@ eq1	.apply	bool.∧	|	ty.eq	tyas.eq
 	.app	nm.eq	eq1
 	.enter	bool.∧
 
+# §section §gs{gsdl.ags.codeitem.lets.parser}
+
+_gsdl.ags.codeitem.lets.parser_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.let.t	.tygvar
+_gsdl.ags.codeitem.lets.parser_apply.p_c	.subcode
+parser.many	.gvar
+apply.p	.alloc	_gsdl.ags.codeitem.lets.parser_apply.p_c
+	.app	apply.p
+	.enter	parser.many	rune.t	gsdl.ags.codeitem.let.t
+
+_gsdl.ags.codeitem.lets.parser_apply.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.let.t	.tygvar
+list.string.ty	.tylet	list.t	string.t
+_gsdl.ags.codeitem.lets.parser_apply.p_f_c	.subcode
+parser.<*	.gvar
+parser.lift4	.gvar
+parser.pos.get	.gvar
+gsdl.ags.syntax.id	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.lets.parser_apply.p_apply.kw.re	.gvar
+parser.many	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.codeitem.lets.parser_apply.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+apply.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.lets.parser_apply.p_apply.kw.re
+nm.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	apply.kw.p
+nm.p	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	nm.p1
+f.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+tyas.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+tyas.p	.apply	parser.many	rune.t	string.t	|	tyas.p1
+p	.apply	parser.lift4	rune.t	parser.pos.t	string.t	string.t	list.string.ty	gsdl.ags.codeitem.let.t	|	f	pos.get	nm.p	f.p	tyas.p
+	.app	p	gsdl.ags.syntax.whitespace
+	.enter	parser.<*	rune.t	gsdl.ags.codeitem.let.t	string.t
+
+_gsdl.ags.codeitem.lets.parser_apply.p_f_c	.expr
+parser.pos.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.let.t	.tygvar	# Temp
+pos0	.larg	parser.pos.t
+nm	.larg	string.t
+f	.larg	string.t
+tyas	.larg	list.t	string.t
+	.undef	gsdl.ags.codeitem.let.t
+
 # §section §gs{gsdl.ags.codeitem.expr.parser}
 
 _gsdl.ags.codeitem.expr.parser_c	.expr
@@ -1136,16 +1193,23 @@ e	.larg	gsdl.ags.codeitem.expr.t
 
 _gsdl.ags.codeitem.expr.gscases.parser_decls.p_c	.expr
 rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.let.t	.tygvar
 _gsdl.ags.codeitem.expr.gscase.prim.u_decls_ty	.tygvar
+list.let.t	.tylet	list.t	gsdl.ags.codeitem.let.t
 _gsdl.ags.codeitem.expr.gscases.parser_decls.p_f_c	.subcode
-parser.unit	.gvar
+parser.map	.gvar
+gsdl.ags.codeitem.lets.parser	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.codeitem.expr.gscases.parser_decls.p_f_c
-	.app	f
-	.enter	parser.unit	rune.t	_gsdl.ags.codeitem.expr.gscase.prim.u_decls_ty
+	.app	f	gsdl.ags.codeitem.lets.parser
+	.enter	parser.map	rune.t	list.let.t	_gsdl.ags.codeitem.expr.gscase.prim.u_decls_ty
 
 _gsdl.ags.codeitem.expr.gscases.parser_decls.p_f_c	.expr
+list.t	.tygvar
+gsdl.ags.codeitem.let.t	.tygvar
 _gsdl.ags.codeitem.expr.gscase.prim.u_decls_ty	.tygvar	# Temp
+lets	.larg	list.t	gsdl.ags.codeitem.let.t
 	.undef	_gsdl.ags.codeitem.expr.gscase.prim.u_decls_ty
 
 	.type
@@ -1242,6 +1306,16 @@ string.t	.tygvar
 list.t	.tygvar
 list.string.t	.tylet	list.t	string.t
 	.typroduct	gstype	string.t	name	string.t	tyargs	list.string.t
+
+# §section §gs{gsdl.ags.codeitem.let.t}
+
+gsdl.ags.codeitem.let.t	.tyabstract	*
+gsdl.ags.codeitem.let.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.codeitem.let.prim.u
+
+gsdl.ags.codeitem.let.prim.u	.tyexpr
+	.tysum
 
 # §section §gs{gsdl.ags.codeitem.expr.t}
 
