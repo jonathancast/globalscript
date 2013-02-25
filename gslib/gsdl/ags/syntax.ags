@@ -75,8 +75,8 @@ _gsdl.ags.syntax.id_k_k	.forcecont
 string.t	.tygvar
 bool.prim.u	.tygvar
 rune.t	.tygvar
-parser.t	.tygvar	# Temp
 parser.unit	.gvar
+parser.fail	.gvar
 v	.fv	string.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
@@ -84,4 +84,4 @@ b0	.karg	bool.prim.u
 			.app	v
 			.enter	parser.unit	rune.t	string.t
 		.case	true
-			.undef	parser.t	rune.t	string.t
+			.enter	parser.fail	rune.t	string.t
