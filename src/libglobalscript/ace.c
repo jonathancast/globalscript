@@ -777,7 +777,34 @@ ace_enter(struct ace_thread *thread)
     prog = thread->regs[ip->args[0]];
 
     for (;;) {
-        st = GS_SLOW_EVALUATE(prog);
+        if (!IS_PTR(prog)) {
+            ace_return(thread, ip->pos, prog);
+            return;
+        }
+        if (gsisheap_block(BLOCK_CONTAINING(prog))) {
+            struct gsheap_item *hp;
+
+            hp = (struct gsheap_item *)prog;
+            gsheap_lock(hp);
+            st = gsheapstate(hp);
+            switch (st) {
+                case gstythunk:
+                    st = ace_start_evaluation(prog);
+                    gsheap_unlock(hp);
+                    break;
+                case gstystack:
+                case gstywhnf:
+                case gstyindir:
+                    gsheap_unlock(hp);
+                    break;
+                default:
+                    ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter heap items of state %d", st);
+                    gsheap_unlock(hp);
+                    return;
+            }
+        } else {
+            st = GS_SLOW_EVALUATE(prog);
+        }
 
         switch (st) {
             case gstystack:
@@ -797,9 +824,6 @@ ace_enter(struct ace_thread *thread)
                 return;
             case gstyimplerr:
                 ace_failure_thread(thread, (struct gsimplementation_failure *)prog);
-                return;
-            case gstyunboxed:
-                ace_return(thread, ip->pos, prog);
                 return;
             default:
                 ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);

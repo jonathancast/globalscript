@@ -24,22 +24,40 @@ gsnoindir(gsvalue val)
     pos.lineno = __LINE__; return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsnoindir: %s", block->class->description);
 }
 
-static int gsheap_lock(struct gsheap_item *);
-static void gsheap_unlock(struct gsheap_item *);
-
 gstypecode
 gsheapeval(gsvalue val)
 {
     gstypecode res;
     struct gsheap_item *hp;
-    int type;
 
     hp = (struct gsheap_item *)val;
-    type = gsheap_lock(hp);
+    gsheap_lock(hp);
 
-    res = gstyenosys;
+    res = gsheapstate(hp);
 
-    switch (type) {
+    switch (res) {
+        case gstythunk:
+            res = ace_start_evaluation(val);
+            break;
+        case gstystack:
+        case gstywhnf:
+        case gstyindir:
+            break;
+        default:
+            gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(%x; state = %d)", val, res);
+            res = gstyenosys;
+            break;
+    }
+
+    gsheap_unlock(hp);
+
+    return res;
+}
+
+gstypecode
+gsheapstate(struct gsheap_item *hp)
+{
+    switch (hp->type) {
         case gsclosure: {
             struct gsclosure *cl;
             struct gsbco *code;
@@ -58,57 +76,43 @@ gsheapeval(gsvalue val)
                     args_for_code = code->numargs;
                     if (fvs_in_cl < fvs_for_code) {
                         gspoison(hp, hp->pos, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);
-                        res = gstyindir;
+                        return gstyindir;
                     } else if (fvs_in_cl > fvs_for_code + args_for_code) {
                         gspoison(hp, hp->pos, "Code has %d free variables and arguments, but closure has %d arguments supplied", fvs_for_code + args_for_code, fvs_in_cl);
-                        res = gstyindir;
+                        return gstyindir;
                     } else if (fvs_in_cl < fvs_for_code + args_for_code) {
-                        res = gstywhnf;
+                        return gstywhnf;
                     } else {
-                        res = ace_start_evaluation(val);
+                        return gstythunk;
                     }
-                    break;
                 }
                 case gsbc_eprog:
-                    res = gstywhnf;
-                    break;
+                    return gstywhnf;
                 default:
                     gswarning("%s:%d: Evalling something else", __FILE__, __LINE__);
-                    gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(closure %x; tag = %d)", val, code->tag);
-                    res = gstyenosys;
-                    break;
+                    gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(closure %x; tag = %d)", hp, code->tag);
+                    return gstyenosys;
             }
             break;
         }
         case gsapplication:
-            res = ace_start_evaluation(val);
-            break;
+            return gstythunk;
         case gseval:
-            res = gstystack;
-            break;
+            return gstystack;
         case gsindirection:
-            res = gstyindir;
-            break;
+            return gstyindir;
         default:
-            gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(%x; type = %d)", val, type);
-            res = gstyenosys;
-            break;
+            gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(%x; type = %d)", hp, hp->type);
+            return gstyenosys;
     }
-
-    gsheap_unlock(hp);
-
-    return res;
 }
 
-static
-int
+void
 gsheap_lock(struct gsheap_item *hp)
 {
     lock(&hp->lock);
-    return hp->type;
 }
 
-static
 void
 gsheap_unlock(struct gsheap_item *hp)
 {

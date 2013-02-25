@@ -38,6 +38,13 @@ struct gsbc_cont_ubanalyze {
     gsvalue *fvs;
 };
 
+/* §section Global Script Closures & Indirections */
+
+void gsheap_lock(struct gsheap_item *);
+void gsheap_unlock(struct gsheap_item *);
+
+gstypecode gsheapstate(struct gsheap_item *);
+
 /* §section Global Script Run-time Errors */
 
 void *gsreserveerrors(ulong);
