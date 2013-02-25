@@ -697,9 +697,9 @@ _list.elem_:_k	.forcecont
 eq.t	.tygvar
 list.t	.tygvar
 bool.prim.u	.tygvar
-bool.t	.tygvar	# Temp
 α	.tyfv	*
 list.elem	.gvar
+bool.true	.gvar
 eq	.fv	eq.t	α
 x	.fv	α
 xn1	.fv	list.t	α
@@ -709,7 +709,7 @@ b0	.karg	bool.prim.u
 			.app	eq	x	xn1
 			.enter	list.elem	α
 		.case	true
-			.undef	bool.t
+			.enter	bool.true
 
 # §section §gs{list.fmtgs}
 
