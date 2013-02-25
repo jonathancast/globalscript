@@ -151,6 +151,10 @@ ace_thread_pool_main(void *p)
                                 ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
                                 break;
                             }
+                            case gstyeoothreads: {
+                                ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter: out of threads");
+                                break;
+                            }
                             default:
                                 ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter (st = %d)", st);
                                 break;
