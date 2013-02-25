@@ -18,6 +18,9 @@ _gsdl.ags.syntax.id_id_component.re	.regex	[a-z][a-z0-9]*|§§*	_gsdl.ags.syntax
 _gsdl.ags.syntax.id_id_component.re.symbol	.regex	[~!@\h$%^&*-+=|:<>?/]
 _gsdl.ags.syntax.id_t.re	.regex	_§	_gsdl.ags.syntax.id_id.re
 
+gsdl.ags.syntax.keywords	.list	string.t	_gsdl.ags.syntax.keywords_0
+_gsdl.ags.syntax.keywords_0	.string	|
+
 	.code
 
 # §section §gs{gsdl.ags.syntax.whitespace}
@@ -44,8 +47,41 @@ _gsdl.ags.syntax.columnsep_re	.gvar
 
 _gsdl.ags.syntax.id_c	.expr
 rune.t	.tygvar
+string.t	.tygvar
+_gsdl.ags.syntax.id_k_c	.subcode
+parser.>>=	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.syntax.id_re	.gvar
-	.app	rune.compare	_gsdl.ags.syntax.id_re
-	.enter	parser.match	rune.t
+p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.syntax.id_re
+k	.alloc	_gsdl.ags.syntax.id_k_c
+	.app	p	k
+	.enter	parser.>>=	rune.t	string.t	string.t
+
+_gsdl.ags.syntax.id_k_c	.expr
+string.t	.tygvar
+_gsdl.ags.syntax.id_k_k	.subcode
+bool.t.out	.cogvar
+list.elem	.gvar
+string.≡	.gvar
+gsdl.ags.syntax.keywords	.gvar
+v	.larg	string.t
+	.force	_gsdl.ags.syntax.id_k_k
+	.coerce	bool.t.out
+	.app	string.≡	v	gsdl.ags.syntax.keywords
+	.enter	list.elem	string.t
+
+_gsdl.ags.syntax.id_k_k	.forcecont
+string.t	.tygvar
+bool.prim.u	.tygvar
+rune.t	.tygvar
+parser.t	.tygvar	# Temp
+parser.unit	.gvar
+v	.fv	string.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.app	v
+			.enter	parser.unit	rune.t	string.t
+		.case	true
+			.undef	parser.t	rune.t	string.t
