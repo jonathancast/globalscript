@@ -523,7 +523,7 @@ _list.drop_worker_k0	.ubcasecont
 list.t	.tygvar
 α	.tyfv	*
 xn	.fv	list.t	α
-	.undef	list.t	α
+	.enter	xn
 
 _list.drop_worker_k1	.ubcasecont
 list.t	.tygvar
