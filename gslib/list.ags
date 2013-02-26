@@ -562,10 +562,59 @@ list.t	.tygvar
 α0	.tyarg	*
 α1	.tyarg	*
 β	.tyarg	*
+_list.byZip.map2_k0	.subcode
+list.t.out	.cogvar
 f	.larg	_list.byZip.map2_f_ty	α0	α1	β
 xn0	.larg	list.t	α0
 xn1	.larg	list.t	α1
-	.undef	list.t	β
+	.force	_list.byZip.map2_k0
+	.coerce	list.t.out	α0
+	.enter	xn0
+
+_list.byZip.map2_k0	.forcecont
+_list.byZip.map2_f_ty	.tygvar
+list.t	.tygvar
+list.prim.u	.tygvar
+α0	.tyfv	*
+α1	.tyfv	*
+β	.tyfv	*
+_list.byZip.map2_k1	.subcode
+list.t.out	.cogvar
+f	.fv	_list.byZip.map2_f_ty	α0	α1	β
+xn1	.fv	list.t	α1
+xn0.0	.karg	list.prim.u	α0
+	.force	_list.byZip.map2_k1
+	.coerce	list.t.out	α1
+	.enter	xn1
+
+_list.byZip.map2_k1	.forcecont
+_list.byZip.map2_f_ty	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+α0	.tyfv	*
+α1	.tyfv	*
+β	.tyfv	*
+list.:	.gvar
+list.byZip.map2	.gvar
+f	.fv	_list.byZip.map2_f_ty	α0	α1	β
+xn0.0	.fv	list.prim.u	α0
+xn1.0	.karg	list.prim.u	α1
+	.analyze	xn0.0	:	nil
+		.case	:
+x0.0		.fkarg	0	α0
+xn0.1		.fkarg	1	list.t	α0
+			.analyze	xn1.0	:	nil
+				.case	:
+x1.0				.fkarg	0	α1
+xn1.1				.fkarg	1	list.t	α1
+y0					.apply	f	|	x0.0	x1.0
+ys1					.apply	list.byZip.map2	α0	α1	β	|	f	xn0.1	xn1.1
+					.app	y0	ys1
+					.enter	list.:	β
+				.case	nil
+					.undef	list.t	β
+		.case	nil
+			.undef	list.t	β
 
 # §section §gs{list.≡}
 
