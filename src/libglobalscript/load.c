@@ -721,6 +721,7 @@ gsparse_ubcase_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
         } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_field_cont_arg(pos, parsedline, fields, n)) {
+        } else if (gsparse_cont_arg(pos, parsedline, fields, n)) {
         } else if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
         } else if (gsparse_cont_push_op(pos, parsedline, fields, n)) {
