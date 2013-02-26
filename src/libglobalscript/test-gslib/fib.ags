@@ -1,0 +1,76 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+fibs	.closure	_fibs_c	_fibs_ty
+fibs1	.closure	_fibs1_c	_fibs_ty
+fibs2	.closure	_fibs2_c	_fibs_ty
+
+	.code
+
+_ep_c	.expr
+natural.t	.tygvar
+_ep_n_c	.subcode
+_ep_k	.subcode
+list.t.out	.cogvar
+list.drop	.gvar
+fibs	.gvar
+n	.alloc	_ep_n_c
+	.force	_ep_k
+	.coerce	list.t.out	natural.t
+	.app	n	fibs
+	.enter	list.drop	natural.t
+
+_ep_n_c	.expr
+natural.t.in	.cogvar
+n0	.natural	6
+	.coerce	natural.t.in
+	.lift
+	.yield	n0
+
+_ep_k	.forcecont
+list.prim.u	.tygvar
+natural.t	.tygvar
+list.t	.tygvar
+xn0	.karg	list.prim.u	natural.t
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	natural.t
+xn1		.fkarg	1	list.t	natural.t
+			.enter	x0
+		.case	nil
+			.undef	natural.t
+
+_fibs_c	.expr
+natural.t	.tygvar
+list.:	.gvar
+natural.0	.gvar
+fibs1	.gvar
+	.app	natural.0	fibs1
+	.enter	list.:	natural.t
+
+_fibs1_c	.expr
+natural.t	.tygvar
+list.:	.gvar
+natural.1	.gvar
+fibs2	.gvar
+	.app	natural.1	fibs2
+	.enter	list.:	natural.t
+
+_fibs2_c	.expr
+natural.t	.tygvar
+list.byZip.map2	.gvar
+natural.+	.gvar
+fibs	.gvar
+fibs1	.gvar
+	.app	natural.+	fibs	fibs1
+	.enter	list.byZip.map2	natural.t	natural.t	natural.t
+
+	.type
+
+_fibs_ty	.tyexpr
+list.t	.tygvar
+natural.t	.tygvar
+	.tyref	list.t	natural.t
