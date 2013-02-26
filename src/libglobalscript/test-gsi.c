@@ -213,7 +213,10 @@ gsprint_unboxed(struct gstype *type, gsvalue prog)
 
         print("%s\n", buf);
         return 0;
-    } else if (gstype_expect_prim(err, err + sizeof(err), type, gsprim_type_defined, "natural.prim", "natural") >= 0) {
+    } else if (
+        gstype_expect_abstract(err, err + sizeof(err), type, "natural.t") >= 0
+        || gstype_expect_prim(err, err + sizeof(err), type, gsprim_type_defined, "natural.prim", "natural") >= 0
+    ) {
         char buf[24];
 
         if (!gsnaturaltochar(err, err + sizeof(err), prog, buf, buf + sizeof(buf))) {
