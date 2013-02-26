@@ -18,6 +18,10 @@ list.reverse	.closure	_list.reverse_c
 list.singleton	.closure	_list.singleton_c
 list.<>	.closure	_list.<>.code	_list.<>.ty
 
+list.drop	.closure	_list.drop_c	_list.drop_ty
+
+list.byZip.map2	.closure	_list.byZip.map2_c	_list.byZip.map2_ty
+
 list.≡	.closure	_list.≡.code	_list.≡.ty
 list.compare	.closure	_list.compare_c	_list.compare_ty
 
@@ -476,6 +480,29 @@ ys	.fv	list.t	α
 	.app	xn1	ys
 	.enter	list.<>	α
 
+# §section §gs{list.drop}
+
+_list.drop_c	.expr
+natural.t	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+n	.larg	natural.t
+xn	.larg	list.t	α
+	.undef	list.t	α
+
+# §section §gs{list.byZip.map2}
+
+_list.byZip.map2_c	.expr
+_list.byZip.map2_f_ty	.tygvar
+list.t	.tygvar
+α0	.tyarg	*
+α1	.tyarg	*
+β	.tyarg	*
+f	.larg	_list.byZip.map2_f_ty	α0	α1	β
+xn0	.larg	list.t	α0
+xn1	.larg	list.t	α1
+	.undef	list.t	β
+
 # §section §gs{list.≡}
 
 _list.≡.code	.expr
@@ -909,6 +936,44 @@ list.t	.tygvar
 	.tylift
 	.tyfun	list.t	α
 	.tyref	list.t	α
+
+# §section §gs{list.drop}
+
+_list.drop_ty	.tyexpr
+natural.t	.tygvar
+list.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	natural.t
+	.tylift
+	.tyfun	list.t	α
+	.tyref	list.t	α
+
+# §section §gs{list.byZip.map2}
+
+_list.byZip.map2_ty	.tyexpr
+_list.byZip.map2_f_ty	.tygvar
+list.t	.tygvar
+α0	.tyforall	*
+α1	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	_list.byZip.map2_f_ty	α0	α1	β
+	.tylift
+	.tyfun	list.t	α0
+	.tylift
+	.tyfun	list.t	α1
+	.tyref	list.t	β
+
+_list.byZip.map2_f_ty	.tyexpr
+α0	.tylambda	*
+α1	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α0
+	.tylift
+	.tyfun	α1
+	.tyref	β
 
 # §section §gs{list.≡}
 
