@@ -18,7 +18,8 @@ list.reverse	.closure	_list.reverse_c
 list.singleton	.closure	_list.singleton_c
 list.<>	.closure	_list.<>.code	_list.<>.ty
 
-list.drop	.closure	_list.drop_c	_list.drop_ty
+list.drop	.closure	_list.drop_c
+_list.drop_worker	.closure	_list.drop_worker_c	_list.drop_worker_ty
 
 list.byZip.map2	.closure	_list.byZip.map2_c	_list.byZip.map2_ty
 
@@ -486,9 +487,72 @@ _list.drop_c	.expr
 natural.t	.tygvar
 list.t	.tygvar
 α	.tyarg	*
+_list.drop_k0	.subcode
+natural.t.out	.cogvar
 n	.larg	natural.t
 xn	.larg	list.t	α
+	.force	_list.drop_k0
+	.coerce	natural.t.out
+	.enter	n
+
+_list.drop_k0	.forcecont
+list.t	.tygvar
+natural.prim.u	.tygvar
+α	.tyfv	*
+_list.drop_worker	.gvar
+xn	.fv	list.t	α
+n0	.karg	natural.prim.u
+	.app	n0	xn
+	.yield	_list.drop_worker	α
+
+_list.drop_worker_c	.expr
+natural.prim.u	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+_list.drop_worker_k0	.subcode
+_list.drop_worker_k1	.subcode
+natural.prim.-	.gvar
+1	.natural	1
+n0	.arg	natural.prim.u
+xn	.arg	list.t	α
+	.ubanalyze	0	_list.drop_worker_k0	1	_list.drop_worker_k1
+	.app	n0	1
+	.yield	natural.prim.-
+
+_list.drop_worker_k0	.ubcasecont
+list.t	.tygvar
+α	.tyfv	*
+xn	.fv	list.t	α
 	.undef	list.t	α
+
+_list.drop_worker_k1	.ubcasecont
+list.t	.tygvar
+natural.prim.u	.tygvar
+α	.tyfv	*
+_list.drop_worker_k1.0	.subcode
+list.t.out	.cogvar
+xn	.fv	list.t	α
+n1	.karg	natural.prim.u
+	.force	_list.drop_worker_k1.0
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.drop_worker_k1.0	.forcecont
+natural.prim.u	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+α	.tyfv	*
+_list.drop_worker	.gvar
+n1	.fv	natural.prim.u
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.app	n1	xn1
+			.yield	_list.drop_worker	α
+		.case	nil
+			.undef	list.t	α
 
 # §section §gs{list.byZip.map2}
 
@@ -939,13 +1003,11 @@ list.t	.tygvar
 
 # §section §gs{list.drop}
 
-_list.drop_ty	.tyexpr
-natural.t	.tygvar
+_list.drop_worker_ty	.tyexpr
+natural.prim.u	.tygvar
 list.t	.tygvar
 α	.tyforall	*
-	.tylift
-	.tyfun	natural.t
-	.tylift
+	.tyfun	natural.prim.u
 	.tyfun	list.t	α
 	.tyref	list.t	α
 
