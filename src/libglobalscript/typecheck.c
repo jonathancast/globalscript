@@ -1270,6 +1270,10 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
             if (cont_arg_type)
                 gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
             ;
+        } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
+            if (fcl.nfields > 0)
+                gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
+            ;
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
