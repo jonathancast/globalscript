@@ -23,16 +23,18 @@ static gsprim_handler *natural_prim_exec[] = {
 };
 
 enum {
+    natural_prim_ub_minus,
     natural_prim_ub_divMod,
     natural_prim_ub_eq,
     natural_prim_ub_lt,
     natural_prim_ub_gt,
 };
 
-static gsubprim_handler natural_prim_handle_divMod;
+static gsubprim_handler natural_prim_handle_minus, natural_prim_handle_divMod;
 static gsubprim_handler natural_prim_handle_eq, natural_prim_handle_lt, natural_prim_handle_gt;
 
 static gsubprim_handler *natural_prim_ubexec[] = {
+    natural_prim_handle_minus,
     natural_prim_handle_divMod,
 
     natural_prim_handle_eq,
@@ -46,6 +48,7 @@ static gslprim_handler *natural_prim_lexec[] = {
 static struct gsregistered_prim natural_prim_operations[] = {
     /* name, file, line, group, apitype, type, index, */
     { "+", __FILE__, __LINE__, gsprim_operation, 0, "natural.prim.u natural.prim.u natural.prim.u → →", natural_prim_plus, },
+    { "-", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 natural.prim.u \"uΣ〈 0 1 〉 → →", natural_prim_ub_minus, },
     { "divMod", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 natural.prim.u natural.prim.u \"uΠ〈 0 1 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_divMod, },
 
     { "≡", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_eq, },
@@ -91,6 +94,32 @@ natural_prim_handle_plus(struct ace_thread *thread, struct gspos pos, int nargs,
 
     *pres = sum;
     return 1;
+}
+
+static
+int
+natural_prim_handle_minus(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
+{
+    gsvalue minuend, subtrahend, difference;
+
+    minuend = args[0];
+    subtrahend = args[1];
+
+    if (IS_PTR(minuend) || IS_PTR(subtrahend))
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_minus: bignums")
+    ;
+
+    minuend &= ~GS_MAX_PTR;
+    subtrahend &= ~GS_MAX_PTR;
+
+    if (minuend < subtrahend)
+        return gsprim_return_ubsum(thread, pos, 0, 0)
+    ;
+
+    difference = minuend - subtrahend;
+    difference |= GS_MAX_PTR;
+
+    return gsprim_return_ubsum(thread, pos, 1, 1, difference);
 }
 
 static
