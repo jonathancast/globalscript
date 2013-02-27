@@ -25,7 +25,7 @@ static void _gs_sys_seg_extend(void);
 static void gs_sys_seg_setup_free_block(struct free_block *);
 
 void
-gs_sys_seg_init(void)
+gs_sys_memory_init(void)
 {
     bottom_of_data = sbrk(0);
     if ((uintptr)bottom_of_data % BLOCK_SIZE) {
@@ -38,11 +38,13 @@ gs_sys_seg_init(void)
             gsfatal("brk failed! %r");
     }
     if ((uintptr)bottom_of_data >= GS_MAX_PTR)
-        gsfatal("Out of memory in gs_sys_seg_init");
+        gsfatal("Out of memory in gs_sys_memory_init")
+    ;
 
     top_of_data = (uchar*)bottom_of_data + BLOCK_SIZE;
     if (brk(top_of_data) < 0)
-        gsfatal("brk failed! %r");
+        gsfatal("brk failed! %r")
+    ;
 
     first_free_block = (struct free_block *)bottom_of_data;
     gs_sys_seg_setup_free_block(first_free_block);
@@ -58,7 +60,7 @@ gs_sys_seg_alloc(registered_block_class cl)
     lock(&gs_allocator_lock);
 
     if (!bottom_of_data)
-        gs_sys_seg_init()
+        gs_sys_memory_init()
     ;
 
     if (!first_free_block)
