@@ -21,7 +21,7 @@ struct gs_block_class free_block_class_descr = {
     /* description = */ "Free memory",
 };
 
-static void _gs_sys_seg_extend(void);
+static void _gs_sys_memory_extend(void);
 static void gs_sys_seg_setup_free_block(struct free_block *);
 
 void
@@ -73,7 +73,7 @@ gs_sys_block_alloc(registered_block_class cl)
     if (pnext)
         first_free_block = pnext
     ; else
-        _gs_sys_seg_extend()
+        _gs_sys_memory_extend()
     ;
 
     pres->class = cl;
@@ -86,7 +86,7 @@ gs_sys_block_alloc(registered_block_class cl)
 /* Assumes the program break is locked */
 static
 void
-_gs_sys_seg_extend(void)
+_gs_sys_memory_extend(void)
 {
     struct free_block *pnext;
     struct gs_blockdesc *pblock;
