@@ -688,7 +688,7 @@ gsbc_item_hash_store(struct gsbc_item_hash *phash, struct gsbc_item item, union 
         plastp = &p->next;
     }
 
-    *plastp = p = gs_sys_seg_suballoc(
+    *plastp = p = gs_sys_block_suballoc(
         &gsbc_hash_link_segment,
         &gsbc_hash_link_nursury,
         sizeof(struct gsbc_item_hash_link),
@@ -759,7 +759,7 @@ gsbc_alloc_scc(struct gsbc_item item)
 {
     struct gsbc_scc *res;
 
-    res = gs_sys_seg_suballoc(&gsbc_scc_segment, &gsbc_scc_nursury, sizeof(*res), sizeof(void*));
+    res = gs_sys_block_suballoc(&gsbc_scc_segment, &gsbc_scc_nursury, sizeof(*res), sizeof(void*));
 
     res->item = item;
     res->next_item = 0;
@@ -807,12 +807,13 @@ gsbc_alloc_item_hash()
 
     alloc_size = sizeof(*res) + GSBC_INITIAL_BUCKET_COUNT * sizeof(res->buckets[0]);
 
-    res = gs_sys_seg_suballoc(&gsbc_item_hash_descr, &gsbc_item_hash_nursury, alloc_size, sizeof(ulong));
+    res = gs_sys_block_suballoc(&gsbc_item_hash_descr, &gsbc_item_hash_nursury, alloc_size, sizeof(ulong));
 
     res->size = 0;
     res->nbuckets = GSBC_INITIAL_BUCKET_COUNT;
     for (p = res->buckets; p < res->buckets + res->nbuckets; p++)
-        *p = 0;
+        *p = 0
+    ;
 
     return res;
 }

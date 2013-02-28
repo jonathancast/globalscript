@@ -41,7 +41,7 @@ gsbio_dir_iopen(char *filename, int omode)
 {
     struct uxio_dir_ichannel *res;
 
-    res = gs_sys_seg_suballoc(&uxio_dir_ichannel_desc, &uxio_dir_ichannel_nursury, sizeof(*res), sizeof(res->udir));
+    res = gs_sys_block_suballoc(&uxio_dir_ichannel_desc, &uxio_dir_ichannel_nursury, sizeof(*res), sizeof(res->udir));
 
     if (!(res->udir = gsbio_device_iopen(filename, omode)))
         return 0;
@@ -130,7 +130,7 @@ gsbio_unix_parse_directory(char *filename, void *p9buf, void *p9bufend, void **n
             ubuf = (uchar*)ubuf + dir->d_reclen;
             continue;
         }
-        nm = gs_sys_seg_suballoc(&uxio_filename_class, &uxio_filename_nursury, strlen(filename) + strlen(dir->d_name) + 2, 1);
+        nm = gs_sys_block_suballoc(&uxio_filename_class, &uxio_filename_nursury, strlen(filename) + strlen(dir->d_name) + 2, 1);
         sprint(nm, "%s/%s", filename, dir->d_name);
 
         if (stat(nm, &st) < 0) {

@@ -147,7 +147,7 @@ gsstring_initialize_intern_hash(void)
     struct gstring_hash_link **p;
 
     string_num_buckets = 0x40;
-    string_intern_hash = gs_sys_seg_suballoc(
+    string_intern_hash = gs_sys_block_suballoc(
         &gsstringhash_desc,
         &gsstringhash_nursury,
         string_num_buckets * sizeof(*string_intern_hash),
@@ -173,7 +173,7 @@ gsstring_expand_hash_table()
         gsfatal("%s:%d: Out of memory for intern hash", __FILE__, __LINE__)
     ;
 
-    new_hash = gs_sys_seg_suballoc(
+    new_hash = gs_sys_block_suballoc(
         &gsstringhash_desc,
         &gsstringhash_nursury,
         newnumbuckets * sizeof(*string_intern_hash),

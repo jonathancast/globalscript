@@ -35,7 +35,7 @@ ace_init()
         gsfatal("ace_init called twice")
     ;
 
-    ace_thread_queue = gs_sys_seg_suballoc(&ace_thread_queue_descr, &ace_thread_queue_nursury, sizeof(*ace_thread_queue), sizeof(void*));
+    ace_thread_queue = gs_sys_block_suballoc(&ace_thread_queue_descr, &ace_thread_queue_nursury, sizeof(*ace_thread_queue), sizeof(void*));
 
     memset(ace_thread_queue, 0, sizeof(*ace_thread_queue));
 
@@ -1489,7 +1489,7 @@ ace_thread_alloc()
     void *stackbase, *stackbot;
 
     lock(&ace_thread_lock);
-        thread = gs_sys_seg_suballoc(&ace_thread_descr, &ace_thread_nursury, sizeof(*thread), sizeof(void*));
+        thread = gs_sys_block_suballoc(&ace_thread_descr, &ace_thread_nursury, sizeof(*thread), sizeof(void*));
         nursury_block = BLOCK_CONTAINING(thread);
         stackbase = (uchar*)thread;
         if ((uintptr)stackbase % ACE_STACK_ARENA_SIZE)
@@ -1529,7 +1529,7 @@ gslprim_blocking_alloc(long sz, gslprim_resumption_handler *resume)
     struct gslprim_blocking *res;
 
     lock(&gslprim_blocking_lock);
-    res = gs_sys_seg_suballoc(&gslprim_blocking_descr, &gslprim_blocking_nursury, sz, sizeof(void*));
+    res = gs_sys_block_suballoc(&gslprim_blocking_descr, &gslprim_blocking_nursury, sz, sizeof(void*));
     unlock(&gslprim_blocking_lock);
 
     res->resume = resume;

@@ -1275,7 +1275,7 @@ static
 void *
 gstype_alloc(ulong size)
 {
-    return gs_sys_seg_suballoc(&gstype_descr, &gstype_nursury, size, sizeof(void*));
+    return gs_sys_block_suballoc(&gstype_descr, &gstype_nursury, size, sizeof(void*));
 }
 
 #define MAX_STACK_SIZE 0x100
@@ -1403,7 +1403,7 @@ gskind_alloc(int nargs)
 {
     struct gskind *res;
 
-    res = gs_sys_seg_suballoc(&gskind_descr, &gskind_nursury, sizeof(*res) + nargs * sizeof(*res->args), sizeof(res->node));
+    res = gs_sys_block_suballoc(&gskind_descr, &gskind_nursury, sizeof(*res) + nargs * sizeof(*res->args), sizeof(res->node));
 
     return res;
 }

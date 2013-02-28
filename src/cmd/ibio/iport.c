@@ -90,7 +90,7 @@ ibio_read_threads_init(char *err, char *eerr)
         gsfatal("ibio_read_threads_init called twice")
     ;
 
-    ibio_read_thread_queue = gs_sys_seg_suballoc(&ibio_read_thread_queue_descr, &ibio_read_thread_queue_nursury, sizeof(*ibio_read_thread_queue), sizeof(void*));
+    ibio_read_thread_queue = gs_sys_block_suballoc(&ibio_read_thread_queue_descr, &ibio_read_thread_queue_nursury, sizeof(*ibio_read_thread_queue), sizeof(void*));
 
     memset(ibio_read_thread_queue, 0, sizeof(*ibio_read_thread_queue));
 
@@ -535,7 +535,7 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
         return api_st_success;
     } else if (!read_blocking->blocking) {
         lock(&ibio_read_blocking_lock);
-        read_blocking->blocking = *read_blocking->iport->waiting_to_read_end = gs_sys_seg_suballoc(&ibio_read_blocking_class, &ibio_read_blocking_nursury, sizeof(struct ibio_iport_read_blocker), sizeof(void *));
+        read_blocking->blocking = *read_blocking->iport->waiting_to_read_end = gs_sys_block_suballoc(&ibio_read_blocking_class, &ibio_read_blocking_nursury, sizeof(struct ibio_iport_read_blocker), sizeof(void *));
         unlock(&ibio_read_blocking_lock);
 
         read_blocking->iport->waiting_to_read_end = &read_blocking->blocking->next;
@@ -791,7 +791,7 @@ ibio_iport_link_to_thread(struct api_thread *thread, struct ibio_iport *iport)
     data = api_thread_client_data(thread);
 
     lock(&ibio_thread_to_iport_link_lock);
-    link = gs_sys_seg_suballoc(&ibio_thread_to_iport_link_descr, &ibio_thread_to_iport_link_nursury, sizeof(*link), sizeof(void*));
+    link = gs_sys_block_suballoc(&ibio_thread_to_iport_link_descr, &ibio_thread_to_iport_link_nursury, sizeof(*link), sizeof(void*));
     unlock(&ibio_thread_to_iport_link_lock);
 
     link->next = data->reading_from_iport;
@@ -838,7 +838,7 @@ ibio_alloc_iport(struct ibio_channel_segment *chan)
     struct ibio_iport *res;
 
     lock(&ibio_iport_segment_lock);
-    res = gs_sys_seg_suballoc(&ibio_iport_segment_descr, &ibio_iport_segment_nursury, sizeof(*res), sizeof(void*));
+    res = gs_sys_block_suballoc(&ibio_iport_segment_descr, &ibio_iport_segment_nursury, sizeof(*res), sizeof(void*));
     unlock(&ibio_iport_segment_lock);
 
     memset(&res->lock, 0, sizeof(res->lock));
@@ -877,7 +877,7 @@ ibio_setup_iport_read_buffer(struct ibio_iport *iport)
 
     lock(&ibio_iport_read_buffer_lock);
     {
-        buf = gs_sys_seg_suballoc(&ibio_iport_read_buffer_descr, &ibio_iport_read_buffer_nursury, 0x10, sizeof(uchar));
+        buf = gs_sys_block_suballoc(&ibio_iport_read_buffer_descr, &ibio_iport_read_buffer_nursury, 0x10, sizeof(uchar));
         nursury_block = START_OF_BLOCK(buf);
         bufbase = (uchar*)buf;
         if ((uintptr)bufbase % IBIO_READ_BUFFER_SIZE)

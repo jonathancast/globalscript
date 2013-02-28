@@ -2902,7 +2902,7 @@ gsbc_typecheck_alloc_code_item_type(int ntyfvs, int nfvs)
     end_of_fvtypes = end_of_fvs + nfvs * sizeof(struct gstype *);
     end_of_efv_bound = end_of_fvtypes + nfvs * sizeof(int);
 
-    res = gs_sys_seg_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, end_of_efv_bound, sizeof(void *));
+    res = gs_sys_block_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, end_of_efv_bound, sizeof(void *));
     res->tyfvs = (gsinterned_string*)((uchar*)res + end_of_res);
     res->tyfvkinds = (struct gskind **)((uchar*)res + end_of_tyfvs);
     res->fvs = (gsinterned_string*)((uchar*)res + end_of_tyfvkinds);
@@ -4092,7 +4092,7 @@ have_type:
         dest = gstypes_compile_lambda(arglines[nargs]->pos, var, kind, dest);
     }
 
-    res = gs_sys_seg_suballoc(&gsbc_coercion_type_descr, &gsbc_coercion_type_nursury, sizeof(*res), sizeof(void*));
+    res = gs_sys_block_suballoc(&gsbc_coercion_type_descr, &gsbc_coercion_type_nursury, sizeof(*res), sizeof(void*));
     res->source = source;
     res->dest = dest;
 

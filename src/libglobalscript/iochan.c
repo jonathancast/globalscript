@@ -22,7 +22,7 @@ gsbio_device_iopen(char *filename, int omode)
     if ((fd = open(filename, omode)) < 0)
         return 0;
 
-    nm = gs_sys_seg_suballoc(
+    nm = gs_sys_block_suballoc(
         &uxio_filename_class,
         &uxio_filename_nursury,
         strlen(filename) + 1,

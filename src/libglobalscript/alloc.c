@@ -130,7 +130,7 @@ gs_sys_block_setup_free_block(struct free_block *pblock)
     } while (0)
 
 void *
-gs_sys_seg_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulong align)
+gs_sys_block_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulong align)
 {
     struct gs_blockdesc *nursury_block;
     void *res;

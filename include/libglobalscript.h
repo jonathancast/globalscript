@@ -458,7 +458,7 @@ struct gs_blockdesc {
 
 void *gs_sys_block_alloc(registered_block_class cl);
 
-void *gs_sys_seg_suballoc(registered_block_class, void**, ulong, ulong);
+void *gs_sys_block_suballoc(registered_block_class, void**, ulong, ulong);
 
 /* §section ACE */
 

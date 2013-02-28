@@ -135,23 +135,24 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
         if (!strcmp(dir->d.name, ".."))
             continue;
 
-        newfilename = gs_sys_seg_suballoc(
+        newfilename = gs_sys_block_suballoc(
             &filename_desc,
             &filename_nursury,
             strlen(filename) + 1 + strlen(dir->d.name) + 1,
             1
         );
         sprint(newfilename, "%s/%s", filename, dir->d.name);
-        newrelname = gs_sys_seg_suballoc(
+        newrelname = gs_sys_block_suballoc(
             &filename_desc,
             &filename_nursury,
             strlen(relname) + 1 + strlen(dir->d.name) + 1,
             1
         );
         if (*relname)
-            sprint(newrelname, "%s.%s", filename, dir->d.name);
-        else
-            strcpy(newrelname, dir->d.name);
+            sprint(newrelname, "%s.%s", filename, dir->d.name)
+        ; else
+            strcpy(newrelname, dir->d.name)
+        ;
 
         if (dir->d.mode & DMDIR) {
             gsaddir_recursive(newfilename, newrelname, symtable, ppend);
@@ -171,7 +172,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
                     continue;
                 } else {
                     gsappend_symtable(symtable, file_symtable);
-                    **ppend = gs_sys_seg_suballoc(&file_link_desc, &file_link_nursury, sizeof(***ppend), sizeof(void*));
+                    **ppend = gs_sys_block_suballoc(&file_link_desc, &file_link_nursury, sizeof(***ppend), sizeof(void*));
                     (**ppend)->file = file;
                     (**ppend)->next = 0;
                     *ppend = &(**ppend)->next;
@@ -183,7 +184,8 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
                 !strcmp(ext, ".gs-scheme")
                 || !strcmp(ext, ".cgs-scheme")
             ))
-                continue;
+                continue
+            ;
             gswarning("%s/%s: skipping; not a Global Script file", filename, dir->d.name);
         }
     }
@@ -2048,7 +2050,7 @@ gscreatesymtable(struct gsfile_symtable *prev_symtable)
 {
     struct gsfile_symtable *newsymtable;
 
-    newsymtable = gs_sys_seg_suballoc(&gssymtable_segment, &symtable_nursury, sizeof(*newsymtable), sizeof(void*));
+    newsymtable = gs_sys_block_suballoc(&gssymtable_segment, &symtable_nursury, sizeof(*newsymtable), sizeof(void*));
 
     newsymtable->parent = prev_symtable;
     newsymtable->dataitems = 0;
@@ -2094,7 +2096,7 @@ gsappend_items(struct gsfile_symtable_item **dest0, struct gsfile_symtable_item 
                 );
             }
         }
-        *dest = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**dest), sizeof(gsinterned_string));
+        *dest = gs_sys_block_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**dest), sizeof(gsinterned_string));
         (*dest)->key = src->key;
         (*dest)->file = src->file;
         (*dest)->pseg = src->pseg;
@@ -2119,7 +2121,7 @@ gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string lab
                 (*p)->value->pos.lineno
             )
     ;
-    *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
+    *p = gs_sys_block_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->file = file;
     (*p)->pseg = pseg;
@@ -2143,7 +2145,7 @@ gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string lab
                 (*p)->value->pos.lineno
             )
     ;
-    *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
+    *p = gs_sys_block_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->file = file;
     (*p)->pseg = pseg;
@@ -2167,7 +2169,7 @@ gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string lab
                 (*p)->value->pos.lineno
             )
     ;
-    *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
+    *p = gs_sys_block_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->file = file;
     (*p)->pseg = pseg;
@@ -2184,7 +2186,7 @@ gssymtable_add_coercion_item(struct gsfile_symtable *symtable, gsinterned_string
         if ((*p)->key == label)
             gsfatal("%P: Duplicate coercion item %y (duplicate of %P)", ptype->pos, label, (*p)->value->pos)
     ;
-    *p = gs_sys_seg_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
+    *p = gs_sys_block_suballoc(&gssymtable_item_segment, &symtable_item_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->file = file;
     (*p)->pseg = pseg;
@@ -2222,7 +2224,7 @@ gssymtable_set_type(struct gsfile_symtable *symtable, gsinterned_string label, s
             gsfatal("%s: Duplicate type", label->name);
     }
 
-    *p = gs_sys_seg_suballoc(&gssymtable_type_item_segment, &symtable_type_item_nursury, sizeof(**p), sizeof(gsinterned_string));
+    *p = gs_sys_block_suballoc(&gssymtable_type_item_segment, &symtable_type_item_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->value = type;
     (*p)->next = 0;
@@ -2265,7 +2267,7 @@ gssymtable_set_type_expr_kind(struct gsfile_symtable *symtable, gsinterned_strin
         if ((*p)->key == label)
             gsfatal("%s: Already set kind of type", label->name);
     }
-    *p = gs_sys_seg_suballoc(&symtable_type_kind_item_descr, &symtable_type_kind_item_nursury, sizeof(**p), sizeof(gsinterned_string));
+    *p = gs_sys_block_suballoc(&symtable_type_kind_item_descr, &symtable_type_kind_item_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->value = kind;
     (*p)->next = 0;
@@ -2348,7 +2350,7 @@ gssymtable_set(struct gsfile_symtable *symtable, enum gsfile_symtable_class clas
             gsfatal("Duplicate %s %s", gsfile_symtable_class_names[class], label->name);
     }
 
-    *p = gs_sys_seg_suballoc(&symtable_entry_descr, &symtable_entry_nursury, sizeof(**p), sizeof(gsinterned_string));
+    *p = gs_sys_block_suballoc(&symtable_entry_descr, &symtable_entry_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->value = v;
     (*p)->next = 0;
@@ -2397,7 +2399,7 @@ gssymtable_set_data_type(struct gsfile_symtable *symtable, gsinterned_string lab
         ;
     }
 
-    *p = gs_sys_seg_suballoc(&symtable_entry_descr, &symtable_entry_nursury, sizeof(**p), sizeof(gsinterned_string));
+    *p = gs_sys_block_suballoc(&symtable_entry_descr, &symtable_entry_nursury, sizeof(**p), sizeof(gsinterned_string));
     (*p)->key = label;
     (*p)->value = v;
     (*p)->next = 0;
@@ -2568,7 +2570,7 @@ gssymtable_set_scc(struct gsfile_symtable *symtable, struct gsbc_item item, stru
             gsfatal("%s:%d: Item already has SCC", item.v->pos.file->name, item.v->pos.lineno);
     }
 
-    *ppscc_item = gs_sys_seg_suballoc(&gsfile_symtable_scc_item_descr, &gsfile_symtable_scc_item_nursury, sizeof(**ppscc_item), sizeof(*ppscc_item));
+    *ppscc_item = gs_sys_block_suballoc(&gsfile_symtable_scc_item_descr, &gsfile_symtable_scc_item_nursury, sizeof(**ppscc_item), sizeof(*ppscc_item));
     (*ppscc_item)->next = 0;
     (*ppscc_item)->key = item;
     (*ppscc_item)->value = pscc;

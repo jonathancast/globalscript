@@ -23,7 +23,7 @@ gsqueue_alloc()
     struct gsrpc_queue *res;
 
     lock(&gsrpc_queue_memory_lock);
-    res = gs_sys_seg_suballoc(&gsrpc_queue_descr, &gsrpc_queue_nursury, sizeof(*res), sizeof(void*));
+    res = gs_sys_block_suballoc(&gsrpc_queue_descr, &gsrpc_queue_nursury, sizeof(*res), sizeof(void*));
     unlock(&gsrpc_queue_memory_lock);
 
     memset(res, 0, sizeof(*res));
@@ -58,7 +58,7 @@ gsqueue_rpc_alloc(ulong sz)
     struct gsrpc *res;
 
     lock(&gsrpc_queue_memory_lock);
-    res = gs_sys_seg_suballoc(&gsrpc_descr, &gsrpc_nursury, sz, sizeof(Lock));
+    res = gs_sys_block_suballoc(&gsrpc_descr, &gsrpc_nursury, sz, sizeof(Lock));
     unlock(&gsrpc_queue_memory_lock);
 
     memset(res, 0, sz);
@@ -113,7 +113,7 @@ gsqueue_send_rpc(struct gsrpc_queue *q, struct gsrpc *rpc)
     struct gsrpc_queue_link *link;
 
     lock(&q->lock);
-    *q->tail = link = gs_sys_seg_suballoc(&gsrpc_queue_link_descr, &q->nursury, sizeof(**q->tail), sizeof(Lock));
+    *q->tail = link = gs_sys_block_suballoc(&gsrpc_queue_link_descr, &q->nursury, sizeof(**q->tail), sizeof(Lock));
     link->rpc = rpc;
     link->next = 0;
     q->tail = &link->next;

@@ -106,7 +106,7 @@ ibio_alloc_uxio(ulong sz, ibio_uxio_refill *refill)
     struct ibio_uxio *res;
 
     lock(&ibio_uxio_lock);
-    res = gs_sys_seg_suballoc(&ibio_uxio_descr, &ibio_uxio_nursury, sz, sizeof(void*));
+    res = gs_sys_block_suballoc(&ibio_uxio_descr, &ibio_uxio_nursury, sz, sizeof(void*));
     unlock(&ibio_uxio_lock);
     res->refill = refill;
 

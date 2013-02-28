@@ -166,7 +166,7 @@ ibio_alloc_external_io(long sz, ibio_external_canread *canread, ibio_external_re
     struct ibio_external_io *res;
 
     lock(&ibio_external_io_lock);
-    res = gs_sys_seg_suballoc(&ibio_external_io_descr, &ibio_external_io_nursury, sz, sizeof(void*));
+    res = gs_sys_block_suballoc(&ibio_external_io_descr, &ibio_external_io_nursury, sz, sizeof(void*));
     unlock(&ibio_external_io_lock);
     res->canread = canread;
     res->readsym = readsym;

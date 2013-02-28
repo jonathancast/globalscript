@@ -40,7 +40,7 @@ ibio_write_threads_init(char *err, char *eerr)
         gsfatal("ibio_write_threads_init called twice")
     ;
 
-    ibio_write_thread_queue = gs_sys_seg_suballoc(&ibio_write_thread_queue_descr, &ibio_write_thread_queue_nursury, sizeof(*ibio_write_thread_queue), sizeof(void*));
+    ibio_write_thread_queue = gs_sys_block_suballoc(&ibio_write_thread_queue_descr, &ibio_write_thread_queue_nursury, sizeof(*ibio_write_thread_queue), sizeof(void*));
 
     memset(ibio_write_thread_queue, 0, sizeof(*ibio_write_thread_queue));
 
@@ -227,8 +227,7 @@ ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, struct 
     } else if (!write_blocking->blocking) {
         lock(&ibio_write_blocking_lock);
         write_blocking->blocking = *write_blocking->oport->waiting_to_write_end =
-            gs_sys_seg_suballoc(&ibio_write_blocking_class, &ibio_write_blocking_nursury, sizeof(struct ibio_oport_write_blocker), sizeof(void*))
-            
+            gs_sys_block_suballoc(&ibio_write_blocking_class, &ibio_write_blocking_nursury, sizeof(struct ibio_oport_write_blocker), sizeof(void*))
         ;
         unlock(&ibio_write_blocking_lock);
 
@@ -496,7 +495,7 @@ ibio_oport_link_to_thread(struct api_thread *thread, struct ibio_oport *oport)
     data = api_thread_client_data(thread);
 
     lock(&ibio_thread_to_oport_link_lock);
-    link = gs_sys_seg_suballoc(&ibio_thread_to_oport_link_descr, &ibio_thread_to_oport_link_nursury, sizeof(*link), sizeof(void*));
+    link = gs_sys_block_suballoc(&ibio_thread_to_oport_link_descr, &ibio_thread_to_oport_link_nursury, sizeof(*link), sizeof(void*));
     unlock(&ibio_thread_to_oport_link_lock);
 
     link->next = data->writing_to_oport;
@@ -543,7 +542,7 @@ ibio_alloc_oport()
     struct ibio_oport *res;
 
     lock(&ibio_oport_segment_lock);
-    res = gs_sys_seg_suballoc(&ibio_oport_segment_descr, &ibio_oport_segment_nursury, sizeof(*res), sizeof(void*));
+    res = gs_sys_block_suballoc(&ibio_oport_segment_descr, &ibio_oport_segment_nursury, sizeof(*res), sizeof(void*));
     unlock(&ibio_oport_segment_lock);
 
     memset(&res->lock, 0, sizeof(res->lock));
@@ -579,7 +578,7 @@ ibio_setup_oport_write_buffer(struct ibio_oport *oport)
 
     lock(&ibio_oport_write_buffer_lock);
     {
-        buf = gs_sys_seg_suballoc(&ibio_oport_write_buffer_descr, &ibio_oport_write_buffer_nursury, 0x10, sizeof(uchar));
+        buf = gs_sys_block_suballoc(&ibio_oport_write_buffer_descr, &ibio_oport_write_buffer_nursury, 0x10, sizeof(uchar));
         nursury_block = START_OF_BLOCK(buf);
         bufbase = (uchar*)buf;
         if ((uintptr)bufbase % IBIO_WRITE_BUFFER_SIZE)

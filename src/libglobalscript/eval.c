@@ -149,7 +149,7 @@ static void *gsheap_nursury;
 void *
 gsreserveheap(ulong sz)
 {
-    return gs_sys_seg_suballoc(&gsheap_descr, &gsheap_nursury, sz, sizeof(struct gsbco*));
+    return gs_sys_block_suballoc(&gsheap_descr, &gsheap_nursury, sz, sizeof(struct gsbco*));
 }
 
 static
@@ -199,7 +199,7 @@ gsreserveerrors(ulong sz)
     void *res;
 
     lock(&gserrors_lock);
-    res = gs_sys_seg_suballoc(&gserrors_descr, &gserrors_nursury, sz, sizeof(gsinterned_string));
+    res = gs_sys_block_suballoc(&gserrors_descr, &gserrors_nursury, sz, sizeof(gsinterned_string));
     unlock(&gserrors_lock);
     return res;
 }
@@ -311,7 +311,7 @@ gsreserveimplementation_errors(ulong sz)
     void *res;
 
     lock(&gsimplementation_errors_lock);
-    res = gs_sys_seg_suballoc(&gsimplementation_errors_descr, &gsimplementation_errors_nursury, sz, sizeof(gsinterned_string));
+    res = gs_sys_block_suballoc(&gsimplementation_errors_descr, &gsimplementation_errors_nursury, sz, sizeof(gsinterned_string));
     unlock(&gsimplementation_errors_lock);
     return res;
 }
@@ -378,7 +378,7 @@ void *gsbytecode_nursury;
 void *
 gsreservebytecode(ulong sz)
 {
-    return gs_sys_seg_suballoc(&gsbytecode_desc, &gsbytecode_nursury, sz, sizeof(void*));
+    return gs_sys_block_suballoc(&gsbytecode_desc, &gsbytecode_nursury, sz, sizeof(void*));
 }
 
 /* §section Records */
@@ -397,7 +397,7 @@ gsreserverecords(ulong sz)
     void *res;
 
     lock(&gsrecords_lock);
-    res = gs_sys_seg_suballoc(&gsrecords_descr, &gsrecords_nursury, sz, sizeof(gsinterned_string));
+    res = gs_sys_block_suballoc(&gsrecords_descr, &gsrecords_nursury, sz, sizeof(gsinterned_string));
     unlock(&gsrecords_lock);
     return res;
 }
@@ -433,7 +433,7 @@ gslfield(struct gspos pos, int fieldno, gsvalue record)
     struct gslfield *res;
 
     lock(&gslfields_lock);
-    res = gs_sys_seg_suballoc(&gslfields_descr, &gslfields_nursury, sizeof(*res), sizeof(gsvalue));
+    res = gs_sys_block_suballoc(&gslfields_descr, &gslfields_nursury, sizeof(*res), sizeof(gsvalue));
     unlock(&gslfields_lock);
 
     res->pos = pos;
@@ -521,7 +521,7 @@ gsreserveconstrs(ulong sz)
     void *res;
 
     lock(&gsconstrs_lock);
-    res = gs_sys_seg_suballoc(&gsconstrs_descr, &gsconstrs_nursury, sz, sizeof(gsinterned_string));
+    res = gs_sys_block_suballoc(&gsconstrs_descr, &gsconstrs_nursury, sz, sizeof(gsinterned_string));
     unlock(&gsconstrs_lock);
     return res;
 }
@@ -548,7 +548,7 @@ gsreserveeprims(ulong sz)
     void *res;
 
     lock(&gseprims_lock);
-    res = gs_sys_seg_suballoc(&gseprims_descr, &gseprims_nursury, sz, sizeof(gsinterned_string));
+    res = gs_sys_block_suballoc(&gseprims_descr, &gseprims_nursury, sz, sizeof(gsinterned_string));
     unlock(&gseprims_lock);
     return res;
 }

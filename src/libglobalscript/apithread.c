@@ -50,7 +50,7 @@ apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table 
         gsfatal("apisetupmainthread called twice")
     ;
 
-    api_thread_queue = gs_sys_seg_suballoc(&api_thread_queue_descr, &api_thread_queue_nursury, sizeof(*api_thread_queue), sizeof(void*));
+    api_thread_queue = gs_sys_block_suballoc(&api_thread_queue_descr, &api_thread_queue_nursury, sizeof(*api_thread_queue), sizeof(void*));
     memset(api_thread_queue, 0, sizeof(*api_thread_queue));
 
     rpc_queue = gsqueue_alloc();
@@ -648,7 +648,7 @@ api_alloc_promise()
     struct api_promise *res;
 
     lock(&api_promise_segment_lock);
-    res = gs_sys_seg_suballoc(&api_promise_segment_descr, &api_promise_segment_nursury, sizeof(*res), sizeof(void*));
+    res = gs_sys_block_suballoc(&api_promise_segment_descr, &api_promise_segment_nursury, sizeof(*res), sizeof(void*));
     unlock(&api_promise_segment_lock);
 
     memset(res, 0, sizeof(*res));
@@ -788,7 +788,7 @@ api_abend(struct api_thread *thread, char *msg, ...)
 
     thread->state = api_thread_st_terminating_on_abend;
     lock(&api_thread_status_lock);
-    thread->status = gs_sys_seg_suballoc(&api_thread_status_descr, &api_thread_status_nursury, strlen(buf) + 1, sizeof(char));
+    thread->status = gs_sys_block_suballoc(&api_thread_status_descr, &api_thread_status_nursury, strlen(buf) + 1, sizeof(char));
     unlock(&api_thread_status_lock);
     strcpy(thread->status, buf);
 }
@@ -938,7 +938,7 @@ api_blocking_alloc(ulong sz)
     struct api_prim_blocking *res;
 
     lock(&api_blocking_info_lock);
-    res = gs_sys_seg_suballoc(&api_blocking_info_descr, &api_blocking_info_nursury, sz, sizeof(void *));
+    res = gs_sys_block_suballoc(&api_blocking_info_descr, &api_blocking_info_nursury, sz, sizeof(void *));
     unlock(&api_blocking_info_lock);
 
     return res;

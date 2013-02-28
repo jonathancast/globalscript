@@ -22,7 +22,7 @@ ibio_main_thread_alloc_data(struct gspos entrypos, int argc, char **argv)
     int i;
 
     lock(&ibio_thread_data_lock);
-    res = gs_sys_seg_suballoc(&ibio_thread_data_descr, &ibio_thread_data_nursury, sizeof(struct ibio_thread_data), sizeof(void*));
+    res = gs_sys_block_suballoc(&ibio_thread_data_descr, &ibio_thread_data_nursury, sizeof(struct ibio_thread_data), sizeof(void*));
     unlock(&ibio_thread_data_lock);
 
     if (argc > sizeof(gsargv) / sizeof(*gsargv))
