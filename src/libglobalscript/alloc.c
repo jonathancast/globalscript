@@ -103,7 +103,7 @@ gs_sys_block_alloc(registered_block_class cl)
                 if (new_free_segment_size < break_size) {
                     GS_SPLIT_SEGMENT(i, gs_sys_segment_free, new_free_segment_size);
                 } else {
-                    gswarning("%s:%d: About to extend program break to maximum location");
+                    gswarning("%s:%d: Extended program break to maximum location", __FILE__, __LINE__);
                     gs_sys_segments[i].type = gs_sys_segment_free;
                 }
             }
