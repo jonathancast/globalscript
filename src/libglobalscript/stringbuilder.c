@@ -24,7 +24,7 @@ gsreserve_string_builder()
         block = BLOCK_CONTAINING(gsstringbuilder_nursury);
         gsstringbuilder_nursury = 0;
     } else {
-        block = gs_sys_seg_alloc(&gsstringbuilder_descr);
+        block = gs_sys_block_alloc(&gsstringbuilder_descr);
         res.start = START_OF_BLOCK(block);
     }
     unlock(&gsstringbuilder_lock);

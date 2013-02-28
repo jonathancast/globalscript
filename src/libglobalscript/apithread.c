@@ -606,7 +606,7 @@ api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
 
     lock(&api_code_segment_lock);
     if (!api_code_segment_nursury) {
-        api_code_segment_nursury_seg = gs_sys_seg_alloc(&api_code_segment_descr);
+        api_code_segment_nursury_seg = gs_sys_block_alloc(&api_code_segment_descr);
         api_code_segment_nursury = START_OF_BLOCK(api_code_segment_nursury_seg);
     } else {
         api_code_segment_nursury_seg = BLOCK_CONTAINING(api_code_segment_nursury);

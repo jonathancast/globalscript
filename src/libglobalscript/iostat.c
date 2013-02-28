@@ -156,7 +156,7 @@ void
 gsbio_alloc_new_dir_block()
 {
     struct gsbio_dir_segment *nursury_seg;
-    nursury_seg = gs_sys_seg_alloc(&gsbio_dir);
+    nursury_seg = gs_sys_block_alloc(&gsbio_dir);
     gsbio_dir_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
     gsassert(__FILE__, __LINE__, !((uintptr)gsbio_dir_nursury % sizeof(gsvalue)), "gsbio_dir_nursury not gsvalue-aligned; check sizeof(struct gsbio_dir_nursury");
 }

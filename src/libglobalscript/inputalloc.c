@@ -59,7 +59,7 @@ gsalloc_new_parsed_file_block()
 {
     struct input_block *nursury_seg;
 
-    nursury_seg = gs_sys_seg_alloc(&gsparsed_file_desc);
+    nursury_seg = gs_sys_block_alloc(&gsparsed_file_desc);
     parsed_file_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
     gsassert(__FILE__, __LINE__, !((uintptr)parsed_file_nursury % sizeof(ulong)), "parsed_file_nursury not ulong-aligned; check sizeof(struct input_block)");
 }
@@ -99,7 +99,7 @@ gsparsed_file_add_segment(gsparsedfile *parsedfile)
 
     gsfatal("%s:%d: %s: Pretty sure multi-segment files don't actually work yet", __FILE__, __LINE__, parsedfile->name->name);
 
-    nursury_seg = gs_sys_seg_alloc(&gsparsed_file_desc);
+    nursury_seg = gs_sys_block_alloc(&gsparsed_file_desc);
     new_segment = (void*)(uchar*)nursury_seg + sizeof(*nursury_seg);
     new_segment->extent = (uchar*)new_segment + sizeof(*new_segment);
     new_segment->next = 0;

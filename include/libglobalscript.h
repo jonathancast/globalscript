@@ -456,8 +456,7 @@ struct gs_blockdesc {
 #define GS_EVALUATOR(p) (IS_PTR(p) ? CLASS_OF_BLOCK_CONTAINING(p)->evaluator : gsevalunboxed)
 #define GS_INDIRECTION_DEREFENCER(p) (CLASS_OF_BLOCK_CONTAINING(p)->indirection_dereferencer)
 
-void *gs_sys_seg_alloc(registered_block_class cl);
-void gs_sys_seg_free(void *);
+void *gs_sys_block_alloc(registered_block_class cl);
 
 void *gs_sys_seg_suballoc(registered_block_class, void**, ulong, ulong);
 

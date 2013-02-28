@@ -37,7 +37,7 @@ ibio_alloc_channel_segment()
             ibio_channel_segment_nursury = (char*)res + IBIO_CHANNEL_SEGMENT_SIZE
         ;
     } else {
-        nursury_block = gs_sys_seg_alloc(&ibio_channel_segment_descr);
+        nursury_block = gs_sys_block_alloc(&ibio_channel_segment_descr);
         res = START_OF_BLOCK(nursury_block);
         ibio_channel_segment_nursury = (char*)nursury_block + IBIO_CHANNEL_SEGMENT_SIZE;
     }

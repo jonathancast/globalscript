@@ -52,7 +52,7 @@ gs_sys_memory_init(void)
 
 /* Needs to lock the program break */
 void *
-gs_sys_seg_alloc(registered_block_class cl)
+gs_sys_block_alloc(registered_block_class cl)
 {
     struct gs_blockdesc *pres;
     struct free_block *pnext;
@@ -81,12 +81,6 @@ gs_sys_seg_alloc(registered_block_class cl)
     unlock(&gs_allocator_lock);
 
     return (void*)pres;
-}
-
-void
-gs_sys_seg_free(void *p)
-{
-    gsfatal("gs_sys_seg_free next");
 }
 
 /* Assumes the program break is locked */
@@ -142,7 +136,7 @@ gs_sys_seg_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulong 
     void *res;
 
     if (!*pnursury) {
-        nursury_block = gs_sys_seg_alloc(cl);
+        nursury_block = gs_sys_block_alloc(cl);
         *pnursury = START_OF_BLOCK(nursury_block);
         ALIGN_TO(*pnursury, align);
     } else {
@@ -150,7 +144,7 @@ gs_sys_seg_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulong 
     }
 
     if ((uchar*)*pnursury + sz > (uchar*)END_OF_BLOCK(nursury_block)) {
-        nursury_block = gs_sys_seg_alloc(cl);
+        nursury_block = gs_sys_block_alloc(cl);
         *pnursury = START_OF_BLOCK(nursury_block);
         ALIGN_TO(*pnursury, align);
     }

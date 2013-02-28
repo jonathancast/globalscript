@@ -248,7 +248,7 @@ gsalloc_new_hash_link_block()
 {
     struct hash_link_block *nursury_seg;
 
-    nursury_seg = gs_sys_seg_alloc(&gshash_link_desc);
+    nursury_seg = gs_sys_block_alloc(&gshash_link_desc);
     hash_link_nursury = (uchar*)nursury_seg + sizeof(*nursury_seg);
     gsassert(__FILE__, __LINE__, !((uintptr)hash_link_nursury % sizeof(void*)), "hash_link_nursury not void*-aligned; check sizeof(struct string_block)");
 }
@@ -305,7 +305,7 @@ gsalloc_new_string_block()
 {
     struct string_block *nursury_seg;
 
-    nursury_seg = gs_sys_seg_alloc(&gsstring_desc);
+    nursury_seg = gs_sys_block_alloc(&gsstring_desc);
     string_nursury = (uchar*)nursury_seg + sizeof(*nursury_seg);
     gsassert(__FILE__, __LINE__, !((uintptr)string_nursury % sizeof(ulong)), "string_nursury not ulong-aligned; check sizeof(struct string_block)");
 }

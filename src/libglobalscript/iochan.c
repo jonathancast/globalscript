@@ -115,7 +115,7 @@ gsbio_alloc_new_uxio_channel_block()
 {
     struct uxio_channel_descr_segment *nursury_seg;
 
-    nursury_seg = gs_sys_seg_alloc(&uxio_channel_descr);
+    nursury_seg = gs_sys_block_alloc(&uxio_channel_descr);
     uxio_channel_descr_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
     gsassert(__FILE__, __LINE__, !((uintptr)uxio_channel_descr_nursury % sizeof(gsvalue)), "uxio_channel_descr_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_descr_segment");
 }
@@ -146,7 +146,7 @@ void
 gsbio_alloc_new_uxio_buffer_block(void)
 {
     struct uxio_channel_buffer_segment *nursury_seg;
-    nursury_seg = gs_sys_seg_alloc(&uxio_channel_buffer);
+    nursury_seg = gs_sys_block_alloc(&uxio_channel_buffer);
     uxio_channel_buffer_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
     gsassert(__FILE__, __LINE__, !((uintptr)uxio_channel_buffer_nursury % sizeof(gsvalue)), "uxio_channel_buffer_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_buffer_segment");
 }

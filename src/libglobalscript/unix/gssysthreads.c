@@ -30,7 +30,7 @@ gscreate_thread_pool(void (*fn)(void *), void *arg, ulong sz)
     void *stack, *top_of_stack;
     struct gsthread_pool_descr *pool_descr;
 
-    stack = gs_sys_seg_alloc(&gssys_stack_descr);
+    stack = gs_sys_block_alloc(&gssys_stack_descr);
 
     top_of_stack = (uchar*)stack + BLOCK_SIZE;
 
