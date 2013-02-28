@@ -12,6 +12,8 @@
 \newcommand\type{\hskwd{type}}
 \newcommand\module{\hskwd{module}}
 \newcommand\view{\hskwd{view}}
+\newcommand\analyze{\hskwd{analyze}}
+\newcommand\case{\hskwd{case}}
 
 \newcommand\defn[1]{\emph{#1}}
 
@@ -137,6 +139,20 @@ Applications have the rule:
     \AxiomC{$\Gamma \sequent e_2 :: \tau_1$}
     \BinaryInfC{$\Gamma \sequent e_1\hsap e_2 :: \tau_2$}
 \end{prooftree}
+
+\section{Branch Expressions}
+
+Syntactically, \<\analyze\ \overline{expr_i} \overline{\case\ \overline{p_{ji}}. body_j}\>.
+This syntax has a `dangling else' problem when a \<\case\> ends with an \<\analyze\> expression;
+this is resolved as usual by associating each \<\case\> to the nearest preceding \<\analyze\> expression.
+This resolution can be over-ridden by putting parentheses around the inner \<\analyze\> expression or its enclosing \<\case\>.
+
+\subsection{Cases}
+
+The judgment form for \<\case\> terms is:
+\begin{haskell}
+    \Gamma;  \sequent \case\ \overline{p_i}. e :: \overline{\tau_i} \rightarrow\ \tau
+\end{haskell}
 
 \chapter{Patterns}
 \label{patterns}
