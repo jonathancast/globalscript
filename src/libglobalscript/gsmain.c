@@ -67,9 +67,11 @@ gsmain(int argc, char **argv)
     exits("no-document");
 have_document:
     if (!gsentrypoint)
-        gsfatal_unimpl(__FILE__, __LINE__, "Do not in fact have a document; check gsaddfile");
+        gsfatal_unimpl(__FILE__, __LINE__, "Do not in fact have a document; check gsaddfile")
+    ;
     if (ace_init() < 0)
-        gsfatal("ace_init failed: %r");
+        gsfatal("ace_init failed: %r")
+    ;
     GS_SLOW_EVALUATE(gsentrypoint);
     gsrun(docfilename, symtable, gsentrypos, gsentrypoint, gsentrytype, argc, argv);
     exits("");
