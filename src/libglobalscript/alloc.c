@@ -22,7 +22,7 @@ struct gs_block_class free_block_class_descr = {
 };
 
 static void _gs_sys_memory_extend(void);
-static void gs_sys_seg_setup_free_block(struct free_block *);
+static void gs_sys_block_setup_free_block(struct free_block *);
 
 void
 gs_sys_memory_init(void)
@@ -47,7 +47,7 @@ gs_sys_memory_init(void)
     ;
 
     first_free_block = (struct free_block *)bottom_of_data;
-    gs_sys_seg_setup_free_block(first_free_block);
+    gs_sys_block_setup_free_block(first_free_block);
 }
 
 /* Needs to lock the program break */
@@ -110,13 +110,13 @@ _gs_sys_memory_extend(void)
         );
     top_of_data = new_top_of_data;
 
-    gs_sys_seg_setup_free_block(pnext);
+    gs_sys_block_setup_free_block(pnext);
     first_free_block = pnext;
 }
 
 static
 void
-gs_sys_seg_setup_free_block(struct free_block *pblock)
+gs_sys_block_setup_free_block(struct free_block *pblock)
 {
     pblock->hdr.class = &free_block_class_descr;
     pblock->next = 0;
