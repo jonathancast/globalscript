@@ -192,6 +192,8 @@ ibio_iport_fdopen(int fd, struct ibio_uxio *uxio, struct ibio_external_io *exter
     unlock(&chan->lock);
     unlock(&res->lock);
 
+    ace_up();
+
     /* Create read process tied to res */
     if ((readpid = gscreate_thread_pool(ibio_read_process_main, &args, sizeof(args))) < 0) {
         seprint(err, eerr, "Couldn't create IBIO read process: %r");
@@ -240,6 +242,7 @@ ibio_read_process_main(void *p)
         gswarning("%s:%d: ibio_read_process_main: out of read threads", __FILE__, __LINE__);
         iport->active = 0;
         unlock(&iport->lock);
+        ace_down();
         return;
     }
     unlock(&iport->lock);
