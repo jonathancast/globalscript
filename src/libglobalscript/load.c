@@ -2194,12 +2194,6 @@ gssymtable_add_coercion_item(struct gsfile_symtable *symtable, gsinterned_string
     (*p)->next = 0;
 }
 
-void
-gssymtable_set_expr_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbc_code_item_type *ptype)
-{
-    gsfatal("%s:%d: %s: gssymtable_set_expr_type next", __FILE__, __LINE__, label->name);
-}
-
 struct gsfile_symtable_type_item {
     gsinterned_string key;
     struct gstype *value;

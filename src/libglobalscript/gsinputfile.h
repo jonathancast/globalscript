@@ -105,7 +105,6 @@ struct gskind;
 struct gsbco;
 struct gsbc_coercion_type;
 
-void gssymtable_set_expr_type(struct gsfile_symtable *symtable, gsinterned_string label, struct gsbc_code_item_type *);
 void gssymtable_set_type(struct gsfile_symtable *, gsinterned_string, struct gstype *);
 void gssymtable_set_abstype(struct gsfile_symtable *, gsinterned_string, struct gstype *);
 void gssymtable_set_type_expr_kind(struct gsfile_symtable *, gsinterned_string, struct gskind *);
