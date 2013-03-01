@@ -42,6 +42,21 @@ gs_sys_memory_init(void)
     gs_sys_segments[0].base = bottom_of_data;
 }
 
+int
+gs_sys_memory_exhausted(void)
+{
+    int res;
+
+    lock(&gs_allocator_lock);
+    res =
+        gs_sys_segments[gs_sys_num_segments - 1].type != gs_sys_segment_break
+        || (uchar*)gs_sys_segments[gs_sys_num_segments - 1].base >= (uchar*)gs_sys_segments[0].base + 0x200 * 0x400 * 0x400
+    ;
+    unlock(&gs_allocator_lock);
+
+    return res;
+}
+
 #define GS_SYS_SEGMENT_SIZE(i) \
     ((i) < gs_sys_num_segments \
         ? (uchar*)gs_sys_segments[(i) + 1].base - (uchar*)gs_sys_segments[i].base \

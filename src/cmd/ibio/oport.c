@@ -302,6 +302,14 @@ ibio_write_process_main(void *p)
         lock(&oport->lock);
         active = oport->active || oport->writing;
         runnable = 1;
+        if (active && gs_sys_memory_exhausted()) {
+            if (oport->writing_thread) {
+                api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "Out of memory");
+                ibio_oport_unlink_from_thread(oport->writing_thread, oport);
+            }
+            active = oport->active = 0;
+            oport->writing = c = 0;
+        }
         if (c) {
             st = GS_SLOW_EVALUATE(c);
             switch (st) {

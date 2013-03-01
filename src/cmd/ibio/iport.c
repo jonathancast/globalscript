@@ -253,6 +253,22 @@ ibio_read_process_main(void *p)
         active = iport->active || iport->reading;
         runnable = !!iport->reading;
 
+        if (active && gs_sys_memory_exhausted()) {
+            struct gsstringbuilder msg;
+            struct gspos gspos;
+
+            msg = gsreserve_string_builder();
+            gsstring_builder_print(&msg, UNIMPL("Out of memory"));
+            gsfinish_string_builder(&msg);
+
+            gspos.file = gsintern_string(gssymfilename, __FILE__);
+            gspos.lineno = __LINE__;
+
+            if (iport->reading) api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "%s", msg.start);
+            iport->error = (gsvalue)gsunimpl(__FILE__, __LINE__, gspos, "%s", msg.start);
+            ibio_shutdown_iport(iport, iport->position);
+            active = 0;
+        }
         if (iport->reading) {
             gstypecode st;
 
@@ -464,8 +480,8 @@ void
 ibio_shutdown_iport(struct ibio_iport *iport, gsvalue *pos)
 {
     iport->active = 0;
+    if (iport->reading) ibio_iport_unlink_from_thread(iport->reading_thread, iport);
     iport->reading = 0;
-    ibio_iport_unlink_from_thread(iport->reading_thread, iport);
 }
 
 /* §section Reading (from API thread) */

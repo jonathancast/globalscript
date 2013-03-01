@@ -460,6 +460,8 @@ void *gs_sys_block_alloc(registered_block_class cl);
 
 void *gs_sys_block_suballoc(registered_block_class, void**, ulong, ulong);
 
+int gs_sys_memory_exhausted(void);
+
 /* §section ACE */
 
 void ace_up(void);
