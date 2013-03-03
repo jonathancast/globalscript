@@ -21,6 +21,11 @@ static void gsprint_error(struct gstype *type, struct gsfile_symtable *symtable,
 static int gsprint_unboxed(struct gstype *type, gsvalue prog);
 
 void
+gscheck_global_gslib(struct gspos pos, struct gsfile_symtable *symtable)
+{
+}
+
+void
 gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type, int argc, char **argv)
 {
     gstypecode st;

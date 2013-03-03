@@ -251,6 +251,16 @@ gstype_expect_product(char *err, char *eerr, struct gstype *ty, int nfields, ...
     }
 }
 
+struct gspos
+gstype_get_location(struct gspos pos, struct gsfile_symtable *symtable, gsinterned_string sym)
+{
+    struct gsbc_item item;
+
+    item = gssymtable_lookup(pos, symtable, sym);
+
+    return item.v->pos;
+}
+
 struct gstype *
 gstype_get_definition(struct gspos pos, struct gsfile_symtable *symtable, struct gstype *ty)
 {

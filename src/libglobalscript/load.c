@@ -32,8 +32,8 @@ gsisdir(char *filename)
 
 #define FILE_NAME_SIZE_LIMIT 0x100
 
-void
-gsadd_global_gslib(struct gsfile_symtable **psymtable)
+gsinterned_string
+gsglobal_gslib_dir()
 {
     struct uxio_ichannel *chan;
     char globalscript[FILE_NAME_SIZE_LIMIT], buf[FILE_NAME_SIZE_LIMIT];
@@ -65,7 +65,13 @@ set_buf:
         )
     ;
 
-    gsadddir(buf, psymtable);
+    return gsintern_string(gssymfilename, buf);
+}
+
+void
+gsadd_global_gslib(gsinterned_string global_gslib, struct gsfile_symtable **psymtable)
+{
+    gsadddir(global_gslib->name, psymtable);
 }
 
 static void gsloadfile(gsparsedfile *, struct gsfile_symtable *, struct gspos *, gsvalue *, struct gstype **);

@@ -131,6 +131,12 @@ struct gspos {
 
 /* §subsection Client-level Type-checking */
 
+/* §subsubsection General Interrogation of Symbol Tables */
+
+struct gsfile_symtable;
+
+struct gspos gstype_get_location(struct gspos, struct gsfile_symtable *, gsinterned_string);
+
 /* §subsubsection Constructors */
 
 struct gstype;
@@ -186,8 +192,6 @@ int gstype_expect_product(char *, char *, struct gstype *, int, ...);
 
 struct gsstringbuilder;
 
-struct gsfile_symtable;
-
 struct gstype *gstype_get_definition(struct gspos, struct gsfile_symtable *, struct gstype *);
 
 int gstypes_type_check(struct gsstringbuilder *, struct gspos, struct gstype *, struct gstype *);
@@ -241,7 +245,8 @@ typedef enum {
     gstyeoostack,
 } gstypecode;
 
-/* Define this yourself; this is your program's entry point */
+/* Define these yourself; this is your program's entry point */
+extern void gscheck_global_gslib(struct gspos pos, struct gsfile_symtable *);
 extern void gsrun(char *, struct gsfile_symtable *, struct gspos, gsvalue, struct gstype *, int, char **);
 
 #define GS_MAX_PTR 0x80000000UL

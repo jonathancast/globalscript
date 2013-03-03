@@ -16,6 +16,11 @@ gsadd_client_prim_sets()
 static void gstype_typecheck(char *, struct gstype *);
 
 void
+gscheck_global_gslib(struct gspos pos, struct gsfile_symtable *symtable)
+{
+}
+
+void
 gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type, int argc, char **argv)
 {
     gsvalue c, s;

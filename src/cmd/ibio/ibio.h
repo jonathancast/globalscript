@@ -109,7 +109,7 @@ gsrpc_handler ibio_main_process_handle_rpc_file_read_open;
 
 /* §section Input */
 
-void ibio_check_acceptor_type(char *, struct gsfile_symtable *, struct gspos);
+void ibio_check_acceptor_type(struct gspos, struct gsfile_symtable *);
 
 struct ibio_iport {
     Lock lock;

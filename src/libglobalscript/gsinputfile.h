@@ -1,7 +1,8 @@
 #define BIG_ENDIAN_32(pb) \
     (((u32int)(pb)[0] << 24) | ((u32int)(pb)[1] << 16) | ((u32int)(pb)[2] << 8) | ((u32int)(pb)[3]))
 
-void gsadd_global_gslib(struct gsfile_symtable **);
+gsinterned_string gsglobal_gslib_dir(void);
+void gsadd_global_gslib(gsinterned_string, struct gsfile_symtable **);
 void gsadddir(char *, struct gsfile_symtable **);
 
 typedef enum {

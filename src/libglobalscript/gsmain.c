@@ -16,7 +16,7 @@ gsmain(int argc, char **argv)
     char *cur_arg;
     struct gsfile_symtable *symtable;
     char *docfilename;
-    struct gspos gsentrypos;
+    struct gspos global_gslib_pos, gsentrypos;
 
     argv0 = *argv++, argc--;
     gsassert(
@@ -34,7 +34,11 @@ gsmain(int argc, char **argv)
 
     gsadd_global_script_prim_sets();
     gsadd_client_prim_sets();
-    gsadd_global_gslib(&symtable);
+
+    global_gslib_pos.file = gsglobal_gslib_dir();
+    global_gslib_pos.lineno = 0;
+    gsadd_global_gslib(global_gslib_pos.file, &symtable);
+    gscheck_global_gslib(global_gslib_pos, symtable);
     while (argc) {
         cur_arg = *argv++, argc--;
         if (*cur_arg == '-') {
@@ -87,7 +91,9 @@ gsPfmt(Fmt *f)
     pos = va_arg(f->args, struct gspos);
     return pos.columnno > 0
         ? fmtprint(f, "%s:%d:%d", pos.file->name, pos.lineno, pos.columnno)
-        : fmtprint(f, "%s:%d", pos.file->name, pos.lineno)
+        : pos.lineno > 0
+        ? fmtprint(f, "%s:%d", pos.file->name, pos.lineno)
+        : fmtprint(f, "%s", pos.file->name)
     ;
 }
 

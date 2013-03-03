@@ -119,15 +119,18 @@ static struct api_process_rpc_table ibio_rpc_table = {
 static gsvalue ibio_downcast_ibio_m(char *, char *, char *, struct gsfile_symtable *, struct gspos, gsvalue, struct gstype *, struct gstype **, struct gstype **, struct gstype **);
 
 void
+gscheck_global_gslib(struct gspos gslib_pos, struct gsfile_symtable *symtable)
+{
+    ibio_check_acceptor_type(gslib_pos, symtable);
+}
+
+void
 gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty, int argc, char **argv)
 {
     struct gstype *input, *output, *result;
     gsvalue stdin, stdout, stderr;
     struct gsstringbuilder err;
     char errbuf[0x100];
-
-    /* §section Check various types look like we expect */
-    ibio_check_acceptor_type(script, symtable, pos);
 
     /* §section Cast down from newtype wrapper */
 

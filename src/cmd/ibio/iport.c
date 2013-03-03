@@ -15,7 +15,7 @@ enum {
 };
 
 void
-ibio_check_acceptor_type(char *script, struct gsfile_symtable *symtable, struct gspos pos)
+ibio_check_acceptor_type(struct gspos pos, struct gsfile_symtable *symtable)
 {
     gsinterned_string s, alpha;
     struct gskind *lifted, *kind;
@@ -48,8 +48,7 @@ ibio_check_acceptor_type(char *script, struct gsfile_symtable *symtable, struct 
     ));
     if (gstypes_type_check(&err, pos, gstype_get_definition(pos, symtable, abstract), expected) < 0) {
         gsfinish_string_builder(&err);
-        ace_down();
-        gsfatal("%s: Panic!  ibio.acceptor.prim.t has the wrong structure: %s", script, err.start);
+        gsfatal("%P: Panic!  ibio.acceptor.prim.t has the wrong structure: %s", pos, err.start);
     }
     gsfinish_string_builder(&err);
 }
