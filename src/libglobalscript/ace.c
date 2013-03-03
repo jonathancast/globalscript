@@ -4,7 +4,6 @@
 
 #include "gsheap.h"
 #include "gsbytecode.h"
-#include "gsregtables.h"
 #include "ace.h"
 
 gsvalue gsentrypoint;

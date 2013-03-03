@@ -4,7 +4,6 @@
 #include <libc.h>
 #include <libglobalscript.h>
 
-#include "gsregtables.h"
 #include "gsbytecode.h"
 #include "api.h"
 

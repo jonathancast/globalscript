@@ -6,7 +6,6 @@
 
 #include "gsinputfile.h"
 #include "gssetup.h"
-#include "gsregtables.h"
 
 static struct gsregistered_primset *registered_primsets[MAX_NUM_REGISTERS];
 static int num_registered_primsets;

@@ -68,23 +68,23 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 	$AR rsc $GLOBALSCRIPT/lib/$LIB $stem.$O
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h
-gsmain.$O: gsinputfile.h gssetup.h gsregtables.h ace.h
-load.$O: gsinputalloc.h gsinputfile.h gsbytecompile.h gsregtables.h gstopsort.h gstypealloc.h gstypecheck.h gstypecheck.h ace.h
+gsmain.$O: gsinputfile.h gssetup.h ace.h
+load.$O: gsinputalloc.h gsinputfile.h gsbytecompile.h gstopsort.h gstypealloc.h gstypecheck.h gstypecheck.h ace.h
 inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsalloc.h
-eval.$O: gsheap.h gsinputfile.h gsregtables.h ace.h
-ace.$O: gsheap.h gsbytecode.h gsregtables.h ace.h
-apithread.$O: gsregtables.h gsbytecode.h api.h
+eval.$O: gsheap.h gsinputfile.h ace.h
+ace.$O: gsheap.h gsbytecode.h ace.h
+apithread.$O: gsbytecode.h api.h
 symtable.$O: gsinputfile.h
 bytecompile.$O: gsinputfile.h gsregtables.h gstypealloc.h gsbytecompile.h gsheap.h gsbytecode.h gstopsort.h gstypealloc.h
-primset.$O: gsinputfile.h gssetup.h gsregtables.h
+primset.$O: gsinputfile.h gssetup.h
 typealloc.$O: gsinputfile.h gsregtables.h gstypealloc.h gstypecheck.h
 typecheck.$O: gsinputfile.h gsregtables.h gstypealloc.h gstypecheck.h
 clienttypecheck.$O: gsinputfile.h gstypealloc.h gstypecheck.h
 clientexpr.$O: gsinputfile.h gstypealloc.h gstypecheck.h gsheap.h
 bctopsort.$O: gsinputfile.h gstopsort.h
 regtables.$O: gsinputfile.h gsregtables.h
-runes.$O: gsheap.h gssetup.h gsregtables.h ace.h
+runes.$O: gsheap.h gssetup.h ace.h
 naturals.$O: gssetup.h
 api.$O: api.h
 iochan.$O: iofile.h $SYSTEM/iosysconstants.h iomacros.h

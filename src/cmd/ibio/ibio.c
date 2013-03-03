@@ -116,7 +116,7 @@ static struct api_process_rpc_table ibio_rpc_table = {
     },
 };
 
-static gsvalue ibio_downcast_ibio_m(char *, char *, char *, struct gsfile_symtable *, struct gspos, gsvalue, struct gstype *, struct gstype **, struct gstype **, struct gstype **);
+static void ibio_downcast_ibio_m(char *, char *, char *, struct gsfile_symtable *, struct gspos, struct gstype *, struct gstype **, struct gstype **, struct gstype **);
 
 void
 gscheck_global_gslib(struct gspos gslib_pos, struct gsfile_symtable *symtable)
@@ -125,39 +125,26 @@ gscheck_global_gslib(struct gspos gslib_pos, struct gsfile_symtable *symtable)
 }
 
 void
-gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty, int argc, char **argv)
+gscheck_program(char *script, struct gsfile_symtable *symtable, struct gspos pos, struct gstype *ty)
 {
-    struct gstype *input, *output, *result;
-    gsvalue stdin, stdout, stderr;
-    struct gsstringbuilder err;
     char errbuf[0x100];
+    struct gstype *input, *output, *result;
+    struct gsstringbuilder err;
 
     /* §section Cast down from newtype wrapper */
 
-    prog = ibio_downcast_ibio_m(errbuf, errbuf + sizeof(errbuf), script, symtable, pos, prog, ty, &input, &output, &result);
+    ibio_downcast_ibio_m(errbuf, errbuf + sizeof(errbuf), script, symtable, pos, ty, &input, &output, &result);
 
-    /* §section Pass in input */
+    /* §section Check input */
 
     err = gsreserve_string_builder();
     if (gstypes_type_check(&err, pos, input, gstypes_compile_rune(pos)) < 0) {
         gsfinish_string_builder(&err);
-        ace_down();
         gsfatal("%s: Panic!  Non-rune.t input in main program (%s)", script, err.start);
     }
     gsfinish_string_builder(&err);
 
-    if (ibio_read_threads_init(errbuf, errbuf + sizeof(errbuf)) < 0) {
-        ace_down();
-        gsfatal("%s: Couldn't initialize read thread pool: %s", script, errbuf);
-    }
-    stdin = ibio_iport_fdopen(0, ibio_file_uxio(), ibio_rune_io(), errbuf, errbuf + sizeof(errbuf));
-    if (!stdin) {
-        ace_down();
-        gsfatal("%s: Couldn't open stdin: %s", script, errbuf);
-    }
-    prog = gsapply(pos, prog, stdin);
-
-    /* §section Pass in output */
+    /* §section Check output */
 
     err = gsreserve_string_builder();
     if (gstypes_type_check(&err, pos, output, gstypes_compile_rune(pos)) < 0) {
@@ -166,36 +153,11 @@ gsrun(char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue 
         gsfatal("%s: Panic!  Non-rune.t output in main program (%s)", script, err.start);
     }
     gsfinish_string_builder(&err);
-
-    if (ibio_write_threads_init(errbuf, errbuf + sizeof(errbuf)) < 0) {
-        ace_down();
-        gsfatal("%s: Couldn't initialize write thread pool: %s", script, err);
-    }
-
-    stdout = ibio_oport_fdopen(1, errbuf, errbuf + sizeof(errbuf));
-    if (!stdout) {
-        ace_down();
-        gsfatal("%s: Couldn't open stdout: %s", script, errbuf);
-    }
-    prog = gsapply(pos, prog, stdout);
-
-    /* §section Pass in stderr */
-
-    stderr = ibio_oport_fdopen(2, errbuf, errbuf + sizeof(errbuf));
-    if (!stderr) {
-        ace_down();
-        gsfatal("%s: Couldn't open stderr: %s", script, errbuf);
-    }
-    prog = gsapply(pos, prog, stderr);
-
-    /* §section Set up the IBIO thread */
-
-    apisetupmainthread(&ibio_rpc_table, &ibio_thread_table, ibio_main_thread_alloc_data(pos, argc, argv), &ibio_prim_table, prog);
 }
 
 static
-gsvalue
-ibio_downcast_ibio_m(char *errbuf, char *eerrbuf, char *script, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *ty, struct gstype **pinput, struct gstype **poutput, struct gstype **presult)
+void
+ibio_downcast_ibio_m(char *errbuf, char *eerrbuf, char *script, struct gsfile_symtable *symtable, struct gspos pos, struct gstype *ty, struct gstype **pinput, struct gstype **poutput, struct gstype **presult)
 {
     struct gstype *monad, *tybody;
     struct gstype *tyw;
@@ -209,17 +171,10 @@ ibio_downcast_ibio_m(char *errbuf, char *eerrbuf, char *script, struct gsfile_sy
         || !(monad = tyw)
         || gstype_expect_abstract(errbuf, eerrbuf, monad, "ibio.m") < 0
     ) {
-        ace_down();
         gsfatal("%s: Bad type: %s", script, errbuf);
     }
 
-    err = gsreserve_string_builder();
-    if (!(prog = gscoerce(prog, ty, &tyw, &err, symtable, "ibio.out", *pinput, *poutput, *presult, 0))) {
-        gsfinish_string_builder(&err);
-        ace_down();
-        gsfatal("%s: Couldn't cast down to primitive level: %s", script, err);
-    }
-    gsfinish_string_builder(&err);
+    tyw = gstype_get_definition(pos, symtable, ty);
 
     /* §section Paranoid check that the result is the API monad we expect it to be */
 
@@ -248,10 +203,55 @@ ibio_downcast_ibio_m(char *errbuf, char *eerrbuf, char *script, struct gsfile_sy
     err = gsreserve_string_builder();
     if (gstypes_type_check(&err, pos, tyw, tybody) < 0) {
         gsfinish_string_builder(&err);
-        ace_down();
         gsfatal("%s: Panic!  Type after un-wrapping newtype wrapper incorrect (%s)", script, err);
     }
     gsfinish_string_builder(&err);
+}
 
-    return prog;
+void
+gsrun(char *script, struct gspos pos, gsvalue prog, int argc, char **argv)
+{
+    gsvalue stdin, stdout, stderr;
+    struct gsstringbuilder err;
+    char errbuf[0x100];
+
+    /* §section Pass in input */
+
+    if (ibio_read_threads_init(errbuf, errbuf + sizeof(errbuf)) < 0) {
+        ace_down();
+        gsfatal("%s: Couldn't initialize read thread pool: %s", script, errbuf);
+    }
+    stdin = ibio_iport_fdopen(0, ibio_file_uxio(), ibio_rune_io(), errbuf, errbuf + sizeof(errbuf));
+    if (!stdin) {
+        ace_down();
+        gsfatal("%s: Couldn't open stdin: %s", script, errbuf);
+    }
+    prog = gsapply(pos, prog, stdin);
+
+    /* §section Pass in output */
+
+    if (ibio_write_threads_init(errbuf, errbuf + sizeof(errbuf)) < 0) {
+        ace_down();
+        gsfatal("%s: Couldn't initialize write thread pool: %s", script, err);
+    }
+
+    stdout = ibio_oport_fdopen(1, errbuf, errbuf + sizeof(errbuf));
+    if (!stdout) {
+        ace_down();
+        gsfatal("%s: Couldn't open stdout: %s", script, errbuf);
+    }
+    prog = gsapply(pos, prog, stdout);
+
+    /* §section Pass in stderr */
+
+    stderr = ibio_oport_fdopen(2, errbuf, errbuf + sizeof(errbuf));
+    if (!stderr) {
+        ace_down();
+        gsfatal("%s: Couldn't open stderr: %s", script, errbuf);
+    }
+    prog = gsapply(pos, prog, stderr);
+
+    /* §section Set up the IBIO thread */
+
+    apisetupmainthread(&ibio_rpc_table, &ibio_thread_table, ibio_main_thread_alloc_data(pos, argc, argv), &ibio_prim_table, prog);
 }

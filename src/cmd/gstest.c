@@ -49,20 +49,24 @@ gscheck_global_gslib(struct gspos pos, struct gsfile_symtable *symtable)
 }
 
 void
-gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type, int argc, char **argv)
+gscheck_program(char *doc, struct gsfile_symtable *symtable, struct gspos pos, struct gstype *type)
 {
-    enum test_state st;
     struct gsstringbuilder err;
-    char errbuf[0x100];
 
     err = gsreserve_string_builder();
     if (gstypes_type_check(&err, pos, type, test_property_type(pos)) < 0) {
         gsfinish_string_builder(&err);
         fprint(2, "Type error: %s\n", err.start);
-        ace_down();
         exits("type err");
     }
     gsfinish_string_builder(&err);
+}
+
+void
+gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
+{
+    enum test_state st;
+    char errbuf[0x100];
 
     while (argc) {
         switch (**argv) {

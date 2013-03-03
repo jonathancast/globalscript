@@ -129,6 +129,8 @@ struct gspos {
 
 /* §section Global Script Program Calculus */
 
+#define MAX_NUM_REGISTERS 0x100
+
 /* §subsection Client-level Type-checking */
 
 /* §subsubsection General Interrogation of Symbol Tables */
@@ -245,9 +247,10 @@ typedef enum {
     gstyeoostack,
 } gstypecode;
 
-/* Define these yourself; this is your program's entry point */
+/* Define these yourself; these are your program's entry points */
 extern void gscheck_global_gslib(struct gspos pos, struct gsfile_symtable *);
-extern void gsrun(char *, struct gsfile_symtable *, struct gspos, gsvalue, struct gstype *, int, char **);
+extern void gscheck_program(char *, struct gsfile_symtable *, struct gspos, struct gstype *);
+extern void gsrun(char *, struct gspos, gsvalue, int, char **);
 
 #define GS_MAX_PTR 0x80000000UL
     /* NOTE: 32-bit specific ↑↑↑.  Thought: would §ccode{1UL << (sizeof(gsvalue) * 8 - 1)} work? */

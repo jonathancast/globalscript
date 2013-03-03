@@ -13,21 +13,33 @@ gsadd_client_prim_sets()
 {
 }
 
-static void gstype_typecheck(char *, struct gstype *);
-
 void
 gscheck_global_gslib(struct gspos pos, struct gsfile_symtable *symtable)
 {
 }
 
 void
-gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue prog, struct gstype *type, int argc, char **argv)
+gscheck_program(char *doc, struct gsfile_symtable *symtable, struct gspos pos, struct gstype *ty)
+{
+    struct gstype *tyw, *tyelem;
+    char errbuf[0x100];
+
+    tyw = ty;
+    if (
+        gstype_expect_app(errbuf, errbuf + sizeof(errbuf), tyw, &tyw, &tyelem) < 0
+        || gstype_expect_abstract(errbuf, errbuf + sizeof(errbuf), tyw, "list.t") < 0
+        || gstype_expect_abstract(errbuf, errbuf + sizeof(errbuf), tyelem, "rune.t") < 0
+    ) {
+        gsfatal("%s: Bad type: %s", doc, errbuf);
+    }
+}
+
+void
+gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
 {
     gsvalue c, s;
     gstypecode st;
     char buf[0x100], *o;
-
-    gstype_typecheck(doc, type);
 
     s = prog;
     c = 0;
@@ -114,22 +126,3 @@ gsrun(char *doc, struct gsfile_symtable *symtable, struct gspos pos, gsvalue pro
         }
     } while (1);
 }
-
-static
-void
-gstype_typecheck(char *doc, struct gstype *ty)
-{
-    struct gstype *tyw, *tyelem;
-    char errbuf[0x100];
-
-    tyw = ty;
-    if (
-        gstype_expect_app(errbuf, errbuf + sizeof(errbuf), tyw, &tyw, &tyelem) < 0
-        || gstype_expect_abstract(errbuf, errbuf + sizeof(errbuf), tyw, "list.t") < 0
-        || gstype_expect_abstract(errbuf, errbuf + sizeof(errbuf), tyelem, "rune.t") < 0
-    ) {
-        ace_down();
-        gsfatal("%s: Bad type: %s", doc, errbuf);
-    }
-}
-

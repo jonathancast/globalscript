@@ -6,7 +6,6 @@
 
 #include "gsheap.h"
 #include "gssetup.h"
-#include "gsregtables.h"
 #include "ace.h"
 
 static struct gsregistered_primtype rune_prim_types[] = {

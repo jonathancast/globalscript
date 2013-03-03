@@ -7,7 +7,6 @@
 #include "gsinputfile.h"
 #include "gsinputalloc.h"
 #include "gsbytecompile.h"
-#include "gsregtables.h"
 #include "gstopsort.h"
 #include "gstypealloc.h"
 #include "gstypecheck.h"

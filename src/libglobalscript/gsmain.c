@@ -4,7 +4,6 @@
 
 #include "gsinputfile.h"
 #include "gssetup.h"
-#include "gsregtables.h"
 #include "ace.h"
 
 static int gsPfmt(Fmt *f);
@@ -73,12 +72,13 @@ have_document:
     if (!gsentrypoint)
         gsfatal_unimpl(__FILE__, __LINE__, "Do not in fact have a document; check gsaddfile")
     ;
+    gscheck_program(docfilename, symtable, gsentrypos, gsentrytype);
     if (gsflag_stat_collection) fprint(2, "Before garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r")
     ;
     GS_SLOW_EVALUATE(gsentrypoint);
-    gsrun(docfilename, symtable, gsentrypos, gsentrypoint, gsentrytype, argc, argv);
+    gsrun(docfilename, gsentrypos, gsentrypoint, argc, argv);
     exits("");
 }
 
