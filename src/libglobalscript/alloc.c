@@ -19,8 +19,6 @@ static struct gs_sys_segment {
     void *base;
 } gs_sys_segments[GS_SYS_MAX_NUM_SEGMENTS];
 
-typedef uintptr gsumemorysize; /* TODO: Horrid hack */
-
 void
 gs_sys_memory_init(void)
 {
@@ -42,6 +40,30 @@ gs_sys_memory_init(void)
     gs_sys_segments[0].base = bottom_of_data;
 }
 
+#define GS_SYS_SEGMENT_SIZE(i) \
+    ((i) < gs_sys_num_segments \
+        ? (uchar*)gs_sys_segments[(i) + 1].base - (uchar*)gs_sys_segments[i].base \
+        : (uchar*)GS_MAX_PTR - (uchar*)gs_sys_segments[i].base \
+    )
+
+#define GS_SYS_SEGMENT_IS(i, ty) \
+    ((i) >= 0 && (i) < gs_sys_num_segments && gs_sys_segments[i].type == ty)
+
+gsumemorysize
+gs_sys_memory_allocated_size()
+{
+    gsumemorysize res;
+    int i;
+
+    res = 0;
+    for (i = 0; i < gs_sys_num_segments; i++)
+        if (GS_SYS_SEGMENT_IS(i, gs_sys_segment_allocated))
+            res += GS_SYS_SEGMENT_SIZE(i)
+    ;
+
+    return res;
+}
+
 int
 gs_sys_memory_exhausted(void)
 {
@@ -56,15 +78,6 @@ gs_sys_memory_exhausted(void)
 
     return res;
 }
-
-#define GS_SYS_SEGMENT_SIZE(i) \
-    ((i) < gs_sys_num_segments \
-        ? (uchar*)gs_sys_segments[(i) + 1].base - (uchar*)gs_sys_segments[i].base \
-        : (uchar*)GS_MAX_PTR - (uchar*)gs_sys_segments[i].base \
-    )
-
-#define GS_SYS_SEGMENT_IS(i, ty) \
-    ((i) >= 0 && (i) < gs_sys_num_segments && gs_sys_segments[i].type == ty)
 
 #define GS_SPLIT_SEGMENT(i, ty, sz) \
     do { \

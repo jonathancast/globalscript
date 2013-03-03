@@ -456,10 +456,13 @@ struct gs_blockdesc {
 #define GS_EVALUATOR(p) (IS_PTR(p) ? CLASS_OF_BLOCK_CONTAINING(p)->evaluator : gsevalunboxed)
 #define GS_INDIRECTION_DEREFENCER(p) (CLASS_OF_BLOCK_CONTAINING(p)->indirection_dereferencer)
 
+typedef uintptr gsumemorysize; /* TODO: Horrid hack */
+
 void *gs_sys_block_alloc(registered_block_class cl);
 
 void *gs_sys_block_suballoc(registered_block_class, void**, ulong, ulong);
 
+gsumemorysize gs_sys_memory_allocated_size(void);
 int gs_sys_memory_exhausted(void);
 
 /* §section ACE */
