@@ -64,38 +64,6 @@ gsrecordv(struct gspos pos, int nfields, gsvalue *fields)
 }
 
 gsvalue
-gscoerce(gsvalue v, struct gstype *ty, struct gstype **pty, struct gsstringbuilder *err, struct gsfile_symtable *symtable, char *coercion_name, ...)
-{
-    struct gsbc_coercion_type *ct;
-    va_list args;
-    struct gstype *source, *dest, *tyarg;
-
-    ct = gssymtable_get_coercion_type(symtable, gsintern_string(gssymcoercionlable, coercion_name));
-
-    if (!ct) {
-        werrstr("No such coercion %s", coercion_name);
-        return 0;
-    }
-
-    source = ct->source;
-    dest = ct->dest;
-
-    va_start(args, coercion_name);
-    while (tyarg = va_arg(args, struct gstype *)) {
-        source = gstype_apply(ty->pos, source, tyarg);
-        dest = gstype_apply(ty->pos, dest, tyarg);
-    }
-    va_end(args);
-
-    if (gstypes_type_check(err, ty->pos, ty, source) < 0)
-        return 0
-    ;
-
-    *pty = dest;
-    return v; /* No change in representation! */
-}
-
-gsvalue
 gsapply(struct gspos pos, gsvalue fun, gsvalue arg)
 {
     struct gsheap_item *res;

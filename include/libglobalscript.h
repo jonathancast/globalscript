@@ -203,8 +203,6 @@ int gstypes_type_check(struct gsstringbuilder *, struct gspos, struct gstype *, 
 struct gsfile_symtable;
 typedef uintptr gsvalue;
 
-gsvalue gscoerce(gsvalue, struct gstype *, struct gstype **, struct gsstringbuilder *, struct gsfile_symtable *, char *, ...);
-
 gsvalue gsapply(struct gspos, gsvalue, gsvalue);
 
 /* §subsection Booleans */
