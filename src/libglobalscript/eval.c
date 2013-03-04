@@ -436,10 +436,24 @@ struct gs_block_class gslfields_descr = {
 static void *gslfields_nursury;
 static Lock gslfields_lock;
 
+enum gslfield_state {
+    gslfield_field,
+    gslfield_evaluating,
+    gslfield_indirection,
+};
 struct gslfield {
+    Lock lock;
     struct gspos pos;
-    int fieldno;
-    gsvalue record;
+    enum gslfield_state state;
+    union {
+        struct {
+            int fieldno;
+            gsvalue record;
+        } f;
+        struct {
+            gsvalue dest;
+        } i;
+    };
 };
 
 gsvalue
@@ -451,9 +465,11 @@ gslfield(struct gspos pos, int fieldno, gsvalue record)
     res = gs_sys_block_suballoc(&gslfields_descr, &gslfields_nursury, sizeof(*res), sizeof(gsvalue));
     unlock(&gslfields_lock);
 
+    memset(&res->lock, 0, sizeof(res->lock));
     res->pos = pos;
-    res->fieldno = fieldno;
-    res->record = record;
+    res->state = gslfield_field;
+    res->f.fieldno = fieldno;
+    res->f.record = record;
 
     return (gsvalue)res;
 }
@@ -462,25 +478,71 @@ static
 gstypecode
 gs_lfield_eval(gsvalue v)
 {
-    gstypecode st;
     struct gslfield *lfield;
-    gsvalue record;
+    enum gslfield_state st;
 
     lfield = (struct gslfield *)v;
 
-    record = lfield->record;
-    for (;;) {
-        st = GS_SLOW_EVALUATE(record); /* §tODO Deadlock */
-        switch (st) {
-            case gstystack:
-            case gstyblocked:
-                return gstyblocked;
-            case gstyindir:
-                record = GS_REMOVE_INDIRECTION(record);
-                break;
-            default:
-                return gstyindir;
+    lock(&lfield->lock);
+    st = lfield->state;
+    lfield->state = gslfield_evaluating;
+    unlock(&lfield->lock);
+
+    switch (st) {
+        case gslfield_field: {
+            gstypecode recst;
+            gsvalue vrecord;
+
+            vrecord = lfield->f.record;
+        again:
+            recst = GS_SLOW_EVALUATE(vrecord); /* §tODO Deadlock */
+            switch (recst) {
+                case gstystack:
+                case gstyblocked:
+                    lock(&lfield->lock);
+                    lfield->state = gslfield_field;
+                    lfield->f.record = vrecord;
+                    unlock(&lfield->lock);
+                    return gstyblocked;
+                case gstywhnf: {
+                    struct gsrecord *record;
+
+                    record = (struct gsrecord *)vrecord;
+                    lock(&lfield->lock);
+                    lfield->state = gslfield_indirection;
+                    lfield->i.dest = record->fields[lfield->f.fieldno];
+                    unlock(&lfield->lock);
+                    return gstyindir;
+                }
+                case gstyindir:
+                    vrecord = GS_REMOVE_INDIRECTION(vrecord);
+                    goto again;
+                case gstyerr:
+                case gstyimplerr:
+                    lock(&lfield->lock);
+                    lfield->state = gslfield_indirection;
+                    lfield->i.dest = vrecord;
+                    unlock(&lfield->lock);
+                    return gstyindir;
+                default:
+                    lock(&lfield->lock);
+                    lfield->state = gslfield_indirection;
+                    lfield->i.dest = (gsvalue)gsunimpl(__FILE__, __LINE__, lfield->pos, "gs_lfield_eval: state of record is %d", recst);
+                    unlock(&lfield->lock);
+                    return gstyindir;
+            }
         }
+        case gslfield_indirection:
+            lock(&lfield->lock);
+            lfield->state = gslfield_indirection;
+            unlock(&lfield->lock);
+            return gstyindir;
+        default:
+            lock(&lfield->lock);
+            lfield->state = gslfield_indirection;
+            lfield->i.dest = (gsvalue)gsunimpl(__FILE__, __LINE__, lfield->pos, "gs_lfield_eval: state of lfield is %d", st);
+            unlock(&lfield->lock);
+            return gstyindir;
     }
 }
 
@@ -488,36 +550,11 @@ static
 gsvalue
 gs_lfield_indir(gsvalue v)
 {
-    gstypecode st;
     struct gslfield *lfield;
-    gsvalue vrecord;
 
     lfield = (struct gslfield *)v;
 
-    vrecord = lfield->record;
-    for (;;) {
-        st = GS_SLOW_EVALUATE(vrecord); /* §tODO Deadlock */
-        switch (st) {
-            case gstystack:
-                return (gsvalue)gsunimpl(__FILE__, __LINE__, lfield->pos, "gs_lfield_indir: Got state 'stack' even though we should only be called for indirections", st);
-            case gstyblocked:
-                return (gsvalue)gsunimpl(__FILE__, __LINE__, lfield->pos, "gs_lfield_indir: Got state 'blocked' even though we should only be called for indirections", st);
-            case gstywhnf: {
-                struct gsrecord *record;
-
-                record = (struct gsrecord *)vrecord;
-                return record->fields[lfield->fieldno];
-            }
-            case gstyindir:
-                vrecord = GS_REMOVE_INDIRECTION(vrecord);
-                break;
-            case gstyerr:
-            case gstyimplerr:
-                return vrecord;
-            default:
-                return (gsvalue)gsunimpl(__FILE__, __LINE__, lfield->pos, "gs_lfield_indir: st = %d (could also be missing in gs_lfield_eval)", st);
-        }
-    }
+    return lfield->i.dest;
 }
 
 /* §section Constructors */
