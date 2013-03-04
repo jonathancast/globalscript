@@ -16,6 +16,7 @@ static gsvalue ibio_channel_remove_indir(gsvalue);
 static struct gs_block_class ibio_channel_segment_descr = {
     /* evaluator = */ ibio_channel_eval,
     /* indirection_dereferencer = */ ibio_channel_remove_indir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "IBIO Channels",
 };
 static void *ibio_channel_segment_nursury;

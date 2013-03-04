@@ -70,6 +70,7 @@ static struct ibio_read_thread_queue {
 static struct gs_block_class ibio_read_thread_queue_descr = {
     /* evaluator = */ gswhnfeval,
     /* indirection_dereferencer = */ gswhnfindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "IBIO Read Thread Queue",
 };
 static void *ibio_read_thread_queue_nursury;
@@ -497,6 +498,7 @@ struct ibio_read_blocking {
 static struct gs_block_class ibio_read_blocking_class = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "IBIO Read Blocking Queue Link",
 };
 static void *ibio_read_blocking_nursury;
@@ -794,6 +796,7 @@ struct ibio_thread_to_iport_link {
 static struct gs_block_class ibio_thread_to_iport_link_descr = {
     /* evaluator = */ gswhnfeval,
     /* indirection_dereferencer = */ gswhnfindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "IBIO Oports",
 };
 static void *ibio_thread_to_iport_link_nursury;
@@ -844,6 +847,7 @@ ibio_iport_unlink_from_thread(struct api_thread *thread, struct ibio_iport *ipor
 static struct gs_block_class ibio_iport_segment_descr = {
     /* evaluator = */ gswhnfeval,
     /* indirection_dereferencer = */ gswhnfindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "IBIO iports",
 };
 static void *ibio_iport_segment_nursury;
@@ -881,6 +885,7 @@ ibio_alloc_iport(struct ibio_channel_segment *chan)
 static struct gs_block_class ibio_iport_read_buffer_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "IBIO Read Buffers",
 };
 static void *ibio_iport_read_buffer_nursury;

@@ -32,6 +32,7 @@ gsbio_sys_stat(char *filename)
 static struct gs_block_class uxio_dir_ichannel_desc = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Unix directory ichannels",
 };
 static void *uxio_dir_ichannel_nursury;

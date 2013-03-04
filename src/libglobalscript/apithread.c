@@ -19,6 +19,7 @@ static struct api_thread *api_add_thread(struct gsrpc_queue *, struct api_thread
 static struct gs_block_class api_thread_queue_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "API Thread Queue",
 };
 static void *api_thread_queue_nursury;
@@ -605,6 +606,7 @@ static void *api_code_segment_nursury;
 static struct gs_block_class api_code_segment_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "API code segments",
 };
 
@@ -650,6 +652,7 @@ static void *api_promise_segment_nursury;
 static struct gs_block_class api_promise_segment_descr = {
     /* evaluator = */ api_promise_eval,
     /* indirection_dereferencer = */ api_promise_dereference,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "API promises",
 };
 
@@ -783,6 +786,7 @@ struct api_abend_rpc {
 static struct gs_block_class api_thread_status_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "API Thread Status",
 };
 static void *api_thread_status_nursury;
@@ -939,6 +943,7 @@ api_thread_handle_prim_unit(struct api_thread *thread, struct gseprim *eprim, st
 static struct gs_block_class api_blocking_info_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "API Primitive Blocking/Restoring Data",
 };
 static void *api_blocking_info_nursury;

@@ -7,6 +7,7 @@
 static struct gs_block_class gsstringbuilder_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "String Builder Strings",
 };
 static void *gsstringbuilder_nursury;

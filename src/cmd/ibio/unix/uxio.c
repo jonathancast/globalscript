@@ -94,6 +94,7 @@ ibio_dir_refill(struct ibio_uxio *uxio, int fd, void *buf, long n)
 static struct gs_block_class ibio_uxio_descr ={
     /* evaluator = */ gswhnfeval,
     /* indirection_dereferencer = */ gswhnfindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Unix system call-level file I/O descriptors",
 };
 static void *ibio_uxio_nursury;

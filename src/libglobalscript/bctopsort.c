@@ -661,6 +661,7 @@ gsbc_preorder_update(struct gsbc_item_hash *preorders, struct gsbc_item item, ul
 static struct gs_block_class gsbc_hash_link_segment = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Byte-compiler hash links",
 };
 
@@ -748,6 +749,7 @@ gsbc_pop(struct gsbc_item_stack *pstack)
 static struct gs_block_class gsbc_scc_segment = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Byte-compiler SCCs",
 };
 
@@ -790,6 +792,7 @@ gsbc_item_empty(struct gsbc_item *pitem)
 struct gs_block_class gsbc_item_hash_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Byte compile item-keyed hashes",
 };
 

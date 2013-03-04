@@ -9,6 +9,7 @@
 static struct gs_block_class ibio_thread_data_descr = {
     /* evaluator = */ gswhnfeval,
     /* indirection_dereferencer = */ gswhnfindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "IBIO Thread Data",
 };
 static void *ibio_thread_data_nursury;

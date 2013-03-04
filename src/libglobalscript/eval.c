@@ -23,6 +23,16 @@ gsnoindir(gsvalue val)
     pos.lineno = __LINE__; return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsnoindir: %s", block->class->description);
 }
 
+gsvalue
+gsunimplgc(struct gsstringbuilder *err, gsvalue v)
+{
+    struct gs_blockdesc *block;
+
+    block = BLOCK_CONTAINING(v);
+    gsstring_builder_print(err, UNIMPL("GC %s"), block->class->description);
+    return 0;
+}
+
 gstypecode
 gsheapeval(gsvalue val)
 {
@@ -141,6 +151,7 @@ static gsvalue gsheapremove_indirections(gsvalue val);
 static struct gs_block_class gsheap_descr = {
     /* evaluator = */ gsheapeval,
     /* indirection_dereferencer = */ gsheapremove_indirections,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Global Script Heap",
 };
 static void *gsheap_nursury;
@@ -187,6 +198,7 @@ static gsvalue gserrorsindir(gsvalue);
 struct gs_block_class gserrors_descr = {
     /* evaluator = */ gserrorseval,
     /* indirection_dereferencer = */ gserrorsindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Erroneous Global Script Values",
 };
 static void *gserrors_nursury;
@@ -299,6 +311,7 @@ static gsvalue gsimplerrorsindir(gsvalue);
 struct gs_block_class gsimplementation_errors_descr = {
     /* evaluator = */ gsimplerrorseval,
     /* indirection_dereferencer = */ gsimplerrorsindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Global Script Implementation Errors",
 };
 static void *gsimplementation_errors_nursury;
@@ -369,6 +382,7 @@ gsisimplementation_failure_block(struct gs_blockdesc *p)
 struct gs_block_class gsbytecode_desc = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gswhnfindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Byte-code objects",
 };
 
@@ -385,6 +399,7 @@ gsreservebytecode(ulong sz)
 struct gs_block_class gsrecords_descr = {
     /* evaluator = */ gswhnfeval,
     /* indirection_dereferencer = */ gswhnfindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Global Script Records",
 };
 static void *gsrecords_nursury;
@@ -415,6 +430,7 @@ static gsvalue gs_lfield_indir(gsvalue);
 struct gs_block_class gslfields_descr = {
     /* evaluator = */ gs_lfield_eval,
     /* indirection_dereferencer = */ gs_lfield_indir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Global Script Records",
 };
 static void *gslfields_nursury;
@@ -509,6 +525,7 @@ gs_lfield_indir(gsvalue v)
 struct gs_block_class gsconstrs_descr = {
     /* evaluator = */ gswhnfeval,
     /* indirection_dereferencer = */ gswhnfindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "Global Script Constructors",
 };
 static void *gsconstrs_nursury;
@@ -536,6 +553,7 @@ gsisconstr_block(struct gs_blockdesc *p)
 struct gs_block_class gseprims_descr = {
     /* evaluator = */ gswhnfeval,
     /* indirection_dereferencer = */ gswhnfindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "API Primitives",
 };
 static void *gseprims_nursury;

@@ -154,6 +154,7 @@ ibio_dir_readsym(struct ibio_external_io *io, char *err, char *eerr, void *start
 static struct gs_block_class ibio_external_io_descr ={
     /* evaluator = */ gswhnfeval,
     /* indirection_dereferencer = */ gswhnfindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "External I/O descriptors",
 };
 static void *ibio_external_io_nursury;

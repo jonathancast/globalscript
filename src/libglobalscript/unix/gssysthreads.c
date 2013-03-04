@@ -13,6 +13,7 @@
 static struct gs_block_class gssys_stack_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "C call stack",
 };
 

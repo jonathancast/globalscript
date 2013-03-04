@@ -257,6 +257,7 @@ void *gsreserveheap(ulong);
 
 gstypecode gsnoeval(gsvalue);
 gsvalue gsnoindir(gsvalue);
+gsvalue gsunimplgc(struct gsstringbuilder *, gsvalue);
 
 gstypecode gsevalunboxed(gsvalue);
 
@@ -446,6 +447,7 @@ typedef struct gs_block_class {
     gstypecode (*evaluator)(gsvalue);
         /* §ccode{evaluator} mayn't return §ccode{gstythunk} */
     gsvalue (*indirection_dereferencer)(gsvalue);
+    gsvalue (*gc_trace)(struct gsstringbuilder *, gsvalue);
     char *description;
 } *registered_block_class;
 

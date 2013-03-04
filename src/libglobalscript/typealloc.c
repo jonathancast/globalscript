@@ -12,6 +12,7 @@
 static struct gs_block_class gstype_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* descrption = */ "GSBC Type Representation",
 };
 static void *gstype_nursury;
@@ -1393,6 +1394,7 @@ gskind_exponential_kind(struct gskind *base, struct gskind *exp)
 static struct gs_block_class gskind_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
     /* description = */ "GSBC Kind Representation",
 };
 static void *gskind_nursury;
