@@ -686,12 +686,13 @@ static
 struct gstype *
 gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
 {
+    static gsinterned_string gssymtydefinition;
     int i;
     struct gstype *res;
 
     if (res = gstype_compile_type_or_coercion_op(cl, p, gstype_compile_coercion_ops_worker)) {
         return res;
-    } else if (gssymeq(p->directive, gssymtypeop, ".tydefinition")) {
+    } else if (gssymceq(p->directive, gssymtydefinition, gssymtypeop, ".tydefinition")) {
         struct gstype_coerce_definition *defn;
         int numargs;
 
@@ -734,7 +735,9 @@ static
 struct gstype *
 gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p, struct gstype *(*next)(struct gstype_compile_type_ops_closure *, struct gsparsedline *))
 {
-    if (gssymeq(p->directive, gssymtypeop, ".tygvar")) {
+    static gsinterned_string gssymtygvar;
+
+    if (gssymceq(p->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
         int i;
 
         if (cl->nregs >= MAX_REGISTERS)
