@@ -342,13 +342,13 @@ static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_by
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
 /* Type free variables */
-static gsinterned_string gssymoptyfv;
+static gsinterned_string gssymoptygvar, gssymoptyfv;
 /* Type arguments */
 static gsinterned_string gssymoptyarg;
 /* Type allocations */
 static gsinterned_string gssymoptylet;
 /* Code/coercion/data free variables */
-static gsinterned_string gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv;
+static gsinterned_string gssymopsubcode, gssymopcogvar, gssymopgvar, gssymoprune, gssymopnatural, gssymopfv, gssymopefv;
 /* Data arguments */
 static gsinterned_string gssymoparg, gssymoplarg, gssymopexkarg, gssymopkarg, gssymopfkarg;
 /* Allocation */
@@ -359,6 +359,8 @@ static gsinterned_string gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, g
 static gsinterned_string gssymopyield, gssymopenter, gssymopubprim, gssymoplprim, gssymopundef;
 /* Branching */
 static gsinterned_string gssymopanalyze, gssymopdanalyze, gssymopcase, gssymopdefault;
+/* API */
+static gsinterned_string gssymopbind, gssymopbody;
 
 static
 int
@@ -380,7 +382,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     }
     pseg = item.pseg;
     for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
-        if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+        if (gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")) {
             if (cl.phase > phtygvars)
                 gsfatal_bad_input(p, "Too late to add type global variables");
             cl.phase = phtygvars;
@@ -405,7 +407,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
             ;
             cl.phase = phgvars;
             /* type erasure */
-        } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+        } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
             if (cl.phase > phgvars)
                 gsfatal_bad_input(p, "Too late to add global variables")
             ;
@@ -422,7 +424,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
             ;
             cl.size += sizeof(gsvalue);
             cl.nregs++;
-        } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+        } else if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
             if (cl.phase > phcode)
                 gsfatal_bad_input(p, "Too late to add sub-expressions")
             ;
@@ -497,7 +499,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
             } else {
                 cl.size += GS_SIZE_BYTECODE(0);
             }
-        } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
+        } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
             int creg;
             struct gsbc_code_item_type *cty;
 
@@ -517,7 +519,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
         } else if (gsbc_bytecode_size_cont_push_op(p, &cl)) {
         } else if (gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
             goto done;
-        } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
+        } else if (gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")) {
             int creg;
             struct gsbc_code_item_type *cty;
 
@@ -868,7 +870,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
 
     if (gssymceq((*pp)->directive, gssymopyield, gssymcodeop, ".yield")) {
         pcl->size += GS_SIZE_BYTECODE(1);
-    } else if (gssymeq((*pp)->directive, gssymcodeop, ".enter")) {
+    } else if (gssymceq((*pp)->directive, gssymopenter, gssymcodeop, ".enter")) {
         pcl->size += GS_SIZE_BYTECODE(1);
     } else if (gssymceq((*pp)->directive, gssymopubprim, gssymcodeop, ".ubprim")) {
         struct gsregistered_primset *prims;
@@ -1391,13 +1393,13 @@ static
 void
 gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco **bcos, int i, int n)
 {
-    static gsinterned_string gssymstrictcont, gssymubcasecont;
+    static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymeprog;
 
-    if (gssymeq(p->directive, gssymcodedirective, ".expr")) {
+    if (gssymceq(p->directive, gssymexpr, gssymcodedirective, ".expr")) {
         bcos[i]->tag = gsbc_expr;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
-    } else if (gssymeq(p->directive, gssymcodedirective, ".forcecont")) {
+    } else if (gssymceq(p->directive, gssymforcecont, gssymcodedirective, ".forcecont")) {
         bcos[i]->tag = gsbc_forcecont;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
@@ -1409,7 +1411,7 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
         bcos[i]->tag = gsbc_ubcasecont;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
-    } else if (gssymeq(p->directive, gssymcodedirective, ".eprog")) {
+    } else if (gssymceq(p->directive, gssymeprog, gssymcodedirective, ".eprog")) {
         bcos[i]->tag = gsbc_eprog;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_api_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
@@ -1479,7 +1481,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
-        } else if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+        } else if (gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)
                 gsfatal("%P: Too late to add type global variables", p->pos)
             ;
@@ -1493,7 +1495,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
         } else if (gsbc_byte_compile_type_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_type_let_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
-        } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+        } else if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
                 gsfatal("%P: Too late to add sub-expressions", p->pos)
             ;
@@ -2514,7 +2516,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
-        } else if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {
+        } else if (gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")) {
             if (cl.phase > rttygvars)
                 gsfatal("%P: Too late to add type global variables", p->pos)
             ;
@@ -2527,7 +2529,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             cl.ntyregs++;
         } else if (gsbc_byte_compile_type_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
-        } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+        } else if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
                 gsfatal("%P: Too late to add sub-expressions", p->pos)
             ;
@@ -2543,7 +2545,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             cl.nsubexprs++;
         } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
-        } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
+        } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
 
@@ -2576,7 +2578,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
 
             pcode = ACE_BIND_SKIP(pcode);
             cl.pout = (uchar *)pcode;
-        } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
+        } else if (gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
 
