@@ -12,7 +12,7 @@
 void
 gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gskind **kinds, int n)
 {
-    static gsinterned_string gssymtyintrprim, gssymtyelimprim;
+    static gsinterned_string gssymtyabstract, gssymtyexpr, gssymtydefinedprim, gssymtyapiprim, gssymtyintrprim, gssymtyelimprim;
 
     int i;
 
@@ -26,13 +26,13 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
                     struct gsparsedline *ptype;
 
                     ptype = item.v;
-                    if (gssymeq(ptype->directive, gssymtypedirective, ".tyabstract")) {
+                    if (gssymceq(ptype->directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
                         gsargcheck(ptype, 0, "Kind");
 
                         kinds[i] = gskind_compile(ptype->pos, ptype->arguments[0]);
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
-                    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyexpr")) {
+                    } else if (gssymceq(ptype->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")) {
                         if (ptype->numarguments > 0) {
                             kinds[i] = gskind_compile(ptype->pos, ptype->arguments[0]);
 
@@ -40,13 +40,13 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
                         } else {
                             kinds[i] = 0;
                         }
-                    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tydefinedprim")) {
+                    } else if (gssymceq(ptype->directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")) {
                         gsargcheck(ptype, 2, "Kind");
 
                         kinds[i] = gskind_compile(ptype->pos, ptype->arguments[2]);
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
-                    } else if (gssymeq(ptype->directive, gssymtypedirective, ".tyapiprim")) {
+                    } else if (gssymceq(ptype->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")) {
                         gsargcheck(ptype, 2, "Kind");
 
                         kinds[i] = gskind_compile(ptype->pos, ptype->arguments[2]);
@@ -873,7 +873,7 @@ static
 void
 gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
 {
-    static gsinterned_string gssymforcecont, gssymstrictcont, gssymubcasecont;
+    static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymeprog;
 
     struct gsparsedline *pcode;
     struct gsparsedfile_segment *pseg;
@@ -881,7 +881,7 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
     pseg = items[i].pseg;
     pcode = items[i].v;
 
-    if (gssymeq(pcode->directive, gssymcodedirective, ".expr")) {
+    if (gssymceq(pcode->directive, gssymexpr, gssymcodedirective, ".expr")) {
         struct gsbc_code_item_type *type;
 
         type = gsbc_typecheck_code_expr(symtable, &pseg, gsinput_next_line(&pseg, pcode));
@@ -901,7 +901,7 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
         type = gsbc_typecheck_ubcase_cont(symtable, pcode->pos, &pseg, gsinput_next_line(&pseg, pcode));
         gssymtable_set_code_type(symtable, pcode->label, type);
-    } else if (gssymeq(pcode->directive, gssymcodedirective, ".eprog")) {
+    } else if (gssymceq(pcode->directive, gssymeprog, gssymcodedirective, ".eprog")) {
         struct gsbc_code_item_type *type;
 
         if (pcode->numarguments < 1)
@@ -1627,7 +1627,7 @@ static
 struct gstype *
 gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparsedline **pp, struct gsparsedfile_segment **ppseg, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymundef, gssymenter, gssymubprim, gssymlprim, gssymanalyze, gssymdanalyze, gssymcase, gssymdefault;
+    static gsinterned_string gssymundef, gssymyield, gssymenter, gssymubprim, gssymlprim, gssymanalyze, gssymdanalyze, gssymcase, gssymdefault;
 
     int i;
 
@@ -1661,7 +1661,7 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
             kind = kind->args[0];
         }
         gstypes_kind_check_fail((*pp)->pos, kind, gskind_lifted_kind());
-    } else if (gssymeq((*pp)->directive, gssymcodeop, ".yield")) {
+    } else if (gssymceq((*pp)->directive, gssymyield, gssymcodeop, ".yield")) {
         int reg;
         struct gskind *kind;
 
@@ -2746,6 +2746,8 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
 {
+    static gsinterned_string gssymbind, gssymbody;
+
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
     int nbinds;
@@ -2764,7 +2766,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
-        } else if (gssymeq(p->directive, gssymcodeop, ".bind")) {
+        } else if (gssymceq(p->directive, gssymbind, gssymcodeop, ".bind")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
 
@@ -2791,7 +2793,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
 
             cl.nregs++;
             nbinds++;
-        } else if (gssymeq(p->directive, gssymcodeop, ".body")) {
+        } else if (gssymceq(p->directive, gssymbody, gssymcodeop, ".body")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
 
@@ -3941,12 +3943,14 @@ static
 void
 gstypes_type_check_coercion_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
 {
+    static gsinterned_string gssymtycoercion;
+
     struct gsparsedline *pcoercion;
     struct gsparsedfile_segment *pseg;
 
     pseg = items[i].pseg;
     pcoercion = items[i].v;
-    if (gssymeq(pcoercion->directive, gssymcoerciondirective, ".tycoercion")) {
+    if (gssymceq(pcoercion->directive, gssymtycoercion, gssymcoerciondirective, ".tycoercion")) {
         struct gsbc_coercion_type *type;
 
         type = gsbc_typecheck_coercion_expr(symtable, &pseg, gsinput_next_line(&pseg, pcoercion));
@@ -3968,6 +3972,8 @@ static
 struct gsbc_coercion_type *
 gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
+    static gsinterned_string gssymtygvar, gssymtylambda, gssymtyinvert, gssymtydefinition;
+
     enum {
         rttygvar,
         rttyarg,
@@ -3989,7 +3995,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
     nregs = nglobals = nargs = nconts = 0;
     regtype = rttygvar;
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymeq(p->directive, gssymcoercionop, ".tygvar")) {
+        if (gssymceq(p->directive, gssymtygvar, gssymcoercionop, ".tygvar")) {
             if (regtype > rttygvar)
                 gsfatal("%P: Too late to add type global variables", p->pos)
             ;
@@ -4005,7 +4011,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
             globaldefns[nglobals] = gssymtable_get_abstype(symtable, p->label);
             nregs++;
             nglobals++;
-        } else if (gssymeq(p->directive, gssymcoercionop, ".tylambda")) {
+        } else if (gssymceq(p->directive, gssymtylambda, gssymcoercionop, ".tylambda")) {
             struct gskind *kind;
 
             if (regtype > rttyarg)
@@ -4023,14 +4029,14 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
             arglines[nargs] = p;
             nregs++;
             nargs++;
-        } else if (gssymeq(p->directive, gssymcoercionop, ".tyinvert")) {
+        } else if (gssymceq(p->directive, gssymtyinvert, gssymcoercionop, ".tyinvert")) {
             regtype = rtcont;
             if (nconts >= MAX_NUM_REGISTERS)
                 gsfatal("%P: Too many continuations", p->pos)
             ;
             conts[nconts] = p;
             nconts++;
-        } else if (gssymeq(p->directive, gssymcoercionop, ".tydefinition")) {
+        } else if (gssymceq(p->directive, gssymtydefinition, gssymcoercionop, ".tydefinition")) {
             int reg, global;
 
             reg = gsbc_find_register(p, regs, nregs, p->arguments[0]);
@@ -4072,7 +4078,7 @@ have_type:
     while (nconts--) {
         p = conts[nconts];
 
-        if (gssymeq(p->directive, gssymcoercionop, ".tyinvert")) {
+        if (gssymceq(p->directive, gssymtyinvert, gssymcoercionop, ".tyinvert")) {
             struct gstype *tmp;
 
             tmp = source;
