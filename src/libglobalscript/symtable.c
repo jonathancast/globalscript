@@ -22,7 +22,7 @@ gssymeq(gsinterned_string sy0, gssymboltype ty, char *str)
 static ulong gshash_string(gssymboltype, char *);
 static gsinterned_string gsget_string(ulong, gssymboltype, char *);
 static gsinterned_string gsalloc_string(ulong, gssymboltype, char *);
-static void gsstore_string(ulong, gssymboltype, char *, gsinterned_string);
+static void gsstore_string(ulong, gsinterned_string);
 
 gsinterned_string
 gsintern_string(gssymboltype ty, char *nm)
@@ -37,7 +37,7 @@ gsintern_string(gssymboltype ty, char *nm)
     ;
 
     res = gsalloc_string(hash, ty, nm);
-    gsstore_string(hash, ty, nm, res);
+    gsstore_string(hash, res);
 
     return res;
 }
@@ -86,7 +86,7 @@ static struct gstring_hash_link *gsstring_alloc_hash_link(void);
 
 static
 void
-gsstore_string(ulong hash, gssymboltype ty, char *nm, gsinterned_string addr)
+gsstore_string(ulong hash, gsinterned_string addr)
 {
     ulong n;
     struct gstring_hash_link *p;
