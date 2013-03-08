@@ -61,6 +61,14 @@ gsbio_consume_stat(struct uxio_ichannel *ip)
     return gsbio_parse_stat(bufsize, buf);
 }
 
+static struct gs_block_class gsbio_dir = {
+    /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
+    /* description = */ "IBIO directory structures",
+};
+static void *gsbio_dir_nursury;
+
 struct gsbio_dir *
 gsbio_parse_stat(u16int bufsize, void *start)
 {
@@ -97,7 +105,7 @@ gsbio_parse_stat(u16int bufsize, void *start)
     buf += namesize;
 
     dir.size = sizeof(struct gsbio_dir) + namesize + 1;
-    res = gsbio_alloc_dir(dir.size);
+    res = gs_sys_block_suballoc(&gsbio_dir, &gsbio_dir_nursury, dir.size, sizeof(void*));
     resend = (uchar*)res + sizeof(struct gsbio_dir);
 
     memcpy(resend, name, namesize + 1);
@@ -112,52 +120,4 @@ gsbio_parse_stat(u16int bufsize, void *start)
     }
 
     return res;
-}
-
-void *gsbio_dir_nursury;
-
-struct gs_block_class gsbio_dir = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO directory structures",
-};
-
-struct gsbio_dir_segment {
-    struct gs_blockdesc desc; /* class = gsbio_dir */
-};
-
-static void gsbio_alloc_new_dir_block(void);
-
-static
-struct gsbio_dir *
-gsbio_alloc_dir(ulong size)
-{
-    struct gsbio_dir_segment *nursury_seg;
-    void *pres, *pnext;
-    if (!gsbio_dir_nursury)
-        gsbio_alloc_new_dir_block();
-
-    gsassert(__FILE__, __LINE__, size >= sizeof(struct gsbio_dir), "size smaller than reasonable for gsbio_dir (%x); should exceed %x", size, sizeof(struct gsbio_dir));
-    gsassert(__FILE__, __LINE__, size < UXIO_IO_BUFFER_SIZE, "size supsiciously large: %x", size);
-
-    nursury_seg = (struct gsbio_dir_segment *)BLOCK_CONTAINING(gsbio_dir_nursury);
-    pres = gsbio_dir_nursury;
-    pnext = (uchar*)pres + size;
-    if ((uchar*)pnext >= (uchar*)END_OF_BLOCK(nursury_seg))
-        gsbio_alloc_new_dir_block();
-    else
-        gsbio_dir_nursury = pnext;
-
-    return pres;
-}
-
-static
-void
-gsbio_alloc_new_dir_block()
-{
-    struct gsbio_dir_segment *nursury_seg;
-    nursury_seg = gs_sys_block_alloc(&gsbio_dir);
-    gsbio_dir_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
-    gsassert(__FILE__, __LINE__, !((uintptr)gsbio_dir_nursury % sizeof(gsvalue)), "gsbio_dir_nursury not gsvalue-aligned; check sizeof(struct gsbio_dir_nursury");
 }
