@@ -19,28 +19,30 @@ gssymeq(gsinterned_string sy0, gssymboltype ty, char *str)
 
 /* §section Interning Symbols */
 
-static gsinterned_string gsget_string(gssymboltype ty, char *nm);
-static gsinterned_string gsalloc_string(gssymboltype ty, char *nm);
-static void gsstore_string(gssymboltype ty, char *nm, gsinterned_string addr);
+static ulong gshash_string(gssymboltype, char *);
+static gsinterned_string gsget_string(ulong, gssymboltype, char *);
+static gsinterned_string gsalloc_string(ulong, gssymboltype, char *);
+static void gsstore_string(ulong, gssymboltype, char *, gsinterned_string);
 
 gsinterned_string
 gsintern_string(gssymboltype ty, char *nm)
 {
+    ulong hash;
     gsinterned_string res;
 
-    if (res = gsget_string(ty, nm))
+    hash = gshash_string(ty, nm);
+
+    if (res = gsget_string(hash, ty, nm))
         return res
     ;
 
-    res = gsalloc_string(ty, nm);
-    gsstore_string(ty, nm, res);
+    res = gsalloc_string(hash, ty, nm);
+    gsstore_string(hash, ty, nm, res);
 
     return res;
 }
 
 /* §subsection Internals */
-
-static ulong gshash_string();
 
 struct gstring_hash_link {
     gsinterned_string string;
@@ -57,13 +59,10 @@ static void gsstring_expand_hash_table(void);
 
 static
 gsinterned_string
-gsget_string(gssymboltype ty, char *nm)
+gsget_string(ulong hash, gssymboltype ty, char *nm)
 {
-    ulong hash;
     ulong n;
     struct gstring_hash_link *p;
-
-    hash = gshash_string(ty, nm);
 
     if (!string_num_buckets)
         gsstring_initialize_intern_hash()
@@ -87,9 +86,9 @@ static struct gstring_hash_link *gsstring_alloc_hash_link(void);
 
 static
 void
-gsstore_string(gssymboltype ty, char *nm, gsinterned_string addr)
+gsstore_string(ulong hash, gssymboltype ty, char *nm, gsinterned_string addr)
 {
-    ulong hash, n;
+    ulong n;
     struct gstring_hash_link *p;
 
     if (!string_num_buckets)
@@ -100,8 +99,6 @@ gsstore_string(gssymboltype ty, char *nm, gsinterned_string addr)
     if (string_hash_size > string_num_buckets >> 1)
         gsstring_expand_hash_table()
     ;
-
-    hash = gshash_string(ty, nm);
 
     n = hash % string_num_buckets;
     p = gsstring_alloc_hash_link();
@@ -229,7 +226,7 @@ struct string_block {
 };
 
 gsinterned_string
-gsalloc_string(gssymboltype ty, char *nm)
+gsalloc_string(ulong hash, gssymboltype ty, char *nm)
 {
     struct string_block *string_nursury_seg;
     gsinterned_string res;
