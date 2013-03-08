@@ -79,6 +79,19 @@ gs_sys_memory_exhausted(void)
     return res;
 }
 
+#define MAX_GS_SYS_GC_NUM_PRE_CALLBACKS 0x100
+static int gs_sys_gc_num_pre_callbacks;
+static gs_sys_gc_pre_callback *gs_sys_gc_pre_callbacks[MAX_GS_SYS_GC_NUM_PRE_CALLBACKS];
+
+void
+gs_sys_gc_pre_callback_register(gs_sys_gc_pre_callback *cb)
+{
+    if (gs_sys_gc_num_pre_callbacks >= MAX_GS_SYS_GC_NUM_PRE_CALLBACKS)
+        gswarning(UNIMPL("Out of gs_sys_gc_num_pre_callbacks"))
+    ;
+    gs_sys_gc_pre_callbacks[gs_sys_gc_num_pre_callbacks++] = cb;
+}
+
 #define GS_SPLIT_SEGMENT(i, ty, sz) \
     do { \
         if (gs_sys_num_segments >= GS_SYS_MAX_NUM_SEGMENTS) \

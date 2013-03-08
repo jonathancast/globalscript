@@ -473,6 +473,9 @@ void *gs_sys_block_suballoc(registered_block_class, void**, ulong, ulong);
 gsumemorysize gs_sys_memory_allocated_size(void);
 int gs_sys_memory_exhausted(void);
 
+typedef void gs_sys_gc_pre_callback(void);
+void gs_sys_gc_pre_callback_register(gs_sys_gc_pre_callback *);
+
 /* §section ACE */
 
 void ace_up(void);
