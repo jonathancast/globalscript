@@ -202,40 +202,6 @@ gsstring_expand_hash_table()
 
 /* §subsection Dynamic Allocation for Interning Hash Table Alist Entries */
 
-void *hash_link_nursury;
-
-static void gsalloc_new_hash_link_block(void);
-
-struct hash_link_block {
-    struct gs_blockdesc hdr;
-};
-
-static
-struct gstring_hash_link *
-gsstring_alloc_hash_link()
-{
-    struct hash_link_block *hash_link_nursury_seg;
-    struct gstring_hash_link *res;
-
-    if (!hash_link_nursury)
-        gsalloc_new_hash_link_block();
-
-    hash_link_nursury_seg = BLOCK_CONTAINING(hash_link_nursury);
-    if ((uchar*)END_OF_BLOCK(hash_link_nursury_seg) - (uchar*)hash_link_nursury < sizeof(struct gstring_hash_link)) {
-        gsalloc_new_hash_link_block();
-        hash_link_nursury_seg = BLOCK_CONTAINING(hash_link_nursury);
-    }
-    res = hash_link_nursury;
-
-    hash_link_nursury = res + 1;
-    if ((uintptr)hash_link_nursury % sizeof(void*))
-        hash_link_nursury = (uchar*)hash_link_nursury + sizeof(void*) - ((uintptr)hash_link_nursury % sizeof(void*));
-
-    if ((uchar*)hash_link_nursury >= (uchar*)END_OF_BLOCK(hash_link_nursury_seg))
-        hash_link_nursury = 0;
-
-    return res;
-}
 
 struct gs_block_class gshash_link_desc = {
     /* evaluator = */ gsnoeval,
@@ -243,16 +209,13 @@ struct gs_block_class gshash_link_desc = {
     /* gc_trace = */ gsunimplgc,
     /* description = */ "Hash alist link for interned symbol hash",
 };
+static void *gshash_link_nursury;
 
 static
-void
-gsalloc_new_hash_link_block()
+struct gstring_hash_link *
+gsstring_alloc_hash_link()
 {
-    struct hash_link_block *nursury_seg;
-
-    nursury_seg = gs_sys_block_alloc(&gshash_link_desc);
-    hash_link_nursury = (uchar*)nursury_seg + sizeof(*nursury_seg);
-    gsassert(__FILE__, __LINE__, !((uintptr)hash_link_nursury % sizeof(void*)), "hash_link_nursury not void*-aligned; check sizeof(struct string_block)");
+    return gs_sys_block_suballoc(&gshash_link_desc, &gshash_link_nursury, sizeof(struct gstring_hash_link), sizeof(void *));
 }
 
 /* §subsection Dynamic Allocation for Strings */
