@@ -112,6 +112,7 @@ typedef enum {
 
 typedef struct gsstring_value {
     ulong size;
+    ulong hash;
     gssymboltype type;
     char name[];
 } *gsinterned_string;
