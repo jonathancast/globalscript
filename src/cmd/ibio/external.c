@@ -151,14 +151,14 @@ ibio_dir_readsym(struct ibio_external_io *io, char *err, char *eerr, void *start
 
 /* §section Allocation */
 
-static struct gs_block_class ibio_external_io_descr ={
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "External I/O descriptors",
+static struct gs_sys_global_block_suballoc_info ibio_external_io_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "External I/O descriptors",
+    },
 };
-static void *ibio_external_io_nursury;
-static Lock ibio_external_io_lock;
 
 static
 struct ibio_external_io *
@@ -166,9 +166,7 @@ ibio_alloc_external_io(long sz, ibio_external_canread *canread, ibio_external_re
 {
     struct ibio_external_io *res;
 
-    lock(&ibio_external_io_lock);
-    res = gs_sys_block_suballoc(&ibio_external_io_descr, &ibio_external_io_nursury, sz, sizeof(void*));
-    unlock(&ibio_external_io_lock);
+    res = gs_sys_global_block_suballoc(&ibio_external_io_info, sz);
     res->canread = canread;
     res->readsym = readsym;
 
