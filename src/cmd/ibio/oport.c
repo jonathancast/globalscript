@@ -581,6 +581,8 @@ static struct gs_block_class ibio_oport_write_buffer_descr = {
 };
 static void *ibio_oport_write_buffer_nursury;
 static Lock ibio_oport_write_buffer_lock;
+static int ibio_oport_write_buffer_pre_gc_callback_registered;
+static gs_sys_gc_pre_callback ibio_oport_write_buffer_pre_gc_callback;
 
 static
 void
@@ -591,8 +593,17 @@ ibio_setup_oport_write_buffer(struct ibio_oport *oport)
 
     lock(&ibio_oport_write_buffer_lock);
     {
-        buf = gs_sys_block_suballoc(&ibio_oport_write_buffer_descr, &ibio_oport_write_buffer_nursury, 0x10, sizeof(uchar));
-        nursury_block = START_OF_BLOCK(buf);
+        if (ibio_oport_write_buffer_nursury) {
+            buf = ibio_oport_write_buffer_nursury;
+            nursury_block = BLOCK_CONTAINING(buf);
+        } else {
+            if (!ibio_oport_write_buffer_pre_gc_callback_registered) {
+                gs_sys_gc_pre_callback_register(ibio_oport_write_buffer_pre_gc_callback);
+                ibio_oport_write_buffer_pre_gc_callback_registered = 1;
+            }
+            nursury_block = gs_sys_block_alloc(&ibio_oport_write_buffer_descr);
+            buf = START_OF_BLOCK(nursury_block);
+        }
         bufbase = (uchar*)buf;
         if ((uintptr)bufbase % IBIO_WRITE_BUFFER_SIZE)
             bufbase = (uchar*)bufbase - ((uintptr)bufbase % IBIO_WRITE_BUFFER_SIZE)
@@ -609,4 +620,10 @@ ibio_setup_oport_write_buffer(struct ibio_oport *oport)
     oport->buf = buf;
     oport->bufend = buf;
     oport->bufextent = bufextent;
+}
+
+void
+ibio_oport_write_buffer_pre_gc_callback()
+{
+    ibio_oport_write_buffer_nursury = 0;
 }
