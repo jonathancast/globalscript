@@ -9,13 +9,14 @@
 #include "gstypealloc.h"
 #include "gstypecheck.h"
 
-static struct gs_block_class gstype_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* descrption = */ "GSBC Type Representation",
+static struct gs_sys_global_block_suballoc_info gstype_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* descrption = */ "GSBC Type Representation",
+    },
 };
-static void *gstype_nursury;
 
 static void *gstype_alloc(ulong);
 
@@ -1276,7 +1277,7 @@ static
 void *
 gstype_alloc(ulong size)
 {
-    return gs_sys_block_suballoc(&gstype_descr, &gstype_nursury, size, sizeof(void*));
+    return gs_sys_global_block_suballoc(&gstype_info, size);
 }
 
 #define MAX_STACK_SIZE 0x100
