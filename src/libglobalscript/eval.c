@@ -587,28 +587,23 @@ gsisconstr_block(struct gs_blockdesc *p)
 
 /* §section API Primitives */
 
-struct gs_block_class gseprims_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "API Primitives",
+static struct gs_sys_global_block_suballoc_info gseprims_alloc_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "API Primitives",
+    },
 };
-static void *gseprims_nursury;
-static Lock gseprims_lock;
 
 void *
 gsreserveeprims(ulong sz)
 {
-    void *res;
-
-    lock(&gseprims_lock);
-    res = gs_sys_block_suballoc(&gseprims_descr, &gseprims_nursury, sz, sizeof(gsinterned_string));
-    unlock(&gseprims_lock);
-    return res;
+    return gs_sys_global_block_suballoc(&gseprims_alloc_info, sz);
 }
 
 int
 gsiseprim_block(struct gs_blockdesc *p)
 {
-    return p->class == &gseprims_descr;
+    return p->class == &gseprims_alloc_info.descr;
 }
