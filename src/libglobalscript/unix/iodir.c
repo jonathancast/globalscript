@@ -29,26 +29,27 @@ gsbio_sys_stat(char *filename)
     return chan;
 }
 
-static struct gs_block_class uxio_dir_ichannel_desc = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Unix directory ichannels",
+static struct gs_sys_global_block_suballoc_info uxio_dir_ichannel_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Unix directory ichannels",
+    },
 };
-static void *uxio_dir_ichannel_nursury;
 
 struct uxio_dir_ichannel *
 gsbio_dir_iopen(char *filename, int omode)
 {
     struct uxio_dir_ichannel *res;
 
-    res = gs_sys_block_suballoc(&uxio_dir_ichannel_desc, &uxio_dir_ichannel_nursury, sizeof(*res), sizeof(res->udir));
+    res = gs_sys_global_block_suballoc(&uxio_dir_ichannel_info, sizeof(*res));
 
-    if (!(res->udir = gsbio_device_iopen(filename, omode)))
-        return 0;
+    if (!(res->udir = gsbio_device_iopen(filename, omode))) return 0;
 
     if (!(res->p9dir = gsbio_get_channel_for_external_io(res->udir->filename, -1, gsbio_ioread)))
-        return 0;
+        return 0
+    ;
 
     return res;
 }
