@@ -379,19 +379,19 @@ gsisimplementation_failure_block(struct gs_blockdesc *p)
 
 /* §section Byte Code */
 
-struct gs_block_class gsbytecode_desc = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Byte-code objects",
+struct gs_sys_global_block_suballoc_info gsbytecode_info = {
+    /* desc = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Byte-code objects",
+    },
 };
-
-void *gsbytecode_nursury;
 
 void *
 gsreservebytecode(ulong sz)
 {
-    return gs_sys_block_suballoc(&gsbytecode_desc, &gsbytecode_nursury, sz, sizeof(void*));
+    return gs_sys_global_block_suballoc(&gsbytecode_info, sz);
 }
 
 /* §section Records */
