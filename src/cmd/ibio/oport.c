@@ -148,7 +148,7 @@ ibio_oport_fdopen(int fd, char *err, char *eerr)
 
 /* §section Writing (from API thread) */
 
-static struct gs_block_class ibio_oport_segment_descr;
+static struct gs_sys_global_block_suballoc_info ibio_oport_segment_info;
 static void ibio_oport_link_to_thread(struct api_thread *, struct ibio_oport *);
 
 struct ibio_write_blocking {
@@ -190,7 +190,7 @@ ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, struct 
 
         /* §c{oportv} is a WHNF by the types */
         block = BLOCK_CONTAINING(oportv);
-        if (block->class != &ibio_oport_segment_descr) {
+        if (block->class != &ibio_oport_segment_info.descr) {
             api_abend(thread, "ibio_handle_prim_write: o is a %s not an oport", block->class->description);
             return api_st_error;
         }
@@ -538,14 +538,14 @@ ibio_oport_unlink_from_thread(struct api_thread *thread, struct ibio_oport *opor
 
 /* §section Allocation */
 
-static struct gs_block_class ibio_oport_segment_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO Oports",
+static struct gs_sys_global_block_suballoc_info ibio_oport_segment_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Oports",
+    },
 };
-static void *ibio_oport_segment_nursury;
-static Lock ibio_oport_segment_lock;
 
 static
 struct ibio_oport *
@@ -553,9 +553,7 @@ ibio_alloc_oport()
 {
     struct ibio_oport *res;
 
-    lock(&ibio_oport_segment_lock);
-    res = gs_sys_block_suballoc(&ibio_oport_segment_descr, &ibio_oport_segment_nursury, sizeof(*res), sizeof(void*));
-    unlock(&ibio_oport_segment_lock);
+    res = gs_sys_global_block_suballoc(&ibio_oport_segment_info, sizeof(*res));
 
     memset(&res->lock, 0, sizeof(res->lock));
     lock(&res->lock);
