@@ -68,14 +68,14 @@ gsbio_get_channel_for_external_io(char *filename, int fd, enum gsbio_iochannel_t
     return chan;
 }
 
-struct gs_block_class uxio_channel_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "UXIO Channels",
+static struct gs_sys_global_block_suballoc_info uxio_channel_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "UXIO Channels",
+    },
 };
-static void *uxio_channel_descr_nursury;
-static Lock uxio_channel_descr_lock;
 
 static
 struct uxio_ichannel *
@@ -83,9 +83,7 @@ gsbio_alloc_uxio_ichannel()
 {
     struct uxio_ichannel *res;
 
-    lock(&uxio_channel_descr_lock);
-    res = gs_sys_block_suballoc(&uxio_channel_descr, &uxio_channel_descr_nursury, sizeof(*res), sizeof(void*));
-    unlock(&uxio_channel_descr_lock);
+    res = gs_sys_global_block_suballoc(&uxio_channel_info, sizeof(*res));
 
     return res;
 }
