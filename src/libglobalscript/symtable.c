@@ -217,36 +217,25 @@ gsstring_alloc_hash_link()
 
 /* §subsection Dynamic Allocation for Strings */
 
-static void *string_nursury;
-
-static void gsalloc_new_string_block(void);
-
-struct string_block {
-    struct gs_blockdesc hdr;
+struct gs_block_class gsstring_desc = {
+    /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
+    /* description = */ "Interned strings",
 };
+static Lock gsstring_lock;
+static void *string_nursury;
 
 gsinterned_string
 gsalloc_string(ulong hash, gssymboltype ty, char *nm)
 {
-    struct string_block *string_nursury_seg;
     gsinterned_string res;
     ulong size;
 
-    if (!string_nursury)
-        gsalloc_new_string_block()
-    ;
-
     size = sizeof(*res) + strlen(nm) + 1;
-    if (size % sizeof(ulong))
-        size += sizeof(ulong) - (size % sizeof(ulong))
-    ;
-
-    string_nursury_seg = BLOCK_CONTAINING(string_nursury);
-    if ((uchar*)END_OF_BLOCK(string_nursury_seg) - (uchar*)string_nursury < size)
-        gsalloc_new_string_block()
-    ;
-
-    res = string_nursury;
+    lock(&gsstring_lock);
+    res = gs_sys_block_suballoc(&gsstring_desc, &string_nursury, size, sizeof(void*));
+    unlock(&gsstring_lock);
     res->size = size;
     res->hash = hash;
     res->type = ty;
@@ -255,22 +244,3 @@ gsalloc_string(ulong hash, gssymboltype ty, char *nm)
 
     return res;
 }
-
-struct gs_block_class gsstring_desc = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Interned strings",
-};
-
-static
-void
-gsalloc_new_string_block()
-{
-    struct string_block *nursury_seg;
-
-    nursury_seg = gs_sys_block_alloc(&gsstring_desc);
-    string_nursury = (uchar*)nursury_seg + sizeof(*nursury_seg);
-    gsassert(__FILE__, __LINE__, !((uintptr)string_nursury % sizeof(ulong)), "string_nursury not ulong-aligned; check sizeof(struct string_block)");
-}
-
