@@ -919,13 +919,14 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
 static struct gstype *gsbc_typecheck_check_api_statement_type(struct gspos, struct gstype *, gsinterned_string, gsinterned_string, int *);
 
-static struct gs_block_class gsbc_code_type_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Code item types",
+static struct gs_sys_global_block_suballoc_info gsbc_code_type_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Code item types",
+    },
 };
-static void *gsbc_code_type_nursury;
 
 enum gsbc_code_regtype {
     rttygvar,
@@ -2905,7 +2906,7 @@ gsbc_typecheck_alloc_code_item_type(int ntyfvs, int nfvs)
     end_of_fvtypes = end_of_fvs + nfvs * sizeof(struct gstype *);
     end_of_efv_bound = end_of_fvtypes + nfvs * sizeof(int);
 
-    res = gs_sys_block_suballoc(&gsbc_code_type_descr, &gsbc_code_type_nursury, end_of_efv_bound, sizeof(void *));
+    res = gs_sys_global_block_suballoc(&gsbc_code_type_info, end_of_efv_bound);
     res->tyfvs = (gsinterned_string*)((uchar*)res + end_of_res);
     res->tyfvkinds = (struct gskind **)((uchar*)res + end_of_tyfvs);
     res->fvs = (gsinterned_string*)((uchar*)res + end_of_tyfvkinds);
