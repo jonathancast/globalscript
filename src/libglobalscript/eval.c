@@ -148,18 +148,19 @@ gswhnfindir(gsvalue val)
 
 static gsvalue gsheapremove_indirections(gsvalue val);
 
-static struct gs_block_class gsheap_descr = {
-    /* evaluator = */ gsheapeval,
-    /* indirection_dereferencer = */ gsheapremove_indirections,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Global Script Heap",
+static struct gs_sys_global_block_suballoc_info gsheap_info = {
+    /* descr = */ {
+        /* evaluator = */ gsheapeval,
+        /* indirection_dereferencer = */ gsheapremove_indirections,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Global Script Heap",
+    },
 };
-static void *gsheap_nursury;
 
 void *
 gsreserveheap(ulong sz)
 {
-    return gs_sys_block_suballoc(&gsheap_descr, &gsheap_nursury, sz, sizeof(struct gsbco*));
+    return gs_sys_global_block_suballoc(&gsheap_info, sz);
 }
 
 static
@@ -189,7 +190,7 @@ gsheapremove_indirections(gsvalue val)
 int
 gsisheap_block(struct gs_blockdesc *p)
 {
-    return p->class == &gsheap_descr;
+    return p->class == &gsheap_info.descr;
 }
 
 static gstypecode gserrorseval(gsvalue);
