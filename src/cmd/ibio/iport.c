@@ -793,14 +793,14 @@ struct ibio_thread_to_iport_link {
     struct ibio_iport *iport;
 };
 
-static struct gs_block_class ibio_thread_to_iport_link_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO Oports",
+static struct gs_sys_global_block_suballoc_info ibio_thread_to_iport_link_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Oports",
+    },
 };
-static void *ibio_thread_to_iport_link_nursury;
-static Lock ibio_thread_to_iport_link_lock;
 
 static
 void
@@ -811,9 +811,7 @@ ibio_iport_link_to_thread(struct api_thread *thread, struct ibio_iport *iport)
 
     data = api_thread_client_data(thread);
 
-    lock(&ibio_thread_to_iport_link_lock);
-    link = gs_sys_block_suballoc(&ibio_thread_to_iport_link_descr, &ibio_thread_to_iport_link_nursury, sizeof(*link), sizeof(void*));
-    unlock(&ibio_thread_to_iport_link_lock);
+    link = gs_sys_global_block_suballoc(&ibio_thread_to_iport_link_info, sizeof(*link));
 
     link->next = data->reading_from_iport;
     link->iport = iport;
