@@ -23,11 +23,13 @@ gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
     gsparsedfile *pres;
 
     if (!parsed_file_nursury)
-        gsalloc_new_parsed_file_block();
+        gsalloc_new_parsed_file_block()
+    ;
 
     parsed_file_nursury_seg = BLOCK_CONTAINING(parsed_file_nursury);
     if ((uchar*)END_OF_BLOCK(parsed_file_nursury_seg) - (uchar*)parsed_file_nursury < sizeof(gsparsedfile))
-        gsalloc_new_parsed_file_block();
+        gsalloc_new_parsed_file_block()
+    ;
     pres = (gsparsedfile *)parsed_file_nursury;
     pres->size = sizeof(gsparsedfile);
     pres->name = gsintern_string(gssymfilename, filename);

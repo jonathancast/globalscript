@@ -7,8 +7,6 @@
 #include "iostat.h"
 #include "iomacros.h"
 
-static struct gsbio_dir *gsbio_alloc_dir(ulong size);
-
 struct gsbio_dir *
 gsbio_stat(char *filename)
 {
