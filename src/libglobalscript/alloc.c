@@ -4,8 +4,9 @@
 #include <libc.h>
 #include <libglobalscript.h>
 #include "gsalloc.h"
+#include "gsproc.h"
 
-static Lock gs_allocator_lock;
+Lock gs_allocator_lock;
 
 #define GS_SYS_MAX_NUM_SEGMENTS 5
 
@@ -18,6 +19,8 @@ static struct gs_sys_segment {
     } type;
     void *base;
 } gs_sys_segments[GS_SYS_MAX_NUM_SEGMENTS];
+static int gs_sys_gc_num_procs_waiting;
+int gs_sys_num_procs = 1;
 
 void
 gs_sys_memory_init(void)

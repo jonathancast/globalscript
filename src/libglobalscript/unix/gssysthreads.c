@@ -10,6 +10,8 @@
 
 #include <libglobalscript.h>
 
+#include "../gsproc.h"
+
 static struct gs_block_class gssys_stack_descr = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
@@ -65,7 +67,16 @@ gsthread_pool_main(void *arg)
 {
     struct gsthread_pool_descr *pdescr;
 
+    lock(&gs_allocator_lock);
+    gs_sys_num_procs++;
+    unlock(&gs_allocator_lock);
+
     pdescr = (struct gsthread_pool_descr *)arg;
     pdescr->fn(pdescr->arg);
+
+    lock(&gs_allocator_lock);
+    gs_sys_num_procs--;
+    unlock(&gs_allocator_lock);
+
     return 0;
 }

@@ -71,7 +71,7 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 gsmain.$O: gsinputfile.h gssetup.h ace.h
 load.$O: gsinputalloc.h gsinputfile.h gsbytecompile.h gstopsort.h gstypealloc.h gstypecheck.h gstypecheck.h ace.h
 inputalloc.$O: gsinputfile.h gsinputalloc.h
-alloc.$O: gsalloc.h
+alloc.$O: gsalloc.h gsproc.h
 eval.$O: gsheap.h gsinputfile.h ace.h
 ace.$O: gsheap.h gsbytecode.h ace.h
 apithread.$O: gsbytecode.h api.h
@@ -91,6 +91,7 @@ iochan.$O: iofile.h $SYSTEM/iosysconstants.h iomacros.h
 iostat.$O: $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h
 unix/iodir.$O: iofile.h iostat.h iomacros.h unix/iodir.h
 unix/ioenv.$O: unix/iosysconstants.h iofile.h
+unix/gssysthreads.$O: gsproc.h
 
 all install:V: test $GLOBALSCRIPT/lib/$LIB
 
