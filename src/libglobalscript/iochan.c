@@ -63,12 +63,6 @@ gsbio_get_channel_for_external_io(char *filename, int fd, enum gsbio_iochannel_t
     return chan;
 }
 
-struct gs_block_class uxio_channel_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "UXIO Channels",
-};
 struct gs_block_class uxio_channel_buffer = {
     /* evaluator = */ gsnoeval,
     /* indirection_dereferencer = */ gsnoindir,
@@ -76,50 +70,34 @@ struct gs_block_class uxio_channel_buffer = {
     /* description = */ "UXIO Buffers",
 };
 
-struct uxio_channel_descr_segment {
-    struct gs_blockdesc desc; /* class = uxio_channel_descr */
-};
-
 struct uxio_channel_buffer_segment {
     struct gs_blockdesc desc; /* class = uxio_channel_buffer */
 };
 
-void *uxio_channel_descr_nursury;
+struct gs_block_class uxio_channel_descr = {
+    /* evaluator = */ gsnoeval,
+    /* indirection_dereferencer = */ gsnoindir,
+    /* gc_trace = */ gsunimplgc,
+    /* description = */ "UXIO Channels",
+};
+static void *uxio_channel_descr_nursury;
+static Lock uxio_channel_descr_lock;
+
 void *uxio_channel_buffer_nursury;
 
-static void gsbio_alloc_new_uxio_channel_block(void);
 static void gsbio_alloc_new_uxio_buffer_block(void);
 
 static
 struct uxio_ichannel *
 gsbio_alloc_uxio_ichannel()
 {
-    struct uxio_channel_descr_segment *nursury_seg;
-    struct uxio_ichannel *pres, *pnext;
+    struct uxio_ichannel *res;
 
-    if (!uxio_channel_descr_nursury)
-        gsbio_alloc_new_uxio_channel_block();
+    lock(&uxio_channel_descr_lock);
+    res = gs_sys_block_suballoc(&uxio_channel_descr, &uxio_channel_descr_nursury, sizeof(*res), sizeof(void*));
+    unlock(&uxio_channel_descr_lock);
 
-    nursury_seg = (struct uxio_channel_descr_segment *)BLOCK_CONTAINING(uxio_channel_descr_nursury);
-    pres = (struct uxio_ichannel *)uxio_channel_descr_nursury;
-    pnext = pres + 1;
-    if ((uchar*)pnext >= (uchar*)END_OF_BLOCK(nursury_seg))
-        gsbio_alloc_new_uxio_channel_block();
-    else
-        uxio_channel_descr_nursury = pnext;
-
-    return pres;
-}
-
-static
-void
-gsbio_alloc_new_uxio_channel_block()
-{
-    struct uxio_channel_descr_segment *nursury_seg;
-
-    nursury_seg = gs_sys_block_alloc(&uxio_channel_descr);
-    uxio_channel_descr_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
-    gsassert(__FILE__, __LINE__, !((uintptr)uxio_channel_descr_nursury % sizeof(gsvalue)), "uxio_channel_descr_nursury not gsvalue-aligned; check sizeof(struct uxio_channel_descr_segment");
+    return res;
 }
 
 static
