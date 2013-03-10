@@ -609,6 +609,8 @@ static struct gs_block_class api_code_segment_descr = {
     /* gc_trace = */ gsunimplgc,
     /* description = */ "API code segments",
 };
+static int api_code_segment_gc_pre_callback_registered;
+static gs_sys_gc_pre_callback api_code_segment_gc_pre_callback;
 
 static
 struct api_code_segment *
@@ -620,6 +622,10 @@ api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
 
     lock(&api_code_segment_lock);
     if (!api_code_segment_nursury) {
+        if (!api_code_segment_gc_pre_callback_registered) {
+            gs_sys_gc_pre_callback_register(api_code_segment_gc_pre_callback);
+            api_code_segment_gc_pre_callback_registered = 1;
+        }
         api_code_segment_nursury_seg = gs_sys_block_alloc(&api_code_segment_descr);
         api_code_segment_nursury = START_OF_BLOCK(api_code_segment_nursury_seg);
     } else {
@@ -642,6 +648,13 @@ api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
     ;
     unlock(&api_code_segment_lock);
     return res;
+}
+
+static
+void
+api_code_segment_gc_pre_callback()
+{
+    api_code_segment_nursury = 0;
 }
 
 static gstypecode api_promise_eval(gsvalue);
