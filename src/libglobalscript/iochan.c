@@ -22,16 +22,21 @@ gsbio_device_iopen(char *filename, int omode)
     if ((fd = open(filename, omode)) < 0)
         return 0;
 
-    nm = gs_sys_block_suballoc(
-        &uxio_filename_class,
-        &uxio_filename_nursury,
-        strlen(filename) + 1,
-        1
-    );
+    nm = gs_sys_global_block_suballoc(&uxio_filename_info, strlen(filename) + 1);
     strcpy(nm, filename);
 
     return gsbio_get_channel_for_external_io(nm, fd, gsbio_ioread);
 }
+
+struct gs_sys_global_block_suballoc_info uxio_filename_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "UXIO file names",
+    },
+    /* align = */ 1,
+};
 
 long
 gsbio_device_iclose(struct uxio_ichannel *chan)

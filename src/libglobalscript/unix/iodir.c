@@ -131,7 +131,7 @@ gsbio_unix_parse_directory(char *filename, void *p9buf, void *p9bufend, void **n
             ubuf = (uchar*)ubuf + dir->d_reclen;
             continue;
         }
-        nm = gs_sys_block_suballoc(&uxio_filename_class, &uxio_filename_nursury, strlen(filename) + strlen(dir->d_name) + 2, 1);
+        nm = gs_sys_global_block_suballoc(&uxio_filename_info, strlen(filename) + strlen(dir->d_name) + 2);
         sprint(nm, "%s/%s", filename, dir->d_name);
 
         if (stat(nm, &st) < 0) {

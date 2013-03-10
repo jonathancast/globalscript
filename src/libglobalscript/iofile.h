@@ -13,8 +13,7 @@ struct uxio_ichannel {
     vlong offset;
 };
 
-struct gs_block_class uxio_filename_class;
-void *uxio_filename_nursury;
+struct gs_sys_global_block_suballoc_info uxio_filename_info;
 
 struct uxio_ichannel *gsbio_get_channel_for_external_io(char *filename, int fd, enum gsbio_iochannel_type ty);
 
