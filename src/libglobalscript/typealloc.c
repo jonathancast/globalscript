@@ -1391,13 +1391,14 @@ gskind_exponential_kind(struct gskind *base, struct gskind *exp)
     return res;
 }
 
-static struct gs_block_class gskind_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "GSBC Kind Representation",
+static struct gs_sys_global_block_suballoc_info gskind_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "GSBC Kind Representation",
+    },
 };
-static void *gskind_nursury;
 
 static
 struct gskind *
@@ -1405,7 +1406,7 @@ gskind_alloc(int nargs)
 {
     struct gskind *res;
 
-    res = gs_sys_block_suballoc(&gskind_descr, &gskind_nursury, sizeof(*res) + nargs * sizeof(*res->args), sizeof(res->node));
+    res = gs_sys_global_block_suballoc(&gskind_info, sizeof(*res) + nargs * sizeof(*res->args));
 
     return res;
 }
