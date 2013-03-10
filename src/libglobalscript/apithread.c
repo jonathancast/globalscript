@@ -16,13 +16,14 @@ static void api_release_thread_queue(void);
 
 static struct api_thread *api_add_thread(struct gsrpc_queue *, struct api_thread_table *api_thread_table, void *, struct api_prim_table *, gsvalue);
 
-static struct gs_block_class api_thread_queue_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "API Thread Queue",
+static struct gs_sys_global_block_suballoc_info api_thread_queue_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "API Thread Queue",
+    },
 };
-static void *api_thread_queue_nursury;
 
 static struct api_thread *api_try_schedule_thread(struct api_thread *);
 
@@ -50,7 +51,7 @@ apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table 
         gsfatal("apisetupmainthread called twice")
     ;
 
-    api_thread_queue = gs_sys_block_suballoc(&api_thread_queue_descr, &api_thread_queue_nursury, sizeof(*api_thread_queue), sizeof(void*));
+    api_thread_queue = gs_sys_global_block_suballoc(&api_thread_queue_info, sizeof(*api_thread_queue));
     memset(api_thread_queue, 0, sizeof(*api_thread_queue));
 
     rpc_queue = gsqueue_alloc();
