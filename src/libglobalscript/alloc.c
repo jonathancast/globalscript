@@ -16,11 +16,13 @@ static struct gs_sys_segment {
         gs_sys_segment_break,
         gs_sys_segment_free,
         gs_sys_segment_allocated,
+        gs_sys_segment_gc_from_space,
     } type;
     void *base;
 } gs_sys_segments[GS_SYS_MAX_NUM_SEGMENTS];
 static int gs_sys_gc_num_procs_waiting;
 int gs_sys_num_procs = 1;
+static int gs_sys_in_gc;
 
 void
 gs_sys_memory_init(void)
@@ -43,11 +45,9 @@ gs_sys_memory_init(void)
     gs_sys_segments[0].base = bottom_of_data;
 }
 
-#define GS_SYS_SEGMENT_SIZE(i) \
-    ((i) < gs_sys_num_segments \
-        ? (uchar*)gs_sys_segments[(i) + 1].base - (uchar*)gs_sys_segments[i].base \
-        : (uchar*)GS_MAX_PTR - (uchar*)gs_sys_segments[i].base \
-    )
+#define GS_SYS_SEGMENT_TOP(i) ((i) < gs_sys_num_segments ? gs_sys_segments[(i) + 1].base : (void*)GS_MAX_PTR)
+
+#define GS_SYS_SEGMENT_SIZE(i) ((uchar*)GS_SYS_SEGMENT_TOP(i) - (uchar*)gs_sys_segments[i].base)
 
 #define GS_SYS_SEGMENT_IS(i, ty) \
     ((i) >= 0 && (i) < gs_sys_num_segments && gs_sys_segments[i].type == ty)
@@ -111,6 +111,25 @@ again:
         goto again;
     }
     unlock(&gs_allocator_lock);
+}
+
+int
+gs_sys_block_in_gc_from_space(void *p)
+{
+    int i;
+
+    if (!gs_sys_in_gc) return 0;
+    for (i = 0; i < gs_sys_num_segments; i++) {
+        if (
+            gs_sys_segments[i].type == gs_sys_segment_gc_from_space
+            && (uchar*)gs_sys_segments[i].base <= (uchar*)p
+            && (uchar*)p < (uchar*)GS_SYS_SEGMENT_TOP(i)
+        ) {
+            unlock(&gs_allocator_lock);
+            return 1;
+        }
+    }
+    return 0;
 }
 
 #define MAX_GS_SYS_GC_NUM_PRE_CALLBACKS 0x100

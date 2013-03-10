@@ -80,6 +80,8 @@ gsfinish_string_builder(struct gsstringbuilder *sb)
 {
     *sb->end++ = 0;
 
+    if (gs_sys_block_in_gc_from_space(BLOCK_CONTAINING(sb->end))) return;
+
     if (sb->extent - sb->end >= 0x100) {
         lock(&gsstringbuilder_lock);
         if (gsstringbuilder_nursury) {
