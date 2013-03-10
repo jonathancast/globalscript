@@ -195,24 +195,19 @@ gsisheap_block(struct gs_blockdesc *p)
 static gstypecode gserrorseval(gsvalue);
 static gsvalue gserrorsindir(gsvalue);
 
-struct gs_block_class gserrors_descr = {
-    /* evaluator = */ gserrorseval,
-    /* indirection_dereferencer = */ gserrorsindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Erroneous Global Script Values",
+static struct gs_sys_global_block_suballoc_info gserrors_info = {
+    /* descr = */ {
+        /* evaluator = */ gserrorseval,
+        /* indirection_dereferencer = */ gserrorsindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Erroneous Global Script Values",
+    },
 };
-static void *gserrors_nursury;
-static Lock gserrors_lock;
 
 void *
 gsreserveerrors(ulong sz)
 {
-    void *res;
-
-    lock(&gserrors_lock);
-    res = gs_sys_block_suballoc(&gserrors_descr, &gserrors_nursury, sz, sizeof(gsinterned_string));
-    unlock(&gserrors_lock);
-    return res;
+    return gs_sys_global_block_suballoc(&gserrors_info, sz);
 }
 
 static
@@ -300,7 +295,7 @@ gserror_format(char *buf, char *ebuf, struct gserror *p)
 int
 gsiserror_block(struct gs_blockdesc *p)
 {
-    return p->class == &gserrors_descr;
+    return p->class == &gserrors_info.descr;
 }
 
 /* §section Global Script Implementation Errors */
