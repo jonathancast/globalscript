@@ -559,30 +559,25 @@ gs_lfield_indir(gsvalue v)
 
 /* §section Constructors */
 
-struct gs_block_class gsconstrs_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Global Script Constructors",
+static struct gs_sys_global_block_suballoc_info gsconstrs_alloc_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Global Script Constructors",
+    },
 };
-static void *gsconstrs_nursury;
-static Lock gsconstrs_lock;
 
 void *
 gsreserveconstrs(ulong sz)
 {
-    void *res;
-
-    lock(&gsconstrs_lock);
-    res = gs_sys_block_suballoc(&gsconstrs_descr, &gsconstrs_nursury, sz, sizeof(gsinterned_string));
-    unlock(&gsconstrs_lock);
-    return res;
+    return gs_sys_global_block_suballoc(&gsconstrs_alloc_info, sz);
 }
 
 int
 gsisconstr_block(struct gs_blockdesc *p)
 {
-    return p->class == &gsconstrs_descr;
+    return p->class == &gsconstrs_alloc_info.descr;
 }
 
 /* §section API Primitives */
