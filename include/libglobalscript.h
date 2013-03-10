@@ -475,6 +475,7 @@ gsumemorysize gs_sys_memory_allocated_size(void);
 int gs_sys_memory_exhausted(void);
 
 int gs_sys_should_gc(void);
+void gs_sys_wait_for_gc(void);
 
 typedef void gs_sys_gc_pre_callback(void);
 void gs_sys_gc_pre_callback_register(gs_sys_gc_pre_callback *);

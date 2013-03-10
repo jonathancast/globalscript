@@ -96,6 +96,23 @@ gs_sys_should_gc()
     return res;
 }
 
+void
+gs_sys_wait_for_gc()
+{
+    lock(&gs_allocator_lock);
+    gs_sys_gc_num_procs_waiting++;
+    unlock(&gs_allocator_lock);
+
+again:
+    lock(&gs_allocator_lock);
+    if (gs_sys_gc_num_procs_waiting < gs_sys_num_procs) {
+        unlock(&gs_allocator_lock);
+        sleep(1);
+        goto again;
+    }
+    unlock(&gs_allocator_lock);
+}
+
 #define MAX_GS_SYS_GC_NUM_PRE_CALLBACKS 0x100
 static int gs_sys_gc_num_pre_callbacks;
 static gs_sys_gc_pre_callback *gs_sys_gc_pre_callbacks[MAX_GS_SYS_GC_NUM_PRE_CALLBACKS];
