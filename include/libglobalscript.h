@@ -474,6 +474,7 @@ struct gs_sys_global_block_suballoc_info {
     ulong align;
     Lock lock;
     void *nursury;
+    struct gs_sys_global_block_suballoc_info *next;
 };
 void *gs_sys_global_block_suballoc(struct gs_sys_global_block_suballoc_info *, ulong sz);
 /* ↓ Deprecated */

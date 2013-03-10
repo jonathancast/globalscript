@@ -278,6 +278,9 @@ gs_sys_block_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulon
     return res;
 }
 
+static struct gs_sys_global_block_suballoc_info *gs_sys_first_global_block_suballoc_info;
+static gs_sys_gc_pre_callback gs_sys_first_global_block_suballoc_gc_pre_callback;
+
 void *
 gs_sys_global_block_suballoc(struct gs_sys_global_block_suballoc_info *info, ulong sz)
 {
@@ -288,8 +291,32 @@ gs_sys_global_block_suballoc(struct gs_sys_global_block_suballoc_info *info, ulo
     if (!align) align = sizeof(void*);
 
     lock(&info->lock);
-    res = gs_sys_block_suballoc(&info->descr, &info->nursury, sz, align);
+        if (!info->next) {
+            lock(&gs_allocator_lock);
+            if (gs_sys_first_global_block_suballoc_info) {
+                info->next = gs_sys_first_global_block_suballoc_info->next;
+                gs_sys_first_global_block_suballoc_info->next = info;
+            } else {
+                info->next = gs_sys_first_global_block_suballoc_info = info;
+                gs_sys_gc_pre_callback_register(gs_sys_first_global_block_suballoc_gc_pre_callback);
+            }
+            unlock(&gs_allocator_lock);
+        }
+
+        res = gs_sys_block_suballoc(&info->descr, &info->nursury, sz, align);
     unlock(&info->lock);
 
     return res;
+}
+
+void
+gs_sys_first_global_block_suballoc_gc_pre_callback()
+{
+    struct gs_sys_global_block_suballoc_info *info;
+
+    info = gs_sys_first_global_block_suballoc_info;
+    do {
+        info->nursury = 0;
+        info = info->next;
+    } while (info != gs_sys_first_global_block_suballoc_info);
 }
