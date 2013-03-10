@@ -308,24 +308,19 @@ gsiserror_block(struct gs_blockdesc *p)
 static gstypecode gsimplerrorseval(gsvalue);
 static gsvalue gsimplerrorsindir(gsvalue);
 
-struct gs_block_class gsimplementation_errors_descr = {
-    /* evaluator = */ gsimplerrorseval,
-    /* indirection_dereferencer = */ gsimplerrorsindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Global Script Implementation Errors",
+static struct gs_sys_global_block_suballoc_info gsimplementation_errors_info = {
+    /* descr = */ {
+        /* evaluator = */ gsimplerrorseval,
+        /* indirection_dereferencer = */ gsimplerrorsindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Global Script Implementation Errors",
+    },
 };
-static void *gsimplementation_errors_nursury;
-static Lock gsimplementation_errors_lock;
 
 void *
 gsreserveimplementation_errors(ulong sz)
 {
-    void *res;
-
-    lock(&gsimplementation_errors_lock);
-    res = gs_sys_block_suballoc(&gsimplementation_errors_descr, &gsimplementation_errors_nursury, sz, sizeof(gsinterned_string));
-    unlock(&gsimplementation_errors_lock);
-    return res;
+    return gs_sys_global_block_suballoc(&gsimplementation_errors_info, sz);
 }
 
 static
@@ -374,7 +369,7 @@ gsimplementation_failure_format(char *buf, char *ebuf, struct gsimplementation_f
 int
 gsisimplementation_failure_block(struct gs_blockdesc *p)
 {
-    return p->class == &gsimplementation_errors_descr;
+    return p->class == &gsimplementation_errors_info.descr;
 }
 
 /* §section Byte Code */
