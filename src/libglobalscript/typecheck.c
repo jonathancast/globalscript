@@ -3960,13 +3960,14 @@ gstypes_type_check_coercion_item(struct gsfile_symtable *symtable, struct gsbc_i
     }
 }
 
-static struct gs_block_class gsbc_coercion_type_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Coercion types",
+static struct gs_sys_global_block_suballoc_info gsbc_coercion_type_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Coercion types",
+    },
 };
-void *gsbc_coercion_type_nursury;
 
 static
 struct gsbc_coercion_type *
@@ -4100,7 +4101,7 @@ have_type:
         dest = gstypes_compile_lambda(arglines[nargs]->pos, var, kind, dest);
     }
 
-    res = gs_sys_block_suballoc(&gsbc_coercion_type_descr, &gsbc_coercion_type_nursury, sizeof(*res), sizeof(void*));
+    res = gs_sys_global_block_suballoc(&gsbc_coercion_type_info, sizeof(*res));
     res->source = source;
     res->dest = dest;
 
