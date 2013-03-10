@@ -18,13 +18,14 @@ static struct ibio_write_thread_queue {
     struct ibio_oport *oports[IBIO_NUM_WRITE_THREADS];
 } *ibio_write_thread_queue;
 
-static struct gs_block_class ibio_write_thread_queue_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO Write Thread Queue",
+static struct gs_sys_global_block_suballoc_info ibio_write_thread_queue_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Write Thread Queue",
+    },
 };
-static void *ibio_write_thread_queue_nursury;
 
 struct ibio_write_thread_args {
 };
@@ -41,7 +42,7 @@ ibio_write_threads_init(char *err, char *eerr)
         gsfatal("ibio_write_threads_init called twice")
     ;
 
-    ibio_write_thread_queue = gs_sys_block_suballoc(&ibio_write_thread_queue_descr, &ibio_write_thread_queue_nursury, sizeof(*ibio_write_thread_queue), sizeof(void*));
+    ibio_write_thread_queue = gs_sys_global_block_suballoc(&ibio_write_thread_queue_info, sizeof(*ibio_write_thread_queue));
 
     memset(ibio_write_thread_queue, 0, sizeof(*ibio_write_thread_queue));
 
