@@ -67,13 +67,14 @@ static struct ibio_read_thread_queue {
     struct ibio_iport *iports[IBIO_NUM_READ_THREADS];
 } *ibio_read_thread_queue;
 
-static struct gs_block_class ibio_read_thread_queue_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO Read Thread Queue",
+static struct gs_sys_global_block_suballoc_info ibio_read_thread_queue_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Read Thread Queue",
+    },
 };
-static void *ibio_read_thread_queue_nursury;
 
 struct ibio_read_thread_args {
 };
@@ -90,7 +91,7 @@ ibio_read_threads_init(char *err, char *eerr)
         gsfatal("ibio_read_threads_init called twice")
     ;
 
-    ibio_read_thread_queue = gs_sys_block_suballoc(&ibio_read_thread_queue_descr, &ibio_read_thread_queue_nursury, sizeof(*ibio_read_thread_queue), sizeof(void*));
+    ibio_read_thread_queue = gs_sys_global_block_suballoc(&ibio_read_thread_queue_info, sizeof(*ibio_read_thread_queue));
 
     memset(ibio_read_thread_queue, 0, sizeof(*ibio_read_thread_queue));
 
