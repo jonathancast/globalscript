@@ -278,3 +278,18 @@ gs_sys_block_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulon
     return res;
 }
 
+void *
+gs_sys_global_block_suballoc(struct gs_sys_global_block_suballoc_info *info, ulong sz)
+{
+    void *res;
+    ulong align;
+
+    align = info->align;
+    if (!align) align = sizeof(void*);
+
+    lock(&info->lock);
+    res = gs_sys_block_suballoc(&info->descr, &info->nursury, sz, align);
+    unlock(&info->lock);
+
+    return res;
+}
