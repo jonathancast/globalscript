@@ -427,14 +427,14 @@ gsisrecord_block(struct gs_blockdesc *p)
 static gstypecode gs_lfield_eval(gsvalue);
 static gsvalue gs_lfield_indir(gsvalue);
 
-struct gs_block_class gslfields_descr = {
-    /* evaluator = */ gs_lfield_eval,
-    /* indirection_dereferencer = */ gs_lfield_indir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Global Script Records",
+struct gs_sys_global_block_suballoc_info gslfields_info = {
+    /* descr = */ {
+        /* evaluator = */ gs_lfield_eval,
+        /* indirection_dereferencer = */ gs_lfield_indir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Global Script Records",
+    },
 };
-static void *gslfields_nursury;
-static Lock gslfields_lock;
 
 enum gslfield_state {
     gslfield_field,
@@ -461,9 +461,7 @@ gslfield(struct gspos pos, int fieldno, gsvalue record)
 {
     struct gslfield *res;
 
-    lock(&gslfields_lock);
-    res = gs_sys_block_suballoc(&gslfields_descr, &gslfields_nursury, sizeof(*res), sizeof(gsvalue));
-    unlock(&gslfields_lock);
+    res = gs_sys_global_block_suballoc(&gslfields_info, sizeof(*res));
 
     memset(&res->lock, 0, sizeof(res->lock));
     res->pos = pos;
