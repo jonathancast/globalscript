@@ -796,14 +796,15 @@ struct api_abend_rpc {
     char status[];
 };
 
-static struct gs_block_class api_thread_status_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "API Thread Status",
+static struct gs_sys_global_block_suballoc_info api_thread_status_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "API Thread Status",
+    },
+    /* align = */ sizeof(char),
 };
-static void *api_thread_status_nursury;
-static Lock api_thread_status_lock;
 
 void
 api_abend(struct api_thread *thread, char *msg, ...)
@@ -816,9 +817,7 @@ api_abend(struct api_thread *thread, char *msg, ...)
     va_end(arg);
 
     thread->state = api_thread_st_terminating_on_abend;
-    lock(&api_thread_status_lock);
-    thread->status = gs_sys_block_suballoc(&api_thread_status_descr, &api_thread_status_nursury, strlen(buf) + 1, sizeof(char));
-    unlock(&api_thread_status_lock);
+    thread->status = gs_sys_global_block_suballoc(&api_thread_status_info, strlen(buf) + 1);
     strcpy(thread->status, buf);
 }
 
