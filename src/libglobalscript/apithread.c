@@ -953,23 +953,17 @@ api_thread_handle_prim_unit(struct api_thread *thread, struct gseprim *eprim, st
 
 /* §section API Primitive Blocking/Restoring Data */
 
-static struct gs_block_class api_blocking_info_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "API Primitive Blocking/Restoring Data",
+static struct gs_sys_global_block_suballoc_info api_blocking_info_info = {
+    /* descr = */{
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "API Primitive Blocking/Restoring Data",
+    },
 };
-static void *api_blocking_info_nursury;
-static Lock api_blocking_info_lock;
 
 void *
 api_blocking_alloc(ulong sz)
 {
-    struct api_prim_blocking *res;
-
-    lock(&api_blocking_info_lock);
-    res = gs_sys_block_suballoc(&api_blocking_info_descr, &api_blocking_info_nursury, sz, sizeof(void *));
-    unlock(&api_blocking_info_lock);
-
-    return res;
+    return gs_sys_global_block_suballoc(&api_blocking_info_info, sz);
 }
