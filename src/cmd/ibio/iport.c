@@ -844,14 +844,14 @@ ibio_iport_unlink_from_thread(struct api_thread *thread, struct ibio_iport *ipor
 
 /* §section Allocation */
 
-static struct gs_block_class ibio_iport_segment_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO iports",
+static struct gs_sys_global_block_suballoc_info ibio_iport_segment_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO iports",
+    },
 };
-static void *ibio_iport_segment_nursury;
-static Lock ibio_iport_segment_lock;
 
 static
 struct ibio_iport *
@@ -859,9 +859,7 @@ ibio_alloc_iport(struct ibio_channel_segment *chan)
 {
     struct ibio_iport *res;
 
-    lock(&ibio_iport_segment_lock);
-    res = gs_sys_block_suballoc(&ibio_iport_segment_descr, &ibio_iport_segment_nursury, sizeof(*res), sizeof(void*));
-    unlock(&ibio_iport_segment_lock);
+    res = gs_sys_global_block_suballoc(&ibio_iport_segment_info, sizeof(*res));
 
     memset(&res->lock, 0, sizeof(res->lock));
     lock(&res->lock);
