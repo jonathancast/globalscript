@@ -158,14 +158,14 @@ struct ibio_write_blocking {
     struct ibio_oport_write_blocker *blocking;
 };
 
-static struct gs_block_class ibio_write_blocking_class = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO Write Blocking Queue Link",
+static struct gs_sys_global_block_suballoc_info ibio_write_blocking_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Write Blocking Queue Link",
+    },
 };
-static void *ibio_write_blocking_nursury;
-static Lock ibio_write_blocking_lock;
 
 struct ibio_oport_write_blocker {
     struct ibio_oport_write_blocker *next;
@@ -227,11 +227,10 @@ ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, struct 
         *pv = gsemptyrecord(write->pos);
         return api_st_success;
     } else if (!write_blocking->blocking) {
-        lock(&ibio_write_blocking_lock);
-        write_blocking->blocking = *write_blocking->oport->waiting_to_write_end =
-            gs_sys_block_suballoc(&ibio_write_blocking_class, &ibio_write_blocking_nursury, sizeof(struct ibio_oport_write_blocker), sizeof(void*))
+        write_blocking->blocking =
+            *write_blocking->oport->waiting_to_write_end =
+                gs_sys_global_block_suballoc(&ibio_write_blocking_info, sizeof(struct ibio_oport_write_blocker))
         ;
-        unlock(&ibio_write_blocking_lock);
 
         write_blocking->oport->waiting_to_write_end = &write_blocking->blocking->next;
         write_blocking->blocking->next = 0;
