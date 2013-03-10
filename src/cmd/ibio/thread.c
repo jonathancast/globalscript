@@ -6,14 +6,14 @@
 
 #include "ibio.h"
 
-static struct gs_block_class ibio_thread_data_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO Thread Data",
+static struct gs_sys_global_block_suballoc_info ibio_thread_data_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Thread Data",
+    },
 };
-static void *ibio_thread_data_nursury;
-static Lock ibio_thread_data_lock;
 
 void *
 ibio_main_thread_alloc_data(struct gspos entrypos, int argc, char **argv)
@@ -22,9 +22,7 @@ ibio_main_thread_alloc_data(struct gspos entrypos, int argc, char **argv)
     gsvalue gsargv[0x100];
     int i;
 
-    lock(&ibio_thread_data_lock);
-    res = gs_sys_block_suballoc(&ibio_thread_data_descr, &ibio_thread_data_nursury, sizeof(struct ibio_thread_data), sizeof(void*));
-    unlock(&ibio_thread_data_lock);
+    res = gs_sys_global_block_suballoc(&ibio_thread_data_info, sizeof(struct ibio_thread_data));
 
     if (argc > sizeof(gsargv) / sizeof(*gsargv))
         gsfatal_unimpl(__FILE__, __LINE__, "Need to dynamically allocate gsargv")
