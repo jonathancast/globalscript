@@ -396,30 +396,25 @@ gsreservebytecode(ulong sz)
 
 /* §section Records */
 
-struct gs_block_class gsrecords_descr = {
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Global Script Records",
+static struct gs_sys_global_block_suballoc_info gsrecords_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Global Script Records",
+    },
 };
-static void *gsrecords_nursury;
-static Lock gsrecords_lock;
 
 void *
 gsreserverecords(ulong sz)
 {
-    void *res;
-
-    lock(&gsrecords_lock);
-    res = gs_sys_block_suballoc(&gsrecords_descr, &gsrecords_nursury, sz, sizeof(gsinterned_string));
-    unlock(&gsrecords_lock);
-    return res;
+    return gs_sys_global_block_suballoc(&gsrecords_info, sz);
 }
 
 int
 gsisrecord_block(struct gs_blockdesc *p)
 {
-    return p->class == &gsrecords_descr;
+    return p->class == &gsrecords_info.descr;
 }
 
 /* §section Field extraction thunks */
