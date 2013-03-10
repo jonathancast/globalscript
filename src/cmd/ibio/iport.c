@@ -890,6 +890,8 @@ static struct gs_block_class ibio_iport_read_buffer_descr = {
 };
 static void *ibio_iport_read_buffer_nursury;
 static Lock ibio_iport_read_buffer_lock;
+static int ibio_iport_read_buffer_pre_gc_callback_registered;
+static gs_sys_gc_pre_callback ibio_iport_read_buffer_pre_gc_callback;
 
 static
 void
@@ -900,8 +902,17 @@ ibio_setup_iport_read_buffer(struct ibio_iport *iport)
 
     lock(&ibio_iport_read_buffer_lock);
     {
-        buf = gs_sys_block_suballoc(&ibio_iport_read_buffer_descr, &ibio_iport_read_buffer_nursury, 0x10, sizeof(uchar));
-        nursury_block = START_OF_BLOCK(buf);
+        if (ibio_iport_read_buffer_nursury) {
+            buf = ibio_iport_read_buffer_nursury;
+            nursury_block = BLOCK_CONTAINING(buf);
+        } else {
+            if (!ibio_iport_read_buffer_pre_gc_callback_registered) {
+                gs_sys_gc_pre_callback_register(ibio_iport_read_buffer_pre_gc_callback);
+                ibio_iport_read_buffer_pre_gc_callback_registered = 1;
+            }
+            nursury_block = gs_sys_block_alloc(&ibio_iport_read_buffer_descr);
+            buf = START_OF_BLOCK(nursury_block);
+        }
         bufbase = (uchar*)buf;
         if ((uintptr)bufbase % IBIO_READ_BUFFER_SIZE)
             bufbase = (uchar*)bufbase - ((uintptr)bufbase % IBIO_READ_BUFFER_SIZE)
@@ -919,4 +930,11 @@ ibio_setup_iport_read_buffer(struct ibio_iport *iport)
     iport->bufstart = buf;
     iport->bufend = buf;
     iport->bufextent = bufextent;
+}
+
+static
+void
+ibio_iport_read_buffer_pre_gc_callback()
+{
+    ibio_iport_read_buffer_nursury = 0;
 }
