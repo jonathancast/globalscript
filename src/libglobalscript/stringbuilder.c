@@ -12,6 +12,8 @@ static struct gs_block_class gsstringbuilder_descr = {
 };
 static void *gsstringbuilder_nursury;
 static Lock gsstringbuilder_lock;
+static int gsstringbuilder_gc_pre_callback_registered;
+static gs_sys_gc_pre_callback gsstringbuilder_gc_pre_callback;
 
 struct gsstringbuilder
 gsreserve_string_builder()
@@ -25,6 +27,10 @@ gsreserve_string_builder()
         block = BLOCK_CONTAINING(gsstringbuilder_nursury);
         gsstringbuilder_nursury = 0;
     } else {
+        if (!gsstringbuilder_gc_pre_callback_registered) {
+            gs_sys_gc_pre_callback_register(gsstringbuilder_gc_pre_callback);
+            gsstringbuilder_gc_pre_callback_registered = 1;
+        }
         block = gs_sys_block_alloc(&gsstringbuilder_descr);
         res.start = START_OF_BLOCK(block);
     }
@@ -34,6 +40,13 @@ gsreserve_string_builder()
     res.extent = END_OF_BLOCK(block);
 
     return res;
+}
+
+static
+void
+gsstringbuilder_gc_pre_callback()
+{
+    gsstringbuilder_nursury = 0;
 }
 
 int
