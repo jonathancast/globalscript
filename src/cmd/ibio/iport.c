@@ -495,14 +495,14 @@ struct ibio_read_blocking {
     struct ibio_iport_read_blocker *blocking;
 };
 
-static struct gs_block_class ibio_read_blocking_class = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO Read Blocking Queue Link",
+static struct gs_sys_global_block_suballoc_info ibio_read_blocking_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Read Blocking Queue Link",
+    },
 };
-static void *ibio_read_blocking_nursury;
-static Lock ibio_read_blocking_lock;
 
 struct ibio_iport_read_blocker {
     struct ibio_iport_read_blocker *next;
@@ -554,9 +554,10 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
         *pv = res;
         return api_st_success;
     } else if (!read_blocking->blocking) {
-        lock(&ibio_read_blocking_lock);
-        read_blocking->blocking = *read_blocking->iport->waiting_to_read_end = gs_sys_block_suballoc(&ibio_read_blocking_class, &ibio_read_blocking_nursury, sizeof(struct ibio_iport_read_blocker), sizeof(void *));
-        unlock(&ibio_read_blocking_lock);
+        read_blocking->blocking =
+            *read_blocking->iport->waiting_to_read_end =
+                gs_sys_global_block_suballoc(&ibio_read_blocking_info, sizeof(struct ibio_iport_read_blocker))
+        ;
 
         read_blocking->iport->waiting_to_read_end = &read_blocking->blocking->next;
         read_blocking->blocking->next = 0;
