@@ -91,14 +91,14 @@ ibio_dir_refill(struct ibio_uxio *uxio, int fd, void *buf, long n)
 
 /* §section Allocation */
 
-static struct gs_block_class ibio_uxio_descr ={
-    /* evaluator = */ gswhnfeval,
-    /* indirection_dereferencer = */ gswhnfindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Unix system call-level file I/O descriptors",
+static struct gs_sys_global_block_suballoc_info ibio_uxio_info = {
+    /* descr = */ {
+        /* evaluator = */ gswhnfeval,
+        /* indirection_dereferencer = */ gswhnfindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Unix system call-level file I/O descriptors",
+    },
 };
-static void *ibio_uxio_nursury;
-static Lock ibio_uxio_lock;
 
 static
 struct ibio_uxio *
@@ -106,9 +106,7 @@ ibio_alloc_uxio(ulong sz, ibio_uxio_refill *refill)
 {
     struct ibio_uxio *res;
 
-    lock(&ibio_uxio_lock);
-    res = gs_sys_block_suballoc(&ibio_uxio_descr, &ibio_uxio_nursury, sz, sizeof(void*));
-    unlock(&ibio_uxio_lock);
+    res = gs_sys_global_block_suballoc(&ibio_uxio_info, sz);
     res->refill = refill;
 
     return res;
