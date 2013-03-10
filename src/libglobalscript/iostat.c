@@ -59,13 +59,14 @@ gsbio_consume_stat(struct uxio_ichannel *ip)
     return gsbio_parse_stat(bufsize, buf);
 }
 
-static struct gs_block_class gsbio_dir = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO directory structures",
+static struct gs_sys_global_block_suballoc_info gsbio_dir_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO directory structures",
+    },
 };
-static void *gsbio_dir_nursury;
 
 struct gsbio_dir *
 gsbio_parse_stat(u16int bufsize, void *start)
@@ -103,7 +104,7 @@ gsbio_parse_stat(u16int bufsize, void *start)
     buf += namesize;
 
     dir.size = sizeof(struct gsbio_dir) + namesize + 1;
-    res = gs_sys_block_suballoc(&gsbio_dir, &gsbio_dir_nursury, dir.size, sizeof(void*));
+    res = gs_sys_global_block_suballoc(&gsbio_dir_info, dir.size);
     resend = (uchar*)res + sizeof(struct gsbio_dir);
 
     memcpy(resend, name, namesize + 1);
