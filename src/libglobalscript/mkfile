@@ -21,7 +21,6 @@ OFILES=\
 	typealloc.$O \
 	typecheck.$O \
 	clienttypecheck.$O \
-	clienttypes.$O \
 	clientexpr.$O \
 	bctopsort.$O \
 	gsrpc.$O \
