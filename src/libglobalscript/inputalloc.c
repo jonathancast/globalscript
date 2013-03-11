@@ -6,31 +6,19 @@
 #include "gsinputfile.h"
 #include "gsinputalloc.h"
 
-struct input_block {
-    struct gs_blockdesc hdr;
-};
-
-static void *parsed_file_nursury;
-
-static void gsalloc_new_parsed_file_block(void);
+static struct gs_blockdesc *gsalloc_new_parsed_file_block(void);
 
 /* §section Allocating a New File */
 
 gsparsedfile *
 gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
 {
-    struct input_block *parsed_file_nursury_seg;
+    struct gs_blockdesc *parsed_file_nursury_seg;
     gsparsedfile *pres;
 
-    if (!parsed_file_nursury)
-        gsalloc_new_parsed_file_block()
-    ;
+    parsed_file_nursury_seg = gsalloc_new_parsed_file_block();
 
-    parsed_file_nursury_seg = BLOCK_CONTAINING(parsed_file_nursury);
-    if ((uchar*)END_OF_BLOCK(parsed_file_nursury_seg) - (uchar*)parsed_file_nursury < sizeof(gsparsedfile))
-        gsalloc_new_parsed_file_block()
-    ;
-    pres = (gsparsedfile *)parsed_file_nursury;
+    pres = (gsparsedfile *)START_OF_BLOCK(parsed_file_nursury_seg);
     pres->size = sizeof(gsparsedfile);
     pres->name = gsintern_string(gssymfilename, filename);
     pres->relname = gsintern_string(gssymfilename, relname);
@@ -40,9 +28,8 @@ gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
     pres->types = 0;
     pres->coercions = 0;
     pres->last_seg = &pres->first_seg;
-    pres->first_seg.extent = (uchar*)parsed_file_nursury + sizeof(gsparsedfile);
+    pres->first_seg.extent = (uchar*)pres + sizeof(gsparsedfile);
     pres->first_seg.next = 0;
-    parsed_file_nursury = 0;
 
     return pres;
 }
@@ -57,14 +44,10 @@ struct gs_block_class gsparsed_file_desc = {
 };
 
 static
-void
+struct gs_blockdesc *
 gsalloc_new_parsed_file_block()
 {
-    struct input_block *nursury_seg;
-
-    nursury_seg = gs_sys_block_alloc(&gsparsed_file_desc);
-    parsed_file_nursury = (void*)((uchar*)nursury_seg + sizeof(*nursury_seg));
-    gsassert(__FILE__, __LINE__, !((uintptr)parsed_file_nursury % sizeof(ulong)), "parsed_file_nursury not ulong-aligned; check sizeof(struct input_block)");
+    return gs_sys_block_alloc(&gsparsed_file_desc);
 }
 
 static void gsparsed_file_add_segment(gsparsedfile *parsedfile);
@@ -97,13 +80,13 @@ gsparsed_file_extend(gsparsedfile *parsedfile, ulong n)
 void
 gsparsed_file_add_segment(gsparsedfile *parsedfile)
 {
-    struct input_block *nursury_seg;
+    struct gs_blockdesc *nursury_seg;
     struct gsparsedfile_segment *new_segment;
 
     gsfatal("%s:%d: %s: Pretty sure multi-segment files don't actually work yet", __FILE__, __LINE__, parsedfile->name->name);
 
     nursury_seg = gs_sys_block_alloc(&gsparsed_file_desc);
-    new_segment = (void*)(uchar*)nursury_seg + sizeof(*nursury_seg);
+    new_segment = START_OF_BLOCK(nursury_seg);
     new_segment->extent = (uchar*)new_segment + sizeof(*new_segment);
     new_segment->next = 0;
 
