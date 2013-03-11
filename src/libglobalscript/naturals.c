@@ -69,7 +69,6 @@ struct gsregistered_primset gsnatural_prim_set = {
 
 /* §section Arithmetic Primitives */
 
-
 static
 int
 natural_prim_handle_plus(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args, gsvalue *pres)

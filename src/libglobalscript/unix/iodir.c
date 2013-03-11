@@ -8,7 +8,6 @@
 #include <unistd.h>
 #include <dirent.h>
 
-
 #include "iosysconstants.h"
 #include "../iofile.h"
 #include "../iostat.h"
