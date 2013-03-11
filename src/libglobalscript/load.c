@@ -138,10 +138,8 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
         struct gsfile_symtable *file_symtable;
         gsparsedfile *file;
 
-        if (!strcmp(dir->d.name, "."))
-            continue;
-        if (!strcmp(dir->d.name, ".."))
-            continue;
+        if (!strcmp(dir->d.name, ".")) continue;
+        if (!strcmp(dir->d.name, "..")) continue;
 
         newfilename = gs_sys_block_suballoc(
             &filename_desc,
