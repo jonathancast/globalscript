@@ -138,6 +138,9 @@ struct gs_sys_global_block_suballoc_info gsstringhash_info = {
     },
 };
 
+static int gsstring_intern_hash_gc_pre_callback_registered;
+static gs_sys_gc_pre_callback gsstring_intern_hash_gc_pre_callback;
+
 static
 void
 gsstring_initialize_intern_hash(void)
@@ -150,6 +153,18 @@ gsstring_initialize_intern_hash(void)
     for (p = gsstring_intern_hash; p < gsstring_intern_hash + gsstring_num_buckets; p++)
         *p = 0
     ;
+
+    if (!gsstring_intern_hash_gc_pre_callback_registered) {
+        gs_sys_gc_pre_callback_register(gsstring_intern_hash_gc_pre_callback);
+        gsstring_intern_hash_gc_pre_callback_registered = 1;
+    }
+}
+
+void
+gsstring_intern_hash_gc_pre_callback()
+{
+    gsstring_num_buckets = 0;
+    gsstring_intern_hash = 0;
 }
 
 static
