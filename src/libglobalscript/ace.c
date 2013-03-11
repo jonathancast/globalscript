@@ -1479,6 +1479,8 @@ static struct gs_block_class ace_thread_descr = {
     /* description = */ "ACE Thread",
 };
 static void *ace_thread_nursury;
+static int ace_thread_pre_gc_callback_registered;
+static gs_sys_gc_pre_callback ace_thread_pre_gc_callback;
 
 #define ACE_STACK_ARENA_SIZE (sizeof(gsvalue) * 0x400)
 
@@ -1490,8 +1492,17 @@ ace_thread_alloc()
     void *stackbase, *stackbot;
 
     lock(&ace_thread_lock);
-        thread = gs_sys_block_suballoc(&ace_thread_descr, &ace_thread_nursury, sizeof(*thread), sizeof(void*));
-        nursury_block = BLOCK_CONTAINING(thread);
+        if (ace_thread_nursury) {
+            thread = ace_thread_nursury;
+            nursury_block = BLOCK_CONTAINING(thread);
+        } else {
+            nursury_block = gs_sys_block_alloc(&ace_thread_descr);
+            thread = START_OF_BLOCK(nursury_block);
+            if (!ace_thread_pre_gc_callback_registered) {
+                gs_sys_gc_pre_callback_register(ace_thread_pre_gc_callback);
+                ace_thread_pre_gc_callback_registered = 1;
+            }
+        }
         stackbase = (uchar*)thread;
         if ((uintptr)stackbase % ACE_STACK_ARENA_SIZE)
             stackbase = (uchar*)stackbase - ((uintptr)stackbase % ACE_STACK_ARENA_SIZE)
@@ -1512,6 +1523,12 @@ ace_thread_alloc()
     thread->stacklimit = (uchar*)thread + sizeof(*thread);
 
     return thread;
+}
+
+void
+ace_thread_pre_gc_callback()
+{
+    ace_thread_nursury = 0;
 }
 
 /* §section §ags{.lprim} Blocking Allocation */
