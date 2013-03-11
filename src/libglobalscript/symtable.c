@@ -129,14 +129,14 @@ gshash_string(gssymboltype ty, char *nm)
 
 /* §subsection Dynamic Allocation for the Interning Hash Table */
 
-struct gs_block_class gsstringhash_desc = {
-    /* evaulator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Interning Hash",
+struct gs_sys_global_block_suballoc_info gsstringhash_info = {
+    /* descr = */ {
+        /* evaulator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Interning Hash",
+    },
 };
-
-void *gsstringhash_nursury;
 
 static
 void
@@ -145,12 +145,7 @@ gsstring_initialize_intern_hash(void)
     struct gstring_hash_link **p;
 
     string_num_buckets = 0x40;
-    string_intern_hash = gs_sys_block_suballoc(
-        &gsstringhash_desc,
-        &gsstringhash_nursury,
-        string_num_buckets * sizeof(*string_intern_hash),
-        sizeof(*string_intern_hash)
-    );
+    string_intern_hash = gs_sys_global_block_suballoc(&gsstringhash_info, string_num_buckets * sizeof(*string_intern_hash));
 
     for (p = string_intern_hash; p < string_intern_hash + string_num_buckets; p++)
         *p = 0
@@ -171,12 +166,7 @@ gsstring_expand_hash_table()
         gsfatal("%s:%d: Out of memory for intern hash", __FILE__, __LINE__)
     ;
 
-    new_hash = gs_sys_block_suballoc(
-        &gsstringhash_desc,
-        &gsstringhash_nursury,
-        newnumbuckets * sizeof(*string_intern_hash),
-        sizeof(*string_intern_hash)
-    );
+    new_hash = gs_sys_global_block_suballoc(&gsstringhash_info, newnumbuckets * sizeof(*string_intern_hash));
 
     for (p = new_hash; p < new_hash + newnumbuckets; p++)
         *p = 0
@@ -200,31 +190,32 @@ gsstring_expand_hash_table()
 /* §subsection Dynamic Allocation for Interning Hash Table Alist Entries */
 
 
-struct gs_block_class gshash_link_desc = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Hash alist link for interned symbol hash",
+struct gs_sys_global_block_suballoc_info gshash_link_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Hash alist link for interned symbol hash",
+    },
 };
-static void *gshash_link_nursury;
 
 static
 struct gstring_hash_link *
 gsstring_alloc_hash_link()
 {
-    return gs_sys_block_suballoc(&gshash_link_desc, &gshash_link_nursury, sizeof(struct gstring_hash_link), sizeof(void *));
+    return gs_sys_global_block_suballoc(&gshash_link_info, sizeof(struct gstring_hash_link));
 }
 
 /* §subsection Dynamic Allocation for Strings */
 
-struct gs_block_class gsstring_desc = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Interned strings",
+struct gs_sys_global_block_suballoc_info gsstring_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Interned strings",
+    },
 };
-static Lock gsstring_lock;
-static void *string_nursury;
 
 gsinterned_string
 gsalloc_string(ulong hash, gssymboltype ty, char *nm)
@@ -233,14 +224,11 @@ gsalloc_string(ulong hash, gssymboltype ty, char *nm)
     ulong size;
 
     size = sizeof(*res) + strlen(nm) + 1;
-    lock(&gsstring_lock);
-    res = gs_sys_block_suballoc(&gsstring_desc, &string_nursury, size, sizeof(void*));
-    unlock(&gsstring_lock);
+    res = gs_sys_global_block_suballoc(&gsstring_info, size);
     res->size = size;
     res->hash = hash;
     res->type = ty;
     strecpy(res->name, (char*)res + size, nm);
-    string_nursury = (uchar*)res + size;
 
     return res;
 }

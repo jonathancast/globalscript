@@ -658,14 +658,14 @@ gsbc_preorder_update(struct gsbc_item_hash *preorders, struct gsbc_item item, ul
     gsbc_item_hash_store(preorders, item, v);
 }
 
-static struct gs_block_class gsbc_hash_link_segment = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Byte-compiler hash links",
+static struct gs_sys_global_block_suballoc_info gsbc_hash_link_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Byte-compiler hash links",
+    },
 };
-
-static void *gsbc_hash_link_nursury;
 
 static
 void
@@ -689,12 +689,7 @@ gsbc_item_hash_store(struct gsbc_item_hash *phash, struct gsbc_item item, union 
         plastp = &p->next;
     }
 
-    *plastp = p = gs_sys_block_suballoc(
-        &gsbc_hash_link_segment,
-        &gsbc_hash_link_nursury,
-        sizeof(struct gsbc_item_hash_link),
-        sizeof(struct gsbc_item_hash_link*)
-    );
+    *plastp = p = gs_sys_global_block_suballoc(&gsbc_hash_link_info, sizeof(struct gsbc_item_hash_link));
 
     p->next = 0;
     p->key = item;
@@ -746,14 +741,14 @@ gsbc_pop(struct gsbc_item_stack *pstack)
     return pstack->items[--pstack->size];
 }
 
-static struct gs_block_class gsbc_scc_segment = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Byte-compiler SCCs",
+static struct gs_sys_global_block_suballoc_info gsbc_scc_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Byte-compiler SCCs",
+    },
 };
-
-static void *gsbc_scc_nursury;
 
 static
 struct gsbc_scc *
@@ -761,7 +756,7 @@ gsbc_alloc_scc(struct gsbc_item item)
 {
     struct gsbc_scc *res;
 
-    res = gs_sys_block_suballoc(&gsbc_scc_segment, &gsbc_scc_nursury, sizeof(*res), sizeof(void*));
+    res = gs_sys_global_block_suballoc(&gsbc_scc_info, sizeof(*res));
 
     res->item = item;
     res->next_item = 0;
@@ -789,14 +784,14 @@ gsbc_item_empty(struct gsbc_item *pitem)
     pitem->v = 0;
 }
 
-struct gs_block_class gsbc_item_hash_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Byte compile item-keyed hashes",
+struct gs_block_class gsbc_item_hash_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Byte compile item-keyed hashes",
+    },
 };
-
-void *gsbc_item_hash_nursury;
 
 #define GSBC_INITIAL_BUCKET_COUNT 32
 
@@ -810,7 +805,7 @@ gsbc_alloc_item_hash()
 
     alloc_size = sizeof(*res) + GSBC_INITIAL_BUCKET_COUNT * sizeof(res->buckets[0]);
 
-    res = gs_sys_block_suballoc(&gsbc_item_hash_descr, &gsbc_item_hash_nursury, alloc_size, sizeof(ulong));
+    res = gs_sys_global_block_suballoc(&gsbc_item_hash_info, alloc_size);
 
     res->size = 0;
     res->nbuckets = GSBC_INITIAL_BUCKET_COUNT;

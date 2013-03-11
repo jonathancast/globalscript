@@ -46,22 +46,21 @@ gsqueue_down(struct gsrpc_queue *q)
     unlock(&q->lock);
 }
 
-static struct gs_block_class gsrpc_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "RPC",
+static struct gs_sys_global_block_suballoc_info gsrpc_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "RPC",
+    },
 };
-static void *gsrpc_nursury;
 
 struct gsrpc *
 gsqueue_rpc_alloc(ulong sz)
 {
     struct gsrpc *res;
 
-    lock(&gsrpc_queue_memory_lock);
-    res = gs_sys_block_suballoc(&gsrpc_descr, &gsrpc_nursury, sz, sizeof(Lock));
-    unlock(&gsrpc_queue_memory_lock);
+    res = gs_sys_global_block_suballoc(&gsrpc_info, sz);
 
     memset(res, 0, sz);
 

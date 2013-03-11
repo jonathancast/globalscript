@@ -14,13 +14,14 @@ struct ace_thread_pool_args {
 
 static struct ace_thread_queue *ace_thread_queue;
 
-static struct gs_block_class ace_thread_queue_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "ACE Thread Queue",
+static struct gs_sys_global_block_suballoc_info ace_thread_queue_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "ACE Thread Queue",
+    },
 };
-static void *ace_thread_queue_nursury;
 
 static void ace_thread_pool_main(void *);
 
@@ -35,7 +36,7 @@ ace_init()
         gsfatal("ace_init called twice")
     ;
 
-    ace_thread_queue = gs_sys_block_suballoc(&ace_thread_queue_descr, &ace_thread_queue_nursury, sizeof(*ace_thread_queue), sizeof(void*));
+    ace_thread_queue = gs_sys_global_block_suballoc(&ace_thread_queue_info, sizeof(*ace_thread_queue));
 
     memset(ace_thread_queue, 0, sizeof(*ace_thread_queue));
 
