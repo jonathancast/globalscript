@@ -49,8 +49,8 @@ struct gstring_hash_link {
     struct gstring_hash_link *next;
 };
 
-static ulong string_num_buckets, string_hash_size;
-static struct gstring_hash_link **string_intern_hash;
+static ulong gsstring_num_buckets, gsstring_hash_size;
+static struct gstring_hash_link **gsstring_intern_hash;
 
 static void gsstring_initialize_intern_hash(void);
 static void gsstring_expand_hash_table(void);
@@ -64,12 +64,12 @@ gsget_string(ulong hash, gssymboltype ty, char *nm)
     ulong n;
     struct gstring_hash_link *p;
 
-    if (!string_num_buckets)
+    if (!gsstring_num_buckets)
         gsstring_initialize_intern_hash()
     ;
 
-    n = hash % string_num_buckets;
-    for (p = string_intern_hash[n]; p; p = p->next)
+    n = hash % gsstring_num_buckets;
+    for (p = gsstring_intern_hash[n]; p; p = p->next)
         if (
             p->string->type == ty
             && !strncmp(p->string->name, nm, ((char*)p->string + p->string->size) - p->string->name)
@@ -91,21 +91,21 @@ gsstore_string(gsinterned_string addr)
     ulong n;
     struct gstring_hash_link *p;
 
-    if (!string_num_buckets)
+    if (!gsstring_num_buckets)
         gsstring_initialize_intern_hash()
     ;
 
-    string_hash_size++;
-    if (string_hash_size > string_num_buckets >> 1)
+    gsstring_hash_size++;
+    if (gsstring_hash_size > gsstring_num_buckets >> 1)
         gsstring_expand_hash_table()
     ;
 
-    n = addr->hash % string_num_buckets;
+    n = addr->hash % gsstring_num_buckets;
     p = gsstring_alloc_hash_link();
     p->string = addr;
-    p->next = string_intern_hash[n];
+    p->next = gsstring_intern_hash[n];
 
-    string_intern_hash[n] = p;
+    gsstring_intern_hash[n] = p;
 }
 
 /* §subsection Common Functions */
@@ -144,10 +144,10 @@ gsstring_initialize_intern_hash(void)
 {
     struct gstring_hash_link **p;
 
-    string_num_buckets = 0x40;
-    string_intern_hash = gs_sys_global_block_suballoc(&gsstringhash_info, string_num_buckets * sizeof(*string_intern_hash));
+    gsstring_num_buckets = 0x40;
+    gsstring_intern_hash = gs_sys_global_block_suballoc(&gsstringhash_info, gsstring_num_buckets * sizeof(*gsstring_intern_hash));
 
-    for (p = string_intern_hash; p < string_intern_hash + string_num_buckets; p++)
+    for (p = gsstring_intern_hash; p < gsstring_intern_hash + gsstring_num_buckets; p++)
         *p = 0
     ;
 }
@@ -160,19 +160,19 @@ gsstring_expand_hash_table()
     struct gstring_hash_link **new_hash, **p, *p1, *p2;
     ulong hash, n;
 
-    newnumbuckets = 2*string_num_buckets;
+    newnumbuckets = 2*gsstring_num_buckets;
 
     if (newnumbuckets * sizeof(*new_hash) > BLOCK_SIZE)
         gsfatal("%s:%d: Out of memory for intern hash", __FILE__, __LINE__)
     ;
 
-    new_hash = gs_sys_global_block_suballoc(&gsstringhash_info, newnumbuckets * sizeof(*string_intern_hash));
+    new_hash = gs_sys_global_block_suballoc(&gsstringhash_info, newnumbuckets * sizeof(*gsstring_intern_hash));
 
     for (p = new_hash; p < new_hash + newnumbuckets; p++)
         *p = 0
     ;
 
-    for (p = string_intern_hash; p < string_intern_hash + string_num_buckets; p++) {
+    for (p = gsstring_intern_hash; p < gsstring_intern_hash + gsstring_num_buckets; p++) {
         for (p1 = *p; p1; p1 = p1->next) {
             hash = gshash_string(p1->string->type, p1->string->name);
             n = hash % newnumbuckets;
@@ -183,8 +183,8 @@ gsstring_expand_hash_table()
         }
     }
 
-    string_intern_hash = new_hash;
-    string_num_buckets = newnumbuckets;
+    gsstring_intern_hash = new_hash;
+    gsstring_num_buckets = newnumbuckets;
 }
 
 /* §subsection Dynamic Allocation for Interning Hash Table Alist Entries */
