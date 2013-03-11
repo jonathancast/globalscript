@@ -132,13 +132,16 @@ uxio_save_space(struct uxio_ichannel *chan, ulong sz)
     void *res;
     int i;
     if (!sz)
-        gswarning("Reserving 0 octets (bytes)? on channel %d; resulting pointer will not be vaid so this is probably a concern somebody should track down & look into", chan->fd);
+        gswarning("Reserving 0 octets (bytes)? on channel %d; resulting pointer will not be vaid so this is probably a concern somebody should track down & look into", chan->fd)
+    ;
     if (((uchar*)UXIO_END_OF_IO_BUFFER(chan->buf_beg) - (uchar*)chan->data_end) < sz)
-        gsfatal("Out of space during read on channel %d", chan->fd);
+        gsfatal("Out of space during read on channel %d", chan->fd)
+    ;
     res = chan->data_end;
     chan->data_end = (uchar*)chan->data_end + sz;
     for (i = 0; i < sz; i++)
-        *((uchar*)res + i) = "\xDE\xAD\xBE\xEF"[i % 4];
+        *((uchar*)res + i) = "\xDE\xAD\xBE\xEF"[i % 4]
+    ;
     return res;
 }
 
