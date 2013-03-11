@@ -1516,23 +1516,21 @@ ace_thread_alloc()
 
 /* §section §ags{.lprim} Blocking Allocation */
 
-static struct gs_block_class gslprim_blocking_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ ".prim blocking information",
+static struct gs_sys_global_block_suballoc_info gslprim_blocking_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ ".prim blocking information",
+    },
 };
-static void *gslprim_blocking_nursury;
-static Lock gslprim_blocking_lock;
 
 void *
 gslprim_blocking_alloc(long sz, gslprim_resumption_handler *resume)
 {
     struct gslprim_blocking *res;
 
-    lock(&gslprim_blocking_lock);
-    res = gs_sys_block_suballoc(&gslprim_blocking_descr, &gslprim_blocking_nursury, sz, sizeof(void*));
-    unlock(&gslprim_blocking_lock);
+    res = gs_sys_global_block_suballoc(&gslprim_blocking_info, sz);
 
     res->resume = resume;
 

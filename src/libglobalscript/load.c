@@ -104,13 +104,15 @@ gsadddir(char *filename, struct gsfile_symtable **psymtable)
 
 static gsparsedfile *gsreadfile(char *filename, char *relname, int skip_docs, int *, int is_ags, struct gsfile_symtable *symtable);
 
-static struct gs_block_class filename_desc = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Filenames for gsaddir_recursive",
+static struct gs_sys_global_block_suballoc_info filename_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Filenames for gsaddir_recursive",
+    },
+    /* align = */ 1,
 };
-static void *filename_nursury;
 
 static struct gs_sys_global_block_suballoc_info file_link_info = {
     /* descr = */ {
@@ -141,19 +143,9 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
         if (!strcmp(dir->d.name, ".")) continue;
         if (!strcmp(dir->d.name, "..")) continue;
 
-        newfilename = gs_sys_block_suballoc(
-            &filename_desc,
-            &filename_nursury,
-            strlen(filename) + 1 + strlen(dir->d.name) + 1,
-            1
-        );
+        newfilename = gs_sys_global_block_suballoc(&filename_info, strlen(filename) + 1 + strlen(dir->d.name) + 1);
         sprint(newfilename, "%s/%s", filename, dir->d.name);
-        newrelname = gs_sys_block_suballoc(
-            &filename_desc,
-            &filename_nursury,
-            strlen(relname) + 1 + strlen(dir->d.name) + 1,
-            1
-        );
+        newrelname = gs_sys_global_block_suballoc(&filename_info, strlen(relname) + 1 + strlen(dir->d.name) + 1);
         if (*relname)
             sprint(newrelname, "%s.%s", filename, dir->d.name)
         ; else
