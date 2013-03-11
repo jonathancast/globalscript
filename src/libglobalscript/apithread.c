@@ -661,13 +661,13 @@ api_code_segment_gc_pre_callback()
 static gstypecode api_promise_eval(gsvalue);
 static gsvalue api_promise_dereference(gsvalue);
 
-static Lock api_promise_segment_lock;
-static void *api_promise_segment_nursury;
-static struct gs_block_class api_promise_segment_descr = {
-    /* evaluator = */ api_promise_eval,
-    /* indirection_dereferencer = */ api_promise_dereference,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "API promises",
+static struct gs_sys_global_block_suballoc_info api_promise_info = {
+    /* descr = */ {
+        /* evaluator = */ api_promise_eval,
+        /* indirection_dereferencer = */ api_promise_dereference,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "API promises",
+    },
 };
 
 static
@@ -676,9 +676,7 @@ api_alloc_promise()
 {
     struct api_promise *res;
 
-    lock(&api_promise_segment_lock);
-    res = gs_sys_block_suballoc(&api_promise_segment_descr, &api_promise_segment_nursury, sizeof(*res), sizeof(void*));
-    unlock(&api_promise_segment_lock);
+    res = gs_sys_global_block_suballoc(&api_promise_info, sizeof(*res));
 
     memset(res, 0, sizeof(*res));
 
