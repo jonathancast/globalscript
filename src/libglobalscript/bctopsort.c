@@ -784,7 +784,7 @@ gsbc_item_empty(struct gsbc_item *pitem)
     pitem->v = 0;
 }
 
-struct gs_block_class gsbc_item_hash_info = {
+struct gs_sys_global_block_suballoc_info gsbc_item_hash_info = {
     /* descr = */ {
         /* evaluator = */ gsnoeval,
         /* indirection_dereferencer = */ gsnoindir,
