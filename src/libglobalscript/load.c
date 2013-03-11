@@ -112,13 +112,14 @@ static struct gs_block_class filename_desc = {
 };
 static void *filename_nursury;
 
-static struct gs_block_class file_link_desc = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "File list links for returning file list to gsaddir",
+static struct gs_sys_global_block_suballoc_info file_link_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "File list links for returning file list to gsaddir",
+    },
 };
-static void *file_link_nursury;
 
 static
 void
@@ -179,7 +180,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
                     continue;
                 } else {
                     gsappend_symtable(symtable, file_symtable);
-                    **ppend = gs_sys_block_suballoc(&file_link_desc, &file_link_nursury, sizeof(***ppend), sizeof(void*));
+                    **ppend = gs_sys_global_block_suballoc(&file_link_info, sizeof(***ppend));
                     (**ppend)->file = file;
                     (**ppend)->next = 0;
                     *ppend = &(**ppend)->next;
@@ -2036,14 +2037,14 @@ struct gsfile_symtable_item {
     struct gsfile_symtable_item *next;
 };
 
-static struct gs_block_class gssymtable_segment = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "Symbol tables",
+static struct gs_sys_global_block_suballoc_info gssymtable_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "Symbol tables",
+    },
 };
-
-static void *symtable_nursury;
 
 static struct gs_sys_global_block_suballoc_info gssymtable_item_info = {
     /* descr = */ {
@@ -2059,7 +2060,7 @@ gscreatesymtable(struct gsfile_symtable *prev_symtable)
 {
     struct gsfile_symtable *newsymtable;
 
-    newsymtable = gs_sys_block_suballoc(&gssymtable_segment, &symtable_nursury, sizeof(*newsymtable), sizeof(void*));
+    newsymtable = gs_sys_global_block_suballoc(&gssymtable_info, sizeof(*newsymtable));
 
     newsymtable->parent = prev_symtable;
     newsymtable->dataitems = 0;
