@@ -484,6 +484,7 @@ int gs_sys_memory_exhausted(void);
 
 int gs_sys_should_gc(void);
 void gs_sys_wait_for_gc(void);
+int gs_sys_start_gc(struct gsstringbuilder *);
 
 int gs_sys_block_in_gc_from_space(void *);
 

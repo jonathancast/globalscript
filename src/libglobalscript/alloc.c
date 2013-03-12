@@ -113,9 +113,37 @@ again:
     unlock(&gs_allocator_lock);
 }
 
+#define MAX_GS_SYS_GC_NUM_PRE_CALLBACKS 0x100
+static int gs_sys_gc_num_pre_callbacks;
+static gs_sys_gc_pre_callback *gs_sys_gc_pre_callbacks[MAX_GS_SYS_GC_NUM_PRE_CALLBACKS];
+
 #define MAX_GS_SYS_GC_NUM_ROOT_CALLBACKS 0x100
 static int gs_sys_gc_num_root_callbacks;
 static gs_sys_gc_root_callback *gs_sys_gc_root_callbacks[MAX_GS_SYS_GC_NUM_ROOT_CALLBACKS];
+
+int
+gs_sys_start_gc(struct gsstringbuilder *err)
+{
+    int i;
+
+    for (i = 0; i < gs_sys_gc_num_pre_callbacks; i++) gs_sys_gc_pre_callbacks[i]();
+
+    for (i = 0; i < gs_sys_num_segments; i++) {
+        if (gs_sys_segments[i].type == gs_sys_segment_allocated)
+            gs_sys_segments[i].type = gs_sys_segment_gc_from_space
+        ;
+    }
+
+    gs_sys_in_gc = 1;
+
+    for (i = 0; i < gs_sys_gc_num_root_callbacks; i++) {
+        if (gs_sys_gc_root_callbacks[i](err) < 0)
+            return -1
+        ;
+    }
+
+    return 0;
+}
 
 int
 gs_sys_block_in_gc_from_space(void *p)
@@ -135,10 +163,6 @@ gs_sys_block_in_gc_from_space(void *p)
     }
     return 0;
 }
-
-#define MAX_GS_SYS_GC_NUM_PRE_CALLBACKS 0x100
-static int gs_sys_gc_num_pre_callbacks;
-static gs_sys_gc_pre_callback *gs_sys_gc_pre_callbacks[MAX_GS_SYS_GC_NUM_PRE_CALLBACKS];
 
 void
 gs_sys_gc_pre_callback_register(gs_sys_gc_pre_callback *cb)
