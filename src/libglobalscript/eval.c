@@ -434,6 +434,55 @@ gsreservebytecode(ulong sz)
     return gs_sys_global_block_suballoc(&gsbytecode_info, sz);
 }
 
+struct gsbco_forward {
+    struct gsbco bco;
+    struct gsbco *dest;
+};
+
+int
+gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
+{
+    struct gsbco *bco, *newbco;
+    struct gsbco_forward *fwd;
+    void *pin;
+    int i;
+
+    bco = *ppbco;
+
+    if (bco->tag == gsbc_gcforward) {
+        gsstring_builder_print(err, UNIMPL("gs_gc_trace_bco: bco is a forwarding pointer"));
+        return -1;
+    }
+
+    newbco = gsreservebytecode(bco->size);
+    memcpy(newbco, bco, bco->size);
+
+    if (bco->size < sizeof(struct gsbco_forward)) {
+        gsstring_builder_print(err, UNIMPL("gs_gc_trace_bco: bco isn't large enough to store forwarding pointer"));
+        return -1;
+    }
+    bco->tag = gsbc_gcforward;
+    fwd = (struct gsbco_forward *)bco;
+    fwd->dest = newbco;
+
+    if (gs_gc_trace_pos(err, &newbco->pos) < 0) return -1;
+
+    pin = (uchar*)newbco + sizeof(struct gsbco);
+
+    for (i = 0; i < newbco->numsubexprs; i++) {
+        gsstring_builder_print(err, UNIMPL("gs_gc_trace_bco: trace subexprs"));
+        return -1;
+    }
+
+    for (i = 0; i < newbco->numglobals; i++) {
+        gsstring_builder_print(err, UNIMPL("gs_gc_trace_bco: trace globals"));
+        return -1;
+    }
+
+    *ppbco = newbco;
+    return 0;
+}
+
 /* §section Records */
 
 static struct gs_sys_global_block_suballoc_info gsrecords_info = {

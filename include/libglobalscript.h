@@ -305,11 +305,14 @@ struct gsbco {
         gsbc_strictcont,
         gsbc_ubcasecont,
         gsbc_eprog,
+        gsbc_gcforward,
     } tag;
     struct gspos pos;
     ulong size;
     ulong numglobals, numsubexprs, numfvs, numargs;
 };
+
+int gs_gc_trace_bco(struct gsstringbuilder *, struct gsbco **);
 
 struct gsapplication {
     struct gsheap_item hp;

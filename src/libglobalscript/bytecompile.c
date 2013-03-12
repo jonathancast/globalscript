@@ -306,6 +306,7 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     for (i = 0; i < n; i++) {
         if (items[i].type == gssymcodelable) {
             bcos[i] = (struct gsbco*)((uchar*)base + offsets[i]);
+            bcos[i]->size = i + 1 < n ? offsets[i + 1] - offsets[i] : total_size - offsets[i];
             gssymtable_set_code(symtable, items[i].v->label, bcos[i]);
         }
     }
