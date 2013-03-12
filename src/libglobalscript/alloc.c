@@ -154,6 +154,27 @@ gs_gc_trace_pos(struct gsstringbuilder *err, struct gspos *pos)
     return 0;
 }
 
+#define GS_SYS_GC_MAX_NUM_POST_CALLBACKS 0x100
+static int gs_sys_gc_num_post_callbacks;
+static gs_sys_gc_post_callback *gs_sys_gc_post_callbacks[GS_SYS_GC_MAX_NUM_POST_CALLBACKS];
+
+int
+gs_sys_finish_gc(struct gsstringbuilder *err)
+{
+    int i;
+
+    for (i = 0; i < gs_sys_gc_num_post_callbacks; i++)
+        if (gs_sys_gc_post_callbacks[i](err) < 0)
+            return -1
+    ;
+
+    lock(&gs_allocator_lock);
+    gs_sys_gc_num_procs_waiting = 0;
+    unlock(&gs_allocator_lock);
+
+    return 0;
+}
+
 int
 gs_sys_block_in_gc_from_space(void *p)
 {
