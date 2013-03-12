@@ -23,6 +23,7 @@ ibio_prim_external_io_handle_rune(struct ace_thread *thread, struct gspos pos, i
 
 static struct ibio_external_io *ibio_rune_io_value;
 static Lock ibio_rune_io_lock;
+static gs_sys_gc_root_callback ibio_rune_io_callback;
 
 static ibio_external_canread ibio_rune_canread;
 static ibio_external_readsym ibio_rune_readsym;
@@ -39,7 +40,17 @@ ibio_rune_io()
     ibio_rune_io_value = ibio_alloc_external_io(sizeof(*ibio_rune_io_value), ibio_rune_canread, ibio_rune_readsym);
 
     unlock(&ibio_rune_io_lock);
+
+    gs_sys_gc_root_callback_register(ibio_rune_io_callback);
+
     return ibio_rune_io_value;
+}
+
+int
+ibio_rune_io_callback(struct gsstringbuilder *err)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_rune_io_callback"));
+    return -1;
 }
 
 static
