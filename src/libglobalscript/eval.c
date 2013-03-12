@@ -564,7 +564,7 @@ struct gs_sys_global_block_suballoc_info gslfields_info = {
         /* evaluator = */ gs_lfield_eval,
         /* indirection_dereferencer = */ gs_lfield_indir,
         /* gc_trace = */ gsunimplgc,
-        /* description = */ "Global Script Records",
+        /* description = */ "Global Script Field Extraction Thunks",
     },
 };
 
