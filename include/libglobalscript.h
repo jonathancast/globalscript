@@ -491,6 +491,8 @@ int gs_sys_block_in_gc_from_space(void *);
 typedef void gs_sys_gc_pre_callback(void);
 void gs_sys_gc_pre_callback_register(gs_sys_gc_pre_callback *);
 
+typedef int gs_sys_gc_root_callback(struct gsstringbuilder *);
+
 /* §section ACE */
 
 void ace_up(void);

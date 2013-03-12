@@ -113,6 +113,10 @@ again:
     unlock(&gs_allocator_lock);
 }
 
+#define MAX_GS_SYS_GC_NUM_ROOT_CALLBACKS 0x100
+static int gs_sys_gc_num_root_callbacks;
+static gs_sys_gc_root_callback *gs_sys_gc_root_callbacks[MAX_GS_SYS_GC_NUM_ROOT_CALLBACKS];
+
 int
 gs_sys_block_in_gc_from_space(void *p)
 {
