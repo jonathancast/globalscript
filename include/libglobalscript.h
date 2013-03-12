@@ -288,6 +288,7 @@ struct gsheap_item {
         gsapplication,
         gseval,
         gsindirection,
+        gsgcforward,
     } type;
 };
 
@@ -329,6 +330,11 @@ struct gseval {
 struct gsindirection {
     struct gsheap_item hp;
     gsvalue target;
+};
+
+struct gsgcforward {
+    struct gsheap_item hp;
+    gsvalue dest;
 };
 
 struct gserror {

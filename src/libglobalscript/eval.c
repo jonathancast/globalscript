@@ -147,12 +147,13 @@ gswhnfindir(gsvalue val)
 }
 
 static gsvalue gsheapremove_indirections(gsvalue val);
+static gsvalue gsheapgc(struct gsstringbuilder *, gsvalue);
 
 static struct gs_sys_global_block_suballoc_info gsheap_info = {
     /* descr = */ {
         /* evaluator = */ gsheapeval,
         /* indirection_dereferencer = */ gsheapremove_indirections,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ gsheapgc,
         /* description = */ "Global Script Heap",
     },
 };
@@ -185,6 +186,53 @@ gsheapremove_indirections(gsvalue val)
     unlock(&hp->lock);
 
     return val;
+}
+
+static
+gsvalue
+gsheapgc(struct gsstringbuilder *err, gsvalue v)
+{
+    int i;
+    struct gsheap_item *hp, *newhp;
+    struct gsgcforward *fwd;
+
+    hp = (struct gsheap_item *)v;
+    newhp = 0;
+
+    switch (hp->type) {
+        case gsclosure: {
+            struct gsclosure *cl, *newcl;
+
+            cl = (struct gsclosure *)hp;
+            newhp = gsreserveheap(sizeof(*newcl) + cl->numfvs * sizeof(gsvalue));
+            newcl = (struct gsclosure *)newhp;
+
+            memset(&newhp->lock, 0, sizeof(newhp->lock));
+            newhp->pos = hp->pos;
+            newhp->type = hp->type;
+            newcl->code = cl->code;
+            newcl->numfvs = cl->numfvs;
+            for (i = 0; i < newcl->numfvs; i++) newcl->fvs[i] = cl->fvs[i];
+
+            hp->type = gsgcforward;
+            fwd = (struct gsgcforward *)hp;
+            fwd->dest = (gsvalue)newhp;
+
+            if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
+            if (gs_gc_trace_bco(err, &newcl->code) < 0) return 0;
+
+            for (i = 0; i < newcl->numfvs; i++) {
+                gsstring_builder_print(err, UNIMPL("gsheapgc: closures: fvs"));
+                return 0;
+            }
+            break;
+        }
+        default:
+            gsstring_builder_print(err, UNIMPL("gsheapgc: type = %d"), hp->type);
+            return 0;
+    }
+
+    return (gsvalue)newhp;
 }
 
 int
