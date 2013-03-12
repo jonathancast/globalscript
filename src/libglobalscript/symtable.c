@@ -42,6 +42,19 @@ gsintern_string(gssymboltype ty, char *nm)
     return res;
 }
 
+int
+gs_gc_trace_interned_string(struct gsstringbuilder *err, gsinterned_string *psym)
+{
+    gsinterned_string newsym;
+
+    if (!gs_sys_block_in_gc_from_space(*psym)) return 0;
+
+    newsym = gsalloc_string((*psym)->hash, (*psym)->type, (*psym)->name);
+    gsstore_string(newsym);
+
+    return 0;
+}
+
 /* §subsection Internals */
 
 struct gstring_hash_link {

@@ -119,6 +119,8 @@ typedef struct gsstring_value {
 
 gsinterned_string gsintern_string(gssymboltype, char*);
 
+int gs_gc_trace_interned_string(struct gsstringbuilder *, gsinterned_string *);
+
 struct gspos {
     gsinterned_string file;
     int lineno, columnno;
