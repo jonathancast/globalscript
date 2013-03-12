@@ -467,6 +467,7 @@ struct gs_blockdesc {
 #define CLASS_OF_BLOCK_CONTAINING(p) (((struct gs_blockdesc *)BLOCK_CONTAINING(p))->class)
 #define GS_EVALUATOR(p) (IS_PTR(p) ? CLASS_OF_BLOCK_CONTAINING(p)->evaluator : gsevalunboxed)
 #define GS_INDIRECTION_DEREFENCER(p) (CLASS_OF_BLOCK_CONTAINING(p)->indirection_dereferencer)
+#define GS_GC_TRACER(p) (CLASS_OF_BLOCK_CONTAINING(p)->gc_trace)
 
 typedef uintptr gsumemorysize; /* TODO: Horrid hack */
 
@@ -489,6 +490,7 @@ int gs_sys_memory_exhausted(void);
 int gs_sys_should_gc(void);
 void gs_sys_wait_for_gc(void);
 int gs_sys_start_gc(struct gsstringbuilder *);
+#define GS_GC_TRACE(err, v) (IS_PTR(v) && gs_sys_block_in_gc_from_space((void*)v) ? ((gctemp = GS_GC_TRACER(v)(&err, v)) ? (v = gctemp, 0) : -1) : 0)
 
 int gs_sys_block_in_gc_from_space(void *);
 
