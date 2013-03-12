@@ -168,6 +168,25 @@ gs_sys_finish_gc(struct gsstringbuilder *err)
             return -1
     ;
 
+    for (i = 0; i < gs_sys_num_segments; i++) {
+        if (gs_sys_segments[i].type == gs_sys_segment_gc_from_space) {
+            if (GS_SYS_SEGMENT_IS(i - 1, gs_sys_segment_free) && GS_SYS_SEGMENT_IS(i + 1, gs_sys_segment_free)) {
+                gsstring_builder_print(err, UNIMPL("gs_sys_finish_gc: free from_space segment: merge with previous and next segment"));
+                return -1;
+            } else if (GS_SYS_SEGMENT_IS(i - 1, gs_sys_segment_free)) {
+                gsstring_builder_print(err, UNIMPL("gs_sys_finish_gc: free from_space segment: merge with previous segment"));
+                return -1;
+            } else if (GS_SYS_SEGMENT_IS(i + 1, gs_sys_segment_free)) {
+                gsstring_builder_print(err, UNIMPL("gs_sys_finish_gc: free from_space segment: merge with next segment"));
+                return -1;
+            } else {
+                gs_sys_segments[i].type = gs_sys_segment_free;
+            }
+        }
+    }
+
+    gs_sys_post_gc_memory_use = gs_sys_memory_allocated_size();
+
     lock(&gs_allocator_lock);
     gs_sys_gc_num_procs_waiting = 0;
     unlock(&gs_allocator_lock);
