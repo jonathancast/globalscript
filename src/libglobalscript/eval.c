@@ -232,14 +232,26 @@ gserrorsgc(struct gsstringbuilder *err, gsvalue v)
     struct gserror *gserr, *newerr;
 
     gserr = (struct gserror *)v;
-    newerr = gsreserveerrors(sizeof(*newerr) + strlen(gserr->message) + 1);
 
-    newerr->pos = gserr->pos;
-    if (gs_gc_trace_pos(err, &newerr->pos) < 0) return 0;
-    newerr->type = gserr->type;
-    strcpy(newerr->message, gserr->message);
+    switch (gserr->type) {
+        case gserror_generated: {
+            struct gserror_message *msg, *newmsg;
 
-    return (gsvalue)newerr;
+            msg = (struct gserror_message *)gserr;
+
+            newerr = gsreserveerrors(sizeof(*newmsg) + strlen(msg->message) + 1);
+            newmsg = (struct gserror_message *)newerr;
+            newerr->pos = gserr->pos;
+            if (gs_gc_trace_pos(err, &newerr->pos) < 0) return 0;
+            newerr->type = gserr->type;
+            strcpy(newmsg->message, msg->message);
+
+            return (gsvalue)newerr;
+        }
+        default:
+            gsstring_builder_print(err, UNIMPL("gserrorsgc: unknown type %d"), gserr->type);
+            return 0;
+    }
 }
 
 struct gserror *
@@ -248,15 +260,17 @@ gserror(struct gspos pos, char *fmt, ...)
     char buf[0x100];
     va_list arg;
     struct gserror *err;
+    struct gserror_message *msg;
 
     va_start(arg, fmt);
     vseprint(buf, buf+sizeof buf, fmt, arg);
     va_end(arg);
 
-    err = gsreserveerrors(sizeof(*err) + strlen(buf) + 1);
+    err = gsreserveerrors(sizeof(*msg) + strlen(buf) + 1);
+    msg = (struct gserror_message *)err;
     err->pos = pos;
     err->type = gserror_generated;
-    strcpy(err->message, buf);
+    strcpy(msg->message, buf);
 
     return err;
 }
@@ -304,8 +318,10 @@ gserror_format(char *buf, char *ebuf, struct gserror *p)
     switch (p->type) {
         case gserror_undefined:
             return seprint(buf, ebuf, "%s %P", "undefined", p->pos);
-        case gserror_generated:
-            return seprint(buf, ebuf, "%P: %s", p->pos, p->message);
+        case gserror_generated: {
+            struct gserror_message *msg = (struct gserror_message *)p;
+            return seprint(buf, ebuf, "%P: %s", p->pos, msg->message);
+        }
         default:
             return seprint(buf, ebuf, "%s:%d: gsprint(error type = %d) next", __FILE__, __LINE__, p->type);
     }

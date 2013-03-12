@@ -334,6 +334,10 @@ struct gserror {
         gserror_undefined,
         gserror_generated,
     } type;
+};
+
+struct gserror_message {
+    struct gserror err;
     char message[];
 };
 

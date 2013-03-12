@@ -362,9 +362,11 @@ api_exec_err(struct api_thread *thread, gsvalue instr, gstypecode st)
                 case gserror_undefined:
                     api_abend(thread, "%P: undefined", p->pos);
                     break;
-                case gserror_generated:
-                    api_abend(thread, "%P: %s", p->pos, p->message);
+                case gserror_generated: {
+                    struct gserror_message *msg = (struct gserror_message *)p;
+                    api_abend(thread, "%P: %s", p->pos, msg->message);
                     break;
+                }
                 default:
                     api_abend(thread, "%P: unknown error type %d", p->pos, p->type);
                     break;
