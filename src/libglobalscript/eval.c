@@ -29,7 +29,7 @@ gsunimplgc(struct gsstringbuilder *err, gsvalue v)
     struct gs_blockdesc *block;
 
     block = BLOCK_CONTAINING(v);
-    gsstring_builder_print(err, UNIMPL("GC %s"), block->class->description);
+    gsstring_builder_print(err, "GC '%s' next", block->class->description);
     return 0;
 }
 
