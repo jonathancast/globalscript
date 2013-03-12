@@ -38,10 +38,11 @@ gsfalse(struct gspos pos)
 gsvalue
 gsemptyrecord(struct gspos pos)
 {
-    struct gsrecord *res;
+    struct gsrecord_fields *res;
 
-    res = gsreserverecords(sizeof(struct gsrecord));
-    res->pos = pos;
+    res = gsreserverecords(sizeof(struct gsrecord_fields));
+    res->rec.pos = pos;
+    res->rec.type = gsrecord_fields;
     res->numfields = 0;
 
     return (gsvalue)res;
@@ -51,14 +52,17 @@ gsvalue
 gsrecordv(struct gspos pos, int nfields, gsvalue *fields)
 {
     struct gsrecord *record;
+    struct gsrecord_fields *record_fields;
     int i;
 
-    record = gsreserverecords(sizeof(*record) + nfields * sizeof(gsvalue));
+    record_fields = gsreserverecords(sizeof(*record_fields) + nfields * sizeof(gsvalue));
+    record = (struct gsrecord *)record_fields;
 
     record->pos = pos;
-    record->numfields = nfields;
+    record->type = gsrecord_fields;
+    record_fields->numfields = nfields;
     for (i = 0; i < nfields; i++)
-        record->fields[i] = fields[i]
+        record_fields->fields[i] = fields[i]
     ;
     return (gsvalue)record;
 }

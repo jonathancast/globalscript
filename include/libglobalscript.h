@@ -371,6 +371,14 @@ char *gsimplementation_failure_format(char *, char *, struct gsimplementation_fa
 
 struct gsrecord {
     struct gspos pos;
+    enum {
+        gsrecord_fields,
+        gsrecord_gcforward,
+    } type;
+};
+
+struct gsrecord_fields {
+    struct gsrecord rec;
     int numfields;
     gsvalue fields[];
 };

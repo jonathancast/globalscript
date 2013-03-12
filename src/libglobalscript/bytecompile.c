@@ -97,7 +97,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
     p = item.v;
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
         *psection = gsbc_records;
-        *psize = sizeof(struct gsrecord) + (p->numarguments / 2) * sizeof(gsvalue);
+        *psize = sizeof(struct gsrecord_fields) + (p->numarguments / 2) * sizeof(gsvalue);
     } else if (gssymceq(p->directive, gssymconstr, gssymdatadirective, ".constr")) {
         *psection = gsbc_constrs;
         if (p->numarguments == 3) {
@@ -1021,11 +1021,14 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
 {
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
         struct gsrecord *record;
+        struct gsrecord_fields *fields;
         int j;
 
-        record = (struct gsrecord *)heap[i];
+        fields = (struct gsrecord_fields *)heap[i];
+        record = (struct gsrecord *)fields;
         record->pos = p->pos;
-        record->numfields = p->numarguments / 2;
+        record->type = gsrecord_fields;
+        fields->numfields = p->numarguments / 2;
 
         for (j = 0; j < p->numarguments; j += 2) {
             if (j > 0 && strcmp(p->arguments[j - 2]->name, p->arguments[j]->name) > 0)
@@ -1034,8 +1037,8 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
             if (j > 0 && strcmp(p->arguments[j - 2]->name, p->arguments[j]->name) == 0)
                 gsfatal("%P: duplicated field %s", p->pos, p->arguments[j - 2]->name)
             ;
-            record->fields[j / 2] = gssymtable_get_data(symtable, p->arguments[j + 1]);
-            if (!record->fields[j / 2])
+            fields->fields[j / 2] = gssymtable_get_data(symtable, p->arguments[j + 1]);
+            if (!fields->fields[j / 2])
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: can't find data value %s", p->pos, p->arguments[j + 1]->name)
             ;
         }

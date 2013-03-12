@@ -412,15 +412,18 @@ ace_alloc_record(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsrecord *record;
+    struct gsrecord_fields *fields;
     int j;
 
     ip = thread->st.running.ip;
 
-    record = gsreserverecords(sizeof(*record) + ip->args[0] * sizeof(gsvalue));
+    record = gsreserverecords(sizeof(*fields) + ip->args[0] * sizeof(gsvalue));
+    fields = (struct gsrecord_fields *)record;
     record->pos = ip->pos;
-    record->numfields = ip->args[0];
+    record->type = gsrecord_fields;
+    fields->numfields = ip->args[0];
     for (j = 0; j < ip->args[0]; j++)
-        record->fields[j] = thread->regs[ACE_RECORD_FIELD(ip, j)]
+        fields->fields[j] = thread->regs[ACE_RECORD_FIELD(ip, j)]
     ;
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {
@@ -438,11 +441,11 @@ void
 ace_extract_field(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsrecord *record;
+    struct gsrecord_fields *record;
 
     ip = thread->st.running.ip;
 
-    record = (struct gsrecord *)thread->regs[ACE_FIELD_RECORD(ip)];
+    record = (struct gsrecord_fields *)thread->regs[ACE_FIELD_RECORD(ip)];
     thread->regs[thread->nregs] = record->fields[ACE_FIELD_FIELD(ip)];
     thread->nregs++;
     thread->st.running.ip = ACE_FIELD_SKIP(ip);

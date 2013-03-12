@@ -184,12 +184,12 @@ gsprint(struct gspos pos, gsvalue prog)
                 return -1;
         }
     } else if (gsisrecord_block(block)) {
-        struct gsrecord *record;
+        struct gsrecord_fields *record;
         int i;
 
-        record = (struct gsrecord *)prog;
+        record = (struct gsrecord_fields *)prog;
         if (gsprog_type.type != gsprog_type_product)
-            gsfatal("%P: %P: Got a record, but not expecting to print a product", pos, record->pos)
+            gsfatal("%P: %P: Got a record, but not expecting to print a product", pos, record->rec.pos)
         ;
         print("〈");
         for (i = 0; i < record->numfields; i++) {

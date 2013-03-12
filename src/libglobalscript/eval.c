@@ -20,6 +20,7 @@ gsnoindir(gsvalue val)
 
     block = BLOCK_CONTAINING(val);
     pos.file = gsintern_string(gssymfilename, __FILE__);
+    pos.columnno = 0;
     pos.lineno = __LINE__; return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsnoindir: %s", block->class->description);
 }
 
@@ -635,9 +636,9 @@ gs_lfield_eval(gsvalue v)
                     unlock(&lfield->lock);
                     return gstyblocked;
                 case gstywhnf: {
-                    struct gsrecord *record;
+                    struct gsrecord_fields *record;
 
-                    record = (struct gsrecord *)vrecord;
+                    record = (struct gsrecord_fields *)vrecord;
                     lock(&lfield->lock);
                     lfield->state = gslfield_indirection;
                     lfield->i.dest = record->fields[lfield->f.fieldno];
