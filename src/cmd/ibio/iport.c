@@ -729,12 +729,6 @@ ibio_prim_iptr_next_return(struct ace_thread *thread, struct gspos pos, struct i
         res = seg->iport->error;
         unlock(&seg->lock);
         return gsprim_error(thread, (struct gserror *)res);
-    } else if (seg->iport->error) {
-        gsvalue res;
-
-        res = seg->iport->error;
-        unlock(&seg->lock);
-        return gsprim_error(thread, (struct gserror *)res);
     } else {
         unlock(&seg->lock);
 
