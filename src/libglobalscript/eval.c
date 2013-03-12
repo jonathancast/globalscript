@@ -195,12 +195,13 @@ gsisheap_block(struct gs_blockdesc *p)
 
 static gstypecode gserrorseval(gsvalue);
 static gsvalue gserrorsindir(gsvalue);
+static gsvalue gserrorsgc(struct gsstringbuilder *, gsvalue);
 
 static struct gs_sys_global_block_suballoc_info gserrors_info = {
     /* descr = */ {
         /* evaluator = */ gserrorseval,
         /* indirection_dereferencer = */ gserrorsindir,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ gserrorsgc,
         /* description = */ "Erroneous Global Script Values",
     },
 };
@@ -222,6 +223,23 @@ gsvalue
 gserrorsindir(gsvalue val)
 {
     return val;
+}
+
+static
+gsvalue
+gserrorsgc(struct gsstringbuilder *err, gsvalue v)
+{
+    struct gserror *gserr, *newerr;
+
+    gserr = (struct gserror *)v;
+    newerr = gsreserveerrors(sizeof(*newerr) + strlen(gserr->message) + 1);
+
+    newerr->pos = gserr->pos;
+    if (gs_gc_trace_pos(err, &newerr->pos) < 0) return 0;
+    newerr->type = gserr->type;
+    strcpy(newerr->message, gserr->message);
+
+    return (gsvalue)newerr;
 }
 
 struct gserror *
