@@ -12,6 +12,7 @@ static struct ibio_uxio *ibio_alloc_uxio(ulong, ibio_uxio_refill *);
 
 static struct ibio_uxio *ibio_file_uxio_value;
 static Lock ibio_file_uxio_lock;
+static gs_sys_gc_root_callback ibio_file_uxio_callback;
 
 static ibio_uxio_refill ibio_file_refill;
 
@@ -27,7 +28,17 @@ ibio_file_uxio()
     ibio_file_uxio_value = ibio_alloc_uxio(sizeof(*ibio_file_uxio_value), ibio_file_refill);
 
     unlock(&ibio_file_uxio_lock);
+
+    gs_sys_gc_root_callback_register(ibio_file_uxio_callback);
+
     return ibio_file_uxio_value;
+}
+
+int
+ibio_file_uxio_callback(struct gsstringbuilder *err)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_file_uxio_callback"));
+    return -1;
 }
 
 long
