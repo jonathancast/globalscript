@@ -200,7 +200,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
         if (interp < p->numarguments) gsfatal("%P: More interpolation values than locations", p->pos);
     } else if (gssymceq(p->directive, gssymundefined, gssymdatadirective, ".undefined")) {
         *psection = gsbc_errors;
-        *psize = sizeof(struct gserror);
+        *psize = MAX(sizeof(struct gserror), sizeof(struct gserror_forward));
     } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
         *psection = gsbc_heap;
         *psize = MAX(sizeof(struct gsclosure), sizeof(struct gsindirection));

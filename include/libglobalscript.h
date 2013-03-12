@@ -333,12 +333,18 @@ struct gserror {
     enum {
         gserror_undefined,
         gserror_generated,
+        gserror_forward,
     } type;
 };
 
 struct gserror_message {
     struct gserror err;
     char message[];
+};
+
+struct gserror_forward {
+    struct gserror err;
+    gsvalue dest;
 };
 
 struct gserror *gserror(struct gspos, char *, ...);

@@ -209,7 +209,7 @@ static struct gs_sys_global_block_suballoc_info gserrors_info = {
 void *
 gsreserveerrors(ulong sz)
 {
-    return gs_sys_global_block_suballoc(&gserrors_info, sz);
+    return gs_sys_global_block_suballoc(&gserrors_info, MAX(sizeof(struct gserror_forward), sz));
 }
 
 static
@@ -230,10 +230,18 @@ gsvalue
 gserrorsgc(struct gsstringbuilder *err, gsvalue v)
 {
     struct gserror *gserr, *newerr;
+    struct gserror_forward *fwd;
 
     gserr = (struct gserror *)v;
 
     switch (gserr->type) {
+        case gserror_undefined: {
+            newerr = gsreserveerrors(sizeof(*newerr));
+            newerr->pos = gserr->pos;
+            newerr->type = gserr->type;
+
+            break;
+        }
         case gserror_generated: {
             struct gserror_message *msg, *newmsg;
 
@@ -242,16 +250,23 @@ gserrorsgc(struct gsstringbuilder *err, gsvalue v)
             newerr = gsreserveerrors(sizeof(*newmsg) + strlen(msg->message) + 1);
             newmsg = (struct gserror_message *)newerr;
             newerr->pos = gserr->pos;
-            if (gs_gc_trace_pos(err, &newerr->pos) < 0) return 0;
             newerr->type = gserr->type;
             strcpy(newmsg->message, msg->message);
 
-            return (gsvalue)newerr;
+            if (gs_gc_trace_pos(err, &newerr->pos) < 0) return 0;
+
+            break;
         }
         default:
             gsstring_builder_print(err, UNIMPL("gserrorsgc: unknown type %d"), gserr->type);
             return 0;
     }
+
+    gserr->type = gserror_forward;
+    fwd = (struct gserror_forward *)gserr;
+    fwd->dest = (gsvalue)newerr;
+
+    return (gsvalue)newerr;
 }
 
 struct gserror *
