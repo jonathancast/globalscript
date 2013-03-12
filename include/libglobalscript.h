@@ -492,6 +492,7 @@ typedef void gs_sys_gc_pre_callback(void);
 void gs_sys_gc_pre_callback_register(gs_sys_gc_pre_callback *);
 
 typedef int gs_sys_gc_root_callback(struct gsstringbuilder *);
+void gs_sys_gc_root_callback_register(gs_sys_gc_root_callback *);
 
 /* §section ACE */
 

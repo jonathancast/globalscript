@@ -144,9 +144,18 @@ void
 gs_sys_gc_pre_callback_register(gs_sys_gc_pre_callback *cb)
 {
     if (gs_sys_gc_num_pre_callbacks >= MAX_GS_SYS_GC_NUM_PRE_CALLBACKS)
-        gswarning(UNIMPL("Out of gs_sys_gc_num_pre_callbacks"))
+        gswarning(UNIMPL("Out of gs_sys_gc_pre_callbacks"))
     ;
     gs_sys_gc_pre_callbacks[gs_sys_gc_num_pre_callbacks++] = cb;
+}
+
+void
+gs_sys_gc_root_callback_register(gs_sys_gc_root_callback *cb)
+{
+    if (gs_sys_gc_num_root_callbacks >= MAX_GS_SYS_GC_NUM_ROOT_CALLBACKS)
+        gswarning(UNIMPL("Out of gs_sys_gc_root_callbacks"))
+    ;
+    gs_sys_gc_root_callbacks[gs_sys_gc_num_root_callbacks++] = cb;
 }
 
 #define GS_SPLIT_SEGMENT(i, ty, sz) \
