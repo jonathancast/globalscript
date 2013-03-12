@@ -146,6 +146,15 @@ gs_sys_start_gc(struct gsstringbuilder *err)
 }
 
 int
+gs_gc_trace_pos(struct gsstringbuilder *err, struct gspos *pos)
+{
+    if (gs_gc_trace_interned_string(err, &pos->file) < 0)
+        return -1
+    ;
+    return 0;
+}
+
+int
 gs_sys_block_in_gc_from_space(void *p)
 {
     int i;

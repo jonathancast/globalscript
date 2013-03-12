@@ -86,6 +86,8 @@ typedef void (gsrpc_handler)(struct gsrpc *);
 
 /* §section Internal error-reporting stuff */
 
+struct gsstringbuilder;
+
 typedef enum {
     gssymfilename,
     gssymdatadirective,
@@ -125,6 +127,8 @@ struct gspos {
     gsinterned_string file;
     int lineno, columnno;
 };
+
+int gs_gc_trace_pos(struct gsstringbuilder *, struct gspos *);
 
 #pragma varargck type "P" struct gspos
 #pragma varargck type "y" gsinterned_string
@@ -193,8 +197,6 @@ int gstype_expect_lifted_fun(char *, char *, struct gstype *, struct gstype **, 
 int gstype_expect_product(char *, char *, struct gstype *, int, ...);
 
 /* §subsubsection Etc. */
-
-struct gsstringbuilder;
 
 struct gstype *gstype_get_definition(struct gspos, struct gsfile_symtable *, struct gstype *);
 
