@@ -517,7 +517,7 @@ int gs_sys_memory_exhausted(void);
 int gs_sys_should_gc(void);
 void gs_sys_wait_for_gc(void);
 int gs_sys_start_gc(struct gsstringbuilder *);
-#define GS_GC_TRACE(err, v) (IS_PTR(v) && gs_sys_block_in_gc_from_space((void*)v) ? ((gctemp = GS_GC_TRACER(v)(&err, v)) ? (v = gctemp, 0) : -1) : 0)
+#define GS_GC_TRACE(err, v) (IS_PTR(v) && gs_sys_block_in_gc_from_space((void*)(v)) ? ((gctemp = GS_GC_TRACER(v)(&(err), v)) ? ((v) = gctemp, 0) : -1) : 0)
 int gs_sys_finish_gc(struct gsstringbuilder *);
 
 int gs_sys_block_in_gc_from_space(void *);
