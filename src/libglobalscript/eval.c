@@ -819,6 +819,10 @@ gsconstrsgc(struct gsstringbuilder *err, gsvalue v)
 
             break;
         }
+        case gsconstr_gcforward: {
+            struct gsconstr_gcforward *fwd = (struct gsconstr_gcforward *)constr;
+            return (gsvalue)fwd->dest;
+        }
         default:
             gsstring_builder_print(err, UNIMPL("%P: gsconstrsgc: type = %d"), constr->pos, constr->type);
             return 0;
