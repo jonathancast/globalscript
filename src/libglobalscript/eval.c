@@ -534,11 +534,13 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
 
 /* §section Records */
 
+static gsvalue gsrecordsgc(struct gsstringbuilder *, gsvalue);
+
 static struct gs_sys_global_block_suballoc_info gsrecords_info = {
     /* descr = */ {
         /* evaluator = */ gswhnfeval,
         /* indirection_dereferencer = */ gswhnfindir,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ gsrecordsgc,
         /* description = */ "Global Script Records",
     },
 };
@@ -547,6 +549,60 @@ void *
 gsreserverecords(ulong sz)
 {
     return gs_sys_global_block_suballoc(&gsrecords_info, sz);
+}
+
+struct gsrecord_gcforward {
+    struct gsrecord rec;
+    struct gsrecord *dest;
+};
+
+static
+gsvalue
+gsrecordsgc(struct gsstringbuilder *err, gsvalue v)
+{
+    int i;
+    struct gsrecord *rec, *newrec;
+
+    rec = (struct gsrecord *)v;
+
+    switch (rec->type) {
+        case gsrecord_fields: {
+            struct gsrecord_fields *fields, *newfields;
+            struct gsrecord_gcforward *fwd;
+
+            fields = (struct gsrecord_fields *)rec;
+
+            newfields = gsreserverecords(sizeof(*newfields) + fields->numfields * sizeof(gsvalue));
+            newrec = (struct gsrecord *)newfields;
+
+            newrec->pos = rec->pos;
+            newrec->type = rec->type;
+            newfields->numfields = fields->numfields;
+
+            for (i = 0; i < fields->numfields; i++) {
+                gsstring_builder_print(err, UNIMPL("%P: gsrecordsgc: copy fields"), rec->pos);
+                return 0;
+            }
+
+            rec->type = gsrecord_gcforward;
+            fwd = (struct gsrecord_gcforward *)rec;
+            fwd->dest = newrec;
+
+            if (gs_gc_trace_pos(err, &newrec->pos) < 0) return 0;
+
+            for (i = 0; i < newfields->numfields; i++) {
+                gsstring_builder_print(err, UNIMPL("%P: gsrecordsgc: trace fields"), newrec->pos);
+                return 0;
+            }
+
+            break;
+        }
+        default:
+            gsstring_builder_print(err, UNIMPL("%P: gsrecordsgc: type = %d"), rec->pos, rec->type);
+            return 0;
+    }
+
+    return (gsvalue)newrec;
 }
 
 int
