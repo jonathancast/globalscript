@@ -4,7 +4,7 @@
 
 all:V: pure-all
 
-pure-all:V: $O.gstype
+pure-all:V: $O.gstype $O.gstest
 
 pure-install:V: $GLOBALSCRIPT/bin/gstype $GLOBALSCRIPT/bin/gstest
 
