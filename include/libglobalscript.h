@@ -252,6 +252,7 @@ typedef enum {
 /* Define these yourself; these are your program's entry points */
 extern void gscheck_global_gslib(struct gspos pos, struct gsfile_symtable *);
 extern void gscheck_program(char *, struct gsfile_symtable *, struct gspos, struct gstype *);
+extern int gs_client_pre_ace_gc_trace_roots(struct gsstringbuilder *);
 extern void gsrun(char *, struct gspos, gsvalue, int, char **);
 
 #define GS_MAX_PTR 0x80000000UL

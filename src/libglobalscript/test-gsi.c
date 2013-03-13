@@ -35,9 +35,11 @@ static struct {
     } type;
     union {
         struct {
+            int numfields;
             gsinterned_string fields[MAX_NUM_REGISTERS];
         } product;
         struct {
+            int numconstrs;
             gsinterned_string constrs[MAX_NUM_REGISTERS];
         } sum;
     };
@@ -81,6 +83,7 @@ again:
             struct gstype_sum *sum;
             sum = (struct gstype_sum *)type;
             gsprog_type.type = gsprog_type_sum;
+            gsprog_type.sum.numconstrs = sum->numconstrs;
             for (i = 0; i < sum->numconstrs; i++)
                 gsprog_type.sum.constrs[i] = sum->constrs[i].name
             ;
@@ -90,6 +93,7 @@ again:
             struct gstype_product *product;
             product = (struct gstype_product *)type;
             gsprog_type.type = gsprog_type_product;
+            gsprog_type.product.numfields = product->numfields;
             for (i = 0; i < product->numfields; i++)
                 gsprog_type.product.fields[i] = product->fields[i].name
             ;
@@ -97,6 +101,35 @@ again:
         }
         default:
             gsfatal_unimpl(__FILE__, __LINE__, "%P: %P: Print values of type %d", pos, type->pos, type->node);
+    }
+}
+
+int
+gs_client_pre_ace_gc_trace_roots(struct gsstringbuilder *err)
+{
+    int i;
+
+    switch (gsprog_type.type) {
+        case gsprog_type_fun:
+        case gsprog_type_natural:
+            return 0;
+        case gsprog_type_product:
+            for (i = 0; i < gsprog_type.product.numfields; i++)
+                if (gs_gc_trace_interned_string(err, &gsprog_type.product.fields[i]) < 0)
+                    return -1
+            ;
+            return 0;
+        case gsprog_type_sum:
+            for (i = 0; i < gsprog_type.sum.numconstrs; i++)
+                if (gs_gc_trace_interned_string(err, &gsprog_type.sum.constrs[i]) < 0)
+                    return -1
+            ;
+            return 0;
+        case gsprog_type_rune:
+            return 0;
+        default:
+            gsstring_builder_print(err, UNIMPL("gs_client_pre_ace_gc_trace_roots: gsprog_type.type = %d"), gsprog_type.type);
+            return -1;
     }
 }
 

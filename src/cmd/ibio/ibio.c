@@ -208,6 +208,12 @@ ibio_downcast_ibio_m(char *errbuf, char *eerrbuf, char *script, struct gsfile_sy
     gsfinish_string_builder(&err);
 }
 
+int
+gs_client_pre_ace_gc_trace_roots(struct gsstringbuilder *err)
+{
+    return 0;
+}
+
 void
 gsrun(char *script, struct gspos pos, gsvalue prog, int argc, char **argv)
 {

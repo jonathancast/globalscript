@@ -62,6 +62,12 @@ gscheck_program(char *doc, struct gsfile_symtable *symtable, struct gspos pos, s
     gsfinish_string_builder(&err);
 }
 
+int
+gs_client_pre_ace_gc_trace_roots(struct gsstringbuilder *err)
+{
+    return 0;
+}
+
 void
 gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
 {
