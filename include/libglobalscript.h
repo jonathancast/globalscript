@@ -387,6 +387,7 @@ struct gsconstr {
     struct gspos pos;
     enum {
         gsconstr_args,
+        gsconstr_gcforward,
     } type;
 };
 

@@ -748,11 +748,13 @@ gs_lfield_indir(gsvalue v)
 
 /* §section Constructors */
 
+static gsvalue gsconstrsgc(struct gsstringbuilder *, gsvalue);
+
 static struct gs_sys_global_block_suballoc_info gsconstrs_alloc_info = {
     /* descr = */ {
         /* evaluator = */ gswhnfeval,
         /* indirection_dereferencer = */ gswhnfindir,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ gsconstrsgc,
         /* description = */ "Global Script Constructors",
     },
 };
@@ -767,6 +769,59 @@ int
 gsisconstr_block(struct gs_blockdesc *p)
 {
     return p->class == &gsconstrs_alloc_info.descr;
+}
+
+struct gsconstr_gcforward {
+    struct gsconstr c;
+    struct gsconstr *dest;
+};
+
+static
+gsvalue
+gsconstrsgc(struct gsstringbuilder *err, gsvalue v)
+{
+    struct gsconstr *constr, *newconstr;
+    gsvalue gctemp;
+    int i;
+
+    constr = (struct gsconstr *)v;
+    switch (constr->type) {
+        case gsconstr_args: {
+            struct gsconstr_args *args, *newargs;
+            struct gsconstr_gcforward *fwd;
+
+            args = (struct gsconstr_args *)constr;
+
+            newconstr = gsreserveconstrs(sizeof(*newargs) + args->numargs * sizeof(gsvalue));
+            newargs = (struct gsconstr_args *)newconstr;
+
+            newconstr->pos = constr->pos;
+            newconstr->type = constr->type;
+            newargs->constrnum = args->constrnum;
+            newargs->numargs = args->numargs;
+
+            for (i = 0; i < args->numargs; i++)
+                newargs->arguments[i] = args->arguments[i]
+            ;
+
+            constr->type = gsconstr_gcforward;
+            fwd = (struct gsconstr_gcforward *)constr;
+            fwd->dest = newconstr;
+
+            if (gs_gc_trace_pos(err, &newconstr->pos) < 0) return 0;
+
+            for (i = 0; i < newargs->numargs; i++)
+                if (GS_GC_TRACE(*err, newargs->arguments[i]) < 0) return 0
+            ;
+
+            break;
+        }
+        default:
+            gsstring_builder_print(err, UNIMPL("%P: gsconstrsgc: type = %d"), constr->pos, constr->type);
+            return 0;
+    }
+
+    return (gsvalue)newconstr;
 }
 
 /* §section API Primitives */
