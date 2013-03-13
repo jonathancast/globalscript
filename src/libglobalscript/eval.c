@@ -564,6 +564,7 @@ gsrecordsgc(struct gsstringbuilder *err, gsvalue v)
 {
     int i;
     struct gsrecord *rec, *newrec;
+    gsvalue gctemp;
 
     rec = (struct gsrecord *)v;
 
@@ -581,10 +582,9 @@ gsrecordsgc(struct gsstringbuilder *err, gsvalue v)
             newrec->type = rec->type;
             newfields->numfields = fields->numfields;
 
-            for (i = 0; i < fields->numfields; i++) {
-                gsstring_builder_print(err, UNIMPL("%P: gsrecordsgc: copy fields"), rec->pos);
-                return 0;
-            }
+            for (i = 0; i < fields->numfields; i++)
+                newfields->fields[i] = fields->fields[i]
+            ;
 
             rec->type = gsrecord_gcforward;
             fwd = (struct gsrecord_gcforward *)rec;
@@ -592,10 +592,9 @@ gsrecordsgc(struct gsstringbuilder *err, gsvalue v)
 
             if (gs_gc_trace_pos(err, &newrec->pos) < 0) return 0;
 
-            for (i = 0; i < newfields->numfields; i++) {
-                gsstring_builder_print(err, UNIMPL("%P: gsrecordsgc: trace fields"), newrec->pos);
-                return 0;
-            }
+            for (i = 0; i < newfields->numfields; i++)
+                if (GS_GC_TRACE(*err, newfields->fields[i]) < 0) return 0
+            ;
 
             break;
         }
