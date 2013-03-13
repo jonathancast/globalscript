@@ -494,6 +494,7 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
     struct gsbco *bco, *newbco;
     struct gsbco_forward *fwd;
     void *pin;
+    gsvalue gctemp;
     int i;
 
     bco = *ppbco;
@@ -524,8 +525,9 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
     }
 
     for (i = 0; i < newbco->numglobals; i++) {
-        gsstring_builder_print(err, UNIMPL("gs_gc_trace_bco: trace globals"));
-        return -1;
+        gsvalue *pglobal = (gsvalue *)pin;
+        if (GS_GC_TRACE(*err, *pglobal) < 0) return -1;
+        pin = pglobal + 1;
     }
 
     *ppbco = newbco;
