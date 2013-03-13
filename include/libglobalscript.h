@@ -385,6 +385,13 @@ struct gsrecord_fields {
 
 struct gsconstr {
     struct gspos pos;
+    enum {
+        gsconstr_args,
+    } type;
+};
+
+struct gsconstr_args {
+    struct gsconstr c;
     int constrnum;
     int numargs;
     gsvalue arguments[];

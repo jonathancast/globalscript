@@ -45,9 +45,9 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
             case gstystack:
                 return ibio_gsstring_eval_blocked;
             case gstywhnf: {
-                struct gsconstr *constr;
+                struct gsconstr_args *constr;
 
-                constr = (struct gsconstr *)eval->gss;
+                constr = (struct gsconstr_args *)eval->gss;
                 switch (constr->constrnum) {
                     case 0:
                         eval->gsc = constr->arguments[0];
@@ -58,7 +58,7 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
                         eval->gss = 0;
                         break;
                     default:
-                        api_abend(thread, UNIMPL("%P: %P: ibio_handle_prim_file_stat: handle s constr %d"), pos, constr->pos, constr->constrnum);
+                        api_abend(thread, UNIMPL("%P: %P: ibio_handle_prim_file_stat: handle s constr %d"), pos, constr->c.pos, constr->constrnum);
                         return ibio_gsstring_eval_error;
                 }
                 break;

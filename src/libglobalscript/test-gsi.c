@@ -201,12 +201,12 @@ gsprint(struct gspos pos, gsvalue prog)
         print("〉\n");
         return 0;
     } else if (gsisconstr_block(block)) {
-        struct gsconstr *constr;
+        struct gsconstr_args *constr;
         int i;
 
-        constr = (struct gsconstr *)prog;
+        constr = (struct gsconstr_args *)prog;
         if (gsprog_type.type != gsprog_type_sum)
-            gsfatal("%P: %P: Got a construct, but not expecting to print a sum", pos, constr->pos)
+            gsfatal("%P: %P: Got a construct, but not expecting to print a sum", pos, constr->c.pos)
         ;
 
         print("%y", gsprog_type.sum.constrs[constr->constrnum]);

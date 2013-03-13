@@ -12,10 +12,11 @@
 gsvalue
 gstrue(struct gspos pos)
 {
-    struct gsconstr *true;
+    struct gsconstr_args *true;
 
     true = gsreserveconstrs(sizeof(*true));
-    true->pos = pos;
+    true->c.pos = pos;
+    true->c.type = gsconstr_args;
     true->constrnum = 1;
     true->numargs = 0;
 
@@ -25,10 +26,11 @@ gstrue(struct gspos pos)
 gsvalue
 gsfalse(struct gspos pos)
 {
-    struct gsconstr *false;
+    struct gsconstr_args *false;
 
     false = gsreserveconstrs(sizeof(*false));
-    false->pos = pos;
+    false->c.pos = pos;
+    false->c.type = gsconstr_args;
     false->constrnum = 0;
     false->numargs = 0;
 
@@ -90,24 +92,26 @@ gsvalue
 gsarraytolist(struct gspos pos, int n, gsvalue *p)
 {
     gsvalue res;
-    struct gsconstr *c;
+    struct gsconstr_args *c;
     int i;
 
-    c = gsreserveconstrs(n * (sizeof(struct gsconstr) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr));
+    c = gsreserveconstrs(n * (sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr_args));
     res = (gsvalue)c;
 
     for (i = 0; i < n; i++) {
-        struct gsconstr *cnext;
+        struct gsconstr_args *cnext;
 
-        c->pos = pos;
+        c->c.pos = pos;
+        c->c.type = gsconstr_args;
         c->constrnum = 0;
         c->numargs = 2;
         c->arguments[0] = p[i];
-        cnext = (struct gsconstr *)((uchar*)c + sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
+        cnext = (struct gsconstr_args *)((uchar*)c + sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue));
         c->arguments[1] = (gsvalue)cnext;
         c = cnext;
     }
-    c->pos = pos;
+    c->c.pos = pos;
+    c->c.type = gsconstr_args;
     c->constrnum = 1;
     c->numargs = 0;
 

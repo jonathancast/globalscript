@@ -382,13 +382,14 @@ void
 ace_alloc_constr(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsconstr *constr;
+    struct gsconstr_args *constr;
     int i;
 
     ip = thread->st.running.ip;
 
     constr = gsreserveconstrs(sizeof(*constr) + ACE_CONSTR_NUMARGS(ip) * sizeof(gsvalue));
-    constr->pos = ip->pos;
+    constr->c.pos = ip->pos;
+    constr->c.type = gsconstr_args;
     constr->constrnum = ACE_CONSTR_CONSTRNUM(ip);
     constr->numargs = ACE_CONSTR_NUMARGS(ip);
     for (i = 0; i < ACE_CONSTR_NUMARGS(ip); i++)
@@ -687,14 +688,14 @@ void
 ace_perform_analyze(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsconstr *constr;
+    struct gsconstr_args *constr;
     struct gsbc **cases;
 
     int i;
 
     ip = thread->st.running.ip;
 
-    constr = (struct gsconstr *)thread->regs[ACE_ANALYZE_SCRUTINEE(ip)];
+    constr = (struct gsconstr_args *)thread->regs[ACE_ANALYZE_SCRUTINEE(ip)];
     cases = ACE_ANALYZE_CASES(ip);
 
     thread->st.running.ip = ip = cases[constr->constrnum];
@@ -714,7 +715,7 @@ void
 ace_perform_danalyze(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsconstr *constr;
+    struct gsconstr_args *constr;
     struct gsbc **cases;
     int casenum;
 
@@ -722,7 +723,7 @@ ace_perform_danalyze(struct ace_thread *thread)
 
     ip = thread->st.running.ip;
 
-    constr = (struct gsconstr *)thread->regs[ACE_DANALYZE_SCRUTINEE(ip)];
+    constr = (struct gsconstr_args *)thread->regs[ACE_DANALYZE_SCRUTINEE(ip)];
     cases = ACE_DANALYZE_CASES(ip);
 
     casenum = 0;

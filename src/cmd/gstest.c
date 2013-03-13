@@ -175,26 +175,29 @@ static
 enum test_state
 test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
 {
-    switch (constr->constrnum) {
+    struct gsconstr_args *args;
+
+    args = (struct gsconstr_args *)constr;
+    switch (args->constrnum) {
         case test_property_constr_false:
             return test_failed;
         case test_property_constr_label:
-            return test_evaluate(err, eerr, constr->arguments[1]);
+            return test_evaluate(err, eerr, args->arguments[1]);
         case test_property_constr_true:
             return test_succeeded;
         case test_property_constr_and: {
             enum test_state st;
 
-            st = test_evaluate(err, eerr, constr->arguments[0]);
+            st = test_evaluate(err, eerr, args->arguments[0]);
             switch (st) {
                 case test_impl_err:
                 case test_prog_err:
                 case test_running:
                     return st;
                 case test_succeeded:
-                    return test_evaluate(err, eerr, constr->arguments[1]);
+                    return test_evaluate(err, eerr, args->arguments[1]);
                 case test_failed: {
-                    enum test_state st1 = test_evaluate(err, eerr, constr->arguments[1]);
+                    enum test_state st1 = test_evaluate(err, eerr, args->arguments[1]);
                     switch (st1) {
                         case test_prog_err:
                         case test_running:
@@ -215,7 +218,7 @@ test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
             break;
         }
         default:
-            seprint(err, eerr, UNIMPL_NL("test_evaluate_constr: constr = %d"), constr->constrnum);
+            seprint(err, eerr, UNIMPL_NL("test_evaluate_constr: constr = %d"), args->constrnum);
             return test_impl_err;
     }
 }
@@ -239,15 +242,17 @@ test_print(int depth, gsvalue v, int print_if_trivial)
             return;
         case gstywhnf: {
             struct gsconstr *constr;
+            struct gsconstr_args *args;
 
             constr = (struct gsconstr *)v;
-            switch (constr->constrnum) {
+            args = (struct gsconstr_args *)constr;
+            switch (args->constrnum) {
                 case test_property_constr_false:
-                    test_print_failure(depth, constr->arguments[0]);
+                    test_print_failure(depth, args->arguments[0]);
                     return;
                 case test_property_constr_label:
-                    test_print_label(depth, constr->arguments[0]);
-                    test_print(depth + 1, constr->arguments[1], 1);
+                    test_print_label(depth, args->arguments[0]);
+                    test_print(depth + 1, args->arguments[1], 1);
                     return;
                 case test_property_constr_true:
                     if (print_if_trivial) {
@@ -257,18 +262,18 @@ test_print(int depth, gsvalue v, int print_if_trivial)
                     return;
                 case test_property_constr_and: {
                     enum test_state st0, st1;
-                    st0 = test_evaluate(err, err + sizeof(err), constr->arguments[0]);
-                    st1 = test_evaluate(err, err + sizeof(err), constr->arguments[1]);
+                    st0 = test_evaluate(err, err + sizeof(err), args->arguments[0]);
+                    st1 = test_evaluate(err, err + sizeof(err), args->arguments[1]);
                     if (listing || st0 != test_succeeded)
-                        test_print(depth, constr->arguments[0], 0)
+                        test_print(depth, args->arguments[0], 0)
                     ;
                     if (listing || st1 != test_succeeded)
-                        test_print(depth, constr->arguments[1], print_if_trivial)
+                        test_print(depth, args->arguments[1], print_if_trivial)
                     ;
                     return;
                 }
                 default:
-                    fprint(2, UNIMPL_NL("test_print: constr = %d"), constr->constrnum);
+                    fprint(2, UNIMPL_NL("test_print: constr = %d"), args->constrnum);
                     ace_down();
                     exits("unimpl");
             }
@@ -350,16 +355,18 @@ test_print_string(gsvalue s)
                     break;
                 case gstywhnf: {
                     struct gsconstr *constr;
+                    struct gsconstr_args *args;
                     constr = (struct gsconstr *)s;
-                    switch (constr->constrnum) {
+                    args = (struct gsconstr_args *)constr;
+                    switch (args->constrnum) {
                         case 0:
-                            c = constr->arguments[0];
-                            s = constr->arguments[1];
+                            c = args->arguments[0];
+                            s = args->arguments[1];
                             break;
                         case 1:
                             return;
                         default:
-                            fprint(2, UNIMPL_NL("test_print_label(constr = %d)"), constr->constrnum);
+                            fprint(2, UNIMPL_NL("test_print_label(constr = %d)"), args->constrnum);
                             ace_down();
                             exits("unimpl");
                     }
