@@ -228,6 +228,9 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             }
             break;
         }
+        case gsgcforward:
+            fwd = (struct gsgcforward *)hp;
+            return fwd->dest;
         default:
             gsstring_builder_print(err, UNIMPL("gsheapgc: type = %d"), hp->type);
             return 0;
