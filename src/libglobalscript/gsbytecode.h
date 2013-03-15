@@ -138,6 +138,9 @@ enum {
 #define ACE_DANALYZE_CONSTR(ip, n) ((ip)->args[2 + (n)])
 #define ACE_DANALYZE_CASES(ip) ((struct gsbc **)GS_NEXT_BYTECODE(ip, 2 + ACE_DANALYZE_NUMCONSTRS(ip)))
 
+#define ACE_UNDEF_SIZE() GS_SIZE_BYTECODE(0)
+#define ACE_SKIP_UNDEF(ip) GS_NEXT_BYTECODE(ip, 0)
+
 #define ACE_BIND_CODE(ip) ((ip)->args[0])
 #define ACE_BIND_NUMFVS(ip) ((ip)->args[1])
 #define ACE_BIND_FV(ip, i) ((ip)->args[2+(i)])

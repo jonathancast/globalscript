@@ -904,7 +904,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             pcl->size += ACE_UNKNOWN_LPRIM_SIZE();
         }
     } else if (gssymceq((*pp)->directive, gssymopundef, gssymcodeop, ".undef")) {
-        pcl->size += GS_SIZE_BYTECODE(0);
+        pcl->size += ACE_UNDEF_SIZE();
     } else if (gssymceq((*pp)->directive, gssymopanalyze, gssymcodeop, ".analyze")) {
         int nconstrs;
 
@@ -2290,9 +2290,11 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
 {
     struct gsbc *pcode;
     struct gsbc **pcases;
+    struct gsparsedline *p;
 
     int i;
 
+    p = *pp;
     if (gssymceq((*pp)->directive, gssymopyield, gssymcodeop, ".yield")) {
         int reg;
 
@@ -2387,10 +2389,8 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
         }
     } else if (gssymceq((*pp)->directive, gssymopundef, gssymcodeop, ".undef")) {
         pcl->phase = rtops;
-        pcode = (struct gsbc *)pcl->pout;
-        pcode->pos = (*pp)->pos;
-        pcode->instr = gsbc_op_undef;
-        pcl->pout = GS_NEXT_BYTECODE(pcode, 0);
+        SETUP_PCODE(gsbc_op_undef);
+        pcl->pout = ACE_SKIP_UNDEF(pcode);
     } else if (gssymceq((*pp)->directive, gssymopanalyze, gssymcodeop, ".analyze")) {
         int nconstrs;
         int reg;
