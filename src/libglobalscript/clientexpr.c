@@ -80,6 +80,7 @@ gsapply(struct gspos pos, gsvalue fun, gsvalue arg)
     app = (struct gsapplication *)res;
 
     res->pos = pos;
+    memset(&res->lock, 0, sizeof(res->lock));
     res->type = gsapplication;
     app->fun = fun;
     app->numargs = 1;

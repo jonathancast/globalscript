@@ -1126,6 +1126,7 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
         clres = (struct gsclosure *)res;
 
         res->pos = cont->pos;
+        memset(&res->lock, 0, sizeof(res->lock));
         res->type = gsclosure;
         clres->code = cl->code;
         clres->numfvs = cl->numfvs + app->numargs;
