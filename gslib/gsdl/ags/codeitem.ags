@@ -257,8 +257,8 @@ list.fv.ty	.tylet	list.t	gsdl.ags.codeitem.fv.t
 _gsdl.ags.codeitem.parser_forcecont.p_decls.p_f_c	.subcode
 parser.lift6	.gvar
 gsdl.ags.codeitem.tygvars.parser	.gvar
-gsdl.ags.codeitem.subcodes.parser	.gvar	# Ignored
-gsdl.ags.codeitem.cogvars.parser	.gvar	# Ignored
+gsdl.ags.codeitem.subcodes.parser	.gvar
+gsdl.ags.codeitem.cogvars.parser	.gvar
 gsdl.ags.codeitem.gvars.parser	.gvar
 gsdl.ags.codeitem.fvs.parser	.gvar
 gsdl.ags.codeitem.karg.parser	.gvar
