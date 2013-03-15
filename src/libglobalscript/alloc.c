@@ -205,10 +205,9 @@ gs_sys_block_in_gc_from_space(void *p)
             gs_sys_segments[i].type == gs_sys_segment_gc_from_space
             && (uchar*)gs_sys_segments[i].base <= (uchar*)p
             && (uchar*)p < (uchar*)GS_SYS_SEGMENT_TOP(i)
-        ) {
-            unlock(&gs_allocator_lock);
-            return 1;
-        }
+        )
+            return 1
+        ;
     }
     return 0;
 }
