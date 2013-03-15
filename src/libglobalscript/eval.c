@@ -450,6 +450,7 @@ gsunimpl(char *file, int lineno, struct gspos srcpos, char *err, ...)
     failure = gsreserveimplementation_errors(sizeof(*failure) + strlen(buf) + 1);
     failure->cpos.file = gsintern_string(gssymfilename, file);
     failure->cpos.lineno = lineno;
+    failure->cpos.columnno = 0;
     failure->srcpos = srcpos;
     strcpy(failure->message, buf);
 
