@@ -422,7 +422,7 @@ ace_alloc_record(struct ace_thread *thread)
     fields = (struct gsrecord_fields *)record;
     record->pos = ip->pos;
     record->type = gsrecord_fields;
-    fields->numfields = ip->args[0];
+    fields->numfields = ACE_RECORD_NUMFIELDS(ip);
     for (j = 0; j < ip->args[0]; j++)
         fields->fields[j] = thread->regs[ACE_RECORD_FIELD(ip, j)]
     ;
@@ -433,7 +433,7 @@ ace_alloc_record(struct ace_thread *thread)
     }
     thread->regs[thread->nregs] = (gsvalue)record;
     thread->nregs++;
-    thread->st.running.ip = GS_NEXT_BYTECODE(ip, 1 + ip->args[0]);
+    thread->st.running.ip = ACE_RECORD_SKIP(ip);
     return;
 }
 

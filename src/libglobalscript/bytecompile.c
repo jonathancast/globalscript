@@ -749,7 +749,7 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         ;
         pcl->nregs++;
 
-        pcl->size += GS_SIZE_BYTECODE(1 + p->numarguments / 2); /* numfields + fields */
+        pcl->size += ACE_SIZE_RECORD(p->numarguments / 2);
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
         CHECK_PHASE(phgens, "allocations");
 
@@ -2013,17 +2013,16 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")
         || gssymceq(p->directive, gssymoplrecord, gssymcodeop, ".lrecord")
     ) {
-        if (pcl->phase > rtlets)
-            gsfatal("%P: Too late to add allocations", p->pos);
-        pcl->phase = rtlets;
+        CHECK_PHASE(rtlets, "allocations");
+
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         pcl->regs[pcl->nregs] = p->label;
-        pcode = (struct gsbc *)pcl->pout;
-        pcode->pos = p->pos;
-        pcode->instr = gsbc_op_record;
-        pcode->args[0] = p->numarguments / 2;
+
+        SETUP_PCODE(gsbc_op_record);
+
+        ACE_RECORD_NUMFIELDS(pcode) = p->numarguments / 2;
         for (i = 0; i < p->numarguments; i += 2) {
             int reg;
 
@@ -2038,7 +2037,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i + 1]);
             ACE_RECORD_FIELD(pcode, i / 2) = reg;
         }
-        pcl->pout = GS_NEXT_BYTECODE(pcode, 1 + p->numarguments / 2);
+        pcl->pout = ACE_RECORD_SKIP(pcode);
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
         struct gstype *type;
