@@ -213,7 +213,10 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             newhp->type = hp->type;
             newcl->code = cl->code;
             newcl->numfvs = cl->numfvs;
-            for (i = 0; i < newcl->numfvs; i++) newcl->fvs[i] = cl->fvs[i];
+            for (i = 0; i < cl->numfvs; i++) {
+                gsstring_builder_print(err, UNIMPL("gsheapgc: closures: fvs"));
+                return 0;
+            }
 
             hp->type = gsgcforward;
             fwd = (struct gsgcforward *)hp;
