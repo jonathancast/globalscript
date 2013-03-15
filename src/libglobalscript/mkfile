@@ -13,7 +13,6 @@ OFILES=\
 	load.$O \
 	inputalloc.$O \
 	alloc.$O \
-	eval.$O \
 	ace.$O \
 	symtable.$O \
 	bytecompile.$O \
