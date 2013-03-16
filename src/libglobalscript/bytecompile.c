@@ -2390,7 +2390,7 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
     } else if (gssymceq((*pp)->directive, gssymopundef, gssymcodeop, ".undef")) {
         pcl->phase = rtops;
         SETUP_PCODE(gsbc_op_undef);
-        pcl->pout = ACE_SKIP_UNDEF(pcode);
+        pcl->pout = ACE_UNDEF_SKIP(pcode);
     } else if (gssymceq((*pp)->directive, gssymopanalyze, gssymcodeop, ".analyze")) {
         int nconstrs;
         int reg;
