@@ -845,12 +845,12 @@ ace_yield(struct ace_thread *thread)
 
     ip = thread->st.running.ip;
 
-    if (ip->args[0] >= thread->nregs) {
-        ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
+    if (ACE_YIELD_ARG(ip) >= thread->nregs) {
+        ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ACE_YIELD_ARG(ip));
         return;
     }
 
-    ace_return(thread, ip->pos, thread->regs[ip->args[0]]);
+    ace_return(thread, ip->pos, thread->regs[ACE_YIELD_ARG(ip)]);
 }
 
 static
