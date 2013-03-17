@@ -4,6 +4,7 @@
 
 #include "gsinputfile.h"
 #include "gsheap.h"
+#include "gsbytecode.h"
 #include "ace.h"
 
 gstypecode
@@ -495,6 +496,8 @@ struct gsbco_forward {
     struct gsbco *dest;
 };
 
+static int gs_gc_trace_bco_instrs(struct gsstringbuilder *, void *, void *, void *);
+
 int
 gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
 {
@@ -539,8 +542,106 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
         pin = pglobal + 1;
     }
 
+    if (gs_gc_trace_bco_instrs(err, bco, newbco, pin) < 0) return -1;
+
     *ppbco = newbco;
     return 0;
+}
+
+static
+int
+gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase, void *pin)
+{
+    int i;
+
+    for (;;) {
+        struct gsbc *ip = (struct gsbc *)pin;
+        if (gs_gc_trace_pos(err, &ip->pos) < 0) return -1;
+        switch (ip->instr) {
+            case gsbc_op_efv:
+                pin = ACE_EFV_SKIP(ip);
+                break;
+            case gsbc_op_alloc:
+                pin = ACE_ALLOC_SKIP(ip);
+                break;
+            case gsbc_op_prim:
+                pin = ACE_PRIM_SKIP(ip);
+                break;
+            case gsbc_op_constr:
+                pin = ACE_CONSTR_SKIP(ip);
+                break;
+            case gsbc_op_record:
+                pin = ACE_RECORD_SKIP(ip);
+                break;
+            case gsbc_op_field:
+                pin = ACE_FIELD_SKIP(ip);
+                break;
+            case gsbc_op_lfield:
+                pin = ACE_LFIELD_SKIP(ip);
+                break;
+            case gsbc_op_undefined:
+                pin = ACE_UNDEFINED_SKIP(ip);
+                break;
+            case gsbc_op_apply:
+                pin = ACE_APPLY_SKIP(ip);
+                break;
+            case gsbc_op_eprim:
+                pin = ACE_EPRIM_SKIP(ip);
+                break;
+            case gsbc_op_bind:
+                pin = ACE_BIND_SKIP(ip);
+                break;
+            case gsbc_op_app:
+                pin = ACE_APP_SKIP(ip);
+                break;
+            case gsbc_op_force:
+                pin = ACE_FORCE_SKIP(ip);
+                break;
+            case gsbc_op_strict:
+                pin = ACE_STRICT_SKIP(ip);
+                break;
+            case gsbc_op_ubanalzye:
+                pin = ACE_UBANALYZE_SKIP(ip);
+                break;
+            case gsbc_op_analyze: {
+                struct gsbc **pcases;
+                int ncases;
+
+                pcases = ACE_ANALYZE_CASES(ip);
+                pcases[0] = (void*)((uchar*)newbase + ((uchar*)pcases[0] - (uchar*)oldbase));
+                ncases = (struct gsbc **)pcases[0] - pcases;
+                for (i = 1; i < ncases; i++)
+                    pcases[i] = (void*)((uchar*)newbase + ((uchar*)pcases[i] - (uchar*)oldbase))
+                ;
+                for (i = 0; i < ncases; i++)
+                    if (gs_gc_trace_bco_instrs(err, oldbase, newbase, pcases[i]) < 0) return -1
+                ;
+                return 0;
+            }
+            case gsbc_op_danalyze: {
+                struct gsbc **pcases;
+                int ncases;
+
+                pcases = ACE_DANALYZE_CASES(ip);
+                ncases = ACE_DANALYZE_NUMCONSTRS(ip);
+
+                for (i = 0; i < ncases + 1; i++) {
+                    pcases[i] = (void*)((uchar*)newbase + ((uchar*)pcases[i] - (uchar*)oldbase));
+                    if (gs_gc_trace_bco_instrs(err, oldbase, newbase, pcases[i]) < 0) return -1;
+                }
+            }
+            case gsbc_op_undef:
+            case gsbc_op_enter:
+            case gsbc_op_yield:
+            case gsbc_op_ubprim:
+            case gsbc_op_lprim:
+            case gsbc_op_body:
+                return 0;
+            default:
+                gsstring_builder_print(err, UNIMPL("%P: Skip instruction %d"), ip->pos, ip->instr);
+                return -1;
+        }
+    }
 }
 
 /* §section Records */
