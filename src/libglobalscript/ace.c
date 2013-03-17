@@ -605,19 +605,19 @@ ace_push_force(struct ace_thread *thread)
 
     ip = thread->st.running.ip;
 
-    cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont_force) + ip->args[1] * sizeof(gsvalue));
+    cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont_force) + ACE_FORCE_NUMFVS(ip) * sizeof(gsvalue));
     force = (struct gsbc_cont_force *)cont;
     if (!cont) return;
 
     cont->node = gsbc_cont_force;
     cont->pos = ip->pos;
-    force->code = thread->subexprs[ip->args[0]];
-    force->numfvs = ip->args[1];
-    for (i = 0; i < ip->args[1]; i++) {
-        force->fvs[i] = thread->regs[ip->args[2+i]];
+    force->code = thread->subexprs[ACE_FORCE_CONT(ip)];
+    force->numfvs = ACE_FORCE_NUMFVS(ip);
+    for (i = 0; i < ACE_FORCE_NUMFVS(ip); i++) {
+        force->fvs[i] = thread->regs[ACE_FORCE_FV(ip, i)];
     }
 
-    thread->st.running.ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
+    thread->st.running.ip = ACE_FORCE_SKIP(ip);
     return;
 }
 

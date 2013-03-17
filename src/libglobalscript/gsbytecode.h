@@ -94,6 +94,12 @@ enum {
 #define ACE_APP_ARG(ip, n) ((ip)->args[1 + (n)])
 #define ACE_APP_SKIP(ip) GS_NEXT_BYTECODE((ip), 1 + ACE_APP_NUMARGS(ip))
 
+#define ACE_FORCE_SIZE(nfvs) GS_SIZE_BYTECODE(2 + nfvs)
+#define ACE_FORCE_CONT(ip) ((ip)->args[0])
+#define ACE_FORCE_NUMFVS(ip) ((ip)->args[1])
+#define ACE_FORCE_FV(ip, n) ((ip)->args[2 + (n)])
+#define ACE_FORCE_SKIP(ip) GS_NEXT_BYTECODE(ip, 2 + ACE_FORCE_NUMFVS(ip))
+
 #define ACE_STRICT_SIZE(nfvs) GS_SIZE_BYTECODE(2 + nfvs)
 #define ACE_STRICT_CONT(ip) ((ip)->args[0])
 #define ACE_STRICT_NUMFVS(ip) ((ip)->args[1])

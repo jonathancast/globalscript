@@ -822,7 +822,7 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
         ;
 
-        pcl->size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
+        pcl->size += ACE_FORCE_SIZE(cty->numfvs);
     } else if (gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")) {
         int creg;
         struct gsbc_code_item_type *cty;
@@ -2194,27 +2194,25 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
 
         pcl->phase = rtops;
 
-        pcode = (struct gsbc *)pcl->pout;
+        SETUP_PCODE(gsbc_op_force);
 
         creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[0]);
 
-        pcode->pos = p->pos;
-        pcode->instr = gsbc_op_force;
-        pcode->args[0] = (uchar)creg;
+        ACE_FORCE_CONT(pcode) = (uchar)creg;
 
         if (!(cty = pcl->subexpr_types[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
         ;
 
-        pcode->args[1] = (uchar)cty->numfvs;
+        ACE_FORCE_NUMFVS(pcode) = (uchar)cty->numfvs;
         for (i = 0; i < cty->numfvs; i++) {
             int regarg;
 
             regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i]);
-            pcode->args[2 + i] = (uchar)regarg;
+            ACE_FORCE_FV(pcode, i) = (uchar)regarg;
         }
 
-        pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + cty->numfvs);
+        pcl->pout = ACE_FORCE_SKIP(pcode);
     } else if (gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")) {
         int creg = 0;
         struct gsbc_code_item_type *cty;
