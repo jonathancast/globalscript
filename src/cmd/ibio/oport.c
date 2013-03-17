@@ -305,7 +305,7 @@ ibio_write_process_main(void *p)
         active = oport->active || oport->writing;
         runnable = 1;
         if (active && gs_sys_memory_exhausted()) {
-            if (oport->writing_thread) {
+            if (c || oport->writing) {
                 api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "Out of memory");
                 ibio_oport_unlink_from_thread(oport->writing_thread, oport);
             }
@@ -559,6 +559,7 @@ ibio_alloc_oport()
     res->writing = 0;
     res->waiting_to_write = 0;
     res->waiting_to_write_end = &res->waiting_to_write;
+    res->writing_thread = 0;
 
     /* Output channel (linked list of segments) can be created dynamically */
 
