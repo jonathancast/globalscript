@@ -74,6 +74,35 @@ have_document:
     ;
     gscheck_program(docfilename, symtable, gsentrypos, gsentrytype);
     if (gsflag_stat_collection) fprint(2, "Before garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
+    if (gs_sys_should_gc()) {
+        struct gsstringbuilder err;
+        gsvalue gctemp;
+
+        err = gsreserve_string_builder();
+
+        gs_sys_wait_for_gc();
+        if (gs_sys_start_gc(&err) < 0) {
+            gsfinish_string_builder(&err);
+            gsfatal("GC failed: %s", err.start);
+        }
+
+        /* §paragraph{Trace roots} */
+        err = gsreserve_string_builder(); /* Old value of §ccode{err} is no longer valid */
+        if (
+            gs_gc_trace_pos(&err, &gsentrypos) < 0
+            || GS_GC_TRACE(err, gsentrypoint) < 0
+            || gs_client_pre_ace_gc_trace_roots(&err) < 0
+        ) {
+            gsfinish_string_builder(&err);
+            gsfatal("GC failed: %s", err.start);
+        }
+
+        if (gs_sys_finish_gc(&err) < 0) {
+            gsfinish_string_builder(&err);
+            gsfatal("GC failed: %s", err.start);
+        }
+    }
+    if (gsflag_stat_collection) fprint(2, "After garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r")
     ;
