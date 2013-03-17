@@ -127,7 +127,7 @@ api_thread_pool_main(void *arg)
     do {
         hadthread = suspended_runnable_thread = 0;
         if (gs_sys_memory_exhausted()) {
-            gswarning("%s:%d: About to terminate on out of memory", __FILE__, __LINE__);
+            gswarning("%s:%d: About to terminate on out of memory (%dMB used)", __FILE__, __LINE__, gs_sys_memory_allocated_size() / 0x400 / 0x400);
             api_take_thread_queue();
             for (threadnum = 0; threadnum < API_NUMTHREADS; threadnum++) {
                 thread = &api_thread_queue->threads[threadnum];
