@@ -603,61 +603,34 @@ have_thread:
 
 /* §section Allocation */
 
-#define API_CODE_SEGMENT_BLOCK_SIZE 0x400
-static Lock api_code_segment_lock;
-static void *api_code_segment_nursury;
-static struct gs_block_class api_code_segment_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "API code segments",
+#define API_CODE_SEGMENT_BLOCK_SIZE sizeof(gsvalue) * 0x400
+
+static struct gs_sys_aligned_block_suballoc_info api_code_segment_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "API code segments",
+    },
+    /* align = */ API_CODE_SEGMENT_BLOCK_SIZE,
 };
-static int api_code_segment_gc_pre_callback_registered;
-static gs_sys_gc_pre_callback api_code_segment_gc_pre_callback;
 
 static
 struct api_code_segment *
 api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
 {
+    void *buf, *bufend;
     struct api_code_segment *res;
-    struct gs_blockdesc *api_code_segment_nursury_seg;
-    struct api_instr *start_of_instrs, *end_of_instrs;
 
-    lock(&api_code_segment_lock);
-    if (!api_code_segment_nursury) {
-        if (!api_code_segment_gc_pre_callback_registered) {
-            gs_sys_gc_pre_callback_register(api_code_segment_gc_pre_callback);
-            api_code_segment_gc_pre_callback_registered = 1;
-        }
-        api_code_segment_nursury_seg = gs_sys_block_alloc(&api_code_segment_descr);
-        api_code_segment_nursury = START_OF_BLOCK(api_code_segment_nursury_seg);
-    } else {
-        api_code_segment_nursury_seg = BLOCK_CONTAINING(api_code_segment_nursury);
-    }
-    res = api_code_segment_nursury;
-    api_code_segment_nursury =
-        (uchar*)api_code_segment_nursury
-        - (uintptr)api_code_segment_nursury % API_CODE_SEGMENT_BLOCK_SIZE
-        + API_CODE_SEGMENT_BLOCK_SIZE
-    ;
-    start_of_instrs = &res->instrs[0];
-    end_of_instrs = api_code_segment_nursury;
-    res->size = end_of_instrs - start_of_instrs;
+    gs_sys_aligned_block_suballoc(&api_code_segment_info, &buf, &bufend);
+    res = buf;
+
+    res->size = ((uchar*)bufend - (uchar*)res->instrs) / sizeof(res->instrs[0]);
     res->ip = res->size - 1;
     res->instrs[res->ip].instr = entry;
     res->instrs[res->ip].presult = api_alloc_promise();
-    if (api_code_segment_nursury >= END_OF_BLOCK(api_code_segment_nursury_seg))
-        api_code_segment_nursury = 0
-    ;
-    unlock(&api_code_segment_lock);
-    return res;
-}
 
-static
-void
-api_code_segment_gc_pre_callback()
-{
-    api_code_segment_nursury = 0;
+    return res;
 }
 
 static gstypecode api_promise_eval(gsvalue);

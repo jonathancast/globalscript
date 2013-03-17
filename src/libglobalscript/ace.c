@@ -1477,49 +1477,27 @@ ace_set_registers_from_bco(struct ace_thread *thread, struct gsbco *code)
     return ip;
 }
 
-static Lock ace_thread_lock;
-static struct gs_block_class ace_thread_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "ACE Thread",
-};
-static void *ace_thread_nursury;
-static int ace_thread_pre_gc_callback_registered;
-static gs_sys_gc_pre_callback ace_thread_pre_gc_callback;
-
 #define ACE_STACK_ARENA_SIZE (sizeof(gsvalue) * 0x400)
+
+static struct gs_sys_aligned_block_suballoc_info ace_thread_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "ACE Thread",
+    },
+    /* align = */ ACE_STACK_ARENA_SIZE,
+};
 
 struct ace_thread *
 ace_thread_alloc()
 {
-    struct gs_blockdesc *nursury_block;
     struct ace_thread *thread;
     void *stackbase, *stackbot;
 
-    lock(&ace_thread_lock);
-        if (ace_thread_nursury) {
-            thread = ace_thread_nursury;
-            nursury_block = BLOCK_CONTAINING(thread);
-        } else {
-            nursury_block = gs_sys_block_alloc(&ace_thread_descr);
-            thread = START_OF_BLOCK(nursury_block);
-            if (!ace_thread_pre_gc_callback_registered) {
-                gs_sys_gc_pre_callback_register(ace_thread_pre_gc_callback);
-                ace_thread_pre_gc_callback_registered = 1;
-            }
-        }
-        stackbase = (uchar*)thread;
-        if ((uintptr)stackbase % ACE_STACK_ARENA_SIZE)
-            stackbase = (uchar*)stackbase - ((uintptr)stackbase % ACE_STACK_ARENA_SIZE)
-        ;
-        stackbot = (uchar*)stackbase + ACE_STACK_ARENA_SIZE;
-        if ((uchar*)stackbot >= (uchar*)END_OF_BLOCK(nursury_block))
-            ace_thread_nursury = 0
-        ; else
-            ace_thread_nursury = stackbot
-        ;
-    unlock(&ace_thread_lock);
+    gs_sys_aligned_block_suballoc(&ace_thread_info, &stackbase, &stackbot);
+
+    thread = (struct ace_thread *)stackbase;
 
     memset(&thread->lock, 0, sizeof(thread->lock));
     lock(&thread->lock);
@@ -1529,12 +1507,6 @@ ace_thread_alloc()
     thread->stacklimit = (uchar*)thread + sizeof(*thread);
 
     return thread;
-}
-
-void
-ace_thread_pre_gc_callback()
-{
-    ace_thread_nursury = 0;
 }
 
 /* §section §ags{.lprim} Blocking Allocation */

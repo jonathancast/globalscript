@@ -13,42 +13,24 @@
 static gstypecode ibio_channel_eval(gsvalue);
 static gsvalue ibio_channel_remove_indir(gsvalue);
 
-static struct gs_block_class ibio_channel_segment_descr = {
-    /* evaluator = */ ibio_channel_eval,
-    /* indirection_dereferencer = */ ibio_channel_remove_indir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO Channels",
+static struct gs_sys_aligned_block_suballoc_info ibio_channel_segment_info = {
+    /* descr = */ {
+        /* evaluator = */ ibio_channel_eval,
+        /* indirection_dereferencer = */ ibio_channel_remove_indir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Channels",
+    },
+    /* align = */ IBIO_CHANNEL_SEGMENT_SIZE,
 };
-static void *ibio_channel_segment_nursury;
-static int ibio_channel_segment_gc_pre_callback_registered;
-static gs_sys_gc_pre_callback ibio_channel_segment_gc_pre_callback;
-static Lock ibio_channel_segment_lock;
 
 struct ibio_channel_segment *
 ibio_alloc_channel_segment()
 {
-    struct gs_blockdesc *nursury_block;
+    void *buf;
     struct ibio_channel_segment *res;
 
-    lock(&ibio_channel_segment_lock);
-    if (ibio_channel_segment_nursury) {
-        res = ibio_channel_segment_nursury;
-        nursury_block = BLOCK_CONTAINING(res);
-        if ((char*)ibio_channel_segment_nursury >= (char*)END_OF_BLOCK(nursury_block) - IBIO_CHANNEL_SEGMENT_SIZE)
-            ibio_channel_segment_nursury = 0
-        ; else
-            ibio_channel_segment_nursury = (char*)res + IBIO_CHANNEL_SEGMENT_SIZE
-        ;
-    } else {
-        if (!ibio_channel_segment_gc_pre_callback_registered) {
-            gs_sys_gc_pre_callback_register(ibio_channel_segment_gc_pre_callback);
-            ibio_channel_segment_gc_pre_callback_registered = 1;
-        }
-        nursury_block = gs_sys_block_alloc(&ibio_channel_segment_descr);
-        res = START_OF_BLOCK(nursury_block);
-        ibio_channel_segment_nursury = (char*)nursury_block + IBIO_CHANNEL_SEGMENT_SIZE;
-    }
-    unlock(&ibio_channel_segment_lock);
+    gs_sys_aligned_block_suballoc(&ibio_channel_segment_info, &buf, 0);
+    res = (struct ibio_channel_segment *)buf;
 
     memset(&res->lock, 0, sizeof(res->lock));
     lock(&res->lock);
@@ -57,13 +39,6 @@ ibio_alloc_channel_segment()
     res->extent = res->items;
 
     return res;
-}
-
-static
-void
-ibio_channel_segment_gc_pre_callback()
-{
-    ibio_channel_segment_nursury = 0;
 }
 
 gsvalue *

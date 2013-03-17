@@ -874,59 +874,20 @@ ibio_alloc_iport(struct ibio_channel_segment *chan)
 
 #define IBIO_READ_BUFFER_SIZE 0x10000
 
-static struct gs_block_class ibio_iport_read_buffer_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "IBIO Read Buffers",
+static struct gs_sys_aligned_block_suballoc_info ibio_iport_read_buffer_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Read Buffers",
+    },
+    /* align = */ IBIO_READ_BUFFER_SIZE,
 };
-static void *ibio_iport_read_buffer_nursury;
-static Lock ibio_iport_read_buffer_lock;
-static int ibio_iport_read_buffer_pre_gc_callback_registered;
-static gs_sys_gc_pre_callback ibio_iport_read_buffer_pre_gc_callback;
 
 static
 void
 ibio_setup_iport_read_buffer(struct ibio_iport *iport)
 {
-    struct gs_blockdesc *nursury_block;
-    void *bufbase, *buf, *bufextent;
-
-    lock(&ibio_iport_read_buffer_lock);
-    {
-        if (ibio_iport_read_buffer_nursury) {
-            buf = ibio_iport_read_buffer_nursury;
-            nursury_block = BLOCK_CONTAINING(buf);
-        } else {
-            if (!ibio_iport_read_buffer_pre_gc_callback_registered) {
-                gs_sys_gc_pre_callback_register(ibio_iport_read_buffer_pre_gc_callback);
-                ibio_iport_read_buffer_pre_gc_callback_registered = 1;
-            }
-            nursury_block = gs_sys_block_alloc(&ibio_iport_read_buffer_descr);
-            buf = START_OF_BLOCK(nursury_block);
-        }
-        bufbase = (uchar*)buf;
-        if ((uintptr)bufbase % IBIO_READ_BUFFER_SIZE)
-            bufbase = (uchar*)bufbase - ((uintptr)bufbase % IBIO_READ_BUFFER_SIZE)
-        ;
-        bufextent = (uchar*)bufbase + IBIO_READ_BUFFER_SIZE;
-        if ((uchar*)bufextent >= (uchar*)END_OF_BLOCK(nursury_block))
-            ibio_iport_read_buffer_nursury = 0
-        ; else
-            ibio_iport_read_buffer_nursury = bufextent
-        ;
-    }
-    unlock(&ibio_iport_read_buffer_lock);
-
-    iport->buf = buf;
-    iport->bufstart = buf;
-    iport->bufend = buf;
-    iport->bufextent = bufextent;
-}
-
-static
-void
-ibio_iport_read_buffer_pre_gc_callback()
-{
-    ibio_iport_read_buffer_nursury = 0;
+    gs_sys_aligned_block_suballoc(&ibio_iport_read_buffer_info, &iport->buf, &iport->bufextent);
+    iport->bufstart = iport->bufend = iport->buf;
 }

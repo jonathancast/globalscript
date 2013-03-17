@@ -88,34 +88,23 @@ gsbio_alloc_uxio_ichannel()
     return res;
 }
 
-struct gs_block_class uxio_channel_buffer = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "UXIO Buffers",
+struct gs_sys_aligned_block_suballoc_info uxio_channel_buffer_info = {
+    /* desc = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "UXIO Buffers",
+    },
+    /* align = */ UXIO_IO_BUFFER_SIZE,
 };
-struct uxio_channel_buffer_segment {
-    struct gs_blockdesc desc; /* class = uxio_channel_buffer */
-};
-void *uxio_channel_buffer_nursury;
 
 static
 void *
 gsbio_alloc_uxio_buffer()
 {
-    struct uxio_channel_buffer_segment *nursury_block;
     void *res, *end;
 
-    if (!uxio_channel_buffer_nursury) {
-        nursury_block = gs_sys_block_alloc(&uxio_channel_buffer);
-        uxio_channel_buffer_nursury = START_OF_BLOCK(nursury_block);
-    } else {
-        nursury_block = (struct uxio_channel_buffer_segment *)BLOCK_CONTAINING(uxio_channel_buffer_nursury);
-    }
-
-    res = uxio_channel_buffer_nursury;
-    end = UXIO_END_OF_IO_BUFFER(res);
-    uxio_channel_buffer_nursury = (uchar*)end >= (uchar*)END_OF_BLOCK(nursury_block) ? 0 : end;
+    gs_sys_aligned_block_suballoc(&uxio_channel_buffer_info, &res, &end);
 
     return res;
 }
