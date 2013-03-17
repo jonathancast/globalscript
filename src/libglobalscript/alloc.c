@@ -405,3 +405,57 @@ gs_sys_first_global_block_suballoc_gc_pre_callback()
         info = info->next;
     } while (info != gs_sys_first_global_block_suballoc_info);
 }
+
+static struct gs_sys_aligned_block_suballoc_info *gs_sys_first_aligned_block_suballoc_info;
+static gs_sys_gc_pre_callback gs_sys_aligned_block_suballoc_gc_pre_callback;
+
+void
+gs_sys_aligned_block_suballoc(struct gs_sys_aligned_block_suballoc_info *info, void **pbeg, void **pend)
+{
+    struct gs_blockdesc *nursury_block;
+    void *bufbase, *buf, *bufextent;
+
+    lock(&info->lock);
+
+    if (info->nursury) {
+        buf = info->nursury;
+        nursury_block = BLOCK_CONTAINING(buf);
+    } else {
+        if (!info->next) {
+            lock(&gs_allocator_lock);
+            if (gs_sys_first_aligned_block_suballoc_info) {
+                info->next = gs_sys_first_aligned_block_suballoc_info->next;
+                gs_sys_first_aligned_block_suballoc_info->next = info;
+            } else {
+                info->next = gs_sys_first_aligned_block_suballoc_info = info;
+                gs_sys_gc_pre_callback_register(gs_sys_aligned_block_suballoc_gc_pre_callback);
+            }
+            unlock(&gs_allocator_lock);
+        }
+        nursury_block = gs_sys_block_alloc(&info->descr);
+        buf = START_OF_BLOCK(nursury_block);
+    }
+    bufbase = (uchar*)buf;
+    if ((uintptr)bufbase % info->align)
+        bufbase = (uchar*)bufbase - ((uintptr)bufbase % info->align)
+    ;
+    bufextent = (uchar*)bufbase + info->align;
+    info->nursury = (uchar*)bufextent >= (uchar*)END_OF_BLOCK(nursury_block) ? 0 : bufextent;
+
+    unlock(&info->lock);
+
+    *pbeg = buf;
+    *pend = bufextent;
+}
+
+void
+gs_sys_aligned_block_suballoc_gc_pre_callback()
+{
+    struct gs_sys_aligned_block_suballoc_info *info;
+
+    info = gs_sys_first_aligned_block_suballoc_info;
+    do {
+        info->nursury = 0;
+        info = info->next;
+    } while (info != gs_sys_first_aligned_block_suballoc_info);
+}

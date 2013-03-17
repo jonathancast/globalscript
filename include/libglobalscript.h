@@ -521,6 +521,15 @@ struct gs_sys_global_block_suballoc_info {
 };
 void *gs_sys_global_block_suballoc(struct gs_sys_global_block_suballoc_info *, ulong sz);
 
+struct gs_sys_aligned_block_suballoc_info {
+    struct gs_block_class descr;
+    ulong align;
+    Lock lock;
+    void *nursury;
+    struct gs_sys_aligned_block_suballoc_info *next;
+};
+void gs_sys_aligned_block_suballoc(struct gs_sys_aligned_block_suballoc_info *, void **, void **);
+
 gsumemorysize gs_sys_memory_allocated_size(void);
 int gs_sys_memory_exhausted(void);
 
