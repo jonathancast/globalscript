@@ -450,7 +450,6 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.codeitem.cogvars.parser_cogvar.kw.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
-parser.fail	.gvar	# Temp
 cogvar.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.cogvars.parser_cogvar.kw.re
 cogvar.p2	.apply	parser.*>	rune.t	string.t	string.t	|	cogvar.kw.p	gsdl.ags.syntax.whitespace
 cogvar.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	cogvar.p2
