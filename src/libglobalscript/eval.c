@@ -507,8 +507,9 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
     bco = *ppbco;
 
     if (bco->tag == gsbc_gcforward) {
-        gsstring_builder_print(err, UNIMPL("gs_gc_trace_bco: bco is a forwarding pointer"));
-        return -1;
+        fwd = (struct gsbco_forward *)bco;
+        *ppbco = fwd->dest;
+        return 0;
     }
 
     newbco = gsreservebytecode(bco->size);
