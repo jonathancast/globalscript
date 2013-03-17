@@ -540,15 +540,15 @@ ace_alloc_eprim(struct ace_thread *thread)
 
     ip = thread->st.running.ip;
 
-    prim = gsreserveeprims(sizeof(*prim) + ip->args[1] * sizeof(gsvalue));
+    prim = gsreserveeprims(sizeof(*prim) + ACE_EPRIM_NUMARGS(ip) * sizeof(gsvalue));
     prim->pos = ip->pos;
-    prim->index = ip->args[0];
-    for (j = 0; j < ip->args[1]; j++) {
-        if (ip->args[2 + j] >= thread->nregs) {
+    prim->index = ACE_EPRIM_INDEX(ip);
+    for (j = 0; j < ACE_EPRIM_NUMARGS(ip); j++) {
+        if (ACE_EPRIM_ARG(ip, j) >= thread->nregs) {
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
             return;
         }
-        prim->arguments[j] = thread->regs[ip->args[2 + j]];
+        prim->arguments[j] = thread->regs[ACE_EPRIM_ARG(ip, j)];
     }
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {
@@ -557,7 +557,7 @@ ace_alloc_eprim(struct ace_thread *thread)
     }
     thread->regs[thread->nregs] = (gsvalue)prim;
     thread->nregs++;
-    thread->st.running.ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
+    thread->st.running.ip = ACE_EPRIM_SKIP(ip);
 
     return;
 }

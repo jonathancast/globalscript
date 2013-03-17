@@ -496,7 +496,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
                 if (i < p->numarguments) i++;
                 nargs = p->numarguments - i;
 
-                cl.size += GS_SIZE_BYTECODE(2 + nargs); /* API index + # args + args */
+                cl.size += ACE_EPRIM_SIZE(nargs); /* API index + # args + args */
             } else {
                 cl.size += GS_SIZE_BYTECODE(0);
             }
@@ -1490,16 +1490,24 @@ static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_co
 static int gsbc_byte_compile_cont_push_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_byte_compile_code_or_api_op_closure *);
 
+#define SETUP_PCODE(op) \
+    do { \
+        pcode = (struct gsbc *)pcl->pout; \
+        pcode->pos = p->pos; \
+        pcode->instr = op; \
+    } while (0)
+
 static
 void
 gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco *pbco)
 {
-    struct gsbc_byte_compile_code_or_api_op_closure cl;
+    struct gsbc_byte_compile_code_or_api_op_closure cl, *pcl;
     int i;
     struct gsbco **psubcode;
     struct gsbc *pcode;
 
     gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
+    pcl = &cl;
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")) {
@@ -1550,35 +1558,32 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             ;
             cl.regs[cl.nregs] = p->label;
 
-            pcode = (struct gsbc *)cl.pout;
-            pcode->pos = p->pos;
             if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
                 int nargs, first_arg;
                 struct gsregistered_prim *prim;
 
                 prim = gsprims_lookup_prim(prims, p->arguments[2]->name);
 
-                pcode->pos = p->pos;
-                pcode->instr = gsbc_op_eprim;
-                pcode->args[0] = prim->index;
+                SETUP_PCODE(gsbc_op_eprim);
+                ACE_EPRIM_INDEX(pcode) = prim->index;
 
-                /* §paragraph{Skipping free type variables} */
+                /* §paragraph{Skipping type arguments} */
                 for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
                 if (i < p->numarguments) i++;
 
                 nargs = p->numarguments - i;
                 first_arg = i;
-                pcode->args[1] = (uchar)nargs;
+                ACE_EPRIM_NUMARGS(pcode) = (uchar)nargs;
                 for (i = first_arg; i < p->numarguments; i++) {
                     int regarg;
 
                     regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                    pcode->args[2 + i - first_arg] = (uchar)regarg;
+                    ACE_EPRIM_ARG(pcode, i - first_arg) = (uchar)regarg;
                 }
 
-                cl.pout = GS_NEXT_BYTECODE(pcode, 2 + nargs);
+                cl.pout = ACE_EPRIM_SKIP(pcode);
             } else {
-                pcode->instr = gsbc_op_unknown_eprim;
+                SETUP_PCODE(gsbc_op_unknown_eprim);
                 cl.pout = GS_NEXT_BYTECODE(pcode, 0);
             }
             cl.nregs++;
@@ -1693,13 +1698,6 @@ gsbc_byte_compile_type_arg_code_op(struct gsparsedline *p, struct gsbc_byte_comp
     }
     return 1;
 }
-
-#define SETUP_PCODE(op) \
-    do { \
-        pcode = (struct gsbc *)pcl->pout; \
-        pcode->pos = p->pos; \
-        pcode->instr = op; \
-    } while (0)
 
 #define ADD_LABEL_TO_REGS_WITH_TYPE(ty) \
     do { \
