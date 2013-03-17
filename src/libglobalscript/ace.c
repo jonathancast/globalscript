@@ -774,12 +774,12 @@ ace_enter(struct ace_thread *thread)
 
     ip = thread->st.running.ip;
 
-    if (ip->args[0] >= thread->nregs) {
-        ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ip->args[0]);
+    if (ACE_ENTER_ARG(ip) >= thread->nregs) {
+        ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ACE_ENTER_ARG(ip));
         return;
     }
 
-    prog = thread->regs[ip->args[0]];
+    prog = thread->regs[ACE_ENTER_ARG(ip)];
 
     for (;;) {
         if (!IS_PTR(prog)) {

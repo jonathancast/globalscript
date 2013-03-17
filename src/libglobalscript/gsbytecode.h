@@ -141,6 +141,10 @@ enum {
 #define ACE_UNDEF_SIZE() GS_SIZE_BYTECODE(0)
 #define ACE_UNDEF_SKIP(ip) GS_NEXT_BYTECODE(ip, 0)
 
+#define ACE_ENTER_SIZE() GS_SIZE_BYTECODE(1)
+#define ACE_ENTER_ARG(ip) ((ip)->args[0])
+#define ACE_ENTER_SKIP(ip) GS_NEXT_BYTECODE(ip, 1)
+
 #define ACE_YIELD_SIZE() GS_SIZE_BYTECODE(1)
 #define ACE_YIELD_ARG(ip) ((ip)->args[0])
 #define ACE_YIELD_SKIP(ip) GS_NEXT_BYTECODE(ip, 1)

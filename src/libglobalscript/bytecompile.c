@@ -872,7 +872,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
     if (gssymceq((*pp)->directive, gssymopyield, gssymcodeop, ".yield")) {
         pcl->size += ACE_YIELD_SIZE();
     } else if (gssymceq((*pp)->directive, gssymopenter, gssymcodeop, ".enter")) {
-        pcl->size += GS_SIZE_BYTECODE(1);
+        pcl->size += ACE_ENTER_SIZE();
     } else if (gssymceq((*pp)->directive, gssymopubprim, gssymcodeop, ".ubprim")) {
         struct gsregistered_primset *prims;
 
@@ -2308,13 +2308,13 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
     } else if (gssymceq((*pp)->directive, gssymopenter, gssymcodeop, ".enter")) {
         int reg = 0;
 
-        pcode = (struct gsbc *)pcl->pout;
+        SETUP_PCODE(gsbc_op_enter);
+
         gsargcheck(*pp, 0, "target");
         reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
-        pcode->pos = (*pp)->pos;
-        pcode->instr = gsbc_op_enter;
-        pcode->args[0] = (uchar)reg;
-        pcl->pout = GS_NEXT_BYTECODE(pcode, 1);
+        ACE_ENTER_ARG(pcode) = (uchar)reg;
+
+        pcl->pout = ACE_ENTER_SKIP(pcode);
     } else if (gssymceq((*pp)->directive, gssymopubprim, gssymcodeop, ".ubprim")) {
         struct gsregistered_primset *prims;
 
