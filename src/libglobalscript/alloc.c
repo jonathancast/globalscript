@@ -445,7 +445,7 @@ gs_sys_aligned_block_suballoc(struct gs_sys_aligned_block_suballoc_info *info, v
     unlock(&info->lock);
 
     *pbeg = buf;
-    *pend = bufextent;
+    if (pend) *pend = bufextent;
 }
 
 void
