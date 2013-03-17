@@ -509,6 +509,9 @@ typedef uintptr gsumemorysize; /* TODO: Horrid hack */
 
 void *gs_sys_block_alloc(registered_block_class cl);
 
+/* ↓ Deprecated */
+void *gs_sys_block_suballoc(registered_block_class, void**, ulong, ulong);
+
 struct gs_sys_global_block_suballoc_info {
     struct gs_block_class descr;
     ulong align;
@@ -517,8 +520,6 @@ struct gs_sys_global_block_suballoc_info {
     struct gs_sys_global_block_suballoc_info *next;
 };
 void *gs_sys_global_block_suballoc(struct gs_sys_global_block_suballoc_info *, ulong sz);
-/* ↓ Deprecated */
-void *gs_sys_block_suballoc(registered_block_class, void**, ulong, ulong);
 
 gsumemorysize gs_sys_memory_allocated_size(void);
 int gs_sys_memory_exhausted(void);
