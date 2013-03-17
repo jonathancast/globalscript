@@ -2395,10 +2395,7 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
 
         nconstrs = (*pp)->numarguments - 1;
 
-        pcode = (struct gsbc *)pcl->pout;
-
-        pcode->pos = (*pp)->pos;
-        pcode->instr = gsbc_op_analyze;
+        SETUP_PCODE(gsbc_op_analyze);
 
         reg = gsbc_find_register(*pp, pcl->regs, pcl->nregs, (*pp)->arguments[0]);
         ACE_ANALYZE_SCRUTINEE(pcode) = reg;
