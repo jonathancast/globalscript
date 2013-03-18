@@ -204,21 +204,18 @@ gs_sys_gc_allow_collection(struct gsstringbuilder *err)
     }
     unlock(&gs_allocator_lock);
 
-    if (err) gsstring_builder_print(err, UNIMPL("gs_sys_gc_allow_collection: coordinate with all processes to GC: signal we're ready"));
-    return -1;
-
     lock(&gs_allocator_lock);
     gs_sys_gc_num_procs_waiting++;
     unlock(&gs_allocator_lock);
 
-    if (err) gsstring_builder_print(err, UNIMPL("gs_sys_gc_allow_collection: coordinate with all processes to GC: wait for everyone else to be ready"));
-    return -1;
-
-    if (err) gsstring_builder_print(err, UNIMPL("gs_sys_gc_allow_collection: wait for collection to start"));
-    return -1;
-
-    if (err) gsstring_builder_print(err, UNIMPL("gs_sys_gc_allow_collection: wait for collection to finish"));
-    return -1;
+again:
+    lock(&gs_allocator_lock);
+    if (gs_sys_gc_num_procs_waiting) {
+        unlock(&gs_allocator_lock);
+        sleep(1);
+        goto again;
+    }
+    unlock(&gs_allocator_lock);
 
     if (err) gsstring_builder_print(err, UNIMPL("gs_sys_gc_allow_collection: check that collection succeeded"));
     return -1;
