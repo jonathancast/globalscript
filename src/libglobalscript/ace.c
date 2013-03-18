@@ -1316,7 +1316,8 @@ ace_remove_thread(struct ace_thread *thread)
     unlock(&ace_thread_queue->lock);
 }
 
-void ace_up()
+void
+ace_up()
 {
     lock(&ace_thread_queue->lock);
     ace_thread_queue->refcount++;
@@ -1330,11 +1331,6 @@ ace_down()
     ace_thread_queue->refcount--;
     unlock(&ace_thread_queue->lock);
 }
-
-struct ace_rpc {
-    struct gsrpc rpc;
-    gsvalue value;
-};
 
 gstypecode
 ace_start_evaluation(gsvalue val)
