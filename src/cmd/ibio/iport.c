@@ -81,6 +81,8 @@ struct ibio_read_thread_args {
 
 static void ibio_read_thread_main(void *);
 
+static gs_sys_gc_post_callback ibio_read_thread_cleanup;
+
 int
 ibio_read_threads_init(char *err, char *eerr)
 {
@@ -98,6 +100,8 @@ ibio_read_threads_init(char *err, char *eerr)
     ibio_read_threads_up();
 
     api_at_termination(ibio_read_threads_down);
+
+    gs_sys_gc_post_callback_register(ibio_read_thread_cleanup);
 
     ace_up();
 
@@ -129,6 +133,14 @@ ibio_read_thread_main(void *p)
     } while (have_clients || have_threads);
 
     ace_down();
+}
+
+static
+int
+ibio_read_thread_cleanup(struct gsstringbuilder *err)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_read_thread_cleanup"));
+    return -1;
 }
 
 static

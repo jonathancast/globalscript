@@ -30,6 +30,8 @@ static struct gs_sys_global_block_suballoc_info ibio_write_thread_queue_info = {
 struct ibio_write_thread_args {
 };
 
+static gs_sys_gc_post_callback ibio_write_thread_cleanup;
+
 static void ibio_write_thread_main(void *);
 
 int
@@ -49,6 +51,8 @@ ibio_write_threads_init(char *err, char *eerr)
     ibio_write_threads_up();
 
     api_at_termination(ibio_write_threads_down);
+
+    gs_sys_gc_post_callback_register(ibio_write_thread_cleanup);
 
     ace_up();
 
@@ -80,6 +84,13 @@ ibio_write_thread_main(void *p)
     } while (have_clients || have_threads);
 
     ace_down();
+}
+
+int
+ibio_write_thread_cleanup(struct gsstringbuilder *err)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_write_thread_cleanup"));
+    return -1;
 }
 
 static

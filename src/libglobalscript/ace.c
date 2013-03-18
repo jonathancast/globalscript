@@ -25,6 +25,8 @@ static struct gs_sys_global_block_suballoc_info ace_thread_queue_info = {
 
 static void ace_thread_pool_main(void *);
 
+static gs_sys_gc_post_callback ace_thread_cleanup;
+
 int
 ace_init()
 {
@@ -39,6 +41,8 @@ ace_init()
     ace_thread_queue = gs_sys_global_block_suballoc(&ace_thread_queue_info, sizeof(*ace_thread_queue));
 
     memset(ace_thread_queue, 0, sizeof(*ace_thread_queue));
+
+    gs_sys_gc_post_callback_register(ace_thread_cleanup);
 
     ace_up();
 
@@ -278,6 +282,13 @@ no_clients:
         fprint(2, "ACE Finding thread time: %llds %lldms\n", finding_thread_time / 1000 / 1000 / 1000, (finding_thread_time / 1000 / 1000) % 1000);
         fprint(2, "Avg unit of work: %gμs\n", (double)(end_time - start_time) / numthreads_total / 1000);
     }
+}
+
+int
+ace_thread_cleanup(struct gsstringbuilder *err)
+{
+    gsstring_builder_print(err, UNIMPL("ace_thread_cleanup"));
+    return -1;
 }
 
 static
