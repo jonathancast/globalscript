@@ -3,6 +3,7 @@
 #include <libc.h>
 
 #ifdef  __linux__
+#include <sys/mman.h>
 #include <sched.h>
 #endif
 
@@ -24,6 +25,9 @@ struct gsthread_pool_descr {
     void *arg;
 };
 
+static void *gs_sys_unix_stack_nursury;
+static int gs_sys_unix_page_size;
+
 static int gsthread_pool_main(void *);
 
 int
@@ -33,9 +37,21 @@ gscreate_thread_pool(void (*fn)(void *), void *arg, ulong sz)
     void *stack, *top_of_stack;
     struct gsthread_pool_descr *pool_descr;
 
-    stack = gs_sys_block_alloc(&gssys_stack_descr);
+    if (!gs_sys_unix_stack_nursury) gs_sys_unix_stack_nursury = (void*)GS_MAX_PTR;
 
-    top_of_stack = (uchar*)stack + BLOCK_SIZE;
+    stack = gs_sys_unix_stack_nursury;
+    if (mmap(stack, BLOCK_SIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0) == (void *)-1)
+        return -1
+    ;
+
+    if (!gs_sys_unix_page_size)
+        if ((gs_sys_unix_page_size = sysconf(_SC_PAGE_SIZE)) < 0)
+            return -1
+    ;
+
+    if (mprotect(stack, gs_sys_unix_page_size, PROT_NONE) < 0) return -1;
+
+    gs_sys_unix_stack_nursury = top_of_stack = (uchar*)stack + BLOCK_SIZE;
 
     top_of_stack = (uchar*)top_of_stack - sz;
     top_of_stack = (uchar*)top_of_stack - (uintptr)top_of_stack % sizeof(void*);
