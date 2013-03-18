@@ -13,13 +13,6 @@
 
 #include "../gsproc.h"
 
-static struct gs_block_class gssys_stack_descr = {
-    /* evaluator = */ gsnoeval,
-    /* indirection_dereferencer = */ gsnoindir,
-    /* gc_trace = */ gsunimplgc,
-    /* description = */ "C call stack",
-};
-
 struct gsthread_pool_descr {
     void (*fn)(void *);
     void *arg;
