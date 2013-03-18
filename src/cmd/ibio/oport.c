@@ -69,10 +69,14 @@ ibio_write_thread_main(void *p)
     int have_clients, have_threads;
 
     do {
+        gs_sys_gc_allow_collection(0);
+
         lock(&ibio_write_thread_queue->lock);
         have_clients = ibio_write_thread_queue->refcount > 0;
         have_threads = ibio_write_thread_queue->numthreads > 0;
         unlock(&ibio_write_thread_queue->lock);
+
+        sleep(1);
     } while (have_clients || have_threads);
 
     ace_down();
@@ -300,13 +304,24 @@ ibio_write_process_main(void *p)
     nloops = 0;
     buftime = 0;
     do {
+        struct gsstringbuilder err;
+        int gcres;
+
         if (buftime) nloops++;
         lock(&oport->lock);
         active = oport->active || oport->writing;
         runnable = 1;
-        if (active && gs_sys_memory_exhausted()) {
-            if (c || oport->writing) {
-                api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "Out of memory");
+
+        err = gsreserve_string_builder();
+        gcres = gs_sys_gc_allow_collection(&err);
+        gsfinish_string_builder(&err);
+        if (active && (gcres < 0 || gs_sys_memory_exhausted())) {
+            if (oport->writing) {
+                if (gcres < 0) {
+                    api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "GC failed: %s", err.start);
+                } else {
+                    api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "Out of memory");
+                }
                 ibio_oport_unlink_from_thread(oport->writing_thread, oport);
             }
             active = oport->active = 0;

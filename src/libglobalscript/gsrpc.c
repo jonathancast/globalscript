@@ -78,6 +78,8 @@ gsqueue_get_rpc(struct gsrpc_queue *q)
     res = 0;
 
     while (!res) {
+        gs_sys_gc_allow_collection(0);
+
         lock(&q->lock);
         if (!q->refcount) {
             unlock(&q->lock);

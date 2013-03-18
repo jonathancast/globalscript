@@ -93,6 +93,8 @@ ace_thread_pool_main(void *p)
         struct ace_thread *thread;
         outer_loops++;
 
+        if (gs_sys_gc_allow_collection(0) < 0) goto no_clients;
+
         last_tid = tid;
         finding_thread_start_time = nsec();
         do {

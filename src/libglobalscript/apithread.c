@@ -65,17 +65,6 @@ apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table 
         gsfatal("Couldn't create API thread pool: %r")
     ;
 
-    /* OK, this is tricky
-
-        We need to write this code in a very specific order:
-        §begin{itemize}
-            §item First, set up the RPC queue for the main process.
-            §item Then, have the main process actually loop over the RPC queue and handle the messages delivered.
-                This will require taking a dispatch table.
-            §item When creating the API pool initially, have it find the main thread immediately and immediately send a failure message to the main process.
-            §item Then we can develop the API pool and have it api_abort by sending failure messages to the main process.
-        §end{itemize}
-    */
     while (rpc = gsqueue_get_rpc(rpc_queue)) {
         int tag;
 

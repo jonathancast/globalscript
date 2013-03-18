@@ -118,10 +118,14 @@ ibio_read_thread_main(void *p)
     int have_clients, have_threads;
 
     do {
+        gs_sys_gc_allow_collection(0);
+
         lock(&ibio_read_thread_queue->lock);
         have_clients = ibio_read_thread_queue->refcount > 0;
         have_threads = ibio_read_thread_queue->numthreads > 0;
         unlock(&ibio_read_thread_queue->lock);
+
+        sleep(1);
     } while (have_clients || have_threads);
 
     ace_down();
@@ -250,16 +254,26 @@ ibio_read_process_main(void *p)
 
     pos = 0;
     do {
+        struct gsstringbuilder err;
+        int gcres;
+
         lock(&iport->lock);
         active = iport->active || iport->reading;
         runnable = !!iport->reading;
 
-        if (active && gs_sys_memory_exhausted()) {
+        err = gsreserve_string_builder();
+        gcres = gs_sys_gc_allow_collection(&err);
+        gsfinish_string_builder(&err);
+        if (active && (gcres < 0 || gs_sys_memory_exhausted())) {
             struct gsstringbuilder msg;
             struct gspos gspos;
 
             msg = gsreserve_string_builder();
-            gsstring_builder_print(&msg, UNIMPL("Out of memory"));
+            if (gcres < 0) {
+                gsstring_builder_print(&msg, UNIMPL("GC failed: %s"), err.start);
+            } else {
+                gsstring_builder_print(&msg, UNIMPL("Out of memory"));
+            }
             gsfinish_string_builder(&msg);
 
             gspos.file = gsintern_string(gssymfilename, __FILE__);
