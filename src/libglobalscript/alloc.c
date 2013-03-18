@@ -257,6 +257,15 @@ gs_sys_gc_root_callback_register(gs_sys_gc_root_callback *cb)
     gs_sys_gc_root_callbacks[gs_sys_gc_num_root_callbacks++] = cb;
 }
 
+void
+gs_sys_gc_post_callback_register(gs_sys_gc_post_callback *cb)
+{
+    if (gs_sys_gc_num_post_callbacks >= GS_SYS_GC_MAX_NUM_POST_CALLBACKS)
+        gswarning(UNIMPL("Out of gs_sys_gc_post_callbacks"))
+    ;
+    gs_sys_gc_post_callbacks[gs_sys_gc_num_post_callbacks++] = cb;
+}
+
 #define GS_SPLIT_SEGMENT(i, ty, sz) \
     do { \
         if (gs_sys_num_segments >= GS_SYS_MAX_NUM_SEGMENTS) \
