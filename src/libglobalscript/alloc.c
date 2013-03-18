@@ -219,6 +219,9 @@ gs_sys_gc_allow_collection(struct gsstringbuilder *err)
 
     if (err) gsstring_builder_print(err, UNIMPL("gs_sys_gc_allow_collection: wait for collection to finish"));
     return -1;
+
+    if (err) gsstring_builder_print(err, UNIMPL("gs_sys_gc_allow_collection: check that collection succeeded"));
+    return -1;
 }
 
 int
