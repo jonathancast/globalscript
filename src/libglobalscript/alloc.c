@@ -20,7 +20,12 @@ static struct gs_sys_segment {
     } type;
     void *base;
 } gs_sys_segments[GS_SYS_MAX_NUM_SEGMENTS];
-static int gs_sys_gc_num_procs_waiting;
+/* OK, this is confusing.
+   §ccode{gs_sys_gc_running} means main process is somewhere in the GC code.
+   §ccode{gs_sys_in_gc} means there exist 'from space' segments.
+*/
+static int gs_sys_gc_running, gs_sys_gc_num_procs_in_gc;
+static char *gs_sys_gc_error;
 int gs_sys_num_procs = 1;
 static int gs_sys_in_gc;
 
@@ -100,12 +105,13 @@ void
 gs_sys_wait_for_gc()
 {
     lock(&gs_allocator_lock);
-    gs_sys_gc_num_procs_waiting++;
+    gs_sys_gc_running = 1;
+    gs_sys_gc_num_procs_in_gc++;
     unlock(&gs_allocator_lock);
 
 again:
     lock(&gs_allocator_lock);
-    if (gs_sys_gc_num_procs_waiting < gs_sys_num_procs) {
+    if (gs_sys_gc_num_procs_in_gc < gs_sys_num_procs) {
         unlock(&gs_allocator_lock);
         sleep(1);
         goto again;
@@ -185,40 +191,109 @@ gs_sys_finish_gc(struct gsstringbuilder *err)
         }
     }
 
+    gs_sys_in_gc = 0;
+
+    /* GC must have completely succeeded by this point */
+
     gs_sys_post_gc_memory_use = gs_sys_memory_allocated_size();
 
     lock(&gs_allocator_lock);
-    gs_sys_gc_num_procs_waiting = 0;
-    unlock(&gs_allocator_lock);
-
-    return 0;
-}
-
-int
-gs_sys_gc_allow_collection(struct gsstringbuilder *err)
-{
-    lock(&gs_allocator_lock);
-    if (!gs_sys_gc_num_procs_waiting) {
-        unlock(&gs_allocator_lock);
-        return 0;
-    }
-    unlock(&gs_allocator_lock);
-
-    lock(&gs_allocator_lock);
-    gs_sys_gc_num_procs_waiting++;
+        gs_sys_gc_num_procs_in_gc--;
+        gs_sys_gc_running = 0;
+        gs_sys_gc_error = 0;
     unlock(&gs_allocator_lock);
 
 again:
     lock(&gs_allocator_lock);
-    if (gs_sys_gc_num_procs_waiting) {
+    if (gs_sys_gc_num_procs_in_gc) {
         unlock(&gs_allocator_lock);
         sleep(1);
         goto again;
     }
     unlock(&gs_allocator_lock);
 
-    if (err) gsstring_builder_print(err, UNIMPL("gs_sys_gc_allow_collection: check that collection succeeded"));
-    return -1;
+    return 0;
+}
+
+#define GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, nsegs) \
+    do { \
+        for (j = i; j + nsegs < gs_sys_num_segments; j++) \
+            gs_sys_segments[j] = gs_sys_segments[j + nsegs] \
+        ; \
+        gs_sys_num_segments -= nsegs; \
+    } while (0)
+
+void
+gs_sys_gc_failed(char *err)
+{
+    int i, j;
+
+    for (i = 0; i < gs_sys_num_segments; i++) {
+        if (gs_sys_segments[i].type == gs_sys_segment_gc_from_space) {
+            if (GS_SYS_SEGMENT_IS(i - 1, gs_sys_segment_allocated) && GS_SYS_SEGMENT_IS(i + 1, gs_sys_segment_allocated)) {
+                GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, 2);
+            } else if (GS_SYS_SEGMENT_IS(i - 1, gs_sys_segment_allocated)) {
+                GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, 1);
+            } else if (GS_SYS_SEGMENT_IS(i + 1, gs_sys_segment_allocated)) {
+                gs_sys_segments[i].type = gs_sys_segment_allocated;
+                GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i + 1, 1);
+            } else {
+                gs_sys_segments[i].type = gs_sys_segment_allocated;
+            }
+        }
+    }
+
+    gs_sys_in_gc = 0;
+
+    lock(&gs_allocator_lock);
+        gs_sys_gc_num_procs_in_gc--;
+        gs_sys_gc_running = 0;
+        gs_sys_gc_error = err;
+    unlock(&gs_allocator_lock);
+
+again:
+    lock(&gs_allocator_lock);
+    if (gs_sys_gc_num_procs_in_gc) {
+        unlock(&gs_allocator_lock);
+        sleep(1);
+        goto again;
+    }
+    unlock(&gs_allocator_lock);
+}
+
+int
+gs_sys_gc_allow_collection(struct gsstringbuilder *err)
+{
+    lock(&gs_allocator_lock);
+    if (!gs_sys_gc_running) {
+        unlock(&gs_allocator_lock);
+        return 0;
+    }
+    unlock(&gs_allocator_lock);
+
+    lock(&gs_allocator_lock);
+    gs_sys_gc_num_procs_in_gc++;
+    unlock(&gs_allocator_lock);
+
+again:
+    lock(&gs_allocator_lock);
+    if (gs_sys_gc_running) {
+        unlock(&gs_allocator_lock);
+        sleep(1);
+        goto again;
+    }
+    unlock(&gs_allocator_lock);
+
+    lock(&gs_allocator_lock);
+    gs_sys_gc_num_procs_in_gc--;
+    if (gs_sys_gc_error) {
+        if (err) gsstring_builder_print(err, "%s", gs_sys_gc_error);
+        unlock(&gs_allocator_lock);
+        return -1;
+    } else {
+        unlock(&gs_allocator_lock);
+        return 0;
+    }
 }
 
 int
@@ -278,14 +353,6 @@ gs_sys_gc_post_callback_register(gs_sys_gc_post_callback *cb)
         gs_sys_segments[i + 1].base = (uchar*)gs_sys_segments[i].base + sz; \
         gs_sys_segments[i].type = ty; \
         gs_sys_num_segments++; \
-    } while (0)
-
-#define GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, nsegs) \
-    do { \
-        for (j = i; j + nsegs < gs_sys_num_segments; j++) \
-            gs_sys_segments[j] = gs_sys_segments[j + nsegs] \
-        ; \
-        gs_sys_num_segments -= nsegs; \
     } while (0)
 
 /* Needs to lock the program break */
