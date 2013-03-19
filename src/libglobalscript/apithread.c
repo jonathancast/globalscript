@@ -65,18 +65,26 @@ apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table 
         gsfatal("Couldn't create API thread pool: %r")
     ;
 
-    while (rpc = gsqueue_get_rpc(rpc_queue)) {
+    for (;;) {
         int tag;
+
+        do {
+            gs_sys_gc_allow_collection(0);
+
+            rpc = gsqueue_try_get_rpc(rpc_queue);
+
+            if (!rpc) sleep(1);
+        } while (!rpc);
 
         tag = rpc->tag;
         if (tag >= table->numrpcs) {
             unlock(&rpc->lock);
-            gsfatal("%s:%d: apisetupmainthread: Panic: Unknown RPC %d in process of type %s", __FILE__, __LINE__, tag, table->name);
+            gsfatal(UNIMPL("apisetupmainthread: Panic: Unknown RPC %d in process of type %s"), tag, table->name);
         } else {
             (*table->handlers[tag])(rpc);
         }
     }
-    gsfatal("%s:%d: Panic: apisetupmainthread: ran out of RPCs somehow", __FILE__, __LINE__);
+    gsfatal(UNIMPL("Panic: apisetupmainthread: ran out of RPCs somehow"));
 }
 
 /* §section Main loop */

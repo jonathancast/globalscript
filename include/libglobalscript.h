@@ -77,7 +77,7 @@ struct gsrpc_queue *gsqueue_alloc(void);
 
 struct gsrpc *gsqueue_rpc_alloc(ulong);
 
-struct gsrpc *gsqueue_get_rpc(struct gsrpc_queue *);
+struct gsrpc *gsqueue_try_get_rpc(struct gsrpc_queue *);
 void gsqueue_send_rpc(struct gsrpc_queue *, struct gsrpc *);
 
 void gsqueue_down(struct gsrpc_queue *);

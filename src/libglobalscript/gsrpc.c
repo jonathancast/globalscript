@@ -71,35 +71,25 @@ struct gsrpc_queue_link {
 };
 
 struct gsrpc *
-gsqueue_get_rpc(struct gsrpc_queue *q)
+gsqueue_try_get_rpc(struct gsrpc_queue *q)
 {
-    struct gsrpc *res;
+    lock(&q->lock);
+    if (q->head) {
+        struct gsrpc *res;
 
-    res = 0;
+        res = q->head->rpc;
+        q->head = q->head->next;
+        if (!q->head)
+            q->tail = &q->head
+        ;
+        unlock(&q->lock);
 
-    while (!res) {
-        gs_sys_gc_allow_collection(0);
-
-        lock(&q->lock);
-        if (!q->refcount) {
-            unlock(&q->lock);
-            return 0;
-        }
-        if (q->head) {
-            res = q->head->rpc;
-            q->head = q->head->next;
-            if (!q->head)
-                q->tail = &q->head
-            ;
-            unlock(&q->lock);
-        } else {
-            unlock(&q->lock);
-            sleep(1);
-        }
+        lock(&res->lock);
+        return res;
+    } else {
+        unlock(&q->lock);
+        return 0;
     }
-
-    lock(&res->lock);
-    return res;
 }
 
 static struct gs_block_class gsrpc_queue_link_descr = {
