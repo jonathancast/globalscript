@@ -142,7 +142,17 @@ Applications have the rule:
 
 \section{Branch Expressions}
 
-Syntactically, \<\analyze\ \overline{expr_i} \overline{\case\ \overline{p_{ji}}. body_j}\>.
+An \<\analyze\> expression,
+Syntactically, \<\analyze\ \overline{expr_i} \overline{\case\ \overline{p_{ji}}. body_j}\>,
+takes a sequence of scrutinee expressions and matches them against the patterns in the cases,
+top-to-bottom and left-to-right.
+If matching a scrutinee against any pattern diverges or no case matches evaluation diverges;
+otherwise the \<\analyze\> expression evaluates to the body of the first matching case.
+Note: if a case matches and matching the scrutinees against the patterns in a previous case diverges,
+evaluation diverges.
+If a case matches and matching the scrutinees against a subsequent case diverges,
+the evaluation proceeds with the body of the matching case.
+
 This syntax has a `dangling else' problem when a \<\case\> ends with an \<\analyze\> expression;
 this is resolved as usual by associating each \<\case\> to the nearest preceding \<\analyze\> expression.
 This resolution can be over-ridden by putting parentheses around the inner \<\analyze\> expression or its enclosing \<\case\>.
@@ -151,8 +161,30 @@ This resolution can be over-ridden by putting parentheses around the inner \<\an
 
 The judgment form for \<\case\> terms is:
 \begin{haskell}
-    \Gamma;  \sequent \case\ \overline{p_i}. e :: \overline{\tau_i} \rightarrow\ \tau
+    \Gamma;  \sequent \case\ \overline{p_i}. e :: \overline{\tau_i} \rightarrow \tau
 \end{haskell}
+
+Single cases type thus:
+
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent \tau :: *$}
+    \AxiomC{$\Gamma \sequent e :: \tau$}
+    \BinaryInfC{$\Gamma \sequent \case.\;e ::\;\rightarrow\ \tau$}
+\end{prooftree}
+
+\begin{prooftree}
+    \AxiomC{$\Gamma \sequent \tau :: *$}
+    \AxiomC{$\Gamma \sequent p_0 :: \tau_0 \rhd \Gamma'$}
+    \AxiomC{$\Gamma, \Gamma', \sequent \case\;\overline{p_i}.\;e :: \overline{\tau_i} \rightarrow \tau$}
+    \TrinaryInfC{$\Gamma \sequent \case\;p_0,\;\overline{p_i},.\;e :: \tau_0,\;\overline{\tau_i}, \rightarrow \tau$}
+\end{prooftree}
+NB: \<p_0, \overline{p_i}\> should define disjoint sets of variables.
+This has implications.
+The principle is --- hrm.
+So we have a can-be-bound-by set for a pattern --- in a context --- and then an is-bound-by function for sequences/sets of patterns.
+Usually these are the same.
+However, certain patterns do \emph{not} bind variables that can be bound by other patterns (whether they are or not).
+But that all goes in the Patterns chapter (Chapter \ref{patterns}).
 
 \chapter{Patterns}
 \label{patterns}
