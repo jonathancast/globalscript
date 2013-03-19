@@ -45,7 +45,18 @@
 
 \maketitle
 
-A prefix files is a sequence of generators; a document is an expression, semi-colon terminated, followed by a sequence of generators.
+\tableofcontents
+
+\section{Files}
+
+A prefix file is a sequence of generators; a document is an expression, semi-colon terminated, followed by a sequence of generators.
+
+\begin{verbatim}
+document ::=
+      <expr> (:: <type>)?; <gen>*
+    | <expr>? :: <type>; <gen>*
+;
+\end{verbatim}
 
 \section{Type System}
 
