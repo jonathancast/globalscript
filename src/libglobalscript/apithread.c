@@ -624,6 +624,7 @@ api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
 
     res->size = ((uchar*)bufend - (uchar*)res->instrs) / sizeof(res->instrs[0]);
     res->ip = res->size - 1;
+    res->fwd = 0;
     res->instrs[res->ip].instr = entry;
     res->instrs[res->ip].presult = api_alloc_promise();
 

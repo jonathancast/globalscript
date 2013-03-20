@@ -27,6 +27,7 @@ struct api_instr {
 
 struct api_code_segment {
     int size, ip;
+    struct api_code_segment *fwd;
     struct api_instr instrs[];
 };
 
