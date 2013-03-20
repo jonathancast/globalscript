@@ -59,6 +59,8 @@ int gscreate_thread_pool(void (*)(void *), void *, ulong);
 
 /* §section RPC */
 
+struct gsstringbuilder;
+
 struct gsrpc_queue;
 
 struct gsrpc {
@@ -84,9 +86,9 @@ void gsqueue_down(struct gsrpc_queue *);
 
 typedef void (gsrpc_handler)(struct gsrpc *);
 
-/* §section Internal error-reporting stuff */
+int gsqueue_gc_trace(struct gsstringbuilder *, struct gsrpc_queue **);
 
-struct gsstringbuilder;
+/* §section Internal error-reporting stuff */
 
 typedef enum {
     gssymfilename,

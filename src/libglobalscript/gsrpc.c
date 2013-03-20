@@ -6,6 +6,7 @@ struct gsrpc_queue {
     Lock lock;
     int refcount;
     struct gsrpc_queue_link *head, **tail;
+    struct gsrpc_queue *fwd;
     void *nursury;
 };
 
@@ -26,9 +27,7 @@ gsqueue_alloc()
     res = gs_sys_global_block_suballoc(&gsrpc_queue_info, sizeof(*res));
 
     memset(res, 0, sizeof(*res));
-
     res->refcount = 1;
-
     res->tail = &res->head;
 
     return res;
@@ -63,6 +62,47 @@ gsqueue_rpc_alloc(ulong sz)
     memset(res, 0, sz);
 
     return res;
+}
+
+int
+gsqueue_gc_trace(struct gsstringbuilder *err, struct gsrpc_queue **ppq)
+{
+    struct gsrpc_queue *q, *newq;
+
+    q = *ppq;
+
+    if (q->fwd) {
+        *ppq = q->fwd;
+        return 0;
+    }
+    if (!gs_sys_block_in_gc_from_space(q)) return 0;
+
+    newq = gs_sys_global_block_suballoc(&gsrpc_queue_info, sizeof(*newq));
+    memset(&newq->lock, 0, sizeof(newq->lock));
+    newq->refcount = q->refcount;
+    newq->head = q->head;
+    if (newq->head) {
+        gsstring_builder_print(err, UNIMPL("gsqueue_gc_trace: copy tail"));
+        return -1;
+    } else {
+        newq->tail = &newq->head;
+    }
+    newq->fwd = 0;
+    newq->nursury = 0;
+
+    q->fwd = newq;
+
+    if (newq->head) {
+        gsstring_builder_print(err, UNIMPL("gsqueue_gc_trace: evacuate head"));
+        return -1;
+
+        gsstring_builder_print(err, UNIMPL("gsqueue_gc_trace: evacuate tail"));
+        return -1;
+    }
+
+    *ppq = newq;
+
+    return 0;
 }
 
 struct gsrpc_queue_link {
