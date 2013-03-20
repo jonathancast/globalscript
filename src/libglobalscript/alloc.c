@@ -262,15 +262,20 @@ again:
 }
 
 int
-gs_sys_gc_allow_collection(struct gsstringbuilder *err)
+gs_sys_gc_want_collection()
 {
+    int res;
+
     lock(&gs_allocator_lock);
-    if (!gs_sys_gc_running) {
-        unlock(&gs_allocator_lock);
-        return 0;
-    }
+    res = gs_sys_gc_running;
     unlock(&gs_allocator_lock);
 
+    return res;
+}
+
+int
+gs_sys_wait_for_collection_to_finish(struct gsstringbuilder *err)
+{
     lock(&gs_allocator_lock);
     gs_sys_gc_num_procs_in_gc++;
     unlock(&gs_allocator_lock);
@@ -285,7 +290,6 @@ again:
     unlock(&gs_allocator_lock);
 
     lock(&gs_allocator_lock);
-    gs_sys_gc_num_procs_in_gc--;
     if (gs_sys_gc_error) {
         if (err) gsstring_builder_print(err, "%s", gs_sys_gc_error);
         unlock(&gs_allocator_lock);
@@ -294,6 +298,26 @@ again:
         unlock(&gs_allocator_lock);
         return 0;
     }
+}
+
+void
+gs_sys_gc_done_with_collection()
+{
+    lock(&gs_allocator_lock);
+    gs_sys_gc_num_procs_in_gc--;
+    unlock(&gs_allocator_lock);
+}
+
+int
+gs_sys_gc_allow_collection(struct gsstringbuilder *err)
+{
+    int res;
+
+    if (!gs_sys_gc_want_collection()) return 0;
+    res = gs_sys_wait_for_collection_to_finish(err);
+    gs_sys_gc_done_with_collection();
+
+    return res;
 }
 
 int

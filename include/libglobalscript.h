@@ -533,6 +533,7 @@ void gs_sys_aligned_block_suballoc(struct gs_sys_aligned_block_suballoc_info *, 
 gsumemorysize gs_sys_memory_allocated_size(void);
 int gs_sys_memory_exhausted(void);
 
+/* §paragraph{GC functions for main thread} */
 int gs_sys_should_gc(void);
 void gs_sys_wait_for_gc(void);
 int gs_sys_start_gc(struct gsstringbuilder *);
@@ -540,6 +541,12 @@ int gs_sys_start_gc(struct gsstringbuilder *);
 int gs_sys_finish_gc(struct gsstringbuilder *);
 void gs_sys_gc_failed(char *);
 
+/* §paragraph{Long-form form GC functions for secondary thread} */
+int gs_sys_gc_want_collection(void);
+int gs_sys_wait_for_collection_to_finish(struct gsstringbuilder *);
+void gs_sys_gc_done_with_collection(void);
+
+/* §paragraph{All-in-one GC function for secondary thread} */
 /* ↓ Pass §ccode{0} to ignore errors */
 int gs_sys_gc_allow_collection(struct gsstringbuilder *);
 
