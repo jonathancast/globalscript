@@ -612,6 +612,8 @@ static struct gs_sys_aligned_block_suballoc_info api_code_segment_info = {
     /* align = */ API_CODE_SEGMENT_BLOCK_SIZE,
 };
 
+static struct api_code_segment *api_init_code_segment(void *, void *);
+
 static
 struct api_code_segment *
 api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
@@ -620,13 +622,25 @@ api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
     struct api_code_segment *res;
 
     gs_sys_aligned_block_suballoc(&api_code_segment_info, &buf, &bufend);
+    res = api_init_code_segment(buf, bufend);
+
+    res->ip = res->size - 1;
+    res->instrs[res->ip].instr = entry;
+    res->instrs[res->ip].presult = api_alloc_promise();
+
+    return res;
+}
+
+static
+struct api_code_segment *
+api_init_code_segment(void *buf, void *bufend)
+{
+    struct api_code_segment *res;
+
     res = buf;
 
     res->size = ((uchar*)bufend - (uchar*)res->instrs) / sizeof(res->instrs[0]);
-    res->ip = res->size - 1;
     res->fwd = 0;
-    res->instrs[res->ip].instr = entry;
-    res->instrs[res->ip].presult = api_alloc_promise();
 
     return res;
 }
