@@ -33,6 +33,7 @@ struct api_code_segment {
 
 struct api_promise {
     Lock lock;
+    struct api_promise *fwd;
     gsvalue value;
 };
 
