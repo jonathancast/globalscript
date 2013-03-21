@@ -160,6 +160,14 @@ gs_gc_trace_pos(struct gsstringbuilder *err, struct gspos *pos)
     return 0;
 }
 
+#define GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, nsegs) \
+    do { \
+        for (j = i; j + nsegs < gs_sys_num_segments; j++) \
+            gs_sys_segments[j] = gs_sys_segments[j + nsegs] \
+        ; \
+        gs_sys_num_segments -= nsegs; \
+    } while (0)
+
 #define GS_SYS_GC_MAX_NUM_POST_CALLBACKS 0x100
 static int gs_sys_gc_num_post_callbacks;
 static gs_sys_gc_post_callback *gs_sys_gc_post_callbacks[GS_SYS_GC_MAX_NUM_POST_CALLBACKS];
@@ -167,7 +175,7 @@ static gs_sys_gc_post_callback *gs_sys_gc_post_callbacks[GS_SYS_GC_MAX_NUM_POST_
 int
 gs_sys_finish_gc(struct gsstringbuilder *err)
 {
-    int i;
+    int i, j;
 
     for (i = 0; i < gs_sys_gc_num_post_callbacks; i++)
         if (gs_sys_gc_post_callbacks[i](err) < 0)
@@ -177,8 +185,7 @@ gs_sys_finish_gc(struct gsstringbuilder *err)
     for (i = 0; i < gs_sys_num_segments; i++) {
         if (gs_sys_segments[i].type == gs_sys_segment_gc_from_space) {
             if (GS_SYS_SEGMENT_IS(i - 1, gs_sys_segment_free) && GS_SYS_SEGMENT_IS(i + 1, gs_sys_segment_free)) {
-                gsstring_builder_print(err, UNIMPL("gs_sys_finish_gc: free from_space segment: merge with previous and next segment"));
-                return -1;
+                GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, 2);
             } else if (GS_SYS_SEGMENT_IS(i - 1, gs_sys_segment_free)) {
                 gsstring_builder_print(err, UNIMPL("gs_sys_finish_gc: free from_space segment: merge with previous segment"));
                 return -1;
@@ -214,14 +221,6 @@ again:
 
     return 0;
 }
-
-#define GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, nsegs) \
-    do { \
-        for (j = i; j + nsegs < gs_sys_num_segments; j++) \
-            gs_sys_segments[j] = gs_sys_segments[j + nsegs] \
-        ; \
-        gs_sys_num_segments -= nsegs; \
-    } while (0)
 
 void
 gs_sys_gc_failed(char *err)
