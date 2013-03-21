@@ -287,8 +287,29 @@ no_clients:
 int
 ace_thread_cleanup(struct gsstringbuilder *err)
 {
-    gsstring_builder_print(err, UNIMPL("ace_thread_cleanup"));
-    return -1;
+    struct ace_thread_queue *new_queue;
+    int i;
+
+    new_queue = gs_sys_global_block_suballoc(&ace_thread_queue_info, sizeof(*ace_thread_queue));
+
+    memset(&new_queue->lock, 0, sizeof(new_queue->lock));
+    new_queue->refcount = ace_thread_queue->refcount;
+    new_queue->numthreads = ace_thread_queue->numthreads;
+
+    for (i = 0; i < NUM_ACE_THREADS; i++)
+        new_queue->threads[i] = ace_thread_queue->threads[i]
+    ;
+
+    ace_thread_queue = new_queue;
+
+    for (i = 0; i < NUM_ACE_THREADS; i++) {
+        if (ace_thread_queue->threads[i]) {
+            gsstring_builder_print(err, UNIMPL("ace_thread_cleanup: evacuate thread table"));
+            return -1;
+        }
+    }
+
+    return 0;
 }
 
 static
