@@ -303,7 +303,7 @@ ace_thread_cleanup(struct gsstringbuilder *err)
     ace_thread_queue = new_queue;
 
     for (i = 0; i < NUM_ACE_THREADS; i++) {
-        if (ace_thread_queue->threads[i]) {
+        if (ace_thread_queue->threads[i] && gs_sys_block_in_gc_from_space(ace_thread_queue->threads[i])) {
             gsstring_builder_print(err, UNIMPL("ace_thread_cleanup: evacuate thread table"));
             return -1;
         }
