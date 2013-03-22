@@ -553,6 +553,7 @@ ace_alloc_unknown_eprim(struct ace_thread *thread)
     prim = gsreserveeprims(sizeof(*prim));
     prim->pos = ip->pos;
     prim->type = eprim_prim;
+    prim->p.numargs = 0;
     prim->p.index = -1;
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {
@@ -578,6 +579,7 @@ ace_alloc_eprim(struct ace_thread *thread)
     prim = gsreserveeprims(sizeof(*prim) + ACE_EPRIM_NUMARGS(ip) * sizeof(gsvalue));
     prim->pos = ip->pos;
     prim->type = eprim_prim;
+    prim->p.numargs = ACE_EPRIM_NUMARGS(ip);
     prim->p.index = ACE_EPRIM_INDEX(ip);
     for (j = 0; j < ACE_EPRIM_NUMARGS(ip); j++) {
         if (ACE_EPRIM_ARG(ip, j) >= thread->nregs) {

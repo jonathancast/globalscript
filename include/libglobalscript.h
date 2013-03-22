@@ -409,6 +409,7 @@ struct gseprim {
     union {
         struct {
             int index;
+            int numargs;
             gsvalue arguments[];
         } p;
     };
