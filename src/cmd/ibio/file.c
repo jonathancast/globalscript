@@ -31,8 +31,8 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
     } else {
         *pblocking = api_blocking_alloc(sizeof(struct ibio_file_read_open_blocking));
         file_read_open_blocking = (struct ibio_file_read_open_blocking *)*pblocking;
-        file_read_open_blocking->io = (struct ibio_external_io *)open->arguments[0];
-        ibio_gsstring_eval_start(&file_read_open_blocking->fn, open->arguments[1]);
+        file_read_open_blocking->io = (struct ibio_external_io *)open->p.arguments[0];
+        ibio_gsstring_eval_start(&file_read_open_blocking->fn, open->p.arguments[1]);
         file_read_open_blocking->rpc = 0;
     }
     for (;;) {

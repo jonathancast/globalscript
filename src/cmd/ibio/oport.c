@@ -201,8 +201,8 @@ ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, struct 
 
         *pblocking = api_blocking_alloc(sizeof(struct ibio_write_blocking));
         write_blocking = (struct ibio_write_blocking *)*pblocking;
-        oportv = write->arguments[0];
-        write_blocking->s = write->arguments[1];
+        oportv = write->p.arguments[0];
+        write_blocking->s = write->p.arguments[1];
 
         /* §c{oportv} is a WHNF by the types */
         block = BLOCK_CONTAINING(oportv);

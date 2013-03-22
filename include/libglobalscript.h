@@ -403,8 +403,15 @@ struct gsconstr_args {
 
 struct gseprim {
     struct gspos pos;
-    int index;
-    gsvalue arguments[];
+    enum {
+        eprim_prim,
+    } type;
+    union {
+        struct {
+            int index;
+            gsvalue arguments[];
+        } p;
+    };
 };
 
 /* §section Primitives */

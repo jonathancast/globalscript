@@ -31,7 +31,7 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, stru
     } else {
         blocking = *pblocking = api_blocking_alloc(sizeof(struct ibio_file_stat_blocking));
         file_stat_blocking = (struct ibio_file_stat_blocking *)blocking;
-        ibio_gsstring_eval_start(&file_stat_blocking->fn, stat->arguments[0]);
+        ibio_gsstring_eval_start(&file_stat_blocking->fn, stat->p.arguments[0]);
         file_stat_blocking->rpc = 0;
     }
     for (;;) {

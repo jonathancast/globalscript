@@ -552,7 +552,8 @@ ace_alloc_unknown_eprim(struct ace_thread *thread)
 
     prim = gsreserveeprims(sizeof(*prim));
     prim->pos = ip->pos;
-    prim->index = -1;
+    prim->type = eprim_prim;
+    prim->p.index = -1;
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
@@ -576,13 +577,14 @@ ace_alloc_eprim(struct ace_thread *thread)
 
     prim = gsreserveeprims(sizeof(*prim) + ACE_EPRIM_NUMARGS(ip) * sizeof(gsvalue));
     prim->pos = ip->pos;
-    prim->index = ACE_EPRIM_INDEX(ip);
+    prim->type = eprim_prim;
+    prim->p.index = ACE_EPRIM_INDEX(ip);
     for (j = 0; j < ACE_EPRIM_NUMARGS(ip); j++) {
         if (ACE_EPRIM_ARG(ip, j) >= thread->nregs) {
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
             return;
         }
-        prim->arguments[j] = thread->regs[ACE_EPRIM_ARG(ip, j)];
+        prim->p.arguments[j] = thread->regs[ACE_EPRIM_ARG(ip, j)];
     }
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {

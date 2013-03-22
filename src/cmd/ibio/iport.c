@@ -546,8 +546,8 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
     } else {
         *pblocking = api_blocking_alloc(sizeof(struct ibio_read_blocking));
         read_blocking = (struct ibio_read_blocking *)*pblocking;
-        read_blocking->iport = (struct ibio_iport*)read->arguments[0];
-        read_blocking->acceptor = read->arguments[1];
+        read_blocking->iport = (struct ibio_iport*)read->p.arguments[0];
+        read_blocking->acceptor = read->p.arguments[1];
         read_blocking->blocking = 0;
     }
 

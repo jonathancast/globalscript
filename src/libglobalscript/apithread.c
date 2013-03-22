@@ -309,17 +309,17 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
 
         eprim = (struct gseprim *)instr;
         table = thread->api_prim_table;
-        if (eprim->index < 0) {
+        if (eprim->p.index < 0) {
             api_abend(thread, "%P: Unknown primitive", eprim->pos);
             return 0;
-        } else if (eprim->index >= table->numprims) {
+        } else if (eprim->p.index >= table->numprims) {
             api_abend(thread, "%P: Primitive out of bounds", eprim->pos);
             return 0;
         } else {
             enum api_prim_execution_state st;
             gsvalue res;
 
-            st = table->execs[eprim->index](thread, eprim, &thread->eprim_blocking, &res);
+            st = table->execs[eprim->p.index](thread, eprim, &thread->eprim_blocking, &res);
             switch (st) {
                 case api_st_success:
                     api_update_promise(thread->code->instrs[thread->code->ip].presult, res);
@@ -932,7 +932,7 @@ enum
 api_prim_execution_state
 api_thread_handle_prim_unit(struct api_thread *thread, struct gseprim *eprim, struct api_prim_blocking **pblocking, gsvalue *res)
 {
-    *res = eprim->arguments[0];
+    *res = eprim->p.arguments[0];
     return api_st_success;
 }
 
