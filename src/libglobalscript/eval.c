@@ -232,6 +232,36 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             }
             break;
         }
+        case gseval: {
+            struct gseval *ev, *newev;
+
+            ev = (struct gseval *)hp;
+            newhp = gsreserveheap(sizeof(*newev));
+            newev = (struct gseval *)newhp;
+
+            memcpy(newev, ev, sizeof(*newev));
+
+            hp->type = gsgcforward;
+            fwd = (struct gsgcforward *)hp;
+            fwd->dest = (gsvalue)newhp;
+
+            memset(&newhp->lock, 0, sizeof(newhp->lock));
+            if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
+            if (newev->thread && gs_sys_block_in_gc_from_space(newev->thread) && ace_thread_gc_trace(err, &newev->thread) < 0) return 0;
+
+            break;
+        }
+        case gsindirection: {
+            struct gsindirection *in;
+            gsvalue res, gctemp;
+
+            in = (struct gsindirection *)hp;
+            res = in->target;
+
+            if (GS_GC_TRACE(*err, res) < 0) return 0;
+
+            return res;
+        }
         case gsgcforward:
             fwd = (struct gsgcforward *)hp;
             return fwd->dest;
