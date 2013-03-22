@@ -1548,6 +1548,88 @@ ace_thread_alloc()
     return thread;
 }
 
+int
+ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
+{
+    struct ace_thread *thread, *newthread;
+    void *stackbase, *stackbot, *stacklimit;
+    void *p;
+    ulong stacksize;
+    gsvalue gctemp;
+    int i;
+
+    thread =*ppthread;
+
+    if (thread->state == ace_thread_gcforward) {
+        gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: check for forwarding pointer"));
+        return -1;
+    }
+
+    gs_sys_aligned_block_suballoc(&ace_thread_info, &stackbase, &stackbot);
+    newthread = stackbase;
+    stacklimit = (uchar*)newthread + sizeof(*newthread);
+
+    memcpy(newthread, thread, sizeof(*thread));
+
+    stacksize = (uchar*)thread->stackbot - (uchar*)thread->stacktop;
+    if (stacksize > (uchar*)stackbot - (uchar*)stacklimit) {
+        gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: no room for new stack"));
+        return -1;
+    }
+
+    newthread->stackbot = stackbot;
+    newthread->stacktop = (uchar*)stackbot - stacksize;
+    newthread->stacklimit = stacklimit;
+    memcpy(newthread->stacktop, thread->stacktop, stacksize);
+
+    thread->state = ace_thread_gcforward;
+    thread->st.forward.dest = newthread;
+
+    memset(&newthread->lock, 0, sizeof(newthread->lock));
+    if (GS_GC_TRACE(*err, newthread->base) < 0) return -1;
+
+    switch (newthread->state) {
+        case ace_thread_running: {
+            void *oldbco, *newip;
+
+            oldbco = newthread->st.running.bco;
+            if (gs_gc_trace_bco(err, &newthread->st.running.bco) < 0) return -1;
+            newip = (uchar*)newthread->st.running.bco + ((uchar*)newthread->st.running.ip - (uchar*)oldbco);
+            newthread->st.running.ip = (struct gsbc *)newip;
+
+            for (i = 0; i < newthread->nsubexprs; i++) {
+                gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate subexprs"));
+                return -1;
+            }
+
+            for (i = 0; i < newthread->nregs; i++)
+                if (GS_GC_TRACE(*err, newthread->regs[i]) < 0) return -1
+            ;
+
+            break;
+        }
+        case ace_thread_blocked:
+            if (GS_GC_TRACE(*err, newthread->st.blocked.on) < 0) return -1;
+            if (gs_gc_trace_pos(err, &newthread->st.blocked.at) < 0) return -1;
+            break;
+        case ace_thread_lprim_blocked:
+            gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate lprim_blocked"));
+            return -1;
+            break;
+        default:
+            gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate st: state = %d"), newthread->state);
+            return -1;
+    }
+
+    for (p = newthread->stacktop; (uchar*)p < (uchar*)newthread->stackbot; ) {
+        gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate stack"));
+        return -1;
+    }
+
+    *ppthread = newthread;
+    return 0;
+}
+
 /* §section §ags{.lprim} Blocking Allocation */
 
 static struct gs_sys_global_block_suballoc_info gslprim_blocking_info = {

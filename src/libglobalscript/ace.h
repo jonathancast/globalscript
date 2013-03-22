@@ -25,6 +25,7 @@ struct ace_thread {
         ace_thread_blocked,
         ace_thread_lprim_blocked,
         ace_thread_finished,
+        ace_thread_gcforward,
     } state;
     union {
         struct {
@@ -39,6 +40,9 @@ struct ace_thread {
             struct gslprim_blocking *on;
             struct gspos at;
         } lprim_blocked;
+        struct {
+            struct ace_thread *dest;
+        } forward;
     } st;
     int nregs, nsubexprs;
     struct gsbco *subexprs[MAX_NUM_REGISTERS];
@@ -47,3 +51,5 @@ struct ace_thread {
 };
 
 void ace_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
+
+int ace_thread_gc_trace(struct gsstringbuilder *, struct ace_thread **);
