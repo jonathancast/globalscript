@@ -967,6 +967,7 @@ gsprim_return_ubsum(struct ace_thread *thread, struct gspos pos, int constr, int
     ;
     va_end(arg);
 
+    thread->st.running.bco = ubanalyze->conts[constr];
     thread->st.running.ip = ip;
     thread->stacktop = (uchar*)thread->stacktop + ACE_UBANALYZE_STACK_SIZE(ubanalyze->numconts, ubanalyze->numfvs);
     return 1;
@@ -1218,6 +1219,7 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
 
                 thread->stacktop = newstacktop;
                 thread->state = ace_thread_running;
+                thread->st.running.bco = cl->code;
                 thread->st.running.ip = (struct gsbc *)ip;
                 break;
             }
@@ -1281,6 +1283,7 @@ ace_return_to_force(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v
     thread->regs[thread->nregs++] = v;
 
     thread->state = ace_thread_running;
+    thread->st.running.bco = force->code;
     thread->st.running.ip = (struct gsbc *)ip;
     thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_force) + force->numfvs * sizeof(gsvalue);
 }
@@ -1316,6 +1319,7 @@ ace_return_to_strict(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue 
     thread->regs[thread->nregs++] = v;
 
     thread->state = ace_thread_running;
+    thread->st.running.bco = strict->code;
     thread->st.running.ip = (struct gsbc *)ip;
     thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_strict) + strict->numfvs * sizeof(gsvalue);
 }
@@ -1388,6 +1392,7 @@ ace_start_evaluation(gsvalue val)
                     }
 
                     thread->state = ace_thread_running;
+                    thread->st.running.bco = cl->code;
                     thread->st.running.ip = instr;
                     break;
                 }

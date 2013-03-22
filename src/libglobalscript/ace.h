@@ -28,6 +28,7 @@ struct ace_thread {
     } state;
     union {
         struct {
+            struct gsbco *bco;
             struct gsbc *ip;
         } running;
         struct {
