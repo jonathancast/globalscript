@@ -939,11 +939,13 @@ gsconstrsgc(struct gsstringbuilder *err, gsvalue v)
 
 /* §section API Primitives */
 
+static gsvalue gseprimgc(struct gsstringbuilder *, gsvalue);
+
 static struct gs_sys_global_block_suballoc_info gseprims_alloc_info = {
     /* descr = */ {
         /* evaluator = */ gswhnfeval,
         /* indirection_dereferencer = */ gswhnfindir,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ gseprimgc,
         /* description = */ "API Primitives",
     },
 };
@@ -958,4 +960,38 @@ int
 gsiseprim_block(struct gs_blockdesc *p)
 {
     return p->class == &gseprims_alloc_info.descr;
+}
+
+static
+gsvalue
+gseprimgc(struct gsstringbuilder *err, gsvalue v)
+{
+    struct gseprim *ep, *newep;
+    gsvalue gctemp;
+    int i;
+
+    ep = (struct gseprim *)v;
+
+    if (ep->type == eprim_forward) return (gsvalue)ep->f.dest;
+
+    newep = gsreserveeprims(sizeof(*newep) + ep->p.numargs * sizeof(gsvalue));
+
+    newep->pos = ep->pos;
+    newep->type = ep->type;
+    newep->p.index = ep->p.index;
+    newep->p.numargs = ep->p.numargs;
+    for (i = 0; i < ep->p.numargs; i++)
+        newep->p.arguments[i] = ep->p.arguments[i]
+    ;
+
+    ep->type = eprim_forward;
+    ep->f.dest = newep;
+
+    if (gs_gc_trace_pos(err, &newep->pos) < 0) return 0;
+    for (i = 0; i < newep->p.numargs; i++)
+        if (GS_GC_TRACE(*err, newep->p.arguments[i]) < 0)
+            return 0
+    ;
+
+    return (gsvalue)newep;
 }

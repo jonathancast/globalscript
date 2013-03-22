@@ -405,6 +405,7 @@ struct gseprim {
     struct gspos pos;
     enum {
         eprim_prim,
+        eprim_forward,
     } type;
     union {
         struct {
@@ -412,6 +413,9 @@ struct gseprim {
             int numargs;
             gsvalue arguments[];
         } p;
+        struct {
+            struct gseprim *dest;
+        } f;
     };
 };
 
