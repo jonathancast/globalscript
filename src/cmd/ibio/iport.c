@@ -362,7 +362,7 @@ ibio_read_process_main(void *p)
 
                                         while (!(
                                             iport->waiting_to_read
-                                            || 1 /* §todo{Need to check if thread is waiting on output instead} */
+                                            || 1 /* §todo{Need to check if thread is waiting on input to terminate instead} */
                                             || iport->last_accessed_seg == seg
                                         )) {
                                             unlock(&seg->lock);
