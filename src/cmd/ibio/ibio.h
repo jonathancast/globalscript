@@ -28,6 +28,7 @@ struct ibio_thread_data {
     gsvalue cmd_args;
     struct ibio_thread_to_oport_link *writing_to_oport;
     struct ibio_thread_to_iport_link *reading_from_iport;
+    struct ibio_thread_data *forward;
 };
 
 void *ibio_main_thread_alloc_data(struct gspos, int, char **);
