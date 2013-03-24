@@ -6,7 +6,8 @@
 
 #include "ibio.h"
 
-static struct ibio_external_io *ibio_alloc_external_io(long, ibio_external_canread *, ibio_external_readsym *);
+static struct ibio_external_io *ibio_alloc_external_io(long, ibio_external_canread *, ibio_external_readsym *, ibio_external_gccopy *, ibio_external_gcevacuate *);
+static int ibio_external_io_trace(struct gsstringbuilder *, struct ibio_external_io **);
 
 /* §section Runes */
 
@@ -27,6 +28,8 @@ static gs_sys_gc_root_callback ibio_rune_io_callback;
 
 static ibio_external_canread ibio_rune_canread;
 static ibio_external_readsym ibio_rune_readsym;
+static ibio_external_gccopy ibio_rune_gccopy;
+static ibio_external_gcevacuate ibio_rune_gcevacuate;
 
 struct ibio_external_io *
 ibio_rune_io()
@@ -37,7 +40,7 @@ ibio_rune_io()
         return ibio_rune_io_value;
     }
 
-    ibio_rune_io_value = ibio_alloc_external_io(sizeof(*ibio_rune_io_value), ibio_rune_canread, ibio_rune_readsym);
+    ibio_rune_io_value = ibio_alloc_external_io(sizeof(*ibio_rune_io_value), ibio_rune_canread, ibio_rune_readsym, ibio_rune_gccopy, ibio_rune_gcevacuate);
 
     unlock(&ibio_rune_io_lock);
 
@@ -49,8 +52,9 @@ ibio_rune_io()
 int
 ibio_rune_io_callback(struct gsstringbuilder *err)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_rune_io_callback"));
-    return -1;
+    if (ibio_external_io_trace(err, &ibio_rune_io_value) < 0) return -1;
+
+    return 0;
 }
 
 static
@@ -81,6 +85,24 @@ ibio_rune_readsym(struct ibio_external_io *io, char *err, char *eerr, void *star
     return gschartorune((char*)start, pres, err, eerr);
 }
 
+static
+struct ibio_external_io *
+ibio_rune_gccopy(struct gsstringbuilder *err, struct ibio_external_io *io)
+{
+    struct ibio_external_io *newio;
+
+    newio = ibio_alloc_external_io(sizeof(*ibio_rune_io_value), ibio_rune_canread, ibio_rune_readsym, ibio_rune_gccopy, ibio_rune_gcevacuate);
+
+    return newio;
+}
+
+static
+int
+ibio_rune_gcevacuate(struct gsstringbuilder *err, struct ibio_external_io *io)
+{
+    return 0;
+}
+
 /* §section Directories */
 
 int
@@ -102,13 +124,15 @@ struct ibio_external_dir_io {
 
 static ibio_external_canread ibio_dir_canread;
 static ibio_external_readsym ibio_dir_readsym;
+static ibio_external_gccopy ibio_dir_gccopy;
+static ibio_external_gcevacuate ibio_dir_gcevacuate;
 
 struct ibio_external_io *
 ibio_dir_io(struct gspos pos, gsvalue v)
 {
     struct ibio_external_dir_io *res;
 
-    res = (struct ibio_external_dir_io *)ibio_alloc_external_io(sizeof(*res), ibio_dir_canread, ibio_dir_readsym);
+    res = (struct ibio_external_dir_io *)ibio_alloc_external_io(sizeof(*res), ibio_dir_canread, ibio_dir_readsym, ibio_dir_gccopy, ibio_dir_gcevacuate);
     res->pos = pos;
     res->dirfromprim = v;
 
@@ -160,6 +184,22 @@ ibio_dir_readsym(struct ibio_external_io *io, char *err, char *eerr, void *start
     return (uchar*)start + 2 + sz;
 }
 
+static
+struct ibio_external_io *
+ibio_dir_gccopy(struct gsstringbuilder *err, struct ibio_external_io *io)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_dir_gccopy"));
+    return 0;
+}
+
+static
+int
+ibio_dir_gcevacuate(struct gsstringbuilder *err, struct ibio_external_io *io)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_dir_gcevacuate"));
+    return -1;
+}
+
 /* §section Allocation */
 
 static struct gs_sys_global_block_suballoc_info ibio_external_io_info = {
@@ -173,13 +213,43 @@ static struct gs_sys_global_block_suballoc_info ibio_external_io_info = {
 
 static
 struct ibio_external_io *
-ibio_alloc_external_io(long sz, ibio_external_canread *canread, ibio_external_readsym *readsym)
+ibio_alloc_external_io(long sz, ibio_external_canread *canread, ibio_external_readsym *readsym, ibio_external_gccopy *gccopy, ibio_external_gcevacuate *gcevacuate)
 {
     struct ibio_external_io *res;
 
     res = gs_sys_global_block_suballoc(&ibio_external_io_info, sz);
     res->canread = canread;
     res->readsym = readsym;
+    res->gccopy = gccopy;
+    res->gcevacuate = gcevacuate;
+    res->forward = 0;
 
     return res;
+}
+
+static
+int
+ibio_external_io_trace(struct gsstringbuilder *err, struct ibio_external_io **pio)
+{
+    struct ibio_external_io *io, *newio;
+
+    io = *pio;
+
+    if (io->forward) {
+        gsstring_builder_print(err, UNIMPL("ibio_external_io_trace: check for forwarding pointer"));
+        return -1;
+    }
+
+    if (!gs_sys_block_in_gc_from_space(io)) {
+        gsstring_builder_print(err, UNIMPL("ibio_external_io_trace: check for to-space"));
+        return -1;
+    }
+
+    if (!(newio = io->gccopy(err, io))) return -1;
+
+    io->forward = *pio = newio;
+
+    if (newio->gcevacuate(err, newio) < 0) return -1;
+
+    return 0;
 }

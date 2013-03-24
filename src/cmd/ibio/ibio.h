@@ -81,10 +81,15 @@ struct ibio_external_io;
 
 typedef int ibio_external_canread(struct ibio_external_io *, void *, void *);
 typedef void *ibio_external_readsym(struct ibio_external_io *, char *, char *, void *, void *, gsvalue *);
+typedef struct ibio_external_io *ibio_external_gccopy(struct gsstringbuilder *, struct ibio_external_io *);
+typedef int ibio_external_gcevacuate(struct gsstringbuilder *, struct ibio_external_io *);
 
 struct ibio_external_io {
     ibio_external_canread *canread;
     ibio_external_readsym *readsym;
+    ibio_external_gccopy *gccopy;
+    ibio_external_gcevacuate *gcevacuate;
+    struct ibio_external_io *forward;
 };
 
 struct ibio_external_io *ibio_rune_io(void);
