@@ -232,6 +232,31 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             }
             break;
         }
+        case gsapplication: {
+            struct gsapplication *app, *newapp;
+            gsvalue gctemp;
+
+            app = (struct gsapplication *)hp;
+
+            newhp = gsreserveheap(sizeof(*newapp) + app->numargs * sizeof(gsvalue));
+            newapp = (struct gsapplication *)newhp;
+
+            memcpy(newapp, app, sizeof(*newapp) + app->numargs * sizeof(gsvalue));
+            memset(&newhp->lock, 0, sizeof(newhp->lock));
+
+            hp->type = gsgcforward;
+            fwd = (struct gsgcforward *)hp;
+            fwd->dest = (gsvalue)newhp;
+
+            if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
+            if (GS_GC_TRACE(*err, newapp->fun) < 0) return 0;
+
+            for (i = 0; i < newapp->numargs; i++)
+                if (GS_GC_TRACE(*err, newapp->arguments[i]) < 0) return 0
+            ;
+
+            break;
+        }
         case gseval: {
             struct gseval *ev, *newev;
 
