@@ -98,9 +98,14 @@ struct ibio_external_io *ibio_dir_io(struct gspos, gsvalue);
 struct ibio_uxio;
 
 typedef long ibio_uxio_refill(struct ibio_uxio *, int, void *, long);
+typedef struct ibio_uxio *ibio_uxio_gccopy(struct gsstringbuilder *, struct ibio_uxio *);
+typedef int ibio_uxio_gcevacuate(struct gsstringbuilder *, struct ibio_uxio *);
 
 struct ibio_uxio {
     ibio_uxio_refill *refill;
+    ibio_uxio_gccopy *gccopy;
+    ibio_uxio_gcevacuate *gcevacuate;
+    struct ibio_uxio *forward;
 };
 
 struct ibio_uxio *ibio_file_uxio(void);

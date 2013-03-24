@@ -6,7 +6,8 @@
 
 #include "../ibio.h"
 
-static struct ibio_uxio *ibio_alloc_uxio(ulong, ibio_uxio_refill *);
+static struct ibio_uxio *ibio_alloc_uxio(ulong, ibio_uxio_refill *, ibio_uxio_gccopy *, ibio_uxio_gcevacuate *);
+static int ibio_uxio_trace(struct gsstringbuilder *, struct ibio_uxio **);
 
 /* §section Files */
 
@@ -15,6 +16,8 @@ static Lock ibio_file_uxio_lock;
 static gs_sys_gc_root_callback ibio_file_uxio_callback;
 
 static ibio_uxio_refill ibio_file_refill;
+static ibio_uxio_gccopy ibio_file_gccopy;
+static ibio_uxio_gcevacuate ibio_file_gcevacuate;
 
 struct ibio_uxio *
 ibio_file_uxio()
@@ -25,7 +28,7 @@ ibio_file_uxio()
         return ibio_file_uxio_value;
     }
 
-    ibio_file_uxio_value = ibio_alloc_uxio(sizeof(*ibio_file_uxio_value), ibio_file_refill);
+    ibio_file_uxio_value = ibio_alloc_uxio(sizeof(*ibio_file_uxio_value), ibio_file_refill, ibio_file_gccopy, ibio_file_gcevacuate);
 
     unlock(&ibio_file_uxio_lock);
 
@@ -37,8 +40,8 @@ ibio_file_uxio()
 int
 ibio_file_uxio_callback(struct gsstringbuilder *err)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_file_uxio_callback"));
-    return -1;
+    if (ibio_uxio_trace(err, &ibio_file_uxio_value) < 0) return -1;
+    return 0;
 }
 
 long
@@ -47,9 +50,25 @@ ibio_file_refill(struct ibio_uxio *uxio, int fd, void *buf, long n)
     return read(fd, buf, n);
 }
 
+static
+struct ibio_uxio *
+ibio_file_gccopy(struct gsstringbuilder *err, struct ibio_uxio *uxio)
+{
+    return ibio_alloc_uxio(sizeof(*ibio_file_uxio_value), ibio_file_refill, ibio_file_gccopy, ibio_file_gcevacuate);
+}
+
+static
+int
+ibio_file_gcevacuate(struct gsstringbuilder *err, struct ibio_uxio *uxio)
+{
+    return 0;
+}
+
 /* §section Directories */
 
 static ibio_uxio_refill ibio_dir_refill;
+static ibio_uxio_gccopy ibio_dir_gccopy;
+static ibio_uxio_gcevacuate ibio_dir_gcevacuate;
 
 #define DIR_SEGMENT_SIZE 0x4000
 
@@ -65,7 +84,7 @@ ibio_dir_uxio(char *dirname)
 {
     struct ibio_dir_uxio *res;
 
-    res = (struct ibio_dir_uxio *)ibio_alloc_uxio(DIR_SEGMENT_SIZE, ibio_dir_refill);
+    res = (struct ibio_dir_uxio *)ibio_alloc_uxio(DIR_SEGMENT_SIZE, ibio_dir_refill, ibio_dir_gccopy, ibio_dir_gcevacuate);
     res->dirname = dirname;
     res->bufend = res->bufbeg = (uchar*)res + sizeof(*res);
     res->offset = 0;
@@ -100,6 +119,22 @@ ibio_dir_refill(struct ibio_uxio *uxio, int fd, void *buf, long n)
     }
 }
 
+static
+struct ibio_uxio *
+ibio_dir_gccopy(struct gsstringbuilder *err, struct ibio_uxio *uxio)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_dir_gccopy"));
+    return 0;
+}
+
+static
+int
+ibio_dir_gcevacuate(struct gsstringbuilder *err, struct ibio_uxio *uxio)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_dir_gcevacuate"));
+    return -1;
+}
+
 /* §section Allocation */
 
 static struct gs_sys_global_block_suballoc_info ibio_uxio_info = {
@@ -113,12 +148,38 @@ static struct gs_sys_global_block_suballoc_info ibio_uxio_info = {
 
 static
 struct ibio_uxio *
-ibio_alloc_uxio(ulong sz, ibio_uxio_refill *refill)
+ibio_alloc_uxio(ulong sz, ibio_uxio_refill *refill, ibio_uxio_gccopy *gccopy, ibio_uxio_gcevacuate *gcevacuate)
 {
     struct ibio_uxio *res;
 
     res = gs_sys_global_block_suballoc(&ibio_uxio_info, sz);
     res->refill = refill;
+    res->gccopy = gccopy;
+    res->gcevacuate = gcevacuate;
+    res->forward = 0;
 
     return res;
+}
+
+static
+int
+ibio_uxio_trace(struct gsstringbuilder *err, struct ibio_uxio **puxio)
+{
+    struct ibio_uxio *uxio, *newuxio;
+
+    uxio = *puxio;
+    if (uxio->forward) {
+        gsstring_builder_print(err, UNIMPL("ibio_uxio_trace: check for forward"));
+        return -1;
+    }
+
+    if (!gs_sys_block_in_gc_from_space(uxio)) return 0;
+
+    if (!(newuxio = uxio->gccopy(err, uxio))) return -1;
+
+    uxio->forward = *puxio = newuxio;
+
+    if (newuxio->gcevacuate(err, newuxio) < 0) return -1;
+
+    return 0;
 }
