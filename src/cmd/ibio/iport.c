@@ -364,6 +364,7 @@ ibio_read_process_main(void *p)
                                             iport->waiting_to_read
                                             || 1 /* §todo{Need to check if thread is waiting on input to terminate instead} */
                                             || iport->last_accessed_seg == seg
+                                            || !iport->last_accessed_seg
                                         )) {
                                             unlock(&seg->lock);
                                             unlock(&iport->lock);
@@ -576,6 +577,8 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
         ibio_iport_link_to_thread(thread, read_blocking->iport);
 
         res = (gsvalue)read_blocking->iport->position;
+        read_blocking->iport->last_accessed_seg = ibio_channel_segment_containing(read_blocking->iport->position);
+        unlock(&read_blocking->iport->last_accessed_seg->lock);
 
         unlock(&read_blocking->iport->lock);
         *pv = res;
