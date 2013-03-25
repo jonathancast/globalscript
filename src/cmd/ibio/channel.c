@@ -60,7 +60,7 @@ ibio_channel_eval(gsvalue v)
 
     seg = ibio_channel_segment_containing((gsvalue *)v);
 
-    /* Note: §ccode{v} is a §gs{iptr}; user has to de-reference it in GS */
+    /* Note: §ccode{v} is an §gs{iptr}; user has to de-reference it in GS */
     if (v >= (uintptr)seg->items && v < (uintptr)seg->extent) {
         unlock(&seg->lock);
         return gstywhnf;
