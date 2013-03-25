@@ -44,10 +44,15 @@ ibio_alloc_channel_segment()
 gsvalue *
 ibio_channel_segment_limit(struct ibio_channel_segment *seg)
 {
-    char *block;
-
-    block = (char*)seg - (uintptr)seg % IBIO_CHANNEL_SEGMENT_SIZE;
-    return (gsvalue*)(block + IBIO_CHANNEL_SEGMENT_SIZE);
+    /* Segments come in two varieties:
+        §begin{itemize}
+            §item The first segment in each block, which extends from §ccode{(char *)block + sizeof(struct gs_blockdesc)} to §ccode{(char*)block + IBIO_CHANNEL_SEGMENT_SIZE}.
+            §item The $n$th segment in a block for $n > 0$, which start at §ccode{(char *)block + IBIO_CHANNEL_SEGMENT_SIZE * n}.
+        §end{itemize}
+        We want all of those segments to have the same size for GC purposes, so we assign them all the size §ccode{IBIO_CHANNEL_SEGMENT_SIZE - sizeof(struct gs_blockdesc)}.
+        This wastes about one word per 255 blocks, which is pretty reasonable.
+    */
+    return (gsvalue *)((char*)seg + IBIO_CHANNEL_SEGMENT_SIZE - sizeof(struct gs_blockdesc));
 }
 
 /* §section Evaluation */
