@@ -753,6 +753,18 @@ api_thread_client_data(struct api_thread *thread)
 
 /* §section Terminate threads */
 
+int
+api_thread_terminating(struct api_thread *thread)
+{
+    int res;
+
+    api_take_thread(thread);
+    res = thread->state == api_thread_st_terminating_on_done || thread->state == api_thread_st_terminating_on_abend;
+    api_release_thread(thread);
+
+    return res;
+}
+
 struct api_done_rpc {
     struct gsrpc rpc;
 };
