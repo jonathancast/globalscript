@@ -161,6 +161,7 @@ struct ibio_oport {
     gsvalue writing;
     struct ibio_oport_write_blocker *waiting_to_write, **waiting_to_write_end;
     struct api_thread *writing_thread;
+    struct ibio_oport *forward;
     /* §section Used for §gs{oport}s connected to external files */
     int fd;
     void *buf, *bufend, *bufextent;

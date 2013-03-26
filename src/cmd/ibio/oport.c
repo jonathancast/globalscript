@@ -31,6 +31,7 @@ struct ibio_write_thread_args {
 };
 
 static gs_sys_gc_post_callback ibio_write_thread_cleanup;
+static gs_sys_gc_failure_callback ibio_write_thread_gc_failure_cleanup;
 
 static void ibio_write_thread_main(void *);
 
@@ -53,6 +54,7 @@ ibio_write_threads_init(char *err, char *eerr)
     api_at_termination(ibio_write_threads_down);
 
     gs_sys_gc_post_callback_register(ibio_write_thread_cleanup);
+    gs_sys_gc_failure_callback_register(ibio_write_thread_gc_failure_cleanup);
 
     ace_up();
 
@@ -91,6 +93,17 @@ ibio_write_thread_cleanup(struct gsstringbuilder *err)
 {
     gsstring_builder_print(err, UNIMPL("ibio_write_thread_cleanup"));
     return -1;
+}
+
+void
+ibio_write_thread_gc_failure_cleanup()
+{
+    int i;
+
+    for (i = 0; i < IBIO_NUM_WRITE_THREADS; i++)
+        if (ibio_write_thread_queue->oports[i] && ibio_write_thread_queue->oports[i]->forward)
+            ibio_write_thread_queue->oports[i] = ibio_write_thread_queue->oports[i]->forward
+    ;
 }
 
 static
@@ -586,6 +599,7 @@ ibio_alloc_oport()
     res->waiting_to_write = 0;
     res->waiting_to_write_end = &res->waiting_to_write;
     res->writing_thread = 0;
+    res->forward = 0;
 
     /* Output channel (linked list of segments) can be created dynamically */
 
