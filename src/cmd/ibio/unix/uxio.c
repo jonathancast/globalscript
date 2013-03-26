@@ -169,8 +169,8 @@ ibio_uxio_trace(struct gsstringbuilder *err, struct ibio_uxio **puxio)
 
     uxio = *puxio;
     if (uxio->forward) {
-        gsstring_builder_print(err, UNIMPL("ibio_uxio_trace: check for forward"));
-        return -1;
+        *puxio = uxio->forward;
+        return 0;
     }
 
     if (!gs_sys_block_in_gc_from_space(uxio)) return 0;
