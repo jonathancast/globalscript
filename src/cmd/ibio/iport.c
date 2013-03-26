@@ -858,7 +858,7 @@ static struct gs_sys_global_block_suballoc_info ibio_thread_to_iport_link_info =
         /* evaluator = */ gswhnfeval,
         /* indirection_dereferencer = */ gswhnfindir,
         /* gc_trace = */ gsunimplgc,
-        /* description = */ "IBIO Oports",
+        /* description = */ "IBIO Thread-to-Iport link",
     },
 };
 
