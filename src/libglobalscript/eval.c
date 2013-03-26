@@ -249,10 +249,10 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             fwd->dest = (gsvalue)newhp;
 
             if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
-            if (GS_GC_TRACE(*err, newapp->fun) < 0) return 0;
+            if (GS_GC_TRACE(err, newapp->fun) < 0) return 0;
 
             for (i = 0; i < newapp->numargs; i++)
-                if (GS_GC_TRACE(*err, newapp->arguments[i]) < 0) return 0
+                if (GS_GC_TRACE(err, newapp->arguments[i]) < 0) return 0
             ;
 
             break;
@@ -283,7 +283,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             in = (struct gsindirection *)hp;
             res = in->target;
 
-            if (GS_GC_TRACE(*err, res) < 0) return 0;
+            if (GS_GC_TRACE(err, res) < 0) return 0;
 
             return res;
         }
@@ -593,7 +593,7 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
 
     for (i = 0; i < newbco->numglobals; i++) {
         gsvalue *pglobal = (gsvalue *)pin;
-        if (GS_GC_TRACE(*err, *pglobal) < 0) return -1;
+        if (GS_GC_TRACE(err, *pglobal) < 0) return -1;
         pin = pglobal + 1;
     }
 
@@ -758,7 +758,7 @@ gsrecordsgc(struct gsstringbuilder *err, gsvalue v)
             if (gs_gc_trace_pos(err, &newrec->pos) < 0) return 0;
 
             for (i = 0; i < newfields->numfields; i++)
-                if (GS_GC_TRACE(*err, newfields->fields[i]) < 0) return 0
+                if (GS_GC_TRACE(err, newfields->fields[i]) < 0) return 0
             ;
 
             break;
@@ -975,7 +975,7 @@ gsconstrsgc(struct gsstringbuilder *err, gsvalue v)
             if (gs_gc_trace_pos(err, &newconstr->pos) < 0) return 0;
 
             for (i = 0; i < newargs->numargs; i++)
-                if (GS_GC_TRACE(*err, newargs->arguments[i]) < 0) return 0
+                if (GS_GC_TRACE(err, newargs->arguments[i]) < 0) return 0
             ;
 
             break;
@@ -1044,7 +1044,7 @@ gseprimgc(struct gsstringbuilder *err, gsvalue v)
 
     if (gs_gc_trace_pos(err, &newep->pos) < 0) return 0;
     for (i = 0; i < newep->p.numargs; i++)
-        if (GS_GC_TRACE(*err, newep->p.arguments[i]) < 0)
+        if (GS_GC_TRACE(err, newep->p.arguments[i]) < 0)
             return 0
     ;
 

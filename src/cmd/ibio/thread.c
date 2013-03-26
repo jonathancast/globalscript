@@ -78,7 +78,7 @@ ibio_thread_data_trace(struct gsstringbuilder *err, gsvalue v)
 
     data->forward = newdata;
 
-    if (GS_GC_TRACE(*err, newdata->cmd_args) < 0) return 0;
+    if (GS_GC_TRACE(err, newdata->cmd_args) < 0) return 0;
 
     if (newdata->writing_to_oport) {
         gsstring_builder_print(err, UNIMPL("ibio_thread_data_trace: evacuate writing_to_oport"));

@@ -1589,7 +1589,7 @@ ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
     thread->st.forward.dest = newthread;
 
     memset(&newthread->lock, 0, sizeof(newthread->lock));
-    if (GS_GC_TRACE(*err, newthread->base) < 0) return -1;
+    if (GS_GC_TRACE(err, newthread->base) < 0) return -1;
 
     switch (newthread->state) {
         case ace_thread_running: {
@@ -1606,13 +1606,13 @@ ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
             }
 
             for (i = 0; i < newthread->nregs; i++)
-                if (GS_GC_TRACE(*err, newthread->regs[i]) < 0) return -1
+                if (GS_GC_TRACE(err, newthread->regs[i]) < 0) return -1
             ;
 
             break;
         }
         case ace_thread_blocked:
-            if (GS_GC_TRACE(*err, newthread->st.blocked.on) < 0) return -1;
+            if (GS_GC_TRACE(err, newthread->st.blocked.on) < 0) return -1;
             if (gs_gc_trace_pos(err, &newthread->st.blocked.at) < 0) return -1;
             break;
         case ace_thread_lprim_blocked:
