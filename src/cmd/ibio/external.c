@@ -7,7 +7,6 @@
 #include "ibio.h"
 
 static struct ibio_external_io *ibio_alloc_external_io(long, ibio_external_canread *, ibio_external_readsym *, ibio_external_gccopy *, ibio_external_gcevacuate *);
-static int ibio_external_io_trace(struct gsstringbuilder *, struct ibio_external_io **);
 
 /* §section Runes */
 
@@ -227,7 +226,6 @@ ibio_alloc_external_io(long sz, ibio_external_canread *canread, ibio_external_re
     return res;
 }
 
-static
 int
 ibio_external_io_trace(struct gsstringbuilder *err, struct ibio_external_io **pio)
 {

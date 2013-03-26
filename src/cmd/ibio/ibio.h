@@ -96,6 +96,8 @@ struct ibio_external_io {
 struct ibio_external_io *ibio_rune_io(void);
 struct ibio_external_io *ibio_dir_io(struct gspos, gsvalue);
 
+int ibio_external_io_trace(struct gsstringbuilder *, struct ibio_external_io **);
+
 struct ibio_uxio;
 
 typedef long ibio_uxio_refill(struct ibio_uxio *, int, void *, long);
