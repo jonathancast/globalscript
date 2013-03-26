@@ -222,10 +222,18 @@ again:
     return 0;
 }
 
+#define GS_SYS_GC_MAX_NUM_FAILURE_CALLBACKS 0x100
+static int gs_sys_gc_num_failure_callbacks;
+static gs_sys_gc_failure_callback *gs_sys_gc_failure_callbacks[GS_SYS_GC_MAX_NUM_FAILURE_CALLBACKS];
+
 void
 gs_sys_gc_failed(char *err)
 {
     int i, j;
+
+    for (i = 0; i < gs_sys_gc_num_failure_callbacks; i++)
+        gs_sys_gc_failure_callbacks[i]()
+    ;
 
     for (i = 0; i < gs_sys_num_segments; i++) {
         if (gs_sys_segments[i].type == gs_sys_segment_gc_from_space) {
@@ -362,6 +370,15 @@ gs_sys_gc_post_callback_register(gs_sys_gc_post_callback *cb)
         gswarning(UNIMPL("Out of gs_sys_gc_post_callbacks"))
     ;
     gs_sys_gc_post_callbacks[gs_sys_gc_num_post_callbacks++] = cb;
+}
+
+void
+gs_sys_gc_failure_callback_register(gs_sys_gc_failure_callback *cb)
+{
+    if (gs_sys_gc_num_failure_callbacks >= GS_SYS_GC_MAX_NUM_FAILURE_CALLBACKS)
+        gswarning(UNIMPL("Out of gs_sys_gc_failure_callbacks"))
+    ;
+    gs_sys_gc_failure_callbacks[gs_sys_gc_num_failure_callbacks++] = cb;
 }
 
 #define GS_SPLIT_SEGMENT(i, ty, sz) \

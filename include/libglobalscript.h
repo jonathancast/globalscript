@@ -575,6 +575,9 @@ void gs_sys_gc_root_callback_register(gs_sys_gc_root_callback *);
 typedef int gs_sys_gc_post_callback(struct gsstringbuilder *);
 void gs_sys_gc_post_callback_register(gs_sys_gc_post_callback *);
 
+typedef void gs_sys_gc_failure_callback(void);
+void gs_sys_gc_failure_callback_register(gs_sys_gc_failure_callback *);
+
 /* §section ACE */
 
 void ace_up(void);
