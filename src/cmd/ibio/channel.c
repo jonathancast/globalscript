@@ -37,6 +37,7 @@ ibio_alloc_channel_segment()
 
     res->next = 0;
     res->extent = res->items;
+    res->forward = 0;
 
     return res;
 }

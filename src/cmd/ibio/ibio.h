@@ -66,6 +66,7 @@ struct ibio_channel_segment {
     Lock lock;
     struct ibio_iport *iport;
     struct ibio_channel_segment *next;
+    struct ibio_channel_segment *forward;
     gsvalue *extent;
     gsvalue items[];
 };
@@ -135,6 +136,7 @@ struct ibio_iport {
     struct api_thread *reading_thread;
     struct ibio_iport_read_blocker *waiting_to_read, **waiting_to_read_end;
     gsvalue error;
+    struct ibio_iport *forward;
     /* §section Used for §gs{iport}s connected to external files */
     int fd;
     struct ibio_uxio *uxio;

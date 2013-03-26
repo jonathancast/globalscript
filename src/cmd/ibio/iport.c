@@ -227,6 +227,8 @@ static void ibio_iport_unlink_from_thread(struct api_thread *, struct ibio_iport
 static void ibio_shutdown_iport(struct ibio_iport *, gsvalue *);
 static void ibio_shutdown_iport_on_read_symbol_unimpl(char *, int, struct gspos, struct ibio_iport *, struct ibio_channel_segment *, gsvalue *, char *, ...);
 
+static gsvalue *ibio_iptr_lookup_forward(gsvalue *);
+
 static
 void
 ibio_read_process_main(void *p)
@@ -274,7 +276,24 @@ ibio_read_process_main(void *p)
         runnable = !!iport->reading;
 
         err = gsreserve_string_builder();
-        gcres = gs_sys_gc_allow_collection(&err);
+        gcres = 0;
+        if (gs_sys_gc_want_collection()) {
+            if ((gcres = gs_sys_wait_for_collection_to_finish(&err)) < 0) {
+                gsfinish_string_builder(&err);
+                gswarning("GC failed: %s", err.start);
+                err = gsreserve_string_builder();
+            }
+
+            if (iport->forward)
+                iport = iport->forward
+            ; else {
+                gsstring_builder_print(&err, "iport not traced in GC");
+                gcres = -1;
+            }
+            if (pos) pos = ibio_iptr_lookup_forward(pos);
+
+            gs_sys_gc_done_with_collection();
+        }
         gsfinish_string_builder(&err);
         if (active && (gcres < 0 || gs_sys_memory_exhausted())) {
             struct gsstringbuilder msg;
@@ -622,7 +641,7 @@ ibio_prim_iptr_handle_iseof(struct ace_thread *thread, struct gspos pos, int nar
     }
 }
 
-/* §section §gs{ibio.prim.iptr.deref} */
+/* §subsection §gs{ibio.prim.iptr.deref} */
 
 struct ibio_prim_iptr_deref_blocking {
     struct gslprim_blocking gs;
@@ -698,7 +717,7 @@ ibio_prim_iptr_deref_return(struct ace_thread *thread, struct gspos pos, gsvalue
     }
 }
 
-/* §section §gs{ibio.prim.iptr.next} */
+/* §subsection §gs{ibio.prim.iptr.next} */
 
 static gslprim_resumption_handler ibio_prim_iptr_resume_next, ibio_prim_iptr_resume_next_wait_for_seg;
 
@@ -811,6 +830,22 @@ ibio_prim_iptr_next_return_wait_for_seg(struct ace_thread *thread, struct gspos 
     }
 }
 
+/* §subsection §ccode{ibio_iptr_lookup_forward} */
+
+static
+gsvalue *
+ibio_iptr_lookup_forward(gsvalue *iptr)
+{
+    struct ibio_channel_segment *seg;
+
+    seg = ibio_channel_segment_containing(iptr);
+    unlock(&seg->lock);
+
+    if (!seg->forward) return iptr;
+
+    return seg->forward->items + (iptr - seg->items);
+}
+
 /* §section Associating list of current reads to thread */
 
 struct ibio_thread_to_iport_link {
@@ -867,11 +902,13 @@ ibio_iport_unlink_from_thread(struct api_thread *thread, struct ibio_iport *ipor
 
 /* §section Allocation */
 
+static gsvalue ibio_iport_trace(struct gsstringbuilder *, gsvalue);
+
 static struct gs_sys_global_block_suballoc_info ibio_iport_segment_info = {
     /* descr = */ {
         /* evaluator = */ gswhnfeval,
         /* indirection_dereferencer = */ gswhnfindir,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ ibio_iport_trace,
         /* description = */ "IBIO iports",
     },
 };
@@ -897,8 +934,58 @@ ibio_alloc_iport(struct ibio_channel_segment *chan)
     res->position = chan->items;
     chan->iport = res;
     res->last_accessed_seg = chan;
+    res->forward = 0;
 
     return res;
+}
+
+static int ibio_iport_read_buffer_evacuate(struct gsstringbuilder *, struct ibio_iport *);
+
+static
+gsvalue
+ibio_iport_trace(struct gsstringbuilder *err, gsvalue v)
+{
+    struct ibio_iport *iport, *newiport;
+    gsvalue gctemp;
+
+    iport = (struct ibio_iport *)v;
+
+    if (iport->forward) {
+        gsstring_builder_print(err, UNIMPL("ibio_iport_trace: check for forward"));
+        return 0;
+    }
+
+    newiport = gs_sys_global_block_suballoc(&ibio_iport_segment_info, sizeof(*newiport));
+
+    memcpy(newiport, iport, sizeof(*iport));
+    memset(&newiport->lock, 0, sizeof(newiport->lock));
+    newiport->forward = 0;
+
+    iport->forward = newiport;
+
+    if (GS_GC_TRACE(err, &newiport->reading) < 0) return 0;
+    if (newiport->reading_thread) {
+        gsstring_builder_print(err, UNIMPL("ibio_iport_trace: evacuate result: reading_thread"));
+        return 0;
+    }
+
+    if (newiport->waiting_to_read) {
+        gsstring_builder_print(err, UNIMPL("ibio_iport_trace: evacuate result: waiting_to_read"));
+        return 0;
+
+        gsstring_builder_print(err, UNIMPL("ibio_iport_trace: evacuate result: waiting_to_read_end"));
+        return 0;
+    } else {
+        newiport->waiting_to_read_end = &newiport->waiting_to_read;
+    }
+
+    if (GS_GC_TRACE(err, &newiport->error) < 0) return 0;
+    if (ibio_uxio_trace(err, &newiport->uxio) < 0) return 0;
+    if (ibio_external_io_trace(err, &newiport->external) < 0) return 0;
+
+    if (ibio_iport_read_buffer_evacuate(err, newiport) < 0) return 0;
+
+    return (gsvalue)newiport;
 }
 
 #define IBIO_READ_BUFFER_SIZE 0x10000
@@ -919,4 +1006,29 @@ ibio_setup_iport_read_buffer(struct ibio_iport *iport)
 {
     gs_sys_aligned_block_suballoc(&ibio_iport_read_buffer_info, &iport->buf, &iport->bufextent);
     iport->bufstart = iport->bufend = iport->buf;
+}
+
+static
+int
+ibio_iport_read_buffer_evacuate(struct gsstringbuilder *err, struct ibio_iport *iport)
+{
+    void *oldbuf, *oldbufstart, *oldbufend, *oldbufextent;
+
+    oldbuf = iport->buf;
+    oldbufstart = iport->bufstart;
+    oldbufend = iport->bufend;
+    oldbufextent = iport->bufextent;
+
+    ibio_setup_iport_read_buffer(iport);
+
+    if ((uchar*)oldbufend - (uchar*)oldbufstart > (uchar*)iport->bufextent - (uchar*)iport->buf) {
+        gsstring_builder_print(err, UNIMPL("ibio_iport_trace: evacuate result: new buf too small"));
+        return -1;
+    }
+
+    memcpy(iport->buf, oldbufstart, (uchar*)oldbufend - (uchar*)oldbufstart);
+
+    iport->bufend = (uchar*)iport->buf + ((uchar*)oldbufend - (uchar*)oldbufstart);
+
+    return 0;
 }
