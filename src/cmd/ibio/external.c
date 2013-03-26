@@ -234,8 +234,8 @@ ibio_external_io_trace(struct gsstringbuilder *err, struct ibio_external_io **pi
     io = *pio;
 
     if (io->forward) {
-        gsstring_builder_print(err, UNIMPL("ibio_external_io_trace: check for forwarding pointer"));
-        return -1;
+        *pio = io->forward;
+        return 0;
     }
 
     if (!gs_sys_block_in_gc_from_space(io)) {
