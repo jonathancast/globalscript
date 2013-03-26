@@ -9,9 +9,5 @@
 _eptype	.tyexpr
 ibio.m	.tygvar
 rune.t	.tygvar
-_empty.record	.tygvar
-	.tyref	ibio.m	rune.t	rune.t	_empty.record
-
-_empty.record	.tyexpr
-	.tylift
-	.typroduct
+record.empty	.tygvar
+	.tyref	ibio.m	rune.t	rune.t	record.empty
