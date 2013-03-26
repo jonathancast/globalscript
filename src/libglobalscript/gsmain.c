@@ -90,7 +90,7 @@ have_document:
         err = gsreserve_string_builder(); /* Old value of §ccode{err} is no longer valid */
         if (
             gs_gc_trace_pos(&err, &gsentrypos) < 0
-            || GS_GC_TRACE(&err, gsentrypoint) < 0
+            || GS_GC_TRACE(&err, &gsentrypoint) < 0
             || gs_client_pre_ace_gc_trace_roots(&err) < 0
         ) {
             gsfinish_string_builder(&err);
