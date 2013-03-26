@@ -7,7 +7,6 @@
 #include "../ibio.h"
 
 static struct ibio_uxio *ibio_alloc_uxio(ulong, ibio_uxio_refill *, ibio_uxio_gccopy *, ibio_uxio_gcevacuate *);
-static int ibio_uxio_trace(struct gsstringbuilder *, struct ibio_uxio **);
 
 /* §section Files */
 
@@ -161,7 +160,6 @@ ibio_alloc_uxio(ulong sz, ibio_uxio_refill *refill, ibio_uxio_gccopy *gccopy, ib
     return res;
 }
 
-static
 int
 ibio_uxio_trace(struct gsstringbuilder *err, struct ibio_uxio **puxio)
 {
