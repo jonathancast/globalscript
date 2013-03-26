@@ -381,7 +381,7 @@ ibio_read_process_main(void *p)
 
                                         while (!(
                                             iport->waiting_to_read
-                                            || 1 /* §todo{Need to check if thread is waiting on input to terminate instead} */
+                                            || api_thread_terminating(iport->reading_thread)
                                             || iport->last_accessed_seg == seg
                                             || !iport->last_accessed_seg
                                         )) {
