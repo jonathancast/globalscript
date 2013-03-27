@@ -575,11 +575,13 @@ ibio_oport_unlink_from_thread(struct api_thread *thread, struct ibio_oport *opor
 
 /* §section Allocation */
 
+static gsvalue ibio_oport_trace(struct gsstringbuilder *, gsvalue);
+
 static struct gs_sys_global_block_suballoc_info ibio_oport_segment_info = {
     /* descr = */ {
         /* evaluator = */ gswhnfeval,
         /* indirection_dereferencer = */ gswhnfindir,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ ibio_oport_trace,
         /* description = */ "IBIO Oports",
     },
 };
@@ -608,6 +610,51 @@ ibio_alloc_oport()
     return res;
 }
 
+static int ibio_oport_evacuate_buf(struct gsstringbuilder *, struct ibio_oport *);
+
+static
+gsvalue
+ibio_oport_trace(struct gsstringbuilder *err, gsvalue v)
+{
+    struct ibio_oport *oport, *newoport;
+    gsvalue gctemp;
+
+    oport = (struct ibio_oport *)v;
+
+    if (oport->forward) {
+        gsstring_builder_print(err, UNIMPL("ibio_oport_trace: check for forward"));
+        return 0;
+    }
+
+    newoport = gs_sys_global_block_suballoc(&ibio_oport_segment_info, sizeof(*newoport));
+
+    memcpy(newoport, oport, sizeof(*newoport));
+    memset(&newoport->lock, 0, sizeof(newoport->lock));
+    if (!newoport->waiting_to_write) newoport->waiting_to_write_end = &newoport->waiting_to_write;
+    newoport->forward = 0;
+
+    oport->forward = newoport->forward;
+
+    if (GS_GC_TRACE(err, &newoport->writing) < 0) return 0;
+
+    if (newoport->waiting_to_write) {
+        gsstring_builder_print(err, UNIMPL("ibio_oport_trace: evacuate waiting_to_write"));
+        return 0;
+
+        gsstring_builder_print(err, UNIMPL("ibio_oport_trace: evacuate waiting_to_write_end"));
+        return 0;
+    }
+
+    if (newoport->writing_thread) {
+        gsstring_builder_print(err, UNIMPL("ibio_oport_trace: evacuate writing_thread"));
+        return 0;
+    }
+
+    if (ibio_oport_evacuate_buf(err, newoport) < 0) return 0;
+
+    return (gsvalue)newoport;
+}
+
 #define IBIO_WRITE_BUFFER_SIZE 0x10000
 
 static struct gs_sys_aligned_block_suballoc_info ibio_oport_write_buffer_info = {
@@ -626,4 +673,27 @@ ibio_setup_oport_write_buffer(struct ibio_oport *oport)
 {
     gs_sys_aligned_block_suballoc(&ibio_oport_write_buffer_info, &oport->buf, &oport->bufextent);
     oport->bufend = oport->buf;
+}
+
+static
+int
+ibio_oport_evacuate_buf(struct gsstringbuilder *err, struct ibio_oport *oport)
+{
+    void *oldbuf, *oldbufend, *oldbufextent;
+
+    oldbuf = oport->buf;
+    oldbufend = oport->bufend;
+    oldbufextent = oport->bufextent;
+
+    ibio_setup_oport_write_buffer(oport);
+
+    if ((uchar*)oldbufend - (uchar*)oldbuf > (uchar*)oport->bufextent - (uchar*)oport->buf) {
+        gsstring_builder_print(err, UNIMPL("ibio_oport_trace: buf too small for existing data"));
+        return -1;
+    }
+
+    memcpy(oport->buf, oldbuf, (uchar*)oldbufend - (uchar*)oldbuf);
+    oport->bufend = (uchar*)oport->buf + ((uchar*)oldbufend - (uchar*)oldbuf);
+
+    return 0;
 }
