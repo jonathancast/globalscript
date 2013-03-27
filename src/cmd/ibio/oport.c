@@ -91,8 +91,22 @@ ibio_write_thread_main(void *p)
 int
 ibio_write_thread_cleanup(struct gsstringbuilder *err)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_write_thread_cleanup"));
-    return -1;
+    int i;
+
+    for (i = 0; i < IBIO_NUM_WRITE_THREADS; i++) {
+        if (ibio_write_thread_queue->oports[i]) {
+            struct ibio_oport *oport;
+
+            if (ibio_write_thread_queue->oports[i]->forward) {
+                oport = ibio_write_thread_queue->oports[i] = ibio_write_thread_queue->oports[i]->forward;
+            } else {
+                gsstring_builder_print(err, UNIMPL("ibio_write_thread_cleanup: garbage"));
+                return -1;
+            }
+        }
+    }
+
+    return 0;
 }
 
 void
