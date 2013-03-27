@@ -92,6 +92,11 @@ int
 ibio_write_thread_cleanup(struct gsstringbuilder *err)
 {
     int i;
+    struct ibio_write_thread_queue *new_write_thread_queue;
+
+    new_write_thread_queue = gs_sys_global_block_suballoc(&ibio_write_thread_queue_info, sizeof(*ibio_write_thread_queue));
+    memcpy(new_write_thread_queue, ibio_write_thread_queue, sizeof(*ibio_write_thread_queue));
+    ibio_write_thread_queue = new_write_thread_queue;
 
     for (i = 0; i < IBIO_NUM_WRITE_THREADS; i++) {
         if (ibio_write_thread_queue->oports[i]) {
