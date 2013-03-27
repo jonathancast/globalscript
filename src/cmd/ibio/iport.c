@@ -143,6 +143,11 @@ int
 ibio_read_thread_cleanup(struct gsstringbuilder *err)
 {
     int i;
+    struct ibio_read_thread_queue *new_read_thread_queue;
+
+    new_read_thread_queue = gs_sys_global_block_suballoc(&ibio_read_thread_queue_info, sizeof(*ibio_read_thread_queue));
+    memcpy(new_read_thread_queue, ibio_read_thread_queue, sizeof(*ibio_read_thread_queue));
+    ibio_read_thread_queue = new_read_thread_queue;
 
     for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
         if (ibio_read_thread_queue->iports[i]) {
