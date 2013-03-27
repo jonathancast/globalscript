@@ -67,13 +67,17 @@ struct ibio_channel_segment {
     struct ibio_iport *iport;
     struct ibio_channel_segment *next;
     struct ibio_channel_segment *forward;
-    gsvalue *extent;
+    gsvalue *beginning, *extent;
     gsvalue items[];
 };
 
 struct ibio_channel_segment *ibio_channel_segment_containing(gsvalue *);
 
 struct ibio_channel_segment *ibio_alloc_channel_segment(void);
+
+int ibio_iptr_live(gsvalue *);
+int ibio_iptr_trace(struct gsstringbuilder *, gsvalue **);
+gsvalue *ibio_iptr_lookup_forward(gsvalue *);
 
 gsvalue *ibio_channel_segment_limit(struct ibio_channel_segment *);
 

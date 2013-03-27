@@ -36,7 +36,7 @@ ibio_alloc_channel_segment()
     lock(&res->lock);
 
     res->next = 0;
-    res->extent = res->items;
+    res->extent = res->beginning = res->items;
     res->forward = 0;
 
     return res;
@@ -133,4 +133,74 @@ ibio_channel_segment_containing(gsvalue *p)
 
     lock(&res->lock);
     return res;
+}
+
+/* §section Garbage-collection */
+
+int
+ibio_iptr_live(gsvalue *iptr)
+{
+    struct ibio_channel_segment *seg;
+
+    seg = ibio_channel_segment_containing(iptr);
+    unlock(&seg->lock);
+
+    return seg->forward || !gs_sys_block_in_gc_from_space(seg);
+}
+
+gsvalue *
+ibio_iptr_lookup_forward(gsvalue *iptr)
+{
+    struct ibio_channel_segment *seg;
+
+    seg = ibio_channel_segment_containing(iptr);
+    unlock(&seg->lock);
+
+    if (!seg->forward) return iptr;
+
+    return seg->forward->items + (iptr - seg->items);
+}
+
+int
+ibio_iptr_trace(struct gsstringbuilder *err, gsvalue **piptr)
+{
+    struct ibio_channel_segment *seg, *newseg;
+    gsvalue *iptr, *newiptr, *tmpiptr;
+
+    iptr = *piptr;
+
+    seg = ibio_channel_segment_containing(iptr);
+    unlock(&seg->lock);
+
+    if (seg->forward) {
+        gsstring_builder_print(err, UNIMPL("ibio_iptr_trace: check for forward"));
+        return -1;
+    } else {
+        void *buf;
+
+        gs_sys_aligned_block_suballoc(&ibio_channel_segment_info, &buf, 0);
+        newseg = (struct ibio_channel_segment *)buf;
+
+        memcpy(buf, seg, (uchar*)ibio_channel_segment_limit(seg) - (uchar*)seg);
+        memset(&newseg->lock, 0, sizeof(newseg->lock));
+        newseg->extent = newseg->beginning = newseg->items + (seg->extent - seg->items);
+
+        seg->forward = newseg;
+
+        if (newseg->next) {
+            gsstring_builder_print(err, UNIMPL("ibio_iptr_trace: evacuate: next"));
+            return -1;
+        }
+    }
+
+    *piptr = newiptr = newseg->items + (iptr - seg->items);
+
+    for (tmpiptr = newiptr; tmpiptr < newseg->beginning; tmpiptr++) {
+        gsstring_builder_print(err, UNIMPL("ibio_iptr_trace: evacuate"));
+        return -1;
+    }
+
+    if (newiptr < newseg->beginning) newseg->beginning = newiptr;
+
+    return 0;
 }

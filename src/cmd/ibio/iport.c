@@ -137,12 +137,37 @@ ibio_read_thread_main(void *p)
     ace_down();
 }
 
+
 static
 int
 ibio_read_thread_cleanup(struct gsstringbuilder *err)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_read_thread_cleanup"));
-    return -1;
+    int i;
+
+    for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
+        if (ibio_read_thread_queue->iports[i]) {
+            struct ibio_iport *iport;
+            if (ibio_read_thread_queue->iports[i]->forward) {
+                iport = ibio_read_thread_queue->iports[i] = ibio_read_thread_queue->iports[i]->forward;
+
+                if (ibio_iptr_live(iport->position)) {
+                    gsstring_builder_print(err, UNIMPL("ibio_read_thread_cleanup: live iport: evacuate position (live)"));
+                    return -1;
+
+                    gsstring_builder_print(err, UNIMPL("ibio_read_thread_cleanup: live iport: evacuate last_accessed_segment (live)"));
+                    return -1;
+                } else {
+                    if (ibio_iptr_trace(err, &iport->position) < 0) return -1;
+                    iport->last_accessed_seg = 0;
+                }
+            } else {
+                gsstring_builder_print(err, UNIMPL("ibio_read_thread_cleanup: garbage iport"));
+                return -1;
+            }
+        }
+    }
+
+    return 0;
 }
 
 void
@@ -239,8 +264,6 @@ static void ibio_iport_unlink_from_thread(struct api_thread *, struct ibio_iport
 
 static void ibio_shutdown_iport(struct ibio_iport *, gsvalue *);
 static void ibio_shutdown_iport_on_read_symbol_unimpl(char *, int, struct gspos, struct ibio_iport *, struct ibio_channel_segment *, gsvalue *, char *, ...);
-
-static gsvalue *ibio_iptr_lookup_forward(gsvalue *);
 
 static
 void
@@ -841,22 +864,6 @@ ibio_prim_iptr_next_return_wait_for_seg(struct ace_thread *thread, struct gspos 
         }
         return gsprim_block(thread, pos, (struct gslprim_blocking *)blocking);
     }
-}
-
-/* §subsection §ccode{ibio_iptr_lookup_forward} */
-
-static
-gsvalue *
-ibio_iptr_lookup_forward(gsvalue *iptr)
-{
-    struct ibio_channel_segment *seg;
-
-    seg = ibio_channel_segment_containing(iptr);
-    unlock(&seg->lock);
-
-    if (!seg->forward) return iptr;
-
-    return seg->forward->items + (iptr - seg->items);
 }
 
 /* §section Associating list of current reads to thread */
