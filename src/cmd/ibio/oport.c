@@ -633,7 +633,7 @@ ibio_oport_trace(struct gsstringbuilder *err, gsvalue v)
     if (!newoport->waiting_to_write) newoport->waiting_to_write_end = &newoport->waiting_to_write;
     newoport->forward = 0;
 
-    oport->forward = newoport->forward;
+    oport->forward = newoport;
 
     if (GS_GC_TRACE(err, &newoport->writing) < 0) return 0;
 
