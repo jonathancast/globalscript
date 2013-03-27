@@ -349,7 +349,21 @@ ibio_write_process_main(void *p)
         runnable = 1;
 
         err = gsreserve_string_builder();
-        gcres = gs_sys_gc_allow_collection(&err);
+        gcres = 0;
+        if (gs_sys_gc_want_collection()) {
+            if ((gcres = gs_sys_wait_for_collection_to_finish(&err)) < 0) {
+                gsfinish_string_builder(&err);
+                gswarning("GC failed: %s", err.start);
+                err = gsreserve_string_builder();
+            }
+            if (oport->forward)
+                oport = oport->forward
+            ; else {
+                gsstring_builder_print(&err, "oport not traced in GC");
+                gcres = -1;
+            }
+            gs_sys_gc_done_with_collection();
+        }
         gsfinish_string_builder(&err);
         if (active && (gcres < 0 || gs_sys_memory_exhausted())) {
             if (oport->writing) {
