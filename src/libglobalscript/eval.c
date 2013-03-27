@@ -347,9 +347,15 @@ gserrorsgc(struct gsstringbuilder *err, gsvalue v)
 
     switch (gserr->type) {
         case gserror_undefined: {
-            newerr = gsreserveerrors(sizeof(*newerr));
-            newerr->pos = gserr->pos;
-            newerr->type = gserr->type;
+            newerr = gsreserveerrors(MAX(sizeof(*newerr), sizeof(*fwd)));
+
+            memcpy(newerr, gserr, sizeof(*newerr));
+
+            gserr->type = gserror_forward;
+            fwd = (struct gserror_forward *)gserr;
+            fwd->dest = (gsvalue)newerr;
+
+            if (gs_gc_trace_pos(err, &newerr->pos) < 0) return 0;
 
             break;
         }
@@ -358,11 +364,14 @@ gserrorsgc(struct gsstringbuilder *err, gsvalue v)
 
             msg = (struct gserror_message *)gserr;
 
-            newerr = gsreserveerrors(sizeof(*newmsg) + strlen(msg->message) + 1);
+            newerr = gsreserveerrors(MAX(sizeof(*newmsg) + strlen(msg->message) + 1, sizeof(*fwd)));
             newmsg = (struct gserror_message *)newerr;
-            newerr->pos = gserr->pos;
-            newerr->type = gserr->type;
-            strcpy(newmsg->message, msg->message);
+
+            memcpy(newerr, gserr, sizeof(*newmsg) + strlen(msg->message) + 1);
+
+            gserr->type = gserror_forward;
+            fwd = (struct gserror_forward *)gserr;
+            fwd->dest = (gsvalue)newerr;
 
             if (gs_gc_trace_pos(err, &newerr->pos) < 0) return 0;
 
@@ -372,10 +381,6 @@ gserrorsgc(struct gsstringbuilder *err, gsvalue v)
             gsstring_builder_print(err, UNIMPL("gserrorsgc: unknown type %d"), gserr->type);
             return 0;
     }
-
-    gserr->type = gserror_forward;
-    fwd = (struct gserror_forward *)gserr;
-    fwd->dest = (gsvalue)newerr;
 
     return (gsvalue)newerr;
 }
