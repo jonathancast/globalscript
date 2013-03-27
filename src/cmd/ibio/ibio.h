@@ -162,7 +162,7 @@ gslprim_handler ibio_prim_iptr_handle_deref, ibio_prim_iptr_handle_next;
 struct ibio_oport {
     Lock lock;
     int active;
-    gsvalue writing;
+    gsvalue writing_symbol, writing;
     struct ibio_oport_write_blocker *waiting_to_write, **waiting_to_write_end;
     struct api_thread *writing_thread;
     struct ibio_oport *forward;

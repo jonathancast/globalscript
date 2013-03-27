@@ -301,7 +301,6 @@ ibio_write_process_main(void *p)
     vlong buftime;
     gstypecode st;
     struct ibio_oport *oport;
-    gsvalue c;
 
     args = (struct ibio_write_process_args *)p;
 
@@ -338,7 +337,6 @@ ibio_write_process_main(void *p)
         return;
     }
 
-    c = 0;
     nloops = 0;
     buftime = 0;
     do {
@@ -363,57 +361,57 @@ ibio_write_process_main(void *p)
                 ibio_oport_unlink_from_thread(oport->writing_thread, oport);
             }
             active = oport->active = 0;
-            oport->writing = c = 0;
+            oport->writing = oport->writing_symbol = 0;
         }
-        if (c) {
-            st = GS_SLOW_EVALUATE(c);
+        if (oport->writing_symbol) {
+            st = GS_SLOW_EVALUATE(oport->writing_symbol);
             switch (st) {
                 case gstystack:
                     runnable = 0;
                     if (nloops > 1024) {
                         api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: check if we should flush buffer");
                         active = oport->active = 0;
-                        oport->writing = c = 0;
+                        oport->writing = oport->writing_symbol = 0;
                         ibio_oport_unlink_from_thread(oport->writing_thread, oport);
                     }
                     break;
                 case gstyindir: {
-                    c = GS_REMOVE_INDIRECTION(c);
+                    oport->writing_symbol = GS_REMOVE_INDIRECTION(oport->writing_symbol);
                     break;
                 }
                 case gstyerr: {
                     struct gserror *err;
                     char buf[0x100];
 
-                    err = (struct gserror *)c;
+                    err = (struct gserror *)oport->writing_symbol;
                     gserror_format(buf, buf + sizeof(buf), err);
                     api_thread_post(oport->writing_thread, "write rune err: %s", buf);
 
                     active = oport->active = 0;
-                    oport->writing = 0;
+                    oport->writing = oport->writing_symbol = 0;
                     ibio_oport_unlink_from_thread(oport->writing_thread, oport);
                     break;
                 }
                 case gstyimplerr: {
                     char buf[0x100];
 
-                    gsimplementation_failure_format(buf, buf + sizeof(buf), (struct gsimplementation_failure *)c);
+                    gsimplementation_failure_format(buf, buf + sizeof(buf), (struct gsimplementation_failure *)oport->writing_symbol);
                     api_thread_post(oport->writing_thread, "write rune implementation err: %s", buf);
 
                     active = oport->active = 0;
-                    oport->writing = 0;
+                    oport->writing = oport->writing_symbol = 0;
                     ibio_oport_unlink_from_thread(oport->writing_thread, oport);
                     break;
                 }
                 case gstyunboxed:
-                    oport->bufend = gsrunetochar(c, oport->bufend, oport->bufextent);
+                    oport->bufend = gsrunetochar(oport->writing_symbol, oport->bufend, oport->bufextent);
                     if (((uchar*)oport->bufextent - (uchar*)oport->bufend) < 4) {
                         api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: flushing buffer");
                         active = oport->active = 0;
-                        oport->writing = c = 0;
+                        oport->writing = oport->writing_symbol = 0;
                         ibio_oport_unlink_from_thread(oport->writing_thread, oport);
                     } else {
-                        c = 0;
+                        oport->writing_symbol = 0;
                         nloops = 0;
                         buftime = nsec();
                     }
@@ -421,7 +419,7 @@ ibio_write_process_main(void *p)
                 default:
                     api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: writing head state %d", st);
                     active = oport->active = 0;
-                    oport->writing = c = 0;
+                    oport->writing = oport->writing_symbol = 0;
                     ibio_oport_unlink_from_thread(oport->writing_thread, oport);
                     break;
             }
@@ -451,7 +449,7 @@ ibio_write_process_main(void *p)
                     list = (struct gsconstr_args *)oport->writing;
                     switch (list->constrnum) {
                         case 0: { /* §gs{:} */
-                            c = list->arguments[0];
+                            oport->writing_symbol = list->arguments[0];
                             oport->writing = list->arguments[1];
                             break;
                         }
@@ -611,7 +609,7 @@ ibio_alloc_oport()
     memset(&res->lock, 0, sizeof(res->lock));
     lock(&res->lock);
     res->active = 1;
-    res->writing = 0;
+    res->writing = res->writing_symbol = 0;
     res->waiting_to_write = 0;
     res->waiting_to_write_end = &res->waiting_to_write;
     res->writing_thread = 0;
@@ -649,6 +647,7 @@ ibio_oport_trace(struct gsstringbuilder *err, gsvalue v)
 
     oport->forward = newoport;
 
+    if (GS_GC_TRACE(err, &newoport->writing_symbol) < 0) return 0;
     if (GS_GC_TRACE(err, &newoport->writing) < 0) return 0;
 
     if (newoport->waiting_to_write) {
