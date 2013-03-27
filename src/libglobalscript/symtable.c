@@ -49,8 +49,13 @@ gs_gc_trace_interned_string(struct gsstringbuilder *err, gsinterned_string *psym
 
     if (!gs_sys_block_in_gc_from_space(*psym)) return 0;
 
-    newsym = gsalloc_string((*psym)->hash, (*psym)->type, (*psym)->name);
-    gsstore_string(newsym);
+    newsym = gsget_string((*psym)->hash, (*psym)->type, (*psym)->name);
+    if (!newsym) {
+        newsym = gsalloc_string((*psym)->hash, (*psym)->type, (*psym)->name);
+        gsstore_string(newsym);
+    }
+
+    *psym = newsym;
 
     return 0;
 }
