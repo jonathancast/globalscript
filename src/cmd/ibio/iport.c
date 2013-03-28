@@ -150,10 +150,10 @@ ibio_read_thread_cleanup(struct gsstringbuilder *err)
     ibio_read_thread_queue = new_read_thread_queue;
 
     for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
-        if (ibio_read_thread_queue->iports[i]) {
-            struct ibio_iport *iport;
-            if (ibio_read_thread_queue->iports[i]->forward) {
-                iport = ibio_read_thread_queue->iports[i] = ibio_read_thread_queue->iports[i]->forward;
+        struct ibio_iport *iport;
+        if (iport = ibio_read_thread_queue->iports[i]) {
+            if (iport->forward) {
+                ibio_read_thread_queue->iports[i] = iport = iport->forward;
 
                 if (ibio_iptr_live(iport->position)) {
                     gsstring_builder_print(err, UNIMPL("ibio_read_thread_cleanup: live iport: evacuate position (live)"));
@@ -169,6 +169,7 @@ ibio_read_thread_cleanup(struct gsstringbuilder *err)
                 gsstring_builder_print(err, UNIMPL("ibio_read_thread_cleanup: garbage iport"));
                 return -1;
             }
+            if (iport->reading_thread) iport->reading_thread = api_thread_gc_forward(iport->reading_thread);
         }
     }
 
@@ -1025,10 +1026,6 @@ ibio_iport_trace(struct gsstringbuilder *err, gsvalue v)
     iport->forward = newiport;
 
     if (GS_GC_TRACE(err, &newiport->reading) < 0) return 0;
-    if (newiport->reading_thread) {
-        gsstring_builder_print(err, UNIMPL("ibio_iport_trace: evacuate result: reading_thread"));
-        return 0;
-    }
 
     if (newiport->waiting_to_read) {
         gsstring_builder_print(err, UNIMPL("ibio_iport_trace: evacuate result: waiting_to_read"));
