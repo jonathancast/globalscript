@@ -783,12 +783,13 @@ gsisrecord_block(struct gs_blockdesc *p)
 
 static gstypecode gs_lfield_eval(gsvalue);
 static gsvalue gs_lfield_indir(gsvalue);
+static gsvalue gs_lfield_trace(struct gsstringbuilder *, gsvalue);
 
 struct gs_sys_global_block_suballoc_info gslfields_info = {
     /* descr = */ {
         /* evaluator = */ gs_lfield_eval,
         /* indirection_dereferencer = */ gs_lfield_indir,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ gs_lfield_trace,
         /* description = */ "Global Script Field Extraction Thunks",
     },
 };
@@ -797,6 +798,7 @@ enum gslfield_state {
     gslfield_field,
     gslfield_evaluating,
     gslfield_indirection,
+    gslfield_evacuating,
 };
 struct gslfield {
     Lock lock;
@@ -910,6 +912,36 @@ gs_lfield_indir(gsvalue v)
     lfield = (struct gslfield *)v;
 
     return lfield->i.dest;
+}
+
+static
+gsvalue
+gs_lfield_trace(struct gsstringbuilder *err, gsvalue v)
+{
+    struct gslfield *lfield;
+    gsvalue gctemp;
+
+    lfield = (struct gslfield *)v;
+
+    switch(lfield->state) {
+        case gslfield_indirection: {
+            gsvalue dest;
+
+            dest = lfield->i.dest;
+
+            lfield->state = gslfield_evacuating;
+            if (GS_GC_TRACE(err, &dest) < 0) {
+                lfield->state = gslfield_indirection;
+                return 0;
+            }
+            lfield->state = gslfield_indirection;
+
+            return dest;
+        }
+        default:
+            gsstring_builder_print(err, UNIMPL("gs_lfield_trace: state = %d"), lfield->state);
+            return 0;
+    }
 }
 
 /* §section Constructors */
