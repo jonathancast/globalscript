@@ -252,6 +252,8 @@ gs_sys_gc_failed(char *err)
 
     gs_sys_in_gc = 0;
 
+    gs_sys_post_gc_memory_use = gs_sys_memory_allocated_size();
+
     lock(&gs_allocator_lock);
         gs_sys_gc_num_procs_in_gc--;
         gs_sys_gc_running = 0;
