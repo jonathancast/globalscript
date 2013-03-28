@@ -154,17 +154,22 @@ ibio_read_thread_cleanup(struct gsstringbuilder *err)
         if (iport = ibio_read_thread_queue->iports[i]) {
             if (iport->forward) {
                 ibio_read_thread_queue->iports[i] = iport = iport->forward;
-
-                if (ibio_iptr_live(iport->position)) {
-                    iport->position = ibio_iptr_lookup_forward(iport->position);
-                    iport->last_accessed_seg = ibio_channel_segment_lookup_forward(iport->last_accessed_seg);
-                } else {
-                    if (ibio_iptr_trace(err, &iport->position) < 0) return -1;
-                    iport->last_accessed_seg = 0;
-                }
             } else {
-                gsstring_builder_print(err, UNIMPL("ibio_read_thread_cleanup: garbage iport"));
-                return -1;
+                gsvalue gcv, gctemp;
+
+                gcv = (gsvalue)iport;
+                if (GS_GC_TRACE(err, &gcv) < 0) return -1;
+                ibio_read_thread_queue->iports[i] = iport = (struct ibio_iport *)gcv;
+
+                iport->active = 0;
+            }
+
+            if (ibio_iptr_live(iport->position)) {
+                iport->position = ibio_iptr_lookup_forward(iport->position);
+                iport->last_accessed_seg = ibio_channel_segment_lookup_forward(iport->last_accessed_seg);
+            } else {
+                if (ibio_iptr_trace(err, &iport->position) < 0) return -1;
+                iport->last_accessed_seg = 0;
             }
             if (iport->reading_thread) iport->reading_thread = api_thread_gc_forward(iport->reading_thread);
         }
