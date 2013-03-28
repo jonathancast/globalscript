@@ -175,8 +175,7 @@ ibio_iptr_trace(struct gsstringbuilder *err, gsvalue **piptr)
     unlock(&seg->lock);
 
     if (seg->forward) {
-        gsstring_builder_print(err, UNIMPL("ibio_iptr_trace: check for forward"));
-        return -1;
+        newseg = seg->forward;
     } else {
         void *buf;
 
