@@ -596,6 +596,9 @@ void *api_thread_client_data(struct api_thread *);
 void api_take_thread(struct api_thread *);
 void api_release_thread(struct api_thread *);
 
+/* ↓ Fetch GC forwarding pointer from thread if needed */
+struct api_thread *api_thread_gc_forward(struct api_thread *);
+
 int api_thread_terminating(struct api_thread *);
 
 /* §paragraph{RPCs, for executing part of primitives in the corresponding (or parent) kernel process} */

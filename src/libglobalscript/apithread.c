@@ -259,6 +259,14 @@ api_at_termination(api_termination_callback *cb)
     unlock(&api_at_termination_queue_lock);
 }
 
+/* Move before §ccode{} §emph{only once the GC patch is done!} */
+struct
+api_thread *
+api_thread_gc_forward(struct api_thread *thread)
+{
+    return thread->forward ? thread->forward : thread;
+}
+
 /* §section Execution */
 
 static void api_unpack_block_statement(struct api_thread *, struct gsclosure *);
