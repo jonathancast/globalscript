@@ -12,13 +12,13 @@
 
 static gstypecode ibio_channel_eval(gsvalue);
 static gsvalue ibio_channel_remove_indir(gsvalue);
-static gsvalue ibio_channel_trace(struct gsstringbuilder *err, gsvalue);
+static gsvalue ibio_iptr_gc_trace(struct gsstringbuilder *err, gsvalue);
 
 static struct gs_sys_aligned_block_suballoc_info ibio_channel_segment_info = {
     /* descr = */ {
         /* evaluator = */ ibio_channel_eval,
         /* indirection_dereferencer = */ ibio_channel_remove_indir,
-        /* gc_trace = */ ibio_channel_trace,
+        /* gc_trace = */ ibio_iptr_gc_trace,
         /* description = */ "IBIO Channels",
     },
     /* align = */ IBIO_CHANNEL_SEGMENT_SIZE,
@@ -168,6 +168,8 @@ ibio_iptr_lookup_forward(gsvalue *iptr)
     return seg->forward->items + (iptr - seg->items);
 }
 
+static int ibio_channel_segment_trace(struct gsstringbuilder *, struct ibio_channel_segment *, struct ibio_channel_segment **, int);
+
 int
 ibio_iptr_trace(struct gsstringbuilder *err, gsvalue **piptr)
 {
@@ -180,25 +182,7 @@ ibio_iptr_trace(struct gsstringbuilder *err, gsvalue **piptr)
     seg = ibio_channel_segment_containing(iptr);
     unlock(&seg->lock);
 
-    if (seg->forward) {
-        newseg = seg->forward;
-    } else {
-        void *buf;
-
-        gs_sys_aligned_block_suballoc(&ibio_channel_segment_info, &buf, 0);
-        newseg = (struct ibio_channel_segment *)buf;
-
-        memcpy(buf, seg, (uchar*)ibio_channel_segment_limit(seg) - (uchar*)seg);
-        memset(&newseg->lock, 0, sizeof(newseg->lock));
-        newseg->extent = newseg->beginning = newseg->items + (seg->extent - seg->items);
-
-        seg->forward = newseg;
-
-        if (newseg->next) {
-            gsstring_builder_print(err, UNIMPL("ibio_iptr_trace: evacuate: next"));
-            return -1;
-        }
-    }
+    if (ibio_channel_segment_trace(err, seg, &newseg, 0) < 0) return -1;
 
     *piptr = newiptr = newseg->items + (iptr - seg->items);
 
@@ -211,9 +195,51 @@ ibio_iptr_trace(struct gsstringbuilder *err, gsvalue **piptr)
     return 0;
 }
 
+int
+ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segment *seg, struct ibio_channel_segment **pnewseg, int copy_everything)
+{
+    struct ibio_channel_segment *newseg;
+    gsvalue *tmpiptr;
+    gsvalue gctemp;
+
+    if (seg->forward) {
+        *pnewseg = newseg = seg->forward;
+
+        if (copy_everything) {
+            gsstring_builder_print(err, UNIMPL("Copy rest of segment"));
+            return -1;
+        }
+
+        return 0;
+    } else {
+        void *buf;
+
+        gs_sys_aligned_block_suballoc(&ibio_channel_segment_info, &buf, 0);
+        *pnewseg = newseg = (struct ibio_channel_segment *)buf;
+
+        memcpy(buf, seg, (uchar*)ibio_channel_segment_limit(seg) - (uchar*)seg);
+        memset(&newseg->lock, 0, sizeof(newseg->lock));
+        newseg->extent = newseg->beginning = newseg->items + (seg->extent - seg->items);
+
+        seg->forward = newseg;
+
+        if (copy_everything) {
+            for (tmpiptr = newseg->items; tmpiptr < newseg->beginning; tmpiptr++)
+                if (GS_GC_TRACE(err, tmpiptr) < 0) return -1
+            ;
+        }
+
+        if (newseg->next) {
+            if (ibio_channel_segment_trace(err, newseg->next, &newseg->next, 1) < 0) return -1;
+        }
+
+        return 0;
+    }
+}
+
 static
 gsvalue
-ibio_channel_trace(struct gsstringbuilder *err, gsvalue v)
+ibio_iptr_gc_trace(struct gsstringbuilder *err, gsvalue v)
 {
     gsvalue *iptr;
 
