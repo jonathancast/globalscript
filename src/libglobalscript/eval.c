@@ -197,6 +197,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
     int i;
     struct gsheap_item *hp, *newhp;
     struct gsgcforward *fwd;
+    gsvalue gctemp;
 
     hp = (struct gsheap_item *)v;
     newhp = 0;
@@ -214,10 +215,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             newhp->type = hp->type;
             newcl->code = cl->code;
             newcl->numfvs = cl->numfvs;
-            for (i = 0; i < cl->numfvs; i++) {
-                gsstring_builder_print(err, UNIMPL("gsheapgc: closures: fvs"));
-                return 0;
-            }
+            for (i = 0; i < cl->numfvs; i++) newcl->fvs[i] = cl->fvs[i];
 
             hp->type = gsgcforward;
             fwd = (struct gsgcforward *)hp;
@@ -226,10 +224,9 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
             if (gs_gc_trace_bco(err, &newcl->code) < 0) return 0;
 
-            for (i = 0; i < newcl->numfvs; i++) {
-                gsstring_builder_print(err, UNIMPL("gsheapgc: closures: fvs"));
-                return 0;
-            }
+            for (i = 0; i < newcl->numfvs; i++)
+                if (GS_GC_TRACE(err, &newcl->fvs[i]) < 0) return 0
+            ;
             break;
         }
         case gsapplication: {
