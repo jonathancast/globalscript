@@ -38,6 +38,9 @@ void ibio_gc_failure_cleanup(void **);
 int ibio_thread_to_oport_link_trace(struct gsstringbuilder *, struct ibio_thread_to_oport_link **);
 void ibio_thread_to_oport_link_cleanup(struct ibio_thread_to_oport_link **);
 
+int ibio_thread_to_iport_link_trace(struct gsstringbuilder *, struct ibio_thread_to_iport_link **);
+void ibio_thread_to_iport_link_cleanup(struct ibio_thread_to_iport_link **);
+
 /* §section Environment */
 
 api_prim_executor ibio_handle_prim_getargs;

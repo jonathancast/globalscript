@@ -85,10 +85,10 @@ ibio_thread_data_trace(struct gsstringbuilder *err, gsvalue v)
             return 0
     ;
 
-    if (newdata->reading_from_iport) {
-        gsstring_builder_print(err, UNIMPL("ibio_thread_data_trace: evacuate reading_from_iport"));
-        return 0;
-    }
+    if (newdata->reading_from_iport && gs_sys_block_in_gc_from_space(newdata->reading_from_iport))
+        if (ibio_thread_to_iport_link_trace(err, &newdata->reading_from_iport) < 0)
+            return 0
+    ;
 
     return (gsvalue)newdata;
 }
@@ -103,4 +103,5 @@ ibio_gc_failure_cleanup(void **pdata)
     if (data->forward) *pdata = data = data->forward;
 
     if (data->writing_to_oport) ibio_thread_to_oport_link_cleanup(&data->writing_to_oport);
+    if (data->reading_from_iport) ibio_thread_to_iport_link_cleanup(&data->reading_from_iport);
 }
