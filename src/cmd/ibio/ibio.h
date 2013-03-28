@@ -33,6 +33,7 @@ struct ibio_thread_data {
 
 void *ibio_main_thread_alloc_data(struct gspos, int, char **);
 enum api_prim_execution_state ibio_thread_term_status(struct api_thread *);
+void ibio_gc_failure_cleanup(void **);
 
 /* §section Environment */
 

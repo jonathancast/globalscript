@@ -63,9 +63,11 @@ static struct api_process_rpc_table exec_rpc_table = {
 };
 
 static enum api_prim_execution_state exec_thread_term_status(struct api_thread *);
+static void exec_gc_failure_cleanup(void **);
 
 static struct api_thread_table exec_thread_table = {
     /* thread_term_status = */ exec_thread_term_status,
+    /* gc_failure_cleanup = */ exec_gc_failure_cleanup,
 };
 
 static struct api_prim_table exec_prim_table = {
@@ -102,4 +104,10 @@ enum api_prim_execution_state
 exec_thread_term_status(struct api_thread *thread)
 {
     return api_st_success;
+}
+
+static
+void
+exec_gc_failure_cleanup(void **pdata)
+{
 }

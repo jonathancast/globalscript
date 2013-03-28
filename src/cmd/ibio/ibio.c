@@ -103,6 +103,7 @@ gsadd_client_prim_sets()
 
 static struct api_thread_table ibio_thread_table = {
     /* thread_term_status = */ ibio_thread_term_status,
+    /* gc_failure_cleanup = */ ibio_gc_failure_cleanup,
 };
 
 static struct api_process_rpc_table ibio_rpc_table = {

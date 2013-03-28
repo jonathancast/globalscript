@@ -92,3 +92,13 @@ ibio_thread_data_trace(struct gsstringbuilder *err, gsvalue v)
 
     return (gsvalue)newdata;
 }
+
+void
+ibio_gc_failure_cleanup(void **pdata)
+{
+    struct ibio_thread_data *data;
+
+    data = (struct ibio_thread_data *)*pdata;
+
+    if (data->forward) *pdata = data = data->forward;
+}

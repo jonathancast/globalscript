@@ -590,6 +590,7 @@ struct api_thread;
 /* §paragraph{Termination} */
 struct api_thread_table {
     enum api_prim_execution_state (*thread_term_status)(struct api_thread *);
+    void (*gc_failure_cleanup)(void **);
 };
 
 void *api_thread_client_data(struct api_thread *);
