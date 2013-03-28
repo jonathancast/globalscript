@@ -1600,10 +1600,9 @@ ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
             newip = (uchar*)newthread->st.running.bco + ((uchar*)newthread->st.running.ip - (uchar*)oldbco);
             newthread->st.running.ip = (struct gsbc *)newip;
 
-            for (i = 0; i < newthread->nsubexprs; i++) {
-                gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate subexprs"));
-                return -1;
-            }
+            for (i = 0; i < newthread->nsubexprs; i++)
+                if (gs_gc_trace_bco(err, &newthread->subexprs[i]) < 0) return -1
+            ;
 
             for (i = 0; i < newthread->nregs; i++)
                 if (GS_GC_TRACE(err, &newthread->regs[i]) < 0) return -1
