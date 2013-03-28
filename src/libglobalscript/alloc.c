@@ -8,7 +8,7 @@
 
 Lock gs_allocator_lock;
 
-#define GS_SYS_MAX_NUM_SEGMENTS 8
+#define GS_SYS_MAX_NUM_SEGMENTS 0x10
 
 static int gs_sys_num_segments;
 static struct gs_sys_segment {
