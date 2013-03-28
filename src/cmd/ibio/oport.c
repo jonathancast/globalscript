@@ -108,6 +108,8 @@ ibio_write_thread_cleanup(struct gsstringbuilder *err)
                 gsstring_builder_print(err, UNIMPL("ibio_write_thread_cleanup: garbage"));
                 return -1;
             }
+
+            if (oport->writing_thread) oport->writing_thread = api_thread_gc_forward(oport->writing_thread);
         }
     }
 
@@ -711,11 +713,6 @@ ibio_oport_trace(struct gsstringbuilder *err, gsvalue v)
         return 0;
 
         gsstring_builder_print(err, UNIMPL("ibio_oport_trace: evacuate waiting_to_write_end"));
-        return 0;
-    }
-
-    if (newoport->writing_thread) {
-        gsstring_builder_print(err, UNIMPL("ibio_oport_trace: evacuate writing_thread"));
         return 0;
     }
 
