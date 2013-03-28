@@ -179,11 +179,14 @@ void
 ibio_read_thread_gc_failure_cleanup()
 {
     int i;
+    struct ibio_iport *iport;
 
-    for (i = 0; i < IBIO_NUM_READ_THREADS; i++)
-        if (ibio_read_thread_queue->iports[i] && ibio_read_thread_queue->iports[i]->forward)
-            ibio_read_thread_queue->iports[i] = ibio_read_thread_queue->iports[i]->forward
-    ;
+    for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
+        if (iport = ibio_read_thread_queue->iports[i]) {
+            if (iport->forward) ibio_read_thread_queue->iports[i] = iport = iport->forward;
+            if (iport->reading_thread) iport->reading_thread = api_thread_gc_forward(iport->reading_thread);
+        }
+    }
 }
 
 static
