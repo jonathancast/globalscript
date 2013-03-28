@@ -149,6 +149,12 @@ ibio_iptr_live(gsvalue *iptr)
     return seg->forward || !gs_sys_block_in_gc_from_space(seg);
 }
 
+struct ibio_channel_segment *
+ibio_channel_segment_lookup_forward(struct ibio_channel_segment *seg)
+{
+    return seg->forward;
+}
+
 gsvalue *
 ibio_iptr_lookup_forward(gsvalue *iptr)
 {

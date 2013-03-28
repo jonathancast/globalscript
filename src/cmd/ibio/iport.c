@@ -156,11 +156,8 @@ ibio_read_thread_cleanup(struct gsstringbuilder *err)
                 ibio_read_thread_queue->iports[i] = iport = iport->forward;
 
                 if (ibio_iptr_live(iport->position)) {
-                    gsstring_builder_print(err, UNIMPL("ibio_read_thread_cleanup: live iport: evacuate position (live)"));
-                    return -1;
-
-                    gsstring_builder_print(err, UNIMPL("ibio_read_thread_cleanup: live iport: evacuate last_accessed_segment (live)"));
-                    return -1;
+                    iport->position = ibio_iptr_lookup_forward(iport->position);
+                    iport->last_accessed_seg = ibio_channel_segment_lookup_forward(iport->last_accessed_seg);
                 } else {
                     if (ibio_iptr_trace(err, &iport->position) < 0) return -1;
                     iport->last_accessed_seg = 0;
