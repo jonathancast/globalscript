@@ -118,11 +118,14 @@ void
 ibio_write_thread_gc_failure_cleanup()
 {
     int i;
+    struct ibio_oport *oport;
 
-    for (i = 0; i < IBIO_NUM_WRITE_THREADS; i++)
-        if (ibio_write_thread_queue->oports[i] && ibio_write_thread_queue->oports[i]->forward)
-            ibio_write_thread_queue->oports[i] = ibio_write_thread_queue->oports[i]->forward
-    ;
+    for (i = 0; i < IBIO_NUM_WRITE_THREADS; i++) {
+        if (oport = ibio_write_thread_queue->oports[i]) {
+            if (oport->forward) ibio_write_thread_queue->oports[i] = oport = oport->forward;
+            if (oport->writing_thread) oport->writing_thread = api_thread_gc_forward(oport->writing_thread);
+        }
+    }
 }
 
 static
