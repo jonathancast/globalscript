@@ -190,8 +190,7 @@ gs_sys_finish_gc(struct gsstringbuilder *err)
                 gsstring_builder_print(err, UNIMPL("gs_sys_finish_gc: free from_space segment: merge with previous segment"));
                 return -1;
             } else if (GS_SYS_SEGMENT_IS(i + 1, gs_sys_segment_free)) {
-                gsstring_builder_print(err, UNIMPL("gs_sys_finish_gc: free from_space segment: merge with next segment"));
-                return -1;
+                GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i + 1, 1);
             } else {
                 gs_sys_segments[i].type = gs_sys_segment_free;
             }
