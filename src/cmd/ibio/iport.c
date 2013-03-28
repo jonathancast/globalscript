@@ -166,7 +166,7 @@ ibio_read_thread_cleanup(struct gsstringbuilder *err)
 
             if (ibio_iptr_live(iport->position)) {
                 iport->position = ibio_iptr_lookup_forward(iport->position);
-                iport->last_accessed_seg = ibio_channel_segment_lookup_forward(iport->last_accessed_seg);
+                if (iport->last_accessed_seg) iport->last_accessed_seg = ibio_channel_segment_lookup_forward(iport->last_accessed_seg);
             } else {
                 if (ibio_iptr_trace(err, &iport->position) < 0) return -1;
                 iport->last_accessed_seg = 0;
