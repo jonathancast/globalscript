@@ -93,20 +93,25 @@ ibio_write_thread_cleanup(struct gsstringbuilder *err)
 {
     int i;
     struct ibio_write_thread_queue *new_write_thread_queue;
+    gsvalue gctemp;
 
     new_write_thread_queue = gs_sys_global_block_suballoc(&ibio_write_thread_queue_info, sizeof(*ibio_write_thread_queue));
     memcpy(new_write_thread_queue, ibio_write_thread_queue, sizeof(*ibio_write_thread_queue));
     ibio_write_thread_queue = new_write_thread_queue;
 
     for (i = 0; i < IBIO_NUM_WRITE_THREADS; i++) {
-        if (ibio_write_thread_queue->oports[i]) {
-            struct ibio_oport *oport;
+        struct ibio_oport *oport;
+        if (oport = ibio_write_thread_queue->oports[i]) {
 
-            if (ibio_write_thread_queue->oports[i]->forward) {
+            if (oport->forward) {
                 oport = ibio_write_thread_queue->oports[i] = ibio_write_thread_queue->oports[i]->forward;
             } else {
-                gsstring_builder_print(err, UNIMPL("ibio_write_thread_cleanup: garbage"));
-                return -1;
+                gsvalue oportv;
+
+                oportv = (gsvalue)oport;
+                if (GS_GC_TRACE(err, &oportv) < 0) return -1;
+                oport = ibio_write_thread_queue->oports[i] = (struct ibio_oport *)oportv;
+                oport->active = 0;
             }
 
             if (oport->writing_thread) oport->writing_thread = api_thread_gc_forward(oport->writing_thread);
