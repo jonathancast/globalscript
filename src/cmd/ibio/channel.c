@@ -12,12 +12,13 @@
 
 static gstypecode ibio_channel_eval(gsvalue);
 static gsvalue ibio_channel_remove_indir(gsvalue);
+static gsvalue ibio_channel_trace(struct gsstringbuilder *err, gsvalue);
 
 static struct gs_sys_aligned_block_suballoc_info ibio_channel_segment_info = {
     /* descr = */ {
         /* evaluator = */ ibio_channel_eval,
         /* indirection_dereferencer = */ ibio_channel_remove_indir,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ ibio_channel_trace,
         /* description = */ "IBIO Channels",
     },
     /* align = */ IBIO_CHANNEL_SEGMENT_SIZE,
@@ -203,4 +204,17 @@ ibio_iptr_trace(struct gsstringbuilder *err, gsvalue **piptr)
     if (newiptr < newseg->beginning) newseg->beginning = newiptr;
 
     return 0;
+}
+
+static
+gsvalue
+ibio_channel_trace(struct gsstringbuilder *err, gsvalue v)
+{
+    gsvalue *iptr;
+
+    iptr = (gsvalue *)v;
+
+    if (ibio_iptr_trace(err, &iptr) < 0) return 0;
+
+    return (gsvalue)iptr;
 }
