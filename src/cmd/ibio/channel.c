@@ -167,6 +167,7 @@ ibio_iptr_trace(struct gsstringbuilder *err, gsvalue **piptr)
 {
     struct ibio_channel_segment *seg, *newseg;
     gsvalue *iptr, *newiptr, *tmpiptr;
+    gsvalue gctemp;
 
     iptr = *piptr;
 
@@ -196,10 +197,9 @@ ibio_iptr_trace(struct gsstringbuilder *err, gsvalue **piptr)
 
     *piptr = newiptr = newseg->items + (iptr - seg->items);
 
-    for (tmpiptr = newiptr; tmpiptr < newseg->beginning; tmpiptr++) {
-        gsstring_builder_print(err, UNIMPL("ibio_iptr_trace: evacuate"));
-        return -1;
-    }
+    for (tmpiptr = newiptr; tmpiptr < newseg->beginning; tmpiptr++)
+        if (GS_GC_TRACE(err, tmpiptr) < 0) return -1
+    ;
 
     if (newiptr < newseg->beginning) newseg->beginning = newiptr;
 
