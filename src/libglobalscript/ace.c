@@ -1624,8 +1624,37 @@ ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
     }
 
     for (p = newthread->stacktop; (uchar*)p < (uchar*)newthread->stackbot; ) {
-        gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate stack"));
-        return -1;
+        struct gsbc_cont *cont = (struct gsbc_cont *)p;
+
+        if (gs_gc_trace_pos(err, &cont->pos) < 0) return -1;
+
+        switch (cont->node) {
+            case gsbc_cont_app: {
+                struct gsbc_cont_app *app = (struct gsbc_cont_app *)cont;
+
+                for (i = 0; i < app->numargs; i++)
+                    if (GS_GC_TRACE(err, &app->arguments[i]) < 0) return -1
+                ;
+
+                p = (uchar*)app + sizeof(*app) + app->numargs * sizeof(gsvalue);
+                continue;
+            }
+            case gsbc_cont_force: {
+                struct gsbc_cont_force *force = (struct gsbc_cont_force *)cont;
+
+                if (gs_gc_trace_bco(err, &force->code) < 0) return -1;
+
+                for (i = 0; i < force->numfvs; i++)
+                    if (GS_GC_TRACE(err, &force->fvs[i]) < 0) return -1
+                ;
+
+                p = (uchar*)force + sizeof(*force) + force->numfvs * sizeof(gsvalue);
+                continue;
+            }
+            default:
+                gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate stack (node = %d)"), cont->node);
+                return -1;
+        }
     }
 
     *ppthread = newthread;
