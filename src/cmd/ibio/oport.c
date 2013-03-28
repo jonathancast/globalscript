@@ -607,6 +607,40 @@ ibio_oport_unlink_from_thread(struct api_thread *thread, struct ibio_oport *opor
     api_release_thread(thread);
 }
 
+int
+ibio_thread_to_oport_link_trace(struct gsstringbuilder *err, struct ibio_thread_to_oport_link **plink)
+{
+    struct ibio_thread_to_oport_link *newlink;
+    gsvalue gcv, gctemp;
+
+    newlink = gs_sys_global_block_suballoc(&ibio_thread_to_oport_link_info, sizeof(*newlink));
+
+    memcpy(newlink, *plink, sizeof(*newlink));
+
+    *plink = newlink;
+
+    if (newlink->next) {
+        gsstring_builder_print(err, UNIMPL("ibio_thread_to_oport_link_trace: evacuate next"));
+        return -1;
+    }
+
+    gcv = (gsvalue)newlink->oport;
+    if (GS_GC_TRACE(err, &gcv) < 0) return -1;
+    newlink->oport = (struct ibio_oport *)gcv;
+
+    return 0;
+}
+
+void
+ibio_thread_to_oport_link_cleanup(struct ibio_thread_to_oport_link **plink)
+{
+    struct ibio_thread_to_oport_link *link;
+
+    for (link = *plink; link; link = link->next)
+        if (link->oport->forward) link->oport = link->oport->forward
+    ;
+}
+
 /* §section Allocation */
 
 static gsvalue ibio_oport_trace(struct gsstringbuilder *, gsvalue);
