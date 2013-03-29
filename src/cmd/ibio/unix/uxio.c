@@ -84,8 +84,9 @@ ibio_dir_uxio(char *dirname)
     struct ibio_dir_uxio *res;
 
     res = (struct ibio_dir_uxio *)ibio_alloc_uxio(DIR_SEGMENT_SIZE, ibio_dir_refill, ibio_dir_gccopy, ibio_dir_gcevacuate);
-    res->dirname = dirname;
-    res->bufend = res->bufbeg = (uchar*)res + sizeof(*res);
+    res->dirname = (char*)res + sizeof(*res);
+    strecpy(res->dirname, (char*)res + DIR_SEGMENT_SIZE, dirname);
+    res->bufend = res->bufbeg = (uchar*)res + sizeof(*res) + strlen(dirname) + 1;
     res->offset = 0;
 
     return (struct ibio_uxio *)res;
@@ -101,7 +102,7 @@ ibio_dir_refill(struct ibio_uxio *uxio, int fd, void *buf, long n)
     dirio = (struct ibio_dir_uxio *)uxio;
 
     if (dirio->bufbeg == dirio->bufend) {
-        dirio->bufbeg = (uchar*)dirio + sizeof(*dirio);
+        dirio->bufbeg = (uchar*)dirio + sizeof(*dirio) + strlen(dirio->dirname) + 1;
         res = gsbio_unix_read_directory(fd, dirio->bufbeg, (uchar*)dirio + DIR_SEGMENT_SIZE, &dirio->offset);
         if (res <= 0)
             return res
