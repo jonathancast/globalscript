@@ -458,7 +458,7 @@ ibio_write_process_main(void *p)
                 case gstystack:
                     runnable = 0;
                     if (nloops > 1024 && nsec() - buftime > 1000 * 1000) {
-                        long n = (uchar*)oport->bufend > (uchar*)oport->buf;
+                        long n = (uchar*)oport->bufend - (uchar*)oport->buf;
                         if (write(oport->fd, oport->buf, n) != n) {
                             api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: error when flushing buffer", n);
                             active = oport->active = 0;
