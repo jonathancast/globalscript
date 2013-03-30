@@ -146,7 +146,7 @@ ibio_iptr_live(gsvalue *iptr)
     seg = ibio_channel_segment_containing(iptr);
     unlock(&seg->lock);
 
-    return seg->forward || !gs_sys_block_in_gc_from_space(seg);
+    return (seg->forward && iptr >= seg->beginning) || !gs_sys_block_in_gc_from_space(seg);
 }
 
 struct ibio_channel_segment *
