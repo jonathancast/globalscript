@@ -227,6 +227,7 @@ ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segm
             for (tmpiptr = newseg->items; tmpiptr < newseg->beginning; tmpiptr++)
                 if (GS_GC_TRACE(err, tmpiptr) < 0) return -1
             ;
+            newseg->beginning = newseg->items;
         }
 
         if (newseg->next) {
