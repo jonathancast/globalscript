@@ -621,6 +621,8 @@ struct ibio_iport_read_blocker {
     struct ibio_iport_read_blocker *next;
 };
 
+static int ibio_read_blocking_gc_trace(struct gsstringbuilder *, struct api_prim_blocking **);
+
 enum api_prim_execution_state
 ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct api_prim_blocking **pblocking, gsvalue *pv)
 {
@@ -630,7 +632,7 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
     if (*pblocking) {
         read_blocking = (struct ibio_read_blocking *)*pblocking;
     } else {
-        *pblocking = api_blocking_alloc(sizeof(struct ibio_read_blocking));
+        *pblocking = api_blocking_alloc(sizeof(struct ibio_read_blocking), ibio_read_blocking_gc_trace);
         read_blocking = (struct ibio_read_blocking *)*pblocking;
         read_blocking->iport = (struct ibio_iport*)read->p.arguments[0];
         read_blocking->acceptor = read->p.arguments[1];
@@ -683,6 +685,14 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
         unlock(&read_blocking->iport->lock);
         return api_st_blocked;
     }
+}
+
+static
+int
+ibio_read_blocking_gc_trace(struct gsstringbuilder *err, struct api_prim_blocking **pblocking)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_read_blocking_gc_trace"));
+    return -1;
 }
 
 /* §section Reading (Global Script-side) */

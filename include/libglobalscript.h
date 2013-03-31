@@ -623,9 +623,10 @@ enum api_prim_execution_state {
 };
 
 struct api_prim_blocking {
+    int (*gc_trace)(struct gsstringbuilder *, struct api_prim_blocking **);
 };
 
-void *api_blocking_alloc(ulong);
+void *api_blocking_alloc(ulong, int (*)(struct gsstringbuilder *, struct api_prim_blocking **));
 
 typedef enum api_prim_execution_state (api_prim_executor)(struct api_thread *, struct gseprim *, struct api_prim_blocking **, gsvalue *);
 

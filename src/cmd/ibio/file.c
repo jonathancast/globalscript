@@ -21,6 +21,8 @@ struct ibio_file_read_open_rpc {
     gsvalue iport;
 };
 
+static int ibio_file_read_open_blocking_gc_trace(struct gsstringbuilder *, struct api_prim_blocking **);
+
 enum api_prim_execution_state
 ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open, struct api_prim_blocking **pblocking, gsvalue *pv)
 {
@@ -29,7 +31,7 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
     if (*pblocking) {
         file_read_open_blocking = (struct ibio_file_read_open_blocking *)*pblocking;
     } else {
-        *pblocking = api_blocking_alloc(sizeof(struct ibio_file_read_open_blocking));
+        *pblocking = api_blocking_alloc(sizeof(struct ibio_file_read_open_blocking), ibio_file_read_open_blocking_gc_trace);
         file_read_open_blocking = (struct ibio_file_read_open_blocking *)*pblocking;
         file_read_open_blocking->io = (struct ibio_external_io *)open->p.arguments[0];
         ibio_gsstring_eval_start(&file_read_open_blocking->fn, open->p.arguments[1]);
@@ -87,6 +89,14 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
             }
         }
     }
+}
+
+static
+int
+ibio_file_read_open_blocking_gc_trace(struct gsstringbuilder *err, struct api_prim_blocking **pblocking)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_file_read_open_blocking_gc_trace"));
+    return -1;
 }
 
 static void ibio_rpc_fail(struct gsrpc *, char *, ...);
