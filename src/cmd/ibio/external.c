@@ -266,10 +266,7 @@ ibio_external_io_trace(struct gsstringbuilder *err, struct ibio_external_io **pi
         return 0;
     }
 
-    if (!gs_sys_block_in_gc_from_space(io)) {
-        gsstring_builder_print(err, UNIMPL("ibio_external_io_trace: check for to-space"));
-        return -1;
-    }
+    if (!gs_sys_block_in_gc_from_space(io)) return 0;
 
     if (!(newio = io->gccopy(err, io))) return -1;
 
