@@ -968,7 +968,7 @@ static struct gs_sys_global_block_suballoc_info api_blocking_info_info = {
 };
 
 void *
-api_blocking_alloc(ulong sz, api_prim_blocking_gccopy *gccopy, api_prim_blocking_gcevacuate *gcevacuate)
+api_blocking_alloc(ulong sz, api_prim_blocking_gccopy *gccopy, api_prim_blocking_gcevacuate *gcevacuate, api_prim_blocking_gccleanup *gccleanup)
 {
     struct api_prim_blocking *res;
 
@@ -976,6 +976,7 @@ api_blocking_alloc(ulong sz, api_prim_blocking_gccopy *gccopy, api_prim_blocking
     res->forward = 0;
     res->gccopy = gccopy;
     res->gcevacuate = gcevacuate;
+    res->gccleanup = gccleanup;
 
     return res;
 }

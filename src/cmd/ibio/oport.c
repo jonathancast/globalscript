@@ -231,6 +231,7 @@ struct ibio_oport_write_blocker {
 
 static api_prim_blocking_gccopy ibio_write_blocking_gccopy;
 static api_prim_blocking_gcevacuate ibio_write_blocking_gcevacuate;
+static api_prim_blocking_gccleanup ibio_write_blocking_gccleanup;
 
 enum api_prim_execution_state
 ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, struct api_prim_blocking **pblocking, gsvalue *pv)
@@ -244,7 +245,7 @@ ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, struct 
     } else {
         gsvalue oportv;
 
-        *pblocking = api_blocking_alloc(sizeof(struct ibio_write_blocking), ibio_write_blocking_gccopy, ibio_write_blocking_gcevacuate);
+        *pblocking = api_blocking_alloc(sizeof(struct ibio_write_blocking), ibio_write_blocking_gccopy, ibio_write_blocking_gcevacuate, ibio_write_blocking_gccleanup);
         write_blocking = (struct ibio_write_blocking *)*pblocking;
         oportv = write->p.arguments[0];
         write_blocking->s = write->p.arguments[1];
@@ -317,6 +318,11 @@ ibio_write_blocking_gcevacuate(struct gsstringbuilder *err, struct api_prim_bloc
 {
     gsstring_builder_print(err, UNIMPL("ibio_write_blocking_gcevacuate"));
     return -1;
+}
+
+void
+ibio_write_blocking_gccleanup(struct api_prim_blocking *blocking)
+{
 }
 
 /* §section Writing to a file (write process) */
