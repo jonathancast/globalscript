@@ -72,6 +72,7 @@ struct gsrpc {
         gsrpc_running,
         gsrpc_succeeded,
     } status;
+    struct gsrpc *forward;
     char *err;
 };
 
