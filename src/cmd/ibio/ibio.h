@@ -142,7 +142,7 @@ void ibio_check_acceptor_type(struct gspos, struct gsfile_symtable *);
 struct ibio_iport {
     Lock lock;
     int active;
-    struct ibio_channel_segment *last_accessed_seg;
+    struct ibio_channel_segment *first_live_seg, *last_accessed_seg;
     gsvalue *position;
     gsvalue reading;
     struct api_thread *reading_thread;

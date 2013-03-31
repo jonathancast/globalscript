@@ -81,6 +81,7 @@ struct ibio_read_thread_args {
 
 static void ibio_read_thread_main(void *);
 
+static gs_sys_gc_pre_callback ibio_read_thread_setup;
 static gs_sys_gc_post_callback ibio_read_thread_cleanup;
 static gs_sys_gc_failure_callback ibio_read_thread_gc_failure_cleanup;
 
@@ -102,6 +103,7 @@ ibio_read_threads_init(char *err, char *eerr)
 
     api_at_termination(ibio_read_threads_down);
 
+    gs_sys_gc_pre_callback_register(ibio_read_thread_setup);
     gs_sys_gc_post_callback_register(ibio_read_thread_cleanup);
     gs_sys_gc_failure_callback_register(ibio_read_thread_gc_failure_cleanup);
 
@@ -137,6 +139,18 @@ ibio_read_thread_main(void *p)
     ace_down();
 }
 
+static
+void
+ibio_read_thread_setup()
+{
+    int i;
+
+    for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
+        if (ibio_read_thread_queue->iports[i]) {
+            ibio_read_thread_queue->iports[i]->first_live_seg = 0;
+        }
+    }
+}
 
 static
 int
@@ -150,8 +164,11 @@ ibio_read_thread_cleanup(struct gsstringbuilder *err)
     ibio_read_thread_queue = new_read_thread_queue;
 
     for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
-        struct ibio_iport *iport;
+        struct ibio_iport *oldiport, *iport;
         if (iport = ibio_read_thread_queue->iports[i]) {
+            struct ibio_channel_segment *seg;
+
+            oldiport = iport;
             if (iport->forward) {
                 ibio_read_thread_queue->iports[i] = iport = iport->forward;
             } else {
@@ -172,6 +189,8 @@ ibio_read_thread_cleanup(struct gsstringbuilder *err)
                 iport->last_accessed_seg = 0;
             }
             if (iport->reading_thread) iport->reading_thread = api_thread_gc_forward(iport->reading_thread);
+
+            for (seg = oldiport->first_live_seg; seg; seg = seg->next) seg->iport = iport;
         }
     }
 

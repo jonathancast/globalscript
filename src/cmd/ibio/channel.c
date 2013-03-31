@@ -234,6 +234,20 @@ ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segm
             if (ibio_channel_segment_trace(err, newseg->next, &newseg->next, 1) < 0) return -1;
         }
 
+        /* Note: this has to be called here.
+           If the segments which are ‘newly live’ (not previously traced) are numbered in channel order as $s_0, §dots, s_{n-1}$,
+           this line needs to run in reverse order so the order of statements is:
+           §begin{cdisplay}
+               $s_{n-1}$->iport->beginning = $s_{n-1}$;
+               $s_{n-2}$->iport->beginning = $s_{n-2}$;
+               $§vdots$
+               $s_0$->iport->beginning = $s_0$;
+           §end{cdisplay}
+           So the effect is that §ccode{newseg->iport->beginning} is set to the earliest segment in the sequence.
+           To accomplish this, this line §emph{must} be after the §ccode{ibio_channel_segment_trace} call above.
+        */
+        newseg->iport->first_live_seg = newseg;
+
         return 0;
     }
 }
