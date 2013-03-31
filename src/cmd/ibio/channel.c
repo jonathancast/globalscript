@@ -230,7 +230,7 @@ ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segm
             newseg->beginning = newseg->items;
         }
 
-        if (newseg->next) {
+        if (newseg->next && gs_sys_block_in_gc_from_space(newseg->next)) {
             if (ibio_channel_segment_trace(err, newseg->next, &newseg->next, 1) < 0) return -1;
         }
 
