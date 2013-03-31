@@ -92,7 +92,7 @@ struct api_prim_blocking *
 ibio_file_stat_blocking_gccopy(struct gsstringbuilder *err, struct api_prim_blocking *pblocking)
 {
     gsstring_builder_print(err, UNIMPL("ibio_file_stat_blocking_gccopy"));
-    return -1;
+    return 0;
 }
 
 static
