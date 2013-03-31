@@ -812,6 +812,7 @@ enum gslfield_state {
     gslfield_evaluating,
     gslfield_indirection,
     gslfield_evacuating,
+    gslfield_forward,
 };
 struct gslfield {
     Lock lock;
@@ -825,6 +826,9 @@ struct gslfield {
         struct {
             gsvalue dest;
         } i;
+        struct {
+            struct gslfield *dest;
+        } fwd;
     };
 };
 
@@ -931,12 +935,42 @@ static
 gsvalue
 gs_lfield_trace(struct gsstringbuilder *err, gsvalue v)
 {
-    struct gslfield *lfield;
+    struct gslfield *lfield, *newlfield;
     gsvalue gctemp;
 
     lfield = (struct gslfield *)v;
 
     switch(lfield->state) {
+        case gslfield_field: {
+            int fieldno;
+            gsvalue record;
+
+            fieldno = lfield->f.fieldno;
+            record = lfield->f.record;
+
+            if (gsisrecord_block(BLOCK_CONTAINING(record))) {
+                lfield->state = gslfield_evacuating;
+
+                gsstring_builder_print(err, UNIMPL("gs_lfield_trace: redex"));
+                lfield->state = gslfield_field;
+                return 0;
+
+                lfield->state = gslfield_field;
+            }
+
+            newlfield = gs_sys_global_block_suballoc(&gslfields_info, sizeof(*newlfield));
+
+            memcpy(newlfield, lfield, sizeof(*newlfield));
+            memset(&newlfield->lock, 0, sizeof(newlfield->lock));
+
+            lfield->state = gslfield_forward;
+            lfield->fwd.dest = newlfield;
+
+            if (gs_gc_trace_pos(err, &newlfield->pos) < 0) return 0;
+            if (GS_GC_TRACE(err, &newlfield->f.record) < 0) return 0;
+
+            return (gsvalue)newlfield;
+        }
         case gslfield_indirection: {
             gsvalue dest;
 
