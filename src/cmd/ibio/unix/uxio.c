@@ -123,16 +123,25 @@ static
 struct ibio_uxio *
 ibio_dir_gccopy(struct gsstringbuilder *err, struct ibio_uxio *uxio)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_dir_gccopy"));
-    return 0;
+    struct ibio_dir_uxio *dirio, *newdirio;
+
+    dirio = (struct ibio_dir_uxio *)uxio;
+
+    newdirio = (struct ibio_dir_uxio *)ibio_alloc_uxio(DIR_SEGMENT_SIZE, ibio_dir_refill, ibio_dir_gccopy, ibio_dir_gcevacuate);
+
+    memcpy(newdirio, uxio, DIR_SEGMENT_SIZE);
+    newdirio->dirname = (char*)newdirio + sizeof(*newdirio);
+    newdirio->bufbeg = (uchar*)newdirio + ((uchar*)dirio->bufbeg - (uchar*)dirio);
+    newdirio->bufend = (uchar*)newdirio + ((uchar*)dirio->bufend - (uchar*)dirio);
+
+    return (struct ibio_uxio *)newdirio;
 }
 
 static
 int
 ibio_dir_gcevacuate(struct gsstringbuilder *err, struct ibio_uxio *uxio)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_dir_gcevacuate"));
-    return -1;
+    return 0;
 }
 
 /* §section Allocation */
