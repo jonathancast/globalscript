@@ -772,6 +772,12 @@ gsrecordsgc(struct gsstringbuilder *err, gsvalue v)
 
             break;
         }
+        case gsrecord_gcforward: {
+            struct gsrecord_gcforward *fwd;
+
+            fwd = (struct gsrecord_gcforward *)rec;
+            return (gsvalue)fwd->dest;
+        }
         default:
             gsstring_builder_print(err, UNIMPL("%P: gsrecordsgc: type = %d"), rec->pos, rec->type);
             return 0;
