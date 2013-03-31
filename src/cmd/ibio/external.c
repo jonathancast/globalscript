@@ -215,11 +215,13 @@ ibio_dir_gcevacuate(struct gsstringbuilder *err, struct ibio_external_io *io)
 
 /* §section Allocation */
 
+static gsvalue ibio_external_io_gc_trace(struct gsstringbuilder *, gsvalue);
+
 static struct gs_sys_global_block_suballoc_info ibio_external_io_info = {
     /* descr = */ {
         /* evaluator = */ gswhnfeval,
         /* indirection_dereferencer = */ gswhnfindir,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ ibio_external_io_gc_trace,
         /* description = */ "External I/O descriptors",
     },
 };
@@ -238,6 +240,18 @@ ibio_alloc_external_io(long sz, ibio_external_canread *canread, ibio_external_re
     res->forward = 0;
 
     return res;
+}
+
+gsvalue
+ibio_external_io_gc_trace(struct gsstringbuilder *err, gsvalue v)
+{
+    struct ibio_external_io *io;
+
+    io = (struct ibio_external_io *)v;
+
+    if (ibio_external_io_trace(err, &io) < 0) return 0;
+
+    return (gsvalue)io;
 }
 
 int
