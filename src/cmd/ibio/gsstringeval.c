@@ -34,6 +34,13 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
                 eval->sb.end = gsrunetochar(eval->gsc, eval->sb.end, eval->sb.extent);
                 eval->gsc = 0;
                 break;
+            case gstyimplerr: {
+                char err[0x100];
+
+                gsimplementation_failure_format(err, err + sizeof(err), (struct gsimplementation_failure *)eval->gsc);
+                api_abend(thread, "%P: %s", pos, err);
+                return ibio_gsstring_eval_error;
+            }
             default:
                 api_abend(thread, UNIMPL("%P: ibio_handle_prim_file_stat: handle c st %d"), pos, st);
                 return ibio_gsstring_eval_error;
