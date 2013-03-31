@@ -622,11 +622,16 @@ enum api_prim_execution_state {
     api_st_blocked,
 };
 
+typedef struct api_prim_blocking *api_prim_blocking_gccopy(struct gsstringbuilder *, struct api_prim_blocking *);
+typedef int api_prim_blocking_gcevacuate(struct gsstringbuilder *, struct api_prim_blocking *);
+
 struct api_prim_blocking {
-    int (*gc_trace)(struct gsstringbuilder *, struct api_prim_blocking **);
+    struct api_prim_blocking *forward;
+    api_prim_blocking_gccopy *gccopy;
+    api_prim_blocking_gcevacuate *gcevacuate;
 };
 
-void *api_blocking_alloc(ulong, int (*)(struct gsstringbuilder *, struct api_prim_blocking **));
+void *api_blocking_alloc(ulong, api_prim_blocking_gccopy *, api_prim_blocking_gcevacuate *);
 
 typedef enum api_prim_execution_state (api_prim_executor)(struct api_thread *, struct gseprim *, struct api_prim_blocking **, gsvalue *);
 

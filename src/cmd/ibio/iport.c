@@ -621,7 +621,8 @@ struct ibio_iport_read_blocker {
     struct ibio_iport_read_blocker *next;
 };
 
-static int ibio_read_blocking_gc_trace(struct gsstringbuilder *, struct api_prim_blocking **);
+static api_prim_blocking_gccopy ibio_read_blocking_gccopy;
+static api_prim_blocking_gcevacuate ibio_read_blocking_gcevacuate;
 
 enum api_prim_execution_state
 ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct api_prim_blocking **pblocking, gsvalue *pv)
@@ -632,7 +633,7 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
     if (*pblocking) {
         read_blocking = (struct ibio_read_blocking *)*pblocking;
     } else {
-        *pblocking = api_blocking_alloc(sizeof(struct ibio_read_blocking), ibio_read_blocking_gc_trace);
+        *pblocking = api_blocking_alloc(sizeof(struct ibio_read_blocking), ibio_read_blocking_gccopy, ibio_read_blocking_gcevacuate);
         read_blocking = (struct ibio_read_blocking *)*pblocking;
         read_blocking->iport = (struct ibio_iport*)read->p.arguments[0];
         read_blocking->acceptor = read->p.arguments[1];
@@ -688,8 +689,15 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
 }
 
 static
+struct api_prim_blocking *
+ibio_read_blocking_gccopy(struct gsstringbuilder *err, struct api_prim_blocking *pblocking)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_read_blocking_gccopy"));
+    return 0;
+}
+
 int
-ibio_read_blocking_gc_trace(struct gsstringbuilder *err, struct api_prim_blocking **pblocking)
+ibio_read_blocking_gcevacuate(struct gsstringbuilder *err, struct api_prim_blocking *pblocking)
 {
     gsstring_builder_print(err, UNIMPL("ibio_read_blocking_gc_trace"));
     return -1;
