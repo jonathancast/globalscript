@@ -374,6 +374,13 @@ gserrorsgc(struct gsstringbuilder *err, gsvalue v)
 
             break;
         }
+        case gserror_forward: {
+            struct gserror_forward *fwd;
+
+            fwd = (struct gserror_forward *)gserr;
+
+            return fwd->dest;
+        }
         default:
             gsstring_builder_print(err, UNIMPL("gserrorsgc: unknown type %d"), gserr->type);
             return 0;
