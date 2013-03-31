@@ -187,16 +187,30 @@ static
 struct ibio_external_io *
 ibio_dir_gccopy(struct gsstringbuilder *err, struct ibio_external_io *io)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_dir_gccopy"));
-    return 0;
+    struct ibio_external_dir_io *dirio, *newdirio;
+
+    dirio = (struct ibio_external_dir_io *)io;
+
+    newdirio = (struct ibio_external_dir_io *)ibio_alloc_external_io(sizeof(*newdirio), ibio_dir_canread, ibio_dir_readsym, ibio_dir_gccopy, ibio_dir_gcevacuate);
+    newdirio->pos = dirio->pos;
+    newdirio->dirfromprim = dirio->dirfromprim;
+
+    return (struct ibio_external_io *)newdirio;
 }
 
 static
 int
 ibio_dir_gcevacuate(struct gsstringbuilder *err, struct ibio_external_io *io)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_dir_gcevacuate"));
-    return -1;
+    struct ibio_external_dir_io *dirio;
+    gsvalue gctemp;
+
+    dirio = (struct ibio_external_dir_io *)io;
+
+    if (gs_gc_trace_pos(err, &dirio->pos) < 0) return -1;
+    if (GS_GC_TRACE(err, &dirio->dirfromprim) < 0) return -1;
+
+    return 0;
 }
 
 /* §section Allocation */
