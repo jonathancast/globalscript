@@ -196,7 +196,7 @@ ibio_iptr_trace(struct gsstringbuilder *err, gsvalue **piptr)
 }
 
 int
-ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segment *seg, struct ibio_channel_segment **pnewseg, int copy_everything)
+ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segment *seg, struct ibio_channel_segment **pnewseg, int evacuate_everything)
 {
     struct ibio_channel_segment *newseg;
     gsvalue *tmpiptr;
@@ -205,7 +205,7 @@ ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segm
     if (seg->forward) {
         *pnewseg = newseg = seg->forward;
 
-        if (copy_everything) {
+        if (evacuate_everything) {
             gsstring_builder_print(err, UNIMPL("Copy rest of segment"));
             return -1;
         }
@@ -223,7 +223,7 @@ ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segm
 
         seg->forward = newseg;
 
-        if (copy_everything) {
+        if (evacuate_everything) {
             for (tmpiptr = newseg->items; tmpiptr < newseg->beginning; tmpiptr++)
                 if (GS_GC_TRACE(err, tmpiptr) < 0) return -1
             ;
