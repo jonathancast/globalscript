@@ -10,6 +10,27 @@
 
 /* §section Allocation */
 
+static struct gs_sys_global_block_suballoc_info ibio_channel_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Channel Descriptors",
+    },
+};
+
+struct ibio_channel *
+ibio_alloc_channel()
+{
+    struct ibio_channel *res;
+
+    res = gs_sys_global_block_suballoc(&ibio_channel_info, sizeof(*res));
+
+    memset(res, 0, sizeof(*res));
+
+    return res;
+}
+
 static gstypecode ibio_channel_eval(gsvalue);
 static gsvalue ibio_channel_remove_indir(gsvalue);
 static gsvalue ibio_iptr_gc_trace(struct gsstringbuilder *err, gsvalue);
@@ -25,7 +46,7 @@ static struct gs_sys_aligned_block_suballoc_info ibio_channel_segment_info = {
 };
 
 struct ibio_channel_segment *
-ibio_alloc_channel_segment()
+ibio_alloc_channel_segment(struct ibio_channel *channel)
 {
     void *buf;
     struct ibio_channel_segment *res;
@@ -36,6 +57,7 @@ ibio_alloc_channel_segment()
     memset(&res->lock, 0, sizeof(res->lock));
     lock(&res->lock);
 
+    res->channel = channel;
     res->next = 0;
     res->extent = res->beginning = res->items;
     res->forward = 0;
@@ -78,7 +100,7 @@ ibio_channel_eval(gsvalue v)
             /* Special representation for EOF */
             unlock(&seg->lock);
             return gstywhnf;
-        } else if (seg->iport->error) {
+        } else if (seg->channel->error) {
             unlock(&seg->lock);
             return gstyindir;
         } else {
@@ -104,10 +126,10 @@ ibio_channel_remove_indir(gsvalue v)
         if (seg->next) {
             unlock(&seg->lock);
             return v;
-        } else if (seg->iport->error) {
+        } else if (seg->channel->error) {
             gsvalue res;
 
-            res = seg->iport->error;
+            res = seg->channel->error;
             unlock(&seg->lock);
             return res;
         } else {
@@ -223,6 +245,9 @@ ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segm
 
         seg->forward = newseg;
 
+        gsstring_builder_print(err, UNIMPL("Evacuate channel"));
+        return -1;
+
         if (evacuate_everything) {
             for (tmpiptr = newseg->items; tmpiptr < newseg->beginning; tmpiptr++)
                 if (GS_GC_TRACE(err, tmpiptr) < 0) return -1
@@ -233,20 +258,6 @@ ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segm
         if (newseg->next && gs_sys_block_in_gc_from_space(newseg->next)) {
             if (ibio_channel_segment_trace(err, newseg->next, &newseg->next, 1) < 0) return -1;
         }
-
-        /* Note: this has to be called here.
-           If the segments which are ‘newly live’ (not previously traced) are numbered in channel order as $s_0, §dots, s_{n-1}$,
-           this line needs to run in reverse order so the order of statements is:
-           §begin{cdisplay}
-               $s_{n-1}$->iport->beginning = $s_{n-1}$;
-               $s_{n-2}$->iport->beginning = $s_{n-2}$;
-               $§vdots$
-               $s_0$->iport->beginning = $s_0$;
-           §end{cdisplay}
-           So the effect is that §ccode{newseg->iport->beginning} is set to the earliest segment in the sequence.
-           To accomplish this, this line §emph{must} be after the §ccode{ibio_channel_segment_trace} call above.
-        */
-        newseg->iport->first_live_seg = newseg;
 
         return 0;
     }

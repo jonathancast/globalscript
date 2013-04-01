@@ -69,9 +69,18 @@ gsrpc_handler ibio_main_process_handle_rpc_stat;
 
 /* §section Channels */
 
+struct ibio_channel {
+    Lock lock;
+    struct ibio_channel *forward;
+    struct ibio_channel_segment *last_accessed_seg;
+    gsvalue error;
+};
+
+struct ibio_channel *ibio_alloc_channel(void);
+
 struct ibio_channel_segment {
     Lock lock;
-    struct ibio_iport *iport;
+    struct ibio_channel *channel;
     struct ibio_channel_segment *next;
     struct ibio_channel_segment *forward;
     gsvalue *beginning, *extent;
@@ -80,7 +89,7 @@ struct ibio_channel_segment {
 
 struct ibio_channel_segment *ibio_channel_segment_containing(gsvalue *);
 
-struct ibio_channel_segment *ibio_alloc_channel_segment(void);
+struct ibio_channel_segment *ibio_alloc_channel_segment(struct ibio_channel *);
 
 int ibio_iptr_live(gsvalue *);
 int ibio_iptr_trace(struct gsstringbuilder *, gsvalue **);
@@ -142,12 +151,11 @@ void ibio_check_acceptor_type(struct gspos, struct gsfile_symtable *);
 struct ibio_iport {
     Lock lock;
     int active;
-    struct ibio_channel_segment *first_live_seg, *last_accessed_seg;
+    struct ibio_channel *channel;
     gsvalue *position;
     gsvalue reading;
     struct api_thread *reading_thread;
     struct ibio_iport_read_blocker *waiting_to_read, **waiting_to_read_end;
-    gsvalue error;
     struct ibio_iport *forward;
     /* §section Used for §gs{iport}s connected to external files */
     int fd;

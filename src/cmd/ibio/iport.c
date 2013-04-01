@@ -81,7 +81,6 @@ struct ibio_read_thread_args {
 
 static void ibio_read_thread_main(void *);
 
-static gs_sys_gc_pre_callback ibio_read_thread_setup;
 static gs_sys_gc_post_callback ibio_read_thread_cleanup;
 static gs_sys_gc_failure_callback ibio_read_thread_gc_failure_cleanup;
 
@@ -103,7 +102,6 @@ ibio_read_threads_init(char *err, char *eerr)
 
     api_at_termination(ibio_read_threads_down);
 
-    gs_sys_gc_pre_callback_register(ibio_read_thread_setup);
     gs_sys_gc_post_callback_register(ibio_read_thread_cleanup);
     gs_sys_gc_failure_callback_register(ibio_read_thread_gc_failure_cleanup);
 
@@ -140,19 +138,6 @@ ibio_read_thread_main(void *p)
 }
 
 static
-void
-ibio_read_thread_setup()
-{
-    int i;
-
-    for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
-        if (ibio_read_thread_queue->iports[i]) {
-            ibio_read_thread_queue->iports[i]->first_live_seg = 0;
-        }
-    }
-}
-
-static
 int
 ibio_read_thread_cleanup(struct gsstringbuilder *err)
 {
@@ -164,11 +149,8 @@ ibio_read_thread_cleanup(struct gsstringbuilder *err)
     ibio_read_thread_queue = new_read_thread_queue;
 
     for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
-        struct ibio_iport *oldiport, *iport;
+        struct ibio_iport *iport;
         if (iport = ibio_read_thread_queue->iports[i]) {
-            struct ibio_channel_segment *seg;
-
-            oldiport = iport;
             if (iport->forward) {
                 ibio_read_thread_queue->iports[i] = iport = iport->forward;
             } else {
@@ -183,14 +165,12 @@ ibio_read_thread_cleanup(struct gsstringbuilder *err)
 
             if (ibio_iptr_live(iport->position)) {
                 iport->position = ibio_iptr_lookup_forward(iport->position);
-                if (iport->last_accessed_seg) iport->last_accessed_seg = ibio_channel_segment_lookup_forward(iport->last_accessed_seg);
+                if (iport->channel->last_accessed_seg) iport->channel->last_accessed_seg = ibio_channel_segment_lookup_forward(iport->channel->last_accessed_seg);
             } else {
                 if (ibio_iptr_trace(err, &iport->position) < 0) return -1;
-                iport->last_accessed_seg = 0;
+                iport->channel->last_accessed_seg = 0;
             }
             if (iport->reading_thread) iport->reading_thread = api_thread_gc_forward(iport->reading_thread);
-
-            for (seg = oldiport->first_live_seg; seg; seg = seg->next) seg->iport = iport;
         }
     }
 
@@ -244,8 +224,7 @@ ibio_read_threads_down()
 
 /* §section Opening files */
 
-/* ↓ Caller must have channel argument locked */
-static struct ibio_iport *ibio_alloc_iport(struct ibio_channel_segment *);
+static struct ibio_iport *ibio_alloc_iport(void);
 
 static void ibio_setup_iport_read_buffer(struct ibio_iport *);
 
@@ -261,11 +240,8 @@ ibio_iport_fdopen(int fd, struct ibio_uxio *uxio, struct ibio_external_io *exter
     struct ibio_iport *res;
     struct ibio_read_process_args args;
     int readpid;
-    struct ibio_channel_segment *chan;
 
-    chan = ibio_alloc_channel_segment();
-
-    res = ibio_alloc_iport(chan);
+    res = ibio_alloc_iport();
 
     args.iport = res;
 
@@ -274,7 +250,6 @@ ibio_iport_fdopen(int fd, struct ibio_uxio *uxio, struct ibio_external_io *exter
     res->external = external;
     ibio_setup_iport_read_buffer(res);
 
-    unlock(&chan->lock);
     unlock(&res->lock);
 
     ace_up();
@@ -377,7 +352,7 @@ ibio_read_process_main(void *p)
             gspos.lineno = __LINE__;
 
             if (iport->reading) api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "%s", msg->start);
-            iport->error = (gsvalue)gsunimpl(__FILE__, __LINE__, gspos, "%s", msg->start);
+            iport->channel->error = (gsvalue)gsunimpl(__FILE__, __LINE__, gspos, "%s", msg->start);
             ibio_shutdown_iport(iport, iport->position);
             active = 0;
         }
@@ -445,20 +420,23 @@ ibio_read_process_main(void *p)
                                     if (seg->extent >= ibio_channel_segment_limit(seg)) {
                                         struct ibio_channel_segment *newseg;
 
+                                        lock(&iport->channel->lock);
                                         while (!(
                                             iport->waiting_to_read
                                             || api_thread_terminating(iport->reading_thread)
-                                            || iport->last_accessed_seg == seg
-                                            || !iport->last_accessed_seg
+                                            || iport->channel->last_accessed_seg == seg
+                                            || !iport->channel->last_accessed_seg
                                         )) {
+                                            unlock(&iport->channel->lock);
                                             unlock(&seg->lock);
                                             unlock(&iport->lock);
                                             sleep(1);
                                             lock(&iport->lock);
                                             lock(&seg->lock);
+                                            lock(&iport->channel->lock);
                                         }
-                                        newseg = ibio_alloc_channel_segment();
-                                        newseg->iport = iport;
+                                        unlock(&iport->channel->lock);
+                                        newseg = ibio_alloc_channel_segment(iport->channel);
                                         seg->next = newseg;
                                         unlock(&seg->lock);
                                         pos = newseg->items;
@@ -484,8 +462,7 @@ ibio_read_process_main(void *p)
                                 if (n == 0) {
                                     struct ibio_channel_segment *newseg;
 
-                                    newseg = ibio_alloc_channel_segment();
-                                    newseg->iport = iport;
+                                    newseg = ibio_alloc_channel_segment(iport->channel);
                                     seg->next = newseg;
                                     pos = newseg->items;
                                     unlock(&newseg->lock);
@@ -522,7 +499,9 @@ ibio_read_process_main(void *p)
                     err = (struct gserror *)iport->reading;
                     gserror_format(buf, buf + sizeof(buf), err);
                     api_thread_post(iport->reading_thread, "acceptor error: %s", buf);
-                    iport->error = (gsvalue)gserror(err->pos, "acceptor error: %s", buf);
+                    lock(&iport->channel->lock);
+                    iport->channel->error = (gsvalue)gserror(err->pos, "acceptor error: %s", buf);
+                    unlock(&iport->channel->lock);
 
                     ibio_shutdown_iport(iport, pos);
                     active = 0;
@@ -535,7 +514,9 @@ ibio_read_process_main(void *p)
                     err = (struct gsimplementation_failure *)iport->reading;
                     gsimplementation_failure_format(buf, buf + sizeof(buf), err);
                     api_thread_post(iport->reading_thread, "unimplemented acceptor: %s", buf);
-                    iport->error = (gsvalue)err;
+                    lock(&iport->channel->lock);
+                    iport->channel->error = (gsvalue)err;
+                    unlock(&iport->channel->lock);
 
                     ibio_shutdown_iport(iport, pos);
                     active = 0;
@@ -584,7 +565,9 @@ ibio_shutdown_iport_on_read_symbol_unimpl(char *file, int lineno, struct gspos g
     gsfinish_string_builder(msg);
 
     api_thread_post_unimpl(iport->reading_thread, file, lineno, "%s", msg->start);
-    iport->error = (gsvalue)gsunimpl(file, lineno, gspos, "%s", msg->start);
+    lock(&iport->channel->lock);
+    iport->channel->error = (gsvalue)gsunimpl(file, lineno, gspos, "%s", msg->start);
+    unlock(&iport->channel->lock);
     ibio_shutdown_iport(iport, pos);
 }
 
@@ -650,6 +633,8 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
         return api_st_error;
     }
     if (!read_blocking->iport->reading) {
+        struct ibio_channel_segment *seg;
+
         if (read_blocking->blocking) {
             if (read_blocking->blocking == read_blocking->iport->waiting_to_read) {
                 read_blocking->iport->waiting_to_read = read_blocking->iport->waiting_to_read->next;
@@ -666,8 +651,11 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
         ibio_iport_link_to_thread(thread, read_blocking->iport);
 
         res = (gsvalue)read_blocking->iport->position;
-        read_blocking->iport->last_accessed_seg = ibio_channel_segment_containing(read_blocking->iport->position);
-        unlock(&read_blocking->iport->last_accessed_seg->lock);
+        seg = ibio_channel_segment_containing(read_blocking->iport->position);
+        lock(&read_blocking->iport->channel->lock);
+        read_blocking->iport->channel->last_accessed_seg = seg;
+        unlock(&read_blocking->iport->channel->lock);
+        unlock(&seg->lock);
 
         unlock(&read_blocking->iport->lock);
         *pv = res;
@@ -861,10 +849,10 @@ ibio_prim_iptr_next_return(struct ace_thread *thread, struct gspos pos, struct i
     if (iptr_res < seg->extent || seg->next) {
         unlock(&seg->lock);
         return gsprim_return(thread, pos, (gsvalue)iptr_res);
-    } else if (seg->iport->error) {
+    } else if (seg->channel->error) {
         gsvalue res;
 
-        res = seg->iport->error;
+        res = seg->channel->error;
         unlock(&seg->lock);
         return gsprim_error(thread, (struct gserror *)res);
     } else {
@@ -897,17 +885,17 @@ ibio_prim_iptr_next_return_wait_for_seg(struct ace_thread *thread, struct gspos 
     if (seg->next) {
         struct ibio_channel_segment *nextseg;
         gsvalue *iptr_res;
-        struct ibio_iport *iport;
+        struct ibio_channel *channel;
 
         nextseg = seg->next;
         unlock(&seg->lock);
         lock(&nextseg->lock);
         iptr_res = nextseg->items;
-        iport = seg->iport;
+        channel = seg->channel;
 
-        lock(&iport->lock);
-        if (iport->last_accessed_seg == seg) iport->last_accessed_seg = nextseg;
-        unlock(&iport->lock);
+        lock(&channel->lock);
+        if (channel->last_accessed_seg == seg) channel->last_accessed_seg = nextseg;
+        unlock(&channel->lock);
 
         return ibio_prim_iptr_next_return(thread, pos, nextseg, iptr_res, 0);
     } else {
@@ -1022,25 +1010,31 @@ static struct gs_sys_global_block_suballoc_info ibio_iport_segment_info = {
 
 static
 struct ibio_iport *
-ibio_alloc_iport(struct ibio_channel_segment *chan)
+ibio_alloc_iport()
 {
     struct ibio_iport *res;
+    struct ibio_channel_segment *seg;
 
     res = gs_sys_global_block_suballoc(&ibio_iport_segment_info, sizeof(*res));
 
     memset(&res->lock, 0, sizeof(res->lock));
     lock(&res->lock);
     res->active = 1;
-    res->error = 0;
+    res->channel = ibio_alloc_channel();
 
     res->reading = 0;
     res->reading_thread = 0;
     res->waiting_to_read = 0;
     res->waiting_to_read_end = &res->waiting_to_read;
 
-    res->position = chan->items;
-    chan->iport = res;
-    res->last_accessed_seg = chan;
+    seg = ibio_alloc_channel_segment(res->channel);
+
+    res->position = seg->items;
+    lock(&res->channel->lock);
+    res->channel->last_accessed_seg = seg;
+    unlock(&res->channel->lock);
+    unlock(&seg->lock);
+
     res->forward = 0;
 
     return res;
@@ -1082,7 +1076,12 @@ ibio_iport_trace(struct gsstringbuilder *err, gsvalue v)
         newiport->waiting_to_read_end = &newiport->waiting_to_read;
     }
 
+    gsstring_builder_print(err, UNIMPL("ibio_iport_trace: evacuate result: channel"));
+    return 0;
+
+#if 0
     if (GS_GC_TRACE(err, &newiport->error) < 0) return 0;
+#endif
     if (ibio_uxio_trace(err, &newiport->uxio) < 0) return 0;
     if (ibio_external_io_trace(err, &newiport->external) < 0) return 0;
 
