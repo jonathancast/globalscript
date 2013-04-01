@@ -17,7 +17,7 @@ struct ibio_file_read_open_rpc {
     struct gsrpc rpc;
     struct gspos pos;
     struct ibio_external_io *io;
-    char *filename;
+    struct gsstringbuilder *filename;
     gsvalue iport;
 };
 
@@ -65,7 +65,7 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
             rpc->tag = ibio_uxproc_rpc_file_read_open;
             openrpc->pos = open->pos;
             openrpc->io = file_read_open_blocking->io;
-            openrpc->filename = file_read_open_blocking->fn.sb->start;
+            openrpc->filename = file_read_open_blocking->fn.sb;
             api_send_rpc(thread, rpc);
         } else {
             struct ibio_file_read_open_rpc *openrpc = (struct ibio_file_read_open_rpc *)file_read_open_blocking->rpc;
@@ -127,15 +127,15 @@ ibio_main_process_handle_rpc_file_read_open(struct gsrpc *rpc)
 
     openrpc = (struct ibio_file_read_open_rpc *)rpc;
 
-    uxio = gsisdir(openrpc->filename) ? ibio_dir_uxio(openrpc->filename) : ibio_file_uxio();
+    uxio = gsisdir(openrpc->filename->start) ? ibio_dir_uxio(openrpc->filename->start) : ibio_file_uxio();
 
-    if ((fd = open(openrpc->filename, OREAD)) < 0) {
-        ibio_rpc_fail(rpc, "%P: %s: %r", openrpc->pos, openrpc->filename, openrpc->pos);
+    if ((fd = open(openrpc->filename->start, OREAD)) < 0) {
+        ibio_rpc_fail(rpc, "%P: %s: %r", openrpc->pos, openrpc->filename->start, openrpc->pos);
         return;
     }
 
     if (!(res = ibio_iport_fdopen(fd, uxio, openrpc->io, errbuf, errbuf + sizeof(errbuf)))) {
-        ibio_rpc_fail(rpc, "%P: %s: %s", openrpc->pos, openrpc->filename, errbuf);
+        ibio_rpc_fail(rpc, "%P: %s: %s", openrpc->pos, openrpc->filename->start, errbuf);
         return;
     }
 
