@@ -160,6 +160,6 @@ ibio_rpc_fail(struct gsrpc *rpc, char *fmt, ...)
     gsfinish_string_builder(err);
 
     rpc->status = gsrpc_failed;
-    rpc->err = err->start;
+    rpc->err = err;
     unlock(&rpc->lock);
 }

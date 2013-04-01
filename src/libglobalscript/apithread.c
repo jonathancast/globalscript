@@ -908,10 +908,16 @@ void
 api_main_process_unimpl_rpc(struct gsrpc *rpc)
 {
     int tag;
+    struct gsstringbuilder *err;
 
     tag = rpc->tag;
     rpc->status = gsrpc_failed;
-    rpc->err = "unimpl";
+
+    err = gsreserve_string_builder();
+    gsstring_builder_print(err, "%s", "unimpl");
+    gsfinish_string_builder(err);
+    rpc->err = err;
+
     unlock(&rpc->lock);
     gsfatal("Panic: unimplemented rpc %d in Unix pool", tag);
 }

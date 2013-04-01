@@ -135,7 +135,7 @@ ibio_main_process_handle_rpc_stat(struct gsrpc *rpc)
         err->end = seprint(err->end, err->extent, "%r");
         gsfinish_string_builder(err);
         rpc->status = gsrpc_failed;
-        rpc->err = err->start;
+        rpc->err = err;
         unlock(&rpc->lock);
         return;
     }

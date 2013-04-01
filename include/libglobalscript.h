@@ -73,7 +73,7 @@ struct gsrpc {
         gsrpc_succeeded,
     } status;
     struct gsrpc *forward;
-    char *err;
+    struct gsstringbuilder *err;
 };
 
 struct gsrpc_queue *gsqueue_alloc(void);
