@@ -69,7 +69,7 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 gsmain.$O: gsinputfile.h gssetup.h ace.h
 load.$O: gsinputalloc.h gsinputfile.h gsbytecompile.h gstopsort.h gstypealloc.h gstypecheck.h gstypecheck.h ace.h
 inputalloc.$O: gsinputfile.h gsinputalloc.h
-alloc.$O: gsalloc.h gsproc.h
+alloc.$O: gsproc.h
 eval.$O: gsheap.h gsinputfile.h gsbytecode.h ace.h
 ace.$O: gsheap.h gsbytecode.h ace.h
 apithread.$O: gsbytecode.h api.h

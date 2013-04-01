@@ -3,7 +3,6 @@
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
-#include "gsalloc.h"
 #include "gsproc.h"
 
 Lock gs_allocator_lock;
