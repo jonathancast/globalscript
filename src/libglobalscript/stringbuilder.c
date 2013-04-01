@@ -78,9 +78,13 @@ gsstring_builder_vprint(struct gsstringbuilder *buf, char *fmt, va_list arg)
 void
 gsfinish_string_builder(struct gsstringbuilder *sb)
 {
+    void *newnursury;
+
     *sb->end++ = 0;
 
     if (gs_sys_block_in_gc_from_space(BLOCK_CONTAINING(sb->end))) return;
+
+    newnursury = (uintptr)sb->end % sizeof(void *) ? sb->end + (sizeof(void *) - (uintptr)sb->end % sizeof(void *)) : sb->end;
 
     if (sb->extent - sb->end >= 0x100) {
         lock(&gsstringbuilder_lock);
@@ -89,11 +93,11 @@ gsfinish_string_builder(struct gsstringbuilder *sb)
             ulong sz;
             block = BLOCK_CONTAINING(gsstringbuilder_nursury);
             sz = (char*)END_OF_BLOCK(block) - (char*)gsstringbuilder_nursury;
-            if (sz < sb->extent - sb->end)
-                gsstringbuilder_nursury = sb->end
+            if (sz < sb->extent - (char*)newnursury)
+                gsstringbuilder_nursury = newnursury
             ;
         } else {
-            gsstringbuilder_nursury = sb->end;
+            gsstringbuilder_nursury = newnursury;
         }
         unlock(&gsstringbuilder_lock);
     }
