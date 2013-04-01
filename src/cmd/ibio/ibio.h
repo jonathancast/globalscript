@@ -77,6 +77,7 @@ struct ibio_channel {
 };
 
 struct ibio_channel *ibio_alloc_channel(void);
+int ibio_channel_trace(struct gsstringbuilder *, struct ibio_channel **);
 
 struct ibio_channel_segment {
     Lock lock;

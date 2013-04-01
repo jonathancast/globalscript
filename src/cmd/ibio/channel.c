@@ -31,6 +31,32 @@ ibio_alloc_channel()
     return res;
 }
 
+int
+ibio_channel_trace(struct gsstringbuilder *err, struct ibio_channel **pchannel)
+{
+    struct ibio_channel *channel, *newchannel;
+    gsvalue gctemp;
+
+    channel = *pchannel;
+
+    if (channel->forward) {
+        *pchannel = channel->forward;
+        return 0;
+    }
+
+    newchannel = gs_sys_global_block_suballoc(&ibio_channel_info, sizeof(*newchannel));
+
+    memcpy(newchannel, channel, sizeof(*newchannel));
+    memset(&newchannel->lock, 0, sizeof(newchannel->lock));
+    newchannel->forward = 0;
+
+    channel->forward = *pchannel = newchannel;
+
+    if (GS_GC_TRACE(err, &newchannel->error) < 0) return 0;
+
+    return 0;
+}
+
 static gstypecode ibio_channel_eval(gsvalue);
 static gsvalue ibio_channel_remove_indir(gsvalue);
 static gsvalue ibio_iptr_gc_trace(struct gsstringbuilder *err, gsvalue);
