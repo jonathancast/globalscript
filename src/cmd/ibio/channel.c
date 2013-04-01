@@ -271,8 +271,7 @@ ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segm
 
         seg->forward = newseg;
 
-        gsstring_builder_print(err, UNIMPL("Evacuate channel"));
-        return -1;
+        if (ibio_channel_trace(err, &newseg->channel) < 0) return -1;
 
         if (evacuate_everything) {
             for (tmpiptr = newseg->items; tmpiptr < newseg->beginning; tmpiptr++)

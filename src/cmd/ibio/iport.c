@@ -1076,12 +1076,7 @@ ibio_iport_trace(struct gsstringbuilder *err, gsvalue v)
         newiport->waiting_to_read_end = &newiport->waiting_to_read;
     }
 
-    gsstring_builder_print(err, UNIMPL("ibio_iport_trace: evacuate result: channel"));
-    return 0;
-
-#if 0
-    if (GS_GC_TRACE(err, &newiport->error) < 0) return 0;
-#endif
+    if (ibio_channel_trace(err, &newiport->channel) < 0) return 0;
     if (ibio_uxio_trace(err, &newiport->uxio) < 0) return 0;
     if (ibio_external_io_trace(err, &newiport->external) < 0) return 0;
 
