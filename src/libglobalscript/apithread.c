@@ -200,7 +200,7 @@ api_thread_pool_main(void *arg)
                                     if (thread->state == api_thread_st_terminating_on_done) {
                                         api_send_done_rpc(thread);
                                     } else {
-                                        api_send_abend_rpc(thread, "%s", thread->status);
+                                        api_send_abend_rpc(thread, "%s", thread->status->start);
                                     }
                                 }
                                 thread->state = api_thread_st_unused;
@@ -781,7 +781,9 @@ void
 api_done(struct api_thread *thread)
 {
     thread->state = api_thread_st_terminating_on_done;
-    thread->status = "";
+
+    thread->status = gsreserve_string_builder();
+    gsfinish_string_builder(thread->status);
 }
 
 static
@@ -802,16 +804,6 @@ struct api_abend_rpc {
     char status[];
 };
 
-static struct gs_sys_global_block_suballoc_info api_thread_status_info = {
-    /* descr = */ {
-        /* evaluator = */ gsnoeval,
-        /* indirection_dereferencer = */ gsnoindir,
-        /* gc_trace = */ gsunimplgc,
-        /* description = */ "API Thread Status",
-    },
-    /* align = */ sizeof(char),
-};
-
 void
 api_abend(struct api_thread *thread, char *msg, ...)
 {
@@ -823,8 +815,9 @@ api_abend(struct api_thread *thread, char *msg, ...)
     va_end(arg);
 
     thread->state = api_thread_st_terminating_on_abend;
-    thread->status = gs_sys_global_block_suballoc(&api_thread_status_info, strlen(buf) + 1);
-    strcpy(thread->status, buf);
+    thread->status = gsreserve_string_builder();
+    gsstring_builder_print(thread->status, "%s", buf);
+    gsfinish_string_builder(thread->status);
 }
 
 static
