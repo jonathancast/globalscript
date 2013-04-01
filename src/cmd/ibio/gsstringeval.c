@@ -27,11 +27,11 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
                 eval->gsc = GS_REMOVE_INDIRECTION(eval->gsc);
                 break;
             case gstyunboxed:
-                if (gsextend_string_builder(&eval->sb, 4) < 0) {
+                if (gsextend_string_builder(eval->sb, 4) < 0) {
                     api_abend(thread, "%P: OOM saving file name", pos);
                     return ibio_gsstring_eval_error;
                 }
-                eval->sb.end = gsrunetochar(eval->gsc, eval->sb.end, eval->sb.extent);
+                eval->sb->end = gsrunetochar(eval->gsc, eval->sb->end, eval->sb->extent);
                 eval->gsc = 0;
                 break;
             case gstyimplerr: {
@@ -61,7 +61,7 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
                         eval->gss = constr->arguments[1];
                         break;
                     case 1:
-                        gsfinish_string_builder(&eval->sb);
+                        gsfinish_string_builder(eval->sb);
                         eval->gss = 0;
                         break;
                     default:

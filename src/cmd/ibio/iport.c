@@ -21,7 +21,7 @@ ibio_check_acceptor_type(struct gspos pos, struct gsfile_symtable *symtable)
     struct gskind *lifted, *kind;
     struct gstype *sv, *alphav;
     struct gstype *abstract, *applied_abstract, *expected;
-    struct gsstringbuilder err;
+    struct gsstringbuilder *err;
 
     err = gsreserve_string_builder();
 
@@ -46,11 +46,11 @@ ibio_check_acceptor_type(struct gspos pos, struct gsfile_symtable *symtable)
             )
         ))
     ));
-    if (gstypes_type_check(&err, pos, gstype_get_definition(pos, symtable, abstract), expected) < 0) {
-        gsfinish_string_builder(&err);
-        gsfatal("%P: Panic!  ibio.acceptor.prim.t has the wrong structure: %s", pos, err.start);
+    if (gstypes_type_check(err, pos, gstype_get_definition(pos, symtable, abstract), expected) < 0) {
+        gsfinish_string_builder(err);
+        gsfatal("%P: Panic!  ibio.acceptor.prim.t has the wrong structure: %s", pos, err->start);
     }
-    gsfinish_string_builder(&err);
+    gsfinish_string_builder(err);
 }
 
 /* §section Managing read threads */
@@ -334,7 +334,7 @@ ibio_read_process_main(void *p)
 
     pos = 0;
     do {
-        struct gsstringbuilder err;
+        struct gsstringbuilder *err;
         int gcres;
 
         lock(&iport->lock);
@@ -344,40 +344,40 @@ ibio_read_process_main(void *p)
         err = gsreserve_string_builder();
         gcres = 0;
         if (gs_sys_gc_want_collection()) {
-            if ((gcres = gs_sys_wait_for_collection_to_finish(&err)) < 0) {
-                gsfinish_string_builder(&err);
-                gswarning("GC failed: %s", err.start);
+            if ((gcres = gs_sys_wait_for_collection_to_finish(err)) < 0) {
+                gsfinish_string_builder(err);
+                gswarning("GC failed: %s", err->start);
                 err = gsreserve_string_builder();
             }
 
             if (iport->forward)
                 iport = iport->forward
             ; else {
-                gsstring_builder_print(&err, "iport not traced in GC");
+                gsstring_builder_print(err, "iport not traced in GC");
                 gcres = -1;
             }
             if (pos) pos = ibio_iptr_lookup_forward(pos);
 
             gs_sys_gc_done_with_collection();
         }
-        gsfinish_string_builder(&err);
+        gsfinish_string_builder(err);
         if (active && (gcres < 0 || gs_sys_memory_exhausted())) {
-            struct gsstringbuilder msg;
+            struct gsstringbuilder *msg;
             struct gspos gspos;
 
             msg = gsreserve_string_builder();
             if (gcres < 0) {
-                gsstring_builder_print(&msg, UNIMPL("GC failed: %s"), err.start);
+                gsstring_builder_print(msg, UNIMPL("GC failed: %s"), err->start);
             } else {
-                gsstring_builder_print(&msg, UNIMPL("Out of memory"));
+                gsstring_builder_print(msg, UNIMPL("Out of memory"));
             }
-            gsfinish_string_builder(&msg);
+            gsfinish_string_builder(msg);
 
             gspos.file = gsintern_string(gssymfilename, __FILE__);
             gspos.lineno = __LINE__;
 
-            if (iport->reading) api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "%s", msg.start);
-            iport->error = (gsvalue)gsunimpl(__FILE__, __LINE__, gspos, "%s", msg.start);
+            if (iport->reading) api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "%s", msg->start);
+            iport->error = (gsvalue)gsunimpl(__FILE__, __LINE__, gspos, "%s", msg->start);
             ibio_shutdown_iport(iport, iport->position);
             active = 0;
         }
@@ -572,19 +572,19 @@ static
 void
 ibio_shutdown_iport_on_read_symbol_unimpl(char *file, int lineno, struct gspos gspos, struct ibio_iport *iport, struct ibio_channel_segment *seg, gsvalue *pos, char *fmt, ...)
 {
-    struct gsstringbuilder msg;
+    struct gsstringbuilder *msg;
     va_list arg;
 
     unlock(&seg->lock);
 
     msg = gsreserve_string_builder();
     va_start(arg, fmt);
-    gsstring_builder_vprint(&msg, fmt, arg);
+    gsstring_builder_vprint(msg, fmt, arg);
     va_end(arg);
-    gsfinish_string_builder(&msg);
+    gsfinish_string_builder(msg);
 
-    api_thread_post_unimpl(iport->reading_thread, file, lineno, "%s", msg.start);
-    iport->error = (gsvalue)gsunimpl(file, lineno, gspos, "%s", msg.start);
+    api_thread_post_unimpl(iport->reading_thread, file, lineno, "%s", msg->start);
+    iport->error = (gsvalue)gsunimpl(file, lineno, gspos, "%s", msg->start);
     ibio_shutdown_iport(iport, pos);
 }
 

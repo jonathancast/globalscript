@@ -8,7 +8,7 @@ enum ibio_gsstring_eval_state {
 
 struct ibio_gsstring_eval {
     gsvalue gss, gsc;
-    struct gsstringbuilder sb;
+    struct gsstringbuilder *sb;
 };
 
 void ibio_gsstring_eval_start(struct ibio_gsstring_eval *, gsvalue);

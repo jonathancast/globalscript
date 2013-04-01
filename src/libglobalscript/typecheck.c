@@ -315,14 +315,14 @@ gstypes_calculate_kind(struct gstype *type)
 void
 gstypes_kind_check_fail(struct gspos pos, struct gskind *kyactual, struct gskind *kyexpected)
 {
-    struct gsstringbuilder err;
+    struct gsstringbuilder *err;
 
     err = gsreserve_string_builder();
-    if (gstypes_kind_check(pos, kyactual, kyexpected, &err) < 0) {
-        gsfinish_string_builder(&err);
-        gsfatal("%s", err);
+    if (gstypes_kind_check(pos, kyactual, kyexpected, err) < 0) {
+        gsfinish_string_builder(err);
+        gsfatal("%s", err->start);
     }
-    gsfinish_string_builder(&err);
+    gsfinish_string_builder(err);
 }
 
 static char *seprint_kind_name(char *, char *, struct gskind *);
@@ -3418,14 +3418,14 @@ static
 void
 gstypes_type_check_type_fail(struct gspos pos, struct gstype *pactual, struct gstype *pexpected)
 {
-    struct gsstringbuilder err;
+    struct gsstringbuilder *err;
 
     err = gsreserve_string_builder();
-    if (gstypes_type_check(&err, pos, pactual, pexpected) < 0) {
-        gsfinish_string_builder(&err);
-        gsfatal("%s", err.start);
+    if (gstypes_type_check(err, pos, pactual, pexpected) < 0) {
+        gsfinish_string_builder(err);
+        gsfatal("%s", err->start);
     }
-    gsfinish_string_builder(&err);
+    gsfinish_string_builder(err);
 }
 
 int

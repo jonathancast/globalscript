@@ -15,15 +15,15 @@ static Lock gsstringbuilder_lock;
 static int gsstringbuilder_gc_pre_callback_registered;
 static gs_sys_gc_pre_callback gsstringbuilder_gc_pre_callback;
 
-struct gsstringbuilder
+struct gsstringbuilder *
 gsreserve_string_builder()
 {
-    struct gsstringbuilder res;
+    struct gsstringbuilder *res;
     struct gs_blockdesc *block;
 
     lock(&gsstringbuilder_lock);
     if (gsstringbuilder_nursury) {
-        res.start = gsstringbuilder_nursury;
+        res = gsstringbuilder_nursury;
         block = BLOCK_CONTAINING(gsstringbuilder_nursury);
         gsstringbuilder_nursury = 0;
     } else {
@@ -32,12 +32,12 @@ gsreserve_string_builder()
             gsstringbuilder_gc_pre_callback_registered = 1;
         }
         block = gs_sys_block_alloc(&gsstringbuilder_descr);
-        res.start = START_OF_BLOCK(block);
+        res = START_OF_BLOCK(block);
     }
     unlock(&gsstringbuilder_lock);
 
-    res.end = res.start;
-    res.extent = END_OF_BLOCK(block);
+    res->end = res->start = (uchar*)res + sizeof(*res);
+    res->extent = END_OF_BLOCK(block);
 
     return res;
 }

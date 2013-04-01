@@ -32,34 +32,34 @@ static void test_print(int, gsvalue, int);
 void
 gscheck_global_gslib(struct gspos pos, struct gsfile_symtable *symtable)
 {
-    struct gsstringbuilder err;
+    struct gsstringbuilder *err;
     struct gspos typos;
 
     typos = gstype_get_location(pos, symtable, gsintern_string(gssymtypelable, "test.property.t"));
 
     err = gsreserve_string_builder();
-    if (gstypes_type_check(&err, typos, gstype_get_definition(typos, symtable, test_property_type(pos)),
+    if (gstypes_type_check(err, typos, gstype_get_definition(typos, symtable, test_property_type(pos)),
         test_expected_property_structure(typos)
     ) < 0) {
-        gsfinish_string_builder(&err);
-        fprint(2, "test.property.t has the wrong structure :%s\n", err.start);
+        gsfinish_string_builder(err);
+        fprint(2, "test.property.t has the wrong structure :%s\n", err->start);
         exits("type err");
     }
-    gsfinish_string_builder(&err);
+    gsfinish_string_builder(err);
 }
 
 void
 gscheck_program(char *doc, struct gsfile_symtable *symtable, struct gspos pos, struct gstype *type)
 {
-    struct gsstringbuilder err;
+    struct gsstringbuilder *err;
 
     err = gsreserve_string_builder();
-    if (gstypes_type_check(&err, pos, type, test_property_type(pos)) < 0) {
-        gsfinish_string_builder(&err);
-        fprint(2, "Type error: %s\n", err.start);
+    if (gstypes_type_check(err, pos, type, test_property_type(pos)) < 0) {
+        gsfinish_string_builder(err);
+        fprint(2, "Type error: %s\n", err->start);
         exits("type err");
     }
-    gsfinish_string_builder(&err);
+    gsfinish_string_builder(err);
 }
 
 int

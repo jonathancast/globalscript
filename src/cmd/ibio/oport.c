@@ -380,7 +380,7 @@ ibio_write_process_main(void *p)
     nloops = 0;
     buftime = 0;
     do {
-        struct gsstringbuilder err;
+        struct gsstringbuilder *err;
         int gcres;
 
         if (buftime) nloops++;
@@ -391,24 +391,24 @@ ibio_write_process_main(void *p)
         err = gsreserve_string_builder();
         gcres = 0;
         if (gs_sys_gc_want_collection()) {
-            if ((gcres = gs_sys_wait_for_collection_to_finish(&err)) < 0) {
-                gsfinish_string_builder(&err);
-                gswarning("GC failed: %s", err.start);
+            if ((gcres = gs_sys_wait_for_collection_to_finish(err)) < 0) {
+                gsfinish_string_builder(err);
+                gswarning("GC failed: %s", err->start);
                 err = gsreserve_string_builder();
             }
             if (oport->forward)
                 oport = oport->forward
             ; else {
-                gsstring_builder_print(&err, "oport not traced in GC");
+                gsstring_builder_print(err, "oport not traced in GC");
                 gcres = -1;
             }
             gs_sys_gc_done_with_collection();
         }
-        gsfinish_string_builder(&err);
+        gsfinish_string_builder(err);
         if (active && (gcres < 0 || gs_sys_memory_exhausted())) {
             if (oport->writing) {
                 if (gcres < 0) {
-                    api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "GC failed: %s", err.start);
+                    api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "GC failed: %s", err->start);
                 } else {
                     api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "Out of memory");
                 }

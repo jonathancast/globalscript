@@ -130,7 +130,7 @@ gscheck_program(char *script, struct gsfile_symtable *symtable, struct gspos pos
 {
     char errbuf[0x100];
     struct gstype *input, *output, *result;
-    struct gsstringbuilder err;
+    struct gsstringbuilder *err;
 
     /* §section Cast down from newtype wrapper */
 
@@ -139,21 +139,21 @@ gscheck_program(char *script, struct gsfile_symtable *symtable, struct gspos pos
     /* §section Check input */
 
     err = gsreserve_string_builder();
-    if (gstypes_type_check(&err, pos, input, gstypes_compile_rune(pos)) < 0) {
-        gsfinish_string_builder(&err);
-        gsfatal("%s: Panic!  Non-rune.t input in main program (%s)", script, err.start);
+    if (gstypes_type_check(err, pos, input, gstypes_compile_rune(pos)) < 0) {
+        gsfinish_string_builder(err);
+        gsfatal("%s: Panic!  Non-rune.t input in main program (%s)", script, err->start);
     }
-    gsfinish_string_builder(&err);
+    gsfinish_string_builder(err);
 
     /* §section Check output */
 
     err = gsreserve_string_builder();
-    if (gstypes_type_check(&err, pos, output, gstypes_compile_rune(pos)) < 0) {
-        gsfinish_string_builder(&err);
+    if (gstypes_type_check(err, pos, output, gstypes_compile_rune(pos)) < 0) {
+        gsfinish_string_builder(err);
         ace_down();
-        gsfatal("%s: Panic!  Non-rune.t output in main program (%s)", script, err.start);
+        gsfatal("%s: Panic!  Non-rune.t output in main program (%s)", script, err->start);
     }
-    gsfinish_string_builder(&err);
+    gsfinish_string_builder(err);
 }
 
 static
@@ -162,7 +162,7 @@ ibio_downcast_ibio_m(char *errbuf, char *eerrbuf, char *script, struct gsfile_sy
 {
     struct gstype *monad, *tybody;
     struct gstype *tyw;
-    struct gsstringbuilder err;
+    struct gsstringbuilder *err;
 
     tyw = ty;
     if (
@@ -202,11 +202,11 @@ ibio_downcast_ibio_m(char *errbuf, char *eerrbuf, char *script, struct gsfile_sy
         ))
     ));
     err = gsreserve_string_builder();
-    if (gstypes_type_check(&err, pos, tyw, tybody) < 0) {
-        gsfinish_string_builder(&err);
-        gsfatal("%s: Panic!  Type after un-wrapping newtype wrapper incorrect (%s)", script, err);
+    if (gstypes_type_check(err, pos, tyw, tybody) < 0) {
+        gsfinish_string_builder(err);
+        gsfatal("%s: Panic!  Type after un-wrapping newtype wrapper incorrect (%s)", script, err->start);
     }
-    gsfinish_string_builder(&err);
+    gsfinish_string_builder(err);
 }
 
 int

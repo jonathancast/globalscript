@@ -60,7 +60,7 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, stru
             file_stat_blocking->rpc = statrpc = (struct ibio_file_stat_rpc *)rpc;
 
             rpc->tag = ibio_uxproc_rpc_stat;
-            statrpc->filename = file_stat_blocking->fn.sb.start;
+            statrpc->filename = file_stat_blocking->fn.sb->start;
             api_send_rpc(thread, rpc);
         } else {
             struct ibio_file_stat_rpc *statrpc = (struct ibio_file_stat_rpc *)file_stat_blocking->rpc;
@@ -125,17 +125,17 @@ ibio_main_process_handle_rpc_stat(struct gsrpc *rpc)
 {
     struct ibio_file_stat_rpc *statrpc;
     struct gsbio_dir *dir;
-    struct gsstringbuilder err;
+    struct gsstringbuilder *err;
 
     statrpc = (struct ibio_file_stat_rpc *)rpc;
 
     dir = gsbio_stat(statrpc->filename);
     if (!dir) {
         err = gsreserve_string_builder();
-        err.end = seprint(err.end, err.extent, "%r");
-        gsfinish_string_builder(&err);
+        err->end = seprint(err->end, err->extent, "%r");
+        gsfinish_string_builder(err);
         rpc->status = gsrpc_failed;
-        rpc->err = err.start;
+        rpc->err = err->start;
         unlock(&rpc->lock);
         return;
     }

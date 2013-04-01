@@ -65,7 +65,7 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
             rpc->tag = ibio_uxproc_rpc_file_read_open;
             openrpc->pos = open->pos;
             openrpc->io = file_read_open_blocking->io;
-            openrpc->filename = file_read_open_blocking->fn.sb.start;
+            openrpc->filename = file_read_open_blocking->fn.sb->start;
             api_send_rpc(thread, rpc);
         } else {
             struct ibio_file_read_open_rpc *openrpc = (struct ibio_file_read_open_rpc *)file_read_open_blocking->rpc;
@@ -148,18 +148,18 @@ static
 void
 ibio_rpc_fail(struct gsrpc *rpc, char *fmt, ...)
 {
-    struct gsstringbuilder err;
+    struct gsstringbuilder *err;
     va_list arg;
 
     err = gsreserve_string_builder();
 
     va_start(arg, fmt);
-    gsstring_builder_vprint(&err, fmt, arg);
+    gsstring_builder_vprint(err, fmt, arg);
     va_end(arg);
 
-    gsfinish_string_builder(&err);
+    gsfinish_string_builder(err);
 
     rpc->status = gsrpc_failed;
-    rpc->err = err.start;
+    rpc->err = err->start;
     unlock(&rpc->lock);
 }
