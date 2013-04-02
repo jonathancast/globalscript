@@ -655,12 +655,13 @@ api_init_code_segment(void *buf, void *bufend)
 
 static gstypecode api_promise_eval(gsvalue);
 static gsvalue api_promise_dereference(gsvalue);
+static gsvalue api_promise_trace(struct gsstringbuilder *, gsvalue);
 
 static struct gs_sys_global_block_suballoc_info api_promise_info = {
     /* descr = */ {
         /* evaluator = */ api_promise_eval,
         /* indirection_dereferencer = */ api_promise_dereference,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ api_promise_trace,
         /* description = */ "API promises",
     },
 };
@@ -706,6 +707,66 @@ api_promise_dereference(gsvalue val)
     unlock(&promise->lock);
 
     return res;
+}
+
+static int api_gc_trace_promise(struct gsstringbuilder *, struct api_promise **);
+
+static
+gsvalue api_promise_trace(struct gsstringbuilder *err, gsvalue v)
+{
+    struct api_promise *promise;
+
+    promise = (struct api_promise *)v;
+
+    if (promise->evacuating) {
+        gsstring_builder_print(err, UNIMPL("api_promise_trace: loops during GC"));
+        return 0;
+    }
+
+    if (promise->value) {
+        gsvalue value, gctemp;
+        promise->evacuating = 1;
+        value = promise->value;
+        if (GS_GC_TRACE(err, &value) < 0) {
+            promise->evacuating = 0;
+            return 0;
+        }
+        promise->evacuating = 0;
+        return value;
+    }
+
+    if (api_gc_trace_promise(err, &promise) < 0) return 0;
+
+    return (gsvalue)promise;
+}
+
+static
+int
+api_gc_trace_promise(struct gsstringbuilder *err, struct api_promise **ppromise)
+{
+    struct api_promise *promise, *newpromise;
+
+    promise = *ppromise;
+
+    if (promise->fwd) {
+        *ppromise = promise->fwd;
+        return 0;
+    }
+    if (!gs_sys_block_in_gc_from_space(promise)) return 0;
+
+    newpromise = api_alloc_promise();
+
+    newpromise->value = promise->value;
+
+    promise->fwd = newpromise;
+
+    if (newpromise->value) {
+        gsstring_builder_print(err, UNIMPL("api_gc_trace_promise: evacuate value"));
+        return -1;
+    }
+
+    *ppromise = newpromise;
+    return 0;
 }
 
 /* §section Helper Functions */
