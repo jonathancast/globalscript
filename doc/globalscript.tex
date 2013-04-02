@@ -2,6 +2,7 @@
 \title{Global Script Program Calculus}
 \author{Jonathan Cast}
 
+\usepackage{amsmath}
 \usepackage{bussproofs}
 \usepackage{latexsym}
 \usepackage{haskell}
@@ -14,6 +15,22 @@
 \newcommand\view{\hskwd{view}}
 \newcommand\analyze{\hskwd{analyze}}
 \newcommand\case{\hskwd{case}}
+\newcommand\for{\hskwd{for}}
+\newcommand\gslambda{\hskwd{\lambda}}
+\hscommand\where{\hskwd{where}}
+
+\newcommand\inlinelambda[2]{\gslambda\ #1. #2}
+\hscommand\inlinefor[2]{\for\ (#1)\ #2}
+
+\newcommand\blockanalyze[2]{\analyze\ #1\hsbody{\hsalign{#2}}}
+\newcommand\blocklambda[2]{\gslambda\ #1. \hsbody{\hsalign{#2}}}
+\hscommand\blockfor[2]{\for\ (#1)\hsbody{\hsalign{#2}}}
+\hscommand\blockwhere[1]{(\where\hsbody{\hsalign{#1}})}
+
+\newcommand\qq[1]{qq\{\text{\texttt{#1}}\}}
+\newcommand\str[1]{\(str\{\text{#1}\}\)}
+
+\hscommand\ifrom{<\!<}
 
 \newcommand\defn[1]{\emph{#1}}
 
@@ -23,6 +40,8 @@
 \newcommand\implicit{\hskwd{implicit}}
 
 \newcommand\kwd[1]{\textbf{#1}}
+
+\newcommand\sh[1]{\texttt{#1}}
 
 \begin{document}
 
@@ -283,5 +302,47 @@ Language TODO: Expression arguments to views (e.g., \<n+m\> patterns).  End TODO
 \chapter{Overloading}
 
 \chapter{Standard Library}
+
+\chapter{Examples}
+
+\section{\sh{gstype} Hello, World}
+
+\begin{haskell}
+    \qq{Hello, world!}
+\end{haskell}
+
+\section{\sh{gsdraw} Hello, World}
+
+\begin{haskell}
+    text \str{Hello, world!}
+\end{haskell}
+
+\section{Dance Hello, World}
+
+\begin{haskell}
+    text \str{Hello, world!}
+\end{haskell}
+
+\section{IBIO \sh{echo}}
+
+\begin{haskell}
+    \inlinefor{'as \leftarrow env.args.get}{send \$ concat (intersperse \qq{\ } as) <> \qq{$\backslash$n}}
+\end{haskell}
+
+\section{IBIO \sh{cat}}
+
+\begin{haskell}
+    (\inlinefor{'as \leftarrow env.args.get}{\blockanalyze{as}{%
+        \case\ nil. cat \\
+        \case\ \_. foreachM \$ \blocklambda{'a}{
+            \inlinefor{'eif \leftarrow file.open o/r/ \$ file.name.in a}{\blockanalyze{eif}{
+                \case\ left 'e. abend e \\
+                \case\ right 'if. cat \ifrom{} if
+            }}
+        }
+    }}) \blockwhere{
+        'cat = \inlinefor{'s \leftarrow receive (many symbol)}{send s};
+    }
+\end{haskell}
 
 \end{document}
