@@ -1004,6 +1004,9 @@ gs_lfield_trace(struct gsstringbuilder *err, gsvalue v)
 
             return dest;
         }
+        case gslfield_forward: {
+            return (gsvalue)lfield->fwd.dest;
+        }
         default:
             gsstring_builder_print(err, UNIMPL("gs_lfield_trace: state = %d"), lfield->state);
             return 0;
