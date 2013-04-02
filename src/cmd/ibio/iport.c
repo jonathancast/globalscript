@@ -1051,10 +1051,7 @@ ibio_iport_trace(struct gsstringbuilder *err, gsvalue v)
 
     iport = (struct ibio_iport *)v;
 
-    if (iport->forward) {
-        gsstring_builder_print(err, UNIMPL("ibio_iport_trace: check for forward"));
-        return 0;
-    }
+    if (iport->forward) return (gsvalue)iport->forward;
 
     newiport = gs_sys_global_block_suballoc(&ibio_iport_segment_info, sizeof(*newiport));
 
