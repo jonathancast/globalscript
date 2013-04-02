@@ -943,17 +943,35 @@ gs_lfield_trace(struct gsstringbuilder *err, gsvalue v)
     switch(lfield->state) {
         case gslfield_field: {
             int fieldno;
-            gsvalue record;
+            gsvalue recordv;
 
             fieldno = lfield->f.fieldno;
-            record = lfield->f.record;
+            recordv = lfield->f.record;
 
-            if (gsisrecord_block(BLOCK_CONTAINING(record))) {
+            if (gsisrecord_block(BLOCK_CONTAINING(recordv))) {
+                struct gsrecord *rec;
+
                 lfield->state = gslfield_evacuating;
 
-                gsstring_builder_print(err, UNIMPL("gs_lfield_trace: redex"));
-                lfield->state = gslfield_field;
-                return 0;
+                rec = (struct gsrecord *)recordv;
+                switch (rec->type) {
+                    case gsrecord_fields: {
+                        struct gsrecord_fields *fields;
+                        gsvalue gsv;
+
+                        fields = (struct gsrecord_fields *)rec;
+                        gsv = fields->fields[fieldno];
+                        if (GS_GC_TRACE(err, &gsv) < 0) {
+                            lfield->state = gslfield_field;
+                            return 0;
+                        }
+                        return gsv;
+                    }
+                    default:
+                        gsstring_builder_print(err, UNIMPL("gs_lfield_trace: redex; record type %d"), rec->type);
+                        lfield->state = gslfield_field;
+                        return 0;
+                }
 
                 lfield->state = gslfield_field;
             }
