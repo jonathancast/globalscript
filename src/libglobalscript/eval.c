@@ -965,6 +965,7 @@ gs_lfield_trace(struct gsstringbuilder *err, gsvalue v)
                             lfield->state = gslfield_field;
                             return 0;
                         }
+                        lfield->state = gslfield_field;
                         return gsv;
                     }
                     default:
