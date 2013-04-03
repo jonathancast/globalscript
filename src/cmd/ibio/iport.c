@@ -879,8 +879,14 @@ ibio_prim_iptr_next_return(struct ace_thread *thread, struct gspos pos, struct i
 struct gslprim_blocking *
 ibio_prim_iptr_next_gccopy(struct gsstringbuilder *err, struct gslprim_blocking *gsblocking)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_prim_iptr_next_gccopy"));
-    return 0;
+    struct ibio_prim_iptr_next_blocking *blocking, *newblocking;
+
+    blocking = (struct ibio_prim_iptr_next_blocking *)gsblocking;
+
+    newblocking = gslprim_blocking_alloc(sizeof(*newblocking), ibio_prim_iptr_resume_next, ibio_prim_iptr_next_gccopy);
+    memcpy(newblocking, blocking, sizeof(*newblocking));
+
+    return (struct gslprim_blocking *)newblocking;
 }
 
 int
