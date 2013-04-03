@@ -699,6 +699,7 @@ void gsbio_unix_parse_directory(char *, void *, void *, void **, void *, void *,
 /* §section String Builders */
 
 struct gsstringbuilder {
+    struct gsstringbuilder *forward;
     char *start, *end, *extent;
 };
 
@@ -709,6 +710,8 @@ void gsstring_builder_print(struct gsstringbuilder *, char *, ...);
 void gsstring_builder_vprint(struct gsstringbuilder *, char *, va_list);
 
 void gsfinish_string_builder(struct gsstringbuilder *);
+
+int gsstring_builder_trace(struct gsstringbuilder *, struct gsstringbuilder **);
 
 #if defined(__cplusplus)
 }

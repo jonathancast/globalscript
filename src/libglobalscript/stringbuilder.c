@@ -36,6 +36,7 @@ gsreserve_string_builder()
     }
     unlock(&gsstringbuilder_lock);
 
+    res->forward = 0;
     res->end = res->start = (char*)res + sizeof(*res);
     res->extent = END_OF_BLOCK(block);
 
@@ -101,4 +102,26 @@ gsfinish_string_builder(struct gsstringbuilder *sb)
         }
         unlock(&gsstringbuilder_lock);
     }
+}
+
+int
+gsstring_builder_trace(struct gsstringbuilder *err, struct gsstringbuilder **psb)
+{
+    struct gsstringbuilder *sb, *newsb;
+
+    sb = *psb;
+
+    if (sb->forward) {
+        *psb = sb->forward;
+        return 0;
+    }
+
+    newsb = gsreserve_string_builder();
+
+    memcpy(newsb->start, sb->start, sb->end - sb->start);
+    newsb->end = newsb->start + (sb->end - sb->start);
+
+    sb->forward = *psb = newsb;
+
+    return 0;
 }
