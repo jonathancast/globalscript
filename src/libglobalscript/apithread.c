@@ -6,6 +6,7 @@
 
 #include "gsbytecode.h"
 #include "api.h"
+#include "gsproc.h"
 
 /* §section Declarations */
 
@@ -69,7 +70,25 @@ apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table 
         int tag;
 
         do {
-            gs_sys_gc_allow_collection(0);
+            if (gs_sys_gc_want_collection()) {
+                struct gsstringbuilder *err;
+
+                err = gsreserve_string_builder();
+                if (gs_sys_wait_for_collection_to_finish(err) < 0) {
+                    gsfinish_string_builder(err);
+                    gswarning("GC failed: %s", err->start);
+                    err = gsreserve_string_builder();
+                }
+
+                if (gsqueue_gc_trace(err, &rpc_queue) < 0) {
+                    gsfinish_string_builder(err);
+                    gswarning("GC failed: %s", err->start);
+                } else {
+                    gsfinish_string_builder(err);
+                }
+
+                gs_sys_gc_done_with_collection();
+            }
 
             rpc = gsqueue_try_get_rpc(rpc_queue);
 
@@ -100,6 +119,10 @@ static Lock api_at_termination_queue_lock;
 static int api_at_termination_queue_length;
 static api_termination_callback *api_at_termination_queue[API_TERMINATION_QUEUE_LENGTH];
 
+static int api_gc_trace_thread_queue(struct gsstringbuilder *);
+
+static void api_handle_gc_failed(struct gsstringbuilder *);
+
 static
 void
 api_thread_pool_main(void *arg)
@@ -123,6 +146,37 @@ api_thread_pool_main(void *arg)
 
     do {
         hadthread = suspended_runnable_thread = 0;
+
+        if (gs_sys_should_gc()) {
+            struct gsstringbuilder *err;
+
+            if (gsflag_stat_collection) fprint(2, "Before garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
+            err = gsreserve_string_builder();
+
+            gs_sys_wait_for_gc();
+            if (gs_sys_start_gc(err) < 0) {
+                gsfinish_string_builder(err);
+                api_handle_gc_failed(err);
+                goto gc_done;
+            }
+
+            err = gsreserve_string_builder();
+            if (api_gc_trace_thread_queue(err) < 0) {
+                gsfinish_string_builder(err);
+                api_handle_gc_failed(err);
+                goto gc_done;
+            }
+
+            if (gs_sys_finish_gc(err) < 0) {
+                gsfinish_string_builder(err);
+                api_handle_gc_failed(err);
+                goto gc_done;
+            }
+
+            if (gsflag_stat_collection) fprint(2, "After garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
+        }
+    gc_done:
+
         if (gs_sys_memory_exhausted()) {
             gswarning("%s:%d: About to terminate on out of memory (%dMB used)", __FILE__, __LINE__, gs_sys_memory_allocated_size() / 0x400 / 0x400);
             api_take_thread_queue();
@@ -136,6 +190,7 @@ api_thread_pool_main(void *arg)
             }
             api_release_thread_queue();
         }
+
         for (threadnum = 0; threadnum < API_NUMTHREADS; threadnum++) {
             thread = 0;
             api_take_thread_queue();
@@ -242,10 +297,126 @@ api_thread_pool_main(void *arg)
     if (gsflag_stat_collection) {
         fprint(2, "# API threads: %d\n", api_thread_queue->numthreads);
         fprint(2, "API thread total lifetime: %llds %lldms\n", thread_lifetime / 1000 / 1000 / 1000, (thread_lifetime / 1000 / 1000) % 1000);
-        fprint(2, "# API thread iterations: %lld (%0.2g%% instructions, %0.2g%% waiting)\n", loops, ((double)instrs / loops) * 100, ((double)loops_waiting / loops) * 100);
+        if (loops) fprint(2, "# API thread iterations: %lld (%0.2g%% instructions, %0.2g%% waiting)\n", loops, ((double)instrs / loops) * 100, ((double)loops_waiting / loops) * 100);
     }
 
     ace_down();
+}
+
+void
+api_handle_gc_failed(struct gsstringbuilder *err)
+{
+    int i;
+    struct api_thread *thread;
+
+    gsfinish_string_builder(err);
+
+    for (i = 0; i < API_NUMTHREADS; i++) {
+        thread = &api_thread_queue->threads[i];
+        if (thread->client_data) thread->api_thread_table->gc_failure_cleanup(&thread->client_data);
+        if (thread->eprim_blocking) {
+            if (thread->eprim_blocking->forward) thread->eprim_blocking = thread->eprim_blocking->forward;
+            thread->eprim_blocking->gccleanup(thread->eprim_blocking);
+        }
+    }
+
+    api_take_thread_queue();
+    for (i = 0; i < API_NUMTHREADS; i++) {
+        thread = &api_thread_queue->threads[i];
+        api_take_thread(thread);
+        if (thread->state == api_thread_st_active) api_abend(thread, "%s", err->start);
+        api_release_thread(thread);
+    }
+    api_release_thread_queue();
+
+    gs_sys_gc_failed(err->start);
+}
+
+static int api_gc_copy_thread(struct gsstringbuilder *, struct api_thread *, struct api_thread *);
+static int api_gc_evacuate_thread(struct gsstringbuilder *, struct api_thread *);
+
+static
+int
+api_gc_trace_thread_queue(struct gsstringbuilder *err)
+{
+    struct api_thread_queue *newqueue;
+    int i;
+
+    newqueue = gs_sys_global_block_suballoc(&api_thread_queue_info, sizeof(*api_thread_queue));
+    memset(&newqueue->lock, 0, sizeof(newqueue->lock));
+    newqueue->numthreads = api_thread_queue->numthreads;
+
+    for (i = 0; i < API_NUMTHREADS; i++)
+        if (api_gc_copy_thread(err, &newqueue->threads[i], &api_thread_queue->threads[i]) < 0)
+            return -1
+    ;
+
+    api_thread_queue = newqueue;
+
+    for (i = 0; i < API_NUMTHREADS; i++)
+        if (api_gc_evacuate_thread(err, &api_thread_queue->threads[i]) < 0)
+            return -1
+    ;
+
+    return 0;
+}
+
+static
+int
+api_gc_copy_thread(struct gsstringbuilder *err, struct api_thread *dest_thread, struct api_thread *src_thread)
+{
+    memset(&dest_thread->lock, 0, sizeof(dest_thread->lock));
+    dest_thread->hard = src_thread->hard;
+    dest_thread->start_time = src_thread->start_time;
+    dest_thread->prog_term_time = src_thread->prog_term_time;
+    dest_thread->state = src_thread->state;
+    dest_thread->process_rpc_queue = src_thread->process_rpc_queue;
+    dest_thread->api_thread_table = src_thread->api_thread_table;
+    dest_thread->api_prim_table = src_thread->api_prim_table;
+    dest_thread->client_data = src_thread->client_data;
+    dest_thread->status = src_thread->status;
+    dest_thread->code = src_thread->code;
+    dest_thread->eprim_blocking = src_thread->eprim_blocking;
+    dest_thread->forward = 0;
+
+    src_thread->forward = dest_thread;
+
+    return 0;
+}
+
+static int api_gc_trace_code_segment(struct gsstringbuilder *, struct api_code_segment **);
+
+static
+int
+api_gc_evacuate_thread(struct gsstringbuilder *err, struct api_thread *thread)
+{
+    gsvalue gcv, gctemp;
+
+    if (thread->process_rpc_queue && gsqueue_gc_trace(err, &thread->process_rpc_queue) < 0)
+        return -1
+    ;
+
+    gcv = (gsvalue)thread->client_data;
+    if (gcv && GS_GC_TRACE(err, &gcv) < 0) return -1;
+    thread->client_data = (void*)gcv;
+
+    if (thread->status && gs_sys_block_in_gc_from_space(thread->status) && gsstring_builder_trace(err, &thread->status) < 0) return -1;
+
+    if (thread->code && api_gc_trace_code_segment(err, &thread->code) < 0) return -1;
+
+    if (thread->eprim_blocking && gs_sys_block_in_gc_from_space(thread->eprim_blocking)) {
+        if (thread->eprim_blocking->forward) {
+            thread->eprim_blocking = thread->eprim_blocking->forward;
+        } else {
+            struct api_prim_blocking *newblocking;
+
+            if (!(newblocking = thread->eprim_blocking->gccopy(err, thread->eprim_blocking))) return -1;
+            thread->eprim_blocking = thread->eprim_blocking->forward = newblocking;
+            if (thread->eprim_blocking->gcevacuate(err, newblocking) < 0) return -1;
+        }
+    }
+
+    return 0;
 }
 
 void
@@ -620,17 +791,15 @@ static struct gs_sys_aligned_block_suballoc_info api_code_segment_info = {
     /* align = */ API_CODE_SEGMENT_BLOCK_SIZE,
 };
 
-static struct api_code_segment *api_init_code_segment(void *, void *);
+static struct api_code_segment *api_new_code_segment(void);
 
 static
 struct api_code_segment *
 api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
 {
-    void *buf, *bufend;
     struct api_code_segment *res;
 
-    gs_sys_aligned_block_suballoc(&api_code_segment_info, &buf, &bufend);
-    res = api_init_code_segment(buf, bufend);
+    res = api_new_code_segment();
 
     res->ip = res->size - 1;
     res->instrs[res->ip].instr = entry;
@@ -641,16 +810,59 @@ api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
 
 static
 struct api_code_segment *
-api_init_code_segment(void *buf, void *bufend)
+api_new_code_segment()
 {
+    void *buf, *bufend;
     struct api_code_segment *res;
 
+    gs_sys_aligned_block_suballoc(&api_code_segment_info, &buf, &bufend);
     res = buf;
 
     res->size = ((uchar*)bufend - (uchar*)res->instrs) / sizeof(res->instrs[0]);
     res->fwd = 0;
 
     return res;
+}
+
+static int api_gc_trace_promise(struct gsstringbuilder *, struct api_promise **);
+
+static
+int
+api_gc_trace_code_segment(struct gsstringbuilder *err, struct api_code_segment **ppcode)
+{
+    struct api_code_segment *code, *newcode;
+    gsvalue gctemp;
+    int i;
+
+    code = *ppcode;
+
+    if (code->fwd) {
+        *ppcode = code->fwd;
+        return 0;
+    }
+    if (!gs_sys_block_in_gc_from_space(code)) return 0;
+
+    newcode = api_new_code_segment();
+
+    if (newcode->size < code->size - code->ip) {
+        gsstring_builder_print(err, UNIMPL("api_gc_trace_code_segment: not enough space for all instructions"));
+        return -1;
+    }
+    newcode->ip = newcode->size - (code->size - code->ip); /* > newcode->size - newcode->ip = code->size - code->ip; */
+    for (i = 1; newcode->size - i >= newcode->ip; i++)
+        newcode->instrs[newcode->size - i] = code->instrs[code->size - i]
+    ;
+
+    code->fwd = newcode;
+
+    for (i = newcode->ip; i < newcode->size; i++) {
+        if (GS_GC_TRACE(err, &newcode->instrs[i].instr) < 0) return -1;
+
+        if (api_gc_trace_promise(err, &newcode->instrs[i].presult) < 0) return -1;
+    }
+
+    *ppcode = newcode;
+    return 0;
 }
 
 static gstypecode api_promise_eval(gsvalue);
@@ -986,6 +1198,7 @@ api_main_process_handle_rpc_done(struct gsrpc *rpc)
     rpc->status = gsrpc_succeeded;
     unlock(&rpc->lock);
 
+    gs_sys_num_procs--;
     exits("");
 }
 
@@ -1003,6 +1216,7 @@ api_main_process_handle_rpc_abend(struct gsrpc *rpc)
     unlock(&rpc->lock);
 
     fprint(2, "%s\n", status);
+    gs_sys_num_procs--;
     exits(status);
 }
 

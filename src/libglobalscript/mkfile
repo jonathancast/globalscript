@@ -72,7 +72,7 @@ inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsproc.h
 eval.$O: gsheap.h gsinputfile.h gsbytecode.h ace.h
 ace.$O: gsheap.h gsbytecode.h ace.h
-apithread.$O: gsbytecode.h api.h
+apithread.$O: gsbytecode.h api.h gsproc.h
 symtable.$O: gsinputfile.h
 bytecompile.$O: gsinputfile.h gsregtables.h gstypealloc.h gsbytecompile.h gsheap.h gsbytecode.h gstopsort.h gstypealloc.h
 primset.$O: gsinputfile.h gssetup.h
