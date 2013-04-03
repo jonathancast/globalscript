@@ -95,23 +95,49 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
 
 static
 struct api_prim_blocking *
-ibio_file_read_open_blocking_gccopy(struct gsstringbuilder *err, struct api_prim_blocking *pblocking)
+ibio_file_read_open_blocking_gccopy(struct gsstringbuilder *err, struct api_prim_blocking *blocking)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_file_read_open_blocking_gccopy"));
-    return 0;
+    struct ibio_file_read_open_blocking *file_read_open_blocking, *new_file_read_open_blocking;
+    struct api_prim_blocking *newblocking;
+
+    file_read_open_blocking = (struct ibio_file_read_open_blocking *)blocking;
+
+    newblocking = api_blocking_alloc(sizeof(struct ibio_file_read_open_blocking), ibio_file_read_open_blocking_gccopy, ibio_file_read_open_blocking_gcevacuate, ibio_file_read_open_blocking_gccleanup);
+    new_file_read_open_blocking = (struct ibio_file_read_open_blocking *)newblocking;
+
+    memcpy(new_file_read_open_blocking, file_read_open_blocking, sizeof(struct ibio_file_read_open_blocking));
+
+    return newblocking;
 }
 
 static
 int
-ibio_file_read_open_blocking_gcevacuate(struct gsstringbuilder *err, struct api_prim_blocking *pblocking)
+ibio_file_read_open_blocking_gcevacuate(struct gsstringbuilder *err, struct api_prim_blocking *blocking)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_file_read_open_blocking_gcevacuate"));
-    return -1;
+    struct ibio_file_read_open_blocking *file_read_open_blocking;
+
+    file_read_open_blocking = (struct ibio_file_read_open_blocking *)blocking;
+    if (ibio_external_io_trace(err, &file_read_open_blocking->io) < 0) return -1;
+    if (ibio_gsstring_eval_evacuate(err, &file_read_open_blocking->fn) < 0) return -1;
+
+    if (file_read_open_blocking->rpc && gs_sys_block_in_gc_from_space(file_read_open_blocking->rpc)) {
+        gsstring_builder_print(err, UNIMPL("ibio_file_read_open_blocking_gcevacuate: rpc"));
+        return -1;
+    }
+
+    return 0;
 }
 
 void
 ibio_file_read_open_blocking_gccleanup(struct api_prim_blocking *blocking)
 {
+    struct ibio_file_read_open_blocking *file_read_open_blocking;
+
+    file_read_open_blocking = (struct ibio_file_read_open_blocking *)blocking;
+
+    if (file_read_open_blocking->rpc && file_read_open_blocking->rpc->rpc.forward)
+        file_read_open_blocking->rpc = (struct ibio_file_read_open_rpc *)file_read_open_blocking->rpc->rpc.forward
+    ;
 }
 
 static void ibio_rpc_fail(struct gsrpc *, char *, ...);
