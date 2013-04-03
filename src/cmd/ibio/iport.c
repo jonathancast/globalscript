@@ -728,6 +728,7 @@ struct ibio_prim_iptr_deref_blocking {
 
 static int ibio_prim_iptr_deref_return(struct ace_thread *, struct gspos, gsvalue, struct ibio_prim_iptr_deref_blocking *);
 static gslprim_gccopy_handler ibio_prim_iptr_gccopy_deref;
+static gslprim_gcevacuate_handler ibio_prim_iptr_deref_gcevacuate;
 
 int
 ibio_prim_iptr_handle_deref(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
@@ -777,7 +778,7 @@ ibio_prim_iptr_deref_return(struct ace_thread *thread, struct gspos pos, gsvalue
         switch (st) {
             case gstystack: {
                 if (!blocking) {
-                    blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_deref, ibio_prim_iptr_gccopy_deref);
+                    blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_deref, ibio_prim_iptr_gccopy_deref, ibio_prim_iptr_deref_gcevacuate);
                     blocking->res = v;
                 }
 
@@ -803,6 +804,13 @@ ibio_prim_iptr_gccopy_deref(struct gsstringbuilder *err, struct gslprim_blocking
     return 0;
 }
 
+int
+ibio_prim_iptr_deref_gcevacuate(struct gsstringbuilder *err, struct gslprim_blocking *gsblocking)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_prim_iptr_deref_gcevacuate"));
+    return -1;
+}
+
 /* §subsection §gs{ibio.prim.iptr.next} */
 
 static gslprim_resumption_handler ibio_prim_iptr_resume_next, ibio_prim_iptr_resume_next_wait_for_seg;
@@ -820,6 +828,7 @@ struct ibio_prim_iptr_next_blocking_wait_for_seg {
 static int ibio_prim_iptr_next_return(struct ace_thread *, struct gspos, struct ibio_channel_segment *, gsvalue *, struct ibio_prim_iptr_next_blocking *);
 static int ibio_prim_iptr_next_return_wait_for_seg(struct ace_thread *, struct gspos, struct ibio_channel_segment *, struct ibio_prim_iptr_next_blocking_wait_for_seg *);
 static gslprim_gccopy_handler ibio_prim_iptr_next_gccopy, ibio_prim_iptr_next_wait_for_seg_gccopy;
+static gslprim_gcevacuate_handler ibio_prim_iptr_next_gcevacuate, ibio_prim_iptr_next_wait_for_seg_gcevacuate;
 
 int
 ibio_prim_iptr_handle_next(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
@@ -868,7 +877,7 @@ ibio_prim_iptr_next_return(struct ace_thread *thread, struct gspos pos, struct i
         unlock(&seg->lock);
 
         if (!blocking) {
-            blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_next, ibio_prim_iptr_next_gccopy);
+            blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_next, ibio_prim_iptr_next_gccopy, ibio_prim_iptr_next_gcevacuate);
             blocking->iptr_res = iptr_res;
         }
 
@@ -883,10 +892,17 @@ ibio_prim_iptr_next_gccopy(struct gsstringbuilder *err, struct gslprim_blocking 
 
     blocking = (struct ibio_prim_iptr_next_blocking *)gsblocking;
 
-    newblocking = gslprim_blocking_alloc(sizeof(*newblocking), ibio_prim_iptr_resume_next, ibio_prim_iptr_next_gccopy);
+    newblocking = gslprim_blocking_alloc(sizeof(*newblocking), ibio_prim_iptr_resume_next, ibio_prim_iptr_next_gccopy, ibio_prim_iptr_next_gcevacuate);
     memcpy(newblocking, blocking, sizeof(*newblocking));
 
     return (struct gslprim_blocking *)newblocking;
+}
+
+int
+ibio_prim_iptr_next_gcevacuate(struct gsstringbuilder *err, struct gslprim_blocking *gsblocking)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_prim_iptr_next_gcevacuate"));
+    return -1;
 }
 
 int
@@ -923,7 +939,7 @@ ibio_prim_iptr_next_return_wait_for_seg(struct ace_thread *thread, struct gspos 
     } else {
         unlock(&seg->lock);
         if (!blocking) {
-            blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_next_wait_for_seg, ibio_prim_iptr_next_wait_for_seg_gccopy);
+            blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_next_wait_for_seg, ibio_prim_iptr_next_wait_for_seg_gccopy, ibio_prim_iptr_next_wait_for_seg_gcevacuate);
             blocking->seg = seg;
         }
         return gsprim_block(thread, pos, (struct gslprim_blocking *)blocking);
@@ -935,6 +951,13 @@ ibio_prim_iptr_next_wait_for_seg_gccopy(struct gsstringbuilder *err, struct gslp
 {
     gsstring_builder_print(err, UNIMPL("ibio_prim_iptr_next_wait_for_seg_gccopy"));
     return 0;
+}
+
+int
+ibio_prim_iptr_next_wait_for_seg_gcevacuate(struct gsstringbuilder *err, struct gslprim_blocking *gsblocking)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_prim_iptr_next_wait_for_seg_gcevacuate"));
+    return -1;
 }
 
 /* §section Associating list of current reads to thread */

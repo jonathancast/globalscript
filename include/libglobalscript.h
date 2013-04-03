@@ -430,14 +430,16 @@ struct gslprim_blocking;
 
 typedef int gslprim_resumption_handler(struct ace_thread *, struct gspos, struct gslprim_blocking *);
 typedef struct gslprim_blocking *gslprim_gccopy_handler(struct gsstringbuilder *, struct gslprim_blocking *);
+typedef int gslprim_gcevacuate_handler(struct gsstringbuilder *, struct gslprim_blocking *);
 
 struct gslprim_blocking {
     gslprim_resumption_handler *resume;
     gslprim_gccopy_handler *gccopy;
+    gslprim_gcevacuate_handler *gcevacuate;
     struct gslprim_blocking *forward;
 };
 
-void *gslprim_blocking_alloc(long, gslprim_resumption_handler *, gslprim_gccopy_handler *);
+void *gslprim_blocking_alloc(long, gslprim_resumption_handler *, gslprim_gccopy_handler *, gslprim_gcevacuate_handler *);
 
 /* §ags{.lprim} and §ags{.ubprim} handlers must finish by returning a call to one of these functions: */
 int gsprim_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
