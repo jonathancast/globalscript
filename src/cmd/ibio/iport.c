@@ -727,6 +727,7 @@ struct ibio_prim_iptr_deref_blocking {
 };
 
 static int ibio_prim_iptr_deref_return(struct ace_thread *, struct gspos, gsvalue, struct ibio_prim_iptr_deref_blocking *);
+static gslprim_gccopy_handler ibio_prim_iptr_gccopy_deref;
 
 int
 ibio_prim_iptr_handle_deref(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
@@ -776,7 +777,7 @@ ibio_prim_iptr_deref_return(struct ace_thread *thread, struct gspos pos, gsvalue
         switch (st) {
             case gstystack: {
                 if (!blocking) {
-                    blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_deref);
+                    blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_deref, ibio_prim_iptr_gccopy_deref);
                     blocking->res = v;
                 }
 
@@ -795,6 +796,13 @@ ibio_prim_iptr_deref_return(struct ace_thread *thread, struct gspos pos, gsvalue
     }
 }
 
+struct gslprim_blocking *
+ibio_prim_iptr_gccopy_deref(struct gsstringbuilder *err, struct gslprim_blocking *gsblocking)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_prim_iptr_gccopy_deref"));
+    return 0;
+}
+
 /* §subsection §gs{ibio.prim.iptr.next} */
 
 static gslprim_resumption_handler ibio_prim_iptr_resume_next, ibio_prim_iptr_resume_next_wait_for_seg;
@@ -811,6 +819,7 @@ struct ibio_prim_iptr_next_blocking_wait_for_seg {
 
 static int ibio_prim_iptr_next_return(struct ace_thread *, struct gspos, struct ibio_channel_segment *, gsvalue *, struct ibio_prim_iptr_next_blocking *);
 static int ibio_prim_iptr_next_return_wait_for_seg(struct ace_thread *, struct gspos, struct ibio_channel_segment *, struct ibio_prim_iptr_next_blocking_wait_for_seg *);
+static gslprim_gccopy_handler ibio_prim_iptr_next_gccopy, ibio_prim_iptr_next_wait_for_seg_gccopy;
 
 int
 ibio_prim_iptr_handle_next(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
@@ -859,12 +868,19 @@ ibio_prim_iptr_next_return(struct ace_thread *thread, struct gspos pos, struct i
         unlock(&seg->lock);
 
         if (!blocking) {
-            blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_next);
+            blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_next, ibio_prim_iptr_next_gccopy);
             blocking->iptr_res = iptr_res;
         }
 
         return gsprim_block(thread, pos, (struct gslprim_blocking *)blocking);
     }
+}
+
+struct gslprim_blocking *
+ibio_prim_iptr_next_gccopy(struct gsstringbuilder *err, struct gslprim_blocking *gsblocking)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_prim_iptr_next_gccopy"));
+    return 0;
 }
 
 int
@@ -901,11 +917,18 @@ ibio_prim_iptr_next_return_wait_for_seg(struct ace_thread *thread, struct gspos 
     } else {
         unlock(&seg->lock);
         if (!blocking) {
-            blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_next_wait_for_seg);
+            blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_next_wait_for_seg, ibio_prim_iptr_next_wait_for_seg_gccopy);
             blocking->seg = seg;
         }
         return gsprim_block(thread, pos, (struct gslprim_blocking *)blocking);
     }
+}
+
+struct gslprim_blocking *
+ibio_prim_iptr_next_wait_for_seg_gccopy(struct gsstringbuilder *err, struct gslprim_blocking *gsblocking)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_prim_iptr_next_wait_for_seg_gccopy"));
+    return 0;
 }
 
 /* §section Associating list of current reads to thread */

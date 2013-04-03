@@ -1673,13 +1673,15 @@ static struct gs_sys_global_block_suballoc_info gslprim_blocking_info = {
 };
 
 void *
-gslprim_blocking_alloc(long sz, gslprim_resumption_handler *resume)
+gslprim_blocking_alloc(long sz, gslprim_resumption_handler *resume, gslprim_gccopy_handler *gccopy)
 {
     struct gslprim_blocking *res;
 
     res = gs_sys_global_block_suballoc(&gslprim_blocking_info, sz);
 
     res->resume = resume;
+    res->gccopy = gccopy;
+    res->forward = 0;
 
     return res;
 }
