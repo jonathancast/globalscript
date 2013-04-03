@@ -33,37 +33,6 @@ gsqueue_alloc()
     return res;
 }
 
-void
-gsqueue_down(struct gsrpc_queue *q)
-{
-    lock(&q->lock);
-
-    q->refcount--;
-
-    unlock(&q->lock);
-}
-
-static struct gs_sys_global_block_suballoc_info gsrpc_info = {
-    /* descr = */ {
-        /* evaluator = */ gsnoeval,
-        /* indirection_dereferencer = */ gsnoindir,
-        /* gc_trace = */ gsunimplgc,
-        /* description = */ "RPC",
-    },
-};
-
-struct gsrpc *
-gsqueue_rpc_alloc(ulong sz)
-{
-    struct gsrpc *res;
-
-    res = gs_sys_global_block_suballoc(&gsrpc_info, sz);
-
-    memset(res, 0, sz);
-
-    return res;
-}
-
 int
 gsqueue_gc_trace(struct gsstringbuilder *err, struct gsrpc_queue **ppq)
 {
@@ -103,6 +72,37 @@ gsqueue_gc_trace(struct gsstringbuilder *err, struct gsrpc_queue **ppq)
     *ppq = newq;
 
     return 0;
+}
+
+void
+gsqueue_down(struct gsrpc_queue *q)
+{
+    lock(&q->lock);
+
+    q->refcount--;
+
+    unlock(&q->lock);
+}
+
+static struct gs_sys_global_block_suballoc_info gsrpc_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "RPC",
+    },
+};
+
+struct gsrpc *
+gsqueue_rpc_alloc(ulong sz)
+{
+    struct gsrpc *res;
+
+    res = gs_sys_global_block_suballoc(&gsrpc_info, sz);
+
+    memset(res, 0, sz);
+
+    return res;
 }
 
 struct gsrpc_queue_link {
