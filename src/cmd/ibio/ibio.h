@@ -14,6 +14,8 @@ struct ibio_gsstring_eval {
 void ibio_gsstring_eval_start(struct ibio_gsstring_eval *, gsvalue);
 enum ibio_gsstring_eval_state ibio_gsstring_eval_advance(struct api_thread *, struct gspos, struct ibio_gsstring_eval *);
 
+int ibio_gsstring_eval_evacuate(struct gsstringbuilder *, struct ibio_gsstring_eval *);
+
 /* §section RPCs for Unix Processes */
 
 enum {

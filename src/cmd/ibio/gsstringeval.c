@@ -88,3 +88,15 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
 
     return ibio_gsstring_eval_success;
 }
+
+int
+ibio_gsstring_eval_evacuate(struct gsstringbuilder *err, struct ibio_gsstring_eval *eval)
+{
+    gsvalue gctemp;
+
+    if (GS_GC_TRACE(err, &eval->gss) < 0) return -1;
+    if (GS_GC_TRACE(err, &eval->gsc) < 0) return -1;
+    if (gs_sys_block_in_gc_from_space(eval->sb) && gsstring_builder_trace(err, &eval->sb) < 0) return -1;
+
+    return 0;
+}
