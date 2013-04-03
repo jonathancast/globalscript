@@ -811,7 +811,6 @@ enum gslfield_state {
     gslfield_field,
     gslfield_evaluating,
     gslfield_indirection,
-    gslfield_evacuating,
     gslfield_forward,
 };
 struct gslfield {
@@ -951,8 +950,6 @@ gs_lfield_trace(struct gsstringbuilder *err, gsvalue v)
             if (gsisrecord_block(BLOCK_CONTAINING(recordv))) {
                 struct gsrecord *rec;
 
-                lfield->state = gslfield_evacuating;
-
                 rec = (struct gsrecord *)recordv;
                 switch (rec->type) {
                     case gsrecord_fields: {
@@ -961,20 +958,13 @@ gs_lfield_trace(struct gsstringbuilder *err, gsvalue v)
 
                         fields = (struct gsrecord_fields *)rec;
                         gsv = fields->fields[fieldno];
-                        if (GS_GC_TRACE(err, &gsv) < 0) {
-                            lfield->state = gslfield_field;
-                            return 0;
-                        }
-                        lfield->state = gslfield_field;
+                        if (GS_GC_TRACE(err, &gsv) < 0) return 0;
                         return gsv;
                     }
                     default:
                         gsstring_builder_print(err, UNIMPL("gs_lfield_trace: redex; record type %d"), rec->type);
-                        lfield->state = gslfield_field;
                         return 0;
                 }
-
-                lfield->state = gslfield_field;
             }
 
             newlfield = gs_sys_global_block_suballoc(&gslfields_info, sizeof(*newlfield));
@@ -995,12 +985,7 @@ gs_lfield_trace(struct gsstringbuilder *err, gsvalue v)
 
             dest = lfield->i.dest;
 
-            lfield->state = gslfield_evacuating;
-            if (GS_GC_TRACE(err, &dest) < 0) {
-                lfield->state = gslfield_indirection;
-                return 0;
-            }
-            lfield->state = gslfield_indirection;
+            if (GS_GC_TRACE(err, &dest) < 0) return 0;
 
             return dest;
         }
