@@ -121,8 +121,10 @@ ibio_file_read_open_blocking_gcevacuate(struct gsstringbuilder *err, struct api_
     if (ibio_gsstring_eval_evacuate(err, &file_read_open_blocking->fn) < 0) return -1;
 
     if (file_read_open_blocking->rpc && gs_sys_block_in_gc_from_space(file_read_open_blocking->rpc)) {
-        gsstring_builder_print(err, UNIMPL("ibio_file_read_open_blocking_gcevacuate: rpc"));
-        return -1;
+        struct gsrpc *rpc;
+        rpc = (struct gsrpc *)file_read_open_blocking->rpc;
+        if (gsqueue_rpc_gc_trace(err, &rpc) < 0) return -1;
+        file_read_open_blocking->rpc = (struct ibio_file_read_open_rpc *)rpc;
     }
 
     return 0;
