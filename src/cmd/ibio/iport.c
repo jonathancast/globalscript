@@ -901,8 +901,16 @@ ibio_prim_iptr_next_gccopy(struct gsstringbuilder *err, struct gslprim_blocking 
 int
 ibio_prim_iptr_next_gcevacuate(struct gsstringbuilder *err, struct gslprim_blocking *gsblocking)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_prim_iptr_next_gcevacuate"));
-    return -1;
+    struct ibio_prim_iptr_next_blocking *blocking;
+    gsvalue gcv, gctemp;
+
+    blocking = (struct ibio_prim_iptr_next_blocking *)gsblocking;
+
+    gcv = (gsvalue)blocking->iptr_res;
+    if (GS_GC_TRACE(err, &gcv) < 0) return -1;
+    blocking->iptr_res = (gsvalue *)gcv;
+
+    return 0;
 }
 
 int
