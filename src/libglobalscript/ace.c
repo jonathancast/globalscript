@@ -1686,3 +1686,24 @@ gslprim_blocking_alloc(long sz, gslprim_resumption_handler *resume, gslprim_gcco
 
     return res;
 }
+
+int
+gslprim_blocking_trace(struct gsstringbuilder *err, struct gslprim_blocking **pblocking)
+{
+    struct gslprim_blocking *blocking, *newblocking;
+
+    blocking = *pblocking;
+
+    if (blocking->forward) {
+        gsstring_builder_print(err, UNIMPL("gslprim_blocking_trace: check for forward"));
+        return -1;
+    }
+
+    if (!(newblocking = blocking->gccopy(err, blocking))) return -1;
+
+    *pblocking = blocking->forward = newblocking;
+
+    if (newblocking->gcevacuate(err, newblocking) < 0) return -1;
+
+    return 0;
+}

@@ -441,6 +441,8 @@ struct gslprim_blocking {
 
 void *gslprim_blocking_alloc(long, gslprim_resumption_handler *, gslprim_gccopy_handler *, gslprim_gcevacuate_handler *);
 
+int gslprim_blocking_trace(struct gsstringbuilder *, struct gslprim_blocking **);
+
 /* §ags{.lprim} and §ags{.ubprim} handlers must finish by returning a call to one of these functions: */
 int gsprim_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 int gsprim_error(struct ace_thread *, struct gserror *);
