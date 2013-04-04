@@ -181,17 +181,21 @@ gs_sys_finish_gc(struct gsstringbuilder *err)
             return -1
     ;
 
-    for (i = 0; i < gs_sys_num_segments; i++) {
+    for (i = 0; i < gs_sys_num_segments;) {
         if (gs_sys_segments[i].type == gs_sys_segment_gc_from_space) {
             if (GS_SYS_SEGMENT_IS(i - 1, gs_sys_segment_free) && GS_SYS_SEGMENT_IS(i + 1, gs_sys_segment_free)) {
                 GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, 2);
+                i --;
             } else if (GS_SYS_SEGMENT_IS(i - 1, gs_sys_segment_free)) {
                 GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, 1);
             } else if (GS_SYS_SEGMENT_IS(i + 1, gs_sys_segment_free)) {
                 GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i + 1, 1);
             } else {
                 gs_sys_segments[i].type = gs_sys_segment_free;
+                i++;
             }
+        } else {
+            i++;
         }
     }
 
@@ -232,10 +236,11 @@ gs_sys_gc_failed(char *err)
         gs_sys_gc_failure_callbacks[i]()
     ;
 
-    for (i = 0; i < gs_sys_num_segments; i++) {
+    for (i = 0; i < gs_sys_num_segments;) {
         if (gs_sys_segments[i].type == gs_sys_segment_gc_from_space) {
             if (GS_SYS_SEGMENT_IS(i - 1, gs_sys_segment_allocated) && GS_SYS_SEGMENT_IS(i + 1, gs_sys_segment_allocated)) {
                 GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, 2);
+                i--;
             } else if (GS_SYS_SEGMENT_IS(i - 1, gs_sys_segment_allocated)) {
                 GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i, 1);
             } else if (GS_SYS_SEGMENT_IS(i + 1, gs_sys_segment_allocated)) {
@@ -243,7 +248,10 @@ gs_sys_gc_failed(char *err)
                 GS_SYS_COALESCE_WITH_PREVIOUS_SEGMENT(i + 1, 1);
             } else {
                 gs_sys_segments[i].type = gs_sys_segment_allocated;
+                i++;
             }
+        } else {
+            i++;
         }
     }
 
