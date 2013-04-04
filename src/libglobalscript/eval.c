@@ -949,22 +949,32 @@ gs_lfield_trace(struct gsstringbuilder *err, gsvalue v)
 
             if (gsisrecord_block(BLOCK_CONTAINING(recordv))) {
                 struct gsrecord *rec;
+                struct gsrecord_fields *fields;
+                gsvalue gsv;
 
                 rec = (struct gsrecord *)recordv;
                 switch (rec->type) {
-                    case gsrecord_fields: {
-                        struct gsrecord_fields *fields;
-                        gsvalue gsv;
-
+                    case gsrecord_fields:
                         fields = (struct gsrecord_fields *)rec;
-                        gsv = fields->fields[fieldno];
-                        if (GS_GC_TRACE(err, &gsv) < 0) return 0;
-                        return gsv;
+                        break;
+                    case gsrecord_gcforward: {
+                        struct gsrecord_gcforward *fwd;
+
+                        fwd = (struct gsrecord_gcforward *)rec;
+                        if (fwd->dest->type != gsrecord_fields) {
+                            gsstring_builder_print(err, UNIMPL("gs_lfield_trace: redex; GC forward doesn't point at record value"));
+                            return 0;
+                        }
+                        fields = (struct gsrecord_fields *)fwd->dest;
+                        break;
                     }
                     default:
                         gsstring_builder_print(err, UNIMPL("gs_lfield_trace: redex; record type %d"), rec->type);
                         return 0;
                 }
+                gsv = fields->fields[fieldno];
+                if (GS_GC_TRACE(err, &gsv) < 0) return 0;
+                return gsv;
             }
 
             newlfield = gs_sys_global_block_suballoc(&gslfields_info, sizeof(*newlfield));
