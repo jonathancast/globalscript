@@ -1615,8 +1615,9 @@ ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
             if (gs_gc_trace_pos(err, &newthread->st.blocked.at) < 0) return -1;
             break;
         case ace_thread_lprim_blocked:
-            gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate lprim_blocked"));
-            return -1;
+            if (newthread->st.lprim_blocked.on && gs_sys_block_in_gc_from_space(newthread->st.lprim_blocked.on) && gslprim_blocking_trace(err, &newthread->st.lprim_blocked.on) < 0) return -1;
+            if (gs_gc_trace_pos(err, &newthread->st.lprim_blocked.at) < 0) return -1;
+
             break;
         default:
             gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate st: state = %d"), newthread->state);
