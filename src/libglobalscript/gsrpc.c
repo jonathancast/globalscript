@@ -105,6 +105,24 @@ gsqueue_rpc_alloc(ulong sz)
     return res;
 }
 
+int
+gsqueue_rpc_gc_trace(struct gsstringbuilder *err, struct gsrpc **prpc)
+{
+    gsstring_builder_print(err, UNIMPL("gsqueue_rpc_gc_trace"));
+    return -1;
+
+    gsstring_builder_print(err, UNIMPL("gsqueue_rpc_gc_trace"));
+    return -1;
+
+    gsstring_builder_print(err, UNIMPL("gsqueue_rpc_gc_trace"));
+    return -1;
+
+    gsstring_builder_print(err, UNIMPL("gsqueue_rpc_gc_trace"));
+    return -1;
+
+    return 0;
+}
+
 struct gsrpc_queue_link {
     struct gsrpc *rpc;
     struct gsrpc_queue_link *next;

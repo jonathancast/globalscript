@@ -89,6 +89,8 @@ typedef void (gsrpc_handler)(struct gsrpc *);
 
 int gsqueue_gc_trace(struct gsstringbuilder *, struct gsrpc_queue **);
 
+int gsqueue_rpc_gc_trace(struct gsstringbuilder *, struct gsrpc **);
+
 /* §section Internal error-reporting stuff */
 
 typedef enum {
