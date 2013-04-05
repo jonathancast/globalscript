@@ -279,6 +279,7 @@ ibio_read_process_main(void *p)
     int tid;
     int active, runnable;
     struct ibio_iport *iport;
+    struct ibio_channel_segment *seg;
     gsvalue *pos;
 
     args = (struct ibio_read_process_args *)p;
@@ -307,6 +308,7 @@ ibio_read_process_main(void *p)
     }
     unlock(&iport->lock);
 
+    seg = 0;
     pos = 0;
     do {
         struct gsstringbuilder *err;
@@ -332,6 +334,7 @@ ibio_read_process_main(void *p)
                 gcres = -1;
             }
             if (pos) pos = ibio_iptr_lookup_forward(pos);
+            if (seg) seg = ibio_channel_segment_lookup_forward(seg);
 
             gs_sys_gc_done_with_collection();
         }
@@ -356,7 +359,30 @@ ibio_read_process_main(void *p)
             ibio_shutdown_iport(iport, iport->position);
             active = 0;
         }
-        if (iport->reading) {
+        if (pos && seg && pos >= ibio_channel_segment_limit(seg)) {
+            struct ibio_channel_segment *newseg;
+
+            lock(&seg->lock);
+            lock(&iport->channel->lock);
+            if (
+                iport->waiting_to_read
+                || api_thread_terminating(iport->reading_thread)
+                || iport->channel->last_accessed_seg == seg
+                || !iport->channel->last_accessed_seg
+            ) {
+                unlock(&iport->channel->lock);
+                newseg = ibio_alloc_channel_segment(iport->channel);
+                seg->next = newseg;
+                unlock(&seg->lock);
+                pos = newseg->items;
+                unlock(&newseg->lock);
+                seg = newseg;
+            } else {
+                unlock(&iport->channel->lock);
+                unlock(&seg->lock);
+                runnable = 0;
+            }
+        } else if (iport->reading) {
             gstypecode st;
 
             if (!pos) pos = iport->position;
@@ -373,10 +399,10 @@ ibio_read_process_main(void *p)
                         case ibio_acceptor_fail:
                             iport->reading = 0;
                             pos = 0;
+                            seg = 0;
                             ibio_iport_unlink_from_thread(iport->reading_thread, iport);
                             break;
                         case ibio_acceptor_symbol_bind: {
-                            struct ibio_channel_segment *seg;
                             gsvalue symk, eofk;
 
                             symk = constr->arguments[0];
@@ -417,31 +443,6 @@ ibio_read_process_main(void *p)
                                     }
                                     *pos++ = sym;
                                     seg->extent = pos;
-                                    if (seg->extent >= ibio_channel_segment_limit(seg)) {
-                                        struct ibio_channel_segment *newseg;
-
-                                        lock(&iport->channel->lock);
-                                        while (!(
-                                            iport->waiting_to_read
-                                            || api_thread_terminating(iport->reading_thread)
-                                            || iport->channel->last_accessed_seg == seg
-                                            || !iport->channel->last_accessed_seg
-                                        )) {
-                                            unlock(&iport->channel->lock);
-                                            unlock(&seg->lock);
-                                            unlock(&iport->lock);
-                                            sleep(1);
-                                            lock(&iport->lock);
-                                            lock(&seg->lock);
-                                            lock(&iport->channel->lock);
-                                        }
-                                        unlock(&iport->channel->lock);
-                                        newseg = ibio_alloc_channel_segment(iport->channel);
-                                        seg->next = newseg;
-                                        unlock(&seg->lock);
-                                        pos = newseg->items;
-                                        unlock(&newseg->lock);
-                                    }
                                     iport->reading = gsapply(constr->c.pos, symk, sym);
                                     unlock(&seg->lock);
                                 } else {
