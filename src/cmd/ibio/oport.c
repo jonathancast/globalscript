@@ -384,8 +384,6 @@ ibio_write_process_main(void *p)
         int gcres;
 
         if (buftime) nloops++;
-        lock(&oport->lock);
-        active = oport->active || oport->writing;
         runnable = 1;
 
         err = gsreserve_string_builder();
@@ -405,6 +403,8 @@ ibio_write_process_main(void *p)
             gs_sys_gc_done_with_collection();
         }
         gsfinish_string_builder(err);
+        lock(&oport->lock);
+        active = oport->active || oport->writing;
         if (active && (gcres < 0 || gs_sys_memory_exhausted())) {
             if (oport->writing) {
                 if (gcres < 0) {
