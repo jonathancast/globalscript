@@ -921,8 +921,6 @@ api_promise_dereference(gsvalue val)
     return res;
 }
 
-static int api_gc_trace_promise(struct gsstringbuilder *, struct api_promise **);
-
 static
 gsvalue api_promise_trace(struct gsstringbuilder *err, gsvalue v)
 {
