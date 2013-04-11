@@ -2,7 +2,7 @@
 
 	.data
 
-	.cast	_real.entry.in	_real.entry
+	.cast	_real.entry	_real.entry.in
 _real.entry	.closure	_real.entry_c
 
 _nl	.string	\n

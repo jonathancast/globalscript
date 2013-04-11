@@ -2,7 +2,7 @@
 
 	.data
 
-	.cast _in	_real.entry
+	.cast	_real.entry	_in
 _real.entry	.undefined	_bodytype
 
 	.type

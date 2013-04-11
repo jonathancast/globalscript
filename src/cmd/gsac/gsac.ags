@@ -2,7 +2,7 @@
 
 	.data
 
-	.cast	_ep.in	_real.entry
+	.cast	_real.entry	_ep.in
 _real.entry	.closure	_real.entry_c
 
 _args.parse	.closure	_args.parse_c	_args.parse_ty

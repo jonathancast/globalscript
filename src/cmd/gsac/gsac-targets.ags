@@ -2,7 +2,7 @@
 
 	.data
 
-	.cast	_ep.in	_real.entry
+	.cast	_real.entry	_ep.in
 _real.entry	.closure	_real.entry_c
 
 _print.targets.in.dir	.closure	_print.targets.in.dir_c	_print.targets.in.dir_ty

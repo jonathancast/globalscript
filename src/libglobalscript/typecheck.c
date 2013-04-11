@@ -842,14 +842,13 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         struct gstype *src_type;
         struct gsbc_coercion_type *coercion_type;
 
-        coercion_type = gssymtable_get_coercion_type(symtable, pdata->arguments[0]);
-        if (!coercion_type)
-            gsfatal("%P: Couldn't find type of coercion %y", pdata->pos, pdata->arguments[0])
-        ;
+        src_type = gssymtable_get_data_type(symtable, pdata->arguments[0]);
+        if (!src_type) gsfatal(UNIMPL("%P: Couldn't find type of %y"), pdata->pos, pdata->arguments[0]);
 
-        src_type = gssymtable_get_data_type(symtable, pdata->arguments[1]);
-        if (!src_type)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Couldn't find type of %s", pdata->pos, pdata->arguments[1]->name);
+        coercion_type = gssymtable_get_coercion_type(symtable, pdata->arguments[1]);
+        if (!coercion_type)
+            gsfatal("%P: Couldn't find type of coercion %y", pdata->pos, pdata->arguments[1])
+        ;
 
         gstypes_type_check_type_fail(pdata->pos, src_type, coercion_type->source);
 

@@ -2,7 +2,7 @@
 
 	.data
 
-	.cast	_ep.in	_real.entry
+	.cast	_real.entry	_ep.in
 _real.entry	.closure	_real.entry.c
 _hello	.string	Hello,\sworld!\n
 

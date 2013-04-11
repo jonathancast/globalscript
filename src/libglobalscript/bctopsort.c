@@ -433,10 +433,10 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
     } else if (gssymceq(directive, gssymcast, gssymdatadirective, ".cast")) {
         struct gsbc_item co, src;
 
-        co = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[0]);
-        gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, co, pend, pc);
-        src = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[1]);
+        src = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[0]);
         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, src, pend, pc);
+        co = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[1]);
+        gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, co, pend, pc);
     } else {
         gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(data item; directive = %s) next", __FILE__, __LINE__, item.v->pos.file->name, item.v->pos.lineno, item.v->directive->name);
     }

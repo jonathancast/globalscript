@@ -207,10 +207,8 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
     } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
         gsvalue res;
 
-        res = gssymtable_get_data(symtable, p->arguments[1]);
-        if (!res)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Can't find cast referent %s", p->pos, p->arguments[1]->name)
-        ;
+        res = gssymtable_get_data(symtable, p->arguments[0]);
+        if (!res) gsfatal(UNIMPL("%P: Can't find cast referent %y"), p->pos, p->arguments[0]);
         *psection = gsbc_indir;
         *pindir = res;
     } else {

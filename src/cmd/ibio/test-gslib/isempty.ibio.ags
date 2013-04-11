@@ -2,7 +2,7 @@
 
 	.data
 
-	.cast	_ep.in	_ep
+	.cast	_ep	_ep.in
 _ep	.closure	_ep_c
 _empty	.string	empty\n
 _not.empty	.string	not\sempty\n

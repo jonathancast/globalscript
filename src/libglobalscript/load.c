@@ -467,13 +467,13 @@ gsparse_data_item(struct gsparse_input_pos *pos, int is_ags, gsparsedfile *parse
         ;
     } else if (gssymceq(parsedline->directive, gssymcast, gssymdatadirective, ".cast")) {
         if (numfields < 2+1)
-            gsfatal("%s:%d: Missing coercion to apply", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
-        if (numfields < 2+2)
             gsfatal("%s:%d: Missing target of coercion", pos->real_filename, pos->real_lineno)
         ;
-        parsedline->arguments[1] = gsintern_string(gssymdatalable, fields[2+1]);
+        parsedline->arguments[0] = gsintern_string(gssymdatalable, fields[2+0]);
+        if (numfields < 2+2)
+            gsfatal("%s:%d: Missing coercion to apply", pos->real_filename, pos->real_lineno)
+        ;
+        parsedline->arguments[1] = gsintern_string(gssymcoercionlable, fields[2+1]);
         if (numfields > 2+2)
             gsfatal("%s:%d: Too many arguments to .cast; I know about the coercion to apply and the data item to cast", pos->real_filename, pos->real_lineno)
         ;
