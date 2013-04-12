@@ -53,6 +53,8 @@ ace_init()
     return 0;
 }
 
+static int ace_find_thread(int *, vlong *, vlong *, vlong *, struct ace_thread **);
+
 static void ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
 static void ace_failure_thread(struct ace_thread *, struct gsimplementation_failure *);
@@ -84,7 +86,7 @@ static
 void
 ace_thread_pool_main(void *p)
 {
-    int tid, last_tid;
+    int tid;
     int nwork;
     vlong outer_loops, numthreads_total, num_instrs, num_blocked, num_blocked_threads;
     vlong start_time, end_time, finding_thread_time, finding_thread_start_time;
@@ -97,96 +99,8 @@ ace_thread_pool_main(void *p)
         struct ace_thread *thread;
         outer_loops++;
 
-
-        last_tid = tid;
-        finding_thread_start_time = nsec();
-        do {
-            if (gs_sys_gc_allow_collection(0) < 0) goto no_clients;
-            tid = (tid + 1) % NUM_ACE_THREADS;
-
-            lock(&ace_thread_queue->lock);
-                if (ace_thread_queue->refcount <= 0) {
-                    unlock(&ace_thread_queue->lock);
-                    goto no_clients;
-                }
-                thread = ace_thread_queue->threads[tid];
-            unlock(&ace_thread_queue->lock);
-
-            if (thread) {
-                numthreads_total++;
-                lock(&thread->lock);
-                switch (thread->state) {
-                    case ace_thread_lprim_blocked: {
-                        thread->st.lprim_blocked.on->resume(thread, thread->st.lprim_blocked.at, thread->st.lprim_blocked.on);
-                        if (thread->state != ace_thread_running) {
-                            unlock(&thread->lock);
-                            thread = 0;
-                        }
-                        break;
-                    }
-                    case ace_thread_blocked: {
-                        gstypecode st;
-
-                        num_blocked++;
-                    again:
-                        st = GS_SLOW_EVALUATE(thread->st.blocked.on);
-
-                        switch (st) {
-                            case gstystack:
-                                num_blocked_threads++;
-                            case gstyblocked:
-                                break;
-                            case gstyindir:
-                                thread->st.blocked.on = GS_REMOVE_INDIRECTION(thread->st.blocked.on);
-                                goto again;
-                                break;
-                            case gstywhnf: {
-                                ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
-                                break;
-                            }
-                            case gstyerr: {
-                                ace_error_thread(thread, (struct gserror *)thread->st.blocked.on);
-                                break;
-                            }
-                            case gstyimplerr: {
-                                ace_failure_thread(thread, (struct gsimplementation_failure *)thread->st.blocked.on);
-                                break;
-                            }
-                            case gstyunboxed: {
-                                ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
-                                break;
-                            }
-                            case gstyeoothreads: {
-                                ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter: out of threads");
-                                break;
-                            }
-                            default:
-                                ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter (st = %d)", st);
-                                break;
-                        }
-                        if (thread->state != ace_thread_running) {
-                            unlock(&thread->lock);
-                            thread = 0;
-                        }
-                        break;
-                    }
-                    case ace_thread_running:
-                        break;
-                    case ace_thread_finished:
-                        unlock(&thread->lock);
-                        thread = 0;
-                        break;
-                    default:
-                        ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "ace_thread_pool_main: state %d", thread->state);
-                        unlock(&thread->lock);
-                        thread = 0;
-                        break;
-                }
-            }
-            if (!thread && tid == last_tid)
-                sleep(1)
-            ;
-        } while (!thread);
+        finding_thread_start_time = gsflag_stat_collection ? nsec() : 0;
+        if (ace_find_thread(&tid, &numthreads_total, &num_blocked, &num_blocked_threads, &thread) < 0) goto no_clients;
         if (gsflag_stat_collection) finding_thread_time += nsec() - finding_thread_start_time;
 
         nwork = 0;
@@ -280,6 +194,107 @@ no_clients:
         fprint(2, "ACE Finding thread time: %llds %lldms\n", finding_thread_time / 1000 / 1000 / 1000, (finding_thread_time / 1000 / 1000) % 1000);
         fprint(2, "Avg unit of work: %gμs\n", (double)(end_time - start_time) / numthreads_total / 1000);
     }
+}
+
+int
+ace_find_thread(int *ptid, vlong *pnumthreads_total, vlong *pnum_blocked, vlong *pnum_blocked_threads, struct ace_thread **pthread)
+{
+    struct ace_thread *thread;
+    int last_tid;
+
+    last_tid = *ptid;
+    thread = 0;
+    do {
+        if (gs_sys_gc_allow_collection(0) < 0) return -1;
+        *ptid = (*ptid + 1) % NUM_ACE_THREADS;
+
+        lock(&ace_thread_queue->lock);
+            if (ace_thread_queue->refcount <= 0) {
+                unlock(&ace_thread_queue->lock);
+                return -1;
+            }
+            thread = ace_thread_queue->threads[*ptid];
+        unlock(&ace_thread_queue->lock);
+
+        if (thread) {
+            (*pnumthreads_total)++;
+            lock(&thread->lock);
+            switch (thread->state) {
+                case ace_thread_lprim_blocked: {
+                    thread->st.lprim_blocked.on->resume(thread, thread->st.lprim_blocked.at, thread->st.lprim_blocked.on);
+                    if (thread->state != ace_thread_running) {
+                        unlock(&thread->lock);
+                        thread = 0;
+                    }
+                    break;
+                }
+                case ace_thread_blocked: {
+                    gstypecode st;
+
+                    (*pnum_blocked)++;
+                again:
+                    st = GS_SLOW_EVALUATE(thread->st.blocked.on);
+
+                    switch (st) {
+                        case gstystack:
+                            (*pnum_blocked_threads)++;
+                        case gstyblocked:
+                            break;
+                        case gstyindir:
+                            thread->st.blocked.on = GS_REMOVE_INDIRECTION(thread->st.blocked.on);
+                            goto again;
+                            break;
+                        case gstywhnf: {
+                            ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
+                            break;
+                        }
+                        case gstyerr: {
+                            ace_error_thread(thread, (struct gserror *)thread->st.blocked.on);
+                            break;
+                        }
+                        case gstyimplerr: {
+                            ace_failure_thread(thread, (struct gsimplementation_failure *)thread->st.blocked.on);
+                            break;
+                        }
+                        case gstyunboxed: {
+                            ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
+                            break;
+                        }
+                        case gstyeoothreads: {
+                            ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter: out of threads");
+                            break;
+                        }
+                        default:
+                            ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter (st = %d)", st);
+                            break;
+                    }
+                    if (thread->state != ace_thread_running) {
+                        unlock(&thread->lock);
+                        thread = 0;
+                    }
+                    break;
+                }
+                case ace_thread_running:
+                    break;
+                case ace_thread_finished:
+                    unlock(&thread->lock);
+                    thread = 0;
+                    break;
+                default:
+                    ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "ace_thread_pool_main: state %d", thread->state);
+                    unlock(&thread->lock);
+                    thread = 0;
+                    break;
+            }
+        }
+        if (!thread && *ptid == last_tid)
+            sleep(1)
+        ;
+    } while (!thread);
+
+    *pthread = thread;
+
+    return 0;
 }
 
 int
