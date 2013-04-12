@@ -422,7 +422,7 @@ ibio_write_process_main(void *p)
             switch (st) {
                 case gstystack:
                     runnable = 0;
-                    if (nloops > 1024) {
+                    if (nloops > 1024 && nsec() - buftime > 1000 * 1000) {
                         api_thread_post_unimpl(oport->writing_thread, __FILE__, __LINE__, "ibio_write_process_main: check if we should flush buffer");
                         active = oport->active = 0;
                         oport->writing = oport->writing_symbol = 0;
