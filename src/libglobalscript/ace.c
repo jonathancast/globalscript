@@ -1640,6 +1640,19 @@ ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
                 p = (uchar*)app + sizeof(*app) + app->numargs * sizeof(gsvalue);
                 continue;
             }
+            case gsbc_cont_strict: {
+                struct gsbc_cont_strict *strict = (struct gsbc_cont_strict *)cont;
+
+                if (gs_gc_trace_bco(err, &strict->code) < 0) return -1;
+
+                for (i = 0; i < strict->numfvs; i++)
+                    if (GS_GC_TRACE(err, &strict->fvs[i]) < 0) return -1
+                ;
+
+                p = (uchar*)strict + sizeof(*strict) + strict->numfvs * sizeof(gsvalue);
+
+                continue;
+            }
             case gsbc_cont_force: {
                 struct gsbc_cont_force *force = (struct gsbc_cont_force *)cont;
 
