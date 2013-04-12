@@ -86,6 +86,7 @@ static void ace_lprim(struct ace_thread *);
 
 struct ace_thread_pool_stats {
     vlong numthreads_total, num_blocked, num_blocked_threads;
+    vlong checking_thread_time;
 };
 
 static
@@ -100,7 +101,7 @@ ace_thread_pool_main(void *p)
 
     outer_loops = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = 0;
     start_time = nsec();
-    finding_thread_time = 0;
+    finding_thread_time = stats.checking_thread_time = 0;
     tid = 0;
     for (;;) {
         struct ace_thread *thread;
@@ -199,6 +200,7 @@ no_clients:
         fprint(2, "ACE threads: %2.2g%% instructions, %2.2g%% blocked, %2.2g%% blocked on threads\n", ((double)num_instrs / stats.numthreads_total) * 100, ((double)stats.num_blocked / stats.numthreads_total) * 100, ((double)stats.num_blocked_threads / stats.numthreads_total) * 100);
         fprint(2, "ACE Run time: %llds %lldms\n", (end_time - start_time) / 1000 / 1000 / 1000, ((end_time - start_time) / 1000 / 1000) % 1000);
         fprint(2, "ACE Finding thread time: %llds %lldms\n", finding_thread_time / 1000 / 1000 / 1000, (finding_thread_time / 1000 / 1000) % 1000);
+        fprint(2, "ACE Checking thread state time: %llds %lldms\n", stats.checking_thread_time / 1000 / 1000 / 1000, (stats.checking_thread_time / 1000 / 1000) % 1000);
         fprint(2, "Avg unit of work: %gμs\n", (double)(end_time - start_time) / stats.numthreads_total / 1000);
     }
 }
@@ -208,6 +210,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int *ptid, struct ace_threa
 {
     struct ace_thread *thread;
     int last_tid;
+    vlong checking_thread_start_time;
 
     last_tid = *ptid;
     thread = 0;
@@ -224,6 +227,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int *ptid, struct ace_threa
         unlock(&ace_thread_queue->lock);
 
         if (thread) {
+            checking_thread_start_time = gsflag_stat_collection ? nsec() : 0;
             stats->numthreads_total++;
             lock(&thread->lock);
             switch (thread->state) {
@@ -293,6 +297,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int *ptid, struct ace_threa
                     thread = 0;
                     break;
             }
+            if (gsflag_stat_collection) stats->checking_thread_time += nsec() - checking_thread_start_time;
         }
         if (!thread && *ptid == last_tid)
             sleep(1)
