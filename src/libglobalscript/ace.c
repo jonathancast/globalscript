@@ -104,7 +104,6 @@ ace_thread_pool_main(void *p)
             if (gs_sys_gc_allow_collection(0) < 0) goto no_clients;
             tid = (tid + 1) % NUM_ACE_THREADS;
 
-            if (0) if (gsflag_stat_collection) gswarning("%s:%d: Locking for tid %d", __FILE__, __LINE__, tid);
             lock(&ace_thread_queue->lock);
                 if (ace_thread_queue->refcount <= 0) {
                     unlock(&ace_thread_queue->lock);
@@ -112,7 +111,6 @@ ace_thread_pool_main(void *p)
                 }
                 thread = ace_thread_queue->threads[tid];
             unlock(&ace_thread_queue->lock);
-            if (0) if (gsflag_stat_collection) gswarning("%s:%d: Un-locking for tid %d", __FILE__, __LINE__, tid);
 
             if (thread) {
                 numthreads_total++;
