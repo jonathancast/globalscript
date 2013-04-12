@@ -2824,13 +2824,31 @@ r	.record	col	natural.1	file	fn	line	natural.1
 
 _parser.pos.next.line_c	.expr
 parser.pos.t	.tygvar
+_parser.pos.next.line_k	.subcode
+pos	.larg	parser.pos.t
+	.force	_parser.pos.next.line_k
+	.enter	pos
+
+_parser.pos.next.line_k	.forcecont
+parser.pos.u	.tygvar
+_parser.pos.next.line_k2	.subcode
+natural.t.out	.cogvar
 natural.+	.gvar
 natural.1	.gvar
-pos	.larg	parser.pos.t
-fn	.lfield	file	pos
-line	.lfield	line	pos
-col	.lfield	col	pos
-line.1	.apply	natural.+	|	line	natural.1
+pos0	.karg	parser.pos.u
+fn	.field	file	pos0
+line	.field	line	pos0
+col	.field	col	pos0
+	.strict	_parser.pos.next.line_k2
+	.app	line	natural.1
+	.enter	natural.+
+
+_parser.pos.next.line_k2	.strictcont
+ibio.file.name.t	.tygvar
+natural.t	.tygvar
+natural.1	.gvar
+fn	.fv	ibio.file.name.t
+line.1	.karg	natural.t
 r	.record	col	natural.1	file	fn	line	line.1
 	.lift
 	.yield	r
