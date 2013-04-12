@@ -53,7 +53,9 @@ ace_init()
     return 0;
 }
 
-static int ace_find_thread(int *, vlong *, vlong *, vlong *, struct ace_thread **);
+struct ace_thread_pool_stats;
+
+static int ace_find_thread(struct ace_thread_pool_stats *, int *, struct ace_thread **);
 
 static void ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
@@ -82,16 +84,21 @@ static void ace_yield(struct ace_thread *);
 static void ace_ubprim(struct ace_thread *);
 static void ace_lprim(struct ace_thread *);
 
+struct ace_thread_pool_stats {
+    vlong numthreads_total, num_blocked, num_blocked_threads;
+};
+
 static
 void
 ace_thread_pool_main(void *p)
 {
     int tid;
     int nwork;
-    vlong outer_loops, numthreads_total, num_instrs, num_blocked, num_blocked_threads;
+    struct ace_thread_pool_stats stats;
+    vlong outer_loops, num_instrs;
     vlong start_time, end_time, finding_thread_time, finding_thread_start_time;
 
-    outer_loops = numthreads_total = num_instrs = num_blocked = num_blocked_threads = 0;
+    outer_loops = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = 0;
     start_time = nsec();
     finding_thread_time = 0;
     tid = 0;
@@ -100,7 +107,7 @@ ace_thread_pool_main(void *p)
         outer_loops++;
 
         finding_thread_start_time = gsflag_stat_collection ? nsec() : 0;
-        if (ace_find_thread(&tid, &numthreads_total, &num_blocked, &num_blocked_threads, &thread) < 0) goto no_clients;
+        if (ace_find_thread(&stats, &tid, &thread) < 0) goto no_clients;
         if (gsflag_stat_collection) finding_thread_time += nsec() - finding_thread_start_time;
 
         nwork = 0;
@@ -188,16 +195,16 @@ no_clients:
         fprint(2, "# ACE threads: %d\n", ace_thread_queue->numthreads);
         fprint(2, "Avg # instructions / ACE thread: %d\n", num_instrs / ace_thread_queue->numthreads);
         fprint(2, "# ACE outer loops: %lld\n", outer_loops);
-        fprint(2, "Avg # ACE threads: %02g\n", (double)numthreads_total / outer_loops);
-        fprint(2, "ACE threads: %2.2g%% instructions, %2.2g%% blocked, %2.2g%% blocked on threads\n", ((double)num_instrs / numthreads_total) * 100, ((double)num_blocked / numthreads_total) * 100, ((double)num_blocked_threads / numthreads_total) * 100);
+        fprint(2, "Avg # ACE threads: %02g\n", (double)stats.numthreads_total / outer_loops);
+        fprint(2, "ACE threads: %2.2g%% instructions, %2.2g%% blocked, %2.2g%% blocked on threads\n", ((double)num_instrs / stats.numthreads_total) * 100, ((double)stats.num_blocked / stats.numthreads_total) * 100, ((double)stats.num_blocked_threads / stats.numthreads_total) * 100);
         fprint(2, "ACE Run time: %llds %lldms\n", (end_time - start_time) / 1000 / 1000 / 1000, ((end_time - start_time) / 1000 / 1000) % 1000);
         fprint(2, "ACE Finding thread time: %llds %lldms\n", finding_thread_time / 1000 / 1000 / 1000, (finding_thread_time / 1000 / 1000) % 1000);
-        fprint(2, "Avg unit of work: %gμs\n", (double)(end_time - start_time) / numthreads_total / 1000);
+        fprint(2, "Avg unit of work: %gμs\n", (double)(end_time - start_time) / stats.numthreads_total / 1000);
     }
 }
 
 int
-ace_find_thread(int *ptid, vlong *pnumthreads_total, vlong *pnum_blocked, vlong *pnum_blocked_threads, struct ace_thread **pthread)
+ace_find_thread(struct ace_thread_pool_stats *stats, int *ptid, struct ace_thread **pthread)
 {
     struct ace_thread *thread;
     int last_tid;
@@ -217,7 +224,7 @@ ace_find_thread(int *ptid, vlong *pnumthreads_total, vlong *pnum_blocked, vlong 
         unlock(&ace_thread_queue->lock);
 
         if (thread) {
-            (*pnumthreads_total)++;
+            stats->numthreads_total++;
             lock(&thread->lock);
             switch (thread->state) {
                 case ace_thread_lprim_blocked: {
@@ -231,13 +238,13 @@ ace_find_thread(int *ptid, vlong *pnumthreads_total, vlong *pnum_blocked, vlong 
                 case ace_thread_blocked: {
                     gstypecode st;
 
-                    (*pnum_blocked)++;
+                    stats->num_blocked++;
                 again:
                     st = GS_SLOW_EVALUATE(thread->st.blocked.on);
 
                     switch (st) {
                         case gstystack:
-                            (*pnum_blocked_threads)++;
+                            stats->num_blocked_threads++;
                         case gstyblocked:
                             break;
                         case gstyindir:
