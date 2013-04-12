@@ -1183,6 +1183,7 @@ gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
             gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_lifted_kind());
+        } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
             if (!cont_arg_type)

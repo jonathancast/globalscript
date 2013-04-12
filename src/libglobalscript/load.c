@@ -689,11 +689,12 @@ gsparse_strict_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
         } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_cont_arg(pos, parsedline, fields, n)) {
+        } else if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
         } else if (gsparse_cont_push_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
             return 0;
         } else {
-            gsfatal(UNIMPL("%s:%d: Unimplemented force continuation op %s"), pos->real_filename, pos->real_lineno, fields[1]);
+            gsfatal(UNIMPL("%s:%d: Unimplemented strict continuation op %s"), pos->real_filename, pos->real_lineno, fields[1]);
         }
     }
     if (n < 0)
