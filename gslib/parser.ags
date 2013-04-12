@@ -240,13 +240,13 @@ s	.tyfv	*
 string.ty	.tylet	list.t	rune.t
 list.string.ty	.tylet	list.t	string.ty
 parser.ty	.tylet	parser.prim.t	s	α
+_parser.parse_work_symbol_:_right_k	.subcode
 either.left	.gvar
 parser.err.message.failure	.gvar
 bool.false	.gvar
 list.<>	.gvar
 _parser.parse_work_symbol_:_unexpected_prefix.s	.gvar
 _parser.parse_work_expecting	.gvar
-_parser.parse_work	.gvar
 adv	.fv	parser.advance.t	s
 pr	.fv	print.t	s
 pos	.fv	parser.pos.t
@@ -265,9 +265,26 @@ err			.apply	parser.err.message.failure	|	pos	bool.false	msg
 			.enter	either.left	parser.err.t	α
 		.case	right
 p		.fkarg	0	parser.prim.t	s	α
-pos1			.apply	adv	|	c	pos
-			.app	adv	pr	pos1	p	s1
-			.enter	_parser.parse_work	s	α
+			.strict	_parser.parse_work_symbol_:_right_k
+			.app	c	pos
+			.enter	adv
+
+_parser.parse_work_symbol_:_right_k	.strictcont
+parser.advance.t	.tygvar
+print.t	.tygvar
+list.t	.tygvar
+parser.prim.t	.tygvar
+parser.pos.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+_parser.parse_work	.gvar
+adv	.fv	parser.advance.t	s
+pr	.fv	print.t	s
+s1	.fv	list.t	s
+p	.fv	parser.prim.t	s	α
+pos1	.karg	parser.pos.t
+	.app	adv	pr	pos1	p	s1
+	.enter	_parser.parse_work	s	α
 
 _parser.parse_work_unit.plus_k	.forcecont
 parser.advance.t	.tygvar
