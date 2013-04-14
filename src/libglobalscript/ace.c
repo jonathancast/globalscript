@@ -314,6 +314,7 @@ ace_thread_cleanup(struct gsstringbuilder *err)
 {
     struct ace_thread_queue *new_queue;
     int i;
+    int srcthread, destthread;
 
     new_queue = gs_sys_global_block_suballoc(&ace_thread_queue_info, sizeof(*ace_thread_queue));
 
@@ -327,15 +328,18 @@ ace_thread_cleanup(struct gsstringbuilder *err)
 
     ace_thread_queue = new_queue;
 
-    for (i = 0; i < NUM_ACE_THREADS; i++) {
-        if (ace_thread_queue->threads[i] && gs_sys_block_in_gc_from_space(ace_thread_queue->threads[i])) {
-            if (ace_thread_queue->threads[i]->state == ace_thread_gcforward) {
-                ace_thread_queue->threads[i] = ace_thread_queue->threads[i]->st.forward.dest;
-            } else {
-                ace_thread_queue->threads[i] = 0;
-            }
+    destthread = 0;
+    for (srcthread = 0; srcthread < NUM_ACE_THREADS; srcthread++) {
+        if (ace_thread_queue->threads[srcthread]) {
+            if (!gs_sys_block_in_gc_from_space(ace_thread_queue->threads[srcthread]))
+                ace_thread_queue->threads[destthread++] = ace_thread_queue->threads[srcthread]
+            ; else if (ace_thread_queue->threads[srcthread]->state == ace_thread_gcforward)
+                ace_thread_queue->threads[destthread++] = ace_thread_queue->threads[srcthread]->st.forward.dest
+            ;
         }
     }
+
+    for (; destthread < NUM_ACE_THREADS; destthread++) ace_thread_queue->threads[destthread] = 0;
 
     return 0;
 }
