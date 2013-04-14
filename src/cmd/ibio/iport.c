@@ -1034,10 +1034,9 @@ ibio_thread_to_iport_link_trace(struct gsstringbuilder *err, struct ibio_thread_
     memcpy(newlink, *plink, sizeof(*newlink));
 
     *plink = newlink;
-    if (newlink->next) {
-        gsstring_builder_print(err, UNIMPL("ibio_thread_to_iport_link_trace: evacuate next"));
-        return -1;
-    }
+    if (newlink->next && gs_sys_block_in_gc_from_space(newlink->next))
+        if (ibio_thread_to_iport_link_trace(err, &newlink->next) < 0) return -1
+    ;
 
     gcv = (gsvalue)newlink->iport;
     if (GS_GC_TRACE(err, &gcv) < 0) return -1;
