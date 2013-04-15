@@ -1087,7 +1087,7 @@ ace_error_thread(struct ace_thread *thread, struct gserror *err)
 {
     struct gsheap_item *hp;
 
-    hp = (struct gsheap_item *)thread->base;
+    hp = thread->base;
 
     lock(&hp->lock);
     gsupdate_heap(hp, (gsvalue)err);
@@ -1129,7 +1129,7 @@ ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *e
 {
     struct gsheap_item *hp;
 
-    hp = (struct gsheap_item *)thread->base;
+    hp = thread->base;
 
     lock(&hp->lock);
     gsupdate_heap(hp, (gsvalue)err);
@@ -1151,7 +1151,7 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
     if ((uchar*)thread->stacktop >= (uchar*)thread->stackbot) {
         struct gsheap_item *hp;
 
-        hp = (struct gsheap_item *)thread->base;
+        hp = thread->base;
 
         lock(&hp->lock);
         gsupdate_heap(hp, v);
@@ -1475,7 +1475,7 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
 {
     int i;
 
-    thread->base = (gsvalue)hp;
+    thread->base = hp;
 
     switch (hp->type) {
         case gsclosure: {
@@ -1663,7 +1663,11 @@ ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
     thread->st.forward.dest = newthread;
 
     memset(&newthread->lock, 0, sizeof(newthread->lock));
-    if (GS_GC_TRACE(err, &newthread->base) < 0) return -1;
+    if (newthread->base->type != gsgcforward) {
+        gsstring_builder_print(err, "%P: Traced thread with base of type %d", newthread->base->pos, newthread->base->type);
+        return -1;
+    }
+    newthread->base = (struct gsheap_item *)((struct gsgcforward *)newthread->base)->dest;
 
     switch (newthread->state) {
         case ace_thread_running: {
