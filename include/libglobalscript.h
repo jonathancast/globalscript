@@ -251,7 +251,6 @@ typedef enum {
     gstyunboxed,
     gstyenosys = 64,
     gstyeoothreads,
-    gstyeoostack,
 } gstypecode;
 
 /* Define these yourself; these are your program's entry points */
