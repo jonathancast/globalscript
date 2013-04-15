@@ -2,12 +2,19 @@
 
 struct gsbc_cont {
     enum {
+        gsbc_cont_update,
         gsbc_cont_app,
         gsbc_cont_force,
         gsbc_cont_strict,
         gsbc_cont_ubanalyze,
     } node;
     struct gspos pos;
+};
+
+struct gsbc_cont_update {
+    struct gsbc_cont cont;
+    struct gsheap_item *dest;
+    struct gsbc_cont_update *next;
 };
 
 struct gsbc_cont_app {

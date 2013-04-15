@@ -352,9 +352,37 @@ ace_thread_cleanup(struct gsstringbuilder *err)
                 ace_thread_queue->threads[destthread]->tid = destthread;
                 destthread++;
             } else if (ace_thread_queue->threads[srcthread]->state == ace_thread_gcforward) {
-                ace_thread_queue->threads[destthread] = ace_thread_queue->threads[srcthread]->st.forward.dest;
+                struct ace_thread *thread;
+                struct gsbc_cont_update *upupdate, *update, *downupdate;
+
+                thread = ace_thread_queue->threads[destthread] = ace_thread_queue->threads[srcthread]->st.forward.dest;
                 ace_thread_queue->threads[destthread]->tid = destthread;
                 destthread++;
+
+                upupdate = 0;
+                for (update = thread->cureval; update; update = downupdate) {
+                    downupdate = update->next;
+                    update->next = upupdate;
+                    upupdate = update;
+                }
+
+                downupdate = 0;
+                for (update = upupdate; update; update = upupdate) {
+                    upupdate = update->next;
+                    update->next = downupdate;
+                    if (!gs_sys_block_in_gc_from_space(update->dest)) {
+                        gsstring_builder_print(err, UNIMPL("%P: Trace update with live dest"), update->cont.pos);
+                        return -1;
+                    } else if (update->dest->type == gsgcforward) {
+                        update->dest = (struct gsheap_item *)((struct gsgcforward *)update->dest)->dest;
+                    } else {
+                        gsstring_builder_print(err, UNIMPL("%P: Trace update with garbage dest"), update->cont.pos);
+                        return -1;
+                    }
+                    downupdate = update;
+                }
+
+                thread->cureval = downupdate;
             }
         }
     }
@@ -1086,12 +1114,15 @@ void
 ace_error_thread(struct ace_thread *thread, struct gserror *err)
 {
     struct gsheap_item *hp;
+    struct gsbc_cont_update *update;
 
-    hp = thread->base;
+    for (update = thread->cureval; update; update = update->next) {
+        hp = update->dest;
 
-    lock(&hp->lock);
-    gsupdate_heap(hp, (gsvalue)err);
-    unlock(&hp->lock);
+        lock(&hp->lock);
+        gsupdate_heap(hp, (gsvalue)err);
+        unlock(&hp->lock);
+    }
 
     ace_remove_thread(thread);
 }
@@ -1127,19 +1158,23 @@ static
 void
 ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *err)
 {
+    struct gsbc_cont_update *update;
     struct gsheap_item *hp;
 
-    hp = thread->base;
+    for (update = thread->cureval; update; update = update->next) {
+        hp = update->dest;
 
-    lock(&hp->lock);
-    gsupdate_heap(hp, (gsvalue)err);
-    unlock(&hp->lock);
+        lock(&hp->lock);
+        gsupdate_heap(hp, (gsvalue)err);
+        unlock(&hp->lock);
+    }
 
     ace_remove_thread(thread);
 }
 
 static void *ace_set_registers_from_closure(struct ace_thread *, struct gsclosure *);
 
+static void ace_return_to_update(struct ace_thread *, struct gsbc_cont *, gsvalue);
 static void ace_return_to_app(struct ace_thread *, struct gsbc_cont *, gsvalue);
 static void ace_return_to_force(struct ace_thread *, struct gsbc_cont *, gsvalue);
 static void ace_return_to_strict(struct ace_thread *, struct gsbc_cont *, gsvalue);
@@ -1148,35 +1183,47 @@ static
 void
 ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
 {
-    if ((uchar*)thread->stacktop >= (uchar*)thread->stackbot) {
-        struct gsheap_item *hp;
+    struct gsbc_cont *cont;
 
-        hp = thread->base;
+    cont = (struct gsbc_cont *)thread->stacktop;
+    switch (cont->node) {
+        case gsbc_cont_update:
+            ace_return_to_update(thread, cont, v);
+            return;
+        case gsbc_cont_app:
+            ace_return_to_app(thread, cont, v);
+            return;
+        case gsbc_cont_force:
+            ace_return_to_force(thread, cont, v);
+            return;
+        case gsbc_cont_strict:
+            ace_return_to_strict(thread, cont, v);
+            return;
+        default:
+            ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Return to %d continuations", cont->node);
+            return;
+    }
+}
 
-        lock(&hp->lock);
-        gsupdate_heap(hp, v);
-        unlock(&hp->lock);
+void
+ace_return_to_update(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
+{
+    struct gsbc_cont_update *update;
+    struct gsheap_item *hp;
 
-        ace_remove_thread(thread);
-        return;
+    update = (struct gsbc_cont_update *)cont;
+    hp = update->dest;
+
+    lock(&hp->lock);
+    gsupdate_heap(hp, v);
+    unlock(&hp->lock);
+
+    if (update->next) {
+        thread->cureval = update->next;
+        thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_update);
+        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Return to update frames above other update frames");
     } else {
-        struct gsbc_cont *cont;
-
-        cont = (struct gsbc_cont *)thread->stacktop;
-        switch (cont->node) {
-            case gsbc_cont_app:
-                ace_return_to_app(thread, cont, v);
-                return;
-            case gsbc_cont_force:
-                ace_return_to_force(thread, cont, v);
-                return;
-            case gsbc_cont_strict:
-                ace_return_to_strict(thread, cont, v);
-                return;
-            default:
-                ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Return to %d continuations", cont->node);
-                return;
-        }
+        ace_remove_thread(thread);
     }
 }
 
@@ -1474,8 +1521,20 @@ int
 ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
 {
     int i;
+    struct gsbc_cont *cont;
+    struct gsbc_cont_update *updatecont;
 
-    thread->base = hp;
+    cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont_update));
+    updatecont = (struct gsbc_cont_update *)cont;
+    if (!cont) {
+        gsupdate_heap(hp, (gsvalue)gsunimpl(__FILE__, __LINE__, hp->pos, "Out of stack space allocating update continuation"));
+        return -1;
+    }
+    cont->node = gsbc_cont_update;
+    cont->pos = hp->pos;
+    updatecont->dest = hp;
+    updatecont->next = 0;
+    thread->cureval = updatecont;
 
     switch (hp->type) {
         case gsclosure: {
@@ -1507,7 +1566,6 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
         }
         case gsapplication: {
             struct gsapplication *app;
-            struct gsbc_cont *cont;
             struct gsbc_cont_app *appcont;
 
             app = (struct gsapplication *)hp;
@@ -1630,6 +1688,7 @@ ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
 {
     struct ace_thread *thread, *newthread;
     void *stackbase, *stackbot, *stacklimit;
+    struct gsbc_cont_update *update;
     void *p;
     ulong stacksize;
     gsvalue gctemp;
@@ -1659,15 +1718,19 @@ ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
     newthread->stacklimit = stacklimit;
     memcpy(newthread->stacktop, thread->stacktop, stacksize);
 
+    /* ↓ §ccode{(uchar*)newthread->stackbot - (uchar*)thread->cureval = (uchar*)thread->stackbot - (uchar*)thread->cureval} */
+    newthread->cureval = (struct gsbc_cont_update *)((uchar*)newthread->stackbot - ((uchar*)thread->stackbot - (uchar*)thread->cureval));
+    for (update = newthread->cureval; update; update = update->next) {
+        if (update->next) {
+            gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: copy next pointer in update frames"));
+            return -1;
+        }
+    }
+
     thread->state = ace_thread_gcforward;
     thread->st.forward.dest = newthread;
 
     memset(&newthread->lock, 0, sizeof(newthread->lock));
-    if (newthread->base->type != gsgcforward) {
-        gsstring_builder_print(err, "%P: Traced thread with base of type %d", newthread->base->pos, newthread->base->type);
-        return -1;
-    }
-    newthread->base = (struct gsheap_item *)((struct gsgcforward *)newthread->base)->dest;
 
     switch (newthread->state) {
         case ace_thread_running: {
@@ -1708,6 +1771,12 @@ ace_thread_gc_trace(struct gsstringbuilder *err, struct ace_thread **ppthread)
         if (gs_gc_trace_pos(err, &cont->pos) < 0) return -1;
 
         switch (cont->node) {
+            case gsbc_cont_update: {
+                update = (struct gsbc_cont_update *)cont;
+
+                p = (uchar*)update + sizeof(*update);
+                continue;
+            }
             case gsbc_cont_app: {
                 struct gsbc_cont_app *app = (struct gsbc_cont_app *)cont;
 

@@ -20,7 +20,7 @@ struct ace_thread *ace_thread_alloc(void);
 struct ace_thread {
     Lock lock;
     int tid;
-    struct gsheap_item *base;
+    struct gsbc_cont_update *cureval;
     enum {
         ace_thread_running,
         ace_thread_blocked,
