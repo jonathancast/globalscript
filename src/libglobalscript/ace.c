@@ -258,7 +258,6 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int *plast_tid, int tid, st
             case ace_thread_blocked: {
                 gstypecode st;
 
-                stats->num_blocked++;
             again:
                 st = GS_SLOW_EVALUATE(thread->st.blocked.on);
 
@@ -266,6 +265,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int *plast_tid, int tid, st
                     case gstystack:
                         stats->num_blocked_threads++;
                     case gstyblocked:
+                        stats->num_blocked++;
                         break;
                     case gstyindir:
                         thread->st.blocked.on = GS_REMOVE_INDIRECTION(thread->st.blocked.on);
