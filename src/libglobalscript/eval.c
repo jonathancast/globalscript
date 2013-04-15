@@ -269,7 +269,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
 
             memset(&newhp->lock, 0, sizeof(newhp->lock));
             if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
-            if (newev->thread && gs_sys_block_in_gc_from_space(newev->thread) && ace_thread_gc_trace(err, &newev->thread) < 0) return 0;
+            if (newev->update && gs_sys_block_in_gc_from_space(newev->update) && ace_eval_gc_trace(err, &newev->update) < 0) return 0;
 
             break;
         }

@@ -329,7 +329,7 @@ struct gsapplication {
 
 struct gseval {
     struct gsheap_item hp;
-    struct ace_thread *thread;
+    struct gsbc_cont_update *update;
 };
 
 struct gsindirection {
@@ -422,6 +422,8 @@ struct gseprim {
 };
 
 /* §section Primitives */
+
+struct ace_thread;
 
 typedef int gsprim_handler(struct ace_thread *, struct gspos, int, gsvalue *, gsvalue *);
 typedef int gsubprim_handler(struct ace_thread *, struct gspos, int, gsvalue *);

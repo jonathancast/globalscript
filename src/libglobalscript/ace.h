@@ -49,8 +49,9 @@ struct ace_thread {
     struct gsbco *subexprs[MAX_NUM_REGISTERS];
     gsvalue regs[MAX_NUM_REGISTERS];
     void *stacklimit, *stacktop, *stackbot;
+    void *gc_evacuated_stackbot;
 };
 
 void ace_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 
-int ace_thread_gc_trace(struct gsstringbuilder *, struct ace_thread **);
+int ace_eval_gc_trace(struct gsstringbuilder *, struct gsbc_cont_update **);
