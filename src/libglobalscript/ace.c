@@ -1533,7 +1533,7 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
     cont->node = gsbc_cont_update;
     cont->pos = hp->pos;
     updatecont->dest = hp;
-    updatecont->next = 0;
+    updatecont->next = thread->cureval;
     thread->cureval = updatecont;
 
     switch (hp->type) {
@@ -1679,6 +1679,7 @@ ace_thread_alloc()
     thread->stackbot = stackbot;
     thread->stacktop = stackbot;
     thread->stacklimit = (uchar*)thread + sizeof(*thread);
+    thread->cureval = 0;
 
     return thread;
 }
