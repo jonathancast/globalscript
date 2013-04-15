@@ -189,7 +189,14 @@ ace_thread_pool_main(void *p)
 
         if (thread) unlock(&thread->lock);
 
-        tid = (tid + 1) % NUM_ACE_THREADS;
+        lock(&ace_thread_queue->lock);
+            if (ace_thread_queue->num_active_threads) {
+                tid = (tid + 1) % ace_thread_queue->num_active_threads;
+                if (last_tid >= ace_thread_queue->num_active_threads) last_tid = 0;
+            } else {
+                tid = last_tid = 0;
+            }
+        unlock(&ace_thread_queue->lock);
     }
 no_clients:
     end_time = nsec();
