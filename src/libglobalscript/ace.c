@@ -914,7 +914,6 @@ ace_enter(struct ace_thread *thread)
             switch (st) {
                 case gstythunk:
                     st = ace_start_evaluation(prog);
-                    gsheap_unlock(hp);
                     break;
                 case gstystack:
                 case gstywhnf:
@@ -1482,7 +1481,6 @@ ace_start_evaluation(gsvalue val)
 {
     struct ace_thread *thread;
     struct gsheap_item *hp;
-    struct gseval *ev;
 
     hp = (struct gsheap_item *)val;
 
@@ -1492,10 +1490,6 @@ ace_start_evaluation(gsvalue val)
         unlock(&thread->lock);
         return gstyindir;
     }
-
-    ev = (struct gseval *)hp;
-    hp->type = gseval;
-    ev->thread = thread;
 
     unlock(&thread->lock);
 
@@ -1521,6 +1515,7 @@ int
 ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
 {
     int i;
+    struct gseval *ev;
     struct gsbc_cont *cont;
     struct gsbc_cont_update *updatecont;
 
@@ -1555,6 +1550,12 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
                     thread->state = ace_thread_running;
                     thread->st.running.bco = cl->code;
                     thread->st.running.ip = instr;
+
+                    ev = (struct gseval *)hp;
+                    hp->type = gseval;
+                    ev->thread = thread;
+                    gsheap_unlock(hp);
+
                     break;
                 }
                 default:
@@ -1567,6 +1568,8 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
         case gsapplication: {
             struct gsapplication *app;
             struct gsbc_cont_app *appcont;
+            gsvalue fun;
+            struct gspos pos;
 
             app = (struct gsapplication *)hp;
 
@@ -1584,9 +1587,17 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
                 appcont->arguments[i] = app->arguments[i];
             }
 
+            fun = app->fun;
+            pos = hp->pos;
+
+            ev = (struct gseval *)hp;
+            hp->type = gseval;
+            ev->thread = thread;
+            gsheap_unlock(hp);
+
             thread->state = ace_thread_blocked;
-            thread->st.blocked.on = app->fun;
-            thread->st.blocked.at = app->hp.pos;
+            thread->st.blocked.on = fun;
+            thread->st.blocked.at = pos;
 
             return 0;
         }

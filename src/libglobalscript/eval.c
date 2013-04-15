@@ -53,14 +53,14 @@ gsheapeval(gsvalue val)
         case gstystack:
         case gstywhnf:
         case gstyindir:
+            gsheap_unlock(hp);
             break;
         default:
+            gsheap_unlock(hp);
             gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(%x; state = %d)", val, res);
             res = gstyenosys;
             break;
     }
-
-    gsheap_unlock(hp);
 
     return res;
 }
