@@ -11,6 +11,7 @@ struct ace_thread_queue {
     Lock lock;
     int refcount;
     vlong numthreads;
+    int num_active_threads;
     struct ace_thread *threads[NUM_ACE_THREADS];
 };
 

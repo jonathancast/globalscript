@@ -331,13 +331,18 @@ ace_thread_cleanup(struct gsstringbuilder *err)
     destthread = 0;
     for (srcthread = 0; srcthread < NUM_ACE_THREADS; srcthread++) {
         if (ace_thread_queue->threads[srcthread]) {
-            if (!gs_sys_block_in_gc_from_space(ace_thread_queue->threads[srcthread]))
-                ace_thread_queue->threads[destthread++] = ace_thread_queue->threads[srcthread]
-            ; else if (ace_thread_queue->threads[srcthread]->state == ace_thread_gcforward)
-                ace_thread_queue->threads[destthread++] = ace_thread_queue->threads[srcthread]->st.forward.dest
-            ;
+            if (!gs_sys_block_in_gc_from_space(ace_thread_queue->threads[srcthread])) {
+                ace_thread_queue->threads[destthread] = ace_thread_queue->threads[srcthread];
+                ace_thread_queue->threads[destthread]->tid = destthread;
+                destthread++;
+            } else if (ace_thread_queue->threads[srcthread]->state == ace_thread_gcforward) {
+                ace_thread_queue->threads[destthread] = ace_thread_queue->threads[srcthread]->st.forward.dest;
+                ace_thread_queue->threads[destthread]->tid = destthread;
+                destthread++;
+            }
         }
     }
+    ace_thread_queue->num_active_threads = destthread;
 
     for (; destthread < NUM_ACE_THREADS; destthread++) ace_thread_queue->threads[destthread] = 0;
 
@@ -1373,7 +1378,18 @@ ace_remove_thread(struct ace_thread *thread)
 {
     thread->state = ace_thread_finished;
     lock(&ace_thread_queue->lock);
-    ace_thread_queue->threads[thread->tid] = 0;
+    ace_thread_queue->num_active_threads--;
+    if (ace_thread_queue->num_active_threads > thread->tid) {
+        int last_tid, cur_tid;
+
+        last_tid = ace_thread_queue->num_active_threads;
+        cur_tid = thread->tid;
+        ace_thread_queue->threads[cur_tid] = ace_thread_queue->threads[last_tid];
+        ace_thread_queue->threads[last_tid] = 0;
+        ace_thread_queue->threads[cur_tid]->tid = cur_tid;
+    } else {
+        ace_thread_queue->threads[thread->tid] = 0;
+    }
     unlock(&ace_thread_queue->lock);
 }
 
@@ -1479,18 +1495,17 @@ ace_start_evaluation(gsvalue val)
     unlock(&thread->lock);
 
     lock(&ace_thread_queue->lock);
-    for (i = 0; i < NUM_ACE_THREADS; i++) {
-        if (!ace_thread_queue->threads[i]) {
-            ace_thread_queue->threads[i] = thread;
-            ace_thread_queue->numthreads++;
-            unlock(&ace_thread_queue->lock);
-            thread->tid = i;
-            return gstystack;
-        }
+    if (ace_thread_queue->num_active_threads >= NUM_ACE_THREADS) {
+        unlock(&ace_thread_queue->lock);
+        gswerrstr_unimpl(__FILE__, __LINE__, "oothreads");
+        return gstyeoothreads;
+    } else {
+        thread->tid = ace_thread_queue->num_active_threads;
+        ace_thread_queue->threads[ace_thread_queue->num_active_threads++] = thread;
+        ace_thread_queue->numthreads++;
+        unlock(&ace_thread_queue->lock);
+        return gstystack;
     }
-    unlock(&ace_thread_queue->lock);
-    gswerrstr_unimpl(__FILE__, __LINE__, "oothreads");
-    return gstyeoothreads;
 }
 
 static
