@@ -1425,83 +1425,25 @@ ace_down()
     unlock(&ace_thread_queue->lock);
 }
 
+int ace_thread_enter_closure(struct ace_thread *, struct gsheap_item *);
+
+/* ↓ Used to start evaluation from outside ACE (so we allocate a new thread).
+   Temporarily also used to start evaluation from §ags{.enter} instructions (until we get update frames).
+*/
 gstypecode
 ace_start_evaluation(gsvalue val)
 {
     struct ace_thread *thread;
     struct gsheap_item *hp;
     struct gseval *ev;
-    int i;
 
     hp = (struct gsheap_item *)val;
-    switch (hp->type) {
-        case gsclosure: {
-            struct gsclosure *cl;
-            struct gsbc *instr;
 
-            cl = (struct gsclosure *)hp;
+    thread = ace_thread_alloc();
 
-            switch (cl->code->tag) {
-                case gsbc_expr: {
-                    thread = ace_thread_alloc();
-
-                    thread->base = val;
-
-                    instr = (struct gsbc *)ace_set_registers_from_closure(thread, cl);
-
-                    if (!instr) {
-                        gspoison_unimpl(hp, __FILE__, __LINE__, cl->code->pos, "Too many registers");
-                        unlock(&thread->lock);
-                        return gstyindir;
-                    }
-
-                    thread->state = ace_thread_running;
-                    thread->st.running.bco = cl->code;
-                    thread->st.running.ip = instr;
-                    break;
-                }
-                default:
-                    gspoison_unimpl(hp, __FILE__, __LINE__, cl->code->pos, "ace_start_evaluation(%d)", cl->code->tag);
-                    return gstyindir;
-            }
-
-            break;
-        }
-        case gsapplication: {
-            struct gsapplication *app;
-            struct gsbc_cont *cont;
-            struct gsbc_cont_app *appcont;
-
-            app = (struct gsapplication *)hp;
-
-            thread = ace_thread_alloc();
-
-            thread->base = val;
-
-            cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue));
-            appcont = (struct gsbc_cont_app *)cont;
-            if (!cont) {
-                unlock(&thread->lock);
-                werrstr("Out of stack space allocating app continuation");
-                return gstyeoostack;
-            }
-
-            cont->node = gsbc_cont_app;
-            cont->pos = hp->pos;
-            appcont->numargs = app->numargs;
-            for (i = 0; i < app->numargs; i++) {
-                appcont->arguments[i] = app->arguments[i];
-            }
-
-            thread->state = ace_thread_blocked;
-            thread->st.blocked.on = app->fun;
-            thread->st.blocked.at = app->hp.pos;
-
-            break;
-        }
-        default:
-            gswerrstr_unimpl(__FILE__, __LINE__, "ace_start_evaluation(type = %d)", hp->type);
-            return gstyenosys;
+    if (ace_thread_enter_closure(thread, hp) < 0) {
+        unlock(&thread->lock);
+        return gstyindir;
     }
 
     ev = (struct gseval *)hp;
@@ -1521,6 +1463,78 @@ ace_start_evaluation(gsvalue val)
         ace_thread_queue->numthreads++;
         unlock(&ace_thread_queue->lock);
         return gstystack;
+    }
+}
+
+/* ↓ Used to add a closure (necessarily a §ccode{struct gsheap_item *}) to a thread.
+   Currently, sets §ccode{thread->base}, but this is the place to change to push update frames.
+   Assume there is enough room for an update frame: it's the caller's responsibility to create a new thread when we're low on stack space.
+*/
+int
+ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
+{
+    int i;
+
+    thread->base = (gsvalue)hp;
+
+    switch (hp->type) {
+        case gsclosure: {
+            struct gsclosure *cl;
+            struct gsbc *instr;
+
+            cl = (struct gsclosure *)hp;
+
+            switch (cl->code->tag) {
+                case gsbc_expr: {
+                    instr = (struct gsbc *)ace_set_registers_from_closure(thread, cl);
+
+                    if (!instr) {
+                        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->code->pos, "Too many registers"));
+                        return -1;
+                    }
+
+                    thread->state = ace_thread_running;
+                    thread->st.running.bco = cl->code;
+                    thread->st.running.ip = instr;
+                    break;
+                }
+                default:
+                    ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->code->pos, "ace_start_evaluation(%d)", cl->code->tag));
+                    return -1;
+            }
+
+            return 0;
+        }
+        case gsapplication: {
+            struct gsapplication *app;
+            struct gsbc_cont *cont;
+            struct gsbc_cont_app *appcont;
+
+            app = (struct gsapplication *)hp;
+
+            cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue));
+            appcont = (struct gsbc_cont_app *)cont;
+            if (!cont) {
+                ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, hp->pos, "Out of stack space allocating app continuation"));
+                return -1;
+            }
+
+            cont->node = gsbc_cont_app;
+            cont->pos = hp->pos;
+            appcont->numargs = app->numargs;
+            for (i = 0; i < app->numargs; i++) {
+                appcont->arguments[i] = app->arguments[i];
+            }
+
+            thread->state = ace_thread_blocked;
+            thread->st.blocked.on = app->fun;
+            thread->st.blocked.at = app->hp.pos;
+
+            return 0;
+        }
+        default:
+            ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, hp->pos, "ace_start_evaluation(type = %d)", hp->type));
+            return -1;
     }
 }
 
