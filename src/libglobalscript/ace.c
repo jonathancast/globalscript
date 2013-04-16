@@ -918,6 +918,7 @@ ace_enter(struct ace_thread *thread)
                 case gstystack:
                 case gstywhnf:
                 case gstyindir:
+                case gstyenosys:
                     gsheap_unlock(hp);
                     break;
                 default:
@@ -947,6 +948,9 @@ ace_enter(struct ace_thread *thread)
                 return;
             case gstyimplerr:
                 ace_failure_thread(thread, (struct gsimplementation_failure *)prog);
+                return;
+            case gstyenosys:
+                ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "%r");
                 return;
             default:
                 ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
