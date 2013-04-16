@@ -210,12 +210,8 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             newhp = gsreserveheap(sizeof(*newcl) + cl->numfvs * sizeof(gsvalue));
             newcl = (struct gsclosure *)newhp;
 
+            memcpy(newhp, hp, sizeof(*newcl) + cl->numfvs * sizeof(gsvalue));
             memset(&newhp->lock, 0, sizeof(newhp->lock));
-            newhp->pos = hp->pos;
-            newhp->type = hp->type;
-            newcl->code = cl->code;
-            newcl->numfvs = cl->numfvs;
-            for (i = 0; i < cl->numfvs; i++) newcl->fvs[i] = cl->fvs[i];
 
             hp->type = gsgcforward;
             fwd = (struct gsgcforward *)hp;
