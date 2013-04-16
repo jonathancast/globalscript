@@ -913,7 +913,7 @@ ace_enter(struct ace_thread *thread)
             st = gsheapstate(hp);
             switch (st) {
                 case gstythunk:
-                    st = ace_start_evaluation(prog);
+                    st = ace_start_evaluation(hp);
                     break;
                 case gstystack:
                 case gstywhnf:
@@ -1477,12 +1477,9 @@ int ace_thread_enter_closure(struct ace_thread *, struct gsheap_item *);
    Temporarily also used to start evaluation from §ags{.enter} instructions (until we get update frames).
 */
 gstypecode
-ace_start_evaluation(gsvalue val)
+ace_start_evaluation(struct gsheap_item *hp)
 {
     struct ace_thread *thread;
-    struct gsheap_item *hp;
-
-    hp = (struct gsheap_item *)val;
 
     thread = ace_thread_alloc();
 

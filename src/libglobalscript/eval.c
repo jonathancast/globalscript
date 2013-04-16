@@ -48,7 +48,7 @@ gsheapeval(gsvalue val)
 
     switch (res) {
         case gstythunk:
-            res = ace_start_evaluation(val);
+            res = ace_start_evaluation(hp);
             break;
         case gstystack:
         case gstywhnf:
