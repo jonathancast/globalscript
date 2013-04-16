@@ -1053,14 +1053,7 @@ gsconstrsgc(struct gsstringbuilder *err, gsvalue v)
             newconstr = gsreserveconstrs(sizeof(*newargs) + args->numargs * sizeof(gsvalue));
             newargs = (struct gsconstr_args *)newconstr;
 
-            newconstr->pos = constr->pos;
-            newconstr->type = constr->type;
-            newargs->constrnum = args->constrnum;
-            newargs->numargs = args->numargs;
-
-            for (i = 0; i < args->numargs; i++)
-                newargs->arguments[i] = args->arguments[i]
-            ;
+            memcpy(newconstr, constr, sizeof(*newargs) + args->numargs * sizeof(gsvalue));
 
             constr->type = gsconstr_gcforward;
             fwd = (struct gsconstr_gcforward *)constr;
