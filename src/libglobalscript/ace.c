@@ -354,6 +354,9 @@ ace_thread_cleanup(struct gsstringbuilder *err)
             } else if (ace_thread_queue->threads[srcthread]->state == ace_thread_gcforward) {
                 struct ace_thread *thread;
                 struct gsbc_cont_update *upupdate, *update, *downupdate;
+                void *srctop, *src, *dest;
+                ulong sz;
+                int is_live;
 
                 thread = ace_thread_queue->threads[destthread] = ace_thread_queue->threads[srcthread]->st.forward.dest;
                 ace_thread_queue->threads[destthread]->tid = destthread;
@@ -367,22 +370,44 @@ ace_thread_cleanup(struct gsstringbuilder *err)
                 }
 
                 downupdate = 0;
+                dest = src = thread->stackbot;
+                is_live = 0;
                 for (update = upupdate; update; update = upupdate) {
                     upupdate = update->next;
                     update->next = downupdate;
+
+                    srctop = update;
+                    sz = (uchar*)src - (uchar*)srctop;
+
                     if (!gs_sys_block_in_gc_from_space(update->dest)) {
                         gsstring_builder_print(err, UNIMPL("%P: Trace update with live dest"), update->cont.pos);
                         return -1;
                     } else if (update->dest->type == gsgcforward) {
                         update->dest = (struct gsheap_item *)((struct gsgcforward *)update->dest)->dest;
+
+                        /* §paragraph{Copy update frame up on the stack} */
+                        dest = (uchar*)dest - sz;
+                        memmove(dest, srctop, sz);
+                        src = (uchar*)src - sz;
+                        downupdate = (struct gsbc_cont_update *)dest;
+
+                        is_live = 1;
                     } else {
-                        gsstring_builder_print(err, UNIMPL("%P: Trace update with garbage dest"), update->cont.pos);
-                        return -1;
+                        /* §paragraph{Skip update frame} */
+                        src = (uchar*)src - sz;
                     }
-                    downupdate = update;
+                    /* §paragraph{Move src down to next update frame or stack top; copy if we've entered the live portion of the stack} */
+                    srctop = upupdate ? (uchar*)upupdate + sizeof(*upupdate) : (uchar*)thread->stacktop;
+                    sz = (uchar*)src - (uchar*)srctop;
+                    if (is_live) {
+                        dest = (uchar*)dest - sz;
+                        if (sz) memmove(dest, srctop, sz);
+                    }
+                    src = (uchar*)src - sz;
                 }
 
                 thread->cureval = downupdate;
+                thread->stacktop = dest;
             }
         }
     }
@@ -883,6 +908,8 @@ ace_return_undef(struct ace_thread *thread)
     ace_error_thread(thread, err);
 }
 
+static int ace_thread_enter_closure(struct ace_thread *, struct gsheap_item *);
+
 static
 void
 ace_enter(struct ace_thread *thread)
@@ -913,8 +940,13 @@ ace_enter(struct ace_thread *thread)
             st = gsheapstate(hp);
             switch (st) {
                 case gstythunk:
-                    st = ace_start_evaluation(hp);
-                    break;
+                    if ((uchar*)thread->stacktop - (uchar*)thread->stacklimit >= 0x100 * sizeof(gsvalue)) {
+                        ace_thread_enter_closure(thread, hp);
+                        return;
+                    } else {
+                        st = ace_start_evaluation(hp);
+                        break;
+                    }
                 case gstystack:
                 case gstywhnf:
                 case gstyindir:
@@ -1177,7 +1209,7 @@ ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *e
 
 static void *ace_set_registers_from_closure(struct ace_thread *, struct gsclosure *);
 
-static void ace_return_to_update(struct ace_thread *, struct gsbc_cont *, gsvalue);
+static int ace_return_to_update(struct ace_thread *, struct gsbc_cont *, gsvalue);
 static void ace_return_to_app(struct ace_thread *, struct gsbc_cont *, gsvalue);
 static void ace_return_to_force(struct ace_thread *, struct gsbc_cont *, gsvalue);
 static void ace_return_to_strict(struct ace_thread *, struct gsbc_cont *, gsvalue);
@@ -1188,11 +1220,15 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
 {
     struct gsbc_cont *cont;
 
+again:
     cont = (struct gsbc_cont *)thread->stacktop;
     switch (cont->node) {
         case gsbc_cont_update:
-            ace_return_to_update(thread, cont, v);
-            return;
+            if (ace_return_to_update(thread, cont, v)) {
+                goto again;
+            } else {
+                return;
+            }
         case gsbc_cont_app:
             ace_return_to_app(thread, cont, v);
             return;
@@ -1208,7 +1244,7 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
     }
 }
 
-void
+int
 ace_return_to_update(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
 {
     struct gsbc_cont_update *update;
@@ -1224,9 +1260,10 @@ ace_return_to_update(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue 
     if (update->next) {
         thread->cureval = update->next;
         thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_update);
-        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Return to update frames above other update frames");
+        return 1;
     } else {
         ace_remove_thread(thread);
+        return 0;
     }
 }
 
@@ -1475,10 +1512,8 @@ ace_down()
     unlock(&ace_thread_queue->lock);
 }
 
-int ace_thread_enter_closure(struct ace_thread *, struct gsheap_item *);
-
 /* ↓ Used to start evaluation from outside ACE (so we allocate a new thread).
-   Temporarily also used to start evaluation from §ags{.enter} instructions (until we get update frames).
+   Also used to start evaluation from §ags{.enter} instructions, when we decide there isn't enough room on the stack for a new eval.
 */
 gstypecode
 ace_start_evaluation(struct gsheap_item *hp)
@@ -1714,8 +1749,7 @@ ace_eval_gc_trace(struct gsstringbuilder *err, struct gsbc_cont_update **pupdate
         gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: set newthread for to-space thread"));
         return -1;
     } else if (thread->state == ace_thread_gcforward) {
-        gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: set newthread for forward"));
-        return -1;
+        newthread = thread->st.forward.dest;
     } else {
         if (!(newthread = ace_thread_gccopy(err, thread))) return -1;
 
@@ -1762,10 +1796,9 @@ ace_thread_gccopy(struct gsstringbuilder *err, struct ace_thread *thread)
     /* ↓ §ccode{(uchar*)newthread->stackbot - (uchar*)thread->cureval = (uchar*)thread->stackbot - (uchar*)thread->cureval} */
     newthread->cureval = (struct gsbc_cont_update *)((uchar*)newthread->stackbot - ((uchar*)thread->stackbot - (uchar*)thread->cureval));
     for (update = newthread->cureval; update; update = update->next) {
-        if (update->next) {
-            gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: copy next pointer in update frames"));
-            return 0;
-        }
+        if (update->next)
+            update->next = (struct gsbc_cont_update *)((uchar*)newthread->stackbot - ((uchar*)thread->stackbot - (uchar*)update->next))
+        ;
     }
 
     memset(&newthread->lock, 0, sizeof(newthread->lock));
@@ -1818,15 +1851,18 @@ ace_thread_gcevacuate(struct gsstringbuilder *err, struct ace_thread *thread)
 int
 ace_thread_stack_gcevacuate(struct gsstringbuilder *err, struct ace_thread *thread, struct gsbc_cont_update *update)
 {
-    void *p, *base;
+    void *p, *top, *base;
     int i;
     gsvalue gctemp;
 
+    top = thread->gc_evacuated_stackbot;
     base = (uchar*)update + sizeof(*update);
 
-    if ((uchar*)base <= (uchar*)thread->gc_evacuated_stackbot) return 0;
+    if ((uchar*)base <= (uchar*)top) return 0;
 
-    for (p = thread->gc_evacuated_stackbot; (uchar*)p < (uchar*)base; ) {
+    thread->gc_evacuated_stackbot = base;
+
+    for (p = top; (uchar*)p < (uchar*)base; ) {
         struct gsbc_cont *cont = (struct gsbc_cont *)p;
 
         if (gs_gc_trace_pos(err, &cont->pos) < 0) return -1;
@@ -1878,8 +1914,6 @@ ace_thread_stack_gcevacuate(struct gsstringbuilder *err, struct ace_thread *thre
                 return -1;
         }
     }
-
-    thread->gc_evacuated_stackbot = base;
 
     return 0;
 }
