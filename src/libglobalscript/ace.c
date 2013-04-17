@@ -55,7 +55,7 @@ ace_init()
 
 struct ace_thread_pool_stats;
 
-static int ace_find_thread(struct ace_thread_pool_stats *, int *, int, struct ace_thread **);
+static int ace_find_thread(struct ace_thread_pool_stats *, int, struct ace_thread **);
 
 static void ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
@@ -93,7 +93,7 @@ static
 void
 ace_thread_pool_main(void *p)
 {
-    int last_tid, tid;
+    int tid;
     int nwork;
     struct ace_thread_pool_stats stats;
     vlong outer_loops, outer_loops_without_threads, total_thread_load, num_timeslots, num_completed_timeslots, num_instrs;
@@ -102,13 +102,13 @@ ace_thread_pool_main(void *p)
     outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = num_timeslots = num_completed_timeslots = 0;
     start_time = nsec();
     finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = 0;
-    tid = last_tid = 0;
+    tid = 0;
     for (;;) {
         struct ace_thread *thread;
         outer_loops++;
 
         finding_thread_start_time = gsflag_stat_collection ? nsec() : 0;
-        if (ace_find_thread(&stats, &last_tid, tid, &thread) < 0) goto no_clients;
+        if (ace_find_thread(&stats, tid, &thread) < 0) goto no_clients;
         if (gsflag_stat_collection) finding_thread_time += nsec() - finding_thread_start_time;
 
         nwork = 0;
@@ -197,10 +197,8 @@ ace_thread_pool_main(void *p)
             total_thread_load += ace_thread_queue->num_active_threads;
             if (ace_thread_queue->num_active_threads) {
                 tid = (tid + 1) % ace_thread_queue->num_active_threads;
-                if (last_tid >= ace_thread_queue->num_active_threads) last_tid = 0;
             } else {
                 outer_loops_without_threads++;
-                tid = last_tid = 0;
             }
         unlock(&ace_thread_queue->lock);
     }
@@ -226,7 +224,7 @@ no_clients:
 }
 
 int
-ace_find_thread(struct ace_thread_pool_stats *stats, int *plast_tid, int tid, struct ace_thread **pthread)
+ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread **pthread)
 {
     struct ace_thread *thread;
     vlong gc_start_time, checking_thread_start_time;
@@ -318,10 +316,6 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int *plast_tid, int tid, st
         }
         if (gsflag_stat_collection) stats->checking_thread_time += nsec() - checking_thread_start_time;
     }
-    if (thread) *plast_tid = tid;
-    if (!thread && tid == *plast_tid)
-        sleep(1)
-    ;
 
     *pthread = thread;
 
