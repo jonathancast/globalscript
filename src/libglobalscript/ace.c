@@ -96,10 +96,10 @@ ace_thread_pool_main(void *p)
     int last_tid, tid;
     int nwork;
     struct ace_thread_pool_stats stats;
-    vlong outer_loops, outer_loops_without_threads, total_thread_load, num_instrs;
+    vlong outer_loops, outer_loops_without_threads, total_thread_load, num_timeslots, num_completed_timeslots, num_instrs;
     vlong start_time, end_time, finding_thread_time, finding_thread_start_time, instr_time, instr_start_time;
 
-    outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = 0;
+    outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = num_timeslots = num_completed_timeslots = 0;
     start_time = nsec();
     finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = 0;
     tid = last_tid = 0;
@@ -112,6 +112,7 @@ ace_thread_pool_main(void *p)
         if (gsflag_stat_collection) finding_thread_time += nsec() - finding_thread_start_time;
 
         nwork = 0;
+        if (thread && thread->state == ace_thread_running) num_timeslots++;
         instr_start_time = gsflag_stat_collection ? nsec() : 0;
         if (thread) while (thread->state == ace_thread_running && nwork++ < 0x1000) {
             num_instrs++;
@@ -188,6 +189,7 @@ ace_thread_pool_main(void *p)
             }
         }
         if (gsflag_stat_collection) instr_time += nsec() - instr_start_time;
+        if (thread && thread->state == ace_thread_running) num_completed_timeslots++;
 
         if (thread) unlock(&thread->lock);
 
@@ -219,6 +221,7 @@ no_clients:
         fprint(2, "ACE instruction execution time: %llds %lldms\n", instr_time / 1000 / 1000 / 1000, (instr_time / 1000 / 1000) % 1000);
         fprint(2, "GC time: %llds %lldms\n", stats.gc_time / 1000 / 1000 / 1000, (stats.gc_time / 1000 / 1000) % 1000);
         if (num_instrs) fprint(2, "Avg unit of work: %gμs\n", (double)instr_time / num_instrs / 1000);
+        if (num_timeslots) fprint(2, "Time slots: %lld (%02g%% ran to completion)\n", num_timeslots, (double)num_completed_timeslots / num_timeslots * 100);
     }
 }
 
