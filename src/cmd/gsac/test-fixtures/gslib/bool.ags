@@ -1,1 +1,7 @@
 	.prefix
+
+	.code
+
+_bool.true_c	.expr
+c	.constr	bool.prim.u	true
+	.enter	c
