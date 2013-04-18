@@ -2,6 +2,8 @@
 
 < $GLOBALSCRIPT/src/mkhdr
 
+CFLAGS=$CFLAGS -I $SYSTEM
+
 OFILES=\
 	ibio.$O \
 	thread.$O \
@@ -14,6 +16,10 @@ OFILES=\
 	file.$O \
 	gsstringeval.$O \
 	$SYSTEM/uxio.$O \
+
+TEST_OFILES=\
+	test.$O \
+	$SYSTEM/test.$O \
 
 TARG=ibio
 
@@ -37,13 +43,19 @@ file.$O: ibio.h
 gsstringeval.$O: ibio.h
 unix/uxio.$O: ibio.h
 
-test:V: 
-    :
+test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h $SYSTEM/test_systemtests.h
+unix/test.$O: unix/test_systemtests.h
+
+test:V: $O.test
+    ./$O.test
 
 integration-test:V: test test-rc
 
 test-rc:V: rc/test $O.ibio
     ./rc/test
+
+$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/libglobalscript.a $GLOBALSCRIPT/lib/libtest.a
+	$LD -o $target $prereq $LDFLAGS
 
 clean:VN:
 	rm -f ibiothreadmain.c
