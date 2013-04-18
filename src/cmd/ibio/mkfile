@@ -22,6 +22,14 @@ TEST_OFILES=\
 	test_iport.$O \
 	$SYSTEM/test.$O \
 
+TESTED_OFILES=\
+	iport.$O \
+	channel.$O \
+	external.$O \
+	stat.$O \
+	gsstringeval.$O \
+	$SYSTEM/uxio.$O \
+
 TARG=ibio
 
 < $PLAN9/src/mkone
@@ -36,7 +44,7 @@ ibio.$O: ibio.h
 thread.$O: ibio.h
 env.$O: ibio.h
 channel.$O: ibio.h
-iport.$O: ibio.h
+iport.$O: ibio.h iport.h
 oport.$O: ibio.h
 external.$O: ibio.h
 stat.$O: ibio.h
@@ -56,7 +64,7 @@ integration-test:V: test test-rc
 test-rc:V: rc/test $O.ibio
     ./rc/test
 
-$O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/libglobalscript.a $GLOBALSCRIPT/lib/libtest.a
+$O.test:	$TEST_OFILES $TESTED_OFILES $GLOBALSCRIPT/lib/libglobalscript.a $GLOBALSCRIPT/lib/libtest.a
 	$LD -o $target $prereq $LDFLAGS
 
 clean:VN:

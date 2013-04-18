@@ -5,6 +5,7 @@
 #include <libglobalscript.h>
 
 #include "ibio.h"
+#include "iport.h"
 
 /* §section Acceptors */
 
@@ -728,7 +729,7 @@ struct ibio_prim_iptr_deref_blocking {
 };
 
 static int ibio_prim_iptr_deref_return(struct ace_thread *, struct gspos, gsvalue, struct ibio_prim_iptr_deref_blocking *);
-static gslprim_gccopy_handler ibio_prim_iptr_gccopy_deref;
+static gslprim_gccopy_handler ibio_prim_iptr_deref_gccopy;
 static gslprim_gcevacuate_handler ibio_prim_iptr_deref_gcevacuate;
 
 int
@@ -779,7 +780,7 @@ ibio_prim_iptr_deref_return(struct ace_thread *thread, struct gspos pos, gsvalue
         switch (st) {
             case gstystack: {
                 if (!blocking) {
-                    blocking = gslprim_blocking_alloc(sizeof(*blocking), ibio_prim_iptr_resume_deref, ibio_prim_iptr_gccopy_deref, ibio_prim_iptr_deref_gcevacuate);
+                    blocking = ibio_prim_iptr_deref_blocking_alloc();
                     blocking->res = v;
                 }
 
@@ -798,11 +799,24 @@ ibio_prim_iptr_deref_return(struct ace_thread *thread, struct gspos pos, gsvalue
     }
 }
 
-struct gslprim_blocking *
-ibio_prim_iptr_gccopy_deref(struct gsstringbuilder *err, struct gslprim_blocking *gsblocking)
+void *
+ibio_prim_iptr_deref_blocking_alloc()
 {
-    gsstring_builder_print(err, UNIMPL("ibio_prim_iptr_gccopy_deref"));
-    return 0;
+    return gslprim_blocking_alloc(sizeof(struct ibio_prim_iptr_deref_blocking), ibio_prim_iptr_resume_deref, ibio_prim_iptr_deref_gccopy, ibio_prim_iptr_deref_gcevacuate);
+}
+
+struct gslprim_blocking *
+ibio_prim_iptr_deref_gccopy(struct gsstringbuilder *err, struct gslprim_blocking *gsblocking)
+{
+    struct ibio_prim_iptr_deref_blocking *blocking, *newblocking;
+
+    blocking = (struct ibio_prim_iptr_deref_blocking *)gsblocking;
+
+    newblocking = ibio_prim_iptr_deref_blocking_alloc();
+
+    memcpy(newblocking, blocking, sizeof(*blocking));
+
+    return (struct gslprim_blocking *)newblocking;
 }
 
 int
