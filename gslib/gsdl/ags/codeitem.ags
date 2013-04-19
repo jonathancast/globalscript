@@ -830,18 +830,18 @@ gsdl.ags.codeitem.expr.t	.tygvar
 _gsdl.ags.codeitem.expr.parser_gsanalyze.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_app.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_coerce.p_c	.subcode
-_gsdl.ags.codeitem.expr.parser_lift.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_enter.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_force.p_c	.subcode
+_gsdl.ags.codeitem.expr.parser_lift.p_c	.subcode
 parser.<|>	.gvar
 gsanalyze.p	.alloc	_gsdl.ags.codeitem.expr.parser_gsanalyze.p_c
 app.p	.alloc	_gsdl.ags.codeitem.expr.parser_app.p_c
 coerce.p	.alloc	_gsdl.ags.codeitem.expr.parser_coerce.p_c
-lift.p	.alloc	_gsdl.ags.codeitem.expr.parser_lift.p_c
 enter.p	.alloc	_gsdl.ags.codeitem.expr.parser_enter.p_c
 force.p	.alloc	_gsdl.ags.codeitem.expr.parser_force.p_c
-p4	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	enter.p	force.p
-p3	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	lift.p	p4
+lift.p	.alloc	_gsdl.ags.codeitem.expr.parser_lift.p_c
+p4	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	force.p	lift.p
+p3	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	enter.p	p4
 p2	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	coerce.p	p3
 p1	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	app.p	p2
 	.app	gsanalyze.p	p1
