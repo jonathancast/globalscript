@@ -9,6 +9,8 @@ _gsdl.ags.typeitem.print_tyexpr.s	.string	\t.tyexpr
 _gsdl.ags.typeitem.print_kindsig.print	.closure	_gsdl.ags.typeitem.print_kindsig.print_c
 _gsdl.ags.typeitem.print_kindsig.print_nokind.s	.string	\n
 
+gsdl.ags.typeitem.fmtgs	.closure	_gsdl.ags.typeitem.fmtgs_c
+
 gsdl.ags.typeitem.expr.print	.closure	_gsdl.ags.typeitem.expr.print_c	_gsdl.ags.typeitem.expr.print_ty
 _gsdl.ags.typeitem.expr.print_tylift.s	.string	\t.tylift\n
 _gsdl.ags.typeitem.expr.print_typroduct.s	.string	\t.typroduct
@@ -98,6 +100,13 @@ ky		.fkarg	0	gsdl.ags.typeitem.gskind.t
 		.case	nothing
 			.app	_gsdl.ags.typeitem.print_kindsig.print_nokind.s
 			.enter	diff.list.fromlist	rune.t
+
+# §section §gs{gsdl.ags.typeitem.fmtgs}
+
+_gsdl.ags.typeitem.fmtgs_c	.expr
+fmtgs.t	.tygvar	# Temp
+gsdl.ags.typeitem.t	.tygvar	# Temp
+	.undef	fmtgs.t gsdl.ags.typeitem.t
 
 # §section §gs{gsdl.ags.typeitem.expr.print}
 
