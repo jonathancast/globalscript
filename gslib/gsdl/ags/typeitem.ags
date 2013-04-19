@@ -2,6 +2,8 @@
 
 	.data
 
+gsdl.ags.typeitem.≡	.closure	_gsdl.ags.typeitem.≡_c
+
 gsdl.ags.typeitem.print	.closure	_gsdl.ags.typeitem.print_c
 _gsdl.ags.typeitem.print_tyexpr.s	.string	\t.tyexpr
 _gsdl.ags.typeitem.print_kindsig.print	.closure	_gsdl.ags.typeitem.print_kindsig.print_c
@@ -21,7 +23,16 @@ gsdl.ags.typeitem.expr.product	.closure	_gsdl.ags.typeitem.expr.product_c
 
 	.code
 
-# §ection §gs{gsdl.ags.typeitem.print}
+# §section §gs{gsdl.ags.typeitem.≡}
+
+_gsdl.ags.typeitem.≡_c	.expr
+gsdl.ags.typeitem.t	.tygvar
+bool.t	.tygvar	# Temp
+ty0	.larg	gsdl.ags.typeitem.t
+ty1	.larg	gsdl.ags.typeitem.t
+	.undef	bool.t
+
+# §section §gs{gsdl.ags.typeitem.print}
 
 _gsdl.ags.typeitem.print_c	.expr
 gsdl.ags.typeitem.t	.tygvar
