@@ -4,4 +4,5 @@
 
 _bool.true_c	.expr
 c	.constr	bool.prim.u	true
+	.lift
 	.enter	c
