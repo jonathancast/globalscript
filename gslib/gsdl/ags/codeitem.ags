@@ -57,7 +57,7 @@ _gsdl.ags.codeitem.expr.parser_app.p_app.re	.regex	.app
 _gsdl.ags.codeitem.expr.parser_coerce.p_coerce.re	.regex	.coerce
 _gsdl.ags.codeitem.expr.parser_lift.p_lift.re	.regex	.lift
 _gsdl.ags.codeitem.expr.parser_enter.p_enter.re	.regex	.enter
-_gsdl.ags.codeitem.expr.parser_force.p_force.kw.re	.regex	.force
+_gsdl.ags.codeitem.expr.parser_force.p_force.re	.regex	.force
 _gsdl.ags.codeitem.expr.parser_yield.p_yield.re	.regex	.yield
 
 gsdl.ags.codeitem.expr.≡	.closure	_gsdl.ags.codeitem.expr.≡_c
@@ -1082,7 +1082,7 @@ parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
 rune.compare	.gvar
-_gsdl.ags.codeitem.expr.parser_force.p_force.kw.re	.gvar
+_gsdl.ags.codeitem.expr.parser_force.p_force.re	.gvar
 parser.<*	.gvar
 gsdl.ags.syntax.id	.gvar
 gsdl.ags.syntax.whitespace	.gvar
@@ -1090,10 +1090,10 @@ gsdl.ags.codeitem.expr.parser	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.codeitem.expr.parser_force.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
-force.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.expr.parser_force.p_force.kw.re
+force.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.expr.parser_force.p_force.re
 co.p3	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	gsdl.ags.syntax.whitespace
 co.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	co.p3
-co.p1	.apply	parser.*>	rune.t	string.t	string.t	|	force.kw.p	co.p2
+co.p1	.apply	parser.*>	rune.t	string.t	string.t	|	force.p	co.p2
 co.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	co.p1
 	.app	f	pos.get	co.p	gsdl.ags.codeitem.expr.parser
 	.enter	parser.lift3	rune.t	parser.pos.t	string.t	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.expr.t
