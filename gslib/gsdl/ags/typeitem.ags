@@ -2,6 +2,8 @@
 
 	.data
 
+gsdl.ags.typeitem.segment.parser	.closure	_gsdl.ags.typeitem.segment.parser_c
+
 gsdl.ags.typeitem.≡	.closure	_gsdl.ags.typeitem.≡_c
 
 gsdl.ags.typeitem.print	.closure	_gsdl.ags.typeitem.print_c
@@ -24,6 +26,20 @@ gsdl.ags.typeitem.expr.lift	.closure	_gsdl.ags.typeitem.expr.lift_c
 gsdl.ags.typeitem.expr.product	.closure	_gsdl.ags.typeitem.expr.product_c
 
 	.code
+
+# §section §gs{gsdl.ags.typeitem.segment.parser}
+
+_gsdl.ags.typeitem.segment.parser_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+list.typeitem.t	.tylet	list.t	gsdl.ags.typeitem.t
+parser.unit	.gvar
+list.nil	.gvar
+parser.fail	.gvar	# Temp
+nil	.apply	list.nil	gsdl.ags.typeitem.t
+	.app	nil
+	.enter	parser.unit	rune.t	list.typeitem.t
 
 # §section §gs{gsdl.ags.typeitem.≡}
 
