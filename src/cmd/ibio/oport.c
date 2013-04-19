@@ -216,18 +216,12 @@ struct ibio_write_blocking {
     struct ibio_oport_write_blocker *blocking;
 };
 
-static struct gs_sys_global_block_suballoc_info ibio_write_blocking_info = {
-    /* descr = */ {
-        /* evaluator = */ gsnoeval,
-        /* indirection_dereferencer = */ gsnoindir,
-        /* gc_trace = */ gsunimplgc,
-        /* description = */ "IBIO Write Blocking Queue Link",
-    },
-};
-
 struct ibio_oport_write_blocker {
+    struct ibio_oport_write_blocker *gcforward;
     struct ibio_oport_write_blocker *next;
 };
+
+static struct ibio_oport_write_blocker *ibio_oport_write_blocker_alloc(void);
 
 static void *ibio_write_blocking_alloc(void);
 
@@ -287,13 +281,9 @@ ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, struct 
         *pv = gsemptyrecord(write->pos);
         return api_st_success;
     } else if (!write_blocking->blocking) {
-        write_blocking->blocking =
-            *write_blocking->oport->waiting_to_write_end =
-                gs_sys_global_block_suballoc(&ibio_write_blocking_info, sizeof(struct ibio_oport_write_blocker))
-        ;
+        write_blocking->blocking = *write_blocking->oport->waiting_to_write_end = ibio_oport_write_blocker_alloc();
 
         write_blocking->oport->waiting_to_write_end = &write_blocking->blocking->next;
-        write_blocking->blocking->next = 0;
         unlock(&write_blocking->oport->lock);
         return api_st_blocked;
     } else {
@@ -312,20 +302,42 @@ ibio_write_blocking_alloc()
     return api_blocking_alloc(sizeof(struct ibio_write_blocking), ibio_write_blocking_gccopy, ibio_write_blocking_gcevacuate, ibio_write_blocking_gccleanup);
 }
 
-static
 struct api_prim_blocking *
 ibio_write_blocking_gccopy(struct gsstringbuilder *err, struct api_prim_blocking *pblocking)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_write_blocking_gccopy"));
-    return 0;
+    struct ibio_write_blocking *blocking, *newblocking;
+
+    blocking = (struct ibio_write_blocking *)pblocking;
+
+    newblocking = ibio_write_blocking_alloc();
+
+    memcpy(newblocking, blocking, sizeof(*newblocking));
+
+    return (struct api_prim_blocking *)newblocking;
 }
 
 static
 int
 ibio_write_blocking_gcevacuate(struct gsstringbuilder *err, struct api_prim_blocking *pblocking)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_write_blocking_gcevacuate"));
-    return -1;
+    struct ibio_write_blocking *blocking;
+    gsvalue gcv, gctemp;
+
+    blocking = (struct ibio_write_blocking *)pblocking;
+
+    if (GS_GC_TRACE(err, &blocking->s) < 0) return -1;
+
+    gcv = (gsvalue)blocking->oport;
+    if (GS_GC_TRACE(err, &gcv) < 0) return -1;
+    blocking->oport = (struct ibio_oport *)gcv;
+
+    if (!blocking->blocking->gcforward) {
+        gsstring_builder_print(err, UNIMPL("ibio_write_blocking_gcevacuate: blocking: no forward?!"));
+        return -1;
+    }
+    blocking->blocking = blocking->blocking->gcforward;
+
+    return 0;
 }
 
 void
@@ -748,9 +760,9 @@ ibio_oport_trace(struct gsstringbuilder *err, gsvalue v)
 
         for (pblocking = &newoport->waiting_to_write; *pblocking; pblocking = &newblocking->next) {
             blocking = *pblocking;
-            newblocking = gs_sys_global_block_suballoc(&ibio_write_blocking_info, sizeof(struct ibio_oport_write_blocker));
+            newblocking = ibio_oport_write_blocker_alloc();
             newblocking->next = blocking->next;
-            *pblocking = newblocking;
+            *pblocking = blocking->gcforward = newblocking;
         }
 
         newoport->waiting_to_write_end = pblocking;
@@ -759,6 +771,27 @@ ibio_oport_trace(struct gsstringbuilder *err, gsvalue v)
     if (ibio_oport_evacuate_buf(err, newoport) < 0) return 0;
 
     return (gsvalue)newoport;
+}
+
+static struct gs_sys_global_block_suballoc_info ibio_oport_write_blocker_info = {
+    /* descr = */ {
+        /* evaluator = */ gsnoeval,
+        /* indirection_dereferencer = */ gsnoindir,
+        /* gc_trace = */ gsunimplgc,
+        /* description = */ "IBIO Write Blocking Queue Link",
+    },
+};
+
+struct ibio_oport_write_blocker *
+ibio_oport_write_blocker_alloc()
+{
+    struct ibio_oport_write_blocker *res;
+
+    res = gs_sys_global_block_suballoc(&ibio_oport_write_blocker_info, sizeof(struct ibio_oport_write_blocker));
+    res->next = 0;
+    res->gcforward = 0;
+
+    return res;
 }
 
 #define IBIO_WRITE_BUFFER_SIZE 0x10000
