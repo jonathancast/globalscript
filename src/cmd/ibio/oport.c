@@ -736,11 +736,16 @@ ibio_oport_trace(struct gsstringbuilder *err, gsvalue v)
     if (GS_GC_TRACE(err, &newoport->writing) < 0) return 0;
 
     if (newoport->waiting_to_write) {
-        gsstring_builder_print(err, UNIMPL("ibio_oport_trace: evacuate waiting_to_write"));
-        return 0;
+        struct ibio_oport_write_blocker **pblocking, *blocking, *newblocking;
 
-        gsstring_builder_print(err, UNIMPL("ibio_oport_trace: evacuate waiting_to_write_end"));
-        return 0;
+        for (pblocking = &newoport->waiting_to_write; *pblocking; pblocking = &newblocking->next) {
+            blocking = *pblocking;
+            newblocking = gs_sys_global_block_suballoc(&ibio_write_blocking_info, sizeof(struct ibio_oport_write_blocker));
+            newblocking->next = blocking->next;
+            *pblocking = newblocking;
+        }
+
+        newoport->waiting_to_write_end = pblocking;
     }
 
     if (ibio_oport_evacuate_buf(err, newoport) < 0) return 0;
