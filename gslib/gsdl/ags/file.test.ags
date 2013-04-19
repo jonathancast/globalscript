@@ -10,6 +10,7 @@ _test.parser.nil	.closure	_test.parser.nil_c
 _test.parser.nil_label	.string	file.parser\sqq{}
 _test.parser.nil_ds_label	.string	data\ssegment
 _test.parser.nil_cs_label	.string	code\ssegment
+_test.parser.nil_ts_label	.string	type\ssegment
 
 _test.parser.empty.prefix	.closure	_test.parser.empty.prefix_c
 _test.parser.empty.prefix_label	.string	file.parser\sqq{\\t.prefix\\n\\n}
@@ -80,8 +81,10 @@ gsdl.ags.file.t	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 list.dataitem.ty	.tylet	list.t	gsdl.ags.dataitem.t
 list.codeitem.ty	.tylet	list.t	gsdl.ags.codeitem.t
+list.typeitem.ty	.tylet	list.t	gsdl.ags.typeitem.t
 test.property.∧	.gvar
 test.property.label	.gvar
 _test.parser.nil_ds_label	.gvar
@@ -94,6 +97,9 @@ list.nil	.gvar
 _test.parser.nil_cs_label	.gvar
 gsdl.ags.codeitem.≡	.gvar
 gsdl.ags.codeitem.fmtgs	.gvar
+_test.parser.nil_ts_label	.gvar
+gsdl.ags.typeitem.≡	.gvar
+gsdl.ags.typeitem.fmtgs	.gvar
 file	.larg	gsdl.ags.file.t
 list.dataitem.≡	.apply	list.≡	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.≡
 list.dataitem.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.fmtgs
@@ -107,7 +113,14 @@ cs	.lfield	codesection	file
 cs.nil	.apply	list.nil	gsdl.ags.codeitem.t
 cs.test.0	.apply	test.assert.eq	list.codeitem.ty	|	list.codeitem.≡	list.codeitem.fmtgs	cs	cs.nil
 cs.test	.apply	test.property.label	|	_test.parser.nil_cs_label	cs.test.0
-	.app	ds.test	cs.test
+list.typeitem.≡	.apply	list.≡	gsdl.ags.typeitem.t	|	gsdl.ags.typeitem.≡
+list.typeitem.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.typeitem.t	|	gsdl.ags.typeitem.fmtgs
+ts	.lfield	typesection	file
+ts.nil	.apply	list.nil	gsdl.ags.typeitem.t
+ts.test.0	.apply	test.assert.eq	list.typeitem.ty	|	list.typeitem.≡	list.typeitem.fmtgs	ts	ts.nil
+ts.test	.apply	test.property.label	|	_test.parser.nil_ts_label	ts.test.0
+test1	.apply	test.property.∧	|	cs.test	ts.test
+	.app	ds.test	test1
 	.enter	test.property.∧
 
 # §section §gs{parser =~ qq{\\t.document\\n}}

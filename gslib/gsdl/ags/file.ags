@@ -234,18 +234,21 @@ gsdl.ags.file.filetype.t	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.file.t	.tygvar
 _dataitems_ty	.tylet	list.t	gsdl.ags.dataitem.t
 _codeitems_ty	.tylet	list.t	gsdl.ags.codeitem.t
+_typeitems_ty	.tylet	list.t	gsdl.ags.typeitem.t
 _gsdl.ags.file.parser_f_c	.subcode
-parser.lift3	.gvar
+parser.lift4	.gvar
 gsdl.ags.file.filetype.parser	.gvar
 gsdl.ags.dataitem.segment.parser	.gvar
 gsdl.ags.codeitem.segment.parser	.gvar
+gsdl.ags.typeitem.segment.parser	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.file.parser_f_c
-	.app	f	gsdl.ags.file.filetype.parser	gsdl.ags.dataitem.segment.parser	gsdl.ags.codeitem.segment.parser
-	.enter	parser.lift3	rune.t	gsdl.ags.file.filetype.t	_dataitems_ty	_codeitems_ty	gsdl.ags.file.t
+	.app	f	gsdl.ags.file.filetype.parser	gsdl.ags.dataitem.segment.parser	gsdl.ags.codeitem.segment.parser	gsdl.ags.typeitem.segment.parser
+	.enter	parser.lift4	rune.t	gsdl.ags.file.filetype.t	_dataitems_ty	_codeitems_ty	_typeitems_ty	gsdl.ags.file.t
 
 _gsdl.ags.file.parser_f_c	.expr
 gsdl.ags.file.filetype.t	.tygvar
@@ -256,7 +259,7 @@ gsdl.ags.typeitem.t	.tygvar	# Temp
 ty	.larg	gsdl.ags.file.filetype.t
 das	.larg	list.t	gsdl.ags.dataitem.t
 cos	.larg	list.t	gsdl.ags.codeitem.t
-tys	.undefined	list.t	gsdl.ags.typeitem.t
+tys	.larg	list.t	gsdl.ags.typeitem.t
 res	.record	codesection	cos	datasection	das	filetype	ty	typesection	tys
 	.lift
 	.yield	res
