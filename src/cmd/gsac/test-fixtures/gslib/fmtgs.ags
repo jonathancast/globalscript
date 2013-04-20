@@ -1,3 +1,6 @@
 	.prefix
 
 	.type
+
+fmtgs.t	.tyexpr
+	.tyref	fmtgs.printer.t
