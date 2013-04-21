@@ -239,16 +239,10 @@ gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
                 *pv = '\n';
                 break;
             case '\\':
-                *pv = '\\';
-                break;
             case '|':
-                *pv = '|';
-                break;
             case '.':
-                *pv = '.';
-                break;
             case '*':
-                *pv = '*';
+                *pv = s[1];
                 break;
             default:
                 gsfatal(UNIMPL("%P: gsbc_parse_rune_literal(%s)"), pos, s);
