@@ -4,5 +4,5 @@
 
 fmtgs.t	.tyexpr
 fmtgs.printer.t	.tygvar
-α	.tygvar
+α	.tylambda	*
 	.tyref	fmtgs.printer.t
