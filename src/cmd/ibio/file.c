@@ -25,6 +25,8 @@ static api_prim_blocking_gccopy ibio_file_read_open_blocking_gccopy;
 static api_prim_blocking_gcevacuate ibio_file_read_open_blocking_gcevacuate;
 static api_prim_blocking_gccleanup ibio_file_read_open_blocking_gccleanup;
 
+static gsrpc_gccopy ibio_file_read_open_rpc_gccopy;
+
 enum api_prim_execution_state
 ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open, struct api_prim_blocking **pblocking, gsvalue *pv)
 {
@@ -59,7 +61,7 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
             struct gsrpc *rpc;
             struct ibio_file_read_open_rpc *openrpc;
 
-            rpc = gsqueue_rpc_alloc(sizeof(struct ibio_file_read_open_rpc));
+            rpc = gsqueue_rpc_alloc(sizeof(struct ibio_file_read_open_rpc), ibio_file_read_open_rpc_gccopy);
             file_read_open_blocking->rpc = openrpc = (struct ibio_file_read_open_rpc *)rpc;
 
             rpc->tag = ibio_uxproc_rpc_file_read_open;
@@ -140,6 +142,13 @@ ibio_file_read_open_blocking_gccleanup(struct api_prim_blocking *blocking)
     if (file_read_open_blocking->rpc && file_read_open_blocking->rpc->rpc.forward)
         file_read_open_blocking->rpc = (struct ibio_file_read_open_rpc *)file_read_open_blocking->rpc->rpc.forward
     ;
+}
+
+struct gsrpc *
+ibio_file_read_open_rpc_gccopy(struct gsstringbuilder *err, struct gsrpc *gsrpc)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_file_read_open_rpc_gccopy"));
+    return 0;
 }
 
 static void ibio_rpc_fail(struct gsrpc *, char *, ...);

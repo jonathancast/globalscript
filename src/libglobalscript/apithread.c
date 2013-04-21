@@ -1057,6 +1057,8 @@ api_done(struct api_thread *thread)
     gsfinish_string_builder(thread->status);
 }
 
+static gsrpc_gccopy api_done_rpc_gccopy;
+
 static
 void
 api_send_done_rpc(struct api_thread *thread)
@@ -1064,10 +1066,17 @@ api_send_done_rpc(struct api_thread *thread)
     struct gsrpc *rpc;
     struct api_done_rpc *done;
 
-    rpc = gsqueue_rpc_alloc(sizeof(*done));
+    rpc = gsqueue_rpc_alloc(sizeof(*done), api_done_rpc_gccopy);
     done = (struct api_done_rpc *)rpc;
     rpc->tag = api_std_rpc_done;
     gsqueue_send_rpc(thread->process_rpc_queue, rpc);
+}
+
+struct gsrpc *
+api_done_rpc_gccopy(struct gsstringbuilder *err, struct gsrpc *rpc)
+{
+    gsstring_builder_print(err, UNIMPL("api_done_rpc_gccopy"));
+    return 0;
 }
 
 struct api_abend_rpc {
@@ -1091,6 +1100,8 @@ api_abend(struct api_thread *thread, char *msg, ...)
     gsfinish_string_builder(thread->status);
 }
 
+static gsrpc_gccopy api_abend_rpc_gccopy;
+
 static
 void
 api_send_abend_rpc(struct api_thread *thread, char *msg, ...)
@@ -1104,11 +1115,18 @@ api_send_abend_rpc(struct api_thread *thread, char *msg, ...)
     vseprint(buf, buf+sizeof buf, msg, arg);
     va_end(arg);
 
-    rpc = gsqueue_rpc_alloc(sizeof(*abend) + strlen(argv0) + 2 + strlen(buf) + 1);
+    rpc = gsqueue_rpc_alloc(sizeof(*abend) + strlen(argv0) + 2 + strlen(buf) + 1, api_abend_rpc_gccopy);
     abend = (struct api_abend_rpc *)rpc;
     rpc->tag = api_std_rpc_abend;
     sprint(abend->status, "%s: %s", argv0, buf);
     api_send_rpc(thread, rpc);
+}
+
+struct gsrpc *
+api_abend_rpc_gccopy(struct gsstringbuilder *err, struct gsrpc *rpc)
+{
+    gsstring_builder_print(err, UNIMPL("api_abend_rpc_gccopy"));
+    return 0;
 }
 
 void

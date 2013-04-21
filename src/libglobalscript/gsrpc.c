@@ -94,13 +94,15 @@ static struct gs_sys_global_block_suballoc_info gsrpc_info = {
 };
 
 struct gsrpc *
-gsqueue_rpc_alloc(ulong sz)
+gsqueue_rpc_alloc(ulong sz, gsrpc_gccopy *gccopy)
 {
     struct gsrpc *res;
 
     res = gs_sys_global_block_suballoc(&gsrpc_info, sz);
 
     memset(res, 0, sz);
+
+    res->gccopy = gccopy;
 
     return res;
 }

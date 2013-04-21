@@ -63,6 +63,8 @@ struct gsstringbuilder;
 
 struct gsrpc_queue;
 
+typedef struct gsrpc *gsrpc_gccopy(struct gsstringbuilder *, struct gsrpc *);
+
 struct gsrpc {
     Lock lock;
     int tag;
@@ -73,12 +75,13 @@ struct gsrpc {
         gsrpc_succeeded,
     } status;
     struct gsrpc *forward;
+    gsrpc_gccopy *gccopy;
     struct gsstringbuilder *err;
 };
 
 struct gsrpc_queue *gsqueue_alloc(void);
 
-struct gsrpc *gsqueue_rpc_alloc(ulong);
+struct gsrpc *gsqueue_rpc_alloc(ulong, gsrpc_gccopy *);
 
 struct gsrpc *gsqueue_try_get_rpc(struct gsrpc_queue *);
 void gsqueue_send_rpc(struct gsrpc_queue *, struct gsrpc *);
