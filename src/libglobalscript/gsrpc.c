@@ -111,17 +111,23 @@ gsqueue_rpc_alloc(ulong sz, gsrpc_gccopy *gccopy, gsrpc_gcevacuate *gcevacuate)
 int
 gsqueue_rpc_gc_trace(struct gsstringbuilder *err, struct gsrpc **prpc)
 {
-    gsstring_builder_print(err, UNIMPL("gsqueue_rpc_gc_trace"));
-    return -1;
+    struct gsrpc *rpc, *newrpc;
 
-    gsstring_builder_print(err, UNIMPL("gsqueue_rpc_gc_trace"));
-    return -1;
+    rpc = *prpc;
 
-    gsstring_builder_print(err, UNIMPL("gsqueue_rpc_gc_trace"));
-    return -1;
+    if (rpc->forward) {
+        gsstring_builder_print(err, UNIMPL("gsqueue_rpc_gc_trace: check for forward"));
+        return -1;
+    }
 
-    gsstring_builder_print(err, UNIMPL("gsqueue_rpc_gc_trace"));
-    return -1;
+    if (!(newrpc = rpc->gccopy(err, rpc))) return -1;
+    memset(&newrpc->lock, 0, sizeof(newrpc->lock));
+
+    rpc->forward = *prpc = newrpc;
+
+    if (rpc->err && gs_sys_block_in_gc_from_space(rpc->err) && gsstring_builder_trace(err, &rpc->err) < 0) return -1;
+
+    if (newrpc->gcevacuate(err, newrpc) < 0) return -1;
 
     return 0;
 }
