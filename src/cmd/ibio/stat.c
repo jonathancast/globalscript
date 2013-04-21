@@ -15,6 +15,7 @@ struct ibio_file_stat_rpc {
 };
 
 static gsrpc_gccopy ibio_file_stat_rpc_gccopy;
+static gsrpc_gcevacuate ibio_file_stat_rpc_gcevacuate;
 
 struct ibio_file_stat_blocking {
     struct api_prim_blocking bl;
@@ -58,7 +59,7 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, stru
             struct gsrpc *rpc;
             struct ibio_file_stat_rpc *statrpc;
 
-            rpc = gsqueue_rpc_alloc(sizeof(struct ibio_file_stat_rpc), ibio_file_stat_rpc_gccopy);
+            rpc = gsqueue_rpc_alloc(sizeof(struct ibio_file_stat_rpc), ibio_file_stat_rpc_gccopy, ibio_file_stat_rpc_gcevacuate);
             file_stat_blocking->rpc = statrpc = (struct ibio_file_stat_rpc *)rpc;
 
             rpc->tag = ibio_uxproc_rpc_stat;
@@ -95,6 +96,13 @@ ibio_file_stat_rpc_gccopy(struct gsstringbuilder *err, struct gsrpc *gsrpc)
 {
     gsstring_builder_print(err, UNIMPL("ibio_file_stat_rpc_gccopy"));
     return 0;
+}
+
+int
+ibio_file_stat_rpc_gcevacuate(struct gsstringbuilder *err, struct gsrpc *gsrpc)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_file_stat_rpc_gcevacuate"));
+    return -1;
 }
 
 static

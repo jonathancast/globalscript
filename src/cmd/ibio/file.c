@@ -26,6 +26,7 @@ static api_prim_blocking_gcevacuate ibio_file_read_open_blocking_gcevacuate;
 static api_prim_blocking_gccleanup ibio_file_read_open_blocking_gccleanup;
 
 static gsrpc_gccopy ibio_file_read_open_rpc_gccopy;
+static gsrpc_gcevacuate ibio_file_read_open_rpc_gcevacuate;
 
 enum api_prim_execution_state
 ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open, struct api_prim_blocking **pblocking, gsvalue *pv)
@@ -61,7 +62,7 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
             struct gsrpc *rpc;
             struct ibio_file_read_open_rpc *openrpc;
 
-            rpc = gsqueue_rpc_alloc(sizeof(struct ibio_file_read_open_rpc), ibio_file_read_open_rpc_gccopy);
+            rpc = gsqueue_rpc_alloc(sizeof(struct ibio_file_read_open_rpc), ibio_file_read_open_rpc_gccopy, ibio_file_read_open_rpc_gcevacuate);
             file_read_open_blocking->rpc = openrpc = (struct ibio_file_read_open_rpc *)rpc;
 
             rpc->tag = ibio_uxproc_rpc_file_read_open;
@@ -151,10 +152,17 @@ ibio_file_read_open_rpc_gccopy(struct gsstringbuilder *err, struct gsrpc *gsrpc)
 
     rpc = (struct ibio_file_read_open_rpc *)gsrpc;
 
-    newrpc = (struct ibio_file_read_open_rpc *)gsqueue_rpc_alloc(sizeof(struct ibio_file_read_open_rpc), ibio_file_read_open_rpc_gccopy);
+    newrpc = (struct ibio_file_read_open_rpc *)gsqueue_rpc_alloc(sizeof(struct ibio_file_read_open_rpc), ibio_file_read_open_rpc_gccopy, ibio_file_read_open_rpc_gcevacuate);
     memcpy(newrpc, rpc, sizeof(struct ibio_file_read_open_rpc));
 
     return (struct gsrpc *)newrpc;
+}
+
+int
+ibio_file_read_open_rpc_gcevacuate(struct gsstringbuilder *err, struct gsrpc *gsrpc)
+{
+    gsstring_builder_print(err, UNIMPL("ibio_file_read_open_rpc_gcevacuate"));
+    return -1;
 }
 
 static void ibio_rpc_fail(struct gsrpc *, char *, ...);
