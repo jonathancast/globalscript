@@ -11,3 +11,6 @@ fmtgs.printer.t	.tygvar
 
 fmtgs.printer.t	.tyexpr
 	.tyref	diff.list.t	rune.t
+
+fmtgs.prec.t	.tyabstract	*
+	.tyref	fmtgs.prec.prim.u
