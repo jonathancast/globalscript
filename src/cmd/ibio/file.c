@@ -147,8 +147,14 @@ ibio_file_read_open_blocking_gccleanup(struct api_prim_blocking *blocking)
 struct gsrpc *
 ibio_file_read_open_rpc_gccopy(struct gsstringbuilder *err, struct gsrpc *gsrpc)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_file_read_open_rpc_gccopy"));
-    return 0;
+    struct ibio_file_read_open_rpc *rpc, *newrpc;
+
+    rpc = (struct ibio_file_read_open_rpc *)gsrpc;
+
+    newrpc = (struct ibio_file_read_open_rpc *)gsqueue_rpc_alloc(sizeof(struct ibio_file_read_open_rpc), ibio_file_read_open_rpc_gccopy);
+    memcpy(newrpc, rpc, sizeof(struct ibio_file_read_open_rpc));
+
+    return (struct gsrpc *)newrpc;
 }
 
 static void ibio_rpc_fail(struct gsrpc *, char *, ...);
