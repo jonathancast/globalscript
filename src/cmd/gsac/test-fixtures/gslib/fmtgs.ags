@@ -3,4 +3,5 @@
 	.type
 
 fmtgs.t	.tyexpr
+fmtgs.printer.t	.tygvar
 	.tyref	fmtgs.printer.t
