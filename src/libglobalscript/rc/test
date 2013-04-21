@@ -75,6 +75,7 @@ ok_diff '-- regex character class ranges --' ./$O.test-gsi regex-class-range.ags
 ok_diff '-- regex multi-character classes --' ./$O.test-gsi regex-multi-char-class.ags
 ok_diff '-- regex products --' ./$O.test-gsi regex-product.ags
 ok_diff '-- regex stars --' ./$O.test-gsi regex-star.ags
+ok_diff '-- regex escaped stars --' ./$O.test-gsi regex-escaped-star.ags
 ok_diff '-- regex interpolations --' ./$O.test-gsi regex-interp.ags
 ok_diff '-- regex sums --' ./$O.test-gsi regex-sum.ags
 ok_diff '-- regex sums with empty left-hand operands --' ./$O.test-gsi regex-sum-empty-left-operand.ags
