@@ -161,8 +161,17 @@ ibio_file_read_open_rpc_gccopy(struct gsstringbuilder *err, struct gsrpc *gsrpc)
 int
 ibio_file_read_open_rpc_gcevacuate(struct gsstringbuilder *err, struct gsrpc *gsrpc)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_file_read_open_rpc_gcevacuate"));
-    return -1;
+    struct ibio_file_read_open_rpc *rpc;
+    gsvalue gctemp;
+
+    rpc = (struct ibio_file_read_open_rpc *)gsrpc;
+
+    if (gs_gc_trace_pos(err, &rpc->pos) < 0) return -1;
+    if (ibio_external_io_trace(err, &rpc->io) < 0) return -1;
+    if (gsstring_builder_trace(err, &rpc->filename) < 0) return -1;
+    if (GS_GC_TRACE(err, &rpc->iport) < 0) return -1;
+
+    return 0;
 }
 
 static void ibio_rpc_fail(struct gsrpc *, char *, ...);
