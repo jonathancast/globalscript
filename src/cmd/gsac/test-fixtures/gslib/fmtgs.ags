@@ -8,3 +8,6 @@ fmtgs.printer.t	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	fmtgs.printer.t
+
+fmtgs.printer.t	.tyexpr
+	.tyref	diff.list.t	rune.t
