@@ -1,0 +1,11 @@
+	.prefix
+
+	.type
+
+gsdl.ags.coercionitem.t	.tyabstract	*
+gsdl.ags.coercionitem.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.coercionitem.prim.u
+
+gsdl.ags.coercionitem.prim.u	.tyexpr
+	.tysum
