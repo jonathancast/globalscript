@@ -13,6 +13,7 @@ gsdl.ags.coercionitem.≡	.closure	_gsdl.ags.coercionitem.≡_c
 gsdl.ags.coercionitem.fmtgs	.closure	_gsdl.ags.coercionitem.fmtgs_c
 
 gsdl.ags.coercionitem.decls.parser	.closure	_gsdl.ags.coercionitem.decls.parser_c
+_gsdl.ags.coercionitem.decls.parser_tygvars.p_tygvar.re	.regex	.tygvar
 
 gsdl.ags.coercionitem.expr.parser	.closure	_gsdl.ags.coercionitem.expr.parser_c
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re	.regex	.tydefinition
@@ -120,16 +121,46 @@ gsdl.ags.coercionitem.t	.tygvar	# Temp
 
 _gsdl.ags.coercionitem.decls.parser_c	.expr
 rune.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
 gsdl.ags.coercionitem.decls.t	.tygvar
+list.string.ty	.tylet	list.t	string.t
 _gsdl.ags.coercionitem.decls.parser_f_c	.subcode
-parser.unit	.gvar
+_gsdl.ags.coercionitem.decls.parser_tygvars.p_c	.subcode
+parser.map	.gvar
 f	.alloc	_gsdl.ags.coercionitem.decls.parser_f_c
-	.app	f
-	.enter	parser.unit	rune.t	gsdl.ags.coercionitem.decls.t
+tygvars.p	.alloc	_gsdl.ags.coercionitem.decls.parser_tygvars.p_c
+	.app	f	tygvars.p
+	.enter	parser.map	rune.t	list.string.ty	gsdl.ags.coercionitem.decls.t
 
 _gsdl.ags.coercionitem.decls.parser_f_c	.expr
+list.t	.tygvar
+string.t	.tygvar
 gsdl.ags.coercionitem.decls.t	.tygvar	# Temp
+tygvs	.larg	list.t	string.t
 	.undef	gsdl.ags.coercionitem.decls.t
+
+_gsdl.ags.coercionitem.decls.parser_tygvars.p_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+list.string.ty	.tylet	list.t	string.t
+parser.many	.gvar
+parser.<*	.gvar
+gsdl.ags.syntax.id	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.coercionitem.decls.parser_tygvars.p_tygvar.re	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.fail	.gvar	# Temp
+tygvar.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.decls.parser_tygvars.p_tygvar.re
+p2	.apply	parser.*>	rune.t	string.t	string.t	|	tygvar.p	gsdl.ags.syntax.whitespace
+p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	p2
+p	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	p1
+	.app	p
+	.enter	parser.many	rune.t	string.t
 
 # §section §gs{gsdl.ags.coercionitem.expr.parser}
 
