@@ -162,6 +162,7 @@ list.t.out	.cogvar
 ibio.file.name.</>	.gvar
 list.reverse	.gvar
 ibio.file.name.components.get	.gvar
+gsac.input.prefix.dir.load	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 dirn	.fv	ibio.file.name.t
 d0	.fv	ibio.dir.u
@@ -177,7 +178,8 @@ stxe			.apply	list.reverse	string.t	|	exts
 			.coerce	list.t.out	string.t
 			.enter	stxe
 		.case	true
-			.undef	ibio.prim.t	gsac.input.prefix.t
+			.app	eo	fn
+			.enter	gsac.input.prefix.dir.load
 
 _gsac.input.prefix.dir.load_files.loaded_f_false_k	.forcecont
 ibio.prim.oport	.tygvar
