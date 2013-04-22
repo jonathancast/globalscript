@@ -21,6 +21,7 @@ fmtgs.prec.prim.u	.tyexpr
 
 	.coercion
 
-fmtgs.prec.t.in	.tycoercion
+fmtgs.prec.t.out	.tycoercion
 fmtgs.prec.t	.tygvar
+	.tyinvert
 	.tydefinition	fmtgs.prec.t

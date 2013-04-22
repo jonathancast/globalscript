@@ -15,8 +15,9 @@ gsdl.ags.coercionitem.fmtgs	.closure	_gsdl.ags.coercionitem.fmtgs_c
 gsdl.ags.coercionitem.decls.parser	.closure	_gsdl.ags.coercionitem.decls.parser_c
 _gsdl.ags.coercionitem.decls.parser_tygvars.p_tygvar.re	.regex	.tygvar
 
-gsdl.ags.coercionitem.expr.parser	.closure	_gsdl.ags.coercionitem.expr.parser_c
+gsdl.ags.coercionitem.expr.parser	.closure	_gsdl.ags.coercionitem.expr.parser_c	_gsdl.ags.coercionitem.expr.parser_ty
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re	.regex	.tydefinition
+_gsdl.ags.coercionitem.expr.parser_tyinvert.p_tyinvert.re	.regex	.tyinvert
 
 	.code
 
@@ -168,8 +169,12 @@ _gsdl.ags.coercionitem.expr.parser_c	.expr
 rune.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_c	.subcode
+_gsdl.ags.coercionitem.expr.parser_tyinvert.p_c	.subcode
+parser.<|>	.gvar
 tydefinition.p	.alloc	_gsdl.ags.coercionitem.expr.parser_tydefinition.p_c
-	.enter	tydefinition.p
+tyinvert.p	.alloc	_gsdl.ags.coercionitem.expr.parser_tyinvert.p_c
+	.app	tydefinition.p	tyinvert.p
+	.enter	parser.<|>	rune.t	gsdl.ags.coercionitem.expr.t
 
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_c	.expr
 rune.t	.tygvar
@@ -199,6 +204,38 @@ _gsdl.ags.coercionitem.expr.parser_tydefinition.p_f_c	.expr
 string.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
 nm	.larg	string.t
+	.undef	gsdl.ags.coercionitem.expr.t
+
+_gsdl.ags.coercionitem.expr.parser_tyinvert.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.ags.coercionitem.expr.t	.tygvar
+string.t	.tygvar
+_gsdl.ags.coercionitem.expr.parser_tyinvert.p_f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.coercionitem.expr.parser_tyinvert.p_tyinvert.re	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+gsdl.ags.coercionitem.expr.parser	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.coercionitem.expr.parser_tyinvert.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+tyinvert.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.expr.parser_tyinvert.p_tyinvert.re
+p2	.apply	parser.*>	rune.t	string.t	gsdl.ags.coercionitem.expr.t	|	gsdl.ags.syntax.whitespace	gsdl.ags.coercionitem.expr.parser
+p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.coercionitem.expr.t	|	tyinvert.p	p2
+p	.apply	parser.*>	rune.t	string.t	gsdl.ags.coercionitem.expr.t	|	gsdl.ags.syntax.columnsep	p1
+	.app	f	pos.get	p
+	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.ags.coercionitem.expr.t	gsdl.ags.coercionitem.expr.t
+
+_gsdl.ags.coercionitem.expr.parser_tyinvert.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.ags.coercionitem.expr.t	.tygvar
+pos	.larg	parser.pos.t
+e	.larg	gsdl.ags.coercionitem.expr.t
 	.undef	gsdl.ags.coercionitem.expr.t
 
 	.type
@@ -232,3 +269,11 @@ gsdl.ags.coercionitem.expr.prim.u	.tygvar
 
 gsdl.ags.coercionitem.expr.prim.u	.tyexpr
 	.tysum
+
+# §section §gs{gsdl.ags.coercionitem.expr.parser}
+
+_gsdl.ags.coercionitem.expr.parser_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.ags.coercionitem.expr.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.ags.coercionitem.expr.t
