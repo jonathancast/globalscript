@@ -3,6 +3,9 @@
 	.data
 
 gsdl.ags.coercionitem.segment.parser	.closure	_gsdl.ags.coercionitem.segment.parser_c
+_gsdl.ags.coercionitem.segment.parser_coercion.re	.regex	.coercion
+
+gsdl.ags.coercionitem.parser	.closure	_gsdl.ags.coercionitem.parser_c
 
 gsdl.ags.coercionitem.≡	.closure	_gsdl.ags.coercionitem.≡_c
 
@@ -16,12 +19,37 @@ _gsdl.ags.coercionitem.segment.parser_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
+string.t	.tygvar
 list.coercionitem.ty	.tylet	list.t	gsdl.ags.coercionitem.t
+parser.<|>	.gvar
 parser.unit	.gvar
 list.nil	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.coercionitem.segment.parser_coercion.re	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.many	.gvar
+gsdl.ags.coercionitem.parser	.gvar
+parser.fail	.gvar	# Temp
 nil	.apply	list.nil	gsdl.ags.coercionitem.t
-	.app	nil
-	.enter	parser.unit	rune.t	list.coercionitem.ty
+nil.p	.apply	parser.unit	rune.t	list.coercionitem.ty	|	nil
+coercion.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.segment.parser_coercion.re	# > m/\.coercion/
+segment.p3	.apply	parser.many	rune.t	gsdl.ags.coercionitem.t	|	gsdl.ags.coercionitem.parser
+segment.p2	.apply	parser.*>	rune.t	string.t	list.coercionitem.ty	|	gsdl.ags.syntax.whitespace	segment.p3
+segment.p1	.apply	parser.*>	rune.t	string.t	list.coercionitem.ty	|	coercion.p	segment.p2
+segment.p	.apply	parser.*>	rune.t	string.t	list.coercionitem.ty	|	gsdl.ags.syntax.columnsep	segment.p1
+	.app	nil.p	segment.p
+	.enter	parser.<|>	rune.t	list.coercionitem.ty
+
+# §section §gs{gsdl.ags.coercionitem.parser}
+
+_gsdl.ags.coercionitem.parser_c	.expr
+rune.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+parser.fail	.gvar	# Temp
+	.enter	parser.fail	rune.t	gsdl.ags.coercionitem.t
 
 # §section §gs{gsdl.ags.coercionitem.≡}
 
