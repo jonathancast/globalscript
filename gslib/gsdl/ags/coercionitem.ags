@@ -4,6 +4,8 @@
 
 gsdl.ags.coercionitem.≡	.closure	_gsdl.ags.coercionitem.≡_c
 
+gsdl.ags.coercionitem.fmtgs	.closure	_gsdl.ags.coercionitem.fmtgs_c
+
 	.code
 
 # §section §gs{gsdl.ags.coercionitem.≡}
@@ -14,6 +16,13 @@ bool.t	.tygvar	# Temp
 co0	.larg	gsdl.ags.coercionitem.t
 co1	.larg	gsdl.ags.coercionitem.t
 	.undef	bool.t
+
+# §section §gs{gsdl.ags.coercionitem.fmtgs}
+
+_gsdl.ags.coercionitem.fmtgs_c	.expr
+fmtgs.t	.tygvar	# Temp
+gsdl.ags.coercionitem.t	.tygvar	# Temp
+	.undef	fmtgs.t	gsdl.ags.coercionitem.t
 
 	.type
 
