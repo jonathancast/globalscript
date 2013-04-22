@@ -15,3 +15,6 @@ fmtgs.printer.t	.tyexpr
 fmtgs.prec.t	.tyabstract	*
 fmtgs.prec.prim.u	.tygvar
 	.tyref	fmtgs.prec.prim.u
+
+fmtgs.prec.prim.u	.tyexpr
+	.tysum	app	record.unboxed.empty	arg	record.unboxed.empty
