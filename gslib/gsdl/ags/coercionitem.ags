@@ -1,6 +1,23 @@
 	.prefix
 
+	.data
+
+gsdl.ags.coercionitem.≡	.closure	_gsdl.ags.coercionitem.≡_c
+
+	.code
+
+# §section §gs{gsdl.ags.coercionitem.≡}
+
+_gsdl.ags.coercionitem.≡_c	.expr
+gsdl.ags.coercionitem.t	.tygvar
+bool.t	.tygvar	# Temp
+co0	.larg	gsdl.ags.coercionitem.t
+co1	.larg	gsdl.ags.coercionitem.t
+	.undef	bool.t
+
 	.type
+
+# §section §gs{gsdl.ags.coercionitem.t}
 
 gsdl.ags.coercionitem.t	.tyabstract	*
 gsdl.ags.coercionitem.prim.u	.tygvar
