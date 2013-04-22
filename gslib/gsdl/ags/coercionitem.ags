@@ -2,11 +2,26 @@
 
 	.data
 
+gsdl.ags.coercionitem.segment.parser	.closure	_gsdl.ags.coercionitem.segment.parser_c
+
 gsdl.ags.coercionitem.≡	.closure	_gsdl.ags.coercionitem.≡_c
 
 gsdl.ags.coercionitem.fmtgs	.closure	_gsdl.ags.coercionitem.fmtgs_c
 
 	.code
+
+# §section §gs{gsdl.ags.coercionitem.segment.parser}
+
+_gsdl.ags.coercionitem.segment.parser_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+list.coercionitem.ty	.tylet	list.t	gsdl.ags.coercionitem.t
+parser.unit	.gvar
+list.nil	.gvar
+nil	.apply	list.nil	gsdl.ags.coercionitem.t
+	.app	nil
+	.enter	parser.unit	rune.t	list.coercionitem.ty
 
 # §section §gs{gsdl.ags.coercionitem.≡}
 
