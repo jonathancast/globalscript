@@ -18,3 +18,8 @@ fmtgs.prec.prim.u	.tygvar
 
 fmtgs.prec.prim.u	.tyexpr
 	.tysum	app	record.unboxed.empty	arg	record.unboxed.empty
+
+	.coercion
+
+fmtgs.prec.t.in	.tycoercion
+	.tydefinition	fmtgs.prec.t
