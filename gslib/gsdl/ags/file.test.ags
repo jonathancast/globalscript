@@ -11,6 +11,7 @@ _test.parser.nil_label	.string	file.parser\sqq{}
 _test.parser.nil_ds_label	.string	data\ssegment
 _test.parser.nil_cs_label	.string	code\ssegment
 _test.parser.nil_ts_label	.string	type\ssegment
+_test.parser.nil_tcs_label	.string	coercion\ssegment
 
 _test.parser.empty.prefix	.closure	_test.parser.empty.prefix_c
 _test.parser.empty.prefix_label	.string	file.parser\sqq{\\t.prefix\\n\\n}
@@ -82,9 +83,11 @@ list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
 list.dataitem.ty	.tylet	list.t	gsdl.ags.dataitem.t
 list.codeitem.ty	.tylet	list.t	gsdl.ags.codeitem.t
 list.typeitem.ty	.tylet	list.t	gsdl.ags.typeitem.t
+list.coercionitem.ty	.tylet	list.t	gsdl.ags.coercionitem.t
 test.property.∧	.gvar
 test.property.label	.gvar
 _test.parser.nil_ds_label	.gvar
@@ -100,6 +103,9 @@ gsdl.ags.codeitem.fmtgs	.gvar
 _test.parser.nil_ts_label	.gvar
 gsdl.ags.typeitem.≡	.gvar
 gsdl.ags.typeitem.fmtgs	.gvar
+_test.parser.nil_tcs_label	.gvar
+gsdl.ags.coercionitem.≡	.gvar
+gsdl.ags.coercionitem.fmtgs	.gvar
 file	.larg	gsdl.ags.file.t
 list.dataitem.≡	.apply	list.≡	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.≡
 list.dataitem.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.fmtgs
@@ -119,7 +125,14 @@ ts	.lfield	typesection	file
 ts.nil	.apply	list.nil	gsdl.ags.typeitem.t
 ts.test.0	.apply	test.assert.eq	list.typeitem.ty	|	list.typeitem.≡	list.typeitem.fmtgs	ts	ts.nil
 ts.test	.apply	test.property.label	|	_test.parser.nil_ts_label	ts.test.0
-test1	.apply	test.property.∧	|	cs.test	ts.test
+list.coercionitem.≡	.apply	list.≡	gsdl.ags.coercionitem.t	|	gsdl.ags.coercionitem.≡
+list.coercionitem.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.coercionitem.t	|	gsdl.ags.coercionitem.fmtgs
+tcs	.lfield	coercionsection	file
+tcs.nil	.apply	list.nil	gsdl.ags.coercionitem.t
+tcs.test.0	.apply	test.assert.eq	list.coercionitem.ty	|	list.coercionitem.≡	list.coercionitem.fmtgs	tcs	tcs.nil
+tcs.test	.apply	test.property.label	|	_test.parser.nil_tcs_label	tcs.test.0
+test2	.apply	test.property.∧	|	ts.test	tcs.test
+test1	.apply	test.property.∧	|	cs.test	test2
 	.app	ds.test	test1
 	.enter	test.property.∧
 
@@ -160,6 +173,7 @@ string.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
 rune.t	.tygvar
 test.property.label	.gvar
 _test.fmtgs_label	.gvar
@@ -174,7 +188,8 @@ _test.fmtgs_expected	.gvar
 cs	.apply	list.nil	gsdl.ags.codeitem.t
 ds	.apply	list.nil	gsdl.ags.dataitem.t
 tys	.apply	list.nil	gsdl.ags.typeitem.t
-file	.lrecord	codesection	cs	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	tys
+tcs	.apply	list.nil	gsdl.ags.coercionitem.t
+file	.lrecord	codesection	cs	coercionsection	tcs	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	tys
 nil	.apply	list.nil	rune.t
 file.s	.apply	gsdl.ags.file.fmtgs	|	file	fmtgs.prec.arg	nil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	file.s	_test.fmtgs_expected
