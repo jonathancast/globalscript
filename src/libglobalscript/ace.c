@@ -101,7 +101,7 @@ ace_thread_pool_main(void *p)
 
     outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = num_timeslots = num_completed_timeslots = 0;
     start_time = nsec();
-    finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = waiting_for_thread_time = 0;
+    finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = waiting_for_thread_time = waiting_for_thread_start_time = 0;
     tid = 0;
     for (;;) {
         struct ace_thread *thread;
