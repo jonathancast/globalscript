@@ -79,13 +79,13 @@ static void ace_push_ubanalyze(struct ace_thread *);
 static void ace_perform_analyze(struct ace_thread *);
 static void ace_perform_danalyze(struct ace_thread *);
 static void ace_return_undef(struct ace_thread *);
-static void ace_enter(struct ace_thread *);
+static void ace_enter(struct ace_thread *, struct ace_thread_pool_stats *);
 static void ace_yield(struct ace_thread *);
 static void ace_ubprim(struct ace_thread *);
 static void ace_lprim(struct ace_thread *);
 
 struct ace_thread_pool_stats {
-    vlong numthreads_total, num_blocked, num_blocked_threads;
+    vlong numthreads_total, num_blocked, num_blocked_threads, num_blocks_on_function;
     vlong gc_time, checking_thread_time;
 };
 
@@ -96,10 +96,10 @@ ace_thread_pool_main(void *p)
     int tid;
     int nwork;
     struct ace_thread_pool_stats stats;
-    vlong outer_loops, outer_loops_without_threads, total_thread_load, num_timeslots, num_completed_timeslots, num_instrs;
+    vlong outer_loops, outer_loops_without_threads, total_thread_load, num_timeslots, num_completed_timeslots, num_blocked_timeslots, num_finished_timeslots, num_instrs;
     vlong start_time, end_time, finding_thread_time, finding_thread_start_time, instr_time, instr_start_time, waiting_for_thread_time, waiting_for_thread_start_time;
 
-    outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = num_timeslots = num_completed_timeslots = 0;
+    outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = num_timeslots = num_completed_timeslots = num_blocked_timeslots = num_finished_timeslots = stats.num_blocks_on_function = 0;
     start_time = nsec();
     finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = waiting_for_thread_time = waiting_for_thread_start_time = 0;
     tid = 0;
@@ -177,7 +177,7 @@ ace_thread_pool_main(void *p)
                     ace_return_undef(thread);
                     break;
                 case gsbc_op_enter:
-                    ace_enter(thread);
+                    ace_enter(thread, &stats);
                     break;
                 case gsbc_op_yield:
                     ace_yield(thread);
@@ -195,6 +195,8 @@ ace_thread_pool_main(void *p)
         }
         if (gsflag_stat_collection) instr_time += nsec() - instr_start_time;
         if (thread && thread->state == ace_thread_running) num_completed_timeslots++;
+        if (thread && thread->state == ace_thread_blocked) num_blocked_timeslots++;
+        if (thread && thread->state == ace_thread_finished) num_finished_timeslots++;
 
         if (thread) unlock(&thread->lock);
 
@@ -227,7 +229,7 @@ no_clients:
         fprint(2, "ACE instruction execution time: %llds %lldms\n", instr_time / 1000 / 1000 / 1000, (instr_time / 1000 / 1000) % 1000);
         fprint(2, "GC time: %llds %lldms\n", stats.gc_time / 1000 / 1000 / 1000, (stats.gc_time / 1000 / 1000) % 1000);
         if (num_instrs) fprint(2, "Avg unit of work: %gμs\n", (double)instr_time / num_instrs / 1000);
-        if (num_timeslots) fprint(2, "Time slots: %lld (%02g%% ran to completion)\n", num_timeslots, (double)num_completed_timeslots / num_timeslots * 100);
+        if (num_timeslots) fprint(2, "Time slots: %lld (%02g%% ran to completion; %02g%% blocked; %02g%% finished; %02g%% blocked on functions)\n", num_timeslots, (double)num_completed_timeslots / num_timeslots * 100, (double)num_finished_timeslots / num_timeslots * 100, (double)num_blocked_timeslots / num_timeslots * 100, (double)stats.num_blocks_on_function / num_timeslots * 100);
         fprint(2, "Time waiting for a thread: %llds %lldms\n", waiting_for_thread_time / 1000 / 1000 / 1000, (waiting_for_thread_time / 1000 / 1000) % 1000);
     }
 }
@@ -914,11 +916,11 @@ ace_return_undef(struct ace_thread *thread)
     ace_error_thread(thread, err);
 }
 
-static int ace_thread_enter_closure(struct ace_thread *, struct gsheap_item *);
+static int ace_thread_enter_closure(struct ace_thread *, struct gsheap_item *, struct ace_thread_pool_stats *);
 
 static
 void
-ace_enter(struct ace_thread *thread)
+ace_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
 {
     struct gsbc *ip;
     gstypecode st;
@@ -947,7 +949,7 @@ ace_enter(struct ace_thread *thread)
             switch (st) {
                 case gstythunk:
                     if ((uchar*)thread->stacktop - (uchar*)thread->stacklimit >= 0x100 * sizeof(gsvalue)) {
-                        ace_thread_enter_closure(thread, hp);
+                        ace_thread_enter_closure(thread, hp, stats);
                         return;
                     } else {
                         st = ace_start_evaluation(hp);
@@ -1528,7 +1530,7 @@ ace_start_evaluation(struct gsheap_item *hp)
 
     thread = ace_thread_alloc();
 
-    if (ace_thread_enter_closure(thread, hp) < 0) {
+    if (ace_thread_enter_closure(thread, hp, 0) < 0) {
         unlock(&thread->lock);
         return gstyindir;
     }
@@ -1556,7 +1558,7 @@ static void ace_blackhole(struct gsheap_item *, struct gsbc_cont_update *);
    Assume there is enough room for an update frame: it's the caller's responsibility to create a new thread when we're low on stack space.
 */
 int
-ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
+ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp, struct ace_thread_pool_stats *stats)
 {
     int i;
     struct gsbc_cont *cont;
@@ -1637,6 +1639,8 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
             thread->state = ace_thread_blocked;
             thread->st.blocked.on = fun;
             thread->st.blocked.at = pos;
+
+            if (stats) stats->num_blocks_on_function++;
 
             return 0;
         }
