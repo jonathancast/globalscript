@@ -6,6 +6,7 @@ gsac.input.prefix.load	.closure	_gsac.input.prefix.load_c	_gsac.input.prefix.loa
 
 gsac.input.prefix.dir.load	.closure	_gsac.input.prefix.dir.load_c	_gsac.input.prefix.dir.load_ty
 _gsac.input.prefix.dir.load_files.loaded_f_ags.s	.string	ags
+_gsac.input.prefix.dir.load_files.loaded_f_gs.scheme.s	.string	gs-scheme
 
 gsac.input.prefix.file.load	.closure	_gsac.input.prefix.file.load_c
 _gsac.input.prefix.file.load_body_left_write_nl.s	.string	\n
@@ -216,9 +217,35 @@ _gsac.input.prefix.dir.load_files.loaded_f_false_k1	.forcecont
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
+string.t	.tygvar
 bool.prim.u	.tygvar
-_gsac.input.skipping	.gvar
+_gsac.input.prefix.dir.load_files.loaded_f_false_false_k	.subcode
+bool.t.out	.cogvar
+string.≡	.gvar
+_gsac.input.prefix.dir.load_files.loaded_f_gs.scheme.s	.gvar
 gsac.input.prefix.file.load	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+fn	.fv	ibio.file.name.t
+ext0	.fv	string.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.force	_gsac.input.prefix.dir.load_files.loaded_f_false_false_k
+			.coerce	bool.t.out
+			.app	ext0	_gsac.input.prefix.dir.load_files.loaded_f_gs.scheme.s
+			.enter	string.≡
+		.case	true
+			.app	eo	fn
+			.enter	gsac.input.prefix.file.load
+
+_gsac.input.prefix.dir.load_files.loaded_f_false_false_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+bool.prim.u	.tygvar
+gsac.input.prefix.t	.tygvar
+_gsac.input.skipping	.gvar
+ibio.prim.unit	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
 b0	.karg	bool.prim.u
@@ -227,8 +254,10 @@ b0	.karg	bool.prim.u
 			.app	eo	fn
 			.enter	_gsac.input.skipping
 		.case	true
-			.app	eo	fn
-			.enter	gsac.input.prefix.file.load
+res			.undefined	gsac.input.prefix.t	# Whatever 'empty prefix' should be
+			.lift
+			.app	res
+			.yield	ibio.prim.unit	gsac.input.prefix.t
 
 _gsac.input.prefix.dir.load_body_c	.expr
 list.t	.tygvar
@@ -418,7 +447,7 @@ out	.fv	string.t
 	.yield	ibio.prim.write	rune.t
 
 _gsac.input.skipping_body_c	.expr
-gsac.input.prefix.t	.tygvar	# Temp
+gsac.input.prefix.t	.tygvar
 ibio.prim.unit	.gvar
 res	.undefined	gsac.input.prefix.t	# Whatever 'empty prefix' should be
 	.lift
