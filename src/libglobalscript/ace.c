@@ -201,7 +201,8 @@ ace_thread_pool_main(void *p)
         lock(&ace_thread_queue->lock);
         total_thread_load += ace_thread_queue->num_active_threads;
         if (ace_thread_queue->num_active_threads) {
-            tid = (tid + 1) % ace_thread_queue->num_active_threads;
+            tid++;
+            if (tid >= ace_thread_queue->num_active_threads) tid = 0;
             unlock(&ace_thread_queue->lock);
         } else {
             unlock(&ace_thread_queue->lock);
