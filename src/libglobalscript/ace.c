@@ -635,7 +635,7 @@ void
 ace_alloc_apply(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    gsvalue fun;
+    gsvalue fun, args[MAX_NUM_REGISTERS];
     int i;
 
     ip = thread->st.running.ip;
@@ -643,10 +643,10 @@ ace_alloc_apply(struct ace_thread *thread)
     fun = thread->regs[ACE_APPLY_FUN(ip)];
 
     for (i = 0; i < ACE_APPLY_NUM_ARGS(ip); i++)
-        fun = gsapply(ip->pos, fun, thread->regs[ACE_APPLY_ARG(ip, i)])
+        args[i] = thread->regs[ACE_APPLY_ARG(ip, i)];
     ;
 
-    thread->regs[thread->nregs] = fun;
+    thread->regs[thread->nregs] = gsnapplyv(ip->pos, fun, ACE_APPLY_NUM_ARGS(ip), args);
     thread->nregs++;
     thread->st.running.ip = ACE_APPLY_SKIP(ip);
     return;

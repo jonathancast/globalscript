@@ -72,10 +72,19 @@ gsrecordv(struct gspos pos, int nfields, gsvalue *fields)
 gsvalue
 gsapply(struct gspos pos, gsvalue fun, gsvalue arg)
 {
+    return gsnapplyv(pos, fun, 1, &arg);
+}
+
+gsvalue
+gsnapplyv(struct gspos pos, gsvalue fun, int n, gsvalue *args)
+{
     struct gsheap_item *res;
     struct gsapplication *app;
+    int i;
 
-    res = gsreserveheap(MAX(sizeof(struct gsapplication) + 1*sizeof(gsvalue), sizeof(struct gsindirection)));
+    if (n < 1) return fun;
+
+    res = gsreserveheap(MAX(sizeof(struct gsapplication) + n*sizeof(gsvalue), sizeof(struct gsindirection)));
 
     app = (struct gsapplication *)res;
 
@@ -83,8 +92,8 @@ gsapply(struct gspos pos, gsvalue fun, gsvalue arg)
     memset(&res->lock, 0, sizeof(res->lock));
     res->type = gsapplication;
     app->fun = fun;
-    app->numargs = 1;
-    app->arguments[0] = arg;
+    app->numargs = n;
+    for (i = 0; i < n; i++) app->arguments[i] = args[i];
 
     return (gsvalue)res;
 }

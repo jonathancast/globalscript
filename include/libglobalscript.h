@@ -218,6 +218,7 @@ struct gsfile_symtable;
 typedef uintptr gsvalue;
 
 gsvalue gsapply(struct gspos, gsvalue, gsvalue);
+gsvalue gsnapplyv(struct gspos, gsvalue, int, gsvalue *);
 
 /* §subsection Booleans */
 
