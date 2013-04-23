@@ -194,13 +194,14 @@ ace_thread_pool_main(void *p)
         if (thread) unlock(&thread->lock);
 
         lock(&ace_thread_queue->lock);
-            total_thread_load += ace_thread_queue->num_active_threads;
-            if (ace_thread_queue->num_active_threads) {
-                tid = (tid + 1) % ace_thread_queue->num_active_threads;
-            } else {
-                outer_loops_without_threads++;
-            }
-        unlock(&ace_thread_queue->lock);
+        total_thread_load += ace_thread_queue->num_active_threads;
+        if (ace_thread_queue->num_active_threads) {
+            tid = (tid + 1) % ace_thread_queue->num_active_threads;
+            unlock(&ace_thread_queue->lock);
+        } else {
+            unlock(&ace_thread_queue->lock);
+            outer_loops_without_threads++;
+        }
     }
 no_clients:
     end_time = nsec();
