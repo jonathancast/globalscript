@@ -97,11 +97,11 @@ ace_thread_pool_main(void *p)
     int nwork;
     struct ace_thread_pool_stats stats;
     vlong outer_loops, outer_loops_without_threads, total_thread_load, num_timeslots, num_completed_timeslots, num_instrs;
-    vlong start_time, end_time, finding_thread_time, finding_thread_start_time, instr_time, instr_start_time;
+    vlong start_time, end_time, finding_thread_time, finding_thread_start_time, instr_time, instr_start_time, waiting_for_thread_time, waiting_for_thread_start_time;
 
     outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = num_timeslots = num_completed_timeslots = 0;
     start_time = nsec();
-    finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = 0;
+    finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = waiting_for_thread_time = 0;
     tid = 0;
     for (;;) {
         struct ace_thread *thread;
@@ -110,6 +110,11 @@ ace_thread_pool_main(void *p)
         finding_thread_start_time = gsflag_stat_collection ? nsec() : 0;
         if (ace_find_thread(&stats, tid, &thread) < 0) goto no_clients;
         if (gsflag_stat_collection) finding_thread_time += nsec() - finding_thread_start_time;
+
+        if (gsflag_stat_collection && waiting_for_thread_start_time && thread) {
+            waiting_for_thread_time = nsec() - waiting_for_thread_start_time;
+            waiting_for_thread_start_time = 0;
+        }
 
         nwork = 0;
         if (thread && thread->state == ace_thread_running) num_timeslots++;
@@ -200,6 +205,7 @@ ace_thread_pool_main(void *p)
             unlock(&ace_thread_queue->lock);
         } else {
             unlock(&ace_thread_queue->lock);
+            if (gsflag_stat_collection && !waiting_for_thread_start_time) waiting_for_thread_start_time = nsec();
             outer_loops_without_threads++;
         }
     }
@@ -221,6 +227,7 @@ no_clients:
         fprint(2, "GC time: %llds %lldms\n", stats.gc_time / 1000 / 1000 / 1000, (stats.gc_time / 1000 / 1000) % 1000);
         if (num_instrs) fprint(2, "Avg unit of work: %gμs\n", (double)instr_time / num_instrs / 1000);
         if (num_timeslots) fprint(2, "Time slots: %lld (%02g%% ran to completion)\n", num_timeslots, (double)num_completed_timeslots / num_timeslots * 100);
+        fprint(2, "Time waiting for a thread: %llds %lldms\n", waiting_for_thread_time / 1000 / 1000 / 1000, (waiting_for_thread_time / 1000 / 1000) % 1000);
     }
 }
 
