@@ -1548,6 +1548,8 @@ ace_start_evaluation(struct gsheap_item *hp)
     }
 }
 
+static void ace_blackhole(struct gsheap_item *, struct gsbc_cont_update *);
+
 /* ↓ Used to add a closure (necessarily a §ccode{struct gsheap_item *}) to a thread.
    Currently, sets §ccode{thread->base}, but this is the place to change to push update frames.
    Assume there is enough room for an update frame: it's the caller's responsibility to create a new thread when we're low on stack space.
@@ -1556,7 +1558,6 @@ int
 ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
 {
     int i;
-    struct gseval *ev;
     struct gsbc_cont *cont;
     struct gsbc_cont_update *updatecont;
 
@@ -1593,10 +1594,7 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
                     thread->st.running.bco = cl->code;
                     thread->st.running.ip = instr;
 
-                    ev = (struct gseval *)hp;
-                    hp->type = gseval;
-                    ev->update = updatecont;
-                    gsheap_unlock(hp);
+                    ace_blackhole(hp, updatecont);
 
                     break;
                 }
@@ -1633,10 +1631,7 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
             fun = app->fun;
             pos = hp->pos;
 
-            ev = (struct gseval *)hp;
-            hp->type = gseval;
-            ev->update = updatecont;
-            gsheap_unlock(hp);
+            ace_blackhole(hp, updatecont);
 
             thread->state = ace_thread_blocked;
             thread->st.blocked.on = fun;
@@ -1649,6 +1644,17 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
             ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, hp->pos, "ace_start_evaluation(type = %d)", hp->type));
             return -1;
     }
+}
+
+void
+ace_blackhole(struct gsheap_item *hp, struct gsbc_cont_update *updatecont)
+{
+    struct gseval *ev;
+
+    ev = (struct gseval *)hp;
+    hp->type = gseval;
+    ev->update = updatecont;
+    gsheap_unlock(hp);
 }
 
 static
