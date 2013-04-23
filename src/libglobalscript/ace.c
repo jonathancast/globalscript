@@ -1564,6 +1564,7 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
     updatecont = (struct gsbc_cont_update *)cont;
     if (!cont) {
         gsupdate_heap(hp, (gsvalue)gsunimpl(__FILE__, __LINE__, hp->pos, "Out of stack space allocating update continuation"));
+        gsheap_unlock(hp);
         return -1;
     }
     cont->node = gsbc_cont_update;
@@ -1600,6 +1601,7 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
                     break;
                 }
                 default:
+                    gsheap_unlock(hp);
                     ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->code->pos, "ace_start_evaluation(%d)", cl->code->tag));
                     return -1;
             }
@@ -1643,6 +1645,7 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp)
             return 0;
         }
         default:
+            gsheap_unlock(hp);
             ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, hp->pos, "ace_start_evaluation(type = %d)", hp->type));
             return -1;
     }
