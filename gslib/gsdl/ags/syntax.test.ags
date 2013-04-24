@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse.comment	_test.parse.two.components	_test.parse.digit.in.alphanum	_test.parse.qualified.op
+_tests	.list	test.property.t	_test.parse.comment	_test.parse.two.components	_test.parse.digit.in.alphanum	_test.parse.qualified.op	_test.parse.stringliteral
 
 _test.parse.comment	.closure	_test.parse.comment_c
 _test.parse.comment_label	.string	qq{\\n\h\sComment\\n}\s=~\swhitespace
@@ -21,6 +21,10 @@ _test.parse.digit.in.alphanum_input	.string	p0
 _test.parse.qualified.op	.closure	_test.parse.qualified.op_c
 _test.parse.qualified.op_label	.string	qq{m.<>}\s=~\ssyntax.id
 _test.parse.qualified.op_input	.string	m.<>
+
+_test.parse.stringliteral	.closure	_test.parse.stringliteral_c
+_test.parse.stringliteral_label	.string	qq{just}\s=~\sstringliteral
+_test.parse.stringliteral_input	.string	just
 
 	.code
 
@@ -137,4 +141,32 @@ string.fmtgs	.gvar
 _test.parse.qualified.op_input	.gvar
 actual	.larg	string.t
 	.app	string.≡	string.fmtgs	actual	_test.parse.qualified.op_input
+	.enter	test.assert.eq	string.t
+
+# §section §gs{qq{just} =~ stringliteral}
+
+_test.parse.stringliteral_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+_test.parse.stringliteral_k_c	.subcode
+test.property.label	.gvar
+_test.parse.stringliteral_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.syntax.stringliteral	.gvar
+_test.parse.stringliteral_input	.gvar
+k	.alloc	_test.parse.stringliteral_k_c
+test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.stringliteral	_test.parse.stringliteral_input	k
+	.app	_test.parse.stringliteral_label	test
+	.enter	test.property.label
+
+_test.parse.stringliteral_k_c	.expr
+string.t	.tygvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+_test.parse.stringliteral_input	.gvar
+actual	.larg	string.t
+	.app	string.≡	string.fmtgs	actual	_test.parse.stringliteral_input
 	.enter	test.assert.eq	string.t

@@ -21,6 +21,9 @@ _gsdl.ags.syntax.id_t.re	.regex	_§	_gsdl.ags.syntax.id_id.re
 gsdl.ags.syntax.keywords	.list	string.t	_gsdl.ags.syntax.keywords_0
 _gsdl.ags.syntax.keywords_0	.string	|
 
+gsdl.ags.syntax.stringliteral	.closure	_gsdl.ags.syntax.stringliteral_c
+_gsdl.ags.syntax.stringliteral_re	.regex	[^\s\t\n][^\s\t\n]*
+
 	.code
 
 # §section §gs{gsdl.ags.syntax.whitespace}
@@ -85,3 +88,13 @@ b0	.karg	bool.prim.u
 			.enter	parser.unit	rune.t	string.t
 		.case	true
 			.enter	parser.fail	rune.t	string.t
+
+# §section §gs{gsdl.ags.syntax.stringliteral}
+
+_gsdl.ags.syntax.stringliteral_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.syntax.stringliteral_re	.gvar
+	.app	rune.compare	_gsdl.ags.syntax.stringliteral_re
+	.enter	parser.match	rune.t
