@@ -229,6 +229,7 @@ s1			.apply	_gsdl.ags.file.print.typeitems	|	file0	tys1
 # §section §gs{gsdl.ags.file.parser}
 
 _gsdl.ags.file.parser_c	.expr
+bool.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.file.filetype.t	.tygvar
 list.t	.tygvar
@@ -249,8 +250,10 @@ gsdl.ags.codeitem.segment.parser	.gvar
 gsdl.ags.typeitem.segment.parser	.gvar
 gsdl.ags.coercionitem.segment.parser	.gvar
 parser.fail	.gvar	# Temp
+isags	.larg	bool.t
 f	.alloc	_gsdl.ags.file.parser_f_c
-	.app	f	gsdl.ags.file.filetype.parser	gsdl.ags.dataitem.segment.parser	gsdl.ags.codeitem.segment.parser	gsdl.ags.typeitem.segment.parser	gsdl.ags.coercionitem.segment.parser
+das.p	.apply	gsdl.ags.dataitem.segment.parser	|	isags
+	.app	f	gsdl.ags.file.filetype.parser	das.p	gsdl.ags.codeitem.segment.parser	gsdl.ags.typeitem.segment.parser	gsdl.ags.coercionitem.segment.parser
 	.enter	parser.lift5	rune.t	gsdl.ags.file.filetype.t	_dataitems_ty	_codeitems_ty	_typeitems_ty	_coercionitems_ty	gsdl.ags.file.t
 
 _gsdl.ags.file.parser_f_c	.expr

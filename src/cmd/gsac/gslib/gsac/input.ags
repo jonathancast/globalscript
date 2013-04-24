@@ -224,6 +224,7 @@ bool.t.out	.cogvar
 string.≡	.gvar
 _gsac.input.prefix.dir.load_files.loaded_f_gs.scheme.s	.gvar
 gsac.input.prefix.file.load	.gvar
+bool.true	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
 ext0	.fv	string.t
@@ -235,7 +236,7 @@ b0	.karg	bool.prim.u
 			.app	ext0	_gsac.input.prefix.dir.load_files.loaded_f_gs.scheme.s
 			.enter	string.≡
 		.case	true
-			.app	eo	fn
+			.app	eo	bool.true	fn
 			.enter	gsac.input.prefix.file.load
 
 _gsac.input.prefix.dir.load_files.loaded_f_false_false_k	.forcecont
@@ -274,11 +275,13 @@ res	.undefined	gsac.input.prefix.t
 _gsac.input.prefix.file.load_c	.eprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
+bool.t	.tygvar
 ibio.file.name.t	.tygvar
 _gsac.input.prefix.file.load_if_c	.subcode
 _gsac.input.prefix.file.load_s_c	.subcode
 _gsac.input.prefix.file.load_body_c	.subcode
 eo	.larg	ibio.prim.oport	rune.t
+isags	.larg	bool.t
 fn	.larg	ibio.file.name.t
 if	.bind	_gsac.input.prefix.file.load_if_c
 s	.bind	_gsac.input.prefix.file.load_s_c
@@ -310,6 +313,7 @@ ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
 _gsac.input.prefix.file.load_body_c	.expr
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
+bool.t	.tygvar
 ibio.file.name.t	.tygvar
 list.t	.tygvar
 gsdl.ags.file.t	.tygvar
@@ -323,12 +327,14 @@ rune.print	.gvar
 parser.pos.initial	.gvar
 gsdl.ags.file.parser	.gvar
 eo	.fv	ibio.prim.oport	rune.t
+isags	.fv	bool.t
 fn	.fv	ibio.file.name.t
 s	.fv	list.t	rune.t
 pos	.apply	parser.pos.initial	|	fn
+fp	.apply	gsdl.ags.file.parser	|	isags
 	.force	_gsac.input.prefix.file.load_body_k
 	.coerce	either.t.out	parser.err.t	gsdl.ags.file.t
-	.app	parser.rune.advance	rune.print	pos	gsdl.ags.file.parser	s
+	.app	parser.rune.advance	rune.print	pos	fp	s
 	.enter	parser.parse	rune.t	gsdl.ags.file.t
 
 _gsac.input.prefix.file.load_body_k	.forcecont

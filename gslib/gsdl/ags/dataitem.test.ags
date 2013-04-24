@@ -106,10 +106,12 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.dataitem.segment.parser	.gvar
+bool.false	.gvar
 list.nil	.gvar
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.parse.missing.gsdata.segment_k_c
-test	.apply	parser.test.assert.passes	rune.t	datasegment_ty	|	parser.rune.advance	rune.print	gsdl.ags.dataitem.segment.parser	nil	k
+ds	.apply	gsdl.ags.dataitem.segment.parser	|	bool.false
+test	.apply	parser.test.assert.passes	rune.t	datasegment_ty	|	parser.rune.advance	rune.print	ds	nil	k
 	.app	_test.parse.missing.gsdata.segment_label	test
 	.enter	test.property.label
 
@@ -146,9 +148,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.dataitem.segment.parser	.gvar
+bool.false	.gvar
 _test.parse.empty.gsdata.segment_input	.gvar
 k	.alloc	_test.parse.empty.gsdata.segment_k_c
-test	.apply	parser.test.assert.passes	rune.t	datasegment_ty	|	parser.rune.advance	rune.print	gsdl.ags.dataitem.segment.parser	_test.parse.empty.gsdata.segment_input	k
+ds	.apply	gsdl.ags.dataitem.segment.parser	|	bool.false
+test	.apply	parser.test.assert.passes	rune.t	datasegment_ty	|	parser.rune.advance	rune.print	ds	_test.parse.empty.gsdata.segment_input	k
 	.app	_test.parse.empty.gsdata.segment_label	test
 	.enter	test.property.label
 
@@ -183,9 +187,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.dataitem.parser	.gvar
+bool.false	.gvar
 _test.parse.closure_input	.gvar
 k	.alloc	_test.parse.closure_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.advance	rune.print	gsdl.ags.dataitem.parser	_test.parse.closure_input	k
+ds	.apply	gsdl.ags.dataitem.parser	|	bool.false
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.advance	rune.print	ds	_test.parse.closure_input	k
 	.app	_test.parse.closure_label	test
 	.enter	test.property.label
 
