@@ -11,6 +11,7 @@ struct gs_blockdesc;
 /* §section Some C Macros */
 
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 /* §section Basic Thread Management Stuff */
 

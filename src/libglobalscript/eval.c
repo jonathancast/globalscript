@@ -83,7 +83,7 @@ gsheapstate(struct gsheap_item *hp)
                     int args_for_code;
 
                     fvs_in_cl = cl->numfvs;
-                    fvs_for_code = cl->numfvs;
+                    fvs_for_code = code->numfvs;
                     args_for_code = code->numargs;
                     if (fvs_in_cl < fvs_for_code) {
                         gspoison(hp, hp->pos, "Code has %d free variables but closure only has %d", fvs_for_code, fvs_in_cl);

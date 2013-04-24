@@ -84,6 +84,42 @@ gsnapplyv(struct gspos pos, gsvalue fun, int n, gsvalue *args)
 
     if (n < 1) return fun;
 
+    if (gsisheap_block(BLOCK_CONTAINING(fun))) {
+        struct gsheap_item *hp;
+
+        hp = (struct gsheap_item *)fun;
+        lock(&hp->lock);
+        if (hp->type == gsclosure) {
+            struct gsclosure *cl;
+            int needed_args, supplied_args;
+
+            cl = (struct gsclosure *)hp;
+            needed_args = cl->code->numfvs + cl->code->numargs - cl->numfvs;
+            supplied_args = MIN(needed_args, n);
+            if (needed_args > 0) {
+                struct gsclosure *newfun;
+
+                newfun = gsreserveheap(MAX(sizeof(struct gsclosure) + (cl->numfvs + supplied_args)*sizeof(gsvalue), sizeof(struct gsindirection)));
+                memset(&newfun->hp.lock, 0, sizeof(newfun->hp.lock));
+                newfun->hp.pos = pos;
+                newfun->hp.type = gsclosure;
+                newfun->code = cl->code;
+                newfun->numfvs = cl->numfvs + supplied_args;
+
+                for (i = 0; i < cl->numfvs; i++) newfun->fvs[i] = cl->fvs[i];
+
+                for (i = 0; i < supplied_args; i++) newfun->fvs[cl->numfvs + i] = args[i];
+
+                n -= supplied_args;
+                args += supplied_args;
+                fun = (gsvalue)newfun;
+            }
+        }
+        unlock(&hp->lock);
+    }
+
+    if (n < 1) return fun;
+
     res = gsreserveheap(MAX(sizeof(struct gsapplication) + n*sizeof(gsvalue), sizeof(struct gsindirection)));
 
     app = (struct gsapplication *)res;
