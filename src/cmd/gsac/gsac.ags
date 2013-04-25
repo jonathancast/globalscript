@@ -17,8 +17,9 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 _real.entry_args_c	.subcode
 _real.entry_parsed.args_c	.subcode
-_real.entry_read.arguments_c	.subcode
-_real.entry_sccs_c	.subcode
+_real.entry_cut.files_c	.subcode
+_real.entry_cut_c	.subcode
+_real.entry_cut.fvs_c	.subcode
 _real.entry_output_c	.subcode
 _real.entry_send.output_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
@@ -26,8 +27,9 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
 parsed.args	.bind	_real.entry_parsed.args_c	# §gs{《 §gsinf{List of prefix arguments}, §gsinf{List of CUT arguments}, 》}
-read.arguments	.bind	_real.entry_read.arguments_c	# Same as §gs{parsed.args} but read in
-sccs	.bind	_real.entry_sccs_c
+cut.files	.alloc	_real.entry_cut.files_c
+cut	.bind	_real.entry_cut_c
+cut.fvs	.alloc	_real.entry_cut.fvs_c
 output	.bind	_real.entry_output_c
 	.body	_real.entry_send.output_c
 
@@ -238,64 +240,15 @@ ibio.file.name.t	.tygvar
 list.nil	.gvar
 	.enter	list.nil	ibio.file.name.t
 
-# §section Process §gs{parsed.args} into (List of (lists of (files, some of which have been parsed)), list of parsed files)
+# §section Read files from §gs{parsed.args} as needed
 
-# ‘CUT’ = ‘component under translation’; ‘component’ = ‘strongly-connected component of the dependency graph’
-
-_real.entry_read.arguments_c	.eprog	ibio.prim	ibio
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
-_args.parsed.t	.tygvar
-_real.entry_read.arguments_prefix.files_c	.subcode
-_real.entry_read.arguments_prefix_c	.subcode
-_real.entry_read.arguments_cut.files_c	.subcode
-_real.entry_read.arguments_cut_c	.subcode
-_real.entry_read.arguments_body_c	.subcode
-eo	.fv	ibio.prim.oport	rune.t
-parsed.args	.fv	_args.parsed.t
-prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c
-prefix	.bind	_real.entry_read.arguments_prefix_c
-cut.files	.alloc	_real.entry_read.arguments_cut.files_c
-cut	.bind	_real.entry_read.arguments_cut_c
-	.body	_real.entry_read.arguments_body_c
-
-_real.entry_read.arguments_prefix.files_c	.expr
-_args.parsed.t	.tygvar
-_real.entry_read.arguments_prefix.files_k	.subcode
-parsed.args	.fv	_args.parsed.t
-	.force	_real.entry_read.arguments_prefix.files_k
-	.enter	parsed.args
-
-_real.entry_read.arguments_prefix.files_k	.forcecont
-_args.parsed.u	.tygvar
-list.t	.tygvar
-ibio.file.name.t	.tygvar
-pa0	.karg	_args.parsed.u
-pas	.field	0	pa0
-	.enter	pas
-
-_real.entry_read.arguments_prefix_c	.expr
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
-ibio.prim.t	.tygvar
-list.t	.tygvar
-gsac.input.prefix.t	.tygvar
-ibio.file.name.t	.tygvar
-ibio.mapM.prim	.gvar
-gsac.input.prefix.load	.gvar
-eo	.fv	ibio.prim.oport	rune.t
-prefix.files	.fv	list.t	ibio.file.name.t
-load	.apply	gsac.input.prefix.load	|	eo
-	.app	load	prefix.files
-	.enter	ibio.mapM.prim	ibio.file.name.t	gsac.input.prefix.t
-
-_real.entry_read.arguments_cut.files_c	.expr
+_real.entry_cut.files_c	.expr
 _args.parsed.t	.tygvar
 parsed.args	.fv	_args.parsed.t
 fs	.lfield	1	parsed.args
 	.enter	fs
 
-_real.entry_read.arguments_cut_c	.expr
+_real.entry_cut_c	.expr
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
@@ -309,38 +262,69 @@ f	.apply	gsdl.cgs.file.read	|	eo
 	.app	f	cut.files
 	.enter	ibio.mapM.prim	ibio.file.name.t	gsdl.cgs.file.t
 
-_real.entry_read.arguments_body_c	.expr
-list.t	.tygvar
-gsdl.cgs.file.t	.tygvar
-_real.entry_read.arguments_ty	.tygvar
-ibio.prim.unit	.gvar
-cut	.fv	list.t	gsdl.cgs.file.t
-res	.lrecord	cut	cut
-	.lift
-	.app	res
-	.yield	ibio.prim.unit	_real.entry_read.arguments_ty
+_real.entry_cut.fvs_c	.expr
+list.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	# Temp
+	.undef	list.t	gsdl.cgs.symbol.t
 
-# §section Split §gs{read.arguments} into strongly-connected components
+# ‘CUT’ = ‘component under translation’; ‘component’ = ‘strongly-connected component of the dependency graph’
 
-# NB: §sh{.ags} files have been read in, and can be split here; §sh{.gsac} files have not, and should be treated as single nodes.
-# §sh{.gsac} files have type signatures/kind signatures on all symbols, and so cannot depend on anything
+#_real.entry_read.arguments_c	.eprog	ibio.prim	ibio
+#ibio.prim.oport	.tygvar
+#rune.t	.tygvar
+#_args.parsed.t	.tygvar
+#_real.entry_read.arguments_prefix.files_c	.subcode
+#_real.entry_read.arguments_prefix_c	.subcode
+#_real.entry_read.arguments_cut.files_c	.subcode
+#_real.entry_read.arguments_cut_c	.subcode
+#_real.entry_read.arguments_body_c	.subcode
+#eo	.fv	ibio.prim.oport	rune.t
+#parsed.args	.fv	_args.parsed.t
+#prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c
+#prefix	.bind	_real.entry_read.arguments_prefix_c
+#cut.files	.alloc	_real.entry_read.arguments_cut.files_c
+#	.body	_real.entry_read.arguments_body_c
 
-_real.entry_sccs_c	.expr
-_real.entry_read.arguments_ty	.tygvar
-_real.entry_sccs_k	.subcode
-read.arguments	.fv	_real.entry_read.arguments_ty
-	.force	_real.entry_sccs_k
-	.enter	read.arguments
+#_real.entry_read.arguments_prefix.files_c	.expr
+#_args.parsed.t	.tygvar
+#_real.entry_read.arguments_prefix.files_k	.subcode
+#parsed.args	.fv	_args.parsed.t
+#	.force	_real.entry_read.arguments_prefix.files_k
+#	.enter	parsed.args
 
-_real.entry_sccs_k	.forcecont
-_real.entry_read.arguments_u	.tygvar
-_real.entry_sccs_ty	.tygvar	# Temp
-ibio.prim.unit	.gvar
-as0	.karg	_real.entry_read.arguments_u
-res	.undefined	_real.entry_sccs_ty
-	.lift
-	.app	res
-	.yield	ibio.prim.unit	_real.entry_sccs_ty
+#_real.entry_read.arguments_prefix.files_k	.forcecont
+#_args.parsed.u	.tygvar
+#list.t	.tygvar
+#ibio.file.name.t	.tygvar
+#pa0	.karg	_args.parsed.u
+#pas	.field	0	pa0
+#	.enter	pas
+
+#_real.entry_read.arguments_prefix_c	.expr
+#ibio.prim.oport	.tygvar
+#rune.t	.tygvar
+#ibio.prim.t	.tygvar
+#list.t	.tygvar
+#gsac.input.prefix.t	.tygvar
+#ibio.file.name.t	.tygvar
+#ibio.mapM.prim	.gvar
+#gsac.input.prefix.load	.gvar
+#eo	.fv	ibio.prim.oport	rune.t
+#prefix.files	.fv	list.t	ibio.file.name.t
+#load	.apply	gsac.input.prefix.load	|	eo
+#	.app	load	prefix.files
+#	.enter	ibio.mapM.prim	ibio.file.name.t	gsac.input.prefix.t
+
+#_real.entry_read.arguments_body_c	.expr
+#list.t	.tygvar
+#gsdl.cgs.file.t	.tygvar
+#_real.entry_read.arguments_ty	.tygvar
+#ibio.prim.unit	.gvar
+#cut	.fv	list.t	gsdl.cgs.file.t
+#res	.lrecord	cut	cut
+#	.lift
+#	.app	res
+#	.yield	ibio.prim.unit	_real.entry_read.arguments_ty
 
 # §section Process §gs{sccs} to get (symtable, output)
 
@@ -350,10 +334,10 @@ res	.undefined	_real.entry_sccs_ty
 _real.entry_output_c	.expr
 _real.entry_read.arguments_ty	.tygvar
 gsdl.cgs.file.t	.tygvar
+list.t	.tygvar	# Temp
 _real.entry_output_k	.subcode
 list.t.out	.cogvar
-read.arguments	.fv	_real.entry_read.arguments_ty
-cut	.lfield	cut	read.arguments
+cut	.fv	list.t	gsdl.cgs.file.t
 	.force	_real.entry_output_k
 	.coerce	list.t.out	gsdl.cgs.file.t
 	.enter	cut
