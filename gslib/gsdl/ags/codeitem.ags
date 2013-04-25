@@ -39,6 +39,7 @@ gsdl.ags.codeitem.fvs.parser	.closure	_gsdl.ags.codeitem.fvs.parser_c
 _gsdl.ags.codeitem.fvs.parser_fv.kw.re	.regex	.fv
 
 gsdl.ags.codeitem.args.parser	.closure	_gsdl.ags.codeitem.args.parser_c
+_gsdl.ags.codeitem.args.parser_arg.kw.re	.regex	.arg
 _gsdl.ags.codeitem.args.parser_larg.kw.re	.regex	.larg
 
 gsdl.ags.codeitem.allocs.parser	.closure	_gsdl.ags.codeitem.allocs.parser_c
@@ -687,16 +688,23 @@ parser.lift4	.gvar
 gsdl.ags.syntax.id	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
+parser.<|>	.gvar
 parser.match	.gvar
 rune.compare	.gvar
-_gsdl.ags.codeitem.args.parser_larg.kw.re	.gvar
+_gsdl.ags.codeitem.args.parser_arg.kw.re	.gvar
 parser.unit	.gvar
+bool.false	.gvar
+_gsdl.ags.codeitem.args.parser_larg.kw.re	.gvar
 bool.true	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.codeitem.args.parser_f_c
-larg.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.args.parser_larg.kw.re	# > m/.larg/
-true.p	.apply	parser.unit	rune.t	bool.t	|	bool.true	# > unit true
-arg.lifted.p1	.apply	parser.*>	rune.t	string.t	bool.t	|	larg.kw.p	true.p	# > m/.larg/ *> unit true -- Change to §gs{m/.larg/ *> unit true <|> m/.arg/ *> unit false} to add support for .arg
+arg.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.args.parser_arg.kw.re
+false.p	.apply	parser.unit	rune.t	bool.t	|	bool.false
+arg.lifted.p1.1	.apply	parser.*>	rune.t	string.t	bool.t	|	arg.kw.p	false.p	# > m/.arg/ *> unit false
+larg.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.args.parser_larg.kw.re
+true.p	.apply	parser.unit	rune.t	bool.t	|	bool.true
+arg.lifted.p1.2	.apply	parser.*>	rune.t	string.t	bool.t	|	larg.kw.p	true.p
+arg.lifted.p1	.apply	parser.<|>	rune.t	bool.t	|	arg.lifted.p1.1	arg.lifted.p1.2
 arg.lifted.p	.apply	parser.*>	rune.t	string.t	bool.t	|	gsdl.ags.syntax.columnsep	arg.lifted.p1
 arg.ty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 arg.tyarg.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id

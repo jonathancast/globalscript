@@ -4,8 +4,9 @@
 
 # §section Constructors
 
-_maybe.nothing_c	.expr
+_maybe.just_c	.expr
 α	.tyarg	*
 res.u	.tylet	maybe.prim.u	α
+x	.arg	α
 	.coerce	maybe.t.in	α
-	.yield	n
+	.yield	j
