@@ -6,4 +6,5 @@
 
 _maybe.nothing_c	.expr
 α	.tyarg	*
+res.u	.tylet	maybe.prim.u	α
 	.yield	n
