@@ -1,0 +1,9 @@
+	.prefix
+
+	.code
+
+# §section Constructors
+
+_maybe.nothing_c	.expr
+α	.tyarg	*
+	.yield	n
