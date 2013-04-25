@@ -41,20 +41,12 @@ _real.entry_parsed.args_c	.expr
 list.t	.tygvar
 string.t	.tygvar
 _args.parsed.t	.tygvar
-_real.entry_parsed.args_pure_c	.subcode
+_args.parse	.gvar
 ibio.from.either.prim	.gvar
 args	.fv	list.t	string.t
-pa	.alloc	_real.entry_parsed.args_pure_c
+pa	.apply	_args.parse	|	args
 	.app	pa
 	.enter	ibio.from.either.prim	_args.parsed.t
-
-_real.entry_parsed.args_pure_c	.expr
-list.t	.tygvar
-string.t	.tygvar
-_args.parse	.gvar
-args	.fv	list.t	string.t
-	.app	args
-	.enter	_args.parse
 
 # §section §gs{_args.parse}
 
