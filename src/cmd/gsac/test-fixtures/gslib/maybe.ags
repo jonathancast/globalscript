@@ -7,4 +7,5 @@
 _maybe.nothing_c	.expr
 α	.tyarg	*
 res.u	.tylet	maybe.prim.u	α
+	.coerce	maybe.t.in	α
 	.yield	n

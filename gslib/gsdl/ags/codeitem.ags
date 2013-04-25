@@ -1076,7 +1076,7 @@ coerce.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.expr.parse
 co.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 co.p1	.apply	parser.*>	rune.t	string.t	string.t	|	coerce.p	co.p2
 co.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	co.p1
-coas.p1	.apply	parser.fail	rune.t	string.t	# > columnsep *> id
+coas.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 coas.p	.apply	parser.many	rune.t	string.t	|	coas.p1
 e.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.expr.t	|	gsdl.ags.syntax.whitespace	gsdl.ags.codeitem.expr.parser
 	.app	f	pos.get	co.p	coas.p	e.p
