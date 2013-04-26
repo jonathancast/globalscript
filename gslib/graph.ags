@@ -3,6 +3,7 @@
 	.data
 
 graph.tsort	.closure	_graph.tsort_c	_graph.tsort_ty
+_graph.tsort_list	.closure	_graph.tsort_list_c	_graph.tsort_list_ty
 
 	.code
 
@@ -14,11 +15,44 @@ list.t	.tygvar
 graph.scc.t	.tygvar	# Temp
 k	.tyarg	*
 v	.tyarg	*
-scc.ty	.tylet	graph.scc.t	v	# Temp
+_graph.tsort_k_c	.subcode
+_graph.tsort_list	.gvar
 ord	.larg	order.total.t	k
 deps	.larg	graph.dependencies.t	k	v
 look	.larg	graph.lookup.t	k	v
 ks	.larg	list.t	k
+k	.alloc	_graph.tsort_k_c
+	.app	ks	k
+	.enter	_graph.tsort_list	k	v
+
+_graph.tsort_k_c	.expr
+list.t	.tygvar	# Temp
+graph.scc.t	.tygvar	# Temp
+v	.tyfv	*	# Temp
+scc.ty	.tylet	graph.scc.t	v	# Temp
+	.undef	list.t	scc.ty
+
+_graph.tsort_list_c	.expr
+list.t	.tygvar
+_graph.tsort_cont.t	.tygvar
+k	.tyarg	*
+v	.tyarg	*
+_graph.tsort_list_k	.subcode
+list.t.out	.cogvar
+ks	.larg	list.t	k
+k	.larg	_graph.tsort_cont.t	k	v
+	.force	_graph.tsort_list_k
+	.coerce	list.t.out	k
+	.enter	ks
+
+_graph.tsort_list_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar	# Temp
+graph.scc.t	.tygvar	# Temp
+k	.tyfv	*
+v	.tyfv	*	# Temp
+scc.ty	.tylet	graph.scc.t	v	# Temp
+ks0	.karg	list.prim.u	k
 	.undef	list.t	scc.ty
 
 	.type
@@ -69,4 +103,23 @@ scc.ty	.tylet	graph.scc.t	v
 	.tyfun	graph.lookup.t	k	v
 	.tylift
 	.tyfun	list.t	k
+	.tyref	list.t	scc.ty
+
+_graph.tsort_list_ty	.tyexpr
+list.t	.tygvar
+_graph.tsort_cont.t	.tygvar
+k	.tyforall	*
+v	.tyforall	*
+	.tylift
+	.tyfun	list.t	k
+	.tylift
+	.tyfun	_graph.tsort_cont.t	k	v
+	.tyref	_graph.tsort_cont.t	k	v
+
+_graph.tsort_cont.t	.tyexpr
+list.t	.tygvar
+graph.scc.t	.tygvar
+k	.tylambda	*
+v	.tylambda	*
+scc.ty	.tylet	graph.scc.t	v
 	.tyref	list.t	scc.ty
