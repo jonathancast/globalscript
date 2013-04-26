@@ -47,12 +47,22 @@ _gsac.prefix.typecheck_k	.forcecont
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
+list.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 gsdl.cgs.typeenv.t	.tygvar	# Temp
 scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
+either.right	.gvar
+gsdl.cgs.typeenv.empty	.gvar
 sccs0	.karg	list.prim.u	scc.item.ty
-	.undef	either.t	string.t	gsdl.cgs.typeenv.t
+	.analyze	sccs0	:	nil
+		.case	:
+scc0		.fkarg	0	graph.scc.t	gsac.prefix.item.t
+sccs1		.fkarg	1	list.t	scc.item.ty
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+		.case	nil
+			.app	gsdl.cgs.typeenv.empty
+			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
 # §section §gs{gsac.prefix.item.name}
 
