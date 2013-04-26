@@ -1,0 +1,30 @@
+	.prefix
+
+	.data
+
+gsac.prefix.typecheck	.closure	_gsac.prefix.typecheck_c
+
+	.code
+
+# §section §gs{gsac.prefix.typecheck}
+
+_gsac.prefix.typecheck_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+gsac.prefix.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+env	.larg	gsdl.cgs.typeenv.t
+pr	.larg	gsac.prefix.t
+	.undef	either.t	string.t	gsdl.cgs.typeenv.t
+
+	.type
+
+# §section §gs{gsac.prefix.t}
+
+gsac.prefix.t	.tyexpr
+gsac.prefix.prim.u	.tygvar
+	.tylift
+	.tyref	gsac.prefix.prim.u
+
+gsac.prefix.prim.u	.tyexpr
+	.typroduct
