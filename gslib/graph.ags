@@ -26,11 +26,11 @@ k	.alloc	_graph.tsort_k_c
 	.enter	_graph.tsort_list	k	v
 
 _graph.tsort_k_c	.expr
-list.t	.tygvar	# Temp
-graph.scc.t	.tygvar	# Temp
-v	.tyfv	*	# Temp
-scc.ty	.tylet	graph.scc.t	v	# Temp
-	.undef	list.t	scc.ty
+graph.scc.t	.tygvar
+v	.tyfv	*
+scc.ty	.tylet	graph.scc.t	v
+list.nil	.gvar
+	.enter	list.nil	scc.ty
 
 _graph.tsort_list_c	.expr
 list.t	.tygvar
@@ -46,14 +46,22 @@ k	.larg	_graph.tsort_cont.t	k	v
 	.enter	ks
 
 _graph.tsort_list_k	.forcecont
+_graph.tsort_cont.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar	# Temp
 graph.scc.t	.tygvar	# Temp
 k	.tyfv	*
 v	.tyfv	*	# Temp
 scc.ty	.tylet	graph.scc.t	v	# Temp
+k	.fv	_graph.tsort_cont.t	k	v
 ks0	.karg	list.prim.u	k
-	.undef	list.t	scc.ty
+	.analyze	ks0	:	nil
+		.case	:
+k0		.fkarg	0	k
+ks1		.fkarg	1	list.t	k
+			.undef	list.t	scc.ty
+		.case	nil
+			.enter	k
 
 	.type
 
