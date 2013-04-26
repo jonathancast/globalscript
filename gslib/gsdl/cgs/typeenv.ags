@@ -4,6 +4,8 @@
 
 gsdl.cgs.typeenv.lookupKind	.closure	_gsdl.cgs.typeenv.lookupKind_c
 
+gsdl.cgs.typeenv.empty	.closure	_gsdl.cgs.typeenv.empty_c
+
 	.code
 
 # §section §gs{gsdl.cgs.typeenv.lookupKind}
@@ -16,6 +18,12 @@ gsdl.cgs.gskind.t	.tygvar	# Temp
 v	.larg	gsdl.cgs.syntax.var.t
 env	.larg	gsdl.cgs.typeenv.t
 	.undef	maybe.t	gsdl.cgs.gskind.t
+
+# §section §gs{gsdl.cgs.typeenv.empty}
+
+_gsdl.cgs.typeenv.empty_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+	.undef	gsdl.cgs.typeenv.t
 
 	.type
 
