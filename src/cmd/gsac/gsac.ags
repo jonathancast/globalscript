@@ -9,6 +9,12 @@ _args.parse	.closure	_args.parse_c	_args.parse_ty
 _args.parsed.empty	.closure	_args.parsed.empty_c	_args.parsed.t
 _flag.l	.string	-l
 
+_prefix.init	.closure	_prefix.init_c	_prefix.init_ty
+
+_prefix.load	.closure	_prefix.load_c	_prefix.load_ty
+
+_prefix.typecheck	.closure	_prefix.typecheck_c	_prefix.typecheck_ty
+
 	.code
 
 _real.entry_c	.eprog	ibio.prim	ibio
@@ -17,9 +23,12 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 _real.entry_args_c	.subcode
 _real.entry_parsed.args_c	.subcode
+_real.entry_prefix.files_c	.subcode
 _real.entry_cut.files_c	.subcode
 _real.entry_cut_c	.subcode
 _real.entry_cut.fvs_c	.subcode
+_real.entry_prefix.loaded_c	.subcode
+_real.entry_env_c	.subcode
 _real.entry_output_c	.subcode
 _real.entry_send.output_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
@@ -27,9 +36,12 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
 parsed.args	.bind	_real.entry_parsed.args_c	# §gs{《 §gsinf{List of prefix arguments}, §gsinf{List of CUT arguments}, 》}
+prefix.files	.alloc	_real.entry_prefix.files_c
 cut.files	.alloc	_real.entry_cut.files_c
 cut	.bind	_real.entry_cut_c
 cut.fvs	.alloc	_real.entry_cut.fvs_c
+prefix.loaded	.bind	_real.entry_prefix.loaded_c
+env	.bind	_real.entry_env_c
 output	.bind	_real.entry_output_c
 	.body	_real.entry_send.output_c
 
@@ -200,6 +212,12 @@ r	.record	0	ps	1	cut
 
 # §section Read files from §gs{parsed.args} as needed
 
+_real.entry_prefix.files_c	.expr
+_args.parsed.t	.tygvar
+parsed.args	.fv	_args.parsed.t
+fs	.lfield	0	parsed.args
+	.enter	fs
+
 _real.entry_cut.files_c	.expr
 _args.parsed.t	.tygvar
 parsed.args	.fv	_args.parsed.t
@@ -221,27 +239,27 @@ f	.apply	gsdl.cgs.file.read	|	eo
 	.enter	ibio.mapM.prim	ibio.file.name.t	gsdl.cgs.file.t
 
 _real.entry_cut.fvs_c	.expr
-list.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
-	.undef	list.t	gsdl.cgs.symbol.t
+list.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ordered.set.t	.tygvar
+set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+ordered.set.tolist	.gvar
+gsdl.cgs.symbol.compare	.gvar
+list.foldr	.gvar
+ordered.set.union	.gvar
+ordered.set.empty	.gvar
+list.map	.gvar
+gsdl.cgs.file.freevars	.gvar
+cut	.fv	list.t	gsdl.cgs.file.t
+fvs1	.apply	list.map	gsdl.cgs.file.t	set.symbol.ty	|	gsdl.cgs.file.freevars	cut
+union	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
+empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
+fvs	.apply	list.foldr	set.symbol.ty	set.symbol.ty	|	union	empty	fvs1
+	.app	gsdl.cgs.symbol.compare	fvs
+	.enter	ordered.set.tolist	gsdl.cgs.symbol.t
 
 # ‘CUT’ = ‘component under translation’; ‘component’ = ‘strongly-connected component of the dependency graph’
-
-#_real.entry_read.arguments_c	.eprog	ibio.prim	ibio
-#ibio.prim.oport	.tygvar
-#rune.t	.tygvar
-#_args.parsed.t	.tygvar
-#_real.entry_read.arguments_prefix.files_c	.subcode
-#_real.entry_read.arguments_prefix_c	.subcode
-#_real.entry_read.arguments_cut.files_c	.subcode
-#_real.entry_read.arguments_cut_c	.subcode
-#_real.entry_read.arguments_body_c	.subcode
-#eo	.fv	ibio.prim.oport	rune.t
-#parsed.args	.fv	_args.parsed.t
-#prefix.files	.alloc	_real.entry_read.arguments_prefix.files_c
-#prefix	.bind	_real.entry_read.arguments_prefix_c
-#cut.files	.alloc	_real.entry_read.arguments_cut.files_c
-#	.body	_real.entry_read.arguments_body_c
 
 #_real.entry_read.arguments_prefix.files_c	.expr
 #_args.parsed.t	.tygvar
@@ -249,14 +267,6 @@ gsdl.cgs.symbol.t	.tygvar	# Temp
 #parsed.args	.fv	_args.parsed.t
 #	.force	_real.entry_read.arguments_prefix.files_k
 #	.enter	parsed.args
-
-#_real.entry_read.arguments_prefix.files_k	.forcecont
-#_args.parsed.u	.tygvar
-#list.t	.tygvar
-#ibio.file.name.t	.tygvar
-#pa0	.karg	_args.parsed.u
-#pas	.field	0	pa0
-#	.enter	pas
 
 #_real.entry_read.arguments_prefix_c	.expr
 #ibio.prim.oport	.tygvar
@@ -284,23 +294,199 @@ gsdl.cgs.symbol.t	.tygvar	# Temp
 #	.app	res
 #	.yield	ibio.prim.unit	_real.entry_read.arguments_ty
 
+# §section Load those files depended on by the CUT
+
+_real.entry_prefix.loaded_c	.expr
+list.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ibio.file.name.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+ibio.prim.t	.tygvar	# Temp
+_prefix.load	.gvar
+_prefix.init	.gvar
+list.nil	.gvar
+prefix.files	.fv	list.t	ibio.file.name.t
+cut.fvs	.fv	list.t	gsdl.cgs.symbol.t
+init1	.apply	list.nil	_real.entry_prefix_ty
+init	.apply	_prefix.init	|	init1	prefix.files
+	.app	cut.fvs	init
+	.enter	_prefix.load
+
+# §gs{_prefix.init 'prn 'files} takes a list of files (as on the command line) §gs{files} and translates to a (reversed) initial prefix, prepended to §gs{prn}.
+# We are tail-recursive because we §emph{want} to reverse §gs{files} as we work.
+_prefix.init_c	.expr
+list.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+ibio.file.name.t	.tygvar
+_prefix.init_k	.subcode
+list.t.out	.cogvar
+prn	.larg	list.t	_real.entry_prefix_ty
+fns	.larg	list.t	ibio.file.name.t
+	.force	_prefix.init_k
+	.coerce	list.t.out	ibio.file.name.t
+	.enter	fns
+
+_prefix.init_k	.forcecont
+list.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+list.prim.u	.tygvar
+ibio.file.name.t	.tygvar
+_prefix.init	.gvar
+list.:	.gvar
+prn	.fv	list.t	_real.entry_prefix_ty
+fns0	.karg	list.prim.u	ibio.file.name.t
+	.analyze	fns0	:	nil
+		.case	:
+fn0		.fkarg	0	ibio.file.name.t
+fns1		.fkarg	1	list.t	ibio.file.name.t
+pr0			.undefined	_real.entry_prefix_ty
+prn1			.apply	list.:	_real.entry_prefix_ty	|	pr0	prn
+			.app	prn1	fns1
+			.enter	_prefix.init
+		.case	nil
+			.enter	prn
+
+_prefix.load_c	.expr
+list.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+_prefix.load_k	.subcode
+list.t.out	.cogvar
+vs	.larg	list.t	gsdl.cgs.symbol.t
+prn	.larg	list.t	_real.entry_prefix_ty
+	.force	_prefix.load_k
+	.coerce	list.t.out	gsdl.cgs.symbol.t
+	.enter	vs
+
+_prefix.load_k	.forcecont
+list.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+list.prim.u	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ibio.prim.t	.tygvar	# Temp
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty
+ibio.prim.unit	.gvar
+prn	.fv	list.t	_real.entry_prefix_ty
+vs0	.karg	list.prim.u	gsdl.cgs.symbol.t
+	.analyze	vs0	:	nil
+		.case	:
+v0		.fkarg	0	gsdl.cgs.symbol.t
+vs1		.fkarg	1	list.t	gsdl.cgs.symbol.t
+			.undef	ibio.prim.t	list.prefix.ty
+		.case	nil
+			.lift
+			.app	prn
+			.yield	ibio.prim.unit	list.prefix.ty
+
+# §section Calculate type of the prefixen and build a type environment from them
+
+_real.entry_env_c	.expr
+list.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+ibio.from.either.prim	.gvar
+_prefix.typecheck	.gvar
+prefix.loaded	.fv	list.t	_real.entry_prefix_ty
+e	.apply	_prefix.typecheck	|	prefix.loaded
+	.app	e
+	.enter	ibio.from.either.prim	gsdl.cgs.typeenv.t
+
+_prefix.typecheck_c	.expr
+list.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+_prefix.typecheck_k	.subcode
+list.t.out	.cogvar
+prn	.larg	list.t	_real.entry_prefix_ty
+	.force	_prefix.typecheck_k
+	.coerce	list.t.out	_real.entry_prefix_ty
+	.enter	prn
+
+_prefix.typecheck_k	.forcecont
+list.prim.u	.tygvar
+_real.entry_prefix_ty	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_prefix.typecheck_:_k	.subcode
+either.t.out	.cogvar
+_prefix.typecheck	.gvar
+either.right	.gvar
+prn0	.karg	list.prim.u	_real.entry_prefix_ty
+	.analyze	prn0	:	nil
+		.case	:
+pr0		.fkarg	0	_real.entry_prefix_ty
+prn1		.fkarg	1	list.t	_real.entry_prefix_ty
+			.force	_prefix.typecheck_:_k
+			.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
+			.app	prn1
+			.enter	_prefix.typecheck
+		.case	nil
+env			.undefined	gsdl.cgs.typeenv.t
+			.app	env
+			.enter	either.right	string.t	gsdl.cgs.typeenv.t
+
+_prefix.typecheck_:_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsac.prefix.t	.tygvar
+either.t	.tygvar	# Temp
+_prefix.typecheck_:_right_k	.subcode
+either.t.out	.cogvar
+gsac.prefix.typecheck	.gvar
+eenv0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
+	.analyze	eenv0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+		.case	right
+env		.fkarg	0	gsdl.cgs.typeenv.t
+pr0.prefix			.undefined	gsac.prefix.t
+			.force	_prefix.typecheck_:_right_k
+			.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
+			.app	env	pr0.prefix
+			.enter	gsac.prefix.typecheck	# > :: gsdl.cgs.typeenv.t → gsac.prefix.t → either.t	string.t	gsdl.cgs.typeenv.t
+
+_prefix.typecheck_:_right_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+either.t	.tygvar	# Temp
+gsdl.cgs.typeenv.overlay	.gvar
+either.right	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+eenv0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
+	.analyze	eenv0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+		.case	right
+env1		.fkarg	0	gsdl.cgs.typeenv.t
+env2			.apply	gsdl.cgs.typeenv.overlay	|	env1	env
+			.app	env2
+			.enter	either.right	string.t	gsdl.cgs.typeenv.t
+
 # §section Process §gs{sccs} to get (symtable, output)
 
 # NB: We will need to read in §gs{.gsac} files --- those that we need --- §emph{before} this step;
 # that can be deferred until a later stage.
 
 _real.entry_output_c	.expr
-_real.entry_read.arguments_ty	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.file.t	.tygvar
 list.t	.tygvar	# Temp
 _real.entry_output_k	.subcode
 list.t.out	.cogvar
 cut	.fv	list.t	gsdl.cgs.file.t
+env	.fv	gsdl.cgs.typeenv.t
 	.force	_real.entry_output_k
 	.coerce	list.t.out	gsdl.cgs.file.t
 	.enter	cut
 
 _real.entry_output_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 list.prim.u	.tygvar
 gsdl.cgs.file.t	.tygvar
 list.t	.tygvar
@@ -308,6 +494,7 @@ ibio.prim.t	.tygvar	# Temp
 gsdl.ags.file.t	.tygvar	# Temp
 _real.entry_output_k1	.subcode
 list.t.out	.cogvar
+env	.fv	gsdl.cgs.typeenv.t
 cut0	.karg	list.prim.u	gsdl.cgs.file.t
 	.analyze	cut0	:	nil
 		.case	:
@@ -320,6 +507,7 @@ cut1		.fkarg	1	list.t	gsdl.cgs.file.t
 			.undef	ibio.prim.t	gsdl.ags.file.t
 
 _real.entry_output_k1	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.file.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
@@ -327,6 +515,7 @@ gsdl.ags.file.t	.tygvar	# Temp
 _real.entry_output_k1_nil_k	.subcode
 ibio.prim.unit	.gvar
 gsdl.cgs.file.t.out	.cogvar
+env	.fv	gsdl.cgs.typeenv.t
 cut0.0	.fv	gsdl.cgs.file.t
 cut1.0	.karg	list.prim.u	gsdl.cgs.file.t
 	.analyze	cut1.0	:	nil
@@ -343,6 +532,7 @@ res			.undefined	gsdl.ags.file.t
 			.enter	cut0.0
 
 _real.entry_output_k1_nil_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.file.prim.u	.tygvar
 gsdl.cgs.document.t	.tygvar
 string.t	.tygvar
@@ -351,13 +541,14 @@ either.t	.tygvar	# Temp
 _real.entry_output_k1_nil_doc_k	.subcode
 either.t.out	.cogvar
 gsac.document.compile	.gvar
+env	.fv	gsdl.cgs.typeenv.t
 f0	.karg	gsdl.cgs.file.prim.u
 	.analyze	f0	document
 		.case	document
 doc		.fkarg	0	gsdl.cgs.document.t
 			.force	_real.entry_output_k1_nil_doc_k
 			.coerce	either.t.out	string.t	gsdl.ags.file.t
-			.app	doc
+			.app	env	doc
 			.enter	gsac.document.compile
 	# > :: ibio.prim.t	gsdl.ags.file.t
 
@@ -413,27 +604,6 @@ ibio.file.name.t	.tygvar
 1.ty	.tylet	list.t	ibio.file.name.t
 	.typroduct	0	0.ty	1	1.ty
 
-_real.entry_read.arguments_ty	.tyexpr
-_real.entry_read.arguments_u	.tygvar
-	.tylift
-	.tyref	_real.entry_read.arguments_u
-
-_real.entry_read.arguments_u	.tyexpr
-list.t	.tygvar
-gsdl.cgs.file.t	.tygvar
-cut_ty	.tylet	list.t	gsdl.cgs.file.t
-	.typroduct	cut	cut_ty
-
-_real.entry_sccs_ty	.tyexpr
-list.t	.tygvar
-_real.entry_sccs_scc_ty	.tygvar
-	.tyref	list.t	_real.entry_sccs_scc_ty
-
-_real.entry_sccs_scc_ty	.tyexpr
-graph.scc.t	.tygvar
-gsac.input.sorted.node.t	.tygvar
-	.tyref	graph.scc.t	gsac.input.sorted.node.t
-
 _args.parse_ty	.tyexpr
 list.t	.tygvar
 string.t	.tygvar
@@ -442,6 +612,46 @@ _args.parsed.t	.tygvar
 	.tylift
 	.tyfun	list.t	string.t
 	.tyref	either.t	string.t	_args.parsed.t
+
+_real.entry_prefix_ty	.tyexpr
+_real.entry_prefix_u	.tygvar
+	.tylift
+	.tyref	_real.entry_prefix_u
+
+_real.entry_prefix_u	.tyexpr
+	.typroduct	# 〈 name :: file.name.t; isdir :: bool.t; bvars :: set.t var.t; loaded :: set.t file.name.t; prefix :: prefix.t; 〉
+
+_prefix.init_ty	.tyexpr
+list.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+ibio.file.name.t	.tygvar
+	.tylift
+	.tyfun	list.t	_real.entry_prefix_ty
+	.tylift
+	.tyfun	list.t	ibio.file.name.t
+	.tyref	list.t	_real.entry_prefix_ty
+
+_prefix.load_ty	.tyexpr
+list.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+ibio.prim.t	.tygvar
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty
+	.tylift
+	.tyfun	list.t	gsdl.cgs.symbol.t
+	.tylift
+	.tyfun	list.t	_real.entry_prefix_ty
+	.tyref	ibio.prim.t	list.prefix.ty
+
+_prefix.typecheck_ty	.tyexpr
+list.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+	.tylift
+	.tyfun	list.t	_real.entry_prefix_ty
+	.tyref	either.t	string.t	gsdl.cgs.typeenv.t
 
 	.coercion
 

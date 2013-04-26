@@ -19,15 +19,18 @@ gsac.gstype.gskind.compile	.closure	_gsac.gstype.gskind.compile_c	_gsac.gstype.g
 
 # > either.t string.t
 _gsac.gstype.kindcheck_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.gstype.kindcheck_k	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
+env	.larg	gsdl.cgs.typeenv.t
 ty	.larg	gsdl.cgs.gstype.t
 	.force	_gsac.gstype.kindcheck_k
 	.coerce	gsdl.cgs.gstype.t.out
 	.enter	ty
 
 _gsac.gstype.kindcheck_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
@@ -42,6 +45,7 @@ _gsac.gstype.kindcheck_product_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.kindcheck	.gvar
 gsac.gstype.fields.kindcheck	.gvar
+env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0	app	lift	product	var
 		.case	app
@@ -52,7 +56,7 @@ tyx		.fkarg	1	gsdl.cgs.gstype.t
 ty1		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.kindcheck_lift_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
-			.app	ty1
+			.app	env	ty1
 			.enter	gsac.gstype.kindcheck
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
@@ -378,10 +382,13 @@ ky	.larg	gsdl.cgs.gskind.t
 # §section §gs{gsac.gstype.kindcheck}
 
 _gsac.gstype.kindcheck_ty	.tyexpr
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	either.t	string.t	gsdl.cgs.gskind.t

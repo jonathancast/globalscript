@@ -12,15 +12,17 @@ gsac.document.annotate	.closure	_gsac.document.annotate_c
 # §section §gs{gsac.document.compile}
 
 _gsac.document.compile_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 string.t	.tygvar
 _gsac.document.compile_k	.subcode
 either.t.out	.cogvar
 gsac.document.annotate	.gvar
+env	.larg	gsdl.cgs.typeenv.t
 doc	.larg	gsdl.cgs.document.t
 	.force	_gsac.document.compile_k
 	.coerce	either.t.out	string.t	gsdl.cgs.document.t
-	.app	doc
+	.app	env	doc
 	.enter	gsac.document.annotate
 
 _gsac.document.compile_k	.forcecont
@@ -116,10 +118,12 @@ res			.lrecord	codesection	cs	coercionsection	tcs	datasection	ds	filetype	gsdl.a
 # §section §gs{gsac.document.annotate}
 
 _gsac.document.annotate_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.document.annotate_gstype_k	.subcode
 maybe.t.out	.cogvar
+env	.larg	gsdl.cgs.typeenv.t
 doc	.larg	gsdl.cgs.document.t
 gsty	.lfield	gstype	doc
 	.force	_gsac.document.annotate_gstype_k
@@ -127,6 +131,7 @@ gsty	.lfield	gstype	doc
 	.enter	gsty
 
 _gsac.document.annotate_gstype_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -136,6 +141,7 @@ either.t	.tygvar	# Temp
 _gsac.document.annotate_gstype_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.kindcheck	.gvar
+env	.fv	gsdl.cgs.typeenv.t
 doc	.fv	gsdl.cgs.document.t
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
@@ -143,7 +149,7 @@ mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 ty		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.document.annotate_gstype_just_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
-			.app	ty
+			.app	env	ty
 			.enter	gsac.gstype.kindcheck
 		.case	nothing
 			.undef	either.t	string.t	gsdl.cgs.document.t
