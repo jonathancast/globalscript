@@ -6,6 +6,8 @@ gsdl.cgs.typeenv.lookupKind	.closure	_gsdl.cgs.typeenv.lookupKind_c
 
 gsdl.cgs.typeenv.empty	.closure	_gsdl.cgs.typeenv.empty_c
 
+gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
+
 	.code
 
 # §section §gs{gsdl.cgs.typeenv.lookupKind}
@@ -23,6 +25,14 @@ env	.larg	gsdl.cgs.typeenv.t
 
 _gsdl.cgs.typeenv.empty_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
+	.undef	gsdl.cgs.typeenv.t
+
+# §section §gs{gsdl.cgs.typeenv.overlay}
+
+_gsdl.cgs.typeenv.overlay_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+env0	.larg	gsdl.cgs.typeenv.t
+env1	.larg	gsdl.cgs.typeenv.t
 	.undef	gsdl.cgs.typeenv.t
 
 	.type
