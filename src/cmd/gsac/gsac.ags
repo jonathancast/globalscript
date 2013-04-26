@@ -95,17 +95,17 @@ string.t	.tygvar
 bool.prim.u	.tygvar
 _args.parsed.t	.tygvar
 _args.parse_file_pre_c	.subcode
-_args.parse_file_ap0_c	.subcode
 _args.parse_l.option_k	.subcode
 list.t.out	.cogvar
 either.map	.gvar
+_args.parse	.gvar
 a0	.fv	string.t
 as1	.fv	list.t	string.t
 is.l0	.karg	bool.prim.u
 	.analyze	is.l0	false	true
 		.case	false
 pre			.alloc	_args.parse_file_pre_c
-ap0			.alloc	_args.parse_file_ap0_c
+ap0			.apply	_args.parse	|	as1
 			.app	pre	ap0
 			.enter	either.map	string.t	_args.parsed.t	_args.parsed.t
 		.case	true
@@ -139,14 +139,6 @@ ap1	.record	0	ps	1	cut
 	.lift
 	.yield	ap1
 
-_args.parse_file_ap0_c	.expr
-list.t	.tygvar
-string.t	.tygvar
-_args.parse	.gvar
-as1	.fv	list.t	string.t
-	.app	as1
-	.enter	_args.parse
-
 # paragraph{§gs{a0} is §sh{-l} flag}
 _args.parse_l.option_k	.forcecont
 list.prim.u	.tygvar
@@ -155,15 +147,15 @@ list.t	.tygvar
 either.t	.tygvar
 _args.parsed.t	.tygvar
 _args.parse_l.option_pre_c	.subcode
-_args.parse_l.option_ap0_c	.subcode
 either.map	.gvar
+_args.parse	.gvar
 as1.0	.karg	list.prim.u	string.t
 	.analyze	as1.0	:	nil
 		.case	:
 a1		.fkarg	0	string.t
 as2		.fkarg	1	list.t	string.t
 pre			.alloc	_args.parse_l.option_pre_c
-ap0			.alloc	_args.parse_l.option_ap0_c
+ap0			.apply	_args.parse	|	as2
 			.app	pre	ap0
 			.enter	either.map	string.t	_args.parsed.t	_args.parsed.t
 		.case	nil
@@ -183,62 +175,28 @@ _args.parse_l.option_pre_k	.forcecont
 string.t	.tygvar
 _args.parsed.u	.tygvar
 _args.parsed.t	.tygvar
-_args.parse_l.option_pre_ps1_c	.subcode
+list.t	.tygvar
+ibio.file.name.t	.tygvar
+list.:	.gvar
+ibio.file.name.in	.gvar
 a1	.fv	string.t
 ap00	.karg	_args.parsed.u
 ps	.field	0	ap00
 cut	.field	1	ap00
-ps1	.alloc	_args.parse_l.option_pre_ps1_c
+fn	.apply	ibio.file.name.in	|	a1
+ps1	.apply	list.:	ibio.file.name.t	|	fn	ps
 ap1	.record	0	ps1	1	cut
 	.lift
 	.yield	ap1
 
-_args.parse_l.option_pre_ps1_c	.expr
-string.t	.tygvar
-list.t	.tygvar
-ibio.file.name.t	.tygvar
-_args.parse_l.option_pre_ps1_fn_c	.subcode
-list.:	.gvar
-a1	.fv	string.t
-ps	.fv	list.t	ibio.file.name.t
-fn	.alloc	_args.parse_l.option_pre_ps1_fn_c
-	.app	fn	ps
-	.enter	list.:	ibio.file.name.t
-
-_args.parse_l.option_pre_ps1_fn_c	.expr
-string.t	.tygvar
-ibio.file.name.in	.gvar
-a1	.fv	string.t
-	.app	a1
-	.enter	ibio.file.name.in
-
-# §paragraph{Recursive call on §gs{as2}}
-_args.parse_l.option_ap0_c	.expr
-list.t	.tygvar
-string.t	.tygvar
-_args.parse	.gvar
-as2	.fv	list.t	string.t
-	.app	as2
-	.enter	_args.parse
-
 _args.parsed.empty_c	.expr
-_args.parsed.empty_ps_c	.subcode
-_args.parsed.empty_cut_c	.subcode
-ps	.alloc	_args.parsed.empty_ps_c
-cut	.alloc	_args.parsed.empty_cut_c
+ibio.file.name.t	.tygvar
+list.nil	.gvar
+ps	.apply	list.nil	ibio.file.name.t
+cut	.apply	list.nil	ibio.file.name.t
 r	.record	0	ps	1	cut
 	.lift
 	.yield	r
-
-_args.parsed.empty_ps_c	.expr
-ibio.file.name.t	.tygvar
-list.nil	.gvar
-	.enter	list.nil	ibio.file.name.t
-
-_args.parsed.empty_cut_c	.expr
-ibio.file.name.t	.tygvar
-list.nil	.gvar
-	.enter	list.nil	ibio.file.name.t
 
 # §section Read files from §gs{parsed.args} as needed
 
