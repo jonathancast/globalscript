@@ -1,8 +1,72 @@
 	.prefix
 
+	.data
+
+graph.tsort	.closure	_graph.tsort_c	_graph.tsort_ty
+
+	.code
+
+_graph.tsort_c	.expr
+order.total.t	.tygvar
+graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
+list.t	.tygvar
+graph.scc.t	.tygvar	# Temp
+k	.tyarg	*
+v	.tyarg	*
+scc.ty	.tylet	graph.scc.t	v	# Temp
+ord	.larg	order.total.t	k
+deps	.larg	graph.dependencies.t	k	v
+look	.larg	graph.lookup.t	k	v
+ks	.larg	list.t	k
+	.undef	list.t	scc.ty
+
 	.type
+
+# §section §gs{graph.scc.t}
 
 graph.scc.t	.tyabstract	**^
 α	.tylambda	*
 	.tylift
 	.tysum
+
+# §section §gs{graph.dependencies.t}
+
+graph.dependencies.t	.tyexpr
+list.t	.tygvar
+k	.tylambda	*
+v	.tylambda	*
+	.tylift
+	.tyfun	v
+	.tyref	list.t	k
+
+# §section §gs{graph.lookup.t}
+
+graph.lookup.t	.tyexpr
+maybe.t	.tygvar
+k	.tylambda	*
+v	.tylambda	*
+	.tylift
+	.tyfun	k
+	.tyref	maybe.t	v
+
+# §section §gs{graph.tsort}
+
+_graph.tsort_ty	.tyexpr
+order.total.t	.tygvar
+graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
+list.t	.tygvar
+graph.scc.t	.tygvar
+k	.tyforall	*
+v	.tyforall	*
+scc.ty	.tylet	graph.scc.t	v
+	.tylift
+	.tyfun	order.total.t	k
+	.tylift
+	.tyfun	graph.dependencies.t	k	v
+	.tylift
+	.tyfun	graph.lookup.t	k	v
+	.tylift
+	.tyfun	list.t	k
+	.tyref	list.t	scc.ty
