@@ -1,0 +1,30 @@
+	.prefix
+
+	.data
+
+gsdl.cgs.typeenv.lookupKind	.closure	_gsdl.cgs.typeenv.lookupKind_c
+
+	.code
+
+# §section §gs{gsdl.cgs.typeenv.lookupKind}
+
+_gsdl.cgs.typeenv.lookupKind_c	.expr
+gsdl.cgs.syntax.var.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+maybe.t	.tygvar	# Temp
+gsdl.cgs.gskind.t	.tygvar	# Temp
+v	.larg	gsdl.cgs.syntax.var.t
+env	.larg	gsdl.cgs.typeenv.t
+	.undef	maybe.t	gsdl.cgs.gskind.t
+
+	.type
+
+# §section §gs{gsdl.cgs.typeenv.t}
+
+gsdl.cgs.typeenv.t	.tyexpr
+gsdl.cgs.typeenv.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.typeenv.prim.u
+
+gsdl.cgs.typeenv.prim.u	.tyexpr
+	.typroduct
