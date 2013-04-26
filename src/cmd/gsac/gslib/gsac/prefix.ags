@@ -11,10 +11,27 @@ gsac.prefix.typecheck	.closure	_gsac.prefix.typecheck_c
 _gsac.prefix.typecheck_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsac.prefix.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
+graph.scc.t	.tygvar
+gsac.prefix.item.t	.tygvar
+list.t	.tygvar	# Temp
+scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
+_gsac.prefix.typecheck_k	.subcode
+list.t.out	.cogvar
 env	.larg	gsdl.cgs.typeenv.t
 pr	.larg	gsac.prefix.t
+	.force	_gsac.prefix.typecheck_k
+	.coerce	list.t.out	scc.item.ty
+	.undef	list.t	scc.item.ty
+
+_gsac.prefix.typecheck_k	.forcecont
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsac.prefix.item.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+gsdl.cgs.typeenv.t	.tygvar	# Temp
+scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
+sccs0	.karg	list.prim.u	scc.item.ty
 	.undef	either.t	string.t	gsdl.cgs.typeenv.t
 
 	.type
@@ -28,3 +45,13 @@ gsac.prefix.prim.u	.tygvar
 
 gsac.prefix.prim.u	.tyexpr
 	.typroduct
+
+# §section §gs{gsac.prefix.item.t}
+
+gsac.prefix.item.t	.tyabstract	*
+gsac.prefix.item.prim.u	.tygvar
+	.tylift
+	.tyref	gsac.prefix.item.prim.u
+
+gsac.prefix.item.prim.u	.tyexpr
+	.tysum
