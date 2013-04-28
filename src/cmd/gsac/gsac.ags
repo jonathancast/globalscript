@@ -619,7 +619,10 @@ _real.entry_prefix_u	.tygvar
 	.tyref	_real.entry_prefix_u
 
 _real.entry_prefix_u	.tyexpr
-	.typroduct	# 〈 name :: file.name.t; isdir :: bool.t; bvars :: set.t var.t; loaded :: set.t file.name.t; prefix :: prefix.t; 〉
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+bvs_ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+	.typroduct	bvs	bvs_ty	# 〈 name :: file.name.t; isdir :: bool.t; bvars :: set.t symbol.t; loaded :: set.t file.name.t; prefix :: prefix.t; 〉
 
 _prefix.init_ty	.tyexpr
 list.t	.tygvar
