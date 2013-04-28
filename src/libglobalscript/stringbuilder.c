@@ -37,7 +37,7 @@ gsreserve_string_builder()
     unlock(&gsstringbuilder_lock);
 
     res->forward = 0;
-    res->end = res->start = (char*)res + sizeof(*res);
+    res->end = res->start;
     res->extent = END_OF_BLOCK(block);
 
     return res;
