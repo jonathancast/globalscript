@@ -6,7 +6,7 @@
 
 	.code
 
-_ep_c	.eprog	test.sequence	m
+_ep_c	.impprog	test.sequence	m
 _ep_x_c	.subcode
 _ep_body_c	.subcode
 x	.bind	_ep_x_c

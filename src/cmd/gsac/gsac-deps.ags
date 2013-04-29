@@ -32,7 +32,7 @@ _ags	.string	ags
 
 	.code
 
-_real.entry_c	.eprog	ibio.prim	ibio
+_real.entry_c	.impprog	ibio.prim	ibio
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
 ibio.prim.oport	.tygvar
@@ -188,7 +188,7 @@ res1			.record	0	pfn1	1	fs
 
 # §section §gs{_prefix.parse}
 
-_prefix.parse_c	.eprog	ibio.prim	ibio
+_prefix.parse_c	.impprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
 _prefix.parse_isd_c	.subcode
 _prefix.parse_body_c	.subcode
@@ -236,7 +236,7 @@ pr			.apply	_prefix.dir	|	fn
 
 # §section §gs{_print.deps}
 
-_print.deps_c	.eprog	ibio.prim	ibio
+_print.deps_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
@@ -346,7 +346,7 @@ res			.alloc	_print.deps_body_w_:_res_c
 # >     'pr1 ← mapM (annotate cs) pr;
 # >     'nds ← foldM (_process.var cs) ds pr1;
 # > ) _print.deps_body_w fvs1
-_print.deps_body_w_:_res_c	.eprog	ibio.prim	ibio
+_print.deps_body_w_:_res_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
@@ -474,7 +474,7 @@ res			.alloc	_prefix.expand_loaded.dir_res_c
 
 # §subsection §gs{_prefix.expand_dir_res}
 
-_prefix.expand_dir_res_c	.eprog	ibio.prim	ibio
+_prefix.expand_dir_res_c	.impprog	ibio.prim	ibio
 list.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 ibio.file.name.t	.tygvar
@@ -523,7 +523,7 @@ p1	.apply	_prefix.loaded.dir	|	dirn	dcs2
 
 # §subsection §gs{_prefix.expand_loaded.dir_res}
 
-_prefix.expand_loaded.dir_res_c	.eprog	ibio.prim	ibio
+_prefix.expand_loaded.dir_res_c	.impprog	ibio.prim	ibio
 list.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 ibio.file.name.t	.tygvar
@@ -700,7 +700,7 @@ p1			.apply	_prefix.dir	|	sdirn
 
 # §section §gs{_prefix.readdir}
 
-_prefix.readdir_c	.eprog	ibio.prim	ibio
+_prefix.readdir_c	.impprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
 _prefix.readdir_id_c	.subcode
 _prefix.readdir_ds1_c	.subcode
@@ -1031,7 +1031,7 @@ res			.alloc	_process.var_rec_file_:_true_res_c
 		.case	true
 			.undef	ibio.prim.t	res.ty
 
-_process.var_rec_file_:_true_res_c	.eprog	ibio.prim	ibio
+_process.var_rec_file_:_true_res_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ordered.set.t	.tygvar

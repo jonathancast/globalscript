@@ -7,7 +7,7 @@ _empty.record	.closure	_empty.record.c
 
 	.code
 
-_epcode	.eprog	test.sequence	m
+_epcode	.impprog	test.sequence	m
 _ep.a.c	.subcode
 _ep.body	.subcode
 a	.alloc	_ep.a.c

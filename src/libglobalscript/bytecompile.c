@@ -1409,7 +1409,7 @@ static
 void
 gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco **bcos, int i, int n)
 {
-    static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymeprog;
+    static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymimpprog;
 
     if (gssymceq(p->directive, gssymexpr, gssymcodedirective, ".expr")) {
         bcos[i]->tag = gsbc_expr;
@@ -1427,8 +1427,8 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
         bcos[i]->tag = gsbc_ubcasecont;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
-    } else if (gssymceq(p->directive, gssymeprog, gssymcodedirective, ".eprog")) {
-        bcos[i]->tag = gsbc_eprog;
+    } else if (gssymceq(p->directive, gssymimpprog, gssymcodedirective, ".impprog")) {
+        bcos[i]->tag = gsbc_impprog;
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_api_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else {

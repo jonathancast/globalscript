@@ -97,7 +97,7 @@ gsheapstate(struct gsheap_item *hp)
                         return gstythunk;
                     }
                 }
-                case gsbc_eprog:
+                case gsbc_impprog:
                     return gstywhnf;
                 default:
                     gswarning("%s:%d: Evalling something else", __FILE__, __LINE__);

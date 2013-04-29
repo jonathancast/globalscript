@@ -494,7 +494,7 @@ static
 long
 gsparse_code_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymeprog;
+    static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymimpprog;
 
     struct gsparsedline *parsedline;
 
@@ -530,17 +530,17 @@ gsparse_code_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
             gsfatal("%s:%d: Too many arguments to .ubcasecont", pos->real_filename, pos->real_lineno)
         ;
         return gsparse_ubcase_cont_ops(pos, parsedfile, parsedline, chan, line, fields);
-    } else if (gssymceq(parsedline->directive, gssymeprog, gssymcodedirective, ".eprog")) {
+    } else if (gssymceq(parsedline->directive, gssymimpprog, gssymcodedirective, ".impprog")) {
         if (numfields < 3)
-            gsfatal("%s:%d: Missing primset argument to .eprog", pos->real_filename, pos->real_lineno)
+            gsfatal("%s:%d: Missing primset argument to .impprog", pos->real_filename, pos->real_lineno)
         ;
         parsedline->arguments[2 - 2] = gsintern_string(gssymprimsetlable, fields[2]);
         if (numfields < 4)
-            gsfatal("%s:%d: Missing prim argument to .eprog", pos->real_filename, pos->real_lineno)
+            gsfatal("%s:%d: Missing prim argument to .impprog", pos->real_filename, pos->real_lineno)
         ;
         parsedline->arguments[3 - 2] = gsintern_string(gssymtypelable, fields[3]);
         if (numfields > 4)
-            gsfatal("%s:%d: Too many arguments to .eprog", pos->real_filename, pos->real_lineno)
+            gsfatal("%s:%d: Too many arguments to .impprog", pos->real_filename, pos->real_lineno)
         ;
         return gsparse_api_ops(pos, parsedfile, parsedline, chan, line, fields);
     } else {
@@ -962,7 +962,7 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
     return 1;
 }
 
-/* ↓ Only parse ops legal in a .eprog */
+/* ↓ Only parse ops legal in a .impprog */
 static
 int
 gsparse_thunk_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
@@ -1019,11 +1019,11 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
         ;
         p->arguments[2 - 2] = gsintern_string(gssymprimsetlable, fields[2]);
         if (n < 4)
-            gsfatal("%P: Missing prim name on .eprim", p->pos)
+            gsfatal("%P: Missing prim name on .prim", p->pos)
         ;
         p->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
         if (n < 5)
-            gsfatal("%P: Missing declared type on .eprim", p->pos)
+            gsfatal("%P: Missing declared type on .prim", p->pos)
         ;
         p->arguments[4 - 2] = gsintern_string(gssymtypelable, fields[4]);
         for (i = 5; i < n && strcmp(fields[i], "|"); i++)

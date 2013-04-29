@@ -6,7 +6,7 @@ gsdl.prefix.load	.closure	_gsdl.prefix.load_c
 
 	.code
 
-_gsdl.prefix.load_c	.eprog	ibio.prim	ibio
+_gsdl.prefix.load_c	.impprog	ibio.prim	ibio
 gsdl.symtable.t	.tygvar
 ibio.file.name.t	.tygvar
 _gsdl.prefix.load_ty	.tygvar

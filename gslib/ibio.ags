@@ -147,7 +147,7 @@ nil			.apply	list.nil	β
 			.app	nil
 			.yield	ibio.prim.unit	res.ty
 
-_ibio.mapM.prim_eys_c	.eprog	ibio.prim	ibio
+_ibio.mapM.prim_eys_c	.impprog	ibio.prim	ibio
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
 α	.tyfv	*
@@ -234,7 +234,7 @@ e			.alloc	_ibio.mapM0.prim_k_:_e_c
 			.app	record.empty
 			.yield	ibio.prim.unit	record.empty
 
-_ibio.mapM0.prim_k_:_e_c	.eprog	ibio.prim	ibio
+_ibio.mapM0.prim_k_:_e_c	.impprog	ibio.prim	ibio
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
 α	.tyfv	*
@@ -318,7 +318,7 @@ res			.alloc	_ibio.foldM.prim_:_res
 			.app	z0
 			.yield	ibio.prim.unit	β
 
-_ibio.foldM.prim_:_res	.eprog	ibio.prim	ibio
+_ibio.foldM.prim_:_res	.impprog	ibio.prim	ibio
 _ibio.foldM.prim_f_ty	.tygvar
 list.t	.tygvar
 α	.tyfv	*

@@ -12,7 +12,7 @@ _directory	.string	directory
 
 	.code
 
-_real.entry_c	.eprog	ibio.prim	ibio
+_real.entry_c	.impprog	ibio.prim	ibio
 ibio.prim.iport	.tygvar
 ibio.prim.oport	.tygvar
 rune.t	.tygvar

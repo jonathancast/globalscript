@@ -500,7 +500,7 @@ xn0	.field	0	r0.0
 
 # §section §gs{ibio.lex.receive}
 
-_ibio.lex.receive_c	.eprog	ibio.prim	ibio
+_ibio.lex.receive_c	.impprog	ibio.prim	ibio
 ibio.lex.receiver.t	.tygvar
 ibio.prim.iport	.tygvar
 s	.tyarg	*

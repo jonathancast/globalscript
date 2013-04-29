@@ -109,7 +109,7 @@ fn.s	.apply	ibio.file.name.out	|	fn
 
 # §section §gs{ibio.file.stat}
 
-_ibio.file.stat.prim_c	.eprog	ibio.prim	ibio
+_ibio.file.stat.prim_c	.impprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
 _ibio.file.stat.prim_pst_c	.subcode
 _ibio.file.stat.prim_st_c	.subcode
@@ -151,7 +151,7 @@ st	.fv	ibio.dir.t
 
 # §section §gs{ibio.file.isdir}
 
-_ibio.file.isdir_c	.eprog	ibio.prim	ibio
+_ibio.file.isdir_c	.impprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
 _ibio.file.isdir_st	.subcode
 _ibio.file.isdir_id_c	.subcode

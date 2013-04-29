@@ -317,7 +317,7 @@ struct gsbco {
         gsbc_forcecont,
         gsbc_strictcont,
         gsbc_ubcasecont,
-        gsbc_eprog,
+        gsbc_impprog,
         gsbc_gcforward,
     } tag;
     struct gspos pos;

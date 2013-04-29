@@ -4,7 +4,7 @@ struct gsbc_code_item_type {
         gsbc_code_item_force_cont,
         gsbc_code_item_strict_cont,
         gsbc_code_item_ubcase_cont,
-        gsbc_code_item_eprog,
+        gsbc_code_item_impprog,
     } type;
     int numftyvs;
     int numfvs;

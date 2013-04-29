@@ -6,7 +6,7 @@
 
 	.code
 
-_epcode	.eprog	test.sequence	m
+_epcode	.impprog	test.sequence	m
 _real.entry.0	.subcode
 as	.bind	_real.entry.0
 	.body	_real.entry.body

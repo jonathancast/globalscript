@@ -457,7 +457,7 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
         || gssymceq(item.v->directive, gssymforcecont, gssymcodedirective, ".forcecont")
         || gssymceq(item.v->directive, gssymstrictcont, gssymcodedirective, ".strictcont")
         || gssymceq(item.v->directive, gssymubcasecont, gssymcodedirective, ".ubcasecont")
-        || gssymeq(item.v->directive, gssymcodedirective, ".eprog")
+        || gssymeq(item.v->directive, gssymcodedirective, ".impprog")
     ) {
         for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
             if (gssymeq(p->directive, gssymcodeop, ".tygvar")) {

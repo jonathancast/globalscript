@@ -470,7 +470,7 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
 
                 cl = (struct gsclosure *)hp;
                 switch (cl->code->tag) {
-                    case gsbc_eprog:
+                    case gsbc_impprog:
                         api_unpack_block_statement(thread, cl);
                         return 1;
                     default:

@@ -1371,7 +1371,7 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
                 thread->st.running.ip = (struct gsbc *)ip;
                 break;
             }
-            case gsbc_eprog: {
+            case gsbc_impprog: {
                 struct gsheap_item *hpres;
                 struct gsclosure *res;
 

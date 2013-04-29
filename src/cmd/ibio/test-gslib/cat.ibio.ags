@@ -7,7 +7,7 @@ _ep	.closure	_ep_c
 
 	.code
 
-_ep_c	.eprog	ibio.prim	ibio
+_ep_c	.impprog	ibio.prim	ibio
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
 ibio.prim.oport	.tygvar

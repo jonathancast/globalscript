@@ -11,7 +11,7 @@ _cgs	.string	cgs
 
 	.code
 
-_real.entry_c	.eprog	ibio.prim	ibio
+_real.entry_c	.impprog	ibio.prim	ibio
 ibio.prim.iport	.tygvar
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
@@ -50,7 +50,7 @@ parsed.args	.fv	list.t	ibio.file.name.t
 	.app	_print.targets.in.dir	parsed.args
 	.enter	ibio.mapM0.prim	ibio.file.name.t	record.empty
 
-_print.targets.in.dir_c .eprog	ibio.prim	ibio
+_print.targets.in.dir_c .impprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
 record.empty	.tygvar

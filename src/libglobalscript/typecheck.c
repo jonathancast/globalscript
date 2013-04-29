@@ -872,7 +872,7 @@ static
 void
 gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, int n, int i)
 {
-    static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymeprog;
+    static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymimpprog;
 
     struct gsparsedline *pcode;
     struct gsparsedfile_segment *pseg;
@@ -900,14 +900,14 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
         type = gsbc_typecheck_ubcase_cont(symtable, pcode->pos, &pseg, gsinput_next_line(&pseg, pcode));
         gssymtable_set_code_type(symtable, pcode->label, type);
-    } else if (gssymceq(pcode->directive, gssymeprog, gssymcodedirective, ".eprog")) {
+    } else if (gssymceq(pcode->directive, gssymimpprog, gssymcodedirective, ".impprog")) {
         struct gsbc_code_item_type *type;
 
         if (pcode->numarguments < 1)
-            gsfatal("%P: Not enough arguments to .eprog; missing primset", pcode->pos)
+            gsfatal("%P: Not enough arguments to .impprog; missing primset", pcode->pos)
         ;
         if (pcode->numarguments < 2)
-            gsfatal("%P: Not enough arguments to .eprog; missing API monad name", pcode->pos)
+            gsfatal("%P: Not enough arguments to .impprog; missing API monad name", pcode->pos)
         ;
         type = gsbc_typecheck_api_expr(pcode->pos, symtable, &pseg, gsinput_next_line(&pseg, pcode), pcode->arguments[0], pcode->arguments[1]);
         gssymtable_set_code_type(symtable, pcode->label, type);
@@ -2828,7 +2828,7 @@ have_type:
 
     calculated_type = gsbc_typecheck_code_type_arg(&cl, calculated_type);
 
-    return gsbc_typecheck_compile_code_item_type(gsbc_code_item_eprog, 0, calculated_type, &cl);
+    return gsbc_typecheck_compile_code_item_type(gsbc_code_item_impprog, 0, calculated_type, &cl);
 }
 
 static struct gsbc_code_item_type *gsbc_typecheck_alloc_code_item_type(int, int);

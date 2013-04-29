@@ -19,7 +19,7 @@ _gsac.input.skipping_out_suffix.s	.string	'\n
 
 # §section §gs{gsac.input.prefix.load}
 
-_gsac.input.prefix.load_c	.eprog	ibio.prim	ibio
+_gsac.input.prefix.load_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
@@ -71,7 +71,7 @@ isd0	.karg	bool.prim.u
 
 # §section §gs{gsac.input.prefix.dir.load}
 
-_gsac.input.prefix.dir.load_c	.eprog	ibio.prim	ibio
+_gsac.input.prefix.dir.load_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
@@ -272,7 +272,7 @@ res	.undefined	gsac.input.prefix.t
 
 # §section §gs{gsac.input.prefix.file.load}
 
-_gsac.input.prefix.file.load_c	.eprog	ibio.prim	ibio
+_gsac.input.prefix.file.load_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 bool.t	.tygvar
@@ -357,7 +357,7 @@ file		.fkarg	0	gsdl.ags.file.t
 			.force	_gsac.input.prefix.file.load_body_right_k
 			.enter	file
 
-_gsac.input.prefix.file.load_body_left_c	.eprog	ibio.prim	ibio
+_gsac.input.prefix.file.load_body_left_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 parser.err.t	.tygvar
@@ -416,7 +416,7 @@ res			.undefined	gsac.input.prefix.t
 
 # §section §gs{_gsac.input.skipping}
 
-_gsac.input.skipping_c	.eprog	ibio.prim	ibio
+_gsac.input.skipping_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar

@@ -20,7 +20,7 @@ _nl	.closure	_nl_c
 
 # §section §gs{gsdl.cgs.file.read}
 
-_gsdl.cgs.file.read_c	.eprog	ibio.prim	ibio
+_gsdl.cgs.file.read_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
@@ -211,7 +211,7 @@ pr.pos.1			.lrecord	pos	pos1	pragmas	prs1
 			.app	pr.pos.1
 			.yield	ibio.prim.unit	_gsdl.cgs.file.read_pragmas.pos_ty
 
-_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	.eprog	ibio.prim	ibio
+_gsdl.cgs.file.read_pragmas.pos_insert_k2_left_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 parser.err.t	.tygvar
@@ -373,7 +373,7 @@ file		.fkarg	0	gsdl.cgs.file.t
 			.app	file
 			.yield	ibio.prim.unit	gsdl.cgs.file.t
 
-_gsdl.cgs.file.read_body_left_res_c	.eprog	ibio.prim	ibio
+_gsdl.cgs.file.read_body_left_res_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 parser.err.t	.tygvar
