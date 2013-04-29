@@ -11,6 +11,7 @@ list.foldr	.closure	_list.foldr_c	_list.foldr_ty
 list.foldr1	.closure	_list.foldr1_code	_list.foldr1_ty
 list.map	.closure	_list.map_c	_list.map_ty
 list.filter	.closure	_list.filter_c	_list.filter_ty
+list.filterMap	.closure	_list.filterMap_c	_list.filterMap_ty
 
 list.foldl	.closure	_list.foldl_c	_list.foldl_ty
 list.reverse	.closure	_list.reverse_c
@@ -304,6 +305,29 @@ ys1	.apply	list.filter	α	|	pred	xn1
 		.case	true
 			.app	x0	ys1
 			.enter	list.:	α
+
+# §section §gs{list.filterMap}
+
+_list.filterMap_c	.expr
+_list.filterMap_f_ty	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+_list.filterMap_k	.subcode
+list.t.out	.cogvar
+f	.larg	_list.filterMap_f_ty	α	β
+xn	.larg	list.t	α
+	.force	_list.filterMap_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.filterMap_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar	# Temp
+α	.tyfv	*
+β	.tyfv	*	# Temp
+xn0	.karg	list.prim.u	α
+	.undef	list.t	β
 
 # §section §gs{list.foldl}
 
@@ -1014,6 +1038,27 @@ bool.t	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	bool.t
+
+# §section §gs{list.filterMap}
+
+_list.filterMap_ty	.tyexpr
+_list.filterMap_f_ty	.tygvar
+list.t	.tygvar
+α	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	_list.filterMap_f_ty	α	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	list.t	β
+
+_list.filterMap_f_ty	.tyexpr
+maybe.t	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	maybe.t	β
 
 # §section §gs{list.foldl}
 
