@@ -2459,56 +2459,32 @@ gssymtable_lookup(struct gspos pos, struct gsfile_symtable *symtable, gsinterned
 
     gsbc_item_empty(&res);
 
-    while (symtable) {
+    for (; symtable; symtable = symtable->parent) {
         switch (label->type) {
             case gssymdatalable:
-                for (p = symtable->dataitems; p; p = p->next) {
-                    if (p->key == label) {
-                        res.file = p->file;
-                        res.type = gssymdatalable;
-                        res.pseg = p->pseg;
-                        res.v = p->value;
-                        return res;
-                    }
-                }
+                p = symtable->dataitems;
                 break;
             case gssymcodelable:
-                for (p = symtable->codeitems; p; p = p->next) {
-                    if (p->key == label) {
-                        res.file = p->file;
-                        res.type = gssymcodelable;
-                        res.pseg = p->pseg;
-                        res.v = p->value;
-                        return res;
-                    }
-                }
+                p = symtable->codeitems;
                 break;
             case gssymtypelable:
-                for (p = symtable->typeitems; p; p = p->next) {
-                    if (p->key == label) {
-                        res.file = p->file;
-                        res.type = gssymtypelable;
-                        res.pseg = p->pseg;
-                        res.v = p->value;
-                        return res;
-                    }
-                }
+                p = symtable->typeitems;
                 break;
             case gssymcoercionlable:
-                for (p = symtable->coercionitems; p; p = p->next) {
-                    if (p->key == label) {
-                        res.file = p->file;
-                        res.type = gssymcoercionlable;
-                        res.pseg = p->pseg;
-                        res.v = p->value;
-                        return res;
-                    }
-                }
+                p = symtable->coercionitems;
                 break;
             default:
                 gsfatal("%s:%d: Unknown symbol type %d", __FILE__, __LINE__, label->type);
         }
-        symtable = symtable->parent;
+        for (; p; p = p->next) {
+            if (p->key == label) {
+                res.file = p->file;
+                res.type = p->key->type;
+                res.pseg = p->pseg;
+                res.v = p->value;
+                return res;
+            }
+        }
     }
 
     strtype = 0;
