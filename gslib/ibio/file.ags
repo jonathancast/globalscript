@@ -678,10 +678,9 @@ _ibio.file.name.components.get_worker_res.u	.tygvar
 
 _ibio.file.name.components.get_worker_res.u	.tyexpr
 list.t	.tygvar
-rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
-list.string.ty	.tylet	list.t	string.ty
-	.typroduct	dirs	list.string.ty	exts	list.string.ty	root	string.ty
+string.t	.tygvar
+list.string.ty	.tylet	list.t	string.t
+	.typroduct	dirs	list.string.ty	exts	list.string.ty	root	string.t
 
 # §section §gs{ibio.file.name.extension.set}
 
