@@ -149,7 +149,7 @@ ibio_main_process_handle_rpc_stat(struct gsrpc *rpc)
     dir = gsbio_stat(statrpc->filename->start);
     if (!dir) {
         err = gsreserve_string_builder();
-        err->end = seprint(err->end, err->extent, "%r");
+        gsstring_builder_print(err, "%r");
         gsfinish_string_builder(err);
         rpc->status = gsrpc_failed;
         rpc->err = err;

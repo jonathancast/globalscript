@@ -717,7 +717,7 @@ void gsbio_unix_parse_directory(char *, void *, void *, void **, void *, void *,
 
 struct gsstringbuilder {
     struct gsstringbuilder *forward;
-    char *end, *extent;
+    char *end;
     char start[];
 };
 

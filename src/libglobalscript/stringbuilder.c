@@ -38,7 +38,6 @@ gsreserve_string_builder()
 
     res->forward = 0;
     res->end = res->start;
-    res->extent = END_OF_BLOCK(block);
 
     return res;
 }
@@ -53,7 +52,7 @@ gsstringbuilder_gc_pre_callback()
 int
 gsextend_string_builder(struct gsstringbuilder *sb, ulong sz)
 {
-    if ((sb->extent - sb->end) < sz + 1)
+    if ((char*)END_OF_BLOCK(BLOCK_CONTAINING(sb)) - sb->end < sz + 1)
         return -1
     ; else
         return 0
@@ -73,28 +72,31 @@ gsstring_builder_print(struct gsstringbuilder *buf, char *fmt, ...)
 void
 gsstring_builder_vprint(struct gsstringbuilder *buf, char *fmt, va_list arg)
 {
-    buf->end = vseprint(buf->end, buf->extent, fmt, arg);
+    buf->end = vseprint(buf->end, (char*)END_OF_BLOCK(BLOCK_CONTAINING(buf)), fmt, arg);
 }
 
 void
 gsfinish_string_builder(struct gsstringbuilder *sb)
 {
     void *newnursury;
+    char *extent;
 
     *sb->end++ = 0;
 
-    if (gs_sys_block_in_gc_from_space(BLOCK_CONTAINING(sb->end))) return;
+    if (gs_sys_block_in_gc_from_space(BLOCK_CONTAINING(sb))) return;
+
+    extent = END_OF_BLOCK(BLOCK_CONTAINING(sb));
 
     newnursury = (uintptr)sb->end % sizeof(void *) ? sb->end + (sizeof(void *) - (uintptr)sb->end % sizeof(void *)) : sb->end;
 
-    if (sb->extent - sb->end >= 0x100) {
+    if ((char*)newnursury <= extent - 0x100) {
         lock(&gsstringbuilder_lock);
         if (gsstringbuilder_nursury) {
             struct gs_blockdesc *block;
             ulong sz;
             block = BLOCK_CONTAINING(gsstringbuilder_nursury);
             sz = (char*)END_OF_BLOCK(block) - (char*)gsstringbuilder_nursury;
-            if (sz < sb->extent - (char*)newnursury)
+            if (sz < extent - (char*)newnursury)
                 gsstringbuilder_nursury = newnursury
             ;
         } else {

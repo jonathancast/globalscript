@@ -31,7 +31,7 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
                     api_abend(thread, "%P: OOM saving file name", pos);
                     return ibio_gsstring_eval_error;
                 }
-                eval->sb->end = gsrunetochar(eval->gsc, eval->sb->end, eval->sb->extent);
+                eval->sb->end = gsrunetochar(eval->gsc, eval->sb->end, END_OF_BLOCK(BLOCK_CONTAINING(eval->sb)));
                 eval->gsc = 0;
                 break;
             case gstyimplerr: {
