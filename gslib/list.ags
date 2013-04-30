@@ -349,6 +349,7 @@ list.t	.tygvar
 maybe.prim.u	.tygvar
 α	.tyfv	*
 β	.tyfv	*
+list.:	.gvar
 list.filterMap	.gvar
 f	.fv	_list.filterMap_f_ty	α	β
 xn1	.fv	list.t	α
@@ -356,7 +357,9 @@ mb0	.karg	maybe.prim.u	β
 	.analyze	mb0	just	nothing
 		.case	just
 y		.fkarg	0	β
-			.undef	list.t	β
+ys			.apply	list.filterMap	α	β	|	f	xn1
+			.app	y	ys
+			.enter	list.:	β
 		.case	nothing
 			.app	f	xn1
 			.enter	list.filterMap	α	β
