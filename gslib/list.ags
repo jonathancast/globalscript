@@ -343,11 +343,22 @@ xn1		.fkarg	1	list.t	α
 			.undef	list.t	β
 
 _list.filterMap_:_k	.forcecont
+_list.filterMap_f_ty	.tygvar
+list.t	.tygvar
 maybe.prim.u	.tygvar
-list.t	.tygvar	# Temp
+α	.tyfv	*
 β	.tyfv	*
+list.filterMap	.gvar
+f	.fv	_list.filterMap_f_ty	α	β
+xn1	.fv	list.t	α
 mb0	.karg	maybe.prim.u	β
-	.undef	list.t	β
+	.analyze	mb0	just	nothing
+		.case	just
+y		.fkarg	0	β
+			.undef	list.t	β
+		.case	nothing
+			.app	f	xn1
+			.enter	list.filterMap	α	β
 
 # §section §gs{list.foldl}
 
