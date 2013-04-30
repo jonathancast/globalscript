@@ -9,6 +9,7 @@
 
 \newcommand\sequent\vdash
 \newcommand\provides\rhd
+\newcommand\match\propto
 
 \newcommand\type{\hskwd{type}}
 \newcommand\module{\hskwd{module}}
@@ -18,6 +19,7 @@
 \newcommand\for{\hskwd{for}}
 \newcommand\gslambda{\hskwd{\lambda}}
 \hscommand\where{\hskwd{where}}
+\hscommand\rec{\hskwd{rec}}
 
 \newcommand\inlinelambda[2]{\gslambda\ #1. #2}
 \hscommand\inlinefor[2]{\for\ (#1)\ #2}
@@ -301,7 +303,74 @@ Language TODO: Expression arguments to views (e.g., \<n+m\> patterns).  End TODO
 
 \chapter{Overloading}
 
+\chapter{Programs}
+
+The judgment form for whole programs is
+\begin{haskell}
+    \sequent\;\langle\overline{g_i}; d\rangle:: \langle\Gamma; \tau\rangle
+\end{haskell}
+The type environment must be empty because whole programs include the entire library and so can have no free variables.
+
+A program consists of a sequence of generators and a §defn{document};
+ideally, Global Script implementations should assemble programs from separately maintained components,
+including the §defn{standard library} (see \chapterref{stdlib}).\footnote{So including multiple components in the program isn't really optional.}
+A program's value is the value of its document.
+
+TODO: The standard library and the standard libraries of languages like IBIO and CORD are quite magic in bringing things into scope there's no way to define in the language.  End TODO.
+
+The generators in a program (at the top level) must be:
+\begin{itemize}
+    \item Match generators \<p \match e\> where \<p\> is lax;
+    \item Let generators \<'f \overline{p_i} = e\>;
+    \item Type signatures \<x :: \sigma\>; and
+    \item Recursive groups \<\rec\;(\overline{g_i})\> where all the \<g_i\> are otherwise legal at the top level.
+\end{itemize}
+
+Implementations may and are likely to further restrict accepted top-level generators;
+they must support these cases:
+\begin{itemize}
+    \item Match generators \<p \match e\> defining variables in a single module.
+        (When defining multiple variables,
+        the best way to ensure this is to use a generator of the form
+        \<module 'm.(\hsinf{export list}) \match e\>).
+
+    \item Functions defined by a single let equation \<'f \overline{p_i} = e\>.
+        Note that using monoidal patterns in such an equation must be legal,
+        but is sub-optimal programming practice as it must be an error for any pattern in the head to fail.
+\end{itemize}
+
+The inference rule from programs is
+\begin{prooftree}
+    \AxiomC{\<\sequent\;\overline{g_i} \provides \Gamma\>}
+    \AxiomC{\<\Gamma\sequent d :: \tau\>}
+    \BinaryInfC{\<\sequent\;\langle \overline{g_i}; d\rangle :: \langle \Gamma; \tau\rangle\>}
+\end{prooftree}
+
+\chapter{Documents}
+
+\begin{prooftree}
+    \AxiomC{\<\Gamma\sequent e :: \tau\>}
+    \UnaryInfC{\<\Gamma\sequent e :: \tau\>}
+\end{prooftree}
+
+\begin{prooftree}
+    \AxiomC{\<\Gamma, \Gamma' \sequent \overline{g_i} \provides \Gamma'\>}
+    \AxiomC{\<\Gamma, \Gamma' \sequent e :: \tau\>}
+    \BinaryInfC{\<\Gamma \sequent e\;(\where\;\overline{g_i}) :: \tau\>}
+\end{prooftree}
+The parentheses around the \<\where\> clause can be omitted when there is only one generator,
+in which case that generator must not have a trailing \<;\>, as usual.
+The standard limits on the generators legal in a \<\where\> clause apply
+
+TODO: Have we said what the `standard limits' on \<\where\> clauses are yet?  End TODO.
+
+A §defn{document} is an expression together with an optional \<\where\> clause.
+The document \<e\;(\where\;\overline{g_i})\> is equivalent to the expression \<\for\;\rec\;(\overline{g_i})\;e\>,
+as might be expected.
+(Except that more generators are legal in a \<\for\> than in a \<\where\>.)
+
 \chapter{Standard Library}
+\label{stdlib}
 
 \chapter{Examples}
 
