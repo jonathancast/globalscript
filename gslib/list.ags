@@ -329,6 +329,7 @@ list.t	.tygvar
 β	.tyfv	*
 _list.filterMap_:_k	.subcode
 maybe.t.out	.cogvar
+list.nil	.gvar
 f	.fv	_list.filterMap_f_ty	α	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
@@ -340,7 +341,7 @@ xn1		.fkarg	1	list.t	α
 			.app	x0
 			.enter	f
 		.case	nil
-			.undef	list.t	β
+			.enter	list.nil	β
 
 _list.filterMap_:_k	.forcecont
 _list.filterMap_f_ty	.tygvar
