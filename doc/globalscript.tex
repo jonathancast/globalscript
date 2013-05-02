@@ -20,6 +20,7 @@
 \newcommand\gslambda{\hskwd{\lambda}}
 \hscommand\where{\hskwd{where}}
 \hscommand\rec{\hskwd{rec}}
+\hscommand\macro{\hskwd{macro}}
 
 \newcommand\inlinelambda[2]{\gslambda\ #1. #2}
 \hscommand\inlinefor[2]{\for\ (#1)\ #2}
@@ -302,6 +303,66 @@ Language TODO: Expression arguments to views (e.g., \<n+m\> patterns).  End TODO
 \label{modules}
 
 \chapter{Overloading}
+
+\chapter{IDMC}
+
+IDMC is more complicated than other aspects of the language,
+because each QLO can define its own syntax and type system for that syntax.
+
+So the judgement form for QLO bits is:
+\begin{haskell}
+    \Gamma \sequent \hsinf{text} ::_{qlo} \tau
+\end{haskell}
+\<\hsinf{text}\> is a bit of marked-up text; \<qlo\> is a QLO.
+
+The master inference rule for QLOs then is:
+\begin{prooftree}
+    \AxiomC{\<\Gamma \sequent \hsinf{text} ::_{qlo} \tau\>}
+    \UnaryInfC{\<\Gamma \sequent qlo\{\hsinf{text}\} :: \tau\>}
+\end{prooftree}
+The curly braces \<\{\}\> can be replaced with any delimiters you want (only in this construct).
+
+Expression interpolations:
+\begin{prooftree}
+    \AxiomC{\<\Gamma \sequent e :: \tau\>}
+    \UnaryInfC{\<\Gamma \sequent \S(e) ::_{qlo} \tau\>}
+\end{prooftree}
+
+Text interpolations:
+\begin{prooftree}
+    \AxiomC{\<\Gamma \sequent \hsinf{text} ::_{qlo} \tau\>}
+    \UnaryInfC{\<\Gamma \sequent \S\{\hsinf{text}\} ::_{qlo} \tau\>}
+\end{prooftree}
+
+\paragraph{Variable/macro interpolations}
+Macro interpolations have the form
+\begin{haskell}
+    \S{}x@(\type{} \tau_0)\ldots@(\type{} \tau_{n-1})@arg_0\ldots@arg_{m-1}arg_m\ldots{}arg_{m+n-1}
+\end{haskell}
+where each \<arg\>,
+whether optional or required,
+has the form \<\{\hsinf{text}\}\> or \<(exp)\>.
+
+The judgment form for a macro interpolation is
+\begin{haskell}
+    \Gamma \sequent v :: \overline{\tau_i :: \kappa_i}; \overline{a_j :: \tau_j}; \overline{qlo_k}; \tau
+\end{haskell}
+where each \<qlo_k\> is either a QLO name or \<\_\>.
+The empty sequence at the end of the sequence \<\overline{qlo_k}\> is equivalent to an infinite sequence of \<\_\>s.
+
+If \<\Gamma\> contains no \<\macro\> declaration for \<x\>:
+\begin{prooftree}
+    \AxiomC{\<\Gamma \sequent x :: \overline{\tau_i :: \kappa_i}; \overline{a_j :: \tau_j}; \tau\>}
+    \AxiomC{\<\overline{\Gamma \sequent \tau_i :: \kappa_i}\>}
+    \BinaryInfC{\<\Gamma \sequent \S{}x ::_{qlo} \overline{\tau_i :: \kappa_i}; \overline{a_j :: \tau_j}; \tau\>}
+\end{prooftree}
+Otherwise:
+\begin{prooftree}
+    \AxiomC{\<\macro\;x\;\overline{qlo_k} \in \Gamma\>}
+    \AxiomC{\<\Gamma \sequent x :: \overline{\tau_i :: \kappa_i}; \overline{a_j :: \tau_j}; \tau\>}
+    \AxiomC{\<\overline{\Gamma \sequent \tau_i :: \kappa_i}\>}
+    \TrinaryInfC{\<\Gamma \sequent \S{}x ::_{qlo} \overline{\tau_i :: \kappa_i}; \overline{a_j :: \tau_j}; \overline{qlo_k}; \tau\>}
+\end{prooftree}
 
 \chapter{Programs}
 
