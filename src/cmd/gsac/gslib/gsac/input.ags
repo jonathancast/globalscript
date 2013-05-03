@@ -11,6 +11,8 @@ _gsac.input.prefix.dir.load_files.loaded_f_gs.scheme.s	.string	gs-scheme
 gsac.input.prefix.file.load	.closure	_gsac.input.prefix.file.load_c
 _gsac.input.prefix.file.load_body_left_write_nl.s	.string	\n
 
+gsac.input.prefix.boundvars	.closure	_gsac.input.prefix.boundvars_c
+
 _gsac.input.skipping	.closure	_gsac.input.skipping_c
 _gsac.input.skipping_out_skipping.s	.string	Skipping\s'
 _gsac.input.skipping_out_suffix.s	.string	'\n
@@ -413,6 +415,15 @@ res			.undefined	gsac.input.prefix.t
 			.app	res
 			.yield	ibio.prim.unit	gsac.input.prefix.t
 	# > :: ibio.prim.t	gsac.input.prefix.t
+
+# §section §gs{gsac.input.prefix.boundvars}
+
+_gsac.input.prefix.boundvars_c	.expr
+gsac.input.prefix.t	.tygvar
+ordered.set.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	# Temp
+file	.larg	gsac.input.prefix.t
+	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{_gsac.input.skipping}
 
