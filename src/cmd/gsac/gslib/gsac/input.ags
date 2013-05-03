@@ -420,10 +420,18 @@ res			.undefined	gsac.input.prefix.t
 
 _gsac.input.prefix.boundvars_c	.expr
 gsac.input.prefix.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
 ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
+ordered.set.union	.gvar
+gsdl.cgs.symbol.compare	.gvar
+ordered.set.empty	.gvar
 file	.larg	gsac.input.prefix.t
-	.undef	ordered.set.t	gsdl.cgs.symbol.t
+cvars	.apply	ordered.set.empty	gsdl.cgs.symbol.t	# FIXME
+tyvars	.apply	ordered.set.empty	gsdl.cgs.symbol.t	# FIXME
+vars	.apply	ordered.set.empty	gsdl.cgs.symbol.t	# FIXME
+s1	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	vars	tyvars
+	.app	gsdl.cgs.symbol.compare	s1	cvars
+	.enter	ordered.set.union	gsdl.cgs.symbol.t	# Include data vars, type vars, and coercion vars
 
 # §section §gs{_gsac.input.skipping}
 
