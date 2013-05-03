@@ -30,10 +30,16 @@ env	.larg	gsdl.cgs.typeenv.t
 _gsdl.cgs.typeenv.lookupKind_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.entry.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 maybe.t	.tygvar	# Temp
-gsdl.cgs.gskind.t	.tygvar	# Temp
+maybe.nothing	.gvar
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.entry.t
-	.undef	maybe.t	gsdl.cgs.gskind.t
+	.analyze	mb0	just	nothing
+		.case	just
+en		.fkarg	0	gsdl.cgs.typeenv.entry.t
+			.undef	maybe.t	gsdl.cgs.gskind.t
+		.case	nothing
+			.enter	maybe.nothing	gsdl.cgs.gskind.t
 
 # §section §gs{gsdl.cgs.typeenv.empty}
 
