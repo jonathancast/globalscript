@@ -38,8 +38,10 @@ mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.entry.t
 # §section §gs{gsdl.cgs.typeenv.empty}
 
 _gsdl.cgs.typeenv.empty_c	.expr
-gsdl.cgs.typeenv.t	.tygvar
-	.undef	gsdl.cgs.typeenv.t
+gsdl.cgs.syntax.var.t	.tygvar
+gsdl.cgs.typeenv.entry.t	.tygvar
+ordered.map.empty	.gvar
+	.enter	ordered.map.empty	gsdl.cgs.syntax.var.t	gsdl.cgs.typeenv.entry.t
 
 # §section §gs{gsdl.cgs.typeenv.overlay}
 
