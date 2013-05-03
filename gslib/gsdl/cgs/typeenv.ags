@@ -40,9 +40,17 @@ env1	.larg	gsdl.cgs.typeenv.t
 # §section §gs{gsdl.cgs.typeenv.t}
 
 gsdl.cgs.typeenv.t	.tyexpr
-gsdl.cgs.typeenv.prim.u	.tygvar
-	.tylift
-	.tyref	gsdl.cgs.typeenv.prim.u
+ordered.map.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+gsdl.cgs.typeenv.entry.t	.tygvar
+	.tyref	ordered.map.t	gsdl.cgs.syntax.var.t	gsdl.cgs.typeenv.entry.t
 
-gsdl.cgs.typeenv.prim.u	.tyexpr
-	.typroduct
+# §section §gs{gsdl.cgs.typeenv.entry.t}
+
+gsdl.cgs.typeenv.entry.t	.tyabstract	*
+gsdl.cgs.typeenv.entry.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.typeenv.entry.prim.u
+
+gsdl.cgs.typeenv.entry.prim.u	.tyexpr
+	.tysum
