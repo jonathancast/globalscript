@@ -12,8 +12,6 @@ _test_get.empty_label	.string	get\sx\sempty
 _test.get.k.insert.k.empty	.closure	_test.get.k.insert.k.empty_c
 _test.get.k.insert.k.empty_label	.string	get\s3\sinsert\s3\sempty
 
-_3	.closure	_3_c
-
 	.code
 
 _epcode	.expr
@@ -37,14 +35,14 @@ bool.≡	.gvar
 maybe.fmtgs	.gvar
 bool.fmtgs	.gvar
 ordered.map.get	.gvar
-_3	.gvar
+natural.3	.gvar
 ordered.map.empty	.gvar
 natural.compare	.gvar
 maybe.nothing	.gvar
 mb.≡	.apply	maybe.≡	bool.t	|	bool.≡
 mb.fmtgs	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs
 empty	.apply	ordered.map.empty	natural.t	bool.t
-actual	.apply	ordered.map.get	natural.t	bool.t	|	natural.compare	_3	empty
+actual	.apply	ordered.map.get	natural.t	bool.t	|	natural.compare	natural.3	empty
 nothing	.apply	maybe.nothing	bool.t
 test	.apply	test.assert.eq	mb.t	|	mb.≡	mb.fmtgs	actual	nothing
 	.app	_test_get.empty_label	test
@@ -66,7 +64,7 @@ maybe.fmtgs	.gvar
 bool.fmtgs	.gvar
 ordered.map.get	.gvar
 natural.compare	.gvar
-_3	.gvar
+natural.3	.gvar
 ordered.map.insert	.gvar
 bool.false	.gvar
 ordered.map.empty	.gvar
@@ -74,18 +72,9 @@ maybe.just	.gvar
 mb.≡	.apply	maybe.≡	bool.t	|	bool.≡
 mb.fmtgs	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs
 empty	.apply	ordered.map.empty	natural.t	bool.t
-map	.apply	ordered.map.insert	natural.t	bool.t	|	natural.compare	_3	bool.false	empty
-actual	.apply	ordered.map.get	natural.t	bool.t	|	natural.compare	_3	map
+map	.apply	ordered.map.insert	natural.t	bool.t	|	natural.compare	natural.3	bool.false	empty
+actual	.apply	ordered.map.get	natural.t	bool.t	|	natural.compare	natural.3	map
 just.false	.apply	maybe.just	bool.t	|	bool.false
 test	.apply	test.assert.eq	mb.t	|	mb.≡	mb.fmtgs	actual	just.false
 	.app	_test.get.k.insert.k.empty_label	test
 	.enter	test.property.label
-
-# §section Miscellaneous Data
-
-_3_c	.expr
-natural.t.in	.cogvar
-3	.natural	3
-	.coerce	natural.t.in
-	.lift
-	.yield	3
