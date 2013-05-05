@@ -71,6 +71,7 @@ The judgment form for variables is
 A \defn{variable term} is a simple variable
 followed by a sequence of \defn{explicit type arguments} of the form \<@(\type \tau)\>
 followed by a sequence of \defn{explicit arguments} of the form \<@e\>.
+Variable terms are designated \<v\>; simple variables are designated \<x\>.
 
 \subsection{Variables Without \kwd{implicit} Declarations}
 
@@ -107,9 +108,9 @@ followed by a sequence of \defn{explicit arguments} of the form \<@e\>.
 \subsection{Explicit Type Applications}
 
 \begin{prooftree}
-    \AxiomC{$\Gamma \sequent x :: \tau_0 :: \kappa_0, \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$}
+    \AxiomC{$\Gamma \sequent v :: \tau_0 :: \kappa_0, \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$}
     \UnaryInfC{
-        \<\Gamma \sequent x\;@(\type\;\tau_0) :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau\>
+        \<\Gamma \sequent v\;@(\type\;\tau_0) :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau\>
     }
 \end{prooftree}
 ($i \in [1, n)$, $j \in [n, n + m)$).
@@ -117,10 +118,10 @@ followed by a sequence of \defn{explicit arguments} of the form \<@e\>.
 \subsection{Explicit Applications}
 
 \begin{prooftree}
-    \AxiomC{$\Gamma \sequent x :: \overline{\tau_i :: \kappa_i}; e_n :: \tau_n, \overline{e_j :: \tau_j}; \tau$}
+    \AxiomC{$\Gamma \sequent v :: \overline{\tau_i :: \kappa_i}; e_n :: \tau_n, \overline{e_j :: \tau_j}; \tau$}
     \AxiomC{$\Gamma \sequent e :: \tau_n$}
     \BinaryInfC{
-        $\Gamma \sequent x\;@e :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$
+        $\Gamma \sequent v\;@e :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$
     }
 \end{prooftree}
 ($i \in [1, n)$, $j \in [n + 1, n + m)$).
@@ -128,8 +129,8 @@ followed by a sequence of \defn{explicit arguments} of the form \<@e\>.
 \subsection{Variables Used as Expressions}
 
 \begin{prooftree}
-    \AxiomC{$\Gamma \sequent x :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$}
-    \UnaryInfC{$\Gamma \sequent x :: \tau$}
+    \AxiomC{$\Gamma \sequent v :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$}
+    \UnaryInfC{$\Gamma \sequent v :: \tau$}
 \end{prooftree}
 ($i \in [1, n)$, $j \in [n, n + m)$).
 
