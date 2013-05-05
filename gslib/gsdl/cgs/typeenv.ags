@@ -53,9 +53,14 @@ ordered.map.empty	.gvar
 
 _gsdl.cgs.typeenv.overlay_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+gsdl.cgs.typeenv.entry.t	.tygvar
+ordered.map.∪	.gvar
+gsdl.cgs.syntax.var.compare	.gvar
 env0	.larg	gsdl.cgs.typeenv.t
 env1	.larg	gsdl.cgs.typeenv.t
-	.undef	gsdl.cgs.typeenv.t
+	.app	gsdl.cgs.syntax.var.compare	env1	env0
+	.enter	ordered.map.∪	gsdl.cgs.syntax.var.t	gsdl.cgs.typeenv.entry.t
 
 	.type
 
