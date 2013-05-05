@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.foo.bar	_test.fmtgs.foo
+_tests	.list	test.property.t	_test.eq.foo.bar	_test.fmtgs.foo	_test.exts.of.qual.fn
 
 _test.eq.foo.bar	.closure	_test.eq.foo.bar_c
 _test.eq.foo.bar_label	.string	ibio.file.name.≡\sfn<./foo>\sfn<./bar>
@@ -17,6 +17,12 @@ _test.fmtgs.foo	.closure	_test.fmtgs.foo_c
 _test.fmtgs.foo_label	.string	fmtgs\sfn<./foo>
 _test.fmtgs.foo_fn.s	.string	./foo
 _test.fmtgs.foo_expected	.string	fn<./foo>
+
+_test.exts.of.qual.fn	.closure	_test.exts.of.qual.fn_c
+_test.exts.of.qual.fn_label	.string	\hexts\s(components.get\sfn<foo/bar.gs>)
+_test.exts.of.qual.fn_fn.s	.string	foo/bar.gs
+_test.exts.of.qual.fn_expected	.list	string.t	_test.exts.of.qual.fn_expected_bar.s
+_test.exts.of.qual.fn_expected_bar.s	.string	gs
 
 	.code
 
@@ -66,4 +72,30 @@ snil	.apply	list.nil	rune.t
 actual	.apply	ibio.file.name.fmtgs	|	fn	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.foo_expected
 	.app	_test.fmtgs.foo_label	test
+	.enter	test.property.label
+
+# §section §gs{#exts (components.get fn<foo/bar.gs>)}
+
+_test.exts.of.qual.fn_c	.expr
+list.t	.tygvar
+string.t	.tygvar
+list.string.ty	.tylet	list.t	string.t
+test.property.label	.gvar
+_test.exts.of.qual.fn_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+string.≡	.gvar
+list.fmtgs.byDefault	.gvar
+string.fmtgs	.gvar
+ibio.file.name.components.get	.gvar
+ibio.file.name.in	.gvar
+_test.exts.of.qual.fn_fn.s	.gvar
+_test.exts.of.qual.fn_expected	.gvar
+list.string.≡	.apply	list.≡	string.t	|	string.≡
+list.string.fmtgs	.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
+fn	.apply	ibio.file.name.in	|	_test.exts.of.qual.fn_fn.s
+cs	.apply	ibio.file.name.components.get	|	fn
+actual	.lfield	exts	cs
+test	.apply	test.assert.eq	list.string.ty	|	list.string.≡	list.string.fmtgs	actual	_test.exts.of.qual.fn_expected
+	.app	_test.exts.of.qual.fn_label	test
 	.enter	test.property.label

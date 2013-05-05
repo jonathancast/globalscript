@@ -294,7 +294,7 @@ d0		.fkarg	0	string.t
 ds1		.fkarg	1	list.t	string.t
 ds2.0			.undefined	string.t
 ds2			.apply	list.:	string.t	|	ds2.0	ds1
-es			.undefined	list.t	string.t
+es			.field	exts	cs1
 r			.field	root	cs1
 res			.record	dirs	ds2	exts	es	root	r
 			.lift
@@ -346,7 +346,7 @@ cs1	.karg	_ibio.file.name.components.get_worker_res.u
 nil	.apply	list.nil	rune.t
 ds	.undefined	list.t	string.t
 ds1	.apply	list.:	string.t	|	nil	ds
-es	.undefined	list.t	string.t
+es	.field	exts	cs1
 r	.field	root	cs1
 res	.record	dirs	ds1	exts	es	root	r
 	.lift
