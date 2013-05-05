@@ -8,6 +8,7 @@
 ordered.map.empty	.closure	_ordered.map.empty_c
 ordered.map.insert	.closure	_ordered.map.insert_c
 ordered.map.get	.closure	_ordered.map.get_c	_ordered.map.get_ty
+ordered.map.∪	.closure	_ordered.map.∪_c	_ordered.map.∪_ty
 
 ordered.map.≡	.closure	_ordered.map.≡_c	_ordered.map.≡_ty
 
@@ -127,6 +128,61 @@ o0	.karg	order.total.ord.prim.u
 		.case	lt
 			.undef	maybe.t	v
 
+# §section §gs{ordered.map.∪}
+
+_ordered.map.∪_c	.expr
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+k	.tyarg	*
+v	.tyarg	*
+_ordered.map.∪_k0	.subcode
+ordered.map.t.out	.cogvar
+cmp	.larg	order.total.t	k
+map0	.larg	ordered.map.t	k	v
+map1	.larg	ordered.map.t	k	v
+	.force	_ordered.map.∪_k0
+	.coerce	ordered.map.t.out	k	v
+	.enter	map0
+
+_ordered.map.∪_k0	.forcecont
+ordered.map.t	.tygvar
+ordered.map.prim.u	.tygvar
+k	.tyfv	*
+v	.tyfv	*
+_ordered.map.∪_k1	.subcode
+ordered.map.t.out	.cogvar
+map1	.fv	ordered.map.t	k	v
+map0.0	.karg	ordered.map.prim.u	k	v
+	.force	_ordered.map.∪_k1
+	.coerce	ordered.map.t.out	k	v
+	.enter	map1
+
+_ordered.map.∪_k1	.forcecont
+ordered.map.prim.u	.tygvar
+ordered.map.t	.tygvar
+k	.tyfv	*
+v	.tyfv	*
+ordered.map.empty	.gvar
+map0.0	.fv	ordered.map.prim.u	k	v
+map1.0	.karg	ordered.map.prim.u	k	v
+	.analyze	map0.0	branch	empty
+		.case	branch
+k0		.fkarg	0	k
+v0		.fkarg	1	v
+l0		.fkarg	2	ordered.map.t	k	v
+r0		.fkarg	3	ordered.map.t	k	v
+			.undef	ordered.map.t	k	v
+		.case	empty
+			.analyze	map1.0	branch	empty
+				.case	branch
+k1				.fkarg	0	k
+v1				.fkarg	1	v
+l1				.fkarg	2	ordered.map.t	k	v
+r1				.fkarg	3	ordered.map.t	k	v
+					.undef	ordered.map.t	k	v
+				.case	empty
+					.enter	ordered.map.empty	k	v
+
 # §section §gs{ordered.map.≡}
 
 _ordered.map.≡_c	.expr
@@ -245,6 +301,21 @@ v	.tyforall	*
 	.tylift
 	.tyfun	ordered.map.t	k	v
 	.tyref	maybe.t	v
+
+# §section §gs{ordered.map.∪}
+
+_ordered.map.∪_ty	.tyexpr
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+k	.tyforall	*
+v	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	k
+	.tylift
+	.tyfun	ordered.map.t	k	v
+	.tylift
+	.tyfun	ordered.map.t	k	v
+	.tyref	ordered.map.t	k	v
 
 # §section §gs{ordered.map.≡}
 
