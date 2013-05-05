@@ -7,6 +7,8 @@ diff.list.:	.closure	_diff.list.:_c
 diff.list.singleton	.closure	_diff.list.singleton_c
 diff.list.<>	.closure	_diff.list.<>_c
 
+diff.list.concat	.closure	_diff.list.concat_c
+
 diff.list.prepend	.closure	_diff.list.prepend_c
 
 diff.list.tolist	.closure	_diff.list.tolist_c
@@ -59,6 +61,20 @@ ys0	.larg	list.t	α
 ys1	.apply	xn1	|	ys0
 	.app	ys1
 	.enter	xn0
+
+# §section §gs{diff.list.concat}
+
+_diff.list.concat_c	.expr
+diff.list.t	.tygvar
+α	.tyarg	*
+diff.list.ty	.tylet	diff.list.t	α
+list.foldr	.gvar
+diff.list.<>	.gvar
+diff.list.nil	.gvar
+<>	.apply	diff.list.<>	α
+nil	.apply	diff.list.nil	α
+	.app	<>	nil
+	.enter	list.foldr	diff.list.ty	diff.list.ty
 
 # §section §gs{diff.list.prepend}
 
