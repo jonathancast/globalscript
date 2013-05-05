@@ -221,6 +221,7 @@ bool.t	.tygvar	# Temp
 k	.tyfv	*
 v	.tyfv	*
 bool.false	.gvar
+bool.true	.gvar
 map0.0	.fv	ordered.map.prim.u	k	v
 map1.0	.karg	ordered.map.prim.u	k	v
 	.analyze	map0.0	branch	empty
@@ -239,7 +240,7 @@ l1				.fkarg	2	ordered.map.t	k	v
 r1				.fkarg	3	ordered.map.t	k	v
 					.enter	bool.false
 				.case	empty
-					.undef	bool.t
+					.enter	bool.true
 
 # §section Constructors
 
