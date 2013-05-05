@@ -10,6 +10,7 @@ diff.list.<>	.closure	_diff.list.<>_c
 diff.list.concat	.closure	_diff.list.concat_c
 
 diff.list.prepend	.closure	_diff.list.prepend_c
+diff.list.postpend	.closure	_diff.list.postpend_c
 
 diff.list.tolist	.closure	_diff.list.tolist_c
 diff.list.fromlist	.closure	_diff.list.fromlist_c
@@ -89,6 +90,20 @@ ys0	.larg	list.t	α
 ys1	.apply	xn1	|	ys0
 	.app	xn0	ys1
 	.enter	list.<>	α
+
+# §section §gs{diff.list.postpend}
+
+_diff.list.postpend_c	.expr
+list.t	.tygvar
+diff.list.t	.tygvar
+α	.tyarg	*
+list.<>	.gvar
+xn0	.larg	diff.list.t	α
+xn1	.larg	list.t	α
+ys0	.larg	list.t	α
+ys1	.apply	list.<>	α	|	xn1	ys0
+	.app	ys1
+	.enter	xn0
 
 # §section §gs{diff.list.tolist}
 
