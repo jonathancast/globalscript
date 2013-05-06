@@ -991,6 +991,7 @@ string.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
 _prefix.load.var_w_false_:_true_res_body_files0.f_false_k	.subcode
 list.t.out	.cogvar
+ibio.file.name.</>	.gvar
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w	.gvar
 list.:	.gvar
 ibio.file.name.components.get	.gvar
@@ -998,6 +999,9 @@ file0	.fv	_prefix.load.var_w_file_ty
 dir	.fv	ibio.dir.t
 isd0	.karg	bool.prim.u
 relv	.lfield	relv	file0
+dirn	.lfield	filename	file0
+fn	.lfield	name	dir
+absfn	.apply	ibio.file.name.</>	|	dirn	fn
 	.analyze	isd0	false	true
 		.case	false
 			.force	_prefix.load.var_w_false_:_true_res_body_files0.f_false_k
@@ -1007,15 +1011,15 @@ relv	.lfield	relv	file0
 fn			.lfield	name	dir
 fn.comps			.apply	ibio.file.name.components.get	|	fn
 fn.root			.lfield	root	fn.comps
-fn.exts			.undefined	list.t	string.t
+fn.exts			.lfield	exts	fn.comps
 cs			.apply	list.:	string.t	|	fn.root	fn.exts
-			.app	relv	cs
+			.app	absfn	relv	cs
 			.enter	_prefix.load.var_w_false_:_true_res_body_files0.f_true_w
 
 # §paragraph{File is not directory; check if file matches}
 _prefix.load.var_w_false_:_true_res_body_files0.f_false_k	.forcecont
 _prefix.load.var_w_file_ty	.tygvar
-ibio.dir.t	.tygvar
+ibio.file.name.t	.tygvar
 list.prim.u	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 list.t	.tygvar
@@ -1026,13 +1030,13 @@ string.≡	.gvar
 ibio.file.name.components.get	.gvar
 gsdl.cgs.syntax.var.component.print	.gvar
 file0	.fv	_prefix.load.var_w_file_ty
-dir	.fv	ibio.dir.t
+fn	.fv	ibio.file.name.t
+absfn	.fv	ibio.file.name.t
 relv0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
 	.analyze	relv0	:	nil
 		.case	:
 c0		.fkarg	0	gsdl.cgs.syntax.var.component.t
 relv1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
-fn			.lfield	name	dir
 fn.comps			.apply	ibio.file.name.components.get	|	fn
 fn.root			.lfield	root	fn.comps
 c0.nm			.apply	gsdl.cgs.syntax.var.component.print	|	c0
@@ -1053,18 +1057,15 @@ gsdl.cgs.syntax.var.component.t	.tygvar
 bool.prim.u	.tygvar
 maybe.nothing	.gvar
 maybe.just	.gvar
-ibio.file.name.</>	.gvar
 bool.false	.gvar
 file0	.fv	_prefix.load.var_w_file_ty
-fn	.fv	ibio.file.name.t
+absfn	.fv	ibio.file.name.t
 relv1	.fv	list.t	gsdl.cgs.syntax.var.component.t
 b0	.karg	bool.prim.u	# Does this file match the identifier?
 	.analyze	b0	false	true
 		.case	false
 			.enter	maybe.nothing	_prefix.load.var_w_file_ty
 		.case	true
-dirn			.lfield	filename	file0
-absfn			.apply	ibio.file.name.</>	|	dirn	fn
 file1			.lrecord	filename	absfn	isdir	bool.false	relv	relv1
 			.app	file1
 			.yield	maybe.just	_prefix.load.var_w_file_ty
@@ -1073,11 +1074,13 @@ file1			.lrecord	filename	absfn	isdir	bool.false	relv	relv1
 # §gs{dircs} should be a prefix of §gs{relv},
 # but we want to work out the remaining components of §gs{relv} so we can scan the contents of this directory on match.
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_c	.expr
+ibio.file.name.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 string.t	.tygvar
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_relv.k	.subcode
 list.t.out	.cogvar
+absfn	.larg	ibio.file.name.t
 relv	.larg	list.t	gsdl.cgs.syntax.var.component.t
 dircs	.larg	list.t	string.t
 	.force	_prefix.load.var_w_false_:_true_res_body_files0.f_true_w_relv.k
@@ -1087,14 +1090,17 @@ dircs	.larg	list.t	string.t
 # §paragraph{Get head and tail of §gs{relv}}
 # If §gs{relv} is empty, fail: even if §gs{dircs} is non-empty, files in this directory can't match this variable anyway
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_relv.k	.forcecont
+ibio.file.name.t	.tygvar
 list.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
 string.t	.tygvar
 list.prim.u	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
 maybe.t	.tygvar	# Temp
 _prefix.load.var_w_file_ty	.tygvar	# Temp
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_:_dircs.k	.subcode
 list.t.out	.cogvar
+absfn	.fv	ibio.file.name.t
+relv	.fv	list.t	gsdl.cgs.syntax.var.component.t
 dircs	.fv	list.t	string.t
 relv0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
 	.analyze	relv0	:	nil
@@ -1109,17 +1115,22 @@ relv1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
 
 # §paragraph{Check §gs{dircs}; if it's empty, we're done; otherwise check head & tail against §gs{vc0} and §gs{relv1} respectively}
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_:_dircs.k	.forcecont
+ibio.file.name.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 list.prim.u	.tygvar
 string.t	.tygvar
-list.t	.tygvar
-maybe.t	.tygvar	# Temp
-_prefix.load.var_w_file_ty	.tygvar	# Temp
+_prefix.load.var_w_file_ty	.tygvar
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_:_dircs_:_k	.subcode
 bool.t.out	.cogvar
 string.≡	.gvar
 gsdl.cgs.syntax.var.component.print	.gvar
+maybe.just	.gvar
+bool.true	.gvar
+absfn	.fv	ibio.file.name.t
+relv	.fv	list.t	gsdl.cgs.syntax.var.component.t
 vc0	.fv	gsdl.cgs.syntax.var.component.t
+relv1	.fv	list.t	gsdl.cgs.syntax.var.component.t
 dircs0	.karg	list.prim.u	string.t
 	.analyze	dircs0	:	nil
 		.case	:
@@ -1131,20 +1142,30 @@ vc0.nm			.apply	gsdl.cgs.syntax.var.component.print	|	vc0
 			.app	vc0.nm	dc0
 			.enter	string.≡
 		.case	nil
-			.undef	maybe.t	_prefix.load.var_w_file_ty
+res			.lrecord	filename	absfn	isdir	bool.true	relv	relv
+			.app	res
+			.yield	maybe.just	_prefix.load.var_w_file_ty
 
 # §paragraph{Branch on whether first component of file name and first component of directory match}
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_:_dircs_:_k	.forcecont
+ibio.file.name.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+string.t	.tygvar
 bool.prim.u	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
-maybe.t	.tygvar	# Temp
 maybe.nothing	.gvar
+_prefix.load.var_w_false_:_true_res_body_files0.f_true_w	.gvar
+absfn	.fv	ibio.file.name.t
+relv1	.fv	list.t	gsdl.cgs.syntax.var.component.t
+dircs1	.fv	list.t	string.t
 b0	.karg	bool.prim.u	# Components match?
 	.analyze	b0	false	true
 		.case	false
 			.enter	maybe.nothing	_prefix.load.var_w_file_ty
 		.case	true
-			.undef	maybe.t	_prefix.load.var_w_file_ty
+			.app	absfn	relv1	dircs1
+			.enter	_prefix.load.var_w_false_:_true_res_body_files0.f_true_w
 
 # §paragraph{§gs{files} is exhausted: recurse on §gs{prn1}, then put §gs{pr0} back on top of the returned stack}
 _prefix.load.var_w_false_nil_res_c	.impprog	ibio.prim	ibio
@@ -1532,11 +1553,14 @@ list.component.ty	.tylet	list.t	gsdl.cgs.syntax.var.component.t
 	.typroduct	filename	ibio.file.name.t	isdir	bool.t	relv	list.component.ty
 
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_ty	.tyexpr
+ibio.file.name.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 string.t	.tygvar
 maybe.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
+	.tylift
+	.tyfun	ibio.file.name.t
 	.tylift
 	.tyfun	list.t	gsdl.cgs.syntax.var.component.t
 	.tylift
