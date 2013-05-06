@@ -17,6 +17,7 @@ _prefix.load.var	.closure	_prefix.load.var_c	_prefix.load.var_ty
 
 _prefix.load.var_w	.closure	_prefix.load.var_w_c	_prefix.load.var_w_ty
 _prefix.load.var_w_false_:_false_false_cgs.scheme.s	.string	cgs-scheme
+_prefix.load.var_w_false_:_false_false_gs.scheme.s	.string	gs-scheme
 _prefix.load.var_w_false_:_false_false_ags.s	.string	ags
 
 _bad.file.name	.closure	_bad.file.name_c	_bad.file.name_ty
@@ -684,8 +685,10 @@ list.prim.u	.tygvar
 string.t	.tygvar
 _prefix.load.var_w_false_:_false_false_cgs.scheme_k	.subcode
 bool.t.out	.cogvar
+bool.∨	.gvar
 string.≡	.gvar
 _prefix.load.var_w_false_:_false_false_cgs.scheme.s	.gvar
+_prefix.load.var_w_false_:_false_false_gs.scheme.s	.gvar
 _bad.file.name	.gvar
 string.empty	.gvar
 eo	.fv	ibio.prim.oport	rune.t
@@ -700,10 +703,12 @@ txes0	.karg	list.prim.u	string.t
 txe0		.fkarg	0	string.t
 txes1		.fkarg	1	list.t	string.t
 			# OK, now we have §gs{txe0}; we need to see what extension that is
+iscgs.scheme			.apply	string.≡	|	txe0	_prefix.load.var_w_false_:_false_false_cgs.scheme.s
+isgs.scheme			.apply	string.≡	|	txe0	_prefix.load.var_w_false_:_false_false_gs.scheme.s
 			.force	_prefix.load.var_w_false_:_false_false_cgs.scheme_k
 			.coerce	bool.t.out
-			.app	txe0	_prefix.load.var_w_false_:_false_false_cgs.scheme.s
-			.enter	string.≡
+			.app	iscgs.scheme	isgs.scheme
+			.enter	bool.∨
 		.case	nil
 			.app	eo	v	files1	pr0	prn1	fn	string.empty
 			.enter	_bad.file.name
