@@ -4,12 +4,19 @@
 
 string.fmtline	.closure	_string.fmtline_c	_string.fmtline_ty
 
+string.empty	.closure	_string.empty_c
+
 string.≡	.closure	_string.≡_c
 string.compare	.closure	_string.compare_c
 
 string.fmtgs	.closure	_string.fmtgs_c
 
 	.code
+
+_string.empty_c	.expr
+rune.t	.tygvar
+list.nil	.gvar
+	.enter	list.nil	rune.t
 
 _string.≡_c	.expr
 rune.t	.tygvar
