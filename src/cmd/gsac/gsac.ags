@@ -19,8 +19,9 @@ _prefix.load.var_w	.closure	_prefix.load.var_w_c	_prefix.load.var_w_ty
 _prefix.load.var_w_false_:_false_false_cgs.scheme.s	.string	cgs-scheme
 _prefix.load.var_w_false_:_false_false_ags.s	.string	ags
 
-_bad.file.name	.closure	_bad.file.name_c
-_bad.file.name_err_col.sp.s	.string	:\s
+_bad.file.name	.closure	_bad.file.name_c	_bad.file.name_ty
+_bad.file.name_err.s1	.string	:\sNot\sloading:\sunrecognized\sextension\s‘
+_bad.file.name_err.s3	.string	’\n
 
 _prefix.load.file	.closure	_prefix.load.file_c
 
@@ -686,6 +687,7 @@ bool.t.out	.cogvar
 string.≡	.gvar
 _prefix.load.var_w_false_:_false_false_cgs.scheme.s	.gvar
 _bad.file.name	.gvar
+string.empty	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 v	.fv	gsdl.cgs.symbol.t
 pr0	.fv	_real.entry_prefix_ty
@@ -703,7 +705,7 @@ txes1		.fkarg	1	list.t	string.t
 			.app	txe0	_prefix.load.var_w_false_:_false_false_cgs.scheme.s
 			.enter	string.≡
 		.case	nil
-			.app	eo	fn
+			.app	eo	v	files1	pr0	prn1	fn	string.empty
 			.enter	_bad.file.name
 
 _prefix.load.var_w_false_:_false_false_cgs.scheme_k	.forcecont
@@ -756,6 +758,7 @@ _real.entry_prefix_ty	.tygvar
 list.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 ibio.file.name.t	.tygvar
+string.t	.tygvar
 bool.prim.u	.tygvar
 _bad.file.name	.gvar
 _prefix.load.file	.gvar
@@ -766,10 +769,11 @@ pr0	.fv	_real.entry_prefix_ty
 prn1	.fv	list.t	_real.entry_prefix_ty
 files1	.fv	list.t	_prefix.load.var_w_file_ty
 fn	.fv	ibio.file.name.t
+txe0	.fv	string.t
 b0	.karg	bool.prim.u	# Is this a §sh{.ags} file?
 	.analyze	b0	false	true
 		.case	false
-			.app	eo	fn
+			.app	eo	v	files1	pr0	prn1	fn	txe0
 			.enter	_bad.file.name
 		.case	true
 			.app	eo	v	pr0	prn1	files1	fn	bool.true
@@ -779,11 +783,21 @@ b0	.karg	bool.prim.u	# Is this a §sh{.ags} file?
 _bad.file.name_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+list.t	.tygvar
 ibio.file.name.t	.tygvar
+_prefix.load.var_w_file_ty	.tygvar
+_real.entry_prefix_ty	.tygvar
+string.t	.tygvar
 _bad.file.name_err_c	.subcode
 _bad.file.name_body_c	.subcode
 eo	.larg	ibio.prim.oport	rune.t
+v	.larg	gsdl.cgs.symbol.t
+files1	.larg	list.t	_prefix.load.var_w_file_ty
+pr0	.larg	_real.entry_prefix_ty
+prn1	.larg	list.t	_real.entry_prefix_ty
 fn	.larg	ibio.file.name.t
+txe0	.larg	string.t
 r	.bind	_bad.file.name_err_c
 	.body	_bad.file.name_body_c
 
@@ -792,27 +806,40 @@ _bad.file.name_err_c	.expr
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
+string.t	.tygvar
 list.t	.tygvar	# Temp
 ibio.prim.write	.gvar
 list.<>	.gvar
 ibio.file.name.out	.gvar
-_bad.file.name_err_col.sp.s	.gvar
+_bad.file.name_err.s1	.gvar
+_bad.file.name_err.s3	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
+txe0	.fv	string.t
 fn.s	.apply	ibio.file.name.out	|	fn
-s2	.undefined	list.t	rune.t
-s1	.apply	list.<>	rune.t	|	_bad.file.name_err_col.sp.s	s2
+s2	.apply	list.<>	rune.t	|	txe0	_bad.file.name_err.s3
+s1	.apply	list.<>	rune.t	|	_bad.file.name_err.s1	s2
 s	.apply	list.<>	rune.t	|	fn.s	s1
 	.app	eo	s
 	.yield	ibio.prim.write	rune.t
 
 # §paragraph{Loop with remaining files} (this means this function becomes recursive)
 _bad.file.name_body_c	.expr
-ibio.prim.t	.tygvar	# Temp
-list.t	.tygvar	 # Temp
-_real.entry_prefix_ty	.tygvar	 # Temp
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
-	.undef	ibio.prim.t	list.prefix.ty
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+list.t	.tygvar
+_prefix.load.var_w_file_ty	.tygvar
+_real.entry_prefix_ty	.tygvar
+
+_prefix.load.var_w	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+v	.fv	gsdl.cgs.symbol.t
+files1	.fv	list.t	_prefix.load.var_w_file_ty
+pr0	.fv	_real.entry_prefix_ty
+prn1	.fv	list.t	_real.entry_prefix_ty
+	.app	eo	v	files1	pr0	prn1
+	.enter	_prefix.load.var_w
 
 # §paragraph{File has not been loaded yet, and has an appropriate extension to be loaded}
 _prefix.load.file_c	.impprog	ibio.prim	ibio
@@ -1551,6 +1578,33 @@ list.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 list.component.ty	.tylet	list.t	gsdl.cgs.syntax.var.component.t
 	.typroduct	filename	ibio.file.name.t	isdir	bool.t	relv	list.component.ty
+
+_bad.file.name_ty	.tyexpr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+list.t	.tygvar
+_prefix.load.var_w_file_ty	.tygvar
+ibio.file.name.t	.tygvar
+string.t	.tygvar
+ibio.prim.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty
+	.tylift
+	.tyfun	ibio.prim.oport	rune.t
+	.tylift
+	.tyfun	gsdl.cgs.symbol.t
+	.tylift
+	.tyfun	list.t	_prefix.load.var_w_file_ty
+	.tylift
+	.tyfun	_real.entry_prefix_ty
+	.tylift
+	.tyfun	list.t	_real.entry_prefix_ty
+	.tylift
+	.tyfun	ibio.file.name.t
+	.tylift
+	.tyfun	string.t
+	.tyref	ibio.prim.t	list.prefix.ty
 
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_ty	.tyexpr
 ibio.file.name.t	.tygvar
