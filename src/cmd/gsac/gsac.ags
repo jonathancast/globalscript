@@ -16,6 +16,13 @@ _prefix.load	.closure	_prefix.load_c	_prefix.load_ty
 _prefix.load.var	.closure	_prefix.load.var_c	_prefix.load.var_ty
 
 _prefix.load.var_w	.closure	_prefix.load.var_w_c	_prefix.load.var_w_ty
+_prefix.load.var_w_false_:_false_false_cgs.scheme.s	.string	cgs-scheme
+_prefix.load.var_w_false_:_false_false_ags.s	.string	ags
+
+_bad.file.name	.closure	_bad.file.name_c
+_bad.file.name_err_col.sp.s	.string	:\s
+
+_prefix.load.file	.closure	_prefix.load.file_c
 
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w	.closure	_prefix.load.var_w_false_:_true_res_body_files0.f_true_w_c	_prefix.load.var_w_false_:_true_res_body_files0.f_true_w_ty
 
@@ -558,7 +565,7 @@ b0	.karg	bool.prim.u	# Is §gs{v} already loaded?
 		.case	true
 			.undef	ibio.prim.t	list.prefix.ty
 
-# §paragraph{File has not been loaded; branch on whether §gs{files} has been exhausted or not}
+# §paragraph{Variable has not been loaded; branch on whether §gs{files} has been exhausted or not}
 _prefix.load.var_w_false_k	.forcecont
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
@@ -633,11 +640,15 @@ list.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 ibio.file.name.t	.tygvar
 bool.prim.u	.tygvar
+string.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 list.t	.tygvar	 # Temp
 _real.entry_prefix_ty	.tygvar	 # Temp
 list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
-_prefix.load.var_w_false_:_false_false_res_c	.subcode
+_prefix.load.var_w_false_:_false_false_k	.subcode
+list.t.out	.cogvar
+list.reverse	.gvar
+ibio.file.name.components.get	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 v	.fv	gsdl.cgs.symbol.t
 pr0	.fv	_real.entry_prefix_ty
@@ -647,13 +658,20 @@ fn	.fv	ibio.file.name.t
 b0	.karg	bool.prim.u	# Has this file been loaded yet?
 	.analyze	b0	false	true
 		.case	false
-res			.alloc	_prefix.load.var_w_false_:_false_false_res_c
-			.enter	res
+cs			.apply	ibio.file.name.components.get	|	fn
+exts			.lfield	exts	cs
+txes			.apply	list.reverse	string.t	|	exts
+			.force	_prefix.load.var_w_false_:_false_false_k
+			.coerce	list.t.out	string.t
+			.enter	txes
 		.case	true
 			.undef	ibio.prim.t	list.prefix.ty
 
-# §paragraph{File has not been loaded yet}
-_prefix.load.var_w_false_:_false_false_res_c	.impprog	ibio.prim	ibio
+# §paragraph{Get the last extension to check if we should load the file}
+# File has not been loaded; check the extension and make sure we should load it.
+# Default is don't load, §emph{and} complain about the file (bad file in prefix directory)
+# To load the file, check out §ags{_prefix.load.var_w_false_:_false_false_res_c}
+_prefix.load.var_w_false_:_false_false_k	.forcecont
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
@@ -661,34 +679,180 @@ _real.entry_prefix_ty	.tygvar
 list.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 ibio.file.name.t	.tygvar
-_prefix.load.var_w_false_:_false_false_res_file.parsed_c	.subcode
-_prefix.load.var_w_false_:_false_false_res_pr0.1_c	.subcode
-_prefix.load.var_w_false_:_false_false_res_body_c	.subcode
+list.prim.u	.tygvar
+string.t	.tygvar
+_prefix.load.var_w_false_:_false_false_cgs.scheme_k	.subcode
+bool.t.out	.cogvar
+string.≡	.gvar
+_prefix.load.var_w_false_:_false_false_cgs.scheme.s	.gvar
+_bad.file.name	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 v	.fv	gsdl.cgs.symbol.t
 pr0	.fv	_real.entry_prefix_ty
 prn1	.fv	list.t	_real.entry_prefix_ty
 files1	.fv	list.t	_prefix.load.var_w_file_ty
 fn	.fv	ibio.file.name.t
-file.parsed	.bind	_prefix.load.var_w_false_:_false_false_res_file.parsed_c
-pr0.1	.alloc	_prefix.load.var_w_false_:_false_false_res_pr0.1_c
-	.body	_prefix.load.var_w_false_:_false_false_res_body_c
+txes0	.karg	list.prim.u	string.t
+	.analyze	txes0	:	nil
+		.case	:
+txe0		.fkarg	0	string.t
+txes1		.fkarg	1	list.t	string.t
+			# OK, now we have §gs{txe0}; we need to see what extension that is
+			.force	_prefix.load.var_w_false_:_false_false_cgs.scheme_k
+			.coerce	bool.t.out
+			.app	txe0	_prefix.load.var_w_false_:_false_false_cgs.scheme.s
+			.enter	string.≡
+		.case	nil
+			.app	eo	fn
+			.enter	_bad.file.name
 
-# §paragraph{Read in the actual file}
-_prefix.load.var_w_false_:_false_false_res_file.parsed_c	.expr
+_prefix.load.var_w_false_:_false_false_cgs.scheme_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+list.t	.tygvar
+_prefix.load.var_w_file_ty	.tygvar
+ibio.file.name.t	.tygvar
+string.t	.tygvar
+bool.prim.u	.tygvar
+ordered.set.t	.tygvar	# Temp
+_prefix.load.var_w_false_:_false_false_ags_k	.subcode
+bool.t.out	.cogvar
+string.≡	.gvar
+_prefix.load.var_w_false_:_false_false_ags.s	.gvar
+_prefix.load.var_w	.gvar
+ordered.set.insert	.gvar
+ibio.file.name.compare	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+v	.fv	gsdl.cgs.symbol.t
+pr0	.fv	_real.entry_prefix_ty
+prn1	.fv	list.t	_real.entry_prefix_ty
+files1	.fv	list.t	_prefix.load.var_w_file_ty
+fn	.fv	ibio.file.name.t
+txe0	.fv	string.t
+b0	.karg	bool.prim.u	# Is this a §sh{.cgs-scheme} file?
+	.analyze	b0	false	true
+		.case	false
+			.force	_prefix.load.var_w_false_:_false_false_ags_k
+			.coerce	bool.t.out
+			.app	txe0	_prefix.load.var_w_false_:_false_false_ags.s
+			.enter	string.≡
+		.case	true
+bvs			.lfield	bvs	pr0
+filename			.lfield	filename	pr0
+files.loaded			.lfield	files.loaded	pr0
+files.loaded.1			.apply	ordered.set.insert	ibio.file.name.t	|	ibio.file.name.compare	fn	files.loaded
+isdir			.lfield	isdir	pr0
+pr0.1			.lrecord	bvs	bvs	filename	filename	files.loaded	files.loaded.1	isdir	isdir
+			.app	eo	v	files1	pr0.1	prn1
+			.enter	_prefix.load.var_w
+
+_prefix.load.var_w_false_:_false_false_ags_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+list.t	.tygvar
+_prefix.load.var_w_file_ty	.tygvar
+ibio.file.name.t	.tygvar
+bool.prim.u	.tygvar
+_bad.file.name	.gvar
+_prefix.load.file	.gvar
+bool.true	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+v	.fv	gsdl.cgs.symbol.t
+pr0	.fv	_real.entry_prefix_ty
+prn1	.fv	list.t	_real.entry_prefix_ty
+files1	.fv	list.t	_prefix.load.var_w_file_ty
+fn	.fv	ibio.file.name.t
+b0	.karg	bool.prim.u	# Is this a §sh{.ags} file?
+	.analyze	b0	false	true
+		.case	false
+			.app	eo	fn
+			.enter	_bad.file.name
+		.case	true
+			.app	eo	v	pr0	prn1	files1	fn	bool.true
+			.enter	_prefix.load.file
+
+# §paragraph{Compain about §gs{fn}, which has a bad extension to be loaded (§gs{ext})}
+_bad.file.name_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
-bool.t	.tygvar	# Temp
+_bad.file.name_err_c	.subcode
+_bad.file.name_body_c	.subcode
+eo	.larg	ibio.prim.oport	rune.t
+fn	.larg	ibio.file.name.t
+r	.bind	_bad.file.name_err_c
+	.body	_bad.file.name_body_c
+
+# §paragraph{Print warning about skipping file}
+_bad.file.name_err_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+list.t	.tygvar	# Temp
+ibio.prim.write	.gvar
+list.<>	.gvar
+ibio.file.name.out	.gvar
+_bad.file.name_err_col.sp.s	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+fn	.fv	ibio.file.name.t
+fn.s	.apply	ibio.file.name.out	|	fn
+s2	.undefined	list.t	rune.t
+s1	.apply	list.<>	rune.t	|	_bad.file.name_err_col.sp.s	s2
+s	.apply	list.<>	rune.t	|	fn.s	s1
+	.app	eo	s
+	.yield	ibio.prim.write	rune.t
+
+# §paragraph{Loop with remaining files} (this means this function becomes recursive)
+_bad.file.name_body_c	.expr
+ibio.prim.t	.tygvar	# Temp
+list.t	.tygvar	 # Temp
+_real.entry_prefix_ty	.tygvar	 # Temp
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
+	.undef	ibio.prim.t	list.prefix.ty
+
+# §paragraph{File has not been loaded yet, and has an appropriate extension to be loaded}
+_prefix.load.file_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+list.t	.tygvar
+_prefix.load.var_w_file_ty	.tygvar
+ibio.file.name.t	.tygvar
+bool.t	.tygvar
+_prefix.load.file_file.parsed_c	.subcode
+_prefix.load.file_pr0.1_c	.subcode
+_prefix.load.file_body_c	.subcode
+eo	.larg	ibio.prim.oport	rune.t
+v	.larg	gsdl.cgs.symbol.t
+pr0	.larg	_real.entry_prefix_ty
+prn1	.larg	list.t	_real.entry_prefix_ty
+files1	.larg	list.t	_prefix.load.var_w_file_ty
+fn	.larg	ibio.file.name.t
+isags	.larg	bool.t
+file.parsed	.bind	_prefix.load.file_file.parsed_c
+pr0.1	.alloc	_prefix.load.file_pr0.1_c
+	.body	_prefix.load.file_body_c
+
+# §paragraph{Read in the actual file}
+_prefix.load.file_file.parsed_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+bool.t	.tygvar
 gsac.input.prefix.file.load	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
-isags	.undefined	bool.t
+isags	.fv	bool.t
 	.app	eo	isags	fn
 	.enter	gsac.input.prefix.file.load
 
 # §paragraph{Add the file to §gs{pr0}}
-_prefix.load.var_w_false_:_false_false_res_pr0.1_c	.expr
+_prefix.load.file_pr0.1_c	.expr
 gsac.input.prefix.t	.tygvar
 _real.entry_prefix_ty	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
@@ -711,7 +875,7 @@ r	.record	bvs	bvs1	filename	pr0.filename	files.loaded	files.loaded.1	isdir	id	# 
 	.yield	r
 
 # §paragraph{Loop with the updated §gs{pr0.1} and the remaining files}
-_prefix.load.var_w_false_:_false_false_res_body_c	.expr
+_prefix.load.file_body_c	.expr
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
