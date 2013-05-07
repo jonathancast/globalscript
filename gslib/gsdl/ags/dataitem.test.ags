@@ -21,7 +21,7 @@ _test.eq.undefined.diff.ty_bar.s	.string	bar
 # §section Parsers
 
 _test.parse	.closure	_test.parse_c
-_tests.parse	.list	test.property.t	_test.parse.missing.gsdata.segment	_test.parse.empty.gsdata.segment	_test.parse.closure
+_tests.parse	.list	test.property.t	_test.parse.missing.gsdata.segment	_test.parse.empty.gsdata.segment	_test.parse.closure	_test.parse.closure.nolabel
 
 _test.parse.missing.gsdata.segment	.closure	_test.parse.missing.gsdata.segment_c
 _test.parse.missing.gsdata.segment_label	.string	segment.parser\s=~\sqq{}
@@ -35,6 +35,11 @@ _test.parse.closure_label	.string	parser\s=~\sqq{foo\\t.closure\\t_foo_c\\n}
 _test.parse.closure_input	.string	foo\t.closure\t_foo_c\n
 _test.parse.closure_foo.s	.string	foo
 _test.parse.closure_foo.c.s	.string	_foo_c
+
+_test.parse.closure.nolabel	.closure	_test.parse.closure.nolabel_c
+_test.parse.closure.nolabel_label	.string	parser\s=~\sqq{\\t.closure\\t_foo_c\\n}
+_test.parse.closure.nolabel_input	.string	\t.closure\t_foo_c\n
+_test.parse.closure.nolabel_foo.c.s	.string	_foo_c
 
 # §section §gs{fmtgs}
 
@@ -213,6 +218,44 @@ pos	.undefined	gsdl.sourcepos.t
 just.foo.s	.apply	maybe.just	string.t	|	_test.parse.closure_foo.s
 nothing	.apply	maybe.nothing	string.t
 expected	.apply	gsdl.ags.dataitem.closure	|	pos	just.foo.s	_test.parse.closure_foo.c.s	nothing
+	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
+	.enter	test.assert.eq	gsdl.ags.dataitem.t
+
+# §subsection §gs{parser =~ qq{\\t.closure\\t_foo_c\\n}}
+
+_test.parse.closure.nolabel_c	.expr
+rune.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+_test.parse.closure.nolabel_k_c	.subcode
+test.property.label	.gvar
+_test.parse.closure.nolabel_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.dataitem.parser	.gvar
+bool.false	.gvar
+_test.parse.closure.nolabel_input	.gvar
+k	.alloc	_test.parse.closure.nolabel_k_c
+di	.apply	gsdl.ags.dataitem.parser	|	bool.false
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.advance	rune.print	di	_test.parse.closure.nolabel_input	k
+	.app	_test.parse.closure.nolabel_label	test
+	.enter	test.property.label
+
+# foo	.closure	_foo_c
+_test.parse.closure.nolabel_k_c	.expr
+gsdl.ags.dataitem.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+test.assert.eq	.gvar
+gsdl.ags.dataitem.≡	.gvar
+gsdl.ags.dataitem.fmtgs	.gvar
+gsdl.ags.dataitem.closure	.gvar
+_test.parse.closure.nolabel_foo.c.s	.gvar
+maybe.nothing	.gvar
+di	.larg	gsdl.ags.dataitem.t
+pos	.undefined	gsdl.sourcepos.t
+nothing	.apply	maybe.nothing	string.t
+expected	.apply	gsdl.ags.dataitem.closure	|	pos	nothing	_test.parse.closure.nolabel_foo.c.s	nothing
 	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
 	.enter	test.assert.eq	gsdl.ags.dataitem.t
 
