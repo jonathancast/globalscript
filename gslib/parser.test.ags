@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
+_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
 
 _test.fail.nil	.closure	_test.fail.nil_c
 _test.fail.nil_label	.string	parse\sfail\sqq{}
@@ -24,6 +24,9 @@ _test.symbol.nil_expected	.string	./parse-data:$:\sUn-expected\sEOF;\sexpected\s
 _test.symbol.cons	.closure	_test.symbol.cons_c
 _test.symbol.cons_label	.string	parse\ssymbol\sqq{n}
 _test.symbol.cons_string	.string	n
+
+_test.optional.fail.nil	.closure	_test.optional.fail.nil_c
+_test.optional.fail.nil_label	.string	parse\s(optional\sfail)\sqq{}
 
 _test.many.fail.nil	.closure	_test.many.fail.nil_c
 _test.many.fail.nil_label	.string	parse\s(many\sfail)\sqq{}
@@ -333,6 +336,46 @@ rune.latin.letter.n	.gvar
 r	.larg	rune.t
 	.app	rune.≡	rune.fmtgs	r	rune.latin.letter.n
 	.enter	test.assert.eq	rune.t
+
+# §section §gs{parse (optional fail) qq{}}
+
+_test.optional.fail.nil_c	.expr
+rune.t	.tygvar
+maybe.t	.tygvar
+bool.t	.tygvar
+maybe.bool.ty	.tylet	maybe.t	bool.t
+_test.optional.fail.nil_k_c	.subcode
+test.property.label	.gvar
+_test.optional.fail.nil_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+parser.optional	.gvar
+parser.fail	.gvar
+string.empty	.gvar
+fail	.apply	parser.fail	rune.t	bool.t
+parser	.apply	parser.optional	rune.t	bool.t	|	fail
+k	.alloc	_test.optional.fail.nil_k_c
+test	.apply	parser.test.assert.passes	rune.t	maybe.bool.ty	|	parser.rune.advance	rune.print	parser	string.empty	k
+	.app	_test.optional.fail.nil_label	test
+	.enter	test.property.label
+
+_test.optional.fail.nil_k_c	.expr
+maybe.t	.tygvar
+bool.t	.tygvar
+maybe.bool.ty	.tylet	maybe.t	bool.t
+test.assert.eq	.gvar
+maybe.≡	.gvar
+bool.≡	.gvar
+maybe.fmtgs	.gvar
+bool.fmtgs	.gvar
+maybe.nothing	.gvar
+mb	.larg	maybe.t	bool.t
+maybe.bool.≡	.apply	maybe.≡	bool.t	|	bool.≡
+maybe.bool.fmtgs	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs
+expected	.apply	maybe.nothing	bool.t
+	.app	maybe.bool.≡	maybe.bool.fmtgs	mb	expected
+	.enter	test.assert.eq	maybe.bool.ty
 
 # §section §gs{parse (many fail) qq{}}
 

@@ -2122,9 +2122,11 @@ res.ty	.tylet	maybe.t	α
 _parser.optional_just_c	.subcode
 parser.<|>	.gvar
 parser.map	.gvar
-parser.fail	.gvar	# Temp
+parser.unit	.gvar
+maybe.nothing	.gvar
 p	.larg	parser.t	s	α
-nothing.p	.apply	parser.fail	s	res.ty
+nothing	.apply	maybe.nothing	α
+nothing.p	.apply	parser.unit	s	res.ty	|	nothing
 just	.alloc	_parser.optional_just_c
 just.p	.apply	parser.map	s	α	res.ty	|	just	p
 	.app	nothing.p	just.p
