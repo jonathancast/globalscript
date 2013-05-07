@@ -28,7 +28,8 @@ _test.eq.closure.diff.ty_foo.ty.s	.string	_foo_ty
 # §section Parsers
 
 _test.parse	.closure	_test.parse_c
-_tests.parse	.list	test.property.t	_test.parse.missing.gsdata.segment	_test.parse.empty.gsdata.segment	_test.parse.closure	_test.parse.closure.nolabel
+
+_tests.parse	.list	test.property.t	_test.parse.missing.gsdata.segment	_test.parse.empty.gsdata.segment	_test.parse.closure	_test.parse.closure.nolabel	_test.parse.closure.typesig
 
 _test.parse.missing.gsdata.segment	.closure	_test.parse.missing.gsdata.segment_c
 _test.parse.missing.gsdata.segment_label	.string	segment.parser\s=~\sqq{}
@@ -38,7 +39,7 @@ _test.parse.empty.gsdata.segment_label	.string	segment.parser\s=~\sqq{\\t.data\\
 _test.parse.empty.gsdata.segment_input	.string	\t.data\n
 
 _test.parse.closure	.closure	_test.parse.closure_c
-_test.parse.closure_label	.string	parser\s=~\sqq{foo\\t.closure\\t_foo_c\\n}
+_test.parse.closure_label	.string	qq{foo\\t.closure\\t_foo_c\\n}\s=~\sparser
 _test.parse.closure_input	.string	foo\t.closure\t_foo_c\n
 _test.parse.closure_foo.s	.string	foo
 _test.parse.closure_foo.c.s	.string	_foo_c
@@ -47,6 +48,13 @@ _test.parse.closure.nolabel	.closure	_test.parse.closure.nolabel_c
 _test.parse.closure.nolabel_label	.string	parser\s=~\sqq{\\t.closure\\t_foo_c\\n}
 _test.parse.closure.nolabel_input	.string	\t.closure\t_foo_c\n
 _test.parse.closure.nolabel_foo.c.s	.string	_foo_c
+
+_test.parse.closure.typesig	.closure	_test.parse.closure.typesig_c
+_test.parse.closure.typesig_label	.string	qq{foo\\t.closure\\t_foo_c\\t_foo_ty\\n}\s=~\sparser
+_test.parse.closure.typesig_input	.string	foo\t.closure\t_foo_c\t_foo_ty\n
+_test.parse.closure.typesig_foo.s	.string	foo
+_test.parse.closure.typesig_foo.c.s	.string	_foo_c
+_test.parse.closure.typesig_foo.ty.s	.string	_foo_ty
 
 # §section §gs{fmtgs}
 
@@ -289,6 +297,46 @@ di	.larg	gsdl.ags.dataitem.t
 pos	.undefined	gsdl.sourcepos.t
 nothing	.apply	maybe.nothing	string.t
 expected	.apply	gsdl.ags.dataitem.closure	|	pos	nothing	_test.parse.closure.nolabel_foo.c.s	nothing
+	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
+	.enter	test.assert.eq	gsdl.ags.dataitem.t
+
+# §subsection §gs{qq{foo\\t.closure\\t_foo_c\\t_foo_ty\\n} =~ parser}
+
+_test.parse.closure.typesig_c	.expr
+rune.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+_test.parse.closure.typesig_k_c	.subcode
+test.property.label	.gvar
+_test.parse.closure.typesig_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.dataitem.parser	.gvar
+bool.false	.gvar
+_test.parse.closure.typesig_input	.gvar
+k	.alloc	_test.parse.closure.typesig_k_c
+ds	.apply	gsdl.ags.dataitem.parser	|	bool.false
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.advance	rune.print	ds	_test.parse.closure.typesig_input	k
+	.app	_test.parse.closure.typesig_label	test
+	.enter	test.property.label
+
+_test.parse.closure.typesig_k_c	.expr
+gsdl.ags.dataitem.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+test.assert.eq	.gvar
+gsdl.ags.dataitem.≡	.gvar
+gsdl.ags.dataitem.fmtgs	.gvar
+gsdl.ags.dataitem.closure	.gvar
+maybe.just	.gvar
+_test.parse.closure.typesig_foo.s	.gvar
+_test.parse.closure.typesig_foo.c.s	.gvar
+_test.parse.closure.typesig_foo.ty.s	.gvar
+di	.larg	gsdl.ags.dataitem.t
+pos	.undefined	gsdl.sourcepos.t
+just.foo.s	.apply	maybe.just	string.t	|	_test.parse.closure.typesig_foo.s
+just.foo.ty.s	.apply	maybe.just	string.t	|	_test.parse.closure.typesig_foo.ty.s
+expected	.apply	gsdl.ags.dataitem.closure	|	pos	just.foo.s	_test.parse.closure.typesig_foo.c.s	just.foo.ty.s
 	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
 	.enter	test.assert.eq	gsdl.ags.dataitem.t
 

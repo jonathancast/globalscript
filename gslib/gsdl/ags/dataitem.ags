@@ -77,7 +77,7 @@ string.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 mb.string.ty	.tylet	maybe.t	string.t
 _gsdl.ags.dataitem.parser_closure.p_f_c	.subcode
-parser.lift3	.gvar
+parser.lift4	.gvar
 parser.pos.get	.gvar
 parser.optional	.gvar
 gsdl.ags.syntax.id	.gvar
@@ -93,12 +93,14 @@ f	.alloc	_gsdl.ags.dataitem.parser_closure.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 nm.p	.apply	parser.optional	rune.t	string.t	|	gsdl.ags.syntax.id
 co.p1.h	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.dataitem.parser_closure.p_closure.re
-co.p3.t	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	gsdl.ags.syntax.whitespace
-co.p2.t	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	co.p3.t
+co.p2.t	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 co.p1.t	.apply	parser.*>	rune.t	string.t	string.t	|	co.p1.h	co.p2.t
 co.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	co.p1.t
-	.app	f	pos.get	nm.p	co.p
-	.enter	parser.lift3	rune.t	parser.pos.t	mb.string.ty	string.t	gsdl.ags.dataitem.t
+ty.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+ty.p1	.apply	parser.optional	rune.t	string.t	|	ty.p2
+ty.p	.apply	parser.<*	rune.t	mb.string.ty	string.t	|	ty.p1	gsdl.ags.syntax.whitespace
+	.app	f	pos.get	nm.p	co.p	ty.p
+	.enter	parser.lift4	rune.t	parser.pos.t	mb.string.ty	string.t	mb.string.ty	gsdl.ags.dataitem.t
 
 _gsdl.ags.dataitem.parser_closure.p_f_c	.expr
 parser.pos.t	.tygvar
@@ -110,10 +112,10 @@ maybe.nothing	.gvar	# Temp
 pos0	.larg	parser.pos.t
 nm	.larg	maybe.t	string.t
 co	.larg	string.t
+ty	.larg	maybe.t	string.t
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-nothing	.apply	maybe.nothing	string.t
-	.app	pos	nm	co	nothing
+	.app	pos	nm	co	ty
 	.yield	gsdl.ags.dataitem.closure
 
 _gsdl.ags.dataitem.parser_string.p_c	.expr
