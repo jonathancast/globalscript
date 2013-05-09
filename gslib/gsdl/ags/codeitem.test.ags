@@ -69,8 +69,8 @@ _test.parse_expr.larg_k_tyargs	.list	string.t	_test.parse_expr.larg_k_tyargs_0
 _test.parse_expr.larg_k_tyargs_0	.string	quux.t
 
 _test.parse_expr.undefined	.closure	_test.parse_expr.undefined_c
-_test.parse_expr.undefined_label	.string	qq{_foo_c\\t.expr\\nbar\\t.undefined\\tbar.t\\n\\t.enter\\tbaz\\n}\s=~\sparser
-_test.parse_expr.undefined_input	.string	_foo_c\t.expr\nbar\t.undefined\tbar.t\n\t.enter\tbaz\n
+_test.parse_expr.undefined_label	.string	qq{_foo_c\\t.expr\\nbar\\t.undefined\\tbar.t\\tα\\n\\t.enter\\tbaz\\n}\s=~\sparser
+_test.parse_expr.undefined_input	.string	_foo_c\t.expr\nbar\t.undefined\tbar.t\tα\n\t.enter\tbaz\n
 
 # §subsection §ags{.forcecont} Code Items
 
