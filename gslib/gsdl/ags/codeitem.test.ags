@@ -23,7 +23,7 @@ _test.parse_segment.empty_input	.string	\t.code\n
 # §subsection §ags{.expr} Code Items
 
 _test.parse_expr.items	.closure	_test.parse_expr.items_c
-_tests.parse_expr.items	.list	test.property.t	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.larg
+_tests.parse_expr.items	.list	test.property.t	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.larg	_test.parse_expr.undefined
 
 _test.parse_expr	.closure	_test.parse_expr_c
 _test.parse_expr_label	.string	qq{_foo_c\\t.expr\\n\\t.enter\\tbar\\n}\s=~\sparser
@@ -67,6 +67,10 @@ _test.parse_expr.larg_k_bar.s	.string	bar
 _test.parse_expr.larg_k_bar.t.s	.string	bar.t
 _test.parse_expr.larg_k_tyargs	.list	string.t	_test.parse_expr.larg_k_tyargs_0
 _test.parse_expr.larg_k_tyargs_0	.string	quux.t
+
+_test.parse_expr.undefined	.closure	_test.parse_expr.undefined_c
+_test.parse_expr.undefined_label	.string	qq{_foo_c\\t.expr\\nbar\\t.undefined\\tbar.t\\n\\t.enter\\tbaz\\n}\s=~\sparser
+_test.parse_expr.undefined_input	.string	_foo_c\t.expr\nbar\t.undefined\tbar.t\n\t.enter\tbaz\n
 
 # §subsection §ags{.forcecont} Code Items
 
@@ -632,6 +636,28 @@ nil			.apply	list.nil	gsdl.ags.codeitem.arg.t
 expected			.apply	list.:	gsdl.ags.codeitem.arg.t	|	arg0	nil
 			.app	args.≡	args.fmtgs	args	expected
 			.enter	test.assert.eq	list.arg.ty
+
+_test.parse_expr.undefined_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_test.parse_expr.undefined_k_c	.subcode
+test.property.label	.gvar
+_test.parse_expr.undefined_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+_test.parse_expr.undefined_input	.gvar
+k	.alloc	_test.parse_expr.undefined_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.parser	_test.parse_expr.undefined_input	k
+	.app	_test.parse_expr.undefined_label	test
+	.enter	test.property.label
+
+_test.parse_expr.undefined_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+test.true	.gvar
+ci	.larg	gsdl.ags.codeitem.t
+	.enter	test.true
 
 # §subsection §ags{.forcecont} Code Items
 
