@@ -156,6 +156,7 @@ struct ibio_iport {
     int active;
     struct ibio_channel *channel;
     gsvalue *position;
+    struct gspos reading_at;
     gsvalue reading;
     struct api_thread *reading_thread;
     struct ibio_iport_read_blocker *waiting_to_read, **waiting_to_read_end;
@@ -181,6 +182,7 @@ gslprim_handler ibio_prim_iptr_handle_deref, ibio_prim_iptr_handle_next;
 struct ibio_oport {
     Lock lock;
     int active;
+    struct gspos writing_at;
     gsvalue writing_symbol, writing;
     struct ibio_oport_write_blocker *waiting_to_write, **waiting_to_write_end;
     struct api_thread *writing_thread;

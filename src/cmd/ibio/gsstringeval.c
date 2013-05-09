@@ -20,11 +20,11 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
     gstypecode st;
 
     if (eval->gsc) {
-        st = GS_SLOW_EVALUATE(eval->gsc);
+        st = GS_SLOW_EVALUATE(pos, eval->gsc);
 
         switch (st) {
             case gstyindir:
-                eval->gsc = GS_REMOVE_INDIRECTION(eval->gsc);
+                eval->gsc = GS_REMOVE_INDIRECTION(pos, eval->gsc);
                 break;
             case gstyunboxed:
                 if (gsextend_string_builder(eval->sb, 4) < 0) {
@@ -46,7 +46,7 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
                 return ibio_gsstring_eval_error;
         }
     } else if (eval->gss) {
-        st = GS_SLOW_EVALUATE(eval->gss);
+        st = GS_SLOW_EVALUATE(pos, eval->gss);
 
         switch (st) {
             case gstystack:
@@ -71,7 +71,7 @@ ibio_gsstring_eval_advance(struct api_thread *thread, struct gspos pos, struct i
                 break;
             }
             case gstyindir:
-                eval->gss = GS_REMOVE_INDIRECTION(eval->gss);
+                eval->gss = GS_REMOVE_INDIRECTION(pos, eval->gss);
                 break;
             case gstyerr: {
                 char err[0x100];

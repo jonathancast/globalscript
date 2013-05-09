@@ -387,7 +387,7 @@ ibio_read_process_main(void *p)
             gstypecode st;
 
             if (!pos) pos = iport->position;
-            st = GS_SLOW_EVALUATE(iport->reading);
+            st = GS_SLOW_EVALUATE(iport->reading_at, iport->reading);
             switch (st) {
                 case gstystack:
                     runnable = 0;
@@ -492,7 +492,7 @@ ibio_read_process_main(void *p)
                     break;
                 }
                 case gstyindir:
-                    iport->reading = GS_REMOVE_INDIRECTION(iport->reading);
+                    iport->reading = GS_REMOVE_INDIRECTION(iport->reading_at, iport->reading);
                     break;
                 case gstyerr: {
                     struct gserror *err;
@@ -648,6 +648,7 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
                 return api_st_blocked;
             }
         }
+        read_blocking->iport->reading_at = read->pos;
         read_blocking->iport->reading = read_blocking->acceptor;
         read_blocking->iport->reading_thread = thread;
         ibio_iport_link_to_thread(thread, read_blocking->iport);
@@ -776,7 +777,7 @@ ibio_prim_iptr_deref_return(struct ace_thread *thread, struct gspos pos, gsvalue
     if (!v) v = blocking->res;
 
     for (;;) {
-        st = GS_SLOW_EVALUATE(v);
+        st = GS_SLOW_EVALUATE(pos, v);
         switch (st) {
             case gstystack: {
                 if (!blocking) {
@@ -789,7 +790,7 @@ ibio_prim_iptr_deref_return(struct ace_thread *thread, struct gspos pos, gsvalue
             case gstywhnf:
                 return gsprim_return(thread, pos, v);
             case gstyindir:
-                blocking->res = v = GS_REMOVE_INDIRECTION(v);
+                blocking->res = v = GS_REMOVE_INDIRECTION(pos, v);
                 break;
             case gstyunboxed:
                 return gsprim_return(thread, pos, v);
@@ -1096,6 +1097,7 @@ ibio_alloc_iport()
     res->active = 1;
     res->channel = ibio_alloc_channel();
 
+    memset(&res->reading_at, 0, sizeof(res->reading_at));
     res->reading = 0;
     res->reading_thread = 0;
     res->waiting_to_read = 0;
@@ -1135,6 +1137,7 @@ ibio_iport_trace(struct gsstringbuilder *err, gsvalue v)
 
     iport->forward = newiport;
 
+    if (gs_gc_trace_pos(err, &newiport->reading_at) < 0) return 0;
     if (GS_GC_TRACE(err, &newiport->reading) < 0) return 0;
 
     if (newiport->waiting_to_read) {

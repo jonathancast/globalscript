@@ -57,8 +57,8 @@ ibio_channel_trace(struct gsstringbuilder *err, struct ibio_channel **pchannel)
     return 0;
 }
 
-static gstypecode ibio_channel_eval(gsvalue);
-static gsvalue ibio_channel_remove_indir(gsvalue);
+static gstypecode ibio_channel_eval(struct gspos, gsvalue);
+static gsvalue ibio_channel_remove_indir(struct gspos, gsvalue);
 static gsvalue ibio_iptr_gc_trace(struct gsstringbuilder *err, gsvalue);
 
 static struct gs_sys_aligned_block_suballoc_info ibio_channel_segment_info = {
@@ -109,7 +109,7 @@ ibio_channel_segment_limit(struct ibio_channel_segment *seg)
 
 static
 gstypecode
-ibio_channel_eval(gsvalue v)
+ibio_channel_eval(struct gspos pos, gsvalue v)
 {
     struct ibio_channel_segment *seg;
 
@@ -142,7 +142,7 @@ ibio_channel_eval(gsvalue v)
 
 static
 gsvalue
-ibio_channel_remove_indir(gsvalue v)
+ibio_channel_remove_indir(struct gspos pos, gsvalue v)
 {
     struct ibio_channel_segment *seg;
 

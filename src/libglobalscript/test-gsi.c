@@ -139,11 +139,11 @@ gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
     gstypecode st;
 
     do {
-        st = GS_SLOW_EVALUATE(prog);
+        st = GS_SLOW_EVALUATE(pos, prog);
 
         switch (st) {
             case gstyindir:
-                prog = GS_REMOVE_INDIRECTION(prog);
+                prog = GS_REMOVE_INDIRECTION(pos, prog);
                 break;
             case gstywhnf:
                 if (gsprint(pos, prog) < 0) {

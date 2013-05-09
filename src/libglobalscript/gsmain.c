@@ -106,7 +106,7 @@ have_document:
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r")
     ;
-    GS_SLOW_EVALUATE(gsentrypoint);
+    GS_SLOW_EVALUATE(gsentrypos, gsentrypoint);
     gsrun(docfilename, gsentrypos, gsentrypoint, argc, argv);
     exits("");
 }

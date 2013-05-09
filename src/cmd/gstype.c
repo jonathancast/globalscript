@@ -53,7 +53,7 @@ gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
 
     do {
         if (c) {
-            st = GS_SLOW_EVALUATE(c);
+            st = GS_SLOW_EVALUATE(pos, c);
 
             switch (st) {
                 case gstyunboxed: {
@@ -73,13 +73,13 @@ gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
                     gsfatal_unimpl(__FILE__, __LINE__, "gsrun: st = %d", st);
             }
         } else {
-            st = GS_SLOW_EVALUATE(s);
+            st = GS_SLOW_EVALUATE(pos, s);
 
             switch (st) {
                 case gstystack:
                     break;
                 case gstyindir:
-                    s= GS_REMOVE_INDIRECTION(s);
+                    s= GS_REMOVE_INDIRECTION(pos, s);
                     break;
                 case gstywhnf: {
                     struct gsconstr *constr;

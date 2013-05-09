@@ -271,19 +271,19 @@ extern void gsrun(char *, struct gspos, gsvalue, int, char **);
 
 void *gsreserveheap(ulong);
 
-gstypecode gsnoeval(gsvalue);
-gsvalue gsnoindir(gsvalue);
+gstypecode gsnoeval(struct gspos, gsvalue);
+gsvalue gsnoindir(struct gspos, gsvalue);
 gsvalue gsunimplgc(struct gsstringbuilder *, gsvalue);
 
-gstypecode gsevalunboxed(gsvalue);
+gstypecode gsevalunboxed(struct gspos, gsvalue);
 
-gstypecode gswhnfeval(gsvalue);
-gsvalue gswhnfindir(gsvalue);
+gstypecode gswhnfeval(struct gspos, gsvalue);
+gsvalue gswhnfindir(struct gspos, gsvalue);
 
 #define IS_PTR(v) ((gsvalue)(v) < GS_MAX_PTR)
 
-#define GS_SLOW_EVALUATE(v) (IS_PTR(v) ? (*GS_EVALUATOR(v))(v) : gstyunboxed)
-#define GS_REMOVE_INDIRECTION(v) ((*GS_INDIRECTION_DEREFENCER(v))(v))
+#define GS_SLOW_EVALUATE(pos, v) (IS_PTR(v) ? (*GS_EVALUATOR(v))(pos, v) : gstyunboxed)
+#define GS_REMOVE_INDIRECTION(pos, v) ((*GS_INDIRECTION_DEREFENCER(v))(pos, v))
 
 int gsiserror_block(struct gs_blockdesc *);
 int gsisimplementation_failure_block(struct gs_blockdesc *);
@@ -516,9 +516,9 @@ struct gsregistered_prim *gsprims_lookup_prim(struct gsregistered_primset *, cha
 /* §section Simple Segment Manager */
 
 typedef struct gs_block_class {
-    gstypecode (*evaluator)(gsvalue);
+    gstypecode (*evaluator)(struct gspos, gsvalue);
         /* §ccode{evaluator} mayn't return §ccode{gstythunk} */
-    gsvalue (*indirection_dereferencer)(gsvalue);
+    gsvalue (*indirection_dereferencer)(struct gspos, gsvalue);
     gsvalue (*gc_trace)(struct gsstringbuilder *, gsvalue);
     char *description;
 } *registered_block_class;
@@ -666,7 +666,7 @@ typedef void (api_termination_callback)(void);
 void api_at_termination(api_termination_callback *);
 
 /* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
-void apisetupmainthread(struct api_process_rpc_table *, struct api_thread_table *, void *, struct api_prim_table *, gsvalue);
+void apisetupmainthread(struct gspos, struct api_process_rpc_table *, struct api_thread_table *, void *, struct api_prim_table *, gsvalue);
 
 /* If (and only if) the current thread is hard, these will send a done message (§c{api_std_rpc_done}) to the corresponding process */
 void api_done(struct api_thread *);

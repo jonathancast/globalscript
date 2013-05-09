@@ -8,20 +8,17 @@
 #include "ace.h"
 
 gstypecode
-gsnoeval(gsvalue val)
+gsnoeval(struct gspos pos, gsvalue val)
 {
     return gstyindir;
 }
 
 gsvalue
-gsnoindir(gsvalue val)
+gsnoindir(struct gspos pos, gsvalue val)
 {
     struct gs_blockdesc *block;
-    struct gspos pos;
 
     block = BLOCK_CONTAINING(val);
-    pos.file = gsintern_string(gssymfilename, __FILE__);
-    pos.columnno = 0;
     pos.lineno = __LINE__; return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsnoindir: %s", block->class->description);
 }
 
@@ -36,7 +33,7 @@ gsunimplgc(struct gsstringbuilder *err, gsvalue v)
 }
 
 gstypecode
-gsheapeval(gsvalue val)
+gsheapeval(struct gspos pos, gsvalue val)
 {
     gstypecode res;
     struct gsheap_item *hp;
@@ -131,24 +128,24 @@ gsheap_unlock(struct gsheap_item *hp)
 }
 
 gstypecode
-gsevalunboxed(gsvalue val)
+gsevalunboxed(struct gspos pos, gsvalue val)
 {
     return gstyunboxed;
 }
 
 gstypecode
-gswhnfeval(gsvalue val)
+gswhnfeval(struct gspos pos, gsvalue val)
 {
     return gstywhnf;
 }
 
 gsvalue
-gswhnfindir(gsvalue val)
+gswhnfindir(struct gspos pos, gsvalue val)
 {
     return val;
 }
 
-static gsvalue gsheapremove_indirections(gsvalue val);
+static gsvalue gsheapremove_indirections(struct gspos, gsvalue val);
 static gsvalue gsheapgc(struct gsstringbuilder *, gsvalue);
 
 static struct gs_sys_global_block_suballoc_info gsheap_info = {
@@ -168,7 +165,7 @@ gsreserveheap(ulong sz)
 
 static
 gsvalue
-gsheapremove_indirections(gsvalue val)
+gsheapremove_indirections(struct gspos pos, gsvalue val)
 {
     struct gsheap_item *hp;
     struct gsindirection *in;
@@ -297,8 +294,8 @@ gsisheap_block(struct gs_blockdesc *p)
     return p->class == &gsheap_info.descr;
 }
 
-static gstypecode gserrorseval(gsvalue);
-static gsvalue gserrorsindir(gsvalue);
+static gstypecode gserrorseval(struct gspos, gsvalue);
+static gsvalue gserrorsindir(struct gspos, gsvalue);
 static gsvalue gserrorsgc(struct gsstringbuilder *, gsvalue);
 
 static struct gs_sys_global_block_suballoc_info gserrors_info = {
@@ -317,14 +314,14 @@ gsreserveerrors(ulong sz)
 }
 
 static
-gstypecode gserrorseval(gsvalue val)
+gstypecode gserrorseval(struct gspos pos, gsvalue val)
 {
     return gstyerr;
 }
 
 static
 gsvalue
-gserrorsindir(gsvalue val)
+gserrorsindir(struct gspos pos, gsvalue val)
 {
     return val;
 }
@@ -466,8 +463,8 @@ gsiserror_block(struct gs_blockdesc *p)
 
 /* §section Global Script Implementation Errors */
 
-static gstypecode gsimplerrorseval(gsvalue);
-static gsvalue gsimplerrorsindir(gsvalue);
+static gstypecode gsimplerrorseval(struct gspos pos, gsvalue);
+static gsvalue gsimplerrorsindir(struct gspos pos, gsvalue);
 
 static struct gs_sys_global_block_suballoc_info gsimplementation_errors_info = {
     /* descr = */ {
@@ -485,14 +482,14 @@ gsreserveimplementation_errors(ulong sz)
 }
 
 static
-gstypecode gsimplerrorseval(gsvalue val)
+gstypecode gsimplerrorseval(struct gspos pos, gsvalue val)
 {
     return gstyimplerr;
 }
 
 static
 gsvalue
-gsimplerrorsindir(gsvalue val)
+gsimplerrorsindir(struct gspos pos, gsvalue val)
 {
     return val;
 }
@@ -790,8 +787,8 @@ gsisrecord_block(struct gs_blockdesc *p)
 
 /* §section Field extraction thunks */
 
-static gstypecode gs_lfield_eval(gsvalue);
-static gsvalue gs_lfield_indir(gsvalue);
+static gstypecode gs_lfield_eval(struct gspos pos, gsvalue);
+static gsvalue gs_lfield_indir(struct gspos pos, gsvalue);
 static gsvalue gs_lfield_trace(struct gsstringbuilder *, gsvalue);
 
 struct gs_sys_global_block_suballoc_info gslfields_info = {
@@ -845,7 +842,7 @@ gslfield(struct gspos pos, int fieldno, gsvalue record)
 
 static
 gstypecode
-gs_lfield_eval(gsvalue v)
+gs_lfield_eval(struct gspos pos, gsvalue v)
 {
     struct gslfield *lfield;
     enum gslfield_state st;
@@ -864,7 +861,7 @@ gs_lfield_eval(gsvalue v)
 
             vrecord = lfield->f.record;
         again:
-            recst = GS_SLOW_EVALUATE(vrecord); /* §tODO Deadlock */
+            recst = GS_SLOW_EVALUATE(lfield->pos, vrecord); /* §tODO Deadlock */
             switch (recst) {
                 case gstystack:
                 case gstyblocked:
@@ -884,7 +881,7 @@ gs_lfield_eval(gsvalue v)
                     return gstyindir;
                 }
                 case gstyindir:
-                    vrecord = GS_REMOVE_INDIRECTION(vrecord);
+                    vrecord = GS_REMOVE_INDIRECTION(lfield->pos, vrecord);
                     goto again;
                 case gstyerr:
                 case gstyimplerr:
@@ -917,7 +914,7 @@ gs_lfield_eval(gsvalue v)
 
 static
 gsvalue
-gs_lfield_indir(gsvalue v)
+gs_lfield_indir(struct gspos pos, gsvalue v)
 {
     struct gslfield *lfield;
 

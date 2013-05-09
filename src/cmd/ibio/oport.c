@@ -273,6 +273,7 @@ ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, struct 
                 return api_st_error;
             }
         }
+        write_blocking->oport->writing_at = write->pos;
         write_blocking->oport->writing = write_blocking->s;
         write_blocking->oport->writing_thread = thread;
         ibio_oport_link_to_thread(thread, write_blocking->oport);
@@ -438,7 +439,7 @@ ibio_write_process_main(void *p)
             oport->writing = oport->writing_symbol = 0;
         }
         if (oport->writing_symbol) {
-            st = GS_SLOW_EVALUATE(oport->writing_symbol);
+            st = GS_SLOW_EVALUATE(oport->writing_at, oport->writing_symbol);
             switch (st) {
                 case gstystack:
                     runnable = 0;
@@ -450,7 +451,7 @@ ibio_write_process_main(void *p)
                     }
                     break;
                 case gstyindir: {
-                    oport->writing_symbol = GS_REMOVE_INDIRECTION(oport->writing_symbol);
+                    oport->writing_symbol = GS_REMOVE_INDIRECTION(oport->writing_at, oport->writing_symbol);
                     break;
                 }
                 case gstyerr: {
@@ -498,7 +499,7 @@ ibio_write_process_main(void *p)
                     break;
             }
         } else if (oport->writing) {
-            st = GS_SLOW_EVALUATE(oport->writing);
+            st = GS_SLOW_EVALUATE(oport->writing_at, oport->writing);
             switch (st) {
                 case gstystack:
                     runnable = 0;
@@ -514,7 +515,7 @@ ibio_write_process_main(void *p)
                     }
                     break;
                 case gstyindir: {
-                    oport->writing = GS_REMOVE_INDIRECTION(oport->writing);
+                    oport->writing = GS_REMOVE_INDIRECTION(oport->writing_at, oport->writing);
                     break;
                 }
                 case gstywhnf: {
@@ -717,6 +718,7 @@ ibio_alloc_oport()
     memset(&res->lock, 0, sizeof(res->lock));
     lock(&res->lock);
     res->active = 1;
+    memset(&res->writing_at, 0, sizeof(res->writing_at));
     res->writing = res->writing_symbol = 0;
     res->waiting_to_write = 0;
     res->waiting_to_write_end = &res->waiting_to_write;
@@ -752,6 +754,7 @@ ibio_oport_trace(struct gsstringbuilder *err, gsvalue v)
 
     oport->forward = newoport;
 
+    if (gs_gc_trace_pos(err, &newoport->writing_at) < 0) return 0;
     if (GS_GC_TRACE(err, &newoport->writing_symbol) < 0) return 0;
     if (GS_GC_TRACE(err, &newoport->writing) < 0) return 0;
 

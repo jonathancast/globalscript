@@ -271,7 +271,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
                 gstypecode st;
 
             again:
-                st = GS_SLOW_EVALUATE(thread->st.blocked.on);
+                st = GS_SLOW_EVALUATE(thread->st.blocked.at, thread->st.blocked.on);
 
                 switch (st) {
                     case gstystack:
@@ -280,7 +280,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
                         stats->num_blocked++;
                         break;
                     case gstyindir:
-                        thread->st.blocked.on = GS_REMOVE_INDIRECTION(thread->st.blocked.on);
+                        thread->st.blocked.on = GS_REMOVE_INDIRECTION(thread->st.blocked.at, thread->st.blocked.on);
                         goto again;
                         break;
                     case gstywhnf: {
@@ -439,13 +439,13 @@ ace_extract_efv(struct ace_thread *thread)
     nreg = ACE_EFV_REGNUM(ip);
 
     for (;;) {
-        st = GS_SLOW_EVALUATE(thread->regs[nreg]);
+        st = GS_SLOW_EVALUATE(ip->pos, thread->regs[nreg]);
 
         switch (st) {
             case gstywhnf:
                 goto extracted_value;
             case gstyindir:
-                thread->regs[nreg] = GS_REMOVE_INDIRECTION(thread->regs[nreg]);
+                thread->regs[nreg] = GS_REMOVE_INDIRECTION(ip->pos, thread->regs[nreg]);
                 break;
             default:
                 ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "ace_extract_efv: st = %d", st);
@@ -967,7 +967,7 @@ ace_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
                     return;
             }
         } else {
-            st = GS_SLOW_EVALUATE(prog);
+            st = GS_SLOW_EVALUATE(ip->pos, prog);
         }
 
         switch (st) {
@@ -978,7 +978,7 @@ ace_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
                 thread->st.blocked.at = ip->pos;
                 return;
             case gstyindir:
-                prog = GS_REMOVE_INDIRECTION(prog);
+                prog = GS_REMOVE_INDIRECTION(ip->pos, prog);
                 break;
             case gstywhnf:
                 ace_return(thread, ip->pos, prog);

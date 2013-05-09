@@ -260,5 +260,5 @@ gsrun(char *script, struct gspos pos, gsvalue prog, int argc, char **argv)
 
     /* §section Set up the IBIO thread */
 
-    apisetupmainthread(&ibio_rpc_table, &ibio_thread_table, ibio_main_thread_alloc_data(pos, argc, argv), &ibio_prim_table, prog);
+    apisetupmainthread(pos, &ibio_rpc_table, &ibio_thread_table, ibio_main_thread_alloc_data(pos, argc, argv), &ibio_prim_table, prog);
 }

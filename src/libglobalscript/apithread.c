@@ -15,7 +15,7 @@ static struct api_thread_queue *api_thread_queue;
 static void api_take_thread_queue(void);
 static void api_release_thread_queue(void);
 
-static struct api_thread *api_add_thread(struct gsrpc_queue *, struct api_thread_table *api_thread_table, void *, struct api_prim_table *, gsvalue);
+static struct api_thread *api_add_thread(struct gspos, struct gsrpc_queue *, struct api_thread_table *api_thread_table, void *, struct api_prim_table *, gsvalue);
 
 static struct gs_sys_global_block_suballoc_info api_thread_queue_info = {
     /* descr = */ {
@@ -29,6 +29,7 @@ static struct gs_sys_global_block_suballoc_info api_thread_queue_info = {
 static struct api_thread *api_try_schedule_thread(struct api_thread *);
 
 struct api_thread_pool_args {
+    struct gspos pos;
     struct gsrpc_queue *rpc_queue;
     struct api_thread_table *api_thread_table;
     void *api_main_thread_data;
@@ -41,7 +42,7 @@ static void api_thread_pool_main(void *);
 
 /* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
 void
-apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table *api_thread_table, void *api_main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
+apisetupmainthread(struct gspos pos, struct api_process_rpc_table *table, struct api_thread_table *api_thread_table, void *api_main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
 {
     struct gsrpc *rpc;
     struct gsrpc_queue *rpc_queue;
@@ -57,6 +58,7 @@ apisetupmainthread(struct api_process_rpc_table *table, struct api_thread_table 
 
     rpc_queue = gsqueue_alloc();
 
+    api_thread_pool_args.pos = pos;
     api_thread_pool_args.rpc_queue = rpc_queue;
     api_thread_pool_args.api_thread_table = api_thread_table;
     api_thread_pool_args.api_main_thread_data = api_main_thread_data;
@@ -137,7 +139,7 @@ api_thread_pool_main(void *arg)
 
     args = (struct api_thread_pool_args *)arg;
 
-    mainthread = api_add_thread(args->rpc_queue, args->api_thread_table, args->api_main_thread_data, args->api_prim_table, args->entry);
+    mainthread = api_add_thread(args->pos, args->rpc_queue, args->api_thread_table, args->api_main_thread_data, args->api_prim_table, args->entry);
 
     api_release_thread(mainthread);
 
@@ -211,7 +213,7 @@ api_thread_pool_main(void *arg)
                         code = thread->code;
 
                         instr = code->instrs[code->ip].instr;
-                        st = GS_SLOW_EVALUATE(instr);
+                        st = GS_SLOW_EVALUATE(code->instrs[code->ip].pos, instr);
 
                         switch (st) {
                             case gstywhnf:
@@ -228,7 +230,7 @@ api_thread_pool_main(void *arg)
                                 loops_waiting++;
                                 break;
                             case gstyindir:
-                                code->instrs[code->ip].instr = GS_REMOVE_INDIRECTION(instr);
+                                code->instrs[code->ip].instr = GS_REMOVE_INDIRECTION(code->instrs[code->ip].pos, instr);
                                 suspended_runnable_thread = 1;
                                 break;
                             case gstyenosys:
@@ -587,6 +589,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
     gsvalue regs[MAX_NUM_REGISTERS];
 
     int nstatements;
+    struct gspos poss[MAX_NUM_REGISTERS];
     gsvalue rhss[MAX_NUM_REGISTERS];
     struct api_promise *lhss[MAX_NUM_REGISTERS];
     int i;
@@ -673,6 +676,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                     cl->fvs[i] = regs[ACE_BIND_FV(pinstr, i)]
                 ;
                 rhss[nstatements] = (gsvalue)cl;
+                poss[nstatements] = pinstr->pos;
                 lhss[nstatements] = api_alloc_promise();
                 regs[nregs] = (gsvalue)lhss[nstatements];
 
@@ -704,6 +708,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                     cl->fvs[i] = regs[pinstr->args[2 + i]]
                 ;
                 rhss[nstatements] = (gsvalue)cl;
+                poss[nstatements] = pinstr->pos;
                 nstatements++;
                 goto got_statements;
             }
@@ -718,6 +723,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
 got_statements:
     nstatements--;
     thread->code->instrs[thread->code->ip].instr = rhss[nstatements];
+    thread->code->instrs[thread->code->ip].pos = poss[nstatements];
     while (nstatements--) {
         if (thread->code->ip <= 0) {
             api_abend_unimpl(thread, __FILE__, __LINE__, "code segment overflow");
@@ -725,17 +731,18 @@ got_statements:
         }
         thread->code->ip--;
         thread->code->instrs[thread->code->ip].instr = rhss[nstatements];
+        thread->code->instrs[thread->code->ip].pos = poss[nstatements];
         thread->code->instrs[thread->code->ip].presult = lhss[nstatements];
     }
 }
 
 /* §section Adding threads */
 
-static struct api_code_segment *api_alloc_code_segment(struct api_thread *, gsvalue);
+static struct api_code_segment *api_alloc_code_segment(struct gspos, struct api_thread *, gsvalue);
 
 static
 struct api_thread *
-api_add_thread(struct gsrpc_queue *rpc_queue, struct api_thread_table *api_thread_table, void *main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
+api_add_thread(struct gspos pos, struct gsrpc_queue *rpc_queue, struct api_thread_table *api_thread_table, void *main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
 {
     int i;
     struct api_thread *thread;
@@ -771,7 +778,7 @@ have_thread:
     thread->client_data = main_thread_data;
     thread->status = 0;
 
-    thread->code = api_alloc_code_segment(thread, entry);
+    thread->code = api_alloc_code_segment(pos, thread, entry);
     thread->eprim_blocking = 0;
 
     return thread;
@@ -795,7 +802,7 @@ static struct api_code_segment *api_new_code_segment(void);
 
 static
 struct api_code_segment *
-api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
+api_alloc_code_segment(struct gspos pos, struct api_thread *thread, gsvalue entry)
 {
     struct api_code_segment *res;
 
@@ -803,6 +810,7 @@ api_alloc_code_segment(struct api_thread *thread, gsvalue entry)
 
     res->ip = res->size - 1;
     res->instrs[res->ip].instr = entry;
+    res->instrs[res->ip].pos = pos;
     res->instrs[res->ip].presult = api_alloc_promise();
 
     return res;
@@ -865,8 +873,8 @@ api_gc_trace_code_segment(struct gsstringbuilder *err, struct api_code_segment *
     return 0;
 }
 
-static gstypecode api_promise_eval(gsvalue);
-static gsvalue api_promise_dereference(gsvalue);
+static gstypecode api_promise_eval(struct gspos, gsvalue);
+static gsvalue api_promise_dereference(struct gspos, gsvalue);
 static gsvalue api_promise_trace(struct gsstringbuilder *, gsvalue);
 
 static struct gs_sys_global_block_suballoc_info api_promise_info = {
@@ -893,7 +901,7 @@ api_alloc_promise()
 
 static
 gstypecode
-api_promise_eval(gsvalue val)
+api_promise_eval(struct gspos pos, gsvalue val)
 {
     struct api_promise *promise;
     gstypecode res;
@@ -908,7 +916,7 @@ api_promise_eval(gsvalue val)
 
 static
 gsvalue
-api_promise_dereference(gsvalue val)
+api_promise_dereference(struct gspos pos, gsvalue val)
 {
     struct api_promise *promise;
     gsvalue res;

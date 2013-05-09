@@ -22,6 +22,7 @@ struct api_thread {
 };
 
 struct api_instr {
+    struct gspos pos;
     gsvalue instr;
     struct api_promise *presult;
 };

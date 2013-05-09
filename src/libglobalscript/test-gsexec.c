@@ -96,7 +96,7 @@ gs_client_pre_ace_gc_trace_roots(struct gsstringbuilder *err)
 void
 gsrun(char *script, struct gspos pos, gsvalue prog, int argc, char **argv)
 {
-    apisetupmainthread(&exec_rpc_table, &exec_thread_table, 0, &exec_prim_table, prog);
+    apisetupmainthread(pos, &exec_rpc_table, &exec_thread_table, 0, &exec_prim_table, prog);
 }
 
 static
