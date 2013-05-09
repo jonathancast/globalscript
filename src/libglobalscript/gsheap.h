@@ -50,7 +50,7 @@ struct gsbc_cont_ubanalyze {
 void gsheap_lock(struct gsheap_item *);
 void gsheap_unlock(struct gsheap_item *);
 
-gstypecode gsheapstate(struct gsheap_item *);
+gstypecode gsheapstate(struct gspos, struct gsheap_item *);
 
 /* §section Global Script Run-time Errors */
 

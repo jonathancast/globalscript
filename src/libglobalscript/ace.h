@@ -1,6 +1,6 @@
 int ace_init(void);
 
-gstypecode ace_start_evaluation(struct gsheap_item *);
+gstypecode ace_start_evaluation(struct gspos, struct gsheap_item *);
 
 extern gsvalue gsentrypoint;
 extern struct gstype *gsentrytype;

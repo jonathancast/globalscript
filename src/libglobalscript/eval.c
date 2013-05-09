@@ -41,11 +41,11 @@ gsheapeval(struct gspos pos, gsvalue val)
     hp = (struct gsheap_item *)val;
     gsheap_lock(hp);
 
-    res = gsheapstate(hp);
+    res = gsheapstate(pos, hp);
 
     switch (res) {
         case gstythunk:
-            res = ace_start_evaluation(hp);
+            res = ace_start_evaluation(pos, hp);
             break;
         case gstystack:
         case gstywhnf:
@@ -54,7 +54,7 @@ gsheapeval(struct gspos pos, gsvalue val)
             break;
         default:
             gsheap_unlock(hp);
-            gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(%x; state = %d)", val, res);
+            gswerrstr_unimpl(__FILE__, __LINE__, "%P: gsheapeval(%x; state = %d)", pos, val, res);
             res = gstyenosys;
             break;
     }
@@ -63,7 +63,7 @@ gsheapeval(struct gspos pos, gsvalue val)
 }
 
 gstypecode
-gsheapstate(struct gsheap_item *hp)
+gsheapstate(struct gspos pos, struct gsheap_item *hp)
 {
     switch (hp->type) {
         case gsclosure: {
@@ -97,8 +97,8 @@ gsheapstate(struct gsheap_item *hp)
                 case gsbc_impprog:
                     return gstywhnf;
                 default:
-                    gswarning("%s:%d: Evalling something else", __FILE__, __LINE__);
-                    gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(closure %x; tag = %d)", hp, code->tag);
+                    gswarning("%s:%d: %P: Evalling something else", __FILE__, __LINE__, pos);
+                    gswerrstr_unimpl(__FILE__, __LINE__, "%P: gsheapeval(closure %x; tag = %d)", pos, hp, code->tag);
                     return gstyenosys;
             }
             break;
@@ -110,7 +110,7 @@ gsheapstate(struct gsheap_item *hp)
         case gsindirection:
             return gstyindir;
         default:
-            gswerrstr_unimpl(__FILE__, __LINE__, "gsheapeval(%x; type = %d)", hp, hp->type);
+            gswerrstr_unimpl(__FILE__, __LINE__, "%P: gsheapeval(%x; type = %d)", pos, hp, hp->type);
             return gstyenosys;
     }
 }

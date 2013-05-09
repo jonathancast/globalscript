@@ -916,7 +916,7 @@ ace_return_undef(struct ace_thread *thread)
     ace_error_thread(thread, err);
 }
 
-static int ace_thread_enter_closure(struct ace_thread *, struct gsheap_item *, struct ace_thread_pool_stats *);
+static int ace_thread_enter_closure(struct gspos, struct ace_thread *, struct gsheap_item *, struct ace_thread_pool_stats *);
 
 static
 void
@@ -945,14 +945,14 @@ ace_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
 
             hp = (struct gsheap_item *)prog;
             gsheap_lock(hp);
-            st = gsheapstate(hp);
+            st = gsheapstate(ip->pos, hp);
             switch (st) {
                 case gstythunk:
                     if ((uchar*)thread->stacktop - (uchar*)thread->stacklimit >= 0x100 * sizeof(gsvalue)) {
-                        ace_thread_enter_closure(thread, hp, stats);
+                        ace_thread_enter_closure(ip->pos, thread, hp, stats);
                         return;
                     } else {
-                        st = ace_start_evaluation(hp);
+                        st = ace_start_evaluation(ip->pos, hp);
                         break;
                     }
                 case gstystack:
@@ -1524,13 +1524,13 @@ ace_down()
    Also used to start evaluation from §ags{.enter} instructions, when we decide there isn't enough room on the stack for a new eval.
 */
 gstypecode
-ace_start_evaluation(struct gsheap_item *hp)
+ace_start_evaluation(struct gspos pos, struct gsheap_item *hp)
 {
     struct ace_thread *thread;
 
     thread = ace_thread_alloc();
 
-    if (ace_thread_enter_closure(thread, hp, 0) < 0) {
+    if (ace_thread_enter_closure(pos, thread, hp, 0) < 0) {
         unlock(&thread->lock);
         return gstyindir;
     }
@@ -1558,7 +1558,7 @@ static void ace_blackhole(struct gsheap_item *, struct gsbc_cont_update *);
    Assume there is enough room for an update frame: it's the caller's responsibility to create a new thread when we're low on stack space.
 */
 int
-ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp, struct ace_thread_pool_stats *stats)
+ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsheap_item *hp, struct ace_thread_pool_stats *stats)
 {
     int i;
     struct gsbc_cont *cont;
@@ -1567,7 +1567,7 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp, stru
     cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont_update));
     updatecont = (struct gsbc_cont_update *)cont;
     if (!cont) {
-        gsupdate_heap(hp, (gsvalue)gsunimpl(__FILE__, __LINE__, hp->pos, "Out of stack space allocating update continuation"));
+        gsupdate_heap(hp, (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating update continuation"));
         gsheap_unlock(hp);
         return -1;
     }
@@ -1603,7 +1603,7 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp, stru
                 }
                 default:
                     gsheap_unlock(hp);
-                    ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->code->pos, "ace_start_evaluation(%d)", cl->code->tag));
+                    ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "ace_start_evaluation(%d)", cl->code->tag));
                     return -1;
             }
 
@@ -1646,7 +1646,7 @@ ace_thread_enter_closure(struct ace_thread *thread, struct gsheap_item *hp, stru
         }
         default:
             gsheap_unlock(hp);
-            ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, hp->pos, "ace_start_evaluation(type = %d)", hp->type));
+            ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "ace_start_evaluation(type = %d)", hp->type));
             return -1;
     }
 }
