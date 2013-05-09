@@ -129,10 +129,7 @@ natural_prim_handle_divMod(struct ace_thread *thread, struct gspos pos, int narg
 
     dividend = args[0];
     divisor = args[1];
-    if (
-        GS_SLOW_EVALUATE(dividend) != gstyunboxed
-        || GS_SLOW_EVALUATE(divisor) != gstyunboxed
-    )
+    if (IS_PTR(dividend) || IS_PTR(divisor))
         return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_divMod: bignums")
     ;
 
@@ -158,10 +155,7 @@ static
 int
 natural_prim_handle_eq(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
 {
-    if (
-        GS_SLOW_EVALUATE(args[0]) != gstyunboxed
-        || GS_SLOW_EVALUATE(args[1]) != gstyunboxed
-    )
+    if (IS_PTR(args[0]) || IS_PTR(args[1]))
         return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_eq: bignums")
     ;
     if (args[0] == args[1])
@@ -175,10 +169,7 @@ static
 int
 natural_prim_handle_lt(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
 {
-    if (
-        GS_SLOW_EVALUATE(args[0]) != gstyunboxed
-        || GS_SLOW_EVALUATE(args[1]) != gstyunboxed
-    )
+    if (IS_PTR(args[0]) || IS_PTR(args[1]))
         return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_lt: bignums")
     ;
     if (args[0] < args[1])
@@ -192,10 +183,7 @@ static
 int
 natural_prim_handle_gt(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args)
 {
-    if (
-        GS_SLOW_EVALUATE(args[0]) != gstyunboxed
-        || GS_SLOW_EVALUATE(args[1]) != gstyunboxed
-    )
+    if (IS_PTR(args[0]) || IS_PTR(args[1]))
         return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_gt: bignums")
     ;
     if (args[0] > args[1])
