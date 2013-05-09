@@ -71,7 +71,7 @@ _test.parse_expr.larg_k_tyargs_0	.string	quux.t
 # §subsection §ags{.forcecont} Code Items
 
 _test.parse_forcecont.items	.closure	_test.parse_forcecont.items_c
-_tests.parse_forcecont.items	.list	test.property.t	_test.parse_forcecont	_test.parse_forcecont.undef	_test.parse_forcecont.tyfv	_test.parse_forcecont.fv
+_tests.parse_forcecont.items	.list	test.property.t	_test.parse_forcecont	_test.parse_forcecont.karg.tyargs	_test.parse_forcecont.undef	_test.parse_forcecont.tyfv	_test.parse_forcecont.fv
 
 _test.parse_forcecont	.closure	_test.parse_forcecont_c
 _test.parse_forcecont_label	.string	qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\n\\t.enter\\ty\\n}\s=~\sparser
@@ -80,6 +80,10 @@ _test.parse_forcecont_k_foo.k.s	.string	_foo_k
 _test.parse_forcecont_k_x0.s	.string	x0
 _test.parse_forcecont_k_x.u.s	.string	x.u
 _test.parse_forcecont_k_y.s	.string	y
+
+_test.parse_forcecont.karg.tyargs	.closure	_test.parse_forcecont.karg.tyargs_c
+_test.parse_forcecont.karg.tyargs_label	.string	qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\tα\\n\\t.enter\\ty\\n}\s=~\sparser
+_test.parse_forcecont.karg.tyargs_input	.string	_foo_k\t.forcecont\nx0\t.karg\tx.u\tα\n\t.enter\ty\n
 
 _test.parse_forcecont.undef	.closure	_test.parse_forcecont.undef_c
 _test.parse_forcecont.undef_label	.string	qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\n\\t.undef\\tx.t\\n}\s=~\sparser
@@ -676,6 +680,30 @@ e	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.parse_forcecont_k_y.s	nil
 expected	.apply	gsdl.ags.codeitem.forcecont	|	pos	_test.parse_forcecont_k_foo.k.s	decls	e
 	.app	gsdl.ags.codeitem.≡	gsdl.ags.codeitem.fmtgs	ci	expected
 	.enter	test.assert.eq	gsdl.ags.codeitem.t
+
+# §subsubsection §gs{qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\tα\\n\\t.enter\\ty\\n} =~ parser}
+
+_test.parse_forcecont.karg.tyargs_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_test.parse_forcecont.karg.tyargs_k_c	.subcode
+test.property.label	.gvar
+_test.parse_forcecont.karg.tyargs_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+_test.parse_forcecont.karg.tyargs_input	.gvar
+k	.alloc	_test.parse_forcecont.karg.tyargs_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.parser	_test.parse_forcecont.karg.tyargs_input	k
+	.app	_test.parse_forcecont.karg.tyargs_label	test
+	.enter	test.property.label
+
+_test.parse_forcecont.karg.tyargs_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+test.true	.gvar
+ci	.larg	gsdl.ags.codeitem.t
+	.enter	test.true
 
 # §subsubsection §gs{qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\n\\t.undef\\tx.t\\n} =~ parser}
 

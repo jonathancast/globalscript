@@ -962,7 +962,7 @@ karg.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.karg.parser_
 ty.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 ty.p1	.apply	parser.*>	rune.t	string.t	string.t	|	karg.p	ty.p2
 ty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	ty.p1
-tyas.p2	.apply	parser.fail	rune.t	string.t	# > columnsep *> id
+tyas.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tyas.p1	.apply	parser.many	rune.t	string.t	|	tyas.p2
 tyas.p	.apply	parser.<*	rune.t	list.string.ty	string.t	|	tyas.p1	gsdl.ags.syntax.whitespace
 	.app	f	gsdl.ags.syntax.id	ty.p	tyas.p
