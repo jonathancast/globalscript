@@ -50,6 +50,7 @@ _gsdl.ags.codeitem.allocs.parser_apply.p_apply.kw.re	.regex	.apply
 _gsdl.ags.codeitem.allocs.parser_apply.p_pipe.kw.re	.regex	\|
 _gsdl.ags.codeitem.allocs.parser_constr.p_kw.re	.regex	.constr
 _gsdl.ags.codeitem.allocs.parser_field.p_field.re	.regex	.field
+_gsdl.ags.codeitem.allocs.parser_prim.p_prim.re	.regex	.prim
 _gsdl.ags.codeitem.allocs.parser_record.p_record.re	.regex	.record
 _gsdl.ags.codeitem.allocs.parser_undefined.p_undefined.re	.regex	.undefined
 
@@ -793,6 +794,7 @@ gsdl.ags.codeitem.alloc.t	.tygvar
 _gsdl.ags.codeitem.allocs.parser_apply.p_c	.subcode
 _gsdl.ags.codeitem.allocs.parser_constr.p_c	.subcode
 _gsdl.ags.codeitem.allocs.parser_field.p_c	.subcode
+_gsdl.ags.codeitem.allocs.parser_prim.p_c	.subcode
 _gsdl.ags.codeitem.allocs.parser_record.p_c	.subcode
 _gsdl.ags.codeitem.allocs.parser_undefined.p_c	.subcode
 parser.many	.gvar
@@ -800,9 +802,11 @@ parser.<|>	.gvar
 apply.p	.alloc	_gsdl.ags.codeitem.allocs.parser_apply.p_c
 constr.p	.alloc	_gsdl.ags.codeitem.allocs.parser_constr.p_c
 field.p	.alloc	_gsdl.ags.codeitem.allocs.parser_field.p_c
+prim.p	.alloc	_gsdl.ags.codeitem.allocs.parser_prim.p_c
 record.p	.alloc	_gsdl.ags.codeitem.allocs.parser_record.p_c
 undefined.p	.alloc	_gsdl.ags.codeitem.allocs.parser_undefined.p_c
-p3	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	record.p	undefined.p
+p4	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	record.p	undefined.p
+p3	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	prim.p	p4
 p2	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	field.p	p3
 p1	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	constr.p	p2
 p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	apply.p	p1
@@ -947,6 +951,46 @@ gsdl.ags.codeitem.alloc.t	.tygvar	# Temp
 nm	.larg	string.t
 field	.larg	string.t
 record	.larg	string.t
+	.undef	gsdl.ags.codeitem.alloc.t
+
+_gsdl.ags.codeitem.allocs.parser_prim.p_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.alloc.t	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar
+_gsdl.ags.codeitem.allocs.parser_prim.p_f_c	.subcode
+parser.<*	.gvar
+parser.lift5	.gvar
+parser.pos.get	.gvar
+gsdl.ags.syntax.id	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.allocs.parser_prim.p_prim.re	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.codeitem.allocs.parser_prim.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+prim.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.allocs.parser_prim.p_prim.re
+primset.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+primset.p1	.apply	parser.*>	rune.t	string.t	string.t	|	prim.p	primset.p2
+primset.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	primset.p1
+primnm.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+ty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+p	.apply	parser.lift5	rune.t	parser.pos.t	string.t	string.t	string.t	string.t	gsdl.ags.codeitem.alloc.t	|	f	pos.get	gsdl.ags.syntax.id	primset.p	primnm.p	ty.p
+	.app	p	gsdl.ags.syntax.whitespace
+	.enter	parser.<*	rune.t	gsdl.ags.codeitem.alloc.t	string.t
+
+_gsdl.ags.codeitem.allocs.parser_prim.p_f_c	.expr
+parser.pos.t	.tygvar
+string.t	.tygvar
+gsdl.ags.codeitem.alloc.t	.tygvar	# Temp
+pos	.larg	parser.pos.t
+nm	.larg	string.t
+primset	.larg	string.t
+prim	.larg	string.t
+ty	.larg	string.t
 	.undef	gsdl.ags.codeitem.alloc.t
 
 _gsdl.ags.codeitem.allocs.parser_record.p_c	.expr
