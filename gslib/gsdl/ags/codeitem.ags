@@ -287,16 +287,19 @@ rune.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 gsdl.ags.codeitem.tyfv.t	.tygvar
+gsdl.ags.codeitem.tylet.t	.tygvar
 gsdl.ags.codeitem.fv.t	.tygvar
 gsdl.ags.codeitem.karg.t	.tygvar
 _gsdl.ags.codeitem.prim.u_forcecont_decls_ty	.tygvar
 list.string.ty	.tylet	list.t	string.t
 list.tyfv.ty	.tylet	list.t	gsdl.ags.codeitem.tyfv.t
+list.tylet.ty	.tylet	list.t	gsdl.ags.codeitem.tylet.t
 list.fv.ty	.tylet	list.t	gsdl.ags.codeitem.fv.t
 _gsdl.ags.codeitem.parser_forcecont.p_decls.p_f_c	.subcode
-parser.lift7	.gvar
+parser.lift8	.gvar
 gsdl.ags.codeitem.tygvars.parser	.gvar
 gsdl.ags.codeitem.tyfvs.parser	.gvar
+gsdl.ags.codeitem.tylets.parser	.gvar
 gsdl.ags.codeitem.subcodes.parser	.gvar
 gsdl.ags.codeitem.cogvars.parser	.gvar
 gsdl.ags.codeitem.gvars.parser	.gvar
@@ -304,17 +307,19 @@ gsdl.ags.codeitem.fvs.parser	.gvar
 gsdl.ags.codeitem.karg.parser	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.codeitem.parser_forcecont.p_decls.p_f_c
-	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.tyfvs.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.cogvars.parser	gsdl.ags.codeitem.gvars.parser	gsdl.ags.codeitem.fvs.parser	gsdl.ags.codeitem.karg.parser
-	.enter	parser.lift7	rune.t	list.string.ty	list.tyfv.ty	list.string.ty	list.string.ty	list.string.ty	list.fv.ty	gsdl.ags.codeitem.karg.t	_gsdl.ags.codeitem.prim.u_forcecont_decls_ty
+	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.tyfvs.parser	gsdl.ags.codeitem.tylets.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.cogvars.parser	gsdl.ags.codeitem.gvars.parser	gsdl.ags.codeitem.fvs.parser	gsdl.ags.codeitem.karg.parser
+	.enter	parser.lift8	rune.t	list.string.ty	list.tyfv.ty	list.tylet.ty	list.string.ty	list.string.ty	list.string.ty	list.fv.ty	gsdl.ags.codeitem.karg.t	_gsdl.ags.codeitem.prim.u_forcecont_decls_ty
 
 _gsdl.ags.codeitem.parser_forcecont.p_decls.p_f_c	.expr
 list.t	.tygvar
 string.t	.tygvar
 gsdl.ags.codeitem.tyfv.t	.tygvar
+gsdl.ags.codeitem.tylet.t	.tygvar
 gsdl.ags.codeitem.fv.t	.tygvar
 gsdl.ags.codeitem.karg.t	.tygvar
 tygvs	.larg	list.t	string.t
 tyfvs	.larg	list.t	gsdl.ags.codeitem.tyfv.t
+tylets	.larg	list.t	gsdl.ags.codeitem.tylet.t
 scs	.larg	list.t	string.t
 cogvs	.larg	list.t	string.t
 gvs	.larg	list.t	string.t
