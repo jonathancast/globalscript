@@ -877,6 +877,8 @@ rune.compare	.gvar
 _gsdl.ags.codeitem.allocs.parser_apply.p_apply.kw.re	.gvar
 parser.many	.gvar
 parser.<|>	.gvar
+parser.unit	.gvar
+list.nil	.gvar
 _gsdl.ags.codeitem.allocs.parser_apply.p_pipe.kw.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
@@ -888,7 +890,8 @@ nm.p	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	nm.p1
 f.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tyas.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tyas.p	.apply	parser.many	rune.t	string.t	|	tyas.p1
-as.p1	.apply	parser.fail	rune.t	list.string.ty	# > unit nil
+as.p1.nil	.apply	list.nil	string.t
+as.p1	.apply	parser.unit	rune.t	list.string.ty	|	as.p1.nil
 pipe.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.allocs.parser_apply.p_pipe.kw.re
 as.p2.3	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 as.p2.2	.apply	parser.many	rune.t	string.t	|	as.p2.3
