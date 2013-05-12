@@ -151,8 +151,8 @@ _test.parse_expr.analyze_label	.string	qq{\\t.analyze\\tfoo\\tbar\\n\\t.case\\tb
 _test.parse_expr.analyze_input	.string	\t.analyze\tfoo\tbar\n\t.case\tbar\n\t.enter\tbaz\n
 
 _test.parse_expr.analyze.fkarg	.closure	_test.parse_expr.analyze.fkarg_c
-_test.parse_expr.analyze.fkarg_label	.string	qq{\\t.analyze\\tfoo\\tbar\\n\\t.case\\tbar\\nx\\t.fkarg\\t0\\tx.t\\n\\t.enter\\tbaz\\n}\s=~\sexpr.parser
-_test.parse_expr.analyze.fkarg_input	.string	\t.analyze\tfoo\tbar\n\t.case\tbar\nx\t.fkarg\t0\tx.t\n\t.enter\tbaz\n
+_test.parse_expr.analyze.fkarg_label	.string	qq{\\t.analyze\\tfoo\\tbar\\n\\t.case\\tbar\\nx\\t.fkarg\\t0\\tx.t\\tα\\n\\t.enter\\tbaz\\n}\s=~\sexpr.parser
+_test.parse_expr.analyze.fkarg_input	.string	\t.analyze\tfoo\tbar\n\t.case\tbar\nx\t.fkarg\t0\tx.t\tα\n\t.enter\tbaz\n
 
 _test.parse_expr.gsanalyze.apply	.closure	_test.parse_expr.gsanalyze.apply_c
 _test.parse_expr.gsanalyze.apply_label	.string	qq{\\t.analyze\\tfoo\\tbar\\n\\t.case\\tbar\\nbaz\\t.apply\\tf\\tx.t\\t|\\tx\\n\\t.enter\\tbaz\\n}\s=~\sexpr.parser

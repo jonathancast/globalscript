@@ -1211,7 +1211,7 @@ field.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	g
 field.p1	.apply	parser.*>	rune.t	string.t	string.t	|	fkarg.p	field.p2
 field.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	field.p1
 ty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-tyas.p1.1	.apply	parser.fail	rune.t	string.t	# > columnsep *> id
+tyas.p1.1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tyas.p1	.apply	parser.many	rune.t	string.t	|	tyas.p1.1
 tyas.p	.apply	parser.<*	rune.t	list.string.ty	string.t	|	tyas.p1	gsdl.ags.syntax.whitespace
 p1.1	.apply	parser.lift5	rune.t	parser.pos.t	string.t	string.t	string.t	list.string.ty	_gsdl.ags.codeitem.karg.prim.u_fkargs_elem.ty	|	f	pos.get	gsdl.ags.syntax.id	field.p	ty.p	tyas.p
