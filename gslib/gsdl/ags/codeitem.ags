@@ -387,15 +387,22 @@ body	.larg	_gsdl.ags.codeitem.prim.u_impprog_body_ty
 
 _gsdl.ags.codeitem.parser_impprog.p_decls.p_c	.expr
 rune.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tygvar
+list.string.ty	.tylet	list.t	string.t
 _gsdl.ags.codeitem.parser_impprog.p_decls.p_f_c	.subcode
-parser.unit	.gvar
+parser.map	.gvar
+gsdl.ags.codeitem.tygvars.parser	.gvar
 f	.alloc	_gsdl.ags.codeitem.parser_impprog.p_decls.p_f_c
-	.app	f
-	.enter	parser.unit	rune.t	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
+	.app	f	gsdl.ags.codeitem.tygvars.parser
+	.enter	parser.map	rune.t	list.string.ty	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
 
 _gsdl.ags.codeitem.parser_impprog.p_decls.p_f_c	.expr
+list.t	.tygvar
+string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tygvar	# Temp
+tygvs	.larg	list.t	string.t
 	.undef	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
 
 _gsdl.ags.codeitem.parser_impprog.p_body.p_c	.expr
