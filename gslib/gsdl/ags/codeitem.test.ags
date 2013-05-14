@@ -124,11 +124,15 @@ _test.parse_forcecont.fv_input	.string	_foo_k\t.forcecont\nbar\t.fv\tbar.t\nx0\t
 # §subsection Imperative Block Statements
 
 _test.parse_impprog.items	.closure	_test.parse_impprog.items_c
-_tests.parse_impprog.items	.list	test.property.t	_test.parse_impprog
+_tests.parse_impprog.items	.list	test.property.t	_test.parse_impprog	_test.parse_impprog.bind
 
 _test.parse_impprog	.closure	_test.parse_impprog_c
 _test.parse_impprog_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body\\t_foo_body_c\\n}\s=~\sparser
 _test.parse_impprog_input	.string	_foo_c\t.impprog\tfoo\tm\n\t.body\t_foo_body_c\n
+
+_test.parse_impprog.bind	.closure	_test.parse_impprog.bind_c
+_test.parse_impprog.bind_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bind\\t_foo_x_c\\n\\t.body\\t_foo_body_c\\n}\s=~\sparser
+_test.parse_impprog.bind_input	.string	_foo_c\t.impprog\tfoo\tm\nx\t.bind\t_foo_x_c\n\t.body\t_foo_body_c\n
 
 # §subsection String Code Expressions
 
@@ -986,6 +990,30 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.a
 	.enter	test.property.label
 
 _test.parse_impprog_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+test.true	.gvar
+ci	.larg	gsdl.ags.codeitem.t
+	.enter	test.true
+
+# §subsubsection §gs{qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bind\\t_foo_x_c\\n\\t.body\\t_foo_body_c\\n} =~ parser}
+
+_test.parse_impprog.bind_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_test.parse_impprog.bind_k_c	.subcode
+test.property.label	.gvar
+_test.parse_impprog.bind_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+_test.parse_impprog.bind_input	.gvar
+k	.alloc	_test.parse_impprog.bind_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.parser	_test.parse_impprog.bind_input	k
+	.app	_test.parse_impprog.bind_label	test
+	.enter	test.property.label
+
+_test.parse_impprog.bind_k_c	.expr
 gsdl.ags.codeitem.t	.tygvar
 test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
