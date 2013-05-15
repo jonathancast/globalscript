@@ -22,6 +22,7 @@ parser.lift6	.closure	_parser.lift6_c
 parser.lift7	.closure	_parser.lift7_c
 parser.lift8	.closure	_parser.lift8_c
 parser.lift9	.closure	_parser.lift9_c
+parser.lift10	.closure	_parser.lift10_c
 
 parser.>>=	.closure	_parser.>>=_c
 
@@ -2087,6 +2088,410 @@ x6	.fv	α6
 x7	.fv	α7
 x8	.larg	α8
 y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6	x7	x8
+	.app	y
+	.enter	k
+
+# §section §gs{parser.lift10}
+
+_parser.lift10_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+s	.tyarg	*
+α0	.tyarg	*
+α1	.tyarg	*
+α2	.tyarg	*
+α3	.tyarg	*
+α4	.tyarg	*
+α5	.tyarg	*
+α6	.tyarg	*
+α7	.tyarg	*
+α8	.tyarg	*
+α9	.tyarg	*
+β	.tyarg	*
+_parser.lift10_res_c	.subcode
+f	.larg	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p0	.larg	parser.t	s	α0
+p1	.larg	parser.t	s	α1
+p2	.larg	parser.t	s	α2
+p3	.larg	parser.t	s	α3
+p4	.larg	parser.t	s	α4
+p5	.larg	parser.t	s	α5
+p6	.larg	parser.t	s	α6
+p7	.larg	parser.t	s	α7
+p8	.larg	parser.t	s	α8
+p9	.larg	parser.t	s	α9
+res	.alloc	_parser.lift10_res_c
+	.enter	res
+
+_parser.lift10_res_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyarg	*
+_parser.lift10_k0_c	.subcode
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p0	.fv	parser.t	s	α0
+p1	.fv	parser.t	s	α1
+p2	.fv	parser.t	s	α2
+p3	.fv	parser.t	s	α3
+p4	.fv	parser.t	s	α4
+p5	.fv	parser.t	s	α5
+p6	.fv	parser.t	s	α6
+p7	.fv	parser.t	s	α7
+p8	.fv	parser.t	s	α8
+p9	.fv	parser.t	s	α9
+k	.larg	_parser.t_k_ty	s	β	r
+k0	.alloc	_parser.lift10_k0_c
+	.app	k0
+	.enter	p0	r
+
+_parser.lift10_k0_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.lift10_k1_c	.subcode
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p1	.fv	parser.t	s	α1
+p2	.fv	parser.t	s	α2
+p3	.fv	parser.t	s	α3
+p4	.fv	parser.t	s	α4
+p5	.fv	parser.t	s	α5
+p6	.fv	parser.t	s	α6
+p7	.fv	parser.t	s	α7
+p8	.fv	parser.t	s	α8
+p9	.fv	parser.t	s	α9
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.larg	α0
+k1	.alloc	_parser.lift10_k1_c
+	.app	k1
+	.enter	p1	r
+
+_parser.lift10_k1_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.lift10_k2_c	.subcode
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p2	.fv	parser.t	s	α2
+p3	.fv	parser.t	s	α3
+p4	.fv	parser.t	s	α4
+p5	.fv	parser.t	s	α5
+p6	.fv	parser.t	s	α6
+p7	.fv	parser.t	s	α7
+p8	.fv	parser.t	s	α8
+p9	.fv	parser.t	s	α9
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.larg	α1
+k2	.alloc	_parser.lift10_k2_c
+	.app	k2
+	.enter	p2	r
+
+_parser.lift10_k2_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.lift10_k3_c	.subcode
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p3	.fv	parser.t	s	α3
+p4	.fv	parser.t	s	α4
+p5	.fv	parser.t	s	α5
+p6	.fv	parser.t	s	α6
+p7	.fv	parser.t	s	α7
+p8	.fv	parser.t	s	α8
+p9	.fv	parser.t	s	α9
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.fv	α1
+x2	.larg	α2
+k3	.alloc	_parser.lift10_k3_c
+	.app	k3
+	.enter	p3	r
+
+_parser.lift10_k3_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.lift10_k4_c	.subcode
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p4	.fv	parser.t	s	α4
+p5	.fv	parser.t	s	α5
+p6	.fv	parser.t	s	α6
+p7	.fv	parser.t	s	α7
+p8	.fv	parser.t	s	α8
+p9	.fv	parser.t	s	α9
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.fv	α1
+x2	.fv	α2
+x3	.larg	α3
+k4	.alloc	_parser.lift10_k4_c
+	.app	k4
+	.enter	p4	r
+
+_parser.lift10_k4_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.lift10_k5_c	.subcode
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p5	.fv	parser.t	s	α5
+p6	.fv	parser.t	s	α6
+p7	.fv	parser.t	s	α7
+p8	.fv	parser.t	s	α8
+p9	.fv	parser.t	s	α9
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.fv	α1
+x2	.fv	α2
+x3	.fv	α3
+x4	.larg	α4
+k5	.alloc	_parser.lift10_k5_c
+	.app	k5
+	.enter	p5	r
+
+_parser.lift10_k5_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.lift10_k6_c	.subcode
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p6	.fv	parser.t	s	α6
+p7	.fv	parser.t	s	α7
+p8	.fv	parser.t	s	α8
+p9	.fv	parser.t	s	α9
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.fv	α1
+x2	.fv	α2
+x3	.fv	α3
+x4	.fv	α4
+x5	.larg	α5
+k6	.alloc	_parser.lift10_k6_c
+	.app	k6
+	.enter	p6	r
+
+_parser.lift10_k6_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.lift10_k7_c	.subcode
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p7	.fv	parser.t	s	α7
+p8	.fv	parser.t	s	α8
+p9	.fv	parser.t	s	α9
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.fv	α1
+x2	.fv	α2
+x3	.fv	α3
+x4	.fv	α4
+x5	.fv	α5
+x6	.larg	α6
+k7	.alloc	_parser.lift10_k7_c
+	.app	k7
+	.enter	p7	r
+
+_parser.lift10_k7_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.lift10_k8_c	.subcode
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p8	.fv	parser.t	s	α8
+p9	.fv	parser.t	s	α9
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.fv	α1
+x2	.fv	α2
+x3	.fv	α3
+x4	.fv	α4
+x5	.fv	α5
+x6	.fv	α6
+x7	.larg	α7
+k8	.alloc	_parser.lift10_k8_c
+	.app	k8
+	.enter	p8	r
+
+_parser.lift10_k8_c	.expr
+_parser.lift10_f_ty	.tygvar
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+_parser.lift10_k9_c	.subcode
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+p9	.fv	parser.t	s	α9
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.fv	α1
+x2	.fv	α2
+x3	.fv	α3
+x4	.fv	α4
+x5	.fv	α5
+x6	.fv	α6
+x7	.fv	α7
+x8	.larg	α8
+k9	.alloc	_parser.lift10_k9_c
+	.app	k9
+	.enter	p9	r
+
+_parser.lift10_k9_c	.expr
+_parser.lift10_f_ty	.tygvar
+_parser.t_k_ty	.tygvar
+s	.tyfv	*
+α0	.tyfv	*
+α1	.tyfv	*
+α2	.tyfv	*
+α3	.tyfv	*
+α4	.tyfv	*
+α5	.tyfv	*
+α6	.tyfv	*
+α7	.tyfv	*
+α8	.tyfv	*
+α9	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
+k	.fv	_parser.t_k_ty	s	β	r
+x0	.fv	α0
+x1	.fv	α1
+x2	.fv	α2
+x3	.fv	α3
+x4	.fv	α4
+x5	.fv	α5
+x6	.fv	α6
+x7	.fv	α7
+x8	.fv	α8
+x9	.larg	α9
+y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6	x7	x8	x9
 	.app	y
 	.enter	k
 
@@ -4170,6 +4575,42 @@ _parser.lift9_f_ty	.tyexpr
 	.tyfun	α7
 	.tylift
 	.tyfun	α8
+	.tyref	β
+
+# §section §gs{parser.lift10}
+
+_parser.lift10_f_ty	.tyexpr
+α0	.tylambda	*
+α1	.tylambda	*
+α2	.tylambda	*
+α3	.tylambda	*
+α4	.tylambda	*
+α5	.tylambda	*
+α6	.tylambda	*
+α7	.tylambda	*
+α8	.tylambda	*
+α9	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α0
+	.tylift
+	.tyfun	α1
+	.tylift
+	.tyfun	α2
+	.tylift
+	.tyfun	α3
+	.tylift
+	.tyfun	α4
+	.tylift
+	.tyfun	α5
+	.tylift
+	.tyfun	α6
+	.tylift
+	.tyfun	α7
+	.tylift
+	.tyfun	α8
+	.tylift
+	.tyfun	α9
 	.tyref	β
 
 # §section §gs{parser.>>=}
