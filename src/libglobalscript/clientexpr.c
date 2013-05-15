@@ -94,7 +94,7 @@ gsnapplyv(struct gspos pos, gsvalue fun, int n, gsvalue *args)
             int needed_args, supplied_args;
 
             cl = (struct gsclosure *)hp;
-            needed_args = cl->code->numfvs + cl->code->numargs - cl->numfvs;
+            needed_args = cl->code->numargs - (cl->numfvs - cl->code->numfvs);
             supplied_args = MIN(needed_args, n);
             if (needed_args > 0) {
                 struct gsclosure *newfun;
