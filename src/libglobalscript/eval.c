@@ -187,13 +187,14 @@ gsheapremove_indirections(struct gspos pos, gsvalue val)
     return val;
 }
 
+static void gsheap_setup_gcforward(struct gsheap_item *, struct gsheap_item *);
+
 static
 gsvalue
 gsheapgc(struct gsstringbuilder *err, gsvalue v)
 {
     int i;
     struct gsheap_item *hp, *newhp;
-    struct gsgcforward *fwd;
     gsvalue gctemp;
 
     hp = (struct gsheap_item *)v;
@@ -210,9 +211,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             memcpy(newhp, hp, sizeof(*newcl) + cl->numfvs * sizeof(gsvalue));
             memset(&newhp->lock, 0, sizeof(newhp->lock));
 
-            hp->type = gsgcforward;
-            fwd = (struct gsgcforward *)hp;
-            fwd->dest = (gsvalue)newhp;
+            gsheap_setup_gcforward(hp, newhp);
 
             if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
             if (gs_gc_trace_bco(err, &newcl->code) < 0) return 0;
@@ -234,9 +233,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             memcpy(newapp, app, sizeof(*newapp) + app->numargs * sizeof(gsvalue));
             memset(&newhp->lock, 0, sizeof(newhp->lock));
 
-            hp->type = gsgcforward;
-            fwd = (struct gsgcforward *)hp;
-            fwd->dest = (gsvalue)newhp;
+            gsheap_setup_gcforward(hp, newhp);
 
             if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
             if (GS_GC_TRACE(err, &newapp->fun) < 0) return 0;
@@ -256,9 +253,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
 
             memcpy(newev, ev, sizeof(*newev));
 
-            hp->type = gsgcforward;
-            fwd = (struct gsgcforward *)hp;
-            fwd->dest = (gsvalue)newhp;
+            gsheap_setup_gcforward(hp, newhp);
 
             memset(&newhp->lock, 0, sizeof(newhp->lock));
             if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
@@ -277,15 +272,28 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
 
             return res;
         }
-        case gsgcforward:
+        case gsgcforward: {
+            struct gsgcforward *fwd;
+
             fwd = (struct gsgcforward *)hp;
             return fwd->dest;
+        }
         default:
             gsstring_builder_print(err, UNIMPL("gsheapgc: type = %d"), hp->type);
             return 0;
     }
 
     return (gsvalue)newhp;
+}
+
+void
+gsheap_setup_gcforward(struct gsheap_item *hp, struct gsheap_item *newhp)
+{
+    struct gsgcforward *fwd;
+
+    hp->type = gsgcforward;
+    fwd = (struct gsgcforward *)hp;
+    fwd->dest = (gsvalue)newhp;
 }
 
 int
