@@ -205,7 +205,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             struct gsclosure *cl, *newcl;
 
             cl = (struct gsclosure *)hp;
-            newhp = gsreserveheap(sizeof(*newcl) + cl->numfvs * sizeof(gsvalue));
+            newhp = gsreserveheap(MAX(sizeof(*newcl) + cl->numfvs * sizeof(gsvalue), sizeof(struct gsindirection)));
             newcl = (struct gsclosure *)newhp;
 
             memcpy(newhp, hp, sizeof(*newcl) + cl->numfvs * sizeof(gsvalue));
@@ -227,7 +227,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
 
             app = (struct gsapplication *)hp;
 
-            newhp = gsreserveheap(sizeof(*newapp) + app->numargs * sizeof(gsvalue));
+            newhp = gsreserveheap(MAX(sizeof(*newapp) + app->numargs * sizeof(gsvalue), sizeof(struct gsindirection)));
             newapp = (struct gsapplication *)newhp;
 
             memcpy(newapp, app, sizeof(*newapp) + app->numargs * sizeof(gsvalue));
@@ -248,7 +248,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             struct gseval *ev, *newev;
 
             ev = (struct gseval *)hp;
-            newhp = gsreserveheap(sizeof(*newev));
+            newhp = gsreserveheap(MAX(sizeof(*newev), sizeof(struct gsindirection)));
             newev = (struct gseval *)newhp;
 
             memcpy(newev, ev, sizeof(*newev));
