@@ -137,13 +137,17 @@ _test.parse_impprog.bind_input	.string	_foo_c\t.impprog\tfoo\tm\nx\t.bind\t_foo_
 # §subsection String Code Expressions
 
 _test.parse_exprs	.closure	_test.parse_exprs_c
-_tests.parse_exprs	.list	test.property.t	_test.parse_expr.force	_test.parse_expr.coerce	_test.parse_expr.app	_test.parse_expr.enter	_test.parse_expr.analyze	_test.parse_expr.analyze.fkarg	_test.parse_expr.gsanalyze.apply
+_tests.parse_exprs	.list	test.property.t	_test.parse_expr.force	_test.parse_expr.strict	_test.parse_expr.coerce	_test.parse_expr.app	_test.parse_expr.enter	_test.parse_expr.analyze	_test.parse_expr.analyze.fkarg	_test.parse_expr.gsanalyze.apply
 
 _test.parse_expr.force	.closure	_test.parse_expr.force_c
 _test.parse_expr.force_label	.string	qq{\\t.force\\t_foo_k\\n\\t.enter\\tfoo\\n}\s=~\sexpr.parser
 _test.parse_expr.force_input	.string	\t.force\t_foo_k\n\t.enter\tfoo\n
 _test.parse_expr.force_k_k_wrong.constr.s	.string	Parse\sresult\sis\snot\sa\s.force\sconstructor
 _test.parse_expr.force_k_co.expected.s	.string	_foo_k
+
+_test.parse_expr.strict	.closure	_test.parse_expr.strict_c
+_test.parse_expr.strict_label	.string	qq{\\t.strict\\t_foo_k\\n\\t.enter\\tfoo\\n}\s=~\sexpr.parser
+_test.parse_expr.strict_input	.string	\t.strict\t_foo_k\n\t.enter\tfoo\n
 
 _test.parse_expr.coerce	.closure	_test.parse_expr.coerce_c
 _test.parse_expr.coerce_label	.string	qq{\\t.coerce\\tbar.t.out\\n\\t.enter\\tfoo\\n}\s=~\sexpr.parser
@@ -1076,6 +1080,30 @@ co		.fkarg	1	string.t
 e		.fkarg	2	gsdl.ags.codeitem.expr.t
 			.app	string.≡	string.fmtgs	co	_test.parse_expr.force_k_co.expected.s
 			.enter	test.assert.eq	string.t
+
+# §subsubsection §gs{qq{\\t.strict\\t_foo_k\\n\\t.enter\\tfoo\\n} =~ expr.parser}
+
+_test.parse_expr.strict_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+_test.parse_expr.strict_k_c	.subcode
+test.property.label	.gvar
+_test.parse_expr.strict_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.expr.parser	.gvar
+_test.parse_expr.strict_input	.gvar
+k	.alloc	_test.parse_expr.strict_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.strict_input	k
+	.app	_test.parse_expr.strict_label	test
+	.enter	test.property.label
+
+_test.parse_expr.strict_k_c	.expr
+gsdl.ags.codeitem.expr.t	.tygvar
+test.true	.gvar
+ci	.larg	gsdl.ags.codeitem.expr.t
+	.enter	test.true
 
 # §subsubsection §gs{qq{\\t.coerce\\tbar.t.out\\n\\t.enter\\tfoo\\n} =~ expr.parser}
 
