@@ -61,28 +61,28 @@ static void ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
 static void ace_failure_thread(struct ace_thread *, struct gsimplementation_failure *);
 
-static void ace_extract_efv(struct ace_thread *);
-static void ace_alloc_thunk(struct ace_thread *);
-static void ace_prim(struct ace_thread *);
-static void ace_alloc_constr(struct ace_thread *);
-static void ace_alloc_record(struct ace_thread *);
-static void ace_extract_field(struct ace_thread *);
-static void ace_alloc_lfield(struct ace_thread *);
-static void ace_alloc_undef(struct ace_thread *);
-static void ace_alloc_apply(struct ace_thread *);
-static void ace_alloc_unknown_eprim(struct ace_thread *);
-static void ace_alloc_eprim(struct ace_thread *);
-static void ace_push_app(struct ace_thread *);
-static void ace_push_force(struct ace_thread *);
-static void ace_push_strict(struct ace_thread *);
-static void ace_push_ubanalyze(struct ace_thread *);
-static void ace_perform_analyze(struct ace_thread *);
-static void ace_perform_danalyze(struct ace_thread *);
-static void ace_return_undef(struct ace_thread *);
-static void ace_enter(struct ace_thread *, struct ace_thread_pool_stats *);
-static void ace_yield(struct ace_thread *);
-static void ace_ubprim(struct ace_thread *);
-static void ace_lprim(struct ace_thread *);
+static void ace_instr_extract_efv(struct ace_thread *);
+static void ace_instr_alloc_thunk(struct ace_thread *);
+static void ace_instr_prim(struct ace_thread *);
+static void ace_instr_alloc_constr(struct ace_thread *);
+static void ace_instr_alloc_record(struct ace_thread *);
+static void ace_instr_extract_field(struct ace_thread *);
+static void ace_instr_alloc_lfield(struct ace_thread *);
+static void ace_instr_alloc_undef(struct ace_thread *);
+static void ace_instr_alloc_apply(struct ace_thread *);
+static void ace_instr_alloc_unknown_eprim(struct ace_thread *);
+static void ace_instr_alloc_eprim(struct ace_thread *);
+static void ace_instr_push_app(struct ace_thread *);
+static void ace_instr_push_force(struct ace_thread *);
+static void ace_instr_push_strict(struct ace_thread *);
+static void ace_instr_push_ubanalyze(struct ace_thread *);
+static void ace_instr_perform_analyze(struct ace_thread *);
+static void ace_instr_perform_danalyze(struct ace_thread *);
+static void ace_instr_return_undef(struct ace_thread *);
+static void ace_instr_enter(struct ace_thread *, struct ace_thread_pool_stats *);
+static void ace_instr_yield(struct ace_thread *);
+static void ace_instr_ubprim(struct ace_thread *);
+static void ace_instr_lprim(struct ace_thread *);
 
 struct ace_thread_pool_stats {
     vlong numthreads_total, num_blocked, num_blocked_threads, num_blocks_on_function;
@@ -123,70 +123,70 @@ ace_thread_pool_main(void *p)
             num_instrs++;
             switch (thread->st.running.ip->instr) {
                 case gsbc_op_efv:
-                    ace_extract_efv(thread);
+                    ace_instr_extract_efv(thread);
                     break;
                 case gsbc_op_alloc:
-                    ace_alloc_thunk(thread);
+                    ace_instr_alloc_thunk(thread);
                     break;
                 case gsbc_op_prim:
-                    ace_prim(thread);
+                    ace_instr_prim(thread);
                     break;
                 case gsbc_op_constr:
-                    ace_alloc_constr(thread);
+                    ace_instr_alloc_constr(thread);
                     break;
                 case gsbc_op_record:
-                    ace_alloc_record(thread);
+                    ace_instr_alloc_record(thread);
                     break;
                 case gsbc_op_field:
-                    ace_extract_field(thread);
+                    ace_instr_extract_field(thread);
                     break;
                 case gsbc_op_lfield:
-                    ace_alloc_lfield(thread);
+                    ace_instr_alloc_lfield(thread);
                     break;
                 case gsbc_op_undefined:
-                    ace_alloc_undef(thread);
+                    ace_instr_alloc_undef(thread);
                     break;
                 case gsbc_op_apply:
-                    ace_alloc_apply(thread);
+                    ace_instr_alloc_apply(thread);
                     break;
                 case gsbc_op_unknown_eprim:
-                    ace_alloc_unknown_eprim(thread);
+                    ace_instr_alloc_unknown_eprim(thread);
                     break;
                 case gsbc_op_eprim:
-                    ace_alloc_eprim(thread);
+                    ace_instr_alloc_eprim(thread);
                     break;
                 case gsbc_op_app:
-                    ace_push_app(thread);
+                    ace_instr_push_app(thread);
                     break;
                 case gsbc_op_force:
-                    ace_push_force(thread);
+                    ace_instr_push_force(thread);
                     break;
                 case gsbc_op_strict:
-                    ace_push_strict(thread);
+                    ace_instr_push_strict(thread);
                     break;
                 case gsbc_op_ubanalzye:
-                    ace_push_ubanalyze(thread);
+                    ace_instr_push_ubanalyze(thread);
                     break;
                 case gsbc_op_analyze:
-                    ace_perform_analyze(thread);
+                    ace_instr_perform_analyze(thread);
                     break;
                 case gsbc_op_danalyze:
-                    ace_perform_danalyze(thread);
+                    ace_instr_perform_danalyze(thread);
                     break;
                 case gsbc_op_undef:
-                    ace_return_undef(thread);
+                    ace_instr_return_undef(thread);
                     break;
                 case gsbc_op_enter:
-                    ace_enter(thread, &stats);
+                    ace_instr_enter(thread, &stats);
                     break;
                 case gsbc_op_yield:
-                    ace_yield(thread);
+                    ace_instr_yield(thread);
                     break;
                 case gsbc_op_ubprim:
-                    ace_ubprim(thread);
+                    ace_instr_ubprim(thread);
                     break;
                 case gsbc_op_lprim:
-                    ace_lprim(thread);
+                    ace_instr_lprim(thread);
                     break;
                 default:
                     ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "run instruction %d", thread->st.running.ip->instr);
@@ -428,7 +428,7 @@ ace_thread_cleanup(struct gsstringbuilder *err)
 
 static
 void
-ace_extract_efv(struct ace_thread *thread)
+ace_instr_extract_efv(struct ace_thread *thread)
 {
     struct gsbc *ip;
     gstypecode st;
@@ -461,7 +461,7 @@ extracted_value:
 
 static
 void
-ace_alloc_thunk(struct ace_thread *thread)
+ace_instr_alloc_thunk(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsheap_item *hp;
@@ -501,7 +501,7 @@ ace_alloc_thunk(struct ace_thread *thread)
 
 static
 void
-ace_prim(struct ace_thread *thread)
+ace_instr_prim(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsregistered_primset *prims;
@@ -527,7 +527,7 @@ ace_prim(struct ace_thread *thread)
 
 static
 void
-ace_alloc_constr(struct ace_thread *thread)
+ace_instr_alloc_constr(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsconstr_args *constr;
@@ -557,7 +557,7 @@ ace_alloc_constr(struct ace_thread *thread)
 
 static
 void
-ace_alloc_record(struct ace_thread *thread)
+ace_instr_alloc_record(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsrecord *record;
@@ -587,7 +587,7 @@ ace_alloc_record(struct ace_thread *thread)
 
 static
 void
-ace_extract_field(struct ace_thread *thread)
+ace_instr_extract_field(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsrecord_fields *record;
@@ -603,7 +603,7 @@ ace_extract_field(struct ace_thread *thread)
 
 static
 void
-ace_alloc_lfield(struct ace_thread *thread)
+ace_instr_alloc_lfield(struct ace_thread *thread)
 {
     struct gsbc *ip;
 
@@ -616,7 +616,7 @@ ace_alloc_lfield(struct ace_thread *thread)
 
 static
 void
-ace_alloc_undef(struct ace_thread *thread)
+ace_instr_alloc_undef(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gserror *err;
@@ -635,7 +635,7 @@ ace_alloc_undef(struct ace_thread *thread)
 
 static
 void
-ace_alloc_apply(struct ace_thread *thread)
+ace_instr_alloc_apply(struct ace_thread *thread)
 {
     struct gsbc *ip;
     gsvalue fun, args[MAX_NUM_REGISTERS];
@@ -657,7 +657,7 @@ ace_alloc_apply(struct ace_thread *thread)
 
 static
 void
-ace_alloc_unknown_eprim(struct ace_thread *thread)
+ace_instr_alloc_unknown_eprim(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gseprim *prim;
@@ -682,7 +682,7 @@ ace_alloc_unknown_eprim(struct ace_thread *thread)
 
 static
 void
-ace_alloc_eprim(struct ace_thread *thread)
+ace_instr_alloc_eprim(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gseprim *prim;
@@ -718,7 +718,7 @@ static struct gsbc_cont *ace_stack_alloc(struct ace_thread *, struct gspos, ulon
 
 static
 void
-ace_push_app(struct ace_thread *thread)
+ace_instr_push_app(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsbc_cont *cont;
@@ -748,7 +748,7 @@ ace_push_app(struct ace_thread *thread)
 
 static
 void
-ace_push_force(struct ace_thread *thread)
+ace_instr_push_force(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsbc_cont *cont;
@@ -775,7 +775,7 @@ ace_push_force(struct ace_thread *thread)
 
 static
 void
-ace_push_strict(struct ace_thread *thread)
+ace_instr_push_strict(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsbc_cont *cont;
@@ -802,7 +802,7 @@ ace_push_strict(struct ace_thread *thread)
 
 static
 void
-ace_push_ubanalyze(struct ace_thread *thread)
+ace_instr_push_ubanalyze(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsbc_cont *cont;
@@ -837,7 +837,7 @@ static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
 
 static
 void
-ace_perform_analyze(struct ace_thread *thread)
+ace_instr_perform_analyze(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsconstr_args *constr;
@@ -864,7 +864,7 @@ ace_perform_analyze(struct ace_thread *thread)
 
 static
 void
-ace_perform_danalyze(struct ace_thread *thread)
+ace_instr_perform_danalyze(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsconstr_args *constr;
@@ -902,7 +902,7 @@ ace_perform_danalyze(struct ace_thread *thread)
 
 static
 void
-ace_return_undef(struct ace_thread *thread)
+ace_instr_return_undef(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gserror *err;
@@ -920,7 +920,7 @@ static int ace_thread_enter_closure(struct gspos, struct ace_thread *, struct gs
 
 static
 void
-ace_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
+ace_instr_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
 {
     struct gsbc *ip;
     gstypecode st;
@@ -1001,7 +1001,7 @@ ace_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
 
 static
 void
-ace_yield(struct ace_thread *thread)
+ace_instr_yield(struct ace_thread *thread)
 {
     struct gsbc *ip;
 
@@ -1017,7 +1017,7 @@ ace_yield(struct ace_thread *thread)
 
 static
 void
-ace_ubprim(struct ace_thread *thread)
+ace_instr_ubprim(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsregistered_primset *prims;
@@ -1035,7 +1035,7 @@ ace_ubprim(struct ace_thread *thread)
 
 static
 void
-ace_lprim(struct ace_thread *thread)
+ace_instr_lprim(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gsregistered_primset *prims;
