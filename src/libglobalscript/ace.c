@@ -1266,8 +1266,7 @@ ace_return_to_update(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue 
     unlock(&hp->lock);
 
     if (update->next) {
-        thread->cureval = update->next;
-        thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_update);
+        ace_pop_update(thread);
         return 1;
     } else {
         ace_remove_thread(thread);
