@@ -26,6 +26,28 @@ ace_push_update(struct gspos pos, struct ace_thread *thread, struct gsheap_item 
     return updatecont;
 }
 
+struct gsbc_cont_app *
+ace_push_appv(struct gspos pos, struct ace_thread *thread, int numargs, gsvalue *arguments)
+{
+    int i;
+    struct gsbc_cont *cont;
+    struct gsbc_cont_app *appcont;
+
+    cont = ace_stack_alloc(thread, pos, sizeof(struct gsbc_cont_app) + numargs * sizeof(gsvalue));
+    appcont = (struct gsbc_cont_app *)cont;
+    if (!cont) {
+        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating app continuation"));
+        return 0;
+    }
+
+    cont->node = gsbc_cont_app;
+    cont->pos = pos;
+    appcont->numargs = numargs;
+    for (i = 0; i < numargs; i++) appcont->arguments[i] = arguments[i];
+
+    return appcont;
+}
+
 struct gsbc_cont *
 ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
 {

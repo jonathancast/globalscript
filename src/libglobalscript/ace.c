@@ -59,7 +59,6 @@ static int ace_find_thread(struct ace_thread_pool_stats *, int, struct ace_threa
 
 static void ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
-static void ace_failure_thread(struct ace_thread *, struct gsimplementation_failure *);
 
 static void ace_instr_extract_efv(struct ace_thread *);
 static void ace_instr_alloc_thunk(struct ace_thread *);
@@ -1172,7 +1171,6 @@ ace_thread_unimpl(struct ace_thread *thread, char *file, int lineno, struct gspo
     ace_failure_thread(thread, gsunimpl(file, lineno, srcpos, "%s", buf));
 }
 
-static
 void
 ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *err)
 {
@@ -1542,7 +1540,6 @@ ace_start_evaluation(struct gspos pos, struct gsheap_item *hp)
 int
 ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsheap_item *hp, struct ace_thread_pool_stats *stats)
 {
-    int i;
     struct gsbc_cont_update *updatecont;
 
     if (!(updatecont = ace_push_update(pos, thread, hp))) return -1;
@@ -1581,29 +1578,17 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
         }
         case gsapplication: {
             struct gsapplication *app;
-            struct gsbc_cont *cont;
-            struct gsbc_cont_app *appcont;
             gsvalue fun;
             struct gspos pos;
 
             app = (struct gsapplication *)hp;
 
-            cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue));
-            appcont = (struct gsbc_cont_app *)cont;
-            if (!cont) {
-                ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, hp->pos, "Out of stack space allocating app continuation"));
-                return -1;
-            }
-
-            cont->node = gsbc_cont_app;
-            cont->pos = hp->pos;
-            appcont->numargs = app->numargs;
-            for (i = 0; i < app->numargs; i++) {
-                appcont->arguments[i] = app->arguments[i];
-            }
-
             fun = app->fun;
             pos = hp->pos;
+            if (!ace_push_appv(pos, thread, app->numargs, app->arguments)) {
+                ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating app continuation"));
+                return -1;
+            }
 
             gsblackhole_heap(hp, updatecont);
 
