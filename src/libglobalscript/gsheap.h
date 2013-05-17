@@ -45,6 +45,10 @@ struct gsbc_cont_ubanalyze {
     gsvalue *fvs;
 };
 
+/* §section ACE Stack manipulations */
+
+struct gsbc_cont *ace_stack_top(struct ace_thread *);
+
 /* §section Global Script Closures & Indirections */
 
 void gsheap_lock(struct gsheap_item *);

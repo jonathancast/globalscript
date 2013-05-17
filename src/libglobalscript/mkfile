@@ -14,6 +14,7 @@ OFILES=\
 	inputalloc.$O \
 	alloc.$O \
 	ace.$O \
+	acestack.$O \
 	symtable.$O \
 	bytecompile.$O \
 	primset.$O \
@@ -73,6 +74,7 @@ inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsproc.h
 eval.$O: gsheap.h gsinputfile.h gsbytecode.h ace.h
 ace.$O: gsheap.h gsbytecode.h ace.h
+acestack.$O: gsheap.h ace.h
 apithread.$O: gsbytecode.h api.h gsproc.h
 symtable.$O: gsinputfile.h
 bytecompile.$O: gsinputfile.h gsregtables.h gstypealloc.h gsbytecompile.h gsheap.h gsbytecode.h gstopsort.h gstypealloc.h

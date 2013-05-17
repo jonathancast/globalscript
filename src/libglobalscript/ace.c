@@ -1229,7 +1229,7 @@ ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
     struct gsbc_cont *cont;
 
 again:
-    cont = (struct gsbc_cont *)thread->stacktop;
+    cont = ace_stack_top(thread);
     switch (cont->node) {
         case gsbc_cont_update:
             if (ace_return_to_update(thread, cont, v)) {
