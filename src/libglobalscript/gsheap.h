@@ -50,6 +50,7 @@ struct gsbc_cont_ubanalyze {
 struct gsbc_cont *ace_stack_alloc(struct ace_thread *, struct gspos, ulong); /* Deprecated */
 
 struct gsbc_cont_update *ace_push_update(struct gspos, struct ace_thread *, struct gsheap_item *);
+struct gsbc_cont_app *ace_push_app(struct gspos, struct ace_thread *, int, ...);
 struct gsbc_cont_app *ace_push_appv(struct gspos, struct ace_thread *, int, gsvalue *);
 
 struct gsbc_cont *ace_stack_top(struct ace_thread *);

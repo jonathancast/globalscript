@@ -27,6 +27,20 @@ ace_push_update(struct gspos pos, struct ace_thread *thread, struct gsheap_item 
 }
 
 struct gsbc_cont_app *
+ace_push_app(struct gspos pos, struct ace_thread *thread, int numargs, ...)
+{
+    va_list arg;
+    int i;
+    gsvalue arguments[MAX_NUM_REGISTERS];
+
+    va_start(arg, numargs);
+    for (i = 0; i < numargs; i++) arguments[i] = va_arg(arg, gsvalue);
+    va_end(arg);
+
+    return ace_push_appv(pos, thread, numargs, arguments);
+}
+
+struct gsbc_cont_app *
 ace_push_appv(struct gspos pos, struct ace_thread *thread, int numargs, gsvalue *arguments)
 {
     int i;
