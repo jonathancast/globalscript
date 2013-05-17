@@ -57,6 +57,8 @@ struct gsbc_cont *ace_stack_top(struct ace_thread *);
 
 void ace_pop_update(struct ace_thread *);
 
+int ace_stack_post_gc_consolidate(struct gsstringbuilder *, struct ace_thread *);
+
 /* §section Global Script Closures & Indirections */
 
 void gsheap_lock(struct gsheap_item *);

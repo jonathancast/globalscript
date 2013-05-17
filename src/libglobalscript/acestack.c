@@ -103,3 +103,62 @@ ace_pop_update(struct ace_thread *thread)
     thread->cureval = update->next;
     thread->stacktop = (uchar*)update + sizeof(struct gsbc_cont_update);
 }
+
+int
+ace_stack_post_gc_consolidate(struct gsstringbuilder *err, struct ace_thread *thread)
+{
+    void *dest;
+    void *src, *srctop;
+    ulong sz;
+    struct gsbc_cont_update *upupdate, *update, *downupdate;
+    int is_live;
+
+    upupdate = 0;
+    for (update = thread->cureval; update; update = downupdate) {
+        downupdate = update->next;
+        update->next = upupdate;
+        upupdate = update;
+    }
+
+    downupdate = 0;
+    dest = src = thread->stackbot;
+    is_live = 0;
+    for (update = upupdate; update; update = upupdate) {
+        upupdate = update->next;
+        update->next = downupdate;
+
+        srctop = update;
+        sz = (uchar*)src - (uchar*)srctop;
+
+        if (!gs_sys_block_in_gc_from_space(update->dest)) {
+            gsstring_builder_print(err, UNIMPL("%P: Trace update with live dest"), update->cont.pos);
+            return -1;
+        } else if (update->dest->type == gsgcforward) {
+            update->dest = (struct gsheap_item *)((struct gsgcforward *)update->dest)->dest;
+
+            /* §paragraph{Copy update frame up on the stack} */
+            dest = (uchar*)dest - sz;
+            memmove(dest, srctop, sz);
+            src = (uchar*)src - sz;
+            downupdate = (struct gsbc_cont_update *)dest;
+
+            is_live = 1;
+        } else {
+            /* §paragraph{Skip update frame} */
+            src = (uchar*)src - sz;
+        }
+        /* §paragraph{Move src down to next update frame or stack top; copy if we've entered the live portion of the stack} */
+        srctop = upupdate ? (uchar*)upupdate + sizeof(*upupdate) : (uchar*)thread->stacktop;
+        sz = (uchar*)src - (uchar*)srctop;
+        if (is_live) {
+            dest = (uchar*)dest - sz;
+            if (sz) memmove(dest, srctop, sz);
+        }
+        src = (uchar*)src - sz;
+    }
+
+    thread->cureval = downupdate;
+    thread->stacktop = dest;
+
+    return 0;
+}

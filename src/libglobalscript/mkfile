@@ -49,6 +49,7 @@ TEST_OFILES=\
 	test_iostat.$O \
 	$SYSTEM/test_iodir.$O \
 	test_iochan.$O \
+	test_fixtures.$O \
 
 TEST_GSI_OFILES=\
 	test-gsi.$O \
@@ -113,8 +114,10 @@ test_symtable.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h test_tests.h
 test_load.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h
 test_typealloc.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h gstypealloc.h test_tests.h
 test_iostat.$O:	$GLOBALSCRIPT/include/libtest.h $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h test_tests.h
-test_clienttypecheck.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h gstypealloc.h
+test_clienttypecheck.$O: $GLOBALSCRIPT/include/libtest.h gsinputfile.h gstypealloc.h test_tests.h
+test_acestack.$O: $GLOBALSCRIPT/include/libtest.h gsheap.h ace.h test_tests.h test_fixtures.h
 unix/test_iodir.$O:	$GLOBALSCRIPT/include/libtest.h unix/iosysconstants.h iofile.h iomacros.h unix/iodir.h unix/test_systemtests.h
+test_fixtures.$O: $GLOBALSCRIPT/include/libtest.h test_fixtures.h
 
 test-gsi.$O: gsinputfile.h gstypealloc.h
 

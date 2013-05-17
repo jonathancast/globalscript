@@ -360,61 +360,12 @@ ace_thread_cleanup(struct gsstringbuilder *err)
                 destthread++;
             } else if (ace_thread_queue->threads[srcthread]->state == ace_thread_gcforward) {
                 struct ace_thread *thread;
-                struct gsbc_cont_update *upupdate, *update, *downupdate;
-                void *srctop, *src, *dest;
-                ulong sz;
-                int is_live;
 
                 thread = ace_thread_queue->threads[destthread] = ace_thread_queue->threads[srcthread]->st.forward.dest;
                 ace_thread_queue->threads[destthread]->tid = destthread;
                 destthread++;
 
-                upupdate = 0;
-                for (update = thread->cureval; update; update = downupdate) {
-                    downupdate = update->next;
-                    update->next = upupdate;
-                    upupdate = update;
-                }
-
-                downupdate = 0;
-                dest = src = thread->stackbot;
-                is_live = 0;
-                for (update = upupdate; update; update = upupdate) {
-                    upupdate = update->next;
-                    update->next = downupdate;
-
-                    srctop = update;
-                    sz = (uchar*)src - (uchar*)srctop;
-
-                    if (!gs_sys_block_in_gc_from_space(update->dest)) {
-                        gsstring_builder_print(err, UNIMPL("%P: Trace update with live dest"), update->cont.pos);
-                        return -1;
-                    } else if (update->dest->type == gsgcforward) {
-                        update->dest = (struct gsheap_item *)((struct gsgcforward *)update->dest)->dest;
-
-                        /* §paragraph{Copy update frame up on the stack} */
-                        dest = (uchar*)dest - sz;
-                        memmove(dest, srctop, sz);
-                        src = (uchar*)src - sz;
-                        downupdate = (struct gsbc_cont_update *)dest;
-
-                        is_live = 1;
-                    } else {
-                        /* §paragraph{Skip update frame} */
-                        src = (uchar*)src - sz;
-                    }
-                    /* §paragraph{Move src down to next update frame or stack top; copy if we've entered the live portion of the stack} */
-                    srctop = upupdate ? (uchar*)upupdate + sizeof(*upupdate) : (uchar*)thread->stacktop;
-                    sz = (uchar*)src - (uchar*)srctop;
-                    if (is_live) {
-                        dest = (uchar*)dest - sz;
-                        if (sz) memmove(dest, srctop, sz);
-                    }
-                    src = (uchar*)src - sz;
-                }
-
-                thread->cureval = downupdate;
-                thread->stacktop = dest;
+                if (ace_stack_post_gc_consolidate(err, thread) < 0) return -1;
             }
         }
     }
@@ -1781,7 +1732,7 @@ ace_thread_gcevacuate(struct gsstringbuilder *err, struct ace_thread *thread)
             void *oldbco, *newip;
 
             oldbco = thread->st.running.bco;
-            if (gs_gc_trace_bco(err, &thread->st.running.bco) < 0) return -1;
+            if (thread->st.running.bco && gs_sys_block_in_gc_from_space(thread->st.running.bco) && gs_gc_trace_bco(err, &thread->st.running.bco) < 0) return -1;
             newip = (uchar*)thread->st.running.bco + ((uchar*)thread->st.running.ip - (uchar*)oldbco);
             thread->st.running.ip = (struct gsbc *)newip;
 
