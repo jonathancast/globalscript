@@ -43,6 +43,7 @@ TEST_OFILES=\
 	test_symtable.$O \
 	test_typealloc.$O \
 	test_clienttypecheck.$O \
+	test_acestack.$O \
 	$SYSTEM/test.$O \
 	test_iostat.$O \
 	$SYSTEM/test_iodir.$O \

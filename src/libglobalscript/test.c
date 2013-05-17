@@ -16,6 +16,7 @@ p9main(int argc, char **argv)
     test_load();
     test_typealloc();
     test_clienttypecheck();
+    test_acestack();
     run_system_tests();
     test_iostat();
     test_iochan();
