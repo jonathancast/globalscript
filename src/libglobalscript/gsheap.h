@@ -47,6 +47,10 @@ struct gsbc_cont_ubanalyze {
 
 /* §section ACE Stack manipulations */
 
+struct gsbc_cont *ace_stack_alloc(struct ace_thread *, struct gspos, ulong); /* Deprecated */
+
+struct gsbc_cont_update *ace_push_update(struct gspos, struct ace_thread *, struct gsheap_item *);
+
 struct gsbc_cont *ace_stack_top(struct ace_thread *);
 
 void ace_pop_update(struct ace_thread *);
@@ -56,6 +60,7 @@ void ace_pop_update(struct ace_thread *);
 void gsheap_lock(struct gsheap_item *);
 void gsheap_unlock(struct gsheap_item *);
 
+void gsupdate_heap(struct gsheap_item *, gsvalue);
 gstypecode gsheapstate(struct gspos, struct gsheap_item *);
 
 /* §section Global Script Run-time Errors */

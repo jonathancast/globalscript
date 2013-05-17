@@ -5,6 +5,48 @@
 #include "gsheap.h"
 #include "ace.h"
 
+struct gsbc_cont_update *
+ace_push_update(struct gspos pos, struct ace_thread *thread, struct gsheap_item *hp)
+{
+    struct gsbc_cont *cont;
+    struct gsbc_cont_update *updatecont;
+
+    cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont_update));
+    updatecont = (struct gsbc_cont_update *)cont;
+    if (!cont) {
+        gsupdate_heap(hp, (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating update continuation"));
+        gsheap_unlock(hp);
+        return 0;
+    }
+    cont->node = gsbc_cont_update;
+    cont->pos = hp->pos;
+    updatecont->dest = hp;
+    updatecont->next = thread->cureval;
+    thread->cureval = updatecont;
+    return updatecont;
+}
+
+struct gsbc_cont *
+ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
+{
+    void *newtop;
+
+    newtop = (uchar*)thread->stacktop - sz;
+    if ((uintptr)newtop % sizeof(gsvalue)) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack mis-aligned (can't round down or we couldn't pop properly)");
+        return 0;
+    }
+
+    if ((uchar*)newtop < (uchar*)thread->stacklimit) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack overflow");
+        return 0;
+    }
+
+    thread->stacktop = newtop;
+
+    return (struct gsbc_cont *)newtop;
+}
+
 struct gsbc_cont *
 ace_stack_top(struct ace_thread *thread)
 {

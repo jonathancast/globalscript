@@ -714,8 +714,6 @@ ace_instr_alloc_eprim(struct ace_thread *thread)
     return;
 }
 
-static struct gsbc_cont *ace_stack_alloc(struct ace_thread *, struct gspos, ulong);
-
 static
 void
 ace_instr_push_app(struct ace_thread *thread)
@@ -1127,29 +1125,6 @@ gsprim_block(struct ace_thread *thread, struct gspos pos, struct gslprim_blockin
     return 0;
 }
 
-static
-struct gsbc_cont *
-ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
-{
-    void *newtop;
-
-    newtop = (uchar*)thread->stacktop - sz;
-    if ((uintptr)newtop % sizeof(gsvalue)) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack mis-aligned (can't round down or we couldn't pop properly)");
-        return 0;
-    }
-
-    if ((uchar*)newtop < (uchar*)thread->stacklimit) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack overflow");
-        return 0;
-    }
-
-    thread->stacktop = newtop;
-
-    return (struct gsbc_cont *)newtop;
-}
-
-static void gsupdate_heap(struct gsheap_item *, gsvalue);
 static void ace_remove_thread(struct ace_thread *);
 
 static
@@ -1471,7 +1446,6 @@ ace_return_to_strict(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue 
     thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_strict) + strict->numfvs * sizeof(gsvalue);
 }
 
-static
 void
 gsupdate_heap(struct gsheap_item *hp, gsvalue v)
 {
@@ -1560,21 +1534,9 @@ int
 ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsheap_item *hp, struct ace_thread_pool_stats *stats)
 {
     int i;
-    struct gsbc_cont *cont;
     struct gsbc_cont_update *updatecont;
 
-    cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont_update));
-    updatecont = (struct gsbc_cont_update *)cont;
-    if (!cont) {
-        gsupdate_heap(hp, (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating update continuation"));
-        gsheap_unlock(hp);
-        return -1;
-    }
-    cont->node = gsbc_cont_update;
-    cont->pos = hp->pos;
-    updatecont->dest = hp;
-    updatecont->next = thread->cureval;
-    thread->cureval = updatecont;
+    if (!(updatecont = ace_push_update(pos, thread, hp))) return -1;
 
     switch (hp->type) {
         case gsclosure: {
@@ -1610,6 +1572,7 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
         }
         case gsapplication: {
             struct gsapplication *app;
+            struct gsbc_cont *cont;
             struct gsbc_cont_app *appcont;
             gsvalue fun;
             struct gspos pos;
