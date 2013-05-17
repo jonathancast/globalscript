@@ -60,6 +60,8 @@ void ace_pop_update(struct ace_thread *);
 void gsheap_lock(struct gsheap_item *);
 void gsheap_unlock(struct gsheap_item *);
 
+void gsblackhole_heap(struct gsheap_item *, struct gsbc_cont_update *);
+
 void gsupdate_heap(struct gsheap_item *, gsvalue);
 gstypecode gsheapstate(struct gspos, struct gsheap_item *);
 
