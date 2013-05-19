@@ -173,16 +173,11 @@ s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
 res.ty	.tylet	list.t	α
-_ibio.acceptor.many.prim_nr_nil_c	.subcode
+list.nil	.gvar
 k	.fv	ibio.acceptor.prim.kt	s	res.ty	β
-nil	.alloc	_ibio.acceptor.many.prim_nr_nil_c
+nil	.apply	list.nil	α
 	.app	nil
 	.enter	k
-
-_ibio.acceptor.many.prim_nr_nil_c	.expr
-α	.tyfv	*
-list.nil	.gvar
-	.enter	list.nil	α
 
 _ibio.acceptor.many.prim_cr_c	.expr
 ibio.acceptor.prim.cont.t	.tygvar
