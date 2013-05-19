@@ -529,18 +529,25 @@ e	.larg	gsdl.ags.codeitem.expr.t
 
 _gsdl.ags.codeitem.parser_strictcont.p_decls.p_c	.expr
 rune.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
 gsdl.ags.codeitem.karg.t	.tygvar
 _gsdl.ags.codeitem.prim.u_strictcont_decls_ty	.tygvar
+list.string.ty	.tylet	list.t	string.t
 _gsdl.ags.codeitem.parser_strictcont.p_decls.p_f_c	.subcode
-parser.map	.gvar
+parser.lift2	.gvar
+gsdl.ags.codeitem.tygvars.parser	.gvar
 gsdl.ags.codeitem.karg.parser	.gvar
 f	.alloc	_gsdl.ags.codeitem.parser_strictcont.p_decls.p_f_c
-	.app	f	gsdl.ags.codeitem.karg.parser
-	.enter	parser.map	rune.t	gsdl.ags.codeitem.karg.t	_gsdl.ags.codeitem.prim.u_strictcont_decls_ty
+	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.karg.parser
+	.enter	parser.lift2	rune.t	list.string.ty	gsdl.ags.codeitem.karg.t	_gsdl.ags.codeitem.prim.u_strictcont_decls_ty
 
 _gsdl.ags.codeitem.parser_strictcont.p_decls.p_f_c	.expr
+list.t	.tygvar
+string.t	.tygvar
 gsdl.ags.codeitem.karg.t	.tygvar
 _gsdl.ags.codeitem.prim.u_strictcont_decls_ty	.tygvar	# Temp
+tygvs	.larg	list.t	string.t
 karg	.larg	gsdl.ags.codeitem.karg.t
 	.undef	_gsdl.ags.codeitem.prim.u_strictcont_decls_ty
 
