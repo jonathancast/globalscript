@@ -9,7 +9,7 @@ _tests	.list	test.property.t	_test.parse	_test.eq
 # §section Parsers
 
 _test.parse	.closure	_test.parse_c
-_tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_impprog.items	_test.parse_exprs
+_tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_strictcont.items	_test.parse_impprog.items	_test.parse_exprs
 
 # §subsection Code Segments
 
@@ -120,6 +120,15 @@ _test.parse_forcecont.tylet_input	.string	_foo_k\t.forcecont\nty\t.tylet\tt\tα\
 _test.parse_forcecont.fv	.closure	_test.parse_forcecont.fv_c
 _test.parse_forcecont.fv_label	.string	qq{_foo_k\\t.forcecont\\nbar\\t.fv\\tbar.t\\nx0\\t.karg\\tx.u\\n\\t.enter\\ty\\n}\s=~\sparser
 _test.parse_forcecont.fv_input	.string	_foo_k\t.forcecont\nbar\t.fv\tbar.t\nx0\t.karg\tx.u\n\t.enter\ty\n
+
+# §subsection §ags{.strictcont} Code Items
+
+_test.parse_strictcont.items	.closure	_test.parse_strictcont.items_c
+_tests.parse_strictcont.items	.list	test.property.t	_test.parse_strictcont
+
+_test.parse_strictcont	.closure	_test.parse_strictcont_c
+_test.parse_strictcont_label	.string	qq{_foo_k\\t.strictcont\\nx0\\t.karg\\tx.t\\n\\t.enter\\ty\\n}\s=~\sparser
+_test.parse_strictcont_input	.string	_foo_k\t.strictcont\nx0\t.karg\tx.t\n\t.enter\ty\n
 
 # §subsection Imperative Block Statements
 
@@ -962,6 +971,38 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.a
 	.enter	test.property.label
 
 _test.parse_forcecont.fv_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+test.true	.gvar
+ci	.larg	gsdl.ags.codeitem.t
+	.enter	test.true
+
+# §subsection §ags{.strictcont} Code Items
+
+_test.parse_strictcont.items_c	.expr
+test.all	.gvar
+_tests.parse_strictcont.items	.gvar
+	.app	_tests.parse_strictcont.items
+	.enter	test.all
+
+# §subsubsection §gs{qq{_foo_k\\t.strictcont\\nx0\\t.karg\\tx.t\\n\\t.enter\\ty\\n} =~ parser}
+
+_test.parse_strictcont_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_test.parse_strictcont_k_c	.subcode
+test.property.label	.gvar
+_test.parse_strictcont_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+_test.parse_strictcont_input	.gvar
+k	.alloc	_test.parse_strictcont_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.parser	_test.parse_strictcont_input	k
+	.app	_test.parse_strictcont_label	test
+	.enter	test.property.label
+
+_test.parse_strictcont_k_c	.expr
 gsdl.ags.codeitem.t	.tygvar
 test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
