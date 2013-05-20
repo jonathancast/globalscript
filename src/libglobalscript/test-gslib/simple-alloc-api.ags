@@ -17,7 +17,7 @@ _ep.a.c	.expr
 sequence.unit.ty	.tygvar
 record.empty	.tygvar
 _empty.record	.gvar
-un	.eprim	test.sequence	m	unit	sequence.unit.ty	record.empty	|	_empty.record
+un	.impprim	test.sequence	m	unit	sequence.unit.ty	record.empty	|	_empty.record
 	.lift
 	.yield	un
 

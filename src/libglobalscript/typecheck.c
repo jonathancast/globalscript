@@ -1019,7 +1019,7 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymeprim;
+    static gsinterned_string gssymimpprim;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
@@ -1035,7 +1035,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
-        } else if (gssymceq(p->directive, gssymeprim, gssymcodeop, ".eprim")) {
+        } else if (gssymceq(p->directive, gssymimpprim, gssymcodeop, ".impprim")) {
             struct gsregistered_primset *prims;
             struct gstype *type;
             int tyreg;

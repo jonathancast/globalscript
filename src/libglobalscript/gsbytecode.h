@@ -89,11 +89,11 @@ enum {
 #define ACE_APPLY_ARG(ip, n) ((ip)->args[2 + (n)])
 #define ACE_APPLY_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_APPLY_NUM_ARGS(ip))
 
-#define ACE_EPRIM_SIZE(nargs) GS_SIZE_BYTECODE(2 + (nargs))
-#define ACE_EPRIM_INDEX(ip) ((ip)->args[0])
-#define ACE_EPRIM_NUMARGS(ip) ((ip)->args[1])
-#define ACE_EPRIM_ARG(ip, n) ((ip)->args[2 + (n)])
-#define ACE_EPRIM_SKIP(ip) GS_NEXT_BYTECODE(ip, 2 + ACE_EPRIM_NUMARGS(ip))
+#define ACE_IMPPRIM_SIZE(nargs) GS_SIZE_BYTECODE(2 + (nargs))
+#define ACE_IMPPRIM_INDEX(ip) ((ip)->args[0])
+#define ACE_IMPPRIM_NUMARGS(ip) ((ip)->args[1])
+#define ACE_IMPPRIM_ARG(ip, n) ((ip)->args[2 + (n)])
+#define ACE_IMPPRIM_SKIP(ip) GS_NEXT_BYTECODE(ip, 2 + ACE_IMPPRIM_NUMARGS(ip))
 
 #define ACE_APP_SIZE(nargs) GS_SIZE_BYTECODE(1 + nargs)
 #define ACE_APP_NUMARGS(ip) ((ip)->args[0])

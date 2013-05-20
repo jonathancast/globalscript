@@ -651,7 +651,7 @@ gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase
                 pin = ACE_APPLY_SKIP(ip);
                 break;
             case gsbc_op_eprim:
-                pin = ACE_EPRIM_SKIP(ip);
+                pin = ACE_IMPPRIM_SKIP(ip);
                 break;
             case gsbc_op_bind:
                 pin = ACE_BIND_SKIP(ip);

@@ -11,7 +11,7 @@ _epcode	.expr
 sequence.unit.ty	.tygvar
 _empty.record	.tygvar
 _empty.record	.gvar
-un	.eprim	test.sequence	m	unit	sequence.unit.ty	_empty.record	|	_empty.record
+un	.impprim	test.sequence	m	unit	sequence.unit.ty	_empty.record	|	_empty.record
 	.lift
 	.yield	un
 

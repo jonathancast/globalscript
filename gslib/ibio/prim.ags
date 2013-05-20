@@ -24,7 +24,7 @@ _ibio.prim.unit_c	.expr
 _ibio.prim.unit_ty	.tygvar
 α	.tyarg	?
 x	.arg	α
-u	.eprim	ibio.prim	ibio	unit	_ibio.prim.unit_ty	α	|	x
+u	.impprim	ibio.prim	ibio	unit	_ibio.prim.unit_ty	α	|	x
 	.yield	u
 
 _ibio.prim.read_c	.expr
@@ -35,7 +35,7 @@ _ibio.prim.read_ty	.tygvar
 ι	.tyarg	*
 i	.arg	ibio.prim.iport	ι
 a	.arg	ibio.acceptor.prim.t	ι	record.empty
-r	.eprim	ibio.prim	ibio	read	_ibio.prim.read_ty	ι	|	i	a
+r	.impprim	ibio.prim	ibio	read	_ibio.prim.read_ty	ι	|	i	a
 	.yield	r
 
 _ibio.prim.write.c	.expr
@@ -45,7 +45,7 @@ list.t	.tygvar
 ο	.tyarg	*
 o	.arg	ibio.prim.oport	ο
 s	.arg	list.t	ο
-w	.eprim	ibio.prim	ibio	write	_ibio.prim.write.ty	ο	|	o	s
+w	.impprim	ibio.prim	ibio	write	_ibio.prim.write.ty	ο	|	o	s
 	.yield	w
 
 _ibio.prim.file.read.open_c	.expr
@@ -56,7 +56,7 @@ _ibio.prim.file.read.open_ty	.tygvar
 s	.tyarg	*
 e	.arg	ibio.prim.external.io	s
 fn	.arg	list.t	rune.t
-w	.eprim	ibio.prim	ibio	file.read.open	_ibio.prim.file.read.open_ty	s	|	e	fn
+w	.impprim	ibio.prim	ibio	file.read.open	_ibio.prim.file.read.open_ty	s	|	e	fn
 	.yield	w
 
 _ibio.prim.external.io.dir_c	.expr
@@ -74,7 +74,7 @@ rune.t	.tygvar
 string.t	.tylet	list.t	rune.t
 res.t	.tylet	list.t	string.t
 t	.tylet	ibio.prim.m	res.t
-ga	.eprim	ibio.prim	ibio	env.args.get	t
+ga	.impprim	ibio.prim	ibio	env.args.get	t
 	.yield	ga
 
 _ibio.prim.file.stat_c	.expr
@@ -82,7 +82,7 @@ list.t	.tygvar
 rune.t	.tygvar
 _ibio.prim.file.stat_ty	.tygvar
 fn	.arg	list.t	rune.t
-st	.eprim	ibio.prim	ibio	file.stat	_ibio.prim.file.stat_ty	|	fn
+st	.impprim	ibio.prim	ibio	file.stat	_ibio.prim.file.stat_ty	|	fn
 	.yield	st
 
 _ibio.prim.iptr.iseof_c	.expr

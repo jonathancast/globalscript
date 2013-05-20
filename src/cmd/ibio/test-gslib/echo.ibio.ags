@@ -27,7 +27,7 @@ s	.alloc	_real.entry.s
 
 _real.entry.as	.expr
 _get.args.type	.tygvar
-ga	.eprim	ibio.prim	ibio	env.args.get	_get.args.type
+ga	.impprim	ibio.prim	ibio	env.args.get	_get.args.type
 	.yield	ga
 
 _real.entry.s	.expr
