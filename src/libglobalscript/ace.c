@@ -675,7 +675,7 @@ ace_instr_push_app(struct ace_thread *thread)
 
     ip = thread->st.running.ip;
 
-    cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont_app) + ip->args[0] * sizeof(gsvalue));
+    cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont_app) + ACE_APP_NUMARGS(ip) * sizeof(gsvalue));
     app = (struct gsbc_cont_app *)cont;
     if (!cont) return;
 
