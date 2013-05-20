@@ -669,26 +669,20 @@ void
 ace_instr_push_app(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsbc_cont *cont;
-    struct gsbc_cont_app *app;
+    gsvalue args[MAX_NUM_REGISTERS];
     int j;
 
     ip = thread->st.running.ip;
 
-    cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont_app) + ACE_APP_NUMARGS(ip) * sizeof(gsvalue));
-    app = (struct gsbc_cont_app *)cont;
-    if (!cont) return;
-
-    cont->node = gsbc_cont_app;
-    cont->pos = ip->pos;
-    app->numargs = ACE_APP_NUMARGS(ip);
     for (j = 0; j < ACE_APP_NUMARGS(ip); j++) {
         if (ACE_APP_ARG(ip, j) >= thread->nregs) {
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".app argument too large: arg #%d is %d (%d registers to this point)", j, ACE_APP_ARG(ip, j), thread->nregs);
             return;
         }
-        app->arguments[j] = thread->regs[ACE_APP_ARG(ip, j)];
+        args[j] = thread->regs[ACE_APP_ARG(ip, j)];
     }
+
+    if (!ace_push_appv(ip->pos, thread, ACE_APP_NUMARGS(ip), args)) return;
 
     thread->st.running.ip = ACE_APP_SKIP(ip);
     return;
