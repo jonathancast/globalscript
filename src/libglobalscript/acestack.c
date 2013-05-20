@@ -62,6 +62,30 @@ ace_push_appv(struct gspos pos, struct ace_thread *thread, int numargs, gsvalue 
     return appcont;
 }
 
+struct gsbc_cont_ubanalyze *
+ace_push_ubanalyzev(struct gspos pos, struct ace_thread *thread, int numconts, struct gsbco **conts, int numfvs, gsvalue *fvs)
+{
+    struct gsbc_cont *cont;
+    struct gsbc_cont_ubanalyze *ubanalyze;
+    int i;
+
+    cont = ace_stack_alloc(thread, pos, ACE_UBANALYZE_STACK_SIZE(numconts, numfvs));
+    ubanalyze = (struct gsbc_cont_ubanalyze *)cont;
+    if (!cont) return 0;
+
+    cont->node = gsbc_cont_ubanalyze;
+    cont->pos = pos;
+    ubanalyze->numconts = numconts;
+    ubanalyze->conts = (struct gsbco **)((uchar*)ubanalyze + sizeof(struct gsbc_cont_ubanalyze));
+    ubanalyze->numfvs = numfvs;
+    ubanalyze->fvs = (gsvalue*)((uchar*)ubanalyze->conts + numconts * sizeof(struct gsbco *));
+
+    for (i = 0; i < numconts; i++) ubanalyze->conts[i] = conts[i];
+    for (i = 0; i < numfvs; i++) ubanalyze->fvs[i] = fvs[i];
+
+    return ubanalyze;
+}
+
 struct gsbc_cont *
 ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
 {

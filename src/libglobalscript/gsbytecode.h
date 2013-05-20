@@ -119,8 +119,6 @@ enum {
 #define ACE_UBANALYZE_FV(ip, n) ((ip)->args[2 + ACE_UBANALYZE_NUMCONTS(ip) + (n)])
 #define ACE_UBANALYZE_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_UBANALYZE_NUMCONTS(ip) + ACE_UBANALYZE_NUMFVS(ip))
 
-#define ACE_UBANALYZE_STACK_SIZE(nconts, nfvs) (sizeof(struct gsbc_cont_ubanalyze) + nconts * sizeof(struct gsbco *) + nfvs * sizeof(gsvalue))
-
 #define ACE_UBPRIM_SIZE(nargs) GS_SIZE_BYTECODE(3 + nargs)
 #define ACE_UBPRIM_PRIMSET_INDEX(ip) ((ip)->args[0])
 #define ACE_UBPRIM_INDEX(ip) ((ip)->args[1])

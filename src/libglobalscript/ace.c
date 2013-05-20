@@ -747,29 +747,20 @@ void
 ace_instr_push_ubanalyze(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsbc_cont *cont;
-    struct gsbc_cont_ubanalyze *ubanalyze;
+    struct gsbco *conts[MAX_NUM_REGISTERS];
+    gsvalue fvs[MAX_NUM_REGISTERS];
     int i;
 
     ip = thread->st.running.ip;
 
-    cont = ace_stack_alloc(thread, ip->pos, ACE_UBANALYZE_STACK_SIZE(ACE_UBANALYZE_NUMCONTS(ip), ACE_UBANALYZE_NUMFVS(ip)));
-    ubanalyze = (struct gsbc_cont_ubanalyze *)cont;
-    if (!cont) return;
-
-    cont->node = gsbc_cont_ubanalyze;
-    cont->pos = ip->pos;
-    ubanalyze->numconts = ACE_UBANALYZE_NUMCONTS(ip);
-    ubanalyze->conts = (struct gsbco **)((uchar*)ubanalyze + sizeof(struct gsbc_cont_ubanalyze));
-    ubanalyze->numfvs = ACE_UBANALYZE_NUMFVS(ip);
-    ubanalyze->fvs = (gsvalue*)((uchar*)ubanalyze->conts + ACE_UBANALYZE_NUMCONTS(ip) * sizeof(struct gsbco *));
-
     for (i = 0; i < ACE_UBANALYZE_NUMCONTS(ip); i++)
-        ubanalyze->conts[i] = thread->subexprs[ACE_UBANALYZE_CONT(ip, i)]
+        conts[i] = thread->subexprs[ACE_UBANALYZE_CONT(ip, i)]
     ;
     for (i = 0; i < ACE_UBANALYZE_NUMFVS(ip); i++)
-        ubanalyze->fvs[i] = thread->regs[ACE_UBANALYZE_FV(ip, i)]
+        fvs[i] = thread->regs[ACE_UBANALYZE_FV(ip, i)]
     ;
+
+    if (!ace_push_ubanalyzev(ip->pos, thread, ACE_UBANALYZE_NUMCONTS(ip), conts, ACE_UBANALYZE_NUMFVS(ip), fvs)) return;
 
     thread->st.running.ip = ACE_UBANALYZE_SKIP(ip);
     return;
