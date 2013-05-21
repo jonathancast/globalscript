@@ -24,6 +24,7 @@ _gsdl.ags.typeitem.decls.parser_tylambda.re	.regex	.tylambda
 
 gsdl.ags.typeitem.gskind.parser	.closure	_gsdl.ags.typeitem.gskind.parser_c
 _gsdl.ags.typeitem.gskind.parser_w	.closure	_gsdl.ags.typeitem.gskind.parser_w_c	_gsdl.ags.typeitem.gskind.parser_w_ty
+_gsdl.ags.typeitem.gskind.parser_w_pop.p_caret.re	.regex	^
 _gsdl.ags.typeitem.gskind.parser_lifted.re	.regex	\*
 
 gsdl.ags.typeitem.expr.parser	.closure	_gsdl.ags.typeitem.expr.parser_c	_gsdl.ags.typeitem.expr.parser_ty
@@ -412,15 +413,26 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
+string.t	.tygvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.typeitem.gskind.parser_w_pop.p_caret.re	.gvar
+_gsdl.ags.typeitem.gskind.parser_w	.gvar
+list.:	.gvar
 parser.unit	.gvar
-parser.fail	.gvar	# Temp
 k1	.fv	gsdl.ags.typeitem.gskind.t
 st1.0	.karg	list.prim.u	gsdl.ags.typeitem.gskind.t
 	.analyze	st1.0	:	nil
 		.case	:
 k0		.fkarg	0	gsdl.ags.typeitem.gskind.t
 st2		.fkarg	1	list.t	gsdl.ags.typeitem.gskind.t
-			.enter	parser.fail	rune.t	gsdl.ags.typeitem.gskind.t
+caret.p			.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.gskind.parser_w_pop.p_caret.re
+k.1			.undefined	gsdl.ags.typeitem.gskind.t	# > exp k0 k1
+st.1			.apply	list.:	gsdl.ags.typeitem.gskind.t	|	k.1	st2
+loop.p			.apply	_gsdl.ags.typeitem.gskind.parser_w	|	st.1
+			.app	caret.p	loop.p
+			.enter	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t
 		.case	nil
 			.app	k1
 			.enter	parser.unit	rune.t	gsdl.ags.typeitem.gskind.t

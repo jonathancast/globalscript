@@ -4,11 +4,15 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse_segment.empty
+_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.exp
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.type\\n}\s=~\ssegment.parser
 _test.parse_segment.empty_input	.string	\t.type\n
+
+_test.parse.kind.exp	.closure	_test.parse.kind.exp_c
+_test.parse.kind.exp_label	.string	qq{**^}\s=~\sgskind.parser
+_test.parse.kind.exp_input	.string	**^
 
 	.code
 
@@ -18,7 +22,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §subsubsection §gs{qq{\\t.type\\n}=~ segment.parser}
+# §section §gs{qq{\\t.type\\n}=~ segment.parser}
 
 _test.parse_segment.empty_c	.expr
 rune.t	.tygvar
@@ -54,3 +58,27 @@ ts.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.typeitem.t	|	gsdl.ags.typeitem.fmt
 nil	.apply	list.nil	gsdl.ags.typeitem.t
 	.app	ts.≡	ts.fmtgs	tys	nil
 	.enter	test.assert.eq	typesegment_ty
+
+# §section §gs{qq{**^} =~ gskind.parser}
+
+_test.parse.kind.exp_c	.expr
+rune.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+_test.parse.kind.exp_k_c	.subcode
+test.property.label	.gvar
+_test.parse.kind.exp_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.typeitem.gskind.parser	.gvar
+_test.parse.kind.exp_input	.gvar
+k	.alloc	_test.parse.kind.exp_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.gskind.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.gskind.parser	_test.parse.kind.exp_input	k
+	.app	_test.parse.kind.exp_label	test
+	.enter	test.property.label
+
+_test.parse.kind.exp_k_c	.expr
+gsdl.ags.typeitem.gskind.t	.tygvar
+test.true	.gvar
+ki	.larg	gsdl.ags.typeitem.gskind.t
+	.enter	test.true
