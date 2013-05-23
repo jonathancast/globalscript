@@ -14,6 +14,7 @@ gsdl.ags.coercionitem.fmtgs	.closure	_gsdl.ags.coercionitem.fmtgs_c
 
 gsdl.ags.coercionitem.decls.parser	.closure	_gsdl.ags.coercionitem.decls.parser_c
 _gsdl.ags.coercionitem.decls.parser_tygvars.p_tygvar.re	.regex	.tygvar
+_gsdl.ags.coercionitem.decls.parser_tylambdas.p_tylambda.re	.regex	.tylambda
 
 gsdl.ags.coercionitem.expr.parser	.closure	_gsdl.ags.coercionitem.expr.parser_c	_gsdl.ags.coercionitem.expr.parser_ty
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re	.regex	.tydefinition
@@ -124,21 +125,27 @@ _gsdl.ags.coercionitem.decls.parser_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
+gsdl.ags.coercionitem.decls.tylambda.t	.tygvar
 gsdl.ags.coercionitem.decls.t	.tygvar
 list.string.ty	.tylet	list.t	string.t
+list.tylambda.ty	.tylet	list.t	gsdl.ags.coercionitem.decls.tylambda.t
 _gsdl.ags.coercionitem.decls.parser_f_c	.subcode
 _gsdl.ags.coercionitem.decls.parser_tygvars.p_c	.subcode
-parser.map	.gvar
+_gsdl.ags.coercionitem.decls.parser_tylambdas.p_c	.subcode
+parser.lift2	.gvar
 f	.alloc	_gsdl.ags.coercionitem.decls.parser_f_c
 tygvars.p	.alloc	_gsdl.ags.coercionitem.decls.parser_tygvars.p_c
-	.app	f	tygvars.p
-	.enter	parser.map	rune.t	list.string.ty	gsdl.ags.coercionitem.decls.t
+tylambdas.p	.alloc	_gsdl.ags.coercionitem.decls.parser_tylambdas.p_c
+	.app	f	tygvars.p	tylambdas.p
+	.enter	parser.lift2	rune.t	list.string.ty	list.tylambda.ty	gsdl.ags.coercionitem.decls.t
 
 _gsdl.ags.coercionitem.decls.parser_f_c	.expr
 list.t	.tygvar
 string.t	.tygvar
+gsdl.ags.coercionitem.decls.tylambda.t	.tygvar
 gsdl.ags.coercionitem.decls.t	.tygvar	# Temp
 tygvs	.larg	list.t	string.t
+tyargs	.larg	list.t	gsdl.ags.coercionitem.decls.tylambda.t
 	.undef	gsdl.ags.coercionitem.decls.t
 
 _gsdl.ags.coercionitem.decls.parser_tygvars.p_c	.expr
@@ -162,6 +169,46 @@ p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	p2
 p	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	p1
 	.app	p
 	.enter	parser.many	rune.t	string.t
+
+_gsdl.ags.coercionitem.decls.parser_tylambdas.p_c	.expr
+rune.t	.tygvar
+gsdl.ags.coercionitem.decls.tylambda.t	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+_gsdl.ags.coercionitem.decls.parser_tylambdas.p_f_c	.subcode
+parser.many	.gvar
+parser.<*	.gvar
+parser.lift3	.gvar
+parser.pos.get	.gvar
+gsdl.ags.syntax.id	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.coercionitem.decls.parser_tylambdas.p_tylambda.re	.gvar
+gsdl.ags.typeitem.gskind.parser	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+f	.alloc	_gsdl.ags.coercionitem.decls.parser_tylambdas.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+tylambda.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.decls.parser_tylambdas.p_tylambda.re
+kind.p2	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.typeitem.gskind.parser
+kind.p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t	|	tylambda.p	kind.p2
+kind.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.syntax.columnsep	kind.p1
+p1	.apply	parser.lift3	rune.t	parser.pos.t	string.t	gsdl.ags.typeitem.gskind.t	gsdl.ags.coercionitem.decls.tylambda.t	|	f	pos.get	gsdl.ags.syntax.id	kind.p
+p	.apply	parser.<*	rune.t	gsdl.ags.coercionitem.decls.tylambda.t	string.t	|	p1	gsdl.ags.syntax.whitespace
+	.app	p
+	.enter	parser.many	rune.t	gsdl.ags.coercionitem.decls.tylambda.t
+
+_gsdl.ags.coercionitem.decls.parser_tylambdas.p_f_c	.expr
+parser.pos.t	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.coercionitem.decls.tylambda.t	.tygvar	# Temp
+pos	.larg	parser.pos.t
+nm	.larg	string.t
+ki	.larg	gsdl.ags.typeitem.gskind.t
+	.undef	gsdl.ags.coercionitem.decls.tylambda.t
 
 # §section §gs{gsdl.ags.coercionitem.expr.parser}
 
@@ -258,6 +305,16 @@ gsdl.ags.coercionitem.decls.prim.u	.tygvar
 	.tyref	gsdl.ags.coercionitem.decls.prim.u
 
 gsdl.ags.coercionitem.decls.prim.u	.tyexpr
+	.typroduct
+
+# §subsection §gs{gsdl.ags.coercionitem.decls.tylambda.t}
+
+gsdl.ags.coercionitem.decls.tylambda.t	.tyexpr
+gsdl.ags.coercionitem.decls.tylambda.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.coercionitem.decls.tylambda.u
+
+gsdl.ags.coercionitem.decls.tylambda.u	.tyexpr
 	.typroduct
 
 # §section §gs{gsdl.ags.coercionitem.expr.t}
