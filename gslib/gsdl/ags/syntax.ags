@@ -7,7 +7,7 @@ _gsdl.ags.syntax.whitespace_re	.regex	\n§*	_gsdl.ags.syntax.whitespace_re_blank
 _gsdl.ags.syntax.whitespace_re_blank	.regex	\n|\t*\h[^\n]*\n
 
 gsdl.ags.syntax.columnsep	.closure	_gsdl.ags.syntax.columnsep_c
-_gsdl.ags.syntax.columnsep_re	.regex	\t\t*
+_gsdl.ags.syntax.columnsep_re	.regex	[\s\t]\t*
 
 gsdl.ags.syntax.id	.closure	_gsdl.ags.syntax.id_c
 _gsdl.ags.syntax.id_re	.regex	§§§*	_gsdl.ags.syntax.id_underscore.re	_gsdl.ags.syntax.id_id.re	_gsdl.ags.syntax.id_t.re
