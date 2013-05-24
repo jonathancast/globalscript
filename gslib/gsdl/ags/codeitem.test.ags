@@ -9,7 +9,7 @@ _tests	.list	test.property.t	_test.parse	_test.eq
 # §section Parsers
 
 _test.parse	.closure	_test.parse_c
-_tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_strictcont.items	_test.parse_impprog.items	_test.parse_exprs
+_tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_strictcont.items	_test.parse_impprog.items	_test.parse_ubcasecont.items	_test.parse_exprs
 
 # §subsection Code Segments
 
@@ -142,6 +142,11 @@ _test.parse_impprog_input	.string	_foo_c\t.impprog\tfoo\tm\n\t.body\t_foo_body_c
 _test.parse_impprog.bind	.closure	_test.parse_impprog.bind_c
 _test.parse_impprog.bind_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bind\\t_foo_x_c\\n\\t.body\\t_foo_body_c\\n}\s=~\sparser
 _test.parse_impprog.bind_input	.string	_foo_c\t.impprog\tfoo\tm\nx\t.bind\t_foo_x_c\n\t.body\t_foo_body_c\n
+
+# §subsection §ags{.ubcasecont} Code Items
+
+_test.parse_ubcasecont.items	.closure	_test.parse_ubcasecont.items_c
+_tests.parse_ubcasecont.items	.list	test.property.t
 
 # §subsection String Code Expressions
 
@@ -1071,6 +1076,14 @@ gsdl.ags.codeitem.t	.tygvar
 test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
+
+# §subsection §ags{.ubcasecont} Code Items
+
+_test.parse_ubcasecont.items_c	.expr
+test.all	.gvar
+_tests.parse_ubcasecont.items	.gvar
+	.app	_tests.parse_ubcasecont.items
+	.enter	test.all
 
 # §subsection String Code Expressions
 
