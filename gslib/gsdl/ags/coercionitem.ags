@@ -226,31 +226,38 @@ tyinvert.p	.alloc	_gsdl.ags.coercionitem.expr.parser_tyinvert.p_c
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_c	.expr
 rune.t	.tygvar
 string.t	.tygvar
+list.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
+list.string.ty	.tylet	list.t	string.t
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_f_c	.subcode
-parser.map	.gvar
+parser.lift2	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re	.gvar
-parser.<*	.gvar
 gsdl.ags.syntax.id	.gvar
+parser.<*	.gvar
+parser.many	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.coercionitem.expr.parser_tydefinition.p_f_c
 tydefinition.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re
-tyv.p3	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	gsdl.ags.syntax.whitespace
-tyv.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	tyv.p3
+tyv.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tyv.p1	.apply	parser.*>	rune.t	string.t	string.t	|	tydefinition.p	tyv.p2
 tyv.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	tyv.p1
-	.app	f	tyv.p
-	.enter	parser.map	rune.t	string.t	gsdl.ags.coercionitem.expr.t
+tyas.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+tyas.p1	.apply	parser.many	rune.t	string.t	|	tyas.p2
+tyas.p	.apply	parser.<*	rune.t	list.string.ty	string.t	|	tyas.p1	gsdl.ags.syntax.whitespace
+	.app	f	tyv.p	tyas.p
+	.enter	parser.lift2	rune.t	string.t	list.string.ty	gsdl.ags.coercionitem.expr.t
 
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_f_c	.expr
 string.t	.tygvar
+list.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
 nm	.larg	string.t
+as	.larg	list.t	string.t
 	.undef	gsdl.ags.coercionitem.expr.t
 
 _gsdl.ags.coercionitem.expr.parser_tyinvert.p_c	.expr

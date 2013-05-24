@@ -4,11 +4,15 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse_tycoercion.tylambda
+_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse_tycoercion.tydefinition	_test.parse_tycoercion.tylambda
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.coercion\\n}\s=~\ssegment.parser
 _test.parse_segment.empty_input	.string	\t.coercion\n
+
+_test.parse_tycoercion.tydefinition	.closure	_test.parse_tycoercion.tydefinition_c
+_test.parse_tycoercion.tydefinition_label	.string	qq{ibio.out\\t.tycoercion\\n\\t.tydefinition\\tibio.m\\tα\\n}\s=~\sparser
+_test.parse_tycoercion.tydefinition_input	.string	ibio.out\t.tycoercion\n\t.tydefinition\tibio.m\tα\n
 
 _test.parse_tycoercion.tylambda	.closure	_test.parse_tycoercion.tylambda_c
 _test.parse_tycoercion.tylambda_label	.string	qq{ibio.out\\t.tycoercion\\nι\\t.tylambda\\t*\\n\\t.tydefinition\\tibio.m\\n}\s=~\sparser
@@ -58,6 +62,30 @@ tcs.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.coercionitem.t	|	gsdl.ags.coercio
 nil	.apply	list.nil	gsdl.ags.coercionitem.t
 	.app	tcs.≡	tcs.fmtgs	tcs	nil
 	.enter	test.assert.eq	coercionsegment_ty
+
+# §section §gs{qq{ibio.out\\t.tycoercion\\n\\t.tydefinition\\tibio.m\\tα\\n} =~ parser}
+
+_test.parse_tycoercion.tydefinition_c	.expr
+rune.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+_test.parse_tycoercion.tydefinition_k_c	.subcode
+test.property.label	.gvar
+_test.parse_tycoercion.tydefinition_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.coercionitem.parser	.gvar
+_test.parse_tycoercion.tydefinition_input	.gvar
+k	.alloc	_test.parse_tycoercion.tydefinition_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.coercionitem.t	|	parser.rune.advance	rune.print	gsdl.ags.coercionitem.parser	_test.parse_tycoercion.tydefinition_input	k
+	.app	_test.parse_tycoercion.tydefinition_label	test
+	.enter	test.property.label
+
+_test.parse_tycoercion.tydefinition_k_c	.expr
+gsdl.ags.coercionitem.t	.tygvar
+test.true	.gvar
+ki	.larg	gsdl.ags.coercionitem.t
+	.enter	test.true
 
 # §section §gs{qq{ibio.out\\t.tycoercion\\nι\\t.tylambda\\t*\\n\\t.tydefinition\\tibio.m\\n} =~ parser}
 
