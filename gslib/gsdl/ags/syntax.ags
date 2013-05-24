@@ -9,6 +9,9 @@ _gsdl.ags.syntax.whitespace_re_blank	.regex	\n|\t*\h[^\n]*\n
 gsdl.ags.syntax.columnsep	.closure	_gsdl.ags.syntax.columnsep_c
 _gsdl.ags.syntax.columnsep_re	.regex	[\s\t]\t*
 
+gsdl.ags.syntax.separator	.closure	_gsdl.ags.syntax.separator_c
+_gsdl.ags.syntax.separator_pipe.re	.regex	\|
+
 gsdl.ags.syntax.id	.closure	_gsdl.ags.syntax.id_c
 _gsdl.ags.syntax.id_re	.regex	§§§*	_gsdl.ags.syntax.id_underscore.re	_gsdl.ags.syntax.id_id.re	_gsdl.ags.syntax.id_t.re
 _gsdl.ags.syntax.id_underscore.re	.regex	_|
@@ -44,6 +47,16 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.syntax.columnsep_re	.gvar
 	.app	rune.compare	_gsdl.ags.syntax.columnsep_re
+	.enter	parser.match	rune.t
+
+# §section §gs{gsdl.ags.syntax.separator}
+
+_gsdl.ags.syntax.separator_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.syntax.separator_pipe.re	.gvar
+	.app	rune.compare	_gsdl.ags.syntax.separator_pipe.re
 	.enter	parser.match	rune.t
 
 # §section §gs{gsdl.ags.syntax.id}

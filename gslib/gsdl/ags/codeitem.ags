@@ -51,7 +51,6 @@ _gsdl.ags.codeitem.args.parser_larg.kw.re	.regex	.larg
 gsdl.ags.codeitem.allocs.parser	.closure	_gsdl.ags.codeitem.allocs.parser_c
 _gsdl.ags.codeitem.allocs.parser_alloc.p_alloc.re	.regex	.alloc
 _gsdl.ags.codeitem.allocs.parser_apply.p_apply.kw.re	.regex	.apply
-_gsdl.ags.codeitem.allocs.parser_apply.p_pipe.kw.re	.regex	\|
 _gsdl.ags.codeitem.allocs.parser_constr.p_kw.re	.regex	.constr
 _gsdl.ags.codeitem.allocs.parser_field.p_field.re	.regex	.field
 _gsdl.ags.codeitem.allocs.parser_prim.p_prim.re	.regex	.prim
@@ -1115,7 +1114,7 @@ parser.many	.gvar
 parser.<|>	.gvar
 parser.unit	.gvar
 list.nil	.gvar
-_gsdl.ags.codeitem.allocs.parser_apply.p_pipe.kw.re	.gvar
+gsdl.ags.syntax.separator	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.codeitem.allocs.parser_apply.p_f_c
@@ -1128,10 +1127,9 @@ tyas.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gs
 tyas.p	.apply	parser.many	rune.t	string.t	|	tyas.p1
 as.p1.nil	.apply	list.nil	string.t
 as.p1	.apply	parser.unit	rune.t	list.string.ty	|	as.p1.nil
-pipe.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.allocs.parser_apply.p_pipe.kw.re
 as.p2.3	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 as.p2.2	.apply	parser.many	rune.t	string.t	|	as.p2.3
-as.p2.1	.apply	parser.*>	rune.t	string.t	list.string.ty	|	pipe.kw.p	as.p2.2
+as.p2.1	.apply	parser.*>	rune.t	string.t	list.string.ty	|	gsdl.ags.syntax.separator	as.p2.2
 as.p2	.apply	parser.*>	rune.t	string.t	list.string.ty	|	gsdl.ags.syntax.columnsep	as.p2.1
 as.p	.apply	parser.<|>	rune.t	list.string.ty	|	as.p1	as.p2
 p	.apply	parser.lift5	rune.t	parser.pos.t	string.t	string.t	list.string.ty	list.string.ty	gsdl.ags.codeitem.alloc.t	|	f	pos.get	nm.p	f.p	tyas.p	as.p
