@@ -83,6 +83,7 @@ _gsdl.ags.codeitem.expr.parser_lift.p_lift.re	.regex	.lift
 _gsdl.ags.codeitem.expr.parser_enter.p_enter.re	.regex	.enter
 _gsdl.ags.codeitem.expr.parser_force.p_force.re	.regex	.force
 _gsdl.ags.codeitem.expr.parser_strict.p_strict.re	.regex	.strict
+_gsdl.ags.codeitem.expr.parser_ubanalyze.p_ubanalyze.re	.regex	.ubanalyze
 _gsdl.ags.codeitem.expr.parser_undef.p_undef.re	.regex	.undef
 _gsdl.ags.codeitem.expr.parser_yield.p_yield.re	.regex	.yield
 
@@ -1647,6 +1648,7 @@ _gsdl.ags.codeitem.expr.parser_enter.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_force.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_lift.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_strict.p_c	.subcode
+_gsdl.ags.codeitem.expr.parser_ubanalyze.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_undef.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_yield.p_c	.subcode
 parser.<|>	.gvar
@@ -1657,9 +1659,11 @@ force.p	.alloc	_gsdl.ags.codeitem.expr.parser_force.p_c
 gsanalyze.p	.alloc	_gsdl.ags.codeitem.expr.parser_gsanalyze.p_c
 lift.p	.alloc	_gsdl.ags.codeitem.expr.parser_lift.p_c
 strict.p	.alloc	_gsdl.ags.codeitem.expr.parser_strict.p_c
+ubanalyze.p	.alloc	_gsdl.ags.codeitem.expr.parser_ubanalyze.p_c
 undef.p	.alloc	_gsdl.ags.codeitem.expr.parser_undef.p_c
 yield.p	.alloc	_gsdl.ags.codeitem.expr.parser_yield.p_c
-p7	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	undef.p	yield.p
+p8	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	undef.p	yield.p
+p7	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	ubanalyze.p	p8
 p6	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	strict.p	p7
 p5	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	lift.p	p6
 p4	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	force.p	p5
@@ -1966,6 +1970,61 @@ pos	.larg	parser.pos.t
 code	.larg	string.t
 e	.larg	gsdl.ags.codeitem.expr.t
 	.undef	gsdl.ags.codeitem.expr.t
+
+_gsdl.ags.codeitem.expr.parser_ubanalyze.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+list.t	.tygvar
+_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_ty	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+string.t	.tygvar
+list.ubcasecont.ty	.tylet	list.t	_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_ty
+_gsdl.ags.codeitem.expr.parser_ubanalyze.p_f_c	.subcode
+_gsdl.ags.codeitem.expr.parser_ubanalyze.p_cases.f_c	.subcode
+parser.lift3	.gvar
+parser.pos.get	.gvar
+parser.<*	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.expr.parser_ubanalyze.p_ubanalyze.re	.gvar
+parser.many	.gvar
+parser.lift2	.gvar
+gsdl.ags.syntax.id	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+gsdl.ags.codeitem.expr.parser	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.codeitem.expr.parser_ubanalyze.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+ubanalyze.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.expr.parser_ubanalyze.p_ubanalyze.re
+cases.f	.alloc	_gsdl.ags.codeitem.expr.parser_ubanalyze.p_cases.f_c
+cases.constr.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+cases.cont.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+cases.p4	.apply	parser.lift2	rune.t	string.t	string.t	_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_ty	|	cases.f	cases.constr.p	cases.cont.p
+cases.p3	.apply	parser.many	rune.t	_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_ty	|	cases.p4
+cases.p2	.apply	parser.*>	rune.t	string.t	list.ubcasecont.ty	|	ubanalyze.p	cases.p3
+cases.p1	.apply	parser.*>	rune.t	string.t	list.ubcasecont.ty	|	gsdl.ags.syntax.columnsep	cases.p2
+cases.p	.apply	parser.<*	rune.t	list.ubcasecont.ty	string.t	|	cases.p1	gsdl.ags.syntax.whitespace
+	.app	f	pos.get	cases.p	gsdl.ags.codeitem.expr.parser
+	.enter	parser.lift3	rune.t	parser.pos.t	list.ubcasecont.ty	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.expr.t	# > f <$> pos.get <*> () <*> expr
+
+_gsdl.ags.codeitem.expr.parser_ubanalyze.p_f_c	.expr
+parser.pos.t	.tygvar
+list.t	.tygvar
+_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_ty	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+pos	.larg	parser.pos.t
+cases	.larg	list.t	_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_ty
+e	.larg	gsdl.ags.codeitem.expr.t
+	.undef	gsdl.ags.codeitem.expr.t
+
+_gsdl.ags.codeitem.expr.parser_ubanalyze.p_cases.f_c	.expr
+string.t	.tygvar
+_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_ty	.tygvar
+constr	.larg	string.t
+cont	.larg	string.t
+	.undef	_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_ty
 
 _gsdl.ags.codeitem.expr.parser_undef.p_c	.expr
 rune.t	.tygvar
@@ -2495,6 +2554,14 @@ gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	string.t	2	gsdl.ags.codeitem.expr.t
+
+_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_ty	.tyexpr
+_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_u	.tygvar
+	.tylift
+	.tyref	_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_u
+
+_gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_u	.tyexpr
+	.typroduct
 
 # §section §gs{gsdl.ags.codeitem.expr.parser}
 

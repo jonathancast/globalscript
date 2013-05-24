@@ -146,7 +146,7 @@ _test.parse_impprog.bind_input	.string	_foo_c\t.impprog\tfoo\tm\nx\t.bind\t_foo_
 # §subsection String Code Expressions
 
 _test.parse_exprs	.closure	_test.parse_exprs_c
-_tests.parse_exprs	.list	test.property.t	_test.parse_expr.force	_test.parse_expr.strict	_test.parse_expr.coerce	_test.parse_expr.app	_test.parse_expr.enter	_test.parse_expr.analyze	_test.parse_expr.analyze.fkarg	_test.parse_expr.gsanalyze.apply
+_tests.parse_exprs	.list	test.property.t	_test.parse_expr.force	_test.parse_expr.strict	_test.parse_expr.coerce	_test.parse_expr.app	_test.parse_expr.ubanalyze	_test.parse_expr.enter	_test.parse_expr.analyze	_test.parse_expr.analyze.fkarg	_test.parse_expr.gsanalyze.apply
 
 _test.parse_expr.force	.closure	_test.parse_expr.force_c
 _test.parse_expr.force_label	.string	qq{\\t.force\\t_foo_k\\n\\t.enter\\tfoo\\n}\s=~\sexpr.parser
@@ -170,6 +170,10 @@ _test.parse_expr.app_input	.string	\t.app\tbar\n\t.enter\tfoo\n
 _test.parse_expr.app_k_k_wrong.constr.s	.string	Parse\sresult\sis\snot\san\s.app\sconstructor
 _test.parse_expr.app_k_as.expected	.list	string.t	_test.parse_expr.app_k_as.expected_0
 _test.parse_expr.app_k_as.expected_0	.string	bar
+
+_test.parse_expr.ubanalyze	.closure	_test.parse_expr.ubanalyze_c
+_test.parse_expr.ubanalyze_label	.string	qq{\\t.ubanalyze\\t0\\t_foo_k0\\n\\t.enter\\tfoo\\n}\s=~\sexpr.parser
+_test.parse_expr.ubanalyze_input	.string	\t.ubanalyze\t0\t_foo_k0\n\t.enter\tfoo\n
 
 _test.parse_expr.enter	.closure	_test.parse_expr.enter_c
 _test.parse_expr.enter_label	.string	qq{\\t.enter\\tfoo\\n}\s=~\sexpr.parser
@@ -1253,6 +1257,30 @@ list.string.≡			.apply	list.≡	string.t	|	string.≡
 list.string.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
 			.app	list.string.≡	list.string.fmtgs	as	_test.parse_expr.app_k_as.expected
 			.enter	test.assert.eq	list.string.ty
+
+# §subsubsection §gs{qq{\\t.ubanalyze\\t0\\t_foo_k0\\n\\t.enter\\tfoo\\n} =~ expr.parser}
+
+_test.parse_expr.ubanalyze_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+_test.parse_expr.ubanalyze_k_c	.subcode
+test.property.label	.gvar
+_test.parse_expr.ubanalyze_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.expr.parser	.gvar
+_test.parse_expr.ubanalyze_input	.gvar
+k	.alloc	_test.parse_expr.ubanalyze_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.ubanalyze_input	k
+	.app	_test.parse_expr.ubanalyze_label	test
+	.enter	test.property.label
+
+_test.parse_expr.ubanalyze_k_c	.expr
+gsdl.ags.codeitem.expr.t	.tygvar
+test.true	.gvar
+actual	.larg	gsdl.ags.codeitem.expr.t
+	.enter	test.true
 
 # §subsubsection §gs{qq{\\t.enter\\tfoo\\n} =~ expr.parser}
 
