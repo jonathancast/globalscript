@@ -146,7 +146,11 @@ _test.parse_impprog.bind_input	.string	_foo_c\t.impprog\tfoo\tm\nx\t.bind\t_foo_
 # §subsection §ags{.ubcasecont} Code Items
 
 _test.parse_ubcasecont.items	.closure	_test.parse_ubcasecont.items_c
-_tests.parse_ubcasecont.items	.list	test.property.t
+_tests.parse_ubcasecont.items	.list	test.property.t	_test.parse_ubcasecont
+
+_test.parse_ubcasecont	.closure	_test.parse_ubcasecont_c
+_test.parse_ubcasecont_label	.string	qq{_rune.≡.k1.0\\t.ubcasecont\\n\\t.enter\\tbool.false\\n}\s=~\sparser
+_test.parse_ubcasecont_input	.string	_rune.≡.k1.0\t.ubcasecont\n\t.enter\tbool.false\n
 
 # §subsection String Code Expressions
 
@@ -1084,6 +1088,30 @@ test.all	.gvar
 _tests.parse_ubcasecont.items	.gvar
 	.app	_tests.parse_ubcasecont.items
 	.enter	test.all
+
+# §subsubsection §gs{qq{_rune.≡.k1.0\\t.ubcasecont\\n\\t.enter\\tbool.false\\n} =~ parser}
+
+_test.parse_ubcasecont_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_test.parse_ubcasecont_k_c	.subcode
+test.property.label	.gvar
+_test.parse_ubcasecont_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+_test.parse_ubcasecont_input	.gvar
+k	.alloc	_test.parse_ubcasecont_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.parser	_test.parse_ubcasecont_input	k
+	.app	_test.parse_ubcasecont_label	test
+	.enter	test.property.label
+
+_test.parse_ubcasecont_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+test.true	.gvar
+ci	.larg	gsdl.ags.codeitem.t
+	.enter	test.true
 
 # §subsection String Code Expressions
 
