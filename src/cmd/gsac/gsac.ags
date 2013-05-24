@@ -893,14 +893,17 @@ ibio.file.name.t	.tygvar	# Temp
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsac.input.prefix.boundvars	.gvar
+ordered.set.insert	.gvar
+ibio.file.name.compare	.gvar
 pr0	.fv	_real.entry_prefix_ty
+fn	.fv	ibio.file.name.t
 file.parsed	.fv	gsac.input.prefix.t
 pr0.bvs	.lfield	bvs	pr0
 file.parsed.bvs	.apply	gsac.input.prefix.boundvars	|	file.parsed
 bvs1	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	pr0.bvs	file.parsed.bvs
 pr0.filename	.lfield	filename	pr0
 pr0.files.loaded	.lfield	files.loaded	pr0
-files.loaded.1	.undefined	ordered.set.t	ibio.file.name.t	# Add the file to §gs{#files.loaded pr0}
+files.loaded.1	.apply	ordered.set.insert	ibio.file.name.t	|	ibio.file.name.compare	fn	pr0.files.loaded
 id	.lfield	isdir	pr0
 r	.record	bvs	bvs1	filename	pr0.filename	files.loaded	files.loaded.1	isdir	id	# Add the file's contents to the prefix in pr0
 	.lift
