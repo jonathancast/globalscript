@@ -23,6 +23,8 @@ ibio.acceptor.optional.prim	.closure	_ibio.acceptor.optional.prim_c
 
 ibio.acceptor.many.prim	.closure	_ibio.acceptor.many.prim_c	_ibio.acceptor.many.prim_ty
 
+ibio.acceptor.many.void.prim	.closure	_ibio.acceptor.many.void.prim_c	_ibio.acceptor.many.void.prim_ty
+
 ibio.acceptor.prim.<|>	.closure	_ibio.acceptor.prim.<|>_c	_ibio.acceptor.prim.<|>_ty
 
 	.code
@@ -226,6 +228,63 @@ xn1	.larg	list.t	α
 xn	.apply	list.:	α	|	x	xn1
 	.app	xn
 	.enter	k
+
+# §section §gs{ibio.acceptor.many.void}
+
+_ibio.acceptor.many.void.prim_c	.expr
+ibio.acceptor.prim.cont.t	.tygvar
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+s	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+_ibio.acceptor.many.void.prim_nr_c	.subcode
+_ibio.acceptor.many.void.prim_cr_c	.subcode
+ibio.acceptor.prim.<|>	.gvar
+p	.larg	ibio.acceptor.prim.cont.t	s	α	β
+k	.larg	ibio.acceptor.prim.kt	s	record.empty	β
+nr	.alloc	_ibio.acceptor.many.void.prim_nr_c
+cr	.alloc	_ibio.acceptor.many.void.prim_cr_c
+	.app	nr	cr
+	.enter	ibio.acceptor.prim.<|>	s	β
+
+_ibio.acceptor.many.void.prim_nr_c	.expr
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+s	.tyfv	*
+β	.tyfv	*
+record.empty	.gvar
+k	.fv	ibio.acceptor.prim.kt	s	record.empty	β
+	.app	record.empty
+	.enter	k
+
+_ibio.acceptor.many.void.prim_cr_c	.expr
+ibio.acceptor.prim.cont.t	.tygvar
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+_ibio.acceptor.many.void.prim_cr_k0_c	.subcode
+p	.fv	ibio.acceptor.prim.cont.t	s	α	β
+k	.fv	ibio.acceptor.prim.kt	s	record.empty	β
+k0	.alloc	_ibio.acceptor.many.void.prim_cr_k0_c
+	.app	k0
+	.enter	p
+
+_ibio.acceptor.many.void.prim_cr_k0_c	.expr
+ibio.acceptor.prim.cont.t	.tygvar
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+ibio.acceptor.many.void.prim	.gvar
+p	.fv	ibio.acceptor.prim.cont.t	s	α	β
+k	.fv	ibio.acceptor.prim.kt	s	record.empty	β
+x	.larg	α
+	.app	p k
+	.enter	ibio.acceptor.many.void.prim	s	α	β
 
 # §section §gs{ibio.acceptor.prim.<|>}
 
@@ -448,6 +507,22 @@ res.ty	.tylet	list.t	α
 	.tyfun	ibio.acceptor.prim.cont.t	s	α	β
 	.tylift
 	.tyfun	ibio.acceptor.prim.kt	s	res.ty	β
+	.tyref	ibio.acceptor.prim.t	s	β
+
+# §section §gs{ibio.acceptor.many.void}
+
+_ibio.acceptor.many.void.prim_ty	.tyexpr
+ibio.acceptor.prim.cont.t	.tygvar
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+ibio.acceptor.prim.t	.tygvar
+s	.tyforall	*
+α	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	ibio.acceptor.prim.cont.t	s	α	β
+	.tylift
+	.tyfun	ibio.acceptor.prim.kt	s	record.empty	β
 	.tyref	ibio.acceptor.prim.t	s	β
 
 # §section §gs{ibio.acceptor.prim.<|>}

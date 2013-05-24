@@ -530,6 +530,7 @@ ibio.prim.iport	.tygvar
 ibio.lex.receiver.u	.tygvar
 ibio.prim.t	.tygvar
 ibio.prim.iptr.t	.tygvar
+record.empty	.tygvar
 s	.tyfv	*
 α	.tyfv	*
 res.ty	.tylet	ibio.prim.iptr.t	s
@@ -538,7 +539,7 @@ ibio.acceptor.prim.cont	.gvar
 i	.fv	ibio.prim.iport	s
 p0	.karg	ibio.lex.receiver.u	s	α
 acc	.field	1	p0
-k	.apply	ibio.acceptor.prim.cont	s	α
+k	.apply	ibio.acceptor.prim.cont	s	record.empty
 a	.apply	acc	|	k
 	.lift
 	.app	i	a
@@ -915,12 +916,12 @@ s	.tyarg	*
 α	.tyarg	*
 res.ty	.tylet	list.t	α
 ibio.lex.many	.gvar
-ibio.acceptor.many.prim	.gvar
+ibio.acceptor.many.void.prim	.gvar
 p	.larg	ibio.lex.receiver.lexeme.t	s	α
 p.lex	.lfield	0	p
 p.acc	.lfield	1	p
 lex	.apply	ibio.lex.many	s	α	|	p.lex
-acc	.apply	ibio.acceptor.many.prim	s	α	record.empty	|	p.acc
+acc	.apply	ibio.acceptor.many.void.prim	s	α	record.empty	|	p.acc
 r	.record	0	lex	1	acc
 	.lift
 	.yield	r
@@ -1017,7 +1018,7 @@ record.empty	.tygvar
 s	.tylambda	*
 α	.tylambda	*
 lex.ty	.tylet	ibio.lex.lexer.t	s	α
-acc.ty	.tylet	ibio.acceptor.prim.cont.t	s	α	record.empty
+acc.ty	.tylet	ibio.acceptor.prim.cont.t	s	record.empty	record.empty
 	.typroduct	0	lex.ty	1	acc.ty
 
 # §section §gs{ibio.lex.receiver.lexeme.t}
