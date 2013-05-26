@@ -25,7 +25,7 @@ gsdl.ags.syntax.keywords	.list	string.t	_gsdl.ags.syntax.keywords_0
 _gsdl.ags.syntax.keywords_0	.string	|
 
 gsdl.ags.syntax.rune.literal	.closure	_gsdl.ags.syntax.rune.literal_c
-gsdl.ags.syntax.rune.literal.re	.regex	\\[\\n]
+gsdl.ags.syntax.rune.literal.re	.regex	\\[\\ns]
 
 gsdl.ags.syntax.stringliteral	.closure	_gsdl.ags.syntax.stringliteral_c
 _gsdl.ags.syntax.stringliteral_re	.regex	[^\s\t\n][^\s\t\n]*
