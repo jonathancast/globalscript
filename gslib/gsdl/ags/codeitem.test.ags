@@ -56,8 +56,7 @@ _test.parse_expr.gvar	.closure	_test.parse_expr.gvar_c
 _test.parse_expr.gvar_label	.string	qq{_foo_c\\t.expr\\nbar\\t.gvar\\n\\t.enter\\tbaz\\n}\s=~\sparser
 _test.parse_expr.gvar_input	.string	_foo_c\t.expr\nbar\t.gvar\n\t.enter\tbaz\n
 _test.parse_expr.gvar_k_wrong.constr.s	.string	Parse\sresult\snot\san\s.expr
-_test.parse_expr.gvar_k_gvars.expected	.list	string.t	_test.parse_expr.gvar_k_gvars.expected_0
-_test.parse_expr.gvar_k_gvars.expected_0	.string	bar
+_test.parse_expr.gvar_k_gvars.expected.0_bar.s	.string	bar
 
 _test.parse_expr.larg	.closure	_test.parse_expr.larg_c
 _test.parse_expr.larg_label	.string	qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\tquux.t\\n\\t.enter\\tbaz\\n}\s=~\sparser
@@ -379,6 +378,7 @@ gsdl.ags.codeitem.t	.tygvar
 string.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.sourcepos.t	.tygvar	# Temp
 test.assert.eq	.gvar
 gsdl.ags.codeitem.≡	.gvar
@@ -393,7 +393,8 @@ pos	.undefined	gsdl.sourcepos.t
 args.nil	.apply	list.nil	gsdl.ags.codeitem.arg.t
 allocs.nil	.apply	list.nil	gsdl.ags.codeitem.alloc.t
 nil	.apply	list.nil	string.t
-ds	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	nil	subcodes	nil	tygvs	nil
+gvars.nil	.apply	list.nil	gsdl.ags.codeitem.gvar.t
+ds	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvs	nil
 tyas	.apply	list.nil	string.t
 expected.expr	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.parse_expr_k_bar.s	tyas
 expected	.apply	gsdl.ags.codeitem.expr	|	pos	_test.parse_expr_k_foo.c.s	ds	expected.expr
@@ -610,16 +611,19 @@ gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 list.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
+list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 test.property.false	.gvar
 _test.parse_expr.gvar_k_wrong.constr.s	.gvar
 test.assert.eq	.gvar
 list.≡	.gvar
-string.≡	.gvar
+gsdl.ags.codeitem.gvar.≡	.gvar
 list.fmtgs.byDefault	.gvar
-string.fmtgs	.gvar
-_test.parse_expr.gvar_k_gvars.expected	.gvar
+gsdl.ags.codeitem.gvar.fmtgs	.gvar
+list.singleton	.gvar
+gsdl.ags.codeitem.gvar.gvar	.gvar
+_test.parse_expr.gvar_k_gvars.expected.0_bar.s	.gvar
 ci0	.karg	gsdl.ags.codeitem.prim.u
 	.danalyze	ci0	expr
 		.default
@@ -631,10 +635,12 @@ nm		.fkarg	1	string.t
 ds		.fkarg	2	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 e		.fkarg	3	gsdl.ags.codeitem.expr.t
 gvars			.lfield	gvars	ds
-gvars.≡			.apply	list.≡	string.t	|	string.≡
-gvars.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
-			.app	gvars.≡	gvars.fmtgs	gvars	_test.parse_expr.gvar_k_gvars.expected
-			.enter	test.assert.eq	list.string.ty
+gvars.≡			.apply	list.≡	gsdl.ags.codeitem.gvar.t	|	gsdl.ags.codeitem.gvar.≡
+gvars.fmtgs			.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.gvar.t	|	gsdl.ags.codeitem.gvar.fmtgs
+expected.0			.apply	gsdl.ags.codeitem.gvar.gvar	|	pos	_test.parse_expr.gvar_k_gvars.expected.0_bar.s
+expected			.apply	list.singleton	gsdl.ags.codeitem.gvar.t	|	expected.0
+			.app	gvars.≡	gvars.fmtgs	gvars	expected
+			.enter	test.assert.eq	list.gvar.ty
 
 # §subsubsection §gs{qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\n\\t.enter\\tbaz\\n} =~ parser}
 
@@ -878,6 +884,7 @@ _test.parse_forcecont_k_c	.expr
 gsdl.ags.codeitem.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.ags.codeitem.fv.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 string.t	.tygvar
 test.assert.eq	.gvar
 gsdl.ags.codeitem.≡	.gvar
@@ -893,9 +900,10 @@ _test.parse_forcecont_k_y.s	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 pos	.undefined	gsdl.sourcepos.t
 nil.fvs	.apply	list.nil	gsdl.ags.codeitem.fv.t
+nil.gvars	.apply	list.nil	gsdl.ags.codeitem.gvar.t
 nil	.apply	list.nil	string.t
 karg	.apply	gsdl.ags.codeitem.karg.karg	|	_test.parse_forcecont_k_x0.s	_test.parse_forcecont_k_x.u.s	nil
-decls	.lrecord	fvs	nil.fvs	gvars	nil	karg	karg	tygvars	nil
+decls	.lrecord	fvs	nil.fvs	gvars	nil.gvars	karg	karg	tygvars	nil
 e	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.parse_forcecont_k_y.s	nil
 expected	.apply	gsdl.ags.codeitem.forcecont	|	pos	_test.parse_forcecont_k_foo.k.s	decls	e
 	.app	gsdl.ags.codeitem.≡	gsdl.ags.codeitem.fmtgs	ci	expected
@@ -1500,6 +1508,7 @@ _test.eq_codeitem.expr.diff.tygvars_c	.expr
 string.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.sourcepos.t	.tygvar	# Temp
 test.property.label	.gvar
 _test.eq_codeitem.expr.diff.tygvars_label	.gvar
@@ -1518,11 +1527,12 @@ pos	.undefined	gsdl.sourcepos.t
 nil	.apply	list.nil	string.t
 args.nil	.apply	list.nil	gsdl.ags.codeitem.arg.t
 allocs.nil	.apply	list.nil	gsdl.ags.codeitem.alloc.t
-decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	nil	subcodes	nil	tygvs	nil
+gvars.nil	.apply	list.nil	gsdl.ags.codeitem.gvar.t
+decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvs	nil
 exp	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.eq_codeitem.expr.diff.tygvars_bar.s	nil
 ci0	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.tygvars_foo.c.s decls0	exp
 tygvs1	.apply	list.:	string.t	|	_test.eq_codeitem.expr.diff.tygvars_foo.s	nil
-decls1	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	nil	subcodes	nil	tygvs	tygvs1
+decls1	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvs	tygvs1
 ci1	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.tygvars_foo.c.s decls1	exp
 eq	.apply	gsdl.ags.codeitem.≡	|	ci0	ci1
 test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.tygvars_false.s	_test.eq_codeitem.expr.diff.tygvars_true.s	eq
@@ -1536,6 +1546,7 @@ gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 test.property.label	.gvar
 _test.eq_codeitem.expr.diff.subcodes_label	.gvar
 test.deny	.gvar
@@ -1552,12 +1563,13 @@ _test.eq_codeitem.expr.diff.subcodes_foo.s	.gvar
 pos	.undefined	gsdl.sourcepos.t
 args.nil	.apply	list.nil	gsdl.ags.codeitem.arg.t
 allocs.nil	.apply	list.nil	gsdl.ags.codeitem.alloc.t
+gvars.nil	.apply	list.nil	gsdl.ags.codeitem.gvar.t
 nil	.apply	list.nil	string.t
-decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	nil	subcodes	nil	tygvs	nil
+decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvs	nil
 exp	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.eq_codeitem.expr.diff.subcodes_bar.s	nil
 ci0	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.subcodes_foo.c.s decls0	exp
 subcodes1	.apply	list.:	string.t	|	_test.eq_codeitem.expr.diff.subcodes_foo.s	nil
-decls1	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	nil	subcodes	subcodes1	tygvs	nil
+decls1	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	subcodes1	tygvs	nil
 ci1	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.subcodes_foo.c.s decls1	exp
 eq	.apply	gsdl.ags.codeitem.≡	|	ci0	ci1
 test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.subcodes_false.s	_test.eq_codeitem.expr.diff.subcodes_true.s	eq
@@ -1570,6 +1582,7 @@ _test.eq_codeitem.expr.diff.cogvars_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 string.t	.tygvar
 test.property.label	.gvar
 _test.eq_codeitem.expr.diff.cogvars_label	.gvar
@@ -1587,12 +1600,13 @@ _test.eq_codeitem.expr.diff.cogvars_foo.s	.gvar
 pos	.undefined	gsdl.sourcepos.t
 args.nil	.apply	list.nil	gsdl.ags.codeitem.arg.t
 allocs.nil	.apply	list.nil	gsdl.ags.codeitem.alloc.t
+gvars.nil	.apply	list.nil	gsdl.ags.codeitem.gvar.t
 nil	.apply	list.nil	string.t
-decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	nil	subcodes	nil	tygvs	nil
+decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvs	nil
 exp	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.eq_codeitem.expr.diff.cogvars_bar.s	nil
 ci0	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.cogvars_foo.c.s decls0	exp
 cogvars1	.apply	list.:	string.t	|	_test.eq_codeitem.expr.diff.cogvars_foo.s	nil
-decls1	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	cogvars1	gvars	nil	subcodes	nil	tygvs	nil
+decls1	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	cogvars1	gvars	gvars.nil	subcodes	nil	tygvs	nil
 ci1	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.cogvars_foo.c.s decls1	exp
 eq	.apply	gsdl.ags.codeitem.≡	|	ci0	ci1
 test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.cogvars_false.s	_test.eq_codeitem.expr.diff.cogvars_true.s	eq
@@ -1605,6 +1619,7 @@ _test.eq_codeitem.expr.diff.gvars_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 string.t	.tygvar
 test.property.label	.gvar
 _test.eq_codeitem.expr.diff.gvars_label	.gvar
@@ -1618,15 +1633,18 @@ list.nil	.gvar
 gsdl.ags.codeitem.expr.enter	.gvar
 _test.eq_codeitem.expr.diff.gvars_bar.s	.gvar
 list.:	.gvar
+gsdl.ags.codeitem.gvar.gvar	.gvar
 _test.eq_codeitem.expr.diff.gvars_foo.s	.gvar
 pos	.undefined	gsdl.sourcepos.t
 args.nil	.apply	list.nil	gsdl.ags.codeitem.arg.t
 allocs.nil	.apply	list.nil	gsdl.ags.codeitem.alloc.t
+gvars.nil	.apply	list.nil	gsdl.ags.codeitem.gvar.t
 nil	.apply	list.nil	string.t
-decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	nil	subcodes	nil	tygvs	nil
+decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvs	nil
 exp	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.eq_codeitem.expr.diff.gvars_bar.s	nil
 ci0	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.gvars_foo.c.s decls0	exp
-gvars1	.apply	list.:	string.t	|	_test.eq_codeitem.expr.diff.gvars_foo.s	nil
+gvar0	.apply	gsdl.ags.codeitem.gvar.gvar	|	pos	_test.eq_codeitem.expr.diff.gvars_foo.s
+gvars1	.apply	list.:	gsdl.ags.codeitem.gvar.t	|	gvar0	gvars.nil
 decls1	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars1	subcodes	nil	tygvs	nil
 ci1	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.gvars_foo.c.s decls1	exp
 eq	.apply	gsdl.ags.codeitem.≡	|	ci0	ci1
@@ -1640,6 +1658,7 @@ _test.eq_codeitem.expr.diff.args_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 string.t	.tygvar
 test.property.label	.gvar
 _test.eq_codeitem.expr.diff.args_label	.gvar
@@ -1660,13 +1679,14 @@ _test.eq_codeitem.expr.diff.args_x.s	.gvar
 pos	.undefined	gsdl.sourcepos.t
 args.nil	.apply	list.nil	gsdl.ags.codeitem.arg.t
 allocs.nil	.apply	list.nil	gsdl.ags.codeitem.alloc.t
+gvars.nil	.apply	list.nil	gsdl.ags.codeitem.gvar.t
 nil	.apply	list.nil	string.t
-decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	nil	subcodes	nil	tygvs	nil
+decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvs	nil
 exp	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.eq_codeitem.expr.diff.args_bar.s	nil
 ci0	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.args_foo.c.s decls0	exp
 arg0	.lrecord	gstype	_test.eq_codeitem.expr.diff.args_x.t.s	lifted	bool.true	name	_test.eq_codeitem.expr.diff.args_x.s	tyargs	nil
 args1	.apply	list.:	gsdl.ags.codeitem.arg.t	|	arg0	args.nil
-decls1	.lrecord	allocs	allocs.nil	args	args1	cogvars	nil	gvars	nil	subcodes	nil	tygvs	nil
+decls1	.lrecord	allocs	allocs.nil	args	args1	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvs	nil
 ci1	.apply	gsdl.ags.codeitem.expr	|	pos	_test.eq_codeitem.expr.diff.args_foo.c.s decls1	exp
 eq	.apply	gsdl.ags.codeitem.≡	|	ci0	ci1
 test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.args_false.s	_test.eq_codeitem.expr.diff.args_true.s	eq
