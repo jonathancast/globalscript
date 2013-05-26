@@ -29,6 +29,7 @@ gsdl.ags.typeitem.gskind.parser	.closure	_gsdl.ags.typeitem.gskind.parser_c
 _gsdl.ags.typeitem.gskind.parser_w	.closure	_gsdl.ags.typeitem.gskind.parser_w_c	_gsdl.ags.typeitem.gskind.parser_w_ty
 _gsdl.ags.typeitem.gskind.parser_w_pop.p_caret.re	.regex	^
 _gsdl.ags.typeitem.gskind.parser_lifted.re	.regex	\*
+_gsdl.ags.typeitem.gskind.parser_unlifted.re	.regex	u
 
 gsdl.ags.typeitem.expr.parser	.closure	_gsdl.ags.typeitem.expr.parser_c	_gsdl.ags.typeitem.expr.parser_ty
 _gsdl.ags.typeitem.expr.parser_tyfun.p_tyfun.re	.regex	.tyfun
@@ -455,11 +456,14 @@ list.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 rune.t	.tygvar
 _gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.p.lifted_c	.subcode
+_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.p.unlifted_c	.subcode
 _gsdl.ags.typeitem.gskind.parser_w_push.atom.p_k_c	.subcode
 parser.>>=	.gvar
+parser.<|>	.gvar
 st	.fv	list.t	gsdl.ags.typeitem.gskind.t
 atom.p.lifted	.alloc	_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.p.lifted_c
-atom.p	.apply	atom.p.lifted
+atom.p.unlifted	.alloc	_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.p.unlifted_c
+atom.p	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.gskind.t	|	atom.p.lifted	atom.p.unlifted
 k	.alloc	_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_k_c
 	.app	atom.p	k
 	.enter	parser.>>=	rune.t	gsdl.ags.typeitem.gskind.t	gsdl.ags.typeitem.gskind.t
@@ -477,6 +481,21 @@ lifted.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.gskind.pa
 lifted.ki	.undefined	gsdl.ags.typeitem.gskind.t
 lifted.p2	.apply	parser.unit	rune.t	gsdl.ags.typeitem.gskind.t	|	lifted.ki
 	.app	lifted.p1	lifted.p2
+	.enter	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t
+
+_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.p.unlifted_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.typeitem.gskind.parser_unlifted.re	.gvar
+parser.unit	.gvar
+unlifted.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.gskind.parser_unlifted.re
+unlifted.ki	.undefined	gsdl.ags.typeitem.gskind.t
+unlifted.p2	.apply	parser.unit	rune.t	gsdl.ags.typeitem.gskind.t	|	unlifted.ki
+	.app	unlifted.p1	unlifted.p2
 	.enter	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t
 
 _gsdl.ags.typeitem.gskind.parser_w_push.atom.p_k_c	.expr
