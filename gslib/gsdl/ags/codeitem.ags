@@ -620,16 +620,18 @@ string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty	.tygvar
 list.string.ty	.tylet	list.t	string.t
 _gsdl.ags.codeitem.parser_ubcasecont.p_decls.p_f_c	.subcode
-parser.map	.gvar
+parser.lift2	.gvar
+gsdl.ags.codeitem.tygvars.parser	.gvar
 gsdl.ags.codeitem.gvars.parser	.gvar
 f	.alloc	_gsdl.ags.codeitem.parser_ubcasecont.p_decls.p_f_c
-	.app	f	gsdl.ags.codeitem.gvars.parser
-	.enter	parser.map	rune.t	list.string.ty	_gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty
+	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.gvars.parser
+	.enter	parser.lift2	rune.t	list.string.ty	list.string.ty	_gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty
 
 _gsdl.ags.codeitem.parser_ubcasecont.p_decls.p_f_c	.expr
 list.t	.tygvar
 string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty	.tygvar	# Temp
+tygvs	.larg	list.t	string.t
 gvs	.larg	list.t	string.t
 	.undef	_gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty
 
