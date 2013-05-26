@@ -38,6 +38,7 @@ _gsdl.ags.codeitem.cogvars.parser_cogvar.kw.re	.regex	.cogvar
 
 gsdl.ags.codeitem.gvars.parser	.closure	_gsdl.ags.codeitem.gvars.parser_c
 _gsdl.ags.codeitem.gvars.parser_gvar.p_gvar.re	.regex	.gvar
+_gsdl.ags.codeitem.gvars.parser_rune.p_rune.re	.regex	.rune
 
 gsdl.ags.codeitem.gvar.≡	.closure	_gsdl.ags.codeitem.gvar.≡_c
 
@@ -974,9 +975,12 @@ _gsdl.ags.codeitem.gvars.parser_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
 _gsdl.ags.codeitem.gvars.parser_gvar.p_c	.subcode
+_gsdl.ags.codeitem.gvars.parser_rune.p_c	.subcode
 parser.many	.gvar
+parser.<|>	.gvar
 gvar.p	.alloc	_gsdl.ags.codeitem.gvars.parser_gvar.p_c
-p	.apply	gvar.p
+rune.p	.alloc	_gsdl.ags.codeitem.gvars.parser_rune.p_c
+p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.gvar.t	|	gvar.p	rune.p
 	.app	p
 	.enter	parser.many	rune.t	gsdl.ags.codeitem.gvar.t
 
@@ -1010,6 +1014,43 @@ nm	.larg	string.t
 pos	.undefined	gsdl.sourcepos.t
 	.app	pos	nm
 	.enter	gsdl.ags.codeitem.gvar.gvar
+
+_gsdl.ags.codeitem.gvars.parser_rune.p_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar
+_gsdl.ags.codeitem.gvars.parser_rune.p_f_c	.subcode
+parser.<*	.gvar
+parser.lift3	.gvar
+parser.pos.get	.gvar
+gsdl.ags.syntax.id	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.gvars.parser_rune.p_rune.re	.gvar
+gsdl.ags.syntax.rune.literal	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.codeitem.gvars.parser_rune.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+rune.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.gvars.parser_rune.p_rune.re
+lit.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.rune.literal
+lit.p1	.apply	parser.*>	rune.t	string.t	string.t	|	rune.p	lit.p2
+lit.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	lit.p1
+p	.apply	parser.lift3	rune.t	parser.pos.t	string.t	string.t	gsdl.ags.codeitem.gvar.t	|	f	pos.get	gsdl.ags.syntax.id	lit.p
+	.app	p	gsdl.ags.syntax.whitespace
+	.enter	parser.<*	rune.t	gsdl.ags.codeitem.gvar.t	string.t
+
+_gsdl.ags.codeitem.gvars.parser_rune.p_f_c	.expr
+parser.pos.t	.tygvar
+string.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+pos	.larg	parser.pos.t
+nm	.larg	string.t
+lit	.larg	string.t
+	.undef	gsdl.ags.codeitem.gvar.t
 
 # §section §gs{gsdl.ags.codeitem.gvar.≡}
 

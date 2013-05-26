@@ -23,7 +23,7 @@ _test.parse_segment.empty_input	.string	\t.code\n
 # §subsection §ags{.expr} Code Items
 
 _test.parse_expr.items	.closure	_test.parse_expr.items_c
-_tests.parse_expr.items	.list	test.property.t	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.larg	_test.parse_expr.alloc	_test.parse_expr.undefined	_test.parse_expr.field	_test.parse_expr.record	_test.parse_expr.prim	_test.parse_expr.prim.args
+_tests.parse_expr.items	.list	test.property.t	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.rune	_test.parse_expr.larg	_test.parse_expr.alloc	_test.parse_expr.undefined	_test.parse_expr.field	_test.parse_expr.record	_test.parse_expr.prim	_test.parse_expr.prim.args
 
 _test.parse_expr	.closure	_test.parse_expr_c
 _test.parse_expr_label	.string	qq{_foo_c\\t.expr\\n\\t.enter\\tbar\\n}\s=~\sparser
@@ -57,6 +57,10 @@ _test.parse_expr.gvar_label	.string	qq{_foo_c\\t.expr\\nbar\\t.gvar\\n\\t.enter\
 _test.parse_expr.gvar_input	.string	_foo_c\t.expr\nbar\t.gvar\n\t.enter\tbaz\n
 _test.parse_expr.gvar_k_wrong.constr.s	.string	Parse\sresult\snot\san\s.expr
 _test.parse_expr.gvar_k_gvars.expected.0_bar.s	.string	bar
+
+_test.parse_expr.rune	.closure	_test.parse_expr.rune_c
+_test.parse_expr.rune_label	.string	qq{_foo_c\\t.expr\\nnl\\t.rune\\t\\\\n\\n\\t.enter\\tbaz\\n}\s=~\sparser
+_test.parse_expr.rune_input	.string	_foo_c\t.expr\nnl\t.rune\t\\n\n\t.enter\tbaz\n
 
 _test.parse_expr.larg	.closure	_test.parse_expr.larg_c
 _test.parse_expr.larg_label	.string	qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\tquux.t\\n\\t.enter\\tbaz\\n}\s=~\sparser
@@ -641,6 +645,30 @@ expected.0			.apply	gsdl.ags.codeitem.gvar.gvar	|	pos	_test.parse_expr.gvar_k_gv
 expected			.apply	list.singleton	gsdl.ags.codeitem.gvar.t	|	expected.0
 			.app	gvars.≡	gvars.fmtgs	gvars	expected
 			.enter	test.assert.eq	list.gvar.ty
+
+# §subsubsection §gs{qq{_foo_c\\t.expr\\nnl\\t.rune\\t\\\\n\\n\\t.enter\\tbaz\\n} =~ parser}
+
+_test.parse_expr.rune_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_test.parse_expr.rune_k_c	.subcode
+test.property.label	.gvar
+_test.parse_expr.rune_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+_test.parse_expr.rune_input	.gvar
+k	.alloc	_test.parse_expr.rune_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.parser	_test.parse_expr.rune_input	k
+	.app	_test.parse_expr.rune_label	test
+	.enter	test.property.label
+
+_test.parse_expr.rune_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+test.true	.gvar
+ci	.larg	gsdl.ags.codeitem.t
+	.enter	test.true
 
 # §subsubsection §gs{qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\n\\t.enter\\tbaz\\n} =~ parser}
 
