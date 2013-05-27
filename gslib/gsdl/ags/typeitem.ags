@@ -37,6 +37,7 @@ _gsdl.ags.typeitem.expr.parser_tylift.p_tylift.re	.regex	.tylift
 _gsdl.ags.typeitem.expr.parser_typroduct.p_typroduct.re	.regex	.typroduct
 _gsdl.ags.typeitem.expr.parser_tyref.p_tyref.re	.regex	.tyref
 _gsdl.ags.typeitem.expr.parser_tysum.p_tysum.re	.regex	.tysum
+_gsdl.ags.typeitem.expr.parser_tyubsum.p_tyubsum.re	.regex	.tyubsum
 
 gsdl.ags.typeitem.expr.print	.closure	_gsdl.ags.typeitem.expr.print_c	_gsdl.ags.typeitem.expr.print_ty
 _gsdl.ags.typeitem.expr.print_tylift.s	.string	\t.tylift\n
@@ -579,13 +580,16 @@ _gsdl.ags.typeitem.expr.parser_tylift.p_c	.subcode
 _gsdl.ags.typeitem.expr.parser_typroduct.p_c	.subcode
 _gsdl.ags.typeitem.expr.parser_tyref.p_c	.subcode
 _gsdl.ags.typeitem.expr.parser_tysum.p_c	.subcode
+_gsdl.ags.typeitem.expr.parser_tyubsum.p_c	.subcode
 parser.<|>	.gvar
 tyfun.p	.alloc	_gsdl.ags.typeitem.expr.parser_tyfun.p_c
 tylift.p	.alloc	_gsdl.ags.typeitem.expr.parser_tylift.p_c
 tyref.p	.alloc	_gsdl.ags.typeitem.expr.parser_tyref.p_c
 typroduct.p	.alloc	_gsdl.ags.typeitem.expr.parser_typroduct.p_c
 tysum.p	.alloc	_gsdl.ags.typeitem.expr.parser_tysum.p_c
-p3	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	tyref.p	tysum.p
+tyubsum.p	.alloc	_gsdl.ags.typeitem.expr.parser_tyubsum.p_c
+p4	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	tysum.p	tyubsum.p
+p3	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	tyref.p	p4
 p2	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	typroduct.p	p3
 p1	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	tylift.p	p2
 	.app	tyfun.p	p1
@@ -790,6 +794,44 @@ constrs.p	.apply	parser.*>	rune.t	string.t	list.constr.ty	|	gsdl.ags.syntax.colu
 	.enter	parser.lift2	rune.t	parser.pos.t	list.constr.ty	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.expr.parser_tysum.p_f_c	.expr
+parser.pos.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar	# Temp
+pos	.larg	parser.pos.t
+cs	.larg	list.t	gsdl.ags.typeitem.constr.t
+	.undef	gsdl.ags.typeitem.expr.t
+
+_gsdl.ags.typeitem.expr.parser_tyubsum.p_c	.expr
+rune.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
+list.constr.ty	.tylet	list.t	gsdl.ags.typeitem.constr.t
+_gsdl.ags.typeitem.expr.parser_tyubsum.p_f_c	.subcode
+parser.<*	.gvar
+parser.lift2	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.typeitem.expr.parser_tyubsum.p_tyubsum.re	.gvar
+gsdl.ags.typeitem.constrs.parser	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.typeitem.expr.parser_tyubsum.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+tyubsum.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.expr.parser_tyubsum.p_tyubsum.re
+constrs.p1	.apply	parser.*>	rune.t	string.t	list.constr.ty	|	tyubsum.p	gsdl.ags.typeitem.constrs.parser
+constrs.p	.apply	parser.*>	rune.t	string.t	list.constr.ty	|	gsdl.ags.syntax.columnsep	constrs.p1
+p	.apply	parser.lift2	rune.t	parser.pos.t	list.constr.ty	gsdl.ags.typeitem.expr.t	|	f	pos.get	constrs.p
+	.app	p	gsdl.ags.syntax.whitespace
+	.enter	parser.<*	rune.t	gsdl.ags.typeitem.expr.t	string.t
+
+_gsdl.ags.typeitem.expr.parser_tyubsum.p_f_c	.expr
 parser.pos.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.constr.t	.tygvar
