@@ -45,6 +45,8 @@ _gsdl.ags.typeitem.expr.print_typroduct.s	.string	\t.typroduct
 _gsdl.ags.typeitem.expr.print_fields.print	.closure	_gsdl.ags.typeitem.expr.print_fields.print_c	_gsdl.ags.typeitem.expr.print_fields.print_ty
 _gsdl.ags.typeitem.expr.print_fields.print_nl.s	.string	\n
 
+gsdl.ags.typeitem.constrs.parser	.closure	_gsdl.ags.typeitem.constrs.parser_c
+
 gsdl.ags.typeitem.tyexpr	.closure	_gsdl.ags.typeitem.tyexpr_c
 
 gsdl.ags.typeitem.expr.lift	.closure	_gsdl.ags.typeitem.expr.lift_c
@@ -767,7 +769,6 @@ gsdl.ags.typeitem.expr.t	.tygvar
 string.t	.tygvar
 list.constr.ty	.tylet	list.t	gsdl.ags.typeitem.constr.t
 _gsdl.ags.typeitem.expr.parser_tysum.p_f_c	.subcode
-_gsdl.ags.typeitem.expr.parser_tysum.p_constrs.p3.1.f_c	.subcode
 parser.lift2	.gvar
 parser.pos.get	.gvar
 parser.*>	.gvar
@@ -776,19 +777,13 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.typeitem.expr.parser_tysum.p_tysum.re	.gvar
 parser.<*	.gvar
-parser.many	.gvar
-gsdl.ags.syntax.id	.gvar
+gsdl.ags.typeitem.constrs.parser	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.typeitem.expr.parser_tysum.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 tysum.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.expr.parser_tysum.p_tysum.re
-constrs.p3.1.f	.alloc	_gsdl.ags.typeitem.expr.parser_tysum.p_constrs.p3.1.f_c
-constr.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-argty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-constrs.p3.1	.apply	parser.lift2	rune.t	string.t	string.t	gsdl.ags.typeitem.constr.t	|	constrs.p3.1.f	constr.p	argty.p
-constrs.p3	.apply	parser.many	rune.t	gsdl.ags.typeitem.constr.t	|	constrs.p3.1
-constrs.p2	.apply	parser.<*	rune.t	list.constr.ty	string.t	|	constrs.p3	gsdl.ags.syntax.whitespace
+constrs.p2	.apply	parser.<*	rune.t	list.constr.ty	string.t	|	gsdl.ags.typeitem.constrs.parser	gsdl.ags.syntax.whitespace
 constrs.p1	.apply	parser.*>	rune.t	string.t	list.constr.ty	|	tysum.p	constrs.p2
 constrs.p	.apply	parser.*>	rune.t	string.t	list.constr.ty	|	gsdl.ags.syntax.columnsep	constrs.p1
 	.app	f	pos.get	constrs.p
@@ -802,13 +797,6 @@ gsdl.ags.typeitem.expr.t	.tygvar	# Temp
 pos	.larg	parser.pos.t
 cs	.larg	list.t	gsdl.ags.typeitem.constr.t
 	.undef	gsdl.ags.typeitem.expr.t
-
-_gsdl.ags.typeitem.expr.parser_tysum.p_constrs.p3.1.f_c	.expr
-string.t	.tygvar
-gsdl.ags.typeitem.constr.t	.tygvar	# Temp
-c	.larg	string.t
-a	.larg	string.t
-	.undef	gsdl.ags.typeitem.constr.t
 
 # §section §gs{gsdl.ags.typeitem.expr.print}
 
@@ -876,6 +864,32 @@ fs1		.fkarg	1	list.t	gsdl.ags.typeitem.field.t
 		.case	nil
 			.app	_gsdl.ags.typeitem.expr.print_fields.print_nl.s
 			.enter	diff.list.fromlist	rune.t
+
+# §section §gs{gsdl.ags.typeitem.constrs.parser}
+
+_gsdl.ags.typeitem.constrs.parser_c	.expr
+rune.t	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
+string.t	.tygvar
+_gsdl.ags.typeitem.constrs.parser_f_c	.subcode
+parser.many	.gvar
+parser.lift2	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+gsdl.ags.syntax.id	.gvar
+f	.alloc	_gsdl.ags.typeitem.constrs.parser_f_c
+constr.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+argty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+p	.apply	parser.lift2	rune.t	string.t	string.t	gsdl.ags.typeitem.constr.t	|	f	constr.p	argty.p
+	.app	p
+	.enter	parser.many	rune.t	gsdl.ags.typeitem.constr.t
+
+_gsdl.ags.typeitem.constrs.parser_f_c	.expr
+string.t	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar	# Temp
+c	.larg	string.t
+a	.larg	string.t
+	.undef	gsdl.ags.typeitem.constr.t
 
 # §section §gs{gsdl.ags.typeitem.t} Constructors
 
