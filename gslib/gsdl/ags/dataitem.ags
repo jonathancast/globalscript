@@ -7,6 +7,7 @@ _gsdl.ags.dataitem.segment.parser_gsdata.re	.regex	\t.data
 
 gsdl.ags.dataitem.parser	.closure	_gsdl.ags.dataitem.parser_c
 _gsdl.ags.dataitem.parser_closure.p_closure.re	.regex	.closure
+_gsdl.ags.dataitem.parser_list.p_list.re	.regex	.list
 _gsdl.ags.dataitem.parser_string.p_string.re	.regex	.string
 
 gsdl.ags.dataitem.≡	.closure	_gsdl.ags.dataitem.≡_c	_gsdl.ags.dataitem.≡_ty
@@ -57,12 +58,15 @@ bool.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 _gsdl.ags.dataitem.parser_closure.p_c	.subcode
+_gsdl.ags.dataitem.parser_list.p_c	.subcode
 _gsdl.ags.dataitem.parser_string.p_c	.subcode
 parser.<|>	.gvar
 isags	.larg	bool.t
 closure.p	.alloc	_gsdl.ags.dataitem.parser_closure.p_c
+list.p	.alloc	_gsdl.ags.dataitem.parser_list.p_c
 string.p	.alloc	_gsdl.ags.dataitem.parser_string.p_c
-	.app	closure.p	string.p
+p	.apply	parser.<|>	rune.t	gsdl.ags.dataitem.t	|	list.p	string.p
+	.app	closure.p	p
 	.enter	parser.<|>	rune.t	gsdl.ags.dataitem.t
 
 # E.g. §ags{foo\t.closure\t_foo_c\n}
@@ -117,6 +121,65 @@ pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
 	.app	pos	nm	co	ty
 	.yield	gsdl.ags.dataitem.closure
+
+_gsdl.ags.dataitem.parser_list.p_c	.expr
+bool.t	.tygvar
+_gsdl.ags.dataitem.parser_list.p_k	.subcode
+bool.t.out	.cogvar
+isags	.fv	bool.t
+	.force	_gsdl.ags.dataitem.parser_list.p_k
+	.coerce	bool.t.out
+	.enter	isags
+
+_gsdl.ags.dataitem.parser_list.p_k	.forcecont
+bool.prim.u	.tygvar
+rune.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar
+list.t	.tygvar
+list.string.ty	.tylet	list.t	string.t
+_gsdl.ags.dataitem.parser_list.p_true_f_c	.subcode
+parser.fail	.gvar
+parser.<*	.gvar
+parser.lift4	.gvar
+parser.pos.get	.gvar
+gsdl.ags.syntax.id	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.dataitem.parser_list.p_list.re	.gvar
+parser.many	.gvar
+
+gsdl.ags.syntax.whitespace	.gvar
+isags0	.karg	bool.prim.u
+	.analyze	isags0	false	true
+		.case	false
+			.enter	parser.fail	rune.t	gsdl.ags.dataitem.t
+		.case	true
+pos.get			.apply	parser.pos.get	rune.t
+f			.alloc	_gsdl.ags.dataitem.parser_list.p_true_f_c
+list.p			.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.dataitem.parser_list.p_list.re
+ty.p2			.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+ty.p1			.apply	parser.*>	rune.t	string.t	string.t	|	list.p	ty.p2
+ty.p			.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	ty.p1
+elems.p1			.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+elems.p			.apply	parser.many	rune.t	string.t	|	elems.p1
+p			.apply	parser.lift4	rune.t	parser.pos.t	string.t	string.t	list.string.ty	gsdl.ags.dataitem.t	|	f	pos.get	gsdl.ags.syntax.id	ty.p	elems.p
+			.app	p	gsdl.ags.syntax.whitespace
+			.enter	parser.<*	rune.t	gsdl.ags.dataitem.t	string.t
+
+_gsdl.ags.dataitem.parser_list.p_true_f_c	.expr
+parser.pos.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar	# Temp
+pos	.larg	parser.pos.t
+nm	.larg	string.t
+ty	.larg	string.t
+es	.larg	list.t	string.t
+	.undef	gsdl.ags.dataitem.t
 
 _gsdl.ags.dataitem.parser_string.p_c	.expr
 bool.t	.tygvar

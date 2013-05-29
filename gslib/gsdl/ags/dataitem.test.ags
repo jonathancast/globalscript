@@ -29,7 +29,7 @@ _test.eq.closure.diff.ty_foo.ty.s	.string	_foo_ty
 
 _test.parse	.closure	_test.parse_c
 
-_tests.parse	.list	test.property.t	_test.parse.missing.gsdata.segment	_test.parse.empty.gsdata.segment	_test.parse.closure	_test.parse.closure.nolabel	_test.parse.closure.typesig
+_tests.parse	.list	test.property.t	_test.parse.missing.gsdata.segment	_test.parse.empty.gsdata.segment	_test.parse.closure	_test.parse.closure.nolabel	_test.parse.closure.typesig	_test.parse.list
 
 _test.parse.missing.gsdata.segment	.closure	_test.parse.missing.gsdata.segment_c
 _test.parse.missing.gsdata.segment_label	.string	segment.parser\s=~\sqq{}
@@ -55,6 +55,10 @@ _test.parse.closure.typesig_input	.string	foo\t.closure\t_foo_c\t_foo_ty\n
 _test.parse.closure.typesig_foo.s	.string	foo
 _test.parse.closure.typesig_foo.c.s	.string	_foo_c
 _test.parse.closure.typesig_foo.ty.s	.string	_foo_ty
+
+_test.parse.list	.closure	_test.parse.list_c
+_test.parse.list_label	.string	qq{_tests\\t.list\\ttest.property.t\\t_test.x.eq.x\\n}\s=~\sparser
+_test.parse.list_input	.string	_tests\t.list\ttest.property.t\t_test.x.eq.x\n
 
 # §section §gs{fmtgs}
 
@@ -339,6 +343,32 @@ just.foo.ty.s	.apply	maybe.just	string.t	|	_test.parse.closure.typesig_foo.ty.s
 expected	.apply	gsdl.ags.dataitem.closure	|	pos	just.foo.s	_test.parse.closure.typesig_foo.c.s	just.foo.ty.s
 	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
 	.enter	test.assert.eq	gsdl.ags.dataitem.t
+
+# §subsection §gs{qq{_tests\\t.list\\ttest.property.t\\t_test.x.eq.x\\n} =~ parser}
+
+_test.parse.list_c	.expr
+rune.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+_test.parse.list_k_c	.subcode
+test.property.label	.gvar
+_test.parse.list_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.dataitem.parser	.gvar
+bool.true	.gvar
+_test.parse.list_input	.gvar
+k	.alloc	_test.parse.list_k_c
+ds	.apply	gsdl.ags.dataitem.parser	|	bool.true
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.advance	rune.print	ds	_test.parse.list_input	k
+	.app	_test.parse.list_label	test
+	.enter	test.property.label
+
+_test.parse.list_k_c	.expr
+gsdl.ags.dataitem.t	.tygvar
+test.true	.gvar
+di	.larg	gsdl.ags.dataitem.t
+	.enter	test.true
 
 # §section §gs{fmtgs}
 
