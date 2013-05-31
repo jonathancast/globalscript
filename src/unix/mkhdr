@@ -1,2 +1,2 @@
-CFLAGS=$CFLAGS -D__UNIX__
+CFLAGS=$CFLAGS -D__UNIX__ -O2
 CPU=`uname -m`
