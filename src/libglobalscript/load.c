@@ -554,6 +554,7 @@ gsparse_code_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
 
 static long gsgrab_code_line(struct gsparse_input_pos *, struct uxio_ichannel *, gsparsedfile *, struct gsparsedline **, char *, char **);
 
+static int gsparse_code_type_gvar_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_code_type_fv_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_code_type_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_code_type_let_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
@@ -572,7 +573,8 @@ gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
     long n;
 
     while ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) > 0) {
-        if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
+        if (gsparse_code_type_gvar_op(pos, parsedline, fields, n)) {
+        } else if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_arg_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
@@ -623,7 +625,8 @@ gsparse_force_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, 
         parsedline = gsparsed_file_addline(pos, parsedfile, n);
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
-        if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
+        if (gsparse_code_type_gvar_op(pos, parsedline, fields, n)) {
+        } else if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_cont_arg(pos, parsedline, fields, n)) {
@@ -655,7 +658,8 @@ gsparse_strict_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
         parsedline = gsparsed_file_addline(pos, parsedfile, n);
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
-        if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
+        if (gsparse_code_type_gvar_op(pos, parsedline, fields, n)) {
+        } else if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_cont_arg(pos, parsedline, fields, n)) {
@@ -688,7 +692,8 @@ gsparse_ubcase_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
         parsedline = gsparsed_file_addline(pos, parsedfile, n);
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
-        if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
+        if (gsparse_code_type_gvar_op(pos, parsedline, fields, n)) {
+        } else if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_field_cont_arg(pos, parsedline, fields, n)) {
@@ -712,9 +717,9 @@ gsparse_ubcase_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
 
 static
 int
-gsparse_code_type_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+gsparse_code_type_gvar_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymtygvar, gssymtyfv;
+    static gsinterned_string gssymtygvar;
 
     if (gssymceq(parsedline->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
         if (*fields[0])
@@ -724,7 +729,19 @@ gsparse_code_type_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *pars
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .tygvar op", pos->real_filename, pos->real_lineno)
         ;
-    } else if (gssymceq(parsedline->directive, gssymtyfv, gssymcodeop, ".tyfv")) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+int
+gsparse_code_type_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+{
+    static gsinterned_string gssymtyfv;
+
+    if (gssymceq(parsedline->directive, gssymtyfv, gssymcodeop, ".tyfv")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0]);
         else
@@ -1253,7 +1270,8 @@ gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
-        if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
+        if (gsparse_code_type_gvar_op(pos, parsedline, fields, n)) {
+        } else if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_arg_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_arg_op(pos, parsedline, fields, n)) {
