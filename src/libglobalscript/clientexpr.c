@@ -120,6 +120,8 @@ gsnapplyv(struct gspos pos, gsvalue fun, int n, gsvalue *args)
 
     if (n < 1) return fun;
 
+    gsstatprint("%P: Creating application thunk\n", pos);
+
     res = gsreserveheap(MAX(sizeof(struct gsapplication) + n*sizeof(gsvalue), sizeof(struct gsindirection)));
 
     app = (struct gsapplication *)res;
