@@ -10,11 +10,15 @@ void
 gstat_initialize(char *doc)
 {
     struct gsstringbuilder *buf;
+    char *basename;
 
     if (!gsflag_stat_collection) return;
 
+    basename = strrchr(doc, '/');
+    if (basename) basename++; else basename = doc;
+
     buf = gsreserve_string_builder();
-    gsstring_builder_print(buf, "%s.stats", doc);
+    gsstring_builder_print(buf, "%s.stats", basename);
     gsfinish_string_builder(buf);
 
     gsstats_fd = create(buf->start, OWRITE | OTRUNC | OCEXEC, 0644);
