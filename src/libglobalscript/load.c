@@ -568,10 +568,7 @@ static
 long
 gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
-    static gsinterned_string gssymimpprim;
-
     struct gsparsedline *parsedline;
-    int i;
     long n;
 
     while ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) > 0) {
@@ -582,37 +579,6 @@ gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
         } else if (gsparse_value_arg_op(pos, parsedline, fields, n)) {
         } else if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
-        } else if (gssymceq(parsedline->directive, gssymimpprim, gssymcodeop, ".impprim")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-            else
-                gsfatal("%s:%d: Missing label on allocation op", pos->real_filename, pos->real_lineno);
-            if (n < 3)
-                gsfatal("%s:%d: Missing primset on .impprim", pos->real_filename, pos->real_lineno)
-            ;
-            parsedline->arguments[2 - 2] = gsintern_string(gssymprimsetlable, fields[2]);
-            if (n < 4)
-                gsfatal("%s:%d: Missing prim type name on .impprim", pos->real_filename, pos->real_lineno)
-            ;
-            parsedline->arguments[3 - 2] = gsintern_string(gssymtypelable, fields[3]);
-            if (n < 5)
-                gsfatal("%s:%d: Missing prim name on .impprim", pos->real_filename, pos->real_lineno)
-            ;
-            parsedline->arguments[4 - 2] = gsintern_string(gssymdatalable, fields[4]);
-            if (n < 6)
-                gsfatal("%s:%d: Missing declared type on .impprim", pos->real_filename, pos->real_lineno)
-            ;
-            parsedline->arguments[5 - 2] = gsintern_string(gssymtypelable, fields[5]);
-            for (i = 6; i < n && strcmp(fields[i], "|"); i++) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-            }
-            if (i < n) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
-                i++;
-            }
-            for (; i < n; i++) {
-                parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
-            }
         } else if (gsparse_cont_push_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
             return 0;
@@ -1018,7 +984,7 @@ static
 int
 gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, char **fields, long n)
 {
-    static gsinterned_string gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
+    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
 
     int i;
 
@@ -1050,6 +1016,37 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
         for (; i < n; i++)
             p->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
         ;
+    } else if (gssymceq(p->directive, gssymimpprim, gssymcodeop, ".impprim")) {
+        if (*fields[0])
+            p->label = gsintern_string(gssymdatalable, fields[0]);
+        else
+            gsfatal("%s:%d: Missing label on allocation op", pos->real_filename, pos->real_lineno);
+        if (n < 3)
+            gsfatal("%s:%d: Missing primset on .impprim", pos->real_filename, pos->real_lineno)
+        ;
+        p->arguments[2 - 2] = gsintern_string(gssymprimsetlable, fields[2]);
+        if (n < 4)
+            gsfatal("%s:%d: Missing prim type name on .impprim", pos->real_filename, pos->real_lineno)
+        ;
+        p->arguments[3 - 2] = gsintern_string(gssymtypelable, fields[3]);
+        if (n < 5)
+            gsfatal("%s:%d: Missing prim name on .impprim", pos->real_filename, pos->real_lineno)
+        ;
+        p->arguments[4 - 2] = gsintern_string(gssymdatalable, fields[4]);
+        if (n < 6)
+            gsfatal("%s:%d: Missing declared type on .impprim", pos->real_filename, pos->real_lineno)
+        ;
+        p->arguments[5 - 2] = gsintern_string(gssymtypelable, fields[5]);
+        for (i = 6; i < n && strcmp(fields[i], "|"); i++) {
+            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+        }
+        if (i < n) {
+            p->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        for (; i < n; i++) {
+            p->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
+        }
     } else if (gssymceq(p->directive, gssymconstr, gssymcodeop, ".constr")) {
         STORE_VALUE_ALLOC_OP_LABEL(".constr");
         if (n < 3)
