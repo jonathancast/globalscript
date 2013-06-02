@@ -152,7 +152,7 @@ api_thread_pool_main(void *arg)
         if (gs_sys_should_gc()) {
             struct gsstringbuilder *err;
 
-            if (gsflag_stat_collection) fprint(2, "Before garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
+            gsstatprint("Before garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
             err = gsreserve_string_builder();
 
             gs_sys_wait_for_gc();
@@ -175,7 +175,7 @@ api_thread_pool_main(void *arg)
                 goto gc_done;
             }
 
-            if (gsflag_stat_collection) fprint(2, "After garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
+            gsstatprint("After garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
         }
     gc_done:
 
@@ -297,9 +297,9 @@ api_thread_pool_main(void *arg)
     unlock(&api_at_termination_queue_lock);
 
     if (gsflag_stat_collection) {
-        fprint(2, "# API threads: %d\n", api_thread_queue->numthreads);
-        fprint(2, "API thread total lifetime: %llds %lldms\n", thread_lifetime / 1000 / 1000 / 1000, (thread_lifetime / 1000 / 1000) % 1000);
-        if (loops) fprint(2, "# API thread iterations: %lld (%0.2g%% instructions, %0.2g%% waiting)\n", loops, ((double)instrs / loops) * 100, ((double)loops_waiting / loops) * 100);
+        gsstatprint("# API threads: %d\n", api_thread_queue->numthreads);
+        gsstatprint("API thread total lifetime: %llds %lldms\n", thread_lifetime / 1000 / 1000 / 1000, (thread_lifetime / 1000 / 1000) % 1000);
+        if (loops) gsstatprint("# API thread iterations: %lld (%0.2g%% instructions, %0.2g%% waiting)\n", loops, ((double)instrs / loops) * 100, ((double)loops_waiting / loops) * 100);
     }
 
     ace_down();

@@ -35,6 +35,10 @@ void gsassert(char *srcfile, int srcline, int passed, char *err, ...);
 
 extern int gsflag_stat_collection;
 
+/* §section Statistics collection */
+
+void gsstatprint(char *, ...);
+
 /* §section Threading */
 
 #ifdef __UNIX__

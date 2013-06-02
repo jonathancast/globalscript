@@ -30,6 +30,7 @@ OFILES=\
 	iochan.$O \
 	iostat.$O \
 	stringbuilder.$O \
+	stats.$O \
 	$SYSTEM/lock.$O \
 	$SYSTEM/$CPU/tas.$O \
 	$SYSTEM/gssysthreads.$O \

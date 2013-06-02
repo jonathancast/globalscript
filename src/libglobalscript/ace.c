@@ -215,21 +215,21 @@ no_clients:
     end_time = nsec();
 
     if (gsflag_stat_collection) {
-        fprint(2, "# ACE threads: %d\n", ace_thread_queue->numthreads);
-        if (ace_thread_queue->numthreads) fprint(2, "Avg # instructions / ACE thread: %d\n", num_instrs / ace_thread_queue->numthreads);
-        fprint(2, "# ACE outer loops: %lld\n", outer_loops);
-        if (outer_loops) fprint(2, "Avg # ACE threads: %02g\n", (double)stats.numthreads_total / outer_loops);
-        if (outer_loops) fprint(2, "Avg ACE system load: %02g\n", (double)total_thread_load / outer_loops);
-        if (outer_loops) fprint(2, "ACE %% loops w/ no threads: %02g%\n", ((double)outer_loops_without_threads / outer_loops) * 100);
-        if (stats.numthreads_total) fprint(2, "ACE threads: %2.2g%% blocked, %2.2g%% blocked on threads\n", ((double)stats.num_blocked / stats.numthreads_total) * 100, ((double)stats.num_blocked_threads / stats.numthreads_total) * 100);
-        fprint(2, "ACE Run time: %llds %lldms\n", (end_time - start_time) / 1000 / 1000 / 1000, ((end_time - start_time) / 1000 / 1000) % 1000);
-        fprint(2, "ACE Finding thread time: %llds %lldms\n", finding_thread_time / 1000 / 1000 / 1000, (finding_thread_time / 1000 / 1000) % 1000);
-        fprint(2, "ACE Checking thread state time: %llds %lldms\n", stats.checking_thread_time / 1000 / 1000 / 1000, (stats.checking_thread_time / 1000 / 1000) % 1000);
-        fprint(2, "ACE instruction execution time: %llds %lldms\n", instr_time / 1000 / 1000 / 1000, (instr_time / 1000 / 1000) % 1000);
-        fprint(2, "GC time: %llds %lldms\n", stats.gc_time / 1000 / 1000 / 1000, (stats.gc_time / 1000 / 1000) % 1000);
-        if (num_instrs) fprint(2, "Avg unit of work: %gμs\n", (double)instr_time / num_instrs / 1000);
-        if (num_timeslots) fprint(2, "Time slots: %lld (%02g%% ran to completion; %02g%% blocked; %02g%% finished; %02g%% blocked on functions)\n", num_timeslots, (double)num_completed_timeslots / num_timeslots * 100, (double)num_finished_timeslots / num_timeslots * 100, (double)num_blocked_timeslots / num_timeslots * 100, (double)stats.num_blocks_on_function / num_timeslots * 100);
-        fprint(2, "Time waiting for a thread: %llds %lldms\n", waiting_for_thread_time / 1000 / 1000 / 1000, (waiting_for_thread_time / 1000 / 1000) % 1000);
+        gsstatprint("# ACE threads: %d\n", ace_thread_queue->numthreads);
+        if (ace_thread_queue->numthreads) gsstatprint("Avg # instructions / ACE thread: %d\n", num_instrs / ace_thread_queue->numthreads);
+        gsstatprint("# ACE outer loops: %lld\n", outer_loops);
+        if (outer_loops) gsstatprint("Avg # ACE threads: %02g\n", (double)stats.numthreads_total / outer_loops);
+        if (outer_loops) gsstatprint("Avg ACE system load: %02g\n", (double)total_thread_load / outer_loops);
+        if (outer_loops) gsstatprint("ACE %% loops w/ no threads: %02g%\n", ((double)outer_loops_without_threads / outer_loops) * 100);
+        if (stats.numthreads_total) gsstatprint("ACE threads: %2.2g%% blocked, %2.2g%% blocked on threads\n", ((double)stats.num_blocked / stats.numthreads_total) * 100, ((double)stats.num_blocked_threads / stats.numthreads_total) * 100);
+        gsstatprint("ACE Run time: %llds %lldms\n", (end_time - start_time) / 1000 / 1000 / 1000, ((end_time - start_time) / 1000 / 1000) % 1000);
+        gsstatprint("ACE Finding thread time: %llds %lldms\n", finding_thread_time / 1000 / 1000 / 1000, (finding_thread_time / 1000 / 1000) % 1000);
+        gsstatprint("ACE Checking thread state time: %llds %lldms\n", stats.checking_thread_time / 1000 / 1000 / 1000, (stats.checking_thread_time / 1000 / 1000) % 1000);
+        gsstatprint("ACE instruction execution time: %llds %lldms\n", instr_time / 1000 / 1000 / 1000, (instr_time / 1000 / 1000) % 1000);
+        gsstatprint("GC time: %llds %lldms\n", stats.gc_time / 1000 / 1000 / 1000, (stats.gc_time / 1000 / 1000) % 1000);
+        if (num_instrs) gsstatprint("Avg unit of work: %gμs\n", (double)instr_time / num_instrs / 1000);
+        if (num_timeslots) gsstatprint("Time slots: %lld (%02g%% ran to completion; %02g%% blocked; %02g%% finished; %02g%% blocked on functions)\n", num_timeslots, (double)num_completed_timeslots / num_timeslots * 100, (double)num_finished_timeslots / num_timeslots * 100, (double)num_blocked_timeslots / num_timeslots * 100, (double)stats.num_blocks_on_function / num_timeslots * 100);
+        gsstatprint("Time waiting for a thread: %llds %lldms\n", waiting_for_thread_time / 1000 / 1000 / 1000, (waiting_for_thread_time / 1000 / 1000) % 1000);
     }
 }
 

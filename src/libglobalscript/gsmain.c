@@ -73,7 +73,7 @@ have_document:
         gsfatal_unimpl(__FILE__, __LINE__, "Do not in fact have a document; check gsaddfile")
     ;
     gscheck_program(docfilename, symtable, gsentrypos, gsentrytype);
-    if (gsflag_stat_collection) fprint(2, "Before garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
+    gsstatprint("Before garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
     if (gs_sys_should_gc()) {
         struct gsstringbuilder *err;
         gsvalue gctemp;
@@ -102,7 +102,7 @@ have_document:
             gsfatal("GC failed: %s", err->start);
         }
     }
-    if (gsflag_stat_collection) fprint(2, "After garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
+    gsstatprint("After garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
     if (ace_init() < 0)
         gsfatal("ace_init failed: %r")
     ;
