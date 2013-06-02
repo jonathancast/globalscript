@@ -484,7 +484,7 @@ gsparse_data_item(struct gsparse_input_pos *pos, int is_ags, gsparsedfile *parse
     return 1;
 }
 
-static long gsparse_code_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
+static long gsparse_expr_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
 static long gsparse_force_cont_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
 static long gsparse_strict_cont_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
 static long gsparse_ubcase_cont_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
@@ -514,7 +514,7 @@ gsparse_code_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
         if (numfields > 2)
             gsfatal("%s:%d: Too many arguments to .expr", pos->real_filename, pos->real_lineno)
         ;
-        return gsparse_code_ops(pos, parsedfile, parsedline, chan, line, fields);
+        return gsparse_expr_ops(pos, parsedfile, parsedline, chan, line, fields);
     } else if (gssymceq(parsedline->directive, gssymforcecont, gssymcodedirective, ".forcecont")) {
         if (numfields > 2)
             gsfatal("%s:%d: Too many arguments to .forcecont", pos->real_filename, pos->real_lineno)
@@ -566,7 +566,7 @@ static int gsparse_code_terminal_expr_op(struct gsparse_input_pos *, gsparsedfil
 
 static
 long
-gsparse_code_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
+gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
     static gsinterned_string gssymimpprim;
 
