@@ -568,7 +568,7 @@ static
 long
 gsparse_code_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
-    static gsinterned_string gssymarg, gssymimpprim;
+    static gsinterned_string gssymimpprim;
 
     struct gsparsedline *parsedline;
     int i;
@@ -580,16 +580,6 @@ gsparse_code_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
         } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_arg_op(pos, parsedline, fields, n)) {
-        } else if (gssymceq(parsedline->directive, gssymarg, gssymcodeop, ".arg")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-            else
-                gsfatal("%s:%d: Missing label on .arg op", pos->real_filename, pos->real_lineno);
-            if (n < 3)
-                gsfatal("%s:%d: Missing type on .arg", pos->real_filename, pos->real_lineno);
-            for (i = 2; i < n; i++)
-                parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-            ;
         } else if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
         } else if (gssymceq(parsedline->directive, gssymimpprim, gssymcodeop, ".impprim")) {
@@ -843,7 +833,7 @@ static
 int
 gsparse_value_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymlarg;
+    static gsinterned_string gssymlarg, gssymarg;
 
     int i;
 
@@ -856,6 +846,16 @@ gsparse_value_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedl
         if (n < 3)
             gsfatal("%s:%d: Missing type on .larg", pos->real_filename, pos->real_lineno)
         ;
+        for (i = 2; i < n; i++)
+            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+    } else if (gssymceq(parsedline->directive, gssymarg, gssymcodeop, ".arg")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+        else
+            gsfatal("%s:%d: Missing label on .arg op", pos->real_filename, pos->real_lineno);
+        if (n < 3)
+            gsfatal("%s:%d: Missing type on .arg", pos->real_filename, pos->real_lineno);
         for (i = 2; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
