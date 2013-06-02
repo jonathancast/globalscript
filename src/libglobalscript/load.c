@@ -578,8 +578,8 @@ gsparse_code_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
         if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_arg_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_value_arg_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
+        } else if (gsparse_value_arg_op(pos, parsedline, fields, n)) {
         } else if (gssymceq(parsedline->directive, gssymarg, gssymcodeop, ".arg")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymdatalable, fields[0]);
