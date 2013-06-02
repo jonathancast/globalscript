@@ -552,6 +552,8 @@ gsparse_code_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
     return -1;
 }
 
+static long gsgrab_code_line(struct gsparse_input_pos *, struct uxio_ichannel *, gsparsedfile *, struct gsparsedline **, char *, char **);
+
 static int gsparse_code_type_fv_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_code_type_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_code_type_let_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
@@ -572,11 +574,7 @@ gsparse_code_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
     int i;
     long n;
 
-    while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
-        parsedline = gsparsed_file_addline(pos, parsedfile, n);
-
-        parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
-
+    while ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) > 0) {
         if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_arg_op(pos, parsedline, fields, n)) {
         } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
@@ -638,6 +636,22 @@ gsparse_code_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
         gsfatal("%s:$: EOF in middle of reading expression", pos->real_filename);
 
     return -1;
+}
+
+long
+gsgrab_code_line(struct gsparse_input_pos *pos, struct uxio_ichannel *chan, gsparsedfile *parsedfile, struct gsparsedline **pparsedline, char *line, char **fields)
+{
+    long n;
+
+    n = gsgrabline(pos, chan, line, fields);
+
+    if (n <= 0) return n;
+
+    *pparsedline = gsparsed_file_addline(pos, parsedfile, n);
+
+    (*pparsedline)->directive = gsintern_string(gssymcodeop, fields[1]);
+
+    return n;
 }
 
 static int gsparse_cont_arg(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
