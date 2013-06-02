@@ -70,7 +70,7 @@ $GLOBALSCRIPT/lib/$LIB:	${OFILES:%=$GLOBALSCRIPT/lib/$LIB(%)}
 	$AR rsc $GLOBALSCRIPT/lib/$LIB $stem.$O
 
 %.$O: $GLOBALSCRIPT/include/libglobalscript.h
-gsmain.$O: gsinputfile.h gssetup.h ace.h
+gsmain.$O: gsinputfile.h gssetup.h ace.h gsstats.h
 load.$O: gsinputalloc.h gsinputfile.h gsbytecompile.h gstopsort.h gstypealloc.h gstypecheck.h gstypecheck.h ace.h
 inputalloc.$O: gsinputfile.h gsinputalloc.h
 alloc.$O: gsproc.h
@@ -92,6 +92,7 @@ naturals.$O: gssetup.h
 api.$O: api.h
 iochan.$O: iofile.h $SYSTEM/iosysconstants.h iomacros.h
 iostat.$O: $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h
+stats.$O: gsstats.h
 unix/iodir.$O: iofile.h iostat.h iomacros.h unix/iodir.h
 unix/ioenv.$O: unix/iosysconstants.h iofile.h
 unix/gssysthreads.$O: gsproc.h
