@@ -1,0 +1,20 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+_foo_ty	.tygvar
+natural.t	.tygvar
+t	.tylet	_foo_ty	natural.t
+	.undef	t
+
+	.type
+
+_foo_ty	.tyexpr
+α	.tylambda	*
+β	.tylambda	*
+	.tyref	α

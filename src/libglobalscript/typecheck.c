@@ -1439,6 +1439,7 @@ gsbc_typecheck_code_type_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_
             arg = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
             ty = gstype_apply(p->pos, ty, arg);
         }
+        if (ty->node == gstype_lambda) gsfatal("%P: Not enough arguments to %y", p->pos, p->arguments[0]);
         pcl->tyregs[pcl->nregs] = ty;
         pcl->tyregkinds[pcl->nregs] = gstypes_calculate_kind(ty);
         pcl->nregs++;
