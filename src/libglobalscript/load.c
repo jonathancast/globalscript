@@ -572,26 +572,52 @@ gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
     struct gsparsedline *parsedline;
     long n;
 
-    while ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) > 0) {
-        if (gsparse_code_type_gvar_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_code_type_arg_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_value_arg_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_cont_push_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
-            return 0;
-        } else {
-            gsfatal(UNIMPL("%s:%d: Unimplemented code op %s"), pos->real_filename, pos->real_lineno, fields[1]);
-        }
+    if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err;
+
+    while (gsparse_code_type_gvar_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_code_type_fv_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_code_type_arg_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_code_type_let_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_value_fv_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_value_arg_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (
+        gsparse_thunk_alloc_op(pos, parsedline, fields, n)
+        || gsparse_value_alloc_op(pos, parsedline, fields, n)
+    )
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_cont_push_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
+        return 0;
+    } else {
+        gsfatal(UNIMPL("%s:%d: Unimplemented code op %s"), pos->real_filename, pos->real_lineno, fields[1]);
     }
-    if (n < 0)
-        gsfatal("%s:%d: Error in reading code line: %r", pos->real_filename, pos->real_lineno);
-    else
-        gsfatal("%s:$: EOF in middle of reading expression", pos->real_filename);
+
+err:
+    if (n < 0) gsfatal("%s:%d: Error in reading code line: %r", pos->real_filename, pos->real_lineno);
+    else gsfatal("%s:$: EOF in middle of reading expression", pos->real_filename);
 
     return -1;
 }
