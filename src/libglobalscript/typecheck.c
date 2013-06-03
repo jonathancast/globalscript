@@ -928,7 +928,6 @@ static struct gs_sys_global_block_suballoc_info gsbc_code_type_info = {
 };
 
 enum gsbc_code_regtype {
-    rtarg,
     rtlet,
     rtconts,
 };
@@ -1033,9 +1032,9 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_data_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_data_arg_op(p, &cl)) {
-        } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymimpprim, gssymcodeop, ".impprim")) {
             struct gsregistered_primset *prims;
             struct gstype *type;
@@ -1314,7 +1313,7 @@ void
 gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
     pcl->nregs = pcl->ntyfvs = pcl->nfvs = pcl->ntyargs = pcl->nargs = pcl->ncodes = pcl->nconts = 0;
-    pcl->regtype = rtarg;
+    pcl->regtype = rtlet;
 }
 
 int
@@ -1602,10 +1601,6 @@ gsbc_typecheck_data_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or
         int reg;
         struct gstype *argtype;
 
-        if (pcl->regtype > rtarg)
-            gsfatal("%P: Too late to add arguments", p->pos)
-        ;
-        pcl->regtype = rtarg;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers", p->pos)
         ;
@@ -1856,7 +1851,7 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
 
             *pp = gsinput_next_line(ppseg, *pp);
             nregs = pcl->nregs;
-            pcl->regtype = rtarg;
+            pcl->regtype = rtlet;
             casetype = gsbc_typecheck_case(case_pos, symtable, pp, ppseg, pcl, sum->constrs[constr].argtype);
             pcl->nregs = nregs;
 
@@ -1890,7 +1885,7 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
 
         *pp = gsinput_next_line(ppseg, *pp);
         nregs = pcl->nregs;
-        pcl->regtype = rtarg;
+        pcl->regtype = rtlet;
         calculated_type = gsbc_typecheck_default(default_pos, symtable, pp, ppseg, pcl);
         pcl->nregs = nregs;
 
@@ -1914,7 +1909,7 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
 
             *pp = gsinput_next_line(ppseg, *pp);
             nregs = pcl->nregs;
-            pcl->regtype = rtarg;
+            pcl->regtype = rtlet;
             casetype = gsbc_typecheck_case(case_pos, symtable, pp, ppseg, pcl, sum->constrs[constr].argtype);
             pcl->nregs = nregs;
 
@@ -2784,9 +2779,9 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_data_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_data_arg_op(p, &cl)) {
-        } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymbind, gssymcodeop, ".bind")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
