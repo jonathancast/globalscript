@@ -928,7 +928,6 @@ static struct gs_sys_global_block_suballoc_info gsbc_code_type_info = {
 };
 
 enum gsbc_code_regtype {
-    rttylet,
     rtcode,
     rtgvar,
     rtfv,
@@ -1029,9 +1028,9 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_code_type_let_op(p, &cl)) {
-        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymimpprim, gssymcodeop, ".impprim")) {
@@ -1140,9 +1139,9 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     cont_arg_type = 0;
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_code_type_let_op(p, &cl)) {
-        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
             gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_unlifted_kind());
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
@@ -1179,9 +1178,9 @@ gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile
     cont_arg_type = 0;
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_code_type_let_op(p, &cl)) {
-        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
             gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_lifted_kind());
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
@@ -1267,9 +1266,9 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
     fcl.nfields = 0;
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_code_type_let_op(p, &cl)) {
-        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_field_cont_arg_op(p, &cl, &fcl)) {
             if (cont_arg_type)
                 gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
@@ -1303,7 +1302,7 @@ void
 gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
     pcl->nregs = pcl->ntyfvs = pcl->nfvs = pcl->ntyargs = pcl->nargs = pcl->ncodes = pcl->nconts = 0;
-    pcl->regtype = rttylet;
+    pcl->regtype = rtcode;
 }
 
 int
@@ -1425,10 +1424,6 @@ gsbc_typecheck_code_type_let_op(struct gsparsedline *p, struct gsbc_typecheck_co
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal(UNIMPL("%P: Register overflow"), p->pos)
         ;
-        if (pcl->regtype > rttylet)
-            gsfatal("%P: Too late to add type lets", p->pos)
-        ;
-        pcl->regtype = rttylet;
         pcl->regs[pcl->nregs] = p->label;
         gsargcheck(p, 0, "base");
         ty = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0])];
@@ -1835,7 +1830,7 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
 
             *pp = gsinput_next_line(ppseg, *pp);
             nregs = pcl->nregs;
-            pcl->regtype = rttylet;
+            pcl->regtype = rtcode;
             casetype = gsbc_typecheck_case(case_pos, symtable, pp, ppseg, pcl, sum->constrs[constr].argtype);
             pcl->nregs = nregs;
 
@@ -1994,13 +1989,13 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, str
     calculated_type = 0;
     gsbc_typecheck_init_existential_cont_closure(&excl);
     while (gsbc_typecheck_cont_type_arg_op(*pp, pcl, &excl)) *pp = gsinput_next_line(ppseg, *pp);
+    while (gsbc_typecheck_code_type_let_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
         struct gsparsedline *p;
 
         p = *pp;
 
-        if (gsbc_typecheck_code_type_let_op(p, pcl)) {
-        } else if (gsbc_typecheck_field_cont_arg_op(p, pcl, &fcl)) {
+        if (gsbc_typecheck_field_cont_arg_op(p, pcl, &fcl)) {
             if (cont_arg_type)
                 gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
             ;
@@ -2760,9 +2755,9 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_code_type_let_op(p, &cl)) {
-        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymbind, gssymcodeop, ".bind")) {
