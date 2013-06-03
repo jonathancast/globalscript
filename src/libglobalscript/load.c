@@ -1350,6 +1350,8 @@ gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedl
     return 1;
 }
 
+static int gsparse_bind_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
+
 static
 long
 gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
@@ -1369,18 +1371,7 @@ gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
         } else if (gsparse_value_arg_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
-        } else if (gssymeq(parsedline->directive, gssymcodeop, ".bind")) {
-            if (*fields[0])
-                parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-            else
-                parsedline->label = 0;
-            if (n < 3)
-                gsfatal("%s:%d: Missing code label", pos->real_filename, pos->real_lineno)
-            ;
-            parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-            if (n > 3)
-                gsfatal("%s:%d: Too many arguments to .bind", pos->real_filename, pos->real_lineno)
-            ;
+        } else if (gsparse_bind_op(pos, parsedline, fields, n)) {
         } else if (gssymeq(parsedline->directive, gssymcodeop, ".body")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops", pos->real_filename, pos->real_lineno);
@@ -1404,6 +1395,29 @@ gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
         gsfatal("%P: EOF in middle of reading API sub-program literal", codedirective->pos);
 
     return -1;
+}
+
+int
+gsparse_bind_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+{
+    static gsinterned_string gssymbind;
+
+    if (gssymceq(parsedline->directive, gssymbind, gssymcodeop, ".bind")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
+        else
+            parsedline->label = 0;
+        if (n < 3)
+            gsfatal("%s:%d: Missing code label", pos->real_filename, pos->real_lineno)
+        ;
+        parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
+        if (n > 3)
+            gsfatal("%s:%d: Too many arguments to .bind", pos->real_filename, pos->real_lineno)
+        ;
+    } else {
+        return 0;
+    }
+    return 1;
 }
 
 static void gsparse_case(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, gsinterned_string, char *, char **);
