@@ -1633,25 +1633,43 @@ gsparse_case(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxi
         gsfatal("%s:%d: Too many arguments to .case", pos->real_filename, pos->real_lineno)
     ;
 
-    while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
-        parsedline = gsparsed_file_addline(pos, parsedfile, n);
+    if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err;
 
-        parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
+    while (gsparse_cont_type_arg(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
 
-        if (gsparse_cont_type_arg(pos, parsedline, fields, n)) {
-        } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_field_cont_arg(pos, parsedline, fields, n)) {
-        } else if (gsparse_cont_arg(pos, parsedline, fields, n)) {
-        } else if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_cont_push_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
-            return;
-        } else {
-            gsfatal(UNIMPL("%s:%d: Unimplemented .case op %y"), pos->real_filename, pos->real_lineno, parsedline->directive);
-        }
+    while (gsparse_code_type_let_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (
+        gsparse_field_cont_arg(pos, parsedline, fields, n)
+        || gsparse_cont_arg(pos, parsedline, fields, n)
+    )
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (
+        gsparse_thunk_alloc_op(pos, parsedline, fields, n)
+        || gsparse_value_alloc_op(pos, parsedline, fields, n)
+    )
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_cont_push_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
+        return;
+    } else {
+        gsfatal(UNIMPL("%s:%d: Unimplemented .case op %y"), pos->real_filename, pos->real_lineno, parsedline->directive);
     }
-    gsfatal_unimpl(__FILE__, __LINE__, ".analyze: parse .case");
+
+err:
+    if (n < 0) gsfatal("%s:%d: Error in reading code line: %r", pos->real_filename, pos->real_lineno);
+    else gsfatal("%s:$: EOF in middle of reading expression", pos->real_filename);
 }
 
 static
