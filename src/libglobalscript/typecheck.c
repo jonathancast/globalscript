@@ -927,13 +927,7 @@ static struct gs_sys_global_block_suballoc_info gsbc_code_type_info = {
     },
 };
 
-enum gsbc_code_regtype {
-    rtconts,
-};
-
 struct gsbc_typecheck_code_or_api_expr_closure {
-    enum gsbc_code_regtype regtype;
-
     int nregs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
 
@@ -1029,16 +1023,10 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     while (gsbc_typecheck_data_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_alloc_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
-    for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_cont_push_op(p, &cl)) {
-        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
-            goto have_type;
-        } else {
-            gsfatal(UNIMPL("%P: gsbc_typecheck_code_expr(%y)"), p->pos, p->directive);
-        }
-    }
-
-have_type:
+    while (gsbc_typecheck_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)))
+        gsfatal(UNIMPL("%P: gsbc_typecheck_code_expr(%y)"), p->pos, p->directive)
+    ;
 
     calculated_type = gsbc_typecheck_conts(&cl, 0, calculated_type);
 
@@ -1076,16 +1064,10 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
         gsfatal("%P: No .karg in a .forcecont", p->pos);
     }
     while (gsbc_typecheck_alloc_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
-    for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_cont_push_op(p, &cl)) {
-        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
-            goto have_type;
-        } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_force_cont(%y)", p->pos, p->directive);
-        }
-    }
-
-have_type:
+    while (gsbc_typecheck_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)))
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_force_cont(%y)", p->pos, p->directive)
+    ;
 
     calculated_type = gsbc_typecheck_conts(&cl, 0, calculated_type);
 
@@ -1119,16 +1101,10 @@ gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile
         gsfatal("%P: No .karg in a .strictcont", p->pos);
     }
     while (gsbc_typecheck_alloc_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
-    for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_cont_push_op(p, &cl)) {
-        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
-            goto have_type;
-        } else {
-            gsfatal(UNIMPL("%P: gsbc_typecheck_force_cont(%y)"), p->pos, p->directive);
-        }
-    }
-
-have_type:
+    while (gsbc_typecheck_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)))
+        gsfatal(UNIMPL("%P: gsbc_typecheck_force_cont(%y)"), p->pos, p->directive)
+    ;
 
     calculated_type = gsbc_typecheck_conts(&cl, 0, calculated_type);
 
@@ -1210,16 +1186,10 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
         while (gsbc_typecheck_field_cont_arg_op(p, &cl, &fcl)) p = gsinput_next_line(ppseg, p);
     }
     while (gsbc_typecheck_alloc_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
-    for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_cont_push_op(p, &cl)) {
-        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
-            goto have_type;
-        } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_ubcase_cont(%y)", p->pos, p->directive);
-        }
-    }
-
-have_type:
+    while (gsbc_typecheck_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)))
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_ubcase_cont(%y)", p->pos, p->directive)
+    ;
 
     calculated_type = gsbc_typecheck_conts(&cl, 0, calculated_type);
 
@@ -1235,7 +1205,6 @@ void
 gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
     pcl->nregs = pcl->ntyfvs = pcl->nfvs = pcl->ntyargs = pcl->nargs = pcl->ncodes = pcl->nconts = 0;
-    pcl->regtype = rtconts;
 }
 
 int
@@ -1773,7 +1742,6 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
 
             *pp = gsinput_next_line(ppseg, *pp);
             nregs = pcl->nregs;
-            pcl->regtype = rtconts;
             casetype = gsbc_typecheck_case(case_pos, symtable, pp, ppseg, pcl, sum->constrs[constr].argtype);
             pcl->nregs = nregs;
 
@@ -1807,7 +1775,6 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
 
         *pp = gsinput_next_line(ppseg, *pp);
         nregs = pcl->nregs;
-        pcl->regtype = rtconts;
         calculated_type = gsbc_typecheck_default(default_pos, symtable, pp, ppseg, pcl);
         pcl->nregs = nregs;
 
@@ -1831,7 +1798,6 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
 
             *pp = gsinput_next_line(ppseg, *pp);
             nregs = pcl->nregs;
-            pcl->regtype = rtconts;
             casetype = gsbc_typecheck_case(case_pos, symtable, pp, ppseg, pcl, sum->constrs[constr].argtype);
             pcl->nregs = nregs;
 
@@ -1940,20 +1906,10 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, str
         while (gsbc_typecheck_field_cont_arg_op(*pp, pcl, &fcl)) *pp = gsinput_next_line(ppseg, *pp);
     }
     while (gsbc_typecheck_alloc_op(symtable, *pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
-        struct gsparsedline *p;
-
-        p = *pp;
-
-        if (gsbc_typecheck_cont_push_op(p, pcl)) {
-        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)) {
-            goto have_type;
-        } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_case(%y)", (*pp)->pos, (*pp)->directive);
-        }
-    }
-
-have_type:
+    while (gsbc_typecheck_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)))
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_case(%y)", (*pp)->pos, (*pp)->directive)
+    ;
 
     calculated_type = gsbc_typecheck_conts(pcl, nconts, calculated_type);
 
@@ -2034,16 +1990,10 @@ gsbc_typecheck_default(struct gspos default_pos, struct gsfile_symtable *symtabl
     nconts = pcl->nconts;
     calculated_type = 0;
     while (gsbc_typecheck_alloc_op(symtable, *pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_typecheck_cont_push_op(*pp, pcl)) {
-        } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)) {
-            goto have_type;
-        } else {
-            gsfatal(UNIMPL("%P: gsbc_typecheck_default(%y)"), (*pp)->pos, (*pp)->directive);
-        }
-    }
-
-have_type:
+    while (gsbc_typecheck_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)))
+        gsfatal(UNIMPL("%P: gsbc_typecheck_default(%y)"), (*pp)->pos, (*pp)->directive)
+    ;
 
     calculated_type = gsbc_typecheck_conts(pcl, nconts, calculated_type);
 
@@ -2534,10 +2484,6 @@ gsbc_typecheck_cont_push_op(struct gsparsedline *p, struct gsbc_typecheck_code_o
         || gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")
         || gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")
     ) {
-        if (pcl->regtype > rtconts)
-            gsfatal("%P: Too late to add continuations", p->pos)
-        ;
-        pcl->regtype = rtconts;
         if (pcl->nconts >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many continuations", p->pos)
         ;
