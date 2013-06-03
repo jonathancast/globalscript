@@ -665,9 +665,11 @@ gsparse_force_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, 
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
-    while (gsparse_cont_arg(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
+    if (gsparse_cont_arg(pos, parsedline, fields, n)) {
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err;
+    } else {
+        gsfatal("%s:%d: Missing .karg in .forcecont", pos->real_filename, pos->real_lineno);
+    }
 
     while (
         gsparse_thunk_alloc_op(pos, parsedline, fields, n)
