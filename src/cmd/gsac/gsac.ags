@@ -1394,8 +1394,8 @@ list.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.file.t	.tygvar	# Temp
 _real.entry_output_k1_nil_k	.subcode
-ibio.prim.unit	.gvar
 gsdl.cgs.file.t.out	.cogvar
+ibio.prim.unit	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 cut0.0	.fv	gsdl.cgs.file.t
 cut1.0	.karg	list.prim.u	gsdl.cgs.file.t
