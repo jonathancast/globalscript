@@ -1345,14 +1345,6 @@ gsbc_typecheck_code_type_let_op(struct gsparsedline *p, struct gsbc_typecheck_co
     return 1;
 }
 
-#define CHECK_REGTYPE(rt, desc) \
-    do { \
-        if (pcl->regtype > rt) \
-            gsfatal("%P: Too late to add %s", p->pos, desc) \
-        ; \
-        pcl->regtype = rt; \
-    } while (0)
-
 int
 gsbc_typecheck_subcode_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
