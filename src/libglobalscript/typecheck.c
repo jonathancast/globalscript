@@ -1146,15 +1146,16 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_unlifted_kind());
+        p = gsinput_next_line(ppseg, p);
+    } else {
+        gsfatal("%P: No .karg in a .forcecont", p->pos);
+    }
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
-            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_unlifted_kind());
-        } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
-            if (!cont_arg_type)
-                gsfatal("%P: No .karg in a .forcecont", p->pos)
-            ;
             goto have_type;
         } else {
             gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_force_cont(%y)", p->pos, p->directive);
@@ -1188,15 +1189,16 @@ gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_lifted_kind());
+        p = gsinput_next_line(ppseg, p);
+    } else {
+        gsfatal("%P: No .karg in a .strictcont", p->pos);
+    }
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
-            gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_lifted_kind());
-        } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
-            if (!cont_arg_type)
-                gsfatal("%P: No .karg in a .strictcont", p->pos)
-            ;
             goto have_type;
         } else {
             gsfatal(UNIMPL("%P: gsbc_typecheck_force_cont(%y)"), p->pos, p->directive);
@@ -1279,16 +1281,13 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
     while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
+        p = gsinput_next_line(ppseg, p);
+    } else {
+        while (gsbc_typecheck_field_cont_arg_op(p, &cl, &fcl)) p = gsinput_next_line(ppseg, p);
+    }
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_field_cont_arg_op(p, &cl, &fcl)) {
-            if (cont_arg_type)
-                gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
-            ;
-        } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
-            if (fcl.nfields > 0)
-                gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
-            ;
-        } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
             goto have_type;
@@ -2011,21 +2010,18 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, str
     gsbc_typecheck_init_existential_cont_closure(&excl);
     while (gsbc_typecheck_cont_type_arg_op(*pp, pcl, &excl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_typecheck_code_type_let_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    if (gsbc_typecheck_cont_arg_op(*pp, pcl, &cont_arg_type)) {
+        karg_pos = (*pp)->pos;
+        *pp = gsinput_next_line(ppseg, *pp);
+    } else {
+        while (gsbc_typecheck_field_cont_arg_op(*pp, pcl, &fcl)) *pp = gsinput_next_line(ppseg, *pp);
+    }
     for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
         struct gsparsedline *p;
 
         p = *pp;
 
-        if (gsbc_typecheck_field_cont_arg_op(p, pcl, &fcl)) {
-            if (cont_arg_type)
-                gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
-            ;
-        } else if (gsbc_typecheck_cont_arg_op(p, pcl, &cont_arg_type)) {
-            if (fcl.nfields > 0)
-                gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
-            ;
-            karg_pos = p->pos;
-        } else if (gsbc_typecheck_alloc_op(symtable, p, pcl)) {
+        if (gsbc_typecheck_alloc_op(symtable, p, pcl)) {
         } else if (gsbc_typecheck_cont_push_op(p, pcl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)) {
             goto have_type;
