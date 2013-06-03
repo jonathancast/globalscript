@@ -329,6 +329,7 @@ struct gsbc_bytecode_size_code_closure {
     gsinterned_string codenames[MAX_NUM_REGISTERS];
     struct gsbc_code_item_type *codetypes[MAX_NUM_REGISTERS];
 };
+static int gsbc_bytecode_size_code_type_gvar(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_type_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_code_type_let_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
@@ -378,11 +379,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     }
     pseg = item.pseg;
     for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
-        if (gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")) {
-            if (cl.phase > phtygvars)
-                gsfatal_bad_input(p, "Too late to add type global variables");
-            cl.phase = phtygvars;
-            /* type erasure */
+        if (gsbc_bytecode_size_code_type_gvar(p, &cl)) {
         } else if (gssymceq(p->directive, gssymoptyfv, gssymcodeop, ".tyfv")) {
             if (cl.phase > phtyfvs)
                 gsfatal("%P: Too late to add type arguments", p->pos)
@@ -537,6 +534,20 @@ done:
     ;
 
     return cl.size;
+}
+
+int
+gsbc_bytecode_size_code_type_gvar(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")) {
+        if (pcl->phase > phtygvars)
+            gsfatal_bad_input(p, "Too late to add type global variables");
+        pcl->phase = phtygvars;
+        /* type erasure */
+    } else {
+        return 0;
+    }
+    return 1;
 }
 
 static
