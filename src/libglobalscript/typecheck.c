@@ -993,6 +993,7 @@ struct gsbc_typecheck_code_or_api_expr_closure {
 
 static void gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *);
 
+static int gsbc_typecheck_code_type_gvar_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_code_type_arg_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
 static int gsbc_typecheck_code_type_alloc_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
@@ -1029,7 +1030,8 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
 
     gsbc_setup_code_expr_closure(&cl);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_code_type_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
@@ -1140,7 +1142,8 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     gsbc_setup_code_expr_closure(&cl);
     cont_arg_type = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
@@ -1178,7 +1181,8 @@ gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile
     gsbc_setup_code_expr_closure(&cl);
     cont_arg_type = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
@@ -1265,7 +1269,8 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
     cont_arg_type = 0;
     fcl.nfields = 0;
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_field_cont_arg_op(p, &cl, &fcl)) {
@@ -1304,11 +1309,10 @@ gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *pcl
     pcl->regtype = rttygvar;
 }
 
-static
 int
-gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+gsbc_typecheck_code_type_gvar_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymtygvar, gssymtyfv;
+    static gsinterned_string gssymtygvar;
 
     if (gssymceq(p->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
         if (pcl->regtype > rttygvar)
@@ -1328,7 +1332,18 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
             gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", p->pos, p->label->name)
         ;
         pcl->nregs++;
-    } else if (gssymceq(p->directive, gssymtyfv, gssymcodeop, ".tyfv")) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+{
+    static gsinterned_string gssymtyfv;
+
+    if (gssymceq(p->directive, gssymtyfv, gssymcodeop, ".tyfv")) {
         struct gskind *fvkind;
 
         if (pcl->regtype > rttyfv)
@@ -2762,7 +2777,8 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
     nbinds = 0;
     memset(bind_bound, 0, sizeof(bind_bound));
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) {
+        } else if (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_code_type_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_code_type_alloc_op(p, &cl)) {
         } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
