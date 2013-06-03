@@ -1351,6 +1351,7 @@ gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedl
 }
 
 static int gsparse_bind_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
+static int gsparse_body_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 
 static
 long
@@ -1372,18 +1373,7 @@ gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
         } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
         } else if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
         } else if (gsparse_bind_op(pos, parsedline, fields, n)) {
-        } else if (gssymeq(parsedline->directive, gssymcodeop, ".body")) {
-            if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on terminal ops", pos->real_filename, pos->real_lineno);
-            else
-                parsedline->label = 0;
-            if (n < 3)
-                gsfatal("%s:%d: Missing code label", pos->real_filename, pos->real_lineno)
-            ;
-            parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-            if (n > 3)
-                gsfatal("%s:%d: Too many arguments to .body", pos->real_filename, pos->real_lineno)
-            ;
+        } else if (gsparse_body_op(pos, parsedline, fields, n)) {
             return 0;
         } else {
             gsfatal(UNIMPL("%s:%d: Unimplemented api op %s"), pos->real_filename, pos->real_lineno, fields[1]);
@@ -1413,6 +1403,29 @@ gsparse_bind_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, 
         parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
         if (n > 3)
             gsfatal("%s:%d: Too many arguments to .bind", pos->real_filename, pos->real_lineno)
+        ;
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsparse_body_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+{
+    static gsinterned_string gssymbody;
+
+    if (gssymceq(parsedline->directive, gssymbody, gssymcodeop, ".body")) {
+        if (*fields[0])
+            gsfatal("%s:%d: Labels illegal on terminal ops", pos->real_filename, pos->real_lineno);
+        else
+            parsedline->label = 0;
+        if (n < 3)
+            gsfatal("%s:%d: Missing code label", pos->real_filename, pos->real_lineno)
+        ;
+        parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
+        if (n > 3)
+            gsfatal("%s:%d: Too many arguments to .body", pos->real_filename, pos->real_lineno)
         ;
     } else {
         return 0;
