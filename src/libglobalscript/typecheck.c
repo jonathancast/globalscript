@@ -928,7 +928,6 @@ static struct gs_sys_global_block_suballoc_info gsbc_code_type_info = {
 };
 
 enum gsbc_code_regtype {
-    rtgvar,
     rtfv,
     rtarg,
     rtlet,
@@ -1033,9 +1032,9 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) {
-        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_data_arg_op(p, &cl)) {
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymimpprim, gssymcodeop, ".impprim")) {
@@ -1147,9 +1146,9 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) {
-        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
             gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_unlifted_kind());
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
@@ -1189,9 +1188,9 @@ gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) {
-        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
             gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(cont_arg_type), gskind_lifted_kind());
         } else if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
@@ -1280,9 +1279,9 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) {
-        } else if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
+        if (gsbc_typecheck_data_fv_op(symtable, p, &cl)) {
         } else if (gsbc_typecheck_field_cont_arg_op(p, &cl, &fcl)) {
             if (cont_arg_type)
                 gsfatal("%P: Cannot mix .karg and .fkarg", p->pos)
@@ -1316,7 +1315,7 @@ void
 gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
     pcl->nregs = pcl->ntyfvs = pcl->nfvs = pcl->ntyargs = pcl->nargs = pcl->ncodes = pcl->nconts = 0;
-    pcl->regtype = rtgvar;
+    pcl->regtype = rtfv;
 }
 
 int
@@ -1513,10 +1512,6 @@ gsbc_typecheck_data_gvar_op(struct gsfile_symtable *symtable, struct gsparsedlin
     static gsinterned_string gssymopgvar, gssymrune, gssymnatural;
 
     if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
-        if (pcl->regtype > rtgvar)
-            gsfatal("%P: Too late to add global variables", p->pos)
-        ;
-        pcl->regtype = rtgvar;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("Too many registers", p->pos)
         ;
@@ -1527,7 +1522,6 @@ gsbc_typecheck_data_gvar_op(struct gsfile_symtable *symtable, struct gsparsedlin
         ;
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymrune, gssymcodeop, ".rune")) {
-        CHECK_REGTYPE(rtgvar, "global variables");
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers", p->pos)
         ;
@@ -1535,7 +1529,6 @@ gsbc_typecheck_data_gvar_op(struct gsfile_symtable *symtable, struct gsparsedlin
         pcl->regtypes[pcl->nregs] = gstypes_compile_prim(p->pos, gsprim_type_defined, "rune.prim", "rune", gskind_unlifted_kind());
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymnatural, gssymcodeop, ".natural")) {
-        CHECK_REGTYPE(rtgvar, "global variables");
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers", p->pos)
         ;
@@ -1868,7 +1861,7 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
 
             *pp = gsinput_next_line(ppseg, *pp);
             nregs = pcl->nregs;
-            pcl->regtype = rtgvar;
+            pcl->regtype = rtfv;
             casetype = gsbc_typecheck_case(case_pos, symtable, pp, ppseg, pcl, sum->constrs[constr].argtype);
             pcl->nregs = nregs;
 
