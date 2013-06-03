@@ -2750,25 +2750,33 @@ gsbc_typecheck_conts(struct gsbc_typecheck_code_or_api_expr_closure *pcl, int ba
     return calculated_type;
 }
 
+struct gsbc_typecheck_impprog_closure {
+    gsinterned_string primsetname, prim;
+    int nbinds;
+    int bind_bound[MAX_NUM_REGISTERS];
+    int first_rhs_lifted;
+};
+
+static void gsbc_setup_code_impprog_closure(struct gsbc_typecheck_impprog_closure *, gsinterned_string, gsinterned_string);
+
+static int gsbc_typecheck_bind_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *, struct gsbc_typecheck_impprog_closure *);
+
 static void gsbc_check_api_free_variable_decls(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int *);
 
 static
 struct gsbc_code_item_type *
 gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
 {
-    static gsinterned_string gssymbind, gssymbody;
+    static gsinterned_string gssymbody;
 
     struct gsbc_typecheck_code_or_api_expr_closure cl;
-
-    int nbinds;
-    int first_rhs_lifted;
-    int bind_bound[MAX_NUM_REGISTERS];
+    struct gsbc_typecheck_impprog_closure impcl;
 
     struct gstype *calculated_type;
 
     gsbc_setup_code_expr_closure(&cl);
-    nbinds = 0;
-    memset(bind_bound, 0, sizeof(bind_bound));
+    gsbc_setup_code_impprog_closure(&impcl, primsetname, prim);
+
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
@@ -2778,33 +2786,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
     while (gsbc_typecheck_data_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
-        } else if (gssymceq(p->directive, gssymbind, gssymcodeop, ".bind")) {
-            int creg = 0;
-            struct gsbc_code_item_type *cty;
-
-            if (cl.regtype > rtlet)
-                gsfatal("%P: Too late to add generators", p->pos)
-            ;
-            cl.regtype = rtlet;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-            ;
-
-            gsargcheck(p, 0, "code");
-            creg = gsbc_find_register(p, cl.coderegs, cl.ncodes, p->arguments[0]);
-            cty = gsbc_typecheck_copy_code_item_type(cl.codetypes[creg]);
-
-            gsbc_typecheck_free_type_variables(&cl, p, cty);
-            gsbc_typecheck_free_variables(&cl, p, cty);
-            gsbc_check_api_free_variable_decls(&cl, p, p->arguments[0], cty, bind_bound);
-            calculated_type = cty->result_type;
-
-            bind_bound[cl.nregs] = 1;
-            cl.regs[cl.nregs] = p->label;
-            cl.regtypes[cl.nregs] = gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
-
-            cl.nregs++;
-            nbinds++;
+        } else if (gsbc_typecheck_bind_op(symtable, p, &cl, &impcl)) {
         } else if (gssymceq(p->directive, gssymbody, gssymcodeop, ".body")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
@@ -2815,10 +2797,10 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
 
             gsbc_typecheck_free_type_variables(&cl, p, cty);
             gsbc_typecheck_free_variables(&cl, p, cty);
-            gsbc_check_api_free_variable_decls(&cl, p, p->arguments[0], cty, bind_bound);
+            gsbc_check_api_free_variable_decls(&cl, p, p->arguments[0], cty, impcl.bind_bound);
             calculated_type = cty->result_type;
 
-            gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, nbinds == 0 ? &first_rhs_lifted : 0);
+            gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, impcl.nbinds == 0 ? &impcl.first_rhs_lifted : 0);
             goto have_type;
         } else {
             gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y)"), p->pos, p->directive);
@@ -2827,7 +2809,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
 
 have_type:
 
-    if (first_rhs_lifted) {
+    if (impcl.first_rhs_lifted) {
         if (calculated_type->node != gstype_lift)
             calculated_type = gstypes_compile_lift(pos, calculated_type)
         ;
@@ -2840,6 +2822,53 @@ have_type:
     calculated_type = gsbc_typecheck_code_type_arg(&cl, calculated_type);
 
     return gsbc_typecheck_compile_code_item_type(gsbc_code_item_impprog, 0, calculated_type, &cl);
+}
+
+void
+gsbc_setup_code_impprog_closure(struct gsbc_typecheck_impprog_closure *pimpcl, gsinterned_string primsetname, gsinterned_string prim)
+{
+    pimpcl->primsetname = primsetname;
+    pimpcl->prim = prim;
+
+    pimpcl->nbinds = 0;
+    memset(pimpcl->bind_bound, 0, sizeof(pimpcl->bind_bound));
+}
+
+int
+gsbc_typecheck_bind_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl)
+{
+    static gsinterned_string gssymbind;
+
+    if (gssymceq(p->directive, gssymbind, gssymcodeop, ".bind")) {
+        int creg = 0;
+        struct gsbc_code_item_type *cty;
+
+        if (pcl->regtype > rtlet)
+            gsfatal("%P: Too late to add generators", p->pos)
+        ;
+        pcl->regtype = rtlet;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+
+        gsargcheck(p, 0, "code");
+        creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
+        cty = gsbc_typecheck_copy_code_item_type(pcl->codetypes[creg]);
+
+        gsbc_typecheck_free_type_variables(pcl, p, cty);
+        gsbc_typecheck_free_variables(pcl, p, cty);
+        gsbc_check_api_free_variable_decls(pcl, p, p->arguments[0], cty, pimpcl->bind_bound);
+
+        pimpcl->bind_bound[pcl->nregs] = 1;
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regtypes[pcl->nregs] = gsbc_typecheck_check_api_statement_type(p->pos, cty->result_type, pimpcl->primsetname, pimpcl->prim, pimpcl->nbinds == 0 ? &pimpcl->first_rhs_lifted : 0);
+
+        pcl->nregs++;
+        pimpcl->nbinds++;
+    } else {
+        return 0;
+    }
+    return 1;
 }
 
 static struct gsbc_code_item_type *gsbc_typecheck_alloc_code_item_type(int, int);
