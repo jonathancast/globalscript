@@ -722,9 +722,11 @@ gsparse_strict_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
-    while (gsparse_cont_arg(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
+    if (gsparse_cont_arg(pos, parsedline, fields, n)) {
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err;
+    } else {
+        gsfatal("%s:%d: Missing .karg in .strictcont", pos->real_filename, pos->real_lineno);
+    }
 
     while (gsparse_value_alloc_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
