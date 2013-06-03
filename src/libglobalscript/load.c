@@ -1353,32 +1353,52 @@ gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedl
 static int gsparse_bind_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_body_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 
-static
 long
 gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
     struct gsparsedline *parsedline;
     long n;
 
-    while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
-        parsedline = gsparsed_file_addline(pos, parsedfile, n);
+    if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err;
 
-        parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
+    while (gsparse_code_type_gvar_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
 
-        if (gsparse_code_type_gvar_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_code_type_fv_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_code_type_arg_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_code_type_let_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_value_arg_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_value_fv_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_bind_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_body_op(pos, parsedline, fields, n)) {
-            return 0;
-        } else {
-            gsfatal(UNIMPL("%s:%d: Unimplemented api op %s"), pos->real_filename, pos->real_lineno, fields[1]);
-        }
+    while (gsparse_code_type_fv_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_code_type_arg_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_code_type_let_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_value_fv_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_value_arg_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (
+        gsparse_thunk_alloc_op(pos, parsedline, fields, n)
+        || gsparse_bind_op(pos, parsedline, fields, n)
+    )
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    if (gsparse_body_op(pos, parsedline, fields, n)) {
+        return 0;
+    } else {
+        gsfatal(UNIMPL("%s:%d: Unimplemented api op %s"), pos->real_filename, pos->real_lineno, fields[1]);
     }
+
+err:
     if (n < 0)
         gsfatal("%s:%d: Error in reading API line: %r", pos->real_filename, pos->real_lineno);
     else
