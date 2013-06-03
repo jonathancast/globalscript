@@ -1015,11 +1015,7 @@ static
 struct gsbc_code_item_type *
 gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymimpprim;
-
     struct gsbc_typecheck_code_or_api_expr_closure cl;
-
-    int i;
 
     struct gstype *calculated_type;
 
@@ -1035,78 +1031,6 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     while (gsbc_typecheck_data_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_typecheck_alloc_op(symtable, p, &cl)) {
-        } else if (gssymceq(p->directive, gssymimpprim, gssymcodeop, ".impprim")) {
-            struct gsregistered_primset *prims;
-            struct gstype *type;
-            int tyreg;
-            int first_arg_pos;
-
-            if (cl.regtype > rtlet)
-                gsfatal("%P: To late to add allocations", p->pos)
-            ;
-            cl.regtype = rtlet;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many registers", p->pos)
-            ;
-
-            gsargcheck(p, 3, "type");
-            tyreg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[3]);
-            type = cl.tyregs[tyreg];
-
-            gsargcheck(p, 0, "primset");
-            if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
-                struct gsregistered_primtype *primty;
-                struct gsregistered_prim *prim;
-                struct gstype *expected_type;
-
-                if (!(primty = gsprims_lookup_type(prims, p->arguments[1]->name)))
-                    gsfatal("%P: Primitive set %s has no primtype %s", p->pos, prims->name, p->arguments[1]->name)
-                ;
-
-                if (!(prim = gsprims_lookup_prim(prims, p->arguments[2]->name)))
-                    gsfatal("%P: Primitive set %s has no prim %s", p->pos, prims->name, p->arguments[2]->name)
-                ;
-
-                if (prim->group != gsprim_operation_api)
-                    gsfatal("%P: Primitive %s in primset %s is not an API primitive", p->pos, prim->name, prims->name)
-                ;
-
-                if (strcmp(prim->apitype, primty->name))
-                    gsfatal("%P: Primitive %s in primset %s does not belong to API type %s", p->pos, prim->name, prims->name, primty->name)
-                ;
-
-                expected_type = gsbc_typecheck_compile_prim_type(p->pos, symtable, prim->type);
-                gstypes_type_check_type_fail(p->pos, type, expected_type);
-            }
-
-            for (i = 4; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
-                int tyargreg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                type = gstype_instantiate(p->pos, type, cl.tyregs[tyargreg]);
-            }
-            if (i < p->numarguments) i++;
-            first_arg_pos = i;
-            for (; i < p->numarguments; i++) {
-                int argreg;
-                struct gstype *argtype;
-
-                argreg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                argtype = cl.regtypes[argreg];
-
-                if (type->node == gstype_fun) {
-                    struct gstype_fun *fun;
-
-                    fun = (struct gstype_fun *)type;
-                    gstypes_type_check_type_fail(p->pos, argtype, fun->tyarg);
-                    type = fun->tyres;
-                } else {
-                    gsfatal("%P: Too many arguments to %s (max %d; got %d)", p->pos, p->arguments[2]->name, i - first_arg_pos, p->numarguments - first_arg_pos);
-                }
-            }
-
-            cl.regs[cl.nregs] = p->label;
-            gsbc_typecheck_check_api_statement_type(p->pos, type, p->arguments[0], p->arguments[1], 0);
-            cl.regtypes[cl.nregs] = type;
-            cl.nregs++;
         } else if (gsbc_typecheck_cont_push_op(p, &cl)) {
         } else if (calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)) {
             goto have_type;
@@ -2190,7 +2114,7 @@ static
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc, gssymprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
+    static gsinterned_string gssymalloc, gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
 
     int i;
 
@@ -2273,6 +2197,78 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         pcl->regs[pcl->nregs] = p->label;
         gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_unlifted_kind());
         gsbc_typecheck_check_boxed(p->pos, type);
+        pcl->regtypes[pcl->nregs] = type;
+        pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymimpprim, gssymcodeop, ".impprim")) {
+        struct gsregistered_primset *prims;
+        struct gstype *type;
+        int tyreg;
+        int first_arg_pos;
+
+        if (pcl->regtype > rtlet)
+            gsfatal("%P: To late to add allocations", p->pos)
+        ;
+        pcl->regtype = rtlet;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers", p->pos)
+        ;
+
+        gsargcheck(p, 3, "type");
+        tyreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[3]);
+        type = pcl->tyregs[tyreg];
+
+        gsargcheck(p, 0, "primset");
+        if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
+            struct gsregistered_primtype *primty;
+            struct gsregistered_prim *prim;
+            struct gstype *expected_type;
+
+            if (!(primty = gsprims_lookup_type(prims, p->arguments[1]->name)))
+                gsfatal("%P: Primitive set %s has no primtype %s", p->pos, prims->name, p->arguments[1]->name)
+            ;
+
+            if (!(prim = gsprims_lookup_prim(prims, p->arguments[2]->name)))
+                gsfatal("%P: Primitive set %s has no prim %s", p->pos, prims->name, p->arguments[2]->name)
+            ;
+
+            if (prim->group != gsprim_operation_api)
+                gsfatal("%P: Primitive %s in primset %s is not an API primitive", p->pos, prim->name, prims->name)
+            ;
+
+            if (strcmp(prim->apitype, primty->name))
+                gsfatal("%P: Primitive %s in primset %s does not belong to API type %s", p->pos, prim->name, prims->name, primty->name)
+            ;
+
+            expected_type = gsbc_typecheck_compile_prim_type(p->pos, symtable, prim->type);
+            gstypes_type_check_type_fail(p->pos, type, expected_type);
+        }
+
+        for (i = 4; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+            int tyargreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            type = gstype_instantiate(p->pos, type, pcl->tyregs[tyargreg]);
+        }
+        if (i < p->numarguments) i++;
+        first_arg_pos = i;
+        for (; i < p->numarguments; i++) {
+            int argreg;
+            struct gstype *argtype;
+
+            argreg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            argtype = pcl->regtypes[argreg];
+
+            if (type->node == gstype_fun) {
+                struct gstype_fun *fun;
+
+                fun = (struct gstype_fun *)type;
+                gstypes_type_check_type_fail(p->pos, argtype, fun->tyarg);
+                type = fun->tyres;
+            } else {
+                gsfatal("%P: Too many arguments to %s (max %d; got %d)", p->pos, p->arguments[2]->name, i - first_arg_pos, p->numarguments - first_arg_pos);
+            }
+        }
+
+        pcl->regs[pcl->nregs] = p->label;
+        gsbc_typecheck_check_api_statement_type(p->pos, type, p->arguments[0], p->arguments[1], 0);
         pcl->regtypes[pcl->nregs] = type;
         pcl->nregs++;
     } else if (
