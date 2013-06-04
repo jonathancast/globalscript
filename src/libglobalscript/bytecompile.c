@@ -331,6 +331,7 @@ struct gsbc_bytecode_size_code_closure {
 };
 static int gsbc_bytecode_size_code_type_gvar(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_code_type_fv(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
+static int gsbc_bytecode_size_code_type_arg(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_type_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_code_type_let_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
@@ -382,12 +383,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
         if (gsbc_bytecode_size_code_type_gvar(p, &cl)) {
         } else if (gsbc_bytecode_size_code_type_fv(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
-            if (cl.phase > phtyargs)
-                gsfatal("%P: Too late to add type arguments", p->pos)
-            ;
-            cl.phase = phtyargs;
-            /* type erasure */
+        } else if (gsbc_bytecode_size_code_type_arg(p, &cl)) {
         } else if (gsbc_bytecode_size_code_type_let_op(p, &cl)) {
         } else if (gsbc_bytecode_size_data_fv_code_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
@@ -554,6 +550,21 @@ gsbc_bytecode_size_code_type_fv(struct gsparsedline *p, struct gsbc_bytecode_siz
             gsfatal("%P: Too late to add type arguments", p->pos)
         ;
         pcl->phase = phtyfvs;
+        /* type erasure */
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsbc_bytecode_size_code_type_arg(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
+        if (pcl->phase > phtyargs)
+            gsfatal("%P: Too late to add type arguments", p->pos)
+        ;
+        pcl->phase = phtyargs;
         /* type erasure */
     } else {
         return 0;
