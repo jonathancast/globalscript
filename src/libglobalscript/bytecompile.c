@@ -1469,12 +1469,12 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_byte_compile_type_let_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
+        if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
             if (cl.phase > rtgvars)
                 gsfatal("%P: Too late to add global variables", p->pos)
             ;
             cl.phase = rtgvars;
+        } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopimpprim, gssymcodeop, ".impprim")) {
