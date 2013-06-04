@@ -395,17 +395,6 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
         if (gsbc_bytecode_size_cont_push_op(p, &cl)) {
         } else if (gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
             goto done;
-        } else if (gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")) {
-            int creg;
-            struct gsbc_code_item_type *cty;
-
-            creg = gsbc_find_register(p, cl.codenames, cl.ncodes, p->arguments[0]);
-            if (!(cty = cl.codetypes[creg]))
-                gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
-            ;
-
-            cl.size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
-            goto done;
         } else {
             gsfatal(UNIMPL("%P: gsbc_bytecode_size_item (%y)"), p->pos, p->directive);
         }
@@ -926,6 +915,16 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
+    } else if (gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")) {
+        int creg;
+        struct gsbc_code_item_type *cty;
+
+        creg = gsbc_find_register(*pp, pcl->codenames, pcl->ncodes, (*pp)->arguments[0]);
+        if (!(cty = pcl->codetypes[creg]))
+            gsfatal("%P: Cannot find type of %y", (*pp)->pos, (*pp)->arguments[0])
+        ;
+
+        pcl->size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
     } else {
         return 0;
     }
