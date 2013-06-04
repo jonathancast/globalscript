@@ -1402,7 +1402,6 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
 
 struct gsbc_byte_compile_code_or_api_op_closure {
     enum {
-        rttyfvs,
         rttyargs,
         rttylets,
         rtsubexprs,
@@ -1468,9 +1467,9 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
     pcl = &cl;
     while (gsbc_byte_compile_type_gvar_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
-        } else if (gsbc_byte_compile_type_arg_code_op(p, &cl)) {
+        if (gsbc_byte_compile_type_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_type_let_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
@@ -1556,7 +1555,7 @@ static
 void
 gsbc_byte_compile_code_or_api_op_closure_init(struct gsbco *pbco, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    pcl->phase = rttyfvs;
+    pcl->phase = rttyargs;
     pcl->ntyregs = pcl->nregs = pcl->nsubexprs = pcl->nglobals = pcl->nfvs = pcl->nargs = pcl->nfields = 0;
     pcl->pout = (uchar*)pbco + sizeof(struct gsbco);
     memset(pcl->regtypes, 0, sizeof(pcl->regtypes));
@@ -1568,10 +1567,6 @@ int
 gsbc_byte_compile_type_fv_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
     if (gssymceq(p->directive, gssymoptyfv, gssymcodeop, ".tyfv")) {
-        if (pcl->phase > rttyfvs)
-            gsfatal("%P: Too late to add free type variables", p->pos)
-        ;
-        pcl->phase = rttyfvs;
         if (pcl->ntyregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many type registers", p->pos)
         ;
@@ -2493,9 +2488,9 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
 
     gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
     while (gsbc_byte_compile_type_gvar_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) {
-        } else if (gsbc_byte_compile_type_arg_code_op(p, &cl)) {
+        if (gsbc_byte_compile_type_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
