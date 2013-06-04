@@ -1442,6 +1442,7 @@ static int gsbc_byte_compile_data_gvar_code_op(struct gsfile_symtable *, struct 
 static int gsbc_byte_compile_data_fv_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
+static int gsbc_byte_compile_bind_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_cont_push_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_byte_compile_code_or_api_op_closure *);
 
@@ -1837,7 +1838,6 @@ static int gsbc_find_field_in_product(struct gstype_product *, gsinterned_string
         pcl->regs[pcl->nregs++] = p->label; \
     } while (0)
 
-static
 int
 gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
@@ -2118,6 +2118,51 @@ gsbc_find_field_in_product(struct gstype_product *prod, gsinterned_string field)
     }
 
     return -1;
+}
+
+int
+gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    int i;
+
+    if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
+        struct gsbc *pcode;
+        int creg = 0;
+        struct gsbc_code_item_type *cty;
+
+        pcl->phase = rtlets;
+
+        pcode = (struct gsbc *)pcl->pout;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+
+        pcl->regs[pcl->nregs] = p->label;
+
+        pcl->nregs++;
+
+        creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[0]);
+
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_bind;
+        ACE_BIND_CODE(pcode) = (uchar)creg;
+
+        if (!(cty = pcl->subexpr_types[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+        ;
+
+        ACE_BIND_NUMFVS(pcode) = (uchar)cty->numfvs;
+        for (i = 0; i < cty->numfvs; i++)
+            ACE_BIND_FV(pcode, i) = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i])
+        ;
+
+        pcode = ACE_BIND_SKIP(pcode);
+        pcl->pout = (uchar *)pcode;
+    } else {
+        return 0;
+    }
+    return 1;
 }
 
 static
@@ -2495,39 +2540,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     while (gsbc_byte_compile_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_byte_compile_alloc_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
-            int creg = 0;
-            struct gsbc_code_item_type *cty;
-
-            cl.phase = rtlets;
-
-            pcode = (struct gsbc *)cl.pout;
-
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-            ;
-
-            cl.regs[cl.nregs] = p->label;
-
-            cl.nregs++;
-
-            creg = gsbc_find_register(p, cl.subexprs, cl.nsubexprs, p->arguments[0]);
-
-            pcode->pos = p->pos;
-            pcode->instr = gsbc_op_bind;
-            ACE_BIND_CODE(pcode) = (uchar)creg;
-
-            if (!(cty = cl.subexpr_types[creg]))
-                gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
-            ;
-
-            ACE_BIND_NUMFVS(pcode) = (uchar)cty->numfvs;
-            for (i = 0; i < cty->numfvs; i++)
-                ACE_BIND_FV(pcode, i) = gsbc_find_register(p, cl.regs, cl.nregs, cty->fvs[i])
-            ;
-
-            pcode = ACE_BIND_SKIP(pcode);
-            cl.pout = (uchar *)pcode;
+        } else if (gsbc_byte_compile_bind_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")) {
             int creg = 0;
             struct gsbc_code_item_type *cty;
