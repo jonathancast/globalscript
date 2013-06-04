@@ -311,7 +311,6 @@ struct gsbc_bytecode_size_code_closure {
     int size;
 
     enum {
-        phgens,
         phconts,
     } phase;
 
@@ -369,7 +368,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
 
     cl.size = sizeof(struct gsbco);
 
-    cl.phase = phgens;
+    cl.phase = phconts;
     cl.nregs = cl.ncodes = 0;
     for (i = 0; i < MAX_NUM_REGISTERS; i++) {
         cl.codenames[i] = 0;
@@ -391,9 +390,9 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     )
         p = gsinput_next_line(&pseg, p)
     ;
+    while (gsbc_bytecode_size_alloc_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gsbc_bytecode_size_alloc_op(p, &cl)) {
-        } else if (gsbc_bytecode_size_cont_push_op(p, &cl)) {
+        if (gsbc_bytecode_size_cont_push_op(p, &cl)) {
         } else if (gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
             goto done;
         } else if (gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")) {
@@ -664,11 +663,6 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         int creg;
         struct gsbc_code_item_type *cty;
 
-        if (pcl->phase > phgens)
-            gsfatal("%P: Too late to add allocations", p->pos)
-        ;
-        pcl->phase = phgens;
-
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
@@ -682,8 +676,6 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         pcl->size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
     } else if (gssymceq(p->directive, gssymopprim, gssymcodeop, ".prim")) {
         struct gsregistered_primset *prims;
-
-        CHECK_PHASE(phgens, "allocations");
 
         CHECK_REGISTERS();
 
@@ -701,11 +693,6 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         }
     } else if (gssymceq(p->directive, gssymopimpprim, gssymcodeop, ".impprim")) {
         struct gsregistered_primset *prims;
-
-        if (pcl->phase > phgens)
-            gsfatal("%P: Too late to add allocations", p->pos)
-        ;
-        pcl->phase = phgens;
 
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
@@ -744,11 +731,6 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         gssymceq(p->directive, gssymoprecord, gssymcodeop, ".record")
         || gssymceq(p->directive, gssymoplrecord, gssymcodeop, ".lrecord")
     ) {
-        if (pcl->phase > phgens)
-            gsfatal("%P: Too late to add allocations", p->pos)
-        ;
-        pcl->phase = phgens;
-
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
@@ -756,23 +738,14 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
 
         pcl->size += ACE_SIZE_RECORD(p->numarguments / 2);
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
-        CHECK_PHASE(phgens, "allocations");
-
         CHECK_REGISTERS();
 
         pcl->size += ACE_FIELD_SIZE();
     } else if (gssymceq(p->directive, gssymoplfield, gssymcodeop, ".lfield")) {
-        CHECK_PHASE(phgens, "allocations");
-
         CHECK_REGISTERS();
 
         pcl->size += ACE_LFIELD_SIZE();
     } else if (gssymceq(p->directive, gssymopundefined, gssymcodeop, ".undefined")) {
-        if (pcl->phase > phgens)
-            gsfatal("%P: Too late to add allocations", p->pos)
-        ;
-        pcl->phase = phgens;
-
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
@@ -780,11 +753,6 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
 
         pcl->size += ACE_UNDEFINED_SIZE();
     } else if (gssymceq(p->directive, gssymopapply, gssymcodeop, ".apply")) {
-        if (pcl->phase > phgens)
-            gsfatal("%P: Too late to add allocations", p->pos)
-        ;
-        pcl->phase = phgens;
-
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
@@ -798,8 +766,6 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
     } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
         int creg;
         struct gsbc_code_item_type *cty;
-
-        pcl->phase = phgens;
 
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
@@ -938,7 +904,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             int nregs;
 
             nregs = pcl->nregs;
-            pcl->phase = phgens;
+            pcl->phase = phconts;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
@@ -950,13 +916,13 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
         pcl->size += ACE_DANALYZE_SIZE(nconstrs);
 
         nregs = pcl->nregs;
-        pcl->phase = phgens;
+        pcl->phase = phconts;
         gsbc_bytecode_size_default(ppseg, pp, pcl);
         pcl->nregs = nregs;
 
         for (i = 0; i < nconstrs; i++) {
             nregs = pcl->nregs;
-            pcl->phase = phgens;
+            pcl->phase = phconts;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
@@ -979,9 +945,9 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
     while (gsbc_bytecode_size_cont_type_arg(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_code_type_let_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_cont_arg_code_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    while (gsbc_bytecode_size_alloc_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_bytecode_size_alloc_op(*pp, pcl)) {
-        } else if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
+        if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
             return;
         } else {
@@ -998,9 +964,10 @@ gsbc_bytecode_size_default(struct gsparsedfile_segment **ppseg, struct gsparsedl
     if (!gssymceq((*pp)->directive, gssymopdefault, gssymcodeop, ".default"))
         gsfatal("%P: Expected .default next", (*pp)->pos)
     ;
-    while (*pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_bytecode_size_alloc_op(*pp, pcl)) {
-        } else if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
+    *pp = gsinput_next_line(ppseg, *pp);
+    while (gsbc_bytecode_size_alloc_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
+        if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
             return;
         } else {
