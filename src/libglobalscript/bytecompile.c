@@ -1440,6 +1440,7 @@ static int gsbc_byte_compile_type_gvar_code_op(struct gsfile_symtable *, struct 
 static int gsbc_byte_compile_type_fv_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_type_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_type_let_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
+static int gsbc_byte_compile_subcode_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
@@ -1459,7 +1460,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
 {
     struct gsbc_byte_compile_code_or_api_op_closure cl, *pcl;
     int i;
-    struct gsbco **psubcode;
     struct gsbc *pcode;
 
     gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
@@ -1469,20 +1469,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_byte_compile_type_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_type_let_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
-            if (cl.phase > rtsubexprs)
-                gsfatal("%P: Too late to add sub-expressions", p->pos)
-            ;
-            cl.phase = rtsubexprs;
-            if (cl.nsubexprs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many sub-expressions; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-            ;
-            cl.subexprs[cl.nsubexprs] = p->label;
-            cl.subexpr_types[cl.nsubexprs] = gssymtable_get_code_type(symtable, p->label);
-            psubcode = (struct gsbco **)cl.pout;
-            *psubcode++ = gssymtable_get_code(symtable, p->label);
-            cl.pout = (uchar*)psubcode;
-            cl.nsubexprs++;
+        if (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) {
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
             if (cl.phase > rtgvars)
@@ -1640,6 +1627,31 @@ gsbc_byte_compile_type_arg_code_op(struct gsparsedline *p, struct gsbc_byte_comp
         pcl->tyregnames[pcl->ntyregs] = p->label;
         pcl->tyregs[pcl->ntyregs] = gstypes_compile_type_var(p->pos, p->label, gskind_compile(p->pos, p->arguments[0]));
         pcl->ntyregs++;
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsbc_byte_compile_subcode_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
+        struct gsbco **psubcode;
+
+        if (pcl->phase > rtsubexprs)
+            gsfatal("%P: Too late to add sub-expressions", p->pos)
+        ;
+        pcl->phase = rtsubexprs;
+        if (pcl->nsubexprs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many sub-expressions; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->subexprs[pcl->nsubexprs] = p->label;
+        pcl->subexpr_types[pcl->nsubexprs] = gssymtable_get_code_type(symtable, p->label);
+        psubcode = (struct gsbco **)pcl->pout;
+        *psubcode++ = gssymtable_get_code(symtable, p->label);
+        pcl->pout = (uchar*)psubcode;
+        pcl->nsubexprs++;
     } else {
         return 0;
     }
@@ -2471,7 +2483,6 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
 {
     struct gsbc_byte_compile_code_or_api_op_closure cl;
     int i;
-    struct gsbco **psubcode;
     struct gsbc *pcode;
 
     gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
@@ -2479,20 +2490,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     while (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_type_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
-            if (cl.phase > rtsubexprs)
-                gsfatal("%P: Too late to add sub-expressions", p->pos)
-            ;
-            cl.phase = rtsubexprs;
-            if (cl.nsubexprs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many sub-expressions; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-            ;
-            cl.subexprs[cl.nsubexprs] = p->label;
-            cl.subexpr_types[cl.nsubexprs] = gssymtable_get_code_type(symtable, p->label);
-            psubcode = (struct gsbco **)cl.pout;
-            *psubcode++ = gssymtable_get_code(symtable, p->label);
-            cl.pout = (uchar*)psubcode;
-            cl.nsubexprs++;
+        if (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) {
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
