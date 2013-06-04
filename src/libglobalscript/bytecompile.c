@@ -385,13 +385,13 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
         } else if (gsbc_bytecode_size_code_type_fv(p, &cl)) {
         } else if (gsbc_bytecode_size_code_type_arg(p, &cl)) {
         } else if (gsbc_bytecode_size_code_type_let_op(p, &cl)) {
-        } else if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
             if (cl.phase > phgvars)
                 gsfatal("%P: Too late to add global variables", p->pos)
             ;
             cl.phase = phgvars;
             /* type erasure */
+        } else if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
             if (cl.phase > phgvars)
                 gsfatal_bad_input(p, "Too late to add global variables")
