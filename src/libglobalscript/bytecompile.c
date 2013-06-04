@@ -331,6 +331,7 @@ static int gsbc_bytecode_size_code_type_let_op(struct gsparsedline *, struct gsb
 static int gsbc_bytecode_size_code_subcode_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_coercion_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
+static int gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
@@ -385,24 +386,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     while (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
-            if (cl.phase > phfvs)
-                gsfatal_bad_input(p, "Too late to add free variables")
-            ;
-            cl.phase = phfvs;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
-            cl.nregs++;
-        } else if (gssymceq(p->directive, gssymopefv, gssymcodeop, ".efv")) {
-            if (cl.phase > phfvs)
-                gsfatal_bad_input(p, "Too late to add free variables")
-            ;
-            cl.phase = phfvs;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
-            ;
-            cl.size += ACE_EFV_SIZE();
-            cl.nregs++;
+        if (gsbc_bytecode_size_data_fv_code_op(p, &cl)) {
         } else if (gsbc_bytecode_size_arg_code_op(p, &cl)) {
         } else if (
             gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
@@ -620,6 +604,34 @@ gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecod
         ;
         gsbc_bytecode_size_check_natural_fits_in_one_word(p->pos, p->arguments[0]);
         pcl->size += sizeof(gsvalue);
+        pcl->nregs++;
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
+        if (pcl->phase > phfvs)
+            gsfatal_bad_input(p, "Too late to add free variables")
+        ;
+        pcl->phase = phfvs;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+        ;
+        pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymopefv, gssymcodeop, ".efv")) {
+        if (pcl->phase > phfvs)
+            gsfatal_bad_input(p, "Too late to add free variables")
+        ;
+        pcl->phase = phfvs;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+        ;
+        pcl->size += ACE_EFV_SIZE();
         pcl->nregs++;
     } else {
         return 0;
