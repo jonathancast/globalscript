@@ -311,7 +311,6 @@ struct gsbc_bytecode_size_code_closure {
     int size;
 
     enum {
-        phargs,
         phgens,
         phconts,
     } phase;
@@ -370,7 +369,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
 
     cl.size = sizeof(struct gsbco);
 
-    cl.phase = phargs;
+    cl.phase = phgens;
     cl.nregs = cl.ncodes = 0;
     for (i = 0; i < MAX_NUM_REGISTERS; i++) {
         cl.codenames[i] = 0;
@@ -386,10 +385,14 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     while (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_data_fv_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
+    while (
+        gsbc_bytecode_size_cont_arg_code_op(p, &cl)
+        || gsbc_bytecode_size_arg_code_op(p, &cl)
+    )
+        p = gsinput_next_line(&pseg, p)
+    ;
     for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gsbc_bytecode_size_cont_arg_code_op(p, &cl)) {
-        } else if (gsbc_bytecode_size_arg_code_op(p, &cl)) {
-        } else if (gsbc_bytecode_size_alloc_op(p, &cl)) {
+        if (gsbc_bytecode_size_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopimpprim, gssymcodeop, ".impprim")) {
             struct gsregistered_primset *prims;
 
@@ -656,10 +659,6 @@ gsbc_bytecode_size_cont_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode
         gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")
         || gssymceq(p->directive, gssymopfkarg, gssymcodeop, ".fkarg")
     ) {
-        if (pcl->phase > phargs)
-            gsfatal("%P: Too late to add arguments", p->pos)
-        ;
-        pcl->phase = phargs;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
@@ -678,10 +677,6 @@ gsbc_bytecode_size_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode_size
         gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
         || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
     ) {
-        if (pcl->phase > phargs)
-            gsfatal_bad_input(p, "Too late to add arguments")
-        ;
-        pcl->phase = phargs;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
         ;
@@ -943,7 +938,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             int nregs;
 
             nregs = pcl->nregs;
-            pcl->phase = phargs;
+            pcl->phase = phgens;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
@@ -955,13 +950,13 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
         pcl->size += ACE_DANALYZE_SIZE(nconstrs);
 
         nregs = pcl->nregs;
-        pcl->phase = phargs;
+        pcl->phase = phgens;
         gsbc_bytecode_size_default(ppseg, pp, pcl);
         pcl->nregs = nregs;
 
         for (i = 0; i < nconstrs; i++) {
             nregs = pcl->nregs;
-            pcl->phase = phargs;
+            pcl->phase = phgens;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
@@ -983,9 +978,9 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
     *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_cont_type_arg(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_code_type_let_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    while (gsbc_bytecode_size_cont_arg_code_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_bytecode_size_cont_arg_code_op(*pp, pcl)) {
-        } else if (gsbc_bytecode_size_alloc_op(*pp, pcl)) {
+        if (gsbc_bytecode_size_alloc_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
             return;
