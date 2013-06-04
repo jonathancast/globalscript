@@ -311,7 +311,6 @@ struct gsbc_bytecode_size_code_closure {
     int size;
 
     enum {
-        phgvars,
         phfvs,
         phargs,
         phgens,
@@ -370,7 +369,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
 
     cl.size = sizeof(struct gsbco);
 
-    cl.phase = phgvars;
+    cl.phase = phfvs;
     cl.nregs = cl.ncodes = 0;
     for (i = 0; i < MAX_NUM_REGISTERS; i++) {
         cl.codenames[i] = 0;
@@ -384,9 +383,9 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     while (gsbc_bytecode_size_code_type_let_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_code_subcode_op(symtable, p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
+    while (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
+        if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
             if (cl.phase > phfvs)
                 gsfatal_bad_input(p, "Too late to add free variables")
             ;
@@ -590,10 +589,6 @@ int
 gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
     if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
-        if (pcl->phase > phgvars)
-            gsfatal_bad_input(p, "Too late to add global variables")
-        ;
-        pcl->phase = phgvars;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
         ;
@@ -608,7 +603,6 @@ gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecod
         pcl->size += sizeof(gsvalue);
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
-        CHECK_PHASE(phgvars, "global variables");
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
@@ -934,7 +928,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             int nregs;
 
             nregs = pcl->nregs;
-            pcl->phase = phgvars;
+            pcl->phase = phfvs;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
@@ -952,7 +946,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
 
         for (i = 0; i < nconstrs; i++) {
             nregs = pcl->nregs;
-            pcl->phase = phgvars;
+            pcl->phase = phfvs;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
