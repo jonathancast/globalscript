@@ -393,23 +393,6 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     ;
     for (; ; p = gsinput_next_line(&pseg, p)) {
         if (gsbc_bytecode_size_alloc_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
-            int creg;
-            struct gsbc_code_item_type *cty;
-
-            cl.phase = phgens;
-
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-            ;
-            cl.nregs++;
-
-            creg = gsbc_find_register(p, cl.codenames, cl.ncodes, p->arguments[0]);
-            if (!(cty = cl.codetypes[creg]))
-                gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
-            ;
-
-            cl.size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
         } else if (gsbc_bytecode_size_cont_push_op(p, &cl)) {
         } else if (gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
             goto done;
@@ -812,6 +795,23 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         if (i < p->numarguments) i++;
 
         pcl->size += ACE_APPLY_SIZE(p->numarguments - i);
+    } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
+        int creg;
+        struct gsbc_code_item_type *cty;
+
+        pcl->phase = phgens;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->nregs++;
+
+        creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
+        if (!(cty = pcl->codetypes[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+        ;
+
+        pcl->size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
     } else {
         return 0;
     }
