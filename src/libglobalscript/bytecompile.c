@@ -330,7 +330,7 @@ struct gsbc_bytecode_size_code_closure {
 static int gsbc_bytecode_size_code_type_gvar(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_code_type_fv(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_code_type_arg(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
-static int gsbc_bytecode_size_type_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
+static int gsbc_bytecode_size_cont_type_arg(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_code_type_let_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_coercion_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
@@ -560,9 +560,8 @@ gsbc_bytecode_size_code_type_arg(struct gsparsedline *p, struct gsbc_bytecode_si
     return 1;
 }
 
-static
 int
-gsbc_bytecode_size_type_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+gsbc_bytecode_size_cont_type_arg(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
     if (gssymceq(p->directive, gssymopexkarg, gssymcodeop, ".exkarg")) {
         if (pcl->phase > phtyargs)
@@ -984,7 +983,7 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
         gsfatal("%P: Expected .case next", (*pp)->pos)
     ;
     while (*pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_bytecode_size_type_arg_code_op(*pp, pcl)) {
+        if (gsbc_bytecode_size_cont_type_arg(*pp, pcl)) {
         } else if (gsbc_bytecode_size_code_type_let_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_arg_code_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_alloc_op(*pp, pcl)) {
