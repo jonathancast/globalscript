@@ -1469,8 +1469,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_byte_compile_type_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_type_let_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
+        if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
                 gsfatal("%P: Too late to add sub-expressions", p->pos)
             ;
@@ -1484,6 +1483,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
             *psubcode++ = gssymtable_get_code(symtable, p->label);
             cl.pout = (uchar*)psubcode;
             cl.nsubexprs++;
+        } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
             if (cl.phase > rtgvars)
                 gsfatal("%P: Too late to add global variables", p->pos)
@@ -2479,8 +2479,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     while (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_type_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
+        if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
             if (cl.phase > rtsubexprs)
                 gsfatal("%P: Too late to add sub-expressions", p->pos)
             ;
@@ -2494,6 +2493,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
             *psubcode++ = gssymtable_get_code(symtable, p->label);
             cl.pout = (uchar*)psubcode;
             cl.nsubexprs++;
+        } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
