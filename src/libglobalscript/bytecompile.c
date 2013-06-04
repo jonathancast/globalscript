@@ -1440,6 +1440,7 @@ static int gsbc_byte_compile_type_fv_code_op(struct gsfile_symtable *, struct gs
 static int gsbc_byte_compile_type_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_type_let_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_subcode_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
+static int gsbc_byte_compile_coercion_gvar_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
@@ -1469,11 +1470,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_byte_compile_type_let_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
-            if (cl.phase > rtgvars)
-                gsfatal("%P: Too late to add global variables", p->pos)
-            ;
-            cl.phase = rtgvars;
+        if (gsbc_byte_compile_coercion_gvar_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
         } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
@@ -1647,6 +1644,20 @@ gsbc_byte_compile_subcode_code_op(struct gsfile_symtable *symtable, struct gspar
         *psubcode++ = gssymtable_get_code(symtable, p->label);
         pcl->pout = (uchar*)psubcode;
         pcl->nsubexprs++;
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsbc_byte_compile_coercion_gvar_code_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
+        if (pcl->phase > rtgvars)
+            gsfatal("%P: Too late to add global variables", p->pos)
+        ;
+        pcl->phase = rtgvars;
     } else {
         return 0;
     }
