@@ -1441,7 +1441,8 @@ static int gsbc_byte_compile_type_arg_code_op(struct gsparsedline *, struct gsbc
 static int gsbc_byte_compile_type_let_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_subcode_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_coercion_gvar_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
-static int gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
+static int gsbc_byte_compile_data_gvar_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
+static int gsbc_byte_compile_data_fv_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_cont_push_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
@@ -1471,7 +1472,8 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_coercion_gvar_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
+        if (gsbc_byte_compile_data_gvar_code_op(symtable, p, &cl)) {
+        } else if (gsbc_byte_compile_data_fv_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopimpprim, gssymcodeop, ".impprim")) {
@@ -1673,15 +1675,12 @@ gsbc_byte_compile_coercion_gvar_code_op(struct gsparsedline *p, struct gsbc_byte
 
 static gsvalue gsbc_parse_natural_literal(struct gspos, char *);
 
-static
 int
-gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+gsbc_byte_compile_data_gvar_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    gsvalue *pglobal;
-    struct gsbc *pcode;
-    int i;
-
     if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
+        gsvalue *pglobal;
+
         if (pcl->phase > rtgvars)
             gsfatal("%P: Too late to add global variables", p->pos)
         ;
@@ -1695,6 +1694,7 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
         pcl->nglobals++;
         ADD_LABEL_TO_REGS_WITH_TYPE(gssymtable_get_data_type(symtable, p->label));
     } else if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
+        gsvalue *pglobal;
         char *eos;
 
         CHECK_PHASE(rtgvars, "global variables");
@@ -1713,6 +1713,8 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
         pcl->nregs++;
         pcl->nglobals++;
     } else if (gssymceq(p->directive, gssymopnatural, gssymcodeop, ".natural")) {
+        gsvalue *pglobal;
+
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
@@ -1724,7 +1726,19 @@ gsbc_byte_compile_data_fv_code_op(struct gsfile_symtable *symtable, struct gspar
 
         pcl->nregs++;
         pcl->nglobals++;
-    } else if (
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsbc_byte_compile_data_fv_code_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    struct gsbc *pcode;
+    int i;
+
+    if (
         gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")
         || gssymceq(p->directive, gssymopefv, gssymcodeop, ".efv")
     ) {
@@ -2494,7 +2508,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     while (gsbc_byte_compile_type_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_byte_compile_data_fv_code_op(symtable, p, &cl)) {
+        if (gsbc_byte_compile_data_fv_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
