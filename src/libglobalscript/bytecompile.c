@@ -1474,48 +1474,6 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_byte_compile_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gsbc_byte_compile_alloc_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopimpprim, gssymcodeop, ".impprim")) {
-            struct gsregistered_primset *prims;
-
-            if (cl.phase > rtlets)
-                gsfatal("%P: Too late to add allocations", p->pos)
-            ;
-            cl.phase = rtlets;
-
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-            ;
-            cl.regs[cl.nregs] = p->label;
-
-            if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
-                int nargs, first_arg;
-                struct gsregistered_prim *prim;
-
-                prim = gsprims_lookup_prim(prims, p->arguments[2]->name);
-
-                SETUP_PCODE(gsbc_op_eprim);
-                ACE_IMPPRIM_INDEX(pcode) = prim->index;
-
-                /* §paragraph{Skipping type arguments} */
-                for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-                if (i < p->numarguments) i++;
-
-                nargs = p->numarguments - i;
-                first_arg = i;
-                ACE_IMPPRIM_NUMARGS(pcode) = (uchar)nargs;
-                for (i = first_arg; i < p->numarguments; i++) {
-                    int regarg;
-
-                    regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
-                    ACE_IMPPRIM_ARG(pcode, i - first_arg) = (uchar)regarg;
-                }
-
-                cl.pout = ACE_IMPPRIM_SKIP(pcode);
-            } else {
-                SETUP_PCODE(gsbc_op_unknown_eprim);
-                cl.pout = GS_NEXT_BYTECODE(pcode, 0);
-            }
-            cl.nregs++;
         } else if (gsbc_byte_compile_cont_push_op(p, &cl)) {
         } else if (gsbc_byte_compile_terminal_code_op(ppseg, &p, &cl)) {
             goto done;
@@ -1924,6 +1882,48 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             pcode->instr = gsbc_op_unknown_prim;
             pcl->pout = ACE_UNKNOWN_PRIM_SKIP(pcode);
         }
+    } else if (gssymceq(p->directive, gssymopimpprim, gssymcodeop, ".impprim")) {
+        struct gsregistered_primset *prims;
+
+        if (pcl->phase > rtlets)
+            gsfatal("%P: Too late to add allocations", p->pos)
+        ;
+        pcl->phase = rtlets;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->regs[pcl->nregs] = p->label;
+
+        if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
+            int nargs, first_arg;
+            struct gsregistered_prim *prim;
+
+            prim = gsprims_lookup_prim(prims, p->arguments[2]->name);
+
+            SETUP_PCODE(gsbc_op_eprim);
+            ACE_IMPPRIM_INDEX(pcode) = prim->index;
+
+            /* §paragraph{Skipping type arguments} */
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+
+            nargs = p->numarguments - i;
+            first_arg = i;
+            ACE_IMPPRIM_NUMARGS(pcode) = (uchar)nargs;
+            for (i = first_arg; i < p->numarguments; i++) {
+                int regarg;
+
+                regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+                ACE_IMPPRIM_ARG(pcode, i - first_arg) = (uchar)regarg;
+            }
+
+            pcl->pout = ACE_IMPPRIM_SKIP(pcode);
+        } else {
+            SETUP_PCODE(gsbc_op_unknown_eprim);
+            pcl->pout = GS_NEXT_BYTECODE(pcode, 0);
+        }
+        pcl->nregs++;
     } else if (
         gssymceq(p->directive, gssymopconstr, gssymcodeop, ".constr")
         || gssymceq(p->directive, gssymopexconstr, gssymcodeop, ".exconstr")
