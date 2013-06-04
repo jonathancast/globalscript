@@ -558,8 +558,11 @@ static int gsparse_code_type_gvar_op(struct gsparse_input_pos *, struct gsparsed
 static int gsparse_code_type_fv_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_code_type_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_code_type_let_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
-static int gsparse_value_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
+static int gsparse_subcode_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
+static int gsparse_coercion_gvar_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
+static int gsparse_value_gvar_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_value_fv_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
+static int gsparse_value_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_thunk_alloc_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_value_alloc_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_cont_push_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
@@ -587,6 +590,18 @@ gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
     ;
 
     while (gsparse_code_type_let_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_subcode_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_coercion_gvar_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_value_gvar_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -661,6 +676,18 @@ gsparse_force_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, 
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
+    while (gsparse_subcode_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_coercion_gvar_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_value_gvar_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
     while (gsparse_value_fv_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
@@ -718,6 +745,18 @@ gsparse_strict_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
+    while (gsparse_subcode_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_coercion_gvar_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_value_gvar_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
     while (gsparse_value_fv_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
@@ -771,6 +810,18 @@ gsparse_ubcase_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
     ;
 
     while (gsparse_code_type_let_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_subcode_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_coercion_gvar_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_value_gvar_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -952,13 +1003,10 @@ gsparse_value_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedl
         ; \
     } while (0)
 
-static
 int
-gsparse_value_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+gsparse_subcode_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymsubcode, gssymcogvar, gssymgvar, gssymrune, gssymnatural, gssymfv, gssymefv;
-
-    int i;
+    static gsinterned_string gssymsubcode;
 
     if (gssymceq(parsedline->directive, gssymsubcode, gssymcodeop, ".subcode")) {
         if (*fields[0])
@@ -968,7 +1016,18 @@ gsparse_value_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedli
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .subcode", pos->real_filename, pos->real_lineno)
         ;
-    } else if (gssymceq(parsedline->directive, gssymcogvar, gssymcodeop, ".cogvar")) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsparse_coercion_gvar_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+{
+    static gsinterned_string gssymcogvar;
+
+    if (gssymceq(parsedline->directive, gssymcogvar, gssymcodeop, ".cogvar")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymcoercionlable, fields[0]);
         else
@@ -976,7 +1035,18 @@ gsparse_value_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedli
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .cogvar op", pos->real_filename, pos->real_lineno)
         ;
-    } else if (gssymceq(parsedline->directive, gssymgvar, gssymcodeop, ".gvar")) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsparse_value_gvar_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+{
+    static gsinterned_string gssymgvar, gssymrune, gssymnatural;
+
+    if (gssymceq(parsedline->directive, gssymgvar, gssymcodeop, ".gvar")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymdatalable, fields[0]);
         else
@@ -1000,7 +1070,20 @@ gsparse_value_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedli
         if (n > 2 + 1)
             gsfatal("%s:%d: Too many arguments to .natural; I know about the natural literal to use", pos->real_filename, pos->real_lineno)
         ;
-    } else if (gssymceq(parsedline->directive, gssymfv, gssymcodeop, ".fv")) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsparse_value_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+{
+    static gsinterned_string gssymfv, gssymefv;
+
+    int i;
+
+    if (gssymceq(parsedline->directive, gssymfv, gssymcodeop, ".fv")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymdatalable, fields[0]);
         else
@@ -1377,6 +1460,10 @@ gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
     ;
 
     while (gsparse_code_type_let_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
+    while (gsparse_subcode_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
