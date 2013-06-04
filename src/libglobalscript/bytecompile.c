@@ -332,6 +332,7 @@ static int gsbc_bytecode_size_coercion_gvar_code_op(struct gsparsedline *, struc
 static int gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_cont_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
+static int gsbc_bytecode_size_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
@@ -387,17 +388,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     while (gsbc_bytecode_size_data_fv_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     for (; ; p = gsinput_next_line(&pseg, p)) {
         if (gsbc_bytecode_size_cont_arg_code_op(p, &cl)) {
-        } else if (
-            gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
-            || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
-        ) {
-            if (cl.phase > phargs)
-                gsfatal_bad_input(p, "Too late to add arguments")
-            ;
-            cl.phase = phargs;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
-            cl.nregs++;
+        } else if (gsbc_bytecode_size_arg_code_op(p, &cl)) {
         } else if (gsbc_bytecode_size_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopimpprim, gssymcodeop, ".impprim")) {
             struct gsregistered_primset *prims;
@@ -671,6 +662,28 @@ gsbc_bytecode_size_cont_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode
         pcl->phase = phargs;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->nregs++;
+    } else {
+        return 0;
+    }
+
+    return 1;
+}
+
+int
+gsbc_bytecode_size_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    if (
+        gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
+        || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
+    ) {
+        if (pcl->phase > phargs)
+            gsfatal_bad_input(p, "Too late to add arguments")
+        ;
+        pcl->phase = phargs;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
         ;
         pcl->nregs++;
     } else {
