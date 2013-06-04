@@ -310,10 +310,6 @@ gsbc_alloc_code_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
 struct gsbc_bytecode_size_code_closure {
     int size;
 
-    enum {
-        phconts,
-    } phase;
-
     int nregs;
 
     int ncodes;
@@ -368,7 +364,6 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
 
     cl.size = sizeof(struct gsbco);
 
-    cl.phase = phconts;
     cl.nregs = cl.ncodes = 0;
     for (i = 0; i < MAX_NUM_REGISTERS; i++) {
         cl.codenames[i] = 0;
@@ -391,15 +386,10 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
         p = gsinput_next_line(&pseg, p)
     ;
     while (gsbc_bytecode_size_alloc_op(p, &cl)) p = gsinput_next_line(&pseg, p);
-    for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gsbc_bytecode_size_cont_push_op(p, &cl)) {
-        } else if (gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
-            goto done;
-        } else {
-            gsfatal(UNIMPL("%P: gsbc_bytecode_size_item (%y)"), p->pos, p->directive);
-        }
+    while (gsbc_bytecode_size_cont_push_op(p, &cl)) p = gsinput_next_line(&pseg, p);
+    if (!gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
+        gsfatal(UNIMPL("%P: gsbc_bytecode_size_item (%y)"), p->pos, p->directive);
     }
-done:
 
     if (cl.size % sizeof(void*))
         cl.size += sizeof(void*) - cl.size % sizeof(void*)
@@ -780,19 +770,14 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
     int i;
 
     if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
-        pcl->phase = phconts;
         /* no effect on representation */
     } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
-        pcl->phase = phconts;
         /* no effect on representation */
     } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
-        pcl->phase = phconts;
         pcl->size += ACE_APP_SIZE(p->numarguments);
     } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
         int creg;
         struct gsbc_code_item_type *cty;
-
-        pcl->phase = phconts;
 
         creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
         if (!(cty = pcl->codetypes[creg]))
@@ -804,8 +789,6 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
         int creg;
         struct gsbc_code_item_type *cty;
 
-        pcl->phase = phconts;
-
         creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
         if (!(cty = pcl->codetypes[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
@@ -816,8 +799,6 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
         int creg;
         struct gsbc_code_item_type *cty;
         int ncases;
-
-        pcl->phase = phconts;
 
         for (i = 0; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
         ncases = i / 2;
@@ -893,7 +874,6 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             int nregs;
 
             nregs = pcl->nregs;
-            pcl->phase = phconts;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
@@ -905,13 +885,11 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
         pcl->size += ACE_DANALYZE_SIZE(nconstrs);
 
         nregs = pcl->nregs;
-        pcl->phase = phconts;
         gsbc_bytecode_size_default(ppseg, pp, pcl);
         pcl->nregs = nregs;
 
         for (i = 0; i < nconstrs; i++) {
             nregs = pcl->nregs;
-            pcl->phase = phconts;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
@@ -945,13 +923,9 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
     while (gsbc_bytecode_size_code_type_let_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_cont_arg_code_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_alloc_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
-        } else if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
-            return;
-        } else {
-            gsfatal(UNIMPL("%P: gsbc_bytecode_size_case(%y)"), (*pp)->pos, (*pp)->directive);
-        }
+    while (gsbc_bytecode_size_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    if (!gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
+        gsfatal(UNIMPL("%P: gsbc_bytecode_size_case(%y)"), (*pp)->pos, (*pp)->directive);
     }
 }
 
@@ -965,13 +939,9 @@ gsbc_bytecode_size_default(struct gsparsedfile_segment **ppseg, struct gsparsedl
     ;
     *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_alloc_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
-        } else if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
-            return;
-        } else {
-            gsfatal(UNIMPL("%P: gsbc_bytecode_size_default(%y)"), (*pp)->pos, (*pp)->directive);
-        }
+    while (gsbc_bytecode_size_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    if (!gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
+        gsfatal(UNIMPL("%P: gsbc_bytecode_size_default(%y)"), (*pp)->pos, (*pp)->directive);
     }
 }
 
