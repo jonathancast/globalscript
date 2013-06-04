@@ -383,26 +383,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     while (gsbc_bytecode_size_code_type_arg(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_code_type_let_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) {
-        } else if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
-            if (cl.phase > phgvars)
-                gsfatal_bad_input(p, "Too late to add global variables")
-            ;
-            cl.phase = phgvars;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
-            if (cl.size % sizeof(gsvalue))
-                gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't gsvalue-aligned",
-                    __FILE__,
-                    __LINE__,
-                    p->pos.file->name,
-                    p->pos.lineno
-                )
-            ;
-            cl.size += sizeof(gsvalue);
-            cl.nregs++;
-        } else if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
+        if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
             if (cl.phase > phcode)
                 gsfatal_bad_input(p, "Too late to add sub-expressions")
             ;
@@ -421,6 +402,25 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
             cl.codenames[cl.ncodes] = p->label;
             cl.codetypes[cl.ncodes] = gssymtable_get_code_type(symtable, p->label);
             cl.ncodes++;
+        } else if (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) {
+        } else if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
+        } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
+            if (cl.phase > phgvars)
+                gsfatal_bad_input(p, "Too late to add global variables")
+            ;
+            cl.phase = phgvars;
+            if (cl.nregs >= MAX_NUM_REGISTERS)
+                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
+            if (cl.size % sizeof(gsvalue))
+                gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't gsvalue-aligned",
+                    __FILE__,
+                    __LINE__,
+                    p->pos.file->name,
+                    p->pos.lineno
+                )
+            ;
+            cl.size += sizeof(gsvalue);
+            cl.nregs++;
         } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
             if (cl.phase > phfvs)
                 gsfatal_bad_input(p, "Too late to add free variables")
