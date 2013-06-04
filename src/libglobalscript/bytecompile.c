@@ -393,31 +393,6 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     ;
     for (; ; p = gsinput_next_line(&pseg, p)) {
         if (gsbc_bytecode_size_alloc_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopimpprim, gssymcodeop, ".impprim")) {
-            struct gsregistered_primset *prims;
-
-            if (cl.phase > phgens)
-                gsfatal("%P: Too late to add allocations", p->pos)
-            ;
-            cl.phase = phgens;
-
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-            ;
-            cl.nregs++;
-
-            if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
-                int nargs;
-
-                /* Ignore free type variables & separator (type erasure) */
-                for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
-                if (i < p->numarguments) i++;
-                nargs = p->numarguments - i;
-
-                cl.size += ACE_IMPPRIM_SIZE(nargs);
-            } else {
-                cl.size += GS_SIZE_BYTECODE(0);
-            }
         } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
             int creg;
             struct gsbc_code_item_type *cty;
@@ -740,6 +715,31 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
             pcl->size += ACE_PRIM_SIZE(nargs); /* API index + # args + args */
         } else {
             pcl->size += ACE_UNKNOWN_PRIM_SIZE();
+        }
+    } else if (gssymceq(p->directive, gssymopimpprim, gssymcodeop, ".impprim")) {
+        struct gsregistered_primset *prims;
+
+        if (pcl->phase > phgens)
+            gsfatal("%P: Too late to add allocations", p->pos)
+        ;
+        pcl->phase = phgens;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->nregs++;
+
+        if (prims = gsprims_lookup_prim_set(p->arguments[0]->name)) {
+            int nargs;
+
+            /* Ignore free type variables & separator (type erasure) */
+            for (i = 1; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+            if (i < p->numarguments) i++;
+            nargs = p->numarguments - i;
+
+            pcl->size += ACE_IMPPRIM_SIZE(nargs);
+        } else {
+            pcl->size += GS_SIZE_BYTECODE(0);
         }
     } else if (
         gssymceq(p->directive, gssymopconstr, gssymcodeop, ".constr")
