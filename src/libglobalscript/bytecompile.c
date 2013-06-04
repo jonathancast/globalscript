@@ -330,6 +330,7 @@ static int gsbc_bytecode_size_code_type_fv(struct gsparsedline *, struct gsbc_by
 static int gsbc_bytecode_size_code_type_arg(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_cont_type_arg(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_code_type_let_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
+static int gsbc_bytecode_size_code_subcode_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_coercion_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
@@ -383,25 +384,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     while (gsbc_bytecode_size_code_type_arg(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_code_type_let_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
-            if (cl.phase > phcode)
-                gsfatal_bad_input(p, "Too late to add sub-expressions")
-            ;
-            cl.phase = phcode;
-            if (cl.ncodes >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
-            ;
-            if (cl.size % sizeof(struct gsbco *))
-                gsfatal("%s:%d: %s:%d: File format error: we're at a .subcode generator but our location isn't struct gsbco *-aligned",
-                    __FILE__, __LINE__,
-                    p->pos.file->name,
-                    p->pos.lineno
-                )
-            ;
-            cl.size += sizeof(struct gsbco *);
-            cl.codenames[cl.ncodes] = p->label;
-            cl.codetypes[cl.ncodes] = gssymtable_get_code_type(symtable, p->label);
-            cl.ncodes++;
+        if (gsbc_bytecode_size_code_subcode_op(symtable, p, &cl)) {
         } else if (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) {
         } else if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
@@ -571,6 +554,34 @@ gsbc_bytecode_size_code_type_let_op(struct gsparsedline *p, struct gsbc_bytecode
 {
     if (gssymceq(p->directive, gssymoptylet, gssymcodeop, ".tylet")) {
         /* type erasure */
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+int
+gsbc_bytecode_size_code_subcode_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
+        if (pcl->phase > phcode)
+            gsfatal_bad_input(p, "Too late to add sub-expressions")
+        ;
+        pcl->phase = phcode;
+        if (pcl->ncodes >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
+        ;
+        if (pcl->size % sizeof(struct gsbco *))
+            gsfatal("%s:%d: %s:%d: File format error: we're at a .subcode generator but our location isn't struct gsbco *-aligned",
+                __FILE__, __LINE__,
+                p->pos.file->name,
+                p->pos.lineno
+            )
+        ;
+        pcl->size += sizeof(struct gsbco *);
+        pcl->codenames[pcl->ncodes] = p->label;
+        pcl->codetypes[pcl->ncodes] = gssymtable_get_code_type(symtable, p->label);
+        pcl->ncodes++;
     } else {
         return 0;
     }
