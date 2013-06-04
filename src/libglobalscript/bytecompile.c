@@ -386,23 +386,6 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     for (; ; p = gsinput_next_line(&pseg, p)) {
         if (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) {
         } else if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
-            if (cl.phase > phgvars)
-                gsfatal_bad_input(p, "Too late to add global variables")
-            ;
-            cl.phase = phgvars;
-            if (cl.nregs >= MAX_NUM_REGISTERS)
-                gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS);
-            if (cl.size % sizeof(gsvalue))
-                gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't gsvalue-aligned",
-                    __FILE__,
-                    __LINE__,
-                    p->pos.file->name,
-                    p->pos.lineno
-                )
-            ;
-            cl.size += sizeof(gsvalue);
-            cl.nregs++;
         } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
             if (cl.phase > phfvs)
                 gsfatal_bad_input(p, "Too late to add free variables")
@@ -610,7 +593,25 @@ void static gsbc_bytecode_size_check_natural_fits_in_one_word(struct gspos, gsin
 int
 gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
-    if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
+    if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
+        if (pcl->phase > phgvars)
+            gsfatal_bad_input(p, "Too late to add global variables")
+        ;
+        pcl->phase = phgvars;
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+        ;
+        if (pcl->size % sizeof(gsvalue))
+            gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't gsvalue-aligned",
+                __FILE__,
+                __LINE__,
+                p->pos.file->name,
+                p->pos.lineno
+            )
+        ;
+        pcl->size += sizeof(gsvalue);
+        pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymoprune, gssymcodeop, ".rune")) {
         CHECK_PHASE(phgvars, "global variables");
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
