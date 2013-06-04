@@ -383,9 +383,9 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     while (gsbc_bytecode_size_code_type_arg(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_code_type_let_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_code_subcode_op(symtable, p, &cl)) p = gsinput_next_line(&pseg, p);
+    while (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) {
-        } else if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
+        if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
             if (cl.phase > phfvs)
                 gsfatal_bad_input(p, "Too late to add free variables")
@@ -577,10 +577,6 @@ int
 gsbc_bytecode_size_coercion_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
     if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
-        if (pcl->phase > phgvars)
-            gsfatal("%P: Too late to add global variables", p->pos)
-        ;
-        pcl->phase = phgvars;
         /* type erasure */
     } else {
         return 0;
