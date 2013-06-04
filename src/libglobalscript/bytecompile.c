@@ -334,6 +334,7 @@ static int gsbc_bytecode_size_code_type_fv(struct gsparsedline *, struct gsbc_by
 static int gsbc_bytecode_size_code_type_arg(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_type_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_code_type_let_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
+static int gsbc_bytecode_size_coercion_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
@@ -385,12 +386,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
         } else if (gsbc_bytecode_size_code_type_fv(p, &cl)) {
         } else if (gsbc_bytecode_size_code_type_arg(p, &cl)) {
         } else if (gsbc_bytecode_size_code_type_let_op(p, &cl)) {
-        } else if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
-            if (cl.phase > phgvars)
-                gsfatal("%P: Too late to add global variables", p->pos)
-            ;
-            cl.phase = phgvars;
-            /* type erasure */
+        } else if (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) {
         } else if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
             if (cl.phase > phgvars)
@@ -610,6 +606,21 @@ gsbc_bytecode_size_code_type_let_op(struct gsparsedline *p, struct gsbc_bytecode
             gsfatal("Too late to add " nm, p->pos); \
         pcl->phase = ph; \
     } while (0)
+
+int
+gsbc_bytecode_size_coercion_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    if (gssymceq(p->directive, gssymopcogvar, gssymcodeop, ".cogvar")) {
+        if (pcl->phase > phgvars)
+            gsfatal("%P: Too late to add global variables", p->pos)
+        ;
+        pcl->phase = phgvars;
+        /* type erasure */
+    } else {
+        return 0;
+    }
+    return 1;
+}
 
 void static gsbc_bytecode_size_check_natural_fits_in_one_word(struct gspos, gsinterned_string);
 
