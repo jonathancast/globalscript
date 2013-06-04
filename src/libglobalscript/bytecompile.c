@@ -1402,7 +1402,6 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
 
 struct gsbc_byte_compile_code_or_api_op_closure {
     enum {
-        rtfvs,
         rtargs,
         rtlets,
         rtops,
@@ -1471,9 +1470,9 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_coercion_gvar_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_data_gvar_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_byte_compile_data_fv_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_byte_compile_data_fv_code_op(p, &cl)) {
-        } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
+        if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopimpprim, gssymcodeop, ".impprim")) {
             struct gsregistered_primset *prims;
@@ -1537,7 +1536,7 @@ static
 void
 gsbc_byte_compile_code_or_api_op_closure_init(struct gsbco *pbco, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    pcl->phase = rtfvs;
+    pcl->phase = rtargs;
     pcl->ntyregs = pcl->nregs = pcl->nsubexprs = pcl->nglobals = pcl->nfvs = pcl->nargs = pcl->nfields = 0;
     pcl->pout = (uchar*)pbco + sizeof(struct gsbco);
     memset(pcl->regtypes, 0, sizeof(pcl->regtypes));
@@ -1738,13 +1737,9 @@ gsbc_byte_compile_data_fv_code_op(struct gsparsedline *p, struct gsbc_byte_compi
     ) {
         struct gstype *type;
 
-        if (pcl->phase > rtfvs)
-            gsfatal("%P: Too late to add free variables", p->pos)
-        ;
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
-        pcl->phase = rtfvs;
 
         if (p->directive == gssymopefv) {
             SETUP_PCODE(gsbc_op_efv);
@@ -2384,7 +2379,7 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
             nregs = pcl->nregs;
             ntyregs = pcl->ntyregs;
             pcl->nfields = 0;
-            pcl->phase = rtfvs;
+            pcl->phase = rtargs;
             gsbc_byte_compile_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
             pcl->ntyregs = ntyregs;
@@ -2440,7 +2435,7 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
             pcases[1 + i] = (struct gsbc *)pcl->pout;
             nregs = pcl->nregs;
             pcl->nfields = 0;
-            pcl->phase = rtfvs;
+            pcl->phase = rtargs;
             gsbc_byte_compile_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
 
@@ -2501,9 +2496,9 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, struct gsparsedfile_
     while (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_type_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_byte_compile_data_fv_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_byte_compile_data_fv_code_op(p, &cl)) {
-        } else if (gsbc_byte_compile_arg_code_op(p, &cl)) {
+        if (gsbc_byte_compile_arg_code_op(p, &cl)) {
         } else if (gsbc_byte_compile_alloc_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
             int creg = 0;
