@@ -1401,10 +1401,6 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile
 }
 
 struct gsbc_byte_compile_code_or_api_op_closure {
-    enum {
-        rtops,
-    } phase;
-
     void *pout;
 
     int nregs;
@@ -1456,12 +1452,9 @@ static
 void
 gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco *pbco)
 {
-    struct gsbc_byte_compile_code_or_api_op_closure cl, *pcl;
-    int i;
-    struct gsbc *pcode;
+    struct gsbc_byte_compile_code_or_api_op_closure cl;
 
     gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
-    pcl = &cl;
     while (gsbc_byte_compile_type_gvar_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_type_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
@@ -1472,16 +1465,10 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_byte_compile_data_fv_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_alloc_op(p, &cl)) p = gsinput_next_line(ppseg, p);
-    for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gsbc_byte_compile_cont_push_op(p, &cl)) {
-        } else if (gsbc_byte_compile_terminal_code_op(ppseg, &p, &cl)) {
-            goto done;
-        } else {
-            gsfatal(UNIMPL("%P: Code op %s"), p->pos, p->directive->name);
-        }
+    while (gsbc_byte_compile_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    if (!gsbc_byte_compile_terminal_code_op(ppseg, &p, &cl)) {
+        gsfatal(UNIMPL("%P: Code op %s"), p->pos, p->directive->name);
     }
-
-done:
 
     pbco->numsubexprs = cl.nsubexprs;
     pbco->numglobals = cl.nglobals;
@@ -1493,7 +1480,6 @@ static
 void
 gsbc_byte_compile_code_or_api_op_closure_init(struct gsbco *pbco, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    pcl->phase = rtops;
     pcl->ntyregs = pcl->nregs = pcl->nsubexprs = pcl->nglobals = pcl->nfvs = pcl->nargs = pcl->nfields = 0;
     pcl->pout = (uchar*)pbco + sizeof(struct gsbco);
     memset(pcl->regtypes, 0, sizeof(pcl->regtypes));
@@ -2147,13 +2133,10 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
     int i;
 
     if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
-        pcl->phase = rtops;
         /* no effect on representation */
     } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
-        pcl->phase = rtops;
         /* no effect on representation */
     } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
-        pcl->phase = rtops;
         pcode = (struct gsbc *)pcl->pout;
         pcode->pos = p->pos;
         pcode->instr = gsbc_op_app;
@@ -2168,8 +2151,6 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
     } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
         int creg = 0;
         struct gsbc_code_item_type *cty;
-
-        pcl->phase = rtops;
 
         SETUP_PCODE(gsbc_op_force);
 
@@ -2194,8 +2175,6 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
         int creg = 0;
         struct gsbc_code_item_type *cty;
 
-        pcl->phase = rtops;
-
         pcode = (struct gsbc *)pcl->pout;
 
         creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[0]);
@@ -2219,7 +2198,6 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
         pcl->pout = ACE_STRICT_SKIP(pcode);
     } else if (gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")) {
         struct gsbc_code_item_type *cty;
-        pcl->phase = rtops;
 
         pcode = (struct gsbc *)pcl->pout;
         pcode->pos = p->pos;
@@ -2363,7 +2341,6 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
             pcl->pout = ACE_UNKNOWN_LPRIM_SKIP(pcode);
         }
     } else if (gssymceq((*pp)->directive, gssymopundef, gssymcodeop, ".undef")) {
-        pcl->phase = rtops;
         SETUP_PCODE(gsbc_op_undef);
         pcl->pout = ACE_UNDEF_SKIP(pcode);
     } else if (gssymceq((*pp)->directive, gssymopanalyze, gssymcodeop, ".analyze")) {
@@ -2393,7 +2370,6 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
             nregs = pcl->nregs;
             ntyregs = pcl->ntyregs;
             pcl->nfields = 0;
-            pcl->phase = rtops;
             gsbc_byte_compile_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
             pcl->ntyregs = ntyregs;
@@ -2433,7 +2409,6 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
         pcases[0] = (struct gsbc *)pcl->pout;
         nregs = pcl->nregs;
         pcl->nfields = 0;
-        pcl->phase = rtops;
         gsbc_byte_compile_default(ppseg, pp, pcl);
         pcl->nregs = nregs;
 
@@ -2449,7 +2424,6 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
             pcases[1 + i] = (struct gsbc *)pcl->pout;
             nregs = pcl->nregs;
             pcl->nfields = 0;
-            pcl->phase = rtops;
             gsbc_byte_compile_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
 
@@ -2471,13 +2445,9 @@ gsbc_byte_compile_case(struct gsparsedfile_segment **ppseg, struct gsparsedline 
     while (gsbc_byte_compile_type_let_code_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_byte_compile_arg_code_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_byte_compile_alloc_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_byte_compile_cont_push_op(*pp, pcl)) {
-        } else if (gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
-            return;
-        } else {
-            gsfatal(UNIMPL("%P: Un-implemented .case code op %y"), (*pp)->pos, (*pp)->directive);
-        }
+    while (gsbc_byte_compile_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    if (!gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
+        gsfatal(UNIMPL("%P: Un-implemented .case code op %y"), (*pp)->pos, (*pp)->directive);
     }
 }
 
@@ -2485,16 +2455,11 @@ static
 void
 gsbc_byte_compile_default(struct gsparsedfile_segment **ppseg, struct gsparsedline **pp, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    pcl->phase = rtops;
     *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_byte_compile_alloc_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_byte_compile_cont_push_op(*pp, pcl)) {
-        } else if (gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
-            return;
-        } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Un-implemented .default code op %y", (*pp)->pos, (*pp)->directive);
-        }
+    while (gsbc_byte_compile_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    if (!gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Un-implemented .default code op %y", (*pp)->pos, (*pp)->directive);
     }
 }
 
