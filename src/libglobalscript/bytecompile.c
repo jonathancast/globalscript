@@ -311,7 +311,6 @@ struct gsbc_bytecode_size_code_closure {
     int size;
 
     enum {
-        phtyfvs,
         phtyargs,
         phtylets,
         phcode,
@@ -373,7 +372,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
 
     cl.size = sizeof(struct gsbco);
 
-    cl.phase = phtyfvs;
+    cl.phase = phtyargs;
     cl.nregs = cl.ncodes = 0;
     for (i = 0; i < MAX_NUM_REGISTERS; i++) {
         cl.codenames[i] = 0;
@@ -382,9 +381,9 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     pseg = item.pseg;
     p = gsinput_next_line(&pseg, item.v);
     while (gsbc_bytecode_size_code_type_gvar(p, &cl)) p = gsinput_next_line(&pseg, p);
+    while (gsbc_bytecode_size_code_type_fv(p, &cl)) p = gsinput_next_line(&pseg, p);
     for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gsbc_bytecode_size_code_type_fv(p, &cl)) {
-        } else if (gsbc_bytecode_size_code_type_arg(p, &cl)) {
+        if (gsbc_bytecode_size_code_type_arg(p, &cl)) {
         } else if (gsbc_bytecode_size_code_type_let_op(p, &cl)) {
         } else if (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) {
         } else if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
@@ -539,10 +538,6 @@ int
 gsbc_bytecode_size_code_type_fv(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
     if (gssymceq(p->directive, gssymoptyfv, gssymcodeop, ".tyfv")) {
-        if (pcl->phase > phtyfvs)
-            gsfatal("%P: Too late to add type arguments", p->pos)
-        ;
-        pcl->phase = phtyfvs;
         /* type erasure */
     } else {
         return 0;
