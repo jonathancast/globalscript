@@ -331,7 +331,7 @@ static int gsbc_bytecode_size_code_subcode_op(struct gsfile_symtable *, struct g
 static int gsbc_bytecode_size_coercion_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
-static int gsbc_bytecode_size_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
+static int gsbc_bytecode_size_cont_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
@@ -386,7 +386,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     while (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_data_fv_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gsbc_bytecode_size_arg_code_op(p, &cl)) {
+        if (gsbc_bytecode_size_cont_arg_code_op(p, &cl)) {
         } else if (
             gssymceq(p->directive, gssymoparg, gssymcodeop, ".arg")
             || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
@@ -658,9 +658,8 @@ gsbc_bytecode_size_check_natural_fits_in_one_word(struct gspos pos, gsinterned_s
     }
 }
 
-static
 int
-gsbc_bytecode_size_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+gsbc_bytecode_size_cont_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
     if (
         gssymceq(p->directive, gssymopkarg, gssymcodeop, ".karg")
@@ -972,7 +971,7 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
     while (gsbc_bytecode_size_cont_type_arg(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_code_type_let_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_bytecode_size_arg_code_op(*pp, pcl)) {
+        if (gsbc_bytecode_size_cont_arg_code_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_alloc_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
