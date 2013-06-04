@@ -311,7 +311,6 @@ struct gsbc_bytecode_size_code_closure {
     int size;
 
     enum {
-        phtyargs,
         phtylets,
         phcode,
         phgvars,
@@ -372,7 +371,7 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
 
     cl.size = sizeof(struct gsbco);
 
-    cl.phase = phtyargs;
+    cl.phase = phtylets;
     cl.nregs = cl.ncodes = 0;
     for (i = 0; i < MAX_NUM_REGISTERS; i++) {
         cl.codenames[i] = 0;
@@ -382,9 +381,9 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     p = gsinput_next_line(&pseg, item.v);
     while (gsbc_bytecode_size_code_type_gvar(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_code_type_fv(p, &cl)) p = gsinput_next_line(&pseg, p);
+    while (gsbc_bytecode_size_code_type_arg(p, &cl)) p = gsinput_next_line(&pseg, p);
     for (; ; p = gsinput_next_line(&pseg, p)) {
-        if (gsbc_bytecode_size_code_type_arg(p, &cl)) {
-        } else if (gsbc_bytecode_size_code_type_let_op(p, &cl)) {
+        if (gsbc_bytecode_size_code_type_let_op(p, &cl)) {
         } else if (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) {
         } else if (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) {
         } else if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
@@ -549,10 +548,6 @@ int
 gsbc_bytecode_size_code_type_arg(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
     if (gssymceq(p->directive, gssymoptyarg, gssymcodeop, ".tyarg")) {
-        if (pcl->phase > phtyargs)
-            gsfatal("%P: Too late to add type arguments", p->pos)
-        ;
-        pcl->phase = phtyargs;
         /* type erasure */
     } else {
         return 0;
@@ -564,10 +559,6 @@ int
 gsbc_bytecode_size_cont_type_arg(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
     if (gssymceq(p->directive, gssymopexkarg, gssymcodeop, ".exkarg")) {
-        if (pcl->phase > phtyargs)
-            gsfatal("%P: Too late to add type arguments", p->pos)
-        ;
-        pcl->phase = phtyargs;
         /* type erasure */
     } else {
         return 0;
@@ -945,7 +936,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             int nregs;
 
             nregs = pcl->nregs;
-            pcl->phase = phtyargs;
+            pcl->phase = phtylets;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
@@ -963,7 +954,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
 
         for (i = 0; i < nconstrs; i++) {
             nregs = pcl->nregs;
-            pcl->phase = phtyargs;
+            pcl->phase = phtylets;
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
@@ -982,9 +973,10 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
     if (!gssymceq((*pp)->directive, gssymopcase, gssymcodeop, ".case"))
         gsfatal("%P: Expected .case next", (*pp)->pos)
     ;
-    while (*pp = gsinput_next_line(ppseg, *pp)) {
-        if (gsbc_bytecode_size_cont_type_arg(*pp, pcl)) {
-        } else if (gsbc_bytecode_size_code_type_let_op(*pp, pcl)) {
+    *pp = gsinput_next_line(ppseg, *pp);
+    while (gsbc_bytecode_size_cont_type_arg(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    for (; ; *pp = gsinput_next_line(ppseg, *pp)) {
+        if (gsbc_bytecode_size_code_type_let_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_arg_code_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_alloc_op(*pp, pcl)) {
         } else if (gsbc_bytecode_size_cont_push_op(*pp, pcl)) {
