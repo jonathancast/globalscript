@@ -29,7 +29,6 @@ string.t	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 parser.t	.tygvar	# Temp
-res.ty	.tylet	list.t	gsdl.ags.dataitem.t
 parser.<|>	.gvar
 parser.unit	.gvar
 list.nil	.gvar
@@ -40,6 +39,7 @@ _gsdl.ags.dataitem.segment.parser_gsdata.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.many	.gvar
 gsdl.ags.dataitem.parser	.gvar
+res.ty	.tylet	list.t	gsdl.ags.dataitem.t
 isags	.larg	bool.t
 nil	.apply	list.nil	gsdl.ags.dataitem.t
 nil.p	.apply	parser.unit	rune.t	res.ty	|	nil
@@ -80,7 +80,6 @@ maybe.t	.tygvar
 string.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 _gsdl.ags.dataitem.parser_closure.p_f_c	.subcode
-mb.string.ty	.tylet	maybe.t	string.t
 parser.lift4	.gvar
 parser.pos.get	.gvar
 parser.optional	.gvar
@@ -93,6 +92,7 @@ _gsdl.ags.dataitem.parser_closure.p_closure.re	.gvar
 parser.<*	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
+mb.string.ty	.tylet	maybe.t	string.t
 f	.alloc	_gsdl.ags.dataitem.parser_closure.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 nm.p	.apply	parser.optional	rune.t	string.t	|	gsdl.ags.syntax.id
@@ -139,7 +139,6 @@ string.t	.tygvar
 parser.pos.t	.tygvar
 list.t	.tygvar
 _gsdl.ags.dataitem.parser_list.p_true_f_c	.subcode
-list.string.ty	.tylet	list.t	string.t
 parser.fail	.gvar
 parser.<*	.gvar
 parser.lift4	.gvar
@@ -151,8 +150,8 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.dataitem.parser_list.p_list.re	.gvar
 parser.many	.gvar
-
 gsdl.ags.syntax.whitespace	.gvar
+list.string.ty	.tylet	list.t	string.t
 isags0	.karg	bool.prim.u
 	.analyze	isags0	false	true
 		.case	false

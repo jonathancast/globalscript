@@ -14,9 +14,9 @@ graph.lookup.t	.tygvar
 list.t	.tygvar
 graph.scc.t	.tygvar	# Temp
 _graph.tsort_k_c	.subcode
+_graph.tsort_list	.gvar
 k	.tyarg	*
 v	.tyarg	*
-_graph.tsort_list	.gvar
 ord	.larg	order.total.t	k
 deps	.larg	graph.dependencies.t	k	v
 look	.larg	graph.lookup.t	k	v
@@ -27,9 +27,9 @@ k	.alloc	_graph.tsort_k_c
 
 _graph.tsort_k_c	.expr
 graph.scc.t	.tygvar
+list.nil	.gvar
 v	.tyfv	*
 scc.ty	.tylet	graph.scc.t	v
-list.nil	.gvar
 	.enter	list.nil	scc.ty
 
 _graph.tsort_list_c	.expr

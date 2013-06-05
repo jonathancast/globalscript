@@ -11,9 +11,9 @@ xn	.closure	_xn.code
 _epcode	.expr
 list.prim.u	.tygvar
 rune.t	.tygvar
-t	.tylet	list.prim.u	rune.t
 x	.gvar
 xn	.gvar
+t	.tylet	list.prim.u	rune.t
 xn1	.constr	t	:	0	x	1	xn
 	.lift
 	.yield	xn1

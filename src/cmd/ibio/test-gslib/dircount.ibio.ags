@@ -49,8 +49,8 @@ list.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
-_string.ty	.tylet	list.t	rune.t
 ibio.file.name.in	.gvar
+_string.ty	.tylet	list.t	rune.t
 as0	.karg	list.prim.u	_string.ty
 	.analyze	as0	:	nil
 		.case	:
@@ -75,10 +75,10 @@ ibio.prim.iport	.tygvar
 ibio.dir.t	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar
-res.ty	.tylet	list.t	ibio.dir.t
 ibio.lex.receive	.gvar
 ibio.lex.receiver.many	.gvar
 ibio.lex.receiver.symbol	.gvar
+res.ty	.tylet	list.t	ibio.dir.t
 id	.efv	ibio.prim.iport	ibio.dir.t
 sym	.apply	ibio.lex.receiver.symbol	ibio.dir.t
 ms	.apply	ibio.lex.receiver.many	ibio.dir.t	ibio.dir.t	|	sym

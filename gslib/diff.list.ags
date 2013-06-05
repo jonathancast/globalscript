@@ -30,8 +30,8 @@ ys0	.larg	list.t	α
 _diff.list.:_c	.expr
 diff.list.t	.tygvar
 list.t	.tygvar
-α	.tyarg	*
 list.:	.gvar
+α	.tyarg	*
 x	.larg	α
 xn	.larg	diff.list.t	α
 ys0	.larg	list.t	α
@@ -43,8 +43,8 @@ ys1	.apply	xn	|	ys0
 
 _diff.list.singleton_c	.expr
 list.t	.tygvar
-α	.tyarg	*
 list.:	.gvar
+α	.tyarg	*
 x	.larg	α
 ys0	.larg	list.t	α
 	.app	x	ys0
@@ -67,11 +67,11 @@ ys1	.apply	xn1	|	ys0
 
 _diff.list.concat_c	.expr
 diff.list.t	.tygvar
-α	.tyarg	*
-diff.list.ty	.tylet	diff.list.t	α
 list.foldr	.gvar
 diff.list.<>	.gvar
 diff.list.nil	.gvar
+α	.tyarg	*
+diff.list.ty	.tylet	diff.list.t	α
 <>	.apply	diff.list.<>	α
 nil	.apply	diff.list.nil	α
 	.app	<>	nil
@@ -82,8 +82,8 @@ nil	.apply	diff.list.nil	α
 _diff.list.prepend_c	.expr
 list.t	.tygvar
 diff.list.t	.tygvar
-α	.tyarg	*
 list.<>	.gvar
+α	.tyarg	*
 xn0	.larg	list.t	α
 xn1	.larg	diff.list.t	α
 ys0	.larg	list.t	α
@@ -96,8 +96,8 @@ ys1	.apply	xn1	|	ys0
 _diff.list.postpend_c	.expr
 list.t	.tygvar
 diff.list.t	.tygvar
-α	.tyarg	*
 list.<>	.gvar
+α	.tyarg	*
 xn0	.larg	diff.list.t	α
 xn1	.larg	list.t	α
 ys0	.larg	list.t	α
@@ -109,8 +109,8 @@ ys1	.apply	list.<>	α	|	xn1	ys0
 
 _diff.list.tolist_c	.expr
 diff.list.t	.tygvar
-α	.tyarg	*
 list.nil	.gvar
+α	.tyarg	*
 xn0	.larg	diff.list.t	α
 nil	.apply	list.nil	α
 	.app	nil
@@ -120,8 +120,8 @@ nil	.apply	list.nil	α
 
 _diff.list.fromlist_c	.expr
 list.t	.tygvar
-α	.tyarg	*
 list.<>	.gvar
+α	.tyarg	*
 xn0	.larg	list.t	α
 ys0	.larg	list.t	α
 	.app	xn0	ys0

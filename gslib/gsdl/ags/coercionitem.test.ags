@@ -33,7 +33,6 @@ rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 _test.parse_segment.empty_k_c	.subcode
-coercionsegment_ty	.tylet	list.t	gsdl.ags.coercionitem.t
 test.property.label	.gvar
 _test.parse_segment.empty_label	.gvar
 parser.test.assert.passes	.gvar
@@ -41,6 +40,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.coercionitem.segment.parser	.gvar
 _test.parse_segment.empty_input	.gvar
+coercionsegment_ty	.tylet	list.t	gsdl.ags.coercionitem.t
 k	.alloc	_test.parse_segment.empty_k_c
 test	.apply	parser.test.assert.passes	rune.t	coercionsegment_ty	|	parser.rune.advance	rune.print	gsdl.ags.coercionitem.segment.parser	_test.parse_segment.empty_input	k
 	.app	_test.parse_segment.empty_label	test
@@ -49,13 +49,13 @@ test	.apply	parser.test.assert.passes	rune.t	coercionsegment_ty	|	parser.rune.ad
 _test.parse_segment.empty_k_c	.expr
 list.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
-coercionsegment_ty	.tylet	list.t	gsdl.ags.coercionitem.t
 test.assert.eq	.gvar
 list.≡	.gvar
 gsdl.ags.coercionitem.≡	.gvar
 list.fmtgs.byDefault	.gvar
 gsdl.ags.coercionitem.fmtgs	.gvar
 list.nil	.gvar
+coercionsegment_ty	.tylet	list.t	gsdl.ags.coercionitem.t
 tcs	.larg	list.t	gsdl.ags.coercionitem.t
 tcs.≡	.apply	list.≡	gsdl.ags.coercionitem.t	|	gsdl.ags.coercionitem.≡
 tcs.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.coercionitem.t	|	gsdl.ags.coercionitem.fmtgs

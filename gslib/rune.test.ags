@@ -169,7 +169,6 @@ test	.apply	test.assert	|	_test.fmtgs.x_test_succ	_test.fmtgs.x_test_fail	eq
 _test.fmtgs.nl_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
 _test.fmtgs.nl_label	.gvar
 test.assert.eq	.gvar
@@ -182,6 +181,7 @@ _nl	.gvar
 fmtgs.prec.arg	.gvar
 list.nil	.gvar
 _test.fmtgs.nl_expected	.gvar
+string.ty	.tylet	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 snil	.apply	list.nil	rune.t
@@ -221,7 +221,6 @@ test	.apply	test.assert	|	_test.list.fmtgs.x_test_succ	_test.list.fmtgs.x_test_f
 _test.list.fmtgs.nl_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
 _test.list.fmtgs.nl_label	.gvar
 test.assert.eq	.gvar
@@ -233,6 +232,7 @@ _test.list.fmtgs.nl_nl	.gvar
 fmtgs.prec.arg	.gvar
 list.nil	.gvar
 _test.list.fmtgs.nl_expected	.gvar
+string.ty	.tylet	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 snil	.apply	list.nil	rune.t

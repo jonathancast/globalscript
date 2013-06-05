@@ -25,11 +25,11 @@ _parser.test.assert.fails_k_ty	.tygvar
 parser.err.t	.tygvar
 _parser.test.assert.fails_k	.subcode
 either.t.out	.cogvar
-s	.tyarg	*
-α	.tyarg	*
 parser.parse	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
+s	.tyarg	*
+α	.tyarg	*
 adv	.larg	parser.advance.t	s
 pr	.larg	print.t	s
 fmtgs	.larg	fmtgs.t	α
@@ -49,12 +49,12 @@ either.prim.u	.tygvar
 parser.err.t	.tygvar
 test.property.t	.tygvar
 rune.t	.tygvar
-α	.tyfv	*
 test.property.false	.gvar
 diff.list.prepend	.gvar
 _parser.test.assert.fails_right_msg.prefix	.gvar
 fmtgs.prec.arg	.gvar
 list.nil	.gvar
+α	.tyfv	*
 fmtgs	.fv	fmtgs.t	α
 k	.fv	_parser.test.assert.fails_k_ty
 e	.karg	either.prim.u	parser.err.t	α
@@ -82,11 +82,11 @@ _parser.test.assert.passes_k_ty	.tygvar
 parser.err.t	.tygvar
 _parser.test.assert.passes_k	.subcode
 either.t.out	.cogvar
-s	.tyarg	*
-α	.tyarg	*
 parser.parse	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
+s	.tyarg	*
+α	.tyarg	*
 adv	.larg	parser.advance.t	s
 pr	.larg	print.t	s
 p	.larg	parser.t	s	α
@@ -104,11 +104,11 @@ either.prim.u	.tygvar
 test.property.t	.tygvar
 parser.err.t	.tygvar
 rune.t	.tygvar
-α	.tyfv	*
 test.property.false	.gvar
 list.<>	.gvar
 _parser.test.assert.passes_left_msg.prefix	.gvar
 parser.err.fmt	.gvar
+α	.tyfv	*
 k	.fv	_parser.test.assert.passes_k_ty	α
 e0	.karg	either.prim.u	parser.err.t	α
 	.analyze	e0	left	right

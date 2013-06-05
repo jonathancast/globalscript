@@ -39,10 +39,10 @@ _gsac.input.prefix.file.load_s_c	.expr
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
-res.ty	.tylet	list.t	rune.t
 ibio.lex.receive	.gvar
 ibio.lex.receiver.many	.gvar
 ibio.lex.receiver.symbol	.gvar
+res.ty	.tylet	list.t	rune.t
 if	.efv	ibio.prim.iport	rune.t
 sym	.apply	ibio.lex.receiver.symbol	rune.t
 ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym

@@ -17,7 +17,6 @@ _parser.string.quotes_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
-list.string.t	.tylet	list.t	string.t
 parser.<|>	.gvar
 parser.unit	.gvar
 list.nil	.gvar
@@ -25,6 +24,7 @@ parser.lift2	.gvar
 list.:	.gvar
 parser.string.quote	.gvar
 _parser.string.quotes_loop	.gvar
+list.string.t	.tylet	list.t	string.t
 nil	.apply	list.nil	string.t
 pnil	.apply	parser.unit	rune.t	list.string.t	|	nil
 cons	.apply	list.:	string.t
@@ -37,7 +37,6 @@ parser.t	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
-list.string.t	.tylet	list.t	string.t
 parser.<|>	.gvar
 parser.unit	.gvar
 list.nil	.gvar
@@ -48,6 +47,7 @@ _parser.string.quotes_loop	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _parser.string.quotes_loop_ws.re	.gvar
+list.string.t	.tylet	list.t	string.t
 nil	.apply	list.nil	string.t
 pnil	.apply	parser.unit	rune.t	list.string.t	|	nil
 cons	.apply	list.:	string.t

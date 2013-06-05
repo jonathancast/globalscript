@@ -71,10 +71,10 @@ gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
-res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 maybe.maybe	.gvar
 ordered.set.empty	.gvar
 gsdl.cgs.gstype.freevars	.gvar
+res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 doc	.larg	gsdl.cgs.document.t
 empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 mb.ty	.lfield	gstype doc

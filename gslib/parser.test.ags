@@ -224,7 +224,6 @@ _test.fail.msg.nil_k_c	.expr
 parser.err.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.assert.eq	.gvar
 list.≡	.gvar
 rune.≡	.gvar
@@ -232,6 +231,7 @@ list.fmtgs	.gvar
 rune.fmtgs.list	.gvar
 parser.err.fmt	.gvar
 _test.fail.msg.nil_err.fmt.expected	.gvar
+string.ty	.tylet	list.t	rune.t
 err	.larg	parser.err.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
@@ -294,7 +294,6 @@ _test.symbol.nil_k_c	.expr
 parser.err.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.assert.eq	.gvar
 list.≡	.gvar
 rune.≡	.gvar
@@ -302,6 +301,7 @@ list.fmtgs	.gvar
 rune.fmtgs.list	.gvar
 parser.err.fmt	.gvar
 _test.symbol.nil_expected	.gvar
+string.ty	.tylet	list.t	rune.t
 err	.larg	parser.err.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
@@ -344,7 +344,6 @@ rune.t	.tygvar
 maybe.t	.tygvar
 bool.t	.tygvar
 _test.optional.fail.nil_k_c	.subcode
-maybe.bool.ty	.tylet	maybe.t	bool.t
 test.property.label	.gvar
 _test.optional.fail.nil_label	.gvar
 parser.test.assert.passes	.gvar
@@ -353,6 +352,7 @@ rune.print	.gvar
 parser.optional	.gvar
 parser.fail	.gvar
 string.empty	.gvar
+maybe.bool.ty	.tylet	maybe.t	bool.t
 fail	.apply	parser.fail	rune.t	bool.t
 parser	.apply	parser.optional	rune.t	bool.t	|	fail
 k	.alloc	_test.optional.fail.nil_k_c
@@ -363,13 +363,13 @@ test	.apply	parser.test.assert.passes	rune.t	maybe.bool.ty	|	parser.rune.advance
 _test.optional.fail.nil_k_c	.expr
 maybe.t	.tygvar
 bool.t	.tygvar
-maybe.bool.ty	.tylet	maybe.t	bool.t
 test.assert.eq	.gvar
 maybe.≡	.gvar
 bool.≡	.gvar
 maybe.fmtgs	.gvar
 bool.fmtgs	.gvar
 maybe.nothing	.gvar
+maybe.bool.ty	.tylet	maybe.t	bool.t
 mb	.larg	maybe.t	bool.t
 maybe.bool.≡	.apply	maybe.≡	bool.t	|	bool.≡
 maybe.bool.fmtgs	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs
@@ -384,7 +384,6 @@ rune.t	.tygvar
 list.t	.tygvar
 bool.t	.tygvar
 _test.many.fail.nil_k_c	.subcode
-list.bool.t	.tylet	list.t	bool.t
 test.property.label	.gvar
 _test.many.fail.nil_label	.gvar
 parser.test.assert.passes	.gvar
@@ -393,6 +392,7 @@ rune.print	.gvar
 parser.many	.gvar
 parser.fail	.gvar
 list.nil	.gvar
+list.bool.t	.tylet	list.t	bool.t
 fail	.apply	parser.fail	rune.t	bool.t
 parser	.apply	parser.many	rune.t	bool.t	|	fail
 nil	.apply	list.nil	rune.t
@@ -404,13 +404,13 @@ test	.apply	parser.test.assert.passes	rune.t	list.bool.t	|	parser.rune.advance	r
 _test.many.fail.nil_k_c	.expr
 list.t	.tygvar
 bool.t	.tygvar
-list.bool.t	.tylet	list.t	bool.t
 test.assert.eq	.gvar
 list.≡	.gvar
 bool.≡	.gvar
 list.fmtgs	.gvar
 bool.fmtgs.list	.gvar
 list.nil	.gvar
+list.bool.t	.tylet	list.t	bool.t
 actual	.larg	list.bool.t
 list.bool.≡	.apply	list.≡	bool.t	|	bool.≡
 list.bool.fmtgs	.apply	list.fmtgs	bool.t	|	bool.fmtgs.list
@@ -425,7 +425,6 @@ rune.t	.tygvar
 list.t	.tygvar
 bool.t	.tygvar
 _test.many.fail.cons_k_c	.subcode
-list.bool.t	.tylet	list.t	bool.t
 test.property.label	.gvar
 _test.many.fail.cons_label	.gvar
 parser.test.assert.fails	.gvar
@@ -436,6 +435,7 @@ bool.fmtgs.list	.gvar
 parser.many	.gvar
 parser.fail	.gvar
 _test.many.fail.cons_input	.gvar
+list.bool.t	.tylet	list.t	bool.t
 list.bool.fmtgs	.apply	list.fmtgs	bool.t	|	bool.fmtgs.list
 fail	.apply	parser.fail	rune.t	bool.t
 parser	.apply	parser.many	rune.t	bool.t	|	fail
@@ -487,13 +487,13 @@ test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune
 _test.match.empty.nil_k_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.assert.eq	.gvar
 list.≡	.gvar
 rune.≡	.gvar
 list.fmtgs	.gvar
 rune.fmtgs.list	.gvar
 list.nil	.gvar
+string.ty	.tylet	list.t	rune.t
 s	.larg	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
@@ -507,7 +507,6 @@ _test.match.range.above_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 _test.match.range.above_k_c	.subcode
-string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
 _test.match.range.above_label	.gvar
 parser.test.assert.fails	.gvar
@@ -518,6 +517,7 @@ parser.match	.gvar
 rune.compare	.gvar
 _test.match.range.above_re	.gvar
 _test.match.range.above_input	.gvar
+string.ty	.tylet	list.t	rune.t
 parser	.apply	parser.match	rune.t	|	rune.compare	_test.match.range.above_re
 k	.alloc	_test.match.range.above_k_c
 test	.apply	parser.test.assert.fails	rune.t	string.ty	|	parser.rune.advance	rune.print	string.fmtgs	parser	_test.match.range.above_input	k
@@ -710,7 +710,6 @@ test	.apply	test.all	|	_tests.err
 _test.err.fmt.simple.failure_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
 _test.err.fmt.simple.failure_label	.gvar
 test.assert.eq	.gvar
@@ -724,6 +723,7 @@ bool.true	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
 _test.err.fmt.simple.failure_expected	.gvar
+string.ty	.tylet	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
@@ -764,7 +764,6 @@ test	.apply	test.assert	|	_test.err.≡.simple.failure.simple.failure_fail.msg	_
 _test.err.fmtgs.simple.failure_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
 _test.err.fmtgs.simple.failure_label	.gvar
 test.assert.eq	.gvar
@@ -780,6 +779,7 @@ list.nil	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
 _test.err.fmtgs.simple.failure_expected	.gvar
+string.ty	.tylet	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
@@ -806,7 +806,6 @@ test	.apply	test.all	|	_tests.pos
 _test.pos.fmt.not.eof_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
 _test.pos.fmt.not.eof_label	.gvar
 test.assert.eq	.gvar
@@ -819,6 +818,7 @@ bool.false	.gvar
 parser.pos.initial	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
 _test.pos.fmt.not.eof_expected	.gvar
+string.ty	.tylet	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name
@@ -978,7 +978,6 @@ test	.apply	test.deny	|	_test.pos.eq.diff.col_false.msg	_test.pos.eq.diff.col_tr
 _test.pos.fmtgs_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
 _test.pos.fmtgs_label	.gvar
 test.assert.eq	.gvar
@@ -992,6 +991,7 @@ parser.test.assert.fixtures.sample.file.name	.gvar
 fmtgs.prec.arg	.gvar
 list.nil	.gvar
 _test.pos.fmtgs_expected	.gvar
+string.ty	.tylet	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 pos	.apply	parser.pos.initial	|	parser.test.assert.fixtures.sample.file.name

@@ -18,12 +18,12 @@ _test.assert.eq_eq_ty	.tygvar
 fmtgs.t	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
-α	.tyarg	*
 test.assert	.gvar
 list.nil	.gvar
 list.<>	.gvar
 fmtgs.prec.app	.gvar
 _test.assert.eq_neq.s_neq	.gvar
+α	.tyarg	*
 eq	.larg	_test.assert.eq_eq_ty	α
 p	.larg	fmtgs.t	α
 x	.larg	α

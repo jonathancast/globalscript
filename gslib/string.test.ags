@@ -28,7 +28,6 @@ _tests	.gvar
 _test.fmtline.line_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
 _test.fmtline.line_label	.gvar
 test.assert.eq	.gvar
@@ -38,6 +37,7 @@ list.fmtgs	.gvar
 rune.fmtgs.list	.gvar
 string.fmtline	.gvar
 _test.fmtline.line_line.s	.gvar
+string.ty	.tylet	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 actual	.apply	string.fmtline	|	_test.fmtline.line_line.s
@@ -50,7 +50,6 @@ test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.fmtl
 _test.fmtline.partial.line_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
 _test.fmtline.partial.line_label	.gvar
 test.assert.eq	.gvar
@@ -61,6 +60,7 @@ rune.fmtgs.list	.gvar
 string.fmtline	.gvar
 _test.fmtline.partial.line_partial.line.s	.gvar
 _test.fmtline.partial.line_line.s	.gvar
+string.ty	.tylet	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 actual	.apply	string.fmtline	|	_test.fmtline.partial.line_partial.line.s

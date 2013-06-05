@@ -57,8 +57,8 @@ ibio.acceptor.prim.kt	.tygvar
 rune.t	.tygvar
 maybe.t	.tygvar
 record.empty	.tygvar
-res.ty	.tylet	maybe.t	rune.t
 ibio.acceptor.prim.cont	.gvar
+res.ty	.tylet	maybe.t	rune.t
 	.enter	ibio.acceptor.prim.cont	rune.t	res.ty
 
 _ep_s_c	.expr

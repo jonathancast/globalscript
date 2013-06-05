@@ -79,7 +79,6 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 _test.exts.of.qual.fn_c	.expr
 list.t	.tygvar
 string.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
 test.property.label	.gvar
 _test.exts.of.qual.fn_label	.gvar
 test.assert.eq	.gvar
@@ -91,6 +90,7 @@ ibio.file.name.components.get	.gvar
 ibio.file.name.in	.gvar
 _test.exts.of.qual.fn_fn.s	.gvar
 _test.exts.of.qual.fn_expected	.gvar
+list.string.ty	.tylet	list.t	string.t
 list.string.≡	.apply	list.≡	string.t	|	string.≡
 list.string.fmtgs	.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
 fn	.apply	ibio.file.name.in	|	_test.exts.of.qual.fn_fn.s

@@ -33,8 +33,8 @@ _ibio.from.either.prim_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 ibio.prim.t	.tygvar
-α	.tyfv	*
 ibio.prim.unit	.gvar
+α	.tyfv	*
 e0	.karg	either.prim.u	string.t	α
 	.analyze	e0	left	right
 		.case	left
@@ -56,8 +56,8 @@ rune.t	.tygvar
 natural.t	.tygvar
 bool.t	.tygvar
 integer.t	.tygvar
-_string.ty	.tylet	list.t	rune.t
 ibio.file.name.in	.gvar
+_string.ty	.tylet	list.t	rune.t
 d	.larg	ibio.prim.dir.t
 at	.undefined	time.t
 g	.undefined	list.t	rune.t
@@ -128,11 +128,11 @@ list.prim.u	.tygvar
 ibio.prim.t	.tygvar
 list.t	.tygvar
 _ibio.mapM.prim_eys_c	.subcode
+ibio.prim.unit	.gvar
+list.nil	.gvar
 α	.tyfv	*
 β	.tyfv	*
 res.ty	.tylet	list.t	β
-ibio.prim.unit	.gvar
-list.nil	.gvar
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
@@ -174,9 +174,9 @@ x0	.fv	α
 _ibio.mapM.prim_eys_ys1_c	.expr
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
+ibio.mapM.prim	.gvar
 α	.tyfv	*
 β	.tyfv	*
-ibio.mapM.prim	.gvar
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 xn1	.fv	list.t	α
 	.app	f	xn1
@@ -185,10 +185,10 @@ xn1	.fv	list.t	α
 _ibio.mapM.prim_eys_body_c	.expr
 ibio.prim.t	.tygvar
 list.t	.tygvar
-β	.tyfv	*
-res.ty	.tylet	list.t	β
 ibio.prim.unit	.gvar
 list.:	.gvar
+β	.tyfv	*
+res.ty	.tylet	list.t	β
 y	.fv	β
 ys1	.fv	list.t	β
 ys	.apply	list.:	β	|	y	ys1
@@ -217,10 +217,10 @@ list.prim.u	.tygvar
 list.t	.tygvar
 record.empty	.tygvar
 _ibio.mapM0.prim_k_:_e_c	.subcode
-α	.tyfv	*
-β	.tyfv	*
 ibio.prim.unit	.gvar
 record.empty	.gvar
+α	.tyfv	*
+β	.tyfv	*
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
@@ -259,9 +259,9 @@ x0	.fv	α
 _ibio.mapM0.prim_k_:_e_body_c	.expr
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
+ibio.mapM0.prim	.gvar
 α	.tyfv	*
 β	.tyfv	*
-ibio.mapM0.prim	.gvar
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 xn1	.fv	list.t	α
 	.app	f	xn1
@@ -301,9 +301,9 @@ list.prim.u	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar
 _ibio.foldM.prim_:_res	.subcode
+ibio.prim.unit	.gvar
 α	.tyfv	*
 β	.tyfv	*
-ibio.prim.unit	.gvar
 f	.fv	_ibio.foldM.prim_f_ty	α	β
 z0	.fv	β
 xn0	.karg	list.prim.u	α
@@ -345,9 +345,9 @@ x0	.fv	α
 _ibio.foldM.prim_:_res_body_c	.expr
 _ibio.foldM.prim_f_ty	.tygvar
 list.t	.tygvar
+ibio.foldM.prim	.gvar
 α	.tyfv	*
 β	.tyfv	*
-ibio.foldM.prim	.gvar
 f	.fv	_ibio.foldM.prim_f_ty	α	β
 xn1	.fv	list.t	α
 z1	.fv	β

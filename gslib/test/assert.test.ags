@@ -71,13 +71,13 @@ s	.larg	list.t	rune.t
 _test.assert.fails.true_k1_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 test.assert.eq	.gvar
 list.≡	.gvar
 rune.≡	.gvar
 list.fmtgs	.gvar
 rune.fmtgs.list	.gvar
 _test.assert.fails.true_expected.msg	.gvar
+string.ty	.tylet	list.t	rune.t
 s	.larg	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list

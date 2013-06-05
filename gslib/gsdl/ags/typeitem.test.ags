@@ -57,7 +57,6 @@ rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 _test.parse_segment.empty_k_c	.subcode
-typesegment_ty	.tylet	list.t	gsdl.ags.typeitem.t
 test.property.label	.gvar
 _test.parse_segment.empty_label	.gvar
 parser.test.assert.passes	.gvar
@@ -65,6 +64,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.segment.parser	.gvar
 _test.parse_segment.empty_input	.gvar
+typesegment_ty	.tylet	list.t	gsdl.ags.typeitem.t
 k	.alloc	_test.parse_segment.empty_k_c
 test	.apply	parser.test.assert.passes	rune.t	typesegment_ty	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.segment.parser	_test.parse_segment.empty_input	k
 	.app	_test.parse_segment.empty_label	test
@@ -73,13 +73,13 @@ test	.apply	parser.test.assert.passes	rune.t	typesegment_ty	|	parser.rune.advanc
 _test.parse_segment.empty_k_c	.expr
 list.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-typesegment_ty	.tylet	list.t	gsdl.ags.typeitem.t
 test.assert.eq	.gvar
 list.≡	.gvar
 gsdl.ags.typeitem.≡	.gvar
 list.fmtgs.byDefault	.gvar
 gsdl.ags.typeitem.fmtgs	.gvar
 list.nil	.gvar
+typesegment_ty	.tylet	list.t	gsdl.ags.typeitem.t
 tys	.larg	list.t	gsdl.ags.typeitem.t
 ts.≡	.apply	list.≡	gsdl.ags.typeitem.t	|	gsdl.ags.typeitem.≡
 ts.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.typeitem.t	|	gsdl.ags.typeitem.fmtgs

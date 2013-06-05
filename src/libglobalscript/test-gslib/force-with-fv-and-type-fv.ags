@@ -12,9 +12,9 @@ y	.closure	_y.code
 _epcode	.expr
 rune.t	.tygvar
 _epcode.cont	.subcode
-α	.tylet	rune.t
 x	.gvar
 y	.gvar
+α	.tylet	rune.t
 	.force	_epcode.cont
 	.enter	x
 

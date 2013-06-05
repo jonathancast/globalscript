@@ -187,7 +187,6 @@ _rune.fmtgs.list_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
 diff.list.t	.tygvar
-diff.string.ty	.tylet	diff.list.t	rune.t
 fmtgs.prec	.gvar
 fmtgs.prec.arg	.gvar
 diff.list.prepend	.gvar
@@ -198,6 +197,7 @@ diff.list.fromlist	.gvar
 _rune.fmtgs.list_suffix	.gvar
 list.map	.gvar
 rune.togss	.gvar
+diff.string.ty	.tylet	diff.list.t	rune.t
 s	.larg	list.t	rune.t
 <>	.apply	diff.list.<>	rune.t
 s2	.apply	diff.list.fromlist	rune.t	|	_rune.fmtgs.list_suffix

@@ -29,7 +29,6 @@ rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 string.t	.tygvar
-list.coercionitem.ty	.tylet	list.t	gsdl.ags.coercionitem.t
 parser.<|>	.gvar
 parser.unit	.gvar
 list.nil	.gvar
@@ -42,6 +41,7 @@ gsdl.ags.syntax.whitespace	.gvar
 parser.many	.gvar
 gsdl.ags.coercionitem.parser	.gvar
 parser.fail	.gvar	# Temp
+list.coercionitem.ty	.tylet	list.t	gsdl.ags.coercionitem.t
 nil	.apply	list.nil	gsdl.ags.coercionitem.t
 nil.p	.apply	parser.unit	rune.t	list.coercionitem.ty	|	nil
 coercion.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.segment.parser_coercion.re	# > m/\.coercion/
@@ -130,9 +130,9 @@ gsdl.ags.coercionitem.decls.t	.tygvar
 _gsdl.ags.coercionitem.decls.parser_f_c	.subcode
 _gsdl.ags.coercionitem.decls.parser_tygvars.p_c	.subcode
 _gsdl.ags.coercionitem.decls.parser_tylambdas.p_c	.subcode
+parser.lift2	.gvar
 list.string.ty	.tylet	list.t	string.t
 list.tylambda.ty	.tylet	list.t	gsdl.ags.coercionitem.decls.tylambda.t
-parser.lift2	.gvar
 f	.alloc	_gsdl.ags.coercionitem.decls.parser_f_c
 tygvars.p	.alloc	_gsdl.ags.coercionitem.decls.parser_tygvars.p_c
 tylambdas.p	.alloc	_gsdl.ags.coercionitem.decls.parser_tylambdas.p_c
@@ -152,7 +152,6 @@ _gsdl.ags.coercionitem.decls.parser_tygvars.p_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
 parser.many	.gvar
 parser.<*	.gvar
 gsdl.ags.syntax.id	.gvar
@@ -163,6 +162,7 @@ rune.compare	.gvar
 _gsdl.ags.coercionitem.decls.parser_tygvars.p_tygvar.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
+list.string.ty	.tylet	list.t	string.t
 tygvar.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.decls.parser_tygvars.p_tygvar.re
 p2	.apply	parser.*>	rune.t	string.t	string.t	|	tygvar.p	gsdl.ags.syntax.whitespace
 p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	p2
@@ -229,7 +229,6 @@ string.t	.tygvar
 list.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_f_c	.subcode
-list.string.ty	.tylet	list.t	string.t
 parser.lift2	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
@@ -241,6 +240,7 @@ parser.<*	.gvar
 parser.many	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
+list.string.ty	.tylet	list.t	string.t
 f	.alloc	_gsdl.ags.coercionitem.expr.parser_tydefinition.p_f_c
 tydefinition.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re
 tyv.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id

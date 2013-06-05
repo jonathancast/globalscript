@@ -49,10 +49,10 @@ map	.larg	ordered.map.t	k	v
 _ordered.map.insert_k	.forcecont
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
-k	.tyfv	*
-v	.tyfv	*
 ordered.map.prim.branch	.gvar
 ordered.map.empty	.gvar
+k	.tyfv	*
+v	.tyfv	*
 k	.fv	k
 v	.fv	v
 map.0	.karg	ordered.map.prim.u	k	v
@@ -91,9 +91,9 @@ ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
 _ordered.map.get_branch_k	.subcode
 order.total.ord.t.out	.cogvar
+maybe.nothing	.gvar
 k	.tyfv	*
 v	.tyfv	*
-maybe.nothing	.gvar
 ord	.fv	order.total.t	k
 key	.fv	k
 map.0	.karg	ordered.map.prim.u	k	v
@@ -114,9 +114,9 @@ map.r		.fkarg	3	ordered.map.t	k	v
 _ordered.map.get_branch_k	.forcecont
 order.total.ord.prim.u	.tygvar
 maybe.t	.tygvar
+maybe.just	.gvar
 k	.tyfv	*
 v	.tyfv	*
-maybe.just	.gvar
 v	.fv	v
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
@@ -160,9 +160,9 @@ map0.0	.karg	ordered.map.prim.u	k	v
 _ordered.map.∪_k1	.forcecont
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
+ordered.map.empty	.gvar
 k	.tyfv	*
 v	.tyfv	*
-ordered.map.empty	.gvar
 map0.0	.fv	ordered.map.prim.u	k	v
 map1.0	.karg	ordered.map.prim.u	k	v
 	.analyze	map0.0	branch	empty
@@ -218,10 +218,10 @@ _ordered.map.≡_k1	.forcecont
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
 bool.t	.tygvar	# Temp
-k	.tyfv	*
-v	.tyfv	*
 bool.false	.gvar
 bool.true	.gvar
+k	.tyfv	*
+v	.tyfv	*
 map0.0	.fv	ordered.map.prim.u	k	v
 map1.0	.karg	ordered.map.prim.u	k	v
 	.analyze	map0.0	branch	empty

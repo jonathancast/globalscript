@@ -149,7 +149,6 @@ rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 _test.parse.missing.gsdata.segment_k_c	.subcode
-datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 test.property.label	.gvar
 _test.parse.missing.gsdata.segment_label	.gvar
 parser.test.assert.passes	.gvar
@@ -158,6 +157,7 @@ rune.print	.gvar
 gsdl.ags.dataitem.segment.parser	.gvar
 bool.false	.gvar
 list.nil	.gvar
+datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 nil	.apply	list.nil	rune.t
 k	.alloc	_test.parse.missing.gsdata.segment_k_c
 ds	.apply	gsdl.ags.dataitem.segment.parser	|	bool.false
@@ -170,11 +170,11 @@ list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 eq.t	.tygvar
 fmtgs.t	.tygvar
-datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 test.assert.eq	.gvar
 list.≡	.gvar
 list.fmtgs.byDefault	.gvar
 list.nil	.gvar
+datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 das	.larg	list.t	gsdl.ags.dataitem.t
 d.≡	.undefined	eq.t	gsdl.ags.dataitem.t
 ds.≡	.apply	list.≡	gsdl.ags.dataitem.t	|	d.≡
@@ -191,7 +191,6 @@ rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 _test.parse.empty.gsdata.segment_k_c	.subcode
-datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 test.property.label	.gvar
 _test.parse.empty.gsdata.segment_label	.gvar
 parser.test.assert.passes	.gvar
@@ -200,6 +199,7 @@ rune.print	.gvar
 gsdl.ags.dataitem.segment.parser	.gvar
 bool.false	.gvar
 _test.parse.empty.gsdata.segment_input	.gvar
+datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 k	.alloc	_test.parse.empty.gsdata.segment_k_c
 ds	.apply	gsdl.ags.dataitem.segment.parser	|	bool.false
 test	.apply	parser.test.assert.passes	rune.t	datasegment_ty	|	parser.rune.advance	rune.print	ds	_test.parse.empty.gsdata.segment_input	k
@@ -211,13 +211,13 @@ list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 eq.t	.tygvar
 fmtgs.t	.tygvar
-datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 test.assert.eq	.gvar
 list.≡	.gvar
 gsdl.ags.dataitem.≡	.gvar
 list.fmtgs.byDefault	.gvar
 gsdl.ags.dataitem.fmtgs	.gvar
 list.nil	.gvar
+datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 das	.larg	list.t	gsdl.ags.dataitem.t
 ds.≡	.apply	list.≡	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.≡
 ds.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.fmtgs

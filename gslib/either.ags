@@ -57,10 +57,10 @@ _either.map_f_ty	.tygvar
 either.prim.u	.tygvar
 either.t	.tygvar
 _either.map_y_c	.subcode
+either.right	.gvar
 α	.tyfv	*
 β0	.tyfv	*
 β1	.tyfv	*
-either.right	.gvar
 f	.fv	_either.map_f_ty	β0	β1
 e0	.karg	either.prim.u	α	β0
 	.analyze	e0	left	right
@@ -85,9 +85,9 @@ x	.fv	β0
 # §section §gs{either.unit}
 
 _either.unit_c	.expr
+either.right	.gvar
 α	.tyarg	*
 β	.tyarg	*
-either.right	.gvar
 x	.larg	β
 	.app	x
 	.enter	either.right	α	β

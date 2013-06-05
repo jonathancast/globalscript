@@ -30,8 +30,6 @@ list.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 _gsdl.cgs.pragma.parse_res_ty	.tygvar
 _gsdl.cgs.pragma.parse_f_c	.subcode
-string.ty	.tylet	list.t	rune.t
-list.string.ty	.tylet	list.t	string.ty
 parser.lift2	.gvar
 gsdl.cgs.syntax.gsid	.gvar
 parser.*>	.gvar
@@ -44,6 +42,8 @@ parser.map	.gvar
 gsdl.cgs.pragma.rc.like	.gvar
 parser.string.quotes	.gvar
 _gsdl.cgs.pragma.parse_ws.nl.re	.gvar
+string.ty	.tylet	list.t	rune.t
+list.string.ty	.tylet	list.t	string.ty
 f	.alloc	_gsdl.cgs.pragma.parse_f_c
 colon.parse	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.pragma.parse_colon.re
 ws	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.pragma.parse_ws.re
@@ -75,11 +75,11 @@ rune.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 _gsdl.cgs.pragma.gstype.get_k	.subcode
 maybe.t.out	.cogvar
-string.ty	.tylet	list.t	rune.t
 ordered.map.get	.gvar
 list.compare	.gvar
 rune.compare	.gvar
 _type	.gvar
+string.ty	.tylet	list.t	rune.t
 fn	.larg	ibio.file.name.t
 prs	.larg	ordered.map.t	string.ty	gsdl.cgs.pragma.t
 string.compare	.apply	list.compare	rune.t	|	rune.compare

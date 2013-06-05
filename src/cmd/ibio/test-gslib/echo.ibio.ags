@@ -64,9 +64,9 @@ list.t	.tygvar
 _string.ty	.tygvar
 rune.t	.tygvar
 _cat.args.c.1.s2	.subcode
-as0.ty	.tylet	list.prim.u	_string.ty
 list.<>	.gvar
 _nl	.gvar
+as0.ty	.tylet	list.prim.u	_string.ty
 as0	.karg	as0.ty
 	.analyze	as0	:	nil
 	.case	:
@@ -104,10 +104,10 @@ rune.t	.tygvar
 _cat.args.w.c.1.1	.subcode
 _cat.args.w.c.1.2	.subcode
 list.t.in	.cogvar
-as0.ty	.tylet	list.prim.u	_string.ty
-t	.tylet	list.prim.u	rune.t
 _sp	.gvar
 _nl	.gvar
+as0.ty	.tylet	list.prim.u	_string.ty
+t	.tylet	list.prim.u	rune.t
 as0	.karg	as0.ty
 	.analyze	as0	:	nil
 	.case	:

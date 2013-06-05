@@ -321,7 +321,6 @@ rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 _test.parse_segment.empty_k_c	.subcode
-codesegment_ty	.tylet	list.t	gsdl.ags.codeitem.t
 test.property.label	.gvar
 _test.parse_segment.empty_label	.gvar
 parser.test.assert.passes	.gvar
@@ -329,6 +328,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.segment.parser	.gvar
 _test.parse_segment.empty_input	.gvar
+codesegment_ty	.tylet	list.t	gsdl.ags.codeitem.t
 k	.alloc	_test.parse_segment.empty_k_c
 test	.apply	parser.test.assert.passes	rune.t	codesegment_ty	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.segment.parser	_test.parse_segment.empty_input	k
 	.app	_test.parse_segment.empty_label	test
@@ -337,13 +337,13 @@ test	.apply	parser.test.assert.passes	rune.t	codesegment_ty	|	parser.rune.advanc
 _test.parse_segment.empty_k_c	.expr
 list.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
-codesegment_ty	.tylet	list.t	gsdl.ags.codeitem.t
 test.assert.eq	.gvar
 list.≡	.gvar
 gsdl.ags.codeitem.≡	.gvar
 list.fmtgs.byDefault	.gvar
 gsdl.ags.codeitem.fmtgs	.gvar
 list.nil	.gvar
+codesegment_ty	.tylet	list.t	gsdl.ags.codeitem.t
 cos	.larg	list.t	gsdl.ags.codeitem.t
 cs.≡	.apply	list.≡	gsdl.ags.codeitem.t	|	gsdl.ags.codeitem.≡
 cs.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.t	|	gsdl.ags.codeitem.fmtgs
@@ -439,7 +439,6 @@ string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 list.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
 test.property.false	.gvar
 _test.parse_expr.tygvar_k_wrong.constr.s	.gvar
 test.assert.eq	.gvar
@@ -448,6 +447,7 @@ string.≡	.gvar
 list.fmtgs.byDefault	.gvar
 string.fmtgs	.gvar
 _test.parse_expr.tygvar_k_tygvs.expected	.gvar
+list.string.ty	.tylet	list.t	string.t
 ci0	.karg	gsdl.ags.codeitem.prim.u
 	.danalyze	ci0	expr
 		.default
@@ -498,7 +498,6 @@ string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 list.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
 test.property.false	.gvar
 _test.parse_expr.subcode_k_wrong.constr.s	.gvar
 test.assert.eq	.gvar
@@ -507,6 +506,7 @@ string.≡	.gvar
 list.fmtgs.byDefault	.gvar
 string.fmtgs	.gvar
 _test.parse_expr.subcode_k_subcodes.expected	.gvar
+list.string.ty	.tylet	list.t	string.t
 ci0	.karg	gsdl.ags.codeitem.prim.u
 	.danalyze	ci0	expr
 		.default
@@ -557,7 +557,6 @@ string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 list.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
 test.property.false	.gvar
 _test.parse_expr.cogvar_k_wrong.constr.s	.gvar
 test.assert.eq	.gvar
@@ -566,6 +565,7 @@ string.≡	.gvar
 list.fmtgs.byDefault	.gvar
 string.fmtgs	.gvar
 _test.parse_expr.cogvar_k_cogvars.expected	.gvar
+list.string.ty	.tylet	list.t	string.t
 ci0	.karg	gsdl.ags.codeitem.prim.u
 	.danalyze	ci0	expr
 		.default
@@ -617,7 +617,6 @@ _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
 list.t	.tygvar
-list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 test.property.false	.gvar
 _test.parse_expr.gvar_k_wrong.constr.s	.gvar
 test.assert.eq	.gvar
@@ -628,6 +627,7 @@ gsdl.ags.codeitem.gvar.fmtgs	.gvar
 list.singleton	.gvar
 gsdl.ags.codeitem.gvar.gvar	.gvar
 _test.parse_expr.gvar_k_gvars.expected.0_bar.s	.gvar
+list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 ci0	.karg	gsdl.ags.codeitem.prim.u
 	.danalyze	ci0	expr
 		.default
@@ -705,7 +705,6 @@ _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
-list.arg.ty	.tylet	list.t	gsdl.ags.codeitem.arg.t
 test.property.false	.gvar
 _test.parse_expr.larg_k_wrong.constr.s	.gvar
 test.assert.eq	.gvar
@@ -719,6 +718,7 @@ bool.true	.gvar
 _test.parse_expr.larg_k_bar.s	.gvar
 _test.parse_expr.larg_k_tyargs	.gvar
 list.nil	.gvar
+list.arg.ty	.tylet	list.t	gsdl.ags.codeitem.arg.t
 ci0	.karg	gsdl.ags.codeitem.prim.u
 	.danalyze	ci0	expr
 		.default
@@ -1344,7 +1344,6 @@ gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
 test.property.false	.gvar
 _test.parse_expr.app_k_k_wrong.constr.s	.gvar
 test.assert.eq	.gvar
@@ -1353,6 +1352,7 @@ string.≡	.gvar
 list.fmtgs.byDefault	.gvar
 string.fmtgs	.gvar
 _test.parse_expr.app_k_as.expected	.gvar
+list.string.ty	.tylet	list.t	string.t
 ci0	.karg	gsdl.ags.codeitem.expr.prim.u
 	.danalyze	ci0	app
 		.default

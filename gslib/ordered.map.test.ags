@@ -34,7 +34,6 @@ _test_get.empty_c	.expr
 maybe.t	.tygvar
 bool.t	.tygvar
 natural.t	.tygvar
-mb.t	.tylet	maybe.t	bool.t
 test.property.label	.gvar
 _test_get.empty_label	.gvar
 test.assert.eq	.gvar
@@ -47,6 +46,7 @@ natural.3	.gvar
 ordered.map.empty	.gvar
 natural.compare	.gvar
 maybe.nothing	.gvar
+mb.t	.tylet	maybe.t	bool.t
 mb.≡	.apply	maybe.≡	bool.t	|	bool.≡
 mb.fmtgs	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs
 empty	.apply	ordered.map.empty	natural.t	bool.t
@@ -62,7 +62,6 @@ _test.get.k.insert.k.empty_c	.expr
 maybe.t	.tygvar
 bool.t	.tygvar
 natural.t	.tygvar
-mb.t	.tylet	maybe.t	bool.t
 test.property.label	.gvar
 _test.get.k.insert.k.empty_label	.gvar
 test.assert.eq	.gvar
@@ -77,6 +76,7 @@ ordered.map.insert	.gvar
 bool.false	.gvar
 ordered.map.empty	.gvar
 maybe.just	.gvar
+mb.t	.tylet	maybe.t	bool.t
 mb.≡	.apply	maybe.≡	bool.t	|	bool.≡
 mb.fmtgs	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs
 empty	.apply	ordered.map.empty	natural.t	bool.t
@@ -118,7 +118,6 @@ ordered.map.t	.tygvar
 natural.t	.tygvar
 bool.t	.tygvar
 fmtgs.t	.tygvar	# Temp
-map.ty	.tylet	ordered.map.t	natural.t	bool.t
 test.property.label	.gvar
 _test.empty.union.empty_label	.gvar
 test.assert.eq	.gvar
@@ -127,6 +126,7 @@ natural.compare	.gvar
 bool.≡	.gvar
 ordered.map.∪	.gvar
 ordered.map.empty	.gvar
+map.ty	.tylet	ordered.map.t	natural.t	bool.t
 map.eq	.apply	ordered.map.≡	natural.t	bool.t	|	natural.compare	bool.≡
 map.fmtgs	.undefined	fmtgs.t	map.ty
 empty	.apply	ordered.map.empty	natural.t	bool.t

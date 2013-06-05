@@ -88,10 +88,6 @@ gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
-list.dataitem.ty	.tylet	list.t	gsdl.ags.dataitem.t
-list.codeitem.ty	.tylet	list.t	gsdl.ags.codeitem.t
-list.typeitem.ty	.tylet	list.t	gsdl.ags.typeitem.t
-list.coercionitem.ty	.tylet	list.t	gsdl.ags.coercionitem.t
 test.property.∧	.gvar
 test.property.label	.gvar
 _test.parser.nil_ds_label	.gvar
@@ -110,6 +106,10 @@ gsdl.ags.typeitem.fmtgs	.gvar
 _test.parser.nil_tcs_label	.gvar
 gsdl.ags.coercionitem.≡	.gvar
 gsdl.ags.coercionitem.fmtgs	.gvar
+list.dataitem.ty	.tylet	list.t	gsdl.ags.dataitem.t
+list.codeitem.ty	.tylet	list.t	gsdl.ags.codeitem.t
+list.typeitem.ty	.tylet	list.t	gsdl.ags.typeitem.t
+list.coercionitem.ty	.tylet	list.t	gsdl.ags.coercionitem.t
 file	.larg	gsdl.ags.file.t
 list.dataitem.≡	.apply	list.≡	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.≡
 list.dataitem.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.fmtgs

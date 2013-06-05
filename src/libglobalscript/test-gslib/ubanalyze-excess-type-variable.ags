@@ -10,9 +10,9 @@ _epc	.expr
 rune.t	.tygvar
 _epc_k0	.subcode
 _epc_k1	.subcode
-α	.tylet	rune.t
 natural.prim.≡	.gvar
 0	.natural	0
+α	.tylet	rune.t
 	.ubanalyze	0	_epc_k0	1	_epc_k1
 	.app	0	0
 	.yield	natural.prim.≡

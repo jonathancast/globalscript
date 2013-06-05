@@ -80,9 +80,9 @@ _ibio.lex.lexeme.t_k.ty	.tygvar
 ibio.prim.iptr	.tygvar
 _ibio.lex.symbol_k0	.subcode
 _ibio.lex.symbol_k1	.subcode
+ibio.prim.iptr.iseof	.gvar
 s	.tyfv	*
 β	.tyfv	*
-ibio.prim.iptr.iseof	.gvar
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip0	.karg	ibio.prim.iptr	s
@@ -93,10 +93,10 @@ ip0	.karg	ibio.prim.iptr	s
 _ibio.lex.symbol_k0	.ubcasecont
 ibio.prim.iptr	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
-s	.tyfv	*
-β	.tyfv	*
 ibio.prim.iptr.deref	.gvar
 ibio.prim.iptr.next	.gvar
+s	.tyfv	*
+β	.tyfv	*
 ip0	.fv	ibio.prim.iptr	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
@@ -147,9 +147,9 @@ _ibio.lex.lexeme.t_k.ty	.tygvar
 ibio.prim.iptr	.tygvar
 _ibio.lex.char_k0	.subcode
 _ibio.lex.char_k1	.subcode
+ibio.prim.iptr.iseof	.gvar
 s	.tyfv	*
 β	.tyfv	*
-ibio.prim.iptr.iseof	.gvar
 eq	.fv	_ibio.lex.receiver.char_eq_ty	s
 c	.fv	s
 ek	.fv	β
@@ -165,9 +165,9 @@ ibio.prim.iptr	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 _ibio.lex.char_k0_k	.subcode
 bool.t.out	.cogvar
+ibio.prim.iptr.deref	.gvar
 s	.tyfv	*
 β	.tyfv	*
-ibio.prim.iptr.deref	.gvar
 eq	.fv	_ibio.lex.receiver.char_eq_ty	s
 c	.fv	s
 ip0	.fv	ibio.prim.iptr	s
@@ -183,9 +183,9 @@ _ibio.lex.char_k0_k	.forcecont
 ibio.prim.iptr	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 bool.prim.u	.tygvar
+ibio.prim.iptr.next	.gvar
 s	.tyfv	*
 β	.tyfv	*
-ibio.prim.iptr.next	.gvar
 c	.fv	s
 ip0	.fv	ibio.prim.iptr	s
 ek	.fv	β
@@ -243,9 +243,9 @@ _ibio.lex.lexeme.t_k.ty	.tygvar
 ibio.prim.iptr	.tygvar
 _ibio.lex.pred_res_k_k0	.subcode
 _ibio.lex.pred_res_k_k1	.subcode
+ibio.prim.iptr.iseof	.gvar
 s	.tyfv	*
 β	.tyfv	*
-ibio.prim.iptr.iseof	.gvar
 pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
@@ -260,9 +260,9 @@ _ibio.lex.lexeme.t_k.ty	.tygvar
 ibio.prim.iptr	.tygvar
 _ibio.lex.pred_res_k_k0_k	.subcode
 bool.t.out	.cogvar
+ibio.prim.iptr.deref	.gvar
 s	.tyfv	*
 β	.tyfv	*
-ibio.prim.iptr.deref	.gvar
 pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
@@ -277,9 +277,9 @@ _ibio.lex.pred_res_k_k0_k	.forcecont
 _ibio.lex.lexeme.t_k.ty	.tygvar
 ibio.prim.iptr	.tygvar
 bool.prim.u	.tygvar
+ibio.prim.iptr.next	.gvar
 s	.tyfv	*
 β	.tyfv	*
-ibio.prim.iptr.next	.gvar
 ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip0	.fv	ibio.prim.iptr	s
@@ -448,9 +448,9 @@ consk	.alloc	_ibio.lex.many_consk_c
 
 _ibio.lex.many_nilk_c	.expr
 ibio.prim.iptr.t	.tygvar
+list.nil	.gvar
 s	.tyfv	*
 α	.tyfv	*
-list.nil	.gvar
 ip	.fv	ibio.prim.iptr.t	s
 nil	.apply	list.nil	α
 r	.record	0	nil	1	ip
@@ -462,10 +462,10 @@ ibio.lex.lexeme.t	.tygvar
 ibio.prim.iptr.t	.tygvar
 list.t	.tygvar
 _ibio.lex.many_consk_xn0_c	.subcode
-s	.tyfv	*
-α	.tyfv	*
 list.:	.gvar
 ibio.lex.many	.gvar
+s	.tyfv	*
+α	.tyfv	*
 l	.fv	ibio.lex.lexeme.t	s	α
 x	.larg	α
 ip1	.larg	ibio.prim.iptr.t	s
@@ -531,11 +531,11 @@ ibio.lex.receiver.u	.tygvar
 ibio.prim.t	.tygvar
 ibio.prim.iptr.t	.tygvar
 record.empty	.tygvar
+ibio.prim.read	.gvar
+ibio.acceptor.prim.cont	.gvar
 s	.tyfv	*
 α	.tyfv	*
 res.ty	.tylet	ibio.prim.iptr.t	s
-ibio.prim.read	.gvar
-ibio.acceptor.prim.cont	.gvar
 i	.fv	ibio.prim.iport	s
 p0	.karg	ibio.lex.receiver.u	s	α
 acc	.field	1	p0
@@ -559,9 +559,9 @@ ip	.fv	ibio.prim.iptr.t	s
 _ibio.lex.receive_x_k	.forcecont
 ibio.prim.iptr.t	.tygvar
 ibio.lex.receiver.u	.tygvar
+ibio.lex.lexer.match	.gvar
 s	.tyfv	*
 α	.tyfv	*
-ibio.lex.lexer.match	.gvar
 ip	.fv	ibio.prim.iptr.t	s
 rec0	.karg	ibio.lex.receiver.u	s	α
 lex	.field	0	rec0
@@ -569,8 +569,8 @@ lex	.field	0	rec0
 	.enter	ibio.lex.lexer.match	s	α
 
 _ibio.lex.receive_body_c	.expr
-α	.tyfv	*
 ibio.prim.unit	.gvar
+α	.tyfv	*
 x	.fv	α
 	.app	x
 	.yield	ibio.prim.unit	α
@@ -580,9 +580,9 @@ x	.fv	α
 _ibio.lex.receiver.symbol_c	.expr
 ibio.lex.lexeme.t	.tygvar
 record.empty	.tygvar
-s	.tyarg	*
 ibio.lex.symbol	.gvar
 ibio.acceptor.symbol.prim	.gvar
+s	.tyarg	*
 lex	.apply	ibio.lex.symbol	s
 acc	.apply	ibio.acceptor.symbol.prim	s	record.empty
 r	.record	0	lex	1	acc
@@ -596,8 +596,8 @@ _ibio.lex.receiver.pred_pred_ty	.tygvar
 ibio.acceptor.prim.cont.t	.tygvar
 record.empty	.tygvar
 _ibio.lex.receiver.pred_acc_c	.subcode
-s	.tyarg	*
 ibio.lex.pred	.gvar
+s	.tyarg	*
 pred	.larg	_ibio.lex.receiver.pred_pred_ty	s
 lex	.apply	ibio.lex.pred	s	|	pred
 acc	.alloc	_ibio.lex.receiver.pred_acc_c
@@ -611,8 +611,8 @@ ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
 ibio.acceptor.prim.t	.tygvar
 _ibio.lex.receiver.pred_acc_k1_c	.subcode
-s	.tyfv	*
 ibio.acceptor.prim.symbol.bind	.gvar
+s	.tyfv	*
 pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
 k	.larg	ibio.acceptor.prim.kt	s	s	record.empty
 k1	.alloc	_ibio.lex.receiver.pred_acc_k1_c
@@ -639,8 +639,8 @@ _ibio.lex.receiver.pred_acc_k1_k	.forcecont
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
 bool.prim.u	.tygvar
-s	.tyfv	*
 ibio.acceptor.prim.fail	.gvar
+s	.tyfv	*
 k	.fv	ibio.acceptor.prim.kt	s	s	record.empty
 sym	.fv	s
 b0	.karg	bool.prim.u
@@ -659,8 +659,8 @@ ibio.lex.lexeme.t	.tygvar
 ibio.acceptor.prim.cont.t	.tygvar
 record.empty	.tygvar
 _ibio.lex.receiver.char_acc_c	.subcode
-s	.tyarg	*
 ibio.lex.char	.gvar
+s	.tyarg	*
 eq	.larg	_ibio.lex.receiver.char_eq_ty	s
 c	.larg	s
 lex	.apply	ibio.lex.char	s	|	eq	c
@@ -674,9 +674,9 @@ _ibio.lex.receiver.char_eq_ty	.tygvar
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
 _ibio.lex.receiver.char_acc_sym.k1_c	.subcode
-s	.tyfv	*
 ibio.acceptor.prim.symbol.bind	.gvar
 ibio.acceptor.prim.fail	.gvar
+s	.tyfv	*
 eq	.fv	_ibio.lex.receiver.char_eq_ty	s
 c	.fv	s
 k	.larg	ibio.acceptor.prim.kt	s	s	record.empty
@@ -705,8 +705,8 @@ _ibio.lex.receiver.char_acc_sym.k1_k	.forcecont
 ibio.acceptor.prim.kt	.tygvar
 bool.prim.u	.tygvar
 record.empty	.tygvar
-s	.tyfv	*
 ibio.acceptor.prim.fail	.gvar
+s	.tyfv	*
 c	.fv	s
 k	.fv	ibio.acceptor.prim.kt	s	s	record.empty
 b0	.karg	bool.prim.u
@@ -723,7 +723,6 @@ _ibio.lex.receiver.line.non.empty_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 ibio.lex.receiver.<|>	.gvar
 ibio.lex.receiver.lexeme.lift.2	.gvar
 list.:	.gvar
@@ -735,6 +734,7 @@ ibio.lex.receiver.char	.gvar
 rune.≡	.gvar
 ibio.lex.receiver.lexeme.unit	.gvar
 list.nil	.gvar
+string.ty	.tylet	list.t	rune.t
 cons	.apply	list.:	rune.t
 non.nl	.apply	rune.≠	|	_nl
 non.nlr	.apply	ibio.lex.receiver.pred	rune.t	|	non.nl
@@ -753,9 +753,9 @@ ibio.lex.lexeme.t	.tygvar
 ibio.acceptor.prim.cont.t	.tygvar
 record.empty	.tygvar
 _ibio.lex.receiver.lexeme.unit_acc_c	.subcode
+ibio.lex.lexeme.unit	.gvar
 s	.tyarg	*
 α	.tyarg	*
-ibio.lex.lexeme.unit	.gvar
 x	.larg	α
 lex	.apply	ibio.lex.lexeme.unit	s	α	|	x
 acc	.alloc	_ibio.lex.receiver.lexeme.unit_acc_c
@@ -783,10 +783,10 @@ ibio.lex.lexeme.t	.tygvar
 ibio.acceptor.prim.cont.t	.tygvar
 record.empty	.tygvar
 _ibio.lex.receiver.lexeme.<*>_acc_c	.subcode
+ibio.lex.lexeme.<*>	.gvar
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
-ibio.lex.lexeme.<*>	.gvar
 rf	.larg	_ibio.lex.receiver.lexeme.<*>_rf_ty	s	α	β
 rx	.larg	ibio.lex.receiver.lexeme.t	s	α
 lf	.lfield	0	rf
@@ -852,14 +852,14 @@ _ibio.lex.receiver.lexeme.lift.2_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
 _ibio.lex.receiver.lexeme.lift.2_f_ty	.tygvar
 _ibio.lex.receiver.lexeme.lift.2_fx_ty	.tygvar
+ibio.lex.receiver.lexeme.<*>	.gvar
+ibio.lex.receiver.lexeme.unit	.gvar
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
 γ	.tyarg	*
 f_ty	.tylet	_ibio.lex.receiver.lexeme.lift.2_f_ty	α	β	γ
 fx_ty	.tylet	_ibio.lex.receiver.lexeme.lift.2_fx_ty	β	γ
-ibio.lex.receiver.lexeme.<*>	.gvar
-ibio.lex.receiver.lexeme.unit	.gvar
 f	.larg	f_ty
 rx	.larg	ibio.lex.receiver.lexeme.t	s	α
 ry	.larg	ibio.lex.receiver.lexeme.t	s	β
@@ -874,9 +874,9 @@ _ibio.lex.receiver.<|>_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
 ibio.lex.lexeme.t	.tygvar
 _ibio.lex.receiver.<|>_acc_c	.subcode
+ibio.lex.<|>	.gvar
 s	.tyarg	*
 α	.tyarg	*
-ibio.lex.<|>	.gvar
 r0	.larg	ibio.lex.receiver.lexeme.t	s	α
 r1	.larg	ibio.lex.receiver.lexeme.t	s	α
 l0	.lfield	0	r0
@@ -892,9 +892,9 @@ ibio.lex.receiver.lexeme.t	.tygvar
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
 ibio.acceptor.prim.t	.tygvar
+ibio.acceptor.prim.<|>	.gvar
 s	.tyfv	*
 α	.tyfv	*
-ibio.acceptor.prim.<|>	.gvar
 r0	.fv	ibio.lex.receiver.lexeme.t	s	α
 r1	.fv	ibio.lex.receiver.lexeme.t	s	α
 k	.larg	ibio.acceptor.prim.kt	s	α	record.empty
@@ -912,11 +912,11 @@ ibio.lex.receiver.lexeme.t	.tygvar
 ibio.lex.lexer.t	.tygvar
 list.t	.tygvar
 record.empty	.tygvar
+ibio.lex.many	.gvar
+ibio.acceptor.many.void.prim	.gvar
 s	.tyarg	*
 α	.tyarg	*
 res.ty	.tylet	list.t	α
-ibio.lex.many	.gvar
-ibio.acceptor.many.void.prim	.gvar
 p	.larg	ibio.lex.receiver.lexeme.t	s	α
 p.lex	.lfield	0	p
 p.acc	.lfield	1	p

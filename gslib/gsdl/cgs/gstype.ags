@@ -99,7 +99,6 @@ list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
-list.field.t	.tylet	list.t	gsdl.cgs.gstype.field.t
 parser.map	.gvar
 gsdl.cgs.gstype.product	.gvar
 parser.*>	.gvar
@@ -111,6 +110,7 @@ parser.many	.gvar
 gsdl.cgs.gstype.field.parser	.gvar
 parser.<*	.gvar
 gsdl.cgs.syntax.rbracket	.gvar
+list.field.t	.tylet	list.t	gsdl.cgs.gstype.field.t
 pi_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_pi.re
 mfp	.apply	parser.many	rune.t	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.parser
 fs_p2	.apply	parser.<*	rune.t	list.field.t	string.t	|	mfp	gsdl.cgs.syntax.rbracket
@@ -165,7 +165,6 @@ gsdl.cgs.gstype.field.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
-res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 gsdl.cgs.gstype.freevars	.gvar
 list.foldr	.gvar
 ordered.set.union	.gvar
@@ -175,6 +174,7 @@ list.map	.gvar
 gsdl.cgs.gstype.field.freevars	.gvar
 ordered.set.singleton	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
+res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0	app	lift	product	var
 		.case	app

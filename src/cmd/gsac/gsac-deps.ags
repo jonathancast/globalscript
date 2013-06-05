@@ -55,8 +55,8 @@ ibio.prim.env.args.get	.gvar
 _real.entry_parsed.args_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-_string.ty	.tylet	list.t	rune.t
 _parse.args	.gvar
+_string.ty	.tylet	list.t	rune.t
 args	.fv	list.t	_string.ty
 	.app	args
 	.enter	_parse.args
@@ -111,11 +111,11 @@ rune.t	.tygvar
 ibio.file.name.t	.tygvar
 _parse.args_k1	.subcode
 bool.t.out	.cogvar
-string.ty	.tylet	list.t	rune.t
 list.≡	.gvar
 rune.≡	.gvar
 _l	.gvar
 list.nil	.gvar
+string.ty	.tylet	list.t	rune.t
 as0	.karg	list.prim.u	string.ty
 	.analyze	as0	:	nil
 		.case	:
@@ -138,10 +138,10 @@ bool.prim.u	.tygvar
 ibio.file.name.t	.tygvar
 _parse.args_k2	.subcode
 list.t.out	.cogvar
-string.ty	.tylet	list.t	rune.t
 list.:	.gvar
 ibio.file.name.in	.gvar
 _parse.args	.gvar
+string.ty	.tylet	list.t	rune.t
 a0	.fv	list.t	rune.t
 as1	.fv	list.t	string.ty
 b0	.karg	bool.prim.u
@@ -166,10 +166,10 @@ list.t	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
 _parse.args_res_ty	.tygvar
-string.ty	.tylet	list.t	rune.t
 list.:	.gvar
 ibio.file.name.in	.gvar
 _parse.args	.gvar
+string.ty	.tylet	list.t	rune.t
 as1.0	.karg	list.prim.u	string.ty
 	.analyze	as1.0	:	nil
 		.case	:
@@ -382,10 +382,10 @@ _print.deps_body_w_:_res_pr1_c	.expr
 list.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 _prefix.t	.tygvar
-#res.ty	.tylet	list.t	_prefix.t	# Temp
 ibio.mapM.prim	.gvar
 _prefix.expand	.gvar
 #ibio.prim.unit	.gvar	# Temp
+#res.ty	.tylet	list.t	_prefix.t	# Temp
 cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
 pr	.fv	list.t	_prefix.t
 f	.apply	_prefix.expand	|	cs
@@ -400,9 +400,9 @@ ibio.file.name.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.syntax.var.component.t	.tygvar
 _prefix.t	.tygvar
-res.ty	.tylet	ordered.set.t	ibio.file.name.t
 ibio.foldM.prim	.gvar
 _process.var	.gvar
+res.ty	.tylet	ordered.set.t	ibio.file.name.t
 o	.fv	ibio.prim.oport	rune.t
 gsac.fn	.fv	ibio.file.name.t
 ds	.fv	ordered.set.t	ibio.file.name.t
@@ -724,10 +724,10 @@ ibio.prim.iport	.tygvar
 ibio.dir.t	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar
-res.ty	.tylet	list.t	ibio.dir.t
 ibio.lex.receive	.gvar
 ibio.lex.receiver.many	.gvar
 ibio.lex.receiver.symbol	.gvar
+res.ty	.tylet	list.t	ibio.dir.t
 id	.efv	ibio.prim.iport	ibio.dir.t
 sym	.apply	ibio.lex.receiver.symbol	ibio.dir.t
 ms	.apply	ibio.lex.receiver.many	ibio.dir.t	ibio.dir.t	|	sym
@@ -741,10 +741,10 @@ _prefix.t	.tygvar
 list.t	.tygvar	# Temp
 _prefix.readdir_body_topr_c	.subcode
 _prefix.readdir_body_pred_c	.subcode
-res.ty	.tylet	list.t	_prefix.t	# Temp
 list.map	.gvar
 list.filter	.gvar
 ibio.prim.unit	.gvar
+res.ty	.tylet	list.t	_prefix.t	# Temp
 ds1	.fv	list.t	ibio.dir.t
 topr	.alloc	_prefix.readdir_body_topr_c
 pred	.alloc	_prefix.readdir_body_pred_c
@@ -863,10 +863,10 @@ _prefix.prim.u	.tygvar
 _prefix.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 list.t.out	.cogvar
-res.ty	.tylet	ordered.set.t	ibio.file.name.t
 ibio.foldM.prim	.gvar
 _process.var_rec	.gvar
 ibio.prim.unit	.gvar	# Temp
+res.ty	.tylet	ordered.set.t	ibio.file.name.t
 o	.fv	ibio.prim.oport	rune.t
 gsac.fn	.fv	ibio.file.name.t
 cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
@@ -919,8 +919,8 @@ _prefix.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _process.var_rec_file_k	.subcode
 list.t.out	.cogvar
-res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
 ibio.prim.unit	.gvar
+res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
 o	.fv	ibio.prim.oport	rune.t
 gsac.fn	.fv	ibio.file.name.t
 dirn	.fv	ibio.file.name.t
@@ -955,10 +955,10 @@ list.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _process.var_rec_file_:_k	.subcode
 bool.t.out	.cogvar
-res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
 string.≡	.gvar
 gsdl.cgs.syntax.var.component.print	.gvar
 ibio.file.name.components.get	.gvar
+res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
 o	.fv	ibio.prim.oport	rune.t
 gsac.fn	.fv	ibio.file.name.t
 dirn	.fv	ibio.file.name.t
@@ -987,11 +987,11 @@ ibio.file.name.t	.tygvar
 ordered.set.t	.tygvar
 _process.var_rec_file_:_true_k	.subcode
 bool.t.out	.cogvar
-res.ty	.tylet	ordered.set.t	ibio.file.name.t
 ibio.prim.unit	.gvar
 ordered.set.elem	.gvar
 ibio.file.name.compare	.gvar
 ibio.file.name.</>	.gvar
+res.ty	.tylet	ordered.set.t	ibio.file.name.t
 o	.fv	ibio.prim.oport	rune.t
 dirn	.fv	ibio.file.name.t
 ds	.fv	ordered.set.t	ibio.file.name.t
@@ -1069,10 +1069,10 @@ s	.apply	list.<>	rune.t	|	gsac.fn.s	s1
 _process.var_rec_file_:_true_res_body_c	.expr
 ordered.set.t	.tygvar
 ibio.file.name.t	.tygvar
-res.ty	.tylet	ordered.set.t	ibio.file.name.t
 ibio.prim.unit	.gvar
 ordered.set.insert	.gvar
 ibio.file.name.compare	.gvar
+res.ty	.tylet	ordered.set.t	ibio.file.name.t
 ds	.fv	ordered.set.t	ibio.file.name.t
 fn	.fv	ibio.file.name.t
 ds1	.apply	ordered.set.insert	ibio.file.name.t	|	ibio.file.name.compare	fn	ds

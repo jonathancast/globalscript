@@ -79,9 +79,9 @@ _list.null_k	.forcecont
 list.prim.u	.tygvar
 list.t	.tygvar
 bool.t	.tygvar
-α	.tyfv	*
 bool.false	.gvar
 bool.true	.gvar
+α	.tyfv	*
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
@@ -111,9 +111,9 @@ _list.foldr_k0	.forcecont
 _list.foldr_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
+list.foldr	.gvar
 α	.tyfv	*
 β	.tyfv	*
-list.foldr	.gvar
 f	.fv	_list.foldr_f_ty	α	β
 z	.fv	β
 xn0	.karg	list.prim.u	α
@@ -188,9 +188,9 @@ y			.alloc	_list.foldr1_rec
 _list.foldr1_rec	.expr
 list.t	.tygvar
 _list.foldr1_ft	.tygvar
+list.foldr1	.gvar
 α	.tyfv	*
 ft	.tylet	_list.foldr1_ft	α
-list.foldr1	.gvar
 f	.fv	ft
 xn1	.fv	list.t	α
 	.app	f	xn1
@@ -217,10 +217,10 @@ list.prim.u	.tygvar
 list.t	.tygvar
 _list.map_y0_c	.subcode
 _list.map_ys1_c	.subcode
-α	.tyfv	*
-β	.tyfv	*
 list.:	.gvar
 list.nil	.gvar
+α	.tyfv	*
+β	.tyfv	*
 f	.fv	_list.map_f_ty	α	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
@@ -246,9 +246,9 @@ x0	.fv	α
 _list.map_ys1_c	.expr
 _list.map_f_ty	.tygvar
 list.t	.tygvar
+list.map	.gvar
 α	.tyfv	*
 β	.tyfv	*
-list.map	.gvar
 f	.fv	_list.map_f_ty	α	β
 xn1	.fv	list.t	α
 	.app	f	xn1
@@ -274,8 +274,8 @@ list.prim.u	.tygvar
 list.t	.tygvar
 _list.filter_:_k	.subcode
 bool.t.out	.cogvar
-α	.tyfv	*
 list.nil	.gvar
+α	.tyfv	*
 pred	.fv	_list.filter_pred_ty	α
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
@@ -293,9 +293,9 @@ _list.filter_:_k	.forcecont
 _list.filter_pred_ty	.tygvar
 list.t	.tygvar
 bool.prim.u	.tygvar
-α	.tyfv	*
 list.:	.gvar
 list.filter	.gvar
+α	.tyfv	*
 pred	.fv	_list.filter_pred_ty	α
 x0	.fv	α
 xn1	.fv	list.t	α
@@ -329,9 +329,9 @@ list.prim.u	.tygvar
 list.t	.tygvar
 _list.filterMap_:_k	.subcode
 maybe.t.out	.cogvar
+list.nil	.gvar
 α	.tyfv	*
 β	.tyfv	*
-list.nil	.gvar
 f	.fv	_list.filterMap_f_ty	α	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
@@ -349,10 +349,10 @@ _list.filterMap_:_k	.forcecont
 _list.filterMap_f_ty	.tygvar
 list.t	.tygvar
 maybe.prim.u	.tygvar
-α	.tyfv	*
-β	.tyfv	*
 list.:	.gvar
 list.filterMap	.gvar
+α	.tyfv	*
+β	.tyfv	*
 f	.fv	_list.filterMap_f_ty	α	β
 xn1	.fv	list.t	α
 mb0	.karg	maybe.prim.u	β
@@ -422,9 +422,9 @@ _list.foldl_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 _list.foldl_k1_z1_c	.subcode
+list.foldl	.gvar
 α	.tyfv	*
 β	.tyfv	*
-list.foldl	.gvar
 f	.fv	_list.foldl_f_ty	α	β
 z	.fv	β
 xn0	.karg	list.prim.u	α
@@ -464,10 +464,10 @@ x0	.fv	α
 _list.reverse_c	.expr
 list.t	.tygvar
 _list.reverse_fcons_c	.subcode
-α	.tyarg	*
-list.α	.tylet	list.t	α
 list.foldl	.gvar
 list.nil	.gvar
+α	.tyarg	*
+list.α	.tylet	list.t	α
 fcons	.alloc	_list.reverse_fcons_c
 nil	.apply	list.nil	α
 	.app	fcons	nil
@@ -475,8 +475,8 @@ nil	.apply	list.nil	α
 
 _list.reverse_fcons_c	.expr
 list.t	.tygvar
-α	.tyfv	*
 list.:	.gvar
+α	.tyfv	*
 xn	.larg	list.t	α
 x	.larg	α
 	.app	x	xn
@@ -486,8 +486,8 @@ x	.larg	α
 
 _list.singleton_c	.expr
 _list.singleton_n_c	.subcode
-α	.tyarg	*
 list.:	.gvar
+α	.tyarg	*
 x	.larg	α
 n	.alloc	_list.singleton_n_c
 	.app	x	n
@@ -495,8 +495,8 @@ n	.alloc	_list.singleton_n_c
 
 _list.singleton_n_c	.expr
 list.t	.tygvar
-α	.tyfv	*
 list.nil	.gvar
+α	.tyfv	*
 	.enter	list.nil	α
 
 # §section §gs{list.<>}
@@ -535,8 +535,8 @@ ys2	.constr	t	:	0	x0	1	ys1
 
 _list.<>.code.rec	.expr
 list.t	.tygvar
-α	.tyfv	*
 list.<>	.gvar
+α	.tyfv	*
 xn1	.fv	list.t	α
 ys	.fv	list.t	α
 	.app	xn1	ys
@@ -559,8 +559,8 @@ xn	.larg	list.t	α
 _list.drop_k0	.forcecont
 list.t	.tygvar
 natural.prim.u	.tygvar
-α	.tyfv	*
 _list.drop_worker	.gvar
+α	.tyfv	*
 xn	.fv	list.t	α
 n0	.karg	natural.prim.u
 	.app	n0	xn
@@ -571,9 +571,9 @@ natural.prim.u	.tygvar
 list.t	.tygvar
 _list.drop_worker_k0	.subcode
 _list.drop_worker_k1	.subcode
-α	.tyarg	*
 natural.prim.-	.gvar
 1	.natural	1
+α	.tyarg	*
 n0	.arg	natural.prim.u
 xn	.arg	list.t	α
 	.ubanalyze	0	_list.drop_worker_k0	1	_list.drop_worker_k1
@@ -602,8 +602,8 @@ _list.drop_worker_k1.0	.forcecont
 natural.prim.u	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
-α	.tyfv	*
 _list.drop_worker	.gvar
+α	.tyfv	*
 n1	.fv	natural.prim.u
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
@@ -652,11 +652,11 @@ _list.byZip.map2_k1	.forcecont
 _list.byZip.map2_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
+list.:	.gvar
+list.byZip.map2	.gvar
 α0	.tyfv	*
 α1	.tyfv	*
 β	.tyfv	*
-list.:	.gvar
-list.byZip.map2	.gvar
 f	.fv	_list.byZip.map2_f_ty	α0	α1	β
 xn0.0	.fv	list.prim.u	α0
 xn1.0	.karg	list.prim.u	α1
@@ -717,12 +717,12 @@ list.t	.tygvar
 _list.≡.arg.ty	.tygvar
 _list.≡.cmp	.subcode
 _list.≡.rec	.subcode
-α	.tyfv	*
-t	.tylet	list.prim.u	α
-at	.tylet	_list.≡.arg.ty	α
 bool.true	.gvar
 bool.false	.gvar
 bool.∧	.gvar
+α	.tyfv	*
+t	.tylet	list.prim.u	α
+at	.tylet	_list.≡.arg.ty	α
 c	.fv	at
 xn0	.fv	t
 ys0	.karg	t
@@ -762,9 +762,9 @@ y	.fv	α
 _list.≡.rec	.expr
 list.t	.tygvar
 _list.≡.arg.ty	.tygvar
+list.≡	.gvar
 α	.tyfv	*
 at	.tylet	_list.≡.arg.ty	α
-list.≡	.gvar
 c	.fv	at
 xn1	.fv	list.t	α
 ys1	.fv	list.t	α
@@ -807,8 +807,8 @@ list.t	.tygvar
 order.total.ord.t	.tygvar
 _list.compare_:_:_k	.subcode
 order.total.ord.t.out	.cogvar
-α	.tyfv	*
 order.total.ord.eq	.gvar
+α	.tyfv	*
 cmp	.fv	order.total.t	α
 xn0.0	.fv	list.prim.u	α
 xn1.0	.karg	list.prim.u	α
@@ -840,10 +840,10 @@ order.total.t	.tygvar
 list.t	.tygvar
 order.total.ord.prim.u	.tygvar
 order.total.ord.t	.tygvar
-α	.tyfv	*
 list.compare	.gvar
 order.total.ord.gt	.gvar
 order.total.ord.lt	.gvar
+α	.tyfv	*
 cmp	.fv	order.total.t	α
 xn0.1	.fv	list.t	α
 xn1.1	.fv	list.t	α
@@ -878,8 +878,8 @@ list.prim.u	.tygvar
 list.t	.tygvar
 _list.elem_:_k	.subcode
 bool.t.out	.cogvar
-α	.tyfv	*
 bool.false	.gvar
+α	.tyfv	*
 eq	.fv	eq.t	α
 x	.fv	α
 xn0	.karg	list.prim.u	α
@@ -898,9 +898,9 @@ _list.elem_:_k	.forcecont
 eq.t	.tygvar
 list.t	.tygvar
 bool.prim.u	.tygvar
-α	.tyfv	*
 list.elem	.gvar
 bool.true	.gvar
+α	.tyfv	*
 eq	.fv	eq.t	α
 x	.fv	α
 xn1	.fv	list.t	α
@@ -945,8 +945,6 @@ fmtgs.printer.t	.tygvar
 rune.t	.tygvar
 diff.list.t	.tygvar
 _list.fmtgs.byDefault_:_f_c	.subcode
-α	.tyfv	*
-diff.list.ty	.tylet	diff.list.t	rune.t
 fmtgs.prec	.gvar
 fmtgs.prec.arg	.gvar
 diff.list.prepend	.gvar
@@ -954,9 +952,10 @@ diff.list.<>	.gvar
 _list.fmtgs.byDefault_:_prefix.s	.gvar
 diff.list.concat	.gvar
 list.map	.gvar
-
 diff.list.fromlist	.gvar
 _list.fmtgs.byDefault_nil.s	.gvar
+α	.tyfv	*
+diff.list.ty	.tylet	diff.list.t	rune.t
 p	.fv	fmtgs.t	α
 xn	.fv	list.t	α
 xn0	.karg	list.prim.u	α
@@ -981,10 +980,10 @@ _list.fmtgs.byDefault_:_f_c	.expr
 fmtgs.t	.tygvar
 rune.t	.tygvar
 diff.list.t	.tygvar	# Temp
-α	.tyfv	*
 diff.list.postpend	.gvar
 fmtgs.prec.max	.gvar
 _list.fmtgs.byDefault_:_f_comma.sp.s	.gvar
+α	.tyfv	*
 p	.fv	fmtgs.t	α
 x	.larg	α
 x.ds	.apply	p	|	x	fmtgs.prec.max

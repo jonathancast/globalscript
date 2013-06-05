@@ -102,9 +102,9 @@ _maybe.≡_k1	.forcecont
 _maybe.≡_eq_ty	.tygvar
 maybe.prim.u	.tygvar
 bool.t	.tygvar
-α	.tyfv	*
 bool.false	.gvar
 bool.true	.gvar
+α	.tyfv	*
 eq	.fv	_maybe.≡_eq_ty	α
 mb0.0	.fv	maybe.prim.u	α
 mb1.0	.karg	maybe.prim.u	α
@@ -145,7 +145,6 @@ fmtgs.t	.tygvar
 maybe.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-α	.tyfv	*
 fmtgs.prec	.gvar
 fmtgs.prec.app	.gvar
 diff.list.prepend	.gvar
@@ -155,6 +154,7 @@ rune.space	.gvar
 fmtgs.prec.arg	.gvar
 diff.list.fromlist	.gvar
 _maybe.fmtgs_nothing.s	.gvar
+α	.tyfv	*
 pr	.fv	fmtgs.t	α
 mb0	.karg	maybe.prim.u	α
 	.analyze	mb0	just	nothing

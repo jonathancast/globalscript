@@ -45,12 +45,12 @@ list.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 ibio.prim.iport	.tygvar
-string.ty	.tylet	list.t	rune.t
-res.ty	.tylet	ibio.prim.iport	rune.t
 ibio.file.read.open.prim	.gvar
 ibio.file.name.in	.gvar
 ibio.rune.external.io	.gvar
 ibio.prim.unit	.gvar
+string.ty	.tylet	list.t	rune.t
+res.ty	.tylet	ibio.prim.iport	rune.t
 i	.fv	ibio.prim.iport	rune.t
 as0	.karg	list.prim.u	string.ty
 	.analyze	as0	:	nil
@@ -69,10 +69,10 @@ _ep_s_c	.expr
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
-res.ty	.tylet	list.t	rune.t
 ibio.lex.receive	.gvar
 ibio.lex.receiver.many	.gvar
 ibio.lex.receiver.symbol	.gvar
+res.ty	.tylet	list.t	rune.t
 if	.efv	ibio.prim.iport	rune.t
 sym	.apply	ibio.lex.receiver.symbol	rune.t
 ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
