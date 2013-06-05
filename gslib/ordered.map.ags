@@ -20,10 +20,10 @@ ordered.map.prim.branch	.closure	_ordered.map.prim.branch_c
 
 _ordered.map.empty_c	.expr
 ordered.map.prim.u	.tygvar
+ordered.map.t.in	.cogvar
 k	.tyarg	*
 v	.tyarg	*
 res.u	.tylet	ordered.map.prim.u	k	v
-ordered.map.t.in	.cogvar
 e	.constr	res.u	empty
 	.coerce	ordered.map.t.in	k	v
 	.lift
@@ -35,9 +35,9 @@ _ordered.map.insert_c	.expr
 order.total.t	.tygvar
 ordered.map.t	.tygvar
 _ordered.map.insert_k	.subcode
+ordered.map.t.out	.cogvar
 k	.tyarg	*
 v	.tyarg	*
-ordered.map.t.out	.cogvar
 cmp	.larg	order.total.t	k
 k	.larg	k
 v	.larg	v
@@ -75,9 +75,9 @@ _ordered.map.get_c	.expr
 order.total.t	.tygvar
 ordered.map.t	.tygvar
 _ordered.map.get_k0	.subcode
+ordered.map.t.out	.cogvar
 k	.tyarg	*
 v	.tyarg	*
-ordered.map.t.out	.cogvar
 ord	.larg	order.total.t	k
 key	.larg	k
 map	.larg	ordered.map.t	k	v
@@ -90,9 +90,9 @@ order.total.t	.tygvar
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
 _ordered.map.get_branch_k	.subcode
+order.total.ord.t.out	.cogvar
 k	.tyfv	*
 v	.tyfv	*
-order.total.ord.t.out	.cogvar
 maybe.nothing	.gvar
 ord	.fv	order.total.t	k
 key	.fv	k
@@ -134,9 +134,9 @@ _ordered.map.∪_c	.expr
 order.total.t	.tygvar
 ordered.map.t	.tygvar
 _ordered.map.∪_k0	.subcode
+ordered.map.t.out	.cogvar
 k	.tyarg	*
 v	.tyarg	*
-ordered.map.t.out	.cogvar
 cmp	.larg	order.total.t	k
 map0	.larg	ordered.map.t	k	v
 map1	.larg	ordered.map.t	k	v
@@ -148,9 +148,9 @@ _ordered.map.∪_k0	.forcecont
 ordered.map.t	.tygvar
 ordered.map.prim.u	.tygvar
 _ordered.map.∪_k1	.subcode
+ordered.map.t.out	.cogvar
 k	.tyfv	*
 v	.tyfv	*
-ordered.map.t.out	.cogvar
 map1	.fv	ordered.map.t	k	v
 map0.0	.karg	ordered.map.prim.u	k	v
 	.force	_ordered.map.∪_k1
@@ -190,9 +190,9 @@ order.total.t	.tygvar
 eq.t	.tygvar
 ordered.map.t	.tygvar
 _ordered.map.≡_k0	.subcode
+ordered.map.t.out	.cogvar
 k	.tyarg	*
 v	.tyarg	*
-ordered.map.t.out	.cogvar
 cmp	.larg	order.total.t	k
 eq	.larg	eq.t	v
 map0	.larg	ordered.map.t	k	v
@@ -205,9 +205,9 @@ _ordered.map.≡_k0	.forcecont
 ordered.map.t	.tygvar
 ordered.map.prim.u	.tygvar
 _ordered.map.≡_k1	.subcode
+ordered.map.t.out	.cogvar
 k	.tyfv	*
 v	.tyfv	*
-ordered.map.t.out	.cogvar
 map1	.fv	ordered.map.t	k	v
 map0.0	.karg	ordered.map.prim.u	k	v
 	.force	_ordered.map.≡_k1
@@ -247,10 +247,10 @@ r1				.fkarg	3	ordered.map.t	k	v
 _ordered.map.prim.branch_c	.expr
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
+ordered.map.t.in	.cogvar
 k	.tyarg	*
 v	.tyarg	*
 res.u	.tylet	ordered.map.prim.u	k	v
-ordered.map.t.in	.cogvar
 k	.larg	k
 v	.larg	v
 map0	.larg	ordered.map.t	k	v

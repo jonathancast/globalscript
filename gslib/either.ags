@@ -14,10 +14,10 @@ either.unit	.closure	_either.unit_c
 
 _either.left_c	.expr
 either.prim.u	.tygvar
+either.t.in	.cogvar
 α	.tyarg	*
 β	.tyarg	*
 t	.tylet	either.prim.u	α	β
-either.t.in	.cogvar
 x	.larg	α
 e0	.constr	t	left	0	x
 	.coerce	either.t.in	α	β
@@ -26,10 +26,10 @@ e0	.constr	t	left	0	x
 
 _either.right_c	.expr
 either.prim.u	.tygvar
+either.t.in	.cogvar
 α	.tyarg	*
 β	.tyarg	*
 t	.tylet	either.prim.u	α	β
-either.t.in	.cogvar
 x	.larg	β
 e0	.constr	t	right	0	x
 	.coerce	either.t.in	α	β
@@ -42,10 +42,10 @@ _either.map_c	.expr
 _either.map_f_ty	.tygvar
 either.t	.tygvar
 _either.map_k	.subcode
+either.t.out	.cogvar
 α	.tyarg	*
 β0	.tyarg	*
 β1	.tyarg	*
-either.t.out	.cogvar
 f	.larg	_either.map_f_ty	β0	β1
 e	.larg	either.t	α	β0
 	.force	_either.map_k

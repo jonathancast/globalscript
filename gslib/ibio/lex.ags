@@ -164,9 +164,9 @@ _ibio.lex.receiver.char_eq_ty	.tygvar
 ibio.prim.iptr	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 _ibio.lex.char_k0_k	.subcode
+bool.t.out	.cogvar
 s	.tyfv	*
 β	.tyfv	*
-bool.t.out	.cogvar
 ibio.prim.iptr.deref	.gvar
 eq	.fv	_ibio.lex.receiver.char_eq_ty	s
 c	.fv	s
@@ -259,9 +259,9 @@ _ibio.lex.receiver.pred_pred_ty	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 ibio.prim.iptr	.tygvar
 _ibio.lex.pred_res_k_k0_k	.subcode
+bool.t.out	.cogvar
 s	.tyfv	*
 β	.tyfv	*
-bool.t.out	.cogvar
 ibio.prim.iptr.deref	.gvar
 pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
 ek	.fv	β
@@ -625,8 +625,8 @@ _ibio.lex.receiver.pred_pred_ty	.tygvar
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
 _ibio.lex.receiver.pred_acc_k1_k	.subcode
-s	.tyfv	*
 bool.t.out	.cogvar
+s	.tyfv	*
 pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
 k	.fv	ibio.acceptor.prim.kt	s	s	record.empty
 sym	.larg	s
@@ -690,8 +690,8 @@ _ibio.lex.receiver.char_eq_ty	.tygvar
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
 _ibio.lex.receiver.char_acc_sym.k1_k	.subcode
-s	.tyfv	*
 bool.t.out	.cogvar
+s	.tyfv	*
 eq	.fv	_ibio.lex.receiver.char_eq_ty	s
 c	.fv	s
 k	.fv	ibio.acceptor.prim.kt	s	s	record.empty

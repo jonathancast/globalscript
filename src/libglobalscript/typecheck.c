@@ -1017,6 +1017,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     /* §paragraph{Globals} */
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
 
     /* §paragraph{Free Variables} */
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
@@ -1026,7 +1027,6 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
 
     /* §paragraph{TEMP: Move to Global Variables} */
-    while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
 
     /* §paragraph{TEMP: Move to Free Variables} */
@@ -1066,9 +1066,9 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     cont_arg_type = 0;
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
@@ -1103,9 +1103,9 @@ gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile
     cont_arg_type = 0;
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     if (gsbc_typecheck_cont_arg_op(p, &cl, &cont_arg_type)) {
@@ -1189,6 +1189,7 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
     fcl.nfields = 0;
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);

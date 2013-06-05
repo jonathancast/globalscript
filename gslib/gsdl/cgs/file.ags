@@ -260,8 +260,8 @@ list.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 _gsdl.cgs.file.read_parser_k	.subcode
-string.ty	.tylet	list.t	rune.t
 maybe.t.out	.cogvar
+string.ty	.tylet	list.t	rune.t
 gsdl.cgs.pragma.gstype.get	.gvar
 fn	.fv	ibio.file.name.t
 pragmas	.fv	ordered.map.t	string.ty	gsdl.cgs.pragma.t

@@ -22,8 +22,8 @@ _ibio.from.either.prim_c	.expr
 either.t	.tygvar
 string.t	.tygvar
 _ibio.from.either.prim_k	.subcode
-α	.tyarg	*
 either.t.out	.cogvar
+α	.tyarg	*
 e	.larg	either.t	string.t	α
 	.force	_ibio.from.either.prim_k
 	.coerce	either.t.out	string.t	α
@@ -113,9 +113,9 @@ _ibio.mapM.prim_c	.expr
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
 _ibio.mapM.prim_k	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
-list.t.out	.cogvar
 f	.larg	_ibio.mapM.prim_f_ty	α	β
 xn	.larg	list.t	α
 	.force	_ibio.mapM.prim_k
@@ -202,9 +202,9 @@ _ibio.mapM0.prim_c	.expr
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
 _ibio.mapM0.prim_k	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
-list.t.out	.cogvar
 f	.larg	_ibio.mapM.prim_f_ty	α	β
 xn	.larg	list.t	α
 	.force	_ibio.mapM0.prim_k
@@ -285,9 +285,9 @@ _ibio.foldM.prim_k0	.strictcont
 _ibio.foldM.prim_f_ty	.tygvar
 list.t	.tygvar
 _ibio.foldM.prim_k1	.subcode
+list.t.out	.cogvar
 α	.tyfv	*
 β	.tyfv	*
-list.t.out	.cogvar
 f	.fv	_ibio.foldM.prim_f_ty	α	β
 xn	.fv	list.t	α
 z0	.karg	β

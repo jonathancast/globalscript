@@ -36,9 +36,9 @@ _graph.tsort_list_c	.expr
 list.t	.tygvar
 _graph.tsort_cont.t	.tygvar
 _graph.tsort_list_k	.subcode
+list.t.out	.cogvar
 k	.tyarg	*
 v	.tyarg	*
-list.t.out	.cogvar
 ks	.larg	list.t	k
 k	.larg	_graph.tsort_cont.t	k	v
 	.force	_graph.tsort_list_k

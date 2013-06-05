@@ -37,8 +37,8 @@ _real.entry_dfn_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
 _real.entry_dfn_k	.subcode
-_string.ty	.tylet	list.t	rune.t
 list.t.out	.cogvar
+_string.ty	.tylet	list.t	rune.t
 as	.fv	list.t	_string.ty
 	.force	_real.entry_dfn_k
 	.coerce	list.t.out	_string.ty

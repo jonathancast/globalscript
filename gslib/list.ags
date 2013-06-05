@@ -41,9 +41,9 @@ _list.fmtgs.byDefault_nil.s	.string	[]
 
 _list.nil.c	.expr
 list.prim.u	.tygvar
+list.t.in	.cogvar
 α	.tyarg	*
 t	.tylet	list.prim.u	α
-list.t.in	.cogvar
 c	.constr	t	nil
 	.coerce	list.t.in	α
 	.lift
@@ -52,9 +52,9 @@ c	.constr	t	nil
 _list.:.c	.expr
 list.t	.tygvar
 list.prim.u	.tygvar
+list.t.in	.cogvar
 α	.tyarg	*
 t	.tylet	list.prim.u	α
-list.t.in	.cogvar
 x	.larg	α
 xn	.larg	list.t	α
 c	.constr	t	:	0	x	1	xn
@@ -68,8 +68,8 @@ _list.null_c	.expr
 list.t	.tygvar
 bool.t	.tygvar
 _list.null_k	.subcode
-α	.tyarg	*
 list.t.out	.cogvar
+α	.tyarg	*
 xn	.larg	list.t	α
 	.force	_list.null_k
 	.coerce	list.t.out	α
@@ -97,9 +97,9 @@ _list.foldr_c	.expr
 _list.foldr_f_ty	.tygvar
 list.t	.tygvar
 _list.foldr_k0	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
-list.t.out	.cogvar
 f	.larg	_list.foldr_f_ty	α	β
 z	.larg	β
 xn	.larg	list.t	α
@@ -133,9 +133,9 @@ _list.foldr1_code	.expr
 list.t	.tygvar
 _list.foldr1_ft	.tygvar
 _list.foldr1_k1	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 ft	.tylet	_list.foldr1_ft	α
-list.t.out	.cogvar
 f	.larg	ft
 xn	.larg	list.t	α
 	.force	_list.foldr1_k1
@@ -147,10 +147,10 @@ list.t	.tygvar
 list.prim.u	.tygvar
 _list.foldr1_ft	.tygvar
 _list.foldr1_k2	.subcode
+list.t.out	.cogvar
 α	.tyfv	*
 t	.tylet	list.prim.u	α
 ft	.tylet	_list.foldr1_ft	α
-list.t.out	.cogvar
 f	.fv	ft
 xn0	.karg	t
 	.analyze	xn0	:	nil
@@ -202,9 +202,9 @@ _list.map_c	.expr
 _list.map_f_ty	.tygvar
 list.t	.tygvar
 _list.map_k	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
-list.t.out	.cogvar
 f	.larg	_list.map_f_ty	α	β
 xn	.larg	list.t	α
 	.force	_list.map_k
@@ -260,8 +260,8 @@ _list.filter_c	.expr
 _list.filter_pred_ty	.tygvar
 list.t	.tygvar
 _list.filter_k	.subcode
-α	.tyarg	*
 list.t.out	.cogvar
+α	.tyarg	*
 pred	.larg	_list.filter_pred_ty	α
 xn	.larg	list.t	α
 	.force	_list.filter_k
@@ -273,8 +273,8 @@ _list.filter_pred_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 _list.filter_:_k	.subcode
-α	.tyfv	*
 bool.t.out	.cogvar
+α	.tyfv	*
 list.nil	.gvar
 pred	.fv	_list.filter_pred_ty	α
 xn0	.karg	list.prim.u	α
@@ -314,9 +314,9 @@ _list.filterMap_c	.expr
 _list.filterMap_f_ty	.tygvar
 list.t	.tygvar
 _list.filterMap_k	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
-list.t.out	.cogvar
 f	.larg	_list.filterMap_f_ty	α	β
 xn	.larg	list.t	α
 	.force	_list.filterMap_k
@@ -328,9 +328,9 @@ _list.filterMap_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 _list.filterMap_:_k	.subcode
+maybe.t.out	.cogvar
 α	.tyfv	*
 β	.tyfv	*
-maybe.t.out	.cogvar
 list.nil	.gvar
 f	.fv	_list.filterMap_f_ty	α	β
 xn0	.karg	list.prim.u	α
@@ -407,9 +407,9 @@ _list.foldl_k0	.strictcont
 _list.foldl_f_ty	.tygvar
 list.t	.tygvar
 _list.foldl_k1	.subcode
+list.t.out	.cogvar
 α	.tyfv	*
 β	.tyfv	*
-list.t.out	.cogvar
 f	.fv	_list.foldl_f_ty	α	β
 xn	.fv	list.t	α
 z	.karg	β
@@ -504,8 +504,8 @@ list.nil	.gvar
 _list.<>.code	.expr
 list.t	.tygvar
 _list.<>.code.cont	.subcode
-α	.tyarg	*
 list.t.out	.cogvar
+α	.tyarg	*
 xn	.larg	list.t	α
 ys	.larg	list.t	α
 	.force	_list.<>.code.cont
@@ -516,9 +516,9 @@ _list.<>.code.cont	.forcecont
 list.t	.tygvar
 list.prim.u	.tygvar
 _list.<>.code.rec	.subcode
+list.t.in	.cogvar
 α	.tyfv	*
 t	.tylet	list.prim.u	α
-list.t.in	.cogvar
 ys	.fv	list.t	α
 xn0	.karg	t
 	.analyze	xn0	:	nil
@@ -548,8 +548,8 @@ _list.drop_c	.expr
 natural.t	.tygvar
 list.t	.tygvar
 _list.drop_k0	.subcode
-α	.tyarg	*
 natural.t.out	.cogvar
+α	.tyarg	*
 n	.larg	natural.t
 xn	.larg	list.t	α
 	.force	_list.drop_k0
@@ -590,8 +590,8 @@ _list.drop_worker_k1	.ubcasecont
 list.t	.tygvar
 natural.prim.u	.tygvar
 _list.drop_worker_k1.0	.subcode
-α	.tyfv	*
 list.t.out	.cogvar
+α	.tyfv	*
 xn	.fv	list.t	α
 n1	.karg	natural.prim.u
 	.force	_list.drop_worker_k1.0
@@ -621,10 +621,10 @@ _list.byZip.map2_c	.expr
 _list.byZip.map2_f_ty	.tygvar
 list.t	.tygvar
 _list.byZip.map2_k0	.subcode
+list.t.out	.cogvar
 α0	.tyarg	*
 α1	.tyarg	*
 β	.tyarg	*
-list.t.out	.cogvar
 f	.larg	_list.byZip.map2_f_ty	α0	α1	β
 xn0	.larg	list.t	α0
 xn1	.larg	list.t	α1
@@ -637,10 +637,10 @@ _list.byZip.map2_f_ty	.tygvar
 list.t	.tygvar
 list.prim.u	.tygvar
 _list.byZip.map2_k1	.subcode
+list.t.out	.cogvar
 α0	.tyfv	*
 α1	.tyfv	*
 β	.tyfv	*
-list.t.out	.cogvar
 f	.fv	_list.byZip.map2_f_ty	α0	α1	β
 xn1	.fv	list.t	α1
 xn0.0	.karg	list.prim.u	α0
@@ -684,9 +684,9 @@ bool.t	.tygvar
 list.t	.tygvar
 _list.≡.arg.ty	.tygvar
 _list.≡.k0	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 at	.tylet	_list.≡.arg.ty	α
-list.t.out	.cogvar
 c	.larg	at
 xn	.larg	list.t	α
 ys	.larg	list.t	α
@@ -700,10 +700,10 @@ list.prim.u	.tygvar
 list.t	.tygvar
 _list.≡.arg.ty	.tygvar
 _list.≡.k1	.subcode
+list.t.out	.cogvar
 α	.tyfv	*
 t	.tylet	list.prim.u	α
 at	.tylet	_list.≡.arg.ty	α
-list.t.out	.cogvar
 c	.fv	at
 ys	.fv	list.t	α
 xn0	.karg	t
@@ -777,8 +777,8 @@ _list.compare_c	.expr
 order.total.t	.tygvar
 list.t	.tygvar
 _list.compare_k0	.subcode
-α	.tyarg	*
 list.t.out	.cogvar
+α	.tyarg	*
 cmp	.larg	order.total.t	α
 xn0	.larg	list.t	α
 xn1	.larg	list.t	α
@@ -791,8 +791,8 @@ order.total.t	.tygvar
 list.t	.tygvar
 list.prim.u	.tygvar
 _list.compare_k1	.subcode
-α	.tyfv	*
 list.t.out	.cogvar
+α	.tyfv	*
 cmp	.fv	order.total.t	α
 xn1	.fv	list.t	α
 xn0.0	.karg	list.prim.u	α
@@ -806,8 +806,8 @@ list.prim.u	.tygvar
 list.t	.tygvar
 order.total.ord.t	.tygvar
 _list.compare_:_:_k	.subcode
-α	.tyfv	*
 order.total.ord.t.out	.cogvar
+α	.tyfv	*
 order.total.ord.eq	.gvar
 cmp	.fv	order.total.t	α
 xn0.0	.fv	list.prim.u	α
@@ -863,8 +863,8 @@ _list.elem_c	.expr
 eq.t	.tygvar
 list.t	.tygvar
 _list.elem_k	.subcode
-α	.tyarg	*
 list.t.out	.cogvar
+α	.tyarg	*
 eq	.larg	eq.t	α
 x	.larg	α
 xn	.larg	list.t	α
@@ -877,8 +877,8 @@ eq.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 _list.elem_:_k	.subcode
-α	.tyfv	*
 bool.t.out	.cogvar
+α	.tyfv	*
 bool.false	.gvar
 eq	.fv	eq.t	α
 x	.fv	α
@@ -929,8 +929,8 @@ fmtgs.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 _list.fmtgs.byDefault_k	.subcode
-α	.tyarg	*
 list.t.out	.cogvar
+α	.tyarg	*
 p	.larg	fmtgs.t	α
 xn	.larg	list.t	α
 	.force	_list.fmtgs.byDefault_k

@@ -19,9 +19,9 @@ _maybe.fmtgs_nothing.s	.string	nothing
 
 _maybe.nothing_c	.expr
 maybe.prim.u	.tygvar
+maybe.t.in	.cogvar
 α	.tyarg	*
 res.u	.tylet	maybe.prim.u	α
-maybe.t.in	.cogvar
 n	.constr	res.u	nothing
 	.coerce	maybe.t.in	α
 	.lift
@@ -29,9 +29,9 @@ n	.constr	res.u	nothing
 
 _maybe.just_c	.expr
 maybe.prim.u	.tygvar
+maybe.t.in	.cogvar
 α	.tyarg	*
 res.u	.tylet	maybe.prim.u	α
-maybe.t.in	.cogvar
 x	.arg	α
 j	.constr	res.u	just	0	x
 	.coerce	maybe.t.in	α
@@ -44,9 +44,9 @@ _maybe.maybe_c	.expr
 _maybe.maybe_sk_ty	.tygvar
 maybe.t	.tygvar
 _maybe.maybe_k	.subcode
+maybe.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
-maybe.t.out	.cogvar
 fk	.larg	β
 sk	.larg	_maybe.maybe_sk_ty	α	β
 mb	.larg	maybe.t	α
@@ -75,8 +75,8 @@ _maybe.≡_c	.expr
 _maybe.≡_eq_ty	.tygvar
 maybe.t	.tygvar
 _maybe.≡_k0	.subcode
-α	.tyarg	*
 maybe.t.out	.cogvar
+α	.tyarg	*
 eq	.larg	_maybe.≡_eq_ty	α
 mb0	.larg	maybe.t	α
 mb1	.larg	maybe.t	α
@@ -89,8 +89,8 @@ _maybe.≡_eq_ty	.tygvar
 maybe.t	.tygvar
 maybe.prim.u	.tygvar
 _maybe.≡_k1	.subcode
-α	.tyfv	*
 maybe.t.out	.cogvar
+α	.tyfv	*
 eq	.fv	_maybe.≡_eq_ty	α
 mb1	.fv	maybe.t	α
 mb0.0	.karg	maybe.prim.u	α
@@ -132,8 +132,8 @@ _maybe.fmtgs_c	.expr
 fmtgs.t	.tygvar
 maybe.t	.tygvar
 _maybe.fmtgs_k	.subcode
-α	.tyarg	*
 maybe.t.out	.cogvar
+α	.tyarg	*
 pr	.larg	fmtgs.t	α
 mb	.larg	maybe.t	α
 	.force	_maybe.fmtgs_k

@@ -32,8 +32,8 @@ ibio.prim.iport	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
 _ep_if_k	.subcode
-string.ty	.tylet	list.t	rune.t
 list.t.out	.cogvar
+string.ty	.tylet	list.t	rune.t
 i	.fv	ibio.prim.iport	rune.t
 as	.fv	list.t	string.ty
 	.force	_ep_if_k

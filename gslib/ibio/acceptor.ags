@@ -291,9 +291,9 @@ x	.larg	α
 _ibio.acceptor.prim.<|>_c	.expr
 ibio.acceptor.prim.t	.tygvar
 _ibio.acceptor.prim.<|>_k0	.subcode
+ibio.acceptor.prim.t.out	.cogvar
 s	.tyarg	*
 β	.tyarg	*
-ibio.acceptor.prim.t.out	.cogvar
 p0	.larg	ibio.acceptor.prim.t	s	β
 p1	.larg	ibio.acceptor.prim.t	s	β
 	.force	_ibio.acceptor.prim.<|>_k0
@@ -306,9 +306,9 @@ ibio.acceptor.prim.t	.tygvar
 _ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	.tygvar
 _ibio.acceptor.prim.<|>_k1	.subcode
 _ibio.acceptor.prim.<|>_k0_unit.plus_p1.1_c	.subcode
+ibio.acceptor.prim.t.out	.cogvar
 s	.tyfv	*
 β	.tyfv	*
-ibio.acceptor.prim.t.out	.cogvar
 ibio.acceptor.prim.unit.plus	.gvar
 p1	.fv	ibio.acceptor.prim.t	s	β
 p0.0	.karg	ibio.acceptor.prim.u	s	β
@@ -385,10 +385,10 @@ _ibio.acceptor.prim.symbol.bind_c	.expr
 _ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	.tygvar
 ibio.acceptor.prim.t	.tygvar
 ibio.acceptor.prim.u	.tygvar
+ibio.acceptor.prim.t.in	.cogvar
 s	.tyarg	*
 α	.tyarg	*
 res.u	.tylet	ibio.acceptor.prim.u	s	α
-ibio.acceptor.prim.t.in	.cogvar
 sym	.larg	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	α
 eof	.larg	ibio.acceptor.prim.t	s	α
 r	.constr	res.u	symbol.bind	0	sym	1	eof
@@ -399,10 +399,10 @@ r	.constr	res.u	symbol.bind	0	sym	1	eof
 _ibio.acceptor.prim.unit.plus_c	.expr
 ibio.acceptor.prim.t	.tygvar
 ibio.acceptor.prim.u	.tygvar
+ibio.acceptor.prim.t.in	.cogvar
 s	.tyarg	*
 α	.tyarg	*
 res.u	.tylet	ibio.acceptor.prim.u	s	α
-ibio.acceptor.prim.t.in	.cogvar
 x	.larg	α
 p1	.larg	ibio.acceptor.prim.t	s	α
 r	.constr	res.u	unit.plus	0	x	1	p1
@@ -412,10 +412,10 @@ r	.constr	res.u	unit.plus	0	x	1	p1
 
 _ibio.acceptor.prim.fail_c	.expr
 ibio.acceptor.prim.u	.tygvar
+ibio.acceptor.prim.t.in	.cogvar
 s	.tyarg	*
 α	.tyarg	*
 res.u	.tylet	ibio.acceptor.prim.u	s	α
-ibio.acceptor.prim.t.in	.cogvar
 r	.constr	res.u	fail
 	.coerce	ibio.acceptor.prim.t.in	s	α
 	.lift

@@ -215,8 +215,8 @@ rune.t	.tygvar
 list.t	.tygvar
 _ibio.file.name.components.get_worker_res.ty	.tygvar
 _ibio.file.name.components.get_worker_:_k	.subcode
-string.ty	.tylet	list.t	rune.t
 bool.t.out	.cogvar
+string.ty	.tylet	list.t	rune.t
 rune.≡	.gvar
 _slash	.gvar
 list.nil	.gvar
@@ -263,8 +263,8 @@ _ibio.file.name.components.get_worker_res.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 _ibio.file.name.components.get_worker_:_false_k1	.subcode
-string.ty	.tylet	list.t	rune.t
 list.t.out	.cogvar
+string.ty	.tylet	list.t	rune.t
 c	.fv	rune.t
 cs1	.karg	_ibio.file.name.components.get_worker_res.u
 ds	.field	dirs	cs1

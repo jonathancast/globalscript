@@ -10,9 +10,9 @@ regex.empty	.closure	_regex.empty_c
 
 _regex.empty_c	.expr
 regex.prim.u	.tygvar
+regex.t.in	.cogvar
 s	.tyarg	*
 res.u	.tylet	regex.prim.u	s
-regex.t.in	.cogvar
 r	.constr	res.u	empty
 	.coerce	regex.t.in	s
 	.lift

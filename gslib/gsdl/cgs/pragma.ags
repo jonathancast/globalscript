@@ -74,8 +74,8 @@ list.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 _gsdl.cgs.pragma.gstype.get_k	.subcode
-string.ty	.tylet	list.t	rune.t
 maybe.t.out	.cogvar
+string.ty	.tylet	list.t	rune.t
 ordered.map.get	.gvar
 list.compare	.gvar
 rune.compare	.gvar

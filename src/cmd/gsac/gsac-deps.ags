@@ -97,8 +97,8 @@ _parse.args_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
 _parse.args_k0	.subcode
-string.ty	.tylet	list.t	rune.t
 list.t.out	.cogvar
+string.ty	.tylet	list.t	rune.t
 as	.larg	list.t	string.ty
 	.force	_parse.args_k0
 	.coerce	list.t.out	string.ty
@@ -110,8 +110,8 @@ list.t	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
 _parse.args_k1	.subcode
-string.ty	.tylet	list.t	rune.t
 bool.t.out	.cogvar
+string.ty	.tylet	list.t	rune.t
 list.≡	.gvar
 rune.≡	.gvar
 _l	.gvar
@@ -137,8 +137,8 @@ rune.t	.tygvar
 bool.prim.u	.tygvar
 ibio.file.name.t	.tygvar
 _parse.args_k2	.subcode
-string.ty	.tylet	list.t	rune.t
 list.t.out	.cogvar
+string.ty	.tylet	list.t	rune.t
 list.:	.gvar
 ibio.file.name.in	.gvar
 _parse.args	.gvar
@@ -862,8 +862,8 @@ ibio.file.name.t	.tygvar
 _prefix.prim.u	.tygvar
 _prefix.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
-res.ty	.tylet	ordered.set.t	ibio.file.name.t
 list.t.out	.cogvar
+res.ty	.tylet	ordered.set.t	ibio.file.name.t
 ibio.foldM.prim	.gvar
 _process.var_rec	.gvar
 ibio.prim.unit	.gvar	# Temp
@@ -918,8 +918,8 @@ _prefix.prim.u	.tygvar
 _prefix.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _process.var_rec_file_k	.subcode
-res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
 list.t.out	.cogvar
+res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
 ibio.prim.unit	.gvar
 o	.fv	ibio.prim.oport	rune.t
 gsac.fn	.fv	ibio.file.name.t
@@ -954,8 +954,8 @@ gsdl.cgs.syntax.var.component.t	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _process.var_rec_file_:_k	.subcode
-res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
 bool.t.out	.cogvar
+res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
 string.≡	.gvar
 gsdl.cgs.syntax.var.component.print	.gvar
 ibio.file.name.components.get	.gvar
@@ -986,8 +986,8 @@ bool.prim.u	.tygvar
 ibio.file.name.t	.tygvar
 ordered.set.t	.tygvar
 _process.var_rec_file_:_true_k	.subcode
-res.ty	.tylet	ordered.set.t	ibio.file.name.t
 bool.t.out	.cogvar
+res.ty	.tylet	ordered.set.t	ibio.file.name.t
 ibio.prim.unit	.gvar
 ordered.set.elem	.gvar
 ibio.file.name.compare	.gvar

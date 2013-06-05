@@ -127,8 +127,8 @@ list.t	.tygvar
 rune.t	.tygvar
 bool.prim.u	.tygvar
 _print.targets.in.dir_body_process.file_k_file_k	.subcode
-string.ty	.tylet	list.t	rune.t
 list.t.out	.cogvar
+string.ty	.tylet	list.t	rune.t
 ibio.file.name.components.get	.gvar
 list.reverse	.gvar
 ibio.file.name.</>	.gvar
@@ -157,8 +157,8 @@ rune.t	.tygvar
 ibio.prim.t	.tygvar
 record.empty	.tygvar
 _print.targets.in.dir_body_process.file_k_file_:_k	.subcode
-string.ty	.tylet	list.t	rune.t
 bool.t.out	.cogvar
+string.ty	.tylet	list.t	rune.t
 list.≡	.gvar
 rune.≡	.gvar
 _cgs	.gvar

@@ -466,8 +466,8 @@ gsdl.cgs.symbol.t	.tygvar
 list.t	.tygvar
 _real.entry_prefix_ty	.tygvar
 _prefix.load.var_k	.subcode
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 list.t.out	.cogvar
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 eo	.larg	ibio.prim.oport	rune.t
 v	.larg	gsdl.cgs.symbol.t
 prn	.larg	list.t	_real.entry_prefix_ty
@@ -550,8 +550,8 @@ _prefix.load.var_w_file_ty	.tygvar
 bool.prim.u	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _prefix.load.var_w_false_k	.subcode
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 list.t.out	.cogvar
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 eo	.fv	ibio.prim.oport	rune.t
 v	.fv	gsdl.cgs.symbol.t
 pr0	.fv	_real.entry_prefix_ty
@@ -579,9 +579,9 @@ _prefix.load.var_w_file_ty	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _prefix.load.var_w_false_:_k	.subcode
 _prefix.load.var_w_false_nil_res_c	.subcode
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 bool.t.out	.cogvar
 list.t.out	.cogvar
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 eo	.fv	ibio.prim.oport	rune.t
 v	.fv	gsdl.cgs.symbol.t
 pr0	.fv	_real.entry_prefix_ty
@@ -647,8 +647,8 @@ ibio.prim.t	.tygvar	# Temp
 list.t	.tygvar	 # Temp
 _real.entry_prefix_ty	.tygvar	 # Temp
 _prefix.load.var_w_false_:_false_false_k	.subcode
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 list.t.out	.cogvar
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 list.reverse	.gvar
 ibio.file.name.components.get	.gvar
 eo	.fv	ibio.prim.oport	rune.t
