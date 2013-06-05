@@ -148,8 +148,8 @@ _test.parse.missing.gsdata.segment_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
-datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 _test.parse.missing.gsdata.segment_k_c	.subcode
+datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 test.property.label	.gvar
 _test.parse.missing.gsdata.segment_label	.gvar
 parser.test.assert.passes	.gvar
@@ -190,8 +190,8 @@ _test.parse.empty.gsdata.segment_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
-datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 _test.parse.empty.gsdata.segment_k_c	.subcode
+datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 test.property.label	.gvar
 _test.parse.empty.gsdata.segment_label	.gvar
 parser.test.assert.passes	.gvar

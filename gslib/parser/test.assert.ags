@@ -23,9 +23,9 @@ parser.t	.tygvar
 list.t	.tygvar
 _parser.test.assert.fails_k_ty	.tygvar
 parser.err.t	.tygvar
+_parser.test.assert.fails_k	.subcode
 s	.tyarg	*
 α	.tyarg	*
-_parser.test.assert.fails_k	.subcode
 either.t.out	.cogvar
 parser.parse	.gvar
 parser.pos.initial	.gvar
@@ -80,9 +80,9 @@ parser.t	.tygvar
 list.t	.tygvar
 _parser.test.assert.passes_k_ty	.tygvar
 parser.err.t	.tygvar
+_parser.test.assert.passes_k	.subcode
 s	.tyarg	*
 α	.tyarg	*
-_parser.test.assert.passes_k	.subcode
 either.t.out	.cogvar
 parser.parse	.gvar
 parser.pos.initial	.gvar

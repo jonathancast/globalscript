@@ -9,8 +9,8 @@ list.lib.length	.closure	_list.lib.length_c
 _list.lib.length_c	.expr
 list.t	.tygvar
 natural.t	.tygvar
-α	.tyarg	*
 _list.lib.length_plus.1_c	.subcode
+α	.tyarg	*
 list.foldl	.gvar
 natural.0	.gvar
 xn	.larg	list.t	α
@@ -20,8 +20,8 @@ plus.1	.alloc	_list.lib.length_plus.1_c
 
 _list.lib.length_plus.1_c	.expr
 natural.t	.tygvar
-α	.tyfv	*
 _list.lib.length_plus.1_k	.subcode
+α	.tyfv	*
 natural.t.out	.cogvar
 n	.larg	natural.t
 x	.larg	α

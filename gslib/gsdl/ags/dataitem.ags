@@ -79,8 +79,8 @@ parser.pos.t	.tygvar
 maybe.t	.tygvar
 string.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
-mb.string.ty	.tylet	maybe.t	string.t
 _gsdl.ags.dataitem.parser_closure.p_f_c	.subcode
+mb.string.ty	.tylet	maybe.t	string.t
 parser.lift4	.gvar
 parser.pos.get	.gvar
 parser.optional	.gvar
@@ -138,8 +138,8 @@ gsdl.ags.dataitem.t	.tygvar
 string.t	.tygvar
 parser.pos.t	.tygvar
 list.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
 _gsdl.ags.dataitem.parser_list.p_true_f_c	.subcode
+list.string.ty	.tylet	list.t	string.t
 parser.fail	.gvar
 parser.<*	.gvar
 parser.lift4	.gvar

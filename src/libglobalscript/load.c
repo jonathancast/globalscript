@@ -581,6 +581,10 @@ gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
+    while (gsparse_subcode_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
     while (gsparse_code_type_fv_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
@@ -590,10 +594,6 @@ gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
     ;
 
     while (gsparse_code_type_let_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_subcode_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -668,15 +668,15 @@ gsparse_force_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, 
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
+    while (gsparse_subcode_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
     while (gsparse_code_type_fv_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
     while (gsparse_code_type_let_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_subcode_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -737,15 +737,15 @@ gsparse_strict_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
+    while (gsparse_subcode_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
     while (gsparse_code_type_fv_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
     while (gsparse_code_type_let_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_subcode_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -805,15 +805,15 @@ gsparse_ubcase_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
+    while (gsparse_subcode_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
     while (gsparse_code_type_fv_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
     while (gsparse_code_type_let_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_subcode_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -1451,6 +1451,10 @@ gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
+    while (gsparse_subcode_op(pos, parsedline, fields, n))
+        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
+    ;
+
     while (gsparse_code_type_fv_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
@@ -1460,10 +1464,6 @@ gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
     ;
 
     while (gsparse_code_type_let_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_subcode_op(pos, parsedline, fields, n))
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 

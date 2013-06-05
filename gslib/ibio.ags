@@ -21,8 +21,8 @@ ibio.foldM.prim	.closure	_ibio.foldM.prim_c	_ibio.foldM.prim_ty
 _ibio.from.either.prim_c	.expr
 either.t	.tygvar
 string.t	.tygvar
-α	.tyarg	*
 _ibio.from.either.prim_k	.subcode
+α	.tyarg	*
 either.t.out	.cogvar
 e	.larg	either.t	string.t	α
 	.force	_ibio.from.either.prim_k
@@ -112,9 +112,9 @@ ibio.dir.fromprim	.gvar
 _ibio.mapM.prim_c	.expr
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
+_ibio.mapM.prim_k	.subcode
 α	.tyarg	*
 β	.tyarg	*
-_ibio.mapM.prim_k	.subcode
 list.t.out	.cogvar
 f	.larg	_ibio.mapM.prim_f_ty	α	β
 xn	.larg	list.t	α
@@ -127,10 +127,10 @@ _ibio.mapM.prim_f_ty	.tygvar
 list.prim.u	.tygvar
 ibio.prim.t	.tygvar
 list.t	.tygvar
+_ibio.mapM.prim_eys_c	.subcode
 α	.tyfv	*
 β	.tyfv	*
 res.ty	.tylet	list.t	β
-_ibio.mapM.prim_eys_c	.subcode
 ibio.prim.unit	.gvar
 list.nil	.gvar
 f	.fv	_ibio.mapM.prim_f_ty	α	β
@@ -150,11 +150,11 @@ nil			.apply	list.nil	β
 _ibio.mapM.prim_eys_c	.impprog	ibio.prim	ibio
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
-α	.tyfv	*
-β	.tyfv	*
 _ibio.mapM.prim_eys_y_c	.subcode
 _ibio.mapM.prim_eys_ys1_c	.subcode
 _ibio.mapM.prim_eys_body_c	.subcode
+α	.tyfv	*
+β	.tyfv	*
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 x0	.fv	α
 xn1	.fv	list.t	α
@@ -201,9 +201,9 @@ ys	.apply	list.:	β	|	y	ys1
 _ibio.mapM0.prim_c	.expr
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
+_ibio.mapM0.prim_k	.subcode
 α	.tyarg	*
 β	.tyarg	*
-_ibio.mapM0.prim_k	.subcode
 list.t.out	.cogvar
 f	.larg	_ibio.mapM.prim_f_ty	α	β
 xn	.larg	list.t	α
@@ -216,9 +216,9 @@ _ibio.mapM.prim_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 record.empty	.tygvar
+_ibio.mapM0.prim_k_:_e_c	.subcode
 α	.tyfv	*
 β	.tyfv	*
-_ibio.mapM0.prim_k_:_e_c	.subcode
 ibio.prim.unit	.gvar
 record.empty	.gvar
 f	.fv	_ibio.mapM.prim_f_ty	α	β
@@ -237,10 +237,10 @@ e			.alloc	_ibio.mapM0.prim_k_:_e_c
 _ibio.mapM0.prim_k_:_e_c	.impprog	ibio.prim	ibio
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
-α	.tyfv	*
-β	.tyfv	*
 _ibio.mapM0.prim_k_:_e_head_c	.subcode
 _ibio.mapM0.prim_k_:_e_body_c	.subcode
+α	.tyfv	*
+β	.tyfv	*
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 x0	.fv	α
 xn1	.fv	list.t	α
@@ -272,9 +272,9 @@ xn1	.fv	list.t	α
 _ibio.foldM.prim_c	.expr
 _ibio.foldM.prim_f_ty	.tygvar
 list.t	.tygvar
+_ibio.foldM.prim_k0	.subcode
 α	.tyarg	*
 β	.tyarg	*
-_ibio.foldM.prim_k0	.subcode
 f	.larg	_ibio.foldM.prim_f_ty	α	β
 z	.larg	β
 xn	.larg	list.t	α
@@ -284,9 +284,9 @@ xn	.larg	list.t	α
 _ibio.foldM.prim_k0	.strictcont
 _ibio.foldM.prim_f_ty	.tygvar
 list.t	.tygvar
+_ibio.foldM.prim_k1	.subcode
 α	.tyfv	*
 β	.tyfv	*
-_ibio.foldM.prim_k1	.subcode
 list.t.out	.cogvar
 f	.fv	_ibio.foldM.prim_f_ty	α	β
 xn	.fv	list.t	α
@@ -300,9 +300,9 @@ _ibio.foldM.prim_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar
+_ibio.foldM.prim_:_res	.subcode
 α	.tyfv	*
 β	.tyfv	*
-_ibio.foldM.prim_:_res	.subcode
 ibio.prim.unit	.gvar
 f	.fv	_ibio.foldM.prim_f_ty	α	β
 z0	.fv	β
@@ -321,10 +321,10 @@ res			.alloc	_ibio.foldM.prim_:_res
 _ibio.foldM.prim_:_res	.impprog	ibio.prim	ibio
 _ibio.foldM.prim_f_ty	.tygvar
 list.t	.tygvar
-α	.tyfv	*
-β	.tyfv	*
 _ibio.foldM.prim_:_res_z1_c	.subcode
 _ibio.foldM.prim_:_res_body_c	.subcode
+α	.tyfv	*
+β	.tyfv	*
 f	.fv	_ibio.foldM.prim_f_ty	α	β
 z0	.fv	β
 x0	.fv	α

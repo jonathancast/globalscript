@@ -43,9 +43,9 @@ j	.constr	res.u	just	0	x
 _maybe.maybe_c	.expr
 _maybe.maybe_sk_ty	.tygvar
 maybe.t	.tygvar
+_maybe.maybe_k	.subcode
 α	.tyarg	*
 β	.tyarg	*
-_maybe.maybe_k	.subcode
 maybe.t.out	.cogvar
 fk	.larg	β
 sk	.larg	_maybe.maybe_sk_ty	α	β
@@ -74,8 +74,8 @@ x		.fkarg	0	α
 _maybe.≡_c	.expr
 _maybe.≡_eq_ty	.tygvar
 maybe.t	.tygvar
-α	.tyarg	*
 _maybe.≡_k0	.subcode
+α	.tyarg	*
 maybe.t.out	.cogvar
 eq	.larg	_maybe.≡_eq_ty	α
 mb0	.larg	maybe.t	α
@@ -88,8 +88,8 @@ _maybe.≡_k0	.forcecont
 _maybe.≡_eq_ty	.tygvar
 maybe.t	.tygvar
 maybe.prim.u	.tygvar
-α	.tyfv	*
 _maybe.≡_k1	.subcode
+α	.tyfv	*
 maybe.t.out	.cogvar
 eq	.fv	_maybe.≡_eq_ty	α
 mb1	.fv	maybe.t	α
@@ -131,8 +131,8 @@ x1				.fkarg	0	α
 _maybe.fmtgs_c	.expr
 fmtgs.t	.tygvar
 maybe.t	.tygvar
-α	.tyarg	*
 _maybe.fmtgs_k	.subcode
+α	.tyarg	*
 maybe.t.out	.cogvar
 pr	.larg	fmtgs.t	α
 mb	.larg	maybe.t	α

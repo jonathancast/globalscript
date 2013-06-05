@@ -127,11 +127,11 @@ list.t	.tygvar
 string.t	.tygvar
 gsdl.ags.coercionitem.decls.tylambda.t	.tygvar
 gsdl.ags.coercionitem.decls.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
-list.tylambda.ty	.tylet	list.t	gsdl.ags.coercionitem.decls.tylambda.t
 _gsdl.ags.coercionitem.decls.parser_f_c	.subcode
 _gsdl.ags.coercionitem.decls.parser_tygvars.p_c	.subcode
 _gsdl.ags.coercionitem.decls.parser_tylambdas.p_c	.subcode
+list.string.ty	.tylet	list.t	string.t
+list.tylambda.ty	.tylet	list.t	gsdl.ags.coercionitem.decls.tylambda.t
 parser.lift2	.gvar
 f	.alloc	_gsdl.ags.coercionitem.decls.parser_f_c
 tygvars.p	.alloc	_gsdl.ags.coercionitem.decls.parser_tygvars.p_c
@@ -228,8 +228,8 @@ rune.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_f_c	.subcode
+list.string.ty	.tylet	list.t	string.t
 parser.lift2	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar

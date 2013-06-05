@@ -320,8 +320,8 @@ _test.parse_segment.empty_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
-codesegment_ty	.tylet	list.t	gsdl.ags.codeitem.t
 _test.parse_segment.empty_k_c	.subcode
+codesegment_ty	.tylet	list.t	gsdl.ags.codeitem.t
 test.property.label	.gvar
 _test.parse_segment.empty_label	.gvar
 parser.test.assert.passes	.gvar

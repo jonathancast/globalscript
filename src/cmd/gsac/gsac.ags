@@ -335,8 +335,8 @@ list.t	.tygvar
 _real.entry_prefix_ty	.tygvar
 list.prim.u	.tygvar
 ibio.file.name.t	.tygvar
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty
 _prefix.init_:_body_c	.subcode
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty
 ibio.prim.unit	.gvar
 prn	.fv	list.t	_real.entry_prefix_ty
 fns0	.karg	list.prim.u	ibio.file.name.t
@@ -413,8 +413,8 @@ list.t	.tygvar
 _real.entry_prefix_ty	.tygvar
 list.prim.u	.tygvar
 gsdl.cgs.symbol.t	.tygvar
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty
 _prefix.load_body_c	.subcode
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty
 ibio.prim.unit	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 prn	.fv	list.t	_real.entry_prefix_ty
@@ -465,8 +465,8 @@ rune.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 list.t	.tygvar
 _real.entry_prefix_ty	.tygvar
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 _prefix.load.var_k	.subcode
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 list.t.out	.cogvar
 eo	.larg	ibio.prim.oport	rune.t
 v	.larg	gsdl.cgs.symbol.t
@@ -549,8 +549,8 @@ list.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 bool.prim.u	.tygvar
 ibio.prim.t	.tygvar	# Temp
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 _prefix.load.var_w_false_k	.subcode
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 list.t.out	.cogvar
 eo	.fv	ibio.prim.oport	rune.t
 v	.fv	gsdl.cgs.symbol.t
@@ -577,9 +577,9 @@ list.t	.tygvar
 list.prim.u	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 ibio.prim.t	.tygvar	# Temp
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 _prefix.load.var_w_false_:_k	.subcode
 _prefix.load.var_w_false_nil_res_c	.subcode
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 bool.t.out	.cogvar
 list.t.out	.cogvar
 eo	.fv	ibio.prim.oport	rune.t
@@ -646,8 +646,8 @@ string.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 list.t	.tygvar	 # Temp
 _real.entry_prefix_ty	.tygvar	 # Temp
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 _prefix.load.var_w_false_:_false_false_k	.subcode
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
 list.t.out	.cogvar
 list.reverse	.gvar
 ibio.file.name.components.get	.gvar

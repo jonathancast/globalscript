@@ -79,8 +79,8 @@ ibio.prim.t	.tygvar
 list.t	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
 gsdl.cgs.pragma.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 _gsdl.cgs.file.read_pragmas.pos_insert_c	.subcode
+string.ty	.tylet	list.t	rune.t
 ibio.foldM.prim	.gvar
 parser.pos.initial	.gvar
 ordered.map.empty	.gvar
@@ -259,8 +259,8 @@ ordered.map.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 _gsdl.cgs.file.read_parser_k	.subcode
+string.ty	.tylet	list.t	rune.t
 maybe.t.out	.cogvar
 gsdl.cgs.pragma.gstype.get	.gvar
 fn	.fv	ibio.file.name.t

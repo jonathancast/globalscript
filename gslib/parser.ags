@@ -115,9 +115,9 @@ print.t	.tygvar
 parser.pos.t	.tygvar
 parser.prim.t	.tygvar
 list.t	.tygvar
+_parser.parse_work_k	.subcode
 s	.tyarg	*
 α	.tyarg	*
-_parser.parse_work_k	.subcode
 parser.prim.t.out	.cogvar
 adv	.larg	parser.advance.t	s
 pr	.larg	print.t	s
@@ -140,11 +140,11 @@ parser.prim.t	.tygvar
 _parser.prim.u_pos.get_0_ty	.tygvar
 _parser.prim.u_symbol_0_ty	.tygvar
 either.t	.tygvar
+_parser.parse_work_symbol_k	.subcode
+_parser.parse_work_unit.plus_k	.subcode
 s	.tyfv	*
 α	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	α
-_parser.parse_work_symbol_k	.subcode
-_parser.parse_work_unit.plus_k	.subcode
 list.t.out	.cogvar
 either.left	.gvar
 parser.err.simple.failure	.gvar
@@ -202,12 +202,12 @@ _parser.prim.u_symbol_0_ty	.tygvar
 parser.prim.t	.tygvar
 list.prim.u	.tygvar
 rune.t	.tygvar
+_parser.parse_work_symbol_:_k	.subcode
 s	.tyfv	*
 α	.tyfv	*
 string.ty	.tylet	list.t	rune.t
 list.string.ty	.tylet	list.t	string.ty
 parser.ty	.tylet	parser.prim.t	s	α
-_parser.parse_work_symbol_:_k	.subcode
 either.t.out	.cogvar
 _parser.parse_work	.gvar
 adv	.fv	parser.advance.t	s
@@ -239,12 +239,12 @@ rune.t	.tygvar
 parser.prim.t	.tygvar
 either.t	.tygvar
 parser.err.t	.tygvar
+_parser.parse_work_symbol_:_right_k	.subcode
 s	.tyfv	*
 α	.tyfv	*
 string.ty	.tylet	list.t	rune.t
 list.string.ty	.tylet	list.t	string.ty
 parser.ty	.tylet	parser.prim.t	s	α
-_parser.parse_work_symbol_:_right_k	.subcode
 either.left	.gvar
 parser.err.message.failure	.gvar
 bool.false	.gvar
@@ -326,10 +326,10 @@ print.t	.tygvar
 parser.pos.t	.tygvar
 parser.prim.t	.tygvar
 list.t	.tygvar
+_parser.parse_work_lookahead_k	.subcode
 s	.tyarg	*
 α	.tyarg	*
 rec.ty	.tylet	parser.prim.t	s	α
-_parser.parse_work_lookahead_k	.subcode
 parser.prim.t.out	.cogvar
 p	.larg	parser.prim.t	s	rec.ty
 s	.larg	list.t	s
@@ -344,11 +344,11 @@ list.t	.tygvar
 rune.t	.tygvar
 _parser.prim.u_pos.get_0_ty	.tygvar
 _parser.prim.u_symbol_0_ty	.tygvar
+_parser.parse_work_lookahead_symbol_k	.subcode
 s	.tyfv	*
 α	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	α
 rec.rec.ty	.tylet	parser.prim.t	s	rec.ty
-_parser.parse_work_lookahead_symbol_k	.subcode
 list.t.out	.cogvar
 parser.prim.fail	.gvar
 parser.prim.<|>	.gvar
@@ -387,12 +387,12 @@ list.prim.u	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 parser.prim.t	.tygvar
+_parser.parse_work_lookahead_symbol_:_k	.subcode
 s	.tyfv	*
 α	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	α
 list.string.ty	.tylet	list.t	string.t
 parser.ty	.tylet	parser.prim.t	s	rec.ty
-_parser.parse_work_lookahead_symbol_:_k	.subcode
 either.t.out	.cogvar
 sk	.fv	_parser.prim.u_symbol_0_ty	s	rec.ty
 s0	.karg	list.prim.u	s
@@ -459,9 +459,9 @@ es1		.fkarg	1	list.t	string.t
 
 _parser.exec_c	.expr
 parser.t	.tygvar
+_parser.exec_k_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
-_parser.exec_k_c	.subcode
 p	.larg	parser.t	s	α
 k	.alloc	_parser.exec_k_c
 	.app	k
@@ -483,10 +483,10 @@ fail	.apply	parser.prim.fail	s	α
 _parser.map_c	.expr
 _parser.map_f_ty	.tygvar
 parser.t	.tygvar
+_parser.map_res_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
-_parser.map_res_c	.subcode
 f	.larg	_parser.map_f_ty	α	β
 p0	.larg	parser.t	s	α
 res	.alloc	_parser.map_res_c
@@ -496,11 +496,11 @@ _parser.map_res_c	.expr
 _parser.map_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.map_k0_c	.subcode
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.map_k0_c	.subcode
 f	.fv	_parser.map_f_ty	α	β
 p0	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	β	r
@@ -525,9 +525,9 @@ fx	.apply	f	|	x
 # §section §gs{parser.unit}
 
 _parser.unit_c	.expr
+_parser.unit_res_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
-_parser.unit_res_c	.subcode
 x	.larg	α
 res	.alloc	_parser.unit_res_c
 	.enter	res
@@ -548,11 +548,11 @@ k	.larg	_parser.t_k_ty	s	α	β
 _parser.<*>_c	.expr
 parser.t	.tygvar
 _parser.<*>_f_ty	.tygvar
+_parser.<*>_res_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
 f_ty	.tylet	_parser.<*>_f_ty	α	β
-_parser.<*>_res_c	.subcode
 pf	.larg	parser.t	s	f_ty
 px	.larg	parser.t	s	α
 res	.alloc	_parser.<*>_res_c
@@ -563,12 +563,12 @@ parser.t	.tygvar
 _parser.<*>_f_ty	.tygvar
 _parser.t_k_ty	.tygvar
 parser.prim.t	.tygvar
+_parser.<*>_kf_c	.subcode
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
 f_ty	.tylet	_parser.<*>_f_ty	α	β
-_parser.<*>_kf_c	.subcode
 pf	.fv	parser.t	s	f_ty
 px	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	β	r
@@ -580,11 +580,11 @@ _parser.<*>_kf_c	.expr
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
 _parser.<*>_f_ty	.tygvar
+_parser.<*>_kx_c	.subcode
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.<*>_kx_c	.subcode
 px	.fv	parser.t	s	α
 k	.fv	_parser.t_k_ty	s	β	r
 f	.larg	_parser.<*>_f_ty	α	β
@@ -611,12 +611,12 @@ fx	.apply	f	|	x
 _parser.lift3_c	.expr
 _parser.lift3_f_ty	.tygvar
 parser.t	.tygvar
+_parser.lift3_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
 α2	.tyarg	*
 β	.tyarg	*
-_parser.lift3_res_c	.subcode
 f	.larg	_parser.lift3_f_ty	s	α0	α1	α2	β
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
@@ -628,13 +628,13 @@ _parser.lift3_res_c	.expr
 _parser.lift3_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift3_k0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 α2	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.lift3_k0_c	.subcode
 f	.fv	_parser.lift3_f_ty	s	α0	α1	α2	β
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
@@ -648,13 +648,13 @@ _parser.lift3_k0_c	.expr
 _parser.lift3_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift3_k1_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 α2	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift3_k1_c	.subcode
 f	.fv	_parser.lift3_f_ty	s	α0	α1	α2	β
 p1	.fv	parser.t	s	α1
 p2	.fv	parser.t	s	α2
@@ -668,13 +668,13 @@ _parser.lift3_k1_c	.expr
 _parser.lift3_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift3_k2_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 α2	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift3_k2_c	.subcode
 f	.fv	_parser.lift3_f_ty	s	α0	α1	α2	β
 p2	.fv	parser.t	s	α2
 x0	.fv	α0
@@ -707,13 +707,13 @@ y	.apply	f	|	x0	x1	x2
 _parser.lift4_c	.expr
 _parser.lift4_f_ty	.tygvar
 parser.t	.tygvar
+_parser.lift4_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
 α2	.tyarg	*
 α3	.tyarg	*
 β	.tyarg	*
-_parser.lift4_res_c	.subcode
 f	.larg	_parser.lift4_f_ty	s	α0	α1	α2	α3	β
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
@@ -726,6 +726,7 @@ _parser.lift4_res_c	.expr
 _parser.lift4_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift4_res_k0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -733,7 +734,6 @@ s	.tyfv	*
 α3	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.lift4_res_k0_c	.subcode
 f	.fv	_parser.lift4_f_ty	s	α0	α1	α2	α3	β
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
@@ -748,6 +748,7 @@ _parser.lift4_res_k0_c	.expr
 _parser.lift4_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift4_res_k1_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -755,7 +756,6 @@ s	.tyfv	*
 α3	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift4_res_k1_c	.subcode
 f	.fv	_parser.lift4_f_ty	s	α0	α1	α2	α3	β
 p1	.fv	parser.t	s	α1
 p2	.fv	parser.t	s	α2
@@ -770,6 +770,7 @@ _parser.lift4_res_k1_c	.expr
 _parser.lift4_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift4_res_k2_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -777,7 +778,6 @@ s	.tyfv	*
 α3	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift4_res_k2_c	.subcode
 f	.fv	_parser.lift4_f_ty	s	α0	α1	α2	α3	β
 p2	.fv	parser.t	s	α2
 p3	.fv	parser.t	s	α3
@@ -792,6 +792,7 @@ _parser.lift4_res_k2_c	.expr
 _parser.lift4_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift4_res_k3_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -799,7 +800,6 @@ s	.tyfv	*
 α3	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift4_res_k3_c	.subcode
 f	.fv	_parser.lift4_f_ty	s	α0	α1	α2	α3	β
 p3	.fv	parser.t	s	α3
 k	.fv	_parser.t_k_ty	s	β	r
@@ -835,6 +835,7 @@ y	.apply	f	|	x0	x1	x2	x3
 _parser.lift5_c	.expr
 _parser.lift5_f_ty	.tygvar
 parser.t	.tygvar
+_parser.lift5_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
@@ -842,7 +843,6 @@ s	.tyarg	*
 α3	.tyarg	*
 α4	.tyarg	*
 β	.tyarg	*
-_parser.lift5_res_c	.subcode
 f	.larg	_parser.lift5_f_ty	α0	α1	α2	α3	α4	β
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
@@ -856,6 +856,7 @@ _parser.lift5_res_c	.expr
 _parser.lift5_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift5_res_k0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -864,7 +865,6 @@ s	.tyfv	*
 α4	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.lift5_res_k0_c	.subcode
 f	.fv	_parser.lift5_f_ty	α0	α1	α2	α3	α4	β
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
@@ -880,6 +880,7 @@ _parser.lift5_res_k0_c	.expr
 _parser.lift5_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift5_res_k1_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -888,7 +889,6 @@ s	.tyfv	*
 α4	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift5_res_k1_c	.subcode
 f	.fv	_parser.lift5_f_ty	α0	α1	α2	α3	α4	β
 p1	.fv	parser.t	s	α1
 p2	.fv	parser.t	s	α2
@@ -904,6 +904,7 @@ _parser.lift5_res_k1_c	.expr
 _parser.lift5_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift5_res_k2_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -912,7 +913,6 @@ s	.tyfv	*
 α4	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift5_res_k2_c	.subcode
 f	.fv	_parser.lift5_f_ty	α0	α1	α2	α3	α4	β
 p2	.fv	parser.t	s	α2
 p3	.fv	parser.t	s	α3
@@ -928,6 +928,7 @@ _parser.lift5_res_k2_c	.expr
 _parser.lift5_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift5_res_k3_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -936,7 +937,6 @@ s	.tyfv	*
 α4	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift5_res_k3_c	.subcode
 f	.fv	_parser.lift5_f_ty	α0	α1	α2	α3	α4	β
 p3	.fv	parser.t	s	α3
 p4	.fv	parser.t	s	α4
@@ -952,6 +952,7 @@ _parser.lift5_res_k3_c	.expr
 _parser.lift5_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift5_res_k4_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -960,7 +961,6 @@ s	.tyfv	*
 α4	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift5_res_k4_c	.subcode
 f	.fv	_parser.lift5_f_ty	α0	α1	α2	α3	α4	β
 p4	.fv	parser.t	s	α4
 k	.fv	_parser.t_k_ty	s	β	r
@@ -999,6 +999,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4
 _parser.lift6_c	.expr
 _parser.lift6_f_ty	.tygvar
 parser.t	.tygvar
+_parser.lift6_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
@@ -1007,7 +1008,6 @@ s	.tyarg	*
 α4	.tyarg	*
 α5	.tyarg	*
 β	.tyarg	*
-_parser.lift6_res_c	.subcode
 f	.larg	_parser.lift6_f_ty	α0	α1	α2	α3	α4	α5	β
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
@@ -1022,6 +1022,7 @@ _parser.lift6_res_c	.expr
 _parser.lift6_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift6_res_k0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1031,7 +1032,6 @@ s	.tyfv	*
 α5	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.lift6_res_k0_c	.subcode
 f	.fv	_parser.lift6_f_ty	α0	α1	α2	α3	α4	α5	β
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
@@ -1048,6 +1048,7 @@ _parser.lift6_res_k0_c	.expr
 _parser.lift6_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift6_res_k1_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1057,7 +1058,6 @@ s	.tyfv	*
 α5	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift6_res_k1_c	.subcode
 f	.fv	_parser.lift6_f_ty	α0	α1	α2	α3	α4	α5	β
 p1	.fv	parser.t	s	α1
 p2	.fv	parser.t	s	α2
@@ -1074,6 +1074,7 @@ _parser.lift6_res_k1_c	.expr
 _parser.lift6_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift6_res_k2_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1083,7 +1084,6 @@ s	.tyfv	*
 α5	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift6_res_k2_c	.subcode
 f	.fv	_parser.lift6_f_ty	α0	α1	α2	α3	α4	α5	β
 p2	.fv	parser.t	s	α2
 p3	.fv	parser.t	s	α3
@@ -1100,6 +1100,7 @@ _parser.lift6_res_k2_c	.expr
 _parser.lift6_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift6_res_k3_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1109,7 +1110,6 @@ s	.tyfv	*
 α5	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift6_res_k3_c	.subcode
 f	.fv	_parser.lift6_f_ty	α0	α1	α2	α3	α4	α5	β
 p3	.fv	parser.t	s	α3
 p4	.fv	parser.t	s	α4
@@ -1126,6 +1126,7 @@ _parser.lift6_res_k3_c	.expr
 _parser.lift6_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift6_res_k4_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1135,7 +1136,6 @@ s	.tyfv	*
 α5	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift6_res_k4_c	.subcode
 f	.fv	_parser.lift6_f_ty	α0	α1	α2	α3	α4	α5	β
 p4	.fv	parser.t	s	α4
 p5	.fv	parser.t	s	α5
@@ -1152,6 +1152,7 @@ _parser.lift6_res_k4_c	.expr
 _parser.lift6_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift6_res_k5_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1161,7 +1162,6 @@ s	.tyfv	*
 α5	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift6_res_k5_c	.subcode
 f	.fv	_parser.lift6_f_ty	α0	α1	α2	α3	α4	α5	β
 p5	.fv	parser.t	s	α5
 k	.fv	_parser.t_k_ty	s	β	r
@@ -1203,6 +1203,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4	x5
 _parser.lift7_c	.expr
 _parser.lift7_f_ty	.tygvar
 parser.t	.tygvar
+_parser.lift7_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
@@ -1212,7 +1213,6 @@ s	.tyarg	*
 α5	.tyarg	*
 α6	.tyarg	*
 β	.tyarg	*
-_parser.lift7_res_c	.subcode
 f	.larg	_parser.lift7_f_ty	α0	α1	α2	α3	α4	α5	α6	β
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
@@ -1228,6 +1228,7 @@ _parser.lift7_res_c	.expr
 _parser.lift7_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift7_k0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1238,7 +1239,6 @@ s	.tyfv	*
 α6	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.lift7_k0_c	.subcode
 f	.fv	_parser.lift7_f_ty	α0	α1	α2	α3	α4	α5	α6	β
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
@@ -1256,6 +1256,7 @@ _parser.lift7_k0_c	.expr
 _parser.lift7_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift7_k1_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1266,7 +1267,6 @@ s	.tyfv	*
 α6	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift7_k1_c	.subcode
 f	.fv	_parser.lift7_f_ty	α0	α1	α2	α3	α4	α5	α6	β
 p1	.fv	parser.t	s	α1
 p2	.fv	parser.t	s	α2
@@ -1284,6 +1284,7 @@ _parser.lift7_k1_c	.expr
 _parser.lift7_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift7_k2_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1294,7 +1295,6 @@ s	.tyfv	*
 α6	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift7_k2_c	.subcode
 f	.fv	_parser.lift7_f_ty	α0	α1	α2	α3	α4	α5	α6	β
 p2	.fv	parser.t	s	α2
 p3	.fv	parser.t	s	α3
@@ -1312,6 +1312,7 @@ _parser.lift7_k2_c	.expr
 _parser.lift7_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift7_k3_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1322,7 +1323,6 @@ s	.tyfv	*
 α6	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift7_k3_c	.subcode
 f	.fv	_parser.lift7_f_ty	α0	α1	α2	α3	α4	α5	α6	β
 p3	.fv	parser.t	s	α3
 p4	.fv	parser.t	s	α4
@@ -1340,6 +1340,7 @@ _parser.lift7_k3_c	.expr
 _parser.lift7_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift7_k4_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1350,7 +1351,6 @@ s	.tyfv	*
 α6	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift7_k4_c	.subcode
 f	.fv	_parser.lift7_f_ty	α0	α1	α2	α3	α4	α5	α6	β
 p4	.fv	parser.t	s	α4
 p5	.fv	parser.t	s	α5
@@ -1368,6 +1368,7 @@ _parser.lift7_k4_c	.expr
 _parser.lift7_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift7_k5_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1378,7 +1379,6 @@ s	.tyfv	*
 α6	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift7_k5_c	.subcode
 f	.fv	_parser.lift7_f_ty	α0	α1	α2	α3	α4	α5	α6	β
 p5	.fv	parser.t	s	α5
 p6	.fv	parser.t	s	α6
@@ -1396,6 +1396,7 @@ _parser.lift7_k5_c	.expr
 _parser.lift7_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift7_k6_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1406,7 +1407,6 @@ s	.tyfv	*
 α6	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift7_k6_c	.subcode
 f	.fv	_parser.lift7_f_ty	α0	α1	α2	α3	α4	α5	α6	β
 p6	.fv	parser.t	s	α6
 k	.fv	_parser.t_k_ty	s	β	r
@@ -1451,6 +1451,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6
 _parser.lift8_c	.expr
 _parser.lift8_f_ty	.tygvar
 parser.t	.tygvar
+_parser.lift8_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
@@ -1461,7 +1462,6 @@ s	.tyarg	*
 α6	.tyarg	*
 α7	.tyarg	*
 β	.tyarg	*
-_parser.lift8_res_c	.subcode
 f	.larg	_parser.lift8_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	β
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
@@ -1478,6 +1478,7 @@ _parser.lift8_res_c	.expr
 _parser.lift8_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift8_k0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1489,7 +1490,6 @@ s	.tyfv	*
 α7	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.lift8_k0_c	.subcode
 f	.fv	_parser.lift8_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	β
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
@@ -1508,6 +1508,7 @@ _parser.lift8_k0_c	.expr
 _parser.lift8_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift8_k1_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1519,7 +1520,6 @@ s	.tyfv	*
 α7	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift8_k1_c	.subcode
 f	.fv	_parser.lift8_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	β
 p1	.fv	parser.t	s	α1
 p2	.fv	parser.t	s	α2
@@ -1538,6 +1538,7 @@ _parser.lift8_k1_c	.expr
 _parser.lift8_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift8_k2_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1549,7 +1550,6 @@ s	.tyfv	*
 α7	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift8_k2_c	.subcode
 f	.fv	_parser.lift8_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	β
 p2	.fv	parser.t	s	α2
 p3	.fv	parser.t	s	α3
@@ -1568,6 +1568,7 @@ _parser.lift8_k2_c	.expr
 _parser.lift8_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift8_k3_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1579,7 +1580,6 @@ s	.tyfv	*
 α7	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift8_k3_c	.subcode
 f	.fv	_parser.lift8_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	β
 p3	.fv	parser.t	s	α3
 p4	.fv	parser.t	s	α4
@@ -1598,6 +1598,7 @@ _parser.lift8_k3_c	.expr
 _parser.lift8_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift8_k4_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1609,7 +1610,6 @@ s	.tyfv	*
 α7	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift8_k4_c	.subcode
 f	.fv	_parser.lift8_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	β
 p4	.fv	parser.t	s	α4
 p5	.fv	parser.t	s	α5
@@ -1628,6 +1628,7 @@ _parser.lift8_k4_c	.expr
 _parser.lift8_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift8_k5_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1639,7 +1640,6 @@ s	.tyfv	*
 α7	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift8_k5_c	.subcode
 f	.fv	_parser.lift8_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	β
 p5	.fv	parser.t	s	α5
 p6	.fv	parser.t	s	α6
@@ -1658,6 +1658,7 @@ _parser.lift8_k5_c	.expr
 _parser.lift8_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift8_k6_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1669,7 +1670,6 @@ s	.tyfv	*
 α7	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift8_k6_c	.subcode
 f	.fv	_parser.lift8_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	β
 p6	.fv	parser.t	s	α6
 p7	.fv	parser.t	s	α7
@@ -1688,6 +1688,7 @@ _parser.lift8_k6_c	.expr
 _parser.lift8_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift8_k7_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1699,7 +1700,6 @@ s	.tyfv	*
 α7	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift8_k7_c	.subcode
 f	.fv	_parser.lift8_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	β
 p6	.fv	parser.t	s	α6
 p7	.fv	parser.t	s	α7
@@ -1748,6 +1748,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6	x7
 _parser.lift9_c	.expr
 _parser.lift9_f_ty	.tygvar
 parser.t	.tygvar
+_parser.lift9_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
@@ -1759,7 +1760,6 @@ s	.tyarg	*
 α7	.tyarg	*
 α8	.tyarg	*
 β	.tyarg	*
-_parser.lift9_res_c	.subcode
 f	.larg	_parser.lift9_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	β
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
@@ -1777,6 +1777,7 @@ _parser.lift9_res_c	.expr
 _parser.lift9_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift9_k0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1789,7 +1790,6 @@ s	.tyfv	*
 α8	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.lift9_k0_c	.subcode
 f	.fv	_parser.lift9_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	β
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
@@ -1809,6 +1809,7 @@ _parser.lift9_k0_c	.expr
 _parser.lift9_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift9_k1_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1821,7 +1822,6 @@ s	.tyfv	*
 α8	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift9_k1_c	.subcode
 f	.fv	_parser.lift9_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	β
 p1	.fv	parser.t	s	α1
 p2	.fv	parser.t	s	α2
@@ -1841,6 +1841,7 @@ _parser.lift9_k1_c	.expr
 _parser.lift9_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift9_k2_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1853,7 +1854,6 @@ s	.tyfv	*
 α8	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift9_k2_c	.subcode
 f	.fv	_parser.lift9_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	β
 p2	.fv	parser.t	s	α2
 p3	.fv	parser.t	s	α3
@@ -1873,6 +1873,7 @@ _parser.lift9_k2_c	.expr
 _parser.lift9_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift9_k3_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1885,7 +1886,6 @@ s	.tyfv	*
 α8	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift9_k3_c	.subcode
 f	.fv	_parser.lift9_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	β
 p3	.fv	parser.t	s	α3
 p4	.fv	parser.t	s	α4
@@ -1905,6 +1905,7 @@ _parser.lift9_k3_c	.expr
 _parser.lift9_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift9_k4_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1917,7 +1918,6 @@ s	.tyfv	*
 α8	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift9_k4_c	.subcode
 f	.fv	_parser.lift9_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	β
 p4	.fv	parser.t	s	α4
 p5	.fv	parser.t	s	α5
@@ -1937,6 +1937,7 @@ _parser.lift9_k4_c	.expr
 _parser.lift9_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift9_k5_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1949,7 +1950,6 @@ s	.tyfv	*
 α8	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift9_k5_c	.subcode
 f	.fv	_parser.lift9_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	β
 p5	.fv	parser.t	s	α5
 p6	.fv	parser.t	s	α6
@@ -1969,6 +1969,7 @@ _parser.lift9_k5_c	.expr
 _parser.lift9_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift9_k6_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -1981,7 +1982,6 @@ s	.tyfv	*
 α8	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift9_k6_c	.subcode
 f	.fv	_parser.lift9_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	β
 p6	.fv	parser.t	s	α6
 p7	.fv	parser.t	s	α7
@@ -2001,6 +2001,7 @@ _parser.lift9_k6_c	.expr
 _parser.lift9_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift9_k7_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2013,7 +2014,6 @@ s	.tyfv	*
 α8	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift9_k7_c	.subcode
 f	.fv	_parser.lift9_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	β
 p7	.fv	parser.t	s	α7
 p8	.fv	parser.t	s	α8
@@ -2033,6 +2033,7 @@ _parser.lift9_k7_c	.expr
 _parser.lift9_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift9_k8_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2045,7 +2046,6 @@ s	.tyfv	*
 α8	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift9_k8_c	.subcode
 f	.fv	_parser.lift9_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	β
 p8	.fv	parser.t	s	α8
 k	.fv	_parser.t_k_ty	s	β	r
@@ -2096,6 +2096,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6	x7	x8
 _parser.lift10_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
+_parser.lift10_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
@@ -2108,7 +2109,6 @@ s	.tyarg	*
 α8	.tyarg	*
 α9	.tyarg	*
 β	.tyarg	*
-_parser.lift10_res_c	.subcode
 f	.larg	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
@@ -2127,6 +2127,7 @@ _parser.lift10_res_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift10_k0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2140,7 +2141,6 @@ s	.tyfv	*
 α9	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.lift10_k0_c	.subcode
 f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
@@ -2161,6 +2161,7 @@ _parser.lift10_k0_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift10_k1_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2174,7 +2175,6 @@ s	.tyfv	*
 α9	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift10_k1_c	.subcode
 f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p1	.fv	parser.t	s	α1
 p2	.fv	parser.t	s	α2
@@ -2195,6 +2195,7 @@ _parser.lift10_k1_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift10_k2_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2208,7 +2209,6 @@ s	.tyfv	*
 α9	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift10_k2_c	.subcode
 f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p2	.fv	parser.t	s	α2
 p3	.fv	parser.t	s	α3
@@ -2229,6 +2229,7 @@ _parser.lift10_k2_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift10_k3_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2242,7 +2243,6 @@ s	.tyfv	*
 α9	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift10_k3_c	.subcode
 f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p3	.fv	parser.t	s	α3
 p4	.fv	parser.t	s	α4
@@ -2263,6 +2263,7 @@ _parser.lift10_k3_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift10_k4_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2276,7 +2277,6 @@ s	.tyfv	*
 α9	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift10_k4_c	.subcode
 f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p4	.fv	parser.t	s	α4
 p5	.fv	parser.t	s	α5
@@ -2297,6 +2297,7 @@ _parser.lift10_k4_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift10_k5_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2310,7 +2311,6 @@ s	.tyfv	*
 α9	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift10_k5_c	.subcode
 f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p5	.fv	parser.t	s	α5
 p6	.fv	parser.t	s	α6
@@ -2331,6 +2331,7 @@ _parser.lift10_k5_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift10_k6_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2344,7 +2345,6 @@ s	.tyfv	*
 α9	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift10_k6_c	.subcode
 f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p6	.fv	parser.t	s	α6
 p7	.fv	parser.t	s	α7
@@ -2365,6 +2365,7 @@ _parser.lift10_k6_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift10_k7_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2378,7 +2379,6 @@ s	.tyfv	*
 α9	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift10_k7_c	.subcode
 f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p7	.fv	parser.t	s	α7
 p8	.fv	parser.t	s	α8
@@ -2399,6 +2399,7 @@ _parser.lift10_k7_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift10_k8_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2412,7 +2413,6 @@ s	.tyfv	*
 α9	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift10_k8_c	.subcode
 f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p8	.fv	parser.t	s	α8
 p9	.fv	parser.t	s	α9
@@ -2433,6 +2433,7 @@ _parser.lift10_k8_c	.expr
 _parser.lift10_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift10_k9_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
@@ -2446,7 +2447,6 @@ s	.tyfv	*
 α9	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift10_k9_c	.subcode
 f	.fv	_parser.lift10_f_ty	α0	α1	α2	α3	α4	α5	α6	α7	α8	α9	β
 p9	.fv	parser.t	s	α9
 k	.fv	_parser.t_k_ty	s	β	r
@@ -2500,10 +2500,10 @@ y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6	x7	x8	x9
 _parser.>>=_c	.expr
 parser.t	.tygvar
 _parser.>>=_k_ty	.tygvar
+_parser.>>=_res_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
-_parser.>>=_res_c	.subcode
 p	.larg	parser.t	s	α
 f	.larg	_parser.>>=_k_ty	s	α	β
 res	.alloc	_parser.>>=_res_c
@@ -2513,11 +2513,11 @@ _parser.>>=_res_c	.expr
 parser.t	.tygvar
 _parser.>>=_k_ty	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.>>=_res_kx_c	.subcode
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.>>=_res_kx_c	.subcode
 p	.fv	parser.t	s	α
 f	.fv	_parser.>>=_k_ty	s	α	β
 k	.larg	_parser.t_k_ty	s	β	r
@@ -2543,9 +2543,9 @@ fx	.apply	f	|	x
 
 _parser.neg.lookahead_c	.expr
 parser.t	.tygvar
+_parser.neg.lookahead_res_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
-_parser.neg.lookahead_res_c	.subcode
 p	.larg	parser.t	s	α
 res	.alloc	_parser.neg.lookahead_res_c
 	.enter	res
@@ -2555,11 +2555,11 @@ parser.t	.tygvar
 _parser.t_k_ty	.tygvar
 record.empty	.tygvar
 parser.prim.t	.tygvar
+_parser.neg.lookahead_res_kx_c	.subcode
 s	.tyfv	*
 α	.tyfv	*
 r	.tyarg	*
 rec.ty	.tylet	parser.prim.t	s	r
-_parser.neg.lookahead_res_kx_c	.subcode
 parser.prim.lookahead	.gvar
 parser.prim.neg	.gvar
 parser.prim.unit.plus	.gvar
@@ -2616,10 +2616,10 @@ k	.larg	_parser.t_k_ty	s	α	β
 
 _parser.*>_c	.expr
 parser.t	.tygvar
+_parser.*>_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
-_parser.*>_res_c	.subcode
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
 res	.alloc	_parser.*>_res_c
@@ -2628,11 +2628,11 @@ res	.alloc	_parser.*>_res_c
 _parser.*>_res_c	.expr
 _parser.t_k_ty	.tygvar
 parser.t	.tygvar
+_parser.*>_k0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 r	.tyarg	*
-_parser.*>_k0_c	.subcode
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
 k	.larg	_parser.t_k_ty	s	α1	r
@@ -2657,10 +2657,10 @@ x0	.larg	α0
 
 _parser.<*_c	.expr
 parser.t	.tygvar
+_parser.<*_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
-_parser.<*_res_c	.subcode
 p0	.larg	parser.t	s	α0
 p1	.larg	parser.t	s	α1
 res	.alloc	_parser.<*_res_c
@@ -2669,11 +2669,11 @@ res	.alloc	_parser.<*_res_c
 _parser.<*_res_c	.expr
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.<*_k0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 r	.tyarg	*
-_parser.<*_k0_c	.subcode
 p0	.fv	parser.t	s	α0
 p1	.fv	parser.t	s	α1
 k	.larg	_parser.t_k_ty	s	α0	r
@@ -2684,11 +2684,11 @@ k0	.alloc	_parser.<*_k0_c
 _parser.<*_k0_c	.expr
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.<*_k1_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 r	.tyfv	*
-_parser.<*_k1_c	.subcode
 p1	.fv	parser.t	s	α1
 k	.fv	_parser.t_k_ty	s	α0	r
 x0	.larg	α0
@@ -2713,11 +2713,11 @@ x1	.larg	α1
 _parser.lift2_c	.expr
 _parser.lift2_f_ty	.tygvar
 parser.t	.tygvar
+_parser.lift2_res_c	.subcode
 s	.tyarg	*
 α0	.tyarg	*
 α1	.tyarg	*
 β	.tyarg	*
-_parser.lift2_res_c	.subcode
 f	.larg	_parser.lift2_f_ty	α0	α1	β
 px0	.larg	parser.t	s	α0
 px1	.larg	parser.t	s	α1
@@ -2728,12 +2728,12 @@ _parser.lift2_res_c	.expr
 _parser.lift2_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.lift2_kx0_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 β	.tyfv	*
 r	.tyarg	*
-_parser.lift2_kx0_c	.subcode
 f	.fv	_parser.lift2_f_ty	α0	α1	β
 px0	.fv	parser.t	s	α0
 px1	.fv	parser.t	s	α1
@@ -2747,12 +2747,12 @@ _parser.lift2_f_ty	.tygvar
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
 parser.prim.t	.tygvar
+_parser.lift2_kx1_c	.subcode
 s	.tyfv	*
 α0	.tyfv	*
 α1	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-_parser.lift2_kx1_c	.subcode
 f	.fv	_parser.lift2_f_ty	α0	α1	β
 px1	.fv	parser.t	s	α1
 k	.fv	_parser.t_k_ty	s	β	r
@@ -2783,9 +2783,9 @@ f.x0.x1	.apply	f	|	x0	x1
 _parser.fail.msg_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
+_parser.fail.msg_res_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
-_parser.fail.msg_res_c	.subcode
 msg	.larg	list.t	rune.t
 res	.alloc	_parser.fail.msg_res_c
 	.enter	res
@@ -2807,9 +2807,9 @@ k	.larg	_parser.t_k_ty	s	α	β
 
 _parser.<|>_c	.expr
 parser.t	.tygvar
+_parser.<|>_res_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
-_parser.<|>_res_c	.subcode
 p0	.larg	parser.t	s	α
 p1	.larg	parser.t	s	α
 res	.alloc	_parser.<|>_res_c
@@ -2836,9 +2836,9 @@ p1.k	.apply	p1	r	|	k
 _parser.symbol_c	.expr
 _parser.t_k_ty	.tygvar
 parser.prim.t	.tygvar
+_parser.symbol_sk_c	.subcode
 s	.tyarg	*
 r	.tyarg	*
-_parser.symbol_sk_c	.subcode
 parser.prim.symbol	.gvar
 parser.prim.fail.msg	.gvar
 _parser.symbol_msg	.gvar
@@ -2870,10 +2870,10 @@ kc	.apply	k	|	c
 _parser.optional_c	.expr
 parser.t	.tygvar
 maybe.t	.tygvar
+_parser.optional_just_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
 res.ty	.tylet	maybe.t	α
-_parser.optional_just_c	.subcode
 parser.<|>	.gvar
 parser.map	.gvar
 parser.unit	.gvar
@@ -2898,11 +2898,11 @@ x	.larg	α
 _parser.many_c	.expr
 parser.t	.tygvar
 list.t	.tygvar
+_parser.many_pnil_c	.subcode
+_parser.many_pcons_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
 res.ty	.tylet	list.t	α
-_parser.many_pnil_c	.subcode
-_parser.many_pcons_c	.subcode
 parser.<|>	.gvar
 p	.larg	parser.t	s	α
 pnil	.alloc	_parser.many_pnil_c
@@ -2928,11 +2928,11 @@ _parser.many_pcons_c	.expr
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
 list.t	.tygvar
+_parser.many_pcons_kx_c	.subcode
 s	.tyfv	*
 α	.tyfv	*
 r	.tyarg	*
 res.ty	.tylet	list.t	α
-_parser.many_pcons_kx_c	.subcode
 p	.fv	parser.t	s	α
 k	.larg	_parser.t_k_ty	s	res.ty	r
 kx	.alloc	_parser.many_pcons_kx_c
@@ -2943,11 +2943,11 @@ _parser.many_pcons_kx_c	.expr
 parser.t	.tygvar
 _parser.t_k_ty	.tygvar
 list.t	.tygvar
+_parser.many_pcons_kxn_c	.subcode
 s	.tyfv	*
 α	.tyfv	*
 r	.tyfv	*
 res.ty	.tylet	list.t	α
-_parser.many_pcons_kxn_c	.subcode
 parser.many	.gvar
 p	.fv	parser.t	s	α
 k	.fv	_parser.t_k_ty	s	res.ty	r
@@ -2977,8 +2977,8 @@ xxn	.apply	list.:	α	|	x	xn
 
 _parser.symbol.matching.bool_c	.expr
 _parser.symbol.matching.bool_pred_ty	.tygvar
-s	.tyarg	*
 _parser.symbol.matching.bool_res_c	.subcode
+s	.tyarg	*
 pred	.larg	_parser.symbol.matching.bool_pred_ty	s
 res	.alloc	_parser.symbol.matching.bool_res_c
 	.enter	res
@@ -2986,9 +2986,9 @@ res	.alloc	_parser.symbol.matching.bool_res_c
 _parser.symbol.matching.bool_res_c	.expr
 _parser.symbol.matching.bool_pred_ty	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.symbol.matching.bool_sk_c	.subcode
 s	.tyfv	*
 r	.tyarg	*
-_parser.symbol.matching.bool_sk_c	.subcode
 parser.prim.symbol	.gvar
 parser.prim.fail.msg	.gvar
 _parser.symbol_msg	.gvar
@@ -3002,9 +3002,9 @@ fail	.apply	parser.prim.fail.msg	s	r	|	_parser.symbol_msg
 _parser.symbol.matching.bool_sk_c	.expr
 _parser.symbol.matching.bool_pred_ty	.tygvar
 _parser.t_k_ty	.tygvar
+_parser.symbol.matching.bool_sk_k	.subcode
 s	.tyfv	*
 r	.tyfv	*
-_parser.symbol.matching.bool_sk_k	.subcode
 bool.t.out	.cogvar
 pred	.fv	_parser.symbol.matching.bool_pred_ty	s
 k	.fv	_parser.t_k_ty	s	s	r
@@ -3064,8 +3064,8 @@ nil.p	.apply	parser.unit	s	res.ty	|	nil
 _parser.match_worker_c	.expr
 order.total.t	.tygvar
 regex.t	.tygvar
-s	.tyarg	*
 _parser.match_worker_k	.subcode
+s	.tyarg	*
 regex.t.out	.cogvar
 cmp	.larg	order.total.t	s
 re	.larg	regex.t	s
@@ -3080,12 +3080,12 @@ regex.class.t	.tygvar
 regex.t	.tygvar
 parser.t	.tygvar
 _parser.match_worker_res_ty	.tygvar
-s	.tyfv	*
-res_ty	.tylet	_parser.match_worker_res_ty	s
 _parser.match_worker_id_c	.subcode
 _parser.match_worker_neg.class_pred_c	.subcode
 _parser.match_worker_co_c	.subcode
 _parser.match_worker_symbol_pred_c	.subcode
+s	.tyfv	*
+res_ty	.tylet	_parser.match_worker_res_ty	s
 _parser.match_worker_class	.gvar
 parser.symbol.matching.bool	.gvar
 parser.map	.gvar
@@ -3186,8 +3186,8 @@ f1.s	.apply	f1	|	s
 
 _parser.match_worker_symbol_pred_c	.expr
 order.total.t	.tygvar
-s	.tyfv	*
 _parser.match_worker_symbol_pred_k	.subcode
+s	.tyfv	*
 order.total.ord.t.out	.cogvar
 cmp	.fv	order.total.t	s
 c	.fv	s
@@ -3211,8 +3211,8 @@ o0	.karg	order.total.ord.prim.u
 _parser.match_worker_class_c	.expr
 order.total.t	.tygvar
 regex.class.t	.tygvar
-s	.tyarg	*
 _parser.match_worker_class_k	.subcode
+s	.tyarg	*
 regex.class.t.out	.cogvar
 cmp	.larg	order.total.t	s
 cl	.larg	regex.class.t	s
@@ -3226,9 +3226,9 @@ order.total.t	.tygvar
 regex.class.prim.u	.tygvar
 regex.class.t	.tygvar
 bool.t	.tygvar
-s	.tyfv	*
 _parser.match_worker_class_range_k1	.subcode
 _parser.match_worker_class_symbol_k	.subcode
+s	.tyfv	*
 order.total.ord.t.out	.cogvar
 bool.∨	.gvar
 _parser.match_worker_class	.gvar
@@ -3261,8 +3261,8 @@ c0		.fkarg	0	s
 _parser.match_worker_class_range_k1	.forcecont
 order.total.t	.tygvar
 order.total.ord.prim.u	.tygvar
-s	.tyfv	*
 _parser.match_worker_class_range_k2	.subcode
+s	.tyfv	*
 order.total.ord.t.out	.cogvar
 bool.false	.gvar
 cmp	.fv	order.total.t	s
@@ -3304,9 +3304,9 @@ o0	.karg	order.total.ord.prim.u
 
 _parser.prim.<|>_c	.expr
 parser.prim.t	.tygvar
+_parser.prim.<|>_k0	.subcode
 s	.tyarg	*
 α	.tyarg	*
-_parser.prim.<|>_k0	.subcode
 parser.prim.t.out	.cogvar
 p0	.larg	parser.prim.t	s	α
 p1	.larg	parser.prim.t	s	α
@@ -3321,13 +3321,13 @@ list.t	.tygvar
 rune.t	.tygvar
 _parser.prim.u_pos.get_0_ty	.tygvar
 _parser.prim.u_symbol_0_ty	.tygvar
-s	.tyfv	*
-α	.tyfv	*
-rec.ty	.tylet	parser.prim.t	s	α
 _parser.prim.<|>_fail.msg_k1	.subcode
 _parser.prim.<|>_lookahead_k	.subcode
 _parser.prim.<|>_pos.get_k1	.subcode
 _parser.prim.<|>_symbol_k1	.subcode
+s	.tyfv	*
+α	.tyfv	*
+rec.ty	.tylet	parser.prim.t	s	α
 parser.prim.t.out	.cogvar
 parser.prim.unit.plus	.gvar
 parser.prim.<|>	.gvar
@@ -3451,10 +3451,10 @@ parser.prim.t	.tygvar
 _parser.prim.u_pos.get_0_ty	.tygvar
 parser.prim.u	.tygvar
 _parser.prim.u_pos.get_0_ty	.tygvar
-s	.tyfv	*
-α	.tyfv	*
 _parser.prim.<|>_pos.get_default_k2_c	.subcode
 _parser.prim.<|>_pos.get_pos.get_k2_c	.subcode
+s	.tyfv	*
+α	.tyfv	*
 parser.prim.pos.get	.gvar
 p1	.fv	parser.prim.t	s	α
 k0	.fv	_parser.prim.u_pos.get_0_ty	s	α
@@ -3505,11 +3505,11 @@ parser.prim.t	.tygvar
 parser.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
+_parser.prim.<|>_symbol_pos.get_k1_c	.subcode
+_parser.prim.<|>_symbol_sk2_c	.subcode
 s	.tyfv	*
 α	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	α
-_parser.prim.<|>_symbol_pos.get_k1_c	.subcode
-_parser.prim.<|>_symbol_sk2_c	.subcode
 parser.prim.symbol	.gvar
 parser.prim.pos.get	.gvar
 parser.prim.<|>	.gvar
@@ -3568,11 +3568,11 @@ either.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 parser.prim.t	.tygvar
+_parser.prim.<|>_symbol_sk2_k0	.subcode
 s	.tyfv	*
 α	.tyfv	*
 list.string.t	.tylet	list.t	string.t
 parser.ty	.tylet	parser.prim.t	s	α
-_parser.prim.<|>_symbol_sk2_k0	.subcode
 either.t.out	.cogvar
 sk	.fv	_parser.prim.u_symbol_0_ty	s	α
 sk1	.fv	_parser.prim.u_symbol_0_ty	s	α
@@ -3588,11 +3588,11 @@ either.prim.u	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 parser.prim.t	.tygvar
+_parser.prim.<|>_symbol_sk2_k1	.subcode
 s	.tyfv	*
 α	.tyfv	*
 list.string.t	.tylet	list.t	string.t
 parser.ty	.tylet	parser.prim.t	s	α
-_parser.prim.<|>_symbol_sk2_k1	.subcode
 either.t.out	.cogvar
 sk1	.fv	_parser.prim.u_symbol_0_ty	s	α
 c	.fv	s
@@ -3649,9 +3649,9 @@ p2					.apply	parser.prim.<|>	s	α	|	p0.1	p1.1
 _parser.prim.neg_c	.expr
 parser.prim.t	.tygvar
 record.empty	.tygvar
+_parser.prim.neg_k	.subcode
 s	.tyarg	*
 α	.tyarg	*
-_parser.prim.neg_k	.subcode
 parser.prim.t.out	.cogvar
 p0	.larg	parser.prim.t	s	record.empty
 p1	.larg	parser.prim.t	s	α
@@ -3667,10 +3667,10 @@ rune.t	.tygvar
 _parser.prim.u_pos.get_0_ty	.tygvar
 _parser.prim.u_symbol_0_ty	.tygvar
 parser.prim.t	.tygvar
+_parser.prim.neg_symbol_sk1_c	.subcode
 s	.tyfv	*
 α	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	record.empty
-_parser.prim.neg_symbol_sk1_c	.subcode
 parser.prim.symbol	.gvar
 parser.prim.fail	.gvar
 p1	.fv	parser.prim.t	s	α
@@ -3706,11 +3706,11 @@ record.empty	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 parser.prim.t	.tygvar
+_parser.prim.neg_symbol_sk1_k	.subcode
 s	.tyfv	*
 α	.tyfv	*
 list.string.ty	.tylet	list.t	string.t
 parser.in.ty	.tylet	parser.prim.t	s	record.empty
-_parser.prim.neg_symbol_sk1_k	.subcode
 either.t.out	.cogvar
 p1	.fv	parser.prim.t	s	α
 sk	.fv	_parser.prim.u_symbol_0_ty	s	record.empty

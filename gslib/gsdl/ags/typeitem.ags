@@ -322,14 +322,14 @@ gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 parser.pos.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
-list.tyarg.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tyarg.t
-list.tyforall.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tyforall.t
-list.tylet.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tylet.t
 _gsdl.ags.typeitem.decls.parser_f_c	.subcode
 _gsdl.ags.typeitem.decls.parser_tylambdas.f_c	.subcode
 _gsdl.ags.typeitem.decls.parser_tyforalls.f_c	.subcode
 _gsdl.ags.typeitem.decls.parser_tylets.f_c	.subcode
+list.string.ty	.tylet	list.t	string.t
+list.tyarg.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tyarg.t
+list.tyforall.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tyforall.t
+list.tylet.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tylet.t
 parser.lift4	.gvar
 parser.many	.gvar
 parser.<*	.gvar
@@ -601,8 +601,8 @@ parser.pos.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
 _gsdl.ags.typeitem.expr.parser_tyfun.p_f_c	.subcode
+list.string.ty	.tylet	list.t	string.t
 parser.lift4	.gvar
 parser.pos.get	.gvar
 parser.*>	.gvar
@@ -677,9 +677,9 @@ string.t	.tygvar
 parser.pos.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
-list.field.ty	.tylet	list.t	gsdl.ags.typeitem.field.t
 _gsdl.ags.typeitem.expr.parser_typroduct.p_f_c	.subcode
 _gsdl.ags.typeitem.expr.parser_typroduct.p_field.f_c	.subcode
+list.field.ty	.tylet	list.t	gsdl.ags.typeitem.field.t
 parser.<*	.gvar
 parser.lift2	.gvar
 parser.pos.get	.gvar
@@ -728,8 +728,8 @@ parser.pos.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
 _gsdl.ags.typeitem.expr.parser_tyref.p_f_c	.subcode
+list.string.ty	.tylet	list.t	string.t
 parser.lift3	.gvar
 parser.pos.get	.gvar
 parser.<*	.gvar
@@ -771,8 +771,8 @@ list.t	.tygvar
 gsdl.ags.typeitem.constr.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 string.t	.tygvar
-list.constr.ty	.tylet	list.t	gsdl.ags.typeitem.constr.t
 _gsdl.ags.typeitem.expr.parser_tysum.p_f_c	.subcode
+list.constr.ty	.tylet	list.t	gsdl.ags.typeitem.constr.t
 parser.lift2	.gvar
 parser.pos.get	.gvar
 parser.*>	.gvar
@@ -809,8 +809,8 @@ string.t	.tygvar
 parser.pos.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.constr.t	.tygvar
-list.constr.ty	.tylet	list.t	gsdl.ags.typeitem.constr.t
 _gsdl.ags.typeitem.expr.parser_tyubsum.p_f_c	.subcode
+list.constr.ty	.tylet	list.t	gsdl.ags.typeitem.constr.t
 parser.<*	.gvar
 parser.lift2	.gvar
 parser.pos.get	.gvar

@@ -29,9 +29,9 @@ rune.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 _gsdl.cgs.pragma.parse_res_ty	.tygvar
+_gsdl.cgs.pragma.parse_f_c	.subcode
 string.ty	.tylet	list.t	rune.t
 list.string.ty	.tylet	list.t	string.ty
-_gsdl.cgs.pragma.parse_f_c	.subcode
 parser.lift2	.gvar
 gsdl.cgs.syntax.gsid	.gvar
 parser.*>	.gvar
@@ -73,8 +73,8 @@ ordered.map.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 _gsdl.cgs.pragma.gstype.get_k	.subcode
+string.ty	.tylet	list.t	rune.t
 maybe.t.out	.cogvar
 ordered.map.get	.gvar
 list.compare	.gvar
@@ -92,8 +92,6 @@ _gsdl.cgs.pragma.gstype.get_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 maybe.t	.tygvar
-#list.t	.tygvar
-#rune.t	.tygvar
 string.t	.tygvar
 _gsdl.cgs.pragma.gstype.get_just_k	.subcode
 gsdl.cgs.pragma.t.out	.cogvar

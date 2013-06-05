@@ -34,9 +34,9 @@ e	.constr	res.u	empty
 _ordered.map.insert_c	.expr
 order.total.t	.tygvar
 ordered.map.t	.tygvar
+_ordered.map.insert_k	.subcode
 k	.tyarg	*
 v	.tyarg	*
-_ordered.map.insert_k	.subcode
 ordered.map.t.out	.cogvar
 cmp	.larg	order.total.t	k
 k	.larg	k
@@ -74,9 +74,9 @@ empty			.apply	ordered.map.empty	k	v
 _ordered.map.get_c	.expr
 order.total.t	.tygvar
 ordered.map.t	.tygvar
+_ordered.map.get_k0	.subcode
 k	.tyarg	*
 v	.tyarg	*
-_ordered.map.get_k0	.subcode
 ordered.map.t.out	.cogvar
 ord	.larg	order.total.t	k
 key	.larg	k
@@ -89,9 +89,9 @@ _ordered.map.get_k0	.forcecont
 order.total.t	.tygvar
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
+_ordered.map.get_branch_k	.subcode
 k	.tyfv	*
 v	.tyfv	*
-_ordered.map.get_branch_k	.subcode
 order.total.ord.t.out	.cogvar
 maybe.nothing	.gvar
 ord	.fv	order.total.t	k
@@ -133,9 +133,9 @@ o0	.karg	order.total.ord.prim.u
 _ordered.map.∪_c	.expr
 order.total.t	.tygvar
 ordered.map.t	.tygvar
+_ordered.map.∪_k0	.subcode
 k	.tyarg	*
 v	.tyarg	*
-_ordered.map.∪_k0	.subcode
 ordered.map.t.out	.cogvar
 cmp	.larg	order.total.t	k
 map0	.larg	ordered.map.t	k	v
@@ -147,9 +147,9 @@ map1	.larg	ordered.map.t	k	v
 _ordered.map.∪_k0	.forcecont
 ordered.map.t	.tygvar
 ordered.map.prim.u	.tygvar
+_ordered.map.∪_k1	.subcode
 k	.tyfv	*
 v	.tyfv	*
-_ordered.map.∪_k1	.subcode
 ordered.map.t.out	.cogvar
 map1	.fv	ordered.map.t	k	v
 map0.0	.karg	ordered.map.prim.u	k	v
@@ -189,9 +189,9 @@ _ordered.map.≡_c	.expr
 order.total.t	.tygvar
 eq.t	.tygvar
 ordered.map.t	.tygvar
+_ordered.map.≡_k0	.subcode
 k	.tyarg	*
 v	.tyarg	*
-_ordered.map.≡_k0	.subcode
 ordered.map.t.out	.cogvar
 cmp	.larg	order.total.t	k
 eq	.larg	eq.t	v
@@ -204,9 +204,9 @@ map1	.larg	ordered.map.t	k	v
 _ordered.map.≡_k0	.forcecont
 ordered.map.t	.tygvar
 ordered.map.prim.u	.tygvar
+_ordered.map.≡_k1	.subcode
 k	.tyfv	*
 v	.tyfv	*
-_ordered.map.≡_k1	.subcode
 ordered.map.t.out	.cogvar
 map1	.fv	ordered.map.t	k	v
 map0.0	.karg	ordered.map.prim.u	k	v

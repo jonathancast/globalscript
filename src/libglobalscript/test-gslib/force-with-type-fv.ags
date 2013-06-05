@@ -10,8 +10,8 @@ x0	.constr	_x0.ty	nil
 
 _epcode	.expr
 rune.t	.tygvar
-α	.tylet	rune.t
 _epcode.cont	.subcode
+α	.tylet	rune.t
 x	.gvar
 	.force	_epcode.cont
 	.enter	x

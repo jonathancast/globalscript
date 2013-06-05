@@ -343,8 +343,8 @@ _test.optional.fail.nil_c	.expr
 rune.t	.tygvar
 maybe.t	.tygvar
 bool.t	.tygvar
-maybe.bool.ty	.tylet	maybe.t	bool.t
 _test.optional.fail.nil_k_c	.subcode
+maybe.bool.ty	.tylet	maybe.t	bool.t
 test.property.label	.gvar
 _test.optional.fail.nil_label	.gvar
 parser.test.assert.passes	.gvar
@@ -383,8 +383,8 @@ _test.many.fail.nil_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 bool.t	.tygvar
-list.bool.t	.tylet	list.t	bool.t
 _test.many.fail.nil_k_c	.subcode
+list.bool.t	.tylet	list.t	bool.t
 test.property.label	.gvar
 _test.many.fail.nil_label	.gvar
 parser.test.assert.passes	.gvar
@@ -424,8 +424,8 @@ _test.many.fail.cons_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 bool.t	.tygvar
-list.bool.t	.tylet	list.t	bool.t
 _test.many.fail.cons_k_c	.subcode
+list.bool.t	.tylet	list.t	bool.t
 test.property.label	.gvar
 _test.many.fail.cons_label	.gvar
 parser.test.assert.fails	.gvar
@@ -506,8 +506,8 @@ nil	.apply	list.nil	rune.t
 _test.match.range.above_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 _test.match.range.above_k_c	.subcode
+string.ty	.tylet	list.t	rune.t
 test.property.label	.gvar
 _test.match.range.above_label	.gvar
 parser.test.assert.fails	.gvar

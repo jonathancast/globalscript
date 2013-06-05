@@ -36,8 +36,8 @@ ibio.prim.env.args.get	.gvar
 _real.entry_dfn_c	.expr
 list.t	.tygvar
 rune.t	.tygvar
-_string.ty	.tylet	list.t	rune.t
 _real.entry_dfn_k	.subcode
+_string.ty	.tylet	list.t	rune.t
 list.t.out	.cogvar
 as	.fv	list.t	_string.ty
 	.force	_real.entry_dfn_k

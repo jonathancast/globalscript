@@ -63,8 +63,8 @@ list.prim.u	.tygvar
 list.t	.tygvar
 _string.ty	.tygvar
 rune.t	.tygvar
-as0.ty	.tylet	list.prim.u	_string.ty
 _cat.args.c.1.s2	.subcode
+as0.ty	.tylet	list.prim.u	_string.ty
 list.<>	.gvar
 _nl	.gvar
 as0	.karg	as0.ty
@@ -101,10 +101,10 @@ list.prim.u	.tygvar
 list.t	.tygvar
 _string.ty	.tygvar
 rune.t	.tygvar
-as0.ty	.tylet	list.prim.u	_string.ty
-t	.tylet	list.prim.u	rune.t
 _cat.args.w.c.1.1	.subcode
 _cat.args.w.c.1.2	.subcode
+as0.ty	.tylet	list.prim.u	_string.ty
+t	.tylet	list.prim.u	rune.t
 list.t.in	.cogvar
 _sp	.gvar
 _nl	.gvar

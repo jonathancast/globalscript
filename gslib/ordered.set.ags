@@ -25,8 +25,8 @@ ordered.set.prim.branch	.closure	_ordered.set.prim.branch_c
 _ordered.set.elem_c	.expr
 order.total.t	.tygvar
 ordered.set.t	.tygvar
-α	.tyarg	*
 _ordered.set.elem_k	.subcode
+α	.tyarg	*
 ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 x	.larg	α
@@ -40,8 +40,8 @@ order.total.t	.tygvar
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
 bool.t	.tygvar	# Temp
-α	.tyfv	*
 _ordered.set.elem_branch_k	.subcode
+α	.tyfv	*
 order.total.ord.t.out	.cogvar
 bool.false	.gvar
 cmp	.fv	order.total.t	α
@@ -100,8 +100,8 @@ _ordered.set.tolist_w_c	.expr
 order.total.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
-α	.tyarg	*
 _ordered.set.tolist_w_k	.subcode
+α	.tyarg	*
 ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 s	.larg	ordered.set.t	α
@@ -165,8 +165,8 @@ empty	.apply	ordered.set.empty	α
 _ordered.set.insert_c	.expr
 order.total.t	.tygvar
 ordered.set.t	.tygvar
-α	.tyarg	*
 _ordered.set.insert_k	.subcode
+α	.tyarg	*
 ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 x	.larg	α
@@ -179,8 +179,8 @@ _ordered.set.insert_k	.forcecont
 order.total.t	.tygvar
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
-α	.tyfv	*
 _ordered.set.insert_branch_k	.subcode
+α	.tyfv	*
 order.total.ord.t.out	.cogvar
 ordered.set.prim.branch	.gvar
 ordered.set.empty	.gvar
@@ -232,8 +232,8 @@ sl1			.apply	ordered.set.insert	α	|	cmp	x	sl
 _ordered.set.union_c	.expr
 order.total.t	.tygvar
 ordered.set.t	.tygvar
-α	.tyarg	*
 _ordered.set.union_k0	.subcode
+α	.tyarg	*
 ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 s0	.larg	ordered.set.t	α
@@ -246,8 +246,8 @@ _ordered.set.union_k0	.forcecont
 order.total.t	.tygvar
 ordered.set.t	.tygvar
 ordered.set.prim.u	.tygvar
-α	.tyfv	*
 _ordered.set.union_k1	.subcode
+α	.tyfv	*
 ordered.set.t.out	.cogvar
 cmp	.fv	order.total.t	α
 s1	.fv	ordered.set.t	α
@@ -260,8 +260,8 @@ _ordered.set.union_k1	.forcecont
 order.total.t	.tygvar
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
-α	.tyfv	*
 _ordered.set.union_branch_branch_k	.subcode
+α	.tyfv	*
 order.total.ord.t.out	.cogvar
 ordered.set.t.in	.cogvar
 cmp	.fv	order.total.t	α
@@ -343,8 +343,8 @@ s3.2			.apply	ordered.set.union	α	|	cmp	sr0.r	sr1
 _ordered.set.union_split_c	.expr
 order.total.t	.tygvar
 ordered.set.t	.tygvar
-α	.tyarg	*
 _ordered.set.union_split_k	.subcode
+α	.tyarg	*
 ordered.set.t.out	.cogvar
 cmp	.larg	order.total.t	α
 x	.larg	α

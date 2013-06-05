@@ -87,8 +87,8 @@ fn1.s	.apply	ibio.file.name.out	|	fn1
 _ibio.file.read.open.prim_c	.expr
 ibio.prim.external.io.t	.tygvar
 ibio.file.name.t	.tygvar
-s	.tyarg	*
 _ibio.file.read.open.prim_k	.subcode
+s	.tyarg	*
 e	.larg	ibio.prim.external.io.t	s
 fn	.larg	ibio.file.name.t
 	.force	_ibio.file.read.open.prim_k
@@ -214,8 +214,8 @@ list.prim.u	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
 _ibio.file.name.components.get_worker_res.ty	.tygvar
-string.ty	.tylet	list.t	rune.t
 _ibio.file.name.components.get_worker_:_k	.subcode
+string.ty	.tylet	list.t	rune.t
 bool.t.out	.cogvar
 rune.≡	.gvar
 _slash	.gvar
@@ -262,8 +262,8 @@ _ibio.file.name.components.get_worker_:_false_k	.forcecont	# First character not
 _ibio.file.name.components.get_worker_res.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-string.ty	.tylet	list.t	rune.t
 _ibio.file.name.components.get_worker_:_false_k1	.subcode
+string.ty	.tylet	list.t	rune.t
 list.t.out	.cogvar
 c	.fv	rune.t
 cs1	.karg	_ibio.file.name.components.get_worker_res.u

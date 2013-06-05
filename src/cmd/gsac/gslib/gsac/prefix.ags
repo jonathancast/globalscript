@@ -20,8 +20,8 @@ list.t	.tygvar	# Temp
 order.total.t	.tygvar	# Temp
 graph.dependencies.t	.tygvar	# Temp
 graph.lookup.t	.tygvar	# Temp
-scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
 _gsac.prefix.typecheck_k	.subcode
+scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
 list.t.out	.cogvar
 graph.tsort	.gvar
 list.map	.gvar

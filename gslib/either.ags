@@ -41,10 +41,10 @@ e0	.constr	t	right	0	x
 _either.map_c	.expr
 _either.map_f_ty	.tygvar
 either.t	.tygvar
+_either.map_k	.subcode
 α	.tyarg	*
 β0	.tyarg	*
 β1	.tyarg	*
-_either.map_k	.subcode
 either.t.out	.cogvar
 f	.larg	_either.map_f_ty	β0	β1
 e	.larg	either.t	α	β0
@@ -56,10 +56,10 @@ _either.map_k	.forcecont
 _either.map_f_ty	.tygvar
 either.prim.u	.tygvar
 either.t	.tygvar
+_either.map_y_c	.subcode
 α	.tyfv	*
 β0	.tyfv	*
 β1	.tyfv	*
-_either.map_y_c	.subcode
 either.right	.gvar
 f	.fv	_either.map_f_ty	β0	β1
 e0	.karg	either.prim.u	α	β0
