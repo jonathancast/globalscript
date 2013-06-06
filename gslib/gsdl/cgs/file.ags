@@ -63,9 +63,9 @@ ibio.lex.receiver.many	.gvar
 ibio.lex.receiver.<|>	.gvar
 gsdl.cgs.pragma.line	.gvar
 gsdl.cgs.blank.line	.gvar
+i	.efv	ibio.prim.iport	rune.t
 string.ty	.tylet	list.t	rune.t
 res.ty	.tylet	list.t	string.ty
-i	.efv	ibio.prim.iport	rune.t
 l	.apply	ibio.lex.receiver.<|>	rune.t	string.ty	|	gsdl.cgs.pragma.line	gsdl.cgs.blank.line
 ml	.apply	ibio.lex.receiver.many	rune.t	string.ty	|	l
 	.app	ml	i
@@ -77,22 +77,22 @@ rune.t	.tygvar
 ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
 list.t	.tygvar
+string.t	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_ty	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 _gsdl.cgs.file.read_pragmas.pos_insert_c	.subcode
 ibio.foldM.prim	.gvar
 parser.pos.initial	.gvar
 ordered.map.empty	.gvar
-string.ty	.tylet	list.t	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
-pr.ls	.fv	list.t	string.ty
+pr.ls	.fv	list.t	string.t
 insert	.alloc	_gsdl.cgs.file.read_pragmas.pos_insert_c
 pos	.apply	parser.pos.initial	|	fn
-prs	.apply	ordered.map.empty	string.ty	gsdl.cgs.pragma.t
+prs	.apply	ordered.map.empty	string.t	gsdl.cgs.pragma.t
 empty	.lrecord	pos	pos	pragmas	prs
 	.app	insert	empty	pr.ls
-	.enter	ibio.foldM.prim	string.ty	_gsdl.cgs.file.read_pragmas.pos_ty
+	.enter	ibio.foldM.prim	string.t	_gsdl.cgs.file.read_pragmas.pos_ty
 
 _gsdl.cgs.file.read_pragmas.pos_insert_c	.expr
 ibio.prim.oport	.tygvar
@@ -256,17 +256,17 @@ pos	.lfield	pos	pragmas.pos
 _gsdl.cgs.file.read_parser_c	.expr
 ibio.file.name.t	.tygvar
 ordered.map.t	.tygvar
+string.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.pragma.t	.tygvar
 _gsdl.cgs.file.read_parser_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.pragma.gstype.get	.gvar
-string.ty	.tylet	list.t	rune.t
 fn	.fv	ibio.file.name.t
-pragmas	.fv	ordered.map.t	string.ty	gsdl.cgs.pragma.t
+pragmas	.fv	ordered.map.t	string.t	gsdl.cgs.pragma.t
 	.force	_gsdl.cgs.file.read_parser_k
-	.coerce	maybe.t.out	string.ty
+	.coerce	maybe.t.out	string.t
 	.app	fn	pragmas
 	.enter	gsdl.cgs.pragma.gstype.get
 
@@ -321,8 +321,8 @@ list.t	.tygvar
 ibio.lex.receive	.gvar
 ibio.lex.receiver.many	.gvar
 ibio.lex.receiver.symbol	.gvar
-res.ty	.tylet	list.t	rune.t
 i	.efv	ibio.prim.iport	rune.t
+res.ty	.tylet	list.t	rune.t
 sym	.apply	ibio.lex.receiver.symbol	rune.t
 ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
 	.app	ms	i

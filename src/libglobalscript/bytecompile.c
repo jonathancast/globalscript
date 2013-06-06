@@ -371,20 +371,29 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
     }
     pseg = item.pseg;
     p = gsinput_next_line(&pseg, item.v);
+
+    /* §paragraph{Global Variables} */
     while (gsbc_bytecode_size_code_type_gvar(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_code_subcode_op(symtable, p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_coercion_gvar_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_data_gvar_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
+
+    /* §paragraph{Free Variables} */
     while (gsbc_bytecode_size_code_type_fv(p, &cl)) p = gsinput_next_line(&pseg, p);
-    while (gsbc_bytecode_size_code_type_arg(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_code_type_let_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_data_fv_code_op(p, &cl)) p = gsinput_next_line(&pseg, p);
+
+    /* §paragraph{Arguments} */
+    while (gsbc_bytecode_size_code_type_arg(p, &cl)) p = gsinput_next_line(&pseg, p);
+    while (gsbc_bytecode_size_code_type_let_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (
         gsbc_bytecode_size_cont_arg_code_op(p, &cl)
         || gsbc_bytecode_size_arg_code_op(p, &cl)
     )
         p = gsinput_next_line(&pseg, p)
     ;
+
+    /* §paragraph{Expression} */
     while (gsbc_bytecode_size_alloc_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     while (gsbc_bytecode_size_cont_push_op(p, &cl)) p = gsinput_next_line(&pseg, p);
     if (!gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
@@ -1455,15 +1464,24 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     struct gsbc_byte_compile_code_or_api_op_closure cl;
 
     gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl);
+
+    /* §paragraph{Global Variables} */
     while (gsbc_byte_compile_type_gvar_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_coercion_gvar_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_data_gvar_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+
+    /* §paragraph{Free Variables} */
     while (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_byte_compile_type_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_type_let_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_data_fv_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+
+    /* §paragraph{Arguments} */
+    while (gsbc_byte_compile_type_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_byte_compile_type_let_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+
+    /* §paragraph{Expression} */
     while (gsbc_byte_compile_alloc_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     if (!gsbc_byte_compile_terminal_code_op(ppseg, &p, &cl)) {

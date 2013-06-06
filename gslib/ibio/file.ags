@@ -264,8 +264,8 @@ list.t	.tygvar
 rune.t	.tygvar
 _ibio.file.name.components.get_worker_:_false_k1	.subcode
 list.t.out	.cogvar
-string.ty	.tylet	list.t	rune.t
 c	.fv	rune.t
+string.ty	.tylet	list.t	rune.t
 cs1	.karg	_ibio.file.name.components.get_worker_res.u
 ds	.field	dirs	cs1
 	.force	_ibio.file.name.components.get_worker_:_false_k1
@@ -309,14 +309,14 @@ _ibio.file.name.components.get_worker_:_false_nil_k	.forcecont	# In the basename
 rune.t	.tygvar
 _ibio.file.name.components.get_worker_res.u	.tygvar
 list.t	.tygvar
+string.t	.tygvar
 bool.prim.u	.tygvar
 _ibio.file.name.components.get_worker_res.ty	.tygvar
 list.:	.gvar
 list.nil	.gvar
-string.ty	.tylet	list.t	rune.t
 c	.fv	rune.t
 cs1	.fv	_ibio.file.name.components.get_worker_res.u
-ds	.fv	list.t	string.ty
+ds	.fv	list.t	string.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
@@ -329,7 +329,7 @@ cs			.record	dirs	ds	exts	es	root	r
 		.case	true
 es1			.field	exts	cs1
 r1			.field	root	cs1
-es			.apply	list.:	string.ty	|	r1	es1
+es			.apply	list.:	string.t	|	r1	es1
 r			.apply	list.nil	rune.t
 cs			.record	dirs	ds	exts	es	root	r
 			.lift

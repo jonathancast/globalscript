@@ -102,8 +102,8 @@ list.foldr1	.gvar
 test.property.∧	.gvar
 test.property.true	.gvar
 _test.all_no.tests.label	.gvar
-t	.tylet	list.prim.u	test.property.t
 ts	.fv	list.t	test.property.t
+t	.tylet	list.prim.u	test.property.t
 ts0	.karg	t
 	.analyze	ts0	:	nil
 		.case	:

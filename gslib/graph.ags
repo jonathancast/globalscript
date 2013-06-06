@@ -52,8 +52,8 @@ list.t	.tygvar	# Temp
 graph.scc.t	.tygvar	# Temp
 k	.tyfv	*
 v	.tyfv	*	# Temp
-scc.ty	.tylet	graph.scc.t	v	# Temp
 k	.fv	_graph.tsort_cont.t	k	v
+scc.ty	.tylet	graph.scc.t	v	# Temp
 ks0	.karg	list.prim.u	k
 	.analyze	ks0	:	nil
 		.case	:
