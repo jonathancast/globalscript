@@ -935,11 +935,16 @@ struct gsbc_typecheck_code_or_api_expr_closure {
     struct gstype *tyregs[MAX_NUM_REGISTERS];
     struct gskind *tyregkinds[MAX_NUM_REGISTERS];
 
-    /* §section Type arguments */
-    int ntyargs;
-    gsinterned_string tyargnames[MAX_NUM_REGISTERS];
-    struct gskind *tyargkinds[MAX_NUM_REGISTERS];
-    struct gsparsedline *tyarglines[MAX_NUM_REGISTERS];
+    /* §section Sub-Expressions */
+    int ncodes;
+    gsinterned_string coderegs[MAX_NUM_REGISTERS];
+    struct gsbc_code_item_type *codetypes[MAX_NUM_REGISTERS];
+
+    /* §section Coercion registers */
+    struct gsbc_coercion_type *regcoerciontypes[MAX_NUM_REGISTERS];
+
+    /* §section Data registers */
+    struct gstype *regtypes[MAX_NUM_REGISTERS];
 
     /* §section Free type variables */
     int ntyfvs;
@@ -947,23 +952,18 @@ struct gsbc_typecheck_code_or_api_expr_closure {
     gsinterned_string tyfvnames[MAX_NUM_REGISTERS];
     struct gskind *tyfvkinds[MAX_NUM_REGISTERS];
 
-    /* §section Sub-Expressions */
-    int ncodes;
-    gsinterned_string coderegs[MAX_NUM_REGISTERS];
-    struct gsbc_code_item_type *codetypes[MAX_NUM_REGISTERS];
-
-    /* §section Data registers */
-    struct gstype *regtypes[MAX_NUM_REGISTERS];
-
-    /* §section Coercion registers */
-    struct gsbc_coercion_type *regcoerciontypes[MAX_NUM_REGISTERS];
-
     /* §section Free variables */
     int nfvs;
     int efv_bound[MAX_NUM_REGISTERS];
     gsinterned_string fvnames[MAX_NUM_REGISTERS];
     struct gspos fvposs[MAX_NUM_REGISTERS];
     struct gstype *fvtypes[MAX_NUM_REGISTERS];
+
+    /* §section Type arguments */
+    int ntyargs;
+    gsinterned_string tyargnames[MAX_NUM_REGISTERS];
+    struct gskind *tyargkinds[MAX_NUM_REGISTERS];
+    struct gsparsedline *tyarglines[MAX_NUM_REGISTERS];
 
     /* §section Arguments */
     int nargs;
