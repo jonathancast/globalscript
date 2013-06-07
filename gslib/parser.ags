@@ -2807,23 +2807,12 @@ k	.larg	_parser.t_k_ty	s	α	β
 
 _parser.<|>_c	.expr
 parser.t	.tygvar
-_parser.<|>_res_c	.subcode
+_parser.t_k_ty	.tygvar
+parser.prim.<|>	.gvar
 s	.tyarg	*
 α	.tyarg	*
 p0	.larg	parser.t	s	α
 p1	.larg	parser.t	s	α
-res	.alloc	_parser.<|>_res_c
-	.enter	res
-
-_parser.<|>_res_c	.expr
-parser.t	.tygvar
-_parser.t_k_ty	.tygvar
-parser.prim.t	.tygvar
-parser.prim.<|>	.gvar
-s	.tyfv	*
-α	.tyfv	*
-p0	.fv	parser.t	s	α
-p1	.fv	parser.t	s	α
 r	.tyarg	*
 k	.larg	_parser.t_k_ty	s	α	r
 p0.k	.apply	p0	r	|	k
