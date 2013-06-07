@@ -995,7 +995,7 @@ static int gsbc_typecheck_cont(struct gsbc_typecheck_code_or_api_expr_closure *,
 
 static struct gstype *gsbc_typecheck_code_or_api_args(int, struct gstype **, struct gsparsedline **, int *, struct gstype *);
 
-static struct gstype *gsbc_typecheck_code_type_arg(struct gsbc_typecheck_code_or_api_expr_closure *, struct gstype *);
+static struct gstype *gsbc_typecheck_code_type_args(struct gsbc_typecheck_code_or_api_expr_closure *, struct gstype *);
 
 static struct gstype *gsbc_typecheck_compile_prim_type(struct gspos, struct gsfile_symtable *, char *);
 
@@ -1044,7 +1044,7 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
 
     calculated_type = gsbc_typecheck_code_or_api_args(cl.nargs, cl.argtypes, cl.arglines, cl.arglifted, calculated_type);
 
-    calculated_type = gsbc_typecheck_code_type_arg(&cl, calculated_type);
+    calculated_type = gsbc_typecheck_code_type_args(&cl, calculated_type);
 
     return gsbc_typecheck_compile_code_item_type(gsbc_code_item_expr, 0, calculated_type, &cl);
 }
@@ -1291,7 +1291,6 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
     return 1;
 }
 
-static
 int
 gsbc_typecheck_code_type_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
@@ -1321,9 +1320,8 @@ gsbc_typecheck_code_type_arg_op(struct gsparsedline *p, struct gsbc_typecheck_co
     return 1;
 }
 
-static
 struct gstype *
-gsbc_typecheck_code_type_arg(struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gstype *calculated_type)
+gsbc_typecheck_code_type_args(struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gstype *calculated_type)
 {
     int i;
 
@@ -2770,7 +2768,7 @@ have_type:
 
     calculated_type = gsbc_typecheck_code_or_api_args(cl.nargs, cl.argtypes, cl.arglines, cl.arglifted, calculated_type);
 
-    calculated_type = gsbc_typecheck_code_type_arg(&cl, calculated_type);
+    calculated_type = gsbc_typecheck_code_type_args(&cl, calculated_type);
 
     return gsbc_typecheck_compile_code_item_type(gsbc_code_item_impprog, 0, calculated_type, &cl);
 }
