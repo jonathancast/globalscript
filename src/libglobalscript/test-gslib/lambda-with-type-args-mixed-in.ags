@@ -1,0 +1,25 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+_f	.closure	_f_c
+
+	.code
+
+_ep_c	.expr
+rune.t	.tygvar
+natural.t	.tygvar
+_f	.gvar
+x	.undefined	rune.t
+fx	.apply	_f	rune.t	|	x
+y	.undefined	natural.t
+	.app	y
+	.enter	fx	natural.t
+
+_f_c	.expr
+α	.tyarg	*
+x	.larg	α
+β	.tyarg	*
+y	.larg	β
+	.enter	x

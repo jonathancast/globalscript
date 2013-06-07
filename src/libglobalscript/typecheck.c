@@ -1021,9 +1021,13 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
     while (gsbc_typecheck_data_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
 
     /* §paragraph{Arguments} */
-    while (gsbc_typecheck_code_type_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_typecheck_data_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (
+        gsbc_typecheck_code_type_arg_op(p, &cl)
+        || gsbc_typecheck_code_type_let_op(p, &cl)
+        || gsbc_typecheck_data_arg_op(p, &cl)
+    )
+        p = gsinput_next_line(ppseg, p)
+    ;
 
     /* §paragraph{Lambda Body / Expression} */
     while (gsbc_typecheck_alloc_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);

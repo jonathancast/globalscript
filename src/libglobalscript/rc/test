@@ -30,6 +30,8 @@ ok_diff_fail '-- applying lambdas with undefined bodies --' ./$O.test-gsi apply-
 ok_diff '-- partial application of lambda with undefined body --' ./$O.test-gsi partial-apply-empty-lambda.ags
 ok_diff_fail '-- over-saturated application of lambda with undefined body --' ./$O.test-gsi over-apply-empty-lamda.ags
 
+ok_diff_fail '-- lambda with type arguments mixed with value arguments --' ./$O.test-gsi lambda-with-type-args-mixed-in.ags
+
 ok_grep_errors '-- a .tylet (of  type synonym) must have enough arguments --' 'unsaturated-tylet.ags:12: Not enough arguments to _foo_ty' ./$O.test-gsi unsaturated-tylet.ags
 
 ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
