@@ -967,7 +967,6 @@ struct gsbc_typecheck_code_or_api_expr_closure {
     int ntyargs;
     gsinterned_string tyargnames[MAX_NUM_REGISTERS];
     struct gskind *tyargkinds[MAX_NUM_REGISTERS];
-    struct gsparsedline *tyarglines[MAX_NUM_REGISTERS];
 
     /* §section Arguments */
     int nargs;
@@ -990,10 +989,8 @@ static int gsbc_typecheck_cont_push_op(struct gsparsedline *, struct gsbc_typech
 static struct gstype *gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *, struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *);
 
 static int gsbc_typecheck_cont(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, struct gstype **);
-
 static int gsbc_typecheck_data_arg(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, struct gstype **);
-
-static struct gstype *gsbc_typecheck_code_type_args(struct gsbc_typecheck_code_or_api_expr_closure *, struct gstype *);
+static int gsbc_typecheck_code_type_arg(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, struct gstype **);
 
 static struct gstype *gsbc_typecheck_compile_prim_type(struct gspos, struct gsfile_symtable *, char *);
 
@@ -1040,12 +1037,11 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
         if (!(
             gsbc_typecheck_cont(&cl, p, &calculated_type)
             || gsbc_typecheck_data_arg(&cl, p, &calculated_type)
+            || gsbc_typecheck_code_type_arg(&cl, p, &calculated_type)
         ))
-            gsfatal(UNIMPL("%P: Unimplemented continuation op %y"), p->pos, p->directive)
+            gsfatal(UNIMPL("%P: Unimplemented continuation, argument, or type argument op %y"), p->pos, p->directive)
         ;
     }
-
-    calculated_type = gsbc_typecheck_code_type_args(&cl, calculated_type);
 
     return gsbc_typecheck_compile_code_item_type(gsbc_code_item_expr, 0, calculated_type, &cl);
 }
@@ -1292,17 +1288,17 @@ gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *symtable, struct gsparsed
     return 1;
 }
 
+static gsinterned_string gssymtyarg;
+
 int
 gsbc_typecheck_code_type_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymtyarg;
-
     if (gssymceq(p->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
         struct gskind *argkind;
 
-        if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal("%P: Too many registers", p->pos)
-        ;
+        if (pcl->nregs >= MAX_NUM_REGISTERS) gsfatal("%P: Too many registers", p->pos);
+        if (pcl->stacksize >= MAX_NUM_REGISTERS) gsfatal("%P: Internal type-checking stack overflow", p->pos);
+
         pcl->regs[pcl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
         argkind = gskind_compile(p->pos, p->arguments[0]);
@@ -1311,9 +1307,9 @@ gsbc_typecheck_code_type_arg_op(struct gsparsedline *p, struct gsbc_typecheck_co
         pcl->tyregs[pcl->nregs] = gstypes_compile_type_var(p->pos, p->label, argkind);
         pcl->nregs++;
 
+        pcl->stack[pcl->stacksize++] = p;
         pcl->tyargnames[pcl->ntyargs] = p->label;
         pcl->tyargkinds[pcl->ntyargs] = argkind;
-        pcl->tyarglines[pcl->ntyargs] = p;
         pcl->ntyargs++;
     } else {
         return 0;
@@ -1321,25 +1317,17 @@ gsbc_typecheck_code_type_arg_op(struct gsparsedline *p, struct gsbc_typecheck_co
     return 1;
 }
 
-struct gstype *
-gsbc_typecheck_code_type_args(struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gstype *calculated_type)
+int
+gsbc_typecheck_code_type_arg(struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsparsedline *p, struct gstype **pcalculated_type)
 {
-    int i;
+    if (p->directive == gssymtyarg) {
+        if (!pcl->ntyargs--) gsfatal(UNIMPL("%P: Didn't add this type argument to the list of type arguments"), p->pos);
 
-    while (pcl->ntyargs--) {
-        struct gsparsedline *p;
-
-        p = pcl->tyarglines[pcl->ntyargs];
-
-        for (i = 0; i < pcl->nfvs; i++)
-            if (gstypes_is_ftyvar(pcl->tyargnames[pcl->ntyargs], pcl->fvtypes[i]))
-                gsfatal("%P: Type argument %y is a free in the type of free variable %y", pcl->fvposs[i], pcl->tyargnames[pcl->ntyargs], pcl->fvnames[i])
-        ;
-
-        calculated_type = gstypes_compile_forall(p->pos, pcl->tyargnames[pcl->ntyargs], pcl->tyargkinds[pcl->ntyargs], calculated_type);
+        *pcalculated_type = gstypes_compile_forall(p->pos, pcl->tyargnames[pcl->ntyargs], pcl->tyargkinds[pcl->ntyargs], *pcalculated_type);
+    } else {
+        return 0;
     }
-
-    return calculated_type;
+    return 1;
 }
 
 int
@@ -2764,12 +2752,15 @@ have_type:
         gsfatal_unimpl(__FILE__, __LINE__, "%P: Ensure API block statement has unlifted type", pos);
     }
 
-    while (cl.stacksize)
-        if (!gsbc_typecheck_data_arg(&cl, cl.stack[--cl.stacksize], &calculated_type))
-            gsfatal(UNIMPL("%P: Un-implemented argument op %y"), cl.stack[cl.stacksize]->pos, cl.stack[cl.stacksize]->directive)
-    ;
-
-    calculated_type = gsbc_typecheck_code_type_args(&cl, calculated_type);
+    while (cl.stacksize) {
+        p = cl.stack[--cl.stacksize];
+        if (!(
+            gsbc_typecheck_data_arg(&cl, p, &calculated_type)
+            || gsbc_typecheck_code_type_arg(&cl, p, &calculated_type)
+        ))
+            gsfatal(UNIMPL("%P: Un-implemented argument op %y"), p->pos, p->directive)
+        ;
+    }
 
     return gsbc_typecheck_compile_code_item_type(gsbc_code_item_impprog, 0, calculated_type, &cl);
 }
