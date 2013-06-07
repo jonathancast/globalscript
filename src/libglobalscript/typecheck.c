@@ -2605,6 +2605,7 @@ gsbc_typecheck_cont(struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct 
             gsfatal("%P: Scrutinee of .ubanalyze not of un-boxed sum type (maybe it's lifted and you meant .ubsumforce?)", p->pos)
         ;
         nconstrs = 0;
+        conttypes[0] = 0;
         for (i = 0; i < p->numarguments && p->arguments[i]->type != gssymseparator; i += 2) {
             int regcont;
 
