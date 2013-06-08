@@ -906,6 +906,7 @@ ace_instr_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
         switch (st) {
             case gstystack:
             case gstyblocked:
+                gsstatprint("%P: Blocking on a %s\n", ip->pos, CLASS_OF_BLOCK_CONTAINING(prog)->description);
                 thread->state = ace_thread_blocked;
                 thread->st.blocked.on = prog;
                 thread->st.blocked.at = ip->pos;
