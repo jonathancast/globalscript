@@ -132,8 +132,8 @@ ibio.prim.unit	.gvar
 list.nil	.gvar
 α	.tyfv	*
 β	.tyfv	*
-f	.fv	_ibio.mapM.prim_f_ty	α	β
 res.ty	.tylet	list.t	β
+f	.fv	_ibio.mapM.prim_f_ty	α	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
@@ -188,9 +188,9 @@ list.t	.tygvar
 ibio.prim.unit	.gvar
 list.:	.gvar
 β	.tyfv	*
+res.ty	.tylet	list.t	β
 y	.fv	β
 ys1	.fv	list.t	β
-res.ty	.tylet	list.t	β
 ys	.apply	list.:	β	|	y	ys1
 	.lift
 	.app	ys
