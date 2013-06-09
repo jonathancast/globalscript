@@ -1,0 +1,26 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+t	.tygvar
+t.in	.cogvar
+x	.undefined	t
+x.t	.cast	x	t.in
+	.enter	x.t
+
+	.type
+
+t	.tyabstract	*
+	.tylift
+	.typroduct
+
+	.coercion
+
+t.in	.tycoercion
+t	.tygvar
+	.tydefinition	t

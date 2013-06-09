@@ -2079,7 +2079,7 @@ static
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc, gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymapply;
+    static gsinterned_string gssymalloc, gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymcast, gssymapply;
 
     int i;
 
@@ -2376,6 +2376,29 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = type;
+        pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymcast, gssymcodeop, ".cast")) {
+        struct gstype *target_type;
+        struct gsbc_coercion_type *coercion_type;
+        struct gstype *src_type, *dest_type;
+
+        CHECK_NUM_REGS(pcl->nregs);
+
+        gsargcheck(p, 0, "Target");
+        target_type = pcl->regtypes[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0])];
+
+        gsargcheck(p, 1, "Coercion");
+        coercion_type = pcl->regcoerciontypes[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1])];
+        
+        src_type = coercion_type->source;
+        dest_type = coercion_type->dest;
+        for (i = 2; i < p->numarguments; i++) {
+            gsfatal(UNIMPL("%P: Handle type arguments to coercion next"), p->pos);
+        }
+        gstypes_type_check_type_fail(p->pos, target_type, src_type);
+
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regtypes[pcl->nregs] = dest_type;
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymapply, gssymcodeop, ".apply")) {
         int first_arg;

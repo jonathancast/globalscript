@@ -342,7 +342,7 @@ static gsinterned_string gssymopsubcode, gssymopcogvar, gssymopgvar, gssymoprune
 /* Data arguments */
 static gsinterned_string gssymoparg, gssymoplarg, gssymopexkarg, gssymopkarg, gssymopfkarg;
 /* Allocation */
-static gsinterned_string gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymoplrecord, gssymopfield, gssymoplfield, gssymopundefined, gssymopapply, gssymopimpprim;
+static gsinterned_string gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymoplrecord, gssymopfield, gssymoplfield, gssymopundefined, gssymopcast, gssymopapply, gssymopimpprim;
 /* Continuations */
 static gsinterned_string gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze;
 /* Terminals */
@@ -740,6 +740,13 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         pcl->nregs++;
 
         pcl->size += ACE_UNDEFINED_SIZE();
+    } else if (gssymceq(p->directive, gssymopcast, gssymcodeop, ".cast")) {
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->nregs++;
+
+        pcl->size += ACE_ALIAS_SIZE(); /* FIXME: Should be erased */
     } else if (gssymceq(p->directive, gssymopapply, gssymcodeop, ".apply")) {
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
@@ -2047,6 +2054,13 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         pcl->pout = ACE_UNDEFINED_SKIP(pcode);
 
         ADD_LABEL_TO_REGS_WITH_TYPE(type);
+    } else if (gssymceq(p->directive, gssymopcast, gssymcodeop, ".cast")) {
+        SETUP_PCODE(gsbc_op_alias);
+
+        ACE_ALIAS_SOURCE(pcode) = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0]);
+        pcl->pout = ACE_ALIAS_SKIP(pcode);
+
+        ADD_LABEL_TO_REGS();
     } else if (gssymceq(p->directive, gssymopapply, gssymcodeop, ".apply")) {
         struct gstype *type, *tyarg;
         int first_arg;

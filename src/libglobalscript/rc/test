@@ -50,6 +50,9 @@ ok_grep_errors '-- an abstract type is different from its definition --' './test
 ok_diff_fail '-- undefined abstract type expressions --' ./$O.test-gsi undef-abs-type-expr.ags
 ok_grep_errors '-- an abstract type is different from its definition (in expressions) --' './test-gslib/invalid-abs-type-expr.ags:13: I don''t think' ./$O.test-gsi invalid-abs-type-expr.ags
 
+ok_grep_errors '-- an abstract type is different from its definition (in generators) --' './test-gslib/invalid-abs-type-gen.ags:13: I don''t think' ./$O.test-gsi invalid-abs-type-gen.ags
+ok_diff_fail '-- undefined abstract type generators --' ./$O.test-gsi undef-abs-type-gen.ags
+
 ok_diff_fail '-- force undefined values of abstract types --' ./$O.test-gsi force-undef-abs-type.ags
 
 ok_diff_fail '-- force with free variable in continuation --' ./$O.test-gsi force-with-fv.ags

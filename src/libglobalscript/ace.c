@@ -68,6 +68,7 @@ static void ace_instr_alloc_record(struct ace_thread *);
 static void ace_instr_extract_field(struct ace_thread *);
 static void ace_instr_alloc_lfield(struct ace_thread *);
 static void ace_instr_alloc_undef(struct ace_thread *);
+static void ace_instr_copy_alias(struct ace_thread *);
 static void ace_instr_alloc_apply(struct ace_thread *);
 static void ace_instr_alloc_unknown_eprim(struct ace_thread *);
 static void ace_instr_alloc_eprim(struct ace_thread *);
@@ -144,6 +145,9 @@ ace_thread_pool_main(void *p)
                     break;
                 case gsbc_op_undefined:
                     ace_instr_alloc_undef(thread);
+                    break;
+                case gsbc_op_alias:
+                    ace_instr_copy_alias(thread);
                     break;
                 case gsbc_op_apply:
                     ace_instr_alloc_apply(thread);
@@ -580,6 +584,20 @@ ace_instr_alloc_undef(struct ace_thread *thread)
     thread->regs[thread->nregs] = (gsvalue)err;
     thread->nregs++;
     thread->st.running.ip = ACE_UNDEFINED_SKIP(ip);
+    return;
+}
+
+static
+void
+ace_instr_copy_alias(struct ace_thread *thread)
+{
+    struct gsbc *ip;
+
+    ip = thread->st.running.ip;
+
+    thread->regs[thread->nregs] = thread->regs[ACE_ALIAS_SOURCE(ip)];
+    thread->nregs++;
+    thread->st.running.ip = ACE_ALIAS_SKIP(ip);
     return;
 }
 
