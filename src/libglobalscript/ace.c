@@ -85,7 +85,7 @@ static void ace_instr_ubprim(struct ace_thread *);
 static void ace_instr_lprim(struct ace_thread *);
 
 struct ace_thread_pool_stats {
-    vlong numthreads_total, num_blocked, num_blocked_threads, num_blocks_on_function;
+    vlong numthreads_total, num_blocked, num_blocked_threads, num_blocks_on_function, num_blocks_on_new_stack, num_blocks_on_existing_thread;
     vlong gc_time, checking_thread_time;
 };
 
@@ -99,7 +99,7 @@ ace_thread_pool_main(void *p)
     vlong outer_loops, outer_loops_without_threads, total_thread_load, num_timeslots, num_completed_timeslots, num_blocked_timeslots, num_finished_timeslots, num_instrs;
     vlong start_time, end_time, finding_thread_time, finding_thread_start_time, instr_time, instr_start_time, waiting_for_thread_time, waiting_for_thread_start_time;
 
-    outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = num_timeslots = num_completed_timeslots = num_blocked_timeslots = num_finished_timeslots = stats.num_blocks_on_function = 0;
+    outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = num_timeslots = num_completed_timeslots = num_blocked_timeslots = num_finished_timeslots = stats.num_blocks_on_function = stats.num_blocks_on_new_stack = stats.num_blocks_on_existing_thread = 0;
     start_time = nsec();
     finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = waiting_for_thread_time = waiting_for_thread_start_time = 0;
     tid = 0;
@@ -224,15 +224,16 @@ no_clients:
         gsstatprint("# ACE outer loops: %lld\n", outer_loops);
         if (outer_loops) gsstatprint("Avg # ACE threads: %02g\n", (double)stats.numthreads_total / outer_loops);
         if (outer_loops) gsstatprint("Avg ACE system load: %02g\n", (double)total_thread_load / outer_loops);
-        if (outer_loops) gsstatprint("ACE %% loops w/ no threads: %02g%\n", ((double)outer_loops_without_threads / outer_loops) * 100);
+        if (outer_loops) gsstatprint("ACE %% loops w/ no threads: %02g%%\n", ((double)outer_loops_without_threads / outer_loops) * 100);
         if (stats.numthreads_total) gsstatprint("ACE threads: %2.2g%% blocked, %2.2g%% blocked on threads\n", ((double)stats.num_blocked / stats.numthreads_total) * 100, ((double)stats.num_blocked_threads / stats.numthreads_total) * 100);
         gsstatprint("ACE Run time: %llds %lldms\n", (end_time - start_time) / 1000 / 1000 / 1000, ((end_time - start_time) / 1000 / 1000) % 1000);
         gsstatprint("ACE Finding thread time: %llds %lldms\n", finding_thread_time / 1000 / 1000 / 1000, (finding_thread_time / 1000 / 1000) % 1000);
         gsstatprint("ACE Checking thread state time: %llds %lldms\n", stats.checking_thread_time / 1000 / 1000 / 1000, (stats.checking_thread_time / 1000 / 1000) % 1000);
         gsstatprint("ACE instruction execution time: %llds %lldms\n", instr_time / 1000 / 1000 / 1000, (instr_time / 1000 / 1000) % 1000);
+        gsstatprint("ACE avg time slot time: %lldns\n", instr_time / num_timeslots);
         gsstatprint("GC time: %llds %lldms\n", stats.gc_time / 1000 / 1000 / 1000, (stats.gc_time / 1000 / 1000) % 1000);
         if (num_instrs) gsstatprint("Avg unit of work: %gμs\n", (double)instr_time / num_instrs / 1000);
-        if (num_timeslots) gsstatprint("Time slots: %lld (%02g%% ran to completion; %02g%% blocked; %02g%% finished; %02g%% blocked on functions)\n", num_timeslots, (double)num_completed_timeslots / num_timeslots * 100, (double)num_finished_timeslots / num_timeslots * 100, (double)num_blocked_timeslots / num_timeslots * 100, (double)stats.num_blocks_on_function / num_timeslots * 100);
+        if (num_timeslots) gsstatprint("Time slots: %lld (%02g%% ran to completion; %02g%% blocked; %02g%% finished; %02g%% blocked on functions; %02g%% blocked on new stacks; %02g%% blocked on existing threads)\n", num_timeslots, (double)num_completed_timeslots / num_timeslots * 100, (double)num_finished_timeslots / num_timeslots * 100, (double)num_blocked_timeslots / num_timeslots * 100, (double)stats.num_blocks_on_function / num_timeslots * 100, (double)stats.num_blocks_on_new_stack / num_timeslots * 100, (double)stats.num_blocks_on_existing_thread / num_timeslots * 100);
         gsstatprint("Time waiting for a thread: %llds %lldms\n", waiting_for_thread_time / 1000 / 1000 / 1000, (waiting_for_thread_time / 1000 / 1000) % 1000);
     }
 }
@@ -903,10 +904,12 @@ ace_instr_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
                         ace_thread_enter_closure(ip->pos, thread, hp, stats);
                         return;
                     } else {
+                        stats->num_blocks_on_new_stack++;
                         st = ace_start_evaluation(ip->pos, hp);
                         break;
                     }
                 case gstystack:
+                    stats->num_blocks_on_existing_thread++;
                 case gstywhnf:
                 case gstyindir:
                 case gstyenosys:
