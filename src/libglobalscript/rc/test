@@ -52,6 +52,7 @@ ok_grep_errors '-- an abstract type is different from its definition (in express
 
 ok_grep_errors '-- an abstract type is different from its definition (in generators) --' './test-gslib/invalid-abs-type-gen.ags:13: I don''t think' ./$O.test-gsi invalid-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators --' ./$O.test-gsi undef-abs-type-gen.ags
+ok_diff_fail '-- undefined abstract type generators with type arguments --' ./$O.test-gsi undef-abs-type-gen-tyargs.ags
 
 ok_diff_fail '-- force undefined values of abstract types --' ./$O.test-gsi force-undef-abs-type.ags
 

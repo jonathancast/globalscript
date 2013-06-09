@@ -1,0 +1,27 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+natural.t	.tygvar
+t.in	.cogvar
+x	.undefined	natural.t
+x.t	.cast	x	t.in	natural.t
+	.enter	x.t
+
+	.type
+
+t	.tyabstract	**^
+α	.tylambda	*
+	.tyref	α
+
+	.coercion
+
+t.in	.tycoercion
+t	.tygvar
+α	.tylambda	*
+	.tydefinition	t	α

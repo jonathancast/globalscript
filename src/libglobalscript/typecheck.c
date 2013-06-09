@@ -2380,7 +2380,7 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
     } else if (gssymceq(p->directive, gssymcast, gssymcodeop, ".cast")) {
         struct gstype *target_type;
         struct gsbc_coercion_type *coercion_type;
-        struct gstype *src_type, *dest_type;
+        struct gstype *src_type, *dest_type, *tyarg;
 
         CHECK_NUM_REGS(pcl->nregs);
 
@@ -2393,7 +2393,9 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         src_type = coercion_type->source;
         dest_type = coercion_type->dest;
         for (i = 2; i < p->numarguments; i++) {
-            gsfatal(UNIMPL("%P: Handle type arguments to coercion next"), p->pos);
+            tyarg = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
+            src_type = gstype_apply(p->pos, src_type, tyarg);
+            dest_type = gstype_apply(p->pos, dest_type, tyarg);
         }
         gstypes_type_check_type_fail(p->pos, target_type, src_type);
 

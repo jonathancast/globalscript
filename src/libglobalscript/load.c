@@ -1342,7 +1342,7 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
         p->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
         if (n < 4) gsfatal("%P: Missing coercion", p->pos);
         p->arguments[3 - 2] = gsintern_string(gssymcoercionlable, fields[3]);
-        if (n > 4) gsfatal(UNIMPL("%P: Type arguments to coercion"), p->pos);
+        for (i = 4; i < n; i++) p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
     } else if (gssymceq(p->directive, gssymapply, gssymcodeop, ".apply")) {
         STORE_VALUE_ALLOC_OP_LABEL(".apply");
         if (n < 3)
