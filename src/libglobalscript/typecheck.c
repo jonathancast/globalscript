@@ -2079,7 +2079,7 @@ static
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc, gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymcast, gssymapply;
+    static gsinterned_string gssymalloc, gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
 
     int i;
 
@@ -2376,6 +2376,19 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = type;
+        pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymlifted, gssymcodeop, ".lifted")) {
+        struct gstype *target_type;
+
+        CHECK_NUM_REGS(pcl->nregs);
+
+        gsargcheck(p, 0, "Target");
+        target_type = pcl->regtypes[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0])];
+
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(target_type), gskind_unlifted_kind());
+
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->regtypes[pcl->nregs] = gstypes_compile_lift(p->pos, target_type);
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymcast, gssymcodeop, ".cast")) {
         struct gstype *target_type;

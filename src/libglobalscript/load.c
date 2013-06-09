@@ -1183,7 +1183,7 @@ static
 int
 gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, char **fields, long n)
 {
-    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymcast, gssymapply;
+    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
 
     int i;
 
@@ -1336,6 +1336,11 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
         for (i = 2; i < n; i++)
             p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
+    } else if (gssymceq(p->directive, gssymlifted, gssymcodeop, ".lifted")) {
+        STORE_VALUE_ALLOC_OP_LABEL(".lifted");
+        if (n < 3) gsfatal("%P: Missing target of lifting", p->pos);
+        p->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
+        if (n > 3) gsfatal("%P: Too many arguments to .lifted", p->pos);
     } else if (gssymceq(p->directive, gssymcast, gssymcodeop, ".cast")) {
         STORE_VALUE_ALLOC_OP_LABEL(".cast");
         if (n < 3) gsfatal("%P: Missing target of coercion", p->pos);

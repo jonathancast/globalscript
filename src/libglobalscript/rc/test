@@ -42,6 +42,8 @@ ok_diff_fail '-- alloc undefined with .undefined --' ./$O.test-gsi undef-op.ags
 
 ok_diff '-- alloc application --' ./$O.test-gsi apply-op.ags
 
+ok_diff_fail '-- lifted generators --' ./$O.test-gsi lifted-gen.ags
+
 ok_grep_errors '-- abstract types with too few lambdas in definition --' './test-gslib/mis-kinded-abs-type.ags:14: Incorrect kind: ' ./$O.test-gsi mis-kinded-abs-type.ags
 
 ok_diff_fail '-- undefined values of abstract types --' ./$O.test-gsi undef-abs-type.ags

@@ -1,0 +1,21 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+f	.closure	_f_c
+
+	.code
+
+_ep_c	.expr
+f	.gvar
+x	.record
+x.l	.lifted	x
+	.app	x.l
+	.yield	f
+
+_f_c	.expr
+record.empty	.tygvar
+x	.arg	record.empty
+	.undef	record.empty
