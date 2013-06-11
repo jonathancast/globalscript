@@ -145,9 +145,12 @@ ibio.prim.unit	.gvar
 ty0	.karg	gsdl.ags.file.filetype.prim.u
 	.analyze	ty0	gsdocument	gsprefix
 		.case	gsdocument
-			.undef	ibio.prim.t	gsac.input.prefix.t
+res			.undefined	gsac.input.prefix.t	# Empty prefix
+			.lift
+			.app	res
+			.yield	ibio.prim.unit	gsac.input.prefix.t
 		.case	gsprefix
-res			.undefined	gsac.input.prefix.t
+res			.undefined	gsac.input.prefix.t	# Translate file0 to a prefix
 			.lift
 			.app	res
 			.yield	ibio.prim.unit	gsac.input.prefix.t
