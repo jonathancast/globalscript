@@ -59,7 +59,7 @@ _string.fmtline_k1	.subcode
 list.t.out	.cogvar
 list.:	.gvar
 list.nil	.gvar
-_nl	.gvar
+rune.new.line	.gvar
 s0	.karg	list.prim.u	rune.t
 	.analyze	s0	:	nil
 		.case	:
@@ -70,7 +70,7 @@ s1		.fkarg	1	list.t	rune.t
 			.enter	s1
 		.case	nil
 nil			.apply	list.nil	rune.t
-			.app	_nl	nil
+			.app	rune.new.line	nil
 			.enter	list.:	rune.t
 
 _string.fmtline_k1	.forcecont
@@ -82,7 +82,7 @@ bool.t.out	.cogvar
 list.:	.gvar
 string.fmtline	.gvar
 rune.≡	.gvar
-_nl	.gvar
+rune.new.line	.gvar
 c0	.fv	rune.t
 s1	.fv	list.t	rune.t
 s1.0	.karg	list.prim.u	rune.t
@@ -96,7 +96,7 @@ y.s.1			.apply	string.fmtline	|	s1
 		.case	nil
 			.force	_string.fmtline_k2
 			.coerce	bool.t.out
-			.app	c0	_nl
+			.app	c0	rune.new.line
 			.enter	rune.≡
 
 _string.fmtline_k2	.forcecont
@@ -106,19 +106,19 @@ bool.prim.u	.tygvar
 list.:	.gvar
 string.fmtline	.gvar
 list.nil	.gvar
-_nl	.gvar
+rune.new.line	.gvar
 c0	.fv	rune.t
 s1	.fv	list.t	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
 nil			.apply	list.nil	rune.t
-y.s.1			.apply	list.:	rune.t	|	_nl	nil
+y.s.1			.apply	list.:	rune.t	|	rune.new.line	nil
 			.app	c0	y.s.1
 			.enter	list.:	rune.t
 		.case	true
 nil			.apply	list.nil	rune.t
-			.app	_nl	nil
+			.app	rune.new.line	nil
 			.enter	list.:	rune.t
 
 	.type

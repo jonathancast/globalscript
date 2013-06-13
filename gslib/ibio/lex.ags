@@ -728,7 +728,7 @@ ibio.lex.receiver.lexeme.lift.2	.gvar
 list.:	.gvar
 ibio.lex.receiver.pred	.gvar
 rune.≠	.gvar
-_nl	.gvar
+rune.new.line	.gvar
 ibio.lex.receiver.line.non.empty	.gvar
 ibio.lex.receiver.char	.gvar
 rune.≡	.gvar
@@ -736,10 +736,10 @@ ibio.lex.receiver.lexeme.unit	.gvar
 list.nil	.gvar
 string.ty	.tylet	list.t	rune.t
 cons	.apply	list.:	rune.t
-non.nl	.apply	rune.≠	|	_nl
+non.nl	.apply	rune.≠	|	rune.new.line
 non.nlr	.apply	ibio.lex.receiver.pred	rune.t	|	non.nl
 consr	.apply	ibio.lex.receiver.lexeme.lift.2	rune.t	rune.t	string.ty	string.ty	|	cons	non.nlr	ibio.lex.receiver.line.non.empty
-nlr	.apply	ibio.lex.receiver.char	rune.t	|	rune.≡	_nl
+nlr	.apply	ibio.lex.receiver.char	rune.t	|	rune.≡	rune.new.line
 nil	.apply	list.nil	rune.t
 nilr	.apply	ibio.lex.receiver.lexeme.unit	rune.t	string.ty	|	nil
 eolr	.apply	ibio.lex.receiver.lexeme.lift.2	rune.t	rune.t	string.ty	string.ty	|	cons	nlr	nilr

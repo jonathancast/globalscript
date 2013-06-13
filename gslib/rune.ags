@@ -215,12 +215,12 @@ list.t	.tygvar
 _rune.togss_k0	.subcode
 bool.t.out	.cogvar
 rune.≡	.gvar
-_nl	.gvar
+rune.new.line	.gvar
 r	.larg	rune.t
 s	.larg	list.t	rune.t
 	.force	_rune.togss_k0
 	.coerce	bool.t.out
-	.app	r	_nl
+	.app	r	rune.new.line
 	.enter	rune.≡
 
 _rune.togss_k0	.forcecont

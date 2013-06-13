@@ -14,9 +14,6 @@ gsdl.cgs.file.document	.closure	_gsdl.cgs.file.document_c
 gsdl.cgs.pragma.line	.closure	_gsdl.cgs.pragma.line_c
 gsdl.cgs.blank.line	.closure	_gsdl.cgs.blank.line_c	_gsdl.cgs.blank.line_ty
 
-_sp	.closure	_sp_c
-_nl	.closure	_nl_c
-
 	.code
 
 # §section §gs{gsdl.cgs.file.read}
@@ -541,37 +538,21 @@ ibio.lex.receiver.lexeme.lift.2	.gvar
 list.:	.gvar
 ibio.lex.receiver.char	.gvar
 rune.≡	.gvar
-_sp	.gvar
+rune.space	.gvar
 gsdl.cgs.blank.line	.gvar
-_nl	.gvar
+rune.new.line	.gvar
 ibio.lex.receiver.lexeme.unit	.gvar
 list.nil	.gvar
 string.ty	.tylet	list.t	rune.t
 cons	.apply	list.:	rune.t
-blr	.apply	ibio.lex.receiver.char	rune.t	|	rune.≡	_sp
+blr	.apply	ibio.lex.receiver.char	rune.t	|	rune.≡	rune.space
 consr	.apply	ibio.lex.receiver.lexeme.lift.2	rune.t	rune.t	string.ty	string.ty	|	cons	blr	gsdl.cgs.blank.line
-nlr	.apply	ibio.lex.receiver.char	rune.t	|	rune.≡	_nl
+nlr	.apply	ibio.lex.receiver.char	rune.t	|	rune.≡	rune.new.line
 nil	.apply	list.nil	rune.t
 nilr	.apply	ibio.lex.receiver.lexeme.unit	rune.t	string.ty	|	nil
 eolr	.apply	ibio.lex.receiver.lexeme.lift.2	rune.t	rune.t	string.ty	string.ty	|	cons	nlr	nilr
 	.app	consr	eolr
 	.enter	ibio.lex.receiver.<|>	rune.t	string.ty
-
-# §section Random data
-
-_sp_c	.expr
-rune.t.in	.cogvar
-sp	.rune	\s
-	.coerce	rune.t.in
-	.lift
-	.yield	sp
-
-_nl_c	.expr
-rune.t.in	.cogvar
-nl	.rune	\n
-	.coerce	rune.t.in
-	.lift
-	.yield	nl
 
 	.type
 

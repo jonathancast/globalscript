@@ -177,7 +177,7 @@ rune.≡	.gvar
 list.fmtgs	.gvar
 rune.fmtgs.list	.gvar
 rune.fmtgs	.gvar
-_nl	.gvar
+rune.new.line	.gvar
 fmtgs.prec.arg	.gvar
 list.nil	.gvar
 _test.fmtgs.nl_expected	.gvar
@@ -185,7 +185,7 @@ string.ty	.tylet	list.t	rune.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 snil	.apply	list.nil	rune.t
-actual	.apply	rune.fmtgs	|	_nl	fmtgs.prec.arg	snil
+actual	.apply	rune.fmtgs	|	rune.new.line	fmtgs.prec.arg	snil
 test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.fmtgs.nl_expected
 	.app	_test.fmtgs.nl_label	test
 	.enter	test.property.label
