@@ -887,71 +887,70 @@ ace_instr_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
 
     prog = thread->regs[ACE_ENTER_ARG(ip)];
 
-    for (;;) {
-        if (!IS_PTR(prog)) {
+again:
+    if (!IS_PTR(prog)) {
+        ace_return(thread, ip->pos, prog);
+        return;
+    }
+    if (gsisheap_block(BLOCK_CONTAINING(prog))) {
+        struct gsheap_item *hp;
+
+        hp = (struct gsheap_item *)prog;
+        gsheap_lock(hp);
+        st = gsheapstate(ip->pos, hp);
+        switch (st) {
+            case gstythunk:
+                if ((uchar*)thread->stacktop - (uchar*)thread->stacklimit >= 0x100 * sizeof(gsvalue)) {
+                    ace_thread_enter_closure(ip->pos, thread, hp, stats);
+                    return;
+                } else {
+                    gsstatprint("%P: Allocating a new thread to avoid stack overflow\n", ip->pos);
+                    stats->num_blocks_on_new_stack++;
+                    st = ace_start_evaluation(ip->pos, hp);
+                    break;
+                }
+            case gstystack:
+                stats->num_blocks_on_existing_thread++;
+            case gstywhnf:
+            case gstyindir:
+            case gstyenosys:
+                gsheap_unlock(hp);
+                break;
+            default:
+                ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter heap items of state %d", st);
+                gsheap_unlock(hp);
+                return;
+        }
+    } else {
+        st = GS_SLOW_EVALUATE(ip->pos, prog);
+    }
+
+    switch (st) {
+        case gstystack:
+        case gstyblocked:
+            gsstatprint("%P: Blocking on a %s\n", ip->pos, CLASS_OF_BLOCK_CONTAINING(prog)->description);
+            thread->state = ace_thread_blocked;
+            thread->st.blocked.on = prog;
+            thread->st.blocked.at = ip->pos;
+            return;
+        case gstyindir:
+            prog = GS_REMOVE_INDIRECTION(ip->pos, prog);
+            goto again;
+        case gstywhnf:
             ace_return(thread, ip->pos, prog);
             return;
-        }
-        if (gsisheap_block(BLOCK_CONTAINING(prog))) {
-            struct gsheap_item *hp;
-
-            hp = (struct gsheap_item *)prog;
-            gsheap_lock(hp);
-            st = gsheapstate(ip->pos, hp);
-            switch (st) {
-                case gstythunk:
-                    if ((uchar*)thread->stacktop - (uchar*)thread->stacklimit >= 0x100 * sizeof(gsvalue)) {
-                        ace_thread_enter_closure(ip->pos, thread, hp, stats);
-                        return;
-                    } else {
-                        gsstatprint("%P: Allocating a new thread to avoid stack overflow\n", ip->pos);
-                        stats->num_blocks_on_new_stack++;
-                        st = ace_start_evaluation(ip->pos, hp);
-                        break;
-                    }
-                case gstystack:
-                    stats->num_blocks_on_existing_thread++;
-                case gstywhnf:
-                case gstyindir:
-                case gstyenosys:
-                    gsheap_unlock(hp);
-                    break;
-                default:
-                    ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter heap items of state %d", st);
-                    gsheap_unlock(hp);
-                    return;
-            }
-        } else {
-            st = GS_SLOW_EVALUATE(ip->pos, prog);
-        }
-
-        switch (st) {
-            case gstystack:
-            case gstyblocked:
-                gsstatprint("%P: Blocking on a %s\n", ip->pos, CLASS_OF_BLOCK_CONTAINING(prog)->description);
-                thread->state = ace_thread_blocked;
-                thread->st.blocked.on = prog;
-                thread->st.blocked.at = ip->pos;
-                return;
-            case gstyindir:
-                prog = GS_REMOVE_INDIRECTION(ip->pos, prog);
-                break;
-            case gstywhnf:
-                ace_return(thread, ip->pos, prog);
-                return;
-            case gstyerr:
-                ace_error_thread(thread, (struct gserror*)prog);
-                return;
-            case gstyimplerr:
-                ace_failure_thread(thread, (struct gsimplementation_failure *)prog);
-                return;
-            case gstyenosys:
-                ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "%r");
-                return;
-            default:
-                ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
-                return;
-        }
+        case gstyerr:
+            ace_error_thread(thread, (struct gserror*)prog);
+            return;
+        case gstyimplerr:
+            ace_failure_thread(thread, (struct gsimplementation_failure *)prog);
+            return;
+        case gstyenosys:
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "%r");
+            return;
+        default:
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
+            return;
     }
 }
 
