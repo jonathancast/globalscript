@@ -225,6 +225,11 @@ typedef uintptr gsvalue;
 gsvalue gsapply(struct gspos, gsvalue, gsvalue);
 gsvalue gsnapplyv(struct gspos, gsvalue, int, gsvalue *);
 
+/* §subsection Constructors */
+
+gsvalue gsconstr(struct gspos, int, int, ...);
+gsvalue gsconstrv(struct gspos, int, int, gsvalue *);
+
 /* §subsection Booleans */
 
 gsvalue gstrue(struct gspos);

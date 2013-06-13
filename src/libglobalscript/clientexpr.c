@@ -12,29 +12,44 @@
 gsvalue
 gstrue(struct gspos pos)
 {
-    struct gsconstr_args *true;
-
-    true = gsreserveconstrs(sizeof(*true));
-    true->c.pos = pos;
-    true->c.type = gsconstr_args;
-    true->constrnum = 1;
-    true->numargs = 0;
-
-    return (gsvalue)true;
+    return gsconstr(pos, 1, 0);
 }
 
 gsvalue
 gsfalse(struct gspos pos)
 {
-    struct gsconstr_args *false;
+    return gsconstr(pos, 0, 0);
+}
 
-    false = gsreserveconstrs(sizeof(*false));
-    false->c.pos = pos;
-    false->c.type = gsconstr_args;
-    false->constrnum = 0;
-    false->numargs = 0;
+gsvalue
+gsconstr(struct gspos pos, int constrnum, int numargs, ...)
+{
+    gsvalue args[MAX_NUM_REGISTERS];
+    va_list arg;
+    int i;
 
-    return (gsvalue)false;
+    va_start(arg, numargs);
+    for (i = 0; i < numargs; i++) args[i] = va_arg(arg, gsvalue);
+    va_end(arg);
+
+    return gsconstrv(pos, constrnum, numargs, args);
+}
+
+gsvalue
+gsconstrv(struct gspos pos, int constrnum, int numargs, gsvalue *args)
+{
+    struct gsconstr_args *res;
+    int i;
+
+    res = gsreserveconstrs(sizeof(*res));
+    res->c.pos = pos;
+    res->c.type = gsconstr_args;
+    res->constrnum = constrnum;
+    res->numargs = 0;
+
+    for (i = 0; i < numargs; i++) res->arguments[i] = args[i];
+
+    return (gsvalue)res;
 }
 
 gsvalue
