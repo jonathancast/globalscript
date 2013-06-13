@@ -45,9 +45,8 @@ list.prim.u	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 ibio.prim.iport	.tygvar
-ibio.file.read.open.prim	.gvar
+_ep_if_res_c	.subcode
 ibio.file.name.in	.gvar
-ibio.rune.external.io	.gvar
 ibio.prim.unit	.gvar
 string.ty	.tylet	list.t	rune.t
 res.ty	.tylet	ibio.prim.iport	rune.t
@@ -58,9 +57,45 @@ as0	.karg	list.prim.u	string.ty
 a0		.fkarg	0	list.t	rune.t
 as1		.fkarg	1	list.t	string.ty
 fn			.apply	ibio.file.name.in	|	a0
-			.app	ibio.rune.external.io	fn
-			.enter	ibio.file.read.open.prim	rune.t
+res			.alloc	_ep_if_res_c
+			.enter	res
 		.case	nil
+			.lift
+			.app	i
+			.yield	ibio.prim.unit	res.ty
+
+_ep_if_res_c	.impprog	ibio.prim	ibio
+ibio.file.name.t	.tygvar
+_ep_if_res_ei_c	.subcode
+_ep_if_res_body	.subcode
+fn	.fv	ibio.file.name.t
+ei	.bind	_ep_if_res_ei_c
+	.body	_ep_if_res_body
+
+_ep_if_res_ei_c	.expr
+ibio.file.name.t	.tygvar
+rune.t	.tygvar
+ibio.file.read.open.prim	.gvar
+ibio.rune.external.io	.gvar
+fn	.fv	ibio.file.name.t
+	.app	ibio.rune.external.io	fn
+	.enter	ibio.file.read.open.prim	rune.t
+
+_ep_if_res_body	.expr
+_ibio.prim.file.read.open_res.ty	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+ibio.prim.t	.tygvar	# Temp
+ibio.prim.iport	.tygvar	# Temp
+ibio.prim.unit	.gvar
+res.ty	.tylet	ibio.prim.iport	rune.t
+ei	.efv	_ibio.prim.file.read.open_res.ty	rune.t
+	.analyze	ei	0	1
+		.case	0
+err		.karg	string.t
+			.undef	ibio.prim.t	res.ty
+		.case	1
+i		.karg	ibio.prim.iport	rune.t
 			.lift
 			.app	i
 			.yield	ibio.prim.unit	res.ty

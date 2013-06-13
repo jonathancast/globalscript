@@ -710,7 +710,15 @@ id	.bind	_prefix.readdir_id_c
 ds1	.bind	_prefix.readdir_ds1_c
 	.body	_prefix.readdir_body_c
 
-_prefix.readdir_id_c	.expr
+_prefix.readdir_id_c	.impprog	ibio.prim	ibio
+ibio.file.name.t	.tygvar
+_prefix.readdir_id_eid_c	.subcode
+_prefix.readdir_id_body_c	.subcode
+dirn	.fv	ibio.file.name.t
+eid	.bind	_prefix.readdir_id_eid_c
+	.body	_prefix.readdir_id_body_c
+
+_prefix.readdir_id_eid_c	.expr
 ibio.file.name.t	.tygvar
 ibio.dir.t	.tygvar
 ibio.file.read.open.prim	.gvar
@@ -718,6 +726,25 @@ ibio.dir.external.io	.gvar
 dirn	.fv	ibio.file.name.t
 	.app	ibio.dir.external.io	dirn
 	.enter	ibio.file.read.open.prim	ibio.dir.t
+
+_prefix.readdir_id_body_c	.expr
+_ibio.prim.file.read.open_res.ty	.tygvar
+ibio.dir.t	.tygvar
+string.t	.tygvar
+ibio.prim.iport	.tygvar
+ibio.prim.t	.tygvar	# Temp
+ibio.prim.unit	.gvar
+res.ty	.tylet	ibio.prim.iport	ibio.dir.t
+eid	.efv	_ibio.prim.file.read.open_res.ty	ibio.dir.t
+	.analyze	eid	0	1
+		.case	0
+err		.karg	string.t
+			.undef	ibio.prim.t	res.ty
+		.case	1
+id		.karg	ibio.prim.iport	ibio.dir.t
+			.lift
+			.app	id
+			.yield	ibio.prim.unit	res.ty
 
 _prefix.readdir_ds1_c	.expr
 ibio.prim.iport	.tygvar

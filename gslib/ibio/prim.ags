@@ -172,12 +172,19 @@ ibio.prim.external.io	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 ibio.prim.m	.tygvar
-ibio.prim.iport	.tygvar
+_ibio.prim.file.read.open_res.ty	.tygvar
 s	.tyforall	*
-res.ty	.tylet	ibio.prim.iport	s
+res.ty	.tylet	_ibio.prim.file.read.open_res.ty	s
 	.tyfun	ibio.prim.external.io	s
 	.tyfun	list.t	rune.t
 	.tyref	ibio.prim.m	res.ty
+
+_ibio.prim.file.read.open_res.ty	.tyexpr
+string.t	.tygvar
+ibio.prim.iport	.tygvar
+s	.tylambda	*
+res.ty	.tylet	ibio.prim.iport	s
+	.tysum	0	string.t	1	res.ty
 
 _ibio.prim.external.io.rune_ty	.tyexpr
 rune.t	.tygvar

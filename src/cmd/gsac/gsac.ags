@@ -948,7 +948,15 @@ dirs	.bind	_prefix.load.var_w_false_:_true_res_dirs_c
 	.body	_prefix.load.var_w_false_:_true_res_body_c
 
 # §paragraph{Open directory}
-_prefix.load.var_w_false_:_true_res_if_c	.expr
+_prefix.load.var_w_false_:_true_res_if_c	.impprog	ibio.prim	ibio
+_prefix.load.var_w_file_ty	.tygvar
+_prefix.load.var_w_false_:_true_res_if_eif_c	.subcode
+_prefix.load.var_w_false_:_true_res_if_body_c	.subcode
+file0	.fv	_prefix.load.var_w_file_ty
+eif	.bind	_prefix.load.var_w_false_:_true_res_if_eif_c
+	.body	_prefix.load.var_w_false_:_true_res_if_body_c
+
+_prefix.load.var_w_false_:_true_res_if_eif_c	.expr
 _prefix.load.var_w_file_ty	.tygvar
 ibio.dir.t	.tygvar
 ibio.file.read.open.prim	.gvar
@@ -957,6 +965,13 @@ file0	.fv	_prefix.load.var_w_file_ty
 fn	.lfield	filename	file0
 	.app	ibio.dir.external.io	fn
 	.enter	ibio.file.read.open.prim	ibio.dir.t
+
+_prefix.load.var_w_false_:_true_res_if_body_c	.expr
+ibio.prim.t	.tygvar	# Temp
+ibio.prim.iport	.tygvar	# Temp
+ibio.dir.t	.tygvar	# Temp
+res.ty	.tylet	ibio.prim.iport	ibio.dir.t	# Temp
+	.undef	ibio.prim.t	res.ty
 
 # §paragraph{Read directory contents}
 _prefix.load.var_w_false_:_true_res_dirs_c	.expr

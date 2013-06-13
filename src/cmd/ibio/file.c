@@ -80,12 +80,12 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
 
             switch (status) {
                 case gsrpc_failed:
-                    api_abend(thread, "%s", openrpc->rpc.err);
+                    api_abend(thread, UNIMPL("%P: Failed"), open->pos);
                     return api_st_error;
                 case gsrpc_pending:
                     return api_st_blocked;
                 case gsrpc_succeeded: {
-                    *pv = openrpc->iport;
+                    *pv = gsconstr(open->pos, 1, 1, openrpc->iport);
                     return api_st_success;
                 }
                 default:

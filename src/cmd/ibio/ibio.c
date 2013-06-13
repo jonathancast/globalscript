@@ -76,7 +76,7 @@ static struct gsregistered_prim ibio_operations[] = {
     { "write", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ο * ibio.prim.oport ο ` list.t ο ` ibio.prim.m \"Π〈 〉 ⌊⌋ ` → → ∀", ibio_prim_write, },
     { "read", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ ι * ibio.prim.iport ι ` ibio.acceptor.prim.t ι ` \"Π〈 〉 ⌊⌋ ` ibio.prim.m ibio.prim.iptr ι ` ⌊⌋ ` → → ∀", ibio_prim_read, },
     { "env.args.get", __FILE__, __LINE__, gsprim_operation_api, "ibio", "ibio.prim.m list.t list.t rune.t ` ` `", ibio_prim_getargs, },
-    { "file.read.open", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ s * ibio.prim.external.io s ` list.t rune.t ` ibio.prim.m ibio.prim.iport s ` ` → → ∀", ibio_prim_file_read_open, },
+    { "file.read.open", __FILE__, __LINE__, gsprim_operation_api, "ibio", "λ s * ibio.prim.external.io s ` list.t rune.t ` ibio.prim.m string.t ibio.prim.iport s ` \"Σ〈 0 1 〉 ` → → ∀", ibio_prim_file_read_open, },
     { "external.io.rune", __FILE__, __LINE__, gsprim_operation, 0, "ibio.prim.external.io rune.t `", ibio_prim_external_io_rune, },
     { "external.io.dir", __FILE__, __LINE__, gsprim_operation, 0, "λ s * ibio.prim.dir.t s → ⌊⌋ ibio.prim.external.io s ` → ∀", ibio_prim_external_io_dir, },
     { "file.stat", __FILE__, __LINE__, gsprim_operation_api, "ibio", "list.t rune.t ` ibio.prim.m " IBIO_DIR_TYPE " ` →", ibio_prim_file_stat, },

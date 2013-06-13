@@ -61,7 +61,15 @@ as1		.fkarg	1	list.t	_string.ty
 		.case	nil
 			.undef	ibio.file.name.t
 
-_real.entry_id_c	.expr
+_real.entry_id_c	.impprog	ibio.prim	ibio
+ibio.file.name.t	.tygvar
+_real.entry_id_edi_c	.subcode
+_real.entry_id_body_c	.subcode
+dfn	.fv	ibio.file.name.t
+edi	.bind	_real.entry_id_edi_c
+	.body	_real.entry_id_body_c
+
+_real.entry_id_edi_c	.expr
 ibio.file.name.t	.tygvar
 ibio.dir.t	.tygvar
 ibio.file.read.open.prim	.gvar
@@ -69,6 +77,25 @@ ibio.dir.external.io	.gvar
 dfn	.fv	ibio.file.name.t
 	.app	ibio.dir.external.io	dfn
 	.enter	ibio.file.read.open.prim	ibio.dir.t
+
+_real.entry_id_body_c	.expr
+_ibio.prim.file.read.open_res.ty	.tygvar
+ibio.dir.t	.tygvar
+string.t	.tygvar
+ibio.prim.iport	.tygvar
+ibio.prim.t	.tygvar	# Temp
+ibio.prim.unit	.gvar
+res.ty	.tylet	ibio.prim.iport	ibio.dir.t
+edi	.efv	_ibio.prim.file.read.open_res.ty	ibio.dir.t
+	.analyze	edi	0	1
+		.case	0
+err		.karg	string.t
+			.undef	ibio.prim.t	res.ty
+		.case	1
+di		.karg	ibio.prim.iport	ibio.dir.t
+			.lift
+			.app	di
+			.yield	ibio.prim.unit	res.ty
 
 _real.entry_ds_c	.expr
 ibio.prim.iport	.tygvar
