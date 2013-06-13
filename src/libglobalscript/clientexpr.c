@@ -45,7 +45,7 @@ gsconstrv(struct gspos pos, int constrnum, int numargs, gsvalue *args)
     res->c.pos = pos;
     res->c.type = gsconstr_args;
     res->constrnum = constrnum;
-    res->numargs = 0;
+    res->numargs = numargs;
 
     for (i = 0; i < numargs; i++) res->arguments[i] = args[i];
 
