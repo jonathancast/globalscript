@@ -967,11 +967,23 @@ fn	.lfield	filename	file0
 	.enter	ibio.file.read.open.prim	ibio.dir.t
 
 _prefix.load.var_w_false_:_true_res_if_body_c	.expr
+_ibio.prim.file.read.open_res.ty	.tygvar
+ibio.dir.t	.tygvar
+string.t	.tygvar
+ibio.prim.iport	.tygvar
 ibio.prim.t	.tygvar	# Temp
-ibio.prim.iport	.tygvar	# Temp
-ibio.dir.t	.tygvar	# Temp
-res.ty	.tylet	ibio.prim.iport	ibio.dir.t	# Temp
-	.undef	ibio.prim.t	res.ty
+ibio.prim.unit	.gvar
+res.ty	.tylet	ibio.prim.iport	ibio.dir.t
+eif	.efv	_ibio.prim.file.read.open_res.ty	ibio.dir.t
+	.analyze	eif	0	1
+		.case	0
+err		.karg	string.t
+			.undef	ibio.prim.t	res.ty
+		.case	1
+if		.karg	ibio.prim.iport	ibio.dir.t
+			.lift
+			.app	if
+			.yield	ibio.prim.unit	res.ty
 
 # §paragraph{Read directory contents}
 _prefix.load.var_w_false_:_true_res_dirs_c	.expr
