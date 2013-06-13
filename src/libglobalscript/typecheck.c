@@ -3064,6 +3064,30 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
             stacksize--;
 
             stack[stacksize++] = ty;
+        } else if (!strcmp("\"Σ〈", tok)) {
+            int nconstrs;
+            struct gstype_constr constrs[MAX_NUM_REGISTERS];
+
+            nconstrs = 0;
+            while (tok = s, s = gsbc_typecheck_compile_prim_type_skip_token(s), strcmp("〉", tok)) {
+                if (nconstrs >= MAX_NUM_REGISTERS)
+                    gsfatal("%P: Too many constrs in internal primtype; max 0x%x", pos, MAX_NUM_REGISTERS)
+                ;
+                constrs[nconstrs++].name = gsintern_string(gssymconstrlable, tok);
+            }
+            if (stacksize < nconstrs)
+                gsfatal("%P: Stack underflow in internal primtype", pos)
+            ;
+            for (i = 0; i < nconstrs; i++)
+                constrs[i].argtype = stack[stacksize - nconstrs + i]
+            ;
+            stacksize -= nconstrs;
+
+            if (stacksize >= MAX_NUM_REGISTERS)
+                gsfatal(UNIMPL("%P: Stack overflow in internal primtype; max 0x%x"), pos, MAX_NUM_REGISTERS)
+            ;
+
+            stack[stacksize++] = gstypes_compile_sumv(pos, nconstrs, constrs);
         } else if (!strcmp("\"uΣ〈", tok)) {
             int nconstrs;
             struct gstype_constr constrs[MAX_NUM_REGISTERS];
