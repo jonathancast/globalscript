@@ -1722,7 +1722,7 @@ gsparse_case(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxi
     ;
 
     if (*fields[0])
-        gsfatal("%s:%d: Labels illegal on .case")
+        gsfatal("%s:%d: Labels illegal on .case", pos->real_filename, pos->real_lineno)
     ; else
         parsedline->label = 0
     ;
