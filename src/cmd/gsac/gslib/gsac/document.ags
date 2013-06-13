@@ -126,6 +126,7 @@ maybe.t.out	.cogvar
 env	.larg	gsdl.cgs.typeenv.t
 doc	.larg	gsdl.cgs.document.t
 gsty	.lfield	gstype	doc
+pos	.lfield	pos	doc
 	.force	_gsac.document.annotate_gstype_k
 	.coerce	maybe.t.out	gsdl.cgs.gstype.t
 	.enter	gsty
@@ -133,6 +134,7 @@ gsty	.lfield	gstype	doc
 _gsac.document.annotate_gstype_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
@@ -143,13 +145,14 @@ either.t.out	.cogvar
 gsac.gstype.kindcheck	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 doc	.fv	gsdl.cgs.document.t
+pos	.fv	gsdl.sourcepos.t
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.document.annotate_gstype_just_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
-			.app	env	ty
+			.app	pos	env	ty
 			.enter	gsac.gstype.kindcheck
 		.case	nothing
 			.undef	either.t	string.t	gsdl.cgs.document.t

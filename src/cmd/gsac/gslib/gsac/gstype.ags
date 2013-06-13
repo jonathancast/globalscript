@@ -19,10 +19,12 @@ gsac.gstype.gskind.compile	.closure	_gsac.gstype.gskind.compile_c	_gsac.gstype.g
 
 # > either.t string.t
 _gsac.gstype.kindcheck_c	.expr
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.gstype.kindcheck_k	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
+pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 ty	.larg	gsdl.cgs.gstype.t
 	.force	_gsac.gstype.kindcheck_k
@@ -30,6 +32,7 @@ ty	.larg	gsdl.cgs.gstype.t
 	.enter	ty
 
 _gsac.gstype.kindcheck_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -49,6 +52,7 @@ maybe.t.out	.cogvar
 gsac.gstype.kindcheck	.gvar
 gsac.gstype.fields.kindcheck	.gvar
 gsdl.cgs.typeenv.lookupKind	.gvar
+pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0	app	lift	product	var
@@ -57,13 +61,13 @@ tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.kindcheck_app_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
-			.app	env	tyf
+			.app	pos	env	tyf
 			.enter	gsac.gstype.kindcheck
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.kindcheck_lift_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
-			.app	env	ty1
+			.app	pos	env	ty1
 			.enter	gsac.gstype.kindcheck
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
@@ -146,10 +150,12 @@ r		.fkarg	0	record.empty
 			.enter	either.right	string.t	gsdl.cgs.gskind.t
 
 _gsac.gstype.kindcheck_var_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
+pos	.fv	gsdl.sourcepos.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mb0	just	nothing
 		.case	just
@@ -413,11 +419,14 @@ ky	.larg	gsdl.cgs.gskind.t
 # §section §gs{gsac.gstype.kindcheck}
 
 _gsac.gstype.kindcheck_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
 	.tylift
 	.tyfun	gsdl.cgs.typeenv.t
 	.tylift
