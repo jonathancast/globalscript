@@ -904,6 +904,7 @@ ace_instr_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
                         ace_thread_enter_closure(ip->pos, thread, hp, stats);
                         return;
                     } else {
+                        gsstatprint("%P: Allocating a new thread to avoid stack overflow\n", ip->pos);
                         stats->num_blocks_on_new_stack++;
                         st = ace_start_evaluation(ip->pos, hp);
                         break;
