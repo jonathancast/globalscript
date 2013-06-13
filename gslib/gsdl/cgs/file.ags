@@ -3,6 +3,7 @@
 	.data
 
 gsdl.cgs.file.read	.closure	_gsdl.cgs.file.read_c
+_gsdl.cgs.file.read_i_body_0_res_print_msg_suffix.s	.string	\n
 _gsdl.cgs.file.read_parser_document.s	.string	document
 _gsdl.cgs.file.read_parser_no.typepragma.msg	.string	No\s\htype:\sprefix\sor\s\htype:\sdocument\spragma
 
@@ -44,10 +45,13 @@ s	.bind	_gsdl.cgs.file.read_s_c
 	.body	_gsdl.cgs.file.read_body_c
 
 _gsdl.cgs.file.read_i_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
 _gsdl.cgs.file.read_i_ei_c	.subcode
 _gsdl.cgs.file.read_i_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
 ei	.bind	_gsdl.cgs.file.read_i_ei_c
 	.body	_gsdl.cgs.file.read_i_body_c
@@ -62,23 +66,57 @@ fn	.fv	ibio.file.name.t
 	.enter	ibio.file.read.open.prim	rune.t
 
 _gsdl.cgs.file.read_i_body_c	.expr
-_ibio.prim.file.read.open_res.ty	.tygvar
+ibio.prim.oport	.tygvar
 rune.t	.tygvar
+_ibio.prim.file.read.open_res.ty	.tygvar
 string.t	.tygvar
 ibio.prim.iport	.tygvar
-ibio.prim.t	.tygvar	# Temp
+_gsdl.cgs.file.read_i_body_0_res_c	.subcode
 ibio.prim.unit	.gvar
 res.ty	.tylet	ibio.prim.iport	rune.t
+eo	.fv	ibio.prim.oport	rune.t
 ei	.efv	_ibio.prim.file.read.open_res.ty	rune.t
 	.analyze	ei	0	1
 		.case	0
 err		.karg	string.t
-			.undef	ibio.prim.t	res.ty
+res			.alloc	_gsdl.cgs.file.read_i_body_0_res_c
+			.enter	res
 		.case	1
 i		.karg	ibio.prim.iport	rune.t
 			.lift
 			.app	i
 			.yield	ibio.prim.unit	res.ty
+
+_gsdl.cgs.file.read_i_body_0_res_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.file.read_i_body_0_res_print_c	.subcode
+_gsdl.cgs.file.read_i_body_0_res_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	string.t
+	.bind	_gsdl.cgs.file.read_i_body_0_res_print_c
+	.body	_gsdl.cgs.file.read_i_body_0_res_body_c
+
+_gsdl.cgs.file.read_i_body_0_res_print_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+ibio.prim.write	.gvar
+list.<>	.gvar
+_gsdl.cgs.file.read_i_body_0_res_print_msg_suffix.s	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	string.t
+msg	.apply	list.<>	rune.t	|	err	_gsdl.cgs.file.read_i_body_0_res_print_msg_suffix.s
+	.app	eo	msg
+	.yield	ibio.prim.write	rune.t
+
+_gsdl.cgs.file.read_i_body_0_res_body_c	.expr
+ibio.prim.t	.tygvar	# Temp
+ibio.prim.iport	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+res.ty	.tylet	ibio.prim.iport	rune.t	# Temp
+	.undef	ibio.prim.t	res.ty
 
 _gsdl.cgs.file.read_pr.ls_c	.expr
 ibio.prim.iport	.tygvar
