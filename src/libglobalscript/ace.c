@@ -233,7 +233,22 @@ no_clients:
         gsstatprint("ACE avg time slot time: %lldns\n", instr_time / num_timeslots);
         gsstatprint("GC time: %llds %lldms\n", stats.gc_time / 1000 / 1000 / 1000, (stats.gc_time / 1000 / 1000) % 1000);
         if (num_instrs) gsstatprint("Avg unit of work: %gμs\n", (double)instr_time / num_instrs / 1000);
-        if (num_timeslots) gsstatprint("Time slots: %lld (%02g%% ran to completion; %02g%% blocked; %02g%% finished; %02g%% blocked on functions; %02g%% blocked on new stacks; %02g%% blocked on existing threads)\n", num_timeslots, (double)num_completed_timeslots / num_timeslots * 100, (double)num_finished_timeslots / num_timeslots * 100, (double)num_blocked_timeslots / num_timeslots * 100, (double)stats.num_blocks_on_function / num_timeslots * 100, (double)stats.num_blocks_on_new_stack / num_timeslots * 100, (double)stats.num_blocks_on_existing_thread / num_timeslots * 100);
+        if (num_timeslots) gsstatprint(
+            "Time slots: %lld "
+                "(%02g%% ran to completion; "
+                "%02g%% blocked; "
+                "%02g%% finished; "
+                "%02g%% blocked on functions; "
+                "%02g%% blocked on new stacks; "
+                "%02g%% blocked on existing threads)\n",
+            num_timeslots,
+            (double)num_completed_timeslots / num_timeslots * 100,
+            (double)num_blocked_timeslots / num_timeslots * 100,
+            (double)num_finished_timeslots / num_timeslots * 100,
+            (double)stats.num_blocks_on_function / num_timeslots * 100,
+            (double)stats.num_blocks_on_new_stack / num_timeslots * 100,
+            (double)stats.num_blocks_on_existing_thread / num_timeslots * 100
+        );
         gsstatprint("Time waiting for a thread: %llds %lldms\n", waiting_for_thread_time / 1000 / 1000 / 1000, (waiting_for_thread_time / 1000 / 1000) % 1000);
     }
 }
