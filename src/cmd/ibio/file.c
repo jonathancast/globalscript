@@ -73,15 +73,17 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *open,
         } else {
             struct ibio_file_read_open_rpc *openrpc = (struct ibio_file_read_open_rpc *)file_read_open_blocking->rpc;
             int status;
+            gsvalue err;
 
             lock(&openrpc->rpc.lock);
                 status = openrpc->rpc.status;
+                if (status == gsrpc_failed) err = gscstringtogsstring(open->pos, openrpc->rpc.err->start);
             unlock(&openrpc->rpc.lock);
 
             switch (status) {
                 case gsrpc_failed:
-                    api_abend(thread, UNIMPL("%P: Failed"), open->pos);
-                    return api_st_error;
+                    *pv = gsconstr(open->pos, 0, 1, err);
+                    return api_st_success;
                 case gsrpc_pending:
                     return api_st_blocked;
                 case gsrpc_succeeded: {
