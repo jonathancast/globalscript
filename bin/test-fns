@@ -116,12 +116,17 @@ fn ok_grep_script_errors {
     shift; shift; shift
     echo $nm
     if ($* > ./test-results/$casenm^-actual >[2] ./test-results/$casenm^-errors) {
-        echo $* 'succeeded; should have failed' >[1=2]
+        echo 'The command' >[1=2]
+        echo '    ' $* >[1=2]
+        echo 'succeeded; should have failed' >[1=2]
         cat ./test-results/$casenm^-errors >[1=2]
         cat ./test-results/$casenm^-actual >[1=2]
         exit 1
     }
     if (! grep -s $msg ./test-results/$casenm^-errors) {
+        echo 'The command' >[1=2]
+        echo '    ' $* >[1=2]
+        echo 'produced the wrong output' >[1=2]
         echo 'Can''t find expected error message '''^$msg^''' in output anywhere' >[1=2]
         cat ./test-results/$casenm^-errors >[1=2]
         cat ./test-results/$casenm^-actual >[1=2]
