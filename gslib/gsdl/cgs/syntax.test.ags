@@ -4,7 +4,12 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.print_x
+
+_test.print_x	.closure	_test.print_x_c
+_test.print_x_label	.string	var.print\sgsv{x}
+_test.print_x_x.s	.string	x
+_test.print_x_expected	.string	x
 
 	.code
 
@@ -13,3 +18,25 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{print gsv{x}}
+
+_test.print_x_c	.expr
+string.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+test.property.label	.gvar
+_test.print_x_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+gsdl.cgs.syntax.var.print	.gvar
+list.singleton	.gvar
+gsdl.cgs.syntax.var.component.alphanum	.gvar
+_test.print_x_x.s	.gvar
+_test.print_x_expected	.gvar
+v0	.apply	gsdl.cgs.syntax.var.component.alphanum	|	_test.print_x_x.s
+v	.apply	list.singleton	gsdl.cgs.syntax.var.component.t	|	v0
+actual	.apply	gsdl.cgs.syntax.var.print	|	v
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print_x_expected
+	.app	_test.print_x_label	test
+	.enter	test.property.label

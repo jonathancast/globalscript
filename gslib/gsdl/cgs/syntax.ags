@@ -6,6 +6,9 @@ gsdl.cgs.syntax.var.parser	.closure	_gsdl.cgs.syntax.var.parser_c
 _gsdl.cgs.syntax.var.parser_dot.re	.regex	\.
 gsdl.cgs.syntax.var.component.alphanum.parser	.closure	_gsdl.cgs.syntax.var.component.alphanum.parser_c
 
+gsdl.cgs.syntax.var.print	.closure	_gsdl.cgs.syntax.var.print_c
+_gsdl.cgs.syntax.var.print_components.print	.closure	_gsdl.cgs.syntax.var.print_components.print_c	_gsdl.cgs.syntax.var.print_components.print_ty
+
 gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
 _gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
 
@@ -114,6 +117,66 @@ c			.apply	gsdl.cgs.syntax.var.component.alphanum	|	id
 			.enter	parser.unit	rune.t	gsdl.cgs.syntax.var.component.t
 		.case	true
 			.enter	parser.fail	rune.t	gsdl.cgs.syntax.var.component.t
+
+# §section §gs{gsdl.cgs.syntax.var.print}
+
+_gsdl.cgs.syntax.var.print_c	.expr
+gsdl.cgs.syntax.var.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+_gsdl.cgs.syntax.var.print_k	.subcode
+list.t.out	.cogvar
+v	.larg	gsdl.cgs.syntax.var.t
+	.force	_gsdl.cgs.syntax.var.print_k
+	.coerce	list.t.out	gsdl.cgs.syntax.var.component.t
+	.enter	v
+
+_gsdl.cgs.syntax.var.print_k	.forcecont
+list.prim.u	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar	# Temp
+list.<>	.gvar
+gsdl.cgs.syntax.var.component.print	.gvar
+_gsdl.cgs.syntax.var.print_components.print	.gvar
+v0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
+	.analyze	v0	:	nil
+		.case	:
+c		.fkarg	0	gsdl.cgs.syntax.var.component.t
+cs		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
+c.s			.apply	gsdl.cgs.syntax.var.component.print	|	c
+cs.s			.apply	_gsdl.cgs.syntax.var.print_components.print	|	cs
+			.app	c.s	cs.s
+			.enter	list.<>	rune.t
+		.case	nil
+			.undef	string.t
+
+_gsdl.cgs.syntax.var.print_components.print_c	.expr
+list.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+string.t	.tygvar	# Temp
+_gsdl.cgs.syntax.var.print_components.print_k	.subcode
+list.t.out	.cogvar
+cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
+	.force	_gsdl.cgs.syntax.var.print_components.print_k
+	.coerce	list.t.out	gsdl.cgs.syntax.var.component.t
+	.enter	cs
+
+_gsdl.cgs.syntax.var.print_components.print_k	.forcecont
+list.prim.u	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar	# Temp
+list.nil	.gvar
+cs0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
+	.analyze	cs0	:	nil
+		.case	:
+c0		.fkarg	0	gsdl.cgs.syntax.var.component.t
+cs1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
+			.undef	string.t
+		.case	nil
+			.enter	list.nil	rune.t
 
 # §section §gs{gsdl.cgs.syntax.ws}
 
@@ -283,6 +346,16 @@ _gsdl.cgs.syntax.var.component.prim.u_alphanum_ty	.tygvar
 _gsdl.cgs.syntax.var.component.prim.u_alphanum_ty	.tyexpr
 string.t	.tygvar
 	.tyubproduct	0	string.t
+
+# §section §gs{gsdl.cgs.syntax.var.print}
+
+_gsdl.cgs.syntax.var.print_components.print_ty	.tyexpr
+list.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+string.t	.tygvar
+	.tylift
+	.tyfun	list.t	gsdl.cgs.syntax.var.component.t
+	.tyref	string.t
 
 	.coercion
 
