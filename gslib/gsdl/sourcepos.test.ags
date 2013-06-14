@@ -4,12 +4,17 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fmtgs
+_tests	.list	test.property.t	_test.fmtgs	_test.print
 
 _test.fmtgs	.closure	_test.fmtgs_c
 _test.fmtgs_label	.string	fmtgs\s〈\s'file\s∝\sfn<./foo>;\s'0.line\s∝1;\s'0.col\s∝\s1;\s〉
 _test.fmtgs_file.s	.string	./foo
 _test.fmtgs_expected	.string	〈\s'file\s∝\sfn<./foo>;\s'0.line\s∝\s1;\s'0.col\s∝\s1;\s〉
+
+_test.print	.closure	_test.print_c
+_test.print_label	.string	print\s〈\s'file\s∝\sfn<./foo>;\s'0.line\s∝1;\s'0.col\s∝\s1;\s〉
+_test.print_file.s	.string	./foo
+_test.print_expected	.string	./foo:1:1
 
 	.code
 
@@ -42,4 +47,25 @@ nil	.apply	list.nil	rune.t
 actual	.apply	gsdl.sourcepos.fmtgs	|	pos	fmtgs.prec.arg	nil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs_expected
 	.app	_test.fmtgs_label	test
+	.enter	test.property.label
+
+# §section §gs{print 〈 'file ∝ fn<./foo>; '0.line ∝1; '0.col ∝ 1; 〉}
+
+_test.print_c	.expr
+string.t	.tygvar
+test.property.label	.gvar
+_test.print_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+gsdl.sourcepos.print	.gvar
+natural.1	.gvar
+ibio.file.name.in	.gvar
+_test.print_file.s	.gvar
+_test.print_expected	.gvar
+fn	.apply	ibio.file.name.in	|	_test.print_file.s
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	fn
+actual	.apply	gsdl.sourcepos.print	|	pos
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print_expected
+	.app	_test.print_label	test
 	.enter	test.property.label

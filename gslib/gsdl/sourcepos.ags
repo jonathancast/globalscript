@@ -12,6 +12,8 @@ _gsdl.sourcepos.fmtgs_0.line.s	.string	'0.line\s∝\s
 _gsdl.sourcepos.fmtgs_0.col.s	.string	'0.col\s∝\s
 _gsdl.sourcepos.fmtgs_suffix.s	.string	〉
 
+gsdl.sourcepos.print	.closure	_gsdl.sourcepos.print_c
+
 	.code
 
 # §section §gs{gsdl.sourcepos}
@@ -66,6 +68,30 @@ ds1	.apply	diff.list.prepend	rune.t	|	_gsdl.sourcepos.fmtgs_file.s	ds2
 ds	.apply	diff.list.prepend	rune.t	|	_gsdl.sourcepos.fmtgs_prefix.s	ds1
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
+
+# §section §gs{gsdl.sourcepos.print}
+
+_gsdl.sourcepos.print_c	.expr
+gsdl.sourcepos.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+ibio.file.name.out	.gvar
+list.:	.gvar
+rune.colon	.gvar
+natural.fmtdecimal	.gvar
+list.nil	.gvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+file	.lfield	file	pos
+file.s	.apply	ibio.file.name.out	|	file
+0.line	.lfield	0.line	pos
+0.line.s	.apply	natural.fmtdecimal	|	0.line
+0.col	.lfield	0.col	pos
+0.col.s	.apply	natural.fmtdecimal	|	0.col
+s2	.apply	list.:	rune.t	|	rune.colon	0.col.s
+s1	.apply	list.<>	rune.t	|	0.line.s	s2
+s	.apply	list.:	rune.t	|	rune.colon	s1
+	.app	file.s	s
+	.enter	list.<>	rune.t
 
 	.type
 
