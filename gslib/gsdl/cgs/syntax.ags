@@ -168,13 +168,22 @@ gsdl.cgs.syntax.var.component.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 string.t	.tygvar	# Temp
+list.:	.gvar
+rune.dot	.gvar
+list.<>	.gvar
+gsdl.cgs.syntax.var.component.print	.gvar
+_gsdl.cgs.syntax.var.print_components.print	.gvar
 list.nil	.gvar
 cs0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
 	.analyze	cs0	:	nil
 		.case	:
 c0		.fkarg	0	gsdl.cgs.syntax.var.component.t
 cs1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
-			.undef	string.t
+c0.s			.apply	gsdl.cgs.syntax.var.component.print	|	c0
+cs1.s			.apply	_gsdl.cgs.syntax.var.print_components.print	|	cs1
+s1			.apply	list.<>	rune.t	|	c0.s	cs1.s
+			.app	rune.dot	s1
+			.enter	list.:	rune.t
 		.case	nil
 			.enter	list.nil	rune.t
 

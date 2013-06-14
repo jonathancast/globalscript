@@ -28,6 +28,7 @@ rune.backslash	.closure	_rune.backslash_c
 rune.space	.closure	_rune.space_c
 rune.number.sign	.closure	_rune.number.sign_c
 rune.colon	.closure	_rune.colon_c
+rune.dot	.closure	_rune.dot_c
 rune.left.paren	.closure	_rune.left.paren_c
 rune.right.paren	.closure	_rune.right.paren_c
 rune.latin.letter.c	.closure	_rune.latin.letter.c_c
@@ -326,6 +327,13 @@ co	.rune	:
 	.coerce	rune.t.in
 	.lift
 	.yield	co
+
+_rune.dot_c	.expr
+rune.t.in	.cogvar
+dot	.rune	.
+	.coerce	rune.t.in
+	.lift
+	.yield	dot
 
 _rune.left.paren_c	.expr
 rune.t.in	.cogvar

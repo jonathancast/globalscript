@@ -4,12 +4,18 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.print_x
+_tests	.list	test.property.t	_test.print_x	_test.print_m.x
 
 _test.print_x	.closure	_test.print_x_c
 _test.print_x_label	.string	var.print\sgsv{x}
 _test.print_x_x.s	.string	x
 _test.print_x_expected	.string	x
+
+_test.print_m.x	.closure	_test.print_m.x_c
+_test.print_m.x_label	.string	var.print\sgsv{m.x}
+_test.print_m.x_m.s	.string	m
+_test.print_m.x_x.s	.string	x
+_test.print_m.x_expected	.string	m.x
 
 	.code
 
@@ -39,4 +45,30 @@ v	.apply	list.singleton	gsdl.cgs.syntax.var.component.t	|	v0
 actual	.apply	gsdl.cgs.syntax.var.print	|	v
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print_x_expected
 	.app	_test.print_x_label	test
+	.enter	test.property.label
+
+# §section §gs{print gsv{m.x}}
+
+_test.print_m.x_c	.expr
+string.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+test.property.label	.gvar
+_test.print_m.x_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+gsdl.cgs.syntax.var.print	.gvar
+list.:	.gvar
+list.singleton	.gvar
+gsdl.cgs.syntax.var.component.alphanum	.gvar
+_test.print_m.x_m.s	.gvar
+_test.print_m.x_x.s	.gvar
+_test.print_m.x_expected	.gvar
+c0	.apply	gsdl.cgs.syntax.var.component.alphanum	|	_test.print_m.x_m.s
+c1	.apply	gsdl.cgs.syntax.var.component.alphanum	|	_test.print_m.x_x.s
+v1	.apply	list.singleton	gsdl.cgs.syntax.var.component.t	|	c1
+v	.apply	list.:	gsdl.cgs.syntax.var.component.t	|	c0	v1
+actual	.apply	gsdl.cgs.syntax.var.print	|	v
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print_m.x_expected
+	.app	_test.print_m.x_label	test
 	.enter	test.property.label
