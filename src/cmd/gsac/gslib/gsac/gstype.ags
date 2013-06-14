@@ -91,8 +91,16 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	# Temp
+either.left	.gvar
 efki0	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
-	.undef	either.t	string.t	gsdl.cgs.gskind.t
+	.analyze	efki0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.gskind.t
+		.case	right
+fki		.fkarg	0	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
 
 _gsac.gstype.kindcheck_lift_k	.forcecont
 either.prim.u	.tygvar
