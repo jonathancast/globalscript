@@ -29,14 +29,15 @@ _gsac.document.compile_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.document.t	.tygvar
-either.t	.tygvar	# Temp
-gsdl.ags.file.t	.tygvar	# Temp
+gsdl.ags.file.t	.tygvar
 _gsac.document.compile_right_k	.subcode
+either.left	.gvar
 e0	.karg	either.prim.u	string.t	gsdl.cgs.document.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.ags.file.t
+			.app	err
+			.enter	either.left	string.t	gsdl.ags.file.t
 		.case	right
 doc1		.fkarg	0	gsdl.cgs.document.t
 			.force	_gsac.document.compile_right_k
@@ -164,9 +165,9 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 record.empty	.tygvar
-either.t	.tygvar	# Temp
 _gsac.document.annotate_gstype_just_right_k	.subcode
 either.t.out	.cogvar
+either.left	.gvar
 gsac.gskind.check	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 doc	.fv	gsdl.cgs.document.t
@@ -175,7 +176,8 @@ eky0	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
 	.analyze	eky0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.document.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.document.t
 		.case	right
 ky		.fkarg	0	gsdl.cgs.gskind.t
 			.force	_gsac.document.annotate_gstype_just_right_k

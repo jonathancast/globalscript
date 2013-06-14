@@ -4,6 +4,7 @@
 
 	.cast	_real.entry	_ep.in
 _real.entry	.closure	_real.entry_c
+_real.entry_output_k1_nil_doc_res_print_msg_suffix.s	.string	\n
 
 _args.parse	.closure	_args.parse_c	_args.parse_ty
 _args.parsed.empty	.closure	_args.parsed.empty_c	_args.parsed.t
@@ -1382,11 +1383,14 @@ env2			.apply	gsdl.cgs.typeenv.overlay	|	env1	env
 # that can be deferred until a later stage.
 
 _real.entry_output_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.file.t	.tygvar
 list.t	.tygvar	# Temp
 _real.entry_output_k	.subcode
 list.t.out	.cogvar
+eo	.fv	ibio.prim.oport	rune.t
 cut	.fv	list.t	gsdl.cgs.file.t
 env	.fv	gsdl.cgs.typeenv.t
 	.force	_real.entry_output_k
@@ -1394,6 +1398,8 @@ env	.fv	gsdl.cgs.typeenv.t
 	.enter	cut
 
 _real.entry_output_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 list.prim.u	.tygvar
 gsdl.cgs.file.t	.tygvar
@@ -1402,6 +1408,7 @@ ibio.prim.t	.tygvar	# Temp
 gsdl.ags.file.t	.tygvar	# Temp
 _real.entry_output_k1	.subcode
 list.t.out	.cogvar
+eo	.fv	ibio.prim.oport	rune.t
 env	.fv	gsdl.cgs.typeenv.t
 cut0	.karg	list.prim.u	gsdl.cgs.file.t
 	.analyze	cut0	:	nil
@@ -1415,14 +1422,17 @@ cut1		.fkarg	1	list.t	gsdl.cgs.file.t
 			.undef	ibio.prim.t	gsdl.ags.file.t
 
 _real.entry_output_k1	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.file.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
-gsdl.ags.file.t	.tygvar	# Temp
+gsdl.ags.file.t	.tygvar
 _real.entry_output_k1_nil_k	.subcode
 gsdl.cgs.file.t.out	.cogvar
 ibio.prim.unit	.gvar
+eo	.fv	ibio.prim.oport	rune.t
 env	.fv	gsdl.cgs.typeenv.t
 cut0.0	.fv	gsdl.cgs.file.t
 cut1.0	.karg	list.prim.u	gsdl.cgs.file.t
@@ -1440,15 +1450,17 @@ res			.undefined	gsdl.ags.file.t
 			.enter	cut0.0
 
 _real.entry_output_k1_nil_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.file.prim.u	.tygvar
 gsdl.cgs.document.t	.tygvar
 string.t	.tygvar
 gsdl.ags.file.t	.tygvar
-either.t	.tygvar	# Temp
 _real.entry_output_k1_nil_doc_k	.subcode
 either.t.out	.cogvar
 gsac.document.compile	.gvar
+eo	.fv	ibio.prim.oport	rune.t
 env	.fv	gsdl.cgs.typeenv.t
 f0	.karg	gsdl.cgs.file.prim.u
 	.analyze	f0	document
@@ -1461,21 +1473,54 @@ doc		.fkarg	0	gsdl.cgs.document.t
 	# > :: ibio.prim.t	gsdl.ags.file.t
 
 _real.entry_output_k1_nil_doc_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.ags.file.t	.tygvar
-ibio.prim.t	.tygvar	# Temp
+_real.entry_output_k1_nil_doc_res_c	.subcode
 ibio.prim.unit	.gvar
+eo	.fv	ibio.prim.oport	rune.t
 res0	.karg	either.prim.u	string.t	gsdl.ags.file.t
 	.analyze	res0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	ibio.prim.t	gsdl.ags.file.t
+res			.alloc	_real.entry_output_k1_nil_doc_res_c
+			.enter	res
 		.case	right
 res		.fkarg	0	gsdl.ags.file.t
 			.lift
 			.app	res
 			.yield	ibio.prim.unit	gsdl.ags.file.t
+
+_real.entry_output_k1_nil_doc_res_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+_real.entry_output_k1_nil_doc_res_print_c	.subcode
+_real.entry_output_k1_nil_doc_res_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	string.t
+	.bind	_real.entry_output_k1_nil_doc_res_print_c
+	.body	_real.entry_output_k1_nil_doc_res_body_c
+
+_real.entry_output_k1_nil_doc_res_print_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+ibio.prim.write	.gvar
+list.<>	.gvar
+_real.entry_output_k1_nil_doc_res_print_msg_suffix.s	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	string.t
+msg	.apply	list.<>	rune.t	|	err	_real.entry_output_k1_nil_doc_res_print_msg_suffix.s
+	.app	eo	msg
+	.yield	ibio.prim.write	rune.t
+
+_real.entry_output_k1_nil_doc_res_body_c	.expr
+ibio.prim.t	.tygvar	# Temp
+gsdl.ags.file.t	.tygvar	# Temp
+	.undef	ibio.prim.t	gsdl.ags.file.t
 
 # §section Write out §gs{output} on stdout
 

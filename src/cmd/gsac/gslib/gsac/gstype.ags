@@ -3,6 +3,9 @@
 	.data
 
 gsac.gstype.kindcheck	.closure	_gsac.gstype.kindcheck_c	_gsac.gstype.kindcheck_ty
+_gsac.gstype.kindcheck_var_nothing_prefix.s	.string	Unknown\stype\svariable\s'
+_gsac.gstype.kindcheck_var_nothing_suffix.s	.string	'
+
 gsac.gstype.fields.kindcheck	.closure	_gsac.gstype.fields.kindcheck_c	_gsac.gstype.fields.kindcheck_ty
 
 gsac.gstype.compile	.closure	_gsac.gstype.compile_c	_gsac.gstype.compile_ty
@@ -151,18 +154,38 @@ r		.fkarg	0	record.empty
 
 _gsac.gstype.kindcheck_var_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+string.t	.tygvar
+rune.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
+either.left	.gvar
+list.<>	.gvar
+gsdl.sourcepos.print	.gvar
+list.:	.gvar
+rune.colon	.gvar
+rune.space	.gvar
+_gsac.gstype.kindcheck_var_nothing_prefix.s	.gvar
+gsdl.cgs.syntax.var.print	.gvar
+_gsac.gstype.kindcheck_var_nothing_suffix.s	.gvar
 pos	.fv	gsdl.sourcepos.t
+v	.fv	gsdl.cgs.syntax.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mb0	just	nothing
 		.case	just
 ki		.fkarg	0	gsdl.cgs.gskind.t
 			.undef	either.t	string.t	gsdl.cgs.gskind.t
 		.case	nothing
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+pos.s			.apply	gsdl.sourcepos.print	|	pos
+var.s			.apply	gsdl.cgs.syntax.var.print	|	v
+msg.4			.apply	list.<>	rune.t	|	var.s	_gsac.gstype.kindcheck_var_nothing_suffix.s
+msg.3			.apply	list.<>	rune.t	|	_gsac.gstype.kindcheck_var_nothing_prefix.s	msg.4
+msg.2			.apply	list.:	rune.t	|	rune.space	msg.3
+msg.1			.apply	list.:	rune.t	|	rune.colon	msg.2
+msg			.apply	list.<>	rune.t	|	pos.s	msg.1
+			.app	msg
+			.enter	either.left	string.t	gsdl.cgs.gskind.t
 
 # §section §gs{gsac.gstype.fields.kindcheck}
 
