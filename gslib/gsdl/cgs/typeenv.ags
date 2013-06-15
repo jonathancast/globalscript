@@ -15,69 +15,42 @@ gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
 _gsdl.cgs.typeenv.lookupKind_c	.expr
 gsdl.cgs.syntax.var.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-gsdl.cgs.typeenv.entry.t	.tygvar
-_gsdl.cgs.typeenv.lookupKind_k	.subcode
-maybe.t.out	.cogvar
-ordered.map.get	.gvar
-gsdl.cgs.syntax.var.compare	.gvar
+gsdl.cgs.gskind.t	.tygvar	# Temp
+maybe.nothing	.gvar	# Temp
 v	.larg	gsdl.cgs.syntax.var.t
 env	.larg	gsdl.cgs.typeenv.t
-	.force	_gsdl.cgs.typeenv.lookupKind_k
-	.coerce	maybe.t.out	gsdl.cgs.typeenv.entry.t
-	.app	gsdl.cgs.syntax.var.compare	v	env
-	.enter	ordered.map.get	gsdl.cgs.syntax.var.t	gsdl.cgs.typeenv.entry.t
-
-_gsdl.cgs.typeenv.lookupKind_k	.forcecont
-maybe.prim.u	.tygvar
-gsdl.cgs.typeenv.entry.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-maybe.t	.tygvar	# Temp
-maybe.nothing	.gvar
-mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.entry.t
-	.analyze	mb0	just	nothing
-		.case	just
-en		.fkarg	0	gsdl.cgs.typeenv.entry.t
-			.undef	maybe.t	gsdl.cgs.gskind.t
-		.case	nothing
-			.enter	maybe.nothing	gsdl.cgs.gskind.t
+	.enter	maybe.nothing	gsdl.cgs.gskind.t
 
 # §section §gs{gsdl.cgs.typeenv.empty}
 
 _gsdl.cgs.typeenv.empty_c	.expr
 gsdl.cgs.syntax.var.t	.tygvar
-gsdl.cgs.typeenv.entry.t	.tygvar
 ordered.map.empty	.gvar
-	.enter	ordered.map.empty	gsdl.cgs.syntax.var.t	gsdl.cgs.typeenv.entry.t
+r	.record
+	.lift
+	.yield	r
 
 # §section §gs{gsdl.cgs.typeenv.overlay}
 
 _gsdl.cgs.typeenv.overlay_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
-gsdl.cgs.typeenv.entry.t	.tygvar
 ordered.map.∪	.gvar
 gsdl.cgs.syntax.var.compare	.gvar
 env0	.larg	gsdl.cgs.typeenv.t
 env1	.larg	gsdl.cgs.typeenv.t
-	.app	gsdl.cgs.syntax.var.compare	env1	env0
-	.enter	ordered.map.∪	gsdl.cgs.syntax.var.t	gsdl.cgs.typeenv.entry.t
+r	.record
+	.lift
+	.yield	r
 
 	.type
 
 # §section §gs{gsdl.cgs.typeenv.t}
 
 gsdl.cgs.typeenv.t	.tyexpr
-ordered.map.t	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
-gsdl.cgs.typeenv.entry.t	.tygvar
-	.tyref	ordered.map.t	gsdl.cgs.syntax.var.t	gsdl.cgs.typeenv.entry.t
-
-# §section §gs{gsdl.cgs.typeenv.entry.t}
-
-gsdl.cgs.typeenv.entry.t	.tyabstract	*
-gsdl.cgs.typeenv.entry.prim.u	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
 	.tylift
-	.tyref	gsdl.cgs.typeenv.entry.prim.u
+	.tyref	gsdl.cgs.typeenv.u
 
-gsdl.cgs.typeenv.entry.prim.u	.tyexpr
-	.tysum
+gsdl.cgs.typeenv.u	.tyexpr
+	.typroduct
