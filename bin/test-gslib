@@ -6,7 +6,7 @@ fn run_tests {
             run_tests $i
         if (~ $i *.test.ags) {
             if (~ $flagv 1) echo $i >[1=2]
-            if (! $GLOBALSCRIPT/bin/gstest $flags $i)
+            if (! $GLOBALSCRIPT/bin/gstest $flags $gslib $i)
                 failing_suites=($failing_suites $i)
         }
     }
@@ -22,7 +22,8 @@ flags=()
 
 failing_suites=()
 
-run_tests $GLOBALSCRIPT/gslib
+if (~ $#* 0) gslib=() run_tests $GLOBALSCRIPT/gslib
+if not for (i) gslib=($i) run_tests $i
 
 if (! ~ $#failing_suites 0) {
     echo Errors in: >[1=2]
