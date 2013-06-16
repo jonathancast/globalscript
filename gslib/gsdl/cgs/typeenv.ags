@@ -24,9 +24,8 @@ env	.larg	gsdl.cgs.typeenv.t
 # §section §gs{gsdl.cgs.typeenv.empty}
 
 _gsdl.cgs.typeenv.empty_c	.expr
-gsdl.cgs.syntax.var.t	.tygvar
-ordered.map.empty	.gvar
-r	.record
+gsdl.cgs.typeenv.u	.tygvar
+r	.record	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
 
@@ -34,12 +33,10 @@ r	.record
 
 _gsdl.cgs.typeenv.overlay_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
-ordered.map.∪	.gvar
-gsdl.cgs.syntax.var.compare	.gvar
+gsdl.cgs.typeenv.u	.tygvar
 env0	.larg	gsdl.cgs.typeenv.t
 env1	.larg	gsdl.cgs.typeenv.t
-r	.record
+r	.record	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
 
