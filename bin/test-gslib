@@ -5,11 +5,20 @@ fn run_tests {
         if (test -d $i)
             run_tests $i
         if (~ $i *.test.ags) {
-            if (! $GLOBALSCRIPT/bin/gstest $i)
+            if (~ $flagv 1) echo $i >[1=2]
+            if (! $GLOBALSCRIPT/bin/gstest $flags $i)
                 failing_suites=($failing_suites $i)
         }
     }
 }
+
+flagfmt='v'
+if(! ifs=() eval `{getflags $*}) {
+    usage
+    exit usage
+}
+
+flags=()
 
 failing_suites=()
 
