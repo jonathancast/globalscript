@@ -4,7 +4,12 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.source.file.name
+
+_test.source.file.name	.closure	_test.source.file.name_c
+_test.source.file.name_label	.string	source.file.name\sfn<foo.gsac>
+_test.source.file.name_fn.s	.string	foo.gsac
+_test.source.file.name_expected.s	.string	foo.cgs
 
 	.code
 
@@ -13,3 +18,23 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{source.file.name fn<foo.gsac>}
+
+_test.source.file.name_c	.expr
+ibio.file.name.t	.tygvar
+test.property.label	.gvar
+_test.source.file.name_label	.gvar
+test.assert.eq	.gvar
+ibio.file.name.≡	.gvar
+ibio.file.name.fmtgs	.gvar
+gsac.source.file.name	.gvar
+ibio.file.name.in	.gvar
+_test.source.file.name_fn.s	.gvar
+_test.source.file.name_expected.s	.gvar
+fn	.apply	ibio.file.name.in	|	_test.source.file.name_fn.s
+actual	.apply	gsac.source.file.name	|	fn
+expected	.apply	ibio.file.name.in	|	_test.source.file.name_expected.s
+test	.apply	test.assert.eq	ibio.file.name.t	|	ibio.file.name.≡	ibio.file.name.fmtgs	actual	expected
+	.app	_test.source.file.name_label	test
+	.enter	test.property.label
