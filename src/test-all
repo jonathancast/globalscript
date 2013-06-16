@@ -9,7 +9,7 @@ cd $GLOBALSCRIPT/src/libtest &&
     cd ../cmd &&
     mk pure-integration-test && mk pure-install &&
     cd ../../gslib &&
-    $GLOBALSCRIPT/src/cmd/rc/test-gslib &&
+    $GLOBALSCRIPT/bin/test-gslib &&
     cd ../src/cmd/ibio/ &&
     mk integration-test && mk install &&
 # §paragraph{Interpreted Compiler}
