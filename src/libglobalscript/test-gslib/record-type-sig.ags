@@ -1,0 +1,21 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+_record.u	.tygvar
+_y	.rune	y
+_x	.rune	x
+r	.record	bar	_y	foo	_x	|	_record.u
+	.lift
+	.yield	r
+
+	.type
+
+_record.u	.tyexpr
+rune.prim.rune	.tygvar
+	.typroduct	bar	rune.prim.rune	foo	rune.prim.rune

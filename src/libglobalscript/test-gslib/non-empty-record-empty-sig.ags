@@ -1,0 +1,14 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+record.unlifted.empty	.tygvar
+_x	.rune	x
+r	.record	foo	_x	|	record.unlifted.empty
+	.lift
+	.yield	r

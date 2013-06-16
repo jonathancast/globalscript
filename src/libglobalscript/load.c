@@ -1305,12 +1305,18 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
             gswarning("%s:%d: Missing label on %y makes it a no-op", pos->real_filename, pos->real_lineno, p->directive);
             p->label = 0;
         }
-        if (n % 2)
-            gsfatal("%s:%d: Odd number of arguments to %y", pos->real_filename, pos->real_lineno, p->directive)
-        ;
-        for (i = 2; i < n; i += 2) {
+        for (i = 2; i + 1 < n && strcmp(fields[i], "|") && strcmp(fields[i + 1], "|"); i += 2) {
             p->arguments[i - 2] = gsintern_string(gssymfieldlable, fields[i]);
             p->arguments[i + 1 - 2] = gsintern_string(gssymdatalable, fields[i + 1]);
+        }
+        if (i < n) {
+            if (strcmp(fields[i], "|")) gsfatal("%s:%d: Unexpected '%s'; expecting |", pos->real_filename, pos->real_lineno, fields[i]);
+            p->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+            if (i >= n) gsfatal("%P: Missing type signature on %y (if you don't want a type signature omit the trailing |)", p->pos, p->directive);
+            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
+            i++;
+            if (i < n) gsfatal("%s:%d: Too many arguments to %y", pos->real_filename, pos->real_lineno, p->directive);
         }
     } else if (
         gssymceq(p->directive, gssymfield, gssymcodeop, ".field")

@@ -2303,7 +2303,7 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         gssymceq(p->directive, gssymrecord, gssymcodeop, ".record")
         || gssymceq(p->directive, gssymlrecord, gssymcodeop, ".lrecord")
     ) {
-        struct gstype *type;
+        struct gstype *type, *typesig;
         struct gstype_field fields[MAX_NUM_REGISTERS];
         int nfields;
 
@@ -2311,17 +2311,24 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
             gsfatal("%P: Too many registers", p->pos)
         ;
 
-        nfields = p->numarguments / 2;
-        for (i = 0; i < p->numarguments; i += 2) {
+        for (i = 0; i < p->numarguments && p->arguments[i]->type != gssymseparator; i += 2) {
             int reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i + 1]);
             fields[i / 2].name = p->arguments[i];
             fields[i / 2].type = pcl->regtypes[reg];
         }
+        nfields = i / 2;
 
         type = gstypes_compile_productv(p->pos, nfields, fields);
         if (p->directive == gssymlrecord)
             type = gstypes_compile_lift(p->pos, type)
         ;
+
+        if (i < p->numarguments) {
+            gsargcheck(p, i + 1, "Type signature");
+            typesig = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i + 1])];
+            for (i += 2; i < p->numarguments; i++) gsfatal(UNIMPL("%P: Type arguments to signature in %y"), p->pos, p->directive);
+            gstypes_type_check_type_fail(p->pos, type, typesig);
+        }
 
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = type;

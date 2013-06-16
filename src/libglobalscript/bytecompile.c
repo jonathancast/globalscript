@@ -723,8 +723,9 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         pcl->nregs++;
+        for (i = 0; i < p->numarguments && p->arguments[i]->type != gssymseparator; i ++);
 
-        pcl->size += ACE_SIZE_RECORD(p->numarguments / 2);
+        pcl->size += ACE_SIZE_RECORD(i / 2);
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {
         CHECK_REGISTERS();
 
@@ -1982,8 +1983,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
 
         SETUP_PCODE(gsbc_op_record);
 
-        ACE_RECORD_NUMFIELDS(pcode) = p->numarguments / 2;
-        for (i = 0; i < p->numarguments; i += 2) {
+        for (i = 0; i < p->numarguments && p->arguments[i]->type != gssymseparator; i += 2) {
             int reg;
 
             if (i > 0) {
@@ -1997,6 +1997,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i + 1]);
             ACE_RECORD_FIELD(pcode, i / 2) = reg;
         }
+        ACE_RECORD_NUMFIELDS(pcode) = i / 2;
         pcl->pout = ACE_RECORD_SKIP(pcode);
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymopfield, gssymcodeop, ".field")) {

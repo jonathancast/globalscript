@@ -73,6 +73,11 @@ ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 
+ok_diff '-- non-empty records in expressions --' ./$O.test-gsi record-literal-gen.ags
+ok_grep_errors '-- empty records with non-empty signatures in expressions --' './test-gslib/record-empty-non-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi record-empty-non-empty-sig.ags
+ok_grep_errors '-- non-empty records with empty signatures in expressions --' './test-gslib/non-empty-record-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi non-empty-record-empty-sig.ags
+ok_diff '-- records with type signatures in expressions --' ./$O.test-gsi record-type-sig.ags
+
 ok_diff '-- natural number literals --' ./$O.test-gsi natural-literal.ags
 ok_grep_errors '-- natural number literals: letters --' './test-gslib/natural-literal-letter.ags:10: Invalid character ''x'' in natural number literal' ./$O.test-gsi natural-literal-letter.ags
 ok_grep_errors '-- natural number literals: negative number --' './test-gslib/natural-literal-negative.ags:10: Invalid character ''-'' in natural number literal' ./$O.test-gsi natural-literal-negative.ags
