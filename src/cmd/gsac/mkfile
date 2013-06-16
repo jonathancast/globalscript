@@ -9,10 +9,13 @@ GSLIB_TARGETS=`{$PLAN9/bin/rc ./gslib-targets}
 interpreted:V:
 	true
 
-integration-test-interpreted:V: interpreted
+test-interpreted:V: interpreted
+	test-gslib ./gslib
+
+integration-test-interpreted:V: interpreted test-interpreted
 	./rc/test-interpreted
 
-install-interpreted:V: interpreted
+install-interpreted:V: interpreted test-interpreted
 	cp gsac.rc $GLOBALSCRIPT/bin/gsac
 	chmod a+x $GLOBALSCRIPT/bin/gsac
 	cp gsac-targets.rc $GLOBALSCRIPT/bin/gsac-targets
