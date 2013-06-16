@@ -4,7 +4,11 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test_lookupKind_exists
+
+_test_lookupKind_exists	.closure	_test_lookupKind_exists_c
+_test_lookupKind_exists_x.s	.string	x
+_test_lookupKind_exists_nothing_lookup.failed.s	.string	Should\shave\sbeen\sable\sto\sfind\sx\sbut\sdidn't
 
 	.code
 
@@ -13,3 +17,42 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{lookupKind gsv{x} [x ⇒ abstype κ]}
+
+_test_lookupKind_exists_c	.expr
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_test_lookupKind_exists_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.lookupKind	.gvar
+list.singleton	.gvar
+gsdl.cgs.syntax.var.component.alphanum	.gvar
+_test_lookupKind_exists_x.s	.gvar
+gsdl.cgs.typeenv.gsabstype.insert	.gvar
+gsdl.cgs.typeenv.empty	.gvar
+c0	.apply	gsdl.cgs.syntax.var.component.alphanum	|	_test_lookupKind_exists_x.s
+v	.apply	list.singleton	gsdl.cgs.syntax.var.component.t	|	c0
+ki	.undefined	gsdl.cgs.gskind.t
+ty	.undefined	gsdl.cgs.gstype.t
+env	.apply	gsdl.cgs.typeenv.gsabstype.insert	|	v	ki	ty	gsdl.cgs.typeenv.empty
+	.force	_test_lookupKind_exists_k
+	.coerce	maybe.t.out	gsdl.cgs.gskind.t
+	.app	v	env
+	.enter	gsdl.cgs.typeenv.lookupKind
+
+_test_lookupKind_exists_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+test.true	.gvar
+test.property.false	.gvar
+_test_lookupKind_exists_nothing_lookup.failed.s	.gvar
+mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
+	.analyze	mb0	just	nothing
+		.case	just
+ki		.fkarg	0	gsdl.cgs.gskind.t
+			.enter	test.true
+		.case	nothing
+			.app	_test_lookupKind_exists_nothing_lookup.failed.s
+			.enter	test.property.false
