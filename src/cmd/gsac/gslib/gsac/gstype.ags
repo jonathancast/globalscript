@@ -54,7 +54,7 @@ either.t.out	.cogvar
 maybe.t.out	.cogvar
 gsac.gstype.kindcheck	.gvar
 gsac.gstype.fields.kindcheck	.gvar
-gsdl.cgs.typeenv.lookupKind	.gvar
+gsdl.cgs.typeenv.gskind.get	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
@@ -83,7 +83,7 @@ v		.fkarg	0	gsdl.cgs.syntax.var.t
 			.force	_gsac.gstype.kindcheck_var_k
 			.coerce	maybe.t.out	gsdl.cgs.gskind.t
 			.app	v	env
-			.enter	gsdl.cgs.typeenv.lookupKind
+			.enter	gsdl.cgs.typeenv.gskind.get
 	# > :: either.t	string.t	gsdl.cgs.gskind.t
 
 _gsac.gstype.kindcheck_app_k	.forcecont
