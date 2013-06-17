@@ -4,10 +4,16 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_items_empty
+_tests	.list	test.property.t	_test_items_empty	_test_item_eq_x.x
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
+
+_test_item_eq_x.x	.closure	_test_item_eq_x.x_c
+_test_item_eq_x.x_label	.string	item.gsabstype\snm\ski\s≡\sitem.gsabstype\snm\ski
+_test_item_eq_x.x_false	.string	item.gsabstype\snm\ski\s≠sitem.gsabstype\snm\ski
+_test_item_eq_x.x_true	.string	item.gsabstype\snm\ski\s≡\sitem.gsabstype\snm\ski
+_test_item_eq_x.x_x.s	.string	x
 
 	.code
 
@@ -39,4 +45,29 @@ actual	.apply	gsac.prefix.items	|	gsac.prefix.empty
 expected	.apply	list.nil	gsac.prefix.item.t
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
 	.app	_test_items_empty_label	test
+	.enter	test.property.label
+
+# §section §gs{item.gsabstype nm ki ≡ item.gsabstype nm ki}
+
+_test_item_eq_x.x_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+test.property.label	.gvar
+_test_item_eq_x.x_label	.gvar
+test.assert	.gvar
+_test_item_eq_x.x_false	.gvar
+_test_item_eq_x.x_true	.gvar
+gsac.prefix.item.≡	.gvar
+gsac.prefix.gsabstype	.gvar
+list.singleton	.gvar
+gsdl.cgs.syntax.var.component.alphanum	.gvar
+_test_item_eq_x.x_x.s	.gvar
+gsdl.cgs.gskind.lifted	.gvar
+pos	.undefined	gsdl.sourcepos.t
+c0	.apply	gsdl.cgs.syntax.var.component.alphanum	|	_test_item_eq_x.x_x.s
+v	.apply	list.singleton	gsdl.cgs.syntax.var.component.t	|	c0
+absty	.apply	gsac.prefix.gsabstype	|	pos	v	gsdl.cgs.gskind.lifted
+eq	.apply	gsac.prefix.item.≡	|	absty	absty
+test	.apply	test.assert	|	_test_item_eq_x.x_false	_test_item_eq_x.x_true	eq
+	.app	_test_item_eq_x.x_label	test
 	.enter	test.property.label
