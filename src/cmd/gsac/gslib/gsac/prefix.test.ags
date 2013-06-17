@@ -4,7 +4,10 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test_items_empty
+
+_test_items_empty	.closure	_test_items_empty_c
+_test_items_empty_label	.string	items\sempty
 
 	.code
 
@@ -13,3 +16,27 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{items empty}
+
+_test_items_empty_c	.expr
+list.t	.tygvar
+gsac.prefix.item.t	.tygvar
+test.property.label	.gvar
+_test_items_empty_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+gsac.prefix.item.≡	.gvar
+list.fmtgs.byDefault	.gvar
+gsac.prefix.item.fmtgs	.gvar
+gsac.prefix.items	.gvar
+gsac.prefix.empty	.gvar
+list.nil	.gvar
+list.item.ty	.tylet	list.t	gsac.prefix.item.t
+list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
+list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
+actual	.apply	gsac.prefix.items	|	gsac.prefix.empty
+expected	.apply	list.nil	gsac.prefix.item.t
+test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
+	.app	_test_items_empty_label	test
+	.enter	test.property.label

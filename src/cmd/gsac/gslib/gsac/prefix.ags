@@ -2,11 +2,27 @@
 
 	.data
 
+gsac.prefix.empty	.closure	_gsac.prefix.empty_c
+
 gsac.prefix.typecheck	.closure	_gsac.prefix.typecheck_c
+
+gsac.prefix.items	.closure	_gsac.prefix.items_c
 
 gsac.prefix.item.name	.closure	_gsac.prefix.item.name_c
 
+gsac.prefix.item.≡	.closure	_gsac.prefix.item.≡_c
+
+gsac.prefix.item.fmtgs	.closure	_gsac.prefix.item.fmtgs_c
+
 	.code
+
+# §section §gs{gsac.prefix.empty}
+
+_gsac.prefix.empty_c	.expr
+gsac.prefix.prim.u	.tygvar
+r	.record	|	gsac.prefix.prim.u
+	.lift
+	.yield	r
 
 # §section §gs{gsac.prefix.typecheck}
 
@@ -64,6 +80,15 @@ sccs1		.fkarg	1	list.t	scc.item.ty
 			.app	gsdl.cgs.typeenv.empty
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
+# §section §gs{gsac.prefix.items}
+
+_gsac.prefix.items_c	.expr
+gsac.prefix.t	.tygvar
+gsac.prefix.item.t	.tygvar	# Temp
+list.nil	.gvar	# Temp
+pr	.larg	gsac.prefix.t
+	.enter	list.nil	gsac.prefix.item.t
+
 # §section §gs{gsac.prefix.item.name}
 
 _gsac.prefix.item.name_c	.expr
@@ -71,6 +96,23 @@ gsac.prefix.item.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
 it	.larg	gsac.prefix.item.t
 	.undef	gsdl.cgs.symbol.t
+
+# §section §gs{gsac.prefix.item.≡}
+
+_gsac.prefix.item.≡_c	.expr
+gsac.prefix.item.t	.tygvar
+bool.t	.tygvar	# Temp
+it0	.larg	gsac.prefix.item.t
+it1	.larg	gsac.prefix.item.t
+	.undef	bool.t
+
+# §section §gs{gsac.prefix.item.fmtgs}
+
+_gsac.prefix.item.fmtgs_c	.expr
+gsac.prefix.item.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+it	.larg	gsac.prefix.item.t
+	.undef	fmtgs.printer.t
 
 	.type
 
