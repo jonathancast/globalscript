@@ -127,6 +127,8 @@ gsac.prefix.item.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+_gsac.prefix.item.≡_gsabstype_gsabstype_k	.subcode
+bool.t.out	.cogvar
 gsdl.cgs.syntax.var.≡	.gvar
 it0.0	.fv	gsac.prefix.item.prim.u
 it1.0	.karg	gsac.prefix.item.prim.u
@@ -140,9 +142,28 @@ ki0		.fkarg	2	gsdl.cgs.gskind.t
 pos1				.fkarg	0	gsdl.sourcepos.t
 v1				.fkarg	1	gsdl.cgs.syntax.var.t
 ki1				.fkarg	2	gsdl.cgs.gskind.t
+					.force	_gsac.prefix.item.≡_gsabstype_gsabstype_k
+					.coerce	bool.t.out
 					.app	v0	v1
 					.enter	gsdl.cgs.syntax.var.≡
 	# > :: bool.t
+
+_gsac.prefix.item.≡_gsabstype_gsabstype_k	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+bool.prim.u	.tygvar
+bool.t.in	.cogvar
+gsdl.cgs.gskind.≡	.gvar
+ki0	.fv	gsdl.cgs.gskind.t
+ki1	.fv	gsdl.cgs.gskind.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.coerce	bool.t.in
+			.lift
+			.yield	b0
+		.case	true
+			.app	ki0	ki1
+			.enter	gsdl.cgs.gskind.≡
 
 # §section §gs{gsac.prefix.item.fmtgs}
 
