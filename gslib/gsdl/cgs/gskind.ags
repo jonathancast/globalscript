@@ -2,10 +2,52 @@
 
 	.data
 
+gsdl.cgs.gskind.≡	.closure	_gsdl.cgs.gskind.≡_c
+
 gsdl.cgs.gskind.unlifted	.closure	_gsdl.cgs.gskind.unlifted_c
 gsdl.cgs.gskind.lifted	.closure	_gsdl.cgs.gskind.lifted_c
 
 	.code
+
+# §section §gs{gsdl.cgs.gskind.≡}
+
+_gsdl.cgs.gskind.≡_c	.expr
+gsdl.cgs.gskind.t	.tygvar
+_gsdl.cgs.gskind.≡_k0	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+ki0	.larg	gsdl.cgs.gskind.t
+ki1	.larg	gsdl.cgs.gskind.t
+	.force	_gsdl.cgs.gskind.≡_k0
+	.coerce	gsdl.cgs.gskind.t.out
+	.enter	ki0
+
+_gsdl.cgs.gskind.≡_k0	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gskind.prim.u	.tygvar
+_gsdl.cgs.gskind.≡_k1	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+ki1	.fv	gsdl.cgs.gskind.t
+ki0.0	.karg	gsdl.cgs.gskind.prim.u
+	.force	_gsdl.cgs.gskind.≡_k1
+	.coerce	gsdl.cgs.gskind.t.out
+	.enter	ki1
+
+_gsdl.cgs.gskind.≡_k1	.forcecont
+gsdl.cgs.gskind.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+bool.false	.gvar
+bool.true	.gvar
+ki0.0	.fv	gsdl.cgs.gskind.prim.u
+ki1.0	.karg	gsdl.cgs.gskind.prim.u
+	.analyze	ki0.0	lifted	unlifted
+		.case	lifted
+			.danalyze	ki1.0	lifted
+				.default
+					.enter	bool.false
+				.case	lifted
+					.enter	bool.true
+		.case	unlifted
+			.undef	bool.t
 
 # §section Constructors
 
