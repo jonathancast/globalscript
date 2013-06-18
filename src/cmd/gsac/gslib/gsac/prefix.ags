@@ -103,10 +103,46 @@ it	.larg	gsac.prefix.item.t
 
 _gsac.prefix.item.≡_c	.expr
 gsac.prefix.item.t	.tygvar
-bool.true	.gvar
+_gsac.prefix.item.≡_k0	.subcode
+gsac.prefix.item.t.out	.cogvar
 it0	.larg	gsac.prefix.item.t
 it1	.larg	gsac.prefix.item.t
-	.enter	bool.true
+	.force	_gsac.prefix.item.≡_k0
+	.coerce	gsac.prefix.item.t.out
+	.enter	it0
+
+_gsac.prefix.item.≡_k0	.forcecont
+gsac.prefix.item.t	.tygvar
+gsac.prefix.item.prim.u	.tygvar
+_gsac.prefix.item.≡_k1	.subcode
+gsac.prefix.item.t.out	.cogvar
+it1	.fv	gsac.prefix.item.t
+it0.0	.karg	gsac.prefix.item.prim.u
+	.force	_gsac.prefix.item.≡_k1
+	.coerce	gsac.prefix.item.t.out
+	.enter	it1
+
+_gsac.prefix.item.≡_k1	.forcecont
+gsac.prefix.item.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.syntax.var.≡	.gvar
+it0.0	.fv	gsac.prefix.item.prim.u
+it1.0	.karg	gsac.prefix.item.prim.u
+	.analyze	it0.0	gsabstype
+		.case	gsabstype
+pos0		.fkarg	0	gsdl.sourcepos.t
+v0		.fkarg	1	gsdl.cgs.syntax.var.t
+ki0		.fkarg	2	gsdl.cgs.gskind.t
+			.analyze	it1.0	gsabstype
+				.case	gsabstype
+pos1				.fkarg	0	gsdl.sourcepos.t
+v1				.fkarg	1	gsdl.cgs.syntax.var.t
+ki1				.fkarg	2	gsdl.cgs.gskind.t
+					.app	v0	v1
+					.enter	gsdl.cgs.syntax.var.≡
+	# > :: bool.t
 
 # §section §gs{gsac.prefix.item.fmtgs}
 
@@ -165,4 +201,9 @@ gsdl.cgs.gskind.t	.tygvar
 
 gsac.prefix.item.t.in	.tycoercion
 gsac.prefix.item.t	.tygvar
+	.tydefinition	gsac.prefix.item.t
+
+gsac.prefix.item.t.out	.tycoercion
+gsac.prefix.item.t	.tygvar
+	.tyinvert
 	.tydefinition	gsac.prefix.item.t

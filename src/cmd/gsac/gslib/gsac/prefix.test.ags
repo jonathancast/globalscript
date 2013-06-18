@@ -4,7 +4,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_items_empty	_test_item_eq_x.x
+_tests	.list	test.property.t	_test_items_empty	_test_item_eq_x.x	_test_item_eq_diff.nm
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
@@ -14,6 +14,13 @@ _test_item_eq_x.x_label	.string	item.gsabstype\snm\ski\s≡\sitem.gsabstype\snm\
 _test_item_eq_x.x_false	.string	item.gsabstype\snm\ski\s≠sitem.gsabstype\snm\ski
 _test_item_eq_x.x_true	.string	item.gsabstype\snm\ski\s≡\sitem.gsabstype\snm\ski
 _test_item_eq_x.x_x.s	.string	x
+
+_test_item_eq_diff.nm	.closure	_test_item_eq_diff.nm_c
+_test_item_eq_diff.nm_label	.string	item.gsabstype\sx\ski\s≡\sitem.gsabstype\sy\ski
+_test_item_eq_diff.nm_false	.string	item.gsabstype\sx\ski\s≠\sitem.gsabstype\sy\ski
+_test_item_eq_diff.nm_true	.string	item.gsabstype\sx\ski\s≡\sitem.gsabstype\sy\ski
+_test_item_eq_diff.nm_x.s	.string	x
+_test_item_eq_diff.nm_y.s	.string	y
 
 	.code
 
@@ -70,4 +77,33 @@ absty	.apply	gsac.prefix.gsabstype	|	pos	v	gsdl.cgs.gskind.lifted
 eq	.apply	gsac.prefix.item.≡	|	absty	absty
 test	.apply	test.assert	|	_test_item_eq_x.x_false	_test_item_eq_x.x_true	eq
 	.app	_test_item_eq_x.x_label	test
+	.enter	test.property.label
+
+# §section §gs{item.gsabstype x ki ≡ item.gsabstype y ki}
+
+_test_item_eq_diff.nm_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.syntax.var.component.t	.tygvar
+test.property.label	.gvar
+_test_item_eq_diff.nm_label	.gvar
+test.deny	.gvar
+_test_item_eq_diff.nm_false	.gvar
+_test_item_eq_diff.nm_true	.gvar
+gsac.prefix.item.≡	.gvar
+gsac.prefix.gsabstype	.gvar
+list.singleton	.gvar
+gsdl.cgs.syntax.var.component.alphanum	.gvar
+_test_item_eq_diff.nm_x.s	.gvar
+_test_item_eq_diff.nm_y.s	.gvar
+gsdl.cgs.gskind.lifted	.gvar
+pos	.undefined	gsdl.sourcepos.t
+c0.x	.apply	gsdl.cgs.syntax.var.component.alphanum	|	_test_item_eq_diff.nm_x.s
+v.x	.apply	list.singleton	gsdl.cgs.syntax.var.component.t	|	c0.x
+absty.x	.apply	gsac.prefix.gsabstype	|	pos	v.x	gsdl.cgs.gskind.lifted
+c0.y	.apply	gsdl.cgs.syntax.var.component.alphanum	|	_test_item_eq_diff.nm_y.s
+v.y	.apply	list.singleton	gsdl.cgs.syntax.var.component.t	|	c0.y
+absty.y	.apply	gsac.prefix.gsabstype	|	pos	v.y	gsdl.cgs.gskind.lifted
+eq	.apply	gsac.prefix.item.≡	|	absty.x	absty.y
+test	.apply	test.deny	|	_test_item_eq_diff.nm_false	_test_item_eq_diff.nm_true	eq
+	.app	_test_item_eq_diff.nm_label	test
 	.enter	test.property.label
