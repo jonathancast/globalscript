@@ -27,7 +27,11 @@ _gsdl.cgs.syntax.semi_re	.regex	;
 
 gsdl.cgs.syntax.keywords	.list	string.t
 
+gsdl.cgs.syntax.var.≡	.closure	_gsdl.cgs.syntax.var.≡_c
+
 gsdl.cgs.syntax.var.compare	.closure	_gsdl.cgs.syntax.var.compare_c
+
+gsdl.cgs.syntax.var.component.≡	.closure	_gsdl.cgs.syntax.var.component.≡_c
 
 gsdl.cgs.syntax.var.component.compare	.closure	_gsdl.cgs.syntax.var.component.compare_c
 
@@ -249,6 +253,15 @@ m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.semi_re
 	.app	m	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
 
+# §section §gs{gsdl.cgs.syntax.var.≡}
+
+_gsdl.cgs.syntax.var.≡_c	.expr
+gsdl.cgs.syntax.var.component.t	.tygvar
+list.≡	.gvar
+gsdl.cgs.syntax.var.component.≡	.gvar
+	.app	gsdl.cgs.syntax.var.component.≡
+	.enter	list.≡	gsdl.cgs.syntax.var.component.t
+
 # §section §gs{gsdl.cgs.syntax.var.compare}
 
 _gsdl.cgs.syntax.var.compare_c	.expr
@@ -257,6 +270,45 @@ list.compare	.gvar
 gsdl.cgs.syntax.var.component.compare	.gvar
 	.app	gsdl.cgs.syntax.var.component.compare
 	.enter	list.compare	gsdl.cgs.syntax.var.component.t
+
+# §section §gs{gsdl.cgs.syntax.var.component.≡}
+
+_gsdl.cgs.syntax.var.component.≡_c	.expr
+gsdl.cgs.syntax.var.component.t	.tygvar
+_gsdl.cgs.syntax.var.component.≡_k0	.subcode
+gsdl.cgs.syntax.var.component.t.out	.cogvar
+c0	.larg	gsdl.cgs.syntax.var.component.t
+c1	.larg	gsdl.cgs.syntax.var.component.t
+	.force	_gsdl.cgs.syntax.var.component.≡_k0
+	.coerce	gsdl.cgs.syntax.var.component.t.out
+	.enter	c0
+
+_gsdl.cgs.syntax.var.component.≡_k0	.forcecont
+gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.cgs.syntax.var.component.prim.u	.tygvar
+_gsdl.cgs.syntax.var.component.≡_k1	.subcode
+gsdl.cgs.syntax.var.component.t.out	.cogvar
+c1	.fv	gsdl.cgs.syntax.var.component.t
+c0.0	.karg	gsdl.cgs.syntax.var.component.prim.u
+	.force	_gsdl.cgs.syntax.var.component.≡_k1
+	.coerce	gsdl.cgs.syntax.var.component.t.out
+	.enter	c1
+
+_gsdl.cgs.syntax.var.component.≡_k1	.forcecont
+gsdl.cgs.syntax.var.component.prim.u	.tygvar
+string.t	.tygvar
+string.≡	.gvar
+c0.0	.fv	gsdl.cgs.syntax.var.component.prim.u
+c1.0	.karg	gsdl.cgs.syntax.var.component.prim.u
+	.analyze	c0.0	alphanum
+		.case	alphanum
+s0		.fkarg	0	string.t
+			.analyze	c1.0	alphanum
+				.case	alphanum
+s1				.fkarg	0	string.t
+					.app	s0	s1
+					.enter	string.≡
+	# > :: bool.t
 
 # §section §gs{gsdl.cgs.syntax.var.component.compare}
 
