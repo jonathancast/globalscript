@@ -4,10 +4,14 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_items_empty	_test_item_eq_x.x	_test_item_eq_diff.nm
+_tests	.list	test.property.t	_test_items_empty	_test_item
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
+
+_test_item	.closure	_test_item_c
+
+_tests_item	.list	test.property.t	_test_item_eq_x.x	_test_item_eq_diff.nm
 
 _test_item_eq_x.x	.closure	_test_item_eq_x.x_c
 _test_item_eq_x.x_label	.string	item.gsabstype\snm\ski\s≡\sitem.gsabstype\snm\ski
@@ -54,7 +58,15 @@ test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	e
 	.app	_test_items_empty_label	test
 	.enter	test.property.label
 
-# §section §gs{item.gsabstype nm ki ≡ item.gsabstype nm ki}
+# §section §gs{item.≡}
+
+_test_item_c	.expr
+test.all	.gvar
+_tests_item	.gvar
+	.app	_tests_item
+	.enter	test.all
+
+# §subsection §gs{item.gsabstype nm ki ≡ item.gsabstype nm ki}
 
 _test_item_eq_x.x_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -79,7 +91,7 @@ test	.apply	test.assert	|	_test_item_eq_x.x_false	_test_item_eq_x.x_true	eq
 	.app	_test_item_eq_x.x_label	test
 	.enter	test.property.label
 
-# §section §gs{item.gsabstype x ki ≡ item.gsabstype y ki}
+# §subsection §gs{item.gsabstype x ki ≡ item.gsabstype y ki}
 
 _test_item_eq_diff.nm_c	.expr
 gsdl.sourcepos.t	.tygvar
