@@ -9,6 +9,10 @@ gsdl.cgs.syntax.var.component.alphanum.parser	.closure	_gsdl.cgs.syntax.var.comp
 gsdl.cgs.syntax.var.print	.closure	_gsdl.cgs.syntax.var.print_c
 _gsdl.cgs.syntax.var.print_components.print	.closure	_gsdl.cgs.syntax.var.print_components.print_c	_gsdl.cgs.syntax.var.print_components.print_ty
 
+gsdl.cgs.syntax.var.fmtgs	.closure	_gsdl.cgs.syntax.var.fmtgs_c
+_gsdl.cgs.syntax.var.fmtgs_prefix.s	.string	gsv{
+_gsdl.cgs.syntax.var.fmtgs_suffix.s	.string	}
+
 gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
 _gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
 
@@ -190,6 +194,26 @@ s1			.apply	list.<>	rune.t	|	c0.s	cs1.s
 			.enter	list.:	rune.t
 		.case	nil
 			.enter	list.nil	rune.t
+
+# §section §gs{gsdl.cgs.syntax.var.fmtgs}
+
+_gsdl.cgs.syntax.var.fmtgs_c	.expr
+gsdl.cgs.syntax.var.t	.tygvar
+rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.prepend	.gvar
+_gsdl.cgs.syntax.var.fmtgs_prefix.s	.gvar
+gsdl.cgs.syntax.var.print	.gvar
+diff.list.fromlist	.gvar
+_gsdl.cgs.syntax.var.fmtgs_suffix.s	.gvar
+v	.larg	gsdl.cgs.syntax.var.t
+v.s	.apply	gsdl.cgs.syntax.var.print	|	v
+ds2	.apply	diff.list.fromlist	rune.t	|	_gsdl.cgs.syntax.var.fmtgs_suffix.s
+ds1	.apply	diff.list.prepend	rune.t	|	v.s	ds2
+ds	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.syntax.var.fmtgs_prefix.s	ds1
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
 
 # §section §gs{gsdl.cgs.syntax.ws}
 
