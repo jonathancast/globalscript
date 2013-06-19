@@ -32,6 +32,7 @@ list.elem	.closure	_list.elem_c	_list.elem_ty
 list.fmtgs	.closure	_list.fmtgs_c
 list.fmtgs.byDefault	.closure	_list.fmtgs.byDefault_c	_list.fmtgs.byDefault_ty
 _list.fmtgs.byDefault_:_prefix.s	.string	[\s
+_list.fmtgs.byDefault_:_suffix.s	.string	]
 _list.fmtgs.byDefault_:_f_comma.sp.s	.string	,\s
 _list.fmtgs.byDefault_nil.s	.string	[]
 
@@ -945,6 +946,7 @@ _list.fmtgs.byDefault_:_prefix.s	.gvar
 diff.list.concat	.gvar
 list.map	.gvar
 diff.list.fromlist	.gvar
+_list.fmtgs.byDefault_:_suffix.s	.gvar
 _list.fmtgs.byDefault_nil.s	.gvar
 α	.tyfv	*
 p	.fv	fmtgs.t	α
@@ -958,7 +960,7 @@ xn1		.fkarg	1	list.t	α
 f			.alloc	_list.fmtgs.byDefault_:_f_c
 xn.dss			.apply	list.map	α	diff.list.ty	|	f	xn
 xn.ds			.apply	diff.list.concat	rune.t	|	xn.dss
-ds2			.undefined	diff.list.t	rune.t
+ds2			.apply	diff.list.fromlist	rune.t	|	_list.fmtgs.byDefault_:_suffix.s
 ds1			.apply	diff.list.<>	rune.t	|	xn.ds	ds2
 ds			.apply	diff.list.prepend	rune.t	|	_list.fmtgs.byDefault_:_prefix.s	ds1
 			.app	fmtgs.prec.arg	ds
