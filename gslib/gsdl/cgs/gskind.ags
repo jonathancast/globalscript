@@ -4,6 +4,9 @@
 
 gsdl.cgs.gskind.≡	.closure	_gsdl.cgs.gskind.≡_c
 
+gsdl.cgs.gskind.fmtgs	.closure	_gsdl.cgs.gskind.fmtgs_c
+_gsdl.cgs.gskind.fmtgs_lifted_lifted.s	.string	lifted
+
 gsdl.cgs.gskind.unlifted	.closure	_gsdl.cgs.gskind.unlifted_c
 gsdl.cgs.gskind.lifted	.closure	_gsdl.cgs.gskind.lifted_c
 
@@ -48,6 +51,31 @@ ki1.0	.karg	gsdl.cgs.gskind.prim.u
 					.enter	bool.true
 		.case	unlifted
 			.undef	bool.t
+
+# §section §gs{gsdl.cgs.gskind.fmtgs}
+
+_gsdl.cgs.gskind.fmtgs_c	.expr
+gsdl.cgs.gskind.t	.tygvar
+_gsdl.cgs.gskind.fmtgs_k	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+ki	.larg	gsdl.cgs.gskind.t
+	.force	_gsdl.cgs.gskind.fmtgs_k
+	.coerce	gsdl.cgs.gskind.t.out
+	.enter	ki
+
+_gsdl.cgs.gskind.fmtgs_k	.forcecont
+gsdl.cgs.gskind.prim.u	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+fmtgs.var	.gvar
+_gsdl.cgs.gskind.fmtgs_lifted_lifted.s	.gvar
+ki0	.karg	gsdl.cgs.gskind.prim.u
+	.analyze	ki0	lifted	unlifted
+		.case	lifted
+			.app	_gsdl.cgs.gskind.fmtgs_lifted_lifted.s
+			.enter	fmtgs.var
+		.case	unlifted
+			.undef	fmtgs.printer.t
+	# > :: fmtgs.printer.t
 
 # §section Constructors
 
