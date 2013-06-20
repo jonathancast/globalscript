@@ -13,6 +13,7 @@ gsac.prefix.item.name	.closure	_gsac.prefix.item.name_c
 gsac.prefix.item.≡	.closure	_gsac.prefix.item.≡_c
 
 gsac.prefix.item.fmtgs	.closure	_gsac.prefix.item.fmtgs_c
+_gsac.prefix.item.fmtgs_gsabstype_gsabstype.s	.string	gsabstype
 
 gsac.prefix.gsabstype	.closure	_gsac.prefix.gsabstype_c
 
@@ -169,9 +170,40 @@ b0	.karg	bool.prim.u
 
 _gsac.prefix.item.fmtgs_c	.expr
 gsac.prefix.item.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+_gsac.prefix.item.fmtgs_k	.subcode
+gsac.prefix.item.t.out	.cogvar
 it	.larg	gsac.prefix.item.t
-	.undef	fmtgs.printer.t
+	.force	_gsac.prefix.item.fmtgs_k
+	.coerce	gsac.prefix.item.t.out
+	.enter	it
+
+_gsac.prefix.item.fmtgs_k	.forcecont
+gsac.prefix.item.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+fmtgs.app	.gvar
+fmtgs.var	.gvar
+_gsac.prefix.item.fmtgs_gsabstype_gsabstype.s	.gvar
+gsdl.sourcepos.fmtgs	.gvar
+gsdl.cgs.syntax.var.fmtgs	.gvar
+gsdl.cgs.gskind.fmtgs	.gvar
+it0	.karg	gsac.prefix.item.prim.u
+	.analyze	it0	gsabstype
+		.case	gsabstype
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.cgs.syntax.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+pr2			.apply	fmtgs.var	|	_gsac.prefix.item.fmtgs_gsabstype_gsabstype.s
+pos.pr			.apply	gsdl.sourcepos.fmtgs	|	pos
+pr1			.apply	fmtgs.app	|	pr2	pos.pr
+v.pr			.apply	gsdl.cgs.syntax.var.fmtgs	|	v
+pr0			.apply	fmtgs.app	|	pr1	v.pr
+ki.pr			.apply	gsdl.cgs.gskind.fmtgs	|	ki
+			.app	pr0	ki.pr
+			.enter	fmtgs.app
+	# > :: fmtgs.printer.t
 
 # §section §gs{gsac.prefix.item.t} constructors
 
