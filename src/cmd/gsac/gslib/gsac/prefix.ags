@@ -87,9 +87,16 @@ sccs1		.fkarg	1	list.t	scc.item.ty
 
 _gsac.prefix.items_c	.expr
 gsac.prefix.t	.tygvar
+_gsac.prefix.items_k	.subcode
+pr	.larg	gsac.prefix.t
+	.force	_gsac.prefix.items_k
+	.enter	pr
+
+_gsac.prefix.items_k	.forcecont
+gsac.prefix.prim.u	.tygvar
 gsac.prefix.item.t	.tygvar	# Temp
 list.nil	.gvar	# Temp
-pr	.larg	gsac.prefix.t
+pr0	.karg	gsac.prefix.prim.u
 	.enter	list.nil	gsac.prefix.item.t
 
 # §section §gs{gsac.prefix.item.name}
