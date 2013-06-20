@@ -10,6 +10,9 @@ ordered.map.insert	.closure	_ordered.map.insert_c
 ordered.map.get	.closure	_ordered.map.get_c	_ordered.map.get_ty
 ordered.map.∪	.closure	_ordered.map.∪_c	_ordered.map.∪_ty
 
+ordered.map.values	.closure	_ordered.map.values_c
+_ordered.map.values_w	.closure	_ordered.map.values_w_c	_ordered.map.values_w_ty
+
 ordered.map.≡	.closure	_ordered.map.≡_c	_ordered.map.≡_ty
 
 ordered.map.prim.branch	.closure	_ordered.map.prim.branch_c
@@ -183,6 +186,50 @@ r1				.fkarg	3	ordered.map.t	k	v
 				.case	empty
 					.enter	ordered.map.empty	k	v
 
+# §section §gs{ordered.map.values}
+
+_ordered.map.values_c	.expr
+ordered.map.t	.tygvar
+_ordered.map.values_w	.gvar
+list.nil	.gvar
+k	.tyarg	*
+v	.tyarg	*
+map	.larg	ordered.map.t	k	v
+nil	.apply	list.nil	v
+	.app	map	nil
+	.enter	_ordered.map.values_w	k	v
+
+_ordered.map.values_w_c	.expr
+ordered.map.t	.tygvar
+list.t	.tygvar
+_ordered.map.values_w_k	.subcode
+ordered.map.t.out	.cogvar
+k	.tyarg	*
+v	.tyarg	*
+map	.larg	ordered.map.t	k	v
+vs	.larg	list.t	v
+	.force	_ordered.map.values_w_k
+	.coerce	ordered.map.t.out	k	v
+	.enter	map
+
+_ordered.map.values_w_k	.forcecont
+list.t	.tygvar
+ordered.map.prim.u	.tygvar
+ordered.map.t	.tygvar
+k	.tyfv	*
+v	.tyfv	*
+vs	.fv	list.t	v
+map0	.karg	ordered.map.prim.u	k	v
+	.analyze	map0	branch	empty
+		.case	branch
+k0		.fkarg	0	k
+v0		.fkarg	1	v
+l		.fkarg	2	ordered.map.t	k	v
+r		.fkarg	3	ordered.map.t	k	v
+			.undef	list.t	v
+		.case	empty
+			.enter	vs
+
 # §section §gs{ordered.map.≡}
 
 _ordered.map.≡_c	.expr
@@ -317,6 +364,19 @@ v	.tyforall	*
 	.tylift
 	.tyfun	ordered.map.t	k	v
 	.tyref	ordered.map.t	k	v
+
+# §section §gs{ordered.map.values}
+
+_ordered.map.values_w_ty	.tyexpr
+ordered.map.t	.tygvar
+list.t	.tygvar
+k	.tyforall	*
+v	.tyforall	*
+	.tylift
+	.tyfun	ordered.map.t	k	v
+	.tylift
+	.tyfun	list.t	v
+	.tyref	list.t	v
 
 # §section §gs{ordered.map.≡}
 
