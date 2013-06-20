@@ -2,6 +2,9 @@
 
 	.data
 
+fmtgs.var	.closure	_fmtgs.var_c
+fmtgs.app	.closure	_fmtgs.app_c
+
 fmtgs.prec	.closure	_fmtgs.prec_c
 
 fmtgs.prec.higher	.closure	_fmtgs.prec.higher_c
@@ -12,6 +15,40 @@ fmtgs.prec.arg	.closure	_fmtgs.prec.arg_c
 fmtgs.prec.app	.closure	_fmtgs.prec.app_c
 
 	.code
+
+# §section §gs{fmtgs.var}
+
+_fmtgs.var_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.fromlist	.gvar
+s	.larg	list.t	rune.t
+ds	.apply	diff.list.fromlist	rune.t	|	s
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
+
+# §section §gs{fmtgs.app}
+
+_fmtgs.app_c	.expr
+fmtgs.printer.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar	# Temp
+fmtgs.prec	.gvar
+fmtgs.prec.app	.gvar
+diff.list.<>	.gvar
+diff.list.:	.gvar
+rune.space	.gvar
+fmtgs.prec.arg	.gvar
+prf	.larg	fmtgs.printer.t
+prx	.larg	fmtgs.printer.t
+dsf	.apply	prf	|	fmtgs.prec.app
+ds2	.apply	prx	|	fmtgs.prec.arg
+ds1	.apply	diff.list.:	rune.t	|	rune.space	ds2
+ds	.apply	diff.list.<>	rune.t	|	dsf	ds1
+	.app	fmtgs.prec.app	ds
+	.enter	fmtgs.prec
 
 # §section §gs{fmtgs.prec}
 
