@@ -1,2 +1,3 @@
 CFLAGS=$CFLAGS -D__UNIX__
 CPU=`uname -m`
+PATH=$GLOBALSCRIPT/bin:$PATH
