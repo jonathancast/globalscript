@@ -216,6 +216,8 @@ _ordered.map.values_w_k	.forcecont
 list.t	.tygvar
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
+_ordered.map.values_w	.gvar
+list.:	.gvar
 k	.tyfv	*
 v	.tyfv	*
 vs	.fv	list.t	v
@@ -226,7 +228,10 @@ k0		.fkarg	0	k
 v0		.fkarg	1	v
 l		.fkarg	2	ordered.map.t	k	v
 r		.fkarg	3	ordered.map.t	k	v
-			.undef	list.t	v
+vs1			.apply	_ordered.map.values_w	k	v	|	r	vs
+vs2			.apply	list.:	v	|	v0	vs1
+			.app	l	vs2
+			.enter	_ordered.map.values_w	k	v
 		.case	empty
 			.enter	vs
 
