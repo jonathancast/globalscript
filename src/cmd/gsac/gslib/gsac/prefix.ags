@@ -8,6 +8,8 @@ gsac.prefix.typecheck	.closure	_gsac.prefix.typecheck_c
 
 gsac.prefix.items	.closure	_gsac.prefix.items_c
 
+gsac.prefix.typeitem.gsabstype.insert	.closure	_gsac.prefix.typeitem.gsabstype.insert_c
+
 gsac.prefix.item.name	.closure	_gsac.prefix.item.name_c
 
 gsac.prefix.item.≡	.closure	_gsac.prefix.item.≡_c
@@ -116,6 +118,41 @@ tys0	.field	typesection	pr0
 tys	.apply	ordered.map.values	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t	|	tys0
 	.app	gsac.prefix.item.typeitem	tys
 	.enter	list.map	gsac.prefix.typeitem.t	gsac.prefix.item.t
+
+# §section §gs{gsac.prefix.typeitem.gsabstype.insert}
+
+_gsac.prefix.typeitem.gsabstype.insert_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsac.prefix.t	.tygvar
+_gsac.prefix.typeitem.gsabstype.insert_k	.subcode
+pos	.larg	gsdl.sourcepos.t
+v	.larg	gsdl.cgs.syntax.var.t
+ki	.larg	gsdl.cgs.gskind.t
+pr	.larg	gsac.prefix.t
+	.force	_gsac.prefix.typeitem.gsabstype.insert_k
+	.enter	pr
+
+_gsac.prefix.typeitem.gsabstype.insert_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsac.prefix.prim.u	.tygvar
+gsac.prefix.typeitem.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.cgs.syntax.var.compare	.gvar
+gsac.prefix.typeitem.gsabstype	.gvar
+pos	.fv	gsdl.sourcepos.t
+v	.fv	gsdl.cgs.syntax.var.t
+ki	.fv	gsdl.cgs.gskind.t
+pr0	.karg	gsac.prefix.prim.u
+ti	.apply	gsac.prefix.typeitem.gsabstype	|	pos	v	ki
+ts0	.field	typesection	pr0
+ts1	.apply	ordered.map.insert	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t	|	gsdl.cgs.syntax.var.compare	v	ti	ts0
+r	.record	typesection	ts1	|	gsac.prefix.prim.u
+	.lift
+	.yield	r
 
 # §section §gs{gsac.prefix.item.name}
 
