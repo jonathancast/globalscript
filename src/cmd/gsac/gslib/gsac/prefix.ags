@@ -187,10 +187,20 @@ it0.0	.karg	gsac.prefix.item.prim.u
 
 _gsac.prefix.item.≡_k1	.forcecont
 gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.typeitem.t	.tygvar
 bool.t	.tygvar	# Temp
+gsac.prefix.typeitem.≡	.gvar
 it0.0	.fv	gsac.prefix.item.prim.u
 it1.0	.karg	gsac.prefix.item.prim.u
-	.undef	bool.t
+	.analyze	it0.0	typeitem
+		.case	typeitem
+ti0		.fkarg	0	gsac.prefix.typeitem.t
+			.analyze	it1.0	typeitem
+				.case	typeitem
+ti1				.fkarg	0	gsac.prefix.typeitem.t
+					.app	ti0	ti1
+					.enter	gsac.prefix.typeitem.≡
+	# > :: bool.t
 
 # §section §gs{gsac.prefix.item.fmtgs}
 
