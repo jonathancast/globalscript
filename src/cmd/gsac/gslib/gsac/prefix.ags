@@ -13,17 +13,28 @@ gsac.prefix.item.name	.closure	_gsac.prefix.item.name_c
 gsac.prefix.item.≡	.closure	_gsac.prefix.item.≡_c
 
 gsac.prefix.item.fmtgs	.closure	_gsac.prefix.item.fmtgs_c
-_gsac.prefix.item.fmtgs_gsabstype_gsabstype.s	.string	gsabstype
+_gsac.prefix.item.fmtgs_typeitem_typeitem.s	.string	typeitem
 
-gsac.prefix.gsabstype	.closure	_gsac.prefix.gsabstype_c
+gsac.prefix.typeitem.≡	.closure	_gsac.prefix.typeitem.≡_c
+
+gsac.prefix.typeitem.fmtgs	.closure	_gsac.prefix.typeitem.fmtgs_c
+_gsac.prefix.typeitem.fmtgs_gsabstype_gsabstype.s	.string	gsabstype
+
+gsac.prefix.item.typeitem	.closure	_gsac.prefix.item.typeitem_c
+
+gsac.prefix.typeitem.gsabstype	.closure	_gsac.prefix.typeitem.gsabstype_c
 
 	.code
 
 # §section §gs{gsac.prefix.empty}
 
 _gsac.prefix.empty_c	.expr
+gsdl.cgs.syntax.var.t	.tygvar
+gsac.prefix.typeitem.t	.tygvar
 gsac.prefix.prim.u	.tygvar
-r	.record	|	gsac.prefix.prim.u
+ordered.map.empty	.gvar
+ts	.apply	ordered.map.empty	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
+r	.record	typesection	ts	|	gsac.prefix.prim.u
 	.lift
 	.yield	r
 
@@ -94,10 +105,17 @@ pr	.larg	gsac.prefix.t
 
 _gsac.prefix.items_k	.forcecont
 gsac.prefix.prim.u	.tygvar
-gsac.prefix.item.t	.tygvar	# Temp
-list.nil	.gvar	# Temp
+gsac.prefix.typeitem.t	.tygvar
+gsac.prefix.item.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+list.map	.gvar
+gsac.prefix.item.typeitem	.gvar
+ordered.map.values	.gvar
 pr0	.karg	gsac.prefix.prim.u
-	.enter	list.nil	gsac.prefix.item.t
+tys0	.field	typesection	pr0
+tys	.apply	ordered.map.values	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t	|	tys0
+	.app	gsac.prefix.item.typeitem	tys
+	.enter	list.map	gsac.prefix.typeitem.t	gsac.prefix.item.t
 
 # §section §gs{gsac.prefix.item.name}
 
@@ -132,31 +150,90 @@ it0.0	.karg	gsac.prefix.item.prim.u
 
 _gsac.prefix.item.≡_k1	.forcecont
 gsac.prefix.item.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+it0.0	.fv	gsac.prefix.item.prim.u
+it1.0	.karg	gsac.prefix.item.prim.u
+	.undef	bool.t
+
+# §section §gs{gsac.prefix.item.fmtgs}
+
+_gsac.prefix.item.fmtgs_c	.expr
+gsac.prefix.item.t	.tygvar
+_gsac.prefix.item.fmtgs_k	.subcode
+gsac.prefix.item.t.out	.cogvar
+it	.larg	gsac.prefix.item.t
+	.force	_gsac.prefix.item.fmtgs_k
+	.coerce	gsac.prefix.item.t.out
+	.enter	it
+
+_gsac.prefix.item.fmtgs_k	.forcecont
+gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.typeitem.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+fmtgs.app	.gvar
+fmtgs.var	.gvar
+_gsac.prefix.item.fmtgs_typeitem_typeitem.s	.gvar
+gsac.prefix.typeitem.fmtgs	.gvar
+it0	.karg	gsac.prefix.item.prim.u
+	.analyze	it0	typeitem
+		.case	typeitem
+ti		.fkarg	0	gsac.prefix.typeitem.t
+f.pr			.apply	fmtgs.var	|	_gsac.prefix.item.fmtgs_typeitem_typeitem.s
+ti.pr			.apply	gsac.prefix.typeitem.fmtgs	|	ti
+			.app	f.pr	ti.pr
+			.enter	fmtgs.app
+	# > :: fmtgs.printer.t
+
+# §section §gs{gsac.prefix.typeitem.≡}
+
+_gsac.prefix.typeitem.≡_c	.expr
+gsac.prefix.typeitem.t	.tygvar
+_gsac.prefix.typeitem.≡_k0	.subcode
+gsac.prefix.typeitem.t.out	.cogvar
+ti0	.larg	gsac.prefix.typeitem.t
+ti1	.larg	gsac.prefix.typeitem.t
+	.force	_gsac.prefix.typeitem.≡_k0
+	.coerce	gsac.prefix.typeitem.t.out
+	.enter	ti0
+
+_gsac.prefix.typeitem.≡_k0	.forcecont
+gsac.prefix.typeitem.t	.tygvar
+gsac.prefix.typeitem.prim.u	.tygvar
+_gsac.prefix.typeitem.≡_k1	.subcode
+gsac.prefix.typeitem.t.out	.cogvar
+ti1	.fv	gsac.prefix.typeitem.t
+ti0.0	.karg	gsac.prefix.typeitem.prim.u
+	.force	_gsac.prefix.typeitem.≡_k1
+	.coerce	gsac.prefix.typeitem.t.out
+	.enter	ti1
+
+_gsac.prefix.typeitem.≡_k1	.forcecont
+gsac.prefix.typeitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-_gsac.prefix.item.≡_gsabstype_gsabstype_k	.subcode
+_gsac.prefix.typeitem.≡_gsabstype_gsabstype_k	.subcode
 bool.t.out	.cogvar
 gsdl.cgs.syntax.var.≡	.gvar
-it0.0	.fv	gsac.prefix.item.prim.u
-it1.0	.karg	gsac.prefix.item.prim.u
-	.analyze	it0.0	gsabstype
+ti0.0	.fv	gsac.prefix.typeitem.prim.u
+ti1.0	.karg	gsac.prefix.typeitem.prim.u
+	.analyze	ti0.0	gsabstype
 		.case	gsabstype
 pos0		.fkarg	0	gsdl.sourcepos.t
 v0		.fkarg	1	gsdl.cgs.syntax.var.t
 ki0		.fkarg	2	gsdl.cgs.gskind.t
-			.analyze	it1.0	gsabstype
+			.analyze	ti1.0	gsabstype
 				.case	gsabstype
 pos1				.fkarg	0	gsdl.sourcepos.t
 v1				.fkarg	1	gsdl.cgs.syntax.var.t
 ki1				.fkarg	2	gsdl.cgs.gskind.t
-					.force	_gsac.prefix.item.≡_gsabstype_gsabstype_k
+					.force	_gsac.prefix.typeitem.≡_gsabstype_gsabstype_k
 					.coerce	bool.t.out
 					.app	v0	v1
 					.enter	gsdl.cgs.syntax.var.≡
 	# > :: bool.t
 
-_gsac.prefix.item.≡_gsabstype_gsabstype_k	.forcecont
+_gsac.prefix.typeitem.≡_gsabstype_gsabstype_k	.forcecont
 gsdl.cgs.gskind.t	.tygvar
 bool.prim.u	.tygvar
 bool.t.in	.cogvar
@@ -173,36 +250,35 @@ b0	.karg	bool.prim.u
 			.app	ki0	ki1
 			.enter	gsdl.cgs.gskind.≡
 
-# §section §gs{gsac.prefix.item.fmtgs}
+# §section §gs{gsac.prefix.typeitem.fmtgs}
 
-_gsac.prefix.item.fmtgs_c	.expr
-gsac.prefix.item.t	.tygvar
-_gsac.prefix.item.fmtgs_k	.subcode
-gsac.prefix.item.t.out	.cogvar
-it	.larg	gsac.prefix.item.t
-	.force	_gsac.prefix.item.fmtgs_k
-	.coerce	gsac.prefix.item.t.out
-	.enter	it
+_gsac.prefix.typeitem.fmtgs_c	.expr
+gsac.prefix.typeitem.t	.tygvar
+_gsac.prefix.typeitem.fmtgs_k	.subcode
+gsac.prefix.typeitem.t.out	.cogvar
+ti	.larg	gsac.prefix.typeitem.t
+	.force	_gsac.prefix.typeitem.fmtgs_k
+	.coerce	gsac.prefix.typeitem.t.out
+	.enter	ti
 
-_gsac.prefix.item.fmtgs_k	.forcecont
-gsac.prefix.item.prim.u	.tygvar
+_gsac.prefix.typeitem.fmtgs_k	.forcecont
+gsac.prefix.typeitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
 fmtgs.app	.gvar
 fmtgs.var	.gvar
-_gsac.prefix.item.fmtgs_gsabstype_gsabstype.s	.gvar
+_gsac.prefix.typeitem.fmtgs_gsabstype_gsabstype.s	.gvar
 gsdl.sourcepos.fmtgs	.gvar
 gsdl.cgs.syntax.var.fmtgs	.gvar
 gsdl.cgs.gskind.fmtgs	.gvar
-it0	.karg	gsac.prefix.item.prim.u
-	.analyze	it0	gsabstype
+ti0	.karg	gsac.prefix.typeitem.prim.u
+	.analyze	ti0	gsabstype
 		.case	gsabstype
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.cgs.syntax.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-pr2			.apply	fmtgs.var	|	_gsac.prefix.item.fmtgs_gsabstype_gsabstype.s
+pr2			.apply	fmtgs.var	|	_gsac.prefix.typeitem.fmtgs_gsabstype_gsabstype.s
 pos.pr			.apply	gsdl.sourcepos.fmtgs	|	pos
 pr1			.apply	fmtgs.app	|	pr2	pos.pr
 v.pr			.apply	gsdl.cgs.syntax.var.fmtgs	|	v
@@ -214,17 +290,29 @@ ki.pr			.apply	gsdl.cgs.gskind.fmtgs	|	ki
 
 # §section §gs{gsac.prefix.item.t} constructors
 
-_gsac.prefix.gsabstype_c	.expr
+_gsac.prefix.item.typeitem_c	.expr
+gsac.prefix.typeitem.t	.tygvar
+gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.item.t.in	.cogvar
+ti	.larg	gsac.prefix.typeitem.t
+c	.constr	gsac.prefix.item.prim.u	typeitem	0	ti
+	.coerce	gsac.prefix.item.t.in
+	.lift
+	.yield	c
+
+# §section §gs{gsac.prefix.typeitem.t} constructors
+
+_gsac.prefix.typeitem.gsabstype_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-gsac.prefix.item.prim.u	.tygvar
-gsac.prefix.item.t.in	.cogvar
+gsac.prefix.typeitem.prim.u	.tygvar
+gsac.prefix.typeitem.t.in	.cogvar
 pos	.larg	gsdl.sourcepos.t
 v	.larg	gsdl.cgs.syntax.var.t
 ki	.larg	gsdl.cgs.gskind.t
-c	.constr	gsac.prefix.item.prim.u	gsabstype	0	pos	1	v	2	ki
-	.coerce	gsac.prefix.item.t.in
+c	.constr	gsac.prefix.typeitem.prim.u	gsabstype	0	pos	1	v	2	ki
+	.coerce	gsac.prefix.typeitem.t.in
 	.lift
 	.yield	c
 
@@ -238,7 +326,11 @@ gsac.prefix.prim.u	.tygvar
 	.tyref	gsac.prefix.prim.u
 
 gsac.prefix.prim.u	.tyexpr
-	.typroduct
+ordered.map.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+gsac.prefix.typeitem.t	.tygvar
+typesection_ty	.tylet	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
+	.typroduct	typesection	typesection_ty
 
 # §section §gs{gsac.prefix.item.t}
 
@@ -248,10 +340,25 @@ gsac.prefix.item.prim.u	.tygvar
 	.tyref	gsac.prefix.item.prim.u
 
 gsac.prefix.item.prim.u	.tyexpr
-_gsac.prefix.item.prim.u_gsabstype_ty	.tygvar
-	.tysum	gsabstype	_gsac.prefix.item.prim.u_gsabstype_ty
+_gsac.prefix.item.prim.u_ty	.tygvar
+	.tysum	typeitem	_gsac.prefix.item.prim.u_ty
 
-_gsac.prefix.item.prim.u_gsabstype_ty	.tyexpr
+_gsac.prefix.item.prim.u_ty	.tyexpr
+gsac.prefix.typeitem.t	.tygvar
+	.tyubproduct	0	gsac.prefix.typeitem.t
+
+# §section §gs{gsac.prefix.typeitem.t}
+
+gsac.prefix.typeitem.t	.tyabstract	*
+gsac.prefix.typeitem.prim.u	.tygvar
+	.tylift
+	.tyref	gsac.prefix.typeitem.prim.u
+
+gsac.prefix.typeitem.prim.u	.tyexpr
+_gsac.prefix.typeitem.prim.u_gsabstype_ty	.tygvar
+	.tysum	gsabstype	_gsac.prefix.typeitem.prim.u_gsabstype_ty
+
+_gsac.prefix.typeitem.prim.u_gsabstype_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
@@ -267,3 +374,12 @@ gsac.prefix.item.t.out	.tycoercion
 gsac.prefix.item.t	.tygvar
 	.tyinvert
 	.tydefinition	gsac.prefix.item.t
+
+gsac.prefix.typeitem.t.in	.tycoercion
+gsac.prefix.typeitem.t	.tygvar
+	.tydefinition	gsac.prefix.typeitem.t
+
+gsac.prefix.typeitem.t.out	.tycoercion
+gsac.prefix.typeitem.t	.tygvar
+	.tyinvert
+	.tydefinition	gsac.prefix.typeitem.t
