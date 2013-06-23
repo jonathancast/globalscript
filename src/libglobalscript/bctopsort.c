@@ -699,8 +699,9 @@ gsbc_item_hash_value(struct gsbc_item item)
 {
     ulong hash_value;
 
-    hash_value = (uintptr)item.file->name;
+    hash_value = (uintptr)item.file->name->hash;
     hash_value = hash_value * 33 + (uintptr)item.type;
+    hash_value = hash_value * 33 + (item.v->label ? item.v->label->hash : 0);
 
     return hash_value;
 }
