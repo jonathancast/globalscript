@@ -9,6 +9,8 @@ graph.scc.≡	.closure	_graph.scc.≡_c
 
 graph.scc.fmtgs	.closure	_graph.scc.fmtgs_c
 
+graph.scc.nonrecursive	.closure	_graph.scc.nonrecursive_c
+
 	.code
 
 _graph.tsort_c	.expr
@@ -80,14 +82,38 @@ fmtgs.printer.t	.tygvar	# Temp
 scc	.larg	graph.scc.t	α
 	.undef	fmtgs.printer.t
 
+# §section §gs{graph.scc.t} constructors
+
+_graph.scc.nonrecursive_c	.expr
+graph.scc.prim.u	.tygvar
+graph.scc.t.in	.cogvar
+α	.tyarg	*
+v	.larg	α
+res.u	.tylet	graph.scc.prim.u	α
+c	.constr	res.u	nonrecursive	0	v
+	.coerce	graph.scc.t.in	α
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{graph.scc.t}
 
 graph.scc.t	.tyabstract	**^
+graph.scc.prim.u	.tygvar
 α	.tylambda	*
 	.tylift
-	.tysum
+	.tyref	graph.scc.prim.u	α
+
+graph.scc.prim.u	.tyexpr
+_graph.scc.prim.u_nonrecursive_ty	.tygvar
+α	.tylambda	*
+nonrecursive_ty	.tylet	_graph.scc.prim.u_nonrecursive_ty	α
+	.tysum	nonrecursive	nonrecursive_ty
+
+_graph.scc.prim.u_nonrecursive_ty	.tyexpr
+α	.tylambda	*
+	.tyubproduct	0	α
 
 # §section §gs{graph.dependencies.t}
 
@@ -148,3 +174,10 @@ k	.tylambda	*
 v	.tylambda	*
 scc.ty	.tylet	graph.scc.t	v
 	.tyref	list.t	scc.ty
+
+	.coercion
+
+graph.scc.t.in	.tycoercion
+graph.scc.t	.tygvar
+α	.tylambda	*
+	.tydefinition	graph.scc.t	α
