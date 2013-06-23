@@ -622,6 +622,8 @@ gsbc_preorder_get(struct gsbc_item_hash *preorders, struct gsbc_item item)
         return 0;
 }
 
+static ulong gsbc_item_hash_value(struct gsbc_item);
+
 static
 int
 gsbc_item_hash_lookup(struct gsbc_item_hash *phash, struct gsbc_item item, union gsbc_item_hash_value *pres)
@@ -631,8 +633,7 @@ gsbc_item_hash_lookup(struct gsbc_item_hash *phash, struct gsbc_item item, union
 
     if (!phash) gsfatal("Forgot to allocate hash");
 
-    hash_value = (uintptr)item.file->name;
-    hash_value = hash_value * 33 + (uintptr)item.type;
+    hash_value = gsbc_item_hash_value(item);
 
     for (p = phash->buckets[hash_value % phash->nbuckets]; p; p = p->next) {
         if (gsbc_item_eq(p->key, item)) {
@@ -675,8 +676,7 @@ gsbc_item_hash_store(struct gsbc_item_hash *phash, struct gsbc_item item, union 
 
     if (!phash) gsfatal("Forgot to allocate hash");
 
-    hash_value = (uintptr)item.file->name;
-    hash_value = hash_value * 33 + (uintptr)item.type;
+    hash_value = gsbc_item_hash_value(item);
 
     plastp = &phash->buckets[hash_value % phash->nbuckets];
     for (p = phash->buckets[hash_value % phash->nbuckets]; p; p = p->next) {
@@ -692,6 +692,17 @@ gsbc_item_hash_store(struct gsbc_item_hash *phash, struct gsbc_item item, union 
     p->next = 0;
     p->key = item;
     p->value = v;
+}
+
+ulong
+gsbc_item_hash_value(struct gsbc_item item)
+{
+    ulong hash_value;
+
+    hash_value = (uintptr)item.file->name;
+    hash_value = hash_value * 33 + (uintptr)item.type;
+
+    return hash_value;
 }
 
 static
