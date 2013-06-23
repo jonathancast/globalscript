@@ -7,6 +7,8 @@ _graph.tsort_list	.closure	_graph.tsort_list_c	_graph.tsort_list_ty
 
 graph.scc.≡	.closure	_graph.scc.≡_c
 
+graph.scc.fmtgs	.closure	_graph.scc.fmtgs_c
+
 	.code
 
 _graph.tsort_c	.expr
@@ -68,6 +70,15 @@ bool.t	.tygvar
 scc0	.larg	graph.scc.t	α
 scc1	.larg	graph.scc.t	α
 	.undef	bool.t
+
+# §section §gs{graph.scc.fmtgs}
+
+_graph.scc.fmtgs_c	.expr
+graph.scc.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+α	.tyarg	*
+scc	.larg	graph.scc.t	α
+	.undef	fmtgs.printer.t
 
 	.type
 
