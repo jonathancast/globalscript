@@ -5,6 +5,8 @@
 graph.tsort	.closure	_graph.tsort_c	_graph.tsort_ty
 _graph.tsort_list	.closure	_graph.tsort_list_c	_graph.tsort_list_ty
 
+graph.scc.≡	.closure	_graph.scc.≡_c
+
 	.code
 
 _graph.tsort_c	.expr
@@ -56,6 +58,16 @@ ks1		.fkarg	1	list.t	k
 			.undef	list.t	scc.ty
 		.case	nil
 			.enter	k
+
+# §section §gs{graph.scc.≡}
+
+_graph.scc.≡_c	.expr
+graph.scc.t	.tygvar
+bool.t	.tygvar
+α	.tyarg	*
+scc0	.larg	graph.scc.t	α
+scc1	.larg	graph.scc.t	α
+	.undef	bool.t
 
 	.type
 
