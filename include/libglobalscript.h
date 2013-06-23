@@ -383,6 +383,7 @@ char *gserror_format(char *, char *, struct gserror *);
 
 struct gsimplementation_failure {
     struct gspos cpos, srcpos;
+    struct gsimplementation_failure *forward;
     char message[];
 };
 

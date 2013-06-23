@@ -473,12 +473,13 @@ gsiserror_block(struct gs_blockdesc *p)
 
 static gstypecode gsimplerrorseval(struct gspos pos, gsvalue);
 static gsvalue gsimplerrorsindir(struct gspos pos, gsvalue);
+static gsvalue gsimplerrorsgc(struct gsstringbuilder *, gsvalue);
 
 static struct gs_sys_global_block_suballoc_info gsimplementation_errors_info = {
     /* descr = */ {
         /* evaluator = */ gsimplerrorseval,
         /* indirection_dereferencer = */ gsimplerrorsindir,
-        /* gc_trace = */ gsunimplgc,
+        /* gc_trace = */ gsimplerrorsgc,
         /* description = */ "Global Script Implementation Errors",
     },
 };
@@ -518,6 +519,7 @@ gsunimpl(char *file, int lineno, struct gspos srcpos, char *err, ...)
     failure->cpos.lineno = lineno;
     failure->cpos.columnno = 0;
     failure->srcpos = srcpos;
+    failure->forward = 0;
     strcpy(failure->message, buf);
 
     return failure;
@@ -537,6 +539,29 @@ int
 gsisimplementation_failure_block(struct gs_blockdesc *p)
 {
     return p->class == &gsimplementation_errors_info.descr;
+}
+
+gsvalue
+gsimplerrorsgc(struct gsstringbuilder *err, gsvalue v)
+{
+    struct gsimplementation_failure *failure, *newfailure;
+
+    failure = (struct gsimplementation_failure *)v;
+    if (failure->forward) {
+        gsstring_builder_print(err, UNIMPL("gsimplerrorsgc: Check for forward"));
+        return 0;
+    }
+
+    newfailure = gsreserveimplementation_errors(sizeof(*newfailure) + strlen(failure->message) + 1);
+    memcpy(newfailure, failure, sizeof(*newfailure) + strlen(failure->message) + 1);
+    newfailure->forward = 0;
+
+    failure->forward = newfailure;
+
+    if (gs_gc_trace_pos(err, &newfailure->cpos) < 0) return 0;
+    if (gs_gc_trace_pos(err, &newfailure->srcpos) < 0) return 0;
+
+    return (gsvalue)newfailure;
 }
 
 /* §section Byte Code */
