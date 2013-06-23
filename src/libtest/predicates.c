@@ -142,3 +142,16 @@ ok_cstring_eq(char *srcfile, int srcline, char *s0, char *s1, char *err, ...)
 
     ok(srcfile, srcline, !strcmp(s0, s1), "%s: '%s' != '%s'", buf, s0, s1);
 }
+
+void
+ok_ptr_ne(char *srcfile, int srcline, void *p0, void *p1, char *err, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, err);
+    vseprint(buf, buf+sizeof buf, err, arg);
+    va_end(arg);
+
+    ok(srcfile, srcline, p0 != p1, "%s: %p != %p", buf, p0, p1);
+}
