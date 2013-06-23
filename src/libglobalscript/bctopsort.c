@@ -629,8 +629,7 @@ gsbc_item_hash_lookup(struct gsbc_item_hash *phash, struct gsbc_item item, union
     ulong hash_value;
     struct gsbc_item_hash_link *p;
 
-    if (!phash)
-        gsfatal("Forgot to allocate hash");
+    if (!phash) gsfatal("Forgot to allocate hash");
 
     hash_value = (uintptr)item.file->name;
     hash_value = hash_value * 33 + (uintptr)item.type;
@@ -674,8 +673,7 @@ gsbc_item_hash_store(struct gsbc_item_hash *phash, struct gsbc_item item, union 
     ulong hash_value;
     struct gsbc_item_hash_link *p, **plastp;
 
-    if (!phash)
-        gsfatal("Forgot to allocate hash");
+    if (!phash) gsfatal("Forgot to allocate hash");
 
     hash_value = (uintptr)item.file->name;
     hash_value = hash_value * 33 + (uintptr)item.type;
