@@ -1,5 +1,7 @@
 	.prefix
 
+# Based on §url{http://en.wikipedia.org/wiki/Path-based_strong_component_algorithm}
+
 	.data
 
 graph.tsort	.closure	_graph.tsort_c	_graph.tsort_ty
