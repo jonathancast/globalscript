@@ -538,10 +538,12 @@ ks1		.fkarg	1	list.t	k
 # §section §gs{graph.scc.≡}
 
 _graph.scc.≡_c	.expr
+order.total.t	.tygvar
 graph.scc.t	.tygvar
 _graph.scc.≡_k0	.subcode
 graph.scc.t.out	.cogvar
 α	.tyarg	*
+cmp	.larg	order.total.t	α
 scc0	.larg	graph.scc.t	α
 scc1	.larg	graph.scc.t	α
 	.force	_graph.scc.≡_k0
@@ -549,10 +551,45 @@ scc1	.larg	graph.scc.t	α
 	.enter	scc0
 
 _graph.scc.≡_k0	.forcecont
+order.total.t	.tygvar
+graph.scc.t	.tygvar
+graph.scc.prim.u	.tygvar
+_graph.scc.≡_k1	.subcode
+graph.scc.t.out	.cogvar
+α	.tyfv	*
+cmp	.fv	order.total.t	α
+scc1	.fv	graph.scc.t	α
+scc0.0	.karg	graph.scc.prim.u	α
+	.force	_graph.scc.≡_k1
+	.coerce	graph.scc.t.out	α
+	.enter	scc1
+
+_graph.scc.≡_k1	.forcecont
+order.total.t	.tygvar
 graph.scc.prim.u	.tygvar
 bool.t	.tygvar	# Temp
+_graph.scc.≡_nonrecursive_nonrecursive_k	.subcode
+order.total.ord.t.out	.cogvar
 α	.tyfv	*
-scc0.0	.karg	graph.scc.prim.u	α
+cmp	.fv	order.total.t	α
+scc0.0	.fv	graph.scc.prim.u	α
+scc1.0	.karg	graph.scc.prim.u	α
+	.analyze	scc0.0	nonrecursive
+		.case	nonrecursive
+v0		.fkarg	0	α
+			.analyze	scc1.0	nonrecursive
+				.case	nonrecursive
+v1				.fkarg	0	α
+					.force	_graph.scc.≡_nonrecursive_nonrecursive_k
+					.coerce	order.total.ord.t.out
+					.app	v0	v1
+					.enter	cmp
+	# > :: bool.t
+
+_graph.scc.≡_nonrecursive_nonrecursive_k	.forcecont
+order.total.ord.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+o0	.karg	order.total.ord.prim.u
 	.undef	bool.t
 
 # §section §gs{graph.scc.fmtgs}
