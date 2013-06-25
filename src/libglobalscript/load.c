@@ -1314,9 +1314,7 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
             p->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
             i++;
             if (i >= n) gsfatal("%P: Missing type signature on %y (if you don't want a type signature omit the trailing |)", p->pos, p->directive);
-            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-            i++;
-            if (i < n) gsfatal("%s:%d: Too many arguments to %y", pos->real_filename, pos->real_lineno, p->directive);
+            for (; i < n; i++) p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
         }
     } else if (
         gssymceq(p->directive, gssymfield, gssymcodeop, ".field")

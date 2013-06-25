@@ -2326,7 +2326,11 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         if (i < p->numarguments) {
             gsargcheck(p, i + 1, "Type signature");
             typesig = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i + 1])];
-            for (i += 2; i < p->numarguments; i++) gsfatal(UNIMPL("%P: Type arguments to signature in %y"), p->pos, p->directive);
+            for (i += 2; i < p->numarguments; i++) {
+                typesig = gstype_apply(p->pos, typesig,
+                    pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])]
+                );
+            }
             gstypes_type_check_type_fail(p->pos, type, typesig);
         }
 
