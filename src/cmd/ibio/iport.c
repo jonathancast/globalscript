@@ -282,6 +282,7 @@ ibio_read_process_main(void *p)
     struct ibio_iport *iport;
     struct ibio_channel_segment *seg;
     gsvalue *pos;
+    vlong total_time_reading;
 
     args = (struct ibio_read_process_args *)p;
 
@@ -311,6 +312,7 @@ ibio_read_process_main(void *p)
 
     seg = 0;
     pos = 0;
+    total_time_reading = 0;
     do {
         struct gsstringbuilder *err;
         int gcres;
@@ -402,6 +404,7 @@ ibio_read_process_main(void *p)
                             pos = 0;
                             seg = 0;
                             ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                            if (gsflag_stat_collection) total_time_reading += nsec() - iport->start_time_reading;
                             break;
                         case ibio_acceptor_symbol_bind: {
                             gsvalue symk, eofk;
@@ -548,6 +551,8 @@ ibio_read_process_main(void *p)
     ibio_read_thread_queue->numthreads--;
     unlock(&ibio_read_thread_queue->lock);
 
+    gsstatprint("Total wallclock time in input: %llds %lldms\n", total_time_reading / 1000 / 1000 / 1000, (total_time_reading / 1000 / 1000) % 1000);
+
     ace_down();
 }
 
@@ -659,6 +664,8 @@ ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct ap
         read_blocking->iport->channel->last_accessed_seg = seg;
         unlock(&read_blocking->iport->channel->lock);
         unlock(&seg->lock);
+
+        if (gsflag_stat_collection) read_blocking->iport->start_time_reading = nsec();
 
         unlock(&read_blocking->iport->lock);
         *pv = res;

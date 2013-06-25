@@ -160,6 +160,7 @@ struct ibio_iport {
     gsvalue reading;
     struct api_thread *reading_thread;
     struct ibio_iport_read_blocker *waiting_to_read, **waiting_to_read_end;
+    vlong start_time_reading;
     struct ibio_iport *forward;
     /* §section Used for §gs{iport}s connected to external files */
     int fd;
