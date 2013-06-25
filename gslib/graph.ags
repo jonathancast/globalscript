@@ -589,8 +589,13 @@ v1				.fkarg	0	α
 _graph.scc.≡_nonrecursive_nonrecursive_k	.forcecont
 order.total.ord.prim.u	.tygvar
 bool.t	.tygvar	# Temp
+bool.true	.gvar
 o0	.karg	order.total.ord.prim.u
-	.undef	bool.t
+	.danalyze	o0	eq
+		.default
+			.undef	bool.t
+		.case	eq
+			.enter	bool.true
 
 # §section §gs{graph.scc.fmtgs}
 
