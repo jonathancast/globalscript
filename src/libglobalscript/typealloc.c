@@ -891,6 +891,7 @@ gstype_apply(struct gspos pos, struct gstype *fun, struct gstype *arg)
             return gstypes_subst(pos, lambda->body, lambda->var, arg);
         }
         case gstype_var:
+        case gstype_product:
         case gstype_sum:
             gsfatal("%P: Too many arguments to %P", pos, fun->pos);
         default:
