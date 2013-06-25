@@ -75,10 +75,20 @@ ks1		.fkarg	1	list.t	k
 
 _graph.scc.≡_c	.expr
 graph.scc.t	.tygvar
-bool.t	.tygvar
+_graph.scc.≡_k0	.subcode
+graph.scc.t.out	.cogvar
 α	.tyarg	*
 scc0	.larg	graph.scc.t	α
 scc1	.larg	graph.scc.t	α
+	.force	_graph.scc.≡_k0
+	.coerce	graph.scc.t.out	α
+	.enter	scc0
+
+_graph.scc.≡_k0	.forcecont
+graph.scc.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+α	.tyfv	*
+scc0.0	.karg	graph.scc.prim.u	α
 	.undef	bool.t
 
 # §section §gs{graph.scc.fmtgs}
@@ -188,4 +198,10 @@ scc.ty	.tylet	graph.scc.t	v
 graph.scc.t.in	.tycoercion
 graph.scc.t	.tygvar
 α	.tylambda	*
+	.tydefinition	graph.scc.t	α
+
+graph.scc.t.out	.tycoercion
+graph.scc.t	.tygvar
+α	.tylambda	*
+	.tyinvert
 	.tydefinition	graph.scc.t	α
