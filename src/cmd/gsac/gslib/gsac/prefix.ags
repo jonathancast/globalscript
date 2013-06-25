@@ -51,7 +51,7 @@ gsac.prefix.item.t	.tygvar
 list.t	.tygvar	# Temp
 order.total.t	.tygvar	# Temp
 graph.dependencies.t	.tygvar	# Temp
-graph.lookup.t	.tygvar	# Temp
+_gsac.prefix.typecheck_get_c	.subcode
 _gsac.prefix.typecheck_k	.subcode
 list.t.out	.cogvar
 graph.tsort	.gvar
@@ -63,7 +63,7 @@ env	.larg	gsdl.cgs.typeenv.t
 pr	.larg	gsac.prefix.t
 ord	.undefined	order.total.t	gsdl.cgs.symbol.t
 deps	.undefined	graph.dependencies.t	gsdl.cgs.symbol.t	gsac.prefix.item.t
-get	.undefined	graph.lookup.t	gsdl.cgs.symbol.t	gsac.prefix.item.t
+get	.alloc	_gsac.prefix.typecheck_get_c
 pr.items	.apply	list.nil	gsac.prefix.item.t
 	# TODO: Data items
 	# TODO: Type items
@@ -74,6 +74,12 @@ items	.apply	list.map	gsac.prefix.item.t	gsdl.cgs.symbol.t	|	gsac.prefix.item.na
 	.coerce	list.t.out	scc.item.ty
 	.app	ord	deps	get	items
 	.enter	graph.tsort	gsdl.cgs.symbol.t	gsac.prefix.item.t
+
+_gsac.prefix.typecheck_get_c	.expr
+graph.lookup.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	# Temp
+gsac.prefix.item.t	.tygvar	# Temp
+	.undef	graph.lookup.t	gsdl.cgs.symbol.t	gsac.prefix.item.t
 
 _gsac.prefix.typecheck_k	.forcecont
 list.prim.u	.tygvar
