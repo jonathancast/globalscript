@@ -99,7 +99,11 @@ b1.0	.karg	bool.prim.u
 				.case	true
 					.undef	order.total.ord.t
 		.case	true
-			.undef	order.total.ord.t
+			.analyze	b1.0	false	true
+				.case	false
+					.undef	order.total.ord.t
+				.case	true
+					.enter	order.total.ord.eq
 
 # §section §gs{bool.not}
 
