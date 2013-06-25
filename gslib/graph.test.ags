@@ -4,7 +4,12 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test_tsort_single.elem
+
+_test_tsort_single.elem	.closure	_test_tsort_single.elem_c
+_test_tsort_single.elem_label	.string	tsort\sa\ssingle\selement\swith\sno\sdependencies
+
+_fixtures.val.compare	.closure	_fixtures.val.compare_c
 
 	.code
 
@@ -13,3 +18,123 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{tsort} a single element with no dependencies
+
+_test_tsort_single.elem_c	.expr
+list.t	.tygvar
+graph.scc.t	.tygvar
+_fixtures.val.t	.tygvar
+natural.t	.tygvar
+_test_tsort_single.elem_val.deps_c	.subcode
+_test_tsort_single.elem_val.look_c	.subcode
+test.property.label	.gvar
+_test_tsort_single.elem_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+graph.scc.≡	.gvar
+_fixtures.val.compare	.gvar
+list.fmtgs.byDefault	.gvar
+graph.scc.fmtgs	.gvar
+graph.tsort	.gvar
+natural.compare	.gvar
+list.singleton	.gvar
+graph.scc.nonrecursive	.gvar
+natural.0	.gvar
+bool.true	.gvar
+scc.ty	.tylet	graph.scc.t	_fixtures.val.t
+list.scc.ty	.tylet	list.t	scc.ty
+scc.≡	.apply	graph.scc.≡	_fixtures.val.t	|	_fixtures.val.compare
+list.scc.≡	.apply	list.≡	scc.ty	|	scc.≡
+scc.fmtgs	.apply	graph.scc.fmtgs	_fixtures.val.t
+list.scc.fmtgs	.apply	list.fmtgs.byDefault	scc.ty	|	scc.fmtgs
+val.deps	.alloc	_test_tsort_single.elem_val.deps_c
+val0	.lrecord	key	natural.0	val	bool.true	|	_fixtures.val.t
+val.look	.alloc	_test_tsort_single.elem_val.look_c
+ks	.apply	list.singleton	natural.t	|	natural.0
+actual	.apply	graph.tsort	natural.t	_fixtures.val.t	|	natural.compare	val.deps	val.look	ks
+scc0	.apply	graph.scc.nonrecursive	_fixtures.val.t	|	val0
+expected	.apply	list.singleton	scc.ty	|	scc0
+test	.apply	test.assert.eq	list.scc.ty	|	list.scc.≡	list.scc.fmtgs	actual	expected
+	.app	_test_tsort_single.elem_label	test
+	.enter	test.property.label
+
+_test_tsort_single.elem_val.deps_c	.expr
+_fixtures.val.t	.tygvar
+natural.t	.tygvar
+list.nil	.gvar
+v	.larg	_fixtures.val.t
+	.enter	list.nil	natural.t
+
+_test_tsort_single.elem_val.look_c	.expr
+_fixtures.val.t	.tygvar
+natural.t	.tygvar
+_test_tsort_single.elem_val.look_k	.subcode
+bool.t.out	.cogvar
+natural.≡	.gvar
+natural.0	.gvar
+val0	.fv	_fixtures.val.t
+k	.larg	natural.t
+	.force	_test_tsort_single.elem_val.look_k
+	.coerce	bool.t.out
+	.app	k	natural.0
+	.enter	natural.≡
+
+_test_tsort_single.elem_val.look_k	.forcecont
+_fixtures.val.t	.tygvar
+bool.prim.u	.tygvar
+maybe.t	.tygvar	# Temp
+maybe.just	.gvar
+val0	.fv	_fixtures.val.t
+b0	.karg	bool.prim.u	# Is §gs{k ≡ 0}?
+	.analyze	b0	false	true
+		.case	false
+			.undef	maybe.t	_fixtures.val.t
+		.case	true
+			.app	val0
+			.yield	maybe.just	_fixtures.val.t
+
+# §section Test fixtures
+
+_fixtures.val.compare_c	.expr
+_fixtures.val.t	.tygvar
+_fixtures.val.compare_k	.subcode
+order.total.ord.t.out	.cogvar
+natural.compare	.gvar
+v0	.larg	_fixtures.val.t
+v1	.larg	_fixtures.val.t
+v0.key	.lfield	key	v0
+v1.key	.lfield	key	v1
+	.force	_fixtures.val.compare_k
+	.coerce	order.total.ord.t.out
+	.app	v0.key	v1.key
+	.enter	natural.compare
+
+_fixtures.val.compare_k	.forcecont
+_fixtures.val.t	.tygvar
+order.total.ord.prim.u	.tygvar
+order.total.ord.t	.tygvar	# Temp
+bool.compare	.gvar
+v0	.fv	_fixtures.val.t
+v1	.fv	_fixtures.val.t
+o0	.karg	order.total.ord.prim.u
+	.analyze	o0	eq	gt	lt
+		.case	eq
+v0.val			.lfield	val	v0
+v1.val			.lfield	val	v1
+			.app	v0.val	v1.val
+			.enter	bool.compare
+		.case	gt
+			.undef	order.total.ord.t
+		.case	lt
+			.undef	order.total.ord.t
+
+	.type
+
+# §section Test fixtures
+
+_fixtures.val.t	.tyexpr
+natural.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.typroduct	key	natural.t	val	bool.t
