@@ -8,6 +8,7 @@ graph.tsort	.closure	_graph.tsort_c	_graph.tsort_ty
 _graph.tsort_list	.closure	_graph.tsort_list_c	_graph.tsort_list_ty
 _graph.tsort_item	.closure	_graph.tsort_item_c	_graph.tsort_item_ty
 _graph.tsort_item_cont1_:_pop.unassigned	.closure	_graph.tsort_item_cont1_:_pop.unassigned_c	_graph.tsort_item_cont1_:_pop.unassigned_ty
+_graph.tsort_item_cont1_:_eq_scc0_w	.closure	_graph.tsort_item_cont1_:_eq_scc0_w_c
 _graph.tsort_subitems	.closure	_graph.tsort_subitems_c	_graph.tsort_subitems_ty
 
 graph.scc.≡	.closure	_graph.scc.≡_c
@@ -213,6 +214,7 @@ cont1	.alloc	_graph.tsort_item_cont1_c
 
 _graph.tsort_item_cont1_c	.expr
 order.total.t	.tygvar
+graph.dependencies.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -221,6 +223,7 @@ list.t.out	.cogvar
 k	.tyfv	*
 v	.tyfv	*
 ord	.fv	order.total.t	k
+deps	.fv	graph.dependencies.t	k	v
 k0	.fv	k
 em	.larg	ordered.set.t	k
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
@@ -232,6 +235,7 @@ maybe.group	.larg	list.t	k
 
 _graph.tsort_item_cont1_k0	.forcecont
 order.total.t	.tygvar
+graph.dependencies.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -243,6 +247,7 @@ v	.tyfv	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 scc.ty	.tylet	graph.scc.t	v	# Temp
 ord	.fv	order.total.t	k
+deps	.fv	graph.dependencies.t	k	v
 k0	.fv	k
 unassigned	.fv	list.t	kv.ty
 mbg0	.karg	list.prim.u	k
@@ -260,6 +265,7 @@ mbg1		.fkarg	1	list.t	k
 
 _graph.tsort_item_cont1_:_k	.forcecont
 order.total.t	.tygvar
+graph.dependencies.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
 order.total.ord.prim.u	.tygvar
@@ -271,6 +277,7 @@ v	.tyfv	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 scc.ty	.tylet	graph.scc.t	v	# Temp
 ord	.fv	order.total.t	k
+deps	.fv	graph.dependencies.t	k	v
 k0	.fv	k
 unassigned	.fv	list.t	kv.ty
 o0	.karg	order.total.ord.prim.u
@@ -369,20 +376,115 @@ r			.record	0	r.0	1	un1	|	_graph.tsort_item_cont1_:_pop.unassigned_res.u	k	v
 			.yield	r
 
 _graph.tsort_item_cont1_:_eq_k	.forcecont
+graph.dependencies.t	.tygvar
 _graph.tsort_item_cont1_:_pop.unassigned_res.u	.tygvar
 list.t	.tygvar	# Temp
 graph.scc.t	.tygvar	# Temp
 list.:	.gvar
+_graph.tsort_item_cont1_:_eq_scc0_w	.gvar
 k	.tyfv	*
 v	.tyfv	*
 scc.ty	.tylet	graph.scc.t	v
+deps	.fv	graph.dependencies.t	k	v
 pop	.karg	_graph.tsort_item_cont1_:_pop.unassigned_res.u	k	v
-scc0	.undefined	scc.ty	# TODO: Group keys so popped into SCC; emit SCC
+ks0	.field	0	pop
+scc0	.apply	_graph.tsort_item_cont1_:_eq_scc0_w	k	v	|	deps	ks0
 	# TODO: Add keys emitted to §gs{em}
 	# TODO: Pop §gs{maybe.group}
 sccs1	.undefined	list.t	scc.ty	# Recursive call with the above
 	.app	scc0	sccs1
 	.enter	list.:	scc.ty
+
+_graph.tsort_item_cont1_:_eq_scc0_w_c	.expr
+graph.dependencies.t	.tygvar
+list.t	.tygvar
+_graph.tsort_key.value.ty	.tygvar
+_graph.tsort_item_cont1_:_eq_scc0_w_k	.subcode
+list.t.out	.cogvar
+k	.tyarg	*
+v	.tyarg	*
+kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
+deps	.larg	graph.dependencies.t	k	v
+ks0	.larg	list.t	kv.ty
+	# TODO: Allocate the fall-back position (for if we need to issue a recursive SCC for any reason) here
+	.force	_graph.tsort_item_cont1_:_eq_scc0_w_k
+	.coerce	list.t.out	kv.ty
+	.enter	ks0
+
+_graph.tsort_item_cont1_:_eq_scc0_w_k	.forcecont
+graph.dependencies.t	.tygvar
+list.prim.u	.tygvar
+_graph.tsort_key.value.ty	.tygvar
+list.t	.tygvar
+graph.scc.t	.tygvar	# Temp
+_graph.tsort_item_cont1_:_eq_scc0_w_:_k	.subcode
+list.t.out	.cogvar
+k	.tyfv	*
+v	.tyfv	*
+kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
+scc.ty	.tylet	graph.scc.t	v	# Temp
+deps	.fv	graph.dependencies.t	k	v
+ks0.0	.karg	list.prim.u	kv.ty
+	.analyze	ks0.0	:	nil
+		.case	:
+kv0		.fkarg	0	kv.ty
+kvs1		.fkarg	1	list.t	kv.ty
+			.force	_graph.tsort_item_cont1_:_eq_scc0_w_:_k
+			.coerce	list.t.out	kv.ty
+			.enter	kvs1
+		.case	nil
+			.undef	scc.ty	# Impossible; we must have popped at least §emph{one} key off §{unassigned}!
+
+_graph.tsort_item_cont1_:_eq_scc0_w_:_k	.forcecont
+graph.dependencies.t	.tygvar
+list.prim.u	.tygvar
+_graph.tsort_key.value.ty	.tygvar
+graph.scc.t	.tygvar	# Temp
+_graph.tsort_item_cont1_:_eq_scc0_w_:_eq_c	.subcode
+_graph.tsort_item_cont1_:_eq_scc0_w_:_nil_k	.subcode
+bool.t.out	.cogvar
+list.elem	.gvar
+k	.tyfv	*
+v	.tyfv	*
+kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
+scc.ty	.tylet	graph.scc.t	v	# Temp
+deps	.fv	graph.dependencies.t	k	v
+kv0	.fv	kv.ty
+ks1.0	.karg	list.prim.u	kv.ty
+	.danalyze	ks1.0	nil
+		.default
+			.undef	scc.ty	# TODO: Group keys so popped into SCC; emit SCC
+		.case	nil
+eq			.alloc	_graph.tsort_item_cont1_:_eq_scc0_w_:_eq_c
+k0			.lfield	0	kv0
+v0			.lfield	1	kv0
+ds0			.apply	deps	|	v0
+			.force	_graph.tsort_item_cont1_:_eq_scc0_w_:_nil_k
+			.coerce	bool.t.out
+			.app	eq	k0	ds0
+			.enter	list.elem	k
+
+_graph.tsort_item_cont1_:_eq_scc0_w_:_eq_c	.expr
+bool.t	.tygvar	# Temp
+k	.tyfv	*
+k0	.larg	k
+k1	.larg	k
+	.undef	bool.t
+
+_graph.tsort_item_cont1_:_eq_scc0_w_:_nil_k	.forcecont
+bool.prim.u	.tygvar
+graph.scc.t	.tygvar	# Temp
+graph.scc.nonrecursive	.gvar
+v	.tyfv	*
+scc.ty	.tylet	graph.scc.t	v	# Temp
+v0	.fv	v
+b0	.karg	bool.prim.u	# Does §gs{k0} depend on itself?
+	.analyze	b0	false	true
+		.case	false
+			.app	v0
+			.enter	graph.scc.nonrecursive	v
+		.case	true
+			.undef	scc.ty	# TODO: Group keys so popped into SCC; emit SCC
 
 _graph.tsort_subitems_c	.expr
 list.t	.tygvar
