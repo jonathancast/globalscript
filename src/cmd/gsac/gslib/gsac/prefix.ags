@@ -2,6 +2,32 @@
 
 	.data
 
+# Important planny-type stuff:
+#
+# Abstract type items need to be split into two pieces:
+# §begin{itemize}
+#     §item §anchor{tydefn} One that declares the abstract type §emph{per se}, especially the definition.
+#     §item §anchor{tyvar} One that declares the name of the abs type as a synomym for the abs typy expression.
+# §end{itemize}
+# References to the abstract type name in other type expressions depend on §ref{tyvar}.
+# Nothing depends on §ref{tydefn}, but it depends on things.
+# To manage this, we have two kinds of symbols:
+# §begin{itemize}
+#     §item §label{§gs{gstype}} Type symbols, which are always type §emph{synonyms}.
+#     §item §label{§gs{gsabstype}} Abstract types, which map onto definitions.
+# §end{itemize}
+#
+# We also have three kinds of items:
+# §begin{itemize}
+#     §item §label{§gs{gstyexpr}} Type synonym items, labeled by §gs{gsytpe}s.
+#     §item §label{§gs{gsabstypenm}} Abstract type (names), labeled by §gs{gstype}s.
+#     §item §label{§gs{gsabstypedefn}} Abstract type (definitions), labeled by §gs{gsabstype}s.
+# §end{itemize}
+#
+# Both §ags{.tyabstract} items and §ags{.tyextabstract} items translate into §emph{two} kinds of ‘items’ on our system.
+#
+# TODO: Bring §gs{gsac.prefxi.typeitem.t} into conformity with this sketch.
+
 gsac.prefix.empty	.closure	_gsac.prefix.empty_c
 
 gsac.prefix.typecheck	.closure	_gsac.prefix.typecheck_c
