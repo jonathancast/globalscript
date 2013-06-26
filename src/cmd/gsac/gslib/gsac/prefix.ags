@@ -25,8 +25,6 @@
 # §end{itemize}
 #
 # Both §ags{.tyabstract} items and §ags{.tyextabstract} items translate into §emph{two} kinds of ‘items’ on our system.
-#
-# TODO: Bring §gs{gsac.prefxi.typeitem.t} into conformity with this sketch.
 
 gsac.prefix.empty	.closure	_gsac.prefix.empty_c
 
@@ -50,7 +48,7 @@ _gsac.prefix.typeitem.fmtgs_gsabstype_gsabstype.s	.string	gsabstype
 
 gsac.prefix.item.typeitem	.closure	_gsac.prefix.item.typeitem_c
 
-gsac.prefix.typeitem.gsabstype	.closure	_gsac.prefix.typeitem.gsabstype_c
+gsac.prefix.typeitem.gsabstypenm	.closure	_gsac.prefix.typeitem.gsabstypenm_c
 
 	.code
 
@@ -173,12 +171,12 @@ gsac.prefix.prim.u	.tygvar
 gsac.prefix.typeitem.t	.tygvar
 ordered.map.insert	.gvar
 gsdl.cgs.syntax.var.compare	.gvar
-gsac.prefix.typeitem.gsabstype	.gvar
+gsac.prefix.typeitem.gsabstypenm	.gvar
 pos	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.cgs.syntax.var.t
 ki	.fv	gsdl.cgs.gskind.t
 pr0	.karg	gsac.prefix.prim.u
-ti	.apply	gsac.prefix.typeitem.gsabstype	|	pos	v	ki
+ti	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	ki
 ts0	.field	typesection	pr0
 ts1	.apply	ordered.map.insert	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t	|	gsdl.cgs.syntax.var.compare	v	ti	ts0
 r	.record	typesection	ts1	|	gsac.prefix.prim.u
@@ -295,13 +293,13 @@ bool.t.out	.cogvar
 gsdl.cgs.syntax.var.≡	.gvar
 ti0.0	.fv	gsac.prefix.typeitem.prim.u
 ti1.0	.karg	gsac.prefix.typeitem.prim.u
-	.analyze	ti0.0	gsabstype
-		.case	gsabstype
+	.analyze	ti0.0	gsabstypenm
+		.case	gsabstypenm
 pos0		.fkarg	0	gsdl.sourcepos.t
 v0		.fkarg	1	gsdl.cgs.syntax.var.t
 ki0		.fkarg	2	gsdl.cgs.gskind.t
-			.analyze	ti1.0	gsabstype
-				.case	gsabstype
+			.analyze	ti1.0	gsabstypenm
+				.case	gsabstypenm
 pos1				.fkarg	0	gsdl.sourcepos.t
 v1				.fkarg	1	gsdl.cgs.syntax.var.t
 ki1				.fkarg	2	gsdl.cgs.gskind.t
@@ -351,8 +349,8 @@ gsdl.sourcepos.fmtgs	.gvar
 gsdl.cgs.syntax.var.fmtgs	.gvar
 gsdl.cgs.gskind.fmtgs	.gvar
 ti0	.karg	gsac.prefix.typeitem.prim.u
-	.analyze	ti0	gsabstype
-		.case	gsabstype
+	.analyze	ti0	gsabstypenm
+		.case	gsabstypenm
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.cgs.syntax.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
@@ -380,7 +378,7 @@ c	.constr	gsac.prefix.item.prim.u	typeitem	0	ti
 
 # §section §gs{gsac.prefix.typeitem.t} constructors
 
-_gsac.prefix.typeitem.gsabstype_c	.expr
+_gsac.prefix.typeitem.gsabstypenm_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
@@ -389,7 +387,7 @@ gsac.prefix.typeitem.t.in	.cogvar
 pos	.larg	gsdl.sourcepos.t
 v	.larg	gsdl.cgs.syntax.var.t
 ki	.larg	gsdl.cgs.gskind.t
-c	.constr	gsac.prefix.typeitem.prim.u	gsabstype	0	pos	1	v	2	ki
+c	.constr	gsac.prefix.typeitem.prim.u	gsabstypenm	0	pos	1	v	2	ki
 	.coerce	gsac.prefix.typeitem.t.in
 	.lift
 	.yield	c
@@ -433,10 +431,10 @@ gsac.prefix.typeitem.prim.u	.tygvar
 	.tyref	gsac.prefix.typeitem.prim.u
 
 gsac.prefix.typeitem.prim.u	.tyexpr
-_gsac.prefix.typeitem.prim.u_gsabstype_ty	.tygvar
-	.tysum	gsabstype	_gsac.prefix.typeitem.prim.u_gsabstype_ty
+_gsac.prefix.typeitem.prim.u_gsabstypenm_ty	.tygvar
+	.tysum	gsabstypenm	_gsac.prefix.typeitem.prim.u_gsabstypenm_ty
 
-_gsac.prefix.typeitem.prim.u_gsabstype_ty	.tyexpr
+_gsac.prefix.typeitem.prim.u_gsabstypenm_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
