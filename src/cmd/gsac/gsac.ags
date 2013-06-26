@@ -381,13 +381,14 @@ gsdl.cgs.symbol.t	.tygvar
 _prefix.init	.gvar
 list.:	.gvar
 ordered.set.empty	.gvar
+gsac.prefix.empty	.gvar
 prn	.fv	list.t	_real.entry_prefix_ty
 fn0	.fv	ibio.file.name.t
 fns1	.fv	list.t	ibio.file.name.t
 isd	.fv	bool.t
 empty.syms	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 empty.files	.apply	ordered.set.empty	ibio.file.name.t
-pr0	.lrecord	bvs	empty.syms	filename	fn0	files.loaded	empty.files	isdir	isd	|	_real.entry_prefix_ty
+pr0	.lrecord	bvs	empty.syms	filename	fn0	files.loaded	empty.files	isdir	isd	prefix	gsac.prefix.empty	|	_real.entry_prefix_ty
 prn1	.apply	list.:	_real.entry_prefix_ty	|	pr0	prn
 	.app	prn1	fns1
 	.enter	_prefix.init
@@ -752,7 +753,8 @@ filename			.lfield	filename	pr0
 files.loaded			.lfield	files.loaded	pr0
 files.loaded.1			.apply	ordered.set.insert	ibio.file.name.t	|	ibio.file.name.compare	fn	files.loaded
 isdir			.lfield	isdir	pr0
-pr0.1			.lrecord	bvs	bvs	filename	filename	files.loaded	files.loaded.1	isdir	isdir	|	_real.entry_prefix_ty
+prefix			.lfield	prefix	pr0
+pr0.1			.lrecord	bvs	bvs	filename	filename	files.loaded	files.loaded.1	isdir	isdir	prefix	prefix	|	_real.entry_prefix_ty
 			.app	eo	v	files1	pr0.1	prn1
 			.enter	_prefix.load.var_w
 
@@ -892,6 +894,7 @@ _real.entry_prefix_u	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
 ordered.set.t	.tygvar 	# Temp
 ibio.file.name.t	.tygvar	# Temp
+gsac.prefix.t	.tygvar	# Temp
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsac.input.prefix.boundvars	.gvar
@@ -907,7 +910,8 @@ pr0.filename	.lfield	filename	pr0
 pr0.files.loaded	.lfield	files.loaded	pr0
 files.loaded.1	.apply	ordered.set.insert	ibio.file.name.t	|	ibio.file.name.compare	fn	pr0.files.loaded
 id	.lfield	isdir	pr0
-r	.record	bvs	bvs1	filename	pr0.filename	files.loaded	files.loaded.1	isdir	id	|	_real.entry_prefix_u	# Add the file's contents to the prefix in pr0
+prefix	.undefined	gsac.prefix.t	# Add the file's contents to the prefix in pr0
+r	.record	bvs	bvs1	filename	pr0.filename	files.loaded	files.loaded.1	isdir	id	prefix	prefix	|	_real.entry_prefix_u
 	.lift
 	.yield	r
 
@@ -1338,6 +1342,7 @@ prn1		.fkarg	1	list.t	_real.entry_prefix_ty
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
 _prefix.typecheck_:_k	.forcecont
+_real.entry_prefix_ty	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
@@ -1346,6 +1351,7 @@ either.t	.tygvar	# Temp
 _prefix.typecheck_:_right_k	.subcode
 either.t.out	.cogvar
 gsac.prefix.typecheck	.gvar
+pr0	.fv	_real.entry_prefix_ty
 eenv0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	eenv0	left	right
 		.case	left
@@ -1353,7 +1359,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.cgs.typeenv.t
 		.case	right
 env		.fkarg	0	gsdl.cgs.typeenv.t
-pr0.prefix			.undefined	gsac.prefix.t
+pr0.prefix			.lfield	prefix	pr0
 			.force	_prefix.typecheck_:_right_k
 			.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
 			.app	env	pr0.prefix
@@ -1577,9 +1583,10 @@ ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 ibio.file.name.t	.tygvar
 bool.t	.tygvar
+gsac.prefix.t	.tygvar
 bvs_ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 files.loaded_ty	.tylet	ordered.set.t	ibio.file.name.t
-	.typroduct	bvs	bvs_ty	filename	ibio.file.name.t	files.loaded	files.loaded_ty	isdir	bool.t	# 〈 name :: file.name.t; isdir :: bool.t; bvars :: set.t symbol.t; loaded :: set.t file.name.t; prefix :: prefix.t; 〉
+	.typroduct	bvs	bvs_ty	filename	ibio.file.name.t	files.loaded	files.loaded_ty	isdir	bool.t	prefix	gsac.prefix.t
 
 _prefix.init_ty	.tyexpr
 list.t	.tygvar
