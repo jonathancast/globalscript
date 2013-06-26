@@ -408,22 +408,22 @@ ace_instr_extract_efv(struct ace_thread *thread)
 
     nreg = ACE_EFV_REGNUM(ip);
 
-    for (;;) {
-        st = GS_SLOW_EVALUATE(ip->pos, thread->regs[nreg]);
+again:
+    st = GS_SLOW_EVALUATE(ip->pos, thread->regs[nreg]);
 
-        switch (st) {
-            case gstywhnf:
-                goto extracted_value;
-            case gstyindir:
-                thread->regs[nreg] = GS_REMOVE_INDIRECTION(ip->pos, thread->regs[nreg]);
-                break;
-            default:
-                ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "ace_extract_efv: st = %d", st);
-                return;
-        }
+    switch (st) {
+        case gstywhnf:
+            break;
+        case gstyindir:
+            thread->regs[nreg] = GS_REMOVE_INDIRECTION(ip->pos, thread->regs[nreg]);
+            goto again;
+        case gstyimplerr:
+            ace_failure_thread(thread, (struct gsimplementation_failure *)thread->regs[nreg]);
+            return;
+        default:
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "ace_extract_efv: st = %d", st);
+            return;
     }
-
-extracted_value:
 
     thread->st.running.ip = ACE_EFV_SKIP(ip);
     return;
