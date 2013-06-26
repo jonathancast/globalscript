@@ -387,7 +387,7 @@ fns1	.fv	list.t	ibio.file.name.t
 isd	.fv	bool.t
 empty.syms	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 empty.files	.apply	ordered.set.empty	ibio.file.name.t
-pr0	.lrecord	bvs	empty.syms	filename	fn0	files.loaded	empty.files	isdir	isd
+pr0	.lrecord	bvs	empty.syms	filename	fn0	files.loaded	empty.files	isdir	isd	|	_real.entry_prefix_ty
 prn1	.apply	list.:	_real.entry_prefix_ty	|	pr0	prn
 	.app	prn1	fns1
 	.enter	_prefix.init
@@ -501,7 +501,7 @@ prn1		.fkarg	1	list.t	_real.entry_prefix_ty
 fn			.lfield	filename	pr0
 isd			.lfield	isdir	pr0
 relv			.apply	gsdl.cgs.symbol.components.get	|	v
-file			.lrecord	filename	fn	isdir	isd	relv	relv
+file			.lrecord	filename	fn	isdir	isd	relv	relv	|	_prefix.load.var_w_file_ty
 files			.apply	list.singleton	_prefix.load.var_w_file_ty	|	file
 			.app	eo	v	files	pr0	prn1
 			.enter	_prefix.load.var_w
@@ -752,7 +752,7 @@ filename			.lfield	filename	pr0
 files.loaded			.lfield	files.loaded	pr0
 files.loaded.1			.apply	ordered.set.insert	ibio.file.name.t	|	ibio.file.name.compare	fn	files.loaded
 isdir			.lfield	isdir	pr0
-pr0.1			.lrecord	bvs	bvs	filename	filename	files.loaded	files.loaded.1	isdir	isdir
+pr0.1			.lrecord	bvs	bvs	filename	filename	files.loaded	files.loaded.1	isdir	isdir	|	_real.entry_prefix_ty
 			.app	eo	v	files1	pr0.1	prn1
 			.enter	_prefix.load.var_w
 
@@ -888,6 +888,7 @@ isags	.fv	bool.t
 _prefix.load.file_pr0.1_c	.expr
 gsac.input.prefix.t	.tygvar
 _real.entry_prefix_ty	.tygvar
+_real.entry_prefix_u	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
 ordered.set.t	.tygvar 	# Temp
 ibio.file.name.t	.tygvar	# Temp
@@ -906,7 +907,7 @@ pr0.filename	.lfield	filename	pr0
 pr0.files.loaded	.lfield	files.loaded	pr0
 files.loaded.1	.apply	ordered.set.insert	ibio.file.name.t	|	ibio.file.name.compare	fn	pr0.files.loaded
 id	.lfield	isdir	pr0
-r	.record	bvs	bvs1	filename	pr0.filename	files.loaded	files.loaded.1	isdir	id	# Add the file's contents to the prefix in pr0
+r	.record	bvs	bvs1	filename	pr0.filename	files.loaded	files.loaded.1	isdir	id	|	_real.entry_prefix_u	# Add the file's contents to the prefix in pr0
 	.lift
 	.yield	r
 
@@ -1129,7 +1130,7 @@ b0	.karg	bool.prim.u	# Does this file match the identifier?
 		.case	false
 			.enter	maybe.nothing	_prefix.load.var_w_file_ty
 		.case	true
-file1			.lrecord	filename	absfn	isdir	bool.false	relv	relv1
+file1			.lrecord	filename	absfn	isdir	bool.false	relv	relv1	|	_prefix.load.var_w_file_ty
 			.app	file1
 			.yield	maybe.just	_prefix.load.var_w_file_ty
 
@@ -1205,7 +1206,7 @@ vc0.nm			.apply	gsdl.cgs.syntax.var.component.print	|	vc0
 			.app	vc0.nm	dc0
 			.enter	string.≡
 		.case	nil
-res			.lrecord	filename	absfn	isdir	bool.true	relv	relv
+res			.lrecord	filename	absfn	isdir	bool.true	relv	relv	|	_prefix.load.var_w_file_ty
 			.app	res
 			.yield	maybe.just	_prefix.load.var_w_file_ty
 
