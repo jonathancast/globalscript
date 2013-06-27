@@ -48,6 +48,7 @@ _gsdl.ags.typeitem.expr.print_fields.print_nl.s	.string	\n
 
 gsdl.ags.typeitem.constrs.parser	.closure	_gsdl.ags.typeitem.constrs.parser_c
 
+gsdl.ags.typeitem.tyabstract	.closure	_gsdl.ags.typeitem.tyabstract_c
 gsdl.ags.typeitem.tyexpr	.closure	_gsdl.ags.typeitem.tyexpr_c
 
 gsdl.ags.typeitem.expr.lift	.closure	_gsdl.ags.typeitem.expr.lift_c
@@ -251,6 +252,7 @@ ty	.larg	gsdl.ags.typeitem.t
 
 _gsdl.ags.typeitem.print_k	.forcecont
 gsdl.ags.typeitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 maybe.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
@@ -264,7 +266,13 @@ diff.list.<>	.gvar
 _gsdl.ags.typeitem.print_kindsig.print	.gvar
 gsdl.ags.typeitem.expr.print	.gvar
 ty0	.karg	gsdl.ags.typeitem.prim.u
-	.analyze	ty0	tyexpr
+	.analyze	ty0	tyabstract	tyexpr
+		.case	tyabstract
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	string.t
+ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
+defn		.fkarg	3	gsdl.ags.typeitem.expr.t
+			.undef	diff.list.t	rune.t
 		.case	tyexpr
 nm		.fkarg	0	string.t
 mb.ky		.fkarg	1	maybe.t	gsdl.ags.typeitem.gskind.t
@@ -935,6 +943,22 @@ a	.larg	string.t
 
 # §section §gs{gsdl.ags.typeitem.t} Constructors
 
+_gsdl.ags.typeitem.tyabstract_c	.expr
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+gsdl.ags.typeitem.prim.u	.tygvar
+gsdl.ags.typeitem.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+nm	.larg	string.t
+ki	.larg	gsdl.ags.typeitem.gskind.t
+dfn	.larg	gsdl.ags.typeitem.expr.t
+c	.constr	gsdl.ags.typeitem.prim.u	tyabstract	0	pos	1	nm	2	ki	3	dfn
+	.coerce	gsdl.ags.typeitem.t.in
+	.lift
+	.yield	c
+
 _gsdl.ags.typeitem.tyexpr_c	.expr
 string.t	.tygvar
 maybe.t	.tygvar
@@ -983,8 +1007,16 @@ gsdl.ags.typeitem.prim.u	.tygvar
 	.tyref	gsdl.ags.typeitem.prim.u
 
 gsdl.ags.typeitem.prim.u	.tyexpr
+_gsdl.ags.typeitem.prim.u_tyabstract_ty	.tygvar
 _gsdl.ags.typeitem.prim.u_tyexpr_ty	.tygvar
-	.tysum	tyexpr	_gsdl.ags.typeitem.prim.u_tyexpr_ty
+	.tysum	tyabstract	_gsdl.ags.typeitem.prim.u_tyabstract_ty	tyexpr	_gsdl.ags.typeitem.prim.u_tyexpr_ty
+
+_gsdl.ags.typeitem.prim.u_tyabstract_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	string.t	2	gsdl.ags.typeitem.gskind.t	3	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.prim.u_tyexpr_ty	.tyexpr
 string.t	.tygvar
