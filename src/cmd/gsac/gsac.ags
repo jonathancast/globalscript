@@ -888,7 +888,7 @@ isags	.fv	bool.t
 
 # §paragraph{Add the file to §gs{pr0}}
 _prefix.load.file_pr0.1_c	.expr
-gsac.input.prefix.t	.tygvar
+gsdl.ags.file.t	.tygvar
 _real.entry_prefix_ty	.tygvar
 _real.entry_prefix_u	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
@@ -902,7 +902,7 @@ ordered.set.insert	.gvar
 ibio.file.name.compare	.gvar
 pr0	.fv	_real.entry_prefix_ty
 fn	.fv	ibio.file.name.t
-file.parsed	.fv	gsac.input.prefix.t
+file.parsed	.fv	gsdl.ags.file.t
 pr0.bvs	.lfield	bvs	pr0
 file.parsed.bvs	.apply	gsac.input.prefix.boundvars	|	file.parsed
 bvs1	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	pr0.bvs	file.parsed.bvs
