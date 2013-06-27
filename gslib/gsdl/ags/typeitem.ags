@@ -142,13 +142,17 @@ string.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-gsdl.ags.typeitem.t	.tygvar	# Temp
-pos	.larg	parser.pos.t
+gsdl.ags.typeitem.tyabstract	.gvar
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
 nm	.larg	string.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
 ds	.larg	gsdl.ags.typeitem.decls.t
 e	.larg	gsdl.ags.typeitem.expr.t
-	.undef	gsdl.ags.typeitem.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+	.app	pos	nm	ki	ds	e
+	.enter	gsdl.ags.typeitem.tyabstract
 
 _gsdl.ags.typeitem.parser_tydefinedprim.p_c	.expr
 rune.t	.tygvar
@@ -258,6 +262,7 @@ gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 maybe.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 list.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
@@ -273,7 +278,8 @@ ty0	.karg	gsdl.ags.typeitem.prim.u
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	string.t
 ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
-defn		.fkarg	3	gsdl.ags.typeitem.expr.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+defn		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.undef	diff.list.t	rune.t
 		.case	tyexpr
 nm		.fkarg	0	string.t
@@ -949,14 +955,16 @@ _gsdl.ags.typeitem.tyabstract_c	.expr
 gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.prim.u	.tygvar
 gsdl.ags.typeitem.t.in	.cogvar
 pos	.larg	gsdl.sourcepos.t
 nm	.larg	string.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
+ds	.larg	gsdl.ags.typeitem.decls.t
 dfn	.larg	gsdl.ags.typeitem.expr.t
-c	.constr	gsdl.ags.typeitem.prim.u	tyabstract	0	pos	1	nm	2	ki	3	dfn
+c	.constr	gsdl.ags.typeitem.prim.u	tyabstract	0	pos	1	nm	2	ki	3	ds	4	dfn
 	.coerce	gsdl.ags.typeitem.t.in
 	.lift
 	.yield	c
@@ -1027,8 +1035,9 @@ _gsdl.ags.typeitem.prim.u_tyabstract_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-	.tyubproduct	0	gsdl.sourcepos.t	1	string.t	2	gsdl.ags.typeitem.gskind.t	3	gsdl.ags.typeitem.expr.t
+	.tyubproduct	0	gsdl.sourcepos.t	1	string.t	2	gsdl.ags.typeitem.gskind.t	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.prim.u_tyexpr_ty	.tyexpr
 string.t	.tygvar
