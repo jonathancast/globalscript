@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.parse.tyexpr.tylet	_test.parse.tyexpr.tyforall	_test.parse.tyexpr.tyfun	_test.parse.tyexpr.typroduct	_test.parse.tyexpr.tyubsum	_test.parse.tydefinedprim
+_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.parse.tyabstract	_test.parse.tyexpr.tylet	_test.parse.tyexpr.tyforall	_test.parse.tyexpr.tyfun	_test.parse.tyexpr.typroduct	_test.parse.tyexpr.tyubsum	_test.parse.tydefinedprim
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.type\\n}\s=~\ssegment.parser
@@ -17,6 +17,10 @@ _test.parse.kind.u_input	.string	u
 _test.parse.kind.exp	.closure	_test.parse.kind.exp_c
 _test.parse.kind.exp_label	.string	qq{**^}\s=~\sgskind.parser
 _test.parse.kind.exp_input	.string	**^
+
+_test.parse.tyabstract	.closure	_test.parse.tyabstract_c
+_test.parse.tyabstract_label	.string	qq{ibio.dir.t\\t.tyabstract\\t*\\n\\t.tyref\\tα\\n}\s=~\sparser
+_test.parse.tyabstract_input	.string	ibio.dir.t\t.tyabstract\t*\n\t.tyref\tα\n
 
 _test.parse.tyexpr.tylet	.closure	_test.parse.tyexpr.tylet_c
 _test.parse.tyexpr.tylet_label	.string	qq{ibio.dir.u\\t.tyexpr\\n_string.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser
@@ -133,6 +137,30 @@ _test.parse.kind.exp_k_c	.expr
 gsdl.ags.typeitem.gskind.t	.tygvar
 test.true	.gvar
 ki	.larg	gsdl.ags.typeitem.gskind.t
+	.enter	test.true
+
+# §section §gs{qq{ibio.dir.t\\t.tyabstract\\t*\\n\\t.tyref\\tα\\n} =~ parser}
+
+_test.parse.tyabstract_c	.expr
+rune.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+_test.parse.tyabstract_k_c	.subcode
+test.property.label	.gvar
+_test.parse.tyabstract_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.typeitem.parser	.gvar
+_test.parse.tyabstract_input	.gvar
+k	.alloc	_test.parse.tyabstract_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse.tyabstract_input	k
+	.app	_test.parse.tyabstract_label	test
+	.enter	test.property.label
+
+_test.parse.tyabstract_k_c	.expr
+gsdl.ags.typeitem.t	.tygvar
+test.true	.gvar
+ti	.larg	gsdl.ags.typeitem.t
 	.enter	test.true
 
 # §section §gs{qq{ibio.dir.u\\t.tyexpr\\n_string.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser}
