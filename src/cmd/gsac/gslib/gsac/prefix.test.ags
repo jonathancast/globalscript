@@ -39,7 +39,10 @@ _test_item_eq_diff.kind_x.s	.string	x
 _test_file.add	.closure	_test_file.add_c
 _test_file.add_label	.string	file.add
 
-_tests_file.add	.list	test.property.t
+_tests_file.add	.list	test.property.t	_test_file.add_gsdocument
+
+_test_file.add_gsdocument	.closure	_test_file.add_gsdocument_c
+_test_file.add_gsdocument_label	.string	file.add\signores\sdocuments
 
 _fixtures.filenm	.closure	_fixtures.filenm_c
 _fixtures.filenm_s	.string	./foo.cgs
@@ -214,6 +217,43 @@ test.all	.gvar
 _tests_file.add	.gvar
 test	.apply	test.all	|	_tests_file.add
 	.app	_test_file.add_label	test
+	.enter	test.property.label
+
+# §section §gs{prefix.add.file} ignores documents
+
+_test_file.add_gsdocument_c	.expr
+list.t	.tygvar
+gsac.prefix.item.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+gsdl.ags.file.t	.tygvar
+test.property.label	.gvar
+_test_file.add_gsdocument_label	.gvar
+test.assert.eq	.gvar
+gsac.prefix.item.≡	.gvar
+list.≡	.gvar
+list.fmtgs.byDefault	.gvar
+gsac.prefix.item.fmtgs	.gvar
+gsac.prefix.items	.gvar
+gsac.prefix.file.add	.gvar
+list.nil	.gvar
+gsdl.ags.file.filetype.gsdocument	.gvar
+gsac.prefix.empty	.gvar
+list.item.ty	.tylet	list.t	gsac.prefix.item.t
+list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
+list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
+cs	.undefined	list.t	gsdl.ags.codeitem.t
+cos	.undefined	list.t	gsdl.ags.coercionitem.t
+ds	.undefined	list.t	gsdl.ags.dataitem.t
+tys	.undefined	list.t	gsdl.ags.typeitem.t
+inprfx	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	tys	|	gsdl.ags.file.t
+pr	.apply	gsac.prefix.file.add	|	inprfx	gsac.prefix.empty
+actual	.apply	gsac.prefix.items	|	pr
+expected	.apply	list.nil	gsac.prefix.item.t
+test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
+	.app	_test_file.add_gsdocument_label	test
 	.enter	test.property.label
 
 # §section Test Fixtures

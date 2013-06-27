@@ -80,9 +80,11 @@ pr	.larg	gsac.prefix.t
 	.enter	file
 
 _gsac.prefix.file.add_k	.forcecont
+gsac.prefix.t	.tygvar
 gsdl.ags.file.prim.u	.tygvar
 _gsac.prefix.file.add_k1	.subcode
 gsdl.ags.file.filetype.t.out	.cogvar
+pr	.fv	gsac.prefix.t
 file0	.karg	gsdl.ags.file.prim.u
 f	.field	filetype	file0
 	.force	_gsac.prefix.file.add_k1
@@ -90,17 +92,18 @@ f	.field	filetype	file0
 	.enter	f
 
 _gsac.prefix.file.add_k1	.forcecont
+gsac.prefix.t	.tygvar
 gsdl.ags.file.filetype.prim.u	.tygvar
 ordered.map.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsac.prefix.typeitem.t	.tygvar
 gsac.prefix.prim.u	.tygvar
-gsac.prefix.t	.tygvar	# Temp
 typesection.ty	.tylet	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
+pr	.fv	gsac.prefix.t
 ft0	.karg	gsdl.ags.file.filetype.prim.u
 	.analyze	ft0	gsdocument	gsprefix
 		.case	gsdocument
-			.undef	gsac.prefix.t
+			.enter	pr
 		.case	gsprefix
 #ts.add			.alloc	_gsac.prefix.file.add_ts.add_c
 #ts			.apply	list.foldr	gsdl.ags.typeitem.t	typesection.ty	|	ts.add	pr.typesection	file.typesection
