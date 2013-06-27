@@ -121,8 +121,20 @@ gsdl.ags.typeitem.t	.tygvar
 ordered.map.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsac.prefix.typeitem.t	.tygvar
+_gsac.prefix.file.add_ts.add_k	.subcode
+gsdl.ags.typeitem.t.out	.cogvar
 ti	.larg	gsdl.ags.typeitem.t
 ts0	.larg	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
+	.force	_gsac.prefix.file.add_ts.add_k
+	.coerce	gsdl.ags.typeitem.t.out
+	.enter	ti
+
+_gsac.prefix.file.add_ts.add_k	.forcecont
+gsdl.ags.typeitem.prim.u	.tygvar
+ordered.map.t	.tygvar	# Temp
+gsdl.cgs.syntax.var.t	.tygvar	# Temp
+gsac.prefix.typeitem.t	.tygvar	# Temp
+ti0	.karg	gsdl.ags.typeitem.prim.u
 	.undef	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
 
 # §section §gs{gsac.prefix.typecheck}
