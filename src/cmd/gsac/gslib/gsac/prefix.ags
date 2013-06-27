@@ -28,6 +28,8 @@
 
 gsac.prefix.empty	.closure	_gsac.prefix.empty_c
 
+gsac.prefix.file.add	.closure	_gsac.prefix.file.add_c
+
 gsac.prefix.typecheck	.closure	_gsac.prefix.typecheck_c
 
 gsac.prefix.items	.closure	_gsac.prefix.items_c
@@ -60,6 +62,22 @@ gsac.prefix.typeitem.t	.tygvar
 gsac.prefix.prim.u	.tygvar
 ordered.map.empty	.gvar
 ts	.apply	ordered.map.empty	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
+r	.record	typesection	ts	|	gsac.prefix.prim.u
+	.lift
+	.yield	r
+
+# §section §gs{gsac.prefix.file.add}
+
+_gsac.prefix.file.add_c	.expr
+gsac.input.prefix.t	.tygvar
+gsac.prefix.t	.tygvar
+gsac.prefix.prim.u	.tygvar
+ordered.map.t	.tygvar	# Temp
+gsdl.cgs.syntax.var.t	.tygvar	# Temp
+gsac.prefix.typeitem.t	.tygvar	# Temp
+file	.larg	gsac.input.prefix.t
+pr	.larg	gsac.prefix.t
+ts	.undefined	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
 r	.record	typesection	ts	|	gsac.prefix.prim.u
 	.lift
 	.yield	r
