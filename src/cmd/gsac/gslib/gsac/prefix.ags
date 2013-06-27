@@ -71,9 +71,7 @@ r	.record	typesection	ts	|	gsac.prefix.prim.u
 _gsac.prefix.file.add_c	.expr
 gsdl.ags.file.t	.tygvar
 gsac.prefix.t	.tygvar
-gsdl.ags.typeitem.t	.tygvar
 _gsac.prefix.file.add_k	.subcode
-list.foldr	.gvar
 file	.larg	gsdl.ags.file.t
 pr	.larg	gsac.prefix.t
 	.force	_gsac.prefix.file.add_k
@@ -93,24 +91,39 @@ f	.field	filetype	file0
 
 _gsac.prefix.file.add_k1	.forcecont
 gsac.prefix.t	.tygvar
+gsdl.ags.file.prim.u	.tygvar
 gsdl.ags.file.filetype.prim.u	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 ordered.map.t	.tygvar
 gsdl.cgs.syntax.var.t	.tygvar
 gsac.prefix.typeitem.t	.tygvar
 gsac.prefix.prim.u	.tygvar
+_gsac.prefix.file.add_ts.add_c	.subcode
+list.foldr	.gvar
 typesection.ty	.tylet	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
 pr	.fv	gsac.prefix.t
+file0	.fv	gsdl.ags.file.prim.u
 ft0	.karg	gsdl.ags.file.filetype.prim.u
 	.analyze	ft0	gsdocument	gsprefix
 		.case	gsdocument
 			.enter	pr
 		.case	gsprefix
-#ts.add			.alloc	_gsac.prefix.file.add_ts.add_c
-#ts			.apply	list.foldr	gsdl.ags.typeitem.t	typesection.ty	|	ts.add	pr.typesection	file.typesection
-ts			.undefined	typesection.ty
+ts.add			.alloc	_gsac.prefix.file.add_ts.add_c
+pr.typesection			.lfield	typesection	pr
+file.typesection			.field	typesection	file0
+ts			.apply	list.foldr	gsdl.ags.typeitem.t	typesection.ty	|	ts.add	pr.typesection	file.typesection
 r			.record	typesection	ts	|	gsac.prefix.prim.u
 			.lift
 			.yield	r
+
+_gsac.prefix.file.add_ts.add_c	.expr
+gsdl.ags.typeitem.t	.tygvar
+ordered.map.t	.tygvar
+gsdl.cgs.syntax.var.t	.tygvar
+gsac.prefix.typeitem.t	.tygvar
+ti	.larg	gsdl.ags.typeitem.t
+ts0	.larg	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
+	.undef	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
 
 # §section §gs{gsac.prefix.typecheck}
 
