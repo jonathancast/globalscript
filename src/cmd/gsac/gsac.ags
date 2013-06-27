@@ -900,6 +900,7 @@ gsdl.cgs.symbol.compare	.gvar
 gsac.input.prefix.boundvars	.gvar
 ordered.set.insert	.gvar
 ibio.file.name.compare	.gvar
+gsac.prefix.file.add	.gvar
 pr0	.fv	_real.entry_prefix_ty
 fn	.fv	ibio.file.name.t
 file.parsed	.fv	gsdl.ags.file.t
@@ -910,7 +911,8 @@ pr0.filename	.lfield	filename	pr0
 pr0.files.loaded	.lfield	files.loaded	pr0
 files.loaded.1	.apply	ordered.set.insert	ibio.file.name.t	|	ibio.file.name.compare	fn	pr0.files.loaded
 id	.lfield	isdir	pr0
-prefix	.undefined	gsac.prefix.t	# Add the file's contents to the prefix in pr0
+pr0.prefix	.lfield	prefix	pr0
+prefix	.apply	gsac.prefix.file.add	|	file.parsed	pr0.prefix
 r	.record	bvs	bvs1	filename	pr0.filename	files.loaded	files.loaded.1	isdir	id	prefix	prefix	|	_real.entry_prefix_u
 	.lift
 	.yield	r
