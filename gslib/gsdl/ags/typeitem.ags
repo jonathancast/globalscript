@@ -54,6 +54,8 @@ gsdl.ags.typeitem.tyexpr	.closure	_gsdl.ags.typeitem.tyexpr_c
 gsdl.ags.typeitem.expr.lift	.closure	_gsdl.ags.typeitem.expr.lift_c
 gsdl.ags.typeitem.expr.product	.closure	_gsdl.ags.typeitem.expr.product_c
 
+gsdl.ags.typeitem.gskind.lifted	.closure	_gsdl.ags.typeitem.gskind.lifted_c
+
 	.code
 
 # §section §gs{gsdl.ags.typeitem.segment.parser}
@@ -997,6 +999,16 @@ c	.constr	gsdl.ags.typeitem.expr.prim.u	product	0	fs
 	.lift
 	.yield	c
 
+# §section §gs{gsdl.ags.typeitem.gskind.t} constructors
+
+_gsdl.ags.typeitem.gskind.lifted_c	.expr
+gsdl.ags.typeitem.gskind.prim.u	.tygvar
+gsdl.ags.typeitem.gskind.t.in	.cogvar
+c	.constr	gsdl.ags.typeitem.gskind.prim.u	lifted
+	.coerce	gsdl.ags.typeitem.gskind.t.in
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{gsdl.ags.typeitem.t}
@@ -1116,7 +1128,8 @@ gsdl.ags.typeitem.gskind.prim.u	.tygvar
 	.tyref	gsdl.ags.typeitem.gskind.prim.u
 
 gsdl.ags.typeitem.gskind.prim.u	.tyexpr
-	.tysum
+record.unboxed.empty	.tygvar
+	.tysum	lifted	record.unboxed.empty
 
 
 _gsdl.ags.typeitem.gskind.parser_w_ty	.tyexpr
@@ -1172,3 +1185,7 @@ gsdl.ags.typeitem.expr.t.out	.tycoercion
 gsdl.ags.typeitem.expr.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.ags.typeitem.expr.t
+
+gsdl.ags.typeitem.gskind.t.in	.tycoercion
+gsdl.ags.typeitem.gskind.t	.tygvar
+	.tydefinition	gsdl.ags.typeitem.gskind.t
