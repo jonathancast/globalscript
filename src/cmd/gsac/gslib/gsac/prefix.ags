@@ -131,11 +131,30 @@ ts0	.larg	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
 
 _gsac.prefix.file.add_ts.add_k	.forcecont
 gsdl.ags.typeitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+maybe.t	.tygvar
 ordered.map.t	.tygvar	# Temp
 gsdl.cgs.syntax.var.t	.tygvar	# Temp
 gsac.prefix.typeitem.t	.tygvar	# Temp
 ti0	.karg	gsdl.ags.typeitem.prim.u
-	.undef	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
+	.analyze	ti0	tyabstract	tyexpr
+		.case	tyabstract
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	string.t
+ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+dfn		.fkarg	4	gsdl.ags.typeitem.expr.t
+			.undef	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
+		.case	tyexpr
+nm		.fkarg	0	string.t
+kmbki		.fkarg	1	maybe.t	gsdl.ags.typeitem.gskind.t
+dfn		.fkarg	2	gsdl.ags.typeitem.expr.t
+			.undef	ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
+	# > :: ordered.map.t	gsdl.cgs.syntax.var.t	gsac.prefix.typeitem.t
 
 # §section §gs{gsac.prefix.typecheck}
 
