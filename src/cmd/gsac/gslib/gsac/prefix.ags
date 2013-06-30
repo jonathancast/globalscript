@@ -132,6 +132,9 @@ ts0	.larg	ordered.map.t	gsdl.var.t	gsac.prefix.typeitem.t
 	.enter	ti
 
 _gsac.prefix.file.add_ts.add_k	.forcecont
+ordered.map.t	.tygvar
+gsdl.var.t	.tygvar
+gsac.prefix.typeitem.t	.tygvar
 gsdl.ags.typeitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
@@ -142,15 +145,24 @@ string.t	.tygvar
 maybe.t	.tygvar
 ordered.map.t	.tygvar	# Temp
 gsac.prefix.typeitem.t	.tygvar	# Temp
+gsdl.cgs.gskind.t	.tygvar	# Temp
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+gsac.prefix.typeitem.gsabstypenm	.gvar
+gsac.prefix.gskind.upconvert	.gvar
+ts0	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.typeitem.t
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.analyze	ti0	tyabstract	tyexpr
 		.case	tyabstract
 pos		.fkarg	0	gsdl.sourcepos.t
-nm		.fkarg	1	gsdl.var.t
+v		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 dfn		.fkarg	4	gsdl.ags.typeitem.expr.t
-			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.typeitem.t
+cgs.ki			.apply	gsac.prefix.gskind.upconvert	|	ki
+prfx.ti			.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	cgs.ki
+			.app	gsdl.var.compare	v	prfx.ti	ts0
+			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typeitem.t
 		.case	tyexpr
 nm		.fkarg	0	string.t
 kmbki		.fkarg	1	maybe.t	gsdl.ags.typeitem.gskind.t
