@@ -39,10 +39,14 @@ _test_item_eq_diff.kind_x.s	.string	x
 _test_file.add	.closure	_test_file.add_c
 _test_file.add_label	.string	file.add
 
-_tests_file.add	.list	test.property.t	_test_file.add_gsdocument
+_tests_file.add	.list	test.property.t	_test_file.add_gsdocument	_test_file.add_gsabstype
 
 _test_file.add_gsdocument	.closure	_test_file.add_gsdocument_c
 _test_file.add_gsdocument_label	.string	file.add\signores\sdocuments
+
+_test_file.add_gsabstype	.closure	_test_file.add_gsabstype_c
+_test_file.add_gsabstype_label	.string	file.add\scan\sreturn\sa\sgsabstype
+_test_file.add_gsabstype_x.s	.string	x
 
 _fixtures.filenm	.closure	_fixtures.filenm_c
 _fixtures.filenm_s	.string	./foo.cgs
@@ -219,7 +223,7 @@ test	.apply	test.all	|	_tests_file.add
 	.app	_test_file.add_label	test
 	.enter	test.property.label
 
-# §section §gs{prefix.add.file} ignores documents
+# §subsection §gs{prefix.add.file} ignores documents
 
 _test_file.add_gsdocument_c	.expr
 list.t	.tygvar
@@ -254,6 +258,66 @@ actual	.apply	gsac.prefix.items	|	pr
 expected	.apply	list.nil	gsac.prefix.item.t
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
 	.app	_test_file.add_gsdocument_label	test
+	.enter	test.property.label
+
+# §subsection §gs{prefix.add.file gsabstype}
+
+_test_file.add_gsabstype_c	.expr
+list.t	.tygvar
+gsac.prefix.item.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar	# Temp
+
+gsdl.ags.file.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar	# Temp
+gsdl.ags.typeitem.expr.t	.tygvar	# Temp
+test.property.label	.gvar
+_test_file.add_gsabstype_label	.gvar
+test.assert.eq	.gvar
+gsac.prefix.item.≡	.gvar
+list.≡	.gvar
+list.fmtgs.byDefault	.gvar
+gsac.prefix.item.fmtgs	.gvar
+gsac.prefix.items	.gvar
+gsac.prefix.file.add	.gvar
+list.nil	.gvar
+gsdl.ags.typeitem.tyabstract	.gvar
+gsdl.ags.typeitem.gskind.lifted	.gvar
+gsdl.ags.file.filetype.gsprefix	.gvar
+natural.1	.gvar
+_fixtures.filenm	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test_file.add_gsabstype_x.s	.gvar
+gsdl.cgs.gskind.lifted	.gvar
+gsac.prefix.empty	.gvar
+gsac.prefix.item.typeitem	.gvar
+gsac.prefix.typeitem.gsabstypenm	.gvar
+list.item.ty	.tylet	list.t	gsac.prefix.item.t
+list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
+list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
+c0	.apply	gsdl.var.component.alphanum	|	_test_file.add_gsabstype_x.s
+v	.apply	list.singleton	gsdl.var.component.t	|	c0
+cs	.apply	list.nil	gsdl.ags.codeitem.t
+cos	.apply	list.nil	gsdl.ags.coercionitem.t
+ds	.apply	list.nil	gsdl.ags.dataitem.t
+decls	.undefined	gsdl.ags.typeitem.decls.t
+tye	.undefined	gsdl.ags.typeitem.expr.t
+ti	.apply	gsdl.ags.typeitem.tyabstract	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	tye
+tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	ti
+inprfx	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
+pr	.apply	gsac.prefix.file.add	|	inprfx	gsac.prefix.empty
+actual	.apply	gsac.prefix.items	|	pr
+absty.ti	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
+absty	.apply	gsac.prefix.item.typeitem	|	absty.ti
+expected	.apply	list.singleton	gsac.prefix.item.t | 	absty
+test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
+	.app	_test_file.add_gsabstype_label	test
 	.enter	test.property.label
 
 # §section Test Fixtures
