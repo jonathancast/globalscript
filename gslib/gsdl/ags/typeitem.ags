@@ -107,15 +107,16 @@ p1	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.t	|	tydefinedprim.p	tyexpr.p
 _gsdl.ags.typeitem.parser_tyabstract.p_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
+string.t	.tygvar
 _gsdl.ags.typeitem.parser_tyabstract.p_f_c	.subcode
 parser.lift5	.gvar
 parser.pos.get	.gvar
-gsdl.ags.syntax.id	.gvar
+gsdl.ags.syntax.var	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -133,19 +134,19 @@ kind.p2	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.s
 kind.p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t	|	tyabstract.p	kind.p2
 kind.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.syntax.columnsep	kind.p1
 decls.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.decls.t	|	gsdl.ags.syntax.whitespace	gsdl.ags.typeitem.decls.parser
-	.app	f	pos.get	gsdl.ags.syntax.id	kind.p	decls.p	gsdl.ags.typeitem.expr.parser
-	.enter	parser.lift5	rune.t	parser.pos.t	string.t	gsdl.ags.typeitem.gskind.t	gsdl.ags.typeitem.decls.t	gsdl.ags.typeitem.expr.t	gsdl.ags.typeitem.t
+	.app	f	pos.get	gsdl.ags.syntax.var	kind.p	decls.p	gsdl.ags.typeitem.expr.parser
+	.enter	parser.lift5	rune.t	parser.pos.t	gsdl.var.t	gsdl.ags.typeitem.gskind.t	gsdl.ags.typeitem.decls.t	gsdl.ags.typeitem.expr.t	gsdl.ags.typeitem.t
 
 _gsdl.ags.typeitem.parser_tyabstract.p_f_c	.expr
 parser.pos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.tyabstract	.gvar
 gsdl.sourcepos	.gvar
 pos0	.larg	parser.pos.t
-nm	.larg	string.t
+nm	.larg	gsdl.var.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
 ds	.larg	gsdl.ags.typeitem.decls.t
 e	.larg	gsdl.ags.typeitem.expr.t
@@ -259,11 +260,12 @@ ty	.larg	gsdl.ags.typeitem.t
 _gsdl.ags.typeitem.print_k	.forcecont
 gsdl.ags.typeitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 maybe.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
+string.t	.tygvar
 list.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 rune.t	.tygvar	# Temp
@@ -276,7 +278,7 @@ ty0	.karg	gsdl.ags.typeitem.prim.u
 	.analyze	ty0	tyabstract	tyexpr
 		.case	tyabstract
 pos		.fkarg	0	gsdl.sourcepos.t
-nm		.fkarg	1	string.t
+nm		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 defn		.fkarg	4	gsdl.ags.typeitem.expr.t
@@ -953,14 +955,14 @@ a	.larg	string.t
 
 _gsdl.ags.typeitem.tyabstract_c	.expr
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.prim.u	.tygvar
 gsdl.ags.typeitem.t.in	.cogvar
 pos	.larg	gsdl.sourcepos.t
-nm	.larg	string.t
+nm	.larg	gsdl.var.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
 ds	.larg	gsdl.ags.typeitem.decls.t
 dfn	.larg	gsdl.ags.typeitem.expr.t
@@ -1033,11 +1035,11 @@ _gsdl.ags.typeitem.prim.u_tyexpr_ty	.tygvar
 
 _gsdl.ags.typeitem.prim.u_tyabstract_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-	.tyubproduct	0	gsdl.sourcepos.t	1	string.t	2	gsdl.ags.typeitem.gskind.t	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.ags.typeitem.gskind.t	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.prim.u_tyexpr_ty	.tyexpr
 string.t	.tygvar
