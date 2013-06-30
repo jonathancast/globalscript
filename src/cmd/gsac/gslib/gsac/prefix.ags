@@ -13,15 +13,15 @@
 # Nothing depends on §ref{tydefn}, but it depends on things.
 # To manage this, we have two kinds of symbols:
 # §begin{itemize}
-#     §item §label{§gs{gstype}} Type symbols, which are always type §emph{synonyms}.
-#     §item §label{§gs{gsabstype}} Abstract types, which map onto definitions.
+#     §item §label{§gs{tyvar}} Type symbols, which are always type §emph{synonyms}.
+#     §item §label{§gs{abstyvar}} Abstract types, which map onto definitions.
 # §end{itemize}
 #
 # We also have three kinds of items:
 # §begin{itemize}
-#     §item §label{§gs{gstyexpr}} Type synonym items, labeled by §gs{gsytpe}s.
-#     §item §label{§gs{gsabstypenm}} Abstract type (names), labeled by §gs{gstype}s.
-#     §item §label{§gs{gsabstypedefn}} Abstract type (definitions), labeled by §gs{gsabstype}s.
+#     §item §label{§gs{gstyexpr}} Type synonym items, labeled by §gs{tyvar}s.
+#     §item §label{§gs{gsabstypenm}} Abstract type (names), labeled by §gs{tyvar}s.
+#     §item §label{§gs{gsabstypedefn}} Abstract type (definitions), labeled by §gs{abstyvar}s.
 # §end{itemize}
 #
 # Both §ags{.tyabstract} items and §ags{.tyextabstract} items translate into §emph{two} kinds of ‘items’ on our system.
