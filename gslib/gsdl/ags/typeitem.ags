@@ -1200,3 +1200,8 @@ gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.gskind.t.in	.tycoercion
 gsdl.ags.typeitem.gskind.t	.tygvar
 	.tydefinition	gsdl.ags.typeitem.gskind.t
+
+gsdl.ags.typeitem.gskind.t.out	.tycoercion
+gsdl.ags.typeitem.gskind.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.typeitem.gskind.t
