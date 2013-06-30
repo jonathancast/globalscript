@@ -523,7 +523,7 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 _real.entry_prefix_ty	.tygvar
 _prefix.load.var_w_k	.subcode
@@ -1056,7 +1056,7 @@ _prefix.load.var_w_false_:_true_res_body_files0.f_k	.forcecont
 _prefix.load.var_w_file_ty	.tygvar
 ibio.dir.t	.tygvar
 bool.prim.u	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 string.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
 _prefix.load.var_w_false_:_true_res_body_files0.f_false_k	.subcode
@@ -1075,7 +1075,7 @@ absfn	.apply	ibio.file.name.</>	|	dirn	fn
 	.analyze	isd0	false	true
 		.case	false
 			.force	_prefix.load.var_w_false_:_true_res_body_files0.f_false_k
-			.coerce	list.t.out	gsdl.cgs.syntax.var.component.t
+			.coerce	list.t.out	gsdl.var.component.t
 			.enter	relv
 		.case	true
 fn			.lfield	name	dir
@@ -1091,7 +1091,7 @@ _prefix.load.var_w_false_:_true_res_body_files0.f_false_k	.forcecont
 _prefix.load.var_w_file_ty	.tygvar
 ibio.file.name.t	.tygvar
 list.prim.u	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 list.t	.tygvar
 maybe.t	.tygvar	# Temp
 _prefix.load.var_w_false_:_true_res_body_files0.f_false_:_k	.subcode
@@ -1102,11 +1102,11 @@ gsdl.cgs.syntax.var.component.print	.gvar
 file0	.fv	_prefix.load.var_w_file_ty
 fn	.fv	ibio.file.name.t
 absfn	.fv	ibio.file.name.t
-relv0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
+relv0	.karg	list.prim.u	gsdl.var.component.t
 	.analyze	relv0	:	nil
 		.case	:
-c0		.fkarg	0	gsdl.cgs.syntax.var.component.t
-relv1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
+c0		.fkarg	0	gsdl.var.component.t
+relv1		.fkarg	1	list.t	gsdl.var.component.t
 fn.comps			.apply	ibio.file.name.components.get	|	fn
 fn.root			.lfield	root	fn.comps
 c0.nm			.apply	gsdl.cgs.syntax.var.component.print	|	c0
@@ -1123,14 +1123,14 @@ _prefix.load.var_w_false_:_true_res_body_files0.f_false_:_k	.forcecont
 _prefix.load.var_w_file_ty	.tygvar
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 bool.prim.u	.tygvar
 maybe.nothing	.gvar
 maybe.just	.gvar
 bool.false	.gvar
 file0	.fv	_prefix.load.var_w_file_ty
 absfn	.fv	ibio.file.name.t
-relv1	.fv	list.t	gsdl.cgs.syntax.var.component.t
+relv1	.fv	list.t	gsdl.var.component.t
 b0	.karg	bool.prim.u	# Does this file match the identifier?
 	.analyze	b0	false	true
 		.case	false
@@ -1146,15 +1146,15 @@ file1			.lrecord	filename	absfn	isdir	bool.false	relv	relv1	|	_prefix.load.var_w
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_c	.expr
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 string.t	.tygvar
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_relv.k	.subcode
 list.t.out	.cogvar
 absfn	.larg	ibio.file.name.t
-relv	.larg	list.t	gsdl.cgs.syntax.var.component.t
+relv	.larg	list.t	gsdl.var.component.t
 dircs	.larg	list.t	string.t
 	.force	_prefix.load.var_w_false_:_true_res_body_files0.f_true_w_relv.k
-	.coerce	list.t.out	gsdl.cgs.syntax.var.component.t
+	.coerce	list.t.out	gsdl.var.component.t
 	.enter	relv
 
 # §paragraph{Get head and tail of §gs{relv}}
@@ -1162,7 +1162,7 @@ dircs	.larg	list.t	string.t
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_relv.k	.forcecont
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 string.t	.tygvar
 list.prim.u	.tygvar
 maybe.t	.tygvar	# Temp
@@ -1170,13 +1170,13 @@ _prefix.load.var_w_file_ty	.tygvar	# Temp
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_:_dircs.k	.subcode
 list.t.out	.cogvar
 absfn	.fv	ibio.file.name.t
-relv	.fv	list.t	gsdl.cgs.syntax.var.component.t
+relv	.fv	list.t	gsdl.var.component.t
 dircs	.fv	list.t	string.t
-relv0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
+relv0	.karg	list.prim.u	gsdl.var.component.t
 	.analyze	relv0	:	nil
 		.case	:
-vc0		.fkarg	0	gsdl.cgs.syntax.var.component.t
-relv1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
+vc0		.fkarg	0	gsdl.var.component.t
+relv1		.fkarg	1	list.t	gsdl.var.component.t
 			.force	_prefix.load.var_w_false_:_true_res_body_files0.f_true_w_:_dircs.k
 			.coerce	list.t.out	string.t
 			.enter	dircs
@@ -1187,7 +1187,7 @@ relv1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_:_dircs.k	.forcecont
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 list.prim.u	.tygvar
 string.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
@@ -1198,9 +1198,9 @@ gsdl.cgs.syntax.var.component.print	.gvar
 maybe.just	.gvar
 bool.true	.gvar
 absfn	.fv	ibio.file.name.t
-relv	.fv	list.t	gsdl.cgs.syntax.var.component.t
-vc0	.fv	gsdl.cgs.syntax.var.component.t
-relv1	.fv	list.t	gsdl.cgs.syntax.var.component.t
+relv	.fv	list.t	gsdl.var.component.t
+vc0	.fv	gsdl.var.component.t
+relv1	.fv	list.t	gsdl.var.component.t
 dircs0	.karg	list.prim.u	string.t
 	.analyze	dircs0	:	nil
 		.case	:
@@ -1220,14 +1220,14 @@ res			.lrecord	filename	absfn	isdir	bool.true	relv	relv	|	_prefix.load.var_w_fil
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_:_dircs_:_k	.forcecont
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 string.t	.tygvar
 bool.prim.u	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 maybe.nothing	.gvar
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w	.gvar
 absfn	.fv	ibio.file.name.t
-relv1	.fv	list.t	gsdl.cgs.syntax.var.component.t
+relv1	.fv	list.t	gsdl.var.component.t
 dircs1	.fv	list.t	string.t
 b0	.karg	bool.prim.u	# Components match?
 	.analyze	b0	false	true
@@ -1639,7 +1639,7 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 ibio.prim.t	.tygvar
 _real.entry_prefix_ty	.tygvar
@@ -1665,8 +1665,8 @@ _prefix.load.var_w_file_u	.tyexpr
 ibio.file.name.t	.tygvar
 bool.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
-list.component.ty	.tylet	list.t	gsdl.cgs.syntax.var.component.t
+gsdl.var.component.t	.tygvar
+list.component.ty	.tylet	list.t	gsdl.var.component.t
 	.typroduct	filename	ibio.file.name.t	isdir	bool.t	relv	list.component.ty
 
 _bad.file.name_ty	.tyexpr
@@ -1699,14 +1699,14 @@ list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty
 _prefix.load.var_w_false_:_true_res_body_files0.f_true_w_ty	.tyexpr
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 string.t	.tygvar
 maybe.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 	.tylift
 	.tyfun	ibio.file.name.t
 	.tylift
-	.tyfun	list.t	gsdl.cgs.syntax.var.component.t
+	.tyfun	list.t	gsdl.var.component.t
 	.tylift
 	.tyfun	list.t	string.t
 	.tyref	maybe.t	_prefix.load.var_w_file_ty

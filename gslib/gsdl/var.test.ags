@@ -1,0 +1,45 @@
+	.document
+
+	.data
+
+	.closure	_epcode
+
+_tests	.list	test.property.t	_test.eq_diff.nms
+
+_test.eq_diff.nms	.closure	_test.eq_diff.nms_c
+_test.eq_diff.nms_label	.string	gsv{x}\s≡\sgsv{y}
+_test.eq_diff.nms_false	.string	gsv{x}\s≠\sgsv{y}
+_test.eq_diff.nms_true	.string	gsv{x}\s≡\sgsv{y}
+_test.eq_diff.nms_x.s	.string	x
+_test.eq_diff.nms_y.s	.string	y
+
+	.code
+
+_epcode	.expr
+test.all	.gvar
+_tests	.gvar
+	.app	_tests
+	.enter	test.all
+
+# §section §gs{gsv{x} ≡ gsv{y}}
+
+_test.eq_diff.nms_c	.expr
+gsdl.var.component.t	.tygvar
+test.property.label	.gvar
+_test.eq_diff.nms_label	.gvar
+test.deny	.gvar
+_test.eq_diff.nms_false	.gvar
+_test.eq_diff.nms_true	.gvar
+gsdl.var.≡	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test.eq_diff.nms_x.s	.gvar
+_test.eq_diff.nms_y.s	.gvar
+c0.x	.apply	gsdl.var.component.alphanum	|	_test.eq_diff.nms_x.s
+v.x	.apply	list.singleton	gsdl.var.component.t	|	c0.x
+c0.y	.apply	gsdl.var.component.alphanum	|	_test.eq_diff.nms_y.s
+v.y	.apply	list.singleton	gsdl.var.component.t	|	c0.y
+eq	.apply	gsdl.var.≡	|	v.x	v.y
+test	.apply	test.deny	|	_test.eq_diff.nms_false	_test.eq_diff.nms_true	eq
+	.app	_test.eq_diff.nms_label	test
+	.enter	test.property.label

@@ -371,8 +371,6 @@ nds	.bind	_print.deps_body_w_:_res_nds_c
 
 _print.deps_body_w_:_res_cs_c	.expr
 gsdl.cgs.symbol.t	.tygvar
-list.t	.tygvar	# Temp
-gsdl.cgs.syntax.var.component.t	.tygvar	# Temp
 gsdl.cgs.symbol.components.get	.gvar
 fv0	.fv	gsdl.cgs.symbol.t
 	.app	fv0
@@ -380,13 +378,11 @@ fv0	.fv	gsdl.cgs.symbol.t
 
 _print.deps_body_w_:_res_pr1_c	.expr
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 _prefix.t	.tygvar
 ibio.mapM.prim	.gvar
 _prefix.expand	.gvar
-#ibio.prim.unit	.gvar	# Temp
-#res.ty	.tylet	list.t	_prefix.t	# Temp
-cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+cs	.fv	list.t	gsdl.var.component.t
 pr	.fv	list.t	_prefix.t
 f	.apply	_prefix.expand	|	cs
 	.app	f	pr
@@ -398,7 +394,7 @@ rune.t	.tygvar
 ordered.set.t	.tygvar
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 _prefix.t	.tygvar
 ibio.foldM.prim	.gvar
 _process.var	.gvar
@@ -406,7 +402,7 @@ res.ty	.tylet	ordered.set.t	ibio.file.name.t
 o	.fv	ibio.prim.oport	rune.t
 gsac.fn	.fv	ibio.file.name.t
 ds	.fv	ordered.set.t	ibio.file.name.t
-cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+cs	.fv	list.t	gsdl.var.component.t
 pr1	.fv	list.t	_prefix.t
 f	.apply	_process.var	|	o	gsac.fn	cs
 	.app	f	ds	pr1
@@ -436,11 +432,11 @@ nds	.fv	ordered.set.t	ibio.file.name.t
 
 _prefix.expand_c	.expr
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 _prefix.t	.tygvar
 _prefix.expand_k0	.subcode
 _prefix.t.out	.cogvar
-cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
+cs	.larg	list.t	gsdl.var.component.t
 p	.larg	_prefix.t
 	.force	_prefix.expand_k0
 	.coerce	_prefix.t.out
@@ -448,14 +444,14 @@ p	.larg	_prefix.t
 
 _prefix.expand_k0	.forcecont
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 _prefix.prim.u	.tygvar
 ibio.file.name.t	.tygvar
 _prefix.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _prefix.expand_dir_res_c	.subcode
 _prefix.expand_loaded.dir_res_c	.subcode
-cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+cs	.fv	list.t	gsdl.var.component.t
 p0	.karg	_prefix.prim.u
 	.analyze	p0	dir	file	loaded.dir
 		.case	dir
@@ -476,12 +472,12 @@ res			.alloc	_prefix.expand_loaded.dir_res_c
 
 _prefix.expand_dir_res_c	.impprog	ibio.prim	ibio
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 ibio.file.name.t	.tygvar
 _prefix.expand_dir_res_dcs1_c	.subcode
 _prefix.expand_dir_res_dcs2_c	.subcode
 _prefix.expand_dir_res_body_c	.subcode
-cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+cs	.fv	list.t	gsdl.var.component.t
 dirn	.fv	ibio.file.name.t
 dcs1	.bind	_prefix.expand_dir_res_dcs1_c
 dcs2	.bind	_prefix.expand_dir_res_dcs2_c
@@ -496,12 +492,12 @@ dirn	.fv	ibio.file.name.t
 
 _prefix.expand_dir_res_dcs2_c	.expr
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 ibio.file.name.t	.tygvar
 _prefix.t	.tygvar
 ibio.mapM.prim	.gvar
 _prefix.expand_w	.gvar
-cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+cs	.fv	list.t	gsdl.var.component.t
 dirn	.fv	ibio.file.name.t
 dcs1	.fv	list.t	_prefix.t
 f	.apply	_prefix.expand_w	|	dirn	cs
@@ -525,12 +521,12 @@ p1	.apply	_prefix.loaded.dir	|	dirn	dcs2
 
 _prefix.expand_loaded.dir_res_c	.impprog	ibio.prim	ibio
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 ibio.file.name.t	.tygvar
 _prefix.t	.tygvar
 _prefix.expand_loaded.dir_res_dcs1_c	.subcode
 _prefix.expand_loaded.dir_res_body_c	.subcode
-cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+cs	.fv	list.t	gsdl.var.component.t
 dirn	.fv	ibio.file.name.t
 dcs	.fv	list.t	_prefix.t
 dcs1	.bind	_prefix.expand_loaded.dir_res_dcs1_c
@@ -538,12 +534,12 @@ dcs1	.bind	_prefix.expand_loaded.dir_res_dcs1_c
 
 _prefix.expand_loaded.dir_res_dcs1_c	.expr
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 ibio.file.name.t	.tygvar
 _prefix.t	.tygvar
 ibio.mapM.prim	.gvar
 _prefix.expand_w	.gvar
-cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+cs	.fv	list.t	gsdl.var.component.t
 dirn	.fv	ibio.file.name.t
 dcs	.fv	list.t	_prefix.t
 f	.apply	_prefix.expand_w	|	dirn	cs
@@ -568,12 +564,12 @@ p1	.apply	_prefix.loaded.dir	|	dirn	dcs1
 _prefix.expand_w_c	.expr
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 _prefix.t	.tygvar
 _prefix.expand_w_k	.subcode
 _prefix.t.out	.cogvar
 dirn	.larg	ibio.file.name.t
-cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
+cs	.larg	list.t	gsdl.var.component.t
 p	.larg	_prefix.t
 	.force	_prefix.expand_w_k
 	.coerce	_prefix.t.out
@@ -582,7 +578,7 @@ p	.larg	_prefix.t
 _prefix.expand_w_k	.forcecont
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 _prefix.t	.tygvar
 _prefix.prim.u	.tygvar
 string.t	.tygvar
@@ -592,7 +588,7 @@ list.:	.gvar
 ibio.file.name.components.get	.gvar
 ibio.prim.unit	.gvar
 dirn	.fv	ibio.file.name.t
-cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+cs	.fv	list.t	gsdl.var.component.t
 p	.fv	_prefix.t
 p0	.karg	_prefix.prim.u
 	.analyze	p0	dir	file	loaded.dir
@@ -618,16 +614,16 @@ dcs		.fkarg	1	list.t	_prefix.t
 _prefix.expand_w_dir_w_c	.expr
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 string.t	.tygvar
 _prefix.expand_w_dir_w_kcs	.subcode
 list.t.out	.cogvar
 dirn	.larg	ibio.file.name.t
 sdirn	.larg	ibio.file.name.t
-cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
+cs	.larg	list.t	gsdl.var.component.t
 dncs	.larg	list.t	string.t
 	.force	_prefix.expand_w_dir_w_kcs
-	.coerce	list.t.out	gsdl.cgs.syntax.var.component.t
+	.coerce	list.t.out	gsdl.var.component.t
 	.enter	cs
 
 _prefix.expand_w_dir_w_kcs	.forcecont
@@ -635,18 +631,18 @@ ibio.file.name.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 list.prim.u	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _prefix.t	.tygvar	# Temp
 _prefix.expand_w_dir_w_kdncs	.subcode
 list.t.out	.cogvar
 sdirn	.fv	ibio.file.name.t
 dncs	.fv	list.t	string.t
-cs0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
+cs0	.karg	list.prim.u	gsdl.var.component.t
 	.analyze	cs0	:	nil
 		.case	:
-c0		.fkarg	0	gsdl.cgs.syntax.var.component.t
-cs1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
+c0		.fkarg	0	gsdl.var.component.t
+cs1		.fkarg	1	list.t	gsdl.var.component.t
 			.force	_prefix.expand_w_dir_w_kdncs
 			.coerce	list.t.out	string.t
 			.enter	dncs
@@ -655,7 +651,7 @@ cs1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
 
 _prefix.expand_w_dir_w_kdncs	.forcecont
 ibio.file.name.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 list.prim.u	.tygvar
 string.t	.tygvar
 list.t	.tygvar
@@ -666,7 +662,7 @@ bool.t.out	.cogvar
 string.≡	.gvar
 gsdl.cgs.syntax.var.component.print	.gvar
 sdirn	.fv	ibio.file.name.t
-c0	.fv	gsdl.cgs.syntax.var.component.t
+c0	.fv	gsdl.var.component.t
 dncs0	.karg	list.prim.u	string.t
 	.analyze	dncs0	:	nil
 		.case	:
@@ -863,7 +859,7 @@ _process.var_c	.expr
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 ordered.set.t	.tygvar
 ibio.file.name.t	.tygvar
 _prefix.t	.tygvar
@@ -872,7 +868,7 @@ _prefix.t.out	.cogvar
 ibio.prim.unit	.gvar	# Temp
 o	.larg	ibio.prim.oport	rune.t
 gsac.fn	.larg	ibio.file.name.t
-cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
+cs	.larg	list.t	gsdl.var.component.t
 ds	.larg	ordered.set.t	ibio.file.name.t
 pr	.larg	_prefix.t
 	.force	_process.var_k0
@@ -883,7 +879,7 @@ _process.var_k0	.forcecont
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 ordered.set.t	.tygvar
 ibio.file.name.t	.tygvar
 _prefix.prim.u	.tygvar
@@ -896,7 +892,7 @@ ibio.prim.unit	.gvar	# Temp
 res.ty	.tylet	ordered.set.t	ibio.file.name.t
 o	.fv	ibio.prim.oport	rune.t
 gsac.fn	.fv	ibio.file.name.t
-cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+cs	.fv	list.t	gsdl.var.component.t
 ds	.fv	ordered.set.t	ibio.file.name.t
 pr0	.karg	_prefix.prim.u
 	.analyze	pr0	dir	file	loaded.dir
@@ -919,7 +915,7 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 ordered.set.t	.tygvar
 _prefix.t	.tygvar
 _process.var_rec_k	.subcode
@@ -927,7 +923,7 @@ _prefix.t.out	.cogvar
 o	.larg	ibio.prim.oport	rune.t
 gsac.fn	.larg	ibio.file.name.t
 dirn	.larg	ibio.file.name.t
-cs	.larg	list.t	gsdl.cgs.syntax.var.component.t
+cs	.larg	list.t	gsdl.var.component.t
 ds	.larg	ordered.set.t	ibio.file.name.t
 p	.larg	_prefix.t
 	.force	_process.var_rec_k
@@ -939,7 +935,7 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 ordered.set.t	.tygvar
 _prefix.prim.u	.tygvar
 _prefix.t	.tygvar
@@ -951,7 +947,7 @@ res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
 o	.fv	ibio.prim.oport	rune.t
 gsac.fn	.fv	ibio.file.name.t
 dirn	.fv	ibio.file.name.t
-cs	.fv	list.t	gsdl.cgs.syntax.var.component.t
+cs	.fv	list.t	gsdl.var.component.t
 ds	.fv	ordered.set.t	ibio.file.name.t
 p0	.karg	_prefix.prim.u
 	.analyze	p0	dir	file	loaded.dir
@@ -963,7 +959,7 @@ dirn1		.fkarg	0	ibio.file.name.t
 		.case	file
 fn1		.fkarg	0	ibio.file.name.t
 			.force	_process.var_rec_file_k
-			.coerce	list.t.out	gsdl.cgs.syntax.var.component.t
+			.coerce	list.t.out	gsdl.var.component.t
 			.enter	cs
 		.case	loaded.dir
 dirn1		.fkarg	0	ibio.file.name.t
@@ -977,7 +973,7 @@ rune.t	.tygvar
 ibio.file.name.t	.tygvar
 ordered.set.t	.tygvar
 list.prim.u	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _process.var_rec_file_:_k	.subcode
@@ -991,11 +987,11 @@ gsac.fn	.fv	ibio.file.name.t
 dirn	.fv	ibio.file.name.t
 ds	.fv	ordered.set.t	ibio.file.name.t
 fn1	.fv	ibio.file.name.t
-cs0	.karg	list.prim.u	gsdl.cgs.syntax.var.component.t
+cs0	.karg	list.prim.u	gsdl.var.component.t
 	.analyze	cs0	:	nil
 		.case	:
-c0		.fkarg	0	gsdl.cgs.syntax.var.component.t
-cs1		.fkarg	1	list.t	gsdl.cgs.syntax.var.component.t
+c0		.fkarg	0	gsdl.var.component.t
+cs1		.fkarg	1	list.t	gsdl.var.component.t
 sc0			.apply	gsdl.cgs.syntax.var.component.print	|	c0
 fcs			.apply	ibio.file.name.components.get	|	fn1
 sb			.lfield	root	fcs
@@ -1219,20 +1215,20 @@ record.empty	.tygvar
 _prefix.expand_w_ty	.tyexpr
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 _prefix.t	.tygvar
 ibio.prim.t	.tygvar
 	.tylift
 	.tyfun	ibio.file.name.t
 	.tylift
-	.tyfun	list.t	gsdl.cgs.syntax.var.component.t
+	.tyfun	list.t	gsdl.var.component.t
 	.tylift
 	.tyfun	_prefix.t
 	.tyref	ibio.prim.t	_prefix.t
 
 _prefix.expand_w_dir_w_ty	.tyexpr
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 string.t	.tygvar
 ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
@@ -1242,7 +1238,7 @@ _prefix.t	.tygvar
 	.tylift
 	.tyfun	ibio.file.name.t
 	.tylift
-	.tyfun	list.t	gsdl.cgs.syntax.var.component.t
+	.tyfun	list.t	gsdl.var.component.t
 	.tylift
 	.tyfun	list.t	string.t
 	.tyref	ibio.prim.t	_prefix.t
@@ -1254,7 +1250,7 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
 list.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 ordered.set.t	.tygvar
 _prefix.t	.tygvar
 ibio.prim.t	.tygvar
@@ -1266,7 +1262,7 @@ res.ty	.tylet	ordered.set.t	ibio.file.name.t
 	.tylift
 	.tyfun	ibio.file.name.t
 	.tylift
-	.tyfun	list.t	gsdl.cgs.syntax.var.component.t
+	.tyfun	list.t	gsdl.var.component.t
 	.tylift
 	.tyfun	ordered.set.t	ibio.file.name.t
 	.tylift

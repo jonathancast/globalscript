@@ -23,15 +23,15 @@ s	.larg	gsdl.cgs.symbol.t
 
 _gsdl.cgs.symbol.components.get_k	.forcecont
 gsdl.cgs.symbol.prim.u	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 list.t	.tygvar	# Temp
-gsdl.cgs.syntax.var.component.t	.tygvar	# Temp
+gsdl.var.component.t	.tygvar	# Temp
 s0	.karg	gsdl.cgs.symbol.prim.u
 	.analyze	s0	tyvar
 		.case	tyvar
-v		.fkarg	0	gsdl.cgs.syntax.var.t
+v		.fkarg	0	gsdl.var.t
 			.enter	v
-	# > :: list.t	gsdl.cgs.syntax.var.component.t
+	# > :: list.t	gsdl.var.component.t
 
 # §section §gs{gsdl.cgs.symbol.compare}
 
@@ -58,28 +58,28 @@ s0.0	.karg	gsdl.cgs.symbol.prim.u
 
 _gsdl.cgs.symbol.compare_k1	.forcecont
 gsdl.cgs.symbol.prim.u	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 order.total.ord.t	.tygvar	# Temp
-gsdl.cgs.syntax.var.compare	.gvar
+gsdl.var.compare	.gvar
 s0.0	.fv	gsdl.cgs.symbol.prim.u
 s1.0	.karg	gsdl.cgs.symbol.prim.u
 	.analyze	s0.0	tyvar
 		.case	tyvar
-v0		.fkarg	0	gsdl.cgs.syntax.var.t
+v0		.fkarg	0	gsdl.var.t
 			.analyze	s1.0	tyvar
 				.case	tyvar
-v1				.fkarg	0	gsdl.cgs.syntax.var.t
+v1				.fkarg	0	gsdl.var.t
 					.app	v0	v1
-					.enter	gsdl.cgs.syntax.var.compare
+					.enter	gsdl.var.compare
 	# > :: order.total.ord.t
 
 # §section §gs{gsdl.cgs.symbol.t} Constructors
 
 _gsdl.cgs.symbol.tyvar_c	.expr
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.symbol.prim.u	.tygvar
 gsdl.cgs.symbol.t.in	.cogvar
-v	.arg	gsdl.cgs.syntax.var.t
+v	.arg	gsdl.var.t
 c	.constr	gsdl.cgs.symbol.prim.u	tyvar	0	v
 	.coerce	gsdl.cgs.symbol.t.in
 	.lift
@@ -99,8 +99,8 @@ _gsdl.cgs.symbol.prim.u_tyvar_ty	.tygvar
 	.tysum	tyvar	_gsdl.cgs.symbol.prim.u_tyvar_ty
 
 _gsdl.cgs.symbol.prim.u_tyvar_ty	.tyexpr
-gsdl.cgs.syntax.var.t	.tygvar
-	.tyubproduct	0	gsdl.cgs.syntax.var.t
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
 
 	.coercion
 

@@ -1,0 +1,184 @@
+	.prefix
+
+	.data
+
+gsdl.var.compare	.closure	_gsdl.var.compare_c
+
+gsdl.var.≡	.closure	_gsdl.var.≡_c
+
+gsdl.var.fmtgs	.closure	_gsdl.var.fmtgs_c
+_gsdl.var.fmtgs_prefix.s	.string	gsv{
+_gsdl.var.fmtgs_suffix.s	.string	}
+
+gsdl.var.component.≡	.closure	_gsdl.var.component.≡_c
+
+gsdl.var.component.compare	.closure	_gsdl.var.component.compare_c
+
+gsdl.var.component.alphanum	.closure	_gsdl.var.component.alphanum_c
+
+	.code
+
+# §section §gs{gsdl.var.compare}
+
+_gsdl.var.compare_c	.expr
+gsdl.var.component.t	.tygvar
+list.compare	.gvar
+gsdl.var.component.compare	.gvar
+	.app	gsdl.var.component.compare
+	.enter	list.compare	gsdl.var.component.t
+
+# §section §gs{gsdl.var.≡}
+
+_gsdl.var.≡_c	.expr
+gsdl.var.component.t	.tygvar
+list.≡	.gvar
+gsdl.var.component.≡	.gvar
+	.app	gsdl.var.component.≡
+	.enter	list.≡	gsdl.var.component.t
+
+# §section §gs{gsdl.var.fmtgs}
+
+_gsdl.var.fmtgs_c	.expr
+gsdl.var.t	.tygvar
+rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.prepend	.gvar
+_gsdl.var.fmtgs_prefix.s	.gvar
+gsdl.cgs.syntax.var.print	.gvar
+diff.list.fromlist	.gvar
+_gsdl.var.fmtgs_suffix.s	.gvar
+v	.larg	gsdl.var.t
+v.s	.apply	gsdl.cgs.syntax.var.print	|	v
+ds2	.apply	diff.list.fromlist	rune.t	|	_gsdl.var.fmtgs_suffix.s
+ds1	.apply	diff.list.prepend	rune.t	|	v.s	ds2
+ds	.apply	diff.list.prepend	rune.t	|	_gsdl.var.fmtgs_prefix.s	ds1
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
+
+# §section §gs{gsdl.var.component.≡}
+
+_gsdl.var.component.≡_c	.expr
+gsdl.var.component.t	.tygvar
+_gsdl.var.component.≡_k0	.subcode
+gsdl.var.component.t.out	.cogvar
+c0	.larg	gsdl.var.component.t
+c1	.larg	gsdl.var.component.t
+	.force	_gsdl.var.component.≡_k0
+	.coerce	gsdl.var.component.t.out
+	.enter	c0
+
+_gsdl.var.component.≡_k0	.forcecont
+gsdl.var.component.t	.tygvar
+gsdl.var.component.prim.u	.tygvar
+_gsdl.var.component.≡_k1	.subcode
+gsdl.var.component.t.out	.cogvar
+c1	.fv	gsdl.var.component.t
+c0.0	.karg	gsdl.var.component.prim.u
+	.force	_gsdl.var.component.≡_k1
+	.coerce	gsdl.var.component.t.out
+	.enter	c1
+
+_gsdl.var.component.≡_k1	.forcecont
+gsdl.var.component.prim.u	.tygvar
+string.t	.tygvar
+string.≡	.gvar
+c0.0	.fv	gsdl.var.component.prim.u
+c1.0	.karg	gsdl.var.component.prim.u
+	.analyze	c0.0	alphanum
+		.case	alphanum
+s0		.fkarg	0	string.t
+			.analyze	c1.0	alphanum
+				.case	alphanum
+s1				.fkarg	0	string.t
+					.app	s0	s1
+					.enter	string.≡
+	# > :: bool.t
+
+# §section §gs{gsdl.var.component.compare}
+
+_gsdl.var.component.compare_c	.expr
+gsdl.var.component.t	.tygvar
+order.total.ord.t	.tygvar	# Temp
+_gsdl.var.component.compare_k0	.subcode
+gsdl.var.component.t.out	.cogvar
+c0	.larg	gsdl.var.component.t
+c1	.larg	gsdl.var.component.t
+	.force	_gsdl.var.component.compare_k0
+	.coerce	gsdl.var.component.t.out
+	.enter	c0
+
+_gsdl.var.component.compare_k0	.forcecont
+gsdl.var.component.t	.tygvar
+gsdl.var.component.prim.u	.tygvar
+_gsdl.var.component.compare_k1	.subcode
+gsdl.var.component.t.out	.cogvar
+c1	.fv	gsdl.var.component.t
+c0.0	.karg	gsdl.var.component.prim.u
+	.force	_gsdl.var.component.compare_k1
+	.coerce	gsdl.var.component.t.out
+	.enter	c1
+
+_gsdl.var.component.compare_k1	.forcecont
+gsdl.var.component.prim.u	.tygvar
+string.t	.tygvar
+order.total.ord.t	.tygvar	# Temp
+string.compare	.gvar
+c0.0	.fv	gsdl.var.component.prim.u
+c1.0	.karg	gsdl.var.component.prim.u
+	.analyze	c0.0	alphanum
+		.case	alphanum
+s0		.fkarg	0	string.t
+			.analyze	c1.0	alphanum
+				.case	alphanum
+s1				.fkarg	0	string.t
+					.app	s0	s1
+					.enter	string.compare
+	# > :: order.total.ord.t
+
+# §section §gs{gsdl.var.component.t} Constructors
+
+_gsdl.var.component.alphanum_c	.expr
+string.t	.tygvar
+gsdl.var.component.prim.u	.tygvar
+gsdl.var.component.t.in	.cogvar
+s	.arg	string.t
+c	.constr	gsdl.var.component.prim.u	alphanum	0	s
+	.coerce	gsdl.var.component.t.in
+	.lift
+	.yield	c
+
+	.type
+
+# §section §gs{gsdl.var.t}
+
+gsdl.var.t	.tyexpr
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+	.tyref	list.t	gsdl.var.component.t
+
+# §section §gs{gsdl.var.component.t}
+
+gsdl.var.component.t	.tyabstract	*
+gsdl.var.component.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.var.component.prim.u
+
+gsdl.var.component.prim.u	.tyexpr
+_gsdl.var.component.prim.u_alphanum_ty	.tygvar
+	.tysum	alphanum	_gsdl.var.component.prim.u_alphanum_ty
+
+_gsdl.var.component.prim.u_alphanum_ty	.tyexpr
+string.t	.tygvar
+	.tyubproduct	0	string.t
+
+	.coercion
+
+gsdl.var.component.t.in	.tycoercion
+gsdl.var.component.t	.tygvar
+	.tydefinition	gsdl.var.component.t
+
+gsdl.var.component.t.out	.tycoercion
+gsdl.var.component.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.var.component.t

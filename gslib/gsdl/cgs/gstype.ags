@@ -82,13 +82,13 @@ p1	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	prod.p	lift.p
 # > ) [| var v |]
 _gsdl.cgs.gstype.parser.arg_var.p_c	.expr
 rune.t	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 parser.map	.gvar
 gsdl.cgs.gstype.var	.gvar
 gsdl.cgs.syntax.var.parser	.gvar
 	.app	gsdl.cgs.gstype.var	gsdl.cgs.syntax.var.parser
-	.enter	parser.map	rune.t	gsdl.cgs.syntax.var.t	gsdl.cgs.gstype.t
+	.enter	parser.map	rune.t	gsdl.var.t	gsdl.cgs.gstype.t
 
 # > for (
 # >     'fs ← m/"Π〈/ *> cgs.syntax.ws *> many field.parser <* cgs.syntax.rbracket;
@@ -164,7 +164,7 @@ list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gstype.freevars	.gvar
 list.foldr	.gvar
 ordered.set.union	.gvar
@@ -196,7 +196,7 @@ fvss			.apply	list.map	gsdl.cgs.gstype.field.t	res.ty	|	gsdl.cgs.gstype.field.fr
 			.app	un	empty	fvss
 			.enter	list.foldr	res.ty	res.ty
 		.case	var
-v		.fkarg	0	gsdl.cgs.syntax.var.t
+v		.fkarg	0	gsdl.var.t
 sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
 			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
@@ -230,7 +230,7 @@ gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 bool.t	.tygvar	# Temp
 bool.false	.gvar
 bool.true	.gvar
@@ -258,7 +258,7 @@ fs0.1		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 fs1.1				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 					.enter	bool.true
 		.case	var
-v0		.fkarg	0	gsdl.cgs.syntax.var.t
+v0		.fkarg	0	gsdl.var.t
 			.undef	bool.t
 	# > :: bool.t
 
@@ -280,7 +280,7 @@ fmtgs.printer.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 rune.t	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 fmtgs.prec	.gvar
 fmtgs.prec.app	.gvar
 diff.list.prepend	.gvar
@@ -307,17 +307,17 @@ ds			.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.gstype.fmtgs_product.s	s1
 			.app	fmtgs.prec.app	ds
 			.enter	fmtgs.prec
 		.case	var
-v		.fkarg	0	gsdl.cgs.syntax.var.t
+v		.fkarg	0	gsdl.var.t
 			.undef	fmtgs.printer.t
 	# > :: fmtgs.printer.t
 
 # §section §gs{gstype} Constructors
 
 _gsdl.cgs.gstype.var_c	.expr
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t.in	.cogvar
-v	.larg	gsdl.cgs.syntax.var.t
+v	.larg	gsdl.var.t
 c	.constr	gsdl.cgs.gstype.prim.u	var	0	v
 	.coerce	gsdl.cgs.gstype.t.in
 	.lift
@@ -425,8 +425,8 @@ gsdl.cgs.gstype.field.t	.tygvar
 	.tyubproduct	0	0_ty
 
 _gsdl.cgs.gstype.prim.u_var_ty	.tyexpr
-gsdl.cgs.syntax.var.t	.tygvar
-	.tyubproduct	0	gsdl.cgs.syntax.var.t
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
 
 # §section §gs{gsdl.cgs.gstype.field.t}
 

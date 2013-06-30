@@ -22,18 +22,18 @@ _tests	.gvar
 
 _test_gskind.get_exists_c	.expr
 gsdl.cgs.gskind.t	.tygvar
-gsdl.cgs.syntax.var.component.t	.tygvar
+gsdl.var.component.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _test_gskind.get_exists_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.typeenv.gskind.get	.gvar
 list.singleton	.gvar
-gsdl.cgs.syntax.var.component.alphanum	.gvar
+gsdl.var.component.alphanum	.gvar
 _test_gskind.get_exists_x.s	.gvar
 gsdl.cgs.typeenv.gsabstype.insert	.gvar
 gsdl.cgs.typeenv.empty	.gvar
-c0	.apply	gsdl.cgs.syntax.var.component.alphanum	|	_test_gskind.get_exists_x.s
-v	.apply	list.singleton	gsdl.cgs.syntax.var.component.t	|	c0
+c0	.apply	gsdl.var.component.alphanum	|	_test_gskind.get_exists_x.s
+v	.apply	list.singleton	gsdl.var.component.t	|	c0
 ki	.undefined	gsdl.cgs.gskind.t
 ty	.undefined	gsdl.cgs.gstype.t
 env	.apply	gsdl.cgs.typeenv.gsabstype.insert	|	v	ki	ty	gsdl.cgs.typeenv.empty

@@ -15,34 +15,34 @@ gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
 # §section §gs{gsdl.cgs.typeenv.gskind.get}
 
 _gsdl.cgs.typeenv.gskind.get_c	.expr
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 _gsdl.cgs.typeenv.gskind.get_k	.subcode
-v	.larg	gsdl.cgs.syntax.var.t
+v	.larg	gsdl.var.t
 env	.larg	gsdl.cgs.typeenv.t
 	.force	_gsdl.cgs.typeenv.gskind.get_k
 	.enter	env
 
 _gsdl.cgs.typeenv.gskind.get_k	.forcecont
 gsdl.cgs.typeenv.u	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 ordered.map.get	.gvar
-gsdl.cgs.syntax.var.compare	.gvar
-v	.fv	gsdl.cgs.syntax.var.t
+gsdl.var.compare	.gvar
+v	.fv	gsdl.var.t
 env0	.karg	gsdl.cgs.typeenv.u
 kis	.field	kinds	env0
-	.app	gsdl.cgs.syntax.var.compare	v	kis
-	.enter	ordered.map.get	gsdl.cgs.syntax.var.t	gsdl.cgs.gskind.t
+	.app	gsdl.var.compare	v	kis
+	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.gskind.t
 
 # §section §gs{gsdl.cgs.typeenv.empty}
 
 _gsdl.cgs.typeenv.empty_c	.expr
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
 ordered.map.empty	.gvar
-kis	.apply	ordered.map.empty	gsdl.cgs.syntax.var.t	gsdl.cgs.gskind.t
+kis	.apply	ordered.map.empty	gsdl.var.t	gsdl.cgs.gskind.t
 r	.record	kinds	kis	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
@@ -50,12 +50,12 @@ r	.record	kinds	kis	|	gsdl.cgs.typeenv.u
 # §section §gs{gsdl.cgs.typeenv.gsabstype.insert}
 
 _gsdl.cgs.typeenv.gsabstype.insert_c	.expr
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 _gsdl.cgs.typeenv.gsabstype.insert_k	.subcode
-v	.larg	gsdl.cgs.syntax.var.t
+v	.larg	gsdl.var.t
 ki	.larg	gsdl.cgs.gskind.t
 defn	.larg	gsdl.cgs.gstype.t
 env	.larg	gsdl.cgs.typeenv.t
@@ -63,16 +63,16 @@ env	.larg	gsdl.cgs.typeenv.t
 	.enter	env
 
 _gsdl.cgs.typeenv.gsabstype.insert_k	.forcecont
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
 ordered.map.insert	.gvar
-gsdl.cgs.syntax.var.compare	.gvar
-v	.fv	gsdl.cgs.syntax.var.t
+gsdl.var.compare	.gvar
+v	.fv	gsdl.var.t
 ki	.fv	gsdl.cgs.gskind.t
 env0	.karg	gsdl.cgs.typeenv.u
 kis0	.field	kinds	env0
-kis1	.apply	ordered.map.insert	gsdl.cgs.syntax.var.t	gsdl.cgs.gskind.t	|	gsdl.cgs.syntax.var.compare	v	ki	kis0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
 r	.record	kinds	kis1	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
@@ -98,15 +98,15 @@ env0.0	.karg	gsdl.cgs.typeenv.u
 
 _gsdl.cgs.typeenv.overlay_k1	.forcecont
 gsdl.cgs.typeenv.u	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 ordered.map.∪	.gvar
-gsdl.cgs.syntax.var.compare	.gvar
+gsdl.var.compare	.gvar
 env0.0	.fv	gsdl.cgs.typeenv.u
 env1.0	.karg	gsdl.cgs.typeenv.u
 kis0	.field	kinds	env0.0
 kis1	.field	kinds	env1.0
-kis2	.apply	ordered.map.∪	gsdl.cgs.syntax.var.t	gsdl.cgs.gskind.t	|	gsdl.cgs.syntax.var.compare	kis0	kis1
+kis2	.apply	ordered.map.∪	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	kis0	kis1
 r	.record	kinds	kis2	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
@@ -122,7 +122,7 @@ gsdl.cgs.typeenv.u	.tygvar
 
 gsdl.cgs.typeenv.u	.tyexpr
 ordered.map.t	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-kinds_ty	.tylet	ordered.map.t	gsdl.cgs.syntax.var.t	gsdl.cgs.gskind.t
+kinds_ty	.tylet	ordered.map.t	gsdl.var.t	gsdl.cgs.gskind.t
 	.typroduct	kinds	kinds_ty

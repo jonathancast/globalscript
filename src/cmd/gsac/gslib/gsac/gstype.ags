@@ -44,7 +44,7 @@ gsdl.cgs.gskind.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 record.empty	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.kindcheck_app_k	.subcode
 _gsac.gstype.kindcheck_lift_k	.subcode
@@ -79,7 +79,7 @@ fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.app	fs
 			.enter	gsac.gstype.fields.kindcheck
 		.case	var
-v		.fkarg	0	gsdl.cgs.syntax.var.t
+v		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.kindcheck_var_k
 			.coerce	maybe.t.out	gsdl.cgs.gskind.t
 			.app	v	env
@@ -162,7 +162,7 @@ r		.fkarg	0	record.empty
 
 _gsac.gstype.kindcheck_var_k	.forcecont
 gsdl.sourcepos.t	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
@@ -178,7 +178,7 @@ _gsac.gstype.kindcheck_var_nothing_prefix.s	.gvar
 gsdl.cgs.syntax.var.print	.gvar
 _gsac.gstype.kindcheck_var_nothing_suffix.s	.gvar
 pos	.fv	gsdl.sourcepos.t
-v	.fv	gsdl.cgs.syntax.var.t
+v	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mb0	just	nothing
 		.case	just
@@ -253,7 +253,7 @@ _gsac.gstype.compile_res.ty	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 _gsac.gstype.fields.compile_res.ty	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.compile_w_lift_k	.subcode
 _gsac.gstype.compile_w_product_k	.subcode
@@ -279,7 +279,7 @@ fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.app	fs
 			.enter	gsac.gstype.fields.compile
 		.case	var
-v		.fkarg	0	gsdl.cgs.syntax.var.t
+v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 	# > :: either.t	string.t	_gsac.gstype.compile_res.ty
 
@@ -347,7 +347,7 @@ _gsac.gstype.compileToGlobalVar_k	.forcecont
 string.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
-gsdl.cgs.syntax.var.t	.tygvar
+gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar	# Temp
 _gsac.gstype.compileToGlobalVar_k1	.subcode
@@ -362,7 +362,7 @@ ty0	.karg	gsdl.cgs.gstype.prim.u
 			.app	ty0
 			.enter	_gsac.gstype.compile_w
 		.case	var
-v		.fkarg	0	gsdl.cgs.syntax.var.t
+v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 	# > :: either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
