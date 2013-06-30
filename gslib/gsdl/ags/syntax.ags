@@ -21,6 +21,9 @@ _gsdl.ags.syntax.id_id_component.re	.regex	[a-zα-ω][a-z0-9A-Z]*|§§*|[0-9]	_g
 _gsdl.ags.syntax.id_id_component.re.symbol	.regex	[~!@\h$%^&*-+=|:<>?/≡≠≯≮]
 _gsdl.ags.syntax.id_t.re	.regex	_§	_gsdl.ags.syntax.id_id.re
 
+gsdl.ags.syntax.var	.closure	_gsdl.ags.syntax.var_c
+_gsdl.ags.syntax.var_alphanum.re	.regex	[a-zα-ω][a-z0-9A-Z]*
+
 gsdl.ags.syntax.keywords	.list	string.t	_gsdl.ags.syntax.keywords_0
 _gsdl.ags.syntax.keywords_0	.string	|
 
@@ -104,6 +107,32 @@ b0	.karg	bool.prim.u
 			.enter	parser.unit	rune.t	string.t
 		.case	true
 			.enter	parser.fail	rune.t	string.t
+
+# §section §gs{gsdl.ags.syntax.var}
+
+_gsdl.ags.syntax.var_c	.expr
+rune.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.var.t	.tygvar
+string.t	.tygvar
+parser.lift2	.gvar
+list.:	.gvar
+parser.map	.gvar
+gsdl.var.component.alphanum	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.syntax.var_alphanum.re	.gvar
+parser.many	.gvar
+parser.fail	.gvar	# Temp
+cons	.apply	list.:	gsdl.var.component.t
+alphanum.f	.lifted	gsdl.var.component.alphanum
+alphanum.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.syntax.var_alphanum.re
+alphanum.p	.apply	parser.map	rune.t	string.t	gsdl.var.component.t	|	alphanum.f	alphanum.p1
+head.p	.apply	alphanum.p
+tail.p1	.apply	parser.fail	rune.t	gsdl.var.component.t
+tail.p	.apply	parser.many	rune.t	gsdl.var.component.t	|	tail.p1
+	.app	cons	head.p	tail.p
+	.enter	parser.lift2	rune.t	gsdl.var.component.t	gsdl.var.t	gsdl.var.t
 
 # §section §gs{gsdl.ags.syntax.rune.literal}
 
