@@ -12,6 +12,8 @@ _ordered.set.tolist_w	.closure	_ordered.set.tolist_w_c	_ordered.set.tolist_w_ty
 
 ordered.set.≡	.closure	_ordered.set.≡_c
 
+ordered.set.fmtgs	.closure	_ordered.set.fmtgs_c
+
 ordered.set.empty	.closure	_ordered.set.empty_c
 ordered.set.singleton	.closure	_ordered.set.singleton_c
 ordered.set.insert	.closure	_ordered.set.insert_c	_ordered.set.insert_ty
@@ -146,6 +148,17 @@ vs0	.apply	ordered.set.tolist	α	|	s0
 vs1	.apply	ordered.set.tolist	α	|	s1
 	.app	eq	vs0	vs1
 	.enter	list.≡	α
+
+# §section §gs{ordered.set.fmtgs}
+
+_ordered.set.fmtgs_c	.expr
+ordered.set.t	.tygvar
+fmtgs.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+α	.tyarg	*
+fmt	.larg	fmtgs.t	α
+s	.larg	ordered.set.t	α
+	.undef	fmtgs.printer.t
 
 # §section §gs{ordered.set.empty}
 
