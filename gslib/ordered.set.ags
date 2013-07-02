@@ -85,25 +85,21 @@ o0	.karg	order.total.ord.prim.u
 # §section §gs{ordered.set.tolist}
 
 _ordered.set.tolist_c	.expr
-order.total.t	.tygvar
 ordered.set.t	.tygvar
 _ordered.set.tolist_w	.gvar
 list.nil	.gvar
 α	.tyarg	*
-cmp	.larg	order.total.t	α
 s	.larg	ordered.set.t	α
 nil	.apply	list.nil	α
-	.app	cmp	s	nil
+	.app	s	nil
 	.enter	_ordered.set.tolist_w	α
 
 _ordered.set.tolist_w_c	.expr
-order.total.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _ordered.set.tolist_w_k	.subcode
 ordered.set.t.out	.cogvar
 α	.tyarg	*
-cmp	.larg	order.total.t	α
 s	.larg	ordered.set.t	α
 ys	.larg	list.t	α
 	.force	_ordered.set.tolist_w_k
@@ -118,7 +114,6 @@ ordered.set.t	.tygvar
 _ordered.set.tolist_w	.gvar
 list.:	.gvar
 α	.tyfv	*
-cmp	.fv	order.total.t	α
 ys	.fv	list.t	α
 s0	.karg	ordered.set.prim.u	α
 	.analyze	s0	branch	empty
@@ -126,9 +121,9 @@ s0	.karg	ordered.set.prim.u	α
 x		.fkarg	0	α
 sl		.fkarg	1	ordered.set.t	α
 sr		.fkarg	2	ordered.set.t	α
-ys2			.apply	_ordered.set.tolist_w	α	|	cmp	sr	ys
+ys2			.apply	_ordered.set.tolist_w	α	|	sr	ys
 ys1			.apply	list.:	α	|	x	ys2
-			.app	cmp	sl	ys1
+			.app	sl	ys1
 			.enter	_ordered.set.tolist_w	α
 		.case	empty
 			.enter	ys
@@ -429,12 +424,9 @@ bool.t	.tygvar
 # §section §gs{ordered.set.tolist}
 
 _ordered.set.tolist_w_ty	.tyexpr
-order.total.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 α	.tyforall	*
-	.tylift
-	.tyfun	order.total.t	α
 	.tylift
 	.tyfun	ordered.set.t	α
 	.tylift

@@ -272,7 +272,7 @@ fvs1	.apply	list.map	gsdl.cgs.file.t	set.symbol.ty	|	gsdl.cgs.file.freevars	cut
 union	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
 empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 fvs	.apply	list.foldr	set.symbol.ty	set.symbol.ty	|	union	empty	fvs1
-	.app	gsdl.cgs.symbol.compare	fvs
+	.app	fvs
 	.enter	ordered.set.tolist	gsdl.cgs.symbol.t
 
 # §section Load those files depended on by the CUT

@@ -281,7 +281,6 @@ gsdl.cgs.symbol.t	.tygvar
 _print.deps_body_w	.gvar
 ordered.set.empty	.gvar
 ordered.set.tolist	.gvar
-gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.file.freevars	.gvar
 o	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
@@ -289,7 +288,7 @@ prefixen	.fv	list.t	_prefix.t
 cgs	.fv	gsdl.cgs.file.t
 ds	.apply	ordered.set.empty	ibio.file.name.t
 fvs	.apply	gsdl.cgs.file.freevars	|	cgs
-fvs.l	.apply	ordered.set.tolist	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	fvs
+fvs.l	.apply	ordered.set.tolist	gsdl.cgs.symbol.t	|	fvs
 	.app	o	fn	prefixen	ds	fvs.l
 	.enter	_print.deps_body_w
 
