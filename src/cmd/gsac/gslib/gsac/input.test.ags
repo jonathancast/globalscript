@@ -4,7 +4,13 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test_boundvars.empty
+
+_test_boundvars.empty	.closure	_test_boundvars.empty_c
+_test_boundvars.empty_label	.string	boundvars\sof\sempty\sprefix
+
+_fixtures_set.symbol.≡	.closure	_fixtures_set.symbol.≡_c
+_fixtures_set.symbol.fmtgs	.closure	_fixtures_set.symbol.fmtgs_c
 
 	.code
 
@@ -13,3 +19,58 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{boundvars} of empty prefix
+
+_test_boundvars.empty_c	.expr
+_fixtures_set.symbol.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+gsdl.ags.file.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+test.property.label	.gvar
+_test_boundvars.empty_label	.gvar
+test.assert.eq	.gvar
+_fixtures_set.symbol.≡	.gvar
+_fixtures_set.symbol.fmtgs	.gvar
+gsac.input.prefix.boundvars	.gvar
+list.nil	.gvar
+gsdl.ags.file.filetype.gsprefix	.gvar
+ordered.set.empty	.gvar
+cs	.apply	list.nil	gsdl.ags.codeitem.t
+cos	.apply	list.nil	gsdl.ags.coercionitem.t
+ds	.apply	list.nil	gsdl.ags.dataitem.t
+tys	.apply	list.nil	gsdl.ags.typeitem.t
+file.empty	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
+actual	.apply	gsac.input.prefix.boundvars	|	file.empty
+set.symbol.empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
+test	.apply	test.assert.eq	_fixtures_set.symbol.t	|	_fixtures_set.symbol.≡	_fixtures_set.symbol.fmtgs	actual	set.symbol.empty
+	.app	_test_boundvars.empty_label	test
+	.enter	test.property.label
+
+# §section Test Fixtures
+
+_fixtures_set.symbol.≡_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+ordered.set.≡	.gvar
+gsdl.cgs.symbol.≡	.gvar
+	.app	gsdl.cgs.symbol.≡
+	.enter	ordered.set.≡	gsdl.cgs.symbol.t
+
+_fixtures_set.symbol.fmtgs_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+ordered.set.fmtgs	.gvar
+gsdl.cgs.symbol.fmtgs	.gvar
+	.app	gsdl.cgs.symbol.fmtgs
+	.enter	ordered.set.fmtgs	gsdl.cgs.symbol.t
+
+	.type
+
+# §section Test Fixtures
+
+_fixtures_set.symbol.t	.tyexpr
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+	.tyref	ordered.set.t	gsdl.cgs.symbol.t
