@@ -6,6 +6,10 @@ gsdl.cgs.symbol.components.get	.closure	_gsdl.cgs.symbol.components.get_c
 
 gsdl.cgs.symbol.compare	.closure	_gsdl.cgs.symbol.compare_c
 
+gsdl.cgs.symbol.≡	.closure	_gsdl.cgs.symbol.≡_c
+
+gsdl.cgs.symbol.fmtgs	.closure	_gsdl.cgs.symbol.fmtgs_c
+
 gsdl.cgs.symbol.tyvar	.closure	_gsdl.cgs.symbol.tyvar_c
 
 	.code
@@ -72,6 +76,23 @@ v1				.fkarg	0	gsdl.var.t
 					.app	v0	v1
 					.enter	gsdl.var.compare
 	# > :: order.total.ord.t
+
+# §section §gs{gsdl.cgs.symbol.≡}
+
+_gsdl.cgs.symbol.≡_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+bool.t	.tygvar	# Temp
+s0	.larg	gsdl.cgs.symbol.t
+s1	.larg	gsdl.cgs.symbol.t
+	.undef	bool.t
+
+# §section §gs{gsdl.cgs.symbol.fmtgs}
+
+_gsdl.cgs.symbol.fmtgs_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+s	.larg	gsdl.cgs.symbol.t
+	.undef	fmtgs.printer.t
 
 # §section §gs{gsdl.cgs.symbol.t} Constructors
 
