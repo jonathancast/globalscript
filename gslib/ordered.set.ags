@@ -136,12 +136,16 @@ ys1			.apply	list.:	α	|	x	ys2
 _ordered.set.≡_c	.expr
 eq.t	.tygvar
 ordered.set.t	.tygvar
-bool.t	.tygvar	# Temp
+list.≡	.gvar
+ordered.set.tolist	.gvar
 α	.tyarg	*
-cmp	.larg	eq.t	α
+eq	.larg	eq.t	α
 s0	.larg	ordered.set.t	α
 s1	.larg	ordered.set.t	α
-	.undef	bool.t
+vs0	.apply	ordered.set.tolist	α	|	s0
+vs1	.apply	ordered.set.tolist	α	|	s1
+	.app	eq	vs0	vs1
+	.enter	list.≡	α
 
 # §section §gs{ordered.set.empty}
 
