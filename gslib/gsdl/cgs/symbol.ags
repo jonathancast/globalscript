@@ -82,10 +82,41 @@ v1				.fkarg	0	gsdl.var.t
 
 _gsdl.cgs.symbol.≡_c	.expr
 gsdl.cgs.symbol.t	.tygvar
-bool.t	.tygvar	# Temp
+_gsdl.cgs.symbol.≡_k0	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
 s0	.larg	gsdl.cgs.symbol.t
 s1	.larg	gsdl.cgs.symbol.t
-	.undef	bool.t
+	.force	_gsdl.cgs.symbol.≡_k0
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s0
+
+_gsdl.cgs.symbol.≡_k0	.forcecont
+gsdl.cgs.symbol.t	.tygvar
+gsdl.cgs.symbol.prim.u	.tygvar
+_gsdl.cgs.symbol.≡_k1	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
+s1	.fv	gsdl.cgs.symbol.t
+s0.0	.karg	gsdl.cgs.symbol.prim.u
+	.force	_gsdl.cgs.symbol.≡_k1
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s1
+
+_gsdl.cgs.symbol.≡_k1	.forcecont
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.var.t	.tygvar
+bool.t	.tygvar	# Temp
+gsdl.var.≡	.gvar
+s0.0	.fv	gsdl.cgs.symbol.prim.u
+s1.0	.karg	gsdl.cgs.symbol.prim.u
+	.analyze	s0.0	tyvar
+		.case	tyvar
+v0		.fkarg	0	gsdl.var.t
+			.analyze	s1.0	tyvar
+				.case	tyvar
+v1				.fkarg	0	gsdl.var.t
+					.app	v0	v1
+					.enter	gsdl.var.≡
+	# > :: bool.t
 
 # §section §gs{gsdl.cgs.symbol.fmtgs}
 
