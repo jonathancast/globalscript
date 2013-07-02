@@ -9,6 +9,7 @@ gsdl.cgs.symbol.compare	.closure	_gsdl.cgs.symbol.compare_c
 gsdl.cgs.symbol.≡	.closure	_gsdl.cgs.symbol.≡_c
 
 gsdl.cgs.symbol.fmtgs	.closure	_gsdl.cgs.symbol.fmtgs_c
+_gsdl.cgs.symbol.fmtgs_tyvar.s	.string	tyvar
 
 gsdl.cgs.symbol.tyvar	.closure	_gsdl.cgs.symbol.tyvar_c
 
@@ -90,9 +91,30 @@ s1	.larg	gsdl.cgs.symbol.t
 
 _gsdl.cgs.symbol.fmtgs_c	.expr
 gsdl.cgs.symbol.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+_gsdl.cgs.symbol.fmtgs_k	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
 s	.larg	gsdl.cgs.symbol.t
-	.undef	fmtgs.printer.t
+	.force	_gsdl.cgs.symbol.fmtgs_k
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s
+
+_gsdl.cgs.symbol.fmtgs_k	.forcecont
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.var.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+fmtgs.app	.gvar
+fmtgs.var	.gvar
+_gsdl.cgs.symbol.fmtgs_tyvar.s	.gvar
+gsdl.var.fmtgs	.gvar
+s0	.karg	gsdl.cgs.symbol.prim.u
+	.analyze	s0	tyvar
+		.case	tyvar
+v		.fkarg	0	gsdl.var.t
+tyfvar.fmt			.apply	fmtgs.var	|	_gsdl.cgs.symbol.fmtgs_tyvar.s
+v.fmt			.apply	gsdl.var.fmtgs	|	v
+			.app	tyfvar.fmt	v.fmt
+			.enter	fmtgs.app
+	# > :: fmtgs.printer.t
 
 # §section §gs{gsdl.cgs.symbol.t} Constructors
 
