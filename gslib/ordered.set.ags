@@ -13,6 +13,7 @@ _ordered.set.tolist_w	.closure	_ordered.set.tolist_w_c	_ordered.set.tolist_w_ty
 ordered.set.≡	.closure	_ordered.set.≡_c
 
 ordered.set.fmtgs	.closure	_ordered.set.fmtgs_c
+_ordered.set.fmtgs_vs.ds_f_suffix.s	.string	,\s
 
 ordered.set.empty	.closure	_ordered.set.empty_c
 ordered.set.singleton	.closure	_ordered.set.singleton_c
@@ -154,11 +155,86 @@ vs1	.apply	ordered.set.tolist	α	|	s1
 _ordered.set.fmtgs_c	.expr
 ordered.set.t	.tygvar
 fmtgs.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+_ordered.set.fmtgs_vs.ds_c	.subcode
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.:	.gvar
+rune.left.curly	.gvar
+diff.list.<>	.gvar
+diff.list.singleton	.gvar
+rune.right.curly	.gvar
 α	.tyarg	*
 fmt	.larg	fmtgs.t	α
 s	.larg	ordered.set.t	α
-	.undef	fmtgs.printer.t
+vs.ds	.alloc	_ordered.set.fmtgs_vs.ds_c
+ds2	.apply	diff.list.singleton	rune.t	|	rune.right.curly
+ds1	.apply	diff.list.<>	rune.t	|	vs.ds	ds2
+ds	.apply	diff.list.:	rune.t	|	rune.left.curly	ds1
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
+
+_ordered.set.fmtgs_vs.ds_c	.expr
+fmtgs.t	.tygvar
+ordered.set.t	.tygvar
+_ordered.set.fmtgs_vs.ds_k	.subcode
+list.t.out	.cogvar
+ordered.set.tolist	.gvar
+α	.tyfv	*
+fmt	.fv	fmtgs.t	α
+s	.fv	ordered.set.t	α
+	.force	_ordered.set.fmtgs_vs.ds_k
+	.coerce	list.t.out	α
+	.app	s
+	.enter	ordered.set.tolist	α
+
+_ordered.set.fmtgs_vs.ds_k	.forcecont
+fmtgs.t	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar
+_ordered.set.fmtgs_vs.ds_f_c	.subcode
+list.t.in	.cogvar
+diff.list.:	.gvar
+rune.space	.gvar
+list.foldr	.gvar
+diff.list.<>	.gvar
+diff.list.nil	.gvar
+list.map	.gvar
+α	.tyfv	*
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+fmt	.fv	fmtgs.t	α
+vs0	.karg	list.prim.u	α
+	.analyze	vs0	:	nil
+		.case	:
+v0		.fkarg	0	α
+vs0		.fkarg	1	list.t	α
+f			.alloc	_ordered.set.fmtgs_vs.ds_f_c
+vs0.l			.lifted	vs0
+vs0.cl			.cast	vs0.l	list.t.in	α
+dss			.apply	list.map	α	diff.list.rune.ty	|	f	vs0.cl
+diff.list.rune.nil			.apply	diff.list.nil	rune.t
+diff.list.rune.<>			.apply	diff.list.<>	rune.t
+ds			.apply	list.foldr	diff.list.rune.ty	diff.list.rune.ty	|	diff.list.rune.<>	diff.list.rune.nil	dss
+			.app	rune.space	ds
+			.enter	diff.list.:	rune.t
+		.case	nil
+			.enter	diff.list.nil	rune.t
+
+_ordered.set.fmtgs_vs.ds_f_c	.expr
+fmtgs.t	.tygvar
+rune.t	.tygvar
+diff.list.postpend	.gvar
+fmtgs.prec.max	.gvar
+_ordered.set.fmtgs_vs.ds_f_suffix.s	.gvar
+α	.tyfv	*
+fmt	.fv	fmtgs.t	α
+v	.larg	α
+v.ds	.apply	fmt	|	v	fmtgs.prec.max
+	.app	v.ds	_ordered.set.fmtgs_vs.ds_f_suffix.s
+	.enter	diff.list.postpend	rune.t
 
 # §section §gs{ordered.set.empty}
 
