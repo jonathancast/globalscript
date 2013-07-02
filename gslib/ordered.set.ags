@@ -10,6 +10,8 @@ ordered.set.elem	.closure	_ordered.set.elem_c	_ordered.set.elem_ty
 ordered.set.tolist	.closure	_ordered.set.tolist_c
 _ordered.set.tolist_w	.closure	_ordered.set.tolist_w_c	_ordered.set.tolist_w_ty
 
+ordered.set.≡	.closure	_ordered.set.≡_c
+
 ordered.set.empty	.closure	_ordered.set.empty_c
 ordered.set.singleton	.closure	_ordered.set.singleton_c
 ordered.set.insert	.closure	_ordered.set.insert_c	_ordered.set.insert_ty
@@ -128,6 +130,18 @@ ys1			.apply	list.:	α	|	x	ys2
 		.case	empty
 			.enter	ys
 	# > :: list.t	α
+
+# §section §gs{ordered.set.≡}
+
+_ordered.set.≡_c	.expr
+eq.t	.tygvar
+ordered.set.t	.tygvar
+bool.t	.tygvar	# Temp
+α	.tyarg	*
+cmp	.larg	eq.t	α
+s0	.larg	ordered.set.t	α
+s1	.larg	ordered.set.t	α
+	.undef	bool.t
 
 # §section §gs{ordered.set.empty}
 
