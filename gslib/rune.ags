@@ -31,6 +31,7 @@ rune.colon	.closure	_rune.colon_c
 rune.dot	.closure	_rune.dot_c
 rune.left.paren	.closure	_rune.left.paren_c
 rune.right.paren	.closure	_rune.right.paren_c
+rune.left.curly	.closure	_rune.left.curly_c
 rune.latin.letter.c	.closure	_rune.latin.letter.c_c
 rune.latin.letter.g	.closure	_rune.latin.letter.g_c
 rune.latin.letter.n	.closure	_rune.latin.letter.n_c
@@ -348,6 +349,13 @@ rp	.rune	)
 	.coerce	rune.t.in
 	.lift
 	.yield	rp
+
+_rune.left.curly_c	.expr
+rune.t.in	.cogvar
+lc	.rune	{
+	.coerce	rune.t.in
+	.lift
+	.yield	lc
 
 _rune.latin.letter.c_c	.expr
 rune.t.in	.cogvar
