@@ -31,14 +31,17 @@ test.deny	.gvar
 _test.eq_diff.nms_false	.gvar
 _test.eq_diff.nms_true	.gvar
 gsdl.var.≡	.gvar
+gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
 _test.eq_diff.nms_x.s	.gvar
 _test.eq_diff.nms_y.s	.gvar
 c0.x	.apply	gsdl.var.component.alphanum	|	_test.eq_diff.nms_x.s
-v.x	.apply	list.singleton	gsdl.var.component.t	|	c0.x
+cs.x	.apply	list.singleton	gsdl.var.component.t	|	c0.x
+v.x	.apply	gsdl.var.basevar	|	cs.x
 c0.y	.apply	gsdl.var.component.alphanum	|	_test.eq_diff.nms_y.s
-v.y	.apply	list.singleton	gsdl.var.component.t	|	c0.y
+cs.y	.apply	list.singleton	gsdl.var.component.t	|	c0.y
+v.y	.apply	gsdl.var.basevar	|	cs.y
 eq	.apply	gsdl.var.≡	|	v.x	v.y
 test	.apply	test.deny	|	_test.eq_diff.nms_false	_test.eq_diff.nms_true	eq
 	.app	_test.eq_diff.nms_label	test

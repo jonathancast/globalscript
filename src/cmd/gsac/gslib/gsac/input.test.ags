@@ -79,6 +79,7 @@ _fixtures_set.symbol.fmtgs	.gvar
 gsac.input.prefix.boundvars	.gvar
 list.nil	.gvar
 gsdl.ags.file.filetype.gsprefix	.gvar
+gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.ags.typeitem.tyabstract	.gvar
 natural.1	.gvar
@@ -93,8 +94,9 @@ cs	.apply	list.nil	gsdl.ags.codeitem.t
 cos	.apply	list.nil	gsdl.ags.coercionitem.t
 ds	.apply	list.nil	gsdl.ags.dataitem.t
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
-c0	.apply	gsdl.var.component.alphanum	|	_test_boundvars.gsabstype_x.s
-v	.apply	list.singleton	gsdl.var.component.t	|	c0
+v.c0	.apply	gsdl.var.component.alphanum	|	_test_boundvars.gsabstype_x.s
+v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
+v	.apply	gsdl.var.basevar	|	v.cs
 decls	.undefined	gsdl.ags.typeitem.decls.t
 tye	.undefined	gsdl.ags.typeitem.expr.t
 ti	.apply	gsdl.ags.typeitem.tyabstract	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	tye

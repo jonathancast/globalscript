@@ -7,7 +7,7 @@ _gsdl.cgs.syntax.var.parser_dot.re	.regex	\.
 gsdl.cgs.syntax.var.component.alphanum.parser	.closure	_gsdl.cgs.syntax.var.component.alphanum.parser_c
 
 gsdl.cgs.syntax.var.print	.closure	_gsdl.cgs.syntax.var.print_c
-_gsdl.cgs.syntax.var.print_components.print	.closure	_gsdl.cgs.syntax.var.print_components.print_c	_gsdl.cgs.syntax.var.print_components.print_ty
+_gsdl.cgs.syntax.var.print_basevar_components.print	.closure	_gsdl.cgs.syntax.var.print_basevar_components.print_c	_gsdl.cgs.syntax.var.print_components.print_ty
 
 gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
 _gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
@@ -35,10 +35,13 @@ gsdl.cgs.syntax.var.component.print	.closure	_gsdl.cgs.syntax.var.component.prin
 
 _gsdl.cgs.syntax.var.parser_c	.expr
 rune.t	.tygvar
-gsdl.var.component.t	.tygvar
 gsdl.var.t	.tygvar
 string.t	.tygvar
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
 parser.<*	.gvar
+parser.map	.gvar
+gsdl.var.basevar	.gvar
 parser.lift2	.gvar
 list.:	.gvar
 gsdl.cgs.syntax.var.component.alphanum.parser	.gvar
@@ -48,12 +51,14 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.cgs.syntax.var.parser_dot.re	.gvar
 gsdl.cgs.syntax.ws	.gvar
+list.component.ty	.tylet	list.t	gsdl.var.component.t
 cons	.apply	list.:	gsdl.var.component.t
 dot_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.var.parser_dot.re
 tail_p1	.apply	parser.*>	rune.t	string.t	gsdl.var.component.t	|	dot_p	gsdl.cgs.syntax.var.component.alphanum.parser
 tail_p	.apply	parser.many	rune.t	gsdl.var.component.t	|	tail_p1
-cons_p	.apply	parser.lift2	rune.t	gsdl.var.component.t	gsdl.var.t	gsdl.var.t	|	cons	gsdl.cgs.syntax.var.component.alphanum.parser	tail_p
-	.app	cons_p	gsdl.cgs.syntax.ws
+cons_p	.apply	parser.lift2	rune.t	gsdl.var.component.t	list.component.ty	list.component.ty	|	cons	gsdl.cgs.syntax.var.component.alphanum.parser	tail_p
+base.p	.apply	parser.map	rune.t	list.component.ty	gsdl.var.t	|	gsdl.var.basevar	cons_p
+	.app	base.p	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	gsdl.var.t	string.t
 
 # §section §gs{gsdl.cgs.syntax.var.component.alphanum.parser}
@@ -116,15 +121,29 @@ c			.apply	gsdl.var.component.alphanum	|	id
 
 _gsdl.cgs.syntax.var.print_c	.expr
 gsdl.var.t	.tygvar
-gsdl.var.component.t	.tygvar
 _gsdl.cgs.syntax.var.print_k	.subcode
-list.t.out	.cogvar
+gsdl.var.t.out	.cogvar
 v	.larg	gsdl.var.t
 	.force	_gsdl.cgs.syntax.var.print_k
-	.coerce	list.t.out	gsdl.var.component.t
+	.coerce	gsdl.var.t.out
 	.enter	v
 
 _gsdl.cgs.syntax.var.print_k	.forcecont
+gsdl.var.prim.u	.tygvar
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+_gsdl.cgs.syntax.var.print_basevar_k	.subcode
+list.t.out	.cogvar
+v0	.karg	gsdl.var.prim.u
+	.analyze	v0	basevar
+		.case	basevar
+cs		.fkarg	0	list.t	gsdl.var.component.t
+			.force	_gsdl.cgs.syntax.var.print_basevar_k
+			.coerce	list.t.out	gsdl.var.component.t
+			.enter	cs
+	# > :: string.t
+
+_gsdl.cgs.syntax.var.print_basevar_k	.forcecont
 list.prim.u	.tygvar
 gsdl.var.component.t	.tygvar
 list.t	.tygvar
@@ -132,31 +151,31 @@ rune.t	.tygvar
 string.t	.tygvar	# Temp
 list.<>	.gvar
 gsdl.cgs.syntax.var.component.print	.gvar
-_gsdl.cgs.syntax.var.print_components.print	.gvar
-v0	.karg	list.prim.u	gsdl.var.component.t
-	.analyze	v0	:	nil
+_gsdl.cgs.syntax.var.print_basevar_components.print	.gvar
+cs0	.karg	list.prim.u	gsdl.var.component.t
+	.analyze	cs0	:	nil
 		.case	:
-c		.fkarg	0	gsdl.var.component.t
-cs		.fkarg	1	list.t	gsdl.var.component.t
-c.s			.apply	gsdl.cgs.syntax.var.component.print	|	c
-cs.s			.apply	_gsdl.cgs.syntax.var.print_components.print	|	cs
+c0		.fkarg	0	gsdl.var.component.t
+cs1		.fkarg	1	list.t	gsdl.var.component.t
+c.s			.apply	gsdl.cgs.syntax.var.component.print	|	c0
+cs.s			.apply	_gsdl.cgs.syntax.var.print_basevar_components.print	|	cs1
 			.app	c.s	cs.s
 			.enter	list.<>	rune.t
 		.case	nil
 			.undef	string.t
 
-_gsdl.cgs.syntax.var.print_components.print_c	.expr
+_gsdl.cgs.syntax.var.print_basevar_components.print_c	.expr
 list.t	.tygvar
 gsdl.var.component.t	.tygvar
 string.t	.tygvar	# Temp
-_gsdl.cgs.syntax.var.print_components.print_k	.subcode
+_gsdl.cgs.syntax.var.print_basevar_components.print_k	.subcode
 list.t.out	.cogvar
 cs	.larg	list.t	gsdl.var.component.t
-	.force	_gsdl.cgs.syntax.var.print_components.print_k
+	.force	_gsdl.cgs.syntax.var.print_basevar_components.print_k
 	.coerce	list.t.out	gsdl.var.component.t
 	.enter	cs
 
-_gsdl.cgs.syntax.var.print_components.print_k	.forcecont
+_gsdl.cgs.syntax.var.print_basevar_components.print_k	.forcecont
 list.prim.u	.tygvar
 gsdl.var.component.t	.tygvar
 list.t	.tygvar
@@ -166,7 +185,7 @@ list.:	.gvar
 rune.dot	.gvar
 list.<>	.gvar
 gsdl.cgs.syntax.var.component.print	.gvar
-_gsdl.cgs.syntax.var.print_components.print	.gvar
+_gsdl.cgs.syntax.var.print_basevar_components.print	.gvar
 list.nil	.gvar
 cs0	.karg	list.prim.u	gsdl.var.component.t
 	.analyze	cs0	:	nil
@@ -174,7 +193,7 @@ cs0	.karg	list.prim.u	gsdl.var.component.t
 c0		.fkarg	0	gsdl.var.component.t
 cs1		.fkarg	1	list.t	gsdl.var.component.t
 c0.s			.apply	gsdl.cgs.syntax.var.component.print	|	c0
-cs1.s			.apply	_gsdl.cgs.syntax.var.print_components.print	|	cs1
+cs1.s			.apply	_gsdl.cgs.syntax.var.print_basevar_components.print	|	cs1
 s1			.apply	list.<>	rune.t	|	c0.s	cs1.s
 			.app	rune.dot	s1
 			.enter	list.:	rune.t

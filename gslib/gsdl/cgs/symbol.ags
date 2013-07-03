@@ -31,11 +31,13 @@ gsdl.cgs.symbol.prim.u	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar	# Temp
 gsdl.var.component.t	.tygvar	# Temp
+gsdl.var.components.get	.gvar
 s0	.karg	gsdl.cgs.symbol.prim.u
 	.analyze	s0	tyvar
 		.case	tyvar
 v		.fkarg	0	gsdl.var.t
-			.enter	v
+			.app	v
+			.enter	gsdl.var.components.get
 	# > :: list.t	gsdl.var.component.t
 
 # §section §gs{gsdl.cgs.symbol.compare}
