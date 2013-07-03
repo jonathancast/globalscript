@@ -22,6 +22,7 @@ _gsdl.ags.syntax.id_id_component.re.symbol	.regex	[~!@\h$%^&*-+=|:<>?/≡≠≯�
 _gsdl.ags.syntax.id_t.re	.regex	_§	_gsdl.ags.syntax.id_id.re
 
 gsdl.ags.syntax.var	.closure	_gsdl.ags.syntax.var_c
+_gsdl.ags.syntax.var_base.p	.closure	_gsdl.ags.syntax.var_base.p_c
 _gsdl.ags.syntax.var_alphanum.re	.regex	[a-zα-ω][a-z0-9A-Z]*
 _gsdl.ags.syntax.var_dot.re	.regex	\.
 
@@ -112,6 +113,10 @@ b0	.karg	bool.prim.u
 # §section §gs{gsdl.ags.syntax.var}
 
 _gsdl.ags.syntax.var_c	.expr
+_gsdl.ags.syntax.var_base.p	.gvar
+	.enter	_gsdl.ags.syntax.var_base.p
+
+_gsdl.ags.syntax.var_base.p_c	.expr
 rune.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.var.component.t	.tygvar
