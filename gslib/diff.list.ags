@@ -12,6 +12,9 @@ diff.list.concat	.closure	_diff.list.concat_c
 diff.list.prepend	.closure	_diff.list.prepend_c
 diff.list.postpend	.closure	_diff.list.postpend_c
 
+diff.list.replicate	.closure	_diff.list.replicate_c
+_diff.list.replicate_w	.closure	_diff.list.replicate_w_c	_diff.list.replicate_w_ty
+
 diff.list.tolist	.closure	_diff.list.tolist_c
 diff.list.fromlist	.closure	_diff.list.fromlist_c
 
@@ -105,6 +108,58 @@ ys1	.apply	list.<>	α	|	xn1	ys0
 	.app	ys1
 	.enter	xn0
 
+# §section §gs{diff.list.replicate}
+
+_diff.list.replicate_c	.expr
+natural.t	.tygvar
+_diff.list.replicate_k	.subcode
+natural.t.out	.cogvar
+α	.tyarg	*
+n	.larg	natural.t
+c	.larg	α
+	.force	_diff.list.replicate_k
+	.coerce	natural.t.out
+	.enter	n
+
+_diff.list.replicate_k	.forcecont
+natural.prim.u	.tygvar
+_diff.list.replicate_w	.gvar
+α	.tyfv	*
+c	.fv	α
+n0	.karg	natural.prim.u
+	.app	n0	c
+	.yield	_diff.list.replicate_w	α
+
+_diff.list.replicate_w_c	.expr
+natural.prim.u	.tygvar
+_diff.list.replicate_w_k0	.subcode
+_diff.list.replicate_w_k1	.subcode
+natural.prim.-	.gvar
+1	.natural	1
+α	.tyarg	*
+n	.arg	natural.prim.u
+c	.arg	α
+	.ubanalyze	0	_diff.list.replicate_w_k0	1	_diff.list.replicate_w_k1
+	.app	n	1
+	.yield	natural.prim.-
+
+_diff.list.replicate_w_k0	.ubcasecont
+diff.list.nil	.gvar
+α	.tyfv	*
+c	.fv	α
+	.enter	diff.list.nil	α
+
+_diff.list.replicate_w_k1	.ubcasecont
+natural.prim.u	.tygvar
+diff.list.:	.gvar
+_diff.list.replicate_w	.gvar
+α	.tyfv	*
+c	.fv	α
+n1	.karg	natural.prim.u
+ds	.apply	_diff.list.replicate_w	α	|	n1	c
+	.app	c	ds
+	.enter	diff.list.:	α
+
 # §section §gs{diff.list.tolist}
 
 _diff.list.tolist_c	.expr
@@ -135,3 +190,13 @@ list.t	.tygvar
 	.tylift
 	.tyfun	list.t	α
 	.tyref	list.t	α
+
+# §section §gs{diff.list.replicate}
+
+_diff.list.replicate_w_ty	.tyexpr
+natural.prim.u	.tygvar
+diff.list.t	.tygvar
+α	.tyforall	*
+	.tyfun	natural.prim.u
+	.tyfun	α
+	.tyref	diff.list.t	α
