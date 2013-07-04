@@ -214,8 +214,17 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.a
 
 _test.parse.tyexpr_k_c	.expr
 gsdl.ags.typeitem.t	.tygvar
-test.true	.gvar
+_test.parse.tyexpr_k_k	.subcode
+gsdl.ags.typeitem.t.out	.cogvar
 ti	.larg	gsdl.ags.typeitem.t
+	.force	_test.parse.tyexpr_k_k
+	.coerce	gsdl.ags.typeitem.t.out
+	.enter	ti
+
+_test.parse.tyexpr_k_k	.forcecont
+gsdl.ags.typeitem.prim.u	.tygvar
+test.true	.gvar
+ti0	.karg	gsdl.ags.typeitem.prim.u
 	.enter	test.true
 
 # §section §gs{qq{ibio.dir.u\\t.tyexpr\\n_string.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser}

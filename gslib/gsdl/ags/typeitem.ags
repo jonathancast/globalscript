@@ -234,12 +234,19 @@ parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-gsdl.ags.typeitem.t	.tygvar	# Temp
-pos	.larg	parser.pos.t
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.tyexpr	.gvar
+gsdl.sourcepos	.gvar
+maybe.nothing	.gvar
+pos0	.larg	parser.pos.t
 nm	.larg	gsdl.var.t
 ds	.larg	gsdl.ags.typeitem.decls.t
 e	.larg	gsdl.ags.typeitem.expr.t
-	.undef	gsdl.ags.typeitem.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+nothing	.apply	maybe.nothing	gsdl.ags.typeitem.gskind.t
+	.app	pos	nm	nothing	ds	e
+	.enter	gsdl.ags.typeitem.tyexpr
 
 # §section §gs{gsdl.ags.typeitem.≡}
 
