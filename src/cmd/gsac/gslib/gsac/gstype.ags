@@ -333,10 +333,12 @@ res			.lrecord		res	res0	tyexprs	tyes
 
 # > either.t string.t ⊕ writer.m (diff.list.t gsdl.ags.typeitem.t)
 _gsac.gstype.compileToGlobalVar_c	.expr
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.gstype.compileToGlobalVar_k	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
+pos	.larg	gsdl.sourcepos.t
 nm0	.larg	string.t
 ty	.larg	gsdl.cgs.gstype.t
 	.force	_gsac.gstype.compileToGlobalVar_k
@@ -344,6 +346,7 @@ ty	.larg	gsdl.cgs.gstype.t
 	.enter	ty
 
 _gsac.gstype.compileToGlobalVar_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
@@ -353,6 +356,7 @@ _gsac.gstype.compileToGlobalVar_res.ty	.tygvar	# Temp
 _gsac.gstype.compileToGlobalVar_k1	.subcode
 either.t.out	.cogvar
 _gsac.gstype.compile_w	.gvar
+pos	.fv	gsdl.sourcepos.t
 nm0	.fv	string.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.danalyze	ty0	var
@@ -367,12 +371,14 @@ v		.fkarg	0	gsdl.var.t
 	# > :: either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
 _gsac.gstype.compileToGlobalVar_k1	.forcecont
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 either.prim.u	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 diff.list.t	.tygvar
 either.t	.tygvar	# Temp
@@ -380,6 +386,7 @@ either.right	.gvar
 diff.list.:	.gvar
 gsdl.ags.typeitem.tyexpr	.gvar
 maybe.nothing	.gvar
+pos	.fv	gsdl.sourcepos.t
 nm0	.fv	string.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.analyze	e0	left	right
@@ -389,8 +396,9 @@ err		.fkarg	0	string.t
 		.case	right
 res1		.fkarg	0	_gsac.gstype.compile_res.ty
 nothing			.apply	maybe.nothing	gsdl.ags.typeitem.gskind.t
+ds			.lrecord	|	gsdl.ags.typeitem.decls.t
 tye0.0			.lfield	res	res1
-tye0			.apply	gsdl.ags.typeitem.tyexpr	|	nm0	nothing	tye0.0
+tye0			.apply	gsdl.ags.typeitem.tyexpr	|	pos	nm0	nothing	ds	tye0.0
 tyes1			.lfield	tyexprs	res1
 tyes			.apply	diff.list.:	gsdl.ags.typeitem.t	|	tye0	tyes1
 res			.lrecord	nm	nm0	tyexprs	tyes
@@ -511,10 +519,13 @@ tyexprs_ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 # §section §gs{gsac.gstype.compileToGlobalVar}
 
 _gsac.gstype.compileToGlobalVar_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
 	.tylift
 	.tyfun	string.t
 	.tylift

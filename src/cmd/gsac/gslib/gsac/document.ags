@@ -71,9 +71,10 @@ mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
+pos			.field	pos	doc0
 			.force	_gsac.document.compile_right_just_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
-			.app	_gsac.document.compile_right_just_ep.ty.s	ty
+			.app	pos	_gsac.document.compile_right_just_ep.ty.s	ty
 			.enter	gsac.gstype.compileToGlobalVar
 		.case	nothing
 			.undef	either.t	string.t	gsdl.ags.file.t

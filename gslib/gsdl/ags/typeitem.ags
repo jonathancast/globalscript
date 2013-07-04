@@ -290,9 +290,11 @@ ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 defn		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.undef	diff.list.t	rune.t
 		.case	tyexpr
-nm		.fkarg	0	string.t
-mb.ky		.fkarg	1	maybe.t	gsdl.ags.typeitem.gskind.t
-exp		.fkarg	2	gsdl.ags.typeitem.expr.t
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	string.t
+mb.ky		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+exp		.fkarg	4	gsdl.ags.typeitem.expr.t
 mb.ky.s			.apply	_gsdl.ags.typeitem.print_kindsig.print	|	mb.ky
 exp.s			.apply	gsdl.ags.typeitem.expr.print	|	exp
 s2			.apply	diff.list.<>	rune.t	|	mb.ky.s	exp.s
@@ -978,16 +980,20 @@ c	.constr	gsdl.ags.typeitem.prim.u	tyabstract	0	pos	1	nm	2	ki	3	ds	4	dfn
 	.yield	c
 
 _gsdl.ags.typeitem.tyexpr_c	.expr
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 maybe.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.prim.u	.tygvar
 gsdl.ags.typeitem.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
 nm	.larg	string.t
 mbky	.larg	maybe.t	gsdl.ags.typeitem.gskind.t
+ds	.larg	gsdl.ags.typeitem.decls.t
 e	.larg	gsdl.ags.typeitem.expr.t
-c	.constr	gsdl.ags.typeitem.prim.u	tyexpr	0	nm	1	mbky	2	e
+c	.constr	gsdl.ags.typeitem.prim.u	tyexpr	0	pos	1	nm	2	mbky	3	ds	4	e
 	.coerce	gsdl.ags.typeitem.t.in
 	.lift
 	.yield	c
@@ -1048,12 +1054,14 @@ gsdl.ags.typeitem.expr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.ags.typeitem.gskind.t	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.prim.u_tyexpr_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 maybe.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 1_ty	.tylet	maybe.t	gsdl.ags.typeitem.gskind.t
-	.tyubproduct	0	string.t	1	1_ty	2	gsdl.ags.typeitem.expr.t
+	.tyubproduct	0	gsdl.sourcepos.t	1	string.t	2	1_ty	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
 
 # §section §gs{gsdl.ags.typeitem.decls.t}
 

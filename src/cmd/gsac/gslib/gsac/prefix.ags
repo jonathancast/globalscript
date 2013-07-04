@@ -164,9 +164,11 @@ prfx.ti			.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	cgs.ki
 			.app	gsdl.var.compare	v	prfx.ti	ts0
 			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typeitem.t
 		.case	tyexpr
-nm		.fkarg	0	string.t
-kmbki		.fkarg	1	maybe.t	gsdl.ags.typeitem.gskind.t
-dfn		.fkarg	2	gsdl.ags.typeitem.expr.t
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	string.t
+mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+dfn		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.typeitem.t
 	# > :: ordered.map.t	gsdl.var.t	gsac.prefix.typeitem.t
 

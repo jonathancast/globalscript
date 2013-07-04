@@ -224,8 +224,10 @@ sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
 			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
 		.case	tyexpr
-nm		.fkarg	0	string.t
-mki		.fkarg	1	maybe.t	gsdl.ags.typeitem.gskind.t
-e		.fkarg	2	gsdl.ags.typeitem.expr.t
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	string.t
+mki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+e		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.undef	ordered.set.t	gsdl.cgs.symbol.t
 	# > :: ordered.set.t	gsdl.cgs.symbol.t
