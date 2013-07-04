@@ -800,6 +800,7 @@ list.t	.tygvar
 order.total.ord.t	.tygvar
 _list.compare_:_:_k	.subcode
 order.total.ord.t.out	.cogvar
+order.total.ord.lt	.gvar
 order.total.ord.eq	.gvar
 α	.tyfv	*
 cmp	.fv	order.total.t	α
@@ -824,7 +825,7 @@ xn1.1				.fkarg	1	list.t	α
 				.case	:
 x1				.fkarg	0	α
 xn1.1				.fkarg	1	list.t	α
-					.undef	order.total.ord.t
+					.enter	order.total.ord.lt
 				.case	nil
 					.enter	order.total.ord.eq
 
