@@ -28,6 +28,11 @@ _gsdl.ags.syntax.var_dot.re	.regex	\.
 _gsdl.ags.syntax.var_underbar.p	.closure	_gsdl.ags.syntax.var_underbar.p_c
 _gsdl.ags.syntax.var_underbar.p_underbar.re	.regex	_
 
+gsdl.ags.syntax.var.print	.closure	_gsdl.ags.syntax.var.print_c
+_gsdl.ags.syntax.var.print_w	.closure	_gsdl.ags.syntax.var.print_w_c	_gsdl.ags.syntax.var.print_w_ty
+
+gsdl.ags.syntax.var.component.print	.closure	_gsdl.ags.syntax.var.component.print_c
+
 gsdl.ags.syntax.keywords	.list	string.t	_gsdl.ags.syntax.keywords_0
 _gsdl.ags.syntax.keywords_0	.string	|
 
@@ -182,6 +187,161 @@ vars.p	.apply	parser.lift2	rune.t	gsdl.var.t	list.var.ty	list.var.ty	|	cons	var.
 	.app	f	vars.p
 	.enter	parser.map	rune.t	list.var.ty	gsdl.var.t
 
+# §section §gs{gsdl.ags.syntax.var.print}
+
+_gsdl.ags.syntax.var.print_c	.expr
+gsdl.var.t	.tygvar
+bool.prim.u	.tygvar
+rune.t	.tygvar
+_gsdl.ags.syntax.var.print_w	.gvar
+list.nil	.gvar
+v	.larg	gsdl.var.t
+true	.constr	bool.prim.u	true
+nil	.apply	list.nil	rune.t
+	.app	v	true	nil
+	.enter	_gsdl.ags.syntax.var.print_w
+
+_gsdl.ags.syntax.var.print_w_c	.expr
+gsdl.var.t	.tygvar
+bool.prim.u	.tygvar
+_gsdl.ags.syntax.var.print_w_k	.subcode
+gsdl.var.t.out	.cogvar
+v	.larg	gsdl.var.t
+b	.larg	bool.prim.u
+	.force	_gsdl.ags.syntax.var.print_w_k
+	.coerce	gsdl.var.t.out
+	.enter	v
+
+_gsdl.ags.syntax.var.print_w_k	.forcecont
+bool.prim.u	.tygvar
+gsdl.var.prim.u	.tygvar
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+natural.t	.tygvar
+gsdl.var.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+_gsdl.ags.syntax.var.print_w_basevar_k	.subcode
+_gsdl.ags.syntax.var.print_w_constructed_f_c	.subcode
+list.t.out	.cogvar
+list.foldr	.gvar
+diff.list.<>	.gvar
+diff.list.nil	.gvar
+list.map	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+b	.fv	bool.prim.u
+v0	.karg	gsdl.var.prim.u
+	.analyze	v0	basevar	constructed
+		.case	basevar
+cs		.fkarg	0	list.t	gsdl.var.component.t
+			.force	_gsdl.ags.syntax.var.print_w_basevar_k
+			.coerce	list.t.out	gsdl.var.component.t
+			.enter	cs
+		.case	constructed
+d		.fkarg	0	natural.t
+cs		.fkarg	1	list.t	gsdl.var.t
+diff.list.rune.<>			.apply	diff.list.<>	rune.t
+diff.list.rune.nil			.apply	diff.list.nil	rune.t
+f			.alloc	_gsdl.ags.syntax.var.print_w_constructed_f_c
+cs.dss			.apply	list.map	gsdl.var.t	diff.list.rune.ty	|	f	cs
+			.app	diff.list.rune.<>	diff.list.rune.nil	cs.dss
+			.enter	list.foldr	diff.list.rune.ty	diff.list.rune.ty
+
+_gsdl.ags.syntax.var.print_w_basevar_k	.forcecont
+list.prim.u	.tygvar
+gsdl.var.component.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar	# Temp
+_gsdl.ags.syntax.var.print_w_basevar_:_f_c	.subcode
+diff.list.<>	.gvar
+gsdl.ags.syntax.var.component.print	.gvar
+list.foldr	.gvar
+diff.list.nil	.gvar
+list.map	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+cs0	.karg	list.prim.u	gsdl.var.component.t
+	.analyze	cs0	:	nil
+		.case	:
+c0		.fkarg	0	gsdl.var.component.t
+cs1		.fkarg	1	list.t	gsdl.var.component.t
+c0.ds			.apply	gsdl.ags.syntax.var.component.print	|	c0
+diff.list.rune.<>			.apply	diff.list.<>	rune.t
+diff.list.rune.nil			.apply	diff.list.nil	rune.t
+f			.alloc	_gsdl.ags.syntax.var.print_w_basevar_:_f_c
+cs1.dss			.apply	list.map	gsdl.var.component.t	diff.list.rune.ty	|	f	cs1
+cs1.ds			.apply	list.foldr	diff.list.rune.ty	diff.list.rune.ty	|	diff.list.rune.<>	diff.list.rune.nil	cs1.dss
+			.app	c0.ds	cs1.ds
+			.enter	diff.list.<>	rune.t
+		.case	nil
+			.undef	diff.list.t	rune.t
+
+_gsdl.ags.syntax.var.print_w_basevar_:_f_c	.expr
+gsdl.var.component.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+c	.larg	gsdl.var.component.t
+	.undef	diff.list.t	rune.t
+
+_gsdl.ags.syntax.var.print_w_constructed_f_c	.expr
+bool.prim.u	.tygvar
+natural.t	.tygvar
+gsdl.var.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+_gsdl.ags.syntax.var.print_w_constructed_f_ubs.ds_c	.subcode
+diff.list.<>	.gvar
+_gsdl.ags.syntax.var.print_w	.gvar
+b	.fv	bool.prim.u
+d	.fv	natural.t
+v	.larg	gsdl.var.t
+ubs.ds	.alloc	_gsdl.ags.syntax.var.print_w_constructed_f_ubs.ds_c
+false	.constr	bool.prim.u	false
+v.ds	.apply	_gsdl.ags.syntax.var.print_w	|	v	false
+	.app	ubs.ds	v.ds
+	.enter	diff.list.<>	rune.t
+
+_gsdl.ags.syntax.var.print_w_constructed_f_ubs.ds_c	.expr
+bool.prim.u	.tygvar
+natural.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar	# Temp
+diff.list.replicate	.gvar
+rune.underscore	.gvar
+b	.fv	bool.prim.u
+d	.fv	natural.t
+	.analyze	b	false	true
+		.case	false
+			.undef	diff.list.t	rune.t
+		.case	true
+			.app	d	rune.underscore
+			.enter	diff.list.replicate	rune.t
+
+# §section §gs{gsdl.ags.syntax.var.component.print}
+
+_gsdl.ags.syntax.var.component.print_c	.expr
+gsdl.var.component.t	.tygvar
+_gsdl.ags.syntax.var.component.print_k	.subcode
+gsdl.var.component.t.out	.cogvar
+c	.larg	gsdl.var.component.t
+	.force	_gsdl.ags.syntax.var.component.print_k
+	.coerce	gsdl.var.component.t.out
+	.enter	c
+
+_gsdl.ags.syntax.var.component.print_k	.forcecont
+gsdl.var.component.prim.u	.tygvar
+string.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar	# Temp
+diff.list.fromlist	.gvar
+c0	.karg	gsdl.var.component.prim.u
+	.analyze	c0	alphanum
+		.case	alphanum
+s		.fkarg	0	string.t
+			.app	s
+			.enter	diff.list.fromlist	rune.t
+	# > :: diff.list.t	rune.t
+
 # §section §gs{gsdl.ags.syntax.rune.literal}
 
 _gsdl.ags.syntax.rune.literal_c	.expr
@@ -201,3 +361,18 @@ rune.compare	.gvar
 _gsdl.ags.syntax.stringliteral_re	.gvar
 	.app	rune.compare	_gsdl.ags.syntax.stringliteral_re
 	.enter	parser.match	rune.t
+
+	.type
+
+# §section §gs{gsdl.ags.syntax.var.print}
+
+_gsdl.ags.syntax.var.print_w_ty	.tyexpr
+gsdl.var.t	.tygvar
+bool.prim.u	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	bool.prim.u
+	.tyref	diff.list.t	rune.t

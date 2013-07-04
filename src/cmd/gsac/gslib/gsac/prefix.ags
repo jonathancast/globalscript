@@ -141,7 +141,6 @@ gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-string.t	.tygvar
 maybe.t	.tygvar
 ordered.map.t	.tygvar	# Temp
 gsac.prefix.typeitem.t	.tygvar	# Temp
@@ -165,7 +164,7 @@ prfx.ti			.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	cgs.ki
 			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typeitem.t
 		.case	tyexpr
 pos		.fkarg	0	gsdl.sourcepos.t
-nm		.fkarg	1	string.t
+nm		.fkarg	1	gsdl.var.t
 mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 dfn		.fkarg	4	gsdl.ags.typeitem.expr.t

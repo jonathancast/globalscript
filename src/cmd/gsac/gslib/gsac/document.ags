@@ -3,7 +3,8 @@
 	.data
 
 gsac.document.compile	.closure	_gsac.document.compile_c
-_gsac.document.compile_right_just_ep.ty.s	.string	_ep_ty
+_gsac.document.compile_right_just_ep.s	.string	ep
+_gsac.document.compile_right_just_ty.s	.string	ty
 
 gsac.document.annotate	.closure	_gsac.document.annotate_c
 
@@ -58,23 +59,42 @@ _gsac.document.compile_right_k1	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.var.component.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.ags.file.t	.tygvar	# Temp	
+gsdl.ags.file.t	.tygvar	# Temp
+list.t	.tygvar	# Temp
 _gsac.document.compile_right_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.compileToGlobalVar	.gvar
-_gsac.document.compile_right_just_ep.ty.s	.gvar
+gsdl.var.constructed	.gvar
+natural.1	.gvar
+list.:	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_gsac.document.compile_right_just_ep.s	.gvar
+_gsac.document.compile_right_just_ty.s	.gvar
 doc0	.fv	gsdl.cgs.document.prim.u
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
 pos			.field	pos	doc0
+v.c0.c0			.apply	gsdl.var.component.alphanum	|	_gsac.document.compile_right_just_ep.s
+v.c0.cs			.apply	list.singleton	gsdl.var.component.t	|	v.c0.c0
+v.c0			.apply	gsdl.var.basevar	|	v.c0.cs
+v.c1.c0			.apply	gsdl.var.component.alphanum	|	_gsac.document.compile_right_just_ty.s
+v.c1.cs			.apply	list.singleton	gsdl.var.component.t	|	v.c1.c0
+v.c1			.apply	gsdl.var.basevar	|	v.c1.cs
+v.cs1			.apply	list.singleton	gsdl.var.t	|	v.c1
+v.cs			.apply	list.:	gsdl.var.t	|	v.c0	v.cs1
+v			.apply	gsdl.var.constructed	|	natural.1	v.cs
 			.force	_gsac.document.compile_right_just_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
-			.app	pos	_gsac.document.compile_right_just_ep.ty.s	ty
+			.app	pos	v	ty
 			.enter	gsac.gstype.compileToGlobalVar
 		.case	nothing
 			.undef	either.t	string.t	gsdl.ags.file.t
@@ -95,6 +115,7 @@ either.right	.gvar
 list.nil	.gvar
 list.singleton	.gvar
 gsdl.ags.dataitem.undefined	.gvar
+gsdl.ags.syntax.var.print	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
 diff.list.tolist	.gvar
 doc0	.fv	gsdl.cgs.document.prim.u
@@ -107,9 +128,10 @@ err		.fkarg	0	string.t
 res1		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
 pos			.field	pos	doc0
 v			.lfield	nm	res1
+v.s			.apply	gsdl.ags.syntax.var.print	|	v
 dts			.lfield	tyexprs	res1
 cs			.apply	list.nil	gsdl.ags.codeitem.t
-d			.apply	gsdl.ags.dataitem.undefined	|	pos	v
+d			.apply	gsdl.ags.dataitem.undefined	|	pos	v.s
 ds			.apply	list.singleton	gsdl.ags.dataitem.t	|	d
 ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	dts
 tcs			.apply	list.nil	gsdl.ags.coercionitem.t

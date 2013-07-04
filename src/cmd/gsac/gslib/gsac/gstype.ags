@@ -334,12 +334,12 @@ res			.lrecord		res	res0	tyexprs	tyes
 # > either.t string.t ⊕ writer.m (diff.list.t gsdl.ags.typeitem.t)
 _gsac.gstype.compileToGlobalVar_c	.expr
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.gstype.compileToGlobalVar_k	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
-nm0	.larg	string.t
+nm0	.larg	gsdl.var.t
 ty	.larg	gsdl.cgs.gstype.t
 	.force	_gsac.gstype.compileToGlobalVar_k
 	.coerce	gsdl.cgs.gstype.t.out
@@ -357,7 +357,7 @@ _gsac.gstype.compileToGlobalVar_k1	.subcode
 either.t.out	.cogvar
 _gsac.gstype.compile_w	.gvar
 pos	.fv	gsdl.sourcepos.t
-nm0	.fv	string.t
+nm0	.fv	gsdl.var.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.danalyze	ty0	var
 		.default
@@ -372,8 +372,9 @@ v		.fkarg	0	gsdl.var.t
 
 _gsac.gstype.compileToGlobalVar_k1	.forcecont
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 either.prim.u	.tygvar
+string.t	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.typeitem.t	.tygvar
@@ -387,7 +388,7 @@ diff.list.:	.gvar
 gsdl.ags.typeitem.tyexpr	.gvar
 maybe.nothing	.gvar
 pos	.fv	gsdl.sourcepos.t
-nm0	.fv	string.t
+nm0	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -520,14 +521,15 @@ tyexprs_ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 
 _gsac.gstype.compileToGlobalVar_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar
+string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 	.tylift
 	.tyfun	gsdl.sourcepos.t
 	.tylift
-	.tyfun	string.t
+	.tyfun	gsdl.var.t
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	either.t	string.t	_gsac.gstype.compileToGlobalVar_res.ty
@@ -538,11 +540,11 @@ _gsac.gstype.compileToGlobalVar_res.u	.tygvar
 	.tyref	_gsac.gstype.compileToGlobalVar_res.u
 
 _gsac.gstype.compileToGlobalVar_res.u	.tyexpr
-string.t	.tygvar
+gsdl.var.t	.tygvar
 diff.list.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 tyexprs_ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
-	.typroduct	nm	string.t	tyexprs	tyexprs_ty
+	.typroduct	nm	gsdl.var.t	tyexprs	tyexprs_ty
 
 # §section §gs{gsac.gstype.fields.compile}
 
