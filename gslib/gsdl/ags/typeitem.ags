@@ -272,12 +272,13 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 string.t	.tygvar
+rune.t	.tygvar
 list.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+diff.list.<>	.gvar
+gsdl.ags.sourcepos.print	.gvar
 diff.list.prepend	.gvar
 _gsdl.ags.typeitem.print_tyexpr.s	.gvar
-diff.list.<>	.gvar
 _gsdl.ags.typeitem.print_kindsig.print	.gvar
 gsdl.ags.typeitem.expr.print	.gvar
 ty0	.karg	gsdl.ags.typeitem.prim.u
@@ -295,12 +296,14 @@ nm		.fkarg	1	string.t
 mb.ky		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 exp		.fkarg	4	gsdl.ags.typeitem.expr.t
+pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
 mb.ky.s			.apply	_gsdl.ags.typeitem.print_kindsig.print	|	mb.ky
 exp.s			.apply	gsdl.ags.typeitem.expr.print	|	exp
 s2			.apply	diff.list.<>	rune.t	|	mb.ky.s	exp.s
 s1			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.typeitem.print_tyexpr.s	s2
-			.app	nm	s1
-			.enter	diff.list.prepend	rune.t
+s			.apply	diff.list.prepend	rune.t	|	nm	s1
+			.app	pos.s	s
+			.enter	diff.list.<>	rune.t
 	# > :: diff.list.t	rune.t
 
 _gsdl.ags.typeitem.print_kindsig.print_c	.expr
