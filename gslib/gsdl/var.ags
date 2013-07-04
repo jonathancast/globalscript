@@ -13,6 +13,7 @@ _gsdl.var.fmtgs_prefix.s	.string	gsv{
 _gsdl.var.fmtgs_suffix.s	.string	}
 
 gsdl.var.basevar	.closure	_gsdl.var.basevar_c
+gsdl.var.constructed	.closure	_gsdl.var.constructed_c
 
 gsdl.var.component.≡	.closure	_gsdl.var.component.≡_c
 
@@ -39,11 +40,17 @@ _gsdl.var.components.get_k	.forcecont
 gsdl.var.prim.u	.tygvar
 list.t	.tygvar
 gsdl.var.component.t	.tygvar
+natural.t	.tygvar
+gsdl.var.t	.tygvar
 v0	.karg	gsdl.var.prim.u
-	.analyze	v0	basevar
+	.analyze	v0	basevar	constructed
 		.case	basevar
 cs		.fkarg	0	list.t	gsdl.var.component.t
 			.enter	cs
+		.case	constructed
+d		.fkarg	0	natural.t
+cs		.fkarg	1	list.t	gsdl.var.t
+			.undef	list.t	gsdl.var.component.t
 	# > :: list.t	gsdl.var.component.t
 
 # §section §gs{gsdl.var.compare}
@@ -73,18 +80,29 @@ _gsdl.var.compare_k1	.forcecont
 gsdl.var.prim.u	.tygvar
 list.t	.tygvar
 gsdl.var.component.t	.tygvar
+natural.t	.tygvar
+gsdl.var.t	.tygvar
+order.total.ord.t	.tygvar	# Temp
 list.compare	.gvar
 gsdl.var.component.compare	.gvar
 v0.0	.fv	gsdl.var.prim.u
 v1.0	.karg	gsdl.var.prim.u
-	.analyze	v0.0	basevar
+	.analyze	v0.0	basevar	constructed
 		.case	basevar
 cs0		.fkarg	0	list.t	gsdl.var.component.t
-			.analyze	v1.0	basevar
+			.analyze	v1.0	basevar	constructed
 				.case	basevar
 cs1				.fkarg	0	list.t	gsdl.var.component.t
 					.app	gsdl.var.component.compare	cs0	cs1
 					.enter	list.compare	gsdl.var.component.t
+				.case	constructed
+d1				.fkarg	0	natural.t
+cs1				.fkarg	1	list.t	gsdl.var.t
+					.undef	order.total.ord.t
+		.case	constructed
+d0		.fkarg	0	natural.t
+cs0		.fkarg	1	list.t	gsdl.var.t
+			.undef	order.total.ord.t
 	# > :: order.total.ord.t
 
 # §section §gs{gsdl.var.≡}
@@ -114,18 +132,28 @@ _gsdl.var.≡_k1	.forcecont
 gsdl.var.prim.u	.tygvar
 list.t	.tygvar
 gsdl.var.component.t	.tygvar
+natural.t	.tygvar
+gsdl.var.t	.tygvar
+bool.t	.tygvar	# Temp
 list.≡	.gvar
 gsdl.var.component.≡	.gvar
 v0.0	.fv	gsdl.var.prim.u
 v1.0	.karg	gsdl.var.prim.u
-	.analyze	v0.0	basevar
+	.analyze	v0.0	basevar	constructed
 		.case	basevar
 cs0		.fkarg	0	list.t	gsdl.var.component.t
-			.analyze	v1.0	basevar
+			.danalyze	v1.0	basevar
+				.default
+					.undef	bool.t
 				.case	basevar
 cs1				.fkarg	0	list.t	gsdl.var.component.t
 					.app	gsdl.var.component.≡	cs0	cs1
 					.enter	list.≡	gsdl.var.component.t
+		.case	constructed
+d0		.fkarg	0	natural.t
+cs0		.fkarg	1	list.t	gsdl.var.t
+			.undef	bool.t
+		# > :: bool.t
 
 # §section §gs{gsdl.var.fmtgs}
 
@@ -156,6 +184,19 @@ gsdl.var.prim.u	.tygvar
 gsdl.var.t.in	.cogvar
 cs	.larg	list.t	gsdl.var.component.t
 c	.constr	gsdl.var.prim.u	basevar	0	cs
+	.coerce	gsdl.var.t.in
+	.lift
+	.yield	c
+
+_gsdl.var.constructed_c	.expr
+natural.t	.tygvar
+list.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.var.prim.u	.tygvar
+gsdl.var.t.in	.cogvar
+n	.larg	natural.t
+cs	.larg	list.t	gsdl.var.t
+c	.constr	gsdl.var.prim.u	constructed	0	n	1	cs
 	.coerce	gsdl.var.t.in
 	.lift
 	.yield	c
@@ -263,13 +304,27 @@ gsdl.var.prim.u	.tygvar
 
 gsdl.var.prim.u	.tyexpr
 _gsdl.var.prim.u_basevar_ty	.tygvar
-	.tysum	basevar	_gsdl.var.prim.u_basevar_ty
+_gsdl.var.prim.u_constructed_ty	.tygvar
+	.tysum	basevar	_gsdl.var.prim.u_basevar_ty	constructed	_gsdl.var.prim.u_constructed_ty
 
 _gsdl.var.prim.u_basevar_ty	.tyexpr
 list.t	.tygvar
 gsdl.var.component.t	.tygvar
 0_ty	.tylet	list.t	gsdl.var.component.t
 	.tyubproduct	0	0_ty
+
+# ↓ Invariant: Let
+# > 'depth (basevar _) = 0;
+# > 'depth (constructed 'n 'cs) = 1 + max (map depth cs);
+# then
+# > depth (constructed 'n 'cs) = n
+# by invariant
+_gsdl.var.prim.u_constructed_ty	.tyexpr
+natural.t	.tygvar
+list.t	.tygvar
+gsdl.var.t	.tygvar
+list.var.ty	.tylet	list.t	gsdl.var.t
+	.tyubproduct	0	natural.t	1	list.var.ty
 
 # §section §gs{gsdl.var.component.t}
 

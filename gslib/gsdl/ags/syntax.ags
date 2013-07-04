@@ -25,6 +25,8 @@ gsdl.ags.syntax.var	.closure	_gsdl.ags.syntax.var_c
 _gsdl.ags.syntax.var_base.p	.closure	_gsdl.ags.syntax.var_base.p_c
 _gsdl.ags.syntax.var_alphanum.re	.regex	[a-zα-ω][a-z0-9A-Z]*
 _gsdl.ags.syntax.var_dot.re	.regex	\.
+_gsdl.ags.syntax.var_underbar.p	.closure	_gsdl.ags.syntax.var_underbar.p_c
+_gsdl.ags.syntax.var_underbar.p_underbar.re	.regex	_
 
 gsdl.ags.syntax.keywords	.list	string.t	_gsdl.ags.syntax.keywords_0
 _gsdl.ags.syntax.keywords_0	.string	|
@@ -113,8 +115,13 @@ b0	.karg	bool.prim.u
 # §section §gs{gsdl.ags.syntax.var}
 
 _gsdl.ags.syntax.var_c	.expr
+rune.t	.tygvar
+gsdl.var.t	.tygvar
+parser.<|>	.gvar
 _gsdl.ags.syntax.var_base.p	.gvar
-	.enter	_gsdl.ags.syntax.var_base.p
+_gsdl.ags.syntax.var_underbar.p	.gvar
+	.app	_gsdl.ags.syntax.var_base.p	_gsdl.ags.syntax.var_underbar.p
+	.enter	parser.<|>	rune.t	gsdl.var.t
 
 _gsdl.ags.syntax.var_base.p_c	.expr
 rune.t	.tygvar
@@ -146,6 +153,34 @@ tail.p	.apply	parser.many	rune.t	gsdl.var.component.t	|	tail.p1
 base.p	.apply	parser.lift2	rune.t	gsdl.var.component.t	list.component.ty	list.component.ty	|	cons	head.p	tail.p
 	.app	gsdl.var.basevar	base.p
 	.enter	parser.map	rune.t	list.component.ty	gsdl.var.t
+
+_gsdl.ags.syntax.var_underbar.p_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.var.t	.tygvar
+string.t	.tygvar
+parser.map	.gvar
+gsdl.var.constructed	.gvar
+natural.1	.gvar
+parser.lift2	.gvar
+list.:	.gvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.syntax.var_underbar.p_underbar.re	.gvar
+_gsdl.ags.syntax.var_base.p	.gvar
+parser.many	.gvar
+parser.fail	.gvar	# Temp
+list.var.ty	.tylet	list.t	gsdl.var.t
+f	.apply	gsdl.var.constructed	|	natural.1
+cons	.apply	list.:	gsdl.var.t
+underbar.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.syntax.var_underbar.p_underbar.re
+var.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	underbar.p	_gsdl.ags.syntax.var_base.p
+vars.p2	.apply	parser.many	rune.t	gsdl.var.t	|	var.p
+vars.p1	.apply	parser.lift2	rune.t	gsdl.var.t	list.var.ty	list.var.ty	|	cons	var.p	vars.p2
+vars.p	.apply	parser.lift2	rune.t	gsdl.var.t	list.var.ty	list.var.ty	|	cons	var.p	vars.p1
+	.app	f	vars.p
+	.enter	parser.map	rune.t	list.var.ty	gsdl.var.t
 
 # §section §gs{gsdl.ags.syntax.rune.literal}
 

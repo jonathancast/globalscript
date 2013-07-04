@@ -132,15 +132,22 @@ _gsdl.cgs.syntax.var.print_k	.forcecont
 gsdl.var.prim.u	.tygvar
 list.t	.tygvar
 gsdl.var.component.t	.tygvar
+natural.t	.tygvar
+gsdl.var.t	.tygvar
+string.t	.tygvar	# Temp
 _gsdl.cgs.syntax.var.print_basevar_k	.subcode
 list.t.out	.cogvar
 v0	.karg	gsdl.var.prim.u
-	.analyze	v0	basevar
+	.analyze	v0	basevar	constructed
 		.case	basevar
 cs		.fkarg	0	list.t	gsdl.var.component.t
 			.force	_gsdl.cgs.syntax.var.print_basevar_k
 			.coerce	list.t.out	gsdl.var.component.t
 			.enter	cs
+		.case	constructed
+d		.fkarg	0	natural.t
+cs		.fkarg	1	list.t	gsdl.var.t
+			.undef	string.t
 	# > :: string.t
 
 _gsdl.cgs.syntax.var.print_basevar_k	.forcecont
