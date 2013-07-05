@@ -84,6 +84,7 @@ natural.t	.tygvar
 gsdl.var.t	.tygvar
 order.total.ord.t	.tygvar	# Temp
 _gsdl.var.compare_basevar_constructed_k	.subcode
+_gsdl.var.compare_constructed_basevar_k	.subcode
 _gsdl.var.compare_constructed_constructed_k	.subcode
 list.t.out	.cogvar
 order.total.ord.t.out	.cogvar
@@ -112,7 +113,9 @@ cs0		.fkarg	1	list.t	gsdl.var.t
 			.analyze	v1.0	basevar	constructed
 				.case	basevar
 cs1				.fkarg	0	list.t	gsdl.var.component.t
-					.undef	order.total.ord.t
+					.force	_gsdl.var.compare_constructed_basevar_k
+					.coerce	list.t.out	gsdl.var.t
+					.enter	cs0
 				.case	constructed
 d1				.fkarg	0	natural.t
 cs1				.fkarg	1	list.t	gsdl.var.t
@@ -159,6 +162,13 @@ o0	.karg	order.total.ord.prim.u
 			.yield	o0
 		.case	eq
 			.undef	order.total.ord.t
+
+_gsdl.var.compare_constructed_basevar_k	.forcecont
+list.prim.u	.tygvar
+gsdl.var.t	.tygvar
+order.total.ord.t	.tygvar	# Temp
+cs0.0	.karg	list.prim.u	gsdl.var.t
+	.undef	order.total.ord.t
 
 _gsdl.var.compare_constructed_constructed_k	.forcecont
 list.t	.tygvar
