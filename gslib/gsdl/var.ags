@@ -152,15 +152,13 @@ order.total.ord.prim.u	.tygvar
 order.total.ord.t	.tygvar
 order.total.ord.t.in	.cogvar
 o0	.karg	order.total.ord.prim.u
-	.analyze	o0	eq	gt	lt
-		.case	eq
-			.undef	order.total.ord.t
-		.case	gt
-			.undef	order.total.ord.t
-		.case	lt
+	.danalyze	o0	eq
+		.default
 			.coerce	order.total.ord.t.in
 			.lift
 			.yield	o0
+		.case	eq
+			.undef	order.total.ord.t
 
 _gsdl.var.compare_constructed_constructed_k	.forcecont
 list.t	.tygvar
