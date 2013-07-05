@@ -69,7 +69,7 @@ _ordered.set.elem_branch_k	.forcecont
 order.total.t	.tygvar
 ordered.set.t	.tygvar
 order.total.ord.prim.u	.tygvar
-bool.t	.tygvar	# Temp
+bool.true	.gvar
 ordered.set.elem	.gvar
 α	.tyfv	*
 cmp	.fv	order.total.t	α
@@ -79,7 +79,7 @@ sr	.fv	ordered.set.t	α
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
 		.case	eq
-			.undef	bool.t
+			.enter	bool.true
 		.case	gt
 			.app	cmp	x	sr
 			.enter	ordered.set.elem	α
