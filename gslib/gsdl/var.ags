@@ -83,7 +83,9 @@ gsdl.var.component.t	.tygvar
 natural.t	.tygvar
 gsdl.var.t	.tygvar
 order.total.ord.t	.tygvar	# Temp
+_gsdl.var.compare_basevar_constructed_k	.subcode
 _gsdl.var.compare_constructed_constructed_k	.subcode
+list.t.out	.cogvar
 order.total.ord.t.out	.cogvar
 list.compare	.gvar
 gsdl.var.component.compare	.gvar
@@ -101,7 +103,9 @@ cs1				.fkarg	0	list.t	gsdl.var.component.t
 				.case	constructed
 d1				.fkarg	0	natural.t
 cs1				.fkarg	1	list.t	gsdl.var.t
-					.undef	order.total.ord.t
+					.force	_gsdl.var.compare_basevar_constructed_k
+					.coerce	list.t.out	gsdl.var.t
+					.enter	cs1
 		.case	constructed
 d0		.fkarg	0	natural.t
 cs0		.fkarg	1	list.t	gsdl.var.t
@@ -117,6 +121,46 @@ cs1				.fkarg	1	list.t	gsdl.var.t
 					.app	d0	d1
 					.enter	natural.compare
 	# > :: order.total.ord.t
+
+_gsdl.var.compare_basevar_constructed_k	.forcecont
+gsdl.var.prim.u	.tygvar
+list.prim.u	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
+order.total.ord.t	.tygvar	# Temp
+_gsdl.var.compare_basevar_constructed_:_k	.subcode
+gsdl.var.t.in	.cogvar
+order.total.ord.t.out	.cogvar
+gsdl.var.compare	.gvar
+v0.0	.fv	gsdl.var.prim.u
+cs1.0	.karg	list.prim.u	gsdl.var.t
+	.analyze	cs1.0	:	nil
+		.case	:
+c1.0		.fkarg	0	gsdl.var.t
+cs1.1		.fkarg	1	list.t	gsdl.var.t
+v0.l			.lifted	v0.0
+v0.lc			.cast	v0.l	gsdl.var.t.in
+			.force	_gsdl.var.compare_basevar_constructed_:_k
+			.coerce	order.total.ord.t.out
+			.app	v0.lc	c1.0
+			.enter	gsdl.var.compare
+		.case	nil
+			.undef	order.total.ord.t
+
+_gsdl.var.compare_basevar_constructed_:_k	.forcecont
+order.total.ord.prim.u	.tygvar
+order.total.ord.t	.tygvar
+order.total.ord.t.in	.cogvar
+o0	.karg	order.total.ord.prim.u
+	.analyze	o0	eq	gt	lt
+		.case	eq
+			.undef	order.total.ord.t
+		.case	gt
+			.undef	order.total.ord.t
+		.case	lt
+			.coerce	order.total.ord.t.in
+			.lift
+			.yield	o0
 
 _gsdl.var.compare_constructed_constructed_k	.forcecont
 list.t	.tygvar
