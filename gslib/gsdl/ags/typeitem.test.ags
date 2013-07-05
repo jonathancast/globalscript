@@ -295,8 +295,17 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.a
 
 _test.parse.tydefinedprim_k_c	.expr
 gsdl.ags.typeitem.t	.tygvar
+_test.parse.tydefinedprim_k_k	.subcode
+gsdl.ags.typeitem.t.out	.cogvar
+ti	.larg	gsdl.ags.typeitem.t
+	.force	_test.parse.tydefinedprim_k_k
+	.coerce	gsdl.ags.typeitem.t.out
+	.enter	ti
+
+_test.parse.tydefinedprim_k_k	.forcecont
+gsdl.ags.typeitem.prim.u	.tygvar
 test.true	.gvar
-ki	.larg	gsdl.ags.typeitem.t
+ti0	.karg	gsdl.ags.typeitem.prim.u
 	.enter	test.true
 
 # §section §gs{qq{\\t.tyfun\\tibio.prim.iport\\tι\\n\\t.tyref\\tibio.prim.m\\n} =~ expr.parser}
