@@ -15,11 +15,17 @@ test-interpreted:V: interpreted
 integration-test-interpreted:V: interpreted test-interpreted
 	./rc/test-interpreted
 
-install-interpreted:V: interpreted test-interpreted
+install-interpreted:V: interpreted test-interpreted $GLOBALSCRIPT/bin/gsac $GLOBALSCRIPT/bin/gsac-targets $GLOBALSCRIPT/bin/gsac-deps
+
+$GLOBALSCRIPT/bin/gsac: gsac.rc interpreted test-interpreted
 	cp gsac.rc $GLOBALSCRIPT/bin/gsac
 	chmod a+x $GLOBALSCRIPT/bin/gsac
+
+$GLOBALSCRIPT/bin/gsac-targets: gsac-targets.rc interpreted test-interpreted
 	cp gsac-targets.rc $GLOBALSCRIPT/bin/gsac-targets
 	chmod a+x $GLOBALSCRIPT/bin/gsac-targets
+
+$GLOBALSCRIPT/bin/gsac-deps: gsac-deps.rc interpreted test-interpreted
 	cp gsac-deps.rc $GLOBALSCRIPT/bin/gsac-deps
 	chmod a+x $GLOBALSCRIPT/bin/gsac-deps
 
