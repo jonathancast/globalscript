@@ -68,13 +68,13 @@ x0	.karg	rune.prim.rune
 _rune.≡.k1	.forcecont
 bool.t	.tygvar
 rune.prim.rune	.tygvar
-_rune.prim.eq.t	.tygvar
+_rune.prim.eq_ty	.tygvar
 _rune.≡.k1.0	.subcode
 _rune.≡.k1.1	.subcode
 x0	.fv	rune.prim.rune
 y0	.karg	rune.prim.rune
 	.ubanalyze	0	_rune.≡.k1.0	1	_rune.≡.k1.1
-	.ubprim	rune.prim	eq	_rune.prim.eq.t	|	x0	y0
+	.ubprim	rune.prim	eq	_rune.prim.eq_ty	|	x0	y0
 
 _rune.≡.k1.0	.ubcasecont
 bool.false	.gvar
@@ -109,23 +109,23 @@ r0.0	.karg	rune.prim.rune
 
 _rune.compare_k1	.forcecont
 rune.prim.rune	.tygvar
-_rune.prim.gt.t	.tygvar
+_rune.prim.gt_ty	.tygvar
 _rune.compare_≯_k	.subcode
 _rune.compare_>_k	.subcode
 r0.0	.fv	rune.prim.rune
 r1.0	.karg	rune.prim.rune
 	.ubanalyze	0	_rune.compare_≯_k	1	_rune.compare_>_k
-	.ubprim	rune.prim	gt	_rune.prim.gt.t	|	r0.0	r1.0
+	.ubprim	rune.prim	gt	_rune.prim.gt_ty	|	r0.0	r1.0
 
 _rune.compare_≯_k	.ubcasecont
 rune.prim.rune	.tygvar
-_rune.prim.lt.t	.tygvar
+_rune.prim.lt_ty	.tygvar
 _rune.compare_≯_≮_k	.subcode
 _rune.compare_<_k	.subcode
 r0.0	.fv	rune.prim.rune
 r1.0	.fv	rune.prim.rune
 	.ubanalyze	0	_rune.compare_≯_≮_k	1	_rune.compare_<_k
-	.ubprim	rune.prim	lt	_rune.prim.lt.t	|	r0.0	r1.0
+	.ubprim	rune.prim	lt	_rune.prim.lt_ty	|	r0.0	r1.0
 
 _rune.compare_≯_≮_k	.ubcasecont
 order.total.ord.eq	.gvar
@@ -419,40 +419,40 @@ rune.prim.rune	.tydefinedprim	rune.prim	rune	u
 
 # §section §gs{rune.<}
 
-_rune.prim.lt.t	.tyexpr
+_rune.prim.lt_ty	.tyexpr
 rune.prim.rune	.tygvar
-_rune.prim.lt.res.t	.tygvar
+_rune.prim.lt_res.ty	.tygvar
 	.tyfun	rune.prim.rune
 	.tyfun	rune.prim.rune
-	.tyref	_rune.prim.lt.res.t
+	.tyref	_rune.prim.lt_res.ty
 
-_rune.prim.lt.res.t	.tyexpr
+_rune.prim.lt_res.ty	.tyexpr
 record.unboxed.empty	.tygvar
 	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
 
 # §section §gs{rune.≡}
 
-_rune.prim.eq.t	.tyexpr
+_rune.prim.eq_ty	.tyexpr
 rune.prim.rune	.tygvar
-_rune.prim.eq.res.t	.tygvar
+_rune.prim.eq_res.ty	.tygvar
 	.tyfun	rune.prim.rune
 	.tyfun	rune.prim.rune
-	.tyref	_rune.prim.eq.res.t
+	.tyref	_rune.prim.eq_res.ty
 
-_rune.prim.eq.res.t	.tyexpr
+_rune.prim.eq_res.ty	.tyexpr
 record.unboxed.empty	.tygvar
 	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
 
 # §section §gs{rune.>}
 
-_rune.prim.gt.t	.tyexpr
+_rune.prim.gt_ty	.tyexpr
 rune.prim.rune	.tygvar
-_rune.prim.gt.res.t	.tygvar
+_rune.prim.gt_res.ty	.tygvar
 	.tyfun	rune.prim.rune
 	.tyfun	rune.prim.rune
-	.tyref	_rune.prim.gt.res.t
+	.tyref	_rune.prim.gt_res.ty
 
-_rune.prim.gt.res.t	.tyexpr
+_rune.prim.gt_res.ty	.tyexpr
 record.unboxed.empty	.tygvar
 	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
 
