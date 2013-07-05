@@ -160,12 +160,13 @@ rune.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 string.t	.tygvar
 parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 _gsdl.ags.typeitem.parser_tydefinedprim.p_f_c	.subcode
 parser.<*	.gvar
 parser.lift5	.gvar
 parser.pos.get	.gvar
-gsdl.ags.syntax.id	.gvar
+gsdl.ags.syntax.var	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -177,24 +178,24 @@ parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.ags.typeitem.parser_tydefinedprim.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 tydefinedprim.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.parser_tydefinedprim.p_tydefinedprim.re
-primset.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-primset.p1	.apply	parser.*>	rune.t	string.t	string.t	|	tydefinedprim.p	primset.p2
-primset.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	primset.p1
-primnm.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+primset.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
+primset.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	tydefinedprim.p	primset.p2
+primset.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	primset.p1
+primnm.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
 kind.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.typeitem.gskind.parser
-p	.apply	parser.lift5	rune.t	parser.pos.t	string.t	string.t	string.t	gsdl.ags.typeitem.gskind.t	gsdl.ags.typeitem.t	|	f	pos.get	gsdl.ags.syntax.id	primset.p	primnm.p	kind.p
+p	.apply	parser.lift5	rune.t	parser.pos.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	gsdl.ags.typeitem.gskind.t	gsdl.ags.typeitem.t	|	f	pos.get	gsdl.ags.syntax.var	primset.p	primnm.p	kind.p
 	.app	p	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.typeitem.t	string.t
 
 _gsdl.ags.typeitem.parser_tydefinedprim.p_f_c	.expr
 parser.pos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar	# Temp
 pos	.larg	parser.pos.t
-nm	.larg	string.t
-primset	.larg	string.t
-primnm	.larg	string.t
+nm	.larg	gsdl.var.t
+primset	.larg	gsdl.var.t
+primnm	.larg	gsdl.var.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
 	.undef	gsdl.ags.typeitem.t
 
