@@ -550,10 +550,11 @@ _real.entry_prefix_ty	.tygvar
 list.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 bool.prim.u	.tygvar
-ibio.prim.t	.tygvar	# Temp
 _prefix.load.var_w_false_k	.subcode
 list.t.out	.cogvar
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
+ibio.prim.unit	.gvar
+list.:	.gvar
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty
 eo	.fv	ibio.prim.oport	rune.t
 v	.fv	gsdl.cgs.symbol.t
 pr0	.fv	_real.entry_prefix_ty
@@ -567,7 +568,10 @@ b0	.karg	bool.prim.u	# Is §gs{v} already loaded?
 			.coerce	list.t.out	_prefix.load.var_w_file_ty
 			.enter	files
 		.case	true
-			.undef	ibio.prim.t	list.prefix.ty
+prny			.apply	list.:	_real.entry_prefix_ty	|	pr0	prn1
+			.lift
+			.app	prny
+			.yield	ibio.prim.unit	list.prefix.ty
 
 # §paragraph{Variable has not been loaded; branch on whether §gs{files} has been exhausted or not}
 _prefix.load.var_w_false_k	.forcecont
