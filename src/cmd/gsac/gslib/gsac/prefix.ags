@@ -168,14 +168,14 @@ v		.fkarg	1	gsdl.var.t
 prims		.fkarg	2	gsdl.var.t
 primnm		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
-			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.typeitem.t
+			.enter	ts0	# TODO
 		.case	tyexpr
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	gsdl.var.t
 mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 dfn		.fkarg	4	gsdl.ags.typeitem.expr.t
-			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.typeitem.t
+			.enter	ts0	# TODO
 	# > :: ordered.map.t	gsdl.var.t	gsac.prefix.typeitem.t
 
 # §section §gs{gsac.prefix.typecheck}
