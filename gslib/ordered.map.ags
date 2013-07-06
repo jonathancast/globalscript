@@ -6,7 +6,7 @@
 	.data
 
 ordered.map.empty	.closure	_ordered.map.empty_c
-ordered.map.insert	.closure	_ordered.map.insert_c
+ordered.map.insert	.closure	_ordered.map.insert_c	_ordered.map.insert_ty
 ordered.map.get	.closure	_ordered.map.get_c	_ordered.map.get_ty
 ordered.map.∪	.closure	_ordered.map.∪_c	_ordered.map.∪_ty
 
@@ -50,12 +50,16 @@ map	.larg	ordered.map.t	k	v
 	.enter	map
 
 _ordered.map.insert_k	.forcecont
+order.total.t	.tygvar
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
+_ordered.map.insert_branch_k	.subcode
+order.total.ord.t.out	.cogvar
 ordered.map.prim.branch	.gvar
 ordered.map.empty	.gvar
 k	.tyfv	*
 v	.tyfv	*
+cmp	.fv	order.total.t	k
 k	.fv	k
 v	.fv	v
 map.0	.karg	ordered.map.prim.u	k	v
@@ -65,12 +69,41 @@ k1		.fkarg	0	k
 v1		.fkarg	1	v
 map.l		.fkarg	2	ordered.map.t	k	v
 map.r		.fkarg	3	ordered.map.t	k	v
-			.undef	ordered.map.t	k	v
+			.force	_ordered.map.insert_branch_k
+			.coerce	order.total.ord.t.out
+			.app	k	k1
+			.enter	cmp
 		.case	empty
 empty			.apply	ordered.map.empty	k	v
 			.app	k	v	empty	empty
 			.enter	ordered.map.prim.branch	k	v
 	# > ordered.map.t	k	v
+
+_ordered.map.insert_branch_k	.forcecont
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+order.total.ord.prim.u	.tygvar
+ordered.map.prim.branch	.gvar
+ordered.map.insert	.gvar
+k	.tyfv	*
+v	.tyfv	*
+cmp	.fv	order.total.t	k
+k	.fv	k
+v	.fv	v
+k1	.fv	k
+v1	.fv	v
+map.l	.fv	ordered.map.t	k	v
+map.r	.fv	ordered.map.t	k	v
+o0	.karg	order.total.ord.prim.u
+	.analyze	o0	eq	gt	lt
+		.case	eq
+			.undef	ordered.map.t	k	v
+		.case	gt
+map.r1			.apply	ordered.map.insert	k	v	|	cmp	k	v	map.r
+			.app	k1	v1	map.l	map.r1
+			.enter	ordered.map.prim.branch	k	v
+		.case	lt
+			.undef	ordered.map.t	k	v
 
 # §section §gs{ordered.map.get}
 
@@ -338,6 +371,23 @@ map_ty	.tylet	ordered.map.t	k	v
 
 _ordered.map.prim.u_empty_ty	.tyexpr
 	.tyubproduct
+
+# §section §gs{ordered.map.insert}
+
+_ordered.map.insert_ty	.tyexpr
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+k	.tyforall	*
+v	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	k
+	.tylift
+	.tyfun	k
+	.tylift
+	.tyfun	v
+	.tylift
+	.tyfun	ordered.map.t	k	v
+	.tyref	ordered.map.t	k	v
 
 # §section §gs{ordered.map.get}
 
