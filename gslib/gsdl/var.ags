@@ -164,11 +164,42 @@ o0	.karg	order.total.ord.prim.u
 			.undef	order.total.ord.t
 
 _gsdl.var.compare_constructed_basevar_k	.forcecont
+gsdl.var.prim.u	.tygvar
 list.prim.u	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 order.total.ord.t	.tygvar	# Temp
+_gsdl.var.compare_constructed_basevar_:_k	.subcode
+gsdl.var.t.in	.cogvar
+order.total.ord.t.out	.cogvar
+gsdl.var.compare	.gvar
+v1.0	.fv	gsdl.var.prim.u
 cs0.0	.karg	list.prim.u	gsdl.var.t
-	.undef	order.total.ord.t
+	.analyze	cs0.0	:	nil
+		.case	:
+v0.c0		.fkarg	0	gsdl.var.t
+v0.cs1		.fkarg	1	list.t	gsdl.var.t
+v1.l			.lifted	v1.0
+v1.cl			.cast	v1.l	gsdl.var.t.in
+			.force	_gsdl.var.compare_constructed_basevar_:_k
+			.coerce	order.total.ord.t.out
+			.app	v0.c0	v1.cl
+			.enter	gsdl.var.compare
+		.case	nil
+			.undef	order.total.ord.t
+
+_gsdl.var.compare_constructed_basevar_:_k	.forcecont
+order.total.ord.prim.u	.tygvar
+order.total.ord.t	.tygvar	# Temp
+order.total.ord.t.in	.cogvar
+o0	.karg	order.total.ord.prim.u
+	.danalyze	o0	eq
+		.default
+			.coerce	order.total.ord.t.in
+			.lift
+			.yield	o0
+		.case	eq
+			.undef	order.total.ord.t
 
 _gsdl.var.compare_constructed_constructed_k	.forcecont
 list.t	.tygvar
