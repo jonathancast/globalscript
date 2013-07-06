@@ -210,7 +210,7 @@ list.compare	.gvar
 gsdl.var.compare	.gvar
 cs0	.fv	list.t	gsdl.var.t
 cs1	.fv	list.t	gsdl.var.t
-o0	.karg	order.total.ord.prim.u
+o0	.karg	order.total.ord.prim.u	# §gs{depth v0 `compare` depth v1}
 	.analyze	o0	eq	gt	lt
 		.case	eq
 			.app	gsdl.var.compare	cs0	cs1
