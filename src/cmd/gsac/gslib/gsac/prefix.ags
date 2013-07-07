@@ -431,10 +431,45 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 
 _gsac.prefix.item.deps_c	.expr
 gsac.prefix.item.t	.tygvar
-list.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
+_gsac.prefix.item.deps_k	.subcode
+gsac.prefix.item.t.out	.cogvar
 it	.larg	gsac.prefix.item.t
-	.undef	list.t	gsdl.cgs.symbol.t
+	.force	_gsac.prefix.item.deps_k
+	.coerce	gsac.prefix.item.t.out
+	.enter	it
+
+_gsac.prefix.item.deps_k	.forcecont
+gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.typeitem.t	.tygvar
+list.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	# Temp
+_gsac.prefix.item.deps_typeitem_k	.subcode
+gsac.prefix.typeitem.t.out	.cogvar
+it0	.karg	gsac.prefix.item.prim.u
+	.analyze	it0	typeitem
+		.case	typeitem
+ti		.fkarg	0	gsac.prefix.typeitem.t
+			.force	_gsac.prefix.item.deps_typeitem_k
+			.coerce	gsac.prefix.typeitem.t.out
+			.enter	ti
+	# > :: list.t	gsdl.cgs.symbol.t
+
+_gsac.prefix.item.deps_typeitem_k	.forcecont
+gsac.prefix.typeitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+list.t	.tygvar	# Temp
+list.nil	.gvar
+ti0	.karg	gsac.prefix.typeitem.prim.u
+	.analyze	ti0	gsabstypenm
+		.case	gsabstypenm
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.enter	list.nil	gsdl.cgs.symbol.t
+	# > :: list.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsac.prefix.item.≡}
 
