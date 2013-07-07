@@ -315,10 +315,15 @@ pr	.larg	gsac.prefix.t
 
 _gsac.prefix.get_k0	.forcecont
 gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.var.t	.tygvar
 maybe.t	.tygvar	# Temp
 gsac.prefix.item.t	.tygvar	# Temp
-sym	.karg	gsdl.cgs.symbol.prim.u
-	.undef	maybe.t	gsac.prefix.item.t
+sym0	.karg	gsdl.cgs.symbol.prim.u
+	.analyze	sym0	tyvar
+		.case	tyvar
+v		.fkarg	0	gsdl.var.t
+			.undef	maybe.t	gsac.prefix.item.t
+	# > :: maybe.t	gsac.prefix.item.t
 
 # §section §gs{gsac.prefix.gskind.upconvert}
 
