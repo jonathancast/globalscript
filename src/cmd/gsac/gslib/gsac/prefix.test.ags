@@ -4,7 +4,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype	_test_item	_test_file.add
+_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype	_test_item	_test_item.name	_test_file.add
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
@@ -35,6 +35,11 @@ _test_item_eq_diff.kind_label	.string	item.gsabstype\snm\slifted\s≡\sitem.gsab
 _test_item_eq_diff.kind_false	.string	item.gsabstype\snm\slifted\s≠\sitem.gsabstype\snm\sunlifted
 _test_item_eq_diff.kind_true	.string	item.gsabstype\snm\slifted\s≡\sitem.gsabstype\snm\sunlifted
 _test_item_eq_diff.kind_x.s	.string	x
+
+_test_item.name	.closure	_test_item.name_c
+_test_item.name_label	.string	item.name
+
+_tests_item.name	.list	test.property.t
 
 _test_file.add	.closure	_test_file.add_c
 _test_file.add_label	.string	file.add
@@ -219,6 +224,17 @@ absty.u	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.unlifted
 eq	.apply	gsac.prefix.typeitem.≡	|	absty.l	absty.u
 test	.apply	test.deny	|	_test_item_eq_diff.kind_false	_test_item_eq_diff.kind_true	eq
 	.app	_test_item_eq_diff.kind_label	test
+	.enter	test.property.label
+
+# §section §gs{item.name}
+
+_test_item.name_c	.expr
+test.property.label	.gvar
+_test_item.name_label	.gvar
+test.all	.gvar
+_tests_item.name	.gvar
+test	.apply	test.all	|	_tests_item.name
+	.app	_test_item.name_label	test
 	.enter	test.property.label
 
 # §section §gs{prefix.add.file} Tests
