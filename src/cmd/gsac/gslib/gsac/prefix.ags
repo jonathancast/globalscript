@@ -373,13 +373,15 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
+gsdl.cgs.symbol.tyvar	.gvar
 ti0	.karg	gsac.prefix.typeitem.prim.u
 	.analyze	ti0	gsabstypenm
 		.case	gsabstypenm
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-			.undef	gsdl.cgs.symbol.t
+			.app	v
+			.yield	gsdl.cgs.symbol.tyvar
 	# > :: gsdl.cgs.symbol.t
 
 # §section §gs{gsac.prefix.item.≡}

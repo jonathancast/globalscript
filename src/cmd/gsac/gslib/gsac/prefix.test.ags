@@ -39,7 +39,11 @@ _test_item_eq_diff.kind_x.s	.string	x
 _test_item.name	.closure	_test_item.name_c
 _test_item.name_label	.string	item.name
 
-_tests_item.name	.list	test.property.t
+_tests_item.name	.list	test.property.t	_tests_item.name_gsabstypenm
+
+_tests_item.name_gsabstypenm	.closure	_tests_item.name_gsabstypenm_c
+_tests_item.name_gsabstypenm_label	.string	item.name\sgsabstypenm
+_tests_item.name_gsabstypenm_x.s	.string	x
 
 _test_file.add	.closure	_test_file.add_c
 _test_file.add_label	.string	file.add
@@ -235,6 +239,39 @@ test.all	.gvar
 _tests_item.name	.gvar
 test	.apply	test.all	|	_tests_item.name
 	.app	_test_item.name_label	test
+	.enter	test.property.label
+
+# §subsection §gs{item.name (gsabstypenm _ _ _)}
+
+_tests_item.name_gsabstypenm_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+test.property.label	.gvar
+_tests_item.name_gsabstypenm_label	.gvar
+test.assert.eq	.gvar
+gsdl.cgs.symbol.≡	.gvar
+gsdl.cgs.symbol.fmtgs	.gvar
+gsac.prefix.item.name	.gvar
+gsac.prefix.item.typeitem	.gvar
+gsac.prefix.typeitem.gsabstypenm	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_tests_item.name_gsabstypenm_x.s	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
+pos	.undefined	gsdl.sourcepos.t
+v.c0	.apply	gsdl.var.component.alphanum	|	_tests_item.name_gsabstypenm_x.s
+v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
+v	.apply	gsdl.var.basevar	|	v.cs
+ki	.undefined	gsdl.cgs.gskind.t
+ti	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	ki
+it	.apply	gsac.prefix.item.typeitem	|	ti
+actual	.apply	gsac.prefix.item.name	|	it
+expected	.apply	gsdl.cgs.symbol.tyvar	|	v
+test	.apply	test.assert.eq	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.≡	gsdl.cgs.symbol.fmtgs	actual	expected
+	.app	_tests_item.name_gsabstypenm_label	test
 	.enter	test.property.label
 
 # §section §gs{prefix.add.file} Tests
