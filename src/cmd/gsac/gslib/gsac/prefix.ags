@@ -348,13 +348,17 @@ ts			.field	typesection	pr0
 _gsac.prefix.get_tyvar_k	.forcecont
 maybe.prim.u	.tygvar
 gsac.prefix.typeitem.t	.tygvar
+gsac.prefix.item.t	.tygvar
 maybe.t	.tygvar	# Temp
-gsac.prefix.item.t	.tygvar	# Temp
+maybe.just	.gvar
+gsac.prefix.item.typeitem	.gvar
 mb0	.karg	maybe.prim.u	gsac.prefix.typeitem.t
 	.analyze	mb0	just	nothing
 		.case	just
 ti		.fkarg	0	gsac.prefix.typeitem.t
-			.undef	maybe.t	gsac.prefix.item.t
+it			.apply	gsac.prefix.item.typeitem	|	ti
+			.app	it
+			.yield	maybe.just	gsac.prefix.item.t
 		.case	nothing
 			.undef	maybe.t	gsac.prefix.item.t
 
