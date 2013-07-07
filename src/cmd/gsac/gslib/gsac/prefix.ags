@@ -190,11 +190,11 @@ gsac.prefix.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
-order.total.t	.tygvar	# Temp
 _gsac.prefix.typecheck_get_c	.subcode
 _gsac.prefix.typecheck_k	.subcode
 list.t.out	.cogvar
 graph.tsort	.gvar
+gsdl.cgs.symbol.compare	.gvar
 gsac.prefix.item.deps	.gvar
 list.map	.gvar
 gsac.prefix.item.name	.gvar
@@ -202,13 +202,12 @@ gsac.prefix.items	.gvar
 scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
 env	.larg	gsdl.cgs.typeenv.t
 pr	.larg	gsac.prefix.t
-ord	.undefined	order.total.t	gsdl.cgs.symbol.t
 get	.alloc	_gsac.prefix.typecheck_get_c
 pr.items	.apply	gsac.prefix.items	|	pr
 items	.apply	list.map	gsac.prefix.item.t	gsdl.cgs.symbol.t	|	gsac.prefix.item.name	pr.items
 	.force	_gsac.prefix.typecheck_k
 	.coerce	list.t.out	scc.item.ty
-	.app	ord	gsac.prefix.item.deps	get	items
+	.app	gsdl.cgs.symbol.compare	gsac.prefix.item.deps	get	items
 	.enter	graph.tsort	gsdl.cgs.symbol.t	gsac.prefix.item.t
 
 _gsac.prefix.typecheck_get_c	.expr
