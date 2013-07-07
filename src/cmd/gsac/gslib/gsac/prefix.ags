@@ -202,10 +202,6 @@ ord	.undefined	order.total.t	gsdl.cgs.symbol.t
 deps	.undefined	graph.dependencies.t	gsdl.cgs.symbol.t	gsac.prefix.item.t
 get	.alloc	_gsac.prefix.typecheck_get_c
 pr.items	.apply	gsac.prefix.items	|	pr
-	# TODO: Data items
-	# TODO: Type items
-	# TODO: Coercion items
-	# NB: No code items; those aren't roots as they aren't part of the public interface.  End NB
 items	.apply	list.map	gsac.prefix.item.t	gsdl.cgs.symbol.t	|	gsac.prefix.item.name	pr.items
 	.force	_gsac.prefix.typecheck_k
 	.coerce	list.t.out	scc.item.ty
