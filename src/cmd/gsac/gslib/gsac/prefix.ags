@@ -42,6 +42,8 @@ gsac.prefix.gskind.upconvert	.closure	_gsac.prefix.gskind.upconvert_c
 
 gsac.prefix.item.name	.closure	_gsac.prefix.item.name_c
 
+gsac.prefix.item.deps	.closure	_gsac.prefix.item.deps_c
+
 gsac.prefix.item.≡	.closure	_gsac.prefix.item.≡_c
 
 gsac.prefix.item.fmtgs	.closure	_gsac.prefix.item.fmtgs_c
@@ -189,11 +191,11 @@ gsdl.cgs.symbol.t	.tygvar
 graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
 order.total.t	.tygvar	# Temp
-_gsac.prefix.typecheck_deps_c	.subcode
 _gsac.prefix.typecheck_get_c	.subcode
 _gsac.prefix.typecheck_k	.subcode
 list.t.out	.cogvar
 graph.tsort	.gvar
+gsac.prefix.item.deps	.gvar
 list.map	.gvar
 gsac.prefix.item.name	.gvar
 gsac.prefix.items	.gvar
@@ -201,21 +203,13 @@ scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
 env	.larg	gsdl.cgs.typeenv.t
 pr	.larg	gsac.prefix.t
 ord	.undefined	order.total.t	gsdl.cgs.symbol.t
-deps	.alloc	_gsac.prefix.typecheck_deps_c
 get	.alloc	_gsac.prefix.typecheck_get_c
 pr.items	.apply	gsac.prefix.items	|	pr
 items	.apply	list.map	gsac.prefix.item.t	gsdl.cgs.symbol.t	|	gsac.prefix.item.name	pr.items
 	.force	_gsac.prefix.typecheck_k
 	.coerce	list.t.out	scc.item.ty
-	.app	ord	deps	get	items
+	.app	ord	gsac.prefix.item.deps	get	items
 	.enter	graph.tsort	gsdl.cgs.symbol.t	gsac.prefix.item.t
-
-_gsac.prefix.typecheck_deps_c	.expr
-gsac.prefix.item.t	.tygvar
-list.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-it	.larg	gsac.prefix.item.t
-	.undef	list.t	gsdl.cgs.symbol.t
 
 _gsac.prefix.typecheck_get_c	.expr
 gsac.prefix.t	.tygvar
@@ -432,6 +426,15 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 			.app	v
 			.yield	gsdl.cgs.symbol.tyvar
 	# > :: gsdl.cgs.symbol.t
+
+# §section §gs{gsac.prefix.item.deps}
+
+_gsac.prefix.item.deps_c	.expr
+gsac.prefix.item.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+it	.larg	gsac.prefix.item.t
+	.undef	list.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsac.prefix.item.≡}
 
