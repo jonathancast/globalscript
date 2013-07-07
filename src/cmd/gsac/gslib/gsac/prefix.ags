@@ -211,10 +211,13 @@ items	.apply	list.map	gsac.prefix.item.t	gsdl.cgs.symbol.t	|	gsac.prefix.item.na
 	.enter	graph.tsort	gsdl.cgs.symbol.t	gsac.prefix.item.t
 
 _gsac.prefix.typecheck_get_c	.expr
-graph.lookup.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
-gsac.prefix.item.t	.tygvar	# Temp
-	.undef	graph.lookup.t	gsdl.cgs.symbol.t	gsac.prefix.item.t
+gsac.prefix.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+gsac.prefix.get	.gvar
+pr	.fv	gsac.prefix.t
+sym	.larg	gsdl.cgs.symbol.t
+	.app	sym	pr
+	.enter	gsac.prefix.get
 
 _gsac.prefix.typecheck_k	.forcecont
 list.prim.u	.tygvar
