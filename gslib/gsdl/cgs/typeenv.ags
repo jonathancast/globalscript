@@ -19,10 +19,27 @@ _gsdl.cgs.typeenv.gskind.set_c	.expr
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.gskind.set_k	.subcode
 v	.larg	gsdl.var.t
 ki	.larg	gsdl.cgs.gskind.t
 env	.larg	gsdl.cgs.typeenv.t
-	.undef	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.gskind.set_k
+	.enter	env
+
+_gsdl.cgs.typeenv.gskind.set_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+v	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+env0	.karg	gsdl.cgs.typeenv.u
+ks0	.field	kinds	env0
+ks1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	ks0
+r	.record	kinds	ks1	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
 
 # §section §gs{gsdl.cgs.typeenv.gskind.get}
 
