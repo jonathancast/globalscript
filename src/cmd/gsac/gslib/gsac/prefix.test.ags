@@ -4,7 +4,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype	_test_item	_test_item.name	_test_file.add
+_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype	_test_item	_test_item.name	_test_file.add	_test.typecheck_gsabstype
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
@@ -56,6 +56,12 @@ _test_file.add_gsdocument_label	.string	file.add\signores\sdocuments
 _test_file.add_gsabstype	.closure	_test_file.add_gsabstype_c
 _test_file.add_gsabstype_label	.string	file.add\scan\sreturn\sa\sgsabstype
 _test_file.add_gsabstype_x.s	.string	x
+
+_test.typecheck_gsabstype	.closure	_test.typecheck_gsabstype_c
+_test.typecheck_gsabstype_label	.string	prefix.typecheck\scan\sreturn\skinds
+_test.typecheck_gsabstype_test_ty.s	.string	ty
+_test.typecheck_gsabstype_test_left_prefix.s	.string	prefix.typecheck\sfailed:\s
+_test.typecheck_gsabstype_test_right_nothing_failed.s	.string	gskind.get\sfailed
 
 _fixtures.filenm	.closure	_fixtures.filenm_c
 _fixtures.filenm_s	.string	./foo.cgs
@@ -383,6 +389,87 @@ expected	.apply	list.singleton	gsac.prefix.item.t | 	absty
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
 	.app	_test_file.add_gsabstype_label	test
 	.enter	test.property.label
+
+# §section §gs{prefix.typecheck} can return the kind of an abstract type
+
+_test.typecheck_gsabstype_c	.expr
+_test.typecheck_gsabstype_test_c	.subcode
+test.property.label	.gvar
+_test.typecheck_gsabstype_label	.gvar
+test	.alloc	_test.typecheck_gsabstype_test_c
+	.app	_test.typecheck_gsabstype_label	test
+	.enter	test.property.label
+
+_test.typecheck_gsabstype_test_c	.expr
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.component.t	.tygvar
+_test.typecheck_gsabstype_test_k	.subcode
+either.t.out	.cogvar
+gsac.prefix.typecheck	.gvar
+gsdl.cgs.typeenv.empty	.gvar
+gsac.prefix.typeitem.gsabstype.insert	.gvar
+natural.1	.gvar
+_fixtures.filenm	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test.typecheck_gsabstype_test_ty.s	.gvar
+gsdl.cgs.gskind.lifted	.gvar
+gsac.prefix.empty	.gvar
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
+v.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype_test_ty.s
+v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
+v	.apply	gsdl.var.basevar	|	v.cs
+pr	.apply	gsac.prefix.typeitem.gsabstype.insert	|	pos	v	gsdl.cgs.gskind.lifted	gsac.prefix.empty
+	.force	_test.typecheck_gsabstype_test_k
+	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
+	.app	gsdl.cgs.typeenv.empty	pr
+	.enter	gsac.prefix.typecheck
+
+_test.typecheck_gsabstype_test_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+rune.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+_test.typecheck_gsabstype_test_right_k	.subcode
+maybe.t.out	.cogvar
+test.property.false	.gvar
+list.<>	.gvar
+_test.typecheck_gsabstype_test_left_prefix.s	.gvar
+gsdl.cgs.typeenv.gskind.get	.gvar
+v	.fv	gsdl.var.t
+eenv0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
+	.analyze	eenv0	left	right
+		.case	left
+err		.fkarg	0	string.t
+msg			.apply	list.<>	rune.t	|	_test.typecheck_gsabstype_test_left_prefix.s	err
+			.app	msg
+			.enter	test.property.false
+		.case	right
+env		.fkarg	0	gsdl.cgs.typeenv.t
+			.force	_test.typecheck_gsabstype_test_right_k
+			.coerce	maybe.t.out	gsdl.cgs.gskind.t
+			.app	v	env
+			.enter	gsdl.cgs.typeenv.gskind.get
+
+_test.typecheck_gsabstype_test_right_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+test.true	.gvar
+test.property.false	.gvar
+_test.typecheck_gsabstype_test_right_nothing_failed.s	.gvar
+mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
+	.analyze	mb0	just	nothing
+		.case	just
+ki		.fkarg	0	gsdl.cgs.gskind.t
+			.enter	test.true
+		.case	nothing
+			.app	_test.typecheck_gsabstype_test_right_nothing_failed.s
+			.enter	test.property.false
 
 # §section Test Fixtures
 
