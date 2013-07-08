@@ -196,6 +196,7 @@ map0.0	.karg	ordered.map.prim.u	k	v
 _ordered.map.∪_k1	.forcecont
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
+ordered.map.t.in	.cogvar
 ordered.map.empty	.gvar
 k	.tyfv	*
 v	.tyfv	*
@@ -207,7 +208,17 @@ k0		.fkarg	0	k
 v0		.fkarg	1	v
 l0		.fkarg	2	ordered.map.t	k	v
 r0		.fkarg	3	ordered.map.t	k	v
-			.undef	ordered.map.t	k	v
+			.analyze	map1.0	branch	empty
+				.case	branch
+k1				.fkarg	0	k
+v1				.fkarg	1	v
+l1				.fkarg	2	ordered.map.t	k	v
+r1				.fkarg	3	ordered.map.t	k	v
+					.undef	ordered.map.t	k	v
+				.case	empty
+					.coerce	ordered.map.t.in	k	v
+					.lift
+					.yield	map0.0
 		.case	empty
 			.analyze	map1.0	branch	empty
 				.case	branch
