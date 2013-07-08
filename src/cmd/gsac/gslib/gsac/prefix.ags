@@ -184,6 +184,7 @@ dfn		.fkarg	4	gsdl.ags.typeitem.expr.t
 
 # §section §gs{gsac.prefix.typecheck}
 
+# Takes a type environment §gs{env} and a prefix §{pr} and returns the type environment §gs{env'} s.t. §gs{env ⊢ pr ⊳ env'}
 _gsac.prefix.typecheck_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsac.prefix.t	.tygvar
