@@ -148,19 +148,26 @@ map.r		.fkarg	3	ordered.map.t	k	v
 	# > :: maybe.t	v
 
 _ordered.map.get_branch_k	.forcecont
+order.total.t	.tygvar
+ordered.map.t	.tygvar
 order.total.ord.prim.u	.tygvar
 maybe.t	.tygvar
 maybe.just	.gvar
+ordered.map.get	.gvar
 k	.tyfv	*
 v	.tyfv	*
+ord	.fv	order.total.t	k
+key	.fv	k
 v	.fv	v
+map.r	.fv	ordered.map.t	k	v
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
 		.case	eq
 			.app	v
 			.yield	maybe.just	v
 		.case	gt
-			.undef	maybe.t	v
+			.app	ord	key	map.r
+			.enter	ordered.map.get	k	v
 		.case	lt
 			.undef	maybe.t	v
 
