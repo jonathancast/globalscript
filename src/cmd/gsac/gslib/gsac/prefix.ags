@@ -45,6 +45,8 @@ gsac.prefix.item.name	.closure	_gsac.prefix.item.name_c
 
 gsac.prefix.item.deps	.closure	_gsac.prefix.item.deps_c
 
+gsac.prefix.item.typecheck	.closure	_gsac.prefix.item.typecheck_c
+
 gsac.prefix.item.≡	.closure	_gsac.prefix.item.≡_c
 
 gsac.prefix.item.fmtgs	.closure	_gsac.prefix.item.fmtgs_c
@@ -241,8 +243,9 @@ list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
 list.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
+string.t	.tygvar
+_gsac.prefix.typecheck_sccs.typecheck_w_:_k	.subcode
+graph.scc.t.out	.cogvar
 either.right	.gvar
 scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
 env	.arg	gsdl.cgs.typeenv.t
@@ -252,10 +255,40 @@ sccs0	.arg	list.prim.u	scc.item.ty
 		.case	:
 scc0		.fkarg	0	graph.scc.t	gsac.prefix.item.t
 sccs1		.fkarg	1	list.t	scc.item.ty
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+			.force	_gsac.prefix.typecheck_sccs.typecheck_w_:_k
+			.coerce	graph.scc.t.out	gsac.prefix.item.t
+			.enter	scc0
 		.case	nil
 			.app	enva
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
+
+_gsac.prefix.typecheck_sccs.typecheck_w_:_k	.forcecont
+graph.scc.prim.u	.tygvar
+gsac.prefix.item.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+gsdl.cgs.typeenv.t	.tygvar	# Temp
+_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_k	.subcode
+either.t.out	.cogvar
+gsac.prefix.item.typecheck	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+scc0.0	.karg	graph.scc.prim.u	gsac.prefix.item.t
+	.analyze	scc0.0	nonrecursive
+		.case	nonrecursive
+it		.fkarg	0	gsac.prefix.item.t
+			.force	_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_k
+			.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
+			.app	env	it
+			.enter	gsac.prefix.item.typecheck
+	# > :: either.t	string.t	gsdl.cgs.typeenv.t
+
+_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+either.t	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t	# Type environment induced by §gs{it}
+	.undef	either.t	string.t	gsdl.cgs.typeenv.t	# Add §gs{fromRight e0} to §gs{env} and §gs{enva} and loop on §gs{sccs1}
 
 # §section §gs{gsac.prefix.items}
 
@@ -486,6 +519,18 @@ v		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
 			.enter	list.nil	gsdl.cgs.symbol.t
 	# > :: list.t	gsdl.cgs.symbol.t
+
+# §section §gs{gsac.prefix.item.typecheck}
+
+# Checks whether §gs{env ⊢ it ⊳ env'} and if so returns the §gs{env'}
+_gsac.prefix.item.typecheck_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+gsac.prefix.item.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+env	.larg	gsdl.cgs.typeenv.t
+it	.larg	gsac.prefix.item.t
+	.undef	either.t	string.t	gsdl.cgs.typeenv.t
 
 # §section §gs{gsac.prefix.item.≡}
 
