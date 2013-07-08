@@ -526,11 +526,52 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 _gsac.prefix.item.typecheck_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsac.prefix.item.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
+_gsac.prefix.item.typecheck_k	.subcode
+gsac.prefix.item.t.out	.cogvar
 env	.larg	gsdl.cgs.typeenv.t
 it	.larg	gsac.prefix.item.t
-	.undef	either.t	string.t	gsdl.cgs.typeenv.t
+	.force	_gsac.prefix.item.typecheck_k
+	.coerce	gsac.prefix.item.t.out
+	.enter	it
+
+_gsac.prefix.item.typecheck_k	.forcecont
+gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.typeitem.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+gsdl.cgs.typeenv.t	.tygvar	# Temp
+_gsac.prefix.item.typecheck_typeitem_k	.subcode
+gsac.prefix.typeitem.t.out	.cogvar
+it0	.karg	gsac.prefix.item.prim.u
+	.analyze	it0	typeitem
+		.case	typeitem
+ti		.fkarg	0	gsac.prefix.typeitem.t
+			.force	_gsac.prefix.item.typecheck_typeitem_k
+			.coerce	gsac.prefix.typeitem.t.out
+			.enter	ti
+	# > :: either.t	string.t	gsdl.cgs.typeenv.t
+
+_gsac.prefix.item.typecheck_typeitem_k	.forcecont
+gsac.prefix.typeitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+gsdl.cgs.typeenv.gskind.set	.gvar
+gsdl.cgs.typeenv.empty	.gvar
+ti0	.karg	gsac.prefix.typeitem.prim.u
+	.analyze	ti0	gsabstypenm
+		.case	gsabstypenm
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+env			.apply	gsdl.cgs.typeenv.gskind.set	|	v	ki	gsdl.cgs.typeenv.empty
+			.app	env
+			.enter	either.right	string.t	gsdl.cgs.typeenv.t
+	# > :: either.t	string.t	gsdl.cgs.typeenv.t
 
 # §section §gs{gsac.prefix.item.≡}
 
