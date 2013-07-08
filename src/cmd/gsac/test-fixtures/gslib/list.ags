@@ -1,1 +1,7 @@
 	.prefix
+
+	.type
+
+list.t	.tyabstract	**^
+	.tylift
+	.tysum

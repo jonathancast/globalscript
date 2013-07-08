@@ -6,3 +6,9 @@ _bool.true_c	.expr
 c	.constr	bool.prim.u	true
 	.lift
 	.yield	c
+
+	.type
+
+bool.t	.tyabstract	*
+	.tylift
+	.tysum
