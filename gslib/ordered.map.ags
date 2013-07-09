@@ -233,7 +233,9 @@ k1				.fkarg	0	k
 v1				.fkarg	1	v
 l1				.fkarg	2	ordered.map.t	k	v
 r1				.fkarg	3	ordered.map.t	k	v
-					.undef	ordered.map.t	k	v
+					.coerce	ordered.map.t.in	k	v
+					.lift
+					.yield	map1.0
 				.case	empty
 					.enter	ordered.map.empty	k	v
 
