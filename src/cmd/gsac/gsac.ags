@@ -1389,10 +1389,7 @@ env2			.apply	gsdl.cgs.typeenv.overlay	|	env1	env
 			.app	env2
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
-# §section Process §gs{sccs} to get (symtable, output)
-
-# NB: We will need to read in §gs{.gsac} files --- those that we need --- §emph{before} this step;
-# that can be deferred until a later stage.
+# §section Process §gs{cut} to get output
 
 _real.entry_output_c	.expr
 ibio.prim.oport	.tygvar
