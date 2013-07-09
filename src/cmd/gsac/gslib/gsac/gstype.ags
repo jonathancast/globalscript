@@ -167,7 +167,7 @@ maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 rune.t	.tygvar
-either.t	.tygvar	# Temp
+either.right	.gvar
 either.left	.gvar
 list.<>	.gvar
 gsdl.sourcepos.print	.gvar
@@ -183,7 +183,8 @@ mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mb0	just	nothing
 		.case	just
 ki		.fkarg	0	gsdl.cgs.gskind.t
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+			.app	ki
+			.enter	either.right	string.t	gsdl.cgs.gskind.t
 		.case	nothing
 pos.s			.apply	gsdl.sourcepos.print	|	pos
 var.s			.apply	gsdl.cgs.syntax.var.print	|	v
