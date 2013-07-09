@@ -360,16 +360,10 @@ _gsac.gstype.compile_w	.gvar
 pos	.fv	gsdl.sourcepos.t
 nm0	.fv	gsdl.var.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.danalyze	ty0	var
-		.default
-			.force	_gsac.gstype.compileToGlobalVar_k1
-			.coerce	either.t.out	string.t	_gsac.gstype.compile_res.ty
-			.app	ty0
-			.enter	_gsac.gstype.compile_w
-		.case	var
-v		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	_gsac.gstype.compileToGlobalVar_res.ty
-	# > :: either.t	string.t	_gsac.gstype.compileToVar_res.ty
+	.force	_gsac.gstype.compileToGlobalVar_k1
+	.coerce	either.t.out	string.t	_gsac.gstype.compile_res.ty
+	.app	ty0
+	.enter	_gsac.gstype.compile_w
 
 _gsac.gstype.compileToGlobalVar_k1	.forcecont
 gsdl.sourcepos.t	.tygvar
