@@ -9,6 +9,7 @@ fmtgs.record	.closure	_fmtgs.record_c
 _fmtgs.record_prefix.s	.string	〈\s
 _fmtgs.record_fs.f_infix.s	.string	\s∝\s
 _fmtgs.record_fs.f_suffix.s	.string	;\s
+_fmtgs.record_suffix.s	.string	〉
 
 fmtgs.prec	.closure	_fmtgs.prec_c
 
@@ -70,10 +71,12 @@ _fmtgs.record_prefix.s	.gvar
 list.foldr	.gvar
 diff.list.<>	.gvar
 list.map	.gvar
+diff.list.fromlist	.gvar
+_fmtgs.record_suffix.s	.gvar
 fs.pr	.larg	list.t	fmtgs.record.field.printer.t
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 diff.list.rune.<>	.apply	diff.list.<>	rune.t
-ds2	.undefined	diff.list.t	rune.t
+ds2	.apply	diff.list.fromlist	rune.t	|	_fmtgs.record_suffix.s
 fs.f	.alloc	_fmtgs.record_fs.f_c
 fs.ds	.apply	list.map	fmtgs.record.field.printer.t	diff.list.rune.ty	|	fs.f	fs.pr
 ds1	.apply	list.foldr	diff.list.rune.ty	diff.list.rune.ty	|	diff.list.rune.<>	ds2	fs.ds
