@@ -33,6 +33,7 @@ rune.left.paren	.closure	_rune.left.paren_c
 rune.right.paren	.closure	_rune.right.paren_c
 rune.left.curly	.closure	_rune.left.curly_c
 rune.right.curly	.closure	_rune.right.curly_c
+rune.single.quote	.closure	_rune.single.quote_c
 rune.latin.letter.c	.closure	_rune.latin.letter.c_c
 rune.latin.letter.g	.closure	_rune.latin.letter.g_c
 rune.latin.letter.n	.closure	_rune.latin.letter.n_c
@@ -372,6 +373,13 @@ c	.rune	c
 	.coerce	rune.t.in
 	.lift
 	.yield	c
+
+_rune.single.quote_c	.expr
+rune.t.in	.cogvar
+sq	.rune	'
+	.coerce	rune.t.in
+	.lift
+	.yield	sq
 
 _rune.latin.letter.g_c	.expr
 rune.t.in	.cogvar
