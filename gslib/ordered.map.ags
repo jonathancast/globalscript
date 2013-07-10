@@ -159,6 +159,7 @@ v	.tyfv	*
 ord	.fv	order.total.t	k
 key	.fv	k
 v	.fv	v
+map.l	.fv	ordered.map.t	k	v
 map.r	.fv	ordered.map.t	k	v
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
@@ -169,7 +170,8 @@ o0	.karg	order.total.ord.prim.u
 			.app	ord	key	map.r
 			.enter	ordered.map.get	k	v
 		.case	lt
-			.undef	maybe.t	v
+			.app	ord	key	map.l
+			.enter	ordered.map.get	k	v
 
 # §section §gs{ordered.map.∪}
 
