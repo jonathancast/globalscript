@@ -13,6 +13,7 @@ _fixtures.val.compare	.closure	_fixtures.val.compare_c
 
 _fixtures.val.fmtgs	.closure	_fixtures.val.fmtgs_c
 _fixtures.val.fmtgs_key.s	.string	key
+_fixtures.val.fmtgs_val.s	.string	val
 
 	.code
 
@@ -140,18 +141,22 @@ v1.val			.lfield	val	v1
 _fixtures.val.fmtgs_c	.expr
 _fixtures.val.t	.tygvar
 fmtgs.record.field.printer.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
 fmtgs.record	.gvar
 list.:	.gvar
 _fixtures.val.fmtgs_key.s	.gvar
 natural.fmtgs	.gvar
+list.singleton	.gvar
+_fixtures.val.fmtgs_val.s	.gvar
+bool.fmtgs	.gvar
 v	.larg	_fixtures.val.t
 v.key	.lfield	key	v
 v.key.pr	.apply	natural.fmtgs	|	v.key
-v.pr	.lrecord	field	_fixtures.val.fmtgs_key.s	val	v.key.pr	|	fmtgs.record.field.printer.t
-fs.pr1	.undefined	list.t	fmtgs.record.field.printer.t
-fs.pr	.apply	list.:	fmtgs.record.field.printer.t	|	v.pr	fs.pr1
+f.pr.key	.lrecord	field	_fixtures.val.fmtgs_key.s	val	v.key.pr	|	fmtgs.record.field.printer.t
+v.val	.lfield	val	v
+v.val.pr	.apply	bool.fmtgs	|	v.val
+f.pr.val	.lrecord	field	_fixtures.val.fmtgs_val.s	val	v.val.pr	|	fmtgs.record.field.printer.t
+fs.pr1	.apply	list.singleton	fmtgs.record.field.printer.t	|	f.pr.val
+fs.pr	.apply	list.:	fmtgs.record.field.printer.t	|	f.pr.key	fs.pr1
 	.app	fs.pr
 	.enter	fmtgs.record
 
