@@ -12,6 +12,7 @@ _test_tsort_single.elem_label	.string	tsort\sa\ssingle\selement\swith\sno\sdepen
 _fixtures.val.compare	.closure	_fixtures.val.compare_c
 
 _fixtures.val.fmtgs	.closure	_fixtures.val.fmtgs_c
+_fixtures.val.fmtgs_key.s	.string	key
 
 	.code
 
@@ -143,8 +144,10 @@ fmtgs.printer.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
 fmtgs.record	.gvar
 list.:	.gvar
+_fixtures.val.fmtgs_key.s	.gvar
 val	.larg	_fixtures.val.t
-key.pr0	.undefined	fmtgs.record.field.printer.t
+key.pr	.undefined	fmtgs.printer.t
+key.pr0	.lrecord	field	_fixtures.val.fmtgs_key.s	val	key.pr	|	fmtgs.record.field.printer.t
 fs.pr1	.undefined	list.t	fmtgs.record.field.printer.t
 fs.pr	.apply	list.:	fmtgs.record.field.printer.t	|	key.pr0	fs.pr1
 	.app	fs.pr
