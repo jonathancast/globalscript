@@ -84,8 +84,15 @@ _fmtgs.record_fs.f_c	.expr
 fmtgs.record.field.printer.t	.tygvar
 diff.list.t	.tygvar	# Temp
 rune.t	.tygvar	# Temp
+diff.list.:	.gvar
+rune.single.quote	.gvar
+diff.list.prepend	.gvar
 f	.larg	fmtgs.record.field.printer.t
-	.undef	diff.list.t	rune.t
+f.field	.lfield	field	f
+ds1	.undefined	diff.list.t	rune.t
+ds	.apply	diff.list.prepend	rune.t	|	f.field	ds1
+	.app	rune.single.quote	ds
+	.enter	diff.list.:	rune.t
 
 # §section §gs{fmtgs.prec}
 
