@@ -13,6 +13,7 @@ bool.∧	.closure	_bool.∧.c
 bool.∨	.closure	_bool.∨_c
 
 bool.fmtgs	.closure	_bool.fmtgs_c	_bool.fmtgs_ty
+_bool.fmtgs_false.s	.string	false
 _bool.fmtgs_true.s	.string	true
 bool.fmtgs.list	.closure	_bool.fmtgs.list_c
 
@@ -188,13 +189,14 @@ b	.larg	bool.t
 
 _bool.fmtgs_k	.forcecont
 bool.prim.u	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
 fmtgs.var	.gvar
+_bool.fmtgs_false.s	.gvar
 _bool.fmtgs_true.s	.gvar
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.undef	fmtgs.printer.t
+			.app	_bool.fmtgs_false.s
+			.enter	fmtgs.var
 		.case	true
 			.app	_bool.fmtgs_true.s
 			.enter	fmtgs.var
