@@ -138,9 +138,17 @@ v1.val			.lfield	val	v1
 
 _fixtures.val.fmtgs_c	.expr
 _fixtures.val.t	.tygvar
+fmtgs.record.field.printer.t	.tygvar
 fmtgs.printer.t	.tygvar	# Temp
+list.t	.tygvar	# Temp
+fmtgs.record	.gvar
+list.:	.gvar
 val	.larg	_fixtures.val.t
-	.undef	fmtgs.printer.t
+key.pr0	.undefined	fmtgs.record.field.printer.t
+fs.pr1	.undefined	list.t	fmtgs.record.field.printer.t
+fs.pr	.apply	list.:	fmtgs.record.field.printer.t	|	key.pr0	fs.pr1
+	.app	fs.pr
+	.enter	fmtgs.record
 
 	.type
 
