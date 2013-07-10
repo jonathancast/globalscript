@@ -325,8 +325,8 @@ order.total.ord.gt	.gvar
 	.enter	order.total.ord.gt
 
 _natural.compare_<_k	.ubcasecont
-order.total.ord.t	.tygvar	# Temp
-	.undef	order.total.ord.t
+order.total.ord.lt	.gvar
+	.enter	order.total.ord.lt
 
 _natural.compare_≡_k	.ubcasecont
 natural.prim.u	.tygvar
