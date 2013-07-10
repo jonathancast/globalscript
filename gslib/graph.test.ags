@@ -145,11 +145,13 @@ list.t	.tygvar	# Temp
 fmtgs.record	.gvar
 list.:	.gvar
 _fixtures.val.fmtgs_key.s	.gvar
-val	.larg	_fixtures.val.t
-key.pr	.undefined	fmtgs.printer.t
-key.pr0	.lrecord	field	_fixtures.val.fmtgs_key.s	val	key.pr	|	fmtgs.record.field.printer.t
+natural.fmtgs	.gvar
+v	.larg	_fixtures.val.t
+v.key	.lfield	key	v
+v.key.pr	.apply	natural.fmtgs	|	v.key
+v.pr	.lrecord	field	_fixtures.val.fmtgs_key.s	val	v.key.pr	|	fmtgs.record.field.printer.t
 fs.pr1	.undefined	list.t	fmtgs.record.field.printer.t
-fs.pr	.apply	list.:	fmtgs.record.field.printer.t	|	key.pr0	fs.pr1
+fs.pr	.apply	list.:	fmtgs.record.field.printer.t	|	v.pr	fs.pr1
 	.app	fs.pr
 	.enter	fmtgs.record
 
