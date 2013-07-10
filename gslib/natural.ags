@@ -310,11 +310,29 @@ n1.0	.karg	natural.prim.u
 	.yield	natural.prim.≡
 
 _natural.compare_≠_k	.ubcasecont
-order.total.ord.t	.tygvar
+natural.prim.u	.tygvar
+_natural.compare_>_k	.subcode
+_natural.compare_<_k	.subcode
+natural.prim.<	.gvar
+n0.0	.fv	natural.prim.u
+n1.0	.fv	natural.prim.u
+	.ubanalyze	0	_natural.compare_>_k	1	_natural.compare_<_k
+	.app	n0.0	n1.0
+	.yield	natural.prim.<
+
+_natural.compare_>_k	.ubcasecont
+order.total.ord.gt	.gvar
+	.enter	order.total.ord.gt
+
+_natural.compare_<_k	.ubcasecont
+order.total.ord.t	.tygvar	# Temp
 	.undef	order.total.ord.t
 
 _natural.compare_≡_k	.ubcasecont
+natural.prim.u	.tygvar
 order.total.ord.eq	.gvar
+n0.0	.fv	natural.prim.u
+n1.0	.fv	natural.prim.u
 	.enter	order.total.ord.eq
 
 # §section Primitives
