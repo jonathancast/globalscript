@@ -7,6 +7,8 @@
 
 ordered.set.elem	.closure	_ordered.set.elem_c	_ordered.set.elem_ty
 
+ordered.set.fromlist	.closure	_ordered.set.fromlist_c
+
 ordered.set.tolist	.closure	_ordered.set.tolist_c
 _ordered.set.tolist_w	.closure	_ordered.set.tolist_w_c	_ordered.set.tolist_w_ty
 
@@ -86,6 +88,24 @@ o0	.karg	order.total.ord.prim.u
 		.case	lt
 			.app	cmp	x	sl
 			.enter	ordered.set.elem	α
+
+# §section §gs{ordered.set.fromlist}
+
+_ordered.set.fromlist_c	.expr
+order.total.t	.tygvar
+list.t	.tygvar
+ordered.set.t	.tygvar
+list.foldr	.gvar
+ordered.set.insert	.gvar
+ordered.set.empty	.gvar
+α	.tyarg	*
+cmp	.larg	order.total.t	α
+xn	.larg	list.t	α
+set.ty	.tylet	ordered.set.t	α
+insert	.apply	ordered.set.insert	α	|	cmp
+empty	.apply	ordered.set.empty	α
+	.app	insert	empty	xn
+	.enter	list.foldr	α	set.ty
 
 # §section §gs{ordered.set.tolist}
 
