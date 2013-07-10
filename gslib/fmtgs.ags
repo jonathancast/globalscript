@@ -7,6 +7,7 @@ fmtgs.app	.closure	_fmtgs.app_c
 
 fmtgs.record	.closure	_fmtgs.record_c
 _fmtgs.record_prefix.s	.string	〈\s
+_fmtgs.record_fs.f_infix.s	.string	\s∝\s
 
 fmtgs.prec	.closure	_fmtgs.prec_c
 
@@ -87,9 +88,16 @@ rune.t	.tygvar	# Temp
 diff.list.:	.gvar
 rune.single.quote	.gvar
 diff.list.prepend	.gvar
+_fmtgs.record_fs.f_infix.s	.gvar
+diff.list.<>	.gvar
+fmtgs.prec.max	.gvar
 f	.larg	fmtgs.record.field.printer.t
 f.field	.lfield	field	f
-ds1	.undefined	diff.list.t	rune.t
+f.val	.lfield	val	f
+f.val.ds	.apply	f.val	|	fmtgs.prec.max
+ds3	.undefined	diff.list.t	rune.t
+ds2	.apply	diff.list.<>	rune.t	|	f.val.ds	ds3
+ds1	.apply	diff.list.prepend	rune.t	|	_fmtgs.record_fs.f_infix.s	ds2
 ds	.apply	diff.list.prepend	rune.t	|	f.field	ds1
 	.app	rune.single.quote	ds
 	.enter	diff.list.:	rune.t
