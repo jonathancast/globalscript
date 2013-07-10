@@ -11,6 +11,8 @@ _test_tsort_single.elem_label	.string	tsort\sa\ssingle\selement\swith\sno\sdepen
 
 _fixtures.val.compare	.closure	_fixtures.val.compare_c
 
+_fixtures.val.fmtgs	.closure	_fixtures.val.fmtgs_c
+
 	.code
 
 _epcode	.expr
@@ -36,6 +38,7 @@ graph.scc.≡	.gvar
 _fixtures.val.compare	.gvar
 list.fmtgs.byDefault	.gvar
 graph.scc.fmtgs	.gvar
+_fixtures.val.fmtgs	.gvar
 graph.tsort	.gvar
 natural.compare	.gvar
 list.singleton	.gvar
@@ -46,7 +49,7 @@ scc.ty	.tylet	graph.scc.t	_fixtures.val.t
 list.scc.ty	.tylet	list.t	scc.ty
 scc.≡	.apply	graph.scc.≡	_fixtures.val.t	|	_fixtures.val.compare
 list.scc.≡	.apply	list.≡	scc.ty	|	scc.≡
-scc.fmtgs	.apply	graph.scc.fmtgs	_fixtures.val.t
+scc.fmtgs	.apply	graph.scc.fmtgs	_fixtures.val.t	|	_fixtures.val.fmtgs
 list.scc.fmtgs	.apply	list.fmtgs.byDefault	scc.ty	|	scc.fmtgs
 val.deps	.alloc	_test_tsort_single.elem_val.deps_c
 val0	.lrecord	key	natural.0	val	bool.true	|	_fixtures.val.t
@@ -96,6 +99,8 @@ b0	.karg	bool.prim.u	# Is §gs{k ≡ 0}?
 
 # §section Test fixtures
 
+# §subsection §gs{_fixtures.val.compare}
+
 _fixtures.val.compare_c	.expr
 _fixtures.val.t	.tygvar
 _fixtures.val.compare_k	.subcode
@@ -128,6 +133,14 @@ v1.val			.lfield	val	v1
 			.undef	order.total.ord.t
 		.case	lt
 			.undef	order.total.ord.t
+
+# §subsection §gs{_fixtures.val.fmtgs}
+
+_fixtures.val.fmtgs_c	.expr
+_fixtures.val.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+val	.larg	_fixtures.val.t
+	.undef	fmtgs.printer.t
 
 	.type
 

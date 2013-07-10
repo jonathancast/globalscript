@@ -14,6 +14,7 @@ _graph.tsort_subitems	.closure	_graph.tsort_subitems_c	_graph.tsort_subitems_ty
 graph.scc.≡	.closure	_graph.scc.≡_c
 
 graph.scc.fmtgs	.closure	_graph.scc.fmtgs_c
+_graph.scc.fmtgs_nonrecursive_nonrecursive.s	.string	nonrecursive
 
 graph.scc.nonrecursive	.closure	_graph.scc.nonrecursive_c
 
@@ -612,11 +613,35 @@ o0	.karg	order.total.ord.prim.u
 # §section §gs{graph.scc.fmtgs}
 
 _graph.scc.fmtgs_c	.expr
+fmtgs.t	.tygvar
 graph.scc.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+_graph.scc.fmtgs_k	.subcode
+graph.scc.t.out	.cogvar
 α	.tyarg	*
+fmt	.larg	fmtgs.t	α
 scc	.larg	graph.scc.t	α
-	.undef	fmtgs.printer.t
+	.force	_graph.scc.fmtgs_k
+	.coerce	graph.scc.t.out	α
+	.enter	scc
+
+_graph.scc.fmtgs_k	.forcecont
+fmtgs.t	.tygvar
+graph.scc.prim.u	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+fmtgs.app	.gvar
+fmtgs.var	.gvar
+_graph.scc.fmtgs_nonrecursive_nonrecursive.s	.gvar
+α	.tyfv	*
+fmt	.fv	fmtgs.t	α
+scc0	.karg	graph.scc.prim.u	α
+	.analyze	scc0	nonrecursive
+		.case	nonrecursive
+x		.fkarg	0	α
+f.pr			.apply	fmtgs.var	|	_graph.scc.fmtgs_nonrecursive_nonrecursive.s
+x.pr			.apply	fmt	|	x
+			.app	f.pr	x.pr
+			.enter	fmtgs.app
+	# > :: fmtgs.printer.t
 
 # §section §gs{graph.scc.t} constructors
 
