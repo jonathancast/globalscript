@@ -143,6 +143,7 @@ emitted	.fv	ordered.set.t	k
 unassigned	.fv	list.t	kv.ty
 maybe.group	.fv	list.t	k
 k0	.fv	k
+ks1	.fv	list.t	k
 b0	.karg	bool.prim.u	# Is this key already in an SCC?
 	.analyze	b0	false	true
 		.case	false
@@ -156,6 +157,7 @@ b0	.karg	bool.prim.u	# Is this key already in an SCC?
 _graph.tsort_list_:_false_k	.forcecont
 order.total.t	.tygvar
 graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
 _graph.tsort_cont.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
@@ -163,22 +165,26 @@ _graph.tsort_key.value.ty	.tygvar
 maybe.prim.u	.tygvar
 graph.scc.t	.tygvar	# Temp
 _graph.tsort_item	.gvar
+_graph.tsort_list	.gvar
 k	.tyfv	*
 v	.tyfv	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
+look	.fv	graph.lookup.t	k	v
 k	.fv	_graph.tsort_cont.t	k	v
 emitted	.fv	ordered.set.t	k
 unassigned	.fv	list.t	kv.ty
 maybe.group	.fv	list.t	k
 k0	.fv	k
+ks1	.fv	list.t	k
 scc.ty	.tylet	graph.scc.t	v	# Temp
 mb0	.karg	maybe.prim.u	v
 	.analyze	mb0	just	nothing
 		.case	just
 v0		.fkarg	0	v
-			.app	ord	deps	k0	v0	k	emitted	unassigned	maybe.group	# TODO: Wrong continuation!  Continuation should continue with §gs{ks1}
+cont1			.apply	_graph.tsort_list	k	v	|	ord	deps	look	ks1	k
+			.app	ord	deps	k0	v0	cont1	emitted	unassigned	maybe.group
 			.enter	_graph.tsort_item	k	v
 		.case	nothing
 			.undef	list.t	scc.ty
@@ -240,9 +246,10 @@ _graph.tsort_item_cont1_k0	.forcecont
 order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 _graph.tsort_cont.t	.tygvar
-list.prim.u	.tygvar
+ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
+list.prim.u	.tygvar
 graph.scc.t	.tygvar	# Temp
 _graph.tsort_item_cont1_:_k	.subcode
 order.total.ord.t.out	.cogvar
@@ -254,6 +261,7 @@ ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 cont	.fv	_graph.tsort_cont.t	k	v
 k0	.fv	k
+em	.fv	ordered.set.t	k
 unassigned	.fv	list.t	kv.ty
 mbg0	.karg	list.prim.u	k
 	.analyze	mbg0	:	nil
@@ -272,6 +280,7 @@ _graph.tsort_item_cont1_:_k	.forcecont
 order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
 order.total.ord.prim.u	.tygvar
@@ -285,6 +294,7 @@ scc.ty	.tylet	graph.scc.t	v	# Temp
 ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 cont	.fv	_graph.tsort_cont.t	k	v
+em	.fv	ordered.set.t	k
 k0	.fv	k
 unassigned	.fv	list.t	kv.ty
 o0	.karg	order.total.ord.prim.u
@@ -383,30 +393,57 @@ r			.record	0	r.0	1	un1	|	_graph.tsort_item_cont1_:_pop.unassigned_res.u	k	v
 			.yield	r
 
 _graph.tsort_item_cont1_:_eq_k	.forcecont
+order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+ordered.set.t	.tygvar
 _graph.tsort_item_cont1_:_pop.unassigned_res.u	.tygvar
 list.t	.tygvar	# Temp
 graph.scc.t	.tygvar	# Temp
-ordered.set.t	.tygvar	# Temp
 _graph.tsort_key.value.ty	.tygvar	# Temp
+_graph.tsort_item_cont1_:_eq_ks0.ks.f_c	.subcode
 list.:	.gvar
 _graph.tsort_item_cont1_:_eq_scc0_w	.gvar
+ordered.set.union	.gvar
+ordered.set.fromlist	.gvar
+list.map	.gvar
 k	.tyfv	*
 v	.tyfv	*
 scc.ty	.tylet	graph.scc.t	v
-kv.ty	.tylet	_graph.tsort_key.value.ty	k	v	# Temp
+kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
+ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 cont	.fv	_graph.tsort_cont.t	k	v
+em	.fv	ordered.set.t	k
 pop	.karg	_graph.tsort_item_cont1_:_pop.unassigned_res.u	k	v
 ks0	.field	0	pop
 scc0	.apply	_graph.tsort_item_cont1_:_eq_scc0_w	k	v	|	deps	ks0
-emitted1	.undefined	ordered.set.t	k	# TODO: Add keys emitted to §gs{em}
+ks0.ks.f	.alloc	_graph.tsort_item_cont1_:_eq_ks0.ks.f_c
+ks0.ks	.apply	list.map	kv.ty	k	|	ks0.ks.f	ks0
+ks0.set	.apply	ordered.set.fromlist	k	|	ord	ks0.ks
+emitted1	.apply	ordered.set.union	k	|	ord	ks0.set	em
 unassigned1	.undefined	list.t	kv.ty	# Second element of pop
 maybe.group1	.undefined	list.t	k	# TODO: Pop §gs{maybe.group}
 sccs1	.apply	cont	|	emitted1	unassigned1	maybe.group1	# Call to continuation with the above
 	.app	scc0	sccs1
 	.enter	list.:	scc.ty
+
+_graph.tsort_item_cont1_:_eq_ks0.ks.f_c	.expr
+_graph.tsort_key.value.ty	.tygvar
+_graph.tsort_item_cont1_:_eq_ks0.ks.f_k	.subcode
+k	.tyfv	*
+v	.tyfv	*
+kv	.larg	_graph.tsort_key.value.ty	k	v
+	.force	_graph.tsort_item_cont1_:_eq_ks0.ks.f_k
+	.enter	kv
+
+_graph.tsort_item_cont1_:_eq_ks0.ks.f_k	.forcecont
+_graph.tsort_key.value.u	.tygvar
+k	.tyfv	*
+v	.tyfv	*
+kv0	.karg	_graph.tsort_key.value.u	k	v
+k	.field	0	kv0
+	.enter	k
 
 _graph.tsort_item_cont1_:_eq_scc0_w_c	.expr
 graph.dependencies.t	.tygvar

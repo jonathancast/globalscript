@@ -4,10 +4,13 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test_tsort_single.elem
+_tests	.list	test.property.t	_test_tsort_single.elem	_test_tsort_two.elems
 
 _test_tsort_single.elem	.closure	_test_tsort_single.elem_c
 _test_tsort_single.elem_label	.string	tsort\sa\ssingle\selement\swith\sno\sdependencies
+
+_test_tsort_two.elems	.closure	_test_tsort_two.elems_c
+_test_tsort_two.elems_label	.string	tsort\stwo\selements\swith\sno\sdependencies
 
 _fixtures.val.compare	.closure	_fixtures.val.compare_c
 
@@ -97,6 +100,113 @@ b0	.karg	bool.prim.u	# Is §gs{k ≡ 0}?
 			.undef	maybe.t	_fixtures.val.t
 		.case	true
 			.app	val0
+			.yield	maybe.just	_fixtures.val.t
+
+# §section §gs{tsort} two elements with no dependencies
+
+_test_tsort_two.elems_c	.expr
+list.t	.tygvar
+graph.scc.t	.tygvar
+_fixtures.val.t	.tygvar
+natural.t	.tygvar
+_test_tsort_two.elems_val.deps_c	.subcode
+_test_tsort_two.elems_val.look_c	.subcode
+test.property.label	.gvar
+_test_tsort_two.elems_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+graph.scc.≡	.gvar
+_fixtures.val.compare	.gvar
+list.fmtgs.byDefault	.gvar
+graph.scc.fmtgs	.gvar
+_fixtures.val.fmtgs	.gvar
+graph.tsort	.gvar
+natural.compare	.gvar
+natural.0	.gvar
+bool.true	.gvar
+natural.1	.gvar
+bool.false	.gvar
+list.:	.gvar
+list.singleton	.gvar
+graph.scc.nonrecursive	.gvar
+scc.ty	.tylet	graph.scc.t	_fixtures.val.t
+list.scc.ty	.tylet	list.t	scc.ty
+scc.≡	.apply	graph.scc.≡	_fixtures.val.t	|	_fixtures.val.compare
+list.scc.≡	.apply	list.≡	scc.ty	|	scc.≡
+scc.fmtgs	.apply	graph.scc.fmtgs	_fixtures.val.t	|	_fixtures.val.fmtgs
+list.scc.fmtgs	.apply	list.fmtgs.byDefault	scc.ty	|	scc.fmtgs
+val.deps	.alloc	_test_tsort_two.elems_val.deps_c
+val0	.lrecord	key	natural.0	val	bool.true	|	_fixtures.val.t
+val1	.lrecord	key	natural.1	val	bool.false	|	_fixtures.val.t
+val.look	.alloc	_test_tsort_two.elems_val.look_c
+ks1	.apply	list.singleton	natural.t	|	natural.1
+ks	.apply	list.:	natural.t	|	natural.0	ks1
+actual	.apply	graph.tsort	natural.t	_fixtures.val.t	|	natural.compare	val.deps	val.look	ks
+scc0	.apply	graph.scc.nonrecursive	_fixtures.val.t	|	val0
+scc1	.apply	graph.scc.nonrecursive	_fixtures.val.t	|	val1
+sccs1	.apply	list.singleton	scc.ty	|	scc1
+expected	.apply	list.:	scc.ty	|	scc0	sccs1
+test	.apply	test.assert.eq	list.scc.ty	|	list.scc.≡	list.scc.fmtgs	actual	expected
+	.app	_test_tsort_two.elems_label	test
+	.enter	test.property.label
+
+_test_tsort_two.elems_val.deps_c	.expr
+_fixtures.val.t	.tygvar
+natural.t	.tygvar
+list.nil	.gvar
+v	.larg	_fixtures.val.t
+	.enter	list.nil	natural.t
+
+_test_tsort_two.elems_val.look_c	.expr
+_fixtures.val.t	.tygvar
+natural.t	.tygvar
+_test_tsort_two.elems_val.look_k	.subcode
+bool.t.out	.cogvar
+natural.≡	.gvar
+natural.0	.gvar
+val0	.fv	_fixtures.val.t
+val1	.fv	_fixtures.val.t
+k	.larg	natural.t
+	.force	_test_tsort_two.elems_val.look_k
+	.coerce	bool.t.out
+	.app	k	natural.0
+	.enter	natural.≡
+
+_test_tsort_two.elems_val.look_k	.forcecont
+_fixtures.val.t	.tygvar
+natural.t	.tygvar
+bool.prim.u	.tygvar
+_test_tsort_two.elems_val.look_k1	.subcode
+bool.t.out	.cogvar
+natural.≡	.gvar
+natural.1	.gvar
+maybe.just	.gvar
+val0	.fv	_fixtures.val.t
+val1	.fv	_fixtures.val.t
+k	.fv	natural.t
+b0	.karg	bool.prim.u	# Is §gs{k ≡ 0}?
+	.analyze	b0	false	true
+		.case	false
+			.force	_test_tsort_two.elems_val.look_k1
+			.coerce	bool.t.out
+			.app	k	natural.1
+			.enter	natural.≡
+		.case	true
+			.app	val0
+			.yield	maybe.just	_fixtures.val.t
+
+_test_tsort_two.elems_val.look_k1	.forcecont
+_fixtures.val.t	.tygvar
+bool.prim.u	.tygvar
+maybe.t	.tygvar	# Temp
+maybe.just	.gvar
+val1	.fv	_fixtures.val.t
+b0	.karg	bool.prim.u	# Is §gs{k ≡ 1}?
+	.analyze	b0	false	true
+		.case	false
+			.undef	maybe.t	_fixtures.val.t
+		.case	true
+			.app	val1
 			.yield	maybe.just	_fixtures.val.t
 
 # §section Test fixtures
