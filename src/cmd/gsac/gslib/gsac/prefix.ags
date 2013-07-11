@@ -475,7 +475,7 @@ ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
 		.case	exp
 ki.b		.fkarg	0	gsdl.ags.typeitem.gskind.t
 ki.e		.fkarg	1	gsdl.ags.typeitem.gskind.t
-ki.b.cgs			.undefined	gsdl.cgs.gskind.t
+ki.b.cgs			.apply	gsac.prefix.gskind.upconvert	|	ki.b
 ki.e.cgs			.apply	gsac.prefix.gskind.upconvert	|	ki.e
 			.app	ki.b.cgs	ki.e.cgs
 			.enter	gsdl.cgs.gskind.exp
