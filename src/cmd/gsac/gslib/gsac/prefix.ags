@@ -467,13 +467,17 @@ _gsac.prefix.gskind.upconvert_k	.forcecont
 gsdl.ags.typeitem.gskind.prim.u	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar	# Temp
+gsdl.cgs.gskind.exp	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
 	.analyze	ki0	exp	lifted
 		.case	exp
 ki0.0		.fkarg	0	gsdl.ags.typeitem.gskind.t
 ki0.1		.fkarg	1	gsdl.ags.typeitem.gskind.t
-			.undef	gsdl.cgs.gskind.t
+ki0.0.cgs			.undefined	gsdl.cgs.gskind.t
+ki0.1.cgs			.undefined	gsdl.cgs.gskind.t
+			.app	ki0.0.cgs	ki0.1.cgs
+			.enter	gsdl.cgs.gskind.exp
 		.case	lifted
 			.enter	gsdl.cgs.gskind.lifted
 	# > :: gsdl.cgs.gskind.t
