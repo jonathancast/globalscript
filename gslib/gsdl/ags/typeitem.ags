@@ -616,7 +616,7 @@ st1.0	.karg	list.prim.u	gsdl.ags.typeitem.gskind.t
 k0		.fkarg	0	gsdl.ags.typeitem.gskind.t
 st2		.fkarg	1	list.t	gsdl.ags.typeitem.gskind.t
 caret.p			.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.gskind.parser_w_pop.p_caret.re
-k.1			.apply	gsdl.ags.typeitem.gskind.exp	|	k1	k0
+k.1			.apply	gsdl.ags.typeitem.gskind.exp	|	k0	k1
 st.1			.apply	list.:	gsdl.ags.typeitem.gskind.t	|	k.1	st2
 loop.p			.apply	_gsdl.ags.typeitem.gskind.parser_w	|	st.1
 			.app	caret.p	loop.p
