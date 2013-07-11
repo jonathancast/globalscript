@@ -56,6 +56,7 @@ gsdl.ags.typeitem.expr.lift	.closure	_gsdl.ags.typeitem.expr.lift_c
 gsdl.ags.typeitem.expr.product	.closure	_gsdl.ags.typeitem.expr.product_c
 
 gsdl.ags.typeitem.gskind.lifted	.closure	_gsdl.ags.typeitem.gskind.lifted_c
+gsdl.ags.typeitem.gskind.exp	.closure	_gsdl.ags.typeitem.gskind.exp_c
 
 	.code
 
@@ -604,6 +605,7 @@ rune.compare	.gvar
 _gsdl.ags.typeitem.gskind.parser_w_pop.p_caret.re	.gvar
 _gsdl.ags.typeitem.gskind.parser_w	.gvar
 list.:	.gvar
+gsdl.ags.typeitem.gskind.exp	.gvar
 parser.unit	.gvar
 k1	.fv	gsdl.ags.typeitem.gskind.t
 st1.0	.karg	list.prim.u	gsdl.ags.typeitem.gskind.t
@@ -612,7 +614,7 @@ st1.0	.karg	list.prim.u	gsdl.ags.typeitem.gskind.t
 k0		.fkarg	0	gsdl.ags.typeitem.gskind.t
 st2		.fkarg	1	list.t	gsdl.ags.typeitem.gskind.t
 caret.p			.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.gskind.parser_w_pop.p_caret.re
-k.1			.undefined	gsdl.ags.typeitem.gskind.t	# > exp k0 k1
+k.1			.apply	gsdl.ags.typeitem.gskind.exp	|	k1	k0
 st.1			.apply	list.:	gsdl.ags.typeitem.gskind.t	|	k.1	st2
 loop.p			.apply	_gsdl.ags.typeitem.gskind.parser_w	|	st.1
 			.app	caret.p	loop.p
@@ -1072,6 +1074,17 @@ c	.constr	gsdl.ags.typeitem.gskind.prim.u	lifted
 	.lift
 	.yield	c
 
+_gsdl.ags.typeitem.gskind.exp_c	.expr
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.gskind.prim.u	.tygvar
+gsdl.ags.typeitem.gskind.t.in	.cogvar
+k0	.larg	gsdl.ags.typeitem.gskind.t
+k1	.larg	gsdl.ags.typeitem.gskind.t
+c	.constr	gsdl.ags.typeitem.gskind.prim.u	exp	0	k0	1	k1
+	.coerce	gsdl.ags.typeitem.gskind.t.in
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{gsdl.ags.typeitem.t}
@@ -1201,9 +1214,15 @@ gsdl.ags.typeitem.gskind.prim.u	.tygvar
 	.tyref	gsdl.ags.typeitem.gskind.prim.u
 
 gsdl.ags.typeitem.gskind.prim.u	.tyexpr
+_gsdl.ags.typeitem.gskind.prim.u_exp_ty	.tygvar
 record.unboxed.empty	.tygvar
-	.tysum	lifted	record.unboxed.empty
+	.tysum	exp	_gsdl.ags.typeitem.gskind.prim.u_exp_ty	lifted	record.unboxed.empty
 
+_gsdl.ags.typeitem.gskind.prim.u_exp_ty	.tyexpr
+gsdl.ags.typeitem.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.ags.typeitem.gskind.t	1	gsdl.ags.typeitem.gskind.t
+
+# §section §gs{gsdl.ags.typeitem.gskind.parser}
 
 _gsdl.ags.typeitem.gskind.parser_w_ty	.tyexpr
 list.t	.tygvar
