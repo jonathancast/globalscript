@@ -107,11 +107,20 @@ fki		.fkarg	0	gsdl.cgs.gskind.t
 
 _gsac.gstype.kindcheck_app_right_k	.forcecont
 gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
-gsdl.cgs.gskind.t	.tygvar	# Temp
-ki0	.karg	gsdl.cgs.gskind.prim.u
-	.undef	either.t	string.t	gsdl.cgs.gskind.t
+ki0	.karg	gsdl.cgs.gskind.prim.u	# Kind of type function
+	.analyze	ki0	exp	lifted	unlifted
+		.case	exp
+ki.b		.fkarg	0	gsdl.cgs.gskind.t
+ki.e		.fkarg	1	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
+		.case	lifted
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
+		.case	unlifted
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
+	# > :: either.t	string.t	gsdl.cgs.gskind.t
 
 _gsac.gstype.kindcheck_lift_k	.forcecont
 either.prim.u	.tygvar
