@@ -23,6 +23,7 @@ _test.empty.union.empty_label	.string	empty\s∪\sempty
 _test.branch.union.branch	.closure	_test.branch.union.branch_c
 _test.branch.union.branch_label	.string	branch\s_\s_\s_\s∪\sbranch\s_\s_\s_
 _test.branch.union.branch_test0_label	.string	get\snatural.1
+_test.branch.union.branch_test1_label	.string	get\snatural.2
 
 _test.values.empty	.closure	_test.values.empty_c
 _test.values.empty_label	.string	values\sempty
@@ -151,6 +152,7 @@ _test.branch.union.branch_c	.expr
 natural.t	.tygvar
 bool.t	.tygvar
 _test.branch.union.branch_test0_c	.subcode
+_test.branch.union.branch_test1_c	.subcode
 test.property.label	.gvar
 _test.branch.union.branch_label	.gvar
 test.property.∧	.gvar
@@ -167,7 +169,9 @@ map0	.apply	ordered.map.insert	natural.t	bool.t	|	natural.compare	natural.1	bool
 map1	.apply	ordered.map.insert	natural.t	bool.t	|	natural.compare	natural.2	bool.false	empty
 union	.apply	ordered.map.∪	natural.t	bool.t	|	natural.compare	map0	map1
 test0	.alloc	_test.branch.union.branch_test0_c
-	.app	_test.branch.union.branch_label	test0
+test1	.alloc	_test.branch.union.branch_test1_c
+tests	.apply	test.property.∧	|	test0	test1
+	.app	_test.branch.union.branch_label	tests
 	.enter	test.property.label
 
 _test.branch.union.branch_test0_c	.expr
@@ -195,6 +199,33 @@ actual	.apply	ordered.map.get	natural.t	bool.t	|	natural.compare	natural.1	union
 expected	.apply	maybe.just	bool.t	|	bool.true
 test	.apply	test.assert.eq	maybe.bool.ty	|	maybe.bool.≡	maybe.bool.fmtgs	actual	expected
 	.app	_test.branch.union.branch_test0_label	test
+	.enter	test.property.label
+
+_test.branch.union.branch_test1_c	.expr
+ordered.map.t	.tygvar
+natural.t	.tygvar
+bool.t	.tygvar
+maybe.t	.tygvar
+test.property.label	.gvar
+_test.branch.union.branch_test1_label	.gvar
+test.assert.eq	.gvar
+maybe.≡	.gvar
+bool.≡	.gvar
+maybe.fmtgs	.gvar
+bool.fmtgs	.gvar
+ordered.map.get	.gvar
+natural.compare	.gvar
+natural.2	.gvar
+maybe.just	.gvar
+bool.false	.gvar
+union	.fv	ordered.map.t	natural.t	bool.t
+maybe.bool.ty	.tylet	maybe.t	bool.t
+maybe.bool.≡	.apply	maybe.≡	bool.t	|	bool.≡
+maybe.bool.fmtgs	.apply	maybe.fmtgs	bool.t	|	bool.fmtgs
+actual	.apply	ordered.map.get	natural.t	bool.t	|	natural.compare	natural.2	union
+expected	.apply	maybe.just	bool.t	|	bool.false
+test	.apply	test.assert.eq	maybe.bool.ty	|	maybe.bool.≡	maybe.bool.fmtgs	actual	expected
+	.app	_test.branch.union.branch_test1_label	test
 	.enter	test.property.label
 
 # §section §gs{values empty}
