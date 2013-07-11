@@ -265,12 +265,17 @@ o0	.karg	order.total.ord.prim.u	# §gs{k0 `compare` k1}
 		.case	eq
 			.undef	ordered.map.t	k	v
 		.case	gt
-			.undef	ordered.map.t	k	v
+s3.0			.undefined	ordered.map.t	k	v	# Everything less than §gs{k1}
+s3.1			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k1} and less than §gs{k0}
+s4			.apply	ordered.map.prim.branch	k	v	|	k1	v1	s3.0	s3.1
+sr0			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k0}
+			.app	k0	v0	s4	sr0
+			.enter	ordered.map.prim.branch	k	v
 		.case	lt
 s3.0			.undefined	ordered.map.t	k	v	# Everything less than §gs{k0}
 s3.1			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k0} and less than §gs{k1}
 s3.2			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k1}
-s4			.apply	ordered.map.prim.branch	k	v	|	k0	v0	s3.0	s3.1	# Everything less than §gs{k1}
+s4			.apply	ordered.map.prim.branch	k	v	|	k0	v0	s3.0	s3.1
 			.app	k1	v1	s4	s3.2
 			.enter	ordered.map.prim.branch	k	v
 
