@@ -149,6 +149,7 @@ either.t	.tygvar	# Temp
 _gsac.gstype.kindcheck_app_right_exp_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check	.gvar
+ki.b	.fv	gsdl.cgs.gskind.t
 ki.e	.fv	gsdl.cgs.gskind.t
 ekix	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
 	.analyze	ekix	left	right
@@ -163,13 +164,22 @@ kix		.fkarg	0	gsdl.cgs.gskind.t
 			.enter	gsac.gskind.check
 
 _gsac.gstype.kindcheck_app_right_exp_right_k	.forcecont
+gsdl.cgs.gskind.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.gskind.t	.tygvar	# Temp
+either.right	.gvar
+ki.b	.fv	gsdl.cgs.gskind.t
 e0	.karg	either.prim.u	string.t	record.empty
-	.undef	either.t	string.t	gsdl.cgs.gskind.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
+		.case	right
+x		.fkarg	0	record.empty
+			.app	ki.b
+			.enter	either.right	string.t	gsdl.cgs.gskind.t
 
 _gsac.gstype.kindcheck_lift_k	.forcecont
 either.prim.u	.tygvar
