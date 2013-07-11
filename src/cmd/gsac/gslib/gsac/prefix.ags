@@ -39,7 +39,7 @@ gsac.prefix.typeitem.gsabstype.insert	.closure	_gsac.prefix.typeitem.gsabstype.i
 
 gsac.prefix.get	.closure	_gsac.prefix.get_c
 
-gsac.prefix.gskind.upconvert	.closure	_gsac.prefix.gskind.upconvert_c
+gsac.prefix.gskind.upconvert	.closure	_gsac.prefix.gskind.upconvert_c	_gsac.prefix.gskind.upconvert_ty
 
 gsac.prefix.item.name	.closure	_gsac.prefix.item.name_c
 
@@ -468,15 +468,16 @@ gsdl.ags.typeitem.gskind.prim.u	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar	# Temp
 gsdl.cgs.gskind.exp	.gvar
+gsac.prefix.gskind.upconvert	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
 	.analyze	ki0	exp	lifted
 		.case	exp
-ki0.0		.fkarg	0	gsdl.ags.typeitem.gskind.t
-ki0.1		.fkarg	1	gsdl.ags.typeitem.gskind.t
-ki0.0.cgs			.undefined	gsdl.cgs.gskind.t
-ki0.1.cgs			.undefined	gsdl.cgs.gskind.t
-			.app	ki0.0.cgs	ki0.1.cgs
+ki.b		.fkarg	0	gsdl.ags.typeitem.gskind.t
+ki.e		.fkarg	1	gsdl.ags.typeitem.gskind.t
+ki.b.cgs			.undefined	gsdl.cgs.gskind.t
+ki.e.cgs			.apply	gsac.prefix.gskind.upconvert	|	ki.e
+			.app	ki.b.cgs	ki.e.cgs
 			.enter	gsdl.cgs.gskind.exp
 		.case	lifted
 			.enter	gsdl.cgs.gskind.lifted
@@ -885,6 +886,15 @@ scc.ty	.tylet	graph.scc.t	gsac.prefix.item.t
 	.tyfun	gsdl.cgs.typeenv.t	# Accumulator
 	.tyfun	list.prim.u	scc.ty
 	.tyref	either.t	string.t	gsdl.cgs.typeenv.t
+
+# §section §gs{gsac.prefix.gskind.upconvert}
+
+_gsac.prefix.gskind.upconvert_ty	.tyexpr
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+	.tylift
+	.tyfun	gsdl.ags.typeitem.gskind.t
+	.tyref	gsdl.cgs.gskind.t
 
 	.coercion
 
