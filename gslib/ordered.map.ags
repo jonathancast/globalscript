@@ -190,12 +190,14 @@ map1	.larg	ordered.map.t	k	v
 	.enter	map0
 
 _ordered.map.∪_k0	.forcecont
+order.total.t	.tygvar
 ordered.map.t	.tygvar
 ordered.map.prim.u	.tygvar
 _ordered.map.∪_k1	.subcode
 ordered.map.t.out	.cogvar
 k	.tyfv	*
 v	.tyfv	*
+cmp	.fv	order.total.t	k
 map1	.fv	ordered.map.t	k	v
 map0.0	.karg	ordered.map.prim.u	k	v
 	.force	_ordered.map.∪_k1
@@ -203,12 +205,16 @@ map0.0	.karg	ordered.map.prim.u	k	v
 	.enter	map1
 
 _ordered.map.∪_k1	.forcecont
+order.total.t	.tygvar
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
+_ordered.map.∪_branch_branch_k	.subcode
+order.total.ord.t.out	.cogvar
 ordered.map.t.in	.cogvar
 ordered.map.empty	.gvar
 k	.tyfv	*
 v	.tyfv	*
+cmp	.fv	order.total.t	k
 map0.0	.fv	ordered.map.prim.u	k	v
 map1.0	.karg	ordered.map.prim.u	k	v
 	.analyze	map0.0	branch	empty
@@ -223,7 +229,10 @@ k1				.fkarg	0	k
 v1				.fkarg	1	v
 l1				.fkarg	2	ordered.map.t	k	v
 r1				.fkarg	3	ordered.map.t	k	v
-					.undef	ordered.map.t	k	v
+					.force	_ordered.map.∪_branch_branch_k
+					.coerce	order.total.ord.t.out
+					.app	k0	k1
+					.enter	cmp
 				.case	empty
 					.coerce	ordered.map.t.in	k	v
 					.lift
@@ -240,6 +249,30 @@ r1				.fkarg	3	ordered.map.t	k	v
 					.yield	map1.0
 				.case	empty
 					.enter	ordered.map.empty	k	v
+
+_ordered.map.∪_branch_branch_k	.forcecont
+order.total.ord.prim.u	.tygvar
+ordered.map.t	.tygvar	# Temp
+ordered.map.prim.branch	.gvar
+k	.tyfv	*
+v	.tyfv	*
+k0	.fv	k
+v0	.fv	v
+k1	.fv	k
+v1	.fv	v
+o0	.karg	order.total.ord.prim.u	# §gs{k0 `compare` k1}
+	.analyze	o0	eq	gt	lt
+		.case	eq
+			.undef	ordered.map.t	k	v
+		.case	gt
+			.undef	ordered.map.t	k	v
+		.case	lt
+s3.0			.undefined	ordered.map.t	k	v	# Everything less than §gs{k0}
+s3.1			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k0} and less than §gs{k1}
+s3.2			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k1}
+s4			.apply	ordered.map.prim.branch	k	v	|	k0	v0	s3.0	s3.1	# Everything less than §gs{k1}
+			.app	k1	v1	s4	s3.2
+			.enter	ordered.map.prim.branch	k	v
 
 # §section §gs{ordered.map.values}
 
