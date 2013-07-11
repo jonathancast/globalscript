@@ -3,6 +3,8 @@
 # Note: this library doesn't balance its binary trees;
 # that will need to be fixed but I want to see what the performance looks like directly first.
 
+# Based on Stephen Adams, §reftitle{Implementing Sets Efficiently in a Functional Language}
+
 	.data
 
 ordered.map.empty	.closure	_ordered.map.empty_c
