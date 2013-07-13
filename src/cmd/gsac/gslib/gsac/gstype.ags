@@ -500,10 +500,38 @@ res			.lrecord	nm	nm0	tyexprs	tyes
 
 _gsac.gstype.compileToApp_c	.expr
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gstype.compileToApp_res.ty	.tygvar	# Temp
+_gsac.gstype.compileToApp_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
 ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsac.gstype.compileToApp_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsac.gstype.compileToApp_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compile_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gstype.compileToApp_res.ty	.tygvar	# Temp
+_gsac.gstype.compileToApp_default_k	.subcode
+either.t.out	.cogvar
+_gsac.gstype.compile_w	.gvar
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	# > .danalyze	ty0
+		# > .default
+			.force	_gsac.gstype.compileToApp_default_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compile_res.ty
+			.app	ty0
+			.enter	_gsac.gstype.compile_w
+	# > :: either.t	string.t	_gsac.gstype.compileToApp_res.ty
+
+_gsac.gstype.compileToApp_default_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compile_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gstype.compileToApp_res.ty	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 
 # §section §gs{gsac.gstype.fields.compile}
