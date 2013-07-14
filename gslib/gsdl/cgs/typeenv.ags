@@ -12,6 +12,8 @@ gsdl.cgs.typeenv.gsabstypenm.insert	.closure	_gsdl.cgs.typeenv.gsabstypenm.inser
 
 gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
 
+gsdl.cgs.typeenv.typeexpansion.gsabstype	.closure	_gsdl.cgs.typeenv.typeexpansion.gsabstype_c
+
 	.code
 
 # §section §gs{gsdl.cgs.typeenv.gskind.get}
@@ -94,12 +96,13 @@ gsdl.cgs.typeenv.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar	# Temp
 ordered.map.insert	.gvar
 gsdl.var.compare	.gvar
+gsdl.cgs.typeenv.typeexpansion.gsabstype	.gvar
 v	.fv	gsdl.var.t
 ki	.fv	gsdl.cgs.gskind.t
 env0	.karg	gsdl.cgs.typeenv.u
 kis0	.field	kinds	env0
 kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
-e	.undefined	gsdl.cgs.typeenv.typeexpansion.t
+e	.apply	gsdl.cgs.typeenv.typeexpansion.gsabstype	|	v
 es0	.field	typeexpansions	env0
 es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
 r	.record	kinds	kis1	typeexpansions	es1	|	gsdl.cgs.typeenv.u
@@ -144,6 +147,18 @@ r	.record	kinds	kis2	typeexpansions	es2	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
 
+# §section §gs{gsdl.cgs.typeenv.typeexpansion.t} Constructors
+
+_gsdl.cgs.typeenv.typeexpansion.gsabstype_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t.in	.cogvar
+v	.larg	gsdl.var.t
+c	.constr	gsdl.cgs.typeenv.typeexpansion.prim.u	gsabstype	0	v
+	.coerce	gsdl.cgs.typeenv.typeexpansion.t.in
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{gsdl.cgs.typeenv.t}
@@ -170,9 +185,18 @@ gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
 	.tyref	gsdl.cgs.typeenv.typeexpansion.prim.u
 
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tyexpr
-	.tysum
+_gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty	.tygvar
+	.tysum	gsabstype	_gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty
+
+_gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty	.tyexpr
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
 
 	.coercion
+
+gsdl.cgs.typeenv.typeexpansion.t.in	.tycoercion
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+	.tydefinition	gsdl.cgs.typeenv.typeexpansion.t
 
 gsdl.cgs.typeenv.typeexpansion.t.out	.tycoercion
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar

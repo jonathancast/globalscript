@@ -89,14 +89,23 @@ env	.apply	gsdl.cgs.typeenv.gsabstypenm.insert	|	v	ki	gsdl.cgs.typeenv.empty
 _test_typeexpansion.get_exists_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
-test.true	.gvar
+_test_typeexpansion.get_exists_just_k	.subcode
+gsdl.cgs.typeenv.typeexpansion.t.out	.cogvar
 test.property.false	.gvar
 _test_typeexpansion.get_exists_nothing_lookup.failed.s	.gvar
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
 	.analyze	mb0	just	nothing
 		.case	just
-ki		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
-			.enter	test.true
+exp		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
+			.force	_test_typeexpansion.get_exists_just_k
+			.coerce	gsdl.cgs.typeenv.typeexpansion.t.out
+			.enter	exp
 		.case	nothing
 			.app	_test_typeexpansion.get_exists_nothing_lookup.failed.s
 			.enter	test.property.false
+
+_test_typeexpansion.get_exists_just_k	.forcecont
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+test.true	.gvar
+e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
+	.enter	test.true
