@@ -444,7 +444,24 @@ gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gstype.compile_res.ty	.tygvar	# Temp
+_gsac.gstype.compile_w_var_just_k	.subcode
+gsdl.cgs.typeenv.typeexpansion.t.out	.cogvar
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
+	.analyze	mb0	just	nothing
+		.case	just
+exp		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
+			.force	_gsac.gstype.compile_w_var_just_k
+			.coerce	gsdl.cgs.typeenv.typeexpansion.t.out
+			.enter	exp
+		.case	nothing
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+
+_gsac.gstype.compile_w_var_just_k	.forcecont
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gstype.compile_res.ty	.tygvar	# Temp
+e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
 	.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 
 # §section §gs{gsac.gstype.compileToGlobalVar}
