@@ -4,11 +4,15 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test_gskind.get_exists
+_tests	.list	test.property.t	_test_gskind.get_exists	_test_typeexpansion.get_exists
 
 _test_gskind.get_exists	.closure	_test_gskind.get_exists_c
 _test_gskind.get_exists_x.s	.string	x
 _test_gskind.get_exists_nothing_lookup.failed.s	.string	Should\shave\sbeen\sable\sto\sfind\sx\sbut\sdidn't
+
+_test_typeexpansion.get_exists	.closure	_test_typeexpansion.get_exists_c
+_test_typeexpansion.get_exists_x.s	.string	x
+_test_typeexpansion.get_exists_nothing_lookup.failed.s	.string	Should\shave\sbeen\sable\sto\sfind\sx\sbut\sdidn't
 
 	.code
 
@@ -55,4 +59,44 @@ ki		.fkarg	0	gsdl.cgs.gskind.t
 			.enter	test.true
 		.case	nothing
 			.app	_test_gskind.get_exists_nothing_lookup.failed.s
+			.enter	test.property.false
+
+# §section §gs{typeexpansion.get gsv{x} [x ⇒ abstype κ]}
+
+_test_typeexpansion.get_exists_c	.expr
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar	# Temp
+_test_typeexpansion.get_exists_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.get	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test_typeexpansion.get_exists_x.s	.gvar
+gsdl.cgs.typeenv.gsabstypenm.insert	.gvar
+gsdl.cgs.typeenv.empty	.gvar
+c0	.apply	gsdl.var.component.alphanum	|	_test_typeexpansion.get_exists_x.s
+cs	.apply	list.singleton	gsdl.var.component.t	|	c0
+v	.apply	gsdl.var.basevar	|	cs
+ki	.undefined	gsdl.cgs.gskind.t
+env	.apply	gsdl.cgs.typeenv.gsabstypenm.insert	|	v	ki	gsdl.cgs.typeenv.empty
+	.force	_test_typeexpansion.get_exists_k
+	.coerce	maybe.t.out	gsdl.cgs.typeenv.typeexpansion.t
+	.app	v	env
+	.enter	gsdl.cgs.typeenv.typeexpansion.get
+
+_test_typeexpansion.get_exists_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+test.true	.gvar
+test.property.false	.gvar
+_test_typeexpansion.get_exists_nothing_lookup.failed.s	.gvar
+mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
+	.analyze	mb0	just	nothing
+		.case	just
+ki		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
+			.enter	test.true
+		.case	nothing
+			.app	_test_typeexpansion.get_exists_nothing_lookup.failed.s
 			.enter	test.property.false
