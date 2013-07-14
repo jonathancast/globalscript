@@ -129,8 +129,7 @@ _gsdl.cgs.typeenv.overlay_k1	.forcecont
 gsdl.cgs.typeenv.u	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-ordered.map.t	.tygvar	# Temp
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar	# Temp
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 ordered.map.∪	.gvar
 gsdl.var.compare	.gvar
 env0.0	.fv	gsdl.cgs.typeenv.u
@@ -138,7 +137,9 @@ env1.0	.karg	gsdl.cgs.typeenv.u
 kis0	.field	kinds	env0.0
 kis1	.field	kinds	env1.0
 kis2	.apply	ordered.map.∪	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	kis0	kis1
-es2	.undefined	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
+es0	.field	typeexpansions	env0.0
+es1	.field	typeexpansions	env1.0
+es2	.apply	ordered.map.∪	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	es0	es1
 r	.record	kinds	kis2	typeexpansions	es2	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
