@@ -2,44 +2,15 @@
 
 	.data
 
-gsdl.cgs.typeenv.gskind.set	.closure	_gsdl.cgs.typeenv.gskind.set_c
 gsdl.cgs.typeenv.gskind.get	.closure	_gsdl.cgs.typeenv.gskind.get_c
 
 gsdl.cgs.typeenv.empty	.closure	_gsdl.cgs.typeenv.empty_c
 
-gsdl.cgs.typeenv.gsabstype.insert	.closure	_gsdl.cgs.typeenv.gsabstype.insert_c
+gsdl.cgs.typeenv.gsabstypenm.insert	.closure	_gsdl.cgs.typeenv.gsabstypenm.insert_c
 
 gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
 
 	.code
-
-# §section §gs{gsdl.cgs.typeenv.gskind.set}
-
-_gsdl.cgs.typeenv.gskind.set_c	.expr
-gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-gsdl.cgs.typeenv.t	.tygvar
-_gsdl.cgs.typeenv.gskind.set_k	.subcode
-v	.larg	gsdl.var.t
-ki	.larg	gsdl.cgs.gskind.t
-env	.larg	gsdl.cgs.typeenv.t
-	.force	_gsdl.cgs.typeenv.gskind.set_k
-	.enter	env
-
-_gsdl.cgs.typeenv.gskind.set_k	.forcecont
-gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-gsdl.cgs.typeenv.u	.tygvar
-ordered.map.insert	.gvar
-gsdl.var.compare	.gvar
-v	.fv	gsdl.var.t
-ki	.fv	gsdl.cgs.gskind.t
-env0	.karg	gsdl.cgs.typeenv.u
-ks0	.field	kinds	env0
-ks1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	ks0
-r	.record	kinds	ks1	|	gsdl.cgs.typeenv.u
-	.lift
-	.yield	r
 
 # §section §gs{gsdl.cgs.typeenv.gskind.get}
 
@@ -76,22 +47,20 @@ r	.record	kinds	kis	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.gsabstype.insert}
+# §section §gs{gsdl.cgs.typeenv.gsabstypenm.insert}
 
-_gsdl.cgs.typeenv.gsabstype.insert_c	.expr
+_gsdl.cgs.typeenv.gsabstypenm.insert_c	.expr
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-_gsdl.cgs.typeenv.gsabstype.insert_k	.subcode
+_gsdl.cgs.typeenv.gsabstypenm.insert_k	.subcode
 v	.larg	gsdl.var.t
 ki	.larg	gsdl.cgs.gskind.t
-defn	.larg	gsdl.cgs.gstype.t
 env	.larg	gsdl.cgs.typeenv.t
-	.force	_gsdl.cgs.typeenv.gsabstype.insert_k
+	.force	_gsdl.cgs.typeenv.gsabstypenm.insert_k
 	.enter	env
 
-_gsdl.cgs.typeenv.gsabstype.insert_k	.forcecont
+_gsdl.cgs.typeenv.gsabstypenm.insert_k	.forcecont
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
