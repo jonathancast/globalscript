@@ -171,3 +171,10 @@ gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
 
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tyexpr
 	.tysum
+
+	.coercion
+
+gsdl.cgs.typeenv.typeexpansion.t.out	.tycoercion
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.typeenv.typeexpansion.t
