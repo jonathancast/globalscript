@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.parse.tyabstract	_test.parse.tyexpr	_test.parse.tyexpr.tylet	_test.parse.tyexpr.tyforall	_test.parse.tyexpr.tyfun	_test.parse.tyexpr.typroduct	_test.parse.tyexpr.tyubsum	_test.parse.tydefinedprim
+_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.parse
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.type\\n}\s=~\ssegment.parser
@@ -18,38 +18,43 @@ _test.parse.kind.exp	.closure	_test.parse.kind.exp_c
 _test.parse.kind.exp_label	.string	qq{**^}\s=~\sgskind.parser
 _test.parse.kind.exp_input	.string	**^
 
-_test.parse.tyabstract	.closure	_test.parse.tyabstract_c
-_test.parse.tyabstract_label	.string	qq{ibio.dir.t\\t.tyabstract\\t*\\n\\t.tyref\\tα\\n}\s=~\sparser
-_test.parse.tyabstract_input	.string	ibio.dir.t\t.tyabstract\t*\n\t.tyref\tα\n
-_test.parse.tyabstract_wrong.constr.s	.string	Wrong\sconstructor;\sexpected\styabstract
+_test.parse	.closure	_test.parse_c
+_test.parse_label	.string	parser
 
-_test.parse.tyexpr	.closure	_test.parse.tyexpr_c
-_test.parse.tyexpr_label	.string	qq{ibio.dir.u\\t.tyexpr\\n\\t.tyref\\tα\\n}\s=~\sparser
-_test.parse.tyexpr_input	.string	ibio.dir.u\t.tyexpr\n\t.tyref\tα\n
+_tests.parse	.list	test.property.t	_test.parse_tyabstract	_test.parse_tyexpr	_test.parse_tyexpr.tylet	_test.parse_tyexpr.tyforall	_test.parse_tyexpr.tyfun	_test.parse_tyexpr.typroduct	_test.parse_tyexpr.tyubsum	_test.parse_tydefinedprim
 
-_test.parse.tyexpr.tylet	.closure	_test.parse.tyexpr.tylet_c
-_test.parse.tyexpr.tylet_label	.string	qq{ibio.dir.u\\t.tyexpr\\n_string.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser
-_test.parse.tyexpr.tylet_input	.string	ibio.dir.u\t.tyexpr\n_string.ty\t.tylet\tlist.t\trune.t\n\t.tyref\tα\n
+_test.parse_tyabstract	.closure	_test.parse_tyabstract_c
+_test.parse_tyabstract_label	.string	qq{ibio.dir.t\\t.tyabstract\\t*\\n\\t.tyref\\tα\\n}\s=~\sparser
+_test.parse_tyabstract_input	.string	ibio.dir.t\t.tyabstract\t*\n\t.tyref\tα\n
+_test.parse_tyabstract_wrong.constr.s	.string	Wrong\sconstructor;\sexpected\styabstract
 
-_test.parse.tyexpr.tyforall	.closure	_test.parse.tyexpr.tyforall_c
-_test.parse.tyexpr.tyforall_label	.string	qq{_ibio.mapM.prim_ty\\t.tyexpr\\nα\\t.tyforall\\t*\\n\\t.tyref\\tibio.prim.t\\tres.ty\\n}\s=~\sparser
-_test.parse.tyexpr.tyforall_input	.string	_ibio.mapM.prim_ty\t.tyexpr\nα\t.tyforall\t*\n\t.tyref\tibio.prim.t\tres.ty\n
+_test.parse_tyexpr	.closure	_test.parse_tyexpr_c
+_test.parse_tyexpr_label	.string	qq{ibio.dir.u\\t.tyexpr\\n\\t.tyref\\tα\\n}\s=~\sparser
+_test.parse_tyexpr_input	.string	ibio.dir.u\t.tyexpr\n\t.tyref\tα\n
 
-_test.parse.tydefinedprim	.closure	_test.parse.tydefinedprim_c
-_test.parse.tydefinedprim_label	.string	qq{rune.prim.rune\\t.tydefinedprim\\trune.prim\\trune\\t*\\n}\s=~\sparser
-_test.parse.tydefinedprim_input	.string	rune.prim.rune\t.tydefinedprim\trune.prim\trune\t*\n
+_test.parse_tyexpr.tylet	.closure	_test.parse_tyexpr.tylet_c
+_test.parse_tyexpr.tylet_label	.string	qq{ibio.dir.u\\t.tyexpr\\n_string.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser
+_test.parse_tyexpr.tylet_input	.string	ibio.dir.u\t.tyexpr\n_string.ty\t.tylet\tlist.t\trune.t\n\t.tyref\tα\n
 
-_test.parse.tyexpr.tyfun	.closure	_test.parse.tyexpr.tyfun_c
-_test.parse.tyexpr.tyfun_label	.string	qq{\\t.tyfun\\tibio.prim.iport\\tι\\n\\t.tyref\\tibio.prim.m\\n}\s=~\sexpr.parser
-_test.parse.tyexpr.tyfun_input	.string	\t.tyfun\tibio.prim.iport\tι\n\t.tyref\tibio.prim.m\n
+_test.parse_tyexpr.tyforall	.closure	_test.parse_tyexpr.tyforall_c
+_test.parse_tyexpr.tyforall_label	.string	qq{_ibio.mapM.prim_ty\\t.tyexpr\\nα\\t.tyforall\\t*\\n\\t.tyref\\tibio.prim.t\\tres.ty\\n}\s=~\sparser
+_test.parse_tyexpr.tyforall_input	.string	_ibio.mapM.prim_ty\t.tyexpr\nα\t.tyforall\t*\n\t.tyref\tibio.prim.t\tres.ty\n
 
-_test.parse.tyexpr.typroduct	.closure	_test.parse.tyexpr.typroduct_c
-_test.parse.tyexpr.typroduct_label	.string	qq{\\t.typroduct\\tatime\\ttime.t\\n}\s=~\sexpr.parser
-_test.parse.tyexpr.typroduct_input	.string	\t.typroduct\tatime\ttime.t\n
+_test.parse_tyexpr.tyfun	.closure	_test.parse_tyexpr.tyfun_c
+_test.parse_tyexpr.tyfun_label	.string	qq{\\t.tyfun\\tibio.prim.iport\\tι\\n\\t.tyref\\tibio.prim.m\\n}\s=~\sexpr.parser
+_test.parse_tyexpr.tyfun_input	.string	\t.tyfun\tibio.prim.iport\tι\n\t.tyref\tibio.prim.m\n
 
-_test.parse.tyexpr.tyubsum	.closure	_test.parse.tyexpr.tyubsum_c
-_test.parse.tyexpr.tyubsum_label	.string	qq{\\t.tyubsum\\t0\\trecord.unboxed.empty\\n}\s=~\sexpr.parser
-_test.parse.tyexpr.tyubsum_input	.string	\t.tyubsum\t0\trecord.unboxed.empty\n
+_test.parse_tyexpr.typroduct	.closure	_test.parse_tyexpr.typroduct_c
+_test.parse_tyexpr.typroduct_label	.string	qq{\\t.typroduct\\tatime\\ttime.t\\n}\s=~\sexpr.parser
+_test.parse_tyexpr.typroduct_input	.string	\t.typroduct\tatime\ttime.t\n
+
+_test.parse_tyexpr.tyubsum	.closure	_test.parse_tyexpr.tyubsum_c
+_test.parse_tyexpr.tyubsum_label	.string	qq{\\t.tyubsum\\t0\\trecord.unboxed.empty\\n}\s=~\sexpr.parser
+_test.parse_tyexpr.tyubsum_input	.string	\t.tyubsum\t0\trecord.unboxed.empty\n
+
+_test.parse_tydefinedprim	.closure	_test.parse_tydefinedprim_c
+_test.parse_tydefinedprim_label	.string	qq{rune.prim.rune\\t.tydefinedprim\\trune.prim\\trune\\t*\\n}\s=~\sparser
+_test.parse_tydefinedprim_input	.string	rune.prim.rune\t.tydefinedprim\trune.prim\trune\t*\n
 
 	.code
 
@@ -154,34 +159,45 @@ test.true	.gvar
 ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
 	.enter	test.true
 
-# §section §gs{qq{ibio.dir.t\\t.tyabstract\\t*\\n\\t.tyref\\tα\\n} =~ parser}
+# §section §gs{parser}
 
-_test.parse.tyabstract_c	.expr
+_test.parse_c	.expr
+test.property.label	.gvar
+_test.parse_label	.gvar
+test.all	.gvar
+_tests.parse	.gvar
+test	.apply	test.all	|	_tests.parse
+	.app	_test.parse_label	test
+	.enter	test.property.label
+
+# §subsection §gs{qq{ibio.dir.t\\t.tyabstract\\t*\\n\\t.tyref\\tα\\n} =~ parser}
+
+_test.parse_tyabstract_c	.expr
 rune.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-_test.parse.tyabstract_k_c	.subcode
+_test.parse_tyabstract_k_c	.subcode
 test.property.label	.gvar
-_test.parse.tyabstract_label	.gvar
+_test.parse_tyabstract_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
-_test.parse.tyabstract_input	.gvar
-k	.alloc	_test.parse.tyabstract_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse.tyabstract_input	k
-	.app	_test.parse.tyabstract_label	test
+_test.parse_tyabstract_input	.gvar
+k	.alloc	_test.parse_tyabstract_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyabstract_input	k
+	.app	_test.parse_tyabstract_label	test
 	.enter	test.property.label
 
-_test.parse.tyabstract_k_c	.expr
+_test.parse_tyabstract_k_c	.expr
 gsdl.ags.typeitem.t	.tygvar
-_test.parse.tyabstract_k_k	.subcode
+_test.parse_tyabstract_k_k	.subcode
 gsdl.ags.typeitem.t.out	.cogvar
 ti	.larg	gsdl.ags.typeitem.t
-	.force	_test.parse.tyabstract_k_k
+	.force	_test.parse_tyabstract_k_k
 	.coerce	gsdl.ags.typeitem.t.out
 	.enter	ti
 
-_test.parse.tyabstract_k_k	.forcecont
+_test.parse_tyabstract_k_k	.forcecont
 gsdl.ags.typeitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
@@ -189,12 +205,12 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 test.property.false	.gvar
-_test.parse.tyabstract_wrong.constr.s	.gvar
+_test.parse_tyabstract_wrong.constr.s	.gvar
 test.true	.gvar
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.danalyze	ti0	tyabstract
 		.default
-			.app	_test.parse.tyabstract_wrong.constr.s
+			.app	_test.parse_tyabstract_wrong.constr.s
 			.enter	test.property.false
 		.case	tyabstract
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -204,189 +220,189 @@ ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 defn		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.enter	test.true
 
-# §section §gs{qq{ibio.dir.u\\t.tyexpr\\n\\t.tyref\\tα\\n}\s=~\sparser}
+# §subsection §gs{qq{ibio.dir.u\\t.tyexpr\\n\\t.tyref\\tα\\n}\s=~\sparser}
 
-_test.parse.tyexpr_c	.expr
+_test.parse_tyexpr_c	.expr
 rune.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-_test.parse.tyexpr_k_c	.subcode
+_test.parse_tyexpr_k_c	.subcode
 test.property.label	.gvar
-_test.parse.tyexpr_label	.gvar
+_test.parse_tyexpr_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
-_test.parse.tyexpr_input	.gvar
-k	.alloc	_test.parse.tyexpr_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse.tyexpr_input	k
-	.app	_test.parse.tyexpr_label	test
+_test.parse_tyexpr_input	.gvar
+k	.alloc	_test.parse_tyexpr_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyexpr_input	k
+	.app	_test.parse_tyexpr_label	test
 	.enter	test.property.label
 
-_test.parse.tyexpr_k_c	.expr
+_test.parse_tyexpr_k_c	.expr
 gsdl.ags.typeitem.t	.tygvar
-_test.parse.tyexpr_k_k	.subcode
+_test.parse_tyexpr_k_k	.subcode
 gsdl.ags.typeitem.t.out	.cogvar
 ti	.larg	gsdl.ags.typeitem.t
-	.force	_test.parse.tyexpr_k_k
+	.force	_test.parse_tyexpr_k_k
 	.coerce	gsdl.ags.typeitem.t.out
 	.enter	ti
 
-_test.parse.tyexpr_k_k	.forcecont
+_test.parse_tyexpr_k_k	.forcecont
 gsdl.ags.typeitem.prim.u	.tygvar
 test.true	.gvar
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.enter	test.true
 
-# §section §gs{qq{ibio.dir.u\\t.tyexpr\\n_string.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser}
+# §subsection §gs{qq{ibio.dir.u\\t.tyexpr\\n_string.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser}
 
-_test.parse.tyexpr.tylet_c	.expr
+_test.parse_tyexpr.tylet_c	.expr
 rune.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-_test.parse.tyexpr.tylet_k_c	.subcode
+_test.parse_tyexpr.tylet_k_c	.subcode
 test.property.label	.gvar
-_test.parse.tyexpr.tylet_label	.gvar
+_test.parse_tyexpr.tylet_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
-_test.parse.tyexpr.tylet_input	.gvar
-k	.alloc	_test.parse.tyexpr.tylet_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse.tyexpr.tylet_input	k
-	.app	_test.parse.tyexpr.tylet_label	test
+_test.parse_tyexpr.tylet_input	.gvar
+k	.alloc	_test.parse_tyexpr.tylet_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyexpr.tylet_input	k
+	.app	_test.parse_tyexpr.tylet_label	test
 	.enter	test.property.label
 
-_test.parse.tyexpr.tylet_k_c	.expr
+_test.parse_tyexpr.tylet_k_c	.expr
 gsdl.ags.typeitem.t	.tygvar
 test.true	.gvar
 ti	.larg	gsdl.ags.typeitem.t
 	.enter	test.true
 
-# §section §gs{qq{_ibio.mapM.prim_ty\\t.tyexpr\\nα\\t.tyforall\\t*\\n\\t.tyref\\tibio.prim.t\\tres.ty\\n} =~ expr.parser}
+# §subsection §gs{qq{_ibio.mapM.prim_ty\\t.tyexpr\\nα\\t.tyforall\\t*\\n\\t.tyref\\tibio.prim.t\\tres.ty\\n} =~ expr.parser}
 
-_test.parse.tyexpr.tyforall_c	.expr
+_test.parse_tyexpr.tyforall_c	.expr
 rune.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-_test.parse.tyexpr.tyforall_k_c	.subcode
+_test.parse_tyexpr.tyforall_k_c	.subcode
 test.property.label	.gvar
-_test.parse.tyexpr.tyforall_label	.gvar
+_test.parse_tyexpr.tyforall_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
-_test.parse.tyexpr.tyforall_input	.gvar
-k	.alloc	_test.parse.tyexpr.tyforall_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse.tyexpr.tyforall_input	k
-	.app	_test.parse.tyexpr.tyforall_label	test
+_test.parse_tyexpr.tyforall_input	.gvar
+k	.alloc	_test.parse_tyexpr.tyforall_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyexpr.tyforall_input	k
+	.app	_test.parse_tyexpr.tyforall_label	test
 	.enter	test.property.label
 
-_test.parse.tyexpr.tyforall_k_c	.expr
+_test.parse_tyexpr.tyforall_k_c	.expr
 gsdl.ags.typeitem.t	.tygvar
 test.true	.gvar
 ki	.larg	gsdl.ags.typeitem.t
 	.enter	test.true
 
-# §section §gs{qq{rune.prim.rune\\t.tydefinedprim\\trune.prim\\trune\\t*\\n} =~ expr.parser}
+# §subsection §gs{qq{\\t.tyfun\\tibio.prim.iport\\tι\\n\\t.tyref\\tibio.prim.m\\n} =~ expr.parser}
 
-_test.parse.tydefinedprim_c	.expr
+_test.parse_tyexpr.tyfun_c	.expr
+rune.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+_test.parse_tyexpr.tyfun_k_c	.subcode
+test.property.label	.gvar
+_test.parse_tyexpr.tyfun_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.typeitem.expr.parser	.gvar
+_test.parse_tyexpr.tyfun_input	.gvar
+k	.alloc	_test.parse_tyexpr.tyfun_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.expr.parser	_test.parse_tyexpr.tyfun_input	k
+	.app	_test.parse_tyexpr.tyfun_label	test
+	.enter	test.property.label
+
+_test.parse_tyexpr.tyfun_k_c	.expr
+gsdl.ags.typeitem.expr.t	.tygvar
+test.true	.gvar
+ki	.larg	gsdl.ags.typeitem.expr.t
+	.enter	test.true
+
+# §subsection §gs{qq{\\t.typroduct\\tatime\\ttime.t\\n} =~ expr.parser}
+
+_test.parse_tyexpr.typroduct_c	.expr
+rune.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+_test.parse_tyexpr.typroduct_k_c	.subcode
+test.property.label	.gvar
+_test.parse_tyexpr.typroduct_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.typeitem.expr.parser	.gvar
+_test.parse_tyexpr.typroduct_input	.gvar
+k	.alloc	_test.parse_tyexpr.typroduct_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.expr.parser	_test.parse_tyexpr.typroduct_input	k
+	.app	_test.parse_tyexpr.typroduct_label	test
+	.enter	test.property.label
+
+_test.parse_tyexpr.typroduct_k_c	.expr
+gsdl.ags.typeitem.expr.t	.tygvar
+test.true	.gvar
+ki	.larg	gsdl.ags.typeitem.expr.t
+	.enter	test.true
+
+# §subsection §gs{qq{\\t.tyubsum\\t0\\trecord.unboxed.empty\\n} =~ expr.parser}
+
+_test.parse_tyexpr.tyubsum_c	.expr
+rune.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+_test.parse_tyexpr.tyubsum_k_c	.subcode
+test.property.label	.gvar
+_test.parse_tyexpr.tyubsum_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.typeitem.expr.parser	.gvar
+_test.parse_tyexpr.tyubsum_input	.gvar
+k	.alloc	_test.parse_tyexpr.tyubsum_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.expr.parser	_test.parse_tyexpr.tyubsum_input	k
+	.app	_test.parse_tyexpr.tyubsum_label	test
+	.enter	test.property.label
+
+_test.parse_tyexpr.tyubsum_k_c	.expr
+gsdl.ags.typeitem.expr.t	.tygvar
+test.true	.gvar
+ki	.larg	gsdl.ags.typeitem.expr.t
+	.enter	test.true
+
+# §subsection §gs{qq{rune.prim.rune\\t.tydefinedprim\\trune.prim\\trune\\t*\\n} =~ expr.parser}
+
+_test.parse_tydefinedprim_c	.expr
 rune.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-_test.parse.tydefinedprim_k_c	.subcode
+_test.parse_tydefinedprim_k_c	.subcode
 test.property.label	.gvar
-_test.parse.tydefinedprim_label	.gvar
+_test.parse_tydefinedprim_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
-_test.parse.tydefinedprim_input	.gvar
-k	.alloc	_test.parse.tydefinedprim_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse.tydefinedprim_input	k
-	.app	_test.parse.tydefinedprim_label	test
+_test.parse_tydefinedprim_input	.gvar
+k	.alloc	_test.parse_tydefinedprim_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tydefinedprim_input	k
+	.app	_test.parse_tydefinedprim_label	test
 	.enter	test.property.label
 
-_test.parse.tydefinedprim_k_c	.expr
+_test.parse_tydefinedprim_k_c	.expr
 gsdl.ags.typeitem.t	.tygvar
-_test.parse.tydefinedprim_k_k	.subcode
+_test.parse_tydefinedprim_k_k	.subcode
 gsdl.ags.typeitem.t.out	.cogvar
 ti	.larg	gsdl.ags.typeitem.t
-	.force	_test.parse.tydefinedprim_k_k
+	.force	_test.parse_tydefinedprim_k_k
 	.coerce	gsdl.ags.typeitem.t.out
 	.enter	ti
 
-_test.parse.tydefinedprim_k_k	.forcecont
+_test.parse_tydefinedprim_k_k	.forcecont
 gsdl.ags.typeitem.prim.u	.tygvar
 test.true	.gvar
 ti0	.karg	gsdl.ags.typeitem.prim.u
-	.enter	test.true
-
-# §section §gs{qq{\\t.tyfun\\tibio.prim.iport\\tι\\n\\t.tyref\\tibio.prim.m\\n} =~ expr.parser}
-
-_test.parse.tyexpr.tyfun_c	.expr
-rune.t	.tygvar
-gsdl.ags.typeitem.expr.t	.tygvar
-_test.parse.tyexpr.tyfun_k_c	.subcode
-test.property.label	.gvar
-_test.parse.tyexpr.tyfun_label	.gvar
-parser.test.assert.passes	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-gsdl.ags.typeitem.expr.parser	.gvar
-_test.parse.tyexpr.tyfun_input	.gvar
-k	.alloc	_test.parse.tyexpr.tyfun_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.expr.parser	_test.parse.tyexpr.tyfun_input	k
-	.app	_test.parse.tyexpr.tyfun_label	test
-	.enter	test.property.label
-
-_test.parse.tyexpr.tyfun_k_c	.expr
-gsdl.ags.typeitem.expr.t	.tygvar
-test.true	.gvar
-ki	.larg	gsdl.ags.typeitem.expr.t
-	.enter	test.true
-
-# §section §gs{qq{\\t.typroduct\\tatime\\ttime.t\\n} =~ expr.parser}
-
-_test.parse.tyexpr.typroduct_c	.expr
-rune.t	.tygvar
-gsdl.ags.typeitem.expr.t	.tygvar
-_test.parse.tyexpr.typroduct_k_c	.subcode
-test.property.label	.gvar
-_test.parse.tyexpr.typroduct_label	.gvar
-parser.test.assert.passes	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-gsdl.ags.typeitem.expr.parser	.gvar
-_test.parse.tyexpr.typroduct_input	.gvar
-k	.alloc	_test.parse.tyexpr.typroduct_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.expr.parser	_test.parse.tyexpr.typroduct_input	k
-	.app	_test.parse.tyexpr.typroduct_label	test
-	.enter	test.property.label
-
-_test.parse.tyexpr.typroduct_k_c	.expr
-gsdl.ags.typeitem.expr.t	.tygvar
-test.true	.gvar
-ki	.larg	gsdl.ags.typeitem.expr.t
-	.enter	test.true
-
-# §section §gs{qq{\\t.tyubsum\\t0\\trecord.unboxed.empty\\n} =~ expr.parser}
-
-_test.parse.tyexpr.tyubsum_c	.expr
-rune.t	.tygvar
-gsdl.ags.typeitem.expr.t	.tygvar
-_test.parse.tyexpr.tyubsum_k_c	.subcode
-test.property.label	.gvar
-_test.parse.tyexpr.tyubsum_label	.gvar
-parser.test.assert.passes	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-gsdl.ags.typeitem.expr.parser	.gvar
-_test.parse.tyexpr.tyubsum_input	.gvar
-k	.alloc	_test.parse.tyexpr.tyubsum_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.expr.parser	_test.parse.tyexpr.tyubsum_input	k
-	.app	_test.parse.tyexpr.tyubsum_label	test
-	.enter	test.property.label
-
-_test.parse.tyexpr.tyubsum_k_c	.expr
-gsdl.ags.typeitem.expr.t	.tygvar
-test.true	.gvar
-ki	.larg	gsdl.ags.typeitem.expr.t
 	.enter	test.true
 
