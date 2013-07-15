@@ -278,10 +278,14 @@ cs1.ds			.apply	list.foldr	diff.list.rune.ty	diff.list.rune.ty	|	diff.list.rune.
 
 _gsdl.ags.syntax.var.print_w_basevar_:_f_c	.expr
 gsdl.var.component.t	.tygvar
-diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+rune.t	.tygvar
+diff.list.:	.gvar
+rune.dot	.gvar
+gsdl.ags.syntax.var.component.print	.gvar
 c	.larg	gsdl.var.component.t
-	.undef	diff.list.t	rune.t
+c.ds	.apply	gsdl.ags.syntax.var.component.print	|	c
+	.app	rune.dot	c.ds
+	.enter	diff.list.:	rune.t
 
 _gsdl.ags.syntax.var.print_w_constructed_f_c	.expr
 bool.prim.u	.tygvar
