@@ -458,11 +458,16 @@ exp		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
 
 _gsac.gstype.compile_w_var_just_k	.forcecont
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gstype.compile_res.ty	.tygvar	# Temp
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+	.analyze	e0	gsabstype
+		.case	gsabstype
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+	# > :: either.t	string.t	_gsac.gstype.compile_res.ty
 
 # §section §gs{gsac.gstype.compileToGlobalVar}
 
