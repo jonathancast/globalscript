@@ -11,12 +11,14 @@
 \newcommand\provides\rhd
 \newcommand\match\propto
 
+\hscommand\from{\leftarrow}
+
 \newcommand\type{\hskwd{type}}
 \newcommand\module{\hskwd{module}}
 \newcommand\view{\hskwd{view}}
 \newcommand\analyze{\hskwd{analyze}}
 \newcommand\case{\hskwd{case}}
-\newcommand\for{\hskwd{for}}
+\hscommand\for{\hskwd{for}}
 \newcommand\gslambda{\hskwd{\lambda}}
 \hscommand\where{\hskwd{where}}
 \hscommand\rec{\hskwd{rec}}
@@ -161,6 +163,37 @@ Applications have the rule:
     \AxiomC{$\Gamma \sequent e_1 :: \tau_1 \to \tau_2$}
     \AxiomC{$\Gamma \sequent e_2 :: \tau_1$}
     \BinaryInfC{$\Gamma \sequent e_1\hsap e_2 :: \tau_2$}
+\end{prooftree}
+
+\section{\kwd{for} Expressions}
+
+\<\for\> expressions are used to make local definitions within an expression.
+The syntax is \<\inlinefor{\hsinf{generators}}{\hsinf{body expression}}\>.
+The generators in a \<\for\> are non-recursive, but cannot shadow variables defined in the same \<\for\>.
+
+In the simplest case, the generators in a \<\for\> are all let and (non-monoidal) match generators.
+\begin{prooftree}
+    \AxiomC{\<\Gamma \sequent \overline{g_i} \provides \Gamma'\>}
+    \AxiomC{\<\Gamma, \Gamma', \sequent e :: \tau\>}
+    \BinaryInfC{\<\Gamma \sequent (\inlinefor{\overline{g_i}}{e}) :: \tau\>}
+\end{prooftree}
+
+\<\for\> can also be used to name intermediate values inside a monad.
+E.g. \<\inlinefor{'x \from e_0}{e_1}\>.
+The type rule for this is
+\begin{prooftree}
+    \AxiomC{\<\Gamma \sequent \module\;monad.c\;m\>}
+    \AxiomC{\<\Gamma \sequent \overline{g_i} \provides_m \Gamma'\>}
+    \AxiomC{\<\Gamma, \Gamma', \sequent e :: m\;\tau\>}
+    \TrinaryInfC{\<\Gamma \sequent \inlinefor{\overline{g_i}}{e} :: m\;\tau\>}
+\end{prooftree}
+
+As might be expected, the monad structure to use in de-sugaring this syntax can be over-ridden:
+\begin{prooftree}
+    \AxiomC{\<\Gamma \sequent mon :: monad.t\;m\>}
+    \AxiomC{\<\Gamma \sequent \overline{g_i} \provides_m \Gamma'\>}
+    \AxiomC{\<\Gamma, \Gamma', \sequent e :: m\;\tau\>}
+    \TrinaryInfC{\<\Gamma \sequent \for\;@{}mon\;(\overline{g_i})\;e :: m\;\tau\>}
 \end{prooftree}
 
 \section{Branch Expressions}
