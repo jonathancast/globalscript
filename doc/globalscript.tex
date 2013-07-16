@@ -196,6 +196,9 @@ As might be expected, the monad structure to use in de-sugaring this syntax can 
     \TrinaryInfC{\<\Gamma \sequent \for\;@{}mon\;(\overline{g_i})\;e :: m\;\tau\>}
 \end{prooftree}
 
+The sequence of generators inside the \<()\> in a \<\for\> can either be a single generator or a sequence of 0 or more generators terminated by semi-colons.
+In the special case of a single \<\rec\> generator, the syntax \<\for\;(\rec(\overline{g_i}))\> can be abreviated to \<\for\;\rec\;(\overline{g_i})\>.
+
 \section{Branch Expressions}
 
 An \<\analyze\> expression,
