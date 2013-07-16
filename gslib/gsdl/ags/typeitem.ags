@@ -42,6 +42,7 @@ _gsdl.ags.typeitem.expr.parser_tyubsum.p_tyubsum.re	.regex	.tyubsum
 gsdl.ags.typeitem.expr.print	.closure	_gsdl.ags.typeitem.expr.print_c	_gsdl.ags.typeitem.expr.print_ty
 _gsdl.ags.typeitem.expr.print_tylift.s	.string	\t.tylift\n
 _gsdl.ags.typeitem.expr.print_typroduct.s	.string	\t.typroduct
+_gsdl.ags.typeitem.expr.print_tyref_tyref.s	.string	\t.tyref
 
 _gsdl.ags.typeitem.expr.print_fields.print	.closure	_gsdl.ags.typeitem.expr.print_fields.print_c	_gsdl.ags.typeitem.expr.print_fields.print_ty
 _gsdl.ags.typeitem.expr.print_fields.print_nl.s	.string	\n
@@ -54,6 +55,7 @@ gsdl.ags.typeitem.tyexpr	.closure	_gsdl.ags.typeitem.tyexpr_c
 
 gsdl.ags.typeitem.expr.lift	.closure	_gsdl.ags.typeitem.expr.lift_c
 gsdl.ags.typeitem.expr.product	.closure	_gsdl.ags.typeitem.expr.product_c
+gsdl.ags.typeitem.expr.tyref	.closure	_gsdl.ags.typeitem.expr.tyref_c
 
 gsdl.ags.typeitem.gskind.lifted	.closure	_gsdl.ags.typeitem.gskind.lifted_c
 gsdl.ags.typeitem.gskind.exp	.closure	_gsdl.ags.typeitem.gskind.exp_c
@@ -909,8 +911,10 @@ gsdl.ags.typeitem.expr.prim.u	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
-diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+gsdl.var.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+_gsdl.ags.typeitem.expr.print_tyref_as.dss.f_c	.subcode
 # §paragraph{§gs{lift}}
 diff.list.prepend	.gvar
 _gsdl.ags.typeitem.expr.print_tylift.s	.gvar
@@ -918,8 +922,19 @@ gsdl.ags.typeitem.expr.print	.gvar
 # §paragraph{§gs{product}}
 _gsdl.ags.typeitem.expr.print_typroduct.s	.gvar
 _gsdl.ags.typeitem.expr.print_fields.print	.gvar
+# §paragraph{§gs{tyref}}
+_gsdl.ags.typeitem.expr.print_tyref_tyref.s	.gvar
+diff.list.:	.gvar
+rune.tab	.gvar
+gsdl.ags.syntax.var.print	.gvar
+diff.list.<>	.gvar
+diff.list.concat	.gvar
+list.map	.gvar
+diff.list.singleton	.gvar
+rune.new.line	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
 exp0	.karg	gsdl.ags.typeitem.expr.prim.u
-	.analyze	exp0	lift	product
+	.analyze	exp0	lift	product	tyref
 		.case	lift
 exp1		.fkarg	0	gsdl.ags.typeitem.expr.t
 s1			.apply	gsdl.ags.typeitem.expr.print	|	exp1
@@ -930,7 +945,27 @@ fs		.fkarg	0	list.t	gsdl.ags.typeitem.field.t
 s1			.apply	_gsdl.ags.typeitem.expr.print_fields.print	|	fs
 			.app	_gsdl.ags.typeitem.expr.print_typroduct.s	s1
 			.enter	diff.list.prepend	rune.t
+		.case	tyref
+f		.fkarg	0	gsdl.var.t
+as		.fkarg	1	list.t	gsdl.var.t
+ds3			.apply	diff.list.singleton	rune.t	|	rune.new.line
+as.dss.f			.alloc	_gsdl.ags.typeitem.expr.print_tyref_as.dss.f_c
+as.dss			.apply	list.map	gsdl.var.t	diff.list.rune.ty	|	as.dss.f	as
+as.ds			.apply	diff.list.concat	rune.t	|	as.dss
+ds2			.apply	diff.list.<>	rune.t	|	as.ds	ds3
+f.s			.apply	gsdl.ags.syntax.var.print	|	f
+ds1			.apply	diff.list.prepend	rune.t	|	f.s	ds2
+ds			.apply	diff.list.:	rune.t	|	rune.tab	ds1
+			.app	_gsdl.ags.typeitem.expr.print_tyref_tyref.s	ds
+			.enter	diff.list.prepend	rune.t
 	# > :: diff.list.t	rune.t
+
+_gsdl.ags.typeitem.expr.print_tyref_as.dss.f_c	.expr
+gsdl.var.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+v	.larg	gsdl.var.t
+	.undef	diff.list.t	rune.t
 
 _gsdl.ags.typeitem.expr.print_fields.print_c	.expr
 list.t	.tygvar
@@ -1064,6 +1099,18 @@ c	.constr	gsdl.ags.typeitem.expr.prim.u	product	0	fs
 	.lift
 	.yield	c
 
+_gsdl.ags.typeitem.expr.tyref_c	.expr
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.expr.prim.u	.tygvar
+gsdl.ags.typeitem.expr.t.in	.cogvar
+f	.arg	gsdl.var.t
+as	.arg	list.t	gsdl.var.t
+c	.constr	gsdl.ags.typeitem.expr.prim.u	tyref	0	f	1	as
+	.coerce	gsdl.ags.typeitem.expr.t.in
+	.lift
+	.yield	c
+
 # §section §gs{gsdl.ags.typeitem.gskind.t} constructors
 
 _gsdl.ags.typeitem.gskind.lifted_c	.expr
@@ -1174,7 +1221,8 @@ gsdl.ags.typeitem.expr.prim.u	.tygvar
 gsdl.ags.typeitem.expr.prim.u	.tyexpr
 _gsdl.ags.typeitem.expr.prim.u_lift_ty	.tygvar
 _gsdl.ags.typeitem.expr.prim.u_product_ty	.tygvar
-	.tysum	lift	_gsdl.ags.typeitem.expr.prim.u_lift_ty	product	_gsdl.ags.typeitem.expr.prim.u_product_ty
+_gsdl.ags.typeitem.expr.prim.u_tyref_ty	.tygvar
+	.tysum	lift	_gsdl.ags.typeitem.expr.prim.u_lift_ty	product	_gsdl.ags.typeitem.expr.prim.u_product_ty	tyref	_gsdl.ags.typeitem.expr.prim.u_tyref_ty
 	
 _gsdl.ags.typeitem.expr.prim.u_product_ty	.tyexpr
 list.t	.tygvar
@@ -1185,6 +1233,12 @@ gsdl.ags.typeitem.field.t	.tygvar
 _gsdl.ags.typeitem.expr.prim.u_lift_ty	.tyexpr
 gsdl.ags.typeitem.expr.t	.tygvar
 	.tyubproduct	0	gsdl.ags.typeitem.expr.t
+
+_gsdl.ags.typeitem.expr.prim.u_tyref_ty	.tyexpr
+gsdl.var.t	.tygvar
+list.t	.tygvar
+_1_ty	.tylet	list.t	gsdl.var.t
+	.tyubproduct	0	gsdl.var.t	1	_1_ty
 
 # §section §gs{gsdl.ags.typeitem.constr.t}
 
