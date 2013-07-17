@@ -30,6 +30,7 @@ rune.space	.closure	_rune.space_c
 rune.number.sign	.closure	_rune.number.sign_c
 rune.colon	.closure	_rune.colon_c
 rune.dot	.closure	_rune.dot_c
+rune.star	.closure	_rune.star_c
 rune.left.paren	.closure	_rune.left.paren_c
 rune.right.paren	.closure	_rune.right.paren_c
 rune.left.curly	.closure	_rune.left.curly_c
@@ -346,6 +347,13 @@ dot	.rune	.
 	.coerce	rune.t.in
 	.lift
 	.yield	dot
+
+_rune.star_c	.expr
+rune.t.in	.cogvar
+star	.rune	*
+	.coerce	rune.t.in
+	.lift
+	.yield	star
 
 _rune.left.paren_c	.expr
 rune.t.in	.cogvar
