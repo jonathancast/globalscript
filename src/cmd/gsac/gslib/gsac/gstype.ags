@@ -409,7 +409,8 @@ res1		.fkarg	0	_gsac.gstype.compile_res.ty
 res0.1			.lfield	res	res1
 res0			.apply	gsdl.ags.typeitem.expr.lift	|	res0.1
 es0			.lfield	tyexprs	res1
-res			.lrecord	res	res0	tyexprs	es0
+tygvs0			.lfield	tygvars	res1
+res			.lrecord	res	res0	tyexprs	es0	tygvars	tygvs0
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
@@ -434,7 +435,8 @@ res0.fs.d			.lfield	fields	fs.res
 res0.fs			.apply	diff.list.tolist	gsdl.ags.typeitem.field.t	|	res0.fs.d
 res0			.apply	gsdl.ags.typeitem.expr.product	|	res0.fs
 tyes			.lfield	tyexprs	fs.res
-res			.lrecord		res	res0	tyexprs	tyes
+tygvs			.lfield	tygvars	fs.res
+res			.lrecord		res	res0	tyexprs	tyes	tygvars	tygvs
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
@@ -517,6 +519,7 @@ _gsac.gstype.compile_res.ty	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 diff.list.t	.tygvar
@@ -525,6 +528,7 @@ either.right	.gvar
 diff.list.:	.gvar
 gsdl.ags.typeitem.tyexpr	.gvar
 maybe.nothing	.gvar
+diff.list.tolist	.gvar
 pos	.fv	gsdl.sourcepos.t
 nm0	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
@@ -535,7 +539,9 @@ err		.fkarg	0	string.t
 		.case	right
 res1		.fkarg	0	_gsac.gstype.compile_res.ty
 nothing			.apply	maybe.nothing	gsdl.ags.typeitem.gskind.t
-ds			.lrecord	|	gsdl.ags.typeitem.decls.t
+tygvs.d			.lfield	tygvars	res1
+tygvs			.apply	diff.list.tolist	gsdl.ags.typeitem.decls.tygvar.t	|	tygvs.d
+ds			.lrecord	tygvars	tygvs	|	gsdl.ags.typeitem.decls.t
 tye0.0			.lfield	res	res1
 tye0			.apply	gsdl.ags.typeitem.tyexpr	|	pos	nm0	nothing	ds	tye0.0
 tyes1			.lfield	tyexprs	res1
@@ -607,6 +613,7 @@ string.t	.tygvar
 _gsac.gstype.fields.compile_res.ty	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
 diff.list.nil	.gvar
@@ -619,7 +626,8 @@ fs1		.fkarg	1	list.t	gsdl.cgs.gstype.field.t
 		.case	nil
 tyes			.apply	diff.list.nil	gsdl.ags.typeitem.t
 fs			.apply	diff.list.nil	gsdl.ags.typeitem.field.t
-res			.lrecord	fields	fs	tyexprs	tyes
+tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
+res			.lrecord	fields	fs	tyexprs	tyes	tygvars	tygvs
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.fields.compile_res.ty
 
@@ -700,8 +708,10 @@ _gsac.gstype.compile_res.u	.tyexpr
 gsdl.ags.typeitem.expr.t	.tygvar
 diff.list.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 tyexprs_ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
-	.typroduct	res	gsdl.ags.typeitem.expr.t	tyexprs	tyexprs_ty
+_tygvars_ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+	.typroduct	res	gsdl.ags.typeitem.expr.t	tyexprs	tyexprs_ty	tygvars	_tygvars_ty
 
 # §section §gs{gsac.gstype.compileToGlobalVar}
 
@@ -776,9 +786,11 @@ _gsac.gstype.fields.compile_res.u	.tyexpr
 diff.list.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 tyexprs_ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 fields_ty	.tylet	diff.list.t	gsdl.ags.typeitem.field.t
-	.typroduct	fields	fields_ty	tyexprs	tyexprs_ty
+_tygvars_ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+	.typroduct	fields	fields_ty	tyexprs	tyexprs_ty	tygvars	_tygvars_ty
 
 # §section §gs{gsac.gstype.gskind.compile}
 
