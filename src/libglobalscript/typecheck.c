@@ -1801,9 +1801,15 @@ gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *symtable, struct gsparse
             ;
 
             gsargcheck(*pp, 0, "Constructor");
-            if (casenum > 0)
-                gsfatal(UNIMPL("%P: Check order of cases in a .danalyze"), case_pos)
+            if ((*pp)->arguments[0] != panalyze->arguments[1 + casenum])
+                gsfatal("%P: Wong constructor; got %y but expected %y", (*pp)->pos, (*pp)->arguments[0], panalyze->arguments[1 + casenum])
             ;
+            if (casenum > 0) {
+                int res;
+                res = strcmp(panalyze->arguments[1 + casenum - 1]->name, panalyze->arguments[1 + casenum]->name);
+                if (res == 0) gsfatal("%P: Duplicate constructor %y", (*pp)->pos, panalyze->arguments[1 + casenum]);
+                if (res > 0) gsfatal("%P: Constructors out of order; %y should be before %y", (*pp)->pos, panalyze->arguments[1 + casenum], panalyze->arguments[1 + casenum - 1]);
+            }
             constr = gsbc_typecheck_find_constr(case_pos, prevconstr, sum, (*pp)->arguments[0]);
 
             *pp = gsinput_next_line(ppseg, *pp);

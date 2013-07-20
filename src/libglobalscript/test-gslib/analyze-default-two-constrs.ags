@@ -1,0 +1,27 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+_test.u	.tygvar
+x	.rune	x
+y	.rune	y
+z	.rune	z
+c	.constr	_test.u	1
+	.danalyze	c	0	2
+		.default
+			.yield	x
+		.case	0
+			.yield	y
+		.case	2
+			.yield	z
+
+	.type
+
+_test.u	.tyexpr
+record.unboxed.empty	.tygvar
+	.tysum	0	record.unboxed.empty	1	record.unboxed.empty	2	record.unboxed.empty
