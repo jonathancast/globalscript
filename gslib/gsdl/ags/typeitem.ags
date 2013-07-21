@@ -1075,10 +1075,16 @@ ds			.apply	diff.list.:	rune.t	|	rune.tab	ds1
 
 _gsdl.ags.typeitem.expr.print_tyref_as.dss.f_c	.expr
 gsdl.var.t	.tygvar
-diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+rune.t	.tygvar
+diff.list.:	.gvar
+rune.tab	.gvar
+diff.list.fromlist	.gvar
+gsdl.ags.syntax.var.print	.gvar
 v	.larg	gsdl.var.t
-	.undef	diff.list.t	rune.t
+v.s	.apply	gsdl.ags.syntax.var.print	|	v
+v.ds	.apply	diff.list.fromlist	rune.t	|	v.s
+	.app	rune.tab	v.ds
+	.enter	diff.list.:	rune.t
 
 _gsdl.ags.typeitem.expr.print_fields.print_c	.expr
 list.t	.tygvar

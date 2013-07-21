@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.print.kind.exp	_test.parse	_test.print
+_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.print.kind.exp	_test.parse	_test.print	_test.print.expr.tyref.tyarg
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.type\\n}\s=~\ssegment.parser
@@ -82,6 +82,12 @@ _test.print_tyexpr.tyextabstype_ty.s	.string	ty
 _test.print_tyexpr.tyextabstype_foo.s	.string	foo
 _test.print_tyexpr.tyextabstype_t.s	.string	t
 _test.print_tyexpr.tyextabstype_expected	.string	\t.line\t./foo.cgs\s3\s1\n_ep_ty\t.tyexpr\nfoo.t\t.tyextabstype\t*\n\t.tyref\tfoo.t\n
+
+_test.print.expr.tyref.tyarg	.closure	_test.print.expr.tyref.tyarg_c
+_test.print.expr.tyref.tyarg_label	.string	print\s(tyref\styf\s[\sarg\s])
+_test.print.expr.tyref.tyarg_f.s	.string	f
+_test.print.expr.tyref.tyarg_x.s	.string	x
+_test.print.expr.tyref.tyarg_expected	.string	\t.tyref\tf\tx\n
 
 	.code
 
@@ -593,4 +599,39 @@ nil.s	.apply	list.nil	rune.t
 actual	.apply	gsdl.ags.typeitem.print	|	ti	nil.s
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print_tyexpr.tyextabstype_expected
 	.app	_test.print_tyexpr.tyextabstype_label	test
+	.enter	test.property.label
+
+# §section §gs{print (tyref tyf [ arg ])}
+
+_test.print.expr.tyref.tyarg_c	.expr
+string.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.var.t	.tygvar
+rune.t	.tygvar
+test.property.label	.gvar
+_test.print.expr.tyref.tyarg_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+gsdl.ags.typeitem.expr.print	.gvar
+gsdl.ags.typeitem.expr.tyref	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test.print.expr.tyref.tyarg_f.s	.gvar
+_test.print.expr.tyref.tyarg_x.s	.gvar
+list.nil	.gvar
+_test.print.expr.tyref.tyarg_expected	.gvar
+f.c0	.apply	gsdl.var.component.alphanum	|	_test.print.expr.tyref.tyarg_f.s
+f.cs	.apply	list.singleton	gsdl.var.component.t	|	f.c0
+f.v	.apply	gsdl.var.basevar	|	f.cs
+x.v.c0	.apply	gsdl.var.component.alphanum	|	_test.print.expr.tyref.tyarg_x.s
+x.v.cs	.apply	list.singleton	gsdl.var.component.t	|	x.v.c0
+x.v	.apply	gsdl.var.basevar	|	x.v.cs
+as	.apply	list.singleton	gsdl.var.t	|	x.v
+e	.apply	gsdl.ags.typeitem.expr.tyref	|	f.v	as
+nil.s	.apply	list.nil	rune.t
+actual	.apply	gsdl.ags.typeitem.expr.print	|	e	nil.s
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print.expr.tyref.tyarg_expected
+	.app	_test.print.expr.tyref.tyarg_label	test
 	.enter	test.property.label
