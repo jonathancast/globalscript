@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.parse	_test.print
+_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.print.kind.exp	_test.parse	_test.print
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.type\\n}\s=~\ssegment.parser
@@ -17,6 +17,10 @@ _test.parse.kind.u_input	.string	u
 _test.parse.kind.exp	.closure	_test.parse.kind.exp_c
 _test.parse.kind.exp_label	.string	qq{**^}\s=~\sgskind.parser
 _test.parse.kind.exp_input	.string	**^
+
+_test.print.kind.exp	.closure	_test.print.kind.exp_c
+_test.print.kind.exp_label	.string	gskind.print\s(exp\slifted\slifted)
+_test.print.kind.exp_expected	.string	**^
 
 _test.parse	.closure	_test.parse_c
 _test.parse_label	.string	parser
@@ -181,6 +185,28 @@ gsdl.ags.typeitem.gskind.prim.u	.tygvar
 test.true	.gvar
 ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
 	.enter	test.true
+
+# §section §gs{gskind.print (exp lifted lifted)}
+
+_test.print.kind.exp_c	.expr
+string.t	.tygvar
+rune.t	.tygvar
+test.property.label	.gvar
+_test.print.kind.exp_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+gsdl.ags.typeitem.gskind.print	.gvar
+gsdl.ags.typeitem.gskind.exp	.gvar
+gsdl.ags.typeitem.gskind.lifted	.gvar
+list.nil	.gvar
+_test.print.kind.exp_expected	.gvar
+ki	.apply	gsdl.ags.typeitem.gskind.exp	|	gsdl.ags.typeitem.gskind.lifted	gsdl.ags.typeitem.gskind.lifted
+nil.s	.apply	list.nil	rune.t
+actual	.apply	gsdl.ags.typeitem.gskind.print	|	ki	nil.s
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print.kind.exp_expected
+	.app	_test.print.kind.exp_label	test
+	.enter	test.property.label
 
 # §section §gs{parser}
 
