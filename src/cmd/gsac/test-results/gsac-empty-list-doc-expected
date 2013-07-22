@@ -1,0 +1,14 @@
+	.document
+
+	.data
+
+	.line	./test-fixtures/empty-list-doc.cgs 3 1
+	.undefined	_ep_ty
+
+	.type
+
+	.line	./test-fixtures/empty-list-doc.cgs 3 1
+_ep_ty	.tyexpr
+list.t	.tyextabstype	**^
+bool.t	.tyextabstype	*
+	.tyref	list.t	bool.t

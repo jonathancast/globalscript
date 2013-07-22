@@ -12,5 +12,6 @@ ok_diff_script '-- gsac-deps: Empty list.t document --' deps-empty-list-doc ibio
 
 ok_diff_script '-- gsac: Empty document --' gsac-empty-doc ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/empty-doc.cgs
 ok_diff_script '-- gsac: Empty bool.t document --' gsac-empty-bool-doc ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/empty-bool-doc.cgs
+ok_diff_script '-- gsac: Empty list.t document --' gsac-empty-list-doc ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/empty-list-doc.cgs
 
 ok_grep_script_errors '-- gsac: Empty document w/ unknown type variable --' gsac-empty-doc-unkn-type-var './test-fixtures/empty-doc-unkn-type-var.cgs:3:1: Unknown type variable' ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/empty-doc-unkn-type-var.cgs
