@@ -11,6 +11,7 @@ ordered.map.empty	.closure	_ordered.map.empty_c
 ordered.map.insert	.closure	_ordered.map.insert_c	_ordered.map.insert_ty
 ordered.map.get	.closure	_ordered.map.get_c	_ordered.map.get_ty
 ordered.map.∪	.closure	_ordered.map.∪_c	_ordered.map.∪_ty
+_ordered.map.∪_split	.closure	_ordered.map.∪_split_c	_ordered.map.∪_split_ty
 
 ordered.map.values	.closure	_ordered.map.values_c
 _ordered.map.values_w	.closure	_ordered.map.values_w_c	_ordered.map.values_w_ty
@@ -253,15 +254,22 @@ r1				.fkarg	3	ordered.map.t	k	v
 					.enter	ordered.map.empty	k	v
 
 _ordered.map.∪_branch_branch_k	.forcecont
+order.total.t	.tygvar
+ordered.map.t	.tygvar
 order.total.ord.prim.u	.tygvar
-ordered.map.t	.tygvar	# Temp
+_ordered.map.∪_split_res.ty	.tygvar	# Temp
 ordered.map.prim.branch	.gvar
+ordered.map.∪	.gvar
+_ordered.map.∪_split	.gvar
 k	.tyfv	*
 v	.tyfv	*
+cmp	.fv	order.total.t	k
 k0	.fv	k
 v0	.fv	v
+r0	.fv	ordered.map.t	k	v
 k1	.fv	k
 v1	.fv	v
+r1	.fv	ordered.map.t	k	v
 o0	.karg	order.total.ord.prim.u	# §gs{k0 `compare` k1}
 	.analyze	o0	eq	gt	lt
 		.case	eq
@@ -270,8 +278,10 @@ o0	.karg	order.total.ord.prim.u	# §gs{k0 `compare` k1}
 s3.0			.undefined	ordered.map.t	k	v	# Everything less than §gs{k1}
 s3.1			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k1} and less than §gs{k0}
 s4			.apply	ordered.map.prim.branch	k	v	|	k1	v1	s3.0	s3.1
-sr0			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k0}
-			.app	k0	v0	s4	sr0
+sr1.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k0	r1
+sr1.r			.lfield	1	sr1.s	# Everything in §gs{r1} greater than §gs{k0}
+s3.2			.apply	ordered.map.∪	k	v	|	cmp	sr1.r	r0	# Everything greater than §gs{k0}
+			.app	k0	v0	s4	s3.2
 			.enter	ordered.map.prim.branch	k	v
 		.case	lt
 s3.0			.undefined	ordered.map.t	k	v	# Everything less than §gs{k0}
@@ -281,9 +291,45 @@ s4			.apply	ordered.map.prim.branch	k	v	|	k0	v0	s3.0	s3.1
 			.app	k1	v1	s4	s3.2
 			.enter	ordered.map.prim.branch	k	v
 
+_ordered.map.∪_split_c	.expr
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+_ordered.map.∪_split_k	.subcode
+ordered.map.t.out	.cogvar
+k	.tyarg	*
+v	.tyarg	*
+cmp	.arg	order.total.t	k
+x	.arg	k
+t	.arg	ordered.map.t	k	v
+	.force	_ordered.map.∪_split_k
+	.coerce	ordered.map.t.out	k	v
+	.enter	t
+
+_ordered.map.∪_split_k	.forcecont
+ordered.map.prim.u	.tygvar
+ordered.map.t	.tygvar
+_ordered.map.∪_split_res.ty	.tygvar	# Temp
+ordered.map.empty	.gvar
+k	.tyfv	*
+v	.tyfv	*
+t0	.karg	ordered.map.prim.u	k	v
+	.analyze	t0	branch	empty
+		.case	branch
+k		.fkarg	0	k
+v		.fkarg	1	v
+l		.fkarg	2	ordered.map.t	k	v
+r		.fkarg	3	ordered.map.t	k	v
+			.undef	_ordered.map.∪_split_res.ty	k	v
+		.case	empty
+empty			.apply	ordered.map.empty	k	v
+r			.record	0	empty	1	empty
+			.lift
+			.yield	r
+
 # §section §gs{ordered.map.values}
 
 _ordered.map.values_c	.expr
+ordered.map.t	.tygvar
 ordered.map.t	.tygvar
 _ordered.map.values_w	.gvar
 list.nil	.gvar
@@ -481,6 +527,25 @@ v	.tyforall	*
 	.tylift
 	.tyfun	ordered.map.t	k	v
 	.tyref	ordered.map.t	k	v
+
+_ordered.map.∪_split_ty	.tyexpr
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+_ordered.map.∪_split_res.ty	.tygvar
+k	.tyforall	*
+v	.tyforall	*
+	.tyfun	order.total.t	k
+	.tyfun	k
+	.tyfun	ordered.map.t	k	v
+	.tyref	_ordered.map.∪_split_res.ty	k	v
+
+_ordered.map.∪_split_res.ty	.tyexpr
+ordered.map.t	.tygvar
+k	.tylambda	*
+v	.tylambda	*
+_map_ty	.tylet	ordered.map.t	k	v
+	.tylift
+	.typroduct	0	_map_ty	1	_map_ty
 
 # §section §gs{ordered.map.values}
 
