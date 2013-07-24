@@ -440,10 +440,10 @@ s2.1			.apply	ordered.set.union	α	|	cmp	sr0	sr1
 		.case	gt	# §gs{x1 < x0}
 sl0.s			.apply	_ordered.set.union_split	α	|	cmp	x1	sl0
 sl0.l			.lfield	0	sl0.s
-sl0.r			.lfield	0	sl0.s
+sl0.r			.lfield	1	sl0.s
 sr1.s			.apply	_ordered.set.union_split	α	|	cmp	x0	sr1
 sr1.l			.lfield	0	sr1.s
-sr1.r			.lfield	0	sr1.s
+sr1.r			.lfield	1	sr1.s
 s3.0			.apply	ordered.set.union	α	|	cmp	sl1	sl0.l	# ${ y | y < x1 < x0, }$
 s3.1			.apply	ordered.set.union	α	|	cmp	sl0.r	sr1.l	# ${ y | x1 < y < x0, }$
 s4			.apply	ordered.set.prim.branch	α	|	x1	s3.0	s3.1
