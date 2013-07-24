@@ -153,6 +153,7 @@ record.empty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.kindcheck_app_right_exp_right_k	.subcode
 either.t.out	.cogvar
+either.left	.gvar
 gsac.gskind.check	.gvar
 ki.b	.fv	gsdl.cgs.gskind.t
 ki.e	.fv	gsdl.cgs.gskind.t
@@ -160,7 +161,8 @@ ekix	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
 	.analyze	ekix	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.gskind.t
 		.case	right
 kix		.fkarg	0	gsdl.cgs.gskind.t
 			.force	_gsac.gstype.kindcheck_app_right_exp_right_k
