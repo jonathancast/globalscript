@@ -488,7 +488,7 @@ s0	.karg	ordered.set.prim.u	α
 		.case	branch
 x1		.fkarg	0	α
 sl		.fkarg	1	ordered.set.t	α
-s2		.fkarg	2	ordered.set.t	α
+sr		.fkarg	2	ordered.set.t	α
 			.undef	_ordered.set.union_split_res.ty	α
 		.case	empty
 empty			.apply	ordered.set.empty	α
