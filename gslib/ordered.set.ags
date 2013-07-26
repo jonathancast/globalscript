@@ -504,13 +504,18 @@ r			.record	0	empty	1	empty
 			.yield	r
 
 _ordered.set.union_split_branch_k	.forcecont
+ordered.set.t	.tygvar
 order.total.ord.prim.u	.tygvar
 _ordered.set.union_split_res.ty	.tygvar	# Temp
 α	.tyfv	*
+sl	.fv	ordered.set.t	α
+sr	.fv	ordered.set.t	α
 o0	.karg	order.total.ord.prim.u	# x `cmp` x1
 	.analyze	o0	eq	gt	lt
 		.case	eq
-			.undef	_ordered.set.union_split_res.ty	α
+r			.record	0	sl	1	sr
+			.lift
+			.yield	r
 		.case	gt
 			.undef	_ordered.set.union_split_res.ty	α
 		.case	lt
