@@ -5,6 +5,7 @@
 #include <libglobalscript.h>
 
 #include "ibio.h"
+#include "stat.h"
 
 /* §section File stat */
 
@@ -23,10 +24,6 @@ struct ibio_file_stat_blocking {
     struct ibio_file_stat_rpc *rpc;
 };
 
-static api_prim_blocking_gccopy ibio_file_stat_blocking_gccopy;
-static api_prim_blocking_gcevacuate ibio_file_stat_blocking_gcevacuate;
-static api_prim_blocking_gccleanup ibio_file_stat_blocking_gccleanup;
-
 enum api_prim_execution_state
 ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, struct api_prim_blocking **pblocking, gsvalue *pv)
 {
@@ -36,7 +33,7 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, stru
     if (blocking = *pblocking) {
         file_stat_blocking = (struct ibio_file_stat_blocking *)blocking;
     } else {
-        blocking = *pblocking = api_blocking_alloc(sizeof(struct ibio_file_stat_blocking), ibio_file_stat_blocking_gccopy, ibio_file_stat_blocking_gcevacuate, ibio_file_stat_blocking_gccleanup);
+        blocking = *pblocking = ibio_file_stat_blocking_alloc();
         file_stat_blocking = (struct ibio_file_stat_blocking *)blocking;
         ibio_gsstring_eval_start(&file_stat_blocking->fn, stat->p.arguments[0]);
         file_stat_blocking->rpc = 0;
@@ -103,6 +100,29 @@ ibio_file_stat_rpc_gcevacuate(struct gsstringbuilder *err, struct gsrpc *gsrpc)
 {
     gsstring_builder_print(err, UNIMPL("ibio_file_stat_rpc_gcevacuate"));
     return -1;
+}
+
+static api_prim_blocking_gccopy ibio_file_stat_blocking_gccopy;
+static api_prim_blocking_gcevacuate ibio_file_stat_blocking_gcevacuate;
+static api_prim_blocking_gccleanup ibio_file_stat_blocking_gccleanup;
+
+struct api_prim_blocking *
+ibio_file_stat_blocking_alloc()
+{
+    struct api_prim_blocking *res;
+    struct ibio_file_stat_blocking *stat;
+
+    res = api_blocking_alloc(
+        sizeof(struct ibio_file_stat_blocking),
+        ibio_file_stat_blocking_gccopy,
+        ibio_file_stat_blocking_gcevacuate,
+        ibio_file_stat_blocking_gccleanup
+    );
+    stat = (struct ibio_file_stat_blocking *)res;
+    memset(&stat->fn, 0, sizeof(stat->fn));
+    stat->rpc = 0;
+
+    return res;
 }
 
 static
