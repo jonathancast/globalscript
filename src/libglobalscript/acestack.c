@@ -129,6 +129,76 @@ ace_pop_update(struct ace_thread *thread)
 }
 
 int
+ace_stack_gcevacuate(struct gsstringbuilder *err, struct ace_thread *thread, struct gsbc_cont_update *update)
+{
+    void *p, *top, *base;
+    int i;
+    gsvalue gctemp;
+
+    top = thread->gc_evacuated_stackbot;
+    base = (uchar*)update + sizeof(*update);
+
+    if ((uchar*)base <= (uchar*)top) return 0;
+
+    thread->gc_evacuated_stackbot = base;
+
+    for (p = top; (uchar*)p < (uchar*)base; ) {
+        struct gsbc_cont *cont = (struct gsbc_cont *)p;
+
+        if (gs_gc_trace_pos(err, &cont->pos) < 0) return -1;
+
+        switch (cont->node) {
+            case gsbc_cont_update: {
+                update = (struct gsbc_cont_update *)cont;
+
+                p = (uchar*)update + sizeof(*update);
+                continue;
+            }
+            case gsbc_cont_app: {
+                struct gsbc_cont_app *app = (struct gsbc_cont_app *)cont;
+
+                for (i = 0; i < app->numargs; i++)
+                    if (GS_GC_TRACE(err, &app->arguments[i]) < 0) return -1
+                ;
+
+                p = (uchar*)app + sizeof(*app) + app->numargs * sizeof(gsvalue);
+                continue;
+            }
+            case gsbc_cont_strict: {
+                struct gsbc_cont_strict *strict = (struct gsbc_cont_strict *)cont;
+
+                if (gs_gc_trace_bco(err, &strict->code) < 0) return -1;
+
+                for (i = 0; i < strict->numfvs; i++)
+                    if (GS_GC_TRACE(err, &strict->fvs[i]) < 0) return -1
+                ;
+
+                p = (uchar*)strict + sizeof(*strict) + strict->numfvs * sizeof(gsvalue);
+
+                continue;
+            }
+            case gsbc_cont_force: {
+                struct gsbc_cont_force *force = (struct gsbc_cont_force *)cont;
+
+                if (gs_gc_trace_bco(err, &force->code) < 0) return -1;
+
+                for (i = 0; i < force->numfvs; i++)
+                    if (GS_GC_TRACE(err, &force->fvs[i]) < 0) return -1
+                ;
+
+                p = (uchar*)force + sizeof(*force) + force->numfvs * sizeof(gsvalue);
+                continue;
+            }
+            default:
+                gsstring_builder_print(err, UNIMPL("ace_eval_gc_trace: evacuate stack (node = %d)"), cont->node);
+                return -1;
+        }
+    }
+
+    return 0;
+}
+
+int
 ace_stack_post_gc_consolidate(struct gsstringbuilder *err, struct ace_thread *thread)
 {
     void *dest;

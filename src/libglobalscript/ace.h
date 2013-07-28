@@ -56,3 +56,5 @@ void ace_failure_thread(struct ace_thread *, struct gsimplementation_failure *);
 void ace_thread_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 
 int ace_eval_gc_trace(struct gsstringbuilder *, struct gsbc_cont_update **);
+
+int ace_stack_gcevacuate(struct gsstringbuilder *, struct ace_thread *, struct gsbc_cont_update *);
