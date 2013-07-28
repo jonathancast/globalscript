@@ -127,10 +127,19 @@ ibio_file_stat_blocking_alloc()
 
 static
 struct api_prim_blocking *
-ibio_file_stat_blocking_gccopy(struct gsstringbuilder *err, struct api_prim_blocking *pblocking)
+ibio_file_stat_blocking_gccopy(struct gsstringbuilder *err, struct api_prim_blocking *blocking)
 {
-    gsstring_builder_print(err, UNIMPL("ibio_file_stat_blocking_gccopy"));
-    return 0;
+    struct api_prim_blocking *newblocking;
+    struct ibio_file_stat_blocking *stat, *newstat;
+
+    newblocking = ibio_file_stat_blocking_alloc();
+
+    stat = (struct ibio_file_stat_blocking *)blocking;
+    newstat = (struct ibio_file_stat_blocking *)newblocking;
+
+    memcpy((uchar*)newstat + sizeof(struct api_prim_blocking), (uchar*)stat + sizeof(struct api_prim_blocking), sizeof(struct ibio_file_stat_blocking) - sizeof(struct api_prim_blocking));
+
+    return newblocking;
 }
 
 static

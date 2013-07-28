@@ -55,6 +55,7 @@ unix/uxio.$O: ibio.h
 
 test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h $SYSTEM/test_systemtests.h
 test_iport.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h ibio.h iport.h
+test_stat.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h ibio.h stat.h
 unix/test.$O: unix/test_systemtests.h
 
 test:V: $O.test
