@@ -789,6 +789,8 @@ string.t	.tygvar	# Temp
 _gsac.gstype.compileToApp_res.ty	.tygvar	# Temp
 _gsac.gstype.compileToApp_app_var_k	.subcode
 maybe.t.out	.cogvar
+_gsac.gstype.compileToApp_app	.gvar
+list.:	.gvar
 gsdl.cgs.typeenv.typeexpansion.get	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 tyas	.fv	list.t	gsdl.cgs.gstype.t
@@ -800,7 +802,9 @@ tyf0	.karg	gsdl.cgs.gstype.prim.u
 		.case	app	# recur
 tyf1		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
+tyas1			.apply	list.:	gsdl.cgs.gstype.t	|	tyx	tyas
+			.app	env	tyf1	tyas1	em
+			.yield	_gsac.gstype.compileToApp_app
 		.case	var	# look up expansion & proceed from there
 v		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.compileToApp_app_var_k
@@ -1145,6 +1149,7 @@ gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
 _gsac.gstype.compileToVar_gsabstype_tygvs_false_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.typeenv.gskind.get	.gvar
+diff.list.nil	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 v	.fv	gsdl.var.t
 b0	.karg	bool.prim.u	# Have we emitted this global variable yet?
@@ -1155,7 +1160,7 @@ b0	.karg	bool.prim.u	# Have we emitted this global variable yet?
 			.app	v	env
 			.enter	gsdl.cgs.typeenv.gskind.get
 		.case	true
-			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+			.enter	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 
 _gsac.gstype.compileToVar_gsabstype_tygvs_false_k	.forcecont
 gsdl.var.t	.tygvar
