@@ -91,6 +91,10 @@ fn ok_diff_script {
     nm=$1; casenm=$2
     shift; shift
     echo $nm
+    if (! test -f ./test-results/$casenm^-expected) {
+        echo $casenm ': no such file' ./test-results/$casenm^-expected >[1=2]
+        exit 1
+    }
     if (! $* > ./test-results/$casenm^-actual >[2] ./test-results/$casenm^-errors) {
         echo 'The command' >[1=2]
         echo '    ' $* >[1=2]
