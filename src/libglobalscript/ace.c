@@ -1683,7 +1683,7 @@ ace_eval_gc_trace(struct gsstringbuilder *err, struct gsbc_cont_update **pupdate
     if (!((uintptr)thread % BLOCK_SIZE)) thread = START_OF_BLOCK((struct gs_blockdesc *)thread);
 
     if (!gs_sys_block_in_gc_from_space(thread)) {
-        gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: set newthread for to-space thread"));
+        gsstring_builder_print(err, UNIMPL("ace_eval_gc_trace: set newthread for to-space thread"));
         return -1;
     } else if (thread->state == ace_thread_gcforward) {
         newthread = thread->st.forward.dest;
@@ -1720,7 +1720,7 @@ ace_thread_gccopy(struct gsstringbuilder *err, struct ace_thread *thread)
 
     stacksize = (uchar*)thread->stackbot - (uchar*)thread->stacktop;
     if (stacksize > (uchar*)stackbot - (uchar*)stacklimit) {
-        gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: no room for new stack"));
+        gsstring_builder_print(err, UNIMPL("ace_eval_gc_trace: no room for new stack"));
         return 0;
     }
 
@@ -1778,7 +1778,7 @@ ace_thread_gcevacuate(struct gsstringbuilder *err, struct ace_thread *thread)
 
             break;
         default:
-            gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate st: state = %d"), thread->state);
+            gsstring_builder_print(err, UNIMPL("ace_eval_gc_trace: evacuate st: state = %d"), thread->state);
             return -1;
     }
 
@@ -1847,7 +1847,7 @@ ace_thread_stack_gcevacuate(struct gsstringbuilder *err, struct ace_thread *thre
                 continue;
             }
             default:
-                gsstring_builder_print(err, UNIMPL("ace_thread_gc_trace: evacuate stack (node = %d)"), cont->node);
+                gsstring_builder_print(err, UNIMPL("ace_eval_gc_trace: evacuate stack (node = %d)"), cont->node);
                 return -1;
         }
     }
