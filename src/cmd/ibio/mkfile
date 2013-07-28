@@ -20,6 +20,7 @@ OFILES=\
 TEST_OFILES=\
 	test.$O \
 	test_iport.$O \
+	test_stat.$O \
 	$SYSTEM/test.$O \
 
 TESTED_OFILES=\
