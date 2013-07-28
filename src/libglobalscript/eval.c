@@ -19,7 +19,7 @@ gsnoindir(struct gspos pos, gsvalue val)
     struct gs_blockdesc *block;
 
     block = BLOCK_CONTAINING(val);
-    pos.lineno = __LINE__; return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsnoindir: %s", block->class->description);
+    return (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "gsnoindir: %s", block->class->description);
 }
 
 gsvalue
