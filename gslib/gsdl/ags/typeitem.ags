@@ -59,6 +59,7 @@ gsdl.ags.typeitem.tydefinedprim	.closure	_gsdl.ags.typeitem.tydefinedprim_c
 gsdl.ags.typeitem.tyexpr	.closure	_gsdl.ags.typeitem.tyexpr_c
 
 gsdl.ags.typeitem.decls.tygvar.tyextabstype	.closure	_gsdl.ags.typeitem.decls.tygvar.tyextabstype_c
+gsdl.ags.typeitem.decls.tygvar.tygvar	.closure	_gsdl.ags.typeitem.decls.tygvar.tygvar_c
 
 gsdl.ags.typeitem.expr.lift	.closure	_gsdl.ags.typeitem.expr.lift_c
 gsdl.ags.typeitem.expr.product	.closure	_gsdl.ags.typeitem.expr.product_c
@@ -546,7 +547,7 @@ diff.list.singleton	.gvar
 rune.new.line	.gvar
 diff.list.nil	.gvar	# Temp
 tygv0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
-	.analyze	tygv0	tyextabstype
+	.analyze	tygv0	tyextabstype	tygvar
 		.case	tyextabstype
 v		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.ags.typeitem.gskind.t
@@ -559,6 +560,9 @@ ds1			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.typeitem.decls.print_tygvs.pri
 ds			.apply	diff.list.:	rune.t	|	rune.tab	ds1
 			.app	v.s	ds
 			.enter	diff.list.prepend	rune.t
+		.case	tygvar
+v		.fkarg	0	gsdl.var.t
+			.undef	diff.list.t	rune.t
 	# > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.typeitem.gskind.parser}
@@ -1209,6 +1213,16 @@ c	.constr	gsdl.ags.typeitem.decls.tygvar.prim.u	tyextabstype	0	v	1	ki
 	.lift
 	.yield	c
 
+_gsdl.ags.typeitem.decls.tygvar.tygvar_c	.expr
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.prim.u	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t.in	.cogvar
+v	.larg	gsdl.var.t
+c	.constr	gsdl.ags.typeitem.decls.tygvar.prim.u	tygvar	0	v
+	.coerce	gsdl.ags.typeitem.decls.tygvar.t.in
+	.lift
+	.yield	c
+
 # §section §gs{gsdl.ags.typeitem.expr.t} Constructors
 
 _gsdl.ags.typeitem.expr.lift_c	.expr
@@ -1326,12 +1340,17 @@ gsdl.ags.typeitem.decls.tygvar.prim.u	.tygvar
 
 gsdl.ags.typeitem.decls.tygvar.prim.u	.tyexpr
 _gsdl.ags.typeitem.decls.tygvar.prim.u_tyextabstype_ty	.tygvar
-	.tysum	tyextabstype	_gsdl.ags.typeitem.decls.tygvar.prim.u_tyextabstype_ty
+_gsdl.ags.typeitem.decls.tygvar.prim.u_tygvar_ty	.tygvar
+	.tysum	tyextabstype	_gsdl.ags.typeitem.decls.tygvar.prim.u_tyextabstype_ty	tygvar	_gsdl.ags.typeitem.decls.tygvar.prim.u_tygvar_ty
 
 _gsdl.ags.typeitem.decls.tygvar.prim.u_tyextabstype_ty	.tyexpr
 gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 	.tyubproduct	0	gsdl.var.t	1	gsdl.ags.typeitem.gskind.t
+
+_gsdl.ags.typeitem.decls.tygvar.prim.u_tygvar_ty	.tyexpr
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
 
 # §section §gs{gsdl.ags.typeitem.decls.tyarg.t}
 
