@@ -643,11 +643,13 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 _gsac.gstype.compileToApp_k	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 env	.larg	gsdl.cgs.typeenv.t
 ty	.larg	gsdl.cgs.gstype.t
 em	.larg	ordered.set.t	gsdl.var.t
+gvs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gstype.compileToApp_k
 	.coerce	gsdl.cgs.gstype.t.out
 	.enter	ty
@@ -951,9 +953,10 @@ em	.field	emitted	r
 		.case	:
 a0		.fkarg	0	gsdl.cgs.gstype.t
 as1		.fkarg	1	list.t	gsdl.cgs.gstype.t
+a0.gvs			.undefined	list.t	gsdl.var.t
 			.force	_gsac.gstype.compileToApp_args_:_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
-			.app	env	a0	em
+			.app	env	a0	em	a0.gvs
 			.enter	gsac.gstype.compileToVar
 		.case	nil
 tyes			.field	tyexprs	r
@@ -1041,6 +1044,7 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
 _gsac.gstype.compileToVar_k	.subcode
@@ -1049,9 +1053,10 @@ gsac.gstype.compileToApp	.gvar
 env	.larg	gsdl.cgs.typeenv.t
 ty	.larg	gsdl.cgs.gstype.t
 em	.larg	ordered.set.t	gsdl.var.t
+gvs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gstype.compileToVar_k
 	.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
-	.app	env	ty	em
+	.app	env	ty	em	gvs
 	.enter	gsac.gstype.compileToApp
 
 _gsac.gstype.compileToVar_k	.forcecont
@@ -1467,6 +1472,7 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
@@ -1476,6 +1482,8 @@ _gsac.gstype.compileToApp_res.ty	.tygvar
 	.tyfun	gsdl.cgs.gstype.t
 	.tylift
 	.tyfun	ordered.set.t	gsdl.var.t
+	.tylift
+	.tyfun	list.t	gsdl.var.t
 	.tyref	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 
 _gsac.gstype.compileToApp_res.ty	.tyexpr
@@ -1535,6 +1543,7 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
@@ -1544,6 +1553,8 @@ _gsac.gstype.compileToVar_res.ty	.tygvar
 	.tyfun	gsdl.cgs.gstype.t
 	.tylift
 	.tyfun	ordered.set.t	gsdl.var.t
+	.tylift
+	.tyfun	list.t	gsdl.var.t
 	.tyref	either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
 _gsac.gstype.compileToVar_res.ty	.tyexpr
