@@ -14,7 +14,7 @@ _gsdl.ags.file.print.dataitems	.closure	_gsdl.ags.file.print.dataitems_c	_gsdl.a
 _gsdl.ags.file.print.dataitems_:_undef.s	.string	\t.undefined\t
 
 _gsdl.ags.file.print.typesection	.closure	_gsdl.ags.file.print.typesection_c
-_gsdl.ags.file.print.typesection_gstype.s	.string	\n\t.type\n\n
+_gsdl.ags.file.print.typesection_gstype.s	.string	\n\t.type\n
 
 _gsdl.ags.file.print.typeitems	.closure	_gsdl.ags.file.print.typeitems_c	_gsdl.ags.file.print.typeitems_ty
 
@@ -211,6 +211,8 @@ list.prim.u	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
+list.:	.gvar
+rune.new.line	.gvar
 gsdl.ags.typeitem.print	.gvar
 _gsdl.ags.file.print.typeitems	.gvar
 list.nil	.gvar
@@ -221,8 +223,9 @@ tys0	.karg	list.prim.u	gsdl.ags.typeitem.t
 ty0		.fkarg	0	gsdl.ags.typeitem.t
 tys1		.fkarg	1	list.t	gsdl.ags.typeitem.t
 s1			.apply	_gsdl.ags.file.print.typeitems	|	file0	tys1
-			.app	ty0	s1
-			.enter	gsdl.ags.typeitem.print
+s			.apply	gsdl.ags.typeitem.print	|	ty0	s1
+			.app	rune.new.line	s
+			.enter	list.:	rune.t
 		.case	nil
 			.enter	list.nil	rune.t
 
