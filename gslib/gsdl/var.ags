@@ -4,6 +4,11 @@
 
 gsdl.var.components.get	.closure	_gsdl.var.components.get_c
 
+gsdl.var.<>	.closure	_gsdl.var.<>_c
+
+gsdl.var.subvars	.closure	_gsdl.var.subvars_c
+_gsdl.var.subvars_w	.closure	_gsdl.var.subvars_w_c	_gsdl.var.subvars_w_ty
+
 gsdl.var.compare	.closure	_gsdl.var.compare_c	_gsdl.var.compare_ty
 
 gsdl.var.≡	.closure	_gsdl.var.≡_c
@@ -53,6 +58,97 @@ d		.fkarg	0	natural.t
 cs		.fkarg	1	list.t	gsdl.var.t
 			.undef	list.t	gsdl.var.component.t
 	# > :: list.t	gsdl.var.component.t
+
+# §section §gs{gsdl.var.<>}
+
+_gsdl.var.<>_c	.expr
+gsdl.var.t	.tygvar
+_gsdl.var.<>_k0	.subcode
+gsdl.var.t.out	.cogvar
+v0	.larg	gsdl.var.t
+v1	.larg	gsdl.var.t
+	.force	_gsdl.var.<>_k0
+	.coerce	gsdl.var.t.out
+	.enter	v0
+
+_gsdl.var.<>_k0	.forcecont
+gsdl.var.t	.tygvar
+gsdl.var.prim.u	.tygvar
+_gsdl.var.<>_k1	.subcode
+gsdl.var.t.out	.cogvar
+v1	.fv	gsdl.var.t
+v0.0	.karg	gsdl.var.prim.u
+	.force	_gsdl.var.<>_k1
+	.coerce	gsdl.var.t.out
+	.enter	v1
+
+_gsdl.var.<>_k1	.forcecont
+gsdl.var.prim.u	.tygvar
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+natural.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.var.t.in	.cogvar
+gsdl.var.constructed	.gvar
+list.<>	.gvar
+list.singleton	.gvar
+v0.0	.fv	gsdl.var.prim.u
+v1.0	.karg	gsdl.var.prim.u
+	.analyze	v0.0	basevar	constructed
+		.case	basevar
+cs0		.fkarg	0	list.t	gsdl.var.component.t
+			.undef	gsdl.var.t
+		.case	constructed
+n0		.fkarg	0	natural.t
+cs0		.fkarg	1	list.t	gsdl.var.t
+			.analyze	v1.0	basevar	constructed
+				.case	basevar
+cs1				.fkarg	0	list.t	gsdl.var.component.t
+v1.0.l					.lifted	v1.0
+v1.0.cl					.cast	v1.0.l	gsdl.var.t.in
+y.cs1					.apply	list.singleton	gsdl.var.t	|	v1.0.cl
+y.cs					.apply	list.<>	gsdl.var.t	|	cs0	y.cs1
+					.app	n0	y.cs
+					.enter	gsdl.var.constructed
+				.case	constructed
+n1				.fkarg	0	natural.t
+cs1				.fkarg	1	list.t	gsdl.var.t
+					.undef	gsdl.var.t
+	# > :: gsdl.var.t
+
+# §section §gs{gsdl.var.subvars}
+
+_gsdl.var.subvars_c	.expr
+gsdl.var.t	.tygvar
+list.t	.tygvar	# Temp
+_gsdl.var.subvars_w	.gvar
+0	.natural	0
+v	.larg	gsdl.var.t
+	.app	v	0
+	.yield	_gsdl.var.subvars_w
+
+_gsdl.var.subvars_w_c	.expr
+gsdl.var.t	.tygvar
+natural.prim.u	.tygvar
+gsdl.var.component.t	.tygvar
+list.t	.tygvar	# Temp
+natural.t.in	.cogvar
+list.:	.gvar
+gsdl.var.<>	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.numeric	.gvar
+v	.arg	gsdl.var.t
+n	.arg	natural.prim.u
+n.l	.lifted	n
+n.cl	.cast	n.l	natural.t.in
+n.c0	.apply	gsdl.var.component.numeric	|	n.cl
+n.cs	.apply	list.singleton	gsdl.var.component.t	|	n.c0
+n.v	.apply	gsdl.var.basevar	|	n.cs
+v0	.apply	gsdl.var.<>	|	v	n.v
+vs	.undefined	list.t	gsdl.var.t
+	.app	v0	vs
+	.enter	list.:	gsdl.var.t
 
 # §section §gs{gsdl.var.compare}
 
@@ -485,6 +581,16 @@ string.t	.tygvar
 _gsdl.var.component.prim.u_numeric_ty	.tyexpr
 natural.t	.tygvar
 	.tyubproduct	0	natural.t
+
+# §section §gs{gsdl.var.subvars}
+
+_gsdl.var.subvars_w_ty	.tyexpr
+gsdl.var.t	.tygvar
+natural.prim.u	.tygvar
+list.t	.tygvar
+	.tyfun	gsdl.var.t
+	.tyfun	natural.prim.u
+	.tyref	list.t	gsdl.var.t
 
 # §section §gs{gsdl.var.compare}
 

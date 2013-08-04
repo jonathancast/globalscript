@@ -1,0 +1,20 @@
+	.document
+
+	.data
+
+	.line	./test-fixtures/empty-either-record-doc.cgs 3 1
+	.undefined	_ep_ty
+
+	.type
+
+	.line	./test-fixtures/empty-either-record-doc.cgs 3 1
+_ep_ty	.tyexpr
+either.t	.tyextabstype	**^*^
+bool.t	.tyextabstype	*
+_ep_ty_0	.tygvar
+	.tyref	either.t	bool.t	_ep_ty_0
+
+	.line	./test-fixtures/empty-either-record-doc.cgs 3 1
+_ep_ty_0	.tyexpr
+	.tylift
+	.typroduct
