@@ -20,6 +20,7 @@ gsdl.var.component.≡	.closure	_gsdl.var.component.≡_c
 gsdl.var.component.compare	.closure	_gsdl.var.component.compare_c
 
 gsdl.var.component.alphanum	.closure	_gsdl.var.component.alphanum_c
+gsdl.var.component.numeric	.closure	_gsdl.var.component.numeric_c
 
 	.code
 
@@ -342,17 +343,24 @@ c0.0	.karg	gsdl.var.component.prim.u
 _gsdl.var.component.≡_k1	.forcecont
 gsdl.var.component.prim.u	.tygvar
 string.t	.tygvar
+natural.t	.tygvar
+bool.t	.tygvar	# Temp
 string.≡	.gvar
 c0.0	.fv	gsdl.var.component.prim.u
 c1.0	.karg	gsdl.var.component.prim.u
-	.analyze	c0.0	alphanum
+	.analyze	c0.0	alphanum	numeric
 		.case	alphanum
 s0		.fkarg	0	string.t
-			.analyze	c1.0	alphanum
+			.danalyze	c1.0	alphanum
+				.default
+					.undef	bool.t
 				.case	alphanum
 s1				.fkarg	0	string.t
 					.app	s0	s1
 					.enter	string.≡
+		.case	numeric
+n0		.fkarg	0	natural.t
+			.undef	bool.t
 	# > :: bool.t
 
 # §section §gs{gsdl.var.component.compare}
@@ -382,18 +390,25 @@ c0.0	.karg	gsdl.var.component.prim.u
 _gsdl.var.component.compare_k1	.forcecont
 gsdl.var.component.prim.u	.tygvar
 string.t	.tygvar
+natural.t	.tygvar
 order.total.ord.t	.tygvar	# Temp
 string.compare	.gvar
 c0.0	.fv	gsdl.var.component.prim.u
 c1.0	.karg	gsdl.var.component.prim.u
-	.analyze	c0.0	alphanum
+	.analyze	c0.0	alphanum	numeric
 		.case	alphanum
 s0		.fkarg	0	string.t
-			.analyze	c1.0	alphanum
+			.analyze	c1.0	alphanum	numeric
 				.case	alphanum
 s1				.fkarg	0	string.t
 					.app	s0	s1
 					.enter	string.compare
+				.case	numeric
+n1				.fkarg	0	natural.t
+					.undef	order.total.ord.t
+		.case	numeric
+n0		.fkarg	0	natural.t
+			.undef	order.total.ord.t
 	# > :: order.total.ord.t
 
 # §section §gs{gsdl.var.component.t} Constructors
@@ -404,6 +419,16 @@ gsdl.var.component.prim.u	.tygvar
 gsdl.var.component.t.in	.cogvar
 s	.arg	string.t
 c	.constr	gsdl.var.component.prim.u	alphanum	0	s
+	.coerce	gsdl.var.component.t.in
+	.lift
+	.yield	c
+
+_gsdl.var.component.numeric_c	.expr
+natural.t	.tygvar
+gsdl.var.component.prim.u	.tygvar
+gsdl.var.component.t.in	.cogvar
+n	.arg	natural.t
+c	.constr	gsdl.var.component.prim.u	numeric	0	n
 	.coerce	gsdl.var.component.t.in
 	.lift
 	.yield	c
@@ -450,11 +475,16 @@ gsdl.var.component.prim.u	.tygvar
 
 gsdl.var.component.prim.u	.tyexpr
 _gsdl.var.component.prim.u_alphanum_ty	.tygvar
-	.tysum	alphanum	_gsdl.var.component.prim.u_alphanum_ty
+_gsdl.var.component.prim.u_numeric_ty	.tygvar
+	.tysum	alphanum	_gsdl.var.component.prim.u_alphanum_ty	numeric	_gsdl.var.component.prim.u_numeric_ty
 
 _gsdl.var.component.prim.u_alphanum_ty	.tyexpr
 string.t	.tygvar
 	.tyubproduct	0	string.t
+
+_gsdl.var.component.prim.u_numeric_ty	.tyexpr
+natural.t	.tygvar
+	.tyubproduct	0	natural.t
 
 # §section §gs{gsdl.var.compare}
 
