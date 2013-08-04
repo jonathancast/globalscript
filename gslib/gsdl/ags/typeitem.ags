@@ -27,6 +27,7 @@ _gsdl.ags.typeitem.decls.parser_tylet.re	.regex	.tylet
 
 gsdl.ags.typeitem.decls.print	.closure	_gsdl.ags.typeitem.decls.print_c
 _gsdl.ags.typeitem.decls.print_tygvs.print_tyextabstype_tyextabstype.s	.string	.tyextabstype
+_gsdl.ags.typeitem.decls.print_tygvs.print_tygvar_tygvar.s	.string	.tygvar
 
 gsdl.ags.typeitem.gskind.parser	.closure	_gsdl.ags.typeitem.gskind.parser_c
 _gsdl.ags.typeitem.gskind.parser_w	.closure	_gsdl.ags.typeitem.gskind.parser_w_c	_gsdl.ags.typeitem.gskind.parser_w_ty
@@ -545,6 +546,7 @@ diff.list.<>	.gvar
 gsdl.ags.typeitem.gskind.print	.gvar
 diff.list.singleton	.gvar
 rune.new.line	.gvar
+_gsdl.ags.typeitem.decls.print_tygvs.print_tygvar_tygvar.s	.gvar
 diff.list.nil	.gvar	# Temp
 tygv0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
 	.analyze	tygv0	tyextabstype	tygvar
@@ -562,7 +564,12 @@ ds			.apply	diff.list.:	rune.t	|	rune.tab	ds1
 			.enter	diff.list.prepend	rune.t
 		.case	tygvar
 v		.fkarg	0	gsdl.var.t
-			.undef	diff.list.t	rune.t
+v.s			.apply	gsdl.ags.syntax.var.print	|	v
+ds2			.apply	diff.list.singleton	rune.t	|	rune.new.line
+ds1			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.typeitem.decls.print_tygvs.print_tygvar_tygvar.s	ds2
+ds			.apply	diff.list.:	rune.t	|	rune.tab	ds1
+			.app	v.s	ds
+			.enter	diff.list.prepend	rune.t
 	# > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.typeitem.gskind.parser}
