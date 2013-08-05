@@ -23,3 +23,6 @@ bin/gsac-deps$
 bin/gsac$
 \.toc$
 \.stats$
+bin/gscr$
+bin/gscr-deps$
+bin/gscr-targets$

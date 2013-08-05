@@ -9,6 +9,9 @@ SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/cmd/gsac/gsac.rc"
 SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/cmd/gsac/gsac-targets.rc"
 SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/cmd/gsac/gsac-deps.rc"
 SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/cmd/gsac/rc/test-interpreted"
+SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/cmd/gscr/gscr.rc"
+SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/cmd/gscr/gscr-targets.rc"
+SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/cmd/gscr/gscr-deps.rc"
 
 u sed -i "s,/usr/local/plan9/,$PLAN9/,g" $SCRIPTS
 u sed -i "s,/usr/local/globalscript/,$GLOBALSCRIPT/,g" $SCRIPTS

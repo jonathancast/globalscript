@@ -11,6 +11,23 @@ LOCAL_TARGETS=\
 all:V: $LOCAL_TARGETS
 	true
 
+test:V: all
+	test-gslib ./gslib
+
+install:V: all test $GLOBALSCRIPT/bin/gscr $GLOBALSCRIPT/bin/gscr-targets $GLOBALSCRIPT/bin/gscr-deps
+
+$GLOBALSCRIPT/bin/gscr: gscr.rc all test
+	cp gscr.rc $GLOBALSCRIPT/bin/gscr
+	chmod a+x $GLOBALSCRIPT/bin/gscr
+
+$GLOBALSCRIPT/bin/gscr-targets: gscr-targets.rc all test
+	cp gscr-targets.rc $GLOBALSCRIPT/bin/gscr-targets
+	chmod a+x $GLOBALSCRIPT/bin/gscr-targets
+
+$GLOBALSCRIPT/bin/gscr-deps: gscr-deps.rc all test
+	cp gscr-deps.rc $GLOBALSCRIPT/bin/gscr-deps
+	chmod a+x $GLOBALSCRIPT/bin/gscr-deps
+
 <| $GLOBALSCRIPT/bin/gsac-deps -l $GLOBALSCRIPT/gslib -l ./gslib $LOCAL_TARGETS
 
 < $GLOBALSCRIPT/src/mkcommon
