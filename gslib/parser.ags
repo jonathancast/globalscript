@@ -3274,9 +3274,10 @@ regex.class.prim.u	.tygvar
 regex.class.t	.tygvar
 bool.t	.tygvar
 _parser.match_worker_class_range_k1	.subcode
+_parser.match_worker_class_sum_k	.subcode
 _parser.match_worker_class_symbol_k	.subcode
+bool.t.out	.cogvar
 order.total.ord.t.out	.cogvar
-bool.∨	.gvar
 _parser.match_worker_class	.gvar
 s	.tyfv	*
 cmp	.fv	order.total.t	s
@@ -3293,10 +3294,10 @@ c1		.fkarg	1	s
 		.case	sum
 cl0.0		.fkarg	0	regex.class.t	s
 cl0.1		.fkarg	1	regex.class.t	s
-b0			.apply	_parser.match_worker_class	s	|	cmp	cl0.0	c
-b1			.apply	_parser.match_worker_class	s	|	cmp	cl0.1	c
-			.app	b0	b1
-			.enter	bool.∨
+			.force	_parser.match_worker_class_sum_k
+			.coerce	bool.t.out
+			.app	cmp	cl0.0	c
+			.enter	_parser.match_worker_class	s
 		.case	symbol
 c0		.fkarg	0	s
 			.force	_parser.match_worker_class_symbol_k
@@ -3335,6 +3336,26 @@ o0	.karg	order.total.ord.prim.u
 			.enter	bool.true
 		.case	gt
 			.enter	bool.false
+
+_parser.match_worker_class_sum_k	.forcecont
+order.total.t	.tygvar
+regex.class.t	.tygvar
+bool.prim.u	.tygvar
+bool.t.in	.cogvar
+_parser.match_worker_class	.gvar
+s	.tyfv	*
+cmp	.fv	order.total.t	s
+c	.fv	s
+cl0.1	.fv	regex.class.t	s
+b0.0	.karg	bool.prim.u
+	.analyze	b0.0	false	true
+		.case	false
+			.app	cmp	cl0.1	c
+			.enter	_parser.match_worker_class	s
+		.case	true
+			.coerce	bool.t.in
+			.lift
+			.yield	b0.0
 
 _parser.match_worker_class_symbol_k	.forcecont
 order.total.ord.prim.u	.tygvar
