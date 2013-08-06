@@ -19,8 +19,7 @@ int ibio_gsstring_eval_evacuate(struct gsstringbuilder *, struct ibio_gsstring_e
 /* §section RPCs for Unix Processes */
 
 enum {
-    ibio_uxproc_rpc_stat = api_std_rpc_numrpcs,
-    ibio_uxproc_rpc_file_read_open,
+    ibio_uxproc_rpc_file_read_open = api_std_rpc_numrpcs,
     ibio_numrpcs,
 };
 
@@ -66,8 +65,6 @@ enum {
 gsvalue ibio_parse_gsbio_dir(struct gspos, struct gsbio_dir *dir);
 
 api_prim_executor ibio_handle_prim_file_stat;
-
-gsrpc_handler ibio_main_process_handle_rpc_stat;
 
 /* §section Channels */
 
