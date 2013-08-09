@@ -112,7 +112,6 @@ static struct api_process_rpc_table ibio_rpc_table = {
     /* rpcs = */ {
         /* api_std_rpc_done */ api_main_process_handle_rpc_done,
         /* api_std_rpc_abend */ api_main_process_handle_rpc_abend,
-        /* ibio_uxproc_rpc_file_read_open */ ibio_main_process_handle_rpc_file_read_open,
     },
 };
 

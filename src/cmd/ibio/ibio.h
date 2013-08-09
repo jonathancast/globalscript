@@ -19,8 +19,7 @@ int ibio_gsstring_eval_evacuate(struct gsstringbuilder *, struct ibio_gsstring_e
 /* §section RPCs for Unix Processes */
 
 enum {
-    ibio_uxproc_rpc_file_read_open = api_std_rpc_numrpcs,
-    ibio_numrpcs,
+    ibio_numrpcs = api_std_rpc_numrpcs,
 };
 
 /* §section Threads */
@@ -141,8 +140,6 @@ int ibio_uxio_trace(struct gsstringbuilder *, struct ibio_uxio **);
 gsprim_handler ibio_prim_external_io_handle_rune, ibio_prim_external_io_handle_dir;
 
 api_prim_executor ibio_handle_prim_file_read_open;
-
-gsrpc_handler ibio_main_process_handle_rpc_file_read_open;
 
 /* §section Input */
 
