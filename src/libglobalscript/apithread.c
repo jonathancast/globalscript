@@ -930,7 +930,8 @@ api_promise_dereference(struct gspos pos, gsvalue val)
 }
 
 static
-gsvalue api_promise_trace(struct gsstringbuilder *err, gsvalue v)
+gsvalue
+api_promise_trace(struct gsstringbuilder *err, gsvalue v)
 {
     struct api_promise *promise;
 
