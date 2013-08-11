@@ -1,3 +1,3 @@
 #! /usr/local/plan9/bin/rc
 
-exec $GLOBALSCRIPT/bin/ibio $GLOBALSCRIPT/src/cmd/gscr/gslib $GLOBALSCRIPT/src/cmd/gscr/gscr-targets.gsac $*
+exec $GLOBALSCRIPT/bin/ibio $GLOBALSCRIPT/src/cmd/gscr/gslib $GLOBALSCRIPT/src/cmd/gscr/gscr-targets.cgs $*
