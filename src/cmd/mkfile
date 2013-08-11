@@ -27,5 +27,3 @@ $O.%: %.$O $GLOBALSCRIPT/lib/libglobalscript.a
 
 hello:V:
 	echo Hello, world
-
-< $GLOBALSCRIPT/src/mkcommon

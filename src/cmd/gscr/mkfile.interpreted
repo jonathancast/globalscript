@@ -30,4 +30,4 @@ $GLOBALSCRIPT/bin/gscr-deps: gscr-deps.rc all test
 
 <| $GLOBALSCRIPT/bin/gsac-deps -l $GLOBALSCRIPT/gslib -l ./gslib $LOCAL_TARGETS
 
-< $GLOBALSCRIPT/src/mkcommon
+< $GLOBALSCRIPT/src/mkcommon-core-source

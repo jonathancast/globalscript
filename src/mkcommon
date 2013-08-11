@@ -1,7 +1,0 @@
-PATH=$GLOBALSCRIPT/bin:$PATH
-BIN=$GLOBALSCRIPT/bin
-CFLAGS=$CFLAGS -I $GLOBALSCRIPT/include
-LDFLAGS=$LDFLAGS -L $GLOBALSCRIPT/lib/ -lglobalscript
-
-%.gsac:D: %.cgs
-	$GLOBALSCRIPT/bin/gsac -l $GLOBALSCRIPT/gslib -l ./gslib $stem.cgs > $stem.gsac
