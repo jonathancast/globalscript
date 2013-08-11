@@ -215,7 +215,7 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_thread_table, 
                                     } else {
                                         api_thread_pool_shutdown(&stats);
                                         gs_sys_num_procs--;
-                                        gsfatal(UNIMPL("Thread is last background thread --- shut down.  Always exits("") in this case; exit status doesn't matter anyway. Complication: Need to run the stuff at the bottom of this thread, too."));
+                                        gsfatal(UNIMPL("Thread is last background thread --- shut down.  Always exits(\"\") in this case; exit status doesn't matter anyway. Complication: Need to run the stuff at the bottom of this thread, too."));
                                     }
                                 }
                                 break;
