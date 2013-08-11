@@ -62,46 +62,9 @@ extern	int	canlock(Lock*);
 
 int gscreate_thread_pool(void (*)(void *), void *, ulong);
 
-/* §section RPC */
+/* §section Internal error-reporting stuff */
 
 struct gsstringbuilder;
-
-struct gsrpc_queue;
-
-typedef struct gsrpc *gsrpc_gccopy(struct gsstringbuilder *, struct gsrpc *);
-typedef int gsrpc_gcevacuate(struct gsstringbuilder *, struct gsrpc *);
-
-struct gsrpc {
-    Lock lock;
-    int tag;
-    enum {
-        gsrpc_failed = -1,
-        gsrpc_pending,
-        gsrpc_running,
-        gsrpc_succeeded,
-    } status;
-    struct gsrpc *forward;
-    gsrpc_gccopy *gccopy;
-    gsrpc_gcevacuate *gcevacuate;
-    struct gsstringbuilder *err;
-};
-
-struct gsrpc_queue *gsqueue_alloc(void);
-
-struct gsrpc *gsqueue_rpc_alloc(ulong, gsrpc_gccopy *, gsrpc_gcevacuate *);
-
-struct gsrpc *gsqueue_try_get_rpc(struct gsrpc_queue *);
-void gsqueue_send_rpc(struct gsrpc_queue *, struct gsrpc *);
-
-void gsqueue_down(struct gsrpc_queue *);
-
-typedef void (gsrpc_handler)(struct gsrpc *);
-
-int gsqueue_gc_trace(struct gsstringbuilder *, struct gsrpc_queue **);
-
-int gsqueue_rpc_gc_trace(struct gsstringbuilder *, struct gsrpc **);
-
-/* §section Internal error-reporting stuff */
 
 typedef enum {
     gssymfilename,
@@ -630,20 +593,6 @@ struct api_thread *api_thread_gc_forward(struct api_thread *);
 
 int api_thread_terminating(struct api_thread *);
 
-/* §paragraph{RPCs, for executing part of primitives in the corresponding (or parent) kernel process} */
-enum {
-    api_std_rpc_done,
-    api_std_rpc_abend,
-    api_std_rpc_numrpcs,
-};
-struct api_process_rpc_table {
-    char *name;
-    int numrpcs;
-    gsrpc_handler *handlers[];
-};
-gsrpc_handler api_main_process_unimpl_rpc;
-void api_send_rpc(struct api_thread *, struct gsrpc *);
-
 enum api_prim_execution_state {
     api_st_success,
     api_st_error,
@@ -676,21 +625,15 @@ typedef void (api_termination_callback)(void);
 void api_at_termination(api_termination_callback *);
 
 /* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
-void apisetupmainthread(struct gspos, struct api_process_rpc_table *, struct api_thread_table *, void *, struct api_prim_table *, gsvalue);
+void apisetupmainthread(struct gspos, struct api_thread_table *, void *, struct api_prim_table *, gsvalue);
 
-/* If (and only if) the current thread is hard, these will send a done message (§c{api_std_rpc_done}) to the corresponding process */
 void api_done(struct api_thread *);
 
-/* If (and only if) the current thread is hard, these will send an abend message (§c{api_std_rpc_abend}) to the corresponding process */
 void api_abend(struct api_thread *, char *, ...);
 void api_abend_unimpl(struct api_thread *, char *, int, char *, ...);
 
-/* If (and only if) the destination thread is hard, these will send an abend message (§c{api_std_rpc_abend}) to the corresponding process */
 void api_thread_post(struct api_thread *, char *, ...);
 void api_thread_post_unimpl(struct api_thread *, char *, int, char *, ...);
-
-gsrpc_handler api_main_process_handle_rpc_done;
-gsrpc_handler api_main_process_handle_rpc_abend;
 
 /* §section Buffered I/O library */
 

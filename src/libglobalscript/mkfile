@@ -23,7 +23,6 @@ OFILES=\
 	clienttypecheck.$O \
 	clientexpr.$O \
 	bctopsort.$O \
-	gsrpc.$O \
 	regtables.$O \
 	runes.$O \
 	naturals.$O \

@@ -49,19 +49,6 @@ gsadd_client_prim_sets()
     gsprims_register_prim_set(&test_sequence_primset);
 }
 
-enum {
-    exec_numrpcs = api_std_rpc_numrpcs,
-};
-
-static struct api_process_rpc_table exec_rpc_table = {
-    /* name = */ "Exec Unix pool process",
-    /* numrpcs = */ exec_numrpcs,
-    /* rpcs = */ {
-        /* api_std_rpc_done */ api_main_process_handle_rpc_done,
-        /* api_std_rpc_abend */ api_main_process_handle_rpc_abend,
-    },
-};
-
 static enum api_prim_execution_state exec_thread_term_status(struct api_thread *);
 static void exec_gc_failure_cleanup(void **);
 
@@ -96,7 +83,7 @@ gs_client_pre_ace_gc_trace_roots(struct gsstringbuilder *err)
 void
 gsrun(char *script, struct gspos pos, gsvalue prog, int argc, char **argv)
 {
-    apisetupmainthread(pos, &exec_rpc_table, &exec_thread_table, 0, &exec_prim_table, prog);
+    apisetupmainthread(pos, &exec_thread_table, 0, &exec_prim_table, prog);
 }
 
 static

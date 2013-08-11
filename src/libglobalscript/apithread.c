@@ -15,7 +15,7 @@ static struct api_thread_queue *api_thread_queue;
 static void api_take_thread_queue(void);
 static void api_release_thread_queue(void);
 
-static struct api_thread *api_add_thread(struct gspos, struct gsrpc_queue *, struct api_thread_table *api_thread_table, void *, struct api_prim_table *, gsvalue);
+static struct api_thread *api_add_thread(struct gspos, struct api_thread_table *api_thread_table, void *, struct api_prim_table *, gsvalue);
 
 static struct gs_sys_global_block_suballoc_info api_thread_queue_info = {
     /* descr = */ {
@@ -28,93 +28,10 @@ static struct gs_sys_global_block_suballoc_info api_thread_queue_info = {
 
 static struct api_thread *api_try_schedule_thread(struct api_thread *);
 
-struct api_thread_pool_args {
-    struct gspos pos;
-    struct gsrpc_queue *rpc_queue;
-    struct api_thread_table *api_thread_table;
-    void *api_main_thread_data;
-    struct api_prim_table *api_prim_table;
-    gsvalue entry;
-};
-static void api_thread_pool_main(void *);
-
-/* §section Setup */
-
-/* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
-void
-apisetupmainthread(struct gspos pos, struct api_process_rpc_table *table, struct api_thread_table *api_thread_table, void *api_main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
-{
-    struct gsrpc *rpc;
-    struct gsrpc_queue *rpc_queue;
-    struct api_thread_pool_args api_thread_pool_args;
-    int api_pool;
-
-    if (api_thread_queue)
-        gsfatal("apisetupmainthread called twice")
-    ;
-
-    api_thread_queue = gs_sys_global_block_suballoc(&api_thread_queue_info, sizeof(*api_thread_queue));
-    memset(api_thread_queue, 0, sizeof(*api_thread_queue));
-
-    rpc_queue = gsqueue_alloc();
-
-    api_thread_pool_args.pos = pos;
-    api_thread_pool_args.rpc_queue = rpc_queue;
-    api_thread_pool_args.api_thread_table = api_thread_table;
-    api_thread_pool_args.api_main_thread_data = api_main_thread_data;
-    api_thread_pool_args.api_prim_table = api_prim_table;
-    api_thread_pool_args.entry = entry;
-    if ((api_pool = gscreate_thread_pool(api_thread_pool_main, &api_thread_pool_args, sizeof(api_thread_pool_args))) < 0)
-        gsfatal("Couldn't create API thread pool: %r")
-    ;
-
-    for (;;) {
-        int tag;
-
-        do {
-            if (gs_sys_gc_want_collection()) {
-                struct gsstringbuilder *err;
-
-                err = gsreserve_string_builder();
-                if (gs_sys_wait_for_collection_to_finish(err) < 0) {
-                    gsfinish_string_builder(err);
-                    gswarning("GC failed: %s", err->start);
-                    err = gsreserve_string_builder();
-                }
-
-                if (gsqueue_gc_trace(err, &rpc_queue) < 0) {
-                    gsfinish_string_builder(err);
-                    gswarning("GC failed: %s", err->start);
-                } else {
-                    gsfinish_string_builder(err);
-                }
-
-                gs_sys_gc_done_with_collection();
-            }
-
-            rpc = gsqueue_try_get_rpc(rpc_queue);
-
-            if (!rpc) sleep(1);
-        } while (!rpc);
-
-        tag = rpc->tag;
-        if (tag >= table->numrpcs) {
-            unlock(&rpc->lock);
-            gsfatal(UNIMPL("apisetupmainthread: Panic: Unknown RPC %d in process of type %s"), tag, table->name);
-        } else {
-            (*table->handlers[tag])(rpc);
-        }
-    }
-    gsfatal(UNIMPL("Panic: apisetupmainthread: ran out of RPCs somehow"));
-}
-
 /* §section Main loop */
 
 static int api_exec_instr(struct api_thread *, gsvalue);
 static void api_exec_err(struct api_thread *, gsvalue, gstypecode);
-
-static void api_send_done_rpc(struct api_thread *);
-static void api_send_abend_rpc(struct api_thread *, char *, ...);
 
 #define API_TERMINATION_QUEUE_LENGTH 0x100
 static Lock api_at_termination_queue_lock;
@@ -125,29 +42,42 @@ static int api_gc_trace_thread_queue(struct gsstringbuilder *);
 
 static void api_handle_gc_failed(struct gsstringbuilder *);
 
-static
-void
-api_thread_pool_main(void *arg)
-{
-    struct api_thread *mainthread, *thread;
-    struct api_thread_pool_args *args;
-
-    int threadnum;
-    int hadthread, suspended_runnable_thread;
+struct api_thread_stats {
     vlong thread_lifetime;
     vlong loops, instrs, loops_waiting;
+};
 
-    args = (struct api_thread_pool_args *)arg;
+static void api_thread_pool_shutdown(struct api_thread_stats *);
 
-    mainthread = api_add_thread(args->pos, args->rpc_queue, args->api_thread_table, args->api_main_thread_data, args->api_prim_table, args->entry);
+/* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
+void
+apisetupmainthread(struct gspos pos, struct api_thread_table *api_thread_table, void *api_main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
+{
+    struct api_thread *mainthread, *thread;
+
+    int threadnum;
+    int suspended_runnable_thread;
+    struct api_thread_stats stats;
+
+    if (api_thread_queue)
+        gsfatal("apisetupmainthread called twice")
+    ;
+
+    api_thread_queue = gs_sys_global_block_suballoc(&api_thread_queue_info, sizeof(*api_thread_queue));
+    memset(api_thread_queue, 0, sizeof(*api_thread_queue));
+
+    mainthread = api_add_thread(pos, api_thread_table, api_main_thread_data, api_prim_table, entry);
+    mainthread->ismain = 1;
 
     api_release_thread(mainthread);
 
-    thread_lifetime = 0;
-    loops = instrs = loops_waiting = 0;
+    mainthread = 0;
 
-    do {
-        hadthread = suspended_runnable_thread = 0;
+    stats.thread_lifetime = 0;
+    stats.loops = stats.instrs = stats.loops_waiting = 0;
+
+    for (;;) {
+        suspended_runnable_thread = 0;
 
         if (gs_sys_should_gc()) {
             struct gsstringbuilder *err;
@@ -201,8 +131,7 @@ api_thread_pool_main(void *arg)
             }
             api_release_thread_queue();
             if (thread) {
-                loops++;
-                hadthread = 1;
+                stats.loops++;
 
                 switch (thread->state) {
                     case api_thread_st_active: {
@@ -217,7 +146,7 @@ api_thread_pool_main(void *arg)
 
                         switch (st) {
                             case gstywhnf:
-                                instrs++;
+                                stats.instrs++;
                                 if (api_exec_instr(thread, instr) > 0)
                                     suspended_runnable_thread = 1
                                 ;
@@ -227,7 +156,7 @@ api_thread_pool_main(void *arg)
                                 api_exec_err(thread, instr, st);
                                 break;
                             case gstystack:
-                                loops_waiting++;
+                                stats.loops_waiting++;
                                 break;
                             case gstyindir:
                                 code->instrs[code->ip].instr = GS_REMOVE_INDIRECTION(code->instrs[code->ip].pos, instr);
@@ -245,39 +174,68 @@ api_thread_pool_main(void *arg)
                     case api_thread_st_terminating_on_done:
                     case api_thread_st_terminating_on_abend: {
                         enum api_prim_execution_state st;
+                        int thread_abended = thread->state == api_thread_st_terminating_on_abend;
 
                         if (gsflag_stat_collection && !thread->prog_term_time) {
                             thread->prog_term_time = nsec();
-                            thread_lifetime += thread->prog_term_time - thread->start_time;
+                            stats.thread_lifetime += thread->prog_term_time - thread->start_time;
                         }
                         st = thread->api_thread_table->thread_term_status(thread);
                         switch (st) {
-                            case api_st_success:
-                                if (thread->hard) {
-                                    if (thread->state == api_thread_st_terminating_on_done) {
-                                        api_send_done_rpc(thread);
+                            case api_st_success: {
+                                int have_other_threads;
+
+                                api_take_thread_queue();
+                                api_thread_queue->numthreads--;
+                                have_other_threads = api_thread_queue->numthreads > 0;
+                                api_release_thread_queue();
+                                thread->state = api_thread_st_unused;
+
+                                if (thread->ismain) {
+                                    if (have_other_threads) {
+                                        api_thread_pool_shutdown(&stats);
+                                        gs_sys_num_procs--;
+                                        gsfatal(UNIMPL("Thread is main thread and there are background threads --- fork into background.  Do not release ACE or run shutdown hooks yet."));
                                     } else {
-                                        api_send_abend_rpc(thread, "%s", thread->status->start);
+                                        api_thread_pool_shutdown(&stats);
+                                        if (thread_abended) {
+                                            fprint(2, "%s\n", thread->status->start);
+                                            gs_sys_num_procs--;
+                                            exits(thread->status->start);
+                                        } else {
+                                            gs_sys_num_procs--;
+                                            exits("");
+                                        }
+                                    }
+                                } else { /* Thread is background thread */
+                                    if (have_other_threads) {
+                                        api_thread_pool_shutdown(&stats);
+                                        gs_sys_num_procs--;
+                                        gsfatal(UNIMPL("Thread is background thread and there are other threads --- shut down thread and keep going.  Do not release ACE or run shutdown hooks yet."));
+                                    } else {
+                                        api_thread_pool_shutdown(&stats);
+                                        gs_sys_num_procs--;
+                                        gsfatal(UNIMPL("Thread is last background thread --- shut down.  Always exits("") in this case; exit status doesn't matter anyway. Complication: Need to run the stuff at the bottom of this thread, too."));
                                     }
                                 }
-                                thread->state = api_thread_st_unused;
                                 break;
+                            }
                             case api_st_blocked:
                                 break;
                             default:
-                                if (thread->hard)
-                                    api_send_abend_rpc(thread, "%s:%d: Handle state %d from thread terminator next", __FILE__, __LINE__, st)
-                                ;
                                 thread->state = api_thread_st_unused;
+                                api_thread_pool_shutdown(&stats);
+                                gs_sys_num_procs--;
+                                gsfatal(UNIMPL("Handle state %d from thread terminator next"), st);
                                 break;
                         }
                         break;
                     }
                     default: {
-                        if (thread->hard)
-                            api_send_abend_rpc(thread, "%s:%d: Handle thread state %d next", __FILE__, __LINE__, thread->state)
-                        ;
                         thread->state = api_thread_st_unused;
+                        api_thread_pool_shutdown(&stats);
+                        gs_sys_num_procs--;
+                        gsfatal(UNIMPL("Handle thread state %d next"), thread->state);
                         break;
                     }
                 }
@@ -288,8 +246,12 @@ api_thread_pool_main(void *arg)
             if (sleep(1) < 0)
                 gswarning("%s:%d: sleep returned a negative number", __FILE__, __LINE__)
         ;
-    } while (hadthread);
+    }
+}
 
+void
+api_thread_pool_shutdown(struct api_thread_stats *stats)
+{
     lock(&api_at_termination_queue_lock);
     while (api_at_termination_queue_length--) {
         api_at_termination_queue[api_at_termination_queue_length]();
@@ -298,8 +260,8 @@ api_thread_pool_main(void *arg)
 
     if (gsflag_stat_collection) {
         gsstatprint("# API threads: %d\n", api_thread_queue->numthreads);
-        gsstatprint("API thread total lifetime: %llds %lldms\n", thread_lifetime / 1000 / 1000 / 1000, (thread_lifetime / 1000 / 1000) % 1000);
-        if (loops) gsstatprint("# API thread iterations: %lld (%0.2g%% instructions, %0.2g%% waiting)\n", loops, ((double)instrs / loops) * 100, ((double)loops_waiting / loops) * 100);
+        gsstatprint("API thread total lifetime: %llds %lldms\n", stats->thread_lifetime / 1000 / 1000 / 1000, (stats->thread_lifetime / 1000 / 1000) % 1000);
+        if (stats->loops) gsstatprint("# API thread iterations: %lld (%0.2g%% instructions, %0.2g%% waiting)\n", stats->loops, ((double)stats->instrs / stats->loops) * 100, ((double)stats->loops_waiting / stats->loops) * 100);
     }
 
     ace_down();
@@ -368,11 +330,10 @@ int
 api_gc_copy_thread(struct gsstringbuilder *err, struct api_thread *dest_thread, struct api_thread *src_thread)
 {
     memset(&dest_thread->lock, 0, sizeof(dest_thread->lock));
-    dest_thread->hard = src_thread->hard;
+    dest_thread->ismain = src_thread->ismain;
     dest_thread->start_time = src_thread->start_time;
     dest_thread->prog_term_time = src_thread->prog_term_time;
     dest_thread->state = src_thread->state;
-    dest_thread->process_rpc_queue = src_thread->process_rpc_queue;
     dest_thread->api_thread_table = src_thread->api_thread_table;
     dest_thread->api_prim_table = src_thread->api_prim_table;
     dest_thread->client_data = src_thread->client_data;
@@ -393,10 +354,6 @@ int
 api_gc_evacuate_thread(struct gsstringbuilder *err, struct api_thread *thread)
 {
     gsvalue gcv, gctemp;
-
-    if (thread->process_rpc_queue && gsqueue_gc_trace(err, &thread->process_rpc_queue) < 0)
-        return -1
-    ;
 
     gcv = (gsvalue)thread->client_data;
     if (gcv && GS_GC_TRACE(err, &gcv) < 0) return -1;
@@ -740,9 +697,8 @@ got_statements:
 
 static struct api_code_segment *api_alloc_code_segment(struct gspos, struct api_thread *, gsvalue);
 
-static
 struct api_thread *
-api_add_thread(struct gspos pos, struct gsrpc_queue *rpc_queue, struct api_thread_table *api_thread_table, void *main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
+api_add_thread(struct gspos pos, struct api_thread_table *api_thread_table, void *main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
 {
     int i;
     struct api_thread *thread;
@@ -770,9 +726,8 @@ have_thread:
         thread->prog_term_time = 0;
     }
     thread->state = api_thread_st_active;
-    thread->hard = 1;
+    thread->ismain = 0;
 
-    thread->process_rpc_queue = rpc_queue;
     thread->api_thread_table = api_thread_table;
     thread->api_prim_table = api_prim_table;
     thread->client_data = main_thread_data;
@@ -1053,10 +1008,6 @@ api_thread_terminating(struct api_thread *thread)
     return res;
 }
 
-struct api_done_rpc {
-    struct gsrpc rpc;
-};
-
 void
 api_done(struct api_thread *thread)
 {
@@ -1065,41 +1016,6 @@ api_done(struct api_thread *thread)
     thread->status = gsreserve_string_builder();
     gsfinish_string_builder(thread->status);
 }
-
-static gsrpc_gccopy api_done_rpc_gccopy;
-static gsrpc_gcevacuate api_done_rpc_gcevacuate;
-
-static
-void
-api_send_done_rpc(struct api_thread *thread)
-{
-    struct gsrpc *rpc;
-    struct api_done_rpc *done;
-
-    rpc = gsqueue_rpc_alloc(sizeof(*done), api_done_rpc_gccopy, api_done_rpc_gcevacuate);
-    done = (struct api_done_rpc *)rpc;
-    rpc->tag = api_std_rpc_done;
-    gsqueue_send_rpc(thread->process_rpc_queue, rpc);
-}
-
-struct gsrpc *
-api_done_rpc_gccopy(struct gsstringbuilder *err, struct gsrpc *rpc)
-{
-    gsstring_builder_print(err, UNIMPL("api_done_rpc_gccopy"));
-    return 0;
-}
-
-int
-api_done_rpc_gcevacuate(struct gsstringbuilder *err, struct gsrpc *rpc)
-{
-    gsstring_builder_print(err, UNIMPL("api_done_rpc_gcevacuate"));
-    return -1;
-}
-
-struct api_abend_rpc {
-    struct gsrpc rpc;
-    char status[];
-};
 
 void
 api_abend(struct api_thread *thread, char *msg, ...)
@@ -1115,43 +1031,6 @@ api_abend(struct api_thread *thread, char *msg, ...)
     thread->status = gsreserve_string_builder();
     gsstring_builder_print(thread->status, "%s", buf);
     gsfinish_string_builder(thread->status);
-}
-
-static gsrpc_gccopy api_abend_rpc_gccopy;
-static gsrpc_gcevacuate api_abend_rpc_gcevacuate;
-
-static
-void
-api_send_abend_rpc(struct api_thread *thread, char *msg, ...)
-{
-    struct gsrpc *rpc;
-    struct api_abend_rpc *abend;
-    char buf[0x100];
-    va_list arg;
-
-    va_start(arg, msg);
-    vseprint(buf, buf+sizeof buf, msg, arg);
-    va_end(arg);
-
-    rpc = gsqueue_rpc_alloc(sizeof(*abend) + strlen(argv0) + 2 + strlen(buf) + 1, api_abend_rpc_gccopy, api_abend_rpc_gcevacuate);
-    abend = (struct api_abend_rpc *)rpc;
-    rpc->tag = api_std_rpc_abend;
-    sprint(abend->status, "%s: %s", argv0, buf);
-    api_send_rpc(thread, rpc);
-}
-
-struct gsrpc *
-api_abend_rpc_gccopy(struct gsstringbuilder *err, struct gsrpc *rpc)
-{
-    gsstring_builder_print(err, UNIMPL("api_abend_rpc_gccopy"));
-    return 0;
-}
-
-int
-api_abend_rpc_gcevacuate(struct gsstringbuilder *err, struct gsrpc *rpc)
-{
-    gsstring_builder_print(err, UNIMPL("api_abend_rpc_gcevacuate"));
-    return -1;
 }
 
 void
@@ -1199,66 +1078,6 @@ api_thread_post_unimpl(struct api_thread *thread, char *file, int lineno, char *
         api_abend(thread, "Panic!  Unimplemented operation '%s' in release build", buf)
     ;
     unlock(&thread->lock);
-}
-
-/* §section Sending RPCS to main process */
-
-void
-api_send_rpc(struct api_thread *thread, struct gsrpc *rpc)
-{
-    gsqueue_send_rpc(thread->process_rpc_queue, rpc);
-}
-
-/* §section RPC handlers for main process */
-
-void
-api_main_process_unimpl_rpc(struct gsrpc *rpc)
-{
-    int tag;
-    struct gsstringbuilder *err;
-
-    tag = rpc->tag;
-    rpc->status = gsrpc_failed;
-
-    err = gsreserve_string_builder();
-    gsstring_builder_print(err, "%s", "unimpl");
-    gsfinish_string_builder(err);
-    rpc->err = err;
-
-    unlock(&rpc->lock);
-    gsfatal("Panic: unimplemented rpc %d in Unix pool", tag);
-}
-
-void
-api_main_process_handle_rpc_done(struct gsrpc *rpc)
-{
-    struct api_done_rpc *done;
-
-    done = (struct api_done_rpc *)rpc;
-
-    rpc->status = gsrpc_succeeded;
-    unlock(&rpc->lock);
-
-    gs_sys_num_procs--;
-    exits("");
-}
-
-void
-api_main_process_handle_rpc_abend(struct gsrpc *rpc)
-{
-    char *status;
-    struct api_abend_rpc *abend;
-
-    abend = (struct api_abend_rpc *)rpc;
-
-    status = abend->status;
-
-    rpc->status = gsrpc_succeeded;
-    unlock(&rpc->lock);
-
-    fprint(2, "%s\n", status);
-    gs_sys_num_procs--;
-    exits(status);
 }
 
 /* §section API primitive implementations */

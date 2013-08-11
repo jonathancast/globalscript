@@ -106,15 +106,6 @@ static struct api_thread_table ibio_thread_table = {
     /* gc_failure_cleanup = */ ibio_gc_failure_cleanup,
 };
 
-static struct api_process_rpc_table ibio_rpc_table = {
-    /* name = */ "IOLL Unix pool process",
-    /* numrpcs = */ ibio_numrpcs,
-    /* rpcs = */ {
-        /* api_std_rpc_done */ api_main_process_handle_rpc_done,
-        /* api_std_rpc_abend */ api_main_process_handle_rpc_abend,
-    },
-};
-
 static void ibio_downcast_ibio_m(char *, char *, char *, struct gsfile_symtable *, struct gspos, struct gstype *, struct gstype **, struct gstype **, struct gstype **);
 
 void
@@ -258,5 +249,5 @@ gsrun(char *script, struct gspos pos, gsvalue prog, int argc, char **argv)
 
     /* §section Set up the IBIO thread */
 
-    apisetupmainthread(pos, &ibio_rpc_table, &ibio_thread_table, ibio_main_thread_alloc_data(pos, argc, argv), &ibio_prim_table, prog);
+    apisetupmainthread(pos, &ibio_thread_table, ibio_main_thread_alloc_data(pos, argc, argv), &ibio_prim_table, prog);
 }

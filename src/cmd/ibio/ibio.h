@@ -16,12 +16,6 @@ enum ibio_gsstring_eval_state ibio_gsstring_eval_advance(struct api_thread *, st
 
 int ibio_gsstring_eval_evacuate(struct gsstringbuilder *, struct ibio_gsstring_eval *);
 
-/* §section RPCs for Unix Processes */
-
-enum {
-    ibio_numrpcs = api_std_rpc_numrpcs,
-};
-
 /* §section Threads */
 
 struct ibio_thread_data {
