@@ -58,7 +58,7 @@ gsmain(int argc, char **argv)
                         docfilename = cur_arg;
                         goto have_document;
                     case gsfileerror:
-                        gswarning("%s: non-fatal error when reading file", cur_arg);
+                        gsfatal("%s: Could not load: %r", cur_arg);
                         break;
                     default:
                         gsfatal("%s: loaded unknown file type %d", cur_arg, ft);

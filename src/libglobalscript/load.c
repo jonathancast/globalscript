@@ -206,6 +206,8 @@ gsaddfile(char *filename, struct gsfile_symtable **psymtable, struct gspos *pent
 
     parsedfile = gsreadfile(filename, "", 0, 0, ext && !strcmp(ext, ".ags"), symtable);
 
+    if (!parsedfile) return gsfileerror;
+
     gsloadfile(parsedfile, symtable, pentrypos, pentry, ptype);
 
     *psymtable = symtable;
@@ -242,7 +244,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     } section;
 
     if (!(chan = gsopenfile(filename, OREAD, &pid))) {
-        *is_doc = 0;
+        if (is_doc) *is_doc = 0;
         return 0;
     }
 

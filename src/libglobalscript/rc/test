@@ -2,6 +2,8 @@
 
 . $GLOBALSCRIPT/bin/test-fns
 
+ok_grep_errors '-- non-existent source file --' 'no-such-file.ags: Could not load' ./$O.test-gsi no-such-file.ags
+
 ok_diff_fail '-- undefined entry points --' ./$O.test-gsi undef.ags
 ok_diff_fail '-- undefined empty record values --' ./$O.test-gsi undef-empty-record.ags
 ok_diff_fail '-- undefined expressions --' ./$O.test-gsi undef-expr.ags
