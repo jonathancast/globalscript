@@ -115,6 +115,30 @@ fn ok_diff_script {
     true
 }
 
+fn ok_grep_script {
+    nm = $1; casenm=$2; re=$3
+    shift; shift; shift
+    echo $nm
+    if (! $* > ./test-results/$casenm^-actual >[2] ./test-results/$casenm^-errors) {
+        echo 'The command' >[1=2]
+        echo '    ' $* >[1=2]
+        echo 'failed; should have succeeded' >[1=2]
+        cat ./test-results/$casenm^-errors >[1=2]
+        cat ./test-results/$casenm^-actual >[1=2]
+        exit 1
+    }
+    if (! grep -s $re ./test-results/$casenm^-actual) {
+        echo 'The command' >[1=2]
+        echo '    ' $* >[1=2]
+        echo 'produced the wrong output' >[1=2]
+        echo 'Can''t find expected output '''^$re^''' in output anywhere' >[1=2]
+        cat ./test-results/$casenm^-errors >[1=2]
+        cat ./test-results/$casenm^-actual >[1=2]
+        exit 1
+    }
+    true
+}
+
 fn ok_grep_script_errors {
     nm = $1; casenm=$2; msg=$3
     shift; shift; shift
