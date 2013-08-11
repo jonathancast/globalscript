@@ -1,0 +1,11 @@
+	.document
+
+	.data
+
+	.undefined	_ep_ty
+
+	.type
+
+	.line	invalid-type-op-core-source.cgs	3	1
+_ep_ty	.tyexpr
+	.tynosuchtypeop
