@@ -2117,7 +2117,7 @@ gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
             }
             return 0;
         } else {
-            gsfatal("%s:%d: %s:%d: Unimplemented type op %s", __FILE__, __LINE__, pos->real_filename, pos->real_lineno, fields[1]);
+            gsfatal(UNIMPL("%s:%d: Unimplemented type op %s"), pos->real_filename, pos->real_lineno, fields[1]);
         }
     }
     if (n < 0)
