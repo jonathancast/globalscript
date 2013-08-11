@@ -6,6 +6,8 @@ ok_grep_errors '-- non-existent source file --' 'no-such-file.ags: Could not loa
 
 ok_grep_errors '-- invalid type op --' 'invalid-type-op.ags:10: Unimplemented type op' ./$O.test-gsi invalid-type-op.ags
 ok_grep_errors '-- invalid type op (declared position) --' 'invalid-type-op-declared-pos.ags:11: Unimplemented type op' ./$O.test-gsi invalid-type-op-declared-pos.ags
+touch ./test-gslib/invalid-type-op-core-source.gsac
+ok_grep_errors '-- invalid type op (core source) --' 'invalid-type-op-core-source.gsac:11: Unimplemented type op' ./$O.test-gsi invalid-type-op-core-source.cgs
 
 ok_diff_fail '-- undefined entry points --' ./$O.test-gsi undef.ags
 ok_diff_fail '-- undefined empty record values --' ./$O.test-gsi undef-empty-record.ags

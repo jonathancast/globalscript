@@ -12,7 +12,7 @@
 #include "gstypecheck.h"
 #include "ace.h"
 
-static struct uxio_ichannel *gsopenfile(char *filename, int omode, int *ppid);
+static struct uxio_ichannel *gsopenfile(char *filename, int omode, char **preal_filename, int *ppid);
 #if 0
 static struct uxio_channel *gspopen(int omode, int *ppid, char *cmd, char **argv);
 #endif
@@ -231,6 +231,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     char line[LINE_LENGTH];
     char *fields[NUM_FIELDS];
     gsparsedfile *parsedfile;
+    char *real_filename;
     int pid;
     long n;
     gsfiletype type;
@@ -243,12 +244,12 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         gscoercionsection,
     } section;
 
-    if (!(chan = gsopenfile(filename, OREAD, &pid))) {
+    if (!(chan = gsopenfile(filename, OREAD, &real_filename, &pid))) {
         if (is_doc) *is_doc = 0;
         return 0;
     }
 
-    pos.real_filename = filename;
+    pos.real_filename = real_filename;
     pos.real_lineno = 0;
     pos.is_artificial = 0;
 
@@ -2857,7 +2858,7 @@ gssymtable_set_scc(struct gsfile_symtable *symtable, struct gsbc_item item, stru
 }
 
 struct uxio_ichannel *
-gsopenfile(char *filename, int omode, int *ppid)
+gsopenfile(char *filename, int omode, char **preal_filename, int *ppid)
 {
     char *ext;
 
@@ -2865,6 +2866,7 @@ gsopenfile(char *filename, int omode, int *ppid)
     ext = strrchr(filename, '.');
     if (!ext) goto error;
     if (!strcmp(ext, ".ags")) {
+        if (preal_filename) *preal_filename = filename;
         return gsbio_device_iopen(filename, omode);
     } else if (!strcmp(ext, ".cgs")) {
         char *gsac_filename;
@@ -2880,6 +2882,7 @@ gsopenfile(char *filename, int omode, int *ppid)
         if (!(gsac_d = gsbio_stat(gsac_filename))) return 0;
 
         if (gsac_d->d.mtime > cgs_d->d.mtime) {
+            if (preal_filename) *preal_filename = gsac_filename;
             return gsbio_device_iopen(gsac_filename, omode);
         } else {
             return 0;
