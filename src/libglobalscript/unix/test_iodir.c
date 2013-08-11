@@ -28,6 +28,8 @@ test_iodir()
 
 static struct uxio_ichannel *fixture_unix_stat_buffer_for_file(void);
 
+#define TEST_FIXTURE_MTIME 1987654321
+
 static
 void
 TEST_UNIX_FILL_STAT()
@@ -36,7 +38,7 @@ TEST_UNIX_FILL_STAT()
     ulong size_of_data_stored;
     void *buf;
     char str[32];
-    u32int mode;
+    u32int mode, mtime;
     long n, s;
 
     chan = fixture_unix_stat_buffer_for_file();
@@ -57,8 +59,16 @@ TEST_UNIX_FILL_STAT()
     mode = GET_LITTLE_ENDIAN_U32INT(buf);
     not_ok(__FILE__, __LINE__, mode & DMDIR, "Indicated file was a directory in stored data");
 
-    n = uxio_consume_space(chan, &buf, 4 + 4 + 8); /* atime + mtime + length */
-    ok_ulong_eq(__FILE__, __LINE__, n, 4 + 4 + 8, "Didn't read in padding between the mode and the name");
+    n = uxio_consume_space(chan, &buf, 4); /* atime */
+    ok_ulong_eq(__FILE__, __LINE__, n, 4, "Didn't read in padding between the mode and the mtime");
+
+    n = uxio_consume_space(chan, &buf, 4); /* mtime */
+    ok_ulong_eq(__FILE__, __LINE__, n, 4, "Didn't read in an mtime");
+    mtime = GET_LITTLE_ENDIAN_U32INT(buf);
+    ok_ulong_eq(__FILE__, __LINE__, mtime, TEST_FIXTURE_MTIME, "mtime was incorrect");
+
+    n = uxio_consume_space(chan, &buf, 8); /* length */
+    ok_ulong_eq(__FILE__, __LINE__, n, 8, "Didn't read in padding between the mtime and the name");
 
     n = uxio_consume_space(chan, &buf, 2); /* name size */
     ok_ulong_eq(__FILE__, __LINE__, n, 2, "Didn't read in a size for the name");
@@ -112,6 +122,7 @@ fixture_unix_stat_buffer_for_file()
     struct stat uxstat;
 
     memset(&uxstat, 0, sizeof(uxstat));
+    uxstat.st_mtime = TEST_FIXTURE_MTIME;
 
     chan = gsbio_get_channel_for_external_io("", -1, gsbio_iostat);
     gsbio_unix_fill_stat("./foo.txt", &uxstat, chan);

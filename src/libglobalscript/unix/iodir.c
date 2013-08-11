@@ -200,8 +200,15 @@ gsbio_unix_dir_from_sys_stat(void *buf, void *bufend, char *filename, struct sta
     PUT_LITTLE_ENDIAN_U32INT(buf, mode);
     buf = (uchar*)buf + 4;
 
-    /* Padding over atime, mtime, and length */
-    buf = (uchar*)buf + 4 + 4 + 8;
+    /* Padding over atime */
+    buf = (uchar*)buf + 4;
+
+    /* mtime */
+    PUT_LITTLE_ENDIAN_U32INT(buf, puxstat->st_mtime);
+    buf = (uchar*)buf + 4;
+
+    /* Padding over length */
+    buf = (uchar*)buf + 8;
 
     /* name[s] */
     PUT_LITTLE_ENDIAN_U16INT(buf, endname - basename);
