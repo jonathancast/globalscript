@@ -89,8 +89,15 @@ gsbio_parse_stat(u16int bufsize, void *start)
     dir.d.mode = GET_LITTLE_ENDIAN_U32INT(buf);
     buf += 4;
 
-    /* padding for atime, mtime, and length */
-    buf += 4 + 4 + 8;
+    /* padding for atime */
+    buf += 4;
+
+    /* mtime */
+    dir.d.mtime = GET_LITTLE_ENDIAN_U32INT(buf);
+    buf += 4;
+
+    /* padding for length */
+    buf += 8;
 
     /* name */
     namesize = GET_LITTLE_ENDIAN_U16INT(buf);

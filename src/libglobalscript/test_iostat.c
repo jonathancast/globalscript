@@ -22,6 +22,8 @@ void test_iostat()
     RUNTESTS(TEST_IOSTAT_DIR);
 }
 
+#define TEST_FIXTURE_MTIME 1987654321
+
 static
 void
 TEST_IOSTAT()
@@ -37,6 +39,7 @@ TEST_IOSTAT()
         "gsbio_parse_stat()->size"
     );
     not_ok(__FILE__, __LINE__, pdir->d.mode & DMDIR, "gsbio_parse_stat returned directory, but was not a directory");
+    ok_ulong_eq(__FILE__, __LINE__, pdir->d.mtime, TEST_FIXTURE_MTIME, "gsbio_parse_stat returned incorrect mtime");
     ok_cstring_eq(__FILE__, __LINE__, pdir->d.name, "foo.txt", "gsbio_parse_stat returned incorrect name");
 }
 
@@ -82,8 +85,15 @@ fixture_sample_chan_with_file_entry()
     p = uxio_save_space(res, 4), size += 4;
     PUT_LITTLE_ENDIAN_U32INT(p, 0664);
 
-    /* padding for atime, mtime, and length */
-    p = uxio_save_space(res, 4 + 4 + 8), size += 4 + 4 + 8;
+    /* padding for atime */
+    p = uxio_save_space(res, 4), size += 4;
+
+    /* padding for mtime */
+    p = uxio_save_space(res, 4), size += 4;
+    PUT_LITTLE_ENDIAN_U32INT(p, TEST_FIXTURE_MTIME);
+
+    /* padding for length */
+    p = uxio_save_space(res, 8), size += 8;
 
     /* name */
     p = uxio_save_space(res, 2), size += 2;
