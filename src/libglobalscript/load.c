@@ -241,9 +241,10 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         gscoercionsection,
     } section;
 
-    if (!(chan = gsopenfile(filename, OREAD, &pid)))
-        gsfatal("%s: open: %r", filename)
-    ;
+    if (!(chan = gsopenfile(filename, OREAD, &pid))) {
+        *is_doc = 0;
+        return 0;
+    }
 
     pos.real_filename = filename;
     pos.real_lineno = 0;
