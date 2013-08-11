@@ -154,6 +154,7 @@ gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gspars
     for (;;) {
         if (
             gssymeq(p->directive, gssymtypeop, ".tygvar")
+            || gssymeq(p->directive, gssymtypeop, ".tyextabstype")
             || gssymeq(p->directive, gssymtypeop, ".tylambda")
             || gssymeq(p->directive, gssymtypeop, ".tyforall")
             || gssymceq(p->directive, gssymtyexists, gssymtypeop, ".tyexists")
@@ -196,12 +197,13 @@ static
 struct gsparsedline *
 gscoercion_section_skip_coercion_expr(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtygvar, gssymtylambda, gssymtyinvert;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtylambda, gssymtyinvert;
     static gsinterned_string gssymtydefinition;
 
     for (;;) {
         if (
             gssymceq(p->directive, gssymtygvar, gssymcoercionop, ".tygvar")
+            || gssymceq(p->directive, gssymtyextabstype, gssymcoercionop, ".tyextabstype")
             || gssymceq(p->directive, gssymtylambda, gssymcoercionop, ".tylambda")
             || gssymceq(p->directive, gssymtyinvert, gssymcoercionop, ".tyinvert")
         )
@@ -599,6 +601,10 @@ gsbc_top_sort_subitems_of_type_or_coercion_expr(struct gsfile_symtable *symtable
 {
     for (; ; p = gsinput_next_line(ppseg, p)) {
         if (gssymeq(p->directive, op, ".tygvar")) {
+            struct gsbc_item global;
+            global = gssymtable_lookup(p->pos, symtable, p->label);
+            gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
+        } else if (gssymeq(p->directive, op, ".tyextabstype")) {
             struct gsbc_item global;
             global = gssymtable_lookup(p->pos, symtable, p->label);
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);

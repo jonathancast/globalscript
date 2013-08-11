@@ -2220,6 +2220,16 @@ gsparse_type_or_coercion_op(struct gsparse_input_pos *pos, struct gsparsedline *
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .tygvar", pos->real_filename, pos->real_lineno);
         return 1;
+    } else if (gssymeq(parsedline->directive, op, ".tyextabstype")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymtypelable, fields[0])
+        ; else
+            gsfatal("%s:%d: Labels required on .tyextabstype", pos->real_filename, pos->real_lineno)
+        ;
+        if (n < 3) gsfatal("%s:%d: Missing kind on .tyextabstype", pos->real_filename, pos->real_lineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
+        if (n > 3) gsfatal("%s:%d: Too many arguments to .tyextabstype", pos->real_filename, pos->real_lineno);
+        return 1;
     } else if (gssymeq(parsedline->directive, op, ".tylambda")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0])

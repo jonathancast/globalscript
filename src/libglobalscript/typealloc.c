@@ -430,7 +430,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         }
         return res;
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_compile_type_ops %s", p->pos, p->directive->name);
+        gsfatal(UNIMPL("%P: gstype_compile_type_ops %y"), p->pos, p->directive);
     }
     return 0;
 }
@@ -735,7 +735,7 @@ static
 struct gstype *
 gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p, struct gstype *(*next)(struct gstype_compile_type_ops_closure *, struct gsparsedline *))
 {
-    static gsinterned_string gssymtygvar;
+    static gsinterned_string gssymtygvar, gssymtyextabstype;
 
     if (gssymceq(p->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
         int i;
@@ -764,6 +764,37 @@ gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, s
         if (!cl->regvalues[cl->nregs])
             gsfatal("%P: Couldn't find referent %y", p->pos, p->label)
         ;
+        cl->nregs++;
+        return next(cl, gsinput_next_line(cl->ppseg, p));
+    } else if (gssymceq(p->directive, gssymtyextabstype, gssymtypeop, ".tyextabstype")) {
+        struct gskind *kind;
+        struct gstype_abstract *abstype;
+
+        if (cl->nregs >= MAX_REGISTERS)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
+        ;
+        if (cl->regclass > regglobal)
+            gsfatal("%P: Too late to add type globals", p->pos)
+        ;
+        cl->regclass = regglobal;
+        cl->regs[cl->nregs] = p->label;
+        cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
+        if (!cl->regvalues[cl->nregs])
+            gsfatal("%P: Couldn't find referent %y", p->pos, p->label)
+        ;
+
+        gsargcheck(p, 0, "kind");
+        kind = gskind_compile(p->pos, p->arguments[0]);
+
+        if (cl->regvalues[cl->nregs]->node != gstype_abstract)
+            gsfatal("%P: Referent %y isn't actually an abstype", p->pos, p->label)
+        ;
+        abstype = (struct gstype_abstract *)cl->regvalues[cl->nregs];
+        if (abstype->name != p->label)
+            gsfatal("%P: Referent %y translates to differently named abstype %y", p->pos, p->label, abstype->name)
+        ;
+        gstypes_kind_check_fail(p->pos, abstype->kind, kind);
+
         cl->nregs++;
         return next(cl, gsinput_next_line(cl->ppseg, p));
     } else {

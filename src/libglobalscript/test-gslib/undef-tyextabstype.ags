@@ -1,0 +1,10 @@
+	.document
+
+	.data
+
+	.undefined	_ep_ty
+
+	.type
+_ep_ty	.tyexpr
+rune.t	.tyextabstype	*
+	.tyref	rune.t
