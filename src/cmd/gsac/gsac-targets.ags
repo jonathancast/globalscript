@@ -6,6 +6,7 @@
 _real.entry	.closure	_real.entry_c
 
 _print.targets.in.dir	.closure	_print.targets.in.dir_c	_print.targets.in.dir_ty
+_print.targets.in.dir_body_process.file_k_file_:_nl	.string	\n
 
 _cgs	.string	cgs
 
@@ -41,22 +42,29 @@ args	.fv	list.t	_string.ty
 	.enter	list.map	_string.ty	ibio.file.name.t
 
 _real.entry_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 list.t	.tygvar
 ibio.file.name.t	.tygvar
 record.empty	.tygvar
 ibio.mapM0.prim	.gvar
 _print.targets.in.dir	.gvar
+o	.fv	ibio.prim.oport	rune.t
 parsed.args	.fv	list.t	ibio.file.name.t
-	.app	_print.targets.in.dir	parsed.args
+f	.apply	_print.targets.in.dir	|	o
+	.app	f	parsed.args
 	.enter	ibio.mapM0.prim	ibio.file.name.t	record.empty
 
 _print.targets.in.dir_c .impprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.prim.t	.tygvar
 record.empty	.tygvar
 _print.targets.in.dir_id_c	.subcode
 _print.targets.in.dir_ds_c	.subcode
 _print.targets.in.dir_body_c	.subcode
+o	.larg	ibio.prim.oport	rune.t
 dirn	.larg	ibio.file.name.t
 id	.bind	_print.targets.in.dir_id_c
 ds	.bind	_print.targets.in.dir_ds_c
@@ -115,32 +123,41 @@ ms	.apply	ibio.lex.receiver.many	ibio.dir.t	ibio.dir.t	|	sym
 
 _print.targets.in.dir_body_c	.expr
 ibio.file.name.t	.tygvar
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 list.t	.tygvar
 ibio.dir.t	.tygvar
 record.empty	.tygvar
 _print.targets.in.dir_body_process.file_c	.subcode
 ibio.mapM0.prim	.gvar
 dirn	.fv	ibio.file.name.t
+o	.fv	ibio.prim.oport	rune.t
 ds	.fv	list.t	ibio.dir.t
 process.file	.alloc	_print.targets.in.dir_body_process.file_c
 	.app	process.file	ds
 	.enter	ibio.mapM0.prim	ibio.dir.t	record.empty
 
 _print.targets.in.dir_body_process.file_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 ibio.dir.t	.tygvar
 _print.targets.in.dir_body_process.file_k0	.subcode
 dirn	.fv	ibio.file.name.t
+o	.fv	ibio.prim.oport	rune.t
 d	.larg	ibio.dir.t
 	.force	_print.targets.in.dir_body_process.file_k0
 	.enter	d
 
 _print.targets.in.dir_body_process.file_k0	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 ibio.dir.u	.tygvar
 _print.targets.in.dir_body_process.file_k1	.subcode
 bool.t.out	.cogvar
 dirn	.fv	ibio.file.name.t
+o	.fv	ibio.prim.oport	rune.t
 d0	.karg	ibio.dir.u
 isd	.field	mode.directory	d0
 	.force	_print.targets.in.dir_body_process.file_k1
@@ -148,10 +165,11 @@ isd	.field	mode.directory	d0
 	.enter	isd
 
 _print.targets.in.dir_body_process.file_k1	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 ibio.dir.u	.tygvar
 list.t	.tygvar
-rune.t	.tygvar
 bool.prim.u	.tygvar
 _print.targets.in.dir_body_process.file_k_file_k	.subcode
 list.t.out	.cogvar
@@ -160,6 +178,7 @@ list.reverse	.gvar
 ibio.file.name.</>	.gvar
 _print.targets.in.dir	.gvar
 string.ty	.tylet	list.t	rune.t
+o	.fv	ibio.prim.oport	rune.t
 dirn	.fv	ibio.file.name.t
 d0	.fv	ibio.dir.u
 isd0	.karg	bool.prim.u
@@ -174,13 +193,15 @@ stxe			.apply	list.reverse	string.ty	|	exts
 			.enter	stxe
 		.case	true
 dn1			.apply	ibio.file.name.</>	|	dirn	nm
-			.app	dn1
+			.app	o	dn1
 			.enter	_print.targets.in.dir
 
 _print.targets.in.dir_body_process.file_k_file_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
-rune.t	.tygvar
 ibio.prim.t	.tygvar
 record.empty	.tygvar
 _print.targets.in.dir_body_process.file_k_file_:_k	.subcode
@@ -189,6 +210,9 @@ list.≡	.gvar
 rune.≡	.gvar
 _cgs	.gvar
 string.ty	.tylet	list.t	rune.t
+o	.fv	ibio.prim.oport	rune.t
+dirn	.fv	ibio.file.name.t
+nm	.fv	ibio.file.name.t
 stxe0	.karg	list.prim.u	string.ty
 	.analyze	stxe0	:	nil
 		.case	:
@@ -202,11 +226,23 @@ stxe1		.fkarg	1	list.t	string.ty
 			.undef	ibio.prim.t	record.empty
 
 _print.targets.in.dir_body_process.file_k_file_:_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
 bool.prim.u	.tygvar
 ibio.prim.t	.tygvar
 record.empty	.tygvar
 ibio.prim.unit	.gvar
 record.empty	.gvar
+ibio.prim.write	.gvar
+list.<>	.gvar
+_print.targets.in.dir_body_process.file_k_file_:_nl	.gvar
+ibio.file.name.out	.gvar
+gsac.target.file.name	.gvar
+ibio.file.name.</>	.gvar
+o	.fv	ibio.prim.oport	rune.t
+dirn	.fv	ibio.file.name.t
+nm	.fv	ibio.file.name.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
@@ -214,14 +250,24 @@ b0	.karg	bool.prim.u
 			.app	record.empty
 			.yield	ibio.prim.unit	record.empty
 		.case	true
-			.undef	ibio.prim.t	record.empty
+fn			.apply	ibio.file.name.</>	|	dirn	nm
+gsac.fn			.apply	gsac.target.file.name	|	fn
+gsac.fn.s			.apply	ibio.file.name.out	|	gsac.fn
+gsac.fn.s.nl			.apply	list.<>	rune.t	|	gsac.fn.s	_print.targets.in.dir_body_process.file_k_file_:_nl
+			.lift
+			.app	o	gsac.fn.s.nl
+			.yield	ibio.prim.write	rune.t
 
 	.type
 
 _print.targets.in.dir_ty	.tyexpr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 ibio.file.name.t	.tygvar
 ibio.prim.t	.tygvar
 record.empty	.tygvar
+	.tylift
+	.tyfun	ibio.prim.oport	rune.t
 	.tylift
 	.tyfun	ibio.file.name.t
 	.tyref	ibio.prim.t	record.empty

@@ -3,8 +3,10 @@
 	.data
 
 gsac.source.file.name	.closure	_gsac.source.file.name_c
+gsac.target.file.name	.closure	_gsac.target.file.name_c
 
 _cgs	.string	cgs
+_gsac	.string	gsac
 
 	.code
 
@@ -16,4 +18,14 @@ ibio.file.name.extension.set	.gvar
 _cgs	.gvar
 fn	.larg	ibio.file.name.t
 	.app	_cgs	fn
+	.enter	ibio.file.name.extension.set
+
+# §section §gs{gsac.target.file.name}
+
+_gsac.target.file.name_c	.expr
+ibio.file.name.t	.tygvar
+ibio.file.name.extension.set	.gvar
+_gsac	.gvar
+fn	.larg	ibio.file.name.t
+	.app	_gsac	fn
 	.enter	ibio.file.name.extension.set

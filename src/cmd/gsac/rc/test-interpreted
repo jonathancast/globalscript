@@ -4,6 +4,8 @@
 
 . $GLOBALSCRIPT/bin/globalscript
 
+ok_grep_script	 '-- gsac-targets: Directory with .cgs files in it --' targets-cgs-file empty-bool-doc.gsac ibio ./gslib ./gsac-targets.ags ./test-fixtures
+
 ok_grep_script_errors '-- gsac-deps: Completely empty .cgs file --' deps-empty-cgs 'empty.cgs:\$: No #type: prefix or #type: document pragma' ibio ./gslib ./gsac-deps.ags -l $GLOBALSCRIPT/gslib ./test-fixtures/empty.gsac
 ok_grep_script_errors '-- gsac-deps: Document with no entry point --' deps-no-entry 'no-entry.cgs:\$: Un-expected EOF; expected symbol' ibio ./gslib ./gsac-deps.ags -l $GLOBALSCRIPT/gslib ./test-fixtures/no-entry.gsac
 
