@@ -2861,7 +2861,7 @@ gsopenfile(char *filename, int omode, int *ppid)
         return gsbio_device_iopen(filename, omode);
     }
 error:
-    gsfatal("%s:extensions are mandatory in Global Script source files (sorry)", filename);
+    gsfatal("%s: extensions are mandatory in Global Script source files (sorry)", filename);
     return 0;
 }
 
