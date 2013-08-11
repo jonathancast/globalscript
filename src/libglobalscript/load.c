@@ -157,7 +157,10 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
         } else {
             ext = strrchr(dir->d.name, '.');
             if (0) gswarning("%s:%d: Considering %s (%s) of type %s", __FILE__, __LINE__, newfilename, dir->d.name, ext);
-            if (ext && !strcmp(ext, ".ags")) {
+            if (ext && (
+                !strcmp(ext, ".ags")
+                || !strcmp(ext, ".cgs")
+            )) {
                 int is_doc;
 
                 file_symtable = gscreatesymtable(symtable);
@@ -181,6 +184,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
             if (ext && (
                 !strcmp(ext, ".gs-scheme")
                 || !strcmp(ext, ".cgs-scheme")
+                || !strcmp(ext, ".gsac")
             ))
                 continue
             ;
@@ -2857,8 +2861,26 @@ gsopenfile(char *filename, int omode, int *ppid)
     *ppid = 0;
     ext = strrchr(filename, '.');
     if (!ext) goto error;
-    if (!strcmp(ext, ".ags") || !strcmp(ext, ".gsac")) {
+    if (!strcmp(ext, ".ags")) {
         return gsbio_device_iopen(filename, omode);
+    } else if (!strcmp(ext, ".cgs")) {
+        char *gsac_filename;
+        struct gsbio_dir *cgs_d, *gsac_d;
+        uint len;
+
+        len = strlen(filename) + strlen(".gsac") - strlen(".cgs") + 1;
+        gsac_filename = gs_sys_global_block_suballoc(&filename_info, len);
+        strecpy(gsac_filename, gsac_filename + len, filename);
+        strecpy(gsac_filename + (ext - filename), gsac_filename + len, ".gsac");
+
+        if (!(cgs_d = gsbio_stat(filename))) return 0;
+        if (!(gsac_d = gsbio_stat(gsac_filename))) return 0;
+
+        if (gsac_d->d.mtime > cgs_d->d.mtime) {
+            return gsbio_device_iopen(gsac_filename, omode);
+        } else {
+            return 0;
+        }
     }
 error:
     gsfatal("%s: extensions are mandatory in Global Script source files (sorry)", filename);
@@ -2870,7 +2892,8 @@ long
 gsclosefile(struct uxio_ichannel *chan, int pid)
 {
     if (pid)
-        gsfatal("gsclosefile for pipe next");
+        gsfatal("gsclosefile for pipe next")
+    ;
 
     return gsbio_device_iclose(chan);
 }

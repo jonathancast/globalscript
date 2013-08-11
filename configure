@@ -3,6 +3,7 @@
 GLOBALSCRIPT=${GLOBALSCRIPT:-$PWD}
 
 SCRIPTS="$GLOBALSCRIPT/src/test-all $GLOBALSCRIPT/src/mk-all $GLOBALSCRIPT/src/libglobalscript/rc/test"
+SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/libglobalscript/rc/test-core-source"
 SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/cmd/rc/pure-test $GLOBALSCRIPT/bin/test-gslib"
 SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/cmd/ibio/rc/test"
 SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/cmd/gsac/gsac.rc"

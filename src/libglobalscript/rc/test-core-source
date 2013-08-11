@@ -1,0 +1,5 @@
+#! /usr/local/plan9/bin/rc -e
+
+. $GLOBALSCRIPT/bin/test-fns
+
+ok_diff_fail '-- undefined Core programs --' ./$O.test-gsi core-prog.cgs

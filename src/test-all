@@ -15,5 +15,7 @@ cd $GLOBALSCRIPT/src/libtest &&
 # §paragraph{Interpreted Compiler}
     cd ../gsac &&
     mk -f mkfile.interpreted integration-test && mk -f mkfile.interpreted install && mk -f mkfile.interpreted effect &&
-    cd ../gscr &&
+    cd ../../libglobalscript &&
+    mk -f mkfile.core-source integration-test &&
+    cd ../cmd/gscr &&
     mk -f mkfile.interpreted

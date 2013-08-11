@@ -104,7 +104,7 @@ test:V: $O.test
 
 integration-test:V: test test-rc
 
-test-rc:V: rc/test $O.test-gsi $O.test-gsexec
+test-rc:V: rc/test $O.test-gsi $O.test-gsexec $TEST_GSAC_FILES
     ./rc/test
 
 $O.test:	$TEST_OFILES $GLOBALSCRIPT/lib/$LIB $GLOBALSCRIPT/lib/libtest.a
