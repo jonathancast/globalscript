@@ -2,8 +2,7 @@
 
 < $GLOBALSCRIPT/src/mkhdr
 
-TEST_GSAC_FILES=\
-	test-gslib/core-prog.gsac \
+TEST_GSAC_FILES=`{$GLOBALSCRIPT/bin/gsac-targets ./test-gslib}
 
 integration-test:V: test-rc
 
