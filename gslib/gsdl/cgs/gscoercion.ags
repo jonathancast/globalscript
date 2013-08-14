@@ -1,5 +1,7 @@
 	.prefix
 
+	.data
+
 	.type
 
 # §section §gs{gsdl.cgs.gscoercion.t}
