@@ -2,7 +2,17 @@
 
 	.data
 
+gsdl.cgs.gsexpr.parser	.closure	_gsdl.cgs.gsexpr.parser_c	_gsdl.cgs.gsexpr.parser_ty
+
 	.code
+
+# §section §gs{gsdl.cgs.gsexpr.parser}
+
+_gsdl.cgs.gsexpr.parser_c	.expr
+rune.t	.tygvar	# Temp
+gsdl.cgs.gsexpr.t	.tygvar	# Temp
+parser.fail	.gvar	# Temp
+	.enter	parser.fail	rune.t	gsdl.cgs.gsexpr.t
 
 	.type
 
@@ -15,3 +25,11 @@ gsdl.cgs.gsexpr.prim.u	.tygvar
 
 gsdl.cgs.gsexpr.prim.u	.tyexpr
 	.tysum
+
+# §section §gs{gsdl.cgs.gsexpr.parser}
+
+_gsdl.cgs.gsexpr.parser_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
