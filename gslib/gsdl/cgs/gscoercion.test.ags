@@ -4,7 +4,11 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.parse.gscoercion.defn
+
+_test.parse.gscoercion.defn	.closure	_test.parse.gscoercion.defn_c
+_test.parse.gscoercion.defn_label	.string	parse\sgsexpr.parser\sqq{"defn\sbool.t}
+_test.parse.gscoercion.defn_input	.string	"defn\sbool.t
 
 	.code
 
@@ -13,3 +17,27 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{parse qq{"defn bool.t}}
+
+_test.parse.gscoercion.defn_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+_test.parse.gscoercion.defn_k_c	.subcode
+test.property.label	.gvar
+_test.parse.gscoercion.defn_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.cgs.gscoercion.parser	.gvar
+_test.parse.gscoercion.defn_input	.gvar
+k	.alloc	_test.parse.gscoercion.defn_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gscoercion.t	|	parser.rune.advance	rune.print	gsdl.cgs.gscoercion.parser	_test.parse.gscoercion.defn_input	k
+	.app	_test.parse.gscoercion.defn_label	test
+	.enter	test.property.label
+
+_test.parse.gscoercion.defn_k_c	.expr
+gsdl.cgs.gscoercion.t	.tygvar
+test.true	.gvar
+actual	.larg	gsdl.cgs.gscoercion.t
+	.enter	test.true

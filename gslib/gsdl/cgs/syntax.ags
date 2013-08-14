@@ -13,8 +13,9 @@ gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
 _gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
 
 gsdl.cgs.syntax.gsid	.closure	_gsdl.cgs.syntax.gsid_c
-_gsdl.cgs.syntax.gsid_re	.regex	[a-z][a-z]*
-_gsdl.cgs.syntax.gsid.ch_re	.regex	[a-z]		# Sync with above!
+_gsdl.cgs.syntax.gsid_re	.regex	[a-z]§*	_gsdl.cgs.syntax_id.cont.char.re
+
+_gsdl.cgs.syntax_id.cont.char.re	.regex	[a-z]	
 
 gsdl.cgs.syntax.oftype	.closure	_gsdl.cgs.syntax.oftype_c
 _gsdl.cgs.syntax.oftype_re	.regex	::
@@ -24,6 +25,9 @@ _gsdl.cgs.syntax.rbracket_re	.regex	〉
 
 gsdl.cgs.syntax.semi	.closure	_gsdl.cgs.syntax.semi_c
 _gsdl.cgs.syntax.semi_re	.regex	;
+
+gsdl.cgs.syntax.core.keyword	.closure	_gsdl.cgs.syntax.core.keyword_c
+_gsdl.cgs.syntax.core.keyword_dq.re	.regex	"
 
 gsdl.cgs.syntax.keywords	.list	string.t
 
@@ -76,10 +80,10 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.cgs.syntax.gsid_re	.gvar
 parser.neg.lookahead	.gvar
-_gsdl.cgs.syntax.gsid.ch_re	.gvar
+_gsdl.cgs.syntax_id.cont.char.re	.gvar
 parser.fail	.gvar	# Temp
 id_p0	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.gsid_re
-id_p1.1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.gsid.ch_re
+id_p1.1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_id.cont.char.re
 id_p1	.apply	parser.neg.lookahead	rune.t	string.t	|	id_p1.1
 id_p	.apply	parser.<*	rune.t	string.t	record.empty	|	id_p0	id_p1
 k	.alloc	_gsdl.cgs.syntax.var.component.alphanum.parser_k_c
@@ -268,6 +272,32 @@ gsdl.cgs.syntax.ws	.gvar
 m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.semi_re
 	.app	m	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
+
+# §section §gs{gsdl.cgs.syntax.core.keyword}
+
+_gsdl.cgs.syntax.core.keyword_c	.expr
+regex.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.core.keyword_dq.re	.gvar
+parser.<*	.gvar
+parser.neg.lookahead	.gvar
+_gsdl.cgs.syntax_id.cont.char.re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+parser.fail	.gvar	# Temp
+kw	.larg	regex.t	rune.t
+dq.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.core.keyword_dq.re
+p1	.apply	parser.match	rune.t	|	rune.compare	kw
+idc.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_id.cont.char.re
+p2.1	.apply	parser.neg.lookahead	rune.t	string.t	|	idc.p
+p2	.apply	parser.*>	rune.t	record.empty	string.t	|	p2.1	gsdl.cgs.syntax.ws
+p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
+	.app	dq.p	p
+	.enter	parser.*>	rune.t	string.t	string.t
 
 # §section §gs{gsdl.cgs.syntax.var.component.print}
 
