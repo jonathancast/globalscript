@@ -3753,6 +3753,7 @@ _parser.prim.u_symbol_0_ty	.tygvar
 parser.prim.t	.tygvar
 _parser.prim.neg_symbol_sk1_c	.subcode
 parser.prim.symbol	.gvar
+parser.prim.neg	.gvar
 parser.prim.fail	.gvar
 s	.tyfv	*
 α	.tyfv	*
@@ -3764,7 +3765,7 @@ p0.0	.karg	parser.prim.u	s	record.empty
 			.undef	parser.prim.t	s	α
 		.case	fail.msg
 msg		.fkarg	0	list.t	rune.t
-			.undef	parser.prim.t	s	α
+			.enter	p1
 		.case	lookahead
 p0.1		.fkarg	0	parser.prim.t	s	rec.ty
 			.undef	parser.prim.t	s	α
@@ -3775,7 +3776,7 @@ k		.fkarg	0	_parser.prim.u_pos.get_0_ty	s	record.empty
 sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	record.empty
 fk		.fkarg	1	parser.prim.t	s	record.empty
 sk1			.alloc	_parser.prim.neg_symbol_sk1_c
-fk1			.undefined	parser.prim.t	s	α
+fk1			.apply	parser.prim.neg	s	α	|	fk	p1
 			.app	sk1	fk1
 			.yield	parser.prim.symbol	s	α
 		.case	unit.plus
