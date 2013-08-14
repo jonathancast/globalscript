@@ -18,23 +18,27 @@ _gsdl.cgs.document.fmtgs_suffix	.string	〉
 
 # §section §gs{gsdl.cgs.document.parser}
 
-# >     for (
-# >         'e ← expr.parser;
-# >         'mb.ty ← optional (lexeme m/::/ *> gstype.parser) <* lexeme m/;/;
-# >         'gs ← many generator.parser;
-# >     ) [| 〈 'expr ∝ just e; 'gstype ∝ mb.ty; 'gens ∝ gs; 〉 |]
-# > <|> for (
-# >         'ty ← lexeme m/::/ *> (gstype.parser <* lexeme m/;/);
-# >         'gs ← many generator.parser;
-# >     ) [| 〈 'expr ∝ nothing; 'gstype ∝ just ty; 'gens ∝ gs; 〉 |]
+# > for (
+# >     'e ← expr.parser;
+# >     'mb.ty ← optional (lexeme m/::/ *> gstype.parser) <* lexeme m/;/;
+# >     'gs ← many generator.parser;
+# > ) [| 〈 'expr ∝ just e; 'gstype ∝ mb.ty; 'gens ∝ gs; 〉 |]
 _gsdl.cgs.document.parser_c	.expr
+_gsdl.cgs.document.parser_no.expr_c	.subcode
+no.expr	.alloc	_gsdl.cgs.document.parser_no.expr_c
+	.enter	no.expr
+
+# > for (
+# >     'ty ← lexeme m/::/ *> gstype.parser <* lexeme m/;/;
+# >     'gs ← many generator.parser;
+# > ) [| 〈 'expr ∝ nothing; 'gstype ∝ just ty; 'gens ∝ gs; 〉 |]
+_gsdl.cgs.document.parser_no.expr_c	.expr
 rune.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
 parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 string.t	.tygvar
-#parser.t	.tygvar	# Temp
-_gsdl.cgs.document.parser_f_c	.subcode
+_gsdl.cgs.document.parser_no.expr_f_c	.subcode
 parser.lift2	.gvar
 parser.pos.get	.gvar
 parser.<*	.gvar
@@ -42,14 +46,14 @@ parser.*>	.gvar
 gsdl.cgs.syntax.oftype	.gvar
 gsdl.cgs.gstype.parser.app	.gvar
 gsdl.cgs.syntax.semi	.gvar
-f	.alloc	_gsdl.cgs.document.parser_f_c
+f	.alloc	_gsdl.cgs.document.parser_no.expr_f_c
 pos.get	.apply	parser.pos.get	rune.t
 ty_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.app
 ty_p	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	ty_p1	gsdl.cgs.syntax.semi
 	.app	f	pos.get	ty_p
 	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.cgs.gstype.t	gsdl.cgs.document.t
 
-_gsdl.cgs.document.parser_f_c	.expr
+_gsdl.cgs.document.parser_no.expr_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.sourcepos.t	.tygvar	# Temp
