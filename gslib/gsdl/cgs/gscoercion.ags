@@ -2,7 +2,17 @@
 
 	.data
 
+gsdl.cgs.gscoercion.parser	.closure	_gsdl.cgs.gscoercion.parser_c	_gsdl.cgs.gscoercion.parser_ty
+
 	.code
+
+# §section §gs{gsdl.cgs.gscoercion.parser}
+
+_gsdl.cgs.gscoercion.parser_c	.expr
+rune.t	.tygvar	# Temp
+gsdl.cgs.gscoercion.t	.tygvar	# Temp
+parser.fail	.gvar	# Temp
+	.enter	parser.fail	rune.t	gsdl.cgs.gscoercion.t
 
 	.type
 
@@ -15,3 +25,11 @@ gsdl.cgs.gscoercion.prim.u	.tygvar
 
 gsdl.cgs.gscoercion.prim.u	.tyexpr
 	.tysum
+
+# §section §gs{gsdl.cgs.gscoercion.parser}
+
+_gsdl.cgs.gscoercion.parser_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gscoercion.t
