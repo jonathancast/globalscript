@@ -1,3 +1,13 @@
 	.prefix
 
 	.type
+
+# §section §gs{gsdl.cgs.gsexpr.t}
+
+gsdl.cgs.gsexpr.t	.tyabstract	*
+gsdl.cgs.gsexpr.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gsexpr.prim.u
+
+gsdl.cgs.gsexpr.prim.u	.tyexpr
+	.tysum
