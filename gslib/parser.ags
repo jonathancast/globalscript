@@ -391,10 +391,13 @@ string.t	.tygvar
 parser.prim.t	.tygvar
 _parser.parse_work_lookahead_symbol_:_k	.subcode
 either.t.out	.cogvar
+list.t.in	.cogvar
+_parser.parse_work_lookahead	.gvar
 s	.tyfv	*
 α	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	α
 sk	.fv	_parser.prim.u_symbol_0_ty	s	rec.ty
+ek	.fv	parser.prim.t	s	rec.ty
 list.string.ty	.tylet	list.t	string.t
 parser.ty	.tylet	parser.prim.t	s	rec.ty
 s0	.karg	list.prim.u	s
@@ -407,7 +410,10 @@ s1		.fkarg	1	list.t	s
 			.app	c
 			.enter	sk
 		.case	nil
-			.undef	parser.prim.t	s	α
+s0.l			.lifted	s0
+s0.cl			.cast	s0.l	list.t.in	s
+			.app	ek	s0.cl
+			.enter	_parser.parse_work_lookahead	s	α
 
 _parser.parse_work_lookahead_symbol_:_k	.forcecont
 either.prim.u	.tygvar
