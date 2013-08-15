@@ -29,10 +29,10 @@ _test.parse.gscoercion.defn_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
-gsdl.cgs.gscoercion.parser	.gvar
+gsdl.cgs.gscoercion.parser.app	.gvar
 _test.parse.gscoercion.defn_input	.gvar
 k	.alloc	_test.parse.gscoercion.defn_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gscoercion.t	|	parser.rune.advance	rune.print	gsdl.cgs.gscoercion.parser	_test.parse.gscoercion.defn_input	k
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gscoercion.t	|	parser.rune.advance	rune.print	gsdl.cgs.gscoercion.parser.app	_test.parse.gscoercion.defn_input	k
 	.app	_test.parse.gscoercion.defn_label	test
 	.enter	test.property.label
 
