@@ -4,7 +4,11 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.parse.gsexpr.expr.heavy.cast
+
+_test.parse.gsexpr.expr.heavy.cast	.closure	_test.parse.gsexpr.expr.heavy.cast_c
+_test.parse.gsexpr.expr.heavy.cast_label	.string	parse\sgsexpr.parser\sqq{"defn\sbool.t\s"⊲}
+_test.parse.gsexpr.expr.heavy.cast_input	.string	"defn\sbool.t\s"⊲
 
 	.code
 
@@ -13,3 +17,27 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{parse qq{"defn bool.t "⊲}}
+
+_test.parse.gsexpr.expr.heavy.cast_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+_test.parse.gsexpr.expr.heavy.cast_k_c	.subcode
+test.property.label	.gvar
+_test.parse.gsexpr.expr.heavy.cast_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.cgs.gsexpr.parser	.gvar
+_test.parse.gsexpr.expr.heavy.cast_input	.gvar
+k	.alloc	_test.parse.gsexpr.expr.heavy.cast_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gsexpr.t	|	parser.rune.advance	rune.print	gsdl.cgs.gsexpr.parser	_test.parse.gsexpr.expr.heavy.cast_input	k
+	.app	_test.parse.gsexpr.expr.heavy.cast_label	test
+	.enter	test.property.label
+
+_test.parse.gsexpr.expr.heavy.cast_k_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+test.true	.gvar
+actual	.larg	gsdl.cgs.gsexpr.t
+	.enter	test.true
