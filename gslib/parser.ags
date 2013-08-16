@@ -3284,6 +3284,7 @@ _parser.match_worker_class_sum_k	.subcode
 _parser.match_worker_class_symbol_k	.subcode
 bool.t.out	.cogvar
 order.total.ord.t.out	.cogvar
+bool.false	.gvar
 _parser.match_worker_class	.gvar
 s	.tyfv	*
 cmp	.fv	order.total.t	s
@@ -3291,7 +3292,7 @@ c	.fv	s
 cl0	.karg	regex.class.prim.u	s
 	.analyze	cl0	empty	range	sum	symbol
 		.case	empty
-			.undef	bool.t
+			.enter	bool.false
 		.case	range
 c0		.fkarg	0	s
 c1		.fkarg	1	s
