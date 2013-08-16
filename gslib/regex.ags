@@ -92,6 +92,7 @@ s	.tylambda	*
 	.tyref	regex.class.prim.u	s
 
 regex.class.prim.u	.tyexpr
+record.unboxed.empty	.tygvar
 _regex.class.prim.u_range_ty	.tygvar
 _regex.class.prim.u_sum_ty	.tygvar
 _regex.class.prim.u_symbol_ty	.tygvar
@@ -99,7 +100,7 @@ s	.tylambda	*
 range_ty	.tylet	_regex.class.prim.u_range_ty	s
 sum_ty	.tylet	_regex.class.prim.u_sum_ty	s
 symbol_ty	.tylet	_regex.class.prim.u_symbol_ty	s
-	.tysum	range	range_ty	sum	sum_ty	symbol	symbol_ty
+	.tysum	empty	record.unboxed.empty	range	range_ty	sum	sum_ty	symbol	symbol_ty
 
 _regex.class.prim.u_range_ty	.tyexpr
 s	.tylambda	*

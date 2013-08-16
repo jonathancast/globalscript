@@ -99,6 +99,7 @@ ok_diff '-- regex character class --' ./$O.test-gsi regex-class.ags
 ok_diff '-- regex negated character class --' ./$O.test-gsi regex-neg-class.ags
 ok_diff '-- regex character class ranges --' ./$O.test-gsi regex-class-range.ags
 ok_diff '-- regex multi-character classes --' ./$O.test-gsi regex-multi-char-class.ags
+ok_diff '-- regex empty character classes --' ./$O.test-gsi regex-empty-char-class.ags
 ok_diff '-- regex products --' ./$O.test-gsi regex-product.ags
 ok_diff '-- regex stars --' ./$O.test-gsi regex-star.ags
 ok_diff '-- regex escaped stars --' ./$O.test-gsi regex-escaped-star.ags

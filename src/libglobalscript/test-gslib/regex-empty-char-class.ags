@@ -1,0 +1,47 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+_re	.regex	[]
+
+	.code
+
+_ep_c	.expr
+rune.t	.tygvar
+_ep_k	.subcode
+regex.t.out	.cogvar
+_re	.gvar
+	.force	_ep_k
+	.coerce	regex.t.out	rune.t
+	.enter	_re
+
+_ep_k	.forcecont
+regex.prim.u	.tygvar
+rune.t	.tygvar
+regex.class.t	.tygvar
+regex.t	.tygvar
+_ep_k1	.subcode
+regex.t.out	.cogvar
+re0	.karg	regex.prim.u	rune.t
+	.danalyze	re0	sum
+		.default
+			.undef	regex.class.t	rune.t
+		.case	sum
+re0.0		.fkarg	0	regex.t	rune.t
+re0.1		.fkarg	1	regex.t	rune.t
+			.force	_ep_k1
+			.coerce	regex.t.out	rune.t
+			.enter	re0.1
+
+_ep_k1	.forcecont
+regex.prim.u	.tygvar
+rune.t	.tygvar
+regex.class.t	.tygvar
+re0	.karg	regex.prim.u	rune.t
+	.danalyze	re0	class
+		.default
+			.undef	regex.class.t	rune.t
+		.case	class
+cl		.fkarg	0	regex.class.t	rune.t
+			.enter	cl

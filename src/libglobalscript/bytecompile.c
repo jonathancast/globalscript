@@ -163,7 +163,8 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
                     size += sizeof(struct gsconstr_args) + sizeof(gsvalue);
                     if (*eos == '^') eos++;
 
-                    while (*eos != ']') {
+                    if (*eos == ']') size += sizeof(struct gsconstr_args);
+                    else while (*eos != ']') {
                         eos = gsbc_parse_rune_literal(p->pos, eos, &v);
                         if (!*eos)
                             gsfatal(UNIMPL("%P: %s: Character classes"), p->pos, eos)
@@ -1261,14 +1262,22 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
                     pclass = &reco->arguments[0];
                     pout = (uchar*)reco + sizeof(struct gsconstr_args) + 1 * sizeof(gsvalue);
 
-                    while (*eos != ']') {
-                        if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
+                    if (*eos == ']') {
+                        cl = (struct gsconstr_args *)pout;
+                        cl->c.pos = p->pos;
+                        cl->c.type = gsconstr_args;
+                        cl->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrempty);
+                        cl->numargs = 0;
+                        pout = (uchar*)cl + sizeof(struct gsconstr_args);
+                        *pclass = (gsvalue)cl;
+                    } else while (*eos != ']') {
+                        if (!*eos) gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
                         eos = gsbc_parse_rune_literal(p->pos, eos, &c0);
-                        if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
+                        if (!*eos) gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
                         else if (*eos == '-') {
                             eos++;
-                            if (!*eos) gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
-                            else if (*eos == ']') gsfatal(UNIMPL("%P: '%s' in character class"), p->pos, eos);
+                            if (!*eos) gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
+                            else if (*eos == ']') gsfatal(UNIMPL("%P: Un-expected end of class in character class"), p->pos);
                             eos = gsbc_parse_rune_literal(p->pos, eos, &c1);
 
                             cl = (struct gsconstr_args *)pout;

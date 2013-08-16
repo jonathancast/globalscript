@@ -3289,7 +3289,9 @@ s	.tyfv	*
 cmp	.fv	order.total.t	s
 c	.fv	s
 cl0	.karg	regex.class.prim.u	s
-	.analyze	cl0	range	sum	symbol
+	.analyze	cl0	empty	range	sum	symbol
+		.case	empty
+			.undef	bool.t
 		.case	range
 c0		.fkarg	0	s
 c1		.fkarg	1	s
@@ -3310,7 +3312,7 @@ c0		.fkarg	0	s
 			.coerce	order.total.ord.t.out
 			.app	c	c0
 			.enter	cmp
-	# > :: parser.t s res_ty
+	# > :: bool.t
 
 _parser.match_worker_class_range_k1	.forcecont
 order.total.t	.tygvar
