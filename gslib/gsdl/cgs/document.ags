@@ -18,20 +18,58 @@ _gsdl.cgs.document.fmtgs_suffix	.string	〉
 
 # §section §gs{gsdl.cgs.document.parser}
 
+_gsdl.cgs.document.parser_c	.expr
+rune.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+_gsdl.cgs.document.parser_expr_c	.subcode
+_gsdl.cgs.document.parser_no.expr_c	.subcode
+parser.<|>	.gvar
+expr	.alloc	_gsdl.cgs.document.parser_expr_c
+no.expr	.alloc	_gsdl.cgs.document.parser_no.expr_c
+	.app	expr	no.expr
+	.enter	parser.<|>	rune.t	gsdl.cgs.document.t
+
 # > for (
 # >     'e ← expr.parser;
 # >     'mb.ty ← optional (lexeme m/::/ *> gstype.parser) <* lexeme m/;/;
 # >     'gs ← many generator.parser;
 # > ) [| 〈 'expr ∝ just e; 'gstype ∝ mb.ty; 'gens ∝ gs; 〉 |]
-_gsdl.cgs.document.parser_c	.expr
-_gsdl.cgs.document.parser_no.expr_c	.subcode
-no.expr	.alloc	_gsdl.cgs.document.parser_no.expr_c
-	.enter	no.expr
+_gsdl.cgs.document.parser_expr_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.document.parser_expr_f_c	.subcode
+parser.lift3	.gvar
+parser.pos.get	.gvar
+gsdl.cgs.gsexpr.parser	.gvar
+parser.<*	.gvar
+parser.optional	.gvar
+gsdl.cgs.syntax.semi	.gvar
+parser.fail	.gvar	# Temp
+maybe.gstype.ty	.tylet	maybe.t	gsdl.cgs.gstype.t
+f	.alloc	_gsdl.cgs.document.parser_expr_f_c
+pos.get	.apply	parser.pos.get	rune.t
+tysig.p2	.apply	parser.fail	rune.t	gsdl.cgs.gstype.t	# > oftype *> gsdl.cgs.gstype.parser.app
+tysig.p1	.apply	parser.optional	rune.t	gsdl.cgs.gstype.t	|	tysig.p2
+tysig.p	.apply	parser.<*	rune.t	maybe.gstype.ty	string.t	|	tysig.p1	gsdl.cgs.syntax.semi
+	.app	f	pos.get	gsdl.cgs.gsexpr.parser	tysig.p
+	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.cgs.gsexpr.t	maybe.gstype.ty	gsdl.cgs.document.t
 
-# > for (
-# >     'ty ← lexeme m/::/ *> gstype.parser <* lexeme m/;/;
-# >     'gs ← many generator.parser;
-# > ) [| 〈 'expr ∝ nothing; 'gstype ∝ just ty; 'gens ∝ gs; 〉 |]
+_gsdl.cgs.document.parser_expr_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.document.t	.tygvar	# Temp
+pos	.larg	parser.pos.t
+expr	.larg	gsdl.cgs.gsexpr.t
+mbty	.larg	maybe.t	gsdl.cgs.gstype.t
+	.undef	gsdl.cgs.document.t
+
 _gsdl.cgs.document.parser_no.expr_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
