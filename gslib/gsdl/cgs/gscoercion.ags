@@ -18,29 +18,38 @@ _gsdl.cgs.gscoercion.parser.app_defn.p_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 string.t	.tygvar
 _gsdl.cgs.gscoercion.parser.app_defn.p_f_c	.subcode
-parser.lift2	.gvar
+parser.lift3	.gvar
 parser.pos.get	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.var.parser	.gvar
 gsdl.cgs.syntax.core.keyword	.gvar
 _gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.gvar
+parser.many	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
 parser.fail	.gvar	# Temp
+list.gstype.ty	.tylet	list.t	gsdl.cgs.gstype.t
 f	.alloc	_gsdl.cgs.gscoercion.parser.app_defn.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 defn.p	.apply	gsdl.cgs.syntax.core.keyword	|	_gsdl.cgs.gscoercion.parser.app_defn.p_defn.re
 tyc.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	defn.p	gsdl.cgs.syntax.var.parser
-	.app	f	pos.get	tyc.p
-	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.var.t	gsdl.cgs.gscoercion.t
+tyas.p	.apply	parser.many	rune.t	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.parser.arg
+	.app	f	pos.get	tyc.p	tyas.p
+	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	list.gstype.ty	gsdl.cgs.gscoercion.t
 
 _gsdl.cgs.gscoercion.parser.app_defn.p_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar	# Temp
 pos	.larg	parser.pos.t
 tyc	.larg	gsdl.var.t
+tays	.larg	list.t	gsdl.cgs.gstype.t
 	.undef	gsdl.cgs.gscoercion.t
 
 	.type
