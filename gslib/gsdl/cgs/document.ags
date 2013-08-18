@@ -97,15 +97,18 @@ ty_p	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	ty_p1	gsdl.cgs.syntax.
 _gsdl.cgs.document.parser_no.expr_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.sourcepos.t	.tygvar	# Temp
+maybe.nothing	.gvar
 maybe.just	.gvar
 gsdl.sourcepos	.gvar
 pos0	.larg	parser.pos.t
 ty	.larg	gsdl.cgs.gstype.t
+nothing	.apply	maybe.nothing	gsdl.cgs.gsexpr.t
 mbty	.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-r	.record	gstype	mbty	pos	pos
+r	.record	expr	nothing	gstype	mbty	pos	pos
 	.lift
 	.yield	r
 
@@ -178,7 +181,9 @@ gsdl.cgs.document.prim.u	.tygvar
 
 gsdl.cgs.document.prim.u	.tyexpr
 maybe.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.sourcepos.t	.tygvar
+_expr_ty	.tylet	maybe.t	gsdl.cgs.gsexpr.t
 gstype_ty	.tylet	maybe.t	gsdl.cgs.gstype.t
-	.typroduct	gstype gstype_ty	pos	gsdl.sourcepos.t
+	.typroduct	expr	_expr_ty	gstype gstype_ty	pos	gsdl.sourcepos.t

@@ -216,6 +216,7 @@ ky		.fkarg	0	gsdl.cgs.gskind.t
 
 _gsac.document.annotate_gstype_just_right_k	.forcecont
 gsdl.cgs.document.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -223,6 +224,7 @@ record.empty	.tygvar
 gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
+maybe.nothing	.gvar
 maybe.just	.gvar
 doc	.fv	gsdl.cgs.document.t
 ty	.fv	gsdl.cgs.gstype.t
@@ -233,8 +235,9 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.cgs.document.t
 		.case	right
 r		.fkarg	0	record.empty
+nothing			.apply	maybe.nothing	gsdl.cgs.gsexpr.t
 mbty			.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
 pos			.lfield	pos	doc
-res			.lrecord	gstype	mbty	pos	pos
+res			.lrecord	expr	nothing	gstype	mbty	pos	pos
 			.app	res
 			.enter	either.right	string.t	gsdl.cgs.document.t
