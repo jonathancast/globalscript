@@ -3,6 +3,9 @@
 \author{Jonathan Cast}
 
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathabx}
+\usepackage{MnSymbol}
 \usepackage{bussproofs}
 \usepackage{latexsym}
 \usepackage{haskell}
@@ -23,9 +26,11 @@
 \hscommand\where{\hskwd{where}}
 \hscommand\rec{\hskwd{rec}}
 \hscommand\macro{\hskwd{macro}}
+\hscommand\error{\hskwd{error}}
 
 \newcommand\inlinelambda[2]{\gslambda\ #1. #2}
 \hscommand\inlinefor[2]{\for\ (#1)\ #2}
+\hscommand\inlinetuple[1]{\llangle #1 \rrangle}
 
 \newcommand\blockanalyze[2]{\analyze\ #1\hsbody{\hsalign{#2}}}
 \newcommand\blocklambda[2]{\gslambda\ #1. \hsbody{\hsalign{#2}}}
@@ -47,6 +52,11 @@
 \newcommand\kwd[1]{\textbf{#1}}
 
 \newcommand\sh[1]{\texttt{#1}}
+
+\hscommand\diverges{\uparrow}
+\hscommand\fails{\downarrow}
+\hscommand\Pat[1]{\mathbb{P}\ldbrack#1\rdbrack}
+\hscommand\Expr[1]{\mathbb{E}\ldbrack#1\rdbrack}
 
 \begin{document}
 
@@ -333,6 +343,51 @@ TODO: How do you declare views?  How do views and constructors interract, exactl
 TODO: Existential types.  End TODO.
 
 Language TODO: Expression arguments to views (e.g., \<n+m\> patterns).  End TODO.
+
+\section{Reasoning at the Source Level}
+
+Source-level reasoning about programs uses three predicates:
+\begin{itemize}
+    \item \<p \match e\diverges\>, read ``matching pattern \<p\> against expression \<e\> diverges''.
+    \item \<p \match e\fails\>, read ``matching pattern \<p\> against expression \<e\> fails''.
+    \item \<p \match e\>, read ``matching pattern \<p\> against expression \<e\> succeeds''.
+\end{itemize}
+Note that, for a given pattern \<p\> and expression \<e\>, precisely one of these predicates will hold.
+
+If \<p \match e\>, the syntax \<\Pat{p \match e}\> will be used to denote the value environment induced by the pattern match;
+\<\Pat{p \match e}e1\> will be used to denote \<e1\> with the values bound by \<p\>:
+\begin{haskell}
+    \Expr{\Pat{p \match e}e1}\eta = \Expr{e1}\{\eta;\Pat{p \match e}\}
+\end{haskell}
+If \<p \match e\diverges\> or \<p \match e\fails\>, \<\Pat{p \match e}\> and \<\Pat{p \match e}e1\> will be undefined.
+
+We have a few basic cases:
+\begin{prooftree}
+    \AxiomC{}
+    \UnaryInfC{\<'x \match e\>} 
+\end{prooftree}
+
+For a basic view pattern \<v \overline{p_i}\>, when matching against an expression \<e\>,
+use a pattern matching algorithm as follows:
+\begin{itemize}
+    \item First consider the expression \<'d = match v bool.false (\inlinelambda{\overline{'x_i}}{bool.true}) e\>.
+        \begin{itemize}
+            \item If \<d = \bot\>, \<v \overline{p_i} \match e\diverges\>.
+            \item If \<d = bool.false\>, \<v \overline{p_i} \match e\fails\>.
+        \end{itemize}
+        Otherwise, \<d = bool.true\>.
+    \item Second, if \<d = bool.true\>, let \<t_0 = match v \error (\inlinelambda{\overline{'x_i}}{\inlinetuple{\overline{x_i,}}}) e\>.
+        Let \<\overline{x_i = \#i t_0}\> be the components of \<t_0\>.
+        \begin{itemize}
+            \item If, for any $'k\in[0,n)$, \<\forall\ 'i\in[0,k). p_i \match x_i\> and \<p_k \match x_k\diverges\>,
+                \<v \overline{p_i} \match e\diverges\>.
+            \item If, for any $'k\in[0,n)$, \<\forall\ 'i\in[0,k). p_i \match x_i\> and \<p_k \match x_k\fails\>,
+                \<v \overline{p_i} \match e\fails\>.
+            \item Otherwise, for all $'i\in[0,n)$, \<p_i \match x_i\>.
+                In this case, \<v \overline{p_i} \match e\>
+                and \<\Pat{v \overline{p_i} \match e}\> is the concatenation of \<\overline{\Pat{p_i \match x_i}}\>.
+        \end{itemize}
+\end{itemize}
 
 \chapter{Types}
 
