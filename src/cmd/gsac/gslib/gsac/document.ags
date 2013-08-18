@@ -49,17 +49,41 @@ doc1		.fkarg	0	gsdl.cgs.document.t
 _gsac.document.compile_right_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.prim.u	.tygvar
-gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 _gsac.document.compile_right_k1	.subcode
 maybe.t.out	.cogvar
 env	.fv	gsdl.cgs.typeenv.t
 doc0	.karg	gsdl.cgs.document.prim.u
-mbty	.field	gstype	doc0
+mbe	.field	expr	doc0
 	.force	_gsac.document.compile_right_k1
-	.coerce	maybe.t.out	gsdl.cgs.gstype.t
-	.enter	mbty
+	.coerce	maybe.t.out	gsdl.cgs.gsexpr.t
+	.enter	mbe
 
 _gsac.document.compile_right_k1	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.document.prim.u	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+gsdl.ags.file.t	.tygvar	# Temp
+_gsac.document.compile_right_nothing_k	.subcode
+maybe.t.out	.cogvar
+env	.fv	gsdl.cgs.typeenv.t
+doc0	.fv	gsdl.cgs.document.prim.u
+mbe0	.karg	maybe.prim.u	gsdl.cgs.gsexpr.t
+mbty	.field	gstype	doc0
+	.analyze	mbe0	just	nothing
+		.case	just
+e		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	gsdl.ags.file.t
+		.case	nothing
+			.force	_gsac.document.compile_right_nothing_k
+			.coerce	maybe.t.out	gsdl.cgs.gstype.t
+			.enter	mbty
+
+_gsac.document.compile_right_nothing_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.prim.u	.tygvar
 maybe.prim.u	.tygvar
@@ -71,7 +95,7 @@ _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
 gsdl.ags.file.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
-_gsac.document.compile_right_just_k	.subcode
+_gsac.document.compile_right_nothing_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.compileToGlobalVar	.gvar
 gsdl.var.constructed	.gvar
@@ -98,14 +122,14 @@ v.c1			.apply	gsdl.var.basevar	|	v.c1.cs
 v.cs1			.apply	list.singleton	gsdl.var.t	|	v.c1
 v.cs			.apply	list.:	gsdl.var.t	|	v.c0	v.cs1
 v			.apply	gsdl.var.constructed	|	natural.1	v.cs
-			.force	_gsac.document.compile_right_just_k
+			.force	_gsac.document.compile_right_nothing_just_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 			.app	pos	env	v	ty
 			.enter	gsac.gstype.compileToGlobalVar
 		.case	nothing
 			.undef	either.t	string.t	gsdl.ags.file.t
 
-_gsac.document.compile_right_just_k	.forcecont
+_gsac.document.compile_right_nothing_just_k	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -150,18 +174,43 @@ res			.lrecord	codesection	cs	coercionsection	tcs	datasection	ds	filetype	gsdl.a
 _gsac.document.annotate_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-_gsac.document.annotate_gstype_k	.subcode
+gsdl.cgs.gsexpr.t	.tygvar
+_gsac.document.annotate_k	.subcode
 maybe.t.out	.cogvar
 env	.larg	gsdl.cgs.typeenv.t
 doc	.larg	gsdl.cgs.document.t
-gsty	.lfield	gstype	doc
 pos	.lfield	pos	doc
-	.force	_gsac.document.annotate_gstype_k
-	.coerce	maybe.t.out	gsdl.cgs.gstype.t
-	.enter	gsty
+mbexp	.lfield	expr	doc
+	.force	_gsac.document.annotate_k
+	.coerce	maybe.t.out	gsdl.cgs.gsexpr.t
+	.enter	mbexp
 
-_gsac.document.annotate_gstype_k	.forcecont
+_gsac.document.annotate_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.document.annotate_nothing_k	.subcode
+maybe.t.out	.cogvar
+env	.fv	gsdl.cgs.typeenv.t
+doc	.fv	gsdl.cgs.document.t
+pos	.fv	gsdl.sourcepos.t
+mbe0	.karg	maybe.prim.u	gsdl.cgs.gsexpr.t
+gsty	.lfield	gstype	doc
+	.analyze	mbe0	just	nothing
+		.case	just
+e		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	gsdl.cgs.document.t
+		.case	nothing
+			.force	_gsac.document.annotate_nothing_k
+			.coerce	maybe.t.out	gsdl.cgs.gstype.t
+			.enter	gsty
+
+_gsac.document.annotate_nothing_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 gsdl.sourcepos.t	.tygvar
@@ -170,7 +219,7 @@ gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	# Temp
-_gsac.document.annotate_gstype_just_k	.subcode
+_gsac.document.annotate_nothing_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.kindcheck	.gvar
 env	.fv	gsdl.cgs.typeenv.t
@@ -180,21 +229,21 @@ mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
-			.force	_gsac.document.annotate_gstype_just_k
+			.force	_gsac.document.annotate_nothing_just_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
 			.app	pos	env	ty
 			.enter	gsac.gstype.kindcheck
 		.case	nothing
 			.undef	either.t	string.t	gsdl.cgs.document.t
 
-_gsac.document.annotate_gstype_just_k	.forcecont
+_gsac.document.annotate_nothing_just_k	.forcecont
 gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 record.empty	.tygvar
-_gsac.document.annotate_gstype_just_right_k	.subcode
+_gsac.document.annotate_nothing_just_right_k	.subcode
 either.t.out	.cogvar
 either.left	.gvar
 gsac.gskind.check	.gvar
@@ -209,12 +258,12 @@ err		.fkarg	0	string.t
 			.enter	either.left	string.t	gsdl.cgs.document.t
 		.case	right
 ky		.fkarg	0	gsdl.cgs.gskind.t
-			.force	_gsac.document.annotate_gstype_just_right_k
+			.force	_gsac.document.annotate_nothing_just_right_k
 			.coerce	either.t.out	string.t	record.empty
 			.app	ky	gsdl.cgs.gskind.lifted
 			.enter	gsac.gskind.check
 
-_gsac.document.annotate_gstype_just_right_k	.forcecont
+_gsac.document.annotate_nothing_just_right_k	.forcecont
 gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
