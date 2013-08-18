@@ -48,12 +48,15 @@ parser.pos.get	.gvar
 gsdl.cgs.gsexpr.parser	.gvar
 parser.<*	.gvar
 parser.optional	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.oftype	.gvar
+gsdl.cgs.gstype.parser.app	.gvar
 gsdl.cgs.syntax.semi	.gvar
 parser.fail	.gvar	# Temp
 maybe.gstype.ty	.tylet	maybe.t	gsdl.cgs.gstype.t
 f	.alloc	_gsdl.cgs.document.parser_expr_f_c
 pos.get	.apply	parser.pos.get	rune.t
-tysig.p2	.apply	parser.fail	rune.t	gsdl.cgs.gstype.t	# > oftype *> gsdl.cgs.gstype.parser.app
+tysig.p2	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.app
 tysig.p1	.apply	parser.optional	rune.t	gsdl.cgs.gstype.t	|	tysig.p2
 tysig.p	.apply	parser.<*	rune.t	maybe.gstype.ty	string.t	|	tysig.p1	gsdl.cgs.syntax.semi
 	.app	f	pos.get	gsdl.cgs.gsexpr.parser	tysig.p

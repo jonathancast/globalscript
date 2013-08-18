@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.fmtgs	_test.parse.empty.document	_test.parse.expr.document
+_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.fmtgs	_test.parse.empty.document	_test.parse.expr.document	_test.parse.typesig.document
 
 _test.eq.gstype.nothing.just	.closure	_test.eq.gstype.nothing.just_c
 _test.eq.gstype.nothing.just_label	.string	〈\s'gstype\s∝\snothing;\s〉\s≡\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
@@ -22,6 +22,10 @@ _test.parse.empty.document_input	.string	::\s"Π〈〉;
 _test.parse.expr.document	.closure	_test.parse.expr.document_c
 _test.parse.expr.document_label	.string	parse\sdocument.parser\sqq{"defn\sbool.t\s"⊲;}
 _test.parse.expr.document_input	.string	"defn\sbool.t\s"⊲;
+
+_test.parse.typesig.document	.closure	_test.parse.typesig.document_c
+_test.parse.typesig.document_label	.string	parse\sdocument.parser\sqq{"defn\sbool.t\s"⊲\s::\sbool.t;}
+_test.parse.typesig.document_input	.string	"defn\sbool.t\s"⊲\s::\sbool.t;
 
 	.code
 
@@ -149,6 +153,30 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.document.t	|	parser.rune.a
 	.enter	test.property.label
 
 _test.parse.expr.document_k_c	.expr
+gsdl.cgs.document.t	.tygvar
+test.true	.gvar
+actual	.larg	gsdl.cgs.document.t
+	.enter	test.true
+
+# §section §gs{parse qq{"defn bool.t ⊲ :: bool.t}}
+
+_test.parse.typesig.document_c	.expr
+rune.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+_test.parse.typesig.document_k_c	.subcode
+test.property.label	.gvar
+_test.parse.typesig.document_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.cgs.document.parser	.gvar
+_test.parse.typesig.document_input	.gvar
+k	.alloc	_test.parse.typesig.document_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.document.t	|	parser.rune.advance	rune.print	gsdl.cgs.document.parser	_test.parse.typesig.document_input	k
+	.app	_test.parse.typesig.document_label	test
+	.enter	test.property.label
+
+_test.parse.typesig.document_k_c	.expr
 gsdl.cgs.document.t	.tygvar
 test.true	.gvar
 actual	.larg	gsdl.cgs.document.t
