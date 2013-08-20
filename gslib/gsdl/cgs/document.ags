@@ -10,6 +10,7 @@ gsdl.cgs.document.≡	.closure	_gsdl.cgs.document.≡_c
 
 gsdl.cgs.document.fmtgs	.closure	_gsdl.cgs.document.fmtgs_c
 _gsdl.cgs.document.fmtgs_prefix	.string	〈\s
+_gsdl.cgs.document.fmtgs_expr.s	.string	'expr\s∝\s
 _gsdl.cgs.document.fmtgs_gstype.s	.string	'gstype\s∝\s
 _gsdl.cgs.document.fmtgs_semi.space	.string	;\s
 _gsdl.cgs.document.fmtgs_suffix	.string	〉
@@ -148,26 +149,34 @@ mb.ty1	.lfield	gstype	doc1
 _gsdl.cgs.document.fmtgs_c	.expr
 gsdl.cgs.document.t	.tygvar
 rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 fmtgs.prec	.gvar
 fmtgs.prec.arg	.gvar
 diff.list.prepend	.gvar
 _gsdl.cgs.document.fmtgs_prefix	.gvar
+_gsdl.cgs.document.fmtgs_expr.s	.gvar
 _gsdl.cgs.document.fmtgs_gstype.s	.gvar
 diff.list.<>	.gvar
 maybe.fmtgs	.gvar
-gsdl.cgs.gstype.fmtgs	.gvar
+gsdl.cgs.gsexpr.fmtgs	.gvar
 fmtgs.prec.app	.gvar
 _gsdl.cgs.document.fmtgs_semi.space	.gvar
+gsdl.cgs.gstype.fmtgs	.gvar
 diff.list.fromlist	.gvar
 _gsdl.cgs.document.fmtgs_suffix	.gvar
 doc	.larg	gsdl.cgs.document.t
+mb.e	.lfield	expr	doc
+mb.e.s	.apply	maybe.fmtgs	gsdl.cgs.gsexpr.t	|	gsdl.cgs.gsexpr.fmtgs	mb.e	fmtgs.prec.app
 mb.ty	.lfield	gstype	doc
 mb.ty.s	.apply	maybe.fmtgs	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.fmtgs	mb.ty	fmtgs.prec.app
-ds4	.apply	diff.list.fromlist	rune.t	|	_gsdl.cgs.document.fmtgs_suffix
+ds7	.apply	diff.list.fromlist	rune.t	|	_gsdl.cgs.document.fmtgs_suffix
+ds6	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_semi.space	ds7
+ds5	.apply	diff.list.<>	rune.t	|	mb.ty.s	ds6
+ds4	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_gstype.s	ds5
 ds3	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_semi.space	ds4
-ds2	.apply	diff.list.<>	rune.t	|	mb.ty.s	ds3
-ds1	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_gstype.s	ds2
+ds2	.apply	diff.list.<>	rune.t	|	mb.e.s	ds3
+ds1	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_expr.s	ds2
 ds	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_prefix	ds1
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec

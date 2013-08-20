@@ -13,7 +13,7 @@ _test.eq.gstype.nothing.just_true	.string	〈\s'gstype\s∝\snothing;\s〉\s≡\
 
 _test.fmtgs	.closure	_test.fmtgs_c
 _test.fmtgs_label	.string	document.fmtgs\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
-_test.fmtgs_expected	.string	〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
+_test.fmtgs_expected	.string	〈\s'expr\s∝\snothing;\s'gstype\s∝\sjust\s(product\s[]);\s〉
 
 _test.parse.empty.document	.closure	_test.parse.empty.document_c
 _test.parse.empty.document_label	.string	parse\sdocument.parser\sqq{::\s"Π〈〉;}
