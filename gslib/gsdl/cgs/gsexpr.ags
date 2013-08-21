@@ -5,7 +5,7 @@
 gsdl.cgs.gsexpr.parser	.closure	_gsdl.cgs.gsexpr.parser_c	_gsdl.cgs.gsexpr.parser_ty
 _gsdl.cgs.gsexpr.parser_expr.heavy.cast_ld.re	.regex	⊲
 
-gsdl.cgs.gsexpr.≡	.closure	_gsdl.cgs.gsexpr.≡_c
+gsdl.cgs.gsexpr.≡	.closure	_gsdl.cgs.gsexpr.≡_c	_gsdl.cgs.gsexpr.≡_ty
 
 gsdl.cgs.gsexpr.fmtgs	.closure	_gsdl.cgs.gsexpr.fmtgs_c
 
@@ -64,7 +64,6 @@ eexp	.larg	either.t	parser.pos.t	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.≡_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
-bool.t	.tygvar	# Temp
 _gsdl.cgs.gsexpr.≡_k0	.subcode
 gsdl.cgs.gsexpr.t.out	.cogvar
 e0	.larg	gsdl.cgs.gsexpr.t
@@ -74,10 +73,35 @@ e1	.larg	gsdl.cgs.gsexpr.t
 	.enter	e0
 
 _gsdl.cgs.gsexpr.≡_k0	.forcecont
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
-bool.t	.tygvar	# Temp
+_gsdl.cgs.gsexpr.≡_k1	.subcode
+gsdl.cgs.gsexpr.t.out	.cogvar
+e1	.fv	gsdl.cgs.gsexpr.t
 e0.0	.karg	gsdl.cgs.gsexpr.prim.u
-	.undef	bool.t
+	.force	_gsdl.cgs.gsexpr.≡_k1
+	.coerce	gsdl.cgs.gsexpr.t.out
+	.enter	e1
+
+_gsdl.cgs.gsexpr.≡_k1	.forcecont
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+bool.t	.tygvar	# Temp
+gsdl.cgs.gsexpr.≡	.gvar
+e0.0	.fv	gsdl.cgs.gsexpr.prim.u
+e1.0	.karg	gsdl.cgs.gsexpr.prim.u
+	.analyze	e0.0	pos
+		.case	pos
+pos0		.fkarg	0	gsdl.sourcepos.t
+e0.1		.fkarg	1	gsdl.cgs.gsexpr.t
+			.analyze	e1.0	pos
+				.case	pos
+pos1				.fkarg	0	gsdl.sourcepos.t
+e1.1				.fkarg	1	gsdl.cgs.gsexpr.t
+					.app	e0.1	e1.1
+					.enter	gsdl.cgs.gsexpr.≡
+	# > :: bool.t
 
 # §section §gs{gsdl.cgs.gsexpr.fmtgs}
 
@@ -126,6 +150,17 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
+
+# §section §gs{gsdl.cgs.gsexpr.≡}
+
+_gsdl.cgs.gsexpr.≡_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tyref	bool.t
 
 	.coercion
 
