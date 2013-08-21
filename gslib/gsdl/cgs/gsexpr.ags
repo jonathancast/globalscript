@@ -9,6 +9,8 @@ gsdl.cgs.gsexpr.≡	.closure	_gsdl.cgs.gsexpr.≡_c
 
 gsdl.cgs.gsexpr.fmtgs	.closure	_gsdl.cgs.gsexpr.fmtgs_c
 
+gsdl.cgs.gsexpr.pos	.closure	_gsdl.cgs.gsexpr.pos_c
+
 	.code
 
 # §section §gs{gsdl.cgs.gsexpr.parser}
@@ -85,6 +87,20 @@ fmtgs.printer.t	.tygvar	# Temp
 e	.larg	gsdl.cgs.gsexpr.t
 	.undef	fmtgs.printer.t
 
+# §section §gs{gsdl.cgs.gsexpr.t} constructors
+
+_gsdl.cgs.gsexpr.pos_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+e	.larg	gsdl.cgs.gsexpr.t
+res	.constr	gsdl.cgs.gsexpr.prim.u	pos	0	pos	1	e
+	.coerce	gsdl.cgs.gsexpr.t.in
+	.lift
+	.yield	res
+
 	.type
 
 # §section §gs{gsdl.cgs.gsexpr.t}
@@ -95,7 +111,13 @@ gsdl.cgs.gsexpr.prim.u	.tygvar
 	.tyref	gsdl.cgs.gsexpr.prim.u
 
 gsdl.cgs.gsexpr.prim.u	.tyexpr
-	.tysum
+_gsdl.cgs.gsexpr.prim.u_pos_ty	.tygvar
+	.tysum	pos	_gsdl.cgs.gsexpr.prim.u_pos_ty
+
+_gsdl.cgs.gsexpr.prim.u_pos_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gsexpr.t
 
 # §section §gs{gsdl.cgs.gsexpr.parser}
 
@@ -106,6 +128,10 @@ gsdl.cgs.gsexpr.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
 
 	.coercion
+
+gsdl.cgs.gsexpr.t.in	.tycoercion
+gsdl.cgs.gsexpr.t	.tygvar
+	.tydefinition	gsdl.cgs.gsexpr.t
 
 gsdl.cgs.gsexpr.t.out	.tycoercion
 gsdl.cgs.gsexpr.t	.tygvar
