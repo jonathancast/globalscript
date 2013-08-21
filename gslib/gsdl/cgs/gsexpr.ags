@@ -5,6 +5,8 @@
 gsdl.cgs.gsexpr.parser	.closure	_gsdl.cgs.gsexpr.parser_c	_gsdl.cgs.gsexpr.parser_ty
 _gsdl.cgs.gsexpr.parser_expr.heavy.cast_ld.re	.regex	⊲
 
+gsdl.cgs.gsexpr.≡	.closure	_gsdl.cgs.gsexpr.≡_c
+
 gsdl.cgs.gsexpr.fmtgs	.closure	_gsdl.cgs.gsexpr.fmtgs_c
 
 	.code
@@ -55,6 +57,15 @@ pos	.larg	parser.pos.t
 co	.larg	gsdl.cgs.gscoercion.t
 eexp	.larg	either.t	parser.pos.t	gsdl.cgs.gsexpr.t
 	.undef	gsdl.cgs.gsexpr.t
+
+# §section §gs{gsdl.cgs.gsexpr.≡}
+
+_gsdl.cgs.gsexpr.≡_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+bool.t	.tygvar	# Temp
+e0	.larg	gsdl.cgs.gsexpr.t
+e1	.larg	gsdl.cgs.gsexpr.t
+	.undef	bool.t
 
 # §section §gs{gsdl.cgs.gsexpr.fmtgs}
 
