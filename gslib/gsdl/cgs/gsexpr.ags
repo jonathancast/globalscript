@@ -10,6 +10,7 @@ gsdl.cgs.gsexpr.≡	.closure	_gsdl.cgs.gsexpr.≡_c	_gsdl.cgs.gsexpr.≡_ty
 gsdl.cgs.gsexpr.fmtgs	.closure	_gsdl.cgs.gsexpr.fmtgs_c
 
 gsdl.cgs.gsexpr.pos	.closure	_gsdl.cgs.gsexpr.pos_c
+gsdl.cgs.gsexpr.expr.heavy.cast	.closure	_gsdl.cgs.gsexpr.expr.heavy.cast_c
 
 	.code
 
@@ -85,17 +86,25 @@ e0.0	.karg	gsdl.cgs.gsexpr.prim.u
 
 _gsdl.cgs.gsexpr.≡_k1	.forcecont
 gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+either.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 bool.t	.tygvar	# Temp
 gsdl.cgs.gsexpr.≡	.gvar
 e0.0	.fv	gsdl.cgs.gsexpr.prim.u
 e1.0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0.0	pos
+	.analyze	e0.0	expr.heavy.cast	pos
+		.case	expr.heavy.cast
+co0		.fkarg	0	gsdl.cgs.gscoercion.t
+ee0		.fkarg	1	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+			.undef	bool.t
 		.case	pos
 pos0		.fkarg	0	gsdl.sourcepos.t
 e0.1		.fkarg	1	gsdl.cgs.gsexpr.t
-			.analyze	e1.0	pos
+			.danalyze	e1.0	pos
+				.default
+					.undef	bool.t
 				.case	pos
 pos1				.fkarg	0	gsdl.sourcepos.t
 e1.1				.fkarg	1	gsdl.cgs.gsexpr.t
@@ -125,6 +134,20 @@ res	.constr	gsdl.cgs.gsexpr.prim.u	pos	0	pos	1	e
 	.lift
 	.yield	res
 
+_gsdl.cgs.gsexpr.expr.heavy.cast_c	.expr
+gsdl.cgs.gscoercion.t	.tygvar
+either.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t.in	.cogvar
+cast	.larg	gsdl.cgs.gscoercion.t
+ee	.larg	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+res	.constr	gsdl.cgs.gsexpr.prim.u	expr.heavy.cast	0	cast	1	ee
+	.coerce	gsdl.cgs.gsexpr.t.in
+	.lift
+	.yield	res
+
 	.type
 
 # §section §gs{gsdl.cgs.gsexpr.t}
@@ -135,8 +158,17 @@ gsdl.cgs.gsexpr.prim.u	.tygvar
 	.tyref	gsdl.cgs.gsexpr.prim.u
 
 gsdl.cgs.gsexpr.prim.u	.tyexpr
+_gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	.tygvar
 _gsdl.cgs.gsexpr.prim.u_pos_ty	.tygvar
-	.tysum	pos	_gsdl.cgs.gsexpr.prim.u_pos_ty
+	.tysum	expr.heavy.cast	_gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	pos	_gsdl.cgs.gsexpr.prim.u_pos_ty
+
+_gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	.tyexpr
+gsdl.cgs.gscoercion.t	.tygvar
+either.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+_1_ty	.tylet	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+	.tyubproduct	0	gsdl.cgs.gscoercion.t	1	_1_ty
 
 _gsdl.cgs.gsexpr.prim.u_pos_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
