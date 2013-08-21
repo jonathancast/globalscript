@@ -63,8 +63,18 @@ eexp	.larg	either.t	parser.pos.t	gsdl.cgs.gsexpr.t
 _gsdl.cgs.gsexpr.≡_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
 bool.t	.tygvar	# Temp
+_gsdl.cgs.gsexpr.≡_k0	.subcode
+gsdl.cgs.gsexpr.t.out	.cogvar
 e0	.larg	gsdl.cgs.gsexpr.t
 e1	.larg	gsdl.cgs.gsexpr.t
+	.force	_gsdl.cgs.gsexpr.≡_k0
+	.coerce	gsdl.cgs.gsexpr.t.out
+	.enter	e0
+
+_gsdl.cgs.gsexpr.≡_k0	.forcecont
+gsdl.cgs.gsexpr.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+e0.0	.karg	gsdl.cgs.gsexpr.prim.u
 	.undef	bool.t
 
 # §section §gs{gsdl.cgs.gsexpr.fmtgs}
@@ -94,3 +104,10 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
+
+	.coercion
+
+gsdl.cgs.gsexpr.t.out	.tycoercion
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gsexpr.t
