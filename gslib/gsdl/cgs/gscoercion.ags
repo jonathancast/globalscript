@@ -5,6 +5,8 @@
 gsdl.cgs.gscoercion.parser.app	.closure	_gsdl.cgs.gscoercion.parser.app_c	_gsdl.cgs.gscoercion.parser.app_ty
 _gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.regex	defn
 
+gsdl.cgs.gscoercion.≡	.closure	_gsdl.cgs.gscoercion.≡_c
+
 	.code
 
 # §section §gs{gsdl.cgs.gscoercion.parser.app}
@@ -51,6 +53,15 @@ pos	.larg	parser.pos.t
 tyc	.larg	gsdl.var.t
 tays	.larg	list.t	gsdl.cgs.gstype.t
 	.undef	gsdl.cgs.gscoercion.t
+
+# §section §gs{gsdl.cgs.gscoercion.≡}
+
+_gsdl.cgs.gscoercion.≡_c	.expr
+gsdl.cgs.gscoercion.t	.tygvar
+bool.t	.tygvar	# Temp
+co0	.larg	gsdl.cgs.gscoercion.t
+co1	.larg	gsdl.cgs.gscoercion.t
+	.undef	bool.t
 
 	.type
 
