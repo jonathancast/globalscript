@@ -4,12 +4,17 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.fmtgs	_test.parse.empty.document	_test.parse.expr.document	_test.parse.typesig.document
+_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.eq.expr.nothing.just	_test.fmtgs	_test.parse.empty.document	_test.parse.expr.document	_test.parse.typesig.document
 
 _test.eq.gstype.nothing.just	.closure	_test.eq.gstype.nothing.just_c
 _test.eq.gstype.nothing.just_label	.string	〈\s'gstype\s∝\snothing;\s〉\s≡\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
 _test.eq.gstype.nothing.just_false	.string	〈\s'gstype\s∝\snothing;\s〉\s≠\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
 _test.eq.gstype.nothing.just_true	.string	〈\s'gstype\s∝\snothing;\s〉\s≡\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
+
+_test.eq.expr.nothing.just	.closure	_test.eq.expr.nothing.just_c
+_test.eq.expr.nothing.just_label	.string	〈\s'expr\s∝\snothing;\s〉\s≡\s〈\s'expr\s∝\sjust\serror;\s〉
+_test.eq.expr.nothing.just_false	.string	〈\s'expr\s∝\snothing;\s〉\s≠\s〈\s'expr\s∝\sjust\serror;\s〉
+_test.eq.expr.nothing.just_true	.string	〈\s'expr\s∝\snothing;\s〉\s≡\s〈\s'expr\s∝\sjust\serror;\s〉
 
 _test.fmtgs	.closure	_test.fmtgs_c
 _test.fmtgs_label	.string	document.fmtgs\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
@@ -64,6 +69,36 @@ doc1	.lrecord	expr	nothing.gsexpr	gstype	just.empty.prod	pos	pos
 b	.apply	gsdl.cgs.document.≡	|	doc0	doc1
 test	.apply	test.deny	|	_test.eq.gstype.nothing.just_false	_test.eq.gstype.nothing.just_true	b
 	.app	_test.eq.gstype.nothing.just_label	test
+	.enter	test.property.label
+
+# §section §gs{〈 'expr ∝ nothing; 〉 ≡ 〈 'expr ∝ just error; 〉}
+
+_test.eq.expr.nothing.just_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+test.property.label	.gvar
+_test.eq.expr.nothing.just_label	.gvar
+test.deny	.gvar
+_test.eq.expr.nothing.just_false	.gvar
+_test.eq.expr.nothing.just_true	.gvar
+gsdl.cgs.document.≡	.gvar
+maybe.nothing	.gvar
+natural.1	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+maybe.just	.gvar
+gsdl.cgs.gstype.product	.gvar
+list.nil	.gvar
+nothing.gsexpr	.apply	maybe.nothing	gsdl.cgs.gsexpr.t
+nothing.gstype	.apply	maybe.nothing	gsdl.cgs.gstype.t
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
+doc0	.lrecord	expr	nothing.gsexpr	gstype	nothing.gstype	pos	pos
+e	.undefined	gsdl.cgs.gsexpr.t
+just.e	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e
+doc1	.lrecord	expr	just.e	gstype	nothing.gstype	pos	pos
+b	.apply	gsdl.cgs.document.≡	|	doc0	doc1
+test	.apply	test.deny	|	_test.eq.expr.nothing.just_false	_test.eq.expr.nothing.just_true	b
+	.app	_test.eq.expr.nothing.just_label	test
 	.enter	test.property.label
 
 # §section §gs{document.fmtgs 〈 'gstype ∝ just (product list.nil); 〉}
