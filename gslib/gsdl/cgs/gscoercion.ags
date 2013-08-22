@@ -53,10 +53,16 @@ gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar	# Temp
-pos	.larg	parser.pos.t
+gsdl.cgs.gscoercion.pos	.gvar
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
 tyc	.larg	gsdl.var.t
 tays	.larg	list.t	gsdl.cgs.gstype.t
-	.undef	gsdl.cgs.gscoercion.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+co1	.undefined	gsdl.cgs.gscoercion.t
+	.app	pos	co1
+	.enter	gsdl.cgs.gscoercion.pos
 
 # §section §gs{gsdl.cgs.gscoercion.≡}
 
