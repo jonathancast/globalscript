@@ -5,7 +5,7 @@
 gsdl.cgs.gscoercion.parser.app	.closure	_gsdl.cgs.gscoercion.parser.app_c	_gsdl.cgs.gscoercion.parser.app_ty
 _gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.regex	defn
 
-gsdl.cgs.gscoercion.≡	.closure	_gsdl.cgs.gscoercion.≡_c
+gsdl.cgs.gscoercion.≡	.closure	_gsdl.cgs.gscoercion.≡_c	_gsdl.cgs.gscoercion.≡_ty
 
 gsdl.cgs.gscoercion.fmtgs	.closure	_gsdl.cgs.gscoercion.fmtgs_c
 
@@ -82,16 +82,30 @@ gsdl.cgs.gscoercion.prim.u	.tygvar
 _gsdl.cgs.gscoercion.≡_k1	.subcode
 gsdl.cgs.gscoercion.t.out	.cogvar
 co1	.fv	gsdl.cgs.gscoercion.t
-c0.0	.karg	gsdl.cgs.gscoercion.prim.u
+co0.0	.karg	gsdl.cgs.gscoercion.prim.u
 	.force	_gsdl.cgs.gscoercion.≡_k1
 	.coerce	gsdl.cgs.gscoercion.t.out
 	.enter	co1
 
 _gsdl.cgs.gscoercion.≡_k1	.forcecont
 gsdl.cgs.gscoercion.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
 bool.t	.tygvar	# Temp
-c1.0	.karg	gsdl.cgs.gscoercion.prim.u
-	.undef	bool.t
+gsdl.cgs.gscoercion.≡	.gvar
+co0.0	.fv	gsdl.cgs.gscoercion.prim.u
+co1.0	.karg	gsdl.cgs.gscoercion.prim.u
+	.analyze	co0.0	pos
+		.case	pos
+pos0		.fkarg	0	gsdl.sourcepos.t
+co0.1		.fkarg	1	gsdl.cgs.gscoercion.t
+			.analyze	co1.0	pos
+				.case	pos
+pos1				.fkarg	0	gsdl.sourcepos.t
+co1.1				.fkarg	1	gsdl.cgs.gscoercion.t
+					.app	co0.1	co1.1
+					.enter	gsdl.cgs.gscoercion.≡
+	# > :: bool.t
 
 # §section §gs{gsdl.cgs.gscoercion.fmtgs}
 
@@ -140,6 +154,17 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gscoercion.t
+
+# §section §gs{gsdl.cgs.gscoercion.≡}
+
+_gsdl.cgs.gscoercion.≡_ty	.tyexpr
+gsdl.cgs.gscoercion.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gscoercion.t
+	.tylift
+	.tyfun	gsdl.cgs.gscoercion.t
+	.tyref	bool.t
 
 	.coercion
 
