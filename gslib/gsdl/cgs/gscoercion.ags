@@ -77,9 +77,20 @@ co1	.larg	gsdl.cgs.gscoercion.t
 	.enter	co0
 
 _gsdl.cgs.gscoercion.≡_k0	.forcecont
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gscoercion.prim.u	.tygvar
+_gsdl.cgs.gscoercion.≡_k1	.subcode
+gsdl.cgs.gscoercion.t.out	.cogvar
+co1	.fv	gsdl.cgs.gscoercion.t
+c0.0	.karg	gsdl.cgs.gscoercion.prim.u
+	.force	_gsdl.cgs.gscoercion.≡_k1
+	.coerce	gsdl.cgs.gscoercion.t.out
+	.enter	co1
+
+_gsdl.cgs.gscoercion.≡_k1	.forcecont
 gsdl.cgs.gscoercion.prim.u	.tygvar
 bool.t	.tygvar	# Temp
-c0.0	.karg	gsdl.cgs.gscoercion.prim.u
+c1.0	.karg	gsdl.cgs.gscoercion.prim.u
 	.undef	bool.t
 
 # §section §gs{gsdl.cgs.gscoercion.fmtgs}
