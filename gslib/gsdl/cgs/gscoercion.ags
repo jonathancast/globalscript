@@ -58,9 +58,18 @@ tays	.larg	list.t	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gscoercion.≡_c	.expr
 gsdl.cgs.gscoercion.t	.tygvar
-bool.t	.tygvar	# Temp
+_gsdl.cgs.gscoercion.≡_k0	.subcode
+gsdl.cgs.gscoercion.t.out	.cogvar
 co0	.larg	gsdl.cgs.gscoercion.t
 co1	.larg	gsdl.cgs.gscoercion.t
+	.force	_gsdl.cgs.gscoercion.≡_k0
+	.coerce	gsdl.cgs.gscoercion.t.out
+	.enter	co0
+
+_gsdl.cgs.gscoercion.≡_k0	.forcecont
+gsdl.cgs.gscoercion.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+c0.0	.karg	gsdl.cgs.gscoercion.prim.u
 	.undef	bool.t
 
 	.type
@@ -82,3 +91,10 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gscoercion.t
+
+	.coercion
+
+gsdl.cgs.gscoercion.t.out	.tycoercion
+gsdl.cgs.gscoercion.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gscoercion.t
