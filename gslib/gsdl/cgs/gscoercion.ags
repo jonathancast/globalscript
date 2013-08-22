@@ -7,6 +7,8 @@ _gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.regex	defn
 
 gsdl.cgs.gscoercion.≡	.closure	_gsdl.cgs.gscoercion.≡_c
 
+gsdl.cgs.gscoercion.fmtgs	.closure	_gsdl.cgs.gscoercion.fmtgs_c
+
 	.code
 
 # §section §gs{gsdl.cgs.gscoercion.parser.app}
@@ -71,6 +73,14 @@ gsdl.cgs.gscoercion.prim.u	.tygvar
 bool.t	.tygvar	# Temp
 c0.0	.karg	gsdl.cgs.gscoercion.prim.u
 	.undef	bool.t
+
+# §section §gs{gsdl.cgs.gscoercion.fmtgs}
+
+_gsdl.cgs.gscoercion.fmtgs_c	.expr
+gsdl.cgs.gscoercion.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+co	.larg	gsdl.cgs.gscoercion.t
+	.undef	fmtgs.printer.t
 
 	.type
 
