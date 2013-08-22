@@ -9,6 +9,8 @@ gsdl.cgs.gscoercion.≡	.closure	_gsdl.cgs.gscoercion.≡_c
 
 gsdl.cgs.gscoercion.fmtgs	.closure	_gsdl.cgs.gscoercion.fmtgs_c
 
+gsdl.cgs.gscoercion.pos	.closure	_gsdl.cgs.gscoercion.pos_c
+
 	.code
 
 # §section §gs{gsdl.cgs.gscoercion.parser.app}
@@ -82,6 +84,20 @@ fmtgs.printer.t	.tygvar	# Temp
 co	.larg	gsdl.cgs.gscoercion.t
 	.undef	fmtgs.printer.t
 
+# §section §gs{gsdl.cgs.gscoercion.t} constructors
+
+_gsdl.cgs.gscoercion.pos_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gscoercion.prim.u	.tygvar
+gsdl.cgs.gscoercion.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+co	.larg	gsdl.cgs.gscoercion.t
+res	.constr	gsdl.cgs.gscoercion.prim.u	pos	0	pos	1	co
+	.coerce	gsdl.cgs.gscoercion.t.in
+	.lift
+	.yield	res
+
 	.type
 
 # §section §gs{gsdl.cgs.gscoercion.t}
@@ -92,7 +108,13 @@ gsdl.cgs.gscoercion.prim.u	.tygvar
 	.tyref	gsdl.cgs.gscoercion.prim.u
 
 gsdl.cgs.gscoercion.prim.u	.tyexpr
-	.tysum
+_gsdl.cgs.gscoercion.prim.u_pos_ty	.tygvar
+	.tysum	pos	_gsdl.cgs.gscoercion.prim.u_pos_ty
+
+_gsdl.cgs.gscoercion.prim.u_pos_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gscoercion.t
 
 # §section §gs{gsdl.cgs.gscoercion.parser.app}
 
@@ -103,6 +125,10 @@ gsdl.cgs.gscoercion.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gscoercion.t
 
 	.coercion
+
+gsdl.cgs.gscoercion.t.in	.tycoercion
+gsdl.cgs.gscoercion.t	.tygvar
+	.tydefinition	gsdl.cgs.gscoercion.t
 
 gsdl.cgs.gscoercion.t.out	.tycoercion
 gsdl.cgs.gscoercion.t	.tygvar
