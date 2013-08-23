@@ -68,11 +68,18 @@ parser.pos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 maybe.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.document.t	.tygvar	# Temp
-pos	.larg	parser.pos.t
+gsdl.cgs.document.prim.u	.tygvar
+maybe.just	.gvar
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
 expr	.larg	gsdl.cgs.gsexpr.t
 mbty	.larg	maybe.t	gsdl.cgs.gstype.t
-	.undef	gsdl.cgs.document.t
+pos1	.undefined	parser.pos.t
+just.expr	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	expr
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+r	.record	expr	just.expr	gstype	mbty	pos	pos	|	gsdl.cgs.document.prim.u
+	.lift
+	.yield	r
 
 _gsdl.cgs.document.parser_no.expr_c	.expr
 rune.t	.tygvar
@@ -99,7 +106,7 @@ _gsdl.cgs.document.parser_no.expr_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-gsdl.sourcepos.t	.tygvar	# Temp
+gsdl.cgs.document.prim.u	.tygvar
 maybe.nothing	.gvar
 maybe.just	.gvar
 gsdl.sourcepos	.gvar
@@ -109,7 +116,7 @@ nothing	.apply	maybe.nothing	gsdl.cgs.gsexpr.t
 mbty	.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-r	.record	expr	nothing	gstype	mbty	pos	pos
+r	.record	expr	nothing	gstype	mbty	pos	pos	|	gsdl.cgs.document.prim.u
 	.lift
 	.yield	r
 

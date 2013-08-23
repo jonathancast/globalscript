@@ -27,6 +27,8 @@ _test.parse.empty.document_input	.string	::\s"Π〈〉;
 _test.parse.expr.document	.closure	_test.parse.expr.document_c
 _test.parse.expr.document_label	.string	parse\sdocument.parser\sqq{"defn\sbool.t\s"⊲;}
 _test.parse.expr.document_input	.string	"defn\sbool.t\s"⊲;
+_test.parse.expr.document_bool.s	.string	bool
+_test.parse.expr.document_t.s	.string	t
 
 _test.parse.typesig.document	.closure	_test.parse.typesig.document_c
 _test.parse.typesig.document_label	.string	parse\sdocument.parser\sqq{"defn\sbool.t\s"⊲\s::\sbool.t;}
@@ -198,9 +200,45 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.document.t	|	parser.rune.a
 
 _test.parse.expr.document_k_c	.expr
 gsdl.cgs.document.t	.tygvar
-test.true	.gvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+test.assert.eq	.gvar
+gsdl.cgs.document.≡	.gvar
+gsdl.cgs.document.fmtgs	.gvar
+maybe.just	.gvar
+gsdl.cgs.gsexpr.pos	.gvar
+natural.1	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+gsdl.cgs.gsexpr.expr.heavy.cast	.gvar
+gsdl.cgs.gscoercion.pos	.gvar
+gsdl.cgs.gscoercion.defn	.gvar
+gsdl.var.basevar	.gvar
+list.:	.gvar
+gsdl.var.component.alphanum	.gvar
+_test.parse.expr.document_bool.s	.gvar
+list.singleton	.gvar
+_test.parse.expr.document_t.s	.gvar
+either.left	.gvar
+maybe.nothing	.gvar
 actual	.larg	gsdl.cgs.document.t
-	.enter	test.true
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name	|	gsdl.sourcepos.t
+bool.c	.apply	gsdl.var.component.alphanum	|	_test.parse.expr.document_bool.s
+t.c	.apply	gsdl.var.component.alphanum	|	_test.parse.expr.document_t.s
+bool.t.v.cs1	.apply	list.singleton	gsdl.var.component.t	|	t.c
+bool.t.v.cs	.apply	list.:	gsdl.var.component.t	|	bool.c	bool.t.v.cs1
+bool.t.v	.apply	gsdl.var.basevar	|	bool.t.v.cs
+co1	.apply	gsdl.cgs.gscoercion.defn	|	bool.t.v
+co	.apply	gsdl.cgs.gscoercion.pos	|	pos	co1
+ee	.apply	either.left	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t	|	pos
+cast1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	ee
+cast	.apply	gsdl.cgs.gsexpr.pos	|	pos	cast1
+just.cast	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	cast
+gstype.nothing	.apply	maybe.nothing	gsdl.cgs.gstype.t
+expected	.lrecord	expr	just.cast	gstype	gstype.nothing	pos	pos	|	gsdl.cgs.document.t
+	.app	gsdl.cgs.document.≡	gsdl.cgs.document.fmtgs	actual	expected
+	.enter	test.assert.eq	gsdl.cgs.document.t
 
 # §section §gs{parse qq{"defn bool.t ⊲ :: bool.t}}
 
