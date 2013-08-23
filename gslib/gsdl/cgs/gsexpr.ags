@@ -125,9 +125,44 @@ e1.1				.fkarg	1	gsdl.cgs.gsexpr.t
 	# > :: bool.t
 
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_k	.forcecont
+either.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 bool.prim.u	.tygvar
 bool.t	.tygvar	# Temp
+_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0	.subcode
+either.t.out	.cogvar
+ee0	.fv	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+ee1	.fv	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
 b0	.karg	bool.prim.u	# Are coercions equal?
+	.analyze	b0	false	true
+		.case	false
+			.undef	bool.t
+		.case	true
+			.force	_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0
+			.coerce	either.t.out	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+			.enter	ee0
+
+_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0	.forcecont
+either.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+either.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k1	.subcode
+either.t.out	.cogvar
+ee1	.fv	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+ee0.0	.karg	either.prim.u	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+	.force	_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k1
+	.coerce	either.t.out	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+	.enter	ee1
+
+_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k1	.forcecont
+either.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+bool.t	.tygvar	# Temp
+ee1.0	.karg	either.prim.u	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
 	.undef	bool.t
 
 # §section §gs{gsdl.cgs.gsexpr.fmtgs}
