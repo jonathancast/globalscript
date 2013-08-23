@@ -53,17 +53,29 @@ parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gscoercion.t	.tygvar	# Temp
+gsdl.cgs.gscoercion.t	.tygvar
+_gsdl.cgs.gscoercion.parser.app_defn.p_f_f_c	.subcode
 gsdl.cgs.gscoercion.pos	.gvar
 gsdl.sourcepos	.gvar
+list.foldl	.gvar
+gsdl.cgs.gscoercion.defn	.gvar
 pos0	.larg	parser.pos.t
 tyc	.larg	gsdl.var.t
-tays	.larg	list.t	gsdl.cgs.gstype.t
+tyas	.larg	list.t	gsdl.cgs.gstype.t
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-co1	.undefined	gsdl.cgs.gscoercion.t
+f	.alloc	_gsdl.cgs.gscoercion.parser.app_defn.p_f_f_c
+co2	.apply	gsdl.cgs.gscoercion.defn	|	tyc
+co1	.apply	list.foldl	gsdl.cgs.gstype.t	gsdl.cgs.gscoercion.t	|	f	co2	tyas
 	.app	pos	co1
 	.enter	gsdl.cgs.gscoercion.pos
+
+_gsdl.cgs.gscoercion.parser.app_defn.p_f_f_c	.expr
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+co	.larg	gsdl.cgs.gscoercion.t
+tya	.larg	gsdl.cgs.gstype.t
+	.undef	gsdl.cgs.gscoercion.t
 
 # §section §gs{gsdl.cgs.gscoercion.≡}
 

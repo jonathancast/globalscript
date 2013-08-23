@@ -9,6 +9,8 @@ _tests	.list	test.property.t	_test.parse.gscoercion.defn	_test.parse.gscoercion.
 _test.parse.gscoercion.defn	.closure	_test.parse.gscoercion.defn_c
 _test.parse.gscoercion.defn_label	.string	parse\sgsexpr.parser\sqq{"defn\sbool.t}
 _test.parse.gscoercion.defn_input	.string	"defn\sbool.t
+_test.parse.gscoercion.defn_bool.s	.string	bool
+_test.parse.gscoercion.defn_t.s	.string	t
 
 _test.parse.gscoercion.defn.tyargs	.closure	_test.parse.gscoercion.defn.tyargs_c
 _test.parse.gscoercion.defn.tyargs_label	.string	parse\sgsexpr.parser\sqq{"defn\smaybe.t\sbool.t}
@@ -42,9 +44,30 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gscoercion.t	|	parser.rune
 
 _test.parse.gscoercion.defn_k_c	.expr
 gsdl.cgs.gscoercion.t	.tygvar
-test.true	.gvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.component.t	.tygvar
+test.assert.eq	.gvar
+gsdl.cgs.gscoercion.≡	.gvar
+gsdl.cgs.gscoercion.fmtgs	.gvar
+gsdl.cgs.gscoercion.pos	.gvar
+gsdl.cgs.gscoercion.defn	.gvar
+gsdl.var.basevar	.gvar
+list.:	.gvar
+gsdl.var.component.alphanum	.gvar
+_test.parse.gscoercion.defn_bool.s	.gvar
+list.singleton	.gvar
+_test.parse.gscoercion.defn_t.s	.gvar
 actual	.larg	gsdl.cgs.gscoercion.t
-	.enter	test.true
+pos	.undefined	gsdl.sourcepos.t
+bool.c	.apply	gsdl.var.component.alphanum	|	_test.parse.gscoercion.defn_bool.s
+t.c	.apply	gsdl.var.component.alphanum	|	_test.parse.gscoercion.defn_t.s
+bool.t.v.cs1	.apply	list.singleton	gsdl.var.component.t	|	t.c
+bool.t.v.cs	.apply	list.:	gsdl.var.component.t	|	bool.c	bool.t.v.cs1
+bool.t.v	.apply	gsdl.var.basevar	|	bool.t.v.cs
+co1	.apply	gsdl.cgs.gscoercion.defn	|	bool.t.v
+expected	.apply	gsdl.cgs.gscoercion.pos	|	pos	co1
+	.app	gsdl.cgs.gscoercion.≡	gsdl.cgs.gscoercion.fmtgs	actual	expected
+	.enter	test.assert.eq	gsdl.cgs.gscoercion.t
 
 # §section §gs{parse qq{"defn maybe.t bool.t}}
 
