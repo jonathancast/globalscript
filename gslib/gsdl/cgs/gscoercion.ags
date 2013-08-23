@@ -10,6 +10,7 @@ gsdl.cgs.gscoercion.≡	.closure	_gsdl.cgs.gscoercion.≡_c	_gsdl.cgs.gscoercion
 gsdl.cgs.gscoercion.fmtgs	.closure	_gsdl.cgs.gscoercion.fmtgs_c
 
 gsdl.cgs.gscoercion.pos	.closure	_gsdl.cgs.gscoercion.pos_c
+gsdl.cgs.gscoercion.defn	.closure	_gsdl.cgs.gscoercion.defn_c
 
 	.code
 
@@ -89,17 +90,23 @@ co0.0	.karg	gsdl.cgs.gscoercion.prim.u
 
 _gsdl.cgs.gscoercion.≡_k1	.forcecont
 gsdl.cgs.gscoercion.prim.u	.tygvar
+gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 bool.t	.tygvar	# Temp
 gsdl.cgs.gscoercion.≡	.gvar
 co0.0	.fv	gsdl.cgs.gscoercion.prim.u
 co1.0	.karg	gsdl.cgs.gscoercion.prim.u
-	.analyze	co0.0	pos
+	.analyze	co0.0	defn	pos
+		.case	defn
+tyc0		.fkarg	0	gsdl.var.t
+			.undef	bool.t
 		.case	pos
 pos0		.fkarg	0	gsdl.sourcepos.t
 co0.1		.fkarg	1	gsdl.cgs.gscoercion.t
-			.analyze	co1.0	pos
+			.danalyze	co1.0	pos
+				.default
+					.undef	bool.t
 				.case	pos
 pos1				.fkarg	0	gsdl.sourcepos.t
 co1.1				.fkarg	1	gsdl.cgs.gscoercion.t
@@ -129,6 +136,16 @@ res	.constr	gsdl.cgs.gscoercion.prim.u	pos	0	pos	1	co
 	.lift
 	.yield	res
 
+_gsdl.cgs.gscoercion.defn_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gscoercion.prim.u	.tygvar
+gsdl.cgs.gscoercion.t.in	.cogvar
+tyc	.larg	gsdl.var.t
+res	.constr	gsdl.cgs.gscoercion.prim.u	defn	0	tyc
+	.coerce	gsdl.cgs.gscoercion.t.in
+	.lift
+	.yield	res
+
 	.type
 
 # §section §gs{gsdl.cgs.gscoercion.t}
@@ -139,8 +156,13 @@ gsdl.cgs.gscoercion.prim.u	.tygvar
 	.tyref	gsdl.cgs.gscoercion.prim.u
 
 gsdl.cgs.gscoercion.prim.u	.tyexpr
+_gsdl.cgs.gscoercion.prim.u_defn_ty	.tygvar
 _gsdl.cgs.gscoercion.prim.u_pos_ty	.tygvar
-	.tysum	pos	_gsdl.cgs.gscoercion.prim.u_pos_ty
+	.tysum	defn	_gsdl.cgs.gscoercion.prim.u_defn_ty	pos	_gsdl.cgs.gscoercion.prim.u_pos_ty
+
+_gsdl.cgs.gscoercion.prim.u_defn_ty	.tyexpr
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
 
 _gsdl.cgs.gscoercion.prim.u_pos_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
