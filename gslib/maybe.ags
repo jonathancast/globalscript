@@ -59,6 +59,7 @@ _maybe.maybe_sk_ty	.tygvar
 maybe.prim.u	.tygvar
 α	.tyfv	*
 β	.tyfv	*
+fk	.fv	β
 sk	.fv	_maybe.maybe_sk_ty	α	β
 mb0	.karg	maybe.prim.u	α
 	.analyze	mb0	just	nothing
@@ -67,7 +68,7 @@ x		.fkarg	0	α
 			.app	x
 			.enter	sk
 		.case	nothing
-			.undef	β
+			.enter	fk
 
 # §section §gs{maybe.≡}
 
