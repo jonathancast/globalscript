@@ -9,6 +9,8 @@ _tests	.list	test.property.t	_test.parse.gsexpr.expr.heavy.cast
 _test.parse.gsexpr.expr.heavy.cast	.closure	_test.parse.gsexpr.expr.heavy.cast_c
 _test.parse.gsexpr.expr.heavy.cast_label	.string	parse\sgsexpr.parser\sqq{"defn\sbool.t\s"⊲}
 _test.parse.gsexpr.expr.heavy.cast_input	.string	"defn\sbool.t\s"⊲
+_test.parse.gsexpr.expr.heavy.cast_bool.s	.string	bool
+_test.parse.gsexpr.expr.heavy.cast_t.s	.string	t
 
 	.code
 
@@ -38,6 +40,34 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gsexpr.t	|	parser.rune.adv
 
 _test.parse.gsexpr.expr.heavy.cast_k_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
-test.true	.gvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.component.t	.tygvar
+either.t	.tygvar	# Temp
+test.assert.eq	.gvar
+gsdl.cgs.gsexpr.≡	.gvar
+gsdl.cgs.gsexpr.fmtgs	.gvar
+gsdl.cgs.gsexpr.pos	.gvar
+gsdl.cgs.gsexpr.expr.heavy.cast	.gvar
+gsdl.cgs.gscoercion.pos	.gvar
+gsdl.cgs.gscoercion.defn	.gvar
+gsdl.var.basevar	.gvar
+list.:	.gvar
+gsdl.var.component.alphanum	.gvar
+_test.parse.gsexpr.expr.heavy.cast_bool.s	.gvar
+list.singleton	.gvar
+_test.parse.gsexpr.expr.heavy.cast_t.s	.gvar
+either.left	.gvar
 actual	.larg	gsdl.cgs.gsexpr.t
-	.enter	test.true
+pos	.undefined	gsdl.sourcepos.t
+bool.c	.apply	gsdl.var.component.alphanum	|	_test.parse.gsexpr.expr.heavy.cast_bool.s
+t.c	.apply	gsdl.var.component.alphanum	|	_test.parse.gsexpr.expr.heavy.cast_t.s
+bool.t.v.cs1	.apply	list.singleton	gsdl.var.component.t	|	t.c
+bool.t.v.cs	.apply	list.:	gsdl.var.component.t	|	bool.c	bool.t.v.cs1
+bool.t.v	.apply	gsdl.var.basevar	|	bool.t.v.cs
+co1	.apply	gsdl.cgs.gscoercion.defn	|	bool.t.v
+co	.apply	gsdl.cgs.gscoercion.pos	|	pos	co1
+ee	.apply	either.left	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t	|	pos
+e1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	ee
+expected	.apply	gsdl.cgs.gsexpr.pos	|	pos	e1
+	.app	gsdl.cgs.gsexpr.≡	gsdl.cgs.gsexpr.fmtgs	actual	expected
+	.enter	test.assert.eq	gsdl.cgs.gsexpr.t

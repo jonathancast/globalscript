@@ -23,14 +23,14 @@ expr.heavy.cast	.alloc	_gsdl.cgs.gsexpr.parser_expr.heavy.cast_c
 
 _gsdl.cgs.gsexpr.parser_expr.heavy.cast_c	.expr
 rune.t	.tygvar
-parser.pos.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 either.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
+parser.pos.t	.tygvar
 _gsdl.cgs.gsexpr.parser_expr.heavy.cast_f_c	.subcode
 parser.lift3	.gvar
-parser.pos.get	.gvar
 gsdl.cgs.gscoercion.parser.app	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.core.keywordOp	.gvar
@@ -38,13 +38,17 @@ _gsdl.cgs.gsexpr.parser_expr.heavy.cast_ld.re	.gvar
 parser.<|>	.gvar
 parser.map	.gvar
 either.left	.gvar
+parser.lift2	.gvar
+gsdl.sourcepos	.gvar
+parser.pos.get	.gvar
 parser.fail	.gvar	# Temp
-either.pos.expr.ty	.tylet	either.t	parser.pos.t	gsdl.cgs.gsexpr.t
+either.pos.expr.ty	.tylet	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
 f	.alloc	_gsdl.cgs.gsexpr.parser_expr.heavy.cast_f_c
-pos.get	.apply	parser.pos.get	rune.t
 ld.p	.apply	gsdl.cgs.syntax.core.keywordOp	|	_gsdl.cgs.gsexpr.parser_expr.heavy.cast_ld.re
-left	.apply	either.left	parser.pos.t	gsdl.cgs.gsexpr.t
-expr.left.p	.apply	parser.map	rune.t	parser.pos.t	either.pos.expr.ty	|	left	pos.get
+left	.apply	either.left	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+pos.get	.apply	parser.pos.get	rune.t
+expr.left.p1	.apply	parser.lift2	rune.t	parser.pos.t	parser.pos.t	gsdl.sourcepos.t	|	gsdl.sourcepos	pos.get	pos.get
+expr.left.p	.apply	parser.map	rune.t	gsdl.sourcepos.t	either.pos.expr.ty	|	left	expr.left.p1
 expr.right.p	.apply	parser.fail	rune.t	either.pos.expr.ty	# > right <$> expr
 expr.p1	.apply	parser.<|>	rune.t	either.pos.expr.ty	|	expr.left.p	expr.right.p
 expr.p	.apply	parser.*>	rune.t	string.t	either.pos.expr.ty	|	ld.p	expr.p1
@@ -55,11 +59,19 @@ _gsdl.cgs.gsexpr.parser_expr.heavy.cast_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 either.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-pos	.larg	parser.pos.t
+gsdl.cgs.gsexpr.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gsexpr.expr.heavy.cast	.gvar
+pos0	.larg	parser.pos.t
 co	.larg	gsdl.cgs.gscoercion.t
-eexp	.larg	either.t	parser.pos.t	gsdl.cgs.gsexpr.t
-	.undef	gsdl.cgs.gsexpr.t
+eexp	.larg	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	eexp
+	.app	pos	e1
+	.enter	gsdl.cgs.gsexpr.pos
 
 # §section §gs{gsdl.cgs.gsexpr.≡}
 
