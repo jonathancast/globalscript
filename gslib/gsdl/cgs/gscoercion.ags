@@ -94,13 +94,20 @@ gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 bool.t	.tygvar	# Temp
+gsdl.var.≡	.gvar
 gsdl.cgs.gscoercion.≡	.gvar
 co0.0	.fv	gsdl.cgs.gscoercion.prim.u
 co1.0	.karg	gsdl.cgs.gscoercion.prim.u
 	.analyze	co0.0	defn	pos
 		.case	defn
 tyc0		.fkarg	0	gsdl.var.t
-			.undef	bool.t
+			.danalyze	co1.0	defn
+				.default
+					.undef	bool.t
+				.case	defn
+tyc1				.fkarg	0	gsdl.var.t
+					.app	tyc0	tyc1
+					.enter	gsdl.var.≡
 		.case	pos
 pos0		.fkarg	0	gsdl.sourcepos.t
 co0.1		.fkarg	1	gsdl.cgs.gscoercion.t
