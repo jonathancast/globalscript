@@ -5,7 +5,7 @@
 gsdl.cgs.gsexpr.parser	.closure	_gsdl.cgs.gsexpr.parser_c	_gsdl.cgs.gsexpr.parser_ty
 _gsdl.cgs.gsexpr.parser_expr.heavy.cast_ld.re	.regex	⊲
 
-gsdl.cgs.gsexpr.freevars	.closure	_gsdl.cgs.gsexpr.freevars_c
+gsdl.cgs.gsexpr.freevars	.closure	_gsdl.cgs.gsexpr.freevars_c	_gsdl.cgs.gsexpr.freevars_ty
 
 gsdl.cgs.gsexpr.≡	.closure	_gsdl.cgs.gsexpr.≡_c	_gsdl.cgs.gsexpr.≡_ty
 
@@ -98,6 +98,7 @@ _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_ee.fvs_c	.subcode
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.gscoercion.freevars	.gvar
+gsdl.cgs.gsexpr.freevars	.gvar
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 	.analyze	e0	expr.heavy.cast	pos
 		.case	expr.heavy.cast
@@ -110,7 +111,8 @@ ee.fvs			.alloc	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_ee.fvs_c
 		.case	pos
 pos		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+			.app	e1
+			.enter	gsdl.cgs.gsexpr.freevars
 	# > :: ordered.set.t	gsdl.cgs.symbol.t
 
 _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_ee.fvs_c	.expr
@@ -327,6 +329,16 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
+
+# §section §gs{gsdl.cgs.gsexpr.freevars}
+
+_gsdl.cgs.gsexpr.freevars_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tyref	ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gsexpr.≡}
 
