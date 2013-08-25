@@ -134,6 +134,8 @@ gsdl.cgs.document.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
+ordered.set.union	.gvar
+gsdl.cgs.symbol.compare	.gvar
 maybe.maybe	.gvar
 ordered.set.empty	.gvar
 gsdl.cgs.gstype.freevars	.gvar
@@ -141,8 +143,10 @@ res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 doc0	.karg	gsdl.cgs.document.prim.u
 empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 mb.ty	.field	gstype doc0
-	.app	empty	gsdl.cgs.gstype.freevars	mb.ty
-	.enter	maybe.maybe	gsdl.cgs.gstype.t	res.ty
+ty.fvs	.apply	maybe.maybe	gsdl.cgs.gstype.t	res.ty	|	empty	gsdl.cgs.gstype.freevars	mb.ty
+e.fvs	.apply	empty
+	.app	gsdl.cgs.symbol.compare	e.fvs	ty.fvs
+	.enter	ordered.set.union	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.document.≡}
 
