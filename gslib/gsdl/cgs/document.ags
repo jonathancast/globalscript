@@ -124,6 +124,13 @@ r	.record	expr	nothing	gstype	mbty	pos	pos	|	gsdl.cgs.document.prim.u
 
 _gsdl.cgs.document.freevars_c	.expr
 gsdl.cgs.document.t	.tygvar
+_gsdl.cgs.document.freevars_k	.subcode
+doc	.larg	gsdl.cgs.document.t
+	.force	_gsdl.cgs.document.freevars_k
+	.enter	doc
+
+_gsdl.cgs.document.freevars_k	.forcecont
+gsdl.cgs.document.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
@@ -131,9 +138,9 @@ maybe.maybe	.gvar
 ordered.set.empty	.gvar
 gsdl.cgs.gstype.freevars	.gvar
 res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
-doc	.larg	gsdl.cgs.document.t
+doc0	.karg	gsdl.cgs.document.prim.u
 empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-mb.ty	.lfield	gstype doc
+mb.ty	.field	gstype doc0
 	.app	empty	gsdl.cgs.gstype.freevars	mb.ty
 	.enter	maybe.maybe	gsdl.cgs.gstype.t	res.ty
 
