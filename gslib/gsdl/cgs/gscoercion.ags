@@ -87,20 +87,25 @@ _gsdl.cgs.gscoercion.freevars_k	.forcecont
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
-ordered.set.singleton	.gvar
+ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
-gsdl.cgs.symbol.tyvar	.gvar
 gsdl.cgs.gscoercion.freevars	.gvar
+gsdl.cgs.gstype.freevars	.gvar
+ordered.set.singleton	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
 co0	.karg	gsdl.cgs.gscoercion.prim.u
 	.analyze	co0	appty	defn	pos
 		.case	appty
 cof		.fkarg	0	gsdl.cgs.gscoercion.t
 tya		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+cof.fvs			.apply	gsdl.cgs.gscoercion.freevars	|	cof
+tya.fvs			.apply	gsdl.cgs.gstype.freevars	|	tya
+			.app	gsdl.cgs.symbol.compare	cof.fvs	tya.fvs
+			.enter	ordered.set.union	gsdl.cgs.symbol.t
 		.case	defn
 v		.fkarg	0	gsdl.var.t
 sym			.apply	gsdl.cgs.symbol.tyvar	|	v
