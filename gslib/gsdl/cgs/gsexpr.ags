@@ -14,6 +14,8 @@ gsdl.cgs.gsexpr.fmtgs	.closure	_gsdl.cgs.gsexpr.fmtgs_c
 gsdl.cgs.gsexpr.pos	.closure	_gsdl.cgs.gsexpr.pos_c
 gsdl.cgs.gsexpr.expr.heavy.cast	.closure	_gsdl.cgs.gsexpr.expr.heavy.cast_c
 
+gsdl.cgs.gsexpr.cast.source.missing	.closure	_gsdl.cgs.gsexpr.cast.source.missing_c
+
 	.code
 
 # §section §gs{gsdl.cgs.gsexpr.parser}
@@ -26,11 +28,11 @@ expr.heavy.cast	.alloc	_gsdl.cgs.gsexpr.parser_expr.heavy.cast_c
 _gsdl.cgs.gsexpr.parser_expr.heavy.cast_c	.expr
 rune.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
-either.t	.tygvar
-gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-string.t	.tygvar
 parser.pos.t	.tygvar
+string.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 _gsdl.cgs.gsexpr.parser_expr.heavy.cast_f_c	.subcode
 parser.lift3	.gvar
 gsdl.cgs.gscoercion.parser.app	.gvar
@@ -39,39 +41,35 @@ gsdl.cgs.syntax.core.keywordOp	.gvar
 _gsdl.cgs.gsexpr.parser_expr.heavy.cast_ld.re	.gvar
 parser.<|>	.gvar
 parser.map	.gvar
-either.left	.gvar
+gsdl.cgs.gsexpr.cast.source.missing	.gvar
 parser.lift2	.gvar
 gsdl.sourcepos	.gvar
 parser.pos.get	.gvar
 parser.fail	.gvar	# Temp
-either.pos.expr.ty	.tylet	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
 f	.alloc	_gsdl.cgs.gsexpr.parser_expr.heavy.cast_f_c
 ld.p	.apply	gsdl.cgs.syntax.core.keywordOp	|	_gsdl.cgs.gsexpr.parser_expr.heavy.cast_ld.re
-left	.apply	either.left	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
 pos.get	.apply	parser.pos.get	rune.t
 expr.left.p1	.apply	parser.lift2	rune.t	parser.pos.t	parser.pos.t	gsdl.sourcepos.t	|	gsdl.sourcepos	pos.get	pos.get
-expr.left.p	.apply	parser.map	rune.t	gsdl.sourcepos.t	either.pos.expr.ty	|	left	expr.left.p1
-expr.right.p	.apply	parser.fail	rune.t	either.pos.expr.ty	# > right <$> expr
-expr.p1	.apply	parser.<|>	rune.t	either.pos.expr.ty	|	expr.left.p	expr.right.p
-expr.p	.apply	parser.*>	rune.t	string.t	either.pos.expr.ty	|	ld.p	expr.p1
+expr.left.p	.apply	parser.map	rune.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.cast.source.t	|	gsdl.cgs.gsexpr.cast.source.missing	expr.left.p1
+expr.right.p	.apply	parser.fail	rune.t	gsdl.cgs.gsexpr.cast.source.t	# > right <$> expr
+expr.p1	.apply	parser.<|>	rune.t	gsdl.cgs.gsexpr.cast.source.t	|	expr.left.p	expr.right.p
+expr.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.cast.source.t	|	ld.p	expr.p1
 	.app	f	pos.get	gsdl.cgs.gscoercion.parser.app	expr.p
-	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.cgs.gscoercion.t	either.pos.expr.ty	gsdl.cgs.gsexpr.t
+	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.cgs.gscoercion.t	gsdl.cgs.gsexpr.cast.source.t	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.parser_expr.heavy.cast_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
-either.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.gsexpr.pos	.gvar
 gsdl.sourcepos	.gvar
 gsdl.cgs.gsexpr.expr.heavy.cast	.gvar
 pos0	.larg	parser.pos.t
 co	.larg	gsdl.cgs.gscoercion.t
-eexp	.larg	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+so	.larg	gsdl.cgs.gsexpr.cast.source.t
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-e1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	eexp
+e1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	so
 	.app	pos	e1
 	.enter	gsdl.cgs.gsexpr.pos
 
@@ -89,12 +87,13 @@ e	.larg	gsdl.cgs.gsexpr.t
 _gsdl.cgs.gsexpr.freevars_k	.forcecont
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
-either.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+either.t	.tygvar	# Temp
 ordered.set.t	.tygvar	# Temp
 gsdl.cgs.symbol.t	.tygvar	# Temp
-_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_ee.fvs_c	.subcode
+_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.subcode
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.gscoercion.freevars	.gvar
@@ -103,10 +102,10 @@ e0	.karg	gsdl.cgs.gsexpr.prim.u
 	.analyze	e0	expr.heavy.cast	pos
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
-ee		.fkarg	1	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
 co.fvs			.apply	gsdl.cgs.gscoercion.freevars	|	co
-ee.fvs			.alloc	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_ee.fvs_c
-			.app	gsdl.cgs.symbol.compare	co.fvs	ee.fvs
+so.fvs			.alloc	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c
+			.app	gsdl.cgs.symbol.compare	co.fvs	so.fvs
 			.enter	ordered.set.union	gsdl.cgs.symbol.t
 		.case	pos
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -115,32 +114,27 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.enter	gsdl.cgs.gsexpr.freevars
 	# > :: ordered.set.t	gsdl.cgs.symbol.t
 
-_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_ee.fvs_c	.expr
-either.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_ee.fvs_k	.subcode
-either.t.out	.cogvar
-ee	.fv	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-	.force	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_ee.fvs_k
-	.coerce	either.t.out	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-	.enter	ee
+_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.expr
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_k	.subcode
+gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
+so	.fv	gsdl.cgs.gsexpr.cast.source.t
+	.force	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_k
+	.coerce	gsdl.cgs.gsexpr.cast.source.t.out
+	.enter	so
 
-_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_ee.fvs_k	.forcecont
-either.prim.u	.tygvar
+_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_k	.forcecont
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
 ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
 ordered.set.empty	.gvar
-ee0	.karg	either.prim.u	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-	.analyze	ee0	left	right
-		.case	left
+so0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
+	.analyze	so0	missing
+		.case	missing
 pos		.fkarg	0	gsdl.sourcepos.t
 			.enter	ordered.set.empty	gsdl.cgs.symbol.t
-		.case	right
-e1		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+	# > :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gsexpr.≡}
 
@@ -168,7 +162,7 @@ e0.0	.karg	gsdl.cgs.gsexpr.prim.u
 _gsdl.cgs.gsexpr.≡_k1	.forcecont
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
-either.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 bool.t	.tygvar	# Temp
@@ -181,13 +175,13 @@ e1.0	.karg	gsdl.cgs.gsexpr.prim.u
 	.analyze	e0.0	expr.heavy.cast	pos
 		.case	expr.heavy.cast
 co0		.fkarg	0	gsdl.cgs.gscoercion.t
-ee0		.fkarg	1	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+so0		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
 			.danalyze	e1.0	expr.heavy.cast
 				.default
 					.undef	bool.t
 				.case	expr.heavy.cast
 co1				.fkarg	0	gsdl.cgs.gscoercion.t
-ee1				.fkarg	1	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+so1				.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
 					.force	_gsdl.cgs.gsexpr.≡_expr.heavy.cast_k
 					.coerce	bool.t.out
 					.app	co0	co1
@@ -206,58 +200,51 @@ e1.1				.fkarg	1	gsdl.cgs.gsexpr.t
 	# > :: bool.t
 
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_k	.forcecont
-either.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
 bool.prim.u	.tygvar
 bool.t	.tygvar	# Temp
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0	.subcode
-either.t.out	.cogvar
-ee0	.fv	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-ee1	.fv	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
+so0	.fv	gsdl.cgs.gsexpr.cast.source.t
+so1	.fv	gsdl.cgs.gsexpr.cast.source.t
 b0	.karg	bool.prim.u	# Are coercions equal?
 	.analyze	b0	false	true
 		.case	false
 			.undef	bool.t
 		.case	true
 			.force	_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0
-			.coerce	either.t.out	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-			.enter	ee0
+			.coerce	gsdl.cgs.gsexpr.cast.source.t.out
+			.enter	so0
 
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0	.forcecont
-either.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-either.prim.u	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
 bool.t	.tygvar	# Temp
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k1	.subcode
-either.t.out	.cogvar
-ee1	.fv	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-ee0.0	.karg	either.prim.u	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
+so1	.fv	gsdl.cgs.gsexpr.cast.source.t
+so0.0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
 	.force	_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k1
-	.coerce	either.t.out	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-	.enter	ee1
+	.coerce	gsdl.cgs.gsexpr.cast.source.t.out
+	.enter	so1
 
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k1	.forcecont
-either.prim.u	.tygvar
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
 bool.t	.tygvar	# Temp
 bool.true	.gvar
-ee0.0	.fv	either.prim.u	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-ee1.0	.karg	either.prim.u	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-	.analyze	ee0.0	left	right
-		.case	left
+so0.0	.fv	gsdl.cgs.gsexpr.cast.source.prim.u
+so1.0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
+	.analyze	so0.0	missing
+		.case	missing
 pos0		.fkarg	0	gsdl.sourcepos.t
-			.danalyze	ee1.0	left
+			.danalyze	so1.0	missing
 				.default
 					.undef	bool.t
-				.case	left
+				.case	missing
 pos1				.fkarg	0	gsdl.sourcepos.t
 					.enter	bool.true
-		.case	right
-e0		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	bool.t
+		# > :: bool.t
 
 # §section §gs{gsdl.cgs.gsexpr.fmtgs}
 
@@ -283,15 +270,25 @@ res	.constr	gsdl.cgs.gsexpr.prim.u	pos	0	pos	1	e
 
 _gsdl.cgs.gsexpr.expr.heavy.cast_c	.expr
 gsdl.cgs.gscoercion.t	.tygvar
-either.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gsexpr.t.in	.cogvar
-cast	.larg	gsdl.cgs.gscoercion.t
-ee	.larg	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-res	.constr	gsdl.cgs.gsexpr.prim.u	expr.heavy.cast	0	cast	1	ee
+co	.larg	gsdl.cgs.gscoercion.t
+so	.larg	gsdl.cgs.gsexpr.cast.source.t
+res	.constr	gsdl.cgs.gsexpr.prim.u	expr.heavy.cast	0	co	1	so
 	.coerce	gsdl.cgs.gsexpr.t.in
+	.lift
+	.yield	res
+
+# §gs{gsdl.cgs.gsexpr.cast.source.t} constructors
+
+_gsdl.cgs.gsexpr.cast.source.missing_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+gsdl.cgs.gsexpr.cast.source.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+res	.constr	gsdl.cgs.gsexpr.cast.source.prim.u	missing	0	pos
+	.coerce	gsdl.cgs.gsexpr.cast.source.t.in
 	.lift
 	.yield	res
 
@@ -311,16 +308,28 @@ _gsdl.cgs.gsexpr.prim.u_pos_ty	.tygvar
 
 _gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	.tyexpr
 gsdl.cgs.gscoercion.t	.tygvar
-either.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-_1_ty	.tylet	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-	.tyubproduct	0	gsdl.cgs.gscoercion.t	1	_1_ty
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gscoercion.t	1	gsdl.cgs.gsexpr.cast.source.t
 
 _gsdl.cgs.gsexpr.prim.u_pos_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gsexpr.t
+
+# §subsection §gs{gsdl.cgs.gsexpr.cast.source.t}
+
+gsdl.cgs.gsexpr.cast.source.t	.tyabstract	*
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gsexpr.cast.source.prim.u
+
+gsdl.cgs.gsexpr.cast.source.prim.u	.tyexpr
+_gsdl.cgs.gsexpr.cast.source.prim.u_missing_ty	.tygvar
+	.tysum	missing	_gsdl.cgs.gsexpr.cast.source.prim.u_missing_ty
+
+_gsdl.cgs.gsexpr.cast.source.prim.u_missing_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t
 
 # §section §gs{gsdl.cgs.gsexpr.parser}
 
@@ -361,3 +370,12 @@ gsdl.cgs.gsexpr.t.out	.tycoercion
 gsdl.cgs.gsexpr.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.cgs.gsexpr.t
+
+gsdl.cgs.gsexpr.cast.source.t.in	.tycoercion
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+	.tydefinition	gsdl.cgs.gsexpr.cast.source.t
+
+gsdl.cgs.gsexpr.cast.source.t.out	.tycoercion
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gsexpr.cast.source.t

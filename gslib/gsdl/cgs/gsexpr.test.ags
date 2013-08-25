@@ -60,7 +60,7 @@ gsdl.var.component.alphanum	.gvar
 _test.parse.gsexpr.expr.heavy.cast_bool.s	.gvar
 list.singleton	.gvar
 _test.parse.gsexpr.expr.heavy.cast_t.s	.gvar
-either.left	.gvar
+gsdl.cgs.gsexpr.cast.source.missing	.gvar
 actual	.larg	gsdl.cgs.gsexpr.t
 pos	.undefined	gsdl.sourcepos.t
 bool.c	.apply	gsdl.var.component.alphanum	|	_test.parse.gsexpr.expr.heavy.cast_bool.s
@@ -70,8 +70,8 @@ bool.t.v.cs	.apply	list.:	gsdl.var.component.t	|	bool.c	bool.t.v.cs1
 bool.t.v	.apply	gsdl.var.basevar	|	bool.t.v.cs
 co1	.apply	gsdl.cgs.gscoercion.defn	|	bool.t.v
 co	.apply	gsdl.cgs.gscoercion.pos	|	pos	co1
-ee	.apply	either.left	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t	|	pos
-e1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	ee
+so	.apply	gsdl.cgs.gsexpr.cast.source.missing	|	pos
+e1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	so
 expected	.apply	gsdl.cgs.gsexpr.pos	|	pos	e1
 	.app	gsdl.cgs.gsexpr.≡	gsdl.cgs.gsexpr.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.cgs.gsexpr.t
@@ -98,7 +98,7 @@ gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
 _test.freevars.expr.heavy.cast_t.s	.gvar
-either.left	.gvar
+gsdl.cgs.gsexpr.cast.source.missing	.gvar
 ordered.set.singleton	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
@@ -110,8 +110,8 @@ v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c
 v	.apply	gsdl.var.basevar	|	v.cs
 e.co	.apply	gsdl.cgs.gscoercion.defn	|	v
 pos	.undefined	gsdl.sourcepos.t
-e.ee	.apply	either.left	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t	|	pos
-e	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	e.co	e.ee
+e.so	.apply	gsdl.cgs.gsexpr.cast.source.missing	|	pos
+e	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	e.co	e.so
 actual	.apply	gsdl.cgs.gsexpr.freevars	|	e
 sym	.apply	gsdl.cgs.symbol.tyvar	|	v
 expected	.apply	ordered.set.singleton	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	sym

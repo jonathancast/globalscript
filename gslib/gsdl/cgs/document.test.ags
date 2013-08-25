@@ -224,7 +224,7 @@ gsdl.var.component.alphanum	.gvar
 _test.parse.expr.document_bool.s	.gvar
 list.singleton	.gvar
 _test.parse.expr.document_t.s	.gvar
-either.left	.gvar
+gsdl.cgs.gsexpr.cast.source.missing	.gvar
 maybe.nothing	.gvar
 actual	.larg	gsdl.cgs.document.t
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name	|	gsdl.sourcepos.t
@@ -235,7 +235,7 @@ bool.t.v.cs	.apply	list.:	gsdl.var.component.t	|	bool.c	bool.t.v.cs1
 bool.t.v	.apply	gsdl.var.basevar	|	bool.t.v.cs
 co1	.apply	gsdl.cgs.gscoercion.defn	|	bool.t.v
 co	.apply	gsdl.cgs.gscoercion.pos	|	pos	co1
-ee	.apply	either.left	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t	|	pos
+ee	.apply	gsdl.cgs.gsexpr.cast.source.missing	|	pos
 cast1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	ee
 cast	.apply	gsdl.cgs.gsexpr.pos	|	pos	cast1
 just.cast	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	cast
@@ -293,7 +293,7 @@ gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
 _test.freevars.expr.document_t.s	.gvar
-either.left	.gvar
+gsdl.cgs.gsexpr.cast.source.missing	.gvar
 maybe.nothing	.gvar
 ordered.set.singleton	.gvar
 gsdl.cgs.symbol.compare	.gvar
@@ -306,8 +306,8 @@ v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c
 v	.apply	gsdl.var.basevar	|	v.cs
 e.co	.apply	gsdl.cgs.gscoercion.defn	|	v
 pos	.undefined	gsdl.sourcepos.t
-e.ee	.apply	either.left	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t	|	pos
-e	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	e.co	e.ee
+e.so	.apply	gsdl.cgs.gsexpr.cast.source.missing	|	pos
+e	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	e.co	e.so
 just.e	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e
 nothing.ty	.apply	maybe.nothing	gsdl.cgs.gstype.t
 doc	.lrecord	expr	just.e	gstype	nothing.ty	pos	pos	|	gsdl.cgs.document.t
