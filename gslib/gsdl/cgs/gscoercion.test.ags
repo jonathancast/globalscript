@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse.gscoercion.defn	_test.parse.gscoercion.defn.tyargs
+_tests	.list	test.property.t	_test.parse.gscoercion.defn	_test.parse.gscoercion.defn.tyargs	_test.freevars.defn
 
 _test.parse.gscoercion.defn	.closure	_test.parse.gscoercion.defn_c
 _test.parse.gscoercion.defn_label	.string	parse\sgsexpr.parser\sqq{"defn\sbool.t}
@@ -15,6 +15,10 @@ _test.parse.gscoercion.defn_t.s	.string	t
 _test.parse.gscoercion.defn.tyargs	.closure	_test.parse.gscoercion.defn.tyargs_c
 _test.parse.gscoercion.defn.tyargs_label	.string	parse\sgsexpr.parser\sqq{"defn\smaybe.t\sbool.t}
 _test.parse.gscoercion.defn.tyargs_input	.string	"defn\smaybe.t\sbool.t
+
+_test.freevars.defn	.closure	_test.freevars.defn_c
+_test.freevars.defn_label	.string	freevars\s(defn\s_)
+_test.freevars.defn_t.s	.string	t
 
 	.code
 
@@ -92,3 +96,40 @@ gsdl.cgs.gscoercion.t	.tygvar
 test.true	.gvar
 actual	.larg	gsdl.cgs.gscoercion.t
 	.enter	test.true
+
+# §section §gs{freevars (defn _)}
+
+_test.freevars.defn_c	.expr
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+gsdl.var.component.t	.tygvar
+test.property.label	.gvar
+_test.freevars.defn_label	.gvar
+test.assert.eq	.gvar
+ordered.set.≡	.gvar
+gsdl.cgs.symbol.≡	.gvar
+ordered.set.fmtgs	.gvar
+gsdl.cgs.symbol.fmtgs	.gvar
+gsdl.cgs.gscoercion.freevars	.gvar
+gsdl.cgs.gscoercion.defn	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test.freevars.defn_t.s	.gvar
+ordered.set.singleton	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
+set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+set.symbol.≡	.apply	ordered.set.≡	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.≡
+set.symbol.fmtgs	.apply	ordered.set.fmtgs	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.fmtgs
+v.c	.apply	gsdl.var.component.alphanum	|	_test.freevars.defn_t.s
+v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c
+v	.apply	gsdl.var.basevar	|	v.cs
+co	.apply	gsdl.cgs.gscoercion.defn	|	v
+actual	.apply	gsdl.cgs.gscoercion.freevars	|	co
+sym	.apply	gsdl.cgs.symbol.tyvar	|	v
+expected	.apply	ordered.set.singleton	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	sym
+test	.apply	test.assert.eq	set.symbol.ty	|	set.symbol.≡	set.symbol.fmtgs	actual	expected
+	.app	_test.freevars.defn_label	test
+	.enter	test.property.label
+
