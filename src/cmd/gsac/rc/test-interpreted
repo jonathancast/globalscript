@@ -11,6 +11,7 @@ ok_grep_script_errors '-- gsac-deps: Document with no entry point --' deps-no-en
 
 ok_diff_script '-- gsac-deps: Empty document --' deps-empty-doc ibio ./gslib ./gsac-deps.ags -l ./test-fixtures/gslib ./test-fixtures/empty-doc.gsac
 ok_diff_script '-- gsac-deps: Empty list.t document --' deps-empty-list-doc ibio ./gslib ./gsac-deps.ags -l ./test-fixtures/gslib ./test-fixtures/empty-list-doc.gsac
+ok_diff_script '-- gsac-deps: Cast to an abstract type --' deps-cast-defn ibio ./gslib ./gsac-deps.ags -l ./test-fixtures/gslib ./test-fixtures/cast-defn.gsac
 
 ok_diff_script '-- gsac: Empty document --' gsac-empty-doc ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/empty-doc.cgs
 ok_diff_script '-- gsac: Empty bool.t document --' gsac-empty-bool-doc ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/empty-bool-doc.cgs

@@ -1,0 +1,2 @@
+./test-fixtures/cast-defn.gsac: ./test-fixtures/gslib/bool.test.ags
+./test-fixtures/cast-defn.gsac: ./test-fixtures/gslib/bool.ags
