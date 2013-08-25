@@ -30,6 +30,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.document.annotate_res.ty	.tygvar
+_gsac.gsexpr.annotate_expr.heavy.cast_k	.subcode
 _gsac.gsexpr.annotate_pos_k	.subcode
 either.t.out	.cogvar
 gsac.gsexpr.annotate	.gvar
@@ -39,7 +40,9 @@ e0	.karg	gsdl.cgs.gsexpr.prim.u
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 ee		.fkarg	1	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.document.annotate_res.ty
+			.force	_gsac.gsexpr.annotate_expr.heavy.cast_k
+			.coerce	either.t.out	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+			.enter	ee
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
@@ -48,6 +51,22 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.app	pos1	env	e1
 			.enter	gsac.gsexpr.annotate
 	# > :: either.t	string.t	_gsac.document.annotate_res.ty
+
+_gsac.gsexpr.annotate_expr.heavy.cast_k	.forcecont
+either.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.document.annotate_res.ty	.tygvar	# Temp
+ee0	.karg	either.prim.u	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
+	.analyze	ee0	left	right
+		.case	left
+pos1		.fkarg	0	gsdl.sourcepos.t
+			.undef	either.t	string.t	_gsac.document.annotate_res.ty
+		.case	right
+e1		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.document.annotate_res.ty
 
 _gsac.gsexpr.annotate_pos_k	.forcecont
 either.prim.u	.tygvar
