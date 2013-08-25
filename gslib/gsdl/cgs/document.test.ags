@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.eq.expr.nothing.just	_test.fmtgs	_test.parse.empty.document	_test.parse.expr.document	_test.parse.typesig.document
+_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.eq.expr.nothing.just	_test.fmtgs	_test.parse.empty.document	_test.parse.expr.document	_test.parse.typesig.document	_test.freevars.expr.document
 
 _test.eq.gstype.nothing.just	.closure	_test.eq.gstype.nothing.just_c
 _test.eq.gstype.nothing.just_label	.string	〈\s'gstype\s∝\snothing;\s〉\s≡\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
@@ -33,6 +33,10 @@ _test.parse.expr.document_t.s	.string	t
 _test.parse.typesig.document	.closure	_test.parse.typesig.document_c
 _test.parse.typesig.document_label	.string	parse\sdocument.parser\sqq{"defn\sbool.t\s"⊲\s::\sbool.t;}
 _test.parse.typesig.document_input	.string	"defn\sbool.t\s"⊲\s::\sbool.t;
+
+_test.freevars.expr.document	.closure	_test.freevars.expr.document_c
+_test.freevars.expr.document_label	.string	freevars\s〈\s'expr\s∝\sjust\s_;\s〉
+_test.freevars.expr.document_t.s	.string	t
 
 	.code
 
@@ -263,3 +267,53 @@ gsdl.cgs.document.t	.tygvar
 test.true	.gvar
 actual	.larg	gsdl.cgs.document.t
 	.enter	test.true
+
+# §section §gs{freevars 〈 'expr ∝ just _; 〉}
+
+_test.freevars.expr.document_c	.expr
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+test.property.label	.gvar
+_test.freevars.expr.document_label	.gvar
+test.assert.eq	.gvar
+ordered.set.≡	.gvar
+gsdl.cgs.symbol.≡	.gvar
+ordered.set.fmtgs	.gvar
+gsdl.cgs.symbol.fmtgs	.gvar
+gsdl.cgs.document.freevars	.gvar
+maybe.just	.gvar
+gsdl.cgs.gsexpr.expr.heavy.cast	.gvar
+gsdl.cgs.gscoercion.defn	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test.freevars.expr.document_t.s	.gvar
+either.left	.gvar
+maybe.nothing	.gvar
+ordered.set.singleton	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
+set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+set.symbol.≡	.apply	ordered.set.≡	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.≡
+set.symbol.fmtgs	.apply	ordered.set.fmtgs	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.fmtgs
+v.c	.apply	gsdl.var.component.alphanum	|	_test.freevars.expr.document_t.s
+v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c
+v	.apply	gsdl.var.basevar	|	v.cs
+e.co	.apply	gsdl.cgs.gscoercion.defn	|	v
+pos	.undefined	gsdl.sourcepos.t
+e.ee	.apply	either.left	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t	|	pos
+e	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	e.co	e.ee
+just.e	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e
+nothing.ty	.apply	maybe.nothing	gsdl.cgs.gstype.t
+doc	.lrecord	expr	just.e	gstype	nothing.ty	pos	pos	|	gsdl.cgs.document.t
+actual	.apply	gsdl.cgs.document.freevars	|	doc
+sym	.apply	gsdl.cgs.symbol.tyvar	|	v
+expected	.apply	ordered.set.singleton	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	sym
+test	.apply	test.assert.eq	set.symbol.ty	|	set.symbol.≡	set.symbol.fmtgs	actual	expected
+	.app	_test.freevars.expr.document_label	test
+	.enter	test.property.label
