@@ -22,13 +22,18 @@ e	.larg	gsdl.cgs.gsexpr.t
 	.enter	e
 
 _gsac.gsexpr.annotate_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 either.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-string.t	.tygvar	# Temp
-_gsac.document.annotate_res.ty	.tygvar	# Temp
+string.t	.tygvar
+_gsac.document.annotate_res.ty	.tygvar
+_gsac.gsexpr.annotate_pos_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.annotate	.gvar
+env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 	.analyze	e0	expr.heavy.cast	pos
 		.case	expr.heavy.cast
@@ -38,8 +43,19 @@ ee		.fkarg	1	either.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.t
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.document.annotate_res.ty
+			.force	_gsac.gsexpr.annotate_pos_k
+			.coerce	either.t.out	string.t	_gsac.document.annotate_res.ty
+			.app	pos1	env	e1
+			.enter	gsac.gsexpr.annotate
 	# > :: either.t	string.t	_gsac.document.annotate_res.ty
+
+_gsac.gsexpr.annotate_pos_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.document.annotate_res.ty	.tygvar
+either.t	.tygvar
+e0	.karg	either.prim.u	string.t	_gsac.document.annotate_res.ty
+	.undef	either.t	string.t	_gsac.document.annotate_res.ty
 
 	.type
 
