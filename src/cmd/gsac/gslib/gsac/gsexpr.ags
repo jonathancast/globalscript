@@ -2,6 +2,47 @@
 
 	.data
 
+gsac.gsexpr.annotate	.closure	_gsac.gsexpr.annotate_c	_gsac.gsexpr.annotate_ty
+
 	.code
 
+# §section §gs{gsac.gsexpr.annotate}
+
+_gsac.gsexpr.annotate_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.document.annotate_res.ty	.tygvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+e	.larg	gsdl.cgs.gsexpr.t
+	.undef	either.t	string.t	_gsac.document.annotate_res.ty
+
 	.type
+
+# §section §gs{gsac.gsexpr.annotate}
+
+_gsac.gsexpr.annotate_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.document.annotate_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tyref	either.t	string.t	_gsac.document.annotate_res.ty
+
+_gsac.document.annotate_res.ty	.tyexpr
+_gsac.document.annotate_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.document.annotate_res.u
+
+_gsac.document.annotate_res.u	.tyexpr
+	.typroduct
