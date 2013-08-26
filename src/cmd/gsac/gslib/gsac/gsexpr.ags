@@ -22,11 +22,11 @@ e	.larg	gsdl.cgs.gsexpr.t
 	.enter	e
 
 _gsac.gsexpr.annotate_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
-gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
@@ -35,6 +35,7 @@ _gsac.gsexpr.annotate_pos_k	.subcode
 gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
 either.t.out	.cogvar
 gsac.gsexpr.annotate	.gvar
+pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 	.analyze	e0	expr.heavy.cast	pos
@@ -54,17 +55,38 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 	# > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_expr.heavy.cast_k	.forcecont
-gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+_gsac.gsexpr.annotate_expr.heavy.cast_missing_k	.subcode
+either.t.out	.cogvar
+gsac.gscoercion.annotate	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+co	.fv	gsdl.cgs.gscoercion.t
 so0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
 	.analyze	so0	missing
 		.case	missing
 pos1		.fkarg	0	gsdl.sourcepos.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+			.force	_gsac.gsexpr.annotate_expr.heavy.cast_missing_k
+			.coerce	either.t.out	string.t	_gsac.gscoercion.annotate_res.ty
+			.app	pos	env	co
+			.enter	gsac.gscoercion.annotate
 		# > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
+
+_gsac.gsexpr.annotate_expr.heavy.cast_missing_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gscoercion.annotate_res.ty
+	.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_pos_k	.forcecont
 either.prim.u	.tygvar
