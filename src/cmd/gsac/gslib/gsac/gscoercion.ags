@@ -22,25 +22,30 @@ co	.larg	gsdl.cgs.gscoercion.t
 	.enter	co
 
 _gsac.gscoercion.annotate_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
+_gsac.gscoercion.annotate_appty_k	.subcode
 _gsac.gscoercion.annotate_pos_k	.subcode
 either.t.out	.cogvar
 gsac.gscoercion.annotate	.gvar
+pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 co0	.karg	gsdl.cgs.gscoercion.prim.u
 	.analyze	co0	appty	defn	pos
 		.case	appty
 cof		.fkarg	0	gsdl.cgs.gscoercion.t
 tya		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+			.force	_gsac.gscoercion.annotate_appty_k
+			.coerce	either.t.out	string.t	_gsac.gscoercion.annotate_res.ty
+			.app	pos	env	cof
+			.enter	gsac.gscoercion.annotate
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
@@ -52,6 +57,14 @@ co1		.fkarg	1	gsdl.cgs.gscoercion.t
 			.app	pos1	env	co1
 			.enter	gsac.gscoercion.annotate
 	# > :: either.t	string.t	_gsac.gscoercion.annotate_res.ty
+
+_gsac.gscoercion.annotate_appty_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gscoercion.annotate_res.ty
+	.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_pos_k	.forcecont
 either.prim.u	.tygvar
