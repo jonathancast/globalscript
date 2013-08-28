@@ -27,14 +27,18 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-gsdl.var.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_appty_k	.subcode
+_gsac.gscoercion.annotate_defn_k	.subcode
 _gsac.gscoercion.annotate_pos_k	.subcode
 either.t.out	.cogvar
+maybe.t.out	.cogvar
 gsac.gscoercion.annotate	.gvar
+gsdl.cgs.typeenv.typedefinition.get	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 co0	.karg	gsdl.cgs.gscoercion.prim.u
@@ -48,7 +52,10 @@ tya		.fkarg	1	gsdl.cgs.gstype.t
 			.enter	gsac.gscoercion.annotate
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+			.force	_gsac.gscoercion.annotate_defn_k
+			.coerce	maybe.t.out	gsdl.cgs.typeenv.typedefinition.t
+			.app	tyc	env
+			.enter	gsdl.cgs.typeenv.typedefinition.get
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 co1		.fkarg	1	gsdl.cgs.gscoercion.t
@@ -64,6 +71,15 @@ string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.annotate_res.ty
+	.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+
+_gsac.gscoercion.annotate_defn_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typedefinition.t
 	.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_pos_k	.forcecont
