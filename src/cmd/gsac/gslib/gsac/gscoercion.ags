@@ -80,7 +80,12 @@ either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typedefinition.t
-	.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+	.analyze	mb0	just	nothing
+		.case	just
+defn		.fkarg	0	gsdl.cgs.typeenv.typedefinition.t
+			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+		.case	nothing
+			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_pos_k	.forcecont
 either.prim.u	.tygvar
