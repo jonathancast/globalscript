@@ -113,7 +113,7 @@ list.≡	.gvar
 list.fmtgs.byDefault	.gvar
 gsac.prefix.item.fmtgs	.gvar
 gsac.prefix.items	.gvar
-gsac.prefix.typeitem.gsabstype.insert	.gvar
+gsac.prefix.typefnitem.gsabstype.insert	.gvar
 natural.1	.gvar
 _fixtures.filenm	.gvar
 gsdl.var.basevar	.gvar
@@ -122,8 +122,8 @@ gsdl.var.component.alphanum	.gvar
 _test_items_gsabstype_x.s	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 gsac.prefix.empty	.gvar
-gsac.prefix.item.typeitem	.gvar
-gsac.prefix.typeitem.gsabstypenm	.gvar
+gsac.prefix.item.typefnitem	.gvar
+gsac.prefix.typefnitem.gsabstypenm	.gvar
 list.item.ty	.tylet	list.t	gsac.prefix.item.t
 list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
 list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
@@ -131,10 +131,10 @@ pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourc
 v.c0	.apply	gsdl.var.component.alphanum	|	_test_items_gsabstype_x.s
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
 v	.apply	gsdl.var.basevar	|	v.cs
-pr	.apply	gsac.prefix.typeitem.gsabstype.insert	|	pos	v	gsdl.cgs.gskind.lifted	gsac.prefix.empty
+pr	.apply	gsac.prefix.typefnitem.gsabstype.insert	|	pos	v	gsdl.cgs.gskind.lifted	gsac.prefix.empty
 actual	.apply	gsac.prefix.items	|	pr
-absty.ti	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
-absty	.apply	gsac.prefix.item.typeitem	|	absty.ti
+absty.ti	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
+absty	.apply	gsac.prefix.item.typefnitem	|	absty.ti
 expected	.apply	list.singleton	gsac.prefix.item.t | 	absty
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
 	.app	_test_items_gsabstype_label	test
@@ -158,8 +158,8 @@ _test_item_eq_x.x_label	.gvar
 test.assert	.gvar
 _test_item_eq_x.x_false	.gvar
 _test_item_eq_x.x_true	.gvar
-gsac.prefix.typeitem.≡	.gvar
-gsac.prefix.typeitem.gsabstypenm	.gvar
+gsac.prefix.typefnitem.≡	.gvar
+gsac.prefix.typefnitem.gsabstypenm	.gvar
 gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
@@ -169,8 +169,8 @@ pos	.undefined	gsdl.sourcepos.t
 v.c0	.apply	gsdl.var.component.alphanum	|	_test_item_eq_x.x_x.s
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
 v	.apply	gsdl.var.basevar	|	v.cs
-absty	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
-eq	.apply	gsac.prefix.typeitem.≡	|	absty	absty
+absty	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
+eq	.apply	gsac.prefix.typefnitem.≡	|	absty	absty
 test	.apply	test.assert	|	_test_item_eq_x.x_false	_test_item_eq_x.x_true	eq
 	.app	_test_item_eq_x.x_label	test
 	.enter	test.property.label
@@ -185,8 +185,8 @@ _test_item_eq_diff.nm_label	.gvar
 test.deny	.gvar
 _test_item_eq_diff.nm_false	.gvar
 _test_item_eq_diff.nm_true	.gvar
-gsac.prefix.typeitem.≡	.gvar
-gsac.prefix.typeitem.gsabstypenm	.gvar
+gsac.prefix.typefnitem.≡	.gvar
+gsac.prefix.typefnitem.gsabstypenm	.gvar
 gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
@@ -197,12 +197,12 @@ pos	.undefined	gsdl.sourcepos.t
 x.c0	.apply	gsdl.var.component.alphanum	|	_test_item_eq_diff.nm_x.s
 x.cs	.apply	list.singleton	gsdl.var.component.t	|	x.c0
 x.v	.apply	gsdl.var.basevar	|	x.cs
-absty.x	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	x.v	gsdl.cgs.gskind.lifted
+absty.x	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	x.v	gsdl.cgs.gskind.lifted
 y.c0	.apply	gsdl.var.component.alphanum	|	_test_item_eq_diff.nm_y.s
 y.cs	.apply	list.singleton	gsdl.var.component.t	|	y.c0
 y.v	.apply	gsdl.var.basevar	|	y.cs
-absty.y	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	y.v	gsdl.cgs.gskind.lifted
-eq	.apply	gsac.prefix.typeitem.≡	|	absty.x	absty.y
+absty.y	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	y.v	gsdl.cgs.gskind.lifted
+eq	.apply	gsac.prefix.typefnitem.≡	|	absty.x	absty.y
 test	.apply	test.deny	|	_test_item_eq_diff.nm_false	_test_item_eq_diff.nm_true	eq
 	.app	_test_item_eq_diff.nm_label	test
 	.enter	test.property.label
@@ -217,8 +217,8 @@ _test_item_eq_diff.kind_label	.gvar
 test.deny	.gvar
 _test_item_eq_diff.kind_false	.gvar
 _test_item_eq_diff.kind_true	.gvar
-gsac.prefix.typeitem.≡	.gvar
-gsac.prefix.typeitem.gsabstypenm	.gvar
+gsac.prefix.typefnitem.≡	.gvar
+gsac.prefix.typefnitem.gsabstypenm	.gvar
 gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
@@ -229,9 +229,9 @@ pos	.undefined	gsdl.sourcepos.t
 c0	.apply	gsdl.var.component.alphanum	|	_test_item_eq_diff.kind_x.s
 cs	.apply	list.singleton	gsdl.var.component.t	|	c0
 v	.apply	gsdl.var.basevar	|	cs
-absty.l	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
-absty.u	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.unlifted
-eq	.apply	gsac.prefix.typeitem.≡	|	absty.l	absty.u
+absty.l	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
+absty.u	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.unlifted
+eq	.apply	gsac.prefix.typefnitem.≡	|	absty.l	absty.u
 test	.apply	test.deny	|	_test_item_eq_diff.kind_false	_test_item_eq_diff.kind_true	eq
 	.app	_test_item_eq_diff.kind_label	test
 	.enter	test.property.label
@@ -260,8 +260,8 @@ test.assert.eq	.gvar
 gsdl.cgs.symbol.≡	.gvar
 gsdl.cgs.symbol.fmtgs	.gvar
 gsac.prefix.item.name	.gvar
-gsac.prefix.item.typeitem	.gvar
-gsac.prefix.typeitem.gsabstypenm	.gvar
+gsac.prefix.item.typefnitem	.gvar
+gsac.prefix.typefnitem.gsabstypenm	.gvar
 gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
@@ -272,8 +272,8 @@ v.c0	.apply	gsdl.var.component.alphanum	|	_tests_item.name_gsabstypenm_x.s
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
 v	.apply	gsdl.var.basevar	|	v.cs
 ki	.undefined	gsdl.cgs.gskind.t
-ti	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	ki
-it	.apply	gsac.prefix.item.typeitem	|	ti
+ti	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	ki
+it	.apply	gsac.prefix.item.typefnitem	|	ti
 actual	.apply	gsac.prefix.item.name	|	it
 expected	.apply	gsdl.cgs.symbol.tyvar	|	v
 test	.apply	test.assert.eq	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.≡	gsdl.cgs.symbol.fmtgs	actual	expected
@@ -364,8 +364,8 @@ gsdl.var.component.alphanum	.gvar
 _test_file.add_gsabstype_x.s	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 gsac.prefix.empty	.gvar
-gsac.prefix.item.typeitem	.gvar
-gsac.prefix.typeitem.gsabstypenm	.gvar
+gsac.prefix.item.typefnitem	.gvar
+gsac.prefix.typefnitem.gsabstypenm	.gvar
 list.item.ty	.tylet	list.t	gsac.prefix.item.t
 list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
 list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
@@ -383,8 +383,8 @@ tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	ti
 inprfx	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
 pr	.apply	gsac.prefix.file.add	|	inprfx	gsac.prefix.empty
 actual	.apply	gsac.prefix.items	|	pr
-absty.ti	.apply	gsac.prefix.typeitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
-absty	.apply	gsac.prefix.item.typeitem	|	absty.ti
+absty.ti	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
+absty	.apply	gsac.prefix.item.typefnitem	|	absty.ti
 expected	.apply	list.singleton	gsac.prefix.item.t | 	absty
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
 	.app	_test_file.add_gsabstype_label	test
@@ -409,7 +409,7 @@ _test.typecheck_gsabstype.kind_test_k	.subcode
 either.t.out	.cogvar
 gsac.prefix.typecheck	.gvar
 gsdl.cgs.typeenv.empty	.gvar
-gsac.prefix.typeitem.gsabstype.insert	.gvar
+gsac.prefix.typefnitem.gsabstype.insert	.gvar
 natural.1	.gvar
 _fixtures.filenm	.gvar
 gsdl.var.basevar	.gvar
@@ -422,7 +422,7 @@ pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourc
 v.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype.kind_test_ty.s
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
 v	.apply	gsdl.var.basevar	|	v.cs
-pr	.apply	gsac.prefix.typeitem.gsabstype.insert	|	pos	v	gsdl.cgs.gskind.lifted	gsac.prefix.empty
+pr	.apply	gsac.prefix.typefnitem.gsabstype.insert	|	pos	v	gsdl.cgs.gskind.lifted	gsac.prefix.empty
 	.force	_test.typecheck_gsabstype.kind_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
 	.app	gsdl.cgs.typeenv.empty	pr
