@@ -10,7 +10,10 @@
 #     §item §anchor{tyvar} One that declares the name of the abs type as a synomym for the abs typy expression.
 # §end{itemize}
 # References to the abstract type name in other type expressions depend on §ref{tyvar}.
-# Nothing depends on §ref{tydefn}, but it depends on things.
+# Nothing depends on §ref{tydefn}, but it depends on things.§footnote{
+#     Not strictly true; coercions depend on §ref{tydefn}.
+#     But only Core coercions do!
+# }
 # To manage this, we have two kinds of symbols:
 # §begin{itemize}
 #     §item §label{§gs{tyvar}} Type symbols, which are always type §emph{synonyms}.
