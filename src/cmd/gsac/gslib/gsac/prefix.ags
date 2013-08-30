@@ -840,8 +840,8 @@ gsac.prefix.prim.u	.tyexpr
 ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
 gsac.prefix.typeitem.t	.tygvar
-typesection_ty	.tylet	ordered.map.t	gsdl.var.t	gsac.prefix.typeitem.t
-	.typroduct	typesection	typesection_ty
+_typesection_ty	.tylet	ordered.map.t	gsdl.var.t	gsac.prefix.typeitem.t
+	.typroduct	typesection	_typesection_ty
 
 # §section §gs{gsac.prefix.item.t}
 
