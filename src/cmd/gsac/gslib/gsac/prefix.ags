@@ -27,7 +27,7 @@
 #     §item §label{§gs{gsabstypedefn}} Abstract type (definitions), labeled by §gs{abstyvar}s.
 # §end{itemize}
 #
-# Both §ags{.tyabstract} items and §ags{.tyextabstract} items translate into §emph{two} kinds of ‘items’ on our system.
+# §ags{.tyabstract} items translate into §emph{two} kinds of ‘items’ on our system.
 
 gsac.prefix.empty	.closure	_gsac.prefix.empty_c
 
