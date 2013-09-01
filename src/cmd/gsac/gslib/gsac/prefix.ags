@@ -41,6 +41,8 @@ _gsac.prefix.typecheck_sccs.typecheck_w	.closure	_gsac.prefix.typecheck_sccs.typ
 
 gsac.prefix.items	.closure	_gsac.prefix.items_c
 
+gsac.prefix.typeconstitem.gsabstype.insert	.closure	_gsac.prefix.typeconstitem.gsabstype.insert_c
+
 gsac.prefix.typefnitem.gsabstype.insert	.closure	_gsac.prefix.typefnitem.gsabstype.insert_c
 
 gsac.prefix.get	.closure	_gsac.prefix.get_c
@@ -375,6 +377,31 @@ tyfs0	.field	typefunctions	pr0
 tyfs	.apply	ordered.map.values	gsdl.var.t	gsac.prefix.typefnitem.t	|	tyfs0
 	.app	gsac.prefix.item.typefnitem	tyfs
 	.enter	list.map	gsac.prefix.typefnitem.t	gsac.prefix.item.t
+
+# §section §gs{gsac.prefix.typeconstitem.gsabstype.insert}
+
+_gsac.prefix.typeconstitem.gsabstype.insert_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+gsac.prefix.t	.tygvar
+_gsac.prefix.typeconstitem.gsabstype.insert_k	.subcode
+pos	.larg	gsdl.sourcepos.t
+v	.larg	gsdl.var.t
+ki	.larg	gsdl.ags.typeitem.gskind.t
+ds	.larg	gsdl.ags.typeitem.decls.t
+dfn	.larg	gsdl.ags.typeitem.expr.t
+pr	.larg	gsac.prefix.t
+	.force	_gsac.prefix.typeconstitem.gsabstype.insert_k
+	.enter	pr
+
+_gsac.prefix.typeconstitem.gsabstype.insert_k	.forcecont
+gsac.prefix.prim.u	.tygvar
+gsac.prefix.t	.tygvar	# Temp
+pr0	.karg	gsac.prefix.prim.u
+	.undef	gsac.prefix.t
 
 # §section §gs{gsac.prefix.typefnitem.gsabstype.insert}
 
