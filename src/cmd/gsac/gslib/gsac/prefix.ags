@@ -118,7 +118,7 @@ gsac.prefix.typefnitem.t	.tygvar
 gsac.prefix.prim.u	.tygvar
 _gsac.prefix.file.add_gsprefix_tycs.add_c	.subcode
 _gsac.prefix.file.add_tyfs.add_c	.subcode
-list.foldr	.gvar
+list.foldl	.gvar
 typeconstants.ty	.tylet	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
 typefunctions.ty	.tylet	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
 pr	.fv	gsac.prefix.t
@@ -131,32 +131,32 @@ ft0	.karg	gsdl.ags.file.filetype.prim.u
 tycs.add			.alloc	_gsac.prefix.file.add_gsprefix_tycs.add_c
 pr.typeconstants			.lfield	typeconstants	pr
 file.typesection			.field	typesection	file0
-tycs			.apply	list.foldr	gsdl.ags.typeitem.t	typeconstants.ty	|	tycs.add	pr.typeconstants	file.typesection
+tycs			.apply	list.foldl	gsdl.ags.typeitem.t	typeconstants.ty	|	tycs.add	pr.typeconstants	file.typesection
 tyfs.add			.alloc	_gsac.prefix.file.add_tyfs.add_c
 pr.typefunctions			.lfield	typefunctions	pr
-tyfs			.apply	list.foldr	gsdl.ags.typeitem.t	typefunctions.ty	|	tyfs.add	pr.typefunctions	file.typesection
+tyfs			.apply	list.foldl	gsdl.ags.typeitem.t	typefunctions.ty	|	tyfs.add	pr.typefunctions	file.typesection
 r			.record	typeconstants	tycs	typefunctions	tyfs	|	gsac.prefix.prim.u
 			.lift
 			.yield	r
 
 _gsac.prefix.file.add_gsprefix_tycs.add_c	.expr
-gsdl.ags.typeitem.t	.tygvar
 ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
-ti	.larg	gsdl.ags.typeitem.t
+gsdl.ags.typeitem.t	.tygvar
 tycs	.larg	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
+ti	.larg	gsdl.ags.typeitem.t
 	.undef	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
 
 _gsac.prefix.file.add_tyfs.add_c	.expr
-gsdl.ags.typeitem.t	.tygvar
 ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 _gsac.prefix.file.add_tyfs.add_k	.subcode
 gsdl.ags.typeitem.t.out	.cogvar
-ti	.larg	gsdl.ags.typeitem.t
 ts0	.larg	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
+ti	.larg	gsdl.ags.typeitem.t
 	.force	_gsac.prefix.file.add_tyfs.add_k
 	.coerce	gsdl.ags.typeitem.t.out
 	.enter	ti
