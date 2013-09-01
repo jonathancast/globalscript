@@ -73,11 +73,13 @@ gsac.prefix.typefnitem.gsabstypenm	.closure	_gsac.prefix.typefnitem.gsabstypenm_
 
 _gsac.prefix.empty_c	.expr
 gsdl.var.t	.tygvar
+gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 gsac.prefix.prim.u	.tygvar
 ordered.map.empty	.gvar
+tycs	.apply	ordered.map.empty	gsdl.var.t	gsac.prefix.typeconstitem.t
 tyfs	.apply	ordered.map.empty	gsdl.var.t	gsac.prefix.typefnitem.t
-r	.record	typefunctions	tyfs	|	gsac.prefix.prim.u
+r	.record	typeconstants	tycs	typefunctions	tyfs	|	gsac.prefix.prim.u
 	.lift
 	.yield	r
 
@@ -111,10 +113,13 @@ gsdl.ags.file.filetype.prim.u	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
+gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 gsac.prefix.prim.u	.tygvar
-_gsac.prefix.file.add_ts.add_c	.subcode
+_gsac.prefix.file.add_gsprefix_tycs.add_c	.subcode
+_gsac.prefix.file.add_tyfs.add_c	.subcode
 list.foldr	.gvar
+typeconstants.ty	.tylet	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
 typefunctions.ty	.tylet	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
 pr	.fv	gsac.prefix.t
 file0	.fv	gsdl.ags.file.prim.u
@@ -123,28 +128,40 @@ ft0	.karg	gsdl.ags.file.filetype.prim.u
 		.case	gsdocument
 			.enter	pr
 		.case	gsprefix
-ts.add			.alloc	_gsac.prefix.file.add_ts.add_c
-pr.typefunctions			.lfield	typefunctions	pr
+tycs.add			.alloc	_gsac.prefix.file.add_gsprefix_tycs.add_c
+pr.typeconstants			.lfield	typeconstants	pr
 file.typesection			.field	typesection	file0
-tyfs			.apply	list.foldr	gsdl.ags.typeitem.t	typefunctions.ty	|	ts.add	pr.typefunctions	file.typesection
-r			.record	typefunctions	tyfs	|	gsac.prefix.prim.u
+tycs			.apply	list.foldr	gsdl.ags.typeitem.t	typeconstants.ty	|	tycs.add	pr.typeconstants	file.typesection
+tyfs.add			.alloc	_gsac.prefix.file.add_tyfs.add_c
+pr.typefunctions			.lfield	typefunctions	pr
+tyfs			.apply	list.foldr	gsdl.ags.typeitem.t	typefunctions.ty	|	tyfs.add	pr.typefunctions	file.typesection
+r			.record	typeconstants	tycs	typefunctions	tyfs	|	gsac.prefix.prim.u
 			.lift
 			.yield	r
 
-_gsac.prefix.file.add_ts.add_c	.expr
+_gsac.prefix.file.add_gsprefix_tycs.add_c	.expr
+gsdl.ags.typeitem.t	.tygvar
+ordered.map.t	.tygvar
+gsdl.var.t	.tygvar
+gsac.prefix.typeconstitem.t	.tygvar
+ti	.larg	gsdl.ags.typeitem.t
+tycs	.larg	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
+	.undef	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
+
+_gsac.prefix.file.add_tyfs.add_c	.expr
 gsdl.ags.typeitem.t	.tygvar
 ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
-_gsac.prefix.file.add_ts.add_k	.subcode
+_gsac.prefix.file.add_tyfs.add_k	.subcode
 gsdl.ags.typeitem.t.out	.cogvar
 ti	.larg	gsdl.ags.typeitem.t
 ts0	.larg	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
-	.force	_gsac.prefix.file.add_ts.add_k
+	.force	_gsac.prefix.file.add_tyfs.add_k
 	.coerce	gsdl.ags.typeitem.t.out
 	.enter	ti
 
-_gsac.prefix.file.add_ts.add_k	.forcecont
+_gsac.prefix.file.add_tyfs.add_k	.forcecont
 ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
@@ -388,9 +405,10 @@ v	.fv	gsdl.var.t
 ki	.fv	gsdl.cgs.gskind.t
 pr0	.karg	gsac.prefix.prim.u
 ti	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	ki
+tycs	.field	typeconstants	pr0
 tyfs0	.field	typefunctions	pr0
 tyfs1	.apply	ordered.map.insert	gsdl.var.t	gsac.prefix.typefnitem.t	|	gsdl.var.compare	v	ti	tyfs0
-r	.record	typefunctions	tyfs1	|	gsac.prefix.prim.u
+r	.record	typeconstants	tycs	typefunctions	tyfs1	|	gsac.prefix.prim.u
 	.lift
 	.yield	r
 
@@ -842,9 +860,11 @@ gsac.prefix.prim.u	.tygvar
 gsac.prefix.prim.u	.tyexpr
 ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
+gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
+_typeconstants_ty	.tylet	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
 _typefunctions_ty	.tylet	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
-	.typroduct	typefunctions	_typefunctions_ty
+	.typroduct	typeconstants	_typeconstants_ty	typefunctions	_typefunctions_ty
 
 # §section §gs{gsac.prefix.item.t}
 
@@ -877,6 +897,16 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.cgs.gskind.t
+
+# §section §gs{gsac.prefix.typeconstitem.t}
+
+gsac.prefix.typeconstitem.t	.tyabstract	*
+gsac.prefix.typeconstitem.prim.u	.tygvar
+	.tylift
+	.tyref	gsac.prefix.typeconstitem.prim.u
+
+gsac.prefix.typeconstitem.prim.u	.tyexpr
+	.tysum
 
 # §section §gs{gsac.prefix.typecheck}
 
