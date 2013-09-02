@@ -37,6 +37,9 @@ _gsdl.ags.typeitem.gskind.parser_unlifted.re	.regex	u
 
 gsdl.ags.typeitem.gskind.print	.closure	_gsdl.ags.typeitem.gskind.print_c	_gsdl.ags.typeitem.gskind.print_ty
 
+gsdl.ags.typeitem.gskind.fmtgs	.closure	_gsdl.ags.typeitem.gskind.fmtgs_c	_gsdl.ags.typeitem.gskind.fmtgs_ty
+_gsdl.ags.typeitem.gskind.fmtgs_lifted_lifted.s	.string	lifted
+
 gsdl.ags.typeitem.expr.parser	.closure	_gsdl.ags.typeitem.expr.parser_c	_gsdl.ags.typeitem.expr.parser_ty
 _gsdl.ags.typeitem.expr.parser_tyfun.p_tyfun.re	.regex	.tyfun
 _gsdl.ags.typeitem.expr.parser_tylift.p_tylift.re	.regex	.tylift
@@ -748,6 +751,34 @@ ds			.apply	diff.list.<>	rune.t	|	kib.ds	kie.ds
 			.app	rune.star
 			.enter	diff.list.singleton	rune.t
 	# > :: diff.list.t	rune.t
+
+# §section §gs{gsdl.ags.typeitem.gskind.fmtgs}
+
+_gsdl.ags.typeitem.gskind.fmtgs_c	.expr
+gsdl.ags.typeitem.gskind.t	.tygvar
+_gsdl.ags.typeitem.gskind.fmtgs_k	.subcode
+gsdl.ags.typeitem.gskind.t.out	.cogvar
+ki	.larg	gsdl.ags.typeitem.gskind.t
+	.force	_gsdl.ags.typeitem.gskind.fmtgs_k
+	.coerce	gsdl.ags.typeitem.gskind.t.out
+	.enter	ki
+
+_gsdl.ags.typeitem.gskind.fmtgs_k	.forcecont
+gsdl.ags.typeitem.gskind.prim.u	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+fmtgs.var	.gvar
+_gsdl.ags.typeitem.gskind.fmtgs_lifted_lifted.s	.gvar
+ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
+	.analyze	ki0	exp	lifted
+		.case	exp
+kib		.fkarg	0	gsdl.ags.typeitem.gskind.t
+kie		.fkarg	1	gsdl.ags.typeitem.gskind.t
+			.undef	fmtgs.printer.t
+		.case	lifted
+			.app	_gsdl.ags.typeitem.gskind.fmtgs_lifted_lifted.s
+			.enter	fmtgs.var
+	# > :: fmtgs.printer.t
 
 # §section §gs{gsdl.ags.typeitem.expr.parser}
 
@@ -1474,6 +1505,15 @@ rune.t	.tygvar
 	.tylift
 	.tyfun	gsdl.ags.typeitem.gskind.t
 	.tyref	diff.list.t	rune.t
+
+# §section §gs{gsdl.ags.typeitem.gskind.fmtgs}
+
+_gsdl.ags.typeitem.gskind.fmtgs_ty	.tyexpr
+gsdl.ags.typeitem.gskind.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+	.tylift
+	.tyfun	gsdl.ags.typeitem.gskind.t
+	.tyref	fmtgs.printer.t
 
 # §section §gs{gsdl.ags.typeitem.expr.parser}
 
