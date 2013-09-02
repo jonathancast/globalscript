@@ -4,14 +4,14 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype	_test_item	_test_item.name	_test_file.add	_test.typecheck_gsabstype.kind
+_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype.nm	_test_item	_test_item.name	_test_file.add	_test.typecheck_gsabstype.kind
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
 
-_test_items_gsabstype	.closure	_test_items_gsabstype_c
-_test_items_gsabstype_label	.string	items\s$\sgsabstype.insert\sempty
-_test_items_gsabstype_x.s	.string	x
+_test_items_gsabstype.nm	.closure	_test_items_gsabstype.nm_c
+_test_items_gsabstype.nm_label	.string	items\s$\sgstypefnitem.gsabstype.insert\sempty
+_test_items_gsabstype.nm_x.s	.string	x
 
 _test_item	.closure	_test_item_c
 
@@ -98,15 +98,15 @@ test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	e
 	.app	_test_items_empty_label	test
 	.enter	test.property.label
 
-# §section §gs{items $ gsabstype.insert $ empty}
+# §section §gs{items $ gstypefnitem.gsabstype.insert $ empty}
 
-_test_items_gsabstype_c	.expr
+_test_items_gsabstype.nm_c	.expr
 list.t	.tygvar
 gsac.prefix.item.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 test.property.label	.gvar
-_test_items_gsabstype_label	.gvar
+_test_items_gsabstype.nm_label	.gvar
 test.assert.eq	.gvar
 gsac.prefix.item.≡	.gvar
 list.≡	.gvar
@@ -119,7 +119,7 @@ _fixtures.filenm	.gvar
 gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
-_test_items_gsabstype_x.s	.gvar
+_test_items_gsabstype.nm_x.s	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 gsac.prefix.empty	.gvar
 gsac.prefix.item.typefnitem	.gvar
@@ -128,7 +128,7 @@ list.item.ty	.tylet	list.t	gsac.prefix.item.t
 list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
 list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
-v.c0	.apply	gsdl.var.component.alphanum	|	_test_items_gsabstype_x.s
+v.c0	.apply	gsdl.var.component.alphanum	|	_test_items_gsabstype.nm_x.s
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
 v	.apply	gsdl.var.basevar	|	v.cs
 pr	.apply	gsac.prefix.typefnitem.gsabstype.insert	|	pos	v	gsdl.cgs.gskind.lifted	gsac.prefix.empty
@@ -137,7 +137,7 @@ absty.ti	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifte
 absty	.apply	gsac.prefix.item.typefnitem	|	absty.ti
 expected	.apply	list.singleton	gsac.prefix.item.t | 	absty
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
-	.app	_test_items_gsabstype_label	test
+	.app	_test_items_gsabstype.nm_label	test
 	.enter	test.property.label
 
 # §section §gs{item.≡}
