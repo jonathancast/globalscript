@@ -1053,6 +1053,11 @@ gsac.prefix.typeconstitem.t.in	.tycoercion
 gsac.prefix.typeconstitem.t	.tygvar
 	.tydefinition	gsac.prefix.typeconstitem.t
 
+gsac.prefix.typeconstitem.t.out	.tycoercion
+gsac.prefix.typeconstitem.t	.tygvar
+	.tyinvert
+	.tydefinition	gsac.prefix.typeconstitem.t
+
 gsac.prefix.typefnitem.t.in	.tycoercion
 gsac.prefix.typefnitem.t	.tygvar
 	.tydefinition	gsac.prefix.typefnitem.t
