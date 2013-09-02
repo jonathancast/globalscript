@@ -399,9 +399,19 @@ pr	.larg	gsac.prefix.t
 
 _gsac.prefix.typeconstitem.gsabstype.insert_k	.forcecont
 gsac.prefix.prim.u	.tygvar
-gsac.prefix.t	.tygvar	# Temp
+gsdl.var.t	.tygvar
+gsac.prefix.typeconstitem.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+v	.fv	gsdl.var.t
 pr0	.karg	gsac.prefix.prim.u
-	.undef	gsac.prefix.t
+absty	.undefined	gsac.prefix.typeconstitem.t
+tycs0	.field	typeconstants	pr0
+tycs1	.apply	ordered.map.insert	gsdl.var.t	gsac.prefix.typeconstitem.t	|	gsdl.var.compare	v	absty	tycs0
+tyfs	.field	typefunctions	pr0
+res	.record	typeconstants	tycs1	typefunctions	tyfs	|	gsac.prefix.prim.u
+	.lift
+	.yield	res
 
 # §section §gs{gsac.prefix.typefnitem.gsabstype.insert}
 
