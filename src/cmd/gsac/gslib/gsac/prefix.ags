@@ -68,6 +68,8 @@ _gsac.prefix.typefnitem.fmtgs_gsabstype_gsabstype.s	.string	gsabstype
 gsac.prefix.item.typeconstitem	.closure	_gsac.prefix.item.typeconstitem_c
 gsac.prefix.item.typefnitem	.closure	_gsac.prefix.item.typefnitem_c
 
+gsac.prefix.typeconstitem.gsabstypedefn	.closure	_gsac.prefix.typeconstitem.gsabstypedefn_c
+
 gsac.prefix.typefnitem.gsabstypenm	.closure	_gsac.prefix.typefnitem.gsabstypenm_c
 
 	.code
@@ -902,6 +904,26 @@ c	.constr	gsac.prefix.item.prim.u	typefnitem	0	ti
 	.lift
 	.yield	c
 
+# §section §gs{gsac.prefix.typeconstitem.t}
+
+_gsac.prefix.typeconstitem.gsabstypedefn_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+gsac.prefix.typeconstitem.prim.u	.tygvar
+gsac.prefix.typeconstitem.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+v	.larg	gsdl.var.t
+ki	.larg	gsdl.ags.typeitem.gskind.t
+ds	.larg	gsdl.ags.typeitem.decls.t
+e	.larg	gsdl.ags.typeitem.expr.t
+c	.constr	gsac.prefix.typeconstitem.prim.u	gsabstypedefn	0	pos	1	v	2	ki	3	ds	4	e
+	.coerce	gsac.prefix.typeconstitem.t.in
+	.lift
+	.yield	c
+
 # §section §gs{gsac.prefix.typefnitem.t} constructors
 
 _gsac.prefix.typefnitem.gsabstypenm_c	.expr
@@ -981,7 +1003,16 @@ gsac.prefix.typeconstitem.prim.u	.tygvar
 	.tyref	gsac.prefix.typeconstitem.prim.u
 
 gsac.prefix.typeconstitem.prim.u	.tyexpr
-	.tysum
+_gsac.prefix.typeconstitem.prim.u_gsabstypedefn_ty	.tygvar
+	.tysum	gsabstypedefn	_gsac.prefix.typeconstitem.prim.u_gsabstypedefn_ty
+
+_gsac.prefix.typeconstitem.prim.u_gsabstypedefn_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.ags.typeitem.gskind.t	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
 
 # §section §gs{gsac.prefix.typecheck}
 
@@ -1017,6 +1048,10 @@ gsac.prefix.item.t.out	.tycoercion
 gsac.prefix.item.t	.tygvar
 	.tyinvert
 	.tydefinition	gsac.prefix.item.t
+
+gsac.prefix.typeconstitem.t.in	.tycoercion
+gsac.prefix.typeconstitem.t	.tygvar
+	.tydefinition	gsac.prefix.typeconstitem.t
 
 gsac.prefix.typefnitem.t.in	.tycoercion
 gsac.prefix.typefnitem.t	.tygvar
