@@ -61,6 +61,8 @@ gsac.prefix.item.fmtgs	.closure	_gsac.prefix.item.fmtgs_c
 _gsac.prefix.item.fmtgs_typeconstitem_typeconstitem.s	.string	typeconstitem
 _gsac.prefix.item.fmtgs_typefnitem_typefnitem.s	.string	typefnitem
 
+gsac.prefix.typeconstitem.≡	.closure	_gsac.prefix.typeconstitem.≡_c
+
 gsac.prefix.typeconstitem.fmtgs	.closure	_gsac.prefix.typeconstitem.fmtgs_c
 _gsac.prefix.typeconstitem.fmtgs_gsabstypedefn_gsabstypedefn.s	.string	gsabstypedefn
 
@@ -786,6 +788,24 @@ ti.pr			.apply	gsac.prefix.typefnitem.fmtgs	|	ti
 			.app	f.pr	ti.pr
 			.enter	fmtgs.app
 	# > :: fmtgs.printer.t
+
+# §section §gs{gsac.prefix.typeconstitem.≡}
+
+_gsac.prefix.typeconstitem.≡_c	.expr
+gsac.prefix.typeconstitem.t	.tygvar
+_gsac.prefix.typeconstitem.≡_k0	.subcode
+gsac.prefix.typeconstitem.t.out	.cogvar
+ti0	.larg	gsac.prefix.typeconstitem.t
+ti1	.larg	gsac.prefix.typeconstitem.t
+	.force	_gsac.prefix.typeconstitem.≡_k0
+	.coerce	gsac.prefix.typeconstitem.t.out
+	.enter	ti0
+
+_gsac.prefix.typeconstitem.≡_k0	.forcecont
+gsac.prefix.typeconstitem.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+ti0.0	.karg	gsac.prefix.typeconstitem.prim.u
+	.undef	bool.t
 
 # §section §gs{gsac.prefix.typeconstitem.fmtgs}
 
