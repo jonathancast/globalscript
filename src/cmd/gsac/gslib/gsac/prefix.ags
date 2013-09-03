@@ -813,6 +813,7 @@ gsdl.sourcepos.fmtgs	.gvar
 gsdl.var.fmtgs	.gvar
 gsdl.ags.typeitem.gskind.fmtgs	.gvar
 gsdl.ags.typeitem.decls.fmtgs	.gvar
+gsdl.ags.typeitem.expr.fmtgs	.gvar
 ti0	.karg	gsac.prefix.typeconstitem.prim.u
 	.analyze	ti0	gsabstypedefn
 		.case	gsabstypedefn
@@ -830,7 +831,7 @@ ki.p			.apply	gsdl.ags.typeitem.gskind.fmtgs	|	ki
 p2			.apply	fmtgs.app	|	p3	ki.p
 ds.p			.apply	gsdl.ags.typeitem.decls.fmtgs	|	ds
 p1			.apply	fmtgs.app	|	p2	ds.p
-e.p			.undefined	fmtgs.printer.t
+e.p			.apply	gsdl.ags.typeitem.expr.fmtgs	|	e
 			.app	p1	e.p
 			.enter	fmtgs.app
 	# > :: fmtgs.printer.t
