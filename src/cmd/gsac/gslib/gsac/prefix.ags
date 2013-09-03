@@ -58,6 +58,7 @@ gsac.prefix.item.typecheck	.closure	_gsac.prefix.item.typecheck_c
 gsac.prefix.item.≡	.closure	_gsac.prefix.item.≡_c
 
 gsac.prefix.item.fmtgs	.closure	_gsac.prefix.item.fmtgs_c
+_gsac.prefix.item.fmtgs_typeconstitem_typeconstitem.s	.string	typeconstitem
 _gsac.prefix.item.fmtgs_typefnitem_typefnitem.s	.string	typefnitem
 
 gsac.prefix.typeconstitem.fmtgs	.closure	_gsac.prefix.typeconstitem.fmtgs_c
@@ -766,13 +767,18 @@ gsac.prefix.typefnitem.t	.tygvar
 fmtgs.printer.t	.tygvar	# Temp
 fmtgs.app	.gvar
 fmtgs.var	.gvar
+_gsac.prefix.item.fmtgs_typeconstitem_typeconstitem.s	.gvar
+gsac.prefix.typeconstitem.fmtgs	.gvar
 _gsac.prefix.item.fmtgs_typefnitem_typefnitem.s	.gvar
 gsac.prefix.typefnitem.fmtgs	.gvar
 it0	.karg	gsac.prefix.item.prim.u
 	.analyze	it0	typeconstitem	typefnitem
 		.case	typeconstitem
 ti		.fkarg	0	gsac.prefix.typeconstitem.t
-			.undef	fmtgs.printer.t
+f.pr			.apply	fmtgs.var	|	_gsac.prefix.item.fmtgs_typeconstitem_typeconstitem.s
+ti.pr			.apply	gsac.prefix.typeconstitem.fmtgs	|	ti
+			.app	f.pr	ti.pr
+			.enter	fmtgs.app
 		.case	typefnitem
 ti		.fkarg	0	gsac.prefix.typefnitem.t
 f.pr			.apply	fmtgs.var	|	_gsac.prefix.item.fmtgs_typefnitem_typefnitem.s
