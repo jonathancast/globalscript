@@ -408,13 +408,22 @@ pr	.larg	gsac.prefix.t
 
 _gsac.prefix.typeconstitem.gsabstype.insert_k	.forcecont
 gsac.prefix.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
 ordered.map.insert	.gvar
 gsdl.var.compare	.gvar
+gsac.prefix.typeconstitem.gsabstypedefn	.gvar
+pos	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
+ki	.fv	gsdl.ags.typeitem.gskind.t
+ds	.fv	gsdl.ags.typeitem.decls.t
+dfn	.fv	gsdl.ags.typeitem.expr.t
 pr0	.karg	gsac.prefix.prim.u
-absty	.undefined	gsac.prefix.typeconstitem.t
+absty	.apply	gsac.prefix.typeconstitem.gsabstypedefn	|	pos	v	ki	ds	dfn
 tycs0	.field	typeconstants	pr0
 tycs1	.apply	ordered.map.insert	gsdl.var.t	gsac.prefix.typeconstitem.t	|	gsdl.var.compare	v	absty	tycs0
 tyfs	.field	typefunctions	pr0
