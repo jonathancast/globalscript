@@ -382,8 +382,8 @@ ordered.map.values	.gvar
 pr0	.karg	gsac.prefix.prim.u
 tyfs0	.field	typefunctions	pr0
 tyfs	.apply	ordered.map.values	gsdl.var.t	gsac.prefix.typefnitem.t	|	tyfs0
-	.app	gsac.prefix.item.typefnitem	tyfs
-	.enter	list.map	gsac.prefix.typefnitem.t	gsac.prefix.item.t
+its.tyfs	.apply	list.map	gsac.prefix.typefnitem.t	gsac.prefix.item.t	|	gsac.prefix.item.typefnitem	tyfs
+	.enter	its.tyfs
 
 # §section §gs{gsac.prefix.typeconstitem.gsabstype.insert}
 
