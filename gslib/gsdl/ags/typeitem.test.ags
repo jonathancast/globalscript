@@ -99,8 +99,8 @@ _test.print.expr.tyref.tyarg_x.s	.string	x
 _test.print.expr.tyref.tyarg_expected	.string	\t.tyref\tf\tx\n
 
 _test.decls.fmtgs	.closure	_test.decls.fmtgs_c
-_test.decls.fmtgs_label	.string	decls.fmtgs\s〈\s〉
-_test.decls.fmtgs_expected	.string	〈\s〉
+_test.decls.fmtgs_label	.string	decls.fmtgs\s〈\s'tygvars\s∝\s[];\s〉
+_test.decls.fmtgs_expected	.string	〈\s'tygvars\s∝\s[];\s〉
 
 	.code
 
@@ -718,20 +718,19 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print
 
 _test.decls.fmtgs_c	.expr
 string.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 rune.t	.tygvar
-list.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
 test.property.label	.gvar
 _test.decls.fmtgs_label	.gvar
 test.assert.eq	.gvar
 string.≡	.gvar
 string.fmtgs	.gvar
 gsdl.ags.typeitem.decls.fmtgs	.gvar
-fmtgs.prec.arg	.gvar
 list.nil	.gvar
+fmtgs.prec.arg	.gvar
 _test.decls.fmtgs_expected	.gvar
-tygvs	.undefined	list.t	gsdl.ags.typeitem.decls.tygvar.t
+tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 ds	.lrecord	tygvars	tygvs	|	gsdl.ags.typeitem.decls.t
 nil.s	.apply	list.nil	rune.t
 actual	.apply	gsdl.ags.typeitem.decls.fmtgs	|	ds	fmtgs.prec.arg	nil.s
