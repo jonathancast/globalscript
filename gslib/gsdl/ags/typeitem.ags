@@ -63,6 +63,7 @@ _gsdl.ags.typeitem.expr.print_fields.print_nl.s	.string	\n
 
 gsdl.ags.typeitem.expr.fmtgs	.closure	_gsdl.ags.typeitem.expr.fmtgs_c	_gsdl.ags.typeitem.expr.fmtgs_ty
 _gsdl.ags.typeitem.expr.fmtgs_lift_lift.s	.string	lift
+_gsdl.ags.typeitem.expr.fmtgs_product_product.s	.string	product
 
 gsdl.ags.typeitem.field.fmtgs	.closure	_gsdl.ags.typeitem.field.fmtgs_c
 
@@ -1216,6 +1217,9 @@ fmtgs.app	.gvar
 fmtgs.var	.gvar
 _gsdl.ags.typeitem.expr.fmtgs_lift_lift.s	.gvar
 gsdl.ags.typeitem.expr.fmtgs	.gvar
+_gsdl.ags.typeitem.expr.fmtgs_product_product.s	.gvar
+list.fmtgs.byDefault	.gvar
+gsdl.ags.typeitem.field.fmtgs	.gvar
 e0	.karg	gsdl.ags.typeitem.expr.prim.u
 	.analyze	e0	lift	product	tyref
 		.case	lift
@@ -1226,7 +1230,10 @@ e1.p			.apply	gsdl.ags.typeitem.expr.fmtgs	|	e1
 			.enter	fmtgs.app
 		.case	product
 fs		.fkarg	0	list.t	gsdl.ags.typeitem.field.t
-			.undef	fmtgs.printer.t
+f.p			.apply	fmtgs.var	|	_gsdl.ags.typeitem.expr.fmtgs_product_product.s
+fs.p			.apply	list.fmtgs.byDefault	gsdl.ags.typeitem.field.t	|	gsdl.ags.typeitem.field.fmtgs	fs
+			.app	f.p	fs.p
+			.enter	fmtgs.app
 		.case	tyref
 tyf		.fkarg	0	gsdl.var.t
 tyas		.fkarg	1	list.t	gsdl.var.t
