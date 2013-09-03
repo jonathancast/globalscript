@@ -29,6 +29,8 @@ gsdl.ags.typeitem.decls.print	.closure	_gsdl.ags.typeitem.decls.print_c
 _gsdl.ags.typeitem.decls.print_tygvs.print_tyextabstype_tyextabstype.s	.string	.tyextabstype
 _gsdl.ags.typeitem.decls.print_tygvs.print_tygvar_tygvar.s	.string	.tygvar
 
+gsdl.ags.typeitem.decls.fmtgs	.closure	_gsdl.ags.typeitem.decls.fmtgs_c
+
 gsdl.ags.typeitem.gskind.parser	.closure	_gsdl.ags.typeitem.gskind.parser_c
 _gsdl.ags.typeitem.gskind.parser_w	.closure	_gsdl.ags.typeitem.gskind.parser_w_c	_gsdl.ags.typeitem.gskind.parser_w_ty
 _gsdl.ags.typeitem.gskind.parser_w_pop.p_caret.re	.regex	^
@@ -574,6 +576,19 @@ ds			.apply	diff.list.:	rune.t	|	rune.tab	ds1
 			.app	v.s	ds
 			.enter	diff.list.prepend	rune.t
 	# > :: diff.list.t	rune.t
+
+# §section §gs{gsdl.ags.typeitem.decls.fmtgs}
+
+_gsdl.ags.typeitem.decls.fmtgs_c	.expr
+gsdl.ags.typeitem.decls.t	.tygvar
+fmtgs.record.field.printer.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+fmtgs.record	.gvar
+list.nil	.gvar
+ds	.larg	gsdl.ags.typeitem.decls.t
+fs	.apply	list.nil	fmtgs.record.field.printer.t
+	.app	fs
+	.enter	fmtgs.record
 
 # §section §gs{gsdl.ags.typeitem.gskind.parser}
 

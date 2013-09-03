@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.print.kind.exp	_test.parse	_test.print	_test.print.expr.tyref.tyarg
+_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.print.kind.exp	_test.parse	_test.print	_test.print.expr.tyref.tyarg	_test.decls.fmtgs
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.type\\n}\s=~\ssegment.parser
@@ -97,6 +97,10 @@ _test.print.expr.tyref.tyarg_label	.string	print\s(tyref\styf\s[\sarg\s])
 _test.print.expr.tyref.tyarg_f.s	.string	f
 _test.print.expr.tyref.tyarg_x.s	.string	x
 _test.print.expr.tyref.tyarg_expected	.string	\t.tyref\tf\tx\n
+
+_test.decls.fmtgs	.closure	_test.decls.fmtgs_c
+_test.decls.fmtgs_label	.string	decls.fmtgs\s〈\s〉
+_test.decls.fmtgs_expected	.string	〈\s〉
 
 	.code
 
@@ -708,4 +712,29 @@ nil.s	.apply	list.nil	rune.t
 actual	.apply	gsdl.ags.typeitem.expr.print	|	e	nil.s
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print.expr.tyref.tyarg_expected
 	.app	_test.print.expr.tyref.tyarg_label	test
+	.enter	test.property.label
+
+# §section §gs{decls.fmtgs 〈〉}
+
+_test.decls.fmtgs_c	.expr
+string.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar	# Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
+test.property.label	.gvar
+_test.decls.fmtgs_label	.gvar
+test.assert.eq	.gvar
+string.≡	.gvar
+string.fmtgs	.gvar
+gsdl.ags.typeitem.decls.fmtgs	.gvar
+fmtgs.prec.arg	.gvar
+list.nil	.gvar
+_test.decls.fmtgs_expected	.gvar
+tygvs	.undefined	list.t	gsdl.ags.typeitem.decls.tygvar.t
+ds	.lrecord	tygvars	tygvs	|	gsdl.ags.typeitem.decls.t
+nil.s	.apply	list.nil	rune.t
+actual	.apply	gsdl.ags.typeitem.decls.fmtgs	|	ds	fmtgs.prec.arg	nil.s
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.decls.fmtgs_expected
+	.app	_test.decls.fmtgs_label	test
 	.enter	test.property.label
