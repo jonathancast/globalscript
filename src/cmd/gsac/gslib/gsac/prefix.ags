@@ -733,13 +733,20 @@ gsac.prefix.item.prim.u	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 bool.t	.tygvar	# Temp
+gsac.prefix.typeconstitem.≡	.gvar
 gsac.prefix.typefnitem.≡	.gvar
 it0.0	.fv	gsac.prefix.item.prim.u
 it1.0	.karg	gsac.prefix.item.prim.u
 	.analyze	it0.0	typeconstitem	typefnitem
 		.case	typeconstitem
 ti0		.fkarg	0	gsac.prefix.typeconstitem.t
-			.undef	bool.t
+			.danalyze	it1.0	typeconstitem
+				.default
+					.undef	bool.t
+				.case	typeconstitem
+ti1				.fkarg	0	gsac.prefix.typeconstitem.t
+					.app	ti0	ti1
+					.enter	gsac.prefix.typeconstitem.≡
 		.case	typefnitem
 ti0		.fkarg	0	gsac.prefix.typefnitem.t
 			.danalyze	it1.0	typefnitem
