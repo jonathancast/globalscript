@@ -60,6 +60,9 @@ gsac.prefix.item.≡	.closure	_gsac.prefix.item.≡_c
 gsac.prefix.item.fmtgs	.closure	_gsac.prefix.item.fmtgs_c
 _gsac.prefix.item.fmtgs_typefnitem_typefnitem.s	.string	typefnitem
 
+gsac.prefix.typeconstitem.fmtgs	.closure	_gsac.prefix.typeconstitem.fmtgs_c
+_gsac.prefix.typeconstitem.fmtgs_gsabstypedefn_gsabstypedefn.s	.string	gsabstypedefn
+
 gsac.prefix.typefnitem.≡	.closure	_gsac.prefix.typefnitem.≡_c
 
 gsac.prefix.typefnitem.fmtgs	.closure	_gsac.prefix.typefnitem.fmtgs_c
@@ -775,6 +778,54 @@ ti		.fkarg	0	gsac.prefix.typefnitem.t
 f.pr			.apply	fmtgs.var	|	_gsac.prefix.item.fmtgs_typefnitem_typefnitem.s
 ti.pr			.apply	gsac.prefix.typefnitem.fmtgs	|	ti
 			.app	f.pr	ti.pr
+			.enter	fmtgs.app
+	# > :: fmtgs.printer.t
+
+# §section §gs{gsac.prefix.typeconstitem.fmtgs}
+
+_gsac.prefix.typeconstitem.fmtgs_c	.expr
+gsac.prefix.typeconstitem.t	.tygvar
+_gsac.prefix.typeconstitem.fmtgs_k	.subcode
+gsac.prefix.typeconstitem.t.out	.cogvar
+ti	.larg	gsac.prefix.typeconstitem.t
+	.force	_gsac.prefix.typeconstitem.fmtgs_k
+	.coerce	gsac.prefix.typeconstitem.t.out
+	.enter	ti
+
+_gsac.prefix.typeconstitem.fmtgs_k	.forcecont
+gsac.prefix.typeconstitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+fmtgs.printer.t	.tygvar	# Temp
+fmtgs.app	.gvar
+fmtgs.var	.gvar
+_gsac.prefix.typeconstitem.fmtgs_gsabstypedefn_gsabstypedefn.s	.gvar
+gsdl.sourcepos.fmtgs	.gvar
+gsdl.var.fmtgs	.gvar
+gsdl.ags.typeitem.gskind.fmtgs	.gvar
+gsdl.ags.typeitem.decls.fmtgs	.gvar
+ti0	.karg	gsac.prefix.typeconstitem.prim.u
+	.analyze	ti0	gsabstypedefn
+		.case	gsabstypedefn
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+e		.fkarg	4	gsdl.ags.typeitem.expr.t
+f.p			.apply	fmtgs.var	|	_gsac.prefix.typeconstitem.fmtgs_gsabstypedefn_gsabstypedefn.s
+pos.p			.apply	gsdl.sourcepos.fmtgs	|	pos
+p4			.apply	fmtgs.app	|	f.p	pos.p
+v.p			.apply	gsdl.var.fmtgs	|	v
+p3			.apply	fmtgs.app	|	p4	v.p
+ki.p			.apply	gsdl.ags.typeitem.gskind.fmtgs	|	ki
+p2			.apply	fmtgs.app	|	p3	ki.p
+ds.p			.apply	gsdl.ags.typeitem.decls.fmtgs	|	ds
+p1			.apply	fmtgs.app	|	p2	ds.p
+e.p			.undefined	fmtgs.printer.t
+			.app	p1	e.p
 			.enter	fmtgs.app
 	# > :: fmtgs.printer.t
 
