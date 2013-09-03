@@ -818,10 +818,35 @@ ti1	.larg	gsac.prefix.typeconstitem.t
 	.enter	ti0
 
 _gsac.prefix.typeconstitem.≡_k0	.forcecont
+gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typeconstitem.prim.u	.tygvar
-bool.t	.tygvar	# Temp
+_gsac.prefix.typeconstitem.≡_k1	.subcode
+gsac.prefix.typeconstitem.t.out	.cogvar
+ti1	.fv	gsac.prefix.typeconstitem.t
 ti0.0	.karg	gsac.prefix.typeconstitem.prim.u
-	.undef	bool.t
+	.force	_gsac.prefix.typeconstitem.≡_k1
+	.coerce	gsac.prefix.typeconstitem.t.out
+	.enter	ti1
+
+_gsac.prefix.typeconstitem.≡_k1	.forcecont
+gsac.prefix.typeconstitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+bool.t	.tygvar	# Temp
+ti0.0	.fv	gsac.prefix.typeconstitem.prim.u
+ti1.0	.karg	gsac.prefix.typeconstitem.prim.u
+	.analyze	ti0.0		gsabstypedefn
+		.case	gsabstypedefn
+pos0		.fkarg	0	gsdl.sourcepos.t
+v0		.fkarg	1	gsdl.var.t
+ki0		.fkarg	2	gsdl.ags.typeitem.gskind.t
+ds0		.fkarg	3	gsdl.ags.typeitem.decls.t
+e0		.fkarg	4	gsdl.ags.typeitem.expr.t
+			.undef	bool.t
+	# > :: bool.t
 
 # §section §gs{gsac.prefix.typeconstitem.fmtgs}
 
