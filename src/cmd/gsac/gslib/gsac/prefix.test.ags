@@ -4,7 +4,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype.nm	_test_item	_test_item.name	_test_file.add	_test.typecheck_gsabstype.kind
+_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype.nm	_test_items_gsabstype.defn	_test_item	_test_item.name	_test_file.add	_test.typecheck_gsabstype.kind
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
@@ -12,6 +12,10 @@ _test_items_empty_label	.string	items\sempty
 _test_items_gsabstype.nm	.closure	_test_items_gsabstype.nm_c
 _test_items_gsabstype.nm_label	.string	items\s$\sgstypefnitem.gsabstype.insert\sempty
 _test_items_gsabstype.nm_x.s	.string	x
+
+_test_items_gsabstype.defn	.closure	_test_items_gsabstype.defn_c
+_test_items_gsabstype.defn_label	.string	items\s$\sgstypeconstitem.gsabstype.insert\sempty
+_test_items_gsabstype.defn_x.s	.string	x
 
 _test_item	.closure	_test_item_c
 
@@ -138,6 +142,59 @@ absty	.apply	gsac.prefix.item.typefnitem	|	absty.ti
 expected	.apply	list.singleton	gsac.prefix.item.t | 	absty
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
 	.app	_test_items_gsabstype.nm_label	test
+	.enter	test.property.label
+
+# §section §gs{items $ gstypeconstitem.gsabstype.insert $ empty}
+
+_test_items_gsabstype.defn_c	.expr
+list.t	.tygvar
+gsac.prefix.item.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.field.t	.tygvar
+test.property.label	.gvar
+_test_items_gsabstype.defn_label	.gvar
+test.assert.eq	.gvar
+gsac.prefix.item.≡	.gvar
+list.≡	.gvar
+list.fmtgs.byDefault	.gvar
+gsac.prefix.item.fmtgs	.gvar
+gsac.prefix.items	.gvar
+gsac.prefix.typeconstitem.gsabstype.insert	.gvar
+natural.1	.gvar
+_fixtures.filenm	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test_items_gsabstype.defn_x.s	.gvar
+gsdl.ags.typeitem.gskind.lifted	.gvar
+list.nil	.gvar
+gsdl.ags.typeitem.expr.lift	.gvar
+gsdl.ags.typeitem.expr.product	.gvar
+gsac.prefix.empty	.gvar
+gsac.prefix.item.typeconstitem	.gvar
+gsac.prefix.typeconstitem.gsabstypedefn	.gvar
+list.item.ty	.tylet	list.t	gsac.prefix.item.t
+list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
+list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
+v.c0	.apply	gsdl.var.component.alphanum	|	_test_items_gsabstype.defn_x.s
+v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
+v	.apply	gsdl.var.basevar	|	v.cs
+decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
+decls	.lrecord	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
+expr.fields	.apply	list.nil	gsdl.ags.typeitem.field.t
+expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr.fields
+expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
+pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
+actual	.apply	gsac.prefix.items	|	pr
+absty.ti	.apply	gsac.prefix.typeconstitem.gsabstypedefn	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr
+absty	.apply	gsac.prefix.item.typeconstitem	|	absty.ti
+expected	.apply	list.singleton	gsac.prefix.item.t | 	absty
+test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
+	.app	_test_items_gsabstype.defn_label	test
 	.enter	test.property.label
 
 # §section §gs{item.≡}
