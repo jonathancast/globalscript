@@ -1203,10 +1203,61 @@ fs1		.fkarg	1	list.t	gsdl.ags.typeitem.field.t
 
 _gsdl.ags.typeitem.expr.≡_c	.expr
 gsdl.ags.typeitem.expr.t	.tygvar
-bool.t	.tygvar	# Temp
+_gsdl.ags.typeitem.expr.≡_k0	.subcode
+gsdl.ags.typeitem.expr.t.out	.cogvar
 e0	.larg	gsdl.ags.typeitem.expr.t
 e1	.larg	gsdl.ags.typeitem.expr.t
-	.undef	bool.t
+	.force	_gsdl.ags.typeitem.expr.≡_k0
+	.coerce	gsdl.ags.typeitem.expr.t.out
+	.enter	e0
+
+_gsdl.ags.typeitem.expr.≡_k0	.forcecont
+gsdl.ags.typeitem.expr.t	.tygvar
+gsdl.ags.typeitem.expr.prim.u	.tygvar
+_gsdl.ags.typeitem.expr.≡_k1	.subcode
+gsdl.ags.typeitem.expr.t.out	.cogvar
+e1	.fv	gsdl.ags.typeitem.expr.t
+e0.0	.karg	gsdl.ags.typeitem.expr.prim.u
+	.force	_gsdl.ags.typeitem.expr.≡_k1
+	.coerce	gsdl.ags.typeitem.expr.t.out
+	.enter	e1
+
+_gsdl.ags.typeitem.expr.≡_k1	.forcecont
+gsdl.ags.typeitem.expr.prim.u	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.field.t	.tygvar
+gsdl.var.t	.tygvar
+bool.t	.tygvar	# Temp
+gsdl.ags.typeitem.expr.≡	.gvar
+list.≡	.gvar
+gsdl.ags.typeitem.field.≡	.gvar
+e0.0	.fv	gsdl.ags.typeitem.expr.prim.u
+e1.0	.karg	gsdl.ags.typeitem.expr.prim.u
+	.analyze	e0.0	lift	product	tyref
+		.case	lift
+e0.1		.fkarg	0	gsdl.ags.typeitem.expr.t
+			.danalyze	e1.0	lift
+				.default
+					.undef	bool.t
+				.case	lift
+e1.1				.fkarg	0	gsdl.ags.typeitem.expr.t
+					.app	e0.1	e1.1
+					.enter	gsdl.ags.typeitem.expr.≡
+		.case	product
+fs0		.fkarg	0	list.t	gsdl.ags.typeitem.field.t
+			.danalyze	e1.0	product
+				.default
+					.undef	bool.t
+				.case	product
+fs1				.fkarg	0	list.t	gsdl.ags.typeitem.field.t
+					.app	gsdl.ags.typeitem.field.≡	fs0	fs1
+					.enter	list.≡	gsdl.ags.typeitem.field.t
+		.case	tyref
+v0		.fkarg	0	gsdl.var.t
+as0		.fkarg	1	list.t	gsdl.var.t
+			.undef	bool.t
+	# > :: bool.t
 
 # §section §gs{gsdl.ags.typeitem.expr.fmtgs}
 
