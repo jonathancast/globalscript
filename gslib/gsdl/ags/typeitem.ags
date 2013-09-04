@@ -32,6 +32,8 @@ _gsdl.ags.typeitem.decls.print_tygvs.print_tygvar_tygvar.s	.string	.tygvar
 gsdl.ags.typeitem.decls.fmtgs	.closure	_gsdl.ags.typeitem.decls.fmtgs_c
 _gsdl.ags.typeitem.decls.fmtgs_tygvs.f_tygvars.s	.string	tygvars
 
+gsdl.ags.typeitem.decls.tygvar.≡	.closure	_gsdl.ags.typeitem.decls.tygvar.≡_c
+
 gsdl.ags.typeitem.decls.tygvar.fmtgs	.closure	_gsdl.ags.typeitem.decls.tygvar.fmtgs_c
 
 gsdl.ags.typeitem.gskind.parser	.closure	_gsdl.ags.typeitem.gskind.parser_c
@@ -611,6 +613,15 @@ tygvs.f	.lrecord	field	_gsdl.ags.typeitem.decls.fmtgs_tygvs.f_tygvars.s	val	tygv
 fs	.apply	list.singleton	fmtgs.record.field.printer.t	|	tygvs.f
 	.app	fs
 	.enter	fmtgs.record
+
+# §section §gs{gsdl.ags.typeitem.decls.tygvar.≡}
+
+_gsdl.ags.typeitem.decls.tygvar.≡_c	.expr
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+bool.t	.tygvar	# Temp
+tygv0	.larg	gsdl.ags.typeitem.decls.tygvar.t
+tygv1	.larg	gsdl.ags.typeitem.decls.tygvar.t
+	.undef	bool.t
 
 # §section §gs{gsdl.ags.typeitem.decls.tygvar.fmtgs}
 
