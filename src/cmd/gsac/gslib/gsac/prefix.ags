@@ -839,6 +839,7 @@ bool.t	.tygvar	# Temp
 bool.∧	.gvar
 gsdl.var.≡	.gvar
 gsdl.ags.typeitem.gskind.≡	.gvar
+gsdl.ags.typeitem.decls.≡	.gvar
 gsdl.ags.typeitem.expr.≡	.gvar
 ti0.0	.fv	gsac.prefix.typeconstitem.prim.u
 ti1.0	.karg	gsac.prefix.typeconstitem.prim.u
@@ -858,8 +859,9 @@ ds1				.fkarg	3	gsdl.ags.typeitem.decls.t
 e1				.fkarg	4	gsdl.ags.typeitem.expr.t
 v.eq					.apply	gsdl.var.≡	|	v0	v1
 ki.eq					.apply	gsdl.ags.typeitem.gskind.≡	|	ki0	ki1
+ds.eq					.apply	gsdl.ags.typeitem.decls.≡	|	ds0	ds1
 e.eq					.apply	gsdl.ags.typeitem.expr.≡	|	e0	e1
-b2					.undefined	bool.t
+b2					.apply	bool.∧	|	ds.eq	e.eq
 b1					.apply	bool.∧	|	ki.eq	b2
 					.app	v.eq	b1
 					.enter	bool.∧
