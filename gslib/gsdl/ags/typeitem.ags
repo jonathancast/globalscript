@@ -67,6 +67,8 @@ gsdl.ags.typeitem.expr.fmtgs	.closure	_gsdl.ags.typeitem.expr.fmtgs_c	_gsdl.ags.
 _gsdl.ags.typeitem.expr.fmtgs_lift_lift.s	.string	lift
 _gsdl.ags.typeitem.expr.fmtgs_product_product.s	.string	product
 
+gsdl.ags.typeitem.field.≡	.closure	_gsdl.ags.typeitem.field.≡_c
+
 gsdl.ags.typeitem.field.fmtgs	.closure	_gsdl.ags.typeitem.field.fmtgs_c
 
 gsdl.ags.typeitem.constrs.parser	.closure	_gsdl.ags.typeitem.constrs.parser_c
@@ -1250,6 +1252,15 @@ tyf		.fkarg	0	gsdl.var.t
 tyas		.fkarg	1	list.t	gsdl.var.t
 			.undef	fmtgs.printer.t
 	# > :: fmtgs.printer.t
+
+# §section §gs{gsdl.ags.typeitem.field.≡}
+
+_gsdl.ags.typeitem.field.≡_c	.expr
+gsdl.ags.typeitem.field.t	.tygvar
+bool.t	.tygvar	# Temp
+f0	.larg	gsdl.ags.typeitem.field.t
+f1	.larg	gsdl.ags.typeitem.field.t
+	.undef	bool.t
 
 # §section §gs{gsdl.ags.typeitem.field.fmtgs}
 
