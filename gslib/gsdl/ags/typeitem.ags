@@ -42,6 +42,8 @@ _gsdl.ags.typeitem.gskind.parser_unlifted.re	.regex	u
 
 gsdl.ags.typeitem.gskind.print	.closure	_gsdl.ags.typeitem.gskind.print_c	_gsdl.ags.typeitem.gskind.print_ty
 
+gsdl.ags.typeitem.gskind.≡	.closure	_gsdl.ags.typeitem.gskind.≡_c	_gsdl.ags.typeitem.gskind.≡_ty
+
 gsdl.ags.typeitem.gskind.fmtgs	.closure	_gsdl.ags.typeitem.gskind.fmtgs_c	_gsdl.ags.typeitem.gskind.fmtgs_ty
 _gsdl.ags.typeitem.gskind.fmtgs_lifted_lifted.s	.string	lifted
 
@@ -794,6 +796,15 @@ ds			.apply	diff.list.<>	rune.t	|	kib.ds	kie.ds
 			.app	rune.star
 			.enter	diff.list.singleton	rune.t
 	# > :: diff.list.t	rune.t
+
+# §section §gs{gsdl.ags.typeitem.gskind.≡}
+
+_gsdl.ags.typeitem.gskind.≡_c	.expr
+gsdl.ags.typeitem.gskind.t	.tygvar
+bool.t	.tygvar	# Temp
+ki0	.larg	gsdl.ags.typeitem.gskind.t
+ki1	.larg	gsdl.ags.typeitem.gskind.t
+	.undef	bool.t
 
 # §section §gs{gsdl.ags.typeitem.gskind.fmtgs}
 
@@ -1670,6 +1681,17 @@ rune.t	.tygvar
 	.tylift
 	.tyfun	gsdl.ags.typeitem.gskind.t
 	.tyref	diff.list.t	rune.t
+
+# §section §gs{gsdl.ags.typeitem.gskind.≡}
+
+_gsdl.ags.typeitem.gskind.≡_ty	.tyexpr
+gsdl.ags.typeitem.gskind.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.tyfun	gsdl.ags.typeitem.gskind.t
+	.tylift
+	.tyfun	gsdl.ags.typeitem.gskind.t
+	.tyref	bool.t
 
 # §section §gs{gsdl.ags.typeitem.gskind.fmtgs}
 
