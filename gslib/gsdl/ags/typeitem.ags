@@ -801,10 +801,44 @@ ds			.apply	diff.list.<>	rune.t	|	kib.ds	kie.ds
 
 _gsdl.ags.typeitem.gskind.≡_c	.expr
 gsdl.ags.typeitem.gskind.t	.tygvar
-bool.t	.tygvar	# Temp
+_gsdl.ags.typeitem.gskind.≡_k0	.subcode
+gsdl.ags.typeitem.gskind.t.out	.cogvar
 ki0	.larg	gsdl.ags.typeitem.gskind.t
 ki1	.larg	gsdl.ags.typeitem.gskind.t
-	.undef	bool.t
+	.force	_gsdl.ags.typeitem.gskind.≡_k0
+	.coerce	gsdl.ags.typeitem.gskind.t.out
+	.enter	ki0
+
+_gsdl.ags.typeitem.gskind.≡_k0	.forcecont
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.gskind.prim.u	.tygvar
+_gsdl.ags.typeitem.gskind.≡_k1	.subcode
+gsdl.ags.typeitem.gskind.t.out	.cogvar
+ki1	.fv	gsdl.ags.typeitem.gskind.t
+ki0.0	.karg	gsdl.ags.typeitem.gskind.prim.u
+	.force	_gsdl.ags.typeitem.gskind.≡_k1
+	.coerce	gsdl.ags.typeitem.gskind.t.out
+	.enter	ki1
+
+_gsdl.ags.typeitem.gskind.≡_k1	.forcecont
+gsdl.ags.typeitem.gskind.prim.u	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+bool.t	.tygvar	# Temp
+bool.true	.gvar
+ki0.0	.fv	gsdl.ags.typeitem.gskind.prim.u
+ki1.0	.karg	gsdl.ags.typeitem.gskind.prim.u
+	.analyze	ki0.0	exp	lifted
+		.case	exp
+kib0		.fkarg	0	gsdl.ags.typeitem.gskind.t
+kie0		.fkarg	1	gsdl.ags.typeitem.gskind.t
+			.undef	bool.t
+		.case	lifted
+			.danalyze	ki1.0	lifted
+				.default
+					.undef	bool.t
+				.case	lifted
+					.enter	bool.true
+	# > :: bool.t
 
 # §section §gs{gsdl.ags.typeitem.gskind.fmtgs}
 
