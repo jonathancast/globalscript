@@ -77,7 +77,14 @@ s1.0	.karg	gsdl.cgs.symbol.prim.u
 	.analyze	s0.0	abstyvar	tyvar
 		.case	abstyvar
 v0		.fkarg	0	gsdl.var.t
-			.undef	order.total.ord.t
+			.analyze	s1.0	abstyvar	tyvar
+				.case	abstyvar
+v1				.fkarg	0	gsdl.var.t
+					.app	v0	v1
+					.enter	gsdl.var.compare
+				.case	tyvar
+v1				.fkarg	0	gsdl.var.t
+					.undef	order.total.ord.t
 		.case	tyvar
 v0		.fkarg	0	gsdl.var.t
 			.analyze	s1.0	abstyvar	tyvar
