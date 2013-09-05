@@ -189,14 +189,14 @@ nm		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
-			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
+			.enter	tycs
 		.case	tyexpr
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	gsdl.var.t
 mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
-			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
+			.enter	tycs
 	# >:: ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
 
 _gsac.prefix.file.add_tyfs.add_c	.expr
