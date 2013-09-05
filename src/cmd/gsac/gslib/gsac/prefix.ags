@@ -812,18 +812,43 @@ gsac.prefix.typefnitem.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 gsdl.cgs.typeenv.t	.tygvar	# Temp
+_gsac.prefix.item.typecheck_typeconstitem_k	.subcode
 _gsac.prefix.item.typecheck_typefnitem_k	.subcode
+gsac.prefix.typeconstitem.t.out	.cogvar
 gsac.prefix.typefnitem.t.out	.cogvar
 it0	.karg	gsac.prefix.item.prim.u
 	.analyze	it0	typeconstitem	typefnitem
 		.case	typeconstitem
 ti		.fkarg	0	gsac.prefix.typeconstitem.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+			.force	_gsac.prefix.item.typecheck_typeconstitem_k
+			.coerce	gsac.prefix.typeconstitem.t.out
+			.enter	ti
 		.case	typefnitem
 ti		.fkarg	0	gsac.prefix.typefnitem.t
 			.force	_gsac.prefix.item.typecheck_typefnitem_k
 			.coerce	gsac.prefix.typefnitem.t.out
 			.enter	ti
+	# > :: either.t	string.t	gsdl.cgs.typeenv.t
+
+_gsac.prefix.item.typecheck_typeconstitem_k	.forcecont
+gsac.prefix.typeconstitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+gsdl.cgs.typeenv.t	.tygvar	# Temp
+ti0	.karg	gsac.prefix.typeconstitem.prim.u
+	.analyze	ti0	gsabstypedefn
+		.case	gsabstypedefn
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+e		.fkarg	4	gsdl.ags.typeitem.expr.t
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
 	# > :: either.t	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.item.typecheck_typefnitem_k	.forcecont
