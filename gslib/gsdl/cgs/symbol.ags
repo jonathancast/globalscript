@@ -12,6 +12,7 @@ gsdl.cgs.symbol.fmtgs	.closure	_gsdl.cgs.symbol.fmtgs_c
 _gsdl.cgs.symbol.fmtgs_tyvar.s	.string	tyvar
 
 gsdl.cgs.symbol.tyvar	.closure	_gsdl.cgs.symbol.tyvar_c
+gsdl.cgs.symbol.abstyvar	.closure	_gsdl.cgs.symbol.abstyvar_c
 
 	.code
 
@@ -33,7 +34,10 @@ list.t	.tygvar	# Temp
 gsdl.var.component.t	.tygvar	# Temp
 gsdl.var.components.get	.gvar
 s0	.karg	gsdl.cgs.symbol.prim.u
-	.analyze	s0	tyvar
+	.analyze	s0	abstyvar	tyvar
+		.case	abstyvar
+v		.fkarg	0	gsdl.var.t
+			.undef	list.t	gsdl.var.component.t
 		.case	tyvar
 v		.fkarg	0	gsdl.var.t
 			.app	v
@@ -70,10 +74,16 @@ order.total.ord.t	.tygvar	# Temp
 gsdl.var.compare	.gvar
 s0.0	.fv	gsdl.cgs.symbol.prim.u
 s1.0	.karg	gsdl.cgs.symbol.prim.u
-	.analyze	s0.0	tyvar
+	.analyze	s0.0	abstyvar	tyvar
+		.case	abstyvar
+v0		.fkarg	0	gsdl.var.t
+			.undef	order.total.ord.t
 		.case	tyvar
 v0		.fkarg	0	gsdl.var.t
-			.analyze	s1.0	tyvar
+			.analyze	s1.0	abstyvar	tyvar
+				.case	abstyvar
+v1				.fkarg	0	gsdl.var.t
+					.undef	order.total.ord.t
 				.case	tyvar
 v1				.fkarg	0	gsdl.var.t
 					.app	v0	v1
@@ -110,10 +120,15 @@ bool.t	.tygvar	# Temp
 gsdl.var.≡	.gvar
 s0.0	.fv	gsdl.cgs.symbol.prim.u
 s1.0	.karg	gsdl.cgs.symbol.prim.u
-	.analyze	s0.0	tyvar
+	.analyze	s0.0	abstyvar	tyvar
+		.case	abstyvar
+v0		.fkarg	0	gsdl.var.t
+			.undef	bool.t
 		.case	tyvar
 v0		.fkarg	0	gsdl.var.t
-			.analyze	s1.0	tyvar
+			.danalyze	s1.0	tyvar
+				.default
+					.undef	bool.t
 				.case	tyvar
 v1				.fkarg	0	gsdl.var.t
 					.app	v0	v1
@@ -140,7 +155,10 @@ fmtgs.var	.gvar
 _gsdl.cgs.symbol.fmtgs_tyvar.s	.gvar
 gsdl.var.fmtgs	.gvar
 s0	.karg	gsdl.cgs.symbol.prim.u
-	.analyze	s0	tyvar
+	.analyze	s0	abstyvar	tyvar
+		.case	abstyvar
+v		.fkarg	0	gsdl.var.t
+			.undef	fmtgs.printer.t
 		.case	tyvar
 v		.fkarg	0	gsdl.var.t
 tyfvar.fmt			.apply	fmtgs.var	|	_gsdl.cgs.symbol.fmtgs_tyvar.s
@@ -161,6 +179,16 @@ c	.constr	gsdl.cgs.symbol.prim.u	tyvar	0	v
 	.lift
 	.yield	c
 
+_gsdl.cgs.symbol.abstyvar_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.cgs.symbol.t.in	.cogvar
+v	.arg	gsdl.var.t
+c	.constr	gsdl.cgs.symbol.prim.u	abstyvar	0	v
+	.coerce	gsdl.cgs.symbol.t.in
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{gsdl.cgs.symbol.t}
@@ -171,8 +199,13 @@ gsdl.cgs.symbol.prim.u	.tygvar
 	.tyref	gsdl.cgs.symbol.prim.u
 
 gsdl.cgs.symbol.prim.u	.tyexpr
+_gsdl.cgs.symbol.prim.u_abstyvar_ty	.tygvar
 _gsdl.cgs.symbol.prim.u_tyvar_ty	.tygvar
-	.tysum	tyvar	_gsdl.cgs.symbol.prim.u_tyvar_ty
+	.tysum	abstyvar	_gsdl.cgs.symbol.prim.u_abstyvar_ty	tyvar	_gsdl.cgs.symbol.prim.u_tyvar_ty
+
+_gsdl.cgs.symbol.prim.u_abstyvar_ty	.tyexpr
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
 
 _gsdl.cgs.symbol.prim.u_tyvar_ty	.tyexpr
 gsdl.var.t	.tygvar

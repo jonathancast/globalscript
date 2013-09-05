@@ -551,7 +551,10 @@ ordered.map.get	.gvar
 gsdl.var.compare	.gvar
 sym0	.fv	gsdl.cgs.symbol.prim.u
 pr0	.karg	gsac.prefix.prim.u
-	.analyze	sym0	tyvar
+	.analyze	sym0	abstyvar	tyvar
+		.case	abstyvar
+v		.fkarg	0	gsdl.var.t
+			.undef	maybe.t	gsac.prefix.item.t
 		.case	tyvar
 v		.fkarg	0	gsdl.var.t
 tyfs			.field	typefunctions	pr0
