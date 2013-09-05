@@ -542,9 +542,11 @@ _gsac.prefix.get_k1	.forcecont
 gsdl.cgs.symbol.prim.u	.tygvar
 gsac.prefix.prim.u	.tygvar
 gsdl.var.t	.tygvar
+gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 maybe.t	.tygvar	# Temp
 gsac.prefix.item.t	.tygvar	# Temp
+_gsac.prefix.get_abstyvar_k	.subcode
 _gsac.prefix.get_tyvar_k	.subcode
 maybe.t.out	.cogvar
 ordered.map.get	.gvar
@@ -554,7 +556,11 @@ pr0	.karg	gsac.prefix.prim.u
 	.analyze	sym0	abstyvar	tyvar
 		.case	abstyvar
 v		.fkarg	0	gsdl.var.t
-			.undef	maybe.t	gsac.prefix.item.t
+tycs			.field	typeconstants	pr0
+			.force	_gsac.prefix.get_abstyvar_k
+			.coerce	maybe.t.out	gsac.prefix.typeconstitem.t
+			.app	gsdl.var.compare	v	tycs
+			.enter	ordered.map.get	gsdl.var.t	gsac.prefix.typeconstitem.t
 		.case	tyvar
 v		.fkarg	0	gsdl.var.t
 tyfs			.field	typefunctions	pr0
@@ -563,6 +569,23 @@ tyfs			.field	typefunctions	pr0
 			.app	gsdl.var.compare	v	tyfs
 			.enter	ordered.map.get	gsdl.var.t	gsac.prefix.typefnitem.t
 	# > :: maybe.t	gsac.prefix.item.t
+
+_gsac.prefix.get_abstyvar_k	.forcecont
+maybe.prim.u	.tygvar
+gsac.prefix.typeconstitem.t	.tygvar
+maybe.t	.tygvar	# Temp
+gsac.prefix.item.t	.tygvar	# Temp
+maybe.just	.gvar
+gsac.prefix.item.typeconstitem	.gvar
+mb0	.karg	maybe.prim.u	gsac.prefix.typeconstitem.t
+	.analyze	mb0	just	nothing
+		.case	just
+ti		.fkarg	0	gsac.prefix.typeconstitem.t
+it			.apply	gsac.prefix.item.typeconstitem	|	ti
+			.app	it
+			.yield	maybe.just	gsac.prefix.item.t
+		.case	nothing
+			.undef	maybe.t	gsac.prefix.item.t
 
 _gsac.prefix.get_tyvar_k	.forcecont
 maybe.prim.u	.tygvar
