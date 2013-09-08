@@ -642,11 +642,20 @@ ki.e.cgs			.apply	gsac.prefix.gskind.upconvert	|	ki.e
 _gsac.prefix.gstype.upconvert_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
+_gsac.prefix.gstype.upconvert_k	.subcode
+gsdl.ags.typeitem.expr.t.out	.cogvar
+env	.larg	gsdl.cgs.typeenv.t
+e	.larg	gsdl.ags.typeitem.expr.t
+	.force	_gsac.prefix.gstype.upconvert_k
+	.coerce	gsdl.ags.typeitem.expr.t.out
+	.enter	e
+
+_gsac.prefix.gstype.upconvert_k	.forcecont
+gsdl.ags.typeitem.expr.prim.u	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 gsdl.cgs.gstype.t	.tygvar	# Temp
-env	.larg	gsdl.cgs.typeenv.t
-e	.larg	gsdl.ags.typeitem.expr.t
+e0	.karg	gsdl.ags.typeitem.expr.prim.u
 	.undef	either.t	string.t	gsdl.cgs.gstype.t
 
 # §section §gs{gsac.prefix.item.name}
