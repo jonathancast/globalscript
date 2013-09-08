@@ -49,6 +49,8 @@ gsac.prefix.get	.closure	_gsac.prefix.get_c
 
 gsac.prefix.gskind.upconvert	.closure	_gsac.prefix.gskind.upconvert_c	_gsac.prefix.gskind.upconvert_ty
 
+gsac.prefix.gstype.upconvert	.closure	_gsac.prefix.gstype.upconvert_c	_gsac.prefix.gstype.upconvert_ty
+
 gsac.prefix.item.name	.closure	_gsac.prefix.item.name_c
 
 gsac.prefix.item.deps	.closure	_gsac.prefix.item.deps_c
@@ -634,6 +636,18 @@ ki.e.cgs			.apply	gsac.prefix.gskind.upconvert	|	ki.e
 		.case	lifted
 			.enter	gsdl.cgs.gskind.lifted
 	# > :: gsdl.cgs.gskind.t
+
+# §section §gs{gsac.prefix.gstype.upconvert}
+
+_gsac.prefix.gstype.upconvert_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+gsdl.cgs.gstype.t	.tygvar	# Temp
+env	.larg	gsdl.cgs.typeenv.t
+e	.larg	gsdl.ags.typeitem.expr.t
+	.undef	either.t	string.t	gsdl.cgs.gstype.t
 
 # §section §gs{gsac.prefix.item.name}
 
@@ -1334,6 +1348,20 @@ gsdl.cgs.gskind.t	.tygvar
 	.tylift
 	.tyfun	gsdl.ags.typeitem.gskind.t
 	.tyref	gsdl.cgs.gskind.t
+
+# §section §gs{gsac.prefix.gstype.upconvert}
+
+_gsac.prefix.gstype.upconvert_ty	.tyexpr
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.ags.typeitem.expr.t
+	.tyref	either.t	string.t	gsdl.cgs.gstype.t
 
 	.coercion
 
