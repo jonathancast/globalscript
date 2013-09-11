@@ -98,7 +98,7 @@ ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
     }
 
     if ((uchar*)newtop < (uchar*)thread->stacklimit) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack overflow");
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack overflow in %P", thread->cureval->cont.pos);
         return 0;
     }
 
