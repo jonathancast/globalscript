@@ -192,34 +192,50 @@ id	.fv	bool.t
 
 _ibio.file.name.components.get_c	.expr
 ibio.file.name.t	.tygvar
+_ibio.file.name.components.get_k_c	.subcode
 ibio.file.name.out	.gvar
 _ibio.file.name.components.get_worker	.gvar
 fn	.larg	ibio.file.name.t
 fn0	.apply	ibio.file.name.out	|	fn
-	.app	fn0
-	.enter	_ibio.file.name.components.get_worker
+k	.alloc	_ibio.file.name.components.get_k_c
+	.app	fn0	k
+	.yield	_ibio.file.name.components.get_worker
+
+_ibio.file.name.components.get_k_c	.expr
+list.t	.tygvar
+string.t	.tygvar
+_ibio.file.name.components.get_worker_res.u	.tygvar
+ds	.larg	list.t	string.t
+r	.arg	string.t
+es	.arg	list.t	string.t
+res	.record	dirs	ds	exts	es	root	r	|	_ibio.file.name.components.get_worker_res.u
+	.lift
+	.yield	res
 
 _ibio.file.name.components.get_worker_c	.expr
+_ibio.file.name.components.get_worker_cont.ty	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 _ibio.file.name.components.get_worker_k	.subcode
 list.t.out	.cogvar
-fn	.larg	list.t	rune.t
+fn	.arg	list.t	rune.t
+k	.arg	_ibio.file.name.components.get_worker_cont.ty
 	.force	_ibio.file.name.components.get_worker_k
 	.coerce	list.t.out	rune.t
 	.enter	fn
 
 _ibio.file.name.components.get_worker_k	.forcecont
+_ibio.file.name.components.get_worker_cont.ty	.tygvar
 list.prim.u	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
-_ibio.file.name.components.get_worker_res.ty	.tygvar
+string.t	.tygvar
 _ibio.file.name.components.get_worker_:_k	.subcode
 bool.t.out	.cogvar
 rune.≡	.gvar
 _slash	.gvar
 list.nil	.gvar
-string.ty	.tylet	list.t	rune.t
+k	.fv	_ibio.file.name.components.get_worker_cont.ty
 fn0	.karg	list.prim.u	rune.t
 	.analyze	fn0	:	nil
 		.case	:
@@ -230,63 +246,66 @@ fn1		.fkarg	1	list.t	rune.t
 			.app	c	_slash
 			.enter	rune.≡
 		.case	nil
-ds			.apply	list.nil	string.ty
-es			.apply	list.nil	string.ty
+ds			.apply	list.nil	string.t
+es			.apply	list.nil	string.t
 r			.apply	list.nil	rune.t
-cs			.record	dirs	ds	exts	es	root	r
-			.lift
-			.yield	cs
+			.app	ds	r	es
+			.enter	k
 
 _ibio.file.name.components.get_worker_:_k	.forcecont
-list.t	.tygvar
+_ibio.file.name.components.get_worker_cont.ty	.tygvar
 rune.t	.tygvar
+list.t	.tygvar
 bool.prim.u	.tygvar
-_ibio.file.name.components.get_worker_res.ty	.tygvar
-_ibio.file.name.components.get_worker_:_false_k	.subcode
-_ibio.file.name.components.get_worker_:_true_k	.subcode
+_ibio.file.name.components.get_worker_:_false_k1_c	.subcode
+_ibio.file.name.components.get_worker_:_true_k1_c	.subcode
 _ibio.file.name.components.get_worker	.gvar
+k	.fv	_ibio.file.name.components.get_worker_cont.ty
 c	.fv	rune.t
 fn1	.fv	list.t	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.force	_ibio.file.name.components.get_worker_:_false_k
-			.app	fn1
-			.enter	_ibio.file.name.components.get_worker
+k1			.alloc	_ibio.file.name.components.get_worker_:_false_k1_c
+			.app	fn1	k1
+			.yield	_ibio.file.name.components.get_worker
 		.case	true
-			.force	_ibio.file.name.components.get_worker_:_true_k
-			.app	fn1
-			.enter	_ibio.file.name.components.get_worker
+k1			.alloc	_ibio.file.name.components.get_worker_:_true_k1_c
+			.app	fn1	k1
+			.yield	_ibio.file.name.components.get_worker
 
-_ibio.file.name.components.get_worker_:_false_k	.forcecont	# First character not r{/}
-_ibio.file.name.components.get_worker_res.u	.tygvar
-list.t	.tygvar
+_ibio.file.name.components.get_worker_:_false_k1_c	.expr	# First character not r{/}
+_ibio.file.name.components.get_worker_cont.ty	.tygvar
 rune.t	.tygvar
-_ibio.file.name.components.get_worker_:_false_k1	.subcode
+list.t	.tygvar
+string.t	.tygvar
+_ibio.file.name.components.get_worker_:_false_k1_k	.subcode
 list.t.out	.cogvar
+k	.fv	_ibio.file.name.components.get_worker_cont.ty
 c	.fv	rune.t
-string.ty	.tylet	list.t	rune.t
-cs1	.karg	_ibio.file.name.components.get_worker_res.u
-ds	.field	dirs	cs1
-	.force	_ibio.file.name.components.get_worker_:_false_k1
-	.coerce	list.t.out	string.ty
+ds	.larg	list.t	string.t
+r	.arg	string.t
+es	.arg	list.t	string.t
+	.force	_ibio.file.name.components.get_worker_:_false_k1_k
+	.coerce	list.t.out	string.t
 	.enter	ds
 
-_ibio.file.name.components.get_worker_:_false_k1	.forcecont
+_ibio.file.name.components.get_worker_:_false_k1_k	.forcecont
+_ibio.file.name.components.get_worker_cont.ty	.tygvar
 rune.t	.tygvar
-_ibio.file.name.components.get_worker_res.u	.tygvar
 list.prim.u	.tygvar
 string.t	.tygvar
 list.t	.tygvar
-_ibio.file.name.components.get_worker_res.ty	.tygvar
-_ibio.file.name.components.get_worker_:_false_nil_k	.subcode
+_ibio.file.name.components.get_worker_:_false_k1_nil_k	.subcode
 bool.t.out	.cogvar
 list.:	.gvar
 rune.≡	.gvar
 _dot	.gvar
+k	.fv	_ibio.file.name.components.get_worker_cont.ty
 c	.fv	rune.t
-cs1	.fv	_ibio.file.name.components.get_worker_res.u
 ds	.fv	list.t	string.t
+r	.fv	string.t
+es	.fv	list.t	string.t
 ds0	.karg	list.prim.u	string.t
 	.analyze	ds0	:	nil
 		.case	:
@@ -294,63 +313,54 @@ d0		.fkarg	0	string.t
 ds1		.fkarg	1	list.t	string.t
 ds2.0			.undefined	string.t
 ds2			.apply	list.:	string.t	|	ds2.0	ds1
-es			.field	exts	cs1
-r			.field	root	cs1
-res			.record	dirs	ds2	exts	es	root	r
-			.lift
-			.yield	res
+			.app	ds2	r	es
+			.enter	k
 		.case	nil
-			.force	_ibio.file.name.components.get_worker_:_false_nil_k
+			.force	_ibio.file.name.components.get_worker_:_false_k1_nil_k
 			.coerce	bool.t.out
 			.app	c	_dot
 			.enter	rune.≡
 
-_ibio.file.name.components.get_worker_:_false_nil_k	.forcecont	# In the basename
+_ibio.file.name.components.get_worker_:_false_k1_nil_k	.forcecont	# In the basename
+_ibio.file.name.components.get_worker_cont.ty	.tygvar
 rune.t	.tygvar
-_ibio.file.name.components.get_worker_res.u	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 bool.prim.u	.tygvar
-_ibio.file.name.components.get_worker_res.ty	.tygvar
 list.:	.gvar
 list.nil	.gvar
+k	.fv	_ibio.file.name.components.get_worker_cont.ty
 c	.fv	rune.t
-cs1	.fv	_ibio.file.name.components.get_worker_res.u
 ds	.fv	list.t	string.t
+r	.fv	string.t
+es	.fv	list.t	string.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-es			.field	exts	cs1
-r1			.field	root	cs1
-r			.apply	list.:	rune.t	|	c	r1
-cs			.record	dirs	ds	exts	es	root	r
-			.lift
-			.yield	cs
+r1			.apply	list.:	rune.t	|	c	r
+			.app	ds	r1	es
+			.enter	k
 		.case	true
-es1			.field	exts	cs1
-r1			.field	root	cs1
-es			.apply	list.:	string.t	|	r1	es1
-r			.apply	list.nil	rune.t
-cs			.record	dirs	ds	exts	es	root	r
-			.lift
-			.yield	cs
+es1			.apply	list.:	string.t	|	r	es
+r1			.apply	list.nil	rune.t
+			.app	ds	r1	es1
+			.enter	k
 
-_ibio.file.name.components.get_worker_:_true_k	.forcecont	# First character r{/}
-_ibio.file.name.components.get_worker_res.u	.tygvar
+_ibio.file.name.components.get_worker_:_true_k1_c	.expr	# First character r{/}
+_ibio.file.name.components.get_worker_cont.ty	.tygvar
 string.t	.tygvar
 rune.t	.tygvar
 list.t	.tygvar	# Temp
 list.:	.gvar
 list.nil	.gvar
-cs1	.karg	_ibio.file.name.components.get_worker_res.u
+k	.fv	_ibio.file.name.components.get_worker_cont.ty
+ds	.larg	list.t	string.t
+r	.arg	string.t
+es	.arg	list.t	string.t
 nil	.apply	list.nil	rune.t
-ds	.undefined	list.t	string.t
 ds1	.apply	list.:	string.t	|	nil	ds
-es	.field	exts	cs1
-r	.field	root	cs1
-res	.record	dirs	ds1	exts	es	root	r
-	.lift
-	.yield	res
+	.app	ds1	r	es
+	.enter	k
 
 # §section §gs{ibio.file.name.extension.set}
 
@@ -666,9 +676,20 @@ rune.t	.tygvar
 _ibio.file.name.components.get_worker_ty	.tyexpr
 list.t	.tygvar
 rune.t	.tygvar
+_ibio.file.name.components.get_worker_cont.ty	.tygvar
+_ibio.file.name.components.get_worker_res.ty	.tygvar
+	.tyfun	list.t	rune.t
+	.tyfun	_ibio.file.name.components.get_worker_cont.ty
+	.tyref	_ibio.file.name.components.get_worker_res.ty
+
+_ibio.file.name.components.get_worker_cont.ty	.tyexpr
+list.t	.tygvar
+string.t	.tygvar
 _ibio.file.name.components.get_worker_res.ty	.tygvar
 	.tylift
-	.tyfun	list.t	rune.t
+	.tyfun	list.t	string.t
+	.tyfun	string.t
+	.tyfun	list.t	string.t
 	.tyref	_ibio.file.name.components.get_worker_res.ty
 
 _ibio.file.name.components.get_worker_res.ty	.tyexpr
