@@ -652,11 +652,26 @@ e	.larg	gsdl.ags.typeitem.expr.t
 
 _gsac.prefix.gstype.upconvert_k	.forcecont
 gsdl.ags.typeitem.expr.prim.u	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.field.t	.tygvar
+gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 gsdl.cgs.gstype.t	.tygvar	# Temp
 e0	.karg	gsdl.ags.typeitem.expr.prim.u
-	.undef	either.t	string.t	gsdl.cgs.gstype.t
+	.analyze	e0	lift	product	tyref
+		.case	lift
+e1		.fkarg	0	gsdl.ags.typeitem.expr.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
+		.case	product
+fs		.fkarg	0	list.t	gsdl.ags.typeitem.field.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
+		.case	tyref
+tyf		.fkarg	0	gsdl.var.t
+tyc		.fkarg	1	list.t	gsdl.var.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
+	# > :: either.t	string.t	gsdl.cgs.gstype.t
 
 # §section §gs{gsac.prefix.item.name}
 
