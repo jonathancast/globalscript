@@ -1,4 +1,9 @@
 #define NOPLAN9DEFINES 1
+
+#ifdef  __linux__
+#define _GNU_SOURCE 1
+#endif
+
 #include <u.h>
 #include <libc.h>
 
