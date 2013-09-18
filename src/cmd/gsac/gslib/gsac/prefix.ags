@@ -651,19 +651,27 @@ e	.larg	gsdl.ags.typeitem.expr.t
 	.enter	e
 
 _gsac.prefix.gstype.upconvert_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.ags.typeitem.expr.prim.u	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-gsdl.cgs.gstype.t	.tygvar	# Temp
+_gsac.prefix.gstype.upconvert_lift_k	.subcode
+either.t.out	.cogvar
+gsac.prefix.gstype.upconvert	.gvar
+env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.ags.typeitem.expr.prim.u
 	.analyze	e0	lift	product	tyref
 		.case	lift
 e1		.fkarg	0	gsdl.ags.typeitem.expr.t
-			.undef	either.t	string.t	gsdl.cgs.gstype.t
+			.force	_gsac.prefix.gstype.upconvert_lift_k
+			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
+			.app	env	e1
+			.enter	gsac.prefix.gstype.upconvert
 		.case	product
 fs		.fkarg	0	list.t	gsdl.ags.typeitem.field.t
 			.undef	either.t	string.t	gsdl.cgs.gstype.t
@@ -672,6 +680,14 @@ tyf		.fkarg	0	gsdl.var.t
 tyc		.fkarg	1	list.t	gsdl.var.t
 			.undef	either.t	string.t	gsdl.cgs.gstype.t
 	# > :: either.t	string.t	gsdl.cgs.gstype.t
+
+_gsac.prefix.gstype.upconvert_lift_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
+	.undef	either.t	string.t	gsdl.cgs.gstype.t
 
 # §section §gs{gsac.prefix.item.name}
 
