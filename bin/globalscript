@@ -1,8 +1,13 @@
 #! /usr/local/plan9/bin/rc
 
 if (~ $#GLOBALSCRIPT 0)
-	GLOBALSCRIPT=/usr/local/globalscript
-if (! ~ $path(1) $GLOBALSCRIPT/bin)
-	path=($GLOBALSCRIPT/bin $path)
+    GLOBALSCRIPT=/usr/local/globalscript
+
+newpath=$GLOBALSCRIPT/bin
+for (i in $path)
+    if (! test -x $i/globalscript)
+        newpath=($newpath $i)
+
+path=$newpath
 
 ~ $#* 0 || exec $*
