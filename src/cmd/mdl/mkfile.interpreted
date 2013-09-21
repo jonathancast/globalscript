@@ -1,0 +1,18 @@
+< $GLOBALSCRIPT/src/mkhdr
+
+MKSHELL=$PLAN9/bin/rc
+
+LOCAL_TARGETS=\
+	`{$GLOBALSCRIPT/bin/gsac-targets ./gslib} \
+
+all:V: $LOCAL_TARGETS
+	true
+
+test:V: all
+	test-gslib ./gslib
+
+install:V: all test
+
+<| $GLOBALSCRIPT/bin/gsac-deps -l $GLOBALSCRIPT/gslib -l ./gslib $LOCAL_TARGETS
+
+< $GLOBALSCRIPT/src/mkcommon-core-source
