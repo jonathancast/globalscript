@@ -13,5 +13,6 @@ cd $GLOBALSCRIPT/src/libtest &&
 # §paragraph{Interpreted Compiler}
     cd ../gsac &&
     mk -f mkfile.interpreted install && mk -f mkfile.interpreted effect &&
+    cd ../mdl &&
     cd ../gscr &&
     mk -f mkfile.interpreted install
