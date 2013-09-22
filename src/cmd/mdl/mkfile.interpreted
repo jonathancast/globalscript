@@ -14,7 +14,11 @@ test:V: all
 integration-test:V: all test
 	./rc/test-interpreted
 
-install:V: all test
+install:V: all test $GLOBALSCRIPT/bin/mdl2clib
+
+$GLOBALSCRIPT/bin/mdl2clib: mdl2clib.rc all test
+	cp mdl2clib.rc $GLOBALSCRIPT/bin/mdl2clib
+	chmod a+x $GLOBALSCRIPT/bin/mdl2clib
 
 <| $GLOBALSCRIPT/bin/gsac-deps -l $GLOBALSCRIPT/gslib -l ./gslib $LOCAL_TARGETS
 
