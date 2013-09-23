@@ -98,15 +98,38 @@ x	.larg	β
 
 _either.mapM_c	.expr
 _either.mapM_fun_ty	.tygvar
-either.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
+list.t	.tygvar
+_either.mapM_k	.subcode
+list.t.out	.cogvar
 e	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
-list.β.ty	.tylet	list.t	β
 f	.larg	_either.mapM_fun_ty	e	α	β
 xn	.larg	list.t	α
-	.undef	either.t	e	list.β.ty
+	.force	_either.mapM_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_either.mapM_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+list.nil	.gvar
+e	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+list.β.ty	.tylet	list.t	β	# Temp
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	either.t	e	list.β.ty
+		.case	nil
+nil			.apply	list.nil	β
+			.app	nil
+			.enter	either.right	e	list.β.ty
 
 	.type
 
