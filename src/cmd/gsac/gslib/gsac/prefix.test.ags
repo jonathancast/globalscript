@@ -4,7 +4,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype.nm	_test_items_gsabstype.defn	_test_item	_test_item.name	_test_file.add	_test.typecheck_gsabstype.kind
+_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype.nm	_test_items_gsabstype.defn	_test_item	_test_item.name	_test_file.add	_test.typecheck_gsabstype.kind	_test.upconvert_product
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
@@ -66,6 +66,9 @@ _test.typecheck_gsabstype.kind_label	.string	prefix.typecheck\scan\sreturn\skind
 _test.typecheck_gsabstype.kind_test_ty.s	.string	ty
 _test.typecheck_gsabstype.kind_test_left_prefix.s	.string	prefix.typecheck\sfailed:\s
 _test.typecheck_gsabstype.kind_test_right_nothing_failed.s	.string	gskind.get\sfailed
+
+_test.upconvert_product	.closure	_test.upconvert_product_c
+_test.upconvert_product_label	.string	gstype.upconvert\s(product\s_)
 
 _fixtures.filenm	.closure	_fixtures.filenm_c
 _fixtures.filenm_s	.string	./foo.cgs
@@ -527,6 +530,56 @@ ki		.fkarg	0	gsdl.cgs.gskind.t
 		.case	nothing
 			.app	_test.typecheck_gsabstype.kind_test_right_nothing_failed.s
 			.enter	test.property.false
+
+# §section §gs{gstype.upconvert (product _)}
+
+_test.upconvert_product_c	.expr
+_test.upconvert_product_test_c	.subcode
+test.property.label	.gvar
+_test.upconvert_product_label	.gvar
+test	.alloc	_test.upconvert_product_test_c
+	.app	_test.upconvert_product_label	test
+	.enter	test.property.label
+
+_test.upconvert_product_test_c	.expr
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.ags.typeitem.field.t	.tygvar
+_test.upconvert_product_test_k	.subcode
+either.t.out	.cogvar
+gsac.prefix.gstype.upconvert	.gvar
+gsdl.cgs.typeenv.empty	.gvar
+gsdl.ags.typeitem.expr.product	.gvar
+list.nil	.gvar
+fs	.apply	list.nil	gsdl.ags.typeitem.field.t
+ty	.apply	gsdl.ags.typeitem.expr.product	|	fs
+	.force	_test.upconvert_product_test_k
+	.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
+	.app	gsdl.cgs.typeenv.empty	ty
+	.enter	gsac.prefix.gstype.upconvert
+
+_test.upconvert_product_test_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+test.property.t	.tygvar	# Temp
+test.assert.eq	.gvar
+gsdl.cgs.gstype.≡	.gvar
+gsdl.cgs.gstype.fmtgs	.gvar
+gsdl.cgs.gstype.product	.gvar
+list.nil	.gvar
+e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	test.property.t
+		.case	right
+ctya		.fkarg	0	gsdl.cgs.gstype.t
+ctye.fs			.apply	list.nil	gsdl.cgs.gstype.field.t
+ctye			.apply	gsdl.cgs.gstype.product	|	ctye.fs
+			.app	gsdl.cgs.gstype.≡	gsdl.cgs.gstype.fmtgs	ctya	ctye
+			.enter	test.assert.eq	gsdl.cgs.gstype.t
 
 # §section Test Fixtures
 
