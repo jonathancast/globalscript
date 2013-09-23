@@ -2895,6 +2895,7 @@ gsopenfile(char *filename, int omode, char **preal_filename, int *ppid)
             if (preal_filename) *preal_filename = gsac_filename;
             return gsbio_device_iopen(gsac_filename, omode);
         } else {
+            werrstr("outofdate %s", gsac_filename);
             return 0;
         }
     }
