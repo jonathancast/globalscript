@@ -8,6 +8,8 @@ either.right	.closure	_either.right_c
 either.map	.closure	_either.map_c
 either.unit	.closure	_either.unit_c
 
+either.mapM	.closure	_either.mapM_c	_either.mapM_ty
+
 	.code
 
 # §section Constructors
@@ -92,6 +94,20 @@ x	.larg	β
 	.app	x
 	.enter	either.right	α	β
 
+# §section §gs{either.mapM}
+
+_either.mapM_c	.expr
+_either.mapM_fun_ty	.tygvar
+either.t	.tygvar	# Temp
+list.t	.tygvar	# Temp
+e	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+list.β.ty	.tylet	list.t	β
+f	.larg	_either.mapM_fun_ty	e	α	β
+xn	.larg	list.t	α
+	.undef	either.t	e	list.β.ty
+
 	.type
 
 # §section §gs{either.t}
@@ -134,6 +150,31 @@ _either.map_f_ty	.tyexpr
 	.tylift
 	.tyfun	β0
 	.tyref	β1
+
+# §section §gs{either.mapM}
+
+_either.mapM_ty	.tyexpr
+_either.mapM_fun_ty	.tygvar
+list.t	.tygvar
+either.t	.tygvar
+e	.tyforall	*
+α	.tyforall	*
+β	.tyforall	*
+list.β.ty	.tylet	list.t	β
+	.tylift
+	.tyfun	_either.mapM_fun_ty	e	α	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	either.t	e	list.β.ty
+
+_either.mapM_fun_ty	.tyexpr
+either.t	.tygvar
+e	.tylambda	*
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	either.t	e	β
 
 	.coercion
 
