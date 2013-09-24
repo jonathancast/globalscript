@@ -12,7 +12,7 @@ _gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.regex	⌋
 
 gsdl.cgs.gstype.freevars	.closure	_gsdl.cgs.gstype.freevars_c	_gsdl.cgs.gstype.freevars_ty
 
-gsdl.cgs.gstype.≡	.closure	_gsdl.cgs.gstype.≡_c
+gsdl.cgs.gstype.≡	.closure	_gsdl.cgs.gstype.≡_c	_gsdl.cgs.gstype.≡_ty
 
 gsdl.cgs.gstype.fmtgs	.closure	_gsdl.cgs.gstype.fmtgs_c
 _gsdl.cgs.gstype.fmtgs_product.s	.string	product
@@ -233,6 +233,7 @@ gsdl.cgs.gstype.field.t	.tygvar
 gsdl.var.t	.tygvar
 bool.t	.tygvar	# Temp
 bool.false	.gvar
+gsdl.cgs.gstype.≡	.gvar
 bool.true	.gvar
 ty0.0	.fv	gsdl.cgs.gstype.prim.u
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
@@ -248,7 +249,8 @@ ty0.1		.fkarg	0	gsdl.cgs.gstype.t
 					.enter	bool.false
 				.case	lift
 ty1.1				.fkarg	0	gsdl.cgs.gstype.t
-					.undef	bool.t
+					.app	ty0.1	ty1.1
+					.enter	gsdl.cgs.gstype.≡
 		.case	product
 fs0.1		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.danalyze	ty1.0	product
@@ -461,6 +463,17 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
+
+# §section §gs{gsdl.cgs.gstype.≡}
+
+_gsdl.cgs.gstype.≡_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	bool.t
 
 # §section §gs{gsdl.cgs.gstype.freevars}
 
