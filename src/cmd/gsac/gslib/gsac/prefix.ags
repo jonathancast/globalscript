@@ -697,8 +697,18 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	# Temp
+either.right	.gvar
+gsdl.cgs.gstype.lift	.gvar
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
-	.undef	either.t	string.t	gsdl.cgs.gstype.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
+		.case	right
+ty1		.fkarg	0	gsdl.cgs.gstype.t
+lift.ty1			.apply	gsdl.cgs.gstype.lift	|	ty1
+			.app	lift.ty1
+			.enter	either.right	string.t	gsdl.cgs.gstype.t
 
 _gsac.prefix.gstype.upconvert_product_k	.forcecont
 either.prim.u	.tygvar
