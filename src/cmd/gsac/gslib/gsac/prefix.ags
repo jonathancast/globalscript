@@ -1041,6 +1041,7 @@ gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 bool.t	.tygvar	# Temp
 gsac.prefix.typeconstitem.≡	.gvar
+bool.false	.gvar
 gsac.prefix.typefnitem.≡	.gvar
 it0.0	.fv	gsac.prefix.item.prim.u
 it1.0	.karg	gsac.prefix.item.prim.u
@@ -1058,7 +1059,7 @@ ti1				.fkarg	0	gsac.prefix.typeconstitem.t
 ti0		.fkarg	0	gsac.prefix.typefnitem.t
 			.danalyze	it1.0	typefnitem
 				.default
-					.undef	bool.t
+					.enter	bool.false
 				.case	typefnitem
 ti1				.fkarg	0	gsac.prefix.typefnitem.t
 					.app	ti0	ti1
