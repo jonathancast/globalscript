@@ -406,7 +406,6 @@ gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar	# Temp
-
 gsdl.ags.file.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
@@ -452,9 +451,9 @@ tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	ti
 inprfx	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
 pr	.apply	gsac.prefix.file.add	|	inprfx	gsac.prefix.empty
 actual	.apply	gsac.prefix.items	|	pr
-absty.ti	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
-absty	.apply	gsac.prefix.item.typefnitem	|	absty.ti
-expected	.apply	list.singleton	gsac.prefix.item.t | 	absty
+abstynm.ti	.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	gsdl.cgs.gskind.lifted
+abstynm	.apply	gsac.prefix.item.typefnitem	|	abstynm.ti
+expected	.apply	list.singleton	gsac.prefix.item.t | 	abstynm
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
 	.app	_test_file.add_gsabstype_label	test
 	.enter	test.property.label
