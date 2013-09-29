@@ -4,7 +4,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype.nm	_test_items_gsabstype.defn	_test_item	_test_item.name	_test_file.add	_test.typecheck_gsabstype.kind	_test.upconvert_product	_test.upconvert_lift
+_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype.nm	_test_items_gsabstype.defn	_test_item	_test_item.name	_test_file.add	_test.typecheck_gsabstype.kind	_test.typecheck_gsabstype.defn	_test.upconvert_product	_test.upconvert_lift
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
@@ -66,6 +66,12 @@ _test.typecheck_gsabstype.kind_label	.string	prefix.typecheck\scan\sreturn\skind
 _test.typecheck_gsabstype.kind_test_ty.s	.string	ty
 _test.typecheck_gsabstype.kind_test_left_prefix.s	.string	prefix.typecheck\sfailed:\s
 _test.typecheck_gsabstype.kind_test_right_nothing_failed.s	.string	gskind.get\sfailed
+
+_test.typecheck_gsabstype.defn	.closure	_test.typecheck_gsabstype.defn_c
+_test.typecheck_gsabstype.defn_label	.string	prefix.typecheck\scan\sreturn\sdefinitions
+_test.typecheck_gsabstype.defn_test_ty.s	.string	ty
+_test.typecheck_gsabstype.defn_test_left_prefix.s	.string	prefix.typecheck\sfailed:\s
+_test.typecheck_gsabstype.defn_test_right_nothing_failed.s	.string	typedefinition.get\sfailed
 
 _test.upconvert_product	.closure	_test.upconvert_product_c
 _test.upconvert_product_label	.string	gstype.upconvert\s(product\s_)
@@ -532,6 +538,100 @@ ki		.fkarg	0	gsdl.cgs.gskind.t
 			.enter	test.true
 		.case	nothing
 			.app	_test.typecheck_gsabstype.kind_test_right_nothing_failed.s
+			.enter	test.property.false
+
+# §section §gs{prefix.typecheck} can return the definition of an abstract type
+
+_test.typecheck_gsabstype.defn_c	.expr
+_test.typecheck_gsabstype.defn_test_c	.subcode
+test.property.label	.gvar
+_test.typecheck_gsabstype.defn_label	.gvar
+test	.alloc	_test.typecheck_gsabstype.defn_test_c
+	.app	_test.typecheck_gsabstype.defn_label	test
+	.enter	test.property.label
+
+_test.typecheck_gsabstype.defn_test_c	.expr
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.field.t	.tygvar
+_test.typecheck_gsabstype.defn_test_k	.subcode
+either.t.out	.cogvar
+gsac.prefix.typecheck	.gvar
+gsdl.cgs.typeenv.empty	.gvar
+gsac.prefix.typeconstitem.gsabstype.insert	.gvar
+natural.1	.gvar
+_fixtures.filenm	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test.typecheck_gsabstype.defn_test_ty.s	.gvar
+gsdl.ags.typeitem.gskind.lifted	.gvar
+gsdl.ags.typeitem.expr.product	.gvar
+list.nil	.gvar
+gsdl.ags.typeitem.expr.lift	.gvar
+gsac.prefix.empty	.gvar
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
+v.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype.defn_test_ty.s
+v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
+v	.apply	gsdl.var.basevar	|	v.cs
+decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
+decls	.lrecord	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
+expr1.fs	.apply	list.nil	gsdl.ags.typeitem.field.t
+expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr1.fs
+expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
+pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
+	.force	_test.typecheck_gsabstype.defn_test_k
+	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
+	.app	gsdl.cgs.typeenv.empty	pr
+	.enter	gsac.prefix.typecheck
+
+_test.typecheck_gsabstype.defn_test_k	.forcecont
+gsdl.var.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+test.property.t	.tygvar	# Temp
+_test.typecheck_gsabstype.defn_test_right_k	.subcode
+maybe.t.out	.cogvar
+test.property.false	.gvar
+list.<>	.gvar
+gsdl.cgs.typeenv.typedefinition.get	.gvar
+_test.typecheck_gsabstype.defn_test_left_prefix.s	.gvar
+v	.fv	gsdl.var.t
+e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+msg			.apply	list.<>	rune.t	|	_test.typecheck_gsabstype.defn_test_left_prefix.s	err
+			.app	msg
+			.enter	test.property.false
+		.case	right
+env		.fkarg	0	gsdl.cgs.typeenv.t
+			.force	_test.typecheck_gsabstype.defn_test_right_k
+			.coerce	maybe.t.out	gsdl.cgs.typeenv.typedefinition.t
+			.app	v	env
+			.enter	gsdl.cgs.typeenv.typedefinition.get
+
+_test.typecheck_gsabstype.defn_test_right_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+test.property.t	.tygvar	# Temp
+test.true	.gvar
+test.property.false	.gvar
+_test.typecheck_gsabstype.defn_test_right_nothing_failed.s	.gvar
+mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typedefinition.t
+	.analyze	mb0	just	nothing
+		.case	just
+defn		.fkarg	0	gsdl.cgs.typeenv.typedefinition.t
+			.enter	test.true
+		.case	nothing
+			.app	_test.typecheck_gsabstype.defn_test_right_nothing_failed.s
 			.enter	test.property.false
 
 # §section §gs{gstype.upconvert (product _)}
