@@ -1000,9 +1000,14 @@ p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.expr.t	|	gsdl.ags.syntax.c
 _gsdl.ags.typeitem.expr.parser_tylift.p_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-pos	.larg	parser.pos.t
+gsdl.ags.typeitem.expr.lift	.gvar
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
 e	.larg	gsdl.ags.typeitem.expr.t
-	.undef	gsdl.ags.typeitem.expr.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+	.app	pos	e
+	.yield	gsdl.ags.typeitem.expr.lift
 
 _gsdl.ags.typeitem.expr.parser_typroduct.p_c	.expr
 rune.t	.tygvar
