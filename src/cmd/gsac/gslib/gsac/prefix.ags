@@ -655,6 +655,7 @@ e	.larg	gsdl.ags.typeitem.expr.t
 _gsac.prefix.gstype.upconvert_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.ags.typeitem.expr.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -674,7 +675,8 @@ env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.ags.typeitem.expr.prim.u
 	.analyze	e0	lift	product	tyref
 		.case	lift
-e1		.fkarg	0	gsdl.ags.typeitem.expr.t
+pos1		.fkarg	0	gsdl.sourcepos.t
+e1		.fkarg	1	gsdl.ags.typeitem.expr.t
 			.force	_gsac.prefix.gstype.upconvert_lift_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
 			.app	env	e1

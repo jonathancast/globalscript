@@ -436,12 +436,14 @@ res	.lrecord	emitted	em	res	tye	tyexprs	tyes	tyfvs	tyfvs	tygvars	tygvs	|	_gsac.g
 	.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
 _gsac.gstype.compile_w_lift_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.ags.typeitem.expr.lift	.gvar
+pos	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -451,7 +453,7 @@ err		.fkarg	0	string.t
 res1		.fkarg	0	_gsac.gstype.compile_res.ty
 em0			.lfield	emitted	res1
 res0.1			.lfield	res	res1
-res0			.apply	gsdl.ags.typeitem.expr.lift	|	res0.1
+res0			.apply	gsdl.ags.typeitem.expr.lift	|	pos	res0.1
 es0			.lfield	tyexprs	res1
 tyfvs0			.lfield	tyfvs	res1
 tygvs0			.lfield	tygvars	res1

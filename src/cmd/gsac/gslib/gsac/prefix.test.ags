@@ -199,7 +199,7 @@ decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 decls	.lrecord	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
 expr.fields	.apply	list.nil	gsdl.ags.typeitem.field.t
 expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr.fields
-expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
+expr	.apply	gsdl.ags.typeitem.expr.lift	|	pos	expr1
 pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
 actual	.apply	gsac.prefix.items	|	pr
 absty.ti	.apply	gsac.prefix.typeconstitem.gsabstypedefn	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr
@@ -581,7 +581,7 @@ decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 decls	.lrecord	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
 expr1.fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr1.fs
-expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
+expr	.apply	gsdl.ags.typeitem.expr.lift	|	pos	expr1
 pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
 	.force	_test.typecheck_gsabstype.defn_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
@@ -696,6 +696,7 @@ test	.alloc	_test.upconvert_lift_test_c
 _test.upconvert_lift_test_c	.expr
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 _test.upconvert_lift_test_k	.subcode
 either.t.out	.cogvar
@@ -704,9 +705,10 @@ gsdl.cgs.typeenv.empty	.gvar
 gsdl.ags.typeitem.expr.lift	.gvar
 gsdl.ags.typeitem.expr.product	.gvar
 list.nil	.gvar
+pos	.undefined	gsdl.sourcepos.t
 fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 ty1	.apply	gsdl.ags.typeitem.expr.product	|	fs
-ty	.apply	gsdl.ags.typeitem.expr.lift	|	ty1
+ty	.apply	gsdl.ags.typeitem.expr.lift	|	pos	ty1
 	.force	_test.upconvert_lift_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
 	.app	gsdl.cgs.typeenv.empty	ty
