@@ -405,21 +405,25 @@ gsdl.ags.typeitem.t	.tygvar	# Temp
 _gsdl.ags.typeitem.decls.parser_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
-string.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+string.t	.tygvar
 _gsdl.ags.typeitem.decls.parser_f_c	.subcode
 _gsdl.ags.typeitem.decls.parser_tylambdas.f_c	.subcode
 _gsdl.ags.typeitem.decls.parser_tyforalls.f_c	.subcode
 _gsdl.ags.typeitem.decls.parser_tylets.f_c	.subcode
 parser.lift4	.gvar
 parser.many	.gvar
+parser.map	.gvar
+gsdl.ags.typeitem.decls.tygvar.tygvar	.gvar
 parser.<*	.gvar
-gsdl.ags.syntax.id	.gvar
+gsdl.ags.syntax.var	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -427,6 +431,7 @@ rune.compare	.gvar
 _gsdl.ags.typeitem.decls.parser_tygvar.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.lift2	.gvar
+gsdl.ags.syntax.id	.gvar
 _gsdl.ags.typeitem.decls.parser_tylambda.re	.gvar
 gsdl.ags.typeitem.gskind.parser	.gvar
 parser.lift3	.gvar
@@ -434,17 +439,19 @@ parser.pos.get	.gvar
 _gsdl.ags.typeitem.decls.parser_tyforall.re	.gvar
 _gsdl.ags.typeitem.decls.parser_tylet.re	.gvar
 parser.fail	.gvar	# Temp
-list.string.ty	.tylet	list.t	string.t
+list.tygvar.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tygvar.t
 list.tyarg.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tyarg.t
 list.tyforall.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tyforall.t
 list.tylet.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tylet.t
+list.string.ty	.tylet	list.t	string.t
 f	.alloc	_gsdl.ags.typeitem.decls.parser_f_c
 # §section §ags{.tygvar}
 tygvar.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.decls.parser_tygvar.re
-tygvars.p1.2	.apply	parser.*>	rune.t	string.t	string.t	|	tygvar.p	gsdl.ags.syntax.whitespace
-tygvars.p1.1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	tygvars.p1.2
-tygvars.p1	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	tygvars.p1.1
-tygvars.p	.apply	parser.many	rune.t	string.t	|	tygvars.p1
+tygvars.p2.2	.apply	parser.*>	rune.t	string.t	string.t	|	tygvar.p	gsdl.ags.syntax.whitespace
+tygvars.p2.1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	tygvars.p2.2
+tygvars.p2	.apply	parser.<*	rune.t	gsdl.var.t	string.t	|	gsdl.ags.syntax.var	tygvars.p2.1
+tygvars.p1	.apply	parser.map	rune.t	gsdl.var.t	gsdl.ags.typeitem.decls.tygvar.t	|	gsdl.ags.typeitem.decls.tygvar.tygvar	tygvars.p2
+tygvars.p	.apply	parser.many	rune.t	gsdl.ags.typeitem.decls.tygvar.t	|	tygvars.p1
 # §section §ags{.tylambda}
 tylambda.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.decls.parser_tylambda.re
 tylambdas.f	.alloc	_gsdl.ags.typeitem.decls.parser_tylambdas.f_c
@@ -477,20 +484,22 @@ tylets.p1	.apply	parser.<*	rune.t	gsdl.ags.typeitem.decls.tylet.t	string.t	|	tyl
 tylets.p	.apply	parser.many	rune.t	gsdl.ags.typeitem.decls.tylet.t	|	tylets.p1
 # §section Put it together
 	.app	f	tygvars.p	tylambdas.p	tyforalls.p	tylets.p
-	.enter	parser.lift4	rune.t	list.string.ty	list.tyarg.ty	list.tyforall.ty	list.tylet.ty	gsdl.ags.typeitem.decls.t
+	.enter	parser.lift4	rune.t	list.tygvar.ty	list.tyarg.ty	list.tyforall.ty	list.tylet.ty	gsdl.ags.typeitem.decls.t
 
 _gsdl.ags.typeitem.decls.parser_f_c	.expr
 list.t	.tygvar
-string.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
-gsdl.ags.typeitem.decls.t	.tygvar	# Temp
-tygvs	.larg	list.t	string.t
+gsdl.ags.typeitem.decls.u	.tygvar
+tygvs	.larg	list.t	gsdl.ags.typeitem.decls.tygvar.t
 tyargs	.larg	list.t	gsdl.ags.typeitem.decls.tyarg.t
 tyforalls	.larg	list.t	gsdl.ags.typeitem.decls.tyforall.t
 tylets	.larg	list.t	gsdl.ags.typeitem.decls.tylet.t
-	.undef	gsdl.ags.typeitem.decls.t
+r	.record	tygvars	tygvs	|	gsdl.ags.typeitem.decls.u
+	.lift
+	.yield	r
 
 _gsdl.ags.typeitem.decls.parser_tylambdas.f_c	.expr
 string.t	.tygvar
