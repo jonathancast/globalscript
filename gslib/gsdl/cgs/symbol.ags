@@ -71,6 +71,7 @@ _gsdl.cgs.symbol.compare_k1	.forcecont
 gsdl.cgs.symbol.prim.u	.tygvar
 gsdl.var.t	.tygvar
 order.total.ord.t	.tygvar	# Temp
+order.total.ord.lt	.gvar
 gsdl.var.compare	.gvar
 s0.0	.fv	gsdl.cgs.symbol.prim.u
 s1.0	.karg	gsdl.cgs.symbol.prim.u
@@ -90,7 +91,7 @@ v0		.fkarg	0	gsdl.var.t
 			.analyze	s1.0	abstyvar	tyvar
 				.case	abstyvar
 v1				.fkarg	0	gsdl.var.t
-					.undef	order.total.ord.t
+					.enter	order.total.ord.lt
 				.case	tyvar
 v1				.fkarg	0	gsdl.var.t
 					.app	v0	v1
