@@ -20,6 +20,7 @@ _gsdl.cgs.gstype.fmtgs_product.s	.string	product
 gsdl.cgs.gstype.var	.closure	_gsdl.cgs.gstype.var_c
 gsdl.cgs.gstype.lift	.closure	_gsdl.cgs.gstype.lift_c
 gsdl.cgs.gstype.product	.closure	_gsdl.cgs.gstype.product_c
+gsdl.cgs.gstype.sum	.closure	_gsdl.cgs.gstype.sum_c
 gsdl.cgs.gstype.app	.closure	_gsdl.cgs.gstype.app_c
 
 gsdl.cgs.gstype.field.parser	.closure	_gsdl.cgs.gstype.field.parser_c
@@ -165,6 +166,7 @@ gsdl.cgs.gstype.field.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
 gsdl.cgs.gstype.freevars	.gvar
 list.foldr	.gvar
 ordered.set.union	.gvar
@@ -176,7 +178,7 @@ ordered.set.singleton	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
 res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	app	lift	product	var
+	.analyze	ty0	app	lift	product	sum	var
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
@@ -195,6 +197,9 @@ empty			.apply	ordered.set.empty	gsdl.cgs.symbol.t
 fvss			.apply	list.map	gsdl.cgs.gstype.field.t	res.ty	|	gsdl.cgs.gstype.field.freevars	fs
 			.app	un	empty	fvss
 			.enter	list.foldr	res.ty	res.ty
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
 		.case	var
 v		.fkarg	0	gsdl.var.t
 sym			.apply	gsdl.cgs.symbol.tyvar	|	v
@@ -230,6 +235,7 @@ gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
 gsdl.var.t	.tygvar
 bool.t	.tygvar	# Temp
 bool.false	.gvar
@@ -237,7 +243,7 @@ gsdl.cgs.gstype.≡	.gvar
 bool.true	.gvar
 ty0.0	.fv	gsdl.cgs.gstype.prim.u
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0.0	app	lift	product	var
+	.analyze	ty0.0	app	lift	product	sum	var
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
@@ -259,6 +265,9 @@ fs0.1		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 				.case	product
 fs1.1				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 					.enter	bool.true
+		.case	sum
+cs0		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	bool.t
 		.case	var
 v0		.fkarg	0	gsdl.var.t
 			.undef	bool.t
@@ -282,6 +291,7 @@ fmtgs.printer.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 rune.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
 gsdl.var.t	.tygvar
 fmtgs.prec	.gvar
 fmtgs.prec.app	.gvar
@@ -293,7 +303,7 @@ list.fmtgs	.gvar
 gsdl.cgs.gstype.field.fmtgs.list	.gvar
 fmtgs.prec.arg	.gvar
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	app	lift	product	var
+	.analyze	ty0	app	lift	product	sum	var
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
@@ -308,6 +318,9 @@ s1			.apply	diff.list.:	rune.t	|	rune.space	s2
 ds			.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.gstype.fmtgs_product.s	s1
 			.app	fmtgs.prec.app	ds
 			.enter	fmtgs.prec
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	fmtgs.printer.t
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.undef	fmtgs.printer.t
@@ -342,6 +355,17 @@ gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t.in	.cogvar
 fields	.larg	list.t	gsdl.cgs.gstype.field.t
 c	.constr	gsdl.cgs.gstype.prim.u	product	0	fields
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.sum_c	.expr
+list.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+constrs	.larg	list.t	gsdl.cgs.gstype.constr.t
+c	.constr	gsdl.cgs.gstype.prim.u	sum	0	constrs
 	.coerce	gsdl.cgs.gstype.t.in
 	.lift
 	.yield	c
@@ -409,8 +433,9 @@ gsdl.cgs.gstype.prim.u	.tyexpr
 _gsdl.cgs.gstype.prim.u_app_ty	.tygvar
 _gsdl.cgs.gstype.prim.u_lift_ty	.tygvar
 _gsdl.cgs.gstype.prim.u_product_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_sum_ty	.tygvar
 _gsdl.cgs.gstype.prim.u_var_ty	.tygvar
-	.tysum	app	_gsdl.cgs.gstype.prim.u_app_ty	lift	_gsdl.cgs.gstype.prim.u_lift_ty	product	_gsdl.cgs.gstype.prim.u_product_ty	var	_gsdl.cgs.gstype.prim.u_var_ty
+	.tysum	app	_gsdl.cgs.gstype.prim.u_app_ty	lift	_gsdl.cgs.gstype.prim.u_lift_ty	product	_gsdl.cgs.gstype.prim.u_product_ty	sum	_gsdl.cgs.gstype.prim.u_sum_ty	var	_gsdl.cgs.gstype.prim.u_var_ty
 
 _gsdl.cgs.gstype.prim.u_app_ty	.tyexpr
 gsdl.cgs.gstype.t	.tygvar
@@ -425,6 +450,12 @@ list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 0_ty	.tylet	list.t	gsdl.cgs.gstype.field.t
 	.tyubproduct	0	0_ty
+
+_gsdl.cgs.gstype.prim.u_sum_ty	.tyexpr
+list.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+_0_ty	.tylet	list.t	gsdl.cgs.gstype.constr.t
+	.tyubproduct	0	_0_ty
 
 _gsdl.cgs.gstype.prim.u_var_ty	.tyexpr
 gsdl.var.t	.tygvar

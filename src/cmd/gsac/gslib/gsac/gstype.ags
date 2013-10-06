@@ -48,6 +48,7 @@ string.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
 record.empty	.tygvar
 gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
@@ -63,7 +64,7 @@ gsdl.cgs.typeenv.gskind.get	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	app	lift	product	var
+	.analyze	ty0	app	lift	product	sum	var
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
@@ -83,6 +84,9 @@ fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.coerce	either.t.out	string.t	record.empty
 			.app	fs
 			.enter	gsac.gstype.fields.kindcheck
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.kindcheck_var_k
@@ -353,6 +357,7 @@ _gsac.gstype.compile_res.ty	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 _gsac.gstype.fields.compile_res.ty	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.compile_w_app_k	.subcode
@@ -371,7 +376,7 @@ env	.larg	gsdl.cgs.typeenv.t
 ty0	.larg	gsdl.cgs.gstype.prim.u
 em	.larg	ordered.set.t	gsdl.var.t
 gvs	.larg	list.t	gsdl.var.t
-	.analyze	ty0	app	lift	product	var
+	.analyze	ty0	app	lift	product	sum	var
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
@@ -392,6 +397,9 @@ fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.coerce	either.t.out	string.t	_gsac.gstype.fields.compile_res.ty
 			.app	fs	em
 			.enter	gsac.gstype.fields.compile
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.compile_w_var_k
