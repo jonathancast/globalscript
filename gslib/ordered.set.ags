@@ -504,10 +504,15 @@ r			.record	0	empty	1	empty
 			.yield	r
 
 _ordered.set.union_split_branch_k	.forcecont
+order.total.t	.tygvar
 ordered.set.t	.tygvar
 order.total.ord.prim.u	.tygvar
 _ordered.set.union_split_res.ty	.tygvar	# Temp
+_ordered.set.union_split_branch_lt_k	.subcode
+_ordered.set.union_split	.gvar
 α	.tyfv	*
+cmp	.fv	order.total.t	α
+x	.fv	α
 sl	.fv	ordered.set.t	α
 sr	.fv	ordered.set.t	α
 o0	.karg	order.total.ord.prim.u	# x `cmp` x1
@@ -519,7 +524,20 @@ r			.record	0	sl	1	sr
 		.case	gt
 			.undef	_ordered.set.union_split_res.ty	α
 		.case	lt
-			.undef	_ordered.set.union_split_res.ty	α
+			.force	_ordered.set.union_split_branch_lt_k
+			.app	cmp	x	sr
+			.enter	_ordered.set.union_split	α
+
+_ordered.set.union_split_branch_lt_k	.forcecont
+_ordered.set.union_split_res.u	.tygvar
+ordered.set.t	.tygvar	# Temp
+α	.tyfv	*
+r0	.karg	_ordered.set.union_split_res.u	α
+r1.0	.undefined	ordered.set.t	α	# branch x1 sl (#0 r0)
+r0.1	.field	1	r0
+r1	.record	0	r1.0	1	r0.1	|	_ordered.set.union_split_res.u	α
+	.lift
+	.yield	r1
 
 # §section §gs{tygvar}
 
@@ -629,10 +647,15 @@ _ordered.set.union_split_res.ty	.tygvar
 	.tyref	_ordered.set.union_split_res.ty	α
 
 _ordered.set.union_split_res.ty	.tyexpr
+_ordered.set.union_split_res.u	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyref	_ordered.set.union_split_res.u	α
+
+_ordered.set.union_split_res.u	.tyexpr
 ordered.set.t	.tygvar
 α	.tylambda	*
 set.ty	.tylet	ordered.set.t	α
-	.tylift
 	.typroduct	0	set.ty	1	set.ty
 
 	.coercion
