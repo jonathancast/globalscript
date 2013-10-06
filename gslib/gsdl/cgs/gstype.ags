@@ -440,6 +440,16 @@ gsdl.cgs.gstype.field.prim.u	.tygvar
 gsdl.cgs.gstype.field.prim.u	.tyexpr
 	.tysum
 
+# §section §gs{gsdl.cgs.gstype.constr.t}
+
+gsdl.cgs.gstype.constr.t	.tyabstract	*
+gsdl.cgs.gstype.constr.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gstype.constr.prim.u
+
+gsdl.cgs.gstype.constr.prim.u	.tyexpr
+	.tysum
+
 # §section §gs{gsdl.cgs.gstype.parser.app}
 
 _gsdl.cgs.gstype.parser.app_ty	.tyexpr
