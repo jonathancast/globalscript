@@ -662,6 +662,7 @@ gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
 gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.prefix.gstype.upconvert_lift_k	.subcode
@@ -673,7 +674,7 @@ gsac.prefix.gstype.field.upconvert	.gvar
 list.cgs.field.ty	.tylet	list.t	gsdl.cgs.gstype.field.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.ags.typeitem.expr.prim.u
-	.analyze	e0	lift	product	tyref
+	.analyze	e0	lift	pos	product	sum	tyref
 		.case	lift
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.ags.typeitem.expr.t
@@ -681,6 +682,10 @@ e1		.fkarg	1	gsdl.ags.typeitem.expr.t
 			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
 			.app	env	e1
 			.enter	gsac.prefix.gstype.upconvert
+		.case	pos
+pos1		.fkarg	0	gsdl.sourcepos.t
+e1		.fkarg	1	gsdl.ags.typeitem.expr.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
 		.case	product
 fs		.fkarg	0	list.t	gsdl.ags.typeitem.field.t
 field.upconvert			.apply	gsac.prefix.gstype.field.upconvert	|	env
@@ -688,6 +693,9 @@ field.upconvert			.apply	gsac.prefix.gstype.field.upconvert	|	env
 			.coerce	either.t.out	string.t	list.cgs.field.ty
 			.app	field.upconvert	fs
 			.enter	either.mapM	string.t	gsdl.ags.typeitem.field.t	gsdl.cgs.gstype.field.t
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.ags.typeitem.constr.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
 		.case	tyref
 tyf		.fkarg	0	gsdl.var.t
 tyc		.fkarg	1	list.t	gsdl.var.t
