@@ -25,9 +25,12 @@ order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 graph.lookup.t	.tygvar
 list.t	.tygvar
+natural.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
 _graph.tsort_k_c	.subcode
 _graph.tsort_list	.gvar
+0	.natural	0
+ordered.map.empty	.gvar
 ordered.set.empty	.gvar
 list.nil	.gvar
 k	.tyarg	*
@@ -38,13 +41,17 @@ look	.larg	graph.lookup.t	k	v
 ks	.larg	list.t	k
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 k	.alloc	_graph.tsort_k_c
+pre	.apply	ordered.map.empty	k	natural.t
 emitted	.apply	ordered.set.empty	k
 unassigned	.apply	list.nil	kv.ty
 maybe.group	.apply	list.nil	k
-	.app	ord	deps	look	ks	k	emitted	unassigned	maybe.group
+	.app	ord	deps	look	ks	k	0	pre	emitted	unassigned	maybe.group
 	.enter	_graph.tsort_list	k	v
 
 _graph.tsort_k_c	.expr
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -53,6 +60,8 @@ list.nil	.gvar
 k	.tyfv	*
 v	.tyfv	*
 scc.ty	.tylet	graph.scc.t	v
+n	.larg	natural.prim.u
+pre	.larg	ordered.map.t	k	natural.t
 emitted	.larg	ordered.set.t	k
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 unassigned	.larg	list.t	kv.ty
@@ -65,6 +74,9 @@ graph.dependencies.t	.tygvar
 graph.lookup.t	.tygvar
 list.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
 _graph.tsort_list_k	.subcode
@@ -76,6 +88,8 @@ deps	.larg	graph.dependencies.t	k	v
 look	.larg	graph.lookup.t	k	v
 ks	.larg	list.t	k
 k	.larg	_graph.tsort_cont.t	k	v
+n	.larg	natural.prim.u
+pre	.larg	ordered.map.t	k	natural.t
 emitted	.larg	ordered.set.t	k
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 unassigned	.larg	list.t	kv.ty
@@ -89,6 +103,9 @@ order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 graph.lookup.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -103,6 +120,8 @@ ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 look	.fv	graph.lookup.t	k	v
 k	.fv	_graph.tsort_cont.t	k	v
+n	.fv	natural.prim.u
+pre	.fv	ordered.map.t	k	natural.t
 emitted	.fv	ordered.set.t	k
 unassigned	.fv	list.t	kv.ty
 maybe.group	.fv	list.t	k
@@ -116,7 +135,7 @@ ks1		.fkarg	1	list.t	k
 			.app	ord	k0	emitted
 			.enter	ordered.set.elem	k
 		.case	nil
-			.app	emitted	unassigned	maybe.group
+			.app	n	pre	emitted	unassigned	maybe.group
 			.enter	k
 
 _graph.tsort_list_:_k	.forcecont
@@ -124,6 +143,9 @@ order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 graph.lookup.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -131,6 +153,7 @@ bool.prim.u	.tygvar
 graph.scc.t	.tygvar	# Temp
 _graph.tsort_list_:_false_k	.subcode
 maybe.t.out	.cogvar
+_graph.tsort_list	.gvar
 k	.tyfv	*
 v	.tyfv	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
@@ -139,6 +162,8 @@ ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 look	.fv	graph.lookup.t	k	v
 k	.fv	_graph.tsort_cont.t	k	v
+n	.fv	natural.prim.u
+pre	.fv	ordered.map.t	k	natural.t
 emitted	.fv	ordered.set.t	k
 unassigned	.fv	list.t	kv.ty
 maybe.group	.fv	list.t	k
@@ -152,13 +177,17 @@ b0	.karg	bool.prim.u	# Is this key already in an SCC?
 			.app	k0
 			.enter	look
 		.case	true
-			.undef	list.t	scc.ty
+			.app	ord	deps	look	ks1	k	n	pre	emitted	unassigned	maybe.group
+			.enter	_graph.tsort_list	k	v
 
 _graph.tsort_list_:_false_k	.forcecont
 order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 graph.lookup.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -173,6 +202,8 @@ ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 look	.fv	graph.lookup.t	k	v
 k	.fv	_graph.tsort_cont.t	k	v
+n	.fv	natural.prim.u
+pre	.fv	ordered.map.t	k	natural.t
 emitted	.fv	ordered.set.t	k
 unassigned	.fv	list.t	kv.ty
 maybe.group	.fv	list.t	k
@@ -184,7 +215,7 @@ mb0	.karg	maybe.prim.u	v
 		.case	just
 v0		.fkarg	0	v
 cont1			.apply	_graph.tsort_list	k	v	|	ord	deps	look	ks1	k
-			.app	ord	deps	k0	v0	cont1	emitted	unassigned	maybe.group
+			.app	ord	deps	look	k0	v0	cont1	n	pre	emitted	unassigned	maybe.group
 			.enter	_graph.tsort_item	k	v
 		.case	nothing
 			.undef	list.t	scc.ty
@@ -192,37 +223,55 @@ cont1			.apply	_graph.tsort_list	k	v	|	ord	deps	look	ks1	k
 _graph.tsort_item_c	.expr
 order.total.t	.tygvar
 graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
+_natural.prim.+_ty	.tygvar
 _graph.tsort_item_cont1_c	.subcode
+natural.t.in	.cogvar
 _graph.tsort_subitems	.gvar
+ordered.map.insert	.gvar
+natural.+	.gvar
+1	.natural	1
 list.:	.gvar
 k	.tyarg	*
 v	.tyarg	*
 ord	.larg	order.total.t	k
 deps	.larg	graph.dependencies.t	k	v
+look	.larg	graph.lookup.t	k	v
 k0	.larg	k
 v0	.larg	v
 cont	.larg	_graph.tsort_cont.t	k	v
+n	.larg	natural.prim.u
+pre	.larg	ordered.map.t	k	natural.t
 em	.larg	ordered.set.t	k
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 unassigned	.larg	list.t	kv.ty
 maybe.group	.larg	list.t	k
-	# TODO: Set pre-order of §gs{k0}
 kv0	.lrecord	0	k0	1	v0	|	kv.ty
+cont1	.alloc	_graph.tsort_item_cont1_c
+n1	.prim	natural.prim	+	_natural.prim.+_ty	|	n	1
+n.l	.lifted	n
+n.cl	.cast	n.l	natural.t.in
+pre1	.apply	ordered.map.insert	k	natural.t	|	ord	k0	n.cl	pre
 uassigned1	.apply	list.:	kv.ty	|	kv0	unassigned
 mbg1	.apply	list.:	k	|	k0	maybe.group
 ds	.apply	deps	|	v0
-cont1	.alloc	_graph.tsort_item_cont1_c
-	.app	ds	cont1	em	uassigned1	mbg1
+	.app	ord	deps	look	ds	cont1	n1	pre1	em	uassigned1	mbg1
 	.enter	_graph.tsort_subitems	k	v
 
 _graph.tsort_item_cont1_c	.expr
 order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -234,6 +283,8 @@ ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 cont	.fv	_graph.tsort_cont.t	k	v
 k0	.fv	k
+n	.larg	natural.prim.u
+pre	.larg	ordered.map.t	k	natural.t
 em	.larg	ordered.set.t	k
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 unassigned	.larg	list.t	kv.ty
@@ -246,6 +297,9 @@ _graph.tsort_item_cont1_k0	.forcecont
 order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -260,6 +314,8 @@ scc.ty	.tylet	graph.scc.t	v	# Temp
 ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 cont	.fv	_graph.tsort_cont.t	k	v
+n	.fv	natural.prim.u
+pre	.fv	ordered.map.t	k	natural.t
 k0	.fv	k
 em	.fv	ordered.set.t	k
 unassigned	.fv	list.t	kv.ty
@@ -280,6 +336,9 @@ _graph.tsort_item_cont1_:_k	.forcecont
 order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -294,9 +353,12 @@ scc.ty	.tylet	graph.scc.t	v	# Temp
 ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 cont	.fv	_graph.tsort_cont.t	k	v
+n	.fv	natural.prim.u
+pre	.fv	ordered.map.t	k	natural.t
 em	.fv	ordered.set.t	k
 k0	.fv	k
 unassigned	.fv	list.t	kv.ty
+mbg1	.fv	list.t	k
 o0	.karg	order.total.ord.prim.u
 	.danalyze	o0	eq
 		.default
@@ -396,9 +458,12 @@ _graph.tsort_item_cont1_:_eq_k	.forcecont
 order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
+list.t	.tygvar
 _graph.tsort_item_cont1_:_pop.unassigned_res.u	.tygvar
-list.t	.tygvar	# Temp
 graph.scc.t	.tygvar	# Temp
 _graph.tsort_key.value.ty	.tygvar	# Temp
 _graph.tsort_item_cont1_:_eq_ks0.ks.f_c	.subcode
@@ -414,17 +479,19 @@ kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 cont	.fv	_graph.tsort_cont.t	k	v
+n	.fv	natural.prim.u
+pre	.fv	ordered.map.t	k	natural.t
 em	.fv	ordered.set.t	k
+mbg1	.fv	list.t	k
 pop	.karg	_graph.tsort_item_cont1_:_pop.unassigned_res.u	k	v
 ks0	.field	0	pop
-scc0	.apply	_graph.tsort_item_cont1_:_eq_scc0_w	k	v	|	deps	ks0
+scc0	.apply	_graph.tsort_item_cont1_:_eq_scc0_w	k	v	|	ord	deps	ks0
 ks0.ks.f	.alloc	_graph.tsort_item_cont1_:_eq_ks0.ks.f_c
 ks0.ks	.apply	list.map	kv.ty	k	|	ks0.ks.f	ks0
 ks0.set	.apply	ordered.set.fromlist	k	|	ord	ks0.ks
 emitted1	.apply	ordered.set.union	k	|	ord	ks0.set	em
-unassigned1	.undefined	list.t	kv.ty	# Second element of pop
-maybe.group1	.undefined	list.t	k	# TODO: Pop §gs{maybe.group}
-sccs1	.apply	cont	|	emitted1	unassigned1	maybe.group1	# Call to continuation with the above
+unassigned1	.field	1	pop
+sccs1	.apply	cont	|	n	pre	emitted1	unassigned1	mbg1	# Call to continuation with the above
 	.app	scc0	sccs1
 	.enter	list.:	scc.ty
 
@@ -446,6 +513,7 @@ k	.field	0	kv0
 	.enter	k
 
 _graph.tsort_item_cont1_:_eq_scc0_w_c	.expr
+order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -454,6 +522,7 @@ list.t.out	.cogvar
 k	.tyarg	*
 v	.tyarg	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
+ord	.larg	order.total.t	k
 deps	.larg	graph.dependencies.t	k	v
 ks0	.larg	list.t	kv.ty
 	# TODO: Allocate the fall-back position (for if we need to issue a recursive SCC for any reason) here
@@ -462,6 +531,7 @@ ks0	.larg	list.t	kv.ty
 	.enter	ks0
 
 _graph.tsort_item_cont1_:_eq_scc0_w_k	.forcecont
+order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 list.prim.u	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -473,6 +543,7 @@ k	.tyfv	*
 v	.tyfv	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 scc.ty	.tylet	graph.scc.t	v	# Temp
+ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 ks0.0	.karg	list.prim.u	kv.ty
 	.analyze	ks0.0	:	nil
@@ -486,6 +557,7 @@ kvs1		.fkarg	1	list.t	kv.ty
 			.undef	scc.ty	# Impossible; we must have popped at least §emph{one} key off §{unassigned}!
 
 _graph.tsort_item_cont1_:_eq_scc0_w_:_k	.forcecont
+order.total.t	.tygvar
 graph.dependencies.t	.tygvar
 list.prim.u	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -498,6 +570,7 @@ k	.tyfv	*
 v	.tyfv	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 scc.ty	.tylet	graph.scc.t	v	# Temp
+ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 kv0	.fv	kv.ty
 ks1.0	.karg	list.prim.u	kv.ty
@@ -515,11 +588,28 @@ ds0			.apply	deps	|	v0
 			.enter	list.elem	k
 
 _graph.tsort_item_cont1_:_eq_scc0_w_:_eq_c	.expr
-bool.t	.tygvar	# Temp
+order.total.t	.tygvar
+_graph.tsort_item_cont1_:_eq_scc0_w_:_eq_k	.subcode
+order.total.ord.t.out	.cogvar
 k	.tyfv	*
+ord	.fv	order.total.t	k
 k0	.larg	k
 k1	.larg	k
-	.undef	bool.t
+	.force	_graph.tsort_item_cont1_:_eq_scc0_w_:_eq_k
+	.coerce	order.total.ord.t.out
+	.app	k0	k1
+	.enter	ord
+
+_graph.tsort_item_cont1_:_eq_scc0_w_:_eq_k	.forcecont
+order.total.ord.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+bool.false	.gvar
+o0	.karg	order.total.ord.prim.u	# §gs{ord k0 k1}
+	.danalyze	o0	eq
+		.default
+			.enter	bool.false
+		.case	eq
+			.undef	bool.t
 
 _graph.tsort_item_cont1_:_eq_scc0_w_:_nil_k	.forcecont
 bool.prim.u	.tygvar
@@ -537,16 +627,27 @@ b0	.karg	bool.prim.u	# Does §gs{k0} depend on itself?
 			.undef	scc.ty	# TODO: Group keys so popped into SCC; emit SCC
 
 _graph.tsort_subitems_c	.expr
+order.total.t	.tygvar
+graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
 list.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
 _graph.tsort_subitems_k	.subcode
 list.t.out	.cogvar
 k	.tyarg	*
 v	.tyarg	*
+ord	.larg	order.total.t	k
+deps	.larg	graph.dependencies.t	k	v
+look	.larg	graph.lookup.t	k	v
 ks	.larg	list.t	k
 cont	.larg	_graph.tsort_cont.t	k	v
+n	.larg	natural.prim.u
+pre	.larg	ordered.map.t	k	natural.t
 em	.larg	ordered.set.t	k
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 unassigned	.larg	list.t	kv.ty
@@ -556,17 +657,29 @@ maybe.group	.larg	list.t	k
 	.enter	ks
 
 _graph.tsort_subitems_k	.forcecont
+order.total.t	.tygvar
+graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
 _graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
 list.prim.u	.tygvar
-graph.scc.t	.tygvar	# Temp
+_graph.tsort_subitems_:_k	.subcode
+bool.t.out	.cogvar
+ordered.set.elem	.gvar
 k	.tyfv	*
 v	.tyfv	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
-scc.ty	.tylet	graph.scc.t	v	# Temp
+ord	.fv	order.total.t	k
+deps	.fv	graph.dependencies.t	k	v
+look	.fv	graph.lookup.t	k	v
 cont	.fv	_graph.tsort_cont.t	k	v
+n	.fv	natural.prim.u
+pre	.fv	ordered.map.t	k	natural.t
 em	.fv	ordered.set.t	k
 unassigned	.fv	list.t	kv.ty
 maybe.group	.fv	list.t	k
@@ -575,15 +688,165 @@ ks0	.karg	list.prim.u	k
 		.case	:
 k0		.fkarg	0	k
 ks1		.fkarg	1	list.t	k
-			# TODO: If §g{k0} has an SCC, ignore it
-			# TODO: Otherwise, if §g{k0} has a pre-order number:
-				# TODO: If §g{k0} is in §gs{unassigned}:
-					# TODO: Pop §gs{unassigned} while pre-order of §gs{list.lisp.head unassigned} > our pre-order
-			# TODO: Otherwise, call §gs{topsort_item} on §gs{k0}
-			.undef	list.t	scc.ty
+			.force	_graph.tsort_subitems_:_k
+			.coerce	bool.t.out
+			.app	ord	k0	em
+			.enter	ordered.set.elem	k
 		.case	nil
-			.app	em	unassigned	maybe.group
+			.app	n	pre	em	unassigned	maybe.group
 			.enter	cont
+
+_graph.tsort_subitems_:_k	.forcecont
+order.total.t	.tygvar
+graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
+_graph.tsort_cont.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
+ordered.set.t	.tygvar
+list.t	.tygvar
+_graph.tsort_key.value.ty	.tygvar
+bool.prim.u	.tygvar
+graph.scc.t	.tygvar	# Temp
+_graph.tsort_subitems_:_false_k	.subcode
+maybe.t.out	.cogvar
+ordered.map.get	.gvar
+k	.tyfv	*
+v	.tyfv	*
+kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
+scc.ty	.tylet	graph.scc.t	v	# Temp
+ord	.fv	order.total.t	k
+deps	.fv	graph.dependencies.t	k	v
+look	.fv	graph.lookup.t	k	v
+cont	.fv	_graph.tsort_cont.t	k	v
+n	.fv	natural.prim.u
+pre	.fv	ordered.map.t	k	natural.t
+em	.fv	ordered.set.t	k
+unassigned	.fv	list.t	kv.ty
+maybe.group	.fv	list.t	k
+k0	.fv	k
+ks1	.fv	list.t	k
+b0	.karg	bool.prim.u	# §gs{k0} has been emitted
+	.analyze	b0	false	true
+		.case	false
+			.force	_graph.tsort_subitems_:_false_k
+			.coerce	maybe.t.out	natural.t
+			.app	ord	k0	pre
+			.enter	ordered.map.get	k	natural.t
+		.case	true
+			# TODO: §g{k0} has an SCC, so ignore it
+			.undef	list.t	scc.ty
+
+_graph.tsort_subitems_:_false_k	.forcecont
+order.total.t	.tygvar
+graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
+_graph.tsort_cont.t	.tygvar
+list.t	.tygvar
+natural.prim.u	.tygvar
+ordered.set.t	.tygvar
+maybe.prim.u	.tygvar
+natural.t	.tygvar
+_graph.tsort_key.value.ty	.tygvar
+graph.scc.t	.tygvar	# Temp
+_graph.tsort_subitems_:_false_nothing_k	.subcode
+maybe.t.out	.cogvar
+k	.tyfv	*
+v	.tyfv	*
+kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
+scc.ty	.tylet	graph.scc.t	v	# Temp
+ord	.fv	order.total.t	k
+deps	.fv	graph.dependencies.t	k	v
+look	.fv	graph.lookup.t	k	v
+cont	.fv	_graph.tsort_cont.t	k	v
+n	.fv	natural.prim.u
+em	.fv	ordered.set.t	k
+unassigned	.fv	list.t	kv.ty
+maybe.group	.fv	list.t	k
+k0	.fv	k
+ks1	.fv	list.t	k
+mb0	.karg	maybe.prim.u	natural.t	# pre-order number of §gs{k0}
+	.analyze	mb0	just	nothing
+		.case	just
+n1		.fkarg	0	natural.t
+			# §g{k0} has a pre-order number.
+			# TODO: If §g{k0} is in §gs{unassigned}:
+				# TODO: Pop §gs{unassigned} while pre-order of §gs{list.lisp.head unassigned} > our pre-order
+			.undef	list.t	scc.ty
+		.case	nothing
+			.force	_graph.tsort_subitems_:_false_nothing_k
+			.coerce	maybe.t.out	v
+			.app	k0
+			.enter	look
+
+_graph.tsort_subitems_:_false_nothing_k	.forcecont
+order.total.t	.tygvar
+graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
+_graph.tsort_cont.t	.tygvar
+list.t	.tygvar
+natural.prim.u	.tygvar
+maybe.prim.u	.tygvar
+ordered.map.t	.tygvar	# Temp
+natural.t	.tygvar	# Temp
+ordered.set.t	.tygvar	# Temp
+_graph.tsort_key.value.ty	.tygvar	# Temp
+graph.scc.t	.tygvar	# Temp
+_graph.tsort_subitems_:_false_nothing_just_cont1_c	.subcode
+_graph.tsort_item	.gvar
+k	.tyfv	*
+v	.tyfv	*
+kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
+scc.ty	.tylet	graph.scc.t	v	# Temp
+ord	.fv	order.total.t	k
+deps	.fv	graph.dependencies.t	k	v
+look	.fv	graph.lookup.t	k	v
+cont	.fv	_graph.tsort_cont.t	k	v
+n	.fv	natural.prim.u
+em	.fv	ordered.set.t	k
+unassigned	.fv	list.t	kv.ty
+maybe.group	.fv	list.t	k
+k0	.fv	k
+ks1	.fv	list.t	k
+mb0	.karg	maybe.prim.u	v
+	.analyze	mb0	just	nothing
+		.case	just
+v		.fkarg	0	v
+cont1			.alloc	_graph.tsort_subitems_:_false_nothing_just_cont1_c
+pre			.undefined	ordered.map.t	k	natural.t	# §gs{pre}; pre-order numbers assigned to keys
+			.app	ord	deps	look	k0	v	cont1	n	pre	em	unassigned	maybe.group
+			.enter	_graph.tsort_item	k	v
+		.case	nothing
+			.undef	list.t	scc.ty
+
+_graph.tsort_subitems_:_false_nothing_just_cont1_c	.expr
+order.total.t	.tygvar
+graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
+_graph.tsort_cont.t	.tygvar
+list.t	.tygvar
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
+ordered.set.t	.tygvar
+_graph.tsort_key.value.ty	.tygvar
+_graph.tsort_subitems	.gvar
+k	.tyfv	*
+v	.tyfv	*
+kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
+ord	.fv	order.total.t	k
+deps	.fv	graph.dependencies.t	k	v
+look	.fv	graph.lookup.t	k	v
+cont	.fv	_graph.tsort_cont.t	k	v
+ks1	.fv	list.t	k
+n	.larg	natural.prim.u
+pre	.larg	ordered.map.t	k	natural.t
+em	.larg	ordered.set.t	k
+un	.larg	list.t	kv.ty
+grp	.larg	list.t	k
+	.app	ord	deps	look	ks1	cont	n	pre	em	un	grp
+	.enter	_graph.tsort_subitems	k	v
 
 # §section §gs{graph.scc.≡}
 
@@ -789,6 +1052,7 @@ v	.tyforall	*
 _graph.tsort_item_ty	.tyexpr
 order.total.t	.tygvar
 graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
 _graph.tsort_cont.t	.tygvar
 k	.tyforall	*
 v	.tyforall	*
@@ -796,6 +1060,8 @@ v	.tyforall	*
 	.tyfun	order.total.t	k
 	.tylift
 	.tyfun	graph.dependencies.t	k	v
+	.tylift
+	.tyfun	graph.lookup.t	k	v
 	.tylift
 	.tyfun	k
 	.tylift
@@ -837,10 +1103,19 @@ list.kv.ty	.tylet	list.t	kv.ty
 	.typroduct	0	list.kv.ty	1	list.kv.ty
 
 _graph.tsort_subitems_ty	.tyexpr
+order.total.t	.tygvar
+graph.dependencies.t	.tygvar
+graph.lookup.t	.tygvar
 list.t	.tygvar
 _graph.tsort_cont.t	.tygvar
 k	.tyforall	*
 v	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	k
+	.tylift
+	.tyfun	graph.dependencies.t	k	v
+	.tylift
+	.tyfun	graph.lookup.t	k	v
 	.tylift
 	.tyfun	list.t	k
 	.tylift
@@ -848,6 +1123,9 @@ v	.tyforall	*
 	.tyref	_graph.tsort_cont.t	k	v
 
 _graph.tsort_cont.t	.tyexpr
+natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 list.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
@@ -856,6 +1134,10 @@ k	.tylambda	*
 v	.tylambda	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 scc.ty	.tylet	graph.scc.t	v
+	.tylift
+	.tyfun	natural.prim.u	# §gs{n}; current pre-order number counter
+	.tylift
+	.tyfun	ordered.map.t	k	natural.t	# §gs{pre}; pre-order numbers assigned to keys
 	.tylift
 	.tyfun	ordered.set.t	k	# §gs{emitted}; set of keys already included in SCCs
 	.tylift
