@@ -53,6 +53,8 @@ gsac.prefix.gstype.upconvert	.closure	_gsac.prefix.gstype.upconvert_c	_gsac.pref
 
 gsac.prefix.gstype.field.upconvert	.closure	_gsac.prefix.gstype.field.upconvert_c	_gsac.prefix.gstype.field.upconvert_ty
 
+gsac.prefix.gstype.constr.upconvert	.closure	_gsac.prefix.gstype.constr.upconvert_c	_gsac.prefix.gstype.constr.upconvert_ty
+
 gsac.prefix.item.name	.closure	_gsac.prefix.item.name_c
 
 gsac.prefix.item.deps	.closure	_gsac.prefix.item.deps_c
@@ -752,6 +754,18 @@ gsdl.cgs.gstype.field.t	.tygvar	# Temp
 env	.larg	gsdl.cgs.typeenv.t
 f	.larg	gsdl.ags.typeitem.field.t
 	.undef	either.t	string.t	gsdl.cgs.gstype.field.t
+
+# §section §gs{gsac.prefix.gstype.constr.upconvert}
+
+_gsac.prefix.gstype.constr.upconvert_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+gsdl.cgs.gstype.constr.t	.tygvar	# Temp
+env	.larg	gsdl.cgs.typeenv.t
+c	.larg	gsdl.ags.typeitem.constr.t
+	.undef	either.t	string.t	gsdl.cgs.gstype.constr.t
 
 # §section §gs{gsac.prefix.item.name}
 
@@ -1512,6 +1526,20 @@ gsdl.cgs.gstype.field.t	.tygvar
 	.tylift
 	.tyfun	gsdl.ags.typeitem.field.t
 	.tyref	either.t	string.t	gsdl.cgs.gstype.field.t
+
+# §section §gs{gsac.prefix.gstype.constr.upconvert}
+
+_gsac.prefix.gstype.constr.upconvert_ty	.tyexpr
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.ags.typeitem.constr.t
+	.tyref	either.t	string.t	gsdl.cgs.gstype.constr.t
 
 	.coercion
 
