@@ -4,7 +4,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype.nm	_test_items_gsabstype.defn	_test_item	_test_item.name	_test_file.add	_test.typecheck_gsabstype.kind	_test.typecheck_gsabstype.defn	_test.upconvert_product	_test.upconvert_lift
+_tests	.list	test.property.t	_test_items_empty	_test_items_gsabstype.nm	_test_items_gsabstype.defn	_test_item	_test_item.name	_test_item.deps	_test_file.add	_test.typecheck_gsabstype.kind	_test.typecheck_gsabstype.defn	_test.upconvert_product	_test.upconvert_lift
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
@@ -48,6 +48,11 @@ _tests_item.name	.list	test.property.t	_tests_item.name_gsabstypenm
 _tests_item.name_gsabstypenm	.closure	_tests_item.name_gsabstypenm_c
 _tests_item.name_gsabstypenm_label	.string	item.name\sgsabstypenm
 _tests_item.name_gsabstypenm_x.s	.string	x
+
+_test_item.deps	.closure	_test_item.deps_c
+_test_item.deps_label	.string	item.deps
+
+_tests_item.deps	.list	test.property.t
 
 _test_file.add	.closure	_test_file.add_c
 _test_file.add_label	.string	file.add
@@ -347,6 +352,17 @@ actual	.apply	gsac.prefix.item.name	|	it
 expected	.apply	gsdl.cgs.symbol.tyvar	|	v
 test	.apply	test.assert.eq	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.≡	gsdl.cgs.symbol.fmtgs	actual	expected
 	.app	_tests_item.name_gsabstypenm_label	test
+	.enter	test.property.label
+
+# §section §gs{item.deps} Tests
+
+_test_item.deps_c	.expr
+test.property.label	.gvar
+_test_item.deps_label	.gvar
+test.all	.gvar
+_tests_item.deps	.gvar
+test	.apply	test.all	|	_tests_item.deps
+	.app	_test_item.deps_label	test
 	.enter	test.property.label
 
 # §section §gs{prefix.add.file} Tests
