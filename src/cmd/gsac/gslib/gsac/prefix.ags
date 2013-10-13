@@ -736,6 +736,7 @@ tyc		.fkarg	1	list.t	gsdl.var.t
 
 _gsac.prefix.gstype.upconvert_fun_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 string.t	.tygvar
@@ -746,7 +747,9 @@ either.left	.gvar
 list.<>	.gvar
 gsdl.sourcepos.print	.gvar
 _gsac.prefix.gstype.upconvert_fun_nothing_col.sp.s	.gvar
+gsdl.ags.syntax.var.print	.gvar
 pos	.fv	gsdl.sourcepos.t
+tyf	.fv	gsdl.var.t
 e0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
 	.analyze	e0	just	nothing
 		.case	just
@@ -754,7 +757,10 @@ exp		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
 			.undef	either.t	string.t	gsdl.cgs.gstype.t
 		.case	nothing
 pos.s			.apply	gsdl.sourcepos.print	|	pos
-err2			.undefined	string.t
+tyf.s			.apply	gsdl.ags.syntax.var.print	|	tyf
+err4			.undefined	string.t
+err3			.apply	list.<>	rune.t	|	_gsac.prefix.gstype.upconvert_fun_nothing_col.sp.s	err4
+err2			.apply	list.<>	rune.t	|	tyf.s	err3
 err1			.apply	list.<>	rune.t	|	_gsac.prefix.gstype.upconvert_fun_nothing_col.sp.s	err2
 err			.apply	list.<>	rune.t	|	pos.s	err1
 			.app	err
