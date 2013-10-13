@@ -50,6 +50,7 @@ gsac.prefix.get	.closure	_gsac.prefix.get_c
 gsac.prefix.gskind.upconvert	.closure	_gsac.prefix.gskind.upconvert_c	_gsac.prefix.gskind.upconvert_ty
 
 gsac.prefix.gstype.upconvert	.closure	_gsac.prefix.gstype.upconvert_c	_gsac.prefix.gstype.upconvert_ty
+_gsac.prefix.gstype.upconvert_fun_nothing_col.sp.s	.string	:\s
 
 gsac.prefix.gstype.field.upconvert	.closure	_gsac.prefix.gstype.field.upconvert_c	_gsac.prefix.gstype.field.upconvert_ty
 
@@ -744,6 +745,7 @@ either.t	.tygvar	# Temp
 either.left	.gvar
 list.<>	.gvar
 gsdl.sourcepos.print	.gvar
+_gsac.prefix.gstype.upconvert_fun_nothing_col.sp.s	.gvar
 pos	.fv	gsdl.sourcepos.t
 e0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
 	.analyze	e0	just	nothing
@@ -752,7 +754,8 @@ exp		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
 			.undef	either.t	string.t	gsdl.cgs.gstype.t
 		.case	nothing
 pos.s			.apply	gsdl.sourcepos.print	|	pos
-err1			.undefined	string.t
+err2			.undefined	string.t
+err1			.apply	list.<>	rune.t	|	_gsac.prefix.gstype.upconvert_fun_nothing_col.sp.s	err2
 err			.apply	list.<>	rune.t	|	pos.s	err1
 			.app	err
 			.enter	either.left	string.t	gsdl.cgs.gstype.t
