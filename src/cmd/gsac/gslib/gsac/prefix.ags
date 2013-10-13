@@ -730,16 +730,19 @@ tyc		.fkarg	1	list.t	gsdl.var.t
 _gsac.prefix.gstype.upconvert_fun_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
-gsdl.cgs.gstype.t	.tygvar	# Temp
+either.left	.gvar
 e0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
 	.analyze	e0	just	nothing
 		.case	just
 exp		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
 			.undef	either.t	string.t	gsdl.cgs.gstype.t
 		.case	nothing
-			.undef	either.t	string.t	gsdl.cgs.gstype.t
+err			.undefined	string.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.gstype.t
 
 _gsac.prefix.gstype.upconvert_lift_k	.forcecont
 either.prim.u	.tygvar
