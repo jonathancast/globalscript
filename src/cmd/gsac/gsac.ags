@@ -1375,14 +1375,16 @@ gsdl.cgs.typeenv.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.typeenv.overlay	.gvar
+either.left	.gvar
 either.right	.gvar
+gsdl.cgs.typeenv.overlay	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 eenv0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	eenv0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.typeenv.t
 		.case	right
 env1		.fkarg	0	gsdl.cgs.typeenv.t
 env2			.apply	gsdl.cgs.typeenv.overlay	|	env1	env
