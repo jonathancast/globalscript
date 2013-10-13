@@ -795,6 +795,7 @@ _graph.tsort_key.value.ty	.tygvar	# Temp
 graph.scc.t	.tygvar	# Temp
 _graph.tsort_subitems_:_false_nothing_just_cont1_c	.subcode
 _graph.tsort_item	.gvar
+_graph.tsort_subitems	.gvar
 k	.tyfv	*
 v	.tyfv	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
@@ -810,15 +811,16 @@ maybe.group	.fv	list.t	k
 k0	.fv	k
 ks1	.fv	list.t	k
 mb0	.karg	maybe.prim.u	v
+pre	.undefined	ordered.map.t	k	natural.t	# §gs{pre}; pre-order numbers assigned to keys
 	.analyze	mb0	just	nothing
 		.case	just
 v		.fkarg	0	v
 cont1			.alloc	_graph.tsort_subitems_:_false_nothing_just_cont1_c
-pre			.undefined	ordered.map.t	k	natural.t	# §gs{pre}; pre-order numbers assigned to keys
 			.app	ord	deps	look	k0	v	cont1	n	pre	em	unassigned	maybe.group
 			.enter	_graph.tsort_item	k	v
 		.case	nothing
-			.undef	list.t	scc.ty
+			.app	ord	deps	look	ks1	cont	n	pre	em	unassigned	maybe.group
+			.enter	_graph.tsort_subitems	k	v
 
 _graph.tsort_subitems_:_false_nothing_just_cont1_c	.expr
 order.total.t	.tygvar
