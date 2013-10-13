@@ -601,6 +601,7 @@ gsac.prefix.item.t	.tygvar
 maybe.t	.tygvar	# Temp
 maybe.just	.gvar
 gsac.prefix.item.typefnitem	.gvar
+maybe.nothing	.gvar
 mb0	.karg	maybe.prim.u	gsac.prefix.typefnitem.t
 	.analyze	mb0	just	nothing
 		.case	just
@@ -609,7 +610,7 @@ it			.apply	gsac.prefix.item.typefnitem	|	ti
 			.app	it
 			.yield	maybe.just	gsac.prefix.item.t
 		.case	nothing
-			.undef	maybe.t	gsac.prefix.item.t
+			.enter	maybe.nothing	gsac.prefix.item.t
 
 # §section §gs{gsac.prefix.gskind.upconvert}
 
