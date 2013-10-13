@@ -682,7 +682,12 @@ list.cgs.field.ty	.tylet	list.t	gsdl.cgs.gstype.field.t
 list.cgs.constr.ty	.tylet	list.t	gsdl.cgs.gstype.constr.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.ags.typeitem.expr.prim.u
-	.analyze	e0	lift	pos	product	sum	tyref
+	.analyze	e0	fun	lift	pos	product	sum	tyref
+		.case	fun
+tyf		.fkarg	0	gsdl.var.t
+tyas		.fkarg	1	list.t	gsdl.var.t
+res		.fkarg	2	gsdl.ags.typeitem.expr.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
 		.case	lift
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.ags.typeitem.expr.t

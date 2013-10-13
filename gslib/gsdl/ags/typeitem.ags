@@ -88,6 +88,7 @@ gsdl.ags.typeitem.decls.tygvar.tygvar	.closure	_gsdl.ags.typeitem.decls.tygvar.t
 
 gsdl.ags.typeitem.expr.pos	.closure	_gsdl.ags.typeitem.expr.pos_c
 gsdl.ags.typeitem.expr.lift	.closure	_gsdl.ags.typeitem.expr.lift_c
+gsdl.ags.typeitem.expr.fun	.closure	_gsdl.ags.typeitem.expr.fun_c
 gsdl.ags.typeitem.expr.product	.closure	_gsdl.ags.typeitem.expr.product_c
 gsdl.ags.typeitem.expr.tyref	.closure	_gsdl.ags.typeitem.expr.tyref_c
 gsdl.ags.typeitem.expr.sum	.closure	_gsdl.ags.typeitem.expr.sum_c
@@ -969,11 +970,18 @@ parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-pos	.larg	parser.pos.t
+gsdl.ags.typeitem.expr.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.ags.typeitem.expr.fun	.gvar
+pos0	.larg	parser.pos.t
 tyf	.larg	gsdl.var.t
 tyas	.larg	list.t	gsdl.var.t
 e	.larg	gsdl.ags.typeitem.expr.t
-	.undef	gsdl.ags.typeitem.expr.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+tyfun	.apply	gsdl.ags.typeitem.expr.fun	|	tyf	tyas	e
+	.app	pos	tyfun
+	.yield	gsdl.ags.typeitem.expr.pos
 
 _gsdl.ags.typeitem.expr.parser_tylift.p_c	.expr
 rune.t	.tygvar
@@ -1230,7 +1238,12 @@ diff.list.singleton	.gvar
 rune.new.line	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 exp0	.karg	gsdl.ags.typeitem.expr.prim.u
-	.analyze	exp0	lift	pos	product	sum	tyref
+	.analyze	exp0	fun	lift	pos	product	sum	tyref
+		.case	fun
+tyf		.fkarg	0	gsdl.var.t
+tyas		.fkarg	1	list.t	gsdl.var.t
+res		.fkarg	2	gsdl.ags.typeitem.expr.t
+			.undef	diff.list.t	rune.t
 		.case	lift
 pos		.fkarg	0	gsdl.sourcepos.t
 exp1		.fkarg	1	gsdl.ags.typeitem.expr.t
@@ -1342,7 +1355,12 @@ list.≡	.gvar
 gsdl.ags.typeitem.field.≡	.gvar
 e0.0	.fv	gsdl.ags.typeitem.expr.prim.u
 e1.0	.karg	gsdl.ags.typeitem.expr.prim.u
-	.analyze	e0.0	lift	pos	product	sum	tyref
+	.analyze	e0.0	fun	lift	pos	product	sum	tyref
+		.case	fun
+tyf		.fkarg	0	gsdl.var.t
+tyas		.fkarg	1	list.t	gsdl.var.t
+res		.fkarg	2	gsdl.ags.typeitem.expr.t
+			.undef	bool.t
 		.case	lift
 pos0		.fkarg	0	gsdl.sourcepos.t
 e0.1		.fkarg	1	gsdl.ags.typeitem.expr.t
@@ -1404,7 +1422,12 @@ _gsdl.ags.typeitem.expr.fmtgs_product_product.s	.gvar
 list.fmtgs.byDefault	.gvar
 gsdl.ags.typeitem.field.fmtgs	.gvar
 e0	.karg	gsdl.ags.typeitem.expr.prim.u
-	.analyze	e0	lift	pos	product	sum	tyref
+	.analyze	e0	fun	lift	pos	product	sum	tyref
+		.case	fun
+tyf		.fkarg	0	gsdl.var.t
+tyas		.fkarg	1	list.t	gsdl.var.t
+res		.fkarg	2	gsdl.ags.typeitem.expr.t
+			.undef	fmtgs.printer.t
 		.case	lift
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.ags.typeitem.expr.t
@@ -1579,6 +1602,20 @@ c	.constr	gsdl.ags.typeitem.expr.prim.u	lift	0	pos	1	e0
 	.lift
 	.yield	c
 
+_gsdl.ags.typeitem.expr.fun_c	.expr
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+gsdl.ags.typeitem.expr.prim.u	.tygvar
+gsdl.ags.typeitem.expr.t.in	.cogvar
+tyf	.arg	gsdl.var.t
+as	.arg	list.t	gsdl.var.t
+res	.arg	gsdl.ags.typeitem.expr.t
+c	.constr	gsdl.ags.typeitem.expr.prim.u	fun	0	tyf	1	as	2	res
+	.coerce	gsdl.ags.typeitem.expr.t.in
+	.lift
+	.yield	c
+
 _gsdl.ags.typeitem.expr.product_c	.expr
 list.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
@@ -1745,12 +1782,20 @@ gsdl.ags.typeitem.expr.prim.u	.tygvar
 	.tyref	gsdl.ags.typeitem.expr.prim.u
 
 gsdl.ags.typeitem.expr.prim.u	.tyexpr
+_gsdl.ags.typeitem.expr.prim.u_fun_ty	.tygvar
 _gsdl.ags.typeitem.expr.prim.u_lift_ty	.tygvar
 _gsdl.ags.typeitem.expr.prim.u_pos_ty	.tygvar
 _gsdl.ags.typeitem.expr.prim.u_product_ty	.tygvar
 _gsdl.ags.typeitem.expr.prim.u_sum_ty	.tygvar
 _gsdl.ags.typeitem.expr.prim.u_tyref_ty	.tygvar
-	.tysum	lift	_gsdl.ags.typeitem.expr.prim.u_lift_ty	pos	_gsdl.ags.typeitem.expr.prim.u_pos_ty	product	_gsdl.ags.typeitem.expr.prim.u_product_ty	sum	_gsdl.ags.typeitem.expr.prim.u_sum_ty	tyref	_gsdl.ags.typeitem.expr.prim.u_tyref_ty
+	.tysum	fun	_gsdl.ags.typeitem.expr.prim.u_fun_ty	lift	_gsdl.ags.typeitem.expr.prim.u_lift_ty	pos	_gsdl.ags.typeitem.expr.prim.u_pos_ty	product	_gsdl.ags.typeitem.expr.prim.u_product_ty	sum	_gsdl.ags.typeitem.expr.prim.u_sum_ty	tyref	_gsdl.ags.typeitem.expr.prim.u_tyref_ty
+
+_gsdl.ags.typeitem.expr.prim.u_fun_ty	.tyexpr
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+list.var.ty	.tylet	list.t	gsdl.var.t
+	.tyubproduct	0	gsdl.var.t	1	list.var.ty	2	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.expr.prim.u_pos_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
