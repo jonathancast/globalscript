@@ -379,6 +379,7 @@ string.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k	.subcode
 list.t.out	.cogvar
+either.left	.gvar
 scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
 env	.fv	gsdl.cgs.typeenv.t
 enva	.fv	gsdl.cgs.typeenv.t
@@ -387,7 +388,8 @@ e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t	# Type environment induced by
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.typeenv.t
 		.case	right
 env0		.fkarg	0	gsdl.cgs.typeenv.t
 			.force	_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k
