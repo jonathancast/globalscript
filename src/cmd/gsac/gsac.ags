@@ -1341,19 +1341,24 @@ env		.fkarg	0	gsdl.cgs.typeenv.t
 _real.entry_env_left_res_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
+string.t	.tygvar
 _real.entry_env_left_res_we_c	.subcode
 _real.entry_env_left_res_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
+err	.fv	string.t
 we	.bind	_real.entry_env_left_res_we_c
 	.body	_real.entry_env_left_res_body_c
 
 _real.entry_env_left_res_we_c	.expr
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
-list.t	.tygvar	# Temp
+string.t	.tygvar
 ibio.prim.write	.gvar
+list.<>	.gvar
 eo	.fv	ibio.prim.oport	rune.t
-err.nl	.undefined	list.t	rune.t
+err	.fv	string.t
+nl	.undefined	string.t
+err.nl	.apply	list.<>	rune.t	|	err	nl
 	.lift
 	.app	eo	err.nl
 	.yield	ibio.prim.write	rune.t
