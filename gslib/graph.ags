@@ -745,9 +745,10 @@ graph.lookup.t	.tygvar
 _graph.tsort_cont.t	.tygvar
 list.t	.tygvar
 natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
 ordered.set.t	.tygvar
 maybe.prim.u	.tygvar
-natural.t	.tygvar
 _graph.tsort_key.value.ty	.tygvar
 graph.scc.t	.tygvar	# Temp
 _graph.tsort_subitems_:_false_nothing_k	.subcode
@@ -761,6 +762,7 @@ deps	.fv	graph.dependencies.t	k	v
 look	.fv	graph.lookup.t	k	v
 cont	.fv	_graph.tsort_cont.t	k	v
 n	.fv	natural.prim.u
+pre	.fv	ordered.map.t	k	natural.t
 em	.fv	ordered.set.t	k
 unassigned	.fv	list.t	kv.ty
 maybe.group	.fv	list.t	k
@@ -787,31 +789,29 @@ graph.lookup.t	.tygvar
 _graph.tsort_cont.t	.tygvar
 list.t	.tygvar
 natural.prim.u	.tygvar
+ordered.map.t	.tygvar
+natural.t	.tygvar
+ordered.set.t	.tygvar
 maybe.prim.u	.tygvar
-ordered.map.t	.tygvar	# Temp
-natural.t	.tygvar	# Temp
-ordered.set.t	.tygvar	# Temp
-_graph.tsort_key.value.ty	.tygvar	# Temp
-graph.scc.t	.tygvar	# Temp
+_graph.tsort_key.value.ty	.tygvar
 _graph.tsort_subitems_:_false_nothing_just_cont1_c	.subcode
 _graph.tsort_item	.gvar
 _graph.tsort_subitems	.gvar
 k	.tyfv	*
 v	.tyfv	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
-scc.ty	.tylet	graph.scc.t	v	# Temp
 ord	.fv	order.total.t	k
 deps	.fv	graph.dependencies.t	k	v
 look	.fv	graph.lookup.t	k	v
 cont	.fv	_graph.tsort_cont.t	k	v
 n	.fv	natural.prim.u
+pre	.fv	ordered.map.t	k	natural.t
 em	.fv	ordered.set.t	k
 unassigned	.fv	list.t	kv.ty
 maybe.group	.fv	list.t	k
 k0	.fv	k
 ks1	.fv	list.t	k
 mb0	.karg	maybe.prim.u	v
-pre	.undefined	ordered.map.t	k	natural.t	# §gs{pre}; pre-order numbers assigned to keys
 	.analyze	mb0	just	nothing
 		.case	just
 v		.fkarg	0	v
