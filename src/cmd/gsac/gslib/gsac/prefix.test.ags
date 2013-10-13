@@ -52,7 +52,11 @@ _tests_item.name_gsabstypenm_x.s	.string	x
 _test_item.deps	.closure	_test_item.deps_c
 _test_item.deps_label	.string	item.deps
 
-_tests_item.deps	.list	test.property.t
+_tests_item.deps	.list	test.property.t	_test_item.deps_defn.tygvar
+
+_test_item.deps_defn.tygvar	.closure	_test_item.deps_defn.tygvar_c
+_test_item.deps_defn.tygvar_label	.string	item.deps\sgsabstypedefn
+_test_item.deps_defn.tygvar_x.s	.string	x
 
 _test_file.add	.closure	_test_file.add_c
 _test_file.add_label	.string	file.add
@@ -363,6 +367,33 @@ test.all	.gvar
 _tests_item.deps	.gvar
 test	.apply	test.all	|	_tests_item.deps
 	.app	_test_item.deps_label	test
+	.enter	test.property.label
+
+# §subsection §gs{item.tygvar.deps sthing}
+
+_test_item.deps_defn.tygvar_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+gsdl.var.component.t	.tygvar
+test.property.label	.gvar
+_test_item.deps_defn.tygvar_label	.gvar
+test.assert.eq	.gvar
+gsdl.cgs.symbol.≡	.gvar
+gsdl.cgs.symbol.fmtgs	.gvar
+gsac.prefix.item.tygvar.deps	.gvar
+gsdl.ags.typeitem.decls.tygvar.tygvar	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test_item.deps_defn.tygvar_x.s	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
+v.c0	.apply	gsdl.var.component.alphanum	|	_test_item.deps_defn.tygvar_x.s
+v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
+v	.apply	gsdl.var.basevar	|	v.cs
+tygv	.apply	gsdl.ags.typeitem.decls.tygvar.tygvar	|	v
+actual	.apply	gsac.prefix.item.tygvar.deps	|	tygv
+expected	.apply	gsdl.cgs.symbol.tyvar	|	v
+test	.apply	test.assert.eq	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.≡	gsdl.cgs.symbol.fmtgs	actual	expected
+	.app	_test_item.deps_defn.tygvar_label	test
 	.enter	test.property.label
 
 # §section §gs{prefix.add.file} Tests

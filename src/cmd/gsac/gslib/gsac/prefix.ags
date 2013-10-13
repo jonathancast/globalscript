@@ -963,6 +963,7 @@ gsdl.ags.typeitem.decls.tygvar.prim.u	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
+gsdl.cgs.symbol.tyvar	.gvar
 tygv0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
 	.analyze	tygv0	tyextabstype	tygvar
 		.case	tyextabstype
@@ -971,7 +972,8 @@ ki		.fkarg	1	gsdl.ags.typeitem.gskind.t
 			.undef	gsdl.cgs.symbol.t
 		.case	tygvar
 v		.fkarg	0	gsdl.var.t
-			.undef	gsdl.cgs.symbol.t
+			.app	v
+			.yield	gsdl.cgs.symbol.tyvar
 	# > :: gsdl.cgs.symbol.t
 
 # §section §gs{gsac.prefix.item.typecheck}
