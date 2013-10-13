@@ -734,19 +734,26 @@ tyc		.fkarg	1	list.t	gsdl.var.t
 	# > :: either.t	string.t	gsdl.cgs.gstype.t
 
 _gsac.prefix.gstype.upconvert_fun_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+rune.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
 either.left	.gvar
+list.<>	.gvar
+gsdl.sourcepos.print	.gvar
+pos	.fv	gsdl.sourcepos.t
 e0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
 	.analyze	e0	just	nothing
 		.case	just
 exp		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
 			.undef	either.t	string.t	gsdl.cgs.gstype.t
 		.case	nothing
-err			.undefined	string.t
+pos.s			.apply	gsdl.sourcepos.print	|	pos
+err1			.undefined	string.t
+err			.apply	list.<>	rune.t	|	pos.s	err1
 			.app	err
 			.enter	either.left	string.t	gsdl.cgs.gstype.t
 
