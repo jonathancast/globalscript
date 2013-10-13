@@ -1302,15 +1302,34 @@ prn1	.fv	list.t	_real.entry_prefix_ty
 _real.entry_env_c	.expr
 list.t	.tygvar
 _real.entry_prefix_ty	.tygvar
+string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
+_real.entry_env_k	.subcode
+either.t.out	.cogvar
 ibio.from.either.prim	.gvar
 _prefix.typecheck	.gvar
 prefix.loaded	.fv	list.t	_real.entry_prefix_ty
-e	.apply	_prefix.typecheck	|	prefix.loaded
-	.app	e
-	.enter	ibio.from.either.prim	gsdl.cgs.typeenv.t
+	.force	_real.entry_env_k
+	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
+	.app	prefix.loaded
+	.enter	_prefix.typecheck
+
+_real.entry_env_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+ibio.prim.t	.tygvar	# Temp
+ibio.prim.unit	.gvar
+e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	ibio.prim.t	gsdl.cgs.typeenv.t
+		.case	right
+env		.fkarg	0	gsdl.cgs.typeenv.t
+			.lift
+			.app	env
+			.yield	ibio.prim.unit	gsdl.cgs.typeenv.t
 
 _prefix.typecheck_c	.expr
 list.t	.tygvar
