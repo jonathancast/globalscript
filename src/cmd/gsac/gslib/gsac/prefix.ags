@@ -1084,6 +1084,7 @@ string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 either.t	.tygvar	# Temp
+either.left	.gvar
 either.right	.gvar
 gsdl.cgs.typeenv.gsabstypedefn.insert	.gvar
 gsdl.cgs.typeenv.empty	.gvar
@@ -1092,7 +1093,8 @@ e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.typeenv.t
 		.case	right
 cty		.fkarg	0	gsdl.cgs.gstype.t
 env1			.apply	gsdl.cgs.typeenv.gsabstypedefn.insert	|	v	gsdl.cgs.typeenv.empty
