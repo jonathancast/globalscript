@@ -1352,16 +1352,17 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsac.prefix.t	.tygvar
-either.t	.tygvar	# Temp
 _prefix.typecheck_:_right_k	.subcode
 either.t.out	.cogvar
+either.left	.gvar
 gsac.prefix.typecheck	.gvar
 pr0	.fv	_real.entry_prefix_ty
 eenv0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	eenv0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.typeenv.t
 		.case	right
 env		.fkarg	0	gsdl.cgs.typeenv.t
 pr0.prefix			.lfield	prefix	pr0
