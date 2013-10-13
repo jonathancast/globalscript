@@ -1300,6 +1300,8 @@ prn1	.fv	list.t	_real.entry_prefix_ty
 # §section Calculate type of the prefixen and build a type environment from them
 
 _real.entry_env_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 list.t	.tygvar
 _real.entry_prefix_ty	.tygvar
 string.t	.tygvar
@@ -1308,6 +1310,7 @@ _real.entry_env_k	.subcode
 either.t.out	.cogvar
 ibio.from.either.prim	.gvar
 _prefix.typecheck	.gvar
+eo	.fv	ibio.prim.oport	rune.t
 prefix.loaded	.fv	list.t	_real.entry_prefix_ty
 	.force	_real.entry_env_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
@@ -1315,21 +1318,50 @@ prefix.loaded	.fv	list.t	_real.entry_prefix_ty
 	.enter	_prefix.typecheck
 
 _real.entry_env_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-ibio.prim.t	.tygvar	# Temp
+_real.entry_env_left_res_c	.subcode
 ibio.prim.unit	.gvar
+eo	.fv	ibio.prim.oport	rune.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	ibio.prim.t	gsdl.cgs.typeenv.t
+res			.alloc	_real.entry_env_left_res_c
+			.enter	res
 		.case	right
 env		.fkarg	0	gsdl.cgs.typeenv.t
 			.lift
 			.app	env
 			.yield	ibio.prim.unit	gsdl.cgs.typeenv.t
+
+_real.entry_env_left_res_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_real.entry_env_left_res_we_c	.subcode
+_real.entry_env_left_res_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+we	.bind	_real.entry_env_left_res_we_c
+	.body	_real.entry_env_left_res_body_c
+
+_real.entry_env_left_res_we_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+list.t	.tygvar	# Temp
+ibio.prim.write	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+err.nl	.undefined	list.t	rune.t
+	.lift
+	.app	eo	err.nl
+	.yield	ibio.prim.write	rune.t
+
+_real.entry_env_left_res_body_c	.expr
+ibio.prim.t	.tygvar	# Temp
+gsdl.cgs.typeenv.t	.tygvar	# Temp
+	.undef	ibio.prim.t	gsdl.cgs.typeenv.t
 
 _prefix.typecheck_c	.expr
 list.t	.tygvar
