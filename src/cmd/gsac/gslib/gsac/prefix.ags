@@ -734,7 +734,12 @@ either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 gsdl.cgs.gstype.t	.tygvar	# Temp
 e0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
-	.undef	either.t	string.t	gsdl.cgs.gstype.t
+	.analyze	e0	just	nothing
+		.case	just
+exp		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
+		.case	nothing
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
 
 _gsac.prefix.gstype.upconvert_lift_k	.forcecont
 either.prim.u	.tygvar
