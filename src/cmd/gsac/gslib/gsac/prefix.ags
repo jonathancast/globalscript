@@ -58,6 +58,7 @@ gsac.prefix.gstype.constr.upconvert	.closure	_gsac.prefix.gstype.constr.upconver
 gsac.prefix.item.name	.closure	_gsac.prefix.item.name_c
 
 gsac.prefix.item.deps	.closure	_gsac.prefix.item.deps_c
+gsac.prefix.item.tygvar.deps	.closure	_gsac.prefix.item.tygvar.deps_c
 
 gsac.prefix.item.typecheck	.closure	_gsac.prefix.item.typecheck_c
 
@@ -914,8 +915,8 @@ gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 list.t	.tygvar	# Temp
-_gsac.prefix.item.deps_typeconstitem_gsabstypedefn_tygvs.f_c	.subcode
 list.map	.gvar
+gsac.prefix.item.tygvar.deps	.gvar
 ti0	.karg	gsac.prefix.typeconstitem.prim.u
 	.analyze	ti0	gsabstypedefn
 		.case	gsabstypedefn
@@ -924,17 +925,10 @@ v		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
-tygvs.f			.alloc	_gsac.prefix.item.deps_typeconstitem_gsabstypedefn_tygvs.f_c
 tygvs			.lfield	tygvars	ds
-			.app	tygvs.f	tygvs
+			.app	gsac.prefix.item.tygvar.deps	tygvs
 			.enter	list.map	gsdl.ags.typeitem.decls.tygvar.t	gsdl.cgs.symbol.t
 	# > :: list.t	gsdl.cgs.symbol.t
-
-_gsac.prefix.item.deps_typeconstitem_gsabstypedefn_tygvs.f_c	.expr
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar	# Temp
-tygv	.larg	gsdl.ags.typeitem.decls.tygvar.t
-	.undef	gsdl.cgs.symbol.t
 
 _gsac.prefix.item.deps_typefnitem_k	.forcecont
 gsac.prefix.typefnitem.prim.u	.tygvar
@@ -952,6 +946,14 @@ v		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
 			.enter	list.nil	gsdl.cgs.symbol.t
 	# > :: list.t	gsdl.cgs.symbol.t
+
+# §subsection §gs{gsac.prefix.item.tygvar.deps}
+
+_gsac.prefix.item.tygvar.deps_c	.expr
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar	# Temp
+tygv	.larg	gsdl.ags.typeitem.decls.tygvar.t
+	.undef	gsdl.cgs.symbol.t
 
 # §section §gs{gsac.prefix.item.typecheck}
 
