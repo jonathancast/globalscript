@@ -659,21 +659,25 @@ e	.larg	gsdl.ags.typeitem.expr.t
 _gsac.prefix.gstype.upconvert_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.ags.typeitem.expr.prim.u	.tygvar
-gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-list.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.ags.typeitem.constr.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
-gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
+_gsac.prefix.gstype.upconvert_fun_k	.subcode
 _gsac.prefix.gstype.upconvert_lift_k	.subcode
 _gsac.prefix.gstype.upconvert_product_k	.subcode
 _gsac.prefix.gstype.upconvert_sum_k	.subcode
+maybe.t.out	.cogvar
 either.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.get	.gvar
 gsac.prefix.gstype.upconvert	.gvar
 either.mapM	.gvar
 gsac.prefix.gstype.field.upconvert	.gvar
@@ -687,7 +691,10 @@ e0	.karg	gsdl.ags.typeitem.expr.prim.u
 tyf		.fkarg	0	gsdl.var.t
 tyas		.fkarg	1	list.t	gsdl.var.t
 res		.fkarg	2	gsdl.ags.typeitem.expr.t
-			.undef	either.t	string.t	gsdl.cgs.gstype.t
+			.force	_gsac.prefix.gstype.upconvert_fun_k
+			.coerce	maybe.t.out	gsdl.cgs.typeenv.typeexpansion.t
+			.app	tyf	env
+			.enter	gsdl.cgs.typeenv.typeexpansion.get
 		.case	lift
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.ags.typeitem.expr.t
@@ -719,6 +726,15 @@ tyf		.fkarg	0	gsdl.var.t
 tyc		.fkarg	1	list.t	gsdl.var.t
 			.undef	either.t	string.t	gsdl.cgs.gstype.t
 	# > :: either.t	string.t	gsdl.cgs.gstype.t
+
+_gsac.prefix.gstype.upconvert_fun_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+gsdl.cgs.gstype.t	.tygvar	# Temp
+e0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
+	.undef	either.t	string.t	gsdl.cgs.gstype.t
 
 _gsac.prefix.gstype.upconvert_lift_k	.forcecont
 either.prim.u	.tygvar
