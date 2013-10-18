@@ -24,6 +24,7 @@ ordered.set.singleton	.closure	_ordered.set.singleton_c
 ordered.set.insert	.closure	_ordered.set.insert_c	_ordered.set.insert_ty
 ordered.set.union	.closure	_ordered.set.union_c	_ordered.set.union_ty
 _ordered.set.union_split	.closure	_ordered.set.union_split_c	_ordered.set.union_split_ty
+ordered.set.difference	.closure	_ordered.set.difference_c	_ordered.set.difference_ty
 
 ordered.set.prim.branch	.closure	_ordered.set.prim.branch_c
 
@@ -539,6 +540,17 @@ r1	.record	0	r1.0	1	r0.1	|	_ordered.set.union_split_res.u	α
 	.lift
 	.yield	r1
 
+# §section §gs{ordered.set.difference}
+
+_ordered.set.difference_c	.expr
+order.total.t	.tygvar
+ordered.set.t	.tygvar
+α	.tyarg	*
+cmp	.larg	order.total.t	α
+s0	.larg	ordered.set.t	α
+s1	.larg	ordered.set.t	α
+	.undef	ordered.set.t	α
+
 # §section §gs{tygvar}
 
 _ordered.set.prim.branch_c	.expr
@@ -657,6 +669,20 @@ ordered.set.t	.tygvar
 α	.tylambda	*
 set.ty	.tylet	ordered.set.t	α
 	.typroduct	0	set.ty	1	set.ty
+
+# §section §gs{ordered.set.difference}
+
+_ordered.set.difference_ty	.tyexpr
+order.total.t	.tygvar
+ordered.set.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	α
+	.tylift
+	.tyfun	ordered.set.t	α
+	.tylift
+	.tyfun	ordered.set.t	α
+	.tyref	ordered.set.t	α
 
 	.coercion
 
