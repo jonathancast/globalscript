@@ -545,11 +545,31 @@ r1	.record	0	r1.0	1	r0.1	|	_ordered.set.union_split_res.u	α
 _ordered.set.difference_c	.expr
 order.total.t	.tygvar
 ordered.set.t	.tygvar
+_ordered.set.difference_k	.subcode
+ordered.set.t.out	.cogvar
 α	.tyarg	*
 cmp	.larg	order.total.t	α
 s0	.larg	ordered.set.t	α
 s1	.larg	ordered.set.t	α
-	.undef	ordered.set.t	α
+	.force	_ordered.set.difference_k
+	.coerce	ordered.set.t.out	α
+	.enter	s0
+
+_ordered.set.difference_k	.forcecont
+ordered.set.prim.u	.tygvar
+ordered.set.t	.tygvar
+ordered.set.empty	.gvar
+α	.tyfv	*
+s0.0	.karg	ordered.set.prim.u	α
+	.analyze	s0.0	branch	empty
+		.case	branch
+x0		.fkarg	0	α
+l0		.fkarg	1	ordered.set.t	α
+r0		.fkarg	2	ordered.set.t	α
+			.undef	ordered.set.t	α
+		.case	empty
+			.enter	ordered.set.empty	α
+	# > :: ordered.set.t	α
 
 # §section §gs{tygvar}
 
