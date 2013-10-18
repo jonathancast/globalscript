@@ -7,6 +7,8 @@ _gsac.input.prefix.file.load_body_left_write_nl.s	.string	\n
 
 gsac.input.prefix.boundvars	.closure	_gsac.input.prefix.boundvars_c
 
+gsac.input.interface.freevars	.closure	_gsac.input.interface.freevars_c
+
 	.code
 
 # §section §gs{gsac.input.prefix.file.load}
@@ -241,3 +243,18 @@ sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
 			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
 	# > :: ordered.set.t	gsdl.cgs.symbol.t
+
+# §section §gs{gsac.input.interface.freevars}
+
+_gsac.input.interface.freevars_c	.expr
+gsdl.ags.file.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ordered.set.difference	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsac.input.prefix.boundvars	.gvar
+ordered.set.empty	.gvar	# Temp
+file	.larg	gsdl.ags.file.t
+fvs	.apply	ordered.set.empty	gsdl.cgs.symbol.t
+bvs	.apply	gsac.input.prefix.boundvars	|	file
+	.app	gsdl.cgs.symbol.compare	fvs	bvs
+	.enter	ordered.set.difference	gsdl.cgs.symbol.t
