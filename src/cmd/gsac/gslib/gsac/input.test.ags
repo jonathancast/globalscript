@@ -13,12 +13,3 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
-
-	.type
-
-# §section Test Fixtures
-
-_fixtures_set.symbol.t	.tyexpr
-ordered.set.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-	.tyref	ordered.set.t	gsdl.cgs.symbol.t
