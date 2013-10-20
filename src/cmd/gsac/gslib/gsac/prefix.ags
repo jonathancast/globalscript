@@ -354,16 +354,36 @@ file	.larg	gsdl.ags.file.t
 _gsac.prefix.file.interface.freevars_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
 gsdl.cgs.symbol.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+_gsac.prefix.file.interface.freevars_tys.fvss.f_c	.subcode
 ordered.set.difference	.gvar
 gsdl.cgs.symbol.compare	.gvar
+list.foldl	.gvar
+ordered.set.union	.gvar
+ordered.set.empty	.gvar
+list.map	.gvar
 gsac.prefix.file.boundvars	.gvar
-ordered.set.empty	.gvar	# Temp
+set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 file0	.karg	gsdl.ags.file.prim.u
-fvs	.apply	ordered.set.empty	gsdl.cgs.symbol.t
+union.symbol	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
+empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
+tys.fvss.f	.alloc	_gsac.prefix.file.interface.freevars_tys.fvss.f_c
+tys	.field	typesection	file0
+tys.fvss	.apply	list.map	gsdl.ags.typeitem.t	set.symbol.ty	|	tys.fvss.f	tys
+tys.fvs	.apply	list.foldl	set.symbol.ty	set.symbol.ty	|	union.symbol	empty.symbol	tys.fvss
+fvs	.apply	tys.fvs
 file0.l	.lifted	file0
 bvs	.apply	gsac.prefix.file.boundvars	|	file0.l
 	.app	gsdl.cgs.symbol.compare	fvs	bvs
 	.enter	ordered.set.difference	gsdl.cgs.symbol.t
+
+_gsac.prefix.file.interface.freevars_tys.fvss.f_c	.expr
+gsdl.ags.typeitem.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar	# Temp
+ordered.set.empty	.gvar	# Temp
+ti	.larg	gsdl.ags.typeitem.t
+	.enter	ordered.set.empty	gsdl.cgs.symbol.t
 
 # §section §gs{gsac.prefix.file.add}
 
