@@ -6,7 +6,6 @@
 
 _tests	.list	test.property.t
 
-_fixtures_set.symbol.≡	.closure	_fixtures_set.symbol.≡_c
 _fixtures_set.symbol.fmtgs	.closure	_fixtures_set.symbol.fmtgs_c
 
 _fixtures.filenm	.closure	_fixtures.filenm_c
@@ -21,13 +20,6 @@ _tests	.gvar
 	.enter	test.all
 
 # §section Test Fixtures
-
-_fixtures_set.symbol.≡_c	.expr
-gsdl.cgs.symbol.t	.tygvar
-ordered.set.≡	.gvar
-gsdl.cgs.symbol.≡	.gvar
-	.app	gsdl.cgs.symbol.≡
-	.enter	ordered.set.≡	gsdl.cgs.symbol.t
 
 _fixtures_set.symbol.fmtgs_c	.expr
 gsdl.cgs.symbol.t	.tygvar
