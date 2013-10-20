@@ -2,8 +2,6 @@
 
 	.data
 
-_gsac.input.prefix.file.load_body_left_write_nl.s	.string	\n
-
 gsac.input.interface.freevars	.closure	_gsac.input.interface.freevars_c
 
 	.code

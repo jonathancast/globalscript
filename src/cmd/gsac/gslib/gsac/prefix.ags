@@ -35,6 +35,7 @@
 gsac.prefix.empty	.closure	_gsac.prefix.empty_c
 
 gsac.prefix.file.load	.closure	_gsac.prefix.file.load_c
+_gsac.prefix.file.load_body_left_write_nl.s	.string	\n
 
 gsac.prefix.file.boundvars	.closure	_gsac.prefix.file.boundvars_c
 
@@ -239,11 +240,11 @@ parser.err.t	.tygvar
 ibio.prim.write	.gvar
 list.<>	.gvar
 parser.err.fmt	.gvar
-_gsac.input.prefix.file.load_body_left_write_nl.s	.gvar
+_gsac.prefix.file.load_body_left_write_nl.s	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	parser.err.t
 s1	.apply	parser.err.fmt	|	err
-s	.apply	list.<>	rune.t	|	s1	_gsac.input.prefix.file.load_body_left_write_nl.s
+s	.apply	list.<>	rune.t	|	s1	_gsac.prefix.file.load_body_left_write_nl.s
 	.app	eo	s
 	.yield	ibio.prim.write	rune.t
 
