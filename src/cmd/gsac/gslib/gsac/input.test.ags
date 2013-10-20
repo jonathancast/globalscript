@@ -4,10 +4,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_interface.freevars.empty
-
-_test_interface.freevars.empty	.closure	_test_interface.freevars.empty_c
-_test_interface.freevars.empty_label	.string	interface.freevars\sempty
+_tests	.list	test.property.t
 
 _fixtures_set.symbol.≡	.closure	_fixtures_set.symbol.≡_c
 _fixtures_set.symbol.fmtgs	.closure	_fixtures_set.symbol.fmtgs_c
@@ -22,36 +19,6 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
-
-# §section §gs{interface.freevars empty}
-
-_test_interface.freevars.empty_c	.expr
-_fixtures_set.symbol.t	.tygvar
-gsdl.ags.codeitem.t	.tygvar
-gsdl.ags.coercionitem.t	.tygvar
-gsdl.ags.dataitem.t	.tygvar
-gsdl.ags.typeitem.t	.tygvar
-gsdl.ags.file.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-test.property.label	.gvar
-_test_interface.freevars.empty_label	.gvar
-test.assert.eq	.gvar
-_fixtures_set.symbol.≡	.gvar
-_fixtures_set.symbol.fmtgs	.gvar
-gsac.input.interface.freevars	.gvar
-list.nil	.gvar
-gsdl.ags.file.filetype.gsprefix	.gvar
-ordered.set.empty	.gvar
-cs	.apply	list.nil	gsdl.ags.codeitem.t
-cos	.apply	list.nil	gsdl.ags.coercionitem.t
-ds	.apply	list.nil	gsdl.ags.dataitem.t
-tys	.apply	list.nil	gsdl.ags.typeitem.t
-file.empty	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
-actual	.apply	gsac.input.interface.freevars	|	file.empty
-set.symbol.empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-test	.apply	test.assert.eq	_fixtures_set.symbol.t	|	_fixtures_set.symbol.≡	_fixtures_set.symbol.fmtgs	actual	set.symbol.empty
-	.app	_test_interface.freevars.empty_label	test
-	.enter	test.property.label
 
 # §section Test Fixtures
 

@@ -39,6 +39,8 @@ _gsac.prefix.file.load_body_left_write_nl.s	.string	\n
 
 gsac.prefix.file.boundvars	.closure	_gsac.prefix.file.boundvars_c
 
+gsac.prefix.file.interface.freevars	.closure	_gsac.prefix.file.interface.freevars_c
+
 gsac.prefix.file.add	.closure	_gsac.prefix.file.add_c
 
 gsac.prefix.typecheck	.closure	_gsac.prefix.typecheck_c
@@ -339,6 +341,21 @@ sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
 			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
 	# > :: ordered.set.t	gsdl.cgs.symbol.t
+
+# §section §gs{gsac.prefix.file.interface.freevars}
+
+_gsac.prefix.file.interface.freevars_c	.expr
+gsdl.ags.file.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ordered.set.difference	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsac.prefix.file.boundvars	.gvar
+ordered.set.empty	.gvar	# Temp
+file	.larg	gsdl.ags.file.t
+fvs	.apply	ordered.set.empty	gsdl.cgs.symbol.t
+bvs	.apply	gsac.prefix.file.boundvars	|	file
+	.app	gsdl.cgs.symbol.compare	fvs	bvs
+	.enter	ordered.set.difference	gsdl.cgs.symbol.t
 
 # §section §gs{gsac.prefix.file.add}
 
