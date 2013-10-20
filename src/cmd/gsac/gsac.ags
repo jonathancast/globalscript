@@ -882,12 +882,12 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 ibio.file.name.t	.tygvar
 bool.t	.tygvar
-gsac.input.prefix.file.load	.gvar
+gsac.prefix.file.load	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
 isags	.fv	bool.t
 	.app	eo	isags	fn
-	.enter	gsac.input.prefix.file.load
+	.enter	gsac.prefix.file.load
 
 # §paragraph{Add the file to §gs{pr0}}
 _prefix.load.file_pr0.1_c	.expr
