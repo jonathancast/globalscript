@@ -389,10 +389,37 @@ ti	.larg	gsdl.ags.typeitem.t
 
 _gsac.prefix.file.interface.freevars_tys.fvss.f_k	.forcecont
 gsdl.ags.typeitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+maybe.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
 ordered.set.empty	.gvar	# Temp
 ti0	.karg	gsdl.ags.typeitem.prim.u
-	.enter	ordered.set.empty	gsdl.cgs.symbol.t
+	.analyze	ti0	tyabstract	tydefinedprim	tyexpr
+		.case	tyabstract
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+e		.fkarg	4	gsdl.ags.typeitem.expr.t
+			.enter	ordered.set.empty	gsdl.cgs.symbol.t
+		.case	tydefinedprim
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ps		.fkarg	2	gsdl.var.t
+pn		.fkarg	3	gsdl.var.t
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
+			.enter	ordered.set.empty	gsdl.cgs.symbol.t
+		.case	tyexpr
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+e		.fkarg	4	gsdl.ags.typeitem.expr.t
+			.enter	ordered.set.empty	gsdl.cgs.symbol.t
 	# > ordered.set.empty	gsdl.cgs.symbol.t :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsac.prefix.file.add}
