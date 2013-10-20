@@ -6,8 +6,6 @@
 
 _tests	.list	test.property.t
 
-_fixtures_set.symbol.fmtgs	.closure	_fixtures_set.symbol.fmtgs_c
-
 _fixtures.filenm	.closure	_fixtures.filenm_c
 _fixtures.filenm_s	.string	./foo.cgs
 
@@ -20,13 +18,6 @@ _tests	.gvar
 	.enter	test.all
 
 # §section Test Fixtures
-
-_fixtures_set.symbol.fmtgs_c	.expr
-gsdl.cgs.symbol.t	.tygvar
-ordered.set.fmtgs	.gvar
-gsdl.cgs.symbol.fmtgs	.gvar
-	.app	gsdl.cgs.symbol.fmtgs
-	.enter	ordered.set.fmtgs	gsdl.cgs.symbol.t
 
 _fixtures.filenm_c	.expr
 ibio.file.name.in	.gvar
