@@ -380,10 +380,20 @@ bvs	.apply	gsac.prefix.file.boundvars	|	file0.l
 
 _gsac.prefix.file.interface.freevars_tys.fvss.f_c	.expr
 gsdl.ags.typeitem.t	.tygvar
+_gsac.prefix.file.interface.freevars_tys.fvss.f_k	.subcode
+gsdl.ags.typeitem.t.out	.cogvar
+ti	.larg	gsdl.ags.typeitem.t
+	.force	_gsac.prefix.file.interface.freevars_tys.fvss.f_k
+	.coerce	gsdl.ags.typeitem.t.out
+	.enter	ti
+
+_gsac.prefix.file.interface.freevars_tys.fvss.f_k	.forcecont
+gsdl.ags.typeitem.prim.u	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
 ordered.set.empty	.gvar	# Temp
-ti	.larg	gsdl.ags.typeitem.t
+ti0	.karg	gsdl.ags.typeitem.prim.u
 	.enter	ordered.set.empty	gsdl.cgs.symbol.t
+	# > ordered.set.empty	gsdl.cgs.symbol.t :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsac.prefix.file.add}
 
