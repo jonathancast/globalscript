@@ -864,6 +864,7 @@ ibio.file.name.t	.tygvar
 bool.t	.tygvar
 _prefix.load.file_file.parsed_c	.subcode
 _prefix.load.file_pr0.1_c	.subcode
+_prefix.load.file_prn3_c	.subcode
 _prefix.load.file_body_c	.subcode
 eo	.larg	ibio.prim.oport	rune.t
 v	.larg	gsdl.cgs.symbol.t
@@ -874,6 +875,7 @@ fn	.larg	ibio.file.name.t
 isags	.larg	bool.t
 file.parsed	.bind	_prefix.load.file_file.parsed_c
 pr0.1	.alloc	_prefix.load.file_pr0.1_c
+prn3	.bind	_prefix.load.file_prn3_c
 	.body	_prefix.load.file_body_c
 
 # §paragraph{Read in the actual file}
@@ -920,6 +922,29 @@ r	.record	bvs	bvs1	filename	pr0.filename	files.loaded	files.loaded.1	isdir	id	pr
 	.lift
 	.yield	r
 
+# §paragraph{Recursively search for the free variables of §gs{file.parsed}'s interface}
+_prefix.load.file_prn3_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+gsdl.ags.file.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ordered.set.t	.tygvar	# Temp
+_prefix.load	.gvar
+ordered.set.tolist	.gvar
+list.:	.gvar
+gsac.prefix.file.interface.freevars	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+prn1	.fv	list.t	_real.entry_prefix_ty
+file.parsed	.fv	gsdl.ags.file.t
+pr0.1	.fv	_real.entry_prefix_ty
+fvs.set	.apply	gsac.prefix.file.interface.freevars	|	file.parsed
+fvs	.apply	ordered.set.tolist	gsdl.cgs.symbol.t	|	fvs.set
+prn2	.apply	list.:	_real.entry_prefix_ty	|	pr0.1	prn1
+	.app	eo	fvs	prn2
+	.enter	_prefix.load
+
 # §paragraph{Loop with the updated §gs{pr0.1} and the remaining files}
 _prefix.load.file_body_c	.expr
 ibio.prim.oport	.tygvar
@@ -928,14 +953,39 @@ gsdl.cgs.symbol.t	.tygvar
 list.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 _real.entry_prefix_ty	.tygvar
-_prefix.load.var_w	.gvar
+_prefix.load.file_body_k	.subcode
+list.t.out	.cogvar
 eo	.fv	ibio.prim.oport	rune.t
 v	.fv	gsdl.cgs.symbol.t
-prn1	.fv	list.t	_real.entry_prefix_ty
+prn3	.fv	list.t	_real.entry_prefix_ty
 files1	.fv	list.t	_prefix.load.var_w_file_ty
-pr0.1	.fv	_real.entry_prefix_ty
-	.app	eo	v	files1	pr0.1	prn1
-	.enter	_prefix.load.var_w
+	.force	_prefix.load.file_body_k
+	.coerce	list.t.out	_real.entry_prefix_ty
+	.enter	prn3
+
+_prefix.load.file_body_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+list.t	.tygvar
+_prefix.load.var_w_file_ty	.tygvar
+list.prim.u	.tygvar
+_real.entry_prefix_ty	.tygvar
+ibio.prim.t	.tygvar	# Temp
+_prefix.load.var_w	.gvar
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	 # Temp
+eo	.fv	ibio.prim.oport	rune.t
+v	.fv	gsdl.cgs.symbol.t
+files1	.fv	list.t	_prefix.load.var_w_file_ty
+prn3.0	.karg	list.prim.u	_real.entry_prefix_ty
+	.analyze	prn3.0	:	nil
+		.case	:
+pr0.3		.fkarg	0	_real.entry_prefix_ty
+prn3.1		.fkarg	1	list.t	_real.entry_prefix_ty
+			.app	eo	v	files1	pr0.3	prn3.1
+			.enter	_prefix.load.var_w
+		.case	nil
+			.undef	ibio.prim.t	list.prefix.ty
 
 # §paragraph{File is a directory; scan it for entries that look like they match §gs{v} and push those onto the front of §gs{files}}
 _prefix.load.var_w_false_:_true_res_c	.impprog	ibio.prim	ibio
