@@ -4,14 +4,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_boundvars.empty	_test_boundvars.gsabstype	_test_interface.freevars.empty
-
-_test_boundvars.empty	.closure	_test_boundvars.empty_c
-_test_boundvars.empty_label	.string	boundvars\sof\sempty\sprefix
-
-_test_boundvars.gsabstype	.closure	_test_boundvars.gsabstype_c
-_test_boundvars.gsabstype_label	.string	boundvars\styabstract
-_test_boundvars.gsabstype_x.s	.string	x
+_tests	.list	test.property.t	_test_interface.freevars.empty
 
 _test_interface.freevars.empty	.closure	_test_interface.freevars.empty_c
 _test_interface.freevars.empty_label	.string	interface.freevars\sempty
@@ -29,88 +22,6 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
-
-# §section §gs{boundvars} of empty prefix
-
-_test_boundvars.empty_c	.expr
-_fixtures_set.symbol.t	.tygvar
-gsdl.ags.codeitem.t	.tygvar
-gsdl.ags.coercionitem.t	.tygvar
-gsdl.ags.dataitem.t	.tygvar
-gsdl.ags.typeitem.t	.tygvar
-gsdl.ags.file.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-test.property.label	.gvar
-_test_boundvars.empty_label	.gvar
-test.assert.eq	.gvar
-_fixtures_set.symbol.≡	.gvar
-_fixtures_set.symbol.fmtgs	.gvar
-gsac.input.prefix.boundvars	.gvar
-list.nil	.gvar
-gsdl.ags.file.filetype.gsprefix	.gvar
-ordered.set.empty	.gvar
-cs	.apply	list.nil	gsdl.ags.codeitem.t
-cos	.apply	list.nil	gsdl.ags.coercionitem.t
-ds	.apply	list.nil	gsdl.ags.dataitem.t
-tys	.apply	list.nil	gsdl.ags.typeitem.t
-file.empty	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
-actual	.apply	gsac.input.prefix.boundvars	|	file.empty
-set.symbol.empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-test	.apply	test.assert.eq	_fixtures_set.symbol.t	|	_fixtures_set.symbol.≡	_fixtures_set.symbol.fmtgs	actual	set.symbol.empty
-	.app	_test_boundvars.empty_label	test
-	.enter	test.property.label
-
-# §section §gs{boundvars} of §gs{tyabstract}
-
-_test_boundvars.gsabstype_c	.expr
-_fixtures_set.symbol.t	.tygvar
-gsdl.ags.codeitem.t	.tygvar
-gsdl.ags.coercionitem.t	.tygvar
-gsdl.ags.dataitem.t	.tygvar
-gsdl.ags.typeitem.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-gsdl.var.component.t	.tygvar
-gsdl.ags.typeitem.decls.t	.tygvar
-gsdl.ags.typeitem.expr.t	.tygvar
-gsdl.ags.file.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-test.property.label	.gvar
-_test_boundvars.gsabstype_label	.gvar
-test.assert.eq	.gvar
-_fixtures_set.symbol.≡	.gvar
-_fixtures_set.symbol.fmtgs	.gvar
-gsac.input.prefix.boundvars	.gvar
-list.nil	.gvar
-gsdl.ags.file.filetype.gsprefix	.gvar
-gsdl.var.basevar	.gvar
-list.singleton	.gvar
-gsdl.ags.typeitem.tyabstract	.gvar
-natural.1	.gvar
-_fixtures.filenm	.gvar
-gsdl.var.component.alphanum	.gvar
-_test_boundvars.gsabstype_x.s	.gvar
-gsdl.ags.typeitem.gskind.lifted	.gvar
-ordered.set.singleton	.gvar
-gsdl.cgs.symbol.compare	.gvar
-gsdl.cgs.symbol.tyvar	.gvar
-cs	.apply	list.nil	gsdl.ags.codeitem.t
-cos	.apply	list.nil	gsdl.ags.coercionitem.t
-ds	.apply	list.nil	gsdl.ags.dataitem.t
-pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
-v.c0	.apply	gsdl.var.component.alphanum	|	_test_boundvars.gsabstype_x.s
-v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
-v	.apply	gsdl.var.basevar	|	v.cs
-decls	.undefined	gsdl.ags.typeitem.decls.t
-tye	.undefined	gsdl.ags.typeitem.expr.t
-ti	.apply	gsdl.ags.typeitem.tyabstract	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	tye
-tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	ti
-file	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
-actual	.apply	gsac.input.prefix.boundvars	|	file
-sym	.apply	gsdl.cgs.symbol.tyvar	|	v
-expected	.apply	ordered.set.singleton	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	sym
-test	.apply	test.assert.eq	_fixtures_set.symbol.t	|	_fixtures_set.symbol.≡	_fixtures_set.symbol.fmtgs	actual	expected
-	.app	_test_boundvars.gsabstype_label	test
-	.enter	test.property.label
 
 # §section §gs{interface.freevars empty}
 

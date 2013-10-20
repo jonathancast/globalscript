@@ -4,98 +4,9 @@
 
 _gsac.input.prefix.file.load_body_left_write_nl.s	.string	\n
 
-gsac.input.prefix.boundvars	.closure	_gsac.input.prefix.boundvars_c
-
 gsac.input.interface.freevars	.closure	_gsac.input.interface.freevars_c
 
 	.code
-
-# §section §gs{gsac.input.prefix.boundvars}
-
-_gsac.input.prefix.boundvars_c	.expr
-gsdl.ags.file.t	.tygvar
-_gsac.input.prefix.boundvars_k	.subcode
-file	.larg	gsdl.ags.file.t
-	.force	_gsac.input.prefix.boundvars_k
-	.enter	file
-
-_gsac.input.prefix.boundvars_k	.forcecont
-gsdl.ags.file.prim.u	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-ordered.set.t	.tygvar
-gsdl.ags.typeitem.t	.tygvar
-_gsac.input.prefix.boundvars_tys.bvars.f_c	.subcode
-ordered.set.union	.gvar
-gsdl.cgs.symbol.compare	.gvar
-list.foldr	.gvar
-ordered.set.empty	.gvar
-list.map	.gvar
-set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
-file0	.karg	gsdl.ags.file.prim.u
-cvars	.apply	ordered.set.empty	gsdl.cgs.symbol.t	# FIXME
-union.symbol	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
-empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-tys.bvars.f	.alloc	_gsac.input.prefix.boundvars_tys.bvars.f_c
-tys	.field	typesection	file0
-tys.bvars	.apply	list.map	gsdl.ags.typeitem.t	set.symbol.ty	|	tys.bvars.f	tys
-tyvars	.apply	list.foldr	set.symbol.ty	set.symbol.ty	|	union.symbol	empty.symbol	tys.bvars
-vars	.apply	ordered.set.empty	gsdl.cgs.symbol.t	# FIXME
-s1	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	vars	tyvars
-	.app	gsdl.cgs.symbol.compare	s1	cvars
-	.enter	ordered.set.union	gsdl.cgs.symbol.t	# Include data vars, type vars, and coercion vars
-
-_gsac.input.prefix.boundvars_tys.bvars.f_c	.expr
-gsdl.ags.typeitem.t	.tygvar
-_gsac.input.prefix.boundvars_tys.bvars.f_k	.subcode
-gsdl.ags.typeitem.t.out	.cogvar
-ti	.larg	gsdl.ags.typeitem.t
-	.force	_gsac.input.prefix.boundvars_tys.bvars.f_k
-	.coerce	gsdl.ags.typeitem.t.out
-	.enter	ti
-
-_gsac.input.prefix.boundvars_tys.bvars.f_k	.forcecont
-gsdl.ags.typeitem.prim.u	.tygvar
-gsdl.sourcepos.t	.tygvar
-gsdl.var.t	.tygvar
-gsdl.ags.typeitem.gskind.t	.tygvar
-gsdl.ags.typeitem.decls.t	.tygvar
-gsdl.ags.typeitem.expr.t	.tygvar
-maybe.t	.tygvar
-ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
-ordered.set.singleton	.gvar
-gsdl.cgs.symbol.compare	.gvar
-gsdl.cgs.symbol.tyvar	.gvar
-ti0	.karg	gsdl.ags.typeitem.prim.u
-	.analyze	ti0	tyabstract	tydefinedprim	tyexpr
-		.case	tyabstract
-pos		.fkarg	0	gsdl.sourcepos.t
-v		.fkarg	1	gsdl.var.t
-ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
-ds		.fkarg	3	gsdl.ags.typeitem.decls.t
-e		.fkarg	4	gsdl.ags.typeitem.expr.t
-sym			.apply	gsdl.cgs.symbol.tyvar	|	v
-			.app	gsdl.cgs.symbol.compare	sym
-			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
-		.case	tydefinedprim
-pos		.fkarg	0	gsdl.sourcepos.t
-v		.fkarg	1	gsdl.var.t
-prims		.fkarg	2	gsdl.var.t
-primnm		.fkarg	3	gsdl.var.t
-ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
-sym			.apply	gsdl.cgs.symbol.tyvar	|	v
-			.app	gsdl.cgs.symbol.compare	sym
-			.enter	ordered.set.singleton	gsdl.cgs.symbol.t	# TODO: Also something like a §gs{primtyvar}?
-		.case	tyexpr
-pos		.fkarg	0	gsdl.sourcepos.t
-v		.fkarg	1	gsdl.var.t
-mki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
-ds		.fkarg	3	gsdl.ags.typeitem.decls.t
-e		.fkarg	4	gsdl.ags.typeitem.expr.t
-sym			.apply	gsdl.cgs.symbol.tyvar	|	v
-			.app	gsdl.cgs.symbol.compare	sym
-			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
-	# > :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsac.input.interface.freevars}
 
@@ -104,10 +15,10 @@ gsdl.ags.file.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 ordered.set.difference	.gvar
 gsdl.cgs.symbol.compare	.gvar
-gsac.input.prefix.boundvars	.gvar
+gsac.prefix.file.boundvars	.gvar
 ordered.set.empty	.gvar	# Temp
 file	.larg	gsdl.ags.file.t
 fvs	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-bvs	.apply	gsac.input.prefix.boundvars	|	file
+bvs	.apply	gsac.prefix.file.boundvars	|	file
 	.app	gsdl.cgs.symbol.compare	fvs	bvs
 	.enter	ordered.set.difference	gsdl.cgs.symbol.t
