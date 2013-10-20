@@ -346,14 +346,22 @@ sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 
 _gsac.prefix.file.interface.freevars_c	.expr
 gsdl.ags.file.t	.tygvar
+_gsac.prefix.file.interface.freevars_k	.subcode
+file	.larg	gsdl.ags.file.t
+	.force	_gsac.prefix.file.interface.freevars_k
+	.enter	file
+
+_gsac.prefix.file.interface.freevars_k	.forcecont
+gsdl.ags.file.prim.u	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 ordered.set.difference	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsac.prefix.file.boundvars	.gvar
 ordered.set.empty	.gvar	# Temp
-file	.larg	gsdl.ags.file.t
+file0	.karg	gsdl.ags.file.prim.u
 fvs	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-bvs	.apply	gsac.prefix.file.boundvars	|	file
+file0.l	.lifted	file0
+bvs	.apply	gsac.prefix.file.boundvars	|	file0.l
 	.app	gsdl.cgs.symbol.compare	fvs	bvs
 	.enter	ordered.set.difference	gsdl.cgs.symbol.t
 
