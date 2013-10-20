@@ -6,9 +6,6 @@
 
 _tests	.list	test.property.t
 
-_fixtures.filenm	.closure	_fixtures.filenm_c
-_fixtures.filenm_s	.string	./foo.cgs
-
 	.code
 
 _ep_c	.expr
@@ -16,14 +13,6 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
-
-# §section Test Fixtures
-
-_fixtures.filenm_c	.expr
-ibio.file.name.in	.gvar
-_fixtures.filenm_s	.gvar
-	.app	_fixtures.filenm_s
-	.enter	ibio.file.name.in
 
 	.type
 
