@@ -4,7 +4,10 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t
+_tests	.list	test.property.t	_test.difference.1.2
+
+_test.difference.1.2	.closure	_test.difference.1.2_c
+_test.difference.1.2_label	.string	{1}\s`difference`\s{2}
 
 	.code
 
@@ -13,3 +16,30 @@ test.all	.gvar
 _tests	.gvar
 	.app	_tests
 	.enter	test.all
+
+# §section §gs{{1} `difference` {2}}
+
+_test.difference.1.2_c	.expr
+ordered.set.t	.tygvar
+natural.t	.tygvar
+test.property.label	.gvar
+_test.difference.1.2_label	.gvar
+test.assert.eq	.gvar
+ordered.set.≡	.gvar
+natural.≡	.gvar
+ordered.set.fmtgs	.gvar
+natural.fmtgs	.gvar
+ordered.set.difference	.gvar
+natural.compare	.gvar
+ordered.set.singleton	.gvar
+natural.1	.gvar
+natural.2	.gvar
+set.natural.ty	.tylet	ordered.set.t	natural.t
+set.natural.≡	.apply	ordered.set.≡	natural.t	|	natural.≡
+set.natural.fmtgs	.apply	ordered.set.fmtgs	natural.t	|	natural.fmtgs
+s1	.apply	ordered.set.singleton	natural.t	|	natural.compare	natural.1
+s2	.apply	ordered.set.singleton	natural.t	|	natural.compare	natural.2
+actual	.apply	ordered.set.difference	natural.t	|	natural.compare	s1	s2
+test	.apply	test.assert.eq	set.natural.ty	|	set.natural.≡	set.natural.fmtgs	actual	s1
+	.app	_test.difference.1.2_label	test
+	.enter	test.property.label
