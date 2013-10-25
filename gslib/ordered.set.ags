@@ -569,7 +569,7 @@ l0.sr		.fkarg	2	ordered.set.t	α
 			.coerce	ordered.set.t.out	α
 			.enter	r
 		.case	empty
-			.undef	ordered.set.t	α
+			.enter	r
 	# > :: ordered.set.t	α
 
 _ordered.set_prim.concat_branch_k	.forcecont
