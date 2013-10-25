@@ -644,19 +644,17 @@ _prefix.load.var_w_false_:_false_k	.forcecont
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
+_real.entry_prefix_ty	.tygvar
 list.t	.tygvar
 _prefix.load.var_w_file_ty	.tygvar
 ibio.file.name.t	.tygvar
 bool.prim.u	.tygvar
 string.t	.tygvar
-ibio.prim.t	.tygvar	# Temp
-list.t	.tygvar	 # Temp
-_real.entry_prefix_ty	.tygvar	 # Temp
 _prefix.load.var_w_false_:_false_false_k	.subcode
 list.t.out	.cogvar
 list.reverse	.gvar
 ibio.file.name.components.get	.gvar
-list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty	# Temp
+_prefix.load.var_w	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 v	.fv	gsdl.cgs.symbol.t
 pr0	.fv	_real.entry_prefix_ty
@@ -673,7 +671,8 @@ txes			.apply	list.reverse	string.t	|	exts
 			.coerce	list.t.out	string.t
 			.enter	txes
 		.case	true
-			.undef	ibio.prim.t	list.prefix.ty
+			.app	eo	v	files1	pr0	prn1
+			.enter	_prefix.load.var_w
 
 # §paragraph{Get the last extension to check if we should load the file}
 # File has not been loaded; check the extension and make sure we should load it.
