@@ -677,12 +677,16 @@ r1	.record	0	r1.0	1	r0.1	|	_ordered.set_prim.split_res.u	α
 	.yield	r1
 
 _ordered.set_prim.split_branch_lt_k	.forcecont
+ordered.set.t	.tygvar
 _ordered.set_prim.split_res.u	.tygvar
-ordered.set.t	.tygvar	# Temp
+ordered.set.prim.branch	.gvar
 α	.tyfv	*
+x1	.fv	α
+sr	.fv	ordered.set.t	α
 r0	.karg	_ordered.set_prim.split_res.u	α
 r0.0	.field	0	r0
-r1.1	.undefined	ordered.set.t	α	# branch x1 (#1 r0) sr
+r0.1	.undefined	ordered.set.t	α
+r1.1	.apply	ordered.set.prim.branch	α	|	x1	r0.1	sr
 r1	.record	0	r0.0	1	r1.1	|	_ordered.set_prim.split_res.u	α
 	.lift
 	.yield	r1
