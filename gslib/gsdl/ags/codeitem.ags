@@ -88,6 +88,7 @@ _gsdl.ags.codeitem.expr.parser_gsanalyze.p_gsanalyze.kw.re	.regex	.analyze
 _gsdl.ags.codeitem.expr.parser_app.p_app.re	.regex	.app
 _gsdl.ags.codeitem.expr.parser_coerce.p_coerce.re	.regex	.coerce
 _gsdl.ags.codeitem.expr.parser_lift.p_lift.re	.regex	.lift
+_gsdl.ags.codeitem.expr.parser_lprim.p_lprim.kw.re	.regex	.lprim
 _gsdl.ags.codeitem.expr.parser_enter.p_enter.re	.regex	.enter
 _gsdl.ags.codeitem.expr.parser_force.p_force.re	.regex	.force
 _gsdl.ags.codeitem.expr.parser_strict.p_strict.re	.regex	.strict
@@ -1951,6 +1952,7 @@ _gsdl.ags.codeitem.expr.parser_coerce.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_enter.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_force.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_lift.p_c	.subcode
+_gsdl.ags.codeitem.expr.parser_lprim.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_strict.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_ubanalyze.p_c	.subcode
 _gsdl.ags.codeitem.expr.parser_ubprim.p_c	.subcode
@@ -1963,15 +1965,17 @@ enter.p	.alloc	_gsdl.ags.codeitem.expr.parser_enter.p_c
 force.p	.alloc	_gsdl.ags.codeitem.expr.parser_force.p_c
 gsanalyze.p	.alloc	_gsdl.ags.codeitem.expr.parser_gsanalyze.p_c
 lift.p	.alloc	_gsdl.ags.codeitem.expr.parser_lift.p_c
+lprim.p	.alloc	_gsdl.ags.codeitem.expr.parser_lprim.p_c
 strict.p	.alloc	_gsdl.ags.codeitem.expr.parser_strict.p_c
 ubanalyze.p	.alloc	_gsdl.ags.codeitem.expr.parser_ubanalyze.p_c
 ubprim.p	.alloc	_gsdl.ags.codeitem.expr.parser_ubprim.p_c
 undef.p	.alloc	_gsdl.ags.codeitem.expr.parser_undef.p_c
 yield.p	.alloc	_gsdl.ags.codeitem.expr.parser_yield.p_c
-p9	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	undef.p	yield.p
-p8	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	ubprim.p	p9
-p7	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	ubanalyze.p	p8
-p6	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	strict.p	p7
+p10	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	undef.p	yield.p
+p9	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	ubprim.p	p10
+p8	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	ubanalyze.p	p9
+p7	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	strict.p	p8
+p6	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	lprim.p	p7
 p5	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	lift.p	p6
 p4	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	force.p	p5
 p3	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.expr.t	|	enter.p	p4
@@ -2240,6 +2244,41 @@ pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
 	.app	pos	co	e
 	.yield	gsdl.ags.codeitem.expr.force
+
+_gsdl.ags.codeitem.expr.parser_lprim.p_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+string.t	.tygvar
+gsdl.var.t	.tygvar
+_gsdl.ags.codeitem.expr.parser_lprim.p_f_c	.subcode
+parser.<*	.gvar
+parser.lift3	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.expr.parser_lprim.p_lprim.kw.re	.gvar
+gsdl.ags.syntax.var	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.codeitem.expr.parser_lprim.p_f_c
+lprim.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.expr.parser_lprim.p_lprim.kw.re
+primset.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
+primset.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	lprim.kw.p	primset.p2
+primset.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	primset.p1
+primnm.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
+p	.apply	parser.lift3	rune.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	gsdl.ags.codeitem.expr.t	|	f	primset.p	primnm.p	ty.p
+	.app	p	gsdl.ags.syntax.whitespace
+	.enter	parser.<*	rune.t	gsdl.ags.codeitem.expr.t	string.t
+
+_gsdl.ags.codeitem.expr.parser_lprim.p_f_c	.expr
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar	# Temp
+ps	.larg	gsdl.var.t
+pn	.larg	gsdl.var.t
+ty	.larg	gsdl.var.t
+	.undef	gsdl.ags.codeitem.expr.t
 
 _gsdl.ags.codeitem.expr.parser_strict.p_c	.expr
 rune.t	.tygvar
