@@ -225,8 +225,8 @@ _test.parse_expr.ubprim_label	.string	qq{\\t.ubprim\\trune.prim\\teq\\t_rune.pri
 _test.parse_expr.ubprim_input	.string	\t.ubprim\trune.prim\teq\t_rune.prim.eq.t\t|\tx0\ty0\n
 
 _test.parse_expr.lprim	.closure	_test.parse_expr.lprim_c
-_test.parse_expr.lprim_label	.string	qq{\\t.lprim\\trune.prim\\teq\\t_rune.prim.eq_ty\\tα\\n}\s=~\sexpr.parser
-_test.parse_expr.lprim_input	.string	\t.lprim\trune.prim\teq\t_rune.prim.eq_ty\tα\n
+_test.parse_expr.lprim_label	.string	qq{\\t.lprim\\trune.prim\\teq\\t_rune.prim.eq_ty\\tα\\t|\\tx\\n}\s=~\sexpr.parser
+_test.parse_expr.lprim_input	.string	\t.lprim\trune.prim\teq\t_rune.prim.eq_ty\tα\t|\tx\n
 
 # §section §gs{≡}
 
