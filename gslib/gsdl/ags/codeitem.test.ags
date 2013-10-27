@@ -76,8 +76,8 @@ _test.parse_expr.alloc_label	.string	qq{_foo_c\\t.expr\\nbar\\t.alloc\\t_bar_c\\
 _test.parse_expr.alloc_input	.string	_foo_c\t.expr\nbar\t.alloc\t_bar_c\n\t.enter\tbaz\n
 
 _test.parse_expr.impprim	.closure	_test.parse_expr.impprim_c
-_test.parse_expr.impprim_label	.string	qq{_foo_c\\t.expr\\nu\\t.impprim\\tibio.prim\\tibio\\tunit\\t_ibio.prim.unit_ty\\n\\t.enter\\tbaz\\n}\s=~\sparser
-_test.parse_expr.impprim_input	.string	_foo_c\t.expr\nu\t.impprim\tibio.prim\tibio\tunit\t_ibio.prim.unit_ty\n\t.enter\tbaz\n
+_test.parse_expr.impprim_label	.string	qq{_foo_c\\t.expr\\nu\\t.impprim\\tibio.prim\\tibio\\tunit\\t_ibio.prim.\\\tα\\n\\t.enter\\tbaz\\n}\s=~\sparser
+_test.parse_expr.impprim_input	.string	_foo_c\t.expr\nu\t.impprim\tibio.prim\tibio\tunit\t_ibio.prim.unit_ty\tα\n\t.enter\tbaz\n
 
 _test.parse_expr.undefined	.closure	_test.parse_expr.undefined_c
 _test.parse_expr.undefined_label	.string	qq{_foo_c\\t.expr\\nbar\\t.undefined\\tbar.t\\tα\\n\\t.enter\\tbaz\\n}\s=~\sparser
@@ -766,7 +766,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nu\\t.impprim\\tibio.prim\\tibio\\tunit\\t_ibio.prim.unit_ty\\n\\t.enter\\tbaz\\n} =~ parser}
+# §subsubsection §gs{qq{_foo_c\\t.expr\\nu\\t.impprim\\tibio.prim\\tibio\\tunit\\t_ibio.prim.unit_ty\\tα\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.impprim_c	.expr
 rune.t	.tygvar
