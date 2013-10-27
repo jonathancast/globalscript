@@ -5,7 +5,7 @@
 ibio.prim.unit	.closure	_ibio.prim.unit_c
 
 ibio.prim.read	.closure	_ibio.prim.read_c
-ibio.prim.write	.closure	_ibio.prim.write.c
+ibio.prim.write	.closure	_ibio.prim.write_c
 
 ibio.prim.file.read.open	.closure	_ibio.prim.file.read.open_c
 ibio.prim.external.io.dir	.closure	_ibio.prim.external.io.dir_c
@@ -38,14 +38,14 @@ a	.arg	ibio.acceptor.prim.t	ι	record.empty
 r	.impprim	ibio.prim	ibio	read	_ibio.prim.read_ty	ι	|	i	a
 	.yield	r
 
-_ibio.prim.write.c	.expr
-_ibio.prim.write.ty	.tygvar
+_ibio.prim.write_c	.expr
+_ibio.prim.write_ty	.tygvar
 ibio.prim.oport	.tygvar
 list.t	.tygvar
 ο	.tyarg	*
 o	.arg	ibio.prim.oport	ο
 s	.arg	list.t	ο
-w	.impprim	ibio.prim	ibio	write	_ibio.prim.write.ty	ο	|	o	s
+w	.impprim	ibio.prim	ibio	write	_ibio.prim.write_ty	ο	|	o	s
 	.yield	w
 
 _ibio.prim.file.read.open_c	.expr
@@ -157,7 +157,7 @@ res.ty	.tylet	ibio.prim.iptr.t	ι
 	.tyfun	ibio.acceptor.prim.t	ι	record.empty
 	.tyref	ibio.prim.m	res.ty
 
-_ibio.prim.write.ty	.tyexpr
+_ibio.prim.write_ty	.tyexpr
 ibio.prim.oport	.tygvar
 list.t	.tygvar
 ibio.prim.m	.tygvar
