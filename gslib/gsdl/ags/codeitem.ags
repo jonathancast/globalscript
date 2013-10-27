@@ -2267,7 +2267,7 @@ code.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	co
 code.p1	.apply	parser.*>	rune.t	string.t	string.t	|	strict.p	code.p2
 code.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	code.p1
 	.app	f	pos.get	code.p	gsdl.ags.codeitem.expr.parser
-	.enter	parser.lift3	rune.t	parser.pos.t	string.t	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.expr.t	# > f <$> pos.get <*> () <*> gsdl.ags.codeitem.expr.parser
+	.enter	parser.lift3	rune.t	parser.pos.t	string.t	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.expr.t
 
 _gsdl.ags.codeitem.expr.parser_strict.p_f_c	.expr
 parser.pos.t	.tygvar
