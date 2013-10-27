@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.exp	_test.print.kind.exp	_test.parse	_test.print	_test.print.expr.tyref.tyarg	_test.decls.fmtgs
+_tests	.list	test.property.t	_test.parse_segment.empty	_test.parse.kind.u	_test.parse.kind.unk	_test.parse.kind.exp	_test.print.kind.exp	_test.parse	_test.print	_test.print.expr.tyref.tyarg	_test.decls.fmtgs
 
 _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.type\\n}\s=~\ssegment.parser
@@ -13,6 +13,10 @@ _test.parse_segment.empty_input	.string	\t.type\n
 _test.parse.kind.u	.closure	_test.parse.kind.u_c
 _test.parse.kind.u_label	.string	qq{u}\s=~\sgskind.parser
 _test.parse.kind.u_input	.string	u
+
+_test.parse.kind.unk	.closure	_test.parse.kind.unk_c
+_test.parse.kind.unk_label	.string	qq{?}\s=~\sgskind.parser
+_test.parse.kind.unk_input	.string	?
 
 _test.parse.kind.exp	.closure	_test.parse.kind.exp_c
 _test.parse.kind.exp_label	.string	qq{**^}\s=~\sgskind.parser
@@ -166,6 +170,30 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.gskind.t	|	parser
 	.enter	test.property.label
 
 _test.parse.kind.u_k_c	.expr
+gsdl.ags.typeitem.gskind.t	.tygvar
+test.true	.gvar
+ki	.larg	gsdl.ags.typeitem.gskind.t
+	.enter	test.true
+
+# §section §gs{qq{?} =~ gskind.parser}
+
+_test.parse.kind.unk_c	.expr
+rune.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+_test.parse.kind.unk_k_c	.subcode
+test.property.label	.gvar
+_test.parse.kind.unk_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.typeitem.gskind.parser	.gvar
+_test.parse.kind.unk_input	.gvar
+k	.alloc	_test.parse.kind.unk_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.gskind.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.gskind.parser	_test.parse.kind.unk_input	k
+	.app	_test.parse.kind.unk_label	test
+	.enter	test.property.label
+
+_test.parse.kind.unk_k_c	.expr
 gsdl.ags.typeitem.gskind.t	.tygvar
 test.true	.gvar
 ki	.larg	gsdl.ags.typeitem.gskind.t

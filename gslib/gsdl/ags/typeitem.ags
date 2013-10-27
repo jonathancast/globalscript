@@ -43,6 +43,7 @@ _gsdl.ags.typeitem.gskind.parser_w	.closure	_gsdl.ags.typeitem.gskind.parser_w_c
 _gsdl.ags.typeitem.gskind.parser_w_pop.p_caret.re	.regex	^
 _gsdl.ags.typeitem.gskind.parser_lifted.re	.regex	\*
 _gsdl.ags.typeitem.gskind.parser_unlifted.re	.regex	u
+_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.unknown_unknown.re	.regex	\?
 
 gsdl.ags.typeitem.gskind.print	.closure	_gsdl.ags.typeitem.gskind.print_c	_gsdl.ags.typeitem.gskind.print_ty
 
@@ -688,13 +689,16 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 rune.t	.tygvar
 _gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.p.lifted_c	.subcode
 _gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.p.unlifted_c	.subcode
+_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.unknown_c	.subcode
 _gsdl.ags.typeitem.gskind.parser_w_push.atom.p_k_c	.subcode
 parser.>>=	.gvar
 parser.<|>	.gvar
 st	.fv	list.t	gsdl.ags.typeitem.gskind.t
 atom.p.lifted	.alloc	_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.p.lifted_c
 atom.p.unlifted	.alloc	_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.p.unlifted_c
-atom.p	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.gskind.t	|	atom.p.lifted	atom.p.unlifted
+atom.unknown	.alloc	_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.unknown_c
+atom.p1	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.gskind.t	|	atom.p.unlifted	atom.unknown
+atom.p	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.gskind.t	|	atom.p.lifted	atom.p1
 k	.alloc	_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_k_c
 	.app	atom.p	k
 	.enter	parser.>>=	rune.t	gsdl.ags.typeitem.gskind.t	gsdl.ags.typeitem.gskind.t
@@ -727,6 +731,22 @@ unlifted.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.gskind.
 unlifted.ki	.undefined	gsdl.ags.typeitem.gskind.t
 unlifted.p2	.apply	parser.unit	rune.t	gsdl.ags.typeitem.gskind.t	|	unlifted.ki
 	.app	unlifted.p1	unlifted.p2
+	.enter	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t
+
+_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.unknown_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.unknown_unknown.re	.gvar
+parser.unit	.gvar
+parser.fail	.gvar	# Temp
+p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.unknown_unknown.re
+unknown.ki	.undefined	gsdl.ags.typeitem.gskind.t
+p2	.apply	parser.unit	rune.t	gsdl.ags.typeitem.gskind.t	|	unknown.ki
+	.app	p1	p2
 	.enter	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t
 
 _gsdl.ags.typeitem.gskind.parser_w_push.atom.p_k_c	.expr
