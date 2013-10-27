@@ -239,11 +239,11 @@ gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
             case 'n':
                 *pv = '\n';
                 break;
+            case '*':
+            case '.':
+            case '?':
             case '\\':
             case '|':
-            case '.':
-            case '*':
-            case '?':
                 *pv = s[1];
                 break;
             default:
