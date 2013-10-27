@@ -1479,8 +1479,8 @@ rune.compare	.gvar
 _gsdl.ags.codeitem.allocs.parser_impprim.p_impprim.kw.re	.gvar
 parser.many	.gvar
 parser.<|>	.gvar
+parser.unit	.gvar
 gsdl.ags.syntax.separator	.gvar
-
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
 list.var.ty	.tylet	list.t	gsdl.var.t
@@ -1494,7 +1494,8 @@ primnm.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep
 ty.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
 tyas.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
 tyas.p	.apply	parser.many	rune.t	gsdl.var.t	|	tyas.p1
-as.p1	.apply	parser.fail	rune.t	list.var.ty	# > unit nil
+as.p1.nil	.undefined	list.t	gsdl.var.t	# > nil
+as.p1	.apply	parser.unit	rune.t	list.var.ty	|	as.p1.nil
 as.p2.2.1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
 as.p2.2	.apply	parser.many	rune.t	gsdl.var.t	|	as.p2.2.1
 as.p2.1	.apply	parser.*>	rune.t	string.t	list.var.ty	|	gsdl.ags.syntax.separator	as.p2.2
