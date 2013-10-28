@@ -9,6 +9,7 @@ gsdl.ags.typeitem.parser	.closure	_gsdl.ags.typeitem.parser_c
 _gsdl.ags.typeitem.parser_tyabstract.p_tyabstract.re	.regex	.tyabstract
 _gsdl.ags.typeitem.parser_tydefinedprim.p_tydefinedprim.re	.regex	.tydefinedprim
 _gsdl.ags.typeitem.parser_tyexpr.p_tyexpr.re	.regex	.tyexpr
+_gsdl.ags.typeitem.parser_tyimpprim.p_tyimpprim.kw.re	.regex	.tyimpprim
 
 gsdl.ags.typeitem.≡	.closure	_gsdl.ags.typeitem.≡_c
 
@@ -137,11 +138,14 @@ gsdl.ags.typeitem.t	.tygvar
 _gsdl.ags.typeitem.parser_tyabstract.p_c	.subcode
 _gsdl.ags.typeitem.parser_tydefinedprim.p_c	.subcode
 _gsdl.ags.typeitem.parser_tyexpr.p_c	.subcode
+_gsdl.ags.typeitem.parser_tyimpprim.p_c	.subcode
 parser.<|>	.gvar
 tyabstract.p	.alloc	_gsdl.ags.typeitem.parser_tyabstract.p_c
 tydefinedprim.p	.alloc	_gsdl.ags.typeitem.parser_tydefinedprim.p_c
 tyexpr.p	.alloc	_gsdl.ags.typeitem.parser_tyexpr.p_c
-p1	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.t	|	tydefinedprim.p	tyexpr.p
+tyimpprim.p	.alloc	_gsdl.ags.typeitem.parser_tyimpprim.p_c
+p2	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.t	|	tyexpr.p	tyimpprim.p
+p1	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.t	|	tydefinedprim.p	p2
 	.app	tyabstract.p	p1
 	.enter	parser.<|>	rune.t	gsdl.ags.typeitem.t
 
@@ -294,6 +298,45 @@ pos	.apply	gsdl.sourcepos	|	pos0	pos1
 nothing	.apply	maybe.nothing	gsdl.ags.typeitem.gskind.t
 	.app	pos	nm	nothing	ds	e
 	.enter	gsdl.ags.typeitem.tyexpr
+
+_gsdl.ags.typeitem.parser_tyimpprim.p_c	.expr
+rune.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+string.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+_gsdl.ags.typeitem.parser_tyimpprim.p_f_c	.subcode
+parser.<*	.gvar
+parser.lift4	.gvar
+gsdl.ags.syntax.var	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.typeitem.parser_tyimpprim.p_tyimpprim.kw.re	.gvar
+gsdl.ags.typeitem.gskind.parser	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.fail	.gvar	# Temp
+f	.alloc	_gsdl.ags.typeitem.parser_tyimpprim.p_f_c
+tyimpprim.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.parser_tyimpprim.p_tyimpprim.kw.re
+primset.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
+primset.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	tyimpprim.kw.p	primset.p2
+primset.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	primset.p1
+primnm.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
+gskind.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.typeitem.gskind.parser
+p	.apply	parser.lift4	rune.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	gsdl.ags.typeitem.gskind.t	gsdl.ags.typeitem.t	|	f	gsdl.ags.syntax.var	primset.p	primnm.p	gskind.p
+	.app	p	gsdl.ags.syntax.whitespace
+	.enter	parser.<*	rune.t	gsdl.ags.typeitem.t	string.t
+
+_gsdl.ags.typeitem.parser_tyimpprim.p_f_c	.expr
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar	# Temp
+nm	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+pn	.larg	gsdl.var.t
+ki	.larg	gsdl.ags.typeitem.gskind.t
+	.undef	gsdl.ags.typeitem.t
 
 # §section §gs{gsdl.ags.typeitem.≡}
 
