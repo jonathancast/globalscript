@@ -1948,7 +1948,7 @@ gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
             gsfatal("%s:%d: Missing kind on primitive type", pos->real_filename, pos->real_lineno);
         parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
         return 0;
-    } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tyapiprim")) {
+    } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tyimpprim")) {
         if (numfields < 2 + 1)
             gsfatal("%s:%d: Mising primitive group name", pos->real_filename, pos->real_lineno);
         parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);

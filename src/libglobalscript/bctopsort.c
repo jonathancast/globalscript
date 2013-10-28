@@ -125,13 +125,13 @@ static struct gsparsedline *gstype_section_skip_type_expr(struct gsparsedfile_se
 struct gsparsedline *
 gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedline *type)
 {
-    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtyapiprim, gssymtyintrprim, gssymtyelimprim, gssymtydefinedprim;
+    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtyimpprim, gssymtyintrprim, gssymtyelimprim, gssymtydefinedprim;
 
     if (gssymceq(type->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
     } else if (gssymceq(type->directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
         return gstype_section_skip_type_expr(ppseg, gsinput_next_line(ppseg, type));
-    } else if (gssymceq(type->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")) {
+    } else if (gssymceq(type->directive, gssymtyimpprim, gssymtypedirective, ".tyimpprim")) {
         return gsinput_next_line(ppseg, type);
     } else if (gssymceq(type->directive, gssymtyintrprim, gssymtypedirective, ".tyintrprim")) {
         return gsinput_next_line(ppseg, type);
@@ -500,7 +500,7 @@ static
 void
 gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtydefinedprim, gssymtyintrprim, gssymtyelimprim, gssymtyapiprim;
+    static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtydefinedprim, gssymtyintrprim, gssymtyelimprim, gssymtyimpprim;
 
     gsinterned_string directive;
     struct gsparsedfile_segment *pseg;
@@ -519,7 +519,7 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
         gssymceq(directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")
         || gssymceq(directive, gssymtyintrprim, gssymtypedirective, ".tyintrprim")
         || gssymceq(directive, gssymtyelimprim, gssymtypedirective, ".tyelimprim")
-        || gssymceq(directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")
+        || gssymceq(directive, gssymtyimpprim, gssymtypedirective, ".tyimpprim")
     ) {
         struct gsregistered_primset *prims;
         struct gsregistered_primtype *type;
@@ -549,9 +549,9 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
         } else if (directive == gssymtyelimprim) {
             expected_group = gsprim_type_elim;
             expected_group_descr = "an elimtype";
-        } else if (directive == gssymtyapiprim) {
-            expected_group = gsprim_type_api;
-            expected_group_descr = "an apitype";
+        } else if (directive == gssymtyimpprim) {
+            expected_group = gsprim_type_imp;
+            expected_group_descr = "an imptype";
         } else {
             gsfatal(UNIMPL("%P: Check primtype group of %y against registered primtype group"), ptype->pos, directive);
         }

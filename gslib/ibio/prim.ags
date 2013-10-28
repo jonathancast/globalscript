@@ -114,7 +114,7 @@ ibio.prim.m	.tygvar
 	.tylift
 	.tyref	ibio.prim.m	α
 
-ibio.prim.m	.tyapiprim	ibio.prim	ibio	u?^
+ibio.prim.m	.tyimpprim	ibio.prim	ibio	u?^
 ibio.prim.oport	.tyelimprim	ibio.prim	oport	u*^
 ibio.prim.iport	.tyelimprim	ibio.prim	iport	u*^
 ibio.prim.iptr	.tyelimprim	ibio.prim	iptr	u*^

@@ -12,7 +12,7 @@
 void
 gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gskind **kinds, int n)
 {
-    static gsinterned_string gssymtyabstract, gssymtyexpr, gssymtydefinedprim, gssymtyapiprim, gssymtyintrprim, gssymtyelimprim;
+    static gsinterned_string gssymtyabstract, gssymtyexpr, gssymtydefinedprim, gssymtyimpprim, gssymtyintrprim, gssymtyelimprim;
 
     int i;
 
@@ -46,7 +46,7 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
                         kinds[i] = gskind_compile(ptype->pos, ptype->arguments[2]);
 
                         gssymtable_set_type_expr_kind(symtable, ptype->label, kinds[i]);
-                    } else if (gssymceq(ptype->directive, gssymtyapiprim, gssymtypedirective, ".tyapiprim")) {
+                    } else if (gssymceq(ptype->directive, gssymtyimpprim, gssymtypedirective, ".tyimpprim")) {
                         gsargcheck(ptype, 2, "Kind");
 
                         kinds[i] = gskind_compile(ptype->pos, ptype->arguments[2]);
@@ -907,7 +907,7 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
             gsfatal("%P: Not enough arguments to .impprog; missing primset", pcode->pos)
         ;
         if (pcode->numarguments < 2)
-            gsfatal("%P: Not enough arguments to .impprog; missing API monad name", pcode->pos)
+            gsfatal("%P: Not enough arguments to .impprog; missing imp monad name", pcode->pos)
         ;
         type = gsbc_typecheck_api_expr(pcode->pos, symtable, &pseg, gsinput_next_line(&pseg, pcode), pcode->arguments[0], pcode->arguments[1]);
         gssymtable_set_code_type(symtable, pcode->label, type);
@@ -2132,7 +2132,7 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
             ;
 
             if (prim->group != gsprim_operation)
-                gsfatal("%P: Primitive %s in primset %s is not an API primitive", p->pos, prim->name, prims->name)
+                gsfatal("%P: Primitive %s in primset %s is not an imp primitive", p->pos, prim->name, prims->name)
             ;
 
             expected_type = gsbc_typecheck_compile_prim_type(p->pos, symtable, prim->type);
@@ -2196,12 +2196,12 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
                 gsfatal("%P: Primitive set %s has no prim %s", p->pos, prims->name, p->arguments[2]->name)
             ;
 
-            if (prim->group != gsprim_operation_api)
-                gsfatal("%P: Primitive %s in primset %s is not an API primitive", p->pos, prim->name, prims->name)
+            if (prim->group != gsprim_operation_imp)
+                gsfatal("%P: Primitive %s in primset %s is not an imp primitive", p->pos, prim->name, prims->name)
             ;
 
             if (strcmp(prim->apitype, primty->name))
-                gsfatal("%P: Primitive %s in primset %s does not belong to API type %s", p->pos, prim->name, prims->name, primty->name)
+                gsfatal("%P: Primitive %s in primset %s does not belong to imp type %s", p->pos, prim->name, prims->name, primty->name)
             ;
 
             expected_type = gsbc_typecheck_compile_prim_type(p->pos, symtable, prim->type);
@@ -2808,7 +2808,7 @@ have_type:
             calculated_type = gstypes_compile_lift(pos, calculated_type)
         ;
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Ensure API block statement has unlifted type", pos);
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Ensure imp block statement has unlifted type", pos);
     }
 
     while (cl.stacksize) {
@@ -3020,7 +3020,7 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
             vars[nvars].kind = gskind_compile(pos, gsintern_string(gssymkindexpr, tok));
 
             nvars++;
-        } else if (!strcmp("\"apiprim", tok)) {
+        } else if (!strcmp("\"impprim", tok)) {
             struct gsregistered_primset *prims;
             struct gsregistered_primtype *primtype;
             gsinterned_string primtypename;
@@ -3030,13 +3030,13 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: Stack overflow in internal primtype; max 0x%x", pos, MAX_NUM_REGISTERS)
             ;
 
-            if (!*s) gsfatal("%P: Can't parse %s: missing primset argument to \"apiprim", pos, buf);
+            if (!*s) gsfatal("%P: Can't parse %s: missing primset argument to \"impprim", pos, buf);
             tok = s;
             s = gsbc_typecheck_compile_prim_type_skip_token(s);
             prims = gsprims_lookup_prim_set(tok);
             if (!prims) gsfatal("%P: Primset %s not declared (in internal primtype)", pos, tok);
 
-            if (!*s) gsfatal("%P: Can't parse %s: missing primtype argument to \"apiprim", pos, buf);
+            if (!*s) gsfatal("%P: Can't parse %s: missing primtype argument to \"impprim", pos, buf);
             tok = s;
             s = gsbc_typecheck_compile_prim_type_skip_token(s);
             primtype = gsprims_lookup_type(prims, tok);
@@ -3044,7 +3044,7 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
 
             primtypename = gsintern_string(gssymtypelable, primtype->name);
             primtypekind = gskind_compile(pos, gsintern_string(gssymkindexpr, primtype->kind));
-            stack[stacksize++] = gstypes_compile_knprim(pos, gsprim_type_api, prims, primtypename, primtypekind);
+            stack[stacksize++] = gstypes_compile_knprim(pos, gsprim_type_imp, prims, primtypename, primtypekind);
         } else if (!strcmp("`", tok)) {
             struct gstype *ty;
 
@@ -3443,8 +3443,8 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
 
         prim = (struct gstype_unprim *)ty;
 
-        if (prim->primtypegroup != gsprim_type_api)
-            gsfatal("%P: I don't think %s is an API primitive type", pos, buf)
+        if (prim->primtypegroup != gsprim_type_imp)
+            gsfatal("%P: I don't think %s is an imperative primitive type", pos, buf)
         ;
         if (prim->primsetname != primsetname)
             gsfatal("%P: I don't think %s is a type in the %s primset", pos, buf, primsetname->name)
@@ -3457,8 +3457,8 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
 
         prim = (struct gstype_knprim *)ty;
 
-        if (prim->primtypegroup != gsprim_type_api)
-            gsfatal("%P: I don't think %s is an API primitive type", pos, buf)
+        if (prim->primtypegroup != gsprim_type_imp)
+            gsfatal("%P: I don't think %s is an imperative primitive type", pos, buf)
         ;
         if (strcmp(prim->primset->name, primsetname->name))
             gsfatal("%P: I don't think %s is a type in the %s primset", pos, buf, primsetname->name)
@@ -3805,8 +3805,8 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
                 case gsprim_type_elim:
                     res = seprint(res, eob, "\"elimprim ");
                     break;
-                case gsprim_type_api:
-                    res = seprint(res, eob, "\"apiprim ");
+                case gsprim_type_imp:
+                    res = seprint(res, eob, "\"impprim ");
                     break;
                 default:
                     res = seprint(res, eob, "%s:%d: %d primitives next ", __FILE__, __LINE__, prim->primtypegroup);
@@ -3828,8 +3828,8 @@ gstypes_eprint_type(char *res, char *eob, struct gstype *pty)
                 case gsprim_type_elim:
                     res = seprint(res, eob, "\"elimprim ");
                     break;
-                case gsprim_type_api:
-                    res = seprint(res, eob, "\"apiprim ");
+                case gsprim_type_imp:
+                    res = seprint(res, eob, "\"impprim ");
                     break;
                 default:
                     res = seprint(res, eob, "%s:%d: %d primitives next ", __FILE__, __LINE__, prim->primtypegroup);

@@ -2,7 +2,7 @@
 
 	.type
 
-sequence.m	.tyapiprim	test.sequence	m	u?^
+sequence.m	.tyimpprim	test.sequence	m	u?^
 
 sequence.unit.ty	.tyexpr
 sequence.m	.tygvar

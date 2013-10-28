@@ -446,7 +446,7 @@ enum gsprim_type_group {
     gsprim_type_defined,
     gsprim_type_intr,
     gsprim_type_elim,
-    gsprim_type_api,
+    gsprim_type_imp,
 };
 
 struct gsregistered_primtype {
@@ -461,7 +461,7 @@ enum gsprim_group {
     gsprim_operation,
     gsprim_operation_unboxed,
     gsprim_operation_lifted,
-    gsprim_operation_api,
+    gsprim_operation_imp,
 };
 
 struct gsregistered_prim {

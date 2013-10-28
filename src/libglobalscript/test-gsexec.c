@@ -10,7 +10,7 @@ p9main(int argc, char **argv)
 
 static struct gsregistered_primtype test_sequence_types[] = {
     /* name, file, line, group, kind, */
-    { "m", __FILE__, __LINE__, gsprim_type_api, "u?^", },
+    { "m", __FILE__, __LINE__, gsprim_type_imp, "u?^", },
     { 0, },
 };
 
@@ -21,7 +21,7 @@ enum test_sequence_api_op {
 
 static struct gsregistered_prim test_sequence_operations[] = {
     /* name, file, line, group, type, index, */
-    { "unit", __FILE__, __LINE__, gsprim_operation_api, "m", "λ α ? α \"apiprim test.sequence m α ` → ∀", test_sequence_api_op_unit, },
+    { "unit", __FILE__, __LINE__, gsprim_operation_imp, "m", "λ α ? α \"impprim test.sequence m α ` → ∀", test_sequence_api_op_unit, },
     { 0, },
 };
 
