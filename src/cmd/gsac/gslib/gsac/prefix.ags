@@ -312,7 +312,7 @@ ordered.set.singleton	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
 ti0	.karg	gsdl.ags.typeitem.prim.u
-	.analyze	ti0	tyabstract	tydefinedprim	tyexpr	tyimpprim
+	.analyze	ti0	tyabstract	tydefinedprim	tyelimprim	tyexpr	tyimpprim
 		.case	tyabstract
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -331,6 +331,13 @@ ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
 			.enter	ordered.set.singleton	gsdl.cgs.symbol.t	# TODO: Also something like a §gs{primtyvar}?
+		.case	tyelimprim
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ps		.fkarg	2	gsdl.var.t
+pn		.fkarg	3	gsdl.var.t
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
 		.case	tyexpr
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -405,7 +412,7 @@ maybe.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
 ordered.set.empty	.gvar	# Temp
 ti0	.karg	gsdl.ags.typeitem.prim.u
-	.analyze	ti0	tyabstract	tydefinedprim	tyexpr	tyimpprim
+	.analyze	ti0	tyabstract	tydefinedprim	tyelimprim	tyexpr	tyimpprim
 		.case	tyabstract
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -414,6 +421,13 @@ ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.enter	ordered.set.empty	gsdl.cgs.symbol.t
 		.case	tydefinedprim
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ps		.fkarg	2	gsdl.var.t
+pn		.fkarg	3	gsdl.var.t
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
+			.enter	ordered.set.empty	gsdl.cgs.symbol.t
+		.case	tyelimprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
@@ -517,7 +531,7 @@ gsdl.ags.typeitem.expr.t	.tygvar
 maybe.t	.tygvar
 tycs	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
 ti0	.karg	gsdl.ags.typeitem.prim.u
-	.analyze	ti0	tyabstract	tydefinedprim	tyexpr	tyimpprim
+	.analyze	ti0	tyabstract	tydefinedprim	tyelimprim	tyexpr	tyimpprim
 		.case	tyabstract
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	gsdl.var.t
@@ -526,6 +540,13 @@ ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 dfn		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.enter	tycs
 		.case	tydefinedprim
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	gsdl.var.t
+ps		.fkarg	2	gsdl.var.t
+pn		.fkarg	3	gsdl.var.t
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
+			.enter	tycs
+		.case	tyelimprim
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
@@ -581,7 +602,7 @@ gsac.prefix.typefnitem.gsabstypenm	.gvar
 gsac.prefix.gskind.upconvert	.gvar
 ts0	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
 ti0	.karg	gsdl.ags.typeitem.prim.u
-	.analyze	ti0	tyabstract	tydefinedprim	tyexpr	tyimpprim
+	.analyze	ti0	tyabstract	tydefinedprim	tyelimprim	tyexpr	tyimpprim
 		.case	tyabstract
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -593,6 +614,13 @@ prfx.ti			.apply	gsac.prefix.typefnitem.gsabstypenm	|	pos	v	cgs.ki
 			.app	gsdl.var.compare	v	prfx.ti	ts0
 			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typefnitem.t
 		.case	tydefinedprim
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+prims		.fkarg	2	gsdl.var.t
+primnm		.fkarg	3	gsdl.var.t
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
+			.enter	ts0	# TODO
+		.case	tyelimprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 prims		.fkarg	2	gsdl.var.t

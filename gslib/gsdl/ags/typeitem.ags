@@ -85,6 +85,7 @@ gsdl.ags.typeitem.constrs.parser	.closure	_gsdl.ags.typeitem.constrs.parser_c
 
 gsdl.ags.typeitem.tyabstract	.closure	_gsdl.ags.typeitem.tyabstract_c
 gsdl.ags.typeitem.tydefinedprim	.closure	_gsdl.ags.typeitem.tydefinedprim_c
+gsdl.ags.typeitem.tyelimprim	.closure	_gsdl.ags.typeitem.tyelimprim_c
 gsdl.ags.typeitem.tyexpr	.closure	_gsdl.ags.typeitem.tyexpr_c
 gsdl.ags.typeitem.tyimpprim	.closure	_gsdl.ags.typeitem.tyimpprim_c
 
@@ -312,11 +313,13 @@ _gsdl.ags.typeitem.parser_tyelimprim.p_c	.expr
 rune.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 string.t	.tygvar
+parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 _gsdl.ags.typeitem.parser_tyelimprim.p_f_c	.subcode
 parser.<*	.gvar
-parser.lift4	.gvar
+parser.lift5	.gvar
+parser.pos.get	.gvar
 gsdl.ags.syntax.var	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
@@ -326,25 +329,32 @@ _gsdl.ags.typeitem.parser_tyelimprim.p_tyelimprim.kw.re	.gvar
 gsdl.ags.typeitem.gskind.parser	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 f	.alloc	_gsdl.ags.typeitem.parser_tyelimprim.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
 tyelimprim.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.parser_tyelimprim.p_tyelimprim.kw.re
 prims.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
 prims.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t		|	tyelimprim.kw.p	prims.p2
 prims.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	prims.p1
 prim.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
 gskind.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.typeitem.gskind.parser
-p	.apply	parser.lift4	rune.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	gsdl.ags.typeitem.gskind.t	gsdl.ags.typeitem.t	|	f	gsdl.ags.syntax.var	prims.p	prim.p	gskind.p
+p	.apply	parser.lift5	rune.t	parser.pos.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	gsdl.ags.typeitem.gskind.t	gsdl.ags.typeitem.t	|	f	pos.get	gsdl.ags.syntax.var	prims.p	prim.p	gskind.p
 	.app	p	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.typeitem.t	string.t
 
 _gsdl.ags.typeitem.parser_tyelimprim.p_f_c	.expr
+parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
-gsdl.ags.typeitem.t	.tygvar	# Temp
+gsdl.ags.typeitem.tyelimprim	.gvar
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
 nm	.larg	gsdl.var.t
 ps	.larg	gsdl.var.t
 pn	.larg	gsdl.var.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
-	.undef	gsdl.ags.typeitem.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+	.app	pos	nm	ps	pn	ki
+	.enter	gsdl.ags.typeitem.tyelimprim
 
 _gsdl.ags.typeitem.parser_tyimpprim.p_c	.expr
 rune.t	.tygvar
@@ -475,7 +485,7 @@ _gsdl.ags.typeitem.print_kindsig.print	.gvar
 gsdl.ags.typeitem.decls.print	.gvar
 gsdl.ags.typeitem.expr.print	.gvar
 ty0	.karg	gsdl.ags.typeitem.prim.u
-	.analyze	ty0	tyabstract	tydefinedprim	tyexpr	tyimpprim
+	.analyze	ty0	tyabstract	tydefinedprim	tyelimprim	tyexpr	tyimpprim
 		.case	tyabstract
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	gsdl.var.t
@@ -488,6 +498,13 @@ pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	gsdl.var.t
 prims		.fkarg	2	gsdl.var.t
 primnm		.fkarg	3	gsdl.var.t
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
+			.undef	diff.list.t	rune.t
+		.case	tyelimprim
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	gsdl.var.t
+ps		.fkarg	2	gsdl.var.t
+pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 			.undef	diff.list.t	rune.t
 		.case	tyexpr
@@ -1698,6 +1715,22 @@ c	.constr	gsdl.ags.typeitem.prim.u	tydefinedprim	0	pos	1	nm	2	primset	3	primnm	4
 	.lift
 	.yield	c
 
+_gsdl.ags.typeitem.tyelimprim_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.prim.u	.tygvar
+gsdl.ags.typeitem.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+nm	.larg	gsdl.var.t
+primset	.larg	gsdl.var.t
+primnm	.larg	gsdl.var.t
+ki	.larg	gsdl.ags.typeitem.gskind.t
+c	.constr	gsdl.ags.typeitem.prim.u	tyelimprim	0	pos	1	nm	2	primset	3	primnm	4	ki
+	.coerce	gsdl.ags.typeitem.t.in
+	.lift
+	.yield	c
+
 _gsdl.ags.typeitem.tyexpr_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
@@ -1864,9 +1897,10 @@ gsdl.ags.typeitem.prim.u	.tygvar
 gsdl.ags.typeitem.prim.u	.tyexpr
 _gsdl.ags.typeitem.prim.u_tyabstract_ty	.tygvar
 _gsdl.ags.typeitem.prim.u_tydefinedprim_ty	.tygvar
+_gsdl.ags.typeitem.prim.u_tyelimprim_ty	.tygvar
 _gsdl.ags.typeitem.prim.u_tyexpr_ty	.tygvar
 _gsdl.ags.typeitem.prim.u_tyimpprim_ty	.tygvar
-	.tysum	tyabstract	_gsdl.ags.typeitem.prim.u_tyabstract_ty	tydefinedprim	_gsdl.ags.typeitem.prim.u_tydefinedprim_ty	tyexpr	_gsdl.ags.typeitem.prim.u_tyexpr_ty	tyimpprim	_gsdl.ags.typeitem.prim.u_tyimpprim_ty
+	.tysum	tyabstract	_gsdl.ags.typeitem.prim.u_tyabstract_ty	tydefinedprim	_gsdl.ags.typeitem.prim.u_tydefinedprim_ty	tyelimprim	_gsdl.ags.typeitem.prim.u_tyelimprim_ty	tyexpr	_gsdl.ags.typeitem.prim.u_tyexpr_ty	tyimpprim	_gsdl.ags.typeitem.prim.u_tyimpprim_ty
 
 _gsdl.ags.typeitem.prim.u_tyabstract_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -1877,6 +1911,12 @@ gsdl.ags.typeitem.expr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.ags.typeitem.gskind.t	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.prim.u_tydefinedprim_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.var.t	3	gsdl.var.t	4	gsdl.ags.typeitem.gskind.t
+
+_gsdl.ags.typeitem.prim.u_tyelimprim_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
