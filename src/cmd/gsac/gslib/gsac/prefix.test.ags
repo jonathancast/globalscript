@@ -21,10 +21,15 @@ _test_file.boundvars_gsabstype_x.s	.string	x
 _test_file.interface.freevars	.closure	_test_file.interface.freevars_c
 _test_file.interface.freevars_label	.string	file.interface.freevars
 
-_tests_file.interface.freevars	.list	test.property.t	_test_file.interface.freevars_empty
+_tests_file.interface.freevars	.list	test.property.t	_test_file.interface.freevars_empty	_test_file.interface.freevars_gsabstype
 
 _test_file.interface.freevars_empty	.closure	_test_file.interface.freevars_empty_c
 _test_file.interface.freevars_empty_label	.string	file.interface.freevars\sempty
+
+_test_file.interface.freevars_gsabstype	.closure	_test_file.interface.freevars_gsabstype_c
+_test_file.interface.freevars_gsabstype_label	.string	file.interface.freevars\sgsabstype
+_test_file.interface.freevars_gsabstype_y.s	.string	y
+_test_file.interface.freevars_gsabstype_x.s	.string	x
 
 _test_items_empty	.closure	_test_items_empty_c
 _test_items_empty_label	.string	items\sempty
@@ -254,6 +259,65 @@ actual	.apply	gsac.prefix.file.interface.freevars	|	file.empty
 set.symbol.empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 test	.apply	test.assert.eq	_fixtures_set.symbol.t	|	_fixtures_set.symbol.≡	_fixtures_set.symbol.fmtgs	actual	set.symbol.empty
 	.app	_test_file.interface.freevars_empty_label	test
+	.enter	test.property.label
+
+# §subsection §gs{file.interface.freevars gsabstype}
+
+_test_file.interface.freevars_gsabstype_c	.expr
+_fixtures_set.symbol.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.ags.file.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.sourcepos.t	.tygvar	# Temp
+gsdl.ags.typeitem.gskind.t	.tygvar	# Temp
+gsdl.ags.typeitem.expr.t	.tygvar	# Temp
+test.property.label	.gvar
+_test_file.interface.freevars_gsabstype_label	.gvar
+test.assert.eq	.gvar
+_fixtures_set.symbol.≡	.gvar
+_fixtures_set.symbol.fmtgs	.gvar
+gsac.prefix.file.interface.freevars	.gvar
+list.nil	.gvar
+gsdl.ags.file.filetype.gsprefix	.gvar
+list.singleton	.gvar
+gsdl.ags.typeitem.tyabstract	.gvar
+gsdl.var.basevar	.gvar
+gsdl.var.component.alphanum	.gvar
+_test_file.interface.freevars_gsabstype_y.s	.gvar
+gsdl.ags.typeitem.decls.tygvar.tygvar	.gvar
+_test_file.interface.freevars_gsabstype_x.s	.gvar
+ordered.set.singleton	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
+cs	.apply	list.nil	gsdl.ags.codeitem.t
+cos	.apply	list.nil	gsdl.ags.coercionitem.t
+ds	.apply	list.nil	gsdl.ags.dataitem.t
+pos	.undefined	gsdl.sourcepos.t
+y.v.c0	.apply	gsdl.var.component.alphanum	|	_test_file.interface.freevars_gsabstype_y.s
+y.v.cs	.apply	list.singleton	gsdl.var.component.t	|	y.v.c0
+y.v	.apply	gsdl.var.basevar	|	y.v.cs
+y.tyabs.ki	.undefined	gsdl.ags.typeitem.gskind.t
+x.v.c0	.apply	gsdl.var.component.alphanum	|	_test_file.interface.freevars_gsabstype_x.s
+x.v.cs	.apply	list.singleton	gsdl.var.component.t	|	x.v.c0
+x.v	.apply	gsdl.var.basevar	|	x.v.cs
+x.tygv	.apply	gsdl.ags.typeitem.decls.tygvar.tygvar	|	x.v
+y.tabs.tygvs	.apply	list.singleton	gsdl.ags.typeitem.decls.tygvar.t	|	x.tygv
+y.tyabs.ds	.lrecord	tygvars	y.tabs.tygvs	|	gsdl.ags.typeitem.decls.t
+y.tyabs.dfn	.undefined	gsdl.ags.typeitem.expr.t
+y.tyabs	.apply	gsdl.ags.typeitem.tyabstract	|	pos	y.v	y.tyabs.ki	y.tyabs.ds	y.tyabs.dfn
+tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	y.tyabs
+file.empty	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
+actual	.apply	gsac.prefix.file.interface.freevars	|	file.empty
+x.sy	.apply	gsdl.cgs.symbol.tyvar	|	x.v
+expected	.apply	ordered.set.singleton	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	x.sy
+test	.apply	test.assert.eq	_fixtures_set.symbol.t	|	_fixtures_set.symbol.≡	_fixtures_set.symbol.fmtgs	actual	expected
+	.app	_test_file.interface.freevars_gsabstype_label	test
 	.enter	test.property.label
 
 # §section §gs{items empty}
