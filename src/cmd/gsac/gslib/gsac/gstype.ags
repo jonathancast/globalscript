@@ -528,6 +528,7 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
@@ -539,7 +540,12 @@ env	.fv	gsdl.cgs.typeenv.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.analyze	e0	gsabstype
+	.analyze	e0	elimprim	gsabstype
+		.case	elimprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.compile_w_var_just_gsabstype_k
@@ -834,6 +840,7 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
@@ -845,7 +852,12 @@ env	.fv	gsdl.cgs.typeenv.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.analyze	e0	gsabstype
+	.analyze	e0	elimprim	gsabstype
+		.case	elimprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.compileToApp_var_just_gsabstype_k
@@ -987,6 +999,7 @@ gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
@@ -1000,7 +1013,12 @@ tyas	.fv	list.t	gsdl.cgs.gstype.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.analyze	e0	gsabstype
+	.analyze	e0	elimprim	gsabstype
+		.case	elimprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.compileToApp_app_var_just_gsabstype_k

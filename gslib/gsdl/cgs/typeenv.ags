@@ -11,11 +11,13 @@ gsdl.cgs.typeenv.typedefinition.get	.closure	_gsdl.cgs.typeenv.typedefinition.ge
 gsdl.cgs.typeenv.empty	.closure	_gsdl.cgs.typeenv.empty_c
 
 gsdl.cgs.typeenv.gsabstypenm.insert	.closure	_gsdl.cgs.typeenv.gsabstypenm.insert_c
+gsdl.cgs.typeenv.elimprim.insert	.closure	_gsdl.cgs.typeenv.elimprim.insert_c
 
 gsdl.cgs.typeenv.gsabstypedefn.insert	.closure	_gsdl.cgs.typeenv.gsabstypedefn.insert_c
 
 gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
 
+gsdl.cgs.typeenv.typeexpansion.elimprim	.closure	_gsdl.cgs.typeenv.typeexpansion.elimprim_c
 gsdl.cgs.typeenv.typeexpansion.gsabstype	.closure	_gsdl.cgs.typeenv.typeexpansion.gsabstype_c
 
 	.code
@@ -139,6 +141,44 @@ r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.
 	.lift
 	.yield	r
 
+# §section §gs{gsdl.cgs.typeenv.elimprim.insert}
+
+_gsdl.cgs.typeenv.elimprim.insert_c	.expr
+gsdl.var.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.elimprim.insert_k	.subcode
+v	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+pn	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.elimprim.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.elimprim.insert_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+gsdl.cgs.typeenv.typeexpansion.elimprim	.gvar
+v	.fv	gsdl.var.t
+pn	.fv	gsdl.var.t
+ps	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+env0	.karg	gsdl.cgs.typeenv.u
+kis	.field	kinds	env0
+tyds	.field	typedefinitions	env0
+e	.apply	gsdl.cgs.typeenv.typeexpansion.elimprim	|	pn	ps	ki
+es0	.field	typeexpansions	env0
+es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
+r	.record	kinds	kis	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
 # §section §gs{gsdl.cgs.typeenv.gsabstypedefn.insert}
 
 _gsdl.cgs.typeenv.gsabstypedefn.insert_c	.expr
@@ -211,6 +251,19 @@ r	.record	kinds	kis2	typedefinitions	tyds2	typeexpansions	es2	|	gsdl.cgs.typeenv
 
 # §section §gs{gsdl.cgs.typeenv.typeexpansion.t} Constructors
 
+_gsdl.cgs.typeenv.typeexpansion.elimprim_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t.in	.cogvar
+ps	.larg	gsdl.var.t
+pn	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+c	.constr	gsdl.cgs.typeenv.typeexpansion.prim.u	elimprim	0 ps	1	pn	2	ki
+	.coerce	gsdl.cgs.typeenv.typeexpansion.t.in
+	.lift
+	.yield	c
+
 _gsdl.cgs.typeenv.typeexpansion.gsabstype_c	.expr
 gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
@@ -249,8 +302,14 @@ gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
 	.tyref	gsdl.cgs.typeenv.typeexpansion.prim.u
 
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tyexpr
+_gsdl.cgs.typeenv.typeexpansion.prim.u_elimprim_ty	.tygvar
 _gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty	.tygvar
-	.tysum	gsabstype	_gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty
+	.tysum	elimprim	_gsdl.cgs.typeenv.typeexpansion.prim.u_elimprim_ty	gsabstype	_gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty
+
+_gsdl.cgs.typeenv.typeexpansion.prim.u_elimprim_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.var.t	1	gsdl.var.t	2	gsdl.cgs.gskind.t
 
 _gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty	.tyexpr
 gsdl.var.t	.tygvar
