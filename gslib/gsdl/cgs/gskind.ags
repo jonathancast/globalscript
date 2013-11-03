@@ -57,7 +57,11 @@ ki0.e		.fkarg	1	gsdl.cgs.gskind.t
 				.case	lifted
 					.enter	bool.true
 		.case	unlifted
-			.undef	bool.t
+			.danalyze	ki1.0	unlifted
+				.default
+					.undef	bool.t
+				.case	unlifted
+					.enter	bool.true
 	# > :: bool.t
 
 # §section §gs{gsdl.cgs.gskind.fmtgs}
