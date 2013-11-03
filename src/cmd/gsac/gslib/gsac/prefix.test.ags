@@ -86,7 +86,7 @@ _test_item.deps_defn.tygvar_x.s	.string	x
 _test_file.add	.closure	_test_file.add_c
 _test_file.add_label	.string	file.add
 
-_tests_file.add	.list	test.property.t	_test_file.add_gsdocument	_test_file.add_gsabstype
+_tests_file.add	.list	test.property.t	_test_file.add_gsdocument	_test_file.add_gsabstype	_test_file.add_elimprim
 
 _test_file.add_gsdocument	.closure	_test_file.add_gsdocument_c
 _test_file.add_gsdocument_label	.string	file.add\signores\sdocuments
@@ -94,6 +94,11 @@ _test_file.add_gsdocument_label	.string	file.add\signores\sdocuments
 _test_file.add_gsabstype	.closure	_test_file.add_gsabstype_c
 _test_file.add_gsabstype_label	.string	file.add\scan\sreturn\sa\sgsabstype
 _test_file.add_gsabstype_x.s	.string	x
+
+_test_file.add_elimprim	.closure	_test_file.add_elimprim_c
+_test_file.add_elimprim_label	.string	file.add\scan\sreturn\san\selimprim
+_test_file.add_elimprim_foo.s	.string	foo
+_test_file.add_elimprim_bar.s	.string	bar
 
 _test.typecheck	.closure	_test.typecheck_c
 _test.typecheck_label	.string	prefix.typecheck
@@ -734,6 +739,71 @@ abstynm	.apply	gsac.prefix.item.typefnitem	|	abstynm.ti
 expected	.apply	list.singleton	gsac.prefix.item.t | 	abstynm
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
 	.app	_test_file.add_gsabstype_label	test
+	.enter	test.property.label
+
+# §subsection §gs{file.add} can return an elimprim
+
+_test_file.add_elimprim_c	.expr
+list.t	.tygvar
+gsac.prefix.item.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.ags.file.t	.tygvar
+gsdl.sourcepos.t	.tygvar	# Temp
+test.property.label	.gvar
+_test_file.add_elimprim_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+gsac.prefix.item.≡	.gvar
+list.fmtgs.byDefault	.gvar
+gsac.prefix.item.fmtgs	.gvar
+gsac.prefix.items	.gvar
+gsac.prefix.file.add	.gvar
+list.nil	.gvar
+gsdl.ags.file.filetype.gsprefix	.gvar
+list.singleton	.gvar
+gsdl.ags.typeitem.tyelimprim	.gvar
+gsdl.var.basevar	.gvar
+list.:	.gvar
+gsdl.var.component.alphanum	.gvar
+_test_file.add_elimprim_foo.s	.gvar
+_test_file.add_elimprim_bar.s	.gvar
+gsdl.ags.typeitem.gskind.unlifted	.gvar
+gsac.prefix.empty	.gvar
+gsac.prefix.item.typefnitem	.gvar
+gsac.prefix.typefnitem.elimprim	.gvar
+gsdl.cgs.gskind.unlifted	.gvar
+natural.1	.gvar
+_fixtures.filenm	.gvar
+list.item.ty	.tylet	list.t	gsac.prefix.item.t
+list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
+list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
+cs	.apply	list.nil	gsdl.ags.codeitem.t
+cos	.apply	list.nil	gsdl.ags.coercionitem.t
+ds	.apply	list.nil	gsdl.ags.dataitem.t
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
+foo.c	.apply	gsdl.var.component.alphanum	|	_test_file.add_elimprim_foo.s
+bar.c	.apply	gsdl.var.component.alphanum	|	_test_file.add_elimprim_bar.s
+v.cs1	.apply	list.singleton	gsdl.var.component.t	|	bar.c
+v.cs	.apply	list.:	gsdl.var.component.t	|	foo.c	v.cs1
+v	.apply	gsdl.var.basevar	|	v.cs
+foo.cs	.apply	list.singleton	gsdl.var.component.t	|	foo.c
+foo	.apply	gsdl.var.basevar	|	foo.cs
+bar.cs	.apply	list.singleton	gsdl.var.component.t	|	bar.c
+bar	.apply	gsdl.var.basevar	|	bar.cs
+ti	.apply	gsdl.ags.typeitem.tyelimprim	|	pos	v	foo	bar	gsdl.ags.typeitem.gskind.unlifted
+tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	ti
+inprfx	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
+pr	.apply	gsac.prefix.file.add	|	inprfx	gsac.prefix.empty
+actual	.apply	gsac.prefix.items	|	pr
+tyfn	.apply	gsac.prefix.typefnitem.elimprim	|	pos	v	foo	bar	gsdl.cgs.gskind.unlifted
+expected.0	.apply	gsac.prefix.item.typefnitem	|	tyfn
+expected	.apply	list.singleton	gsac.prefix.item.t	|	expected.0
+test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
+	.app	_test_file.add_elimprim_label	test
 	.enter	test.property.label
 
 # §section §gs{prefix.typecheck}
