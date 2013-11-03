@@ -1933,7 +1933,9 @@ gsdl.cgs.gskind.t	.tygvar
 bool.t	.tygvar	# Temp
 _gsac.prefix.typefnitem.≡_gsabstype_gsabstype_k	.subcode
 bool.t.out	.cogvar
+bool.∧	.gvar
 gsdl.var.≡	.gvar
+gsdl.cgs.gskind.≡	.gvar
 ti0.0	.fv	gsac.prefix.typefnitem.prim.u
 ti1.0	.karg	gsac.prefix.typefnitem.prim.u
 	.analyze	ti0.0	elimprim	gsabstypenm
@@ -1943,7 +1945,23 @@ v0		.fkarg	1	gsdl.var.t
 ps0		.fkarg	2	gsdl.var.t
 pn0		.fkarg	3	gsdl.var.t
 ki0		.fkarg	4	gsdl.cgs.gskind.t
-			.undef	bool.t
+			.danalyze	ti1.0	elimprim
+				.default
+					.undef	bool.t
+				.case	elimprim
+pos1				.fkarg	0	gsdl.sourcepos.t
+v1				.fkarg	1	gsdl.var.t
+ps1				.fkarg	2	gsdl.var.t
+pn1				.fkarg	3	gsdl.var.t
+ki1				.fkarg	4	gsdl.cgs.gskind.t
+v.eq					.apply	gsdl.var.≡	|	v0	v1
+ps.eq					.apply	gsdl.var.≡	|	ps0	ps1
+pn.eq					.apply	gsdl.var.≡	|	pn0	pn1
+ki.eq					.apply	gsdl.cgs.gskind.≡	|	ki0	ki1
+b2					.apply	bool.∧	|	pn.eq	ki.eq
+b1					.apply	bool.∧	|	ps.eq	b2
+					.app	v.eq	b1
+					.enter	bool.∧
 		.case	gsabstypenm
 pos0		.fkarg	0	gsdl.sourcepos.t
 v0		.fkarg	1	gsdl.var.t
