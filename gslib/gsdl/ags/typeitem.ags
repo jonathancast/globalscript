@@ -100,6 +100,7 @@ gsdl.ags.typeitem.expr.product	.closure	_gsdl.ags.typeitem.expr.product_c
 gsdl.ags.typeitem.expr.tyref	.closure	_gsdl.ags.typeitem.expr.tyref_c
 gsdl.ags.typeitem.expr.sum	.closure	_gsdl.ags.typeitem.expr.sum_c
 
+gsdl.ags.typeitem.gskind.unlifted	.closure	_gsdl.ags.typeitem.gskind.unlifted_c
 gsdl.ags.typeitem.gskind.lifted	.closure	_gsdl.ags.typeitem.gskind.lifted_c
 gsdl.ags.typeitem.gskind.exp	.closure	_gsdl.ags.typeitem.gskind.exp_c
 
@@ -1021,7 +1022,7 @@ diff.list.<>	.gvar
 gsdl.ags.typeitem.gskind.print	.gvar
 rune.caret	.gvar
 ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
-	.analyze	ki0	exp	lifted
+	.analyze	ki0	exp	lifted	unlifted
 		.case	exp
 kib		.fkarg	0	gsdl.ags.typeitem.gskind.t
 kie		.fkarg	1	gsdl.ags.typeitem.gskind.t
@@ -1033,6 +1034,8 @@ ds			.apply	diff.list.<>	rune.t	|	kib.ds	kie.ds
 		.case	lifted
 			.app	rune.star
 			.enter	diff.list.singleton	rune.t
+		.case	unlifted
+			.undef	diff.list.t	rune.t
 	# > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.typeitem.gskind.≡}
@@ -1065,7 +1068,7 @@ bool.t	.tygvar	# Temp
 bool.true	.gvar
 ki0.0	.fv	gsdl.ags.typeitem.gskind.prim.u
 ki1.0	.karg	gsdl.ags.typeitem.gskind.prim.u
-	.analyze	ki0.0	exp	lifted
+	.analyze	ki0.0	exp	lifted	unlifted
 		.case	exp
 kib0		.fkarg	0	gsdl.ags.typeitem.gskind.t
 kie0		.fkarg	1	gsdl.ags.typeitem.gskind.t
@@ -1076,6 +1079,8 @@ kie0		.fkarg	1	gsdl.ags.typeitem.gskind.t
 					.undef	bool.t
 				.case	lifted
 					.enter	bool.true
+		.case	unlifted
+			.undef	bool.t
 	# > :: bool.t
 
 # §section §gs{gsdl.ags.typeitem.gskind.fmtgs}
@@ -1096,7 +1101,7 @@ fmtgs.printer.t	.tygvar	# Temp
 fmtgs.var	.gvar
 _gsdl.ags.typeitem.gskind.fmtgs_lifted_lifted.s	.gvar
 ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
-	.analyze	ki0	exp	lifted
+	.analyze	ki0	exp	lifted	unlifted
 		.case	exp
 kib		.fkarg	0	gsdl.ags.typeitem.gskind.t
 kie		.fkarg	1	gsdl.ags.typeitem.gskind.t
@@ -1104,6 +1109,8 @@ kie		.fkarg	1	gsdl.ags.typeitem.gskind.t
 		.case	lifted
 			.app	_gsdl.ags.typeitem.gskind.fmtgs_lifted_lifted.s
 			.enter	fmtgs.var
+		.case	unlifted
+			.undef	fmtgs.printer.t
 	# > :: fmtgs.printer.t
 
 # §section §gs{gsdl.ags.typeitem.expr.parser}
@@ -1899,6 +1906,14 @@ c	.constr	gsdl.ags.typeitem.expr.prim.u	sum	0	cs
 
 # §section §gs{gsdl.ags.typeitem.gskind.t} constructors
 
+_gsdl.ags.typeitem.gskind.unlifted_c	.expr
+gsdl.ags.typeitem.gskind.prim.u	.tygvar
+gsdl.ags.typeitem.gskind.t.in	.cogvar
+c	.constr	gsdl.ags.typeitem.gskind.prim.u	unlifted
+	.coerce	gsdl.ags.typeitem.gskind.t.in
+	.lift
+	.yield	c
+
 _gsdl.ags.typeitem.gskind.lifted_c	.expr
 gsdl.ags.typeitem.gskind.prim.u	.tygvar
 gsdl.ags.typeitem.gskind.t.in	.cogvar
@@ -2123,7 +2138,7 @@ gsdl.ags.typeitem.gskind.prim.u	.tygvar
 gsdl.ags.typeitem.gskind.prim.u	.tyexpr
 _gsdl.ags.typeitem.gskind.prim.u_exp_ty	.tygvar
 record.unboxed.empty	.tygvar
-	.tysum	exp	_gsdl.ags.typeitem.gskind.prim.u_exp_ty	lifted	record.unboxed.empty
+	.tysum	exp	_gsdl.ags.typeitem.gskind.prim.u_exp_ty	lifted	record.unboxed.empty	unlifted	record.unboxed.empty
 
 _gsdl.ags.typeitem.gskind.prim.u_exp_ty	.tyexpr
 gsdl.ags.typeitem.gskind.t	.tygvar
