@@ -268,16 +268,20 @@ v	.tyfv	*
 cmp	.fv	order.total.t	k
 k0	.fv	k
 v0	.fv	v
+l0	.fv	ordered.map.t	k	v
 r0	.fv	ordered.map.t	k	v
 k1	.fv	k
 v1	.fv	v
+l1	.fv	ordered.map.t	k	v
 r1	.fv	ordered.map.t	k	v
 o0	.karg	order.total.ord.prim.u	# §gs{k0 `compare` k1}
 	.analyze	o0	eq	gt	lt
 		.case	eq
 			.undef	ordered.map.t	k	v
-		.case	gt
-s3.0			.undefined	ordered.map.t	k	v	# Everything less than §gs{k1}
+		.case	gt	# k1 < k0
+l0.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k1	l0
+l0.l			.lfield	0	l0.s	# Everything in l0 less than §gs{k1}
+s3.0			.apply	ordered.map.∪	k	v	|	cmp	l1	l0.l	# Everything less than §gs{k1}
 s3.1			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k1} and less than §gs{k0}
 s4			.apply	ordered.map.prim.branch	k	v	|	k1	v1	s3.0	s3.1
 sr1.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k0	r1
