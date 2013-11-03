@@ -106,7 +106,9 @@ map.r1			.apply	ordered.map.insert	k	v	|	cmp	k	v	map.r
 			.app	k1	v1	map.l	map.r1
 			.enter	ordered.map.prim.branch	k	v
 		.case	lt
-			.undef	ordered.map.t	k	v
+map.l1			.apply	ordered.map.insert	k	v	|	cmp	k	v	map.l
+			.app	k1	v1	map.l1	map.r
+			.enter	ordered.map.prim.branch	k	v
 
 # §section §gs{ordered.map.get}
 
