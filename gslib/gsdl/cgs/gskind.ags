@@ -6,6 +6,7 @@ gsdl.cgs.gskind.≡	.closure	_gsdl.cgs.gskind.≡_c
 
 gsdl.cgs.gskind.fmtgs	.closure	_gsdl.cgs.gskind.fmtgs_c
 _gsdl.cgs.gskind.fmtgs_lifted_lifted.s	.string	lifted
+_gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s	.string	unlifted
 
 gsdl.cgs.gskind.unlifted	.closure	_gsdl.cgs.gskind.unlifted_c
 gsdl.cgs.gskind.lifted	.closure	_gsdl.cgs.gskind.lifted_c
@@ -76,6 +77,7 @@ gsdl.cgs.gskind.t	.tygvar
 fmtgs.printer.t	.tygvar	# Temp
 fmtgs.var	.gvar
 _gsdl.cgs.gskind.fmtgs_lifted_lifted.s	.gvar
+_gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s	.gvar
 ki0	.karg	gsdl.cgs.gskind.prim.u
 	.analyze	ki0	exp	lifted	unlifted
 		.case	exp
@@ -86,7 +88,8 @@ ki.e		.fkarg	1	gsdl.cgs.gskind.t
 			.app	_gsdl.cgs.gskind.fmtgs_lifted_lifted.s
 			.enter	fmtgs.var
 		.case	unlifted
-			.undef	fmtgs.printer.t
+			.app	_gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s
+			.enter	fmtgs.var
 	# > :: fmtgs.printer.t
 
 # §section Constructors
