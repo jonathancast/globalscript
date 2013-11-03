@@ -87,6 +87,7 @@ gsac.prefix.typefnitem.≡	.closure	_gsac.prefix.typefnitem.≡_c
 
 gsac.prefix.typefnitem.fmtgs	.closure	_gsac.prefix.typefnitem.fmtgs_c
 _gsac.prefix.typefnitem.fmtgs_gsabstype_gsabstype.s	.string	gsabstype
+_gsac.prefix.typefnitem.fmtgs_elimprim_elimprim.s	.string	elimprim
 
 gsac.prefix.item.typeconstitem	.closure	_gsac.prefix.item.typeconstitem_c
 gsac.prefix.item.typefnitem	.closure	_gsac.prefix.item.typefnitem_c
@@ -1996,6 +1997,7 @@ gsdl.cgs.gskind.t	.tygvar
 fmtgs.printer.t	.tygvar	# Temp
 fmtgs.app	.gvar
 fmtgs.var	.gvar
+_gsac.prefix.typefnitem.fmtgs_elimprim_elimprim.s	.gvar
 _gsac.prefix.typefnitem.fmtgs_gsabstype_gsabstype.s	.gvar
 gsdl.sourcepos.fmtgs	.gvar
 gsdl.var.fmtgs	.gvar
@@ -2008,7 +2010,18 @@ v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.cgs.gskind.t
-			.undef	fmtgs.printer.t
+f.pr			.apply	fmtgs.var	|	_gsac.prefix.typefnitem.fmtgs_elimprim_elimprim.s
+pos.pr			.apply	gsdl.sourcepos.fmtgs	|	pos
+pr3			.apply	fmtgs.app	|	f.pr	pos.pr
+v.pr			.apply	gsdl.var.fmtgs	|	v
+pr2			.apply	fmtgs.app	|	pr3	v.pr
+ps.pr			.apply	gsdl.var.fmtgs	|	ps
+pr1			.apply	fmtgs.app	|	pr2	ps.pr
+pn.pr			.apply	gsdl.var.fmtgs	|	pn
+pr0			.apply	fmtgs.app	|	pr1	pn.pr
+ki.pr			.apply	gsdl.cgs.gskind.fmtgs	|	ki
+			.app	pr0	ki.pr
+			.enter	fmtgs.app
 		.case	gsabstypenm
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
