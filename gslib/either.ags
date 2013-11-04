@@ -138,13 +138,19 @@ nil			.apply	list.nil	β
 			.enter	either.right	e	list.β.ty
 
 _either.mapM_:_k	.forcecont
+_either.mapM_fun_ty	.tygvar
+list.t	.tygvar
 either.prim.u	.tygvar
-either.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
+_either.mapM_:_right_k	.subcode
+either.t.out	.cogvar
 either.left	.gvar
+either.mapM	.gvar
 e	.tyfv	*
+α	.tyfv	*
 β	.tyfv	*
 list.β.ty	.tylet	list.t	β
+f	.fv	_either.mapM_fun_ty	e	α	β
+xn1	.fv	list.t	α
 ey0	.karg	either.prim.u	e	β
 	.analyze	ey0	left	right
 		.case	left
@@ -153,7 +159,31 @@ e		.fkarg	0	e
 			.enter	either.left	e	list.β.ty
 		.case	right
 y0		.fkarg	0	β
+			.force	_either.mapM_:_right_k
+			.coerce	either.t.out	e	list.β.ty
+			.app	f	xn1
+			.enter	either.mapM	e	α	β
+
+_either.mapM_:_right_k	.forcecont
+either.prim.u	.tygvar
+list.t	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+list.:	.gvar
+e	.tyfv	*
+β	.tyfv	*
+list.β.ty	.tylet	list.t	β
+y0	.fv	β
+e0	.karg	either.prim.u	e	list.β.ty
+	.analyze	e0	left	right
+		.case	left
+e		.fkarg	0	e
 			.undef	either.t	e	list.β.ty
+		.case	right
+ys1		.fkarg	0	list.t	β
+ys			.apply	list.:	β	|	y0	ys1
+			.app	ys
+			.enter	either.right	e	list.β.ty
 
 	.type
 
