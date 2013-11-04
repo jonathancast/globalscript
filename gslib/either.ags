@@ -141,11 +141,19 @@ _either.mapM_:_k	.forcecont
 either.prim.u	.tygvar
 either.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
+either.left	.gvar
 e	.tyfv	*
 β	.tyfv	*
 list.β.ty	.tylet	list.t	β
 ey0	.karg	either.prim.u	e	β
-	.undef	either.t	e	list.β.ty
+	.analyze	ey0	left	right
+		.case	left
+e		.fkarg	0	e
+			.app	e
+			.enter	either.left	e	list.β.ty
+		.case	right
+y0		.fkarg	0	β
+			.undef	either.t	e	list.β.ty
 
 	.type
 
