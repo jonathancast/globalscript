@@ -540,7 +540,7 @@ env	.fv	gsdl.cgs.typeenv.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.analyze	e0	elimprim	gsabstype
+	.analyze	e0	elimprim	gsabstype	var
 		.case	elimprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
@@ -552,6 +552,9 @@ v		.fkarg	0	gsdl.var.t
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
 			.app	env	v	em	gvs
 			.yield	_gsac.gstype.compileToVar_gsabstype
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 	# > :: either.t	string.t	_gsac.gstype.compile_res.ty
 
 _gsac.gstype.compile_w_var_just_gsabstype_k	.forcecont
@@ -852,7 +855,7 @@ env	.fv	gsdl.cgs.typeenv.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.analyze	e0	elimprim	gsabstype
+	.analyze	e0	elimprim	gsabstype	var
 		.case	elimprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
@@ -864,6 +867,9 @@ v		.fkarg	0	gsdl.var.t
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
 			.app	env	v	em	gvs
 			.yield	_gsac.gstype.compileToVar_gsabstype
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 	# > :: either.t	string.t	_gsac.gstype.compileToApp_res.ty
 
 _gsac.gstype.compileToApp_var_just_gsabstype_k	.forcecont
@@ -1013,7 +1019,7 @@ tyas	.fv	list.t	gsdl.cgs.gstype.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.analyze	e0	elimprim	gsabstype
+	.analyze	e0	elimprim	gsabstype	var
 		.case	elimprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
@@ -1025,6 +1031,9 @@ v		.fkarg	0	gsdl.var.t
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
 			.app	env	v	em	gvs
 			.yield	_gsac.gstype.compileToVar_gsabstype
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 	# > :: either.t	string.t	_gsac.gstype.compileToApp_res.ty
 
 _gsac.gstype.compileToApp_app_var_just_gsabstype_k	.forcecont
