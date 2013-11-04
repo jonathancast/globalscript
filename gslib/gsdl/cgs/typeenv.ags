@@ -19,6 +19,7 @@ gsdl.cgs.typeenv.gsabstypedefn.insert	.closure	_gsdl.cgs.typeenv.gsabstypedefn.i
 gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
 
 gsdl.cgs.typeenv.typeexpansion.elimprim	.closure	_gsdl.cgs.typeenv.typeexpansion.elimprim_c
+gsdl.cgs.typeenv.typeexpansion.expr	.closure	_gsdl.cgs.typeenv.typeexpansion.expr_c
 gsdl.cgs.typeenv.typeexpansion.gsabstype	.closure	_gsdl.cgs.typeenv.typeexpansion.gsabstype_c
 gsdl.cgs.typeenv.typeexpansion.var	.closure	_gsdl.cgs.typeenv.typeexpansion.var_c
 
@@ -300,6 +301,16 @@ c	.constr	gsdl.cgs.typeenv.typeexpansion.prim.u	elimprim	0 ps	1	pn	2	ki
 	.lift
 	.yield	c
 
+_gsdl.cgs.typeenv.typeexpansion.expr_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t.in	.cogvar
+e	.larg	gsdl.cgs.gstype.t
+c	.constr	gsdl.cgs.typeenv.typeexpansion.prim.u	expr	0	e
+	.coerce	gsdl.cgs.typeenv.typeexpansion.t.in
+	.lift
+	.yield	c
+
 _gsdl.cgs.typeenv.typeexpansion.gsabstype_c	.expr
 gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
@@ -349,14 +360,19 @@ gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
 
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tyexpr
 _gsdl.cgs.typeenv.typeexpansion.prim.u_elimprim_ty	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.prim.u_expr_ty	.tygvar
 _gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty	.tygvar
 _gsdl.cgs.typeenv.typeexpansion.prim.u_var_ty	.tygvar
-	.tysum	elimprim	_gsdl.cgs.typeenv.typeexpansion.prim.u_elimprim_ty	gsabstype	_gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty	var	_gsdl.cgs.typeenv.typeexpansion.prim.u_var_ty
+	.tysum	elimprim	_gsdl.cgs.typeenv.typeexpansion.prim.u_elimprim_ty	expr	_gsdl.cgs.typeenv.typeexpansion.prim.u_expr_ty	gsabstype	_gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty	var	_gsdl.cgs.typeenv.typeexpansion.prim.u_var_ty
 
 _gsdl.cgs.typeenv.typeexpansion.prim.u_elimprim_ty	.tyexpr
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 	.tyubproduct	0	gsdl.var.t	1	gsdl.var.t	2	gsdl.cgs.gskind.t
+
+_gsdl.cgs.typeenv.typeexpansion.prim.u_expr_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gstype.t
 
 _gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty	.tyexpr
 gsdl.var.t	.tygvar
