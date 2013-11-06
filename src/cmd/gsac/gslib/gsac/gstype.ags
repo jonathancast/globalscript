@@ -529,6 +529,7 @@ gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
@@ -548,7 +549,8 @@ pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	expr
-e		.fkarg	0	gsdl.cgs.gstype.t
+tyls		.fkarg	0	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
@@ -848,6 +850,7 @@ gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
@@ -867,7 +870,8 @@ pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	expr
-e		.fkarg	0	gsdl.cgs.gstype.t
+tyls		.fkarg	0	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
@@ -1014,6 +1018,7 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
@@ -1034,7 +1039,8 @@ pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	expr
-e		.fkarg	0	gsdl.cgs.gstype.t
+tys		.fkarg	0	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t

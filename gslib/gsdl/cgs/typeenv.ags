@@ -302,11 +302,14 @@ c	.constr	gsdl.cgs.typeenv.typeexpansion.prim.u	elimprim	0 ps	1	pn	2	ki
 	.yield	c
 
 _gsdl.cgs.typeenv.typeexpansion.expr_c	.expr
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t.in	.cogvar
+tyls	.larg	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 e	.larg	gsdl.cgs.gstype.t
-c	.constr	gsdl.cgs.typeenv.typeexpansion.prim.u	expr	0	e
+c	.constr	gsdl.cgs.typeenv.typeexpansion.prim.u	expr	0	tyls	1	e
 	.coerce	gsdl.cgs.typeenv.typeexpansion.t.in
 	.lift
 	.yield	c
@@ -371,8 +374,11 @@ gsdl.cgs.gskind.t	.tygvar
 	.tyubproduct	0	gsdl.var.t	1	gsdl.var.t	2	gsdl.cgs.gskind.t
 
 _gsdl.cgs.typeenv.typeexpansion.prim.u_expr_ty	.tyexpr
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-	.tyubproduct	0	gsdl.cgs.gstype.t
+list.tylambda.ty	.tylet	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.tyubproduct	0	list.tylambda.ty	1	gsdl.cgs.gstype.t
 
 _gsdl.cgs.typeenv.typeexpansion.prim.u_gsabstype_ty	.tyexpr
 gsdl.var.t	.tygvar

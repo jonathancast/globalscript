@@ -1525,6 +1525,8 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
 tye0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
@@ -1537,7 +1539,8 @@ tyres			.undefined	gsdl.cgs.gstype.t
 			.app	tyres
 			.enter	either.right	string.t	gsdl.cgs.gstype.t
 		.case	expr
-e		.fkarg	0	gsdl.cgs.gstype.t
+tyls		.fkarg	0	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	gsdl.cgs.gstype.t
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
