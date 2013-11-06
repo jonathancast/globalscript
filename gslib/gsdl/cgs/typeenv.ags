@@ -382,6 +382,16 @@ _gsdl.cgs.typeenv.typeexpansion.prim.u_var_ty	.tyexpr
 gsdl.var.t	.tygvar
 	.tyubproduct	0	gsdl.var.t
 
+# §section §gs{gsdl.cgs.typeenv.typexpansion.tylambda.t}
+
+gsdl.cgs.typeenv.typexpansion.tylambda.t	.tyexpr
+gsdl.cgs.typeenv.typexpansion.tylambda.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.typeenv.typexpansion.tylambda.prim.u
+
+gsdl.cgs.typeenv.typexpansion.tylambda.prim.u	.tyexpr
+	.typroduct
+
 # §section §gs{gsdl.cgs.typeenv.typedefinition.t}
 
 gsdl.cgs.typeenv.typedefinition.t	.tyexpr
