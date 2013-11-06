@@ -136,6 +136,7 @@ _test.upconvert_lift_label	.string	gstype.upconvert\s(lift\s_)
 _test.upconvert_fun	.closure	_test.upconvert_fun_c
 _test.upconvert_fun_label	.string	tstype.upconvert\s(fun\s_\s_\s_)
 _test.upconvert_fun_test_tyf.s	.string	f
+_test.upconvert_fun_test_α.s	.string	α
 _test.upconvert_fun_test_left_err1_prefix.s	.string	upconvert\sfailed:\s
 
 _fixtures_set.symbol.≡	.closure	_fixtures_set.symbol.≡_c
@@ -1224,24 +1225,33 @@ either.t.out	.cogvar
 gsac.prefix.gstype.upconvert	.gvar
 natural.1	.gvar
 _fixtures.filenm	.gvar
-gsdl.cgs.typeenv.elimprim.insert	.gvar
-gsdl.cgs.gskind.unlifted	.gvar
-gsdl.cgs.typeenv.empty	.gvar
-gsdl.ags.typeitem.expr.fun	.gvar
+gsdl.cgs.typeenv.var.insert	.gvar
 gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
+_test.upconvert_fun_test_α.s	.gvar
+gsdl.cgs.typeenv.elimprim.insert	.gvar
 _test.upconvert_fun_test_tyf.s	.gvar
-list.nil	.gvar
+gsdl.cgs.gskind.exp	.gvar
+gsdl.cgs.gskind.unlifted	.gvar
+gsdl.cgs.gskind.lifted	.gvar
+gsdl.cgs.typeenv.empty	.gvar
+gsdl.ags.typeitem.expr.fun	.gvar
 gsdl.ags.typeitem.expr.product	.gvar
+list.nil	.gvar
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
 tyf.c0	.apply	gsdl.var.component.alphanum	|	_test.upconvert_fun_test_tyf.s
 tyf.cs	.apply	list.singleton	gsdl.var.component.t	|	tyf.c0
 tyf	.apply	gsdl.var.basevar	|	tyf.cs
-env	.apply	gsdl.cgs.typeenv.elimprim.insert	|	tyf	tyf	tyf	gsdl.cgs.gskind.unlifted	gsdl.cgs.typeenv.empty
+ki	.apply	gsdl.cgs.gskind.exp	|	gsdl.cgs.gskind.unlifted	gsdl.cgs.gskind.lifted
+env1	.apply	gsdl.cgs.typeenv.elimprim.insert	|	tyf	tyf	tyf	ki	gsdl.cgs.typeenv.empty
+α.c0	.apply	gsdl.var.component.alphanum	|	_test.upconvert_fun_test_α.s
+α.cs	.apply	list.singleton	gsdl.var.component.t	|	α.c0
+α.v	.apply	gsdl.var.basevar	|	α.cs
+env	.apply	gsdl.cgs.typeenv.var.insert	|	α.v	gsdl.cgs.gskind.lifted	env1
 fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 ty1	.apply	gsdl.ags.typeitem.expr.product	|	fs
-as	.apply	list.nil	gsdl.var.t
+as	.apply	list.singleton	gsdl.var.t	|	α.v
 ty	.apply	gsdl.ags.typeitem.expr.fun	|	tyf	as	ty1
 	.force	_test.upconvert_fun_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.gstype.t

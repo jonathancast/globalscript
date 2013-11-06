@@ -66,6 +66,7 @@ gsac.prefix.gstype.field.upconvert	.closure	_gsac.prefix.gstype.field.upconvert_
 gsac.prefix.gstype.constr.upconvert	.closure	_gsac.prefix.gstype.constr.upconvert_c	_gsac.prefix.gstype.constr.upconvert_ty
 
 gsac.prefix.typeenv.gstype.get	.closure	_gsac.prefix.typeenv.gstype.get_c
+_gsac.prefix.typeenv.gstype.get_nothing_col.sp.s	.string	:\s
 
 gsac.prefix.typeexpansion.app	.closure	_gsac.prefix.typeexpansion.app_c
 
@@ -1335,6 +1336,7 @@ gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.prefix.gstype.upconvert_fun_just_right_k	.subcode
 either.t.out	.cogvar
+either.left	.gvar
 gsac.prefix.typeexpansion.togstype	.gvar
 list.foldl	.gvar
 gsac.prefix.typeexpansion.app	.gvar
@@ -1347,7 +1349,8 @@ e0	.karg	either.prim.u	string.t	list.gstype.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.gstype.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.gstype.t
 		.case	right
 cgs.tyas		.fkarg	0	list.t	gsdl.cgs.gstype.t
 tyy.exp			.apply	list.foldl	gsdl.cgs.gstype.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsac.prefix.typeexpansion.app	tyf.exp	cgs.tyas
@@ -1491,22 +1494,96 @@ _gsac.prefix.typeenv.gstype.get_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-gsdl.cgs.gstype.t	.tygvar	# Temp
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+_gsac.prefix.typeenv.gstype.get_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.get	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 v	.larg	gsdl.var.t
-	.undef	either.t	string.t	gsdl.cgs.gstype.t
+	.force	_gsac.prefix.typeenv.gstype.get_k
+	.coerce	maybe.t.out	gsdl.cgs.typeenv.typeexpansion.t
+	.app	v	env
+	.enter	gsdl.cgs.typeenv.typeexpansion.get
+
+_gsac.prefix.typeenv.gstype.get_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+rune.t	.tygvar
+either.t	.tygvar	# Temp
+gsac.prefix.typeexpansion.togstype	.gvar
+either.left	.gvar
+list.<>	.gvar
+gsdl.sourcepos.print	.gvar
+_gsac.prefix.typeenv.gstype.get_nothing_col.sp.s	.gvar
+gsdl.ags.syntax.var.print	.gvar
+pos	.fv	gsdl.sourcepos.t
+v	.fv	gsdl.var.t
+mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
+	.analyze	mb0	just	nothing
+		.case	just
+tye		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
+			.app	tye
+			.enter	gsac.prefix.typeexpansion.togstype
+		.case	nothing
+pos.s			.apply	gsdl.sourcepos.print	|	pos
+v.s			.apply	gsdl.ags.syntax.var.print	|	v
+err4			.undefined	string.t
+err3			.apply	list.<>	rune.t	|	_gsac.prefix.typeenv.gstype.get_nothing_col.sp.s	err4
+err2			.apply	list.<>	rune.t	|	v.s	err3
+err1			.apply	list.<>	rune.t	|	_gsac.prefix.typeenv.gstype.get_nothing_col.sp.s	err2
+err			.apply	list.<>	rune.t	|	pos.s	err1
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.gstype.t
 
 # §section §gs{gsac.prefix.typeexpansion.app}
 
 _gsac.prefix.typeexpansion.app_c	.expr
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+_gsac.prefix.typeexpansion.app_k	.subcode
+gsdl.cgs.typeenv.typeexpansion.t.out	.cogvar
 tyf	.larg	gsdl.cgs.typeenv.typeexpansion.t
 tya	.larg	gsdl.cgs.gstype.t
-	.undef	gsdl.cgs.typeenv.typeexpansion.t
+	.force	_gsac.prefix.typeexpansion.app_k
+	.coerce	gsdl.cgs.typeenv.typeexpansion.t.out
+	.enter	tyf
+
+_gsac.prefix.typeexpansion.app_k	.forcecont
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar	# Temp
+gsdl.cgs.typeenv.typeexpansion.expr	.gvar
+list.nil	.gvar
+tyf0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
+	.analyze	tyf0	elimprim	expr	gsabstype	var
+		.case	elimprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+nil			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+tyy			.undefined	gsdl.cgs.gstype.t
+			.app	nil	tyy
+			.enter	gsdl.cgs.typeenv.typeexpansion.expr
+		.case	expr
+tyls		.fkarg	0	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	gsdl.cgs.typeenv.typeexpansion.t
+		.case	gsabstype
+v		.fkarg	0	gsdl.var.t
+			.undef	gsdl.cgs.typeenv.typeexpansion.t
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	gsdl.cgs.typeenv.typeexpansion.t
+	# > :: gsdl.cgs.typeenv.typeexpansion.t
 
 # §section §gs{gsac.prefix.typeexpansion.togstype}
 
@@ -1523,11 +1600,13 @@ _gsac.prefix.typeexpansion.togstype_k	.forcecont
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-string.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	# Temp
+_gsac.prefix.typeexpansion.togstype_expr_k	.subcode
+list.t.out	.cogvar
 either.right	.gvar
 tye0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
 	.analyze	tye0	elimprim	expr	gsabstype	var
@@ -1541,14 +1620,37 @@ tyres			.undefined	gsdl.cgs.gstype.t
 		.case	expr
 tyls		.fkarg	0	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 e		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	gsdl.cgs.gstype.t
+			.force	_gsac.prefix.typeexpansion.togstype_expr_k
+			.coerce	list.t.out	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+			.enter	tyls
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	gsdl.cgs.gstype.t
 		.case	var
 v		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	gsdl.cgs.gstype.t
+tyres			.undefined	gsdl.cgs.gstype.t
+			.app	tyres
+			.enter	either.right	string.t	gsdl.cgs.gstype.t
 	# > :: either.t	string.t	gsdl.cgs.gstype.t
+
+_gsac.prefix.typeexpansion.togstype_expr_k	.forcecont
+gsdl.cgs.gstype.t	.tygvar
+list.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+e	.fv	gsdl.cgs.gstype.t
+tyls0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.analyze	tyls0	:	nil
+		.case	:
+tyl0		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+tyls1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
+		.case	nil
+			.app	e
+			.enter	either.right	string.t	gsdl.cgs.gstype.t
 
 # §section §gs{gsac.prefix.item.name}
 
