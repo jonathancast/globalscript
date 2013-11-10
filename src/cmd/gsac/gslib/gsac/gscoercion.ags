@@ -79,13 +79,23 @@ gsdl.cgs.typeenv.typedefinition.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+_gsac.gscoercion.annotate_defn_just_k	.subcode
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typedefinition.t
 	.analyze	mb0	just	nothing
 		.case	just
 defn		.fkarg	0	gsdl.cgs.typeenv.typedefinition.t
-			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+			.force	_gsac.gscoercion.annotate_defn_just_k
+			.enter	defn
 		.case	nothing
 			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+
+_gsac.gscoercion.annotate_defn_just_k	.forcecont
+gsdl.cgs.typeenv.typedefinition.u	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+defn0	.karg	gsdl.cgs.typeenv.typedefinition.u
+	.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_pos_k	.forcecont
 either.prim.u	.tygvar
