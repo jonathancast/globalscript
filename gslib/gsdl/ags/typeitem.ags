@@ -1325,12 +1325,13 @@ list.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar	# Temp
 gsdl.ags.typeitem.expr.pos	.gvar
 gsdl.sourcepos	.gvar
+gsdl.ags.typeitem.expr.tyref	.gvar
 pos0	.larg	parser.pos.t
 v	.larg	gsdl.var.t
 as	.larg	list.t	gsdl.var.t
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-ty	.undefined	gsdl.ags.typeitem.expr.t
+ty	.apply	gsdl.ags.typeitem.expr.tyref	|	v	as
 	.app	pos	ty
 	.yield	gsdl.ags.typeitem.expr.pos
 
