@@ -1645,7 +1645,9 @@ e		.fkarg	1	gsdl.cgs.gstype.t
 			.enter	tyls
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	gsdl.cgs.gstype.t
+tyy			.undefined	gsdl.cgs.gstype.t
+			.app	tyy
+			.enter	either.right	string.t	gsdl.cgs.gstype.t
 		.case	var
 v		.fkarg	0	gsdl.var.t
 tyres			.undefined	gsdl.cgs.gstype.t
