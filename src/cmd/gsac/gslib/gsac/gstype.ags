@@ -542,7 +542,12 @@ env	.fv	gsdl.cgs.typeenv.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.analyze	e0	elimprim	expr	gsabstype	impprim	var
+	.analyze	e0	definedprim	elimprim	expr	gsabstype	impprim	var
+		.case	definedprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	elimprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
@@ -873,7 +878,12 @@ env	.fv	gsdl.cgs.typeenv.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.analyze	e0	elimprim	expr	gsabstype	impprim	var
+	.analyze	e0	definedprim	elimprim	expr	gsabstype	impprim	var
+		.case	definedprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	elimprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
@@ -1047,7 +1057,12 @@ tyas	.fv	list.t	gsdl.cgs.gstype.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.analyze	e0	elimprim	expr	gsabstype	impprim	var
+	.analyze	e0	definedprim	elimprim	expr	gsabstype	impprim	var
+		.case	definedprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	elimprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
