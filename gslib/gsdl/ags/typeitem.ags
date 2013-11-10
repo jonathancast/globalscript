@@ -2039,7 +2039,8 @@ gsdl.ags.typeitem.decls.tyarg.u	.tygvar
 gsdl.ags.typeitem.decls.tyarg.u	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
-	.typroduct	0	gsdl.sourcepos.t	1	gsdl.var.t
+gsdl.ags.typeitem.gskind.t	.tygvar
+	.typroduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.ags.typeitem.gskind.t
 
 # §section §gs{gsdl.ags.typeitem.decls.tyforall.t}
 
