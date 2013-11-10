@@ -7,7 +7,7 @@
 # Abstract type items need to be split into two pieces:
 # §begin{itemize}
 #     §item §anchor{tydefn} One that declares the abstract type §emph{per se}, especially the definition.
-#     §item §anchor{tyvar} One that declares the name of the abs type as a synomym for the abs typy expression.
+#     §item §anchor{tyvar} One that declares the name of the abs type as a synomym for the abs type expression.
 # §end{itemize}
 # References to the abstract type name in other type expressions depend on §ref{tyvar}.
 # Nothing depends on §ref{tydefn}, but it depends on things.§footnote{
@@ -31,6 +31,12 @@
 # type items labeled by §gs{abstyvar}s are §gs{typeconstitems}.
 #
 # §ags{.tyabstract} items translate into §emph{two} kinds of ‘items’ on our system.
+
+# End planny-type stuff
+
+# Important note: We are not as strict in reading the prefix as we should be reading the CUT,
+# since the prefix (should have been) automatically generated and will be checked by lots of other code in any case.
+# End important note.
 
 gsac.prefix.empty	.closure	_gsac.prefix.empty_c
 
@@ -1276,8 +1282,9 @@ constr.upconvert			.apply	gsac.prefix.gstype.constr.upconvert	|	env
 			.enter	either.mapM	string.t	gsdl.ags.typeitem.constr.t	gsdl.cgs.gstype.constr.t
 		.case	tyref
 tyf		.fkarg	0	gsdl.var.t
-tyc		.fkarg	1	list.t	gsdl.var.t
-			.undef	either.t	string.t	gsdl.cgs.gstype.t
+tyas		.fkarg	1	list.t	gsdl.var.t
+			.app	pos	env	tyf	tyas
+			.enter	gsac.prefix.typeapp.upconvert
 	# > :: either.t	string.t	gsdl.cgs.gstype.t
 
 _gsac.prefix.gstype.upconvert_fun_k	.forcecont
@@ -1906,12 +1913,15 @@ gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
+gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	# Temp
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_c	.subcode
 _gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_k	.subcode
 either.t.out	.cogvar
 gsac.prefix.gstype.upconvert	.gvar
+list.foldl	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 ti0	.karg	gsac.prefix.typeconstitem.prim.u
 	.analyze	ti0	gsabstypedefn
@@ -1921,11 +1931,36 @@ v		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
+f			.alloc	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_c
+tyas			.lfield	tyargs	ds
+env1			.apply	list.foldl	gsdl.ags.typeitem.decls.tyarg.t	gsdl.cgs.typeenv.t	|	f	env	tyas
 			.force	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
-			.app	pos	env	e
+			.app	pos	env1	e
 			.enter	gsac.prefix.gstype.upconvert
 	# > :: either.t	string.t	gsdl.cgs.typeenv.t
+
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.ags.typeitem.decls.tyarg.t	.tygvar
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_k	.subcode
+env	.larg	gsdl.cgs.typeenv.t
+l	.larg	gsdl.ags.typeitem.decls.tyarg.t
+	.force	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_k
+	.enter	l
+
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.ags.typeitem.decls.tyarg.u	.tygvar
+gsdl.cgs.typeenv.var.insert	.gvar
+gsac.prefix.gskind.upconvert	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+l0	.karg	gsdl.ags.typeitem.decls.tyarg.u
+v	.field	1	l0
+ki	.field	2	l0
+ki.cgs	.apply	gsac.prefix.gskind.upconvert	|	ki
+	.app	v	ki.cgs	env
+	.enter	gsdl.cgs.typeenv.var.insert
 
 _gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_k	.forcecont
 gsdl.var.t	.tygvar
