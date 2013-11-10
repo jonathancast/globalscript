@@ -1659,7 +1659,9 @@ tye0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-			.undef	either.t	string.t	gsdl.cgs.gstype.t
+tyres			.undefined	gsdl.cgs.gstype.t
+			.app	tyres
+			.enter	either.right	string.t	gsdl.cgs.gstype.t
 		.case	elimprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
