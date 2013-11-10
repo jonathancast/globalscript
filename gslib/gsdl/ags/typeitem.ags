@@ -1288,8 +1288,9 @@ ty	.larg	string.t
 _gsdl.ags.typeitem.expr.parser_tyref.p_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 list.t	.tygvar
+string.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 _gsdl.ags.typeitem.expr.parser_tyref.p_f_c	.subcode
 parser.lift3	.gvar
@@ -1300,30 +1301,32 @@ gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.typeitem.expr.parser_tyref.p_tyref.re	.gvar
-gsdl.ags.syntax.id	.gvar
+gsdl.ags.syntax.var	.gvar
 parser.many	.gvar
+gsdl.ags.syntax.id	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
 list.string.ty	.tylet	list.t	string.t
 f	.alloc	_gsdl.ags.typeitem.expr.parser_tyref.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 tyref.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.expr.parser_tyref.p_tyref.re
-v.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-v.p1	.apply	parser.*>	rune.t	string.t	string.t	|	tyref.p	v.p2
-v.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	v.p1
+v.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
+v.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	tyref.p	v.p2
+v.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	v.p1
 as.p1.1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 as.p1	.apply	parser.many	rune.t	string.t	|	as.p1.1
 as.p	.apply	parser.<*	rune.t	list.string.ty	string.t	|	as.p1	gsdl.ags.syntax.whitespace
 	.app	f	pos.get	v.p	as.p
-	.enter	parser.lift3	rune.t	parser.pos.t	string.t	list.string.ty	gsdl.ags.typeitem.expr.t
+	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	list.string.ty	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.expr.parser_tyref.p_f_c	.expr
 parser.pos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 list.t	.tygvar
+string.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar	# Temp
 pos0	.larg	parser.pos.t
-v	.larg	string.t
+v	.larg	gsdl.var.t
 as	.larg	list.t	string.t
 	.undef	gsdl.ags.typeitem.expr.t
 
