@@ -1,25 +1,38 @@
 fn ok_diff {
     nm=$1; prog=$2; script=$3
     shift; shift; shift
-    echo $nm
+    if (~ $#TODO 0) {
+        fn do_exit { exit 1 }
+        todo_msg=()
+        fn todo_diagnostic { true }
+    }
+    if not {
+        fn do_exit { true }
+        todo_msg='# TODO '^$TODO
+        fn todo_diagnostic { echo 'Failed (TODO) test '''^$msg'''' >[1=2] }
+    }
+    echo $nm $todo_msg
     if (! test -f ./test-results/$script^-expected) {
+        todo_diagnostic
         echo $prog $script ': no such file' ./test-results/$script^-expected >[1=2]
         exit 1
     }
     if (! $prog ./test-gslib ./test-gslib/$script $* > ./test-results/$script^-actual >[2] ./test-results/$script^-errors) {
+        todo_diagnostic
         echo $prog $script 'failed; should have succeeded' >[1=2]
         cat ./test-results/$script^-errors >[1=2]
         cat ./test-results/$script^-actual >[1=2]
-        exit 1
+        do_exit
     }
     if (! diff ./test-results/$script^-actual ./test-results/$script^-expected) {
+        todo_diagnostic
         echo $prog $script 'produced incorrect output' >[1=2]
         echo '--- Actual ---' >[1=2]
         cat ./test-results/$script^-errors >[1=2]
         cat ./test-results/$script^-actual >[1=2]
         echo '--- Expected ---' >[1=2]
         cat ./test-results/$script^-expected
-        exit 1
+        do_exit
     }
     true
 }
