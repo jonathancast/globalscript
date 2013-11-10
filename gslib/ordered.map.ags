@@ -353,12 +353,14 @@ order.total.t	.tygvar
 ordered.map.t	.tygvar
 order.total.ord.prim.u	.tygvar
 _ordered.map.∪_split_res.u	.tygvar
-ordered.map.∪	.gvar
+ordered.map.prim.branch	.gvar
 _ordered.map.∪_split	.gvar
 k	.tyfv	*
 v	.tyfv	*
 cmp	.fv	order.total.t	k
 x	.fv	k
+k	.fv	k
+v	.fv	v
 l	.fv	ordered.map.t	k	v
 r	.fv	ordered.map.t	k	v
 o0	.karg	order.total.ord.prim.u
@@ -372,7 +374,7 @@ s			.record	0	s.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
 		.case	gt	# k < x
 r.s			.apply	_ordered.map.∪_split	k	v	|	cmp	x	r
 r.l			.lfield	0	r.s
-s.l			.apply	ordered.map.∪	k	v	|	cmp	l	r.l
+s.l			.apply	ordered.map.prim.branch	k	v	|	k	v	l	r.l
 s.r			.undefined	ordered.map.t	k	v
 s			.record	0	s.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
 			.lift
@@ -380,7 +382,8 @@ s			.record	0	s.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
 		.case	lt	# x < k
 l.s			.apply	_ordered.map.∪_split	k	v	|	cmp	x	l
 l.l			.lfield	0	l.s
-s.r			.undefined	ordered.map.t	k	v
+l.r			.lfield	1	l.s
+s.r			.apply	ordered.map.prim.branch	k	v	|	k	v	l.r	r
 s			.record	0	l.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
 			.lift
 			.yield	s
