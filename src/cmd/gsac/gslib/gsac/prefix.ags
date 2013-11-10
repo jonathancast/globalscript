@@ -1611,7 +1611,10 @@ v		.fkarg	0	gsdl.var.t
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-			.undef	gsdl.cgs.typeenv.typeexpansion.t
+ls			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e			.undefined	gsdl.cgs.gstype.t
+			.app	ls	e
+			.enter	gsdl.cgs.typeenv.typeexpansion.expr
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.undef	gsdl.cgs.typeenv.typeexpansion.t
