@@ -281,12 +281,14 @@ o0	.karg	order.total.ord.prim.u	# §gs{k0 `compare` k1}
 		.case	gt	# k1 < k0
 l0.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k1	l0
 l0.l			.lfield	0	l0.s	# Everything in l0 less than §gs{k1}
+l0.r			.lfield	1	l0.s
+r1.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k0	r1
+r1.l			.lfield	0	r1.s
+r1.r			.lfield	1	r1.s	# Everything in §gs{r1} greater than §gs{k0}
 s3.0			.apply	ordered.map.∪	k	v	|	cmp	l1	l0.l	# Everything less than §gs{k1}
-s3.1			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k1} and less than §gs{k0}
+s3.1			.apply	ordered.map.∪	k	v	|	cmp	r1.l	l0.r	# Everything greater than §gs{k1} and less than §gs{k0}
 s4			.apply	ordered.map.prim.branch	k	v	|	k1	v1	s3.0	s3.1
-sr1.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k0	r1
-sr1.r			.lfield	1	sr1.s	# Everything in §gs{r1} greater than §gs{k0}
-s3.2			.apply	ordered.map.∪	k	v	|	cmp	sr1.r	r0	# Everything greater than §gs{k0}
+s3.2			.apply	ordered.map.∪	k	v	|	cmp	r1.r	r0	# Everything greater than §gs{k0}
 			.app	k0	v0	s4	s3.2
 			.enter	ordered.map.prim.branch	k	v
 		.case	lt
