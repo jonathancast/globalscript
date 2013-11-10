@@ -294,7 +294,9 @@ s3.2			.apply	ordered.map.∪	k	v	|	cmp	r1.r	r0	# Everything greater than §gs{k
 		.case	lt	# k0 < k1
 r0.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k1	r0
 r0.r			.lfield	1	r0.s
-s3.0			.undefined	ordered.map.t	k	v	# Everything less than §gs{k0}
+l1.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k0	l1
+l1.l			.lfield	0	l1.s
+s3.0			.apply	ordered.map.∪	k	v	|	cmp	l0	l1.l	# Everything less than §gs{k0}
 s3.1			.undefined	ordered.map.t	k	v	# Everything greater than §gs{k0} and less than §gs{k1}
 s3.2			.apply	ordered.map.∪	k	v	|	cmp	r0.r	r1	# Everything greater than §gs{k1}
 s4			.apply	ordered.map.prim.branch	k	v	|	k0	v0	s3.0	s3.1
