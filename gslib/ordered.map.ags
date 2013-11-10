@@ -318,12 +318,17 @@ t	.arg	ordered.map.t	k	v
 	.enter	t
 
 _ordered.map.∪_split_k	.forcecont
+order.total.t	.tygvar
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
-_ordered.map.∪_split_res.ty	.tygvar	# Temp
+_ordered.map.∪_split_res.u	.tygvar
+_ordered.map.∪_split_branch_k	.subcode
+order.total.ord.t.out	.cogvar
 ordered.map.empty	.gvar
 k	.tyfv	*
 v	.tyfv	*
+cmp	.fv	order.total.t	k
+x	.fv	k
 t0	.karg	ordered.map.prim.u	k	v
 	.analyze	t0	branch	empty
 		.case	branch
@@ -331,12 +336,52 @@ k		.fkarg	0	k
 v		.fkarg	1	v
 l		.fkarg	2	ordered.map.t	k	v
 r		.fkarg	3	ordered.map.t	k	v
-			.undef	_ordered.map.∪_split_res.ty	k	v
+			.force	_ordered.map.∪_split_branch_k
+			.coerce	order.total.ord.t.out
+			.app	x	k
+			.enter	cmp
 		.case	empty
 empty			.apply	ordered.map.empty	k	v
-r			.record	0	empty	1	empty
+r			.record	0	empty	1	empty	|	_ordered.map.∪_split_res.u	k	v
 			.lift
 			.yield	r
+
+_ordered.map.∪_split_branch_k	.forcecont
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+order.total.ord.prim.u	.tygvar
+_ordered.map.∪_split_res.u	.tygvar
+ordered.map.∪	.gvar
+_ordered.map.∪_split	.gvar
+k	.tyfv	*
+v	.tyfv	*
+cmp	.fv	order.total.t	k
+x	.fv	k
+l	.fv	ordered.map.t	k	v
+r	.fv	ordered.map.t	k	v
+o0	.karg	order.total.ord.prim.u
+	.analyze	o0	eq	gt	lt
+		.case	eq	# k ≡ x
+s.l			.undefined	ordered.map.t	k	v
+s.r			.undefined	ordered.map.t	k	v
+s			.record	0	s.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
+			.lift
+			.yield	s
+		.case	gt	# k < x
+r.s			.apply	_ordered.map.∪_split	k	v	|	cmp	x	r
+r.l			.lfield	0	r.s
+s.l			.apply	ordered.map.∪	k	v	|	cmp	l	r.l
+s.r			.undefined	ordered.map.t	k	v
+s			.record	0	s.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
+			.lift
+			.yield	s
+		.case	lt	# x < k
+l.s			.apply	_ordered.map.∪_split	k	v	|	cmp	x	l
+l.l			.lfield	0	l.s
+s.r			.undefined	ordered.map.t	k	v
+s			.record	0	l.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
+			.lift
+			.yield	s
 
 # §section §gs{ordered.map.values}
 
@@ -552,11 +597,17 @@ v	.tyforall	*
 	.tyref	_ordered.map.∪_split_res.ty	k	v
 
 _ordered.map.∪_split_res.ty	.tyexpr
+_ordered.map.∪_split_res.u	.tygvar
+k	.tylambda	*
+v	.tylambda	*
+	.tylift
+	.tyref	_ordered.map.∪_split_res.u	k	v
+
+_ordered.map.∪_split_res.u	.tyexpr
 ordered.map.t	.tygvar
 k	.tylambda	*
 v	.tylambda	*
 _map_ty	.tylet	ordered.map.t	k	v
-	.tylift
 	.typroduct	0	_map_ty	1	_map_ty
 
 # §section §gs{ordered.map.values}
