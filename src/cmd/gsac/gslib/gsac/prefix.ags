@@ -2062,7 +2062,7 @@ err		.fkarg	0	string.t
 			.enter	either.left	string.t	gsdl.cgs.typeenv.t
 		.case	right
 cty		.fkarg	0	gsdl.cgs.gstype.t
-env1			.apply	gsdl.cgs.typeenv.gsabstypedefn.insert	|	v	tyas.cgs	gsdl.cgs.typeenv.empty
+env1			.apply	gsdl.cgs.typeenv.gsabstypedefn.insert	|	v	tyas.cgs	cty	gsdl.cgs.typeenv.empty
 			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 

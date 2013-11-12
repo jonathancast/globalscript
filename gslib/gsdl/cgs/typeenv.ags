@@ -302,10 +302,12 @@ _gsdl.cgs.typeenv.gsabstypedefn.insert_c	.expr
 gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 _gsdl.cgs.typeenv.gsabstypedefn.insert_k	.subcode
 v	.larg	gsdl.var.t
 as	.larg	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e	.larg	gsdl.cgs.gstype.t
 env	.larg	gsdl.cgs.typeenv.t
 	.force	_gsdl.cgs.typeenv.gsabstypedefn.insert_k
 	.enter	env
@@ -314,15 +316,17 @@ _gsdl.cgs.typeenv.gsabstypedefn.insert_k	.forcecont
 gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
 ordered.map.insert	.gvar
 gsdl.var.compare	.gvar
 v	.fv	gsdl.var.t
 as	.fv	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e	.fv	gsdl.cgs.gstype.t
 env0	.karg	gsdl.cgs.typeenv.u
 kis	.field	kinds	env0
-dfn	.lrecord	tyargs	as	|	gsdl.cgs.typeenv.typedefinition.t
+dfn	.lrecord	tyargs	as	tybody	e	|	gsdl.cgs.typeenv.typedefinition.t
 tyds	.field	typedefinitions	env0
 tyds1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t	|	gsdl.var.compare	v	dfn	tyds
 tyes	.field	typeexpansions	env0
@@ -532,8 +536,9 @@ gsdl.cgs.typeenv.typedefinition.u	.tygvar
 gsdl.cgs.typeenv.typedefinition.u	.tyexpr
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 list.tylambda.ty	.tylet	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
-	.typroduct	tyargs	list.tylambda.ty
+	.typroduct	tyargs	list.tylambda.ty	tybody	gsdl.cgs.gstype.t
 
 	.coercion
 
