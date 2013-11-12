@@ -139,4 +139,5 @@ _gsac.gsexpr.annotate_res.u	.tygvar
 	.tyref	_gsac.gsexpr.annotate_res.u
 
 _gsac.gsexpr.annotate_res.u	.tyexpr
-	.typroduct
+gsdl.cgs.gsexpr.t	.tygvar
+	.typroduct	expr	gsdl.cgs.gsexpr.t
