@@ -1993,11 +1993,13 @@ gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar	# Temp
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar	# Temp
 either.t	.tygvar	# Temp
-_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_c	.subcode
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_env1.f_c	.subcode
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_tyas.f_c	.subcode
 _gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_k	.subcode
 either.t.out	.cogvar
 gsac.prefix.gstype.upconvert	.gvar
 list.foldl	.gvar
+list.map	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 ti0	.karg	gsac.prefix.typeconstitem.prim.u
 	.analyze	ti0	gsabstypedefn
@@ -2007,37 +2009,56 @@ v		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
-f			.alloc	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_c
+env1.f			.alloc	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_env1.f_c
+tyas.f			.alloc	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_tyas.f_c
 tyas			.lfield	tyargs	ds
-tyas.cgs			.undefined	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
-env1			.apply	list.foldl	gsdl.ags.typeitem.decls.tyarg.t	gsdl.cgs.typeenv.t	|	f	env	tyas
+tyas.cgs			.apply	list.map	gsdl.ags.typeitem.decls.tyarg.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t	|	tyas.f	tyas
+env1			.apply	list.foldl	gsdl.cgs.typeenv.typeexpansion.tylambda.t	gsdl.cgs.typeenv.t	|	env1.f	env	tyas.cgs
 			.force	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
 			.app	pos	env1	e
 			.enter	gsac.prefix.gstype.upconvert
 	# > :: either.t	string.t	gsdl.cgs.typeenv.t
 
-_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_c	.expr
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_env1.f_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
-gsdl.ags.typeitem.decls.tyarg.t	.tygvar
-_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_k	.subcode
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_env1.f_k	.subcode
 env	.larg	gsdl.cgs.typeenv.t
-l	.larg	gsdl.ags.typeitem.decls.tyarg.t
-	.force	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_k
+l	.larg	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.force	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_env1.f_k
 	.enter	l
 
-_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_f_k	.forcecont
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_env1.f_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
-gsdl.ags.typeitem.decls.tyarg.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u	.tygvar
 gsdl.cgs.typeenv.var.insert	.gvar
-gsac.prefix.gskind.upconvert	.gvar
 env	.fv	gsdl.cgs.typeenv.t
+l0	.karg	gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u
+v	.field	1	l0
+ki	.field	2	l0
+	.app	v	ki	env
+	.enter	gsdl.cgs.typeenv.var.insert
+
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_tyas.f_c	.expr
+gsdl.ags.typeitem.decls.tyarg.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar	# Temp
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_tyas.f_k	.subcode
+l	.larg	gsdl.ags.typeitem.decls.tyarg.t
+	.force	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_tyas.f_k
+	.enter	l
+
+_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_tyas.f_k	.forcecont
+gsdl.ags.typeitem.decls.tyarg.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u	.tygvar
+gsac.prefix.gskind.upconvert	.gvar
 l0	.karg	gsdl.ags.typeitem.decls.tyarg.u
 v	.field	1	l0
 ki	.field	2	l0
 ki.cgs	.apply	gsac.prefix.gskind.upconvert	|	ki
-	.app	v	ki.cgs	env
-	.enter	gsdl.cgs.typeenv.var.insert
+r	.record	1	v	2	ki.cgs	|	gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u
+	.lift
+	.yield	r
 
 _gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_k	.forcecont
 gsdl.var.t	.tygvar
