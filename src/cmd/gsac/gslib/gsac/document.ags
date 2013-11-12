@@ -217,13 +217,53 @@ e		.fkarg	0	gsdl.cgs.gsexpr.t
 			.enter	gsty
 
 _gsac.document.annotate_just_k	.forcecont
+gsdl.cgs.document.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.document.t	.tygvar	# Temp
+_gsac.document.annotate_just_right_k	.subcode
+maybe.t.out	.cogvar
+doc	.fv	gsdl.cgs.document.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
-	.undef	either.t	string.t	gsdl.cgs.document.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.document.t
+		.case	right
+e.r		.fkarg	0	_gsac.gsexpr.annotate_res.ty
+mbty			.lfield	gstype	doc
+			.force	_gsac.document.annotate_just_right_k
+			.coerce	maybe.t.out	gsdl.cgs.gstype.t
+			.enter	mbty
+
+_gsac.document.annotate_just_right_k	.forcecont
+gsdl.cgs.document.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+either.t	.tygvar	# Temp
+maybe.t	.tygvar	# Temp
+either.right	.gvar
+maybe.just	.gvar
+doc	.fv	gsdl.cgs.document.t
+e.r	.fv	_gsac.gsexpr.annotate_res.ty
+mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
+	.analyze	mbty0	just	nothing
+		.case	just
+ty		.fkarg	0	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	gsdl.cgs.document.t
+		.case	nothing
+e.r.expr			.lfield	expr	e.r
+mbe1			.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e.r.expr
+mbty1			.undefined	maybe.t	gsdl.cgs.gstype.t
+doc.pos			.lfield	pos	doc
+doc1			.lrecord	expr	mbe1	gstype	mbty1	pos	doc.pos	|	gsdl.cgs.document.t
+			.app	doc1
+			.enter	either.right	string.t	gsdl.cgs.document.t
 
 _gsac.document.annotate_nothing_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
