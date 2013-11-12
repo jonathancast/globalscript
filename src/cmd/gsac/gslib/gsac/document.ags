@@ -65,9 +65,7 @@ gsdl.cgs.document.prim.u	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-gsdl.ags.file.t	.tygvar	# Temp
+_gsac.document.compile_right_just_k	.subcode
 _gsac.document.compile_right_nothing_k	.subcode
 maybe.t.out	.cogvar
 env	.fv	gsdl.cgs.typeenv.t
@@ -77,11 +75,53 @@ mbty	.field	gstype	doc0
 	.analyze	mbe0	just	nothing
 		.case	just
 e		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	gsdl.ags.file.t
+			.force	_gsac.document.compile_right_just_k
+			.coerce	maybe.t.out	gsdl.cgs.gstype.t
+			.enter	mbty
 		.case	nothing
 			.force	_gsac.document.compile_right_nothing_k
 			.coerce	maybe.t.out	gsdl.cgs.gstype.t
 			.enter	mbty
+
+_gsac.document.compile_right_just_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.document.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.var.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToDataItem_res.ty	.tygvar
+either.t	.tygvar	# Temp
+gsdl.ags.file.t	.tygvar	# Temp
+_gsac.document.compile_right_just_just_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.compileToDataItem	.gvar
+maybe.nothing	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+doc0	.fv	gsdl.cgs.document.prim.u
+e	.fv	gsdl.cgs.gsexpr.t
+mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
+	.analyze	mbty0	just	nothing
+		.case	just
+ty		.fkarg	0	gsdl.cgs.gstype.t
+pos			.field	pos	doc0
+nothing			.apply	maybe.nothing	gsdl.var.t
+			.force	_gsac.document.compile_right_just_just_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+			.app	pos	env	nothing	e	ty
+			.enter	gsac.gsexpr.compileToDataItem
+		.case	nothing
+			.undef	either.t	string.t	gsdl.ags.file.t
+
+_gsac.document.compile_right_just_just_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToDataItem_res.ty	.tygvar
+either.t	.tygvar	# Temp
+gsdl.ags.file.t	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+	.undef	either.t	string.t	gsdl.ags.file.t
 
 _gsac.document.compile_right_nothing_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
