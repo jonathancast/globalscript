@@ -142,12 +142,34 @@ ty	.larg	gsdl.cgs.gstype.t
 	.enter	e
 
 _gsac.gsexpr.compileToDataItem_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
+gsac.gsexpr.compileToDataItem	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+mbv	.fv	maybe.t	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+	.analyze	e0	expr.heavy.cast	pos
+		.case	expr.heavy.cast
+co		.fkarg	0	gsdl.cgs.gscoercion.t
+src		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+		.case	pos
+pos1		.fkarg	0	gsdl.sourcepos.t
+e1		.fkarg	1	gsdl.cgs.gsexpr.t
+			.app	pos1	env	mbv	e1	ty
+			.enter	gsac.gsexpr.compileToDataItem
+	# > :: either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
 	.type
 
