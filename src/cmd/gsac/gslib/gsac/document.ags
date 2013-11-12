@@ -286,7 +286,7 @@ gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	# Temp
-maybe.t	.tygvar	# Temp
+#maybe.t	.tygvar	# Temp
 either.right	.gvar
 maybe.just	.gvar
 doc	.fv	gsdl.cgs.document.t
@@ -299,7 +299,8 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 		.case	nothing
 e.r.expr			.lfield	expr	e.r
 mbe1			.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e.r.expr
-mbty1			.undefined	maybe.t	gsdl.cgs.gstype.t
+e.r.ty			.undefined	gsdl.cgs.gstype.t
+mbty1			.apply	maybe.just	gsdl.cgs.gstype.t	|	e.r.ty
 doc.pos			.lfield	pos	doc
 doc1			.lrecord	expr	mbe1	gstype	mbty1	pos	doc.pos	|	gsdl.cgs.document.t
 			.app	doc1
