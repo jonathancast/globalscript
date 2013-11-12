@@ -3,6 +3,7 @@
 	.data
 
 gsac.gscoercion.annotate	.closure	_gsac.gscoercion.annotate_c	_gsac.gscoercion.annotate_ty
+_gsac.gscoercion.annotate_defn_w	.closure	_gsac.gscoercion.annotate_defn_w_c	_gsac.gscoercion.annotate_defn_w_ty
 
 	.code
 
@@ -91,11 +92,14 @@ defn		.fkarg	0	gsdl.cgs.typeenv.typedefinition.t
 
 _gsac.gscoercion.annotate_defn_just_k	.forcecont
 gsdl.cgs.typeenv.typedefinition.u	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+gsdl.cgs.gstype.t	.tygvar	# Temp
+_gsac.gscoercion.annotate_defn_w	.gvar
 defn0	.karg	gsdl.cgs.typeenv.typedefinition.u
-	.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+as	.field	tyargs	defn0
+tye	.field	tybody	defn0
+res	.undefined	gsdl.cgs.gstype.t
+	.app	as	res	tye
+	.enter	_gsac.gscoercion.annotate_defn_w
 
 _gsac.gscoercion.annotate_pos_k	.forcecont
 either.prim.u	.tygvar
@@ -104,6 +108,38 @@ _gsac.gscoercion.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.annotate_res.ty
 	.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+
+_gsac.gscoercion.annotate_defn_w_c	.expr
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsac.gscoercion.annotate_defn_w_k	.subcode
+list.t.out	.cogvar
+as	.larg	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+res	.larg	gsdl.cgs.gstype.t
+tye	.larg	gsdl.cgs.gstype.t
+	.force	_gsac.gscoercion.annotate_defn_w_k
+	.coerce	list.t.out	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.enter	as
+
+_gsac.gscoercion.annotate_defn_w_k	.forcecont
+list.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+list.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+either.right	.gvar
+as0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.analyze	as0	:	nil
+		.case	:
+a0		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+as1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+		.case	nil
+r			.undefined	_gsac.gscoercion.annotate_res.ty
+			.app	r
+			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
 
 	.type
 
@@ -131,3 +167,18 @@ _gsac.gscoercion.annotate_res.u	.tygvar
 
 _gsac.gscoercion.annotate_res.u	.tyexpr
 	.typroduct
+
+_gsac.gscoercion.annotate_defn_w_ty	.tyexpr
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.annotate_res.ty	.tygvar
+	.tylift
+	.tyfun	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	either.t	string.t	_gsac.gscoercion.annotate_res.ty
