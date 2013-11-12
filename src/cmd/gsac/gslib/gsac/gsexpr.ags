@@ -125,14 +125,23 @@ maybe.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
+_gsac.gsexpr.compileToDataItem_k	.subcode
+gsdl.cgs.gsexpr.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 mbv	.larg	maybe.t	gsdl.var.t
 e	.larg	gsdl.cgs.gsexpr.t
 ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsac.gsexpr.compileToDataItem_k
+	.coerce	gsdl.cgs.gsexpr.t.out
+	.enter	e
+
+_gsac.gsexpr.compileToDataItem_k	.forcecont
+gsdl.cgs.gsexpr.prim.u	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
+e0	.karg	gsdl.cgs.gsexpr.prim.u
 	.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
 	.type
