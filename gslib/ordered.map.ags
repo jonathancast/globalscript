@@ -116,13 +116,64 @@ map.l1			.apply	ordered.map.insert	k	v	|	cmp	k	v	map.l
 _ordered.map.elem_c	.expr
 order.total.t	.tygvar
 ordered.map.t	.tygvar
-bool.t	.tygvar	# Temp
+_ordered.map.elem_k	.subcode
+ordered.map.t.out	.cogvar
 k	.tyarg	*
 v	.tyarg	*
-ord	.larg	order.total.t	k
+cmp	.larg	order.total.t	k
 x	.larg	k
 map	.larg	ordered.map.t	k	v
-	.undef	bool.t
+	.force	_ordered.map.elem_k
+	.coerce	ordered.map.t.out	k	v
+	.enter	map
+
+_ordered.map.elem_k	.forcecont
+order.total.t	.tygvar
+ordered.map.prim.u	.tygvar
+ordered.map.t	.tygvar
+bool.t	.tygvar	# Temp
+_ordered.map.elem_branch_k	.subcode
+order.total.ord.t.out	.cogvar
+bool.false	.gvar
+k	.tyfv	*
+v	.tyfv	*
+cmp	.fv	order.total.t	k
+x	.fv	k
+map0	.karg	ordered.map.prim.u	k	v
+	.analyze	map0	branch	empty
+		.case	branch
+k		.fkarg	0	k
+v		.fkarg	1	v
+l		.fkarg	2	ordered.map.t	k	v
+r		.fkarg	3	ordered.map.t	k	v
+			.force	_ordered.map.elem_branch_k
+			.coerce	order.total.ord.t.out
+			.app	x	k
+			.enter	cmp
+		.case	empty
+			.enter	bool.false
+	# > :: bool.t
+
+_ordered.map.elem_branch_k	.forcecont
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+order.total.ord.prim.u	.tygvar
+bool.t	.tygvar	# Temp
+ordered.map.elem	.gvar
+k	.tyfv	*
+v	.tyfv	*
+cmp	.fv	order.total.t	k
+x	.fv	k
+r	.fv	ordered.map.t	k	v
+o0	.karg	order.total.ord.prim.u	# > x `cmp` k
+	.analyze	o0	eq	gt	lt
+		.case	eq
+			.undef	bool.t
+		.case	gt
+			.app	cmp	x	r
+			.enter	ordered.map.elem	k	v
+		.case	lt
+			.undef	bool.t
 
 # §section §gs{ordered.map.get}
 
