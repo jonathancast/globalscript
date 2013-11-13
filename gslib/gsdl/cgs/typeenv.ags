@@ -177,12 +177,13 @@ pn	.fv	gsdl.var.t
 ps	.fv	gsdl.var.t
 ki	.fv	gsdl.cgs.gskind.t
 env0	.karg	gsdl.cgs.typeenv.u
-kis	.field	kinds	env0
+kis0	.field	kinds	env0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
 tyds	.field	typedefinitions	env0
 e	.apply	gsdl.cgs.typeenv.typeexpansion.definedprim	|	pn	ps	ki
 es0	.field	typeexpansions	env0
 es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
-r	.record	kinds	kis	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
+r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
 
@@ -215,12 +216,13 @@ pn	.fv	gsdl.var.t
 ps	.fv	gsdl.var.t
 ki	.fv	gsdl.cgs.gskind.t
 env0	.karg	gsdl.cgs.typeenv.u
-kis	.field	kinds	env0
+kis0	.field	kinds	env0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
 tyds	.field	typedefinitions	env0
 e	.apply	gsdl.cgs.typeenv.typeexpansion.elimprim	|	pn	ps	ki
 es0	.field	typeexpansions	env0
 es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
-r	.record	kinds	kis	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
+r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
 
@@ -253,12 +255,13 @@ pn	.fv	gsdl.var.t
 ps	.fv	gsdl.var.t
 ki	.fv	gsdl.cgs.gskind.t
 env0	.karg	gsdl.cgs.typeenv.u
-kis	.field	kinds	env0
+kis0	.field	kinds	env0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
 tyds	.field	typedefinitions	env0
 e	.apply	gsdl.cgs.typeenv.typeexpansion.impprim	|	pn	ps	ki
 es0	.field	typeexpansions	env0
 es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
-r	.record	kinds	kis	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
+r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
 
