@@ -9,6 +9,7 @@
 
 ordered.map.empty	.closure	_ordered.map.empty_c
 ordered.map.insert	.closure	_ordered.map.insert_c	_ordered.map.insert_ty
+ordered.map.elem	.closure	_ordered.map.elem_c	_ordered.map.elem_ty
 ordered.map.get	.closure	_ordered.map.get_c	_ordered.map.get_ty
 ordered.map.∪	.closure	_ordered.map.∪_c	_ordered.map.∪_ty
 _ordered.map.∪_split	.closure	_ordered.map.∪_split_c	_ordered.map.∪_split_ty
@@ -109,6 +110,19 @@ map.r1			.apply	ordered.map.insert	k	v	|	cmp	k	v	map.r
 map.l1			.apply	ordered.map.insert	k	v	|	cmp	k	v	map.l
 			.app	k1	v1	map.l1	map.r
 			.enter	ordered.map.prim.branch	k	v
+
+# §section §gs{ordered.map.elem}
+
+_ordered.map.elem_c	.expr
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+bool.t	.tygvar	# Temp
+k	.tyarg	*
+v	.tyarg	*
+ord	.larg	order.total.t	k
+x	.larg	k
+map	.larg	ordered.map.t	k	v
+	.undef	bool.t
 
 # §section §gs{ordered.map.get}
 
@@ -558,6 +572,22 @@ v	.tyforall	*
 	.tylift
 	.tyfun	ordered.map.t	k	v
 	.tyref	ordered.map.t	k	v
+
+# §section §gs{ordered.map.elem}
+
+_ordered.map.elem_ty	.tyexpr
+order.total.t	.tygvar
+ordered.map.t	.tygvar
+bool.t	.tygvar
+k	.tyforall	*
+v	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	k
+	.tylift
+	.tyfun	k
+	.tylift
+	.tyfun	ordered.map.t	k	v
+	.tyref	bool.t
 
 # §section §gs{ordered.map.get}
 
