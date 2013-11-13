@@ -8,6 +8,8 @@ gsdl.cgs.typeenv.typeexpansion.get	.closure	_gsdl.cgs.typeenv.typeexpansion.get_
 
 gsdl.cgs.typeenv.typedefinition.get	.closure	_gsdl.cgs.typeenv.typedefinition.get_c
 
+gsdl.cgs.typeenv.tyvar.elem	.closure	_gsdl.cgs.typeenv.tyvar.elem_c
+
 gsdl.cgs.typeenv.empty	.closure	_gsdl.cgs.typeenv.empty_c
 
 gsdl.cgs.typeenv.gsabstypenm.insert	.closure	_gsdl.cgs.typeenv.gsabstypenm.insert_c
@@ -97,6 +99,21 @@ env0	.karg	gsdl.cgs.typeenv.u
 tyds	.field	typedefinitions	env0
 	.app	gsdl.var.compare	v	tyds
 	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t
+
+# §section §gs{gsdl.cgs.typeenv.tyvar.elem}
+
+_gsdl.cgs.typeenv.tyvar.elem_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+bool.t	.tygvar	# Temp
+ordered.map.elem	.gvar
+gsdl.var.compare	.gvar
+v	.larg	gsdl.var.t
+env	.larg	gsdl.cgs.typeenv.t
+kis	.lfield	kinds	env
+	.app	gsdl.var.compare	v	kis
+	.enter	ordered.map.elem	gsdl.var.t	gsdl.cgs.gskind.t
 
 # §section §gs{gsdl.cgs.typeenv.empty}
 
