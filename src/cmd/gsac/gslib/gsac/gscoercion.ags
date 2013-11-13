@@ -71,7 +71,23 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
+_gsac.gscoercion.annotate_appty_right_k	.subcode
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.annotate_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+		.case	right
+r0		.fkarg	0	_gsac.gscoercion.annotate_res.ty
+			.force	_gsac.gscoercion.annotate_appty_right_k
+			.enter	r0
+
+_gsac.gscoercion.annotate_appty_right_k	.forcecont
+_gsac.gscoercion.annotate_res.u	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+r0.0	.karg	_gsac.gscoercion.annotate_res.u
 	.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_defn_k	.forcecont
