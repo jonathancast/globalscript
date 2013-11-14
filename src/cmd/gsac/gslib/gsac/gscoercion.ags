@@ -173,6 +173,7 @@ as0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 a0		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 as1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 a0.v			.lfield	1	a0
+a0.ki			.lfield	2	a0
 			.force	_gsac.gscoercion.annotate_defn_w_:_k
 			.coerce	bool.t.out
 			.app	a0.v	env
@@ -186,6 +187,8 @@ _gsac.gscoercion.annotate_defn_w_:_k	.forcecont
 gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 bool.prim.u	.tygvar
 gsdl.cgs.typeenv.t	.tygvar	# Temp
 either.t	.tygvar	# Temp
@@ -194,12 +197,16 @@ _gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
 _gsac.gscoercion.annotate_defn_w_:_false_k	.subcode
 either.t.out	.cogvar
 _gsac.gscoercion.annotate_defn_w	.gvar
+gsdl.cgs.typeenv.var.insert	.gvar
+env	.fv	gsdl.cgs.typeenv.t
 tye	.fv	gsdl.cgs.gstype.t
 as1	.fv	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+a0.v	.fv	gsdl.var.t
+a0.ki		.fv	gsdl.cgs.gskind.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-env1			.undefined	gsdl.cgs.typeenv.t	# > tyvar.add a0.v a0.ki env
+env1			.apply	gsdl.cgs.typeenv.var.insert	|	a0.v	a0.ki	env
 res1			.undefined	gsdl.cgs.gstype.t	# > gs{§res (type §a0.v)}
 			.force	_gsac.gscoercion.annotate_defn_w_:_false_k
 			.coerce	either.t.out	string.t	_gsac.gscoercion.annotate_res.ty
