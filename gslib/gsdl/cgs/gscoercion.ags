@@ -252,6 +252,16 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gscoercion.t
 
+# §section §gs{gsdl.cgs.gscoercion.gstype.t}
+
+gsdl.cgs.gscoercion.gstype.t	.tyabstract	*
+gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gscoercion.gstype.prim.u
+
+gsdl.cgs.gscoercion.gstype.prim.u	.tyexpr
+	.tysum
+
 # §section §gs{gsdl.cgs.gscoercion.parser.app}
 
 _gsdl.cgs.gscoercion.parser.app_ty	.tyexpr
