@@ -221,7 +221,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gscoercion.annotate_res.ty
-r1			.undefined	_gsac.gscoercion.annotate_res.ty
+r1			.lrecord	|	_gsac.gscoercion.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
 
