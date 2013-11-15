@@ -84,10 +84,20 @@ r0		.fkarg	0	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_appty_right_k	.forcecont
 _gsac.gscoercion.annotate_res.u	.tygvar
+_gsac.gscoercion.annotate_appty_right_k1	.subcode
+gsdl.cgs.gscoercion.gstype.t.out	.cogvar
+r0.0	.karg	_gsac.gscoercion.annotate_res.u
+ty	.field	gstype	r0.0
+	.force	_gsac.gscoercion.annotate_appty_right_k1
+	.coerce	gsdl.cgs.gscoercion.gstype.t.out
+	.enter	ty
+
+_gsac.gscoercion.annotate_appty_right_k1	.forcecont
+gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
-r0.0	.karg	_gsac.gscoercion.annotate_res.u
+ty0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
 	.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_defn_k	.forcecont
