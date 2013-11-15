@@ -226,12 +226,16 @@ res1			.undefined	gsdl.cgs.gstype.t	# > gs{§res (type §a0.v)}
 			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_defn_w_:_false_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.gscoercion.gstype.t	.tygvar	# Temp
 either.right	.gvar
+gsdl.cgs.gscoercion.gstype.forall	.gvar
+a0.v	.fv	gsdl.var.t
+a0.ki		.fv	gsdl.cgs.gskind.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -239,7 +243,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gscoercion.annotate_res.ty
-ty			.undefined	gsdl.cgs.gscoercion.gstype.t
+r0.ty			.lfield	gstype	r0
+ty			.apply	gsdl.cgs.gscoercion.gstype.forall	|	a0.v	a0.ki	r0.ty
 r1			.lrecord	gstype	ty	|	_gsac.gscoercion.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
