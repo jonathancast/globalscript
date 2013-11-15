@@ -301,3 +301,8 @@ gsdl.cgs.gscoercion.t.out	.tycoercion
 gsdl.cgs.gscoercion.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.cgs.gscoercion.t
+
+gsdl.cgs.gscoercion.gstype.t.out	.tycoercion
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gscoercion.gstype.t
