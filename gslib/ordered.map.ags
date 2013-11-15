@@ -164,6 +164,7 @@ k	.tyfv	*
 v	.tyfv	*
 cmp	.fv	order.total.t	k
 x	.fv	k
+l	.fv	ordered.map.t	k	v
 r	.fv	ordered.map.t	k	v
 o0	.karg	order.total.ord.prim.u	# > x `cmp` k
 	.analyze	o0	eq	gt	lt
@@ -173,7 +174,8 @@ o0	.karg	order.total.ord.prim.u	# > x `cmp` k
 			.app	cmp	x	r
 			.enter	ordered.map.elem	k	v
 		.case	lt
-			.undef	bool.t
+			.app	cmp	x	l
+			.enter	ordered.map.elem	k	v
 
 # §section §gs{ordered.map.get}
 
