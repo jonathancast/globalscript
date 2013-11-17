@@ -366,8 +366,11 @@ gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 record.empty	.tygvar	# Temp
+_gsac.gstype.check_abstype_abstype_k	.subcode
 _gsac.gstype.check_var_k	.subcode
+bool.t.out	.cogvar
 maybe.t.out	.cogvar
+gsdl.var.≡	.gvar
 gsdl.cgs.typeenv.typeexpansion.get	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
@@ -376,7 +379,18 @@ tye0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	tye0	abstype	app	lift	product	sum	var
 		.case	abstype
 tyce		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	record.empty
+			.danalyze	tya0	abstype	var
+				.default
+					.undef	either.t	string.t	record.empty
+				.case	abstype
+tyca				.fkarg	0	gsdl.var.t
+					.force	_gsac.gstype.check_abstype_abstype_k
+					.coerce	bool.t.out
+					.app	tyca	tyce
+					.enter	gsdl.var.≡
+				.case	var
+va				.fkarg	0	gsdl.var.t
+					.undef	either.t	string.t	record.empty
 		.case	app
 tyfe		.fkarg	0	gsdl.cgs.gstype.t
 tyxe		.fkarg	1	gsdl.cgs.gstype.t
@@ -397,6 +411,21 @@ ve		.fkarg	0	gsdl.var.t
 			.app	ve	env
 			.enter	gsdl.cgs.typeenv.typeexpansion.get
 	# > :: either.t	string.t	record.empty
+
+_gsac.gstype.check_abstype_abstype_k	.forcecont
+bool.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+record.empty	.gvar
+b0	.karg	bool.prim.u	# §gs{tyca ≡ tyce}
+	.analyze	b0	false	true
+		.case	false
+			.undef	either.t	string.t	record.empty
+		.case	true
+			.app	record.empty
+			.enter	either.right	string.t	record.empty
 
 _gsac.gstype.check_var_k	.forcecont
 gsdl.sourcepos.t	.tygvar
