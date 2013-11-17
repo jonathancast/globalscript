@@ -299,6 +299,7 @@ doc	.fv	gsdl.cgs.document.t
 e.r	.fv	_gsac.gsexpr.annotate_res.ty
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t	# Type signature in input document
 pos	.lfield	pos	doc
+e.r.expr	.lfield	expr	e.r
 e.r.ty	.lfield	gstype	e.r
 	.analyze	mbty0	just	nothing
 		.case	just
@@ -308,7 +309,6 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 			.app	pos	env	e.r.ty	ty
 			.enter	gsac.gstype.check
 		.case	nothing
-e.r.expr			.lfield	expr	e.r
 mbe1			.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e.r.expr
 mbty1			.apply	maybe.just	gsdl.cgs.gstype.t	|	e.r.ty
 doc1			.lrecord	expr	mbe1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
@@ -316,13 +316,31 @@ doc1			.lrecord	expr	mbe1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
 			.enter	either.right	string.t	gsdl.cgs.document.t
 
 _gsac.document.annotate_just_right_just_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
+gsdl.cgs.document.t	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.document.t	.tygvar	# Temp
+either.right	.gvar
+maybe.just	.gvar
+pos	.fv	gsdl.sourcepos.t
+e.r.expr	.fv	gsdl.cgs.gsexpr.t
+e.r.ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	record.empty
-	.undef	either.t	string.t	gsdl.cgs.document.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.document.t
+		.case	right
+r		.fkarg	0	record.empty
+mbe1			.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e.r.expr
+mbty1			.apply	maybe.just	gsdl.cgs.gstype.t	|	e.r.ty
+doc1			.lrecord	expr	mbe1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
+			.app	doc1
+			.enter	either.right	string.t	gsdl.cgs.document.t
 
 _gsac.document.annotate_nothing_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
