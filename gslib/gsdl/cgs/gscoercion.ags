@@ -139,19 +139,27 @@ cty	.larg	gsdl.cgs.gscoercion.gstype.t
 	.enter	cty
 
 _gsdl.cgs.gscoercion.gstype.substty_k	.forcecont
-gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gscoercion.gstype.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gscoercion.gstype.substty_forall_k	.subcode
+bool.t.out	.cogvar
+gsdl.var.≡	.gvar
 gsdl.cgs.gscoercion.gstype.iso	.gvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
 cty0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
 	.analyze	cty0	forall	iso
 		.case	forall
 v1		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.cgs.gskind.t
 cty1		.fkarg	2	gsdl.cgs.gscoercion.gstype.t
-			.undef	gsdl.cgs.gscoercion.gstype.t
+			.force	_gsdl.cgs.gscoercion.gstype.substty_forall_k
+			.coerce	bool.t.out
+			.app	v	v1
+			.enter	gsdl.var.≡
 		.case	iso
 ty0		.fkarg	0	gsdl.cgs.gstype.t
 ty1		.fkarg	1	gsdl.cgs.gstype.t
@@ -160,6 +168,58 @@ y.ty1			.undefined	gsdl.cgs.gstype.t
 			.app	y.ty0	y.ty1
 			.enter	gsdl.cgs.gscoercion.gstype.iso
 	# > :: gsdl.cgs.gscoercion.gstype.t
+
+_gsdl.cgs.gscoercion.gstype.substty_forall_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+bool.prim.u	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+_gsdl.cgs.gscoercion.gstype.substty_forall_false_k	.subcode
+bool.t.out	.cogvar
+ordered.set.elem	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
+gsdl.cgs.gstype.freevars	.gvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+v1	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+cty1	.fv	gsdl.cgs.gscoercion.gstype.t
+b0	.karg	bool.prim.u	# §gs{v ≡ v1}
+	.analyze	b0	false	true
+		.case	false
+v1.sym			.apply	gsdl.cgs.symbol.tyvar	|	v1
+ty.fvs			.apply	gsdl.cgs.gstype.freevars	|	ty
+			.force	_gsdl.cgs.gscoercion.gstype.substty_forall_false_k
+			.coerce	bool.t.out
+			.app	gsdl.cgs.symbol.compare	v1.sym	ty.fvs
+			.enter	ordered.set.elem	gsdl.cgs.symbol.t
+		.case	true
+			.undef	gsdl.cgs.gscoercion.gstype.t
+
+_gsdl.cgs.gscoercion.gstype.substty_forall_false_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+bool.prim.u	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar	# Temp
+gsdl.cgs.gscoercion.gstype.forall	.gvar
+gsdl.cgs.gscoercion.gstype.substty	.gvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+v1	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+cty1	.fv	gsdl.cgs.gscoercion.gstype.t
+b0	.karg	bool.prim.u	# §gs{v1 ∈ fvs(ty)}
+	.analyze	b0	false	true
+		.case	false
+y.cty1			.apply	gsdl.cgs.gscoercion.gstype.substty	|	v	ty	cty1
+			.app	v1	ki	y.cty1
+			.enter	gsdl.cgs.gscoercion.gstype.forall
+		.case	true
+			.undef	gsdl.cgs.gscoercion.gstype.t
 
 # §section §gs{gsdl.cgs.gscoercion.≡}
 
