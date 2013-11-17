@@ -7,6 +7,8 @@ _gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.regex	defn
 
 gsdl.cgs.gscoercion.freevars	.closure	_gsdl.cgs.gscoercion.freevars_c	_gsdl.cgs.gscoercion.freevars_ty
 
+gsdl.cgs.gscoercion.gstype.substty	.closure	_gsdl.cgs.gscoercion.gstype.substty_c	_gsdl.cgs.gscoercion.gstype.substty_ty
+
 gsdl.cgs.gscoercion.≡	.closure	_gsdl.cgs.gscoercion.≡_c	_gsdl.cgs.gscoercion.≡_ty
 
 gsdl.cgs.gscoercion.fmtgs	.closure	_gsdl.cgs.gscoercion.fmtgs_c
@@ -119,6 +121,17 @@ c1		.fkarg	1	gsdl.cgs.gscoercion.t
 			.app	c1
 			.enter	gsdl.cgs.gscoercion.freevars
 	# > :: ordered.set.t	gsdl.cgs.symbol.t
+
+# §section §gs{gsdl.cgs.gscoercion.gstype.substty}
+
+_gsdl.cgs.gscoercion.gstype.substty_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+v	.larg	gsdl.var.t
+ty	.larg	gsdl.cgs.gstype.t
+co	.larg	gsdl.cgs.gscoercion.gstype.t
+	.undef	gsdl.cgs.gscoercion.gstype.t
 
 # §section §gs{gsdl.cgs.gscoercion.≡}
 
@@ -304,6 +317,20 @@ gsdl.cgs.symbol.t	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.gscoercion.t
 	.tyref	ordered.set.t	gsdl.cgs.symbol.t
+
+# §section §gs{gsdl.cgs.gscoercion.gstype.substty}
+
+_gsdl.cgs.gscoercion.gstype.substty_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.gscoercion.gstype.t
+	.tyref	gsdl.cgs.gscoercion.gstype.t
 
 # §section §gs{gsdl.cgs.gscoercion.≡}
 
