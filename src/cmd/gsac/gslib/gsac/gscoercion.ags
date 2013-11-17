@@ -122,7 +122,9 @@ pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tya	.fv	gsdl.cgs.gstype.t
 ty0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
-	.analyze	ty0	forall
+	.danalyze	ty0	forall
+		.default
+			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 		.case	forall
 v		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.cgs.gskind.t

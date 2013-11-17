@@ -18,6 +18,7 @@ gsdl.cgs.gscoercion.defn	.closure	_gsdl.cgs.gscoercion.defn_c
 gsdl.cgs.gscoercion.appty	.closure	_gsdl.cgs.gscoercion.appty_c
 
 gsdl.cgs.gscoercion.gstype.forall	.closure	_gsdl.cgs.gscoercion.gstype.forall_c
+gsdl.cgs.gscoercion.gstype.iso	.closure	_gsdl.cgs.gscoercion.gstype.iso_c
 
 	.code
 
@@ -264,6 +265,17 @@ res	.constr	gsdl.cgs.gscoercion.gstype.prim.u	forall	0	v	1	ki	2	ty
 	.lift
 	.yield	res
 
+_gsdl.cgs.gscoercion.gstype.iso_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
+gsdl.cgs.gscoercion.gstype.t.in	.cogvar
+ty0	.larg	gsdl.cgs.gstype.t
+ty1	.larg	gsdl.cgs.gstype.t
+res	.constr	gsdl.cgs.gscoercion.gstype.prim.u	iso	0	ty0	1	ty1
+	.coerce	gsdl.cgs.gscoercion.gstype.t.in
+	.lift
+	.yield	res
+
 	.type
 
 # §section §gs{gsdl.cgs.gscoercion.t}
@@ -302,13 +314,18 @@ gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
 
 gsdl.cgs.gscoercion.gstype.prim.u	.tyexpr
 _gsdl.cgs.gscoercion.gstype.prim.u_forall_ty	.tygvar
-	.tysum	forall	_gsdl.cgs.gscoercion.gstype.prim.u_forall_ty
+_gsdl.cgs.gscoercion.gstype.prim.u_iso_ty	.tygvar
+	.tysum	forall	_gsdl.cgs.gscoercion.gstype.prim.u_forall_ty	iso	_gsdl.cgs.gscoercion.gstype.prim.u_iso_ty
 
 _gsdl.cgs.gscoercion.gstype.prim.u_forall_ty	.tyexpr
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gscoercion.gstype.t	.tygvar
 	.tyubproduct	0	gsdl.var.t	1	gsdl.cgs.gskind.t	2	gsdl.cgs.gscoercion.gstype.t
+
+_gsdl.cgs.gscoercion.gstype.prim.u_iso_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gstype.t	1	gsdl.cgs.gstype.t
 
 # §section §gs{gsdl.cgs.gscoercion.parser.app}
 
