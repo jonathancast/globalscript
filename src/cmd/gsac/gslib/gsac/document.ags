@@ -299,7 +299,7 @@ doc	.fv	gsdl.cgs.document.t
 e.r	.fv	_gsac.gsexpr.annotate_res.ty
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t	# Type signature in input document
 pos	.lfield	pos	doc
-e.r.ty	.undefined	gsdl.cgs.gstype.t
+e.r.ty	.lfield	gstype	e.r
 	.analyze	mbty0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
