@@ -8,6 +8,8 @@ _gsac.gstype.kindcheck_var_nothing_suffix.s	.string	'
 
 gsac.gstype.fields.kindcheck	.closure	_gsac.gstype.fields.kindcheck_c	_gsac.gstype.fields.kindcheck_ty
 
+gsac.gstype.check	.closure	_gsac.gstype.check_c	_gsac.gstype.check_ty
+
 gsac.gstype.compile	.closure	_gsac.gstype.compile_c	_gsac.gstype.compile_ty
 _gsac.gstype.compile_w	.closure	_gsac.gstype.compile_w_c	_gsac.gstype.compile_w_ty
 gsac.gstype.compileToGlobalVar	.closure	_gsac.gstype.compileToGlobalVar_c	_gsac.gstype.compileToGlobalVar_ty
@@ -316,6 +318,21 @@ fs1		.fkarg	1	list.t	gsdl.cgs.gstype.field.t
 		.case	nil
 			.app	record.empty
 			.enter	either.right	string.t	record.empty
+
+# §section §gs{gsac.gstype.check}
+
+_gsac.gstype.check_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+record.empty	.tygvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+tya	.larg	gsdl.cgs.gstype.t
+tye	.larg	gsdl.cgs.gstype.t
+	.undef	either.t	string.t	record.empty
 
 # §section §gs{gsac.gstype.compile}
 
@@ -1613,6 +1630,25 @@ string.t	.tygvar
 record.empty	.tygvar
 	.tylift
 	.tyfun	list.t	gsdl.cgs.gstype.field.t
+	.tyref	either.t	string.t	record.empty
+
+# §section §gs{gsac.gstype.check}
+
+_gsac.gstype.check_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
 	.tyref	either.t	string.t	record.empty
 
 # §section §gs{gsac.gstype.compile}
