@@ -106,10 +106,12 @@ gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar	# Temp
+gsdl.cgs.gstype.t	.tygvar	# Temp
 either.right	.gvar
 ty0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
 r1.e	.undefined	gsdl.cgs.gsexpr.t
-r1	.lrecord	expr	r1.e	|	_gsac.gsexpr.annotate_res.ty
+ty1	.undefined	gsdl.cgs.gstype.t
+r1	.lrecord	expr	r1.e	gstype	ty1	|	_gsac.gsexpr.annotate_res.ty
 	.app	r1
 	.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
 
@@ -131,7 +133,8 @@ err		.fkarg	0	string.t
 r0		.fkarg	0	_gsac.gsexpr.annotate_res.ty
 r0.e			.lfield	expr	r0
 r1.e			.apply	gsdl.cgs.gsexpr.pos	|	pos1	r0.e
-r1			.lrecord	expr	r1.e	|	_gsac.gsexpr.annotate_res.ty
+ty			.lfield	gstype	r0
+r1			.lrecord	expr	r1.e	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
 
@@ -211,7 +214,8 @@ _gsac.gsexpr.annotate_res.u	.tygvar
 
 _gsac.gsexpr.annotate_res.u	.tyexpr
 gsdl.cgs.gsexpr.t	.tygvar
-	.typroduct	expr	gsdl.cgs.gsexpr.t
+gsdl.cgs.gstype.t	.tygvar
+	.typroduct	expr	gsdl.cgs.gsexpr.t	gstype	gsdl.cgs.gstype.t
 
 # §section §gs{gsac.gsexpr.compileToDataItem}
 
