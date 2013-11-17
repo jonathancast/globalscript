@@ -339,12 +339,117 @@ tye	.larg	gsdl.cgs.gstype.t
 	.enter	tya
 
 _gsac.gstype.check_ka	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsac.gstype.check_ke	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tye	.fv	gsdl.cgs.gstype.t
+tya0	.karg	gsdl.cgs.gstype.prim.u
+	.force	_gsac.gstype.check_ke
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	tye
+
+_gsac.gstype.check_ke	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 record.empty	.tygvar	# Temp
-tya0	.karg	gsdl.cgs.gstype.prim.u
-	.undef	either.t	string.t	record.empty
+_gsac.gstype.check_var_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.get	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tya0	.fv	gsdl.cgs.gstype.prim.u
+tye0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	tye0	abstype	app	lift	product	sum	var
+		.case	abstype
+tyce		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	record.empty
+		.case	app
+tyfe		.fkarg	0	gsdl.cgs.gstype.t
+tyxe		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	record.empty
+		.case	lift
+tye1		.fkarg	0	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	record.empty
+		.case	product
+fse		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.undef	either.t	string.t	record.empty
+		.case	sum
+cse		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	either.t	string.t	record.empty
+		.case	var
+ve		.fkarg	0	gsdl.var.t
+			.force	_gsac.gstype.check_var_k
+			.coerce	maybe.t.out	gsdl.cgs.typeenv.typeexpansion.t
+			.app	ve	env
+			.enter	gsdl.cgs.typeenv.typeexpansion.get
+	# > :: either.t	string.t	record.empty
+
+_gsac.gstype.check_var_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	# Temp
+record.empty	.tygvar	# Temp
+_gsac.gstype.check_var_just_k	.subcode
+either.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.togstype	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tya0	.fv	gsdl.cgs.gstype.prim.u
+mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
+	.analyze	mb0	just	nothing
+		.case	just
+ee		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
+			.force	_gsac.gstype.check_var_just_k
+			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
+			.app	ee
+			.enter	gsdl.cgs.typeenv.typeexpansion.togstype
+		.case	nothing
+			.undef	either.t	string.t	record.empty
+
+_gsac.gstype.check_var_just_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	# Temp
+record.empty	.tygvar	# Temp
+gsdl.cgs.gstype.t.in	.cogvar
+gsac.gstype.check	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tya0	.fv	gsdl.cgs.gstype.prim.u
+ee0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
+	.analyze	ee0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	record.empty
+		.case	right
+tye1		.fkarg	0	gsdl.cgs.gstype.t
+tya0.l			.lifted	tya0
+tya0.cl			.cast	tya0.l	gsdl.cgs.gstype.t.in
+			.app	pos	env	tya0.cl	tye1
+			.enter	gsac.gstype.check
 
 # §section §gs{gsac.gstype.compile}
 
