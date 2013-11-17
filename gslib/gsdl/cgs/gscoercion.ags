@@ -133,16 +133,33 @@ _gsdl.cgs.gscoercion.gstype.substty_k	.subcode
 gsdl.cgs.gscoercion.gstype.t.out	.cogvar
 v	.larg	gsdl.var.t
 ty	.larg	gsdl.cgs.gstype.t
-co	.larg	gsdl.cgs.gscoercion.gstype.t
+cty	.larg	gsdl.cgs.gscoercion.gstype.t
 	.force	_gsdl.cgs.gscoercion.gstype.substty_k
 	.coerce	gsdl.cgs.gscoercion.gstype.t.out
-	.enter	co
+	.enter	cty
 
 _gsdl.cgs.gscoercion.gstype.substty_k	.forcecont
 gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
-gsdl.cgs.gscoercion.gstype.t	.tygvar	# Temp
-co0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
-	.undef	gsdl.cgs.gscoercion.gstype.t
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.gstype.iso	.gvar
+cty0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
+	.analyze	cty0	forall	iso
+		.case	forall
+v1		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
+cty1		.fkarg	2	gsdl.cgs.gscoercion.gstype.t
+			.undef	gsdl.cgs.gscoercion.gstype.t
+		.case	iso
+ty0		.fkarg	0	gsdl.cgs.gstype.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+y.ty0			.undefined	gsdl.cgs.gstype.t
+y.ty1			.undefined	gsdl.cgs.gstype.t
+			.app	y.ty0	y.ty1
+			.enter	gsdl.cgs.gscoercion.gstype.iso
+	# > :: gsdl.cgs.gscoercion.gstype.t
 
 # §section §gs{gsdl.cgs.gscoercion.≡}
 
