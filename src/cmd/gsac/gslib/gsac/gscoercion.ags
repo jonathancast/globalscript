@@ -266,7 +266,9 @@ _gsac.gscoercion.annotate_defn_w_:_k	.subcode
 bool.t.out	.cogvar
 gsdl.cgs.typeenv.tyvar.elem	.gvar
 either.right	.gvar
+gsdl.cgs.gscoercion.gstype.iso	.gvar
 env	.fv	gsdl.cgs.typeenv.t
+res	.fv	gsdl.cgs.gstype.t
 tye	.fv	gsdl.cgs.gstype.t
 as0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 	.analyze	as0	:	nil
@@ -280,7 +282,8 @@ a0.ki			.lfield	2	a0
 			.app	a0.v	env
 			.enter	gsdl.cgs.typeenv.tyvar.elem
 		.case	nil
-r			.undefined	_gsac.gscoercion.annotate_res.ty
+r.ty			.apply	gsdl.cgs.gscoercion.gstype.iso	|	tye	res
+r			.lrecord	gstype	r.ty	|	_gsac.gscoercion.annotate_res.ty
 			.app	r
 			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
 
