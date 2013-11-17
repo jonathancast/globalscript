@@ -66,7 +66,10 @@ gsdl.cgs.typeenv.gskind.get	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	app	lift	product	sum	var
+	.analyze	ty0	abstype	app	lift	product	sum	var
+		.case	abstype
+tyc		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	gsdl.cgs.gskind.t
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
@@ -402,7 +405,10 @@ env	.larg	gsdl.cgs.typeenv.t
 ty0	.larg	gsdl.cgs.gstype.prim.u
 em	.larg	ordered.set.t	gsdl.var.t
 gvs	.larg	list.t	gsdl.var.t
-	.analyze	ty0	app	lift	product	sum	var
+	.analyze	ty0	abstype	app	lift	product	sum	var
+		.case	abstype
+tyc		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
