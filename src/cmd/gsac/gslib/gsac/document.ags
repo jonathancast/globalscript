@@ -286,12 +286,11 @@ gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	# Temp
-#maybe.t	.tygvar	# Temp
 either.right	.gvar
 maybe.just	.gvar
 doc	.fv	gsdl.cgs.document.t
 e.r	.fv	_gsac.gsexpr.annotate_res.ty
-mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
+mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t	# Type signature in input document
 	.analyze	mbty0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
