@@ -325,13 +325,22 @@ _gsac.gstype.check_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-record.empty	.tygvar	# Temp
+_gsac.gstype.check_ka	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 tya	.larg	gsdl.cgs.gstype.t
 tye	.larg	gsdl.cgs.gstype.t
+	.force	_gsac.gstype.check_ka
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	tya
+
+_gsac.gstype.check_ka	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+record.empty	.tygvar	# Temp
+tya0	.karg	gsdl.cgs.gstype.prim.u
 	.undef	either.t	string.t	record.empty
 
 # §section §gs{gsac.gstype.compile}
