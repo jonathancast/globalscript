@@ -67,11 +67,17 @@ co1		.fkarg	1	gsdl.cgs.gscoercion.t
 	# > :: either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_appty_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_appty_right_k	.subcode
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tya	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -83,9 +89,15 @@ r0		.fkarg	0	_gsac.gscoercion.annotate_res.ty
 			.enter	r0
 
 _gsac.gscoercion.annotate_appty_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 _gsac.gscoercion.annotate_res.u	.tygvar
 _gsac.gscoercion.annotate_appty_right_k1	.subcode
 gsdl.cgs.gscoercion.gstype.t.out	.cogvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tya	.fv	gsdl.cgs.gstype.t
 r0.0	.karg	_gsac.gscoercion.annotate_res.u
 ty	.field	gstype	r0.0
 	.force	_gsac.gscoercion.annotate_appty_right_k1
@@ -93,11 +105,41 @@ ty	.field	gstype	r0.0
 	.enter	ty
 
 _gsac.gscoercion.annotate_appty_right_k1	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+string.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+_gsac.gscoercion.annotate_appty_right_forall_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.kindcheck	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tya	.fv	gsdl.cgs.gstype.t
 ty0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
+	.analyze	ty0	forall
+		.case	forall
+v		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
+ty1		.fkarg	2	gsdl.cgs.gscoercion.gstype.t
+			.force	_gsac.gscoercion.annotate_appty_right_forall_k
+			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
+			.app	pos	env	tya
+			.enter	gsac.gstype.kindcheck
+	# > :: either.t	string.t	_gsac.gscoercion.annotate_res.ty
+
+_gsac.gscoercion.annotate_appty_right_forall_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t	# Kind of §gs{tya}
 	.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_defn_k	.forcecont
