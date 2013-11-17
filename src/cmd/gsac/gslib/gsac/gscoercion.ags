@@ -192,6 +192,7 @@ res			.lrecord	gstype	res.ty	|	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_defn_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
 either.t	.tygvar	# Temp
@@ -199,6 +200,7 @@ string.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
 _gsac.gscoercion.annotate_defn_just_k	.subcode
 env	.fv	gsdl.cgs.typeenv.t
+tyc	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typedefinition.t
 	.analyze	mb0	just	nothing
 		.case	just
@@ -210,14 +212,17 @@ defn		.fkarg	0	gsdl.cgs.typeenv.typedefinition.t
 
 _gsac.gscoercion.annotate_defn_just_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typedefinition.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_defn_w	.gvar
+gsdl.cgs.gstype.abstype	.gvar
 env	.fv	gsdl.cgs.typeenv.t
+tyc	.fv	gsdl.var.t
 defn0	.karg	gsdl.cgs.typeenv.typedefinition.u
 as	.field	tyargs	defn0
 tye	.field	tybody	defn0
-res	.undefined	gsdl.cgs.gstype.t
+res	.apply	gsdl.cgs.gstype.abstype	|	tyc
 	.app	env	as	res	tye
 	.enter	_gsac.gscoercion.annotate_defn_w
 
