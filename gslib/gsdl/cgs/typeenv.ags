@@ -421,6 +421,7 @@ either.t	.tygvar	# Temp
 _gsdl.cgs.typeenv.typeexpansion.togstype_expr_k	.subcode
 list.t.out	.cogvar
 either.right	.gvar
+gsdl.cgs.gstype.abstype	.gvar
 tye0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
 	.analyze	tye0	definedprim	elimprim	expr	gsabstype	impprim	var
 		.case	definedprim
@@ -444,8 +445,8 @@ e		.fkarg	1	gsdl.cgs.gstype.t
 			.coerce	list.t.out	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 			.enter	tyls
 		.case	gsabstype
-v		.fkarg	0	gsdl.var.t
-tyy			.undefined	gsdl.cgs.gstype.t
+tyc		.fkarg	0	gsdl.var.t
+tyy			.apply	gsdl.cgs.gstype.abstype	|	tyc
 			.app	tyy
 			.enter	either.right	string.t	gsdl.cgs.gstype.t
 		.case	impprim
