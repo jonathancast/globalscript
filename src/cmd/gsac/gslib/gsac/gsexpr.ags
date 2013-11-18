@@ -82,6 +82,7 @@ pos1		.fkarg	0	gsdl.sourcepos.t
 		# > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_expr.heavy.cast_missing_k	.forcecont
+gsdl.cgs.gscoercion.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
@@ -89,6 +90,7 @@ either.t	.tygvar	# Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
 _gsac.gsexpr.annotate_expr.heavy.cast_missing_right_k	.subcode
 gsdl.cgs.gscoercion.gstype.t.out	.cogvar
+co	.fv	gsdl.cgs.gscoercion.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -102,6 +104,7 @@ cty			.lfield	gstype	r0
 			.enter	cty
 
 _gsac.gsexpr.annotate_expr.heavy.cast_missing_right_k	.forcecont
+gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
@@ -110,8 +113,10 @@ gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.gsexpr.t	.tygvar	# Temp
+gsdl.cgs.gsexpr.cast.source.t	.tygvar	# Temp
 either.right	.gvar
+gsdl.cgs.gsexpr.expr.heavy.cast	.gvar
+co	.fv	gsdl.cgs.gscoercion.t
 cty0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
 	.analyze	cty0	forall	iso
 		.case	forall
@@ -122,7 +127,8 @@ cty1		.fkarg	2	gsdl.cgs.gscoercion.gstype.t
 		.case	iso
 tys		.fkarg	0	gsdl.cgs.gstype.t
 tyd		.fkarg	1	gsdl.cgs.gstype.t
-r1.e			.undefined	gsdl.cgs.gsexpr.t
+r1.so			.undefined	gsdl.cgs.gsexpr.cast.source.t
+r1.e			.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	r1.so
 r1			.lrecord	expr	r1.e	gstype	tyd	|	_gsac.gsexpr.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
