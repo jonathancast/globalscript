@@ -148,6 +148,7 @@ _gsdl.cgs.gscoercion.gstype.substty_forall_k	.subcode
 bool.t.out	.cogvar
 gsdl.var.≡	.gvar
 gsdl.cgs.gscoercion.gstype.iso	.gvar
+gsdl.cgs.gstype.substty	.gvar
 v	.fv	gsdl.var.t
 ty	.fv	gsdl.cgs.gstype.t
 cty0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
@@ -164,7 +165,7 @@ cty1		.fkarg	2	gsdl.cgs.gscoercion.gstype.t
 ty0		.fkarg	0	gsdl.cgs.gstype.t
 ty1		.fkarg	1	gsdl.cgs.gstype.t
 y.ty0			.undefined	gsdl.cgs.gstype.t
-y.ty1			.undefined	gsdl.cgs.gstype.t
+y.ty1			.apply	gsdl.cgs.gstype.substty	|	v	ty	ty1
 			.app	y.ty0	y.ty1
 			.enter	gsdl.cgs.gscoercion.gstype.iso
 	# > :: gsdl.cgs.gscoercion.gstype.t
