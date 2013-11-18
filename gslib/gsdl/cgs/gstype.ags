@@ -12,6 +12,8 @@ _gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.regex	⌋
 
 gsdl.cgs.gstype.freevars	.closure	_gsdl.cgs.gstype.freevars_c	_gsdl.cgs.gstype.freevars_ty
 
+gsdl.cgs.gstype.substty	.closure	_gsdl.cgs.gstype.substty_c	_gsdl.cgs.gstype.substty_ty
+
 gsdl.cgs.gstype.≡	.closure	_gsdl.cgs.gstype.≡_c	_gsdl.cgs.gstype.≡_ty
 
 gsdl.cgs.gstype.fmtgs	.closure	_gsdl.cgs.gstype.fmtgs_c
@@ -210,6 +212,16 @@ sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
 			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
 	# > :: ordered.set.t	gsdl.cgs.symbol.t
+
+# §section §gs{gsdl.cgs.gstype.substty}
+
+_gsdl.cgs.gstype.substty_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+v	.larg	gsdl.var.t
+ty0	.larg	gsdl.cgs.gstype.t
+ty1	.larg	gsdl.cgs.gstype.t
+	.undef	gsdl.cgs.gstype.t	# [ty0/v]ty1
 
 # §section §gs{gsdl.cgs.gstype.≡}
 
@@ -529,6 +541,19 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
+
+# §section §gs{gsdl.cgs.gstype.substty}
+
+_gsdl.cgs.gstype.substty_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	gsdl.cgs.gstype.t
 
 # §section §gs{gsdl.cgs.gstype.≡}
 
