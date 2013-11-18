@@ -6,6 +6,8 @@ gsac.gsexpr.annotate	.closure	_gsac.gsexpr.annotate_c	_gsac.gsexpr.annotate_ty
 
 gsac.gsexpr.compileToDataItem	.closure	_gsac.gsexpr.compileToDataItem_c	_gsac.gsexpr.compileToDataItem_ty
 
+gsac.gsexpr.cast.source.compileToDataItem	.closure	_gsac.gsexpr.cast.source.compileToDataItem_c	_gsac.gsexpr.cast.source.compileToDataItem_ty
+
 	.code
 
 # §section §gs{gsac.gsexpr.annotate}
@@ -178,6 +180,7 @@ ty	.larg	gsdl.cgs.gstype.t
 	.enter	e
 
 _gsac.gsexpr.compileToDataItem_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
@@ -185,12 +188,17 @@ gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
+_gsac.gsexpr.compileToDataItem_expr.heavy.cast_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.cast.source.compileToDataItem	.gvar
 gsac.gsexpr.compileToDataItem	.gvar
+pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 mbv	.fv	maybe.t	gsdl.var.t
 ty	.fv	gsdl.cgs.gstype.t
@@ -199,13 +207,42 @@ e0	.karg	gsdl.cgs.gsexpr.prim.u
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 src		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+so.x			.undefined	gsdl.var.t
+			.force	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+			.app	pos	env	so.x	src
+			.enter	gsac.gsexpr.cast.source.compileToDataItem
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.app	pos1	env	mbv	e1	ty
 			.enter	gsac.gsexpr.compileToDataItem
 	# > :: either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+
+_gsac.gsexpr.compileToDataItem_expr.heavy.cast_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+	.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+
+# §section §gs{gsac.gsexpr.cast.source.compileToDataItem}
+
+_gsac.gsexpr.cast.source.compileToDataItem_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+x	.larg	gsdl.var.t
+so	.larg	gsdl.cgs.gsexpr.cast.source.t
+	.undef	either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
 
 	.type
 
@@ -266,4 +303,32 @@ _gsac.gsexpr.compileToDataItem_res.u	.tygvar
 	.tyref	_gsac.gsexpr.compileToDataItem_res.u
 
 _gsac.gsexpr.compileToDataItem_res.u	.tyexpr
+	.typroduct
+
+# §section §gs{gsac.gsexpr.cast.source.compileToDataItem}
+
+_gsac.gsexpr.cast.source.compileToDataItem_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.cast.source.t
+	.tyref	either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+
+_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tyexpr
+_gsac.gsexpr.cast.source.compileToDataItem_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gsexpr.cast.source.compileToDataItem_res.u
+
+_gsac.gsexpr.cast.source.compileToDataItem_res.u	.tyexpr
 	.typroduct
