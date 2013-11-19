@@ -218,9 +218,19 @@ sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 _gsdl.cgs.gstype.substty_c	.expr
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.substty_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
 v	.larg	gsdl.var.t
 ty0	.larg	gsdl.cgs.gstype.t
 ty1	.larg	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.gstype.substty_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty1
+
+_gsdl.cgs.gstype.substty_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar	# Temp
+ty1.0	.karg	gsdl.cgs.gstype.prim.u
 	.undef	gsdl.cgs.gstype.t	# [ty0/v]ty1
 
 # §section §gs{gsdl.cgs.gstype.≡}
