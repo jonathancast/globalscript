@@ -229,9 +229,37 @@ ty1	.larg	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.substty_k	.forcecont
 gsdl.cgs.gstype.prim.u	.tygvar
-gsdl.cgs.gstype.t	.tygvar	# Temp
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+gsdl.cgs.gstype.app	.gvar
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
-	.undef	gsdl.cgs.gstype.t	# [ty0/v]ty1
+	.analyze	ty1.0	abstype	app	lift	product	sum	var
+		.case	abstype
+tyc		.fkarg	0	gsdl.var.t
+			.undef	gsdl.cgs.gstype.t
+		.case	app
+tyf		.fkarg	0	gsdl.cgs.gstype.t
+tyx		.fkarg	1	gsdl.cgs.gstype.t
+y.tyf			.undefined	gsdl.cgs.gstype.t	# [ty0/v]tyf
+y.tyx			.undefined	gsdl.cgs.gstype.t	# [ty0/v]tyx
+			.app	y.tyf	y.tyx
+			.enter	gsdl.cgs.gstype.app
+		.case	lift
+ty1.1		.fkarg	0	gsdl.cgs.gstype.t
+			.undef	gsdl.cgs.gstype.t
+		.case	product
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.undef	gsdl.cgs.gstype.t
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	gsdl.cgs.gstype.t
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	gsdl.cgs.gstype.t
+	# > :: gsdl.cgs.gstype.t
 
 # §section §gs{gsdl.cgs.gstype.≡}
 
