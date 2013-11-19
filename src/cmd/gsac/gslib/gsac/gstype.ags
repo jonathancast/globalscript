@@ -367,10 +367,12 @@ either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 record.empty	.tygvar	# Temp
 _gsac.gstype.check_abstype_abstype_k	.subcode
+_gsac.gstype.check_app_app_k	.subcode
 bool.t.out	.cogvar
 maybe.t.out	.cogvar
+either.t.out	.cogvar
 gsdl.var.≡	.gvar
-gsdl.cgs.typeenv.typeexpansion.get	.gvar
+gsac.gstype.check	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tya0	.fv	gsdl.cgs.gstype.prim.u
@@ -393,7 +395,16 @@ va				.fkarg	0	gsdl.var.t
 		.case	app
 tyfe		.fkarg	0	gsdl.cgs.gstype.t
 tyxe		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	record.empty
+			.danalyze	tya0	app
+				.default
+					.undef	either.t	string.t	record.empty
+				.case	app
+tyfa				.fkarg	0	gsdl.cgs.gstype.t
+tyxa				.fkarg	1	gsdl.cgs.gstype.t
+					.force	_gsac.gstype.check_app_app_k
+					.coerce	either.t.out	string.t	record.empty
+					.app	pos	env	tyfa	tyfe
+					.enter	gsac.gstype.check
 		.case	lift
 tye1		.fkarg	0	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	record.empty
@@ -422,6 +433,14 @@ b0	.karg	bool.prim.u	# §gs{tyca ≡ tyce}
 		.case	true
 			.app	record.empty
 			.enter	either.right	string.t	record.empty
+
+_gsac.gstype.check_app_app_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	record.empty
+	.undef	either.t	string.t	record.empty
 
 # §section §gs{gsac.gstype.compile}
 
