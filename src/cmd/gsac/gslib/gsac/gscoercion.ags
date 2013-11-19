@@ -307,7 +307,9 @@ _gsac.gscoercion.annotate_defn_w_:_false_k	.subcode
 either.t.out	.cogvar
 _gsac.gscoercion.annotate_defn_w	.gvar
 gsdl.cgs.typeenv.var.insert	.gvar
+gsdl.cgs.gstype.app	.gvar
 env	.fv	gsdl.cgs.typeenv.t
+res	.fv	gsdl.cgs.gstype.t
 tye	.fv	gsdl.cgs.gstype.t
 as1	.fv	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 a0.v	.fv	gsdl.var.t
@@ -316,7 +318,8 @@ b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
 env1			.apply	gsdl.cgs.typeenv.var.insert	|	a0.v	a0.ki	env
-res1			.undefined	gsdl.cgs.gstype.t	# > gs{§res (type §a0.v)}
+a0.v.ty			.undefined	gsdl.cgs.gstype.t	# > type §a0.v
+res1			.apply	gsdl.cgs.gstype.app	|	res	a0.v.ty
 			.force	_gsac.gscoercion.annotate_defn_w_:_false_k
 			.coerce	either.t.out	string.t	_gsac.gscoercion.annotate_res.ty
 			.app	env1	as1	res1	tye
