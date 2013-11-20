@@ -228,13 +228,16 @@ ty1	.larg	gsdl.cgs.gstype.t
 	.enter	ty1
 
 _gsdl.cgs.gstype.substty_k	.forcecont
-gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
 gsdl.cgs.gstype.app	.gvar
+gsdl.cgs.gstype.substty	.gvar
+v	.fv	gsdl.var.t
+ty0	.fv	gsdl.cgs.gstype.t
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty1.0	abstype	app	lift	product	sum	var
 		.case	abstype
@@ -243,7 +246,7 @@ tyc		.fkarg	0	gsdl.var.t
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
-y.tyf			.undefined	gsdl.cgs.gstype.t	# [ty0/v]tyf
+y.tyf			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyf
 y.tyx			.undefined	gsdl.cgs.gstype.t	# [ty0/v]tyx
 			.app	y.tyf	y.tyx
 			.enter	gsdl.cgs.gstype.app
