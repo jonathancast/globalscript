@@ -234,6 +234,7 @@ gsdl.cgs.gstype.prim.u	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
 gsdl.cgs.gstype.app	.gvar
 gsdl.cgs.gstype.substty	.gvar
 v	.fv	gsdl.var.t
@@ -242,7 +243,9 @@ ty1.0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty1.0	abstype	app	lift	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
-			.undef	gsdl.cgs.gstype.t
+			.coerce	gsdl.cgs.gstype.t.in
+			.lift
+			.yield	ty1.0
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
