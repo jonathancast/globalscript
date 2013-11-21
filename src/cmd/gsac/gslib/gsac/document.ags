@@ -349,7 +349,7 @@ gsdl.sourcepos.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.document.annotate_nothing_just_k	.subcode
 either.t.out	.cogvar
@@ -362,7 +362,7 @@ mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.document.annotate_nothing_just_k
-			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
+			.coerce	either.t.out	string.t	_gsac.gstype.kindcheck_res.ty
 			.app	pos	env	ty
 			.enter	gsac.gstype.kindcheck
 		.case	nothing
@@ -373,7 +373,7 @@ gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 record.empty	.tygvar
 _gsac.document.annotate_nothing_just_right_k	.subcode
 either.t.out	.cogvar
@@ -382,17 +382,18 @@ gsac.gskind.check	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 doc	.fv	gsdl.cgs.document.t
 ty	.fv	gsdl.cgs.gstype.t
-eky0	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
+eky0	.karg	either.prim.u	string.t	_gsac.gstype.kindcheck_res.ty
 	.analyze	eky0	left	right
 		.case	left
 err		.fkarg	0	string.t
 			.app	err
 			.enter	either.left	string.t	gsdl.cgs.document.t
 		.case	right
-ky		.fkarg	0	gsdl.cgs.gskind.t
+ty.r		.fkarg	0	_gsac.gstype.kindcheck_res.ty
+ki			.lfield	gskind	ty.r
 			.force	_gsac.document.annotate_nothing_just_right_k
 			.coerce	either.t.out	string.t	record.empty
-			.app	ky	gsdl.cgs.gskind.lifted
+			.app	ki	gsdl.cgs.gskind.lifted
 			.enter	gsac.gskind.check
 
 _gsac.document.annotate_nothing_just_right_k	.forcecont

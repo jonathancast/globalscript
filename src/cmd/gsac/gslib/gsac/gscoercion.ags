@@ -113,6 +113,7 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gscoercion.gstype.t	.tygvar
 string.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
 _gsac.gscoercion.annotate_appty_right_forall_k	.subcode
@@ -130,7 +131,7 @@ v		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.cgs.gskind.t
 ty1		.fkarg	2	gsdl.cgs.gscoercion.gstype.t
 			.force	_gsac.gscoercion.annotate_appty_right_forall_k
-			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
+			.coerce	either.t.out	string.t	_gsac.gstype.kindcheck_res.ty
 			.app	pos	env	tya
 			.enter	gsac.gstype.kindcheck
 	# > :: either.t	string.t	_gsac.gscoercion.annotate_res.ty
@@ -142,6 +143,7 @@ gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gscoercion.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
@@ -152,13 +154,14 @@ tya	.fv	gsdl.cgs.gstype.t
 v	.fv	gsdl.var.t
 ki	.fv	gsdl.cgs.gskind.t
 ty1	.fv	gsdl.cgs.gscoercion.gstype.t
-e0	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
+e0	.karg	either.prim.u	string.t	_gsac.gstype.kindcheck_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 		.case	right
-kia		.fkarg	0	gsdl.cgs.gskind.t
+a.r		.fkarg	0	_gsac.gstype.kindcheck_res.ty
+kia			.lfield	gskind	a.r
 			.force	_gsac.gscoercion.annotate_appty_right_forall_right_k
 			.coerce	either.t.out	string.t	record.empty
 			.app	ki	kia

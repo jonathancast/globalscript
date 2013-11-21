@@ -47,12 +47,13 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
 record.empty	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.kindcheck_app_k	.subcode
 _gsac.gstype.kindcheck_lift_k	.subcode
@@ -69,18 +70,18 @@ ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0	abstype	app	lift	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.kindcheck_res.ty
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.kindcheck_app_k
-			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
+			.coerce	either.t.out	string.t	_gsac.gstype.kindcheck_res.ty
 			.app	pos	env	tyf
 			.enter	gsac.gstype.kindcheck
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.kindcheck_lift_k
-			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
+			.coerce	either.t.out	string.t	_gsac.gstype.kindcheck_res.ty
 			.app	pos	env	ty1
 			.enter	gsac.gstype.kindcheck
 		.case	product
@@ -91,7 +92,7 @@ fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.enter	gsac.gstype.fields.kindcheck
 		.case	sum
 cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.kindcheck_res.ty
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.kindcheck_var_k
@@ -106,21 +107,22 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 _gsac.gstype.kindcheck_app_right_k	.subcode
 gsdl.cgs.gskind.t.out	.cogvar
 either.left	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tyx	.fv	gsdl.cgs.gstype.t
-efki0	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
+efki0	.karg	either.prim.u	string.t	_gsac.gstype.kindcheck_res.ty
 	.analyze	efki0	left	right
 		.case	left
 err		.fkarg	0	string.t
 			.app	err
-			.enter	either.left	string.t	gsdl.cgs.gskind.t
+			.enter	either.left	string.t	_gsac.gstype.kindcheck_res.ty
 		.case	right
-fki		.fkarg	0	gsdl.cgs.gskind.t
+f.r		.fkarg	0	_gsac.gstype.kindcheck_res.ty
+fki			.lfield	gskind	f.r
 			.force	_gsac.gstype.kindcheck_app_right_k
 			.coerce	gsdl.cgs.gskind.t.out
 			.enter	fki
@@ -131,6 +133,7 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gskind.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 string.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.kindcheck_app_right_exp_k	.subcode
@@ -145,19 +148,20 @@ ki0	.karg	gsdl.cgs.gskind.prim.u	# Kind of type function
 ki.b		.fkarg	0	gsdl.cgs.gskind.t
 ki.e		.fkarg	1	gsdl.cgs.gskind.t
 			.force	_gsac.gstype.kindcheck_app_right_exp_k
-			.coerce	either.t.out	string.t	gsdl.cgs.gskind.t
+			.coerce	either.t.out	string.t	_gsac.gstype.kindcheck_res.ty
 			.app	pos	env	tyx
 			.enter	gsac.gstype.kindcheck
 		.case	lifted
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.kindcheck_res.ty
 		.case	unlifted
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.kindcheck_res.ty
 	# > :: either.t	string.t	gsdl.cgs.gskind.t
 
 _gsac.gstype.kindcheck_app_right_exp_k	.forcecont
 gsdl.cgs.gskind.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.kindcheck_app_right_exp_right_k	.subcode
@@ -166,14 +170,15 @@ either.left	.gvar
 gsac.gskind.check	.gvar
 ki.b	.fv	gsdl.cgs.gskind.t
 ki.e	.fv	gsdl.cgs.gskind.t
-ekix	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
-	.analyze	ekix	left	right
+ex.r	.karg	either.prim.u	string.t	_gsac.gstype.kindcheck_res.ty
+	.analyze	ex.r	left	right
 		.case	left
 err		.fkarg	0	string.t
 			.app	err
-			.enter	either.left	string.t	gsdl.cgs.gskind.t
+			.enter	either.left	string.t	_gsac.gstype.kindcheck_res.ty
 		.case	right
-kix		.fkarg	0	gsdl.cgs.gskind.t
+x.r		.fkarg	0	_gsac.gstype.kindcheck_res.ty
+kix			.lfield	gskind	x.r
 			.force	_gsac.gstype.kindcheck_app_right_exp_right_k
 			.coerce	either.t.out	string.t	record.empty
 			.app	kix	ki.e
@@ -184,6 +189,7 @@ gsdl.cgs.gskind.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
 ki.b	.fv	gsdl.cgs.gskind.t
@@ -191,39 +197,41 @@ e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.kindcheck_res.ty
 		.case	right
 x		.fkarg	0	record.empty
-			.app	ki.b
-			.enter	either.right	string.t	gsdl.cgs.gskind.t
+res			.lrecord	gskind	ki.b	|	_gsac.gstype.kindcheck_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.kindcheck_res.ty
 
 _gsac.gstype.kindcheck_lift_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.kindcheck_lift_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
-e0	.karg	either.prim.u	string.t	gsdl.cgs.gskind.t
+e0	.karg	either.prim.u	string.t	_gsac.gstype.kindcheck_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.kindcheck_res.ty
 		.case	right
-ky		.fkarg	0	gsdl.cgs.gskind.t
+r		.fkarg	0	_gsac.gstype.kindcheck_res.ty
+ki			.lfield	gskind	r
 			.force	_gsac.gstype.kindcheck_lift_right_k
 			.coerce	either.t.out	string.t	record.empty
-			.app	ky	gsdl.cgs.gskind.unlifted
+			.app	ki	gsdl.cgs.gskind.unlifted
 			.enter	gsac.gskind.check
 
 _gsac.gstype.kindcheck_lift_right_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.cgs.gskind.lifted	.gvar
@@ -231,29 +239,31 @@ e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.kindcheck_res.ty
 		.case	right
 r		.fkarg	0	record.empty
-			.app	gsdl.cgs.gskind.lifted
-			.enter	either.right	string.t	gsdl.cgs.gskind.t
+res			.lrecord	gskind	gsdl.cgs.gskind.lifted	|	_gsac.gstype.kindcheck_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.kindcheck_res.ty
 
 _gsac.gstype.kindcheck_product_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.gskind.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.kindcheck_res.ty
 		.case	right
 r		.fkarg	0	record.empty
-			.app	gsdl.cgs.gskind.unlifted
-			.enter	either.right	string.t	gsdl.cgs.gskind.t
+res			.lrecord	gskind	gsdl.cgs.gskind.unlifted	|	_gsac.gstype.kindcheck_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.kindcheck_res.ty
 
 _gsac.gstype.kindcheck_var_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -261,6 +271,7 @@ gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 rune.t	.tygvar
 either.right	.gvar
 either.left	.gvar
@@ -278,8 +289,9 @@ mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mb0	just	nothing
 		.case	just
 ki		.fkarg	0	gsdl.cgs.gskind.t
-			.app	ki
-			.enter	either.right	string.t	gsdl.cgs.gskind.t
+res			.lrecord	gskind	ki	|	_gsac.gstype.kindcheck_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.kindcheck_res.ty
 		.case	nothing
 pos.s			.apply	gsdl.sourcepos.print	|	pos
 var.s			.apply	gsdl.cgs.syntax.var.print	|	v
@@ -289,7 +301,7 @@ msg.2			.apply	list.:	rune.t	|	rune.space	msg.3
 msg.1			.apply	list.:	rune.t	|	rune.colon	msg.2
 msg			.apply	list.<>	rune.t	|	pos.s	msg.1
 			.app	msg
-			.enter	either.left	string.t	gsdl.cgs.gskind.t
+			.enter	either.left	string.t	_gsac.gstype.kindcheck_res.ty
 
 # §section §gs{gsac.gstype.fields.kindcheck}
 
@@ -1722,14 +1734,23 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+_gsac.gstype.kindcheck_res.ty	.tygvar
 	.tylift
 	.tyfun	gsdl.sourcepos.t
 	.tylift
 	.tyfun	gsdl.cgs.typeenv.t
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
-	.tyref	either.t	string.t	gsdl.cgs.gskind.t
+	.tyref	either.t	string.t	_gsac.gstype.kindcheck_res.ty
+
+_gsac.gstype.kindcheck_res.ty	.tyexpr
+_gsac.gstype.kindcheck_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gstype.kindcheck_res.u
+
+_gsac.gstype.kindcheck_res.u	.tyexpr
+gsdl.cgs.gskind.t	.tygvar
+	.typroduct	gskind	gsdl.cgs.gskind.t
 
 # §section §gs{gsac.gstype.fields.kindcheck}
 
