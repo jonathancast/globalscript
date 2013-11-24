@@ -635,6 +635,7 @@ gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.check_abstype_abstype_k	.subcode
 _gsac.gstype.check_app_app_k	.subcode
+gsdl.cgs.gstype.t.in	.cogvar
 bool.t.out	.cogvar
 maybe.t.out	.cogvar
 either.t.out	.cogvar
@@ -643,6 +644,7 @@ list.<>	.gvar
 gsdl.sourcepos.print	.gvar
 _gsac.gstype.check_col.sp.s	.gvar
 _gsac.gstype.check_dont.think.s	.gvar
+gsdl.cgs.gstype.print	.gvar
 
 gsdl.var.≡	.gvar
 gsac.gstype.check	.gvar
@@ -650,13 +652,17 @@ pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tya0	.fv	gsdl.cgs.gstype.prim.u
 tye0	.karg	gsdl.cgs.gstype.prim.u
+tya0.l	.lifted	tya0
+tya0.cl	.cast	tya0.l	gsdl.cgs.gstype.t.in
 	.analyze	tye0	abstype	app	lift	product	sum	var
 		.case	abstype
 tyce		.fkarg	0	gsdl.var.t
 			.danalyze	tya0	abstype	var
 				.default
 pos.s					.apply	gsdl.sourcepos.print	|	pos
-err3					.undefined	string.t
+tyca.s					.apply	gsdl.cgs.gstype.print	|	tya0.cl
+err4					.undefined	string.t
+err3					.apply	list.<>	rune.t	|	tyca.s	err4
 err2					.apply	list.<>	rune.t	|	_gsac.gstype.check_dont.think.s	err3
 err1					.apply	list.<>	rune.t	|	_gsac.gstype.check_col.sp.s	err2
 err					.apply	list.<>	rune.t	|	pos.s	err1
