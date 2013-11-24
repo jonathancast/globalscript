@@ -444,7 +444,10 @@ e		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	gsdl.cgs.typeenv.typeexpansion.t
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
-			.undef	gsdl.cgs.typeenv.typeexpansion.t
+ls			.undefined	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e			.undefined	gsdl.cgs.gstype.t
+			.app	ls	e
+			.enter	gsdl.cgs.typeenv.typeexpansion.expr
 		.case	impprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
