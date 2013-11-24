@@ -479,18 +479,43 @@ res			.lrecord	gskind	kib	gstype	tye	|	_gsac.gstype.fun.annotate_res.ty
 			.enter	either.right	string.t	_gsac.gstype.fun.annotate_res.ty
 
 _gsac.gstype.fun.annotate_var_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-string.t	.tygvar
-_gsac.gstype.fun.annotate_res.ty	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar	# Temp
-either.right	.gvar
+string.t	.tygvar	# Temp
+_gsac.gstype.fun.annotate_res.ty	.tygvar	# Temp
+_gsac.gstype.fun.annotate_var_just_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.get	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+v	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mb0	just	nothing
 		.case	just
 ki		.fkarg	0	gsdl.cgs.gskind.t
-tye			.undefined	gsdl.cgs.typeenv.typeexpansion.t
+			.force	_gsac.gstype.fun.annotate_var_just_k
+			.coerce	maybe.t.out	gsdl.cgs.typeenv.typeexpansion.t
+			.app	v	env
+			.enter	gsdl.cgs.typeenv.typeexpansion.get
+		.case	nothing
+			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
+
+_gsac.gstype.fun.annotate_var_just_k	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.fun.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+ki	.fv	gsdl.cgs.gskind.t
+e0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
+	.analyze	e0	just	nothing
+		.case	just
+tye		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
 res			.lrecord	gskind	ki	gstype	tye	|	_gsac.gstype.fun.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.fun.annotate_res.ty
