@@ -448,7 +448,7 @@ e		.fkarg	1	gsdl.cgs.gstype.t
 			.enter	tyls
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
-ls			.undefined	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+ls			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 e			.undefined	gsdl.cgs.gstype.t
 			.app	ls	e
 			.enter	gsdl.cgs.typeenv.typeexpansion.expr
