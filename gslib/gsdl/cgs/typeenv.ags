@@ -425,6 +425,7 @@ _gsdl.cgs.typeenv.typeexpansion.app_expr_k	.subcode
 list.t.out	.cogvar
 gsdl.cgs.typeenv.typeexpansion.expr	.gvar
 list.nil	.gvar
+gsdl.cgs.gstype.abstype	.gvar
 tyf0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
 	.analyze	tyf0	definedprim	elimprim	expr	gsabstype	impprim	var
 		.case	definedprim
@@ -449,7 +450,7 @@ e		.fkarg	1	gsdl.cgs.gstype.t
 		.case	gsabstype
 v		.fkarg	0	gsdl.var.t
 ls			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
-e			.undefined	gsdl.cgs.gstype.t
+e			.apply	gsdl.cgs.gstype.abstype	|	v
 			.app	ls	e
 			.enter	gsdl.cgs.typeenv.typeexpansion.expr
 		.case	impprim
