@@ -388,6 +388,7 @@ err		.fkarg	0	string.t
 		.case	right
 tyf.r		.fkarg	0	_gsac.gstype.fun.annotate_res.ty
 tyf.ki			.lfield	gskind	tyf.r
+tyf.ty			.lfield	gstype	tyf.r
 			.force	_gsac.gstype.fun.annotate_app_right_k
 			.coerce	gsdl.cgs.gskind.t.out
 			.enter	tyf.ki
@@ -396,6 +397,7 @@ _gsac.gstype.fun.annotate_app_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 gsdl.cgs.gskind.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
@@ -408,6 +410,7 @@ gsac.gstype.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tyx	.fv	gsdl.cgs.gstype.t
+tyf.ty	.fv	gsdl.cgs.typeenv.typeexpansion.t
 tyf.ki0	.karg	gsdl.cgs.gskind.prim.u
 	.danalyze	tyf.ki0	exp
 		.default
@@ -421,6 +424,7 @@ kie		.fkarg	1	gsdl.cgs.gskind.t
 			.enter	gsac.gstype.annotate
 
 _gsac.gstype.fun.annotate_app_right_exp_k	.forcecont
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -431,6 +435,7 @@ _gsac.gstype.fun.annotate_res.ty	.tygvar	# Temp
 _gsac.gstype.fun.annotate_app_right_exp_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check	.gvar
+tyf.ty	.fv	gsdl.cgs.typeenv.typeexpansion.t
 kib	.fv	gsdl.cgs.gskind.t
 kie	.fv	gsdl.cgs.gskind.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
@@ -441,21 +446,26 @@ err		.fkarg	0	string.t
 		.case	right
 tyx.r		.fkarg	0	_gsac.gstype.annotate_res.ty
 tyx.ki			.lfield	gskind	tyx.r
+tyx.ty			.lfield	gstype	tyx.r
 			.force	_gsac.gstype.fun.annotate_app_right_exp_right_k
 			.coerce	either.t.out	string.t	record.empty
 			.app	tyx.ki	kie
 			.enter	gsac.gskind.check
 
 _gsac.gstype.fun.annotate_app_right_exp_right_k	.forcecont
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 _gsac.gstype.fun.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar	# Temp
 either.right	.gvar
+gsdl.cgs.typeenv.typeexpansion.app	.gvar
+tyf.ty	.fv	gsdl.cgs.typeenv.typeexpansion.t
 kib	.fv	gsdl.cgs.gskind.t
+tyx.ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
@@ -463,7 +473,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
 		.case	right
 r		.fkarg	0	record.empty
-tye			.undefined	gsdl.cgs.typeenv.typeexpansion.t
+tye			.apply	gsdl.cgs.typeenv.typeexpansion.app	|	tyf.ty	tyx.ty
 res			.lrecord	gskind	kib	gstype	tye	|	_gsac.gstype.fun.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.fun.annotate_res.ty
