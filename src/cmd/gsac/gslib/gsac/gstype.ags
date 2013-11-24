@@ -263,20 +263,23 @@ err		.fkarg	0	string.t
 		.case	right
 r		.fkarg	0	_gsac.gstype.annotate_res.ty
 ki			.lfield	gskind	r
+r.ty			.lfield	gstype	r
 			.force	_gsac.gstype.annotate_lift_right_k
 			.coerce	either.t.out	string.t	record.empty
 			.app	ki	gsdl.cgs.gskind.unlifted
 			.enter	gsac.gskind.check
 
 _gsac.gstype.annotate_lift_right_k	.forcecont
+gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.gstype.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.cgs.gskind.lifted	.gvar
+gsdl.cgs.gstype.lift	.gvar
+r.ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
@@ -284,7 +287,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	right
 r		.fkarg	0	record.empty
-res.ty			.undefined	gsdl.cgs.gstype.t
+res.ty			.apply	gsdl.cgs.gstype.lift	|	r.ty
 res			.lrecord	gskind	gsdl.cgs.gskind.lifted	gstype	res.ty	|	_gsac.gstype.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
