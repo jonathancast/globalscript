@@ -6,6 +6,8 @@ gsac.gstype.annotate	.closure	_gsac.gstype.annotate_c	_gsac.gstype.annotate_ty
 _gsac.gstype.annotate_var_nothing_prefix.s	.string	Unknown\stype\svariable\s'
 _gsac.gstype.annotate_var_nothing_suffix.s	.string	'
 
+gsac.gstype.fun.annotate	.closure	_gsac.gstype.fun.annotate_c	_gsac.gstype.fun.annotate_ty
+
 gsac.gstype.fields.annotate	.closure	_gsac.gstype.fields.annotate_c	_gsac.gstype.fields.annotate_ty
 
 gsac.gstype.check	.closure	_gsac.gstype.check_c	_gsac.gstype.check_ty
@@ -46,6 +48,7 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
+_gsac.gstype.fun.annotate_res.ty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
@@ -60,6 +63,7 @@ _gsac.gstype.annotate_product_k	.subcode
 _gsac.gstype.annotate_var_k	.subcode
 either.t.out	.cogvar
 maybe.t.out	.cogvar
+gsac.gstype.fun.annotate	.gvar
 gsac.gstype.annotate	.gvar
 gsac.gstype.fields.annotate	.gvar
 gsdl.cgs.typeenv.gskind.get	.gvar
@@ -74,9 +78,9 @@ tyc		.fkarg	0	gsdl.var.t
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.annotate_app_k
-			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
+			.coerce	either.t.out	string.t	_gsac.gstype.fun.annotate_res.ty
 			.app	pos	env	tyf
-			.enter	gsac.gstype.annotate
+			.enter	gsac.gstype.fun.annotate
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.annotate_lift_k
@@ -107,20 +111,21 @@ gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
+_gsac.gstype.fun.annotate_res.ty	.tygvar
 _gsac.gstype.annotate_app_right_k	.subcode
 gsdl.cgs.gskind.t.out	.cogvar
 either.left	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tyx	.fv	gsdl.cgs.gstype.t
-efki0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
+efki0	.karg	either.prim.u	string.t	_gsac.gstype.fun.annotate_res.ty
 	.analyze	efki0	left	right
 		.case	left
 err		.fkarg	0	string.t
 			.app	err
 			.enter	either.left	string.t	_gsac.gstype.annotate_res.ty
 		.case	right
-f.r		.fkarg	0	_gsac.gstype.annotate_res.ty
+f.r		.fkarg	0	_gsac.gstype.fun.annotate_res.ty
 fki			.lfield	gskind	f.r
 			.force	_gsac.gstype.annotate_app_right_k
 			.coerce	gsdl.cgs.gskind.t.out
@@ -309,6 +314,174 @@ msg.1			.apply	list.:	rune.t	|	rune.colon	msg.2
 msg			.apply	list.<>	rune.t	|	pos.s	msg.1
 			.app	msg
 			.enter	either.left	string.t	_gsac.gstype.annotate_res.ty
+
+# §section §gs{gsac.gstype.fun.annotate}
+
+_gsac.gstype.fun.annotate_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsac.gstype.fun.annotate_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsac.gstype.fun.annotate_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsac.gstype.fun.annotate_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gstype.fun.annotate_res.ty	.tygvar	# Temp
+_gsac.gstype.fun.annotate_app_k	.subcode
+_gsac.gstype.fun.annotate_var_k	.subcode
+either.t.out	.cogvar
+maybe.t.out	.cogvar
+gsac.gstype.fun.annotate	.gvar
+gsdl.cgs.typeenv.gskind.get	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.danalyze	ty0	app	var
+		.default
+			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
+		.case	app
+tyf		.fkarg	0	gsdl.cgs.gstype.t
+tyx		.fkarg	1	gsdl.cgs.gstype.t
+			.force	_gsac.gstype.fun.annotate_app_k
+			.coerce	either.t.out	string.t	_gsac.gstype.fun.annotate_res.ty
+			.app	pos	env	tyf
+			.enter	gsac.gstype.fun.annotate
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.force	_gsac.gstype.fun.annotate_var_k
+			.coerce	maybe.t.out	gsdl.cgs.gskind.t
+			.app	v	env
+			.enter	gsdl.cgs.typeenv.gskind.get
+	# > :: either.t	string.t	_gsac.gstype.fun.annotate_res.ty
+
+_gsac.gstype.fun.annotate_app_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.fun.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gstype.fun.annotate_app_right_k	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tyx	.fv	gsdl.cgs.gstype.t
+e0	.karg	either.prim.u	string.t	_gsac.gstype.fun.annotate_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
+		.case	right
+tyf.r		.fkarg	0	_gsac.gstype.fun.annotate_res.ty
+tyf.ki			.lfield	gskind	tyf.r
+			.force	_gsac.gstype.fun.annotate_app_right_k
+			.coerce	gsdl.cgs.gskind.t.out
+			.enter	tyf.ki
+
+_gsac.gstype.fun.annotate_app_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gstype.fun.annotate_res.ty	.tygvar	# Temp
+_gsac.gstype.fun.annotate_app_right_exp_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.annotate	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tyx	.fv	gsdl.cgs.gstype.t
+tyf.ki0	.karg	gsdl.cgs.gskind.prim.u
+	.danalyze	tyf.ki0	exp
+		.default
+			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
+		.case	exp
+kib		.fkarg	0	gsdl.cgs.gskind.t
+kie		.fkarg	1	gsdl.cgs.gskind.t
+			.force	_gsac.gstype.fun.annotate_app_right_exp_k
+			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
+			.app	pos	env	tyx
+			.enter	gsac.gstype.annotate
+
+_gsac.gstype.fun.annotate_app_right_exp_k	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gstype.fun.annotate_res.ty	.tygvar	# Temp
+_gsac.gstype.fun.annotate_app_right_exp_right_k	.subcode
+either.t.out	.cogvar
+gsac.gskind.check	.gvar
+kib	.fv	gsdl.cgs.gskind.t
+kie	.fv	gsdl.cgs.gskind.t
+e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
+		.case	right
+tyx.r		.fkarg	0	_gsac.gstype.annotate_res.ty
+tyx.ki			.lfield	gskind	tyx.r
+			.force	_gsac.gstype.fun.annotate_app_right_exp_right_k
+			.coerce	either.t.out	string.t	record.empty
+			.app	tyx.ki	kie
+			.enter	gsac.gskind.check
+
+_gsac.gstype.fun.annotate_app_right_exp_right_k	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+_gsac.gstype.fun.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+kib	.fv	gsdl.cgs.gskind.t
+e0	.karg	either.prim.u	string.t	record.empty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
+		.case	right
+r		.fkarg	0	record.empty
+res			.lrecord	gskind	kib	|	_gsac.gstype.fun.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.fun.annotate_res.ty
+
+_gsac.gstype.fun.annotate_var_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.fun.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
+	.analyze	mb0	just	nothing
+		.case	just
+ki		.fkarg	0	gsdl.cgs.gskind.t
+res			.lrecord	gskind	ki	|	_gsac.gstype.fun.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.fun.annotate_res.ty
+		.case	nothing
+			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
 
 # §section §gs{gsac.gstype.fields.annotate}
 
@@ -1759,6 +1932,32 @@ _gsac.gstype.annotate_res.u	.tyexpr
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.typroduct	gskind	gsdl.cgs.gskind.t	gstype	gsdl.cgs.gstype.t
+
+# §section §gs{gsac.gstype.fun.annotate}
+
+_gsac.gstype.fun.annotate_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.fun.annotate_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
+
+_gsac.gstype.fun.annotate_res.ty	.tyexpr
+_gsac.gstype.fun.annotate_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gstype.fun.annotate_res.u
+
+_gsac.gstype.fun.annotate_res.u	.tyexpr
+gsdl.cgs.gskind.t	.tygvar
+	.typroduct	gskind	gsdl.cgs.gskind.t
 
 # §section §gs{gsac.gstype.fields.annotate}
 
