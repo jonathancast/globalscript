@@ -8,7 +8,7 @@ _gsac.gstype.annotate_var_nothing_suffix.s	.string	'
 
 gsac.gstype.fun.annotate	.closure	_gsac.gstype.fun.annotate_c	_gsac.gstype.fun.annotate_ty
 
-gsac.gstype.fields.annotate	.closure	_gsac.gstype.fields.annotate_c	_gsac.gstype.fields.annotate_ty
+gsac.gstype.field.annotate	.closure	_gsac.gstype.field.annotate_c	_gsac.gstype.field.annotate_ty
 
 gsac.gstype.check	.closure	_gsac.gstype.check_c	_gsac.gstype.check_ty
 _gsac.gstype.check_col.sp.s	.string	:\s
@@ -54,8 +54,8 @@ _gsac.gstype.fun.annotate_res.ty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
-gsdl.cgs.gstype.constr.t	.tygvar
 record.empty	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	# Temp
@@ -67,8 +67,10 @@ either.t.out	.cogvar
 maybe.t.out	.cogvar
 gsac.gstype.fun.annotate	.gvar
 gsac.gstype.annotate	.gvar
-gsac.gstype.fields.annotate	.gvar
+either.mapM	.gvar
+gsac.gstype.field.annotate	.gvar
 gsdl.cgs.typeenv.gskind.get	.gvar
+list.record.empty.ty	.tylet	list.t	record.empty
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
@@ -92,9 +94,9 @@ ty1		.fkarg	0	gsdl.cgs.gstype.t
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.force	_gsac.gstype.annotate_product_k
-			.coerce	either.t.out	string.t	record.empty
-			.app	fs
-			.enter	gsac.gstype.fields.annotate
+			.coerce	either.t.out	string.t	list.record.empty.ty
+			.app	gsac.gstype.field.annotate	fs
+			.enter	either.mapM	string.t	gsdl.cgs.gstype.field.t	record.empty
 		.case	sum
 cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
@@ -295,19 +297,21 @@ res			.lrecord	gskind	gsdl.cgs.gskind.lifted	gstype	res.ty	|	_gsac.gstype.annota
 _gsac.gstype.annotate_product_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
+list.t	.tygvar
 record.empty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
 gsdl.cgs.gstype.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
-e0	.karg	either.prim.u	string.t	record.empty
+list.record.empty.ty	.tylet	list.t	record.empty
+e0	.karg	either.prim.u	string.t	list.record.empty.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	right
-r		.fkarg	0	record.empty
+r		.fkarg	0	list.t	record.empty
 res.ty			.undefined	gsdl.cgs.gstype.t
 res			.lrecord	gskind	gsdl.cgs.gskind.unlifted	gstype	res.ty	|	_gsac.gstype.annotate_res.ty
 			.app	res
@@ -560,36 +564,15 @@ res			.lrecord	gskind	ki	gstype	tye	|	_gsac.gstype.fun.annotate_res.ty
 		.case	nothing
 			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
 
-# §section §gs{gsac.gstype.fields.annotate}
+# §section §gs{gsac.gstype.field.annotate}
 
-_gsac.gstype.fields.annotate_c	.expr
-list.t	.tygvar
+_gsac.gstype.field.annotate_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
-_gsac.gstype.fields.annotate_k	.subcode
-list.t.out	.cogvar
-fs	.larg	list.t	gsdl.cgs.gstype.field.t
-	.force	_gsac.gstype.fields.annotate_k
-	.coerce	list.t.out	gsdl.cgs.gstype.field.t
-	.enter	fs
-
-_gsac.gstype.fields.annotate_k	.forcecont
-list.prim.u	.tygvar
-gsdl.cgs.gstype.field.t	.tygvar
-list.t	.tygvar
-string.t	.tygvar
-record.empty	.tygvar
 either.t	.tygvar	# Temp
-either.right	.gvar
-record.empty	.gvar
-fs0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
-	.analyze	fs0	:	nil
-		.case	:
-f0		.fkarg	0	gsdl.cgs.gstype.field.t
-fs1		.fkarg	1	list.t	gsdl.cgs.gstype.field.t
-			.undef	either.t	string.t	record.empty
-		.case	nil
-			.app	record.empty
-			.enter	either.right	string.t	record.empty
+string.t	.tygvar	# Temp
+record.empty	.tygvar	# Temp
+f	.larg	gsdl.cgs.gstype.field.t
+	.undef	either.t	string.t	record.empty
 
 # §section §gs{gsac.gstype.check}
 
@@ -2056,16 +2039,15 @@ gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 	.typroduct	gskind	gsdl.cgs.gskind.t	gstype	gsdl.cgs.typeenv.typeexpansion.t
 
-# §section §gs{gsac.gstype.fields.annotate}
+# §section §gs{gsac.gstype.field.annotate}
 
-_gsac.gstype.fields.annotate_ty	.tyexpr
-list.t	.tygvar
+_gsac.gstype.field.annotate_ty	.tyexpr
 gsdl.cgs.gstype.field.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 	.tylift
-	.tyfun	list.t	gsdl.cgs.gstype.field.t
+	.tyfun	gsdl.cgs.gstype.field.t
 	.tyref	either.t	string.t	record.empty
 
 # §section §gs{gsac.gstype.check}
