@@ -468,9 +468,22 @@ v		.fkarg	0	gsdl.var.t
 _gsdl.cgs.typeenv.typeexpansion.app_expr_k	.forcecont
 list.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar	# Temp
+gsdl.cgs.gstype.t	.tygvar	# Temp
+gsdl.cgs.typeenv.typeexpansion.expr	.gvar
+list.nil	.gvar
 tyls0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.analyze	tyls0	:	nil
+		.case	:
+tyl0		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+tyls1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 			.undef	gsdl.cgs.typeenv.typeexpansion.t
+		.case	nil
+ls1			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e1			.undefined	gsdl.cgs.gstype.t
+			.app	ls1	e1
+			.enter	gsdl.cgs.typeenv.typeexpansion.expr
 
 # §section §gs{gsdl.cgs.typeenv.typeexpansion.togstype}
 
