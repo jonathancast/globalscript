@@ -300,10 +300,13 @@ string.t	.tygvar
 list.t	.tygvar
 _gsac.gstype.field.annotate_res.ty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.gstype.t	.tygvar	# Temp
+_gsac.gstype.annotate_product_res.fs.f_c	.subcode
 either.right	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
+gsdl.cgs.gstype.product	.gvar
+list.map	.gvar
 list.field.res.ty	.tylet	list.t	_gsac.gstype.field.annotate_res.ty
 e0	.karg	either.prim.u	string.t	list.field.res.ty
 	.analyze	e0	left	right
@@ -312,10 +315,18 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	right
 r		.fkarg	0	list.t	_gsac.gstype.field.annotate_res.ty
-res.ty			.undefined	gsdl.cgs.gstype.t
+res.fs.f			.alloc	_gsac.gstype.annotate_product_res.fs.f_c
+res.fs			.apply	list.map	_gsac.gstype.field.annotate_res.ty	gsdl.cgs.gstype.field.t	|	res.fs.f	r
+res.ty			.apply	gsdl.cgs.gstype.product	|	res.fs
 res			.lrecord	gskind	gsdl.cgs.gskind.unlifted	gstype	res.ty	|	_gsac.gstype.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
+
+_gsac.gstype.annotate_product_res.fs.f_c	.expr
+_gsac.gstype.field.annotate_res.ty	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar	# Temp
+r	.larg	_gsac.gstype.field.annotate_res.ty
+	.undef	gsdl.cgs.gstype.field.t
 
 _gsac.gstype.annotate_var_k	.forcecont
 gsdl.sourcepos.t	.tygvar
