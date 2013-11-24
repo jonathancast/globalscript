@@ -622,19 +622,20 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.var.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-record.empty	.tygvar	# Temp
 _gsac.gstype.check_abstype_abstype_k	.subcode
 _gsac.gstype.check_app_app_k	.subcode
 bool.t.out	.cogvar
 maybe.t.out	.cogvar
 either.t.out	.cogvar
+either.left	.gvar
 gsdl.var.≡	.gvar
 gsac.gstype.check	.gvar
 pos	.fv	gsdl.sourcepos.t
@@ -646,7 +647,9 @@ tye0	.karg	gsdl.cgs.gstype.prim.u
 tyce		.fkarg	0	gsdl.var.t
 			.danalyze	tya0	abstype	var
 				.default
-					.undef	either.t	string.t	record.empty
+err					.undefined	string.t
+					.app	err
+					.enter	either.left	string.t	record.empty
 				.case	abstype
 tyca				.fkarg	0	gsdl.var.t
 					.force	_gsac.gstype.check_abstype_abstype_k
