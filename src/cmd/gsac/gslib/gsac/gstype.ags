@@ -11,6 +11,8 @@ gsac.gstype.fun.annotate	.closure	_gsac.gstype.fun.annotate_c	_gsac.gstype.fun.a
 gsac.gstype.fields.annotate	.closure	_gsac.gstype.fields.annotate_c	_gsac.gstype.fields.annotate_ty
 
 gsac.gstype.check	.closure	_gsac.gstype.check_c	_gsac.gstype.check_ty
+_gsac.gstype.check_col.sp.s	.string	:\s
+_gsac.gstype.check_dont.think.s	.string	I\sdon't\sthink\s'
 
 gsac.gstype.compile	.closure	_gsac.gstype.compile_c	_gsac.gstype.compile_ty
 _gsac.gstype.compile_w	.closure	_gsac.gstype.compile_w_c	_gsac.gstype.compile_w_ty
@@ -624,6 +626,7 @@ gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.var.t	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
+rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
@@ -636,6 +639,11 @@ bool.t.out	.cogvar
 maybe.t.out	.cogvar
 either.t.out	.cogvar
 either.left	.gvar
+list.<>	.gvar
+gsdl.sourcepos.print	.gvar
+_gsac.gstype.check_col.sp.s	.gvar
+_gsac.gstype.check_dont.think.s	.gvar
+
 gsdl.var.≡	.gvar
 gsac.gstype.check	.gvar
 pos	.fv	gsdl.sourcepos.t
@@ -647,7 +655,11 @@ tye0	.karg	gsdl.cgs.gstype.prim.u
 tyce		.fkarg	0	gsdl.var.t
 			.danalyze	tya0	abstype	var
 				.default
-err					.undefined	string.t
+pos.s					.apply	gsdl.sourcepos.print	|	pos
+err3					.undefined	string.t
+err2					.apply	list.<>	rune.t	|	_gsac.gstype.check_dont.think.s	err3
+err1					.apply	list.<>	rune.t	|	_gsac.gstype.check_col.sp.s	err2
+err					.apply	list.<>	rune.t	|	pos.s	err1
 					.app	err
 					.enter	either.left	string.t	record.empty
 				.case	abstype
