@@ -319,13 +319,17 @@ res			.lrecord	gskind	gsdl.cgs.gskind.unlifted	gstype	res.ty	|	_gsac.gstype.anno
 
 _gsac.gstype.annotate_var_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 rune.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar	# Temp
+_gsac.gstype.annotate_var_just_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.get	.gvar
 either.right	.gvar
 either.left	.gvar
 list.<>	.gvar
@@ -337,15 +341,16 @@ _gsac.gstype.annotate_var_nothing_prefix.s	.gvar
 gsdl.cgs.syntax.var.print	.gvar
 _gsac.gstype.annotate_var_nothing_suffix.s	.gvar
 pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
 v	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mb0	just	nothing
 		.case	just
 ki		.fkarg	0	gsdl.cgs.gskind.t
-res.ty			.undefined	gsdl.cgs.gstype.t
-res			.lrecord	gskind	ki	gstype	res.ty	|	_gsac.gstype.annotate_res.ty
-			.app	res
-			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
+			.force	_gsac.gstype.annotate_var_just_k
+			.coerce	maybe.t.out	gsdl.cgs.typeenv.typeexpansion.t
+			.app	v	env
+			.enter	gsdl.cgs.typeenv.typeexpansion.get
 		.case	nothing
 pos.s			.apply	gsdl.sourcepos.print	|	pos
 var.s			.apply	gsdl.cgs.syntax.var.print	|	v
@@ -356,6 +361,27 @@ msg.1			.apply	list.:	rune.t	|	rune.colon	msg.2
 msg			.apply	list.<>	rune.t	|	pos.s	msg.1
 			.app	msg
 			.enter	either.left	string.t	_gsac.gstype.annotate_res.ty
+
+_gsac.gstype.annotate_var_just_k	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+gsdl.cgs.gstype.t	.tygvar	# Temp
+either.t	.tygvar	# Temp
+either.right	.gvar
+ki	.fv	gsdl.cgs.gskind.t
+mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
+	.analyze	mb0	just	nothing
+		.case	just
+ex		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
+res.ty			.undefined	gsdl.cgs.gstype.t
+res			.lrecord	gskind	ki	gstype	res.ty	|	_gsac.gstype.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
+		.case	nothing
+			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 
 # §section §gs{gsac.gstype.fun.annotate}
 
