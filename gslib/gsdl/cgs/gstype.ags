@@ -10,6 +10,9 @@ _gsdl.cgs.gstype.parser.arg_pi.re	.regex	"Π〈
 _gsdl.cgs.gstype.parser.arg_lift.p_lb.re	.regex	⌊
 _gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.regex	⌋
 
+gsdl.cgs.gstype.print	.closure	_gsdl.cgs.gstype.print_c
+_gsdl.cgs.gstype.print_w	.closure	_gsdl.cgs.gstype.print_w_c	_gsdl.cgs.gstype.print_w_ty
+
 gsdl.cgs.gstype.freevars	.closure	_gsdl.cgs.gstype.freevars_c	_gsdl.cgs.gstype.freevars_ty
 
 gsdl.cgs.gstype.substty	.closure	_gsdl.cgs.gstype.substty_c	_gsdl.cgs.gstype.substty_ty
@@ -149,6 +152,59 @@ ty_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.ws	ty
 ty_p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	lb_p	ty_p1
 	.app	gsdl.cgs.gstype.lift	ty_p
 	.enter	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t
+
+# §section §gs{gsdl.cgs.gstype.print}
+
+_gsdl.cgs.gstype.print_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+rune.t	.tygvar
+_gsdl.cgs.gstype.print_w	.gvar
+list.nil	.gvar
+ty	.larg	gsdl.cgs.gstype.t
+nil.s	.apply	list.nil	rune.t
+	.app	ty	nil.s
+	.enter	_gsdl.cgs.gstype.print_w
+
+_gsdl.cgs.gstype.print_w_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.print_w_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.gstype.print_w_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsdl.cgs.gstype.print_w_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	ty0	abstype	app	lift	product	sum	var
+		.case	abstype
+v		.fkarg	0	gsdl.var.t
+			.undef	diff.list.t	rune.t
+		.case	app
+tyf		.fkarg	0	gsdl.cgs.gstype.t
+tyx		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	diff.list.t	rune.t
+		.case	lift
+ty1		.fkarg	0	gsdl.cgs.gstype.t
+			.undef	diff.list.t	rune.t
+		.case	product
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.undef	diff.list.t	rune.t
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	diff.list.t	rune.t
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	diff.list.t	rune.t
+	# > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.cgs.gstype.freevars}
 
@@ -609,6 +665,16 @@ bool.t	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	bool.t
+
+# §section §gs{gsdl.cgs.gstype.print}
+
+_gsdl.cgs.gstype.print_w_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	diff.list.t	rune.t
 
 # §section §gs{gsdl.cgs.gstype.freevars}
 
