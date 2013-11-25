@@ -232,8 +232,8 @@ gsdl.cgs.gskind.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
-_gsac.gstype.annotate_res.ty	.tygvar	# Temp
 either.right	.gvar
 ki.b	.fv	gsdl.cgs.gskind.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
