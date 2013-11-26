@@ -226,21 +226,24 @@ ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
+ordered.set.singleton	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.symbol.abstyvar	.gvar
 gsdl.cgs.gstype.freevars	.gvar
 list.foldr	.gvar
 ordered.set.union	.gvar
-gsdl.cgs.symbol.compare	.gvar
 ordered.set.empty	.gvar
 list.map	.gvar
 gsdl.cgs.gstype.field.freevars	.gvar
-ordered.set.singleton	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
 res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0	abstype	app	lift	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+sym			.apply	gsdl.cgs.symbol.abstyvar	|	tyc
+			.app	gsdl.cgs.symbol.compare	sym
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
