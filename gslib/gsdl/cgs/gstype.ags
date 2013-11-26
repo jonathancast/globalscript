@@ -290,9 +290,12 @@ gsdl.cgs.gstype.prim.u	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
+_gsdl.cgs.gstype.substty_var_k	.subcode
 gsdl.cgs.gstype.t.in	.cogvar
+bool.t.out	.cogvar
 gsdl.cgs.gstype.app	.gvar
 gsdl.cgs.gstype.substty	.gvar
+gsdl.var.≡	.gvar
 v	.fv	gsdl.var.t
 ty0	.fv	gsdl.cgs.gstype.t
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
@@ -319,9 +322,28 @@ fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 			.undef	gsdl.cgs.gstype.t
 		.case	var
-v		.fkarg	0	gsdl.var.t
-			.undef	gsdl.cgs.gstype.t
+v1		.fkarg	0	gsdl.var.t
+			.force	_gsdl.cgs.gstype.substty_var_k
+			.coerce	bool.t.out
+			.app	v	v1
+			.enter	gsdl.var.≡
 	# > :: gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.substty_var_k	.forcecont
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+bool.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+ty0	.fv	gsdl.cgs.gstype.t
+ty1.0	.fv	gsdl.cgs.gstype.prim.u
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.coerce	gsdl.cgs.gstype.t.in
+			.lift
+			.yield	ty1.0
+		.case	true
+			.enter	ty0
 
 # §section §gs{gsdl.cgs.gstype.≡}
 
