@@ -306,7 +306,7 @@ tyc		.fkarg	0	gsdl.var.t
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
 y.tyf			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyf
-y.tyx			.undefined	gsdl.cgs.gstype.t	# [ty0/v]tyx
+y.tyx			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyx
 			.app	y.tyf	y.tyx
 			.enter	gsdl.cgs.gstype.app
 		.case	lift
