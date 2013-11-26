@@ -1311,14 +1311,13 @@ string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.compileToApp_res.ty	.tygvar	# Temp
-_gsac.gstype.compileToApp_var_just_gsabstype_k	.subcode
 either.t.out	.cogvar
 _gsac.gstype.compileToVar_gsabstype	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.analyze	e0	definedprim	elimprim	expr	gsabstype	impprim	var
+	.analyze	e0	definedprim	elimprim	expr	impprim	var
 		.case	definedprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
@@ -1333,12 +1332,6 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 tyls		.fkarg	0	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 e		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
-		.case	gsabstype
-v		.fkarg	0	gsdl.var.t
-			.force	_gsac.gstype.compileToApp_var_just_gsabstype_k
-			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
-			.app	env	v	em	gvs
-			.yield	_gsac.gstype.compileToVar_gsabstype
 		.case	impprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
@@ -1348,42 +1341,6 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 	# > :: either.t	string.t	_gsac.gstype.compileToApp_res.ty
-
-_gsac.gstype.compileToApp_var_just_gsabstype_k	.forcecont
-either.prim.u	.tygvar
-string.t	.tygvar
-_gsac.gstype.compileToVar_res.ty	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gstype.compileToApp_res.ty	.tygvar	# Temp
-_gsac.gstype.compileToApp_var_just_gsabstype_right_k	.subcode
-e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
-	.analyze	e0	left	right
-		.case	left
-err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
-		.case	right
-r		.fkarg	0	_gsac.gstype.compileToVar_res.ty
-			.force	_gsac.gstype.compileToApp_var_just_gsabstype_right_k
-			.enter	r
-
-_gsac.gstype.compileToApp_var_just_gsabstype_right_k	.forcecont
-_gsac.gstype.compileToVar_res.u	.tygvar
-string.t	.tygvar
-_gsac.gstype.compileToApp_res.ty	.tygvar
-gsdl.var.t	.tygvar
-either.right	.gvar
-list.nil	.gvar
-r0	.karg	_gsac.gstype.compileToVar_res.u
-r.em	.field	emitted	r0
-r.gvs	.field	global.subvars	r0
-tyas	.apply	list.nil	gsdl.var.t
-r.tyes	.field	tyexprs	r0
-r.v	.field	var	r0
-r.tyfvs	.field	tyfvs	r0
-r.tygvs	.field	tygvars	r0
-res	.lrecord	emitted	r.em	global.subvars	r.gvs	tyexprs	r.tyes	tyfun	r.v	tyfvs	r.tyfvs	tygvars	r.tygvs	typeargs	tyas	|	_gsac.gstype.compileToApp_res.ty
-	.app	res
-	.enter	either.right	string.t	_gsac.gstype.compileToApp_res.ty
 
 _gsac.gstype.compileToApp_app_c	.expr
 gsdl.sourcepos.t	.tygvar
