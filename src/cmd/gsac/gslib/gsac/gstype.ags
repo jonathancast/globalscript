@@ -1479,13 +1479,17 @@ gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
 _gsac.gstype.compileToApp_res.ty	.tygvar	# Temp
+_gsac.gstype.compileToApp_app_abstype_k	.subcode
 _gsac.gstype.compileToApp_app_var_k	.subcode
+either.t.out	.cogvar
 maybe.t.out	.cogvar
+_gsac.gstype.compileToVar_gsabstype	.gvar
 _gsac.gstype.compileToApp_app	.gvar
 list.:	.gvar
 gsdl.cgs.typeenv.typeexpansion.get	.gvar
@@ -1495,9 +1499,15 @@ tyas	.fv	list.t	gsdl.cgs.gstype.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 tyf0	.karg	gsdl.cgs.gstype.prim.u
-	.danalyze	tyf0	app	var	# I believe these are the only legal cases
+	.danalyze	tyf0	abstype	app	var
 		.default	# error; illicit function in application
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
+		.case	abstype
+tyc		.fkarg	0	gsdl.var.t
+			.force	_gsac.gstype.compileToApp_app_abstype_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
+			.app	env	tyc	em	gvs
+			.yield	_gsac.gstype.compileToVar_gsabstype
 		.case	app	# recur
 tyf1		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
@@ -1511,6 +1521,47 @@ v		.fkarg	0	gsdl.var.t
 			.app	v	env
 			.enter	gsdl.cgs.typeenv.typeexpansion.get
 	# > :: either.t	string.t	_gsac.gstype.compileToApp_res.ty
+
+_gsac.gstype.compileToApp_app_abstype_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
+_gsac.gstype.compileToApp_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gstype.compileToApp_app_abstype_right_k	.subcode
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tyas	.fv	list.t	gsdl.cgs.gstype.t
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
+		.case	right
+r		.fkarg	0	_gsac.gstype.compileToVar_res.ty
+			.force	_gsac.gstype.compileToApp_app_abstype_right_k
+			.enter	r
+
+_gsac.gstype.compileToApp_app_abstype_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsac.gstype.compileToVar_res.u	.tygvar
+gsdl.var.t	.tygvar
+_gsac.gstype.compileToApp_args	.gvar
+diff.list.nil	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tyas	.fv	list.t	gsdl.cgs.gstype.t
+r0	.karg	_gsac.gstype.compileToVar_res.u
+nil	.apply	diff.list.nil	gsdl.var.t
+	.app	pos	env	r0	tyas	nil
+	.yield	_gsac.gstype.compileToApp_args
 
 _gsac.gstype.compileToApp_app_var_k	.forcecont
 gsdl.sourcepos.t	.tygvar
