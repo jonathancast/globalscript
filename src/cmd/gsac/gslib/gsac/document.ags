@@ -454,10 +454,11 @@ err		.fkarg	0	string.t
 			.enter	either.left	string.t	gsdl.cgs.document.t
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.annotate_res.ty
-ki			.lfield	gskind	ty.r
+ty.r.ty			.lfield	gstype	ty.r
+ty.r.ki			.lfield	gskind	ty.r
 			.force	_gsac.document.annotate_nothing_just_right_k
 			.coerce	either.t.out	string.t	record.empty
-			.app	ki	gsdl.cgs.gskind.lifted
+			.app	ty.r.ki	gsdl.cgs.gskind.lifted
 			.enter	gsac.gskind.check
 
 _gsac.document.annotate_nothing_just_right_k	.forcecont
@@ -473,7 +474,7 @@ either.right	.gvar
 maybe.nothing	.gvar
 maybe.just	.gvar
 doc	.fv	gsdl.cgs.document.t
-ty	.fv	gsdl.cgs.gstype.t
+ty.r.ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
@@ -482,7 +483,7 @@ err		.fkarg	0	string.t
 		.case	right
 r		.fkarg	0	record.empty
 nothing			.apply	maybe.nothing	gsdl.cgs.gsexpr.t
-mbty			.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
+mbty			.apply	maybe.just	gsdl.cgs.gstype.t	|	ty.r.ty
 pos			.lfield	pos	doc
 res			.lrecord	expr	nothing	gstype	mbty	pos	pos
 			.app	res
