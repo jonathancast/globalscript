@@ -695,6 +695,8 @@ gsdl.cgs.gstype.print	.gvar
 gsdl.var.≡	.gvar
 gsac.gstype.check	.gvar
 gsac.gstype.fields.check	.gvar
+list.sort	.gvar
+gsdl.cgs.gstype.field.name.compare	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tya0	.fv	gsdl.cgs.gstype.prim.u
@@ -753,7 +755,7 @@ fse		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 					.undef	either.t	string.t	record.empty
 				.case	product
 fsa				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
-fsa.s					.undefined	list.t	gsdl.cgs.gstype.field.t
+fsa.s					.apply	list.sort	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.name.compare	fsa
 fse.s					.undefined	list.t	gsdl.cgs.gstype.field.t
 					.app	pos	env	fsa.s	fse.s
 					.enter	gsac.gstype.fields.check
