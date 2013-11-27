@@ -756,7 +756,7 @@ fse		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 				.case	product
 fsa				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 fsa.s					.apply	list.sort	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.name.compare	fsa
-fse.s					.undefined	list.t	gsdl.cgs.gstype.field.t
+fse.s					.apply	list.sort	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.name.compare	fse
 					.app	pos	env	fsa.s	fse.s
 					.enter	gsac.gstype.fields.check
 		.case	sum
