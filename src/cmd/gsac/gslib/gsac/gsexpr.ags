@@ -257,11 +257,24 @@ so	.larg	gsdl.cgs.gsexpr.cast.source.t
 
 _gsac.gsexpr.cast.source.compileToDataItem_k	.forcecont
 gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar	# Temp
+either.right	.gvar
 so0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
-	.undef	either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+	.analyze	so0	missing	typesig
+		.case	missing
+pos1		.fkarg	0	gsdl.sourcepos.t
+			.undef	either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+		.case	typesig
+pos1		.fkarg	0	gsdl.sourcepos.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+res			.undefined	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+	# > :: either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
 
 	.type
 
