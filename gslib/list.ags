@@ -682,10 +682,28 @@ ys1					.apply	list.byZip.map2	α0	α1	β	|	f	xn0.1	xn1.1
 _list.sort_c	.expr
 order.total.t	.tygvar
 list.t	.tygvar
+_list.sort_k	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 cmp	.larg	order.total.t	α
 xn	.larg	list.t	α
-	.undef	list.t	α
+	.force	_list.sort_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.sort_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+list.nil	.gvar
+α	.tyfv	*
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	list.t	α
+		.case	nil
+			.enter	list.nil	α
 
 # §section §gs{list.≡}
 
