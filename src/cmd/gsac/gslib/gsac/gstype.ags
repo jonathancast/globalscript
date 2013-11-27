@@ -823,12 +823,24 @@ fse	.larg	list.t	gsdl.cgs.gstype.field.t
 	.enter	fsa
 
 _gsac.gstype.fields.check_ka	.forcecont
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+list.prim.u	.tygvar
+_gsac.gstype.fields.check_ke	.subcode
+list.t.out	.cogvar
+fse	.fv	list.t	gsdl.cgs.gstype.field.t
+fsa0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
+	.force	_gsac.gstype.fields.check_ke
+	.coerce	list.t.out	gsdl.cgs.gstype.field.t
+	.enter	fse
+
+_gsac.gstype.fields.check_ke	.forcecont
 list.prim.u	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 record.empty	.tygvar	# Temp
-fsa0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
+fse0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
 	.undef	either.t	string.t	record.empty
 
 # §section §gs{gsac.gstype.compile}
