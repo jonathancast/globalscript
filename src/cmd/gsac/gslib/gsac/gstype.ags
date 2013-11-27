@@ -837,11 +837,28 @@ fsa0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
 _gsac.gstype.fields.check_ke	.forcecont
 list.prim.u	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-record.empty	.tygvar	# Temp
+either.right	.gvar
+record.empty	.gvar
+fsa0	.fv	list.prim.u	gsdl.cgs.gstype.field.t
 fse0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
-	.undef	either.t	string.t	record.empty
+	.analyze	fse0	:	nil
+		.case	:
+fe0		.fkarg	0	gsdl.cgs.gstype.field.t
+fse1		.fkarg	1	list.t	gsdl.cgs.gstype.field.t
+			.undef	either.t	string.t	record.empty
+		.case	nil
+			.analyze	fsa0	:	nil
+				.case	:
+fa0				.fkarg	0	gsdl.cgs.gstype.field.t
+fsa1				.fkarg	1	list.t	gsdl.cgs.gstype.field.t
+					.undef	either.t	string.t	record.empty
+				.case	nil
+					.app	record.empty
+					.enter	either.right	string.t	record.empty
 
 # §section §gs{gsac.gstype.compile}
 
