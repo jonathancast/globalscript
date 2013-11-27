@@ -24,6 +24,8 @@ _list.drop_worker	.closure	_list.drop_worker_c	_list.drop_worker_ty
 
 list.byZip.map2	.closure	_list.byZip.map2_c	_list.byZip.map2_ty
 
+list.sort	.closure	_list.sort_c	_list.sort_ty
+
 list.≡	.closure	_list.≡.code	_list.≡.ty
 list.compare	.closure	_list.compare_c	_list.compare_ty
 
@@ -675,6 +677,16 @@ ys1					.apply	list.byZip.map2	α0	α1	β	|	f	xn0.1	xn1.1
 		.case	nil
 			.undef	list.t	β
 
+# §section §gs{list.sort}
+
+_list.sort_c	.expr
+order.total.t	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+cmp	.larg	order.total.t	α
+xn	.larg	list.t	α
+	.undef	list.t	α
+
 # §section §gs{list.≡}
 
 _list.≡.code	.expr
@@ -1194,6 +1206,18 @@ _list.byZip.map2_f_ty	.tyexpr
 	.tylift
 	.tyfun	α1
 	.tyref	β
+
+# §section §gs{list.sort}
+
+_list.sort_ty	.tyexpr
+order.total.t	.tygvar
+list.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	α
+	.tylift
+	.tyfun	list.t	α
+	.tyref	list.t	α
 
 # §section §gs{list.≡}
 
