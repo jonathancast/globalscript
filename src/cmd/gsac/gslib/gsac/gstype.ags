@@ -810,13 +810,23 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-record.empty	.tygvar	# Temp
+_gsac.gstype.fields.check_ka	.subcode
+list.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 fsa	.larg	list.t	gsdl.cgs.gstype.field.t
 fse	.larg	list.t	gsdl.cgs.gstype.field.t
+	.force	_gsac.gstype.fields.check_ka
+	.coerce	list.t.out	gsdl.cgs.gstype.field.t
+	.enter	fsa
+
+_gsac.gstype.fields.check_ka	.forcecont
+list.prim.u	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+record.empty	.tygvar	# Temp
+fsa0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
 	.undef	either.t	string.t	record.empty
 
 # §section §gs{gsac.gstype.compile}
