@@ -33,6 +33,8 @@ gsdl.cgs.gstype.field.parser	.closure	_gsdl.cgs.gstype.field.parser_c
 
 gsdl.cgs.gstype.field.freevars	.closure	_gsdl.cgs.gstype.field.freevars_c
 
+gsdl.cgs.gstype.field.name.compare	.closure	_gsdl.cgs.gstype.field.name.compare_c
+
 gsdl.cgs.gstype.field.fmtgs	.closure	_gsdl.cgs.gstype.field.fmtgs_c	_gsdl.cgs.gstype.field.fmtgs_ty
 gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
@@ -554,6 +556,15 @@ ordered.set.t	.tygvar	# Temp
 gsdl.cgs.symbol.t	.tygvar	# Temp
 f	.larg	gsdl.cgs.gstype.field.t
 	.undef	ordered.set.t	gsdl.cgs.symbol.t
+
+# §section §gs{gsdl.cgs.gstype.field.name.compare}
+
+_gsdl.cgs.gstype.field.name.compare_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+order.total.ord.t	.tygvar	# Temp
+f0	.larg	gsdl.cgs.gstype.field.t
+f1	.larg	gsdl.cgs.gstype.field.t
+	.undef	order.total.ord.t
 
 # §section §gs{gsdl.cgs.gstype.field.fmtgs}
 
