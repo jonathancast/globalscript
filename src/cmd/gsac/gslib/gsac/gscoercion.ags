@@ -473,20 +473,29 @@ tyas	.larg	list.t	gsdl.cgs.gstype.t
 	.enter	co
 
 _gsac.gscoercion.compileToTypeApp_app_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gscoercion.compileToTypeApp_res.ty	.tygvar	# Temp
+_gsac.gscoercion.compileToTypeApp_app	.gvar
+list.:	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tyas	.fv	list.t	gsdl.cgs.gstype.t
 co0	.karg	gsdl.cgs.gscoercion.prim.u
 	.analyze	co0	appty	defn	pos
 		.case	appty
 cof		.fkarg	0	gsdl.cgs.gscoercion.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	_gsac.gscoercion.compileToTypeApp_res.ty
+tyas1			.apply	list.:	gsdl.cgs.gstype.t	|	tyx	tyas
+			.app	pos	env	cof	tyas1
+			.enter	_gsac.gscoercion.compileToTypeApp_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gscoercion.compileToTypeApp_res.ty
