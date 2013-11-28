@@ -1,14 +1,14 @@
 #! /home/jcast/globalscript/bin/ibio
 
-for (
-    'opt.n ← env.option ch{n};
-    'as ← env.args.get;
-) send $ concat (intersperse qq{ } as) <> analyze opt.n
-    case true. qq{}
-    case false. qq{\n}
+for
+        'opt.n ← env.option ch{n};
+        'as ← env.args.get;
+    . send $ concat (intersperse qq{ } as) <> analyze opt.n
+        case true. qq{}
+        (case false. qq{\n})
 (where
     'concat = foldr (<>) [];
-    'intersperse = λ 'x. tail (>>= λ 'y. [ x, y, ]);
+    'intersperse = λ 'x. tail (_ >>= λ 'y. [ x, y, ]);
     ('<>) = λ 'xn 'ys. foldr (:) ys xn;
     'foldr = λ 'f 'z 'xn. analyze xn
         case nil. z
