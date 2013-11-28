@@ -5,6 +5,8 @@
 gsac.gscoercion.annotate	.closure	_gsac.gscoercion.annotate_c	_gsac.gscoercion.annotate_ty
 _gsac.gscoercion.annotate_defn_w	.closure	_gsac.gscoercion.annotate_defn_w_c	_gsac.gscoercion.annotate_defn_w_ty
 
+gsac.gscoercion.compileToGlobalVar	.closure	_gsac.gscoercion.compileToGlobalVar_c	_gsac.gscoercion.compileToGlobalVar_ty
+
 	.code
 
 # §section §gs{gsac.gscoercion.annotate}
@@ -356,6 +358,22 @@ r1			.lrecord	gstype	ty	|	_gsac.gscoercion.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
 
+# §section §gs{gsac.gscoercion.compileToGlobalVar}
+
+_gsac.gscoercion.compileToGlobalVar_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gscoercion.compileToVar_res.ty	.tygvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+v	.larg	gsdl.var.t
+co	.larg	gsdl.cgs.gscoercion.t
+	.undef	either.t	string.t	_gsac.gscoercion.compileToVar_res.ty
+
 	.type
 
 # §section §gs{gsac.gscoercion.annotate}
@@ -401,3 +419,31 @@ _gsac.gscoercion.annotate_res.ty	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+
+# §section §gs{gsac.gscoercion.compileToGlobalVar}
+
+_gsac.gscoercion.compileToGlobalVar_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.compileToVar_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gscoercion.t
+	.tyref	either.t	string.t	_gsac.gscoercion.compileToVar_res.ty
+
+_gsac.gscoercion.compileToVar_res.ty	.tyexpr
+_gsac.gscoercion.compileToVar_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gscoercion.compileToVar_res.u
+
+_gsac.gscoercion.compileToVar_res.u	.tyexpr
+	.typroduct
