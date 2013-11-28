@@ -120,7 +120,13 @@ string.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 gsdl.ags.file.t	.tygvar
 either.t	.tygvar	# Temp
+list.t	.tygvar	# Temp
+gsdl.ags.codeitem.t	.tygvar	# Temp
+gsdl.ags.coercionitem.t	.tygvar	# Temp
+gsdl.ags.dataitem.t	.tygvar	# Temp
+gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
+gsdl.ags.file.filetype.gsdocument	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -128,7 +134,11 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.ags.file.t
 		.case	right
 r		.fkarg	0	_gsac.gsexpr.compileToDataItem_res.ty
-res			.undefined	gsdl.ags.file.t
+cs			.undefined	list.t	gsdl.ags.codeitem.t
+cos			.undefined	list.t	gsdl.ags.coercionitem.t
+ds			.undefined	list.t	gsdl.ags.dataitem.t
+ts			.undefined	list.t	gsdl.ags.typeitem.t
+res			.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	ts	|	gsdl.ags.file.t
 			.app	res
 			.enter	either.right	string.t	gsdl.ags.file.t
 
