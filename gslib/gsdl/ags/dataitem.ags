@@ -16,6 +16,7 @@ gsdl.ags.dataitem.fmtgs	.closure	_gsdl.ags.dataitem.fmtgs_c	_gsdl.ags.dataitem.f
 _gsdl.ags.dataitem.fmtgs_undefined.s	.string	undefined\s
 
 gsdl.ags.dataitem.undefined	.closure	_gsdl.ags.dataitem.undefined_c
+gsdl.ags.dataitem.cast	.closure	_gsdl.ags.dataitem.cast_c
 gsdl.ags.dataitem.closure	.closure	_gsdl.ags.dataitem.closure_c
 
 	.code
@@ -259,6 +260,7 @@ _gsdl.ags.dataitem.≡_k1	.forcecont
 gsdl.ags.dataitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
+gsdl.var.t	.tygvar
 string.t	.tygvar
 bool.t	.tygvar	# Temp
 bool.∧	.gvar
@@ -266,7 +268,13 @@ maybe.≡	.gvar
 string.≡	.gvar
 di0.0	.fv	gsdl.ags.dataitem.prim.u
 di1.0	.karg	gsdl.ags.dataitem.prim.u
-	.analyze	di0.0	closure	undefined
+	.analyze	di0.0	cast	closure	undefined
+		.case	cast
+pos0		.fkarg	0	gsdl.sourcepos.t
+nm0		.fkarg	1	maybe.t	gsdl.var.t
+x0		.fkarg	2	gsdl.var.t
+co0		.fkarg	3	gsdl.var.t
+			.undef	bool.t
 		.case	closure
 pos0		.fkarg	0	gsdl.sourcepos.t
 nm0		.fkarg	1	maybe.t	string.t
@@ -314,6 +322,7 @@ _gsdl.ags.dataitem.fmtgs_k	.forcecont
 gsdl.ags.dataitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
+gsdl.var.t	.tygvar
 string.t	.tygvar
 rune.t	.tygvar
 fmtgs.printer.t	.tygvar	# Temp
@@ -328,7 +337,13 @@ diff.list.:	.gvar
 rune.space	.gvar
 string.fmtgs	.gvar
 di0	.karg	gsdl.ags.dataitem.prim.u
-	.analyze	di0	closure	undefined
+	.analyze	di0	cast	closure	undefined
+		.case	cast
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	maybe.t	gsdl.var.t
+x		.fkarg	2	gsdl.var.t
+co		.fkarg	3	gsdl.var.t
+			.undef	fmtgs.printer.t
 		.case	closure
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	string.t
@@ -361,6 +376,21 @@ c	.constr	gsdl.ags.dataitem.prim.u	undefined	0	pos	1	ty
 	.lift
 	.yield	c
 
+_gsdl.ags.dataitem.cast_c	.expr
+gsdl.sourcepos.t	.tygvar
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.dataitem.prim.u	.tygvar
+gsdl.ags.dataitem.t.in	.cogvar
+pos	.arg	gsdl.sourcepos.t
+nm	.arg	maybe.t	gsdl.var.t
+x	.arg	gsdl.var.t
+co	.arg	gsdl.var.t
+c	.constr	gsdl.ags.dataitem.prim.u	cast	0	pos	1	nm	2	x	3	co
+	.coerce	gsdl.ags.dataitem.t.in
+	.lift
+	.yield	c
+
 _gsdl.ags.dataitem.closure_c	.expr
 gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
@@ -384,9 +414,17 @@ gsdl.ags.dataitem.prim.u	.tygvar
 	.tyref	gsdl.ags.dataitem.prim.u
 
 gsdl.ags.dataitem.prim.u	.tyexpr
+_gsdl.ags.dataitem.prim.u_cast_ty	.tygvar
 _gsdl.ags.dataitem.prim.u_closure_ty	.tygvar
 _gsdl.ags.dataitem.prim.u_undefined_ty	.tygvar
-	.tysum	closure	_gsdl.ags.dataitem.prim.u_closure_ty	undefined	_gsdl.ags.dataitem.prim.u_undefined_ty
+	.tysum	cast	_gsdl.ags.dataitem.prim.u_cast_ty	closure	_gsdl.ags.dataitem.prim.u_closure_ty	undefined	_gsdl.ags.dataitem.prim.u_undefined_ty
+
+_gsdl.ags.dataitem.prim.u_cast_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
+maybe.var.ty	.tylet	maybe.t	gsdl.var.t
+	.tyubproduct	0	gsdl.sourcepos.t	1	maybe.var.ty	2	gsdl.var.t	3	gsdl.var.t
 
 _gsdl.ags.dataitem.prim.u_closure_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
