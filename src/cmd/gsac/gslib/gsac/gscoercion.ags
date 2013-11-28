@@ -382,19 +382,29 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.compileToTypeApp_res.ty	.tygvar
 gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
 _gsac.gscoercion.compile_res.ty	.tygvar	# Temp
+_gsac.gscoercion.compile_appty_k	.subcode
+either.t.out	.cogvar
+_gsac.gscoercion.compileToTypeApp_app	.gvar
+list.singleton	.gvar
 gsac.gscoercion.compile	.gvar
+pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 co0	.karg	gsdl.cgs.gscoercion.prim.u
 	.analyze	co0	appty	defn	pos
 		.case	appty
 cof		.fkarg	0	gsdl.cgs.gscoercion.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	_gsac.gscoercion.compile_res.ty
+tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
+			.force	_gsac.gscoercion.compile_appty_k
+			.coerce	either.t.out	string.t	_gsac.gscoercion.compileToTypeApp_res.ty
+			.app	pos	env	cof	tyas
+			.enter	_gsac.gscoercion.compileToTypeApp_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gscoercion.compile_res.ty
@@ -404,6 +414,15 @@ co1		.fkarg	1	gsdl.cgs.gscoercion.t
 			.app	pos1	env	co1
 			.enter	gsac.gscoercion.compile
 	# > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
+
+_gsac.gscoercion.compile_appty_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.compileToTypeApp_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gscoercion.compile_res.ty	.tygvar	# Temp
+eo	.karg	either.prim.u	string.t	_gsac.gscoercion.compileToTypeApp_res.ty
+	.undef	either.t	string.t	_gsac.gscoercion.compile_res.ty
 
 # §section §gs{gsac.gscoercion.compileToGlobalVar}
 
