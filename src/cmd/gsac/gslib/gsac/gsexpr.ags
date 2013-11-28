@@ -344,7 +344,8 @@ _gsac.gsexpr.compileToDataItem_res.u	.tygvar
 	.tyref	_gsac.gsexpr.compileToDataItem_res.u
 
 _gsac.gsexpr.compileToDataItem_res.u	.tyexpr
-	.typroduct
+gsdl.ags.dataitem.t	.tygvar
+	.typroduct	res	gsdl.ags.dataitem.t
 
 # §section §gs{gsac.gsexpr.cast.source.compileToDataItem}
 
