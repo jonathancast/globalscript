@@ -9,6 +9,8 @@ gsac.gscoercion.compile	.closure	_gsac.gscoercion.compile_c	_gsac.gscoercion.com
 
 gsac.gscoercion.compileToGlobalVar	.closure	_gsac.gscoercion.compileToGlobalVar_c	_gsac.gscoercion.compileToGlobalVar_ty
 
+_gsac.gscoercion.compileToTypeApp_app	.closure	_gsac.gscoercion.compileToTypeApp_app_c	_gsac.gscoercion.compileToTypeApp_app_ty
+
 	.code
 
 # §section §gs{gsac.gscoercion.annotate}
@@ -433,6 +435,23 @@ _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar	# Temp
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.compile_res.ty
 	.undef	either.t	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 
+# §section §gs{gsac.gscoercion.compileToTypeApp}
+
+_gsac.gscoercion.compileToTypeApp_app_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gscoercion.compileToTypeApp_res.ty	.tygvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+co	.larg	gsdl.cgs.gscoercion.t
+tyas	.larg	list.t	gsdl.cgs.gstype.t
+	.undef	either.t	string.t	_gsac.gscoercion.compileToTypeApp_res.ty
+
 	.type
 
 # §section §gs{gsac.gscoercion.annotate}
@@ -530,4 +549,33 @@ _gsac.gscoercion.compileToGlobalVar_res.u	.tygvar
 	.tyref	_gsac.gscoercion.compileToGlobalVar_res.u
 
 _gsac.gscoercion.compileToGlobalVar_res.u	.tyexpr
+	.typroduct
+
+# §section §gs{gsac.gscoercion.compileToTypeApp}
+
+_gsac.gscoercion.compileToTypeApp_app_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.compileToTypeApp_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.cgs.gscoercion.t
+	.tylift
+	.tyfun	list.t	gsdl.cgs.gstype.t
+	.tyref	either.t	string.t	_gsac.gscoercion.compileToTypeApp_res.ty
+
+_gsac.gscoercion.compileToTypeApp_res.ty	.tyexpr
+_gsac.gscoercion.compileToTypeApp_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gscoercion.compileToTypeApp_res.u
+
+_gsac.gscoercion.compileToTypeApp_res.u	.tyexpr
 	.typroduct
