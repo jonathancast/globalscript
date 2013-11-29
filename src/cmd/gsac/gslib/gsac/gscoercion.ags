@@ -551,6 +551,18 @@ _gsac.gscoercion.annotate_res.ty	.tygvar
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
+# §section §gs{gsac.gscoercion.compile.m}
+
+_gsac.gscoercion.compile.m_res.ty	.tyexpr
+_gsac.gscoercion.compile.m_res.u	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyref	_gsac.gscoercion.compile.m_res.u	α
+
+_gsac.gscoercion.compile.m_res.u	.tyexpr
+α	.tylambda	*
+	.typroduct
+
 # §section §gs{gsac.gscoercion.compile}
 
 _gsac.gscoercion.compile_ty	.tyexpr
@@ -618,9 +630,6 @@ _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 	.tyref	either.t	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tyexpr
-_gsac.gscoercion.compileToGlobalVar_res.u	.tygvar
-	.tylift
-	.tyref	_gsac.gscoercion.compileToGlobalVar_res.u
-
-_gsac.gscoercion.compileToGlobalVar_res.u	.tyexpr
-	.typroduct
+_gsac.gscoercion.compile.m_res.ty	.tygvar
+gsdl.var.t	.tygvar
+	.tyref	_gsac.gscoercion.compile.m_res.ty	gsdl.var.t
