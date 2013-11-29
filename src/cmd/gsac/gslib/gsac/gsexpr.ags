@@ -205,12 +205,15 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
+list.t	.tygvar	# Temp
+gsdl.var.component.t	.tygvar	# Temp
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_k	.subcode
 either.t.out	.cogvar
 maybe.fromJust	.gvar
 _gsac.gsexpr.compileToDataItem_ep.v	.gvar
 gsac.gsexpr.cast.source.compileToDataItem	.gvar
 gsdl.var.subvar	.gvar
+gsdl.var.basevar	.gvar
 gsac.gsexpr.compileToDataItem	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
@@ -222,7 +225,8 @@ x	.apply	maybe.fromJust	gsdl.var.t	|	_gsac.gsexpr.compileToDataItem_ep.v	mbv
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 src		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
-so.v			.undefined	gsdl.var.t
+so.cs			.undefined	list.t	gsdl.var.component.t
+so.v			.apply	gsdl.var.basevar	|	so.cs
 so.x			.apply	gsdl.var.subvar	|	x	so.v
 			.force	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
