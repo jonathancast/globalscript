@@ -131,9 +131,20 @@ v1	.larg	gsdl.var.t
 	.enter	v0
 
 _gsdl.var.subvar_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.var.prim.u	.tygvar
+_gsdl.var.subvar_k1	.subcode
+gsdl.var.t.out	.cogvar
+v1	.fv	gsdl.var.t
+v0.0	.karg	gsdl.var.prim.u
+	.force	_gsdl.var.subvar_k1
+	.coerce	gsdl.var.t.out
+	.enter	v1
+
+_gsdl.var.subvar_k1	.forcecont
 gsdl.var.prim.u	.tygvar
 gsdl.var.t	.tygvar	# Temp
-v0.0	.karg	gsdl.var.prim.u
+v1.0	.karg	gsdl.var.prim.u
 	.undef	gsdl.var.t
 
 # §section §gs{gsdl.var.subvars}
