@@ -151,17 +151,20 @@ gsdl.var.t.in	.cogvar
 gsdl.var.constructed	.gvar
 natural.1	.gvar
 list.:	.gvar
+list.singleton	.gvar
 v0.0	.fv	gsdl.var.prim.u
 v1.0	.karg	gsdl.var.prim.u
 v0.0.l	.lifted	v0.0
 v0.0.cl	.cast	v0.0.l	gsdl.var.t.in
+v1.0.l	.lifted	v1.0
+v1.0.cl	.cast	v1.0.l	gsdl.var.t.in
 	.analyze	v0.0	basevar	constructed
 		.case	basevar
 cs0		.fkarg	0	list.t	gsdl.var.component.t
 			.analyze	v1.0	basevar	constructed
 				.case	basevar
 cs1				.fkarg	0	list.t	gsdl.var.component.t
-cs2.1					.undefined	list.t	gsdl.var.t
+cs2.1					.apply	list.singleton	gsdl.var.t	|	v1.0.cl
 cs2					.apply	list.:	gsdl.var.t	|	v0.0.cl	cs2.1
 					.app	natural.1	cs2
 					.enter	gsdl.var.constructed
