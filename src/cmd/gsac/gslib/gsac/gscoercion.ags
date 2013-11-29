@@ -384,13 +384,14 @@ gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 gsdl.var.t	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.compile_res.ty	.tygvar
 gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gscoercion.compile_res.ty	.tygvar	# Temp
 either.t.out	.cogvar
 _gsac.gscoercion.compileAppTy_app	.gvar
 list.singleton	.gvar
+either.right	.gvar
 gsac.gscoercion.compile	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
@@ -404,7 +405,9 @@ tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
 			.enter	_gsac.gscoercion.compileAppTy_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	_gsac.gscoercion.compile_res.ty
+res			.undefined	_gsac.gscoercion.compile_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gscoercion.compile_res.ty
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 co1		.fkarg	1	gsdl.cgs.gscoercion.t
