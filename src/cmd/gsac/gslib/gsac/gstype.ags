@@ -29,6 +29,8 @@ gsac.gstype.fields.compile	.closure	_gsac.gstype.fields.compile_c	_gsac.gstype.f
 
 gsac.gstype.gskind.compile	.closure	_gsac.gstype.gskind.compile_c	_gsac.gstype.gskind.compile_ty
 
+gsac.gstype.compile.mapM	.closure	_gsac.gstype.compile.mapM_c	_gsac.gstype.compile.mapM_ty
+
 	.code
 
 # §section §gs{gsac.gstype.annotate}
@@ -1976,7 +1978,43 @@ ki.ags			.apply	gsdl.ags.typeitem.gskind.exp	|	kib.ags	kie.ags
 			.app	ki.ags
 			.enter	either.right	string.t	gsdl.ags.typeitem.gskind.t
 
+# §section §gs{gsac.gstype.compile.mapM}
+
+_gsac.gstype.compile.mapM_c	.expr
+_gsac.gstype.compile.mapM_fun.ty	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gstype.compile.m_res.ty	.tygvar	# Temp
+list.t	.tygvar	# Temp
+α	.tyarg	*
+β	.tyarg	*
+list.β	.tylet	list.t	β
+compile.m.res.list.β	.tylet	_gsac.gstype.compile.m_res.ty	list.β
+f	.larg	_gsac.gstype.compile.mapM_fun.ty	α	β
+xn	.larg	list.t	α
+	.undef	either.t	string.t	compile.m.res.list.β
+
 	.type
+
+# §section §gs{gsac.gstype.compile.m}
+
+gsac.gstype.compile.m	.tyexpr
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.compile.m_res.ty	.tygvar
+α	.tylambda	*
+res.α	.tylet	_gsac.gstype.compile.m_res.ty	α
+	.tyref	either.t	string.t	res.α
+
+_gsac.gstype.compile.m_res.ty	.tyexpr
+_gsac.gstype.compile.m_res.u	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyref	_gsac.gstype.compile.m_res.u	α
+
+_gsac.gstype.compile.m_res.u	.tyexpr
+α	.tylambda	*
+	.typroduct
 
 # §section §gs{gsac.gstype.annotate}
 
@@ -2354,3 +2392,26 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.gskind.t
 	.tyref	either.t	string.t	gsdl.ags.typeitem.gskind.t
+
+# §section §gs{gsac.gstype.compile.mapM}
+
+_gsac.gstype.compile.mapM_ty	.tyexpr
+_gsac.gstype.compile.mapM_fun.ty	.tygvar
+list.t	.tygvar
+gsac.gstype.compile.m	.tygvar
+α	.tyforall	*
+β	.tyforall	*
+list.β	.tylet	list.t	β
+	.tylift
+	.tyfun	_gsac.gstype.compile.mapM_fun.ty	α	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	gsac.gstype.compile.m	list.β
+
+_gsac.gstype.compile.mapM_fun.ty	.tyexpr
+gsac.gstype.compile.m	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	gsac.gstype.compile.m	β
