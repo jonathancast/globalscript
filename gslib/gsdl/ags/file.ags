@@ -161,8 +161,9 @@ list.<>	.gvar
 maybe.maybe	.gvar
 gsdl.ags.syntax.var.print	.gvar
 _gsdl.ags.file.print.dataitems_:_cast_cast.s	.gvar
-_gsdl.ags.file.print.dataitems_:_undef.s	.gvar
 list.:	.gvar
+rune.tab	.gvar
+_gsdl.ags.file.print.dataitems_:_undef.s	.gvar
 rune.new.line	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 ds1	.fv	list.t	gsdl.ags.dataitem.t
@@ -177,7 +178,10 @@ x		.fkarg	2	gsdl.var.t
 co		.fkarg	3	gsdl.var.t
 nm.s			.apply	maybe.maybe	gsdl.var.t	string.t	|	nil	gsdl.ags.syntax.var.print	nm
 x.s			.apply	gsdl.ags.syntax.var.print	|	x
-s0.3			.undefined	string.t
+co.s			.apply	gsdl.ags.syntax.var.print	|	co
+s0.5			.undefined	string.t
+s0.4			.apply	list.<>	rune.t	|	co.s	s0.5
+s0.3			.apply	list.:	rune.t	|	rune.tab	s0.4
 s0.2			.apply	list.<>	rune.t	|	x.s	s0.3
 s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print.dataitems_:_cast_cast.s	s0.2
 s0			.apply	list.<>	rune.t	|	nm.s	s0.1
