@@ -5,6 +5,7 @@
 maybe.nothing	.closure	_maybe.nothing_c
 maybe.just	.closure	_maybe.just_c
 
+maybe.fromJust	.closure	_maybe.fromJust_c
 maybe.maybe	.closure	_maybe.maybe_c
 
 maybe.≡	.closure	_maybe.≡_c
@@ -37,6 +38,31 @@ j	.constr	res.u	just	0	x
 	.coerce	maybe.t.in	α
 	.lift
 	.yield	j
+
+# §section §gs{maybe.fromJust}
+
+_maybe.fromJust_c	.expr
+maybe.t	.tygvar
+_maybe.fromJust_k	.subcode
+maybe.t.out	.cogvar
+α	.tyarg	*
+x	.larg	α
+mb	.larg	maybe.t	α
+	.force	_maybe.fromJust_k
+	.coerce	maybe.t.out	α
+	.enter	mb
+
+_maybe.fromJust_k	.forcecont
+maybe.prim.u	.tygvar
+α	.tyfv	*
+x	.fv	α
+mb0	.karg	maybe.prim.u	α
+	.analyze	mb0	just	nothing
+		.case	just
+x1		.fkarg	0	α
+			.undef	α
+		.case	nothing
+			.enter	x
 
 # §section §gs{maybe.maybe}
 
