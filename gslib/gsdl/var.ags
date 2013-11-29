@@ -122,8 +122,18 @@ cs1				.fkarg	1	list.t	gsdl.var.t
 
 _gsdl.var.subvar_c	.expr
 gsdl.var.t	.tygvar
+_gsdl.var.subvar_k	.subcode
+gsdl.var.t.out	.cogvar
 v0	.larg	gsdl.var.t
 v1	.larg	gsdl.var.t
+	.force	_gsdl.var.subvar_k
+	.coerce	gsdl.var.t.out
+	.enter	v0
+
+_gsdl.var.subvar_k	.forcecont
+gsdl.var.prim.u	.tygvar
+gsdl.var.t	.tygvar	# Temp
+v0.0	.karg	gsdl.var.prim.u
 	.undef	gsdl.var.t
 
 # §section §gs{gsdl.var.subvars}
