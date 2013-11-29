@@ -6,6 +6,7 @@ gsac.gsexpr.annotate	.closure	_gsac.gsexpr.annotate_c	_gsac.gsexpr.annotate_ty
 
 gsac.gsexpr.compileToDataItem	.closure	_gsac.gsexpr.compileToDataItem_c	_gsac.gsexpr.compileToDataItem_ty
 _gsac.gsexpr.compileToDataItem_ep.v	.closure	_gsac.gsexpr.compileToDataItem_ep.v_c
+_gsac.gsexpr.compileToDataItem_ep.v_s	.string	ep
 
 gsac.gsexpr.cast.source.compileToDataItem	.closure	_gsac.gsexpr.cast.source.compileToDataItem_c	_gsac.gsexpr.cast.source.compileToDataItem_ty
 
@@ -240,10 +241,13 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 	# > :: either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
 _gsac.gsexpr.compileToDataItem_ep.v_c	.expr
-list.t	.tygvar	# Temp
-gsdl.var.component.t	.tygvar	# Temp
+gsdl.var.component.t	.tygvar
 gsdl.var.basevar	.gvar
-cs	.undefined	list.t	gsdl.var.component.t
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_gsac.gsexpr.compileToDataItem_ep.v_s	.gvar
+c0	.apply	gsdl.var.component.alphanum	|	_gsac.gsexpr.compileToDataItem_ep.v_s
+cs	.apply	list.singleton	gsdl.var.component.t	|	c0
 	.app	cs
 	.enter	gsdl.var.basevar
 
