@@ -207,17 +207,20 @@ _gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_k	.subcode
 either.t.out	.cogvar
 gsac.gsexpr.cast.source.compileToDataItem	.gvar
+gsdl.var.subvar	.gvar
 gsac.gsexpr.compileToDataItem	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 mbv	.fv	maybe.t	gsdl.var.t
 ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
+x	.undefined	gsdl.var.t
 	.analyze	e0	expr.heavy.cast	pos
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 src		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
-so.x			.undefined	gsdl.var.t
+so.v			.undefined	gsdl.var.t
+so.x			.apply	gsdl.var.subvar	|	x	so.v
 			.force	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
 			.app	pos	env	so.x	src
