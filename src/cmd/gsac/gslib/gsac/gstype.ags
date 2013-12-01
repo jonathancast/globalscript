@@ -2106,9 +2106,11 @@ _gsac.gstype.compile.m_res.u	.tygvar
 _gsac.gstype.compile.m_res.u	.tyexpr
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+diff.list.t	.tygvar
 α	.tylambda	*
 set.var.ty	.tylet	ordered.set.t	gsdl.var.t
-	.typroduct	emitted	set.var.ty
+diff.list.var.ty	.tylet	diff.list.t	gsdl.var.t
+	.typroduct	emitted	set.var.ty	tyfvs	diff.list.var.ty
 
 # §section §gs{gsac.gstype.annotate}
 
