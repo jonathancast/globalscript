@@ -553,6 +553,14 @@ _gsac.gscoercion.annotate_res.ty	.tygvar
 
 # §section §gs{gsac.gscoercion.compile.m}
 
+gsac.gscoercion.compile.m	.tyexpr
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.compile.m_res.ty	.tygvar
+α	.tylambda	*
+res.ty	.tylet	_gsac.gscoercion.compile.m_res.ty	α
+	.tyref	either.t	string.t	res.ty
+
 _gsac.gscoercion.compile.m_res.ty	.tyexpr
 _gsac.gscoercion.compile.m_res.u	.tygvar
 α	.tylambda	*
@@ -616,9 +624,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
-either.t	.tygvar
-string.t	.tygvar
-_gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
+gsac.gscoercion.compile.m	.tygvar
 	.tylift
 	.tyfun	gsdl.sourcepos.t
 	.tylift
@@ -627,7 +633,7 @@ _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 	.tyfun	gsdl.var.t
 	.tylift
 	.tyfun	gsdl.cgs.gscoercion.t
-	.tyref	either.t	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
+	.tyref	gsac.gscoercion.compile.m	gsdl.var.t
 
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tyexpr
 _gsac.gscoercion.compile.m_res.ty	.tygvar
