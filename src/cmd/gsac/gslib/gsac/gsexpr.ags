@@ -8,6 +8,7 @@ gsac.gsexpr.compileToDataItem	.closure	_gsac.gsexpr.compileToDataItem_c	_gsac.gs
 _gsac.gsexpr.compileToDataItem_ep.v	.closure	_gsac.gsexpr.compileToDataItem_ep.v_c
 _gsac.gsexpr.compileToDataItem_ep.v_s	.string	ep
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_so.s	.string	so
+_gsac.gsexpr.compileToDataItem_expr.heavy.cast_co.s	.string	co
 
 gsac.gsexpr.cast.source.compileToDataItem	.closure	_gsac.gsexpr.cast.source.compileToDataItem_c	_gsac.gsexpr.cast.source.compileToDataItem_ty
 
@@ -263,16 +264,23 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
-_gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 _gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar
+_gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
+gsdl.var.component.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k	.subcode
 either.t.out	.cogvar
 gsac.gscoercion.compileToGlobalVar	.gvar
+gsdl.var.subvar	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_gsac.gsexpr.compileToDataItem_expr.heavy.cast_co.s	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 mbv	.fv	maybe.t	gsdl.var.t
+x	.fv	gsdl.var.t
 co	.fv	gsdl.cgs.gscoercion.t
 so.x	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
@@ -282,7 +290,10 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	right
 so.r		.fkarg	0	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
-co.x			.undefined	gsdl.var.t
+co.c0			.apply	gsdl.var.component.alphanum	|	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_co.s
+co.cs			.apply	list.singleton	gsdl.var.component.t	|	co.c0
+co.v			.apply	gsdl.var.basevar	|	co.cs
+co.x			.apply	gsdl.var.subvar	|	x	co.v
 			.force	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k
 			.coerce	either.t.out	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 			.app	pos	env	co.x	co
