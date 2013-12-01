@@ -393,6 +393,18 @@ gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.typroduct	expr	gsdl.cgs.gsexpr.t	gstype	gsdl.cgs.gstype.t
 
+# §section §gs{gsac.gsexpr.compile.m}
+
+_gsac.gsexpr.compile.m_res.ty	.tyexpr
+_gsac.gsexpr.compile.m_res.u	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyref	_gsac.gsexpr.compile.m_res.u	α
+
+_gsac.gsexpr.compile.m_res.u	.tyexpr
+α	.tylambda	*
+	.typroduct	res	α
+
 # §section §gs{gsac.gsexpr.compileToDataItem}
 
 _gsac.gsexpr.compileToDataItem_ty	.tyexpr
@@ -418,13 +430,9 @@ _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 	.tyref	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
 _gsac.gsexpr.compileToDataItem_res.ty	.tyexpr
-_gsac.gsexpr.compileToDataItem_res.u	.tygvar
-	.tylift
-	.tyref	_gsac.gsexpr.compileToDataItem_res.u
-
-_gsac.gsexpr.compileToDataItem_res.u	.tyexpr
+_gsac.gsexpr.compile.m_res.ty	.tygvar
 gsdl.ags.dataitem.t	.tygvar
-	.typroduct	res	gsdl.ags.dataitem.t
+	.tyref	_gsac.gsexpr.compile.m_res.ty	gsdl.ags.dataitem.t
 
 # §section §gs{gsac.gsexpr.cast.source.compileToDataItem}
 
