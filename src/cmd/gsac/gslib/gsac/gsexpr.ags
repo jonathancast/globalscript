@@ -295,6 +295,7 @@ err		.fkarg	0	string.t
 so.r		.fkarg	0	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 so.r.var			.lfield	res	so.r
 so.ds			.lfield	dataitems	so.r
+so.r.ts			.lfield	typeitems	so.r
 co.c0			.apply	gsdl.var.component.alphanum	|	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_co.s
 co.cs			.apply	list.singleton	gsdl.var.component.t	|	co.c0
 co.v			.apply	gsdl.var.basevar	|	co.cs
@@ -308,21 +309,22 @@ _gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.ags.dataitem.t	.tygvar
 diff.list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
-diff.list.:	.gvar
 gsdl.ags.dataitem.cast	.gvar
+diff.list.<>	.gvar
 pos	.fv	gsdl.sourcepos.t
 mbv	.fv	maybe.t	gsdl.var.t
 so.r.var	.fv	gsdl.var.t
 so.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
+so.r.ts	.fv	diff.list.t	gsdl.ags.typeitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -332,7 +334,8 @@ err		.fkarg	0	string.t
 co.r		.fkarg	0	_gsac.gscoercion.compileToGlobalVar_res.ty
 co.r.var			.lfield	res	co.r
 di			.apply	gsdl.ags.dataitem.cast	|	pos	mbv	so.r.var	co.r.var
-ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+co.r.ts			.lfield	typeitems	co.r
+ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	so.r.ts	co.r.ts
 res			.lrecord	dataitems	so.ds	res	di	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
