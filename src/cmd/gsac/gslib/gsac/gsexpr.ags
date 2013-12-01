@@ -309,7 +309,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	right
 co.r		.fkarg	0	_gsac.gscoercion.compileToGlobalVar_res.ty
-co.r.var			.undefined	gsdl.var.t
+co.r.var			.lfield	res	co.r
 di			.apply	gsdl.ags.dataitem.cast	|	pos	mbv	so.x	co.r.var
 res			.lrecord	res	di	|	_gsac.gsexpr.compileToDataItem_res.ty
 			.app	res
