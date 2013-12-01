@@ -222,10 +222,9 @@ err		.fkarg	0	string.t
 res1		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
 pos			.field	pos	doc0
 v			.lfield	nm	res1
-v.s			.apply	gsdl.ags.syntax.var.print	|	v
 dts			.lfield	tyexprs	res1
 cs			.apply	list.nil	gsdl.ags.codeitem.t
-d			.apply	gsdl.ags.dataitem.undefined	|	pos	v.s
+d			.apply	gsdl.ags.dataitem.undefined	|	pos	v
 ds			.apply	list.singleton	gsdl.ags.dataitem.t	|	d
 ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	dts
 tcs			.apply	list.nil	gsdl.ags.coercionitem.t

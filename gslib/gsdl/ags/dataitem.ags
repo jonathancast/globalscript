@@ -266,6 +266,7 @@ bool.t	.tygvar	# Temp
 bool.∧	.gvar
 maybe.≡	.gvar
 string.≡	.gvar
+gsdl.var.≡	.gvar
 di0.0	.fv	gsdl.ags.dataitem.prim.u
 di1.0	.karg	gsdl.ags.dataitem.prim.u
 	.analyze	di0.0	cast	closure	undefined
@@ -296,15 +297,15 @@ b1					.apply	bool.∧	|	b1.0	b2
 					.enter	bool.∧
 		.case	undefined
 pos0		.fkarg	0	gsdl.sourcepos.t
-ty0		.fkarg	1	string.t
+ty0		.fkarg	1	gsdl.var.t
 			.danalyze	di1.0	undefined
 				.default
 					.undef	bool.t
 				.case	undefined
 pos1				.fkarg	0	gsdl.sourcepos.t
-ty1				.fkarg	1	string.t
+ty1				.fkarg	1	gsdl.var.t
 					.app	ty0	ty1
-					.enter	string.≡
+					.enter	gsdl.var.≡
 	# > :: bool.t
 
 # §section §gs{gsdl.ags.dataitem.fmtgs}
@@ -335,7 +336,7 @@ gsdl.sourcepos.fmtgs	.gvar
 fmtgs.prec.arg	.gvar
 diff.list.:	.gvar
 rune.space	.gvar
-string.fmtgs	.gvar
+gsdl.var.fmtgs	.gvar
 di0	.karg	gsdl.ags.dataitem.prim.u
 	.analyze	di0	cast	closure	undefined
 		.case	cast
@@ -352,9 +353,9 @@ ty		.fkarg	3	maybe.t	string.t
 			.undef	fmtgs.printer.t
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t
-ty		.fkarg	1	string.t
+ty		.fkarg	1	gsdl.var.t
 pos.s			.apply	gsdl.sourcepos.fmtgs	|	pos	fmtgs.prec.arg
-ty.s			.apply	string.fmtgs	|	ty	fmtgs.prec.arg
+ty.s			.apply	gsdl.var.fmtgs	|	ty	fmtgs.prec.arg
 ds2			.apply	diff.list.:	rune.t	|	rune.space	ty.s
 ds1			.apply	diff.list.<>	rune.t	|	pos.s	ds2
 ds			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.dataitem.fmtgs_undefined.s	ds1
@@ -366,11 +367,11 @@ ds			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.dataitem.fmtgs_undefined.s	ds1
 
 _gsdl.ags.dataitem.undefined_c	.expr
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.dataitem.prim.u	.tygvar
 gsdl.ags.dataitem.t.in	.cogvar
 pos	.arg	gsdl.sourcepos.t
-ty	.arg	string.t
+ty	.arg	gsdl.var.t
 c	.constr	gsdl.ags.dataitem.prim.u	undefined	0	pos	1	ty
 	.coerce	gsdl.ags.dataitem.t.in
 	.lift
@@ -435,8 +436,8 @@ mb.string.ty	.tylet	maybe.t	string.t
 
 _gsdl.ags.dataitem.prim.u_undefined_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
-	.tyubproduct	0	gsdl.sourcepos.t	1	string.t
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t
 
 # §section §gs{gsdl.ags.dataitem.≡}
 

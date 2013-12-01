@@ -12,9 +12,9 @@ _test.eq	.closure	_test.eq_c
 _tests.eq	.list	test.property.t	_test.eq.undefined.diff.ty	_test.eq.closure.diff.ty
 
 _test.eq.undefined.diff.ty	.closure	_test.eq.undefined.diff.ty_c
-_test.eq.undefined.diff.ty_label	.string	undefined\sqq{foo}\s≡\sundefined\sqq{bar}
-_test.eq.undefined.diff.ty_false	.string	undefined\sqq{foo}\s≠\sundefined\sqq{bar}
-_test.eq.undefined.diff.ty_true	.string	undefined\sqq{foo}\s≡\sundefined\sqq{bar}
+_test.eq.undefined.diff.ty_label	.string	undefined\sgsv{foo}\s≡\sundefined\sgsv{bar}
+_test.eq.undefined.diff.ty_false	.string	undefined\sgsv{foo}\s≠\sundefined\sgsv{bar}
+_test.eq.undefined.diff.ty_true	.string	undefined\sgsv{foo}\s≡\sundefined\sgsv{bar}
 _test.eq.undefined.diff.ty_foo.s	.string	foo
 _test.eq.undefined.diff.ty_bar.s	.string	bar
 
@@ -66,10 +66,10 @@ _test.fmtgs	.closure	_test.fmtgs_c
 _tests.fmtgs	.list	test.property.t	_test.fmtgs.undefined
 
 _test.fmtgs.undefined	.closure	_test.fmtgs.undefined_c
-_test.fmtgs.undefined_label	.string	fmtgs\s(undefined\sqq{foo})
+_test.fmtgs.undefined_label	.string	fmtgs\s(undefined\sgsv{foo})
 _test.fmtgs.undefined_file.s	.string	./foo
 _test.fmtgs.undefined_foo.s	.string	foo
-_test.fmtgs.undefined_expected	.string	undefined\s〈\s'file\s∝\sfn<./foo>;\s'0.line\s∝\s1;\s'0.col\s∝\s1;\s〉\sqq{foo}
+_test.fmtgs.undefined_expected	.string	undefined\s〈\s'file\s∝\sfn<./foo>;\s'0.line\s∝\s1;\s'0.col\s∝\s1;\s〉\sgsv{foo}
 
 	.code
 
@@ -91,6 +91,7 @@ _tests.eq	.gvar
 
 _test.eq.undefined.diff.ty_c	.expr
 gsdl.sourcepos.t	.tygvar
+gsdl.var.component.t	.tygvar
 test.property.label	.gvar
 _test.eq.undefined.diff.ty_label	.gvar
 test.deny	.gvar
@@ -98,11 +99,20 @@ _test.eq.undefined.diff.ty_false	.gvar
 _test.eq.undefined.diff.ty_true	.gvar
 gsdl.ags.dataitem.≡	.gvar
 gsdl.ags.dataitem.undefined	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
 _test.eq.undefined.diff.ty_foo.s	.gvar
 _test.eq.undefined.diff.ty_bar.s	.gvar
 pos0	.undefined	gsdl.sourcepos.t
-u.foo	.apply	gsdl.ags.dataitem.undefined	|	pos0	_test.eq.undefined.diff.ty_foo.s
-u.bar	.apply	gsdl.ags.dataitem.undefined	|	pos0	_test.eq.undefined.diff.ty_bar.s
+foo.c0	.apply	gsdl.var.component.alphanum	|	_test.eq.undefined.diff.ty_foo.s
+foo.cs	.apply	list.singleton	gsdl.var.component.t	|	foo.c0
+foo.v	.apply	gsdl.var.basevar	|	foo.cs
+u.foo	.apply	gsdl.ags.dataitem.undefined	|	pos0	foo.v
+bar.c0	.apply	gsdl.var.component.alphanum	|	_test.eq.undefined.diff.ty_bar.s
+bar.cs	.apply	list.singleton	gsdl.var.component.t	|	bar.c0
+bar.v	.apply	gsdl.var.basevar	|	bar.cs
+u.bar	.apply	gsdl.ags.dataitem.undefined	|	pos0	bar.v
 eq	.apply	gsdl.ags.dataitem.≡	|	u.foo	u.bar
 test	.apply	test.deny	|	_test.eq.undefined.diff.ty_false	_test.eq.undefined.diff.ty_true	eq
 	.app	_test.eq.undefined.diff.ty_label	test
@@ -382,6 +392,7 @@ _tests.fmtgs	.gvar
 
 _test.fmtgs.undefined_c	.expr
 string.t	.tygvar
+gsdl.var.component.t	.tygvar
 rune.t	.tygvar
 test.property.label	.gvar
 _test.fmtgs.undefined_label	.gvar
@@ -393,13 +404,19 @@ gsdl.ags.dataitem.undefined	.gvar
 natural.1	.gvar
 ibio.file.name.in	.gvar
 _test.fmtgs.undefined_file.s	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
 _test.fmtgs.undefined_foo.s	.gvar
 fmtgs.prec.app	.gvar
 list.nil	.gvar
 _test.fmtgs.undefined_expected	.gvar
 fn	.apply	ibio.file.name.in	|	_test.fmtgs.undefined_file.s
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	fn
-di	.apply	gsdl.ags.dataitem.undefined	|	pos	_test.fmtgs.undefined_foo.s
+foo.c0	.apply	gsdl.var.component.alphanum	|	_test.fmtgs.undefined_foo.s
+foo.cs	.apply	list.singleton	gsdl.var.component.t	|	foo.c0
+foo.v	.apply	gsdl.var.basevar	|	foo.cs
+di	.apply	gsdl.ags.dataitem.undefined	|	pos	foo.v
 nil	.apply	list.nil	rune.t
 actual	.apply	gsdl.ags.dataitem.fmtgs	|	di	fmtgs.prec.app	nil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.undefined_expected
