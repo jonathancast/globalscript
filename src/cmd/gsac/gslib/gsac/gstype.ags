@@ -29,6 +29,8 @@ gsac.gstype.fields.compile	.closure	_gsac.gstype.fields.compile_c	_gsac.gstype.f
 
 gsac.gstype.constr.compile	.closure	_gsac.gstype.constr.compile_c	_gsac.gstype.constr.compile_ty
 
+gsac.gstype.constr.compare	.closure	_gsac.gstype.constr.compare_c
+
 gsac.gstype.gskind.compile	.closure	_gsac.gstype.gskind.compile_c	_gsac.gstype.gskind.compile_ty
 
 gsac.gstype.compile.mapM	.closure	_gsac.gstype.compile.mapM_c	_gsac.gstype.compile.mapM_ty
@@ -1911,6 +1913,15 @@ _gsac.gstype.constr.compile_res.ty	.tygvar
 res.ty	.tylet	_gsac.gstype.compile.m_res.ty	_gsac.gstype.constr.compile_res.ty
 c	.larg	gsdl.cgs.gstype.constr.t
 	.undef	either.t	string.t	res.ty
+
+# §section §gs{gsac.gstype.constr.compare}
+
+_gsac.gstype.constr.compare_c	.expr
+gsdl.cgs.gstype.constr.t	.tygvar
+order.total.ord.t	.tygvar	# Temp
+c0	.larg	gsdl.cgs.gstype.constr.t
+c1	.larg	gsdl.cgs.gstype.constr.t
+	.undef	order.total.ord.t
 
 # §section §gs{gsac.gstype.gskind.compile}
 
