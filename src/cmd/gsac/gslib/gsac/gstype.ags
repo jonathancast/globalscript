@@ -1114,7 +1114,7 @@ cs.r		.fkarg	0	compile.res.list.constr.compile.res.ty
 cs.r.em			.lfield	emitted	cs.r
 r			.undefined	gsdl.ags.typeitem.expr.t
 r.tyfvs			.lfield	tyfvs	cs.r
-r.tygvs			.lfield	tygvs	cs.r
+r.tygvs			.lfield	tygvars	cs.r
 r.ts			.lfield	typeitems	cs.r
 res			.lrecord	emitted	cs.r.em	res	r	tyfvs	r.tyfvs	tygvars	r.tygvs	typeitems	r.ts	|	_gsac.gstype.compile_res.ty
 			.app	res
@@ -2120,7 +2120,7 @@ set.var.ty	.tylet	ordered.set.t	gsdl.var.t
 diff.list.var.ty	.tylet	diff.list.t	gsdl.var.t
 diff.list.tygvar.ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
-	.typroduct	emitted	set.var.ty	tyfvs	diff.list.var.ty	tygvs	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
+	.typroduct	emitted	set.var.ty	tyfvs	diff.list.var.ty	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
 
 # §section §gs{gsac.gstype.annotate}
 
