@@ -2066,16 +2066,22 @@ em	.larg	ordered.set.t	gsdl.var.t
 	.enter	xn
 
 _gsac.gstype.compile.mapM_k	.forcecont
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile.m_res.ty	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
+diff.list.nil	.gvar
 α	.tyfv	*
 β	.tyfv	*
 list.β	.tylet	list.t	β
 compile.m.res.list.β	.tylet	_gsac.gstype.compile.m_res.ty	list.β
+em	.fv	ordered.set.t	gsdl.var.t
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
@@ -2083,7 +2089,10 @@ x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
 			.undef	either.t	string.t	compile.m.res.list.β
 		.case	nil
-res			.undefined	compile.m.res.list.β
+tyfvs			.apply	diff.list.nil	gsdl.var.t
+tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
+ts			.apply	diff.list.nil	gsdl.ags.typeitem.t
+res			.lrecord	emitted	em	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile.m_res.ty	list.β
 			.app	res
 			.enter	either.right	string.t	compile.m.res.list.β
 
