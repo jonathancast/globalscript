@@ -968,7 +968,7 @@ constr.compile			.apply	gsac.gstype.constr.compile
 cs.s			.apply	list.sort	gsdl.cgs.gstype.constr.t	|	gsac.gstype.constr.compare	cs
 			.force	_gsac.gstype.compile_w_sum_k
 			.coerce	either.t.out	string.t	compile.res.list.constr.compile.res.ty
-			.app	constr.compile	cs.s
+			.app	constr.compile	cs.s	em
 			.enter	gsac.gstype.compile.mapM	gsdl.cgs.gstype.constr.t	_gsac.gstype.constr.compile_res.ty
 		.case	var
 v		.fkarg	0	gsdl.var.t
@@ -1941,12 +1941,15 @@ res			.lrecord	emitted	em	fields	fs	tyexprs	tyes	tyfvs	tyfvs	tygvars	tygvs	|	_gs
 
 _gsac.gstype.constr.compile_c	.expr
 gsdl.cgs.gstype.constr.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gstype.compile.m_res.ty	.tygvar	# Temp
 _gsac.gstype.constr.compile_res.ty	.tygvar
 res.ty	.tylet	_gsac.gstype.compile.m_res.ty	_gsac.gstype.constr.compile_res.ty
 c	.larg	gsdl.cgs.gstype.constr.t
+em	.larg	ordered.set.t	gsdl.var.t
 	.undef	either.t	string.t	res.ty
 
 # §section §gs{gsac.gstype.constr.compare}
@@ -2043,12 +2046,15 @@ ki.ags			.apply	gsdl.ags.typeitem.gskind.exp	|	kib.ags	kie.ags
 _gsac.gstype.compile.mapM_c	.expr
 _gsac.gstype.compile.mapM_fun.ty	.tygvar
 list.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 _gsac.gstype.compile.mapM_k	.subcode
 list.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
 f	.larg	_gsac.gstype.compile.mapM_fun.ty	α	β
 xn	.larg	list.t	α
+em	.larg	ordered.set.t	gsdl.var.t
 	.force	_gsac.gstype.compile.mapM_k
 	.coerce	list.t.out	α
 	.enter	xn
@@ -2080,11 +2086,15 @@ res			.undefined	compile.m.res.list.β
 # §section §gs{gsac.gstype.compile.m}
 
 gsac.gstype.compile.m	.tyexpr
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile.m_res.ty	.tygvar
 α	.tylambda	*
 res.α	.tylet	_gsac.gstype.compile.m_res.ty	α
+	.tylift
+	.tyfun	ordered.set.t	gsdl.var.t	# > emitted
 	.tyref	either.t	string.t	res.α
 
 _gsac.gstype.compile.m_res.ty	.tyexpr
