@@ -352,13 +352,22 @@ so	.larg	gsdl.cgs.gsexpr.cast.source.t
 	.enter	so
 
 _gsac.gsexpr.cast.source.compileToDataItem_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
-_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
-either.right	.gvar
+_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar	# Temp
+_gsac.gsexpr.cast.source.compileToDataItem_typesig_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.compileToGlobalVar	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+x	.fv	gsdl.var.t
 so0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
 	.analyze	so0	missing	typesig
 		.case	missing
@@ -367,10 +376,43 @@ pos1		.fkarg	0	gsdl.sourcepos.t
 		.case	typesig
 pos1		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
-res			.undefined	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+ty.v			.undefined	gsdl.var.t
+			.force	_gsac.gsexpr.cast.source.compileToDataItem_typesig_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
+			.app	pos	env	ty.v	ty
+			.enter	gsac.gstype.compileToGlobalVar
+	# > :: either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+
+_gsac.gsexpr.cast.source.compileToDataItem_typesig_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar
+_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar
+gsdl.var.t	.tygvar
+either.t	.tygvar	# Temp
+diff.list.t	.tygvar	# Temp
+gsdl.ags.dataitem.t	.tygvar	# Temp
+either.right	.gvar
+gsdl.ags.dataitem.undefined	.gvar
+maybe.just	.gvar
+pos	.fv	gsdl.sourcepos.t
+x	.fv	gsdl.var.t
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToGlobalVar_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+		.case	right
+ty.r		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
+ds			.undefined	diff.list.t	gsdl.ags.dataitem.t
+ty.r.v			.lfield	nm	ty.r
+just.x			.apply	maybe.just	gsdl.var.t	|	x
+r			.apply	gsdl.ags.dataitem.undefined	|	pos	just.x	ty.r.v
+res			.lrecord	dataitems	ds	res	r	|	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
-	# > :: either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
 
 	.type
 
