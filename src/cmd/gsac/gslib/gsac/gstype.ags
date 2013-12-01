@@ -999,7 +999,7 @@ ty			.apply	gsdl.ags.typeitem.expr.tyref	|	r.v	r.as
 r.tyes			.lfield	tyexprs	r
 r.tyfvs			.lfield	tyfvs	r
 r.tygvs			.lfield	tygvars	r
-res			.lrecord	emitted	r.em	res	ty	tyexprs	r.tyes	tyfvs	r.tyfvs	tygvars	r.tygvs	|	_gsac.gstype.compile_res.ty
+res			.lrecord	emitted	r.em	res	ty	tyfvs	r.tyfvs	tygvars	r.tygvs	typeitems	r.tyes	|	_gsac.gstype.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
@@ -1034,7 +1034,7 @@ tye	.apply	gsdl.ags.typeitem.expr.tyref	|	tyf	tyas
 tyes	.field	tyexprs	r0
 tyfvs	.field	tyfvs	r0
 tygvs	.field	tygvars	r0
-res	.lrecord	emitted	em	res	tye	tyexprs	tyes	tyfvs	tyfvs	tygvars	tygvs	|	_gsac.gstype.compile_res.ty
+res	.lrecord	emitted	em	res	tye	tyfvs	tyfvs	tygvars	tygvs	typeitems	tyes	|	_gsac.gstype.compile_res.ty
 	.app	res
 	.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
@@ -1057,10 +1057,10 @@ res1		.fkarg	0	_gsac.gstype.compile_res.ty
 em0			.lfield	emitted	res1
 res0.1			.lfield	res	res1
 res0			.apply	gsdl.ags.typeitem.expr.lift	|	pos	res0.1
-es0			.lfield	tyexprs	res1
+es0			.lfield	typeitems	res1
 tyfvs0			.lfield	tyfvs	res1
 tygvs0			.lfield	tygvars	res1
-res			.lrecord	emitted	em0	res	res0	tyexprs	es0	tyfvs	tyfvs0	tygvars	tygvs0
+res			.lrecord	emitted	em0	res	res0	tyfvs	tyfvs0	tygvars	tygvs0	typeitems	es0	|	_gsac.gstype.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
@@ -1088,7 +1088,7 @@ res0			.apply	gsdl.ags.typeitem.expr.product	|	res0.fs
 tyes			.lfield	tyexprs	fs.res
 tyfvs			.lfield	tyfvs	fs.res
 tygvs			.lfield	tygvars	fs.res
-res			.lrecord	emitted	em0	res	res0	tyexprs	tyes	tyfvs	tyfvs	tygvars	tygvs
+res			.lrecord	emitted	em0	res	res0	tyfvs	tyfvs	tygvars	tygvs	typeitems	tyes	|	_gsac.gstype.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
@@ -1193,7 +1193,7 @@ tygvs			.apply	diff.list.tolist	gsdl.ags.typeitem.decls.tygvar.t	|	tygvs.d
 ds			.lrecord	tyargs	tyas	tygvars	tygvs	|	gsdl.ags.typeitem.decls.t
 tye0.0			.lfield	res	res1
 tye0			.apply	gsdl.ags.typeitem.tyexpr	|	pos	nm0	nothing	ds	tye0.0
-tyes1			.lfield	tyexprs	res1
+tyes1			.lfield	typeitems	res1
 tyes			.apply	diff.list.:	gsdl.ags.typeitem.t	|	tye0	tyes1
 res			.lrecord	nm	nm0	typeitems	tyes	|	_gsac.gstype.compileToGlobalVar_res.ty
 			.app	res
@@ -1344,7 +1344,7 @@ em			.undefined	ordered.set.t	gsdl.var.t
 gvs			.undefined	list.t	gsdl.var.t
 res.tyfvs			.lfield	tyfvs	res
 tye0.tyas			.undefined	list.t	gsdl.ags.typeitem.decls.tyarg.t	# Calculate from res.tyfvs
-res.tyes			.lfield	tyexprs	res
+res.tyes			.lfield	typeitems	res
 tye0.ki			.apply	maybe.nothing	gsdl.ags.typeitem.gskind.t
 res.tygvs			.lfield	tygvars	res
 tye0.tygvs			.apply	diff.list.tolist	gsdl.ags.typeitem.decls.tygvar.t	|	res.tygvs
@@ -2271,10 +2271,10 @@ diff.list.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 _emitted_ty	.tylet	ordered.set.t	gsdl.var.t
-tyexprs_ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 _tyfvs_ty	.tylet	diff.list.t	gsdl.var.t
 _tygvars_ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
-	.typroduct	emitted	_emitted_ty	res	gsdl.ags.typeitem.expr.t	tyexprs	tyexprs_ty	tyfvs	_tyfvs_ty	tygvars	_tygvars_ty
+diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
+	.typroduct	emitted	_emitted_ty	res	gsdl.ags.typeitem.expr.t	tyfvs	_tyfvs_ty	tygvars	_tygvars_ty	typeitems	diff.list.typeitem.ty
 
 # §section §gs{gsac.gstype.compileToGlobalVar}
 
