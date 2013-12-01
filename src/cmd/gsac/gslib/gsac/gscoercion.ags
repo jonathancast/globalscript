@@ -500,7 +500,7 @@ e0	.karg	either.prim.u	string.t	_gsac.gscoercion.compile_res.ty
 err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 		.case	right
-r		.fkarg	0	_gsac.gscoercion.compileToGlobalVar_res.ty
+r		.fkarg	0	_gsac.gscoercion.compile_res.ty
 res			.undefined	_gsac.gscoercion.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
