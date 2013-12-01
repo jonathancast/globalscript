@@ -1100,6 +1100,7 @@ list.t	.tygvar
 _gsac.gstype.constr.compile_res.ty	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 either.t	.tygvar	# Temp
+gsdl.ags.typeitem.expr.t	.tygvar
 either.right	.gvar
 list.constr.compile.res.ty	.tylet	list.t	_gsac.gstype.constr.compile_res.ty
 compile.res.list.constr.compile.res.ty	.tylet	_gsac.gstype.compile.m_res.ty	list.constr.compile.res.ty
@@ -1110,7 +1111,12 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	right
 cs.r		.fkarg	0	compile.res.list.constr.compile.res.ty
-res			.undefined	_gsac.gstype.compile_res.ty
+cs.r.em			.lfield	emitted	cs.r
+r			.undefined	gsdl.ags.typeitem.expr.t
+r.tyfvs			.lfield	tyfvs	cs.r
+r.tygvs			.lfield	tygvs	cs.r
+r.ts			.lfield	typeitems	cs.r
+res			.lrecord	emitted	cs.r.em	res	r	tyfvs	r.tyfvs	tygvars	r.tygvs	typeitems	r.ts	|	_gsac.gstype.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
