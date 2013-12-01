@@ -5,10 +5,10 @@
 gsdl.ags.file.print	.closure	_gsdl.ags.file.print_c
 
 _gsdl.ags.file.print.filetype	.closure	_gsdl.ags.file.print.filetype_c
-_gsdl.ags.file.print.filetype_doc.s	.string	\t.document\n\n
+_gsdl.ags.file.print.filetype_doc.s	.string	\t.document\n
 
 _gsdl.ags.file.print.datasection	.closure	_gsdl.ags.file.print.datasection_c
-_gsdl.ags.file.print.datasection_gsdata.s	.string	\t.data\n\n
+_gsdl.ags.file.print.datasection_gsdata.s	.string	\n\t.data\n
 
 _gsdl.ags.file.print.dataitems	.closure	_gsdl.ags.file.print.dataitems_c	_gsdl.ags.file.print.dataitems_ty
 _gsdl.ags.file.print.dataitems_:_cast_cast.s	.string	\t.cast\t
@@ -125,10 +125,10 @@ gsdl.ags.file.prim.u	.tygvar
 list.prim.u	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 list.t	.tygvar
-string.t	.tygvar	# Temp
-_gsdl.ags.file.print.dataitems_:_k	.subcode
-gsdl.ags.dataitem.t.out	.cogvar
-_gsdl.ags.file.print.dataitems	.gvar
+rune.t	.tygvar
+_gsdl.ags.file.print.dataitems_d0.s_c	.subcode
+list.:	.gvar
+rune.new.line	.gvar
 _gsdl.ags.file.print.typesection	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 ds0	.karg	list.prim.u	gsdl.ags.dataitem.t
@@ -136,13 +136,26 @@ ds0	.karg	list.prim.u	gsdl.ags.dataitem.t
 		.case	:
 d0		.fkarg	0	gsdl.ags.dataitem.t
 ds1		.fkarg	1	list.t	gsdl.ags.dataitem.t
-			.force	_gsdl.ags.file.print.dataitems_:_k
-			.coerce	gsdl.ags.dataitem.t.out
-			.enter	d0
+d0.s			.alloc	_gsdl.ags.file.print.dataitems_d0.s_c
+			.app	rune.new.line	d0.s
+			.enter	list.:	rune.t
 		.case	nil
 tys			.field	typesection	file0
 			.app	file0	tys
 			.yield	_gsdl.ags.file.print.typesection
+
+_gsdl.ags.file.print.dataitems_d0.s_c	.expr
+gsdl.ags.file.prim.u	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+list.t	.tygvar
+_gsdl.ags.file.print.dataitems_:_k	.subcode
+gsdl.ags.dataitem.t.out	.cogvar
+file0	.fv	gsdl.ags.file.prim.u
+d0	.fv	gsdl.ags.dataitem.t
+ds1	.fv	list.t	gsdl.ags.dataitem.t
+	.force	_gsdl.ags.file.print.dataitems_:_k
+	.coerce	gsdl.ags.dataitem.t.out
+	.enter	d0
 
 _gsdl.ags.file.print.dataitems_:_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
