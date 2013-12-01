@@ -908,12 +908,14 @@ list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 _gsac.gstype.fields.compile_res.ty	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+_gsac.gstype.constr.compile_res.ty	.tygvar
+_gsac.gstype.compile.m_res.ty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.compile_w_abstype_k	.subcode
 _gsac.gstype.compile_w_app_k	.subcode
 _gsac.gstype.compile_w_lift_k	.subcode
 _gsac.gstype.compile_w_product_k	.subcode
+_gsac.gstype.compile_w_sum_k	.subcode
 either.t.out	.cogvar
 maybe.t.out	.cogvar
 _gsac.gstype.compileToVar_gsabstype	.gvar
@@ -922,6 +924,12 @@ list.singleton	.gvar
 gsac.gstype.compile	.gvar
 gsac.gstype.fields.compile	.gvar
 gsdl.cgs.typeenv.typeexpansion.get	.gvar
+gsac.gstype.compile.mapM	.gvar
+gsac.gstype.constr.compile	.gvar
+list.sort	.gvar
+gsac.gstype.constr.compare	.gvar
+list.constr.compile.res.ty	.tylet	list.t	_gsac.gstype.constr.compile_res.ty
+compile.res.list.constr.compile.res.ty	.tylet	_gsac.gstype.compile.m_res.ty	list.constr.compile.res.ty
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 ty0	.larg	gsdl.cgs.gstype.prim.u
@@ -956,7 +964,12 @@ fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.enter	gsac.gstype.fields.compile
 		.case	sum
 cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
-			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+constr.compile			.apply	gsac.gstype.constr.compile
+cs.s			.apply	list.sort	gsdl.cgs.gstype.constr.t	|	gsac.gstype.constr.compare	cs
+			.force	_gsac.gstype.compile_w_sum_k
+			.coerce	either.t.out	string.t	compile.res.list.constr.compile.res.ty
+			.app	constr.compile	cs.s
+			.enter	gsac.gstype.compile.mapM	gsdl.cgs.gstype.constr.t	_gsac.gstype.constr.compile_res.ty
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
@@ -1078,6 +1091,19 @@ tygvs			.lfield	tygvars	fs.res
 res			.lrecord	emitted	em0	res	res0	tyexprs	tyes	tyfvs	tyfvs	tygvars	tygvs
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
+
+_gsac.gstype.compile_w_sum_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compile.m_res.ty	.tygvar
+list.t	.tygvar
+_gsac.gstype.constr.compile_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gstype.compile_res.ty	.tygvar	# Temp
+list.constr.compile.res.ty	.tylet	list.t	_gsac.gstype.constr.compile_res.ty
+compile.res.list.constr.compile.res.ty	.tylet	_gsac.gstype.compile.m_res.ty	list.constr.compile.res.ty
+e0	.karg	either.prim.u	string.t	compile.res.list.constr.compile.res.ty
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 
 # §section §gs{gsac.gstype.compileToGlobalVar}
 
