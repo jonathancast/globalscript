@@ -454,9 +454,8 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
-either.t	.tygvar
-string.t	.tygvar
-_gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 	.tylift
 	.tyfun	gsdl.sourcepos.t
 	.tylift
@@ -465,12 +464,9 @@ _gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tygvar
 	.tyfun	gsdl.var.t
 	.tylift
 	.tyfun	gsdl.cgs.gsexpr.cast.source.t
-	.tyref	either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+	.tyref	gsac.gsexpr.compile.m	gsdl.ags.dataitem.t
 
 _gsac.gsexpr.cast.source.compileToDataItem_res.ty	.tyexpr
-_gsac.gsexpr.cast.source.compileToDataItem_res.u	.tygvar
-	.tylift
-	.tyref	_gsac.gsexpr.cast.source.compileToDataItem_res.u
-
-_gsac.gsexpr.cast.source.compileToDataItem_res.u	.tyexpr
-	.typroduct
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+	.tyref	_gsac.gsexpr.compile.m_res.ty	gsdl.ags.dataitem.t
