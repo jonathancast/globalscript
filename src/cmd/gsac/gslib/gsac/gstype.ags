@@ -2094,8 +2094,11 @@ _gsac.gstype.compile.m_res.u	.tygvar
 	.tyref	_gsac.gstype.compile.m_res.u	α
 
 _gsac.gstype.compile.m_res.u	.tyexpr
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 α	.tylambda	*
-	.typroduct
+set.var.ty	.tylet	ordered.set.t	gsdl.var.t
+	.typroduct	emitted	set.var.ty
 
 # §section §gs{gsac.gstype.annotate}
 
