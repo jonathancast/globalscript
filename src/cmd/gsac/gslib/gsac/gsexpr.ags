@@ -366,6 +366,8 @@ _gsac.gsexpr.cast.source.compileToGlobalVar_res.ty	.tygvar	# Temp
 _gsac.gsexpr.cast.source.compileToGlobalVar_typesig_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.compileToGlobalVar	.gvar
+gsdl.var.<>	.gvar
+_gsac.gsexpr_ty.v	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 x	.fv	gsdl.var.t
@@ -377,7 +379,7 @@ pos1		.fkarg	0	gsdl.sourcepos.t
 		.case	typesig
 pos1		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
-ty.v			.undefined	gsdl.var.t
+ty.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_ty.v
 			.force	_gsac.gsexpr.cast.source.compileToGlobalVar_typesig_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 			.app	pos	env	ty.v	ty
