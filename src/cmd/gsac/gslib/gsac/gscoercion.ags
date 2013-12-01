@@ -569,7 +569,7 @@ _gsac.gscoercion.compile.m_res.u	.tygvar
 
 _gsac.gscoercion.compile.m_res.u	.tyexpr
 α	.tylambda	*
-	.typroduct
+	.typroduct	res	α
 
 # §section §gs{gsac.gscoercion.compile}
 
