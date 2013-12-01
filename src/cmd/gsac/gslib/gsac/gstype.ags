@@ -1098,12 +1098,21 @@ string.t	.tygvar
 _gsac.gstype.compile.m_res.ty	.tygvar
 list.t	.tygvar
 _gsac.gstype.constr.compile_res.ty	.tygvar
+_gsac.gstype.compile_res.ty	.tygvar
 either.t	.tygvar	# Temp
-_gsac.gstype.compile_res.ty	.tygvar	# Temp
+either.right	.gvar
 list.constr.compile.res.ty	.tylet	list.t	_gsac.gstype.constr.compile_res.ty
 compile.res.list.constr.compile.res.ty	.tylet	_gsac.gstype.compile.m_res.ty	list.constr.compile.res.ty
 e0	.karg	either.prim.u	string.t	compile.res.list.constr.compile.res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+		.case	right
+cs.r		.fkarg	0	compile.res.list.constr.compile.res.ty
+res			.undefined	_gsac.gstype.compile_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
 # §section §gs{gsac.gstype.compileToGlobalVar}
 
