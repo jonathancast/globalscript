@@ -395,6 +395,14 @@ gsdl.cgs.gstype.t	.tygvar
 
 # §section §gs{gsac.gsexpr.compile.m}
 
+gsac.gsexpr.compile.m	.tyexpr
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+α	.tylambda	*
+res.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	α
+	.tyref	either.t	string.t	res.ty
+
 _gsac.gsexpr.compile.m_res.ty	.tyexpr
 _gsac.gsexpr.compile.m_res.u	.tygvar
 α	.tylambda	*
@@ -414,9 +422,8 @@ maybe.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar
-string.t	.tygvar
-_gsac.gsexpr.compileToDataItem_res.ty	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 	.tylift
 	.tyfun	gsdl.sourcepos.t
 	.tylift
@@ -427,7 +434,7 @@ _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 	.tyfun	gsdl.cgs.gsexpr.t
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
-	.tyref	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+	.tyref	gsac.gsexpr.compile.m	gsdl.ags.dataitem.t
 
 _gsac.gsexpr.compileToDataItem_res.ty	.tyexpr
 _gsac.gsexpr.compile.m_res.ty	.tygvar
