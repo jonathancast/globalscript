@@ -195,12 +195,15 @@ ty		.fkarg	3	maybe.t	string.t
 			.undef	string.t
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t
-ty		.fkarg	1	gsdl.var.t
+nm		.fkarg	1	maybe.t	gsdl.var.t
+ty		.fkarg	2	gsdl.var.t
+nm.s			.apply	maybe.maybe	gsdl.var.t	string.t	|	nil	gsdl.ags.syntax.var.print	nm
 ty.s			.apply	gsdl.ags.syntax.var.print	|	ty
 s0.3			.apply	list.:	rune.t	|	rune.new.line	s1
 s0.2			.apply	list.<>	rune.t	|	ty.s	s0.3
 s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print.dataitems_:_undef.s	s0.2
-			.app	pos	s0.1
+s0			.apply	list.<>	rune.t	|	nm.s	s0.1
+			.app	pos	s0
 			.enter	gsdl.ags.sourcepos.print
 	# > :: string.t
 

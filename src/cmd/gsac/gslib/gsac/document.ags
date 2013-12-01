@@ -201,6 +201,7 @@ _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.file.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 either.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
@@ -209,6 +210,7 @@ either.right	.gvar
 list.nil	.gvar
 list.singleton	.gvar
 gsdl.ags.dataitem.undefined	.gvar
+maybe.nothing	.gvar
 gsdl.ags.syntax.var.print	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
 diff.list.tolist	.gvar
@@ -224,7 +226,8 @@ pos			.field	pos	doc0
 v			.lfield	nm	res1
 dts			.lfield	tyexprs	res1
 cs			.apply	list.nil	gsdl.ags.codeitem.t
-d			.apply	gsdl.ags.dataitem.undefined	|	pos	v
+nothing			.apply	maybe.nothing	gsdl.var.t
+d			.apply	gsdl.ags.dataitem.undefined	|	pos	nothing	v
 ds			.apply	list.singleton	gsdl.ags.dataitem.t	|	d
 ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	dts
 tcs			.apply	list.nil	gsdl.ags.coercionitem.t
