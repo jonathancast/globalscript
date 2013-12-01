@@ -27,6 +27,8 @@ _gsac.gstype.compileToVar_gsabstype	.closure	_gsac.gstype.compileToVar_gsabstype
 
 gsac.gstype.fields.compile	.closure	_gsac.gstype.fields.compile_c	_gsac.gstype.fields.compile_ty
 
+gsac.gstype.constr.compile	.closure	_gsac.gstype.constr.compile_c	_gsac.gstype.constr.compile_ty
+
 gsac.gstype.gskind.compile	.closure	_gsac.gstype.gskind.compile_c	_gsac.gstype.gskind.compile_ty
 
 gsac.gstype.compile.mapM	.closure	_gsac.gstype.compile.mapM_c	_gsac.gstype.compile.mapM_ty
@@ -1898,6 +1900,18 @@ res			.lrecord	emitted	em	fields	fs	tyexprs	tyes	tyfvs	tyfvs	tygvars	tygvs	|	_gs
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.fields.compile_res.ty
 
+# §section §gs{gsac.gstype.constr.compile}
+
+_gsac.gstype.constr.compile_c	.expr
+gsdl.cgs.gstype.constr.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gstype.compile.m_res.ty	.tygvar	# Temp
+_gsac.gstype.constr.compile_res.ty	.tygvar
+res.ty	.tylet	_gsac.gstype.compile.m_res.ty	_gsac.gstype.constr.compile_res.ty
+c	.larg	gsdl.cgs.gstype.constr.t
+	.undef	either.t	string.t	res.ty
+
 # §section §gs{gsac.gstype.gskind.compile}
 
 # > either.t string.t
@@ -2381,6 +2395,24 @@ fields_ty	.tylet	diff.list.t	gsdl.ags.typeitem.field.t
 _tyfvs_ty	.tylet	diff.list.t	gsdl.var.t
 _tygvars_ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 	.typroduct	emitted	_emitted_ty	fields	fields_ty	tyexprs	tyexprs_ty	tyfvs	_tyfvs_ty	tygvars	_tygvars_ty
+
+# §section §gs{gsac.gstype.constr.compile}
+
+_gsac.gstype.constr.compile_ty	.tyexpr
+gsdl.cgs.gstype.constr.t	.tygvar
+gsac.gstype.compile.m	.tygvar
+_gsac.gstype.constr.compile_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gstype.constr.t
+	.tyref	gsac.gstype.compile.m	_gsac.gstype.constr.compile_res.ty
+
+_gsac.gstype.constr.compile_res.ty	.tyexpr
+_gsac.gstype.constr.compile_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gstype.constr.compile_res.u
+
+_gsac.gstype.constr.compile_res.u	.tyexpr
+	.typroduct
 
 # §section §gs{gsac.gstype.gskind.compile}
 
