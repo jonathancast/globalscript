@@ -2033,17 +2033,38 @@ ki.ags			.apply	gsdl.ags.typeitem.gskind.exp	|	kib.ags	kie.ags
 
 _gsac.gstype.compile.mapM_c	.expr
 _gsac.gstype.compile.mapM_fun.ty	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gstype.compile.m_res.ty	.tygvar	# Temp
-list.t	.tygvar	# Temp
+list.t	.tygvar
+_gsac.gstype.compile.mapM_k	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
-list.β	.tylet	list.t	β
-compile.m.res.list.β	.tylet	_gsac.gstype.compile.m_res.ty	list.β
 f	.larg	_gsac.gstype.compile.mapM_fun.ty	α	β
 xn	.larg	list.t	α
-	.undef	either.t	string.t	compile.m.res.list.β
+	.force	_gsac.gstype.compile.mapM_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_gsac.gstype.compile.mapM_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.compile.m_res.ty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+α	.tyfv	*
+β	.tyfv	*
+list.β	.tylet	list.t	β
+compile.m.res.list.β	.tylet	_gsac.gstype.compile.m_res.ty	list.β
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	either.t	string.t	compile.m.res.list.β
+		.case	nil
+res			.undefined	compile.m.res.list.β
+			.app	res
+			.enter	either.right	string.t	compile.m.res.list.β
 
 	.type
 
