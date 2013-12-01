@@ -1195,7 +1195,7 @@ tye0.0			.lfield	res	res1
 tye0			.apply	gsdl.ags.typeitem.tyexpr	|	pos	nm0	nothing	ds	tye0.0
 tyes1			.lfield	tyexprs	res1
 tyes			.apply	diff.list.:	gsdl.ags.typeitem.t	|	tye0	tyes1
-res			.lrecord	nm	nm0	tyexprs	tyes
+res			.lrecord	nm	nm0	typeitems	tyes	|	_gsac.gstype.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 
@@ -2302,8 +2302,8 @@ _gsac.gstype.compileToGlobalVar_res.u	.tyexpr
 gsdl.var.t	.tygvar
 diff.list.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-tyexprs_ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
-	.typroduct	nm	gsdl.var.t	tyexprs	tyexprs_ty
+diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
+	.typroduct	nm	gsdl.var.t	typeitems	diff.list.typeitem.ty
 
 # §section §gs{gsac.gstype.compileToApp}
 
