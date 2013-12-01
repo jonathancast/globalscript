@@ -308,6 +308,8 @@ string.t	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	# Temp
+diff.list.t	.tygvar	# Temp
+gsdl.ags.dataitem.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.ags.dataitem.cast	.gvar
 pos	.fv	gsdl.sourcepos.t
@@ -320,9 +322,10 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	right
 co.r		.fkarg	0	_gsac.gscoercion.compileToGlobalVar_res.ty
+ds			.undefined	diff.list.t	gsdl.ags.dataitem.t
 co.r.var			.lfield	res	co.r
 di			.apply	gsdl.ags.dataitem.cast	|	pos	mbv	so.x	co.r.var
-res			.lrecord	res	di	|	_gsac.gsexpr.compileToDataItem_res.ty
+res			.lrecord	dataitems	ds	res	di	|	_gsac.gsexpr.compileToDataItem_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
@@ -410,8 +413,11 @@ _gsac.gsexpr.compile.m_res.u	.tygvar
 	.tyref	_gsac.gsexpr.compile.m_res.u	α
 
 _gsac.gsexpr.compile.m_res.u	.tyexpr
+diff.list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 α	.tylambda	*
-	.typroduct	res	α
+diff.list.dataitem.ty	.tylet	diff.list.t	gsdl.ags.dataitem.t
+	.typroduct	dataitems	diff.list.dataitem.ty	res	α
 
 # §section §gs{gsac.gsexpr.compileToDataItem}
 
