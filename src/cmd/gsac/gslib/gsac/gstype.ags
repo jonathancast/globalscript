@@ -2108,11 +2108,13 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 diff.list.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 α	.tylambda	*
 set.var.ty	.tylet	ordered.set.t	gsdl.var.t
 diff.list.var.ty	.tylet	diff.list.t	gsdl.var.t
 diff.list.tygvar.ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
-	.typroduct	emitted	set.var.ty	tyfvs	diff.list.var.ty	tygvs	diff.list.tygvar.ty
+diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
+	.typroduct	emitted	set.var.ty	tyfvs	diff.list.var.ty	tygvs	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
 
 # §section §gs{gsac.gstype.annotate}
 
