@@ -488,12 +488,14 @@ co	.larg	gsdl.cgs.gscoercion.t
 	.enter	gsac.gscoercion.compile
 
 _gsac.gscoercion.compileToGlobalVar_k	.forcecont
+gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
+v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.compile_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -501,7 +503,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 		.case	right
 r		.fkarg	0	_gsac.gscoercion.compile_res.ty
-res			.undefined	_gsac.gscoercion.compileToGlobalVar_res.ty
+res			.lrecord	res	v	|	_gsac.gscoercion.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 
