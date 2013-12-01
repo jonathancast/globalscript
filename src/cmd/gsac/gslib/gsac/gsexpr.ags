@@ -315,6 +315,7 @@ string.t	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	# Temp
+gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
 diff.list.:	.gvar
 gsdl.ags.dataitem.cast	.gvar
@@ -331,7 +332,8 @@ err		.fkarg	0	string.t
 co.r		.fkarg	0	_gsac.gscoercion.compileToGlobalVar_res.ty
 co.r.var			.lfield	res	co.r
 di			.apply	gsdl.ags.dataitem.cast	|	pos	mbv	so.r.var	co.r.var
-res			.lrecord	dataitems	so.ds	res	di	|	_gsac.gsexpr.compileToDataItem_res.ty
+ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	dataitems	so.ds	res	di	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
@@ -397,6 +399,7 @@ gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.dataitem.t	.tygvar	# Temp
+gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
 diff.list.singleton	.gvar
 gsdl.ags.dataitem.undefined	.gvar
@@ -414,7 +417,8 @@ ty.r.v			.lfield	nm	ty.r
 just.x			.apply	maybe.just	gsdl.var.t	|	x
 di			.apply	gsdl.ags.dataitem.undefined	|	pos	just.x	ty.r.v
 ds			.apply	diff.list.singleton	gsdl.ags.dataitem.t	|	di
-res			.lrecord	dataitems	ds	res	x	|	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
+ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	dataitems	ds	res	x	typeitems	ts	|	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 
@@ -481,9 +485,11 @@ _gsac.gsexpr.compile.m_res.u	.tygvar
 _gsac.gsexpr.compile.m_res.u	.tyexpr
 diff.list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 α	.tylambda	*
 diff.list.dataitem.ty	.tylet	diff.list.t	gsdl.ags.dataitem.t
-	.typroduct	dataitems	diff.list.dataitem.ty	res	α
+diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
+	.typroduct	dataitems	diff.list.dataitem.ty	res	α	typeitems	diff.list.typeitem.ty
 
 # §section §gs{gsac.gsexpr.compileToDataItem}
 
