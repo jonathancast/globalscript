@@ -120,11 +120,11 @@ string.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 gsdl.ags.file.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
 gsdl.ags.codeitem.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
-gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
 list.:	.gvar
 diff.list.tolist	.gvar
@@ -142,7 +142,8 @@ r.res			.lfield	res	r
 r.ds			.lfield	dataitems	r
 ds1			.apply	diff.list.tolist	gsdl.ags.dataitem.t	|	r.ds
 ds			.apply	list.:	gsdl.ags.dataitem.t	|	r.res	ds1
-ts			.undefined	list.t	gsdl.ags.typeitem.t
+r.ts			.lfield	typeitems	r
+ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	r.ts
 res			.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	ts	|	gsdl.ags.file.t
 			.app	res
 			.enter	either.right	string.t	gsdl.ags.file.t
