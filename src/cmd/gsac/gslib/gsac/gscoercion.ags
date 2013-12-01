@@ -494,6 +494,8 @@ string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
+diff.list.t	.tygvar	# Temp
+gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
 v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.compile_res.ty
@@ -503,7 +505,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 		.case	right
 r		.fkarg	0	_gsac.gscoercion.compile_res.ty
-res			.lrecord	res	v	|	_gsac.gscoercion.compileToGlobalVar_res.ty
+ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	res	v	typeitems	ts	|	_gsac.gscoercion.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 
@@ -570,8 +573,11 @@ _gsac.gscoercion.compile.m_res.u	.tygvar
 	.tyref	_gsac.gscoercion.compile.m_res.u	α
 
 _gsac.gscoercion.compile.m_res.u	.tyexpr
+diff.list.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 α	.tylambda	*
-	.typroduct	res	α
+diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
+	.typroduct	res	α	typeitems	diff.list.typeitem.ty
 
 # §section §gs{gsac.gscoercion.compile}
 
