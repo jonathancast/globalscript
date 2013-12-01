@@ -12,6 +12,9 @@ _gsac.gsexpr.compileToDataItem_expr.heavy.cast_co.s	.string	co
 
 gsac.gsexpr.cast.source.compileToGlobalVar	.closure	_gsac.gsexpr.cast.source.compileToGlobalVar_c	_gsac.gsexpr.cast.source.compileToGlobalVar_ty
 
+_gsac.gsexpr_ty.v	.closure	_gsac.gsexpr_ty.v_c
+_gsac.gsexpr_ty.v_s	.string	ty
+
 	.code
 
 # §section §gs{gsac.gsexpr.annotate}
@@ -413,6 +416,21 @@ ds			.apply	diff.list.:	gsdl.ags.dataitem.t	|	di	ds1
 res			.lrecord	dataitems	ds	res	x	|	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
+
+# §section Helper Functions
+
+# §subsection §gs{ty.v}
+
+_gsac.gsexpr_ty.v_c	.expr
+gsdl.var.component.t	.tygvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_gsac.gsexpr_ty.v_s	.gvar
+c0	.apply	gsdl.var.component.alphanum	|	_gsac.gsexpr_ty.v_s
+cs	.apply	list.singleton	gsdl.var.component.t	|	c0
+	.app	cs
+	.enter	gsdl.var.basevar
 
 	.type
 
