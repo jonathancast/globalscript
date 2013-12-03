@@ -1550,9 +1550,19 @@ fs1		.fkarg	1	list.t	gsdl.ags.typeitem.field.t
 _gsdl.ags.typeitem.expr.print_sum_constrs.print_c	.expr
 list.t	.tygvar
 gsdl.ags.typeitem.constr.t	.tygvar
+_gsdl.ags.typeitem.expr.print_sum_constrs.print_k	.subcode
+list.t.out	.cogvar
+cs	.arg	list.t	gsdl.ags.typeitem.constr.t
+	.force	_gsdl.ags.typeitem.expr.print_sum_constrs.print_k
+	.coerce	list.t.out	gsdl.ags.typeitem.constr.t
+	.enter	cs
+
+_gsdl.ags.typeitem.expr.print_sum_constrs.print_k	.forcecont
+list.prim.u	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
 diff.list.t	.tygvar	# Temp
 rune.t	.tygvar	# Temp
-cs	.arg	list.t	gsdl.ags.typeitem.constr.t
+cs0	.karg	list.prim.u	gsdl.ags.typeitem.constr.t
 	.undef	diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.typeitem.expr.≡}
