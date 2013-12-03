@@ -71,6 +71,8 @@ _gsdl.ags.typeitem.expr.print_tyref_tyref.s	.string	\t.tyref
 _gsdl.ags.typeitem.expr.print_fields.print	.closure	_gsdl.ags.typeitem.expr.print_fields.print_c	_gsdl.ags.typeitem.expr.print_fields.print_ty
 _gsdl.ags.typeitem.expr.print_fields.print_nl.s	.string	\n
 
+_gsdl.ags.typeitem.expr.print_sum_constrs.print	.closure	_gsdl.ags.typeitem.expr.print_sum_constrs.print_c	_gsdl.ags.typeitem.expr.print_sum_constrs.print_ty
+
 gsdl.ags.typeitem.expr.≡	.closure	_gsdl.ags.typeitem.expr.≡_c	_gsdl.ags.typeitem.expr.≡_ty
 
 gsdl.ags.typeitem.expr.fmtgs	.closure	_gsdl.ags.typeitem.expr.fmtgs_c	_gsdl.ags.typeitem.expr.fmtgs_ty
@@ -1539,6 +1541,14 @@ fs1		.fkarg	1	list.t	gsdl.ags.typeitem.field.t
 			.app	_gsdl.ags.typeitem.expr.print_fields.print_nl.s
 			.enter	diff.list.fromlist	rune.t
 
+_gsdl.ags.typeitem.expr.print_sum_constrs.print_c	.expr
+list.t	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+cs	.arg	list.t	gsdl.ags.typeitem.constr.t
+	.undef	diff.list.t	rune.t
+
 # §section §gs{gsdl.ags.typeitem.expr.≡}
 
 _gsdl.ags.typeitem.expr.≡_c	.expr
@@ -2228,6 +2238,14 @@ gsdl.ags.typeitem.field.t	.tygvar
 diff.list.t	.tygvar
 rune.t	.tygvar
 	.tyfun	list.t	gsdl.ags.typeitem.field.t
+	.tyref	diff.list.t	rune.t
+
+_gsdl.ags.typeitem.expr.print_sum_constrs.print_ty	.tyexpr
+list.t	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+	.tyfun	list.t	gsdl.ags.typeitem.constr.t
 	.tyref	diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.typeitem.expr.≡}
