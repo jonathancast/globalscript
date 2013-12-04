@@ -1099,10 +1099,12 @@ _gsac.gstype.compile.m_res.ty	.tygvar
 list.t	.tygvar
 _gsac.gstype.constr.compile_res.ty	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
 either.t	.tygvar	# Temp
-gsdl.ags.typeitem.constr.t	.tygvar	# Temp
+_gsac.gstype.compile_w_sum_right_r.cs.f_c	.subcode
 either.right	.gvar
 gsdl.ags.typeitem.expr.sum	.gvar
+list.map	.gvar
 list.constr.compile.res.ty	.tylet	list.t	_gsac.gstype.constr.compile_res.ty
 compile.res.list.constr.compile.res.ty	.tylet	_gsac.gstype.compile.m_res.ty	list.constr.compile.res.ty
 e0	.karg	either.prim.u	string.t	compile.res.list.constr.compile.res.ty
@@ -1111,9 +1113,11 @@ e0	.karg	either.prim.u	string.t	compile.res.list.constr.compile.res.ty
 err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	right
-cs.r		.fkarg	0	compile.res.list.constr.compile.res.ty
+cs.r		.fkarg	0	_gsac.gstype.compile.m_res.ty	list.constr.compile.res.ty
 cs.r.em			.lfield	emitted	cs.r
-r.cs			.undefined	list.t	gsdl.ags.typeitem.constr.t
+r.cs.f			.alloc	_gsac.gstype.compile_w_sum_right_r.cs.f_c
+cs.r.res			.lfield	res	cs.r
+r.cs			.apply	list.map	_gsac.gstype.constr.compile_res.ty	gsdl.ags.typeitem.constr.t	|	r.cs.f	cs.r.res
 r			.apply	gsdl.ags.typeitem.expr.sum	|	r.cs
 r.tyfvs			.lfield	tyfvs	cs.r
 r.tygvs			.lfield	tygvars	cs.r
@@ -1121,6 +1125,12 @@ r.ts			.lfield	typeitems	cs.r
 res			.lrecord	emitted	cs.r.em	res	r	tyfvs	r.tyfvs	tygvars	r.tygvs	typeitems	r.ts	|	_gsac.gstype.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
+
+_gsac.gstype.compile_w_sum_right_r.cs.f_c	.expr
+_gsac.gstype.constr.compile_res.ty	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar	# Temp
+r	.larg	_gsac.gstype.constr.compile_res.ty
+	.undef	gsdl.ags.typeitem.constr.t
 
 # §section §gs{gsac.gstype.compileToGlobalVar}
 
