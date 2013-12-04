@@ -2078,6 +2078,7 @@ gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
+list.nil	.gvar
 diff.list.nil	.gvar
 α	.tyfv	*
 β	.tyfv	*
@@ -2091,10 +2092,11 @@ x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
 			.undef	either.t	string.t	compile.m.res.list.β
 		.case	nil
+nil			.apply	list.nil	β
 tyfvs			.apply	diff.list.nil	gsdl.var.t
 tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 ts			.apply	diff.list.nil	gsdl.ags.typeitem.t
-res			.lrecord	emitted	em	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile.m_res.ty	list.β
+res			.lrecord	emitted	em	res	nil	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile.m_res.ty	list.β
 			.app	res
 			.enter	either.right	string.t	compile.m.res.list.β
 
@@ -2131,7 +2133,7 @@ set.var.ty	.tylet	ordered.set.t	gsdl.var.t
 diff.list.var.ty	.tylet	diff.list.t	gsdl.var.t
 diff.list.tygvar.ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
-	.typroduct	emitted	set.var.ty	tyfvs	diff.list.var.ty	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
+	.typroduct	emitted	set.var.ty	res	α	tyfvs	diff.list.var.ty	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
 
 # §section §gs{gsac.gstype.annotate}
 
