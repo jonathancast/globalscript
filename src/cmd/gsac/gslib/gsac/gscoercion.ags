@@ -585,16 +585,15 @@ _gsac.gscoercion.compile_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
-either.t	.tygvar
-string.t	.tygvar
-_gsac.gscoercion.compile_res.ty	.tygvar
+gsac.gscoercion.compile.m	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
 	.tylift
 	.tyfun	gsdl.sourcepos.t
 	.tylift
 	.tyfun	gsdl.cgs.typeenv.t
 	.tylift
 	.tyfun	gsdl.cgs.gscoercion.t
-	.tyref	either.t	string.t	_gsac.gscoercion.compile_res.ty
+	.tyref	gsac.gscoercion.compile.m	gsdl.ags.coercionitem.t
 
 _gsac.gscoercion.compile_res.ty	.tyexpr
 _gsac.gscoercion.compile.m_res.ty	.tygvar
