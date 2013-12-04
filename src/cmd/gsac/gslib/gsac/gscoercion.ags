@@ -597,12 +597,9 @@ _gsac.gscoercion.compile_res.ty	.tygvar
 	.tyref	either.t	string.t	_gsac.gscoercion.compile_res.ty
 
 _gsac.gscoercion.compile_res.ty	.tyexpr
-_gsac.gscoercion.compile_res.u	.tygvar
-	.tylift
-	.tyref	_gsac.gscoercion.compile_res.u
-
-_gsac.gscoercion.compile_res.u	.tyexpr
-	.typroduct
+_gsac.gscoercion.compile.m_res.ty	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+	.tyref	_gsac.gscoercion.compile.m_res.ty	gsdl.ags.coercionitem.t
 
 # §section §gs{gsac.gscoercion.compileAppTy}
 
