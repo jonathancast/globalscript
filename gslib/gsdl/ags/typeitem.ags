@@ -1560,10 +1560,20 @@ cs	.arg	list.t	gsdl.ags.typeitem.constr.t
 _gsdl.ags.typeitem.expr.print_sum_constrs.print_k	.forcecont
 list.prim.u	.tygvar
 gsdl.ags.typeitem.constr.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
 diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+diff.list.singleton	.gvar
+rune.new.line	.gvar
 cs0	.karg	list.prim.u	gsdl.ags.typeitem.constr.t
-	.undef	diff.list.t	rune.t
+	.analyze	cs0	:	nil
+		.case	:
+c0		.fkarg	0	gsdl.ags.typeitem.constr.t
+cs1		.fkarg	1	list.t	gsdl.ags.typeitem.constr.t
+			.undef	diff.list.t	rune.t
+		.case	nil
+			.app	rune.new.line
+			.enter	diff.list.singleton	rune.t
 
 # §section §gs{gsdl.ags.typeitem.expr.≡}
 
