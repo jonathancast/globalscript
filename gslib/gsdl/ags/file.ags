@@ -19,6 +19,8 @@ _gsdl.ags.file.print.typesection_gstype.s	.string	\n\t.type\n
 
 _gsdl.ags.file.print.typeitems	.closure	_gsdl.ags.file.print.typeitems_c	_gsdl.ags.file.print.typeitems_ty
 
+_gsdl.ags.file.print.coercionsection	.closure	_gsdl.ags.file.print.coercionsection_c
+
 gsdl.ags.file.parser	.closure	_gsdl.ags.file.parser_c
 
 gsdl.ags.file.fmtgs	.closure	_gsdl.ags.file.fmtgs_c
@@ -256,7 +258,7 @@ list.:	.gvar
 rune.new.line	.gvar
 gsdl.ags.typeitem.print	.gvar
 _gsdl.ags.file.print.typeitems	.gvar
-list.nil	.gvar
+_gsdl.ags.file.print.coercionsection	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 tys0	.karg	list.prim.u	gsdl.ags.typeitem.t
 	.analyze	tys0	:	nil
@@ -267,6 +269,35 @@ s1			.apply	_gsdl.ags.file.print.typeitems	|	file0	tys1
 s			.apply	gsdl.ags.typeitem.print	|	ty0	s1
 			.app	rune.new.line	s
 			.enter	list.:	rune.t
+		.case	nil
+cos			.field	coercionsection	file0
+			.app	file0	cos
+			.yield	_gsdl.ags.file.print.coercionsection
+
+_gsdl.ags.file.print.coercionsection_c	.expr
+gsdl.ags.file.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+_gsdl.ags.file.print.coercionsection_k	.subcode
+list.t.out	.cogvar
+file0	.arg	gsdl.ags.file.prim.u
+cos	.arg	list.t	gsdl.ags.coercionitem.t
+	.force	_gsdl.ags.file.print.coercionsection_k
+	.coerce	list.t.out	gsdl.ags.coercionitem.t
+	.enter	cos
+
+_gsdl.ags.file.print.coercionsection_k	.forcecont
+list.prim.u	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+list.nil	.gvar
+cos0	.karg	list.prim.u	gsdl.ags.coercionitem.t
+	.analyze	cos0	:	nil
+		.case	:
+co0		.fkarg	0	gsdl.ags.coercionitem.t
+cos1		.fkarg	1	list.t	gsdl.ags.coercionitem.t
+			.undef	list.t	rune.t
 		.case	nil
 			.enter	list.nil	rune.t
 
