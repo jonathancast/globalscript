@@ -387,7 +387,7 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 ty.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_ty.v
 			.force	_gsac.gsexpr.cast.source.compileToGlobalVar_typesig_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
-			.app	pos	env	ty.v	ty
+			.app	pos1	env	ty.v	ty
 			.enter	gsac.gstype.compileToGlobalVar
 	# > :: either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
 
@@ -406,7 +406,7 @@ either.right	.gvar
 diff.list.singleton	.gvar
 gsdl.ags.dataitem.undefined	.gvar
 maybe.just	.gvar
-pos	.fv	gsdl.sourcepos.t
+pos1	.fv	gsdl.sourcepos.t
 x	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 	.analyze	e0	left	right
@@ -417,7 +417,7 @@ err		.fkarg	0	string.t
 ty.r		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
 ty.r.v			.lfield	nm	ty.r
 just.x			.apply	maybe.just	gsdl.var.t	|	x
-di			.apply	gsdl.ags.dataitem.undefined	|	pos	just.x	ty.r.v
+di			.apply	gsdl.ags.dataitem.undefined	|	pos1	just.x	ty.r.v
 ds			.apply	diff.list.singleton	gsdl.ags.dataitem.t	|	di
 ts			.lfield	typeitems	ty.r
 res			.lrecord	dataitems	ds	res	x	typeitems	ts	|	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
