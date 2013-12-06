@@ -316,11 +316,17 @@ _gsdl.ags.file_print.coercionitems_c	.expr
 gsdl.ags.file.prim.u	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 list.t	.tygvar
-rune.t	.tygvar	# Temp
+rune.t	.tygvar
+list.:	.gvar
+rune.new.line	.gvar
+gsdl.ags.coercionitem.print	.gvar
 file0	.arg	gsdl.ags.file.prim.u
 co0	.arg	gsdl.ags.coercionitem.t
 cos	.arg	list.t	gsdl.ags.coercionitem.t
-	.undef	list.t	rune.t
+s1	.undefined	list.t	rune.t
+s0	.apply	gsdl.ags.coercionitem.print	|	co0	s1
+	.app	rune.new.line	s0
+	.enter	list.:	rune.t
 
 # §section §gs{gsdl.ags.file.parser}
 
