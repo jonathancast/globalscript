@@ -352,3 +352,10 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.ags.coercionitem.expr.t
+
+	.coercion
+
+gsdl.ags.coercionitem.t.out	.tycoercion
+gsdl.ags.coercionitem.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.coercionitem.t
