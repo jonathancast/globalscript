@@ -8,6 +8,8 @@ _gsdl.ags.coercionitem.segment.parser_coercion.re	.regex	.coercion
 gsdl.ags.coercionitem.parser	.closure	_gsdl.ags.coercionitem.parser_c
 _gsdl.ags.coercionitem.parser_tycoercion.p_tycoercion.re	.regex	.tycoercion
 
+gsdl.ags.coercionitem.print	.closure	_gsdl.ags.coercionitem.print_c
+
 gsdl.ags.coercionitem.≡	.closure	_gsdl.ags.coercionitem.≡_c
 
 gsdl.ags.coercionitem.fmtgs	.closure	_gsdl.ags.coercionitem.fmtgs_c
@@ -102,6 +104,15 @@ nm	.larg	string.t
 ds	.larg	gsdl.ags.coercionitem.decls.t
 e	.larg	gsdl.ags.coercionitem.expr.t
 	.undef	gsdl.ags.coercionitem.t
+
+# §section §gs{gsdl.ags.coercionitem.print}
+
+_gsdl.ags.coercionitem.print_c	.expr
+gsdl.ags.coercionitem.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+co	.larg	gsdl.ags.coercionitem.t
+	.undef	diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.coercionitem.≡}
 
