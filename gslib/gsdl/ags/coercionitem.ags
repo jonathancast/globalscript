@@ -29,6 +29,8 @@ gsdl.ags.coercionitem.expr.print	.closure	_gsdl.ags.coercionitem.expr.print_c	_g
 
 gsdl.ags.coercionitem.tycoercion	.closure	_gsdl.ags.coercionitem.tycoercion_c
 
+gsdl.ags.coercionitem.expr.pos	.closure	_gsdl.ags.coercionitem.expr.pos_c
+
 	.code
 
 # §section §gs{gsdl.ags.coercionitem.segment.parser}
@@ -405,6 +407,20 @@ res	.constr	gsdl.ags.coercionitem.prim.u	tycoercion	0	pos	1	v	2	ds	3	e
 	.lift
 	.yield	res
 
+# §section §gs{gsdl.ags.coercionitem.expr.t}
+
+_gsdl.ags.coercionitem.expr.pos_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.ags.coercionitem.expr.t	.tygvar
+gsdl.ags.coercionitem.expr.prim.u	.tygvar
+gsdl.ags.coercionitem.expr.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+e	.larg	gsdl.ags.coercionitem.expr.t
+res	.constr	gsdl.ags.coercionitem.expr.prim.u	pos	0	pos	1	e
+	.coerce	gsdl.ags.coercionitem.expr.t.in
+	.lift
+	.yield	res
+
 	.type
 
 # §section §gs{gsdl.ags.coercionitem.t}
@@ -456,7 +472,13 @@ gsdl.ags.coercionitem.expr.prim.u	.tygvar
 	.tyref	gsdl.ags.coercionitem.expr.prim.u
 
 gsdl.ags.coercionitem.expr.prim.u	.tyexpr
-	.tysum
+_gsdl.ags.coercionitem.expr.prim.u_pos_ty	.tygvar
+	.tysum	pos	_gsdl.ags.coercionitem.expr.prim.u_pos_ty
+
+_gsdl.ags.coercionitem.expr.prim.u_pos_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.ags.coercionitem.expr.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.ags.coercionitem.expr.t
 
 # §section §gs{gsdl.ags.coercionitem.expr.parser}
 
@@ -486,6 +508,10 @@ gsdl.ags.coercionitem.t.out	.tycoercion
 gsdl.ags.coercionitem.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.ags.coercionitem.t
+
+gsdl.ags.coercionitem.expr.t.in	.tycoercion
+gsdl.ags.coercionitem.expr.t	.tygvar
+	.tydefinition	gsdl.ags.coercionitem.expr.t
 
 gsdl.ags.coercionitem.expr.t.out	.tycoercion
 gsdl.ags.coercionitem.expr.t	.tygvar
