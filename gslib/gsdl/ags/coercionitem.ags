@@ -384,10 +384,22 @@ e	.larg	gsdl.ags.coercionitem.expr.t
 
 _gsdl.ags.coercionitem.expr.print_k	.forcecont
 gsdl.ags.coercionitem.expr.prim.u	.tygvar
-diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+gsdl.sourcepos.t	.tygvar
+gsdl.ags.coercionitem.expr.t	.tygvar
+rune.t	.tygvar
+diff.list.<>	.gvar
+gsdl.ags.sourcepos.print	.gvar
+gsdl.ags.coercionitem.expr.print	.gvar
 e0	.karg	gsdl.ags.coercionitem.expr.prim.u
-	.undef	diff.list.t	rune.t
+	.analyze	e0	pos
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+e1		.fkarg	1	gsdl.ags.coercionitem.expr.t
+pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
+e1.s			.apply	gsdl.ags.coercionitem.expr.print	|	e1
+			.app	pos.s	e1.s
+			.enter	diff.list.<>	rune.t
+	# > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.coercionitem.t} Constructors
 
