@@ -521,12 +521,13 @@ _gsac.gscoercion.compile_res.ty	.tygvar
 _gsac.gscoercion.compileToGlobalVar_k	.subcode
 either.t.out	.cogvar
 gsac.gscoercion.compile	.gvar
+ordered.set.empty	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 v	.larg	gsdl.var.t
 co	.larg	gsdl.cgs.gscoercion.t
 em	.larg	ordered.set.t	gsdl.var.t	# Ignored
-empty	.undefined	ordered.set.t	gsdl.var.t
+empty	.apply	ordered.set.empty	gsdl.var.t
 	.force	_gsac.gscoercion.compileToGlobalVar_k
 	.coerce	either.t.out	string.t	_gsac.gscoercion.compile_res.ty
 	.app	pos	env	co	empty
