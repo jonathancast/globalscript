@@ -531,6 +531,8 @@ _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.coercionitem.decls.t	.tygvar
 either.t	.tygvar	# Temp
+list.t	.tygvar	# Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
 either.right	.gvar
 diff.list.:	.gvar
 gsdl.ags.coercionitem.tycoercion	.gvar
@@ -543,7 +545,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 		.case	right
 r		.fkarg	0	_gsac.gscoercion.compile_res.ty
-ds			.lrecord	|	gsdl.ags.coercionitem.decls.t
+tygvs			.undefined	list.t	gsdl.ags.typeitem.decls.tygvar.t
+ds			.lrecord	tygvars	tygvs	|	gsdl.ags.coercionitem.decls.t
 r.res			.lfield	res	r
 co			.apply	gsdl.ags.coercionitem.tycoercion	|	pos	v	ds	r.res
 r.cos			.lfield	coercionitems	r

@@ -404,7 +404,10 @@ gsdl.ags.coercionitem.decls.prim.u	.tygvar
 	.tyref	gsdl.ags.coercionitem.decls.prim.u
 
 gsdl.ags.coercionitem.decls.prim.u	.tyexpr
-	.typroduct
+list.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+list.tygvar.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tygvar.t
+	.typroduct	tygvars	list.tygvar.ty
 
 # §subsection §gs{gsdl.ags.coercionitem.decls.tylambda.t}
 
