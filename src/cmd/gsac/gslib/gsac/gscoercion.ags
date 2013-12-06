@@ -368,22 +368,26 @@ _gsac.gscoercion.compile_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 _gsac.gscoercion.compile_k	.subcode
 gsdl.cgs.gscoercion.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 co	.larg	gsdl.cgs.gscoercion.t
+em	.larg	ordered.set.t	gsdl.var.t
 	.force	_gsac.gscoercion.compile_k
 	.coerce	gsdl.cgs.gscoercion.t.out
 	.enter	co
 
 _gsac.gscoercion.compile_k	.forcecont
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
-gsdl.var.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 gsdl.ags.typeitem.t	.tygvar
@@ -402,6 +406,7 @@ diff.list.nil	.gvar
 gsac.gscoercion.compile	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
+em	.fv	ordered.set.t	gsdl.var.t
 co0	.karg	gsdl.cgs.gscoercion.prim.u
 	.analyze	co0	appty	defn	pos
 		.case	appty
@@ -424,7 +429,7 @@ pos1		.fkarg	0	gsdl.sourcepos.t
 co1		.fkarg	1	gsdl.cgs.gscoercion.t
 			.force	_gsac.gscoercion.compile_pos_k
 			.coerce	either.t.out	string.t	_gsac.gscoercion.compile_res.ty
-			.app	pos1	env	co1
+			.app	pos1	env	co1	em
 			.enter	gsac.gscoercion.compile
 	# > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
 
@@ -510,6 +515,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
+ordered.set.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 _gsac.gscoercion.compileToGlobalVar_k	.subcode
@@ -519,9 +525,11 @@ pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 v	.larg	gsdl.var.t
 co	.larg	gsdl.cgs.gscoercion.t
+em	.larg	ordered.set.t	gsdl.var.t	# Ignored
+empty	.undefined	ordered.set.t	gsdl.var.t
 	.force	_gsac.gscoercion.compileToGlobalVar_k
 	.coerce	either.t.out	string.t	_gsac.gscoercion.compile_res.ty
-	.app	pos	env	co
+	.app	pos	env	co	empty
 	.enter	gsac.gscoercion.compile
 
 _gsac.gscoercion.compileToGlobalVar_k	.forcecont
@@ -612,11 +620,15 @@ _gsac.gscoercion.annotate_res.ty	.tygvar
 # §section §gs{gsac.gscoercion.compile.m}
 
 gsac.gscoercion.compile.m	.tyexpr
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile.m_res.ty	.tygvar
 α	.tylambda	*
 res.ty	.tylet	_gsac.gscoercion.compile.m_res.ty	α
+	.tylift
+	.tyfun	ordered.set.t	gsdl.var.t	# §gs{emitted} --- the set of free variables already accounted for
 	.tyref	either.t	string.t	res.ty
 
 _gsac.gscoercion.compile.m_res.ty	.tyexpr
