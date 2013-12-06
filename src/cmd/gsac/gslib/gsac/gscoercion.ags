@@ -381,9 +381,10 @@ em	.larg	ordered.set.t	gsdl.var.t
 	.enter	co
 
 _gsac.gscoercion.compile_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -391,12 +392,11 @@ _gsac.gscoercion.compile_res.ty	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
 gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
+_gsac.gscoercion.compile_defn_tygvs_c	.subcode
 _gsac.gscoercion.compile_pos_k	.subcode
 either.t.out	.cogvar
 _gsac.gscoercion.compileAppTy_app	.gvar
@@ -419,7 +419,7 @@ tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
 tyc		.fkarg	0	gsdl.var.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 r			.undefined	gsdl.ags.coercionitem.expr.t
-tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tygvs			.alloc	_gsac.gscoercion.compile_defn_tygvs_c
 ts			.apply	diff.list.nil	gsdl.ags.typeitem.t
 res			.lrecord	coercionitems	cos	res	r	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
 			.app	res
@@ -432,6 +432,88 @@ co1		.fkarg	1	gsdl.cgs.gscoercion.t
 			.app	pos1	env	co1	em
 			.enter	gsac.gscoercion.compile
 	# > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
+
+_gsac.gscoercion.compile_defn_tygvs_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+_gsac.gscoercion.compile_defn_tygvs_k	.subcode
+bool.t.out	.cogvar
+ordered.set.elem	.gvar
+gsdl.var.compare	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+em	.fv	ordered.set.t	gsdl.var.t
+tyc	.fv	gsdl.var.t
+	.force	_gsac.gscoercion.compile_defn_tygvs_k
+	.coerce	bool.t.out
+	.app	gsdl.var.compare	tyc	em
+	.enter	ordered.set.elem	gsdl.var.t
+
+_gsac.gscoercion.compile_defn_tygvs_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+bool.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+diff.list.t	.tygvar	# Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
+_gsac.gscoercion.compile_defn_tygvs_false_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.gskind.get	.gvar
+tyc	.fv	gsdl.var.t
+env	.fv	gsdl.cgs.typeenv.t
+b0	.karg	bool.prim.u	# Has §gs{tyc} been emitted yet?
+	.analyze	b0	false	true
+		.case	false
+			.force	_gsac.gscoercion.compile_defn_tygvs_false_k
+			.coerce	maybe.t.out	gsdl.cgs.gskind.t
+			.app	tyc	env
+			.enter	gsdl.cgs.typeenv.gskind.get
+		.case	true
+			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+
+_gsac.gscoercion.compile_defn_tygvs_false_k	.forcecont
+gsdl.var.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+diff.list.t	.tygvar	# Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
+_gsac.gscoercion.compile_defn_tygvs_false_just_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.gskind.compile	.gvar
+tyc	.fv	gsdl.var.t
+mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
+	.analyze	mb0	just	nothing
+		.case	just
+ki		.fkarg	0	gsdl.cgs.gskind.t
+			.force	_gsac.gscoercion.compile_defn_tygvs_false_just_k
+			.coerce	either.t.out	string.t	gsdl.ags.typeitem.gskind.t
+			.app	ki
+			.enter	gsac.gstype.gskind.compile
+		.case	nothing
+			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+
+_gsac.gscoercion.compile_defn_tygvs_false_just_k	.forcecont
+gsdl.var.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+diff.list.t	.tygvar	# Temp
+diff.list.singleton	.gvar
+gsdl.ags.typeitem.decls.tygvar.tyextabstype	.gvar
+tyc	.fv	gsdl.var.t
+e0	.karg	either.prim.u	string.t	gsdl.ags.typeitem.gskind.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+		.case	right
+ki.ags		.fkarg	0	gsdl.ags.typeitem.gskind.t
+gv			.apply	gsdl.ags.typeitem.decls.tygvar.tyextabstype	|	tyc	ki.ags
+			.app	gv
+			.enter	diff.list.singleton	gsdl.ags.typeitem.decls.tygvar.t
 
 _gsac.gscoercion.compile_pos_k	.forcecont
 either.prim.u	.tygvar
