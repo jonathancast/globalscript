@@ -137,6 +137,7 @@ diff.list.prepend	.gvar
 gsdl.ags.syntax.var.print	.gvar
 _gsdl.ags.coercionitem.print_tycoercion_tycoercion.s	.gvar
 gsdl.ags.coercionitem.decls.print	.gvar
+gsdl.ags.coercionitem.expr.print	.gvar
 co0	.karg	gsdl.ags.coercionitem.prim.u
 	.analyze	co0	tycoercion
 		.case	tycoercion
@@ -147,8 +148,8 @@ e		.fkarg	3	gsdl.ags.coercionitem.expr.t
 pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
 v.s			.apply	gsdl.ags.syntax.var.print	|	v
 ds.s			.apply	gsdl.ags.coercionitem.decls.print	|	ds
-s4			.undefined	diff.list.t	rune.t
-s3			.apply	diff.list.<>	rune.t	|	ds.s	s4
+e.s			.apply	gsdl.ags.coercionitem.expr.print	|	e
+s3			.apply	diff.list.<>	rune.t	|	ds.s	e.s
 s2			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.coercionitem.print_tycoercion_tycoercion.s	s3
 s1			.apply	diff.list.prepend	rune.t	|	v.s	s2
 			.app	pos.s	s1
