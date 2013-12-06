@@ -392,6 +392,7 @@ either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
 gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
+_gsac.gscoercion.compile_pos_k	.subcode
 either.t.out	.cogvar
 _gsac.gscoercion.compileAppTy_app	.gvar
 list.singleton	.gvar
@@ -419,9 +420,19 @@ res			.lrecord	coercionitems	cos	res	r	typeitems	ts	|	_gsac.gscoercion.compile_r
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 co1		.fkarg	1	gsdl.cgs.gscoercion.t
-			.app	pos1	env	co1	# Nope!
+			.force	_gsac.gscoercion.compile_pos_k
+			.coerce	either.t.out	string.t	_gsac.gscoercion.compile_res.ty
+			.app	pos1	env	co1
 			.enter	gsac.gscoercion.compile
 	# > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
+
+_gsac.gscoercion.compile_pos_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gscoercion.compile_res.ty	.tygvar
+either.t	.tygvar	# Temp
+eo0	.karg	either.prim.u	string.t	_gsac.gscoercion.compile_res.ty
+			.undef	either.t	string.t	_gsac.gscoercion.compile_res.ty
 
 # §section §gs{gsac.gscoercion.compileAppTy}
 
