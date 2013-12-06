@@ -18,6 +18,8 @@ gsdl.ags.coercionitem.decls.parser	.closure	_gsdl.ags.coercionitem.decls.parser_
 _gsdl.ags.coercionitem.decls.parser_tygvars.p_tygvar.re	.regex	.tygvar
 _gsdl.ags.coercionitem.decls.parser_tylambdas.p_tylambda.re	.regex	.tylambda
 
+gsdl.ags.coercionitem.decls.print	.closure	_gsdl.ags.coercionitem.decls.print_c
+
 gsdl.ags.coercionitem.expr.parser	.closure	_gsdl.ags.coercionitem.expr.parser_c	_gsdl.ags.coercionitem.expr.parser_ty
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re	.regex	.tydefinition
 _gsdl.ags.coercionitem.expr.parser_tyinvert.p_tyinvert.re	.regex	.tyinvert
@@ -231,6 +233,22 @@ pos	.larg	parser.pos.t
 nm	.larg	string.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
 	.undef	gsdl.ags.coercionitem.decls.tylambda.t
+
+# §section §gs{gsdl.ags.coercionitem.decls.print}
+
+_gsdl.ags.coercionitem.decls.print_c	.expr
+gsdl.ags.coercionitem.decls.t	.tygvar
+_gsdl.ags.coercionitem.decls.print_k	.subcode
+ds	.larg	gsdl.ags.coercionitem.decls.t
+	.force	_gsdl.ags.coercionitem.decls.print_k
+	.enter	ds
+
+_gsdl.ags.coercionitem.decls.print_k	.forcecont
+gsdl.ags.coercionitem.decls.prim.u	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+ds0	.karg	gsdl.ags.coercionitem.decls.prim.u
+	.undef	diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.coercionitem.expr.parser}
 
