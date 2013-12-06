@@ -21,6 +21,8 @@ _gsdl.ags.file.print.typeitems	.closure	_gsdl.ags.file.print.typeitems_c	_gsdl.a
 
 _gsdl.ags.file.print.coercionsection	.closure	_gsdl.ags.file.print.coercionsection_c
 
+_gsdl.ags.file_print.coercionitems	.closure	_gsdl.ags.file_print.coercionitems_c	_gsdl.ags.file_print.coercionitems_ty
+
 gsdl.ags.file.parser	.closure	_gsdl.ags.file.parser_c
 
 gsdl.ags.file.fmtgs	.closure	_gsdl.ags.file.fmtgs_c
@@ -301,6 +303,15 @@ cos1		.fkarg	1	list.t	gsdl.ags.coercionitem.t
 		.case	nil
 			.enter	list.nil	rune.t
 
+_gsdl.ags.file_print.coercionitems_c	.expr
+gsdl.ags.file.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+rune.t	.tygvar	# Temp
+file0	.arg	gsdl.ags.file.prim.u
+cos	.arg	list.t	gsdl.ags.coercionitem.t
+	.undef	list.t	rune.t
+
 # §section §gs{gsdl.ags.file.parser}
 
 _gsdl.ags.file.parser_c	.expr
@@ -565,6 +576,15 @@ string.t	.tygvar
 	.tyfun	gsdl.ags.file.prim.u
 	.tyfun	list.t	gsdl.ags.typeitem.t
 	.tyref	string.t
+
+_gsdl.ags.file_print.coercionitems_ty	.tyexpr
+gsdl.ags.file.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+rune.t	.tygvar
+	.tyfun	gsdl.ags.file.prim.u
+	.tyfun	list.t	gsdl.ags.coercionitem.t
+	.tyref	list.t	rune.t
 
 	.coercion
 
