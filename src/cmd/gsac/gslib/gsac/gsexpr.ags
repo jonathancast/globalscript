@@ -293,6 +293,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	right
 so.r		.fkarg	0	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
+so.r.cos			.lfield	coercionitems	so.r
 so.r.var			.lfield	res	so.r
 so.ds			.lfield	dataitems	so.r
 so.r.ts			.lfield	typeitems	so.r
@@ -310,6 +311,7 @@ gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
 diff.list.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 either.prim.u	.tygvar
@@ -317,12 +319,12 @@ string.t	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.ags.dataitem.cast	.gvar
 diff.list.<>	.gvar
 pos	.fv	gsdl.sourcepos.t
 mbv	.fv	maybe.t	gsdl.var.t
+so.r.cos	.fv	diff.list.t	gsdl.ags.coercionitem.t
 so.r.var	.fv	gsdl.var.t
 so.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
 so.r.ts	.fv	diff.list.t	gsdl.ags.typeitem.t
@@ -333,7 +335,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	right
 co.r		.fkarg	0	_gsac.gscoercion.compileToGlobalVar_res.ty
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+co.r.cos			.lfield	coercionitems	co.r
+cos			.apply	diff.list.<>	gsdl.ags.coercionitem.t	|	so.r.cos	co.r.cos
 co.r.var			.lfield	res	co.r
 di			.apply	gsdl.ags.dataitem.cast	|	pos	mbv	so.r.var	co.r.var
 co.r.ts			.lfield	typeitems	co.r
