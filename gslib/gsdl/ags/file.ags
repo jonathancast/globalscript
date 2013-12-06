@@ -306,9 +306,7 @@ cos0	.karg	list.prim.u	gsdl.ags.coercionitem.t
 		.case	:
 co0		.fkarg	0	gsdl.ags.coercionitem.t
 cos1		.fkarg	1	list.t	gsdl.ags.coercionitem.t
-cos0.l			.lifted	cos0
-cos0.cl			.cast	cos0.l	list.t.in	gsdl.ags.coercionitem.t
-cos.s			.apply	_gsdl.ags.file_print.coercionitems	|	file0	cos0.cl
+cos.s			.apply	_gsdl.ags.file_print.coercionitems	|	file0	co0	cos1
 			.app	_gsdl.ags.file.print.coercionsection_:_tycoercion.s	cos.s
 			.enter	list.<>	rune.t
 		.case	nil
@@ -316,10 +314,11 @@ cos.s			.apply	_gsdl.ags.file_print.coercionitems	|	file0	cos0.cl
 
 _gsdl.ags.file_print.coercionitems_c	.expr
 gsdl.ags.file.prim.u	.tygvar
-list.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
+list.t	.tygvar
 rune.t	.tygvar	# Temp
 file0	.arg	gsdl.ags.file.prim.u
+co0	.arg	gsdl.ags.coercionitem.t
 cos	.arg	list.t	gsdl.ags.coercionitem.t
 	.undef	list.t	rune.t
 
@@ -590,10 +589,11 @@ string.t	.tygvar
 
 _gsdl.ags.file_print.coercionitems_ty	.tyexpr
 gsdl.ags.file.prim.u	.tygvar
-list.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
+list.t	.tygvar
 rune.t	.tygvar
 	.tyfun	gsdl.ags.file.prim.u
+	.tyfun	gsdl.ags.coercionitem.t
 	.tyfun	list.t	gsdl.ags.coercionitem.t
 	.tyref	list.t	rune.t
 
