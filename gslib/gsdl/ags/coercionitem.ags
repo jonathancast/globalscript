@@ -22,6 +22,8 @@ gsdl.ags.coercionitem.expr.parser	.closure	_gsdl.ags.coercionitem.expr.parser_c	
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re	.regex	.tydefinition
 _gsdl.ags.coercionitem.expr.parser_tyinvert.p_tyinvert.re	.regex	.tyinvert
 
+gsdl.ags.coercionitem.tycoercion	.closure	_gsdl.ags.coercionitem.tycoercion_c
+
 	.code
 
 # §section §gs{gsdl.ags.coercionitem.segment.parser}
@@ -312,6 +314,24 @@ pos	.larg	parser.pos.t
 e	.larg	gsdl.ags.coercionitem.expr.t
 	.undef	gsdl.ags.coercionitem.expr.t
 
+# §section §gs{gsdl.ags.coercionitem.t} Constructors
+
+_gsdl.ags.coercionitem.tycoercion_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.coercionitem.decls.t	.tygvar
+gsdl.ags.coercionitem.expr.t	.tygvar
+gsdl.ags.coercionitem.prim.u	.tygvar
+gsdl.ags.coercionitem.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+v	.larg	gsdl.var.t
+ds	.larg	gsdl.ags.coercionitem.decls.t
+e	.larg	gsdl.ags.coercionitem.expr.t
+res	.constr	gsdl.ags.coercionitem.prim.u	tycoercion	0	pos	1	v	2	ds	3	e
+	.coerce	gsdl.ags.coercionitem.t.in
+	.lift
+	.yield	res
+
 	.type
 
 # §section §gs{gsdl.ags.coercionitem.t}
@@ -322,7 +342,15 @@ gsdl.ags.coercionitem.prim.u	.tygvar
 	.tyref	gsdl.ags.coercionitem.prim.u
 
 gsdl.ags.coercionitem.prim.u	.tyexpr
-	.tysum
+_gsdl.ags.coercionitem.prim.u_tycoercion_ty	.tygvar
+	.tysum	tycoercion	_gsdl.ags.coercionitem.prim.u_tycoercion_ty
+
+_gsdl.ags.coercionitem.prim.u_tycoercion_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.coercionitem.decls.t	.tygvar
+gsdl.ags.coercionitem.expr.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.ags.coercionitem.decls.t	3	gsdl.ags.coercionitem.expr.t
 
 # §section §gs{gsdl.ags.coercionitem.decls.t}
 
@@ -363,6 +391,10 @@ gsdl.ags.coercionitem.expr.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.ags.coercionitem.expr.t
 
 	.coercion
+
+gsdl.ags.coercionitem.t.in	.tycoercion
+gsdl.ags.coercionitem.t	.tygvar
+	.tydefinition	gsdl.ags.coercionitem.t
 
 gsdl.ags.coercionitem.t.out	.tycoercion
 gsdl.ags.coercionitem.t	.tygvar
