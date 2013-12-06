@@ -391,6 +391,7 @@ gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
+gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
 either.t.out	.cogvar
 _gsac.gscoercion.compileAppTy_app	.gvar
 list.singleton	.gvar
@@ -410,7 +411,7 @@ tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
-r			.undefined	gsdl.ags.coercionitem.t
+r			.undefined	gsdl.ags.coercionitem.expr.t
 ts			.apply	diff.list.nil	gsdl.ags.typeitem.t
 res			.lrecord	coercionitems	cos	res	r	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
 			.app	res
@@ -418,7 +419,7 @@ res			.lrecord	coercionitems	cos	res	r	typeitems	ts	|	_gsac.gscoercion.compile_r
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 co1		.fkarg	1	gsdl.cgs.gscoercion.t
-			.app	pos1	env	co1
+			.app	pos1	env	co1	# Nope!
 			.enter	gsac.gscoercion.compile
 	# > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
 
@@ -512,9 +513,9 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 		.case	right
 r		.fkarg	0	_gsac.gscoercion.compile_res.ty
-r.res			.lfield	res	r
+co			.undefined	gsdl.ags.coercionitem.t
 r.cos			.lfield	coercionitems	r
-cos			.apply	diff.list.:	gsdl.ags.coercionitem.t	|	r.res	r.cos
+cos			.apply	diff.list.:	gsdl.ags.coercionitem.t	|	co	r.cos
 ts			.lfield	typeitems	r
 res			.lrecord	coercionitems	cos	res	v	typeitems	ts	|	_gsac.gscoercion.compileToGlobalVar_res.ty
 			.app	res
@@ -598,19 +599,19 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsac.gscoercion.compile.m	.tygvar
-gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.coercionitem.expr.t	.tygvar
 	.tylift
 	.tyfun	gsdl.sourcepos.t
 	.tylift
 	.tyfun	gsdl.cgs.typeenv.t
 	.tylift
 	.tyfun	gsdl.cgs.gscoercion.t
-	.tyref	gsac.gscoercion.compile.m	gsdl.ags.coercionitem.t
+	.tyref	gsac.gscoercion.compile.m	gsdl.ags.coercionitem.expr.t
 
 _gsac.gscoercion.compile_res.ty	.tyexpr
 _gsac.gscoercion.compile.m_res.ty	.tygvar
-gsdl.ags.coercionitem.t	.tygvar
-	.tyref	_gsac.gscoercion.compile.m_res.ty	gsdl.ags.coercionitem.t
+gsdl.ags.coercionitem.expr.t	.tygvar
+	.tyref	_gsac.gscoercion.compile.m_res.ty	gsdl.ags.coercionitem.expr.t
 
 # §section §gs{gsac.gscoercion.compileAppTy}
 
