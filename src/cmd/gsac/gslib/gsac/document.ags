@@ -137,7 +137,8 @@ err		.fkarg	0	string.t
 		.case	right
 r		.fkarg	0	_gsac.gsexpr.compileToDataItem_res.ty
 cs			.undefined	list.t	gsdl.ags.codeitem.t
-cos			.undefined	list.t	gsdl.ags.coercionitem.t
+r.cos			.lfield	coercionitems	r
+cos			.apply	diff.list.tolist	gsdl.ags.coercionitem.t	|	r.cos
 r.res			.lfield	res	r
 r.ds			.lfield	dataitems	r
 ds1			.apply	diff.list.tolist	gsdl.ags.dataitem.t	|	r.ds
