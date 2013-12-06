@@ -403,12 +403,12 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 _gsac.gsexpr.cast.source.compileToGlobalVar_res.ty	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
 either.right	.gvar
+diff.list.nil	.gvar
 diff.list.singleton	.gvar
 gsdl.ags.dataitem.undefined	.gvar
 maybe.just	.gvar
@@ -421,7 +421,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ty.r.v			.lfield	nm	ty.r
 just.x			.apply	maybe.just	gsdl.var.t	|	x
 di			.apply	gsdl.ags.dataitem.undefined	|	pos1	just.x	ty.r.v
