@@ -516,14 +516,16 @@ gv			.apply	gsdl.ags.typeitem.decls.tygvar.tyextabstype	|	tyc	ki.ags
 			.enter	diff.list.singleton	gsdl.ags.typeitem.decls.tygvar.t
 
 _gsac.gscoercion.compile_pos_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
-gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
 either.right	.gvar
+gsdl.ags.coercionitem.expr.pos	.gvar
+pos1	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.compile_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -532,7 +534,8 @@ err		.fkarg	0	string.t
 		.case	right
 r		.fkarg	0	_gsac.gscoercion.compile_res.ty
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
-e			.undefined	gsdl.ags.coercionitem.expr.t
+r.e			.lfield	res	r
+e			.apply	gsdl.ags.coercionitem.expr.pos	|	pos1	r.e
 tygvs			.lfield	tygvars	r
 ts			.lfield	typeitems	r
 res			.lrecord	coercionitems	cos	res	e	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
