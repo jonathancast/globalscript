@@ -389,6 +389,7 @@ _gsac.gscoercion.compile_res.ty	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
+diff.list.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
 either.t.out	.cogvar
 _gsac.gscoercion.compileAppTy_app	.gvar
@@ -408,9 +409,10 @@ tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
 			.enter	_gsac.gscoercion.compileAppTy_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
+cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 r			.undefined	gsdl.ags.coercionitem.t
 ts			.apply	diff.list.nil	gsdl.ags.typeitem.t
-res			.lrecord	res	r	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
+res			.lrecord	coercionitems	cos	res	r	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compile_res.ty
 		.case	pos
@@ -499,6 +501,8 @@ string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 either.t	.tygvar	# Temp
+diff.list.t	.tygvar	# Temp
+gsdl.ags.coercionitem.t	.tygvar	# Temp
 either.right	.gvar
 v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.compile_res.ty
@@ -508,8 +512,9 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 		.case	right
 r		.fkarg	0	_gsac.gscoercion.compile_res.ty
+cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ts			.lfield	typeitems	r
-res			.lrecord	res	v	typeitems	ts	|	_gsac.gscoercion.compileToGlobalVar_res.ty
+res			.lrecord	coercionitems	cos	res	v	typeitems	ts	|	_gsac.gscoercion.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 
@@ -577,10 +582,12 @@ _gsac.gscoercion.compile.m_res.u	.tygvar
 
 _gsac.gscoercion.compile.m_res.u	.tyexpr
 diff.list.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 α	.tylambda	*
+diff.list.coercionitem.ty	.tylet	diff.list.t	gsdl.ags.coercionitem.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
-	.typroduct	res	α	typeitems	diff.list.typeitem.ty
+	.typroduct	coercionitems	diff.list.coercionitem.ty	res	α	typeitems	diff.list.typeitem.ty
 
 # §section §gs{gsac.gscoercion.compile}
 
