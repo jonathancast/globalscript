@@ -455,3 +455,8 @@ gsdl.ags.coercionitem.t.out	.tycoercion
 gsdl.ags.coercionitem.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.ags.coercionitem.t
+
+gsdl.ags.coercionitem.expr.t.out	.tycoercion
+gsdl.ags.coercionitem.expr.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.coercionitem.expr.t
