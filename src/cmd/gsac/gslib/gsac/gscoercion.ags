@@ -500,10 +500,10 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
 either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
 either.right	.gvar
+diff.list.:	.gvar
 v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.compile_res.ty
 	.analyze	e0	left	right
@@ -512,7 +512,9 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 		.case	right
 r		.fkarg	0	_gsac.gscoercion.compile_res.ty
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+r.res			.lfield	res	r
+r.cos			.lfield	coercionitems	r
+cos			.apply	diff.list.:	gsdl.ags.coercionitem.t	|	r.res	r.cos
 ts			.lfield	typeitems	r
 res			.lrecord	coercionitems	cos	res	v	typeitems	ts	|	_gsac.gscoercion.compileToGlobalVar_res.ty
 			.app	res
