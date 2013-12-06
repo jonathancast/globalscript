@@ -271,10 +271,18 @@ ds	.larg	gsdl.ags.coercionitem.decls.t
 
 _gsdl.ags.coercionitem.decls.print_k	.forcecont
 gsdl.ags.coercionitem.decls.prim.u	.tygvar
-diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+rune.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+diff.list.t	.tygvar
+diff.list.concat	.gvar
+list.map	.gvar
+gsdl.ags.typeitem.decls.tygvar.print	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
 ds0	.karg	gsdl.ags.coercionitem.decls.prim.u
-	.undef	diff.list.t	rune.t
+tygvs	.field	tygvars	ds0
+tygvs.ss	.apply	list.map	gsdl.ags.typeitem.decls.tygvar.t	diff.list.rune.ty	|	gsdl.ags.typeitem.decls.tygvar.print	tygvs
+	.app	tygvs.ss
+	.enter	diff.list.concat	rune.t
 
 # §section §gs{gsdl.ags.coercionitem.expr.parser}
 
