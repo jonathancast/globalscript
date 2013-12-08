@@ -2074,6 +2074,7 @@ err		.fkarg	0	string.t
 ry0		.fkarg	0	_gsac.gstype.compile.m_res.ty	β
 ry0.em			.lfield	emitted	ry0
 ry0.svs			.lfield	subvars	ry0
+ry0.tygvs			.lfield	tygvars	ry0
 ry0.ts			.lfield	typeitems	ry0
 			.force	_gsac.gstype.compile.mapM_:_right_k
 			.coerce	either.t.out	string.t	compile.m.res.list.β
@@ -2082,6 +2083,7 @@ ry0.ts			.lfield	typeitems	ry0
 
 _gsac.gstype.compile.mapM_:_right_k	.forcecont
 diff.list.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -2090,12 +2092,12 @@ list.t	.tygvar
 either.t	.tygvar	# Temp
 ordered.set.t	.tygvar	# Temp
 gsdl.var.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
 either.right	.gvar
 diff.list.<>	.gvar
 β	.tyfv	*
 list.β	.tylet	list.t	β
 compile.m.res.list.β	.tylet	_gsac.gstype.compile.m_res.ty	list.β
+ry0.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 ry0.ts	.fv	diff.list.t	gsdl.ags.typeitem.t
 e0	.karg	either.prim.u	string.t	compile.m.res.list.β
 	.analyze	e0	left	right
@@ -2108,7 +2110,8 @@ em			.undefined	ordered.set.t	gsdl.var.t
 ys1			.undefined	list.t	β
 svs			.undefined	list.t	gsdl.var.t
 tyfvs			.undefined	diff.list.t	gsdl.var.t
-tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+rys0.tygvs			.lfield	tygvars	rys0
+tygvs			.apply	diff.list.<>	gsdl.ags.typeitem.decls.tygvar.t	|	ry0.tygvs	rys0.tygvs
 rys0.ts			.lfield	typeitems	rys0
 ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	ry0.ts	rys0.ts
 rys1			.lrecord	emitted	em	res	ys1	subvars	svs	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile.m_res.ty	list.β
