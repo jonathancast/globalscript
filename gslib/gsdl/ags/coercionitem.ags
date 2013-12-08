@@ -26,7 +26,7 @@ _gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re	.regex	.tydefi
 _gsdl.ags.coercionitem.expr.parser_tyinvert.p_tyinvert.re	.regex	.tyinvert
 
 gsdl.ags.coercionitem.expr.print	.closure	_gsdl.ags.coercionitem.expr.print_c	_gsdl.ags.coercionitem.expr.print_ty
-_gsdl.ags.coercionitem.expr.print_defn_tydefn.s	.string	\t.tydefn
+_gsdl.ags.coercionitem.expr.print_defn_tydefn.s	.string	\t.tydefinition
 
 gsdl.ags.coercionitem.tycoercion	.closure	_gsdl.ags.coercionitem.tycoercion_c
 
