@@ -377,7 +377,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gscoercion.annotate_res.ty
-co1			.undefined	gsdl.cgs.gscoercion.t
+co1			.lfield	coercion	r0
 r0.ty			.lfield	gstype	r0
 ty			.apply	gsdl.cgs.gscoercion.gstype.forall	|	a0.v	a0.ki	r0.ty
 r1			.lrecord	coercion	co1	gstype	ty	|	_gsac.gscoercion.annotate_res.ty
