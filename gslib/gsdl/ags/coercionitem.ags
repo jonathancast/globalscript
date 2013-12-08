@@ -26,6 +26,7 @@ _gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re	.regex	.tydefi
 _gsdl.ags.coercionitem.expr.parser_tyinvert.p_tyinvert.re	.regex	.tyinvert
 
 gsdl.ags.coercionitem.expr.print	.closure	_gsdl.ags.coercionitem.expr.print_c	_gsdl.ags.coercionitem.expr.print_ty
+_gsdl.ags.coercionitem.expr.print_defn_tydefn.s	.string	\t.tydefn
 
 gsdl.ags.coercionitem.tycoercion	.closure	_gsdl.ags.coercionitem.tycoercion_c
 
@@ -387,19 +388,39 @@ _gsdl.ags.coercionitem.expr.print_k	.forcecont
 gsdl.ags.coercionitem.expr.prim.u	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
-rune.t	.tygvar
-diff.list.t	.tygvar	# Temp
+_gsdl.ags.coercionitem.expr.print_defn_tyas.ss.f_c	.subcode
+diff.list.prepend	.gvar
+_gsdl.ags.coercionitem.expr.print_defn_tydefn.s	.gvar
+diff.list.:	.gvar
+rune.tab	.gvar
+gsdl.ags.syntax.var.print	.gvar
 diff.list.<>	.gvar
+diff.list.concat	.gvar
+list.map	.gvar
+diff.list.singleton	.gvar
+rune.new.line	.gvar
 gsdl.ags.sourcepos.print	.gvar
 gsdl.ags.coercionitem.expr.print	.gvar
+diff.list.ty	.tylet	diff.list.t	rune.t
 e0	.karg	gsdl.ags.coercionitem.expr.prim.u
 	.analyze	e0	defn	pos
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
 tyas		.fkarg	1	list.t	gsdl.var.t
-			.undef	diff.list.t	rune.t
+tyc.s			.apply	gsdl.ags.syntax.var.print	|	tyc
+tyas.ss.f			.alloc	_gsdl.ags.coercionitem.expr.print_defn_tyas.ss.f_c
+tyas.ss			.apply	list.map	gsdl.var.t	diff.list.ty	|	tyas.ss.f	tyas
+tyas.s			.apply	diff.list.concat	rune.t	|	tyas.ss
+s4			.apply	diff.list.singleton	rune.t	|	rune.new.line
+s3			.apply	diff.list.<>	rune.t	|	tyas.s	s4
+s2			.apply	diff.list.prepend	rune.t	|	tyc.s	s3
+s1			.apply	diff.list.:	rune.t	|	rune.tab	s2
+			.app	_gsdl.ags.coercionitem.expr.print_defn_tydefn.s	s1
+			.enter	diff.list.prepend	rune.t
 		.case	pos
 pos		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.ags.coercionitem.expr.t
@@ -408,6 +429,13 @@ e1.s			.apply	gsdl.ags.coercionitem.expr.print	|	e1
 			.app	pos.s	e1.s
 			.enter	diff.list.<>	rune.t
 	# > :: diff.list.t	rune.t
+
+_gsdl.ags.coercionitem.expr.print_defn_tyas.ss.f_c	.expr
+gsdl.var.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+tya	.larg	gsdl.var.t
+	.undef	diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.coercionitem.t} Constructors
 
