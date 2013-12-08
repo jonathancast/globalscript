@@ -659,6 +659,7 @@ gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
 _gsac.gscoercion.compileAppTy_app_defn_right_tygvs_c	.subcode
 either.right	.gvar
+gsdl.ags.coercionitem.expr.defn	.gvar
 list.var.ty	.tylet	list.t	gsdl.var.t
 gstype.compile.res.list.var.ty	.tylet	_gsac.gstype.compile.m_res.ty	list.var.ty
 env	.fv	gsdl.cgs.typeenv.t
@@ -672,7 +673,8 @@ err		.fkarg	0	string.t
 		.case	right
 tyas.r		.fkarg	0	_gsac.gstype.compile.m_res.ty	list.var.ty
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
-r			.undefined	gsdl.ags.coercionitem.expr.t
+tyas.r.res			.lfield	res	tyas.r
+r			.apply	gsdl.ags.coercionitem.expr.defn	|	tyc	tyas.r.res
 tyas.r.tygvs			.lfield	tygvars	tyas.r
 tygvs			.alloc	_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_c
 ts			.lfield	typeitems	tyas.r
