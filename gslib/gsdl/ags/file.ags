@@ -317,16 +317,35 @@ gsdl.ags.file.prim.u	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
+_gsdl.ags.file_print.coercionitems_s1_c	.subcode
 list.:	.gvar
 rune.new.line	.gvar
 gsdl.ags.coercionitem.print	.gvar
 file0	.arg	gsdl.ags.file.prim.u
 co0	.arg	gsdl.ags.coercionitem.t
 cos	.arg	list.t	gsdl.ags.coercionitem.t
-s1	.undefined	list.t	rune.t
+s1	.alloc	_gsdl.ags.file_print.coercionitems_s1_c
 s0	.apply	gsdl.ags.coercionitem.print	|	co0	s1
 	.app	rune.new.line	s0
 	.enter	list.:	rune.t
+
+_gsdl.ags.file_print.coercionitems_s1_c	.expr
+list.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+_gsdl.ags.file_print.coercionitems_s1_k	.subcode
+list.t.out	.cogvar
+cos	.fv	list.t	gsdl.ags.coercionitem.t
+	.force	_gsdl.ags.file_print.coercionitems_s1_k
+	.coerce	list.t.out	gsdl.ags.coercionitem.t
+	.enter	cos
+
+_gsdl.ags.file_print.coercionitems_s1_k	.forcecont
+list.prim.u	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+cos0	.karg	list.prim.u	gsdl.ags.coercionitem.t
+	.undef	list.t	rune.t
 
 # §section §gs{gsdl.ags.file.parser}
 
