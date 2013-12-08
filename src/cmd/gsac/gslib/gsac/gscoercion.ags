@@ -630,9 +630,10 @@ tyas1			.apply	list.:	gsdl.cgs.gstype.t	|	tyx	tyas
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
 compileToVar			.apply	gsac.gstype.compileToVar	|	pos	env
+em.ty1			.undefined	ordered.set.t	gsdl.var.t
 			.force	_gsac.gscoercion.compileAppTy_app_defn_k
 			.coerce	either.t.out	string.t	gstype.compile.res.list.var.ty
-			.app	compileToVar	tyas	em.ty	svs.ty
+			.app	compileToVar	tyas	em.ty1	svs.ty
 			.enter	gsac.gstype.compile.mapM	gsdl.cgs.gstype.t	gsdl.var.t
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
@@ -641,21 +642,26 @@ co1		.fkarg	1	gsdl.cgs.gscoercion.t
 	# > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
 
 _gsac.gscoercion.compileAppTy_app_defn_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.set.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile.m_res.ty	.tygvar
 list.t	.tygvar
-gsdl.var.t	.tygvar
 either.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 diff.list.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
 gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
+_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_c	.subcode
 either.right	.gvar
 list.var.ty	.tylet	list.t	gsdl.var.t
 gstype.compile.res.list.var.ty	.tylet	_gsac.gstype.compile.m_res.ty	list.var.ty
+env	.fv	gsdl.cgs.typeenv.t
+tyc	.fv	gsdl.var.t
+em.ty	.fv	ordered.set.t	gsdl.var.t
 e0	.karg	either.prim.u	string.t	gstype.compile.res.list.var.ty
 	.analyze	e0	left	right
 		.case	left
@@ -665,11 +671,100 @@ err		.fkarg	0	string.t
 tyas.r		.fkarg	0	_gsac.gstype.compile.m_res.ty	list.var.ty
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 r			.undefined	gsdl.ags.coercionitem.expr.t
-tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tyas.r.tygvs			.lfield	tygvars	tyas.r
+tygvs			.alloc	_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_c
 ts			.lfield	typeitems	tyas.r
 res			.lrecord	coercionitems	cos	res	r	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compile_res.ty
+
+_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.set.t	.tygvar
+diff.list.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_k	.subcode
+bool.t.out	.cogvar
+ordered.set.elem	.gvar
+gsdl.var.compare	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+tyc	.fv	gsdl.var.t
+em.ty	.fv	ordered.set.t	gsdl.var.t
+tyas.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+	.force	_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_k
+	.coerce	bool.t.out
+	.app	gsdl.var.compare	tyc	em.ty
+	.enter	ordered.set.elem	gsdl.var.t
+
+_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+diff.list.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+bool.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_false_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.gskind.get	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+tyc	.fv	gsdl.var.t
+tyas.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.force	_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_false_k
+			.coerce	maybe.t.out	gsdl.cgs.gskind.t
+			.app	tyc	env
+			.enter	gsdl.cgs.typeenv.gskind.get
+		.case	true
+			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+
+_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_false_k	.forcecont
+gsdl.var.t	.tygvar
+diff.list.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_false_just_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.gskind.compile	.gvar
+tyc	.fv	gsdl.var.t
+tyas.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
+	.analyze	mb0	just	nothing
+		.case	just
+ki		.fkarg	0	gsdl.cgs.gskind.t
+			.force	_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_false_just_k
+			.coerce	either.t.out	string.t	gsdl.ags.typeitem.gskind.t
+			.app	ki
+			.enter	gsac.gstype.gskind.compile
+		.case	nothing
+			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+
+_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_false_just_k	.forcecont
+gsdl.var.t	.tygvar
+diff.list.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+diff.list.:	.gvar
+gsdl.ags.typeitem.decls.tygvar.tyextabstype	.gvar
+tyc	.fv	gsdl.var.t
+tyas.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+e0	.karg	either.prim.u	string.t	gsdl.ags.typeitem.gskind.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+		.case	right
+ki.ags		.fkarg	0	gsdl.ags.typeitem.gskind.t
+gv			.apply	gsdl.ags.typeitem.decls.tygvar.tyextabstype	|	tyc	ki.ags
+			.app	gv	tyas.r.tygvs
+			.enter	diff.list.:	gsdl.ags.typeitem.decls.tygvar.t
 
 # §section §gs{gsac.gscoercion.compileToGlobalVar}
 
