@@ -968,7 +968,7 @@ constr.compile			.apply	gsac.gstype.constr.compile
 cs.s			.apply	list.sort	gsdl.cgs.gstype.constr.t	|	gsac.gstype.constr.compare	cs
 			.force	_gsac.gstype.compile_w_sum_k
 			.coerce	either.t.out	string.t	compile.res.list.constr.compile.res.ty
-			.app	constr.compile	cs.s	em
+			.app	constr.compile	cs.s	em	gvs
 			.enter	gsac.gstype.compile.mapM	gsdl.cgs.gstype.constr.t	_gsac.gstype.constr.compile_res.ty
 		.case	var
 v		.fkarg	0	gsdl.var.t
@@ -1961,6 +1961,7 @@ _gsac.gstype.constr.compile_c	.expr
 gsdl.cgs.gstype.constr.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gstype.compile.m_res.ty	.tygvar	# Temp
@@ -1968,6 +1969,7 @@ _gsac.gstype.constr.compile_res.ty	.tygvar
 res.ty	.tylet	_gsac.gstype.compile.m_res.ty	_gsac.gstype.constr.compile_res.ty
 c	.larg	gsdl.cgs.gstype.constr.t
 em	.larg	ordered.set.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
 	.undef	either.t	string.t	res.ty
 
 # §section §gs{gsac.gstype.constr.compare}
@@ -2073,6 +2075,7 @@ list.t.out	.cogvar
 f	.larg	_gsac.gstype.compile.mapM_fun.ty	α	β
 xn	.larg	list.t	α
 em	.larg	ordered.set.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gstype.compile.mapM_k
 	.coerce	list.t.out	α
 	.enter	xn
@@ -2080,8 +2083,8 @@ em	.larg	ordered.set.t	gsdl.var.t
 _gsac.gstype.compile.mapM_k	.forcecont
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
-list.prim.u	.tygvar
 list.t	.tygvar
+list.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile.m_res.ty	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
@@ -2095,6 +2098,7 @@ diff.list.nil	.gvar
 list.β	.tylet	list.t	β
 compile.m.res.list.β	.tylet	_gsac.gstype.compile.m_res.ty	list.β
 em	.fv	ordered.set.t	gsdl.var.t
+svs	.fv	list.t	gsdl.var.t
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
@@ -2106,7 +2110,7 @@ nil			.apply	list.nil	β
 tyfvs			.apply	diff.list.nil	gsdl.var.t
 tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 ts			.apply	diff.list.nil	gsdl.ags.typeitem.t
-res			.lrecord	emitted	em	res	nil	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile.m_res.ty	list.β
+res			.lrecord	emitted	em	res	nil	subvars	svs	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile.m_res.ty	list.β
 			.app	res
 			.enter	either.right	string.t	compile.m.res.list.β
 
@@ -2117,13 +2121,16 @@ res			.lrecord	emitted	em	res	nil	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac
 gsac.gstype.compile.m	.tyexpr
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile.m_res.ty	.tygvar
 α	.tylambda	*
 res.α	.tylet	_gsac.gstype.compile.m_res.ty	α
 	.tylift
-	.tyfun	ordered.set.t	gsdl.var.t	# > emitted
+	.tyfun	ordered.set.t	gsdl.var.t	# §gs{emitted} --- state input of set of variables already emitted
+	.tylift
+	.tyfun	list.t	gsdl.var.t	# §gs{supply} --- state input of supply of variables to use for lambda-lifted sub-expressions
 	.tyref	either.t	string.t	res.α
 
 _gsac.gstype.compile.m_res.ty	.tyexpr
@@ -2135,15 +2142,17 @@ _gsac.gstype.compile.m_res.u	.tygvar
 _gsac.gstype.compile.m_res.u	.tyexpr
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 diff.list.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 α	.tylambda	*
 set.var.ty	.tylet	ordered.set.t	gsdl.var.t
+list.var.ty	.tylet	list.t	gsdl.var.t
 diff.list.var.ty	.tylet	diff.list.t	gsdl.var.t
 diff.list.tygvar.ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
-	.typroduct	emitted	set.var.ty	res	α	tyfvs	diff.list.var.ty	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
+	.typroduct	emitted	set.var.ty	res	α	subvars	list.var.ty	tyfvs	diff.list.var.ty	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
 
 # §section §gs{gsac.gstype.annotate}
 
