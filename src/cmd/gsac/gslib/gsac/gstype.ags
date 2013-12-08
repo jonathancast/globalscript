@@ -2049,17 +2049,56 @@ res			.lrecord	emitted	em	res	nil	subvars	svs	tyfvs	tyfvs	tygvars	tygvs	typeitem
 			.enter	either.right	string.t	compile.m.res.list.β
 
 _gsac.gstype.compile.mapM_:_k	.forcecont
+_gsac.gstype.compile.mapM_fun.ty	.tygvar
+list.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile.m_res.ty	.tygvar
 either.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
+_gsac.gstype.compile.mapM_:_right_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.compile.mapM	.gvar
+α	.tyfv	*
 β	.tyfv	*
 compile.m.res.β	.tylet	_gsac.gstype.compile.m_res.ty	β
-list.β	.tylet	list.t	β	# Temp
-compile.m.res.list.β	.tylet	_gsac.gstype.compile.m_res.ty	list.β	# Temp
+list.β	.tylet	list.t	β
+compile.m.res.list.β	.tylet	_gsac.gstype.compile.m_res.ty	list.β
+f	.fv	_gsac.gstype.compile.mapM_fun.ty	α	β
+xn1	.fv	list.t	α
 e0	.karg	either.prim.u	string.t	compile.m.res.β
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	compile.m.res.list.β
+		.case	right
+ry0		.fkarg	0	_gsac.gstype.compile.m_res.ty	β
+ry0.em			.lfield	emitted	ry0
+ry0.svs			.lfield	subvars	ry0
+			.force	_gsac.gstype.compile.mapM_:_right_k
+			.coerce	either.t.out	string.t	compile.m.res.list.β
+			.app	f	xn1	ry0.em	ry0.svs
+			.enter	gsac.gstype.compile.mapM	α	β
+
+_gsac.gstype.compile.mapM_:_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compile.m_res.ty	.tygvar
+list.t	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+β	.tyfv	*
+list.β	.tylet	list.t	β
+compile.m.res.list.β	.tylet	_gsac.gstype.compile.m_res.ty	list.β
+e0	.karg	either.prim.u	string.t	compile.m.res.list.β
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	compile.m.res.list.β
+		.case	right
+rys0		.fkarg	0	_gsac.gstype.compile.m_res.ty	list.β
+rys1			.undefined	_gsac.gstype.compile.m_res.ty	list.β
+			.app	rys1
+			.enter	either.right	string.t	compile.m.res.list.β
 
 	.type
 
