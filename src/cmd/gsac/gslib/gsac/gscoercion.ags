@@ -536,7 +536,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.compile_res.ty
 		.case	right
 r		.fkarg	0	_gsac.gscoercion.compile_res.ty
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+cos			.lfield	coercionitems	r
 r.e			.lfield	res	r
 e			.apply	gsdl.ags.coercionitem.expr.pos	|	pos1	r.e
 tygvs			.lfield	tygvars	r
