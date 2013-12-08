@@ -235,7 +235,7 @@ defn0	.karg	gsdl.cgs.typeenv.typedefinition.u
 as	.field	tyargs	defn0
 tye	.field	tybody	defn0
 res	.apply	gsdl.cgs.gstype.abstype	|	tyc
-	.app	env	as	res	tye
+	.app	env	tyc	as	res	tye
 	.enter	_gsac.gscoercion.annotate_defn_w
 
 _gsac.gscoercion.annotate_pos_k	.forcecont
@@ -263,12 +263,14 @@ r1			.lrecord	coercion	co1	gstype	r0.ty	|	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_defn_w_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.gscoercion.annotate_defn_w_k	.subcode
 list.t.out	.cogvar
 env	.larg	gsdl.cgs.typeenv.t
+tyc	.larg	gsdl.var.t
 as	.larg	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 res	.larg	gsdl.cgs.gstype.t
 tye	.larg	gsdl.cgs.gstype.t
@@ -278,6 +280,7 @@ tye	.larg	gsdl.cgs.gstype.t
 
 _gsac.gscoercion.annotate_defn_w_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 list.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
@@ -291,6 +294,7 @@ gsdl.cgs.typeenv.tyvar.elem	.gvar
 either.right	.gvar
 gsdl.cgs.gscoercion.gstype.iso	.gvar
 env	.fv	gsdl.cgs.typeenv.t
+tyc	.fv	gsdl.var.t
 res	.fv	gsdl.cgs.gstype.t
 tye	.fv	gsdl.cgs.gstype.t
 as0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
@@ -312,13 +316,13 @@ r			.lrecord	coercion	co1	gstype	r.ty	|	_gsac.gscoercion.annotate_res.ty
 			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_defn_w_:_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
-gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 bool.prim.u	.tygvar
-gsdl.cgs.typeenv.t	.tygvar	# Temp
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
@@ -329,6 +333,7 @@ gsdl.cgs.typeenv.var.insert	.gvar
 gsdl.cgs.gstype.app	.gvar
 gsdl.cgs.gstype.var	.gvar
 env	.fv	gsdl.cgs.typeenv.t
+tyc	.fv	gsdl.var.t
 res	.fv	gsdl.cgs.gstype.t
 tye	.fv	gsdl.cgs.gstype.t
 as1	.fv	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
@@ -342,7 +347,7 @@ a0.v.ty			.apply	gsdl.cgs.gstype.var	|	a0.v
 res1			.apply	gsdl.cgs.gstype.app	|	res	a0.v.ty
 			.force	_gsac.gscoercion.annotate_defn_w_:_false_k
 			.coerce	either.t.out	string.t	_gsac.gscoercion.annotate_res.ty
-			.app	env1	as1	res1	tye
+			.app	env1	tyc	as1	res1	tye
 			.enter	_gsac.gscoercion.annotate_defn_w
 		.case	true
 			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
@@ -740,6 +745,7 @@ gsdl.cgs.gscoercion.gstype.t	.tygvar
 
 _gsac.gscoercion.annotate_defn_w_ty	.tyexpr
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -748,6 +754,8 @@ string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.var.t
 	.tylift
 	.tyfun	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 	.tylift
