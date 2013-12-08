@@ -17,6 +17,8 @@ gsdl.cgs.gstype.freevars	.closure	_gsdl.cgs.gstype.freevars_c	_gsdl.cgs.gstype.f
 
 gsdl.cgs.gstype.substty	.closure	_gsdl.cgs.gstype.substty_c	_gsdl.cgs.gstype.substty_ty
 
+gsdl.cgs.gstype.constr.substty	.closure	_gsdl.cgs.gstype.constr.substty_c	_gsdl.cgs.gstype.constr.substty_ty
+
 gsdl.cgs.gstype.≡	.closure	_gsdl.cgs.gstype.≡_c	_gsdl.cgs.gstype.≡_ty
 
 gsdl.cgs.gstype.fmtgs	.closure	_gsdl.cgs.gstype.fmtgs_c
@@ -352,6 +354,17 @@ b0	.karg	bool.prim.u
 			.yield	ty1.0
 		.case	true
 			.enter	ty0
+
+# §section §gs{gsdl.cgs.gstype.constr.substty}
+
+_gsdl.cgs.gstype.constr.substty_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+v	.larg	gsdl.var.t
+ty0	.larg	gsdl.cgs.gstype.t
+co	.larg	gsdl.cgs.gstype.constr.t
+	.undef	gsdl.cgs.gstype.constr.t
 
 # §section §gs{gsdl.cgs.gstype.≡}
 
@@ -693,6 +706,20 @@ gsdl.cgs.gstype.t	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	gsdl.cgs.gstype.t
+
+# §section §gs{gsdl.cgs.gstype.constr.substty}
+
+_gsdl.cgs.gstype.constr.substty_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.constr.t
+	.tyref	gsdl.cgs.gstype.constr.t
 
 # §section §gs{gsdl.cgs.gstype.≡}
 
