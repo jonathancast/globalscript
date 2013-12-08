@@ -608,10 +608,12 @@ either.t	.tygvar	# Temp
 _gsac.gscoercion.compile_res.ty	.tygvar	# Temp
 _gsac.gscoercion.compileAppTy_app_defn_k	.subcode
 either.t.out	.cogvar
-gsac.gstype.compile.mapM	.gvar
-gsac.gstype.compileToVar	.gvar
 _gsac.gscoercion.compileAppTy_app	.gvar
 list.:	.gvar
+gsac.gstype.compile.mapM	.gvar
+gsac.gstype.compileToVar	.gvar
+ordered.set.insert	.gvar
+gsdl.var.compare	.gvar
 list.var.ty	.tylet	list.t	gsdl.var.t
 gstype.compile.res.list.var.ty	.tylet	_gsac.gstype.compile.m_res.ty	list.var.ty
 pos	.fv	gsdl.sourcepos.t
@@ -630,7 +632,7 @@ tyas1			.apply	list.:	gsdl.cgs.gstype.t	|	tyx	tyas
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
 compileToVar			.apply	gsac.gstype.compileToVar	|	pos	env
-em.ty1			.undefined	ordered.set.t	gsdl.var.t
+em.ty1			.apply	ordered.set.insert	gsdl.var.t	|	gsdl.var.compare	tyc	em.ty
 			.force	_gsac.gscoercion.compileAppTy_app_defn_k
 			.coerce	either.t.out	string.t	gstype.compile.res.list.var.ty
 			.app	compileToVar	tyas	em.ty1	svs.ty
