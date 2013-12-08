@@ -239,12 +239,14 @@ res	.apply	gsdl.cgs.gstype.abstype	|	tyc
 	.enter	_gsac.gscoercion.annotate_defn_w
 
 _gsac.gscoercion.annotate_pos_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.gscoercion.t	.tygvar	# Temp
 either.right	.gvar
+gsdl.cgs.gscoercion.pos	.gvar
+pos1	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -252,7 +254,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gscoercion.annotate_res.ty
-co1			.undefined	gsdl.cgs.gscoercion.t
+r0.co			.lfield	coercion	r0
+co1			.apply	gsdl.cgs.gscoercion.pos	|	pos1	r0.co
 r0.ty			.lfield	gstype	r0
 r1			.lrecord	coercion	co1	gstype	r0.ty	|	_gsac.gscoercion.annotate_res.ty
 			.app	r1
