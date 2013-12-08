@@ -415,7 +415,7 @@ co0	.karg	gsdl.cgs.gscoercion.prim.u
 cof		.fkarg	0	gsdl.cgs.gscoercion.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
 tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
-			.app	pos	env	cof	tyas
+			.app	pos	env	cof	tyas	em
 			.enter	_gsac.gscoercion.compileAppTy_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
@@ -553,12 +553,15 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 _gsac.gscoercion.compileAppTy_app_k	.subcode
 gsdl.cgs.gscoercion.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 co	.larg	gsdl.cgs.gscoercion.t
 tyas	.larg	list.t	gsdl.cgs.gstype.t
+em.ty	.larg	ordered.set.t	gsdl.var.t
 	.force	_gsac.gscoercion.compileAppTy_app_k
 	.coerce	gsdl.cgs.gscoercion.t.out
 	.enter	co
@@ -568,9 +571,10 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
-gsdl.var.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gscoercion.compile_res.ty	.tygvar	# Temp
@@ -579,13 +583,14 @@ list.:	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tyas	.fv	list.t	gsdl.cgs.gstype.t
+em.ty	.fv	ordered.set.t	gsdl.var.t
 co0	.karg	gsdl.cgs.gscoercion.prim.u
 	.analyze	co0	appty	defn	pos
 		.case	appty
 cof		.fkarg	0	gsdl.cgs.gscoercion.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
 tyas1			.apply	list.:	gsdl.cgs.gstype.t	|	tyx	tyas
-			.app	pos	env	cof	tyas1
+			.app	pos	env	cof	tyas1	em.ty
 			.enter	_gsac.gscoercion.compileAppTy_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
@@ -766,9 +771,8 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar
-string.t	.tygvar
-_gsac.gscoercion.compile_res.ty	.tygvar
+gsac.gscoercion.compile.m	.tygvar
+gsdl.ags.coercionitem.expr.t	.tygvar
 	.tylift
 	.tyfun	gsdl.sourcepos.t
 	.tylift
@@ -777,7 +781,7 @@ _gsac.gscoercion.compile_res.ty	.tygvar
 	.tyfun	gsdl.cgs.gscoercion.t
 	.tylift
 	.tyfun	list.t	gsdl.cgs.gstype.t
-	.tyref	either.t	string.t	_gsac.gscoercion.compile_res.ty
+	.tyref	gsac.gscoercion.compile.m	gsdl.ags.coercionitem.expr.t
 
 # §section §gs{gsac.gscoercion.compileToGlobalVar}
 
