@@ -300,6 +300,7 @@ gsdl.cgs.gstype.t.in	.cogvar
 bool.t.out	.cogvar
 gsdl.cgs.gstype.app	.gvar
 gsdl.cgs.gstype.substty	.gvar
+gsdl.cgs.gstype.lift	.gvar
 gsdl.var.≡	.gvar
 v	.fv	gsdl.var.t
 ty0	.fv	gsdl.cgs.gstype.t
@@ -319,7 +320,9 @@ y.tyx			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyx
 			.enter	gsdl.cgs.gstype.app
 		.case	lift
 ty1.1		.fkarg	0	gsdl.cgs.gstype.t
-			.undef	gsdl.cgs.gstype.t
+ty1.2			.apply	gsdl.cgs.gstype.substty	|	v	ty0	ty1.1
+			.app	ty1.2
+			.enter	gsdl.cgs.gstype.lift
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.undef	gsdl.cgs.gstype.t
