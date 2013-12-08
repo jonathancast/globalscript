@@ -648,10 +648,28 @@ list.t	.tygvar
 gsdl.var.t	.tygvar
 either.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
+diff.list.t	.tygvar	# Temp
+gsdl.ags.coercionitem.t	.tygvar	# Temp
+gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
+gsdl.ags.typeitem.t	.tygvar	# Temp
+either.right	.gvar
 list.var.ty	.tylet	list.t	gsdl.var.t
 gstype.compile.res.list.var.ty	.tylet	_gsac.gstype.compile.m_res.ty	list.var.ty
 e0	.karg	either.prim.u	string.t	gstype.compile.res.list.var.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gscoercion.compile_res.ty
+		.case	right
+tyas.r		.fkarg	0	_gsac.gstype.compile.m_res.ty	list.var.ty
+cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+r			.undefined	gsdl.ags.coercionitem.expr.t
+tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+ts			.lfield	typeitems	tyas.r
+res			.lrecord	coercionitems	cos	res	r	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gscoercion.compile_res.ty
 
 # §section §gs{gsac.gscoercion.compileToGlobalVar}
 
