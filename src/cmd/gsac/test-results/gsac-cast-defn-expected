@@ -1,0 +1,24 @@
+	.document
+
+	.data
+
+	.line	./test-fixtures/cast-defn.cgs 3 1
+	.cast	_ep_so	_ep_co
+
+	.line	./test-fixtures/cast-defn.cgs 3 16
+_ep_so	.undefined	_ep_so_ty
+
+	.type
+
+	.line	./test-fixtures/cast-defn.cgs 3 16
+_ep_so_ty	.tyexpr
+	.tylift
+	.tysum
+
+	.coercion
+
+	.line	./test-fixtures/cast-defn.cgs 3 1
+_ep_co	.tycoercion
+bool.t	.tyextabstype	*
+	.line	./test-fixtures/cast-defn.cgs 3 1
+	.tydefinition	bool.t
