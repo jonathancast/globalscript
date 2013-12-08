@@ -164,7 +164,7 @@ cty1		.fkarg	2	gsdl.cgs.gscoercion.gstype.t
 		.case	iso
 ty0		.fkarg	0	gsdl.cgs.gstype.t
 ty1		.fkarg	1	gsdl.cgs.gstype.t
-y.ty0			.undefined	gsdl.cgs.gstype.t
+y.ty0			.apply	gsdl.cgs.gstype.substty	|	v	ty	ty0
 y.ty1			.apply	gsdl.cgs.gstype.substty	|	v	ty	ty1
 			.app	y.ty0	y.ty1
 			.enter	gsdl.cgs.gscoercion.gstype.iso
