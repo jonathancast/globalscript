@@ -342,10 +342,17 @@ cos	.fv	list.t	gsdl.ags.coercionitem.t
 _gsdl.ags.file_print.coercionitems_s1_k	.forcecont
 list.prim.u	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
-list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+list.t	.tygvar
+rune.t	.tygvar
+list.nil	.gvar
 cos0	.karg	list.prim.u	gsdl.ags.coercionitem.t
-	.undef	list.t	rune.t
+	.analyze	cos0	:	nil
+		.case	:
+co1		.fkarg	0	gsdl.ags.coercionitem.t
+cos1		.fkarg	1	list.t	gsdl.ags.coercionitem.t
+			.undef	list.t	rune.t
+		.case	nil
+			.enter	list.nil	rune.t
 
 # §section §gs{gsdl.ags.file.parser}
 
