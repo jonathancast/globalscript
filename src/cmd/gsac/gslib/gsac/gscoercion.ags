@@ -402,6 +402,8 @@ either.t.out	.cogvar
 _gsac.gscoercion.compileAppTy_app	.gvar
 list.singleton	.gvar
 either.right	.gvar
+gsdl.ags.coercionitem.expr.defn	.gvar
+list.nil	.gvar
 diff.list.nil	.gvar
 gsac.gscoercion.compile	.gvar
 pos	.fv	gsdl.sourcepos.t
@@ -418,7 +420,8 @@ tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
-r			.undefined	gsdl.ags.coercionitem.expr.t
+nil			.apply	list.nil	gsdl.var.t
+r			.apply	gsdl.ags.coercionitem.expr.defn	|	tyc	nil
 tygvs			.alloc	_gsac.gscoercion.compile_defn_tygvs_c
 ts			.apply	diff.list.nil	gsdl.ags.typeitem.t
 res			.lrecord	coercionitems	cos	res	r	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
