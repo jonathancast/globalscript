@@ -1,0 +1,25 @@
+	.document
+
+	.data
+
+	.line	./test-fixtures/list-type-sig.cgs 3 1
+	.cast	_ep_so	_ep_co
+
+	.line	./test-fixtures/list-type-sig.cgs 3 24
+_ep_so	.undefined	_ep_so_ty
+
+	.type
+
+	.line	./test-fixtures/list-type-sig.cgs 3 24
+_ep_so_ty	.tyexpr
+	.tylift
+	.tysum
+
+	.coercion
+
+	.line	./test-fixtures/list-type-sig.cgs 3 1
+_ep_co	.tycoercion
+list.t	.tyextabstype	**^
+bool.t	.tyextabstype	*
+	.line	./test-fixtures/list-type-sig.cgs 3 1
+	.tydefinition	list.t	bool.t
