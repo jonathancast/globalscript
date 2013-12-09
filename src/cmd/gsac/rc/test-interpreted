@@ -22,5 +22,6 @@ ok_diff_script '-- gsac: Empty either.t 〈〉 document --' gsac-empty-either-re
 ok_grep_script_errors '-- gsac: Empty document w/ unknown type variable --' gsac-empty-doc-unkn-type-var './test-fixtures/empty-doc-unkn-type-var.cgs:3:1: Unknown type variable' ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/empty-doc-unkn-type-var.cgs
 
 ok_diff_script '-- gsac: Expressions with no type signature --' gsac-cast-defn ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/cast-defn.cgs
+ok_diff_script '-- gsac: Coercion to list.t --' gsac-list-coercion-doc ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/list-coercion-doc.cgs
 
 ok_diff_script '-- gsac: Type signatures --' gsac-type-sig ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/type-sig.cgs
