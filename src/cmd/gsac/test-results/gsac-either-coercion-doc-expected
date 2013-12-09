@@ -1,0 +1,25 @@
+	.document
+
+	.data
+
+	.line	./test-fixtures/either-coercion-doc.cgs 3 1
+	.cast	_ep_so	_ep_co
+
+	.line	./test-fixtures/either-coercion-doc.cgs 3 32
+_ep_so	.undefined	_ep_so_ty
+
+	.type
+
+	.line	./test-fixtures/either-coercion-doc.cgs 3 32
+_ep_so_ty	.tyexpr
+	.tylift
+	.tysum
+
+	.coercion
+
+	.line	./test-fixtures/either-coercion-doc.cgs 3 1
+_ep_co	.tycoercion
+either.t	.tyextabstype	**^*^
+bool.t	.tyextabstype	*
+	.line	./test-fixtures/either-coercion-doc.cgs 3 1
+	.tydefinition	either.t	bool.t	bool.t
