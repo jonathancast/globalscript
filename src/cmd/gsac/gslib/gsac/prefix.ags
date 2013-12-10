@@ -1325,12 +1325,14 @@ tyarg.cgs		.fkarg	0	gsdl.cgs.gstype.t
 			.enter	gsac.prefix.gstype.upconvert
 
 _gsac.prefix.gstype.upconvert_fun_right_k	.forcecont
+gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	# Temp
 either.left	.gvar
 either.right	.gvar
+gsdl.cgs.gstype.fun	.gvar
+tyarg.cgs	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
 	.analyze	e0	left	right
 		.case	left
@@ -1339,7 +1341,7 @@ err		.fkarg	0	string.t
 			.enter	either.left	string.t	gsdl.cgs.gstype.t
 		.case	right
 res.cgs		.fkarg	0	gsdl.cgs.gstype.t
-tyexp.cgs			.undefined	gsdl.cgs.gstype.t
+tyexp.cgs			.apply	gsdl.cgs.gstype.fun	|	tyarg.cgs	res.cgs
 			.app	tyexp.cgs
 			.enter	either.right	string.t	gsdl.cgs.gstype.t
 
