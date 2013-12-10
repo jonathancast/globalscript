@@ -82,7 +82,7 @@ list.field.res.ty	.tylet	list.t	_gsac.gstype.field.annotate_res.ty
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	abstype	app	lift	product	sum	var
+	.analyze	ty0	abstype	app	fun	lift	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
@@ -93,6 +93,10 @@ tyx		.fkarg	1	gsdl.cgs.gstype.t
 			.coerce	either.t.out	string.t	_gsac.gstype.fun.annotate_res.ty
 			.app	pos	env	tyf
 			.enter	gsac.gstype.fun.annotate
+		.case	fun
+tya		.fkarg	0	gsdl.cgs.gstype.t
+tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.annotate_lift_k
@@ -709,7 +713,7 @@ tya0	.fv	gsdl.cgs.gstype.prim.u
 tye0	.karg	gsdl.cgs.gstype.prim.u
 tya0.l	.lifted	tya0
 tya0.cl	.cast	tya0.l	gsdl.cgs.gstype.t.in
-	.analyze	tye0	abstype	app	lift	product	sum	var
+	.analyze	tye0	abstype	app	fun	lift	product	sum	var
 		.case	abstype
 tyce		.fkarg	0	gsdl.var.t
 			.danalyze	tya0	abstype	var
@@ -745,6 +749,10 @@ tyxa				.fkarg	1	gsdl.cgs.gstype.t
 					.coerce	either.t.out	string.t	record.empty
 					.app	pos	env	tyfa	tyfe
 					.enter	gsac.gstype.check
+		.case	fun
+tya		.fkarg	0	gsdl.cgs.gstype.t
+tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	record.empty
 		.case	lift
 tye1		.fkarg	0	gsdl.cgs.gstype.t
 			.danalyze	tya0	lift
@@ -935,7 +943,7 @@ env	.larg	gsdl.cgs.typeenv.t
 ty0	.larg	gsdl.cgs.gstype.prim.u
 em	.larg	ordered.set.t	gsdl.var.t
 gvs	.larg	list.t	gsdl.var.t
-	.analyze	ty0	abstype	app	lift	product	sum	var
+	.analyze	ty0	abstype	app	fun	lift	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.compile_w_abstype_k
@@ -950,6 +958,10 @@ tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
 			.app	pos	env	tyf	tyas	em	gvs
 			.yield	_gsac.gstype.compileToApp_app
+		.case	fun
+tya		.fkarg	0	gsdl.cgs.gstype.t
+tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.compile_w_lift_k
