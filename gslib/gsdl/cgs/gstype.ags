@@ -311,6 +311,7 @@ gsdl.cgs.gstype.t.in	.cogvar
 bool.t.out	.cogvar
 gsdl.cgs.gstype.app	.gvar
 gsdl.cgs.gstype.substty	.gvar
+gsdl.cgs.gstype.fun	.gvar
 gsdl.cgs.gstype.lift	.gvar
 gsdl.cgs.gstype.sum	.gvar
 list.map	.gvar
@@ -335,7 +336,10 @@ y.tyx			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyx
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	gsdl.cgs.gstype.t
+y.tya			.undefined	gsdl.cgs.gstype.t
+y.tyr			.undefined	gsdl.cgs.gstype.t
+			.app	y.tya	y.tyr
+			.enter	gsdl.cgs.gstype.fun
 		.case	lift
 ty1.1		.fkarg	0	gsdl.cgs.gstype.t
 ty1.2			.apply	gsdl.cgs.gstype.substty	|	v	ty0	ty1.1
