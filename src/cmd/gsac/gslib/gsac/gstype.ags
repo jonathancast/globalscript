@@ -921,6 +921,7 @@ _gsac.gstype.compile.m_res.ty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.compile_w_abstype_k	.subcode
 _gsac.gstype.compile_w_app_k	.subcode
+_gsac.gstype.compile_w_fun_k	.subcode
 _gsac.gstype.compile_w_lift_k	.subcode
 _gsac.gstype.compile_w_product_k	.subcode
 _gsac.gstype.compile_w_sum_k	.subcode
@@ -961,7 +962,10 @@ tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+			.force	_gsac.gstype.compile_w_fun_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compile_res.ty
+			.app	pos	env	tya	em	gvs
+			.enter	gsac.gstype.compile
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.compile_w_lift_k
@@ -1049,6 +1053,14 @@ tygvs	.field	tygvars	r0
 res	.lrecord	emitted	em	res	tye	tyfvs	tyfvs	tygvars	tygvs	typeitems	tyes	|	_gsac.gstype.compile_res.ty
 	.app	res
 	.enter	either.right	string.t	_gsac.gstype.compile_res.ty
+
+_gsac.gstype.compile_w_fun_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compile_res.ty	.tygvar
+either.t	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 
 _gsac.gstype.compile_w_lift_k	.forcecont
 gsdl.sourcepos.t	.tygvar
