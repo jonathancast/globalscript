@@ -351,7 +351,9 @@ y.tyx			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyx
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-			.undef	gsdl.cgs.gstype.t
+			.coerce	gsdl.cgs.gstype.t.in
+			.lift
+			.yield	ty1.0
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
