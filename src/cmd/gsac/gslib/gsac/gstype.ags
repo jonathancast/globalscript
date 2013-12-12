@@ -1472,14 +1472,16 @@ gsdl.cgs.gstype.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.compileToApp_res.ty	.tygvar	# Temp
 _gsac.gstype.compileToApp_app_abstype_k	.subcode
+_gsac.gstype.compileToApp_app_elimprim_k	.subcode
 either.t.out	.cogvar
 maybe.t.out	.cogvar
 _gsac.gstype.compileToVar_gsabstype	.gvar
 _gsac.gstype.compileToApp_app	.gvar
+_gsac.gstype.compileToVar_elimprim	.gvar
 list.:	.gvar
 gsdl.cgs.typeenv.typeexpansion.get	.gvar
 pos	.fv	gsdl.sourcepos.t
@@ -1488,7 +1490,7 @@ tyas	.fv	list.t	gsdl.cgs.gstype.t
 em	.fv	ordered.set.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 tyf0	.karg	gsdl.cgs.gstype.prim.u
-	.danalyze	tyf0	abstype	app	var
+	.danalyze	tyf0	abstype	app	elimprim	var
 		.default	# error; illicit function in application
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	abstype
@@ -1503,6 +1505,14 @@ tyx		.fkarg	1	gsdl.cgs.gstype.t
 tyas1			.apply	list.:	gsdl.cgs.gstype.t	|	tyx	tyas
 			.app	pos	env	tyf1	tyas1	em	gvs
 			.yield	_gsac.gstype.compileToApp_app
+		.case	elimprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.force	_gsac.gstype.compileToApp_app_elimprim_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
+			.app	env	ps	pn	ki	em	gvs
+			.yield	_gsac.gstype.compileToVar_elimprim
 		.case	var	# look up expansion & proceed from there
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
@@ -1548,6 +1558,15 @@ r0	.karg	_gsac.gstype.compile.m_res.u	gsdl.var.t
 nil	.apply	diff.list.nil	gsdl.var.t
 	.app	pos	env	r0	tyas	nil
 	.yield	_gsac.gstype.compileToApp_args
+
+_gsac.gstype.compileToApp_app_elimprim_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
+either.t	.tygvar	 # Temp
+_gsac.gstype.compileToApp_res.ty	.tygvar	 # Temp
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
+			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 
 _gsac.gstype.compileToApp_args_c	.expr
 gsdl.sourcepos.t	.tygvar
