@@ -2635,3 +2635,13 @@ gsac.gstype.compile.m	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	gsac.gstype.compile.m	β
+
+# §section §gs{primname.t}
+
+_gsac.gstype_primname.t	.tyexpr
+_gsac.gstype_primname.u	.tygvar
+	.tylift
+	.tyref	_gsac.gstype_primname.u
+
+_gsac.gstype_primname.u	.tyexpr
+	.typroduct
