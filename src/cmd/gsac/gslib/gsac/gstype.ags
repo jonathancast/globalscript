@@ -36,6 +36,8 @@ gsac.gstype.gskind.compile	.closure	_gsac.gstype.gskind.compile_c	_gsac.gstype.g
 
 gsac.gstype.compile.mapM	.closure	_gsac.gstype.compile.mapM_c	_gsac.gstype.compile.mapM_ty
 
+_gsac.gstype_primname.compare	.closure	_gsac.gstype_primname.compare_c
+
 	.code
 
 # §section §gs{gsac.gstype.annotate}
@@ -2199,6 +2201,15 @@ ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	ry0.ts	rys0.ts
 rys1			.lrecord	emitted	em	res	ys1	subvars	svs	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile.m_res.ty	list.β
 			.app	rys1
 			.enter	either.right	string.t	compile.m.res.list.β
+
+# §section §gs{primname.compare}
+
+_gsac.gstype_primname.compare_c	.expr
+_gsac.gstype_primname.t	.tygvar
+order.total.ord.t	.tygvar	# Temp
+pn0	.larg	_gsac.gstype_primname.t
+pn1	.larg	_gsac.gstype_primname.t
+	.undef	order.total.ord.t
 
 	.type
 
