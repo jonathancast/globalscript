@@ -274,6 +274,8 @@ gsdl.var.component.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
 ordered.set.t	.tygvar	# Temp
+ordered.map.t	.tygvar	# Temp
+_gsac.gstype_primname.t	.tygvar	# Temp
 list.t	.tygvar	# Temp
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k	.subcode
 either.t.out	.cogvar
@@ -304,11 +306,12 @@ co.c0			.apply	gsdl.var.component.alphanum	|	_gsac.gsexpr.compileToDataItem_expr
 co.cs			.apply	list.singleton	gsdl.var.component.t	|	co.c0
 co.v			.apply	gsdl.var.basevar	|	co.cs
 co.x			.apply	gsdl.var.subvar	|	x	co.v
-empty			.undefined	ordered.set.t	gsdl.var.t
+em.empty			.undefined	ordered.set.t	gsdl.var.t
+pem.empty			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 subvars			.undefined	list.t	gsdl.var.t
 			.force	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k
 			.coerce	either.t.out	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
-			.app	pos	env	co.x	co	empty	subvars
+			.app	pos	env	co.x	co	em.empty	pem.empty	subvars
 			.enter	gsac.gscoercion.compileToGlobalVar
 
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k	.forcecont

@@ -392,6 +392,8 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 _gsac.gscoercion.compile_k	.subcode
 gsdl.cgs.gscoercion.t.out	.cogvar
@@ -399,6 +401,7 @@ pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 co	.larg	gsdl.cgs.gscoercion.t
 em.ty	.larg	ordered.set.t	gsdl.var.t
+pem.ty	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs.ty	.larg	list.t	gsdl.var.t
 	.force	_gsac.gscoercion.compile_k
 	.coerce	gsdl.cgs.gscoercion.t.out
@@ -409,6 +412,8 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
@@ -434,6 +439,7 @@ gsac.gscoercion.compile	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 em.ty	.fv	ordered.set.t	gsdl.var.t
+pem.ty	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs.ty	.fv	list.t	gsdl.var.t
 co0	.karg	gsdl.cgs.gscoercion.prim.u
 	.analyze	co0	appty	defn	pos
@@ -441,7 +447,7 @@ co0	.karg	gsdl.cgs.gscoercion.prim.u
 cof		.fkarg	0	gsdl.cgs.gscoercion.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
 tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
-			.app	pos	env	cof	tyas	em.ty	svs.ty
+			.app	pos	env	cof	tyas	em.ty	pem.ty	svs.ty
 			.enter	_gsac.gscoercion.compileAppTy_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
@@ -458,7 +464,7 @@ pos1		.fkarg	0	gsdl.sourcepos.t
 co1		.fkarg	1	gsdl.cgs.gscoercion.t
 			.force	_gsac.gscoercion.compile_pos_k
 			.coerce	either.t.out	string.t	_gsac.gscoercion.compile_res.ty
-			.app	pos1	env	co1	em.ty	svs.ty
+			.app	pos1	env	co1	em.ty	pem.ty	svs.ty
 			.enter	gsac.gscoercion.compile
 	# > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
 
@@ -581,6 +587,8 @@ list.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 _gsac.gscoercion.compileAppTy_app_k	.subcode
 gsdl.cgs.gscoercion.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
@@ -588,6 +596,7 @@ env	.larg	gsdl.cgs.typeenv.t
 co	.larg	gsdl.cgs.gscoercion.t
 tyas	.larg	list.t	gsdl.cgs.gstype.t
 em.ty	.larg	ordered.set.t	gsdl.var.t
+pem.ty	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs.ty	.larg	list.t	gsdl.var.t
 	.force	_gsac.gscoercion.compileAppTy_app_k
 	.coerce	gsdl.cgs.gscoercion.t.out
@@ -600,6 +609,8 @@ list.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 string.t	.tygvar
@@ -620,6 +631,7 @@ pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tyas	.fv	list.t	gsdl.cgs.gstype.t
 em.ty	.fv	ordered.set.t	gsdl.var.t
+pem.ty	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs.ty	.fv	list.t	gsdl.var.t
 co0	.karg	gsdl.cgs.gscoercion.prim.u
 	.analyze	co0	appty	defn	pos
@@ -627,7 +639,7 @@ co0	.karg	gsdl.cgs.gscoercion.prim.u
 cof		.fkarg	0	gsdl.cgs.gscoercion.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
 tyas1			.apply	list.:	gsdl.cgs.gstype.t	|	tyx	tyas
-			.app	pos	env	cof	tyas1	em.ty	svs.ty
+			.app	pos	env	cof	tyas1	em.ty	pem.ty	svs.ty
 			.enter	_gsac.gscoercion.compileAppTy_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
@@ -635,7 +647,7 @@ compileToVar			.apply	gsac.gstype.compileToVar	|	pos	env
 em.ty1			.apply	ordered.set.insert	gsdl.var.t	|	gsdl.var.compare	tyc	em.ty
 			.force	_gsac.gscoercion.compileAppTy_app_defn_k
 			.coerce	either.t.out	string.t	gstype.compile.res.list.var.ty
-			.app	compileToVar	tyas	em.ty1	svs.ty
+			.app	compileToVar	tyas	em.ty1	pem.ty	svs.ty
 			.enter	gsac.gstype.compile.mapM	gsdl.cgs.gstype.t	gsdl.var.t
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
@@ -776,6 +788,8 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 ordered.set.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
@@ -783,17 +797,20 @@ _gsac.gscoercion.compileToGlobalVar_k	.subcode
 either.t.out	.cogvar
 gsac.gscoercion.compile	.gvar
 ordered.set.empty	.gvar
+ordered.map.empty	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 v	.larg	gsdl.var.t
 co	.larg	gsdl.cgs.gscoercion.t
-em	.larg	ordered.set.t	gsdl.var.t
-svs	.larg	list.t	gsdl.var.t
-empty	.apply	ordered.set.empty	gsdl.var.t
+em.ty	.larg	ordered.set.t	gsdl.var.t
+pem.ty	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+svs.ty	.larg	list.t	gsdl.var.t
+em.ty.empty	.apply	ordered.set.empty	gsdl.var.t
+pem.ty.empty	.apply	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
 subvars	.undefined	list.t	gsdl.var.t
 	.force	_gsac.gscoercion.compileToGlobalVar_k
 	.coerce	either.t.out	string.t	_gsac.gscoercion.compile_res.ty
-	.app	pos	env	co	empty	subvars
+	.app	pos	env	co	em.ty.empty	pem.ty.empty	subvars
 	.enter	gsac.gscoercion.compile
 
 _gsac.gscoercion.compileToGlobalVar_k	.forcecont
@@ -890,6 +907,8 @@ _gsac.gscoercion.annotate_res.ty	.tygvar
 gsac.gscoercion.compile.m	.tyexpr
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
@@ -898,6 +917,8 @@ _gsac.gscoercion.compile.m_res.ty	.tygvar
 res.ty	.tylet	_gsac.gscoercion.compile.m_res.ty	α
 	.tylift
 	.tyfun	ordered.set.t	gsdl.var.t	# §gs{emitted.gstype} --- the set of free variables already accounted for
+	.tylift
+	.tyfun	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t	# §gs{prim.emitted.gstype} --- map from primtype to variable used for it
 	.tylift
 	.tyfun	list.t	gsdl.var.t	# §gs{subvars.gstype} --- the supply of variables to use for lambda-lifted type expressions
 	.tyref	either.t	string.t	res.ty
