@@ -24,7 +24,7 @@ _gsac.gstype.compileToApp_app	.closure	_gsac.gstype.compileToApp_app_c	_gsac.gst
 _gsac.gstype.compileToApp_args	.closure	_gsac.gstype.compileToApp_args_c	_gsac.gstype.compileToApp_args_ty
 gsac.gstype.compileToVar	.closure	_gsac.gstype.compileToVar_c	_gsac.gstype.compileToVar_ty
 _gsac.gstype.compileToVar_gsabstype	.closure	_gsac.gstype.compileToVar_gsabstype_c
-_gsac.gstype.compileToVar_elimprim	.closure	_gsac.gstype.compileToVar_elimprim_c
+_gsac.gstype.compileToVar_elimprim	.closure	_gsac.gstype.compileToVar_elimprim_c	_gsac.gstype.compileToVar_elimprim_ty
 
 gsac.gstype.fields.compile	.closure	_gsac.gstype.fields.compile_c	_gsac.gstype.fields.compile_ty
 
@@ -1909,8 +1909,8 @@ env	.arg	gsdl.cgs.typeenv.t
 ps	.arg	gsdl.var.t
 pn	.arg	gsdl.var.t
 ki	.arg	gsdl.cgs.gskind.t
-em	.arg	ordered.set.t	gsdl.var.t
-svs	.arg	list.t	gsdl.var.t
+em	.larg	ordered.set.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
 	.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
 # §section §gs{gsac.gstype.fields.compile}
@@ -2559,6 +2559,17 @@ _gsac.gstype.compileToVar_res.ty	.tyexpr
 _gsac.gstype.compile.m_res.ty	.tygvar
 gsdl.var.t	.tygvar
 	.tyref	_gsac.gstype.compile.m_res.ty	gsdl.var.t
+
+_gsac.gstype.compileToVar_elimprim_ty	.tyexpr
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsac.gstype.compile.m	.tygvar
+	.tyfun	gsdl.cgs.typeenv.t
+	.tyfun	gsdl.var.t
+	.tyfun	gsdl.var.t
+	.tyfun	gsdl.cgs.gskind.t
+	.tyref	gsac.gstype.compile.m	gsdl.var.t
 
 # §section §gs{gsac.gstype.fields.compile}
 
