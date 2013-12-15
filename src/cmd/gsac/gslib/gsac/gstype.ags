@@ -2041,7 +2041,7 @@ ki	.arg	gsdl.cgs.gskind.t
 em	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
-ps.pn	.lrecord	0	ps	|	_gsac.gstype_primname.t
+ps.pn	.lrecord	0	ps	1	pn	|	_gsac.gstype_primname.t
 	.force	_gsac.gstype.compileToVar_elimprim_k
 	.coerce	maybe.t.out	gsdl.var.t
 	.app	_gsac.gstype_primname.compare	ps.pn	pem
@@ -2866,4 +2866,4 @@ _gsac.gstype_primname.u	.tygvar
 
 _gsac.gstype_primname.u	.tyexpr
 gsdl.var.t	.tygvar
-	.typroduct	0	gsdl.var.t
+	.typroduct	0	gsdl.var.t	1	gsdl.var.t
