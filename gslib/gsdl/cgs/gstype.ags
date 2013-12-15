@@ -30,6 +30,7 @@ gsdl.cgs.gstype.lift	.closure	_gsdl.cgs.gstype.lift_c
 gsdl.cgs.gstype.product	.closure	_gsdl.cgs.gstype.product_c
 gsdl.cgs.gstype.sum	.closure	_gsdl.cgs.gstype.sum_c
 gsdl.cgs.gstype.elimprim	.closure	_gsdl.cgs.gstype.elimprim_c
+gsdl.cgs.gstype.impprim	.closure	_gsdl.cgs.gstype.impprim_c
 gsdl.cgs.gstype.app	.closure	_gsdl.cgs.gstype.app_c
 gsdl.cgs.gstype.fun	.closure	_gsdl.cgs.gstype.fun_c
 
@@ -191,7 +192,7 @@ gsdl.cgs.gstype.constr.t	.tygvar
 diff.list.t	.tygvar	# Temp
 rune.t	.tygvar	# Temp
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	abstype	app	elimprim	fun	lift	product	sum	var
+	.analyze	ty0	abstype	app	elimprim	fun	impprim	lift	product	sum	var
 		.case	abstype
 v		.fkarg	0	gsdl.var.t
 			.undef	diff.list.t	rune.t
@@ -207,6 +208,11 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	diff.list.t	rune.t
+		.case	impprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
 			.undef	diff.list.t	rune.t
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
@@ -255,7 +261,7 @@ gsdl.cgs.gstype.field.freevars	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
 res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	abstype	app	elimprim	fun	lift	product	sum	var
+	.analyze	ty0	abstype	app	elimprim	fun	impprim	lift	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 sym			.apply	gsdl.cgs.symbol.abstyvar	|	tyc
@@ -276,6 +282,11 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
+		.case	impprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
 			.undef	ordered.set.t	gsdl.cgs.symbol.t
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
@@ -334,7 +345,7 @@ gsdl.var.≡	.gvar
 v	.fv	gsdl.var.t
 ty0	.fv	gsdl.cgs.gstype.t
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty1.0	abstype	app	elimprim	fun	lift	product	sum	var
+	.analyze	ty1.0	abstype	app	elimprim	fun	impprim	lift	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 			.coerce	gsdl.cgs.gstype.t.in
@@ -361,6 +372,11 @@ y.tya			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tya
 y.tyr			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyr
 			.app	y.tya	y.tyr
 			.enter	gsdl.cgs.gstype.fun
+		.case	impprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	gsdl.cgs.gstype.t
 		.case	lift
 ty1.1		.fkarg	0	gsdl.cgs.gstype.t
 ty1.2			.apply	gsdl.cgs.gstype.substty	|	v	ty0	ty1.1
@@ -447,7 +463,7 @@ gsdl.cgs.gstype.≡	.gvar
 bool.true	.gvar
 ty0.0	.fv	gsdl.cgs.gstype.prim.u
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0.0	abstype	app	elimprim	fun	lift	product	sum	var
+	.analyze	ty0.0	abstype	app	elimprim	fun	impprim	lift	product	sum	var
 		.case	abstype
 tyc0		.fkarg	0	gsdl.var.t
 			.undef	bool.t
@@ -463,6 +479,11 @@ ki0		.fkarg	2	gsdl.cgs.gskind.t
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	bool.t
+		.case	impprim
+ps0		.fkarg	0	gsdl.var.t
+pn0		.fkarg	1	gsdl.var.t
+ki0		.fkarg	2	gsdl.cgs.gskind.t
 			.undef	bool.t
 		.case	lift
 ty0.1		.fkarg	0	gsdl.cgs.gstype.t
@@ -520,7 +541,7 @@ list.fmtgs	.gvar
 gsdl.cgs.gstype.field.fmtgs.list	.gvar
 fmtgs.prec.arg	.gvar
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	abstype	app	elimprim	fun	lift	product	sum	var
+	.analyze	ty0	abstype	app	elimprim	fun	impprim	lift	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 			.undef	fmtgs.printer.t
@@ -536,6 +557,11 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	fmtgs.printer.t
+		.case	impprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
 			.undef	fmtgs.printer.t
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
@@ -618,6 +644,19 @@ pn	.larg	gsdl.var.t
 ps	.larg	gsdl.var.t
 ki	.larg	gsdl.cgs.gskind.t
 c	.constr	gsdl.cgs.gstype.prim.u	elimprim	0	pn	1	ps	2	ki
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.impprim_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+pn	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+c	.constr	gsdl.cgs.gstype.prim.u	impprim	0	pn	1	ps	2	ki
 	.coerce	gsdl.cgs.gstype.t.in
 	.lift
 	.yield	c
@@ -706,11 +745,12 @@ _gsdl.cgs.gstype.prim.u_abstype_ty	.tygvar
 _gsdl.cgs.gstype.prim.u_app_ty	.tygvar
 _gsdl.cgs.gstype.prim.u_elimprim_ty	.tygvar
 _gsdl.cgs.gstype.prim.u_fun_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_impprim_ty	.tygvar
 _gsdl.cgs.gstype.prim.u_lift_ty	.tygvar
 _gsdl.cgs.gstype.prim.u_product_ty	.tygvar
 _gsdl.cgs.gstype.prim.u_sum_ty	.tygvar
 _gsdl.cgs.gstype.prim.u_var_ty	.tygvar
-	.tysum	abstype	_gsdl.cgs.gstype.prim.u_abstype_ty	app	_gsdl.cgs.gstype.prim.u_app_ty	elimprim	_gsdl.cgs.gstype.prim.u_elimprim_ty	fun	_gsdl.cgs.gstype.prim.u_fun_ty	lift	_gsdl.cgs.gstype.prim.u_lift_ty	product	_gsdl.cgs.gstype.prim.u_product_ty	sum	_gsdl.cgs.gstype.prim.u_sum_ty	var	_gsdl.cgs.gstype.prim.u_var_ty
+	.tysum	abstype	_gsdl.cgs.gstype.prim.u_abstype_ty	app	_gsdl.cgs.gstype.prim.u_app_ty	elimprim	_gsdl.cgs.gstype.prim.u_elimprim_ty	fun	_gsdl.cgs.gstype.prim.u_fun_ty	impprim	_gsdl.cgs.gstype.prim.u_impprim_ty	lift	_gsdl.cgs.gstype.prim.u_lift_ty	product	_gsdl.cgs.gstype.prim.u_product_ty	sum	_gsdl.cgs.gstype.prim.u_sum_ty	var	_gsdl.cgs.gstype.prim.u_var_ty
 
 _gsdl.cgs.gstype.prim.u_abstype_ty	.tyexpr
 gsdl.var.t	.tygvar
@@ -728,6 +768,11 @@ gsdl.cgs.gskind.t	.tygvar
 _gsdl.cgs.gstype.prim.u_fun_ty	.tyexpr
 gsdl.cgs.gstype.t	.tygvar
 	.tyubproduct	0	gsdl.cgs.gstype.t	1	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.prim.u_impprim_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.var.t	1	gsdl.var.t	2	gsdl.cgs.gskind.t
 
 _gsdl.cgs.gstype.prim.u_lift_ty	.tyexpr
 gsdl.cgs.gstype.t	.tygvar
