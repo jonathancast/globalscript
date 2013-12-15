@@ -2422,7 +2422,9 @@ ps.pn1	.larg	_gsac.gstype_primname.t
 ps0	.lfield	0	ps.pn0
 ps1	.lfield	0	ps.pn1
 ps.cmp	.apply	gsdl.var.compare	|	ps0	ps1
-pn.cmp	.undefined	order.total.ord.t
+pn0	.lfield	1	ps.pn0
+pn1	.lfield	1	ps.pn1
+pn.cmp	.apply	gsdl.var.compare	|	pn0	pn1
 	.app	ps.cmp	pn.cmp
 	.enter	order.total.ord.||
 
