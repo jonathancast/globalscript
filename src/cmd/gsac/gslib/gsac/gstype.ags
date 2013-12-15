@@ -2155,9 +2155,10 @@ ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
+_gsac.gstype.compileToVar_impprim_k	.subcode
+maybe.t.out	.cogvar
+ordered.map.get	.gvar
+_gsac.gstype_primname.compare	.gvar
 env	.arg	gsdl.cgs.typeenv.t
 ps	.arg	gsdl.var.t
 pn	.arg	gsdl.var.t
@@ -2165,7 +2166,50 @@ ki	.arg	gsdl.cgs.gskind.t
 em	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
-	.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+ps.pn	.lrecord	0	ps	1	pn	|	_gsac.gstype_primname.t
+	.force	_gsac.gstype.compileToVar_impprim_k
+	.coerce	maybe.t.out	gsdl.var.t
+	.app	_gsac.gstype_primname.compare	ps.pn	pem
+	.enter	ordered.map.get	_gsac.gstype_primname.t	gsdl.var.t
+
+_gsac.gstype.compileToVar_impprim_k	.forcecont
+list.t	.tygvar
+gsdl.var.t	.tygvar
+maybe.prim.u	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
+_gsac.gstype.compileToVar_impprim_nothing_k	.subcode
+list.t.out	.cogvar
+svs	.fv	list.t	gsdl.var.t
+mb0	.karg	maybe.prim.u	gsdl.var.t
+	.analyze	mb0	just	nothing
+		.case	just
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+		.case	nothing
+			.force	_gsac.gstype.compileToVar_impprim_nothing_k
+			.coerce	list.t.out	gsdl.var.t
+			.enter	svs
+
+_gsac.gstype.compileToVar_impprim_nothing_k	.forcecont
+list.prim.u	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+svs0	.karg	list.prim.u	gsdl.var.t
+	.analyze	svs0	:	nil
+		.case	:
+sv0		.fkarg	0	gsdl.var.t
+svs1		.fkarg	1	list.t	gsdl.var.t
+res			.undefined	_gsac.gstype.compileToVar_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.compileToVar_res.ty
+		.case	nil
+			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
 # §section §gs{gsac.gstype.fields.compile}
 
