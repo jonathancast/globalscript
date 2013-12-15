@@ -193,13 +193,15 @@ _gsdl.var.subvars_w_c	.expr
 gsdl.var.t	.tygvar
 natural.prim.u	.tygvar
 gsdl.var.component.t	.tygvar
-list.t	.tygvar	# Temp
+_natural.prim.+_ty	.tygvar
 natural.t.in	.cogvar
 list.:	.gvar
 gsdl.var.<>	.gvar
 gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.numeric	.gvar
+_gsdl.var.subvars_w	.gvar
+1	.natural	1
 v	.arg	gsdl.var.t
 n	.arg	natural.prim.u
 n.l	.lifted	n
@@ -208,7 +210,8 @@ n.c0	.apply	gsdl.var.component.numeric	|	n.cl
 n.cs	.apply	list.singleton	gsdl.var.component.t	|	n.c0
 n.v	.apply	gsdl.var.basevar	|	n.cs
 v0	.apply	gsdl.var.<>	|	v	n.v
-vs	.undefined	list.t	gsdl.var.t
+n1	.prim	natural.prim	+	_natural.prim.+_ty	|	n	1
+vs	.apply	_gsdl.var.subvars_w	|	v	n1
 	.app	v0	vs
 	.enter	list.:	gsdl.var.t
 
