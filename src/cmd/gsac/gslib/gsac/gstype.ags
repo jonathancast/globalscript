@@ -2054,11 +2054,14 @@ ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 maybe.prim.u	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
+string.t	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 _gsac.gstype.compileToVar_elimprim_nothing_k	.subcode
 list.t.out	.cogvar
+either.right	.gvar
+diff.list.nil	.gvar
 em	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs	.fv	list.t	gsdl.var.t
@@ -2067,7 +2070,12 @@ mb0	.karg	maybe.prim.u	gsdl.var.t
 	.analyze	mb0	just	nothing
 		.case	just
 v		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+nil.var			.apply	diff.list.nil	gsdl.var.t
+nil.tygvar			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
+nil.ti			.apply	diff.list.nil	gsdl.ags.typeitem.t
+res			.lrecord	emitted	em	prim.emitted	pem	res	v	subvars	svs	tyfvs	nil.var	tygvars	nil.tygvar	typeitems	nil.ti	|	_gsac.gstype.compileToVar_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.compileToVar_res.ty
 		.case	nothing
 			.force	_gsac.gstype.compileToVar_elimprim_nothing_k
 			.coerce	list.t.out	gsdl.var.t
