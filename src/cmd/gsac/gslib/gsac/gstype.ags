@@ -1938,9 +1938,14 @@ ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
+_gsac.gstype.compileToVar_elimprim_k	.subcode
+maybe.t.out	.cogvar
+ordered.map.get	.gvar
+_gsac.gstype_primname.compare	.gvar
 env	.arg	gsdl.cgs.typeenv.t
 ps	.arg	gsdl.var.t
 pn	.arg	gsdl.var.t
@@ -1948,6 +1953,19 @@ ki	.arg	gsdl.cgs.gskind.t
 em	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
+ps.pn	.undefined	_gsac.gstype_primname.t
+	.force	_gsac.gstype.compileToVar_elimprim_k
+	.coerce	maybe.t.out	gsdl.var.t
+	.app	_gsac.gstype_primname.compare	ps.pn	pem
+	.enter	ordered.map.get	_gsac.gstype_primname.t	gsdl.var.t
+
+_gsac.gstype.compileToVar_elimprim_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.var.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
+mb0	.karg	maybe.prim.u	gsdl.var.t
 	.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
 # §section §gs{gsac.gstype.fields.compile}
