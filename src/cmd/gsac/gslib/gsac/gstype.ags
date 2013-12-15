@@ -1133,8 +1133,17 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 either.t	.tygvar	# Temp
+either.right	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+		.case	right
+tyr.r		.fkarg	0	_gsac.gstype.compile_res.ty
+res			.undefined	_gsac.gstype.compile_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
 _gsac.gstype.compile_w_lift_k	.forcecont
 gsdl.sourcepos.t	.tygvar
