@@ -1066,8 +1066,6 @@ _gsac.gstype.compile.m_res.u	.tygvar
 _gsac.gstype.compileToApp_res_res.ty	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
-list.t	.tygvar	# Temp
-gsdl.var.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.ags.typeitem.expr.tyref	.gvar
 r0	.karg	_gsac.gstype.compile.m_res.u	_gsac.gstype.compileToApp_res_res.ty
@@ -1077,7 +1075,7 @@ r0.res	.field	res	r0
 tyf	.lfield	tyfun	r0.res
 tyas	.lfield	typeargs	r0.res
 tye	.apply	gsdl.ags.typeitem.expr.tyref	|	tyf	tyas
-svs	.undefined	list.t	gsdl.var.t
+svs	.field	subvars	r0
 tyes	.field	typeitems	r0
 tyfvs	.field	tyfvs	r0
 tygvs	.field	tygvars	r0
