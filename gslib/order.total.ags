@@ -2,6 +2,8 @@
 
 	.data
 
+order.total.ord.||	.closure	_order.total.ord.||_c
+
 order.total.ord.≡	.closure	_order.total.ord.≡_c
 
 order.total.ord.fmtgs	.closure	_order.total.ord.fmtgs_c
@@ -14,6 +16,24 @@ order.total.ord.eq	.closure	_order.total.ord.eq_c
 order.total.ord.gt	.closure	_order.total.ord.gt_c
 
 	.code
+
+# §section §gs{order.total.ord.||}
+
+_order.total.ord.||_c	.expr
+order.total.ord.t	.tygvar
+_order.total.ord.||_k	.subcode
+order.total.ord.t.out	.cogvar
+o0	.larg	order.total.ord.t
+o1	.larg	order.total.ord.t
+	.force	_order.total.ord.||_k
+	.coerce	order.total.ord.t.out
+	.enter	o0
+
+_order.total.ord.||_k	.forcecont
+order.total.ord.prim.u	.tygvar
+order.total.ord.t	.tygvar	# Temp
+o0.0	.karg	order.total.ord.prim.u
+	.undef	order.total.ord.t
 
 # §section §gs{order.total.ord.≡}
 
