@@ -1960,13 +1960,43 @@ ps.pn	.undefined	_gsac.gstype_primname.t
 	.enter	ordered.map.get	_gsac.gstype_primname.t	gsdl.var.t
 
 _gsac.gstype.compileToVar_elimprim_k	.forcecont
-maybe.prim.u	.tygvar
+list.t	.tygvar
 gsdl.var.t	.tygvar
+maybe.prim.u	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
+_gsac.gstype.compileToVar_elimprim_nothing_k	.subcode
+list.t.out	.cogvar
+svs	.fv	list.t	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.var.t
-	.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+	.analyze	mb0	just	nothing
+		.case	just
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+		.case	nothing
+			.force	_gsac.gstype.compileToVar_elimprim_nothing_k
+			.coerce	list.t.out	gsdl.var.t
+			.enter	svs
+
+_gsac.gstype.compileToVar_elimprim_nothing_k	.forcecont
+list.prim.u	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+svs0	.karg	list.prim.u	gsdl.var.t
+	.analyze	svs0	:	nil
+		.case	:
+sv0		.fkarg	0	gsdl.var.t
+svs1		.fkarg	1	list.t	gsdl.var.t
+res			.undefined	_gsac.gstype.compileToVar_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.compileToVar_res.ty
+		.case	nil
+			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
 # §section §gs{gsac.gstype.fields.compile}
 
