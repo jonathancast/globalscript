@@ -358,7 +358,7 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
 y.tya			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tya
-y.tyr			.undefined	gsdl.cgs.gstype.t
+y.tyr			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyr
 			.app	y.tya	y.tyr
 			.enter	gsdl.cgs.gstype.fun
 		.case	lift
