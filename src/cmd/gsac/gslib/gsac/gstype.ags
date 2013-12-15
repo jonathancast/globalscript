@@ -2417,10 +2417,10 @@ _gsac.gstype_primname.t	.tygvar
 order.total.ord.t	.tygvar	# Temp
 order.total.ord.||	.gvar
 gsdl.var.compare	.gvar
-pn0	.larg	_gsac.gstype_primname.t
-pn1	.larg	_gsac.gstype_primname.t
-ps0	.lfield	0	pn0
-ps1	.lfield	0	pn1
+ps.pn0	.larg	_gsac.gstype_primname.t
+ps.pn1	.larg	_gsac.gstype_primname.t
+ps0	.lfield	0	ps.pn0
+ps1	.lfield	0	ps.pn1
 ps.cmp	.apply	gsdl.var.compare	|	ps0	ps1
 pn.cmp	.undefined	order.total.ord.t
 	.app	ps.cmp	pn.cmp
