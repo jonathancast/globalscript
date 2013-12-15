@@ -2862,4 +2862,5 @@ _gsac.gstype_primname.u	.tygvar
 	.tyref	_gsac.gstype_primname.u
 
 _gsac.gstype_primname.u	.tyexpr
-	.typroduct
+gsdl.var.t	.tygvar
+	.typroduct	0	gsdl.var.t
