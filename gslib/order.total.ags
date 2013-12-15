@@ -32,8 +32,15 @@ o1	.larg	order.total.ord.t
 _order.total.ord.||_k	.forcecont
 order.total.ord.prim.u	.tygvar
 order.total.ord.t	.tygvar	# Temp
+order.total.ord.t.in	.cogvar
 o0.0	.karg	order.total.ord.prim.u
-	.undef	order.total.ord.t
+	.danalyze	o0.0	eq
+		.default
+			.coerce	order.total.ord.t.in
+			.lift
+			.yield	o0.0
+		.case	eq
+			.undef	order.total.ord.t
 
 # §section §gs{order.total.ord.≡}
 
