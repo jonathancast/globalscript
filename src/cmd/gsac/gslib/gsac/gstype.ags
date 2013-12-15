@@ -2040,6 +2040,8 @@ ps.pn	.undefined	_gsac.gstype_primname.t
 _gsac.gstype.compileToVar_elimprim_k	.forcecont
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 maybe.prim.u	.tygvar
 either.t	.tygvar	# Temp
@@ -2048,7 +2050,9 @@ _gsac.gstype.compileToVar_res.ty	.tygvar	# Temp
 _gsac.gstype.compileToVar_elimprim_nothing_k	.subcode
 list.t.out	.cogvar
 em	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs	.fv	list.t	gsdl.var.t
+ps.pn	.fv	_gsac.gstype_primname.t
 mb0	.karg	maybe.prim.u	gsdl.var.t
 	.analyze	mb0	just	nothing
 		.case	just
@@ -2062,25 +2066,29 @@ v		.fkarg	0	gsdl.var.t
 _gsac.gstype.compileToVar_elimprim_nothing_k	.forcecont
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	# Temp
-ordered.map.t	.tygvar	# Temp
-_gsac.gstype_primname.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
 either.right	.gvar
+ordered.map.insert	.gvar
+_gsac.gstype_primname.compare	.gvar
 diff.list.nil	.gvar
 em	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+ps.pn	.fv	_gsac.gstype_primname.t
 svs0	.karg	list.prim.u	gsdl.var.t
 	.analyze	svs0	:	nil
 		.case	:
 sv0		.fkarg	0	gsdl.var.t
 svs1		.fkarg	1	list.t	gsdl.var.t
-pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+pem1			.apply	ordered.map.insert	_gsac.gstype_primname.t	gsdl.var.t	|	_gsac.gstype_primname.compare	ps.pn	sv0	pem
 nil.var			.apply	diff.list.nil	gsdl.var.t
 nil.tygvar			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 nil.ti			.apply	diff.list.nil	gsdl.ags.typeitem.t
