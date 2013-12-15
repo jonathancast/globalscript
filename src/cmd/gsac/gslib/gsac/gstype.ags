@@ -2405,9 +2405,16 @@ rys1			.lrecord	emitted	em	prim.emitted	pem	res	ys1	subvars	svs	tyfvs	tyfvs	tygv
 _gsac.gstype_primname.compare_c	.expr
 _gsac.gstype_primname.t	.tygvar
 order.total.ord.t	.tygvar	# Temp
+order.total.ord.||	.gvar
+gsdl.var.compare	.gvar
 pn0	.larg	_gsac.gstype_primname.t
 pn1	.larg	_gsac.gstype_primname.t
-	.undef	order.total.ord.t
+ps0	.lfield	0	pn0
+ps1	.lfield	0	pn1
+ps.cmp	.apply	gsdl.var.compare	|	ps0	ps1
+pn.cmp	.undefined	order.total.ord.t
+	.app	ps.cmp	pn.cmp
+	.enter	order.total.ord.||
 
 	.type
 
