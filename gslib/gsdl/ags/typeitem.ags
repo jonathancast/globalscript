@@ -97,6 +97,7 @@ gsdl.ags.typeitem.tyintrprim	.closure	_gsdl.ags.typeitem.tyintrprim_c
 
 gsdl.ags.typeitem.decls.tygvar.tyextabstype	.closure	_gsdl.ags.typeitem.decls.tygvar.tyextabstype_c
 gsdl.ags.typeitem.decls.tygvar.tygvar	.closure	_gsdl.ags.typeitem.decls.tygvar.tygvar_c
+gsdl.ags.typeitem.decls.tygvar.tyextelimprim	.closure	_gsdl.ags.typeitem.decls.tygvar.tyextelimprim_c
 
 gsdl.ags.typeitem.expr.pos	.closure	_gsdl.ags.typeitem.expr.pos_c
 gsdl.ags.typeitem.expr.lift	.closure	_gsdl.ags.typeitem.expr.lift_c
@@ -813,7 +814,7 @@ rune.new.line	.gvar
 _gsdl.ags.typeitem.decls.tygvar.print_tygvar_tygvar.s	.gvar
 diff.list.nil	.gvar	# Temp
 tygv0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
-	.analyze	tygv0	tyextabstype	tygvar
+	.analyze	tygv0	tyextabstype	tyextelimprim	tygvar
 		.case	tyextabstype
 v		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.ags.typeitem.gskind.t
@@ -826,6 +827,12 @@ ds1			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.typeitem.decls.tygvar.print_ty
 ds			.apply	diff.list.:	rune.t	|	rune.tab	ds1
 			.app	v.s	ds
 			.enter	diff.list.prepend	rune.t
+		.case	tyextelimprim
+v		.fkarg	0	gsdl.var.t
+ps		.fkarg	1	gsdl.var.t
+pn		.fkarg	2	gsdl.var.t
+ki		.fkarg	3	gsdl.ags.typeitem.gskind.t
+			.undef	diff.list.t	rune.t
 		.case	tygvar
 v		.fkarg	0	gsdl.var.t
 v.s			.apply	gsdl.ags.syntax.var.print	|	v
@@ -1884,6 +1891,20 @@ c	.constr	gsdl.ags.typeitem.decls.tygvar.prim.u	tygvar	0	v
 	.lift
 	.yield	c
 
+_gsdl.ags.typeitem.decls.tygvar.tyextelimprim_c	.expr
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.prim.u	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t.in	.cogvar
+v	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+pn	.larg	gsdl.var.t
+ki	.larg	gsdl.ags.typeitem.gskind.t
+c	.constr	gsdl.ags.typeitem.decls.tygvar.prim.u	tyextelimprim	0	v	1	ps	2	pn	3	ki
+	.coerce	gsdl.ags.typeitem.decls.tygvar.t.in
+	.lift
+	.yield	c
+
 # §section §gs{gsdl.ags.typeitem.expr.t} Constructors
 
 _gsdl.ags.typeitem.expr.pos_c	.expr
@@ -2072,7 +2093,8 @@ gsdl.ags.typeitem.decls.tygvar.prim.u	.tygvar
 gsdl.ags.typeitem.decls.tygvar.prim.u	.tyexpr
 _gsdl.ags.typeitem.decls.tygvar.prim.u_tyextabstype_ty	.tygvar
 _gsdl.ags.typeitem.decls.tygvar.prim.u_tygvar_ty	.tygvar
-	.tysum	tyextabstype	_gsdl.ags.typeitem.decls.tygvar.prim.u_tyextabstype_ty	tygvar	_gsdl.ags.typeitem.decls.tygvar.prim.u_tygvar_ty
+_gsdl.ags.typeitem.decls.tygvar.prim.u_tyextelimprim_ty	.tygvar
+	.tysum	tyextabstype	_gsdl.ags.typeitem.decls.tygvar.prim.u_tyextabstype_ty	tyextelimprim	_gsdl.ags.typeitem.decls.tygvar.prim.u_tyextelimprim_ty	tygvar	_gsdl.ags.typeitem.decls.tygvar.prim.u_tygvar_ty
 
 _gsdl.ags.typeitem.decls.tygvar.prim.u_tyextabstype_ty	.tyexpr
 gsdl.var.t	.tygvar
@@ -2082,6 +2104,11 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 _gsdl.ags.typeitem.decls.tygvar.prim.u_tygvar_ty	.tyexpr
 gsdl.var.t	.tygvar
 	.tyubproduct	0	gsdl.var.t
+
+_gsdl.ags.typeitem.decls.tygvar.prim.u_tyextelimprim_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.var.t	1	gsdl.var.t	2	gsdl.var.t	3	gsdl.ags.typeitem.gskind.t
 
 # §section §gs{gsdl.ags.typeitem.decls.tyarg.t}
 
