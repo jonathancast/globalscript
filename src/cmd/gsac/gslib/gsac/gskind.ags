@@ -4,6 +4,8 @@
 
 gsac.gskind.check	.closure	_gsac.gskind.check_c	_gsac.gskind.check_ty
 
+gsac.gskind.compile	.closure	_gsac.gskind.compile_c	_gsac.gskind.compile_ty
+
 	.code
 
 # §section §gs{gsac.gskind.check}
@@ -60,6 +62,85 @@ ky.e		.fkarg	1	gsdl.cgs.gskind.t
 					.enter	either.right	string.t	record.empty
 	# > :: either.t	string.t	record.empty
 
+# §section §gs{gsac.gskind.compile}
+
+_gsac.gskind.compile_c	.expr
+gsdl.cgs.gskind.t	.tygvar
+_gsac.gskind.compile_k	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+ki	.larg	gsdl.cgs.gskind.t
+	.force	_gsac.gskind.compile_k
+	.coerce	gsdl.cgs.gskind.t.out
+	.enter	ki
+
+_gsac.gskind.compile_k	.forcecont
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gskind.compile_exp_k	.subcode
+either.t.out	.cogvar
+gsac.gskind.compile	.gvar
+either.right	.gvar
+gsdl.ags.typeitem.gskind.lifted	.gvar
+ki0	.karg	gsdl.cgs.gskind.prim.u
+	.analyze	ki0	exp	lifted	unlifted
+		.case	exp
+kib		.fkarg	0	gsdl.cgs.gskind.t
+kie		.fkarg	1	gsdl.cgs.gskind.t
+			.force	_gsac.gskind.compile_exp_k
+			.coerce	either.t.out	string.t	gsdl.ags.typeitem.gskind.t
+			.app	kib
+			.enter	gsac.gskind.compile
+		.case	lifted
+			.app	gsdl.ags.typeitem.gskind.lifted
+			.enter	either.right	string.t	gsdl.ags.typeitem.gskind.t
+		.case	unlifted
+			.undef	either.t	string.t	gsdl.ags.typeitem.gskind.t
+	# > :: either.t	string.t	gsdl.ags.typeitem.gskind.t
+
+_gsac.gskind.compile_exp_k	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gskind.compile_exp_right_k	.subcode
+either.t.out	.cogvar
+gsac.gskind.compile	.gvar
+kie	.fv	gsdl.cgs.gskind.t
+ekib0	.karg	either.prim.u	string.t	gsdl.ags.typeitem.gskind.t
+	.analyze	ekib0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.ags.typeitem.gskind.t
+		.case	right
+kib.ags		.fkarg	0	gsdl.ags.typeitem.gskind.t
+			.force	_gsac.gskind.compile_exp_right_k
+			.coerce	either.t.out	string.t	gsdl.ags.typeitem.gskind.t
+			.app	kie
+			.enter	gsac.gskind.compile
+
+_gsac.gskind.compile_exp_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+gsdl.ags.typeitem.gskind.exp	.gvar
+kib.ags	.fv	gsdl.ags.typeitem.gskind.t
+ekie0	.karg	either.prim.u	string.t	gsdl.ags.typeitem.gskind.t
+	.analyze	ekie0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.ags.typeitem.gskind.t
+		.case	right
+kie.ags		.fkarg	0	gsdl.ags.typeitem.gskind.t
+ki.ags			.apply	gsdl.ags.typeitem.gskind.exp	|	kib.ags	kie.ags
+			.app	ki.ags
+			.enter	either.right	string.t	gsdl.ags.typeitem.gskind.t
+
 	.type
 
 # §section §gs{gsac.gskind.check}
@@ -74,3 +155,14 @@ record.empty	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.gskind.t
 	.tyref	either.t	string.t	record.empty
+
+# §section §gs{gsac.gskind.compile}
+
+_gsac.gskind.compile_ty	.tyexpr
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gskind.t
+	.tyref	either.t	string.t	gsdl.ags.typeitem.gskind.t

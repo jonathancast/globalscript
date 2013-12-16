@@ -33,8 +33,6 @@ gsac.gstype.constr.compile	.closure	_gsac.gstype.constr.compile_c	_gsac.gstype.c
 
 gsac.gstype.constr.compare	.closure	_gsac.gstype.constr.compare_c
 
-gsac.gstype.gskind.compile	.closure	_gsac.gstype.gskind.compile_c	_gsac.gstype.gskind.compile_ty
-
 gsac.gstype.compile.mapM	.closure	_gsac.gstype.compile.mapM_c	_gsac.gstype.compile.mapM_ty
 
 _gsac.gstype_primname.compare	.closure	_gsac.gstype_primname.compare_c
@@ -2061,7 +2059,7 @@ diff.list.t	.tygvar	# Temp
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
 _gsac.gstype.compileToVar_gsabstype_tygvs_false_just_k	.subcode
 either.t.out	.cogvar
-gsac.gstype.gskind.compile	.gvar
+gsac.gskind.compile	.gvar
 v	.fv	gsdl.var.t
 mbki0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mbki0	just	nothing
@@ -2070,7 +2068,7 @@ ki		.fkarg	0	gsdl.cgs.gskind.t
 			.force	_gsac.gstype.compileToVar_gsabstype_tygvs_false_just_k
 			.coerce	either.t.out	string.t	gsdl.ags.typeitem.gskind.t
 			.app	ki
-			.enter	gsac.gstype.gskind.compile
+			.enter	gsac.gskind.compile
 		.case	nothing
 			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 
@@ -2329,86 +2327,6 @@ order.total.ord.t	.tygvar	# Temp
 c0	.larg	gsdl.cgs.gstype.constr.t
 c1	.larg	gsdl.cgs.gstype.constr.t
 	.undef	order.total.ord.t
-
-# §section §gs{gsac.gstype.gskind.compile}
-
-# > either.t string.t
-_gsac.gstype.gskind.compile_c	.expr
-gsdl.cgs.gskind.t	.tygvar
-_gsac.gstype.gskind.compile_k	.subcode
-gsdl.cgs.gskind.t.out	.cogvar
-ki	.larg	gsdl.cgs.gskind.t
-	.force	_gsac.gstype.gskind.compile_k
-	.coerce	gsdl.cgs.gskind.t.out
-	.enter	ki
-
-_gsac.gstype.gskind.compile_k	.forcecont
-gsdl.cgs.gskind.prim.u	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-string.t	.tygvar
-gsdl.ags.typeitem.gskind.t	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gstype.gskind.compile_exp_k	.subcode
-either.t.out	.cogvar
-gsac.gstype.gskind.compile	.gvar
-either.right	.gvar
-gsdl.ags.typeitem.gskind.lifted	.gvar
-ki0	.karg	gsdl.cgs.gskind.prim.u
-	.analyze	ki0	exp	lifted	unlifted
-		.case	exp
-kib		.fkarg	0	gsdl.cgs.gskind.t
-kie		.fkarg	1	gsdl.cgs.gskind.t
-			.force	_gsac.gstype.gskind.compile_exp_k
-			.coerce	either.t.out	string.t	gsdl.ags.typeitem.gskind.t
-			.app	kib
-			.enter	gsac.gstype.gskind.compile
-		.case	lifted
-			.app	gsdl.ags.typeitem.gskind.lifted
-			.enter	either.right	string.t	gsdl.ags.typeitem.gskind.t
-		.case	unlifted
-			.undef	either.t	string.t	gsdl.ags.typeitem.gskind.t
-	# > :: either.t	string.t	gsdl.ags.typeitem.gskind.t
-
-_gsac.gstype.gskind.compile_exp_k	.forcecont
-gsdl.cgs.gskind.t	.tygvar
-either.prim.u	.tygvar
-string.t	.tygvar
-gsdl.ags.typeitem.gskind.t	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gstype.gskind.compile_exp_right_k	.subcode
-either.t.out	.cogvar
-gsac.gstype.gskind.compile	.gvar
-kie	.fv	gsdl.cgs.gskind.t
-ekib0	.karg	either.prim.u	string.t	gsdl.ags.typeitem.gskind.t
-	.analyze	ekib0	left	right
-		.case	left
-err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.ags.typeitem.gskind.t
-		.case	right
-kib.ags		.fkarg	0	gsdl.ags.typeitem.gskind.t
-			.force	_gsac.gstype.gskind.compile_exp_right_k
-			.coerce	either.t.out	string.t	gsdl.ags.typeitem.gskind.t
-			.app	kie
-			.enter	gsac.gstype.gskind.compile
-
-_gsac.gstype.gskind.compile_exp_right_k	.forcecont
-either.prim.u	.tygvar
-string.t	.tygvar
-gsdl.ags.typeitem.gskind.t	.tygvar
-either.t	.tygvar	# Temp
-either.right	.gvar
-gsdl.ags.typeitem.gskind.exp	.gvar
-kib.ags	.fv	gsdl.ags.typeitem.gskind.t
-ekie0	.karg	either.prim.u	string.t	gsdl.ags.typeitem.gskind.t
-	.analyze	ekie0	left	right
-		.case	left
-err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.ags.typeitem.gskind.t
-		.case	right
-kie.ags		.fkarg	0	gsdl.ags.typeitem.gskind.t
-ki.ags			.apply	gsdl.ags.typeitem.gskind.exp	|	kib.ags	kie.ags
-			.app	ki.ags
-			.enter	either.right	string.t	gsdl.ags.typeitem.gskind.t
 
 # §section §gs{gsac.gstype.compile.mapM}
 
@@ -2980,17 +2898,6 @@ _gsac.gstype.constr.compile_res.u	.tygvar
 
 _gsac.gstype.constr.compile_res.u	.tyexpr
 	.typroduct
-
-# §section §gs{gsac.gstype.gskind.compile}
-
-_gsac.gstype.gskind.compile_ty	.tyexpr
-gsdl.cgs.gskind.t	.tygvar
-either.t	.tygvar
-string.t	.tygvar
-gsdl.ags.typeitem.gskind.t	.tygvar
-	.tylift
-	.tyfun	gsdl.cgs.gskind.t
-	.tyref	either.t	string.t	gsdl.ags.typeitem.gskind.t
 
 # §section §gs{gsac.gstype.compile.mapM}
 

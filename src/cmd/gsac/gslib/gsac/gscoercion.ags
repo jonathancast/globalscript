@@ -516,7 +516,7 @@ diff.list.t	.tygvar	# Temp
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
 _gsac.gscoercion.compile_defn_tygvs_false_just_k	.subcode
 either.t.out	.cogvar
-gsac.gstype.gskind.compile	.gvar
+gsac.gskind.compile	.gvar
 tyc	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mb0	just	nothing
@@ -525,7 +525,7 @@ ki		.fkarg	0	gsdl.cgs.gskind.t
 			.force	_gsac.gscoercion.compile_defn_tygvs_false_just_k
 			.coerce	either.t.out	string.t	gsdl.ags.typeitem.gskind.t
 			.app	ki
-			.enter	gsac.gstype.gskind.compile
+			.enter	gsac.gskind.compile
 		.case	nothing
 			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 
@@ -744,7 +744,7 @@ string.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 _gsac.gscoercion.compileAppTy_app_defn_right_tygvs_false_just_k	.subcode
 either.t.out	.cogvar
-gsac.gstype.gskind.compile	.gvar
+gsac.gskind.compile	.gvar
 tyc	.fv	gsdl.var.t
 tyas.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
@@ -754,7 +754,7 @@ ki		.fkarg	0	gsdl.cgs.gskind.t
 			.force	_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_false_just_k
 			.coerce	either.t.out	string.t	gsdl.ags.typeitem.gskind.t
 			.app	ki
-			.enter	gsac.gstype.gskind.compile
+			.enter	gsac.gskind.compile
 		.case	nothing
 			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 
