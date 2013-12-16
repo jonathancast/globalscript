@@ -798,6 +798,7 @@ either.t.out	.cogvar
 gsac.gscoercion.compile	.gvar
 ordered.set.empty	.gvar
 ordered.map.empty	.gvar
+gsdl.var.subvars	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 v	.larg	gsdl.var.t
@@ -807,7 +808,7 @@ pem.ty	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs.ty	.larg	list.t	gsdl.var.t
 em.ty.empty	.apply	ordered.set.empty	gsdl.var.t
 pem.ty.empty	.apply	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
-subvars	.undefined	list.t	gsdl.var.t
+subvars	.apply	gsdl.var.subvars	|	v
 	.force	_gsac.gscoercion.compileToGlobalVar_k
 	.coerce	either.t.out	string.t	_gsac.gscoercion.compile_res.ty
 	.app	pos	env	co	em.ty.empty	pem.ty.empty	subvars
