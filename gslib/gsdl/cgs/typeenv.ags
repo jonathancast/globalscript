@@ -237,15 +237,15 @@ gsdl.cgs.typeenv.typeexpansion.expr	.gvar
 list.nil	.gvar
 gsdl.cgs.gstype.elimprim	.gvar
 v	.fv	gsdl.var.t
-pn	.fv	gsdl.var.t
 ps	.fv	gsdl.var.t
+pn	.fv	gsdl.var.t
 ki	.fv	gsdl.cgs.gskind.t
 env0	.karg	gsdl.cgs.typeenv.u
 kis0	.field	kinds	env0
 kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
 tyds	.field	typedefinitions	env0
 nil	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
-ety	.apply	gsdl.cgs.gstype.elimprim	|	pn	ps	ki
+ety	.apply	gsdl.cgs.gstype.elimprim	|	ps	pn	ki
 e	.apply	gsdl.cgs.typeenv.typeexpansion.expr	|	nil	ety
 es0	.field	typeexpansions	env0
 es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
