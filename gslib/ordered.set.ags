@@ -345,7 +345,8 @@ sr	.fv	ordered.set.t	α
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
 		.case	eq
-			.undef	ordered.set.t	α
+			.app	x1	sl	sr
+			.yield	ordered.set.prim.branch	α
 		.case	gt
 sr1			.apply	ordered.set.insert	α	|	cmp	x	sr
 			.app	x1	sl	sr1
