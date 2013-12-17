@@ -2053,45 +2053,22 @@ _gsac.gstype.compileToVar_gsabstype_tygvs_false_k	.forcecont
 gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-string.t	.tygvar
-gsdl.ags.typeitem.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 diff.list.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
-_gsac.gstype.compileToVar_gsabstype_tygvs_false_just_k	.subcode
-either.t.out	.cogvar
+diff.list.singleton	.gvar
+gsdl.ags.typeitem.decls.tygvar.tyextabstype	.gvar
 gsac.gskind.compile	.gvar
 v	.fv	gsdl.var.t
 mbki0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mbki0	just	nothing
 		.case	just
 ki		.fkarg	0	gsdl.cgs.gskind.t
-			.force	_gsac.gstype.compileToVar_gsabstype_tygvs_false_just_k
-			.coerce	either.t.out	string.t	gsdl.ags.typeitem.gskind.t
-			.app	ki
-			.enter	gsac.gskind.compile
-		.case	nothing
-			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
-
-_gsac.gstype.compileToVar_gsabstype_tygvs_false_just_k	.forcecont
-gsdl.var.t	.tygvar
-either.prim.u	.tygvar
-string.t	.tygvar
-gsdl.ags.typeitem.gskind.t	.tygvar
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar
-diff.list.t	.tygvar	# Temp
-diff.list.singleton	.gvar
-gsdl.ags.typeitem.decls.tygvar.tyextabstype	.gvar
-v	.fv	gsdl.var.t
-e0	.karg	either.prim.u	string.t	gsdl.ags.typeitem.gskind.t
-	.analyze	e0	left	right
-		.case	left
-err		.fkarg	0	string.t
-			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
-		.case	right
-ki.ags		.fkarg	0	gsdl.ags.typeitem.gskind.t
+ki.ags		.apply	gsac.gskind.compile	|	ki
 tygv			.apply	gsdl.ags.typeitem.decls.tygvar.tyextabstype	|	v	ki.ags
 			.app	tygv
 			.enter	diff.list.singleton	gsdl.ags.typeitem.decls.tygvar.t
+		.case	nothing
+			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 
 _gsac.gstype.compileToVar_elimprim_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
