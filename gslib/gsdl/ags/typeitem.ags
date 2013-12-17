@@ -943,9 +943,9 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.typeitem.gskind.parser_unlifted.re	.gvar
 parser.unit	.gvar
+gsdl.ags.typeitem.gskind.unlifted	.gvar
 unlifted.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.gskind.parser_unlifted.re
-unlifted.ki	.undefined	gsdl.ags.typeitem.gskind.t
-unlifted.p2	.apply	parser.unit	rune.t	gsdl.ags.typeitem.gskind.t	|	unlifted.ki
+unlifted.p2	.apply	parser.unit	rune.t	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.typeitem.gskind.unlifted
 	.app	unlifted.p1	unlifted.p2
 	.enter	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t
 
