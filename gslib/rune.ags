@@ -40,6 +40,7 @@ rune.single.quote	.closure	_rune.single.quote_c
 rune.latin.letter.c	.closure	_rune.latin.letter.c_c
 rune.latin.letter.g	.closure	_rune.latin.letter.g_c
 rune.latin.letter.n	.closure	_rune.latin.letter.n_c
+rune.latin.letter.u	.closure	_rune.latin.letter.u_c
 rune.latin.letter.x	.closure	_rune.latin.letter.x_c
 rune.latin.letter.y	.closure	_rune.latin.letter.y_c
 rune.underscore	.closure	_rune.underscore_c
@@ -418,6 +419,13 @@ n	.rune	n
 	.coerce	rune.t.in
 	.lift
 	.yield	n
+
+_rune.latin.letter.u_c	.expr
+rune.t.in	.cogvar
+u	.rune	u
+	.coerce	rune.t.in
+	.lift
+	.yield	u
 
 _rune.latin.letter.x_c	.expr
 rune.t.in	.cogvar
