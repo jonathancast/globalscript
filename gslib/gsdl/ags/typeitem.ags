@@ -1057,6 +1057,7 @@ diff.list.snoc	.gvar
 diff.list.<>	.gvar
 gsdl.ags.typeitem.gskind.print	.gvar
 rune.caret	.gvar
+rune.latin.letter.u	.gvar
 ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
 	.analyze	ki0	exp	lifted	unlifted
 		.case	exp
@@ -1071,7 +1072,8 @@ ds			.apply	diff.list.<>	rune.t	|	kib.ds	kie.ds
 			.app	rune.star
 			.enter	diff.list.singleton	rune.t
 		.case	unlifted
-			.undef	diff.list.t	rune.t
+			.app	rune.latin.letter.u
+			.enter	diff.list.singleton	rune.t
 	# > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.typeitem.gskind.≡}
