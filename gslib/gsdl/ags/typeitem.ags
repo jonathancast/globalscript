@@ -838,7 +838,7 @@ v.s			.apply	gsdl.ags.syntax.var.print	|	v
 ps.s			.apply	gsdl.ags.syntax.var.print	|	ps
 pn.s			.apply	gsdl.ags.syntax.var.print	|	pn
 ki.ds			.apply	gsdl.ags.typeitem.gskind.print	|	ki
-ds8			.undefined	diff.list.t	rune.t
+ds8			.apply	diff.list.singleton	rune.t	|	rune.new.line
 ds7			.apply	diff.list.<>	rune.t	|	ki.ds	ds8
 ds6			.apply	diff.list.:	rune.t	|	rune.tab	ds7
 ds5			.apply	diff.list.prepend	rune.t	|	pn.s	ds6
