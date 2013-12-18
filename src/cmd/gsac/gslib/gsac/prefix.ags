@@ -549,12 +549,18 @@ gsdl.cgs.symbol.tyvar	.gvar
 s	.fv	ordered.set.t	gsdl.cgs.symbol.t
 tygvs1	.fv	list.t	gsdl.ags.typeitem.decls.tygvar.t
 tygv0.0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
-	.analyze	tygv0.0	tyextabstype	tyextelimprim	tygvar
+	.analyze	tygv0.0	tyextabstype	tyextelimprim	tyextimpprim	tygvar
 		.case	tyextabstype
 v		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.ags.typeitem.gskind.t
 			.undef	ordered.set.t	gsdl.cgs.symbol.t
 		.case	tyextelimprim
+v		.fkarg	0	gsdl.var.t
+ps		.fkarg	1	gsdl.var.t
+pn		.fkarg	2	gsdl.var.t
+ki		.fkarg	3	gsdl.ags.typeitem.gskind.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
+		.case	tyextimpprim
 v		.fkarg	0	gsdl.var.t
 ps		.fkarg	1	gsdl.var.t
 pn		.fkarg	2	gsdl.var.t
@@ -1793,12 +1799,18 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
 gsdl.cgs.symbol.tyvar	.gvar
 tygv0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
-	.analyze	tygv0	tyextabstype	tyextelimprim	tygvar
+	.analyze	tygv0	tyextabstype	tyextelimprim	tyextimpprim	tygvar
 		.case	tyextabstype
 v		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.ags.typeitem.gskind.t
 			.undef	gsdl.cgs.symbol.t
 		.case	tyextelimprim
+v		.fkarg	0	gsdl.var.t
+ps		.fkarg	1	gsdl.var.t
+pn		.fkarg	2	gsdl.var.t
+ki		.fkarg	3	gsdl.ags.typeitem.gskind.t
+			.undef	gsdl.cgs.symbol.t
+		.case	tyextimpprim
 v		.fkarg	0	gsdl.var.t
 ps		.fkarg	1	gsdl.var.t
 pn		.fkarg	2	gsdl.var.t
