@@ -990,10 +990,10 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.unknown_unknown.re	.gvar
 parser.unit	.gvar
+gsdl.ags.typeitem.gskind.unknown	.gvar
 parser.fail	.gvar	# Temp
 p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.gskind.parser_w_push.atom.p_atom.unknown_unknown.re
-unknown.ki	.undefined	gsdl.ags.typeitem.gskind.t
-p2	.apply	parser.unit	rune.t	gsdl.ags.typeitem.gskind.t	|	unknown.ki
+p2	.apply	parser.unit	rune.t	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.typeitem.gskind.unknown
 	.app	p1	p2
 	.enter	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t
 
