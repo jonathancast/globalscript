@@ -178,7 +178,7 @@ env	.fv	gsdl.cgs.typeenv.t
 tyx	.fv	gsdl.cgs.gstype.t
 f.r.tye	.fv	gsdl.cgs.typeenv.typeexpansion.t
 ki0	.karg	gsdl.cgs.gskind.prim.u	# Kind of type function
-	.analyze	ki0	exp	lifted	unlifted
+	.analyze	ki0	exp	lifted	unknown	unlifted
 		.case	exp
 ki.b		.fkarg	0	gsdl.cgs.gskind.t
 ki.e		.fkarg	1	gsdl.cgs.gskind.t
@@ -188,9 +188,11 @@ ki.e		.fkarg	1	gsdl.cgs.gskind.t
 			.enter	gsac.gstype.annotate
 		.case	lifted
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
+		.case	unknown
+			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	unlifted
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
-	# > :: either.t	string.t	gsdl.cgs.gskind.t
+	# > :: either.t	string.t	_gsac.gstype.annotate_res.ty
 
 _gsac.gstype.annotate_app_right_exp_k	.forcecont
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar

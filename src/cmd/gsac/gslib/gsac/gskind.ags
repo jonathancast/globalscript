@@ -41,7 +41,7 @@ either.right	.gvar
 record.empty	.gvar
 ky0.0	.fv	gsdl.cgs.gskind.prim.u
 ky1.0	.karg	gsdl.cgs.gskind.prim.u
-	.analyze	ky1.0	exp	lifted	unlifted
+	.analyze	ky1.0	exp	lifted	unknown	unlifted
 		.case	exp
 ky.b		.fkarg	0	gsdl.cgs.gskind.t
 ky.e		.fkarg	1	gsdl.cgs.gskind.t
@@ -53,6 +53,8 @@ ky.e		.fkarg	1	gsdl.cgs.gskind.t
 				.case	lifted
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
+		.case	unknown
+			.undef	either.t	string.t	record.empty
 		.case	unlifted
 			.danalyze	ky0.0	unlifted
 				.default
@@ -82,7 +84,7 @@ gsac.gskind.compile	.gvar
 gsdl.ags.typeitem.gskind.lifted	.gvar
 gsdl.ags.typeitem.gskind.unlifted	.gvar
 ki0	.karg	gsdl.cgs.gskind.prim.u
-	.analyze	ki0	exp	lifted	unlifted
+	.analyze	ki0	exp	lifted	unknown	unlifted
 		.case	exp
 kib		.fkarg	0	gsdl.cgs.gskind.t
 kie		.fkarg	1	gsdl.cgs.gskind.t
@@ -92,6 +94,8 @@ kie.ags			.apply	gsac.gskind.compile	|	kie
 			.enter	gsdl.ags.typeitem.gskind.exp
 		.case	lifted
 			.enter	gsdl.ags.typeitem.gskind.lifted
+		.case	unknown
+			.undef	gsdl.ags.typeitem.gskind.t
 		.case	unlifted
 			.enter	gsdl.ags.typeitem.gskind.unlifted
 	# > :: gsdl.ags.typeitem.gskind.t

@@ -10,6 +10,7 @@ _gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s	.string	unlifted
 
 gsdl.cgs.gskind.unlifted	.closure	_gsdl.cgs.gskind.unlifted_c
 gsdl.cgs.gskind.lifted	.closure	_gsdl.cgs.gskind.lifted_c
+gsdl.cgs.gskind.unknown	.closure	_gsdl.cgs.gskind.unknown_c
 gsdl.cgs.gskind.exp	.closure	_gsdl.cgs.gskind.exp_c
 
 	.code
@@ -45,7 +46,7 @@ bool.false	.gvar
 bool.true	.gvar
 ki0.0	.fv	gsdl.cgs.gskind.prim.u
 ki1.0	.karg	gsdl.cgs.gskind.prim.u
-	.analyze	ki0.0	exp	lifted	unlifted
+	.analyze	ki0.0	exp	lifted	unknown	unlifted
 		.case	exp
 ki0.b		.fkarg	0	gsdl.cgs.gskind.t
 ki0.e		.fkarg	1	gsdl.cgs.gskind.t
@@ -56,6 +57,8 @@ ki0.e		.fkarg	1	gsdl.cgs.gskind.t
 					.enter	bool.false
 				.case	lifted
 					.enter	bool.true
+		.case	unknown
+			.undef	bool.t
 		.case	unlifted
 			.danalyze	ki1.0	unlifted
 				.default
@@ -83,7 +86,7 @@ fmtgs.var	.gvar
 _gsdl.cgs.gskind.fmtgs_lifted_lifted.s	.gvar
 _gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s	.gvar
 ki0	.karg	gsdl.cgs.gskind.prim.u
-	.analyze	ki0	exp	lifted	unlifted
+	.analyze	ki0	exp	lifted	unknown	unlifted
 		.case	exp
 ki.b		.fkarg	0	gsdl.cgs.gskind.t
 ki.e		.fkarg	1	gsdl.cgs.gskind.t
@@ -91,6 +94,8 @@ ki.e		.fkarg	1	gsdl.cgs.gskind.t
 		.case	lifted
 			.app	_gsdl.cgs.gskind.fmtgs_lifted_lifted.s
 			.enter	fmtgs.var
+		.case	unknown
+			.undef	fmtgs.printer.t
 		.case	unlifted
 			.app	_gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s
 			.enter	fmtgs.var
@@ -110,6 +115,14 @@ _gsdl.cgs.gskind.lifted_c	.expr
 gsdl.cgs.gskind.prim.u	.tygvar
 gsdl.cgs.gskind.t.in	.cogvar
 c	.constr	gsdl.cgs.gskind.prim.u	lifted
+	.coerce	gsdl.cgs.gskind.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gskind.unknown_c	.expr
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t.in	.cogvar
+c	.constr	gsdl.cgs.gskind.prim.u	unknown
 	.coerce	gsdl.cgs.gskind.t.in
 	.lift
 	.yield	c
@@ -135,7 +148,7 @@ gsdl.cgs.gskind.prim.u	.tygvar
 gsdl.cgs.gskind.prim.u	.tyexpr
 _gsdl.cgs.gskind.prim.u_exp_ty	.tygvar
 record.unboxed.empty	.tygvar
-	.tysum	exp	_gsdl.cgs.gskind.prim.u_exp_ty	lifted	record.unboxed.empty	unlifted	record.unboxed.empty
+	.tysum	exp	_gsdl.cgs.gskind.prim.u_exp_ty	lifted	record.unboxed.empty	unknown	record.unboxed.empty	unlifted	record.unboxed.empty
 
 _gsdl.cgs.gskind.prim.u_exp_ty	.tyexpr
 gsdl.cgs.gskind.t	.tygvar
