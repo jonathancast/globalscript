@@ -40,6 +40,8 @@ _gsdl.ags.typeitem.decls.tygvar.print_tyextabstype_tyextabstype.s	.string	.tyext
 _gsdl.ags.typeitem.decls.tygvar.print_tyextelimprim_tyextelimprim.s	.string	.tyextelimprim
 _gsdl.ags.typeitem.decls.tygvar.print_tygvar_tygvar.s	.string	.tygvar
 
+_gsdl.ags.typeitem.decls.tygvar.print_prim	.closure	_gsdl.ags.typeitem.decls.tygvar.print_prim_c
+
 gsdl.ags.typeitem.decls.tygvar.≡	.closure	_gsdl.ags.typeitem.decls.tygvar.≡_c
 
 gsdl.ags.typeitem.decls.tygvar.fmtgs	.closure	_gsdl.ags.typeitem.decls.tygvar.fmtgs_c
@@ -813,6 +815,7 @@ diff.list.<>	.gvar
 gsdl.ags.typeitem.gskind.print	.gvar
 diff.list.singleton	.gvar
 rune.new.line	.gvar
+_gsdl.ags.typeitem.decls.tygvar.print_prim	.gvar
 _gsdl.ags.typeitem.decls.tygvar.print_tyextelimprim_tyextelimprim.s	.gvar
 _gsdl.ags.typeitem.decls.tygvar.print_tygvar_tygvar.s	.gvar
 diff.list.nil	.gvar	# Temp
@@ -835,21 +838,8 @@ v		.fkarg	0	gsdl.var.t
 ps		.fkarg	1	gsdl.var.t
 pn		.fkarg	2	gsdl.var.t
 ki		.fkarg	3	gsdl.ags.typeitem.gskind.t
-v.s			.apply	gsdl.ags.syntax.var.print	|	v
-ps.s			.apply	gsdl.ags.syntax.var.print	|	ps
-pn.s			.apply	gsdl.ags.syntax.var.print	|	pn
-ki.ds			.apply	gsdl.ags.typeitem.gskind.print	|	ki
-ds8			.apply	diff.list.singleton	rune.t	|	rune.new.line
-ds7			.apply	diff.list.<>	rune.t	|	ki.ds	ds8
-ds6			.apply	diff.list.:	rune.t	|	rune.tab	ds7
-ds5			.apply	diff.list.prepend	rune.t	|	pn.s	ds6
-ds4			.apply	diff.list.:	rune.t	|	rune.tab	ds5
-ds3			.apply	diff.list.prepend	rune.t	|	ps.s	ds4
-ds2			.apply	diff.list.:	rune.t	|	rune.tab	ds3
-ds1			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.typeitem.decls.tygvar.print_tyextelimprim_tyextelimprim.s	ds2
-ds			.apply	diff.list.:	rune.t	|	rune.tab	ds1
-			.app	v.s	ds
-			.enter	diff.list.prepend	rune.t
+			.app	_gsdl.ags.typeitem.decls.tygvar.print_tyextelimprim_tyextelimprim.s	v	ps	pn	ki
+			.enter	_gsdl.ags.typeitem.decls.tygvar.print_prim
 		.case	tyextimpprim
 v		.fkarg	0	gsdl.var.t
 ps		.fkarg	1	gsdl.var.t
@@ -865,6 +855,40 @@ ds			.apply	diff.list.:	rune.t	|	rune.tab	ds1
 			.app	v.s	ds
 			.enter	diff.list.prepend	rune.t
 	# > :: diff.list.t	rune.t
+
+_gsdl.ags.typeitem.decls.tygvar.print_prim_c	.expr
+string.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+rune.t	.tygvar
+diff.list.prepend	.gvar
+gsdl.ags.syntax.var.print	.gvar
+diff.list.:	.gvar
+rune.tab	.gvar
+diff.list.<>	.gvar
+gsdl.ags.typeitem.gskind.print	.gvar
+diff.list.singleton	.gvar
+rune.new.line	.gvar
+kw	.larg	string.t
+v	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+pn	.larg	gsdl.var.t
+ki	.larg	gsdl.ags.typeitem.gskind.t
+v.s	.apply	gsdl.ags.syntax.var.print	|	v
+ps.s	.apply	gsdl.ags.syntax.var.print	|	ps
+pn.s	.apply	gsdl.ags.syntax.var.print	|	pn
+ki.ds	.apply	gsdl.ags.typeitem.gskind.print	|	ki
+ds8	.apply	diff.list.singleton	rune.t	|	rune.new.line
+ds7	.apply	diff.list.<>	rune.t	|	ki.ds	ds8
+ds6	.apply	diff.list.:	rune.t	|	rune.tab	ds7
+ds5	.apply	diff.list.prepend	rune.t	|	pn.s	ds6
+ds4	.apply	diff.list.:	rune.t	|	rune.tab	ds5
+ds3	.apply	diff.list.prepend	rune.t	|	ps.s	ds4
+ds2	.apply	diff.list.:	rune.t	|	rune.tab	ds3
+ds1	.apply	diff.list.prepend	rune.t	|	kw	ds2
+ds	.apply	diff.list.:	rune.t	|	rune.tab	ds1
+	.app	v.s	ds
+	.enter	diff.list.prepend	rune.t
 
 # §section §gs{gsdl.ags.typeitem.decls.tygvar.≡}
 
