@@ -1206,7 +1206,7 @@ gsac.prefix.gskind.upconvert	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
 ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
-	.analyze	ki0	exp	lifted	unlifted
+	.analyze	ki0	exp	lifted	unknown	unlifted
 		.case	exp
 ki.b		.fkarg	0	gsdl.ags.typeitem.gskind.t
 ki.e		.fkarg	1	gsdl.ags.typeitem.gskind.t
@@ -1216,6 +1216,8 @@ ki.e.cgs			.apply	gsac.prefix.gskind.upconvert	|	ki.e
 			.enter	gsdl.cgs.gskind.exp
 		.case	lifted
 			.enter	gsdl.cgs.gskind.lifted
+		.case	unknown
+			.undef	gsdl.cgs.gskind.t
 		.case	unlifted
 			.enter	gsdl.cgs.gskind.unlifted
 	# > :: gsdl.cgs.gskind.t
