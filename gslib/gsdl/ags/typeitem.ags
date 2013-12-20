@@ -38,6 +38,7 @@ _gsdl.ags.typeitem.decls.fmtgs_tygvs.f_tygvars.s	.string	tygvars
 gsdl.ags.typeitem.decls.tygvar.print	.closure	_gsdl.ags.typeitem.decls.tygvar.print_c
 _gsdl.ags.typeitem.decls.tygvar.print_tyextabstype_tyextabstype.s	.string	.tyextabstype
 _gsdl.ags.typeitem.decls.tygvar.print_tyextelimprim_tyextelimprim.s	.string	.tyextelimprim
+_gsdl.ags.typeitem.decls.tygvar.print_tyextimpprim_tyextimpprim.s	.string	.tyextimpprim
 _gsdl.ags.typeitem.decls.tygvar.print_tygvar_tygvar.s	.string	.tygvar
 
 _gsdl.ags.typeitem.decls.tygvar.print_prim	.closure	_gsdl.ags.typeitem.decls.tygvar.print_prim_c
@@ -818,6 +819,7 @@ diff.list.singleton	.gvar
 rune.new.line	.gvar
 _gsdl.ags.typeitem.decls.tygvar.print_prim	.gvar
 _gsdl.ags.typeitem.decls.tygvar.print_tyextelimprim_tyextelimprim.s	.gvar
+_gsdl.ags.typeitem.decls.tygvar.print_tyextimpprim_tyextimpprim.s	.gvar
 _gsdl.ags.typeitem.decls.tygvar.print_tygvar_tygvar.s	.gvar
 diff.list.nil	.gvar	# Temp
 tygv0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
@@ -846,7 +848,8 @@ v		.fkarg	0	gsdl.var.t
 ps		.fkarg	1	gsdl.var.t
 pn		.fkarg	2	gsdl.var.t
 ki		.fkarg	3	gsdl.ags.typeitem.gskind.t
-			.undef	diff.list.t	rune.t
+			.app	_gsdl.ags.typeitem.decls.tygvar.print_tyextimpprim_tyextimpprim.s	v	ps	pn	ki
+			.enter	_gsdl.ags.typeitem.decls.tygvar.print_prim
 		.case	tygvar
 v		.fkarg	0	gsdl.var.t
 v.s			.apply	gsdl.ags.syntax.var.print	|	v
