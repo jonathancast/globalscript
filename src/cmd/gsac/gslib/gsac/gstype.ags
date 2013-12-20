@@ -2205,6 +2205,7 @@ _gsac.gstype.compileToVar_impprim_k	.forcecont
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 maybe.prim.u	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
@@ -2215,6 +2216,7 @@ em	.fv	ordered.set.t	gsdl.var.t
 svs	.fv	list.t	gsdl.var.t
 ps	.fv	gsdl.var.t
 pn	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
 mb0	.karg	maybe.prim.u	gsdl.var.t
 	.analyze	mb0	just	nothing
 		.case	just
@@ -2228,6 +2230,7 @@ v		.fkarg	0	gsdl.var.t
 _gsac.gstype.compileToVar_impprim_nothing_k	.forcecont
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 string.t	.tygvar
@@ -2243,9 +2246,11 @@ either.right	.gvar
 diff.list.nil	.gvar
 diff.list.singleton	.gvar
 gsdl.ags.typeitem.decls.tygvar.tyextimpprim	.gvar
+gsac.gskind.compile	.gvar
 em	.fv	ordered.set.t	gsdl.var.t
 ps	.fv	gsdl.var.t
 pn	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
 svs0	.karg	list.prim.u	gsdl.var.t
 	.analyze	svs0	:	nil
 		.case	:
@@ -2253,7 +2258,7 @@ sv0		.fkarg	0	gsdl.var.t
 svs1		.fkarg	1	list.t	gsdl.var.t
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 nil.var			.apply	diff.list.nil	gsdl.var.t
-ki.ags			.undefined	gsdl.ags.typeitem.gskind.t
+ki.ags			.apply	gsac.gskind.compile	|	ki
 tygv			.apply	gsdl.ags.typeitem.decls.tygvar.tyextimpprim	|	sv0	ps	pn	ki.ags
 tygvs			.apply	diff.list.singleton	gsdl.ags.typeitem.decls.tygvar.t	|	tygv
 nil.ti			.apply	diff.list.nil	gsdl.ags.typeitem.t
