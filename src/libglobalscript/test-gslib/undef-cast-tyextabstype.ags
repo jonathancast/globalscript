@@ -1,0 +1,19 @@
+	.document
+
+	.data
+
+	.cast	_ep_so	_ep_co
+_ep_so	.undefined	_ep_so_ty
+
+	.type
+
+_ep_so_ty	.tyexpr
+rune.prim.rune	.tygvar
+	.tylift
+	.tyref	rune.prim.rune
+
+	.coercion
+
+_ep_co	.tycoercion
+rune.t	.tyextabstype	*
+	.tydefinition	rune.t

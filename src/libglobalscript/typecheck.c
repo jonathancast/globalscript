@@ -4033,7 +4033,7 @@ static
 struct gsbc_coercion_type *
 gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtygvar, gssymtylambda, gssymtyinvert, gssymtydefinition;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtylambda, gssymtyinvert, gssymtydefinition;
 
     enum {
         rttygvar,
@@ -4070,6 +4070,38 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
                 gsfatal("%P: Couldn't find type for global %y", p->pos, p->label)
             ;
             globaldefns[nglobals] = gssymtable_get_abstype(symtable, p->label);
+            nregs++;
+            nglobals++;
+        } else if (gssymceq(p->directive, gssymtyextabstype, gssymcoercionop, ".tyextabstype")) {
+            struct gskind *kind;
+            struct gstype_abstract *abstype;
+
+            if (nregs >= MAX_NUM_REGISTERS)
+                gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
+            ;
+            if (regtype > rttygvar)
+                gsfatal("%P: Too late to add type globals", p->pos)
+            ;
+            regtype = rttygvar;
+            regs[nregs] = p->label;
+            regtypes[nregs] = gssymtable_get_type(symtable, p->label);
+            if (!regtypes[nregs])
+                gsfatal("%P: Couldn't find referent %y", p->pos, p->label)
+            ;
+            globaldefns[nglobals] = gssymtable_get_abstype(symtable, p->label);
+
+            gsargcheck(p, 0, "kind");
+            kind = gskind_compile(p->pos, p->arguments[0]);
+
+            if (regtypes[nregs]->node != gstype_abstract)
+                gsfatal("%P: Referent %y isn't actually an abstype", p->pos, p->label)
+            ;
+            abstype = (struct gstype_abstract *)regtypes[nregs];
+            if (abstype->name != p->label)
+                gsfatal("%P: Referent %y translates to differently named abstype %y", p->pos, p->label, abstype->name)
+            ;
+            gstypes_kind_check_fail(p->pos, abstype->kind, kind);
+
             nregs++;
             nglobals++;
         } else if (gssymceq(p->directive, gssymtylambda, gssymcoercionop, ".tylambda")) {
