@@ -167,12 +167,10 @@ gstypes_compile_type_definitions(struct gsfile_symtable *symtable, struct gsbc_i
     }
 }
 
-#define MAX_REGISTERS 0x100
-
 struct gstype_compile_type_ops_closure {
     int nregs;
-    gsinterned_string regs[MAX_REGISTERS];
-    struct gstype *regvalues[MAX_REGISTERS];
+    gsinterned_string regs[MAX_NUM_REGISTERS];
+    struct gstype *regvalues[MAX_NUM_REGISTERS];
     struct gsfile_symtable *symtable;
     struct gsparsedfile_segment **ppseg;
     enum {
@@ -224,7 +222,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         struct gskind *kind;
         struct gstype_lambda *lambda;
 
-        if (cl->nregs >= MAX_REGISTERS)
+        if (cl->nregs >= MAX_NUM_REGISTERS)
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
             ;
         if (cl->regclass > regarg)
@@ -247,7 +245,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
     } else if (gssymceq(p->directive, gssymtyforall, gssymtypeop, ".tyforall")) {
         struct gskind *kind;
 
-        if (cl->nregs >= MAX_REGISTERS)
+        if (cl->nregs >= MAX_NUM_REGISTERS)
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
             ;
         if (cl->regclass > regforall)
@@ -265,7 +263,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
     } else if (gssymceq(p->directive, gssymtyexists, gssymtypeop, ".tyexists")) {
         struct gskind *kind;
 
-        if (cl->nregs >= MAX_REGISTERS)
+        if (cl->nregs >= MAX_NUM_REGISTERS)
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
             ;
         if (cl->regclass > regexists)
@@ -283,7 +281,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
     } else if (gssymceq(p->directive, gssymtylet, gssymtypeop, ".tylet")) {
         struct gstype *reg;
 
-        if (cl->nregs >= MAX_REGISTERS)
+        if (cl->nregs >= MAX_NUM_REGISTERS)
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
         ;
         if (cl->regclass > reglet)
@@ -332,7 +330,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         }
         return res;
     } else if (gssymceq(p->directive, gssymtysum, gssymtypeop, ".tysum")) {
-        struct gstype_constr constrs[MAX_REGISTERS];
+        struct gstype_constr constrs[MAX_NUM_REGISTERS];
         int i;
         int nconstrs;
 
@@ -341,8 +339,8 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         ;
         nconstrs = p->numarguments / 2;
 
-        if (nconstrs > MAX_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: sums with more than 0x%x constructors", p->pos, MAX_REGISTERS)
+        if (nconstrs > MAX_NUM_REGISTERS)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: sums with more than 0x%x constructors", p->pos, MAX_NUM_REGISTERS)
         ;
 
         for (i = 0; i < p->numarguments; i += 2) {
@@ -358,7 +356,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
 
         return gstypes_compile_sumv(p->pos, nconstrs, constrs);
     } else if (gssymceq(p->directive, gssymtyubsum, gssymtypeop, ".tyubsum")) {
-        struct gstype_constr constrs[MAX_REGISTERS];
+        struct gstype_constr constrs[MAX_NUM_REGISTERS];
         int i;
         int nconstrs;
 
@@ -367,8 +365,8 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         ;
         nconstrs = p->numarguments / 2;
 
-        if (nconstrs > MAX_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: sums with more than 0x%x constructors", p->pos, MAX_REGISTERS)
+        if (nconstrs > MAX_NUM_REGISTERS)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: sums with more than 0x%x constructors", p->pos, MAX_NUM_REGISTERS)
         ;
 
         for (i = 0; i < p->numarguments; i += 2) {
@@ -440,7 +438,7 @@ gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, st
     if (gssymceq(p->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
         int i;
 
-        if (cl->nregs >= MAX_REGISTERS)
+        if (cl->nregs >= MAX_NUM_REGISTERS)
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
         ;
         if (cl->regclass > regglobal)
@@ -470,7 +468,7 @@ gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, st
         struct gskind *kind;
         struct gstype_abstract *abstype;
 
-        if (cl->nregs >= MAX_REGISTERS)
+        if (cl->nregs >= MAX_NUM_REGISTERS)
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
         ;
         if (cl->regclass > regglobal)
@@ -505,7 +503,7 @@ gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, st
         struct gskind *kind;
         enum gsprim_type_group group;
 
-        if (cl->nregs >= MAX_REGISTERS)
+        if (cl->nregs >= MAX_NUM_REGISTERS)
             gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
         ;
         if (cl->regclass > regglobal)
@@ -621,11 +619,11 @@ struct gstype *
 gstypes_compile_sum(struct gspos pos, int nconstrs, ...)
 {
     va_list arg;
-    struct gstype_constr constrs[MAX_REGISTERS];
+    struct gstype_constr constrs[MAX_NUM_REGISTERS];
     int i;
 
-    if (nconstrs > MAX_REGISTERS)
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Sums with more than 0x%x constructors", pos, MAX_REGISTERS)
+    if (nconstrs > MAX_NUM_REGISTERS)
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Sums with more than 0x%x constructors", pos, MAX_NUM_REGISTERS)
     ;
 
     va_start(arg, nconstrs);
@@ -682,11 +680,11 @@ struct gstype *
 gstypes_compile_product(struct gspos pos, int nfields, ...)
 {
     va_list arg;
-    struct gstype_field fields[MAX_REGISTERS];
+    struct gstype_field fields[MAX_NUM_REGISTERS];
     int i;
 
-    if (nfields > MAX_REGISTERS)
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Products with more than 0x%x fields", pos, MAX_REGISTERS)
+    if (nfields > MAX_NUM_REGISTERS)
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Products with more than 0x%x fields", pos, MAX_NUM_REGISTERS)
     ;
 
     va_start(arg, nfields);
@@ -722,11 +720,11 @@ struct gstype *
 gstypes_compile_ubproduct(struct gspos pos, int nfields, ...)
 {
     va_list arg;
-    struct gstype_field fields[MAX_REGISTERS];
+    struct gstype_field fields[MAX_NUM_REGISTERS];
     int i;
 
-    if (nfields > MAX_REGISTERS)
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Products with more than 0x%x fields", pos, MAX_REGISTERS)
+    if (nfields > MAX_NUM_REGISTERS)
+        gsfatal_unimpl(__FILE__, __LINE__, "%P: Products with more than 0x%x fields", pos, MAX_NUM_REGISTERS)
     ;
 
     va_start(arg, nfields);
