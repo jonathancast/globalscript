@@ -2134,14 +2134,16 @@ gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
 int
 gsparse_type_global_var_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    if (gssymeq(parsedline->directive, gssymtypeop, ".tygvar")) {
+    static gsinterned_string gssymtygvar, gssymtyextabstype;
+
+    if (gssymceq(parsedline->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0]);
         else
             gsfatal("%s:%d: Labels required on .tygvar", pos->real_filename, pos->real_lineno);
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .tygvar", pos->real_filename, pos->real_lineno);
-    } else if (gssymeq(parsedline->directive, gssymtypeop, ".tyextabstype")) {
+    } else if (gssymceq(parsedline->directive, gssymtyextabstype, gssymtypeop, ".tyextabstype")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0])
         ; else
