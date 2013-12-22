@@ -608,7 +608,10 @@ gsbc_top_sort_subitems_of_type_or_coercion_expr(struct gsfile_symtable *symtable
             struct gsbc_item global;
             global = gssymtable_lookup(p->pos, symtable, p->label);
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
-        } else if (gssymeq(p->directive, op, ".tyextimpprim")) {
+        } else if (
+            gssymeq(p->directive, op, ".tyextelimprim")
+            || gssymeq(p->directive, op, ".tyextimpprim")
+        ) {
             /* skipped */
         } else {
             return;
