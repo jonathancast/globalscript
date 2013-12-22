@@ -1986,6 +1986,7 @@ gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
     return -1;
 }
 
+static int gsparse_type_global_var_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_type_or_coercion_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long, gssymboltype);
 
 static
@@ -2003,7 +2004,8 @@ gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
 
         parsedline->directive = gsintern_string(gssymtypeop, fields[1]);
 
-        if (gsparse_type_or_coercion_op(pos, parsedline, fields, n, gssymtypeop)) {
+        if (gsparse_type_global_var_op(pos, parsedline, fields, n)) {
+        } else if (gsparse_type_or_coercion_op(pos, parsedline, fields, n, gssymtypeop)) {
         } else if (gssymceq(parsedline->directive, gssymtyforall, gssymtypeop, ".tyforall")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);
@@ -2129,6 +2131,32 @@ gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
     return -1;
 }
 
+int
+gsparse_type_global_var_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+{
+    if (gssymeq(parsedline->directive, gssymtypeop, ".tygvar")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
+        else
+            gsfatal("%s:%d: Labels required on .tygvar", pos->real_filename, pos->real_lineno);
+        if (n > 2)
+            gsfatal("%s:%d: Too many arguments to .tygvar", pos->real_filename, pos->real_lineno);
+    } else if (gssymeq(parsedline->directive, gssymtypeop, ".tyextabstype")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymtypelable, fields[0])
+        ; else
+            gsfatal("%s:%d: Labels required on .tyextabstype", pos->real_filename, pos->real_lineno)
+        ;
+        if (n < 3) gsfatal("%s:%d: Missing kind on .tyextabstype", pos->real_filename, pos->real_lineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
+        if (n > 3) gsfatal("%s:%d: Too many arguments to .tyextabstype", pos->real_filename, pos->real_lineno);
+    } else {
+        return 0;
+    }
+
+    return 1;
+}
+
 static
 long
 gsparse_coercion_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
@@ -2162,7 +2190,8 @@ gsparse_coercion_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, s
     return -1;
 }
 
-static
+static int gsparse_coercion_global_var_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
+
 long
 gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
@@ -2175,7 +2204,8 @@ gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, stru
 
         parsedline->directive = gsintern_string(gssymcoercionop, fields[1]);
 
-        if (gsparse_type_or_coercion_op(pos, parsedline, fields, n, gssymcoercionop)) {
+        if (gsparse_coercion_global_var_op(pos, parsedline, fields, n)) {
+        } else if (gsparse_type_or_coercion_op(pos, parsedline, fields, n, gssymcoercionop)) {
         } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tyinvert")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuations");
@@ -2208,19 +2238,17 @@ gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, stru
     return -1;
 }
 
-static
 int
-gsparse_type_or_coercion_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n, gssymboltype op)
+gsparse_coercion_global_var_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    if (gssymeq(parsedline->directive, op, ".tygvar")) {
+    if (gssymeq(parsedline->directive, gssymcoercionop, ".tygvar")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0]);
         else
             gsfatal("%s:%d: Labels required on .tygvar", pos->real_filename, pos->real_lineno);
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .tygvar", pos->real_filename, pos->real_lineno);
-        return 1;
-    } else if (gssymeq(parsedline->directive, op, ".tyextabstype")) {
+    } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tyextabstype")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0])
         ; else
@@ -2229,8 +2257,18 @@ gsparse_type_or_coercion_op(struct gsparse_input_pos *pos, struct gsparsedline *
         if (n < 3) gsfatal("%s:%d: Missing kind on .tyextabstype", pos->real_filename, pos->real_lineno);
         parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
         if (n > 3) gsfatal("%s:%d: Too many arguments to .tyextabstype", pos->real_filename, pos->real_lineno);
-        return 1;
-    } else if (gssymeq(parsedline->directive, op, ".tylambda")) {
+    } else {
+        return 0;
+    }
+
+    return 1;
+}
+
+static
+int
+gsparse_type_or_coercion_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n, gssymboltype op)
+{
+    if (gssymeq(parsedline->directive, op, ".tylambda")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0])
         ; else
