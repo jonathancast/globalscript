@@ -1086,12 +1086,13 @@ gsdl.ags.typeitem.gskind.prim.u	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 diff.list.t	.tygvar	# Temp
 rune.t	.tygvar	# Temp
-diff.list.singleton	.gvar
-rune.star	.gvar
 diff.list.snoc	.gvar
 diff.list.<>	.gvar
 gsdl.ags.typeitem.gskind.print	.gvar
 rune.caret	.gvar
+diff.list.singleton	.gvar
+rune.star	.gvar
+rune.query	.gvar
 rune.latin.letter.u	.gvar
 ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
 	.analyze	ki0	exp	lifted	unknown	unlifted
@@ -1107,7 +1108,8 @@ ds			.apply	diff.list.<>	rune.t	|	kib.ds	kie.ds
 			.app	rune.star
 			.enter	diff.list.singleton	rune.t
 		.case	unknown
-			.undef	diff.list.t	rune.t
+			.app	rune.query
+			.enter	diff.list.singleton	rune.t
 		.case	unlifted
 			.app	rune.latin.letter.u
 			.enter	diff.list.singleton	rune.t
