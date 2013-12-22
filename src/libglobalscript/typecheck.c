@@ -4130,7 +4130,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
 
             goto have_type;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_coercion_expr(%s)", p->pos, p->directive->name);
+            gsfatal(UNIMPL("%P: gsbc_typecheck_coercion_expr(%y)"), p->pos, p->directive);
         }
     }
 
