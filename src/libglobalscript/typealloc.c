@@ -103,9 +103,10 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             group = gsprim_type_elim
         ; else if (ptype->directive == gssymtyimpprim)
             group = gsprim_type_imp
-        ; else
-            gsfatal(UNIMPL("%P: Get group for %y"), ptype->pos, ptype->directive)
-        ;
+        ; else {
+            group = -1;
+            gsfatal(UNIMPL("%P: Get group for %y"), ptype->pos, ptype->directive);
+        }
         kind = gskind_compile(ptype->pos, ptype->arguments[2]);
         types[i] = prims
             ? gstypes_compile_knprim(ptype->pos, group, prims, ptype->arguments[1], kind)
@@ -434,7 +435,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
 struct gstype *
 gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtygvar, gssymtyextabstype;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim;
 
     if (gssymceq(p->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
         int i;
@@ -493,6 +494,46 @@ gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, st
             gsfatal("%P: Referent %y translates to differently named abstype %y", p->pos, p->label, abstype->name)
         ;
         gstypes_kind_check_fail(p->pos, abstype->kind, kind);
+
+        cl->nregs++;
+        return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
+    } else if (gssymceq(p->directive, gssymtyextelimprim, gssymtypeop, ".tyextelimprim")) {
+        struct gsregistered_primset *prims;
+        struct gskind *kind;
+        enum gsprim_type_group group;
+
+        if (cl->nregs >= MAX_REGISTERS)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
+        ;
+        if (cl->regclass > regglobal)
+            gsfatal("%P: Too late to add type globals", p->pos)
+        ;
+        cl->regclass = regglobal;
+        cl->regs[cl->nregs] = p->label;
+
+        prims = gsprims_lookup_prim_set(p->arguments[0]->name);
+
+        if (p->directive == 0 && !prims) /* > gssymtydefinedprim */
+            gsfatal("%P: Unknown primset %y, which is bad because it supposedly contains defined primtype %y", p->pos, p->arguments[0], p->arguments[1])
+        ;
+
+        if (p->directive == 0) /* > gssymtydefinedprim */
+            group = gsprim_type_defined
+        ; else if (p->directive == 0) /* > gssymtyintrprim */
+            group = gsprim_type_intr
+        ; else if (p->directive == gssymtyextelimprim)
+            group = gsprim_type_elim
+        ; else if (p->directive == 0) /* > gssymtyimpprim */
+            group = gsprim_type_imp
+        ; else {
+            group = -1;
+            gsfatal(UNIMPL("%P: Get group for %y"), p->pos, p->directive);
+        }
+        kind = gskind_compile(p->pos, p->arguments[2]);
+        cl->regvalues[cl->nregs] = prims
+            ? gstypes_compile_knprim(p->pos, group, prims, p->arguments[1], kind)
+            : gstypes_compile_unprim(p->pos, group, p->arguments[0], p->arguments[1], kind)
+        ;
 
         cl->nregs++;
         return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));

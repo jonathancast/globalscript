@@ -1,0 +1,12 @@
+	.document
+
+	.data
+
+	.undefined	_ep_ty
+
+	.type
+
+_ep_ty	.tyexpr
+unknown.ty	.tyextelimprim	unknown.prim	unknown	u
+	.tylift
+	.typroduct	0	unknown.ty

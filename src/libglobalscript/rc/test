@@ -16,6 +16,7 @@ ok_diff_fail '-- undefined expressions --' ./$O.test-gsi undef-expr.ags
 ok_diff_fail '-- undefined entry points (declared position) --' ./$O.test-gsi undef-declared-line-column-pos.ags
 
 ok_diff_fail '-- undefined entry points (.tyextabstype type) --' ./$O.test-gsi undef-tyextabstype.ags
+ok_diff_fail '-- undefined entry points (lifted .tyextelimprim type) --' ./$O.test-gsi undef-tyextelimprim.ags
 
 ok_diff '-- empty record values --' ./$O.test-gsi empty-record.ags
 ok_diff '-- empty record expressions --' ./$O.test-gsi empty-record-expr.ags
