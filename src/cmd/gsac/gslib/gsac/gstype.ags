@@ -1739,13 +1739,19 @@ nil	.apply	diff.list.nil	gsdl.var.t
 	.yield	_gsac.gstype.compileToApp_args
 
 _gsac.gstype.compileToApp_app_impprim_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
-_gsac.gstype.compileToApp_res.ty	.tygvar
 either.t	.tygvar	# Temp
-_gsac.gstype.compileToApp_res_res.ty	.tygvar	# Temp
-either.right	.gvar
+_gsac.gstype.compileToApp_res.ty	.tygvar	# Temp
+_gsac.gstype.compileToApp_app_impprim_right_k	.subcode
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tyas	.fv	list.t	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -1753,16 +1759,25 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	right
 r		.fkarg	0	_gsac.gstype.compileToVar_res.ty
-r.em			.lfield	emitted	r
-r.pem			.lfield	prim.emitted	r
-res.r			.undefined	_gsac.gstype.compileToApp_res_res.ty
-r.svs			.lfield	subvars	r
-r.tyfvs			.lfield	tyfvs	r
-r.tygvs			.lfield	tygvars	r
-r.ts			.lfield	typeitems	r
-res			.lrecord	emitted	r.em	prim.emitted	r.pem	res	res.r	subvars	r.svs	tyfvs	r.tyfvs	tygvars	r.tygvs	typeitems	r.ts	|	_gsac.gstype.compileToApp_res.ty
-			.app	res
-			.enter	either.right	string.t	_gsac.gstype.compileToApp_res.ty
+			.force	_gsac.gstype.compileToApp_app_impprim_right_k
+			.enter	r
+
+_gsac.gstype.compileToApp_app_impprim_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsac.gstype.compile.m_res.u	.tygvar
+gsdl.var.t	.tygvar
+_gsac.gstype.compileToApp_args	.gvar
+diff.list.nil	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+tyas	.fv	list.t	gsdl.cgs.gstype.t
+r0	.karg	_gsac.gstype.compile.m_res.u	gsdl.var.t
+nil	.apply	diff.list.nil	gsdl.var.t
+	.app	pos	env	r0	tyas	nil
+	.yield	_gsac.gstype.compileToApp_args
 
 _gsac.gstype.compileToApp_args_c	.expr
 gsdl.sourcepos.t	.tygvar
