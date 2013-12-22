@@ -100,7 +100,7 @@ again:
             break;
         }
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: %P: Print values of type %d", pos, type->pos, type->node);
+            gsfatal(UNIMPL("%P: %P: Print values of type %d"), pos, type->pos, type->node);
     }
 }
 
