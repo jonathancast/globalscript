@@ -207,19 +207,75 @@ gstype_compile_type_ops(struct gsfile_symtable *symtable, struct gsparsedfile_se
     return gstype_compile_type_ops_worker(&cl, p);
 }
 
-static struct gstype *gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *, struct gsparsedline *, struct gstype *(*)(struct gstype_compile_type_ops_closure *, struct gsparsedline *));
-
 static
 struct gstype *
 gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtylambda, gssymtyforall, gssymtyexists, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtylambda, gssymtyforall, gssymtyexists, gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
 
     int i;
     struct gstype *res;
 
-    if (res = gstype_compile_type_or_coercion_op(cl, p, gstype_compile_type_ops_worker)) {
-        return res;
+    if (gssymceq(p->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
+        int i;
+
+        if (cl->nregs >= MAX_REGISTERS)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
+        ;
+        if (cl->regclass > regglobal)
+            gsfatal("%P: Too late to add type globals", p->pos)
+        ;
+        cl->regclass = regglobal;
+        cl->regs[cl->nregs] = p->label;
+        cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
+        if (!cl->regvalues[cl->nregs] && cl->types) {
+            for (i = 0; i < cl->scc_size; i++) {
+                if (cl->items[i].v->label == p->label) {
+                    if (cl->compiling[i])
+                        gsfatal("%P: Loop: already compiling %s", p->pos, p->label->name)
+                    ;
+                    gstypes_compile_type(cl->symtable, cl->items, cl->types, cl->compiling, i, cl->scc_size);
+                    cl->regvalues[cl->nregs] = cl->types[i];
+                    break;
+                }
+            }
+        }
+        if (!cl->regvalues[cl->nregs])
+            gsfatal("%P: Couldn't find referent %y", p->pos, p->label)
+        ;
+        cl->nregs++;
+        return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
+    } else if (gssymceq(p->directive, gssymtyextabstype, gssymtypeop, ".tyextabstype")) {
+        struct gskind *kind;
+        struct gstype_abstract *abstype;
+
+        if (cl->nregs >= MAX_REGISTERS)
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
+        ;
+        if (cl->regclass > regglobal)
+            gsfatal("%P: Too late to add type globals", p->pos)
+        ;
+        cl->regclass = regglobal;
+        cl->regs[cl->nregs] = p->label;
+        cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
+        if (!cl->regvalues[cl->nregs])
+            gsfatal("%P: Couldn't find referent %y", p->pos, p->label)
+        ;
+
+        gsargcheck(p, 0, "kind");
+        kind = gskind_compile(p->pos, p->arguments[0]);
+
+        if (cl->regvalues[cl->nregs]->node != gstype_abstract)
+            gsfatal("%P: Referent %y isn't actually an abstype", p->pos, p->label)
+        ;
+        abstype = (struct gstype_abstract *)cl->regvalues[cl->nregs];
+        if (abstype->name != p->label)
+            gsfatal("%P: Referent %y translates to differently named abstype %y", p->pos, p->label, abstype->name)
+        ;
+        gstypes_kind_check_fail(p->pos, abstype->kind, kind);
+
+        cl->nregs++;
+        return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
     } else if (gssymceq(p->directive, gssymtylambda, gssymtypeop, ".tylambda")) {
         struct gskind *kind;
         struct gstype_lambda *lambda;
@@ -657,77 +713,6 @@ gstypes_compile_fun(struct gspos pos, struct gstype *tyarg, struct gstype *tyres
     fun->tyres = tyres;
 
     return res;
-}
-
-static
-struct gstype *
-gstype_compile_type_or_coercion_op(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p, struct gstype *(*next)(struct gstype_compile_type_ops_closure *, struct gsparsedline *))
-{
-    static gsinterned_string gssymtygvar, gssymtyextabstype;
-
-    if (gssymceq(p->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
-        int i;
-
-        if (cl->nregs >= MAX_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
-        ;
-        if (cl->regclass > regglobal)
-            gsfatal("%P: Too late to add type globals", p->pos)
-        ;
-        cl->regclass = regglobal;
-        cl->regs[cl->nregs] = p->label;
-        cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
-        if (!cl->regvalues[cl->nregs] && cl->types) {
-            for (i = 0; i < cl->scc_size; i++) {
-                if (cl->items[i].v->label == p->label) {
-                    if (cl->compiling[i])
-                        gsfatal("%P: Loop: already compiling %s", p->pos, p->label->name)
-                    ;
-                    gstypes_compile_type(cl->symtable, cl->items, cl->types, cl->compiling, i, cl->scc_size);
-                    cl->regvalues[cl->nregs] = cl->types[i];
-                    break;
-                }
-            }
-        }
-        if (!cl->regvalues[cl->nregs])
-            gsfatal("%P: Couldn't find referent %y", p->pos, p->label)
-        ;
-        cl->nregs++;
-        return next(cl, gsinput_next_line(cl->ppseg, p));
-    } else if (gssymceq(p->directive, gssymtyextabstype, gssymtypeop, ".tyextabstype")) {
-        struct gskind *kind;
-        struct gstype_abstract *abstype;
-
-        if (cl->nregs >= MAX_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
-        ;
-        if (cl->regclass > regglobal)
-            gsfatal("%P: Too late to add type globals", p->pos)
-        ;
-        cl->regclass = regglobal;
-        cl->regs[cl->nregs] = p->label;
-        cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
-        if (!cl->regvalues[cl->nregs])
-            gsfatal("%P: Couldn't find referent %y", p->pos, p->label)
-        ;
-
-        gsargcheck(p, 0, "kind");
-        kind = gskind_compile(p->pos, p->arguments[0]);
-
-        if (cl->regvalues[cl->nregs]->node != gstype_abstract)
-            gsfatal("%P: Referent %y isn't actually an abstype", p->pos, p->label)
-        ;
-        abstype = (struct gstype_abstract *)cl->regvalues[cl->nregs];
-        if (abstype->name != p->label)
-            gsfatal("%P: Referent %y translates to differently named abstype %y", p->pos, p->label, abstype->name)
-        ;
-        gstypes_kind_check_fail(p->pos, abstype->kind, kind);
-
-        cl->nregs++;
-        return next(cl, gsinput_next_line(cl->ppseg, p));
-    } else {
-        return 0;
-    }
 }
 
 struct gstype *
