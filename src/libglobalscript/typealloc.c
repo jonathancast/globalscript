@@ -23,7 +23,6 @@ static void *gstype_alloc(ulong);
 static void gstypes_compile_type(struct gsfile_symtable *, struct gsbc_item *, struct gstype **, int *, int, int);
 
 static struct gstype *gstype_compile_type_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbc_item *, struct gstype **, int *, int);
-static struct gstype *gstype_compile_coercion_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbc_item *, struct gstype **, int *, int);
 
 void
 gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, int n)
@@ -61,7 +60,7 @@ static
 void
 gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, int *compiling, int i, int n)
 {
-    static gsinterned_string gssymtyabstract, gssymtyexpr, gssymtydefinedprim, gssymtyintrprim, gssymtyelimprim, gssymtyimpprim, gssymtycoercion;
+    static gsinterned_string gssymtyabstract, gssymtyexpr, gssymtydefinedprim, gssymtyintrprim, gssymtyelimprim, gssymtyimpprim;
 
     struct gsbc_item item;
     struct gsparsedfile_segment *pseg;
@@ -112,8 +111,6 @@ gstypes_compile_type(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             ? gstypes_compile_knprim(ptype->pos, group, prims, ptype->arguments[1], kind)
             : gstypes_compile_unprim(ptype->pos, group, ptype->arguments[0], ptype->arguments[1], kind)
         ;
-    } else if (gssymceq(item.v->directive, gssymtycoercion, gssymtypedirective, ".tycoercion")) {
-        types[i] = gstype_compile_coercion_ops(symtable, &pseg, gsinput_next_line(&pseg, ptype), items, types, compiling, n);
     } else {
         gsfatal(UNIMPL("%P: gstypes_compile_types(%y)"), item.v->pos, item.v->directive);
     }
@@ -660,75 +657,6 @@ gstypes_compile_fun(struct gspos pos, struct gstype *tyarg, struct gstype *tyres
     fun->tyres = tyres;
 
     return res;
-}
-
-static struct gstype *gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *, struct gsparsedline *);
-
-static
-struct gstype *
-gstype_compile_coercion_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbc_item *items, struct gstype **types, int *compiling, int n)
-{
-    struct gstype_compile_type_ops_closure cl;
-
-    cl.nregs = 0;
-    cl.symtable = symtable;
-    cl.ppseg = ppseg;
-    cl.regclass = regglobal;
-    cl.items = items;
-    cl.compiling = compiling;
-    cl.types = types;
-    cl.scc_size = n;
-
-    return gstype_compile_coercion_ops_worker(&cl, p);
-}
-
-static
-struct gstype *
-gstype_compile_coercion_ops_worker(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
-{
-    static gsinterned_string gssymtydefinition;
-    int i;
-    struct gstype *res;
-
-    if (res = gstype_compile_type_or_coercion_op(cl, p, gstype_compile_coercion_ops_worker)) {
-        return res;
-    } else if (gssymceq(p->directive, gssymtydefinition, gssymtypeop, ".tydefinition")) {
-        struct gstype_coerce_definition *defn;
-        int numargs;
-
-        numargs = p->numarguments - 1;
-        res = gstype_alloc(sizeof(struct gstype_coerce_definition) + numargs * sizeof(struct gstype *));
-        defn = (struct gstype_coerce_definition *)res;
-        res->node = gstype_coerce_definition;
-        res->pos = p->pos;
-
-        defn->dest = cl->regvalues[gsbc_find_register(p, cl->regs, cl->nregs, p->arguments[0])];
-        switch (defn->dest->node) {
-            case gstype_abstract: {
-                struct gstype_abstract *abs;
-
-                abs = (struct gstype_abstract *)defn->dest;
-
-                defn->source = gssymtable_get_abstype(cl->symtable, abs->name);
-                if (!defn->source)
-                    gsfatal("%P: Couldn't find definition of abstract type %y", p->pos, abs->name)
-                ;
-
-                goto have_defn_for_source;
-            }
-            default:
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: .tydefinition with source a %d", p->pos, defn->dest->node);
-        }
-    have_defn_for_source:
-        defn->numargs = numargs;
-        for (i = 1; i < p->numarguments; i ++) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Arguments to .tydefinition", p->pos);
-        }
-        return res;
-    } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_compile_coercion_ops_worker %s", p->pos, p->directive->name);
-    }
-    return 0;
 }
 
 static
