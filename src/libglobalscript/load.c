@@ -2134,7 +2134,7 @@ gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
 int
 gsparse_type_global_var_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim, gssymtyextimpprim;
 
     if (gssymceq(parsedline->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
         if (*fields[0])
@@ -2152,11 +2152,14 @@ gsparse_type_global_var_op(struct gsparse_input_pos *pos, struct gsparsedline *p
         if (n < 3) gsfatal("%s:%d: Missing kind on .tyextabstype", pos->real_filename, pos->real_lineno);
         parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
         if (n > 3) gsfatal("%s:%d: Too many arguments to .tyextabstype", pos->real_filename, pos->real_lineno);
-    } else if (gssymceq(parsedline->directive, gssymtyextelimprim, gssymtypeop, ".tyextelimprim")) {
+    } else if (
+        gssymceq(parsedline->directive, gssymtyextelimprim, gssymtypeop, ".tyextelimprim")
+        || gssymceq(parsedline->directive, gssymtyextimpprim, gssymtypeop, ".tyextimpprim")
+    ) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0])
         ; else
-            gsfatal("%s:%d: Labels required on .tyextelimprim", pos->real_filename, pos->real_lineno)
+            gsfatal("%s:%d: Labels required on %y", pos->real_filename, pos->real_lineno, parsedline->directive)
         ;
         if (n < 3)
             gsfatal("%s:%d: Missing primitive set name", pos->real_filename, pos->real_lineno);
@@ -2166,10 +2169,10 @@ gsparse_type_global_var_op(struct gsparse_input_pos *pos, struct gsparsedline *p
         parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2 + 1]);
         if (n < 5)
             gsfatal("%s:%d: Missing kind on primitive type", pos->real_filename, pos->real_lineno);
-        if (n > 5)
-            gsfatal("%s:%d: Too many arguments to .tyextelimprim; expected primset, primname, and kind", pos->real_filename, pos->real_lineno)
-        ;
         parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
+        if (n > 5)
+            gsfatal("%s:%d: Too many arguments to %y; expected primset, primname, and kind", pos->real_filename, pos->real_lineno, parsedline->directive)
+        ;
     } else {
         return 0;
     }

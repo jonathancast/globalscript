@@ -435,7 +435,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
 struct gstype *
 gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim, gssymtyextimpprim;
 
     if (gssymceq(p->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
         int i;
@@ -497,7 +497,10 @@ gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, st
 
         cl->nregs++;
         return gstype_compile_type_ops_worker(cl, gsinput_next_line(cl->ppseg, p));
-    } else if (gssymceq(p->directive, gssymtyextelimprim, gssymtypeop, ".tyextelimprim")) {
+    } else if (
+        gssymceq(p->directive, gssymtyextelimprim, gssymtypeop, ".tyextelimprim")
+        || gssymceq(p->directive, gssymtyextimpprim, gssymtypeop, ".tyextimpprim")
+    ) {
         struct gsregistered_primset *prims;
         struct gskind *kind;
         enum gsprim_type_group group;
@@ -523,7 +526,7 @@ gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, st
             group = gsprim_type_intr
         ; else if (p->directive == gssymtyextelimprim)
             group = gsprim_type_elim
-        ; else if (p->directive == 0) /* > gssymtyimpprim */
+        ; else if (p->directive == gssymtyextimpprim)
             group = gsprim_type_imp
         ; else {
             group = -1;

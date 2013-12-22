@@ -1,0 +1,14 @@
+	.document
+
+	.data
+
+	.undefined	_ep_ty
+
+	.type
+
+_ep_ty	.tyexpr
+unknown.ty	.tyextimpprim	unknown.prim	unknown	u?^
+rune.t	.tyextabstype	*
+res.ty	.tylet	unknown.ty	rune.t
+	.tylift
+	.typroduct	0	res.ty
