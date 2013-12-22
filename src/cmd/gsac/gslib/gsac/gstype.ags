@@ -1129,6 +1129,7 @@ tyf			.lfield	tyfun	tya.r.res
 tyas			.lfield	typeargs	tya.r.res
 svs1			.lfield	subvars	tya.r
 tya.r.tygvs			.lfield	tygvars	tya.r
+tya.r.ts			.lfield	typeitems	tya.r
 			.force	_gsac.gstype.compile_w_fun_right_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compile_res.ty
 			.app	pos	env	tyr	em1	pem1	svs1
@@ -1139,18 +1140,18 @@ gsdl.var.t	.tygvar
 list.t	.tygvar
 diff.list.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.ags.typeitem.expr.t	.tygvar	# Temp
-gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.ags.typeitem.expr.fun	.gvar
 diff.list.<>	.gvar
 tyf	.fv	gsdl.var.t
 tyas	.fv	list.t	gsdl.var.t
 tya.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tya.r.ts	.fv	diff.list.t	gsdl.ags.typeitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -1166,7 +1167,8 @@ tyr.r.svs			.lfield	subvars	tyr.r
 tyfvs			.undefined	diff.list.t	gsdl.var.t
 tyr.r.tygvs			.lfield	tygvars	tyr.r
 tygvs			.apply	diff.list.<>	gsdl.ags.typeitem.decls.tygvar.t	|	tya.r.tygvs	tyr.r.tygvs
-ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+tyr.r.ts			.lfield	typeitems	tyr.r
+ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	tya.r.ts	tyr.r.ts
 res			.lrecord	emitted	tyr.r.em	prim.emitted	tyr.r.pem	res	r	subvars	tyr.r.svs	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
