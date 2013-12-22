@@ -82,6 +82,7 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.gskind.exp	.gvar
 gsac.gskind.compile	.gvar
 gsdl.ags.typeitem.gskind.lifted	.gvar
+gsdl.ags.typeitem.gskind.unknown	.gvar
 gsdl.ags.typeitem.gskind.unlifted	.gvar
 ki0	.karg	gsdl.cgs.gskind.prim.u
 	.analyze	ki0	exp	lifted	unknown	unlifted
@@ -95,7 +96,7 @@ kie.ags			.apply	gsac.gskind.compile	|	kie
 		.case	lifted
 			.enter	gsdl.ags.typeitem.gskind.lifted
 		.case	unknown
-			.undef	gsdl.ags.typeitem.gskind.t
+			.enter	gsdl.ags.typeitem.gskind.unknown
 		.case	unlifted
 			.enter	gsdl.ags.typeitem.gskind.unlifted
 	# > :: gsdl.ags.typeitem.gskind.t
