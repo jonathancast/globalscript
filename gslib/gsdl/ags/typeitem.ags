@@ -70,6 +70,7 @@ _gsdl.ags.typeitem.expr.parser_tysum.p_tysum.re	.regex	.tysum
 _gsdl.ags.typeitem.expr.parser_tyubsum.p_tyubsum.re	.regex	.tyubsum
 
 gsdl.ags.typeitem.expr.print	.closure	_gsdl.ags.typeitem.expr.print_c	_gsdl.ags.typeitem.expr.print_ty
+_gsdl.ags.typeitem.expr.print_fun_tyfun.s	.string	.tyfun
 _gsdl.ags.typeitem.expr.print_tylift.s	.string	\t.tylift\n
 _gsdl.ags.typeitem.expr.print_typroduct.s	.string	\t.typroduct
 _gsdl.ags.typeitem.expr.print_sum_tysum.s	.string	\t.tysum
@@ -1505,17 +1506,27 @@ exp	.arg	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.expr.print_k	.forcecont
 gsdl.ags.typeitem.expr.prim.u	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar
+string.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-list.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 gsdl.ags.typeitem.constr.t	.tygvar
-gsdl.var.t	.tygvar
-diff.list.t	.tygvar
-rune.t	.tygvar
 _gsdl.ags.typeitem.expr.print_tyref_as.dss.f_c	.subcode
-# §paragraph{§gs{lift}}
+# §paragraph{§gs{fun}}
+diff.list.:	.gvar
+rune.tab	.gvar
 diff.list.prepend	.gvar
+_gsdl.ags.typeitem.expr.print_fun_tyfun.s	.gvar
+gsdl.ags.syntax.var.print	.gvar
+diff.list.<>	.gvar
+diff.list.concat	.gvar
+diff.list.fromlist	.gvar
+rune.new.line	.gvar
+# §paragraph{§gs{lift}}
 _gsdl.ags.typeitem.expr.print_tylift.s	.gvar
 gsdl.ags.typeitem.expr.print	.gvar
 # §paragraph{§gs{product}}
@@ -1526,14 +1537,8 @@ _gsdl.ags.typeitem.expr.print_sum_tysum.s	.gvar
 _gsdl.ags.typeitem.expr.print_sum_constrs.print	.gvar
 # §paragraph{§gs{tyref}}
 _gsdl.ags.typeitem.expr.print_tyref_tyref.s	.gvar
-diff.list.:	.gvar
-rune.tab	.gvar
-gsdl.ags.syntax.var.print	.gvar
-diff.list.<>	.gvar
-diff.list.concat	.gvar
 list.map	.gvar
 diff.list.singleton	.gvar
-rune.new.line	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 exp0	.karg	gsdl.ags.typeitem.expr.prim.u
 	.analyze	exp0	fun	lift	pos	product	sum	tyref
@@ -1541,7 +1546,21 @@ exp0	.karg	gsdl.ags.typeitem.expr.prim.u
 tyf		.fkarg	0	gsdl.var.t
 tyas		.fkarg	1	list.t	gsdl.var.t
 res		.fkarg	2	gsdl.ags.typeitem.expr.t
-			.undef	diff.list.t	rune.t
+tyf.s			.apply	gsdl.ags.syntax.var.print	|	tyf
+cons.tab			.apply	diff.list.:	rune.t	|	rune.tab
+diff.list.fromlist.rune			.apply	diff.list.fromlist	rune.t
+tyas.ss2			.apply	list.map	gsdl.var.t	string.t	|	gsdl.ags.syntax.var.print	tyas
+tyas.ss1			.apply	list.map	string.t	diff.list.rune.ty	|	diff.list.fromlist.rune	tyas.ss2
+tyas.ss			.apply	list.map	diff.list.rune.ty	diff.list.rune.ty	|	cons.tab	tyas.ss1
+tyas.s			.apply	diff.list.concat	rune.t	|	tyas.ss
+ds5			.apply	gsdl.ags.typeitem.expr.print	|	res
+ds4			.apply	diff.list.:	rune.t	|	rune.new.line	ds5
+ds3			.apply	diff.list.<>	rune.t	|	tyas.s	ds4
+ds2			.apply	diff.list.prepend	rune.t	|	tyf.s	ds3
+ds1			.apply	diff.list.:	rune.t	|	rune.tab	ds2
+ds			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.typeitem.expr.print_fun_tyfun.s	ds1
+			.app	rune.tab	ds
+			.enter	diff.list.:	rune.t
 		.case	lift
 pos		.fkarg	0	gsdl.sourcepos.t
 exp1		.fkarg	1	gsdl.ags.typeitem.expr.t
