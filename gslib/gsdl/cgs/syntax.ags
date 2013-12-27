@@ -41,6 +41,7 @@ _gsdl.cgs.syntax.keywords_gsλ.s	.string	λ
 
 gsdl.cgs.syntax.var.component.print	.closure	_gsdl.cgs.syntax.var.component.print_c
 
+gsdl.cgs.syntax.branch.l	.closure	_gsdl.cgs.syntax.branch.l_c
 gsdl.cgs.syntax.branch.r	.closure	_gsdl.cgs.syntax.branch.r_c
 
 	.code
@@ -375,6 +376,14 @@ n		.fkarg	0	natural.t
 
 # §section §gs{gsdl.cgs.syntax.branch.t} Constructors
 
+_gsdl.cgs.syntax.branch.l_c	.expr
+gsdl.cgs.syntax.branch.prim.u	.tygvar
+gsdl.cgs.syntax.branch.t.in	.cogvar
+c	.constr	gsdl.cgs.syntax.branch.prim.u	l
+	.coerce	gsdl.cgs.syntax.branch.t.in
+	.lift
+	.yield	c
+
 _gsdl.cgs.syntax.branch.r_c	.expr
 gsdl.cgs.syntax.branch.prim.u	.tygvar
 gsdl.cgs.syntax.branch.t.in	.cogvar
@@ -394,7 +403,7 @@ gsdl.cgs.syntax.branch.prim.u	.tygvar
 
 gsdl.cgs.syntax.branch.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
-	.tysum	r	record.unboxed.empty
+	.tysum	l	record.unboxed.empty	r	record.unboxed.empty
 
 # §section §gs{gsdl.cgs.syntax.var.print}
 
