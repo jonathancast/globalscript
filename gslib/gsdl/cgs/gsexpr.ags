@@ -3,7 +3,9 @@
 	.data
 
 gsdl.cgs.gsexpr.parser	.closure	_gsdl.cgs.gsexpr.parser_c	_gsdl.cgs.gsexpr.parser_ty
-_gsdl.cgs.gsexpr.parser_expr.heavy.cast_ld.re	.regex	⊲
+
+gsdl.cgs.gsexpr.parser.cast	.closure	_gsdl.cgs.gsexpr.parser.cast_c	_gsdl.cgs.gsexpr.parser.cast_ty
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re	.regex	⊲
 
 gsdl.cgs.gsexpr.freevars	.closure	_gsdl.cgs.gsexpr.freevars_c	_gsdl.cgs.gsexpr.freevars_ty
 
@@ -22,11 +24,21 @@ gsdl.cgs.gsexpr.cast.source.typesig	.closure	_gsdl.cgs.gsexpr.cast.source.typesi
 # §section §gs{gsdl.cgs.gsexpr.parser}
 
 _gsdl.cgs.gsexpr.parser_c	.expr
-_gsdl.cgs.gsexpr.parser_expr.heavy.cast_c	.subcode
-expr.heavy.cast	.alloc	_gsdl.cgs.gsexpr.parser_expr.heavy.cast_c
+gsdl.cgs.gsexpr.parser.cast	.gvar
+gsdl.cgs.syntax.branch.r	.gvar
+	.app	gsdl.cgs.syntax.branch.r
+	.enter	gsdl.cgs.gsexpr.parser.cast
+
+# §subsection §gs{gsdl.cgs.gsexpr.parser.cast}
+
+_gsdl.cgs.gsexpr.parser.cast_c	.expr
+gsdl.cgs.syntax.branch.t	.tygvar
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c	.subcode
+t	.larg	gsdl.cgs.syntax.branch.t
+expr.heavy.cast	.alloc	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c
 	.enter	expr.heavy.cast
 
-_gsdl.cgs.gsexpr.parser_expr.heavy.cast_c	.expr
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c	.expr
 rune.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
@@ -34,12 +46,12 @@ gsdl.cgs.gsexpr.t	.tygvar
 parser.pos.t	.tygvar
 string.t	.tygvar
 gsdl.sourcepos.t	.tygvar
-_gsdl.cgs.gsexpr.parser_expr.heavy.cast_f_c	.subcode
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_f_c	.subcode
 parser.lift3	.gvar
 gsdl.cgs.gscoercion.parser.app	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.core.keywordOp	.gvar
-_gsdl.cgs.gsexpr.parser_expr.heavy.cast_ld.re	.gvar
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re	.gvar
 parser.<|>	.gvar
 parser.map	.gvar
 gsdl.cgs.gsexpr.cast.source.missing	.gvar
@@ -47,8 +59,8 @@ parser.lift2	.gvar
 gsdl.sourcepos	.gvar
 parser.pos.get	.gvar
 parser.fail	.gvar	# Temp
-f	.alloc	_gsdl.cgs.gsexpr.parser_expr.heavy.cast_f_c
-ld.p	.apply	gsdl.cgs.syntax.core.keywordOp	|	_gsdl.cgs.gsexpr.parser_expr.heavy.cast_ld.re
+f	.alloc	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_f_c
+ld.p	.apply	gsdl.cgs.syntax.core.keywordOp	|	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re
 pos.get	.apply	parser.pos.get	rune.t
 expr.left.p1	.apply	parser.lift2	rune.t	parser.pos.t	parser.pos.t	gsdl.sourcepos.t	|	gsdl.sourcepos	pos.get	pos.get
 expr.left.p	.apply	parser.map	rune.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.cast.source.t	|	gsdl.cgs.gsexpr.cast.source.missing	expr.left.p1
@@ -58,7 +70,7 @@ expr.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.cast.source.t	|	ld.p	exp
 	.app	f	pos.get	gsdl.cgs.gscoercion.parser.app	expr.p
 	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.cgs.gscoercion.t	gsdl.cgs.gsexpr.cast.source.t	gsdl.cgs.gsexpr.t
 
-_gsdl.cgs.gsexpr.parser_expr.heavy.cast_f_c	.expr
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
@@ -366,6 +378,17 @@ _gsdl.cgs.gsexpr.parser_ty	.tyexpr
 parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
+
+# §subsection §gs{gsdl.cgs.gsexpr.parser.cast}
+
+_gsdl.cgs.gsexpr.parser.cast_ty	.tyexpr
+gsdl.cgs.syntax.branch.t	.tygvar
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.syntax.branch.t
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
 
 # §section §gs{gsdl.cgs.gsexpr.freevars}
