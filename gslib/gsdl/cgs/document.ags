@@ -30,11 +30,21 @@ no.expr	.alloc	_gsdl.cgs.document.parser_no.expr_c
 	.app	expr	no.expr
 	.enter	parser.<|>	rune.t	gsdl.cgs.document.t
 
-# > for (
+# > for
 # >     'e ← expr.parser;
 # >     'mb.ty ← optional (lexeme m/::/ *> gstype.parser) <* lexeme m/;/;
 # >     'gs ← many generator.parser;
-# > ) [| 〈 'expr ∝ just e; 'gstype ∝ mb.ty; 'gens ∝ gs; 〉 |]
+# > . [| 〈 'expr ∝ just e; 'gstype ∝ mb.ty; 'gens ∝ gs; 〉 |]
+
+# TODO: Should be
+# > for
+# >         !《 'e, 'mb.ty, 》 ←
+# >              <|> |for 'e ← expr.parser <* lexeme m/;/. [| 《 e, nothing, 》 |]
+# >              <|> |for 'e ← expr.parser.cast l; 'ty ← lexeme m/::/ *> gstype.parser.fun r <* lexeme m/;/. [| 《 e, just ty, 》 |]
+# >         ;
+# >         'gs ← many generator.parser;
+# >     . [ 〈 'expr ∝ just e; 'gstype ∝ mb.ty; 'gens ∝ gs; 〉 |]
+# End TODO
 _gsdl.cgs.document.parser_expr_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
