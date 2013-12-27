@@ -40,6 +40,8 @@ gsdl.cgs.syntax.keywords	.list	string.t
 
 gsdl.cgs.syntax.var.component.print	.closure	_gsdl.cgs.syntax.var.component.print_c
 
+gsdl.cgs.syntax.branch.r	.closure	_gsdl.cgs.syntax.branch.r_c
+
 	.code
 
 # §section §gs{gsdl.cgs.syntax.var.parser}
@@ -370,7 +372,28 @@ n		.fkarg	0	natural.t
 			.undef	string.t
 	# > :: string.t
 
+# §section §gs{gsdl.cgs.syntax.branch.t} Constructors
+
+_gsdl.cgs.syntax.branch.r_c	.expr
+gsdl.cgs.syntax.branch.prim.u	.tygvar
+gsdl.cgs.syntax.branch.t.in	.cogvar
+c	.constr	gsdl.cgs.syntax.branch.prim.u	r
+	.coerce	gsdl.cgs.syntax.branch.t.in
+	.lift
+	.yield	c
+
 	.type
+
+# §section §gs{gsdl.cgs.syntax.branch.t}
+
+gsdl.cgs.syntax.branch.t	.tyabstract	*
+gsdl.cgs.syntax.branch.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.syntax.branch.prim.u
+
+gsdl.cgs.syntax.branch.prim.u	.tyexpr
+record.unboxed.empty	.tygvar
+	.tysum	r	record.unboxed.empty
 
 # §section §gs{gsdl.cgs.syntax.var.print}
 
@@ -381,3 +404,9 @@ string.t	.tygvar
 	.tylift
 	.tyfun	list.t	gsdl.var.component.t
 	.tyref	string.t
+
+	.coercion
+
+gsdl.cgs.syntax.branch.t.in	.tycoercion
+gsdl.cgs.syntax.branch.t	.tygvar
+	.tydefinition	gsdl.cgs.syntax.branch.t
