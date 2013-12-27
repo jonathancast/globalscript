@@ -36,7 +36,8 @@ _gsdl.cgs.syntax.core.keyword_dq.re	.regex	"
 gsdl.cgs.syntax.core.keywordOp	.closure	_gsdl.cgs.syntax.core.keywordOp_c
 _gsdl.cgs.syntax.core.keywordOp_dq.re	.regex	"
 
-gsdl.cgs.syntax.keywords	.list	string.t
+gsdl.cgs.syntax.keywords	.list	string.t	_gsdl.cgs.syntax.keywords_gsλ.s
+_gsdl.cgs.syntax.keywords_gsλ.s	.string	λ
 
 gsdl.cgs.syntax.var.component.print	.closure	_gsdl.cgs.syntax.var.component.print_c
 
