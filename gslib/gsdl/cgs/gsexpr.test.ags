@@ -4,17 +4,17 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse.gsexpr.expr.heavy.cast	_test.freevars.expr.heavy.cast
+_tests	.list	test.property.t	_test_parse_gsexpr_expr.heavy.cast	_test_freevars_expr.heavy.cast
 
-_test.parse.gsexpr.expr.heavy.cast	.closure	_test.parse.gsexpr.expr.heavy.cast_c
-_test.parse.gsexpr.expr.heavy.cast_label	.string	parse\sgsexpr.parser\sqq{"defn\sbool.t\s"⊲}
-_test.parse.gsexpr.expr.heavy.cast_input	.string	"defn\sbool.t\s"⊲
-_test.parse.gsexpr.expr.heavy.cast_bool.s	.string	bool
-_test.parse.gsexpr.expr.heavy.cast_t.s	.string	t
+_test_parse_gsexpr_expr.heavy.cast	.closure	_test_parse_gsexpr_expr.heavy.cast_c
+_test_parse_gsexpr_expr.heavy.cast_label	.string	parse\sgsexpr.parser\sqq{"defn\sbool.t\s"⊲}
+_test_parse_gsexpr_expr.heavy.cast_input	.string	"defn\sbool.t\s"⊲
+_test_parse_gsexpr_expr.heavy.cast_bool.s	.string	bool
+_test_parse_gsexpr_expr.heavy.cast_t.s	.string	t
 
-_test.freevars.expr.heavy.cast	.closure	_test.freevars.expr.heavy.cast_c
-_test.freevars.expr.heavy.cast_label	.string	freevars\s(expr.heavy.cast\s_)
-_test.freevars.expr.heavy.cast_t.s	.string	t
+_test_freevars_expr.heavy.cast	.closure	_test_freevars_expr.heavy.cast_c
+_test_freevars_expr.heavy.cast_label	.string	freevars\s(expr.heavy.cast\s_)
+_test_freevars_expr.heavy.cast_t.s	.string	t
 
 	.code
 
@@ -26,23 +26,23 @@ _tests	.gvar
 
 # §section §gs{parse qq{"defn bool.t "⊲}}
 
-_test.parse.gsexpr.expr.heavy.cast_c	.expr
+_test_parse_gsexpr_expr.heavy.cast_c	.expr
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-_test.parse.gsexpr.expr.heavy.cast_k_c	.subcode
+_test_parse_gsexpr_expr.heavy.cast_k_c	.subcode
 test.property.label	.gvar
-_test.parse.gsexpr.expr.heavy.cast_label	.gvar
+_test_parse_gsexpr_expr.heavy.cast_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.cgs.gsexpr.parser	.gvar
-_test.parse.gsexpr.expr.heavy.cast_input	.gvar
-k	.alloc	_test.parse.gsexpr.expr.heavy.cast_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gsexpr.t	|	parser.rune.advance	rune.print	gsdl.cgs.gsexpr.parser	_test.parse.gsexpr.expr.heavy.cast_input	k
-	.app	_test.parse.gsexpr.expr.heavy.cast_label	test
+_test_parse_gsexpr_expr.heavy.cast_input	.gvar
+k	.alloc	_test_parse_gsexpr_expr.heavy.cast_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gsexpr.t	|	parser.rune.advance	rune.print	gsdl.cgs.gsexpr.parser	_test_parse_gsexpr_expr.heavy.cast_input	k
+	.app	_test_parse_gsexpr_expr.heavy.cast_label	test
 	.enter	test.property.label
 
-_test.parse.gsexpr.expr.heavy.cast_k_c	.expr
+_test_parse_gsexpr_expr.heavy.cast_k_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
@@ -57,14 +57,14 @@ gsdl.cgs.gscoercion.defn	.gvar
 gsdl.var.basevar	.gvar
 list.:	.gvar
 gsdl.var.component.alphanum	.gvar
-_test.parse.gsexpr.expr.heavy.cast_bool.s	.gvar
+_test_parse_gsexpr_expr.heavy.cast_bool.s	.gvar
 list.singleton	.gvar
-_test.parse.gsexpr.expr.heavy.cast_t.s	.gvar
+_test_parse_gsexpr_expr.heavy.cast_t.s	.gvar
 gsdl.cgs.gsexpr.cast.source.missing	.gvar
 actual	.larg	gsdl.cgs.gsexpr.t
 pos	.undefined	gsdl.sourcepos.t
-bool.c	.apply	gsdl.var.component.alphanum	|	_test.parse.gsexpr.expr.heavy.cast_bool.s
-t.c	.apply	gsdl.var.component.alphanum	|	_test.parse.gsexpr.expr.heavy.cast_t.s
+bool.c	.apply	gsdl.var.component.alphanum	|	_test_parse_gsexpr_expr.heavy.cast_bool.s
+t.c	.apply	gsdl.var.component.alphanum	|	_test_parse_gsexpr_expr.heavy.cast_t.s
 bool.t.v.cs1	.apply	list.singleton	gsdl.var.component.t	|	t.c
 bool.t.v.cs	.apply	list.:	gsdl.var.component.t	|	bool.c	bool.t.v.cs1
 bool.t.v	.apply	gsdl.var.basevar	|	bool.t.v.cs
@@ -78,14 +78,14 @@ expected	.apply	gsdl.cgs.gsexpr.pos	|	pos	e1
 
 # §section §gs{freevars (expr.heavy.cast _)}
 
-_test.freevars.expr.heavy.cast_c	.expr
+_test_freevars_expr.heavy.cast_c	.expr
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 test.property.label	.gvar
-_test.freevars.expr.heavy.cast_label	.gvar
+_test_freevars_expr.heavy.cast_label	.gvar
 test.assert.eq	.gvar
 ordered.set.≡	.gvar
 gsdl.cgs.symbol.≡	.gvar
@@ -97,7 +97,7 @@ gsdl.cgs.gscoercion.defn	.gvar
 gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
-_test.freevars.expr.heavy.cast_t.s	.gvar
+_test_freevars_expr.heavy.cast_t.s	.gvar
 gsdl.cgs.gsexpr.cast.source.missing	.gvar
 ordered.set.singleton	.gvar
 gsdl.cgs.symbol.compare	.gvar
@@ -105,7 +105,7 @@ gsdl.cgs.symbol.tyvar	.gvar
 set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 set.symbol.≡	.apply	ordered.set.≡	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.≡
 set.symbol.fmtgs	.apply	ordered.set.fmtgs	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.fmtgs
-v.c	.apply	gsdl.var.component.alphanum	|	_test.freevars.expr.heavy.cast_t.s
+v.c	.apply	gsdl.var.component.alphanum	|	_test_freevars_expr.heavy.cast_t.s
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c
 v	.apply	gsdl.var.basevar	|	v.cs
 e.co	.apply	gsdl.cgs.gscoercion.defn	|	v
@@ -116,5 +116,5 @@ actual	.apply	gsdl.cgs.gsexpr.freevars	|	e
 sym	.apply	gsdl.cgs.symbol.tyvar	|	v
 expected	.apply	ordered.set.singleton	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	sym
 test	.apply	test.assert.eq	set.symbol.ty	|	set.symbol.≡	set.symbol.fmtgs	actual	expected
-	.app	_test.freevars.expr.heavy.cast_label	test
+	.app	_test_freevars_expr.heavy.cast_label	test
 	.enter	test.property.label
