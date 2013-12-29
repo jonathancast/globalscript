@@ -420,3 +420,8 @@ string.t	.tygvar
 gsdl.cgs.syntax.branch.t.in	.tycoercion
 gsdl.cgs.syntax.branch.t	.tygvar
 	.tydefinition	gsdl.cgs.syntax.branch.t
+
+gsdl.cgs.syntax.branch.t.out	.tycoercion
+gsdl.cgs.syntax.branch.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.syntax.branch.t
