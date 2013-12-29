@@ -41,6 +41,7 @@ gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
 _gsac.gsexpr.annotate_expr.heavy.cast_k	.subcode
 _gsac.gsexpr.annotate_pos_k	.subcode
 gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
@@ -49,13 +50,16 @@ gsac.gsexpr.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0	expr.heavy.cast	pos
+	.analyze	e0	expr.heavy.cast	lift	pos
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
 			.force	_gsac.gsexpr.annotate_expr.heavy.cast_k
 			.coerce	gsdl.cgs.gsexpr.cast.source.t.out
 			.enter	so
+		.case	lift
+e1		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
@@ -230,7 +234,7 @@ mbv	.fv	maybe.t	gsdl.var.t
 ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 x	.apply	maybe.fromJust	gsdl.var.t	|	_gsac.gsexpr.compileToDataItem_ep.v	mbv
-	.analyze	e0	expr.heavy.cast	pos
+	.analyze	e0	expr.heavy.cast	lift	pos
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 src		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
@@ -242,6 +246,9 @@ so.x			.apply	gsdl.var.subvar	|	x	so.v
 			.coerce	either.t.out	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 			.app	pos	env	so.x	src
 			.enter	gsac.gsexpr.cast.source.compileToGlobalVar
+		.case	lift
+e1		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
