@@ -21,6 +21,9 @@ _gsdl.cgs.syntax_id.cont.char.re	.regex	[a-z]
 
 _gsdl.cgs.syntax_op.cont.char.re	.regex	[]	
 
+gsdl.cgs.syntax.dot	.closure	_gsdl.cgs.syntax.dot_c
+_gsdl.cgs.syntax.dot_re	.regex	.
+
 gsdl.cgs.syntax.oftype	.closure	_gsdl.cgs.syntax.oftype_c
 _gsdl.cgs.syntax.oftype_re	.regex	::
 
@@ -255,6 +258,20 @@ rune.compare	.gvar
 _gsdl.cgs.syntax.gsid_re	.gvar
 	.app	rune.compare	_gsdl.cgs.syntax.gsid_re
 	.enter	parser.match	rune.t
+
+# §section §gs{gsdl.cgs.syntax.dot}
+
+_gsdl.cgs.syntax.dot_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+parser.<*	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.dot_re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.dot_re
+	.app	m	gsdl.cgs.syntax.ws
+	.enter	parser.<*	rune.t	string.t	string.t
 
 # §section §gs{gsdl.cgs.syntax.oftype}
 
