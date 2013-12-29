@@ -258,7 +258,8 @@ so.fvs			.alloc	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c
 			.enter	ordered.set.union	gsdl.cgs.symbol.t
 		.case	lift
 e1		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+			.app	e1
+			.enter	gsdl.cgs.gsexpr.freevars
 		.case	pos
 pos		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
