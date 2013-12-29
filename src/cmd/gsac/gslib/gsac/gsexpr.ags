@@ -38,6 +38,9 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
@@ -50,13 +53,18 @@ gsac.gsexpr.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0	expr.heavy.cast	lift	pos
+	.analyze	e0	expr.heavy.cast	lambda	lift	pos
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
 			.force	_gsac.gsexpr.annotate_expr.heavy.cast_k
 			.coerce	gsdl.cgs.gsexpr.cast.source.t.out
 			.enter	so
+		.case	lambda
+v		.fkarg	0	gsdl.var.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+b		.fkarg	2	gsdl.cgs.gsexpr.body.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	lift
 e1		.fkarg	0	gsdl.cgs.gsexpr.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
@@ -213,6 +221,7 @@ gsdl.cgs.gsexpr.cast.source.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.cast.source.compileToGlobalVar_res.ty	.tygvar
 gsdl.var.component.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	# Temp
@@ -234,7 +243,7 @@ mbv	.fv	maybe.t	gsdl.var.t
 ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 x	.apply	maybe.fromJust	gsdl.var.t	|	_gsac.gsexpr.compileToDataItem_ep.v	mbv
-	.analyze	e0	expr.heavy.cast	lift	pos
+	.analyze	e0	expr.heavy.cast	lambda	lift	pos
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 src		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
@@ -246,6 +255,11 @@ so.x			.apply	gsdl.var.subvar	|	x	so.v
 			.coerce	either.t.out	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 			.app	pos	env	so.x	src
 			.enter	gsac.gsexpr.cast.source.compileToGlobalVar
+		.case	lambda
+v		.fkarg	0	gsdl.var.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+b		.fkarg	2	gsdl.cgs.gsexpr.body.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	lift
 e1		.fkarg	0	gsdl.cgs.gsexpr.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
