@@ -22,6 +22,8 @@ gsdl.cgs.gsexpr.fmtgs	.closure	_gsdl.cgs.gsexpr.fmtgs_c
 
 gsdl.cgs.gsexpr.body.parser	.closure	_gsdl.cgs.gsexpr.body.parser_c	_gsdl.cgs.gsexpr.body.parser_ty
 
+gsdl.cgs.gsexpr.body.freevars	.closure	_gsdl.cgs.gsexpr.body.freevars_c	_gsdl.cgs.gsexpr.body.freevars_ty
+
 gsdl.cgs.gsexpr.pos	.closure	_gsdl.cgs.gsexpr.pos_c
 gsdl.cgs.gsexpr.expr.heavy.cast	.closure	_gsdl.cgs.gsexpr.expr.heavy.cast_c
 gsdl.cgs.gsexpr.lambda	.closure	_gsdl.cgs.gsexpr.lambda_c
@@ -484,6 +486,15 @@ pos0	.larg	parser.pos.t
 ty	.larg	gsdl.cgs.gstype.t
 	.undef	gsdl.cgs.gsexpr.body.t
 
+# §section §gs{gsdl.cgs.gsexpr.body.freevars}
+
+_gsdl.cgs.gsexpr.body.freevars_c	.expr
+gsdl.cgs.gsexpr.body.t	.tygvar
+ordered.set.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	# Temp
+b	.larg	gsdl.cgs.gsexpr.body.t
+	.undef	ordered.set.t	gsdl.cgs.symbol.t
+
 # §section §gs{gsdl.cgs.gsexpr.t} constructors
 
 _gsdl.cgs.gsexpr.pos_c	.expr
@@ -691,6 +702,16 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.body.t
+
+# §section §gs{gsdl.cgs.gsexpr.body.freevars}
+
+_gsdl.cgs.gsexpr.body.freevars_ty	.tyexpr
+gsdl.cgs.gsexpr.body.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.body.t
+	.tyref	ordered.set.t	gsdl.cgs.symbol.t
 
 	.coercion
 
