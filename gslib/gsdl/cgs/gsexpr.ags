@@ -174,12 +174,18 @@ parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar	# Temp
-p0	.larg	parser.pos.t
+gsdl.cgs.gsexpr.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gsexpr.lambda	.gvar
+pos0	.larg	parser.pos.t
 v	.larg	gsdl.var.t
 ty	.larg	gsdl.cgs.gstype.t
 b	.larg	gsdl.cgs.gsexpr.body.t
-	.undef	gsdl.cgs.gsexpr.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e	.apply	gsdl.cgs.gsexpr.lambda	|	v	ty	b
+	.app	pos	e
+	.enter	gsdl.cgs.gsexpr.pos
 
 # §subsection §gs{gsdl.cgs.gsexpr.parser.arg}
 
