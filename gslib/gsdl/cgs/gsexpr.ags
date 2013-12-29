@@ -500,9 +500,19 @@ ty	.larg	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gsexpr.body.freevars_c	.expr
 gsdl.cgs.gsexpr.body.t	.tygvar
+_gsdl.cgs.gsexpr.body.freevars_k	.subcode
+gsdl.cgs.gsexpr.body.t.out	.cogvar
+b	.larg	gsdl.cgs.gsexpr.body.t
+	.force	_gsdl.cgs.gsexpr.body.freevars_k
+	.coerce	gsdl.cgs.gsexpr.body.t.out
+	.enter	b
+
+
+_gsdl.cgs.gsexpr.body.freevars_k	.forcecont
+gsdl.cgs.gsexpr.body.prim.u	.tygvar
 ordered.set.t	.tygvar	# Temp
 gsdl.cgs.symbol.t	.tygvar	# Temp
-b	.larg	gsdl.cgs.gsexpr.body.t
+b0	.karg	gsdl.cgs.gsexpr.body.prim.u
 	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gsexpr.t} constructors
