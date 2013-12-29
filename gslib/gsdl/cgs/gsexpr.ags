@@ -742,3 +742,8 @@ gsdl.cgs.gsexpr.cast.source.t.out	.tycoercion
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.cgs.gsexpr.cast.source.t
+
+gsdl.cgs.gsexpr.body.t.out	.tycoercion
+gsdl.cgs.gsexpr.body.t	.tygvar
+	.tyinvert
+	.tydefinition gsdl.cgs.gsexpr.body.t
