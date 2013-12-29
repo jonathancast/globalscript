@@ -265,6 +265,10 @@ _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.subcode
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.gscoercion.freevars	.gvar
+gsdl.cgs.gstype.freevars	.gvar
+ordered.set.difference	.gvar
+gsdl.cgs.gsexpr.body.freevars	.gvar
+ordered.set.singleton	.gvar
 gsdl.cgs.gsexpr.freevars	.gvar
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 	.analyze	e0	expr.heavy.cast	lambda	lift	pos
@@ -279,7 +283,13 @@ so.fvs			.alloc	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c
 v		.fkarg	0	gsdl.var.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
 b		.fkarg	2	gsdl.cgs.gsexpr.body.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+ty.fvs			.apply	gsdl.cgs.gstype.freevars	|	ty
+b.fvs			.apply	gsdl.cgs.gsexpr.body.freevars	|	b
+v.sym			.undefined	gsdl.cgs.symbol.t
+v.bvs			.apply	ordered.set.singleton	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	v.sym
+e.fvs			.apply	ordered.set.difference	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	b.fvs	v.bvs
+			.app	gsdl.cgs.symbol.compare	ty.fvs	e.fvs
+			.enter	ordered.set.union	gsdl.cgs.symbol.t
 		.case	lift
 e1		.fkarg	0	gsdl.cgs.gsexpr.t
 			.app	e1
