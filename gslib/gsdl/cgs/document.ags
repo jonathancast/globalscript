@@ -39,6 +39,7 @@ parser.map	.gvar
 gsdl.cgs.gsexpr.parser	.gvar
 gsdl.cgs.gsexpr.parser.cast	.gvar
 gsdl.cgs.syntax.branch.l	.gvar
+gsdl.cgs.syntax.assoc.any	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.oftype	.gvar
 gsdl.cgs.gstype.parser.app	.gvar
@@ -51,7 +52,7 @@ expr.f	.alloc	_gsdl.cgs.document.parser_expr.f_c
 expr.p	.apply	parser.map	rune.t	gsdl.cgs.gsexpr.t	_gsdl.cgs.document.parser_ety_ty	|	expr.f	gsdl.cgs.gsexpr.parser
 # §paragraph{Expression and type signature}
 expr.sig.f	.alloc	_gsdl.cgs.document.parser_expr.sig.f_c
-expr.sig.p1	.apply	gsdl.cgs.gsexpr.parser.cast	|	gsdl.cgs.syntax.branch.l
+expr.sig.p1	.apply	gsdl.cgs.gsexpr.parser.cast	|	gsdl.cgs.syntax.branch.l	gsdl.cgs.syntax.assoc.any
 expr.sig.p	.apply	parser.lift2	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gstype.t	_gsdl.cgs.document.parser_ety_ty	|	expr.sig.f	expr.sig.p1	typesig.p
 # §paragraph{No expression, just type signature}
 noexpr.f	.alloc	_gsdl.cgs.document.parser_noexpr.f_c

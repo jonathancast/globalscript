@@ -39,13 +39,15 @@ gsdl.cgs.gsexpr.cast.source.typesig	.closure	_gsdl.cgs.gsexpr.cast.source.typesi
 _gsdl.cgs.gsexpr.parser_c	.expr
 gsdl.cgs.gsexpr.parser.cast	.gvar
 gsdl.cgs.syntax.branch.r	.gvar
-	.app	gsdl.cgs.syntax.branch.r
+gsdl.cgs.syntax.assoc.any	.gvar
+	.app	gsdl.cgs.syntax.branch.r	gsdl.cgs.syntax.assoc.any
 	.enter	gsdl.cgs.gsexpr.parser.cast
 
 # §subsection §gs{gsdl.cgs.gsexpr.parser.cast}
 
 _gsdl.cgs.gsexpr.parser.cast_c	.expr
 gsdl.cgs.syntax.branch.t	.tygvar
+gsdl.cgs.syntax.assoc.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 _gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c	.subcode
@@ -53,6 +55,7 @@ _gsdl.cgs.gsexpr.parser.cast_right.assoc_c	.subcode
 parser.<|>	.gvar
 gsdl.cgs.gsexpr.parser.app.or.lambda	.gvar
 t	.larg	gsdl.cgs.syntax.branch.t
+a	.larg	gsdl.cgs.syntax.assoc.t
 expr.heavy.cast	.alloc	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c
 right.assoc	.alloc	_gsdl.cgs.gsexpr.parser.cast_right.assoc_c
 app.or.lambda	.apply	gsdl.cgs.gsexpr.parser.app.or.lambda	|	t
@@ -677,11 +680,14 @@ gsdl.cgs.gsexpr.t	.tygvar
 
 _gsdl.cgs.gsexpr.parser.cast_ty	.tyexpr
 gsdl.cgs.syntax.branch.t	.tygvar
+gsdl.cgs.syntax.assoc.t	.tygvar
 parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.syntax.branch.t
+	.tylift
+	.tyfun	gsdl.cgs.syntax.assoc.t
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
 
 # §subsection §gs{gsdl.cgs.gsexpr.parser.app.or.lambda}
