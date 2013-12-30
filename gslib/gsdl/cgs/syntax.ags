@@ -41,8 +41,9 @@ gsdl.cgs.syntax.core.keywordOp	.closure	_gsdl.cgs.syntax.core.keywordOp_c
 
 _gsdl.cgs.syntax_dq.re	.regex	"
 
-gsdl.cgs.syntax.keywords	.list	string.t	_gsdl.cgs.syntax.keywords_gsλ.s
+gsdl.cgs.syntax.keywords	.list	string.t	_gsdl.cgs.syntax.keywords_gsλ.s	_gsdl.cgs.syntax.keywords_arr.s
 _gsdl.cgs.syntax.keywords_gsλ.s	.string	λ
+_gsdl.cgs.syntax.keywords_arr.s	.string	→
 
 gsdl.cgs.syntax.var.component.print	.closure	_gsdl.cgs.syntax.var.component.print_c
 

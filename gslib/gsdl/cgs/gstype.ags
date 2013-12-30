@@ -4,6 +4,9 @@
 
 gsdl.cgs.gstype.parser	.closure	_gsdl.cgs.gstype.parser_c	_gsdl.cgs.gstype.parser_ty
 
+gsdl.cgs.gstype.parser.fun	.closure	_gsdl.cgs.gstype.parser.fun_c	_gsdl.cgs.gstype.parser.fun_ty
+_gsdl.cgs.gstype.parser.fun_arr.re	.regex	→
+
 gsdl.cgs.gstype.parser.app	.closure	_gsdl.cgs.gstype.parser.app_c	_gsdl.cgs.gstype.parser.app_ty
 _gsdl.cgs.gstype.parser.app_k	.closure	_gsdl.cgs.gstype.parser.app_k_c	_gsdl.cgs.gstype.parser.app_k_ty
 
@@ -50,8 +53,61 @@ gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 # §section §gs{gsdl.cgs.gstype.parser}
 
 _gsdl.cgs.gstype.parser_c	.expr
+gsdl.cgs.gstype.parser.fun	.gvar
+	.enter	gsdl.cgs.gstype.parser.fun
+
+# §section §gs{gsdl.cgs.gstype.parser.fun}
+
+_gsdl.cgs.gstype.parser.fun_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.parser.fun_k_c	.subcode
+parser.>>=	.gvar
+parser.pos.get	.gvar
+pos.get	.apply	parser.pos.get	rune.t
+k	.alloc	_gsdl.cgs.gstype.parser.fun_k_c
+	.app	pos.get	k
+	.enter	parser.>>=	rune.t	parser.pos.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.fun_k_c	.expr
+parser.pos.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.parser.fun_k1_c	.subcode
+parser.>>=	.gvar
 gsdl.cgs.gstype.parser.app	.gvar
-	.enter	gsdl.cgs.gstype.parser.app
+pos0	.larg	parser.pos.t
+k1	.alloc	_gsdl.cgs.gstype.parser.fun_k1_c
+	.app	gsdl.cgs.gstype.parser.app	k1
+	.enter	parser.>>=	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.fun_k1_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gstype.parser.fun_f_c	.subcode
+parser.unit	.gvar
+parser.<|>	.gvar
+parser.map	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.keywordOp	.gvar
+_gsdl.cgs.gstype.parser.fun_arr.re	.gvar
+gsdl.cgs.gstype.parser.fun	.gvar
+parser.fail	.gvar	# Temp
+ty0	.larg	gsdl.cgs.gstype.t
+un.ty0	.apply	parser.unit	rune.t	gsdl.cgs.gstype.t	|	ty0
+f	.alloc	_gsdl.cgs.gstype.parser.fun_f_c
+arr.p	.apply	gsdl.cgs.syntax.keywordOp	|	_gsdl.cgs.gstype.parser.fun_arr.re
+fun.p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	arr.p	gsdl.cgs.gstype.parser.fun
+fun.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t	|	f	fun.p1
+	.app	un.ty0	fun.p
+	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.fun_f_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+ty1	.larg	gsdl.cgs.gstype.t
+	.undef	gsdl.cgs.gstype.t
 
 # §section §gs{gsdl.cgs.gstype.parser.app}
 
@@ -827,6 +883,14 @@ gsdl.cgs.gstype.constr.prim.u	.tyexpr
 # §section §gs{gsdl.cgs.gstype.parser}
 
 _gsdl.cgs.gstype.parser_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
+
+# §section §gs{gsdl.cgs.gstype.parser.fun}
+
+_gsdl.cgs.gstype.parser.fun_ty	.tyexpr
 parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
