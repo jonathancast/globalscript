@@ -49,6 +49,7 @@ gsdl.cgs.syntax.branch.l	.closure	_gsdl.cgs.syntax.branch.l_c
 gsdl.cgs.syntax.branch.r	.closure	_gsdl.cgs.syntax.branch.r_c
 
 gsdl.cgs.syntax.assoc.any	.closure	_gsdl.cgs.syntax.assoc.any_c
+gsdl.cgs.syntax.assoc.right	.closure	_gsdl.cgs.syntax.assoc.right_c
 
 	.code
 
@@ -452,6 +453,14 @@ c	.constr	gsdl.cgs.syntax.assoc.prim.u	any
 	.lift
 	.yield	c
 
+_gsdl.cgs.syntax.assoc.right_c	.expr
+gsdl.cgs.syntax.assoc.prim.u	.tygvar
+gsdl.cgs.syntax.assoc.t.in	.cogvar
+c	.constr	gsdl.cgs.syntax.assoc.prim.u	right
+	.coerce	gsdl.cgs.syntax.assoc.t.in
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{gsdl.cgs.syntax.branch.t}
@@ -474,7 +483,7 @@ gsdl.cgs.syntax.assoc.prim.u	.tygvar
 
 gsdl.cgs.syntax.assoc.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
-	.tysum	any	record.unboxed.empty	left	record.unboxed.empty
+	.tysum	any	record.unboxed.empty	left	record.unboxed.empty	right	record.unboxed.empty
 
 # §section §gs{gsdl.cgs.syntax.var.print}
 
