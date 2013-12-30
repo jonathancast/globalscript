@@ -500,3 +500,8 @@ gsdl.cgs.syntax.branch.t	.tygvar
 gsdl.cgs.syntax.assoc.t.in	.tycoercion
 gsdl.cgs.syntax.assoc.t	.tygvar
 	.tydefinition	gsdl.cgs.syntax.assoc.t
+
+gsdl.cgs.syntax.assoc.t.out	.tycoercion
+gsdl.cgs.syntax.assoc.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.syntax.assoc.t
