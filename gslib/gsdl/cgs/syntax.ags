@@ -483,3 +483,7 @@ gsdl.cgs.syntax.branch.t.out	.tycoercion
 gsdl.cgs.syntax.branch.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.cgs.syntax.branch.t
+
+gsdl.cgs.syntax.assoc.t.in	.tycoercion
+gsdl.cgs.syntax.assoc.t	.tygvar
+	.tydefinition	gsdl.cgs.syntax.assoc.t
