@@ -36,6 +36,7 @@ _gsdl.cgs.syntax.semi_re	.regex	;
 gsdl.cgs.syntax.keyword	.closure	_gsdl.cgs.syntax.keyword_c
 gsdl.cgs.syntax.core.keyword	.closure	_gsdl.cgs.syntax.core.keyword_c
 
+gsdl.cgs.syntax.keywordOp	.closure	_gsdl.cgs.syntax.keywordOp_c
 gsdl.cgs.syntax.core.keywordOp	.closure	_gsdl.cgs.syntax.core.keywordOp_c
 
 _gsdl.cgs.syntax_dq.re	.regex	"
@@ -373,6 +374,36 @@ p2	.apply	parser.*>	rune.t	record.empty	string.t	|	p2.1	gsdl.cgs.syntax.ws
 p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
 	.app	dq.p	p
 	.enter	parser.*>	rune.t	string.t	string.t
+
+# §section §gs{gsdl.cgs.syntax.keywordOp}
+
+_gsdl.cgs.syntax.keywordOp_c	.expr
+regex.t	.tygvar
+rune.t	.tygvar
+maybe.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+parser.*>	.gvar
+parser.optional	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax_dq.re	.gvar
+parser.<*	.gvar
+parser.neg.lookahead	.gvar
+_gsdl.cgs.syntax_op.cont.char.re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+parser.fail	.gvar	# Temp
+maybe.string.ty	.tylet	maybe.t	string.t
+kw	.larg	regex.t	rune.t
+dq.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_dq.re
+dq.p	.apply	parser.optional	rune.t	string.t	|	dq.p1
+p1	.apply	parser.match	rune.t	|	rune.compare	kw
+opc.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_op.cont.char.re
+p2.1	.apply	parser.neg.lookahead	rune.t	string.t	|	opc.p
+p2	.apply	parser.*>	rune.t	record.empty	string.t	|	p2.1	gsdl.cgs.syntax.ws
+p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
+	.app	dq.p	p
+	.enter	parser.*>	rune.t	maybe.string.ty	string.t
 
 # §section §gs{gsdl.cgs.syntax.core.keywordOp}
 
