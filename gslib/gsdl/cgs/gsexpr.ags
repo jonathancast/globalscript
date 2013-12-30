@@ -33,6 +33,8 @@ gsdl.cgs.gsexpr.cast.source.missing	.closure	_gsdl.cgs.gsexpr.cast.source.missin
 gsdl.cgs.gsexpr.cast.source.typesig	.closure	_gsdl.cgs.gsexpr.cast.source.typesig_c
 gsdl.cgs.gsexpr.cast.source.expr	.closure	_gsdl.cgs.gsexpr.cast.source.expr_c
 
+gsdl.cgs.gsexpr.body.missing	.closure	_gsdl.cgs.gsexpr.body.missing_c
+
 	.code
 
 # §section §gs{gsdl.cgs.gsexpr.parser}
@@ -648,6 +650,20 @@ res	.constr	gsdl.cgs.gsexpr.cast.source.prim.u	expr	0	e
 	.lift
 	.yield	res
 
+# §section §gs{gsdl.cgs.gsexpr.body.t} Constructors
+
+_gsdl.cgs.gsexpr.body.missing_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.body.prim.u	.tygvar
+gsdl.cgs.gsexpr.body.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+ty	.larg	gsdl.cgs.gstype.t
+res	.constr	gsdl.cgs.gsexpr.body.prim.u	missing	0	pos	1	ty
+	.coerce	gsdl.cgs.gsexpr.body.t.in
+	.lift
+	.yield	res
+
 	.type
 
 # §section §gs{gsdl.cgs.gsexpr.t}
@@ -718,7 +734,13 @@ gsdl.cgs.gsexpr.body.prim.u	.tygvar
 	.tyref	gsdl.cgs.gsexpr.body.prim.u
 
 gsdl.cgs.gsexpr.body.prim.u	.tyexpr
-	.tysum
+_gsdl.cgs.gsexpr.body.prim.u_missing_ty	.tygvar
+	.tysum	missing	_gsdl.cgs.gsexpr.body.prim.u_missing_ty
+
+_gsdl.cgs.gsexpr.body.prim.u_missing_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gstype.t
 
 # §section §gs{gsdl.cgs.gsexpr.parser}
 
