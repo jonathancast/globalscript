@@ -48,6 +48,8 @@ gsdl.cgs.syntax.var.component.print	.closure	_gsdl.cgs.syntax.var.component.prin
 gsdl.cgs.syntax.branch.l	.closure	_gsdl.cgs.syntax.branch.l_c
 gsdl.cgs.syntax.branch.r	.closure	_gsdl.cgs.syntax.branch.r_c
 
+gsdl.cgs.syntax.assoc.any	.closure	_gsdl.cgs.syntax.assoc.any_c
+
 	.code
 
 # §section §gs{gsdl.cgs.syntax.var.parser}
@@ -440,6 +442,16 @@ c	.constr	gsdl.cgs.syntax.branch.prim.u	r
 	.lift
 	.yield	c
 
+# §section §gs{gsdl.cgs.syntax.assoc.t} Constructors
+
+_gsdl.cgs.syntax.assoc.any_c	.expr
+gsdl.cgs.syntax.assoc.prim.u	.tygvar
+gsdl.cgs.syntax.assoc.t.in	.cogvar
+c	.constr	gsdl.cgs.syntax.assoc.prim.u	any
+	.coerce	gsdl.cgs.syntax.assoc.t.in
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{gsdl.cgs.syntax.branch.t}
@@ -461,7 +473,8 @@ gsdl.cgs.syntax.assoc.prim.u	.tygvar
 	.tyref	gsdl.cgs.syntax.assoc.prim.u
 
 gsdl.cgs.syntax.assoc.prim.u	.tyexpr
-	.tysum
+record.unboxed.empty	.tygvar
+	.tysum	any	record.unboxed.empty
 
 # §section §gs{gsdl.cgs.syntax.var.print}
 
