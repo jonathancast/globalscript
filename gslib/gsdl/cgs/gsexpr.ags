@@ -91,6 +91,7 @@ a0	.karg	gsdl.cgs.syntax.assoc.prim.u
 			.enter	parser.fail	rune.t	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c	.expr
+gsdl.cgs.syntax.branch.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
@@ -110,13 +111,18 @@ gsdl.cgs.gsexpr.cast.source.missing	.gvar
 parser.lift2	.gvar
 gsdl.sourcepos	.gvar
 parser.pos.get	.gvar
+gsdl.cgs.gsexpr.cast.source.expr	.gvar
+gsdl.cgs.gsexpr.parser.cast	.gvar
+gsdl.cgs.syntax.assoc.right	.gvar
 parser.fail	.gvar	# Temp
+t	.fv	gsdl.cgs.syntax.branch.t
 f	.alloc	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_f_c
 ld.p	.apply	gsdl.cgs.syntax.core.keywordOp	|	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re
 pos.get	.apply	parser.pos.get	rune.t
 expr.left.p1	.apply	parser.lift2	rune.t	parser.pos.t	parser.pos.t	gsdl.sourcepos.t	|	gsdl.sourcepos	pos.get	pos.get
 expr.left.p	.apply	parser.map	rune.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.cast.source.t	|	gsdl.cgs.gsexpr.cast.source.missing	expr.left.p1
-expr.right.p	.apply	parser.fail	rune.t	gsdl.cgs.gsexpr.cast.source.t	# > right <$> expr
+expr.right.p1	.apply	gsdl.cgs.gsexpr.parser.cast	|	t	gsdl.cgs.syntax.assoc.right
+expr.right.p	.apply	parser.map	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gsexpr.cast.source.t	|	gsdl.cgs.gsexpr.cast.source.expr	expr.right.p1
 expr.p1	.apply	parser.<|>	rune.t	gsdl.cgs.gsexpr.cast.source.t	|	expr.left.p	expr.right.p
 expr.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.cast.source.t	|	ld.p	expr.p1
 	.app	f	pos.get	gsdl.cgs.gscoercion.parser.app	expr.p
