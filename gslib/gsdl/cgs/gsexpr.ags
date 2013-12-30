@@ -197,7 +197,7 @@ gsdl.cgs.syntax.keyword	.gvar
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_gsλ.re	.gvar
 gsdl.cgs.syntax.var.parser	.gvar
 gsdl.cgs.syntax.oftype	.gvar
-gsdl.cgs.gstype.parser.app	.gvar
+gsdl.cgs.gstype.parser.fun	.gvar
 gsdl.cgs.syntax.dot	.gvar
 gsdl.cgs.gsexpr.body.parser	.gvar
 parser.fail	.gvar	# Temp
@@ -205,7 +205,7 @@ f	.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_f_c
 pos.get	.apply	parser.pos.get	rune.t
 gsλ.p	.apply	gsdl.cgs.syntax.keyword	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_gsλ.re
 v.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsλ.p	gsdl.cgs.syntax.var.parser
-ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.app
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
 b.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.body.t	|	gsdl.cgs.syntax.dot	gsdl.cgs.gsexpr.body.parser
 	.app	f	pos.get	v.p	ty.p	b.p
 	.enter	parser.lift4	rune.t	parser.pos.t	gsdl.var.t	gsdl.cgs.gstype.t	gsdl.cgs.gsexpr.body.t	gsdl.cgs.gsexpr.t
@@ -527,11 +527,11 @@ parser.lift2	.gvar
 parser.pos.get	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.oftype	.gvar
-gsdl.cgs.gstype.parser.app	.gvar
+gsdl.cgs.gstype.parser.fun	.gvar
 parser.fail	.gvar	# Temp
 f	.alloc	_gsdl.cgs.gsexpr.body.parser_missing.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
-ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.app
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
 	.app	f	pos.get	ty.p
 	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.cgs.gstype.t	gsdl.cgs.gsexpr.body.t
 

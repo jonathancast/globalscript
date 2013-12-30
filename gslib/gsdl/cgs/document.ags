@@ -42,11 +42,11 @@ gsdl.cgs.syntax.branch.l	.gvar
 gsdl.cgs.syntax.assoc.any	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.oftype	.gvar
-gsdl.cgs.gstype.parser.app	.gvar
+gsdl.cgs.gstype.parser.fun	.gvar
 gsdl.cgs.syntax.semi	.gvar
 f	.alloc	_gsdl.cgs.document.parser_f_c
 pos.get	.apply	parser.pos.get	rune.t
-typesig.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.app
+typesig.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
 # §paragraph{Expression, no type signature}
 expr.f	.alloc	_gsdl.cgs.document.parser_expr.f_c
 expr.p	.apply	parser.map	rune.t	gsdl.cgs.gsexpr.t	_gsdl.cgs.document.parser_ety_ty	|	expr.f	gsdl.cgs.gsexpr.parser
