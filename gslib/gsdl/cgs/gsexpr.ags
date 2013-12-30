@@ -563,13 +563,21 @@ b	.larg	gsdl.cgs.gsexpr.body.t
 	.coerce	gsdl.cgs.gsexpr.body.t.out
 	.enter	b
 
-
 _gsdl.cgs.gsexpr.body.freevars_k	.forcecont
 gsdl.cgs.gsexpr.body.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar	# Temp
 gsdl.cgs.symbol.t	.tygvar	# Temp
+gsdl.cgs.gstype.freevars	.gvar
 b0	.karg	gsdl.cgs.gsexpr.body.prim.u
-	.undef	ordered.set.t	gsdl.cgs.symbol.t
+	.analyze	b0	missing
+		.case	missing
+pos1		.fkarg	0	gsdl.sourcepos.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+			.app	ty
+			.enter	gsdl.cgs.gstype.freevars
+	# > :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gsexpr.t} constructors
 
