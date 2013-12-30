@@ -82,6 +82,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -94,7 +95,10 @@ pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 co	.fv	gsdl.cgs.gscoercion.t
 so0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
-	.analyze	so0	missing	typesig
+	.analyze	so0	expr	missing	typesig
+		.case	expr
+e		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	missing
 pos1		.fkarg	0	gsdl.sourcepos.t
 			.force	_gsac.gsexpr.annotate_expr.heavy.cast_missing_k
@@ -396,6 +400,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
@@ -411,7 +416,10 @@ pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 x	.fv	gsdl.var.t
 so0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
-	.analyze	so0	missing	typesig
+	.analyze	so0	expr	missing	typesig
+		.case	expr
+e		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 		.case	missing
 pos1		.fkarg	0	gsdl.sourcepos.t
 			.undef	either.t	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
@@ -423,7 +431,7 @@ ty.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_ty.v
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 			.app	pos1	env	ty.v	ty
 			.enter	gsac.gstype.compileToGlobalVar
-	# > :: either.t	string.t	_gsac.gsexpr.cast.source.compileToDataItem_res.ty
+	# > :: either.t	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 
 _gsac.gsexpr.cast.source.compileToGlobalVar_typesig_k	.forcecont
 gsdl.sourcepos.t	.tygvar
