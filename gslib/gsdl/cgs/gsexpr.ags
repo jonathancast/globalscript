@@ -49,13 +49,22 @@ gsdl.cgs.syntax.branch.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 _gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c	.subcode
+_gsdl.cgs.gsexpr.parser.cast_right.assoc_c	.subcode
 parser.<|>	.gvar
 gsdl.cgs.gsexpr.parser.app.or.lambda	.gvar
 t	.larg	gsdl.cgs.syntax.branch.t
 expr.heavy.cast	.alloc	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c
+right.assoc	.alloc	_gsdl.cgs.gsexpr.parser.cast_right.assoc_c
 app.or.lambda	.apply	gsdl.cgs.gsexpr.parser.app.or.lambda	|	t
-	.app	expr.heavy.cast	app.or.lambda
+	.app	right.assoc	app.or.lambda
 	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.cast_right.assoc_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+expr.heavy.cast	.fv	parser.t	rune.t	gsdl.cgs.gsexpr.t
+	.enter	expr.heavy.cast
 
 _gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c	.expr
 rune.t	.tygvar
