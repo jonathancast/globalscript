@@ -63,11 +63,31 @@ app.or.lambda	.apply	gsdl.cgs.gsexpr.parser.app.or.lambda	|	t
 	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.parser.cast_right.assoc_c	.expr
+gsdl.cgs.syntax.assoc.t	.tygvar
 parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.parser.cast_right.assoc_k	.subcode
+gsdl.cgs.syntax.assoc.t.out	.cogvar
+a	.fv	gsdl.cgs.syntax.assoc.t
 expr.heavy.cast	.fv	parser.t	rune.t	gsdl.cgs.gsexpr.t
-	.enter	expr.heavy.cast
+	.force	_gsdl.cgs.gsexpr.parser.cast_right.assoc_k
+	.coerce	gsdl.cgs.syntax.assoc.t.out
+	.enter	a
+
+_gsdl.cgs.gsexpr.parser.cast_right.assoc_k	.forcecont
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.syntax.assoc.prim.u	.tygvar
+parser.fail	.gvar
+expr.heavy.cast	.fv	parser.t	rune.t	gsdl.cgs.gsexpr.t
+a0	.karg	gsdl.cgs.syntax.assoc.prim.u
+	.danalyze	a0	left
+		.default
+			.enter	expr.heavy.cast
+		.case	left
+			.enter	parser.fail	rune.t	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c	.expr
 rune.t	.tygvar
