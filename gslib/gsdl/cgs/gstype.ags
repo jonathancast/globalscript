@@ -2,6 +2,8 @@
 
 	.data
 
+gsdl.cgs.gstype.parser	.closure	_gsdl.cgs.gstype.parser_c	_gsdl.cgs.gstype.parser_ty
+
 gsdl.cgs.gstype.parser.app	.closure	_gsdl.cgs.gstype.parser.app_c	_gsdl.cgs.gstype.parser.app_ty
 _gsdl.cgs.gstype.parser.app_k	.closure	_gsdl.cgs.gstype.parser.app_k_c	_gsdl.cgs.gstype.parser.app_k_ty
 
@@ -44,6 +46,12 @@ gsdl.cgs.gstype.field.fmtgs	.closure	_gsdl.cgs.gstype.field.fmtgs_c	_gsdl.cgs.gs
 gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
 	.code
+
+# §section §gs{gsdl.cgs.gstype.parser}
+
+_gsdl.cgs.gstype.parser_c	.expr
+gsdl.cgs.gstype.parser.app	.gvar
+	.enter	gsdl.cgs.gstype.parser.app
 
 # §section §gs{gsdl.cgs.gstype.parser.app}
 
@@ -148,13 +156,13 @@ _gsdl.cgs.gstype.parser.arg_lift.p_lb.re	.gvar
 rune.compare	.gvar
 gsdl.cgs.syntax.ws	.gvar
 parser.<*	.gvar
-gsdl.cgs.gstype.parser.arg	.gvar
+gsdl.cgs.gstype.parser	.gvar
 _gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.gvar
 parser.fail	.gvar	# Temp
 lb_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_lift.p_lb.re
 rb_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_lift.p_rb.re
 ty_p3	.apply	parser.<*	rune.t	string.t	string.t	|	rb_p	gsdl.cgs.syntax.ws
-ty_p2	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	gsdl.cgs.gstype.parser.arg	ty_p3
+ty_p2	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	gsdl.cgs.gstype.parser	ty_p3
 ty_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.ws	ty_p2
 ty_p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	lb_p	ty_p1
 	.app	gsdl.cgs.gstype.lift	ty_p
@@ -815,6 +823,14 @@ gsdl.cgs.gstype.constr.prim.u	.tygvar
 
 gsdl.cgs.gstype.constr.prim.u	.tyexpr
 	.tysum
+
+# §section §gs{gsdl.cgs.gstype.parser}
+
+_gsdl.cgs.gstype.parser_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
 
 # §section §gs{gsdl.cgs.gstype.parser.app}
 

@@ -4,7 +4,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.fmtgs.product	_test.lift.eq.product	_test.parser.empty.product
+_tests	.list	test.property.t	_test.fmtgs.product	_test.lift.eq.product	_test.parser.empty.product	_test.parser_lifted.app
 
 _test.fmtgs.product	.closure	_test.fmtgs.product_c
 _test.fmtgs.product_label	.string	fmtgs\s(product\s[])
@@ -18,6 +18,10 @@ _test.lift.eq.product_true	.string	lift\s(product\snil)\s≡\sproduct\snil
 _test.parser.empty.product	.closure	_test.parser.empty.product_c
 _test.parser.empty.product_label	.string	parse\sqq{"Π〈〉}
 _test.parser.empty.product_input	.string	"Π〈〉
+
+_test.parser_lifted.app	.closure	_test.parser_lifted.app_c
+_test.parser_lifted.app_label	.string	parse\sqq{⌊tyf\styx⌋}
+_test.parser_lifted.app_input	.string	⌊tyf\styx⌋
 
 	.code
 
@@ -103,3 +107,27 @@ nil	.apply	list.nil	gsdl.cgs.gstype.field.t
 expected	.apply	gsdl.cgs.gstype.product	|	nil
 	.app	gsdl.cgs.gstype.≡	gsdl.cgs.gstype.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.cgs.gstype.t
+
+# §section §gs{parse qq{⌊tyx tyf⌋}}
+
+_test.parser_lifted.app_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_test.parser_lifted.app_k_c	.subcode
+test.property.label	.gvar
+_test.parser_lifted.app_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
+_test.parser_lifted.app_input	.gvar
+k	.alloc	_test.parser_lifted.app_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gstype.t	|	parser.rune.advance	rune.print	gsdl.cgs.gstype.parser.arg	_test.parser_lifted.app_input	k
+	.app	_test.parser_lifted.app_label	test
+	.enter	test.property.label
+
+_test.parser_lifted.app_k_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+test.true	.gvar
+ty	.larg	gsdl.cgs.gstype.t
+	.enter	test.true
