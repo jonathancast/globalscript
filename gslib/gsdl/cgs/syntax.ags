@@ -474,7 +474,7 @@ gsdl.cgs.syntax.assoc.prim.u	.tygvar
 
 gsdl.cgs.syntax.assoc.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
-	.tysum	any	record.unboxed.empty
+	.tysum	any	record.unboxed.empty	left	record.unboxed.empty
 
 # §section §gs{gsdl.cgs.syntax.var.print}
 
