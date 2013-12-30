@@ -543,9 +543,14 @@ _gsdl.cgs.gsexpr.body.parser_missing.p_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar	# Temp
+gsdl.cgs.gsexpr.body.missing	.gvar
+gsdl.sourcepos	.gvar
 pos0	.larg	parser.pos.t
 ty	.larg	gsdl.cgs.gstype.t
-	.undef	gsdl.cgs.gsexpr.body.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+	.app	pos	ty
+	.enter	gsdl.cgs.gsexpr.body.missing
 
 # §section §gs{gsdl.cgs.gsexpr.body.freevars}
 
