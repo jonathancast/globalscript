@@ -453,6 +453,16 @@ gsdl.cgs.syntax.branch.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
 	.tysum	l	record.unboxed.empty	r	record.unboxed.empty
 
+# §section §gs{gsdl.cgs.syntax.assoc.t}
+
+gsdl.cgs.syntax.assoc.t	.tyabstract	*
+gsdl.cgs.syntax.assoc.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.syntax.assoc.prim.u
+
+gsdl.cgs.syntax.assoc.prim.u	.tyexpr
+	.tysum
+
 # §section §gs{gsdl.cgs.syntax.var.print}
 
 _gsdl.cgs.syntax.var.print_components.print_ty	.tyexpr
