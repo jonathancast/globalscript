@@ -1134,7 +1134,7 @@ ordered.map.get	.gvar
 gsdl.var.compare	.gvar
 sym0	.fv	gsdl.cgs.symbol.prim.u
 pr0	.karg	gsac.prefix.prim.u
-	.analyze	sym0	abstyvar	tyvar
+	.analyze	sym0	abstyvar	tyvar	var
 		.case	abstyvar
 v		.fkarg	0	gsdl.var.t
 tycs			.field	typeconstants	pr0
@@ -1149,6 +1149,9 @@ tyfs			.field	typefunctions	pr0
 			.coerce	maybe.t.out	gsac.prefix.typefnitem.t
 			.app	gsdl.var.compare	v	tyfs
 			.enter	ordered.map.get	gsdl.var.t	gsac.prefix.typefnitem.t
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	maybe.t	gsac.prefix.item.t
 	# > :: maybe.t	gsac.prefix.item.t
 
 _gsac.prefix.get_abstyvar_k	.forcecont

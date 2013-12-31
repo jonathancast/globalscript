@@ -11,6 +11,7 @@ gsdl.cgs.symbol.≡	.closure	_gsdl.cgs.symbol.≡_c
 gsdl.cgs.symbol.fmtgs	.closure	_gsdl.cgs.symbol.fmtgs_c
 _gsdl.cgs.symbol.fmtgs_tyvar.s	.string	tyvar
 
+gsdl.cgs.symbol.var	.closure	_gsdl.cgs.symbol.var_c
 gsdl.cgs.symbol.tyvar	.closure	_gsdl.cgs.symbol.tyvar_c
 gsdl.cgs.symbol.abstyvar	.closure	_gsdl.cgs.symbol.abstyvar_c
 
@@ -34,7 +35,7 @@ list.t	.tygvar	# Temp
 gsdl.var.component.t	.tygvar	# Temp
 gsdl.var.components.get	.gvar
 s0	.karg	gsdl.cgs.symbol.prim.u
-	.analyze	s0	abstyvar	tyvar
+	.analyze	s0	abstyvar	tyvar	var
 		.case	abstyvar
 v		.fkarg	0	gsdl.var.t
 			.undef	list.t	gsdl.var.component.t
@@ -42,6 +43,9 @@ v		.fkarg	0	gsdl.var.t
 v		.fkarg	0	gsdl.var.t
 			.app	v
 			.enter	gsdl.var.components.get
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	list.t	gsdl.var.component.t
 	# > :: list.t	gsdl.var.component.t
 
 # §section §gs{gsdl.cgs.symbol.compare}
@@ -76,10 +80,10 @@ order.total.ord.lt	.gvar
 order.total.ord.gt	.gvar
 s0.0	.fv	gsdl.cgs.symbol.prim.u
 s1.0	.karg	gsdl.cgs.symbol.prim.u
-	.analyze	s0.0	abstyvar	tyvar
+	.analyze	s0.0	abstyvar	tyvar	var
 		.case	abstyvar
 v0		.fkarg	0	gsdl.var.t
-			.analyze	s1.0	abstyvar	tyvar
+			.analyze	s1.0	abstyvar	tyvar	var
 				.case	abstyvar
 v1				.fkarg	0	gsdl.var.t
 					.app	v0	v1
@@ -87,9 +91,12 @@ v1				.fkarg	0	gsdl.var.t
 				.case	tyvar
 v1				.fkarg	0	gsdl.var.t
 					.enter	order.total.ord.lt
+				.case	var
+v1				.fkarg	0	gsdl.var.t
+					.enter	order.total.ord.lt
 		.case	tyvar
 v0		.fkarg	0	gsdl.var.t
-			.analyze	s1.0	abstyvar	tyvar
+			.analyze	s1.0	abstyvar	tyvar	var
 				.case	abstyvar
 v1				.fkarg	0	gsdl.var.t
 					.enter	order.total.ord.gt
@@ -97,6 +104,12 @@ v1				.fkarg	0	gsdl.var.t
 v1				.fkarg	0	gsdl.var.t
 					.app	v0	v1
 					.enter	gsdl.var.compare
+				.case	var
+v1				.fkarg	0	gsdl.var.t
+					.undef	order.total.ord.t
+		.case	var
+v0		.fkarg	0	gsdl.var.t
+			.undef	order.total.ord.t
 	# > :: order.total.ord.t
 
 # §section §gs{gsdl.cgs.symbol.≡}
@@ -129,7 +142,7 @@ bool.t	.tygvar	# Temp
 gsdl.var.≡	.gvar
 s0.0	.fv	gsdl.cgs.symbol.prim.u
 s1.0	.karg	gsdl.cgs.symbol.prim.u
-	.analyze	s0.0	abstyvar	tyvar
+	.analyze	s0.0	abstyvar	tyvar	var
 		.case	abstyvar
 v0		.fkarg	0	gsdl.var.t
 			.undef	bool.t
@@ -142,6 +155,9 @@ v0		.fkarg	0	gsdl.var.t
 v1				.fkarg	0	gsdl.var.t
 					.app	v0	v1
 					.enter	gsdl.var.≡
+		.case	var
+v0		.fkarg	0	gsdl.var.t
+			.undef	bool.t
 	# > :: bool.t
 
 # §section §gs{gsdl.cgs.symbol.fmtgs}
@@ -164,7 +180,7 @@ fmtgs.var	.gvar
 _gsdl.cgs.symbol.fmtgs_tyvar.s	.gvar
 gsdl.var.fmtgs	.gvar
 s0	.karg	gsdl.cgs.symbol.prim.u
-	.analyze	s0	abstyvar	tyvar
+	.analyze	s0	abstyvar	tyvar	var
 		.case	abstyvar
 v		.fkarg	0	gsdl.var.t
 			.undef	fmtgs.printer.t
@@ -174,9 +190,22 @@ tyfvar.fmt			.apply	fmtgs.var	|	_gsdl.cgs.symbol.fmtgs_tyvar.s
 v.fmt			.apply	gsdl.var.fmtgs	|	v
 			.app	tyfvar.fmt	v.fmt
 			.enter	fmtgs.app
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	fmtgs.printer.t
 	# > :: fmtgs.printer.t
 
 # §section §gs{gsdl.cgs.symbol.t} Constructors
+
+_gsdl.cgs.symbol.var_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.cgs.symbol.t.in	.cogvar
+v	.arg	gsdl.var.t
+c	.constr	gsdl.cgs.symbol.prim.u	var	0	v
+	.coerce	gsdl.cgs.symbol.t.in
+	.lift
+	.yield	c
 
 _gsdl.cgs.symbol.tyvar_c	.expr
 gsdl.var.t	.tygvar
@@ -210,13 +239,18 @@ gsdl.cgs.symbol.prim.u	.tygvar
 gsdl.cgs.symbol.prim.u	.tyexpr
 _gsdl.cgs.symbol.prim.u_abstyvar_ty	.tygvar
 _gsdl.cgs.symbol.prim.u_tyvar_ty	.tygvar
-	.tysum	abstyvar	_gsdl.cgs.symbol.prim.u_abstyvar_ty	tyvar	_gsdl.cgs.symbol.prim.u_tyvar_ty
+_gsdl.cgs.symbol.prim.u_var_ty	.tygvar
+	.tysum	abstyvar	_gsdl.cgs.symbol.prim.u_abstyvar_ty	tyvar	_gsdl.cgs.symbol.prim.u_tyvar_ty	var	_gsdl.cgs.symbol.prim.u_var_ty
 
 _gsdl.cgs.symbol.prim.u_abstyvar_ty	.tyexpr
 gsdl.var.t	.tygvar
 	.tyubproduct	0	gsdl.var.t
 
 _gsdl.cgs.symbol.prim.u_tyvar_ty	.tyexpr
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
+
+_gsdl.cgs.symbol.prim.u_var_ty	.tyexpr
 gsdl.var.t	.tygvar
 	.tyubproduct	0	gsdl.var.t
 
