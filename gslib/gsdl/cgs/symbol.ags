@@ -109,7 +109,16 @@ v1				.fkarg	0	gsdl.var.t
 					.undef	order.total.ord.t
 		.case	var
 v0		.fkarg	0	gsdl.var.t
-			.undef	order.total.ord.t
+			.analyze	s1.0	abstyvar	tyvar	var
+				.case	abstyvar
+v1				.fkarg	0	gsdl.var.t
+					.undef	order.total.ord.t
+				.case	tyvar
+v1				.fkarg	0	gsdl.var.t
+					.enter	order.total.ord.gt
+				.case	var
+v1				.fkarg	0	gsdl.var.t
+					.undef	order.total.ord.t
 	# > :: order.total.ord.t
 
 # §section §gs{gsdl.cgs.symbol.≡}
