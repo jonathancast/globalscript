@@ -84,7 +84,7 @@ list.field.res.ty	.tylet	list.t	_gsac.gstype.field.annotate_res.ty
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	abstype	app	elimprim	fun	impprim	lift	product	sum	var
+	.analyze	ty0	abstype	app	elimprim	fun	impprim	lift	pos	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
@@ -115,6 +115,10 @@ ty1		.fkarg	0	gsdl.cgs.gstype.t
 			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
 			.app	pos	env	ty1
 			.enter	gsac.gstype.annotate
+		.case	pos
+pos1		.fkarg	0	gsdl.sourcepos.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.force	_gsac.gstype.annotate_product_k
@@ -728,7 +732,7 @@ tya0	.fv	gsdl.cgs.gstype.prim.u
 tye0	.karg	gsdl.cgs.gstype.prim.u
 tya0.l	.lifted	tya0
 tya0.cl	.cast	tya0.l	gsdl.cgs.gstype.t.in
-	.analyze	tye0	abstype	app	elimprim	fun	impprim	lift	product	sum	var
+	.analyze	tye0	abstype	app	elimprim	fun	impprim	lift	pos	product	sum	var
 		.case	abstype
 tyce		.fkarg	0	gsdl.var.t
 			.danalyze	tya0	abstype	var
@@ -787,6 +791,10 @@ tye1		.fkarg	0	gsdl.cgs.gstype.t
 tya1				.fkarg	0	gsdl.cgs.gstype.t
 					.app	pos	env	tya1	tye1
 					.enter	gsac.gstype.check
+		.case	pos
+pos1		.fkarg	0	gsdl.sourcepos.t
+ty0.1		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	record.empty
 		.case	product
 fse		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.danalyze	tya0	product
@@ -974,7 +982,7 @@ ty0	.larg	gsdl.cgs.gstype.prim.u
 em	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 gvs	.larg	list.t	gsdl.var.t
-	.analyze	ty0	abstype	app	elimprim	fun	impprim	lift	product	sum	var
+	.analyze	ty0	abstype	app	elimprim	fun	impprim	lift	pos	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.compile_w_abstype_k
@@ -1012,6 +1020,10 @@ ty1		.fkarg	0	gsdl.cgs.gstype.t
 			.coerce	either.t.out	string.t	_gsac.gstype.compile_res.ty
 			.app	pos	env	ty1	em	pem	gvs
 			.enter	gsac.gstype.compile
+		.case	pos
+pos1		.fkarg	0	gsdl.sourcepos.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.force	_gsac.gstype.compile_w_product_k
