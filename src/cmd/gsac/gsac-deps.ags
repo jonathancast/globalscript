@@ -1040,7 +1040,8 @@ ibio.file.name.t	.tygvar
 bool.prim.u	.tygvar
 ibio.prim.t	.tygvar	# Temp
 _process.var_rec_file_:_true_false_res_c	.subcode
-res.ty	.tylet	ordered.set.t	ibio.file.name.t	# Temp
+ibio.prim.unit	.gvar
+res.ty	.tylet	ordered.set.t	ibio.file.name.t
 o	.fv	ibio.prim.oport	rune.t
 ds	.fv	ordered.set.t	ibio.file.name.t
 gsac.fn	.fv	ibio.file.name.t
@@ -1051,7 +1052,9 @@ b0	.karg	bool.prim.u	# Have we emitted this dependency already?
 res			.alloc	_process.var_rec_file_:_true_false_res_c
 			.enter	res
 		.case	true
-			.undef	ibio.prim.t	res.ty
+			.lift
+			.app	ds
+			.yield	ibio.prim.unit	res.ty
 
 _process.var_rec_file_:_true_false_res_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
