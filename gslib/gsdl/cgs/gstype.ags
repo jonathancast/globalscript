@@ -376,7 +376,8 @@ ty1		.fkarg	0	gsdl.cgs.gstype.t
 		.case	pos
 pos		.fkarg	0	gsdl.sourcepos.t
 ty1		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+			.app	ty1
+			.enter	gsdl.cgs.gstype.freevars
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 un			.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
