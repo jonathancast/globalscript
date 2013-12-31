@@ -112,11 +112,13 @@ parser.pos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gstype.pos	.gvar
 gsdl.sourcepos	.gvar
+gsdl.cgs.gstype.fun	.gvar
 pos0	.fv	parser.pos.t
+ty0	.fv	gsdl.cgs.gstype.t
 ty1	.larg	gsdl.cgs.gstype.t
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-tye	.undefined	gsdl.cgs.gstype.t
+tye	.apply	gsdl.cgs.gstype.fun	|	ty0	ty1
 	.app	pos	tye
 	.enter	gsdl.cgs.gstype.pos
 
