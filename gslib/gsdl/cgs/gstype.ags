@@ -84,6 +84,7 @@ k1	.alloc	_gsdl.cgs.gstype.parser.fun_k1_c
 	.enter	parser.>>=	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.parser.fun_k1_c	.expr
+parser.pos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 rune.t	.tygvar
 string.t	.tygvar
@@ -96,6 +97,7 @@ gsdl.cgs.syntax.keywordOp	.gvar
 _gsdl.cgs.gstype.parser.fun_arr.re	.gvar
 gsdl.cgs.gstype.parser.fun	.gvar
 parser.fail	.gvar	# Temp
+pos0	.fv	parser.pos.t
 ty0	.larg	gsdl.cgs.gstype.t
 un.ty0	.apply	parser.unit	rune.t	gsdl.cgs.gstype.t	|	ty0
 f	.alloc	_gsdl.cgs.gstype.parser.fun_f_c
@@ -106,9 +108,17 @@ fun.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t	|	f	fun.p1
 	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.parser.fun_f_c	.expr
+parser.pos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.pos	.gvar
+gsdl.sourcepos	.gvar
+pos0	.fv	parser.pos.t
 ty1	.larg	gsdl.cgs.gstype.t
-	.undef	gsdl.cgs.gstype.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+tye	.undefined	gsdl.cgs.gstype.t
+	.app	pos	tye
+	.enter	gsdl.cgs.gstype.pos
 
 # §section §gs{gsdl.cgs.gstype.parser.app}
 
