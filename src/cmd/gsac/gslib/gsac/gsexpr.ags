@@ -92,8 +92,10 @@ _gsac.gscoercion.annotate_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+_gsac.gsexpr.annotate_expr.heavy.cast_expr_k	.subcode
 _gsac.gsexpr.annotate_expr.heavy.cast_missing_k	.subcode
 either.t.out	.cogvar
+gsac.gsexpr.annotate	.gvar
 gsac.gscoercion.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
@@ -102,7 +104,10 @@ so0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
 	.analyze	so0	expr	missing	typesig
 		.case	expr
 e		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+			.force	_gsac.gsexpr.annotate_expr.heavy.cast_expr_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.annotate_res.ty
+			.app	pos	env	e
+			.enter	gsac.gsexpr.annotate
 		.case	missing
 pos1		.fkarg	0	gsdl.sourcepos.t
 			.force	_gsac.gsexpr.annotate_expr.heavy.cast_missing_k
@@ -114,6 +119,14 @@ pos1		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 	# > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
+
+_gsac.gsexpr.annotate_expr.heavy.cast_expr_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_expr.heavy.cast_missing_k	.forcecont
 gsdl.cgs.gscoercion.t	.tygvar
