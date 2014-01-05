@@ -41,16 +41,19 @@ gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gsexpr.annotate_expr.heavy.cast_k	.subcode
+_gsac.gsexpr.annotate_lambda_k	.subcode
 _gsac.gsexpr.annotate_lift_k	.subcode
 _gsac.gsexpr.annotate_pos_k	.subcode
 gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
 either.t.out	.cogvar
 gsac.gsexpr.annotate	.gvar
+gsac.gstype.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
@@ -65,7 +68,10 @@ so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
 v		.fkarg	0	gsdl.var.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
 b		.fkarg	2	gsdl.cgs.gsexpr.body.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+			.force	_gsac.gsexpr.annotate_lambda_k
+			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
+			.app	pos	env	ty
+			.enter	gsac.gstype.annotate
 		.case	lift
 e1		.fkarg	0	gsdl.cgs.gsexpr.t
 			.force	_gsac.gsexpr.annotate_lift_k
@@ -186,6 +192,43 @@ r1			.lrecord	expr	r1.e	gstype	tyd	|	_gsac.gsexpr.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
 	# > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
+
+_gsac.gsexpr.annotate_lambda_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+_gsac.gsexpr.annotate_lambda_right_k	.subcode
+either.t.out	.cogvar
+gsac.gskind.check.simple	.gvar
+pos	.fv	gsdl.sourcepos.t
+e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+		.case	right
+ty.r		.fkarg	0	_gsac.gstype.annotate_res.ty
+ty.ki			.lfield	gskind	ty.r
+			.force	_gsac.gsexpr.annotate_lambda_right_k
+			.coerce	either.t.out	string.t	record.empty
+			.app	pos	ty.ki
+			.enter	gsac.gskind.check.simple
+
+_gsac.gsexpr.annotate_lambda_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	record.empty
+	# Insert v / type into env
+	# Type check body
+	# Return annotated lambda
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_lift_k	.forcecont
 either.prim.u	.tygvar
