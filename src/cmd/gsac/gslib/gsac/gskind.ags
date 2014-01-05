@@ -4,6 +4,8 @@
 
 gsac.gskind.check	.closure	_gsac.gskind.check_c	_gsac.gskind.check_ty
 
+gsac.gskind.check.simple	.closure	_gsac.gskind.check.simple_c
+
 gsac.gskind.compile	.closure	_gsac.gskind.compile_c	_gsac.gskind.compile_ty
 
 	.code
@@ -63,6 +65,18 @@ ky.e		.fkarg	1	gsdl.cgs.gskind.t
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
 	# > :: either.t	string.t	record.empty
+
+# §section §gs{gsac.gskind.check.simple}
+
+_gsac.gskind.check.simple_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+record.empty	.tygvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+ki	.larg	gsdl.cgs.gskind.t
+	.undef	either.t	string.t	record.empty
 
 # §section §gs{gsac.gskind.compile}
 
