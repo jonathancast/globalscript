@@ -99,7 +99,8 @@ kie		.fkarg	1	gsdl.cgs.gskind.t
 		.case	unknown
 			.undef	either.t	string.t	record.empty
 		.case	unlifted
-			.undef	either.t	string.t	record.empty
+			.app	record.empty
+			.enter	either.right	string.t	record.empty
 	# > :: either.t	string.t	record.empty
 
 # §section §gs{gsac.gskind.compile}
