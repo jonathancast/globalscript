@@ -16,7 +16,7 @@ gsdl.cgs.typeenv.gsabstypenm.insert	.closure	_gsdl.cgs.typeenv.gsabstypenm.inser
 gsdl.cgs.typeenv.definedprim.insert	.closure	_gsdl.cgs.typeenv.definedprim.insert_c
 gsdl.cgs.typeenv.elimprim.insert	.closure	_gsdl.cgs.typeenv.elimprim.insert_c
 gsdl.cgs.typeenv.impprim.insert	.closure	_gsdl.cgs.typeenv.impprim.insert_c
-gsdl.cgs.typeenv.var.insert	.closure	_gsdl.cgs.typeenv.var.insert_c
+gsdl.cgs.typeenv.tyvar.insert	.closure	_gsdl.cgs.typeenv.tyvar.insert_c
 
 gsdl.cgs.typeenv.gsabstypedefn.insert	.closure	_gsdl.cgs.typeenv.gsabstypedefn.insert_c
 
@@ -297,20 +297,20 @@ r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.var.insert}
+# §section §gs{gsdl.cgs.typeenv.tyvar.insert}
 
-_gsdl.cgs.typeenv.var.insert_c	.expr
+_gsdl.cgs.typeenv.tyvar.insert_c	.expr
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-_gsdl.cgs.typeenv.var.insert_k	.subcode
+_gsdl.cgs.typeenv.tyvar.insert_k	.subcode
 v	.larg	gsdl.var.t
 ki	.larg	gsdl.cgs.gskind.t
 env	.larg	gsdl.cgs.typeenv.t
-	.force	_gsdl.cgs.typeenv.var.insert_k
+	.force	_gsdl.cgs.typeenv.tyvar.insert_k
 	.enter	env
 
-_gsdl.cgs.typeenv.var.insert_k	.forcecont
+_gsdl.cgs.typeenv.tyvar.insert_k	.forcecont
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar

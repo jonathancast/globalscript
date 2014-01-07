@@ -1921,13 +1921,13 @@ l	.larg	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 _gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_env1.f_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u	.tygvar
-gsdl.cgs.typeenv.var.insert	.gvar
+gsdl.cgs.typeenv.tyvar.insert	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 l0	.karg	gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u
 v	.field	1	l0
 ki	.field	2	l0
 	.app	v	ki	env
-	.enter	gsdl.cgs.typeenv.var.insert
+	.enter	gsdl.cgs.typeenv.tyvar.insert
 
 _gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_tyas.f_c	.expr
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
