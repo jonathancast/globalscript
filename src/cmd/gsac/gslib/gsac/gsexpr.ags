@@ -190,7 +190,8 @@ tys		.fkarg	0	gsdl.cgs.gstype.t
 tyd		.fkarg	1	gsdl.cgs.gstype.t
 r1.so			.apply	gsdl.cgs.gsexpr.cast.source.typesig	|	pos1	tys
 r1.e			.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	r0.co	r1.so
-r1			.lrecord	expr	r1.e	gstype	tyd	|	_gsac.gsexpr.annotate_res.ty
+ki			.undefined	gsdl.cgs.gskind.t
+r1			.lrecord	expr	r1.e	gskind	ki	gstype	tyd	|	_gsac.gsexpr.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
 	# > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
@@ -296,6 +297,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
+gsdl.cgs.gskind.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.cgs.gsexpr.pos	.gvar
 pos1	.fv	gsdl.sourcepos.t
@@ -308,8 +310,9 @@ err		.fkarg	0	string.t
 r0		.fkarg	0	_gsac.gsexpr.annotate_res.ty
 r0.e			.lfield	expr	r0
 r1.e			.apply	gsdl.cgs.gsexpr.pos	|	pos1	r0.e
+ki			.undefined	gsdl.cgs.gskind.t
 ty			.lfield	gstype	r0
-r1			.lrecord	expr	r1.e	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
+r1			.lrecord	expr	r1.e	gskind	ki	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
 
@@ -686,8 +689,9 @@ _gsac.gsexpr.annotate_res.u	.tygvar
 
 _gsac.gsexpr.annotate_res.u	.tyexpr
 gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-	.typroduct	expr	gsdl.cgs.gsexpr.t	gstype	gsdl.cgs.gstype.t
+	.typroduct	expr	gsdl.cgs.gsexpr.t	gskind	gsdl.cgs.gskind.t	gstype	gsdl.cgs.gstype.t
 
 # §section §gs{gsac.gsexpr.compile.m}
 
