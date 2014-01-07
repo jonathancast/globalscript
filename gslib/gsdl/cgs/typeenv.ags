@@ -383,11 +383,23 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.var.insert_k	.subcode
 v	.larg	gsdl.var.t
 ty	.larg	gsdl.cgs.gstype.t
 ki	.larg	gsdl.cgs.gskind.t
 env	.larg	gsdl.cgs.typeenv.t
-	.undef	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.var.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.var.insert_k	.forcecont
+gsdl.cgs.typeenv.u	.tygvar
+env0	.karg	gsdl.cgs.typeenv.u
+kis	.field	kinds	env0
+tyds	.field	typedefinitions	env0
+tyes	.field	typeexpansions	env0
+r	.record	kinds	kis	typedefinitions	tyds	typeexpansions	tyes	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
 
 # §section §gs{gsdl.cgs.typeenv.overlay}
 
