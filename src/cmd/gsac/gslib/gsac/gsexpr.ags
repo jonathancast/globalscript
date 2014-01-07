@@ -4,6 +4,8 @@
 
 gsac.gsexpr.annotate	.closure	_gsac.gsexpr.annotate_c	_gsac.gsexpr.annotate_ty
 
+gsac.gsexpr.body.annotate	.closure	_gsac.gsexpr.body.annotate_c	_gsac.gsexpr.body.annotate_ty
+
 gsac.gsexpr.compileToDataItem	.closure	_gsac.gsexpr.compileToDataItem_c	_gsac.gsexpr.compileToDataItem_ty
 _gsac.gsexpr.compileToDataItem_ep.v	.closure	_gsac.gsexpr.compileToDataItem_ep.v_c
 _gsac.gsexpr.compileToDataItem_ep.v_s	.string	ep
@@ -260,6 +262,20 @@ ty			.lfield	gstype	r0
 r1			.lrecord	expr	r1.e	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
+
+# §section §gs{gsac.gsexpr.body.annotate}
+
+_gsac.gsexpr.body.annotate_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gsexpr.body.annotate_res.ty	.tygvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+b	.larg	gsdl.cgs.gsexpr.body.t
+	.undef	either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
 
 # §section §gs{gsac.gsexpr.compileToDataItem}
 
@@ -606,6 +622,31 @@ diff.list.coercionitem.t	.tylet	diff.list.t	gsdl.ags.coercionitem.t
 diff.list.dataitem.ty	.tylet	diff.list.t	gsdl.ags.dataitem.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 	.typroduct	coercionitems	diff.list.coercionitem.t	dataitems	diff.list.dataitem.ty	res	α	typeitems	diff.list.typeitem.ty
+
+# §section §gs{gsac.gsexpr.body.annotate}
+
+_gsac.gsexpr.body.annotate_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.body.annotate_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.body.t
+	.tyref	either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
+
+_gsac.gsexpr.body.annotate_res.ty	.tyexpr
+_gsac.gsexpr.body.annotate_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gsexpr.body.annotate_res.u
+
+_gsac.gsexpr.body.annotate_res.u	.tyexpr
+	.typroduct
 
 # §section §gs{gsac.gsexpr.compileToDataItem}
 
