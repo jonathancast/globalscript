@@ -197,6 +197,7 @@ r1			.lrecord	expr	r1.e	gstype	tyd	|	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_lambda_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
@@ -207,6 +208,7 @@ _gsac.gsexpr.annotate_lambda_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check.simple	.gvar
 pos	.fv	gsdl.sourcepos.t
+b	.fv	gsdl.cgs.gsexpr.body.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -221,15 +223,42 @@ ty.ki			.lfield	gskind	ty.r
 			.enter	gsac.gskind.check.simple
 
 _gsac.gsexpr.annotate_lambda_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
+_gsac.gsexpr.body.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+gsdl.cgs.typeenv.t	.tygvar	# Temp
+_gsac.gsexpr.annotate_lambda_right_right_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.body.annotate	.gvar
+pos	.fv	gsdl.sourcepos.t
+b	.fv	gsdl.cgs.gsexpr.body.t
 e0	.karg	either.prim.u	string.t	record.empty
-	# Insert v / type into env
-	# Type check body
-	# Return annotated lambda
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+		.case	right
+r		.fkarg	0	record.empty
+env1			.undefined	gsdl.cgs.typeenv.t	# Insert v / type into env
+			# Type check body
+			.force	_gsac.gsexpr.annotate_lambda_right_right_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.body.annotate_res.ty
+			.app	pos	env1	b
+			.enter	gsac.gsexpr.body.annotate
+
+_gsac.gsexpr.annotate_lambda_right_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.body.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.body.annotate_res.ty
+			# Return annotated lambda
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_lift_k	.forcecont
