@@ -289,8 +289,32 @@ _gsac.gstype.annotate_fun_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
+record.empty	.tygvar
 either.t	.tygvar	# Temp
+_gsac.gstype.annotate_fun_right_k	.subcode
+either.t.out	.cogvar
+gsac.gskind.check	.gvar
+gsdl.cgs.gskind.unknown	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
+		.case	right
+tya.r		.fkarg	0	_gsac.gstype.annotate_res.ty
+tya.ki			.lfield	gskind	tya.r
+			.force	_gsac.gstype.annotate_fun_right_k
+			.coerce	either.t.out	string.t	record.empty
+			.app	tya.ki	gsdl.cgs.gskind.unknown
+			.enter	gsac.gskind.check
+
+_gsac.gstype.annotate_fun_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gstype.annotate_res.ty	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	record.empty
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 
 _gsac.gstype.annotate_lift_k	.forcecont
