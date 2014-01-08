@@ -441,9 +441,9 @@ s			.record	0	s.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
 		.case	gt	# k < x
 r.s			.apply	_ordered.map.∪_split	k	v	|	cmp	x	r
 r.l			.lfield	0	r.s
+r.r			.lfield	1	r.s
 s.l			.apply	ordered.map.prim.branch	k	v	|	k	v	l	r.l
-s.r			.undefined	ordered.map.t	k	v
-s			.record	0	s.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
+s			.record	0	s.l	1	r.r	|	_ordered.map.∪_split_res.u	k	v
 			.lift
 			.yield	s
 		.case	lt	# x < k
