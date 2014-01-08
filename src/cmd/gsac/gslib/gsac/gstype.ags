@@ -70,6 +70,7 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gstype.annotate_app_k	.subcode
+_gsac.gstype.annotate_fun_k	.subcode
 _gsac.gstype.annotate_lift_k	.subcode
 _gsac.gstype.annotate_pos_k	.subcode
 _gsac.gstype.annotate_product_k	.subcode
@@ -104,7 +105,10 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
+			.force	_gsac.gstype.annotate_fun_k
+			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
+			.app	pos	env	tya
+			.enter	gsac.gstype.annotate
 		.case	impprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
@@ -280,6 +284,14 @@ res.ty		.fkarg	0	gsdl.cgs.gstype.t
 res			.lrecord	gskind	ki.b	gstype	res.ty	|	_gsac.gstype.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
+
+_gsac.gstype.annotate_fun_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+either.t	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
+			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 
 _gsac.gstype.annotate_lift_k	.forcecont
 either.prim.u	.tygvar
