@@ -278,12 +278,14 @@ _gsdl.ags.typeitem.parser_tyexpr.p_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 string.t	.tygvar
 _gsdl.ags.typeitem.parser_tyexpr.p_f_c	.subcode
-parser.lift4	.gvar
+parser.lift5	.gvar
 parser.pos.get	.gvar
 parser.<*	.gvar
 gsdl.ags.syntax.var	.gvar
@@ -292,36 +294,42 @@ gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.typeitem.parser_tyexpr.p_tyexpr.re	.gvar
+parser.optional	.gvar
+gsdl.ags.typeitem.gskind.parser	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 gsdl.ags.typeitem.decls.parser	.gvar
 gsdl.ags.typeitem.expr.parser	.gvar
 parser.fail	.gvar	# Temp
+maybe.gskind.ty	.tylet	maybe.t	gsdl.ags.typeitem.gskind.t
 f	.alloc	_gsdl.ags.typeitem.parser_tyexpr.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 tyexpr.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.parser_tyexpr.p_tyexpr.re
-nm.p2	.apply	parser.*>	rune.t	string.t	string.t	|	tyexpr.p	gsdl.ags.syntax.whitespace
-nm.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	nm.p2
+ki.p2	.apply	parser.*>	rune.t	string.t	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.typeitem.gskind.parser
+ki.p1	.apply	parser.optional	rune.t	gsdl.ags.typeitem.gskind.t	|	ki.p2
+ki.p	.apply	parser.<*	rune.t	maybe.gskind.ty	string.t	|	ki.p1	gsdl.ags.syntax.whitespace
+nm.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	tyexpr.p
 nm.p	.apply	parser.<*	rune.t	gsdl.var.t	string.t	|	gsdl.ags.syntax.var	nm.p1
-	.app	f	pos.get	nm.p	gsdl.ags.typeitem.decls.parser	gsdl.ags.typeitem.expr.parser
-	.enter	parser.lift4	rune.t	parser.pos.t	gsdl.var.t	gsdl.ags.typeitem.decls.t	gsdl.ags.typeitem.expr.t	gsdl.ags.typeitem.t
+	.app	f	pos.get	nm.p	ki.p	gsdl.ags.typeitem.decls.parser	gsdl.ags.typeitem.expr.parser
+	.enter	parser.lift5	rune.t	parser.pos.t	gsdl.var.t	maybe.gskind.ty		gsdl.ags.typeitem.decls.t	gsdl.ags.typeitem.expr.t	gsdl.ags.typeitem.t
 
 _gsdl.ags.typeitem.parser_tyexpr.p_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.tyexpr	.gvar
 gsdl.sourcepos	.gvar
-maybe.nothing	.gvar
 pos0	.larg	parser.pos.t
 nm	.larg	gsdl.var.t
+mbki	.larg	maybe.t	gsdl.ags.typeitem.gskind.t
 ds	.larg	gsdl.ags.typeitem.decls.t
 e	.larg	gsdl.ags.typeitem.expr.t
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-nothing	.apply	maybe.nothing	gsdl.ags.typeitem.gskind.t
-	.app	pos	nm	nothing	ds	e
+	.app	pos	nm	mbki	ds	e
 	.enter	gsdl.ags.typeitem.tyexpr
 
 _gsdl.ags.typeitem.parser_tyelimprim.p_c	.expr
