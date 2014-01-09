@@ -47,6 +47,9 @@ ok_diff_fail '-- lambda with type arguments mixed with value arguments --' ./$O.
 
 ok_grep_errors '-- a .tylet (of  type synonym) must have enough arguments --' 'unsaturated-tylet.ags:12: Not enough arguments to _foo_ty' ./$O.test-gsi unsaturated-tylet.ags
 
+ok_grep_errors '-- incorrect kind signatures on .tyexprs --' 'tyexpr-wrong-kind-sig.ags:10: Incorrect kind: Expected ''\*''; got ''u''' ./$O.test-gsi tyexpr-wrong-kind-sig.ags
+ok_diff_fail '-- kind signatures on .tyexprs --' ./$O.test-gsi tyexpr-kind-sig.ags
+
 ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
 ok_grep_errors '-- a let can be mis-typed --' './test-gslib/mistyped-let.ags:5: I don''t think' ./$O.test-gsi mistyped-let.ags
 ok_diff_fail '-- let with undefined FV --' ./$O.test-gsi undef-free-var.ags

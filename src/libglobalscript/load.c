@@ -1913,7 +1913,11 @@ gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
 
     if (gssymeq(parsedline->directive, gssymtypedirective, ".tyexpr")) {
         if (numfields > 2 + 0)
-            gsfatal("%s:%d: Too many arguments to .tyexpr", pos->real_filename, pos->real_lineno);
+            parsedline->arguments[0] = gsintern_string(gssymkindexpr, fields[2 + 0])
+        ;
+        if (numfields > 2 + 1)
+            gsfatal("%s:%d: Too many arguments to .tyexpr", pos->real_filename, pos->real_lineno)
+        ;
         return gsparse_type_ops(pos, parsedfile, parsedline, chan, line, fields);
     } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tydefinedprim")) {
         if (numfields < 2 + 1)
