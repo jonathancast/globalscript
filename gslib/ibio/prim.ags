@@ -108,7 +108,7 @@ ip	.arg	ibio.prim.iptr	s
 
 	.type
 
-ibio.prim.t	.tyexpr
+ibio.prim.t	.tyexpr	*?^
 ibio.prim.m	.tygvar
 α	.tylambda	?
 	.tylift
