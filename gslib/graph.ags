@@ -712,6 +712,7 @@ graph.scc.t	.tygvar	# Temp
 _graph.tsort_subitems_:_false_k	.subcode
 maybe.t.out	.cogvar
 ordered.map.get	.gvar
+_graph.tsort_subitems	.gvar
 k	.tyfv	*
 v	.tyfv	*
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
@@ -735,8 +736,8 @@ b0	.karg	bool.prim.u	# §gs{k0} has been emitted
 			.app	ord	k0	pre
 			.enter	ordered.map.get	k	natural.t
 		.case	true
-			# TODO: §g{k0} has an SCC, so ignore it
-			.undef	list.t	scc.ty
+			.app	ord	deps	look	ks1	cont	n	pre	em	unassigned	maybe.group
+			.enter	_graph.tsort_subitems	k	v
 
 _graph.tsort_subitems_:_false_k	.forcecont
 order.total.t	.tygvar
