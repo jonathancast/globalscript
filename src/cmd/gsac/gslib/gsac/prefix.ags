@@ -109,6 +109,7 @@ gsac.prefix.typefnitem.gsabstypenm	.closure	_gsac.prefix.typefnitem.gsabstypenm_
 gsac.prefix.typefnitem.definedprim	.closure	_gsac.prefix.typefnitem.definedprim_c
 gsac.prefix.typefnitem.elimprim	.closure	_gsac.prefix.typefnitem.elimprim_c
 gsac.prefix.typefnitem.impprim	.closure	_gsac.prefix.typefnitem.impprim_c
+gsac.prefix.typefnitem.tyexpr	.closure	_gsac.prefix.typefnitem.tyexpr_c
 
 	.code
 
@@ -1653,10 +1654,12 @@ gsac.prefix.typefnitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	# Temp
 gsdl.cgs.symbol.tyvar	.gvar
 ti0	.karg	gsac.prefix.typefnitem.prim.u
-	.analyze	ti0	definedprim	elimprim	gsabstypenm	impprim
+	.analyze	ti0	definedprim	elimprim	gsabstypenm	impprim	tyexpr
 		.case	definedprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -1687,6 +1690,13 @@ pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.cgs.gskind.t
 			.app	v
 			.yield	gsdl.cgs.symbol.tyvar
+		.case	tyexpr
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+e		.fkarg	4	gsdl.ags.typeitem.expr.t
+			.undef	gsdl.cgs.symbol.t
 	# > :: gsdl.cgs.symbol.t
 
 # §section §gs{gsac.prefix.item.deps}
@@ -1755,10 +1765,12 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
 list.t	.tygvar	# Temp
 list.nil	.gvar
 ti0	.karg	gsac.prefix.typefnitem.prim.u
-	.analyze	ti0	definedprim	elimprim	gsabstypenm	impprim
+	.analyze	ti0	definedprim	elimprim	gsabstypenm	impprim	tyexpr
 		.case	definedprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -1785,6 +1797,13 @@ ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.cgs.gskind.t
 			.enter	list.nil	gsdl.cgs.symbol.t
+		.case	tyexpr
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+e		.fkarg	4	gsdl.ags.typeitem.expr.t
+			.undef	list.t	gsdl.cgs.symbol.t
 	# > :: list.t	gsdl.cgs.symbol.t
 
 # §subsection §gs{gsac.prefix.item.tygvar.deps}
@@ -1983,6 +2002,8 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.cgs.typeenv.definedprim.insert	.gvar
@@ -1991,7 +2012,7 @@ gsdl.cgs.typeenv.elimprim.insert	.gvar
 gsdl.cgs.typeenv.gsabstypenm.insert	.gvar
 gsdl.cgs.typeenv.impprim.insert	.gvar
 ti0	.karg	gsac.prefix.typefnitem.prim.u
-	.analyze	ti0	definedprim	elimprim	gsabstypenm	impprim
+	.analyze	ti0	definedprim	elimprim	gsabstypenm	impprim	tyexpr
 		.case	definedprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -2026,6 +2047,13 @@ ki		.fkarg	4	gsdl.cgs.gskind.t
 env			.apply	gsdl.cgs.typeenv.impprim.insert	|	v	ps	pn	ki	gsdl.cgs.typeenv.empty
 			.app	env
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
+		.case	tyexpr
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+e		.fkarg	4	gsdl.ags.typeitem.expr.t
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
 	# > :: either.t	string.t	gsdl.cgs.typeenv.t
 
 # §section §gs{gsac.prefix.item.≡}
@@ -2259,6 +2287,8 @@ gsac.prefix.typefnitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
 bool.t	.tygvar	# Temp
 _gsac.prefix.typefnitem.≡_gsabstype_gsabstype_k	.subcode
 bool.t.out	.cogvar
@@ -2267,7 +2297,7 @@ gsdl.var.≡	.gvar
 gsdl.cgs.gskind.≡	.gvar
 ti0.0	.fv	gsac.prefix.typefnitem.prim.u
 ti1.0	.karg	gsac.prefix.typefnitem.prim.u
-	.analyze	ti0.0	definedprim	elimprim	gsabstypenm	impprim
+	.analyze	ti0.0	definedprim	elimprim	gsabstypenm	impprim	tyexpr
 		.case	definedprim
 pos0		.fkarg	0	gsdl.sourcepos.t
 v0		.fkarg	1	gsdl.var.t
@@ -2352,6 +2382,13 @@ b2					.apply	bool.∧	|	pn.eq	ki.eq
 b1					.apply	bool.∧	|	ps.eq	b2
 					.app	v.eq	b1
 					.enter	bool.∧
+		.case	tyexpr
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+e		.fkarg	4	gsdl.ags.typeitem.expr.t
+			.undef	bool.t
 	# > :: bool.t
 
 _gsac.prefix.typefnitem.≡_gsabstype_gsabstype_k	.forcecont
@@ -2387,6 +2424,8 @@ gsac.prefix.typefnitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
 fmtgs.printer.t	.tygvar	# Temp
 fmtgs.app	.gvar
 fmtgs.var	.gvar
@@ -2396,7 +2435,7 @@ gsdl.sourcepos.fmtgs	.gvar
 gsdl.var.fmtgs	.gvar
 gsdl.cgs.gskind.fmtgs	.gvar
 ti0	.karg	gsac.prefix.typefnitem.prim.u
-	.analyze	ti0	definedprim	elimprim	gsabstypenm	impprim
+	.analyze	ti0	definedprim	elimprim	gsabstypenm	impprim	tyexpr
 		.case	definedprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -2440,6 +2479,13 @@ v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.cgs.gskind.t
+			.undef	fmtgs.printer.t
+		.case	tyexpr
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+ds		.fkarg	3	gsdl.ags.typeitem.decls.t
+e		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.undef	fmtgs.printer.t
 	# > :: fmtgs.printer.t
 
@@ -2549,6 +2595,24 @@ c	.constr	gsac.prefix.typefnitem.prim.u	impprim	0	pos	1	v	2	ps	3	pn	4	ki
 	.lift
 	.yield	c
 
+_gsac.prefix.typefnitem.tyexpr_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+gsac.prefix.typefnitem.prim.u	.tygvar
+gsac.prefix.typefnitem.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+v	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+ds	.larg	gsdl.ags.typeitem.decls.t
+e	.larg	gsdl.ags.typeitem.expr.t
+c	.constr	gsac.prefix.typefnitem.prim.u	tyexpr	0	pos	1	v	2	ki	3	ds	4	e
+	.coerce	gsac.prefix.typefnitem.t.in
+	.lift
+	.yield	c
+
 	.type
 
 # §section §gs{gsac.prefix.t}
@@ -2599,7 +2663,8 @@ _gsac.prefix.typefnitem.prim.u_definedprim_ty	.tygvar
 _gsac.prefix.typefnitem.prim.u_elimprim_ty	.tygvar
 _gsac.prefix.typefnitem.prim.u_gsabstypenm_ty	.tygvar
 _gsac.prefix.typefnitem.prim.u_impprim_ty	.tygvar
-	.tysum	definedprim	_gsac.prefix.typefnitem.prim.u_definedprim_ty	elimprim	_gsac.prefix.typefnitem.prim.u_elimprim_ty	gsabstypenm	_gsac.prefix.typefnitem.prim.u_gsabstypenm_ty	impprim	_gsac.prefix.typefnitem.prim.u_impprim_ty
+_gsac.prefix.typefnitem.prim.u_tyexpr_ty	.tygvar
+	.tysum	definedprim	_gsac.prefix.typefnitem.prim.u_definedprim_ty	elimprim	_gsac.prefix.typefnitem.prim.u_elimprim_ty	gsabstypenm	_gsac.prefix.typefnitem.prim.u_gsabstypenm_ty	impprim	_gsac.prefix.typefnitem.prim.u_impprim_ty	tyexpr	_gsac.prefix.typefnitem.prim.u_tyexpr_ty
 
 _gsac.prefix.typefnitem.prim.u_definedprim_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -2624,6 +2689,14 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.var.t	3	gsdl.var.t	4	gsdl.cgs.gskind.t
+
+_gsac.prefix.typefnitem.prim.u_tyexpr_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.decls.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.cgs.gskind.t	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
 
 # §section §gs{gsac.prefix.typeconstitem.t}
 
