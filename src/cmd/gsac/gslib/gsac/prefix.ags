@@ -2002,21 +2002,30 @@ env1			.apply	gsdl.cgs.typeenv.gsabstypedefn.insert	|	v	tyas.cgs	cty	gsdl.cgs.ty
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.item.typecheck_typefnitem_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 gsac.prefix.typefnitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
-gsdl.cgs.typeenv.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	# Temp
+list.t	.tygvar	# Temp
+_gsac.prefix.item.typecheck_typefnitem_tyexpr_env1.f_c	.subcode
+_gsac.prefix.item.typecheck_typefnitem_tyexpr_k	.subcode
+either.t.out	.cogvar
 either.right	.gvar
 gsdl.cgs.typeenv.definedprim.insert	.gvar
 gsdl.cgs.typeenv.empty	.gvar
 gsdl.cgs.typeenv.elimprim.insert	.gvar
 gsdl.cgs.typeenv.gsabstypenm.insert	.gvar
 gsdl.cgs.typeenv.impprim.insert	.gvar
+gsac.prefix.gstype.upconvert	.gvar
+list.foldl	.gvar
+env	.fv	gsdl.cgs.typeenv.t
 ti0	.karg	gsac.prefix.typefnitem.prim.u
 	.analyze	ti0	definedprim	elimprim	gsabstypenm	impprim	tyexpr
 		.case	definedprim
@@ -2059,8 +2068,30 @@ v		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+env1.f			.alloc	_gsac.prefix.item.typecheck_typefnitem_tyexpr_env1.f_c
+tyas.cgs			.undefined	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+env1			.apply	list.foldl	gsdl.cgs.typeenv.typeexpansion.tylambda.t	gsdl.cgs.typeenv.t	|	env1.f	env	tyas.cgs
+			.force	_gsac.prefix.item.typecheck_typefnitem_tyexpr_k
+			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
+			.app	pos	env1	e
+			.enter	gsac.prefix.gstype.upconvert
 	# > :: either.t	string.t	gsdl.cgs.typeenv.t
+
+_gsac.prefix.item.typecheck_typefnitem_tyexpr_env1.f_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+env	.larg	gsdl.cgs.typeenv.t
+l	.larg	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.undef	gsdl.cgs.typeenv.t
+
+_gsac.prefix.item.typecheck_typefnitem_tyexpr_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	# Temp
+gsdl.cgs.typeenv.t	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
 
 # §section §gs{gsac.prefix.item.≡}
 
