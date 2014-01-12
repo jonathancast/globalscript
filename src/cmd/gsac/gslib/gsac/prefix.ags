@@ -2025,8 +2025,8 @@ v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.cgs.gskind.t
-env			.apply	gsdl.cgs.typeenv.definedprim.insert	|	v	ps	pn	ki	gsdl.cgs.typeenv.empty
-			.app	env
+env1			.apply	gsdl.cgs.typeenv.definedprim.insert	|	v	ps	pn	ki	gsdl.cgs.typeenv.empty
+			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 		.case	elimprim
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -2034,15 +2034,15 @@ v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.cgs.gskind.t
-env			.apply	gsdl.cgs.typeenv.elimprim.insert	|	v	ps	pn	ki	gsdl.cgs.typeenv.empty
-			.app	env
+env1			.apply	gsdl.cgs.typeenv.elimprim.insert	|	v	ps	pn	ki	gsdl.cgs.typeenv.empty
+			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 		.case	gsabstypenm
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-env			.apply	gsdl.cgs.typeenv.gsabstypenm.insert	|	v	ki	gsdl.cgs.typeenv.empty
-			.app	env
+env1			.apply	gsdl.cgs.typeenv.gsabstypenm.insert	|	v	ki	gsdl.cgs.typeenv.empty
+			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 		.case	impprim
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -2050,8 +2050,8 @@ v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.cgs.gskind.t
-env			.apply	gsdl.cgs.typeenv.impprim.insert	|	v	ps	pn	ki	gsdl.cgs.typeenv.empty
-			.app	env
+env1			.apply	gsdl.cgs.typeenv.impprim.insert	|	v	ps	pn	ki	gsdl.cgs.typeenv.empty
+			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 		.case	tyexpr
 pos		.fkarg	0	gsdl.sourcepos.t
