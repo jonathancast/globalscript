@@ -1978,7 +1978,7 @@ gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 either.t	.tygvar	# Temp
-_gsac.prefix.item.typecheck_typefnitem_tyexpr_k	.subcode
+_gsac.prefix.item.typecheck_typefnitem_typefun_k	.subcode
 either.t.out	.cogvar
 either.right	.gvar
 gsdl.cgs.typeenv.definedprim.insert	.gvar
@@ -2037,20 +2037,38 @@ e		.fkarg	4	gsdl.ags.typeitem.expr.t
 tyas			.lfield	tyargs	ds
 tyas.cgs			.apply	list.map	gsdl.ags.typeitem.decls.tyarg.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t	|	gsac.prefix.tyarg.upconvert	tyas
 env1			.apply	list.foldl	gsdl.cgs.typeenv.typeexpansion.tylambda.t	gsdl.cgs.typeenv.t	|	gsac.prefix.tylambda.typecheck	env	tyas.cgs
-			.force	_gsac.prefix.item.typecheck_typefnitem_tyexpr_k
+			.force	_gsac.prefix.item.typecheck_typefnitem_typefun_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
 			.app	pos	env1	e
 			.enter	gsac.prefix.gstype.upconvert
 	# > :: either.t	string.t	gsdl.cgs.typeenv.t
 
-_gsac.prefix.item.typecheck_typefnitem_tyexpr_k	.forcecont
+_gsac.prefix.item.typecheck_typefnitem_typefun_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.typeenv.t	.tygvar	# Temp
+either.right	.gvar
+gsdl.cgs.typeenv.typefun.insert	.gvar
+gsdl.cgs.typeenv.empty	.gvar
+v	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+tyas.cgs	.fv	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+		.case	right
+cty		.fkarg	0	gsdl.cgs.gstype.t
+env1			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	ki	tyas.cgs	cty	gsdl.cgs.typeenv.empty
+			.app	env1
+			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
 # §section §gs{gsac.prefix.item.≡}
 
