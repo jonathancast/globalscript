@@ -2521,7 +2521,7 @@ l0	.karg	gsdl.ags.typeitem.decls.tyarg.u
 v	.field	1	l0
 ki	.field	2	l0
 ki.cgs	.apply	gsac.prefix.gskind.upconvert	|	ki
-r	.record	1	v	2	ki.cgs	|	gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u
+r	.record	0	v	1	ki.cgs	|	gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u
 	.lift
 	.yield	r
 
@@ -2549,8 +2549,8 @@ gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u	.tygvar
 gsdl.cgs.typeenv.tyvar.insert	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 l0	.karg	gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u
-v	.field	1	l0
-ki	.field	2	l0
+v	.field	0	l0
+ki	.field	1	l0
 	.app	v	ki	env
 	.enter	gsdl.cgs.typeenv.tyvar.insert
 

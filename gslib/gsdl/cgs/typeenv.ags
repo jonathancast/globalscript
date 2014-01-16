@@ -698,7 +698,7 @@ gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u	.tyexpr
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-	.typroduct	1	gsdl.var.t	2	gsdl.cgs.gskind.t
+	.typroduct	0	gsdl.var.t	1	gsdl.cgs.gskind.t
 
 # §section §gs{gsdl.cgs.typeenv.typedefinition.t}
 
