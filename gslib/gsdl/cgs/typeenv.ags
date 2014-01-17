@@ -27,6 +27,8 @@ gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
 
 gsdl.cgs.typeenv.typeexpansion.app	.closure	_gsdl.cgs.typeenv.typeexpansion.app_c
 
+gsdl.cgs.typeenv.typeexpansion.substty	.closure	_gsdl.cgs.typeenv.typeexpansion.substty_c	_gsdl.cgs.typeenv.typeexpansion.substty_ty
+
 gsdl.cgs.typeenv.typeexpansion.togstype	.closure	_gsdl.cgs.typeenv.typeexpansion.togstype_c
 
 gsdl.cgs.typeenv.typeexpansion.definedprim	.closure	_gsdl.cgs.typeenv.typeexpansion.definedprim_c
@@ -556,6 +558,17 @@ e1			.apply	gsdl.cgs.gstype.app	|	e	tya
 			.app	ls1	e1
 			.enter	gsdl.cgs.typeenv.typeexpansion.expr
 
+# §section §gs{gsdl.cgs.typeenv.typeexpansion.substty}
+
+_gsdl.cgs.typeenv.typeexpansion.substty_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+v	.larg	gsdl.var.t
+ty	.larg	gsdl.cgs.gstype.t
+tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
+	.undef	gsdl.cgs.typeenv.typeexpansion.t
+
 # §section §gs{gsdl.cgs.typeenv.typeexpansion.togstype}
 
 _gsdl.cgs.typeenv.typeexpansion.togstype_c	.expr
@@ -713,6 +726,20 @@ gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 list.tylambda.ty	.tylet	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 	.typroduct	tyargs	list.tylambda.ty	tybody	gsdl.cgs.gstype.t
+
+# §section §gs{gsdl.cgs.typeenv.typeexpansion.substty}
+
+_gsdl.cgs.typeenv.typeexpansion.substty_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.typeexpansion.t
+	.tyref	gsdl.cgs.typeenv.typeexpansion.t
 
 	.coercion
 
