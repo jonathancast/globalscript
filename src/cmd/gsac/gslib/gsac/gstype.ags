@@ -86,7 +86,7 @@ list.field.res.ty	.tylet	list.t	_gsac.gstype.field.annotate_res.ty
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	abstype	app	elimprim	fun	impprim	lift	pos	product	sum	var
+	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
@@ -97,6 +97,11 @@ tyx		.fkarg	1	gsdl.cgs.gstype.t
 			.coerce	either.t.out	string.t	_gsac.gstype.fun.annotate_res.ty
 			.app	pos	env	tyf
 			.enter	gsac.gstype.fun.annotate
+		.case	definedprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	elimprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
@@ -812,7 +817,7 @@ tya0	.fv	gsdl.cgs.gstype.prim.u
 tye0	.karg	gsdl.cgs.gstype.prim.u
 tya0.l	.lifted	tya0
 tya0.cl	.cast	tya0.l	gsdl.cgs.gstype.t.in
-	.analyze	tye0	abstype	app	elimprim	fun	impprim	lift	pos	product	sum	var
+	.analyze	tye0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
 		.case	abstype
 tyce		.fkarg	0	gsdl.var.t
 			.danalyze	tya0	abstype	var
@@ -848,6 +853,11 @@ tyxa				.fkarg	1	gsdl.cgs.gstype.t
 					.coerce	either.t.out	string.t	record.empty
 					.app	pos	env	tyfa	tyfe
 					.enter	gsac.gstype.check
+		.case	definedprim
+ps0		.fkarg	0	gsdl.var.t
+pn0		.fkarg	1	gsdl.var.t
+ki0		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	record.empty
 		.case	elimprim
 ps0		.fkarg	0	gsdl.var.t
 pn0		.fkarg	1	gsdl.var.t
@@ -1062,7 +1072,7 @@ ty0	.larg	gsdl.cgs.gstype.prim.u
 em	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 gvs	.larg	list.t	gsdl.var.t
-	.analyze	ty0	abstype	app	elimprim	fun	impprim	lift	pos	product	sum	var
+	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 			.force	_gsac.gstype.compile_w_abstype_k
@@ -1077,6 +1087,11 @@ tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
 			.app	pos	env	tyf	tyas	em	pem	gvs
 			.yield	_gsac.gstype.compileToApp_app
+		.case	definedprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	elimprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
