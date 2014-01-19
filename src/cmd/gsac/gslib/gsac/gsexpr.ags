@@ -826,7 +826,8 @@ _gsac.gsexpr.body.annotate_res.u	.tygvar
 	.tyref	_gsac.gsexpr.body.annotate_res.u
 
 _gsac.gsexpr.body.annotate_res.u	.tyexpr
-	.typroduct
+gsdl.cgs.gstype.t	.tygvar
+	.typroduct	gstype	gsdl.cgs.gstype.t
 
 # §section §gs{gsac.gsexpr.compileToDataItem}
 
