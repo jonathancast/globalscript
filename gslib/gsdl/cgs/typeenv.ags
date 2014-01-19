@@ -555,10 +555,46 @@ tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
 	.enter	tye
 
 _gsdl.cgs.typeenv.typeexpansion.substty_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.substty_k1	.subcode
+list.t.out	.cogvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+tye0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
+tyls	.field	0	tye0
+e	.field	1	tye0
+	.force	_gsdl.cgs.typeenv.typeexpansion.substty_k1
+	.coerce	list.t.out	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.enter	tyls
+
+_gsdl.cgs.typeenv.typeexpansion.substty_k1	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar	# Temp
-tye0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
-	.undef	gsdl.cgs.typeenv.typeexpansion.t
+list.nil	.gvar
+gsdl.cgs.gstype.substty	.gvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+e	.fv	gsdl.cgs.gstype.t
+tyls0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.analyze	tyls0	:	nil
+		.case	:
+tyl0		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+tyls1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+			.undef	gsdl.cgs.typeenv.typeexpansion.t
+		.case	nil
+nil			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e1			.apply	gsdl.cgs.gstype.substty	|	v	ty	e
+r			.record	0	nil	1	e1	|	gsdl.cgs.typeenv.typeexpansion.prim.u
+			.lift
+			.yield	r
 
 # §section §gs{gsdl.cgs.typeenv.typeexpansion.togstype}
 
