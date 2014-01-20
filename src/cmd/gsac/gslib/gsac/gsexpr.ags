@@ -459,7 +459,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.annotate_res.ty
-res			.undefined	_gsac.gsexpr.body.annotate_res.ty
+ty.r.ty			.lfield	gstype	ty.r
+res			.lrecord	gstype	ty.r.ty	|	_gsac.gsexpr.body.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.body.annotate_res.ty
 
