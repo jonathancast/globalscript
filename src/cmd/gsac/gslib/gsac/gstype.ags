@@ -1038,11 +1038,18 @@ b0	.karg	bool.prim.u	# Same primset and prim?
 
 _gsac.gstype.check_elimprim_elimprim_true_k	.forcecont
 bool.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-record.empty	.tygvar	# Temp
+either.right	.gvar
+record.empty	.gvar
 b0	.karg	bool.prim.u	# Same kind?
+	.analyze	b0	false	true
+		.case	false
 			.undef	either.t	string.t	record.empty
+		.case	true
+			.app	record.empty
+			.enter	either.right	string.t	record.empty
 
 _gsac.gstype.check_fun_fun_k	.forcecont
 gsdl.sourcepos.t	.tygvar
