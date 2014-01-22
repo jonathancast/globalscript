@@ -438,12 +438,15 @@ res			.lrecord	gskind	gsdl.cgs.gskind.lifted	gstype	res.ty	|	_gsac.gstype.annota
 			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
 
 _gsac.gstype.annotate_pos_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
 gsdl.cgs.gstype.t	.tygvar	# Temp
 either.right	.gvar
+gsdl.cgs.gstype.pos	.gvar
+pos1	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -452,7 +455,8 @@ err		.fkarg	0	string.t
 		.case	right
 r0		.fkarg	0	_gsac.gstype.annotate_res.ty
 r0.ki			.lfield	gskind	r0
-ty			.undefined	gsdl.cgs.gstype.t
+r0.ty			.lfield	gstype	r0
+ty			.apply	gsdl.cgs.gstype.pos	|	pos1	r0.ty
 res			.lrecord	gskind	r0.ki	gstype	ty	|	_gsac.gstype.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
