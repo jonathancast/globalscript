@@ -873,112 +873,121 @@ tya0	.fv	gsdl.cgs.gstype.prim.u
 tye0	.karg	gsdl.cgs.gstype.prim.u
 tya0.l	.lifted	tya0
 tya0.cl	.cast	tya0.l	gsdl.cgs.gstype.t.in
-	.analyze	tye0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
-		.case	abstype
-tyce		.fkarg	0	gsdl.var.t
-			.danalyze	tya0	abstype	var
-				.default
-pos.s					.apply	gsdl.sourcepos.print	|	pos
-tyca.s					.apply	gsdl.cgs.gstype.print	|	tya0.cl
-err4					.undefined	string.t
-err3					.apply	list.<>	rune.t	|	tyca.s	err4
-err2					.apply	list.<>	rune.t	|	_gsac.gstype.check_dont.think.s	err3
-err1					.apply	list.<>	rune.t	|	_gsac.gstype.check_col.sp.s	err2
-err					.apply	list.<>	rune.t	|	pos.s	err1
-					.app	err
-					.enter	either.left	string.t	record.empty
+tye0.l	.lifted	tye0
+tye0.cl	.cast	tye0.l	gsdl.cgs.gstype.t.in
+	.danalyze	tya0	pos
+		.default
+			.analyze	tye0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
 				.case	abstype
-tyca				.fkarg	0	gsdl.var.t
-					.force	_gsac.gstype.check_abstype_abstype_k
-					.coerce	bool.t.out
-					.app	tyca	tyce
-					.enter	gsdl.var.≡
-				.case	var
-va				.fkarg	0	gsdl.var.t
-					.undef	either.t	string.t	record.empty
-		.case	app
-tyfe		.fkarg	0	gsdl.cgs.gstype.t
-tyxe		.fkarg	1	gsdl.cgs.gstype.t
-			.danalyze	tya0	app
-				.default
-					.undef	either.t	string.t	record.empty
+tyce				.fkarg	0	gsdl.var.t
+					.danalyze	tya0	abstype	var
+						.default
+pos.s							.apply	gsdl.sourcepos.print	|	pos
+tyca.s							.apply	gsdl.cgs.gstype.print	|	tya0.cl
+err4							.undefined	string.t
+err3							.apply	list.<>	rune.t	|	tyca.s	err4
+err2							.apply	list.<>	rune.t	|	_gsac.gstype.check_dont.think.s	err3
+err1							.apply	list.<>	rune.t	|	_gsac.gstype.check_col.sp.s	err2
+err							.apply	list.<>	rune.t	|	pos.s	err1
+							.app	err
+							.enter	either.left	string.t	record.empty
+						.case	abstype
+tyca						.fkarg	0	gsdl.var.t
+							.force	_gsac.gstype.check_abstype_abstype_k
+							.coerce	bool.t.out
+							.app	tyca	tyce
+							.enter	gsdl.var.≡
+						.case	var
+va						.fkarg	0	gsdl.var.t
+							.undef	either.t	string.t	record.empty
 				.case	app
-tyfa				.fkarg	0	gsdl.cgs.gstype.t
-tyxa				.fkarg	1	gsdl.cgs.gstype.t
-					.force	_gsac.gstype.check_app_app_k
-					.coerce	either.t.out	string.t	record.empty
-					.app	pos	env	tyfa	tyfe
-					.enter	gsac.gstype.check
-		.case	definedprim
-ps0		.fkarg	0	gsdl.var.t
-pn0		.fkarg	1	gsdl.var.t
-ki0		.fkarg	2	gsdl.cgs.gskind.t
-			.undef	either.t	string.t	record.empty
-		.case	elimprim
-pse		.fkarg	0	gsdl.var.t
-pne		.fkarg	1	gsdl.var.t
-kie		.fkarg	2	gsdl.cgs.gskind.t
-			.danalyze	tya0	elimprim
-				.default
+tyfe				.fkarg	0	gsdl.cgs.gstype.t
+tyxe				.fkarg	1	gsdl.cgs.gstype.t
+					.danalyze	tya0	app
+						.default
+							.undef	either.t	string.t	record.empty
+						.case	app
+tyfa						.fkarg	0	gsdl.cgs.gstype.t
+tyxa						.fkarg	1	gsdl.cgs.gstype.t
+							.force	_gsac.gstype.check_app_app_k
+							.coerce	either.t.out	string.t	record.empty
+							.app	pos	env	tyfa	tyfe
+							.enter	gsac.gstype.check
+				.case	definedprim
+ps0				.fkarg	0	gsdl.var.t
+pn0				.fkarg	1	gsdl.var.t
+ki0				.fkarg	2	gsdl.cgs.gskind.t
 					.undef	either.t	string.t	record.empty
 				.case	elimprim
-psa				.fkarg	0	gsdl.var.t
-pna				.fkarg	1	gsdl.var.t
-kia				.fkarg	2	gsdl.cgs.gskind.t
-ps.eq					.apply	gsdl.var.≡	|	psa	pse
-pn.eq					.apply	gsdl.var.≡	|	pna	pne
-					.force	_gsac.gstype.check_elimprim_elimprim_k
-					.coerce	bool.t.out
-					.app	ps.eq	pn.eq
-					.enter	bool.∧
-		.case	fun
-tyea		.fkarg	0	gsdl.cgs.gstype.t
-tyer		.fkarg	1	gsdl.cgs.gstype.t
-			.danalyze	tya0	fun
-				.default
-					.undef	either.t	string.t	record.empty
+pse				.fkarg	0	gsdl.var.t
+pne				.fkarg	1	gsdl.var.t
+kie				.fkarg	2	gsdl.cgs.gskind.t
+					.danalyze	tya0	elimprim
+						.default
+							.undef	either.t	string.t	record.empty
+						.case	elimprim
+psa						.fkarg	0	gsdl.var.t
+pna						.fkarg	1	gsdl.var.t
+kia						.fkarg	2	gsdl.cgs.gskind.t
+ps.eq							.apply	gsdl.var.≡	|	psa	pse
+pn.eq							.apply	gsdl.var.≡	|	pna	pne
+							.force	_gsac.gstype.check_elimprim_elimprim_k
+							.coerce	bool.t.out
+							.app	ps.eq	pn.eq
+							.enter	bool.∧
 				.case	fun
-tyaa				.fkarg	0	gsdl.cgs.gstype.t
-tyar				.fkarg	1	gsdl.cgs.gstype.t
-					.force	_gsac.gstype.check_fun_fun_k
-					.coerce	either.t.out	string.t	record.empty
-					.app	pos	env	tyaa	tyea
-					.enter	gsac.gstype.check
-		.case	impprim
-ps0		.fkarg	0	gsdl.var.t
-pn0		.fkarg	1	gsdl.var.t
-ki0		.fkarg	2	gsdl.cgs.gskind.t
-			.undef	either.t	string.t	record.empty
-		.case	lift
-tye1		.fkarg	0	gsdl.cgs.gstype.t
-			.danalyze	tya0	lift
-				.default
+tyea				.fkarg	0	gsdl.cgs.gstype.t
+tyer				.fkarg	1	gsdl.cgs.gstype.t
+					.danalyze	tya0	fun
+						.default
+							.undef	either.t	string.t	record.empty
+						.case	fun
+tyaa						.fkarg	0	gsdl.cgs.gstype.t
+tyar						.fkarg	1	gsdl.cgs.gstype.t
+							.force	_gsac.gstype.check_fun_fun_k
+							.coerce	either.t.out	string.t	record.empty
+							.app	pos	env	tyaa	tyea
+							.enter	gsac.gstype.check
+				.case	impprim
+ps0				.fkarg	0	gsdl.var.t
+pn0				.fkarg	1	gsdl.var.t
+ki0				.fkarg	2	gsdl.cgs.gskind.t
 					.undef	either.t	string.t	record.empty
 				.case	lift
-tya1				.fkarg	0	gsdl.cgs.gstype.t
-					.app	pos	env	tya1	tye1
-					.enter	gsac.gstype.check
-		.case	pos
-pos1		.fkarg	0	gsdl.sourcepos.t
-ty0.1		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	record.empty
-		.case	product
-fse		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
-			.danalyze	tya0	product
-				.default
+tye1				.fkarg	0	gsdl.cgs.gstype.t
+					.danalyze	tya0	lift
+						.default
+							.undef	either.t	string.t	record.empty
+						.case	lift
+tya1						.fkarg	0	gsdl.cgs.gstype.t
+							.app	pos	env	tya1	tye1
+							.enter	gsac.gstype.check
+				.case	pos
+pos1				.fkarg	0	gsdl.sourcepos.t
+ty0.1				.fkarg	1	gsdl.cgs.gstype.t
 					.undef	either.t	string.t	record.empty
 				.case	product
-fsa				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
-fsa.s					.apply	list.sort	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.name.compare	fsa
-fse.s					.apply	list.sort	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.name.compare	fse
-					.app	pos	env	fsa.s	fse.s
-					.enter	gsac.gstype.fields.check
-		.case	sum
-cse		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
-			.undef	either.t	string.t	record.empty
-		.case	var
-ve		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	record.empty
+fse				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+					.danalyze	tya0	product
+						.default
+							.undef	either.t	string.t	record.empty
+						.case	product
+fsa						.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+fsa.s							.apply	list.sort	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.name.compare	fsa
+fse.s							.apply	list.sort	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.name.compare	fse
+							.app	pos	env	fsa.s	fse.s
+							.enter	gsac.gstype.fields.check
+				.case	sum
+cse				.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+					.undef	either.t	string.t	record.empty
+				.case	var
+ve				.fkarg	0	gsdl.var.t
+					.undef	either.t	string.t	record.empty
+		.case	pos
+posa		.fkarg	0	gsdl.sourcepos.t
+tya1		.fkarg	1	gsdl.cgs.gstype.t
+			.app	pos	env	tya1	tye0.cl
+			.enter	gsac.gstype.check
 	# > :: either.t	string.t	record.empty
 
 _gsac.gstype.check_abstype_abstype_k	.forcecont
