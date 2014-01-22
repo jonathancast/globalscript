@@ -2,7 +2,7 @@
 
 	.data
 
-gsdl.cgs.gskind.≡	.closure	_gsdl.cgs.gskind.≡_c
+gsdl.cgs.gskind.≡	.closure	_gsdl.cgs.gskind.≡_c	_gsdl.cgs.gskind.≡_ty
 
 gsdl.cgs.gskind.fmtgs	.closure	_gsdl.cgs.gskind.fmtgs_c
 _gsdl.cgs.gskind.fmtgs_lifted_lifted.s	.string	lifted
@@ -42,6 +42,8 @@ _gsdl.cgs.gskind.≡_k1	.forcecont
 gsdl.cgs.gskind.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 bool.t	.tygvar	# Temp
+bool.∧	.gvar
+gsdl.cgs.gskind.≡	.gvar
 bool.false	.gvar
 bool.true	.gvar
 ki0.0	.fv	gsdl.cgs.gskind.prim.u
@@ -50,7 +52,16 @@ ki1.0	.karg	gsdl.cgs.gskind.prim.u
 		.case	exp
 ki0.b		.fkarg	0	gsdl.cgs.gskind.t
 ki0.e		.fkarg	1	gsdl.cgs.gskind.t
-			.undef	bool.t
+			.danalyze	ki1.0	exp
+				.default
+					.undef	bool.t
+				.case	exp
+ki1.b				.fkarg	0	gsdl.cgs.gskind.t
+ki1.e				.fkarg	1	gsdl.cgs.gskind.t
+kib.eq					.apply	gsdl.cgs.gskind.≡	|	ki0.b	ki1.b
+kie.eq					.apply	gsdl.cgs.gskind.≡	|	ki0.e	ki1.e
+					.app	kib.eq	kie.eq
+					.enter	bool.∧
 		.case	lifted
 			.danalyze	ki1.0	lifted
 				.default
@@ -140,6 +151,8 @@ c	.constr	gsdl.cgs.gskind.prim.u	exp	0	ki.b	1	ki.e
 
 	.type
 
+# §section §gs{gsdl.cgs.gskind.t}
+
 gsdl.cgs.gskind.t	.tyabstract	*
 gsdl.cgs.gskind.prim.u	.tygvar
 	.tylift
@@ -153,6 +166,17 @@ record.unboxed.empty	.tygvar
 _gsdl.cgs.gskind.prim.u_exp_ty	.tyexpr
 gsdl.cgs.gskind.t	.tygvar
 	.tyubproduct	0	gsdl.cgs.gskind.t	1	gsdl.cgs.gskind.t
+
+# §section §gs{gsdl.cgs.gskind.≡}
+
+_gsdl.cgs.gskind.≡_ty	.tyexpr
+gsdl.cgs.gskind.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gskind.t
+	.tylift
+	.tyfun	gsdl.cgs.gskind.t
+	.tyref	bool.t
 
 	.coercion
 
