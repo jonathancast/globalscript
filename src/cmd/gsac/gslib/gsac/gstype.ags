@@ -859,6 +859,7 @@ _gsac.gstype.check_abstype_abstype_k	.subcode
 _gsac.gstype.check_app_app_k	.subcode
 _gsac.gstype.check_elimprim_elimprim_k	.subcode
 _gsac.gstype.check_fun_fun_k	.subcode
+_gsac.gstype.check_impprim_impprim_k	.subcode
 gsdl.cgs.gstype.t.in	.cogvar
 bool.t.out	.cogvar
 maybe.t.out	.cogvar
@@ -957,10 +958,22 @@ tyar						.fkarg	1	gsdl.cgs.gstype.t
 							.app	pos	env	tyaa	tyea
 							.enter	gsac.gstype.check
 				.case	impprim
-ps0				.fkarg	0	gsdl.var.t
-pn0				.fkarg	1	gsdl.var.t
-ki0				.fkarg	2	gsdl.cgs.gskind.t
-					.undef	either.t	string.t	record.empty
+pse				.fkarg	0	gsdl.var.t
+pne				.fkarg	1	gsdl.var.t
+kie				.fkarg	2	gsdl.cgs.gskind.t
+					.danalyze	tya0	impprim
+						.default
+							.undef	either.t	string.t	record.empty
+						.case	impprim
+psa						.fkarg	0	gsdl.var.t
+pna						.fkarg	1	gsdl.var.t
+kia						.fkarg	2	gsdl.cgs.gskind.t
+ps.eq							.apply	gsdl.var.≡	|	psa	pse
+pn.eq							.apply	gsdl.var.≡	|	pna	pne
+							.force	_gsac.gstype.check_impprim_impprim_k
+							.coerce	bool.t.out
+							.app	ps.eq	pn.eq
+							.enter	bool.∧
 				.case	lift
 tye1				.fkarg	0	gsdl.cgs.gstype.t
 					.danalyze	tya0	lift
@@ -1094,6 +1107,37 @@ err		.fkarg	0	string.t
 r		.fkarg	0	record.empty
 			.app	pos	env	tyar	tyer
 			.enter	gsac.gstype.check
+
+_gsac.gstype.check_impprim_impprim_k	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+bool.prim.u	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+record.empty	.tygvar	# Temp
+_gsac.gstype.check_impprim_impprim_true_k	.subcode
+bool.t.out	.cogvar
+gsdl.cgs.gskind.≡	.gvar
+kia	.fv	gsdl.cgs.gskind.t
+kie	.fv	gsdl.cgs.gskind.t
+b0	.karg	bool.prim.u	# Same primset and prim?
+	.analyze	b0	false	true
+		.case	false
+			.undef	either.t	string.t	record.empty
+		.case	true
+			.force	_gsac.gstype.check_impprim_impprim_true_k
+			.coerce	bool.t.out
+			.app	kia	kie
+			.enter	gsdl.cgs.gskind.≡
+
+_gsac.gstype.check_impprim_impprim_true_k	.forcecont
+bool.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+record.empty	.gvar
+b0	.karg	bool.prim.u	# Same kind?
+			.undef	either.t	string.t	record.empty
 
 # §section §gs{gsac.gstype.fields.check}
 
