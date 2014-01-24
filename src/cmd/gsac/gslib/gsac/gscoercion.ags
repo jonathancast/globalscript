@@ -187,6 +187,7 @@ string.t	.tygvar
 record.empty	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
+gsdl.cgs.gskind.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.cgs.gscoercion.appty	.gvar
 gsdl.cgs.gscoercion.gstype.substty	.gvar
@@ -203,7 +204,8 @@ err		.fkarg	0	string.t
 r		.fkarg	0	record.empty
 co1			.apply	gsdl.cgs.gscoercion.appty	|	co.r.co	a.r.ty
 res.ty			.apply	gsdl.cgs.gscoercion.gstype.substty	|	v	a.r.ty	ty1
-res			.lrecord	coercion	co1	gstype	res.ty	|	_gsac.gscoercion.annotate_res.ty
+res.ki			.undefined	gsdl.cgs.gskind.t
+res			.lrecord	coercion	co1	gskind	res.ki	gstype	res.ty	|	_gsac.gscoercion.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
 
@@ -249,6 +251,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
+gsdl.cgs.gskind.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.cgs.gscoercion.pos	.gvar
 pos1	.fv	gsdl.sourcepos.t
@@ -261,8 +264,9 @@ err		.fkarg	0	string.t
 r0		.fkarg	0	_gsac.gscoercion.annotate_res.ty
 r0.co			.lfield	coercion	r0
 co1			.apply	gsdl.cgs.gscoercion.pos	|	pos1	r0.co
+r1.ki			.undefined	gsdl.cgs.gskind.t
 r0.ty			.lfield	gstype	r0
-r1			.lrecord	coercion	co1	gstype	r0.ty	|	_gsac.gscoercion.annotate_res.ty
+r1			.lrecord	coercion	co1	gskind	r1.ki	gstype	r0.ty	|	_gsac.gscoercion.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
 
@@ -293,6 +297,7 @@ list.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar	# Temp
+gsdl.cgs.gskind.t	.tygvar	# Temp
 _gsac.gscoercion.annotate_defn_w_:_k	.subcode
 bool.t.out	.cogvar
 gsdl.cgs.typeenv.tyvar.elem	.gvar
@@ -316,8 +321,9 @@ a0.ki			.lfield	1	a0
 			.enter	gsdl.cgs.typeenv.tyvar.elem
 		.case	nil
 co1			.apply	gsdl.cgs.gscoercion.defn	|	tyc
+r.ki			.undefined	gsdl.cgs.gskind.t
 r.ty			.apply	gsdl.cgs.gscoercion.gstype.iso	|	tye	res
-r			.lrecord	coercion	co1	gstype	r.ty	|	_gsac.gscoercion.annotate_res.ty
+r			.lrecord	coercion	co1	gskind	r.ki	gstype	r.ty	|	_gsac.gscoercion.annotate_res.ty
 			.app	r
 			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
 
@@ -378,9 +384,10 @@ err		.fkarg	0	string.t
 		.case	right
 r0		.fkarg	0	_gsac.gscoercion.annotate_res.ty
 co1			.lfield	coercion	r0
+r1.ki			.undefined	gsdl.cgs.gskind.t
 r0.ty			.lfield	gstype	r0
 ty			.apply	gsdl.cgs.gscoercion.gstype.forall	|	a0.v	a0.ki	r0.ty
-r1			.lrecord	coercion	co1	gstype	ty	|	_gsac.gscoercion.annotate_res.ty
+r1			.lrecord	coercion	co1	gskind	r1.ki	gstype	ty	|	_gsac.gscoercion.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
 
@@ -834,8 +841,9 @@ _gsac.gscoercion.annotate_res.u	.tygvar
 
 _gsac.gscoercion.annotate_res.u	.tyexpr
 gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gscoercion.gstype.t	.tygvar
-	.typroduct	coercion	gsdl.cgs.gscoercion.t	gstype	gsdl.cgs.gscoercion.gstype.t
+	.typroduct	coercion	gsdl.cgs.gscoercion.t	gskind	gsdl.cgs.gskind.t	gstype	gsdl.cgs.gscoercion.gstype.t
 
 _gsac.gscoercion.annotate_defn_w_ty	.tyexpr
 gsdl.cgs.typeenv.t	.tygvar
