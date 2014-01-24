@@ -1137,7 +1137,12 @@ either.t	.tygvar	# Temp
 either.right	.gvar
 record.empty	.gvar
 b0	.karg	bool.prim.u	# Same kind?
+	.analyze	b0	false	true
+		.case	false
 			.undef	either.t	string.t	record.empty
+		.case	true
+			.app	record.empty
+			.enter	either.right	string.t	record.empty
 
 # §section §gs{gsac.gstype.fields.check}
 
