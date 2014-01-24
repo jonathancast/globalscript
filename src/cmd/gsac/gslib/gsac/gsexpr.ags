@@ -689,13 +689,23 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gsexpr.compileToGlobalVar_res.ty	.tygvar	# Temp
+_gsac.gsexpr.compileToGlobalVar_k	.subcode
+gsdl.cgs.gsexpr.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 x	.larg	gsdl.var.t
 e	.larg	gsdl.cgs.gsexpr.t
+	.force	_gsac.gsexpr.compileToGlobalVar_k
+	.coerce	gsdl.cgs.gsexpr.t.out
+	.enter	e
+
+
+_gsac.gsexpr.compileToGlobalVar_k	.forcecont
+gsdl.cgs.gsexpr.prim.u	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gsexpr.compileToGlobalVar_res.ty	.tygvar	# Temp
+e0	.karg	gsdl.cgs.gsexpr.prim.u
 	.undef	either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 
 # §section §gs{gsac.gsexpr.cast.source.compileToGlobalVar}
