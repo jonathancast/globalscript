@@ -721,7 +721,6 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
@@ -730,6 +729,8 @@ _gsac.gsexpr.cast.source.compileToGlobalVar_res.ty	.tygvar	# Temp
 _gsac.gsexpr.cast.source.compileToGlobalVar_typesig_k	.subcode
 either.t.out	.cogvar
 maybe.just	.gvar
+maybe.nothing	.gvar
+gsac.gsexpr.compileToGlobalVar	.gvar
 gsac.gstype.compileToGlobalVar	.gvar
 gsdl.var.<>	.gvar
 _gsac.gsexpr_ty.v	.gvar
@@ -741,7 +742,8 @@ just.x	.apply	maybe.just	gsdl.var.t	|	x
 	.analyze	so0	expr	missing	typesig
 		.case	expr
 e		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
+			.app	pos	env	x	e
+			.enter	gsac.gsexpr.compileToGlobalVar
 		.case	missing
 pos1		.fkarg	0	gsdl.sourcepos.t
 			.undef	either.t	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
