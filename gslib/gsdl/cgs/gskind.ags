@@ -69,7 +69,11 @@ kie.eq					.apply	gsdl.cgs.gskind.≡	|	ki0.e	ki1.e
 				.case	lifted
 					.enter	bool.true
 		.case	unknown
-			.undef	bool.t
+			.danalyze	ki1.0	unknown
+				.default
+					.undef	bool.t
+				.case	unknown
+					.enter	bool.true
 		.case	unlifted
 			.danalyze	ki1.0	unlifted
 				.default
