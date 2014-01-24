@@ -12,6 +12,8 @@ _gsac.gsexpr.compileToDataItem_ep.v_s	.string	ep
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_so.s	.string	so
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_co.s	.string	co
 
+gsac.gsexpr.compileToGlobalVar	.closure	_gsac.gsexpr.compileToGlobalVar_c	_gsac.gsexpr.compileToGlobalVar_ty
+
 gsac.gsexpr.cast.source.compileToGlobalVar	.closure	_gsac.gsexpr.cast.source.compileToGlobalVar_c	_gsac.gsexpr.cast.source.compileToGlobalVar_ty
 
 _gsac.gsexpr_ty.v	.closure	_gsac.gsexpr_ty.v_c
@@ -680,6 +682,22 @@ res			.lrecord	coercionitems	cos	dataitems	so.ds	res	di	typeitems	ts	|	_gsac.gse
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
+# §section §gs{gsac.gsexpr.compileToGlobalVar}
+
+_gsac.gsexpr.compileToGlobalVar_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gsexpr.compileToGlobalVar_res.ty	.tygvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+x	.larg	gsdl.var.t
+e	.larg	gsdl.cgs.gsexpr.t
+	.undef	either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
+
 # §section §gs{gsac.gsexpr.cast.source.compileToGlobalVar}
 
 _gsac.gsexpr.cast.source.compileToGlobalVar_c	.expr
@@ -897,6 +915,29 @@ _gsac.gsexpr.compileToDataItem_res.ty	.tyexpr
 _gsac.gsexpr.compile.m_res.ty	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 	.tyref	_gsac.gsexpr.compile.m_res.ty	gsdl.ags.dataitem.t
+
+# §section §gs{gsac.gsexpr.compileToGlobalVar}
+
+_gsac.gsexpr.compileToGlobalVar_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tyref	gsac.gsexpr.compile.m	gsdl.var.t
+
+_gsac.gsexpr.compileToGlobalVar_res.ty	.tyexpr
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+gsdl.var.t	.tygvar
+	.tyref	_gsac.gsexpr.compile.m_res.ty	gsdl.var.t
 
 # §section §gs{gsac.gsexpr.cast.source.compileToGlobalVar}
 
