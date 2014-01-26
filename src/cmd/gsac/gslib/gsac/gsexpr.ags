@@ -339,17 +339,19 @@ env1			.apply	gsdl.cgs.typeenv.var.insert	|	v	ty.ex	ty.ki	env
 			.enter	gsac.gsexpr.body.annotate
 
 _gsac.gsexpr.annotate_lambda_right_right_k	.forcecont
+gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.body.annotate_res.ty	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.cgs.gsexpr.t	.tygvar	# Temp
 gsdl.cgs.gstype.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
 gsdl.cgs.gstype.fun	.gvar
+gsdl.cgs.gsexpr.lambda	.gvar
+v	.fv	gsdl.var.t
 ty.ex	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.body.annotate_res.ty
 	.analyze	e0	left	right
@@ -358,10 +360,11 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 b.r		.fkarg	0	_gsac.gsexpr.body.annotate_res.ty
-l			.undefined	gsdl.cgs.gsexpr.t
 b.r.ty			.lfield	gstype	b.r
 tye			.apply	gsdl.cgs.gstype.fun	|	ty.ex	b.r.ty
-res			.lrecord	expr	l	gskind	gsdl.cgs.gskind.unlifted	gstype	tye	|	_gsac.gsexpr.annotate_res.ty	# Return annotated lambda
+b.r.b			.lfield	body	b.r
+l			.apply	gsdl.cgs.gsexpr.lambda	|	v	ty.ex	b.r.b
+res			.lrecord	expr	l	gskind	gsdl.cgs.gskind.unlifted	gstype	tye	|	_gsac.gsexpr.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
 
