@@ -16,6 +16,8 @@ gsac.gsexpr.compileToGlobalVar	.closure	_gsac.gsexpr.compileToGlobalVar_c	_gsac.
 
 gsac.gsexpr.cast.source.compileToGlobalVar	.closure	_gsac.gsexpr.cast.source.compileToGlobalVar_c	_gsac.gsexpr.cast.source.compileToGlobalVar_ty
 
+gsac.gsexpr.compileToLambdaExpr	.closure	_gsac.gsexpr.compileToLambdaExpr_c	_gsac.gsexpr.compileToLambdaExpr_ty
+
 _gsac.gsexpr_ty.v	.closure	_gsac.gsexpr_ty.v_c
 _gsac.gsexpr_ty.v_s	.string	ty
 
@@ -830,6 +832,20 @@ res			.lrecord	coercionitems	cos	dataitems	ds	res	x	typeitems	ts	|	_gsac.gsexpr.
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 
+# §section §gs{gsac.gsexpr.compileToLambdaExpr}
+
+_gsac.gsexpr.compileToLambdaExpr_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+e	.larg	gsdl.cgs.gsexpr.t
+	.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
 # §section Helper Functions
 
 # §subsection §gs{ty.v}
@@ -1002,3 +1018,32 @@ _gsac.gsexpr.cast.source.compileToGlobalVar_res.ty	.tyexpr
 _gsac.gsexpr.compile.m_res.ty	.tygvar
 gsdl.var.t	.tygvar
 	.tyref	_gsac.gsexpr.compile.m_res.ty	gsdl.var.t
+
+# §section §gs{gsac.gsepxr.compileToLambdaExpr}
+
+_gsac.gsexpr.compileToLambdaExpr_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tyexpr
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
+	.tyref	_gsac.gsexpr.compile.m_res.ty	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tyexpr
+_gsac.gsexpr.compileToLambdaExpr_res_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gsexpr.compileToLambdaExpr_res_res.u
+
+_gsac.gsexpr.compileToLambdaExpr_res_res.u	.tyexpr
+	.typroduct
