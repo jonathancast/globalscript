@@ -884,6 +884,8 @@ e	.larg	gsdl.cgs.gsexpr.t
 	.enter	e
 
 _gsac.gsexpr.compileToLambdaExpr_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
@@ -895,6 +897,11 @@ gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	# Temp
+_gsac.gsexpr.compileToLambdaExpr_lift_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.compileToLambdaExpr	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 	.analyze	e0	expr.heavy.cast	lambda	lift	pos
 		.case	expr.heavy.cast
@@ -908,12 +915,23 @@ b		.fkarg	2	gsdl.cgs.gsexpr.body.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	lift
 e1		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.force	_gsac.gsexpr.compileToLambdaExpr_lift_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.app	pos	env	e1
+			.enter	gsac.gsexpr.compileToLambdaExpr
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	# > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
+_gsac.gsexpr.compileToLambdaExpr_lift_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+either.t	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 # §section Helper Functions
 
