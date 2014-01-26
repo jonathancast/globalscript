@@ -526,9 +526,10 @@ maybe.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
-string.t	.tygvar
 _gsac.gsexpr.cast.source.compileToGlobalVar_res.ty	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
@@ -536,10 +537,13 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	# Temp
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
+_gsac.gsexpr.compileToDataItem_default_k	.subcode
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_k	.subcode
+gsdl.cgs.gsexpr.t.in	.cogvar
 either.t.out	.cogvar
 maybe.fromJust	.gvar
 _gsac.gsexpr.compileToDataItem_ep.v	.gvar
+gsac.gsexpr.compileToLambdaExpr	.gvar
 gsac.gsexpr.cast.source.compileToGlobalVar	.gvar
 gsdl.var.subvar	.gvar
 gsdl.var.basevar	.gvar
@@ -552,8 +556,15 @@ env	.fv	gsdl.cgs.typeenv.t
 mbv	.fv	maybe.t	gsdl.var.t
 ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
+e0.l	.lifted	e0
+e0.cl	.cast	e0.l	gsdl.cgs.gsexpr.t.in
 x	.apply	maybe.fromJust	gsdl.var.t	|	_gsac.gsexpr.compileToDataItem_ep.v	mbv
-	.analyze	e0	expr.heavy.cast	lambda	lift	pos
+	.danalyze	e0	expr.heavy.cast	lambda	pos
+		.default
+			.force	_gsac.gsexpr.compileToDataItem_default_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.app	pos	env	e0.cl
+			.enter	gsac.gsexpr.compileToLambdaExpr
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 src		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
@@ -569,9 +580,6 @@ so.x			.apply	gsdl.var.subvar	|	x	so.v
 v		.fkarg	0	gsdl.var.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
 b		.fkarg	2	gsdl.cgs.gsexpr.body.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
-		.case	lift
-e1		.fkarg	0	gsdl.cgs.gsexpr.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
@@ -590,6 +598,15 @@ c0	.apply	gsdl.var.component.alphanum	|	_gsac.gsexpr.compileToDataItem_ep.v_s
 cs	.apply	list.singleton	gsdl.var.component.t	|	c0
 	.app	cs
 	.enter	gsdl.var.basevar
+
+_gsac.gsexpr.compileToDataItem_default_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+	.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_k	.forcecont
 gsdl.sourcepos.t	.tygvar
