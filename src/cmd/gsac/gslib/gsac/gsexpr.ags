@@ -719,23 +719,36 @@ e	.larg	gsdl.cgs.gsexpr.t
 	.enter	e
 
 _gsac.gsexpr.compileToGlobalVar_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
 _gsac.gsexpr.compileToGlobalVar_res.ty	.tygvar	# Temp
+_gsac.gsexpr.compileToGlobalVar_default_k	.subcode
+gsdl.cgs.gsexpr.t.in	.cogvar
+either.t.out	.cogvar
+gsac.gsexpr.compileToLambdaExpr	.gvar
 gsac.gsexpr.compileToGlobalVar	.gvar
+pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 x	.fv	gsdl.var.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0	expr.heavy.cast	lambda	lift	pos
+e0.l	.lifted	e0
+e0.cl	.cast	e0.l	gsdl.cgs.gsexpr.t.in
+	.danalyze	e0	expr.heavy.cast	lambda	pos
+		.default
+			.force	_gsac.gsexpr.compileToGlobalVar_default_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.app	pos	env	e0.cl
+			.enter	gsac.gsexpr.compileToLambdaExpr
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
@@ -745,15 +758,21 @@ v		.fkarg	0	gsdl.var.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
 b		.fkarg	2	gsdl.cgs.gsexpr.body.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
-		.case	lift
-e1		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.app	pos1	env	x	e1
 			.enter	gsac.gsexpr.compileToGlobalVar
 	# > :: either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
+
+_gsac.gsexpr.compileToGlobalVar_default_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gsexpr.compileToGlobalVar_res.ty	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.undef	either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 
 # §section §gs{gsac.gsexpr.cast.source.compileToGlobalVar}
 
