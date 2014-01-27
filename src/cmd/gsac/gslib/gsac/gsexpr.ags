@@ -18,6 +18,8 @@ gsac.gsexpr.cast.source.compileToGlobalVar	.closure	_gsac.gsexpr.cast.source.com
 
 gsac.gsexpr.compileToLambdaExpr	.closure	_gsac.gsexpr.compileToLambdaExpr_c	_gsac.gsexpr.compileToLambdaExpr_ty
 
+gsac.gsexpr.body.compileToLambdaExpr	.closure	_gsac.gsexpr.body.compileToLambdaExpr_c	_gsac.gsexpr.body.compileToLambdaExpr_ty
+
 _gsac.gsexpr_ty.v	.closure	_gsac.gsexpr_ty.v_c
 _gsac.gsexpr_ty.v_s	.string	ty
 
@@ -950,6 +952,20 @@ either.t	.tygvar	# Temp
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
+# §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
+
+_gsac.gsexpr.body.compileToLambdaExpr_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+either.t	.tygvar	# Temp
+string.t	.tygvar	# Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	# Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+b	.larg	gsdl.cgs.gsexpr.body.t
+	.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
 # §section Helper Functions
 
 # §subsection §gs{ty.v}
@@ -1152,3 +1168,19 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.u	.tygvar
 
 _gsac.gsexpr.compileToLambdaExpr_res_res.u	.tyexpr
 	.typroduct
+
+# §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
+
+_gsac.gsexpr.body.compileToLambdaExpr_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.body.t
+	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
