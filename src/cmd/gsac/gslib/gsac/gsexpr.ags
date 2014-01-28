@@ -486,6 +486,7 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 	# > :: either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
 
 _gsac.gsexpr.body.annotate_missing_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
@@ -493,6 +494,8 @@ _gsac.gsexpr.body.annotate_res.ty	.tygvar
 either.t	.tygvar	# Temp
 gsdl.cgs.gsexpr.body.t	.tygvar	# Temp
 either.right	.gvar
+gsdl.cgs.gsexpr.body.missing	.gvar
+pos1	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -500,8 +503,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.annotate_res.ty
-res.b			.undefined	gsdl.cgs.gsexpr.body.t
 ty.r.ty			.lfield	gstype	ty.r
+res.b			.apply	gsdl.cgs.gsexpr.body.missing	|	pos1	ty.r.ty
 res			.lrecord	body	res.b	gstype	ty.r.ty	|	_gsac.gsexpr.body.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.body.annotate_res.ty
