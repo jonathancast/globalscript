@@ -90,6 +90,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	# Temp
@@ -97,13 +98,15 @@ gsdl.ags.file.t	.tygvar	# Temp
 _gsac.document.compile_right_just_just_k	.subcode
 either.t.out	.cogvar
 ordered.set.empty	.gvar
+ordered.map.empty	.gvar
 gsac.gsexpr.compileToDataItem	.gvar
 maybe.nothing	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 doc0	.fv	gsdl.cgs.document.prim.u
 e	.fv	gsdl.cgs.gsexpr.t
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
-empty	.apply	ordered.set.empty	gsdl.var.t
+set.empty	.apply	ordered.set.empty	gsdl.var.t
+map.empty	.apply	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
 	.analyze	mbty0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
@@ -111,7 +114,7 @@ pos			.field	pos	doc0
 nothing			.apply	maybe.nothing	gsdl.var.t
 			.force	_gsac.document.compile_right_just_just_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToDataItem_res.ty
-			.app	pos	env	nothing	e	ty	empty
+			.app	pos	env	nothing	e	ty	set.empty	map.empty
 			.enter	gsac.gsexpr.compileToDataItem
 		.case	nothing
 			.undef	either.t	string.t	gsdl.ags.file.t
