@@ -91,6 +91,7 @@ maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	# Temp
@@ -112,9 +113,10 @@ map.empty	.apply	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
 ty		.fkarg	0	gsdl.cgs.gstype.t
 pos			.field	pos	doc0
 nothing			.apply	maybe.nothing	gsdl.var.t
+tyvs			.undefined	list.t	gsdl.var.t
 			.force	_gsac.document.compile_right_just_just_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToDataItem_res.ty
-			.app	pos	env	nothing	e	ty	set.empty	map.empty
+			.app	pos	env	nothing	e	ty	set.empty	map.empty	tyvs
 			.enter	gsac.gsexpr.compileToDataItem
 		.case	nothing
 			.undef	either.t	string.t	gsdl.ags.file.t

@@ -521,6 +521,7 @@ gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 _gsac.gsexpr.compileToDataItem_k	.subcode
 gsdl.cgs.gsexpr.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
@@ -530,6 +531,7 @@ e	.larg	gsdl.cgs.gsexpr.t
 ty	.larg	gsdl.cgs.gstype.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gsexpr.compileToDataItem_k
 	.coerce	gsdl.cgs.gsexpr.t.out
 	.enter	e
@@ -543,6 +545,7 @@ gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
@@ -575,15 +578,17 @@ mbv	.fv	maybe.t	gsdl.var.t
 ty	.fv	gsdl.cgs.gstype.t
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 e0.l	.lifted	e0
 e0.cl	.cast	e0.l	gsdl.cgs.gsexpr.t.in
 x	.apply	maybe.fromJust	gsdl.var.t	|	_gsac.gsexpr.compileToDataItem_ep.v	mbv
 	.danalyze	e0	expr.heavy.cast	lambda	pos
 		.default
+tyvs1			.undefined	list.t	gsdl.var.t
 			.force	_gsac.gsexpr.compileToDataItem_default_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
-			.app	pos	env	e0.cl	tyem	pem
+			.app	pos	env	e0.cl	tyem	pem	tyvs1
 			.enter	gsac.gsexpr.compileToLambdaExpr
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
@@ -594,7 +599,7 @@ so.v			.apply	gsdl.var.basevar	|	so.cs
 so.x			.apply	gsdl.var.subvar	|	x	so.v
 			.force	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
-			.app	pos	env	so.x	src	tyem	pem
+			.app	pos	env	so.x	src	tyem	pem	tyvs
 			.enter	gsac.gsexpr.cast.source.compileToGlobalVar
 		.case	lambda
 v		.fkarg	0	gsdl.var.t
@@ -604,7 +609,7 @@ b		.fkarg	2	gsdl.cgs.gsexpr.body.t
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
-			.app	pos1	env	mbv	e1	ty	tyem	pem
+			.app	pos1	env	mbv	e1	ty	tyem	pem	tyvs
 			.enter	gsac.gsexpr.compileToDataItem
 	# > :: either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
@@ -731,6 +736,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 _gsac.gsexpr.compileToGlobalVar_k	.subcode
 gsdl.cgs.gsexpr.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
@@ -739,6 +745,7 @@ x	.larg	gsdl.var.t
 e	.larg	gsdl.cgs.gsexpr.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gsexpr.compileToGlobalVar_k
 	.coerce	gsdl.cgs.gsexpr.t.out
 	.enter	e
@@ -750,6 +757,7 @@ gsdl.var.t	.tygvar
 ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
@@ -770,14 +778,16 @@ env	.fv	gsdl.cgs.typeenv.t
 x	.fv	gsdl.var.t
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 e0.l	.lifted	e0
 e0.cl	.cast	e0.l	gsdl.cgs.gsexpr.t.in
 	.danalyze	e0	expr.heavy.cast	lambda	pos
 		.default
+tyvs1			.undefined	list.t	gsdl.var.t
 			.force	_gsac.gsexpr.compileToGlobalVar_default_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
-			.app	pos	env	e0.cl	tyem	pem
+			.app	pos	env	e0.cl	tyem	pem	tyvs1
 			.enter	gsac.gsexpr.compileToLambdaExpr
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
@@ -791,7 +801,7 @@ b		.fkarg	2	gsdl.cgs.gsexpr.body.t
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
-			.app	pos1	env	x	e1	tyem	pem
+			.app	pos1	env	x	e1	tyem	pem	tyvs
 			.enter	gsac.gsexpr.compileToGlobalVar
 	# > :: either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 
@@ -814,6 +824,7 @@ gsdl.cgs.gsexpr.cast.source.t	.tygvar
 ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 _gsac.gsexpr.cast.source.compileToGlobalVar_k	.subcode
 gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
@@ -822,6 +833,7 @@ x	.larg	gsdl.var.t
 so	.larg	gsdl.cgs.gsexpr.cast.source.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gsexpr.cast.source.compileToGlobalVar_k
 	.coerce	gsdl.cgs.gsexpr.cast.source.t.out
 	.enter	so
@@ -833,6 +845,7 @@ gsdl.var.t	.tygvar
 ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -853,12 +866,13 @@ env	.fv	gsdl.cgs.typeenv.t
 x	.fv	gsdl.var.t
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.fv	list.t	gsdl.var.t
 so0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
 just.x	.apply	maybe.just	gsdl.var.t	|	x
 	.analyze	so0	expr	missing	typesig
 		.case	expr
 e		.fkarg	0	gsdl.cgs.gsexpr.t
-			.app	pos	env	x	e	tyem	pem
+			.app	pos	env	x	e	tyem	pem	tyvs
 			.enter	gsac.gsexpr.compileToGlobalVar
 		.case	missing
 pos1		.fkarg	0	gsdl.sourcepos.t
@@ -918,6 +932,7 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_k	.subcode
 gsdl.cgs.gsexpr.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
@@ -925,6 +940,7 @@ env	.larg	gsdl.cgs.typeenv.t
 e	.larg	gsdl.cgs.gsexpr.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gsexpr.compileToLambdaExpr_k
 	.coerce	gsdl.cgs.gsexpr.t.out
 	.enter	e
@@ -936,6 +952,7 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
@@ -956,6 +973,7 @@ pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 	.analyze	e0	expr.heavy.cast	lambda	lift	pos
 		.case	expr.heavy.cast
@@ -968,20 +986,20 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 b		.fkarg	2	gsdl.cgs.gsexpr.body.t
 			.force	_gsac.gsexpr.compileToLambdaExpr_lambda_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
-			.app	pos	env	b	tyem	pem
+			.app	pos	env	b	tyem	pem	tyvs
 			.enter	gsac.gsexpr.body.compileToLambdaExpr
 		.case	lift
 e1		.fkarg	0	gsdl.cgs.gsexpr.t
 			.force	_gsac.gsexpr.compileToLambdaExpr_lift_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
-			.app	pos	env	e1	tyem	pem
+			.app	pos	env	e1	tyem	pem	tyvs
 			.enter	gsac.gsexpr.compileToLambdaExpr
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.force	_gsac.gsexpr.compileToLambdaExpr_pos_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
-			.app	pos1	env	e1	tyem	pem
+			.app	pos1	env	e1	tyem	pem	tyvs
 			.enter	gsac.gsexpr.compileToLambdaExpr
 	# > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
@@ -1019,6 +1037,7 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 _gsac.gsexpr.body.compileToLambdaExpr_k	.subcode
 gsdl.cgs.gsexpr.body.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
@@ -1026,6 +1045,7 @@ env	.larg	gsdl.cgs.typeenv.t
 b	.larg	gsdl.cgs.gsexpr.body.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gsexpr.body.compileToLambdaExpr_k
 	.coerce	gsdl.cgs.gsexpr.body.t.out
 	.enter	b
@@ -1034,11 +1054,13 @@ _gsac.gsexpr.body.compileToLambdaExpr_k	.forcecont
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.gsexpr.body.prim.u	.tygvar
 either.t	.tygvar	# Temp
 string.t	.tygvar	# Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	# Temp
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.fv	list.t	gsdl.var.t
 b0	.karg	gsdl.cgs.gsexpr.body.prim.u
 	.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
@@ -1094,6 +1116,7 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compile.m_res.ty	.tygvar
@@ -1103,6 +1126,8 @@ res.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	α
 	.tyfun	ordered.set.t	gsdl.var.t	# §gs{ty.emitted} --- state input of set of type variables already emitted
 	.tylift
 	.tyfun	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+	.tylift
+	.tyfun	list.t	gsdl.var.t
 	.tyref	either.t	string.t	res.ty
 
 _gsac.gsexpr.compile.m_res.ty	.tyexpr
