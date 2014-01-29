@@ -1051,18 +1051,46 @@ tyvs	.larg	list.t	gsdl.var.t
 	.enter	b
 
 _gsac.gsexpr.body.compileToLambdaExpr_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.body.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToApp_res.ty	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	# Temp
+_gsac.gsexpr.body.compileToLambdaExpr_missing_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.compileToApp	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tyvs	.fv	list.t	gsdl.var.t
 b0	.karg	gsdl.cgs.gsexpr.body.prim.u
-	.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+	.analyze	b0	missing
+		.case	missing
+pos1		.fkarg	0	gsdl.sourcepos.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+			.force	_gsac.gsexpr.body.compileToLambdaExpr_missing_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
+			.app	pos1	env	ty	tyem	pem	tyvs
+			.enter	gsac.gstype.compileToApp
+	# > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
+_gsac.gsexpr.body.compileToLambdaExpr_missing_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToApp_res.ty	.tygvar
+either.t	.tygvar	# Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	# Temp
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 # §section Helper Functions
 
