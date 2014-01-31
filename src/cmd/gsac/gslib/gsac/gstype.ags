@@ -1251,6 +1251,7 @@ _gsac.gstype.compile_w_abstype_k	.subcode
 _gsac.gstype.compile_w_app_k	.subcode
 _gsac.gstype.compile_w_fun_k	.subcode
 _gsac.gstype.compile_w_lift_k	.subcode
+_gsac.gstype.compile_w_pos_k	.subcode
 _gsac.gstype.compile_w_product_k	.subcode
 _gsac.gstype.compile_w_sum_k	.subcode
 either.t.out	.cogvar
@@ -1320,7 +1321,10 @@ ty1		.fkarg	0	gsdl.cgs.gstype.t
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 ty1		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+			.force	_gsac.gstype.compile_w_pos_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compile_res.ty
+			.app	pos1	env	ty1	em	pem	gvs
+			.enter	gsac.gstype.compile
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.force	_gsac.gstype.compile_w_product_k
@@ -1507,6 +1511,23 @@ es0			.lfield	typeitems	res1
 tyfvs0			.lfield	tyfvs	res1
 tygvs0			.lfield	tygvars	res1
 res			.lrecord	emitted	em0	prim.emitted	pem0	res	res0	subvars	svs0	tyfvs	tyfvs0	tygvars	tygvs0	typeitems	es0	|	_gsac.gstype.compile_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
+
+_gsac.gstype.compile_w_pos_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compile_res.ty	.tygvar
+either.t	.tygvar	# Temp
+either.right	.gvar
+ty0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
+	.analyze	ty0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+		.case	right
+r0		.fkarg	0	_gsac.gstype.compile_res.ty
+res			.undefined	_gsac.gstype.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
