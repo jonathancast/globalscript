@@ -772,6 +772,7 @@ _gsac.gsexpr.compileToGlobalVar_default_k	.subcode
 gsdl.cgs.gsexpr.t.in	.cogvar
 either.t.out	.cogvar
 gsac.gsexpr.compileToLambdaExpr	.gvar
+gsdl.var.subvars	.gvar
 gsac.gsexpr.compileToGlobalVar	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
@@ -784,7 +785,7 @@ e0.l	.lifted	e0
 e0.cl	.cast	e0.l	gsdl.cgs.gsexpr.t.in
 	.danalyze	e0	expr.heavy.cast	lambda	pos
 		.default
-tyvs1			.undefined	list.t	gsdl.var.t
+tyvs1			.apply	gsdl.var.subvars	|	x
 			.force	_gsac.gsexpr.compileToGlobalVar_default_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	pos	env	e0.cl	tyem	pem	tyvs1
