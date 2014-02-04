@@ -13,7 +13,7 @@ _gsdl.var.subvars_w	.closure	_gsdl.var.subvars_w_c	_gsdl.var.subvars_w_ty
 
 gsdl.var.compare	.closure	_gsdl.var.compare_c	_gsdl.var.compare_ty
 
-gsdl.var.≡	.closure	_gsdl.var.≡_c
+gsdl.var.≡	.closure	_gsdl.var.≡_c	_gsdl.var.≡_ty
 
 gsdl.var.fmtgs	.closure	_gsdl.var.fmtgs_c
 _gsdl.var.fmtgs_prefix.s	.string	gsv{
@@ -414,6 +414,9 @@ gsdl.var.t	.tygvar
 bool.t	.tygvar	# Temp
 list.≡	.gvar
 gsdl.var.component.≡	.gvar
+bool.∧	.gvar
+natural.≡	.gvar
+gsdl.var.≡	.gvar
 v0.0	.fv	gsdl.var.prim.u
 v1.0	.karg	gsdl.var.prim.u
 	.analyze	v0.0	basevar	constructed
@@ -429,7 +432,16 @@ cs1				.fkarg	0	list.t	gsdl.var.component.t
 		.case	constructed
 d0		.fkarg	0	natural.t
 cs0		.fkarg	1	list.t	gsdl.var.t
-			.undef	bool.t
+			.danalyze	v1.0	constructed
+				.default
+					.undef	bool.t
+				.case	constructed
+d1				.fkarg	0	natural.t
+cs1				.fkarg	1	list.t	gsdl.var.t
+d.eq					.apply	natural.≡	|	d0	d1
+cs.eq					.apply	list.≡	gsdl.var.t	|	gsdl.var.≡	cs0	cs1
+					.app	d.eq	cs.eq
+					.enter	bool.∧
 		# > :: bool.t
 
 # §section §gs{gsdl.var.fmtgs}
@@ -667,6 +679,17 @@ order.total.ord.t	.tygvar
 	.tylift
 	.tyfun	gsdl.var.t
 	.tyref	order.total.ord.t
+
+# §section §gs{gsdl.var.≡}
+
+_gsdl.var.≡_ty	.tyexpr
+gsdl.var.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.var.t
+	.tyref	bool.t
 
 	.coercion
 
