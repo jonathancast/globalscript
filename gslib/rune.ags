@@ -2,7 +2,7 @@
 
 	.data
 
-rune.≡	.closure	_rune.≡.c
+rune.≡	.closure	_rune.≡_c
 rune.compare	.closure	_rune.compare_c
 
 rune.≠	.closure	_rune.≠_c
@@ -50,7 +50,7 @@ rune.underscore	.closure	_rune.underscore_c
 
 # §section §gs{rune.≡}
 
-_rune.≡.c	.expr
+_rune.≡_c	.expr
 rune.t	.tygvar
 _rune.≡.k0	.subcode
 rune.t.out	.cogvar
