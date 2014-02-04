@@ -341,7 +341,7 @@ diff.list.t	.tygvar	# Temp
 diff.list.fromlist	.gvar
 natural.fmtdecimal	.gvar
 c0	.karg	gsdl.var.component.prim.u
-	.analyze	c0	alphanum	numeric
+	.analyze	c0	alphanum	numeric	symbolic
 		.case	alphanum
 s		.fkarg	0	string.t
 			.app	s
@@ -351,6 +351,9 @@ n		.fkarg	0	natural.t
 n.s			.apply	natural.fmtdecimal	|	n
 			.app	n.s
 			.enter	diff.list.fromlist	rune.t
+		.case	symbolic
+s		.fkarg	0	string.t
+			.undef	diff.list.t	rune.t
 	# > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.syntax.rune.literal}

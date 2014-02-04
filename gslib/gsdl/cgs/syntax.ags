@@ -448,12 +448,15 @@ gsdl.var.component.prim.u	.tygvar
 string.t	.tygvar
 natural.t	.tygvar
 c0	.karg	gsdl.var.component.prim.u
-	.analyze	c0	alphanum	numeric
+	.analyze	c0	alphanum	numeric	symbolic
 		.case	alphanum
 s		.fkarg	0	string.t
 			.enter	s
 		.case	numeric
 n		.fkarg	0	natural.t
+			.undef	string.t
+		.case	symbolic
+s		.fkarg	0	string.t
 			.undef	string.t
 	# > :: string.t
 

@@ -28,6 +28,7 @@ gsdl.var.component.compare	.closure	_gsdl.var.component.compare_c
 
 gsdl.var.component.alphanum	.closure	_gsdl.var.component.alphanum_c
 gsdl.var.component.numeric	.closure	_gsdl.var.component.numeric_c
+gsdl.var.component.symbolic	.closure	_gsdl.var.component.symbolic_c
 
 	.code
 
@@ -521,7 +522,7 @@ bool.t	.tygvar	# Temp
 string.≡	.gvar
 c0.0	.fv	gsdl.var.component.prim.u
 c1.0	.karg	gsdl.var.component.prim.u
-	.analyze	c0.0	alphanum	numeric
+	.analyze	c0.0	alphanum	numeric	symbolic
 		.case	alphanum
 s0		.fkarg	0	string.t
 			.danalyze	c1.0	alphanum
@@ -533,6 +534,9 @@ s1				.fkarg	0	string.t
 					.enter	string.≡
 		.case	numeric
 n0		.fkarg	0	natural.t
+			.undef	bool.t
+		.case	symbolic
+s0		.fkarg	0	string.t
 			.undef	bool.t
 	# > :: bool.t
 
@@ -568,10 +572,10 @@ order.total.ord.t	.tygvar	# Temp
 string.compare	.gvar
 c0.0	.fv	gsdl.var.component.prim.u
 c1.0	.karg	gsdl.var.component.prim.u
-	.analyze	c0.0	alphanum	numeric
+	.analyze	c0.0	alphanum	numeric	symbolic
 		.case	alphanum
 s0		.fkarg	0	string.t
-			.analyze	c1.0	alphanum	numeric
+			.analyze	c1.0	alphanum	numeric	symbolic
 				.case	alphanum
 s1				.fkarg	0	string.t
 					.app	s0	s1
@@ -579,8 +583,14 @@ s1				.fkarg	0	string.t
 				.case	numeric
 n1				.fkarg	0	natural.t
 					.undef	order.total.ord.t
+				.case	symbolic
+s1				.fkarg	0	string.t
+					.undef	order.total.ord.t
 		.case	numeric
 n0		.fkarg	0	natural.t
+			.undef	order.total.ord.t
+		.case	symbolic
+s0		.fkarg	0	string.t
 			.undef	order.total.ord.t
 	# > :: order.total.ord.t
 
@@ -602,6 +612,16 @@ gsdl.var.component.prim.u	.tygvar
 gsdl.var.component.t.in	.cogvar
 n	.arg	natural.t
 c	.constr	gsdl.var.component.prim.u	numeric	0	n
+	.coerce	gsdl.var.component.t.in
+	.lift
+	.yield	c
+
+_gsdl.var.component.symbolic_c	.expr
+string.t	.tygvar
+gsdl.var.component.prim.u	.tygvar
+gsdl.var.component.t.in	.cogvar
+s	.arg	string.t
+c	.constr	gsdl.var.component.prim.u	symbolic	0	s
 	.coerce	gsdl.var.component.t.in
 	.lift
 	.yield	c
@@ -649,7 +669,8 @@ gsdl.var.component.prim.u	.tygvar
 gsdl.var.component.prim.u	.tyexpr
 _gsdl.var.component.prim.u_alphanum_ty	.tygvar
 _gsdl.var.component.prim.u_numeric_ty	.tygvar
-	.tysum	alphanum	_gsdl.var.component.prim.u_alphanum_ty	numeric	_gsdl.var.component.prim.u_numeric_ty
+_gsdl.var.component.prim.u_symbolic_ty	.tygvar
+	.tysum	alphanum	_gsdl.var.component.prim.u_alphanum_ty	numeric	_gsdl.var.component.prim.u_numeric_ty	symbolic	_gsdl.var.component.prim.u_symbolic_ty
 
 _gsdl.var.component.prim.u_alphanum_ty	.tyexpr
 string.t	.tygvar
@@ -658,6 +679,10 @@ string.t	.tygvar
 _gsdl.var.component.prim.u_numeric_ty	.tyexpr
 natural.t	.tygvar
 	.tyubproduct	0	natural.t
+
+_gsdl.var.component.prim.u_symbolic_ty	.tyexpr
+string.t	.tygvar
+	.tyubproduct	0	string.t
 
 # §section §gs{gsdl.var.subvars}
 
