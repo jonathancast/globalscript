@@ -240,6 +240,7 @@ gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
                 *pv = '\n';
                 break;
             case '*':
+            case '-':
             case '.':
             case '?':
             case '\\':
