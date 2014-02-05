@@ -109,21 +109,21 @@ gsnapplyv(struct gspos pos, gsvalue fun, int n, gsvalue *args)
             int needed_args, supplied_args;
 
             cl = (struct gsclosure *)hp;
-            needed_args = cl->code->numargs - (cl->numfvs - cl->code->numfvs);
+            needed_args = cl->cl.code->numargs - (cl->cl.numfvs - cl->cl.code->numfvs);
             supplied_args = MIN(needed_args, n);
             if (needed_args > 0) {
                 struct gsclosure *newfun;
 
-                newfun = gsreserveheap(MAX(sizeof(struct gsclosure) + (cl->numfvs + supplied_args)*sizeof(gsvalue), sizeof(struct gsindirection)));
+                newfun = gsreserveheap(sizeof(struct gsclosure) + (cl->cl.numfvs + supplied_args)*sizeof(gsvalue));
                 memset(&newfun->hp.lock, 0, sizeof(newfun->hp.lock));
                 newfun->hp.pos = pos;
                 newfun->hp.type = gsclosure;
-                newfun->code = cl->code;
-                newfun->numfvs = cl->numfvs + supplied_args;
+                newfun->cl.code = cl->cl.code;
+                newfun->cl.numfvs = cl->cl.numfvs + supplied_args;
 
-                for (i = 0; i < cl->numfvs; i++) newfun->fvs[i] = cl->fvs[i];
+                for (i = 0; i < cl->cl.numfvs; i++) newfun->cl.fvs[i] = cl->cl.fvs[i];
 
-                for (i = 0; i < supplied_args; i++) newfun->fvs[cl->numfvs + i] = args[i];
+                for (i = 0; i < supplied_args; i++) newfun->cl.fvs[cl->cl.numfvs + i] = args[i];
 
                 n -= supplied_args;
                 args += supplied_args;
@@ -137,16 +137,16 @@ gsnapplyv(struct gspos pos, gsvalue fun, int n, gsvalue *args)
 
     gsstatprint("%P: Creating application thunk\n", pos);
 
-    res = gsreserveheap(MAX(sizeof(struct gsapplication) + n*sizeof(gsvalue), sizeof(struct gsindirection)));
+    res = gsreserveheap(sizeof(struct gsapplication) + n*sizeof(gsvalue));
 
     app = (struct gsapplication *)res;
 
     res->pos = pos;
     memset(&res->lock, 0, sizeof(res->lock));
     res->type = gsapplication;
-    app->fun = fun;
-    app->numargs = n;
-    for (i = 0; i < n; i++) app->arguments[i] = args[i];
+    app->app.fun = fun;
+    app->app.numargs = n;
+    for (i = 0; i < n; i++) app->app.arguments[i] = args[i];
 
     return (gsvalue)res;
 }

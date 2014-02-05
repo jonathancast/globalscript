@@ -84,14 +84,14 @@ TEST_ERASE_BOTTOM_OF_STACK()
 void
 test_fixture_update(struct ace_thread *thread, struct gsbc_cont_update **pupdate, gsvalue *php)
 {
-    struct gsheap_item *hp;
+    struct gseval *ev;
 
-    hp = gsreserveheap(sizeof(struct gsindirection));
-    memset(&hp->lock, 0, sizeof(hp->lock));
-    hp->pos = HERE;
-    hp->type = gseval;
+    ev = (struct gseval *)gsreserveheap(sizeof(struct gseval));
+    memset(&ev->hp.lock, 0, sizeof(ev->hp.lock));
+    ev->hp.pos = HERE;
+    ev->hp.type = gseval;
 
-    *pupdate = ace_push_update(HERE, thread, hp);
-    gsblackhole_heap(hp, *pupdate);
-    *php = (gsvalue)hp;
+    ev->update = *pupdate = ace_push_update(HERE, thread, (struct gsheap_item *)ev);
+
+    *php = (gsvalue)ev;
 }

@@ -1387,8 +1387,8 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
         hp->type = gsclosure;
         cl = (struct gsclosure *)hp;
         gsargcheck(p, 0, "Code label");
-        cl->code = gssymtable_get_code(symtable, p->arguments[0]);
-        cl->numfvs = 0;
+        cl->cl.code = gssymtable_get_code(symtable, p->arguments[0]);
+        cl->cl.numfvs = 0;
     } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
         ;
     } else {

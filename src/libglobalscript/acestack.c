@@ -10,11 +10,14 @@ ace_push_update(struct gspos pos, struct ace_thread *thread, struct gsheap_item 
 {
     struct gsbc_cont *cont;
     struct gsbc_cont_update *updatecont;
+    struct gsindirection *in;
 
     cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont_update));
     updatecont = (struct gsbc_cont_update *)cont;
     if (!cont) {
-        gsupdate_heap(hp, (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating update continuation"));
+        hp->type = gsindirection;
+        in = (struct gsindirection *)hp;
+        in->dest = (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating update continuation");
         gsheap_unlock(hp);
         return 0;
     }
@@ -228,7 +231,7 @@ ace_stack_post_gc_consolidate(struct gsstringbuilder *err, struct ace_thread *th
             gsstring_builder_print(err, UNIMPL("%P: Trace update with live dest"), update->cont.pos);
             return -1;
         } else if (update->dest->type == gsgcforward) {
-            update->dest = (struct gsheap_item *)((struct gsgcforward *)update->dest)->dest;
+            update->dest = (struct gsheap_item *)((struct gsgcforward *)update->dest)->gcfwd;
 
             /* §paragraph{Copy update frame up on the stack} */
             dest = (uchar*)dest - sz;

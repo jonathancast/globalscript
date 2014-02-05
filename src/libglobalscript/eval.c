@@ -71,7 +71,7 @@ gsheapstate(struct gspos pos, struct gsheap_item *hp)
             struct gsbco *code;
 
             cl = (struct gsclosure *)hp;
-            code = cl->code;
+            code = cl->cl.code;
 
             switch (code->tag) {
                 case gsbc_expr: {
@@ -79,7 +79,7 @@ gsheapstate(struct gspos pos, struct gsheap_item *hp)
                     int fvs_for_code;
                     int args_for_code;
 
-                    fvs_in_cl = cl->numfvs;
+                    fvs_in_cl = cl->cl.numfvs;
                     fvs_for_code = code->numfvs;
                     args_for_code = code->numargs;
                     if (fvs_in_cl < fvs_for_code) {
@@ -181,45 +181,43 @@ gsheapremove_indirections(struct gspos pos, gsvalue val)
 
     in = (struct gsindirection *)hp;
 
-    val = in->target;
+    val = in->dest;
     unlock(&hp->lock);
 
     return val;
 }
-
-static void gsheap_setup_gcforward(struct gsheap_item *, struct gsheap_item *);
 
 static
 gsvalue
 gsheapgc(struct gsstringbuilder *err, gsvalue v)
 {
     int i;
-    struct gsheap_item *hp, *newhp;
+    struct gsheap_item *hp;
     gsvalue gctemp;
 
     hp = (struct gsheap_item *)v;
-    newhp = 0;
 
     switch (hp->type) {
         case gsclosure: {
             struct gsclosure *cl, *newcl;
 
             cl = (struct gsclosure *)hp;
-            newhp = gsreserveheap(MAX(sizeof(*newcl) + cl->numfvs * sizeof(gsvalue), sizeof(struct gsindirection)));
-            newcl = (struct gsclosure *)newhp;
+            newcl = (struct gsclosure *)gsreserveheap(sizeof(*newcl) + cl->cl.numfvs * sizeof(gsvalue));
 
-            memcpy(newhp, hp, sizeof(*newcl) + cl->numfvs * sizeof(gsvalue));
-            memset(&newhp->lock, 0, sizeof(newhp->lock));
+            memcpy(newcl, cl, sizeof(*newcl) + cl->cl.numfvs * sizeof(gsvalue));
+            memset(&newcl->hp.lock, 0, sizeof(newcl->hp.lock));
 
-            gsheap_setup_gcforward(hp, newhp);
+            cl->hp.type = gsgcforward;
+            cl->gcfwd = (gsvalue)newcl;
 
-            if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
-            if (gs_gc_trace_bco(err, &newcl->code) < 0) return 0;
+            if (gs_gc_trace_pos(err, &newcl->hp.pos) < 0) return 0;
+            if (gs_gc_trace_bco(err, &newcl->cl.code) < 0) return 0;
 
-            for (i = 0; i < newcl->numfvs; i++)
-                if (GS_GC_TRACE(err, &newcl->fvs[i]) < 0) return 0
+            for (i = 0; i < newcl->cl.numfvs; i++)
+                if (GS_GC_TRACE(err, &newcl->cl.fvs[i]) < 0) return 0
             ;
-            break;
+
+            return (gsvalue)newcl;
         }
         case gsapplication: {
             struct gsapplication *app, *newapp;
@@ -227,46 +225,46 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
 
             app = (struct gsapplication *)hp;
 
-            newhp = gsreserveheap(MAX(sizeof(*newapp) + app->numargs * sizeof(gsvalue), sizeof(struct gsindirection)));
-            newapp = (struct gsapplication *)newhp;
+            newapp = (struct gsapplication *)gsreserveheap(sizeof(*newapp) + app->app.numargs * sizeof(gsvalue));
 
-            memcpy(newapp, app, sizeof(*newapp) + app->numargs * sizeof(gsvalue));
-            memset(&newhp->lock, 0, sizeof(newhp->lock));
+            memcpy(newapp, app, sizeof(*newapp) + app->app.numargs * sizeof(gsvalue));
+            memset(&newapp->hp.lock, 0, sizeof(newapp->hp.lock));
 
-            gsheap_setup_gcforward(hp, newhp);
+            app->hp.type = gsgcforward;
+            app->gcfwd = (gsvalue)newapp;
 
-            if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
-            if (GS_GC_TRACE(err, &newapp->fun) < 0) return 0;
+            if (gs_gc_trace_pos(err, &newapp->hp.pos) < 0) return 0;
+            if (GS_GC_TRACE(err, &newapp->app.fun) < 0) return 0;
 
-            for (i = 0; i < newapp->numargs; i++)
-                if (GS_GC_TRACE(err, &newapp->arguments[i]) < 0) return 0
+            for (i = 0; i < newapp->app.numargs; i++)
+                if (GS_GC_TRACE(err, &newapp->app.arguments[i]) < 0) return 0
             ;
 
-            break;
+            return (gsvalue)newapp;
         }
         case gseval: {
             struct gseval *ev, *newev;
 
             ev = (struct gseval *)hp;
-            newhp = gsreserveheap(MAX(sizeof(*newev), sizeof(struct gsindirection)));
-            newev = (struct gseval *)newhp;
+            newev = (struct gseval *)gsreserveheap(sizeof(*newev));
 
             memcpy(newev, ev, sizeof(*newev));
 
-            gsheap_setup_gcforward(hp, newhp);
+            ev->hp.type = gsgcforward;
+            ev->gcfwd = (gsvalue)newev;
 
-            memset(&newhp->lock, 0, sizeof(newhp->lock));
-            if (gs_gc_trace_pos(err, &newhp->pos) < 0) return 0;
+            memset(&newev->hp.lock, 0, sizeof(newev->hp.lock));
+            if (gs_gc_trace_pos(err, &newev->hp.pos) < 0) return 0;
             if (newev->update && gs_sys_block_in_gc_from_space(newev->update) && ace_eval_gc_trace(err, &newev->update) < 0) return 0;
 
-            break;
+            return (gsvalue)newev;
         }
         case gsindirection: {
             struct gsindirection *in;
             gsvalue res, gctemp;
 
             in = (struct gsindirection *)hp;
-            res = in->target;
+            res = in->dest;
 
             if (GS_GC_TRACE(err, &res) < 0) return 0;
 
@@ -276,24 +274,12 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             struct gsgcforward *fwd;
 
             fwd = (struct gsgcforward *)hp;
-            return fwd->dest;
+            return fwd->gcfwd;
         }
         default:
             gsstring_builder_print(err, UNIMPL("gsheapgc: type = %d"), hp->type);
             return 0;
     }
-
-    return (gsvalue)newhp;
-}
-
-void
-gsheap_setup_gcforward(struct gsheap_item *hp, struct gsheap_item *newhp)
-{
-    struct gsgcforward *fwd;
-
-    hp->type = gsgcforward;
-    fwd = (struct gsgcforward *)hp;
-    fwd->dest = (gsvalue)newhp;
 }
 
 int
@@ -428,7 +414,7 @@ gspoison(struct gsheap_item *hp, struct gspos srcpos, char *fmt, ...)
 
     hp->type = gsindirection;
     in = (struct gsindirection *)hp;
-    in->target = (gsvalue)err;
+    in->dest = (gsvalue)err;
 }
 
 void

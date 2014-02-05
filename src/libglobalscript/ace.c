@@ -450,14 +450,14 @@ ace_instr_alloc_thunk(struct ace_thread *thread)
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".alloc subexpr out of range");
         return;
     }
-    cl->code = thread->subexprs[ip->args[0]];
-    cl->numfvs = ip->args[1];
+    cl->cl.code = thread->subexprs[ip->args[0]];
+    cl->cl.numfvs = ip->args[1];
     for (i = 0; i < ip->args[1]; i++) {
         if (ip->args[2 + i] > thread->nregs) {
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".alloc free variable out of range");
             return;
         }
-        cl->fvs[i] = thread->regs[ip->args[2 + i]];
+        cl->cl.fvs[i] = thread->regs[ip->args[2 + i]];
     }
     if (thread->nregs >= MAX_NUM_REGISTERS) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Register overflow in .alloc");
@@ -1105,12 +1105,15 @@ ace_error_thread(struct ace_thread *thread, struct gserror *err)
 {
     struct gsheap_item *hp;
     struct gsbc_cont_update *update;
+    struct gsindirection *in;
 
     for (update = thread->cureval; update; update = update->next) {
         hp = update->dest;
 
         lock(&hp->lock);
-        gsupdate_heap(hp, (gsvalue)err);
+        hp->type = gsindirection;
+        in = (struct gsindirection *)hp;
+        in->dest = (gsvalue)err;
         unlock(&hp->lock);
     }
 
@@ -1149,12 +1152,15 @@ ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *e
 {
     struct gsbc_cont_update *update;
     struct gsheap_item *hp;
+    struct gsindirection *in;
 
     for (update = thread->cureval; update; update = update->next) {
         hp = update->dest;
 
         lock(&hp->lock);
-        gsupdate_heap(hp, (gsvalue)err);
+        hp->type = gsindirection;
+        in = (struct gsindirection *)hp;
+        in->dest = (gsvalue)err;
         unlock(&hp->lock);
     }
 
@@ -1203,12 +1209,15 @@ ace_return_to_update(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue 
 {
     struct gsbc_cont_update *update;
     struct gsheap_item *hp;
+    struct gsindirection *in;
 
     update = (struct gsbc_cont_update *)cont;
     hp = update->dest;
 
     lock(&hp->lock);
-    gsupdate_heap(hp, v);
+    hp->type = gsindirection;
+    in = (struct gsindirection *)hp;
+    in->dest = v;
     unlock(&hp->lock);
 
     if (update->next) {
@@ -1248,25 +1257,25 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
     }
 
     cl = (struct gsclosure *)fun;
-    needed_args = cl->code->numargs - (cl->numfvs - cl->code->numfvs);
+    needed_args = cl->cl.code->numargs - (cl->cl.numfvs - cl->cl.code->numfvs);
 
     if (app->numargs < needed_args) {
         struct gsheap_item *res;
         struct gsclosure *clres;
 
-        res = gsreserveheap(sizeof (struct gsclosure) + (cl->numfvs + app->numargs) * sizeof(gsvalue));
+        res = gsreserveheap(sizeof (struct gsclosure) + (cl->cl.numfvs + app->numargs) * sizeof(gsvalue));
         clres = (struct gsclosure *)res;
 
         res->pos = cont->pos;
         memset(&res->lock, 0, sizeof(res->lock));
         res->type = gsclosure;
-        clres->code = cl->code;
-        clres->numfvs = cl->numfvs + app->numargs;
-        for (i = 0; i < cl->numfvs; i++)
-            clres->fvs[i] = cl->fvs[i]
+        clres->cl.code = cl->cl.code;
+        clres->cl.numfvs = cl->cl.numfvs + app->numargs;
+        for (i = 0; i < cl->cl.numfvs; i++)
+            clres->cl.fvs[i] = cl->cl.fvs[i]
         ;
-        for (i = cl->numfvs; i < cl->numfvs + app->numargs; i++)
-            clres->fvs[i] = app->arguments[i - cl->numfvs]
+        for (i = cl->cl.numfvs; i < cl->cl.numfvs + app->numargs; i++)
+            clres->cl.fvs[i] = app->arguments[i - cl->cl.numfvs]
         ;
         thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
 
@@ -1276,7 +1285,7 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
         int i;
         void *ip;
 
-        switch (cl->code->tag) {
+        switch (cl->cl.code->tag) {
             case gsbc_expr: {
                 void *bot_of_app_cont, *newstacktop;
 
@@ -1312,7 +1321,7 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
 
                 thread->stacktop = newstacktop;
                 thread->state = ace_thread_running;
-                thread->st.running.bco = cl->code;
+                thread->st.running.bco = cl->cl.code;
                 thread->st.running.ip = (struct gsbc *)ip;
                 break;
             }
@@ -1320,26 +1329,26 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
                 struct gsheap_item *hpres;
                 struct gsclosure *res;
 
-                hpres = gsreserveheap(sizeof(*res) + (cl->numfvs + app->numargs) * sizeof(gsvalue));
+                hpres = gsreserveheap(sizeof(*res) + (cl->cl.numfvs + app->numargs) * sizeof(gsvalue));
                 res = (struct gsclosure *)hpres;
 
                 memset(&hpres->lock, 0, sizeof(hpres->lock));
                 hpres->pos = cont->pos;
                 hpres->type = gsclosure;
-                res->code = cl->code;
-                res->numfvs = cl->numfvs + app->numargs;
-                for (i = 0; i < cl->numfvs; i++)
-                    res->fvs[i] = cl->fvs[i]
+                res->cl.code = cl->cl.code;
+                res->cl.numfvs = cl->cl.numfvs + app->numargs;
+                for (i = 0; i < cl->cl.numfvs; i++)
+                    res->cl.fvs[i] = cl->cl.fvs[i]
                 ;
                 for (i = 0; i < app->numargs; i++)
-                    res->fvs[cl->numfvs + i] = app->arguments[i]
+                    res->cl.fvs[cl->cl.numfvs + i] = app->arguments[i]
                 ;
 
                 thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
                 return ace_return(thread, cont->pos, (gsvalue)res);
             }
             default:
-                ace_thread_unimpl(thread, __FILE__, __LINE__, fun->pos, "Apply code blocks of type %d", cl->code->tag);
+                ace_thread_unimpl(thread, __FILE__, __LINE__, fun->pos, "Apply code blocks of type %d", cl->cl.code->tag);
                 return;
         }
     }
@@ -1415,27 +1424,6 @@ ace_return_to_strict(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue 
     thread->st.running.bco = strict->code;
     thread->st.running.ip = (struct gsbc *)ip;
     thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_strict) + strict->numfvs * sizeof(gsvalue);
-}
-
-void
-gsblackhole_heap(struct gsheap_item *hp, struct gsbc_cont_update *updatecont)
-{
-    struct gseval *ev;
-
-    ev = (struct gseval *)hp;
-    hp->type = gseval;
-    ev->update = updatecont;
-    gsheap_unlock(hp);
-}
-
-void
-gsupdate_heap(struct gsheap_item *hp, gsvalue v)
-{
-    struct gsindirection *in;
-
-    hp->type = gsindirection;
-    in = (struct gsindirection *)hp;
-    in->target = v;
 }
 
 static
@@ -1524,26 +1512,28 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
 
             cl = (struct gsclosure *)hp;
 
-            switch (cl->code->tag) {
+            switch (cl->cl.code->tag) {
                 case gsbc_expr: {
                     instr = (struct gsbc *)ace_set_registers_from_closure(thread, cl);
 
                     if (!instr) {
-                        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->code->pos, "Too many registers"));
+                        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->cl.code->pos, "Too many registers"));
                         return -1;
                     }
 
                     thread->state = ace_thread_running;
-                    thread->st.running.bco = cl->code;
+                    thread->st.running.bco = cl->cl.code;
                     thread->st.running.ip = instr;
 
-                    gsblackhole_heap(hp, updatecont);
+                    cl->hp.type = gseval;
+                    cl->update = updatecont;
+                    gsheap_unlock(hp);
 
                     break;
                 }
                 default:
                     gsheap_unlock(hp);
-                    ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "ace_start_evaluation(%d)", cl->code->tag));
+                    ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "ace_start_evaluation(%d)", cl->cl.code->tag));
                     return -1;
             }
 
@@ -1556,14 +1546,16 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
 
             app = (struct gsapplication *)hp;
 
-            fun = app->fun;
+            fun = app->app.fun;
             pos = hp->pos;
-            if (!ace_push_appv(pos, thread, app->numargs, app->arguments)) {
+            if (!ace_push_appv(pos, thread, app->app.numargs, app->app.arguments)) {
                 ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating app continuation"));
                 return -1;
             }
 
-            gsblackhole_heap(hp, updatecont);
+            app->hp.type = gseval;
+            app->update = updatecont;
+            gsheap_unlock(hp);
 
             thread->state = ace_thread_blocked;
             thread->st.blocked.on = fun;
@@ -1587,13 +1579,13 @@ ace_set_registers_from_closure(struct ace_thread *thread, struct gsclosure *cl)
     void *ip;
     int i;
 
-    ip = ace_set_registers_from_bco(thread, cl->code);
+    ip = ace_set_registers_from_bco(thread, cl->cl.code);
     if (!ip) return 0;
-    for (i = 0; i < cl->numfvs; i++) {
+    for (i = 0; i < cl->cl.numfvs; i++) {
         if (thread->nregs >= MAX_NUM_REGISTERS)
             return 0
         ;
-        thread->regs[thread->nregs] = cl->fvs[i];
+        thread->regs[thread->nregs] = cl->cl.fvs[i];
         thread->nregs++;
     }
     return ip;

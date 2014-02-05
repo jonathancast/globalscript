@@ -199,9 +199,9 @@ gsprint(struct gspos pos, gsvalue prog)
 
                 cl = (struct gsclosure *)hp;
 
-                nfvs = cl->numfvs;
+                nfvs = cl->cl.numfvs;
                 ncfvs = 0;
-                ncargs = cl->code->numargs;
+                ncargs = cl->cl.code->numargs;
                 if (nfvs < ncfvs + ncargs) {
                     print("<function>\n");
                     return 0;

@@ -278,9 +278,16 @@ struct gsheap_item {
 
 struct gsclosure {
     struct gsheap_item hp;
-    struct gsbco *code;
-    uint numfvs;
-    gsvalue fvs[];
+    union {
+        struct {
+            struct gsbco *code;
+            uint numfvs;
+            gsvalue fvs[];
+        } cl;
+        struct gsbc_cont_update *update;
+        gsvalue gcfwd;
+        gsvalue dest;
+    };
 };
 
 struct gsbco {
@@ -301,24 +308,39 @@ int gs_gc_trace_bco(struct gsstringbuilder *, struct gsbco **);
 
 struct gsapplication {
     struct gsheap_item hp;
-    gsvalue fun;
-    uint numargs;
-    gsvalue arguments[];
+    union {
+        struct {
+            gsvalue fun;
+            uint numargs;
+            gsvalue arguments[];
+        } app;
+        struct gsbc_cont_update *update;
+        gsvalue gcfwd;
+        gsvalue dest;
+    };
 };
 
 struct gseval {
     struct gsheap_item hp;
-    struct gsbc_cont_update *update;
+    union {
+        struct gsbc_cont_update *update;
+        gsvalue gcfwd;
+        gsvalue dest;
+    };
 };
 
 struct gsindirection {
     struct gsheap_item hp;
-    gsvalue target;
+    union {
+        gsvalue dest;
+    };
 };
 
 struct gsgcforward {
     struct gsheap_item hp;
-    gsvalue dest;
+    union {
+        gsvalue gcfwd;
+    };
 };
 
 struct gserror {
