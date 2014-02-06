@@ -452,6 +452,10 @@ ace_instr_alloc_thunk(struct ace_thread *thread)
     }
     cl->cl.code = thread->subexprs[ip->args[0]];
     cl->cl.numfvs = ip->args[1];
+    if (cl->cl.numfvs > 0x100) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".alloc with too many free variables", cl->cl.numfvs);
+        return;
+    }
     for (i = 0; i < ip->args[1]; i++) {
         if (ip->args[2 + i] > thread->nregs) {
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".alloc free variable out of range");
