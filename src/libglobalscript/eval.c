@@ -194,6 +194,7 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
     int i;
     struct gsheap_item *hp;
     gsvalue gctemp;
+    ulong sz;
 
     hp = (struct gsheap_item *)v;
 
@@ -202,9 +203,11 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             struct gsclosure *cl, *newcl;
 
             cl = (struct gsclosure *)hp;
-            newcl = (struct gsclosure *)gsreserveheap(sizeof(*newcl) + cl->cl.numfvs * sizeof(gsvalue));
 
-            memcpy(newcl, cl, sizeof(*newcl) + cl->cl.numfvs * sizeof(gsvalue));
+            sz = sizeof(*newcl) + cl->cl.numfvs * sizeof(gsvalue);
+            newcl = (struct gsclosure *)gsreserveheap(sz);
+
+            memcpy(newcl, cl, sz);
             memset(&newcl->hp.lock, 0, sizeof(newcl->hp.lock));
 
             cl->hp.type = gsgcforward;
