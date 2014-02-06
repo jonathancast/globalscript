@@ -1850,7 +1850,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         pcode->instr = gsbc_op_alloc;
         pcode->args[0] = (uchar)creg;
 
-        /* §paragraph{Skipping free type variables} */
+        /* §paragraph{Calculate type of the bound variable} */
         for (i = 1; i < p->numarguments; i++) {
             struct gstype *type = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[i])];
             for (j = i - 1 + 1; j < ctype->numftyvs; j++)
@@ -1860,16 +1860,16 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
             ctype->result_type = gstypes_subst(p->pos, ctype->result_type, ctype->tyfvs[i - 1], type);
         }
 
-        pcode->args[1] = (uchar)ctype->numfvs;
+        ACE_ALLOC_NUMFVS(pcode) = (uchar)ctype->numfvs;
         for (i = 0; i < ctype->numfvs; i++) {
             int regarg;
 
             regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, ctype->fvs[i]);
-            pcode->args[2 + i] = (uchar)regarg;
+            ACE_ALLOC_FV(pcode, i) = (uchar)regarg; /* > pcode->args[2 + i] */
         }
 
         ADD_LABEL_TO_REGS_WITH_TYPE(ctype->result_type);
-        pcl->pout = GS_NEXT_BYTECODE(pcode, 2 + ctype->numfvs);
+        pcl->pout = ACE_ALLOC_SKIP(pcode);
     } else if (gssymceq(p->directive, gssymopprim, gssymcodeop, ".prim")) {
         struct gsregistered_primset *prims;
 
