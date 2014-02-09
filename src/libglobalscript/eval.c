@@ -204,6 +204,10 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
 
             cl = (struct gsclosure *)hp;
 
+            if (cl->cl.numfvs > 0x100) {
+                gswarning("%P: claims to have %ud free variables, which is impossible", cl->hp.pos, cl->cl.numfvs);
+                return 0;
+            }
             sz = sizeof(*newcl) + cl->cl.numfvs * sizeof(gsvalue);
             newcl = (struct gsclosure *)gsreserveheap(sz);
 
