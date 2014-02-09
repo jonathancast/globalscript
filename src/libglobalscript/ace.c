@@ -440,28 +440,28 @@ ace_instr_alloc_thunk(struct ace_thread *thread)
 
     ip = thread->st.running.ip;
 
-    hp = gsreserveheap(sizeof(struct gsclosure) + ip->args[1] * sizeof(gsvalue));
+    hp = gsreserveheap(sizeof(struct gsclosure) + ACE_ALLOC_NUMFVS(ip) * sizeof(gsvalue));
     cl = (struct gsclosure *)hp;
 
     memset(&hp->lock, 0, sizeof(hp->lock));
     hp->pos = ip->pos;
     hp->type = gsclosure;
-    if (ip->args[0] > thread->nsubexprs) {
+    if (ACE_ALLOC_CODE(ip) > thread->nsubexprs) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".alloc subexpr out of range");
         return;
     }
-    cl->cl.code = thread->subexprs[ip->args[0]];
-    cl->cl.numfvs = ip->args[1];
+    cl->cl.code = thread->subexprs[ACE_ALLOC_CODE(ip)];
+    cl->cl.numfvs = ACE_ALLOC_NUMFVS(ip);
     if (cl->cl.numfvs > 0x100) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".alloc with too many free variables", cl->cl.numfvs);
         return;
     }
-    for (i = 0; i < ip->args[1]; i++) {
-        if (ip->args[2 + i] > thread->nregs) {
+    for (i = 0; i < ACE_ALLOC_NUMFVS(ip); i++) {
+        if (ACE_ALLOC_FV(ip, i) > thread->nregs) {
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".alloc free variable out of range");
             return;
         }
-        cl->cl.fvs[i] = thread->regs[ip->args[2 + i]];
+        cl->cl.fvs[i] = thread->regs[ACE_ALLOC_FV(ip, i)];
     }
     if (thread->nregs >= MAX_NUM_REGISTERS) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Register overflow in .alloc");
@@ -469,7 +469,7 @@ ace_instr_alloc_thunk(struct ace_thread *thread)
     }
     thread->regs[thread->nregs] = (gsvalue)hp;
     thread->nregs++;
-    thread->st.running.ip = GS_NEXT_BYTECODE(ip, 2 + ip->args[1]);
+    thread->st.running.ip = ACE_ALLOC_SKIP(ip);
     return;
 }
 
