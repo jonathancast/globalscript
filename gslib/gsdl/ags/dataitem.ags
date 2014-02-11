@@ -78,13 +78,14 @@ _gsdl.ags.dataitem.parser_closure.p_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
 maybe.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+string.t	.tygvar
 _gsdl.ags.dataitem.parser_closure.p_f_c	.subcode
 parser.lift4	.gvar
 parser.pos.get	.gvar
 parser.optional	.gvar
-gsdl.ags.syntax.id	.gvar
+gsdl.ags.syntax.var	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -93,31 +94,31 @@ _gsdl.ags.dataitem.parser_closure.p_closure.re	.gvar
 parser.<*	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	# Temp
-mb.string.ty	.tylet	maybe.t	string.t
+mb.var.ty	.tylet	maybe.t	gsdl.var.t
 f	.alloc	_gsdl.ags.dataitem.parser_closure.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
-nm.p	.apply	parser.optional	rune.t	string.t	|	gsdl.ags.syntax.id
+nm.p	.apply	parser.optional	rune.t	gsdl.var.t	|	gsdl.ags.syntax.var
 co.p1.h	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.dataitem.parser_closure.p_closure.re
-co.p2.t	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-co.p1.t	.apply	parser.*>	rune.t	string.t	string.t	|	co.p1.h	co.p2.t
-co.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	co.p1.t
-ty.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-ty.p1	.apply	parser.optional	rune.t	string.t	|	ty.p2
-ty.p	.apply	parser.<*	rune.t	mb.string.ty	string.t	|	ty.p1	gsdl.ags.syntax.whitespace
+co.p2.t	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
+co.p1.t	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	co.p1.h	co.p2.t
+co.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	co.p1.t
+ty.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.var
+ty.p1	.apply	parser.optional	rune.t	gsdl.var.t	|	ty.p2
+ty.p	.apply	parser.<*	rune.t	mb.var.ty	string.t	|	ty.p1	gsdl.ags.syntax.whitespace
 	.app	f	pos.get	nm.p	co.p	ty.p
-	.enter	parser.lift4	rune.t	parser.pos.t	mb.string.ty	string.t	mb.string.ty	gsdl.ags.dataitem.t
+	.enter	parser.lift4	rune.t	parser.pos.t	mb.var.ty	gsdl.var.t	mb.var.ty	gsdl.ags.dataitem.t
 
 _gsdl.ags.dataitem.parser_closure.p_f_c	.expr
 parser.pos.t	.tygvar
 maybe.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.dataitem.closure	.gvar
 gsdl.sourcepos	.gvar
 maybe.nothing	.gvar	# Temp
 pos0	.larg	parser.pos.t
-nm	.larg	maybe.t	string.t
-co	.larg	string.t
-ty	.larg	maybe.t	string.t
+nm	.larg	maybe.t	gsdl.var.t
+co	.larg	gsdl.var.t
+ty	.larg	maybe.t	gsdl.var.t
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
 	.app	pos	nm	co	ty
@@ -261,11 +262,9 @@ gsdl.ags.dataitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
-string.t	.tygvar
 bool.t	.tygvar	# Temp
 bool.∧	.gvar
 maybe.≡	.gvar
-string.≡	.gvar
 gsdl.var.≡	.gvar
 di0.0	.fv	gsdl.ags.dataitem.prim.u
 di1.0	.karg	gsdl.ags.dataitem.prim.u
@@ -278,20 +277,20 @@ co0		.fkarg	3	gsdl.var.t
 			.undef	bool.t
 		.case	closure
 pos0		.fkarg	0	gsdl.sourcepos.t
-nm0		.fkarg	1	maybe.t	string.t
-co0		.fkarg	2	string.t
-ty0		.fkarg	3	maybe.t	string.t
+nm0		.fkarg	1	maybe.t	gsdl.var.t
+co0		.fkarg	2	gsdl.var.t
+ty0		.fkarg	3	maybe.t	gsdl.var.t
 			.danalyze	di1.0	closure
 				.default
 					.undef	bool.t
 				.case	closure
 pos1				.fkarg	0	gsdl.sourcepos.t
-nm1				.fkarg	1	maybe.t	string.t
-co1				.fkarg	2	string.t
-ty1				.fkarg	3	maybe.t	string.t
-b0					.apply	maybe.≡	string.t	|	string.≡	nm0	nm1
-b1.0					.apply	string.≡	|	co0	co1
-b2					.apply	maybe.≡	string.t	|	string.≡	ty0	ty1
+nm1				.fkarg	1	maybe.t	gsdl.var.t
+co1				.fkarg	2	gsdl.var.t
+ty1				.fkarg	3	maybe.t	gsdl.var.t
+b0					.apply	maybe.≡	gsdl.var.t	|	gsdl.var.≡	nm0	nm1
+b1.0					.apply	gsdl.var.≡	|	co0	co1
+b2					.apply	maybe.≡	gsdl.var.t	|	gsdl.var.≡	ty0	ty1
 b1					.apply	bool.∧	|	b1.0	b2
 					.app	b0	b1
 					.enter	bool.∧
@@ -352,9 +351,9 @@ co		.fkarg	3	gsdl.var.t
 			.undef	fmtgs.printer.t
 		.case	closure
 pos		.fkarg	0	gsdl.sourcepos.t
-nm		.fkarg	1	maybe.t	string.t
-co		.fkarg	2	string.t
-ty		.fkarg	3	maybe.t	string.t
+nm		.fkarg	1	maybe.t	gsdl.var.t
+co		.fkarg	2	gsdl.var.t
+ty		.fkarg	3	maybe.t	gsdl.var.t
 			.undef	fmtgs.printer.t
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -406,13 +405,13 @@ c	.constr	gsdl.ags.dataitem.prim.u	cast	0	pos	1	nm	2	x	3	co
 _gsdl.ags.dataitem.closure_c	.expr
 gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.dataitem.prim.u	.tygvar
 gsdl.ags.dataitem.t.in	.cogvar
 pos	.arg	gsdl.sourcepos.t
-nm	.arg	maybe.t	string.t
-co	.arg	string.t
-ty	.arg	maybe.t	string.t
+nm	.arg	maybe.t	gsdl.var.t
+co	.arg	gsdl.var.t
+ty	.arg	maybe.t	gsdl.var.t
 c	.constr	gsdl.ags.dataitem.prim.u	closure	0	pos	1	nm	2	co	3	ty
 	.coerce	gsdl.ags.dataitem.t.in
 	.lift
@@ -441,9 +440,9 @@ maybe.var.ty	.tylet	maybe.t	gsdl.var.t
 _gsdl.ags.dataitem.prim.u_closure_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
-string.t	.tygvar
-mb.string.ty	.tylet	maybe.t	string.t
-	.tyubproduct	0	gsdl.sourcepos.t	1	mb.string.ty	2	string.t	3	mb.string.ty
+gsdl.var.t	.tygvar
+mb.var.ty	.tylet	maybe.t	gsdl.var.t
+	.tyubproduct	0	gsdl.sourcepos.t	1	mb.var.ty	2	gsdl.var.t	3	mb.var.ty
 
 _gsdl.ags.dataitem.prim.u_undefined_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar

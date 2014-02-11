@@ -207,9 +207,9 @@ s0			.apply	list.<>	rune.t	|	nm.s	s0.1
 			.enter	gsdl.ags.sourcepos.print
 		.case	closure
 pos		.fkarg	0	gsdl.sourcepos.t
-nm		.fkarg	1	maybe.t	string.t
-co		.fkarg	2	string.t
-ty		.fkarg	3	maybe.t	string.t
+nm		.fkarg	1	maybe.t	gsdl.var.t
+co		.fkarg	2	gsdl.var.t
+ty		.fkarg	3	maybe.t	gsdl.var.t
 			.undef	string.t
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t

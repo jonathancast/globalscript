@@ -19,11 +19,9 @@ _test.eq.undefined.diff.ty_foo.s	.string	foo
 _test.eq.undefined.diff.ty_bar.s	.string	bar
 
 _test.eq.closure.diff.ty	.closure	_test.eq.closure.diff.ty_c
-_test.eq.closure.diff.ty_label	.string	closure\sqq{_foo_c}\snothing\s≡\sclosure\sqq{_foo_c}\s(just\sqq{_foo_ty})
-_test.eq.closure.diff.ty_false	.string	closure\sqq{_foo_c}\snothing\s≠\sclosure\sqq{_foo_c}\s(just\sqq{_foo_ty})
-_test.eq.closure.diff.ty_true	.string	closure\sqq{_foo_c}\snothing\s≡\sclosure\sqq{_foo_c}\s(just\sqq{_foo_ty})
-_test.eq.closure.diff.ty_foo.c.s	.string	_foo_c
-_test.eq.closure.diff.ty_foo.ty.s	.string	_foo_ty
+_test.eq.closure.diff.ty_label	.string	closure\sgsv{_foo_c}\snothing\s≡\sclosure\sgsv{_foo_c}\s(just\sgsv{_foo_ty})
+_test.eq.closure.diff.ty_false	.string	closure\sgsv{_foo_c}\snothing\s≠\sclosure\sgsv{_foo_c}\s(just\sgsv{_foo_ty})
+_test.eq.closure.diff.ty_true	.string	closure\sgsv{_foo_c}\snothing\s≡\sclosure\sgsv{_foo_c}\s(just\sgsv{_foo_ty})
 
 # §section Parsers
 
@@ -41,20 +39,14 @@ _test.parse.empty.gsdata.segment_input	.string	\t.data\n
 _test.parse.closure	.closure	_test.parse.closure_c
 _test.parse.closure_label	.string	qq{foo\\t.closure\\t_foo_c\\n}\s=~\sparser
 _test.parse.closure_input	.string	foo\t.closure\t_foo_c\n
-_test.parse.closure_foo.s	.string	foo
-_test.parse.closure_foo.c.s	.string	_foo_c
 
 _test.parse.closure.nolabel	.closure	_test.parse.closure.nolabel_c
 _test.parse.closure.nolabel_label	.string	parser\s=~\sqq{\\t.closure\\t_foo_c\\n}
 _test.parse.closure.nolabel_input	.string	\t.closure\t_foo_c\n
-_test.parse.closure.nolabel_foo.c.s	.string	_foo_c
 
 _test.parse.closure.typesig	.closure	_test.parse.closure.typesig_c
 _test.parse.closure.typesig_label	.string	qq{foo\\t.closure\\t_foo_c\\t_foo_ty\\n}\s=~\sparser
 _test.parse.closure.typesig_input	.string	foo\t.closure\t_foo_c\t_foo_ty\n
-_test.parse.closure.typesig_foo.s	.string	foo
-_test.parse.closure.typesig_foo.c.s	.string	_foo_c
-_test.parse.closure.typesig_foo.ty.s	.string	_foo_ty
 
 _test.parse.list	.closure	_test.parse.list_c
 _test.parse.list_label	.string	qq{_tests\\t.list\\ttest.property.t\\t_test.x.eq.x\\n}\s=~\sparser
@@ -70,6 +62,15 @@ _test.fmtgs.undefined_label	.string	fmtgs\s(undefined\sgsv{foo})
 _test.fmtgs.undefined_file.s	.string	./foo
 _test.fmtgs.undefined_foo.s	.string	foo
 _test.fmtgs.undefined_expected	.string	undefined\s〈\s'file\s∝\sfn<./foo>;\s'0.line\s∝\s1;\s'0.col\s∝\s1;\s〉\snothing\sgsv{foo}
+
+# §section Test fixtures
+
+_fixtures_foo.v	.closure	_fixtures_foo.v_c
+_fixtures_foo.v_foo.s	.string	foo
+_fixtures_foo.c.v	.closure	_fixtures_foo.c.v_c
+_fixtures_foo.c.v_c.s	.string	c
+_fixtures_foo.ty.v	.closure	_fixtures_foo.ty.v_c
+_fixtures_foo.ty.v_ty.s	.string	ty
 
 	.code
 
@@ -125,7 +126,7 @@ test	.apply	test.deny	|	_test.eq.undefined.diff.ty_false	_test.eq.undefined.diff
 
 _test.eq.closure.diff.ty_c	.expr
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 test.property.label	.gvar
 _test.eq.closure.diff.ty_label	.gvar
 test.deny	.gvar
@@ -134,14 +135,14 @@ _test.eq.closure.diff.ty_true	.gvar
 gsdl.ags.dataitem.≡	.gvar
 gsdl.ags.dataitem.closure	.gvar
 maybe.nothing	.gvar
-_test.eq.closure.diff.ty_foo.c.s	.gvar
+_fixtures_foo.c.v	.gvar
 maybe.just	.gvar
-_test.eq.closure.diff.ty_foo.ty.s	.gvar
+_fixtures_foo.ty.v	.gvar
 pos	.undefined	gsdl.sourcepos.t
-nothing	.apply	maybe.nothing	string.t
-da0	.apply	gsdl.ags.dataitem.closure	|	pos	nothing	_test.eq.closure.diff.ty_foo.c.s	nothing
-just.foo.ty.s	.apply	maybe.just	string.t	|	_test.eq.closure.diff.ty_foo.ty.s
-da1	.apply	gsdl.ags.dataitem.closure	|	pos	nothing	_test.eq.closure.diff.ty_foo.c.s	just.foo.ty.s
+nothing	.apply	maybe.nothing	gsdl.var.t
+da0	.apply	gsdl.ags.dataitem.closure	|	pos	nothing	_fixtures_foo.c.v	nothing
+just.foo.ty.s	.apply	maybe.just	gsdl.var.t	|	_fixtures_foo.ty.v
+da1	.apply	gsdl.ags.dataitem.closure	|	pos	nothing	_fixtures_foo.c.v	just.foo.ty.s
 eq	.apply	gsdl.ags.dataitem.≡	|	da0	da1
 test	.apply	test.deny	|	_test.eq.closure.diff.ty_false	_test.eq.closure.diff.ty_true	eq
 	.app	_test.eq.closure.diff.ty_label	test
@@ -262,20 +263,20 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.a
 _test.parse.closure_k_c	.expr
 gsdl.ags.dataitem.t	.tygvar
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 test.assert.eq	.gvar
 gsdl.ags.dataitem.≡	.gvar
 gsdl.ags.dataitem.fmtgs	.gvar
 gsdl.ags.dataitem.closure	.gvar
 maybe.just	.gvar
-_test.parse.closure_foo.s	.gvar
-_test.parse.closure_foo.c.s	.gvar
+_fixtures_foo.v	.gvar
+_fixtures_foo.c.v	.gvar
 maybe.nothing	.gvar
 di	.larg	gsdl.ags.dataitem.t
 pos	.undefined	gsdl.sourcepos.t
-just.foo.s	.apply	maybe.just	string.t	|	_test.parse.closure_foo.s
-nothing	.apply	maybe.nothing	string.t
-expected	.apply	gsdl.ags.dataitem.closure	|	pos	just.foo.s	_test.parse.closure_foo.c.s	nothing
+just.foo.s	.apply	maybe.just	gsdl.var.t	|	_fixtures_foo.v
+nothing	.apply	maybe.nothing	gsdl.var.t
+expected	.apply	gsdl.ags.dataitem.closure	|	pos	just.foo.s	_fixtures_foo.c.v	nothing
 	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
 	.enter	test.assert.eq	gsdl.ags.dataitem.t
 
@@ -303,17 +304,17 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.a
 _test.parse.closure.nolabel_k_c	.expr
 gsdl.ags.dataitem.t	.tygvar
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 test.assert.eq	.gvar
 gsdl.ags.dataitem.≡	.gvar
 gsdl.ags.dataitem.fmtgs	.gvar
 gsdl.ags.dataitem.closure	.gvar
-_test.parse.closure.nolabel_foo.c.s	.gvar
+_fixtures_foo.c.v	.gvar
 maybe.nothing	.gvar
 di	.larg	gsdl.ags.dataitem.t
 pos	.undefined	gsdl.sourcepos.t
-nothing	.apply	maybe.nothing	string.t
-expected	.apply	gsdl.ags.dataitem.closure	|	pos	nothing	_test.parse.closure.nolabel_foo.c.s	nothing
+nothing	.apply	maybe.nothing	gsdl.var.t
+expected	.apply	gsdl.ags.dataitem.closure	|	pos	nothing	_fixtures_foo.c.v	nothing
 	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
 	.enter	test.assert.eq	gsdl.ags.dataitem.t
 
@@ -340,20 +341,20 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.a
 _test.parse.closure.typesig_k_c	.expr
 gsdl.ags.dataitem.t	.tygvar
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 test.assert.eq	.gvar
 gsdl.ags.dataitem.≡	.gvar
 gsdl.ags.dataitem.fmtgs	.gvar
 gsdl.ags.dataitem.closure	.gvar
 maybe.just	.gvar
-_test.parse.closure.typesig_foo.s	.gvar
-_test.parse.closure.typesig_foo.c.s	.gvar
-_test.parse.closure.typesig_foo.ty.s	.gvar
+_fixtures_foo.v	.gvar
+_fixtures_foo.c.v	.gvar
+_fixtures_foo.ty.v	.gvar
 di	.larg	gsdl.ags.dataitem.t
 pos	.undefined	gsdl.sourcepos.t
-just.foo.s	.apply	maybe.just	string.t	|	_test.parse.closure.typesig_foo.s
-just.foo.ty.s	.apply	maybe.just	string.t	|	_test.parse.closure.typesig_foo.ty.s
-expected	.apply	gsdl.ags.dataitem.closure	|	pos	just.foo.s	_test.parse.closure.typesig_foo.c.s	just.foo.ty.s
+just.foo.s	.apply	maybe.just	gsdl.var.t	|	_fixtures_foo.v
+just.foo.ty.s	.apply	maybe.just	gsdl.var.t	|	_fixtures_foo.ty.v
+expected	.apply	gsdl.ags.dataitem.closure	|	pos	just.foo.s	_fixtures_foo.c.v	just.foo.ty.s
 	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
 	.enter	test.assert.eq	gsdl.ags.dataitem.t
 
@@ -428,3 +429,54 @@ actual	.apply	gsdl.ags.dataitem.fmtgs	|	di	fmtgs.prec.app	nil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.undefined_expected
 	.app	_test.fmtgs.undefined_label	test
 	.enter	test.property.label
+
+# §section Test Fixtures
+
+_fixtures_foo.v_c	.expr
+gsdl.var.component.t	.tygvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_fixtures_foo.v_foo.s	.gvar
+foo.v.c0	.apply	gsdl.var.component.alphanum	|	_fixtures_foo.v_foo.s
+foo.v.cs	.apply	list.singleton	gsdl.var.component.t	|	foo.v.c0
+	.app	foo.v.cs
+	.enter	gsdl.var.basevar
+
+_fixtures_foo.c.v_c	.expr
+gsdl.var.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.var.constructed	.gvar
+natural.1	.gvar
+list.:	.gvar
+_fixtures_foo.v	.gvar
+list.singleton	.gvar
+gsdl.var.basevar	.gvar
+gsdl.var.component.alphanum	.gvar
+_fixtures_foo.c.v_c.s	.gvar
+c.v.c0	.apply	gsdl.var.component.alphanum	|	_fixtures_foo.c.v_c.s
+c.v.cs	.apply	list.singleton	gsdl.var.component.t	|	c.v.c0
+c.v	.apply	gsdl.var.basevar	|	c.v.cs
+cs1	.apply	list.singleton	gsdl.var.t	|	c.v
+cs	.apply	list.:	gsdl.var.t	|	_fixtures_foo.v	cs1
+	.app	natural.1	cs
+	.enter	gsdl.var.constructed
+
+_fixtures_foo.ty.v_c	.expr
+gsdl.var.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.var.constructed	.gvar
+natural.1	.gvar
+list.:	.gvar
+_fixtures_foo.v	.gvar
+list.singleton	.gvar
+gsdl.var.basevar	.gvar
+gsdl.var.component.alphanum	.gvar
+_fixtures_foo.ty.v_ty.s	.gvar
+ty.v.c0	.apply	gsdl.var.component.alphanum	|	_fixtures_foo.ty.v_ty.s
+ty.v.cs	.apply	list.singleton	gsdl.var.component.t	|	ty.v.c0
+ty.v	.apply	gsdl.var.basevar	|	ty.v.cs
+cs1	.apply	list.singleton	gsdl.var.t	|	ty.v
+cs	.apply	list.:	gsdl.var.t	|	_fixtures_foo.v	cs1
+	.app	natural.1	cs
+	.enter	gsdl.var.constructed
