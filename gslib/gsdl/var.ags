@@ -600,7 +600,7 @@ _gsdl.var.component.alphanum_c	.expr
 string.t	.tygvar
 gsdl.var.component.prim.u	.tygvar
 gsdl.var.component.t.in	.cogvar
-s	.arg	string.t
+s	.larg	string.t
 c	.constr	gsdl.var.component.prim.u	alphanum	0	s
 	.coerce	gsdl.var.component.t.in
 	.lift
@@ -610,7 +610,7 @@ _gsdl.var.component.numeric_c	.expr
 natural.t	.tygvar
 gsdl.var.component.prim.u	.tygvar
 gsdl.var.component.t.in	.cogvar
-n	.arg	natural.t
+n	.larg	natural.t
 c	.constr	gsdl.var.component.prim.u	numeric	0	n
 	.coerce	gsdl.var.component.t.in
 	.lift
@@ -620,7 +620,7 @@ _gsdl.var.component.symbolic_c	.expr
 string.t	.tygvar
 gsdl.var.component.prim.u	.tygvar
 gsdl.var.component.t.in	.cogvar
-s	.arg	string.t
+s	.larg	string.t
 c	.constr	gsdl.var.component.prim.u	symbolic	0	s
 	.coerce	gsdl.var.component.t.in
 	.lift
