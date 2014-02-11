@@ -169,6 +169,7 @@ rune.t	.tygvar
 list.t	.tygvar
 gsdl.var.component.t	.tygvar
 string.t	.tygvar
+natural.t	.tygvar
 gsdl.var.component.t.in	.cogvar
 parser.<|>	.gvar
 parser.unit	.gvar
@@ -191,8 +192,17 @@ dot.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.syntax.var_dot.re
 cons.c0	.apply	list.:	gsdl.var.component.t	|	c0.cl
 loop.p1	.apply	parser.map	rune.t	list.component.ty	list.component.ty	|	cons.c0	_gsdl.ags.syntax.var_components.p
 loop.p	.apply	parser.*>	rune.t	string.t	list.component.ty	|	dot.p	loop.p1
-	.app	singleton.p	loop.p
-	.enter	parser.<|>	rune.t	list.component.ty
+	.analyze	c0.0	alphanum	numeric	symbolic
+		.case	alphanum
+s		.fkarg	0	string.t
+			.app	singleton.p	loop.p
+			.enter	parser.<|>	rune.t	list.component.ty
+		.case	numeric
+n		.fkarg	0	natural.t
+			.enter	parser.fail	rune.t	list.component.ty
+		.case	symbolic
+s		.fkarg	0	string.t
+			.enter	parser.fail	rune.t	list.component.ty
 
 _gsdl.ags.syntax.var_component.p_c	.expr
 rune.t	.tygvar
