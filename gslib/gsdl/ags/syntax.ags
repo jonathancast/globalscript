@@ -27,7 +27,7 @@ _gsdl.ags.syntax.var_components.p	.closure	_gsdl.ags.syntax.var_components.p_c	_
 _gsdl.ags.syntax.var_dot.re	.regex	\.
 _gsdl.ags.syntax.var_component.p	.closure	_gsdl.ags.syntax.var_component.p_c
 _gsdl.ags.syntax.var_alphanum.re	.regex	[a-zα-ω][a-z0-9A-Z]*
-_gsdl.ags.syntax.var_symbolic.re	.regex	[~!@\h$%^&*\-+=|:<>?/≡≠≯≮]
+_gsdl.ags.syntax.var_symbolic.re	.regex	[≡]
 _gsdl.ags.syntax.var_underbar.p	.closure	_gsdl.ags.syntax.var_underbar.p_c
 _gsdl.ags.syntax.var_underbar.p_underbar.re	.regex	_
 
@@ -203,7 +203,7 @@ n		.fkarg	0	natural.t
 			.enter	parser.fail	rune.t	list.component.ty
 		.case	symbolic
 s		.fkarg	0	string.t
-			.enter	parser.fail	rune.t	list.component.ty
+			.enter	singleton.p
 
 _gsdl.ags.syntax.var_component.p_c	.expr
 rune.t	.tygvar
