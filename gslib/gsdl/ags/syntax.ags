@@ -23,7 +23,7 @@ _gsdl.ags.syntax.id_t.re	.regex	_§	_gsdl.ags.syntax.id_id.re
 
 gsdl.ags.syntax.var	.closure	_gsdl.ags.syntax.var_c
 _gsdl.ags.syntax.var_base.p	.closure	_gsdl.ags.syntax.var_base.p_c
-_gsdl.ags.syntax.var_components.p	.closure	_gsdl.ags.syntax.var_components.p_c
+_gsdl.ags.syntax.var_components.p	.closure	_gsdl.ags.syntax.var_components.p_c	_gsdl.ags.syntax.var_components.p_ty
 _gsdl.ags.syntax.var_dot.re	.regex	\.
 _gsdl.ags.syntax.var_component.p	.closure	_gsdl.ags.syntax.var_component.p_c
 _gsdl.ags.syntax.var_alphanum.re	.regex	[a-zα-ω][a-z0-9A-Z]*
@@ -170,24 +170,29 @@ list.t	.tygvar
 gsdl.var.component.t	.tygvar
 string.t	.tygvar
 gsdl.var.component.t.in	.cogvar
-parser.map	.gvar
-list.:	.gvar
-parser.many	.gvar
+parser.<|>	.gvar
+parser.unit	.gvar
+list.singleton	.gvar
 parser.*>	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.syntax.var_dot.re	.gvar
-_gsdl.ags.syntax.var_component.p	.gvar
+parser.map	.gvar
+list.:	.gvar
+_gsdl.ags.syntax.var_components.p	.gvar
+parser.fail	.gvar	# Temp
 list.component.ty	.tylet	list.t	gsdl.var.component.t
 c0.0	.karg	gsdl.var.component.prim.u
 c0.l	.lifted	c0.0
 c0.cl	.cast	c0.l	gsdl.var.component.t.in
-cons.c0	.apply	list.:	gsdl.var.component.t	|	c0.cl
+singleton.c0	.apply	list.singleton	gsdl.var.component.t	|	c0.cl
+singleton.p	.apply	parser.unit	rune.t	list.component.ty	|	singleton.c0
 dot.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.syntax.var_dot.re
-tail.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.component.t	|	dot.p	_gsdl.ags.syntax.var_component.p
-tail.p	.apply	parser.many	rune.t	gsdl.var.component.t	|	tail.p1
-	.app	cons.c0	tail.p
-	.enter	parser.map	rune.t	list.component.ty	list.component.ty
+cons.c0	.apply	list.:	gsdl.var.component.t	|	c0.cl
+loop.p1	.apply	parser.map	rune.t	list.component.ty	list.component.ty	|	cons.c0	_gsdl.ags.syntax.var_components.p
+loop.p	.apply	parser.*>	rune.t	string.t	list.component.ty	|	dot.p	loop.p1
+	.app	singleton.p	loop.p
+	.enter	parser.<|>	rune.t	list.component.ty
 
 _gsdl.ags.syntax.var_component.p_c	.expr
 rune.t	.tygvar
@@ -421,6 +426,16 @@ _gsdl.ags.syntax.stringliteral_re	.gvar
 	.enter	parser.match	rune.t
 
 	.type
+
+# §section §gs{gsdl.ags.syntax.var}
+
+_gsdl.ags.syntax.var_components.p_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+list.component.ty	.tylet	list.t	gsdl.var.component.t
+	.tyref	parser.t	rune.t	list.component.ty
 
 # §section §gs{gsdl.ags.syntax.var.print}
 
