@@ -155,10 +155,21 @@ k	.alloc	_gsdl.ags.syntax.var_components.p_k_c
 	.enter	parser.>>=	rune.t	gsdl.var.component.t	list.component.ty
 
 _gsdl.ags.syntax.var_components.p_k_c	.expr
-rune.t	.tygvar
 gsdl.var.component.t	.tygvar
+_gsdl.ags.syntax.var_components.p_k_k	.subcode
+gsdl.var.component.t.out	.cogvar
+c0	.larg	gsdl.var.component.t
+	.force	_gsdl.ags.syntax.var_components.p_k_k
+	.coerce	gsdl.var.component.t.out
+	.enter	c0
+
+_gsdl.ags.syntax.var_components.p_k_k	.forcecont
+gsdl.var.component.prim.u	.tygvar
+rune.t	.tygvar
 list.t	.tygvar
+gsdl.var.component.t	.tygvar
 string.t	.tygvar
+gsdl.var.component.t.in	.cogvar
 parser.map	.gvar
 list.:	.gvar
 parser.many	.gvar
@@ -168,14 +179,10 @@ rune.compare	.gvar
 _gsdl.ags.syntax.var_dot.re	.gvar
 _gsdl.ags.syntax.var_component.p	.gvar
 list.component.ty	.tylet	list.t	gsdl.var.component.t
-c0	.larg	gsdl.var.component.t
-	.force	_gsdl.ags.syntax.var_components.p_k_k
-	.coerce	gsdl.var.component.t.out
-	.enter	c0
-
-_gsdl.ags.syntax.var_components.p_k_k	.forcecont
 c0.0	.karg	gsdl.var.component.prim.u
-cons.c0	.apply	list.:	gsdl.var.component.t	|	c0
+c0.l	.lifted	c0.0
+c0.cl	.cast	c0.l	gsdl.var.component.t.in
+cons.c0	.apply	list.:	gsdl.var.component.t	|	c0.cl
 dot.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.syntax.var_dot.re
 tail.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.component.t	|	dot.p	_gsdl.ags.syntax.var_component.p
 tail.p	.apply	parser.many	rune.t	gsdl.var.component.t	|	tail.p1
