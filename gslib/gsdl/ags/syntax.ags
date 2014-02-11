@@ -27,6 +27,7 @@ _gsdl.ags.syntax.var_components.p	.closure	_gsdl.ags.syntax.var_components.p_c	_
 _gsdl.ags.syntax.var_dot.re	.regex	\.
 _gsdl.ags.syntax.var_component.p	.closure	_gsdl.ags.syntax.var_component.p_c
 _gsdl.ags.syntax.var_alphanum.re	.regex	[a-zα-ω][a-z0-9A-Z]*
+_gsdl.ags.syntax.var_symbolic.re	.regex	[~!@\h$%^&*\-+=|:<>?/≡≠≯≮]
 _gsdl.ags.syntax.var_underbar.p	.closure	_gsdl.ags.syntax.var_underbar.p_c
 _gsdl.ags.syntax.var_underbar.p_underbar.re	.regex	_
 
@@ -206,17 +207,23 @@ s		.fkarg	0	string.t
 
 _gsdl.ags.syntax.var_component.p_c	.expr
 rune.t	.tygvar
-string.t	.tygvar
 gsdl.var.component.t	.tygvar
+string.t	.tygvar
+parser.<|>	.gvar
 parser.map	.gvar
 gsdl.var.component.alphanum	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.syntax.var_alphanum.re	.gvar
+gsdl.var.component.symbolic	.gvar
+_gsdl.ags.syntax.var_symbolic.re	.gvar
 parser.fail	.gvar	# Temp
 alphanum.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.syntax.var_alphanum.re
 alphanum.p	.apply	parser.map	rune.t	string.t	gsdl.var.component.t	|	gsdl.var.component.alphanum	alphanum.p1
-	.enter	alphanum.p
+symbolic.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.syntax.var_symbolic.re
+symbolic.p	.apply	parser.map	rune.t	string.t	gsdl.var.component.t	|	gsdl.var.component.symbolic	symbolic.p1
+	.app	alphanum.p	symbolic.p
+	.enter	parser.<|>	rune.t	gsdl.var.component.t
 
 _gsdl.ags.syntax.var_underbar.p_c	.expr
 rune.t	.tygvar
