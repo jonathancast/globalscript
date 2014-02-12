@@ -625,13 +625,42 @@ cs	.apply	list.singleton	gsdl.var.component.t	|	c0
 	.enter	gsdl.var.basevar
 
 _gsac.gsexpr.compileToDataItem_default_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+_gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	# Temp
-_gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
+gsdl.ags.dataitem.t	.tygvar	# Temp
+list.t	.tygvar	# Temp
+gsdl.var.component.t	.tygvar	# Temp
+either.right	.gvar
+gsdl.ags.dataitem.closure		.gvar
+gsdl.var.<>	.gvar
+gsdl.var.basevar	.gvar
+pos	.fv	gsdl.sourcepos.t
+mbv	.fv	maybe.t	gsdl.var.t
+v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
-	.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+		.case	right
+r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
+cos			.lfield	coercionitems	r0
+ds			.lfield	dataitems	r0
+c.v.cs			.undefined	list.t	gsdl.var.component.t
+c.v			.apply	gsdl.var.basevar	|	c.v.cs
+v.c.v			.apply	gsdl.var.<>	|	v	c.v
+just.v.ty.v			.undefined	maybe.t	gsdl.var.t
+di			.apply	gsdl.ags.dataitem.closure		|	pos	mbv	v.c.v	just.v.ty.v
+ts			.lfield	typeitems	r0
+res			.lrecord	coercionitems	cos	dataitems	ds	res	di	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_k	.forcecont
 gsdl.sourcepos.t	.tygvar
