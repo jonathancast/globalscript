@@ -582,7 +582,7 @@ tyvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 e0.l	.lifted	e0
 e0.cl	.cast	e0.l	gsdl.cgs.gsexpr.t.in
-x	.apply	maybe.fromJust	gsdl.var.t	|	_gsac.gsexpr.compileToDataItem_ep.v	mbv
+v	.apply	maybe.fromJust	gsdl.var.t	|	_gsac.gsexpr.compileToDataItem_ep.v	mbv
 	.danalyze	e0	expr.heavy.cast	lambda	pos
 		.default
 tyvs1			.undefined	list.t	gsdl.var.t
@@ -596,10 +596,10 @@ src		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
 so.c0			.apply	gsdl.var.component.alphanum	|	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_so.s
 so.cs			.apply	list.singleton	gsdl.var.component.t	|	so.c0
 so.v			.apply	gsdl.var.basevar	|	so.cs
-so.x			.apply	gsdl.var.subvar	|	x	so.v
+v.so.v			.apply	gsdl.var.subvar	|	v	so.v
 			.force	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
-			.app	pos	env	so.x	src	tyem	pem	tyvs
+			.app	pos	env	v.so.v	src	tyem	pem	tyvs
 			.enter	gsac.gsexpr.cast.source.compileToGlobalVar
 		.case	lambda
 v		.fkarg	0	gsdl.var.t
@@ -661,9 +661,9 @@ _gsac.gsexpr.compileToDataItem_expr.heavy.cast_co.s	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 mbv	.fv	maybe.t	gsdl.var.t
-x	.fv	gsdl.var.t
+v	.fv	gsdl.var.t
 co	.fv	gsdl.cgs.gscoercion.t
-so.x	.fv	gsdl.var.t
+v.so.v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -678,13 +678,13 @@ so.r.ts			.lfield	typeitems	so.r
 co.c0			.apply	gsdl.var.component.alphanum	|	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_co.s
 co.cs			.apply	list.singleton	gsdl.var.component.t	|	co.c0
 co.v			.apply	gsdl.var.basevar	|	co.cs
-co.x			.apply	gsdl.var.subvar	|	x	co.v
+v.co.v			.apply	gsdl.var.subvar	|	v	co.v
 em.empty			.undefined	ordered.set.t	gsdl.var.t
 pem.empty			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 subvars			.undefined	list.t	gsdl.var.t
 			.force	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k
 			.coerce	either.t.out	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
-			.app	pos	env	co.x	co	em.empty	pem.empty	subvars
+			.app	pos	env	v.co.v	co	em.empty	pem.empty	subvars
 			.enter	gsac.gscoercion.compileToGlobalVar
 
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k	.forcecont
