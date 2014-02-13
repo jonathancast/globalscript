@@ -836,17 +836,24 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 	# > :: either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 
 _gsac.gsexpr.compileToGlobalVar_default_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 _gsac.gsexpr.compileToGlobalVar_res.ty	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
-gsdl.ags.dataitem.t	.tygvar	# Temp
-gsdl.var.t	.tygvar	# Temp
+maybe.t	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
+diff.list.:	.gvar
+gsdl.ags.dataitem.closure		.gvar
+maybe.just	.gvar
+pos	.fv	gsdl.sourcepos.t
+x	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -855,10 +862,14 @@ err		.fkarg	0	string.t
 		.case	right
 r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
-ds			.undefined	diff.list.t	gsdl.ags.dataitem.t	# Include a data item built from §gs{r0}! --- This won't have a type (that's the difference between this function and §gs{compileToDataItem})
-v			.undefined	gsdl.var.t
+just.x			.apply	maybe.just	gsdl.var.t	|	x
+x.c.v			.undefined	gsdl.var.t
+nothing.var			.undefined	maybe.t	gsdl.var.t
+d0			.apply	gsdl.ags.dataitem.closure		|	pos	just.x	x.c.v	nothing.var
+ds1			.undefined	diff.list.t	gsdl.ags.dataitem.t
+ds			.apply	diff.list.:	gsdl.ags.dataitem.t	|	d0	ds1
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
-res			.lrecord	coercionitems	cos	dataitems	ds	res	v	typeitems	ts	|	_gsac.gsexpr.compileToGlobalVar_res.ty
+res			.lrecord	coercionitems	cos	dataitems	ds	res	x	typeitems	ts	|	_gsac.gsexpr.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 
