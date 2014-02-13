@@ -20,6 +20,8 @@ gsac.gsexpr.compileToLambdaExpr	.closure	_gsac.gsexpr.compileToLambdaExpr_c	_gsa
 
 gsac.gsexpr.body.compileToLambdaExpr	.closure	_gsac.gsexpr.body.compileToLambdaExpr_c	_gsac.gsexpr.body.compileToLambdaExpr_ty
 
+_gsac.gsexpr_c.v	.closure	_gsac.gsexpr_c.v_c
+
 _gsac.gsexpr_ty.v	.closure	_gsac.gsexpr_ty.v_c
 _gsac.gsexpr_ty.v_s	.string	ty
 
@@ -634,12 +636,10 @@ _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	# Temp
 gsdl.ags.dataitem.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
-gsdl.var.component.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.ags.dataitem.closure		.gvar
 gsdl.var.<>	.gvar
-gsdl.var.basevar	.gvar
+_gsac.gsexpr_c.v	.gvar
 pos	.fv	gsdl.sourcepos.t
 mbv	.fv	maybe.t	gsdl.var.t
 v	.fv	gsdl.var.t
@@ -652,9 +652,7 @@ err		.fkarg	0	string.t
 r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cos			.lfield	coercionitems	r0
 ds			.lfield	dataitems	r0
-c.v.cs			.undefined	list.t	gsdl.var.component.t
-c.v			.apply	gsdl.var.basevar	|	c.v.cs
-v.c.v			.apply	gsdl.var.<>	|	v	c.v
+v.c.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_c.v
 just.v.ty.v			.undefined	maybe.t	gsdl.var.t
 di			.apply	gsdl.ags.dataitem.closure		|	pos	mbv	v.c.v	just.v.ty.v
 ts			.lfield	typeitems	r0
@@ -1188,6 +1186,16 @@ res			.undefined	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 # §section Helper Functions
+
+# §subsection §gs{c.v}
+
+_gsac.gsexpr_c.v_c	.expr
+list.t	.tygvar	# Temp
+gsdl.var.component.t	.tygvar	# Temp
+gsdl.var.basevar	.gvar
+cs	.undefined	list.t	gsdl.var.component.t
+	.app	cs
+	.enter	gsdl.var.basevar
 
 # §subsection §gs{ty.v}
 
