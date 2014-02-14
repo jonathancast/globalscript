@@ -868,7 +868,7 @@ just.x			.apply	maybe.just	gsdl.var.t	|	x
 x.c.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_c.v
 nothing.var			.apply	maybe.nothing	gsdl.var.t
 d0			.apply	gsdl.ags.dataitem.closure		|	pos	just.x	x.c.v	nothing.var
-ds1			.undefined	diff.list.t	gsdl.ags.dataitem.t
+ds1			.lfield	dataitems	r0
 ds			.apply	diff.list.:	gsdl.ags.dataitem.t	|	d0	ds1
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	coercionitems	cos	dataitems	ds	res	x	typeitems	ts	|	_gsac.gsexpr.compileToGlobalVar_res.ty
