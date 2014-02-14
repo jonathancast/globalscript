@@ -21,6 +21,7 @@ gsac.gsexpr.compileToLambdaExpr	.closure	_gsac.gsexpr.compileToLambdaExpr_c	_gsa
 gsac.gsexpr.body.compileToLambdaExpr	.closure	_gsac.gsexpr.body.compileToLambdaExpr_c	_gsac.gsexpr.body.compileToLambdaExpr_ty
 
 _gsac.gsexpr_c.v	.closure	_gsac.gsexpr_c.v_c
+_gsac.gsexpr_c.v_s	.string	c
 
 _gsac.gsexpr_ty.v	.closure	_gsac.gsexpr_ty.v_c
 _gsac.gsexpr_ty.v_s	.string	ty
@@ -1192,10 +1193,13 @@ res			.undefined	_gsac.gsexpr.compileToLambdaExpr_res.ty
 # §subsection §gs{c.v}
 
 _gsac.gsexpr_c.v_c	.expr
-list.t	.tygvar	# Temp
-gsdl.var.component.t	.tygvar	# Temp
+gsdl.var.component.t	.tygvar
 gsdl.var.basevar	.gvar
-cs	.undefined	list.t	gsdl.var.component.t
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_gsac.gsexpr_c.v_s	.gvar
+c0	.apply	gsdl.var.component.alphanum	|	_gsac.gsexpr_c.v_s
+cs	.apply	list.singleton	gsdl.var.component.t	|	c0
 	.app	cs
 	.enter	gsdl.var.basevar
 
