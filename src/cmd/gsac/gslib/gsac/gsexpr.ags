@@ -850,6 +850,8 @@ either.right	.gvar
 diff.list.:	.gvar
 gsdl.ags.dataitem.closure		.gvar
 maybe.just	.gvar
+gsdl.var.<>	.gvar
+_gsac.gsexpr_c.v	.gvar
 pos	.fv	gsdl.sourcepos.t
 x	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
@@ -861,7 +863,7 @@ err		.fkarg	0	string.t
 r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 just.x			.apply	maybe.just	gsdl.var.t	|	x
-x.c.v			.undefined	gsdl.var.t
+x.c.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_c.v
 nothing.var			.undefined	maybe.t	gsdl.var.t
 d0			.apply	gsdl.ags.dataitem.closure		|	pos	just.x	x.c.v	nothing.var
 ds1			.undefined	diff.list.t	gsdl.ags.dataitem.t
