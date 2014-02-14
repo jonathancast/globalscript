@@ -1112,6 +1112,11 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 either.t	.tygvar	# Temp
+diff.list.t	.tygvar	# Temp
+gsdl.ags.coercionitem.t	.tygvar	# Temp
+gsdl.ags.dataitem.t	.tygvar	# Temp
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar	# Temp
+gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	.analyze	e0	left	right
@@ -1120,7 +1125,11 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
-res			.undefined	_gsac.gsexpr.compileToLambdaExpr_res.ty
+cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+ds			.lfield	dataitems	r0
+e			.undefined	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	coercionitems	cos	dataitems	ds	res	e	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
