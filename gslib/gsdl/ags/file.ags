@@ -173,6 +173,7 @@ gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
 string.t	.tygvar
+_gsdl.ags.file.print.dataitems_:_closure_ty.s.print_c	.subcode
 list.nil	.gvar
 _gsdl.ags.file.print.dataitems	.gvar
 gsdl.ags.sourcepos.print	.gvar
@@ -213,8 +214,11 @@ nm		.fkarg	1	maybe.t	gsdl.var.t
 co		.fkarg	2	gsdl.var.t
 ty		.fkarg	3	maybe.t	gsdl.var.t
 nm.s			.apply	maybe.maybe	gsdl.var.t	string.t	|	nil	gsdl.ags.syntax.var.print	nm
+ty.s.print			.alloc	_gsdl.ags.file.print.dataitems_:_closure_ty.s.print_c
+ty.s			.apply	maybe.maybe	gsdl.var.t	string.t	|	nil	ty.s.print	ty
 co.s			.apply	gsdl.ags.syntax.var.print	|	co
-s0.3			.undefined	string.t
+s0.4			.undefined	string.t
+s0.3			.apply	list.<>	rune.t	|	ty.s	s0.4
 s0.2			.apply	list.<>	rune.t	|	co.s	s0.3
 s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print.dataitems_:_closure_closure.s	s0.2
 s0			.apply	list.<>	rune.t	|	nm.s	s0.1
@@ -233,6 +237,12 @@ s0			.apply	list.<>	rune.t	|	nm.s	s0.1
 			.app	pos	s0
 			.enter	gsdl.ags.sourcepos.print
 	# > :: string.t
+
+_gsdl.ags.file.print.dataitems_:_closure_ty.s.print_c	.expr
+gsdl.var.t	.tygvar
+string.t	.tygvar	# Temp
+v	.larg	gsdl.var.t
+	.undef	string.t
 
 _gsdl.ags.file.print.typesection_c	.expr
 gsdl.ags.file.prim.u	.tygvar
