@@ -1019,16 +1019,15 @@ gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToApp_res.ty	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	# Temp
 _gsac.gsexpr.compileToLambdaExpr_lambda_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_lift_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_pos_k	.subcode
 either.t.out	.cogvar
-gsac.gsexpr.body.compileToLambdaExpr	.gvar
 gsac.gsexpr.compileToLambdaExpr	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
@@ -1046,9 +1045,8 @@ x		.fkarg	0	gsdl.var.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
 b		.fkarg	2	gsdl.cgs.gsexpr.body.t
 			.force	_gsac.gsexpr.compileToLambdaExpr_lambda_k
-			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
-			.app	pos	env	b	tyem	pem	tyvs
-			.enter	gsac.gsexpr.body.compileToLambdaExpr
+			.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
+			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	lift
 e1		.fkarg	0	gsdl.cgs.gsexpr.t
 			.force	_gsac.gsexpr.compileToLambdaExpr_lift_k
@@ -1065,6 +1063,41 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 	# > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToLambdaExpr_lambda_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToApp_res.ty	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+either.t	.tygvar	# Temp
+ordered.set.t	.tygvar	# Temp
+gsdl.var.t	.tygvar	# Temp
+ordered.map.t	.tygvar	# Temp
+_gsac.gstype_primname.t	.tygvar	# Temp
+list.t	.tygvar	# Temp
+_gsac.gsexpr.compileToLambdaExpr_lambda_right_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.body.compileToLambdaExpr	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+b	.fv	gsdl.cgs.gsexpr.body.t
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	right
+ty.r0		.fkarg	0	_gsac.gstype.compileToApp_res.ty
+ty.r0.tyem			.undefined	ordered.set.t	gsdl.var.t
+ty.r0.pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+ty.r0.tyvs			.undefined	list.t	gsdl.var.t
+			.force	_gsac.gsexpr.compileToLambdaExpr_lambda_right_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.app	pos	env	b	ty.r0.tyem	ty.r0.pem	ty.r0.tyvs
+			.enter	gsac.gsexpr.body.compileToLambdaExpr
+
+_gsac.gsexpr.compileToLambdaExpr_lambda_right_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
@@ -1076,7 +1109,7 @@ e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	right
-r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
+b.r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 res			.undefined	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
