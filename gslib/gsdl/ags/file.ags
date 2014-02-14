@@ -217,7 +217,7 @@ nm.s			.apply	maybe.maybe	gsdl.var.t	string.t	|	nil	gsdl.ags.syntax.var.print	nm
 ty.s.print			.alloc	_gsdl.ags.file.print.dataitems_:_closure_ty.s.print_c
 ty.s			.apply	maybe.maybe	gsdl.var.t	string.t	|	nil	ty.s.print	ty
 co.s			.apply	gsdl.ags.syntax.var.print	|	co
-s0.4			.undefined	string.t
+s0.4			.apply	list.:	rune.t	|	rune.new.line	s1
 s0.3			.apply	list.<>	rune.t	|	ty.s	s0.4
 s0.2			.apply	list.<>	rune.t	|	co.s	s0.3
 s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print.dataitems_:_closure_closure.s	s0.2
