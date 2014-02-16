@@ -984,7 +984,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
 cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ty.r.v			.lfield	nm	ty.r
 di			.apply	gsdl.ags.dataitem.undefined	|	pos1	just.x	ty.r.v
