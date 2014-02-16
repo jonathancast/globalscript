@@ -4,8 +4,8 @@
 
 gsdl.ags.file.print	.closure	_gsdl.ags.file.print_c
 
-_gsdl.ags.file.print.filetype	.closure	_gsdl.ags.file.print.filetype_c
-_gsdl.ags.file.print.filetype_doc.s	.string	\t.document\n
+_gsdl.ags.file.print_filetype	.closure	_gsdl.ags.file.print_filetype_c
+_gsdl.ags.file.print_filetype_doc.s	.string	\t.document\n
 
 _gsdl.ags.file.print.datasection	.closure	_gsdl.ags.file.print.datasection_c
 _gsdl.ags.file.print.datasection_gsdata.s	.string	\n\t.data\n
@@ -63,30 +63,30 @@ file	.larg	gsdl.ags.file.t
 
 _gsdl.ags.file.print_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
-_gsdl.ags.file.print.filetype	.gvar
+_gsdl.ags.file.print_filetype	.gvar
 file0	.karg	gsdl.ags.file.prim.u
 	.app	file0
-	.yield	_gsdl.ags.file.print.filetype
+	.yield	_gsdl.ags.file.print_filetype
 
-# §subsection §gs{_gsdl.ags.file.print.filetype}
+# §subsection §gs{_gsdl.ags.file.print_filetype}
 
-_gsdl.ags.file.print.filetype_c	.expr
+_gsdl.ags.file.print_filetype_c	.expr
 gsdl.ags.file.prim.u	.tygvar
-_gsdl.ags.file.print.filetype_k	.subcode
+_gsdl.ags.file.print_filetype_k	.subcode
 gsdl.ags.file.filetype.t.out	.cogvar
 file0	.arg	gsdl.ags.file.prim.u
 ty	.field	filetype	file0
-	.force	_gsdl.ags.file.print.filetype_k
+	.force	_gsdl.ags.file.print_filetype_k
 	.coerce	gsdl.ags.file.filetype.t.out
 	.enter	ty
 
-_gsdl.ags.file.print.filetype_k	.forcecont
+_gsdl.ags.file.print_filetype_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
 gsdl.ags.file.filetype.prim.u	.tygvar
 rune.t	.tygvar
 string.t	.tygvar	# Temp
 list.<>	.gvar
-_gsdl.ags.file.print.filetype_doc.s	.gvar
+_gsdl.ags.file.print_filetype_doc.s	.gvar
 _gsdl.ags.file.print.datasection	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 ty0	.karg	gsdl.ags.file.filetype.prim.u
@@ -94,7 +94,7 @@ ds	.field	datasection	file0
 k	.apply	_gsdl.ags.file.print.datasection	|	file0	ds
 	.analyze	ty0	gsdocument	gsprefix
 		.case	gsdocument
-			.app	_gsdl.ags.file.print.filetype_doc.s	k
+			.app	_gsdl.ags.file.print_filetype_doc.s	k
 			.enter	list.<>	rune.t
 		.case	gsprefix
 			.undef	string.t
