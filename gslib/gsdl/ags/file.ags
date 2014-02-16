@@ -10,10 +10,10 @@ _gsdl.ags.file.print_filetype_doc.s	.string	\t.document\n
 _gsdl.ags.file.print_datasection	.closure	_gsdl.ags.file.print_datasection_c
 _gsdl.ags.file.print_datasection_gsdata.s	.string	\n\t.data\n
 
-_gsdl.ags.file.print.dataitems	.closure	_gsdl.ags.file.print.dataitems_c	_gsdl.ags.file.print.dataitems_ty
-_gsdl.ags.file.print.dataitems_:_cast_cast.s	.string	\t.cast\t
-_gsdl.ags.file.print.dataitems_:_closure_closure.s	.string	\t.closure\t
-_gsdl.ags.file.print.dataitems_:_undef.s	.string	\t.undefined\t
+_gsdl.ags.file.print_dataitems	.closure	_gsdl.ags.file.print_dataitems_c	_gsdl.ags.file.print_dataitems_ty
+_gsdl.ags.file.print_dataitems_:_cast_cast.s	.string	\t.cast\t
+_gsdl.ags.file.print_dataitems_:_closure_closure.s	.string	\t.closure\t
+_gsdl.ags.file.print_dataitems_:_undef.s	.string	\t.undefined\t
 
 _gsdl.ags.file_print.codesection	.closure	_gsdl.ags.file_print.codesection_c
 
@@ -109,32 +109,32 @@ gsdl.ags.dataitem.t	.tygvar
 rune.t	.tygvar
 list.<>	.gvar
 _gsdl.ags.file.print_datasection_gsdata.s	.gvar
-_gsdl.ags.file.print.dataitems	.gvar
+_gsdl.ags.file.print_dataitems	.gvar
 file0	.arg	gsdl.ags.file.prim.u
 ds	.arg	list.t	gsdl.ags.dataitem.t
-s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds
+s1	.apply	_gsdl.ags.file.print_dataitems	|	file0	ds
 	.app	_gsdl.ags.file.print_datasection_gsdata.s	s1
 	.enter	list.<>	rune.t
 
-_gsdl.ags.file.print.dataitems_c	.expr
+_gsdl.ags.file.print_dataitems_c	.expr
 gsdl.ags.file.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
-_gsdl.ags.file.print.dataitems_k	.subcode
+_gsdl.ags.file.print_dataitems_k	.subcode
 list.t.out	.cogvar
 file0	.arg	gsdl.ags.file.prim.u
 ds	.arg	list.t	gsdl.ags.dataitem.t
-	.force	_gsdl.ags.file.print.dataitems_k
+	.force	_gsdl.ags.file.print_dataitems_k
 	.coerce	list.t.out	gsdl.ags.dataitem.t
 	.enter	ds
 
-_gsdl.ags.file.print.dataitems_k	.forcecont
+_gsdl.ags.file.print_dataitems_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
 list.prim.u	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-_gsdl.ags.file.print.dataitems_d0.s_c	.subcode
+_gsdl.ags.file.print_dataitems_d0.s_c	.subcode
 list.:	.gvar
 rune.new.line	.gvar
 _gsdl.ags.file_print.codesection	.gvar
@@ -144,7 +144,7 @@ ds0	.karg	list.prim.u	gsdl.ags.dataitem.t
 		.case	:
 d0		.fkarg	0	gsdl.ags.dataitem.t
 ds1		.fkarg	1	list.t	gsdl.ags.dataitem.t
-d0.s			.alloc	_gsdl.ags.file.print.dataitems_d0.s_c
+d0.s			.alloc	_gsdl.ags.file.print_dataitems_d0.s_c
 			.app	rune.new.line	d0.s
 			.enter	list.:	rune.t
 		.case	nil
@@ -152,20 +152,20 @@ cs			.field	codesection	file0
 			.app	file0	cs
 			.yield	_gsdl.ags.file_print.codesection
 
-_gsdl.ags.file.print.dataitems_d0.s_c	.expr
+_gsdl.ags.file.print_dataitems_d0.s_c	.expr
 gsdl.ags.file.prim.u	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 list.t	.tygvar
-_gsdl.ags.file.print.dataitems_:_k	.subcode
+_gsdl.ags.file.print_dataitems_:_k	.subcode
 gsdl.ags.dataitem.t.out	.cogvar
 file0	.fv	gsdl.ags.file.prim.u
 d0	.fv	gsdl.ags.dataitem.t
 ds1	.fv	list.t	gsdl.ags.dataitem.t
-	.force	_gsdl.ags.file.print.dataitems_:_k
+	.force	_gsdl.ags.file.print_dataitems_:_k
 	.coerce	gsdl.ags.dataitem.t.out
 	.enter	d0
 
-_gsdl.ags.file.print.dataitems_:_k	.forcecont
+_gsdl.ags.file.print_dataitems_:_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
@@ -175,24 +175,24 @@ gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
 string.t	.tygvar
-_gsdl.ags.file.print.dataitems_:_closure_ty.s.print_c	.subcode
+_gsdl.ags.file.print_dataitems_:_closure_ty.s.print_c	.subcode
 list.nil	.gvar
-_gsdl.ags.file.print.dataitems	.gvar
+_gsdl.ags.file.print_dataitems	.gvar
 gsdl.ags.sourcepos.print	.gvar
 list.<>	.gvar
 maybe.maybe	.gvar
 gsdl.ags.syntax.var.print	.gvar
-_gsdl.ags.file.print.dataitems_:_cast_cast.s	.gvar
+_gsdl.ags.file.print_dataitems_:_cast_cast.s	.gvar
 list.:	.gvar
 rune.tab	.gvar
 rune.new.line	.gvar
-_gsdl.ags.file.print.dataitems_:_closure_closure.s	.gvar
-_gsdl.ags.file.print.dataitems_:_undef.s	.gvar
+_gsdl.ags.file.print_dataitems_:_closure_closure.s	.gvar
+_gsdl.ags.file.print_dataitems_:_undef.s	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 ds1	.fv	list.t	gsdl.ags.dataitem.t
 d0.0	.karg	gsdl.ags.dataitem.prim.u
 nil	.apply	list.nil	rune.t
-s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds1
+s1	.apply	_gsdl.ags.file.print_dataitems	|	file0	ds1
 	.analyze	d0.0	cast	closure	undefined
 		.case	cast
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -206,7 +206,7 @@ s0.5			.apply	list.:	rune.t	|	rune.new.line	s1
 s0.4			.apply	list.<>	rune.t	|	co.s	s0.5
 s0.3			.apply	list.:	rune.t	|	rune.tab	s0.4
 s0.2			.apply	list.<>	rune.t	|	x.s	s0.3
-s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print.dataitems_:_cast_cast.s	s0.2
+s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print_dataitems_:_cast_cast.s	s0.2
 s0			.apply	list.<>	rune.t	|	nm.s	s0.1
 			.app	pos	s0
 			.enter	gsdl.ags.sourcepos.print
@@ -216,13 +216,13 @@ nm		.fkarg	1	maybe.t	gsdl.var.t
 co		.fkarg	2	gsdl.var.t
 ty		.fkarg	3	maybe.t	gsdl.var.t
 nm.s			.apply	maybe.maybe	gsdl.var.t	string.t	|	nil	gsdl.ags.syntax.var.print	nm
-ty.s.print			.alloc	_gsdl.ags.file.print.dataitems_:_closure_ty.s.print_c
+ty.s.print			.alloc	_gsdl.ags.file.print_dataitems_:_closure_ty.s.print_c
 ty.s			.apply	maybe.maybe	gsdl.var.t	string.t	|	nil	ty.s.print	ty
 co.s			.apply	gsdl.ags.syntax.var.print	|	co
 s0.4			.apply	list.:	rune.t	|	rune.new.line	s1
 s0.3			.apply	list.<>	rune.t	|	ty.s	s0.4
 s0.2			.apply	list.<>	rune.t	|	co.s	s0.3
-s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print.dataitems_:_closure_closure.s	s0.2
+s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print_dataitems_:_closure_closure.s	s0.2
 s0			.apply	list.<>	rune.t	|	nm.s	s0.1
 			.app	pos	s0
 			.enter	gsdl.ags.sourcepos.print
@@ -234,13 +234,13 @@ nm.s			.apply	maybe.maybe	gsdl.var.t	string.t	|	nil	gsdl.ags.syntax.var.print	nm
 ty.s			.apply	gsdl.ags.syntax.var.print	|	ty
 s0.3			.apply	list.:	rune.t	|	rune.new.line	s1
 s0.2			.apply	list.<>	rune.t	|	ty.s	s0.3
-s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print.dataitems_:_undef.s	s0.2
+s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print_dataitems_:_undef.s	s0.2
 s0			.apply	list.<>	rune.t	|	nm.s	s0.1
 			.app	pos	s0
 			.enter	gsdl.ags.sourcepos.print
 	# > :: string.t
 
-_gsdl.ags.file.print.dataitems_:_closure_ty.s.print_c	.expr
+_gsdl.ags.file.print_dataitems_:_closure_ty.s.print_c	.expr
 gsdl.var.t	.tygvar
 string.t	.tygvar	# Temp
 v	.larg	gsdl.var.t
@@ -656,7 +656,7 @@ record.unboxed.empty	.tygvar
 
 # §section §gs{gsdl.ags.file.print}
 
-_gsdl.ags.file.print.dataitems_ty	.tyexpr
+_gsdl.ags.file.print_dataitems_ty	.tyexpr
 gsdl.ags.file.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
