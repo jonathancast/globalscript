@@ -1028,6 +1028,7 @@ _gsac.gsexpr.compileToLambdaExpr_lambda_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_lift_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_pos_k	.subcode
 either.t.out	.cogvar
+gsac.gstype.compileToApp	.gvar
 gsac.gsexpr.compileToLambdaExpr	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
@@ -1046,7 +1047,8 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 b		.fkarg	2	gsdl.cgs.gsexpr.body.t
 			.force	_gsac.gsexpr.compileToLambdaExpr_lambda_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
-			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
+			.app	pos	env	ty	tyem	pem	tyvs
+			.enter	gsac.gstype.compileToApp
 		.case	lift
 e1		.fkarg	0	gsdl.cgs.gsexpr.t
 			.force	_gsac.gsexpr.compileToLambdaExpr_lift_k
