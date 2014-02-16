@@ -126,12 +126,11 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 gsdl.ags.file.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
-gsdl.ags.codeitem.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
 either.right	.gvar
 list.:	.gvar
 diff.list.tolist	.gvar
@@ -143,7 +142,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.ags.file.t
 		.case	right
 r		.fkarg	0	_gsac.gsexpr.compileToDataItem_res.ty
-cs			.undefined	list.t	gsdl.ags.codeitem.t
+r.cs			.lfield	codeitems	r
+cs			.apply	diff.list.tolist	gsdl.ags.codeitem.t	|	r.cs
 r.cos			.lfield	coercionitems	r
 cos			.apply	diff.list.tolist	gsdl.ags.coercionitem.t	|	r.cos
 r.res			.lfield	res	r
