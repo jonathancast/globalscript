@@ -702,6 +702,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	right
 so.r		.fkarg	0	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
+so.r.cs			.lfield	codeitems	so.r
 so.r.cos			.lfield	coercionitems	so.r
 so.r.var			.lfield	res	so.r
 so.ds			.lfield	dataitems	so.r
@@ -723,6 +724,7 @@ gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
 diff.list.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
@@ -731,12 +733,12 @@ string.t	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	# Temp
-gsdl.ags.codeitem.t	.tygvar	# Temp
 either.right	.gvar
 gsdl.ags.dataitem.cast	.gvar
 diff.list.<>	.gvar
 pos	.fv	gsdl.sourcepos.t
 mbv	.fv	maybe.t	gsdl.var.t
+so.r.cs	.fv	diff.list.t	gsdl.ags.codeitem.t
 so.r.cos	.fv	diff.list.t	gsdl.ags.coercionitem.t
 so.r.var	.fv	gsdl.var.t
 so.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
@@ -748,14 +750,13 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	right
 co.r		.fkarg	0	_gsac.gscoercion.compileToGlobalVar_res.ty
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t	# Need to combine §gs{#codeitems so.r} and §gs{#codeitems co.r}
 co.r.cos			.lfield	coercionitems	co.r
 cos			.apply	diff.list.<>	gsdl.ags.coercionitem.t	|	so.r.cos	co.r.cos
 co.r.var			.lfield	res	co.r
 di			.apply	gsdl.ags.dataitem.cast	|	pos	mbv	so.r.var	co.r.var
 co.r.ts			.lfield	typeitems	co.r
 ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	so.r.ts	co.r.ts
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	so.ds	res	di	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
+res			.lrecord	codeitems	so.r.cs	coercionitems	cos	dataitems	so.ds	res	di	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
