@@ -7,8 +7,8 @@ gsdl.ags.file.print	.closure	_gsdl.ags.file.print_c
 _gsdl.ags.file.print_filetype	.closure	_gsdl.ags.file.print_filetype_c
 _gsdl.ags.file.print_filetype_doc.s	.string	\t.document\n
 
-_gsdl.ags.file.print.datasection	.closure	_gsdl.ags.file.print.datasection_c
-_gsdl.ags.file.print.datasection_gsdata.s	.string	\n\t.data\n
+_gsdl.ags.file.print_datasection	.closure	_gsdl.ags.file.print_datasection_c
+_gsdl.ags.file.print_datasection_gsdata.s	.string	\n\t.data\n
 
 _gsdl.ags.file.print.dataitems	.closure	_gsdl.ags.file.print.dataitems_c	_gsdl.ags.file.print.dataitems_ty
 _gsdl.ags.file.print.dataitems_:_cast_cast.s	.string	\t.cast\t
@@ -87,11 +87,11 @@ rune.t	.tygvar
 string.t	.tygvar	# Temp
 list.<>	.gvar
 _gsdl.ags.file.print_filetype_doc.s	.gvar
-_gsdl.ags.file.print.datasection	.gvar
+_gsdl.ags.file.print_datasection	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 ty0	.karg	gsdl.ags.file.filetype.prim.u
 ds	.field	datasection	file0
-k	.apply	_gsdl.ags.file.print.datasection	|	file0	ds
+k	.apply	_gsdl.ags.file.print_datasection	|	file0	ds
 	.analyze	ty0	gsdocument	gsprefix
 		.case	gsdocument
 			.app	_gsdl.ags.file.print_filetype_doc.s	k
@@ -100,20 +100,20 @@ k	.apply	_gsdl.ags.file.print.datasection	|	file0	ds
 			.undef	string.t
 	# > :: string.t
 
-# §subsection §gs{_gsdl.ags.file.print.datasection}
+# §subsection §gs{_gsdl.ags.file.print_datasection}
 
-_gsdl.ags.file.print.datasection_c	.expr
+_gsdl.ags.file.print_datasection_c	.expr
 gsdl.ags.file.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 rune.t	.tygvar
 list.<>	.gvar
-_gsdl.ags.file.print.datasection_gsdata.s	.gvar
+_gsdl.ags.file.print_datasection_gsdata.s	.gvar
 _gsdl.ags.file.print.dataitems	.gvar
 file0	.arg	gsdl.ags.file.prim.u
 ds	.arg	list.t	gsdl.ags.dataitem.t
 s1	.apply	_gsdl.ags.file.print.dataitems	|	file0	ds
-	.app	_gsdl.ags.file.print.datasection_gsdata.s	s1
+	.app	_gsdl.ags.file.print_datasection_gsdata.s	s1
 	.enter	list.<>	rune.t
 
 _gsdl.ags.file.print.dataitems_c	.expr
