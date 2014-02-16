@@ -1075,9 +1075,6 @@ _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 either.t	.tygvar	# Temp
 ordered.set.t	.tygvar	# Temp
 gsdl.var.t	.tygvar	# Temp
-ordered.map.t	.tygvar	# Temp
-_gsac.gstype_primname.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
 _gsac.gsexpr.compileToLambdaExpr_lambda_right_k	.subcode
 either.t.out	.cogvar
 gsac.gsexpr.body.compileToLambdaExpr	.gvar
@@ -1092,8 +1089,8 @@ err		.fkarg	0	string.t
 		.case	right
 ty.r0		.fkarg	0	_gsac.gstype.compileToApp_res.ty
 ty.r0.tyem			.undefined	ordered.set.t	gsdl.var.t
-ty.r0.pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-ty.r0.tyvs			.undefined	list.t	gsdl.var.t
+ty.r0.pem			.lfield	prim.emitted	ty.r0
+ty.r0.tyvs			.lfield	subvars	ty.r0
 			.force	_gsac.gsexpr.compileToLambdaExpr_lambda_right_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	pos	env	b	ty.r0.tyem	ty.r0.pem	ty.r0.tyvs
