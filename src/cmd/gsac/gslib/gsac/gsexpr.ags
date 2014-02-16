@@ -1348,10 +1348,10 @@ gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 α	.tylambda	*
-diff.list.coercionitem.t	.tylet	diff.list.t	gsdl.ags.coercionitem.t
+diff.list.coercionitem.ty	.tylet	diff.list.t	gsdl.ags.coercionitem.t
 diff.list.dataitem.ty	.tylet	diff.list.t	gsdl.ags.dataitem.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
-	.typroduct	coercionitems	diff.list.coercionitem.t	dataitems	diff.list.dataitem.ty	res	α	typeitems	diff.list.typeitem.ty
+	.typroduct	coercionitems	diff.list.coercionitem.ty	dataitems	diff.list.dataitem.ty	res	α	typeitems	diff.list.typeitem.ty
 
 # §section §gs{gsac.gsexpr.body.annotate}
 
