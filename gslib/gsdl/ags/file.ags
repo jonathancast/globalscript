@@ -15,6 +15,8 @@ _gsdl.ags.file.print.dataitems_:_cast_cast.s	.string	\t.cast\t
 _gsdl.ags.file.print.dataitems_:_closure_closure.s	.string	\t.closure\t
 _gsdl.ags.file.print.dataitems_:_undef.s	.string	\t.undefined\t
 
+_gsdl.ags.file_print.codesection	.closure	_gsdl.ags.file_print.codesection_c
+
 _gsdl.ags.file.print.typesection	.closure	_gsdl.ags.file.print.typesection_c
 _gsdl.ags.file.print.typesection_gstype.s	.string	\n\t.type\n
 
@@ -135,7 +137,7 @@ rune.t	.tygvar
 _gsdl.ags.file.print.dataitems_d0.s_c	.subcode
 list.:	.gvar
 rune.new.line	.gvar
-_gsdl.ags.file.print.typesection	.gvar
+_gsdl.ags.file_print.codesection	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 ds0	.karg	list.prim.u	gsdl.ags.dataitem.t
 	.analyze	ds0	:	nil
@@ -146,9 +148,9 @@ d0.s			.alloc	_gsdl.ags.file.print.dataitems_d0.s_c
 			.app	rune.new.line	d0.s
 			.enter	list.:	rune.t
 		.case	nil
-tys			.field	typesection	file0
-			.app	file0	tys
-			.yield	_gsdl.ags.file.print.typesection
+cs			.field	codesection	file0
+			.app	file0	cs
+			.yield	_gsdl.ags.file_print.codesection
 
 _gsdl.ags.file.print.dataitems_d0.s_c	.expr
 gsdl.ags.file.prim.u	.tygvar
@@ -243,6 +245,40 @@ gsdl.var.t	.tygvar
 string.t	.tygvar	# Temp
 v	.larg	gsdl.var.t
 	.undef	string.t
+
+_gsdl.ags.file_print.codesection_c	.expr
+gsdl.ags.file.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_gsdl.ags.file_print.codesection_k	.subcode
+list.t.out	.cogvar
+list.<>	.gvar
+_gsdl.ags.file.print.typesection_gstype.s	.gvar
+_gsdl.ags.file.print.typeitems	.gvar
+file0	.arg	gsdl.ags.file.prim.u
+cs	.arg	list.t	gsdl.ags.codeitem.t
+	.force	_gsdl.ags.file_print.codesection_k
+	.coerce	list.t.out	gsdl.ags.codeitem.t
+	.enter	cs
+
+_gsdl.ags.file_print.codesection_k	.forcecont
+gsdl.ags.file.prim.u	.tygvar
+list.prim.u	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+_gsdl.ags.file.print.typesection	.gvar
+file0	.fv	gsdl.ags.file.prim.u
+cs0	.karg	list.prim.u	gsdl.ags.codeitem.t
+	.analyze	cs0	:	nil
+		.case	:
+c0		.fkarg	0	gsdl.ags.codeitem.t
+cs1		.fkarg	1	list.t	gsdl.ags.codeitem.t
+			.undef	list.t	rune.t
+		.case	nil
+tys			.field	typesection	file0
+			.app	file0	tys
+			.yield	_gsdl.ags.file.print.typesection
 
 _gsdl.ags.file.print.typesection_c	.expr
 gsdl.ags.file.prim.u	.tygvar
