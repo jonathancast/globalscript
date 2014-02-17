@@ -15,7 +15,7 @@ _gsdl.ags.file.print_dataitems_:_cast_cast.s	.string	\t.cast\t
 _gsdl.ags.file.print_dataitems_:_closure_closure.s	.string	\t.closure\t
 _gsdl.ags.file.print_dataitems_:_undef.s	.string	\t.undefined\t
 
-_gsdl.ags.file_print.codesection	.closure	_gsdl.ags.file_print.codesection_c
+_gsdl.ags.file.print_codesection	.closure	_gsdl.ags.file.print_codesection_c
 
 _gsdl.ags.file.print.typesection	.closure	_gsdl.ags.file.print.typesection_c
 _gsdl.ags.file.print.typesection_gstype.s	.string	\n\t.type\n
@@ -137,7 +137,7 @@ rune.t	.tygvar
 _gsdl.ags.file.print_dataitems_d0.s_c	.subcode
 list.:	.gvar
 rune.new.line	.gvar
-_gsdl.ags.file_print.codesection	.gvar
+_gsdl.ags.file.print_codesection	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 ds0	.karg	list.prim.u	gsdl.ags.dataitem.t
 	.analyze	ds0	:	nil
@@ -150,7 +150,7 @@ d0.s			.alloc	_gsdl.ags.file.print_dataitems_d0.s_c
 		.case	nil
 cs			.field	codesection	file0
 			.app	file0	cs
-			.yield	_gsdl.ags.file_print.codesection
+			.yield	_gsdl.ags.file.print_codesection
 
 _gsdl.ags.file.print_dataitems_d0.s_c	.expr
 gsdl.ags.file.prim.u	.tygvar
@@ -246,22 +246,22 @@ string.t	.tygvar	# Temp
 v	.larg	gsdl.var.t
 	.undef	string.t
 
-_gsdl.ags.file_print.codesection_c	.expr
+_gsdl.ags.file.print_codesection_c	.expr
 gsdl.ags.file.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
-_gsdl.ags.file_print.codesection_k	.subcode
+_gsdl.ags.file.print_codesection_k	.subcode
 list.t.out	.cogvar
 list.<>	.gvar
 _gsdl.ags.file.print.typesection_gstype.s	.gvar
 _gsdl.ags.file.print.typeitems	.gvar
 file0	.arg	gsdl.ags.file.prim.u
 cs	.arg	list.t	gsdl.ags.codeitem.t
-	.force	_gsdl.ags.file_print.codesection_k
+	.force	_gsdl.ags.file.print_codesection_k
 	.coerce	list.t.out	gsdl.ags.codeitem.t
 	.enter	cs
 
-_gsdl.ags.file_print.codesection_k	.forcecont
+_gsdl.ags.file.print_codesection_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
 list.prim.u	.tygvar
 gsdl.ags.codeitem.t	.tygvar
