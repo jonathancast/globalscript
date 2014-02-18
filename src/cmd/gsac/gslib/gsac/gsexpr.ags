@@ -644,6 +644,7 @@ gsdl.ags.dataitem.closure		.gvar
 gsdl.var.<>	.gvar
 _gsac.gsexpr_c.v	.gvar
 maybe.just	.gvar
+_gsac.gsexpr_ty.v	.gvar
 pos	.fv	gsdl.sourcepos.t
 mbv	.fv	maybe.t	gsdl.var.t
 v	.fv	gsdl.var.t
@@ -658,7 +659,7 @@ cs			.undefined	diff.list.t	gsdl.ags.codeitem.t	# Turn §gs{r0} into a code item
 cos			.lfield	coercionitems	r0
 ds			.lfield	dataitems	r0
 v.c.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_c.v
-v.ty.v			.undefined	gsdl.var.t
+v.ty.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_ty.v
 just.v.ty.v			.apply	maybe.just	gsdl.var.t	|	v.ty.v
 di			.apply	gsdl.ags.dataitem.closure		|	pos	mbv	v.c.v	just.v.ty.v
 ts			.lfield	typeitems	r0
