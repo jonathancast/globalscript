@@ -847,10 +847,10 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 _gsac.gsexpr.compileToGlobalVar_res.ty	.tygvar
+gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
-gsdl.ags.codeitem.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
 maybe.t	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
@@ -870,7 +870,9 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+c0			.undefined	gsdl.ags.codeitem.t	# Turn r0 into a code item
+cs1			.lfield	codeitems	r0
+cs			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	cs1
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 just.x			.apply	maybe.just	gsdl.var.t	|	x
 x.c.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_c.v
