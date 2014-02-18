@@ -242,9 +242,15 @@ s0			.apply	list.<>	rune.t	|	nm.s	s0.1
 
 _gsdl.ags.file.print_dataitems_:_closure_ty.s.print_c	.expr
 gsdl.var.t	.tygvar
-string.t	.tygvar	# Temp
+rune.t	.tygvar
+string.t	.tygvar
+list.:	.gvar
+rune.tab	.gvar
+gsdl.ags.syntax.var.print	.gvar
 v	.larg	gsdl.var.t
-	.undef	string.t
+v.s	.apply	gsdl.ags.syntax.var.print	|	v
+	.app	rune.tab	v.s
+	.enter	list.:	rune.t
 
 _gsdl.ags.file.print_codesection_c	.expr
 gsdl.ags.file.prim.u	.tygvar
