@@ -1536,3 +1536,10 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.gsexpr.body.t
 	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+
+	.coercion
+
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t.out	.tycoercion
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar
+	.tyinvert
+	.tydefinition	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
