@@ -1513,6 +1513,14 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.u	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.u	.tyexpr
 	.typroduct
 
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tyabstract	*
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tygvar
+	.tylift
+	.tyref	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u
+
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tyexpr
+	.tysum
+
 # §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
 
 _gsac.gsexpr.body.compileToLambdaExpr_ty	.tyexpr
