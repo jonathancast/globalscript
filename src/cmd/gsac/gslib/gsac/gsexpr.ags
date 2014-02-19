@@ -1511,7 +1511,8 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.u	.tygvar
 	.tyref	_gsac.gsexpr.compileToLambdaExpr_res_res.u
 
 _gsac.gsexpr.compileToLambdaExpr_res_res.u	.tyexpr
-	.typroduct
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar
+	.typroduct	body	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
 
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tyabstract	*
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tygvar
