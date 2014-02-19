@@ -14,6 +14,8 @@ _gsdl.ags.codeitem.parser_impprog.p_body.p_body.p_body.re	.regex	.body
 _gsdl.ags.codeitem.parser_strictcont.p_strictcont.re	.regex	.strictcont
 _gsdl.ags.codeitem.parser_ubcasecont.p_ubcasecont.re	.regex	.ubcasecont
 
+gsdl.ags.codeitem.print	.closure	_gsdl.ags.codeitem.print_c
+
 gsdl.ags.codeitem.≡	.closure	_gsdl.ags.codeitem.≡_c
 
 gsdl.ags.codeitem.fmtgs	.closure	_gsdl.ags.codeitem.fmtgs_c
@@ -659,6 +661,15 @@ subcs	.larg	list.t	string.t
 gvs	.larg	list.t	gsdl.ags.codeitem.gvar.t
 fvs	.larg	list.t	gsdl.ags.codeitem.fv.t
 	.undef	_gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty
+
+# §section §gs{gsdl.ags.codeitem.print}
+
+_gsdl.ags.codeitem.print_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+c	.larg	gsdl.ags.codeitem.t
+	.undef	diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.codeitem.≡}
 
