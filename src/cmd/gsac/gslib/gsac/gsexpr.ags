@@ -639,6 +639,7 @@ gsdl.ags.codeitem.t	.tygvar
 either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.dataitem.t	.tygvar	# Temp
+_gsac.gsexpr.compileToDataItem_default_right_c0_c	.subcode
 either.right	.gvar
 diff.list.:	.gvar
 gsdl.ags.dataitem.closure		.gvar
@@ -656,7 +657,9 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
-c0			.undefined	gsdl.ags.codeitem.t	# Turn §gs{r0} into a code item
+r0.res			.lfield	res	r0
+r0.res.body			.lfield	body	r0.res
+c0			.alloc	_gsac.gsexpr.compileToDataItem_default_right_c0_c
 cs1			.lfield	codeitems	r0
 cs			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	cs1
 cos			.lfield	coercionitems	r0
@@ -669,6 +672,21 @@ ts			.lfield	typeitems	r0
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	di	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+
+_gsac.gsexpr.compileToDataItem_default_right_c0_c	.expr
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar
+_gsac.gsexpr.compileToDataItem_default_right_c0_k	.subcode
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t.out	.cogvar
+r0.res.body	.fv	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
+	.force	_gsac.gsexpr.compileToDataItem_default_right_c0_k
+	.coerce	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t.out
+	.enter	r0.res.body
+
+_gsac.gsexpr.compileToDataItem_default_right_c0_k	.forcecont
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tygvar
+gsdl.ags.codeitem.t	.tygvar	# Temp
+b0	.karg	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u
+	.undef	gsdl.ags.codeitem.t	# Turn §gs{r0} into a code item
 
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_k	.forcecont
 gsdl.sourcepos.t	.tygvar
