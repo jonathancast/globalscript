@@ -16,6 +16,9 @@ _gsdl.ags.file.print_dataitems_:_closure_closure.s	.string	\t.closure\t
 _gsdl.ags.file.print_dataitems_:_undef.s	.string	\t.undefined\t
 
 _gsdl.ags.file.print_codesection	.closure	_gsdl.ags.file.print_codesection_c
+_gsdl.ags.file.print_codesection_:_code.s	.string	\n\t.code\n
+
+_gsdl.ags.file.print_codeitems	.closure	_gsdl.ags.file.print_codeitems_c	_gsdl.ags.file.print_codeitems_ty
 
 _gsdl.ags.file.print_typesection	.closure	_gsdl.ags.file.print_typesection_c
 _gsdl.ags.file.print_typesection_gstype.s	.string	\n\t.type\n
@@ -271,20 +274,46 @@ _gsdl.ags.file.print_codesection_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
 list.prim.u	.tygvar
 gsdl.ags.codeitem.t	.tygvar
-list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+list.t	.tygvar
+rune.t	.tygvar
 _gsdl.ags.file.print_typesection	.gvar
+list.<>	.gvar
+_gsdl.ags.file.print_codesection_:_code.s	.gvar
+_gsdl.ags.file.print_codeitems	.gvar
 file0	.fv	gsdl.ags.file.prim.u
 cs0	.karg	list.prim.u	gsdl.ags.codeitem.t
+tys	.field	typesection	file0
+tys.s	.apply	_gsdl.ags.file.print_typesection	|	file0	tys
 	.analyze	cs0	:	nil
 		.case	:
 c0		.fkarg	0	gsdl.ags.codeitem.t
 cs1		.fkarg	1	list.t	gsdl.ags.codeitem.t
-			.undef	list.t	rune.t
+cs.s			.apply	_gsdl.ags.file.print_codeitems	|	c0	cs1	tys.s
+			.app	_gsdl.ags.file.print_codesection_:_code.s	cs.s
+			.enter	list.<>	rune.t
 		.case	nil
-tys			.field	typesection	file0
-			.app	file0	tys
-			.yield	_gsdl.ags.file.print_typesection
+			.enter	tys.s
+
+_gsdl.ags.file.print_codeitems_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+rune.t	.tygvar
+_gsdl.ags.file.print_codeitems_s2_c	.subcode
+list.:	.gvar
+rune.new.line	.gvar
+gsdl.ags.codeitem.print	.gvar
+c0	.arg	gsdl.ags.codeitem.t
+cs1	.arg	list.t	gsdl.ags.codeitem.t
+tys.s	.arg	string.t
+s2	.alloc	_gsdl.ags.file.print_codeitems_s2_c
+s1	.apply	gsdl.ags.codeitem.print	|	c0	s2
+	.app	rune.new.line	s1
+	.enter	list.:	rune.t
+
+_gsdl.ags.file.print_codeitems_s2_c	.expr
+string.t	.tygvar
+	.undef	string.t
 
 _gsdl.ags.file.print_typesection_c	.expr
 gsdl.ags.file.prim.u	.tygvar
@@ -669,6 +698,15 @@ gsdl.ags.dataitem.t	.tygvar
 string.t	.tygvar
 	.tyfun	gsdl.ags.file.prim.u
 	.tyfun	list.t	gsdl.ags.dataitem.t
+	.tyref	string.t
+
+_gsdl.ags.file.print_codeitems_ty	.tyexpr
+gsdl.ags.codeitem.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+	.tyfun	gsdl.ags.codeitem.t
+	.tyfun	list.t	gsdl.ags.codeitem.t
+	.tyfun	string.t
 	.tyref	string.t
 
 _gsdl.ags.file.print.typeitems_ty	.tyexpr
