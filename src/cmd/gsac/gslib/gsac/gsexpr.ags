@@ -866,6 +866,7 @@ maybe.t	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
 diff.list.:	.gvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.gvar
 gsdl.ags.dataitem.closure		.gvar
 maybe.just	.gvar
 gsdl.var.<>	.gvar
@@ -880,7 +881,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
-c0			.undefined	gsdl.ags.codeitem.t	# Turn r0 into a code item
+r0.res			.lfield	res	r0
+c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	r0.res
 cs1			.lfield	codeitems	r0
 cs			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	cs1
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
