@@ -1183,6 +1183,7 @@ cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.lfield	dataitems	r0
 r0.res			.lfield	res	r0
 r0.as			.lfield	args	r0.res
+r0.b			.lfield	body	r0.res
 e			.alloc	_gsac.gsexpr.compileToLambdaExpr_lift_right_e_c
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
@@ -1190,24 +1191,37 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	typeitems	ts	|	
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToLambdaExpr_lift_right_e_c	.expr
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_lift_right_e_k	.subcode
 list.t.out	.cogvar
 r0.as	.fv	list.t	gsdl.ags.codeitem.arg.t
+r0.b	.fv	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
 	.force	_gsac.gsexpr.compileToLambdaExpr_lift_right_e_k
 	.coerce	list.t.out	gsdl.ags.codeitem.arg.t
 	.enter	r0.as
 
 _gsac.gsexpr.compileToLambdaExpr_lift_right_e_k	.forcecont
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar
 list.prim.u	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.u	.tygvar
 list.t	.tygvar	# Temp
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar	# Temp
+r0.b	.fv	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
 r0.as0	.karg	list.prim.u	gsdl.ags.codeitem.arg.t
-as			.undefined	list.t	gsdl.ags.codeitem.arg.t	# Depends on # of arguments in §gs{r0}, doesn't it?
-b			.undefined	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t	# Depends on # of arguments in §gs{r0}, doesn't it?
+	.analyze	r0.as0	:	nil
+		.case	:
+r0.a0		.fkarg	0	gsdl.ags.codeitem.arg.t
+r0.as1		.fkarg	1	list.t	gsdl.ags.codeitem.arg.t
+as			.undefined	list.t	gsdl.ags.codeitem.arg.t
+res			.record	args	as	body	r0.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.u
+			.lift
+			.yield	res
+		.case	nil
+as			.undefined	list.t	gsdl.ags.codeitem.arg.t
+b			.undefined	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
 res			.record	args	as	body	b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.u
 			.lift
 			.yield	res
