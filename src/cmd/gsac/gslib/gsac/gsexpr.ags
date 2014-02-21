@@ -1212,8 +1212,8 @@ diff.list.t	.tygvar	# Temp
 gsdl.ags.codeitem.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
 gsdl.ags.dataitem.t	.tygvar	# Temp
-_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
+_gsac.gsexpr.compileToLambdaExpr_pos_right_e_c	.subcode
 either.right	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	.analyze	e0	left	right
@@ -1225,11 +1225,30 @@ r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.lfield	dataitems	r0
-e			.undefined	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+r0.res			.lfield	res	r0
+r0.as			.lfield	args	r0.res
+e			.alloc	_gsac.gsexpr.compileToLambdaExpr_pos_right_e_c
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
+_gsac.gsexpr.compileToLambdaExpr_pos_right_e_c	.expr
+list.t	.tygvar
+gsdl.ags.codeitem.arg.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_pos_right_e_k	.subcode
+list.t.out	.cogvar
+r0.as	.fv	list.t	gsdl.ags.codeitem.arg.t
+	.force	_gsac.gsexpr.compileToLambdaExpr_pos_right_e_k
+	.coerce	list.t.out	gsdl.ags.codeitem.arg.t
+	.enter	r0.as
+
+_gsac.gsexpr.compileToLambdaExpr_pos_right_e_k	.forcecont
+list.prim.u	.tygvar
+gsdl.ags.codeitem.arg.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar	# Temp
+r0.as0	.karg	list.prim.u	gsdl.ags.codeitem.arg.t
+	.undef	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 
 # §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
 
