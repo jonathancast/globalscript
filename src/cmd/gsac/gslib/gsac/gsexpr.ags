@@ -1125,13 +1125,17 @@ _gsac.gsexpr.compileToLambdaExpr_lambda_right_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+gsdl.ags.codeitem.arg.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
 gsdl.ags.codeitem.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
-_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar	# Temp
+list.t	.tygvar	# Temp
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
+list.:	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -1142,9 +1146,14 @@ b.r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.lfield	dataitems	b.r0
-res.r0			.undefined	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+a0			.undefined	gsdl.ags.codeitem.arg.t
+b.e			.lfield	res	b.r0
+b.as			.lfield	args	b.e
+e.as			.apply	list.:	gsdl.ags.codeitem.arg.t	|	a0	b.as
+e.b			.undefined	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
+e			.lrecord	args	e.as	body	e.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	res.r0	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
