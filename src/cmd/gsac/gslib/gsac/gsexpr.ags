@@ -1536,7 +1536,10 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.u	.tygvar
 
 _gsac.gsexpr.compileToLambdaExpr_res_res.u	.tyexpr
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar
-	.typroduct	body	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
+list.t	.tygvar
+gsdl.ags.codeitem.arg.t	.tygvar
+list.arg.ty	.tylet	list.t	gsdl.ags.codeitem.arg.t
+	.typroduct	args	list.arg.ty	body	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
 
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tyabstract	*
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tygvar
