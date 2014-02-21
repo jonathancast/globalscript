@@ -1149,9 +1149,9 @@ ds			.lfield	dataitems	b.r0
 a0			.undefined	gsdl.ags.codeitem.arg.t
 b.e			.lfield	res	b.r0
 b.as			.lfield	args	b.e
+b.b			.lfield	body	b.e
 e.as			.apply	list.:	gsdl.ags.codeitem.arg.t	|	a0	b.as
-e.b			.undefined	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
-e			.lrecord	args	e.as	body	e.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+e			.lrecord	args	e.as	body	b.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
