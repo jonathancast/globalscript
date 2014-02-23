@@ -662,12 +662,12 @@ err		.fkarg	0	string.t
 		.case	right
 r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 r0.res			.lfield	res	r0
-c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	r0.res
+v.c.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_c.v
+c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	pos	v.c.v	r0.res
 cs1			.lfield	codeitems	r0
 cs			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	cs1
 cos			.lfield	coercionitems	r0
 ds			.lfield	dataitems	r0
-v.c.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_c.v
 v.ty.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_ty.v
 just.v.ty.v			.apply	maybe.just	gsdl.var.t	|	v.ty.v
 di			.apply	gsdl.ags.dataitem.closure		|	pos	mbv	v.c.v	just.v.ty.v
@@ -884,12 +884,12 @@ err		.fkarg	0	string.t
 		.case	right
 r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 r0.res			.lfield	res	r0
-c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	r0.res
+x.c.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_c.v
+c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	pos	x.c.v	r0.res
 cs1			.lfield	codeitems	r0
 cs			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	cs1
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 just.x			.apply	maybe.just	gsdl.var.t	|	x
-x.c.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_c.v
 nothing.var			.apply	maybe.nothing	gsdl.var.t
 d0			.apply	gsdl.ags.dataitem.closure		|	pos	just.x	x.c.v	nothing.var
 ds1			.lfield	dataitems	r0
@@ -1391,9 +1391,13 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	typeitems	ts	|	
 # §section §gs{_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem}
 
 _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.t.out	.cogvar
+pos	.larg	gsdl.sourcepos.t
+x	.larg	gsdl.var.t
 r0	.larg	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 r0.res.body	.lfield	body	r0
 	.force	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem_k
@@ -1401,10 +1405,26 @@ r0.res.body	.lfield	body	r0
 	.enter	r0.res.body
 
 _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.alloc.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+_gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar	# Temp
 gsdl.ags.codeitem.t	.tygvar	# Temp
+gsdl.ags.codeitem.expr	.gvar
+pos	.fv	gsdl.sourcepos.t
+x	.fv	gsdl.var.t
 b0	.karg	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u
-	.undef	gsdl.ags.codeitem.t	# Turn §gs{r0} into a code item
+	.analyze	b0	expr
+		.case	expr
+as		.fkarg	0	list.t	gsdl.ags.codeitem.alloc.t
+e		.fkarg	1	gsdl.ags.codeitem.expr.t
+ds			.undefined	_gsdl.ags.codeitem.prim.u_expr_decls_ty
+			.app	pos	x	ds	e
+			.yield	gsdl.ags.codeitem.expr
+	# > :: gsdl.ags.codeitem.t
 
 # §section §gs{_gsac.gsexpr.compileToLambdaExpr_res_res_body.t} Constructors
 
