@@ -22,6 +22,8 @@ gsac.gsexpr.body.compileToLambdaExpr	.closure	_gsac.gsexpr.body.compileToLambdaE
 
 _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.closure	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem_c
 
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.closure	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr_c
+
 _gsac.gsexpr_c.v	.closure	_gsac.gsexpr_c.v_c
 _gsac.gsexpr_c.v_s	.string	c
 
@@ -1395,6 +1397,21 @@ gsdl.ags.codeitem.t	.tygvar	# Temp
 b0	.karg	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u
 	.undef	gsdl.ags.codeitem.t	# Turn §gs{r0} into a code item
 
+# §section §gs{_gsac.gsexpr.compileToLambdaExpr_res_res_body.t} Constructors
+
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr_c	.expr
+list.t	.tygvar
+gsdl.ags.codeitem.alloc.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t.in	.cogvar
+as	.larg	list.t	gsdl.ags.codeitem.alloc.t
+e	.larg	gsdl.ags.codeitem.expr.t
+res	.constr	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	expr	0	as	1	e
+	.coerce	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t.in
+	.lift
+	.yield	res
+
 # §section Helper Functions
 
 # §subsection §gs{c.v}
@@ -1634,7 +1651,15 @@ _gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tygvar
 	.tyref	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u
 
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tyexpr
-	.tysum
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u_expr_ty	.tygvar
+	.tysum	expr	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u_expr_ty
+
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u_expr_ty	.tyexpr
+list.t	.tygvar
+gsdl.ags.codeitem.alloc.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+list.alloc.ty	.tylet	list.t	gsdl.ags.codeitem.alloc.t
+	.tyubproduct	0	list.alloc.ty	1	gsdl.ags.codeitem.expr.t
 
 # §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
 
@@ -1653,6 +1678,10 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 
 	.coercion
+
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t.in	.tycoercion
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar
+	.tydefinition	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
 
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.t.out	.tycoercion
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar
