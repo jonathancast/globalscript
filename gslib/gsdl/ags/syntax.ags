@@ -27,7 +27,7 @@ _gsdl.ags.syntax.var_components.p	.closure	_gsdl.ags.syntax.var_components.p_c	_
 _gsdl.ags.syntax.var_dot.re	.regex	\.
 _gsdl.ags.syntax.var_component.p	.closure	_gsdl.ags.syntax.var_component.p_c
 _gsdl.ags.syntax.var_alphanum.re	.regex	[a-zα-ω][a-z0-9A-Z]*
-_gsdl.ags.syntax.var_symbolic.re	.regex	[≡≠]
+_gsdl.ags.syntax.var_symbolic.re	.regex	[:≡≠]
 _gsdl.ags.syntax.var_underbar.p	.closure	_gsdl.ags.syntax.var_underbar.p_c
 _gsdl.ags.syntax.var_underbar.p_underbar.re	.regex	_
 
