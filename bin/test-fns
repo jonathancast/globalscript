@@ -129,6 +129,9 @@ fn ok_diff_script {
         echo 'failed; should have succeeded' >[1=2]
         cat ./test-results/$casenm^-errors >[1=2]
         cat ./test-results/$casenm^-actual >[1=2]
+        if (test -s ./test-results/$casenm^-actual) {
+            diff ./test-results/$casenm^-actual ./test-results/$casenm^-expected >[1=2]
+        }
         exit 1
     }
     if (! diff ./test-results/$casenm^-actual ./test-results/$casenm^-expected) {
