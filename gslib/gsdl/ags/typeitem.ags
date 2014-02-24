@@ -927,10 +927,60 @@ ds	.apply	diff.list.:	rune.t	|	rune.tab	ds1
 
 _gsdl.ags.typeitem.decls.tygvar.≡_c	.expr
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
-bool.t	.tygvar	# Temp
+_gsdl.ags.typeitem.decls.tygvar.≡_k0	.subcode
+gsdl.ags.typeitem.decls.tygvar.t.out	.cogvar
 tygv0	.larg	gsdl.ags.typeitem.decls.tygvar.t
 tygv1	.larg	gsdl.ags.typeitem.decls.tygvar.t
-	.undef	bool.t
+	.force	_gsdl.ags.typeitem.decls.tygvar.≡_k0
+	.coerce	gsdl.ags.typeitem.decls.tygvar.t.out
+	.enter	tygv0
+
+_gsdl.ags.typeitem.decls.tygvar.≡_k0	.forcecont
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.prim.u	.tygvar
+_gsdl.ags.typeitem.decls.tygvar.≡_k1	.subcode
+gsdl.ags.typeitem.decls.tygvar.t.out	.cogvar
+tygv1	.fv	gsdl.ags.typeitem.decls.tygvar.t
+tygv0.0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
+	.force	_gsdl.ags.typeitem.decls.tygvar.≡_k1
+	.coerce	gsdl.ags.typeitem.decls.tygvar.t.out
+	.enter	tygv1
+
+_gsdl.ags.typeitem.decls.tygvar.≡_k1	.forcecont
+gsdl.ags.typeitem.decls.tygvar.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
+bool.t	.tygvar	# Temp
+gsdl.var.≡	.gvar
+tygv0.0	.fv	gsdl.ags.typeitem.decls.tygvar.prim.u
+tygv1.0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
+	.analyze	tygv0.0	tyextabstype	tyextelimprim	tyextimpprim	tygvar
+		.case	tyextabstype
+v0		.fkarg	0	gsdl.var.t
+ki0		.fkarg	1	gsdl.ags.typeitem.gskind.t
+			.undef	bool.t
+		.case	tyextelimprim
+v0		.fkarg	0	gsdl.var.t
+ps0		.fkarg	1	gsdl.var.t
+pn0		.fkarg	2	gsdl.var.t
+ki0		.fkarg	3	gsdl.ags.typeitem.gskind.t
+			.undef	bool.t
+		.case	tyextimpprim
+v0		.fkarg	0	gsdl.var.t
+ps0		.fkarg	1	gsdl.var.t
+pn0		.fkarg	2	gsdl.var.t
+ki0		.fkarg	3	gsdl.ags.typeitem.gskind.t
+			.undef	bool.t
+		.case	tygvar
+v0		.fkarg	0	gsdl.var.t
+			.danalyze	tygv1.0	tygvar
+				.default
+					.undef	bool.t
+				.case	tygvar
+v1				.fkarg	0	gsdl.var.t
+					.app	v0	v1
+					.enter	gsdl.var.≡
+	# > :: bool.t
 
 # §section §gs{gsdl.ags.typeitem.decls.tygvar.fmtgs}
 
