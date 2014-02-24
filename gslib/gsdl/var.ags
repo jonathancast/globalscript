@@ -427,6 +427,7 @@ gsdl.var.component.t	.tygvar
 natural.t	.tygvar
 gsdl.var.t	.tygvar
 bool.t	.tygvar	# Temp
+bool.false	.gvar
 list.≡	.gvar
 gsdl.var.component.≡	.gvar
 bool.∧	.gvar
@@ -439,7 +440,7 @@ v1.0	.karg	gsdl.var.prim.u
 cs0		.fkarg	0	list.t	gsdl.var.component.t
 			.danalyze	v1.0	basevar
 				.default
-					.undef	bool.t
+					.enter	bool.false
 				.case	basevar
 cs1				.fkarg	0	list.t	gsdl.var.component.t
 					.app	gsdl.var.component.≡	cs0	cs1
