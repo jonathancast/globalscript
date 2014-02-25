@@ -15,6 +15,9 @@ _gsdl.ags.codeitem.parser_strictcont.p_strictcont.re	.regex	.strictcont
 _gsdl.ags.codeitem.parser_ubcasecont.p_ubcasecont.re	.regex	.ubcasecont
 
 gsdl.ags.codeitem.print	.closure	_gsdl.ags.codeitem.print_c
+_gsdl.ags.codeitem.print_expr_expr.s	.string	\t.expr\n
+
+_gsdl.ags.codeitem.prim.u_expr_decls.print	.closure	_gsdl.ags.codeitem.prim.u_expr_decls.print_c
 
 gsdl.ags.codeitem.≡	.closure	_gsdl.ags.codeitem.≡_c
 
@@ -680,10 +683,59 @@ c	.larg	gsdl.ags.codeitem.t
 
 _gsdl.ags.codeitem.print_k	.forcecont
 gsdl.ags.codeitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+_gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+_gsdl.ags.codeitem.prim.u_forcecont_decls_ty	.tygvar
 diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+diff.list.<>	.gvar
+gsdl.ags.sourcepos.print	.gvar
+diff.list.prepend	.gvar
+gsdl.ags.syntax.var.print	.gvar
+_gsdl.ags.codeitem.print_expr_expr.s	.gvar
+_gsdl.ags.codeitem.prim.u_expr_decls.print	.gvar
 c0	.karg	gsdl.ags.codeitem.prim.u
-	.undef	diff.list.t	rune.t
+	.analyze	c0	expr	forcecont
+		.case	expr
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	gsdl.var.t
+ds		.fkarg	2	_gsdl.ags.codeitem.prim.u_expr_decls_ty
+e		.fkarg	3	gsdl.ags.codeitem.expr.t
+pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
+nm.s			.apply	gsdl.ags.syntax.var.print	|	nm
+ds.s			.apply	_gsdl.ags.codeitem.prim.u_expr_decls.print	|	ds
+e.s			.undefined	diff.list.t	rune.t
+s3			.apply	diff.list.<>	rune.t	|	ds.s	e.s
+s2			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.codeitem.print_expr_expr.s	s3
+s1			.apply	diff.list.prepend	rune.t	|	nm.s	s2
+			.app	pos.s	s1
+			.enter	diff.list.<>	rune.t
+		.case	forcecont
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	string.t
+ds		.fkarg	2	_gsdl.ags.codeitem.prim.u_forcecont_decls_ty
+e		.fkarg	3	gsdl.ags.codeitem.expr.t
+			.undef	diff.list.t	rune.t
+	# > :: diff.list.t	rune.t
+
+_gsdl.ags.codeitem.prim.u_expr_decls.print_c	.expr
+_gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar	# Temp
+diff.list.concat	.gvar
+list.map	.gvar
+gsdl.ags.typeitem.decls.tygvar.print	.gvar
+ds	.larg	_gsdl.ags.codeitem.prim.u_expr_decls_ty
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+tygvs	.lfield	tygvs	ds
+tygvs.dss	.apply	list.map	gsdl.ags.typeitem.decls.tygvar.t	diff.list.rune.ty	|	gsdl.ags.typeitem.decls.tygvar.print	tygvs
+	.app	tygvs.dss
+	.enter	diff.list.concat	rune.t
 
 # §section §gs{gsdl.ags.codeitem.≡}
 
