@@ -278,7 +278,7 @@ tyls	.larg	list.t	gsdl.ags.codeitem.tylet.t
 fvs	.larg	list.t	gsdl.ags.codeitem.fv.t
 args	.larg	list.t	gsdl.ags.codeitem.arg.t
 allocs	.larg	list.t	gsdl.ags.codeitem.alloc.t
-r	.record	allocs	allocs	args	args	cogvars	cogvars	gvars	gvars	subcodes	subcodes	tygvs	tygvs	|	_gsdl.ags.codeitem.prim.u_expr_decls_u
+r	.record	allocs	allocs	args	args	cogvars	cogvars	gvars	gvars	subcodes	subcodes	tygvars	tygvs	|	_gsdl.ags.codeitem.prim.u_expr_decls_u
 	.lift
 	.yield	r
 
@@ -732,7 +732,7 @@ list.map	.gvar
 gsdl.ags.typeitem.decls.tygvar.print	.gvar
 ds	.larg	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
-tygvs	.lfield	tygvs	ds
+tygvs	.lfield	tygvars	ds
 tygvs.dss	.apply	list.map	gsdl.ags.typeitem.decls.tygvar.t	diff.list.rune.ty	|	gsdl.ags.typeitem.decls.tygvar.print	tygvs
 	.app	tygvs.dss
 	.enter	diff.list.concat	rune.t
@@ -810,8 +810,8 @@ gvars.eq					.apply	list.≡	gsdl.ags.codeitem.gvar.t	|	gsdl.ags.codeitem.gvar.�
 subcodes0					.lfield	subcodes	ds0
 subcodes1					.lfield	subcodes	ds1
 subcodes.eq					.apply	list.≡	string.t	|	string.≡	subcodes0	subcodes1
-tygvs0					.lfield	tygvs	ds0
-tygvs1					.lfield	tygvs	ds1
+tygvs0					.lfield	tygvars	ds0
+tygvs1					.lfield	tygvars	ds1
 tygvs.eq					.apply	list.≡	gsdl.ags.typeitem.decls.tygvar.t	|	gsdl.ags.typeitem.decls.tygvar.≡	tygvs0	tygvs1
 ds.eq.3					.apply	bool.∧	|	subcodes.eq	tygvs.eq
 ds.eq.2					.apply	bool.∧	|	gvars.eq	ds.eq.3
@@ -2859,7 +2859,7 @@ list.arg.ty	.tylet	list.t	gsdl.ags.codeitem.arg.t
 list.string.ty	.tylet	list.t	string.t
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 list.tygvar.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tygvar.t
-	.typroduct	allocs	list.alloc.ty	args	list.arg.ty	cogvars	list.string.ty	gvars	list.gvar.ty	subcodes	list.string.ty	tygvs	list.tygvar.ty
+	.typroduct	allocs	list.alloc.ty	args	list.arg.ty	cogvars	list.string.ty	gvars	list.gvar.ty	subcodes	list.string.ty	tygvars	list.tygvar.ty
 
 _gsdl.ags.codeitem.prim.u_forcecont_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
