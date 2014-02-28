@@ -1249,7 +1249,6 @@ diff.list.t	.tygvar	# Temp
 gsdl.ags.codeitem.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
 gsdl.ags.dataitem.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar	# Temp
 _gsac.gsexpr.compileToLambdaExpr_pos_right_e_c	.subcode
 either.right	.gvar
@@ -1267,7 +1266,7 @@ r0.res			.lfield	res	r0
 r0.as			.lfield	args	r0.res
 r0.b			.lfield	body	r0.res
 e			.alloc	_gsac.gsexpr.compileToLambdaExpr_pos_right_e_c
-tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tygvs			.lfield	tygvars	r0
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
