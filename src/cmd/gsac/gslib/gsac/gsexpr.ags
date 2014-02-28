@@ -1127,7 +1127,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	right
 ty.r0		.fkarg	0	_gsac.gstype.compileToApp_res.ty
-ty.r0.tyem			.undefined	ordered.set.t	gsdl.var.t
+ty.r0.tyem			.lfield	emitted	ty.r0
 ty.r0.pem			.lfield	prim.emitted	ty.r0
 ty.r0.tyvs			.lfield	subvars	ty.r0
 ty.r0.tygvs			.lfield	tygvars	ty.r0
