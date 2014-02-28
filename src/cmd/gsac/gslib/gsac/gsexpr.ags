@@ -1381,7 +1381,6 @@ list.t	.tygvar	# Temp
 gsdl.ags.codeitem.arg.t	.tygvar	# Temp
 gsdl.ags.codeitem.alloc.t	.tygvar	# Temp
 gsdl.ags.codeitem.expr.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
 gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
 diff.list.nil	.gvar
@@ -1401,7 +1400,7 @@ e.b.as			.undefined	list.t	gsdl.ags.codeitem.alloc.t
 e.b.u			.undefined	gsdl.ags.codeitem.expr.t
 e.b			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	|	e.b.as	e.b.u
 e			.lrecord	args	e.as	body	e.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
-tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tygvs			.lfield	tygvars	r0
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
