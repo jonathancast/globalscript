@@ -725,19 +725,26 @@ e		.fkarg	3	gsdl.ags.codeitem.expr.t
 
 _gsdl.ags.codeitem.prim.u_expr_decls.print_c	.expr
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
+rune.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 diff.list.t	.tygvar
-rune.t	.tygvar
+gsdl.ags.codeitem.arg.t	.tygvar
 list.t	.tygvar	# Temp
+diff.list.<>	.gvar
 diff.list.concat	.gvar
 list.map	.gvar
 gsdl.ags.typeitem.decls.tygvar.print	.gvar
+gsdl.ags.codeitem.arg.print	.gvar
 ds	.larg	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 tygvs	.lfield	tygvars	ds
 tygvs.dss	.apply	list.map	gsdl.ags.typeitem.decls.tygvar.t	diff.list.rune.ty	|	gsdl.ags.typeitem.decls.tygvar.print	tygvs
-	.app	tygvs.dss
-	.enter	diff.list.concat	rune.t
+tygvs.ds	.apply	diff.list.concat	rune.t	|	tygvs.dss
+args	.lfield	args	ds
+args.dss	.apply	list.map	gsdl.ags.codeitem.arg.t	diff.list.rune.ty	|	gsdl.ags.codeitem.arg.print	args
+args.ds	.apply	diff.list.concat	rune.t	|	args.dss
+	.app	tygvs.ds	args.ds
+	.enter	diff.list.<>	rune.t
 
 # §section §gs{gsdl.ags.codeitem.≡}
 
