@@ -61,6 +61,8 @@ gsdl.ags.codeitem.args.parser	.closure	_gsdl.ags.codeitem.args.parser_c
 _gsdl.ags.codeitem.args.parser_arg.kw.re	.regex	.arg
 _gsdl.ags.codeitem.args.parser_larg.kw.re	.regex	.larg
 
+gsdl.ags.codeitem.arg.print	.closure	_gsdl.ags.codeitem.arg.print_c
+
 gsdl.ags.codeitem.allocs.parser	.closure	_gsdl.ags.codeitem.allocs.parser_c
 _gsdl.ags.codeitem.allocs.parser_alloc.p_alloc.re	.regex	.alloc
 _gsdl.ags.codeitem.allocs.parser_apply.p_apply.kw.re	.regex	.apply
@@ -1332,6 +1334,15 @@ tyargs	.larg	list.t	string.t
 r	.record	gstype	ty	lifted	lifted	name	nm	tyargs	tyargs
 	.lift
 	.yield	r
+
+# §section §gs{gsdl.ags.codeitem.arg.print}
+
+_gsdl.ags.codeitem.arg.print_c	.expr
+gsdl.ags.codeitem.arg.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+a	.larg	gsdl.ags.codeitem.arg.t
+	.undef	diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.codeitem.allocs.parser}
 
