@@ -63,6 +63,8 @@ _gsdl.ags.codeitem.args.parser_larg.kw.re	.regex	.larg
 
 gsdl.ags.codeitem.arg.print	.closure	_gsdl.ags.codeitem.arg.print_c
 
+gsdl.ags.codeitem.arg.arg	.closure	_gsdl.ags.codeitem.arg.arg_c
+
 gsdl.ags.codeitem.allocs.parser	.closure	_gsdl.ags.codeitem.allocs.parser_c
 _gsdl.ags.codeitem.allocs.parser_alloc.p_alloc.re	.regex	.alloc
 _gsdl.ags.codeitem.allocs.parser_apply.p_apply.kw.re	.regex	.apply
@@ -1334,13 +1336,13 @@ _gsdl.ags.codeitem.args.parser_f_c	.expr
 string.t	.tygvar
 bool.t	.tygvar
 list.t	.tygvar
+gsdl.ags.codeitem.arg.arg	.gvar
 nm	.larg	string.t
 lifted	.larg	bool.t
 ty	.larg	string.t
 tyargs	.larg	list.t	string.t
-r	.record	gstype	ty	lifted	lifted	name	nm	tyargs	tyargs
-	.lift
-	.yield	r
+	.app	lifted	nm	ty	tyargs
+	.enter	gsdl.ags.codeitem.arg.arg
 
 # §section §gs{gsdl.ags.codeitem.arg.print}
 
@@ -1350,6 +1352,23 @@ diff.list.t	.tygvar	# Temp
 rune.t	.tygvar	# Temp
 a	.larg	gsdl.ags.codeitem.arg.t
 	.undef	diff.list.t	rune.t
+
+# §section §gs{gsdl.ags.codeitem.arg.t} constructors
+
+_gsdl.ags.codeitem.arg.arg_c	.expr
+bool.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.arg.prim.u	.tygvar
+gsdl.ags.codeitem.arg.t.in	.cogvar
+lifted	.larg	bool.t
+nm	.larg	string.t
+ty	.larg	string.t
+tyas	.larg	list.t	string.t
+res	.constr	gsdl.ags.codeitem.arg.prim.u	arg	0	lifted	1	nm	2	ty	3	tyas
+	.coerce	gsdl.ags.codeitem.arg.t.in
+	.lift
+	.yield	res
 
 # §section §gs{gsdl.ags.codeitem.allocs.parser}
 
@@ -1837,28 +1856,61 @@ code	.larg	string.t
 _gsdl.ags.codeitem.arg.≡_c	.expr
 gsdl.ags.codeitem.arg.t	.tygvar
 string.t	.tygvar
+_gsdl.ags.codeitem.arg.≡_k0	.subcode
+gsdl.ags.codeitem.arg.t.out	.cogvar
 bool.∧	.gvar
 string.≡	.gvar
 bool.≡	.gvar
 list.≡	.gvar
 arg0	.larg	gsdl.ags.codeitem.arg.t
 arg1	.larg	gsdl.ags.codeitem.arg.t
-name0	.lfield	name	arg0
-name1	.lfield	name	arg1
-name.eq	.apply	string.≡	|	name0	name1
-lifted0	.lfield	lifted	arg0
-lifted1	.lfield	lifted	arg1
-lifted.eq	.apply	bool.≡	|	lifted0	lifted1
-gstype0	.lfield	gstype	arg0
-gstype1	.lfield	gstype	arg1
-gstype.eq	.apply	string.≡	|	gstype0	gstype1
-tyargs0	.lfield	tyargs	arg0
-tyargs1	.lfield	tyargs	arg1
-tyargs.eq	.apply	list.≡	string.t	|	string.≡	tyargs0	tyargs1
-eq.2	.apply	bool.∧	|	gstype.eq	tyargs.eq
-eq.1	.apply	bool.∧	|	lifted.eq	eq.2
-	.app	name.eq	eq.1
-	.enter	bool.∧
+	.force	_gsdl.ags.codeitem.arg.≡_k0
+	.coerce	gsdl.ags.codeitem.arg.t.out
+	.enter	arg0
+
+_gsdl.ags.codeitem.arg.≡_k0	.forcecont
+gsdl.ags.codeitem.arg.t	.tygvar
+gsdl.ags.codeitem.arg.prim.u	.tygvar
+_gsdl.ags.codeitem.arg.≡_k1	.subcode
+gsdl.ags.codeitem.arg.t.out	.cogvar
+arg1	.fv	gsdl.ags.codeitem.arg.t
+arg0.0	.karg	gsdl.ags.codeitem.arg.prim.u
+	.force	_gsdl.ags.codeitem.arg.≡_k1
+	.coerce	gsdl.ags.codeitem.arg.t.out
+	.enter	arg1
+
+_gsdl.ags.codeitem.arg.≡_k1	.forcecont
+gsdl.ags.codeitem.arg.prim.u	.tygvar
+string.t	.tygvar
+bool.t	.tygvar
+list.t	.tygvar
+bool.∧	.gvar
+string.≡	.gvar
+bool.≡	.gvar
+list.≡	.gvar
+arg0.0	.fv	gsdl.ags.codeitem.arg.prim.u
+arg1.0	.karg	gsdl.ags.codeitem.arg.prim.u
+	.analyze	arg0.0	arg
+		.case	arg
+lifted0		.fkarg	0	bool.t
+name0		.fkarg	1	string.t
+gstype0		.fkarg	2	string.t
+tyargs0		.fkarg	3	list.t	string.t
+				.analyze	arg1.0	arg
+					.case	arg
+lifted1				.fkarg	0	bool.t
+name1				.fkarg	1	string.t
+gstype1				.fkarg	2	string.t
+tyargs1				.fkarg	3	list.t	string.t
+name.eq					.apply	string.≡	|	name0	name1
+lifted.eq					.apply	bool.≡	|	lifted0	lifted1
+gstype.eq					.apply	string.≡	|	gstype0	gstype1
+tyargs.eq					.apply	list.≡	string.t	|	string.≡	tyargs0	tyargs1
+eq.2					.apply	bool.∧	|	gstype.eq	tyargs.eq
+eq.1					.apply	bool.∧	|	lifted.eq	eq.2
+					.app	name.eq	eq.1
+					.enter	bool.∧
+	# > :: bool.t
 
 # §section §gs{gsdl.ags.codeitem.arg.fmtgs}
 
@@ -2972,17 +3024,21 @@ gsdl.ags.codeitem.tylet.u	.tyexpr
 
 # §section §gs{gsdl.ags.codeitem.arg.t}
 
-gsdl.ags.codeitem.arg.t	.tyexpr
-gsdl.ags.codeitem.arg.u	.tygvar
+gsdl.ags.codeitem.arg.t	.tyabstract	*
+gsdl.ags.codeitem.arg.prim.u	.tygvar
 	.tylift
-	.tyref	gsdl.ags.codeitem.arg.u
+	.tyref	gsdl.ags.codeitem.arg.prim.u
 
-gsdl.ags.codeitem.arg.u	.tyexpr
+gsdl.ags.codeitem.arg.prim.u	.tyexpr
+_gsdl.ags.codeitem.arg.prim.u_arg_ty	.tygvar
+	.tysum	arg	_gsdl.ags.codeitem.arg.prim.u_arg_ty
+
+_gsdl.ags.codeitem.arg.prim.u_arg_ty	.tyexpr
 bool.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 list.string.t	.tylet	list.t	string.t
-	.typroduct	gstype	string.t	lifted	bool.t	name	string.t	tyargs	list.string.t
+	.tyubproduct	0	bool.t	1	string.t	2	string.t	3	list.string.t	# lifted name gstype tyargs
 
 # §section §gs{gsdl.ags.codeitem.alloc.t}
 
@@ -3162,6 +3218,15 @@ gsdl.ags.codeitem.gvar.t.out	.tycoercion
 gsdl.ags.codeitem.gvar.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.ags.codeitem.gvar.t
+
+gsdl.ags.codeitem.arg.t.in	.tycoercion
+gsdl.ags.codeitem.arg.t	.tygvar
+	.tydefinition	gsdl.ags.codeitem.arg.t
+
+gsdl.ags.codeitem.arg.t.out	.tycoercion
+gsdl.ags.codeitem.arg.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.codeitem.arg.t
 
 gsdl.ags.codeitem.karg.in	.tycoercion
 gsdl.ags.codeitem.karg.t	.tygvar
