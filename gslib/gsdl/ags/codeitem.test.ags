@@ -749,7 +749,7 @@ gsdl.ags.codeitem.arg.≡	.gvar
 list.fmtgs.byDefault	.gvar
 gsdl.ags.codeitem.arg.fmtgs	.gvar
 list.:	.gvar
-gsdl.ags.codeitem.arg.arg	.gvar
+gsdl.ags.codeitem.arg.larg	.gvar
 bool.true	.gvar
 _test.parse_expr.larg_k_bar.t.s	.gvar
 _test.parse_expr.larg_k_bar.s	.gvar
@@ -769,7 +769,7 @@ e		.fkarg	3	gsdl.ags.codeitem.expr.t
 args			.lfield	args	ds
 args.≡			.apply	list.≡	gsdl.ags.codeitem.arg.t	|	gsdl.ags.codeitem.arg.≡
 args.fmtgs			.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.arg.t	|	gsdl.ags.codeitem.arg.fmtgs
-arg0			.apply	gsdl.ags.codeitem.arg.arg	|	bool.true	_test.parse_expr.larg_k_bar.s	_test.parse_expr.larg_k_bar.t.s	_test.parse_expr.larg_k_tyargs
+arg0			.apply	gsdl.ags.codeitem.arg.larg	|	_test.parse_expr.larg_k_bar.s	_test.parse_expr.larg_k_bar.t.s	_test.parse_expr.larg_k_tyargs
 nil			.apply	list.nil	gsdl.ags.codeitem.arg.t
 expected			.apply	list.:	gsdl.ags.codeitem.arg.t	|	arg0	nil
 			.app	args.≡	args.fmtgs	args	expected
@@ -1853,7 +1853,7 @@ list.nil	.gvar
 gsdl.ags.codeitem.expr.enter	.gvar
 _test.eq_codeitem.expr.diff.args_bar.s	.gvar
 list.:	.gvar
-gsdl.ags.codeitem.arg.arg	.gvar
+gsdl.ags.codeitem.arg.larg	.gvar
 _test.eq_codeitem.expr.diff.args_x.t.s	.gvar
 bool.true	.gvar
 _test.eq_codeitem.expr.diff.args_x.s	.gvar
@@ -1866,7 +1866,7 @@ tygvs.nil	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvars	tygvs.nil	|	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 exp	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.eq_codeitem.expr.diff.args_bar.s	nil
 ci0	.apply	gsdl.ags.codeitem.expr	|	pos	_fixtures_foo.c.v decls0	exp
-arg0	.apply	gsdl.ags.codeitem.arg.arg	|	bool.true	_test.eq_codeitem.expr.diff.args_x.s	_test.eq_codeitem.expr.diff.args_x.t.s	nil
+arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_test.eq_codeitem.expr.diff.args_x.s	_test.eq_codeitem.expr.diff.args_x.t.s	nil
 args1	.apply	list.:	gsdl.ags.codeitem.arg.t	|	arg0	args.nil
 decls1	.lrecord	allocs	allocs.nil	args	args1	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvars	tygvs.nil	|	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 ci1	.apply	gsdl.ags.codeitem.expr	|	pos	_fixtures_foo.c.v decls1	exp
@@ -1885,15 +1885,14 @@ test.deny	.gvar
 _test.eq_arg.diff.name_false	.gvar
 _test.eq_arg.diff.name_true	.gvar
 gsdl.ags.codeitem.arg.≡	.gvar
-gsdl.ags.codeitem.arg.arg	.gvar
-bool.true	.gvar
+gsdl.ags.codeitem.arg.larg	.gvar
 _test.eq_arg.diff.name_bar.t.s	.gvar
 _test.eq_arg.diff.name_foo.s	.gvar
 list.nil	.gvar
 _test.eq_arg.diff.name_baz.s	.gvar
 nil	.apply	list.nil	string.t
-arg0	.apply	gsdl.ags.codeitem.arg.arg	|	bool.true	_test.eq_arg.diff.name_foo.s	_test.eq_arg.diff.name_bar.t.s	nil
-arg1	.apply	gsdl.ags.codeitem.arg.arg	|	bool.true	_test.eq_arg.diff.name_baz.s	_test.eq_arg.diff.name_bar.t.s	nil
+arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_test.eq_arg.diff.name_foo.s	_test.eq_arg.diff.name_bar.t.s	nil
+arg1	.apply	gsdl.ags.codeitem.arg.larg	|	_test.eq_arg.diff.name_baz.s	_test.eq_arg.diff.name_bar.t.s	nil
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
 test	.apply	test.deny	|	_test.eq_arg.diff.name_false	_test.eq_arg.diff.name_true	eq
 	.app	_test.eq_arg.diff.name_label	test
@@ -1909,15 +1908,14 @@ test.deny	.gvar
 _test.eq_arg.diff.lifted_false	.gvar
 _test.eq_arg.diff.lifted_true	.gvar
 gsdl.ags.codeitem.arg.≡	.gvar
-gsdl.ags.codeitem.arg.arg	.gvar
-bool.true	.gvar
+gsdl.ags.codeitem.arg.larg	.gvar
 _test.eq_arg.diff.lifted_bar.t.s	.gvar
 _test.eq_arg.diff.lifted_foo.s	.gvar
 list.nil	.gvar
-bool.false	.gvar
+gsdl.ags.codeitem.arg.arg	.gvar
 nil	.apply	list.nil	string.t
-arg0	.apply	gsdl.ags.codeitem.arg.arg	|	bool.true	_test.eq_arg.diff.lifted_foo.s	_test.eq_arg.diff.lifted_bar.t.s	nil
-arg1	.apply	gsdl.ags.codeitem.arg.arg	|	bool.false	_test.eq_arg.diff.lifted_foo.s	_test.eq_arg.diff.lifted_bar.t.s	nil
+arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_test.eq_arg.diff.lifted_foo.s	_test.eq_arg.diff.lifted_bar.t.s	nil
+arg1	.apply	gsdl.ags.codeitem.arg.arg	|	_test.eq_arg.diff.lifted_foo.s	_test.eq_arg.diff.lifted_bar.t.s	nil
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
 test	.apply	test.deny	|	_test.eq_arg.diff.lifted_false	_test.eq_arg.diff.lifted_true	eq
 	.app	_test.eq_arg.diff.lifted_label	test
@@ -1933,15 +1931,14 @@ test.deny	.gvar
 _test.eq_arg.diff.ty_false	.gvar
 _test.eq_arg.diff.ty_true	.gvar
 gsdl.ags.codeitem.arg.≡	.gvar
-gsdl.ags.codeitem.arg.arg	.gvar
-bool.true	.gvar
+gsdl.ags.codeitem.arg.larg	.gvar
 _test.eq_arg.diff.ty_bar.t.s	.gvar
 _test.eq_arg.diff.ty_foo.s	.gvar
 list.nil	.gvar
 _test.eq_arg.diff.ty_baz.t.s	.gvar
 nil	.apply	list.nil	string.t
-arg0	.apply	gsdl.ags.codeitem.arg.arg	|	bool.true	_test.eq_arg.diff.ty_foo.s	_test.eq_arg.diff.ty_bar.t.s	nil
-arg1	.apply	gsdl.ags.codeitem.arg.arg	|	bool.true	_test.eq_arg.diff.ty_foo.s	_test.eq_arg.diff.ty_baz.t.s	nil
+arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_test.eq_arg.diff.ty_foo.s	_test.eq_arg.diff.ty_bar.t.s	nil
+arg1	.apply	gsdl.ags.codeitem.arg.larg	|	_test.eq_arg.diff.ty_foo.s	_test.eq_arg.diff.ty_baz.t.s	nil
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
 test	.apply	test.deny	|	_test.eq_arg.diff.ty_false	_test.eq_arg.diff.ty_true	eq
 	.app	_test.eq_arg.diff.ty_label	test
@@ -1957,17 +1954,16 @@ test.deny	.gvar
 _test.eq_arg.diff.tyargs_false	.gvar
 _test.eq_arg.diff.tyargs_true	.gvar
 gsdl.ags.codeitem.arg.≡	.gvar
-gsdl.ags.codeitem.arg.arg	.gvar
-bool.true	.gvar
+gsdl.ags.codeitem.arg.larg	.gvar
 _test.eq_arg.diff.tyargs_bar.t.s	.gvar
 _test.eq_arg.diff.tyargs_foo.s	.gvar
 list.nil	.gvar
 list.:	.gvar
 _test.eq_arg.diff.tyargs_quux.t.s	.gvar
 nil	.apply	list.nil	string.t
-arg0	.apply	gsdl.ags.codeitem.arg.arg	|	bool.true	_test.eq_arg.diff.tyargs_foo.s	_test.eq_arg.diff.tyargs_bar.t.s	nil
+arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_test.eq_arg.diff.tyargs_foo.s	_test.eq_arg.diff.tyargs_bar.t.s	nil
 tyargs1	.apply	list.:	string.t	|	_test.eq_arg.diff.tyargs_quux.t.s	nil
-arg1	.apply	gsdl.ags.codeitem.arg.arg	|	bool.true	_test.eq_arg.diff.tyargs_foo.s	_test.eq_arg.diff.tyargs_bar.t.s	tyargs1
+arg1	.apply	gsdl.ags.codeitem.arg.larg	|	_test.eq_arg.diff.tyargs_foo.s	_test.eq_arg.diff.tyargs_bar.t.s	tyargs1
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
 test	.apply	test.deny	|	_test.eq_arg.diff.tyargs_false	_test.eq_arg.diff.tyargs_true	eq
 	.app	_test.eq_arg.diff.tyargs_label	test
