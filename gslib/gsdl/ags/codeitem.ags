@@ -65,6 +65,7 @@ gsdl.ags.codeitem.arg.print	.closure	_gsdl.ags.codeitem.arg.print_c
 
 gsdl.ags.codeitem.arg.arg	.closure	_gsdl.ags.codeitem.arg.arg_c
 gsdl.ags.codeitem.arg.larg	.closure	_gsdl.ags.codeitem.arg.larg_c
+gsdl.ags.codeitem.arg.lift	.closure	_gsdl.ags.codeitem.arg.lift_c
 
 gsdl.ags.codeitem.allocs.parser	.closure	_gsdl.ags.codeitem.allocs.parser_c
 _gsdl.ags.codeitem.allocs.parser_alloc.p_alloc.re	.regex	.alloc
@@ -1402,6 +1403,14 @@ res	.constr	gsdl.ags.codeitem.arg.prim.u	larg	0	nm	1	ty	2	tyas
 	.lift
 	.yield	res
 
+_gsdl.ags.codeitem.arg.lift_c	.expr
+gsdl.ags.codeitem.arg.prim.u	.tygvar
+gsdl.ags.codeitem.arg.t.in	.cogvar
+res	.constr	gsdl.ags.codeitem.arg.prim.u	lift
+	.coerce	gsdl.ags.codeitem.arg.t.in
+	.lift
+	.yield	res
+
 # §section §gs{gsdl.ags.codeitem.allocs.parser}
 
 _gsdl.ags.codeitem.allocs.parser_c	.expr
@@ -1923,7 +1932,7 @@ list.≡	.gvar
 bool.false	.gvar
 arg0.0	.fv	gsdl.ags.codeitem.arg.prim.u
 arg1.0	.karg	gsdl.ags.codeitem.arg.prim.u
-	.analyze	arg0.0	arg	larg
+	.analyze	arg0.0	arg	larg	lift
 		.case	arg
 name0		.fkarg	0	string.t
 gstype0		.fkarg	1	string.t
@@ -1958,6 +1967,8 @@ as.e					.apply	list.≡	string.t	|	string.≡	as0	as1
 eq.1					.apply	bool.∧	|	ty.e	as.e
 					.app	nm.e	eq.1
 					.enter	bool.∧
+		.case	lift
+			.undef	bool.t
 	# > :: bool.t
 
 # §section §gs{gsdl.ags.codeitem.arg.fmtgs}
@@ -3080,7 +3091,8 @@ gsdl.ags.codeitem.arg.prim.u	.tygvar
 gsdl.ags.codeitem.arg.prim.u	.tyexpr
 _gsdl.ags.codeitem.arg.prim.u_arg_ty	.tygvar
 _gsdl.ags.codeitem.arg.prim.u_larg_ty	.tygvar
-	.tysum	arg	_gsdl.ags.codeitem.arg.prim.u_arg_ty	larg	_gsdl.ags.codeitem.arg.prim.u_larg_ty
+_gsdl.ags.codeitem.arg.prim.u_lift_ty	.tygvar
+	.tysum	arg	_gsdl.ags.codeitem.arg.prim.u_arg_ty	larg	_gsdl.ags.codeitem.arg.prim.u_larg_ty	lift	_gsdl.ags.codeitem.arg.prim.u_lift_ty
 
 _gsdl.ags.codeitem.arg.prim.u_arg_ty	.tyexpr
 string.t	.tygvar
@@ -3093,6 +3105,9 @@ string.t	.tygvar
 list.t	.tygvar
 list.string.t	.tylet	list.t	string.t
 	.tyubproduct	0	string.t	1	string.t	2	list.string.t	# name gstype tyargs
+
+_gsdl.ags.codeitem.arg.prim.u_lift_ty	.tyexpr
+	.tyubproduct
 
 # §section §gs{gsdl.ags.codeitem.alloc.t}
 
