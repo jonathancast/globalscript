@@ -50,7 +50,7 @@ _test_parse_gsexpr_expr.heavy.cast_k_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 test.assert.eq	.gvar
 gsdl.cgs.gsexpr.≡	.gvar
 gsdl.cgs.gsexpr.fmtgs	.gvar

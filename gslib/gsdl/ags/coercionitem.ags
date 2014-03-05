@@ -53,11 +53,11 @@ _gsdl.ags.coercionitem.segment.parser_coercion.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.many	.gvar
 gsdl.ags.coercionitem.parser	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 list.coercionitem.ty	.tylet	list.t	gsdl.ags.coercionitem.t
 nil	.apply	list.nil	gsdl.ags.coercionitem.t
 nil.p	.apply	parser.unit	rune.t	list.coercionitem.ty	|	nil
-coercion.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.segment.parser_coercion.re	# > m/\.coercion/
+coercion.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.segment.parser_coercion.re	-- > m/\.coercion/
 segment.p3	.apply	parser.many	rune.t	gsdl.ags.coercionitem.t	|	gsdl.ags.coercionitem.parser
 segment.p2	.apply	parser.*>	rune.t	string.t	list.coercionitem.ty	|	gsdl.ags.syntax.whitespace	segment.p3
 segment.p1	.apply	parser.*>	rune.t	string.t	list.coercionitem.ty	|	coercion.p	segment.p2
@@ -94,7 +94,7 @@ _gsdl.ags.coercionitem.parser_tycoercion.p_tycoercion.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 gsdl.ags.coercionitem.decls.parser	.gvar
 gsdl.ags.coercionitem.expr.parser	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 f	.alloc	_gsdl.ags.coercionitem.parser_tycoercion.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 tycoercion.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.parser_tycoercion.p_tycoercion.re
@@ -102,14 +102,14 @@ nm.p2	.apply	parser.*>	rune.t	string.t	string.t	|	tycoercion.p	gsdl.ags.syntax.w
 nm.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	nm.p2
 nm.p	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	nm.p1
 	.app	f	pos.get	nm.p	gsdl.ags.coercionitem.decls.parser	gsdl.ags.coercionitem.expr.parser
-	.enter	parser.lift4	rune.t	parser.pos.t	string.t	gsdl.ags.coercionitem.decls.t	gsdl.ags.coercionitem.expr.t	gsdl.ags.coercionitem.t	# > f <$> pos.get <*> () <*> expr
+	.enter	parser.lift4	rune.t	parser.pos.t	string.t	gsdl.ags.coercionitem.decls.t	gsdl.ags.coercionitem.expr.t	gsdl.ags.coercionitem.t	-- > f <$> pos.get <*> () <*> expr
 
 _gsdl.ags.coercionitem.parser_tycoercion.p_f_c	.expr
 parser.pos.t	.tygvar
 string.t	.tygvar
 gsdl.ags.coercionitem.decls.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
-gsdl.ags.coercionitem.t	.tygvar	# Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
 pos	.larg	parser.pos.t
 nm	.larg	string.t
 ds	.larg	gsdl.ags.coercionitem.decls.t
@@ -134,7 +134,7 @@ gsdl.var.t	.tygvar
 gsdl.ags.coercionitem.decls.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
 rune.t	.tygvar
-diff.list.t	.tygvar	# Temp
+diff.list.t	.tygvar	-- Temp
 diff.list.<>	.gvar
 gsdl.ags.sourcepos.print	.gvar
 diff.list.prepend	.gvar
@@ -158,13 +158,13 @@ s2			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.coercionitem.print_tycoercion_t
 s1			.apply	diff.list.prepend	rune.t	|	v.s	s2
 			.app	pos.s	s1
 			.enter	diff.list.<>	rune.t
-	# > :: diff.list.t	rune.t
+	-- > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.coercionitem.≡}
 
 _gsdl.ags.coercionitem.≡_c	.expr
 gsdl.ags.coercionitem.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 co0	.larg	gsdl.ags.coercionitem.t
 co1	.larg	gsdl.ags.coercionitem.t
 	.undef	bool.t
@@ -172,8 +172,8 @@ co1	.larg	gsdl.ags.coercionitem.t
 # §section §gs{gsdl.ags.coercionitem.fmtgs}
 
 _gsdl.ags.coercionitem.fmtgs_c	.expr
-fmtgs.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
+fmtgs.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
 	.undef	fmtgs.t	gsdl.ags.coercionitem.t
 
 # §section §gs{gsdl.ags.coercionitem.decls.parser}
@@ -200,7 +200,7 @@ _gsdl.ags.coercionitem.decls.parser_f_c	.expr
 list.t	.tygvar
 string.t	.tygvar
 gsdl.ags.coercionitem.decls.tylambda.t	.tygvar
-gsdl.ags.coercionitem.decls.t	.tygvar	# Temp
+gsdl.ags.coercionitem.decls.t	.tygvar	-- Temp
 tygvs	.larg	list.t	string.t
 tyargs	.larg	list.t	gsdl.ags.coercionitem.decls.tylambda.t
 	.undef	gsdl.ags.coercionitem.decls.t
@@ -218,7 +218,7 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.coercionitem.decls.parser_tygvars.p_tygvar.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 list.string.ty	.tylet	list.t	string.t
 tygvar.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.decls.parser_tygvars.p_tygvar.re
 p2	.apply	parser.*>	rune.t	string.t	string.t	|	tygvar.p	gsdl.ags.syntax.whitespace
@@ -261,7 +261,7 @@ _gsdl.ags.coercionitem.decls.parser_tylambdas.p_f_c	.expr
 parser.pos.t	.tygvar
 string.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
-gsdl.ags.coercionitem.decls.tylambda.t	.tygvar	# Temp
+gsdl.ags.coercionitem.decls.tylambda.t	.tygvar	-- Temp
 pos	.larg	parser.pos.t
 nm	.larg	string.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
@@ -320,7 +320,7 @@ gsdl.ags.syntax.id	.gvar
 parser.<*	.gvar
 parser.many	.gvar
 gsdl.ags.syntax.whitespace	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 list.string.ty	.tylet	list.t	string.t
 f	.alloc	_gsdl.ags.coercionitem.expr.parser_tydefinition.p_f_c
 tydefinition.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.expr.parser_tydefinition.p_tydefinition.re
@@ -336,7 +336,7 @@ tyas.p	.apply	parser.<*	rune.t	list.string.ty	string.t	|	tyas.p1	gsdl.ags.syntax
 _gsdl.ags.coercionitem.expr.parser_tydefinition.p_f_c	.expr
 string.t	.tygvar
 list.t	.tygvar
-gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
+gsdl.ags.coercionitem.expr.t	.tygvar	-- Temp
 nm	.larg	string.t
 as	.larg	list.t	string.t
 	.undef	gsdl.ags.coercionitem.expr.t
@@ -356,7 +356,7 @@ rune.compare	.gvar
 _gsdl.ags.coercionitem.expr.parser_tyinvert.p_tyinvert.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 gsdl.ags.coercionitem.expr.parser	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 f	.alloc	_gsdl.ags.coercionitem.expr.parser_tyinvert.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 tyinvert.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.coercionitem.expr.parser_tyinvert.p_tyinvert.re
@@ -428,7 +428,7 @@ pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
 e1.s			.apply	gsdl.ags.coercionitem.expr.print	|	e1
 			.app	pos.s	e1.s
 			.enter	diff.list.<>	rune.t
-	# > :: diff.list.t	rune.t
+	-- > :: diff.list.t	rune.t
 
 _gsdl.ags.coercionitem.expr.print_defn_tyas.ss.f_c	.expr
 gsdl.var.t	.tygvar

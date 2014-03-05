@@ -40,7 +40,7 @@ ds	.apply	diff.list.fromlist	rune.t	|	s
 _fmtgs.app_c	.expr
 fmtgs.printer.t	.tygvar
 rune.t	.tygvar
-diff.list.t	.tygvar	# Temp
+diff.list.t	.tygvar	-- Temp
 fmtgs.prec	.gvar
 fmtgs.prec.app	.gvar
 diff.list.<>	.gvar
@@ -186,7 +186,7 @@ p1.0	.karg	fmtgs.prec.prim.u
 					.enter	bool.true
 				.case	arg
 					.enter	bool.true
-	# > :: bool.t
+	-- > :: bool.t
 
 # §section §gs{fmtgs.prec.max}
 

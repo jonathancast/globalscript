@@ -116,7 +116,7 @@ parser.pos.get	.gvar
 gsdl.cgs.gsexpr.cast.source.expr	.gvar
 gsdl.cgs.gsexpr.parser.cast	.gvar
 gsdl.cgs.syntax.assoc.right	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 t	.fv	gsdl.cgs.syntax.branch.t
 f	.alloc	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_f_c
 ld.p	.apply	gsdl.cgs.syntax.core.keywordOp	|	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re
@@ -202,7 +202,7 @@ gsdl.cgs.syntax.oftype	.gvar
 gsdl.cgs.gstype.parser.fun	.gvar
 gsdl.cgs.syntax.dot	.gvar
 gsdl.cgs.gsexpr.body.parser	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 f	.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_f_c
 pos.get	.apply	parser.pos.get	rune.t
 gsλ.p	.apply	gsdl.cgs.syntax.keyword	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_gsλ.re
@@ -253,13 +253,13 @@ _gsdl.cgs.gsexpr.parser.arg_lift.p_lbrack.re	.gvar
 parser.<*	.gvar
 gsdl.cgs.gsexpr.parser	.gvar
 _gsdl.cgs.gsexpr.parser.arg_lift.p_rbrack.re	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 f	.alloc	_gsdl.cgs.gsexpr.parser.arg_lift.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 lf.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gsexpr.parser.arg_lift.p_lbrack.re
 lf.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	lf.p1
 rf.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gsexpr.parser.arg_lift.p_rbrack.re
-rf.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	rf.p1	# > lexeme m/⌋/
+rf.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	rf.p1	-- > lexeme m/⌋/
 arg.p1	.apply	parser.<*	rune.t	gsdl.cgs.gsexpr.t	string.t	|	gsdl.cgs.gsexpr.parser	rf.p
 arg.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.t	|	lf.p	arg.p1
 	.app	f	pos.get	arg.p
@@ -299,9 +299,9 @@ gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-either.t	.tygvar	# Temp
-ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.subcode
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
@@ -341,7 +341,7 @@ pos		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.app	e1
 			.enter	gsdl.cgs.gsexpr.freevars
-	# > :: ordered.set.t	gsdl.cgs.symbol.t
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
 _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.expr
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
@@ -358,7 +358,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-ordered.set.t	.tygvar	# Temp
+ordered.set.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.freevars	.gvar
 ordered.set.empty	.gvar
 so0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
@@ -374,7 +374,7 @@ pos		.fkarg	0	gsdl.sourcepos.t
 pos		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	ordered.set.t	gsdl.cgs.symbol.t
-	# > :: ordered.set.t	gsdl.cgs.symbol.t
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gsexpr.≡}
 
@@ -408,7 +408,7 @@ gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_k	.subcode
 bool.t.out	.cogvar
 gsdl.cgs.gscoercion.≡	.gvar
@@ -448,17 +448,17 @@ pos1				.fkarg	0	gsdl.sourcepos.t
 e1.1				.fkarg	1	gsdl.cgs.gsexpr.t
 					.app	e0.1	e1.1
 					.enter	gsdl.cgs.gsexpr.≡
-	# > :: bool.t
+	-- > :: bool.t
 
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_k	.forcecont
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
 bool.prim.u	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0	.subcode
 gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
 so0	.fv	gsdl.cgs.gsexpr.cast.source.t
 so1	.fv	gsdl.cgs.gsexpr.cast.source.t
-b0	.karg	bool.prim.u	# Are coercions equal?
+b0	.karg	bool.prim.u	-- Are coercions equal?
 	.analyze	b0	false	true
 		.case	false
 			.undef	bool.t
@@ -470,7 +470,7 @@ b0	.karg	bool.prim.u	# Are coercions equal?
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0	.forcecont
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k1	.subcode
 gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
 so1	.fv	gsdl.cgs.gsexpr.cast.source.t
@@ -484,7 +484,7 @@ gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 bool.true	.gvar
 so0.0	.fv	gsdl.cgs.gsexpr.cast.source.prim.u
 so1.0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
@@ -504,13 +504,13 @@ pos1				.fkarg	0	gsdl.sourcepos.t
 pos0		.fkarg	0	gsdl.sourcepos.t
 ty0		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	bool.t
-		# > :: bool.t
+		-- > :: bool.t
 
 # §section §gs{gsdl.cgs.gsexpr.fmtgs}
 
 _gsdl.cgs.gsexpr.fmtgs_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+fmtgs.printer.t	.tygvar	-- Temp
 e	.larg	gsdl.cgs.gsexpr.t
 	.undef	fmtgs.printer.t
 
@@ -533,7 +533,7 @@ parser.pos.get	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.oftype	.gvar
 gsdl.cgs.gstype.parser.fun	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 f	.alloc	_gsdl.cgs.gsexpr.body.parser_missing.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
@@ -543,7 +543,7 @@ ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype
 _gsdl.cgs.gsexpr.body.parser_missing.p_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gsexpr.body.t	.tygvar	# Temp
+gsdl.cgs.gsexpr.body.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.body.missing	.gvar
 gsdl.sourcepos	.gvar
 pos0	.larg	parser.pos.t
@@ -568,8 +568,8 @@ _gsdl.cgs.gsexpr.body.freevars_k	.forcecont
 gsdl.cgs.gsexpr.body.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 gsdl.cgs.gstype.freevars	.gvar
 b0	.karg	gsdl.cgs.gsexpr.body.prim.u
 	.analyze	b0	missing
@@ -578,7 +578,7 @@ pos1		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
 			.app	ty
 			.enter	gsdl.cgs.gstype.freevars
-	# > :: ordered.set.t	gsdl.cgs.symbol.t
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gsexpr.t} constructors
 

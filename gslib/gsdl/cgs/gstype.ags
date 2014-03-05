@@ -97,7 +97,7 @@ parser.*>	.gvar
 gsdl.cgs.syntax.keywordOp	.gvar
 _gsdl.cgs.gstype.parser.fun_arr.re	.gvar
 gsdl.cgs.gstype.parser.fun	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 pos0	.fv	parser.pos.t
 ty0	.larg	gsdl.cgs.gstype.t
 un.ty0	.apply	parser.unit	rune.t	gsdl.cgs.gstype.t	|	ty0
@@ -136,7 +136,7 @@ _gsdl.cgs.gstype.parser.app_k	.gvar
 
 _gsdl.cgs.gstype.parser.app_k_c	.expr
 gsdl.cgs.gstype.t	.tygvar
-rune.t	.tygvar	# Temp
+rune.t	.tygvar	-- Temp
 parser.<|>	.gvar
 parser.unit	.gvar
 parser.>>=	.gvar
@@ -144,7 +144,7 @@ parser.map	.gvar
 gsdl.cgs.gstype.app	.gvar
 gsdl.cgs.gstype.parser.arg	.gvar
 _gsdl.cgs.gstype.parser.app_k	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 tyf	.larg	gsdl.cgs.gstype.t
 p0	.apply	parser.unit	rune.t	gsdl.cgs.gstype.t	|	tyf
 f	.apply	gsdl.cgs.gstype.app	|	tyf
@@ -228,7 +228,7 @@ gsdl.cgs.syntax.ws	.gvar
 parser.<*	.gvar
 gsdl.cgs.gstype.parser	.gvar
 _gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 lb_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_lift.p_lb.re
 rb_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_lift.p_rb.re
 ty_p3	.apply	parser.<*	rune.t	string.t	string.t	|	rb_p	gsdl.cgs.syntax.ws
@@ -268,8 +268,8 @@ gsdl.sourcepos.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
-diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+diff.list.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
 		.case	abstype
@@ -314,7 +314,7 @@ cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.undef	diff.list.t	rune.t
-	# > :: diff.list.t	rune.t
+	-- > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.cgs.gstype.freevars}
 
@@ -409,7 +409,7 @@ v		.fkarg	0	gsdl.var.t
 sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
 			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
-	# > :: ordered.set.t	gsdl.cgs.symbol.t
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
 # §section §gs{gsdl.cgs.gstype.substty}
 
@@ -511,7 +511,7 @@ v1		.fkarg	0	gsdl.var.t
 			.coerce	bool.t.out
 			.app	v	v1
 			.enter	gsdl.var.≡
-	# > :: gsdl.cgs.gstype.t
+	-- > :: gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.substty_var_k	.forcecont
 gsdl.cgs.gstype.t	.tygvar
@@ -572,7 +572,7 @@ gsdl.sourcepos.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 bool.false	.gvar
 gsdl.cgs.gstype.≡	.gvar
 bool.true	.gvar
@@ -632,7 +632,7 @@ cs0		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 		.case	var
 v0		.fkarg	0	gsdl.var.t
 			.undef	bool.t
-	# > :: bool.t
+	-- > :: bool.t
 
 # §section §gs{gsdl.cgs.gstype.fmtgs}
 
@@ -655,7 +655,7 @@ list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+fmtgs.printer.t	.tygvar	-- Temp
 fmtgs.prec	.gvar
 fmtgs.prec.app	.gvar
 diff.list.prepend	.gvar
@@ -713,7 +713,7 @@ cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.undef	fmtgs.printer.t
-	# > :: fmtgs.printer.t
+	-- > :: fmtgs.printer.t
 
 # §section §gs{gstype} Constructors
 
@@ -854,8 +854,8 @@ parser.fail	.gvar
 
 _gsdl.cgs.gstype.field.freevars_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
-ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 f	.larg	gsdl.cgs.gstype.field.t
 	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
@@ -863,7 +863,7 @@ f	.larg	gsdl.cgs.gstype.field.t
 
 _gsdl.cgs.gstype.field.name.compare_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
-order.total.ord.t	.tygvar	# Temp
+order.total.ord.t	.tygvar	-- Temp
 f0	.larg	gsdl.cgs.gstype.field.t
 f1	.larg	gsdl.cgs.gstype.field.t
 	.undef	order.total.ord.t

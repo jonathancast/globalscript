@@ -167,7 +167,7 @@ y0		.fkarg	0	β
 _either.mapM_:_right_k	.forcecont
 either.prim.u	.tygvar
 list.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 list.:	.gvar
 e	.tyfv	*

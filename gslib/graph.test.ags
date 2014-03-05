@@ -94,10 +94,10 @@ k	.larg	natural.t
 _test_tsort_single.elem_val.look_k	.forcecont
 _fixtures.val.t	.tygvar
 bool.prim.u	.tygvar
-maybe.t	.tygvar	# Temp
+maybe.t	.tygvar	-- Temp
 maybe.just	.gvar
 val0	.fv	_fixtures.val.t
-b0	.karg	bool.prim.u	# Is §gs{k ≡ 0}?
+b0	.karg	bool.prim.u	-- Is §gs{k ≡ 0}?
 	.analyze	b0	false	true
 		.case	false
 			.undef	maybe.t	_fixtures.val.t
@@ -187,7 +187,7 @@ maybe.just	.gvar
 val0	.fv	_fixtures.val.t
 val1	.fv	_fixtures.val.t
 k	.fv	natural.t
-b0	.karg	bool.prim.u	# Is §gs{k ≡ 0}?
+b0	.karg	bool.prim.u	-- Is §gs{k ≡ 0}?
 	.analyze	b0	false	true
 		.case	false
 			.force	_test_tsort_two.elems_val.look_k1
@@ -201,10 +201,10 @@ b0	.karg	bool.prim.u	# Is §gs{k ≡ 0}?
 _test_tsort_two.elems_val.look_k1	.forcecont
 _fixtures.val.t	.tygvar
 bool.prim.u	.tygvar
-maybe.t	.tygvar	# Temp
+maybe.t	.tygvar	-- Temp
 maybe.just	.gvar
 val1	.fv	_fixtures.val.t
-b0	.karg	bool.prim.u	# Is §gs{k ≡ 1}?
+b0	.karg	bool.prim.u	-- Is §gs{k ≡ 1}?
 	.analyze	b0	false	true
 		.case	false
 			.undef	maybe.t	_fixtures.val.t
@@ -252,7 +252,7 @@ val.look	.alloc	_test_tsort_dependency_val.look_c
 ks1	.apply	list.singleton	natural.t	|	natural.1
 ks	.apply	list.:	natural.t	|	natural.0	ks1
 actual	.apply	graph.tsort	natural.t	_fixtures.val.t	|	natural.compare	val.deps	val.look	ks
-scc0	.apply	graph.scc.nonrecursive	_fixtures.val.t	|	val1	# §gs{val0} depends on §gs{val0} so output in reverse order
+scc0	.apply	graph.scc.nonrecursive	_fixtures.val.t	|	val1	-- §gs{val0} depends on §gs{val0} so output in reverse order
 scc1	.apply	graph.scc.nonrecursive	_fixtures.val.t	|	val0
 expected1	.apply	list.singleton	scc.ty	|	scc1
 expected	.apply	list.:	scc.ty	|	scc0	expected1
@@ -279,7 +279,7 @@ natural.t	.tygvar
 list.nil	.gvar
 list.singleton	.gvar
 natural.1	.gvar
-b0	.karg	bool.prim.u	# §gs{#key v ≡ 0}
+b0	.karg	bool.prim.u	-- §gs{#key v ≡ 0}
 	.analyze	b0	false	true
 		.case	false
 			.enter	list.nil	natural.t
@@ -314,7 +314,7 @@ maybe.just	.gvar
 v	.fv	natural.t
 val0	.fv	_fixtures.val.t
 val1	.fv	_fixtures.val.t
-b0	.karg	bool.prim.u	# §gs{v ≡ 0}
+b0	.karg	bool.prim.u	-- §gs{v ≡ 0}
 	.analyze	b0	false	true
 		.case	false
 			.force	_test_tsort_dependency_val.look_false_k
@@ -328,10 +328,10 @@ b0	.karg	bool.prim.u	# §gs{v ≡ 0}
 _test_tsort_dependency_val.look_false_k	.forcecont
 _fixtures.val.t	.tygvar
 bool.prim.u	.tygvar
-maybe.t	.tygvar	# Temp
+maybe.t	.tygvar	-- Temp
 maybe.just	.gvar
 val1	.fv	_fixtures.val.t
-b0	.karg	bool.prim.u	# §gs{v ≡ 1}
+b0	.karg	bool.prim.u	-- §gs{v ≡ 1}
 	.analyze	b0	false	true
 		.case	false
 			.undef	maybe.t	_fixtures.val.t
@@ -360,7 +360,7 @@ v1.key	.lfield	key	v1
 _fixtures.val.compare_k	.forcecont
 _fixtures.val.t	.tygvar
 order.total.ord.prim.u	.tygvar
-order.total.ord.t	.tygvar	# Temp
+order.total.ord.t	.tygvar	-- Temp
 bool.compare	.gvar
 v0	.fv	_fixtures.val.t
 v1	.fv	_fixtures.val.t

@@ -41,7 +41,7 @@ ki0.0	.karg	gsdl.cgs.gskind.prim.u
 _gsdl.cgs.gskind.≡_k1	.forcecont
 gsdl.cgs.gskind.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 bool.∧	.gvar
 gsdl.cgs.gskind.≡	.gvar
 bool.false	.gvar
@@ -80,7 +80,7 @@ kie.eq					.apply	gsdl.cgs.gskind.≡	|	ki0.e	ki1.e
 					.undef	bool.t
 				.case	unlifted
 					.enter	bool.true
-	# > :: bool.t
+	-- > :: bool.t
 
 # §section §gs{gsdl.cgs.gskind.fmtgs}
 
@@ -96,7 +96,7 @@ ki	.larg	gsdl.cgs.gskind.t
 _gsdl.cgs.gskind.fmtgs_k	.forcecont
 gsdl.cgs.gskind.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+fmtgs.printer.t	.tygvar	-- Temp
 fmtgs.var	.gvar
 _gsdl.cgs.gskind.fmtgs_lifted_lifted.s	.gvar
 _gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s	.gvar
@@ -114,7 +114,7 @@ ki.e		.fkarg	1	gsdl.cgs.gskind.t
 		.case	unlifted
 			.app	_gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s
 			.enter	fmtgs.var
-	# > :: fmtgs.printer.t
+	-- > :: fmtgs.printer.t
 
 # §section Constructors
 

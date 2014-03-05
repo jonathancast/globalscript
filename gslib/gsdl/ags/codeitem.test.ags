@@ -408,7 +408,7 @@ gsdl.ags.codeitem.alloc.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
-gsdl.sourcepos.t	.tygvar	# Temp
+gsdl.sourcepos.t	.tygvar	-- Temp
 test.assert.eq	.gvar
 gsdl.ags.codeitem.≡	.gvar
 gsdl.ags.codeitem.fmtgs	.gvar
@@ -1521,7 +1521,7 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.r
 _test.parse_expr.enter_k_c	.expr
 gsdl.ags.codeitem.expr.t	.tygvar
 string.t	.tygvar
-gsdl.sourcepos.t	.tygvar	# Temp
+gsdl.sourcepos.t	.tygvar	-- Temp
 test.assert.eq	.gvar
 gsdl.ags.codeitem.expr.≡	.gvar
 gsdl.ags.codeitem.expr.fmtgs	.gvar
@@ -1672,7 +1672,7 @@ gsdl.ags.codeitem.alloc.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
-gsdl.sourcepos.t	.tygvar	# Temp
+gsdl.sourcepos.t	.tygvar	-- Temp
 test.property.label	.gvar
 _test.eq_codeitem.expr.diff.tygvars_label	.gvar
 test.deny	.gvar
