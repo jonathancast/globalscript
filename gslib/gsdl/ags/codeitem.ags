@@ -62,6 +62,7 @@ _gsdl.ags.codeitem.args.parser_arg.kw.re	.regex	.arg
 _gsdl.ags.codeitem.args.parser_larg.kw.re	.regex	.larg
 
 gsdl.ags.codeitem.arg.print	.closure	_gsdl.ags.codeitem.arg.print_c
+_gsdl.ags.codeitem.arg.print_lift_lift.s	.string	\t.lift\n
 
 gsdl.ags.codeitem.arg.arg	.closure	_gsdl.ags.codeitem.arg.arg_c
 gsdl.ags.codeitem.arg.larg	.closure	_gsdl.ags.codeitem.arg.larg_c
@@ -1370,10 +1371,37 @@ b0	.karg	bool.prim.u
 
 _gsdl.ags.codeitem.arg.print_c	.expr
 gsdl.ags.codeitem.arg.t	.tygvar
-diff.list.t	.tygvar	-- Temp
-rune.t	.tygvar	-- Temp
+_gsdl.ags.codeitem.arg.print_k	.subcode
+gsdl.ags.codeitem.arg.t.out	.cogvar
 a	.larg	gsdl.ags.codeitem.arg.t
-	.undef	diff.list.t	rune.t
+	.force	_gsdl.ags.codeitem.arg.print_k
+	.coerce	gsdl.ags.codeitem.arg.t.out
+	.enter	a
+
+_gsdl.ags.codeitem.arg.print_k	.forcecont
+gsdl.ags.codeitem.arg.prim.u	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar	-- Temp
+diff.list.fromlist	.gvar
+_gsdl.ags.codeitem.arg.print_lift_lift.s	.gvar
+a0	.karg	gsdl.ags.codeitem.arg.prim.u
+	.analyze	a0	arg	larg	lift
+		.case	arg
+nm		.fkarg	0	string.t
+ty		.fkarg	1	string.t
+tyas		.fkarg	2	list.t	string.t
+			.undef	diff.list.t	rune.t
+		.case	larg
+nm		.fkarg	0	string.t
+ty		.fkarg	1	string.t
+tyas		.fkarg	2	list.t	string.t
+			.undef	diff.list.t	rune.t
+		.case	lift
+			.app	_gsdl.ags.codeitem.arg.print_lift_lift.s
+			.enter	diff.list.fromlist	rune.t
+	-- > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.codeitem.arg.t} constructors
 
