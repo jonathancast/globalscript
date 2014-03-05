@@ -3006,6 +3006,8 @@ gsclosefile(struct uxio_ichannel *chan, int pid)
     return gsbio_device_iclose(chan);
 }
 
+#define IS_COMMENT (*p == '#' || (p[0] == '-' && p[1] && p[1] == '-' && p[2] && isspace(p[2])))
+
 static
 long
 gsac_tokenize(char *line, char **fields, long maxfields)
@@ -3018,20 +3020,20 @@ gsac_tokenize(char *line, char **fields, long maxfields)
     numfields = 0;
     p = line;
     fields[0] = line;
-    while (*p && !isspace(*p) && *p != '#')
+    while (*p && !isspace(*p) && !IS_COMMENT)
         p++
     ;
     label_present = p > line;
-    if (*p && *p != '#')
+    if (*p && !IS_COMMENT)
         *p++ = 0
     ;
 
     pfield = fields + 1;
-    while (*p && *p != '#' && pfield < fields + maxfields) {
-        while (*p && isspace(*p) && *p != '#')
+    while (*p && !IS_COMMENT && pfield < fields + maxfields) {
+        while (*p && isspace(*p) && !IS_COMMENT)
             p++
         ;
-        if (*p && *p != '#') {
+        if (*p && !IS_COMMENT) {
             *pfield++ = p;
             while (*p && !isspace(*p) && *p != '#')
                 p++
