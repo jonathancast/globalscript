@@ -1388,6 +1388,7 @@ gsdl.sourcepos.t	.tygvar
 diff.list.t	.tygvar	-- Temp
 diff.list.fromlist	.gvar
 _gsdl.ags.codeitem.arg.print_lift_lift.s	.gvar
+gsdl.ags.sourcepos.print	.gvar
 a0	.karg	gsdl.ags.codeitem.arg.prim.u
 	.analyze	a0	arg	larg	lift	pos
 		.case	arg
@@ -1405,7 +1406,8 @@ tyas		.fkarg	2	list.t	string.t
 			.enter	diff.list.fromlist	rune.t
 		.case	pos
 pos		.fkarg	0	gsdl.sourcepos.t
-			.undef	diff.list.t	rune.t
+			.app	pos
+			.enter	gsdl.ags.sourcepos.print
 	-- > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.codeitem.arg.t} constructors
