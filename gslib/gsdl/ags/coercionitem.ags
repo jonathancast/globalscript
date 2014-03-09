@@ -155,7 +155,7 @@ ds.s			.apply	gsdl.ags.coercionitem.decls.print	|	ds
 e.s			.apply	gsdl.ags.coercionitem.expr.print	|	e
 s3			.apply	diff.list.<>	rune.t	|	ds.s	e.s
 s2			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.coercionitem.print_tycoercion_tycoercion.s	s3
-s1			.apply	diff.list.prepend	rune.t	|	v.s	s2
+s1			.apply	diff.list.<>	rune.t	|	v.s	s2
 			.app	pos.s	s1
 			.enter	diff.list.<>	rune.t
 	-- > :: diff.list.t	rune.t
@@ -417,7 +417,7 @@ tyas.ss			.apply	list.map	gsdl.var.t	diff.list.ty	|	tyas.ss.f	tyas
 tyas.s			.apply	diff.list.concat	rune.t	|	tyas.ss
 s4			.apply	diff.list.singleton	rune.t	|	rune.new.line
 s3			.apply	diff.list.<>	rune.t	|	tyas.s	s4
-s2			.apply	diff.list.prepend	rune.t	|	tyc.s	s3
+s2			.apply	diff.list.<>	rune.t	|	tyc.s	s3
 s1			.apply	diff.list.:	rune.t	|	rune.tab	s2
 			.app	_gsdl.ags.coercionitem.expr.print_defn_tydefn.s	s1
 			.enter	diff.list.prepend	rune.t
@@ -435,12 +435,10 @@ gsdl.var.t	.tygvar
 rune.t	.tygvar
 diff.list.:	.gvar
 rune.tab	.gvar
-diff.list.fromlist	.gvar
 gsdl.ags.syntax.var.print	.gvar
 tya	.larg	gsdl.var.t
 tya.s	.apply	gsdl.ags.syntax.var.print	|	tya
-tya.ds	.apply	diff.list.fromlist	rune.t	|	tya.s
-	.app	rune.tab	tya.ds
+	.app	rune.tab	tya.s
 	.enter	diff.list.:	rune.t
 
 # §section §gs{gsdl.ags.coercionitem.t} Constructors

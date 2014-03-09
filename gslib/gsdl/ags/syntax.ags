@@ -258,13 +258,10 @@ vars.p	.apply	parser.lift2	rune.t	gsdl.var.t	list.var.ty	list.var.ty	|	cons	var.
 _gsdl.ags.syntax.var.print_c	.expr
 gsdl.var.t	.tygvar
 bool.prim.u	.tygvar
-rune.t	.tygvar
 _gsdl.ags.syntax.var.print_w	.gvar
-list.nil	.gvar
 v	.larg	gsdl.var.t
 true	.constr	bool.prim.u	true
-nil	.apply	list.nil	rune.t
-	.app	v	true	nil
+	.app	v	true
 	.enter	_gsdl.ags.syntax.var.print_w
 
 _gsdl.ags.syntax.var.print_w_c	.expr

@@ -718,7 +718,7 @@ ds.s			.apply	_gsdl.ags.codeitem.prim.u_expr_decls.print	|	ds
 e.s			.undefined	diff.list.t	rune.t
 s3			.apply	diff.list.<>	rune.t	|	ds.s	e.s
 s2			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.codeitem.print_expr_expr.s	s3
-s1			.apply	diff.list.prepend	rune.t	|	nm.s	s2
+s1			.apply	diff.list.<>	rune.t	|	nm.s	s2
 			.app	pos.s	s1
 			.enter	diff.list.<>	rune.t
 		.case	forcecont

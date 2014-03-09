@@ -1523,7 +1523,7 @@ pos.s			.apply	gsdl.sourcepos.print	|	pos
 tyf.s			.apply	gsdl.ags.syntax.var.print	|	tyf
 err4			.undefined	string.t
 err3			.apply	list.<>	rune.t	|	_gsac.prefix.typeapp.upconvert_nothing_col.sp.s	err4
-err2			.apply	list.<>	rune.t	|	tyf.s	err3
+err2			.apply	tyf.s	|	err3
 err1			.apply	list.<>	rune.t	|	_gsac.prefix.typeapp.upconvert_nothing_col.sp.s	err2
 err			.apply	list.<>	rune.t	|	pos.s	err1
 			.app	err
@@ -1627,7 +1627,7 @@ pos.s			.apply	gsdl.sourcepos.print	|	pos
 v.s			.apply	gsdl.ags.syntax.var.print	|	v
 err4			.undefined	string.t
 err3			.apply	list.<>	rune.t	|	_gsac.prefix.typeenv.gstype.get_nothing_col.sp.s	err4
-err2			.apply	list.<>	rune.t	|	v.s	err3
+err2			.apply	v.s	|	err3
 err1			.apply	list.<>	rune.t	|	_gsac.prefix.typeenv.gstype.get_nothing_col.sp.s	err2
 err			.apply	list.<>	rune.t	|	pos.s	err1
 			.app	err
