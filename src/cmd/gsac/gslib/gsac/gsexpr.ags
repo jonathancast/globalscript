@@ -1318,6 +1318,7 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 	# > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.body.compileToLambdaExpr_missing_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
@@ -1337,6 +1338,8 @@ either.right	.gvar
 diff.list.nil	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.gvar
 list.nil	.gvar
+gsdl.ags.codeitem.expr.pos	.gvar
+pos1	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -1349,7 +1352,8 @@ cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 e.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
 e.b.as			.undefined	list.t	gsdl.ags.codeitem.alloc.t
-e.b.u			.undefined	gsdl.ags.codeitem.expr.t
+e.b.u1			.undefined	gsdl.ags.codeitem.expr.t
+e.b.u			.apply	gsdl.ags.codeitem.expr.pos	|	pos1	e.b.u1
 e.b			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	|	e.b.as	e.b.u
 e			.lrecord	args	e.as	body	e.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 tygvs			.lfield	tygvars	r0
