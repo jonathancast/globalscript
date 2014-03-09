@@ -62,6 +62,7 @@ _gsdl.ags.codeitem.args.parser_arg.kw.re	.regex	.arg
 _gsdl.ags.codeitem.args.parser_larg.kw.re	.regex	.larg
 
 gsdl.ags.codeitem.arg.print	.closure	_gsdl.ags.codeitem.arg.print_c
+_gsdl.ags.codeitem.arg.print_arg_arg.s	.string	\t.arg
 _gsdl.ags.codeitem.arg.print_lift_lift.s	.string	\t.lift\n
 
 gsdl.ags.codeitem.arg.arg	.closure	_gsdl.ags.codeitem.arg.arg_c
@@ -1387,16 +1388,39 @@ list.t	.tygvar
 rune.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 diff.list.t	.tygvar	-- Temp
+diff.list.<>	.gvar
+gsdl.ags.syntax.var.print	.gvar
+diff.list.:	.gvar
+diff.list.prepend	.gvar
+_gsdl.ags.codeitem.arg.print_arg_arg.s	.gvar
+rune.tab	.gvar
+diff.list.concat	.gvar
+list.map	.gvar
+diff.list.singleton	.gvar
+rune.new.line	.gvar
 diff.list.fromlist	.gvar
 _gsdl.ags.codeitem.arg.print_lift_lift.s	.gvar
 gsdl.ags.sourcepos.print	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
 a0	.karg	gsdl.ags.codeitem.arg.prim.u
+cons.tab	.apply	diff.list.:	rune.t	|	rune.tab
 	.analyze	a0	arg	larg	lift	pos
 		.case	arg
 nm		.fkarg	0	gsdl.var.t
 ty		.fkarg	1	gsdl.var.t
 tyas		.fkarg	2	list.t	gsdl.var.t
-			.undef	diff.list.t	rune.t
+nm.s			.apply	gsdl.ags.syntax.var.print	|	nm
+ty.s			.apply	gsdl.ags.syntax.var.print	|	ty
+tyas.ss1			.apply	list.map	gsdl.var.t	diff.list.rune.ty	|	gsdl.ags.syntax.var.print	tyas
+tyas.ss			.apply	list.map	diff.list.rune.ty	diff.list.rune.ty	|	cons.tab	tyas.ss1
+tyas.s			.apply	diff.list.concat	rune.t	|	tyas.ss
+s5			.apply	diff.list.singleton	rune.t	|	rune.new.line
+s4			.apply	diff.list.<>	rune.t	|	tyas.s	s5
+s3			.apply	diff.list.<>	rune.t	|	ty.s	s4
+s2			.apply	diff.list.:	rune.t	|	rune.tab	s3
+s1			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.codeitem.arg.print_arg_arg.s	s2
+			.app	nm.s	s1
+			.enter	diff.list.<>	rune.t
 		.case	larg
 nm		.fkarg	0	gsdl.var.t
 ty		.fkarg	1	gsdl.var.t
