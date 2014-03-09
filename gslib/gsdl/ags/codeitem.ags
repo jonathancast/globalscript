@@ -112,6 +112,7 @@ _gsdl.ags.codeitem.expr.parser_undef.p_undef.re	.regex	.undef
 _gsdl.ags.codeitem.expr.parser_yield.p_yield.re	.regex	.yield
 
 gsdl.ags.codeitem.expr.print	.closure	_gsdl.ags.codeitem.expr.print_c	_gsdl.ags.codeitem.expr.print_ty
+_gsdl.ags.codeitem.expr.print_undef_undef.s	.string	\t.undef
 
 gsdl.ags.codeitem.expr.≡	.closure	_gsdl.ags.codeitem.expr.≡_c
 
@@ -2843,7 +2844,18 @@ diff.list.t	.tygvar	# Temp
 diff.list.<>	.gvar
 gsdl.ags.sourcepos.print	.gvar
 gsdl.ags.codeitem.expr.print	.gvar
+diff.list.prepend	.gvar
+_gsdl.ags.codeitem.expr.print_undef_undef.s	.gvar
+diff.list.:	.gvar
+rune.tab	.gvar
+gsdl.ags.syntax.var.print	.gvar
+diff.list.concat	.gvar
+list.map	.gvar
+diff.list.singleton	.gvar
+rune.new.line	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
 e0	.karg	gsdl.ags.codeitem.expr.prim.u
+cons.tab	.apply	diff.list.:	rune.t	|	rune.tab
 	.analyze	e0	app	coerce	enter	force	pos	undef
 		.case	app
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -2876,7 +2888,16 @@ e1.s			.apply	gsdl.ags.codeitem.expr.print	|	e1
 		.case	undef
 tyf		.fkarg	0	gsdl.var.t
 tyas		.fkarg	1	list.t	gsdl.var.t
-			.undef	diff.list.t	rune.t
+tyf.s			.apply	gsdl.ags.syntax.var.print	|	tyf
+tyas.ss1				.apply	list.map	gsdl.var.t	diff.list.rune.ty	|	gsdl.ags.syntax.var.print	tyas
+tyas.ss			.apply	list.map	diff.list.rune.ty	diff.list.rune.ty	|	cons.tab	tyas.ss1
+tyas.s			.apply	diff.list.concat	rune.t	|	tyas.ss
+s3			.apply	diff.list.singleton	rune.t	|	rune.new.line
+s2			.apply	diff.list.<>	rune.t	|	tyas.s	s3
+s1			.apply	diff.list.<>	rune.t	|	tyf.s	s2
+s0			.apply	diff.list.:	rune.t	|	rune.tab	s1
+			.app	_gsdl.ags.codeitem.expr.print_undef_undef.s	s0
+			.enter	diff.list.prepend	rune.t
 	-- > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.codeitem.expr.≡}
