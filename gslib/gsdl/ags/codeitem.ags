@@ -2832,10 +2832,46 @@ e	.larg	gsdl.ags.codeitem.expr.t
 
 _gsdl.ags.codeitem.expr.print_k	.forcecont
 gsdl.ags.codeitem.expr.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+rune.t	.tygvar
 diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+diff.list.<>	.gvar
+gsdl.ags.sourcepos.print	.gvar
+gsdl.ags.codeitem.expr.print	.gvar
 e0	.karg	gsdl.ags.codeitem.expr.prim.u
-	.undef	diff.list.t	rune.t
+	.analyze	e0	app	coerce	enter	force	pos
+		.case	app
+pos		.fkarg	0	gsdl.sourcepos.t
+as		.fkarg	1	list.t	string.t
+e1		.fkarg	2	gsdl.ags.codeitem.expr.t
+			.undef	diff.list.t	rune.t
+		.case	coerce
+pos		.fkarg	0	gsdl.sourcepos.t
+co		.fkarg	1	string.t
+coas		.fkarg	2	list.t	string.t
+e1		.fkarg	3	gsdl.ags.codeitem.expr.t
+			.undef	diff.list.t	rune.t
+		.case	enter
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	string.t
+tyas		.fkarg	2	list.t	string.t
+			.undef	diff.list.t	rune.t
+		.case	force
+pos		.fkarg	0	gsdl.sourcepos.t
+co		.fkarg	1	string.t
+e1		.fkarg	2	gsdl.ags.codeitem.expr.t
+			.undef	diff.list.t	rune.t
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+e1		.fkarg	1	gsdl.ags.codeitem.expr.t
+pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
+e1.s			.apply	gsdl.ags.codeitem.expr.print	|	e1
+			.app	pos.s	e1.s
+			.enter	diff.list.<>	rune.t
+	-- > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.codeitem.expr.≡}
 
