@@ -65,8 +65,7 @@ _test.parse_expr.larg	.closure	_test.parse_expr.larg_c
 _test.parse_expr.larg_label	.string	qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\tquux.t\\n\\t.enter\\tbaz\\n}\s=~\sparser
 _test.parse_expr.larg_input	.string	_foo_c\t.expr\nbar\t.larg\tbar.t\tquux.t\n\t.enter\tbaz\n
 _test.parse_expr.larg_k_wrong.constr.s	.string	Parse\sresult\snot\san\s.expr
-_test.parse_expr.larg_k_tyargs	.list	string.t	_test.parse_expr.larg_k_tyargs_0
-_test.parse_expr.larg_k_tyargs_0	.string	quux.t
+_test.parse_expr.larg_k_tyargs	.list	gsdl.var.t	_fixtures_quux.t.v
 
 _test.parse_expr.alloc	.closure	_test.parse_expr.alloc_c
 _test.parse_expr.alloc_label	.string	qq{_foo_c\\t.expr\\nbar\\t.alloc\\t_bar_c\\n\\t.enter\\tbaz\\n}\s=~\sparser
@@ -307,6 +306,9 @@ _fixtures_baz.v	.closure	_fixtures_baz.v_c
 
 _fixtures_baz.c	.closure	_fixtures_baz.c_c
 _fixtures_baz.c_baz.s	.string	baz
+
+_fixtures_quux.t.v	.closure	_fixtures_quux.t.v_c
+_fixtures_quux.t.v_quux.s	.string	quux
 
 _fixtures_x.v	.closure	_fixtures_x.v_c
 
@@ -1844,6 +1846,7 @@ gsdl.ags.codeitem.alloc.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
 string.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.var.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
 test.property.label	.gvar
 _test.eq_codeitem.expr.diff.args_label	.gvar
@@ -1869,7 +1872,8 @@ tygvs.nil	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvars	tygvs.nil	|	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 exp	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.eq_codeitem.expr.diff.args_bar.s	nil
 ci0	.apply	gsdl.ags.codeitem.expr	|	pos	_fixtures_foo.c.v decls0	exp
-arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_fixtures_x.v	_fixtures_x.t.v	nil
+as.nil	.apply	list.nil	gsdl.var.t
+arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_fixtures_x.v	_fixtures_x.t.v	as.nil
 args1	.apply	list.:	gsdl.ags.codeitem.arg.t	|	arg0	args.nil
 decls1	.lrecord	allocs	allocs.nil	args	args1	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvars	tygvs.nil	|	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 ci1	.apply	gsdl.ags.codeitem.expr	|	pos	_fixtures_foo.c.v decls1	exp
@@ -1881,7 +1885,7 @@ test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.args_false.s	_test.eq_codeit
 # §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉 ≡ 〈 'name ∝ qq{baz}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉}
 
 _test.eq_arg.diff.name_c	.expr
-string.t	.tygvar
+gsdl.var.t	.tygvar
 test.property.label	.gvar
 _test.eq_arg.diff.name_label	.gvar
 test.deny	.gvar
@@ -1893,7 +1897,7 @@ _fixtures_foo.v	.gvar
 _fixtures_bar.t.v	.gvar
 list.nil	.gvar
 _fixtures_baz.v	.gvar
-nil	.apply	list.nil	string.t
+nil	.apply	list.nil	gsdl.var.t
 arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_fixtures_foo.v	_fixtures_bar.t.v	nil
 arg1	.apply	gsdl.ags.codeitem.arg.larg	|	_fixtures_baz.v	_fixtures_bar.t.v	nil
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
@@ -1904,7 +1908,7 @@ test	.apply	test.deny	|	_test.eq_arg.diff.name_false	_test.eq_arg.diff.name_true
 # §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉  〈 'name ∝ qq{foo}; 'lifted ∝ false; 'ty ∝ qq{bar.t}; 〉}
 
 _test.eq_arg.diff.lifted_c	.expr
-string.t	.tygvar
+gsdl.var.t	.tygvar
 test.property.label	.gvar
 _test.eq_arg.diff.lifted_label	.gvar
 test.deny	.gvar
@@ -1916,7 +1920,7 @@ _fixtures_foo.v	.gvar
 _fixtures_bar.t.v	.gvar
 list.nil	.gvar
 gsdl.ags.codeitem.arg.arg	.gvar
-nil	.apply	list.nil	string.t
+nil	.apply	list.nil	gsdl.var.t
 arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_fixtures_foo.v	_fixtures_bar.t.v	nil
 arg1	.apply	gsdl.ags.codeitem.arg.arg	|	_fixtures_foo.v	_fixtures_bar.t.v	nil
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
@@ -1927,7 +1931,7 @@ test	.apply	test.deny	|	_test.eq_arg.diff.lifted_false	_test.eq_arg.diff.lifted_
 # §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉 ≡ 〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{baz.t}; 〉}
 
 _test.eq_arg.diff.ty_c	.expr
-string.t	.tygvar
+gsdl.var.t	.tygvar
 test.property.label	.gvar
 _test.eq_arg.diff.ty_label	.gvar
 test.deny	.gvar
@@ -1939,7 +1943,7 @@ _fixtures_foo.v	.gvar
 _fixtures_bar.t.v	.gvar
 list.nil	.gvar
 _fixtures_baz.t.v	.gvar
-nil	.apply	list.nil	string.t
+nil	.apply	list.nil	gsdl.var.t
 arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_fixtures_foo.v	_fixtures_bar.t.v	nil
 arg1	.apply	gsdl.ags.codeitem.arg.larg	|	_fixtures_foo.v	_fixtures_baz.t.v	nil
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
@@ -1950,7 +1954,7 @@ test	.apply	test.deny	|	_test.eq_arg.diff.ty_false	_test.eq_arg.diff.ty_true	eq
 # §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'gstype ∝ qq{bar.t}; 'tyargs ∝ []; 〉 ≡ 〈 'name ∝ qq{foo}; 'lifted ∝ true; 'gstype ∝ qq{bar.t}; 'tyargs ∝ [ qq{quux.t}, ]; 〉}
 
 _test.eq_arg.diff.tyargs_c	.expr
-string.t	.tygvar
+gsdl.var.t	.tygvar
 test.property.label	.gvar
 _test.eq_arg.diff.tyargs_label	.gvar
 test.deny	.gvar
@@ -1962,10 +1966,10 @@ _fixtures_foo.v	.gvar
 _fixtures_bar.t.v	.gvar
 list.nil	.gvar
 list.:	.gvar
-_test.eq_arg.diff.tyargs_quux.t.s	.gvar
-nil	.apply	list.nil	string.t
+_fixtures_quux.t.v	.gvar
+nil	.apply	list.nil	gsdl.var.t
 arg0	.apply	gsdl.ags.codeitem.arg.larg	|	_fixtures_foo.v	_fixtures_bar.t.v	nil
-tyargs1	.apply	list.:	string.t	|	_test.eq_arg.diff.tyargs_quux.t.s	nil
+tyargs1	.apply	list.:	gsdl.var.t	|	_fixtures_quux.t.v	nil
 arg1	.apply	gsdl.ags.codeitem.arg.larg	|	_fixtures_foo.v	_fixtures_bar.t.v	tyargs1
 eq	.apply	gsdl.ags.codeitem.arg.≡	|	arg0	arg1
 test	.apply	test.deny	|	_test.eq_arg.diff.tyargs_false	_test.eq_arg.diff.tyargs_true	eq
@@ -2063,6 +2067,20 @@ gsdl.var.component.alphanum	.gvar
 _fixtures_baz.c_baz.s	.gvar
 	.app	_fixtures_baz.c_baz.s
 	.enter	gsdl.var.component.alphanum
+
+_fixtures_quux.t.v_c	.expr
+gsdl.var.component.t	.tygvar
+gsdl.var.basevar	.gvar
+list.:	.gvar
+gsdl.var.component.alphanum	.gvar
+_fixtures_quux.t.v_quux.s	.gvar
+list.singleton	.gvar
+_fixtures_t.c	.gvar
+c0	.apply	gsdl.var.component.alphanum	|	_fixtures_quux.t.v_quux.s
+cs1	.apply	list.singleton	gsdl.var.component.t	|	_fixtures_t.c
+cs	.apply	list.:	gsdl.var.component.t	|	c0	cs1
+	.app	cs
+	.enter	gsdl.var.basevar
 
 _fixtures_x.v_c	.expr
 gsdl.var.component.t	.tygvar
