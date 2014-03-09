@@ -111,6 +111,8 @@ _gsdl.ags.codeitem.expr.parser_ubprim.p_uprim.re	.regex	.ubprim
 _gsdl.ags.codeitem.expr.parser_undef.p_undef.re	.regex	.undef
 _gsdl.ags.codeitem.expr.parser_yield.p_yield.re	.regex	.yield
 
+gsdl.ags.codeitem.expr.print	.closure	_gsdl.ags.codeitem.expr.print_c	_gsdl.ags.codeitem.expr.print_ty
+
 gsdl.ags.codeitem.expr.≡	.closure	_gsdl.ags.codeitem.expr.≡_c
 
 gsdl.ags.codeitem.expr.fmtgs	.closure	_gsdl.ags.codeitem.expr.fmtgs_c
@@ -2815,6 +2817,15 @@ v	.larg	string.t
 tyas	.larg	list.t	string.t
 	.undef	gsdl.ags.codeitem.expr.t
 
+# §section §gs{gsdl.ags.codeitem.expr.print}
+
+_gsdl.ags.codeitem.expr.print_c	.expr
+gsdl.ags.codeitem.expr.t	.tygvar
+diff.list.t	.tygvar	# Temp
+rune.t	.tygvar	# Temp
+e0	.larg	gsdl.ags.codeitem.expr.t
+	.undef	diff.list.t	rune.t
+
 # §section §gs{gsdl.ags.codeitem.expr.≡}
 
 _gsdl.ags.codeitem.expr.≡_c	.expr
@@ -3319,6 +3330,16 @@ parser.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.ags.codeitem.expr.t
+
+# §section §gs{gsdl.ags.codeitem.expr.print}
+
+_gsdl.ags.codeitem.expr.print_ty	.tyexpr
+gsdl.ags.codeitem.expr.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	gsdl.ags.codeitem.expr.t
+	.tyref	diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.codeitem.field.t}
 
