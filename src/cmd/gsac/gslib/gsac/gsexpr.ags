@@ -1170,7 +1170,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	right
 b.r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cs			.lfield	codeitems	b.r0
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.lfield	dataitems	b.r0
 a0			.apply	gsdl.ags.codeitem.arg.arg	|	x	ty.r0.tyf	ty.r0.as
