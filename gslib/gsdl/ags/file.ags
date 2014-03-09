@@ -312,7 +312,20 @@ s1	.apply	gsdl.ags.codeitem.print	|	c0	s2
 	.enter	list.:	rune.t
 
 _gsdl.ags.file.print_codeitems_s2_c	.expr
-string.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+_gsdl.ags.file.print_codeitems_s2_k	.subcode
+list.t.out	.cogvar
+cs1	.fv	list.t	gsdl.ags.codeitem.t
+	.force	_gsdl.ags.file.print_codeitems_s2_k
+	.coerce	list.t.out	gsdl.ags.codeitem.t
+	.enter	cs1
+
+_gsdl.ags.file.print_codeitems_s2_k	.forcecont
+list.prim.u	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+string.t	.tygvar	-- Temp
+cs1.0	.karg	list.prim.u	gsdl.ags.codeitem.t
 	.undef	string.t
 
 _gsdl.ags.file.print_typesection_c	.expr
