@@ -122,6 +122,7 @@ gsdl.ags.codeitem.expr.app	.closure	_gsdl.ags.codeitem.expr.app_c
 gsdl.ags.codeitem.expr.coerce	.closure	_gsdl.ags.codeitem.expr.coerce_c
 gsdl.ags.codeitem.expr.enter	.closure	_gsdl.ags.codeitem.expr.enter_c
 gsdl.ags.codeitem.expr.force	.closure	_gsdl.ags.codeitem.expr.force_c
+gsdl.ags.codeitem.expr.undef	.closure	_gsdl.ags.codeitem.expr.undef_c
 
 gsdl.ags.codeitem.expr.gscases.parser	.closure	_gsdl.ags.codeitem.expr.gscases.parser_c
 _gsdl.ags.codeitem.expr.gscases.parser_gscase.kw.re	.regex	.case
@@ -2837,12 +2838,13 @@ list.t	.tygvar
 string.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 rune.t	.tygvar
+gsdl.var.t	.tygvar
 diff.list.t	.tygvar	# Temp
 diff.list.<>	.gvar
 gsdl.ags.sourcepos.print	.gvar
 gsdl.ags.codeitem.expr.print	.gvar
 e0	.karg	gsdl.ags.codeitem.expr.prim.u
-	.analyze	e0	app	coerce	enter	force	pos
+	.analyze	e0	app	coerce	enter	force	pos	undef
 		.case	app
 pos		.fkarg	0	gsdl.sourcepos.t
 as		.fkarg	1	list.t	string.t
@@ -2871,6 +2873,10 @@ pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
 e1.s			.apply	gsdl.ags.codeitem.expr.print	|	e1
 			.app	pos.s	e1.s
 			.enter	diff.list.<>	rune.t
+		.case	undef
+tyf		.fkarg	0	gsdl.var.t
+tyas		.fkarg	1	list.t	gsdl.var.t
+			.undef	diff.list.t	rune.t
 	-- > :: diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.codeitem.expr.≡}
@@ -2902,13 +2908,14 @@ gsdl.sourcepos.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.var.t	.tygvar
 bool.t	.tygvar	-- Temp
 bool.∧	.gvar
 string.≡	.gvar
 list.≡	.gvar
 e0.0	.fv	gsdl.ags.codeitem.expr.prim.u
 e1.0	.karg	gsdl.ags.codeitem.expr.prim.u
-	.analyze	e0.0	app	coerce	enter	force	pos
+	.analyze	e0.0	app	coerce	enter	force	pos	undef
 		.case	app
 pos0		.fkarg	0	gsdl.sourcepos.t
 as0		.fkarg	1	list.t	string.t
@@ -2943,6 +2950,10 @@ e0.1		.fkarg	2	gsdl.ags.codeitem.expr.t
 		.case	pos
 pos0		.fkarg	0	gsdl.sourcepos.t
 e0		.fkarg	1	gsdl.ags.codeitem.expr.t
+			.undef	bool.t
+		.case	undef
+tyf0		.fkarg	0	gsdl.var.t
+tyas0		.fkarg	1	list.t	gsdl.var.t
 			.undef	bool.t
 	-- > :: bool.t
 
@@ -3023,6 +3034,18 @@ pos	.arg	gsdl.sourcepos.t
 co	.arg	string.t
 e	.arg	gsdl.ags.codeitem.expr.t
 c	.constr	gsdl.ags.codeitem.expr.prim.u	force	0	pos	1	co	2	e
+	.coerce	gsdl.ags.codeitem.expr.t.in
+	.lift
+	.yield	c
+
+_gsdl.ags.codeitem.expr.undef_c	.expr
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.expr.prim.u	.tygvar
+gsdl.ags.codeitem.expr.t.in	.cogvar
+tyf	.arg	gsdl.var.t
+tyas	.arg	list.t	gsdl.var.t
+c	.constr	gsdl.ags.codeitem.expr.prim.u	undef	0	tyf	1	tyas
 	.coerce	gsdl.ags.codeitem.expr.t.in
 	.lift
 	.yield	c
@@ -3348,7 +3371,8 @@ _gsdl.ags.codeitem.expr.prim.u_coerce_ty	.tygvar
 _gsdl.ags.codeitem.expr.prim.u_enter_ty	.tygvar
 _gsdl.ags.codeitem.expr.prim.u_force_ty	.tygvar
 _gsdl.ags.codeitem.expr.prim.u_pos_ty	.tygvar
-	.tysum	app	_gsdl.ags.codeitem.expr.prim.u_app_ty	coerce	_gsdl.ags.codeitem.expr.prim.u_coerce_ty	enter	_gsdl.ags.codeitem.expr.prim.u_enter_ty	force	_gsdl.ags.codeitem.expr.prim.u_force_ty	pos	_gsdl.ags.codeitem.expr.prim.u_pos_ty
+_gsdl.ags.codeitem.expr.prim.u_undef_ty	.tygvar
+	.tysum	app	_gsdl.ags.codeitem.expr.prim.u_app_ty	coerce	_gsdl.ags.codeitem.expr.prim.u_coerce_ty	enter	_gsdl.ags.codeitem.expr.prim.u_enter_ty	force	_gsdl.ags.codeitem.expr.prim.u_force_ty	pos	_gsdl.ags.codeitem.expr.prim.u_pos_ty	undef	_gsdl.ags.codeitem.expr.prim.u_undef_ty
 
 _gsdl.ags.codeitem.expr.prim.u_app_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -3383,6 +3407,12 @@ _gsdl.ags.codeitem.expr.prim.u_pos_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.ags.codeitem.expr.t
+
+_gsdl.ags.codeitem.expr.prim.u_undef_ty	.tyexpr
+gsdl.var.t	.tygvar
+list.t	.tygvar
+list.var.ty	.tylet	list.t	gsdl.var.t
+	.tyubproduct	0	gsdl.var.t	1	list.var.ty
 
 _gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_ty	.tyexpr
 _gsdl.ags.codeitem.expr.prim.u_ubanalyze_ubcasecont_u	.tygvar
