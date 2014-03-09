@@ -1246,7 +1246,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cs			.lfield	codeitems	r0
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.lfield	dataitems	r0
 r0.res			.lfield	res	r0
