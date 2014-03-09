@@ -2822,9 +2822,18 @@ tyas	.larg	list.t	string.t
 
 _gsdl.ags.codeitem.expr.print_c	.expr
 gsdl.ags.codeitem.expr.t	.tygvar
+_gsdl.ags.codeitem.expr.print_k	.subcode
+gsdl.ags.codeitem.expr.t.out	.cogvar
+e	.larg	gsdl.ags.codeitem.expr.t
+	.force	_gsdl.ags.codeitem.expr.print_k
+	.coerce	gsdl.ags.codeitem.expr.t.out
+	.enter	e
+
+_gsdl.ags.codeitem.expr.print_k	.forcecont
+gsdl.ags.codeitem.expr.prim.u	.tygvar
 diff.list.t	.tygvar	# Temp
 rune.t	.tygvar	# Temp
-e0	.larg	gsdl.ags.codeitem.expr.t
+e0	.karg	gsdl.ags.codeitem.expr.prim.u
 	.undef	diff.list.t	rune.t
 
 # §section §gs{gsdl.ags.codeitem.expr.≡}
