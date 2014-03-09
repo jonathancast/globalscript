@@ -1339,6 +1339,7 @@ diff.list.nil	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.gvar
 list.nil	.gvar
 gsdl.ags.codeitem.expr.pos	.gvar
+gsdl.ags.codeitem.expr.undef	.gvar
 pos1	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
 	.analyze	e0	left	right
@@ -1352,7 +1353,10 @@ cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 e.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
 e.b.as			.undefined	list.t	gsdl.ags.codeitem.alloc.t
-e.b.u1			.undefined	gsdl.ags.codeitem.expr.t
+r0.res			.lfield	res	r0
+r0.tyf			.lfield	tyfun	r0.res
+r0.tyas			.lfield	typeargs	r0.res
+e.b.u1			.apply	gsdl.ags.codeitem.expr.undef	|	r0.tyf	r0.tyas
 e.b.u			.apply	gsdl.ags.codeitem.expr.pos	|	pos1	e.b.u1
 e.b			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	|	e.b.as	e.b.u
 e			.lrecord	args	e.as	body	e.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
