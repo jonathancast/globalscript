@@ -1348,7 +1348,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gstype.compileToApp_res.ty
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 e.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
