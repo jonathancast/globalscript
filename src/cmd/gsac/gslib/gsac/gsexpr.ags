@@ -1229,10 +1229,8 @@ gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 either.t	.tygvar	# Temp
 diff.list.t	.tygvar	# Temp
-gsdl.ags.codeitem.t	.tygvar	# Temp
 gsdl.ags.coercionitem.t	.tygvar	# Temp
 gsdl.ags.dataitem.t	.tygvar	# Temp
-gsdl.ags.typeitem.t	.tygvar	# Temp
 either.right	.gvar
 list.:	.gvar
 gsdl.ags.codeitem.arg.pos	.gvar
@@ -1254,7 +1252,7 @@ a1.1			.apply	gsdl.ags.codeitem.arg.pos	|	pos1
 as			.apply	list.:	gsdl.ags.codeitem.arg.t	|	a1.1	r0.as
 e			.lrecord	args	as	body	r0.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 tygvs			.lfield	tygvars	r0
-ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+ts			.lfield	typeitems	r0
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
