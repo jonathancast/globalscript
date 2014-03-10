@@ -633,28 +633,25 @@ cs	.apply	list.singleton	gsdl.var.component.t	|	c0
 
 _gsac.gsexpr.compileToDataItem_default_k	.forcecont
 gsdl.sourcepos.t	.tygvar
-either.prim.u	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar
-_gsac.gsexpr.compileToDataItem_res.ty	.tygvar
-gsdl.ags.codeitem.t	.tygvar
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-diff.list.t	.tygvar	-- Temp
-gsdl.ags.dataitem.t	.tygvar	-- Temp
-either.right	.gvar
-diff.list.:	.gvar
-_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.gvar
-gsdl.ags.dataitem.closure		.gvar
+_gsac.gsexpr.compileToDataItem_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileToDataItem_default_right_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.compileToGlobalVar	.gvar
 gsdl.var.<>	.gvar
-_gsac.gsexpr_c.v	.gvar
-maybe.just	.gvar
 _gsac.gsexpr_ty.v	.gvar
-diff.list.nil	.gvar
 pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
 mbv	.fv	maybe.t	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
 v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	.analyze	e0	left	right
@@ -662,20 +659,61 @@ e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	right
-r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
-r0.res			.lfield	res	r0
-v.c.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_c.v
-r0.tygvs			.lfield	tygvars	r0
-c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	pos	v.c.v	r0.tygvs	r0.res
-cs1			.lfield	codeitems	r0
-cs			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	cs1
-cos			.lfield	coercionitems	r0
-ds			.lfield	dataitems	r0
+e.r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 v.ty.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_ty.v
-just.v.ty.v			.apply	maybe.just	gsdl.var.t	|	v.ty.v
-di			.apply	gsdl.ags.dataitem.closure		|	pos	mbv	v.c.v	just.v.ty.v
+			.force	_gsac.gsexpr.compileToDataItem_default_right_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
+			.app	pos	env	v.ty.v	ty
+			.enter	gsac.gstype.compileToGlobalVar
+
+_gsac.gsexpr.compileToDataItem_default_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar
+_gsac.gsexpr.compileToDataItem_res.ty	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+either.t	.tygvar	-- Temp
+either.right	.gvar
+diff.list.:	.gvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.gvar
+gsdl.var.<>	.gvar
+_gsac.gsexpr_c.v	.gvar
+gsdl.ags.dataitem.closure		.gvar
+maybe.just	.gvar
+diff.list.nil	.gvar
+diff.list.<>	.gvar
+pos	.fv	gsdl.sourcepos.t
+mbv	.fv	maybe.t	gsdl.var.t
+v	.fv	gsdl.var.t
+e.r0	.fv	_gsac.gsexpr.compileToLambdaExpr_res.ty
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToGlobalVar_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+		.case	right
+ty.r0		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
+e.r0.res			.lfield	res	e.r0
+v.c.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_c.v
+e.r0.tygvs			.lfield	tygvars	e.r0
+c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	pos	v.c.v	e.r0.tygvs	e.r0.res
+cs1			.lfield	codeitems	e.r0
+cs			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	cs1
+cos			.lfield	coercionitems	e.r0
+ds			.lfield	dataitems	e.r0
+ty.e.res			.lfield	nm	ty.r0
+just.ty.e.res		.apply	maybe.just	gsdl.var.t	|	ty.e.res
+di			.apply	gsdl.ags.dataitem.closure		|	pos	mbv	v.c.v	just.ty.e.res
 tygvs.nil			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
-ts			.lfield	typeitems	r0
+e.ts			.lfield	typeitems	e.r0
+ty.ts			.lfield	typeitems	ty.r0
+ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	e.ts	ty.ts
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	di	tygvars	tygvs.nil	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
