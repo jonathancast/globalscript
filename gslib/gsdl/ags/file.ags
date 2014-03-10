@@ -314,19 +314,29 @@ s1	.apply	gsdl.ags.codeitem.print	|	c0	s2
 _gsdl.ags.file.print_codeitems_s2_c	.expr
 list.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
+string.t	.tygvar
 _gsdl.ags.file.print_codeitems_s2_k	.subcode
 list.t.out	.cogvar
 cs1	.fv	list.t	gsdl.ags.codeitem.t
+tys.s	.fv	string.t
 	.force	_gsdl.ags.file.print_codeitems_s2_k
 	.coerce	list.t.out	gsdl.ags.codeitem.t
 	.enter	cs1
 
 _gsdl.ags.file.print_codeitems_s2_k	.forcecont
+string.t	.tygvar
 list.prim.u	.tygvar
 gsdl.ags.codeitem.t	.tygvar
-string.t	.tygvar	-- Temp
+list.t	.tygvar
+tys.s	.fv	string.t
 cs1.0	.karg	list.prim.u	gsdl.ags.codeitem.t
-	.undef	string.t
+	.analyze	cs1.0	:	nil
+		.case	:
+c1		.fkarg	0	gsdl.ags.codeitem.t
+cs2		.fkarg	1	list.t	gsdl.ags.codeitem.t
+			.undef	string.t
+		.case	nil
+			.enter	tys.s
 
 _gsdl.ags.file.print_typesection_c	.expr
 gsdl.ags.file.prim.u	.tygvar
