@@ -32,7 +32,7 @@ _gsac.gsexpr_ty.v_s	.string	ty
 
 	.code
 
-# §section §gs{gsac.gsexpr.annotate}
+-- §section §gs{gsac.gsexpr.annotate}
 
 _gsac.gsexpr.annotate_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -61,7 +61,7 @@ gsdl.cgs.gsexpr.body.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_expr.heavy.cast_k	.subcode
 _gsac.gsexpr.annotate_lambda_k	.subcode
 _gsac.gsexpr.annotate_lift_k	.subcode
@@ -102,7 +102,7 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.coerce	either.t.out	string.t	_gsac.gsexpr.annotate_res.ty
 			.app	pos1	env	e1
 			.enter	gsac.gsexpr.annotate
-	# > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_expr.heavy.cast_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -111,8 +111,8 @@ gsdl.cgs.gsexpr.cast.source.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_expr.heavy.cast_right_k	.subcode
 gsdl.cgs.gscoercion.gstype.t.out	.cogvar
 pos	.fv	gsdl.sourcepos.t
@@ -142,9 +142,9 @@ gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gscoercion.gstype.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_expr.heavy.cast_right_iso_k	.subcode
 gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
 pos	.fv	gsdl.sourcepos.t
@@ -165,7 +165,7 @@ tyd		.fkarg	1	gsdl.cgs.gstype.t
 			.force	_gsac.gsexpr.annotate_expr.heavy.cast_right_iso_k
 			.coerce	gsdl.cgs.gsexpr.cast.source.t.out
 			.enter	so
-	# > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_expr.heavy.cast_right_iso_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -178,7 +178,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_expr.heavy.cast_right_iso_expr_k	.subcode
 either.t.out	.cogvar
 gsac.gsexpr.annotate	.gvar
@@ -211,7 +211,7 @@ r1			.lrecord	expr	r1.e	gskind	ki	gstype	tyd	|	_gsac.gsexpr.annotate_res.ty
 pos1		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
-	# > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_expr.heavy.cast_right_iso_expr_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -223,7 +223,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 record.empty	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_expr.heavy.cast_right_iso_expr_right_k	.subcode
 either.t.out	.cogvar
 gsdl.cgs.gsexpr.cast.source.expr	.gvar
@@ -258,8 +258,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.cgs.gsexpr.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gsexpr.expr.heavy.cast	.gvar
 co.r.co	.fv	gsdl.cgs.gscoercion.t
@@ -287,8 +287,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 record.empty	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_lambda_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check.simple	.gvar
@@ -321,8 +321,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 _gsac.gsexpr.body.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_lambda_right_right_k	.subcode
 either.t.out	.cogvar
 gsac.gsexpr.body.annotate	.gvar
@@ -341,7 +341,7 @@ err		.fkarg	0	string.t
 		.case	right
 r		.fkarg	0	record.empty
 env1			.apply	gsdl.cgs.typeenv.var.insert	|	v	ty.ex	ty.ki	env
-			# Type check body
+			-- Type check body
 			.force	_gsac.gsexpr.annotate_lambda_right_right_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.body.annotate_res.ty
 			.app	pos	env1	b
@@ -354,8 +354,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.body.annotate_res.ty	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.cgs.gstype.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.cgs.gstype.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
 gsdl.cgs.gstype.fun	.gvar
@@ -382,7 +382,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 record.empty	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_lift_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check	.gvar
@@ -409,7 +409,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gsexpr.lift	.gvar
 gsdl.cgs.gskind.lifted	.gvar
@@ -434,7 +434,7 @@ gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gsexpr.pos	.gvar
 pos1	.fv	gsdl.sourcepos.t
@@ -453,7 +453,7 @@ r1			.lrecord	expr	r1.e	gskind	ki	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
 
-# §section §gs{gsac.gsexpr.body.annotate}
+-- §section §gs{gsac.gsexpr.body.annotate}
 
 _gsac.gsexpr.body.annotate_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -475,8 +475,8 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gsexpr.body.annotate_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.body.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.body.annotate_missing_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.annotate	.gvar
@@ -490,7 +490,7 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
 			.app	pos1	env	ty
 			.enter	gsac.gstype.annotate
-	# > :: either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
 
 _gsac.gsexpr.body.annotate_missing_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -498,8 +498,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 _gsac.gsexpr.body.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.cgs.gsexpr.body.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.body.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gsexpr.body.missing	.gvar
 pos1	.fv	gsdl.sourcepos.t
@@ -516,7 +516,7 @@ res			.lrecord	body	res.b	gstype	ty.r.ty	|	_gsac.gsexpr.body.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.body.annotate_res.ty
 
-# §section §gs{gsac.gsexpr.compileToDataItem}
+-- §section §gs{gsac.gsexpr.compileToDataItem}
 
 _gsac.gsexpr.compileToDataItem_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -563,8 +563,8 @@ gsdl.var.component.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToDataItem_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileToDataItem_default_k	.subcode
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_k	.subcode
 gsdl.cgs.gsexpr.t.in	.cogvar
@@ -618,7 +618,7 @@ pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.app	pos1	env	mbv	e1	ty	tyem	pem	tyvs
 			.enter	gsac.gsexpr.compileToDataItem
-	# > :: either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
 _gsac.gsexpr.compileToDataItem_ep.v_c	.expr
 gsdl.var.component.t	.tygvar
@@ -641,9 +641,9 @@ _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 gsdl.ags.codeitem.t	.tygvar
-either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.dataitem.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.dataitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.:	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.gvar
@@ -691,12 +691,12 @@ string.t	.tygvar
 _gsac.gsexpr.cast.source.compileToGlobalVar_res.ty	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 gsdl.var.component.t	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gsexpr.compileToDataItem_res.ty	.tygvar	# Temp
-ordered.set.t	.tygvar	# Temp
-ordered.map.t	.tygvar	# Temp
-_gsac.gstype_primname.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToDataItem_res.ty	.tygvar	-- Temp
+ordered.set.t	.tygvar	-- Temp
+ordered.map.t	.tygvar	-- Temp
+_gsac.gstype_primname.t	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k	.subcode
 either.t.out	.cogvar
 gsac.gscoercion.compileToGlobalVar	.gvar
@@ -748,8 +748,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.ags.dataitem.cast	.gvar
 diff.list.<>	.gvar
@@ -778,7 +778,7 @@ res			.lrecord	codeitems	so.r.cs	coercionitems	cos	dataitems	so.ds	res	di	tygvar
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
-# §section §gs{gsac.gsexpr.compileToGlobalVar}
+-- §section §gs{gsac.gsexpr.compileToGlobalVar}
 
 _gsac.gsexpr.compileToGlobalVar_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -818,8 +818,8 @@ gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gsexpr.compileToGlobalVar_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToGlobalVar_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileToGlobalVar_default_k	.subcode
 gsdl.cgs.gsexpr.t.in	.cogvar
 either.t.out	.cogvar
@@ -856,7 +856,7 @@ pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.app	pos1	env	x	e1	tyem	pem	tyvs
 			.enter	gsac.gsexpr.compileToGlobalVar
-	# > :: either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 
 _gsac.gsexpr.compileToGlobalVar_default_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -868,11 +868,11 @@ gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 _gsac.gsexpr.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
-either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
-maybe.t	.tygvar	# Temp
-gsdl.ags.typeitem.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+maybe.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.:	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.gvar
@@ -909,7 +909,7 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	x	tygvars	tygvs	t
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 
-# §section §gs{gsac.gsexpr.cast.source.compileToGlobalVar}
+-- §section §gs{gsac.gsexpr.cast.source.compileToGlobalVar}
 
 _gsac.gsexpr.cast.source.compileToGlobalVar_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -946,8 +946,8 @@ gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.cast.source.compileToGlobalVar_typesig_k	.subcode
 either.t.out	.cogvar
 maybe.just	.gvar
@@ -980,7 +980,7 @@ ty.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_ty.v
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 			.app	pos1	env	ty.v	ty
 			.enter	gsac.gstype.compileToGlobalVar
-	# > :: either.t	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 
 _gsac.gsexpr.cast.source.compileToGlobalVar_typesig_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -993,10 +993,10 @@ gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.var.t	.tygvar
 maybe.t	.tygvar
-either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.codeitem.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.codeitem.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.nil	.gvar
 diff.list.singleton	.gvar
@@ -1022,7 +1022,7 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	x	tygvars	tygvs	t
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 
-# §section §gs{gsac.gsexpr.compileToLambdaExpr}
+-- §section §gs{gsac.gsexpr.compileToLambdaExpr}
 
 _gsac.gsexpr.compileToLambdaExpr_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1061,8 +1061,8 @@ gsdl.cgs.gsexpr.body.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_lambda_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_lift_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_pos_k	.subcode
@@ -1101,7 +1101,7 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	pos1	env	e1	tyem	pem	tyvs
 			.enter	gsac.gsexpr.compileToLambdaExpr
-	# > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToLambdaExpr_lambda_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -1112,9 +1112,9 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
-either.t	.tygvar	# Temp
-ordered.set.t	.tygvar	# Temp
-gsdl.var.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.var.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_lambda_right_k	.subcode
 either.t.out	.cogvar
 gsac.gsexpr.body.compileToLambdaExpr	.gvar
@@ -1153,8 +1153,8 @@ string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
 either.right	.gvar
 list.:	.gvar
 gsdl.ags.codeitem.arg.arg	.gvar
@@ -1194,10 +1194,10 @@ string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
-either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
-gsdl.ags.dataitem.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+gsdl.ags.dataitem.t	.tygvar	-- Temp
 either.right	.gvar
 list.:	.gvar
 gsdl.ags.codeitem.arg.lift	.gvar
@@ -1229,10 +1229,10 @@ string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
-either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
-gsdl.ags.dataitem.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+gsdl.ags.dataitem.t	.tygvar	-- Temp
 either.right	.gvar
 list.:	.gvar
 gsdl.ags.codeitem.arg.pos	.gvar
@@ -1259,7 +1259,7 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	tygvars	tygvs	t
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
-# §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
+-- §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
 
 _gsac.gsexpr.body.compileToLambdaExpr_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1295,8 +1295,8 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.body.compileToLambdaExpr_missing_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.compileToApp	.gvar
@@ -1313,7 +1313,7 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
 			.app	pos1	env	ty	tyem	pem	tyvs
 			.enter	gsac.gstype.compileToApp
-	# > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.body.compileToLambdaExpr_missing_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -1324,14 +1324,14 @@ _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
-either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.codeitem.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
-gsdl.ags.codeitem.alloc.t	.tygvar	# Temp
-gsdl.ags.codeitem.expr.t	.tygvar	# Temp
-gsdl.ags.typeitem.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.codeitem.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+gsdl.ags.codeitem.alloc.t	.tygvar	-- Temp
+gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.nil	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.gvar
@@ -1364,7 +1364,7 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	tygvars	tygvs	t
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
-# §section §gs{_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem}
+-- §section §gs{_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem}
 
 _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1396,10 +1396,10 @@ list.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
-gsdl.ags.codeitem.alloc.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	# Temp
-gsdl.ags.codeitem.t	.tygvar	# Temp
+gsdl.ags.codeitem.alloc.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
+gsdl.ags.codeitem.t	.tygvar	-- Temp
 diff.list.tolist	.gvar
 gsdl.ags.codeitem.expr	.gvar
 pos	.fv	gsdl.sourcepos.t
@@ -1419,9 +1419,9 @@ e		.fkarg	1	gsdl.ags.codeitem.expr.t
 ds			.lrecord	allocs	as	args	r0.args	cogvars	cogvs	gvars	gvs	subcodes	scs	tygvars	ds.tygvs	|	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 			.app	pos	x	ds	e
 			.yield	gsdl.ags.codeitem.expr
-	# > :: gsdl.ags.codeitem.t
+	-- > :: gsdl.ags.codeitem.t
 
-# §section §gs{_gsac.gsexpr.compileToLambdaExpr_res_res_body.t} Constructors
+-- §section §gs{_gsac.gsexpr.compileToLambdaExpr_res_res_body.t} Constructors
 
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr_c	.expr
 list.t	.tygvar
@@ -1436,9 +1436,9 @@ res	.constr	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	expr	0	as	1	e
 	.lift
 	.yield	res
 
-# §section Helper Functions
+-- §section Helper Functions
 
-# §subsection §gs{c.v}
+-- §subsection §gs{c.v}
 
 _gsac.gsexpr_c.v_c	.expr
 gsdl.var.component.t	.tygvar
@@ -1451,7 +1451,7 @@ cs	.apply	list.singleton	gsdl.var.component.t	|	c0
 	.app	cs
 	.enter	gsdl.var.basevar
 
-# §subsection §gs{ty.v}
+-- §subsection §gs{ty.v}
 
 _gsac.gsexpr_ty.v_c	.expr
 gsdl.var.component.t	.tygvar
@@ -1466,7 +1466,7 @@ cs	.apply	list.singleton	gsdl.var.component.t	|	c0
 
 	.type
 
-# §section §gs{gsac.gsexpr.annotate}
+-- §section §gs{gsac.gsexpr.annotate}
 
 _gsac.gsexpr.annotate_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -1494,7 +1494,7 @@ gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.typroduct	expr	gsdl.cgs.gsexpr.t	gskind	gsdl.cgs.gskind.t	gstype	gsdl.cgs.gstype.t
 
-# §section §gs{gsac.gsexpr.compile.m}
+-- §section §gs{gsac.gsexpr.compile.m}
 
 gsac.gsexpr.compile.m	.tyexpr
 ordered.set.t	.tygvar
@@ -1508,7 +1508,7 @@ _gsac.gsexpr.compile.m_res.ty	.tygvar
 α	.tylambda	*
 res.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	α
 	.tylift
-	.tyfun	ordered.set.t	gsdl.var.t	# §gs{ty.emitted} --- state input of set of type variables already emitted
+	.tyfun	ordered.set.t	gsdl.var.t	-- §gs{ty.emitted} --- state input of set of type variables already emitted
 	.tylift
 	.tyfun	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 	.tylift
@@ -1536,7 +1536,7 @@ diff.list.tygvar.ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 	.typroduct	codeitems	diff.list.codeitem.ty	coercionitems	diff.list.coercionitem.ty	dataitems	diff.list.dataitem.ty	res	α	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
 
-# §section §gs{gsac.gsexpr.body.annotate}
+-- §section §gs{gsac.gsexpr.body.annotate}
 
 _gsac.gsexpr.body.annotate_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -1563,7 +1563,7 @@ gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.typroduct	body	gsdl.cgs.gsexpr.body.t	gstype	gsdl.cgs.gstype.t
 
-# §section §gs{gsac.gsexpr.compileToDataItem}
+-- §section §gs{gsac.gsexpr.compileToDataItem}
 
 _gsac.gsexpr.compileToDataItem_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -1591,7 +1591,7 @@ _gsac.gsexpr.compile.m_res.ty	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 	.tyref	_gsac.gsexpr.compile.m_res.ty	gsdl.ags.dataitem.t
 
-# §section §gs{gsac.gsexpr.compileToGlobalVar}
+-- §section §gs{gsac.gsexpr.compileToGlobalVar}
 
 _gsac.gsexpr.compileToGlobalVar_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -1614,7 +1614,7 @@ _gsac.gsexpr.compile.m_res.ty	.tygvar
 gsdl.var.t	.tygvar
 	.tyref	_gsac.gsexpr.compile.m_res.ty	gsdl.var.t
 
-# §section §gs{gsac.gsexpr.cast.source.compileToGlobalVar}
+-- §section §gs{gsac.gsexpr.cast.source.compileToGlobalVar}
 
 _gsac.gsexpr.cast.source.compileToGlobalVar_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -1638,7 +1638,7 @@ _gsac.gsexpr.compile.m_res.ty	.tygvar
 gsdl.var.t	.tygvar
 	.tyref	_gsac.gsexpr.compile.m_res.ty	gsdl.var.t
 
-# §section §gs{gsac.gsepxr.compileToLambdaExpr}
+-- §section §gs{gsac.gsepxr.compileToLambdaExpr}
 
 _gsac.gsexpr.compileToLambdaExpr_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -1687,7 +1687,7 @@ gsdl.ags.codeitem.expr.t	.tygvar
 list.alloc.ty	.tylet	list.t	gsdl.ags.codeitem.alloc.t
 	.tyubproduct	0	list.alloc.ty	1	gsdl.ags.codeitem.expr.t
 
-# §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
+-- §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
 
 _gsac.gsexpr.body.compileToLambdaExpr_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
