@@ -1359,7 +1359,7 @@ e.b.u			.apply	gsdl.ags.codeitem.expr.pos	|	pos1	e.b.u1
 e.b			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	|	e.b.as	e.b.u
 e			.lrecord	args	e.as	body	e.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 tygvs			.lfield	tygvars	r0
-ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+ts			.lfield	typeitems	r0
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
