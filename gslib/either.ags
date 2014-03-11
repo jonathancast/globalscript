@@ -12,7 +12,7 @@ either.mapM	.closure	_either.mapM_c	_either.mapM_ty
 
 	.code
 
-# §section Constructors
+-- §section Constructors
 
 _either.left_c	.expr
 either.prim.u	.tygvar
@@ -38,7 +38,7 @@ e0	.constr	t	right	0	x
 	.lift
 	.yield	e0
 
-# §section §gs{either.map}
+-- §section §gs{either.map}
 
 _either.map_c	.expr
 _either.map_f_ty	.tygvar
@@ -84,7 +84,7 @@ x	.fv	β0
 	.app	x
 	.enter	f
 
-# §section §gs{either.unit}
+-- §section §gs{either.unit}
 
 _either.unit_c	.expr
 either.right	.gvar
@@ -94,7 +94,7 @@ x	.larg	β
 	.app	x
 	.enter	either.right	α	β
 
-# §section §gs{either.mapM}
+-- §section §gs{either.mapM}
 
 _either.mapM_c	.expr
 _either.mapM_fun_ty	.tygvar
@@ -187,7 +187,7 @@ ys			.apply	list.:	β	|	y0	ys1
 
 	.type
 
-# §section §gs{either.t}
+-- §section §gs{either.t}
 
 either.t	.tyabstract	**^*^
 either.prim.t	.tygvar
@@ -219,7 +219,7 @@ _either.prim.u_right.ty	.tyexpr
 β	.tylambda	*
 	.tyubproduct	0	β
 
-# §section §gs{either.map}
+-- §section §gs{either.map}
 
 _either.map_f_ty	.tyexpr
 β0	.tylambda	*
@@ -228,7 +228,7 @@ _either.map_f_ty	.tyexpr
 	.tyfun	β0
 	.tyref	β1
 
-# §section §gs{either.mapM}
+-- §section §gs{either.mapM}
 
 _either.mapM_ty	.tyexpr
 _either.mapM_fun_ty	.tygvar

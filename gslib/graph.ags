@@ -1,6 +1,6 @@
 	.prefix
 
-# Based on §url{http://en.wikipedia.org/wiki/Path-based_strong_component_algorithm}
+-- Based on §url{http://en.wikipedia.org/wiki/Path-based_strong_component_algorithm}
 
 	.data
 
@@ -390,7 +390,7 @@ order.total.t	.tygvar
 list.prim.u	.tygvar
 _graph.tsort_key.value.ty	.tygvar
 list.t	.tygvar
-_graph.tsort_item_cont1_:_pop.unassigned_res.ty	.tygvar	 # Temp
+_graph.tsort_item_cont1_:_pop.unassigned_res.ty	.tygvar	-- Temp
 _graph.tsort_item_cont1_:_pop.unassigned_:_k	.subcode
 k	.tyfv	*
 v	.tyfv	*
@@ -851,7 +851,7 @@ grp	.larg	list.t	k
 	.app	ord	deps	look	ks1	cont	n	pre	em	un	grp
 	.enter	_graph.tsort_subitems	k	v
 
-# §section §gs{graph.scc.≡}
+-- §section §gs{graph.scc.≡}
 
 _graph.scc.≡_c	.expr
 order.total.t	.tygvar
@@ -913,7 +913,7 @@ o0	.karg	order.total.ord.prim.u
 		.case	eq
 			.enter	bool.true
 
-# §section §gs{graph.scc.fmtgs}
+-- §section §gs{graph.scc.fmtgs}
 
 _graph.scc.fmtgs_c	.expr
 fmtgs.t	.tygvar
@@ -946,7 +946,7 @@ x.pr			.apply	fmt	|	x
 			.enter	fmtgs.app
 	-- > :: fmtgs.printer.t
 
-# §section §gs{graph.scc.t} constructors
+-- §section §gs{graph.scc.t} constructors
 
 _graph.scc.nonrecursive_c	.expr
 graph.scc.prim.u	.tygvar
@@ -961,7 +961,7 @@ c	.constr	res.u	nonrecursive	0	v
 
 	.type
 
-# §section §gs{graph.scc.t}
+-- §section §gs{graph.scc.t}
 
 graph.scc.t	.tyabstract	**^
 graph.scc.prim.u	.tygvar
@@ -979,7 +979,7 @@ _graph.scc.prim.u_nonrecursive_ty	.tyexpr
 α	.tylambda	*
 	.tyubproduct	0	α
 
-# §section §gs{graph.dependencies.t}
+-- §section §gs{graph.dependencies.t}
 
 graph.dependencies.t	.tyexpr
 list.t	.tygvar
@@ -989,7 +989,7 @@ v	.tylambda	*
 	.tyfun	v
 	.tyref	list.t	k
 
-# §section §gs{graph.lookup.t}
+-- §section §gs{graph.lookup.t}
 
 graph.lookup.t	.tyexpr
 maybe.t	.tygvar
@@ -999,7 +999,7 @@ v	.tylambda	*
 	.tyfun	k
 	.tyref	maybe.t	v
 
-# §section §gs{graph.tsort}
+-- §section §gs{graph.tsort}
 
 _graph.tsort_ty	.tyexpr
 order.total.t	.tygvar

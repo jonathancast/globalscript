@@ -16,7 +16,7 @@ _maybe.fmtgs_nothing.s	.string	nothing
 
 	.code
 
-# §section Constructors
+-- §section Constructors
 
 _maybe.nothing_c	.expr
 maybe.prim.u	.tygvar
@@ -39,7 +39,7 @@ j	.constr	res.u	just	0	x
 	.lift
 	.yield	j
 
-# §section §gs{maybe.fromJust}
+-- §section §gs{maybe.fromJust}
 
 _maybe.fromJust_c	.expr
 maybe.t	.tygvar
@@ -64,7 +64,7 @@ x1		.fkarg	0	α
 		.case	nothing
 			.enter	x
 
-# §section §gs{maybe.maybe}
+-- §section §gs{maybe.maybe}
 
 _maybe.maybe_c	.expr
 _maybe.maybe_sk_ty	.tygvar
@@ -96,7 +96,7 @@ x		.fkarg	0	α
 		.case	nothing
 			.enter	fk
 
-# §section §gs{maybe.≡}
+-- §section §gs{maybe.≡}
 
 _maybe.≡_c	.expr
 _maybe.≡_eq_ty	.tygvar
@@ -153,7 +153,7 @@ x1				.fkarg	0	α
 				.case	nothing
 					.enter	bool.true
 
-# §section §gs{maybe.fmtgs}
+-- §section §gs{maybe.fmtgs}
 
 _maybe.fmtgs_c	.expr
 fmtgs.t	.tygvar
@@ -219,7 +219,7 @@ _maybe.prim.u_just_ty	.tyexpr
 _maybe.prim.u_nothing_ty	.tyexpr
 	.tyubproduct
 
-# §section §gs{maybe.maybe}
+-- §section §gs{maybe.maybe}
 
 _maybe.maybe_sk_ty	.tyexpr
 α	.tylambda	*
@@ -228,7 +228,7 @@ _maybe.maybe_sk_ty	.tyexpr
 	.tyfun	α
 	.tyref	β
 
-# §section §gs{maybe.≡}
+-- §section §gs{maybe.≡}
 
 _maybe.≡_eq_ty	.tyexpr
 bool.t	.tygvar
@@ -239,7 +239,7 @@ bool.t	.tygvar
 	.tyfun	α
 	.tyref	bool.t
 
-# §section §gs{maybe.fmtgs}
+-- §section §gs{maybe.fmtgs}
 
 _maybe.fmtgs_pr_ty	.tyexpr
 list.t	.tygvar

@@ -22,7 +22,7 @@ fmtgs.prec.app	.closure	_fmtgs.prec.app_c
 
 	.code
 
-# §section §gs{fmtgs.var}
+-- §section §gs{fmtgs.var}
 
 _fmtgs.var_c	.expr
 list.t	.tygvar
@@ -35,7 +35,7 @@ ds	.apply	diff.list.fromlist	rune.t	|	s
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
 
-# §section §gs{fmtgs.app}
+-- §section §gs{fmtgs.app}
 
 _fmtgs.app_c	.expr
 fmtgs.printer.t	.tygvar
@@ -56,7 +56,7 @@ ds	.apply	diff.list.<>	rune.t	|	dsf	ds1
 	.app	fmtgs.prec.app	ds
 	.enter	fmtgs.prec
 
-# §section §gs{fmtgs.record}
+-- §section §gs{fmtgs.record}
 
 _fmtgs.record_c	.expr
 list.t	.tygvar
@@ -106,7 +106,7 @@ ds	.apply	diff.list.prepend	rune.t	|	f.field	ds1
 	.app	rune.single.quote	ds
 	.enter	diff.list.:	rune.t
 
-# §section §gs{fmtgs.prec}
+-- §section §gs{fmtgs.prec}
 
 _fmtgs.prec_c	.expr
 fmtgs.prec.t	.tygvar
@@ -143,7 +143,7 @@ ds1			.apply	diff.list.<>	rune.t	|	ds	ds2
 		.case	true
 			.enter	ds
 
-# §section §gs{fmtgs.prec.higher}
+-- §section §gs{fmtgs.prec.higher}
 
 _fmtgs.prec.higher_c	.expr
 fmtgs.prec.t	.tygvar
@@ -188,13 +188,13 @@ p1.0	.karg	fmtgs.prec.prim.u
 					.enter	bool.true
 	-- > :: bool.t
 
-# §section §gs{fmtgs.prec.max}
+-- §section §gs{fmtgs.prec.max}
 
 _fmtgs.prec.max_c	.expr
 fmtgs.prec.app	.gvar
 	.enter	fmtgs.prec.app
 
-# §section §gs{fmtgs.prec} Constructors
+-- §section §gs{fmtgs.prec} Constructors
 
 _fmtgs.prec.arg_c	.expr
 fmtgs.prec.prim.u	.tygvar
@@ -214,7 +214,7 @@ c	.constr	fmtgs.prec.prim.u	app
 
 	.type
 
-# §section §gs{fmtgs.t}
+-- §section §gs{fmtgs.t}
 
 fmtgs.t	.tyexpr
 fmtgs.printer.t	.tygvar
@@ -231,7 +231,7 @@ rune.t	.tygvar
 	.tyfun	fmtgs.prec.t
 	.tyref	diff.list.t	rune.t
 
-# §section §gs{fmtgs.record}
+-- §section §gs{fmtgs.record}
 
 fmtgs.record.field.printer.t	.tyexpr
 fmtgs.record.field.printer.prim.u	.tygvar
@@ -243,7 +243,7 @@ string.t	.tygvar
 fmtgs.printer.t	.tygvar
 	.typroduct	field	string.t	val	fmtgs.printer.t
 
-# §section §gs{fmtgs.prec.t}
+-- §section §gs{fmtgs.prec.t}
 
 fmtgs.prec.t	.tyabstract	*
 fmtgs.prec.prim.u	.tygvar
