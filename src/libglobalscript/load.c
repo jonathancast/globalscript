@@ -18,7 +18,7 @@ static struct uxio_channel *gspopen(int omode, int *ppid, char *cmd, char **argv
 #endif
 static long gsclosefile(struct uxio_ichannel *chan, int pid);
 
-static long gsac_tokenize(char *, char **, long);
+static long gsac_tokenize(char *, int, char *, char **, long);
 
 int
 gsisdir(char *filename)
@@ -2357,7 +2357,7 @@ gsgrabline(struct gsparse_input_pos *pos, struct uxio_ichannel *chan, char *line
         if (n <= 1)
             return 0
         ;
-        if ((n = gsac_tokenize(line, fields, NUM_FIELDS)) < 0)
+        if ((n = gsac_tokenize(pos->real_filename, pos->real_lineno, line, fields, NUM_FIELDS)) < 0)
             gsfatal("%s:%d: Fatal error in lexer: %r", pos->real_filename, pos->real_lineno)
         ;
         if (n > NUM_FIELDS)
@@ -3006,11 +3006,12 @@ gsclosefile(struct uxio_ichannel *chan, int pid)
     return gsbio_device_iclose(chan);
 }
 
+#define DISALLOW_OLD_COMMENTS 0
 #define IS_COMMENT (*p == '#' || (p[0] == '-' && p[1] && p[1] == '-' && p[2] && isspace(p[2])))
 
 static
 long
-gsac_tokenize(char *line, char **fields, long maxfields)
+gsac_tokenize(char *file, int lineno, char *line, char **fields, long maxfields)
 {
     int label_present;
     long numfields;
@@ -3042,6 +3043,7 @@ gsac_tokenize(char *line, char **fields, long maxfields)
             numfields++;
         }
     }
+    if (DISALLOW_OLD_COMMENTS && *p == '#') gsfatal("%s:%d:%d: Illegal old-style # comment", file, lineno, p - line + 1);
     if (*p) *p++ = 0;
     return label_present || numfields ? numfields + 1 : 0;
 }
