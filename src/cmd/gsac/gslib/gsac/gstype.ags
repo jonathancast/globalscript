@@ -39,7 +39,7 @@ _gsac.gstype_primname.compare	.closure	_gsac.gstype_primname.compare_c
 
 	.code
 
-# §section §gs{gsac.gstype.annotate}
+-- §section §gs{gsac.gstype.annotate}
 
 _gsac.gstype.annotate_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -591,7 +591,7 @@ res			.lrecord	gskind	ki	gstype	res.ty	|	_gsac.gstype.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
 
-# §section §gs{gsac.gstype.fun.annotate}
+-- §section §gs{gsac.gstype.fun.annotate}
 
 _gsac.gstype.fun.annotate_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -798,7 +798,7 @@ res			.lrecord	gskind	ki	gstype	tye	|	_gsac.gstype.fun.annotate_res.ty
 		.case	nothing
 			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
 
-# §section §gs{gsac.gstype.field.annotate}
+-- §section §gs{gsac.gstype.field.annotate}
 
 _gsac.gstype.field.annotate_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
@@ -808,7 +808,7 @@ record.empty	.tygvar	-- Temp
 f	.larg	gsdl.cgs.gstype.field.t
 	.undef	either.t	string.t	record.empty
 
-# §section §gs{gsac.gstype.check}
+-- §section §gs{gsac.gstype.check}
 
 _gsac.gstype.check_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1144,7 +1144,7 @@ b0	.karg	bool.prim.u	-- Same kind?
 			.app	record.empty
 			.enter	either.right	string.t	record.empty
 
-# §section §gs{gsac.gstype.fields.check}
+-- §section §gs{gsac.gstype.fields.check}
 
 _gsac.gstype.fields.check_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1199,9 +1199,9 @@ fsa1				.fkarg	1	list.t	gsdl.cgs.gstype.field.t
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
 
-# §section §gs{gsac.gstype.compile}
+-- §section §gs{gsac.gstype.compile}
 
-# > either.t string.t ⊕ writer.m (diff.list.t gsdl.ags.typeitem.t)
+-- > either.t string.t ⊕ writer.m (diff.list.t gsdl.ags.typeitem.t)
 _gsac.gstype.compile_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
@@ -1625,9 +1625,9 @@ gsdl.ags.typeitem.constr.t	.tygvar	-- Temp
 r	.larg	_gsac.gstype.constr.compile_res.ty
 	.undef	gsdl.ags.typeitem.constr.t
 
-# §section §gs{gsac.gstype.compileToGlobalVar}
+-- §section §gs{gsac.gstype.compileToGlobalVar}
 
-# > either.t string.t ⊕ writer.m (diff.list.t gsdl.ags.typeitem.t)
+-- > either.t string.t ⊕ writer.m (diff.list.t gsdl.ags.typeitem.t)
 _gsac.gstype.compileToGlobalVar_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
@@ -1713,7 +1713,7 @@ res			.lrecord	nm	nm0	typeitems	tyes	|	_gsac.gstype.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 
-# §section §gs{gsac.gstype.compileToApp}
+-- §section §gs{gsac.gstype.compileToApp}
 
 _gsac.gstype.compileToApp_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -2054,7 +2054,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 _gsac.gstype.compile.m_res.u	.tygvar
-either.t	.tygvar	 # Temp
+either.t	.tygvar	 -- Temp
 _gsac.gstype.compileToApp_res.ty	.tygvar	-- Temp
 _gsac.gstype.compileToApp_app_elimprim_right_k	.subcode
 pos	.fv	gsdl.sourcepos.t
@@ -2268,7 +2268,7 @@ das1	.apply	diff.list.snoc	gsdl.var.t	|	das	a0.v
 	.app	pos	env	r1	as1	das1
 	.yield	_gsac.gstype.compileToApp_args
 
-# §section §gs{gsac.gstype.compileToVar}
+-- §section §gs{gsac.gstype.compileToVar}
 
 _gsac.gstype.compileToVar_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -2357,7 +2357,7 @@ res			.lrecord	emitted	r.em	prim.emitted	r.pem	res	r.tyf	subvars	r.gvs	tyfvs	r.t
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compileToVar_res.ty
 
-# ↓ Not really a case of §gs{compileToVar}, but just a utility function used in a couple of places
+-- ↓ Not really a case of §gs{compileToVar}, but just a utility function used in a couple of places
 _gsac.gstype.compileToVar_gsabstype_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
@@ -2644,9 +2644,9 @@ res			.lrecord	emitted	em	prim.emitted	pem1	res	sv0	subvars	svs1	tyfvs	nil.var	t
 		.case	nil
 			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
-# §section §gs{gsac.gstype.fields.compile}
+-- §section §gs{gsac.gstype.fields.compile}
 
-# > either.t string.t ⊕ writer.m (diff.list.t gsdl.ags.typeitem.t)
+-- > either.t string.t ⊕ writer.m (diff.list.t gsdl.ags.typeitem.t)
 _gsac.gstype.fields.compile_c	.expr
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
@@ -2692,7 +2692,7 @@ res			.lrecord	emitted	em	fields	fs	tyexprs	tyes	tyfvs	tyfvs	tygvars	tygvs	|	_gs
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.fields.compile_res.ty
 
-# §section §gs{gsac.gstype.constr.compile}
+-- §section §gs{gsac.gstype.constr.compile}
 
 _gsac.gstype.constr.compile_c	.expr
 gsdl.cgs.gstype.constr.t	.tygvar
@@ -2712,7 +2712,7 @@ pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
 	.undef	either.t	string.t	res.ty
 
-# §section §gs{gsac.gstype.constr.compare}
+-- §section §gs{gsac.gstype.constr.compare}
 
 _gsac.gstype.constr.compare_c	.expr
 gsdl.cgs.gstype.constr.t	.tygvar
@@ -2721,7 +2721,7 @@ c0	.larg	gsdl.cgs.gstype.constr.t
 c1	.larg	gsdl.cgs.gstype.constr.t
 	.undef	order.total.ord.t
 
-# §section §gs{gsac.gstype.compile.mapM}
+-- §section §gs{gsac.gstype.compile.mapM}
 
 _gsac.gstype.compile.mapM_c	.expr
 _gsac.gstype.compile.mapM_fun.ty	.tygvar
@@ -2866,7 +2866,7 @@ rys1			.lrecord	emitted	em	prim.emitted	pem	res	ys1	subvars	svs	tyfvs	tyfvs	tygv
 			.app	rys1
 			.enter	either.right	string.t	compile.m.res.list.β
 
-# §section §gs{primname.compare}
+-- §section §gs{primname.compare}
 
 _gsac.gstype_primname.compare_c	.expr
 _gsac.gstype_primname.t	.tygvar
@@ -2886,7 +2886,7 @@ pn.cmp	.apply	gsdl.var.compare	|	pn0	pn1
 
 	.type
 
-# §section §gs{gsac.gstype.compile.m}
+-- §section §gs{gsac.gstype.compile.m}
 
 gsac.gstype.compile.m	.tyexpr
 ordered.set.t	.tygvar
@@ -2931,7 +2931,7 @@ diff.list.tygvar.ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 	.typroduct	emitted	set.var.ty	prim.emitted	map.primname.var.ty	res	α	subvars	list.var.ty	tyfvs	diff.list.var.ty	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
 
-# §section §gs{gsac.gstype.annotate}
+-- §section §gs{gsac.gstype.annotate}
 
 _gsac.gstype.annotate_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -2958,7 +2958,7 @@ gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.typroduct	gskind	gsdl.cgs.gskind.t	gstype	gsdl.cgs.gstype.t
 
-# §section §gs{gsac.gstype.fun.annotate}
+-- §section §gs{gsac.gstype.fun.annotate}
 
 _gsac.gstype.fun.annotate_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -2985,7 +2985,7 @@ gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 	.typroduct	gskind	gsdl.cgs.gskind.t	gstype	gsdl.cgs.typeenv.typeexpansion.t
 
-# §section §gs{gsac.gstype.field.annotate}
+-- §section §gs{gsac.gstype.field.annotate}
 
 _gsac.gstype.field.annotate_ty	.tyexpr
 gsdl.cgs.gstype.field.t	.tygvar
@@ -3004,7 +3004,7 @@ _gsac.gstype.field.annotate_res.u	.tygvar
 _gsac.gstype.field.annotate_res.u	.tyexpr
 	.typroduct
 
-# §section §gs{gsac.gstype.check}
+-- §section §gs{gsac.gstype.check}
 
 _gsac.gstype.check_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -3023,7 +3023,7 @@ record.empty	.tygvar
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	either.t	string.t	record.empty
 
-# §section §gs{gsac.gstype.fields.check}
+-- §section §gs{gsac.gstype.fields.check}
 
 _gsac.gstype.fields.check_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -3043,7 +3043,7 @@ record.empty	.tygvar
 	.tyfun	list.t	gsdl.cgs.gstype.field.t
 	.tyref	either.t	string.t	record.empty
 
-# §section §gs{gsac.gstype.compile}
+-- §section §gs{gsac.gstype.compile}
 
 _gsac.gstype.compile_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -3088,7 +3088,7 @@ _gsac.gstype.compile.m_res.ty	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 	.tyref	_gsac.gstype.compile.m_res.ty	gsdl.ags.typeitem.expr.t
 
-# §section §gs{gsac.gstype.compileToGlobalVar}
+-- §section §gs{gsac.gstype.compileToGlobalVar}
 
 _gsac.gstype.compileToGlobalVar_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -3120,7 +3120,7 @@ gsdl.ags.typeitem.t	.tygvar
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 	.typroduct	nm	gsdl.var.t	typeitems	diff.list.typeitem.ty
 
-# §section §gs{gsac.gstype.compileToApp}
+-- §section §gs{gsac.gstype.compileToApp}
 
 _gsac.gstype.compileToApp_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -3196,7 +3196,7 @@ _gsac.gstype.compileToApp_res.ty	.tygvar
 	.tyfun	diff.list.t	gsdl.var.t
 	.tyref	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 
-# §section §gs{gsac.gstype.compileToVar}
+-- §section §gs{gsac.gstype.compileToVar}
 
 _gsac.gstype.compileToVar_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -3239,7 +3239,7 @@ gsac.gstype.compile.m	.tygvar
 	.tyfun	gsdl.cgs.gskind.t
 	.tyref	gsac.gstype.compile.m	gsdl.var.t
 
-# §section §gs{gsac.gstype.fields.compile}
+-- §section §gs{gsac.gstype.fields.compile}
 
 _gsac.gstype.fields.compile_ty	.tyexpr
 list.t	.tygvar
@@ -3274,7 +3274,7 @@ _tyfvs_ty	.tylet	diff.list.t	gsdl.var.t
 _tygvars_ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 	.typroduct	emitted	_emitted_ty	fields	fields_ty	tyexprs	tyexprs_ty	tyfvs	_tyfvs_ty	tygvars	_tygvars_ty
 
-# §section §gs{gsac.gstype.constr.compile}
+-- §section §gs{gsac.gstype.constr.compile}
 
 _gsac.gstype.constr.compile_ty	.tyexpr
 gsdl.cgs.gstype.constr.t	.tygvar
@@ -3292,7 +3292,7 @@ _gsac.gstype.constr.compile_res.u	.tygvar
 _gsac.gstype.constr.compile_res.u	.tyexpr
 	.typroduct
 
-# §section §gs{gsac.gstype.compile.mapM}
+-- §section §gs{gsac.gstype.compile.mapM}
 
 _gsac.gstype.compile.mapM_ty	.tyexpr
 _gsac.gstype.compile.mapM_fun.ty	.tygvar
@@ -3315,7 +3315,7 @@ gsac.gstype.compile.m	.tygvar
 	.tyfun	α
 	.tyref	gsac.gstype.compile.m	β
 
-# §section §gs{primname.t}
+-- §section §gs{primname.t}
 
 _gsac.gstype_primname.t	.tyexpr
 _gsac.gstype_primname.u	.tygvar
