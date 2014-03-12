@@ -1530,7 +1530,6 @@ gsdl.ags.typeitem.expr.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
-gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 ty0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.analyze	ty0	left	right
@@ -1545,7 +1544,7 @@ e			.undefined	gsdl.ags.typeitem.expr.t
 svs			.undefined	list.t	gsdl.var.t
 tyfvs			.lfield	tyfvs	r0
 tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
-ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+ts			.lfield	typeitems	r0
 res			.lrecord	emitted	em	prim.emitted	pem	res	e	subvars	svs	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
