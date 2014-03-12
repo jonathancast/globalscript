@@ -476,7 +476,7 @@ decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 decls	.lrecord	tyargs	tyas	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
 expr.fields	.apply	list.nil	gsdl.ags.typeitem.field.t
 expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr.fields
-expr	.apply	gsdl.ags.typeitem.expr.lift	|	pos	expr1
+expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
 pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
 actual	.apply	gsac.prefix.items	|	pr
 absty.ti	.apply	gsac.prefix.typeconstitem.gsabstypedefn	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr
@@ -771,7 +771,7 @@ decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
 tye1.fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 tye1	.apply	gsdl.ags.typeitem.expr.product	|	tye1.fs
-tye	.apply	gsdl.ags.typeitem.expr.lift	|	pos	tye1
+tye	.apply	gsdl.ags.typeitem.expr.lift	|	tye1
 ti	.apply	gsdl.ags.typeitem.tyabstract	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	tye
 tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	ti
 inprfx	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
@@ -1118,7 +1118,7 @@ decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
 expr1.fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr1.fs
-expr	.apply	gsdl.ags.typeitem.expr.lift	|	pos	expr1
+expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
 pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
 	.force	_test.typecheck_gsabstype.defn_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
@@ -1438,7 +1438,7 @@ list.nil	.gvar
 pos	.undefined	gsdl.sourcepos.t
 fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 ty1	.apply	gsdl.ags.typeitem.expr.product	|	fs
-ty	.apply	gsdl.ags.typeitem.expr.lift	|	pos	ty1
+ty	.apply	gsdl.ags.typeitem.expr.lift	|	ty1
 	.force	_test.upconvert_lift_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
 	.app	pos	gsdl.cgs.typeenv.empty	ty

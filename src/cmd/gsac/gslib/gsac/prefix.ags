@@ -1322,11 +1322,10 @@ res		.fkarg	2	gsdl.ags.typeitem.expr.t
 			.app	pos	env	tyf	tyas
 			.enter	gsac.prefix.typeapp.upconvert
 		.case	lift
-pos1		.fkarg	0	gsdl.sourcepos.t
-e1		.fkarg	1	gsdl.ags.typeitem.expr.t
+e1		.fkarg	0	gsdl.ags.typeitem.expr.t
 			.force	_gsac.prefix.gstype.upconvert_lift_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
-			.app	pos1	env	e1
+			.app	pos	env	e1
 			.enter	gsac.prefix.gstype.upconvert
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
