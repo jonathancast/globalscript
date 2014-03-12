@@ -1519,6 +1519,15 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.var.t	.tygvar	-- Temp
+ordered.map.t	.tygvar	-- Temp
+_gsac.gstype_primname.t	.tygvar	-- Temp
+gsdl.ags.typeitem.expr.t	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 ty0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.analyze	ty0	left	right
@@ -1527,7 +1536,14 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gstype.compile_res.ty
-res			.undefined	_gsac.gstype.compile_res.ty
+em			.undefined	ordered.set.t	gsdl.var.t
+pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+e			.undefined	gsdl.ags.typeitem.expr.t
+svs			.undefined	list.t	gsdl.var.t
+tyfvs			.undefined	diff.list.t	gsdl.var.t
+tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	emitted	em	prim.emitted	pem	res	e	subvars	svs	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
