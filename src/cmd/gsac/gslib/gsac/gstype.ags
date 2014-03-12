@@ -1540,7 +1540,7 @@ em			.undefined	ordered.set.t	gsdl.var.t
 pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 e			.undefined	gsdl.ags.typeitem.expr.t
 svs			.undefined	list.t	gsdl.var.t
-tyfvs			.undefined	diff.list.t	gsdl.var.t
+tyfvs			.lfield	tyfvs	r0
 tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	emitted	em	prim.emitted	pem	res	e	subvars	svs	tyfvs	tyfvs	tygvars	tygvs	typeitems	ts	|	_gsac.gstype.compile_res.ty
