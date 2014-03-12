@@ -1518,6 +1518,7 @@ res			.lrecord	emitted	em0	prim.emitted	pem0	res	res0	subvars	svs0	tyfvs	tyfvs0	
 			.enter	either.right	string.t	_gsac.gstype.compile_res.ty
 
 _gsac.gstype.compile_w_pos_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
@@ -1529,6 +1530,8 @@ _gsac.gstype_primname.t	.tygvar	-- Temp
 gsdl.ags.typeitem.expr.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
 either.right	.gvar
+gsdl.ags.typeitem.expr.pos	.gvar
+pos1	.fv	gsdl.sourcepos.t
 ty0	.karg	either.prim.u	string.t	_gsac.gstype.compile_res.ty
 	.analyze	ty0	left	right
 		.case	left
@@ -1538,7 +1541,8 @@ err		.fkarg	0	string.t
 r0		.fkarg	0	_gsac.gstype.compile_res.ty
 em			.undefined	ordered.set.t	gsdl.var.t
 pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-e			.undefined	gsdl.ags.typeitem.expr.t
+r0.e			.lfield	res	r0
+e			.apply	gsdl.ags.typeitem.expr.pos	|	pos1	r0.e
 svs			.undefined	list.t	gsdl.var.t
 tyfvs			.lfield	tyfvs	r0
 tygvs			.lfield	tygvars	r0
