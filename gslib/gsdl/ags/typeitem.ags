@@ -1609,6 +1609,8 @@ rune.new.line	.gvar
 # §paragraph{§gs{lift}}
 _gsdl.ags.typeitem.expr.print_tylift.s	.gvar
 gsdl.ags.typeitem.expr.print	.gvar
+# §paragraph{§gs{os}}
+gsdl.ags.sourcepos.print	.gvar
 # §paragraph{§gs{product}}
 _gsdl.ags.typeitem.expr.print_typroduct.s	.gvar
 _gsdl.ags.typeitem.expr.print_fields.print	.gvar
@@ -1648,7 +1650,10 @@ s1			.apply	gsdl.ags.typeitem.expr.print	|	exp1
 		.case	pos
 pos		.fkarg	0	gsdl.sourcepos.t
 exp1		.fkarg	1	gsdl.ags.typeitem.expr.t
-			.undef	diff.list.t	rune.t
+pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
+exp1.s			.apply	gsdl.ags.typeitem.expr.print	|	exp1
+			.app	pos.s	exp1.s
+			.enter	diff.list.<>	rune.t
 		.case	product
 fs		.fkarg	0	list.t	gsdl.ags.typeitem.field.t
 s1			.apply	_gsdl.ags.typeitem.expr.print_fields.print	|	fs
