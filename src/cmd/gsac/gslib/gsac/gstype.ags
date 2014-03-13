@@ -1848,7 +1848,7 @@ ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
 either.right	.gvar
-diff.list.snoc	.gvar
+diff.list.:	.gvar
 gsdl.ags.typeitem.tyexpr	.gvar
 maybe.nothing	.gvar
 diff.list.tolist	.gvar
@@ -1879,7 +1879,7 @@ ref.e			.lfield	res	res
 tygv0			.apply	gsdl.ags.typeitem.decls.tygvar.tygvar	|	v
 tygvs			.apply	diff.list.singleton	gsdl.ags.typeitem.decls.tygvar.t	|	tygv0
 tye0			.apply	gsdl.ags.typeitem.tyexpr	|	pos	v	tye0.ki	tye0.ds	ref.e
-tyes			.apply	diff.list.snoc	gsdl.ags.typeitem.t	|	res.tyes	tye0
+tyes			.apply	diff.list.:	gsdl.ags.typeitem.t	|	tye0	res.tyes
 r			.lrecord	emitted	em	prim.emitted	pem	res	r.res	subvars	gvs1	tyfvs	tyfvs	tygvars	tygvs	typeitems	tyes	|	_gsac.gstype.compileToApp_res.ty
 			.app	r
 			.enter	either.right	string.t	_gsac.gstype.compileToApp_res.ty
