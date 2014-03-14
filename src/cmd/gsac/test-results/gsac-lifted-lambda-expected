@@ -1,0 +1,26 @@
+	.document
+
+	.data
+
+	.line	./test-fixtures/lifted-lambda.cgs 3 1
+	.closure	_ep_c	_ep_ty
+
+	.code
+
+	.line	./test-fixtures/lifted-lambda.cgs 3 1
+_ep_c	.expr
+bool.t	.tyextabstype	*
+	.lift
+	.line	./test-fixtures/lifted-lambda.cgs 3 2
+x	.arg	bool.t
+	.line	./test-fixtures/lifted-lambda.cgs 3 17
+	.undef	bool.t
+
+	.type
+
+	.line	./test-fixtures/lifted-lambda.cgs 3 1
+_ep_ty	.tyexpr
+bool.t	.tyextabstype	*
+	.tylift
+	.tyfun	bool.t
+	.tyref	bool.t
