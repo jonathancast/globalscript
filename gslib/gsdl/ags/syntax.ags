@@ -4,7 +4,7 @@
 
 gsdl.ags.syntax.whitespace	.closure	_gsdl.ags.syntax.whitespace_c
 _gsdl.ags.syntax.whitespace_re	.regex	\n§*	_gsdl.ags.syntax.whitespace_re_blank
-_gsdl.ags.syntax.whitespace_re_blank	.regex	\n|\t*\h[^\n]*\n
+_gsdl.ags.syntax.whitespace_re_blank	.regex	\n|\t*\h[^\n]*\n|\t*--[\s][^\n]*\n
 
 gsdl.ags.syntax.columnsep	.closure	_gsdl.ags.syntax.columnsep_c
 _gsdl.ags.syntax.columnsep_re	.regex	[\s\t]\t*
