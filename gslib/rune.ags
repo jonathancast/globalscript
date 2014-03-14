@@ -48,7 +48,7 @@ rune.underscore	.closure	_rune.underscore_c
 
 	.code
 
-# §section §gs{rune.≡}
+-- §section §gs{rune.≡}
 
 _rune.≡_c	.expr
 rune.t	.tygvar
@@ -90,7 +90,7 @@ _rune.≡.k1.1	.ubcasecont
 bool.true	.gvar
 	.enter	bool.true
 
-# §section §gs{rune.compare}
+-- §section §gs{rune.compare}
 
 _rune.compare_c	.expr
 rune.t	.tygvar
@@ -148,7 +148,7 @@ r0.0	.fv	rune.prim.rune
 r1.0	.fv	rune.prim.rune
 	.enter	order.total.ord.gt
 
-# §section §gs{rune.≠}
+-- §section §gs{rune.≠}
 
 _rune.≠_c	.expr
 rune.t	.tygvar
@@ -160,7 +160,7 @@ b	.apply	rune.≡	|	r0	r1
 	.app	b
 	.enter	bool.not
 
-# §section §gs{rune.print}
+-- §section §gs{rune.print}
 
 _rune.print_c	.expr
 rune.t	.tygvar
@@ -171,7 +171,7 @@ nil	.apply	list.nil	rune.t
 	.app	r	nil
 	.enter	list.:	rune.t
 
-# §section §gs{rune.fmtgs}
+-- §section §gs{rune.fmtgs}
 
 _rune.fmtgs_c	.expr
 rune.t	.tygvar
@@ -191,7 +191,7 @@ ds	.apply	diff.list.prepend	rune.t	|	_rune.fmtgs_prefix	s1
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
 
-# §section §gs{rune.fmtgs.list}
+-- §section §gs{rune.fmtgs.list}
 
 _rune.fmtgs.list_c	.expr
 list.t	.tygvar
@@ -217,7 +217,7 @@ ds	.apply	diff.list.prepend	rune.t	|	_rune.fmtgs.list_prefix	s1
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
 
-# §section §gs{_rune.togss}
+-- §section §gs{_rune.togss}
 
 _rune.togss_c	.expr
 rune.t	.tygvar
@@ -252,7 +252,7 @@ s1			.apply	list.:	rune.t	|	rune.latin.letter.n	s
 			.app	rune.backslash	s1
 			.enter	list.:	rune.t
 
-# §section §gs{rune.advance}
+-- §section §gs{rune.advance}
 
 _rune.advance_c	.expr
 rune.t	.tygvar
@@ -289,7 +289,7 @@ n0	.karg	natural.prim.u
 	.app	r0	n0
 	.yield	rune.prim.advance
 
-# §section Primitives
+-- §section Primitives
 
 _rune.prim.advance_c	.expr
 rune.prim.rune	.tygvar
@@ -300,7 +300,7 @@ n0	.arg	natural.prim.u
 r1	.prim	rune.prim	advance	_rune.prim.advance_ty	|	r0	n0
 	.yield	r1
 
-# §section Random data
+-- §section Random data
 
 _rune.new.line_c	.expr
 rune.t.in	.cogvar
@@ -465,7 +465,7 @@ rune.prim.rune	.tygvar
 
 rune.prim.rune	.tydefinedprim	rune.prim	rune	u
 
-# §section §gs{rune.<}
+-- §section §gs{rune.<}
 
 _rune.prim.lt_ty	.tyexpr
 rune.prim.rune	.tygvar
@@ -478,7 +478,7 @@ _rune.prim.lt_res.ty	.tyexpr
 record.unboxed.empty	.tygvar
 	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
 
-# §section §gs{rune.≡}
+-- §section §gs{rune.≡}
 
 _rune.prim.eq_ty	.tyexpr
 rune.prim.rune	.tygvar
@@ -491,7 +491,7 @@ _rune.prim.eq_res.ty	.tyexpr
 record.unboxed.empty	.tygvar
 	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
 
-# §section §gs{rune.>}
+-- §section §gs{rune.>}
 
 _rune.prim.gt_ty	.tyexpr
 rune.prim.rune	.tygvar
@@ -504,7 +504,7 @@ _rune.prim.gt_res.ty	.tyexpr
 record.unboxed.empty	.tygvar
 	.tyubsum	0	record.unboxed.empty	1	record.unboxed.empty
 
-# §section Primitives
+-- §section Primitives
 
 _rune.prim.advance_ty	.tyexpr
 rune.prim.rune	.tygvar
