@@ -1355,13 +1355,13 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.t	.tygvar	-- Temp
-gsdl.ags.coercionitem.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
 gsdl.ags.codeitem.alloc.t	.tygvar	-- Temp
 gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
@@ -1381,7 +1381,7 @@ err		.fkarg	0	string.t
 		.case	right
 r0		.fkarg	0	_gsac.gstype.compileToApp_res.ty
 cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 e.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
 e.b.as			.undefined	list.t	gsdl.ags.codeitem.alloc.t
