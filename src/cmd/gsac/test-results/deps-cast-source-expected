@@ -1,0 +1,3 @@
+./test-fixtures/cast-source.cgs: ./test-fixtures/gslib/bool.test.ags
+./test-fixtures/cast-source.cgs: ./test-fixtures/gslib/bool.ags
+./test-fixtures/cast-source.cgs: ./test-fixtures/gslib/env.ags

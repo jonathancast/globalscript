@@ -1,0 +1,31 @@
+	.document
+
+	.data
+
+	.line	./test-fixtures/cast-source.cgs 3 1
+	.cast	_ep_so	_ep_co
+
+	.line	./test-fixtures/cast-source.cgs 3 30
+_ep_so	.closure	_ep_so_c
+
+	.code
+
+	.line	./test-fixtures/cast-source.cgs 3 30
+_ep_so_c	.expr
+bool.t	.tyextabstype	*
+	.lift
+	.line	./test-fixtures/cast-source.cgs 3 31
+x	.arg	bool.t
+	.line	./test-fixtures/cast-source.cgs 3 46
+	.undef	bool.t
+
+	.type
+
+	.coercion
+
+	.line	./test-fixtures/cast-source.cgs 3 1
+_ep_co	.tycoercion
+env.m	.tyextabstype	**^*^
+bool.t	.tyextabstype	*
+	.line	./test-fixtures/cast-source.cgs 3 1
+	.tydefinition	env.m	bool.t	bool.t
