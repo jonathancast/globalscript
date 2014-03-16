@@ -1,0 +1,21 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+_ep_tylift	.tygvar
+iport	.tyextelimprim	ibio.prim	iport	u*^
+rune.t	.tygvar
+res	.tylet	iport	rune.t
+	.undef	_ep_tylift	res
+
+	.type
+
+_ep_tylift	.tyexpr
+r	.tylambda	u
+	.tylift
+	.tyref	r

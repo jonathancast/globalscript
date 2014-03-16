@@ -30,6 +30,7 @@ static struct {
         gsprog_type_fun,
         gsprog_type_product,
         gsprog_type_sum,
+        gsprog_type_unprim,
         gsprog_type_rune,
         gsprog_type_natural,
     } type;
@@ -49,11 +50,14 @@ void
 gscheck_program(char *doc, struct gsfile_symtable *symtable, struct gspos pos, struct gstype *type)
 {
     int i;
+    struct gstype *args[0x100];
+    int numargs = 0;
 
 again:
     switch (type->node) {
         case gstype_abstract:
             type = gstype_get_definition(pos, symtable, type);
+            while (numargs > 0) type = gstype_apply(pos, type, args[--numargs]);
             goto again;
         case gstype_lift: {
             struct gstype_lift *lift = (struct gstype_lift *)type;
@@ -73,9 +77,16 @@ again:
             }
             break;
         }
-        case gstype_app:
-            type = gstype_get_definition(pos, symtable, type);
+        case gstype_unprim:
+            gsprog_type.type = gsprog_type_unprim;
+            break;
+        case gstype_app: {
+            struct gstype_app *app = (struct gstype_app *)type;
+
+            type = app->fun;
+            args[numargs++] = app->arg;
             goto again;
+        }
         case gstype_fun:
             gsprog_type.type = gsprog_type_fun;
             break;
@@ -111,7 +122,9 @@ gs_client_pre_ace_gc_trace_roots(struct gsstringbuilder *err)
 
     switch (gsprog_type.type) {
         case gsprog_type_fun:
+        case gsprog_type_unprim:
         case gsprog_type_natural:
+        case gsprog_type_rune:
             return 0;
         case gsprog_type_product:
             for (i = 0; i < gsprog_type.product.numfields; i++)
@@ -124,8 +137,6 @@ gs_client_pre_ace_gc_trace_roots(struct gsstringbuilder *err)
                 if (gs_gc_trace_interned_string(err, &gsprog_type.sum.constrs[i]) < 0)
                     return -1
             ;
-            return 0;
-        case gsprog_type_rune:
             return 0;
         default:
             gsstring_builder_print(err, UNIMPL("gs_client_pre_ace_gc_trace_roots: gsprog_type.type = %d"), gsprog_type.type);

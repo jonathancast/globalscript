@@ -335,7 +335,7 @@ static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_by
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
 /* Type free variables */
-static gsinterned_string gssymoptygvar, gssymoptyfv;
+static gsinterned_string gssymoptyextelimprim, gssymoptygvar, gssymoptyfv;
 /* Type arguments */
 static gsinterned_string gssymoptyarg;
 /* Type allocations */
@@ -413,7 +413,10 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
 int
 gsbc_bytecode_size_code_type_gvar(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
-    if (gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")) {
+    if (
+        gssymceq(p->directive, gssymoptyextelimprim, gssymcodeop, ".tyextelimprim")
+        || gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")
+    ) {
         /* type erasure */
     } else {
         return 0;
@@ -1556,6 +1559,41 @@ gsbc_byte_compile_type_gvar_code_op(struct gsfile_symtable *symtable, struct gsp
         ;
         pcl->tyregnames[pcl->ntyregs] = p->label;
         pcl->tyregs[pcl->ntyregs] = gssymtable_get_type(symtable, p->label);
+        pcl->ntyregs++;
+    } else if (gssymceq(p->directive, gssymoptyextelimprim, gssymcodeop, ".tyextelimprim")) {
+        /* TODO: is this too much duplication w/ §ccode{gsbc_typecheck_code_type_gvar_op}? */
+        struct gsregistered_primset *prims;
+        struct gskind *kind;
+        enum gsprim_type_group group;
+
+        if (pcl->ntyregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many type registers", p->pos)
+        ;
+
+        prims = gsprims_lookup_prim_set(p->arguments[0]->name);
+
+        if (p->directive == 0 && !prims) /* > gssymtydefinedprim */
+            gsfatal("%P: Unknown primset %y, which is bad because it supposedly contains defined primtype %y", p->pos, p->arguments[0], p->arguments[1])
+        ;
+
+        if (p->directive == 0) /* > gssymtydefinedprim */
+            group = gsprim_type_defined
+        ; else if (p->directive == 0) /* > gssymtyintrprim */
+            group = gsprim_type_intr
+        ; else if (p->directive == gssymoptyextelimprim)
+            group = gsprim_type_elim
+        ; else if (p->directive == 0)
+            group = gsprim_type_imp
+        ; else {
+            group = -1;
+            gsfatal(UNIMPL("%P: Get group for %y"), p->pos, p->directive);
+        }
+        kind = gskind_compile(p->pos, p->arguments[2]);
+        pcl->tyregnames[pcl->ntyregs] = p->label;
+        pcl->tyregs[pcl->ntyregs] = prims
+            ? gstypes_compile_knprim(p->pos, group, prims, p->arguments[1], kind)
+            : gstypes_compile_unprim(p->pos, group, p->arguments[0], p->arguments[1], kind)
+        ;
         pcl->ntyregs++;
     } else {
         return 0;
