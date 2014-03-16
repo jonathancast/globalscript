@@ -615,7 +615,8 @@ gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
     ;
 
     while (
-        gsparse_code_type_arg_op(pos, parsedline, fields, n)
+        gsparse_cast_op(pos, parsedline, fields, n)
+        || gsparse_code_type_arg_op(pos, parsedline, fields, n)
         || gsparse_code_type_let_op(pos, parsedline, fields, n)
         || gsparse_value_arg_op(pos, parsedline, fields, n)
     )

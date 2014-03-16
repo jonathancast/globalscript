@@ -1,0 +1,14 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+rune.t	.tygvar
+record.empty	.tygvar
+	.lift
+x	.arg	rune.t
+	.undef	record.empty

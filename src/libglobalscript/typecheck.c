@@ -1023,7 +1023,8 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
 
     /* §paragraph{Arguments} */
     while (
-        gsbc_typecheck_code_type_arg_op(p, &cl)
+        gsbc_typecheck_cast_op(p, &cl)
+        || gsbc_typecheck_code_type_arg_op(p, &cl)
         || gsbc_typecheck_code_type_let_op(p, &cl)
         || gsbc_typecheck_data_arg_op(p, &cl)
     )
