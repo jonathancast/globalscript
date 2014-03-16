@@ -801,7 +801,8 @@ gsbc_bytecode_size_cast_op(struct gsparsedline *p, struct gsbc_bytecode_size_cod
 {
     int i;
 
-    if (0) {
+    if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
+        /* no effect on representation */
     } else {
         return 0;
     }
@@ -813,9 +814,7 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
 {
     int i;
 
-    if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
-        /* no effect on representation */
-    } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
+    if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
         /* no effect on representation */
     } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
         pcl->size += ACE_APP_SIZE(p->numarguments);
