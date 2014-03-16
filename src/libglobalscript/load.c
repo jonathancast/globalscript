@@ -573,6 +573,7 @@ static int gsparse_value_fv_op(struct gsparse_input_pos *, struct gsparsedline *
 static int gsparse_value_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_thunk_alloc_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_value_alloc_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
+static int gsparse_cast_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_cont_push_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_code_terminal_expr_op(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, struct gsparsedline *, char **, long);
 
@@ -628,7 +629,10 @@ gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
-    while (gsparse_cont_push_op(pos, parsedline, fields, n))
+    while (
+        gsparse_cast_op(pos, parsedline, fields, n)
+        || gsparse_cont_push_op(pos, parsedline, fields, n)
+    )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -717,7 +721,10 @@ gsparse_force_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, 
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
-    while (gsparse_cont_push_op(pos, parsedline, fields, n))
+    while (
+        gsparse_cast_op(pos, parsedline, fields, n)
+        || gsparse_cont_push_op(pos, parsedline, fields, n)
+    )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -783,7 +790,10 @@ gsparse_strict_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
-    while (gsparse_cont_push_op(pos, parsedline, fields, n))
+    while (
+        gsparse_cast_op(pos, parsedline, fields, n)
+        || gsparse_cont_push_op(pos, parsedline, fields, n)
+    )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -854,7 +864,10 @@ gsparse_ubcase_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
-    while (gsparse_cont_push_op(pos, parsedline, fields, n))
+    while (
+        gsparse_cast_op(pos, parsedline, fields, n)
+        || gsparse_cont_push_op(pos, parsedline, fields, n)
+    )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -1420,6 +1433,21 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
 
 static
 int
+gsparse_cast_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+{
+    static gsinterned_string sdjflkdsajflkj;
+
+    int i;
+
+    if (0) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+int
 gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
     static gsinterned_string gssymlift, gssymcoerce, gssymapp, gssymforce, gssymstrict, gssymubanalyze;
@@ -1801,7 +1829,10 @@ gsparse_case(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxi
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
-    while (gsparse_cont_push_op(pos, parsedline, fields, n))
+    while (
+        gsparse_cast_op(pos, parsedline, fields, n)
+        || gsparse_cont_push_op(pos, parsedline, fields, n)
+    )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
@@ -1850,7 +1881,10 @@ gsparse_default(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
 
         if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
         } else if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_cont_push_op(pos, parsedline, fields, n)) {
+        } else if (
+            gsparse_cast_op(pos, parsedline, fields, n)
+            || gsparse_cont_push_op(pos, parsedline, fields, n)
+        ) {
         } else if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
             return;
         } else {
