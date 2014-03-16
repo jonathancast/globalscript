@@ -1499,6 +1499,7 @@ static int gsbc_byte_compile_data_fv_code_op(struct gsparsedline *, struct gsbc_
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_bind_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
+static int gsbc_byte_compile_cast_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_cont_push_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_byte_compile_code_or_api_op_closure *);
 
@@ -1539,7 +1540,12 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
 
     /* §paragraph{Expression} */
     while (gsbc_byte_compile_alloc_op(p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_byte_compile_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (
+        gsbc_byte_compile_cast_op(p, &cl)
+        || gsbc_byte_compile_cont_push_op(p, &cl)
+    )
+        p = gsinput_next_line(ppseg, p)
+    ;
     if (!gsbc_byte_compile_terminal_code_op(ppseg, &p, &cl)) {
         gsfatal(UNIMPL("%P: Code op %s"), p->pos, p->directive->name);
     }
@@ -2251,7 +2257,19 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
     return 1;
 }
 
-static
+int
+gsbc_byte_compile_cast_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+{
+    struct gsbc *pcode;
+    int i;
+
+    if (0) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
 int
 gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
@@ -2571,7 +2589,12 @@ gsbc_byte_compile_case(struct gsparsedfile_segment **ppseg, struct gsparsedline 
     while (gsbc_byte_compile_type_let_code_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_byte_compile_arg_code_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_byte_compile_alloc_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    while (gsbc_byte_compile_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    while (
+        gsbc_byte_compile_cast_op(*pp, pcl)
+        || gsbc_byte_compile_cont_push_op(*pp, pcl)
+    )
+        *pp = gsinput_next_line(ppseg, *pp)
+    ;
     if (!gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
         gsfatal(UNIMPL("%P: Un-implemented .case code op %y"), (*pp)->pos, (*pp)->directive);
     }
@@ -2583,7 +2606,12 @@ gsbc_byte_compile_default(struct gsparsedfile_segment **ppseg, struct gsparsedli
 {
     *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_byte_compile_alloc_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    while (gsbc_byte_compile_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    while (
+        gsbc_byte_compile_cast_op(*pp, pcl)
+        || gsbc_byte_compile_cont_push_op(*pp, pcl)
+    )
+        *pp = gsinput_next_line(ppseg, *pp)
+    ;
     if (!gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
         gsfatal_unimpl(__FILE__, __LINE__, "%P: Un-implemented .default code op %y", (*pp)->pos, (*pp)->directive);
     }
