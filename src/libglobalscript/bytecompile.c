@@ -2263,7 +2263,8 @@ gsbc_byte_compile_cast_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
     struct gsbc *pcode;
     int i;
 
-    if (0) {
+    if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
+        /* no effect on representation */
     } else {
         return 0;
     }
@@ -2276,9 +2277,7 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
     struct gsbc *pcode;
     int i;
 
-    if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
-        /* no effect on representation */
-    } else if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
+    if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
         /* no effect on representation */
     } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
         pcode = (struct gsbc *)pcl->pout;
