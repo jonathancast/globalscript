@@ -1435,22 +1435,7 @@ static
 int
 gsparse_cast_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string sdjflkdsajflkj;
-
-    int i;
-
-    if (0) {
-    } else {
-        return 0;
-    }
-    return 1;
-}
-
-static
-int
-gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymlift, gssymcoerce, gssymapp, gssymforce, gssymstrict, gssymubanalyze;
+    static gsinterned_string gssymlift;
 
     int i;
 
@@ -1462,7 +1447,21 @@ gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedl
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .lift", pos->real_filename, pos->real_lineno)
         ;
-    } else if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
+static
+int
+gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+{
+    static gsinterned_string gssymcoerce, gssymapp, gssymforce, gssymstrict, gssymubanalyze;
+
+    int i;
+
+    if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
         if (n < 3)
             gsfatal("%s:%d: Missing coercion to apply");
         parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
