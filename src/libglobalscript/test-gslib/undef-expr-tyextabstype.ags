@@ -1,0 +1,11 @@
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+rune.t	.tyextabstype	*
+	.undef	rune.t

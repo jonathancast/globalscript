@@ -877,7 +877,7 @@ static
 int
 gsparse_code_type_gvar_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymtygvar, gssymtyextelimprim;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim;
 
     if (gssymceq(parsedline->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
         if (*fields[0])
@@ -887,6 +887,15 @@ gsparse_code_type_gvar_op(struct gsparse_input_pos *pos, struct gsparsedline *pa
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .tygvar op", pos->real_filename, pos->real_lineno)
         ;
+    } else if (gssymceq(parsedline->directive, gssymtyextabstype, gssymcodeop, ".tyextabstype")) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymtypelable, fields[0])
+        ; else
+            gsfatal("%s:%d: Labels required on .tyextabstype", pos->real_filename, pos->real_lineno)
+        ;
+        if (n < 3) gsfatal("%s:%d: Missing kind on .tyextabstype", pos->real_filename, pos->real_lineno);
+        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
+        if (n > 3) gsfatal("%s:%d: Too many arguments to .tyextabstype", pos->real_filename, pos->real_lineno);
     } else if (gssymceq(parsedline->directive, gssymtyextelimprim, gssymcodeop, ".tyextelimprim")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0])

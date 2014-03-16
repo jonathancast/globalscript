@@ -20,6 +20,7 @@ ok_diff_fail '-- undefined entry points (lifted .tyextelimprim type) --' ./$O.te
 ok_diff_fail '-- undefined entry points (lifted .tyextimpprim type) --' ./$O.test-gsi undef-tyextimpprim.ags
 
 ok_diff_fail '-- undefined entry points (lifted .tyextelimprim in .expr type) --' ./$O.test-gsi undef-expr-tyextelimprim.ags
+ok_diff_fail '-- undefined entry points (.tyextabstype in .expr type) --' ./$O.test-gsi undef-expr-tyextabstype.ags
 
 ok_diff_fail '-- undefined entry points (cast into .tyextabstype type) --' ./$O.test-gsi undef-cast-tyextabstype.ags
 

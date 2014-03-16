@@ -335,7 +335,7 @@ static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_by
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
 /* Type free variables */
-static gsinterned_string gssymoptyextelimprim, gssymoptygvar, gssymoptyfv;
+static gsinterned_string gssymoptyextabstype, gssymoptyextelimprim, gssymoptygvar, gssymoptyfv;
 /* Type arguments */
 static gsinterned_string gssymoptyarg;
 /* Type allocations */
@@ -414,7 +414,8 @@ int
 gsbc_bytecode_size_code_type_gvar(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
     if (
-        gssymceq(p->directive, gssymoptyextelimprim, gssymcodeop, ".tyextelimprim")
+        gssymceq(p->directive, gssymoptyextabstype, gssymcodeop, ".tyextabstype")
+        || gssymceq(p->directive, gssymoptyextelimprim, gssymcodeop, ".tyextelimprim")
         || gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")
     ) {
         /* type erasure */
@@ -1553,7 +1554,10 @@ gsbc_byte_compile_type_fv_code_op(struct gsfile_symtable *symtable, struct gspar
 int
 gsbc_byte_compile_type_gvar_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    if (gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")) {
+    if (
+        gssymceq(p->directive, gssymoptygvar, gssymcodeop, ".tygvar")
+        || gssymceq(p->directive, gssymoptyextabstype, gssymcodeop, ".tyextabstype")
+    ) {
         if (pcl->ntyregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many type registers", p->pos)
         ;

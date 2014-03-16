@@ -1241,7 +1241,7 @@ gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *pcl
 int
 gsbc_typecheck_code_type_gvar_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymtygvar, gssymtyextelimprim;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim;
 
     if (gssymceq(p->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
         if (pcl->nregs >= MAX_NUM_REGISTERS)
@@ -1256,6 +1256,34 @@ gsbc_typecheck_code_type_gvar_op(struct gsfile_symtable *symtable, struct gspars
         if (!pcl->tyregkinds[pcl->nregs])
             gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", p->pos, p->label->name)
         ;
+        pcl->nregs++;
+    } else if (gssymceq(p->directive, gssymtyextabstype, gssymcodeop, ".tyextabstype")) {
+        struct gskind *kind;
+        struct gstype_abstract *abstype;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers", p->pos)
+        ;
+
+        pcl->regs[pcl->nregs] = p->label;
+        pcl->tyregs[pcl->nregs] = gssymtable_get_type(symtable, p->label);
+        if (!pcl->tyregs[pcl->nregs])
+            gsfatal("%P: Couldn't find referent %y", p->pos, p->label)
+        ;
+
+        gsargcheck(p, 0, "kind");
+        kind = gskind_compile(p->pos, p->arguments[0]);
+
+        if (pcl->tyregs[pcl->nregs]->node != gstype_abstract)
+            gsfatal("%P: Referent %y isn't actually an abstype", p->pos, p->label)
+        ;
+        abstype = (struct gstype_abstract *)pcl->tyregs[pcl->nregs];
+        if (abstype->name != p->label)
+            gsfatal("%P: Referent %y translates to differently named abstype %y", p->pos, p->label, abstype->name)
+        ;
+        gstypes_kind_check_fail(p->pos, abstype->kind, kind);
+        pcl->tyregkinds[pcl->nregs] = kind;
+
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymtyextelimprim, gssymcodeop, ".tyextelimprim")) {
         struct gsregistered_primset *prims;
