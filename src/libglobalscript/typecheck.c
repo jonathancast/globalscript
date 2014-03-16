@@ -2640,7 +2640,11 @@ static gsinterned_string gssymoplift, gssymopcoerce, gssymopforce, gssymopstrict
 int
 gsbc_typecheck_cast_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    if (0) {
+    if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
+        if (pcl->stacksize >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many evaluation contexts", p->pos)
+        ;
+        pcl->stack[pcl->stacksize++] = p;
     } else {
         return 0;
     }
@@ -2651,8 +2655,7 @@ int
 gsbc_typecheck_cont_push_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
     if (
-        gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
-        || gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")
+        gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")
         || gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")
         || gssymceq(p->directive, gssymopstrict, gssymcodeop, ".strict")
         || gssymceq(p->directive, gssymopubanalyze, gssymcodeop, ".ubanalyze")
