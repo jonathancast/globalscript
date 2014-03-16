@@ -331,6 +331,7 @@ static int gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *, struct gsbc
 static int gsbc_bytecode_size_cont_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_arg_code_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_alloc_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
+static int gsbc_bytecode_size_cast_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_cont_push_op(struct gsparsedline *, struct gsbc_bytecode_size_code_closure *);
 static int gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **, struct gsparsedline **, struct gsbc_bytecode_size_code_closure *);
 
@@ -398,7 +399,12 @@ gsbc_bytecode_size_item(struct gsfile_symtable *symtable, struct gsbc_item item)
 
     /* §paragraph{Expression} */
     while (gsbc_bytecode_size_alloc_op(p, &cl)) p = gsinput_next_line(&pseg, p);
-    while (gsbc_bytecode_size_cont_push_op(p, &cl)) p = gsinput_next_line(&pseg, p);
+    while (
+        gsbc_bytecode_size_cast_op(p, &cl)
+        || gsbc_bytecode_size_cont_push_op(p, &cl)
+    )
+        p = gsinput_next_line(&pseg, p)
+    ;
     if (!gsbc_bytecode_size_terminal_code_op(&pseg, &p, &cl)) {
         gsfatal(UNIMPL("%P: gsbc_bytecode_size_item (%y)"), p->pos, p->directive);
     }
@@ -790,7 +796,18 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
     return 1;
 }
 
-static
+int
+gsbc_bytecode_size_cast_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
+{
+    int i;
+
+    if (0) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
 int
 gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
@@ -950,7 +967,12 @@ gsbc_bytecode_size_case(struct gsparsedfile_segment **ppseg, struct gsparsedline
     while (gsbc_bytecode_size_code_type_let_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_cont_arg_code_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_alloc_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    while (gsbc_bytecode_size_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    while (
+        gsbc_bytecode_size_cast_op(*pp, pcl)
+        || gsbc_bytecode_size_cont_push_op(*pp, pcl)
+    )
+        *pp = gsinput_next_line(ppseg, *pp)
+    ;
     if (!gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
         gsfatal(UNIMPL("%P: gsbc_bytecode_size_case(%y)"), (*pp)->pos, (*pp)->directive);
     }
@@ -966,7 +988,12 @@ gsbc_bytecode_size_default(struct gsparsedfile_segment **ppseg, struct gsparsedl
     ;
     *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_bytecode_size_alloc_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    while (gsbc_bytecode_size_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    while (
+        gsbc_bytecode_size_cast_op(*pp, pcl)
+        || gsbc_bytecode_size_cont_push_op(*pp, pcl)
+    )
+        *pp = gsinput_next_line(ppseg, *pp)
+    ;
     if (!gsbc_bytecode_size_terminal_code_op(ppseg, pp, pcl)) {
         gsfatal(UNIMPL("%P: gsbc_bytecode_size_default(%y)"), (*pp)->pos, (*pp)->directive);
     }
