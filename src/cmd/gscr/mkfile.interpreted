@@ -11,6 +11,9 @@ LOCAL_TARGETS=\
 all:V: $LOCAL_TARGETS
 	true
 
+integration-test:V: all test
+	./rc/test-interpreted
+
 test:V: all
 	test-gslib ./gslib
 

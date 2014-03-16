@@ -20,4 +20,4 @@ cd $GLOBALSCRIPT/src/libtest &&
     cd ../cmd/mdl &&
     mk -f mkfile.interpreted integration-test && mk -f mkfile.interpreted install &&
     cd ../gscr &&
-    mk -f mkfile.interpreted
+    mk -f mkfile.interpreted integration-test && mk -f mkfile.interpreted install
