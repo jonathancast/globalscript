@@ -985,6 +985,7 @@ static int gsbc_typecheck_data_gvar_op(struct gsfile_symtable *, struct gsparsed
 static int gsbc_typecheck_data_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_data_arg_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_alloc_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
+static int gsbc_typecheck_cast_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
 static int gsbc_typecheck_cont_push_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *);
 static struct gstype *gsbc_typecheck_expr_terminal_op(struct gsfile_symtable *, struct gsparsedline **, struct gsparsedfile_segment **, struct gsbc_typecheck_code_or_api_expr_closure *);
 
@@ -1031,7 +1032,12 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
 
     /* §paragraph{Lambda Body / Expression} */
     while (gsbc_typecheck_alloc_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_typecheck_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (
+        gsbc_typecheck_cast_op(p, &cl)
+        || gsbc_typecheck_cont_push_op(p, &cl)
+    )
+        p = gsinput_next_line(ppseg, p)
+    ;
     if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)))
         gsfatal(UNIMPL("%P: gsbc_typecheck_code_expr(%y)"), p->pos, p->directive)
     ;
@@ -1086,7 +1092,12 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
 
     /* §paragraph{Expression} */
     while (gsbc_typecheck_alloc_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_typecheck_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (
+        gsbc_typecheck_cast_op(p, &cl)
+        || gsbc_typecheck_cont_push_op(p, &cl)
+    )
+        p = gsinput_next_line(ppseg, p)
+    ;
     if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)))
         gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_force_cont(%y)", p->pos, p->directive)
     ;
@@ -1126,7 +1137,12 @@ gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile
         gsfatal("%P: No .karg in a .strictcont", p->pos);
     }
     while (gsbc_typecheck_alloc_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_typecheck_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (
+        gsbc_typecheck_cast_op(p, &cl)
+        || gsbc_typecheck_cont_push_op(p, &cl)
+    )
+        p = gsinput_next_line(ppseg, p)
+    ;
     if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)))
         gsfatal(UNIMPL("%P: gsbc_typecheck_force_cont(%y)"), p->pos, p->directive)
     ;
@@ -1214,7 +1230,12 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
         while (gsbc_typecheck_field_cont_arg_op(p, &cl, &fcl)) p = gsinput_next_line(ppseg, p);
     }
     while (gsbc_typecheck_alloc_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_typecheck_cont_push_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (
+        gsbc_typecheck_cast_op(p, &cl)
+        || gsbc_typecheck_cont_push_op(p, &cl)
+    )
+        p = gsinput_next_line(ppseg, p)
+    ;
     if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)))
         gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_ubcase_cont(%y)", p->pos, p->directive)
     ;
@@ -1985,7 +2006,12 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, str
         while (gsbc_typecheck_field_cont_arg_op(*pp, pcl, &fcl)) *pp = gsinput_next_line(ppseg, *pp);
     }
     while (gsbc_typecheck_alloc_op(symtable, *pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    while (gsbc_typecheck_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    while (
+        gsbc_typecheck_cast_op(*pp, pcl)
+        || gsbc_typecheck_cont_push_op(*pp, pcl)
+    )
+        *pp = gsinput_next_line(ppseg, *pp)
+    ;
     if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)))
         gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_case(%y)", (*pp)->pos, (*pp)->directive)
     ;
@@ -2072,7 +2098,12 @@ gsbc_typecheck_default(struct gspos default_pos, struct gsfile_symtable *symtabl
     saved_stacksize = pcl->stacksize;
     calculated_type = 0;
     while (gsbc_typecheck_alloc_op(symtable, *pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
-    while (gsbc_typecheck_cont_push_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
+    while (
+        gsbc_typecheck_cast_op(*pp, pcl)
+        || gsbc_typecheck_cont_push_op(*pp, pcl)
+    )
+        *pp = gsinput_next_line(ppseg, *pp)
+    ;
     if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)))
         gsfatal(UNIMPL("%P: gsbc_typecheck_default(%y)"), (*pp)->pos, (*pp)->directive)
     ;
@@ -2606,7 +2637,16 @@ gsbc_find_field_in_product(struct gspos pos, struct gstype_product *prod, gsinte
 
 static gsinterned_string gssymoplift, gssymopcoerce, gssymopforce, gssymopstrict, gssymopubanalyze, gssymopapp;
 
-static
+int
+gsbc_typecheck_cast_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+{
+    if (0) {
+    } else {
+        return 0;
+    }
+    return 1;
+}
+
 int
 gsbc_typecheck_cont_push_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
