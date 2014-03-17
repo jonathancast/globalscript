@@ -13,7 +13,7 @@ _parser.test.assert.fixtures.sample.file.name_s	.string	./parse-data
 
 	.code
 
-# §section §gs{parser.test.assert.fails}
+-- §section §gs{parser.test.assert.fails}
 
 _parser.test.assert.fails_c	.expr
 parser.advance.t	.tygvar
@@ -71,7 +71,7 @@ msg			.apply	diff.list.prepend	rune.t	|	_parser.test.assert.fails_right_msg.pref
 			.app	msg
 			.enter	test.property.false
 
-# §section §gs{parser.test.assert.passes}
+-- §section §gs{parser.test.assert.passes}
 
 _parser.test.assert.passes_c	.expr
 parser.advance.t	.tygvar
@@ -123,7 +123,7 @@ x		.fkarg	0	α
 			.app	x
 			.enter	k
 
-# §section §gs{parser.test.assert.fixtures.sample.file.name}
+-- §section §gs{parser.test.assert.fixtures.sample.file.name}
 
 _parser.test.assert.fixtures.sample.file.name_c	.expr
 ibio.file.name.in	.gvar
@@ -140,7 +140,7 @@ test.property.t	.tygvar
 	.tyfun	parser.err.t
 	.tyref	test.property.t
 
-# §section §gs{parser.test.assert.passes}
+-- §section §gs{parser.test.assert.passes}
 
 _parser.test.assert.passes_k_ty	.tyexpr
 test.property.t	.tygvar
