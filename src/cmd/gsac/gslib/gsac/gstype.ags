@@ -1790,14 +1790,11 @@ v		.fkarg	0	gsdl.var.t
 _gsac.gstype.compileToApp_default_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-ordered.set.t	.tygvar
-gsdl.var.t	.tygvar
-ordered.map.t	.tygvar
-_gsac.gstype_primname.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 gsdl.var.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 either.t	.tygvar	-- Temp
@@ -1806,11 +1803,11 @@ _gsac.gstype.compileToApp_default_:_k	.subcode
 gsdl.cgs.gstype.t.in	.cogvar
 either.t.out	.cogvar
 gsac.gstype.compile	.gvar
+ordered.set.empty	.gvar
+ordered.map.empty	.gvar
 gsdl.var.subvars	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
-em	.fv	ordered.set.t	gsdl.var.t
-pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 ty0	.fv	gsdl.cgs.gstype.prim.u
 gvs0	.karg	list.prim.u	gsdl.var.t
@@ -1820,10 +1817,12 @@ v		.fkarg	0	gsdl.var.t
 gvs1		.fkarg	1	list.t	gsdl.var.t
 ty0.l			.lifted	ty0
 ty0.cl			.cast	ty0.l	gsdl.cgs.gstype.t.in
+em.empty			.apply	ordered.set.empty	gsdl.var.t
+pem.empty			.apply	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
 gvs2			.apply	gsdl.var.subvars	|	v
 			.force	_gsac.gstype.compileToApp_default_:_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compile_res.ty
-			.app	pos	env	ty0.cl	em	pem	gvs2
+			.app	pos	env	ty0.cl	em.empty	pem.empty	gvs2
 			.enter	gsac.gstype.compile
 		.case	nil
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
