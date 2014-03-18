@@ -518,9 +518,25 @@ e	.larg	gsdl.cgs.gsexpr.t
 # §section §gs{gsdl.cgs.gsexpr.body.parser}
 
 _gsdl.cgs.gsexpr.body.parser_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+_gsdl.cgs.gsexpr.body.parser_expr.p_c	.subcode
 _gsdl.cgs.gsexpr.body.parser_missing.p_c	.subcode
+parser.<|>	.gvar
+expr.p	.alloc	_gsdl.cgs.gsexpr.body.parser_expr.p_c
 missing.p	.alloc	_gsdl.cgs.gsexpr.body.parser_missing.p_c
-	.enter	missing.p
+	.app	expr.p	missing.p
+	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.body.t
+
+_gsdl.cgs.gsexpr.body.parser_expr.p_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+parser.map	.gvar
+gsdl.cgs.gsexpr.body.expr	.gvar
+gsdl.cgs.gsexpr.parser	.gvar
+	.app	gsdl.cgs.gsexpr.body.expr	gsdl.cgs.gsexpr.parser
+	.enter	parser.map	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gsexpr.body.t
 
 _gsdl.cgs.gsexpr.body.parser_missing.p_c	.expr
 rune.t	.tygvar
