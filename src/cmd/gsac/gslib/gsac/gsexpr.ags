@@ -469,24 +469,31 @@ b	.larg	gsdl.cgs.gsexpr.body.t
 	.enter	b
 
 _gsac.gsexpr.body.annotate_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.body.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.body.annotate_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.body.annotate_expr_k	.subcode
 _gsac.gsexpr.body.annotate_missing_k	.subcode
 either.t.out	.cogvar
+gsac.gsexpr.annotate	.gvar
 gsac.gstype.annotate	.gvar
+pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 b0	.karg	gsdl.cgs.gsexpr.body.prim.u
 	.analyze	b0	expr	missing
 		.case	expr
 e		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
+			.force	_gsac.gsexpr.body.annotate_expr_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.annotate_res.ty
+			.app	pos	env	e
+			.enter	gsac.gsexpr.annotate
 		.case	missing
 pos1		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
@@ -495,6 +502,29 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 			.app	pos1	env	ty
 			.enter	gsac.gstype.annotate
 	-- > :: either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
+
+_gsac.gsexpr.body.annotate_expr_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
+_gsac.gsexpr.body.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+gsdl.cgs.gstype.t	.tygvar	-- Temp
+either.right	.gvar
+gsdl.cgs.gsexpr.body.expr	.gvar
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
+		.case	right
+r0		.fkarg	0	_gsac.gsexpr.annotate_res.ty
+r0.e			.lfield	expr	r0
+b			.apply	gsdl.cgs.gsexpr.body.expr	|	r0.e
+ty			.undefined	gsdl.cgs.gstype.t
+res			.lrecord	body	b	gstype	ty	|	_gsac.gsexpr.body.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.body.annotate_res.ty
 
 _gsac.gsexpr.body.annotate_missing_k	.forcecont
 gsdl.sourcepos.t	.tygvar
