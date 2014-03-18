@@ -1349,6 +1349,7 @@ tyvs	.larg	list.t	gsdl.var.t
 	.enter	b
 
 _gsac.gsexpr.body.compileToLambdaExpr_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
@@ -1358,7 +1359,6 @@ gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.body.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
@@ -1366,7 +1366,9 @@ either.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.body.compileToLambdaExpr_missing_k	.subcode
 either.t.out	.cogvar
+gsac.gsexpr.compileToLambdaExpr	.gvar
 gsac.gstype.compileToApp	.gvar
+pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -1375,7 +1377,8 @@ b0	.karg	gsdl.cgs.gsexpr.body.prim.u
 	.analyze	b0	expr	missing
 		.case	expr
 e		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.app	pos	env	e	tyem	pem	tyvs
+			.enter	gsac.gsexpr.compileToLambdaExpr
 		.case	missing
 pos1		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
