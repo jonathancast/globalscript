@@ -33,6 +33,7 @@ gsdl.cgs.gsexpr.cast.source.missing	.closure	_gsdl.cgs.gsexpr.cast.source.missin
 gsdl.cgs.gsexpr.cast.source.typesig	.closure	_gsdl.cgs.gsexpr.cast.source.typesig_c
 gsdl.cgs.gsexpr.cast.source.expr	.closure	_gsdl.cgs.gsexpr.cast.source.expr_c
 
+gsdl.cgs.gsexpr.body.expr	.closure	_gsdl.cgs.gsexpr.body.expr_c
 gsdl.cgs.gsexpr.body.missing	.closure	_gsdl.cgs.gsexpr.body.missing_c
 
 	.code
@@ -566,13 +567,17 @@ b	.larg	gsdl.cgs.gsexpr.body.t
 
 _gsdl.cgs.gsexpr.body.freevars_k	.forcecont
 gsdl.cgs.gsexpr.body.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar	-- Temp
 gsdl.cgs.symbol.t	.tygvar	-- Temp
 gsdl.cgs.gstype.freevars	.gvar
 b0	.karg	gsdl.cgs.gsexpr.body.prim.u
-	.analyze	b0	missing
+	.analyze	b0	expr	missing
+		.case	expr
+e		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
 		.case	missing
 pos1		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
@@ -666,6 +671,16 @@ res	.constr	gsdl.cgs.gsexpr.cast.source.prim.u	expr	0	e
 
 # §section §gs{gsdl.cgs.gsexpr.body.t} Constructors
 
+_gsdl.cgs.gsexpr.body.expr_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.body.prim.u	.tygvar
+gsdl.cgs.gsexpr.body.t.in	.cogvar
+e	.larg	gsdl.cgs.gsexpr.t
+res	.constr	gsdl.cgs.gsexpr.body.prim.u	expr	0	e
+	.coerce	gsdl.cgs.gsexpr.body.t.in
+	.lift
+	.yield	res
+
 _gsdl.cgs.gsexpr.body.missing_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -748,8 +763,13 @@ gsdl.cgs.gsexpr.body.prim.u	.tygvar
 	.tyref	gsdl.cgs.gsexpr.body.prim.u
 
 gsdl.cgs.gsexpr.body.prim.u	.tyexpr
+_gsdl.cgs.gsexpr.body.prim.u_expr_ty	.tygvar
 _gsdl.cgs.gsexpr.body.prim.u_missing_ty	.tygvar
-	.tysum	missing	_gsdl.cgs.gsexpr.body.prim.u_missing_ty
+	.tysum	expr	_gsdl.cgs.gsexpr.body.prim.u_expr_ty	missing	_gsdl.cgs.gsexpr.body.prim.u_missing_ty
+
+_gsdl.cgs.gsexpr.body.prim.u_expr_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.body.prim.u_missing_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
