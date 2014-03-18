@@ -1,0 +1,32 @@
+	.document
+
+	.data
+
+	.line	./test-fixtures/lambda-body.cgs 3 1
+	.closure	_ep_c	_ep_ty
+
+	.code
+
+	.line	./test-fixtures/lambda-body.cgs 3 1
+_ep_c	.expr
+bool.t	.tyextabstype	*
+	.lift
+	.line	./test-fixtures/lambda-body.cgs 3 2
+x	.arg	bool.t
+	.line	./test-fixtures/lambda-body.cgs 3 17
+	.lift
+	.line	./test-fixtures/lambda-body.cgs 3 18
+y	.arg	bool.t
+	.line	./test-fixtures/lambda-body.cgs 3 33
+	.undef	bool.t
+
+	.type
+
+	.line	./test-fixtures/lambda-body.cgs 3 1
+_ep_ty	.tyexpr
+bool.t	.tyextabstype	*
+	.tylift
+	.tyfun	bool.t
+	.tylift
+	.tyfun	bool.t
+	.tyref	bool.t

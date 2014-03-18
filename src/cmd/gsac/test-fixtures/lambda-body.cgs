@@ -1,0 +1,3 @@
+#type: document
+
+⌊λ x :: bool.t. ⌊λ y :: bool.t. :: bool.t⌋⌋;

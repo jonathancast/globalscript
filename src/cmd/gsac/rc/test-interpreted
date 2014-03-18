@@ -26,6 +26,7 @@ ok_grep_script_errors '-- gsac: Empty document w/ unknown type variable --' gsac
 ok_diff_script '-- gsac: Expressions with no type signature --' gsac-cast-defn ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/cast-defn.cgs
 ok_diff_script '-- gsac: Lifted lambda-terms --' gsac-lifted-lambda ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/lifted-lambda.cgs
 ok_diff_script '-- gsac: Casts with expression sources --' gsac-cast-source ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/cast-source.cgs
+ok_diff_script '-- gsac: Lambda-terms with bodies --' gsac-lambda-body ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/lambda-body.cgs
 
 ok_diff_script '-- gsac: Type signatures --' gsac-type-sig ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/type-sig.cgs
 ok_diff_script '-- gsac: either.t type signatures --' gsac-either-type-sig ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/either-type-sig.cgs
