@@ -11,7 +11,7 @@ _parser.string.quote_re	.regex	[^'\s\n\t][^'\s\n\t]*
 
 	.code
 
-# §section §gs{parser.string.quotes}
+-- §section §gs{parser.string.quotes}
 
 _parser.string.quotes_c	.expr
 rune.t	.tygvar
@@ -57,9 +57,9 @@ quote	.apply	parser.*>	rune.t	string.t	string.t	|	quote.0	quote.1
 pcons	.apply	parser.lift2	rune.t	string.t	list.string.t	list.string.t	|	cons	quote	_parser.string.quotes_loop
 	.app	pnil	pcons
 	.enter	parser.<|>	rune.t	list.string.t
-	# > parser.t	rune.t	list.string.t
+	-- > parser.t	rune.t	list.string.t
 
-# §section §gs{parser.string.quote}
+-- §section §gs{parser.string.quote}
 
 _parser.string.quote_c	.expr
 rune.t	.tygvar
