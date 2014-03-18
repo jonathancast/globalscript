@@ -588,12 +588,14 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar	-- Temp
 gsdl.cgs.symbol.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.freevars	.gvar
 gsdl.cgs.gstype.freevars	.gvar
 b0	.karg	gsdl.cgs.gsexpr.body.prim.u
 	.analyze	b0	expr	missing
 		.case	expr
 e		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+			.app	e
+			.enter	gsdl.cgs.gsexpr.freevars
 		.case	missing
 pos1		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
