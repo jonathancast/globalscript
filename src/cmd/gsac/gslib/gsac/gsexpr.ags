@@ -521,7 +521,7 @@ err		.fkarg	0	string.t
 r0		.fkarg	0	_gsac.gsexpr.annotate_res.ty
 r0.e			.lfield	expr	r0
 b			.apply	gsdl.cgs.gsexpr.body.expr	|	r0.e
-ty			.undefined	gsdl.cgs.gstype.t
+ty			.lfield	gstype	r0
 res			.lrecord	body	b	gstype	ty	|	_gsac.gsexpr.body.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.body.annotate_res.ty
