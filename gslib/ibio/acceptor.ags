@@ -1,13 +1,13 @@
 	.prefix
 
-# Based on §emph{Parallel Parsing Processes} by Koen Claessen
+-- Based on §emph{Parallel Parsing Processes} by Koen Claessen
 
-# §paragraph{Types are}
-# §begin{itemize}
-#   §item §gs{ibio.acceptor.prim.cont.t s α β = ibio.acceptor.prim.kt s α β → ibio.acceptor.prim.t s β} is the underlying type
-#   §item §gs{ibio.acceptor.prim.kt s α β = α → ibio.acceptor.prim.t s β} is the type of the continuation
-#   §item §gs{ibio.acceptor.prim.t s β} is the type of the continuation result
-# §end{itemize}
+-- §paragraph{Types are}
+-- §begin{itemize}
+--   §item §gs{ibio.acceptor.prim.cont.t s α β = ibio.acceptor.prim.kt s α β → ibio.acceptor.prim.t s β} is the underlying type
+--   §item §gs{ibio.acceptor.prim.kt s α β = α → ibio.acceptor.prim.t s β} is the type of the continuation
+--   §item §gs{ibio.acceptor.prim.t s β} is the type of the continuation result
+-- §end{itemize}
 
 	.data
 
@@ -29,7 +29,7 @@ ibio.acceptor.prim.<|>	.closure	_ibio.acceptor.prim.<|>_c	_ibio.acceptor.prim.<|
 
 	.code
 
-# §section §gs{ibio.acceptor.prim.cont}
+-- §section §gs{ibio.acceptor.prim.cont}
 
 _ibio.acceptor.prim.cont_c	.expr
 ibio.acceptor.prim.t	.tygvar
@@ -56,7 +56,7 @@ ibio.acceptor.prim.fail	.gvar
 s	.tyfv	*
 	.enter	ibio.acceptor.prim.fail	s	record.empty
 
-# §section §gs{ibio.acceptor.symbol}
+-- §section §gs{ibio.acceptor.symbol}
 
 _ibio.acceptor.symbol.prim_c	.expr
 ibio.acceptor.prim.kt	.tygvar
@@ -75,7 +75,7 @@ s	.tyfv	*
 β	.tyfv	*
 	.enter	ibio.acceptor.prim.fail	s	β
 
-# §section §gs{ibio.acceptor.optional}
+-- §section §gs{ibio.acceptor.optional}
 
 _ibio.acceptor.optional.prim_c	.expr
 ibio.acceptor.prim.cont.t	.tygvar
@@ -148,7 +148,7 @@ maybe.t	.tygvar
 α	.tyfv	*
 	.undef	maybe.t	α
 
-# §section §gs{ibio.acceptor.many}
+-- §section §gs{ibio.acceptor.many}
 
 _ibio.acceptor.many.prim_c	.expr
 ibio.acceptor.prim.cont.t	.tygvar
@@ -229,7 +229,7 @@ xn	.apply	list.:	α	|	x	xn1
 	.app	xn
 	.enter	k
 
-# §section §gs{ibio.acceptor.many.void}
+-- §section §gs{ibio.acceptor.many.void}
 
 _ibio.acceptor.many.void.prim_c	.expr
 ibio.acceptor.prim.cont.t	.tygvar
@@ -286,7 +286,7 @@ x	.larg	α
 	.app	p k
 	.enter	ibio.acceptor.many.void.prim	s	α	β
 
-# §section §gs{ibio.acceptor.prim.<|>}
+-- §section §gs{ibio.acceptor.prim.<|>}
 
 _ibio.acceptor.prim.<|>_c	.expr
 ibio.acceptor.prim.t	.tygvar
@@ -379,7 +379,7 @@ p1	.fv	ibio.acceptor.prim.t	s	β
 	.app	p0.1	p1
 	.enter	ibio.acceptor.prim.<|>	s	β
 
-# §section Constructors
+-- §section Constructors
 
 _ibio.acceptor.prim.symbol.bind_c	.expr
 _ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	.tygvar
@@ -423,7 +423,7 @@ r	.constr	res.u	fail
 
 	.type
 
-# §section §gs{ibio.acceptor.prim.cont.t}
+-- §section §gs{ibio.acceptor.prim.cont.t}
 
 ibio.acceptor.prim.cont.t	.tyexpr
 ibio.acceptor.prim.kt	.tygvar
@@ -435,7 +435,7 @@ s	.tylambda	*
 	.tyfun	ibio.acceptor.prim.kt	s	α	β
 	.tyref	ibio.acceptor.prim.t	s	β
 
-# §section §gs{ibio.acceptor.prim.kt}
+-- §section §gs{ibio.acceptor.prim.kt}
 
 ibio.acceptor.prim.kt	.tyexpr
 ibio.acceptor.prim.t	.tygvar
@@ -446,7 +446,7 @@ s	.tylambda	*
 	.tyfun	α
 	.tyref	ibio.acceptor.prim.t	s	β
 
-# §section §gs{ibio.acceptor.prim.t}
+-- §section §gs{ibio.acceptor.prim.t}
 
 ibio.acceptor.prim.t	.tyabstract	**^*^
 ibio.acceptor.prim.u	.tygvar
@@ -492,7 +492,7 @@ s	.tylambda	*
 1_arg_ty	.tylet	ibio.acceptor.prim.t	s	α
 	.tyubproduct	0	α	1	1_arg_ty
 
-# §section §gs{ibio.acceptor.many}
+-- §section §gs{ibio.acceptor.many}
 
 _ibio.acceptor.many.prim_ty	.tyexpr
 ibio.acceptor.prim.cont.t	.tygvar
@@ -509,7 +509,7 @@ res.ty	.tylet	list.t	α
 	.tyfun	ibio.acceptor.prim.kt	s	res.ty	β
 	.tyref	ibio.acceptor.prim.t	s	β
 
-# §section §gs{ibio.acceptor.many.void}
+-- §section §gs{ibio.acceptor.many.void}
 
 _ibio.acceptor.many.void.prim_ty	.tyexpr
 ibio.acceptor.prim.cont.t	.tygvar
@@ -525,7 +525,7 @@ s	.tyforall	*
 	.tyfun	ibio.acceptor.prim.kt	s	record.empty	β
 	.tyref	ibio.acceptor.prim.t	s	β
 
-# §section §gs{ibio.acceptor.prim.<|>}
+-- §section §gs{ibio.acceptor.prim.<|>}
 
 _ibio.acceptor.prim.<|>_ty	.tyexpr
 ibio.acceptor.prim.t	.tygvar
