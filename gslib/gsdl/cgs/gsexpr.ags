@@ -38,7 +38,7 @@ gsdl.cgs.gsexpr.body.missing	.closure	_gsdl.cgs.gsexpr.body.missing_c
 
 	.code
 
-# §section §gs{gsdl.cgs.gsexpr.parser}
+-- §section §gs{gsdl.cgs.gsexpr.parser}
 
 _gsdl.cgs.gsexpr.parser_c	.expr
 gsdl.cgs.gsexpr.parser.cast	.gvar
@@ -47,7 +47,7 @@ gsdl.cgs.syntax.assoc.any	.gvar
 	.app	gsdl.cgs.syntax.branch.r	gsdl.cgs.syntax.assoc.any
 	.enter	gsdl.cgs.gsexpr.parser.cast
 
-# §subsection §gs{gsdl.cgs.gsexpr.parser.cast}
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.cast}
 
 _gsdl.cgs.gsexpr.parser.cast_c	.expr
 gsdl.cgs.syntax.branch.t	.tygvar
@@ -147,7 +147,7 @@ e1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	so
 	.app	pos	e1
 	.enter	gsdl.cgs.gsexpr.pos
 
-# §subsection §gs{gsdl.cgs.gsexpr.parser.app.or.lambda}
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.app.or.lambda}
 
 _gsdl.cgs.gsexpr.parser.app.or.lambda_c	.expr
 gsdl.cgs.syntax.branch.t	.tygvar
@@ -231,7 +231,7 @@ e	.apply	gsdl.cgs.gsexpr.lambda	|	v	ty	b
 	.app	pos	e
 	.enter	gsdl.cgs.gsexpr.pos
 
-# §subsection §gs{gsdl.cgs.gsexpr.parser.arg}
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.arg}
 
 _gsdl.cgs.gsexpr.parser.arg_c	.expr
 _gsdl.cgs.gsexpr.parser.arg_lift.p_c	.subcode
@@ -280,7 +280,7 @@ e1	.apply	gsdl.cgs.gsexpr.lift	|	e
 	.app	pos	e1
 	.enter	gsdl.cgs.gsexpr.pos
 
-# §section §gs{gsdl.cgs.gsexpr.freevars}
+-- §section §gs{gsdl.cgs.gsexpr.freevars}
 
 _gsdl.cgs.gsexpr.freevars_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
@@ -377,7 +377,7 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	ordered.set.t	gsdl.cgs.symbol.t
 	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsdl.cgs.gsexpr.≡}
+-- §section §gs{gsdl.cgs.gsexpr.≡}
 
 _gsdl.cgs.gsexpr.≡_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
@@ -507,7 +507,7 @@ ty0		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	bool.t
 		-- > :: bool.t
 
-# §section §gs{gsdl.cgs.gsexpr.fmtgs}
+-- §section §gs{gsdl.cgs.gsexpr.fmtgs}
 
 _gsdl.cgs.gsexpr.fmtgs_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
@@ -515,7 +515,7 @@ fmtgs.printer.t	.tygvar	-- Temp
 e	.larg	gsdl.cgs.gsexpr.t
 	.undef	fmtgs.printer.t
 
-# §section §gs{gsdl.cgs.gsexpr.body.parser}
+-- §section §gs{gsdl.cgs.gsexpr.body.parser}
 
 _gsdl.cgs.gsexpr.body.parser_c	.expr
 rune.t	.tygvar
@@ -570,7 +570,7 @@ pos	.apply	gsdl.sourcepos	|	pos0	pos1
 	.app	pos	ty
 	.enter	gsdl.cgs.gsexpr.body.missing
 
-# §section §gs{gsdl.cgs.gsexpr.body.freevars}
+-- §section §gs{gsdl.cgs.gsexpr.body.freevars}
 
 _gsdl.cgs.gsexpr.body.freevars_c	.expr
 gsdl.cgs.gsexpr.body.t	.tygvar
@@ -603,7 +603,7 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 			.enter	gsdl.cgs.gstype.freevars
 	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsdl.cgs.gsexpr.t} constructors
+-- §section §gs{gsdl.cgs.gsexpr.t} constructors
 
 _gsdl.cgs.gsexpr.pos_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -653,7 +653,7 @@ res	.constr	gsdl.cgs.gsexpr.prim.u	lift	0	e
 	.lift
 	.yield	res
 
-# §gs{gsdl.cgs.gsexpr.cast.source.t} constructors
+-- §gs{gsdl.cgs.gsexpr.cast.source.t} constructors
 
 _gsdl.cgs.gsexpr.cast.source.missing_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -687,7 +687,7 @@ res	.constr	gsdl.cgs.gsexpr.cast.source.prim.u	expr	0	e
 	.lift
 	.yield	res
 
-# §section §gs{gsdl.cgs.gsexpr.body.t} Constructors
+-- §section §gs{gsdl.cgs.gsexpr.body.t} Constructors
 
 _gsdl.cgs.gsexpr.body.expr_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
@@ -713,7 +713,7 @@ res	.constr	gsdl.cgs.gsexpr.body.prim.u	missing	0	pos	1	ty
 
 	.type
 
-# §section §gs{gsdl.cgs.gsexpr.t}
+-- §section §gs{gsdl.cgs.gsexpr.t}
 
 gsdl.cgs.gsexpr.t	.tyabstract	*
 gsdl.cgs.gsexpr.prim.u	.tygvar
@@ -747,7 +747,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gsexpr.t
 
-# §subsection §gs{gsdl.cgs.gsexpr.cast.source.t}
+-- §subsection §gs{gsdl.cgs.gsexpr.cast.source.t}
 
 gsdl.cgs.gsexpr.cast.source.t	.tyabstract	*
 gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
@@ -773,7 +773,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.gsexpr.body.t}
+-- §section §gs{gsdl.cgs.gsexpr.body.t}
 
 gsdl.cgs.gsexpr.body.t	.tyabstract	*
 gsdl.cgs.gsexpr.body.prim.u	.tygvar
@@ -794,7 +794,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.gsexpr.parser}
+-- §section §gs{gsdl.cgs.gsexpr.parser}
 
 _gsdl.cgs.gsexpr.parser_ty	.tyexpr
 parser.t	.tygvar
@@ -802,7 +802,7 @@ rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
 
-# §subsection §gs{gsdl.cgs.gsexpr.parser.cast}
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.cast}
 
 _gsdl.cgs.gsexpr.parser.cast_ty	.tyexpr
 gsdl.cgs.syntax.branch.t	.tygvar
@@ -816,7 +816,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 	.tyfun	gsdl.cgs.syntax.assoc.t
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
 
-# §subsection §gs{gsdl.cgs.gsexpr.parser.app.or.lambda}
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.app.or.lambda}
 
 _gsdl.cgs.gsexpr.parser.app.or.lambda_ty	.tyexpr
 gsdl.cgs.syntax.branch.t	.tygvar
@@ -827,7 +827,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 	.tyfun	gsdl.cgs.syntax.branch.t
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
 
-# §subsection §gs{gsdl.cgs.gsexpr.parser.arg}
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.arg}
 
 _gsdl.cgs.gsexpr.parser.arg_ty	.tyexpr
 parser.t	.tygvar
@@ -835,7 +835,7 @@ rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
 
-# §section §gs{gsdl.cgs.gsexpr.freevars}
+-- §section §gs{gsdl.cgs.gsexpr.freevars}
 
 _gsdl.cgs.gsexpr.freevars_ty	.tyexpr
 gsdl.cgs.gsexpr.t	.tygvar
@@ -845,7 +845,7 @@ gsdl.cgs.symbol.t	.tygvar
 	.tyfun	gsdl.cgs.gsexpr.t
 	.tyref	ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsdl.cgs.gsexpr.≡}
+-- §section §gs{gsdl.cgs.gsexpr.≡}
 
 _gsdl.cgs.gsexpr.≡_ty	.tyexpr
 gsdl.cgs.gsexpr.t	.tygvar
@@ -856,7 +856,7 @@ bool.t	.tygvar
 	.tyfun	gsdl.cgs.gsexpr.t
 	.tyref	bool.t
 
-# §section §gs{gsdl.cgs.gsexpr.body.parser}
+-- §section §gs{gsdl.cgs.gsexpr.body.parser}
 
 _gsdl.cgs.gsexpr.body.parser_ty	.tyexpr
 parser.t	.tygvar
@@ -864,7 +864,7 @@ rune.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.body.t
 
-# §section §gs{gsdl.cgs.gsexpr.body.freevars}
+-- §section §gs{gsdl.cgs.gsexpr.body.freevars}
 
 _gsdl.cgs.gsexpr.body.freevars_ty	.tyexpr
 gsdl.cgs.gsexpr.body.t	.tygvar
