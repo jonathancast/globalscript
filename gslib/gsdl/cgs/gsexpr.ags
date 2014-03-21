@@ -24,6 +24,8 @@ gsdl.cgs.gsexpr.fmtgs	.closure	_gsdl.cgs.gsexpr.fmtgs_c
 
 gsdl.cgs.gsexpr.generator.imp.parser	.closure	_gsdl.cgs.gsexpr.generator.imp.parser_c
 
+gsdl.cgs.gsexpr.generator.freevars	.closure	_gsdl.cgs.gsexpr.generator.freevars_c
+
 gsdl.cgs.gsexpr.body.parser	.closure	_gsdl.cgs.gsexpr.body.parser_c	_gsdl.cgs.gsexpr.body.parser_ty
 
 gsdl.cgs.gsexpr.body.freevars	.closure	_gsdl.cgs.gsexpr.body.freevars_c	_gsdl.cgs.gsexpr.body.freevars_ty
@@ -600,6 +602,15 @@ rune.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 parser.fail	.gvar	-- Temp
 	.enter	parser.fail	rune.t	gsdl.cgs.gsexpr.generator.t
+
+-- §section §gs{gsdl.cgs.gsexpr.generator.freevars}
+
+_gsdl.cgs.gsexpr.generator.freevars_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+g	.larg	gsdl.cgs.gsexpr.generator.t
+	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gsexpr.body.parser}
 
