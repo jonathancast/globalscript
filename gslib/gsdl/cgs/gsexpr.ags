@@ -773,6 +773,16 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gstype.t
 
+-- §section §gs{gsdl.cgs.gsexpr.generator.t}
+
+gsdl.cgs.gsexpr.generator.t	.tyabstract	*
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gsexpr.generator.prim.u
+
+gsdl.cgs.gsexpr.generator.prim.u	.tyexpr
+	.tysum
+
 -- §section §gs{gsdl.cgs.gsexpr.body.t}
 
 gsdl.cgs.gsexpr.body.t	.tyabstract	*
