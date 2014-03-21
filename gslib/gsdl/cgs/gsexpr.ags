@@ -174,15 +174,53 @@ _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_k	.forcecont
 gsdl.cgs.syntax.branch.prim.u	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_c	.subcode
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_c	.subcode
 parser.fail	.gvar
+parser.<|>	.gvar
 t0	.karg	gsdl.cgs.syntax.branch.prim.u
 	.analyze	t0	l	r
 		.case	l
 			.enter	parser.fail	rune.t	gsdl.cgs.gsexpr.t
 		.case	r
+impfor			.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_c
 lambda			.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_c
-			.enter	lambda
+			.app	impfor	lambda
+			.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_f_c	.subcode
+parser.lift4	.gvar
+parser.pos.get	.gvar
+parser.fail	.gvar	-- Temp
+list.gen.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
+f	.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_f_c
+pos.get	.apply	parser.pos.get	rune.t
+ty.p	.apply	parser.fail	rune.t	gsdl.cgs.gstype.t	-- > keyword m/for/ *> keywordOp m/@/ *> gstype.arg.parser
+gens.p	.apply	parser.fail	rune.t	list.gen.ty	-- > many gsdl.cgs.gsexpr.generator.imp.parser
+body.p	.apply	parser.fail	rune.t	gsdl.cgs.gsexpr.body.t	-- > lexeme m/\./ *> gsbody.parser
+	.app	f	pos.get	ty.p	gens.p	body.p
+	.enter	parser.lift4	rune.t	parser.pos.t	gsdl.cgs.gstype.t	list.gen.ty	gsdl.cgs.gsexpr.body.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+pos0	.larg	parser.pos.t
+m	.larg	gsdl.cgs.gstype.t
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+b	.larg	gsdl.cgs.gsexpr.body.t
+	.undef	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_c	.expr
 rune.t	.tygvar
