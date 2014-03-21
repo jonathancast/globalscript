@@ -4,7 +4,7 @@
 
 ibio.lex.lexer.match	.closure	_ibio.lex.lexer.match_c
 
-# §section Lexers
+-- §section Lexers
 
 ibio.lex.symbol	.closure	_ibio.lex.symbol_c
 
@@ -18,7 +18,7 @@ ibio.lex.<|>	.closure	_ibio.lex.<|>_c
 
 ibio.lex.many	.closure	_ibio.lex.many_c	_ibio.lex.many_ty
 
-# §section Receivers
+-- §section Receivers
 
 ibio.lex.receive	.closure	_ibio.lex.receive_c
 
@@ -39,7 +39,7 @@ ibio.lex.receiver.many	.closure	_ibio.lex.receiver.many_c
 
 	.code
 
-# §section §gs{ibio.lex.lexer.match}
+-- §section §gs{ibio.lex.lexer.match}
 
 _ibio.lex.lexer.match_c	.expr
 ibio.lex.lexer.t	.tygvar
@@ -61,7 +61,7 @@ p0	.karg	_ibio.lex.lexer.t_res.u	s	α
 x	.field	0	p0
 	.enter	x
 
-# §section §gs{ibio.lex.symbol}
+-- §section §gs{ibio.lex.symbol}
 
 _ibio.lex.symbol_c	.expr
 _ibio.lex.lexeme.t_k.ty	.tygvar
@@ -115,7 +115,7 @@ ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 	.enter	ek
 
-# §section §gs{ibio.lex.char}
+-- §section §gs{ibio.lex.char}
 
 _ibio.lex.char_c	.expr
 _ibio.lex.receiver.char_eq_ty	.tygvar
@@ -159,7 +159,7 @@ ip0	.karg	ibio.prim.iptr	s
 	.app	ip0
 	.yield	ibio.prim.iptr.iseof	s
 
-_ibio.lex.char_k0	.ubcasecont	# Not EOF
+_ibio.lex.char_k0	.ubcasecont	-- Not EOF
 _ibio.lex.receiver.char_eq_ty	.tygvar
 ibio.prim.iptr	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
@@ -199,7 +199,7 @@ ip1			.apply	ibio.prim.iptr.next	s	|	ip0
 			.app	c	ip1
 			.enter	sk
 
-_ibio.lex.char_k1	.ubcasecont	# EOF
+_ibio.lex.char_k1	.ubcasecont	-- EOF
 _ibio.lex.receiver.char_eq_ty	.tygvar
 ibio.prim.iptr	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
@@ -212,7 +212,7 @@ ek	.fv	β
 sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 	.enter	ek
 
-# §section §gs{ibio.lex.pred}
+-- §section §gs{ibio.lex.pred}
 
 _ibio.lex.pred_c	.expr
 _ibio.lex.receiver.pred_pred_ty	.tygvar
@@ -254,7 +254,7 @@ ip0	.karg	ibio.prim.iptr	s
 	.app	ip0
 	.yield	ibio.prim.iptr.iseof	s
 
-_ibio.lex.pred_res_k_k0	.ubcasecont	# Not EOF
+_ibio.lex.pred_res_k_k0	.ubcasecont	-- Not EOF
 _ibio.lex.receiver.pred_pred_ty	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 ibio.prim.iptr	.tygvar
@@ -293,7 +293,7 @@ ip1			.apply	ibio.prim.iptr.next	s	|	ip0
 			.app	s	ip1
 			.enter	sk
 
-_ibio.lex.pred_res_k_k1	.ubcasecont	# EOF
+_ibio.lex.pred_res_k_k1	.ubcasecont	-- EOF
 _ibio.lex.receiver.pred_pred_ty	.tygvar
 _ibio.lex.lexeme.t_k.ty	.tygvar
 ibio.prim.iptr	.tygvar
@@ -305,7 +305,7 @@ sk	.fv	_ibio.lex.lexeme.t_k.ty	s	s	β
 ip0	.fv	ibio.prim.iptr	s
 	.undef	β
 
-# §section §gs{ibio.lex.lexeme.unit}
+-- §section §gs{ibio.lex.lexeme.unit}
 
 _ibio.lex.lexeme.unit_c	.expr
 _ibio.lex.lexeme.unit_res_c	.subcode
@@ -328,7 +328,7 @@ ip	.larg	ibio.prim.iptr.t	s
 	.app	x	ip
 	.enter	sk
 
-# §section §gs{ibio.lex.lexeme.<*>}
+-- §section §gs{ibio.lex.lexeme.<*>}
 
 _ibio.lex.lexeme.<*>_c	.expr
 ibio.lex.lexeme.t	.tygvar
@@ -398,7 +398,7 @@ fx	.apply	f	|	x
 	.app	fx	ip2
 	.enter	sk
 
-# §section §gs{ibio.lex.<|>}
+-- §section §gs{ibio.lex.<|>}
 
 _ibio.lex.<|>_c	.expr
 ibio.lex.lexeme.t	.tygvar
@@ -426,7 +426,7 @@ ek1	.apply	l1	β	|	ek	sk	ip
 	.app	ek1	sk	ip
 	.enter	l0	β
 
-# §section §gs{ibio.lex.many}
+-- §section §gs{ibio.lex.many}
 
 _ibio.lex.many_c	.expr
 ibio.lex.lexeme.t	.tygvar
@@ -498,7 +498,7 @@ r0.0	.karg	_ibio.lex.lexer.t_res.u	s	res.ty
 xn0	.field	0	r0.0
 	.enter	xn0
 
-# §section §gs{ibio.lex.receive}
+-- §section §gs{ibio.lex.receive}
 
 _ibio.lex.receive_c	.impprog	ibio.prim	ibio
 ibio.lex.receiver.t	.tygvar
@@ -575,7 +575,7 @@ x	.fv	α
 	.app	x
 	.yield	ibio.prim.unit	α
 
-# §section §gs{ibio.lex.receiver.symbol}
+-- §section §gs{ibio.lex.receiver.symbol}
 
 _ibio.lex.receiver.symbol_c	.expr
 ibio.lex.lexeme.t	.tygvar
@@ -589,7 +589,7 @@ r	.record	0	lex	1	acc
 	.lift
 	.yield	r
 
-# §section §gs{ibio.lex.receiver.pred}
+-- §section §gs{ibio.lex.receiver.pred}
 
 _ibio.lex.receiver.pred_c	.expr
 _ibio.lex.receiver.pred_pred_ty	.tygvar
@@ -651,7 +651,7 @@ b0	.karg	bool.prim.u
 			.app	sym
 			.enter	k
 
-# §section §gs{ibio.lex.receiver.char}
+-- §section §gs{ibio.lex.receiver.char}
 
 _ibio.lex.receiver.char_c	.expr
 _ibio.lex.receiver.char_eq_ty	.tygvar
@@ -717,7 +717,7 @@ b0	.karg	bool.prim.u
 			.app	c
 			.enter	k
 
-# §section §gs{ibio.lex.receiver.line.non.empty}
+-- §section §gs{ibio.lex.receiver.line.non.empty}
 
 _ibio.lex.receiver.line.non.empty_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
@@ -746,7 +746,7 @@ eolr	.apply	ibio.lex.receiver.lexeme.lift.2	rune.t	rune.t	string.ty	string.ty	|	
 	.app	consr	eolr
 	.enter	ibio.lex.receiver.<|>	rune.t	string.ty
 
-# §section §gs{ibio.lex.receiver.lexeme.unit}
+-- §section §gs{ibio.lex.receiver.lexeme.unit}
 
 _ibio.lex.receiver.lexeme.unit_c	.expr
 ibio.lex.lexeme.t	.tygvar
@@ -774,7 +774,7 @@ k	.larg	ibio.acceptor.prim.kt	s	α	record.empty
 	.app	x
 	.enter	k
 
-# §section §gs{ibio.lex.receiver.lexeme.<*>}
+-- §section §gs{ibio.lex.receiver.lexeme.<*>}
 
 _ibio.lex.receiver.lexeme.<*>_c	.expr
 _ibio.lex.receiver.lexeme.<*>_rf_ty	.tygvar
@@ -846,7 +846,7 @@ fx	.apply	f	|	x
 	.app	fx
 	.enter	k
 
-# §section §gs{ibio.lex.receiver.lexeme.lift.2}
+-- §section §gs{ibio.lex.receiver.lexeme.lift.2}
 
 _ibio.lex.receiver.lexeme.lift.2_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
@@ -868,7 +868,7 @@ rfx	.apply	ibio.lex.receiver.lexeme.<*>	s	α	fx_ty	|	rf	rx
 	.app	rfx	ry
 	.enter	ibio.lex.receiver.lexeme.<*>	s	β	γ
 
-# §section §gs{ibio.lex.receiver.<|>}
+-- §section §gs{ibio.lex.receiver.<|>}
 
 _ibio.lex.receiver.<|>_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
@@ -905,7 +905,7 @@ a1r	.apply	a1	|	k
 	.app	a0r	a1r
 	.enter	ibio.acceptor.prim.<|>	s	record.empty
 
-# §section §gs{ibio.lex.receiver.many}
+-- §section §gs{ibio.lex.receiver.many}
 
 _ibio.lex.receiver.many_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
@@ -928,7 +928,7 @@ r	.record	0	lex	1	acc
 
 	.type
 
-# §section §gs{ibio.lex.lexer.t}
+-- §section §gs{ibio.lex.lexer.t}
 
 ibio.lex.lexer.t	.tyexpr
 ibio.prim.iptr.t	.tygvar
@@ -953,7 +953,7 @@ s	.tylambda	*
 ip.ty	.tylet	ibio.prim.iptr.t	s
 	.typroduct	0	α	1	ip.ty
 
-# §section §gs{ibio.lex.lexeme.t}
+-- §section §gs{ibio.lex.lexeme.t}
 
 ibio.lex.lexeme.t	.tyexpr
 _ibio.lex.lexeme.t_k.ty	.tygvar
@@ -980,7 +980,7 @@ s	.tylambda	*
 	.tyfun	ibio.prim.iptr.t	s
 	.tyref	β
 
-# §section §gs{ibio.lex.lexeme.<*>}
+-- §section §gs{ibio.lex.lexeme.<*>}
 
 _ibio.lex.lexeme.<*>_f_ty	.tyexpr
 α	.tylambda	*
@@ -989,7 +989,7 @@ _ibio.lex.lexeme.<*>_f_ty	.tyexpr
 	.tyfun	α
 	.tyref	β
 
-# §section §gs{ibio.lex.many}
+-- §section §gs{ibio.lex.many}
 
 _ibio.lex.many_ty	.tyexpr
 ibio.lex.lexeme.t	.tygvar
@@ -1002,7 +1002,7 @@ res.ty	.tylet	list.t	α
 	.tyfun	ibio.lex.lexeme.t	s	α
 	.tyref	ibio.lex.lexer.t	s	res.ty
 
-# §section §gs{ibio.lex.receiver.t}
+-- §section §gs{ibio.lex.receiver.t}
 
 ibio.lex.receiver.t	.tyexpr
 ibio.lex.receiver.u	.tygvar
@@ -1021,7 +1021,7 @@ lex.ty	.tylet	ibio.lex.lexer.t	s	α
 acc.ty	.tylet	ibio.acceptor.prim.cont.t	s	record.empty	record.empty
 	.typroduct	0	lex.ty	1	acc.ty
 
-# §section §gs{ibio.lex.receiver.lexeme.t}
+-- §section §gs{ibio.lex.receiver.lexeme.t}
 
 ibio.lex.receiver.lexeme.t	.tyexpr
 ibio.lex.receiver.lexeme.u	.tygvar
@@ -1040,7 +1040,7 @@ lex.ty	.tylet	ibio.lex.lexeme.t	s	α
 acc.ty	.tylet	ibio.acceptor.prim.cont.t	s	α	record.empty
 	.typroduct	0	lex.ty	1	acc.ty
 
-# §section §gs{ibio.lex.receiver.pred}
+-- §section §gs{ibio.lex.receiver.pred}
 
 _ibio.lex.receiver.pred_pred_ty	.tyexpr
 bool.t	.tygvar
@@ -1049,7 +1049,7 @@ s	.tylambda	*
 	.tyfun	s
 	.tyref	bool.t
 
-# §section §gs{ibio.lex.receiver.char}
+-- §section §gs{ibio.lex.receiver.char}
 
 _ibio.lex.receiver.char_eq_ty	.tyexpr
 bool.t	.tygvar
@@ -1060,7 +1060,7 @@ s	.tylambda	*
 	.tyfun	s
 	.tyref	bool.t
 
-# §section §gs{ibio.lex.receiver.line.non.empty}
+-- §section §gs{ibio.lex.receiver.line.non.empty}
 
 _ibio.lex.receiver.line.non.empty_ty	.tyexpr
 ibio.lex.receiver.lexeme.t	.tygvar
@@ -1069,7 +1069,7 @@ list.t	.tygvar
 string.ty	.tylet	list.t	rune.t
 	.tyref	ibio.lex.receiver.lexeme.t	rune.t	string.ty
 
-# §section §gs{ibio.lex.receiver.lexeme.<*>}
+-- §section §gs{ibio.lex.receiver.lexeme.<*>}
 
 _ibio.lex.receiver.lexeme.<*>_rf_ty	.tyexpr
 ibio.lex.receiver.lexeme.t	.tygvar
@@ -1080,7 +1080,7 @@ s	.tylambda	*
 res.ty	.tylet	_ibio.lex.lexeme.<*>_f_ty	α	β
 	.tyref	ibio.lex.receiver.lexeme.t	s	res.ty
 
-# §section §gs{ibio.lex.receiver.lexeme.lift.2}
+-- §section §gs{ibio.lex.receiver.lexeme.lift.2}
 
 _ibio.lex.receiver.lexeme.lift.2_f_ty	.tyexpr
 α	.tylambda	*
