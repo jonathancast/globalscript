@@ -9,6 +9,8 @@ _gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re	.regex	⊲
 
 gsdl.cgs.gsexpr.parser.app.or.lambda	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_c	_gsdl.cgs.gsexpr.parser.app.or.lambda_ty
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_gsλ.re	.regex	λ
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_gsfor.re	.regex	for
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_at.re	.regex	@
 
 gsdl.cgs.gsexpr.parser.arg	.closure	_gsdl.cgs.gsexpr.parser.arg_c	_gsdl.cgs.gsexpr.parser.arg_ty
 _gsdl.cgs.gsexpr.parser.arg_lift.p_lbrack.re	.regex	⌊
@@ -199,16 +201,30 @@ list.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+string.t	.tygvar
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_f_c	.subcode
 parser.lift4	.gvar
 parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.keyword	.gvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_gsfor.re	.gvar
+gsdl.cgs.syntax.keywordOp	.gvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_at.re	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
+parser.many	.gvar
+gsdl.cgs.gsexpr.generator.imp.parser	.gvar
+gsdl.cgs.syntax.dot	.gvar
+gsdl.cgs.gsexpr.body.parser	.gvar
 parser.fail	.gvar	-- Temp
 list.gen.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
 f	.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_f_c
 pos.get	.apply	parser.pos.get	rune.t
-ty.p	.apply	parser.fail	rune.t	gsdl.cgs.gstype.t	-- > keyword m/for/ *> keywordOp m/@/ *> gstype.arg.parser
-gens.p	.apply	parser.fail	rune.t	list.gen.ty	-- > many gsdl.cgs.gsexpr.generator.imp.parser
-body.p	.apply	parser.fail	rune.t	gsdl.cgs.gsexpr.body.t	-- > lexeme m/\./ *> gsbody.parser
+gsfor.p	.apply	gsdl.cgs.syntax.keyword	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_gsfor.re
+at.p	.apply	gsdl.cgs.syntax.keywordOp	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_at.re	-- > keywordOp m/@/
+ty.p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	at.p	gsdl.cgs.gstype.parser.arg
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsfor.p	ty.p1
+gens.p	.apply	parser.many	rune.t	gsdl.cgs.gsexpr.generator.t	|	gsdl.cgs.gsexpr.generator.imp.parser
+body.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.body.t	|	gsdl.cgs.syntax.dot	gsdl.cgs.gsexpr.body.parser
 	.app	f	pos.get	ty.p	gens.p	body.p
 	.enter	parser.lift4	rune.t	parser.pos.t	gsdl.cgs.gstype.t	list.gen.ty	gsdl.cgs.gsexpr.body.t	gsdl.cgs.gsexpr.t
 
@@ -219,11 +235,18 @@ list.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gsexpr.impfor	.gvar
 pos0	.larg	parser.pos.t
 m	.larg	gsdl.cgs.gstype.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
 b	.larg	gsdl.cgs.gsexpr.body.t
-	.undef	gsdl.cgs.gsexpr.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e1	.apply	gsdl.cgs.gsexpr.impfor	|	m	gs	b
+	.app	pos	e1
+	.enter	gsdl.cgs.gsexpr.pos
 
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_c	.expr
 rune.t	.tygvar
