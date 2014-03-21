@@ -3067,7 +3067,6 @@ gsclosefile(struct uxio_ichannel *chan, int pid)
     return gsbio_device_iclose(chan);
 }
 
-#define DISALLOW_OLD_COMMENTS 0
 #define IS_COMMENT (*p == '#' || (p[0] == '-' && p[1] && p[1] == '-' && p[2] && isspace(p[2])))
 
 static
@@ -3104,7 +3103,7 @@ gsac_tokenize(char *file, int lineno, char *line, char **fields, long maxfields)
             numfields++;
         }
     }
-    if (DISALLOW_OLD_COMMENTS && *p == '#') gsfatal("%s:%d:%d: Illegal old-style # comment", file, lineno, p - line + 1);
+    if (*p == '#') gsfatal("%s:%d:%d: Illegal old-style # comment", file, lineno, p - line + 1);
     if (*p) *p++ = 0;
     return label_present || numfields ? numfields + 1 : 0;
 }
