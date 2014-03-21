@@ -361,27 +361,34 @@ _gsdl.cgs.gsexpr.freevars_k	.forcecont
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
+ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
-ordered.set.t	.tygvar	-- Temp
-gsdl.cgs.symbol.t	.tygvar	-- Temp
 _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.subcode
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
+ordered.set.empty	.gvar
 gsdl.cgs.gscoercion.freevars	.gvar
 gsdl.cgs.gstype.freevars	.gvar
-ordered.set.difference	.gvar
+list.foldl	.gvar
+list.map	.gvar
+gsdl.cgs.gsexpr.generator.freevars	.gvar
 gsdl.cgs.gsexpr.body.freevars	.gvar
+ordered.set.difference	.gvar
 ordered.set.singleton	.gvar
 gsdl.cgs.symbol.var	.gvar
 gsdl.cgs.gsexpr.freevars	.gvar
+set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
+union.symbol	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
+empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 	.analyze	e0	expr.heavy.cast	impfor	lambda	lift	pos
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
@@ -394,7 +401,13 @@ so.fvs			.alloc	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c
 m		.fkarg	0	gsdl.cgs.gstype.t
 gs		.fkarg	1	list.t	gsdl.cgs.gsexpr.generator.t
 b		.fkarg	2	gsdl.cgs.gsexpr.body.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+m.fvs			.apply	gsdl.cgs.gstype.freevars	|	m
+gs.fvss			.apply	list.map	gsdl.cgs.gsexpr.generator.t	set.symbol.ty	|	gsdl.cgs.gsexpr.generator.freevars	gs
+gs.fvs			.apply	list.foldl	set.symbol.ty	set.symbol.ty	|	union.symbol	empty.symbol	gs.fvss
+b.fvs			.apply	gsdl.cgs.gsexpr.body.freevars	|	b
+fvs1			.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	gs.fvs	b.fvs
+			.app	gsdl.cgs.symbol.compare	m.fvs	fvs1
+			.enter	ordered.set.union	gsdl.cgs.symbol.t
 		.case	lambda
 v		.fkarg	0	gsdl.var.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
