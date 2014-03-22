@@ -34,7 +34,7 @@ _dot	.closure	_dot_c
 
 	.code
 
-# §section §gs{ibio.file.name.in}
+-- §section §gs{ibio.file.name.in}
 
 _ibio.file.name.in_c	.expr
 list.t	.tygvar
@@ -44,7 +44,7 @@ s	.larg	list.t	rune.t
 	.coerce	ibio.file.name.in
 	.enter	s
 
-# §section §gs{ibio.file.name.out}
+-- §section §gs{ibio.file.name.out}
 
 _ibio.file.name.out_c	.expr
 ibio.file.name.t	.tygvar
@@ -53,7 +53,7 @@ fn	.larg	ibio.file.name.t
 	.coerce	ibio.file.name.out
 	.enter	fn
 
-# §section §gs{_ibio.file.name.with_c}
+-- §section §gs{_ibio.file.name.with_c}
 
 _ibio.file.name.with_c	.expr
 _ibio.file.name.with_f_ty	.tygvar
@@ -67,7 +67,7 @@ fn.1	.apply	f	|	fn.0
 	.app	fn.1
 	.enter	ibio.file.name.in
 
-# §section §gs{ibio.file.name.≡}
+-- §section §gs{ibio.file.name.≡}
 
 _ibio.file.name.≡_c	.expr
 ibio.file.name.t	.tygvar
@@ -82,7 +82,7 @@ fn1.s	.apply	ibio.file.name.out	|	fn1
 	.app	rune.≡	fn0.s	fn1.s
 	.enter	list.≡	rune.t
 
-# §section §gs{ibio.file.read.open.prim}
+-- §section §gs{ibio.file.read.open.prim}
 
 _ibio.file.read.open.prim_c	.expr
 ibio.prim.external.io.t	.tygvar
@@ -107,7 +107,7 @@ fn.s	.apply	ibio.file.name.out	|	fn
 	.app	e0	fn.s
 	.yield	ibio.prim.file.read.open	s
 
-# §section §gs{ibio.file.stat}
+-- §section §gs{ibio.file.stat}
 
 _ibio.file.stat.prim_c	.impprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
@@ -149,7 +149,7 @@ st	.fv	ibio.dir.t
 	.app	st
 	.yield	ibio.prim.unit	ibio.dir.t
 
-# §section §gs{ibio.file.isdir}
+-- §section §gs{ibio.file.isdir}
 
 _ibio.file.isdir_c	.impprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
@@ -188,7 +188,7 @@ id	.fv	bool.t
 	.app	id
 	.yield	ibio.prim.unit	bool.t
 
-# §section §gs{ibio.file.name.components.get}
+-- §section §gs{ibio.file.name.components.get}
 
 _ibio.file.name.components.get_c	.expr
 ibio.file.name.t	.tygvar
@@ -274,7 +274,7 @@ k1			.alloc	_ibio.file.name.components.get_worker_:_true_k1_c
 			.app	fn1	k1
 			.yield	_ibio.file.name.components.get_worker
 
-_ibio.file.name.components.get_worker_:_false_k1_c	.expr	# First character not r{/}
+_ibio.file.name.components.get_worker_:_false_k1_c	.expr	-- First character not r{/}
 _ibio.file.name.components.get_worker_cont.ty	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
@@ -321,7 +321,7 @@ ds2			.apply	list.:	string.t	|	ds2.0	ds1
 			.app	c	_dot
 			.enter	rune.≡
 
-_ibio.file.name.components.get_worker_:_false_k1_nil_k	.forcecont	# In the basename
+_ibio.file.name.components.get_worker_:_false_k1_nil_k	.forcecont	-- In the basename
 _ibio.file.name.components.get_worker_cont.ty	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
@@ -346,11 +346,11 @@ r1			.apply	list.nil	rune.t
 			.app	ds	r1	es1
 			.enter	k
 
-_ibio.file.name.components.get_worker_:_true_k1_c	.expr	# First character r{/}
+_ibio.file.name.components.get_worker_:_true_k1_c	.expr	-- First character r{/}
 _ibio.file.name.components.get_worker_cont.ty	.tygvar
 string.t	.tygvar
 rune.t	.tygvar
-list.t	.tygvar	# Temp
+list.t	.tygvar	-- Temp
 list.:	.gvar
 list.nil	.gvar
 k	.fv	_ibio.file.name.components.get_worker_cont.ty
@@ -362,7 +362,7 @@ ds1	.apply	list.:	string.t	|	nil	ds
 	.app	ds1	r	es
 	.enter	k
 
-# §section §gs{ibio.file.name.extension.set}
+-- §section §gs{ibio.file.name.extension.set}
 
 _ibio.file.name.extension.set_c	.expr
 list.t	.tygvar
@@ -440,12 +440,12 @@ c	.fv	rune.t
 s1	.fv	list.t	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
-		.case	false	# §gs{c ≠ r{/}}
+		.case	false	-- §gs{c ≠ r{/}}
 			.force	_ibio.file.name.extension.set_worker_k2
 			.coerce	bool.t.out
 			.app	c	_dot
 			.enter	rune.≡
-		.case	true	# §gs{c ≡ r{/}}
+		.case	true	-- §gs{c ≡ r{/}}
 pre0.1			.alloc	_ibio.file.name.extension.set_worker_pre0.1_c
 id			.alloc	_ibio.file.name.extension.set_worker_id_c
 			.app	ext	pre0.1	id	s1
@@ -467,11 +467,11 @@ c	.fv	rune.t
 s1	.fv	list.t	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
-		.case	false	# §gs{c ≠ r/./}
+		.case	false	-- §gs{c ≠ r/./}
 pre1.1			.alloc	_ibio.file.name.extension.set_worker_pre1.1_c
 			.app	ext	pre.0	pre1.1	s1
 			.enter	_ibio.file.name.extension.set_worker
-		.case	true	# §gs{c ≡ r/./}
+		.case	true	-- §gs{c ≡ r/./}
 pre0.1			.alloc	_ibio.file.name.extension.set_worker_pre0.1_c
 id			.alloc	_ibio.file.name.extension.set_worker_id_c
 			.app	ext	pre0.1	id	s1
@@ -509,7 +509,7 @@ rune.t	.tygvar
 s1	.larg	list.t	rune.t
 	.enter	s1
 
-# §section §gs{ibio.file.name.</>}
+-- §section §gs{ibio.file.name.</>}
 
 _ibio.file.name.</>_c	.expr
 ibio.file.name.t	.tygvar
@@ -598,7 +598,7 @@ fn1			.apply	list.:	rune.t	|	_slash	fn
 			.app	_slash	fn
 			.enter	list.:	rune.t
 
-# §section §gs{ibio.file.name.compare}
+-- §section §gs{ibio.file.name.compare}
 
 _ibio.file.name.compare_c	.expr
 ibio.file.name.t	.tygvar
@@ -611,7 +611,7 @@ fn1.s	.apply	ibio.file.name.out	|	fn1
 	.app	fn0.s	fn1.s
 	.enter	string.compare
 
-# §section §gs{ibio.file.name.fmtgs}
+-- §section §gs{ibio.file.name.fmtgs}
 
 _ibio.file.name.fmtgs_c	.expr
 rune.t	.tygvar
@@ -639,7 +639,7 @@ ds	.apply	diff.list.prepend	rune.t	|	_ibio.file.name.fmtgs_prefix	s1
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
 
-# §section Random data
+-- §section Random data
 
 _slash_c	.expr
 rune.t.in	.cogvar
@@ -662,7 +662,7 @@ list.t	.tygvar
 rune.t	.tygvar
 	.tyref	list.t	rune.t
 
-# §section §gs{ibio.file.name.with}
+-- §section §gs{ibio.file.name.with}
 
 _ibio.file.name.with_f_ty	.tyexpr
 list.t	.tygvar
@@ -671,7 +671,7 @@ rune.t	.tygvar
 	.tyfun	list.t	rune.t
 	.tyref	list.t	rune.t
 
-# §section §gs{ibio.file.name.components.get}
+-- §section §gs{ibio.file.name.components.get}
 
 _ibio.file.name.components.get_worker_ty	.tyexpr
 list.t	.tygvar
@@ -703,7 +703,7 @@ string.t	.tygvar
 list.string.ty	.tylet	list.t	string.t
 	.typroduct	dirs	list.string.ty	exts	list.string.ty	root	string.t
 
-# §section §gs{ibio.file.name.extension.set}
+-- §section §gs{ibio.file.name.extension.set}
 
 _ibio.file.name.extension.set_worker_ty	.tyexpr
 list.t	.tygvar
@@ -726,7 +726,7 @@ rune.t	.tygvar
 	.tyfun	list.t	rune.t
 	.tyref	list.t	rune.t
 
-# §section §gs{ibio.file.name.</>}
+-- §section §gs{ibio.file.name.</>}
 
 _ibio.file.name.</>_worker_ty	.tyexpr
 list.t	.tygvar
