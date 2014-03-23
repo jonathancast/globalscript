@@ -539,13 +539,15 @@ _gsac.gsexpr.annotate_res.ty	.tygvar
 _gsac.gsexpr.body.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.cgs.gstype.t	.tygvar	-- Temp
+either.left	.gvar
 either.right	.gvar
 gsdl.cgs.gsexpr.body.expr	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
+			.app	err
+			.enter	either.left	string.t	_gsac.gsexpr.body.annotate_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gsexpr.annotate_res.ty
 r0.e			.lfield	expr	r0
