@@ -1763,6 +1763,7 @@ list.t.out	.cogvar
 maybe.t.out	.cogvar
 _gsac.gstype.compileToVar_gsabstype	.gvar
 _gsac.gstype.compileToApp_app	.gvar
+gsac.gstype.compileToApp	.gvar
 list.singleton	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
@@ -1770,7 +1771,7 @@ em	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.danalyze	ty0	abstype	app	var
+	.danalyze	ty0	abstype	app	pos	var
 		.default	-- Call §gs{compile} and emit the result as a type expression
 			.force	_gsac.gstype.compileToApp_default_k
 			.coerce	list.t.out	gsdl.var.t
@@ -1787,6 +1788,11 @@ tyx		.fkarg	1	gsdl.cgs.gstype.t
 tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
 			.app	pos	env	tyf	tyas	em	pem	gvs
 			.yield	_gsac.gstype.compileToApp_app
+		.case	pos
+pos1		.fkarg	0	gsdl.sourcepos.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+			.app	pos1	env	ty1	em	pem	gvs
+			.enter	gsac.gstype.compileToApp
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
