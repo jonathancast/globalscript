@@ -625,7 +625,7 @@ gsdl.cgs.typeenv.gskind.get	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.danalyze	ty0	app	var
+	.danalyze	ty0	app	pos	var
 		.default
 			.undef	either.t	string.t	_gsac.gstype.fun.annotate_res.ty
 		.case	app
@@ -634,6 +634,11 @@ tyx		.fkarg	1	gsdl.cgs.gstype.t
 			.force	_gsac.gstype.fun.annotate_app_k
 			.coerce	either.t.out	string.t	_gsac.gstype.fun.annotate_res.ty
 			.app	pos	env	tyf
+			.enter	gsac.gstype.fun.annotate
+		.case	pos
+pos1		.fkarg	0	gsdl.sourcepos.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+			.app	pos1	env	ty1
 			.enter	gsac.gstype.fun.annotate
 		.case	var
 v		.fkarg	0	gsdl.var.t
