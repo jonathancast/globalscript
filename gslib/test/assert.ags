@@ -10,7 +10,7 @@ _test.assert.fails_true_msg.prefix	.string	Test\spassed;\sshould\shave\sfailed:\
 
 	.code
 
-# §section §gs{test.assert.eq}
+-- §section §gs{test.assert.eq}
 
 _test.assert.eq_c	.expr
 test.property.t	.tygvar
@@ -38,7 +38,7 @@ eq.b	.apply	eq	|	x	y
 	.app	neq.s	eq.s	eq.b
 	.enter	test.assert
 
-# §section §gs{test.assert.fails}
+-- §section §gs{test.assert.fails}
 
 _test.assert.fails_c	.expr
 test.property.t	.tygvar
@@ -83,7 +83,7 @@ p2		.fkarg	1	test.property.t
 
 	.type
 
-# §section §gs{test.assert.eq}
+-- §section §gs{test.assert.eq}
 
 _test.assert.eq_eq_ty	.tyexpr
 bool.t	.tygvar
@@ -94,7 +94,7 @@ bool.t	.tygvar
 	.tyfun	α
 	.tyref	bool.t
 
-# §section §gs{test.assert.fails}
+-- §section §gs{test.assert.fails}
 
 _test.assert.fails_k_ty	.tyexpr
 list.t	.tygvar
