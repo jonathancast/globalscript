@@ -77,7 +77,8 @@ ki.e				.fkarg	1	gsdl.cgs.gskind.t
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
 				.case	unknown
-					.undef	either.t	string.t	record.empty
+					.app	record.empty
+					.enter	either.right	string.t	record.empty
 				.case	unlifted
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
