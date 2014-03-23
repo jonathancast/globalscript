@@ -293,6 +293,10 @@ res			.lrecord	expr	res.e	gskind	co.r.ki	gstype	tyd	|	_gsac.gsexpr.annotate_res.
 
 _gsac.gsexpr.annotate_impfor_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
@@ -306,6 +310,9 @@ gsdl.cgs.gskind.exp	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
 gsdl.cgs.gskind.unknown	.gvar
 pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+gs	.fv	list.t	gsdl.cgs.gsexpr.generator.t
+b	.fv	gsdl.cgs.gsexpr.body.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -324,6 +331,10 @@ exp.ki			.apply	gsdl.cgs.gskind.exp	|	gsdl.cgs.gskind.unlifted	gsdl.cgs.gskind.u
 
 _gsac.gsexpr.annotate_impfor_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -334,6 +345,9 @@ _gsac.gsexpr.annotate_impfor_right_right_k	.subcode
 either.t.out	.cogvar
 _gsac.gsexpr.annotate_impfor_ensure.impprim	.gvar
 pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+gs	.fv	list.t	gsdl.cgs.gsexpr.generator.t
+b	.fv	gsdl.cgs.gsexpr.body.t
 m.ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
@@ -394,12 +408,88 @@ m1		.fkarg	1	gsdl.cgs.gstype.t
 	-- > :: either.t	string.t	record.empty
 
 _gsac.gsexpr.annotate_impfor_right_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
+_gsac.gsexpr.annotate_impfor_right_right_right_z_ty	.tygvar
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_c	.subcode
+_gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_c	.subcode
+_gsac.gsexpr.annotate_impfor_right_right_right_k	.subcode
+either.t.out	.cogvar
+list.foldr	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+gs	.fv	list.t	gsdl.cgs.gsexpr.generator.t
+b	.fv	gsdl.cgs.gsexpr.body.t
 e0	.karg	either.prim.u	string.t	record.empty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+		.case	right
+r0		.fkarg	0	record.empty
+gen.annotate			.alloc	_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_c
+body.annotate			.alloc	_gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_c
+			.force	_gsac.gsexpr.annotate_impfor_right_right_right_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+			.app	gen.annotate	body.annotate	gs	env
+			.enter	list.foldr	gsdl.cgs.gsexpr.generator.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
+
+_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
+_gsac.gsexpr.annotate_impfor_right_right_right_z_ty	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar	-- Temp
+g	.larg	gsdl.cgs.gsexpr.generator.t
+k	.larg	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
+env	.larg	gsdl.cgs.typeenv.t
+	.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+
+_gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.body.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.body.annotate	.gvar
+pos	.fv	gsdl.sourcepos.t
+b	.fv	gsdl.cgs.gsexpr.body.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_k
+	.coerce	either.t.out	string.t	_gsac.gsexpr.body.annotate_res.ty
+	.app	pos	env	b
+	.enter	gsac.gsexpr.body.annotate
+
+_gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.body.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.body.annotate_res.ty
+	.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+
+_gsac.gsexpr.annotate_impfor_right_right_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_lambda_k	.forcecont
@@ -1714,6 +1804,23 @@ record.empty	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	either.t	string.t	record.empty
+
+_gsac.gsexpr.annotate_impfor_right_right_right_z_ty	.tyexpr
+gsdl.cgs.typeenv.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tyref	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tyexpr
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.u
+
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.u	.tyexpr
+	.typroduct
 
 -- §section §gs{gsac.gsexpr.body.annotate}
 
