@@ -39,6 +39,9 @@ gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	-- Temp
+_gsac.gskind.check_exp_exp_k	.subcode
+either.t.out	.cogvar
+gsac.gskind.check	.gvar
 either.right	.gvar
 record.empty	.gvar
 ki0.0	.fv	gsdl.cgs.gskind.prim.u
@@ -53,7 +56,10 @@ ki0.e		.fkarg	1	gsdl.cgs.gskind.t
 				.case	exp
 ki1.b				.fkarg	0	gsdl.cgs.gskind.t
 ki1.e				.fkarg	1	gsdl.cgs.gskind.t
-					.undef	either.t	string.t	record.empty
+					.force	_gsac.gskind.check_exp_exp_k
+					.coerce	either.t.out	string.t	record.empty
+					.app	ki0.b	ki1.b
+					.enter	gsac.gskind.check
 		.case	lifted
 			.danalyze	ki0.0	lifted
 				.default
@@ -83,6 +89,14 @@ ki.e				.fkarg	1	gsdl.cgs.gskind.t
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
 	-- > :: either.t	string.t	record.empty
+
+_gsac.gskind.check_exp_exp_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	record.empty
+					.undef	either.t	string.t	record.empty
 
 -- §section §gs{gsac.gskind.check.simple}
 
