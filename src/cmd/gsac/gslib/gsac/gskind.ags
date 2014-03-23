@@ -16,22 +16,22 @@ _gsac.gskind.check_c	.expr
 gsdl.cgs.gskind.t	.tygvar
 _gsac.gskind.check_k0	.subcode
 gsdl.cgs.gskind.t.out	.cogvar
-ky0	.larg	gsdl.cgs.gskind.t
-ky1	.larg	gsdl.cgs.gskind.t
+ki0	.larg	gsdl.cgs.gskind.t
+ki1	.larg	gsdl.cgs.gskind.t
 	.force	_gsac.gskind.check_k0
 	.coerce	gsdl.cgs.gskind.t.out
-	.enter	ky0
+	.enter	ki0
 
 _gsac.gskind.check_k0	.forcecont
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gskind.prim.u	.tygvar
 _gsac.gskind.check_k1	.subcode
 gsdl.cgs.gskind.t.out	.cogvar
-ky1	.fv	gsdl.cgs.gskind.t
-ky0.0	.karg	gsdl.cgs.gskind.prim.u
+ki1	.fv	gsdl.cgs.gskind.t
+ki0.0	.karg	gsdl.cgs.gskind.prim.u
 	.force	_gsac.gskind.check_k1
 	.coerce	gsdl.cgs.gskind.t.out
-	.enter	ky1
+	.enter	ki1
 
 _gsac.gskind.check_k1	.forcecont
 gsdl.cgs.gskind.prim.u	.tygvar
@@ -41,22 +41,22 @@ record.empty	.tygvar
 either.t	.tygvar	# Temp
 either.right	.gvar
 record.empty	.gvar
-ky0.0	.fv	gsdl.cgs.gskind.prim.u
-ky1.0	.karg	gsdl.cgs.gskind.prim.u
-	.analyze	ky1.0	exp	lifted	unknown	unlifted
+ki0.0	.fv	gsdl.cgs.gskind.prim.u
+ki1.0	.karg	gsdl.cgs.gskind.prim.u
+	.analyze	ki1.0	exp	lifted	unknown	unlifted
 		.case	exp
-ky.b		.fkarg	0	gsdl.cgs.gskind.t
-ky.e		.fkarg	1	gsdl.cgs.gskind.t
+ki0.b		.fkarg	0	gsdl.cgs.gskind.t
+ki0.e		.fkarg	1	gsdl.cgs.gskind.t
 			.undef	either.t	string.t	record.empty
 		.case	lifted
-			.danalyze	ky0.0	lifted
+			.danalyze	ki0.0	lifted
 				.default
 					.undef	either.t	string.t	record.empty
 				.case	lifted
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
 		.case	unknown
-			.analyze	ky0.0	exp	lifted	unknown	unlifted
+			.analyze	ki0.0	exp	lifted	unknown	unlifted
 				.case	exp
 ki.b				.fkarg	0	gsdl.cgs.gskind.t
 ki.e				.fkarg	1	gsdl.cgs.gskind.t
@@ -70,7 +70,7 @@ ki.e				.fkarg	1	gsdl.cgs.gskind.t
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
 		.case	unlifted
-			.danalyze	ky0.0	unlifted
+			.danalyze	ki0.0	unlifted
 				.default
 					.undef	either.t	string.t	record.empty
 				.case	unlifted
