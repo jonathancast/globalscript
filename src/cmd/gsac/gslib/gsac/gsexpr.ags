@@ -1628,6 +1628,33 @@ gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.typroduct	expr	gsdl.cgs.gsexpr.t	gskind	gsdl.cgs.gskind.t	gstype	gsdl.cgs.gstype.t
 
+-- §section §gs{gsac.gsexpr.body.annotate}
+
+_gsac.gsexpr.body.annotate_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.body.annotate_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.body.t
+	.tyref	either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
+
+_gsac.gsexpr.body.annotate_res.ty	.tyexpr
+_gsac.gsexpr.body.annotate_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gsexpr.body.annotate_res.u
+
+_gsac.gsexpr.body.annotate_res.u	.tyexpr
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.typroduct	body	gsdl.cgs.gsexpr.body.t	gstype	gsdl.cgs.gstype.t
+
 -- §section §gs{gsac.gsexpr.compile.m}
 
 gsac.gsexpr.compile.m	.tyexpr
@@ -1669,33 +1696,6 @@ diff.list.dataitem.ty	.tylet	diff.list.t	gsdl.ags.dataitem.t
 diff.list.tygvar.ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 	.typroduct	codeitems	diff.list.codeitem.ty	coercionitems	diff.list.coercionitem.ty	dataitems	diff.list.dataitem.ty	res	α	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
-
--- §section §gs{gsac.gsexpr.body.annotate}
-
-_gsac.gsexpr.body.annotate_ty	.tyexpr
-gsdl.sourcepos.t	.tygvar
-gsdl.cgs.typeenv.t	.tygvar
-gsdl.cgs.gsexpr.body.t	.tygvar
-either.t	.tygvar
-string.t	.tygvar
-_gsac.gsexpr.body.annotate_res.ty	.tygvar
-	.tylift
-	.tyfun	gsdl.sourcepos.t
-	.tylift
-	.tyfun	gsdl.cgs.typeenv.t
-	.tylift
-	.tyfun	gsdl.cgs.gsexpr.body.t
-	.tyref	either.t	string.t	_gsac.gsexpr.body.annotate_res.ty
-
-_gsac.gsexpr.body.annotate_res.ty	.tyexpr
-_gsac.gsexpr.body.annotate_res.u	.tygvar
-	.tylift
-	.tyref	_gsac.gsexpr.body.annotate_res.u
-
-_gsac.gsexpr.body.annotate_res.u	.tyexpr
-gsdl.cgs.gsexpr.body.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-	.typroduct	body	gsdl.cgs.gsexpr.body.t	gstype	gsdl.cgs.gstype.t
 
 -- §section §gs{gsac.gsexpr.compileToDataItem}
 
