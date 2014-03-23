@@ -990,8 +990,9 @@ tya1						.fkarg	0	gsdl.cgs.gstype.t
 							.enter	gsac.gstype.check
 				.case	pos
 pos1				.fkarg	0	gsdl.sourcepos.t
-ty0.1				.fkarg	1	gsdl.cgs.gstype.t
-					.undef	either.t	string.t	record.empty
+tye1				.fkarg	1	gsdl.cgs.gstype.t
+					.app	pos	env	tya0.cl	tye1
+					.enter	gsac.gstype.check
 				.case	product
 fse				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 					.danalyze	tya0	product
