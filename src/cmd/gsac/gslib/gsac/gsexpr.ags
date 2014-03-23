@@ -328,7 +328,6 @@ gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
-_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_impfor_right_right_k	.subcode
@@ -345,7 +344,7 @@ err		.fkarg	0	string.t
 r0		.fkarg	0	record.empty
 			-- Need to make sure that §gs{m} is either an impprim, or an application of such
 			.force	_gsac.gsexpr.annotate_impfor_right_right_k
-			.coerce	either.t.out	string.t	_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty
+			.coerce	either.t.out	string.t	record.empty
 			.app	pos	m.ty
 			.enter	_gsac.gsexpr.annotate_impfor_ensure.impprim
 
@@ -367,40 +366,40 @@ gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
-_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty	.tygvar
+record.empty	.tygvar
 either.t	.tygvar	-- Temp
 either.right	.gvar
+record.empty	.gvar
 _gsac.gsexpr.annotate_impfor_ensure.impprim	.gvar
 pos	.fv	gsdl.sourcepos.t
 m0	.karg	gsdl.cgs.gstype.prim.u
 	.danalyze	m0	app	impprim	pos
 		.default
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty
+			.undef	either.t	string.t	record.empty
 		.case	app
 mf		.fkarg	0	gsdl.cgs.gstype.t
 mx		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty
+			.undef	either.t	string.t	record.empty
 		.case	impprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-res			.undefined	_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty
-			.app	res
-			.enter	either.right	string.t	_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty
+			.app	record.empty
+			.enter	either.right	string.t	record.empty
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 m1		.fkarg	1	gsdl.cgs.gstype.t
 			.app	pos	m1
 			.enter	_gsac.gsexpr.annotate_impfor_ensure.impprim
-	-- > :: either.t	string.t	_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty
+	-- > :: either.t	string.t	record.empty
 
 _gsac.gsexpr.annotate_impfor_right_right_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
-_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty	.tygvar
+record.empty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
-e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty
+e0	.karg	either.prim.u	string.t	record.empty
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_lambda_k	.forcecont
@@ -1709,20 +1708,12 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
-_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty	.tygvar
+record.empty	.tygvar
 	.tylift
 	.tyfun	gsdl.sourcepos.t
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
-	.tyref	either.t	string.t	_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty
-
-_gsac.gsexpr.annotate_impfor_ensure.impprim_res.ty	.tyexpr
-_gsac.gsexpr.annotate_impfor_ensure.impprim_res.u	.tygvar
-	.tylift
-	.tyref	_gsac.gsexpr.annotate_impfor_ensure.impprim_res.u
-
-_gsac.gsexpr.annotate_impfor_ensure.impprim_res.u	.tyexpr
-	.typroduct
+	.tyref	either.t	string.t	record.empty
 
 -- §section §gs{gsac.gsexpr.body.annotate}
 
