@@ -294,9 +294,15 @@ _gsac.gsexpr.annotate_impfor_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
-either.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar
+record.empty	.tygvar
+_gsac.gsexpr.annotate_impfor_right_k	.subcode
+either.t.out	.cogvar
 either.left	.gvar
+gsac.gskind.check	.gvar
+gsdl.cgs.gskind.exp	.gvar
+gsdl.cgs.gskind.unlifted	.gvar
+gsdl.cgs.gskind.unknown	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -305,6 +311,20 @@ err		.fkarg	0	string.t
 			.enter	either.left	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 m.r0		.fkarg	0	_gsac.gstype.annotate_res.ty
+m.ki			.lfield	gskind	m.r0
+exp.ki			.apply	gsdl.cgs.gskind.exp	|	gsdl.cgs.gskind.unlifted	gsdl.cgs.gskind.unknown
+			.force	_gsac.gsexpr.annotate_impfor_right_k
+			.coerce	either.t.out	string.t	record.empty
+			.app	m.ki	exp.ki
+			.enter	gsac.gskind.check
+
+_gsac.gsexpr.annotate_impfor_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	record.empty
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_lambda_k	.forcecont
