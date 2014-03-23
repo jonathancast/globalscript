@@ -10,7 +10,7 @@ gsac.document.annotate	.closure	_gsac.document.annotate_c
 
 	.code
 
-# §section §gs{gsac.document.compile}
+-- §section §gs{gsac.document.compile}
 
 _gsac.document.compile_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
@@ -94,8 +94,8 @@ _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.ags.file.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.ags.file.t	.tygvar	-- Temp
 _gsac.document.compile_right_just_just_k	.subcode
 either.t.out	.cogvar
 ordered.set.empty	.gvar
@@ -130,7 +130,7 @@ gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 list.:	.gvar
 diff.list.tolist	.gvar
@@ -165,9 +165,9 @@ gsdl.var.t	.tygvar
 gsdl.var.component.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.ags.file.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.ags.file.t	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
 _gsac.document.compile_right_nothing_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.compileToGlobalVar	.gvar
@@ -212,9 +212,9 @@ gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
-either.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
-gsdl.ags.typeitem.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 list.nil	.gvar
 list.singleton	.gvar
@@ -244,7 +244,7 @@ res			.lrecord	codesection	cs	coercionsection	tcs	datasection	ds	filetype	gsdl.a
 			.app	res
 			.enter	either.right	string.t	gsdl.ags.file.t
 
-# §section §gs{gsac.document.annotate}
+-- §section §gs{gsac.document.annotate}
 
 _gsac.document.annotate_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
@@ -298,7 +298,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.document.annotate_just_right_k	.subcode
 maybe.t.out	.cogvar
 env	.fv	gsdl.cgs.typeenv.t
@@ -332,7 +332,7 @@ maybe.just	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 doc	.fv	gsdl.cgs.document.t
 e.r	.fv	_gsac.gsexpr.annotate_res.ty
-mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t	# Type signature in input document
+mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t	-- Type signature in input document
 pos	.lfield	pos	doc
 e.r.expr	.lfield	expr	e.r
 e.r.ty	.lfield	gstype	e.r
@@ -359,8 +359,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 record.empty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.cgs.document.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.cgs.document.t	.tygvar	-- Temp
 _gsac.document.annotate_just_right_just_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check	.gvar
@@ -391,8 +391,8 @@ gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.cgs.document.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.cgs.document.t	.tygvar	-- Temp
 _gsac.document.annotate_just_right_just_right_right_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.check	.gvar
@@ -449,7 +449,7 @@ maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.document.annotate_nothing_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.annotate	.gvar
@@ -504,7 +504,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 gsdl.sourcepos.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 maybe.nothing	.gvar
 maybe.just	.gvar
