@@ -441,6 +441,7 @@ gsdl.cgs.gstype.app	.gvar
 gsdl.cgs.gstype.substty	.gvar
 gsdl.cgs.gstype.fun	.gvar
 gsdl.cgs.gstype.lift	.gvar
+gsdl.cgs.gstype.pos	.gvar
 gsdl.cgs.gstype.sum	.gvar
 list.map	.gvar
 gsdl.cgs.gstype.constr.substty	.gvar
@@ -495,7 +496,9 @@ ty1.2			.apply	gsdl.cgs.gstype.substty	|	v	ty0	ty1.1
 		.case	pos
 pos		.fkarg	0	gsdl.sourcepos.t
 ty1.1		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	gsdl.cgs.gstype.t
+ty1.2			.apply	gsdl.cgs.gstype.substty	|	v	ty0	ty1.1
+			.app	pos	ty1.2
+			.enter	gsdl.cgs.gstype.pos
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.undef	gsdl.cgs.gstype.t
