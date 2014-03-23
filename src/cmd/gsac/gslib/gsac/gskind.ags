@@ -10,7 +10,7 @@ gsac.gskind.compile	.closure	_gsac.gskind.compile_c	_gsac.gskind.compile_ty
 
 	.code
 
-# §section §gs{gsac.gskind.check}
+-- §section §gs{gsac.gskind.check}
 
 _gsac.gskind.check_c	.expr
 gsdl.cgs.gskind.t	.tygvar
@@ -38,7 +38,7 @@ gsdl.cgs.gskind.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 record.empty	.gvar
 ki0.0	.fv	gsdl.cgs.gskind.prim.u
@@ -82,9 +82,9 @@ ki.e				.fkarg	1	gsdl.cgs.gskind.t
 				.case	unlifted
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
-	# > :: either.t	string.t	record.empty
+	-- > :: either.t	string.t	record.empty
 
-# §section §gs{gsac.gskind.check.simple}
+-- §section §gs{gsac.gskind.check.simple}
 
 _gsac.gskind.check.simple_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -102,7 +102,7 @@ gsdl.cgs.gskind.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 record.empty	.gvar
 ki0	.karg	gsdl.cgs.gskind.prim.u
@@ -119,9 +119,9 @@ kie		.fkarg	1	gsdl.cgs.gskind.t
 		.case	unlifted
 			.app	record.empty
 			.enter	either.right	string.t	record.empty
-	# > :: either.t	string.t	record.empty
+	-- > :: either.t	string.t	record.empty
 
-# §section §gs{gsac.gskind.compile}
+-- §section §gs{gsac.gskind.compile}
 
 _gsac.gskind.compile_c	.expr
 gsdl.cgs.gskind.t	.tygvar
@@ -156,11 +156,11 @@ kie.ags			.apply	gsac.gskind.compile	|	kie
 			.enter	gsdl.ags.typeitem.gskind.unknown
 		.case	unlifted
 			.enter	gsdl.ags.typeitem.gskind.unlifted
-	# > :: gsdl.ags.typeitem.gskind.t
+	-- > :: gsdl.ags.typeitem.gskind.t
 
 	.type
 
-# §section §gs{gsac.gskind.check}
+-- §section §gs{gsac.gskind.check}
 
 _gsac.gskind.check_ty	.tyexpr
 gsdl.cgs.gskind.t	.tygvar
@@ -173,7 +173,7 @@ record.empty	.tygvar
 	.tyfun	gsdl.cgs.gskind.t
 	.tyref	either.t	string.t	record.empty
 
-# §section §gs{gsac.gskind.compile}
+-- §section §gs{gsac.gskind.compile}
 
 _gsac.gskind.compile_ty	.tyexpr
 gsdl.cgs.gskind.t	.tygvar
