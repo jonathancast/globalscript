@@ -29,4 +29,5 @@ bool.t	.tyextabstype	*
 	.tyfun	bool.t
 	.tylift
 	.tyfun	bool.t
+	.line	./test-fixtures/lambda-body.cgs 3 36
 	.tyref	bool.t

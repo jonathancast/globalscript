@@ -10,4 +10,5 @@
 	.line	./test-fixtures/empty-bool-doc.cgs 3 1
 _ep_ty	.tyexpr
 bool.t	.tyextabstype	*
+	.line	./test-fixtures/empty-bool-doc.cgs 3 4
 	.tyref	bool.t

@@ -23,4 +23,5 @@ _ep_ty	.tyexpr
 bool.t	.tyextabstype	*
 	.tylift
 	.tyfun	bool.t
+	.line	./test-fixtures/lifted-lambda.cgs 3 20
 	.tyref	bool.t

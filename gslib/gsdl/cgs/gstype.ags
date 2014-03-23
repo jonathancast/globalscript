@@ -174,13 +174,31 @@ p1	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	prod.p	lift.p
 # > ) [| var v |]
 _gsdl.cgs.gstype.parser.arg_var.p_c	.expr
 rune.t	.tygvar
+parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-parser.map	.gvar
-gsdl.cgs.gstype.var	.gvar
+_gsdl.cgs.gstype.parser.arg_var.p_f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
 gsdl.cgs.syntax.var.parser	.gvar
-	.app	gsdl.cgs.gstype.var	gsdl.cgs.syntax.var.parser
-	.enter	parser.map	rune.t	gsdl.var.t	gsdl.cgs.gstype.t
+f	.alloc	_gsdl.cgs.gstype.parser.arg_var.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+	.app	f	pos.get	gsdl.cgs.syntax.var.parser
+	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.var.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.arg_var.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gstype.var	.gvar
+pos0	.larg	parser.pos.t
+v	.larg	gsdl.var.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e1	.apply	gsdl.cgs.gstype.var	|	v
+	.app	pos	e1
+	.enter	gsdl.cgs.gstype.pos
 
 # > for (
 # >     'fs ← m/"Π〈/ *> cgs.syntax.ws *> many field.parser <* cgs.syntax.rbracket;
