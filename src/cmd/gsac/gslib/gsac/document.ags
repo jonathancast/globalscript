@@ -298,16 +298,17 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar	-- Temp
 _gsac.document.annotate_just_right_k	.subcode
 maybe.t.out	.cogvar
+either.left	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 doc	.fv	gsdl.cgs.document.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.document.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.document.t
 		.case	right
 e.r		.fkarg	0	_gsac.gsexpr.annotate_res.ty
 mbty			.lfield	gstype	doc
