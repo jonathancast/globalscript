@@ -363,7 +363,7 @@ static
 long
 gsparse_data_item(struct gsparse_input_pos *pos, int is_ags, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymclosure, gssymtyapp, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymcast;
 
     struct gsparsedline *parsedline;
     int i;
@@ -390,14 +390,6 @@ gsparse_data_item(struct gsparse_input_pos *pos, int is_ags, gsparsedfile *parse
         ;
         if (numfields > 2+1+1)
             gsfatal("%s:%d: Data item %s has too many arguments; I don't know what they all are", pos->real_filename, pos->real_lineno, fields[0])
-        ;
-    } else if (gssymceq(parsedline->directive, gssymtyapp, gssymdatadirective, ".tyapp")) {
-        if (numfields < 2+0+1)
-            gsfatal("%s:%d: Missing polymorphic data label", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[0] = gsintern_string(gssymdatalable, fields[2+0]);
-        for (i = 1; numfields > 2+i; i++)
-            parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i])
         ;
     } else if (gssymceq(parsedline->directive, gssymrecord, gssymdatadirective, ".record")) {
         if (numfields % 2)
