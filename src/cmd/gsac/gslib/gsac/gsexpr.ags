@@ -1952,8 +1952,9 @@ _gsac.gsexpr.annotate_impfor_right_right_right_z_res.u	.tyexpr
 list.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 list.gen.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
-	.typroduct	body	gsdl.cgs.gsexpr.body.t	gens	list.gen.ty
+	.typroduct	body	gsdl.cgs.gsexpr.body.t	gens	list.gen.ty	res.ty	gsdl.cgs.gstype.t
 
 _gsac.gsexpr.annotate_impfor_rhsty.check_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
