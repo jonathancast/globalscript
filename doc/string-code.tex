@@ -140,11 +140,158 @@ used for functions, block statements, and thunks.
 \stringcode{<code label>} is the label of an \stringcode{.expr} or \stringcode{.impprog} item in the code section,
 containing the variable \stringcode{label}'s definition.
 
-\section{\stringcode{.tyapp}}
+\section{\stringcode{.record}}
 
-This is kind of silly.
-In fact, I doubt it's ever used.
-Find out.
+\begin{verbatim}
+label	.record	(field	value)*
+\end{verbatim}
+
+This defines a simple object-member-only structure literal;
+the value of each field is given by the object variable following the field name.
+
+\section{\stringcode{.constr}}
+
+\begin{verbatim}
+label	.constr	type	constr	(field	value)*
+\end{verbatim}
+or
+\begin{verbatim}
+label	.constr	type	constr	arg
+\end{verbatim}
+
+This defines a literal of a sum type;
+\stringcode{type} is the exact sum type the constructor should include into,
+and \stringcode{constr} is the constructor name to use.
+
+Summands in Core or String Code sum types can have one of two forms:
+\begin{itemize}
+    \item A regular boxed type, of any form.
+
+        In this case, the second form will be used for \stringcode{.constr}, with a simple variable for the tagged value.
+
+    \item An un-boxed product.
+
+        In this case, the first form will be used for \stringcode{.constr}.
+        The field name / value pairs are the same data used for a record literal, which will then be taken to be the tagged value.
+\end{itemize}
+
+\section{\stringcode{.rune}}
+
+\begin{verbatim}
+label	.rune	r
+\end{verbatim}
+
+This bind \stringcode{label} to a simple (un-boxed, un-lifted, un-cast) rune literal.
+This will have type \<"definedprim rune.prim rune\>.
+
+\section{\stringcode{.string}}
+
+\agsonly{String literals are only supported in hand-written .ags files; the string compiler never generates them.}
+
+\begin{verbatim}
+label	.string	string
+\end{verbatim}
+
+This binds \stringcode{label} to a \emph{lifted, boxed} string literal of type \<list.t rune.t\>.
+The byte-compiler will expand this definition to a chain of \<:\> constructors terminated by a \<nil\> constructor,
+with literal un-boxed runes for the elements.
+
+\section{\stringcode{.list}}
+
+\agsonly{List literals are only supported in hand-written .ags files; the string compiler never generates them.}
+
+\begin{verbatim}
+label	.list	type	elem*
+\end{verbatim}
+
+This binds \stringcode{label} to a \emph{lifted, boxed, cast} list literal of type \<list.t type\>.
+The byte-compiler will expand this definition to a chain of \<:\> constructors terminated by a \<nil\> constructor.
+
+Alternative form:\unimpl{This isn't supported yet, and may never be, as it hasn't proven necessary yet.}
+
+\begin{verbatim}
+label	.list	type	elem*	|	tail
+\end{verbatim}
+
+This binds \stringcode{label} to a `dotted list', where \<tail\> is used in place of the final \<nil\> constructor.
+
+\section{\stringcode{.regex}}
+
+\agsonly{Regex literals are only supported in hand-written .ags files; the string compiler never generates them.}
+
+\begin{verbatim}
+label	.regex	re	arg*
+\end{verbatim}
+
+This binds \stringcode{label} to a \emph{lifted, boxed, cast} regex literal of type \<regex.t rune.t\>.
+The byte-compiler will expand this definition to a tree of constructor literals;
+the character \stringcode{§} can be used to insert another data item, taken from the \stringcode{arg} list, into the generated tree.
+
+\section{\stringcode{.undefined}}
+
+\begin{verbatim}
+label	.undefined	type
+\end{verbatim}
+
+This binds \stringcode{label} to the least element of the lifted, boxed type \stringcode{type}.
+This is used to translate undefined variables at the core or source level.
+
+\section{\stringcode{.cast}}
+
+\begin{verbatim}
+label	.undefined	x	co
+\end{verbatim}
+
+This binds \stringcode{label} to the same value as \stringcode{x} (a data item),
+but with a new type obtained by coercing it through \stringcode{co} (a coercion item).
+This is useful for casting data items created by \stringcode{.constr} or \stringcode{.record} generators into abstract types,
+although it will be used more generally.
+
+\chapter{Code Items}
+
+Code items are substantially more complicated than data items.
+
+\section{\stringcode{.expr}}
+
+\begin{verbatim}
+label	.expr
+ops
+\end{verbatim}
+
+This defines a code item which represents a discrete expression, or a lambda term whose body is an expression.
+
+The contents of a \stringcode{.expr} code item will be:
+\begin{itemize}
+    \item A list of the items (global variables) this expression depends on, comprised of:
+        \begin{itemize}
+            \item A sequence of global type variable declarations (section \ref{code_type_gvar});
+            \item A sequence of sub-code declarations (section \ref{subcode});
+            \item A sequence of global coercion variable declarations (section \ref{coercion_gvar}); and
+            \item A sequence of global object variable declarations (section \ref{value_gvar}).
+        \end{itemize}
+    \item A list of the (non-global) free variables of this expression, comprised of:
+        \begin{itemize}
+            \item A sequence of free type variable declarations (section \ref{type_fv});
+            \item A sequence of type lets using the free type variables decared above (section \ref{code_type_let});
+            \item A sequence of free object variable declarations (section \ref{value_fv}), using the type variables declared above;
+        \end{itemize}
+    \item A sequence, intermixed in the appropriate order, of:
+        \begin{itemize}
+            \item Type argument declarations (section \ref{code_type_arg});
+            \item Type lets using the type arguments declared above (and other type variables in scope at this point) (section \ref{code_type_let}); and
+            \item Object argument declarations, using the type variables declared above (section \ref{value_arg}).
+        \end{itemize}
+    \item A list of local declarations within this expression,
+        intermixed in the appropriate order,\future{We plan to support recursion at this point, at which point the only restriction will be that forward references will have to be to variables with type signatures.}
+        consisting of
+        \begin{itemize}
+            \item Thunk allocations (section \ref{thunk_alloc}); and
+            \item Value allocations (section \ref{value_alloc}).
+        \end{itemize}
+    \item A list of evaluation contexts, in the appropriate order (section \ref{cont_push}).
+        And, finally,
+    \item A terminal operator (section \ref{terminal_op}).
+\end{itemize}
 
 \chapter{Types}
 
@@ -240,139 +387,10 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-
-static
-long
-gsparse_data_item(struct gsparse_input_pos *pos, int is_ags, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
-{
-
-    if (gssymceq(parsedline->directive, gssymtyapp, gssymdatadirective, "")) {
-        if (numfields < 2+0+1)
-            gsfatal("%s:%d: Missing polymorphic data label", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[0] = gsintern_string(gssymdatalable, fields[2+0]);
-        for (i = 1; numfields > 2+i; i++)
-            parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i])
-        ;
-    } else if (gssymceq(parsedline->directive, gssymrecord, gssymdatadirective, ".record")) {
-        if (numfields % 2)
-            gsfatal("%s:%d: Odd number of arguments to .record", pos->real_filename, pos->real_lineno)
-        ;
-        for (i = 0; numfields > 2 + i; i+= 2) {
-            parsedline->arguments[i] = gsintern_string(gssymfieldlable, fields[2+i]);
-            parsedline->arguments[i+1] = gsintern_string(gssymdatalable, fields[2+i+1]);
-        }
-    } else if (gssymceq(parsedline->directive, gssymconstr, gssymdatadirective, ".constr")) {
-        if (numfields < 2+1)
-            gsfatal("%s:%d: Missing sum type argument to .constr", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2+0]);
-        if (numfields < 2+2)
-            gsfatal("%s:%d: Missing constructor argument to .constr", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[1] = gsintern_string(gssymconstrlable, fields[2+1]);
-        if (numfields == 2+3) {
-            parsedline->arguments[4 - 2] = gsintern_string(gssymdatalable, fields[4]);
-        } else {
-            if ((numfields - (2+2)) % 2)
-                gsfatal("%s:%d: Odd number of arguments to .constr when field/value pairs expected", pos->real_filename, pos->real_lineno)
-            ;
-            for (i = 2; 2 + i < numfields; i += 2) {
-                parsedline->arguments[i] = gsintern_string(gssymfieldlable, fields[2+i]);
-                parsedline->arguments[i+1] = gsintern_string(gssymdatalable, fields[2+i+1]);
-            }
-        }
-    } else if (gssymceq(parsedline->directive, gssymrune, gssymdatadirective, ".rune")) {
-        if (numfields < 2+1)
-            gsfatal("%s:%d: Missing rune literal", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[0] = gsintern_string(gssymruneconstant, fields[2+0]);
-        if (numfields > 2+1)
-            gsfatal("%s:%d: Too many arguments to .rune; I know about the rune literal to use", pos->real_filename, pos->real_lineno)
-        ;
-    } else if (is_ags && gssymceq(parsedline->directive, gssymstring, gssymdatadirective, ".string")) {
-        if (numfields < 2+1)
-            gsfatal("%s:%d: Missing string literal", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[0] = gsintern_string(gssymstringconstant, fields[2+0]);
-        if (numfields >= 2+2)
-            parsedline->arguments[1] = gsintern_string(gssymdatalable, fields[2+1])
-        ;
-        if (numfields > 2+2)
-            gsfatal("%s:%d: Too many arguments to .string", pos->real_filename, pos->real_lineno)
-        ;
-    } else if (is_ags && gssymceq(parsedline->directive, gssymlist, gssymdatadirective, ".list")) {
-        if (numfields < 2+1)
-            gsfatal("%s:%d: Missing element type", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2+0]);
-        for (i = 1; 2 + i < numfields && strcmp(fields[2 + i], "|"); i++)
-            parsedline->arguments[i] = gsintern_string(gssymdatalable, fields[2+i])
-        ;
-        if (2 + i < numfields)
-            gsfatal(UNIMPL("%s:%d: Dotted .lists next"), pos->real_filename, pos->real_lineno)
-        ;
-    } else if (is_ags && gssymceq(parsedline->directive, gssymregex, gssymdatadirective, ".regex")) {
-        if (numfields < 2 + 1)
-            gsfatal("%s:%d: Missing regex", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[0] = gsintern_string(gssymregexconstant, fields[2+0]);
-        for (i = 1; 2 + i < numfields; i++)
-            parsedline->arguments[i] = gsintern_string(gssymdatalable, fields[2+i])
-        ;
-    } else if (gssymceq(parsedline->directive, gssymundefined, gssymdatadirective, ".undefined")) {
-        if (numfields < 2+1)
-            gsfatal("%s:%d: Missing type label", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2+0]);
-        if (numfields > 2+1)
-            gsfatal("%s:%d: Undefined data item %s has too many arguments; I don't know what they all are", pos->real_filename, pos->real_lineno, fields[0])
-        ;
-    } else if (gssymceq(parsedline->directive, gssymcast, gssymdatadirective, ".cast")) {
-        if (numfields < 2+1)
-            gsfatal("%s:%d: Missing target of coercion", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[0] = gsintern_string(gssymdatalable, fields[2+0]);
-        if (numfields < 2+2)
-            gsfatal("%s:%d: Missing coercion to apply", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[1] = gsintern_string(gssymcoercionlable, fields[2+1]);
-        if (numfields > 2+2)
-            gsfatal("%s:%d: Too many arguments to .cast; I know about the coercion to apply and the data item to cast", pos->real_filename, pos->real_lineno)
-        ;
-    } else {
-        gsfatal(UNIMPL("%s:%d: Unimplemented data directive %s"), pos->real_filename, pos->real_lineno, fields[1]);
-    }
-
-    return 1;
-}
-
-static long gsparse_expr_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
-static long gsparse_force_cont_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
-static long gsparse_strict_cont_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
-static long gsparse_ubcase_cont_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
-static long gsparse_api_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
-
 static
 long
 gsparse_code_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymimpprog;
-
-    struct gsparsedline *parsedline;
-
-    parsedline = gsparsed_file_addline(pos, parsedfile, numfields);
-    parsedfile->code->numitems++;
-
-    if (*fields[0])
-        parsedline->label = gsintern_string(gssymcodelable, fields[0]);
-    else
-        gsfatal("%s:%d: Missing code label", pos->real_filename, pos->real_lineno);
-
-    gssymtable_add_code_item(symtable, parsedline->label, parsedfile, parsedfile->last_seg, parsedline);
-
-    parsedline->directive = gsintern_string(gssymcodedirective, fields[1]);
-
     if (gssymceq(parsedline->directive, gssymexpr, gssymcodedirective, ".expr")) {
         if (numfields > 2)
             gsfatal("%s:%d: Too many arguments to .expr", pos->real_filename, pos->real_lineno)
@@ -435,69 +453,6 @@ static
 long
 gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
-    struct gsparsedline *parsedline;
-    long n;
-
-    if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err;
-
-    while (gsparse_code_type_gvar_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_subcode_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_coercion_gvar_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_value_gvar_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_code_type_fv_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_code_type_let_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_value_fv_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (
-        gsparse_code_type_arg_op(pos, parsedline, fields, n)
-        || gsparse_code_type_let_op(pos, parsedline, fields, n)
-        || gsparse_value_arg_op(pos, parsedline, fields, n)
-    )
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (
-        gsparse_thunk_alloc_op(pos, parsedline, fields, n)
-        || gsparse_value_alloc_op(pos, parsedline, fields, n)
-    )
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_cont_push_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
-        return 0;
-    } else {
-        gsfatal(UNIMPL("%s:%d: Unimplemented code op %s"), pos->real_filename, pos->real_lineno, fields[1]);
-    }
-
-err:
-    if (n < 0) gsfatal("%s:%d: Error in reading code line: %r", pos->real_filename, pos->real_lineno);
-    else gsfatal("%s:$: EOF in middle of reading expression", pos->real_filename);
-
-    return -1;
 }
 
 long
@@ -1004,7 +959,6 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
     return 1;
 }
 
-/* ↓ Only parse ops legal in a .impprog */
 static
 int
 gsparse_thunk_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
