@@ -35,7 +35,7 @@ gsdl.ags.coercionitem.expr.pos	.closure	_gsdl.ags.coercionitem.expr.pos_c
 
 	.code
 
-# §section §gs{gsdl.ags.coercionitem.segment.parser}
+-- §section §gs{gsdl.ags.coercionitem.segment.parser}
 
 _gsdl.ags.coercionitem.segment.parser_c	.expr
 rune.t	.tygvar
@@ -65,7 +65,7 @@ segment.p	.apply	parser.*>	rune.t	string.t	list.coercionitem.ty	|	gsdl.ags.synta
 	.app	nil.p	segment.p
 	.enter	parser.<|>	rune.t	list.coercionitem.ty
 
-# §section §gs{gsdl.ags.coercionitem.parser}
+-- §section §gs{gsdl.ags.coercionitem.parser}
 
 _gsdl.ags.coercionitem.parser_c	.expr
 rune.t	.tygvar
@@ -116,7 +116,7 @@ ds	.larg	gsdl.ags.coercionitem.decls.t
 e	.larg	gsdl.ags.coercionitem.expr.t
 	.undef	gsdl.ags.coercionitem.t
 
-# §section §gs{gsdl.ags.coercionitem.print}
+-- §section §gs{gsdl.ags.coercionitem.print}
 
 _gsdl.ags.coercionitem.print_c	.expr
 gsdl.ags.coercionitem.t	.tygvar
@@ -160,7 +160,7 @@ s1			.apply	diff.list.<>	rune.t	|	v.s	s2
 			.enter	diff.list.<>	rune.t
 	-- > :: diff.list.t	rune.t
 
-# §section §gs{gsdl.ags.coercionitem.≡}
+-- §section §gs{gsdl.ags.coercionitem.≡}
 
 _gsdl.ags.coercionitem.≡_c	.expr
 gsdl.ags.coercionitem.t	.tygvar
@@ -169,14 +169,14 @@ co0	.larg	gsdl.ags.coercionitem.t
 co1	.larg	gsdl.ags.coercionitem.t
 	.undef	bool.t
 
-# §section §gs{gsdl.ags.coercionitem.fmtgs}
+-- §section §gs{gsdl.ags.coercionitem.fmtgs}
 
 _gsdl.ags.coercionitem.fmtgs_c	.expr
 fmtgs.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
 	.undef	fmtgs.t	gsdl.ags.coercionitem.t
 
-# §section §gs{gsdl.ags.coercionitem.decls.parser}
+-- §section §gs{gsdl.ags.coercionitem.decls.parser}
 
 _gsdl.ags.coercionitem.decls.parser_c	.expr
 rune.t	.tygvar
@@ -267,7 +267,7 @@ nm	.larg	string.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
 	.undef	gsdl.ags.coercionitem.decls.tylambda.t
 
-# §section §gs{gsdl.ags.coercionitem.decls.print}
+-- §section §gs{gsdl.ags.coercionitem.decls.print}
 
 _gsdl.ags.coercionitem.decls.print_c	.expr
 gsdl.ags.coercionitem.decls.t	.tygvar
@@ -291,7 +291,7 @@ tygvs.ss	.apply	list.map	gsdl.ags.typeitem.decls.tygvar.t	diff.list.rune.ty	|	gs
 	.app	tygvs.ss
 	.enter	diff.list.concat	rune.t
 
-# §section §gs{gsdl.ags.coercionitem.expr.parser}
+-- §section §gs{gsdl.ags.coercionitem.expr.parser}
 
 _gsdl.ags.coercionitem.expr.parser_c	.expr
 rune.t	.tygvar
@@ -373,7 +373,7 @@ pos	.larg	parser.pos.t
 e	.larg	gsdl.ags.coercionitem.expr.t
 	.undef	gsdl.ags.coercionitem.expr.t
 
-# §section §gs{gsdl.ags.coercionitem.expr.print}
+-- §section §gs{gsdl.ags.coercionitem.expr.print}
 
 _gsdl.ags.coercionitem.expr.print_c	.expr
 gsdl.ags.coercionitem.expr.t	.tygvar
@@ -441,7 +441,7 @@ tya.s	.apply	gsdl.ags.syntax.var.print	|	tya
 	.app	rune.tab	tya.s
 	.enter	diff.list.:	rune.t
 
-# §section §gs{gsdl.ags.coercionitem.t} Constructors
+-- §section §gs{gsdl.ags.coercionitem.t} Constructors
 
 _gsdl.ags.coercionitem.tycoercion_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -459,7 +459,7 @@ res	.constr	gsdl.ags.coercionitem.prim.u	tycoercion	0	pos	1	v	2	ds	3	e
 	.lift
 	.yield	res
 
-# §section §gs{gsdl.ags.coercionitem.expr.t}
+-- §section §gs{gsdl.ags.coercionitem.expr.t}
 
 _gsdl.ags.coercionitem.expr.defn_c	.expr
 gsdl.var.t	.tygvar
@@ -487,7 +487,7 @@ res	.constr	gsdl.ags.coercionitem.expr.prim.u	pos	0	pos	1	e
 
 	.type
 
-# §section §gs{gsdl.ags.coercionitem.t}
+-- §section §gs{gsdl.ags.coercionitem.t}
 
 gsdl.ags.coercionitem.t	.tyabstract	*
 gsdl.ags.coercionitem.prim.u	.tygvar
@@ -505,7 +505,7 @@ gsdl.ags.coercionitem.decls.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.ags.coercionitem.decls.t	3	gsdl.ags.coercionitem.expr.t
 
-# §section §gs{gsdl.ags.coercionitem.decls.t}
+-- §section §gs{gsdl.ags.coercionitem.decls.t}
 
 gsdl.ags.coercionitem.decls.t	.tyexpr
 gsdl.ags.coercionitem.decls.prim.u	.tygvar
@@ -518,7 +518,7 @@ gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 list.tygvar.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tygvar.t
 	.typroduct	tygvars	list.tygvar.ty
 
-# §subsection §gs{gsdl.ags.coercionitem.decls.tylambda.t}
+-- §subsection §gs{gsdl.ags.coercionitem.decls.tylambda.t}
 
 gsdl.ags.coercionitem.decls.tylambda.t	.tyexpr
 gsdl.ags.coercionitem.decls.tylambda.u	.tygvar
@@ -528,7 +528,7 @@ gsdl.ags.coercionitem.decls.tylambda.u	.tygvar
 gsdl.ags.coercionitem.decls.tylambda.u	.tyexpr
 	.typroduct
 
-# §section §gs{gsdl.ags.coercionitem.expr.t}
+-- §section §gs{gsdl.ags.coercionitem.expr.t}
 
 gsdl.ags.coercionitem.expr.t	.tyabstract	*
 gsdl.ags.coercionitem.expr.prim.u	.tygvar
@@ -551,7 +551,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.ags.coercionitem.expr.t
 
-# §section §gs{gsdl.ags.coercionitem.expr.parser}
+-- §section §gs{gsdl.ags.coercionitem.expr.parser}
 
 _gsdl.ags.coercionitem.expr.parser_ty	.tyexpr
 parser.t	.tygvar
@@ -559,7 +559,7 @@ rune.t	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.ags.coercionitem.expr.t
 
-# §section §gs{gsdl.ags.coercionitem.expr.print}
+-- §section §gs{gsdl.ags.coercionitem.expr.print}
 
 _gsdl.ags.coercionitem.expr.print_ty	.tyexpr
 gsdl.ags.coercionitem.expr.t	.tygvar
