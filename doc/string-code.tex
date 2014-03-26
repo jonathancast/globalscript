@@ -293,6 +293,44 @@ The contents of a \stringcode{.expr} code item will be:
     \item A terminal operator (section \ref{terminal_op}).
 \end{itemize}
 
+\section{\stringcode{.forcecont}}
+
+\begin{verbatim}
+label	.forcecont
+\end{verbatim}
+
+This defines a code item which represents an evaluation context of the form \<\hskwd{for} \lfloor{}x_0\rfloor \propto \bullet. e1\>.
+This represents a continuation for a lifted expression, which receives the unlifted value as an argument.
+
+The contents of a \stringcode{.forcecont} code item will be:
+\begin{itemize}
+    \item A list of the items (global variables) this evaluation context depends on, comprised of:
+        \begin{itemize}
+            \item A sequence of global type variable declarations (section \ref{code_type_gvar});
+            \item A sequence of sub-code declarations (section \ref{subcode});
+            \item A sequence of global coercion variable declarations (section \ref{coercion_gvar}); and
+            \item A sequence of global object variable declarations (section \ref{value_gvar}).
+        \end{itemize}
+    \item A list of the (non-global) free variables of this evaluation context, comprised of:
+        \begin{itemize}
+            \item A sequence of free type variable declarations (section \ref{type_fv});
+            \item A sequence of type lets using the free type variables decared above (section \ref{code_type_let});
+            \item A sequence of free object variable declarations (section \ref{value_fv}), using the type variables declared above;
+        \end{itemize}
+    \item A further sequence of type lets (section \ref{code_type_let}).
+    \item A single continuation argument (section \ref{cont_arg}).
+    \item A list of local declarations within this evaluation context,
+        intermixed in the appropriate order,\future{We plan to support recursion, at which point the only restriction will be that forward references will have to be to variables with type signatures.}
+        consisting of
+        \begin{itemize}
+            \item Thunk allocations (section \ref{thunk_alloc}); and
+            \item Value allocations (section \ref{value_alloc}).
+        \end{itemize}
+    \item A list of evaluation contexts, in the appropriate order (section \ref{cont_push}).
+        And, finally,
+    \item A terminal operator (section \ref{terminal_op}).
+\end{itemize}
+
 \chapter{Types}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -391,17 +429,7 @@ static
 long
 gsparse_code_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    if (gssymceq(parsedline->directive, gssymexpr, gssymcodedirective, ".expr")) {
-        if (numfields > 2)
-            gsfatal("%s:%d: Too many arguments to .expr", pos->real_filename, pos->real_lineno)
-        ;
-        return gsparse_expr_ops(pos, parsedfile, parsedline, chan, line, fields);
-    } else if (gssymceq(parsedline->directive, gssymforcecont, gssymcodedirective, ".forcecont")) {
-        if (numfields > 2)
-            gsfatal("%s:%d: Too many arguments to .forcecont", pos->real_filename, pos->real_lineno)
-        ;
-        return gsparse_force_cont_ops(pos, parsedfile, parsedline, chan, line, fields);
-    } else if (gssymceq(parsedline->directive, gssymstrictcont, gssymcodedirective, ".strictcont")) {
+    if (gssymceq(parsedline->directive, gssymstrictcont, gssymcodedirective, ".strictcont")) {
         if (numfields > 2)
             gsfatal("%s:%d: Too many arguments to .strictcont", pos->real_filename, pos->real_lineno)
         ;
@@ -472,79 +500,6 @@ gsgrab_code_line(struct gsparse_input_pos *pos, struct uxio_ichannel *chan, gspa
 }
 
 static int gsparse_cont_arg(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
-
-static
-long
-gsparse_force_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
-{
-    struct gsparsedline *parsedline;
-    long n;
-
-    if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err;
-
-    while (gsparse_code_type_gvar_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_subcode_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_coercion_gvar_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_value_gvar_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_code_type_fv_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_code_type_let_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_value_fv_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_code_type_let_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    if (gsparse_cont_arg(pos, parsedline, fields, n)) {
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err;
-    } else {
-        gsfatal("%s:%d: Missing .karg in .forcecont", pos->real_filename, pos->real_lineno);
-    }
-
-    while (
-        gsparse_thunk_alloc_op(pos, parsedline, fields, n)
-        || gsparse_value_alloc_op(pos, parsedline, fields, n)
-    )
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    while (gsparse_cont_push_op(pos, parsedline, fields, n))
-        if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
-    ;
-
-    if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
-        return 0;
-    } else {
-        gsfatal(UNIMPL("%s:%d: Unimplemented force continuation op %s"), pos->real_filename, pos->real_lineno, fields[1]);
-    }
-
-err:
-    if (n < 0)
-        gsfatal("%s:%d: Error in reading code line: %r", pos->real_filename, pos->real_lineno);
-    else
-        gsfatal("%s:$: EOF in middle of reading expression", pos->real_filename);
-
-    return -1;
-}
 
 static
 long
