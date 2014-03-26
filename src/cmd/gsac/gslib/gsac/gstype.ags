@@ -22,6 +22,7 @@ gsac.gstype.compileToGlobalVar	.closure	_gsac.gstype.compileToGlobalVar_c	_gsac.
 gsac.gstype.compileToApp	.closure	_gsac.gstype.compileToApp_c	_gsac.gstype.compileToApp_ty
 _gsac.gstype.compileToApp_app	.closure	_gsac.gstype.compileToApp_app_c	_gsac.gstype.compileToApp_app_ty
 _gsac.gstype.compileToApp_args	.closure	_gsac.gstype.compileToApp_args_c	_gsac.gstype.compileToApp_args_ty
+gsac.gstype.compileToImpprim	.closure	_gsac.gstype.compileToImpprim_c	_gsac.gstype.compileToImpprim_ty
 gsac.gstype.compileToVar	.closure	_gsac.gstype.compileToVar_c	_gsac.gstype.compileToVar_ty
 _gsac.gstype.compileToVar_gsabstype	.closure	_gsac.gstype.compileToVar_gsabstype_c
 _gsac.gstype.compileToVar_elimprim	.closure	_gsac.gstype.compileToVar_elimprim_c	_gsac.gstype.compileToVar_elimprim_ty
@@ -2281,6 +2282,28 @@ das1	.apply	diff.list.snoc	gsdl.var.t	|	das	a0.v
 	.app	pos	env	r1	as1	das1
 	.yield	_gsac.gstype.compileToApp_args
 
+-- §section §gs{gsac.gstype.compileToImpprim}
+
+_gsac.gstype.compileToImpprim_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gstype.compileToImpprim_res.ty	.tygvar	-- Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+ty	.larg	gsdl.cgs.gstype.t
+em	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
+	.undef	either.t	string.t	_gsac.gstype.compileToImpprim_res.ty
+
 -- §section §gs{gsac.gstype.compileToVar}
 
 _gsac.gstype.compileToVar_c	.expr
@@ -3208,6 +3231,35 @@ _gsac.gstype.compileToApp_res.ty	.tygvar
 	.tyfun	list.t	gsdl.cgs.gstype.t
 	.tyfun	diff.list.t	gsdl.var.t
 	.tyref	either.t	string.t	_gsac.gstype.compileToApp_res.ty
+
+-- §section §gs{gsac.gstype.compileToImpprim}
+
+_gsac.gstype.compileToImpprim_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsac.gstype.compile.m	.tygvar
+_gsac.gstype.compileToImpprim_res_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	gsac.gstype.compile.m	_gsac.gstype.compileToImpprim_res_res.ty
+
+_gsac.gstype.compileToImpprim_res.ty	.tyexpr
+_gsac.gstype.compile.m_res.ty	.tygvar
+_gsac.gstype.compileToImpprim_res_res.ty	.tygvar
+	.tyref	_gsac.gstype.compile.m_res.ty	_gsac.gstype.compileToImpprim_res_res.ty
+
+_gsac.gstype.compileToImpprim_res_res.ty	.tyexpr
+_gsac.gstype.compileToImpprim_res_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gstype.compileToImpprim_res_res.u
+
+_gsac.gstype.compileToImpprim_res_res.u	.tyexpr
+	.typroduct
 
 -- §section §gs{gsac.gstype.compileToVar}
 
