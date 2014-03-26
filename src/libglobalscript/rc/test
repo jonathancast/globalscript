@@ -55,7 +55,7 @@ ok_grep_errors '-- incorrect kind signatures on .tyexprs --' 'tyexpr-wrong-kind-
 ok_diff_fail '-- kind signatures on .tyexprs --' ./$O.test-gsi tyexpr-kind-sig.ags
 
 ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
-ok_grep_errors '-- a let can be mis-typed --' './test-gslib/mistyped-let.ags:5: I don''t think' ./$O.test-gsi mistyped-let.ags
+ok_grep_errors '-- a let can be mis-typed --' './test-fixtures/mistyped-let.ags:5: I don''t think' ./$O.test-gsi mistyped-let.ags
 ok_diff_fail '-- let with undefined FV --' ./$O.test-gsi undef-free-var.ags
 
 ok_diff_fail '-- alloc undefined with .undefined --' ./$O.test-gsi undef-op.ags
@@ -64,15 +64,15 @@ ok_diff '-- alloc application --' ./$O.test-gsi apply-op.ags
 
 ok_diff_fail '-- lifted generators --' ./$O.test-gsi lifted-gen.ags
 
-ok_grep_errors '-- abstract types with too few lambdas in definition --' './test-gslib/mis-kinded-abs-type.ags:14: Incorrect kind: ' ./$O.test-gsi mis-kinded-abs-type.ags
+ok_grep_errors '-- abstract types with too few lambdas in definition --' './test-fixtures/mis-kinded-abs-type.ags:14: Incorrect kind: ' ./$O.test-gsi mis-kinded-abs-type.ags
 
 ok_diff_fail '-- undefined values of abstract types --' ./$O.test-gsi undef-abs-type.ags
-ok_grep_errors '-- an abstract type is different from its definition --' './test-gslib/invalid-abs-type.ags:[0-9]*: I don''t think' ./$O.test-gsi invalid-abs-type.ags
+ok_grep_errors '-- an abstract type is different from its definition --' './test-fixtures/invalid-abs-type.ags:[0-9]*: I don''t think' ./$O.test-gsi invalid-abs-type.ags
 
 ok_diff_fail '-- undefined abstract type expressions --' ./$O.test-gsi undef-abs-type-expr.ags
-ok_grep_errors '-- an abstract type is different from its definition (in expressions) --' './test-gslib/invalid-abs-type-expr.ags:13: I don''t think' ./$O.test-gsi invalid-abs-type-expr.ags
+ok_grep_errors '-- an abstract type is different from its definition (in expressions) --' './test-fixtures/invalid-abs-type-expr.ags:13: I don''t think' ./$O.test-gsi invalid-abs-type-expr.ags
 
-ok_grep_errors '-- an abstract type is different from its definition (in generators) --' './test-gslib/invalid-abs-type-gen.ags:13: I don''t think' ./$O.test-gsi invalid-abs-type-gen.ags
+ok_grep_errors '-- an abstract type is different from its definition (in generators) --' './test-fixtures/invalid-abs-type-gen.ags:13: I don''t think' ./$O.test-gsi invalid-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators --' ./$O.test-gsi undef-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators with type arguments --' ./$O.test-gsi undef-abs-type-gen-tyargs.ags
 
@@ -94,14 +94,14 @@ ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 
 ok_diff '-- non-empty records in expressions --' ./$O.test-gsi record-literal-gen.ags
-ok_grep_errors '-- empty records with non-empty signatures in expressions --' './test-gslib/record-empty-non-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi record-empty-non-empty-sig.ags
-ok_grep_errors '-- non-empty records with empty signatures in expressions --' './test-gslib/non-empty-record-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi non-empty-record-empty-sig.ags
+ok_grep_errors '-- empty records with non-empty signatures in expressions --' './test-fixtures/record-empty-non-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi record-empty-non-empty-sig.ags
+ok_grep_errors '-- non-empty records with empty signatures in expressions --' './test-fixtures/non-empty-record-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi non-empty-record-empty-sig.ags
 ok_diff '-- records with type signatures in expressions --' ./$O.test-gsi record-type-sig.ags
 ok_diff '-- records with type signatures with type arguments in expressions --' ./$O.test-gsi record-type-sig-args.ags
 
 ok_diff '-- natural number literals --' ./$O.test-gsi natural-literal.ags
-ok_grep_errors '-- natural number literals: letters --' './test-gslib/natural-literal-letter.ags:10: Invalid character ''x'' in natural number literal' ./$O.test-gsi natural-literal-letter.ags
-ok_grep_errors '-- natural number literals: negative number --' './test-gslib/natural-literal-negative.ags:10: Invalid character ''-'' in natural number literal' ./$O.test-gsi natural-literal-negative.ags
+ok_grep_errors '-- natural number literals: letters --' './test-fixtures/natural-literal-letter.ags:10: Invalid character ''x'' in natural number literal' ./$O.test-gsi natural-literal-letter.ags
+ok_grep_errors '-- natural number literals: negative number --' './test-fixtures/natural-literal-negative.ags:10: Invalid character ''-'' in natural number literal' ./$O.test-gsi natural-literal-negative.ags
 
 ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
 
@@ -127,24 +127,24 @@ ok_diff '-- analyze on sums of unboxed products --' ./$O.test-gsi analyze-adt-co
 ok_diff '-- analyze with default --' ./$O.test-gsi analyze-default.ags
 ok_diff '-- analyze with default and two constructor cases --' ./$O.test-gsi analyze-default-two-constrs.ags
 
-ok_grep_errors '-- analyze on un-boxed sum with mis-matched free type variables --' './test-gslib/ubanalyze-excess-type-variable.ags:16: Mis-matched number of free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
+ok_grep_errors '-- analyze on un-boxed sum with mis-matched free type variables --' './test-fixtures/ubanalyze-excess-type-variable.ags:16: Mis-matched number of free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
 
-ok_grep_errors '-- analyze on un-boxed sum with mis-matched number of free variables --' './test-gslib/ubanalyze-mismatched-free-variable-number.ags:17: Mis-matched number of free variables' ./$O.test-gsi ubanalyze-mismatched-free-variable-number.ags
-ok_grep_errors '-- analyze on un-boxed sum with mis-matched names of free variables --' './test-gslib/ubanalyze-mismatched-free-variable-name.ags:19: Mis-matched free variable' ./$O.test-gsi ubanalyze-mismatched-free-variable-name.ags
+ok_grep_errors '-- analyze on un-boxed sum with mis-matched number of free variables --' './test-fixtures/ubanalyze-mismatched-free-variable-number.ags:17: Mis-matched number of free variables' ./$O.test-gsi ubanalyze-mismatched-free-variable-number.ags
+ok_grep_errors '-- analyze on un-boxed sum with mis-matched names of free variables --' './test-fixtures/ubanalyze-mismatched-free-variable-name.ags:19: Mis-matched free variable' ./$O.test-gsi ubanalyze-mismatched-free-variable-name.ags
 
 ok_diff '-- analyze on un-boxed sums --' ./$O.test-gsi analyze-unboxed-free-variable.ags
 
-ok_grep_errors '-- analyze on existential types with failing occurs check --' './test-gslib/analyze-failing-occurs-check.ags:21: .exkarg-bound type variable α free in type of .case body' ./$O.test-gsi analyze-failing-occurs-check.ags
+ok_grep_errors '-- analyze on existential types with failing occurs check --' './test-fixtures/analyze-failing-occurs-check.ags:21: .exkarg-bound type variable α free in type of .case body' ./$O.test-gsi analyze-failing-occurs-check.ags
 ok_diff_fail '-- analyze on existential types --' ./$O.test-gsi analyze-existential-type.ags
 
-ok_grep_errors '-- undefined API entry points --' './test-gslib/undef-api.ags:5: undefined' ./$O.test-gsexec undef-api.ags
-ok_grep_errors '-- undefined expression API entry points --' './test-gslib/undef-expr-api.ags:11: undefined' ./$O.test-gsexec undef-expr-api.ags
-ok_grep_errors '-- block statements with mis-typed bodies --' './test-gslib/mistyped-block-api.ags:11: I don''t think' ./$O.test-gsexec mistyped-block-api.ags
-ok_grep_errors '-- undefined block statement API entry points --' './test-gslib/undef-block-api.ags:15: undefined' ./$O.test-gsexec undef-block-api.ags
-ok_grep_errors '-- block statement API entry points with mis-typed binds --' './test-gslib/mistyped-bind-api.ags:11: I don''t think' ./$O.test-gsexec mistyped-bind-api.ags
-ok_grep_errors '-- block statement API entry points with undefined binds --' './test-gslib/undef-bind-api.ags:17: undefined' ./$O.test-gsexec undef-bind-api.ags
+ok_grep_errors '-- undefined API entry points --' './test-fixtures/undef-api.ags:5: undefined' ./$O.test-gsexec undef-api.ags
+ok_grep_errors '-- undefined expression API entry points --' './test-fixtures/undef-expr-api.ags:11: undefined' ./$O.test-gsexec undef-expr-api.ags
+ok_grep_errors '-- block statements with mis-typed bodies --' './test-fixtures/mistyped-block-api.ags:11: I don''t think' ./$O.test-gsexec mistyped-block-api.ags
+ok_grep_errors '-- undefined block statement API entry points --' './test-fixtures/undef-block-api.ags:15: undefined' ./$O.test-gsexec undef-block-api.ags
+ok_grep_errors '-- block statement API entry points with mis-typed binds --' './test-fixtures/mistyped-bind-api.ags:11: I don''t think' ./$O.test-gsexec mistyped-bind-api.ags
+ok_grep_errors '-- block statement API entry points with undefined binds --' './test-fixtures/undef-bind-api.ags:17: undefined' ./$O.test-gsexec undef-bind-api.ags
 
 ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
 ok_diff '-- trivial use of alloc --' ./$O.test-gsexec simple-alloc-api.ags
 
-ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-gslib/invalid-fv.ags:13: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags
+ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-fixtures/invalid-fv.ags:13: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags

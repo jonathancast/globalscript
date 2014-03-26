@@ -85,7 +85,7 @@ fn ok_grep_errors {
     nm=$1; msg=$2; prog=$3; script=$4
     shift; shift; shift; shift
     echo $nm
-    if ($prog ./test-gslib ./test-gslib/$script $* > ./test-results/$script^-actual >[2] ./test-results/$script^-errors) {
+    if ($prog ./test-gslib ./test-fixtures/$script $* > ./test-results/$script^-actual >[2] ./test-results/$script^-errors) {
         echo $prog 'succeeded; should have failed' >[1=2]
         cat ./test-results/$script^-errors >[1=2]
         cat ./test-results/$script^-actual >[1=2]
