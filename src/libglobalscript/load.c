@@ -18,7 +18,7 @@ static struct uxio_channel *gspopen(int omode, int *ppid, char *cmd, char **argv
 #endif
 static long gsclosefile(struct uxio_ichannel *chan, int pid);
 
-static long gsac_tokenize(char *, int, char *, char **, long);
+static long gsac_tokenize(char *, int, uint, char *, char **, long);
 
 int
 gsisdir(char *filename)
@@ -215,7 +215,7 @@ gsaddfile(char *filename, struct gsfile_symtable **psymtable, struct gspos *pent
     return parsedfile->type;
 }
 
-static long gsgrabline(struct gsparse_input_pos *, struct uxio_ichannel *, char *, char **);
+static long gsgrabline(uint, struct gsparse_input_pos *, struct uxio_ichannel *, char *, char **);
 static long gsparse_data_item(struct gsparse_input_pos *, int, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
 static long gsparse_code_item(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
 static long gsparse_type_item(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
@@ -232,6 +232,8 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     char *fields[NUM_FIELDS];
     gsparsedfile *parsedfile;
     char *real_filename;
+    char *calculus_version;
+    uint features = 0;
     int pid;
     long n;
     gsfiletype type;
@@ -253,14 +255,101 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     pos.real_lineno = 0;
     pos.is_artificial = 0;
 
-    if ((n = gsgrabline(&pos, chan, line, fields)) < 0)
-        gsfatal("%s: Error in reading line: %r", filename);
-    if (n == 0) {
-        if (pos.real_lineno <= 1)
-            gsfatal("%s: EOF before reading first line", pos.real_filename);
-        else
-            gsfatal("%s:%d: EOF before reading file directive", pos.real_filename, pos.real_lineno);
+    /* The first line(s) have to be read a bit specially;
+       basically, we can't tell that we've read in a data line until we have, so the first tokenized line has to be read in, then scanned
+    */
+    pos.real_lineno++;
+    if ((n = gsbio_device_getline(chan, line, LINE_LENGTH)) < 0) gsfatal("%s: getline: %r", pos.real_filename);
+    /* ↓ The return value from §ccode{gsbio_device_getline} includes the terminating nul, so it's 1 on EOF . . . */
+    if (n == 1) gsfatal("%s: EOF before reading first line", pos.real_filename);
+    if (line[0] == '#') {
+        calculus_version = 0;
+        while (line[0] == '#' || line[0] == '\n') {
+            if (line[0] == '#') {
+                char *pragma = line + 1;
+                char *s = pragma;
+
+                while (*s && *s != ':') s++;
+                if (*s != ':') gsfatal("%s:%d: Can't find argument to pragma '%s'", pos.real_filename, pos.real_lineno, pragma);
+                *s++ = 0;
+
+                if (!strcmp("calculus", pragma)) {
+                    char *calculus;
+
+                    while(*s && isspace(*s)) s++;
+                    if (!*s) gsfatal("%s:%d: Missing calculus", pos.real_filename, pos.real_lineno);
+                    calculus = s;
+                    while (*s && !isspace(*s)) s++;
+                    if (*s) *s++ = 0;
+                    while (*s && isspace(*s)) s++;
+
+                    if (!strcmp(calculus, "gsdl.string-code")) {
+                        char *version = s;
+
+                        while (*s && !isspace(*s)) s++;
+                        if (*s != '\n') gsfatal("%s:%d: Junk after calculus version", pos.real_filename, pos.real_lineno);
+                        *s++ = 0;
+
+                        if (!strcmp(version, "0.1")) {
+                            calculus_version = "0.1";
+                            features = gsstring_code_hash_escapes;
+                        } else if (!strcmp(version, "0.2")) {
+                            calculus_version = "0.2";
+                            features = gsstring_code_hash_is_normal;
+                        } else {
+                            gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
+                        }
+                    } else {
+                        gsfatal("%s:%d: Unknown calculus '%s'", pos.real_filename, pos.real_lineno, calculus);
+                    }
+                } else {
+                    gsfatal("%s:%d: Unsupported pragma '%s'", pos.real_filename, pos.real_lineno, pragma);
+                }
+            } else if (line[0] == '\n') {
+            } else {
+                gsfatal(UNIMPL("%s:%d: Don't recognize line %s in pragmas section"), pos.real_filename, pos.real_lineno);
+            }
+            pos.real_lineno++;
+            if ((n = gsbio_device_getline(chan, line, LINE_LENGTH)) < 0) gsfatal("%s: getline: %r", pos.real_filename);
+            /* ↓ The return value from §ccode{gsbio_device_getline} includes the terminating nul, so it's 1 on EOF . . . */
+            if (n == 1) gsfatal("%s:$: EOF before .document or .prefix", pos.real_filename);
+        }
+        if (!calculus_version) gsfatal(UNIMPL("%s:%d: No #calculus pragma"), pos.real_filename, pos.real_lineno);
+    } else {
+        calculus_version = "0.0";
+        features = gsstring_code_hash_comments | gsstring_code_hash_escapes;
     }
+
+    /* TODO: This needs to be turned into a nice wrapper around gsac_tokenize */
+    if ((n = gsac_tokenize(pos.real_filename, pos.real_lineno, features, line, fields, NUM_FIELDS)) < 0)
+        gsfatal("%s:%d: Fatal error in lexer: %r", pos.real_filename, pos.real_lineno)
+    ;
+    if (n > NUM_FIELDS) gsfatal("%s:%d: Too many fields; max is %d", pos.real_filename, pos.real_lineno, NUM_FIELDS - 1);
+    if (n == 0) gsfatal("%s:%d: Whitespace in pragma section", pos.real_filename, pos.real_lineno);
+    if (n == 1) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
+    while (!strcmp(fields[1], ".line")) {
+        pos.is_artificial = 1;
+        if (n < 3) gsfatal("%s:%d: Missing source file name", pos.real_filename, pos.real_lineno);
+        pos.artificial.file = gsintern_string(gssymfilename, fields[2]);
+        if (n < 4) gsfatal("%s:%d: Missing source line #", pos.real_filename, pos.real_lineno);
+        pos.artificial.lineno = atoi(fields[3]);
+        if (n < 5) gsfatal("%s:%d: Missing source column #", pos.real_filename, pos.real_lineno);
+        pos.artificial.columnno = atoi(fields[4]);
+        if (n > 5) gsfatal("%s:%d: Too many arguments to .line", pos.real_filename, pos.real_lineno);
+
+        if ((n = gsac_tokenize(pos.real_filename, pos.real_lineno, features, line, fields, NUM_FIELDS)) < 0)
+            gsfatal("%s:%d: Fatal error in lexer: %r", pos.real_filename, pos.real_lineno)
+        ;
+        if (n > NUM_FIELDS) gsfatal("%s:%d: Too many fields; max is %d", pos.real_filename, pos.real_lineno, NUM_FIELDS - 1);
+        if (n == 0) gsfatal("%s:%d: Whitespace in pragma section", pos.real_filename, pos.real_lineno);
+        if (n == 1) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
+    }
+    if (!pos.is_artificial) {
+        pos.artificial.file = gsintern_string(gssymfilename, pos.real_filename);
+        pos.artificial.lineno = pos.real_lineno;
+        pos.artificial.columnno = 0;
+    }
+
     if (!strcmp(fields[1], ".document")) {
         if (skip_docs) {
             if (gsclosefile(chan, pid) < 0)
@@ -275,7 +364,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         gsfatal("%s:%d: Cannot understand directive '%s'", pos.real_filename, pos.real_lineno, fields[1]);
         return 0;
     }
-    if ((parsedfile = gsparsed_file_alloc(filename, relname, type)) < 0) {
+    if ((parsedfile = gsparsed_file_alloc(filename, relname, type, features)) < 0) {
         gsfatal("%s:%d: Cannot allocate input file: %r", pos.real_filename, pos.real_lineno);
     }
 
@@ -287,7 +376,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         It is always un-ambiguous whether more lines are needed;
         so when the parse function returns, we are ready to read in the next item (or section declaration).
     */
-    while ((pos.is_artificial = 0, n = gsgrabline(&pos, chan, line, fields)) > 0) {
+    while ((pos.is_artificial = 0, n = gsgrabline(features, &pos, chan, line, fields)) > 0) {
         if (n < 2) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
         if (!strcmp(fields[1], ".data")) {
             section = gsdatasection;
@@ -647,7 +736,7 @@ gsgrab_code_line(struct gsparse_input_pos *pos, struct uxio_ichannel *chan, gspa
 {
     long n;
 
-    n = gsgrabline(pos, chan, line, fields);
+    n = gsgrabline(parsedfile->features, pos, chan, line, fields);
 
     if (n <= 0) return n;
 
@@ -1430,8 +1519,6 @@ gsparse_cast_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, 
 {
     static gsinterned_string gssymlift;
 
-    int i;
-
     if (gssymceq(parsedline->directive, gssymlift, gssymcodeop, ".lift")) {
         if (*fields[0])
             gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
@@ -1623,7 +1710,6 @@ static void gsparse_default(struct gsparse_input_pos *, gsparsedfile *, struct u
 
 static void gsparse_check_label_on_terminal_op(gsparsedfile *, struct gsparsedline *, char **);
 
-static
 int
 gsparse_code_terminal_expr_op(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, struct gsparsedline *parsedline, char **fields, long n)
 {
@@ -1758,7 +1844,6 @@ gsparse_check_label_on_terminal_op(gsparsedfile *parsedfile, struct gsparsedline
 
 static int gsparse_cont_type_arg(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 
-static
 void
 gsparse_case(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, gsinterned_string constr, char *line, char **fields)
 {
@@ -1767,7 +1852,7 @@ gsparse_case(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxi
     struct gsparsedline *parsedline;
     long n;
 
-    if ((n = gsgrabline(pos, chan, line, fields)) < 0)
+    if ((n = gsgrabline(parsedfile->features, pos, chan, line, fields)) < 0)
         gsfatal("%s:%d: Error in reading API line: %r", pos->real_filename, pos->real_lineno)
     ; else if (n == 0)
         gsfatal("%s:%d: EOF when looking for .case", pos->real_filename, pos->real_lineno - 1)
@@ -1839,7 +1924,6 @@ err:
     else gsfatal("%s:$: EOF in middle of reading expression", pos->real_filename);
 }
 
-static
 void
 gsparse_default(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields)
 {
@@ -1848,7 +1932,7 @@ gsparse_default(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
     struct gsparsedline *parsedline;
     long n;
 
-    if ((n = gsgrabline(pos, chan, line, fields)) < 0)
+    if ((n = gsgrabline(parsedfile->features, pos, chan, line, fields)) < 0)
         gsfatal("%s:%d: Error in reading line: %r", pos->real_filename, pos->real_lineno)
     ; else if (n == 0)
         gsfatal("%s:%d: EOF when looking for .default", pos->real_filename, pos->real_lineno - 1)
@@ -1866,7 +1950,7 @@ gsparse_default(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
 
     if (n > 2) gsfatal("%s:%d: Too many arguments to .default", pos->real_filename, pos->real_lineno);
 
-    while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
+    while ((n = gsgrabline(parsedfile->features, pos, chan, line, fields)) > 0) {
         parsedline = gsparsed_file_addline(pos, parsedfile, n);
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
@@ -1944,7 +2028,6 @@ gsparse_field_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parse
 static long gsparse_type_ops(struct gsparse_input_pos *, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields);
 static long gsparse_coerce_ops(struct gsparse_input_pos *, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields);
 
-static
 long
 gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
@@ -2046,7 +2129,6 @@ gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
 static int gsparse_type_global_var_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_type_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 
-static
 long
 gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
@@ -2056,7 +2138,7 @@ gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
     int i;
     long n;
 
-    while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
+    while ((n = gsgrabline(parsedfile->features, pos, chan, line, fields)) > 0) {
         parsedline = gsparsed_file_addline(pos, parsedfile, n);
 
         parsedline->directive = gsintern_string(gssymtypeop, fields[1]);
@@ -2261,7 +2343,6 @@ gsparse_type_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedli
     return 1;
 }
 
-static
 long
 gsparse_coercion_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
@@ -2304,7 +2385,7 @@ gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, stru
     int i;
     long n;
 
-    while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
+    while ((n = gsgrabline(parsedfile->features, pos, chan, line, fields)) > 0) {
         parsedline = gsparsed_file_addline(pos, parsedfile, n);
 
         parsedline->directive = gsintern_string(gssymcoercionop, fields[1]);
@@ -2393,9 +2474,8 @@ gsparse_coercion_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *pars
     return 1;
 }
 
-static
 long
-gsgrabline(struct gsparse_input_pos *pos, struct uxio_ichannel *chan, char *line, char **fields)
+gsgrabline(uint features, struct gsparse_input_pos *pos, struct uxio_ichannel *chan, char *line, char **fields)
 {
     long n;
 
@@ -2410,7 +2490,7 @@ gsgrabline(struct gsparse_input_pos *pos, struct uxio_ichannel *chan, char *line
         if (n <= 1)
             return 0
         ;
-        if ((n = gsac_tokenize(pos->real_filename, pos->real_lineno, line, fields, NUM_FIELDS)) < 0)
+        if ((n = gsac_tokenize(pos->real_filename, pos->real_lineno, features, line, fields, NUM_FIELDS)) < 0)
             gsfatal("%s:%d: Fatal error in lexer: %r", pos->real_filename, pos->real_lineno)
         ;
         if (n > NUM_FIELDS)
@@ -3059,12 +3139,11 @@ gsclosefile(struct uxio_ichannel *chan, int pid)
     return gsbio_device_iclose(chan);
 }
 
-#define DISALLOW_OLD_COMMENTS 0
-#define IS_COMMENT (*p == '#' || (p[0] == '-' && p[1] && p[1] == '-' && p[2] && isspace(p[2])))
+#define IS_HASH_COMMENT (!(features & gsstring_code_hash_is_normal) && *p == '#')
+#define IS_COMMENT (IS_HASH_COMMENT || (p[0] == '-' && p[1] && p[1] == '-' && p[2] && isspace(p[2])))
 
-static
 long
-gsac_tokenize(char *file, int lineno, char *line, char **fields, long maxfields)
+gsac_tokenize(char *file, int lineno, uint features, char *line, char **fields, long maxfields)
 {
     int label_present;
     long numfields;
@@ -3089,14 +3168,16 @@ gsac_tokenize(char *file, int lineno, char *line, char **fields, long maxfields)
         ;
         if (*p && !IS_COMMENT) {
             *pfield++ = p;
-            while (*p && !isspace(*p) && *p != '#')
+            while (*p && !isspace(*p) && !IS_HASH_COMMENT)
                 p++
             ;
-            if (*p) *p++ = 0;
+            if (*p && !IS_HASH_COMMENT) *p++ = 0;
             numfields++;
         }
     }
-    if (DISALLOW_OLD_COMMENTS && *p == '#') gsfatal("%s:%d:%d: Illegal old-style # comment", file, lineno, p - line + 1);
+    if (!(features & gsstring_code_hash_comments) && IS_HASH_COMMENT)
+        gsfatal("%s:%d:%d: Illegal old-style # comment", file, lineno, p - line + 1)
+    ;
     if (*p) *p++ = 0;
     return label_present || numfields ? numfields + 1 : 0;
 }

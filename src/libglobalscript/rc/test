@@ -9,6 +9,13 @@ ok_grep_errors '-- invalid type op (declared position) --' 'invalid-type-op-decl
 touch ./test-gslib/invalid-type-op-core-source.gsac
 ok_grep_errors '-- invalid type op (core source) --' 'invalid-type-op-core-source.gsac:11: Unimplemented type op' ./$O.test-gsi invalid-type-op-core-source.cgs
 
+ok_grep_errors '-- pragma with no argument --' 'pragma-no-arg.ags:1: Can''t find argument to pragma' ./$O.test-gsi pragma-no-arg.ags
+ok_grep_errors '-- invalid pragma --' 'invalid-pragma.ags:1: Unsupported pragma' ./$O.test-gsi invalid-pragma.ags
+ok_grep_errors '-- invalid calculus --' 'invalid-calculus.ags:1: Unknown calculus' ./$O.test-gsi invalid-calculus.ags
+ok_grep_errors '-- invalid calculus version --' 'invalid-calculus-version.ags:1: Unsupported calculus version' ./$O.test-gsi invalid-calculus-version.ags
+
+# §section Version 0.0:
+
 ok_diff_fail '-- undefined entry points --' ./$O.test-gsi undef.ags
 ok_diff_fail '-- undefined empty record values --' ./$O.test-gsi undef-empty-record.ags
 ok_diff_fail '-- undefined expressions --' ./$O.test-gsi undef-expr.ags
@@ -148,3 +155,13 @@ ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
 ok_diff '-- trivial use of alloc --' ./$O.test-gsexec simple-alloc-api.ags
 
 ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-fixtures/invalid-fv.ags:13: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags
+
+echo '# Version 0.1:'
+
+ok_diff_fail '-- source-style comments --' ./$O.test-gsi undef-new-comments.ags
+ok_grep_errors '-- # is illegal --' 'illegal-hash-character.ags:7:16: Illegal old-style # comment' ./$O.test-gsi illegal-hash-character.ags
+
+echo '# Version 0.2 and up:'
+
+ok_diff_fail '-- # is a regular character --' ./$O.test-gsi undef-hash-operator.ags
+ok_grep_errors '-- \h is un-supported --' 'string-invalid-h-escape.ags:7: Unknown escape \\h' ./$O.test-gsi string-invalid-h-escape.ags

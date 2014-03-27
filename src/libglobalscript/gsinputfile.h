@@ -5,6 +5,12 @@ gsinterned_string gsglobal_gslib_dir(void);
 void gsadd_global_gslib(gsinterned_string, struct gsfile_symtable **);
 void gsadddir(char *, struct gsfile_symtable **);
 
+enum {
+    gsstring_code_hash_comments = 1,
+    gsstring_code_hash_escapes = 2,
+    gsstring_code_hash_is_normal = 4,
+};
+
 typedef enum {
     gsfileerror = -1,
     gsfileprefix = 0,
@@ -29,6 +35,7 @@ typedef struct gsparsedfile {
     ulong size;
     gsinterned_string name, relname;
     gsfiletype type;
+    uint features;
     struct gsdatasection *data;
     struct gscodesection *code;
     struct gstypesection *types;

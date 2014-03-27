@@ -11,7 +11,7 @@ static struct gs_blockdesc *gsalloc_new_parsed_file_block(void);
 /* §section Allocating a New File */
 
 gsparsedfile *
-gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
+gsparsed_file_alloc(char *filename, char *relname, gsfiletype type, uint features)
 {
     struct gs_blockdesc *parsed_file_nursury_seg;
     gsparsedfile *pres;
@@ -23,6 +23,7 @@ gsparsed_file_alloc(char *filename, char *relname, gsfiletype type)
     pres->name = gsintern_string(gssymfilename, filename);
     pres->relname = gsintern_string(gssymfilename, relname);
     pres->type = type;
+    pres->features = features;
     pres->data = 0;
     pres->code = 0;
     pres->types = 0;

@@ -79,7 +79,7 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
     }
 }
 
-static char *gsbc_parse_rune_literal(struct gspos, char *, gsvalue *);
+static char *gsbc_parse_rune_literal(struct gspos, uint, char *, gsvalue *);
 
 static gsinterned_string gssymundefined, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymclosure, gssymcast;
 
@@ -109,7 +109,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
         char *eos;
         gsvalue res;
 
-        eos = gsbc_parse_rune_literal(p->pos, p->arguments[0]->name, &res);
+        eos = gsbc_parse_rune_literal(p->pos, item.file->features, p->arguments[0]->name, &res);
         if (*eos)
             gsfatal("%P: %s: More than one rune in argument to .rune", p->pos, p->arguments[0]->name)
         ;
@@ -127,7 +127,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
         while (*eos) {
             gsvalue v;
 
-            eos = gsbc_parse_rune_literal(p->pos, eos, &v);
+            eos = gsbc_parse_rune_literal(p->pos, item.file->features, eos, &v);
             len++;
         }
         size = len * (sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue));
@@ -165,13 +165,13 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
 
                     if (*eos == ']') size += sizeof(struct gsconstr_args);
                     else while (*eos != ']') {
-                        eos = gsbc_parse_rune_literal(p->pos, eos, &v);
+                        eos = gsbc_parse_rune_literal(p->pos, item.file->features, eos, &v);
                         if (!*eos)
                             gsfatal(UNIMPL("%P: %s: Character classes"), p->pos, eos)
                         ; else if (*eos == '-') {
                             eos++;
                             if (!*eos) gsfatal(UNIMPL("%P: %s: Character classes"), p->pos, eos);
-                            eos = gsbc_parse_rune_literal(p->pos, eos, &v);
+                            eos = gsbc_parse_rune_literal(p->pos, item.file->features, eos, &v);
                             size += sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue);
                         } else {
                             size += sizeof(struct gsconstr_args) + sizeof(gsvalue);
@@ -184,7 +184,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
                     if (interp >= p->numarguments) gsfatal("%P: More interpolation locations than values", p->pos);
                     interp++;
                 } else {
-                    eos = gsbc_parse_rune_literal(p->pos, eos, &v);
+                    eos = gsbc_parse_rune_literal(p->pos, item.file->features, eos, &v);
                     size += sizeof(struct gsconstr_args) + 1 * sizeof(gsvalue);
                 }
                 if (*eos == '*') {
@@ -217,9 +217,8 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
     }
 }
 
-static
 char *
-gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
+gsbc_parse_rune_literal(struct gspos pos, uint features, char *s, gsvalue *pv)
 {
     int noctets;
 
@@ -231,7 +230,8 @@ gsbc_parse_rune_literal(struct gspos pos, char *s, gsvalue *pv)
                 *pv = ' ';
                 break;
             case 'h':
-                *pv = '#';
+                if (features & gsstring_code_hash_escapes) *pv = '#';
+                else gsfatal("%P: Unknown escape \\h", pos);
                 break;
             case 't':
                 *pv = '\t';
@@ -1001,8 +1001,8 @@ gsbc_bytecode_size_default(struct gsparsedfile_segment **ppseg, struct gsparsedl
 
 /* §section Actual Byte Compiler */
 
-static void gsbc_bytecompile_data_item(struct gsfile_symtable *, struct gsparsedline *, gsvalue *, int, int);
-static void gsbc_bytecompile_code_item(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco **, int, int);
+static void gsbc_bytecompile_data_item(struct gsfile_symtable *, uint, struct gsparsedline *, gsvalue *, int, int);
+static void gsbc_bytecompile_code_item(struct gsfile_symtable *, uint, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco **, int, int);
 
 void
 gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, gsvalue *heap, struct gsbco **bcos, int n)
@@ -1016,11 +1016,11 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
             case gssymcoercionlable:
                 break;
             case gssymdatalable:
-                gsbc_bytecompile_data_item(symtable, items[i].v, heap, i, n);
+                gsbc_bytecompile_data_item(symtable, items[i].file->features, items[i].v, heap, i, n);
                 break;
             case gssymcodelable:
                 pseg = items[i].pseg;
-                gsbc_bytecompile_code_item(symtable, &pseg, items[i].v, bcos, i, n);
+                gsbc_bytecompile_code_item(symtable, items[i].file->features, &pseg, items[i].v, bcos, i, n);
                 break;
             default:
                 gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_bytecompile_scc(type = %d)", items[i].v->pos, items[i].type);
@@ -1028,9 +1028,8 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
     }
 }
 
-static
 void
-gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline *p, gsvalue *heap, int i, int n)
+gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, struct gsparsedline *p, gsvalue *heap, int i, int n)
 {
     if (gssymceq(p->directive, gssymrecord, gssymdatadirective, ".record")) {
         struct gsrecord *record;
@@ -1103,7 +1102,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
             cons->c.type = gsconstr_args;
             cons->constrnum = 0;
             cons->numargs = 2;
-            eos = gsbc_parse_rune_literal(p->pos, eos, &cons->arguments[0]);
+            eos = gsbc_parse_rune_literal(p->pos, features, eos, &cons->arguments[0]);
             pptail = &cons->arguments[1];
 
             tail = (gsvalue)((uchar*)tail + sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue));
@@ -1305,13 +1304,13 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
                         *pclass = (gsvalue)cl;
                     } else while (*eos != ']') {
                         if (!*eos) gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
-                        eos = gsbc_parse_rune_literal(p->pos, eos, &c0);
+                        eos = gsbc_parse_rune_literal(p->pos, features, eos, &c0);
                         if (!*eos) gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
                         else if (*eos == '-') {
                             eos++;
                             if (!*eos) gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
                             else if (*eos == ']') gsfatal(UNIMPL("%P: Un-expected end of class in character class"), p->pos);
-                            eos = gsbc_parse_rune_literal(p->pos, eos, &c1);
+                            eos = gsbc_parse_rune_literal(p->pos, features, eos, &c1);
 
                             cl = (struct gsconstr_args *)pout;
                             cl->c.pos = p->pos;
@@ -1356,7 +1355,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
                 } else {
                     gsvalue c;
 
-                    eos = gsbc_parse_rune_literal(p->pos, eos, &c);
+                    eos = gsbc_parse_rune_literal(p->pos, features, eos, &c);
                     reco = (struct gsconstr_args *)pout;
                     reco->c.pos = p->pos;
                     reco->c.type = gsconstr_args;
@@ -1428,31 +1427,30 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, struct gsparsedline
     }
 }
 
-static void gsbc_byte_compile_code_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco *);
+static void gsbc_byte_compile_code_ops(struct gsfile_symtable *, uint, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco *);
 static void gsbc_byte_compile_api_ops(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, struct gsbco *);
 
-static
 void
-gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco **bcos, int i, int n)
+gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, uint features, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco **bcos, int i, int n)
 {
     static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymimpprog;
 
     if (gssymceq(p->directive, gssymexpr, gssymcodedirective, ".expr")) {
         bcos[i]->tag = gsbc_expr;
         bcos[i]->pos = p->pos;
-        gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
+        gsbc_byte_compile_code_ops(symtable, features, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else if (gssymceq(p->directive, gssymforcecont, gssymcodedirective, ".forcecont")) {
         bcos[i]->tag = gsbc_forcecont;
         bcos[i]->pos = p->pos;
-        gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
+        gsbc_byte_compile_code_ops(symtable, features, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else if (gssymceq(p->directive, gssymstrictcont, gssymcodedirective, ".strictcont")) {
         bcos[i]->tag = gsbc_strictcont;
         bcos[i]->pos = p->pos;
-        gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
+        gsbc_byte_compile_code_ops(symtable, features, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else if (gssymceq(p->directive, gssymubcasecont, gssymcodedirective, ".ubcasecont")) {
         bcos[i]->tag = gsbc_ubcasecont;
         bcos[i]->pos = p->pos;
-        gsbc_byte_compile_code_ops(symtable, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
+        gsbc_byte_compile_code_ops(symtable, features, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else if (gssymceq(p->directive, gssymimpprog, gssymcodedirective, ".impprog")) {
         bcos[i]->tag = gsbc_impprog;
         bcos[i]->pos = p->pos;
@@ -1495,7 +1493,7 @@ static int gsbc_byte_compile_type_arg_code_op(struct gsparsedline *, struct gsbc
 static int gsbc_byte_compile_type_let_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_subcode_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_coercion_gvar_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
-static int gsbc_byte_compile_data_gvar_code_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
+static int gsbc_byte_compile_data_gvar_code_op(struct gsfile_symtable *, uint, struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_data_fv_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_arg_code_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
 static int gsbc_byte_compile_alloc_op(struct gsparsedline *, struct gsbc_byte_compile_code_or_api_op_closure *);
@@ -1511,9 +1509,8 @@ static int gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **, st
         pcode->instr = op; \
     } while (0)
 
-static
 void
-gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco *pbco)
+gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, uint features, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, struct gsbco *pbco)
 {
     struct gsbc_byte_compile_code_or_api_op_closure cl;
 
@@ -1523,7 +1520,7 @@ gsbc_byte_compile_code_ops(struct gsfile_symtable *symtable, struct gsparsedfile
     while (gsbc_byte_compile_type_gvar_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_coercion_gvar_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_byte_compile_data_gvar_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_byte_compile_data_gvar_code_op(symtable, features, p, &cl)) p = gsinput_next_line(ppseg, p);
 
     /* §paragraph{Free Variables} */
     while (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
@@ -1737,7 +1734,7 @@ gsbc_byte_compile_coercion_gvar_code_op(struct gsparsedline *p, struct gsbc_byte
 static gsvalue gsbc_parse_natural_literal(struct gspos, char *);
 
 int
-gsbc_byte_compile_data_gvar_code_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
+gsbc_byte_compile_data_gvar_code_op(struct gsfile_symtable *symtable, uint features, struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
     if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
         gsvalue *pglobal;
@@ -1760,7 +1757,7 @@ gsbc_byte_compile_data_gvar_code_op(struct gsfile_symtable *symtable, struct gsp
         pcl->regs[pcl->nregs] = p->label;
 
         pglobal = (gsvalue *)pcl->pout;
-        eos = gsbc_parse_rune_literal(p->pos, p->arguments[0]->name, pglobal);
+        eos = gsbc_parse_rune_literal(p->pos, features, p->arguments[0]->name, pglobal);
         if (*eos)
             gsfatal("%P: %y: More than one rune in argument to .rune", p->pos, p->arguments[0])
         ;
@@ -2262,9 +2259,6 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
 int
 gsbc_byte_compile_cast_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    struct gsbc *pcode;
-    int i;
-
     if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
         /* no effect on representation */
     } else {

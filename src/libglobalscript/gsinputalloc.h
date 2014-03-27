@@ -5,7 +5,7 @@ struct gsparse_input_pos {
     struct gspos artificial;
 };
 
-gsparsedfile *gsparsed_file_alloc(char *filename, char *relname, gsfiletype type);
+gsparsedfile *gsparsed_file_alloc(char *filename, char *relname, gsfiletype type, uint features);
 
 /* Allocate data from a file; leave file->last_seg pointing at the segment containing the allocated data. */
 void *gsparsed_file_extend(gsparsedfile *, ulong);
