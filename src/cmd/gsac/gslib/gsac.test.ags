@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -19,7 +21,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{source.file.name fn<foo.gsac>}
+-- §section §gs{source.file.name fn<foo.gsac>}
 
 _test.source.file.name_c	.expr
 ibio.file.name.t	.tygvar

@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -10,7 +12,7 @@ _gsac	.string	gsac
 
 	.code
 
-# §section §gs{gsac.source.file.name}
+-- §section §gs{gsac.source.file.name}
 
 _gsac.source.file.name_c	.expr
 ibio.file.name.t	.tygvar
@@ -20,7 +22,7 @@ fn	.larg	ibio.file.name.t
 	.app	_cgs	fn
 	.enter	ibio.file.name.extension.set
 
-# §section §gs{gsac.target.file.name}
+-- §section §gs{gsac.target.file.name}
 
 _gsac.target.file.name_c	.expr
 ibio.file.name.t	.tygvar

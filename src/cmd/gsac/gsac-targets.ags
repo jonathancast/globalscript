@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -92,9 +94,9 @@ _ibio.prim.file.read.open_res.ty	.tygvar
 ibio.dir.t	.tygvar
 string.t	.tygvar
 ibio.prim.iport	.tygvar
-ibio.prim.t	.tygvar	# Temp
+ibio.prim.t	.tygvar	-- Temp
 ibio.prim.unit	.gvar
-res.ty	.tylet	ibio.prim.iport	ibio.dir.t	# Temp
+res.ty	.tylet	ibio.prim.iport	ibio.dir.t	-- Temp
 eid	.efv	_ibio.prim.file.read.open_res.ty	ibio.dir.t
 	.analyze	eid	0	1
 		.case	0
