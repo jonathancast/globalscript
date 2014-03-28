@@ -536,6 +536,7 @@ gsdl.cgs.gsexpr.t	.tygvar	-- Temp
 gsdl.cgs.gskind.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gsexpr.impfor	.gvar
+gsdl.cgs.gstype.app	.gvar
 m.ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 	.analyze	e0	left	right
@@ -546,9 +547,10 @@ err		.fkarg	0	string.t
 r0		.fkarg	0	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 r0.gs			.lfield	gens	r0
 r0.b			.lfield	body	r0
+r0.res.ty			.lfield	res.ty	r0
 e			.apply	gsdl.cgs.gsexpr.impfor	|	m.ty	r0.gs	r0.b
 ki			.undefined	gsdl.cgs.gskind.t
-ty			.undefined	gsdl.cgs.gstype.t
+ty			.apply	gsdl.cgs.gstype.app	|	m.ty	r0.res.ty
 res			.lrecord	expr	e	gskind	ki	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
