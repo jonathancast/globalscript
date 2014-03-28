@@ -3,6 +3,7 @@
 	.data
 
 gsdl.ags.file.print	.closure	_gsdl.ags.file.print_c
+_gsdl.ags.file.print_calculus.s	.string	\hcalculus:\sgsdl.string-code\s0.2\n\n
 
 _gsdl.ags.file.print_filetype	.closure	_gsdl.ags.file.print_filetype_c
 _gsdl.ags.file.print_filetype_doc.s	.string	\t.document\n
@@ -66,10 +67,14 @@ file	.larg	gsdl.ags.file.t
 
 _gsdl.ags.file.print_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_gsdl.ags.file.print_calculus.s	.gvar
 _gsdl.ags.file.print_filetype	.gvar
 file0	.karg	gsdl.ags.file.prim.u
-	.app	file0
-	.yield	_gsdl.ags.file.print_filetype
+file0.s	.apply	_gsdl.ags.file.print_filetype	|	file0
+	.app	_gsdl.ags.file.print_calculus.s	file0.s
+	.enter	list.<>	rune.t
 
 # §subsection §gs{_gsdl.ags.file.print_filetype}
 
