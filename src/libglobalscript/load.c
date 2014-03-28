@@ -215,6 +215,7 @@ gsaddfile(char *filename, struct gsfile_symtable **psymtable, struct gspos *pent
     return parsedfile->type;
 }
 
+static void gsparse_pragma(struct gsparse_input_pos, char *, char **, uint *);
 static long gsgrabline(uint, struct gsparse_input_pos *, struct uxio_ichannel *, char *, char **);
 static long gsparse_data_item(struct gsparse_input_pos *, int, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
 static long gsparse_code_item(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
@@ -233,7 +234,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     gsparsedfile *parsedfile;
     char *real_filename;
     char *calculus_version;
-    uint features = 0;
+    uint features;
     int pid;
     long n;
     gsfiletype type;
@@ -264,47 +265,10 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     if (n == 1) gsfatal("%s: EOF before reading first line", pos.real_filename);
     if (line[0] == '#') {
         calculus_version = 0;
+        features = 0;
         while (line[0] == '#' || line[0] == '\n') {
             if (line[0] == '#') {
-                char *pragma = line + 1;
-                char *s = pragma;
-
-                while (*s && *s != ':') s++;
-                if (*s != ':') gsfatal("%s:%d: Can't find argument to pragma '%s'", pos.real_filename, pos.real_lineno, pragma);
-                *s++ = 0;
-
-                if (!strcmp("calculus", pragma)) {
-                    char *calculus;
-
-                    while(*s && isspace(*s)) s++;
-                    if (!*s) gsfatal("%s:%d: Missing calculus", pos.real_filename, pos.real_lineno);
-                    calculus = s;
-                    while (*s && !isspace(*s)) s++;
-                    if (*s) *s++ = 0;
-                    while (*s && isspace(*s)) s++;
-
-                    if (!strcmp(calculus, "gsdl.string-code")) {
-                        char *version = s;
-
-                        while (*s && !isspace(*s)) s++;
-                        if (*s != '\n') gsfatal("%s:%d: Junk after calculus version", pos.real_filename, pos.real_lineno);
-                        *s++ = 0;
-
-                        if (!strcmp(version, "0.1")) {
-                            calculus_version = "0.1";
-                            features = gsstring_code_hash_escapes;
-                        } else if (!strcmp(version, "0.2")) {
-                            calculus_version = "0.2";
-                            features = gsstring_code_hash_is_normal;
-                        } else {
-                            gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
-                        }
-                    } else {
-                        gsfatal("%s:%d: Unknown calculus '%s'", pos.real_filename, pos.real_lineno, calculus);
-                    }
-                } else {
-                    gsfatal("%s:%d: Unsupported pragma '%s'", pos.real_filename, pos.real_lineno, pragma);
-                }
+                gsparse_pragma(pos, line, &calculus_version, &features);
             } else if (line[0] == '\n') {
             } else {
                 gsfatal(UNIMPL("%s:%d: Don't recognize line %s in pragmas section"), pos.real_filename, pos.real_lineno);
@@ -446,6 +410,50 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     ;
 
     return parsedfile;
+}
+
+void
+gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_version, uint *pfeatures)
+{
+    char *pragma = line + 1;
+    char *s = pragma;
+
+    while (*s && *s != ':') s++;
+    if (*s != ':') gsfatal("%s:%d: Can't find argument to pragma '%s'", pos.real_filename, pos.real_lineno, pragma);
+    *s++ = 0;
+
+    if (!strcmp("calculus", pragma)) {
+        char *calculus;
+
+        while(*s && isspace(*s)) s++;
+        if (!*s) gsfatal("%s:%d: Missing calculus", pos.real_filename, pos.real_lineno);
+        calculus = s;
+        while (*s && !isspace(*s)) s++;
+        if (*s) *s++ = 0;
+        while (*s && isspace(*s)) s++;
+
+        if (!strcmp(calculus, "gsdl.string-code")) {
+            char *version = s;
+
+            while (*s && !isspace(*s)) s++;
+            if (*s != '\n') gsfatal("%s:%d: Junk after calculus version", pos.real_filename, pos.real_lineno);
+            *s++ = 0;
+
+            if (!strcmp(version, "0.1")) {
+                *pcalculus_version = "0.1";
+                *pfeatures = gsstring_code_hash_escapes;
+            } else if (!strcmp(version, "0.2")) {
+                *pcalculus_version = "0.2";
+                *pfeatures = gsstring_code_hash_is_normal;
+            } else {
+                gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
+            }
+        } else {
+            gsfatal("%s:%d: Unknown calculus '%s'", pos.real_filename, pos.real_lineno, calculus);
+        }
+    } else {
+        gsfatal("%s:%d: Unsupported pragma '%s'", pos.real_filename, pos.real_lineno, pragma);
+    }
 }
 
 static
