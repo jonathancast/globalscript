@@ -284,35 +284,12 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         features = gsstring_code_hash_comments | gsstring_code_hash_escapes;
     }
 
-    /* TODO: This needs to be turned into a nice wrapper around gsac_tokenize */
     if ((n = gsac_tokenize(pos.real_filename, pos.real_lineno, features, line, fields, NUM_FIELDS)) < 0)
         gsfatal("%s:%d: Fatal error in lexer: %r", pos.real_filename, pos.real_lineno)
     ;
     if (n > NUM_FIELDS) gsfatal("%s:%d: Too many fields; max is %d", pos.real_filename, pos.real_lineno, NUM_FIELDS - 1);
     if (n == 0) gsfatal("%s:%d: Whitespace in pragma section", pos.real_filename, pos.real_lineno);
     if (n == 1) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
-    while (!strcmp(fields[1], ".line")) {
-        pos.is_artificial = 1;
-        if (n < 3) gsfatal("%s:%d: Missing source file name", pos.real_filename, pos.real_lineno);
-        pos.artificial.file = gsintern_string(gssymfilename, fields[2]);
-        if (n < 4) gsfatal("%s:%d: Missing source line #", pos.real_filename, pos.real_lineno);
-        pos.artificial.lineno = atoi(fields[3]);
-        if (n < 5) gsfatal("%s:%d: Missing source column #", pos.real_filename, pos.real_lineno);
-        pos.artificial.columnno = atoi(fields[4]);
-        if (n > 5) gsfatal("%s:%d: Too many arguments to .line", pos.real_filename, pos.real_lineno);
-
-        if ((n = gsac_tokenize(pos.real_filename, pos.real_lineno, features, line, fields, NUM_FIELDS)) < 0)
-            gsfatal("%s:%d: Fatal error in lexer: %r", pos.real_filename, pos.real_lineno)
-        ;
-        if (n > NUM_FIELDS) gsfatal("%s:%d: Too many fields; max is %d", pos.real_filename, pos.real_lineno, NUM_FIELDS - 1);
-        if (n == 0) gsfatal("%s:%d: Whitespace in pragma section", pos.real_filename, pos.real_lineno);
-        if (n == 1) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
-    }
-    if (!pos.is_artificial) {
-        pos.artificial.file = gsintern_string(gssymfilename, pos.real_filename);
-        pos.artificial.lineno = pos.real_lineno;
-        pos.artificial.columnno = 0;
-    }
 
     if (!strcmp(fields[1], ".document")) {
         if (skip_docs) {
