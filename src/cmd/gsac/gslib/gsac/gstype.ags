@@ -2295,15 +2295,24 @@ gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gstype.compileToImpprim_res.ty	.tygvar	-- Temp
+_gsac.gstype.compileToImpprim_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 ty	.larg	gsdl.cgs.gstype.t
 em	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
+	.force	_gsac.gstype.compileToImpprim_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsac.gstype.compileToImpprim_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gstype.compileToImpprim_res.ty	.tygvar	-- Temp
+ty0	.karg	gsdl.cgs.gstype.prim.u
 	.undef	either.t	string.t	_gsac.gstype.compileToImpprim_res.ty
 
 -- §section §gs{gsac.gstype.compileToVar}
