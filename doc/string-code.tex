@@ -369,6 +369,22 @@ The contents of a \stringcode{.strictcont} code item will be:
     \item A terminal operator (section \ref{terminal_op}).
 \end{itemize}
 
+\section{Thunk (closure) allocations}
+\label{thunk_alloc}
+
+These are actually just the allocations that are supported in both expressions and in imperative block statements.
+
+\subsection{\stringcode{.alloc}}
+
+\begin{verbatim}
+label	.alloc	<code label>
+\end{verbatim}
+
+\stringcode{<code label>} should be either an \stringcode{.expr} or a \stringcode{.impprog} code item;
+this construct binds \stringcode{label} to the expression defined by \stringcode{<code label>}.
+
+Legally, the label can be omitted with a warning (since allocation operations are side-effect-free).
+
 \chapter{Types}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -503,7 +519,6 @@ static int gsparse_coercion_gvar_op(struct gsparse_input_pos *, struct gsparsedl
 static int gsparse_value_gvar_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_value_fv_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_value_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
-static int gsparse_thunk_alloc_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_value_alloc_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_cont_push_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_code_terminal_expr_op(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, struct gsparsedline *, char **, long);
@@ -874,33 +889,6 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
         return 0;
     }
 
-    return 1;
-}
-
-static
-int
-gsparse_thunk_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymalloc;
-
-
-    if (gssymceq(parsedline->directive, gssymalloc, gssymcodeop, ".alloc")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0])
-        ; else {
-            gswarning("%s:%d: Missing label on .alloc makes it a no-op", pos->real_filename, pos->real_lineno);
-            parsedline->label = 0;
-        }
-        if (n < 3)
-            gsfatal("%s:%d: Missing subexpression on .alloc", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-        if (n > 3)
-            gsfatal("%s:%d: Too many arguments to .alloc", pos->real_filename, pos->real_lineno)
-        ;
-    } else {
-        return 0;
-    }
     return 1;
 }
 
