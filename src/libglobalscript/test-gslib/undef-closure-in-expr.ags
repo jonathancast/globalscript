@@ -1,0 +1,18 @@
+#calculus: gsdl.string-code 0.3
+
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+_ep_x_c	.subcode
+x	.closure	_ep_x_c
+	.enter	x
+
+_ep_x_c	.expr
+rune.t	.tygvar
+	.undef	rune.t

@@ -862,11 +862,11 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
     }
 }
 
-static struct gsbc_code_item_type *gsbc_typecheck_code_expr(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
-static struct gsbc_code_item_type *gsbc_typecheck_force_cont(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
-static struct gsbc_code_item_type *gsbc_typecheck_strict_cont(struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *);
-static struct gsbc_code_item_type *gsbc_typecheck_ubcase_cont(struct gsfile_symtable *, struct gspos, struct gsparsedfile_segment **, struct gsparsedline *);
-static struct gsbc_code_item_type *gsbc_typecheck_api_expr(struct gspos, struct gsfile_symtable *, struct gsparsedfile_segment **, struct gsparsedline *, gsinterned_string, gsinterned_string);
+static struct gsbc_code_item_type *gsbc_typecheck_code_expr(struct gsfile_symtable *, uint, struct gsparsedfile_segment **, struct gsparsedline *);
+static struct gsbc_code_item_type *gsbc_typecheck_force_cont(struct gsfile_symtable *, uint, struct gsparsedfile_segment **, struct gsparsedline *);
+static struct gsbc_code_item_type *gsbc_typecheck_strict_cont(struct gsfile_symtable *, uint, struct gsparsedfile_segment **, struct gsparsedline *);
+static struct gsbc_code_item_type *gsbc_typecheck_ubcase_cont(struct gsfile_symtable *, uint, struct gspos, struct gsparsedfile_segment **, struct gsparsedline *);
+static struct gsbc_code_item_type *gsbc_typecheck_api_expr(struct gspos, struct gsfile_symtable *, uint, struct gsparsedfile_segment **, struct gsparsedline *, gsinterned_string, gsinterned_string);
 
 static
 void
@@ -883,22 +883,22 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
     if (gssymceq(pcode->directive, gssymexpr, gssymcodedirective, ".expr")) {
         struct gsbc_code_item_type *type;
 
-        type = gsbc_typecheck_code_expr(symtable, &pseg, gsinput_next_line(&pseg, pcode));
+        type = gsbc_typecheck_code_expr(symtable, items[i].file->features, &pseg, gsinput_next_line(&pseg, pcode));
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else if (gssymceq(pcode->directive, gssymforcecont, gssymcodedirective, ".forcecont")) {
         struct gsbc_code_item_type *type;
 
-        type = gsbc_typecheck_force_cont(symtable, &pseg, gsinput_next_line(&pseg, pcode));
+        type = gsbc_typecheck_force_cont(symtable, items[i].file->features, &pseg, gsinput_next_line(&pseg, pcode));
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else if (gssymceq(pcode->directive, gssymstrictcont, gssymcodedirective, ".strictcont")) {
         struct gsbc_code_item_type *type;
 
-        type = gsbc_typecheck_strict_cont(symtable, &pseg, gsinput_next_line(&pseg, pcode));
+        type = gsbc_typecheck_strict_cont(symtable, items[i].file->features, &pseg, gsinput_next_line(&pseg, pcode));
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else if (gssymceq(pcode->directive, gssymubcasecont, gssymcodedirective, ".ubcasecont")) {
         struct gsbc_code_item_type *type;
 
-        type = gsbc_typecheck_ubcase_cont(symtable, pcode->pos, &pseg, gsinput_next_line(&pseg, pcode));
+        type = gsbc_typecheck_ubcase_cont(symtable, items[i].file->features, pcode->pos, &pseg, gsinput_next_line(&pseg, pcode));
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else if (gssymceq(pcode->directive, gssymimpprog, gssymcodedirective, ".impprog")) {
         struct gsbc_code_item_type *type;
@@ -909,7 +909,7 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
         if (pcode->numarguments < 2)
             gsfatal("%P: Not enough arguments to .impprog; missing imp monad name", pcode->pos)
         ;
-        type = gsbc_typecheck_api_expr(pcode->pos, symtable, &pseg, gsinput_next_line(&pseg, pcode), pcode->arguments[0], pcode->arguments[1]);
+        type = gsbc_typecheck_api_expr(pcode->pos, symtable, items[i].file->features, &pseg, gsinput_next_line(&pseg, pcode), pcode->arguments[0], pcode->arguments[1]);
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else {
         gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_type_check_code_item(%s)", pcode->pos, pcode->directive->name);
@@ -928,6 +928,8 @@ static struct gs_sys_global_block_suballoc_info gsbc_code_type_info = {
 };
 
 struct gsbc_typecheck_code_or_api_expr_closure {
+    uint features;
+
     int nregs;
     gsinterned_string regs[MAX_NUM_REGISTERS];
 
@@ -973,7 +975,7 @@ struct gsbc_typecheck_code_or_api_expr_closure {
     struct gstype *argtypes[MAX_NUM_REGISTERS];
 };
 
-static void gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *);
+static void gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *, uint);
 
 static int gsbc_typecheck_code_type_gvar_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
 static int gsbc_typecheck_code_type_fv_op(struct gsfile_symtable *, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl);
@@ -1000,15 +1002,14 @@ static void gsbc_typecheck_free_variables(struct gsbc_typecheck_code_or_api_expr
 
 static struct gsbc_code_item_type *gsbc_typecheck_compile_code_item_type(int, struct gstype *, struct gstype *, struct gsbc_typecheck_code_or_api_expr_closure *);
 
-static
 struct gsbc_code_item_type *
-gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
+gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, uint features, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
     struct gstype *calculated_type;
 
-    gsbc_setup_code_expr_closure(&cl);
+    gsbc_setup_code_expr_closure(&cl, features);
 
     /* §paragraph{Globals} */
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
@@ -1059,16 +1060,15 @@ gsbc_typecheck_code_expr(struct gsfile_symtable *symtable, struct gsparsedfile_s
 
 static int gsbc_typecheck_cont_arg_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *, struct gstype **);
 
-static
 struct gsbc_code_item_type *
-gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
+gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, uint features, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
     struct gstype *cont_arg_type;
     struct gstype *calculated_type;
 
-    gsbc_setup_code_expr_closure(&cl);
+    gsbc_setup_code_expr_closure(&cl, features);
     cont_arg_type = 0;
 
     /* §paragraph{Globals} */
@@ -1113,16 +1113,15 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, struct gsparsedfile_
     return gsbc_typecheck_compile_code_item_type(gsbc_code_item_force_cont, cont_arg_type, calculated_type, &cl);
 }
 
-static
 struct gsbc_code_item_type *
-gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
+gsbc_typecheck_strict_cont(struct gsfile_symtable *symtable, uint features, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
     struct gstype *cont_arg_type;
     struct gstype *calculated_type;
 
-    gsbc_setup_code_expr_closure(&cl);
+    gsbc_setup_code_expr_closure(&cl, features);
     cont_arg_type = 0;
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
@@ -1202,9 +1201,8 @@ struct gsbc_typecheck_field_cont_closure {
 
 static int gsbc_typecheck_field_cont_arg_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *, struct gsbc_typecheck_field_cont_closure *);
 
-static
 struct gsbc_code_item_type *
-gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_pos, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
+gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, uint features, struct gspos case_pos, struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
     struct gsbc_typecheck_code_or_api_expr_closure cl;
 
@@ -1215,7 +1213,7 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
 
     struct gstype *calculated_type;
 
-    gsbc_setup_code_expr_closure(&cl);
+    gsbc_setup_code_expr_closure(&cl, features);
     cont_arg_type = 0;
     fcl.nfields = 0;
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
@@ -1253,11 +1251,11 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, struct gspos case_p
     return gsbc_typecheck_compile_code_item_type(gsbc_code_item_ubcase_cont, cont_arg_type, calculated_type, &cl);
 }
 
-static
 void
-gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+gsbc_setup_code_expr_closure(struct gsbc_typecheck_code_or_api_expr_closure *pcl, uint features)
 {
     pcl->nregs = pcl->ntyfvs = pcl->nfvs = pcl->stacksize = pcl->ntyargs = pcl->nargs = pcl->ncodes = 0;
+    pcl->features = features;
 }
 
 int
@@ -2176,15 +2174,18 @@ static struct gstype *gsbc_find_field_in_product(struct gspos, struct gstype_pro
         ; \
     } while (0)
 
-static
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymalloc, gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
+    static gsinterned_string gssymclosure, gssymalloc, gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
 
     int i;
 
-    if (gssymceq(p->directive, gssymalloc, gssymcodeop, ".alloc")) {
+    if (
+        pcl->features & gsstring_code_closure_not_alloc
+            ? gssymceq(p->directive, gssymclosure, gssymcodeop, ".closure")
+            : gssymceq(p->directive, gssymalloc, gssymcodeop, ".alloc")
+    ) {
         int creg = 0;
         struct gsbc_code_item_type *cty;
         struct gstype *alloc_type;
@@ -2860,9 +2861,8 @@ static int gsbc_typecheck_bind_op(struct gsfile_symtable *, struct gsparsedline 
 
 static void gsbc_check_api_free_variable_decls(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int *);
 
-static
 struct gsbc_code_item_type *
-gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
+gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, uint features, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
 {
     static gsinterned_string gssymbody;
 
@@ -2871,7 +2871,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, stru
 
     struct gstype *calculated_type;
 
-    gsbc_setup_code_expr_closure(&cl);
+    gsbc_setup_code_expr_closure(&cl, features);
     gsbc_setup_code_impprog_closure(&impcl, primsetname, prim);
 
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);

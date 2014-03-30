@@ -424,10 +424,11 @@ The contents of a \stringcode{.ubcasecont} code item will be:
 
 These are actually just the allocations that are supported in both expressions and in imperative block statements.
 
-\subsection{\stringcode{.alloc}}
+\subsection{\stringcode{.closure}}
+\new{0.3}{this construct was called \stringcode{.alloc}.}
 
 \begin{verbatim}
-label	.alloc	<code label>
+label	.closure	<code label>
 \end{verbatim}
 
 \stringcode{<code label>} should be either an \stringcode{.expr} or a \stringcode{.impprog} code item;

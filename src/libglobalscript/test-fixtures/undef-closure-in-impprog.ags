@@ -1,0 +1,42 @@
+#calculus: gsdl.string-code 0.3
+
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.impprog	test.sequence	m
+_ep_x_c	.subcode
+_ep_body_c	.subcode
+x	.closure	_ep_x_c
+	.body	_ep_body_c
+
+_ep_x_c	.expr
+rune.t	.tygvar
+	.undef	rune.t
+
+_ep_body_c	.expr
+rune.t	.tygvar
+_ep_body_k	.subcode
+rune.t.out	.cogvar
+x	.fv	rune.t
+	.force	_ep_body_k
+	.coerce	rune.t.out
+	.enter	x
+
+_ep_body_k	.forcecont
+rune.prim.rune	.tygvar
+_ep_body_res.ty	.tygvar
+r0	.karg	rune.prim.rune
+	.undef	_ep_body_res.ty
+
+	.type
+
+_ep_body_res.ty	.tyexpr
+sequence.m	.tygvar
+record.empty	.tygvar
+	.tylift
+	.tyref	sequence.m	record.empty

@@ -422,6 +422,9 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
             } else if (!strcmp(version, "0.2")) {
                 *pcalculus_version = "0.2";
                 *pfeatures = gsstring_code_hash_is_normal;
+            } else if (!strcmp(version, "0.3")) {
+                *pcalculus_version = "0.3";
+                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc;
             } else {
                 gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
             }
@@ -637,7 +640,7 @@ static int gsparse_coercion_gvar_op(struct gsparse_input_pos *, struct gsparsedl
 static int gsparse_value_gvar_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_value_fv_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_value_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
-static int gsparse_thunk_alloc_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
+static int gsparse_thunk_alloc_op(uint, struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_value_alloc_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_cast_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 static int gsparse_cont_push_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
@@ -690,7 +693,7 @@ gsparse_expr_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
     ;
 
     while (
-        gsparse_thunk_alloc_op(pos, parsedline, fields, n)
+        gsparse_thunk_alloc_op(parsedfile->features, pos, parsedline, fields, n)
         || gsparse_value_alloc_op(pos, parsedline, fields, n)
     )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
@@ -782,7 +785,7 @@ gsparse_force_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, 
     }
 
     while (
-        gsparse_thunk_alloc_op(pos, parsedline, fields, n)
+        gsparse_thunk_alloc_op(parsedfile->features, pos, parsedline, fields, n)
         || gsparse_value_alloc_op(pos, parsedline, fields, n)
     )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
@@ -925,7 +928,7 @@ gsparse_ubcase_cont_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile,
     }
 
     while (
-        gsparse_thunk_alloc_op(pos, parsedline, fields, n)
+        gsparse_thunk_alloc_op(parsedfile->features, pos, parsedline, fields, n)
         || gsparse_value_alloc_op(pos, parsedline, fields, n)
     )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
@@ -1257,26 +1260,28 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
 }
 
 /* ↓ Only parse ops legal in a .impprog */
-static
 int
-gsparse_thunk_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
+gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymalloc;
+    static gsinterned_string gssymclosure, gssymalloc;
 
-
-    if (gssymceq(parsedline->directive, gssymalloc, gssymcodeop, ".alloc")) {
+    if (
+        (features & gsstring_code_closure_not_alloc)
+            ?gssymceq(parsedline->directive, gssymclosure, gssymcodeop, ".closure")
+            : gssymceq(parsedline->directive, gssymalloc, gssymcodeop, ".alloc")
+    ) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymdatalable, fields[0])
         ; else {
-            gswarning("%s:%d: Missing label on .alloc makes it a no-op", pos->real_filename, pos->real_lineno);
+            gswarning("%s:%d: Missing label on %y makes it a no-op", pos->real_filename, pos->real_lineno, parsedline->directive);
             parsedline->label = 0;
         }
         if (n < 3)
-            gsfatal("%s:%d: Missing subexpression on .alloc", pos->real_filename, pos->real_lineno)
+            gsfatal("%s:%d: Missing subexpression on %y", pos->real_filename, pos->real_lineno, parsedline->directive)
         ;
         parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
         if (n > 3)
-            gsfatal("%s:%d: Too many arguments to .alloc", pos->real_filename, pos->real_lineno)
+            gsfatal("%s:%d: Too many arguments to %y", pos->real_filename, pos->real_lineno, parsedline->directive)
         ;
     } else {
         return 0;
@@ -1623,7 +1628,7 @@ gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
     ;
 
     while (
-        gsparse_thunk_alloc_op(pos, parsedline, fields, n)
+        gsparse_thunk_alloc_op(parsedfile->features, pos, parsedline, fields, n)
         || gsparse_bind_op(pos, parsedline, fields, n)
     )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
@@ -1885,7 +1890,7 @@ gsparse_case(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxi
     }
 
     while (
-        gsparse_thunk_alloc_op(pos, parsedline, fields, n)
+        gsparse_thunk_alloc_op(parsedfile->features, pos, parsedline, fields, n)
         || gsparse_value_alloc_op(pos, parsedline, fields, n)
     )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
@@ -1940,7 +1945,7 @@ gsparse_default(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
 
         parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
 
-        if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
+        if (gsparse_thunk_alloc_op(parsedfile->features, pos, parsedline, fields, n)) {
         } else if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
         } else if (
             gsparse_cast_op(pos, parsedline, fields, n)

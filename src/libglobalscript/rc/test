@@ -165,3 +165,10 @@ echo '# Version 0.2 and up:'
 
 ok_diff_fail '-- # is a regular character --' ./$O.test-gsi undef-hash-operator.ags
 ok_grep_errors '-- \h is un-supported --' 'string-invalid-h-escape.ags:7: Unknown escape \\h' ./$O.test-gsi string-invalid-h-escape.ags
+
+echo '# Version 0.3 and up:'
+
+ok_diff_fail '-- .closure can be used for closures --' ./$O.test-gsi undef-closure-in-expr.ags
+ok_grep_errors '-- .closure can be used for closures in .impprogs --' 'undef-closure-in-impprog.ags:19: undefined' ./$O.test-gsexec undef-closure-in-impprog.ags
+ok_grep_errors '-- .alloc cannot be used in expressions --' 'illegal-alloc-in-expr.ags:13: Unimplemented code op .alloc' ./$O.test-gsi illegal-alloc-in-expr.ags
+ok_grep_errors '-- .alloc cannot be used in .impprogs --' 'illegal-alloc-in-impprog.ags:14: Unimplemented imp op .alloc' ./$O.test-gsexec illegal-alloc-in-impprog.ags

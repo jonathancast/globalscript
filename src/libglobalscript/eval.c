@@ -644,8 +644,8 @@ gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase
             case gsbc_op_efv:
                 pin = ACE_EFV_SKIP(ip);
                 break;
-            case gsbc_op_alloc:
-                pin = ACE_ALLOC_SKIP(ip);
+            case gsbc_op_closure:
+                pin = ACE_CLOSURE_SKIP(ip);
                 break;
             case gsbc_op_prim:
                 pin = ACE_PRIM_SKIP(ip);

@@ -8,7 +8,7 @@ struct gsbc {
 
 enum {
     gsbc_op_efv,
-    gsbc_op_alloc,
+    gsbc_op_closure,
     gsbc_op_unknown_prim,
     gsbc_op_prim,
     gsbc_op_constr,
@@ -46,11 +46,11 @@ enum {
 #define ACE_EFV_REGNUM(ip) ((ip)->args[0])
 #define ACE_EFV_SKIP(ip) GS_NEXT_BYTECODE(ip, 1)
 
-#define ACE_ALLOC_SIZE(nfvs) GS_SIZE_BYTECODE(2 + (nfvs))
-#define ACE_ALLOC_CODE(ip) ((ip)->args[0])
-#define ACE_ALLOC_NUMFVS(ip) ((ip)->args[1])
-#define ACE_ALLOC_FV(ip, n) ((ip)->args[2+(n)])
-#define ACE_ALLOC_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_ALLOC_NUMFVS(ip))
+#define ACE_CLOSURE_SIZE(nfvs) GS_SIZE_BYTECODE(2 + (nfvs))
+#define ACE_CLOSURE_CODE(ip) ((ip)->args[0])
+#define ACE_CLOSURE_NUMFVS(ip) ((ip)->args[1])
+#define ACE_CLOSURE_FV(ip, n) ((ip)->args[2+(n)])
+#define ACE_CLOSURE_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_CLOSURE_NUMFVS(ip))
 
 #define ACE_UNKNOWN_PRIM_SIZE() (0)
 #define ACE_UNKNOWN_PRIM_SKIP(ip) GS_NEXT_BYTECODE((ip), 0)

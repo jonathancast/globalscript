@@ -584,7 +584,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
     for (;;) {
         pinstr = (struct gsbc *)pin;
         switch (pinstr->instr) {
-            case gsbc_op_alloc: {
+            case gsbc_op_closure: {
                 struct gsbco *subexpr;
                 struct gsclosure *cl;
 
@@ -593,22 +593,22 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                     return;
                 }
 
-                subexpr = subexprs[ACE_ALLOC_CODE(pinstr)];
+                subexpr = subexprs[ACE_CLOSURE_CODE(pinstr)];
 
-                cl = gsreserveheap(sizeof(*cl) + ACE_ALLOC_NUMFVS(pinstr) * sizeof(gsvalue));
+                cl = gsreserveheap(sizeof(*cl) + ACE_CLOSURE_NUMFVS(pinstr) * sizeof(gsvalue));
 
                 memset(&cl->hp.lock, 0, sizeof(cl->hp.lock));
                 cl->hp.pos = pinstr->pos;
                 cl->hp.type = gsclosure;
                 cl->cl.code = subexpr;
-                cl->cl.numfvs = ACE_ALLOC_NUMFVS(pinstr);
-                for (i = 0; i < ACE_ALLOC_NUMFVS(pinstr); i++)
-                    cl->cl.fvs[i] = regs[ACE_ALLOC_FV(pinstr, i)]
+                cl->cl.numfvs = ACE_CLOSURE_NUMFVS(pinstr);
+                for (i = 0; i < ACE_CLOSURE_NUMFVS(pinstr); i++)
+                    cl->cl.fvs[i] = regs[ACE_CLOSURE_FV(pinstr, i)]
                 ;
                 regs[nregs] = (gsvalue)cl;
                 nregs++;
 
-                pin = ACE_ALLOC_SKIP(pinstr);
+                pin = ACE_CLOSURE_SKIP(pinstr);
                 continue;
             }
             case gsbc_op_bind: {
