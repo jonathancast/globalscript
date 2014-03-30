@@ -1921,7 +1921,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
 
         pcode->pos = p->pos;
         pcode->instr = gsbc_op_alloc;
-        pcode->args[0] = (uchar)creg;
+        ACE_ALLOC_CODE(pcode) = (uchar)creg;
 
         /* §paragraph{Calculate type of the bound variable} */
         for (i = 1; i < p->numarguments; i++) {
