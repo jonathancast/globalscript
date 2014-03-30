@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -170,7 +172,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{file.boundvars}
+-- §section §gs{file.boundvars}
 
 _test_file.boundvars_c	.expr
 test.property.label	.gvar
@@ -181,7 +183,7 @@ test	.apply	test.all	|	_tests_file.boundvars
 	.app	_test_file.boundvars_label	test
 	.enter	test.property.label
 
-# §subsection §gs{boundvars} of empty prefix
+-- §subsection §gs{boundvars} of empty prefix
 
 _test_file.boundvars_empty_c	.expr
 _fixtures_set.symbol.t	.tygvar
@@ -211,7 +213,7 @@ test	.apply	test.assert.eq	_fixtures_set.symbol.t	|	_fixtures_set.symbol.≡	_fi
 	.app	_test_file.boundvars_empty_label	test
 	.enter	test.property.label
 
-# §subsection §gs{boundvars} of §gs{tyabstract}
+-- §subsection §gs{boundvars} of §gs{tyabstract}
 
 _test_file.boundvars_gsabstype_c	.expr
 _fixtures_set.symbol.t	.tygvar
@@ -263,7 +265,7 @@ test	.apply	test.assert.eq	_fixtures_set.symbol.t	|	_fixtures_set.symbol.≡	_fi
 	.app	_test_file.boundvars_gsabstype_label	test
 	.enter	test.property.label
 
-# §section §gs{file.interface.freevars}
+-- §section §gs{file.interface.freevars}
 
 _test_file.interface.freevars_c	.expr
 test.property.label	.gvar
@@ -274,7 +276,7 @@ test	.apply	test.all	|	_tests_file.interface.freevars
 	.app	_test_file.interface.freevars_label	test
 	.enter	test.property.label
 
-# §subsection §gs{file.interface.freevars empty}
+-- §subsection §gs{file.interface.freevars empty}
 
 _test_file.interface.freevars_empty_c	.expr
 _fixtures_set.symbol.t	.tygvar
@@ -304,7 +306,7 @@ test	.apply	test.assert.eq	_fixtures_set.symbol.t	|	_fixtures_set.symbol.≡	_fi
 	.app	_test_file.interface.freevars_empty_label	test
 	.enter	test.property.label
 
-# §subsection §gs{file.interface.freevars gsabstype}
+-- §subsection §gs{file.interface.freevars gsabstype}
 
 _test_file.interface.freevars_gsabstype_c	.expr
 _fixtures_set.symbol.t	.tygvar
@@ -318,9 +320,9 @@ gsdl.cgs.symbol.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
-gsdl.sourcepos.t	.tygvar	# Temp
-gsdl.ags.typeitem.gskind.t	.tygvar	# Temp
-gsdl.ags.typeitem.expr.t	.tygvar	# Temp
+gsdl.sourcepos.t	.tygvar	-- Temp
+gsdl.ags.typeitem.gskind.t	.tygvar	-- Temp
+gsdl.ags.typeitem.expr.t	.tygvar	-- Temp
 test.property.label	.gvar
 _test_file.interface.freevars_gsabstype_label	.gvar
 test.assert.eq	.gvar
@@ -365,7 +367,7 @@ test	.apply	test.assert.eq	_fixtures_set.symbol.t	|	_fixtures_set.symbol.≡	_fi
 	.app	_test_file.interface.freevars_gsabstype_label	test
 	.enter	test.property.label
 
-# §section §gs{items empty}
+-- §section §gs{items empty}
 
 _test_items_empty_c	.expr
 list.t	.tygvar
@@ -389,7 +391,7 @@ test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	e
 	.app	_test_items_empty_label	test
 	.enter	test.property.label
 
-# §section §gs{items $ gstypefnitem.gsabstype.insert $ empty}
+-- §section §gs{items $ gstypefnitem.gsabstype.insert $ empty}
 
 _test_items_gsabstype.nm_c	.expr
 list.t	.tygvar
@@ -431,7 +433,7 @@ test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	e
 	.app	_test_items_gsabstype.nm_label	test
 	.enter	test.property.label
 
-# §section §gs{items $ gstypeconstitem.gsabstype.insert $ empty}
+-- §section §gs{items $ gstypeconstitem.gsabstype.insert $ empty}
 
 _test_items_gsabstype.defn_c	.expr
 list.t	.tygvar
@@ -486,7 +488,7 @@ test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	e
 	.app	_test_items_gsabstype.defn_label	test
 	.enter	test.property.label
 
-# §section §gs{item.≡}
+-- §section §gs{item.≡}
 
 _test_item_c	.expr
 test.all	.gvar
@@ -494,7 +496,7 @@ _tests_item	.gvar
 	.app	_tests_item
 	.enter	test.all
 
-# §subsection §gs{item.gsabstype nm ki ≡ item.gsabstype nm ki}
+-- §subsection §gs{item.gsabstype nm ki ≡ item.gsabstype nm ki}
 
 _test_item_eq_x.x_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -521,7 +523,7 @@ test	.apply	test.assert	|	_test_item_eq_x.x_false	_test_item_eq_x.x_true	eq
 	.app	_test_item_eq_x.x_label	test
 	.enter	test.property.label
 
-# §subsection §gs{item.gsabstype x ki ≡ item.gsabstype y ki}
+-- §subsection §gs{item.gsabstype x ki ≡ item.gsabstype y ki}
 
 _test_item_eq_diff.nm_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -553,7 +555,7 @@ test	.apply	test.deny	|	_test_item_eq_diff.nm_false	_test_item_eq_diff.nm_true	e
 	.app	_test_item_eq_diff.nm_label	test
 	.enter	test.property.label
 
-# §subsection §gs{item.gsabstype nm lifted ≡ item.gsabstype nm unlifted}
+-- §subsection §gs{item.gsabstype nm lifted ≡ item.gsabstype nm unlifted}
 
 _test_item_eq_diff.kind_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -582,7 +584,7 @@ test	.apply	test.deny	|	_test_item_eq_diff.kind_false	_test_item_eq_diff.kind_tr
 	.app	_test_item_eq_diff.kind_label	test
 	.enter	test.property.label
 
-# §section §gs{item.name}
+-- §section §gs{item.name}
 
 _test_item.name_c	.expr
 test.property.label	.gvar
@@ -593,7 +595,7 @@ test	.apply	test.all	|	_tests_item.name
 	.app	_test_item.name_label	test
 	.enter	test.property.label
 
-# §subsection §gs{item.name (gsabstypenm _ _ _)}
+-- §subsection §gs{item.name (gsabstypenm _ _ _)}
 
 _tests_item.name_gsabstypenm_c	.expr
 gsdl.cgs.symbol.t	.tygvar
@@ -626,7 +628,7 @@ test	.apply	test.assert.eq	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.≡	gsdl.cgs.symb
 	.app	_tests_item.name_gsabstypenm_label	test
 	.enter	test.property.label
 
-# §section §gs{item.deps} Tests
+-- §section §gs{item.deps} Tests
 
 _test_item.deps_c	.expr
 test.property.label	.gvar
@@ -637,7 +639,7 @@ test	.apply	test.all	|	_tests_item.deps
 	.app	_test_item.deps_label	test
 	.enter	test.property.label
 
-# §subsection §gs{item.tygvar.deps sthing}
+-- §subsection §gs{item.tygvar.deps sthing}
 
 _test_item.deps_defn.tygvar_c	.expr
 gsdl.cgs.symbol.t	.tygvar
@@ -664,7 +666,7 @@ test	.apply	test.assert.eq	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.≡	gsdl.cgs.symb
 	.app	_test_item.deps_defn.tygvar_label	test
 	.enter	test.property.label
 
-# §section §gs{prefix.add.file} Tests
+-- §section §gs{prefix.add.file} Tests
 
 _test_file.add_c	.expr
 test.property.label	.gvar
@@ -675,7 +677,7 @@ test	.apply	test.all	|	_tests_file.add
 	.app	_test_file.add_label	test
 	.enter	test.property.label
 
-# §subsection §gs{prefix.add.file} ignores documents
+-- §subsection §gs{prefix.add.file} ignores documents
 
 _test_file.add_gsdocument_c	.expr
 list.t	.tygvar
@@ -712,7 +714,7 @@ test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	e
 	.app	_test_file.add_gsdocument_label	test
 	.enter	test.property.label
 
-# §subsection §gs{prefix.add.file gsabstype}
+-- §subsection §gs{prefix.add.file gsabstype}
 
 _test_file.add_gsabstype_c	.expr
 list.t	.tygvar
@@ -787,7 +789,7 @@ test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	e
 	.app	_test_file.add_gsabstype_label	test
 	.enter	test.property.label
 
-# §subsection §gs{file.add} can return an definedprim
+-- §subsection §gs{file.add} can return an definedprim
 
 _test_file.add_definedprim_c	.expr
 list.t	.tygvar
@@ -798,7 +800,7 @@ gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.file.t	.tygvar
-gsdl.sourcepos.t	.tygvar	# Temp
+gsdl.sourcepos.t	.tygvar	-- Temp
 test.property.label	.gvar
 _test_file.add_definedprim_label	.gvar
 test.assert.eq	.gvar
@@ -852,7 +854,7 @@ test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	e
 	.app	_test_file.add_definedprim_label	test
 	.enter	test.property.label
 
-# §subsection §gs{file.add} can return an elimprim
+-- §subsection §gs{file.add} can return an elimprim
 
 _test_file.add_elimprim_c	.expr
 list.t	.tygvar
@@ -863,7 +865,7 @@ gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.file.t	.tygvar
-gsdl.sourcepos.t	.tygvar	# Temp
+gsdl.sourcepos.t	.tygvar	-- Temp
 test.property.label	.gvar
 _test_file.add_elimprim_label	.gvar
 test.assert.eq	.gvar
@@ -917,7 +919,7 @@ test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	e
 	.app	_test_file.add_elimprim_label	test
 	.enter	test.property.label
 
-# §subsection §gs{file.add} can return an impprim
+-- §subsection §gs{file.add} can return an impprim
 
 _test_file.add_impprim_c	.expr
 list.t	.tygvar
@@ -928,7 +930,7 @@ gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.file.t	.tygvar
-gsdl.sourcepos.t	.tygvar	# Temp
+gsdl.sourcepos.t	.tygvar	-- Temp
 test.property.label	.gvar
 _test_file.add_impprim_label	.gvar
 test.assert.eq	.gvar
@@ -982,7 +984,7 @@ test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	e
 	.app	_test_file.add_impprim_label	test
 	.enter	test.property.label
 
-# §section §gs{prefix.typecheck}
+-- §section §gs{prefix.typecheck}
 
 _test.typecheck_c	.expr
 test.property.label	.gvar
@@ -993,7 +995,7 @@ test	.apply	test.all	|	_tests.typecheck
 	.app	_test.typecheck_label	test
 	.enter	test.property.label
 
-# §subsection §gs{prefix.typecheck} can return the kind of an abstract type
+-- §subsection §gs{prefix.typecheck} can return the kind of an abstract type
 
 _test.typecheck_gsabstype.kind_c	.expr
 _test.typecheck_gsabstype.kind_test_c	.subcode
@@ -1074,7 +1076,7 @@ ki		.fkarg	0	gsdl.cgs.gskind.t
 			.app	_test.typecheck_gsabstype.kind_test_right_nothing_failed.s
 			.enter	test.property.false
 
-# §subsection §gs{prefix.typecheck} can return the definition of an abstract type
+-- §subsection §gs{prefix.typecheck} can return the definition of an abstract type
 
 _test.typecheck_gsabstype.defn_c	.expr
 _test.typecheck_gsabstype.defn_test_c	.subcode
@@ -1132,7 +1134,7 @@ string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
-test.property.t	.tygvar	# Temp
+test.property.t	.tygvar	-- Temp
 _test.typecheck_gsabstype.defn_test_right_k	.subcode
 maybe.t.out	.cogvar
 test.property.false	.gvar
@@ -1157,7 +1159,7 @@ env		.fkarg	0	gsdl.cgs.typeenv.t
 _test.typecheck_gsabstype.defn_test_right_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
-test.property.t	.tygvar	# Temp
+test.property.t	.tygvar	-- Temp
 test.true	.gvar
 test.property.false	.gvar
 _test.typecheck_gsabstype.defn_test_right_nothing_failed.s	.gvar
@@ -1170,7 +1172,7 @@ defn		.fkarg	0	gsdl.cgs.typeenv.typedefinition.t
 			.app	_test.typecheck_gsabstype.defn_test_right_nothing_failed.s
 			.enter	test.property.false
 
-# §subsection §gs{prefix.typecheck} can use §ags{.tylambda}s in §ags{.tyabstype}s
+-- §subsection §gs{prefix.typecheck} can use §ags{.tylambda}s in §ags{.tyabstype}s
 
 _test.typecheck_gsabstype.tylambda.defn_c	.expr
 _test.typecheck_gsabstype.tylambda.defn_test_c	.subcode
@@ -1231,7 +1233,7 @@ string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
-test.property.t	.tygvar	# Temp
+test.property.t	.tygvar	-- Temp
 _test.typecheck_gsabstype.tylambda.defn_test_right_k	.subcode
 maybe.t.out	.cogvar
 test.property.false	.gvar
@@ -1256,7 +1258,7 @@ env		.fkarg	0	gsdl.cgs.typeenv.t
 _test.typecheck_gsabstype.tylambda.defn_test_right_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
-test.property.t	.tygvar	# Temp
+test.property.t	.tygvar	-- Temp
 test.true	.gvar
 test.property.false	.gvar
 _test.typecheck_gsabstype.tylambda.defn_test_right_nothing_failed.s	.gvar
@@ -1269,7 +1271,7 @@ defn		.fkarg	0	gsdl.cgs.typeenv.typedefinition.t
 			.app	_test.typecheck_gsabstype.tylambda.defn_test_right_nothing_failed.s
 			.enter	test.property.false
 
-# §subsection §gs{prefix.typecheck} can return elimprim expansions
+-- §subsection §gs{prefix.typecheck} can return elimprim expansions
 
 _test.typecheck_elimprim_c	.expr
 _test.typecheck_elimprim_test_c	.subcode
@@ -1284,7 +1286,7 @@ gsdl.var.component.t	.tygvar
 
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-gsdl.sourcepos.t	.tygvar	# Temp
+gsdl.sourcepos.t	.tygvar	-- Temp
 _test.typecheck_elimprim_test_k	.subcode
 either.t.out	.cogvar
 gsac.prefix.typecheck	.gvar
@@ -1320,7 +1322,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
-test.property.t	.tygvar	# Temp
+test.property.t	.tygvar	-- Temp
 _test.typecheck_elimprim_test_right_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.typeenv.typeexpansion.get	.gvar
@@ -1340,7 +1342,7 @@ env		.fkarg	0	gsdl.cgs.typeenv.t
 _test.typecheck_elimprim_test_right_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
-test.property.t	.tygvar	# Temp
+test.property.t	.tygvar	-- Temp
 test.true	.gvar
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
 	.analyze	mb0	just	nothing
@@ -1350,7 +1352,7 @@ exp		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
 		.case	nothing
 			.undef	test.property.t
 
-# §section §gs{gstype.upconvert}
+-- §section §gs{gstype.upconvert}
 
 _test.upconvert_c	.expr
 test.property.label	.gvar
@@ -1361,7 +1363,7 @@ test	.apply	test.all	|	_tests.upconvert
 	.app	_test.upconvert_label	test
 	.enter	test.property.label
 
-# §subsection §gs{gstype.upconvert (product _)}
+-- §subsection §gs{gstype.upconvert (product _)}
 
 _test.upconvert_product_c	.expr
 _test.upconvert_product_test_c	.subcode
@@ -1375,7 +1377,7 @@ _test.upconvert_product_test_c	.expr
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
-gsdl.sourcepos.t	.tygvar	# Temp
+gsdl.sourcepos.t	.tygvar	-- Temp
 _test.upconvert_product_test_k	.subcode
 either.t.out	.cogvar
 gsac.prefix.gstype.upconvert	.gvar
@@ -1395,7 +1397,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
-test.property.t	.tygvar	# Temp
+test.property.t	.tygvar	-- Temp
 test.assert.eq	.gvar
 gsdl.cgs.gstype.≡	.gvar
 gsdl.cgs.gstype.fmtgs	.gvar
@@ -1413,7 +1415,7 @@ ctye			.apply	gsdl.cgs.gstype.product	|	ctye.fs
 			.app	gsdl.cgs.gstype.≡	gsdl.cgs.gstype.fmtgs	ctya	ctye
 			.enter	test.assert.eq	gsdl.cgs.gstype.t
 
-# §subsection §gs{gstype.upconvert (lift _)}
+-- §subsection §gs{gstype.upconvert (lift _)}
 
 _test.upconvert_lift_c	.expr
 _test.upconvert_lift_test_c	.subcode
@@ -1449,7 +1451,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
-test.property.t	.tygvar	# Temp
+test.property.t	.tygvar	-- Temp
 test.assert.eq	.gvar
 gsdl.cgs.gstype.≡	.gvar
 gsdl.cgs.gstype.fmtgs	.gvar
@@ -1469,7 +1471,7 @@ ctye			.apply	gsdl.cgs.gstype.lift	|	ctye1
 			.app	gsdl.cgs.gstype.≡	gsdl.cgs.gstype.fmtgs	ctya	ctye
 			.enter	test.assert.eq	gsdl.cgs.gstype.t
 
-# §subsection §gs{gstype.upconvert (fun _ _ _)}
+-- §subsection §gs{gstype.upconvert (fun _ _ _)}
 
 _test.upconvert_fun_c	.expr
 _test.upconvert_fun_test_c	.subcode
@@ -1544,7 +1546,7 @@ err1			.apply	list.<>	rune.t	|	_test.upconvert_fun_test_left_err1_prefix.s	err
 ctya		.fkarg	0	gsdl.cgs.gstype.t
 			.enter	test.true
 
-# §section Test Fixtures
+-- §section Test Fixtures
 
 _fixtures_set.symbol.≡_c	.expr
 gsdl.cgs.symbol.t	.tygvar
@@ -1568,7 +1570,7 @@ _fixtures.filenm_s	.gvar
 
 	.type
 
-# §section Test Fixtures
+-- §section Test Fixtures
 
 _fixtures_set.symbol.t	.tyexpr
 ordered.set.t	.tygvar

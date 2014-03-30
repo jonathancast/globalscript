@@ -1,42 +1,44 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
 
-# Important planny-type stuff:
-#
-# Abstract type items need to be split into two pieces:
-# §begin{itemize}
-#     §item §anchor{tydefn} One that declares the abstract type §emph{per se}, especially the definition.
-#     §item §anchor{tyvar} One that declares the name of the abs type as a synomym for the abs type expression.
-# §end{itemize}
-# References to the abstract type name in other type expressions depend on §ref{tyvar}.
-# Nothing depends on §ref{tydefn}, but it depends on things.§footnote{
-#     Not strictly true; coercions depend on §ref{tydefn}.
-#     But only Core coercions do!
-# }
-# To manage this, we have two kinds of symbols:
-# §begin{itemize}
-#     §item §label{§gs{tyvar}} Type symbols, which are always type §emph{synonyms}.
-#     §item §label{§gs{abstyvar}} Abstract types, which map onto definitions.
-# §end{itemize}
-#
-# We also have three kinds of items:
-# §begin{itemize}
-#     §item §label{§gs{gstyexpr}} Type synonym items, labeled by §gs{tyvar}s.
-#     §item §label{§gs{gsabstypenm}} Abstract type (names), labeled by §gs{tyvar}s.
-#     §item §label{§gs{gsabstypedefn}} Abstract type (definitions), labeled by §gs{abstyvar}s.
-# §end{itemize}
-#
-# ‘Type’ items labeled by §gs{tyvar}s are §gs{typefnitems};
-# type items labeled by §gs{abstyvar}s are §gs{typeconstitems}.
-#
-# §ags{.tyabstract} items translate into §emph{two} kinds of ‘items’ on our system.
+-- Important planny-type stuff:
 
-# End planny-type stuff
+-- Abstract type items need to be split into two pieces:
+-- §begin{itemize}
+--     §item §anchor{tydefn} One that declares the abstract type §emph{per se}, especially the definition.
+--     §item §anchor{tyvar} One that declares the name of the abs type as a synomym for the abs type expression.
+-- §end{itemize}
+-- References to the abstract type name in other type expressions depend on §ref{tyvar}.
+-- Nothing depends on §ref{tydefn}, but it depends on things.§footnote{
+--     Not strictly true; coercions depend on §ref{tydefn}.
+--     But only Core coercions do!
+-- }
+-- To manage this, we have two kinds of symbols:
+-- §begin{itemize}
+--     §item §label{§gs{tyvar}} Type symbols, which are always type §emph{synonyms}.
+--     §item §label{§gs{abstyvar}} Abstract types, which map onto definitions.
+-- §end{itemize}
 
-# Important note: We are not as strict in reading the prefix as we should be reading the CUT,
-# since the prefix (should have been) automatically generated and will be checked by lots of other code in any case.
-# End important note.
+-- We also have three kinds of items:
+-- §begin{itemize}
+--     §item §label{§gs{gstyexpr}} Type synonym items, labeled by §gs{tyvar}s.
+--     §item §label{§gs{gsabstypenm}} Abstract type (names), labeled by §gs{tyvar}s.
+--     §item §label{§gs{gsabstypedefn}} Abstract type (definitions), labeled by §gs{abstyvar}s.
+-- §end{itemize}
+
+-- ‘Type’ items labeled by §gs{tyvar}s are §gs{typefnitems};
+-- type items labeled by §gs{abstyvar}s are §gs{typeconstitems}.
+
+-- §ags{.tyabstract} items translate into §emph{two} kinds of ‘items’ on our system.
+
+-- End planny-type stuff
+
+-- Important note: We are not as strict in reading the prefix as we should be reading the CUT,
+-- since the prefix (should have been) automatically generated and will be checked by lots of other code in any case.
+-- End important note.
 
 gsac.prefix.empty	.closure	_gsac.prefix.empty_c
 
@@ -117,7 +119,7 @@ gsac.prefix.typefnitem.typefun	.closure	_gsac.prefix.typefnitem.typefun_c
 
 	.code
 
-# §section §gs{gsac.prefix.empty}
+-- §section §gs{gsac.prefix.empty}
 
 _gsac.prefix.empty_c	.expr
 gsdl.var.t	.tygvar
@@ -131,7 +133,7 @@ r	.record	typeconstants	tycs	typefunctions	tyfs	|	gsac.prefix.prim.u
 	.lift
 	.yield	r
 
-# §section §gs{gsac.prefix.file.load}
+-- §section §gs{gsac.prefix.file.load}
 
 _gsac.prefix.file.load_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
@@ -170,7 +172,7 @@ _ibio.prim.file.read.open_res.ty	.tygvar
 rune.t	.tygvar
 string.t	.tygvar
 ibio.prim.iport	.tygvar
-ibio.prim.t	.tygvar	# Temp
+ibio.prim.t	.tygvar	-- Temp
 ibio.prim.unit	.gvar
 res.ty	.tylet	ibio.prim.iport	rune.t
 eif	.efv	_ibio.prim.file.read.open_res.ty	rune.t
@@ -206,7 +208,7 @@ ibio.file.name.t	.tygvar
 list.t	.tygvar
 gsdl.ags.file.t	.tygvar
 parser.err.t	.tygvar
-parser.pos.t	.tygvar	# Temp
+parser.pos.t	.tygvar	-- Temp
 _gsac.prefix.file.load_body_k	.subcode
 either.t.out	.cogvar
 parser.parse	.gvar
@@ -273,11 +275,11 @@ s	.apply	list.<>	rune.t	|	s1	_gsac.prefix.file.load_body_left_write_nl.s
 	.yield	ibio.prim.write	rune.t
 
 _gsac.prefix.file.load_body_left_body_c	.expr
-ibio.prim.t	.tygvar	# Temp
-gsdl.ags.file.t	.tygvar	# Temp
+ibio.prim.t	.tygvar	-- Temp
+gsdl.ags.file.t	.tygvar	-- Temp
 	.undef	ibio.prim.t	gsdl.ags.file.t
 
-# §section §gs{gsac.prefix.file.boundvars}
+-- §section §gs{gsac.prefix.file.boundvars}
 
 _gsac.prefix.file.boundvars_c	.expr
 gsdl.ags.file.t	.tygvar
@@ -299,17 +301,17 @@ ordered.set.empty	.gvar
 list.map	.gvar
 set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 file0	.karg	gsdl.ags.file.prim.u
-cvars	.apply	ordered.set.empty	gsdl.cgs.symbol.t	# FIXME
+cvars	.apply	ordered.set.empty	gsdl.cgs.symbol.t	-- FIXME
 union.symbol	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
 empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 tys.bvars.f	.alloc	_gsac.prefix.file.boundvars_tys.bvars.f_c
 tys	.field	typesection	file0
 tys.bvars	.apply	list.map	gsdl.ags.typeitem.t	set.symbol.ty	|	tys.bvars.f	tys
 tyvars	.apply	list.foldr	set.symbol.ty	set.symbol.ty	|	union.symbol	empty.symbol	tys.bvars
-vars	.apply	ordered.set.empty	gsdl.cgs.symbol.t	# FIXME
+vars	.apply	ordered.set.empty	gsdl.cgs.symbol.t	-- FIXME
 s1	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	vars	tyvars
 	.app	gsdl.cgs.symbol.compare	s1	cvars
-	.enter	ordered.set.union	gsdl.cgs.symbol.t	# Include data vars, type vars, and coercion vars
+	.enter	ordered.set.union	gsdl.cgs.symbol.t	-- Include data vars, type vars, and coercion vars
 
 _gsac.prefix.file.boundvars_tys.bvars.f_c	.expr
 gsdl.ags.typeitem.t	.tygvar
@@ -328,8 +330,8 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 maybe.t	.tygvar
-ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 ordered.set.singleton	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
@@ -352,7 +354,7 @@ primnm		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
-			.enter	ordered.set.singleton	gsdl.cgs.symbol.t	# TODO: Also something like a §gs{primtyvar}?
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t	-- TODO: Also something like a §gs{primtyvar}?
 		.case	tyelimprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -361,7 +363,7 @@ pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
-			.enter	ordered.set.singleton	gsdl.cgs.symbol.t	# TODO: Also something like a §gs{primtyvar}?
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t	-- TODO: Also something like a §gs{primtyvar}?
 		.case	tyexpr
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -379,7 +381,7 @@ pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
-			.enter	ordered.set.singleton	gsdl.cgs.symbol.t	# TODO: Also something like a §gs{primtyvar}?
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t	-- TODO: Also something like a §gs{primtyvar}?
 		.case	tyintrprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -388,10 +390,10 @@ pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
-			.enter	ordered.set.singleton	gsdl.cgs.symbol.t	# TODO: Also something like a §gs{primtyvar}?
-	# > :: ordered.set.t	gsdl.cgs.symbol.t
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t	-- TODO: Also something like a §gs{primtyvar}?
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsac.prefix.file.interface.freevars}
+-- §section §gs{gsac.prefix.file.interface.freevars}
 
 _gsac.prefix.file.interface.freevars_c	.expr
 gsdl.ags.file.t	.tygvar
@@ -444,10 +446,10 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 maybe.t	.tygvar
-ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 _gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_k	.subcode
-ordered.set.empty	.gvar	# Temp
+ordered.set.empty	.gvar	-- Temp
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.analyze	ti0	tyabstract	tydefinedprim	tyelimprim	tyexpr	tyimpprim	tyintrprim
 		.case	tyabstract
@@ -493,7 +495,7 @@ ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 			.enter	ordered.set.empty	gsdl.cgs.symbol.t
-	# > ordered.set.empty	gsdl.cgs.symbol.t :: ordered.set.t	gsdl.cgs.symbol.t
+	-- > ordered.set.empty	gsdl.cgs.symbol.t :: ordered.set.t	gsdl.cgs.symbol.t
 
 _gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_k	.forcecont
 gsdl.ags.typeitem.decls.u	.tygvar
@@ -577,9 +579,9 @@ sy			.apply	gsdl.cgs.symbol.tyvar	|	v
 s1			.apply	ordered.set.insert	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	sy	s
 			.app	s1	tygvs1
 			.enter	_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w
-	# > :: ordered.set.t	gsdl.cgs.symbol.t
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsac.prefix.file.add}
+-- §section §gs{gsac.prefix.file.add}
 
 _gsac.prefix.file.add_c	.expr
 gsdl.ags.file.t	.tygvar
@@ -708,7 +710,7 @@ ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 			.enter	tycs0
-	# > tycs :: ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
+	-- > tycs :: ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
 
 _gsac.prefix.file.add_tyfs.add_c	.expr
 ordered.map.t	.tygvar
@@ -734,9 +736,9 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 maybe.t	.tygvar
-ordered.map.t	.tygvar	# Temp
-gsac.prefix.typefnitem.t	.tygvar	# Temp
-gsdl.cgs.gskind.t	.tygvar	# Temp
+ordered.map.t	.tygvar	-- Temp
+gsac.prefix.typefnitem.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
 _gsac.prefix.file.add_tyfs.add_tyexpr_k	.subcode
 maybe.t.out	.cogvar
 ordered.map.insert	.gvar
@@ -804,8 +806,8 @@ nm		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
-			.enter	ts0	# TODO
-	# > ts0 :: ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
+			.enter	ts0	-- TODO
+	-- > ts0 :: ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
 
 _gsac.prefix.file.add_tyfs.add_tyexpr_k	.forcecont
 ordered.map.t	.tygvar
@@ -834,11 +836,11 @@ ti			.apply	gsac.prefix.typefnitem.typefun	|	pos	v	ki.cgs	ds	dfn
 			.app	gsdl.var.compare	v	ti	ts0
 			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typefnitem.t
 		.case	nothing
-			.enter	ts0	# TODO
+			.enter	ts0	-- TODO
 
-# §section §gs{gsac.prefix.typecheck}
+-- §section §gs{gsac.prefix.typecheck}
 
-# Takes a type environment §gs{env} and a prefix §{pr} and returns the type environment §gs{env'} s.t. §gs{env ⊢ pr ⊳ env'}
+-- Takes a type environment §gs{env} and a prefix §{pr} and returns the type environment §gs{env'} s.t. §gs{env ⊢ pr ⊳ env'}
 _gsac.prefix.typecheck_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsac.prefix.t	.tygvar
@@ -920,8 +922,8 @@ graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
 graph.scc.prim.u	.tygvar
 gsac.prefix.item.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
 _gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_k	.subcode
 either.t.out	.cogvar
 gsac.prefix.item.typecheck	.gvar
@@ -937,7 +939,7 @@ it		.fkarg	0	gsac.prefix.item.t
 			.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
 			.app	env	it
 			.enter	gsac.prefix.item.typecheck
-	# > :: either.t	string.t	gsdl.cgs.typeenv.t
+	-- > :: either.t	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
@@ -946,7 +948,7 @@ graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k	.subcode
 list.t.out	.cogvar
 either.left	.gvar
@@ -954,7 +956,7 @@ scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
 env	.fv	gsdl.cgs.typeenv.t
 enva	.fv	gsdl.cgs.typeenv.t
 sccs1	.fv	list.t	scc.item.ty
-e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t	# Type environment induced by §gs{it}
+e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t	-- Type environment induced by §gs{it}
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
@@ -983,7 +985,7 @@ enva1	.apply	gsdl.cgs.typeenv.overlay	|	env0	enva
 	.app	env1	enva1	sccs1.0
 	.yield	_gsac.prefix.typecheck_sccs.typecheck_w
 
-# §section §gs{gsac.prefix.items}
+-- §section §gs{gsac.prefix.items}
 
 _gsac.prefix.items_c	.expr
 gsac.prefix.t	.tygvar
@@ -1013,7 +1015,7 @@ its.tyfs	.apply	list.map	gsac.prefix.typefnitem.t	gsac.prefix.item.t	|	gsac.pref
 	.app	its.tycs	its.tyfs
 	.enter	list.<>	gsac.prefix.item.t
 
-# §section §gs{gsac.prefix.typeconstitem.gsabstype.insert}
+-- §section §gs{gsac.prefix.typeconstitem.gsabstype.insert}
 
 _gsac.prefix.typeconstitem.gsabstype.insert_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1057,7 +1059,7 @@ res	.record	typeconstants	tycs1	typefunctions	tyfs	|	gsac.prefix.prim.u
 	.lift
 	.yield	res
 
-# §section §gs{gsac.prefix.typefnitem.gsabstype.insert}
+-- §section §gs{gsac.prefix.typefnitem.gsabstype.insert}
 
 _gsac.prefix.typefnitem.gsabstype.insert_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1093,7 +1095,7 @@ r	.record	typeconstants	tycs	typefunctions	tyfs1	|	gsac.prefix.prim.u
 	.lift
 	.yield	r
 
-# §section §gs{gsac.prefix.typefnitem.elimprim.insert}
+-- §section §gs{gsac.prefix.typefnitem.elimprim.insert}
 
 _gsac.prefix.typefnitem.elimprim.insert_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1133,13 +1135,13 @@ r	.record	typeconstants	tycs	typefunctions	tyfs1	|	gsac.prefix.prim.u
 	.lift
 	.yield	r
 
-# §section §gs{gsac.prefix.get}
+-- §section §gs{gsac.prefix.get}
 
 _gsac.prefix.get_c	.expr
 gsdl.cgs.symbol.t	.tygvar
 gsac.prefix.t	.tygvar
-maybe.t	.tygvar	# Temp
-gsac.prefix.item.t	.tygvar	# Temp
+maybe.t	.tygvar	-- Temp
+gsac.prefix.item.t	.tygvar	-- Temp
 _gsac.prefix.get_k0	.subcode
 gsdl.cgs.symbol.t.out	.cogvar
 sym	.larg	gsdl.cgs.symbol.t
@@ -1163,8 +1165,8 @@ gsac.prefix.prim.u	.tygvar
 gsdl.var.t	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
-maybe.t	.tygvar	# Temp
-gsac.prefix.item.t	.tygvar	# Temp
+maybe.t	.tygvar	-- Temp
+gsac.prefix.item.t	.tygvar	-- Temp
 _gsac.prefix.get_abstyvar_k	.subcode
 _gsac.prefix.get_tyvar_k	.subcode
 maybe.t.out	.cogvar
@@ -1190,13 +1192,13 @@ tyfs			.field	typefunctions	pr0
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.undef	maybe.t	gsac.prefix.item.t
-	# > :: maybe.t	gsac.prefix.item.t
+	-- > :: maybe.t	gsac.prefix.item.t
 
 _gsac.prefix.get_abstyvar_k	.forcecont
 maybe.prim.u	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
-maybe.t	.tygvar	# Temp
-gsac.prefix.item.t	.tygvar	# Temp
+maybe.t	.tygvar	-- Temp
+gsac.prefix.item.t	.tygvar	-- Temp
 maybe.just	.gvar
 gsac.prefix.item.typeconstitem	.gvar
 mb0	.karg	maybe.prim.u	gsac.prefix.typeconstitem.t
@@ -1213,7 +1215,7 @@ _gsac.prefix.get_tyvar_k	.forcecont
 maybe.prim.u	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 gsac.prefix.item.t	.tygvar
-maybe.t	.tygvar	# Temp
+maybe.t	.tygvar	-- Temp
 maybe.just	.gvar
 gsac.prefix.item.typefnitem	.gvar
 maybe.nothing	.gvar
@@ -1227,7 +1229,7 @@ it			.apply	gsac.prefix.item.typefnitem	|	ti
 		.case	nothing
 			.enter	maybe.nothing	gsac.prefix.item.t
 
-# §section §gs{gsac.prefix.gskind.upconvert}
+-- §section §gs{gsac.prefix.gskind.upconvert}
 
 _gsac.prefix.gskind.upconvert_c	.expr
 gsdl.ags.typeitem.gskind.t	.tygvar
@@ -1241,7 +1243,7 @@ ki	.larg	gsdl.ags.typeitem.gskind.t
 _gsac.prefix.gskind.upconvert_k	.forcecont
 gsdl.ags.typeitem.gskind.prim.u	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar	# Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
 gsdl.cgs.gskind.exp	.gvar
 gsac.prefix.gskind.upconvert	.gvar
 gsdl.cgs.gskind.lifted	.gvar
@@ -1262,9 +1264,9 @@ ki.e.cgs			.apply	gsac.prefix.gskind.upconvert	|	ki.e
 			.enter	gsdl.cgs.gskind.unknown
 		.case	unlifted
 			.enter	gsdl.cgs.gskind.unlifted
-	# > :: gsdl.cgs.gskind.t
+	-- > :: gsdl.cgs.gskind.t
 
-# §section §gs{gsac.prefix.gstype.upconvert}
+-- §section §gs{gsac.prefix.gstype.upconvert}
 
 _gsac.prefix.gstype.upconvert_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1294,7 +1296,7 @@ gsdl.ags.typeitem.field.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.ags.typeitem.constr.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.prefix.gstype.upconvert_fun_k	.subcode
 _gsac.prefix.gstype.upconvert_lift_k	.subcode
 _gsac.prefix.gstype.upconvert_product_k	.subcode
@@ -1351,7 +1353,7 @@ tyf		.fkarg	0	gsdl.var.t
 tyas		.fkarg	1	list.t	gsdl.var.t
 			.app	pos	env	tyf	tyas
 			.enter	gsac.prefix.typeapp.upconvert
-	# > :: either.t	string.t	gsdl.cgs.gstype.t
+	-- > :: either.t	string.t	gsdl.cgs.gstype.t
 
 _gsac.prefix.gstype.upconvert_fun_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -1360,7 +1362,7 @@ gsdl.ags.typeitem.expr.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.prefix.gstype.upconvert_fun_right_k	.subcode
 either.t.out	.cogvar
 either.left	.gvar
@@ -1385,7 +1387,7 @@ _gsac.prefix.gstype.upconvert_fun_right_k	.forcecont
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.left	.gvar
 either.right	.gvar
 gsdl.cgs.gstype.fun	.gvar
@@ -1406,7 +1408,7 @@ _gsac.prefix.gstype.upconvert_lift_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.left	.gvar
 either.right	.gvar
 gsdl.cgs.gstype.lift	.gvar
@@ -1427,8 +1429,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
-either.t	.tygvar	# Temp
-gsdl.cgs.gstype.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.cgs.gstype.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gstype.product	.gvar
 list.cgs.field.ty	.tylet	list.t	gsdl.cgs.gstype.field.t
@@ -1448,8 +1450,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
-either.t	.tygvar	# Temp
-gsdl.cgs.gstype.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.cgs.gstype.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gstype.sum	.gvar
 list.cgs.constr.ty	.tylet	list.t	gsdl.cgs.gstype.constr.t
@@ -1464,7 +1466,7 @@ ty			.apply	gsdl.cgs.gstype.sum	|	cs
 			.app	ty
 			.enter	either.right	string.t	gsdl.cgs.gstype.t
 
-# §section §gs{gsac.prefix.typeapp.upconvert}
+-- §section §gs{gsac.prefix.typeapp.upconvert}
 
 _gsac.prefix.typeapp.upconvert_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1537,7 +1539,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.left	.gvar
 gsdl.cgs.typeenv.typeexpansion.togstype	.gvar
 list.foldl	.gvar
@@ -1556,31 +1558,31 @@ tyy.exp			.apply	list.foldl	gsdl.cgs.gstype.t	gsdl.cgs.typeenv.typeexpansion.t	|
 			.app	tyy.exp
 			.enter	gsdl.cgs.typeenv.typeexpansion.togstype
 
-# §section §gs{gsac.prefix.gstype.field.upconvert}
+-- §section §gs{gsac.prefix.gstype.field.upconvert}
 
 _gsac.prefix.gstype.field.upconvert_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-gsdl.cgs.gstype.field.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+gsdl.cgs.gstype.field.t	.tygvar	-- Temp
 env	.larg	gsdl.cgs.typeenv.t
 f	.larg	gsdl.ags.typeitem.field.t
 	.undef	either.t	string.t	gsdl.cgs.gstype.field.t
 
-# §section §gs{gsac.prefix.gstype.constr.upconvert}
+-- §section §gs{gsac.prefix.gstype.constr.upconvert}
 
 _gsac.prefix.gstype.constr.upconvert_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.ags.typeitem.constr.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-gsdl.cgs.gstype.constr.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+gsdl.cgs.gstype.constr.t	.tygvar	-- Temp
 env	.larg	gsdl.cgs.typeenv.t
 c	.larg	gsdl.ags.typeitem.constr.t
 	.undef	either.t	string.t	gsdl.cgs.gstype.constr.t
 
-# §section §gs{gsac.prefix.typeenv.gstype.get}
+-- §section §gs{gsac.prefix.typeenv.gstype.get}
 
 _gsac.prefix.typeenv.gstype.get_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1606,7 +1608,7 @@ gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 rune.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 gsdl.cgs.typeenv.typeexpansion.togstype	.gvar
 either.left	.gvar
 list.<>	.gvar
@@ -1632,7 +1634,7 @@ err			.apply	list.<>	rune.t	|	pos.s	err1
 			.app	err
 			.enter	either.left	string.t	gsdl.cgs.gstype.t
 
-# §section §gs{gsac.prefix.item.name}
+-- §section §gs{gsac.prefix.item.name}
 
 _gsac.prefix.item.name_c	.expr
 gsac.prefix.item.t	.tygvar
@@ -1647,7 +1649,7 @@ _gsac.prefix.item.name_k	.forcecont
 gsac.prefix.item.prim.u	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 _gsac.prefix.item.name_typeconstitem_k	.subcode
 _gsac.prefix.item.name_typefnitem_k	.subcode
 gsac.prefix.typeconstitem.t.out	.cogvar
@@ -1664,7 +1666,7 @@ ti		.fkarg	0	gsac.prefix.typefnitem.t
 			.force	_gsac.prefix.item.name_typefnitem_k
 			.coerce	gsac.prefix.typefnitem.t.out
 			.enter	ti
-	# > :: gsdl.cgs.symbol.t
+	-- > :: gsdl.cgs.symbol.t
 
 _gsac.prefix.item.name_typeconstitem_k	.forcecont
 gsac.prefix.typeconstitem.prim.u	.tygvar
@@ -1673,7 +1675,7 @@ gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 gsdl.cgs.symbol.abstyvar	.gvar
 ti0	.karg	gsac.prefix.typeconstitem.prim.u
 	.analyze	ti0	gsabstypedefn
@@ -1685,7 +1687,7 @@ ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.app	v
 			.yield	gsdl.cgs.symbol.abstyvar
-	# > :: gsdl.cgs.symbol.t
+	-- > :: gsdl.cgs.symbol.t
 
 _gsac.prefix.item.name_typefnitem_k	.forcecont
 gsac.prefix.typefnitem.prim.u	.tygvar
@@ -1694,7 +1696,7 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 gsdl.cgs.symbol.tyvar	.gvar
 ti0	.karg	gsac.prefix.typefnitem.prim.u
 	.analyze	ti0	definedprim	elimprim	gsabstypenm	impprim	typefun
@@ -1736,9 +1738,9 @@ ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.app	v
 			.yield	gsdl.cgs.symbol.tyvar
-	# > :: gsdl.cgs.symbol.t
+	-- > :: gsdl.cgs.symbol.t
 
-# §section §gs{gsac.prefix.item.deps}
+-- §section §gs{gsac.prefix.item.deps}
 
 _gsac.prefix.item.deps_c	.expr
 gsac.prefix.item.t	.tygvar
@@ -1753,8 +1755,8 @@ _gsac.prefix.item.deps_k	.forcecont
 gsac.prefix.item.prim.u	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
-list.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
+list.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 _gsac.prefix.item.deps_typeconstitem_k	.subcode
 _gsac.prefix.item.deps_typefnitem_k	.subcode
 gsac.prefix.typeconstitem.t.out	.cogvar
@@ -1771,7 +1773,7 @@ ti		.fkarg	0	gsac.prefix.typefnitem.t
 			.force	_gsac.prefix.item.deps_typefnitem_k
 			.coerce	gsac.prefix.typefnitem.t.out
 			.enter	ti
-	# > :: list.t	gsdl.cgs.symbol.t
+	-- > :: list.t	gsdl.cgs.symbol.t
 
 _gsac.prefix.item.deps_typeconstitem_k	.forcecont
 gsac.prefix.typeconstitem.prim.u	.tygvar
@@ -1782,7 +1784,7 @@ gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
-list.t	.tygvar	# Temp
+list.t	.tygvar	-- Temp
 list.map	.gvar
 gsac.prefix.item.tygvar.deps	.gvar
 ti0	.karg	gsac.prefix.typeconstitem.prim.u
@@ -1796,7 +1798,7 @@ e		.fkarg	4	gsdl.ags.typeitem.expr.t
 tygvs			.lfield	tygvars	ds
 			.app	gsac.prefix.item.tygvar.deps	tygvs
 			.enter	list.map	gsdl.ags.typeitem.decls.tygvar.t	gsdl.cgs.symbol.t
-	# > :: list.t	gsdl.cgs.symbol.t
+	-- > :: list.t	gsdl.cgs.symbol.t
 
 _gsac.prefix.item.deps_typefnitem_k	.forcecont
 gsac.prefix.typefnitem.prim.u	.tygvar
@@ -1807,7 +1809,7 @@ gsdl.cgs.symbol.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
-list.t	.tygvar	# Temp
+list.t	.tygvar	-- Temp
 list.nil	.gvar
 list.map	.gvar
 gsac.prefix.item.tygvar.deps	.gvar
@@ -1848,9 +1850,9 @@ e		.fkarg	4	gsdl.ags.typeitem.expr.t
 tygvs			.lfield	tygvars	ds
 			.app	gsac.prefix.item.tygvar.deps	tygvs
 			.enter	list.map	gsdl.ags.typeitem.decls.tygvar.t	gsdl.cgs.symbol.t
-	# > :: list.t	gsdl.cgs.symbol.t
+	-- > :: list.t	gsdl.cgs.symbol.t
 
-# §subsection §gs{gsac.prefix.item.tygvar.deps}
+-- §subsection §gs{gsac.prefix.item.tygvar.deps}
 
 _gsac.prefix.item.tygvar.deps_c	.expr
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
@@ -1865,7 +1867,7 @@ _gsac.prefix.item.tygvar.deps_k	.forcecont
 gsdl.ags.typeitem.decls.tygvar.prim.u	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar	# Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 gsdl.cgs.symbol.tyvar	.gvar
 tygv0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
 	.analyze	tygv0	tyextabstype	tyextelimprim	tyextimpprim	tygvar
@@ -1889,11 +1891,11 @@ ki		.fkarg	3	gsdl.ags.typeitem.gskind.t
 v		.fkarg	0	gsdl.var.t
 			.app	v
 			.yield	gsdl.cgs.symbol.tyvar
-	# > :: gsdl.cgs.symbol.t
+	-- > :: gsdl.cgs.symbol.t
 
-# §section §gs{gsac.prefix.item.typecheck}
+-- §section §gs{gsac.prefix.item.typecheck}
 
-# Checks whether §gs{env ⊢ it ⊳ env'} and if so returns the §gs{env'}
+-- Checks whether §gs{env ⊢ it ⊳ env'} and if so returns the §gs{env'}
 _gsac.prefix.item.typecheck_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsac.prefix.item.t	.tygvar
@@ -1910,8 +1912,8 @@ gsdl.cgs.typeenv.t	.tygvar
 gsac.prefix.item.prim.u	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
 _gsac.prefix.item.typecheck_typeconstitem_k	.subcode
 _gsac.prefix.item.typecheck_typefnitem_k	.subcode
 gsac.prefix.typeconstitem.t.out	.cogvar
@@ -1929,7 +1931,7 @@ ti		.fkarg	0	gsac.prefix.typefnitem.t
 			.force	_gsac.prefix.item.typecheck_typefnitem_k
 			.coerce	gsac.prefix.typefnitem.t.out
 			.enter	ti
-	# > :: either.t	string.t	gsdl.cgs.typeenv.t
+	-- > :: either.t	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.item.typecheck_typeconstitem_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
@@ -1942,9 +1944,9 @@ gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-list.t	.tygvar	# Temp
-gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar	# Temp
-either.t	.tygvar	# Temp
+list.t	.tygvar	-- Temp
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar	-- Temp
+either.t	.tygvar	-- Temp
 _gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_k	.subcode
 either.t.out	.cogvar
 gsac.prefix.gstype.upconvert	.gvar
@@ -1968,7 +1970,7 @@ env1			.apply	list.foldl	gsdl.cgs.typeenv.typeexpansion.tylambda.t	gsdl.cgs.type
 			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
 			.app	pos	env1	e
 			.enter	gsac.prefix.gstype.upconvert
-	# > :: either.t	string.t	gsdl.cgs.typeenv.t
+	-- > :: either.t	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_k	.forcecont
 gsdl.var.t	.tygvar
@@ -1978,7 +1980,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.left	.gvar
 either.right	.gvar
 gsdl.cgs.typeenv.gsabstypedefn.insert	.gvar
@@ -2009,7 +2011,7 @@ gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.prefix.item.typecheck_typefnitem_typefun_k	.subcode
 either.t.out	.cogvar
 either.right	.gvar
@@ -2073,7 +2075,7 @@ env1			.apply	list.foldl	gsdl.cgs.typeenv.typeexpansion.tylambda.t	gsdl.cgs.type
 			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
 			.app	pos	env1	e
 			.enter	gsac.prefix.gstype.upconvert
-	# > :: either.t	string.t	gsdl.cgs.typeenv.t
+	-- > :: either.t	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.item.typecheck_typefnitem_typefun_k	.forcecont
 gsdl.var.t	.tygvar
@@ -2084,7 +2086,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.typeenv.typefun.insert	.gvar
 gsdl.cgs.typeenv.empty	.gvar
@@ -2102,7 +2104,7 @@ env1			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	ki	tyas.cgs	cty	gsdl.cgs.typee
 			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
-# §section §gs{gsac.prefix.item.≡}
+-- §section §gs{gsac.prefix.item.≡}
 
 _gsac.prefix.item.≡_c	.expr
 gsac.prefix.item.t	.tygvar
@@ -2129,7 +2131,7 @@ _gsac.prefix.item.≡_k1	.forcecont
 gsac.prefix.item.prim.u	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 gsac.prefix.typeconstitem.≡	.gvar
 bool.false	.gvar
 gsac.prefix.typefnitem.≡	.gvar
@@ -2154,9 +2156,9 @@ ti0		.fkarg	0	gsac.prefix.typefnitem.t
 ti1				.fkarg	0	gsac.prefix.typefnitem.t
 					.app	ti0	ti1
 					.enter	gsac.prefix.typefnitem.≡
-	# > :: bool.t
+	-- > :: bool.t
 
-# §section §gs{gsac.prefix.item.fmtgs}
+-- §section §gs{gsac.prefix.item.fmtgs}
 
 _gsac.prefix.item.fmtgs_c	.expr
 gsac.prefix.item.t	.tygvar
@@ -2171,7 +2173,7 @@ _gsac.prefix.item.fmtgs_k	.forcecont
 gsac.prefix.item.prim.u	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+fmtgs.printer.t	.tygvar	-- Temp
 fmtgs.app	.gvar
 fmtgs.var	.gvar
 _gsac.prefix.item.fmtgs_typeconstitem_typeconstitem.s	.gvar
@@ -2192,9 +2194,9 @@ f.pr			.apply	fmtgs.var	|	_gsac.prefix.item.fmtgs_typefnitem_typefnitem.s
 ti.pr			.apply	gsac.prefix.typefnitem.fmtgs	|	ti
 			.app	f.pr	ti.pr
 			.enter	fmtgs.app
-	# > :: fmtgs.printer.t
+	-- > :: fmtgs.printer.t
 
-# §section §gs{gsac.prefix.typeconstitem.≡}
+-- §section §gs{gsac.prefix.typeconstitem.≡}
 
 _gsac.prefix.typeconstitem.≡_c	.expr
 gsac.prefix.typeconstitem.t	.tygvar
@@ -2224,7 +2226,7 @@ gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 bool.∧	.gvar
 gsdl.var.≡	.gvar
 gsdl.ags.typeitem.gskind.≡	.gvar
@@ -2254,9 +2256,9 @@ b2					.apply	bool.∧	|	ds.eq	e.eq
 b1					.apply	bool.∧	|	ki.eq	b2
 					.app	v.eq	b1
 					.enter	bool.∧
-	# > :: bool.t
+	-- > :: bool.t
 
-# §section §gs{gsac.prefix.typeconstitem.fmtgs}
+-- §section §gs{gsac.prefix.typeconstitem.fmtgs}
 
 _gsac.prefix.typeconstitem.fmtgs_c	.expr
 gsac.prefix.typeconstitem.t	.tygvar
@@ -2274,7 +2276,7 @@ gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+fmtgs.printer.t	.tygvar	-- Temp
 fmtgs.app	.gvar
 fmtgs.var	.gvar
 _gsac.prefix.typeconstitem.fmtgs_gsabstypedefn_gsabstypedefn.s	.gvar
@@ -2303,9 +2305,9 @@ p1			.apply	fmtgs.app	|	p2	ds.p
 e.p			.apply	gsdl.ags.typeitem.expr.fmtgs	|	e
 			.app	p1	e.p
 			.enter	fmtgs.app
-	# > :: fmtgs.printer.t
+	-- > :: fmtgs.printer.t
 
-# §section §gs{gsac.prefix.typefnitem.≡}
+-- §section §gs{gsac.prefix.typefnitem.≡}
 
 _gsac.prefix.typefnitem.≡_c	.expr
 gsac.prefix.typefnitem.t	.tygvar
@@ -2335,7 +2337,7 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 _gsac.prefix.typefnitem.≡_gsabstype_gsabstype_k	.subcode
 bool.t.out	.cogvar
 bool.∧	.gvar
@@ -2435,7 +2437,7 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.undef	bool.t
-	# > :: bool.t
+	-- > :: bool.t
 
 _gsac.prefix.typefnitem.≡_gsabstype_gsabstype_k	.forcecont
 gsdl.cgs.gskind.t	.tygvar
@@ -2454,7 +2456,7 @@ b0	.karg	bool.prim.u
 			.app	ki0	ki1
 			.enter	gsdl.cgs.gskind.≡
 
-# §section §gs{gsac.prefix.typefnitem.fmtgs}
+-- §section §gs{gsac.prefix.typefnitem.fmtgs}
 
 _gsac.prefix.typefnitem.fmtgs_c	.expr
 gsac.prefix.typefnitem.t	.tygvar
@@ -2472,7 +2474,7 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+fmtgs.printer.t	.tygvar	-- Temp
 fmtgs.app	.gvar
 fmtgs.var	.gvar
 _gsac.prefix.typefnitem.fmtgs_elimprim_elimprim.s	.gvar
@@ -2533,13 +2535,13 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.undef	fmtgs.printer.t
-	# > :: fmtgs.printer.t
+	-- > :: fmtgs.printer.t
 
-# §section §gs{gsac.prefix.tyarg.upconvert}
+-- §section §gs{gsac.prefix.tyarg.upconvert}
 
 _gsac.prefix.tyarg.upconvert_c	.expr
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
-gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar	# Temp
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar	-- Temp
 _gsac.prefix.tyarg.upconvert_k	.subcode
 l	.larg	gsdl.ags.typeitem.decls.tyarg.t
 	.force	_gsac.prefix.tyarg.upconvert_k
@@ -2557,14 +2559,14 @@ r	.record	0	v	1	ki.cgs	|	gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u
 	.lift
 	.yield	r
 
-# §section §gs{gsac.prefix.tylambda.typecheck}
+-- §section §gs{gsac.prefix.tylambda.typecheck}
 
-# Insert a type lambda into the environment.
-# Note that, unlike the item / generator type checker,
-# the returned environment §emph{does} include the environment passed in.
+-- Insert a type lambda into the environment.
+-- Note that, unlike the item / generator type checker,
+-- the returned environment §emph{does} include the environment passed in.
 
-# §begin§display.math Γ ⊢ t :: κ0 ⊳ Γ'; Γ, Γ', ⊢ τ :: κ1 ⇒ Γ ⊢ (λ t :: κ0. τ) :: κ0 → κ1 §end;
-# this function returns the §math{Γ, Γ'} to type-check §math{τ} in.
+-- §begin§display.math Γ ⊢ t :: κ0 ⊳ Γ'; Γ, Γ', ⊢ τ :: κ1 ⇒ Γ ⊢ (λ t :: κ0. τ) :: κ0 → κ1 §end;
+-- this function returns the §math{Γ, Γ'} to type-check §math{τ} in.
 
 _gsac.prefix.tylambda.typecheck_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
@@ -2586,7 +2588,7 @@ ki	.field	1	l0
 	.app	v	ki	env
 	.enter	gsdl.cgs.typeenv.tyvar.insert
 
-# §section §gs{gsac.prefix.item.t} constructors
+-- §section §gs{gsac.prefix.item.t} constructors
 
 _gsac.prefix.item.typeconstitem_c	.expr
 gsac.prefix.typeconstitem.t	.tygvar
@@ -2608,7 +2610,7 @@ c	.constr	gsac.prefix.item.prim.u	typefnitem	0	ti
 	.lift
 	.yield	c
 
-# §section §gs{gsac.prefix.typeconstitem.t}
+-- §section §gs{gsac.prefix.typeconstitem.t}
 
 _gsac.prefix.typeconstitem.gsabstypedefn_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -2628,7 +2630,7 @@ c	.constr	gsac.prefix.typeconstitem.prim.u	gsabstypedefn	0	pos	1	v	2	ki	3	ds	4	e
 	.lift
 	.yield	c
 
-# §section §gs{gsac.prefix.typefnitem.t} constructors
+-- §section §gs{gsac.prefix.typefnitem.t} constructors
 
 _gsac.prefix.typefnitem.gsabstypenm_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -2712,7 +2714,7 @@ c	.constr	gsac.prefix.typefnitem.prim.u	typefun	0	pos	1	v	2	ki	3	ds	4	e
 
 	.type
 
-# §section §gs{gsac.prefix.t}
+-- §section §gs{gsac.prefix.t}
 
 gsac.prefix.t	.tyexpr
 gsac.prefix.prim.u	.tygvar
@@ -2728,7 +2730,7 @@ _typeconstants_ty	.tylet	ordered.map.t	gsdl.var.t	gsac.prefix.typeconstitem.t
 _typefunctions_ty	.tylet	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
 	.typroduct	typeconstants	_typeconstants_ty	typefunctions	_typefunctions_ty
 
-# §section §gs{gsac.prefix.item.t}
+-- §section §gs{gsac.prefix.item.t}
 
 gsac.prefix.item.t	.tyabstract	*
 gsac.prefix.item.prim.u	.tygvar
@@ -2748,7 +2750,7 @@ _gsac.prefix.item.prim.u_typefnitem_ty	.tyexpr
 gsac.prefix.typefnitem.t	.tygvar
 	.tyubproduct	0	gsac.prefix.typefnitem.t
 
-# §section §gs{gsac.prefix.typefnitem.t}
+-- §section §gs{gsac.prefix.typefnitem.t}
 
 gsac.prefix.typefnitem.t	.tyabstract	*
 gsac.prefix.typefnitem.prim.u	.tygvar
@@ -2795,7 +2797,7 @@ gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.cgs.gskind.t	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
 
-# §section §gs{gsac.prefix.typeconstitem.t}
+-- §section §gs{gsac.prefix.typeconstitem.t}
 
 gsac.prefix.typeconstitem.t	.tyabstract	*
 gsac.prefix.typeconstitem.prim.u	.tygvar
@@ -2814,7 +2816,7 @@ gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.ags.typeitem.gskind.t	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
 
-# §section §gs{gsac.prefix.file.interface.freevars}
+-- §section §gs{gsac.prefix.file.interface.freevars}
 
 _gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w_ty	.tyexpr
 ordered.set.t	.tygvar
@@ -2827,7 +2829,7 @@ gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 	.tyfun	list.t	gsdl.ags.typeitem.decls.tygvar.t
 	.tyref	ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsac.prefix.typecheck}
+-- §section §gs{gsac.prefix.typecheck}
 
 _gsac.prefix.typecheck_sccs.typecheck_w_ty	.tyexpr
 gsdl.cgs.typeenv.t	.tygvar
@@ -2837,12 +2839,12 @@ gsac.prefix.item.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 scc.ty	.tylet	graph.scc.t	gsac.prefix.item.t
-	.tyfun	gsdl.cgs.typeenv.t	# Type environment to work in
-	.tyfun	gsdl.cgs.typeenv.t	# Accumulator
+	.tyfun	gsdl.cgs.typeenv.t	-- Type environment to work in
+	.tyfun	gsdl.cgs.typeenv.t	-- Accumulator
 	.tyfun	list.prim.u	scc.ty
 	.tyref	either.t	string.t	gsdl.cgs.typeenv.t
 
-# §section §gs{gsac.prefix.gskind.upconvert}
+-- §section §gs{gsac.prefix.gskind.upconvert}
 
 _gsac.prefix.gskind.upconvert_ty	.tyexpr
 gsdl.ags.typeitem.gskind.t	.tygvar
@@ -2851,7 +2853,7 @@ gsdl.cgs.gskind.t	.tygvar
 	.tyfun	gsdl.ags.typeitem.gskind.t
 	.tyref	gsdl.cgs.gskind.t
 
-# §section §gs{gsac.prefix.gstype.upconvert}
+-- §section §gs{gsac.prefix.gstype.upconvert}
 
 _gsac.prefix.gstype.upconvert_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -2868,7 +2870,7 @@ gsdl.cgs.gstype.t	.tygvar
 	.tyfun	gsdl.ags.typeitem.expr.t
 	.tyref	either.t	string.t	gsdl.cgs.gstype.t
 
-# §section §gs{gsac.prefix.gstype.field.upconvert}
+-- §section §gs{gsac.prefix.gstype.field.upconvert}
 
 _gsac.prefix.gstype.field.upconvert_ty	.tyexpr
 gsdl.cgs.typeenv.t	.tygvar
@@ -2882,7 +2884,7 @@ gsdl.cgs.gstype.field.t	.tygvar
 	.tyfun	gsdl.ags.typeitem.field.t
 	.tyref	either.t	string.t	gsdl.cgs.gstype.field.t
 
-# §section §gs{gsac.prefix.gstype.constr.upconvert}
+-- §section §gs{gsac.prefix.gstype.constr.upconvert}
 
 _gsac.prefix.gstype.constr.upconvert_ty	.tyexpr
 gsdl.cgs.typeenv.t	.tygvar
