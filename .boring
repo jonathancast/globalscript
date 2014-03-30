@@ -6,6 +6,8 @@
 \.bcgs$
 \.ps$
 \.dvi$
+\.bbl$
+\.blg$
 \.gsac$
 \.listing$
 \.log$
