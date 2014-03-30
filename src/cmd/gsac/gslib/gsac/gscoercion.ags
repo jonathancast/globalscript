@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -13,7 +15,7 @@ gsac.gscoercion.compileToGlobalVar	.closure	_gsac.gscoercion.compileToGlobalVar_
 
 	.code
 
-# §section §gs{gsac.gscoercion.annotate}
+-- §section §gs{gsac.gscoercion.annotate}
 
 _gsac.gscoercion.annotate_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -38,7 +40,7 @@ string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.gscoercion.annotate_appty_k	.subcode
 _gsac.gscoercion.annotate_defn_k	.subcode
 _gsac.gscoercion.annotate_pos_k	.subcode
@@ -70,7 +72,7 @@ co1		.fkarg	1	gsdl.cgs.gscoercion.t
 			.coerce	either.t.out	string.t	_gsac.gscoercion.annotate_res.ty
 			.app	pos1	env	co1
 			.enter	gsac.gscoercion.annotate
-	# > :: either.t	string.t	_gsac.gscoercion.annotate_res.ty
+	-- > :: either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_appty_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -79,7 +81,7 @@ gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 _gsac.gscoercion.annotate_appty_right_k	.subcode
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
@@ -122,8 +124,8 @@ gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gscoercion.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gscoercion.annotate_res.ty	.tygvar	-- Temp
 _gsac.gscoercion.annotate_appty_right_forall_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.annotate	.gvar
@@ -143,7 +145,7 @@ ty1		.fkarg	2	gsdl.cgs.gscoercion.gstype.t
 			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
 			.app	pos	env	tya
 			.enter	gsac.gstype.annotate
-	# > :: either.t	string.t	_gsac.gscoercion.annotate_res.ty
+	-- > :: either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_appty_right_forall_k	.forcecont
 gsdl.cgs.gscoercion.t	.tygvar
@@ -154,8 +156,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 record.empty	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gscoercion.annotate_res.ty	.tygvar	-- Temp
 _gsac.gscoercion.annotate_appty_right_forall_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check	.gvar
@@ -186,8 +188,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.cgs.gskind.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gscoercion.appty	.gvar
 gsdl.cgs.gscoercion.gstype.substty	.gvar
@@ -214,9 +216,9 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gscoercion.annotate_res.ty	.tygvar	-- Temp
 _gsac.gscoercion.annotate_defn_just_k	.subcode
 env	.fv	gsdl.cgs.typeenv.t
 tyc	.fv	gsdl.var.t
@@ -233,7 +235,7 @@ _gsac.gscoercion.annotate_defn_just_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typedefinition.u	.tygvar
-gsdl.cgs.gstype.t	.tygvar	# Temp
+gsdl.cgs.gstype.t	.tygvar	-- Temp
 _gsac.gscoercion.annotate_defn_w	.gvar
 gsdl.cgs.gstype.abstype	.gvar
 env	.fv	gsdl.cgs.typeenv.t
@@ -250,8 +252,8 @@ gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.cgs.gskind.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gscoercion.pos	.gvar
 pos1	.fv	gsdl.sourcepos.t
@@ -296,8 +298,8 @@ gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
-gsdl.cgs.gscoercion.t	.tygvar	# Temp
-gsdl.cgs.gskind.t	.tygvar	# Temp
+gsdl.cgs.gscoercion.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
 _gsac.gscoercion.annotate_defn_w_:_k	.subcode
 bool.t.out	.cogvar
 gsdl.cgs.typeenv.tyvar.elem	.gvar
@@ -335,9 +337,9 @@ list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 bool.prim.u	.tygvar
-either.t	.tygvar	# Temp
-string.t	.tygvar	# Temp
-_gsac.gscoercion.annotate_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gscoercion.annotate_res.ty	.tygvar	-- Temp
 _gsac.gscoercion.annotate_defn_w_:_false_k	.subcode
 either.t.out	.cogvar
 _gsac.gscoercion.annotate_defn_w	.gvar
@@ -370,8 +372,8 @@ gsdl.cgs.gskind.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
-either.t	.tygvar	# Temp
-gsdl.cgs.gscoercion.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+gsdl.cgs.gscoercion.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gscoercion.gstype.forall	.gvar
 a0.v	.fv	gsdl.var.t
@@ -391,7 +393,7 @@ r1			.lrecord	coercion	co1	gskind	r1.ki	gstype	ty	|	_gsac.gscoercion.annotate_re
 			.app	r1
 			.enter	either.right	string.t	_gsac.gscoercion.annotate_res.ty
 
-# §section §gs{gsac.gscoercion.compile}
+-- §section §gs{gsac.gscoercion.compile}
 
 _gsac.gscoercion.compile_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -429,10 +431,10 @@ _gsac.gscoercion.compile_res.ty	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
-gsdl.ags.coercionitem.expr.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.expr.t	.tygvar	-- Temp
 _gsac.gscoercion.compile_defn_tygvs_c	.subcode
 _gsac.gscoercion.compile_pos_k	.subcode
 either.t.out	.cogvar
@@ -473,7 +475,7 @@ co1		.fkarg	1	gsdl.cgs.gscoercion.t
 			.coerce	either.t.out	string.t	_gsac.gscoercion.compile_res.ty
 			.app	pos1	env	co1	em.ty	pem.ty	svs.ty
 			.enter	gsac.gscoercion.compile
-	# > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
+	-- > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
 
 _gsac.gscoercion.compile_defn_tygvs_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
@@ -496,14 +498,14 @@ gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 bool.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-diff.list.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
 _gsac.gscoercion.compile_defn_tygvs_false_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.typeenv.gskind.get	.gvar
 tyc	.fv	gsdl.var.t
 env	.fv	gsdl.cgs.typeenv.t
-b0	.karg	bool.prim.u	# Has §gs{tyc} been emitted yet?
+b0	.karg	bool.prim.u	-- Has §gs{tyc} been emitted yet?
 	.analyze	b0	false	true
 		.case	false
 			.force	_gsac.gscoercion.compile_defn_tygvs_false_k
@@ -518,7 +520,7 @@ gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
-diff.list.t	.tygvar	# Temp
+diff.list.t	.tygvar	-- Temp
 diff.list.singleton	.gvar
 gsdl.ags.typeitem.decls.tygvar.tyextabstype	.gvar
 gsac.gskind.compile	.gvar
@@ -539,9 +541,9 @@ gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
-either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.coercionitem.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.ags.coercionitem.expr.pos	.gvar
 pos1	.fv	gsdl.sourcepos.t
@@ -561,7 +563,7 @@ res			.lrecord	coercionitems	cos	res	e	tygvars	tygvs	typeitems	ts	|	_gsac.gscoer
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compile_res.ty
 
-# §section §gs{gsac.gscoercion.compileAppTy}
+-- §section §gs{gsac.gscoercion.compileAppTy}
 
 _gsac.gscoercion.compileAppTy_app_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -599,8 +601,8 @@ gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile.m_res.ty	.tygvar
-either.t	.tygvar	# Temp
-_gsac.gscoercion.compile_res.ty	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+_gsac.gscoercion.compile_res.ty	.tygvar	-- Temp
 _gsac.gscoercion.compileAppTy_app_defn_k	.subcode
 either.t.out	.cogvar
 _gsac.gscoercion.compileAppTy_app	.gvar
@@ -637,7 +639,7 @@ em.ty1			.apply	ordered.set.insert	gsdl.var.t	|	gsdl.var.compare	tyc	em.ty
 pos1		.fkarg	0	gsdl.sourcepos.t
 co1		.fkarg	1	gsdl.cgs.gscoercion.t
 			.undef	either.t	string.t	_gsac.gscoercion.compile_res.ty
-	# > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
+	-- > :: either.t	string.t	_gsac.gscoercion.compile_res.ty
 
 _gsac.gscoercion.compileAppTy_app_defn_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
@@ -742,7 +744,7 @@ gv			.apply	gsdl.ags.typeitem.decls.tygvar.tyextabstype	|	tyc	ki.ags
 		.case	nothing
 			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 
-# §section §gs{gsac.gscoercion.compileToGlobalVar}
+-- §section §gs{gsac.gscoercion.compileToGlobalVar}
 
 _gsac.gscoercion.compileToGlobalVar_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -786,9 +788,9 @@ _gsac.gscoercion.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.coercionitem.decls.t	.tygvar
-either.t	.tygvar	# Temp
-diff.list.t	.tygvar	# Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.:	.gvar
 gsdl.ags.coercionitem.tycoercion	.gvar
@@ -817,7 +819,7 @@ res			.lrecord	coercionitems	cos	res	v	tygvars	tygvs	typeitems	ts	|	_gsac.gscoer
 
 	.type
 
-# §section §gs{gsac.gscoercion.annotate}
+-- §section §gs{gsac.gscoercion.annotate}
 
 _gsac.gscoercion.annotate_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -866,7 +868,7 @@ _gsac.gscoercion.annotate_res.ty	.tygvar
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
-# §section §gs{gsac.gscoercion.compile.m}
+-- §section §gs{gsac.gscoercion.compile.m}
 
 gsac.gscoercion.compile.m	.tyexpr
 ordered.set.t	.tygvar
@@ -880,11 +882,11 @@ _gsac.gscoercion.compile.m_res.ty	.tygvar
 α	.tylambda	*
 res.ty	.tylet	_gsac.gscoercion.compile.m_res.ty	α
 	.tylift
-	.tyfun	ordered.set.t	gsdl.var.t	# §gs{emitted.gstype} --- the set of free variables already accounted for
+	.tyfun	ordered.set.t	gsdl.var.t	-- §gs{emitted.gstype} --- the set of free variables already accounted for
 	.tylift
-	.tyfun	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t	# §gs{prim.emitted.gstype} --- map from primtype to variable used for it
+	.tyfun	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t	-- §gs{prim.emitted.gstype} --- map from primtype to variable used for it
 	.tylift
-	.tyfun	list.t	gsdl.var.t	# §gs{subvars.gstype} --- the supply of variables to use for lambda-lifted type expressions
+	.tyfun	list.t	gsdl.var.t	-- §gs{subvars.gstype} --- the supply of variables to use for lambda-lifted type expressions
 	.tyref	either.t	string.t	res.ty
 
 _gsac.gscoercion.compile.m_res.ty	.tyexpr
@@ -904,7 +906,7 @@ diff.list.tygvar.ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
 	.typroduct	coercionitems	diff.list.coercionitem.ty	res	α	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
 
-# §section §gs{gsac.gscoercion.compile}
+-- §section §gs{gsac.gscoercion.compile}
 
 _gsac.gscoercion.compile_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -925,7 +927,7 @@ _gsac.gscoercion.compile.m_res.ty	.tygvar
 gsdl.ags.coercionitem.expr.t	.tygvar
 	.tyref	_gsac.gscoercion.compile.m_res.ty	gsdl.ags.coercionitem.expr.t
 
-# §section §gs{gsac.gscoercion.compileAppTy}
+-- §section §gs{gsac.gscoercion.compileAppTy}
 
 _gsac.gscoercion.compileAppTy_app_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -945,7 +947,7 @@ gsdl.ags.coercionitem.expr.t	.tygvar
 	.tyfun	list.t	gsdl.cgs.gstype.t
 	.tyref	gsac.gscoercion.compile.m	gsdl.ags.coercionitem.expr.t
 
-# §section §gs{gsac.gscoercion.compileToGlobalVar}
+-- §section §gs{gsac.gscoercion.compileToGlobalVar}
 
 _gsac.gscoercion.compileToGlobalVar_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar

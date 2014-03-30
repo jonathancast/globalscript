@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -25,7 +27,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{length nil}
+-- §section §gs{length nil}
 
 _test.length.nil_c	.expr
 _test.length.nil_test_c	.subcode
@@ -53,7 +55,7 @@ _fixture.nil	.gvar
 	.app	_fixture.nil
 	.enter	list.lib.length	bool.t
 
-# §section §gs{length [false]}
+-- §section §gs{length [false]}
 
 _test.length.singleton_c	.expr
 _test.length.singleton_test_c	.subcode
@@ -81,7 +83,7 @@ _fixture.singleton	.gvar
 	.app	_fixture.singleton
 	.enter	list.lib.length	bool.t
 
-# §section Test fixtures
+-- §section Test fixtures
 
 _fixture.nil_c	.expr
 bool.t	.tygvar
