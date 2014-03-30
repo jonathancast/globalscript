@@ -1632,7 +1632,7 @@ gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
     if (gsparse_body_op(pos, parsedline, fields, n)) {
         return 0;
     } else {
-        gsfatal(UNIMPL("%s:%d: Unimplemented api op %s"), pos->real_filename, pos->real_lineno, fields[1]);
+        gsfatal(UNIMPL("%s:%d: Unimplemented imp op %s"), pos->real_filename, pos->real_lineno, fields[1]);
     }
 
 err:
