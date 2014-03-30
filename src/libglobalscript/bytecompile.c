@@ -675,7 +675,7 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
         ;
 
-        pcl->size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
+        pcl->size += ACE_ALLOC_SIZE(cty->numfvs); /* Code reg + nfvs + fvs */
     } else if (gssymceq(p->directive, gssymopprim, gssymcodeop, ".prim")) {
         struct gsregistered_primset *prims;
 
