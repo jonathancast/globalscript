@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -22,7 +24,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{assert.fails (unit 〈〉) qq{}}
+-- §section §gs{assert.fails (unit 〈〉) qq{}}
 
 _test.fails.unit.nil_c	.expr
 rune.t	.tygvar
@@ -66,7 +68,7 @@ msg	.larg	list.t	rune.t
 	.app	string.≡	string.fmtgs	msg	_test.fails.unit.nil_expected.msg
 	.enter	test.assert.eq	string.t
 
-# §section §gs{assert.passes fail qq{}}
+-- §section §gs{assert.passes fail qq{}}
 
 _test.passes.fail.nil_c	.expr
 rune.t	.tygvar

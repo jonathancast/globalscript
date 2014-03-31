@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 -- Based on §url{http://en.wikipedia.org/wiki/Path-based_strong_component_algorithm}

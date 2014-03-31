@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -44,7 +46,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{get empty}
+-- §section §gs{get empty}
 
 _test_get.empty_c	.expr
 maybe.t	.tygvar
@@ -72,7 +74,7 @@ test	.apply	test.assert.eq	mb.t	|	mb.≡	mb.fmtgs	actual	nothing
 	.app	_test_get.empty_label	test
 	.enter	test.property.label
 
-# §section §gs{get 3 (insert 3 empty)}
+-- §section §gs{get 3 (insert 3 empty)}
 
 _test.get.k.insert.k.empty_c	.expr
 maybe.t	.tygvar
@@ -103,7 +105,7 @@ test	.apply	test.assert.eq	mb.t	|	mb.≡	mb.fmtgs	actual	just.false
 	.app	_test.get.k.insert.k.empty_label	test
 	.enter	test.property.label
 
-# §section §gs{empty ≡ insert 3 empty}
+-- §section §gs{empty ≡ insert 3 empty}
 
 _test.eq.empty.insert.k.empty_c	.expr
 natural.t	.tygvar
@@ -127,13 +129,13 @@ test	.apply	test.deny	|	_test.eq.empty.insert.k.empty_false	_test.eq.empty.inser
 	.app	_test.eq.empty.insert.k.empty_label	test
 	.enter	test.property.label
 
-# §section §gs{empty ∪ empty}
+-- §section §gs{empty ∪ empty}
 
 _test.empty.union.empty_c	.expr
 ordered.map.t	.tygvar
 natural.t	.tygvar
 bool.t	.tygvar
-fmtgs.t	.tygvar	# Temp
+fmtgs.t	.tygvar	-- Temp
 test.property.label	.gvar
 _test.empty.union.empty_label	.gvar
 test.assert.eq	.gvar
@@ -151,7 +153,7 @@ test	.apply	test.assert.eq	map.ty	|	map.eq	map.fmtgs	actual	empty
 	.app	_test.empty.union.empty_label	test
 	.enter	test.property.label
 
-# §section §gs{branch _ _ _ _ ∪ branch _ _ _ _}
+-- §section §gs{branch _ _ _ _ ∪ branch _ _ _ _}
 
 _test.branch.union.branch_c	.expr
 natural.t	.tygvar
@@ -233,7 +235,7 @@ test	.apply	test.assert.eq	maybe.bool.ty	|	maybe.bool.≡	maybe.bool.fmtgs	actua
 	.app	_test.branch.union.branch_test1_label	test
 	.enter	test.property.label
 
-# §section §gs{branch 2 _ _ _ ∪ branch 1 _ _ _}
+-- §section §gs{branch 2 _ _ _ ∪ branch 1 _ _ _}
 
 _test.branch.union.branch.gt_c	.expr
 natural.t	.tygvar
@@ -315,7 +317,7 @@ test	.apply	test.assert.eq	maybe.bool.ty	|	maybe.bool.≡	maybe.bool.fmtgs	actua
 	.app	_test.branch.union.branch.gt_test1_label	test
 	.enter	test.property.label
 
-# §section §gs{values empty}
+-- §section §gs{values empty}
 
 _test.values.empty_c	.expr
 list.t	.tygvar
@@ -341,7 +343,7 @@ test	.apply	test.assert.eq	list.bool.ty	|	list.bool.eq	list.bool.fmtgs	actual	ni
 	.app	_test.values.empty_label	test
 	.enter	test.property.label
 
-# §section §gs{values $ insert k v empty}
+-- §section §gs{values $ insert k v empty}
 
 _test.values.insert.empty_c	.expr
 list.t	.tygvar

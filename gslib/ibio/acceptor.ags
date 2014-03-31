@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 -- Based on §emph{Parallel Parsing Processes} by Koen Claessen

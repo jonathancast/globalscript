@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -37,7 +39,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{just x ≡ nothing}
+-- §section §gs{just x ≡ nothing}
 
 _test.eq.just.nothing_c	.expr
 bool.t	.tygvar
@@ -58,7 +60,7 @@ test	.apply	test.deny	|	_test.eq.just.nothing_false	_test.eq.just.nothing_true	e
 	.app	_test.eq.just.nothing_label	test
 	.enter	test.property.label
 
-# §section §gs{just false ≡ just true}
+-- §section §gs{just false ≡ just true}
 
 _test.eq.just.just_c	.expr
 bool.t	.tygvar
@@ -79,7 +81,7 @@ test	.apply	test.deny	|	_test.eq.just.just_false	_test.eq.just.just_true	eq
 	.app	_test.eq.just.just_label	test
 	.enter	test.property.label
 
-# §section §gs{nothing ≡ nothing}
+-- §section §gs{nothing ≡ nothing}
 
 _test.eq.nothing.nothing_c	.expr
 bool.t	.tygvar
@@ -97,7 +99,7 @@ test	.apply	test.assert	|	_test.eq.nothing.nothing_false	_test.eq.nothing.nothin
 	.app	_test.eq.nothing.nothing_label	test
 	.enter	test.property.label
 
-# §section §gs{fmtgs nothing}
+-- §section §gs{fmtgs nothing}
 
 _test.fmtgs.nothing_c	.expr
 string.t	.tygvar
@@ -121,7 +123,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 	.app	_test.fmtgs.nothing_label	test
 	.enter	test.property.label
 
-# §section §gs{fmtgs (just true)}
+-- §section §gs{fmtgs (just true)}
 
 _test.fmtgs.just_c	.expr
 string.t	.tygvar
