@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -32,7 +34,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{fn<./foo> ≡ fn<./bar>}
+-- §section §gs{fn<./foo> ≡ fn<./bar>}
 
 _test.eq.foo.bar_c	.expr
 test.property.label	.gvar
@@ -51,7 +53,7 @@ test	.apply	test.deny	|	_test.eq.foo.bar_false.msg	_test.eq.foo.bar_true.msg	eq
 	.app	_test.eq.foo.bar_label	test
 	.enter	test.property.label
 
-# §section §gs{fmtgs fn<./foo>}
+-- §section §gs{fmtgs fn<./foo>}
 
 _test.fmtgs.foo_c	.expr
 string.t	.tygvar
@@ -74,7 +76,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 	.app	_test.fmtgs.foo_label	test
 	.enter	test.property.label
 
-# §section §gs{#exts (components.get fn<foo/bar.gs>)}
+-- §section §gs{#exts (components.get fn<foo/bar.gs>)}
 
 _test.exts.of.qual.fn_c	.expr
 list.t	.tygvar

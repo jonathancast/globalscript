@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -41,7 +43,7 @@ _test.rune.advance.x_label	.string	parser.rune.advance\sr/x/
 _test.rune.advance.nl	.closure	_test.rune.advance.nl_c
 _test.rune.advance.nl_label	.string	parser.rune.advance\sr/\\n/
 
-# §section §gs{parser.match}
+-- §section §gs{parser.match}
 
 _test.match	.closure	_test.match_c
 _test.match_label	.string	parser.match
@@ -83,7 +85,7 @@ _test.match.multi.char.class_label	.string	parser\sm/[ab]/\sqq{b}
 _test.match.multi.char.class_re	.regex	[ab]
 _test.match.multi.char.class_input	.string	b
 
-# §section §gs{parser.err}
+-- §section §gs{parser.err}
 
 _tests.err	.list	test.property.t	_test.err.fmt.simple.failure	_test.err.≡.simple.failure.simple.failure	_test.err.fmtgs.simple.failure
 
@@ -103,7 +105,7 @@ _test.err.fmtgs.simple.failure	.closure	_test.err.fmtgs.simple.failure_c
 _test.err.fmtgs.simple.failure_label	.string	err.fmtgs\ssimple.failure\strue
 _test.err.fmtgs.simple.failure_expected	.string	simple.failure\strue\s〈\s'file\s∝\sfn<./parse-data>;\s'line\s∝\s1;\s'col\s∝\s1;\s〉
 
-# §section §gs{parser.pos}
+-- §section §gs{parser.pos}
 
 _tests.pos	.list	test.property.t	_test.pos.fmt.not.eof	_test.pos.fmt.next.line	_test.pos.fmt.eof	_test.pos.fmt.eof.next.line	_test.pos.eq.x.x	_test.pos.eq.diff.file	_test.pos.eq.diff.line	_test.pos.eq.diff.col	_test.pos.fmtgs	
 
@@ -162,7 +164,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{parse fail qq{}}
+-- §section §gs{parse fail qq{}}
 
 _test.fail.nil_c	.expr
 rune.t	.tygvar
@@ -198,7 +200,7 @@ expected	.apply	parser.err.simple.failure	|	pos	bool.true
 	.app	parser.err.≡	parser.err.fmtgs	err	expected
 	.enter	test.assert.eq	parser.err.t
 
-# §section §gs{parse fail.msg qq{}}
+-- §section §gs{parse fail.msg qq{}}
 
 _test.fail.msg.nil_c	.expr
 rune.t	.tygvar
@@ -239,7 +241,7 @@ err.fmt	.apply	parser.err.fmt	|	err
 	.app	string.≡	string.fmtgs	err.fmt	_test.fail.msg.nil_err.fmt.expected
 	.enter	test.assert.eq	string.ty
 
-# §section §gs{parse unit qq{}}
+-- §section §gs{parse unit qq{}}
 
 _test.unit.nil_c	.expr
 rune.t	.tygvar
@@ -270,7 +272,7 @@ x	.larg	bool.t
 	.app	bool.≡	bool.fmtgs	x	bool.true
 	.enter	test.assert.eq	bool.t
 
-# §section §gs{parse symbol qq{}}
+-- §section §gs{parse symbol qq{}}
 
 _test.symbol.nil_c	.expr
 rune.t	.tygvar
@@ -309,7 +311,7 @@ err.s	.apply	parser.err.fmt	|	err
 	.app	string.≡	string.fmtgs	err.s	_test.symbol.nil_expected
 	.enter	test.assert.eq	string.ty
 
-# §section §gs{parse symbol qq{n}}
+-- §section §gs{parse symbol qq{n}}
 
 _test.symbol.cons_c	.expr
 rune.t	.tygvar
@@ -337,7 +339,7 @@ r	.larg	rune.t
 	.app	rune.≡	rune.fmtgs	r	rune.latin.letter.n
 	.enter	test.assert.eq	rune.t
 
-# §section §gs{parse (optional fail) qq{}}
+-- §section §gs{parse (optional fail) qq{}}
 
 _test.optional.fail.nil_c	.expr
 rune.t	.tygvar
@@ -377,7 +379,7 @@ expected	.apply	maybe.nothing	bool.t
 	.app	maybe.bool.≡	maybe.bool.fmtgs	mb	expected
 	.enter	test.assert.eq	maybe.bool.ty
 
-# §section §gs{parse (many fail) qq{}}
+-- §section §gs{parse (many fail) qq{}}
 
 _test.many.fail.nil_c	.expr
 rune.t	.tygvar
@@ -418,7 +420,7 @@ expected	.apply	list.nil	bool.t
 	.app	list.bool.≡	list.bool.fmtgs	actual	expected
 	.enter	test.assert.eq	list.bool.t
 
-# §section §gs{parse (many fail) qq{x}}
+-- §section §gs{parse (many fail) qq{x}}
 
 _test.many.fail.cons_c	.expr
 rune.t	.tygvar
@@ -450,7 +452,7 @@ test.true	.gvar
 err	.larg	parser.err.t
 	.enter	test.true
 
-# §section §gs{_test.match}
+-- §section §gs{_test.match}
 
 _test.match_c	.expr
 test.property.label	.gvar
@@ -461,7 +463,7 @@ test	.apply	test.all	|	_tests.match
 	.app	_test.match_label	test
 	.enter	test.property.label
 
-# §section §gs{parse m// qq{}}
+-- §section §gs{parse m// qq{}}
 
 _test.match.empty.nil_c	.expr
 string.t	.tygvar
@@ -501,7 +503,7 @@ nil	.apply	list.nil	rune.t
 	.app	string.≡	string.fmtgs	s	nil
 	.enter	test.assert.eq	string.ty
 
-# §section §gs{parse m/[a-z]/ qq{\\\{}}
+-- §section §gs{parse m/[a-z]/ qq{\\\{}}
 
 _test.match.range.above_c	.expr
 rune.t	.tygvar
@@ -537,7 +539,7 @@ err.s	.apply	parser.err.fmt	|	err
 	.app	string.≡	string.fmtgs	err.s	_test.match.range.above_expected
 	.enter	test.assert.eq	string.t
 
-# §section §gs{parse m/[a-z]/ qq{z}}
+-- §section §gs{parse m/[a-z]/ qq{z}}
 
 _test.match.range.upper_c	.expr
 rune.t	.tygvar
@@ -569,7 +571,7 @@ res	.larg	string.t
 	.app	string.≡	string.fmtgs	res	_test.match.range.upper_input
 	.enter	test.assert.eq	string.t
 
-# §section §gs{parse m/[a-z]/ qq{`}}
+-- §section §gs{parse m/[a-z]/ qq{`}}
 
 _test.match.range.below_c	.expr
 rune.t	.tygvar
@@ -604,7 +606,7 @@ err.s	.apply	parser.err.fmt	|	err
 	.app	string.≡	string.fmtgs	err.s	_test.match.range.below_expected
 	.enter	test.assert.eq	string.t
 
-# §section §gs{parse m/a*/ qq{aa}}
+-- §section §gs{parse m/a*/ qq{aa}}
 
 _test.match.star_c	.expr
 rune.t	.tygvar
@@ -635,7 +637,7 @@ s	.larg	string.t
 	.app	string.≡	string.fmtgs	s	_test.match.star_input
 	.enter	test.assert.eq	string.t
 
-# §section §gs{parse m/[^a] qq{a}}
+-- §section §gs{parse m/[^a] qq{a}}
 
 _test.match.neg.in.class_c	.expr
 rune.t	.tygvar
@@ -663,7 +665,7 @@ test.true	.gvar
 err	.larg	parser.err.t
 	.enter	test.true
 
-# §section §gs{parse m/[ab] qq{a}}
+-- §section §gs{parse m/[ab] qq{a}}
 
 _test.match.multi.char.class_c	.expr
 rune.t	.tygvar
@@ -694,7 +696,7 @@ s	.larg	string.t
 	.app	string.≡	string.fmtgs	s	_test.match.multi.char.class_input
 	.enter	test.assert.eq	string.t
 
-# §section §gs{_test.err}
+-- §section §gs{_test.err}
 
 _test.err_c	.expr
 test.all	.gvar
@@ -705,7 +707,7 @@ test	.apply	test.all	|	_tests.err
 	.app	_test.err_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.err.fmt simple.failure}
+-- §section §gs{parser.err.fmt simple.failure}
 
 _test.err.fmt.simple.failure_c	.expr
 list.t	.tygvar
@@ -733,7 +735,7 @@ test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.err.
 	.app	_test.err.fmt.simple.failure_label	test
 	.enter	test.property.label
 
-# §section §gs{simple.failure ≡ simple.failure}
+-- §section §gs{simple.failure ≡ simple.failure}
 
 _test.err.≡.simple.failure.simple.failure_c	.expr
 test.property.label	.gvar
@@ -753,13 +755,13 @@ test	.apply	test.assert	|	_test.err.≡.simple.failure.simple.failure_fail.msg	_
 	.app	_test.err.≡.simple.failure.simple.failure_label	test
 	.enter	test.property.label
 
-# > test.property.label qq{...} $
-# >     test.assert qq{...} qq{...} $
-# >         parser.err.≡ sf sf
-# > where
-# >     'sf ∝ parser.err.simple.failure (parser.pos.initial parser.test.assert.fixtures.sample.file.name)
+-- > test.property.label qq{...} $
+-- >     test.assert qq{...} qq{...} $
+-- >         parser.err.≡ sf sf
+-- > where
+-- >     'sf ∝ parser.err.simple.failure (parser.pos.initial parser.test.assert.fixtures.sample.file.name)
 
-# §section §gs{parser.err.fmtgs simple.failure}
+-- §section §gs{parser.err.fmtgs simple.failure}
 
 _test.err.fmtgs.simple.failure_c	.expr
 list.t	.tygvar
@@ -790,7 +792,7 @@ test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	sf.s	_test.err.fm
 	.app	_test.err.fmtgs.simple.failure_label	test
 	.enter	test.property.label
 
-# §section §gs{_test.pos}
+-- §section §gs{_test.pos}
 
 _test.pos_c	.expr
 test.property.label	.gvar
@@ -801,7 +803,7 @@ test	.apply	test.all	|	_tests.pos
 	.app	_test.pos_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.pos.fmt false initial.pos}
+-- §section §gs{parser.pos.fmt false initial.pos}
 
 _test.pos.fmt.not.eof_c	.expr
 list.t	.tygvar
@@ -827,7 +829,7 @@ test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.pos.
 	.app	_test.pos.fmt.not.eof_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.pos.fmt false (next.line initial.pos)}
+-- §section §gs{parser.pos.fmt false (next.line initial.pos)}
 
 _test.pos.fmt.next.line_c	.expr
 string.t	.tygvar
@@ -849,7 +851,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.pos.f
 	.app	_test.pos.fmt.next.line_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.pos.fmt true initial.pos}
+-- §section §gs{parser.pos.fmt true initial.pos}
 
 _test.pos.fmt.eof_c	.expr
 string.t	.tygvar
@@ -870,7 +872,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.pos.f
 	.app	_test.pos.fmt.eof_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.pos.fmt true (next.line initial.pos)}
+-- §section §gs{parser.pos.fmt true (next.line initial.pos)}
 
 _test.pos.fmt.eof.next.line_c	.expr
 string.t	.tygvar
@@ -892,7 +894,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.pos.f
 	.app	_test.pos.fmt.eof.next.line_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.pos.≡ x x}
+-- §section §gs{parser.pos.≡ x x}
 
 _test.pos.eq.x.x_c	.expr
 test.property.label	.gvar
@@ -909,7 +911,7 @@ test	.apply	test.assert	|	_test.pos.eq.x.x_fail.msg	_test.pos.eq.x.x_succ.msg	b
 	.app	_test.pos.eq.x.x_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.pos.≡ (pos.initial fn<./foo>) (pos.initial fn<./bar>)}
+-- §section §gs{parser.pos.≡ (pos.initial fn<./foo>) (pos.initial fn<./bar>)}
 
 _test.pos.eq.diff.file_c	.expr
 test.property.label	.gvar
@@ -931,7 +933,7 @@ test	.apply	test.deny	|	_test.pos.eq.diff.file_false.msg	_test.pos.eq.diff.file_
 	.app	_test.pos.eq.diff.file_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.pos.≡ (pos.next.line x) x}
+-- §section §gs{parser.pos.≡ (pos.next.line x) x}
 
 _test.pos.eq.diff.line_c	.expr
 test.property.label	.gvar
@@ -952,7 +954,7 @@ test	.apply	test.deny	|	_test.pos.eq.diff.line_false.msg	_test.pos.eq.diff.line_
 	.app	_test.pos.eq.diff.line_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.pos.≡ (pos.next.col x) x}
+-- §section §gs{parser.pos.≡ (pos.next.col x) x}
 
 _test.pos.eq.diff.col_c	.expr
 test.property.label	.gvar
@@ -973,7 +975,7 @@ test	.apply	test.deny	|	_test.pos.eq.diff.col_false.msg	_test.pos.eq.diff.col_tr
 	.app	_test.pos.eq.diff.col_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.pos.fmtgs pos.initial}
+-- §section §gs{parser.pos.fmtgs pos.initial}
 
 _test.pos.fmtgs_c	.expr
 list.t	.tygvar
@@ -1001,7 +1003,7 @@ test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	pos.s	_test.pos.f
 	.app	_test.pos.fmtgs_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.rune.advance r/x/}
+-- §section §gs{parser.rune.advance r/x/}
 
 _test.rune.advance.x_c	.expr
 parser.pos.t	.tygvar
@@ -1022,7 +1024,7 @@ test	.apply	test.assert.eq	parser.pos.t	|	parser.pos.≡	parser.pos.fmtgs	actual
 	.app	_test.rune.advance.x_label	test
 	.enter	test.property.label
 
-# §section §gs{parser.rune.advance r/\\n/}
+-- §section §gs{parser.rune.advance r/\\n/}
 
 _test.rune.advance.nl_c	.expr
 parser.pos.t	.tygvar

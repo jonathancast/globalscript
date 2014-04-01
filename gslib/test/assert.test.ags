@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -25,7 +27,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{assert.eq rune.≡ rune.fmtgs r/x r/x}
+-- §section §gs{assert.eq rune.≡ rune.fmtgs r/x r/x}
 
 _test.assert.eq.x.x_c	.expr
 test.property.label	.gvar
@@ -43,7 +45,7 @@ _x	.gvar
 	.app	rune.≡	rune.fmtgs	_x	_x
 	.enter	test.assert.eq	rune.t
 
-# §section §gs{assert.fails true}
+-- §section §gs{assert.fails true}
 
 _test.assert.fails.true_c	.expr
 _test.assert.fails.true_k0_c	.subcode
@@ -84,7 +86,7 @@ string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 	.app	string.≡	string.fmtgs	s	_test.assert.fails.true_expected.msg
 	.enter	test.assert.eq	string.ty
 
-# §section Fixtures
+-- §section Fixtures
 
 _x_c	.expr
 rune.t.in	.cogvar
