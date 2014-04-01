@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -441,8 +441,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 r0		.fkarg	0	record.empty
-gen.annotate			.alloc	_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_c
-body.annotate			.alloc	_gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_c
+gen.annotate			.closure	_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_c
+body.annotate			.closure	_gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_c
 			.force	_gsac.gsexpr.annotate_impfor_right_right_right_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 			.app	gen.annotate	body.annotate	gs	env
