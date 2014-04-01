@@ -28,6 +28,8 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.closure	_gsac.gsexpr
 
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.closure	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr_c
 
+gsac.gsexpr.compile.mapM	.closure	_gsac.gsexpr.compile.mapM_c	_gsac.gsexpr.compile.mapM_ty
+
 _gsac.gsexpr_c.v	.closure	_gsac.gsexpr_c.v_c
 _gsac.gsexpr_c.v_s	.string	c
 
@@ -1888,6 +1890,19 @@ res	.constr	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	expr	0	as	1	e
 	.lift
 	.yield	res
 
+-- §section §gs{gsac.gsexpr.compile.mapM}
+
+_gsac.gsexpr.compile.mapM_c	.expr
+_gsac.gsexpr.compile.mapM_f_ty	.tygvar
+list.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar	-- Temp
+α	.tyarg	*
+β	.tyarg	*
+list.β.ty	.tylet	list.t	β	-- Temp
+f	.larg	_gsac.gsexpr.compile.mapM_f_ty	α	β
+xn	.larg	list.t	α
+	.undef	gsac.gsexpr.compile.m	list.β.ty
+
 -- §section Helper Functions
 
 -- §subsection §gs{c.v}
@@ -2204,6 +2219,29 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.gsexpr.body.t
 	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+
+-- §section §gs{gsac.gsexpr.compile.mapM}
+
+_gsac.gsexpr.compile.mapM_ty	.tyexpr
+_gsac.gsexpr.compile.mapM_f_ty	.tygvar
+list.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+α	.tyforall	*
+β	.tyforall	*
+list.β.ty	.tylet	list.t	β
+	.tylift
+	.tyfun	_gsac.gsexpr.compile.mapM_f_ty	α	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	gsac.gsexpr.compile.m	list.β.ty
+
+_gsac.gsexpr.compile.mapM_f_ty	.tyexpr
+gsac.gsexpr.compile.m	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	gsac.gsexpr.compile.m	β
 
 	.coercion
 
