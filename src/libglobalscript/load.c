@@ -565,7 +565,7 @@ static long gsparse_expr_ops(struct gsparse_input_pos *, gsparsedfile *, struct 
 static long gsparse_force_cont_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
 static long gsparse_strict_cont_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
 static long gsparse_ubcase_cont_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
-static long gsparse_api_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
+static long gsparse_imp_ops(struct gsparse_input_pos *, gsparsedfile *, struct gsparsedline *, struct uxio_ichannel *, char *, char **);
 
 static
 long
@@ -619,7 +619,7 @@ gsparse_code_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
         if (numfields > 4)
             gsfatal("%s:%d: Too many arguments to .impprog", pos->real_filename, pos->real_lineno)
         ;
-        return gsparse_api_ops(pos, parsedfile, parsedline, chan, line, fields);
+        return gsparse_imp_ops(pos, parsedfile, parsedline, chan, line, fields);
     } else {
         gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: code directive %s", pos->real_filename, pos->real_lineno, fields[1]);
     }
@@ -1592,7 +1592,7 @@ static int gsparse_bind_op(struct gsparse_input_pos *, struct gsparsedline *, ch
 static int gsparse_body_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
 
 long
-gsparse_api_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
+gsparse_imp_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *codedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
     struct gsparsedline *parsedline;
     long n;
