@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -54,7 +56,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{qq{\\n# Comment\\n} =~ whitespace}
+-- §section §gs{qq{\\n# Comment\\n} =~ whitespace}
 
 _test.parse.comment_c	.expr
 rune.t	.tygvar
@@ -79,7 +81,7 @@ test.true	.gvar
 s	.larg	string.t
 	.enter	test.true
 
-# §section §gs{qq{\\n-- Comment\\n} =~ whitespace}
+-- §section §gs{qq{\\n-- Comment\\n} =~ whitespace}
 
 _test.parse.dash.dash.comment_c	.expr
 rune.t	.tygvar
@@ -104,7 +106,7 @@ test.true	.gvar
 s	.larg	string.t
 	.enter	test.true
 
-# §section §gs{qq{fmtgs.prec} =~ syntax.id}
+-- §section §gs{qq{fmtgs.prec} =~ syntax.id}
 
 _test.parse.two.components_c	.expr
 rune.t	.tygvar
@@ -132,7 +134,7 @@ res	.larg	string.t
 	.app	string.≡	string.fmtgs	res	_test.parse.two.components_input
 	.enter	test.assert.eq	string.t
 
-# §section §gs{qq{p0} =~ syntax.id}
+-- §section §gs{qq{p0} =~ syntax.id}
 
 _test.parse.digit.in.alphanum_c	.expr
 rune.t	.tygvar
@@ -160,7 +162,7 @@ actual	.larg	string.t
 	.app	string.≡	string.fmtgs	actual	_test.parse.digit.in.alphanum_input
 	.enter	test.assert.eq	string.t
 
-# §section §gs{qq{m.<>} =~ syntax.id}
+-- §section §gs{qq{m.<>} =~ syntax.id}
 
 _test.parse.qualified.op_c	.expr
 rune.t	.tygvar
@@ -188,7 +190,7 @@ actual	.larg	string.t
 	.app	string.≡	string.fmtgs	actual	_test.parse.qualified.op_input
 	.enter	test.assert.eq	string.t
 
-# §section §gs{qq{ibio} =~ var}
+-- §section §gs{qq{ibio} =~ var}
 
 _test.parse.var_c	.expr
 rune.t	.tygvar
@@ -212,7 +214,7 @@ test.true	.gvar
 v	.larg	gsdl.var.t
 	.enter	test.true
 
-# §section §gs{qq{ibio.dir} =~ var}
+-- §section §gs{qq{ibio.dir} =~ var}
 
 _test.parse.var.qualified_c	.expr
 rune.t	.tygvar
@@ -236,7 +238,7 @@ test.true	.gvar
 v	.larg	gsdl.var.t
 	.enter	test.true
 
-# §section §gs{qq{ibio.≡} =~ var}
+-- §section §gs{qq{ibio.≡} =~ var}
 
 _test.parse.var.op_c	.expr
 rune.t	.tygvar
@@ -260,7 +262,7 @@ test.true	.gvar
 v	.larg	gsdl.var.t
 	.enter	test.true
 
-# §section §gs{qq{_ibio.mapM.prim_ty} =~ var}
+-- §section §gs{qq{_ibio.mapM.prim_ty} =~ var}
 
 _test.parse.var.underbarred_c	.expr
 rune.t	.tygvar
@@ -284,7 +286,7 @@ test.true	.gvar
 v	.larg	gsdl.var.t
 	.enter	test.true
 
-# §section §gs{qq{just} =~ stringliteral}
+-- §section §gs{qq{just} =~ stringliteral}
 
 _test.parse.stringliteral_c	.expr
 rune.t	.tygvar

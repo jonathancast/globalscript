@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -26,7 +28,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{qq{\\t.coercion\\n}=~ segment.parser}
+-- §section §gs{qq{\\t.coercion\\n}=~ segment.parser}
 
 _test.parse_segment.empty_c	.expr
 rune.t	.tygvar
@@ -63,7 +65,7 @@ nil	.apply	list.nil	gsdl.ags.coercionitem.t
 	.app	tcs.≡	tcs.fmtgs	tcs	nil
 	.enter	test.assert.eq	coercionsegment_ty
 
-# §section §gs{qq{ibio.out\\t.tycoercion\\n\\t.tydefinition\\tibio.m\\tα\\n} =~ parser}
+-- §section §gs{qq{ibio.out\\t.tycoercion\\n\\t.tydefinition\\tibio.m\\tα\\n} =~ parser}
 
 _test.parse_tycoercion.tydefinition_c	.expr
 rune.t	.tygvar
@@ -87,7 +89,7 @@ test.true	.gvar
 ki	.larg	gsdl.ags.coercionitem.t
 	.enter	test.true
 
-# §section §gs{qq{ibio.out\\t.tycoercion\\nι\\t.tylambda\\t*\\n\\t.tydefinition\\tibio.m\\n} =~ parser}
+-- §section §gs{qq{ibio.out\\t.tycoercion\\nι\\t.tylambda\\t*\\n\\t.tydefinition\\tibio.m\\n} =~ parser}
 
 _test.parse_tycoercion.tylambda_c	.expr
 rune.t	.tygvar
