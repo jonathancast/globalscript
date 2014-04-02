@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -54,10 +54,10 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
 parsed.args	.bind	_real.entry_parsed.args_c	-- §gs{《 §gsinf{List of prefix arguments}, §gsinf{List of CUT arguments}, 》}
-prefix.files	.alloc	_real.entry_prefix.files_c
-cut.files	.alloc	_real.entry_cut.files_c
+prefix.files	.closure	_real.entry_prefix.files_c
+cut.files	.closure	_real.entry_cut.files_c
 cut	.bind	_real.entry_cut_c
-cut.fvs	.alloc	_real.entry_cut.fvs_c
+cut.fvs	.closure	_real.entry_cut.fvs_c
 prefix.loaded	.bind	_real.entry_prefix.loaded_c
 env	.bind	_real.entry_env_c
 output	.bind	_real.entry_output_c
@@ -134,7 +134,7 @@ as1	.fv	list.t	string.t
 is.l0	.karg	bool.prim.u
 	.analyze	is.l0	false	true
 		.case	false
-pre			.alloc	_args.parse_file_pre_c
+pre			.closure	_args.parse_file_pre_c
 ap0			.apply	_args.parse	|	as1
 			.app	pre	ap0
 			.enter	either.map	string.t	_args.parsed.t	_args.parsed.t
@@ -184,7 +184,7 @@ as1.0	.karg	list.prim.u	string.t
 		.case	:
 a1		.fkarg	0	string.t
 as2		.fkarg	1	list.t	string.t
-pre			.alloc	_args.parse_l.option_pre_c
+pre			.closure	_args.parse_l.option_pre_c
 ap0			.apply	_args.parse	|	as2
 			.app	pre	ap0
 			.enter	either.map	string.t	_args.parsed.t	_args.parsed.t
@@ -347,7 +347,7 @@ fns0	.karg	list.prim.u	ibio.file.name.t
 		.case	:
 fn0		.fkarg	0	ibio.file.name.t
 fns1		.fkarg	1	list.t	ibio.file.name.t
-body			.alloc	_prefix.init_:_body_c
+body			.closure	_prefix.init_:_body_c
 			.enter	body
 		.case	nil
 			.lift
@@ -427,7 +427,7 @@ vs0	.karg	list.prim.u	gsdl.cgs.symbol.t
 		.case	:
 v0		.fkarg	0	gsdl.cgs.symbol.t
 vs1		.fkarg	1	list.t	gsdl.cgs.symbol.t
-body			.alloc	_prefix.load_body_c
+body			.closure	_prefix.load_body_c
 			.enter	body
 		.case	nil
 			.lift
@@ -604,7 +604,7 @@ isd			.lfield	isdir	file0
 			.coerce	bool.t.out
 			.enter	isd
 		.case	nil
-res			.alloc	_prefix.load.var_w_false_nil_res_c
+res			.closure	_prefix.load.var_w_false_nil_res_c
 			.enter	res
 
 -- §paragraph{§gs{files} has not been exhausted; branch on whether the next file is a directory}
@@ -638,7 +638,7 @@ loaded			.lfield	files.loaded	pr0
 			.app	ibio.file.name.compare	fn	loaded
 			.enter	ordered.set.elem	ibio.file.name.t
 		.case	true
-res			.alloc	_prefix.load.var_w_false_:_true_res_c
+res			.closure	_prefix.load.var_w_false_:_true_res_c
 			.enter	res
 
 -- §paragraph{Processing a regular file; branch on whether the file has been loaded yet}
@@ -875,7 +875,7 @@ files1	.larg	list.t	_prefix.load.var_w_file_ty
 fn	.larg	ibio.file.name.t
 isags	.larg	bool.t
 file.parsed	.bind	_prefix.load.file_file.parsed_c
-pr0.1	.alloc	_prefix.load.file_pr0.1_c
+pr0.1	.closure	_prefix.load.file_pr0.1_c
 prn3	.bind	_prefix.load.file_prn3_c
 	.body	_prefix.load.file_body_c
 
@@ -1082,7 +1082,7 @@ prn1	.fv	list.t	_real.entry_prefix_ty
 file0	.fv	_prefix.load.var_w_file_ty
 files1	.fv	list.t	_prefix.load.var_w_file_ty
 dirs	.fv	list.t	ibio.dir.t	-- The files in §gs{file0}
-files0.f	.alloc	_prefix.load.var_w_false_:_true_res_body_files0.f_c
+files0.f	.closure	_prefix.load.var_w_false_:_true_res_body_files0.f_c
 files0	.apply	list.filterMap	ibio.dir.t	_prefix.load.var_w_file_ty	|	files0.f	dirs
 files2	.apply	list.<>	_prefix.load.var_w_file_ty	|	files0	files1
 	.app	eo	v	files2	pr0	prn1
@@ -1381,7 +1381,7 @@ e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-res			.alloc	_real.entry_env_left_res_c
+res			.closure	_real.entry_env_left_res_c
 			.enter	res
 		.case	right
 env		.fkarg	0	gsdl.cgs.typeenv.t
@@ -1604,7 +1604,7 @@ res0	.karg	either.prim.u	string.t	gsdl.ags.file.t
 	.analyze	res0	left	right
 		.case	left
 err		.fkarg	0	string.t
-res			.alloc	_real.entry_output_k1_nil_doc_res_c
+res			.closure	_real.entry_output_k1_nil_doc_res_c
 			.enter	res
 		.case	right
 res		.fkarg	0	gsdl.ags.file.t
