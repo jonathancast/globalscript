@@ -464,7 +464,43 @@ The contents of an \stringcode{.impprim} code item will be:
     \item A body expression (section \ref{body}).
 \end{itemize}
 
-\section{Thunk (closure) allocations}
+\section{Global Type Variables}
+\label{code_type_gvar}
+
+These are type variables with definitions that are global in scope,
+as opposed to `free' type variables, which are defined (actually, lambda-bound) in an intermediate enclosing scope.
+
+\subsection{\stringcode{.tygvar}}
+
+\begin{verbatim}
+t	.tygvar
+\end{verbatim}
+
+This declares (a dependency on) the global type variable \stringcode{t},
+which is any type label defined at the top level, either a type synonym or an abstract type (= type constant).
+
+\subsection{\stringcode{.tyextabstype}}
+
+\begin{verbatim}
+t	.tyextabstype	ki
+\end{verbatim}
+
+This declares \stringcode{t} to be specifically the type constant \stringcode{t},
+which must have kind \stringcode{ki} (see section \ref{kinds}).
+This construct allows the string compiler to produce output files that are relatively independent of each other.
+
+\subsection{\stringcode{.tyextelimprim}}
+
+\begin{verbatim}
+t	.tyextelimprim	ps	pn	ki
+\end{verbatim}
+
+This declares \stringcode{t} to be the elimination primitive type \stringcode{pn} from primitive set \stringcode{ps},
+with kinds \stringcode{ki}.
+This isn't really an external dependency;
+it's more a kind of type literal, that simplifies the implementation of the string compiler.
+
+\section{Thunk (Closure) Allocations}
 \label{thunk_alloc}
 
 These are actually just the allocations that are supported in both expressions and in imperative block statements.
@@ -575,26 +611,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-
-static
-int
-gsparse_code_type_gvar_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymtygvar;
-
-    if (gssymceq(parsedline->directive, gssymtygvar, gssymcodeop, ".tygvar")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .tygvar op", pos->real_filename, pos->real_lineno);
-        if (n > 2)
-            gsfatal("%s:%d: Too many arguments to .tygvar op", pos->real_filename, pos->real_lineno)
-        ;
-    } else {
-        return 0;
-    }
-    return 1;
-}
 
 static
 int
