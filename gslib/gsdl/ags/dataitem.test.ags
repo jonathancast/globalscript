@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -6,7 +8,7 @@
 
 _tests	.list	test.property.t	_test.eq	_test.parse	_test.fmtgs
 
-# §section §gs{≡}
+-- §section §gs{≡}
 
 _test.eq	.closure	_test.eq_c
 _tests.eq	.list	test.property.t	_test.eq.undefined.diff.ty	_test.eq.closure.diff.ty
@@ -23,7 +25,7 @@ _test.eq.closure.diff.ty_label	.string	closure\sgsv{_foo_c}\snothing\s≡\sclosu
 _test.eq.closure.diff.ty_false	.string	closure\sgsv{_foo_c}\snothing\s≠\sclosure\sgsv{_foo_c}\s(just\sgsv{_foo_ty})
 _test.eq.closure.diff.ty_true	.string	closure\sgsv{_foo_c}\snothing\s≡\sclosure\sgsv{_foo_c}\s(just\sgsv{_foo_ty})
 
-# §section Parsers
+-- §section Parsers
 
 _test.parse	.closure	_test.parse_c
 
@@ -52,7 +54,7 @@ _test.parse.list	.closure	_test.parse.list_c
 _test.parse.list_label	.string	qq{_tests\\t.list\\ttest.property.t\\t_test.x.eq.x\\n}\s=~\sparser
 _test.parse.list_input	.string	_tests\t.list\ttest.property.t\t_test.x.eq.x\n
 
-# §section §gs{fmtgs}
+-- §section §gs{fmtgs}
 
 _test.fmtgs	.closure	_test.fmtgs_c
 _tests.fmtgs	.list	test.property.t	_test.fmtgs.undefined
@@ -63,7 +65,7 @@ _test.fmtgs.undefined_file.s	.string	./foo
 _test.fmtgs.undefined_foo.s	.string	foo
 _test.fmtgs.undefined_expected	.string	undefined\s〈\s'file\s∝\sfn<./foo>;\s'0.line\s∝\s1;\s'0.col\s∝\s1;\s〉\snothing\sgsv{foo}
 
-# §section Test fixtures
+-- §section Test fixtures
 
 _fixtures_foo.v	.closure	_fixtures_foo.v_c
 _fixtures_foo.v_foo.s	.string	foo
@@ -80,7 +82,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{≡}
+-- §section §gs{≡}
 
 _test.eq_c	.expr
 test.all	.gvar
@@ -88,7 +90,7 @@ _tests.eq	.gvar
 	.app	_tests.eq
 	.enter	test.all
 
-# §subsection §gs{undefined qq{foo} ≡ undefined qq{bar}}
+-- §subsection §gs{undefined qq{foo} ≡ undefined qq{bar}}
 
 _test.eq.undefined.diff.ty_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -122,7 +124,7 @@ test	.apply	test.deny	|	_test.eq.undefined.diff.ty_false	_test.eq.undefined.diff
 	.app	_test.eq.undefined.diff.ty_label	test
 	.enter	test.property.label
 
-# §subsection §gs{closure qq{_foo_c} nothing ≡ closure qq{_foo_c} (just qq{_foo_ty})}
+-- §subsection §gs{closure qq{_foo_c} nothing ≡ closure qq{_foo_c} (just qq{_foo_ty})}
 
 _test.eq.closure.diff.ty_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -148,7 +150,7 @@ test	.apply	test.deny	|	_test.eq.closure.diff.ty_false	_test.eq.closure.diff.ty_
 	.app	_test.eq.closure.diff.ty_label	test
 	.enter	test.property.label
 
-# §section Parsers
+-- §section Parsers
 
 _test.parse_c	.expr
 test.all	.gvar
@@ -156,7 +158,7 @@ _tests.parse	.gvar
 	.app	_tests.parse
 	.enter	test.all
 
-# §subsection §gs{segment.parser =~ qq{}}
+-- §subsection §gs{segment.parser =~ qq{}}
 
 _test.parse.missing.gsdata.segment_c	.expr
 rune.t	.tygvar
@@ -198,7 +200,7 @@ nil	.apply	list.nil	gsdl.ags.dataitem.t
 	.app	ds.≡	ds.fmtgs	das	nil
 	.enter	test.assert.eq	datasegment_ty
 
-# §subsection §gs{segment.parser =~ qq{\\t.data\\n}}
+-- §subsection §gs{segment.parser =~ qq{\\t.data\\n}}
 
 _test.parse.empty.gsdata.segment_c	.expr
 rune.t	.tygvar
@@ -239,7 +241,7 @@ nil	.apply	list.nil	gsdl.ags.dataitem.t
 	.app	ds.≡	ds.fmtgs	das	nil
 	.enter	test.assert.eq	datasegment_ty
 
-# §subsection §gs{parser =~ qq{foo\\t.closure\\t_foo_c\\n}}
+-- §subsection §gs{parser =~ qq{foo\\t.closure\\t_foo_c\\n}}
 
 _test.parse.closure_c	.expr
 rune.t	.tygvar
@@ -259,7 +261,7 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.a
 	.app	_test.parse.closure_label	test
 	.enter	test.property.label
 
-# foo	.closure	_foo_c
+-- foo	.closure	_foo_c
 _test.parse.closure_k_c	.expr
 gsdl.ags.dataitem.t	.tygvar
 gsdl.sourcepos.t	.tygvar
@@ -280,7 +282,7 @@ expected	.apply	gsdl.ags.dataitem.closure	|	pos	just.foo.s	_fixtures_foo.c.v	not
 	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
 	.enter	test.assert.eq	gsdl.ags.dataitem.t
 
-# §subsection §gs{parser =~ qq{\\t.closure\\t_foo_c\\n}}
+-- §subsection §gs{parser =~ qq{\\t.closure\\t_foo_c\\n}}
 
 _test.parse.closure.nolabel_c	.expr
 rune.t	.tygvar
@@ -300,7 +302,7 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.a
 	.app	_test.parse.closure.nolabel_label	test
 	.enter	test.property.label
 
-# foo	.closure	_foo_c
+-- foo	.closure	_foo_c
 _test.parse.closure.nolabel_k_c	.expr
 gsdl.ags.dataitem.t	.tygvar
 gsdl.sourcepos.t	.tygvar
@@ -318,7 +320,7 @@ expected	.apply	gsdl.ags.dataitem.closure	|	pos	nothing	_fixtures_foo.c.v	nothin
 	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
 	.enter	test.assert.eq	gsdl.ags.dataitem.t
 
-# §subsection §gs{qq{foo\\t.closure\\t_foo_c\\t_foo_ty\\n} =~ parser}
+-- §subsection §gs{qq{foo\\t.closure\\t_foo_c\\t_foo_ty\\n} =~ parser}
 
 _test.parse.closure.typesig_c	.expr
 rune.t	.tygvar
@@ -358,7 +360,7 @@ expected	.apply	gsdl.ags.dataitem.closure	|	pos	just.foo.s	_fixtures_foo.c.v	jus
 	.app	gsdl.ags.dataitem.≡	gsdl.ags.dataitem.fmtgs	di	expected
 	.enter	test.assert.eq	gsdl.ags.dataitem.t
 
-# §subsection §gs{qq{_tests\\t.list\\ttest.property.t\\t_test.x.eq.x\\n} =~ parser}
+-- §subsection §gs{qq{_tests\\t.list\\ttest.property.t\\t_test.x.eq.x\\n} =~ parser}
 
 _test.parse.list_c	.expr
 rune.t	.tygvar
@@ -384,7 +386,7 @@ test.true	.gvar
 di	.larg	gsdl.ags.dataitem.t
 	.enter	test.true
 
-# §section §gs{fmtgs}
+-- §section §gs{fmtgs}
 
 _test.fmtgs_c	.expr
 test.all	.gvar
@@ -392,7 +394,7 @@ _tests.fmtgs	.gvar
 	.app	_tests.fmtgs
 	.enter	test.all
 
-# §subsection §gs{fmtgs (undefined 〈 'file ∝ fn<./foo>; '0.line ∝ 1; '0.col ∝ 1; 〉 qq{foo})}
+-- §subsection §gs{fmtgs (undefined 〈 'file ∝ fn<./foo>; '0.line ∝ 1; '0.col ∝ 1; 〉 qq{foo})}
 
 _test.fmtgs.undefined_c	.expr
 string.t	.tygvar
@@ -430,7 +432,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 	.app	_test.fmtgs.undefined_label	test
 	.enter	test.property.label
 
-# §section Test Fixtures
+-- §section Test Fixtures
 
 _fixtures_foo.v_c	.expr
 gsdl.var.component.t	.tygvar

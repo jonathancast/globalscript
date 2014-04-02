@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -126,7 +128,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{qq{\\t.type\\n}=~ segment.parser}
+-- §section §gs{qq{\\t.type\\n}=~ segment.parser}
 
 _test.parse_segment.empty_c	.expr
 rune.t	.tygvar
@@ -163,7 +165,7 @@ nil	.apply	list.nil	gsdl.ags.typeitem.t
 	.app	ts.≡	ts.fmtgs	tys	nil
 	.enter	test.assert.eq	typesegment_ty
 
-# §section §gs{qq{u} =~ gskind.parser}
+-- §section §gs{qq{u} =~ gskind.parser}
 
 _test.parse.kind.u_c	.expr
 rune.t	.tygvar
@@ -187,7 +189,7 @@ test.true	.gvar
 ki	.larg	gsdl.ags.typeitem.gskind.t
 	.enter	test.true
 
-# §section §gs{qq{?} =~ gskind.parser}
+-- §section §gs{qq{?} =~ gskind.parser}
 
 _test.parse.kind.unk_c	.expr
 rune.t	.tygvar
@@ -211,7 +213,7 @@ test.true	.gvar
 ki	.larg	gsdl.ags.typeitem.gskind.t
 	.enter	test.true
 
-# §section §gs{qq{**^} =~ gskind.parser}
+-- §section §gs{qq{**^} =~ gskind.parser}
 
 _test.parse.kind.exp_c	.expr
 rune.t	.tygvar
@@ -245,7 +247,7 @@ test.true	.gvar
 ki0	.karg	gsdl.ags.typeitem.gskind.prim.u
 	.enter	test.true
 
-# §section §gs{gskind.print (exp lifted lifted)}
+-- §section §gs{gskind.print (exp lifted lifted)}
 
 _test.print.kind.exp_c	.expr
 string.t	.tygvar
@@ -267,7 +269,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print
 	.app	_test.print.kind.exp_label	test
 	.enter	test.property.label
 
-# §section §gs{parser}
+-- §section §gs{parser}
 
 _test.parse_c	.expr
 test.property.label	.gvar
@@ -278,7 +280,7 @@ test	.apply	test.all	|	_tests.parse
 	.app	_test.parse_label	test
 	.enter	test.property.label
 
-# §subsection §gs{qq{ibio.dir.t\\t.tyabstract\\t*\\n\\t.tyref\\tα\\n} =~ parser}
+-- §subsection §gs{qq{ibio.dir.t\\t.tyabstract\\t*\\n\\t.tyref\\tα\\n} =~ parser}
 
 _test.parse_tyabstract_c	.expr
 rune.t	.tygvar
@@ -328,7 +330,7 @@ ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 defn		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.enter	test.true
 
-# §subsection §gs{qq{ibio.dir.u\\t.tyexpr\\n\\t.tyref\\tα\\n}\s=~\sparser}
+-- §subsection §gs{qq{ibio.dir.u\\t.tyexpr\\n\\t.tyref\\tα\\n}\s=~\sparser}
 
 _test.parse_tyexpr_c	.expr
 rune.t	.tygvar
@@ -361,7 +363,7 @@ test.true	.gvar
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.enter	test.true
 
-# §subsection §gs{qq{ibio.dir.u\\t.tyexpr\\n_string.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser}
+-- §subsection §gs{qq{ibio.dir.u\\t.tyexpr\\n_string.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser}
 
 _test.parse_tyexpr.tylet_c	.expr
 rune.t	.tygvar
@@ -385,7 +387,7 @@ test.true	.gvar
 ti	.larg	gsdl.ags.typeitem.t
 	.enter	test.true
 
-# §subsection §gs{qq{_ibio.mapM.prim_ty\\t.tyexpr\\nα\\t.tyforall\\t*\\n\\t.tyref\\tibio.prim.t\\tres.ty\\n} =~ expr.parser}
+-- §subsection §gs{qq{_ibio.mapM.prim_ty\\t.tyexpr\\nα\\t.tyforall\\t*\\n\\t.tyref\\tibio.prim.t\\tres.ty\\n} =~ expr.parser}
 
 _test.parse_tyexpr.tyforall_c	.expr
 rune.t	.tygvar
@@ -409,7 +411,7 @@ test.true	.gvar
 ki	.larg	gsdl.ags.typeitem.t
 	.enter	test.true
 
-# §subsection §gs{qq{\\t.tyfun\\tibio.prim.iport\\tι\\n\\t.tyref\\tibio.prim.m\\n} =~ expr.parser}
+-- §subsection §gs{qq{\\t.tyfun\\tibio.prim.iport\\tι\\n\\t.tyref\\tibio.prim.m\\n} =~ expr.parser}
 
 _test.parse_tyexpr.tyfun_c	.expr
 rune.t	.tygvar
@@ -433,7 +435,7 @@ test.true	.gvar
 ki	.larg	gsdl.ags.typeitem.expr.t
 	.enter	test.true
 
-# §subsection §gs{qq{\\t.typroduct\\tatime\\ttime.t\\n} =~ expr.parser}
+-- §subsection §gs{qq{\\t.typroduct\\tatime\\ttime.t\\n} =~ expr.parser}
 
 _test.parse_tyexpr.typroduct_c	.expr
 rune.t	.tygvar
@@ -457,7 +459,7 @@ test.true	.gvar
 ki	.larg	gsdl.ags.typeitem.expr.t
 	.enter	test.true
 
-# §subsection §gs{qq{\\t.tyubsum\\t0\\trecord.unboxed.empty\\n} =~ expr.parser}
+-- §subsection §gs{qq{\\t.tyubsum\\t0\\trecord.unboxed.empty\\n} =~ expr.parser}
 
 _test.parse_tyexpr.tyubsum_c	.expr
 rune.t	.tygvar
@@ -481,7 +483,7 @@ test.true	.gvar
 ki	.larg	gsdl.ags.typeitem.expr.t
 	.enter	test.true
 
-# §subsection §gs{qq{rune.prim.rune\\t.tydefinedprim\\trune.prim\\trune\\t*\\n} =~ expr.parser}
+-- §subsection §gs{qq{rune.prim.rune\\t.tydefinedprim\\trune.prim\\trune\\t*\\n} =~ expr.parser}
 
 _test.parse_tydefinedprim_c	.expr
 rune.t	.tygvar
@@ -514,7 +516,7 @@ test.true	.gvar
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.enter	test.true
 
-# §subsection §gs{qq{ibio.prim.oport\\t.tyelimprim\\tibio.prim\\toport\\tu*^\\n} =~ expr.parser}
+-- §subsection §gs{qq{ibio.prim.oport\\t.tyelimprim\\tibio.prim\\toport\\tu*^\\n} =~ expr.parser}
 
 _test.parse_tyelimprim_c	.expr
 rune.t	.tygvar
@@ -547,7 +549,7 @@ test.true	.gvar
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.enter	test.true
 
-# §subsection §gs{qq{ibio.prim.m\\t.tyimpprim\\tibio.prim\\tibio\\tu?^\\n} =~ expr.parser}
+-- §subsection §gs{qq{ibio.prim.m\\t.tyimpprim\\tibio.prim\\tibio\\tu?^\\n} =~ expr.parser}
 
 _test.parse_tyimpprim_c	.expr
 rune.t	.tygvar
@@ -580,7 +582,7 @@ test.true	.gvar
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.enter	test.true
 
-# §subsection §gs{qq{ibio.prim.external.io\\t.tyintrprim\\tibio.prim\\texternal.io\\tu*^\\n} =~ expr.parser}
+-- §subsection §gs{qq{ibio.prim.external.io\\t.tyintrprim\\tibio.prim\\texternal.io\\tu*^\\n} =~ expr.parser}
 
 _test.parse_tyintrprim_c	.expr
 rune.t	.tygvar
@@ -613,7 +615,7 @@ test.true	.gvar
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.enter	test.true
 
-# §section §gs{print}
+-- §section §gs{print}
 
 _test.print_c	.expr
 test.property.label	.gvar
@@ -624,7 +626,7 @@ test	.apply	test.all	|	_tests.print
 	.app	_test.print_label	test
 	.enter	test.property.label
 
-# §subsection §ags{.tyexpr}s
+-- §subsection §ags{.tyexpr}s
 
 _test.print_tyexpr_c	.expr
 string.t	.tygvar
@@ -689,7 +691,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print
 	.app	_test.print_tyexpr_label	test
 	.enter	test.property.label
 
-# §subsection §ags{.tyextabstype}s
+-- §subsection §ags{.tyextabstype}s
 
 _test.print_tyexpr.tyextabstype_c	.expr
 string.t	.tygvar
@@ -757,7 +759,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print
 	.app	_test.print_tyexpr.tyextabstype_label	test
 	.enter	test.property.label
 
-# §subsection §ags{.tygvar}s
+-- §subsection §ags{.tygvar}s
 
 _test.print_tyexpr.tygvar_c	.expr
 string.t	.tygvar
@@ -824,7 +826,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print
 	.app	_test.print_tyexpr.tygvar_label	test
 	.enter	test.property.label
 
-# §section §gs{print (tyref tyf [ arg ])}
+-- §section §gs{print (tyref tyf [ arg ])}
 
 _test.print.expr.tyref.tyarg_c	.expr
 string.t	.tygvar
@@ -859,7 +861,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.print
 	.app	_test.print.expr.tyref.tyarg_label	test
 	.enter	test.property.label
 
-# §section §gs{decls.fmtgs 〈〉}
+-- §section §gs{decls.fmtgs 〈〉}
 
 _test.decls.fmtgs_c	.expr
 string.t	.tygvar

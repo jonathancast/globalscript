@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -7,13 +9,13 @@ _gsdl.ags.sourcepos.print_line.s	.string	\t.line\t
 
 	.code
 
-# §section §gs{gsdl.ags.sourcepos.print}
+-- §section §gs{gsdl.ags.sourcepos.print}
 
 _gsdl.ags.sourcepos.print_c	.expr
 gsdl.sourcepos.t	.tygvar
 rune.t	.tygvar
-diff.list.t	.tygvar	# Temp
-list.t	.tygvar	# Temp
+diff.list.t	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
 diff.list.prepend	.gvar
 _gsdl.ags.sourcepos.print_line.s	.gvar
 ibio.file.name.out	.gvar

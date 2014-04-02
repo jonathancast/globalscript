@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -56,7 +58,7 @@ gsdl.ags.file.filetype.gsprefix	.closure	_gsdl.ags.file.filetype.gsprefix_c
 
 	.code
 
-# §section §gs{gsdl.ags.file.print}
+-- §section §gs{gsdl.ags.file.print}
 
 _gsdl.ags.file.print_c	.expr
 gsdl.ags.file.t	.tygvar
@@ -76,7 +78,7 @@ file0.s	.apply	_gsdl.ags.file.print_filetype	|	file0
 	.app	_gsdl.ags.file.print_calculus.s	file0.s
 	.enter	list.<>	rune.t
 
-# §subsection §gs{_gsdl.ags.file.print_filetype}
+-- §subsection §gs{_gsdl.ags.file.print_filetype}
 
 _gsdl.ags.file.print_filetype_c	.expr
 gsdl.ags.file.prim.u	.tygvar
@@ -92,7 +94,7 @@ _gsdl.ags.file.print_filetype_k	.forcecont
 gsdl.ags.file.prim.u	.tygvar
 gsdl.ags.file.filetype.prim.u	.tygvar
 rune.t	.tygvar
-string.t	.tygvar	# Temp
+string.t	.tygvar	-- Temp
 list.<>	.gvar
 _gsdl.ags.file.print_filetype_doc.s	.gvar
 _gsdl.ags.file.print_datasection	.gvar
@@ -106,9 +108,9 @@ k	.apply	_gsdl.ags.file.print_datasection	|	file0	ds
 			.enter	list.<>	rune.t
 		.case	gsprefix
 			.undef	string.t
-	# > :: string.t
+	-- > :: string.t
 
-# §subsection §gs{_gsdl.ags.file.print_datasection}
+-- §subsection §gs{_gsdl.ags.file.print_datasection}
 
 _gsdl.ags.file.print_datasection_c	.expr
 gsdl.ags.file.prim.u	.tygvar
@@ -247,7 +249,7 @@ s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print_dataitems_:_undef.s	s0.2
 s0			.apply	nm.s	|	s0.1
 			.app	pos	s0
 			.enter	gsdl.ags.sourcepos.print
-	# > :: string.t
+	-- > :: string.t
 
 _gsdl.ags.file.print_dataitems_:_closure_ty.s.print_c	.expr
 gsdl.var.t	.tygvar
@@ -472,7 +474,7 @@ cos1		.fkarg	1	list.t	gsdl.ags.coercionitem.t
 		.case	nil
 			.enter	list.nil	rune.t
 
-# §section §gs{gsdl.ags.file.parser}
+-- §section §gs{gsdl.ags.file.parser}
 
 _gsdl.ags.file.parser_c	.expr
 bool.t	.tygvar
@@ -491,7 +493,7 @@ gsdl.ags.dataitem.segment.parser	.gvar
 gsdl.ags.codeitem.segment.parser	.gvar
 gsdl.ags.typeitem.segment.parser	.gvar
 gsdl.ags.coercionitem.segment.parser	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 _dataitems_ty	.tylet	list.t	gsdl.ags.dataitem.t
 _codeitems_ty	.tylet	list.t	gsdl.ags.codeitem.t
 _typeitems_ty	.tylet	list.t	gsdl.ags.typeitem.t
@@ -518,7 +520,7 @@ res	.record	codesection	cos	coercionsection	tycos	datasection	das	filetype	ty	ty
 	.lift
 	.yield	res
 
-# §section §gs{gsdl.ags.file.fmtgs}
+-- §section §gs{gsdl.ags.file.fmtgs}
 
 _gsdl.ags.file.fmtgs_c	.expr
 gsdl.ags.file.t	.tygvar
@@ -526,7 +528,7 @@ rune.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-fmtgs.t	.tygvar	# Temp
+fmtgs.t	.tygvar	-- Temp
 fmtgs.prec	.gvar
 fmtgs.prec.arg	.gvar
 diff.list.prepend	.gvar
@@ -571,7 +573,7 @@ ds	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.file.fmtgs_prefix.s	ds1
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
 
-# §section §gs{gsdl.ags.file.filetype.parser}
+-- §section §gs{gsdl.ags.file.filetype.parser}
 
 _gsdl.ags.file.filetype.parser_c	.expr
 rune.t	.tygvar
@@ -589,7 +591,7 @@ gsdl.ags.syntax.columnsep	.gvar
 _gsdl.ags.file.filetype.parser_gsdocument.re	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
 gsdl.ags.syntax.whitespace	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 m.gsprefix	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.file.filetype.parser_gsprefix.re
 unit.gsprefix	.apply	parser.unit	rune.t	gsdl.ags.file.filetype.t	|	gsdl.ags.file.filetype.gsprefix
 prefix.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.file.filetype.t	|	m.gsprefix	unit.gsprefix
@@ -601,7 +603,7 @@ p1	.apply	parser.<|>	rune.t	gsdl.ags.file.filetype.t	|	prefix.p	doc.p
 	.app	p1	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.file.filetype.t	string.t
 
-# §section §gs{gsdl.ags.file.filetype.≡}
+-- §section §gs{gsdl.ags.file.filetype.≡}
 
 _gsdl.ags.file.filetype.≡_c	.expr
 gsdl.ags.file.filetype.t	.tygvar
@@ -626,7 +628,7 @@ ft0.0	.karg	gsdl.ags.file.filetype.prim.u
 
 _gsdl.ags.file.filetype.≡_k1	.forcecont
 gsdl.ags.file.filetype.prim.u	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 bool.true	.gvar
 ft0.0	.fv	gsdl.ags.file.filetype.prim.u
 ft1.0	.karg	gsdl.ags.file.filetype.prim.u
@@ -639,9 +641,9 @@ ft1.0	.karg	gsdl.ags.file.filetype.prim.u
 					.enter	bool.true
 		.case	gsprefix
 			.undef	bool.t
-	# > :: bool.t
+	-- > :: bool.t
 
-# §section §gs{gsdl.ags.file.filetype.fmtgs}
+-- §section §gs{gsdl.ags.file.filetype.fmtgs}
 
 _gsdl.ags.file.filetype.fmtgs_c	.expr
 gsdl.ags.file.filetype.t	.tygvar
@@ -655,7 +657,7 @@ ty	.larg	gsdl.ags.file.filetype.t
 _gsdl.ags.file.filetype.fmtgs_k	.forcecont
 gsdl.ags.file.filetype.prim.u	.tygvar
 rune.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+fmtgs.printer.t	.tygvar	-- Temp
 fmtgs.prec	.gvar
 fmtgs.prec.arg	.gvar
 diff.list.fromlist	.gvar
@@ -668,9 +670,9 @@ ds			.apply	diff.list.fromlist	rune.t	|	_gsdl.ags.file.filetype.fmtgs_gsdocument
 			.enter	fmtgs.prec
 		.case	gsprefix
 			.undef	fmtgs.printer.t
-	# > :: fmtgs.printer.t
+	-- > :: fmtgs.printer.t
 
-# §section §gs{gsdl.ags.file.filetype.t} Constructors
+-- §section §gs{gsdl.ags.file.filetype.t} Constructors
 
 _gsdl.ags.file.filetype.gsdocument_c	.expr
 gsdl.ags.file.filetype.prim.u	.tygvar
@@ -717,7 +719,7 @@ gsdl.ags.file.filetype.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
 	.tysum	gsdocument	record.unboxed.empty	gsprefix	record.unboxed.empty
 
-# §section §gs{gsdl.ags.file.print}
+-- §section §gs{gsdl.ags.file.print}
 
 _gsdl.ags.file.print_dataitems_ty	.tyexpr
 gsdl.ags.file.prim.u	.tygvar
