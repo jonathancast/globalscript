@@ -496,9 +496,25 @@ t	.tyextelimprim	ps	pn	ki
 \end{verbatim}
 
 This declares \stringcode{t} to be the elimination primitive type \stringcode{pn} from primitive set \stringcode{ps},
-with kinds \stringcode{ki}.
+with kinds \stringcode{ki} (see section \ref{kinds}).
 This isn't really an external dependency;
 it's more a kind of type literal, that simplifies the implementation of the string compiler.
+
+\section{Free Type Variables}
+\label{type_fv}
+
+These are type variables that are lambda-bound in an enclosing expression.
+These should only be lambda-bound variables, and not let-defined variables, because string code is typed bottom-up,
+which means each code item is typed (in terms of its free type variables) first, then that type is used to type-check the enclosing context.
+This means that free type variables will be treated as lambda-bound regardless of how they are actually defined.
+
+\subsection{\stringcode{.tyfv}}
+
+\begin{verbatim}
+t	.tyfv	ki
+\end{verbatim}
+
+This declares \stringcode{t} to be a free type variable of kind \stringcode{ki} (see section \ref{kinds}).
 
 \section{Thunk (Closure) Allocations}
 \label{thunk_alloc}
@@ -611,30 +627,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-
-static
-int
-gsparse_code_type_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymtyfv;
-
-    if (gssymceq(parsedline->directive, gssymtyfv, gssymcodeop, ".tyfv")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .tyfv op", pos->real_filename, pos->real_lineno);
-        if (n < 3)
-            gsfatal("%s:%d: Missing kind on .tyfv", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
-        if (n > 4)
-            gsfatal("%s:%d: Too many arguments to .tyfv", pos->real_filename, pos->real_lineno)
-        ;
-    } else {
-        return 0;
-    }
-    return 1;
-}
 
 static
 int
