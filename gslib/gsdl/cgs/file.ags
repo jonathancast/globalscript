@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -16,7 +18,7 @@ gsdl.cgs.blank.line	.closure	_gsdl.cgs.blank.line_c	_gsdl.cgs.blank.line_ty
 
 	.code
 
-# §section §gs{gsdl.cgs.file.read}
+-- §section §gs{gsdl.cgs.file.read}
 
 _gsdl.cgs.file.read_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
@@ -109,10 +111,10 @@ msg	.apply	list.<>	rune.t	|	err	_gsdl.cgs.file.read_i_body_0_res_print_msg_suffi
 	.yield	ibio.prim.write	rune.t
 
 _gsdl.cgs.file.read_i_body_0_res_body_c	.expr
-ibio.prim.t	.tygvar	# Temp
-ibio.prim.iport	.tygvar	# Temp
-rune.t	.tygvar	# Temp
-res.ty	.tylet	ibio.prim.iport	rune.t	# Temp
+ibio.prim.t	.tygvar	-- Temp
+ibio.prim.iport	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+res.ty	.tylet	ibio.prim.iport	rune.t	-- Temp
 	.undef	ibio.prim.t	res.ty
 
 _gsdl.cgs.file.read_pr.ls_c	.expr
@@ -230,7 +232,7 @@ pr.pos.1			.lrecord	pos	pos1	pragmas	prs
 pos			.lfield	pos	p
 pragmas			.lfield	pragmas	p
 pos1			.apply	parser.pos.next.col	|	pos
-parser			.apply	gsdl.cgs.pragma.parse	# §todo{Should be §gs{gsdl.cgs.syntax.ws *> gsdl.cgs.pragma.parse}}
+parser			.apply	gsdl.cgs.pragma.parse	-- §todo{Should be §gs{gsdl.cgs.syntax.ws *> gsdl.cgs.pragma.parse}}
 			.force	_gsdl.cgs.file.read_pragmas.pos_insert_k2
 			.coerce	either.t.out	parser.err.t	_gsdl.cgs.pragma.parse_res_ty
 			.app	parser.rune.advance	rune.print	pos1	parser	l1
@@ -465,7 +467,7 @@ ibio.prim.t	.tygvar
 gsdl.cgs.file.t	.tygvar
 	.undef	ibio.prim.t	gsdl.cgs.file.t
 
-# §section §gs{gsdl.cgs.file.freevars}
+-- §section §gs{gsdl.cgs.file.freevars}
 
 _gsdl.cgs.file.freevars_c	.expr
 gsdl.cgs.file.t	.tygvar
@@ -481,8 +483,8 @@ file	.larg	gsdl.cgs.file.t
 _gsdl.cgs.file.freevars_k	.forcecont
 gsdl.cgs.file.prim.u	.tygvar
 gsdl.cgs.document.t	.tygvar
-ordered.set.t	.tygvar	# Temp
-gsdl.cgs.symbol.t	.tygvar	# Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
 gsdl.cgs.document.freevars	.gvar
 file.0	.karg	gsdl.cgs.file.prim.u
 	.analyze	file.0	document
@@ -490,9 +492,9 @@ file.0	.karg	gsdl.cgs.file.prim.u
 doc		.fkarg	0	gsdl.cgs.document.t
 			.app	doc
 			.enter	gsdl.cgs.document.freevars
-	# > :: ordered.set.t	gsdl.cgs.symbol.t
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsdl.cgs.file.document.t} Constructors
+-- §section §gs{gsdl.cgs.file.document.t} Constructors
 
 _gsdl.cgs.file.document_c	.expr
 gsdl.cgs.document.t	.tygvar
@@ -504,7 +506,7 @@ c	.constr	gsdl.cgs.file.prim.u	document	0	d
 	.lift
 	.yield	c
 
-# §section §gs{gsdl.cgs.pragma.line}
+-- §section §gs{gsdl.cgs.pragma.line}
 
 _gsdl.cgs.pragma.line_c	.expr
 ibio.lex.lexeme.t	.tygvar
@@ -527,7 +529,7 @@ cons.hash	.apply	ibio.lex.receiver.lexeme.<*>	rune.t	rune.t	_gsdl.cgs.pragma.lin
 	.app	cons.hash	ibio.lex.receiver.line.non.empty
 	.enter	ibio.lex.receiver.lexeme.<*>	rune.t	string.ty	string.ty
 
-# §section §gs{gsdl.cgs.blank.line}
+-- §section §gs{gsdl.cgs.blank.line}
 
 _gsdl.cgs.blank.line_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
@@ -556,7 +558,7 @@ eolr	.apply	ibio.lex.receiver.lexeme.lift.2	rune.t	rune.t	string.ty	string.ty	|	
 
 	.type
 
-# §section §gs{gsdl.cgs.file.t}
+-- §section §gs{gsdl.cgs.file.t}
 
 gsdl.cgs.file.t	.tyabstract	*
 gsdl.cgs.file.prim.u	.tygvar
@@ -571,7 +573,7 @@ _gsdl.cgs.file.prim.u_document_ty	.tyexpr
 gsdl.cgs.document.t	.tygvar
 	.tyubproduct	0	gsdl.cgs.document.t
 	
-# §section §gs{gsdl.cgs.file.read}
+-- §section §gs{gsdl.cgs.file.read}
 
 _gsdl.cgs.file.read_pragmas.pos_ty	.tyexpr
 _gsdl.cgs.file.read_pragmas.pos_u	.tygvar
@@ -588,7 +590,7 @@ string.ty	.tylet	list.t	rune.t
 pragmas_ty	.tylet	ordered.map.t	string.ty	gsdl.cgs.pragma.t
 	.typroduct	pos	parser.pos.t	pragmas	pragmas_ty
 
-# §section §gs{gsdl.cgs.pragma.line}
+-- §section §gs{gsdl.cgs.pragma.line}
 
 _gsdl.cgs.pragma.line_cons_res.ty	.tyexpr
 rune.t	.tygvar
