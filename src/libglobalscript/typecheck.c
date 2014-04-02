@@ -2858,14 +2858,13 @@ struct gsbc_typecheck_impprog_closure {
 static void gsbc_setup_code_impprog_closure(struct gsbc_typecheck_impprog_closure *, gsinterned_string, gsinterned_string);
 
 static int gsbc_typecheck_bind_op(struct gsfile_symtable *, struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *, struct gsbc_typecheck_impprog_closure *);
+static struct gstype *gsbc_typecheck_body_op(struct gsparsedline *, struct gsbc_typecheck_code_or_api_expr_closure *, struct gsbc_typecheck_impprog_closure *);
 
 static void gsbc_check_api_free_variable_decls(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int *);
 
 struct gsbc_code_item_type *
 gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, uint features, struct gsparsedfile_segment **ppseg, struct gsparsedline *p, gsinterned_string primsetname, gsinterned_string prim)
 {
-    static gsinterned_string gssymbody;
-
     struct gsbc_typecheck_code_or_api_expr_closure cl;
     struct gsbc_typecheck_impprog_closure impcl;
 
@@ -2887,28 +2886,10 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, uint
     )
         p = gsinput_next_line(ppseg, p)
     ;
-    for (; ; p = gsinput_next_line(ppseg, p)) {
-        if (gssymceq(p->directive, gssymbody, gssymcodeop, ".body")) {
-            int creg = 0;
-            struct gsbc_code_item_type *cty;
 
-            gsargcheck(p, 0, "code");
-            creg = gsbc_find_register(p, cl.coderegs, cl.ncodes, p->arguments[0]);
-            cty = gsbc_typecheck_copy_code_item_type(cl.codetypes[creg]);
-
-            gsbc_typecheck_free_type_variables(&cl, p, cty);
-            gsbc_typecheck_free_variables(&cl, p, cty);
-            gsbc_check_api_free_variable_decls(&cl, p, p->arguments[0], cty, impcl.bind_bound);
-            calculated_type = cty->result_type;
-
-            gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, primsetname, prim, impcl.nbinds == 0 ? &impcl.first_rhs_lifted : 0);
-            goto have_type;
-        } else {
-            gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y)"), p->pos, p->directive);
-        }
-    }
-
-have_type:
+    if (!(calculated_type = gsbc_typecheck_body_op(p, &cl, &impcl)))
+        gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y)"), p->pos, p->directive)
+    ;
 
     if (impcl.first_rhs_lifted) {
         if (calculated_type->node != gstype_lift)
@@ -2972,6 +2953,33 @@ gsbc_typecheck_bind_op(struct gsfile_symtable *symtable, struct gsparsedline *p,
         return 0;
     }
     return 1;
+}
+
+struct gstype *
+gsbc_typecheck_body_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl)
+{
+    static gsinterned_string gssymbody;
+
+    if (gssymceq(p->directive, gssymbody, gssymcodeop, ".body")) {
+        int creg = 0;
+        struct gsbc_code_item_type *cty;
+        struct gstype *calculated_type;
+
+        gsargcheck(p, 0, "code");
+        creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
+        cty = gsbc_typecheck_copy_code_item_type(pcl->codetypes[creg]);
+
+        gsbc_typecheck_free_type_variables(pcl, p, cty);
+        gsbc_typecheck_free_variables(pcl, p, cty);
+        gsbc_check_api_free_variable_decls(pcl, p, p->arguments[0], cty, pimpcl->bind_bound);
+        calculated_type = cty->result_type;
+
+        gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, pimpcl->primsetname, pimpcl->prim, pimpcl->nbinds == 0 ? &pimpcl->first_rhs_lifted : 0);
+
+        return calculated_type;
+    }
+
+    return 0;
 }
 
 static struct gsbc_code_item_type *gsbc_typecheck_alloc_code_item_type(int, int);
