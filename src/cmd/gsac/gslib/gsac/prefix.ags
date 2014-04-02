@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -240,7 +240,7 @@ e0	.karg	either.prim.u	parser.err.t	gsdl.ags.file.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	parser.err.t
-res			.alloc	_gsac.prefix.file.load_body_left_c
+res			.closure	_gsac.prefix.file.load_body_left_c
 			.enter	res
 		.case	right
 file		.fkarg	0	gsdl.ags.file.t
@@ -304,7 +304,7 @@ file0	.karg	gsdl.ags.file.prim.u
 cvars	.apply	ordered.set.empty	gsdl.cgs.symbol.t	-- FIXME
 union.symbol	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
 empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-tys.bvars.f	.alloc	_gsac.prefix.file.boundvars_tys.bvars.f_c
+tys.bvars.f	.closure	_gsac.prefix.file.boundvars_tys.bvars.f_c
 tys	.field	typesection	file0
 tys.bvars	.apply	list.map	gsdl.ags.typeitem.t	set.symbol.ty	|	tys.bvars.f	tys
 tyvars	.apply	list.foldr	set.symbol.ty	set.symbol.ty	|	union.symbol	empty.symbol	tys.bvars
@@ -419,7 +419,7 @@ set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 file0	.karg	gsdl.ags.file.prim.u
 union.symbol	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
 empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-tys.fvss.f	.alloc	_gsac.prefix.file.interface.freevars_tys.fvss.f_c
+tys.fvss.f	.closure	_gsac.prefix.file.interface.freevars_tys.fvss.f_c
 tys	.field	typesection	file0
 tys.fvss	.apply	list.map	gsdl.ags.typeitem.t	set.symbol.ty	|	tys.fvss.f	tys
 tys.fvs	.apply	list.foldl	set.symbol.ty	set.symbol.ty	|	union.symbol	empty.symbol	tys.fvss
@@ -626,11 +626,11 @@ ft0	.karg	gsdl.ags.file.filetype.prim.u
 		.case	gsdocument
 			.enter	pr
 		.case	gsprefix
-tycs.add			.alloc	_gsac.prefix.file.add_gsprefix_tycs.add_c
+tycs.add			.closure	_gsac.prefix.file.add_gsprefix_tycs.add_c
 pr.typeconstants			.lfield	typeconstants	pr
 file.typesection			.field	typesection	file0
 tycs			.apply	list.foldl	gsdl.ags.typeitem.t	typeconstants.ty	|	tycs.add	pr.typeconstants	file.typesection
-tyfs.add			.alloc	_gsac.prefix.file.add_tyfs.add_c
+tyfs.add			.closure	_gsac.prefix.file.add_tyfs.add_c
 pr.typefunctions			.lfield	typefunctions	pr
 tyfs			.apply	list.foldl	gsdl.ags.typeitem.t	typefunctions.ty	|	tyfs.add	pr.typefunctions	file.typesection
 r			.record	typeconstants	tycs	typefunctions	tyfs	|	gsac.prefix.prim.u
@@ -859,7 +859,7 @@ gsac.prefix.items	.gvar
 scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
 env	.larg	gsdl.cgs.typeenv.t
 pr	.larg	gsac.prefix.t
-get	.alloc	_gsac.prefix.typecheck_get_c
+get	.closure	_gsac.prefix.typecheck_get_c
 pr.items	.apply	gsac.prefix.items	|	pr
 items	.apply	list.map	gsac.prefix.item.t	gsdl.cgs.symbol.t	|	gsac.prefix.item.name	pr.items
 	.force	_gsac.prefix.typecheck_k
