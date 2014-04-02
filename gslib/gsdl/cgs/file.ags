@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.1
+#calculus: gsdl.string-code 0.2
 
 	.prefix
 
@@ -7,7 +7,7 @@
 gsdl.cgs.file.read	.closure	_gsdl.cgs.file.read_c
 _gsdl.cgs.file.read_i_body_0_res_print_msg_suffix.s	.string	\n
 _gsdl.cgs.file.read_parser_document.s	.string	document
-_gsdl.cgs.file.read_parser_no.typepragma.msg	.string	No\s\htype:\sprefix\sor\s\htype:\sdocument\spragma
+_gsdl.cgs.file.read_parser_no.typepragma.msg	.string	No\s#type:\sprefix\sor\s#type:\sdocument\spragma
 
 gsdl.cgs.file.freevars	.closure	_gsdl.cgs.file.freevars_c
 
