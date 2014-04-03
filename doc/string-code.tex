@@ -516,6 +516,19 @@ t	.tyfv	ki
 
 This declares \stringcode{t} to be a free type variable of kind \stringcode{ki} (see section \ref{kinds}).
 
+\section{Type Arguments}
+\label{code_type_arg}
+
+These are abstractions over type variables.
+
+\subsection{\stringcode{.tyarg}}
+
+\begin{verbatim}
+t	.tyarg	ki
+\end{verbatim}
+
+This declares \stringcode{t} to be a type variable with kind \stringcode{ki}  (see section \ref{kinds}).
+
 \section{Thunk (Closure) Allocations}
 \label{thunk_alloc}
 
@@ -627,30 +640,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-
-static
-int
-gsparse_code_type_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymtyarg;
-
-    if (gssymceq(parsedline->directive, gssymtyarg, gssymcodeop, ".tyarg")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .tyarg op", pos->real_filename, pos->real_lineno);
-        if (n < 3)
-            gsfatal("%s:%d: Missing kind on .tyarg", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
-        if (n > 4)
-            gsfatal("%s:%d: Too many arguments to .tyarg", pos->real_filename, pos->real_lineno)
-        ;
-    } else {
-        return 0;
-    }
-    return 1;
-}
-
 
 static
 int
