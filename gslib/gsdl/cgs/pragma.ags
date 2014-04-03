@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -46,7 +46,7 @@ parser.string.quotes	.gvar
 _gsdl.cgs.pragma.parse_ws.nl.re	.gvar
 string.ty	.tylet	list.t	rune.t
 list.string.ty	.tylet	list.t	string.ty
-f	.alloc	_gsdl.cgs.pragma.parse_f_c
+f	.closure	_gsdl.cgs.pragma.parse_f_c
 colon.parse	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.pragma.parse_colon.re
 ws	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.pragma.parse_ws.re
 value.parse.3	.apply	parser.map	rune.t	list.string.ty	gsdl.cgs.pragma.t	|	gsdl.cgs.pragma.rc.like	parser.string.quotes
