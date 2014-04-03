@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -6,12 +8,12 @@
 
 _tests	.list	test.property.t	_test.parse	_test.eq
 
-# §section Parsers
+-- §section Parsers
 
 _test.parse	.closure	_test.parse_c
 _tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_strictcont.items	_test.parse_impprog.items	_test.parse_ubcasecont.items	_test.parse_exprs
 
-# §subsection Code Segments
+-- §subsection Code Segments
 
 _test.parse_segments	.closure	_test.parse_segments_c
 _tests.parse_segments	.list	test.property.t	_test.parse_segment.empty
@@ -20,7 +22,7 @@ _test.parse_segment.empty	.closure	_test.parse_segment.empty_c
 _test.parse_segment.empty_label	.string	qq{\\t.code\\n}\s=~\ssegment.parser
 _test.parse_segment.empty_input	.string	\t.code\n
 
-# §subsection §ags{.expr} Code Items
+-- §subsection §ags{.expr} Code Items
 
 _test.parse_expr.items	.closure	_test.parse_expr.items_c
 _tests.parse_expr.items	.list	test.property.t	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.rune	_test.parse_expr.larg	_test.parse_expr.alloc	_test.parse_expr.impprim	_test.parse_expr.impprim.args	_test.parse_expr.undefined	_test.parse_expr.field	_test.parse_expr.record	_test.parse_expr.prim	_test.parse_expr.prim.tyargs	_test.parse_expr.prim.args
@@ -103,7 +105,7 @@ _test.parse_expr.prim.args	.closure	_test.parse_expr.prim.args_c
 _test.parse_expr.prim.args_label	.string	qq{_foo_c\\t.expr\\nx\\t.prim\\tset\\tf\\tty\\t|\\tx\\n\\t.enter\\tbaz\\n}\s=~\sparser
 _test.parse_expr.prim.args_input	.string	_foo_c\t.expr\nx\t.prim\tset\tf\tty\t|\tx\n\t.enter\tbaz\n
 
-# §subsection §ags{.forcecont} Code Items
+-- §subsection §ags{.forcecont} Code Items
 
 _test.parse_forcecont.items	.closure	_test.parse_forcecont.items_c
 _tests.parse_forcecont.items	.list	test.property.t	_test.parse_forcecont	_test.parse_forcecont.karg.tyargs	_test.parse_forcecont.undef	_test.parse_forcecont.tyfv	_test.parse_forcecont.tylet	_test.parse_forcecont.fv
@@ -136,7 +138,7 @@ _test.parse_forcecont.fv	.closure	_test.parse_forcecont.fv_c
 _test.parse_forcecont.fv_label	.string	qq{_foo_k\\t.forcecont\\nbar\\t.fv\\tbar.t\\nx0\\t.karg\\tx.u\\n\\t.enter\\ty\\n}\s=~\sparser
 _test.parse_forcecont.fv_input	.string	_foo_k\t.forcecont\nbar\t.fv\tbar.t\nx0\t.karg\tx.u\n\t.enter\ty\n
 
-# §subsection §ags{.strictcont} Code Items
+-- §subsection §ags{.strictcont} Code Items
 
 _test.parse_strictcont.items	.closure	_test.parse_strictcont.items_c
 _tests.parse_strictcont.items	.list	test.property.t	_test.parse_strictcont
@@ -145,7 +147,7 @@ _test.parse_strictcont	.closure	_test.parse_strictcont_c
 _test.parse_strictcont_label	.string	qq{_foo_k\\t.strictcont\\nx0\\t.karg\\tx.t\\n\\t.enter\\ty\\n}\s=~\sparser
 _test.parse_strictcont_input	.string	_foo_k\t.strictcont\nx0\t.karg\tx.t\n\t.enter\ty\n
 
-# §subsection Imperative Block Statements
+-- §subsection Imperative Block Statements
 
 _test.parse_impprog.items	.closure	_test.parse_impprog.items_c
 _tests.parse_impprog.items	.list	test.property.t	_test.parse_impprog	_test.parse_impprog.bind
@@ -158,7 +160,7 @@ _test.parse_impprog.bind	.closure	_test.parse_impprog.bind_c
 _test.parse_impprog.bind_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bind\\t_foo_x_c\\n\\t.body\\t_foo_body_c\\n}\s=~\sparser
 _test.parse_impprog.bind_input	.string	_foo_c\t.impprog\tfoo\tm\nx\t.bind\t_foo_x_c\n\t.body\t_foo_body_c\n
 
-# §subsection §ags{.ubcasecont} Code Items
+-- §subsection §ags{.ubcasecont} Code Items
 
 _test.parse_ubcasecont.items	.closure	_test.parse_ubcasecont.items_c
 _tests.parse_ubcasecont.items	.list	test.property.t	_test.parse_ubcasecont
@@ -167,7 +169,7 @@ _test.parse_ubcasecont	.closure	_test.parse_ubcasecont_c
 _test.parse_ubcasecont_label	.string	qq{_rune.≡.k1.0\\t.ubcasecont\\n\\t.enter\\tbool.false\\n}\s=~\sparser
 _test.parse_ubcasecont_input	.string	_rune.≡.k1.0\t.ubcasecont\n\t.enter\tbool.false\n
 
-# §subsection String Code Expressions
+-- §subsection String Code Expressions
 
 _test.parse_exprs	.closure	_test.parse_exprs_c
 _tests.parse_exprs	.list	test.property.t	_test.parse_expr.force	_test.parse_expr.strict	_test.parse_expr.coerce	_test.parse_expr.app	_test.parse_expr.ubanalyze	_test.parse_expr.enter	_test.parse_expr.analyze	_test.parse_expr.analyze.fkarg	_test.parse_expr.gsanalyze.apply	_test.parse_expr.ubprim	_test.parse_expr.lprim
@@ -224,7 +226,7 @@ _test.parse_expr.lprim	.closure	_test.parse_expr.lprim_c
 _test.parse_expr.lprim_label	.string	qq{\\t.lprim\\trune.prim\\teq\\t_rune.prim.eq_ty\\tα\\t|\\tx\\n}\s=~\sexpr.parser
 _test.parse_expr.lprim_input	.string	\t.lprim\trune.prim\teq\t_rune.prim.eq_ty\tα\t|\tx\n
 
-# §section §gs{≡}
+-- §section §gs{≡}
 
 _test.eq	.closure	_test.eq_c
 _tests.eq	.list	test.property.t	_test.eq_codeitem.expr.diff.tygvars	_test.eq_codeitem.expr.diff.subcodes	_test.eq_codeitem.expr.diff.cogvars	_test.eq_codeitem.expr.diff.gvars	_test.eq_codeitem.expr.diff.args	_test.eq_arg.diff.name	_test.eq_arg.diff.lifted	_test.eq_arg.diff.ty	_test.eq_arg.diff.tyargs
@@ -284,7 +286,7 @@ _test.eq_arg.diff.tyargs_false	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\s
 _test.eq_arg.diff.tyargs_true	.string	〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'gstype\s∝\sqq{bar.t};\s'tyargs\s∝\s[];\s〉\s≡\s〈\s'name\s∝\sqq{foo};\s'lifted\s∝\strue;\s'gstype\s∝\sqq{bar.t};\s'tyargs\s∝\s[\sqq{quux.t},\s];\s〉
 _test.eq_arg.diff.tyargs_quux.t.s	.string	quux.t
 
-# §section Fixtures
+-- §section Fixtures
 
 _fixtures_foo.c.v	.closure	_fixtures_foo.c.v_c
 
@@ -328,7 +330,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section Parsers
+-- §section Parsers
 
 _test.parse_c	.expr
 test.all	.gvar
@@ -336,7 +338,7 @@ _tests.parse	.gvar
 	.app	_tests.parse
 	.enter	test.all
 
-# §subsection Code Segments
+-- §subsection Code Segments
 
 _test.parse_segments_c	.expr
 test.all	.gvar
@@ -344,7 +346,7 @@ _tests.parse_segments	.gvar
 	.app	_tests.parse_segments
 	.enter	test.all
 
-# §subsubsection §gs{qq{\\t.code\\n}=~ segment.parser}
+-- §subsubsection §gs{qq{\\t.code\\n}=~ segment.parser}
 
 _test.parse_segment.empty_c	.expr
 rune.t	.tygvar
@@ -381,7 +383,7 @@ nil	.apply	list.nil	gsdl.ags.codeitem.t
 	.app	cs.≡	cs.fmtgs	cos	nil
 	.enter	test.assert.eq	codesegment_ty
 
-# §subsection §ags{.expr} Code Items
+-- §subsection §ags{.expr} Code Items
 
 _test.parse_expr.items_c	.expr
 test.all	.gvar
@@ -389,7 +391,7 @@ _tests.parse_expr.items	.gvar
 	.app	_tests.parse_expr.items
 	.enter	test.all
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\n\\t.enter\\tbar\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\n\\t.enter\\tbar\\n} =~ parser}
 
 _test.parse_expr_c	.expr
 rune.t	.tygvar
@@ -438,7 +440,7 @@ expected	.apply	gsdl.ags.codeitem.expr	|	pos	_fixtures_foo.c.v	ds	expected.expr
 	.app	gsdl.ags.codeitem.≡	gsdl.ags.codeitem.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.ags.codeitem.t
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nbar.t\\t.tygvar\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nbar.t\\t.tygvar\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.tygvar_c	.expr
 rune.t	.tygvar
@@ -504,7 +506,7 @@ _fixtures_bar.t.v	.gvar
 	.app	_fixtures_bar.t.v
 	.enter	gsdl.ags.typeitem.decls.tygvar.tygvar
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\n_bar_c\\t.subcode\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\n_bar_c\\t.subcode\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.subcode_c	.expr
 rune.t	.tygvar
@@ -564,7 +566,7 @@ subcodes.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
 			.app	subcodes.≡	subcodes.fmtgs	subcodes	_test.parse_expr.subcode_k_subcodes.expected
 			.enter	test.assert.eq	list.string.ty
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nbar.t.out\\t.cogvar\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nbar.t.out\\t.cogvar\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.cogvar_c	.expr
 rune.t	.tygvar
@@ -624,7 +626,7 @@ cogvars.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
 			.app	cogvars.≡	cogvars.fmtgs	cogvars	_test.parse_expr.cogvar_k_cogvars.expected
 			.enter	test.assert.eq	list.string.ty
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nbar\\t.gvar\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nbar\\t.gvar\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.gvar_c	.expr
 rune.t	.tygvar
@@ -689,7 +691,7 @@ expected			.apply	list.singleton	gsdl.ags.codeitem.gvar.t	|	expected.0
 			.app	gvars.≡	gvars.fmtgs	gvars	expected
 			.enter	test.assert.eq	list.gvar.ty
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nnl\\t.rune\\t\\\\n\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nnl\\t.rune\\t\\\\n\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.rune_c	.expr
 rune.t	.tygvar
@@ -713,7 +715,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nbar\\t.larg\\tbar.t\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.larg_c	.expr
 rune.t	.tygvar
@@ -781,7 +783,7 @@ expected			.apply	list.:	gsdl.ags.codeitem.arg.t	|	arg0	nil
 			.app	args.≡	args.fmtgs	args	expected
 			.enter	test.assert.eq	list.arg.ty
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nbar\\t.alloc\\t_bar_c\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nbar\\t.alloc\\t_bar_c\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.alloc_c	.expr
 rune.t	.tygvar
@@ -805,7 +807,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nu\\t.impprim\\tibio.prim\\tibio\\tunit\\t_ibio.prim.unit_ty\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nu\\t.impprim\\tibio.prim\\tibio\\tunit\\t_ibio.prim.unit_ty\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.impprim_c	.expr
 rune.t	.tygvar
@@ -829,7 +831,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nu\\t.impprim\\tibio.prim\\tibio\\tunit\\t_ibio.prim.unit_ty\\tα\\t|\\tx\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nu\\t.impprim\\tibio.prim\\tibio\\tunit\\t_ibio.prim.unit_ty\\tα\\t|\\tx\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.impprim.args_c	.expr
 rune.t	.tygvar
@@ -853,7 +855,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nbar\\t.undefined\\tbar.t\\tα\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nbar\\t.undefined\\tbar.t\\tα\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.undefined_c	.expr
 rune.t	.tygvar
@@ -877,7 +879,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nx.bar\\t.field\\tbar\\tx\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nx.bar\\t.field\\tbar\\tx\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.field_c	.expr
 rune.t	.tygvar
@@ -901,7 +903,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nx\\t.record\\tf\\tx.f\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nx\\t.record\\tf\\tx.f\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.record_c	.expr
 rune.t	.tygvar
@@ -925,7 +927,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nx\\t.prim\\tf\\tty\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nx\\t.prim\\tf\\tty\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.prim_c	.expr
 rune.t	.tygvar
@@ -949,7 +951,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nx\\t.prim\\tf\\tty\tα\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nx\\t.prim\\tf\\tty\tα\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.prim.tyargs_c	.expr
 rune.t	.tygvar
@@ -973,7 +975,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.expr\\nx\\t.prim\\tf\\tty\tα\\n\\t.enter\\tbaz\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nx\\t.prim\\tf\\tty\tα\\n\\t.enter\\tbaz\\n} =~ parser}
 
 _test.parse_expr.prim.args_c	.expr
 rune.t	.tygvar
@@ -997,7 +999,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsection §ags{.forcecont} Code Items
+-- §subsection §ags{.forcecont} Code Items
 
 _test.parse_forcecont.items_c	.expr
 test.all	.gvar
@@ -1005,7 +1007,7 @@ _tests.parse_forcecont.items	.gvar
 	.app	_tests.parse_forcecont.items
 	.enter	test.all
 
-# §subsubsection §gs{qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\n\\t.enter\\ty\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\n\\t.enter\\ty\\n} =~ parser}
 
 _test.parse_forcecont_c	.expr
 rune.t	.tygvar
@@ -1052,7 +1054,7 @@ expected	.apply	gsdl.ags.codeitem.forcecont	|	pos	_test.parse_forcecont_k_foo.k.
 	.app	gsdl.ags.codeitem.≡	gsdl.ags.codeitem.fmtgs	ci	expected
 	.enter	test.assert.eq	gsdl.ags.codeitem.t
 
-# §subsubsection §gs{qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\tα\\n\\t.enter\\ty\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\tα\\n\\t.enter\\ty\\n} =~ parser}
 
 _test.parse_forcecont.karg.tyargs_c	.expr
 rune.t	.tygvar
@@ -1076,7 +1078,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\n\\t.undef\\tx.t\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_k\\t.forcecont\\nx0\\t.karg\\tx.u\\n\\t.undef\\tx.t\\n} =~ parser}
 
 _test.parse_forcecont.undef_c	.expr
 rune.t	.tygvar
@@ -1100,7 +1102,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §ags{.forcecont}s with §ags{.tyfv}s
+-- §subsubsection §ags{.forcecont}s with §ags{.tyfv}s
 
 _test.parse_forcecont.tyfv_c	.expr
 rune.t	.tygvar
@@ -1124,7 +1126,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_k\\t.forcecont\\nty\\t.tylet\\tt\\tα\\nx0\\t.karg\\tx.u\\n\\t.undef\\tα\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_k\\t.forcecont\\nty\\t.tylet\\tt\\tα\\nx0\\t.karg\\tx.u\\n\\t.undef\\tα\\n} =~ parser}
 
 _test.parse_forcecont.tylet_c	.expr
 rune.t	.tygvar
@@ -1148,7 +1150,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §ags{.forcecont}s with §ags{.fv}s
+-- §subsubsection §ags{.forcecont}s with §ags{.fv}s
 
 _test.parse_forcecont.fv_c	.expr
 rune.t	.tygvar
@@ -1172,7 +1174,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsection §ags{.strictcont} Code Items
+-- §subsection §ags{.strictcont} Code Items
 
 _test.parse_strictcont.items_c	.expr
 test.all	.gvar
@@ -1180,7 +1182,7 @@ _tests.parse_strictcont.items	.gvar
 	.app	_tests.parse_strictcont.items
 	.enter	test.all
 
-# §subsubsection §gs{qq{_foo_k\\t.strictcont\\nx0\\t.karg\\tx.t\\n\\t.enter\\ty\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_k\\t.strictcont\\nx0\\t.karg\\tx.t\\n\\t.enter\\ty\\n} =~ parser}
 
 _test.parse_strictcont_c	.expr
 rune.t	.tygvar
@@ -1204,7 +1206,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsection Imperative Block Statements
+-- §subsection Imperative Block Statements
 
 _test.parse_impprog.items_c	.expr
 test.all	.gvar
@@ -1212,7 +1214,7 @@ _tests.parse_impprog.items	.gvar
 	.app	_tests.parse_impprog.items
 	.enter	test.all
 
-# §subsubsection §gs{qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body\\t_foo_body_c\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body\\t_foo_body_c\\n} =~ parser}
 
 _test.parse_impprog_c	.expr
 rune.t	.tygvar
@@ -1236,7 +1238,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bind\\t_foo_x_c\\n\\t.body\\t_foo_body_c\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bind\\t_foo_x_c\\n\\t.body\\t_foo_body_c\\n} =~ parser}
 
 _test.parse_impprog.bind_c	.expr
 rune.t	.tygvar
@@ -1260,7 +1262,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsection §ags{.ubcasecont} Code Items
+-- §subsection §ags{.ubcasecont} Code Items
 
 _test.parse_ubcasecont.items_c	.expr
 test.all	.gvar
@@ -1268,7 +1270,7 @@ _tests.parse_ubcasecont.items	.gvar
 	.app	_tests.parse_ubcasecont.items
 	.enter	test.all
 
-# §subsubsection §gs{qq{_rune.≡.k1.0\\t.ubcasecont\\n\\t.enter\\tbool.false\\n} =~ parser}
+-- §subsubsection §gs{qq{_rune.≡.k1.0\\t.ubcasecont\\n\\t.enter\\tbool.false\\n} =~ parser}
 
 _test.parse_ubcasecont_c	.expr
 rune.t	.tygvar
@@ -1292,7 +1294,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
-# §subsection String Code Expressions
+-- §subsection String Code Expressions
 
 _test.parse_exprs_c	.expr
 test.all	.gvar
@@ -1300,7 +1302,7 @@ _tests.parse_exprs	.gvar
 	.app	_tests.parse_exprs
 	.enter	test.all
 
-# §subsubsection §gs{qq{\\t.force\\t_foo_k\\n\\t.enter\\tfoo\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.force\\t_foo_k\\n\\t.enter\\tfoo\\n} =~ expr.parser}
 
 _test.parse_expr.force_c	.expr
 rune.t	.tygvar
@@ -1350,7 +1352,7 @@ e		.fkarg	2	gsdl.ags.codeitem.expr.t
 			.app	string.≡	string.fmtgs	co	_test.parse_expr.force_k_co.expected.s
 			.enter	test.assert.eq	string.t
 
-# §subsubsection §gs{qq{\\t.strict\\t_foo_k\\n\\t.enter\\tfoo\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.strict\\t_foo_k\\n\\t.enter\\tfoo\\n} =~ expr.parser}
 
 _test.parse_expr.strict_c	.expr
 rune.t	.tygvar
@@ -1374,7 +1376,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.expr.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{\\t.coerce\\tbar.t.out\\n\\t.enter\\tfoo\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.coerce\\tbar.t.out\\n\\t.enter\\tfoo\\n} =~ expr.parser}
 
 _test.parse_expr.coerce_c	.expr
 rune.t	.tygvar
@@ -1426,7 +1428,7 @@ e		.fkarg	3	gsdl.ags.codeitem.expr.t
 			.app	string.≡	string.fmtgs	co	_test.parse_expr.coerce_k_co.expected.s
 			.enter	test.assert.eq	string.t
 
-# §subsubsection §gs{qq{\\t.app\\tbar\\n\\t.enter\\tfoo\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.app\\tbar\\n\\t.enter\\tfoo\\n} =~ expr.parser}
 
 _test.parse_expr.app_c	.expr
 rune.t	.tygvar
@@ -1482,7 +1484,7 @@ list.string.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
 			.app	list.string.≡	list.string.fmtgs	as	_test.parse_expr.app_k_as.expected
 			.enter	test.assert.eq	list.string.ty
 
-# §subsubsection §gs{qq{\\t.ubanalyze\\t0\\t_foo_k0\\n\\t.enter\\tfoo\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.ubanalyze\\t0\\t_foo_k0\\n\\t.enter\\tfoo\\n} =~ expr.parser}
 
 _test.parse_expr.ubanalyze_c	.expr
 rune.t	.tygvar
@@ -1506,7 +1508,7 @@ test.true	.gvar
 actual	.larg	gsdl.ags.codeitem.expr.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{\\t.enter\\tfoo\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.enter\\tfoo\\n} =~ expr.parser}
 
 _test.parse_expr.enter_c	.expr
 rune.t	.tygvar
@@ -1541,7 +1543,7 @@ expected	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.parse_expr.enter_k_foo.
 	.app	gsdl.ags.codeitem.expr.≡	gsdl.ags.codeitem.expr.fmtgs	 actual	expected
 	.enter	test.assert.eq	gsdl.ags.codeitem.expr.t
 
-# §subsubsection §gs{qq{\\t.analyze\\tfoo\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.analyze\\tfoo\\n} =~ expr.parser}
 
 _test.parse_expr.analyze_c	.expr
 rune.t	.tygvar
@@ -1565,7 +1567,7 @@ test.true	.gvar
 e	.larg	gsdl.ags.codeitem.expr.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{\\t.analyze\\tfoo\\n\\t.case\\nx\\t.fkarg\\t0\\tx.t\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.analyze\\tfoo\\n\\t.case\\nx\\t.fkarg\\t0\\tx.t\\n} =~ expr.parser}
 
 _test.parse_expr.analyze.fkarg_c	.expr
 rune.t	.tygvar
@@ -1589,7 +1591,7 @@ test.true	.gvar
 e	.larg	gsdl.ags.codeitem.expr.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{\\t.analyze\\tfoo\\tbar\\n\\t.case\\tbar\\nbaz\\t.apply\\tf\\tx.t\\n\\t.enter\\tbaz\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.analyze\\tfoo\\tbar\\n\\t.case\\tbar\\nbaz\\t.apply\\tf\\tx.t\\n\\t.enter\\tbaz\\n} =~ expr.parser}
 
 _test.parse_expr.gsanalyze.apply_c	.expr
 rune.t	.tygvar
@@ -1613,7 +1615,7 @@ test.true	.gvar
 e	.larg	gsdl.ags.codeitem.expr.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{\\t.ubprim\\trune.prim\\teq\\t_rune.prim.eq.t\\t|\\tx0\\ty0\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.ubprim\\trune.prim\\teq\\t_rune.prim.eq.t\\t|\\tx0\\ty0\\n} =~ expr.parser}
 
 _test.parse_expr.ubprim_c	.expr
 rune.t	.tygvar
@@ -1637,7 +1639,7 @@ test.true	.gvar
 e	.larg	gsdl.ags.codeitem.expr.t
 	.enter	test.true
 
-# §subsubsection §gs{qq{\\t.lprim\\trune.prim\\teq\\t_rune.prim.eq_ty\\n} =~ expr.parser}
+-- §subsubsection §gs{qq{\\t.lprim\\trune.prim\\teq\\t_rune.prim.eq_ty\\n} =~ expr.parser}
 
 _test.parse_expr.lprim_c	.expr
 rune.t	.tygvar
@@ -1661,7 +1663,7 @@ test.true	.gvar
 e	.larg	gsdl.ags.codeitem.expr.t
 	.enter	test.true
 
-# §section §gs{≡}
+-- §section §gs{≡}
 
 _test.eq_c	.expr
 test.all	.gvar
@@ -1669,7 +1671,7 @@ _tests.eq	.gvar
 	.app	_tests.eq
 	.enter	test.all
 
-# §subsection §gs{ags.codeitem.≡ expr expr} with different §ags{.tygvar}s
+-- §subsection §gs{ags.codeitem.≡ expr expr} with different §ags{.tygvar}s
 
 _test.eq_codeitem.expr.diff.tygvars_c	.expr
 string.t	.tygvar
@@ -1715,7 +1717,7 @@ _fixtures_foo.v	.gvar
 	.app	_fixtures_foo.v
 	.enter	gsdl.ags.typeitem.decls.tygvar.tygvar
 
-# §subsection §gs{ags.codeitem.≡ expr expr} with different §ags{.subcode}s
+-- §subsection §gs{ags.codeitem.≡ expr expr} with different §ags{.subcode}s
 
 _test.eq_codeitem.expr.diff.subcodes_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1755,7 +1757,7 @@ test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.subcodes_false.s	_test.eq_co
 	.app	_test.eq_codeitem.expr.diff.subcodes_label	test
 	.enter	test.property.label
 
-# §subsection §gs{ags.codeitem.≡ expr expr} with different §ags{.cogvar}s
+-- §subsection §gs{ags.codeitem.≡ expr expr} with different §ags{.cogvar}s
 
 _test.eq_codeitem.expr.diff.cogvars_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1795,7 +1797,7 @@ test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.cogvars_false.s	_test.eq_cod
 	.app	_test.eq_codeitem.expr.diff.cogvars_label	test
 	.enter	test.property.label
 
-# §subsection §gs{ags.codeitem.≡ expr expr} with different §ags{.gvar}s
+-- §subsection §gs{ags.codeitem.≡ expr expr} with different §ags{.gvar}s
 
 _test.eq_codeitem.expr.diff.gvars_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1837,7 +1839,7 @@ test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.gvars_false.s	_test.eq_codei
 	.app	_test.eq_codeitem.expr.diff.gvars_label	test
 	.enter	test.property.label
 
-# §subsection §gs{ags.codeitem.≡ expr expr} with different args
+-- §subsection §gs{ags.codeitem.≡ expr expr} with different args
 
 _test.eq_codeitem.expr.diff.args_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -1882,7 +1884,7 @@ test	.apply	test.deny	|	_test.eq_codeitem.expr.diff.args_false.s	_test.eq_codeit
 	.app	_test.eq_codeitem.expr.diff.args_label	test
 	.enter	test.property.label
 
-# §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉 ≡ 〈 'name ∝ qq{baz}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉}
+-- §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉 ≡ 〈 'name ∝ qq{baz}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉}
 
 _test.eq_arg.diff.name_c	.expr
 gsdl.var.t	.tygvar
@@ -1905,7 +1907,7 @@ test	.apply	test.deny	|	_test.eq_arg.diff.name_false	_test.eq_arg.diff.name_true
 	.app	_test.eq_arg.diff.name_label	test
 	.enter	test.property.label
 
-# §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉  〈 'name ∝ qq{foo}; 'lifted ∝ false; 'ty ∝ qq{bar.t}; 〉}
+-- §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉  〈 'name ∝ qq{foo}; 'lifted ∝ false; 'ty ∝ qq{bar.t}; 〉}
 
 _test.eq_arg.diff.lifted_c	.expr
 gsdl.var.t	.tygvar
@@ -1928,7 +1930,7 @@ test	.apply	test.deny	|	_test.eq_arg.diff.lifted_false	_test.eq_arg.diff.lifted_
 	.app	_test.eq_arg.diff.lifted_label	test
 	.enter	test.property.label
 
-# §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉 ≡ 〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{baz.t}; 〉}
+-- §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{bar.t}; 〉 ≡ 〈 'name ∝ qq{foo}; 'lifted ∝ true; 'ty ∝ qq{baz.t}; 〉}
 
 _test.eq_arg.diff.ty_c	.expr
 gsdl.var.t	.tygvar
@@ -1951,7 +1953,7 @@ test	.apply	test.deny	|	_test.eq_arg.diff.ty_false	_test.eq_arg.diff.ty_true	eq
 	.app	_test.eq_arg.diff.ty_label	test
 	.enter	test.property.label
 
-# §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'gstype ∝ qq{bar.t}; 'tyargs ∝ []; 〉 ≡ 〈 'name ∝ qq{foo}; 'lifted ∝ true; 'gstype ∝ qq{bar.t}; 'tyargs ∝ [ qq{quux.t}, ]; 〉}
+-- §subsection §gs{〈 'name ∝ qq{foo}; 'lifted ∝ true; 'gstype ∝ qq{bar.t}; 'tyargs ∝ []; 〉 ≡ 〈 'name ∝ qq{foo}; 'lifted ∝ true; 'gstype ∝ qq{bar.t}; 'tyargs ∝ [ qq{quux.t}, ]; 〉}
 
 _test.eq_arg.diff.tyargs_c	.expr
 gsdl.var.t	.tygvar
@@ -1976,7 +1978,7 @@ test	.apply	test.deny	|	_test.eq_arg.diff.tyargs_false	_test.eq_arg.diff.tyargs_
 	.app	_test.eq_arg.diff.tyargs_label	test
 	.enter	test.property.label
 
-# §section Test fixtures
+-- §section Test fixtures
 
 _fixtures_foo.c.v_c	.expr
 gsdl.var.t	.tygvar

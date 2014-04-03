@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -33,7 +35,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{parser =~ qq{}}
+-- §section §gs{parser =~ qq{}}
 
 _test.parser.nil_c	.expr
 rune.t	.tygvar
@@ -61,7 +63,7 @@ test.true	.gvar
 err	.larg	parser.err.t
 	.enter	test.true
 
-# §section §gs{parser =~ qq{\\t.prefix\\n}}
+-- §section §gs{parser =~ qq{\\t.prefix\\n}}
 
 _test.parser.empty.prefix_c	.expr
 rune.t	.tygvar
@@ -140,7 +142,7 @@ test1	.apply	test.property.∧	|	cs.test	test2
 	.app	ds.test	test1
 	.enter	test.property.∧
 
-# §section §gs{parser =~ qq{\\t.document\\n}}
+-- §section §gs{parser =~ qq{\\t.document\\n}}
 
 _test.parser.empty.doc_c	.expr
 rune.t	.tygvar
@@ -172,7 +174,7 @@ filety	.lfield	filetype	file
 	.app	gsdl.ags.file.filetype.≡	gsdl.ags.file.filetype.fmtgs	filety	gsdl.ags.file.filetype.gsdocument
 	.enter	test.assert.eq	gsdl.ags.file.filetype.t
 
-# §section §gs{fmtgs 〈 'filetype ∝ gsdocument; 'datasection ∝ []; 'typesection ∝ []; 〉}
+-- §section §gs{fmtgs 〈 'filetype ∝ gsdocument; 'datasection ∝ []; 'typesection ∝ []; 〉}
 
 _test.fmtgs_c	.expr
 string.t	.tygvar

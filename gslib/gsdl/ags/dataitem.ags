@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -21,7 +23,7 @@ gsdl.ags.dataitem.closure	.closure	_gsdl.ags.dataitem.closure_c
 
 	.code
 
-# §section §gs{gsdl.ags.dataitem.segment.parser}
+-- §section §gs{gsdl.ags.dataitem.segment.parser}
 
 _gsdl.ags.dataitem.segment.parser_c	.expr
 bool.t	.tygvar
@@ -52,7 +54,7 @@ seg.p	.apply	parser.*>	rune.t	string.t	res.ty	|	gsdata.p	das.p
 	.app	nil.p	seg.p
 	.enter	parser.<|>	rune.t	res.ty
 
-# §section §gs{gsdl.ags.dataitem.parser}
+-- §section §gs{gsdl.ags.dataitem.parser}
 
 _gsdl.ags.dataitem.parser_c	.expr
 bool.t	.tygvar
@@ -70,10 +72,10 @@ p	.apply	parser.<|>	rune.t	gsdl.ags.dataitem.t	|	list.p	string.p
 	.app	closure.p	p
 	.enter	parser.<|>	rune.t	gsdl.ags.dataitem.t
 
-# E.g. §ags{foo\t.closure\t_foo_c\n}
-# > for ('nm ← optional ags.id; 'co ← ags.columnsep *> m/\.closure/ *> ags.columnsep *> ags.id <* ags.whitespace;) [|
-# >     closure nm co nothing
-# > |]
+-- E.g. §ags{foo\t.closure\t_foo_c\n}
+-- > for ('nm ← optional ags.id; 'co ← ags.columnsep *> m/\.closure/ *> ags.columnsep *> ags.id <* ags.whitespace;) [|
+-- >     closure nm co nothing
+-- > |]
 _gsdl.ags.dataitem.parser_closure.p_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
@@ -234,7 +236,7 @@ nm	.larg	string.t
 s	.larg	string.t
 	.undef	gsdl.ags.dataitem.t
 
-# §section §gs{gsdl.ags.dataitem.≡}
+-- §section §gs{gsdl.ags.dataitem.≡}
 
 _gsdl.ags.dataitem.≡_c	.expr
 gsdl.ags.dataitem.t	.tygvar
@@ -309,9 +311,9 @@ nm.eq					.apply	maybe.≡	gsdl.var.t	|	gsdl.var.≡	nm0	nm1
 ty.eq					.apply	gsdl.var.≡	|	ty0	ty1
 					.app	nm.eq	ty.eq
 					.enter	bool.∧
-	# > :: bool.t
+	-- > :: bool.t
 
-# §section §gs{gsdl.ags.dataitem.fmtgs}
+-- §section §gs{gsdl.ags.dataitem.fmtgs}
 
 _gsdl.ags.dataitem.fmtgs_c	.expr
 gsdl.ags.dataitem.t	.tygvar
@@ -329,7 +331,7 @@ maybe.t	.tygvar
 gsdl.var.t	.tygvar
 string.t	.tygvar
 rune.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+fmtgs.printer.t	.tygvar	-- Temp
 fmtgs.prec	.gvar
 fmtgs.prec.app	.gvar
 diff.list.prepend	.gvar
@@ -369,9 +371,9 @@ ds1			.apply	diff.list.<>	rune.t	|	pos.s	ds2
 ds			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.dataitem.fmtgs_undefined.s	ds1
 			.app	fmtgs.prec.app	ds
 			.enter	fmtgs.prec
-	# > :: fmtgs.printer.t
+	-- > :: fmtgs.printer.t
 
-# §section §gs{gsdl.ags.dataitem.t} Constructors
+-- §section §gs{gsdl.ags.dataitem.t} Constructors
 
 _gsdl.ags.dataitem.undefined_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -451,14 +453,14 @@ gsdl.var.t	.tygvar
 maybe.var.ty	.tylet	maybe.t	gsdl.var.t
 	.tyubproduct	0	gsdl.sourcepos.t	1	maybe.var.ty	2	gsdl.var.t
 
-# §section §gs{gsdl.ags.dataitem.≡}
+-- §section §gs{gsdl.ags.dataitem.≡}
 
 _gsdl.ags.dataitem.≡_ty	.tyexpr
 eq.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 	.tyref	eq.t	gsdl.ags.dataitem.t
 
-# §section §gs{gsdl.ags.dataitem.fmtgs}
+-- §section §gs{gsdl.ags.dataitem.fmtgs}
 
 _gsdl.ags.dataitem.fmtgs_ty	.tyexpr
 fmtgs.t	.tygvar
