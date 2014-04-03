@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -14,14 +16,14 @@ gsdl.cgs.pragma.rc.like	.closure	_gsdl.cgs.pragma.rc.like_c
 
 	.code
 
-# §section §gs{gsdl.cgs.pragma.parse}
+-- §section §gs{gsdl.cgs.pragma.parse}
 
-# > for (
-# >     'nm ← gsdl.cgs.syntax.gsid;
-# >     'pr ← gsdl.cgs.syntax.lexeme m/:/ *> (gsdl.cgs.pragma.rc.like <$> quotes)
-# >         <|> gsdl.cgs.syntax.lexeme m/=/ *> (gsdl.cgs.pragma.json.like <$> json.parse)
-# >    ;
-# > ) [| 《 nm, pr, 》 |]
+-- > for (
+-- >     'nm ← gsdl.cgs.syntax.gsid;
+-- >     'pr ← gsdl.cgs.syntax.lexeme m/:/ *> (gsdl.cgs.pragma.rc.like <$> quotes)
+-- >         <|> gsdl.cgs.syntax.lexeme m/=/ *> (gsdl.cgs.pragma.json.like <$> json.parse)
+-- >    ;
+-- > ) [| 《 nm, pr, 》 |]
 
 _gsdl.cgs.pragma.parse_c	.expr
 parser.t	.tygvar
@@ -65,7 +67,7 @@ r	.record	0	nm	1	pr
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.pragma.gstype.get}
+-- §section §gs{gsdl.cgs.pragma.gstype.get}
 
 _gsdl.cgs.pragma.gstype.get_c	.expr
 ibio.file.name.t	.tygvar
@@ -119,7 +121,7 @@ as		.fkarg	0	list.t	string.t
 			.force	_gsdl.cgs.pragma.gstype.get_just_rc.like_k
 			.coerce	list.t.out	string.t
 			.enter	as
-	# > :: maybe.t	string.t
+	-- > :: maybe.t	string.t
 
 _gsdl.cgs.pragma.gstype.get_just_rc.like_k	.forcecont
 list.prim.u	.tygvar
@@ -137,7 +139,7 @@ as1		.fkarg	1	list.t	string.t
 		.case	nil
 			.undef	maybe.t	string.t
 
-# §section Constructors
+-- §section Constructors
 
 _gsdl.cgs.pragma.rc.like_c	.expr
 list.t	.tygvar
@@ -152,7 +154,7 @@ c	.constr	gsdl.cgs.pragma.prim.u	rc.like	0	as
 
 	.type
 
-# §section §gs{gsdl.cgs.pragma.t}
+-- §section §gs{gsdl.cgs.pragma.t}
 
 gsdl.cgs.pragma.t	.tyabstract	*
 gsdl.cgs.pragma.prim.u	.tygvar
@@ -169,7 +171,7 @@ string.t	.tygvar
 0_ty	.tylet	list.t	string.t
 	.tyubproduct	0	0_ty
 
-# §section §gs{gsdl.cgs.pragma.parse}
+-- §section §gs{gsdl.cgs.pragma.parse}
 
 _gsdl.cgs.pragma.parse_res_ty	.tyexpr
 _gsdl.cgs.pragma.parse_res_u	.tygvar
