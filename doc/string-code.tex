@@ -559,6 +559,20 @@ x	.bind	<code label>
 
 This declares \stringcode{x} to be the result of executing the subprogram denoted by the code label.
 
+\section{Block Statement Bodies}
+\label{body}
+
+These are similar to bind generators (section \ref{bind}), but they define the last sub-program in a block statement.
+The result of these sub-programs is returned directly from the block statement, rather than being captured and used inside it.
+
+\subsection{\stringcode{.body}}
+
+\begin{verbatim}
+	.body	<code label>
+\end{verbatim}
+
+This declares the result of the block statement to be the result of executing the subprogram denoted by the code label.
+
 \chapter{Types}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -1143,31 +1157,6 @@ gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedl
             parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i]);
             parsedline->arguments[i + 1 - 2] = gsintern_string(gssymcodelable, fields[i + 1]);
         }
-    } else {
-        return 0;
-    }
-    return 1;
-}
-
-static int gsparse_body_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
-
-int
-gsparse_body_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymbody;
-
-    if (gssymceq(parsedline->directive, gssymbody, gssymcodeop, ".body")) {
-        if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on terminal ops", pos->real_filename, pos->real_lineno);
-        else
-            parsedline->label = 0;
-        if (n < 3)
-            gsfatal("%s:%d: Missing code label", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-        if (n > 3)
-            gsfatal("%s:%d: Too many arguments to .body", pos->real_filename, pos->real_lineno)
-        ;
     } else {
         return 0;
     }
