@@ -10,6 +10,11 @@ gsdl.pragma.line	.closure	_gsdl.pragma.line_c
 
 gsdl.pragma.blank.line	.closure	_gsdl.pragma.blank.line_c	_gsdl.pragma.blank.line_ty
 
+gsdl.pragma.parse	.closure	_gsdl.pragma.parse_c
+_gsdl.pragma.parse_colon.re	.regex	:
+_gsdl.pragma.parse_ws.re	.regex	\s*
+_gsdl.pragma.parse_ws.nl.re	.regex	\s*\n
+
 gsdl.pragma.rc.like	.closure	_gsdl.pragma.rc.like_c
 
 	.code
@@ -124,7 +129,7 @@ parser.parse	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 parser.pos.next.col	.gvar
-gsdl.cgs.pragma.parse	.gvar
+gsdl.pragma.parse	.gvar
 parser.pos.next.line	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 p	.fv	_gsdl.pragma.read_res.ty
@@ -143,7 +148,7 @@ pr.pos.1			.lrecord	pos	pos1	pragmas	prs
 pos			.lfield	pos	p
 pragmas			.lfield	pragmas	p
 pos1			.apply	parser.pos.next.col	|	pos
-parser			.apply	gsdl.cgs.pragma.parse	-- §todo{Should be §gs{gsdl.cgs.syntax.ws *> gsdl.cgs.pragma.parse}}
+parser			.apply	gsdl.pragma.parse	-- §todo{Should be §gs{gsdl.cgs.syntax.ws *> gsdl.cgs.pragma.parse}}
 			.force	_gsdl.pragma.read_insert_k2
 			.coerce	either.t.out	parser.err.t	_gsdl.pragma.parse_res.ty
 			.app	parser.rune.advance	rune.print	pos1	parser	l1
@@ -265,6 +270,57 @@ nilr	.apply	ibio.lex.receiver.lexeme.unit	rune.t	string.ty	|	nil
 eolr	.apply	ibio.lex.receiver.lexeme.lift.2	rune.t	rune.t	string.ty	string.ty	|	cons	nlr	nilr
 	.app	consr	eolr
 	.enter	ibio.lex.receiver.<|>	rune.t	string.ty
+
+-- §section §gs{gsdl.cgs.pragma.parse}
+
+-- > for (
+-- >     'nm ← gsdl.cgs.syntax.gsid;
+-- >     'pr ← gsdl.cgs.syntax.lexeme m/:/ *> (gsdl.cgs.pragma.rc.like <$> quotes)
+-- >         <|> gsdl.cgs.syntax.lexeme m/=/ *> (gsdl.cgs.pragma.json.like <$> json.parse)
+-- >    ;
+-- > ) [| 《 nm, pr, 》 |]
+
+_gsdl.pragma.parse_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.pragma.t	.tygvar
+_gsdl.pragma.parse_res.ty	.tygvar
+_gsdl.pragma.parse_f_c	.subcode
+parser.lift2	.gvar
+gsdl.cgs.syntax.gsid	.gvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.pragma.parse_colon.re	.gvar
+_gsdl.pragma.parse_ws.re	.gvar
+parser.<*	.gvar
+parser.map	.gvar
+gsdl.pragma.rc.like	.gvar
+parser.string.quotes	.gvar
+_gsdl.pragma.parse_ws.nl.re	.gvar
+string.ty	.tylet	list.t	rune.t
+list.string.ty	.tylet	list.t	string.ty
+f	.closure	_gsdl.pragma.parse_f_c
+colon.parse	.apply	parser.match	rune.t	|	rune.compare	_gsdl.pragma.parse_colon.re
+ws	.apply	parser.match	rune.t	|	rune.compare	_gsdl.pragma.parse_ws.re
+value.parse.3	.apply	parser.map	rune.t	list.string.ty	gsdl.pragma.t	|	gsdl.pragma.rc.like	parser.string.quotes
+ws.nl	.apply	parser.match	rune.t	|	rune.compare	_gsdl.pragma.parse_ws.nl.re
+value.parse.2	.apply	parser.<*	rune.t	gsdl.pragma.t	string.ty	|	value.parse.3	ws.nl
+value.parse.1	.apply	parser.*>	rune.t	string.ty	gsdl.pragma.t	|	ws	value.parse.2
+value.parse	.apply	parser.*>	rune.t	string.ty	gsdl.pragma.t	|	colon.parse	value.parse.1
+	.app	f	gsdl.cgs.syntax.gsid	value.parse
+	.enter	parser.lift2	rune.t	string.ty	gsdl.pragma.t	_gsdl.pragma.parse_res.ty
+
+_gsdl.pragma.parse_f_c	.expr
+list.t	.tygvar
+rune.t	.tygvar
+gsdl.pragma.t	.tygvar
+nm	.larg	list.t	rune.t
+pr	.larg	gsdl.pragma.t
+r	.record	0	nm	1	pr
+	.lift
+	.yield	r
 
 -- §section Constructors
 
