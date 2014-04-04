@@ -634,9 +634,9 @@ label	.impprog	primset	primtype
 \end{verbatim}
 That is followed by global variables, free variables, and arguments as for an \verb+.expr+.
 
-`Let' generators get compiled to\future{We plan to replace this wtih \stringcode{.closure}.}
+`Let' generators get compiled to\new{0.3}{this was called \stringcode{.alloc}.}
 \begin{verbatim}
-var	.alloc	code-label
+var	.closure	code-label
 \end{verbatim}
 `Bind' generators get compiled to\future{We plan to replace this with \stringcode{.bind .closure}.}
 \begin{verbatim}
