@@ -145,13 +145,13 @@ rune.t	.tygvar
 gsdl.pragma.t	.tygvar
 _gsdl.cgs.file.read_parser_k	.subcode
 maybe.t.out	.cogvar
-gsdl.cgs.pragma.gstype.get	.gvar
+gsdl.pragma.gstype.get	.gvar
 fn	.fv	ibio.file.name.t
 pragmas	.fv	ordered.map.t	string.t	gsdl.pragma.t
 	.force	_gsdl.cgs.file.read_parser_k
 	.coerce	maybe.t.out	string.t
 	.app	fn	pragmas
-	.enter	gsdl.cgs.pragma.gstype.get
+	.enter	gsdl.pragma.gstype.get
 
 _gsdl.cgs.file.read_parser_k	.forcecont
 maybe.prim.u	.tygvar

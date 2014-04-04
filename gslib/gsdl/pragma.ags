@@ -15,6 +15,9 @@ _gsdl.pragma.parse_colon.re	.regex	:
 _gsdl.pragma.parse_ws.re	.regex	\s*
 _gsdl.pragma.parse_ws.nl.re	.regex	\s*\n
 
+gsdl.pragma.gstype.get	.closure	_gsdl.pragma.gstype.get_c
+_gsdl.pragma.gstype.get_gstype.s	.string	type
+
 gsdl.pragma.rc.like	.closure	_gsdl.pragma.rc.like_c
 
 	.code
@@ -321,6 +324,78 @@ pr	.larg	gsdl.pragma.t
 r	.record	0	nm	1	pr
 	.lift
 	.yield	r
+
+-- §section §gs{gsdl.pragma.gstype.get}
+
+_gsdl.pragma.gstype.get_c	.expr
+ibio.file.name.t	.tygvar
+ordered.map.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+gsdl.pragma.t	.tygvar
+_gsdl.pragma.gstype.get_k	.subcode
+maybe.t.out	.cogvar
+ordered.map.get	.gvar
+list.compare	.gvar
+rune.compare	.gvar
+_gsdl.pragma.gstype.get_gstype.s	.gvar
+string.ty	.tylet	list.t	rune.t
+fn	.larg	ibio.file.name.t
+prs	.larg	ordered.map.t	string.ty	gsdl.pragma.t
+string.compare	.apply	list.compare	rune.t	|	rune.compare
+	.force	_gsdl.pragma.gstype.get_k
+	.coerce	maybe.t.out	gsdl.pragma.t
+	.app	string.compare	_gsdl.pragma.gstype.get_gstype.s	prs
+	.enter	ordered.map.get	string.ty	gsdl.pragma.t
+
+_gsdl.pragma.gstype.get_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.pragma.t	.tygvar
+maybe.t	.tygvar
+string.t	.tygvar
+_gsdl.pragma.gstype.get_just_k	.subcode
+gsdl.pragma.t.out	.cogvar
+maybe.nothing	.gvar
+mb.0	.karg	maybe.prim.u	gsdl.pragma.t
+	.analyze	mb.0	just	nothing
+		.case	just
+pr		.fkarg	0	gsdl.pragma.t
+			.force	_gsdl.pragma.gstype.get_just_k
+			.coerce	gsdl.pragma.t.out
+			.enter	pr
+		.case	nothing
+			.enter	maybe.nothing	string.t
+
+_gsdl.pragma.gstype.get_just_k	.forcecont
+gsdl.pragma.prim.u	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+_gsdl.pragma.gstype.get_just_rc.like_k	.subcode
+list.t.out	.cogvar
+pr0	.karg	gsdl.pragma.prim.u
+	.analyze	pr0	rc.like
+		.case	rc.like
+as		.fkarg	0	list.t	string.t
+			.force	_gsdl.pragma.gstype.get_just_rc.like_k
+			.coerce	list.t.out	string.t
+			.enter	as
+	-- > :: maybe.t	string.t
+
+_gsdl.pragma.gstype.get_just_rc.like_k	.forcecont
+list.prim.u	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+maybe.t	.tygvar
+maybe.just	.gvar
+as0	.karg	list.prim.u	string.t
+	.analyze	as0	:	nil
+		.case	:
+a0		.fkarg	0	string.t
+as1		.fkarg	1	list.t	string.t
+			.app	a0
+			.yield	maybe.just	string.t
+		.case	nil
+			.undef	maybe.t	string.t
 
 -- §section Constructors
 
