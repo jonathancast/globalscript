@@ -18,8 +18,6 @@ _gsdl.pragma.parse_ws.nl.re	.regex	\s*\n
 gsdl.pragma.gstype.get	.closure	_gsdl.pragma.gstype.get_c
 _gsdl.pragma.gstype.get_gstype.s	.string	type
 
-gsdl.pragma.rc.like	.closure	_gsdl.pragma.rc.like_c
-
 	.code
 
 -- §section §gs{gsdl.pragma.read}
@@ -299,7 +297,6 @@ _gsdl.pragma.parse_colon.re	.gvar
 _gsdl.pragma.parse_ws.re	.gvar
 parser.<*	.gvar
 parser.map	.gvar
-gsdl.pragma.rc.like	.gvar
 parser.string.quotes	.gvar
 _gsdl.pragma.parse_ws.nl.re	.gvar
 string.ty	.tylet	list.t	rune.t
@@ -307,9 +304,8 @@ list.string.ty	.tylet	list.t	string.ty
 f	.closure	_gsdl.pragma.parse_f_c
 colon.parse	.apply	parser.match	rune.t	|	rune.compare	_gsdl.pragma.parse_colon.re
 ws	.apply	parser.match	rune.t	|	rune.compare	_gsdl.pragma.parse_ws.re
-value.parse.3	.apply	parser.map	rune.t	list.string.ty	gsdl.pragma.t	|	gsdl.pragma.rc.like	parser.string.quotes
 ws.nl	.apply	parser.match	rune.t	|	rune.compare	_gsdl.pragma.parse_ws.nl.re
-value.parse.2	.apply	parser.<*	rune.t	gsdl.pragma.t	string.ty	|	value.parse.3	ws.nl
+value.parse.2	.apply	parser.<*	rune.t	gsdl.pragma.t	string.ty	|	parser.string.quotes	ws.nl
 value.parse.1	.apply	parser.*>	rune.t	string.ty	gsdl.pragma.t	|	ws	value.parse.2
 value.parse	.apply	parser.*>	rune.t	string.ty	gsdl.pragma.t	|	colon.parse	value.parse.1
 	.app	f	gsdl.cgs.syntax.gsid	value.parse
@@ -354,34 +350,19 @@ gsdl.pragma.t	.tygvar
 maybe.t	.tygvar
 string.t	.tygvar
 _gsdl.pragma.gstype.get_just_k	.subcode
-gsdl.pragma.t.out	.cogvar
+list.t.out	.cogvar
 maybe.nothing	.gvar
 mb.0	.karg	maybe.prim.u	gsdl.pragma.t
 	.analyze	mb.0	just	nothing
 		.case	just
 pr		.fkarg	0	gsdl.pragma.t
 			.force	_gsdl.pragma.gstype.get_just_k
-			.coerce	gsdl.pragma.t.out
+			.coerce	list.t.out	string.t
 			.enter	pr
 		.case	nothing
 			.enter	maybe.nothing	string.t
 
 _gsdl.pragma.gstype.get_just_k	.forcecont
-gsdl.pragma.prim.u	.tygvar
-list.t	.tygvar
-string.t	.tygvar
-_gsdl.pragma.gstype.get_just_rc.like_k	.subcode
-list.t.out	.cogvar
-pr0	.karg	gsdl.pragma.prim.u
-	.analyze	pr0	rc.like
-		.case	rc.like
-as		.fkarg	0	list.t	string.t
-			.force	_gsdl.pragma.gstype.get_just_rc.like_k
-			.coerce	list.t.out	string.t
-			.enter	as
-	-- > :: maybe.t	string.t
-
-_gsdl.pragma.gstype.get_just_rc.like_k	.forcecont
 list.prim.u	.tygvar
 string.t	.tygvar
 list.t	.tygvar
@@ -414,20 +395,10 @@ c	.constr	gsdl.pragma.prim.u	rc.like	0	as
 
 -- §section §gs{gsdl.pragma.t}
 
-gsdl.pragma.t	.tyabstract	*
-gsdl.pragma.prim.u	.tygvar
-	.tylift
-	.tyref	gsdl.pragma.prim.u
-
-gsdl.pragma.prim.u	.tyexpr
-_gsdl.pragma.prim.u_rc.like_ty	.tygvar
-	.tysum	rc.like	_gsdl.pragma.prim.u_rc.like_ty
-
-_gsdl.pragma.prim.u_rc.like_ty	.tyexpr
+gsdl.pragma.t	.tyexpr
 list.t	.tygvar
 string.t	.tygvar
-_0_ty	.tylet	list.t	string.t
-	.tyubproduct	0	_0_ty
+	.tyref	list.t	string.t
 
 -- §section §gs{gsdl.pragma.read}
 
@@ -466,15 +437,4 @@ rune.t	.tygvar
 list.t	.tygvar
 string.ty	.tylet	list.t	rune.t
 	.tyref	ibio.lex.receiver.lexeme.t	rune.t	string.ty
-
-	.coercion
-
-gsdl.pragma.t.in	.tycoercion
-gsdl.pragma.t	.tygvar
-	.tydefinition	gsdl.pragma.t
-
-gsdl.pragma.t.out	.tycoercion
-gsdl.pragma.t	.tygvar
-	.tyinvert
-	.tydefinition	gsdl.pragma.t
 
