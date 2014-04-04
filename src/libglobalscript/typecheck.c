@@ -2925,9 +2925,13 @@ gsbc_setup_code_impprog_closure(struct gsbc_typecheck_impprog_closure *pimpcl, g
 int
 gsbc_typecheck_bind_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl)
 {
-    static gsinterned_string gssymbind;
+    static gsinterned_string gssymbindclosure, gssymbind;
 
-    if (gssymceq(p->directive, gssymbind, gssymcodeop, ".bind")) {
+    if (
+        (pcl->features & gsstring_code_bind_closure_one_word)
+            ? gssymceq(p->directive, gssymbindclosure, gssymcodeop, ".bind.closure")
+            : gssymceq(p->directive, gssymbind, gssymcodeop, ".bind")
+    ) {
         int creg = 0;
         struct gsbc_code_item_type *cty;
 
@@ -2958,9 +2962,13 @@ gsbc_typecheck_bind_op(struct gsfile_symtable *symtable, struct gsparsedline *p,
 struct gstype *
 gsbc_typecheck_body_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl)
 {
-    static gsinterned_string gssymbody;
+    static gsinterned_string gssymbodyclosure, gssymbody;
 
-    if (gssymceq(p->directive, gssymbody, gssymcodeop, ".body")) {
+    if (
+        (pcl->features & gsstring_code_bind_closure_one_word)
+            ? gssymceq(p->directive, gssymbodyclosure, gssymcodeop, ".body.closure")
+            : gssymceq(p->directive, gssymbody, gssymcodeop, ".body")
+    ) {
         int creg = 0;
         struct gsbc_code_item_type *cty;
         struct gstype *calculated_type;

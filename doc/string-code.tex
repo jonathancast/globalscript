@@ -551,10 +551,11 @@ Legally, the label can be omitted with a warning (since allocation operations ar
 
 These are used in imperative block statements to execute sub-programs and name their results.
 
-\subsection{\stringcode{.bind}}
+\subsection{\stringcode{.bind.closure}}
+\new{0.4}{this was just \stringcode{.bind}.}
 
 \begin{verbatim}
-x	.bind	<code label>
+x	.bind.closure	<code label>
 \end{verbatim}
 
 This declares \stringcode{x} to be the result of executing the subprogram denoted by the code label.
@@ -565,10 +566,11 @@ This declares \stringcode{x} to be the result of executing the subprogram denote
 These are similar to bind generators (section \ref{bind}), but they define the last sub-program in a block statement.
 The result of these sub-programs is returned directly from the block statement, rather than being captured and used inside it.
 
-\subsection{\stringcode{.body}}
+\subsection{\stringcode{.body.closure}}
+\new{0.4}{this was just \stringcode{.body}.}
 
 \begin{verbatim}
-	.body	<code label>
+	.body.closure	<code label>
 \end{verbatim}
 
 This declares the result of the block statement to be the result of executing the subprogram denoted by the code label.
@@ -638,13 +640,13 @@ That is followed by global variables, free variables, and arguments as for an \v
 \begin{verbatim}
 var	.closure	code-label
 \end{verbatim}
-`Bind' generators get compiled to\future{We plan to replace this with \stringcode{.bind .closure}.}
+`Bind' generators get compiled to\new{0.4}{this was just \stringcode{.bind}.}\future{We plan to replace this with \stringcode{.bind .closure}.}
 \begin{verbatim}
-var	.bind	code-label
+var	.bind.closure	code-label
 \end{verbatim}
-The body gets compiled to\future{We plan to replace this with \stringcode{.body .closure}.}
+The body gets compiled to\new{0.4}{this was just \stringcode{.body}.}\future{We plan to replace this with \stringcode{.body .closure}.}
 \begin{verbatim}
-	.body	code-label
+	.body.closure	code-label
 \end{verbatim}
 
 \chapter{\stringcode{.regex} Literals}\agsonly{Regex literals are only supported for simplifying hand-written string code, for bootstrapping.}

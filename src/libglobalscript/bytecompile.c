@@ -356,7 +356,7 @@ static gsinterned_string gssymopyield, gssymopenter, gssymopubprim, gssymoplprim
 /* Branching */
 static gsinterned_string gssymopanalyze, gssymopdanalyze, gssymopcase, gssymopdefault;
 /* API */
-static gsinterned_string gssymopbind, gssymopbody;
+static gsinterned_string gssymopbindclosure, gssymopbind, gssymopbodyclosure, gssymopbody;
 
 static
 int
@@ -783,7 +783,11 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         if (i < p->numarguments) i++;
 
         pcl->size += ACE_APPLY_SIZE(p->numarguments - i);
-    } else if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
+    } else if (
+        (pcl->features & gsstring_code_bind_closure_one_word)
+            ?gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
+            : gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+    ) {
         int creg;
         struct gsbc_code_item_type *cty;
 
@@ -944,7 +948,11 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             gsbc_bytecode_size_case(ppseg, pp, pcl);
             pcl->nregs = nregs;
         }
-    } else if (gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")) {
+    } else if (
+        (pcl->features & gsstring_code_bind_closure_one_word)
+            ? gssymceq((*pp)->directive, gssymopbodyclosure, gssymcodeop, ".body.closure")
+            : gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
+    ) {
         int creg;
         struct gsbc_code_item_type *cty;
 
@@ -2231,7 +2239,11 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
 {
     int i;
 
-    if (gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")) {
+    if (
+        (pcl->features & gsstring_code_bind_closure_one_word)
+            ?gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
+            : gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+    ) {
         struct gsbc *pcode;
         int creg = 0;
         struct gsbc_code_item_type *cty;
@@ -2645,7 +2657,11 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
     )
         p = gsinput_next_line(ppseg, p)
     ;
-    if (gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")) {
+    if (
+        (features & gsstring_code_bind_closure_one_word)
+            ? gssymceq(p->directive, gssymopbodyclosure, gssymcodeop, ".body.closure")
+            : gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
+    ) {
         int creg = 0;
         struct gsbc_code_item_type *cty;
 

@@ -172,3 +172,10 @@ ok_diff_fail '-- .closure can be used for closures --' ./$O.test-gsi undef-closu
 ok_grep_errors '-- .closure can be used for closures in .impprogs --' 'undef-closure-in-impprog.ags:19: undefined' ./$O.test-gsexec undef-closure-in-impprog.ags
 ok_grep_errors '-- .alloc cannot be used in expressions --' 'illegal-alloc-in-expr.ags:13: Unimplemented code op .alloc' ./$O.test-gsi illegal-alloc-in-expr.ags
 ok_grep_errors '-- .alloc cannot be used in .impprogs --' 'illegal-alloc-in-impprog.ags:14: Unimplemented imp op .alloc' ./$O.test-gsexec illegal-alloc-in-impprog.ags
+
+echo '# Version 0.4 and up:'
+
+ok_grep_errors '-- .body.closure in .impprogs --' 'undef-body-closure-in-impprog.ags:17: undefined' ./$O.test-gsexec undef-body-closure-in-impprog.ags
+ok_grep_errors '-- .bind.closure in .impprogs --' 'undef-bind-closure-in-impprog.ags:19: undefined' ./$O.test-gsexec undef-bind-closure-in-impprog.ags
+ok_grep_errors '-- bare .body illegal in .impprogs --' 'illegal-body-in-impprog.ags:13: Unimplemented imp op .body' ./$O.test-gsexec illegal-body-in-impprog.ags
+ok_grep_errors '-- bare .bind illegal in .impprogs --' 'illegal-bind-in-impprog.ags:14: Unimplemented imp op .bind' ./$O.test-gsexec illegal-bind-in-impprog.ags
