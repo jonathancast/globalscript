@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -17,7 +19,7 @@ gsdl.cgs.symbol.abstyvar	.closure	_gsdl.cgs.symbol.abstyvar_c
 
 	.code
 
-# §section §gs{gsdl.cgs.symbol.components.get}
+-- §section §gs{gsdl.cgs.symbol.components.get}
 
 _gsdl.cgs.symbol.components.get_c	.expr
 gsdl.cgs.symbol.t	.tygvar
@@ -31,8 +33,8 @@ s	.larg	gsdl.cgs.symbol.t
 _gsdl.cgs.symbol.components.get_k	.forcecont
 gsdl.cgs.symbol.prim.u	.tygvar
 gsdl.var.t	.tygvar
-list.t	.tygvar	# Temp
-gsdl.var.component.t	.tygvar	# Temp
+list.t	.tygvar	-- Temp
+gsdl.var.component.t	.tygvar	-- Temp
 gsdl.var.components.get	.gvar
 s0	.karg	gsdl.cgs.symbol.prim.u
 	.analyze	s0	abstyvar	tyvar	var
@@ -46,9 +48,9 @@ v		.fkarg	0	gsdl.var.t
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.undef	list.t	gsdl.var.component.t
-	# > :: list.t	gsdl.var.component.t
+	-- > :: list.t	gsdl.var.component.t
 
-# §section §gs{gsdl.cgs.symbol.compare}
+-- §section §gs{gsdl.cgs.symbol.compare}
 
 _gsdl.cgs.symbol.compare_c	.expr
 gsdl.cgs.symbol.t	.tygvar
@@ -74,7 +76,7 @@ s0.0	.karg	gsdl.cgs.symbol.prim.u
 _gsdl.cgs.symbol.compare_k1	.forcecont
 gsdl.cgs.symbol.prim.u	.tygvar
 gsdl.var.t	.tygvar
-order.total.ord.t	.tygvar	# Temp
+order.total.ord.t	.tygvar	-- Temp
 gsdl.var.compare	.gvar
 order.total.ord.lt	.gvar
 order.total.ord.gt	.gvar
@@ -119,9 +121,9 @@ v1				.fkarg	0	gsdl.var.t
 				.case	var
 v1				.fkarg	0	gsdl.var.t
 					.undef	order.total.ord.t
-	# > :: order.total.ord.t
+	-- > :: order.total.ord.t
 
-# §section §gs{gsdl.cgs.symbol.≡}
+-- §section §gs{gsdl.cgs.symbol.≡}
 
 _gsdl.cgs.symbol.≡_c	.expr
 gsdl.cgs.symbol.t	.tygvar
@@ -147,7 +149,7 @@ s0.0	.karg	gsdl.cgs.symbol.prim.u
 _gsdl.cgs.symbol.≡_k1	.forcecont
 gsdl.cgs.symbol.prim.u	.tygvar
 gsdl.var.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 gsdl.var.≡	.gvar
 s0.0	.fv	gsdl.cgs.symbol.prim.u
 s1.0	.karg	gsdl.cgs.symbol.prim.u
@@ -167,9 +169,9 @@ v1				.fkarg	0	gsdl.var.t
 		.case	var
 v0		.fkarg	0	gsdl.var.t
 			.undef	bool.t
-	# > :: bool.t
+	-- > :: bool.t
 
-# §section §gs{gsdl.cgs.symbol.fmtgs}
+-- §section §gs{gsdl.cgs.symbol.fmtgs}
 
 _gsdl.cgs.symbol.fmtgs_c	.expr
 gsdl.cgs.symbol.t	.tygvar
@@ -183,7 +185,7 @@ s	.larg	gsdl.cgs.symbol.t
 _gsdl.cgs.symbol.fmtgs_k	.forcecont
 gsdl.cgs.symbol.prim.u	.tygvar
 gsdl.var.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+fmtgs.printer.t	.tygvar	-- Temp
 fmtgs.app	.gvar
 fmtgs.var	.gvar
 _gsdl.cgs.symbol.fmtgs_tyvar.s	.gvar
@@ -202,9 +204,9 @@ v.fmt			.apply	gsdl.var.fmtgs	|	v
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.undef	fmtgs.printer.t
-	# > :: fmtgs.printer.t
+	-- > :: fmtgs.printer.t
 
-# §section §gs{gsdl.cgs.symbol.t} Constructors
+-- §section §gs{gsdl.cgs.symbol.t} Constructors
 
 _gsdl.cgs.symbol.var_c	.expr
 gsdl.var.t	.tygvar
@@ -238,7 +240,7 @@ c	.constr	gsdl.cgs.symbol.prim.u	abstyvar	0	v
 
 	.type
 
-# §section §gs{gsdl.cgs.symbol.t}
+-- §section §gs{gsdl.cgs.symbol.t}
 
 gsdl.cgs.symbol.t	.tyabstract	*
 gsdl.cgs.symbol.prim.u	.tygvar

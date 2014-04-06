@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -46,7 +48,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{〈 'gstype ∝ nothing; 〉 ≡ 〈 'gstype ∝ just (product []); 〉}
+-- §section §gs{〈 'gstype ∝ nothing; 〉 ≡ 〈 'gstype ∝ just (product []); 〉}
 
 _test.eq.gstype.nothing.just_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
@@ -77,7 +79,7 @@ test	.apply	test.deny	|	_test.eq.gstype.nothing.just_false	_test.eq.gstype.nothi
 	.app	_test.eq.gstype.nothing.just_label	test
 	.enter	test.property.label
 
-# §section §gs{〈 'expr ∝ nothing; 〉 ≡ 〈 'expr ∝ just error; 〉}
+-- §section §gs{〈 'expr ∝ nothing; 〉 ≡ 〈 'expr ∝ just error; 〉}
 
 _test.eq.expr.nothing.just_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
@@ -107,7 +109,7 @@ test	.apply	test.deny	|	_test.eq.expr.nothing.just_false	_test.eq.expr.nothing.j
 	.app	_test.eq.expr.nothing.just_label	test
 	.enter	test.property.label
 
-# §section §gs{document.fmtgs 〈 'gstype ∝ just (product list.nil); 〉}
+-- §section §gs{document.fmtgs 〈 'gstype ∝ just (product list.nil); 〉}
 
 _test.fmtgs_c	.expr
 string.t	.tygvar
@@ -142,7 +144,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 	.app	_test.fmtgs_label	test
 	.enter	test.property.label
 
-# §section §gs{parse qq{:: "Π〈〉}}
+-- §section §gs{parse qq{:: "Π〈〉}}
 
 _test.parse.empty.document_c	.expr
 rune.t	.tygvar
@@ -184,7 +186,7 @@ expected	.lrecord	expr	nothing	gstype	just.empty.prod	pos	pos	|	gsdl.cgs.documen
 	.app	gsdl.cgs.document.≡	gsdl.cgs.document.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.cgs.document.t
 
-# §section §gs{parse qq{"defn bool.t ⊲}}
+-- §section §gs{parse qq{"defn bool.t ⊲}}
 
 _test.parse.expr.document_c	.expr
 rune.t	.tygvar
@@ -244,7 +246,7 @@ expected	.lrecord	expr	just.cast	gstype	gstype.nothing	pos	pos	|	gsdl.cgs.docume
 	.app	gsdl.cgs.document.≡	gsdl.cgs.document.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.cgs.document.t
 
-# §section §gs{parse qq{"defn bool.t ⊲ :: bool.t}}
+-- §section §gs{parse qq{"defn bool.t ⊲ :: bool.t}}
 
 _test.parse.typesig.document_c	.expr
 rune.t	.tygvar
@@ -268,7 +270,7 @@ test.true	.gvar
 actual	.larg	gsdl.cgs.document.t
 	.enter	test.true
 
-# §section §gs{freevars 〈 'expr ∝ just _; 〉}
+-- §section §gs{freevars 〈 'expr ∝ just _; 〉}
 
 _test.freevars.expr.document_c	.expr
 ordered.set.t	.tygvar

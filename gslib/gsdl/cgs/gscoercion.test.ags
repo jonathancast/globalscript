@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -28,7 +30,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{parse qq{"defn bool.t}}
+-- §section §gs{parse qq{"defn bool.t}}
 
 _test.parse.gscoercion.defn_c	.expr
 rune.t	.tygvar
@@ -73,7 +75,7 @@ expected	.apply	gsdl.cgs.gscoercion.pos	|	pos	co1
 	.app	gsdl.cgs.gscoercion.≡	gsdl.cgs.gscoercion.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.cgs.gscoercion.t
 
-# §section §gs{parse qq{"defn maybe.t bool.t}}
+-- §section §gs{parse qq{"defn maybe.t bool.t}}
 
 _test.parse.gscoercion.defn.tyargs_c	.expr
 rune.t	.tygvar
@@ -97,7 +99,7 @@ test.true	.gvar
 actual	.larg	gsdl.cgs.gscoercion.t
 	.enter	test.true
 
-# §section §gs{freevars (defn _)}
+-- §section §gs{freevars (defn _)}
 
 _test.freevars.defn_c	.expr
 ordered.set.t	.tygvar
