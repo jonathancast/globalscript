@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -15,7 +17,7 @@ gsdl.cgs.gskind.exp	.closure	_gsdl.cgs.gskind.exp_c
 
 	.code
 
-# §section §gs{gsdl.cgs.gskind.≡}
+-- §section §gs{gsdl.cgs.gskind.≡}
 
 _gsdl.cgs.gskind.≡_c	.expr
 gsdl.cgs.gskind.t	.tygvar
@@ -82,7 +84,7 @@ kie.eq					.apply	gsdl.cgs.gskind.≡	|	ki0.e	ki1.e
 					.enter	bool.true
 	-- > :: bool.t
 
-# §section §gs{gsdl.cgs.gskind.fmtgs}
+-- §section §gs{gsdl.cgs.gskind.fmtgs}
 
 _gsdl.cgs.gskind.fmtgs_c	.expr
 gsdl.cgs.gskind.t	.tygvar
@@ -116,7 +118,7 @@ ki.e		.fkarg	1	gsdl.cgs.gskind.t
 			.enter	fmtgs.var
 	-- > :: fmtgs.printer.t
 
-# §section Constructors
+-- §section Constructors
 
 _gsdl.cgs.gskind.unlifted_c	.expr
 gsdl.cgs.gskind.prim.u	.tygvar
@@ -155,7 +157,7 @@ c	.constr	gsdl.cgs.gskind.prim.u	exp	0	ki.b	1	ki.e
 
 	.type
 
-# §section §gs{gsdl.cgs.gskind.t}
+-- §section §gs{gsdl.cgs.gskind.t}
 
 gsdl.cgs.gskind.t	.tyabstract	*
 gsdl.cgs.gskind.prim.u	.tygvar
@@ -171,7 +173,7 @@ _gsdl.cgs.gskind.prim.u_exp_ty	.tyexpr
 gsdl.cgs.gskind.t	.tygvar
 	.tyubproduct	0	gsdl.cgs.gskind.t	1	gsdl.cgs.gskind.t
 
-# §section §gs{gsdl.cgs.gskind.≡}
+-- §section §gs{gsdl.cgs.gskind.≡}
 
 _gsdl.cgs.gskind.≡_ty	.tyexpr
 gsdl.cgs.gskind.t	.tygvar

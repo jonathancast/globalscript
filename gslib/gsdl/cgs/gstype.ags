@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -52,13 +54,13 @@ gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
 	.code
 
-# §section §gs{gsdl.cgs.gstype.parser}
+-- §section §gs{gsdl.cgs.gstype.parser}
 
 _gsdl.cgs.gstype.parser_c	.expr
 gsdl.cgs.gstype.parser.fun	.gvar
 	.enter	gsdl.cgs.gstype.parser.fun
 
-# §section §gs{gsdl.cgs.gstype.parser.fun}
+-- §section §gs{gsdl.cgs.gstype.parser.fun}
 
 _gsdl.cgs.gstype.parser.fun_c	.expr
 rune.t	.tygvar
@@ -123,7 +125,7 @@ tye	.apply	gsdl.cgs.gstype.fun	|	ty0	ty1
 	.app	pos	tye
 	.enter	gsdl.cgs.gstype.pos
 
-# §section §gs{gsdl.cgs.gstype.parser.app}
+-- §section §gs{gsdl.cgs.gstype.parser.app}
 
 _gsdl.cgs.gstype.parser.app_c	.expr
 rune.t	.tygvar
@@ -153,7 +155,7 @@ p1	.apply	parser.>>=	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t	|	p1.0	_gsdl.cgs
 	.app	p0	p1
 	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.gstype.parser.arg}
+-- §section §gs{gsdl.cgs.gstype.parser.arg}
 
 _gsdl.cgs.gstype.parser.arg_c	.expr
 rune.t	.tygvar
@@ -169,9 +171,9 @@ p1	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	prod.p	lift.p
 	.app	var.p	p1
 	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
 
-# > for (
-# >     'v ← cgs.syntax.var
-# > ) [| var v |]
+-- > for (
+-- >     'v ← cgs.syntax.var
+-- > ) [| var v |]
 _gsdl.cgs.gstype.parser.arg_var.p_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
@@ -200,9 +202,9 @@ e1	.apply	gsdl.cgs.gstype.var	|	v
 	.app	pos	e1
 	.enter	gsdl.cgs.gstype.pos
 
-# > for (
-# >     'fs ← m/"Π〈/ *> cgs.syntax.ws *> many field.parser <* cgs.syntax.rbracket;
-# > ) [| product fs |]
+-- > for (
+-- >     'fs ← m/"Π〈/ *> cgs.syntax.ws *> many field.parser <* cgs.syntax.rbracket;
+-- > ) [| product fs |]
 _gsdl.cgs.gstype.parser.arg_prod.p_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
@@ -229,9 +231,9 @@ fs_p	.apply	parser.*>	rune.t	string.t	list.field.t	|	pi_p	fs_p1
 	.app	gsdl.cgs.gstype.product	fs_p
 	.enter	parser.map	rune.t	list.field.t	gsdl.cgs.gstype.t
 
-# > for (
-# >     'ty ← m/⌊/ *> cgs.syntax.ws *> gsdl.cgs.gstype.parser <* m/⌋/ <* cgs.syntax.ws;
-# > ) [| lift ty |]
+-- > for (
+-- >     'ty ← m/⌊/ *> cgs.syntax.ws *> gsdl.cgs.gstype.parser <* m/⌋/ <* cgs.syntax.ws;
+-- > ) [| lift ty |]
 _gsdl.cgs.gstype.parser.arg_lift.p_c	.expr
 rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -256,7 +258,7 @@ ty_p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	lb_p	ty_p1
 	.app	gsdl.cgs.gstype.lift	ty_p
 	.enter	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.gstype.print}
+-- §section §gs{gsdl.cgs.gstype.print}
 
 _gsdl.cgs.gstype.print_c	.expr
 gsdl.cgs.gstype.t	.tygvar
@@ -334,7 +336,7 @@ v		.fkarg	0	gsdl.var.t
 			.undef	diff.list.t	rune.t
 	-- > :: diff.list.t	rune.t
 
-# §section §gs{gsdl.cgs.gstype.freevars}
+-- §section §gs{gsdl.cgs.gstype.freevars}
 
 _gsdl.cgs.gstype.freevars_c	.expr
 gsdl.cgs.gstype.t	.tygvar
@@ -429,7 +431,7 @@ sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
 	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsdl.cgs.gstype.substty}
+-- §section §gs{gsdl.cgs.gstype.substty}
 
 _gsdl.cgs.gstype.substty_c	.expr
 gsdl.var.t	.tygvar
@@ -550,7 +552,7 @@ b0	.karg	bool.prim.u
 		.case	true
 			.enter	ty0
 
-# §section §gs{gsdl.cgs.gstype.constr.substty}
+-- §section §gs{gsdl.cgs.gstype.constr.substty}
 
 _gsdl.cgs.gstype.constr.substty_c	.expr
 gsdl.var.t	.tygvar
@@ -561,7 +563,7 @@ ty0	.larg	gsdl.cgs.gstype.t
 co	.larg	gsdl.cgs.gstype.constr.t
 	.undef	gsdl.cgs.gstype.constr.t
 
-# §section §gs{gsdl.cgs.gstype.≡}
+-- §section §gs{gsdl.cgs.gstype.≡}
 
 _gsdl.cgs.gstype.≡_c	.expr
 gsdl.cgs.gstype.t	.tygvar
@@ -655,7 +657,7 @@ v0		.fkarg	0	gsdl.var.t
 			.undef	bool.t
 	-- > :: bool.t
 
-# §section §gs{gsdl.cgs.gstype.fmtgs}
+-- §section §gs{gsdl.cgs.gstype.fmtgs}
 
 _gsdl.cgs.gstype.fmtgs_c	.expr
 gsdl.cgs.gstype.t	.tygvar
@@ -736,7 +738,7 @@ v		.fkarg	0	gsdl.var.t
 			.undef	fmtgs.printer.t
 	-- > :: fmtgs.printer.t
 
-# §section §gs{gstype} Constructors
+-- §section §gs{gstype} Constructors
 
 _gsdl.cgs.gstype.abstype_c	.expr
 gsdl.var.t	.tygvar
@@ -863,7 +865,7 @@ c	.constr	gsdl.cgs.gstype.prim.u	fun	0	tya	1	tyr
 	.lift
 	.yield	c
 
-# §section §gs{gsdl.cgs.gstype.field.parser}
+-- §section §gs{gsdl.cgs.gstype.field.parser}
 
 _gsdl.cgs.gstype.field.parser_c	.expr
 rune.t	.tygvar
@@ -871,7 +873,7 @@ gsdl.cgs.gstype.field.t	.tygvar
 parser.fail	.gvar
 	.enter	parser.fail	rune.t	gsdl.cgs.gstype.field.t
 
-# §section §gs{gsdl.cgs.gstype.field.freevars}
+-- §section §gs{gsdl.cgs.gstype.field.freevars}
 
 _gsdl.cgs.gstype.field.freevars_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
@@ -880,7 +882,7 @@ gsdl.cgs.symbol.t	.tygvar	-- Temp
 f	.larg	gsdl.cgs.gstype.field.t
 	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsdl.cgs.gstype.field.name.compare}
+-- §section §gs{gsdl.cgs.gstype.field.name.compare}
 
 _gsdl.cgs.gstype.field.name.compare_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
@@ -889,7 +891,7 @@ f0	.larg	gsdl.cgs.gstype.field.t
 f1	.larg	gsdl.cgs.gstype.field.t
 	.undef	order.total.ord.t
 
-# §section §gs{gsdl.cgs.gstype.field.fmtgs}
+-- §section §gs{gsdl.cgs.gstype.field.fmtgs}
 
 _gsdl.cgs.gstype.field.fmtgs_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
@@ -902,7 +904,7 @@ ds	.apply	diff.list.nil	rune.t
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
 
-# §section §gs{gsdl.cgs.gstype.field.fmtgs.list}
+-- §section §gs{gsdl.cgs.gstype.field.fmtgs.list}
 
 _gsdl.cgs.gstype.field.fmtgs.list_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
@@ -913,7 +915,7 @@ gsdl.cgs.gstype.field.fmtgs	.gvar
 
 	.type
 
-# §section §gs{gsdl.cgs.gstype.t}
+-- §section §gs{gsdl.cgs.gstype.t}
 
 gsdl.cgs.gstype.t	.tyabstract	*
 gsdl.cgs.gstype.prim.u	.tygvar
@@ -986,7 +988,7 @@ _gsdl.cgs.gstype.prim.u_var_ty	.tyexpr
 gsdl.var.t	.tygvar
 	.tyubproduct	0	gsdl.var.t
 
-# §section §gs{gsdl.cgs.gstype.field.t}
+-- §section §gs{gsdl.cgs.gstype.field.t}
 
 gsdl.cgs.gstype.field.t	.tyabstract	*
 gsdl.cgs.gstype.field.prim.u	.tygvar
@@ -996,7 +998,7 @@ gsdl.cgs.gstype.field.prim.u	.tygvar
 gsdl.cgs.gstype.field.prim.u	.tyexpr
 	.tysum
 
-# §section §gs{gsdl.cgs.gstype.constr.t}
+-- §section §gs{gsdl.cgs.gstype.constr.t}
 
 gsdl.cgs.gstype.constr.t	.tyabstract	*
 gsdl.cgs.gstype.constr.prim.u	.tygvar
@@ -1006,7 +1008,7 @@ gsdl.cgs.gstype.constr.prim.u	.tygvar
 gsdl.cgs.gstype.constr.prim.u	.tyexpr
 	.tysum
 
-# §section §gs{gsdl.cgs.gstype.parser}
+-- §section §gs{gsdl.cgs.gstype.parser}
 
 _gsdl.cgs.gstype.parser_ty	.tyexpr
 parser.t	.tygvar
@@ -1014,7 +1016,7 @@ rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.gstype.parser.fun}
+-- §section §gs{gsdl.cgs.gstype.parser.fun}
 
 _gsdl.cgs.gstype.parser.fun_ty	.tyexpr
 parser.t	.tygvar
@@ -1022,7 +1024,7 @@ rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.gstype.parser.app}
+-- §section §gs{gsdl.cgs.gstype.parser.app}
 
 _gsdl.cgs.gstype.parser.app_ty	.tyexpr
 parser.t	.tygvar
@@ -1038,7 +1040,7 @@ rune.t	.tygvar
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.gstype.parser.arg}
+-- §section §gs{gsdl.cgs.gstype.parser.arg}
 
 _gsdl.cgs.gstype.parser.arg_ty	.tyexpr
 parser.t	.tygvar
@@ -1046,7 +1048,7 @@ rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.gstype.substty}
+-- §section §gs{gsdl.cgs.gstype.substty}
 
 _gsdl.cgs.gstype.substty_ty	.tyexpr
 gsdl.var.t	.tygvar
@@ -1059,7 +1061,7 @@ gsdl.cgs.gstype.t	.tygvar
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.gstype.constr.substty}
+-- §section §gs{gsdl.cgs.gstype.constr.substty}
 
 _gsdl.cgs.gstype.constr.substty_ty	.tyexpr
 gsdl.var.t	.tygvar
@@ -1073,7 +1075,7 @@ gsdl.cgs.gstype.constr.t	.tygvar
 	.tyfun	gsdl.cgs.gstype.constr.t
 	.tyref	gsdl.cgs.gstype.constr.t
 
-# §section §gs{gsdl.cgs.gstype.≡}
+-- §section §gs{gsdl.cgs.gstype.≡}
 
 _gsdl.cgs.gstype.≡_ty	.tyexpr
 gsdl.cgs.gstype.t	.tygvar
@@ -1084,7 +1086,7 @@ bool.t	.tygvar
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	bool.t
 
-# §section §gs{gsdl.cgs.gstype.print}
+-- §section §gs{gsdl.cgs.gstype.print}
 
 _gsdl.cgs.gstype.print_w_ty	.tyexpr
 gsdl.cgs.gstype.t	.tygvar
@@ -1094,7 +1096,7 @@ rune.t	.tygvar
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	diff.list.t	rune.t
 
-# §section §gs{gsdl.cgs.gstype.freevars}
+-- §section §gs{gsdl.cgs.gstype.freevars}
 
 _gsdl.cgs.gstype.freevars_ty	.tyexpr
 gsdl.cgs.gstype.t	.tygvar
@@ -1104,7 +1106,7 @@ gsdl.cgs.symbol.t	.tygvar
 	.tyfun	gsdl.cgs.gstype.t
 	.tyref	ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsdl.cgs.gstype.field.fmtgs}
+-- §section §gs{gsdl.cgs.gstype.field.fmtgs}
 
 _gsdl.cgs.gstype.field.fmtgs_ty	.tyexpr
 fmtgs.t	.tygvar

@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -33,7 +35,7 @@ gsdl.cgs.typeenv.typeexpansion.togstype	.closure	_gsdl.cgs.typeenv.typeexpansion
 
 	.code
 
-# §section §gs{gsdl.cgs.typeenv.gskind.get}
+-- §section §gs{gsdl.cgs.typeenv.gskind.get}
 
 _gsdl.cgs.typeenv.gskind.get_c	.expr
 gsdl.var.t	.tygvar
@@ -56,7 +58,7 @@ kis	.field	kinds	env0
 	.app	gsdl.var.compare	v	kis
 	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.gskind.t
 
-# §section §gs{gsdl.cgs.typeenv.typeexpansion.get}
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.get}
 
 _gsdl.cgs.typeenv.typeexpansion.get_c	.expr
 gsdl.var.t	.tygvar
@@ -79,7 +81,7 @@ exps	.field	typeexpansions	env0
 	.app	gsdl.var.compare	v	exps
 	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
 
-# §section §gs{gsdl.cgs.typeenv.typedefinition.get}
+-- §section §gs{gsdl.cgs.typeenv.typedefinition.get}
 
 _gsdl.cgs.typeenv.typedefinition.get_c	.expr
 gsdl.var.t	.tygvar
@@ -102,13 +104,13 @@ tyds	.field	typedefinitions	env0
 	.app	gsdl.var.compare	v	tyds
 	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t
 
-# §section §gs{gsdl.cgs.typeenv.tyvar.elem}
+-- §section §gs{gsdl.cgs.typeenv.tyvar.elem}
 
 _gsdl.cgs.typeenv.tyvar.elem_c	.expr
 gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 ordered.map.elem	.gvar
 gsdl.var.compare	.gvar
 v	.larg	gsdl.var.t
@@ -117,7 +119,7 @@ kis	.lfield	kinds	env
 	.app	gsdl.var.compare	v	kis
 	.enter	ordered.map.elem	gsdl.var.t	gsdl.cgs.gskind.t
 
-# §section §gs{gsdl.cgs.typeenv.empty}
+-- §section §gs{gsdl.cgs.typeenv.empty}
 
 _gsdl.cgs.typeenv.empty_c	.expr
 gsdl.var.t	.tygvar
@@ -133,7 +135,7 @@ r	.record	kinds	kis	typedefinitions	tyds	typeexpansions	es	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.gsabstypenm.insert}
+-- §section §gs{gsdl.cgs.typeenv.gsabstypenm.insert}
 
 _gsdl.cgs.typeenv.gsabstypenm.insert_c	.expr
 gsdl.var.t	.tygvar
@@ -171,7 +173,7 @@ r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.definedprim.insert}
+-- §section §gs{gsdl.cgs.typeenv.definedprim.insert}
 
 _gsdl.cgs.typeenv.definedprim.insert_c	.expr
 gsdl.var.t	.tygvar
@@ -214,7 +216,7 @@ r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.elimprim.insert}
+-- §section §gs{gsdl.cgs.typeenv.elimprim.insert}
 
 _gsdl.cgs.typeenv.elimprim.insert_c	.expr
 gsdl.var.t	.tygvar
@@ -257,7 +259,7 @@ r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.impprim.insert}
+-- §section §gs{gsdl.cgs.typeenv.impprim.insert}
 
 _gsdl.cgs.typeenv.impprim.insert_c	.expr
 gsdl.var.t	.tygvar
@@ -300,7 +302,7 @@ r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.tyvar.insert}
+-- §section §gs{gsdl.cgs.typeenv.tyvar.insert}
 
 _gsdl.cgs.typeenv.tyvar.insert_c	.expr
 gsdl.var.t	.tygvar
@@ -338,7 +340,7 @@ r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	tyes1	|	gsdl.cgs.typeen
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.typefun.insert}
+-- §section §gs{gsdl.cgs.typeenv.typefun.insert}
 
 _gsdl.cgs.typeenv.typefun.insert_c	.expr
 gsdl.var.t	.tygvar
@@ -383,7 +385,7 @@ r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	tyes1	|	gsdl.cgs.typeen
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.gsabstypedefn.insert}
+-- §section §gs{gsdl.cgs.typeenv.gsabstypedefn.insert}
 
 _gsdl.cgs.typeenv.gsabstypedefn.insert_c	.expr
 gsdl.var.t	.tygvar
@@ -421,7 +423,7 @@ r	.record	kinds	kis	typedefinitions	tyds1	typeexpansions	tyes	|	gsdl.cgs.typeenv
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.var.insert}
+-- §section §gs{gsdl.cgs.typeenv.var.insert}
 
 _gsdl.cgs.typeenv.var.insert_c	.expr
 gsdl.var.t	.tygvar
@@ -446,7 +448,7 @@ r	.record	kinds	kis	typedefinitions	tyds	typeexpansions	tyes	|	gsdl.cgs.typeenv.
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.overlay}
+-- §section §gs{gsdl.cgs.typeenv.overlay}
 
 _gsdl.cgs.typeenv.overlay_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
@@ -488,7 +490,7 @@ r	.record	kinds	kis2	typedefinitions	tyds2	typeexpansions	es2	|	gsdl.cgs.typeenv
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.typeexpansion.app}
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.app}
 
 _gsdl.cgs.typeenv.typeexpansion.app_c	.expr
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
@@ -541,7 +543,7 @@ r			.record	0	ls1	1	e1	|	gsdl.cgs.typeenv.typeexpansion.prim.u
 			.lift
 			.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.typeexpansion.substty}
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.substty}
 
 _gsdl.cgs.typeenv.typeexpansion.substty_c	.expr
 gsdl.var.t	.tygvar
@@ -577,7 +579,7 @@ list.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar	# Temp
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar	-- Temp
 list.nil	.gvar
 gsdl.cgs.gstype.substty	.gvar
 v	.fv	gsdl.var.t
@@ -596,7 +598,7 @@ r			.record	0	nil	1	e1	|	gsdl.cgs.typeenv.typeexpansion.prim.u
 			.lift
 			.yield	r
 
-# §section §gs{gsdl.cgs.typeenv.typeexpansion.togstype}
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.togstype}
 
 _gsdl.cgs.typeenv.typeexpansion.togstype_c	.expr
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
@@ -623,7 +625,7 @@ list.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
-either.t	.tygvar	# Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 e	.fv	gsdl.cgs.gstype.t
 tyls0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
@@ -638,7 +640,7 @@ tyls1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 
 	.type
 
-# §section §gs{gsdl.cgs.typeenv.t}
+-- §section §gs{gsdl.cgs.typeenv.t}
 
 gsdl.cgs.typeenv.t	.tyexpr
 gsdl.cgs.typeenv.u	.tygvar
@@ -656,7 +658,7 @@ _typedefinitions_ty	.tylet	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typedefinit
 typeexpansions_ty	.tylet	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
 	.typroduct	kinds	kinds_ty	typedefinitions	_typedefinitions_ty	typeexpansions	typeexpansions_ty
 
-# §section §gs{gsdl.cgs.typeenv.typeexpansion.t}
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.t}
 
 gsdl.cgs.typeenv.typeexpansion.t	.tyexpr	*
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
@@ -670,7 +672,7 @@ gsdl.cgs.gstype.t	.tygvar
 list.tylambda.ty	.tylet	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 	.typroduct	0	list.tylambda.ty	1	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.typeenv.typeexpansion.tylambda.t}
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.tylambda.t}
 
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tyexpr
 gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u	.tygvar
@@ -682,7 +684,7 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 	.typroduct	0	gsdl.var.t	1	gsdl.cgs.gskind.t
 
-# §section §gs{gsdl.cgs.typeenv.typedefinition.t}
+-- §section §gs{gsdl.cgs.typeenv.typedefinition.t}
 
 gsdl.cgs.typeenv.typedefinition.t	.tyexpr
 gsdl.cgs.typeenv.typedefinition.u	.tygvar
@@ -696,7 +698,7 @@ gsdl.cgs.gstype.t	.tygvar
 list.tylambda.ty	.tylet	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 	.typroduct	tyargs	list.tylambda.ty	tybody	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.typeenv.typeexpansion.substty}
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.substty}
 
 _gsdl.cgs.typeenv.typeexpansion.substty_ty	.tyexpr
 gsdl.var.t	.tygvar

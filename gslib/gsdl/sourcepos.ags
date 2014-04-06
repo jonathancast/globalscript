@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -16,7 +18,7 @@ gsdl.sourcepos.print	.closure	_gsdl.sourcepos.print_c
 
 	.code
 
-# §section §gs{gsdl.sourcepos}
+-- §section §gs{gsdl.sourcepos}
 
 _gsdl.sourcepos_c	.expr
 parser.pos.t	.tygvar
@@ -29,7 +31,7 @@ r	.record	0.col	0.col	0.line	0.line	file	file
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.sourcepos.fmtgs}
+-- §section §gs{gsdl.sourcepos.fmtgs}
 
 _gsdl.sourcepos.fmtgs_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -69,7 +71,7 @@ ds	.apply	diff.list.prepend	rune.t	|	_gsdl.sourcepos.fmtgs_prefix.s	ds1
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
 
-# §section §gs{gsdl.sourcepos.print}
+-- §section §gs{gsdl.sourcepos.print}
 
 _gsdl.sourcepos.print_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -79,7 +81,7 @@ ibio.file.name.out	.gvar
 list.:	.gvar
 rune.colon	.gvar
 natural.fmtdecimal	.gvar
-list.nil	.gvar	# Temp
+list.nil	.gvar	-- Temp
 pos	.larg	gsdl.sourcepos.t
 file	.lfield	file	pos
 file.s	.apply	ibio.file.name.out	|	file
