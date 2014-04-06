@@ -961,7 +961,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             gsfatal("%P: Cannot find type of %y", (*pp)->pos, (*pp)->arguments[0])
         ;
 
-        pcl->size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
+        pcl->size += ACE_BODY_SIZE(cty->numfvs);
     } else {
         return 0;
     }
