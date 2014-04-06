@@ -141,12 +141,16 @@ rune.t	.tygvar
 bool.t	.tygvar
 ibio.file.name.t	.tygvar
 _gsac.prefix.file.load_if_c	.subcode
+_gsac.prefix.file.load_pragmas.pos_c	.subcode
+_gsac.prefix.file.load_pos_c	.subcode
 _gsac.prefix.file.load_s_c	.subcode
 _gsac.prefix.file.load_body_c	.subcode
 eo	.larg	ibio.prim.oport	rune.t
 isags	.larg	bool.t
 fn	.larg	ibio.file.name.t
 if	.bind	_gsac.prefix.file.load_if_c
+pragmas.pos	.bind	_gsac.prefix.file.load_pragmas.pos_c
+pos	.closure	_gsac.prefix.file.load_pos_c
 s	.bind	_gsac.prefix.file.load_s_c
 	.body	_gsac.prefix.file.load_body_c
 
@@ -186,6 +190,24 @@ if		.karg	ibio.prim.iport	rune.t
 			.app	if
 			.yield	ibio.prim.unit	res.ty
 
+_gsac.prefix.file.load_pragmas.pos_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+ibio.prim.iport	.tygvar
+gsdl.pragma.read	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+fn	.fv	ibio.file.name.t
+if	.efv	ibio.prim.iport	rune.t
+	.app	eo	fn	if
+	.enter	gsdl.pragma.read
+
+_gsac.prefix.file.load_pos_c	.expr
+_gsdl.pragma.read_res.ty	.tygvar
+pragmas.pos	.fv	_gsdl.pragma.read_res.ty
+pos	.lfield	pos	pragmas.pos
+	.enter	pos
+
 _gsac.prefix.file.load_s_c	.expr
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
@@ -214,13 +236,12 @@ either.t.out	.cogvar
 parser.parse	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
-parser.pos.initial	.gvar
 gsdl.ags.file.parser	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 isags	.fv	bool.t
 fn	.fv	ibio.file.name.t
 s	.fv	list.t	rune.t
-pos	.apply	parser.pos.initial	|	fn
+pos	.fv	parser.pos.t
 fp	.apply	gsdl.ags.file.parser	|	isags
 	.force	_gsac.prefix.file.load_body_k
 	.coerce	either.t.out	parser.err.t	gsdl.ags.file.t
