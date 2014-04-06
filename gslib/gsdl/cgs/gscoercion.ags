@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -22,7 +24,7 @@ gsdl.cgs.gscoercion.gstype.iso	.closure	_gsdl.cgs.gscoercion.gstype.iso_c
 
 	.code
 
-# §section §gs{gsdl.cgs.gscoercion.parser.app}
+-- §section §gs{gsdl.cgs.gscoercion.parser.app}
 
 _gsdl.cgs.gscoercion.parser.app_c	.expr
 _gsdl.cgs.gscoercion.parser.app_defn.p_c	.subcode
@@ -46,7 +48,7 @@ gsdl.cgs.syntax.core.keyword	.gvar
 _gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.gvar
 parser.many	.gvar
 gsdl.cgs.gstype.parser.arg	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 list.gstype.ty	.tylet	list.t	gsdl.cgs.gstype.t
 f	.alloc	_gsdl.cgs.gscoercion.parser.app_defn.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
@@ -77,7 +79,7 @@ co1	.apply	list.foldl	gsdl.cgs.gstype.t	gsdl.cgs.gscoercion.t	|	gsdl.cgs.gscoerc
 	.app	pos	co1
 	.enter	gsdl.cgs.gscoercion.pos
 
-# §section §gs{gsdl.cgs.gscoercion.freevars}
+-- §section §gs{gsdl.cgs.gscoercion.freevars}
 
 _gsdl.cgs.gscoercion.freevars_c	.expr
 gsdl.cgs.gscoercion.t	.tygvar
@@ -95,7 +97,7 @@ gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
-ordered.set.t	.tygvar	# Temp
+ordered.set.t	.tygvar	-- Temp
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.gscoercion.freevars	.gvar
@@ -121,9 +123,9 @@ pos		.fkarg	0	gsdl.sourcepos.t
 c1		.fkarg	1	gsdl.cgs.gscoercion.t
 			.app	c1
 			.enter	gsdl.cgs.gscoercion.freevars
-	# > :: ordered.set.t	gsdl.cgs.symbol.t
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsdl.cgs.gscoercion.gstype.substty}
+-- §section §gs{gsdl.cgs.gscoercion.gstype.substty}
 
 _gsdl.cgs.gscoercion.gstype.substty_c	.expr
 gsdl.var.t	.tygvar
@@ -168,7 +170,7 @@ y.ty0			.apply	gsdl.cgs.gstype.substty	|	v	ty	ty0
 y.ty1			.apply	gsdl.cgs.gstype.substty	|	v	ty	ty1
 			.app	y.ty0	y.ty1
 			.enter	gsdl.cgs.gscoercion.gstype.iso
-	# > :: gsdl.cgs.gscoercion.gstype.t
+	-- > :: gsdl.cgs.gscoercion.gstype.t
 
 _gsdl.cgs.gscoercion.gstype.substty_forall_k	.forcecont
 gsdl.var.t	.tygvar
@@ -188,7 +190,7 @@ ty	.fv	gsdl.cgs.gstype.t
 v1	.fv	gsdl.var.t
 ki	.fv	gsdl.cgs.gskind.t
 cty1	.fv	gsdl.cgs.gscoercion.gstype.t
-b0	.karg	bool.prim.u	# §gs{v ≡ v1}
+b0	.karg	bool.prim.u	-- §gs{v ≡ v1}
 	.analyze	b0	false	true
 		.case	false
 v1.sym			.apply	gsdl.cgs.symbol.tyvar	|	v1
@@ -205,7 +207,7 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 bool.prim.u	.tygvar
-gsdl.cgs.gscoercion.gstype.t	.tygvar	# Temp
+gsdl.cgs.gscoercion.gstype.t	.tygvar	-- Temp
 gsdl.cgs.gscoercion.gstype.forall	.gvar
 gsdl.cgs.gscoercion.gstype.substty	.gvar
 v	.fv	gsdl.var.t
@@ -213,7 +215,7 @@ ty	.fv	gsdl.cgs.gstype.t
 v1	.fv	gsdl.var.t
 ki	.fv	gsdl.cgs.gskind.t
 cty1	.fv	gsdl.cgs.gscoercion.gstype.t
-b0	.karg	bool.prim.u	# §gs{v1 ∈ fvs(ty)}
+b0	.karg	bool.prim.u	-- §gs{v1 ∈ fvs(ty)}
 	.analyze	b0	false	true
 		.case	false
 y.cty1			.apply	gsdl.cgs.gscoercion.gstype.substty	|	v	ty	cty1
@@ -222,7 +224,7 @@ y.cty1			.apply	gsdl.cgs.gscoercion.gstype.substty	|	v	ty	cty1
 		.case	true
 			.undef	gsdl.cgs.gscoercion.gstype.t
 
-# §section §gs{gsdl.cgs.gscoercion.≡}
+-- §section §gs{gsdl.cgs.gscoercion.≡}
 
 _gsdl.cgs.gscoercion.≡_c	.expr
 gsdl.cgs.gscoercion.t	.tygvar
@@ -251,7 +253,7 @@ gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 gsdl.var.≡	.gvar
 gsdl.cgs.gscoercion.≡	.gvar
 co0.0	.fv	gsdl.cgs.gscoercion.prim.u
@@ -281,17 +283,17 @@ pos1				.fkarg	0	gsdl.sourcepos.t
 co1.1				.fkarg	1	gsdl.cgs.gscoercion.t
 					.app	co0.1	co1.1
 					.enter	gsdl.cgs.gscoercion.≡
-	# > :: bool.t
+	-- > :: bool.t
 
-# §section §gs{gsdl.cgs.gscoercion.fmtgs}
+-- §section §gs{gsdl.cgs.gscoercion.fmtgs}
 
 _gsdl.cgs.gscoercion.fmtgs_c	.expr
 gsdl.cgs.gscoercion.t	.tygvar
-fmtgs.printer.t	.tygvar	# Temp
+fmtgs.printer.t	.tygvar	-- Temp
 co	.larg	gsdl.cgs.gscoercion.t
 	.undef	fmtgs.printer.t
 
-# §section §gs{gsdl.cgs.gscoercion.t} constructors
+-- §section §gs{gsdl.cgs.gscoercion.t} constructors
 
 _gsdl.cgs.gscoercion.pos_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -327,7 +329,7 @@ res	.constr	gsdl.cgs.gscoercion.prim.u	appty	0	cof	1	tya
 	.lift
 	.yield	res
 
-# §section §gs{gsdl.cgs.gscoercion.gstype.t} Constructors
+-- §section §gs{gsdl.cgs.gscoercion.gstype.t} Constructors
 
 _gsdl.cgs.gscoercion.gstype.forall_c	.expr
 gsdl.var.t	.tygvar
@@ -356,7 +358,7 @@ res	.constr	gsdl.cgs.gscoercion.gstype.prim.u	iso	0	ty0	1	ty1
 
 	.type
 
-# §section §gs{gsdl.cgs.gscoercion.t}
+-- §section §gs{gsdl.cgs.gscoercion.t}
 
 gsdl.cgs.gscoercion.t	.tyabstract	*
 gsdl.cgs.gscoercion.prim.u	.tygvar
@@ -383,7 +385,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gscoercion.t
 
-# §section §gs{gsdl.cgs.gscoercion.gstype.t}
+-- §section §gs{gsdl.cgs.gscoercion.gstype.t}
 
 gsdl.cgs.gscoercion.gstype.t	.tyabstract	*
 gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
@@ -405,7 +407,7 @@ _gsdl.cgs.gscoercion.gstype.prim.u_iso_ty	.tyexpr
 gsdl.cgs.gstype.t	.tygvar
 	.tyubproduct	0	gsdl.cgs.gstype.t	1	gsdl.cgs.gstype.t
 
-# §section §gs{gsdl.cgs.gscoercion.parser.app}
+-- §section §gs{gsdl.cgs.gscoercion.parser.app}
 
 _gsdl.cgs.gscoercion.parser.app_ty	.tyexpr
 parser.t	.tygvar
@@ -413,7 +415,7 @@ rune.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 	.tyref	parser.t	rune.t	gsdl.cgs.gscoercion.t
 
-# §section §gs{gsdl.cgs.gscoercion.freevars}
+-- §section §gs{gsdl.cgs.gscoercion.freevars}
 
 _gsdl.cgs.gscoercion.freevars_ty	.tyexpr
 gsdl.cgs.gscoercion.t	.tygvar
@@ -423,7 +425,7 @@ gsdl.cgs.symbol.t	.tygvar
 	.tyfun	gsdl.cgs.gscoercion.t
 	.tyref	ordered.set.t	gsdl.cgs.symbol.t
 
-# §section §gs{gsdl.cgs.gscoercion.gstype.substty}
+-- §section §gs{gsdl.cgs.gscoercion.gstype.substty}
 
 _gsdl.cgs.gscoercion.gstype.substty_ty	.tyexpr
 gsdl.var.t	.tygvar
@@ -437,7 +439,7 @@ gsdl.cgs.gscoercion.gstype.t	.tygvar
 	.tyfun	gsdl.cgs.gscoercion.gstype.t
 	.tyref	gsdl.cgs.gscoercion.gstype.t
 
-# §section §gs{gsdl.cgs.gscoercion.≡}
+-- §section §gs{gsdl.cgs.gscoercion.≡}
 
 _gsdl.cgs.gscoercion.≡_ty	.tyexpr
 gsdl.cgs.gscoercion.t	.tygvar

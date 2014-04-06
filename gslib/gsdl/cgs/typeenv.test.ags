@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -22,11 +24,11 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{gskind.get gsv{x} [x ⇒ abstype κ]}
+-- §section §gs{gskind.get gsv{x} [x ⇒ abstype κ]}
 
 _test_gskind.get_exists_c	.expr
 gsdl.var.component.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar	# Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
 _test_gskind.get_exists_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.typeenv.gskind.get	.gvar
@@ -61,12 +63,12 @@ ki		.fkarg	0	gsdl.cgs.gskind.t
 			.app	_test_gskind.get_exists_nothing_lookup.failed.s
 			.enter	test.property.false
 
-# §section §gs{typeexpansion.get gsv{x} [x ⇒ abstype κ]}
+-- §section §gs{typeexpansion.get gsv{x} [x ⇒ abstype κ]}
 
 _test_typeexpansion.get_exists_c	.expr
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 gsdl.var.component.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar	# Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
 _test_typeexpansion.get_exists_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.typeenv.typeexpansion.get	.gvar

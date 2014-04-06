@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -35,7 +37,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{fmtgs (product [])}
+-- §section §gs{fmtgs (product [])}
 
 _test.fmtgs.product_c	.expr
 string.t	.tygvar
@@ -59,7 +61,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 	.app	_test.fmtgs.product_label	test
 	.enter	test.property.label
 
-# §section §gs{lift (product nil) ≡ product nil}
+-- §section §gs{lift (product nil) ≡ product nil}
 
 _test.lift.eq.product_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
@@ -80,7 +82,7 @@ test	.apply	test.deny	|	_test.lift.eq.product_false	_test.lift.eq.product_true	e
 	.app	_test.lift.eq.product_label	test
 	.enter	test.property.label
 
-# §section §gs{parse qq{"Π〈〉}}
+-- §section §gs{parse qq{"Π〈〉}}
 
 _test.parser.empty.product_c	.expr
 rune.t	.tygvar
@@ -112,7 +114,7 @@ expected	.apply	gsdl.cgs.gstype.product	|	nil
 	.app	gsdl.cgs.gstype.≡	gsdl.cgs.gstype.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.cgs.gstype.t
 
-# §section §gs{parse qq{⌊tyx tyf⌋}}
+-- §section §gs{parse qq{⌊tyx tyf⌋}}
 
 _test.parser_lifted.app_c	.expr
 rune.t	.tygvar
@@ -136,7 +138,7 @@ test.true	.gvar
 ty	.larg	gsdl.cgs.gstype.t
 	.enter	test.true
 
-# §section §gs{parse qq{ty → tyr}}
+-- §section §gs{parse qq{ty → tyr}}
 
 _test.parser_fun_c	.expr
 rune.t	.tygvar

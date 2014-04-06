@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -17,7 +19,7 @@ _gsdl.cgs.document.fmtgs_suffix	.string	〉
 
 	.code
 
-# §section §gs{gsdl.cgs.document.parser}
+-- §section §gs{gsdl.cgs.document.parser}
 
 _gsdl.cgs.document.parser_c	.expr
 rune.t	.tygvar
@@ -47,17 +49,17 @@ gsdl.cgs.syntax.semi	.gvar
 f	.alloc	_gsdl.cgs.document.parser_f_c
 pos.get	.apply	parser.pos.get	rune.t
 typesig.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
-# §paragraph{Expression, no type signature}
+-- §paragraph{Expression, no type signature}
 expr.f	.alloc	_gsdl.cgs.document.parser_expr.f_c
 expr.p	.apply	parser.map	rune.t	gsdl.cgs.gsexpr.t	_gsdl.cgs.document.parser_ety_ty	|	expr.f	gsdl.cgs.gsexpr.parser
-# §paragraph{Expression and type signature}
+-- §paragraph{Expression and type signature}
 expr.sig.f	.alloc	_gsdl.cgs.document.parser_expr.sig.f_c
 expr.sig.p1	.apply	gsdl.cgs.gsexpr.parser.cast	|	gsdl.cgs.syntax.branch.l	gsdl.cgs.syntax.assoc.any
 expr.sig.p	.apply	parser.lift2	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gstype.t	_gsdl.cgs.document.parser_ety_ty	|	expr.sig.f	expr.sig.p1	typesig.p
-# §paragraph{No expression, just type signature}
+-- §paragraph{No expression, just type signature}
 noexpr.f	.alloc	_gsdl.cgs.document.parser_noexpr.f_c
 noexpr.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	_gsdl.cgs.document.parser_ety_ty	|	noexpr.f	typesig.p
-# §par
+-- §par
 ep.p1.1	.apply	parser.<|>	rune.t	_gsdl.cgs.document.parser_ety_ty	|	expr.sig.p	noexpr.p
 ep.p1	.apply	parser.<|>	rune.t	_gsdl.cgs.document.parser_ety_ty	|	expr.p	ep.p1.1
 ep.p	.apply	parser.<*	rune.t	_gsdl.cgs.document.parser_ety_ty	string.t	|	ep.p1	gsdl.cgs.syntax.semi
@@ -120,7 +122,7 @@ r	.record	0	nothing	1	just.ty	|	_gsdl.cgs.document.parser_ety_u
 	.lift
 	.yield	r
 
-# §section §gs{gsdl.cgs.document.freevars}
+-- §section §gs{gsdl.cgs.document.freevars}
 
 _gsdl.cgs.document.freevars_c	.expr
 gsdl.cgs.document.t	.tygvar
@@ -151,7 +153,7 @@ e.fvs	.apply	maybe.maybe	gsdl.cgs.gsexpr.t	res.ty	|	empty	gsdl.cgs.gsexpr.freeva
 	.app	gsdl.cgs.symbol.compare	e.fvs	ty.fvs
 	.enter	ordered.set.union	gsdl.cgs.symbol.t
 
-# §section §gs{gsdl.cgs.document.≡}
+-- §section §gs{gsdl.cgs.document.≡}
 
 _gsdl.cgs.document.≡_c	.expr
 gsdl.cgs.document.t	.tygvar
@@ -172,7 +174,7 @@ ty.eq	.apply	maybe.≡	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.≡	mb.ty0	mb.ty1
 	.app	e.eq	ty.eq
 	.enter	bool.∧
 
-# §section §gs{gsdl.cgs.document.fmtgs}
+-- §section §gs{gsdl.cgs.document.fmtgs}
 
 _gsdl.cgs.document.fmtgs_c	.expr
 gsdl.cgs.document.t	.tygvar
@@ -211,7 +213,7 @@ ds	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_prefix	ds1
 
 	.type
 
-# §section §gs{gsdl.cgs.document.t}
+-- §section §gs{gsdl.cgs.document.t}
 
 gsdl.cgs.document.t	.tyexpr
 gsdl.cgs.document.prim.u	.tygvar
@@ -227,7 +229,7 @@ _expr_ty	.tylet	maybe.t	gsdl.cgs.gsexpr.t
 gstype_ty	.tylet	maybe.t	gsdl.cgs.gstype.t
 	.typroduct	expr	_expr_ty	gstype gstype_ty	pos	gsdl.sourcepos.t
 
-# §section §gs{gsdl.cgs.document.parser}
+-- §section §gs{gsdl.cgs.document.parser}
 
 _gsdl.cgs.document.parser_ety_ty	.tyexpr
 _gsdl.cgs.document.parser_ety_u	.tygvar

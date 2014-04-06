@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -56,7 +58,7 @@ gsdl.cgs.syntax.assoc.right	.closure	_gsdl.cgs.syntax.assoc.right_c
 
 	.code
 
-# §section §gs{gsdl.cgs.syntax.var.parser}
+-- §section §gs{gsdl.cgs.syntax.var.parser}
 
 _gsdl.cgs.syntax.var.parser_c	.expr
 rune.t	.tygvar
@@ -86,14 +88,14 @@ base.p	.apply	parser.map	rune.t	list.component.ty	gsdl.var.t	|	gsdl.var.basevar	
 	.app	base.p	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	gsdl.var.t	string.t
 
-# §section §gs{gsdl.cgs.syntax.var.component.alphanum.parser}
+-- §section §gs{gsdl.cgs.syntax.var.component.alphanum.parser}
 
 _gsdl.cgs.syntax.var.component.alphanum.parser_c	.expr
 rune.t	.tygvar
 string.t	.tygvar
 gsdl.var.component.t	.tygvar
 record.empty	.tygvar
-parser.t	.tygvar	# Temp
+parser.t	.tygvar	-- Temp
 _gsdl.cgs.syntax.var.component.alphanum.parser_k_c	.subcode
 parser.>>=	.gvar
 parser.<*	.gvar
@@ -102,7 +104,7 @@ rune.compare	.gvar
 _gsdl.cgs.syntax.gsid_re	.gvar
 parser.neg.lookahead	.gvar
 _gsdl.cgs.syntax_id.cont.char.re	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 id_p0	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.gsid_re
 id_p1.1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_id.cont.char.re
 id_p1	.apply	parser.neg.lookahead	rune.t	string.t	|	id_p1.1
@@ -134,7 +136,7 @@ gsdl.var.component.alphanum	.gvar
 parser.fail	.gvar
 id	.fv	string.t
 b0	.karg	bool.prim.u
-	.analyze	b0	false	true	# §gs{b0} = ‘is keyword’
+	.analyze	b0	false	true	-- §gs{b0} = ‘is keyword’
 		.case	false
 c			.apply	gsdl.var.component.alphanum	|	id
 			.app	c
@@ -142,7 +144,7 @@ c			.apply	gsdl.var.component.alphanum	|	id
 		.case	true
 			.enter	parser.fail	rune.t	gsdl.var.component.t
 
-# §section §gs{gsdl.cgs.syntax.var.print}
+-- §section §gs{gsdl.cgs.syntax.var.print}
 
 _gsdl.cgs.syntax.var.print_c	.expr
 gsdl.var.t	.tygvar
@@ -159,7 +161,7 @@ list.t	.tygvar
 gsdl.var.component.t	.tygvar
 natural.t	.tygvar
 gsdl.var.t	.tygvar
-string.t	.tygvar	# Temp
+string.t	.tygvar	-- Temp
 _gsdl.cgs.syntax.var.print_basevar_k	.subcode
 list.t.out	.cogvar
 v0	.karg	gsdl.var.prim.u
@@ -173,14 +175,14 @@ cs		.fkarg	0	list.t	gsdl.var.component.t
 d		.fkarg	0	natural.t
 cs		.fkarg	1	list.t	gsdl.var.t
 			.undef	string.t
-	# > :: string.t
+	-- > :: string.t
 
 _gsdl.cgs.syntax.var.print_basevar_k	.forcecont
 list.prim.u	.tygvar
 gsdl.var.component.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-string.t	.tygvar	# Temp
+string.t	.tygvar	-- Temp
 list.<>	.gvar
 gsdl.cgs.syntax.var.component.print	.gvar
 _gsdl.cgs.syntax.var.print_basevar_components.print	.gvar
@@ -199,7 +201,7 @@ cs.s			.apply	_gsdl.cgs.syntax.var.print_basevar_components.print	|	cs1
 _gsdl.cgs.syntax.var.print_basevar_components.print_c	.expr
 list.t	.tygvar
 gsdl.var.component.t	.tygvar
-string.t	.tygvar	# Temp
+string.t	.tygvar	-- Temp
 _gsdl.cgs.syntax.var.print_basevar_components.print_k	.subcode
 list.t.out	.cogvar
 cs	.larg	list.t	gsdl.var.component.t
@@ -212,7 +214,7 @@ list.prim.u	.tygvar
 gsdl.var.component.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
-string.t	.tygvar	# Temp
+string.t	.tygvar	-- Temp
 list.:	.gvar
 rune.dot	.gvar
 list.<>	.gvar
@@ -232,7 +234,7 @@ s1			.apply	list.<>	rune.t	|	c0.s	cs1.s
 		.case	nil
 			.enter	list.nil	rune.t
 
-# §section §gs{gsdl.cgs.syntax.lexeme}
+-- §section §gs{gsdl.cgs.syntax.lexeme}
 
 _gsdl.cgs.syntax.lexeme_c	.expr
 parser.t	.tygvar
@@ -245,7 +247,7 @@ p	.larg	parser.t	rune.t	α
 	.app	p	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	α	string.t
 
-# §section §gs{gsdl.cgs.syntax.ws}
+-- §section §gs{gsdl.cgs.syntax.ws}
 
 _gsdl.cgs.syntax.ws_c	.expr
 rune.t	.tygvar
@@ -255,7 +257,7 @@ _gsdl.cgs.syntax.ws_re	.gvar
 	.app	rune.compare	_gsdl.cgs.syntax.ws_re
 	.enter	parser.match	rune.t
 
-# §section §gs{gsdl.cgs.syntax.gsid}
+-- §section §gs{gsdl.cgs.syntax.gsid}
 
 _gsdl.cgs.syntax.gsid_c	.expr
 rune.t	.tygvar
@@ -265,7 +267,7 @@ _gsdl.cgs.syntax.gsid_re	.gvar
 	.app	rune.compare	_gsdl.cgs.syntax.gsid_re
 	.enter	parser.match	rune.t
 
-# §section §gs{gsdl.cgs.syntax.dot}
+-- §section §gs{gsdl.cgs.syntax.dot}
 
 _gsdl.cgs.syntax.dot_c	.expr
 rune.t	.tygvar
@@ -279,7 +281,7 @@ m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.dot_re
 	.app	m	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
 
-# §section §gs{gsdl.cgs.syntax.oftype}
+-- §section §gs{gsdl.cgs.syntax.oftype}
 
 _gsdl.cgs.syntax.oftype_c	.expr
 rune.t	.tygvar
@@ -293,7 +295,7 @@ p0	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.oftype_re
 	.app	p0	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
 
-# §section §gs{gsdl.cgs.syntax.rbracket}
+-- §section §gs{gsdl.cgs.syntax.rbracket}
 
 _gsdl.cgs.syntax.rbracket_c	.expr
 rune.t	.tygvar
@@ -307,7 +309,7 @@ m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.rbracket_re
 	.app	m	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
 
-# §section §gs{gsdl.cgs.syntax.rbracket}
+-- §section §gs{gsdl.cgs.syntax.rbracket}
 
 _gsdl.cgs.syntax.semi_c	.expr
 rune.t	.tygvar
@@ -321,7 +323,7 @@ m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.semi_re
 	.app	m	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
 
-# §section §gs{gsdl.cgs.syntax.keyword}
+-- §section §gs{gsdl.cgs.syntax.keyword}
 
 _gsdl.cgs.syntax.keyword_c	.expr
 regex.t	.tygvar
@@ -338,7 +340,7 @@ parser.<*	.gvar
 parser.neg.lookahead	.gvar
 _gsdl.cgs.syntax_id.cont.char.re	.gvar
 gsdl.cgs.syntax.ws	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 maybe.string.ty	.tylet	maybe.t	string.t
 kw	.larg	regex.t	rune.t
 dq.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_dq.re
@@ -351,7 +353,7 @@ p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
 	.app	mb.dq.p	p
 	.enter	parser.*>	rune.t	maybe.string.ty	string.t
 
-# §section §gs{gsdl.cgs.syntax.core.keyword}
+-- §section §gs{gsdl.cgs.syntax.core.keyword}
 
 _gsdl.cgs.syntax.core.keyword_c	.expr
 regex.t	.tygvar
@@ -366,7 +368,7 @@ parser.<*	.gvar
 parser.neg.lookahead	.gvar
 _gsdl.cgs.syntax_id.cont.char.re	.gvar
 gsdl.cgs.syntax.ws	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 kw	.larg	regex.t	rune.t
 dq.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_dq.re
 p1	.apply	parser.match	rune.t	|	rune.compare	kw
@@ -377,7 +379,7 @@ p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
 	.app	dq.p	p
 	.enter	parser.*>	rune.t	string.t	string.t
 
-# §section §gs{gsdl.cgs.syntax.keywordOp}
+-- §section §gs{gsdl.cgs.syntax.keywordOp}
 
 _gsdl.cgs.syntax.keywordOp_c	.expr
 regex.t	.tygvar
@@ -394,7 +396,7 @@ parser.<*	.gvar
 parser.neg.lookahead	.gvar
 _gsdl.cgs.syntax_op.cont.char.re	.gvar
 gsdl.cgs.syntax.ws	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 maybe.string.ty	.tylet	maybe.t	string.t
 kw	.larg	regex.t	rune.t
 dq.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_dq.re
@@ -407,7 +409,7 @@ p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
 	.app	dq.p	p
 	.enter	parser.*>	rune.t	maybe.string.ty	string.t
 
-# §section §gs{gsdl.cgs.syntax.core.keywordOp}
+-- §section §gs{gsdl.cgs.syntax.core.keywordOp}
 
 _gsdl.cgs.syntax.core.keywordOp_c	.expr
 regex.t	.tygvar
@@ -422,7 +424,7 @@ parser.<*	.gvar
 parser.neg.lookahead	.gvar
 _gsdl.cgs.syntax_op.cont.char.re	.gvar
 gsdl.cgs.syntax.ws	.gvar
-parser.fail	.gvar	# Temp
+parser.fail	.gvar	-- Temp
 kw	.larg	regex.t	rune.t
 dq.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_dq.re
 p1	.apply	parser.match	rune.t	|	rune.compare	kw
@@ -433,7 +435,7 @@ p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
 	.app	dq.p	p
 	.enter	parser.*>	rune.t	string.t	string.t
 
-# §section §gs{gsdl.cgs.syntax.var.component.print}
+-- §section §gs{gsdl.cgs.syntax.var.component.print}
 
 _gsdl.cgs.syntax.var.component.print_c	.expr
 gsdl.var.component.t	.tygvar
@@ -459,9 +461,9 @@ n		.fkarg	0	natural.t
 		.case	symbolic
 s		.fkarg	0	string.t
 			.undef	string.t
-	# > :: string.t
+	-- > :: string.t
 
-# §section §gs{gsdl.cgs.syntax.branch.t} Constructors
+-- §section §gs{gsdl.cgs.syntax.branch.t} Constructors
 
 _gsdl.cgs.syntax.branch.l_c	.expr
 gsdl.cgs.syntax.branch.prim.u	.tygvar
@@ -479,7 +481,7 @@ c	.constr	gsdl.cgs.syntax.branch.prim.u	r
 	.lift
 	.yield	c
 
-# §section §gs{gsdl.cgs.syntax.assoc.t} Constructors
+-- §section §gs{gsdl.cgs.syntax.assoc.t} Constructors
 
 _gsdl.cgs.syntax.assoc.any_c	.expr
 gsdl.cgs.syntax.assoc.prim.u	.tygvar
@@ -499,7 +501,7 @@ c	.constr	gsdl.cgs.syntax.assoc.prim.u	right
 
 	.type
 
-# §section §gs{gsdl.cgs.syntax.branch.t}
+-- §section §gs{gsdl.cgs.syntax.branch.t}
 
 gsdl.cgs.syntax.branch.t	.tyabstract	*
 gsdl.cgs.syntax.branch.prim.u	.tygvar
@@ -510,7 +512,7 @@ gsdl.cgs.syntax.branch.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
 	.tysum	l	record.unboxed.empty	r	record.unboxed.empty
 
-# §section §gs{gsdl.cgs.syntax.assoc.t}
+-- §section §gs{gsdl.cgs.syntax.assoc.t}
 
 gsdl.cgs.syntax.assoc.t	.tyabstract	*
 gsdl.cgs.syntax.assoc.prim.u	.tygvar
@@ -521,7 +523,7 @@ gsdl.cgs.syntax.assoc.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
 	.tysum	any	record.unboxed.empty	left	record.unboxed.empty	right	record.unboxed.empty
 
-# §section §gs{gsdl.cgs.syntax.var.print}
+-- §section §gs{gsdl.cgs.syntax.var.print}
 
 _gsdl.cgs.syntax.var.print_components.print_ty	.tyexpr
 list.t	.tygvar
