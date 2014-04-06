@@ -500,6 +500,19 @@ with kinds \stringcode{ki} (see section \ref{kinds}).
 This isn't really an external dependency;
 it's more a kind of type literal, that simplifies the implementation of the string compiler.
 
+\section{Sub-Code Items}
+\label{subcode}
+
+These declare dependencies on code items which sub-expressions or evaluation contexts within this expression were compiled to.
+
+\subsection{\stringcode{.subcode}}
+
+\begin{verbatim}
+c	.subcode
+\end{verbatim}
+
+This declares that the code item \stringcode{c} is a sub-expression or evaluation context of the current code item.
+
 \section{Free Type Variables}
 \label{type_fv}
 
@@ -716,25 +729,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-
-int
-gsparse_subcode_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymsubcode;
-
-    if (gssymceq(parsedline->directive, gssymsubcode, gssymcodeop, ".subcode")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymcodelable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .subcode", pos->real_filename, pos->real_lineno);
-        if (n > 2)
-            gsfatal("%s:%d: Too many arguments to .subcode", pos->real_filename, pos->real_lineno)
-        ;
-    } else {
-        return 0;
-    }
-    return 1;
-}
 
 int
 gsparse_coercion_gvar_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
