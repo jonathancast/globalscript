@@ -529,6 +529,30 @@ t	.tyarg	ki
 
 This declares \stringcode{t} to be a type variable with kind \stringcode{ki}  (see section \ref{kinds}).
 
+\section{Value Arguments}
+\label{value_arg}
+
+These are abstractions over object or value variables.
+
+\subsection{\stringcode{.larg}}
+
+\begin{verbatim}
+x	.larg	tyf	tyx_0	...	tyx_n-1
+\end{verbatim}
+
+This does two jobs:
+it declares \stringcode{x} to be an argument of type \stringcode{tyf $tyx_0$ $\ldots$ $tyx_{n-1}$},
+and it lifts the resulting lambda term.
+
+\subsection{\stringcode{.arg}}
+
+\begin{verbatim}
+x	.arg	tyf	tyx_0	...	tyx_n-1
+\end{verbatim}
+
+This only declares \stringcode{x} to be an argument of type \stringcode{tyf $tyx_0$ $\ldots$ $tyx_{n-1}$};
+the resulting expression is un-lifted.
+
 \section{Local Type Definitions}
 \label{code_type_let}
 
@@ -686,51 +710,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-
-static
-int
-gsparse_value_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymlarg, gssymarg;
-
-    int i;
-
-    if (gssymceq(parsedline->directive, gssymlarg, gssymcodeop, ".larg")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .larg op", pos->real_filename, pos->real_lineno)
-        ;
-        if (n < 3)
-            gsfatal("%s:%d: Missing type on .larg", pos->real_filename, pos->real_lineno)
-        ;
-        for (i = 2; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-    } else if (gssymceq(parsedline->directive, gssymarg, gssymcodeop, ".arg")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .arg op", pos->real_filename, pos->real_lineno);
-        if (n < 3)
-            gsfatal("%s:%d: Missing type on .arg", pos->real_filename, pos->real_lineno);
-        for (i = 2; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-    } else {
-        return 0;
-    }
-    return 1;
-}
-
-#define CHECK_GVAR_LABEL(op) \
-    do { \
-        if (*fields[0]) \
-            parsedline->label = gsintern_string(gssymdatalable, fields[0]) \
-        ; else \
-            gsfatal("%s:%d: Missing label on " op " op", pos->real_filename, pos->real_lineno) \
-        ; \
-    } while (0)
 
 int
 gsparse_subcode_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
