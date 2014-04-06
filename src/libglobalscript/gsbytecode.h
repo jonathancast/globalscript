@@ -171,6 +171,10 @@ enum {
 #define ACE_BIND_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_BIND_NUMFVS(ip))
 
 #define ACE_BODY_SIZE(nfvs) GS_SIZE_BYTECODE(2 + nfvs) /* Code reg + nfvs + fvs */
+#define ACE_BODY_CODE(ip) ((ip)->args[0])
+#define ACE_BODY_NUMFVS(ip) ((ip)->args[1])
+#define ACE_BODY_FV(ip, i) ((ip)->args[2+(i)])
+#define ACE_BODY_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_BODY_NUMFVS(ip))
 
 void *gsreservebytecode(ulong);
 

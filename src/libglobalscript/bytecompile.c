@@ -2671,20 +2671,20 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
 
         pcode->pos = p->pos;
         pcode->instr = gsbc_op_body;
-        pcode->args[0] = (uchar)creg;
+        ACE_BODY_CODE(pcode) = (uchar)creg;
 
         if (!(cty = cl.subexpr_types[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
         ;
-        pcode->args[1] = (uchar)cty->numfvs;
+        ACE_BODY_NUMFVS(pcode) = (uchar)cty->numfvs;
         for (i = 0; i < cty->numfvs; i++) {
             int regarg;
 
             regarg = gsbc_find_register(p, cl.regs, cl.nregs, cty->fvs[i]);
-            pcode->args[2 + i] = (uchar)regarg;
+            ACE_BODY_FV(pcode, i) = (uchar)regarg;
         }
 
-        pcode = GS_NEXT_BYTECODE(pcode, 2 + cty->numfvs);
+        pcode = ACE_BODY_SKIP(pcode);
         cl.pout = (uchar *)pcode;
     } else {
         gsfatal(UNIMPL("%P: API op %y"), p->pos, p->directive);
