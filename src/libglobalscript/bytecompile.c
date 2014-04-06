@@ -785,7 +785,7 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         pcl->size += ACE_APPLY_SIZE(p->numarguments - i);
     } else if (
         (pcl->features & gsstring_code_bind_closure_one_word)
-            ?gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
+            ? gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
             : gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
     ) {
         int creg;
@@ -801,7 +801,7 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
         ;
 
-        pcl->size += GS_SIZE_BYTECODE(2 + cty->numfvs); /* Code reg + nfvs + fvs */
+        pcl->size += ACE_BIND_SIZE(cty->numfvs);
     } else {
         return 0;
     }
