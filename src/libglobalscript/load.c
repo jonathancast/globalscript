@@ -281,7 +281,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         if (!calculus_version) gsfatal(UNIMPL("%s:%d: No #calculus pragma"), pos.real_filename, pos.real_lineno);
     } else {
         calculus_version = "0.0";
-        features = gsstring_code_hash_comments | gsstring_code_hash_escapes;
+        features = gsstring_code_hash_comments | gsstring_code_hash_escapes | gsstring_code_bind_one_word;
     }
 
     if ((n = gsac_tokenize(pos.real_filename, pos.real_lineno, features, line, fields, NUM_FIELDS)) < 0)
@@ -418,16 +418,19 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
 
             if (!strcmp(version, "0.1")) {
                 *pcalculus_version = "0.1";
-                *pfeatures = gsstring_code_hash_escapes;
+                *pfeatures = gsstring_code_hash_escapes | gsstring_code_bind_one_word;
             } else if (!strcmp(version, "0.2")) {
                 *pcalculus_version = "0.2";
-                *pfeatures = gsstring_code_hash_is_normal;
+                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_bind_one_word;
             } else if (!strcmp(version, "0.3")) {
                 *pcalculus_version = "0.3";
-                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc;
+                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc | gsstring_code_bind_one_word;
             } else if (!strcmp(version, "0.4")) {
                 *pcalculus_version = "0.4";
                 *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc | gsstring_code_bind_closure_one_word;
+            } else if (!strcmp(version, "0.5")) {
+                *pcalculus_version = "0.5";
+                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc | gsstring_code_bind_closure_two_words;
             } else {
                 gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
             }
@@ -1666,8 +1669,10 @@ gsparse_bind_op(uint features, struct gsparse_input_pos *pos, struct gsparsedlin
 
     if (
         (features & gsstring_code_bind_closure_one_word)
-            ?gssymceq(parsedline->directive, gssymbindclosure, gssymcodeop, ".bind.closure")
-            : gssymceq(parsedline->directive, gssymbind, gssymcodeop, ".bind")
+            ? gssymceq(parsedline->directive, gssymbindclosure, gssymcodeop, ".bind.closure")
+        : (features & gsstring_code_bind_one_word)
+            ? gssymceq(parsedline->directive, gssymbind, gssymcodeop, ".bind")
+        : 0
     ) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymdatalable, fields[0]);
@@ -1679,6 +1684,22 @@ gsparse_bind_op(uint features, struct gsparse_input_pos *pos, struct gsparsedlin
         parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
         if (n > 3)
             gsfatal("%s:%d: Too many arguments to %y", pos->real_filename, pos->real_lineno, parsedline->directive)
+        ;
+    } else if (
+        (features & gsstring_code_bind_closure_two_words)
+            ? gssymceq(parsedline->directive, gssymbind, gssymcodeop, ".bind")
+            : 0
+    ) {
+        if (*fields[0])
+            parsedline->label = gsintern_string(gssymdatalable, fields[0])
+        ; else
+            parsedline->label = 0
+        ;
+        if (n < 3)
+            gsfatal("%s:%d: Missing sub-op on .bind", pos->real_filename, pos->real_lineno)
+        ;
+        if (!gsparse_thunk_alloc_op(features, pos, parsedline, 1, fields, n))
+            gsfatal("%s:%d: Un-recognized sub-op %y on .body", pos->real_filename, pos->real_lineno, parsedline->arguments[0])
         ;
     } else {
         return 0;
@@ -1694,7 +1715,9 @@ gsparse_body_op(uint features, struct gsparse_input_pos *pos, struct gsparsedlin
     if (
         (features & gsstring_code_bind_closure_one_word)
             ? gssymceq(parsedline->directive, gssymbodyclosure, gssymcodeop, ".body.closure")
-            : gssymceq(parsedline->directive, gssymbody, gssymcodeop, ".body")
+        : (features & gsstring_code_bind_one_word)
+            ? gssymceq(parsedline->directive, gssymbody, gssymcodeop, ".body")
+        : 0
     ) {
         if (*fields[0])
             gsfatal("%s:%d: Labels illegal on terminal ops", pos->real_filename, pos->real_lineno);
@@ -1706,6 +1729,17 @@ gsparse_body_op(uint features, struct gsparse_input_pos *pos, struct gsparsedlin
         parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
         if (n > 3)
             gsfatal("%s:%d: Too many arguments to %y", pos->real_filename, pos->real_lineno, parsedline->directive)
+        ;
+    } else if (
+        (features & gsstring_code_bind_closure_two_words)
+            ? gssymceq(parsedline->directive, gssymbody, gssymcodeop, ".body")
+            : 0
+    ) {
+        if (n < 3)
+            gsfatal("%s:%d: Missing sub-op on .body", pos->real_filename, pos->real_lineno)
+        ;
+        if (!gsparse_thunk_alloc_op(features, pos, parsedline, 1, fields, n))
+            gsfatal("%s:%d: Un-recognized sub-op %y on .body", pos->real_filename, pos->real_lineno, parsedline->arguments[0])
         ;
     } else {
         return 0;

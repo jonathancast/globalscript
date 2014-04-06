@@ -592,14 +592,17 @@ Legally, the label can be omitted with a warning (since allocation operations ar
 
 These are used in imperative block statements to execute sub-programs and name their results.
 
-\subsection{\stringcode{.bind.closure}}
-\new{0.4}{this was just \stringcode{.bind}.}
+\subsection{\stringcode{.bind}}
+\old{0.4}{\stringcode{.bind} meant what is now written \stringcode{.bind	.closure}.}
+\new{0.5}{these were combined into one token; e.g., what is now written \stringcode{.bind	.closure} was \stringcode{.bind.closure}.}
 
 \begin{verbatim}
-x	.bind.closure	<code label>
+x	.bind	<alloc op>
 \end{verbatim}
 
-This declares \stringcode{x} to be the result of executing the subprogram denoted by the code label.
+This declares \stringcode{x} to be the result of executing the subprogram denoted by the allocation operator.
+The allocation operator can be any specified in section \ref{thunk_alloc},
+although since it will need to be of imperative type, not all allocations will be useful.\unimpl{Only \stringcode{.closure} is currently implemented.}
 
 \section{Block Statement Bodies}
 \label{body}
@@ -607,14 +610,17 @@ This declares \stringcode{x} to be the result of executing the subprogram denote
 These are similar to bind generators (section \ref{bind}), but they define the last sub-program in a block statement.
 The result of these sub-programs is returned directly from the block statement, rather than being captured and used inside it.
 
-\subsection{\stringcode{.body.closure}}
-\new{0.4}{this was just \stringcode{.body}.}
+\subsection{\stringcode{.body}}
+\old{0.4}{\stringcode{.body} meant wah is now written \stringcode{.body	.closure}.}
+\new{0.5}{these were combined into one token; e.g., what is now written \stringcode{.body	.closure} was \stringcode{.body.closure}.}
 
 \begin{verbatim}
-	.body.closure	<code label>
+	.body	<alloc op>
 \end{verbatim}
 
-This declares the result of the block statement to be the result of executing the subprogram denoted by the code label.
+This declares the result of the block statement to be the result of executing the subprogram denoted by the allocation operator.
+As with bind generators, the allocation operator can be any specified in section \ref{thunk_alloc},
+although since it will need to be of imperative type, not all allocations will be useful.\unimpl{Only \stringcode{.closure} is currently implemented.}
 
 \chapter{Types}
 
@@ -681,13 +687,13 @@ That is followed by global variables, free variables, and arguments as for an \v
 \begin{verbatim}
 var	.closure	code-label
 \end{verbatim}
-`Bind' generators get compiled to\new{0.4}{this was just \stringcode{.bind}.}\future{We plan to replace this with \stringcode{.bind .closure}.}
+`Bind' generators get compiled to\new{0.4}{this was just \stringcode{.bind}.} \new{0.5}{this was one token, \stringcode{.bind.closure}.}
 \begin{verbatim}
-var	.bind.closure	code-label
+var	.bind	.closure	code-label
 \end{verbatim}
-The body gets compiled to\new{0.4}{this was just \stringcode{.body}.}\future{We plan to replace this with \stringcode{.body .closure}.}
+The body gets compiled to\new{0.4}{this was just \stringcode{.body}.} \new{0.5}{this was one token, \stringcode{.body.closure}.}
 \begin{verbatim}
-	.body.closure	code-label
+	.body	.closure	code-label
 \end{verbatim}
 
 \chapter{\stringcode{.regex} Literals}\agsonly{Regex literals are only supported for simplifying hand-written string code, for bootstrapping.}

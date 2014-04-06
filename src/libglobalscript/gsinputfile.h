@@ -10,7 +10,9 @@ enum {
     gsstring_code_hash_escapes = 2,
     gsstring_code_hash_is_normal = 4,
     gsstring_code_closure_not_alloc = 8,
-    gsstring_code_bind_closure_one_word = 0x10,
+    gsstring_code_bind_one_word = 0x10,
+    gsstring_code_bind_closure_one_word = 0x20,
+    gsstring_code_bind_closure_two_words = 0x40,
 };
 
 typedef enum {

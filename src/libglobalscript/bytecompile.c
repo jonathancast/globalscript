@@ -786,7 +786,9 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
     } else if (
         (pcl->features & gsstring_code_bind_closure_one_word)
             ? gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
-            : gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+        : (pcl->features & gsstring_code_bind_one_word)
+            ? gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+        : 0
     ) {
         int creg;
         struct gsbc_code_item_type *cty;
@@ -799,6 +801,27 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
         if (!(cty = pcl->codetypes[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+        ;
+
+        pcl->size += ACE_BIND_SIZE(cty->numfvs);
+    } else if (
+        (pcl->features & gsstring_code_bind_closure_two_words)
+            ?
+                gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+                && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".closure")
+            : 0
+    ) {
+        int creg;
+        struct gsbc_code_item_type *cty;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->nregs++;
+
+        creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[1]);
+        if (!(cty = pcl->codetypes[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1])
         ;
 
         pcl->size += ACE_BIND_SIZE(cty->numfvs);
@@ -951,7 +974,9 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
     } else if (
         (pcl->features & gsstring_code_bind_closure_one_word)
             ? gssymceq((*pp)->directive, gssymopbodyclosure, gssymcodeop, ".body.closure")
-            : gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
+        : (pcl->features & gsstring_code_bind_one_word)
+            ? gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
+        : 0
     ) {
         int creg;
         struct gsbc_code_item_type *cty;
@@ -959,6 +984,22 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
         creg = gsbc_find_register(*pp, pcl->codenames, pcl->ncodes, (*pp)->arguments[0]);
         if (!(cty = pcl->codetypes[creg]))
             gsfatal("%P: Cannot find type of %y", (*pp)->pos, (*pp)->arguments[0])
+        ;
+
+        pcl->size += ACE_BODY_SIZE(cty->numfvs);
+    } else if (
+        (pcl->features & gsstring_code_bind_closure_two_words)
+            ?
+                gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
+                && gssymceq((*pp)->arguments[0], gssymopclosure, gssymcodeop, ".closure")
+            : 0
+    ) {
+        int creg;
+        struct gsbc_code_item_type *cty;
+
+        creg = gsbc_find_register(*pp, pcl->codenames, pcl->ncodes, (*pp)->arguments[1]);
+        if (!(cty = pcl->codetypes[creg]))
+            gsfatal("%P: Cannot find type of %y", (*pp)->pos, (*pp)->arguments[1])
         ;
 
         pcl->size += ACE_BODY_SIZE(cty->numfvs);
@@ -2241,8 +2282,10 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
 
     if (
         (pcl->features & gsstring_code_bind_closure_one_word)
-            ?gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
-            : gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+            ? gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
+        : (pcl->features & gsstring_code_bind_one_word)
+            ? gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+        : 0
     ) {
         struct gsbc *pcode;
         int creg = 0;
@@ -2266,6 +2309,44 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
 
         if (!(cty = pcl->subexpr_types[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+        ;
+
+        ACE_BIND_NUMFVS(pcode) = (uchar)cty->numfvs;
+        for (i = 0; i < cty->numfvs; i++)
+            ACE_BIND_FV(pcode, i) = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i])
+        ;
+
+        pcode = ACE_BIND_SKIP(pcode);
+        pcl->pout = (uchar *)pcode;
+    } else if (
+        (pcl->features & gsstring_code_bind_closure_two_words)
+            ?
+                gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+                && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".clousre")
+            : 0
+    ) {
+        struct gsbc *pcode;
+        int creg = 0;
+        struct gsbc_code_item_type *cty;
+
+        pcode = (struct gsbc *)pcl->pout;
+
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+
+        pcl->regs[pcl->nregs] = p->label;
+
+        pcl->nregs++;
+
+        creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[1]);
+
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_bind;
+        ACE_BIND_CODE(pcode) = (uchar)creg;
+
+        if (!(cty = pcl->subexpr_types[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1])
         ;
 
         ACE_BIND_NUMFVS(pcode) = (uchar)cty->numfvs;
@@ -2660,7 +2741,9 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
     if (
         (features & gsstring_code_bind_closure_one_word)
             ? gssymceq(p->directive, gssymopbodyclosure, gssymcodeop, ".body.closure")
-            : gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
+        : (features & gsstring_code_bind_one_word)
+            ? gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
+        : 0
     ) {
         int creg = 0;
         struct gsbc_code_item_type *cty;
@@ -2675,6 +2758,37 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
 
         if (!(cty = cl.subexpr_types[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
+        ;
+        ACE_BODY_NUMFVS(pcode) = (uchar)cty->numfvs;
+        for (i = 0; i < cty->numfvs; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(p, cl.regs, cl.nregs, cty->fvs[i]);
+            ACE_BODY_FV(pcode, i) = (uchar)regarg;
+        }
+
+        pcode = ACE_BODY_SKIP(pcode);
+        cl.pout = (uchar *)pcode;
+    } else if (
+        (features & gsstring_code_bind_closure_two_words)
+            ? 
+                gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
+                && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".closure")
+            : 0
+    ) {
+        int creg = 0;
+        struct gsbc_code_item_type *cty;
+
+        pcode = (struct gsbc *)cl.pout;
+
+        creg = gsbc_find_register(p, cl.subexprs, cl.nsubexprs, p->arguments[1]);
+
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_body;
+        ACE_BODY_CODE(pcode) = (uchar)creg;
+
+        if (!(cty = cl.subexpr_types[creg]))
+            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1])
         ;
         ACE_BODY_NUMFVS(pcode) = (uchar)cty->numfvs;
         for (i = 0; i < cty->numfvs; i++) {
