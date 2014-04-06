@@ -2174,34 +2174,18 @@ static struct gstype *gsbc_find_field_in_product(struct gspos, struct gstype_pro
         ; \
     } while (0)
 
+static struct gstype *gsbc_typecheck_alloc_rhs(struct gsparsedline *, int, struct gsbc_typecheck_code_or_api_expr_closure *);
+
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymclosure, gssymalloc, gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
+    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
 
     int i;
+    struct gstype *alloc_type;
 
-    if (
-        pcl->features & gsstring_code_closure_not_alloc
-            ? gssymceq(p->directive, gssymclosure, gssymcodeop, ".closure")
-            : gssymceq(p->directive, gssymalloc, gssymcodeop, ".alloc")
-    ) {
-        int creg = 0;
-        struct gsbc_code_item_type *cty;
-        struct gstype *alloc_type;
-
+    if (alloc_type = gsbc_typecheck_alloc_rhs(p, 0, pcl)) {
         CHECK_NUM_REGS(pcl->nregs);
-
-        gsargcheck(p, 0, "code");
-        creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
-        cty = gsbc_typecheck_copy_code_item_type(pcl->codetypes[creg]);
-
-        gsbc_typecheck_free_type_variables(pcl, p, cty);
-        gsbc_typecheck_free_variables(pcl, p, cty);
-        alloc_type = cty->result_type;
-
-        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(alloc_type), gskind_lifted_kind());
-        gsbc_typecheck_check_boxed(p->pos, alloc_type);
 
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = alloc_type;
@@ -2576,6 +2560,41 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         return 0;
     }
     return 1;
+}
+
+struct gstype *
+gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
+{
+    static gsinterned_string gssymclosure, gssymalloc;
+
+    struct gstype *type;
+
+    gsinterned_string directive = offset == 0 ? p->directive : p->arguments[offset - 1];
+
+    if (
+        pcl->features & gsstring_code_closure_not_alloc
+            ? gssymceq(directive, gssymclosure, gssymcodeop, ".closure")
+            : gssymceq(directive, gssymalloc, gssymcodeop, ".alloc")
+    ) {
+        int creg = 0;
+        struct gsbc_code_item_type *cty;
+
+        gsargcheck(p, offset + 0, "code");
+
+        creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[offset + 0]);
+        cty = gsbc_typecheck_copy_code_item_type(pcl->codetypes[creg]);
+
+        gsbc_typecheck_free_type_variables(pcl, p, cty);
+        gsbc_typecheck_free_variables(pcl, p, cty);
+        type = cty->result_type;
+
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
+        gsbc_typecheck_check_boxed(p->pos, type);
+    } else {
+        return 0;
+    }
+
+    return type;
 }
 
 int
