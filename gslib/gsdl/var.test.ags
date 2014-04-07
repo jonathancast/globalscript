@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -21,7 +23,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{gsv{x} ≡ gsv{y}}
+-- §section §gs{gsv{x} ≡ gsv{y}}
 
 _test.eq_diff.nms_c	.expr
 gsdl.var.component.t	.tygvar

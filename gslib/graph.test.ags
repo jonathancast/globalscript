@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -29,7 +31,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{tsort} a single element with no dependencies
+-- §section §gs{tsort} a single element with no dependencies
 
 _test_tsort_single.elem_c	.expr
 list.t	.tygvar
@@ -105,7 +107,7 @@ b0	.karg	bool.prim.u	-- Is §gs{k ≡ 0}?
 			.app	val0
 			.yield	maybe.just	_fixtures.val.t
 
-# §section §gs{tsort} two elements with no dependencies
+-- §section §gs{tsort} two elements with no dependencies
 
 _test_tsort_two.elems_c	.expr
 list.t	.tygvar
@@ -212,7 +214,7 @@ b0	.karg	bool.prim.u	-- Is §gs{k ≡ 1}?
 			.app	val1
 			.yield	maybe.just	_fixtures.val.t
 
-# §section §gs{tsort} two elements with one dependency
+-- §section §gs{tsort} two elements with one dependency
 
 _test_tsort_dependency_c	.expr
 list.t	.tygvar
@@ -339,9 +341,9 @@ b0	.karg	bool.prim.u	-- §gs{v ≡ 1}
 			.app	val1
 			.yield	maybe.just	_fixtures.val.t
 
-# §section Test fixtures
+-- §section Test fixtures
 
-# §subsection §gs{_fixtures.val.compare}
+-- §subsection §gs{_fixtures.val.compare}
 
 _fixtures.val.compare_c	.expr
 _fixtures.val.t	.tygvar
@@ -376,7 +378,7 @@ v1.val			.lfield	val	v1
 		.case	lt
 			.undef	order.total.ord.t
 
-# §subsection §gs{_fixtures.val.fmtgs}
+-- §subsection §gs{_fixtures.val.fmtgs}
 
 _fixtures.val.fmtgs_c	.expr
 _fixtures.val.t	.tygvar
@@ -402,7 +404,7 @@ fs.pr	.apply	list.:	fmtgs.record.field.printer.t	|	f.pr.key	fs.pr1
 
 	.type
 
-# §section Test fixtures
+-- §section Test fixtures
 
 _fixtures.val.t	.tyexpr
 natural.t	.tygvar

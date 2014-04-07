@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -24,7 +26,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{〈 'file ∝ fn<./foo>; '0.line ∝1; '0.col ∝ 1; 〉}
+-- §section §gs{〈 'file ∝ fn<./foo>; '0.line ∝1; '0.col ∝ 1; 〉}
 
 _test.fmtgs_c	.expr
 string.t	.tygvar
@@ -49,7 +51,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 	.app	_test.fmtgs_label	test
 	.enter	test.property.label
 
-# §section §gs{print 〈 'file ∝ fn<./foo>; '0.line ∝1; '0.col ∝ 1; 〉}
+-- §section §gs{print 〈 'file ∝ fn<./foo>; '0.line ∝1; '0.col ∝ 1; 〉}
 
 _test.print_c	.expr
 string.t	.tygvar

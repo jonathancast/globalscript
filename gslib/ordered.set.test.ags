@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -17,7 +19,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{{1} `difference` {2}}
+-- §section §gs{{1} `difference` {2}}
 
 _test.difference.1.2_c	.expr
 ordered.set.t	.tygvar
