@@ -431,6 +431,9 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
             } else if (!strcmp(version, "0.5")) {
                 *pcalculus_version = "0.5";
                 *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc | gsstring_code_bind_closure_two_words;
+            } else if (!strcmp(version, "0.6")) {
+                *pcalculus_version = "0.6";
+                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc | gsstring_code_bind_closure_two_words | gsstring_code_impprogs_are_boxing;
             } else {
                 gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
             }
@@ -1636,7 +1639,10 @@ gsparse_imp_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct 
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 
-    while (gsparse_value_arg_op(pos, parsedline, fields, n))
+    while (
+        gsparse_cast_op(pos, parsedline, fields, n)
+        || gsparse_value_arg_op(pos, parsedline, fields, n)
+    )
         if ((n = gsgrab_code_line(pos, chan, parsedfile, &parsedline, line, fields)) <= 0) goto err
     ;
 

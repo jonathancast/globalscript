@@ -13,6 +13,7 @@ enum {
     gsstring_code_bind_one_word = 0x10,
     gsstring_code_bind_closure_one_word = 0x20,
     gsstring_code_bind_closure_two_words = 0x40,
+    gsstring_code_impprogs_are_boxing = 0x80,
 };
 
 typedef enum {

@@ -428,7 +428,13 @@ label	.impprog	primset	primtype
 This defines a closure of the form \<\hskwd{for} @m \overline{g_i}_i. e\>.\future{Or \<\hskwd{for}\;\hskwd{rec}\;@m\;\overline{g_i}_i.\;e\>, once we add support for recursion.}
 These are special values, since they need to be executed on an API thread rather than being part of regular evaluation.
 
-The contents of an \stringcode{.impprim} code item will be:
+Closures with \stringcode{.impprog} bodies are considered 'boxed', which makes them un-lifted,
+unless you specifically lift them using a \stringcode{.lift} evaluation context or give them arguments.\new{0.6}{
+  these were considered lifted if and only if the \stringcode{.body} expression was lifted,
+  and they were required to be lifted if the expression on the right-hand side of the first\stringcode{.bind} expression was lifted.
+}
+
+The contents of an \stringcode{.impprog} code item will be:
 \begin{itemize}
     \item A list of the items (global variables) this evaluation context depends on, comprised of:
         \begin{itemize}
@@ -680,7 +686,7 @@ The generators look like
 String code only permits `let' generators at lifted types and `bind' generators in its `imperative block statement' construct;
 the others are compiled to \verb+.expr+s.\footnote{Not so!  Ignores the issue of RRF RHSs!}
 \footnote{
-    Unlifted `let' generators and `forcet' generators bind variables of unlifted types,
+    Unlifted `let' generators and `force' generators bind variables of unlifted types,
     and so cannot participate in recursion,
     \emph{including forward references to bind generators}.
     NB: That's not entirely true --- variables of unlifted but pointed type, like unlifted function types,

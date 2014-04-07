@@ -186,3 +186,7 @@ ok_grep_errors '-- .body	.closure in .impprogs --' 'undef-body-closure-two-token
 ok_grep_errors '-- .bind	.closure in .impprogs --' 'undef-bind-closure-two-tokens-in-impprog.ags:19: undefined' ./$O.test-gsexec undef-bind-closure-two-tokens-in-impprog.ags
 ok_grep_errors '-- single-token .body.closure illegal in .impprogs --' 'illegal-body-closure-in-impprog.ags:13: Unimplemented imp op .body' ./$O.test-gsexec illegal-body-closure-in-impprog.ags
 ok_grep_errors '-- single-token .bind.closure illegal in .impprogs --' 'illegal-bind-closure-in-impprog.ags:14: Unimplemented imp op .bind' ./$O.test-gsexec illegal-bind-closure-in-impprog.ags
+
+echo '# Version 0.6 and up:'
+
+ok_grep_errors '-- .impprogs are un-lifted, by default --' 'lift-impprog.ags:18: undefined' ./$O.test-gsexec lift-impprog.ags

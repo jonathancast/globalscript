@@ -2901,7 +2901,14 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, uint
     while (gsbc_typecheck_code_type_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_data_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
-    while (gsbc_typecheck_data_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
+
+    while (
+        gsbc_typecheck_cast_op(p, &cl)
+        || gsbc_typecheck_data_arg_op(p, &cl)
+    )
+        p = gsinput_next_line(ppseg, p)
+    ;
+
     while (
         gsbc_typecheck_alloc_op(symtable, p, &cl)
         || gsbc_typecheck_bind_op(symtable, p, &cl, &impcl)
@@ -2913,18 +2920,26 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, uint
         gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y)"), p->pos, p->directive)
     ;
 
-    if (impcl.first_rhs_lifted) {
-        if (calculated_type->node != gstype_lift)
-            calculated_type = gstypes_compile_lift(pos, calculated_type)
-        ;
+    if (features & gsstring_code_impprogs_are_boxing) {
+        if (calculated_type->node == gstype_lift) {
+            struct gstype_lift *lift = (struct gstype_lift *)calculated_type;
+            calculated_type = lift->arg;
+        }
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Ensure imp block statement has unlifted type", pos);
+        if (impcl.first_rhs_lifted) {
+            if (calculated_type->node != gstype_lift)
+                calculated_type = gstypes_compile_lift(pos, calculated_type)
+            ;
+        } else {
+            gsfatal_unimpl(__FILE__, __LINE__, "%P: Ensure imp block statement has unlifted type", pos);
+        }
     }
 
     while (cl.stacksize) {
         p = cl.stack[--cl.stacksize];
         if (!(
-            gsbc_typecheck_data_arg(&cl, p, &calculated_type)
+            gsbc_typecheck_cont(&cl, p, &calculated_type)
+            || gsbc_typecheck_data_arg(&cl, p, &calculated_type)
             || gsbc_typecheck_code_type_arg(&cl, p, &calculated_type)
         ))
             gsfatal(UNIMPL("%P: Un-implemented argument op %y"), p->pos, p->directive)
