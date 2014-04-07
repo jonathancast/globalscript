@@ -519,6 +519,21 @@ c	.subcode
 
 This declares that the code item \stringcode{c} is a sub-expression or evaluation context of the current code item.
 
+\section{Global Coercion Variables}
+\label{coercion_gvar}
+
+These are type variables with definitions that are global in scope,
+as opposed to `free' coercion variables,\unimpl{we don't support coercion abstractions or definitions, yet.}
+which are lambda-bound at a higher level or defined in an intermediate enclosing scope.
+
+\subsection{\stringcode{.cogvar}}
+
+\begin{verbatim}
+co	.cogvar
+\end{verbatim}
+
+This declares a dependency on the global coercion variable \stringcode{co}.
+
 \section{Free Type Variables}
 \label{type_fv}
 
@@ -735,25 +750,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-
-int
-gsparse_coercion_gvar_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymcogvar;
-
-    if (gssymceq(parsedline->directive, gssymcogvar, gssymcodeop, ".cogvar")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymcoercionlable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .cogvar op", pos->real_filename, pos->real_lineno);
-        if (n > 2)
-            gsfatal("%s:%d: Too many arguments to .cogvar op", pos->real_filename, pos->real_lineno)
-        ;
-    } else {
-        return 0;
-    }
-    return 1;
-}
 
 int
 gsparse_value_gvar_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
