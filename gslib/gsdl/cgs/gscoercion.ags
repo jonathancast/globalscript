@@ -64,17 +64,20 @@ gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gscoercion.pos	.gvar
 gsdl.sourcepos	.gvar
 list.foldl	.gvar
 gsdl.cgs.gscoercion.appty	.gvar
 gsdl.cgs.gscoercion.defn	.gvar
+maybe.nothing	.gvar
 pos0	.larg	parser.pos.t
 tyc	.larg	gsdl.var.t
 tyas	.larg	list.t	gsdl.cgs.gstype.t
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-co2	.apply	gsdl.cgs.gscoercion.defn	|	tyc
+nothing	.apply	maybe.nothing	gsdl.cgs.gskind.t
+co2	.apply	gsdl.cgs.gscoercion.defn	|	tyc	nothing
 co1	.apply	list.foldl	gsdl.cgs.gstype.t	gsdl.cgs.gscoercion.t	|	gsdl.cgs.gscoercion.appty	co2	tyas
 	.app	pos	co1
 	.enter	gsdl.cgs.gscoercion.pos
@@ -96,6 +99,8 @@ gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 ordered.set.t	.tygvar	-- Temp
 ordered.set.union	.gvar
@@ -115,6 +120,7 @@ tya.fvs			.apply	gsdl.cgs.gstype.freevars	|	tya
 			.enter	ordered.set.union	gsdl.cgs.symbol.t
 		.case	defn
 v		.fkarg	0	gsdl.var.t
+mbki		.fkarg	1	maybe.t	gsdl.cgs.gskind.t
 sym			.apply	gsdl.cgs.symbol.tyvar	|	v
 			.app	gsdl.cgs.symbol.compare	sym
 			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
@@ -252,6 +258,8 @@ gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 bool.t	.tygvar	-- Temp
 gsdl.var.≡	.gvar
@@ -265,11 +273,13 @@ tya		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	bool.t
 		.case	defn
 tyc0		.fkarg	0	gsdl.var.t
+mbki0		.fkarg	1	maybe.t	gsdl.cgs.gskind.t
 			.danalyze	co1.0	defn
 				.default
 					.undef	bool.t
 				.case	defn
 tyc1				.fkarg	0	gsdl.var.t
+mbk1				.fkarg	1	maybe.t	gsdl.cgs.gskind.t
 					.app	tyc0	tyc1
 					.enter	gsdl.var.≡
 		.case	pos
@@ -309,10 +319,13 @@ res	.constr	gsdl.cgs.gscoercion.prim.u	pos	0	pos	1	co
 
 _gsdl.cgs.gscoercion.defn_c	.expr
 gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t.in	.cogvar
 tyc	.larg	gsdl.var.t
-res	.constr	gsdl.cgs.gscoercion.prim.u	defn	0	tyc
+mbki	.larg	maybe.t	gsdl.cgs.gskind.t
+res	.constr	gsdl.cgs.gscoercion.prim.u	defn	0	tyc	1	mbki
 	.coerce	gsdl.cgs.gscoercion.t.in
 	.lift
 	.yield	res
@@ -378,7 +391,10 @@ gsdl.cgs.gstype.t	.tygvar
 
 _gsdl.cgs.gscoercion.prim.u_defn_ty	.tyexpr
 gsdl.var.t	.tygvar
-	.tyubproduct	0	gsdl.var.t
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+maybe.gskind.ty	.tylet	maybe.t	gsdl.cgs.gskind.t
+	.tyubproduct	0	gsdl.var.t	1	maybe.gskind.ty
 
 _gsdl.cgs.gscoercion.prim.u_pos_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar

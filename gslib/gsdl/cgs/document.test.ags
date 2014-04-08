@@ -209,6 +209,7 @@ gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 test.assert.eq	.gvar
 gsdl.cgs.document.≡	.gvar
@@ -235,7 +236,8 @@ t.c	.apply	gsdl.var.component.alphanum	|	_test.parse.expr.document_t.s
 bool.t.v.cs1	.apply	list.singleton	gsdl.var.component.t	|	t.c
 bool.t.v.cs	.apply	list.:	gsdl.var.component.t	|	bool.c	bool.t.v.cs1
 bool.t.v	.apply	gsdl.var.basevar	|	bool.t.v.cs
-co1	.apply	gsdl.cgs.gscoercion.defn	|	bool.t.v
+nothing	.apply	maybe.nothing	gsdl.cgs.gskind.t
+co1	.apply	gsdl.cgs.gscoercion.defn	|	bool.t.v	nothing
 co	.apply	gsdl.cgs.gscoercion.pos	|	pos	co1
 ee	.apply	gsdl.cgs.gsexpr.cast.source.missing	|	pos
 cast1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	ee
@@ -277,6 +279,7 @@ ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.var.component.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.document.t	.tygvar
@@ -295,8 +298,8 @@ gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
 _test.freevars.expr.document_t.s	.gvar
-gsdl.cgs.gsexpr.cast.source.missing	.gvar
 maybe.nothing	.gvar
+gsdl.cgs.gsexpr.cast.source.missing	.gvar
 ordered.set.singleton	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
@@ -306,7 +309,8 @@ set.symbol.fmtgs	.apply	ordered.set.fmtgs	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.fm
 v.c	.apply	gsdl.var.component.alphanum	|	_test.freevars.expr.document_t.s
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c
 v	.apply	gsdl.var.basevar	|	v.cs
-e.co	.apply	gsdl.cgs.gscoercion.defn	|	v
+nothing	.apply	maybe.nothing	gsdl.cgs.gskind.t
+e.co	.apply	gsdl.cgs.gscoercion.defn	|	v	nothing
 pos	.undefined	gsdl.sourcepos.t
 e.so	.apply	gsdl.cgs.gsexpr.cast.source.missing	|	pos
 e	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	e.co	e.so

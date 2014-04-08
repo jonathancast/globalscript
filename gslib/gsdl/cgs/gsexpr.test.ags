@@ -52,6 +52,7 @@ _test_parse_gsexpr_expr.heavy.cast_k_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	-- Temp
 test.assert.eq	.gvar
 gsdl.cgs.gsexpr.≡	.gvar
@@ -66,6 +67,7 @@ gsdl.var.component.alphanum	.gvar
 _test_parse_gsexpr_expr.heavy.cast_bool.s	.gvar
 list.singleton	.gvar
 _test_parse_gsexpr_expr.heavy.cast_t.s	.gvar
+maybe.nothing	.gvar
 gsdl.cgs.gsexpr.cast.source.missing	.gvar
 actual	.larg	gsdl.cgs.gsexpr.t
 pos	.undefined	gsdl.sourcepos.t
@@ -74,7 +76,8 @@ t.c	.apply	gsdl.var.component.alphanum	|	_test_parse_gsexpr_expr.heavy.cast_t.s
 bool.t.v.cs1	.apply	list.singleton	gsdl.var.component.t	|	t.c
 bool.t.v.cs	.apply	list.:	gsdl.var.component.t	|	bool.c	bool.t.v.cs1
 bool.t.v	.apply	gsdl.var.basevar	|	bool.t.v.cs
-co1	.apply	gsdl.cgs.gscoercion.defn	|	bool.t.v
+nothing	.apply	maybe.nothing	gsdl.cgs.gskind.t
+co1	.apply	gsdl.cgs.gscoercion.defn	|	bool.t.v	nothing
 co	.apply	gsdl.cgs.gscoercion.pos	|	pos	co1
 so	.apply	gsdl.cgs.gsexpr.cast.source.missing	|	pos
 e1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	so
@@ -112,6 +115,7 @@ _test_freevars_expr.heavy.cast_c	.expr
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.var.component.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 test.property.label	.gvar
@@ -128,6 +132,7 @@ gsdl.var.basevar	.gvar
 list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
 _test_freevars_expr.heavy.cast_t.s	.gvar
+maybe.nothing	.gvar
 gsdl.cgs.gsexpr.cast.source.missing	.gvar
 ordered.set.singleton	.gvar
 gsdl.cgs.symbol.compare	.gvar
@@ -138,7 +143,8 @@ set.symbol.fmtgs	.apply	ordered.set.fmtgs	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.fm
 v.c	.apply	gsdl.var.component.alphanum	|	_test_freevars_expr.heavy.cast_t.s
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c
 v	.apply	gsdl.var.basevar	|	v.cs
-e.co	.apply	gsdl.cgs.gscoercion.defn	|	v
+nothing	.apply	maybe.nothing	gsdl.cgs.gskind.t
+e.co	.apply	gsdl.cgs.gscoercion.defn	|	v	nothing
 pos	.undefined	gsdl.sourcepos.t
 e.so	.apply	gsdl.cgs.gsexpr.cast.source.missing	|	pos
 e	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	e.co	e.so

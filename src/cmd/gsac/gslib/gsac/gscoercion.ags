@@ -39,6 +39,8 @@ gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
 gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gscoercion.annotate_appty_k	.subcode
@@ -61,6 +63,7 @@ tya		.fkarg	1	gsdl.cgs.gstype.t
 			.enter	gsac.gscoercion.annotate
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
+mbki		.fkarg	1	maybe.t	gsdl.cgs.gskind.t
 			.force	_gsac.gscoercion.annotate_defn_k
 			.coerce	maybe.t.out	gsdl.cgs.typeenv.typedefinition.t
 			.app	tyc	env
@@ -327,13 +330,13 @@ gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.annotate_res.ty	.tygvar
-gsdl.cgs.gscoercion.t	.tygvar	-- Temp
-gsdl.cgs.gskind.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar
 _gsac.gscoercion.annotate_defn_w_:_k	.subcode
 bool.t.out	.cogvar
 gsdl.cgs.typeenv.tyvar.elem	.gvar
 either.right	.gvar
 gsdl.cgs.gscoercion.defn	.gvar
+maybe.just	.gvar
 gsdl.cgs.gscoercion.gstype.iso	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 tyc	.fv	gsdl.var.t
@@ -351,8 +354,9 @@ a0.ki			.lfield	1	a0
 			.app	a0.v	env
 			.enter	gsdl.cgs.typeenv.tyvar.elem
 		.case	nil
-co1			.apply	gsdl.cgs.gscoercion.defn	|	tyc
 r.ki			.undefined	gsdl.cgs.gskind.t
+just.r.ki			.apply	maybe.just	gsdl.cgs.gskind.t	|	r.ki
+co1			.apply	gsdl.cgs.gscoercion.defn	|	tyc	just.r.ki
 r.ty			.apply	gsdl.cgs.gscoercion.gstype.iso	|	tye	res
 r			.lrecord	coercion	co1	gskind	r.ki	gstype	r.ty	|	_gsac.gscoercion.annotate_res.ty
 			.app	r
@@ -456,6 +460,8 @@ list.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
@@ -489,6 +495,7 @@ tyas			.apply	list.singleton	gsdl.cgs.gstype.t	|	tyx
 			.enter	_gsac.gscoercion.compileAppTy_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
+mbki		.fkarg	1	maybe.t	gsdl.cgs.gskind.t
 cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 nil			.apply	list.nil	gsdl.var.t
 r			.apply	gsdl.ags.coercionitem.expr.defn	|	tyc	nil
@@ -624,6 +631,8 @@ list.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 gsdl.cgs.gscoercion.prim.u	.tygvar
@@ -658,6 +667,7 @@ tyas1			.apply	list.:	gsdl.cgs.gstype.t	|	tyx	tyas
 			.enter	_gsac.gscoercion.compileAppTy_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
+mbki		.fkarg	1	maybe.t	gsdl.cgs.gskind.t
 compileToVar			.apply	gsac.gstype.compileToVar	|	pos
 em.ty1			.apply	ordered.set.insert	gsdl.var.t	|	gsdl.var.compare	tyc	em.ty
 			.force	_gsac.gscoercion.compileAppTy_app_defn_k
