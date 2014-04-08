@@ -216,10 +216,13 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gscoercion.annotate_res.ty	.tygvar	-- Temp
 _gsac.gscoercion.annotate_defn_just_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.gskind.get	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 tyc	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typedefinition.t
@@ -227,23 +230,49 @@ mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typedefinition.t
 		.case	just
 defn		.fkarg	0	gsdl.cgs.typeenv.typedefinition.t
 			.force	_gsac.gscoercion.annotate_defn_just_k
-			.enter	defn
+			.coerce	maybe.t.out	gsdl.cgs.gskind.t
+			.app	tyc	env
+			.enter	gsdl.cgs.typeenv.gskind.get
 		.case	nothing
 			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
 
 _gsac.gscoercion.annotate_defn_just_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gscoercion.annotate_res.ty	.tygvar	-- Temp
+_gsac.gscoercion.annotate_defn_just_just_k	.subcode
+env	.fv	gsdl.cgs.typeenv.t
+tyc	.fv	gsdl.var.t
+defn	.fv	gsdl.cgs.typeenv.typedefinition.t
+mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
+	.analyze	mb0	just	nothing
+		.case	just
+ki		.fkarg	0	gsdl.cgs.gskind.t
+			.force	_gsac.gscoercion.annotate_defn_just_just_k
+			.enter	defn
+		.case	nothing
+			.undef	either.t	string.t	_gsac.gscoercion.annotate_res.ty
+
+_gsac.gscoercion.annotate_defn_just_just_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.typedefinition.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar	-- Temp
 _gsac.gscoercion.annotate_defn_w	.gvar
 gsdl.cgs.gstype.abstype	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 tyc	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
 defn0	.karg	gsdl.cgs.typeenv.typedefinition.u
 as	.field	tyargs	defn0
 tye	.field	tybody	defn0
-res	.apply	gsdl.cgs.gstype.abstype	|	tyc
+res	.apply	gsdl.cgs.gstype.abstype	|	tyc	ki
 	.app	env	tyc	as	res	tye
 	.enter	_gsac.gscoercion.annotate_defn_w
 

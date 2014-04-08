@@ -165,7 +165,7 @@ kis0	.field	kinds	env0
 kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
 tyds	.field	typedefinitions	env0
 e.ls	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
-e.ty	.apply	gsdl.cgs.gstype.abstype	|	v
+e.ty	.apply	gsdl.cgs.gstype.abstype	|	v	ki
 e	.lrecord	0	e.ls	1	e.ty	|	gsdl.cgs.typeenv.typeexpansion.t
 es0	.field	typeexpansions	env0
 es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0

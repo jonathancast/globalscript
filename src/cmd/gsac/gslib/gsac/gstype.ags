@@ -61,6 +61,8 @@ _gsac.gstype.annotate_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.fun.annotate_res.ty	.tygvar
@@ -69,8 +71,6 @@ list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 _gsac.gstype.field.annotate_res.ty	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
-gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gstype.annotate_app_k	.subcode
 _gsac.gstype.annotate_fun_k	.subcode
@@ -92,6 +92,7 @@ ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
@@ -897,6 +898,7 @@ tye0.cl	.cast	tye0.l	gsdl.cgs.gstype.t.in
 			.analyze	tye0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
 				.case	abstype
 tyce				.fkarg	0	gsdl.var.t
+tykie				.fkarg	1	gsdl.cgs.gskind.t
 					.danalyze	tya0	abstype	var
 						.default
 pos.s							.apply	gsdl.sourcepos.print	|	pos
@@ -910,6 +912,7 @@ err							.apply	list.<>	rune.t	|	pos.s	err1
 							.enter	either.left	string.t	record.empty
 						.case	abstype
 tyca						.fkarg	0	gsdl.var.t
+kia						.fkarg	1	gsdl.cgs.gskind.t
 							.force	_gsac.gstype.check_abstype_abstype_k
 							.coerce	bool.t.out
 							.app	tyca	tyce
@@ -1287,9 +1290,10 @@ gvs	.larg	list.t	gsdl.var.t
 	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
 			.force	_gsac.gstype.compile_w_abstype_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
-			.app	env	tyc	em	pem	gvs
+			.app	env	tyc	ki	em	pem	gvs
 			.yield	_gsac.gstype.compileToVar_gsabstype
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
@@ -1754,6 +1758,7 @@ ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -1782,9 +1787,10 @@ ty0	.karg	gsdl.cgs.gstype.prim.u
 			.enter	gvs
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
 			.force	_gsac.gstype.compileToApp_abstype_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
-			.app	env	tyc	em	pem	gvs
+			.app	env	tyc	ki	em	pem	gvs
 			.yield	_gsac.gstype.compileToVar_gsabstype
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
@@ -1989,9 +1995,10 @@ tyf0	.karg	gsdl.cgs.gstype.prim.u
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
 			.force	_gsac.gstype.compileToApp_app_abstype_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
-			.app	env	tyc	em	pem	gvs
+			.app	env	tyc	ki	em	pem	gvs
 			.yield	_gsac.gstype.compileToVar_gsabstype
 		.case	app	-- recur
 tyf1		.fkarg	0	gsdl.cgs.gstype.t
@@ -2442,6 +2449,7 @@ res			.lrecord	emitted	r.em	prim.emitted	r.pem	res	r.tyf	subvars	r.gvs	tyfvs	r.t
 _gsac.gstype.compileToVar_gsabstype_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
@@ -2456,6 +2464,7 @@ gsdl.var.compare	.gvar
 diff.list.nil	.gvar
 env	.arg	gsdl.cgs.typeenv.t
 v	.arg	gsdl.var.t
+ki	.arg	gsdl.cgs.gskind.t
 em	.arg	ordered.set.t	gsdl.var.t
 pem	.arg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 gvs	.arg	list.t	gsdl.var.t
@@ -2470,6 +2479,7 @@ res	.lrecord	emitted	em1	prim.emitted	pem	res	v	subvars	gvs	tyfvs	tyfvs	tygvars	
 _gsac.gstype.compileToVar_gsabstype_tygvs_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 ordered.set.t	.tygvar
 _gsac.gstype.compileToVar_gsabstype_tygvs_k	.subcode
 bool.t.out	.cogvar
@@ -2477,6 +2487,7 @@ ordered.set.elem	.gvar
 gsdl.var.compare	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 v	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
 em	.fv	ordered.set.t	gsdl.var.t
 	.force	_gsac.gstype.compileToVar_gsabstype_tygvs_k
 	.coerce	bool.t.out
@@ -2486,46 +2497,26 @@ em	.fv	ordered.set.t	gsdl.var.t
 _gsac.gstype.compileToVar_gsabstype_tygvs_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 bool.prim.u	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-diff.list.t	.tygvar	-- Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
-_gsac.gstype.compileToVar_gsabstype_tygvs_false_k	.subcode
-maybe.t.out	.cogvar
-gsdl.cgs.typeenv.gskind.get	.gvar
-diff.list.nil	.gvar
-env	.fv	gsdl.cgs.typeenv.t
-v	.fv	gsdl.var.t
-b0	.karg	bool.prim.u	-- Have we emitted this global variable yet?
-	.analyze	b0	false	true
-		.case	false
-			.force	_gsac.gstype.compileToVar_gsabstype_tygvs_false_k
-			.coerce	maybe.t.out	gsdl.cgs.gskind.t
-			.app	v	env
-			.enter	gsdl.cgs.typeenv.gskind.get
-		.case	true
-			.enter	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
-
-_gsac.gstype.compileToVar_gsabstype_tygvs_false_k	.forcecont
-gsdl.var.t	.tygvar
-maybe.prim.u	.tygvar
-gsdl.cgs.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
-diff.list.t	.tygvar	-- Temp
+maybe.t.out	.cogvar
 diff.list.singleton	.gvar
 gsdl.ags.typeitem.decls.tygvar.tyextabstype	.gvar
 gsac.gskind.compile	.gvar
+diff.list.nil	.gvar
+env	.fv	gsdl.cgs.typeenv.t
 v	.fv	gsdl.var.t
-mbki0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
-	.analyze	mbki0	just	nothing
-		.case	just
-ki		.fkarg	0	gsdl.cgs.gskind.t
+ki	.fv	gsdl.cgs.gskind.t
+b0	.karg	bool.prim.u	-- Have we emitted this global variable yet?
+	.analyze	b0	false	true
+		.case	false
 ki.ags		.apply	gsac.gskind.compile	|	ki
 tygv			.apply	gsdl.ags.typeitem.decls.tygvar.tyextabstype	|	v	ki.ags
 			.app	tygv
 			.enter	diff.list.singleton	gsdl.ags.typeitem.decls.tygvar.t
-		.case	nothing
-			.undef	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+		.case	true
+			.enter	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 
 _gsac.gstype.compileToVar_elimprim_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
