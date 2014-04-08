@@ -1,9 +1,11 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
-# Note: this library doesn't balance its binary trees;
-# that will need to be fixed but I want to see what the performance looks like directly first.
+-- Note: this library doesn't balance its binary trees;
+-- that will need to be fixed but I want to see what the performance looks like directly first.
 
-# Based on Stephen Adams, §reftitle{Implementing Sets Efficiently in a Functional Language}
+-- Based on Stephen Adams, §reftitle{Implementing Sets Efficiently in a Functional Language}
 
 	.data
 
@@ -23,7 +25,7 @@ ordered.map.prim.branch	.closure	_ordered.map.prim.branch_c
 
 	.code
 
-# §section §gs{ordered.map.empty}
+-- §section §gs{ordered.map.empty}
 
 _ordered.map.empty_c	.expr
 ordered.map.prim.u	.tygvar
@@ -36,7 +38,7 @@ e	.constr	res.u	empty
 	.lift
 	.yield	e
 
-# §section §gs{ordered.map.insert}
+-- §section §gs{ordered.map.insert}
 
 _ordered.map.insert_c	.expr
 order.total.t	.tygvar
@@ -81,7 +83,7 @@ map.r		.fkarg	3	ordered.map.t	k	v
 empty			.apply	ordered.map.empty	k	v
 			.app	k	v	empty	empty
 			.enter	ordered.map.prim.branch	k	v
-	# > ordered.map.t	k	v
+	-- > ordered.map.t	k	v
 
 _ordered.map.insert_branch_k	.forcecont
 order.total.t	.tygvar
@@ -111,7 +113,7 @@ map.l1			.apply	ordered.map.insert	k	v	|	cmp	k	v	map.l
 			.app	k1	v1	map.l1	map.r
 			.enter	ordered.map.prim.branch	k	v
 
-# §section §gs{ordered.map.elem}
+-- §section §gs{ordered.map.elem}
 
 _ordered.map.elem_c	.expr
 order.total.t	.tygvar
@@ -131,7 +133,7 @@ _ordered.map.elem_k	.forcecont
 order.total.t	.tygvar
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 _ordered.map.elem_branch_k	.subcode
 order.total.ord.t.out	.cogvar
 bool.false	.gvar
@@ -152,13 +154,13 @@ r		.fkarg	3	ordered.map.t	k	v
 			.enter	cmp
 		.case	empty
 			.enter	bool.false
-	# > :: bool.t
+	-- > :: bool.t
 
 _ordered.map.elem_branch_k	.forcecont
 order.total.t	.tygvar
 ordered.map.t	.tygvar
 order.total.ord.prim.u	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 ordered.map.elem	.gvar
 k	.tyfv	*
 v	.tyfv	*
@@ -166,7 +168,7 @@ cmp	.fv	order.total.t	k
 x	.fv	k
 l	.fv	ordered.map.t	k	v
 r	.fv	ordered.map.t	k	v
-o0	.karg	order.total.ord.prim.u	# > x `cmp` k
+o0	.karg	order.total.ord.prim.u	-- > x `cmp` k
 	.analyze	o0	eq	gt	lt
 		.case	eq
 			.undef	bool.t
@@ -177,7 +179,7 @@ o0	.karg	order.total.ord.prim.u	# > x `cmp` k
 			.app	cmp	x	l
 			.enter	ordered.map.elem	k	v
 
-# §section §gs{ordered.map.get}
+-- §section §gs{ordered.map.get}
 
 _ordered.map.get_c	.expr
 order.total.t	.tygvar
@@ -217,7 +219,7 @@ map.r		.fkarg	3	ordered.map.t	k	v
 			.enter	ord
 		.case	empty
 			.enter	maybe.nothing	v
-	# > :: maybe.t	v
+	-- > :: maybe.t	v
 
 _ordered.map.get_branch_k	.forcecont
 order.total.t	.tygvar
@@ -245,7 +247,7 @@ o0	.karg	order.total.ord.prim.u
 			.app	ord	key	map.l
 			.enter	ordered.map.get	k	v
 
-# §section §gs{ordered.map.∪}
+-- §section §gs{ordered.map.∪}
 
 _ordered.map.∪_c	.expr
 order.total.t	.tygvar
@@ -326,7 +328,7 @@ _ordered.map.∪_branch_branch_k	.forcecont
 order.total.t	.tygvar
 ordered.map.t	.tygvar
 order.total.ord.prim.u	.tygvar
-_ordered.map.∪_split_res.ty	.tygvar	# Temp
+_ordered.map.∪_split_res.ty	.tygvar	-- Temp
 ordered.map.prim.branch	.gvar
 ordered.map.∪	.gvar
 _ordered.map.∪_split	.gvar
@@ -341,33 +343,33 @@ k1	.fv	k
 v1	.fv	v
 l1	.fv	ordered.map.t	k	v
 r1	.fv	ordered.map.t	k	v
-o0	.karg	order.total.ord.prim.u	# §gs{k0 `compare` k1}
+o0	.karg	order.total.ord.prim.u	-- §gs{k0 `compare` k1}
 	.analyze	o0	eq	gt	lt
 		.case	eq
 			.undef	ordered.map.t	k	v
-		.case	gt	# k1 < k0
+		.case	gt	-- k1 < k0
 l0.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k1	l0
-l0.l			.lfield	0	l0.s	# Everything in l0 less than §gs{k1}
+l0.l			.lfield	0	l0.s	-- Everything in l0 less than §gs{k1}
 l0.r			.lfield	1	l0.s
 r1.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k0	r1
 r1.l			.lfield	0	r1.s
-r1.r			.lfield	1	r1.s	# Everything in §gs{r1} greater than §gs{k0}
-s3.0			.apply	ordered.map.∪	k	v	|	cmp	l1	l0.l	# Everything less than §gs{k1}
-s3.1			.apply	ordered.map.∪	k	v	|	cmp	r1.l	l0.r	# Everything greater than §gs{k1} and less than §gs{k0}
+r1.r			.lfield	1	r1.s	-- Everything in §gs{r1} greater than §gs{k0}
+s3.0			.apply	ordered.map.∪	k	v	|	cmp	l1	l0.l	-- Everything less than §gs{k1}
+s3.1			.apply	ordered.map.∪	k	v	|	cmp	r1.l	l0.r	-- Everything greater than §gs{k1} and less than §gs{k0}
 s4			.apply	ordered.map.prim.branch	k	v	|	k1	v1	s3.0	s3.1
-s3.2			.apply	ordered.map.∪	k	v	|	cmp	r1.r	r0	# Everything greater than §gs{k0}
+s3.2			.apply	ordered.map.∪	k	v	|	cmp	r1.r	r0	-- Everything greater than §gs{k0}
 			.app	k0	v0	s4	s3.2
 			.enter	ordered.map.prim.branch	k	v
-		.case	lt	# k0 < k1
+		.case	lt	-- k0 < k1
 r0.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k1	r0
 r0.l			.lfield	0	r0.s
 r0.r			.lfield	1	r0.s
 l1.s			.apply	_ordered.map.∪_split	k	v	|	cmp	k0	l1
 l1.l			.lfield	0	l1.s
 l1.r			.lfield	1	l1.s
-s3.0			.apply	ordered.map.∪	k	v	|	cmp	l0	l1.l	# Everything less than §gs{k0}
-s3.1			.apply	ordered.map.∪	k	v	|	cmp	r0.l	l1.r	# Everything greater than §gs{k0} and less than §gs{k1}
-s3.2			.apply	ordered.map.∪	k	v	|	cmp	r0.r	r1	# Everything greater than §gs{k1}
+s3.0			.apply	ordered.map.∪	k	v	|	cmp	l0	l1.l	-- Everything less than §gs{k0}
+s3.1			.apply	ordered.map.∪	k	v	|	cmp	r0.l	l1.r	-- Everything greater than §gs{k0} and less than §gs{k1}
+s3.2			.apply	ordered.map.∪	k	v	|	cmp	r0.r	r1	-- Everything greater than §gs{k1}
 s4			.apply	ordered.map.prim.branch	k	v	|	k0	v0	s3.0	s3.1
 			.app	k1	v1	s4	s3.2
 			.enter	ordered.map.prim.branch	k	v
@@ -432,13 +434,13 @@ l	.fv	ordered.map.t	k	v
 r	.fv	ordered.map.t	k	v
 o0	.karg	order.total.ord.prim.u
 	.analyze	o0	eq	gt	lt
-		.case	eq	# k ≡ x
+		.case	eq	-- k ≡ x
 s.l			.undefined	ordered.map.t	k	v
 s.r			.undefined	ordered.map.t	k	v
 s			.record	0	s.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
 			.lift
 			.yield	s
-		.case	gt	# k < x
+		.case	gt	-- k < x
 r.s			.apply	_ordered.map.∪_split	k	v	|	cmp	x	r
 r.l			.lfield	0	r.s
 r.r			.lfield	1	r.s
@@ -446,7 +448,7 @@ s.l			.apply	ordered.map.prim.branch	k	v	|	k	v	l	r.l
 s			.record	0	s.l	1	r.r	|	_ordered.map.∪_split_res.u	k	v
 			.lift
 			.yield	s
-		.case	lt	# x < k
+		.case	lt	-- x < k
 l.s			.apply	_ordered.map.∪_split	k	v	|	cmp	x	l
 l.l			.lfield	0	l.s
 l.r			.lfield	1	l.s
@@ -455,7 +457,7 @@ s			.record	0	l.l	1	s.r	|	_ordered.map.∪_split_res.u	k	v
 			.lift
 			.yield	s
 
-# §section §gs{ordered.map.values}
+-- §section §gs{ordered.map.values}
 
 _ordered.map.values_c	.expr
 ordered.map.t	.tygvar
@@ -505,7 +507,7 @@ vs2			.apply	list.:	v	|	v0	vs1
 		.case	empty
 			.enter	vs
 
-# §section §gs{ordered.map.≡}
+-- §section §gs{ordered.map.≡}
 
 _ordered.map.≡_c	.expr
 order.total.t	.tygvar
@@ -539,7 +541,7 @@ map0.0	.karg	ordered.map.prim.u	k	v
 _ordered.map.≡_k1	.forcecont
 ordered.map.prim.u	.tygvar
 ordered.map.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 bool.false	.gvar
 bool.true	.gvar
 k	.tyfv	*
@@ -564,7 +566,7 @@ r1				.fkarg	3	ordered.map.t	k	v
 				.case	empty
 					.enter	bool.true
 
-# §section Constructors
+-- §section Constructors
 
 _ordered.map.prim.branch_c	.expr
 ordered.map.prim.u	.tygvar
@@ -609,7 +611,7 @@ map_ty	.tylet	ordered.map.t	k	v
 _ordered.map.prim.u_empty_ty	.tyexpr
 	.tyubproduct
 
-# §section §gs{ordered.map.insert}
+-- §section §gs{ordered.map.insert}
 
 _ordered.map.insert_ty	.tyexpr
 order.total.t	.tygvar
@@ -626,7 +628,7 @@ v	.tyforall	*
 	.tyfun	ordered.map.t	k	v
 	.tyref	ordered.map.t	k	v
 
-# §section §gs{ordered.map.elem}
+-- §section §gs{ordered.map.elem}
 
 _ordered.map.elem_ty	.tyexpr
 order.total.t	.tygvar
@@ -642,7 +644,7 @@ v	.tyforall	*
 	.tyfun	ordered.map.t	k	v
 	.tyref	bool.t
 
-# §section §gs{ordered.map.get}
+-- §section §gs{ordered.map.get}
 
 _ordered.map.get_ty	.tyexpr
 order.total.t	.tygvar
@@ -658,7 +660,7 @@ v	.tyforall	*
 	.tyfun	ordered.map.t	k	v
 	.tyref	maybe.t	v
 
-# §section §gs{ordered.map.∪}
+-- §section §gs{ordered.map.∪}
 
 _ordered.map.∪_ty	.tyexpr
 order.total.t	.tygvar
@@ -698,7 +700,7 @@ v	.tylambda	*
 _map_ty	.tylet	ordered.map.t	k	v
 	.typroduct	0	_map_ty	1	_map_ty
 
-# §section §gs{ordered.map.values}
+-- §section §gs{ordered.map.values}
 
 _ordered.map.values_w_ty	.tyexpr
 ordered.map.t	.tygvar
@@ -711,7 +713,7 @@ v	.tyforall	*
 	.tyfun	list.t	v
 	.tyref	list.t	v
 
-# §section §gs{ordered.map.≡}
+-- §section §gs{ordered.map.≡}
 
 _ordered.map.≡_ty	.tyexpr
 order.total.t	.tygvar

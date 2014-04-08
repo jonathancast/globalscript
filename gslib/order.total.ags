@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -17,7 +19,7 @@ order.total.ord.gt	.closure	_order.total.ord.gt_c
 
 	.code
 
-# §section §gs{order.total.ord.||}
+-- §section §gs{order.total.ord.||}
 
 _order.total.ord.||_c	.expr
 order.total.ord.t	.tygvar
@@ -43,7 +45,7 @@ o0.0	.karg	order.total.ord.prim.u
 		.case	eq
 			.enter	o1
 
-# §section §gs{order.total.ord.≡}
+-- §section §gs{order.total.ord.≡}
 
 _order.total.ord.≡_c	.expr
 order.total.ord.t	.tygvar
@@ -92,7 +94,7 @@ o1.0	.karg	order.total.ord.prim.u
 				.case	lt
 					.enter	bool.true
 
-# §section §gs{order.total.ord.fmtgs}
+-- §section §gs{order.total.ord.fmtgs}
 
 _order.total.ord.fmtgs_c	.expr
 order.total.ord.t	.tygvar
@@ -127,9 +129,9 @@ ds			.apply	diff.list.fromlist	rune.t	|	_order.total.ord.fmtgs_gt.s
 ds			.apply	diff.list.fromlist	rune.t	|	_order.total.ord.fmtgs_lt.s
 			.app	fmtgs.prec.arg	ds
 			.enter	fmtgs.prec
-	# > :: list.t	rune.t
+	-- > :: list.t	rune.t
 
-# §section Constructors
+-- §section Constructors
 
 _order.total.ord.lt_c	.expr
 order.total.ord.prim.u	.tygvar

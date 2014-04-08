@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -61,7 +63,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{nil ≡ nil}
+-- §section §gs{nil ≡ nil}
 
 _test.nil.eq.nil.c	.expr
 bool.t	.tygvar
@@ -78,7 +80,7 @@ test	.apply	test.assert	|	_test.nil.eq.nil.test.fail	_test.nil.eq.nil.test.succ	
 	.app	_test.nil.eq.nil.label	test
 	.enter	test.property.label
 
-# §section §gs{[false] ≡ [false]}
+-- §section §gs{[false] ≡ [false]}
 
 _test.singleton.eq.singleton.c	.expr
 bool.t	.tygvar
@@ -95,7 +97,7 @@ test	.apply	test.assert	|	_test.singleton.eq.singleton.test.fail	_test.singleton
 	.app	_test.singleton.eq.singleton.label	test
 	.enter	test.property.label
 
-# §section §gs{[false] ≠ nil}
+-- §section §gs{[false] ≠ nil}
 
 _test.singleton.eq.nil_c	.expr
 bool.t	.tygvar
@@ -113,7 +115,7 @@ test	.apply	test.deny	|	_test.singleton.eq.nil_test_succ	_test.singleton.eq.nil_
 	.app	_test.singleton.eq.nil_label	test
 	.enter	test.property.label
 
-# §section §gs{nil ≠ [false]}
+-- §section §gs{nil ≠ [false]}
 
 _test.nil.eq.singleton_c	.expr
 bool.t	.tygvar
@@ -131,7 +133,7 @@ test	.apply	test.deny	|	_test.nil.eq.singleton_test_succ	_test.nil.eq.singleton_
 	.app	_test.nil.eq.singleton_label	test
 	.enter	test.property.label
 
-# §section §gs{list.compare [false] [false]}
+-- §section §gs{list.compare [false] [false]}
 
 _test.compare.singleton.singleton_c	.expr
 order.total.ord.t	.tygvar
@@ -150,7 +152,7 @@ test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.o
 	.app	_test.compare.singleton.singleton_label	test
 	.enter	test.property.label
 
-# §section §gs{fmtgs nil}
+-- §section §gs{fmtgs nil}
 
 _test.fmtgs.nil_c	.expr
 bool.t	.tygvar
@@ -178,7 +180,7 @@ test	.apply	test.assert	|	_test.fmtgs.nil_test_fail	_test.fmtgs.nil_test_succ	eq
 	.app	_test.fmtgs.nil_label	test
 	.enter	test.property.label
 
-# §section §gs{map f nil}
+-- §section §gs{map f nil}
 
 _test.map.nil_c	.expr
 list.t	.tygvar
@@ -197,7 +199,7 @@ test	.apply	test.assert.eq	list.ty	|	_fixture.list.bool.≡	_fixture.list.bool.f
 	.app	_test.map.nil_label	test
 	.enter	test.property.label
 
-# §section §gs{map f (_:_)}
+-- §section §gs{map f (_:_)}
 
 _test.map.:_c	.expr
 list.t	.tygvar
@@ -220,7 +222,7 @@ test	.apply	test.assert.eq	list.ty	|	_fixture.list.bool.≡	_fixture.list.bool.f
 	.app	_test.map.:_label	test
 	.enter	test.property.label
 
-# §section §gs{reverse nil}
+-- §section §gs{reverse nil}
 
 _test.reverse.nil_c	.expr
 list.t	.tygvar
@@ -238,7 +240,7 @@ test	.apply	test.assert.eq	list.bool	|	_fixture.list.bool.≡	_fixture.list.bool
 	.app	_test.reverse.nil_label	test
 	.enter	test.property.label
 
-# §section §gs{reverse (false:true:nil)}
+-- §section §gs{reverse (false:true:nil)}
 
 _test.reverse.cons_c	.expr
 list.t	.tygvar
@@ -265,7 +267,7 @@ test	.apply	test.assert.eq	list.bool	|	_fixture.list.bool.≡	_fixture.list.bool
 	.app	_test.reverse.cons_label	test
 	.enter	test.property.label
 
-# §section Test fixtures
+-- §section Test fixtures
 
 _fixture.nil.c	.expr
 bool.t	.tygvar

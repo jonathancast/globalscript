@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -23,7 +25,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{prec prec.arg _ prec.arg _}
+-- §section §gs{prec prec.arg _ prec.arg _}
 
 _test.prec.arg.arg_c	.expr
 string.t	.tygvar
@@ -45,7 +47,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.prec.
 	.app	_test.prec.arg.arg_label	test
 	.enter	test.property.label
 
-# §section §gs{prec prec.app _ prec.arg _}
+-- §section §gs{prec prec.app _ prec.arg _}
 
 _test.prec.app.arg_c	.expr
 string.t	.tygvar
