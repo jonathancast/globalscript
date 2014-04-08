@@ -94,7 +94,7 @@ it is illegal to include multiple sections with the same name.
 
     \item Lines may optionally be terminated by the field value \stringcode{--}, which begins a comment.\new{0.1}{the comment delimiter was the single character \stringcode{\#}}
 
-    \item String constants and character constants are un-quoted and may contain the standard C escapes as well as
+    \item String literals and rune literals are un-quoted and may contain the standard C escapes as well as
         \stringcode{\bs{}s}, which represents an ASCII space.
         \agsonly{String literals are only supported for simplifying hand-written string code, for bootstrapping.}
         \old{0.2}{we also had an escape \stringcode{\bs{}h}, which represents a \stringcode{\#} character.}
@@ -534,6 +534,39 @@ co	.cogvar
 
 This declares a dependency on the global coercion variable \stringcode{co}.
 
+\section{Global Data Variables}
+\label{value_gvar}
+
+These are value variables (generally, object variables) with definitions that are global in scope,
+as opposed to `free' value variables, which are lambda-bound at a higher level or defined in an intermediate enclosing scope.
+
+\subsection{\stringcode{.gvar}}
+
+\begin{verbatim}
+x	.gvar
+\end{verbatim}
+
+This declares a dependency on the global variable \stringcode{x}.
+
+\subsection{\stringcode{.rune}}
+
+\begin{verbatim}
+r	.rune	ch
+\end{verbatim}
+
+This binds \stringcode{r} to the rune literal \stringcode{ch}.
+Technically, this is a generator, but is kept with the global variables so we have a good storage location for \stringcode{ch}.
+
+\subsection{\stringcode{.natural}}
+
+\begin{verbatim}
+x	.natural	n
+\end{verbatim}
+
+This binds \stringcode{x} to the decimal natural number literal \stringcode{n}.
+\stringcode{n} should be small enough to be stored un-boxed, which makes this syntax somewhat machine-dependent.
+This is technically a generator, but is kept with the global variables so we have a good storage location for \stringcode{n}.
+
 \section{Free Type Variables}
 \label{type_fv}
 
@@ -750,41 +783,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-
-int
-gsparse_value_gvar_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymgvar, gssymrune, gssymnatural;
-
-    if (gssymceq(parsedline->directive, gssymgvar, gssymcodeop, ".gvar")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .gvar op", pos->real_filename, pos->real_lineno);
-        if (n > 2)
-            gsfatal("%s:%d: Too many arguments to .gvar op", pos->real_filename, pos->real_lineno)
-        ;
-    } else if (gssymceq(parsedline->directive, gssymrune, gssymcodeop, ".rune")) {
-        CHECK_GVAR_LABEL(".rune");
-        if (n < 2+1)
-            gsfatal("%s:%d: Missing rune literal", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2 - 2] = gsintern_string(gssymruneconstant, fields[2]);
-        if (n > 2+1)
-            gsfatal("%s:%d: Too many arguments to .rune; I know about the rune literal to use", pos->real_filename, pos->real_lineno)
-        ;
-    } else if (gssymceq(parsedline->directive, gssymnatural, gssymcodeop, ".natural")) {
-        CHECK_GVAR_LABEL(".rune");
-        if (n < 2 + 1)
-            gsfatal("%s:%d: Missing natural number literal", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2 - 2] = gsintern_string(gssymnaturalconstant, fields[2]);
-        if (n > 2 + 1)
-            gsfatal("%s:%d: Too many arguments to .natural; I know about the natural literal to use", pos->real_filename, pos->real_lineno)
-        ;
-    } else {
-        return 0;
-    }
-    return 1;
-}
 
 int
 gsparse_value_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
