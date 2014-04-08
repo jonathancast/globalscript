@@ -1057,7 +1057,7 @@ e.r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 v.ty.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_ty.v
 			.force	_gsac.gsexpr.compileToDataItem_default_right_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
-			.app	pos	env	v.ty.v	ty
+			.app	pos	v.ty.v	ty
 			.enter	gsac.gstype.compileToGlobalVar
 
 _gsac.gsexpr.compileToDataItem_default_right_k	.forcecont
@@ -1407,7 +1407,7 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 ty.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_ty.v
 			.force	_gsac.gsexpr.cast.source.compileToGlobalVar_typesig_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
-			.app	pos1	env	ty.v	ty
+			.app	pos1	ty.v	ty
 			.enter	gsac.gstype.compileToGlobalVar
 	-- > :: either.t	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 
@@ -1519,7 +1519,7 @@ gs		.fkarg	1	list.t	gsdl.cgs.gsexpr.generator.t
 b		.fkarg	2	gsdl.cgs.gsexpr.body.t
 			.force	_gsac.gsexpr.compileToLambdaExpr_impfor_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToImpprim_res.ty
-			.app	pos	env	m	tyem	pem	tyvs
+			.app	pos	m	tyem	pem	tyvs
 			.enter	gsac.gstype.compileToImpprim
 		.case	lambda
 x		.fkarg	0	gsdl.var.t
@@ -1527,7 +1527,7 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 b		.fkarg	2	gsdl.cgs.gsexpr.body.t
 			.force	_gsac.gsexpr.compileToLambdaExpr_lambda_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
-			.app	pos	env	ty	tyem	pem	tyvs
+			.app	pos	ty	tyem	pem	tyvs
 			.enter	gsac.gstype.compileToApp
 		.case	lift
 e1		.fkarg	0	gsdl.cgs.gsexpr.t
@@ -1765,7 +1765,7 @@ pos1		.fkarg	0	gsdl.sourcepos.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
 			.force	_gsac.gsexpr.body.compileToLambdaExpr_missing_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
-			.app	pos1	env	ty	tyem	pem	tyvs
+			.app	pos1	ty	tyem	pem	tyvs
 			.enter	gsac.gstype.compileToApp
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 

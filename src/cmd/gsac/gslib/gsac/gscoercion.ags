@@ -658,7 +658,7 @@ tyas1			.apply	list.:	gsdl.cgs.gstype.t	|	tyx	tyas
 			.enter	_gsac.gscoercion.compileAppTy_app
 		.case	defn
 tyc		.fkarg	0	gsdl.var.t
-compileToVar			.apply	gsac.gstype.compileToVar	|	pos	env
+compileToVar			.apply	gsac.gstype.compileToVar	|	pos
 em.ty1			.apply	ordered.set.insert	gsdl.var.t	|	gsdl.var.compare	tyc	em.ty
 			.force	_gsac.gscoercion.compileAppTy_app_defn_k
 			.coerce	either.t.out	string.t	gstype.compile.res.list.var.ty

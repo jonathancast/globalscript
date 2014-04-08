@@ -199,7 +199,7 @@ v.cs			.apply	list.:	gsdl.var.t	|	v.c0	v.cs1
 v			.apply	gsdl.var.constructed	|	natural.1	v.cs
 			.force	_gsac.document.compile_right_nothing_just_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
-			.app	pos	env	v	ty
+			.app	pos	v	ty
 			.enter	gsac.gstype.compileToGlobalVar
 		.case	nothing
 			.undef	either.t	string.t	gsdl.ags.file.t
