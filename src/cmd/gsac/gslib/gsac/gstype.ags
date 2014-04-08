@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -494,7 +494,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	right
 r		.fkarg	0	list.t	_gsac.gstype.field.annotate_res.ty
-res.fs.f			.alloc	_gsac.gstype.annotate_product_res.fs.f_c
+res.fs.f			.closure	_gsac.gstype.annotate_product_res.fs.f_c
 res.fs			.apply	list.map	_gsac.gstype.field.annotate_res.ty	gsdl.cgs.gstype.field.t	|	res.fs.f	r
 res.ty			.apply	gsdl.cgs.gstype.product	|	res.fs
 res			.lrecord	gskind	gsdl.cgs.gskind.unlifted	gstype	res.ty	|	_gsac.gstype.annotate_res.ty
@@ -1620,7 +1620,7 @@ err		.fkarg	0	string.t
 cs.r		.fkarg	0	_gsac.gstype.compile.m_res.ty	list.constr.compile.res.ty
 cs.r.em			.lfield	emitted	cs.r
 cs.r.pem			.lfield	prim.emitted	cs.r
-r.cs.f			.alloc	_gsac.gstype.compile_w_sum_right_r.cs.f_c
+r.cs.f			.closure	_gsac.gstype.compile_w_sum_right_r.cs.f_c
 cs.r.res			.lfield	res	cs.r
 r.cs			.apply	list.map	_gsac.gstype.constr.compile_res.ty	gsdl.ags.typeitem.constr.t	|	r.cs.f	cs.r.res
 r			.apply	gsdl.ags.typeitem.expr.sum	|	r.cs
@@ -2471,7 +2471,7 @@ gvs	.arg	list.t	gsdl.var.t
 em1	.apply	ordered.set.insert	gsdl.var.t	|	gsdl.var.compare	v	em
 tyes	.apply	diff.list.nil	gsdl.ags.typeitem.t
 tyfvs	.apply	diff.list.nil	gsdl.var.t
-tygvs	.alloc	_gsac.gstype.compileToVar_gsabstype_tygvs_c
+tygvs	.closure	_gsac.gstype.compileToVar_gsabstype_tygvs_c
 res	.lrecord	emitted	em1	prim.emitted	pem	res	v	subvars	gvs	tyfvs	tyfvs	tygvars	tygvs	typeitems	tyes	|	_gsac.gstype.compileToVar_res.ty
 	.app	res
 	.enter	either.right	string.t	_gsac.gstype.compileToVar_res.ty
