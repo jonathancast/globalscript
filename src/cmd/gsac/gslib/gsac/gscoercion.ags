@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -463,7 +463,7 @@ tyc		.fkarg	0	gsdl.var.t
 cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 nil			.apply	list.nil	gsdl.var.t
 r			.apply	gsdl.ags.coercionitem.expr.defn	|	tyc	nil
-tygvs			.alloc	_gsac.gscoercion.compile_defn_tygvs_c
+tygvs			.closure	_gsac.gscoercion.compile_defn_tygvs_c
 ts			.apply	diff.list.nil	gsdl.ags.typeitem.t
 res			.lrecord	coercionitems	cos	res	r	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
 			.app	res
@@ -672,7 +672,7 @@ cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 tyas.r.res			.lfield	res	tyas.r
 r			.apply	gsdl.ags.coercionitem.expr.defn	|	tyc	tyas.r.res
 tyas.r.tygvs			.lfield	tygvars	tyas.r
-tygvs			.alloc	_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_c
+tygvs			.closure	_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_c
 ts			.lfield	typeitems	tyas.r
 res			.lrecord	coercionitems	cos	res	r	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
 			.app	res
