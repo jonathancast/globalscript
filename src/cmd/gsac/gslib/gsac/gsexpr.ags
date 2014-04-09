@@ -1166,7 +1166,7 @@ pem.empty			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 subvars			.undefined	list.t	gsdl.var.t
 			.force	_gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k
 			.coerce	either.t.out	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
-			.app	pos	env	v.co.v	co	em.empty	pem.empty	subvars
+			.app	pos	v.co.v	co	em.empty	pem.empty	subvars
 			.enter	gsac.gscoercion.compileToGlobalVar
 
 _gsac.gsexpr.compileToDataItem_expr.heavy.cast_right_k	.forcecont
