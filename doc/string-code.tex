@@ -583,6 +583,31 @@ t	.tyfv	ki
 
 This declares \stringcode{t} to be a free type variable of kind \stringcode{ki} (see section \ref{kinds}).
 
+\section{Free Variables}
+\label{value_fv}
+
+These are free object or value variables that are bound in an intermediate scope between this expression or evaluation context and the global level of the program.
+
+\subsection{\stringcode{.fv}}
+
+\begin{verbatim}
+x	.fv	tyf	tyx0	...	tyxn-1
+\end{verbatim}
+
+This declares \stringcode{x} to be a free variable of type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}.
+
+\subsection{\stringcode{.efv}}
+
+\begin{verbatim}
+x	.efv	tyf	tyx0	...	tyxn-1
+\end{verbatim}
+
+This is the same as \stringcode{.fv}, but warns that \stringcode{x}, which is of un-lifted type, may nevertheless be bound to a (fulfilled) promise.
+As such, when this expression is entered, \stringcode{x} should first have all indirections removed before the value is used.
+
+This is required for any (unlifted) free variable which is bind-bound in the enclosing scope,
+as well in some cases involving mutual recursion between lifted and unlifted variables.
+
 \section{Type Arguments}
 \label{code_type_arg}
 
@@ -783,41 +808,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-
-int
-gsparse_value_fv_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymfv, gssymefv;
-
-    int i;
-
-    if (gssymceq(parsedline->directive, gssymfv, gssymcodeop, ".fv")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .fv op", pos->real_filename, pos->real_lineno);
-        if (n < 3)
-            gsfatal("%s:%d: Missing type on .fv", pos->real_filename, pos->real_lineno)
-        ;
-        for (i = 2; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-    } else if (gssymceq(parsedline->directive, gssymefv, gssymcodeop, ".efv")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-        else
-            gsfatal("%s:%d: Missing label on .efv op", pos->real_filename, pos->real_lineno);
-        if (n < 3)
-            gsfatal("%s:%d: Missing type on .efv", pos->real_filename, pos->real_lineno)
-        ;
-        for (i = 2; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-    } else {
-        return 0;
-    }
-    return 1;
-}
 
 static
 int
