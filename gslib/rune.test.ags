@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -57,7 +59,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{r/x/ ≡ r/x/}
+-- §section §gs{r/x/ ≡ r/x/}
 
 _test.x.eq.x.c	.expr
 test.property.label	.gvar
@@ -72,7 +74,7 @@ test	.apply	test.assert	|	_test.x.eq.x.fail	_test.x.eq.x.succ	eq
 	.app	_test.x.eq.x.label	test
 	.enter	test.property.label
 
-# §section §gs{r/x/ ≠ r/y/}
+-- §section §gs{r/x/ ≠ r/y/}
 
 _test.x.eq.y_c	.expr
 test.property.label	.gvar
@@ -88,7 +90,7 @@ test	.apply	test.deny	|	_test.x.eq.y_test_succ	_test.x.eq.y_test_fail	eq
 	.app	_test.x.eq.y_label	test
 	.enter	test.property.label
 
-# §section §gs{compare r/y/ r/x/}
+-- §section §gs{compare r/y/ r/x/}
 
 _test.compare.y.x_c	.expr
 order.total.ord.t	.tygvar
@@ -106,7 +108,7 @@ test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.o
 	.app	_test.compare.y.x_label	test
 	.enter	test.property.label
 
-# §section §gs{compare r/x/ r/x/}
+-- §section §gs{compare r/x/ r/x/}
 
 _test.compare.x.x_c	.expr
 order.total.ord.t	.tygvar
@@ -123,7 +125,7 @@ test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.o
 	.app	_test.compare.x.x_label	test
 	.enter	test.property.label
 
-# §section §gs{compare r/x/ r/y/}
+-- §section §gs{compare r/x/ r/y/}
 
 _test.compare.x.y_c	.expr
 order.total.ord.t	.tygvar
@@ -141,7 +143,7 @@ test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.o
 	.app	_test.compare.x.y_label	test
 	.enter	test.property.label
 
-# §section §gs{fmtgs r/x/}
+-- §section §gs{fmtgs r/x/}
 
 _test.fmtgs.x_c	.expr
 rune.t	.tygvar
@@ -164,7 +166,7 @@ test	.apply	test.assert	|	_test.fmtgs.x_test_succ	_test.fmtgs.x_test_fail	eq
 	.app	_test.fmtgs.x_label	test
 	.enter	test.property.label
 
-# §section §gs{rune.fmtgs r/\\n/}
+-- §section §gs{rune.fmtgs r/\\n/}
 
 _test.fmtgs.nl_c	.expr
 list.t	.tygvar
@@ -190,7 +192,7 @@ test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.fmtg
 	.app	_test.fmtgs.nl_label	test
 	.enter	test.property.label
 
-# §section §gs{list.fmtgs qq\{x\}}
+-- §section §gs{list.fmtgs qq\{x\}}
 
 _test.list.fmtgs.x_c	.expr
 rune.t	.tygvar
@@ -216,7 +218,7 @@ test	.apply	test.assert	|	_test.list.fmtgs.x_test_succ	_test.list.fmtgs.x_test_f
 	.app	_test.list.fmtgs.x_label	test
 	.enter	test.property.label
 
-# §section §gs{rune.list.fmtgs qq{\\n}}
+-- §section §gs{rune.list.fmtgs qq{\\n}}
 
 _test.list.fmtgs.nl_c	.expr
 list.t	.tygvar
@@ -241,7 +243,7 @@ test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.list
 	.app	_test.list.fmtgs.nl_label	test
 	.enter	test.property.label
 
-# §section §gs{rune.advance}
+-- §section §gs{rune.advance}
 
 _test.rune.advance_c	.expr
 rune.t	.tygvar

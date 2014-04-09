@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -91,7 +93,7 @@ parser.pos.next.col	.closure	_parser.pos.next.col_c
 
 	.code
 
-# §section §gs{parser.parse}
+-- §section §gs{parser.parse}
 
 _parser.parse_c	.expr
 parser.advance.t	.tygvar
@@ -192,7 +194,7 @@ p1		.fkarg	1	parser.prim.t	s	α
 			.force	_parser.parse_work_unit.plus_k
 			.coerce	list.t.out	s
 			.enter	s
-	# > :: either.t	parser.err.t	α
+	-- > :: either.t	parser.err.t	α
 
 _parser.parse_work_symbol_k	.forcecont
 parser.advance.t	.tygvar
@@ -381,7 +383,7 @@ p1		.fkarg	1	parser.prim.t	s	rec.ty
 			.force	_parser.parse_work_lookahead_unit.plus_kx
 			.coerce	parser.prim.t.out	s	α
 			.enter	x
-	# > :: parser.prim.t	s	α
+	-- > :: parser.prim.t	s	α
 
 _parser.parse_work_lookahead_symbol_k	.forcecont
 _parser.prim.u_symbol_0_ty	.tygvar
@@ -491,7 +493,7 @@ es1		.fkarg	1	list.t	string.t
 		.case	nil
 			.enter	list.nil	rune.t
 
-# §section §gs{parser.exec}
+-- §section §gs{parser.exec}
 
 _parser.exec_c	.expr
 parser.t	.tygvar
@@ -514,7 +516,7 @@ fail	.apply	parser.prim.fail	s	α
 	.app	x	fail
 	.yield	parser.prim.unit.plus	s	α
 
-# §section §gs{parser.map}
+-- §section §gs{parser.map}
 
 _parser.map_c	.expr
 _parser.map_f_ty	.tygvar
@@ -558,7 +560,7 @@ fx	.apply	f	|	x
 	.app	fx
 	.enter	k
 
-# §section §gs{parser.unit}
+-- §section §gs{parser.unit}
 
 _parser.unit_c	.expr
 _parser.unit_res_c	.subcode
@@ -579,7 +581,7 @@ k	.larg	_parser.t_k_ty	s	α	β
 	.app	x
 	.enter	k
 
-# §section §gs{parser.<*>}
+-- §section §gs{parser.<*>}
 
 _parser.<*>_c	.expr
 parser.t	.tygvar
@@ -642,7 +644,7 @@ fx	.apply	f	|	x
 	.app	fx
 	.enter	k
 
-# §section §gs{parser.lift3}
+-- §section §gs{parser.lift3}
 
 _parser.lift3_c	.expr
 _parser.lift3_f_ty	.tygvar
@@ -738,7 +740,7 @@ y	.apply	f	|	x0	x1	x2
 	.app	y
 	.enter	k
 
-# §section §gs{parser.lift4}
+-- §section §gs{parser.lift4}
 
 _parser.lift4_c	.expr
 _parser.lift4_f_ty	.tygvar
@@ -866,7 +868,7 @@ y	.apply	f	|	x0	x1	x2	x3
 	.app	y
 	.enter	k
 
-# §section §gs{parser.lift5}
+-- §section §gs{parser.lift5}
 
 _parser.lift5_c	.expr
 _parser.lift5_f_ty	.tygvar
@@ -1030,7 +1032,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4
 	.app	y
 	.enter	k
 
-# §section §gs{parser.lift6}
+-- §section §gs{parser.lift6}
 
 _parser.lift6_c	.expr
 _parser.lift6_f_ty	.tygvar
@@ -1234,7 +1236,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4	x5
 	.app	y
 	.enter	k
 
-# §section §gs{parser.lift7}
+-- §section §gs{parser.lift7}
 
 _parser.lift7_c	.expr
 _parser.lift7_f_ty	.tygvar
@@ -1482,7 +1484,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6
 	.app	y
 	.enter	k
 
-# §section §gs{parser.lift8}
+-- §section §gs{parser.lift8}
 
 _parser.lift8_c	.expr
 _parser.lift8_f_ty	.tygvar
@@ -1779,7 +1781,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6	x7
 	.app	y
 	.enter	k
 
-# §section §gs{parser.lift9}
+-- §section §gs{parser.lift9}
 
 _parser.lift9_c	.expr
 _parser.lift9_f_ty	.tygvar
@@ -2127,7 +2129,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6	x7	x8
 	.app	y
 	.enter	k
 
-# §section §gs{parser.lift10}
+-- §section §gs{parser.lift10}
 
 _parser.lift10_c	.expr
 _parser.lift10_f_ty	.tygvar
@@ -2531,7 +2533,7 @@ y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6	x7	x8	x9
 	.app	y
 	.enter	k
 
-# §section §gs{parser.>>=}
+-- §section §gs{parser.>>=}
 
 _parser.>>=_c	.expr
 parser.t	.tygvar
@@ -2575,7 +2577,7 @@ fx	.apply	f	|	x
 	.app	k
 	.enter	fx	r
 
-# §section §gs{parser.neg.lookahead}
+-- §section §gs{parser.neg.lookahead}
 
 _parser.neg.lookahead_c	.expr
 parser.t	.tygvar
@@ -2624,7 +2626,7 @@ fail	.undefined	parser.prim.t	s	record.empty
 	.app	record.empty	fail
 	.yield	parser.prim.unit.plus	s	record.empty
 
-# §section §gs{parser.pos.get}
+-- §section §gs{parser.pos.get}
 
 _parser.pos.get_c	.expr
 _parser.t_k_ty	.tygvar
@@ -2636,7 +2638,7 @@ k	.larg	_parser.t_k_ty	s	parser.pos.t	r
 	.app	k
 	.yield	parser.prim.pos.get	s	r
 
-# §section §gs{parser.fail}
+-- §section §gs{parser.fail}
 
 _parser.fail_c	.expr
 _parser.t_k_ty	.tygvar
@@ -2648,7 +2650,7 @@ s	.tyarg	*
 k	.larg	_parser.t_k_ty	s	α	β
 	.enter	parser.prim.fail	s	β
 
-# §section §gs{parser.*>}
+-- §section §gs{parser.*>}
 
 _parser.*>_c	.expr
 parser.t	.tygvar
@@ -2689,7 +2691,7 @@ x0	.larg	α0
 	.app	k
 	.enter	p1	r
 
-# §section §gs{parser.<*}
+-- §section §gs{parser.<*}
 
 _parser.<*_c	.expr
 parser.t	.tygvar
@@ -2744,7 +2746,7 @@ x1	.larg	α1
 	.app	x0
 	.enter	k
 
-# §section §gs{parser.lift2}
+-- §section §gs{parser.lift2}
 
 _parser.lift2_c	.expr
 _parser.lift2_f_ty	.tygvar
@@ -2814,7 +2816,7 @@ f.x0.x1	.apply	f	|	x0	x1
 	.app	f.x0.x1
 	.enter	k
 
-# §section §gs{parser.fail.msg}
+-- §section §gs{parser.fail.msg}
 
 _parser.fail.msg_c	.expr
 list.t	.tygvar
@@ -2839,7 +2841,7 @@ k	.larg	_parser.t_k_ty	s	α	β
 	.app	msg
 	.yield	parser.prim.fail.msg	s	β
 
-# §section §gs{parser.<|>}
+-- §section §gs{parser.<|>}
 
 _parser.<|>_c	.expr
 parser.t	.tygvar
@@ -2884,7 +2886,7 @@ p1.k	.karg	parser.prim.u	s	r
 	.app	p0.k	p1.k
 	.yield	_parser.prim.<|>_w	s	r
 
-# §section §gs{parser.symbol}
+-- §section §gs{parser.symbol}
 
 _parser.symbol_c	.expr
 _parser.t_k_ty	.tygvar
@@ -2918,7 +2920,7 @@ kc	.apply	k	|	c
 	.app	kc
 	.enter	either.right	list.string.ty	parser.ty
 
-# §section §gs{parser.optional}
+-- §section §gs{parser.optional}
 
 _parser.optional_c	.expr
 parser.t	.tygvar
@@ -2946,7 +2948,7 @@ x	.larg	α
 	.app	x
 	.yield	maybe.just	α
 
-# §section §gs{parser.many}
+-- §section §gs{parser.many}
 
 _parser.many_c	.expr
 parser.t	.tygvar
@@ -3026,7 +3028,7 @@ xxn	.apply	list.:	α	|	x	xn
 	.app	xxn
 	.enter	k
 
-# §section §gs{parser.symbol.matching.bool}
+-- §section §gs{parser.symbol.matching.bool}
 
 _parser.symbol.matching.bool_c	.expr
 _parser.symbol.matching.bool_pred_ty	.tygvar
@@ -3093,7 +3095,7 @@ kc			.apply	k	|	c
 			.app	kc
 			.enter	either.right	list.string.t	parser.ty
 
-# §section §gs{parser.match}
+-- §section §gs{parser.match}
 
 _parser.match_c	.expr
 order.total.t	.tygvar
@@ -3204,7 +3206,7 @@ pred			.alloc	_parser.match_worker_symbol_pred_c
 sym			.apply	parser.symbol.matching.bool	s	|	pred
 			.app	cons	sym
 			.enter	parser.map	s	s	res_ty
-	# > :: parser.t	s	res_ty
+	-- > :: parser.t	s	res_ty
 
 _parser.match_worker_id_c	.expr
 list.t	.tygvar
@@ -3313,7 +3315,7 @@ c0		.fkarg	0	s
 			.coerce	order.total.ord.t.out
 			.app	c	c0
 			.enter	cmp
-	# > :: bool.t
+	-- > :: bool.t
 
 _parser.match_worker_class_range_k1	.forcecont
 order.total.t	.tygvar
@@ -3377,7 +3379,7 @@ o0	.karg	order.total.ord.prim.u
 		.case	eq
 			.enter	bool.true
 
-# §section §gs{parser.prim.<|>}
+-- §section §gs{parser.prim.<|>}
 
 _parser.prim.<|>_c	.expr
 parser.prim.t	.tygvar
@@ -3426,7 +3428,7 @@ _parser.prim.<|>_w_pos.get_default_k2_c	.subcode
 _parser.prim.<|>_w_pos.get_pos.get_k2_c	.subcode
 _parser.prim.<|>_w_symbol_pos.get_k1_c	.subcode
 _parser.prim.<|>_w_symbol_sk2_c	.subcode
-parser.prim.t.out	.cogvar	# Temp?
+parser.prim.t.out	.cogvar	-- Temp?
 parser.prim.t.in	.cogvar
 parser.prim.fail.msg	.gvar
 parser.prim.pos.get	.gvar
@@ -3469,7 +3471,7 @@ ek				.fkarg	1	parser.prim.t	s	α
 x				.fkarg	0	α
 p1.1				.fkarg	1	parser.prim.t	s	α
 					.undef	parser.prim.t	s	α
-			# > :: parser.prim.t	s	α
+			-- > :: parser.prim.t	s	α
 		.case	lookahead
 p0.1		.fkarg	0	parser.prim.t	s	rec.ty
 			.analyze	p1	fail	fail.msg	lookahead	pos.get	symbol	unit.plus
@@ -3501,7 +3503,7 @@ p0.b					.undefined	parser.prim.t	s	α
 p2					.apply	parser.prim.<|>	s	α	|	p0.b	p1.1
 					.app	x	p2
 					.yield	parser.prim.unit.plus	s	α
-			# > :: parser.prim.t	s	α
+			-- > :: parser.prim.t	s	α
 		.case	pos.get
 k0		.fkarg	0	_parser.prim.u_pos.get_0_ty	s	α
 			.danalyze	p1	pos.get
@@ -3547,7 +3549,7 @@ p0.b					.cast	p0.l	parser.prim.t.in	s	α
 p2					.apply	parser.prim.<|>	s	α	|	p0.b	p1.1
 					.app	x	p2
 					.yield	parser.prim.unit.plus	s	α
-			# > :: parser.prim.t	s	α
+			-- > :: parser.prim.t	s	α
 		.case	unit.plus
 x		.fkarg	0	α
 p0.1		.fkarg	1	parser.prim.t	s	α
@@ -3556,7 +3558,7 @@ p1.b			.cast	p1.l	parser.prim.t.in	s	α
 p2			.apply	parser.prim.<|>	s	α	|	p0.1	p1.b
 			.app	x	p2
 			.yield	parser.prim.unit.plus	s	α
-	# > :: parser.prim.t	s	α
+	-- > :: parser.prim.t	s	α
 
 _parser.prim.<|>_w_pos.get_default_k2_c	.expr
 parser.prim.u	.tygvar
@@ -3733,7 +3735,7 @@ p2					.apply	parser.prim.<|>	s	α	|	p0.1	p1.1
 					.app	p2
 					.enter	either.right	list.string.t	parser.ty
 
-# §section §gs{parser.prim.neg}
+-- §section §gs{parser.prim.neg}
 
 _parser.prim.neg_c	.expr
 parser.prim.t	.tygvar
@@ -3788,7 +3790,7 @@ fk1			.apply	parser.prim.neg	s	α	|	fk	p1
 x		.fkarg	0	record.empty
 p0.1		.fkarg	1	parser.prim.t	s	record.empty
 			.enter	parser.prim.fail	s	α
-	# > :: parser.prim.t	s	α
+	-- > :: parser.prim.t	s	α
 
 _parser.prim.neg_symbol_sk1_c	.expr
 _parser.prim.u_symbol_0_ty	.tygvar
@@ -3837,7 +3839,7 @@ p2			.apply	parser.prim.neg	s	α	|	p0.1	p1
 			.app	p2
 			.enter	either.right	list.string.ty	parser.ty
 
-# §section Constructors
+-- §section Constructors
 
 _parser.prim.unit.plus_c	.expr
 parser.prim.t	.tygvar
@@ -3920,7 +3922,7 @@ l	.constr	res.u	pos.get	0	k
 	.lift
 	.yield	l
 
-# §section §gs{parser.err.fmt}
+-- §section §gs{parser.err.fmt}
 
 _parser.err.fmt_c	.expr
 parser.err.t	.tygvar
@@ -3958,7 +3960,7 @@ pos.s			.apply	parser.pos.fmt	|	eof	pos
 			.app	pos.s	_parser.err.fmt_parse.failure.s
 			.enter	list.<>	rune.t
 
-# §section §gs{parser.err.≡}
+-- §section §gs{parser.err.≡}
 
 _parser.err.≡_c	.expr
 parser.err.t	.tygvar
@@ -4008,7 +4010,7 @@ eof1				.fkarg	1	bool.t
 					.app	pos0	pos1
 					.enter	parser.pos.≡
 
-# §section §gs{parser.err.fmtgs}
+-- §section §gs{parser.err.fmtgs}
 
 _parser.err.fmtgs_c	.expr
 parser.err.t	.tygvar
@@ -4054,7 +4056,7 @@ ds			.apply	diff.list.prepend	rune.t	|	_parser.err.fmtgs_simple.failure_prefix	s
 			.app	fmtgs.prec.app	ds
 			.enter	fmtgs.prec
 
-# §section §gs{parser.err.t} constructors
+-- §section §gs{parser.err.t} constructors
 
 _parser.err.simple.failure_c	.expr
 parser.pos.t	.tygvar
@@ -4083,7 +4085,7 @@ c	.constr	parser.err.prim.u	message.failure	0	pos	1	eof	2	msg
 	.lift
 	.yield	c
 
-# §section §gs{parser.rune.advance}
+-- §section §gs{parser.rune.advance}
 
 _parser.rune.advance_c	.expr
 rune.t	.tygvar
@@ -4114,7 +4116,7 @@ b0	.karg	bool.prim.u
 			.app	pos
 			.enter	parser.pos.next.line
 
-# §section §gs{parser.pos.fmt}
+-- §section §gs{parser.pos.fmt}
 
 _parser.pos.fmt_c	.expr
 bool.t	.tygvar
@@ -4158,7 +4160,7 @@ fn.s			.apply	ibio.file.name.out	|	fn
 			.app	fn.s	_parser.pos.fmt_eof.suffix.s
 			.enter	list.<>	rune.t
 
-# §section §gs{parser.pos.≡}
+-- §section §gs{parser.pos.≡}
 
 _parser.pos.≡_c	.expr
 parser.pos.t	.tygvar
@@ -4180,7 +4182,7 @@ b3	.apply	bool.∧	|	b1	b2
 	.app	b0	b3
 	.enter	bool.∧
 
-# §section §gs{parser.pos.fmtgs}
+-- §section §gs{parser.pos.fmtgs}
 
 _parser.pos.fmtgs_c	.expr
 parser.pos.t	.tygvar
@@ -4220,7 +4222,7 @@ ds	.apply	diff.list.prepend	rune.t	|	_parser.pos.fmtgs_prefix.s	s0
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
 
-# §section §gs{parser.pos.initial}
+-- §section §gs{parser.pos.initial}
 
 _parser.pos.initial_c	.expr
 ibio.file.name.t	.tygvar
@@ -4230,7 +4232,7 @@ r	.record	col	natural.1	file	fn	line	natural.1
 	.lift
 	.yield	r
 
-# §section §gs{parser.pos.next.line}
+-- §section §gs{parser.pos.next.line}
 
 _parser.pos.next.line_c	.expr
 parser.pos.t	.tygvar
@@ -4263,7 +4265,7 @@ r	.record	col	natural.1	file	fn	line	line.1
 	.lift
 	.yield	r
 
-# §section §gs{parser.pos.next.col}
+-- §section §gs{parser.pos.next.col}
 _parser.pos.next.col_c	.expr
 parser.pos.t	.tygvar
 natural.+	.gvar
@@ -4279,7 +4281,7 @@ r	.record	col	col.1	file	fn	line	line
 
 	.type
 
-# §section §gs{parser.t}
+-- §section §gs{parser.t}
 
 parser.t	.tyexpr
 _parser.t_k_ty	.tygvar
@@ -4385,7 +4387,7 @@ parser.ty	.tylet	parser.prim.t	s	α
 	.tyfun	s
 	.tyref	either.t	list.string.ty	parser.ty
 
-# §section §gs{parser.err.t}
+-- §section §gs{parser.err.t}
 
 parser.err.t	.tyabstract	*
 parser.err.prim.u	.tygvar
@@ -4410,7 +4412,7 @@ parser.pos.t	.tygvar
 bool.t	.tygvar
 	.tyubproduct	0	parser.pos.t	1	bool.t
 
-# §section §gs{parser.pos.t}
+-- §section §gs{parser.pos.t}
 
 parser.pos.t	.tyexpr
 parser.pos.u	.tygvar
@@ -4422,7 +4424,7 @@ natural.t	.tygvar
 ibio.file.name.t	.tygvar
 	.typroduct	col	natural.t	file	ibio.file.name.t	line	natural.t
 
-# §section §gs{parser.advance.t}
+-- §section §gs{parser.advance.t}
 
 parser.advance.t	.tyexpr
 parser.pos.t	.tygvar
@@ -4433,7 +4435,7 @@ s	.tylambda	*
 	.tyfun	parser.pos.t
 	.tyref	parser.pos.t
 
-# §section §gs{parser.parse}
+-- §section §gs{parser.parse}
 
 _parser.parse_work_ty	.tyexpr
 parser.advance.t	.tygvar
@@ -4480,7 +4482,7 @@ rune.t	.tygvar
 	.tyfun	list.t	string.t
 	.tyref	list.t	rune.t
 
-# §section §gs{parser.map}
+-- §section §gs{parser.map}
 
 _parser.map_f_ty	.tyexpr
 α	.tylambda	*
@@ -4489,7 +4491,7 @@ _parser.map_f_ty	.tyexpr
 	.tyfun	α
 	.tyref	β
 
-# §section §gs{parser.<*>}
+-- §section §gs{parser.<*>}
 
 _parser.<*>_f_ty	.tyexpr
 α	.tylambda	*
@@ -4498,7 +4500,7 @@ _parser.<*>_f_ty	.tyexpr
 	.tyfun	α
 	.tyref	β
 
-# §section §gs{parser.lift3}
+-- §section §gs{parser.lift3}
 
 _parser.lift3_f_ty	.tyexpr
 s	.tylambda	*
@@ -4514,7 +4516,7 @@ s	.tylambda	*
 	.tyfun	α2
 	.tyref	β
 
-# §section §gs{parser.lift4}
+-- §section §gs{parser.lift4}
 
 _parser.lift4_f_ty	.tyexpr
 s	.tylambda	*
@@ -4553,7 +4555,7 @@ _parser.lift5_f_ty	.tyexpr
 	.tyfun	α4
 	.tyref	β
 
-# §section §gs{parser.lift6}
+-- §section §gs{parser.lift6}
 
 _parser.lift6_f_ty	.tyexpr
 α0	.tylambda	*
@@ -4577,7 +4579,7 @@ _parser.lift6_f_ty	.tyexpr
 	.tyfun	α5
 	.tyref	β
 
-# §section §gs{parser.lift7}
+-- §section §gs{parser.lift7}
 
 _parser.lift7_f_ty	.tyexpr
 α0	.tylambda	*
@@ -4604,7 +4606,7 @@ _parser.lift7_f_ty	.tyexpr
 	.tyfun	α6
 	.tyref	β
 
-# §section §gs{parser.lift8}
+-- §section §gs{parser.lift8}
 
 _parser.lift8_f_ty	.tyexpr
 α0	.tylambda	*
@@ -4634,7 +4636,7 @@ _parser.lift8_f_ty	.tyexpr
 	.tyfun	α7
 	.tyref	β
 
-# §section §gs{parser.lift9}
+-- §section §gs{parser.lift9}
 
 _parser.lift9_f_ty	.tyexpr
 α0	.tylambda	*
@@ -4667,7 +4669,7 @@ _parser.lift9_f_ty	.tyexpr
 	.tyfun	α8
 	.tyref	β
 
-# §section §gs{parser.lift10}
+-- §section §gs{parser.lift10}
 
 _parser.lift10_f_ty	.tyexpr
 α0	.tylambda	*
@@ -4703,7 +4705,7 @@ _parser.lift10_f_ty	.tyexpr
 	.tyfun	α9
 	.tyref	β
 
-# §section §gs{parser.>>=}
+-- §section §gs{parser.>>=}
 
 _parser.>>=_k_ty	.tyexpr
 parser.t	.tygvar
@@ -4714,7 +4716,7 @@ s	.tylambda	*
 	.tyfun	α	
 	.tyref	parser.t	s	β
 
-# §section §gs{parser.lift2}
+-- §section §gs{parser.lift2}
 
 _parser.lift2_f_ty	.tyexpr
 α0	.tylambda	*
@@ -4726,7 +4728,7 @@ _parser.lift2_f_ty	.tyexpr
 	.tyfun	α1
 	.tyref	β
 
-# §section §gs{parser.symbol.matching.bool}
+-- §section §gs{parser.symbol.matching.bool}
 
 _parser.symbol.matching.bool_pred_ty	.tyexpr
 bool.t	.tygvar
@@ -4735,7 +4737,7 @@ s	.tylambda	*
 	.tyfun	s
 	.tyref	bool.t
 
-# §section §gs{parser.many}
+-- §section §gs{parser.many}
 
 _parser.many_ty	.tyexpr
 parser.t	.tygvar
@@ -4747,7 +4749,7 @@ res.ty	.tylet	list.t	α
 	.tyfun	parser.t	s	α
 	.tyref	parser.t	s	res.ty
 
-# §section §gs{parser.match}
+-- §section §gs{parser.match}
 
 _parser.match_worker_ty	.tyexpr
 order.total.t	.tygvar
@@ -4782,7 +4784,7 @@ s	.tyforall	*
 	.tyfun	s
 	.tyref	bool.t
 
-# §section §gs{parser.prim.<|>}
+-- §section §gs{parser.prim.<|>}
 
 _parser.prim.<|>_ty	.tyexpr
 parser.prim.t	.tygvar
@@ -4803,7 +4805,7 @@ s	.tyforall	*
 	.tyfun	parser.prim.u	s	α
 	.tyref	parser.prim.t	s	α
 
-# §section §gs{parser.prim.neg}
+-- §section §gs{parser.prim.neg}
 
 _parser.prim.neg_ty	.tyexpr
 parser.prim.t	.tygvar

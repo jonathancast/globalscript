@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -23,7 +25,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{fmtline qq{foo\n}}
+-- §section §gs{fmtline qq{foo\n}}
 
 _test.fmtline.line_c	.expr
 list.t	.tygvar
@@ -45,7 +47,7 @@ test	.apply	test.assert.eq	string.ty	|	string.≡	string.fmtgs	actual	_test.fmtl
 	.app	_test.fmtline.line_label	test
 	.enter	test.property.label
 
-# §section §gs{fmtline qq{foo\n}}
+-- §section §gs{fmtline qq{foo\n}}
 
 _test.fmtline.partial.line_c	.expr
 list.t	.tygvar
