@@ -86,7 +86,6 @@ e		.fkarg	0	gsdl.cgs.gsexpr.t
 			.enter	mbty
 
 _gsac.document.compile_right_just_k	.forcecont
-gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 maybe.prim.u	.tygvar
@@ -104,7 +103,6 @@ ordered.set.empty	.gvar
 ordered.map.empty	.gvar
 gsac.gsexpr.compileToDataItem	.gvar
 maybe.nothing	.gvar
-env	.fv	gsdl.cgs.typeenv.t
 doc0	.fv	gsdl.cgs.document.prim.u
 e	.fv	gsdl.cgs.gsexpr.t
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
@@ -118,7 +116,7 @@ nothing			.apply	maybe.nothing	gsdl.var.t
 tyvs			.undefined	list.t	gsdl.var.t
 			.force	_gsac.document.compile_right_just_just_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToDataItem_res.ty
-			.app	pos	env	nothing	e	ty	set.empty	map.empty	tyvs
+			.app	pos	nothing	e	ty	set.empty	map.empty	tyvs
 			.enter	gsac.gsexpr.compileToDataItem
 		.case	nothing
 			.undef	either.t	string.t	gsdl.ags.file.t
