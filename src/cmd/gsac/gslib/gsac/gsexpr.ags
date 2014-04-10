@@ -1950,16 +1950,25 @@ svs	.larg	list.t	gsdl.var.t
 
 _gsac.gsexpr.compile.mapM_k	.forcecont
 list.prim.u	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compile.m_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.compile.m_res.ty	.tygvar	-- Temp
-list.t	.tygvar	-- Temp
+either.right	.gvar
 α	.tyfv	*
 β	.tyfv	*
-list.β.ty	.tylet	list.t	β	-- Temp
-res.list.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.β.ty	-- Temp
+list.β.ty	.tylet	list.t	β
+res.list.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.β.ty
 xn0	.karg	list.prim.u	α
-	.undef	either.t	string.t	res.list.β.ty
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	either.t	string.t	res.list.β.ty
+		.case	nil
+res			.undefined	_gsac.gsexpr.compile.m_res.ty	list.β.ty
+			.app	res
+			.enter	either.right	string.t	res.list.β.ty
 
 -- §section Helper Functions
 
