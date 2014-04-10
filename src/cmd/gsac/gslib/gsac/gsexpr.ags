@@ -1930,13 +1930,35 @@ svs	.larg	list.t	gsdl.var.t
 _gsac.gsexpr.compile.mapM_c	.expr
 _gsac.gsexpr.compile.mapM_f_ty	.tygvar
 list.t	.tygvar
-gsac.gsexpr.compile.m	.tygvar	-- Temp
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+_gsac.gsexpr.compile.mapM_k	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
-list.β.ty	.tylet	list.t	β	-- Temp
 f	.larg	_gsac.gsexpr.compile.mapM_f_ty	α	β
 xn	.larg	list.t	α
-	.undef	gsac.gsexpr.compile.m	list.β.ty
+em	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
+	.force	_gsac.gsexpr.compile.mapM_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_gsac.gsexpr.compile.mapM_k	.forcecont
+list.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compile.m_res.ty	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+α	.tyfv	*
+β	.tyfv	*
+list.β.ty	.tylet	list.t	β	-- Temp
+res.list.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.β.ty	-- Temp
+xn0	.karg	list.prim.u	α
+	.undef	either.t	string.t	res.list.β.ty
 
 -- §section Helper Functions
 
