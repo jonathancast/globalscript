@@ -518,11 +518,12 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.body.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
-gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 either.right	.gvar
+list.nil	.gvar
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
 	.analyze	e0	left	right
 		.case	left
@@ -531,7 +532,7 @@ err		.fkarg	0	string.t
 		.case	right
 r.tyx		.fkarg	0	gsdl.cgs.gstype.t
 b			.undefined	gsdl.cgs.gsexpr.body.t
-gs			.undefined	list.t	gsdl.cgs.gsexpr.generator.t
+gs			.apply	list.nil	gsdl.cgs.gsexpr.generator.t
 res			.lrecord	body	b	gens	gs	res.ty	r.tyx	|	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
