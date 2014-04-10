@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -55,7 +57,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{false ≡ false}
+-- §section §gs{false ≡ false}
 
 _test.false.eq.false.c	.expr
 test.property.label	.gvar
@@ -79,7 +81,7 @@ bool.false	.gvar
 	.app	bool.false	bool.false
 	.enter	bool.≡
 
-# §section §gs{false ≠ true}
+-- §section §gs{false ≠ true}
 
 _test.false.eq.true_c	.expr
 test.property.label	.gvar
@@ -104,7 +106,7 @@ bool.true	.gvar
 	.app	bool.false	bool.true
 	.enter	bool.≡
 
-# §section §gs{true ≠ false}
+-- §section §gs{true ≠ false}
 
 _test.true.eq.false_c	.expr
 test.property.label	.gvar
@@ -129,7 +131,7 @@ bool.false	.gvar
 	.app	bool.true	bool.false
 	.enter	bool.≡
 
-# §section §gs{true ≡ true}
+-- §section §gs{true ≡ true}
 
 _test.true.eq.true_c	.expr
 test.property.label	.gvar
@@ -153,7 +155,7 @@ bool.true	.gvar
 	.app	bool.true	bool.true
 	.enter	bool.≡
 
-# §section §gs{bool.compare false false}
+-- §section §gs{bool.compare false false}
 
 _test.compare.false.false_c	.expr
 order.total.ord.t	.tygvar
@@ -170,7 +172,7 @@ test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.o
 	.app	_test.compare.false.false_label	test
 	.enter	test.property.label
 
-# §section §gs{not false}
+-- §section §gs{not false}
 
 _test.not.false_c	.expr
 bool.t	.tygvar
@@ -187,7 +189,7 @@ test	.apply	test.assert.eq	bool.t	|	bool.≡	bool.fmtgs	actual	bool.true
 	.app	_test.not.false_false	test
 	.enter	test.property.label	
 
-# §section §gs{true ∧ true}
+-- §section §gs{true ∧ true}
 
 _test.true.∧.true.c	.expr
 test.property.label	.gvar
@@ -211,7 +213,7 @@ bool.true	.gvar
 	.app	bool.true	bool.true
 	.enter	bool.∧
 
-# §section §gs{false ∧ false}
+-- §section §gs{false ∧ false}
 
 _test.false.∧.false_c	.expr
 test.property.label	.gvar

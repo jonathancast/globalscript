@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -39,7 +41,7 @@ rune.fmtgs.list	.gvar
 	.app	rune.fmtgs.list
 	.enter	list.fmtgs	rune.t
 
-# §section §gs{string.fmtline}
+-- §section §gs{string.fmtline}
 
 _string.fmtline_c	.expr
 list.t	.tygvar
@@ -128,7 +130,7 @@ list.t	.tygvar
 rune.t	.tygvar
 	.tyref	list.t	rune.t
 
-# §section §gs{string.fmtline}
+-- §section §gs{string.fmtline}
 
 _string.fmtline_ty	.tyexpr
 list.t	.tygvar

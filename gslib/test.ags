@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -13,7 +15,7 @@ _test.all_no.tests.label	.string	No\stests
 
 	.code
 
-# §section §gs{test.true}
+-- §section §gs{test.true}
 
 _test.true_c	.expr
 test.property.true	.gvar
@@ -21,7 +23,7 @@ _test.true_s	.gvar
 	.app	_test.true_s
 	.enter	test.property.true
 
-# §section §gs{test.assert}
+-- §section §gs{test.assert}
 
 _test.assert_c	.expr
 bool.t	.tygvar
@@ -52,7 +54,7 @@ b0	.karg	bool.prim.u
 	.app	s
 	.enter	test.property.true
 
-# §section §gs{test.deny}
+-- §section §gs{test.deny}
 
 _test.deny_c	.expr
 string.t	.tygvar
@@ -82,7 +84,7 @@ b0	.karg	bool.prim.u
 			.app	tm
 			.enter	test.property.false
 
-# §section §gs{test.all}
+-- §section §gs{test.all}
 
 _test.all_c	.expr
 list.t	.tygvar

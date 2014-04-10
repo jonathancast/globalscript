@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -41,7 +43,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{lt ≡ lt}
+-- §section §gs{lt ≡ lt}
 
 _test.lt.eq.lt_c	.expr
 test.property.label	.gvar
@@ -56,7 +58,7 @@ test	.apply	test.assert	|	_test.lt.eq.lt_false	_test.lt.eq.lt_true	eq
 	.app	_test.lt.eq.lt_label	test
 	.enter	test.property.label
 
-# §section §gs{eq ≡ eq}
+-- §section §gs{eq ≡ eq}
 
 _test.eq.eq.eq_c	.expr
 test.property.label	.gvar
@@ -71,7 +73,7 @@ test	.apply	test.assert	|	_test.eq.eq.eq_false	_test.eq.eq.eq_true	eq
 	.app	_test.eq.eq.eq_label	test
 	.enter	test.property.label
 
-# §section §gs{gt ≡ gt}
+-- §section §gs{gt ≡ gt}
 
 _test.gt.eq.gt_c	.expr
 test.property.label	.gvar
@@ -86,7 +88,7 @@ test	.apply	test.assert	|	_test.gt.eq.gt_false	_test.gt.eq.gt_true	eq
 	.app	_test.gt.eq.gt_label	test
 	.enter	test.property.label
 
-# §section §gs{fmtgs lt}
+-- §section §gs{fmtgs lt}
 
 _test.fmtgs.lt_c	.expr
 string.t	.tygvar
@@ -107,7 +109,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 	.app	_test.fmtgs.lt_label	test
 	.enter	test.property.label
 
-# §section §gs{fmtgs eq}
+-- §section §gs{fmtgs eq}
 
 _test.fmtgs.eq_c	.expr
 string.t	.tygvar
@@ -128,7 +130,7 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs
 	.app	_test.fmtgs.eq_label	test
 	.enter	test.property.label
 
-# §section §gs{fmtgs gt}
+-- §section §gs{fmtgs gt}
 
 _test.fmtgs.gt_c	.expr
 string.t	.tygvar
