@@ -1527,12 +1527,51 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToLambdaExpr_impfor_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToImpprim_res.ty	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+_gsac.gsexpr.generator.imp.compile_res_res.ty	.tygvar
+_gsac.gsexpr.compile.m_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_impfor_right_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.compile.mapM	.gvar
+gsac.gsexpr.generator.imp.compile	.gvar
+list.gen.res.ty	.tylet	list.t	_gsac.gsexpr.generator.imp.compile_res_res.ty
+compile.list.gen.res.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.gen.res.ty
+pos	.fv	gsdl.sourcepos.t
+gs	.fv	list.t	gsdl.cgs.gsexpr.generator.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToImpprim_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	right
+m.r		.fkarg	0	_gsac.gstype.compileToImpprim_res.ty
+gen.compile			.apply	gsac.gsexpr.generator.imp.compile	|	pos
+tyem1			.lfield	emitted	m.r
+pem1			.lfield	prim.emitted	m.r
+svs1			.lfield	subvars	m.r
+			.force	_gsac.gsexpr.compileToLambdaExpr_impfor_right_k
+			.coerce	either.t.out	string.t	compile.list.gen.res.ty
+			.app	gen.compile	gs	tyem1	pem1	svs1
+			.enter	gsac.gsexpr.compile.mapM	gsdl.cgs.gsexpr.generator.t	_gsac.gsexpr.generator.imp.compile_res_res.ty
+
+_gsac.gsexpr.compileToLambdaExpr_impfor_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+list.t	.tygvar
+_gsac.gsexpr.generator.imp.compile_res_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+list.gen.res.ty	.tylet	list.t	_gsac.gsexpr.generator.imp.compile_res_res.ty
+compile.list.gen.res.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.gen.res.ty
+e0	.karg	either.prim.u	string.t	compile.list.gen.res.ty
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToLambdaExpr_lambda_k	.forcecont
