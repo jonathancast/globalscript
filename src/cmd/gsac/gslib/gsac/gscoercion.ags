@@ -547,7 +547,7 @@ nil			.apply	list.nil	gsdl.var.t
 r			.apply	gsdl.ags.coercionitem.expr.defn	|	tyc	nil
 tygvs			.closure	_gsac.gscoercion.compile_defn_tygvs_c
 ts			.apply	diff.list.nil	gsdl.ags.typeitem.t
-res			.lrecord	coercionitems	cos	res	r	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
+res			.lrecord	coercionitems	cos	res	r	ty.emitted	em.ty	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compile_res.ty
 		.case	nothing
@@ -611,9 +611,10 @@ r		.fkarg	0	_gsac.gscoercion.compile_res.ty
 cos			.lfield	coercionitems	r
 r.e			.lfield	res	r
 e			.apply	gsdl.ags.coercionitem.expr.pos	|	pos1	r.e
+r.em.ty			.lfield	ty.emitted	r
 tygvs			.lfield	tygvars	r
 ts			.lfield	typeitems	r
-res			.lrecord	coercionitems	cos	res	e	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
+res			.lrecord	coercionitems	cos	res	e	ty.emitted	r.em.ty	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compile_res.ty
 
@@ -755,10 +756,11 @@ tyas.r		.fkarg	0	_gsac.gstype.compile.m_res.ty	list.var.ty
 cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 tyas.r.res			.lfield	res	tyas.r
 r			.apply	gsdl.ags.coercionitem.expr.defn	|	tyc	tyas.r.res
+tyas.r.em			.lfield	emitted	tyas.r
 tyas.r.tygvs			.lfield	tygvars	tyas.r
 tygvs			.closure	_gsac.gscoercion.compileAppTy_app_defn_right_tygvs_c
 ts			.lfield	typeitems	tyas.r
-res			.lrecord	coercionitems	cos	res	r	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
+res			.lrecord	coercionitems	cos	res	r	ty.emitted	tyas.r.em	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compile_res.ty
 
@@ -827,6 +829,7 @@ co	.larg	gsdl.cgs.gscoercion.t
 em.ty	.larg	ordered.set.t	gsdl.var.t
 pem.ty	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs.ty	.larg	list.t	gsdl.var.t
+	-- The call to §gs{compile} below goes to a separate item, so it's a separate state
 em.ty.empty	.apply	ordered.set.empty	gsdl.var.t
 pem.ty.empty	.apply	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
 subvars	.apply	gsdl.var.subvars	|	v
@@ -838,6 +841,7 @@ subvars	.apply	gsdl.var.subvars	|	v
 _gsac.gscoercion.compileToGlobalVar_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
+ordered.set.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gscoercion.compile_res.ty	.tygvar
@@ -854,6 +858,8 @@ gsdl.ags.coercionitem.tycoercion	.gvar
 diff.list.tolist	.gvar
 pos	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
+	-- The call to §gs{compile} that returns to this goes to a separate item, so return the original state
+em.ty	.fv	ordered.set.t	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gscoercion.compile_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -870,7 +876,7 @@ r.cos			.lfield	coercionitems	r
 cos			.apply	diff.list.:	gsdl.ags.coercionitem.t	|	co	r.cos
 tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 ts			.lfield	typeitems	r
-res			.lrecord	coercionitems	cos	res	v	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compileToGlobalVar_res.ty
+res			.lrecord	coercionitems	cos	res	v	ty.emitted	em.ty	tygvars	tygvs	typeitems	ts	|	_gsac.gscoercion.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gscoercion.compileToGlobalVar_res.ty
 
@@ -955,13 +961,16 @@ _gsac.gscoercion.compile.m_res.u	.tygvar
 _gsac.gscoercion.compile.m_res.u	.tyexpr
 diff.list.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 α	.tylambda	*
 diff.list.coercionitem.ty	.tylet	diff.list.t	gsdl.ags.coercionitem.t
+set.var.ty	.tylet	ordered.set.t	gsdl.var.t
 diff.list.tygvar.ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
-	.typroduct	coercionitems	diff.list.coercionitem.ty	res	α	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
+	.typroduct	coercionitems	diff.list.coercionitem.ty	res	α	ty.emitted	set.var.ty	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
 
 -- §section §gs{gsac.gscoercion.compile}
 
