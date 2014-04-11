@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -16,7 +18,7 @@ ibio.foldM.prim	.closure	_ibio.foldM.prim_c	_ibio.foldM.prim_ty
 
 	.code
 
-# §section §gs{ibio.from.either.prim}
+-- §section §gs{ibio.from.either.prim}
 
 _ibio.from.either.prim_c	.expr
 either.t	.tygvar
@@ -46,7 +48,7 @@ x		.fkarg	0	α
 			.app	x
 			.yield	ibio.prim.unit	α
 
-# §section §gs{ibio.dir.fromprim}
+-- §section §gs{ibio.dir.fromprim}
 
 _ibio.dir.fromprim_c	.expr
 ibio.prim.dir.t	.tygvar
@@ -91,7 +93,7 @@ st	.record	atime	at	gid	g	length	l	mode.append.only	mao	mode.directory	md	mode.e
 	.lift
 	.yield	st
 
-# §section §gs{external.io}
+-- §section §gs{external.io}
 
 _ibio.rune.external.io_c	.expr
 _ibio.prim.external.io.rune_ty	.tygvar
@@ -107,7 +109,7 @@ ibio.dir.fromprim	.gvar
 	.app	ibio.dir.fromprim
 	.yield	ibio.prim.external.io.dir	ibio.dir.t
 
-# §section §gs{ibio.mapM.prim}
+-- §section §gs{ibio.mapM.prim}
 
 _ibio.mapM.prim_c	.expr
 _ibio.mapM.prim_f_ty	.tygvar
@@ -196,7 +198,7 @@ ys	.apply	list.:	β	|	y	ys1
 	.app	ys
 	.yield	ibio.prim.unit	res.ty
 
-# §section §gs{ibio.mapM0.prim}
+-- §section §gs{ibio.mapM0.prim}
 
 _ibio.mapM0.prim_c	.expr
 _ibio.mapM.prim_f_ty	.tygvar
@@ -267,7 +269,7 @@ xn1	.fv	list.t	α
 	.app	f	xn1
 	.enter	ibio.mapM0.prim	α	β
 
-# §section §gs{ibio.foldM.prim}
+-- §section §gs{ibio.foldM.prim}
 
 _ibio.foldM.prim_c	.expr
 _ibio.foldM.prim_f_ty	.tygvar
@@ -396,7 +398,7 @@ integer.t	.tygvar
 _string.ty	.tylet	list.t	rune.t
 	.typroduct	atime	time.t	gid	_string.ty	length	natural.t	mode.append.only	bool.t	mode.directory	bool.t	mode.exclusive	bool.t	mode.group.execute	bool.t	mode.group.read	bool.t	mode.group.write	bool.t	mode.other.execute	bool.t	mode.other.read	bool.t	mode.other.write	bool.t	mode.owner.execute	bool.t	mode.owner.read	bool.t	mode.owner.write	bool.t	mode.unix.dev	bool.t	mode.unix.link	bool.t	mode.unix.pipe	bool.t	mode.unix.socket	bool.t	mtime	time.t	muid	_string.ty	name	ibio.file.name.t	qid.path	integer.t	srvdev	natural.t	srvtype	natural.t	uid	_string.ty	vers	natural.t
 
-# §section §gs{ibio.mapM.prim}
+-- §section §gs{ibio.mapM.prim}
 
 _ibio.mapM.prim_ty	.tyexpr
 _ibio.mapM.prim_f_ty	.tygvar
@@ -419,7 +421,7 @@ ibio.prim.t	.tygvar
 	.tyfun	α
 	.tyref	ibio.prim.t	β
 
-# §section §gs{ibio.mapM0.prim}
+-- §section §gs{ibio.mapM0.prim}
 
 _ibio.mapM0.prim_ty	.tyexpr
 _ibio.mapM.prim_f_ty	.tygvar
@@ -434,7 +436,7 @@ record.empty	.tygvar
 	.tyfun	list.t	α
 	.tyref	ibio.prim.t	record.empty
 
-# §section §gs{ibio.foldM.prim}
+-- §section §gs{ibio.foldM.prim}
 
 _ibio.foldM.prim_ty	.tyexpr
 _ibio.foldM.prim_f_ty	.tygvar

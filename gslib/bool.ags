@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -19,7 +21,7 @@ bool.fmtgs.list	.closure	_bool.fmtgs.list_c
 
 	.code
 
-# §section Constructors
+-- §section Constructors
 
 _bool.true.c	.expr
 bool.prim.u	.tygvar
@@ -37,7 +39,7 @@ c	.constr	bool.prim.u	false
 	.lift
 	.yield	c
 
-# §section §gs{bool.≡}
+-- §section §gs{bool.≡}
 
 _bool.≡.c	.expr
 bool.t	.tygvar
@@ -62,7 +64,7 @@ a0	.karg	bool.prim.u
 	.case	true
 		.enter	b
 
-# §section §gs{bool.compare}
+-- §section §gs{bool.compare}
 
 _bool.compare_c	.expr
 bool.t	.tygvar
@@ -106,7 +108,7 @@ b1.0	.karg	bool.prim.u
 				.case	true
 					.enter	order.total.ord.eq
 
-# §section §gs{bool.not}
+-- §section §gs{bool.not}
 
 _bool.not_c	.expr
 bool.t	.tygvar
@@ -128,7 +130,7 @@ b0	.karg	bool.prim.u
 		.case	true
 			.enter	bool.false
 
-# §section §gs{bool.∧}
+-- §section §gs{bool.∧}
 
 _bool.∧.c	.expr
 bool.t	.tygvar
@@ -152,7 +154,7 @@ b0.0	.karg	bool.prim.u
 	.case	true
 		.enter	b1
 
-# §section §gs{bool.∨}
+-- §section §gs{bool.∨}
 
 _bool.∨_c	.expr
 bool.t	.tygvar
@@ -176,7 +178,7 @@ b0.0	.karg	bool.prim.u
 		.case	true
 			.enter	bool.true
 
-# §section §gs{bool.fmtgs}
+-- §section §gs{bool.fmtgs}
 
 _bool.fmtgs_c	.expr
 bool.t	.tygvar

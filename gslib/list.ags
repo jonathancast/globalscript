@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -40,7 +42,7 @@ _list.fmtgs.byDefault_nil.s	.string	[]
 
 	.code
 
-# §section Constructors
+-- §section Constructors
 
 _list.nil.c	.expr
 list.prim.u	.tygvar
@@ -65,7 +67,7 @@ c	.constr	t	:	0	x	1	xn
 	.lift
 	.yield	c
 
-# §section §gs{list.null}
+-- §section §gs{list.null}
 
 _list.null_c	.expr
 list.t	.tygvar
@@ -94,7 +96,7 @@ xn1		.fkarg	1	list.t	α
 		.case	nil
 			.enter	bool.true
 
-# §section §gs{list.foldr}
+-- §section §gs{list.foldr}
 
 _list.foldr_c	.expr
 _list.foldr_f_ty	.tygvar
@@ -130,7 +132,7 @@ z1			.apply	list.foldr	α	β	|	f	z	xn1
 		.case	nil
 			.enter	z
 
-# §section §gs{list.foldr1}
+-- §section §gs{list.foldr1}
 
 _list.foldr1_code	.expr
 list.t	.tygvar
@@ -196,7 +198,7 @@ xn1	.fv	list.t	α
 	.app	f	xn1
 	.enter	list.foldr1	α
 
-# §section §gs{list.map}
+-- §section §gs{list.map}
 
 _list.map_c	.expr
 _list.map_f_ty	.tygvar
@@ -254,7 +256,7 @@ xn1	.fv	list.t	α
 	.app	f	xn1
 	.enter	list.map	α	β
 
-# §section §gs{list.filter}
+-- §section §gs{list.filter}
 
 _list.filter_c	.expr
 _list.filter_pred_ty	.tygvar
@@ -308,7 +310,7 @@ ys1	.apply	list.filter	α	|	pred	xn1
 			.app	x0	ys1
 			.enter	list.:	α
 
-# §section §gs{list.filterMap}
+-- §section §gs{list.filterMap}
 
 _list.filterMap_c	.expr
 _list.filterMap_f_ty	.tygvar
@@ -366,30 +368,30 @@ ys			.apply	list.filterMap	α	β	|	f	xn1
 			.app	f	xn1
 			.enter	list.filterMap	α	β
 
-# §section §gs{list.foldl}
+-- §section §gs{list.foldl}
 
-# > list.foldl 'f 'z = list.foldr (flip $ strict f) z ∘ list.reverse;
+-- > list.foldl 'f 'z = list.foldr (flip $ strict f) z ∘ list.reverse;
 
-# > list.foldr 'f 'z (list.<> 'xn.0 'xn.1) = list.foldr f (list.foldr f z xn.1) xn.0;
+-- > list.foldr 'f 'z (list.<> 'xn.0 'xn.1) = list.foldr f (list.foldr f z xn.1) xn.0;
 
-# > list.foldl 'f 'z nil = list.foldr (flip $ strict f) z (list.reverse nil)
-# >   = list.foldr (flip $ strict f) z nil
-# >   = z
-# > ;
-# > list.foldl 'f 'z (list.: 'x 'xn) = list.foldr (flip $ strict f) z (list.reverse (list.: x xn))
-# >   = list.foldr (flip $ strict f) z (list.reverse (list.<> (list.singleton x) xn))
-# >   = list.foldr (flip $ strict f) z (list.<> (list.reverse xn) (list.reverse (list.singleton x)))
-# >   = list.foldr (flip $ strict f) (list.foldr (flip $ strict f) z (list.reverse (list.singleton x))) (list.reverse xn)
-# >   = list.foldl f (list.foldr (flip $ strict f) z (list.reverse (list.singleton x))) xn
-# >   = list.foldl f (list.foldr (flip $ strict f) z (list.singleton x)) xn
-# >   = list.foldl f (list.foldr (flip $ strict f) z (list.: x nil)) xn
-# >   = list.foldl f (flip (strict f) x (list.foldr (flip $ strict f) z nil)) xn
-# >   = list.foldl f (flip (strict f) x z) xn
-# >   = list.foldl f ((strict f z) x) xn
-# >   = list.foldl f ((for (!'z0 ∝ z) f z0) x) xn
-# >   = list.foldl f (for (!'z0 ∝ z) f z0 x) xn
-# >   = for (!'z0 ∝ z) list.foldl f (f z0 x) xn -- Since §gs{list.fold} is strict in §gs{z}
-# > ;
+-- > list.foldl 'f 'z nil = list.foldr (flip $ strict f) z (list.reverse nil)
+-- >   = list.foldr (flip $ strict f) z nil
+-- >   = z
+-- > ;
+-- > list.foldl 'f 'z (list.: 'x 'xn) = list.foldr (flip $ strict f) z (list.reverse (list.: x xn))
+-- >   = list.foldr (flip $ strict f) z (list.reverse (list.<> (list.singleton x) xn))
+-- >   = list.foldr (flip $ strict f) z (list.<> (list.reverse xn) (list.reverse (list.singleton x)))
+-- >   = list.foldr (flip $ strict f) (list.foldr (flip $ strict f) z (list.reverse (list.singleton x))) (list.reverse xn)
+-- >   = list.foldl f (list.foldr (flip $ strict f) z (list.reverse (list.singleton x))) xn
+-- >   = list.foldl f (list.foldr (flip $ strict f) z (list.singleton x)) xn
+-- >   = list.foldl f (list.foldr (flip $ strict f) z (list.: x nil)) xn
+-- >   = list.foldl f (flip (strict f) x (list.foldr (flip $ strict f) z nil)) xn
+-- >   = list.foldl f (flip (strict f) x z) xn
+-- >   = list.foldl f ((strict f z) x) xn
+-- >   = list.foldl f ((for (!'z0 ∝ z) f z0) x) xn
+-- >   = list.foldl f (for (!'z0 ∝ z) f z0 x) xn
+-- >   = for (!'z0 ∝ z) list.foldl f (f z0 x) xn -- Since §gs{list.fold} is strict in §gs{z}
+-- > ;
 
 _list.foldl_c	.expr
 _list.foldl_f_ty	.tygvar
@@ -448,18 +450,18 @@ x0	.fv	α
 	.app	z	x0
 	.enter	f
 
-# §section §gs{list.reverse}
+-- §section §gs{list.reverse}
 
-# > list.reverse nil = nil;
-# > list.reverse (list.singleton 'x) = list.singleton x;
-# > list.reverse (list.<> 'xn.0 'xn.1) = list.<> (list.reverse xn.1) (list.reverse xn.0);
+-- > list.reverse nil = nil;
+-- > list.reverse (list.singleton 'x) = list.singleton x;
+-- > list.reverse (list.<> 'xn.0 'xn.1) = list.<> (list.reverse xn.1) (list.reverse xn.0);
 
-# > list.reverse = id ∘ list.reverse
-# >   = list.foldr list.: list.nil ∘ list.reverse
-# >   = list.foldr (flip (flip list.:)) list.nil ∘ list.reverse
-# >   = list.foldr (flip (strict (flip list.:))) list.nil ∘ list.reverse -- Since the accumulator is defined whenever it's used
-# >   = list.foldl (flip list.:) list.nil
-# > ;
+-- > list.reverse = id ∘ list.reverse
+-- >   = list.foldr list.: list.nil ∘ list.reverse
+-- >   = list.foldr (flip (flip list.:)) list.nil ∘ list.reverse
+-- >   = list.foldr (flip (strict (flip list.:))) list.nil ∘ list.reverse -- Since the accumulator is defined whenever it's used
+-- >   = list.foldl (flip list.:) list.nil
+-- > ;
 
 _list.reverse_c	.expr
 list.t	.tygvar
@@ -482,7 +484,7 @@ x	.larg	α
 	.app	x	xn
 	.enter	list.:	α
 
-# §section §gs{list.singleton}
+-- §section §gs{list.singleton}
 
 _list.singleton_c	.expr
 _list.singleton_n_c	.subcode
@@ -499,7 +501,7 @@ list.nil	.gvar
 α	.tyfv	*
 	.enter	list.nil	α
 
-# §section §gs{list.<>}
+-- §section §gs{list.<>}
 
 _list.<>.code	.expr
 list.t	.tygvar
@@ -542,7 +544,7 @@ ys	.fv	list.t	α
 	.app	xn1	ys
 	.enter	list.<>	α
 
-# §section §gs{list.drop}
+-- §section §gs{list.drop}
 
 _list.drop_c	.expr
 natural.t	.tygvar
@@ -615,7 +617,7 @@ xn1		.fkarg	1	list.t	α
 		.case	nil
 			.undef	list.t	α
 
-# §section §gs{list.byZip.map2}
+-- §section §gs{list.byZip.map2}
 
 _list.byZip.map2_c	.expr
 _list.byZip.map2_f_ty	.tygvar
@@ -677,7 +679,7 @@ ys1					.apply	list.byZip.map2	α0	α1	β	|	f	xn0.1	xn1.1
 		.case	nil
 			.undef	list.t	β
 
-# §section §gs{list.sort}
+-- §section §gs{list.sort}
 
 _list.sort_c	.expr
 order.total.t	.tygvar
@@ -705,7 +707,7 @@ xn1		.fkarg	1	list.t	α
 		.case	nil
 			.enter	list.nil	α
 
-# §section §gs{list.≡}
+-- §section §gs{list.≡}
 
 _list.≡.code	.expr
 bool.t	.tygvar
@@ -794,7 +796,7 @@ ys1	.fv	list.t	α
 	.app	c	xn1	ys1
 	.enter	list.≡	α
 
-# §section §gs{list.compare}
+-- §section §gs{list.compare}
 
 _list.compare_c	.expr
 order.total.t	.tygvar
@@ -881,7 +883,7 @@ o0	.karg	order.total.ord.prim.u
 		.case	lt
 			.enter	order.total.ord.lt
 
-# §section §gs{list.elem}
+-- §section §gs{list.elem}
 
 _list.elem_c	.expr
 eq.t	.tygvar
@@ -936,7 +938,7 @@ b0	.karg	bool.prim.u
 		.case	true
 			.enter	bool.true
 
-# §section §gs{list.fmtgs}
+-- §section §gs{list.fmtgs}
 
 _list.fmtgs_c	.expr
 list.fmtgs.list.t	.tygvar
@@ -1004,7 +1006,7 @@ ds			.apply	diff.list.fromlist	rune.t	|	_list.fmtgs.byDefault_nil.s
 _list.fmtgs.byDefault_:_f_c	.expr
 fmtgs.t	.tygvar
 rune.t	.tygvar
-diff.list.t	.tygvar	# Temp
+diff.list.t	.tygvar	-- Temp
 diff.list.postpend	.gvar
 fmtgs.prec.max	.gvar
 _list.fmtgs.byDefault_:_f_comma.sp.s	.gvar
@@ -1017,7 +1019,7 @@ x.ds	.apply	p	|	x	fmtgs.prec.max
 
 	.type
 
-# §section §gs{list.t}
+-- §section §gs{list.t}
 
 list.t	.tyabstract	**^
 list.prim.u	.tygvar
@@ -1049,7 +1051,7 @@ _nil_type	.tyexpr
 α	.tylambda	*
 	.tyubproduct
 
-# §section §gs{list.foldr}
+-- §section §gs{list.foldr}
 
 _list.foldr_ty	.tyexpr
 _list.foldr_f_ty	.tygvar
@@ -1073,7 +1075,7 @@ _list.foldr_f_ty	.tyexpr
 	.tyfun	β
 	.tyref	β
 
-# §section §gs{list.foldr1}
+-- §section §gs{list.foldr1}
 
 _list.foldr1_ty	.tyexpr
 _list.foldr1_ft	.tygvar
@@ -1094,7 +1096,7 @@ _list.foldr1_ft	.tyexpr
 	.tyfun	α
 	.tyref	α
 
-# §section §gs{list.map}
+-- §section §gs{list.map}
 
 _list.map_ty	.tyexpr
 _list.map_f_ty	.tygvar
@@ -1114,7 +1116,7 @@ _list.map_f_ty	.tyexpr
 	.tyfun	α
 	.tyref	β
 
-# §section §gs{list.filter}
+-- §section §gs{list.filter}
 
 _list.filter_ty	.tyexpr
 _list.filter_pred_ty	.tygvar
@@ -1133,7 +1135,7 @@ bool.t	.tygvar
 	.tyfun	α
 	.tyref	bool.t
 
-# §section §gs{list.filterMap}
+-- §section §gs{list.filterMap}
 
 _list.filterMap_ty	.tyexpr
 _list.filterMap_f_ty	.tygvar
@@ -1154,7 +1156,7 @@ maybe.t	.tygvar
 	.tyfun	α
 	.tyref	maybe.t	β
 
-# §section §gs{list.foldl}
+-- §section §gs{list.foldl}
 
 _list.foldl_ty	.tyexpr
 _list.foldl_f_ty	.tygvar
@@ -1178,7 +1180,7 @@ _list.foldl_f_ty	.tyexpr
 	.tyfun	α
 	.tyref	β
 
-# §section §gs{list.<>}
+-- §section §gs{list.<>}
 
 _list.<>.ty	.tyexpr
 list.t	.tygvar
@@ -1189,7 +1191,7 @@ list.t	.tygvar
 	.tyfun	list.t	α
 	.tyref	list.t	α
 
-# §section §gs{list.drop}
+-- §section §gs{list.drop}
 
 _list.drop_worker_ty	.tyexpr
 natural.prim.u	.tygvar
@@ -1199,7 +1201,7 @@ list.t	.tygvar
 	.tyfun	list.t	α
 	.tyref	list.t	α
 
-# §section §gs{list.byZip.map2}
+-- §section §gs{list.byZip.map2}
 
 _list.byZip.map2_ty	.tyexpr
 _list.byZip.map2_f_ty	.tygvar
@@ -1225,7 +1227,7 @@ _list.byZip.map2_f_ty	.tyexpr
 	.tyfun	α1
 	.tyref	β
 
-# §section §gs{list.sort}
+-- §section §gs{list.sort}
 
 _list.sort_ty	.tyexpr
 order.total.t	.tygvar
@@ -1237,7 +1239,7 @@ list.t	.tygvar
 	.tyfun	list.t	α
 	.tyref	list.t	α
 
-# §section §gs{list.≡}
+-- §section §gs{list.≡}
 
 _list.≡.ty	.tyexpr
 bool.t	.tygvar
@@ -1262,7 +1264,7 @@ bool.t	.tygvar
 	.tyfun	α
 	.tyref	bool.t
 
-# §section §gs{list.compare}
+-- §section §gs{list.compare}
 
 _list.compare_ty	.tyexpr
 order.total.t	.tygvar
@@ -1273,7 +1275,7 @@ arg.ty	.tylet	list.t	α
 	.tyfun	order.total.t	α
 	.tyref	order.total.t	arg.ty
 
-# §section §gs{list.elem}
+-- §section §gs{list.elem}
 
 _list.elem_ty	.tyexpr
 eq.t	.tygvar
@@ -1288,7 +1290,7 @@ bool.t	.tygvar
 	.tyfun	list.t	α
 	.tyref	bool.t
 
-# §section §gs{list.fmtgs}
+-- §section §gs{list.fmtgs}
 
 list.fmtgs.list.t	.tyexpr
 fmtgs.t	.tygvar

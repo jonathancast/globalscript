@@ -1,9 +1,11 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
-# Note: this library doesn't balance its binary trees;
-# that will need to be fixed but I want to see what the performance looks like directly first.
+-- Note: this library doesn't balance its binary trees;
+-- that will need to be fixed but I want to see what the performance looks like directly first.
 
-# Based on Stephen Adams, §reftitle{Implementing Sets Efficiently in a Functional Language}
+-- Based on Stephen Adams, §reftitle{Implementing Sets Efficiently in a Functional Language}
 
 	.data
 
@@ -33,7 +35,7 @@ ordered.set.prim.branch	.closure	_ordered.set.prim.branch_c
 
 	.code
 
-# §section §gs{ordered.set.elem}
+-- §section §gs{ordered.set.elem}
 
 _ordered.set.elem_c	.expr
 order.total.t	.tygvar
@@ -52,14 +54,14 @@ _ordered.set.elem_k	.forcecont
 order.total.t	.tygvar
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
-bool.t	.tygvar	# Temp
+bool.t	.tygvar	-- Temp
 _ordered.set.elem_branch_k	.subcode
 order.total.ord.t.out	.cogvar
 bool.false	.gvar
 α	.tyfv	*
 cmp	.fv	order.total.t	α
 x	.fv	α
-s0	.karg	ordered.set.prim.u	α	# s0 :: ordered.set.prim.u	α
+s0	.karg	ordered.set.prim.u	α	-- s0 :: ordered.set.prim.u	α
 	.analyze	s0	branch	empty
 		.case	branch
 x1		.fkarg	0	α
@@ -71,7 +73,7 @@ sr		.fkarg	2	ordered.set.t	α
 			.enter	cmp
 		.case	empty
 			.enter	bool.false
-	# > :: bool.t
+	-- > :: bool.t
 
 _ordered.set.elem_branch_k	.forcecont
 order.total.t	.tygvar
@@ -95,7 +97,7 @@ o0	.karg	order.total.ord.prim.u
 			.app	cmp	x	sl
 			.enter	ordered.set.elem	α
 
-# §section §gs{ordered.set.fromlist}
+-- §section §gs{ordered.set.fromlist}
 
 _ordered.set.fromlist_c	.expr
 order.total.t	.tygvar
@@ -113,7 +115,7 @@ empty	.apply	ordered.set.empty	α
 	.app	insert	empty	xn
 	.enter	list.foldr	α	set.ty
 
-# §section §gs{ordered.set.tolist}
+-- §section §gs{ordered.set.tolist}
 
 _ordered.set.tolist_c	.expr
 ordered.set.t	.tygvar
@@ -158,9 +160,9 @@ ys1			.apply	list.:	α	|	x	ys2
 			.enter	_ordered.set.tolist_w	α
 		.case	empty
 			.enter	ys
-	# > :: list.t	α
+	-- > :: list.t	α
 
-# §section §gs{ordered.set.≡}
+-- §section §gs{ordered.set.≡}
 
 _ordered.set.≡_c	.expr
 eq.t	.tygvar
@@ -176,13 +178,13 @@ vs1	.apply	ordered.set.tolist	α	|	s1
 	.app	eq	vs0	vs1
 	.enter	list.≡	α
 
-# §section §gs{ordered.set.fmtgs}
+-- §section §gs{ordered.set.fmtgs}
 
 _ordered.set.fmtgs_c	.expr
 ordered.set.t	.tygvar
 fmtgs.t	.tygvar
-diff.list.t	.tygvar	# Temp
-rune.t	.tygvar	# Temp
+diff.list.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
 _ordered.set.fmtgs_vs.ds_c	.subcode
 fmtgs.prec	.gvar
 fmtgs.prec.arg	.gvar
@@ -262,7 +264,7 @@ v.ds	.apply	fmt	|	v	fmtgs.prec.max
 	.app	v.ds	_ordered.set.fmtgs_vs.ds_f_suffix.s
 	.enter	diff.list.postpend	rune.t
 
-# §section §gs{ordered.set.empty}
+-- §section §gs{ordered.set.empty}
 
 _ordered.set.empty_c	.expr
 ordered.set.prim.u	.tygvar
@@ -274,11 +276,11 @@ c	.constr	res.u	empty
 	.lift
 	.yield	c
 
-# §section §gs{ordered.set.singleton}
+-- §section §gs{ordered.set.singleton}
 
 _ordered.set.singleton_c	.expr
 order.total.t	.tygvar
-ordered.set.t	.tygvar	# Temp
+ordered.set.t	.tygvar	-- Temp
 ordered.set.prim.branch	.gvar
 ordered.set.empty	.gvar
 α	.tyarg	*
@@ -288,7 +290,7 @@ empty	.apply	ordered.set.empty	α
 	.app	x	empty	empty
 	.yield	ordered.set.prim.branch	α
 
-# §section §gs{ordered.set.insert}
+-- §section §gs{ordered.set.insert}
 
 _ordered.set.insert_c	.expr
 order.total.t	.tygvar
@@ -328,7 +330,7 @@ sr		.fkarg	2	ordered.set.t	α
 empty			.apply	ordered.set.empty	α
 			.app	x	empty	empty
 			.yield	ordered.set.prim.branch	α
-	# > :: ordered.set.t	α
+	-- > :: ordered.set.t	α
 
 _ordered.set.insert_branch_k	.forcecont
 order.total.t	.tygvar
@@ -356,7 +358,7 @@ sl1			.apply	ordered.set.insert	α	|	cmp	x	sl
 			.app	x1	sl1	sr
 			.yield	ordered.set.prim.branch	α
 
-# §section §gs{ordered.set.union}
+-- §section §gs{ordered.set.union}
 
 _ordered.set.union_c	.expr
 order.total.t	.tygvar
@@ -418,7 +420,7 @@ sr1				.fkarg	2	ordered.set.t	α
 			.coerce	ordered.set.t.in	α
 			.lift
 			.yield	s1.0
-	# > :: ordered.set.t	α
+	-- > :: ordered.set.t	α
 
 _ordered.set.union_branch_branch_k	.forcecont
 order.total.t	.tygvar
@@ -442,20 +444,20 @@ s2.0			.apply	ordered.set.union	α	|	cmp	sl0	sl1
 s2.1			.apply	ordered.set.union	α	|	cmp	sr0	sr1
 			.app	x0	s2.0	s2.1
 			.yield	ordered.set.prim.branch	α
-		.case	gt	# §gs{x1 < x0}
+		.case	gt	-- §gs{x1 < x0}
 sl0.s			.apply	_ordered.set_prim.split	α	|	cmp	x1	sl0
 sl0.l			.lfield	0	sl0.s
 sl0.r			.lfield	1	sl0.s
 sr1.s			.apply	_ordered.set_prim.split	α	|	cmp	x0	sr1
 sr1.l			.lfield	0	sr1.s
 sr1.r			.lfield	1	sr1.s
-s3.0			.apply	ordered.set.union	α	|	cmp	sl1	sl0.l	# ${ y | y < x1 < x0, }$
-s3.1			.apply	ordered.set.union	α	|	cmp	sl0.r	sr1.l	# ${ y | x1 < y < x0, }$
+s3.0			.apply	ordered.set.union	α	|	cmp	sl1	sl0.l	-- ${ y | y < x1 < x0, }$
+s3.1			.apply	ordered.set.union	α	|	cmp	sl0.r	sr1.l	-- ${ y | x1 < y < x0, }$
 s4			.apply	ordered.set.prim.branch	α	|	x1	s3.0	s3.1
-s3.2			.apply	ordered.set.union	α	|	cmp	sr1.r	sr0	# ${ y | x1 < x0 < y, }$
+s3.2			.apply	ordered.set.union	α	|	cmp	sr1.r	sr0	-- ${ y | x1 < x0 < y, }$
 			.app	x0		s4	s3.2
 			.yield	ordered.set.prim.branch	α
-		.case	lt	# §gs{x0 < x1}
+		.case	lt	-- §gs{x0 < x1}
 sl1.s			.apply	_ordered.set_prim.split	α	|	cmp	x0	sl1
 sl1.l			.lfield	0	sl1.s
 sl1.r			.lfield	1	sl1.s
@@ -469,7 +471,7 @@ s3.2			.apply	ordered.set.union	α	|	cmp	sr0.r	sr1
 			.app	x1	s4	s3.2
 			.yield	ordered.set.prim.branch	α
 
-# §section §gs{ordered.set.difference}
+-- §section §gs{ordered.set.difference}
 
 _ordered.set.difference_c	.expr
 order.total.t	.tygvar
@@ -505,13 +507,13 @@ r0		.fkarg	2	ordered.set.t	α
 			.enter	s1
 		.case	empty
 			.enter	ordered.set.empty	α
-	# > :: ordered.set.t	α
+	-- > :: ordered.set.t	α
 
 _ordered.set.difference_branch_k	.forcecont
 order.total.t	.tygvar
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
-_ordered.set_prim.split_res.ty	.tygvar	# Temp
+_ordered.set_prim.split_res.ty	.tygvar	-- Temp
 ordered.set.t.in	.cogvar
 _ordered.set_prim.concat	.gvar
 ordered.set.difference	.gvar
@@ -538,9 +540,9 @@ r3			.apply	ordered.set.difference	α	|	cmp	r2	r1
 			.coerce	ordered.set.t.in	α
 			.lift
 			.yield	s0.0
-	# > :: ordered.set.t	α
+	-- > :: ordered.set.t	α
 
-# §section §gs{_ordered.set_prim.concat}
+-- §section §gs{_ordered.set_prim.concat}
 
 _ordered.set_prim.concat_c	.expr
 ordered.set.t	.tygvar
@@ -571,7 +573,7 @@ l0.sr		.fkarg	2	ordered.set.t	α
 			.enter	r
 		.case	empty
 			.enter	r
-	# > :: ordered.set.t	α
+	-- > :: ordered.set.t	α
 
 _ordered.set_prim.concat_branch_k	.forcecont
 ordered.set.prim.u	.tygvar
@@ -590,9 +592,9 @@ r0.sr		.fkarg	2	ordered.set.t	α
 			.coerce	ordered.set.t.in	α
 			.lift
 			.yield	l0
-	# > :: ordered.set.t	α
+	-- > :: ordered.set.t	α
 
-# §section §gs{_ordered.set_prim.split}
+-- §section §gs{_ordered.set_prim.split}
 
 _ordered.set_prim.split_c	.expr
 order.total.t	.tygvar
@@ -637,27 +639,27 @@ _ordered.set_prim.split_branch_k	.forcecont
 order.total.t	.tygvar
 ordered.set.t	.tygvar
 order.total.ord.prim.u	.tygvar
-_ordered.set_prim.split_res.ty	.tygvar	# Temp
+_ordered.set_prim.split_res.ty	.tygvar	-- Temp
 _ordered.set_prim.split_branch_gt_k	.subcode
 _ordered.set_prim.split_branch_lt_k	.subcode
 _ordered.set_prim.split	.gvar
 α	.tyfv	*
 cmp	.fv	order.total.t	α
-x	.fv	α	# Value to split on
-x1	.fv	α	# Value at top of tree to split
+x	.fv	α	-- Value to split on
+x1	.fv	α	-- Value at top of tree to split
 sl	.fv	ordered.set.t	α
 sr	.fv	ordered.set.t	α
-o0	.karg	order.total.ord.prim.u	# x `cmp` x1
+o0	.karg	order.total.ord.prim.u	-- x `cmp` x1
 	.analyze	o0	eq	gt	lt
 		.case	eq
 r			.record	0	sl	1	sr
 			.lift
 			.yield	r
-		.case	gt	# sl < x1 < x
+		.case	gt	-- sl < x1 < x
 			.force	_ordered.set_prim.split_branch_gt_k
 			.app	cmp	x	sr
 			.enter	_ordered.set_prim.split	α
-		.case	lt	# x < x1 < sr
+		.case	lt	-- x < x1 < sr
 			.force	_ordered.set_prim.split_branch_lt_k
 			.app	cmp	x	sl
 			.enter	_ordered.set_prim.split	α
@@ -692,7 +694,7 @@ r1	.record	0	r0.0	1	r1.1	|	_ordered.set_prim.split_res.u	α
 	.lift
 	.yield	r1
 
-# §section §gs{ordered.set.t}
+-- §section §gs{ordered.set.t}
 
 _ordered.set.prim.branch_c	.expr
 ordered.set.t	.tygvar
@@ -710,7 +712,7 @@ c	.constr	res.u	branch	0	x	1	l	2	r
 
 	.type
 
-# §section §gs{ordered.set.t}
+-- §section §gs{ordered.set.t}
 
 ordered.set.t	.tyabstract	**^
 ordered.set.prim.u	.tygvar
@@ -731,7 +733,7 @@ ordered.set.t	.tygvar
 set.ty	.tylet	ordered.set.t	α
 	.tyubproduct	0	α	1	set.ty	2	set.ty
 
-# §section §gs{ordered.set.elem}
+-- §section §gs{ordered.set.elem}
 
 _ordered.set.elem_ty	.tyexpr
 order.total.t	.tygvar
@@ -746,7 +748,7 @@ bool.t	.tygvar
 	.tyfun	ordered.set.t	α
 	.tyref	bool.t
 
-# §section §gs{ordered.set.tolist}
+-- §section §gs{ordered.set.tolist}
 
 _ordered.set.tolist_w_ty	.tyexpr
 ordered.set.t	.tygvar
@@ -758,7 +760,7 @@ list.t	.tygvar
 	.tyfun	list.t	α
 	.tyref	list.t	α
 
-# §section §gs{ordered.set.insert}
+-- §section §gs{ordered.set.insert}
 
 _ordered.set.insert_ty	.tyexpr
 order.total.t	.tygvar
@@ -772,7 +774,7 @@ ordered.set.t	.tygvar
 	.tyfun	ordered.set.t	α
 	.tyref	ordered.set.t	α
 
-# §section §gs{ordered.set.union}
+-- §section §gs{ordered.set.union}
 
 _ordered.set.union_ty	.tyexpr
 order.total.t	.tygvar
@@ -786,7 +788,7 @@ ordered.set.t	.tygvar
 	.tyfun	ordered.set.t	α
 	.tyref	ordered.set.t	α
 
-# §section §gs{ordered.set.difference}
+-- §section §gs{ordered.set.difference}
 
 _ordered.set.difference_ty	.tyexpr
 order.total.t	.tygvar
@@ -800,7 +802,7 @@ ordered.set.t	.tygvar
 	.tyfun	ordered.set.t	α
 	.tyref	ordered.set.t	α
 
-# §section §gs{_ordered.set_prim.split}
+-- §section §gs{_ordered.set_prim.split}
 
 _ordered.set_prim.split_ty	.tyexpr
 order.total.t	.tygvar

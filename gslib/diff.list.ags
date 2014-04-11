@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.prefix
 
 	.data
@@ -21,7 +23,7 @@ diff.list.fromlist	.closure	_diff.list.fromlist_c
 
 	.code
 
-# §section §gs{diff.list.nil}
+-- §section §gs{diff.list.nil}
 
 _diff.list.nil_c	.expr
 list.t	.tygvar
@@ -29,7 +31,7 @@ list.t	.tygvar
 ys0	.larg	list.t	α
 	.enter	ys0
 
-# §section §gs{diff.list.:}
+-- §section §gs{diff.list.:}
 
 _diff.list.:_c	.expr
 diff.list.t	.tygvar
@@ -43,7 +45,7 @@ ys1	.apply	xn	|	ys0
 	.app	x	ys1
 	.enter	list.:	α
 
-# §section §gs{diff.list.singleton}
+-- §section §gs{diff.list.singleton}
 
 _diff.list.singleton_c	.expr
 list.t	.tygvar
@@ -54,7 +56,7 @@ ys0	.larg	list.t	α
 	.app	x	ys0
 	.enter	list.:	α
 
-# §section §gs{diff.list.<>}
+-- §section §gs{diff.list.<>}
 
 _diff.list.<>_c	.expr
 diff.list.t	.tygvar
@@ -67,7 +69,7 @@ ys1	.apply	xn1	|	ys0
 	.app	ys1
 	.enter	xn0
 
-# §section §gs{diff.list.snoc}
+-- §section §gs{diff.list.snoc}
 
 _diff.list.snoc_c	.expr
 diff.list.t	.tygvar
@@ -81,7 +83,7 @@ ys1	.apply	list.:	α	|	x	ys
 	.app	ys1
 	.enter	xn
 
-# §section §gs{diff.list.concat}
+-- §section §gs{diff.list.concat}
 
 _diff.list.concat_c	.expr
 diff.list.t	.tygvar
@@ -95,7 +97,7 @@ nil	.apply	diff.list.nil	α
 	.app	<>	nil
 	.enter	list.foldr	diff.list.ty	diff.list.ty
 
-# §section §gs{diff.list.prepend}
+-- §section §gs{diff.list.prepend}
 
 _diff.list.prepend_c	.expr
 list.t	.tygvar
@@ -109,7 +111,7 @@ ys1	.apply	xn1	|	ys0
 	.app	xn0	ys1
 	.enter	list.<>	α
 
-# §section §gs{diff.list.postpend}
+-- §section §gs{diff.list.postpend}
 
 _diff.list.postpend_c	.expr
 list.t	.tygvar
@@ -123,7 +125,7 @@ ys1	.apply	list.<>	α	|	xn1	ys0
 	.app	ys1
 	.enter	xn0
 
-# §section §gs{diff.list.replicate}
+-- §section §gs{diff.list.replicate}
 
 _diff.list.replicate_c	.expr
 natural.t	.tygvar
@@ -175,7 +177,7 @@ ds	.apply	_diff.list.replicate_w	α	|	n1	c
 	.app	c	ds
 	.enter	diff.list.:	α
 
-# §section §gs{diff.list.tolist}
+-- §section §gs{diff.list.tolist}
 
 _diff.list.tolist_c	.expr
 diff.list.t	.tygvar
@@ -186,7 +188,7 @@ nil	.apply	list.nil	α
 	.app	nil
 	.enter	xn0
 
-# §section §gs{diff.list.fromlist}
+-- §section §gs{diff.list.fromlist}
 
 _diff.list.fromlist_c	.expr
 list.t	.tygvar
@@ -206,7 +208,7 @@ list.t	.tygvar
 	.tyfun	list.t	α
 	.tyref	list.t	α
 
-# §section §gs{diff.list.replicate}
+-- §section §gs{diff.list.replicate}
 
 _diff.list.replicate_w_ty	.tyexpr
 natural.prim.u	.tygvar

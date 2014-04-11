@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -71,7 +73,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
-# §section §gs{4 ≡ 4}
+-- §section §gs{4 ≡ 4}
 
 _test.4.eq.4_c	.expr
 _test.4.eq.4_test_c	.subcode
@@ -96,7 +98,7 @@ natural.4	.gvar
 	.app	natural.4	natural.4
 	.enter	natural.≡
 
-# §section §gs{4 ≡ 0}
+-- §section §gs{4 ≡ 0}
 
 _test.4.eq.0_c	.expr
 _test.4.eq.0_test_c	.subcode
@@ -122,7 +124,7 @@ natural.0	.gvar
 	.app	natural.4	natural.0
 	.enter	natural.≡
 
-# §section §gs{0 < 4}
+-- §section §gs{0 < 4}
 
 _test.0.lt.4_c	.expr
 test.property.label	.gvar
@@ -147,7 +149,7 @@ natural.4	.gvar
 	.app	natural.0	natural.4
 	.enter	natural.<
 
-# §section §gs{4 < 0}
+-- §section §gs{4 < 0}
 
 _test.4.lt.0_c	.expr
 test.property.label	.gvar
@@ -172,7 +174,7 @@ natural.0	.gvar
 	.app	natural.4	natural.0
 	.enter	natural.<
 
-# §section §gs{4 > 0}
+-- §section §gs{4 > 0}
 
 _test.4.gt.0_c	.expr
 test.property.label	.gvar
@@ -188,7 +190,7 @@ test	.apply	test.assert	|	_test.4.gt.0_test_false	_test.4.gt.0_test_true	gt
 	.app	_test.4.gt.0_label	test
 	.enter	test.property.label
 
-# §section §gs{compare 4 4}
+-- §section §gs{compare 4 4}
 
 _test.compare.4.4_c	.expr
 order.total.ord.t	.tygvar
@@ -205,7 +207,7 @@ test	.apply	test.assert.eq	order.total.ord.t	|	order.total.ord.≡	order.total.o
 	.app	_test.compare.4.4_label	test
 	.enter	test.property.label
 
-# §section §gs{2 + 3}
+-- §section §gs{2 + 3}
 
 _test_2.plus.3_c	.expr
 _test_2.plus.3_test_c	.subcode
@@ -233,7 +235,7 @@ natural.3	.gvar
 	.app	natural.2	natural.3
 	.enter	natural.+
 
-# §section §gs{1 `divMod` 0}
+-- §section §gs{1 `divMod` 0}
 
 _test.1.div.0_c	.expr
 test.property.label	.gvar
@@ -267,7 +269,7 @@ mod	.fkarg	1	natural.prim.u
 	.app	_test.1.div.0_test_fail
 	.enter	test.property.false
 
-# §section §gs{2 `divMod` 3}
+-- §section §gs{2 `divMod` 3}
 
 _test.2.div.3_c	.expr
 test.property.label	.gvar
@@ -336,7 +338,7 @@ m	.fv	natural.t
 	.app	m	natural.2
 	.enter	natural.≡
 
-# §section §gs{natural.fmtdecimal 0}
+-- §section §gs{natural.fmtdecimal 0}
 
 _test.fmtdecimal.0_c	.expr
 test.property.label	.gvar
