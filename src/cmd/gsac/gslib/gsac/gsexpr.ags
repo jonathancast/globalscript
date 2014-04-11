@@ -30,6 +30,8 @@ _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.closure	_gsac.gsexpr.compile
 
 gsac.gsexpr.generator.imp.compile	.closure	_gsac.gsexpr.generator.imp.compile_c	_gsac.gsexpr.generator.imp.compile_ty
 
+gsac.gsexpr.body.compileToGenRHS	.closure	_gsac.gsexpr.body.compileToGenRHS_c	_gsac.gsexpr.body.compileToGenRHS_ty
+
 gsac.gsexpr.compile.mapM	.closure	_gsac.gsexpr.compile.mapM_c	_gsac.gsexpr.compile.mapM_ty
 
 _gsac.gsexpr_c.v	.closure	_gsac.gsexpr_c.v_c
@@ -1926,6 +1928,26 @@ pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
 	.undef	either.t	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
 
+-- §section §gs{gsac.gsexpr.body.compileToGenRHS}
+
+_gsac.gsexpr.body.compileToGenRHS_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.body.compileToGenRHS_res.ty	.tygvar	-- Temp
+pos	.larg	gsdl.sourcepos.t
+b	.larg	gsdl.cgs.gsexpr.body.t
+em	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
+	.undef	either.t	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
+
 -- §section §gs{gsac.gsexpr.compile.mapM}
 
 _gsac.gsexpr.compile.mapM_c	.expr
@@ -2297,6 +2319,24 @@ _gsac.gsexpr.generator.imp.compile_res_res.u	.tygvar
 
 _gsac.gsexpr.generator.imp.compile_res_res.u	.tyexpr
 	.typroduct
+
+-- §section §gs{gsac.gsexpr.body.compileToGenRHS}
+
+_gsac.gsexpr.body.compileToGenRHS_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.body.t
+	.tyref	gsac.gsexpr.compile.m	gsdl.ags.codeitem.alloc.rhs.t
+
+_gsac.gsexpr.body.compileToGenRHS_res.ty	.tyexpr
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+	.tyref	_gsac.gsexpr.compile.m_res.ty	gsdl.ags.codeitem.alloc.rhs.t
 
 -- §section §gs{gsac.gsexpr.compile.mapM}
 
