@@ -3327,6 +3327,16 @@ _gsdl.ags.codeitem.alloc.prim.u_record_field.u	.tygvar
 _gsdl.ags.codeitem.alloc.prim.u_record_field.u	.tyexpr
 	.typroduct
 
+-- §section §gs{gsdl.ags.codeitem.alloc.rhs.t}
+
+gsdl.ags.codeitem.alloc.rhs.t	.tyabstract	*
+gsdl.ags.codeitem.alloc.rhs.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.codeitem.alloc.rhs.prim.u
+
+gsdl.ags.codeitem.alloc.rhs.prim.u	.tyexpr
+	.tysum
+
 -- §section §gs{gsdl.ags.codeitem.gvar.t}
 
 gsdl.ags.codeitem.gvar.t	.tyabstract	*
