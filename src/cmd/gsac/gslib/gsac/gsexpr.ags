@@ -510,22 +510,24 @@ err		.fkarg	0	string.t
 		.case	right
 b.r		.fkarg	0	_gsac.gsexpr.body.annotate_res.ty
 b.r.ty			.lfield	gstype	 b.r
+b.r.b			.lfield	body	 b.r
 			.force	_gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_right_k
 			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
 			.app	pos	env	m.ty	b.r.ty
 			.enter	_gsac.gsexpr.annotate_impfor_rhsty.check
 
 _gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_right_k	.forcecont
+gsdl.cgs.gsexpr.body.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 either.t	.tygvar	-- Temp
-gsdl.cgs.gsexpr.body.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
 either.right	.gvar
 list.nil	.gvar
+b.r.b	.fv	gsdl.cgs.gsexpr.body.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
 	.analyze	e0	left	right
 		.case	left
@@ -533,9 +535,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 		.case	right
 r.tyx		.fkarg	0	gsdl.cgs.gstype.t
-b			.undefined	gsdl.cgs.gsexpr.body.t
 gs			.apply	list.nil	gsdl.cgs.gsexpr.generator.t
-res			.lrecord	body	b	gens	gs	res.ty	r.tyx	|	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+res			.lrecord	body	b.r.b	gens	gs	res.ty	r.tyx	|	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 
