@@ -2015,20 +2015,55 @@ _gsac.gsexpr.body.compileToGenRHS_k	.subcode
 gsdl.cgs.gsexpr.body.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 b	.larg	gsdl.cgs.gsexpr.body.t
-em	.larg	ordered.set.t	gsdl.var.t
+tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-svs	.larg	list.t	gsdl.var.t
+tysvs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gsexpr.body.compileToGenRHS_k
 	.coerce	gsdl.cgs.gsexpr.body.t.out
 	.enter	b
 
 _gsac.gsexpr.body.compileToGenRHS_k	.forcecont
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.gsexpr.body.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToApp_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
 _gsac.gsexpr.body.compileToGenRHS_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.body.compileToGenRHS_missing_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.compileToApp	.gvar
+tyem	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.fv	list.t	gsdl.var.t
 b0	.karg	gsdl.cgs.gsexpr.body.prim.u
-	.undef	either.t	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
+	.analyze	b0	expr	missing
+		.case	expr
+e		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
+		.case	missing
+pos1		.fkarg	0	gsdl.sourcepos.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+			.force	_gsac.gsexpr.body.compileToGenRHS_missing_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
+			.app	pos1	ty	tyem	pem	tysvs
+			.enter	gsac.gstype.compileToApp
+	-- > :: either.t	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
+
+_gsac.gsexpr.body.compileToGenRHS_missing_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToApp_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.body.compileToGenRHS_res.ty	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
+			.undef	either.t	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
 
 -- §section §gs{gsac.gsexpr.compile.mapM}
 
