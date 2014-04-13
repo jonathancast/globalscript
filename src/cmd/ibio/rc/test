@@ -2,7 +2,7 @@
 
 . $GLOBALSCRIPT/bin/test-fns
 
-ok_grep_errors '-- undefined entry points --' './test-fixtures/undef-api.ags:5: undefined' ./$O.ibio undef-api.ags
+ok_grep_errors '-- undefined entry points --' './test-fixtures/undef-api.ags:7: undefined' ./$O.ibio undef-api.ags
 ok_grep_errors '-- entry points that don''t use the newtype wrapper --' './test-fixtures/wrong-type.ags: Bad type' ./$O.ibio wrong-type.ags
 
 ok_diff '-- Hello, world --' ./$O.ibio hello.ibio.ags

@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -85,8 +87,8 @@ _ep_if_res_body	.expr
 _ibio.prim.file.read.open_res.ty	.tygvar
 rune.t	.tygvar
 string.t	.tygvar
-ibio.prim.t	.tygvar	# Temp
-ibio.prim.iport	.tygvar	# Temp
+ibio.prim.t	.tygvar	-- Temp
+ibio.prim.iport	.tygvar	-- Temp
 ibio.prim.unit	.gvar
 res.ty	.tylet	ibio.prim.iport	rune.t
 ei	.efv	_ibio.prim.file.read.open_res.ty	rune.t
