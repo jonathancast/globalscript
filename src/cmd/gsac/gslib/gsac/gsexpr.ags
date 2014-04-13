@@ -1046,7 +1046,6 @@ _gsac.gsexpr_ty.v	.gvar
 pos	.fv	gsdl.sourcepos.t
 mbv	.fv	maybe.t	gsdl.var.t
 ty	.fv	gsdl.cgs.gstype.t
-tyem	.fv	ordered.set.t	gsdl.var.t
 v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	.analyze	e0	left	right
@@ -1056,6 +1055,8 @@ err		.fkarg	0	string.t
 		.case	right
 e.r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 v.ty.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_ty.v
+e.r0.tyem			.lfield	ty.emitted	e.r0
+e.r0.pem			.lfield	prim.emitted	e.r0
 			.force	_gsac.gsexpr.compileToDataItem_default_right_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 			.app	pos	v.ty.v	ty
@@ -1066,6 +1067,8 @@ gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.set.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -1086,7 +1089,8 @@ diff.list.nil	.gvar
 diff.list.<>	.gvar
 pos	.fv	gsdl.sourcepos.t
 mbv	.fv	maybe.t	gsdl.var.t
-tyem	.fv	ordered.set.t	gsdl.var.t
+e.r0.tyem	.fv	ordered.set.t	gsdl.var.t
+e.r0.pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 v	.fv	gsdl.var.t
 e.r0	.fv	_gsac.gsexpr.compileToLambdaExpr_res.ty
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToGlobalVar_res.ty
@@ -1111,7 +1115,7 @@ tygvs.nil			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 e.ts			.lfield	typeitems	e.r0
 ty.ts			.lfield	typeitems	ty.r0
 ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	e.ts	ty.ts
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	di	ty.emitted	tyem	tygvars	tygvs.nil	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	e.r0.pem	res	di	ty.emitted	e.r0.tyem	tygvars	tygvs.nil	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
@@ -1202,13 +1206,14 @@ err		.fkarg	0	string.t
 co.r		.fkarg	0	_gsac.gscoercion.compileToGlobalVar_res.ty
 co.r.cos			.lfield	coercionitems	co.r
 cos			.apply	diff.list.<>	gsdl.ags.coercionitem.t	|	so.r.cos	co.r.cos
+pem1			.lfield	prim.emitted	co.r
 co.r.var			.lfield	res	co.r
 di			.apply	gsdl.ags.dataitem.cast	|	pos	mbv	so.r.var	co.r.var
 tyem1			.lfield	ty.emitted	co.r
 co.r.ts			.lfield	typeitems	co.r
 tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	so.r.ts	co.r.ts
-res			.lrecord	codeitems	so.r.cs	coercionitems	cos	dataitems	so.ds	res	di	ty.emitted	tyem1	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
+res			.lrecord	codeitems	so.r.cs	coercionitems	cos	dataitems	so.ds	prim.emitted	pem1	res	di	ty.emitted	tyem1	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 
@@ -1292,6 +1297,8 @@ _gsac.gsexpr.compileToGlobalVar_default_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.set.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
@@ -1312,7 +1319,9 @@ maybe.nothing	.gvar
 diff.list.nil	.gvar
 pos	.fv	gsdl.sourcepos.t
 x	.fv	gsdl.var.t
-tyem	.fv	ordered.set.t	gsdl.var.t	-- Result is a separate item from the caller, so don't modify the caller's emitted variable state
+	-- Result is a separate item from the caller, so don't modify the caller's emitted variable state
+tyem	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -1334,7 +1343,7 @@ ds1			.lfield	dataitems	r0
 ds			.apply	diff.list.:	gsdl.ags.dataitem.t	|	d0	ds1
 tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 ts			.lfield	typeitems	r0
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	x	ty.emitted	tyem	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToGlobalVar_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	x	ty.emitted	tyem	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToGlobalVar_res.ty
 
@@ -1418,6 +1427,8 @@ gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.set.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 maybe.t	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
@@ -1430,6 +1441,7 @@ gsdl.ags.dataitem.undefined	.gvar
 pos1	.fv	gsdl.sourcepos.t
 x	.fv	gsdl.var.t
 tyem		.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 just.x	.fv	maybe.t	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 	.analyze	e0	left	right
@@ -1445,7 +1457,7 @@ di			.apply	gsdl.ags.dataitem.undefined	|	pos1	just.x	ty.r.v
 ds			.apply	diff.list.singleton	gsdl.ags.dataitem.t	|	di
 tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 ts			.lfield	typeitems	ty.r
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	x	ty.emitted	tyem	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	x	ty.emitted	tyem	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.cast.source.compileToGlobalVar_res.ty
 
@@ -1655,6 +1667,7 @@ b.r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cs			.lfield	codeitems	b.r0
 cos			.lfield	coercionitems	b.r0
 ds			.lfield	dataitems	b.r0
+b.r0.pem			.lfield	prim.emitted	b.r0
 a0			.apply	gsdl.ags.codeitem.arg.arg	|	x	ty.r0.tyf	ty.r0.as
 b.e			.lfield	res	b.r0
 b.as			.lfield	args	b.e
@@ -1666,7 +1679,7 @@ b.r0.tygvs			.lfield	tygvars	b.r0
 tygvs			.apply	diff.list.<>	gsdl.ags.typeitem.decls.tygvar.t	|	ty.r0.tygvs	b.r0.tygvs
 b.r0.tis			.lfield	typeitems	b.r0
 ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	ty.r0.tis	b.r0.tis
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	ty.emitted	b.r0.tyem	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	b.r0.pem	res	e	ty.emitted	b.r0.tyem	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
@@ -1690,6 +1703,7 @@ r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cs			.lfield	codeitems	r0
 cos			.lfield	coercionitems	r0
 ds			.lfield	dataitems	r0
+pem			.lfield	prim.emitted	r0
 r0.res			.lfield	res	r0
 r0.as			.lfield	args	r0.res
 r0.b			.lfield	body	r0.res
@@ -1698,7 +1712,7 @@ e			.lrecord	args	as	body	r0.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 emty			.lfield	ty.emitted	r0
 tygvs			.lfield	tygvars	r0
 ts			.lfield	typeitems	r0
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	ty.emitted	emty	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	e	ty.emitted	emty	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
@@ -1727,6 +1741,7 @@ r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cs			.lfield	codeitems	r0
 cos			.lfield	coercionitems	r0
 ds			.lfield	dataitems	r0
+pem			.lfield	prim.emitted	r0
 r0.res			.lfield	res	r0
 r0.as			.lfield	args	r0.res
 r0.b			.lfield	body	r0.res
@@ -1736,7 +1751,7 @@ e			.lrecord	args	as	body	r0.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 emty			.lfield	ty.emitted	r0
 tygvs			.lfield	tygvars	r0
 ts			.lfield	typeitems	r0
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	ty.emitted	emty	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	e	ty.emitted	emty	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
@@ -1833,6 +1848,7 @@ r0		.fkarg	0	_gsac.gstype.compileToApp_res.ty
 cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
 cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
+pem			.lfield	prim.emitted	r0
 e.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
 e.b.as			.undefined	list.t	gsdl.ags.codeitem.alloc.t
 r0.res			.lfield	res	r0
@@ -1845,7 +1861,7 @@ e			.lrecord	args	e.as	body	e.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 tyem			.lfield	emitted	r0
 tygvs			.lfield	tygvars	r0
 ts			.lfield	typeitems	r0
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	res	e	ty.emitted	tyem	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	e	ty.emitted	tyem	tygvars	tygvs	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
@@ -2172,18 +2188,21 @@ diff.list.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
-ordered.set.t	.tygvar
+ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+ordered.set.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 α	.tylambda	*
 diff.list.codeitem.ty	.tylet	diff.list.t	gsdl.ags.codeitem.t
 diff.list.coercionitem.ty	.tylet	diff.list.t	gsdl.ags.coercionitem.t
 diff.list.dataitem.ty	.tylet	diff.list.t	gsdl.ags.dataitem.t
+map.prim.var.ty	.tylet	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 set.var.ty	.tylet	ordered.set.t	gsdl.var.t
 diff.list.tygvar.ty	.tylet	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 diff.list.typeitem.ty	.tylet	diff.list.t	gsdl.ags.typeitem.t
-	.typroduct	codeitems	diff.list.codeitem.ty	coercionitems	diff.list.coercionitem.ty	dataitems	diff.list.dataitem.ty	res	α	ty.emitted	set.var.ty	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
+	.typroduct	codeitems	diff.list.codeitem.ty	coercionitems	diff.list.coercionitem.ty	dataitems	diff.list.dataitem.ty	prim.emitted	map.prim.var.ty	res	α	ty.emitted	set.var.ty	tygvars	diff.list.tygvar.ty	typeitems	diff.list.typeitem.ty
 
 -- §section §gs{gsac.gsexpr.compileToDataItem}
 
