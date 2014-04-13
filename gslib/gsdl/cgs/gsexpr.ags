@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.1
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -69,8 +69,8 @@ parser.<|>	.gvar
 gsdl.cgs.gsexpr.parser.app.or.lambda	.gvar
 t	.larg	gsdl.cgs.syntax.branch.t
 a	.larg	gsdl.cgs.syntax.assoc.t
-expr.heavy.cast	.alloc	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c
-right.assoc	.alloc	_gsdl.cgs.gsexpr.parser.cast_right.assoc_c
+expr.heavy.cast	.closure	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c
+right.assoc	.closure	_gsdl.cgs.gsexpr.parser.cast_right.assoc_c
 app.or.lambda	.apply	gsdl.cgs.gsexpr.parser.app.or.lambda	|	t
 	.app	right.assoc	app.or.lambda
 	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
@@ -128,7 +128,7 @@ gsdl.cgs.gsexpr.parser.cast	.gvar
 gsdl.cgs.syntax.assoc.right	.gvar
 parser.fail	.gvar	-- Temp
 t	.fv	gsdl.cgs.syntax.branch.t
-f	.alloc	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_f_c
+f	.closure	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_f_c
 ld.p	.apply	gsdl.cgs.syntax.core.keywordOp	|	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re
 pos.get	.apply	parser.pos.get	rune.t
 expr.left.p1	.apply	parser.lift2	rune.t	parser.pos.t	parser.pos.t	gsdl.sourcepos.t	|	gsdl.sourcepos	pos.get	pos.get
@@ -166,7 +166,7 @@ _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c	.subcode
 gsdl.cgs.gsexpr.parser.arg	.gvar
 parser.<|>	.gvar
 t	.larg	gsdl.cgs.syntax.branch.t
-mb.lambda	.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c
+mb.lambda	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c
 	.app	gsdl.cgs.gsexpr.parser.arg	mb.lambda
 	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
 
@@ -192,8 +192,8 @@ t0	.karg	gsdl.cgs.syntax.branch.prim.u
 		.case	l
 			.enter	parser.fail	rune.t	gsdl.cgs.gsexpr.t
 		.case	r
-impfor			.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_c
-lambda			.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_c
+impfor			.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_c
+lambda			.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_c
 			.app	impfor	lambda
 			.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
 
@@ -221,7 +221,7 @@ gsdl.cgs.syntax.dot	.gvar
 gsdl.cgs.gsexpr.body.parser	.gvar
 parser.fail	.gvar	-- Temp
 list.gen.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
-f	.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_f_c
+f	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_f_c
 pos.get	.apply	parser.pos.get	rune.t
 gsfor.p	.apply	gsdl.cgs.syntax.keyword	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_gsfor.re
 at.p	.apply	gsdl.cgs.syntax.keywordOp	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_at.re	-- > keywordOp m/@/
@@ -272,7 +272,7 @@ gsdl.cgs.gstype.parser.fun	.gvar
 gsdl.cgs.syntax.dot	.gvar
 gsdl.cgs.gsexpr.body.parser	.gvar
 parser.fail	.gvar	-- Temp
-f	.alloc	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_f_c
+f	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_f_c
 pos.get	.apply	parser.pos.get	rune.t
 gsλ.p	.apply	gsdl.cgs.syntax.keyword	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_gsλ.re
 v.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsλ.p	gsdl.cgs.syntax.var.parser
@@ -303,7 +303,7 @@ e	.apply	gsdl.cgs.gsexpr.lambda	|	v	ty	b
 
 _gsdl.cgs.gsexpr.parser.arg_c	.expr
 _gsdl.cgs.gsexpr.parser.arg_lift.p_c	.subcode
-lift.p	.alloc	_gsdl.cgs.gsexpr.parser.arg_lift.p_c
+lift.p	.closure	_gsdl.cgs.gsexpr.parser.arg_lift.p_c
 	.enter	lift.p
 
 _gsdl.cgs.gsexpr.parser.arg_lift.p_c	.expr
@@ -323,7 +323,7 @@ parser.<*	.gvar
 gsdl.cgs.gsexpr.parser	.gvar
 _gsdl.cgs.gsexpr.parser.arg_lift.p_rbrack.re	.gvar
 parser.fail	.gvar	-- Temp
-f	.alloc	_gsdl.cgs.gsexpr.parser.arg_lift.p_f_c
+f	.closure	_gsdl.cgs.gsexpr.parser.arg_lift.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 lf.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gsexpr.parser.arg_lift.p_lbrack.re
 lf.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	lf.p1
@@ -396,7 +396,7 @@ empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
 co.fvs			.apply	gsdl.cgs.gscoercion.freevars	|	co
-so.fvs			.alloc	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c
+so.fvs			.closure	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c
 			.app	gsdl.cgs.symbol.compare	co.fvs	so.fvs
 			.enter	ordered.set.union	gsdl.cgs.symbol.t
 		.case	impfor
@@ -635,8 +635,8 @@ gsdl.cgs.gsexpr.body.t	.tygvar
 _gsdl.cgs.gsexpr.body.parser_expr.p_c	.subcode
 _gsdl.cgs.gsexpr.body.parser_missing.p_c	.subcode
 parser.<|>	.gvar
-expr.p	.alloc	_gsdl.cgs.gsexpr.body.parser_expr.p_c
-missing.p	.alloc	_gsdl.cgs.gsexpr.body.parser_missing.p_c
+expr.p	.closure	_gsdl.cgs.gsexpr.body.parser_expr.p_c
+missing.p	.closure	_gsdl.cgs.gsexpr.body.parser_missing.p_c
 	.app	expr.p	missing.p
 	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.body.t
 
@@ -663,7 +663,7 @@ parser.*>	.gvar
 gsdl.cgs.syntax.oftype	.gvar
 gsdl.cgs.gstype.parser.fun	.gvar
 parser.fail	.gvar	-- Temp
-f	.alloc	_gsdl.cgs.gsexpr.body.parser_missing.p_f_c
+f	.closure	_gsdl.cgs.gsexpr.body.parser_missing.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
 	.app	f	pos.get	ty.p
