@@ -7,7 +7,7 @@ ok_grep_errors '-- ill-typed gstype programs --' './test-fixtures/mistyped.type.
 ok_diff '-- hello, world --' ./$O.gstype hello.type.ags
 ok_diff '-- concatenation --' ./$O.gstype concat.type.ags
 
-ok_grep_errors '-- ill-typed tests --' './test-fixtures/mistyped.test.ags:5: I don''t think' ./$O.gstest mistyped.test.ags
+ok_grep_errors '-- ill-typed tests --' './test-fixtures/mistyped.test.ags:7: I don''t think' ./$O.gstest mistyped.test.ags
 ok_diff '-- successful tests --' ./$O.gstest true.test.ags
 ok_diff_fail '-- unsuccessful tests --' ./$O.gstest false.test.ags
 ok_diff '-- labelled tests --' ./$O.gstest label.test.ags

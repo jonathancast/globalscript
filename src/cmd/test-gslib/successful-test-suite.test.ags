@@ -1,3 +1,5 @@
+#calculus: gsdl.string-code 0.1
+
 	.document
 
 	.data
@@ -23,7 +25,7 @@ _test.1	.gvar
 	.app	_test.0	_test.1
 	.enter	test.property.∧
 
-# §section test 0
+-- §section test 0
 
 _test.0.c	.expr
 test.property.label	.gvar
@@ -38,7 +40,7 @@ _test.0.test.msg	.gvar
 	.app	_test.0.test.msg
 	.enter	test.property.true
 
-# §section test 1
+-- §section test 1
 
 _test.1.c	.expr
 test.property.label	.gvar
