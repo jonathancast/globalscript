@@ -2080,24 +2080,38 @@ list.t.out	.cogvar
 β	.tyarg	*
 f	.larg	_gsac.gsexpr.compile.mapM_f_ty	α	β
 xn	.larg	list.t	α
-em	.larg	ordered.set.t	gsdl.var.t
+tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-svs	.larg	list.t	gsdl.var.t
+tysvs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gsexpr.compile.mapM_k
 	.coerce	list.t.out	α
 	.enter	xn
 
 _gsac.gsexpr.compile.mapM_k	.forcecont
-list.prim.u	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
+list.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compile.m_res.ty	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	-- Temp
 either.right	.gvar
+diff.list.nil	.gvar
+list.nil	.gvar
 α	.tyfv	*
 β	.tyfv	*
 list.β.ty	.tylet	list.t	β
 res.list.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.β.ty
+tyem	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.fv	list.t	gsdl.var.t
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
@@ -2105,7 +2119,13 @@ x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
 			.undef	either.t	string.t	res.list.β.ty
 		.case	nil
-res			.undefined	_gsac.gsexpr.compile.m_res.ty	list.β.ty
+cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
+cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
+ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
+nil.β			.apply	list.nil	β
+tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
+tis			.apply	diff.list.nil	gsdl.ags.typeitem.t
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	nil.β	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	typeitems	tis	|	_gsac.gsexpr.compile.m_res.ty	list.β.ty
 			.app	res
 			.enter	either.right	string.t	res.list.β.ty
 
