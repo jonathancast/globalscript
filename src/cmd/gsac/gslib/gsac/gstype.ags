@@ -1968,7 +1968,7 @@ em	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
 tyf0	.karg	gsdl.cgs.gstype.prim.u
-	.danalyze	tyf0	abstype	app	elimprim	impprim	var
+	.danalyze	tyf0	abstype	app	elimprim	impprim	pos	var
 		.default	-- error; illicit function in application
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	abstype
@@ -2000,6 +2000,11 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
 			.app	ps	pn	ki	em	pem	gvs
 			.yield	_gsac.gstype.compileToVar_impprim
+		.case	pos
+pos1		.fkarg	0	gsdl.sourcepos.t
+tyf1		.fkarg	1	gsdl.cgs.gstype.t
+			.app	pos1	tyf1	tyas	em	pem	gvs
+			.yield	_gsac.gstype.compileToApp_app
 		.case	var	-- look up expansion & proceed from there
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
