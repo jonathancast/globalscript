@@ -2279,11 +2279,15 @@ list.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToImpprim_res.ty	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gstype.compileToImpprim_res.ty	.tygvar	-- Temp
+_gsac.gstype.compileToImpprim_res_res.ty	.tygvar	-- Temp
 either.right	.gvar
+diff.list.nil	.gvar
 gsac.gstype.compileToImpprim	.gvar
 em	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -2300,7 +2304,11 @@ tyx		.fkarg	1	gsdl.cgs.gstype.t
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-res			.undefined	_gsac.gstype.compileToImpprim_res.ty
+r			.undefined	_gsac.gstype.compileToImpprim_res_res.ty
+tyfvs			.apply	diff.list.nil	gsdl.var.t
+tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
+tis			.apply	diff.list.nil	gsdl.ags.typeitem.t
+res			.lrecord	emitted	em	prim.emitted	pem	res	r	subvars	svs	tyfvs	tyfvs	tygvars	tygvs	typeitems	tis	|	_gsac.gstype.compileToImpprim_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compileToImpprim_res.ty
 		.case	pos
