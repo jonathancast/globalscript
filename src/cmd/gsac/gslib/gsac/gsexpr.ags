@@ -2065,10 +2065,19 @@ _gsac.gsexpr.body.compileToGenRHS_missing_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
+_gsac.gsexpr.body.compileToGenRHS_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-_gsac.gsexpr.body.compileToGenRHS_res.ty	.tygvar	-- Temp
+either.right	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
+		.case	right
+ty.r		.fkarg	0	_gsac.gstype.compileToApp_res.ty
+res			.undefined	_gsac.gsexpr.body.compileToGenRHS_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
 
 -- §section §gs{gsac.gsexpr.compile.mapM}
 
