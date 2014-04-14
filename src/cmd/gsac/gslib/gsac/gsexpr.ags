@@ -1638,10 +1638,19 @@ _gsac.gsexpr.compileToLambdaExpr_impfor_right_right_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.body.compileToGenRHS_res.ty	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+either.right	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	right
+b.r		.fkarg	0	_gsac.gsexpr.body.compileToGenRHS_res.ty
+res			.undefined	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToLambdaExpr_lambda_k	.forcecont
 gsdl.sourcepos.t	.tygvar
