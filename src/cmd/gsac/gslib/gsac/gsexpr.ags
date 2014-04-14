@@ -969,6 +969,9 @@ either.t.out	.cogvar
 maybe.fromJust	.gvar
 _gsac.gsexpr.compileToDataItem_ep.v	.gvar
 gsac.gsexpr.compileToLambdaExpr	.gvar
+ordered.set.empty	.gvar
+ordered.map.empty	.gvar
+gsdl.var.subvars	.gvar
 gsac.gsexpr.cast.source.compileToGlobalVar	.gvar
 gsdl.var.subvar	.gvar
 gsdl.var.basevar	.gvar
@@ -988,10 +991,12 @@ e0.cl	.cast	e0.l	gsdl.cgs.gsexpr.t.in
 v	.apply	maybe.fromJust	gsdl.var.t	|	_gsac.gsexpr.compileToDataItem_ep.v	mbv
 	.danalyze	e0	expr.heavy.cast	lambda	pos
 		.default
-tyvs1			.undefined	list.t	gsdl.var.t
+tyem1			.apply	ordered.set.empty	gsdl.var.t
+pem1			.apply	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
+tyvs1			.apply	gsdl.var.subvars	|	v
 			.force	_gsac.gsexpr.compileToDataItem_default_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
-			.app	pos	e0.cl	tyem	pem	tyvs1
+			.app	pos	e0.cl	tyem1	pem1	tyvs1
 			.enter	gsac.gsexpr.compileToLambdaExpr
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
