@@ -1642,10 +1642,13 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.body.compileToGenRHS_res.ty	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.ags.codeitem.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
-_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+gsdl.ags.codeitem.arg.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
@@ -1663,7 +1666,9 @@ cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 b.r.ds			.lfield	dataitems	b.r
 ds			.apply	diff.list.<>	gsdl.ags.dataitem.t	|	gs.r.ds	b.r.ds
 b.r.pem			.lfield	prim.emitted	b.r
-r			.undefined	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+r.as			.undefined	list.t	gsdl.ags.codeitem.arg.t
+r.b			.undefined	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t
+r			.lrecord	args	r.as	body	r.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 b.r.tyem			.lfield	ty.emitted	b.r
 b.r.tysvs			.lfield	ty.subvars	b.r
 tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
