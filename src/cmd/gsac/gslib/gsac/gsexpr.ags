@@ -2095,8 +2095,13 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
 _gsac.gsexpr.body.compileToGenRHS_res.ty	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 either.t	.tygvar	-- Temp
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
 either.right	.gvar
+diff.list.nil	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -2104,7 +2109,16 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.compileToApp_res.ty
-res			.undefined	_gsac.gsexpr.body.compileToGenRHS_res.ty
+cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
+cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
+ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
+pem1			.lfield	prim.emitted	ty.r
+r			.undefined	gsdl.ags.codeitem.alloc.rhs.t
+tyem1			.lfield	emitted	ty.r
+tysvs1			.lfield	subvars	ty.r
+tygvs			.lfield	tygvars	ty.r
+tis			.lfield	typeitems	ty.r
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem1	res	r	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	typeitems	tis	|	_gsac.gsexpr.body.compileToGenRHS_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
 
