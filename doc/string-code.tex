@@ -771,6 +771,14 @@ The clause \stringcode{| tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}, if present, is a typ
 it gives the type of \stringcode{x}, so in the \stringcode{.lrecord} case it must itself be lifted.
 Every field in the record must be given a value explicitly; there is no support for undefined fields.
 
+\subsection{\stringcode{.field}}
+
+\begin{verbatim}
+x	.field	f	r
+\end{verbatim}
+
+This binds \stringcode{x} to the field \stringcode{f} of \stringcode{r}, which must be an unlifted record with a field \stringcode{f}.
+
 \section{Bind Generators}
 \label{bind}
 
@@ -905,14 +913,11 @@ static
 int
 gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, char **fields, long n)
 {
-    static gsinterned_string gssymfield, gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
+    static gsinterned_string gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
 
     int i;
 
-    if (
-        gssymceq(p->directive, gssymfield, gssymcodeop, ".field")
-        || gssymceq(p->directive, gssymlfield, gssymcodeop, ".lfield")
-    ) {
+    if (gssymceq(p->directive, gssymlfield, gssymcodeop, ".lfield")) {
         STORE_VALUE_ALLOC_OP_LABEL(p->directive->name);
         if (n < 3)
             gsfatal("%P: Missing field on %y", p->pos, p->directive)
