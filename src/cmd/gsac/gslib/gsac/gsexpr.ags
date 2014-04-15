@@ -1629,18 +1629,28 @@ gs.r		.fkarg	0	_gsac.gsexpr.compile.m_res.ty	list.gen.res.ty
 tyem1			.lfield	ty.emitted	gs.r
 pem1			.lfield	prim.emitted	gs.r
 svs1			.lfield	ty.subvars	gs.r
+gs.r.ds			.lfield	dataitems	gs.r
 			.force	_gsac.gsexpr.compileToLambdaExpr_impfor_right_right_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
 			.app	pos	b	tyem1	pem1	svs1
 			.enter	gsac.gsexpr.body.compileToGenRHS
 
 _gsac.gsexpr.compileToLambdaExpr_impfor_right_right_k	.forcecont
+diff.list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.body.compileToGenRHS_res.ty	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+gsdl.ags.codeitem.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
+diff.list.<>	.gvar
+gs.r.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -1648,7 +1658,17 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	right
 b.r		.fkarg	0	_gsac.gsexpr.body.compileToGenRHS_res.ty
-res			.undefined	_gsac.gsexpr.compileToLambdaExpr_res.ty
+cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+b.r.ds			.lfield	dataitems	b.r
+ds			.apply	diff.list.<>	gsdl.ags.dataitem.t	|	gs.r.ds	b.r.ds
+b.r.pem			.lfield	prim.emitted	b.r
+r			.undefined	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+b.r.tyem			.lfield	ty.emitted	b.r
+b.r.tysvs			.lfield	ty.subvars	b.r
+tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tis			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	b.r.pem	res	r	ty.emitted	b.r.tyem	ty.subvars	b.r.tysvs	tygvars	tygvs	typeitems	tis	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
