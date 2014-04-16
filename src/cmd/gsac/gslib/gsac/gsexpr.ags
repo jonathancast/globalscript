@@ -27,6 +27,7 @@ gsac.gsexpr.body.compileToLambdaExpr	.closure	_gsac.gsexpr.body.compileToLambdaE
 _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.closure	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem_c
 
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.closure	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr_c
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.impprog	.closure	_gsac.gsexpr.compileToLambdaExpr_res_res_body.impprog_c
 
 gsac.gsexpr.generator.imp.compile	.closure	_gsac.gsexpr.generator.imp.compile_c	_gsac.gsexpr.generator.imp.compile_ty
 
@@ -1980,7 +1981,8 @@ list.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
-gsdl.ags.codeitem.alloc.t	.tygvar	-- Temp
+gsdl.ags.codeitem.bind.t	.tygvar
+gsdl.ags.codeitem.body.t	.tygvar
 string.t	.tygvar	-- Temp
 gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 gsdl.ags.codeitem.t	.tygvar	-- Temp
@@ -1996,13 +1998,17 @@ cogvs	.undefined	list.t	string.t
 gvs	.undefined	list.t	gsdl.ags.codeitem.gvar.t
 scs	.undefined	list.t	string.t
 ds.tygvs	.apply	diff.list.tolist	gsdl.ags.typeitem.decls.tygvar.t	|	tygvs
-	.analyze	b0	expr
+	.analyze	b0	expr	impprog
 		.case	expr
 as		.fkarg	0	list.t	gsdl.ags.codeitem.alloc.t
 e		.fkarg	1	gsdl.ags.codeitem.expr.t
 ds			.lrecord	allocs	as	args	r0.args	cogvars	cogvs	gvars	gvs	subcodes	scs	tygvars	ds.tygvs	|	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 			.app	pos	x	ds	e
 			.yield	gsdl.ags.codeitem.expr
+		.case	impprog
+gs		.fkarg	0	list.t	gsdl.ags.codeitem.bind.t
+b		.fkarg	1	gsdl.ags.codeitem.body.t
+			.undef	gsdl.ags.codeitem.t
 	-- > :: gsdl.ags.codeitem.t
 
 -- §section §gs{_gsac.gsexpr.compileToLambdaExpr_res_res_body.t} Constructors
@@ -2016,6 +2022,19 @@ _gsac.gsexpr.compileToLambdaExpr_res_res_body.t.in	.cogvar
 as	.larg	list.t	gsdl.ags.codeitem.alloc.t
 e	.larg	gsdl.ags.codeitem.expr.t
 res	.constr	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	expr	0	as	1	e
+	.coerce	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t.in
+	.lift
+	.yield	res
+
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.impprog_c	.expr
+list.t	.tygvar
+gsdl.ags.codeitem.bind.t	.tygvar
+gsdl.ags.codeitem.body.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.t.in	.cogvar
+gs	.larg	list.t	gsdl.ags.codeitem.bind.t
+b	.larg	gsdl.ags.codeitem.body.t
+res	.constr	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	impprog	0	gs	1	b
 	.coerce	_gsac.gsexpr.compileToLambdaExpr_res_res_body.t.in
 	.lift
 	.yield	res
@@ -2479,7 +2498,8 @@ _gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tygvar
 
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tyexpr
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u_expr_ty	.tygvar
-	.tysum	expr	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u_expr_ty
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u_impprog_ty	.tygvar
+	.tysum	expr	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u_expr_ty	impprog	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u_impprog_ty
 
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u_expr_ty	.tyexpr
 list.t	.tygvar
@@ -2487,6 +2507,13 @@ gsdl.ags.codeitem.alloc.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 list.alloc.ty	.tylet	list.t	gsdl.ags.codeitem.alloc.t
 	.tyubproduct	0	list.alloc.ty	1	gsdl.ags.codeitem.expr.t
+
+_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u_impprog_ty	.tyexpr
+list.t	.tygvar
+gsdl.ags.codeitem.bind.t	.tygvar
+gsdl.ags.codeitem.body.t	.tygvar
+list.bind.ty	.tylet	list.t	gsdl.ags.codeitem.bind.t
+	.tyubproduct	0	list.bind.ty	1	gsdl.ags.codeitem.body.t
 
 -- §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
 
