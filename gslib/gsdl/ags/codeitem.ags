@@ -3337,6 +3337,16 @@ gsdl.ags.codeitem.bind.u	.tygvar
 gsdl.ags.codeitem.bind.u	.tyexpr
 	.typroduct
 
+-- §section §gs{gsdl.ags.codeitem.body.t}
+
+gsdl.ags.codeitem.body.t	.tyexpr
+gsdl.ags.codeitem.body.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.codeitem.body.u
+
+gsdl.ags.codeitem.body.u	.tyexpr
+	.typroduct
+
 -- §section §gs{gsdl.ags.codeitem.alloc.rhs.t}
 
 gsdl.ags.codeitem.alloc.rhs.t	.tyabstract	*
