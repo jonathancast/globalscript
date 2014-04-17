@@ -720,6 +720,17 @@ x	.lfield	f	r
 
 This binds \stringcode{x} to the field \stringcode{f} of \stringcode{r}, which must be a lifted record with a field \stringcode{f}, which must in turn have lifted type.
 
+\subsection{\stringcode{.undefined}}
+\new{0.5}{in imperative block statements, a \stringcode{.undef} had to be put out in a \stringcode{.closure}.}
+\unimpl{This is un-supported in imperative block statements as yet.}
+
+\begin{verbatim}
+x	.undefined	tyf	tyx0	...	tyxn-1
+\end{verbatim}
+
+This binds \stringcode{x} to the `undefined' value of type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$},
+which must be a lifted type.
+
 \section{Value Allocations}
 \label{value_alloc}
 
@@ -921,17 +932,9 @@ Interpolations aren't supported inside classes yet but they will be.
 int
 gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, char **fields, long n)
 {
-    static gsinterned_string gssymundefined, gssymlifted, gssymcast, gssymapply;
+    static gsinterned_string gssymlifted, gssymcast, gssymapply;
 
-    if (gssymceq(p->directive, gssymundefined, gssymcodeop, ".undefined")) {
-        STORE_VALUE_ALLOC_OP_LABEL(".undefined");
-        if (n < 3)
-            gsfatal("%P: Missing type on .undefined", p->pos)
-        ;
-        for (i = 2; i < n; i++)
-            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-    } else if (gssymceq(p->directive, gssymlifted, gssymcodeop, ".lifted")) {
+    if (gssymceq(p->directive, gssymlifted, gssymcodeop, ".lifted")) {
         STORE_VALUE_ALLOC_OP_LABEL(".lifted");
         if (n < 3) gsfatal("%P: Missing target of lifting", p->pos);
         p->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
