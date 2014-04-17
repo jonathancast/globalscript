@@ -263,25 +263,20 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     if ((n = gsbio_device_getline(chan, line, LINE_LENGTH)) < 0) gsfatal("%s: getline: %r", pos.real_filename);
     /* ↓ The return value from §ccode{gsbio_device_getline} includes the terminating nul, so it's 1 on EOF . . . */
     if (n == 1) gsfatal("%s: EOF before reading first line", pos.real_filename);
-    if (line[0] == '#') {
-        calculus_version = 0;
-        features = 0;
-        while (line[0] == '#' || line[0] == '\n') {
-            if (line[0] == '#') {
-                gsparse_pragma(pos, line, &calculus_version, &features);
-            } else if (line[0] == '\n') {
-            } else {
-                gsfatal(UNIMPL("%s:%d: Don't recognize line %s in pragmas section"), pos.real_filename, pos.real_lineno);
-            }
-            pos.real_lineno++;
-            if ((n = gsbio_device_getline(chan, line, LINE_LENGTH)) < 0) gsfatal("%s: getline: %r", pos.real_filename);
-            /* ↓ The return value from §ccode{gsbio_device_getline} includes the terminating nul, so it's 1 on EOF . . . */
-            if (n == 1) gsfatal("%s:$: EOF before .document or .prefix", pos.real_filename);
+
+    calculus_version = 0;
+    features = 0;
+    while (line[0] == '#' || line[0] == '\n') {
+        if (line[0] == '#') {
+            gsparse_pragma(pos, line, &calculus_version, &features);
+        } else if (line[0] == '\n') {
+        } else {
+            gsfatal(UNIMPL("%s:%d: Don't recognize line %s in pragmas section"), pos.real_filename, pos.real_lineno);
         }
-        if (!calculus_version) gsfatal(UNIMPL("%s:%d: No #calculus pragma"), pos.real_filename, pos.real_lineno);
-    } else {
-        calculus_version = "0.0";
-        features = gsstring_code_hash_comments | gsstring_code_hash_escapes | gsstring_code_bind_one_word;
+        pos.real_lineno++;
+        if ((n = gsbio_device_getline(chan, line, LINE_LENGTH)) < 0) gsfatal("%s: getline: %r", pos.real_filename);
+        /* ↓ The return value from §ccode{gsbio_device_getline} includes the terminating nul, so it's 1 on EOF . . . */
+        if (n == 1) gsfatal("%s:$: EOF before .document or .prefix", pos.real_filename);
     }
 
     if ((n = gsac_tokenize(pos.real_filename, pos.real_lineno, features, line, fields, NUM_FIELDS)) < 0)
@@ -305,6 +300,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         gsfatal("%s:%d: Cannot understand directive '%s'", pos.real_filename, pos.real_lineno, fields[1]);
         return 0;
     }
+    if (!calculus_version) gsfatal("%s: Missing #calculus pragma", pos.real_filename);
     if ((parsedfile = gsparsed_file_alloc(filename, relname, type, features)) < 0) {
         gsfatal("%s:%d: Cannot allocate input file: %r", pos.real_filename, pos.real_lineno);
     }
