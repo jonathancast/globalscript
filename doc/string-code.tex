@@ -710,6 +710,16 @@ it will be blindly believed and used to type-check the arguments and assign a ty
 The result type must be an appliction of \stringcode{primtype} from the same primitive set,
 which must be an imperative primitive type.
 
+\subsection{\stringcode{.lfield}}
+\new{0.5}{in imperative block statements, this had to be put out in a \stringcode{.closure} and the result returned.}
+\unimpl{This is un-supported in imperative block statements as yet.}
+
+\begin{verbatim}
+x	.lfield	f	r
+\end{verbatim}
+
+This binds \stringcode{x} to the field \stringcode{f} of \stringcode{r}, which must be a lifted record with a field \stringcode{f}, which must in turn have lifted type.
+
 \section{Value Allocations}
 \label{value_alloc}
 
@@ -908,29 +918,12 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-
-static
 int
 gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, char **fields, long n)
 {
-    static gsinterned_string gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
+    static gsinterned_string gssymundefined, gssymlifted, gssymcast, gssymapply;
 
-    int i;
-
-    if (gssymceq(p->directive, gssymlfield, gssymcodeop, ".lfield")) {
-        STORE_VALUE_ALLOC_OP_LABEL(p->directive->name);
-        if (n < 3)
-            gsfatal("%P: Missing field on %y", p->pos, p->directive)
-        ;
-        p->arguments[2 - 2] = gsintern_string(gssymfieldlable, fields[2]);
-        if (n < 4)
-            gsfatal("%P: Missing record on %y", p->pos, p->directive)
-        ;
-        p->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
-        if (n > 4)
-            gsfatal("%P: Too many arguments to %y", p->pos, p->directive)
-        ;
-    } else if (gssymceq(p->directive, gssymundefined, gssymcodeop, ".undefined")) {
+    if (gssymceq(p->directive, gssymundefined, gssymcodeop, ".undefined")) {
         STORE_VALUE_ALLOC_OP_LABEL(".undefined");
         if (n < 3)
             gsfatal("%P: Missing type on .undefined", p->pos)
