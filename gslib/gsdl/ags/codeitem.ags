@@ -22,6 +22,8 @@ _gsdl.ags.codeitem.print_impprog_impprog.s	.string	\t.impprog\t
 
 _gsdl.ags.codeitem.prim.u_expr_decls.print	.closure	_gsdl.ags.codeitem.prim.u_expr_decls.print_c
 
+_gsdl.ags.codeitem.prim.u_impprog_decls.print	.closure	_gsdl.ags.codeitem.prim.u_impprog_decls.print_c
+
 gsdl.ags.codeitem.≡	.closure	_gsdl.ags.codeitem.≡_c
 
 gsdl.ags.codeitem.fmtgs	.closure	_gsdl.ags.codeitem.fmtgs_c
@@ -785,6 +787,17 @@ args	.lfield	args	ds
 args.dss	.apply	list.map	gsdl.ags.codeitem.arg.t	diff.list.rune.ty	|	gsdl.ags.codeitem.arg.print	args
 args.ds	.apply	diff.list.concat	rune.t	|	args.dss
 	.app	tygvs.ds	args.ds
+	.enter	diff.list.<>	rune.t
+
+_gsdl.ags.codeitem.prim.u_impprog_decls.print_c	.expr
+_gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar	-- Temp
+diff.list.<>	.gvar
+ds	.larg	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
+tygvs.s	.undefined	diff.list.t	rune.t
+args.s	.undefined	diff.list.t	rune.t
+	.app	tygvs.s	args.s
 	.enter	diff.list.<>	rune.t
 
 -- §section §gs{gsdl.ags.codeitem.≡}
