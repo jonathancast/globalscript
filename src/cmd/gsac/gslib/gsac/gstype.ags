@@ -3230,7 +3230,8 @@ _gsac.gstype.compileToImpprim_res_res.u	.tygvar
 	.tyref	_gsac.gstype.compileToImpprim_res_res.u
 
 _gsac.gstype.compileToImpprim_res_res.u	.tyexpr
-	.typroduct
+gsdl.var.t	.tygvar
+	.typroduct	primset	gsdl.var.t
 
 -- §section §gs{gsac.gstype.compileToVar}
 
