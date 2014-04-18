@@ -18,6 +18,7 @@ _gsdl.ags.codeitem.parser_ubcasecont.p_ubcasecont.re	.regex	.ubcasecont
 
 gsdl.ags.codeitem.print	.closure	_gsdl.ags.codeitem.print_c
 _gsdl.ags.codeitem.print_expr_expr.s	.string	\t.expr\n
+_gsdl.ags.codeitem.print_impprog_impprog.s	.string	\t.impprog\t
 
 _gsdl.ags.codeitem.prim.u_expr_decls.print	.closure	_gsdl.ags.codeitem.prim.u_expr_decls.print_c
 
@@ -717,6 +718,7 @@ gsdl.ags.syntax.var.print	.gvar
 _gsdl.ags.codeitem.print_expr_expr.s	.gvar
 _gsdl.ags.codeitem.prim.u_expr_decls.print	.gvar
 gsdl.ags.codeitem.expr.print	.gvar
+_gsdl.ags.codeitem.print_impprog_impprog.s	.gvar
 c0	.karg	gsdl.ags.codeitem.prim.u
 	.analyze	c0	expr	forcecont	impprog
 		.case	expr
@@ -746,7 +748,15 @@ ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ds		.fkarg	4	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
 b		.fkarg	5	gsdl.ags.codeitem.body.t
-			.undef	diff.list.t	rune.t
+pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
+nm.s			.apply	gsdl.ags.syntax.var.print	|	nm
+ps.s			.apply	gsdl.ags.syntax.var.print	|	ps
+s4			.undefined	diff.list.t	rune.t
+s3			.apply	diff.list.<>	rune.t	|	ps.s	s4
+s2			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.codeitem.print_impprog_impprog.s	s3
+s1			.apply	diff.list.<>	rune.t	|	nm.s	s2
+			.app	pos.s	s1
+			.enter	diff.list.<>	rune.t
 	-- > :: diff.list.t	rune.t
 
 _gsdl.ags.codeitem.prim.u_expr_decls.print_c	.expr
