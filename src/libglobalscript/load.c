@@ -3219,7 +3219,7 @@ gsac_tokenize(char *file, int lineno, uint features, char *line, char **fields, 
             numfields++;
         }
     }
-    if (!(features & gsstring_code_hash_comments) && IS_HASH_COMMENT)
+    if (IS_HASH_COMMENT)
         gsfatal("%s:%d:%d: Illegal old-style # comment", file, lineno, p - line + 1)
     ;
     if (*p) *p++ = 0;
