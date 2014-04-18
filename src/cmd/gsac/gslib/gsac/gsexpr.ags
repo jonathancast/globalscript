@@ -1595,6 +1595,7 @@ err		.fkarg	0	string.t
 m.r		.fkarg	0	_gsac.gstype.compileToImpprim_res.ty
 m.r.r			.lfield	res	m.r
 ps			.lfield	primset	m.r.r
+pn			.lfield	primnm	m.r.r
 gen.compile			.apply	gsac.gsexpr.generator.imp.compile	|	pos
 tyem1			.lfield	emitted	m.r
 pem1			.lfield	prim.emitted	m.r
@@ -1624,6 +1625,7 @@ compile.list.gen.res.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.gen.res.ty
 pos	.fv	gsdl.sourcepos.t
 b	.fv	gsdl.cgs.gsexpr.body.t
 ps	.fv	gsdl.var.t
+pn	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	compile.list.gen.res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -1663,9 +1665,9 @@ either.right	.gvar
 diff.list.<>	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.impprog	.gvar
 ps	.fv	gsdl.var.t
+pn	.fv	gsdl.var.t
 gs.r.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
-pn	.undefined	gsdl.var.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
