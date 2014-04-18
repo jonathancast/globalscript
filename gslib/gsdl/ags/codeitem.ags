@@ -719,6 +719,8 @@ _gsdl.ags.codeitem.print_expr_expr.s	.gvar
 _gsdl.ags.codeitem.prim.u_expr_decls.print	.gvar
 gsdl.ags.codeitem.expr.print	.gvar
 _gsdl.ags.codeitem.print_impprog_impprog.s	.gvar
+diff.list.:	.gvar
+rune.tab	.gvar
 c0	.karg	gsdl.ags.codeitem.prim.u
 	.analyze	c0	expr	forcecont	impprog
 		.case	expr
@@ -751,7 +753,10 @@ b		.fkarg	5	gsdl.ags.codeitem.body.t
 pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
 nm.s			.apply	gsdl.ags.syntax.var.print	|	nm
 ps.s			.apply	gsdl.ags.syntax.var.print	|	ps
-s4			.undefined	diff.list.t	rune.t
+pn.s			.apply	gsdl.ags.syntax.var.print	|	pn
+s6			.undefined	diff.list.t	rune.t
+s5			.apply	diff.list.<>	rune.t	|	pn.s	s6
+s4			.apply	diff.list.:	rune.t	|	rune.tab	s5
 s3			.apply	diff.list.<>	rune.t	|	ps.s	s4
 s2			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.codeitem.print_impprog_impprog.s	s3
 s1			.apply	diff.list.<>	rune.t	|	nm.s	s2
