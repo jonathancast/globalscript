@@ -797,10 +797,17 @@ args.ds	.apply	diff.list.concat	rune.t	|	args.dss
 _gsdl.ags.codeitem.prim.u_impprog_decls.print_c	.expr
 _gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tygvar
 rune.t	.tygvar
-diff.list.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+diff.list.t	.tygvar
 diff.list.<>	.gvar
+diff.list.concat	.gvar
+list.map	.gvar
+gsdl.ags.typeitem.decls.tygvar.print	.gvar
 ds	.larg	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
-tygvs.s	.undefined	diff.list.t	rune.t
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+tygvs	.lfield	tygvars	ds
+tygvs.ss	.apply	list.map	gsdl.ags.typeitem.decls.tygvar.t	diff.list.rune.ty	|	gsdl.ags.typeitem.decls.tygvar.print	tygvs
+tygvs.s	.apply	diff.list.concat	rune.t	|	tygvs.ss
 args.s	.undefined	diff.list.t	rune.t
 	.app	tygvs.s	args.s
 	.enter	diff.list.<>	rune.t
