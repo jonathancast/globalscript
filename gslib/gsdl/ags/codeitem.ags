@@ -3294,7 +3294,10 @@ _gsdl.ags.codeitem.prim.u_impprog_decls_u	.tygvar
 	.tyref	_gsdl.ags.codeitem.prim.u_impprog_decls_u
 
 _gsdl.ags.codeitem.prim.u_impprog_decls_u	.tyexpr
-	.typroduct
+list.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+list.tygvar.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tygvar.t
+	.typroduct	tygvars	list.tygvar.ty
 
 _gsdl.ags.codeitem.prim.u_impprog_body_ty	.tyabstract	*
 _gsdl.ags.codeitem.prim.u_impprog_body_u	.tygvar
