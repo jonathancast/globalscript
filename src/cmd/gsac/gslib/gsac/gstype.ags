@@ -2309,7 +2309,7 @@ tyx		.fkarg	1	gsdl.cgs.gstype.t
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-r			.undefined	_gsac.gstype.compileToImpprim_res_res.ty
+r			.lrecord	primset	ps	|	_gsac.gstype.compileToImpprim_res_res.ty
 tyfvs			.apply	diff.list.nil	gsdl.var.t
 tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tis			.apply	diff.list.nil	gsdl.ags.typeitem.t
