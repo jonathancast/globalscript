@@ -55,6 +55,7 @@ gsdl.ags.codeitem.gvar.gvar	.closure	_gsdl.ags.codeitem.gvar.gvar_c
 
 gsdl.ags.codeitem.expr	.closure	_gsdl.ags.codeitem.expr_c
 gsdl.ags.codeitem.forcecont	.closure	_gsdl.ags.codeitem.forcecont_c
+gsdl.ags.codeitem.impprog	.closure	_gsdl.ags.codeitem.impprog_c
 
 gsdl.ags.codeitem.fvs.parser	.closure	_gsdl.ags.codeitem.fvs.parser_c
 _gsdl.ags.codeitem.fvs.parser_fv.kw.re	.regex	.fv
@@ -706,6 +707,8 @@ gsdl.ags.codeitem.expr.t	.tygvar
 rune.t	.tygvar
 string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_forcecont_decls_ty	.tygvar
+_gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tygvar
+gsdl.ags.codeitem.body.t	.tygvar
 diff.list.t	.tygvar	-- Temp
 diff.list.<>	.gvar
 gsdl.ags.sourcepos.print	.gvar
@@ -715,7 +718,7 @@ _gsdl.ags.codeitem.print_expr_expr.s	.gvar
 _gsdl.ags.codeitem.prim.u_expr_decls.print	.gvar
 gsdl.ags.codeitem.expr.print	.gvar
 c0	.karg	gsdl.ags.codeitem.prim.u
-	.analyze	c0	expr	forcecont
+	.analyze	c0	expr	forcecont	impprog
 		.case	expr
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	gsdl.var.t
@@ -735,6 +738,14 @@ pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	string.t
 ds		.fkarg	2	_gsdl.ags.codeitem.prim.u_forcecont_decls_ty
 e		.fkarg	3	gsdl.ags.codeitem.expr.t
+			.undef	diff.list.t	rune.t
+		.case	impprog
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	gsdl.var.t
+ps		.fkarg	2	gsdl.var.t
+pn		.fkarg	3	gsdl.var.t
+ds		.fkarg	4	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
+b		.fkarg	5	gsdl.ags.codeitem.body.t
 			.undef	diff.list.t	rune.t
 	-- > :: diff.list.t	rune.t
 
@@ -795,6 +806,8 @@ string.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 _gsdl.ags.codeitem.prim.u_forcecont_decls_ty	.tygvar
+_gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tygvar
+gsdl.ags.codeitem.body.t	.tygvar
 bool.t	.tygvar	-- Temp
 bool.∧	.gvar
 gsdl.var.≡	.gvar
@@ -807,7 +820,7 @@ gsdl.ags.codeitem.expr.≡	.gvar
 gsdl.ags.codeitem.karg.≡	.gvar
 ci0.0	.fv	gsdl.ags.codeitem.prim.u
 ci1.0	.karg	gsdl.ags.codeitem.prim.u
-	.analyze	ci0.0	expr	forcecont
+	.analyze	ci0.0	expr	forcecont	impprog
 		.case	expr
 pos0		.fkarg	0	gsdl.sourcepos.t
 nm0		.fkarg	1	gsdl.var.t
@@ -867,6 +880,14 @@ e.eq					.apply	gsdl.ags.codeitem.expr.≡	|	e0	e1
 eq1					.apply	bool.∧	|	ds.eq	e.eq
 					.app	nm.eq	eq1
 					.enter	bool.∧
+		.case	impprog
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	gsdl.var.t
+ps		.fkarg	2	gsdl.var.t
+pn		.fkarg	3	gsdl.var.t
+ds		.fkarg	4	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
+b		.fkarg	5	gsdl.ags.codeitem.body.t
+			.undef	bool.t
 	-- > :: bool.t
 
 -- §section §gs{gsdl.ags.codeitem.fmtgs}
@@ -1256,6 +1277,24 @@ nm	.arg	string.t
 ds	.arg	_gsdl.ags.codeitem.prim.u_forcecont_decls_ty
 e	.arg	gsdl.ags.codeitem.expr.t
 c	.constr	gsdl.ags.codeitem.prim.u	forcecont	0	pos	1	nm	2	ds	3	e
+	.coerce	gsdl.ags.codeitem.t.in
+	.lift
+	.yield	c
+
+_gsdl.ags.codeitem.impprog_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+_gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tygvar
+gsdl.ags.codeitem.body.t	.tygvar
+gsdl.ags.codeitem.prim.u	.tygvar
+gsdl.ags.codeitem.t.in	.cogvar
+pos	.arg	gsdl.sourcepos.t
+nm	.arg	gsdl.var.t
+ps	.arg	gsdl.var.t
+pn	.arg	gsdl.var.t
+ds	.arg	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
+b	.arg	gsdl.ags.codeitem.body.t
+c	.constr	gsdl.ags.codeitem.prim.u	impprog	0	pos	1	nm	2	ps	3	pn	4	ds	5	b
 	.coerce	gsdl.ags.codeitem.t.in
 	.lift
 	.yield	c
@@ -3157,7 +3196,8 @@ gsdl.ags.codeitem.prim.u	.tygvar
 gsdl.ags.codeitem.prim.u	.tyexpr
 _gsdl.ags.codeitem.prim.u_expr_ty	.tygvar
 _gsdl.ags.codeitem.prim.u_forcecont_ty	.tygvar
-	.tysum	expr	_gsdl.ags.codeitem.prim.u_expr_ty	forcecont	_gsdl.ags.codeitem.prim.u_forcecont_ty
+_gsdl.ags.codeitem.prim.u_impprog_ty	.tygvar
+	.tysum	expr	_gsdl.ags.codeitem.prim.u_expr_ty	forcecont	_gsdl.ags.codeitem.prim.u_forcecont_ty	impprog	_gsdl.ags.codeitem.prim.u_impprog_ty
 
 _gsdl.ags.codeitem.prim.u_expr_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
@@ -3207,6 +3247,13 @@ list.fv.ty	.tylet	list.t	gsdl.ags.codeitem.fv.t
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 list.string.ty	.tylet	list.t	string.t
 	.typroduct	fvs	list.fv.ty	gvars	list.gvar.ty	karg	gsdl.ags.codeitem.karg.t	tygvars	list.string.ty
+
+_gsdl.ags.codeitem.prim.u_impprog_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+_gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tygvar
+gsdl.ags.codeitem.body.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.var.t	3	gsdl.var.t	4	_gsdl.ags.codeitem.prim.u_impprog_decls_ty	5	gsdl.ags.codeitem.body.t
 
 _gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tyexpr
 _gsdl.ags.codeitem.prim.u_impprog_decls_u	.tygvar
