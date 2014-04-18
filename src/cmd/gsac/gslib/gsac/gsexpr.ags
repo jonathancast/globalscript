@@ -2000,8 +2000,10 @@ gsdl.ags.codeitem.body.t	.tygvar
 string.t	.tygvar	-- Temp
 gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 gsdl.ags.codeitem.t	.tygvar	-- Temp
+_gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tygvar	-- Temp
 diff.list.tolist	.gvar
 gsdl.ags.codeitem.expr	.gvar
+gsdl.ags.codeitem.impprog	.gvar
 pos	.fv	gsdl.sourcepos.t
 x	.fv	gsdl.var.t
 tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
@@ -2024,7 +2026,9 @@ ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 gs		.fkarg	2	list.t	gsdl.ags.codeitem.bind.t
 b		.fkarg	3	gsdl.ags.codeitem.body.t
-			.undef	gsdl.ags.codeitem.t
+ds			.undefined	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
+			.app	pos	x	ps	pn	ds	b
+			.yield	gsdl.ags.codeitem.impprog
 	-- > :: gsdl.ags.codeitem.t
 
 -- §section §gs{_gsac.gsexpr.compileToLambdaExpr_res_res_body.t} Constructors
