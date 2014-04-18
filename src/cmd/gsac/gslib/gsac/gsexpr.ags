@@ -1593,6 +1593,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	right
 m.r		.fkarg	0	_gsac.gstype.compileToImpprim_res.ty
+m.r.r			.lfield	res	m.r
+ps			.lfield	primset	m.r.r
 gen.compile			.apply	gsac.gsexpr.generator.imp.compile	|	pos
 tyem1			.lfield	emitted	m.r
 pem1			.lfield	prim.emitted	m.r
@@ -1605,6 +1607,7 @@ svs1			.lfield	subvars	m.r
 _gsac.gsexpr.compileToLambdaExpr_impfor_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compile.m_res.ty	.tygvar
@@ -1620,6 +1623,7 @@ list.gen.res.ty	.tylet	list.t	_gsac.gsexpr.generator.imp.compile_res_res.ty
 compile.list.gen.res.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.gen.res.ty
 pos	.fv	gsdl.sourcepos.t
 b	.fv	gsdl.cgs.gsexpr.body.t
+ps	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	compile.list.gen.res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -1637,6 +1641,7 @@ gs.r.ds			.lfield	dataitems	gs.r
 			.enter	gsac.gsexpr.body.compileToGenRHS
 
 _gsac.gsexpr.compileToLambdaExpr_impfor_right_right_k	.forcecont
+gsdl.var.t	.tygvar
 diff.list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 either.prim.u	.tygvar
@@ -1654,13 +1659,12 @@ gsdl.ags.codeitem.body.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
-gsdl.var.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.<>	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.impprog	.gvar
+ps	.fv	gsdl.var.t
 gs.r.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
-ps	.undefined	gsdl.var.t
 pn	.undefined	gsdl.var.t
 	.analyze	e0	left	right
 		.case	left
