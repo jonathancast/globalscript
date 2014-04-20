@@ -1,3 +1,23 @@
+fn ok {
+    nm=$1; prog=$2;
+    shift; shift
+    if (~ $#TODO 0) {
+        fn do_exit { exit 1 }
+        todo_msg=()
+    }
+    if not {
+        fn do_exit { true }
+        todo_msg='# TODO '^$TODO
+    }
+    echo $nm $todo_msg
+    if (! $prog $*) {
+        echo 'The command' >[1=2]
+        echo '    ' $prog $* >[1=2]
+        echo 'failed' >[1=2]
+        do_exit
+    }
+}
+
 fn ok_diff {
     nm=$1; prog=$2; script=$3
     shift; shift; shift
