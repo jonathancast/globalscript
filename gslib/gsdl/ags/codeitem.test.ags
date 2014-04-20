@@ -11,7 +11,7 @@ _tests	.list	test.property.t	_test.parse	_test.eq
 -- §section Parsers
 
 _test.parse	.closure	_test.parse_c
-_tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_strictcont.items	_test.parse_impprog.items	_test.parse_ubcasecont.items	_test.parse_exprs
+_tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_strictcont.items	_test.parse_impprog.items	_test.parse_ubcasecont.items	_test.parse_gvars	_test.parse_exprs
 
 -- §subsection Code Segments
 
@@ -168,6 +168,12 @@ _tests.parse_ubcasecont.items	.list	test.property.t	_test.parse_ubcasecont
 _test.parse_ubcasecont	.closure	_test.parse_ubcasecont_c
 _test.parse_ubcasecont_label	.string	qq{_rune.≡.k1.0\\t.ubcasecont\\n\\t.enter\\tbool.false\\n}\s=~\sparser
 _test.parse_ubcasecont_input	.string	_rune.≡.k1.0\t.ubcasecont\n\t.enter\tbool.false\n
+
+-- §subsection Global Variable Declarations
+
+_test.parse_gvars	.closure	_test.parse_gvars_c
+_test.parse_gvars_label	.string	Global\sValue\sVariable\sDeclarations
+_tests.parse_gvars	.list	test.property.t
 
 -- §subsection String Code Expressions
 
@@ -1293,6 +1299,17 @@ gsdl.ags.codeitem.t	.tygvar
 test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
+
+-- §subsection Global Variable Declarations
+
+_test.parse_gvars_c	.expr
+test.property.label	.gvar
+_test.parse_gvars_label	.gvar
+test.all	.gvar
+_tests.parse_gvars	.gvar
+t	.apply	test.all	|	_tests.parse_gvars
+	.app	_test.parse_gvars_label	t
+	.enter	test.property.label
 
 -- §subsection String Code Expressions
 
