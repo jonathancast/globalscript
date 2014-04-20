@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.1
+#calculus: gsdl.string-code 0.2
 
 	.document
 
@@ -9,8 +9,8 @@
 _tests	.list	test.property.t	_test.parse.comment	_test.parse.dash.dash.comment	_test.parse.two.components	_test.parse.digit.in.alphanum	_test.parse.qualified.op	_test.parse.var	_test.parse.var.qualified	_test.parse.var.op	_test.parse.var.underbarred	_test.parse.stringliteral
 
 _test.parse.comment	.closure	_test.parse.comment_c
-_test.parse.comment_label	.string	qq{\\n\h\sComment\\n}\s=~\swhitespace
-_test.parse.comment_input	.string	\n\h\sComment\n
+_test.parse.comment_label	.string	qq{\\n#\sComment\\n}\s=~\swhitespace
+_test.parse.comment_input	.string	\n#\sComment\n
 
 _test.parse.dash.dash.comment	.closure	_test.parse.dash.dash.comment_c
 _test.parse.dash.dash.comment_label	.string	qq{\\n--\sComment\\n}\s=~\swhitespace
