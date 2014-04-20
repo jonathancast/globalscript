@@ -727,6 +727,7 @@ diff.list.:	.gvar
 rune.tab	.gvar
 rune.new.line	.gvar
 _gsdl.ags.codeitem.prim.u_impprog_decls.print	.gvar
+gsdl.ags.codeitem.body.print	.gvar
 c0	.karg	gsdl.ags.codeitem.prim.u
 	.analyze	c0	expr	forcecont	impprog
 		.case	expr
@@ -761,8 +762,8 @@ nm.s			.apply	gsdl.ags.syntax.var.print	|	nm
 ps.s			.apply	gsdl.ags.syntax.var.print	|	ps
 pn.s			.apply	gsdl.ags.syntax.var.print	|	pn
 ds.s			.apply	_gsdl.ags.codeitem.prim.u_impprog_decls.print	|	ds
-s8			.undefined	diff.list.t	rune.t
-s7			.apply	diff.list.<>	rune.t	|	ds.s	s8
+b.s			.apply	gsdl.ags.codeitem.body.print	|	b
+s7			.apply	diff.list.<>	rune.t	|	ds.s	b.s
 s6			.apply	diff.list.:	rune.t	|	rune.new.line	s7
 s5			.apply	diff.list.<>	rune.t	|	pn.s	s6
 s4			.apply	diff.list.:	rune.t	|	rune.tab	s5
