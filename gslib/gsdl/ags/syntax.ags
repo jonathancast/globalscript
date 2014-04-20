@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.1
+#calculus: gsdl.string-code 0.2
 
 	.prefix
 
@@ -6,7 +6,7 @@
 
 gsdl.ags.syntax.whitespace	.closure	_gsdl.ags.syntax.whitespace_c
 _gsdl.ags.syntax.whitespace_re	.regex	\n§*	_gsdl.ags.syntax.whitespace_re_blank
-_gsdl.ags.syntax.whitespace_re_blank	.regex	\n|\t*\h[^\n]*\n|\t*--[\s][^\n]*\n
+_gsdl.ags.syntax.whitespace_re_blank	.regex	\n|\t*#[^\n]*\n|\t*--[\s][^\n]*\n
 
 gsdl.ags.syntax.columnsep	.closure	_gsdl.ags.syntax.columnsep_c
 _gsdl.ags.syntax.columnsep_re	.regex	[\s\t]\t*
@@ -20,7 +20,7 @@ _gsdl.ags.syntax.id_underscore.re	.regex	_|
 _gsdl.ags.syntax.id_id.re	.regex	§§*	_gsdl.ags.syntax.id_id_component.re	_gsdl.ags.syntax.id_id_t.re
 _gsdl.ags.syntax.id_id_t.re	.regex	.§	_gsdl.ags.syntax.id_id_component.re
 _gsdl.ags.syntax.id_id_component.re	.regex	[a-zα-ω][a-z0-9A-Z]*|§§*|[0-9]	_gsdl.ags.syntax.id_id_component.re.symbol	_gsdl.ags.syntax.id_id_component.re.symbol
-_gsdl.ags.syntax.id_id_component.re.symbol	.regex	[~!@\h$%^&*-+=|:<>?/≡≠≯≮]
+_gsdl.ags.syntax.id_id_component.re.symbol	.regex	[~!@#$%^&*-+=|:<>?/≡≠≯≮]
 _gsdl.ags.syntax.id_t.re	.regex	_§	_gsdl.ags.syntax.id_id.re
 
 gsdl.ags.syntax.var	.closure	_gsdl.ags.syntax.var_c
@@ -42,7 +42,7 @@ gsdl.ags.syntax.keywords	.list	string.t	_gsdl.ags.syntax.keywords_0
 _gsdl.ags.syntax.keywords_0	.string	|
 
 gsdl.ags.syntax.rune.literal	.closure	_gsdl.ags.syntax.rune.literal_c
-gsdl.ags.syntax.rune.literal.re	.regex	[^\\\s\n\t\h]|\\[\\hnst]
+gsdl.ags.syntax.rune.literal.re	.regex	[^\\\s\n\t#]|\\[\\hnst]
 
 gsdl.ags.syntax.stringliteral	.closure	_gsdl.ags.syntax.stringliteral_c
 _gsdl.ags.syntax.stringliteral_re	.regex	[^\s\t\n][^\s\t\n]*
