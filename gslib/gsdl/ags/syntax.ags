@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -90,7 +90,7 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.syntax.id_re	.gvar
 p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.syntax.id_re
-k	.alloc	_gsdl.ags.syntax.id_k_c
+k	.closure	_gsdl.ags.syntax.id_k_c
 	.app	p	k
 	.enter	parser.>>=	rune.t	string.t	string.t
 
@@ -153,7 +153,7 @@ _gsdl.ags.syntax.var_components.p_k_c	.subcode
 parser.>>=	.gvar
 _gsdl.ags.syntax.var_component.p	.gvar
 list.component.ty	.tylet	list.t	gsdl.var.component.t
-k	.alloc	_gsdl.ags.syntax.var_components.p_k_c
+k	.closure	_gsdl.ags.syntax.var_components.p_k_c
 	.app	_gsdl.ags.syntax.var_component.p	k
 	.enter	parser.>>=	rune.t	gsdl.var.component.t	list.component.ty
 
@@ -307,7 +307,7 @@ d		.fkarg	0	natural.t
 cs		.fkarg	1	list.t	gsdl.var.t
 diff.list.rune.<>			.apply	diff.list.<>	rune.t
 diff.list.rune.nil			.apply	diff.list.nil	rune.t
-f			.alloc	_gsdl.ags.syntax.var.print_w_constructed_f_c
+f			.closure	_gsdl.ags.syntax.var.print_w_constructed_f_c
 cs.dss			.apply	list.map	gsdl.var.t	diff.list.rune.ty	|	f	cs
 			.app	diff.list.rune.<>	diff.list.rune.nil	cs.dss
 			.enter	list.foldr	diff.list.rune.ty	diff.list.rune.ty
@@ -333,7 +333,7 @@ cs1		.fkarg	1	list.t	gsdl.var.component.t
 c0.ds			.apply	gsdl.ags.syntax.var.component.print	|	c0
 diff.list.rune.<>			.apply	diff.list.<>	rune.t
 diff.list.rune.nil			.apply	diff.list.nil	rune.t
-f			.alloc	_gsdl.ags.syntax.var.print_w_basevar_:_f_c
+f			.closure	_gsdl.ags.syntax.var.print_w_basevar_:_f_c
 cs1.dss			.apply	list.map	gsdl.var.component.t	diff.list.rune.ty	|	f	cs1
 cs1.ds			.apply	list.foldr	diff.list.rune.ty	diff.list.rune.ty	|	diff.list.rune.<>	diff.list.rune.nil	cs1.dss
 			.app	c0.ds	cs1.ds
@@ -364,7 +364,7 @@ _gsdl.ags.syntax.var.print_w	.gvar
 b	.fv	bool.prim.u
 d	.fv	natural.t
 v	.larg	gsdl.var.t
-ubs.ds	.alloc	_gsdl.ags.syntax.var.print_w_constructed_f_ubs.ds_c
+ubs.ds	.closure	_gsdl.ags.syntax.var.print_w_constructed_f_ubs.ds_c
 false	.constr	bool.prim.u	false
 v.ds	.apply	_gsdl.ags.syntax.var.print_w	|	v	false
 	.app	ubs.ds	v.ds
