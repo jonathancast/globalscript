@@ -4,11 +4,11 @@
 
 all:V: pure-all
 
-pure-all:V: $O.gstype $O.gstest
+pure-all:V: $O.gstype $O.gstest $O.gslint
 
-pure-install:V: $GLOBALSCRIPT/bin/gstype $GLOBALSCRIPT/bin/gstest
+pure-install:V: $GLOBALSCRIPT/bin/gstype $GLOBALSCRIPT/bin/gstest $GLOBALSCRIPT/bin/gslint
 
-pure-integration-test:V: rc/pure-test $O.gstype $O.gstest
+pure-integration-test:V: rc/pure-test $O.gstype $O.gstest $O.gslint
 	./rc/pure-test
 
 $GLOBALSCRIPT/bin/%: $O.%

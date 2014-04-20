@@ -18,6 +18,7 @@ test-results/.*actual$
 test-results/.*errors$
 ^bin/gstype$
 ^bin/gstest$
+^bin/gslint$
 stage0/.*\.gs$
 \.gscr$
 bin/gsac-targets$
