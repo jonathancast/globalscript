@@ -16,6 +16,7 @@ fn ok {
         echo 'failed' >[1=2]
         do_exit
     }
+    true
 }
 
 fn ok_diff {
