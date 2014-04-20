@@ -173,11 +173,15 @@ _test.parse_ubcasecont_input	.string	_rune.≡.k1.0\t.ubcasecont\n\t.enter\tbool
 
 _test.parse_gvars	.closure	_test.parse_gvars_c
 _test.parse_gvars_label	.string	Global\sValue\sVariable\sDeclarations
-_tests.parse_gvars	.list	test.property.t	_test.parse_gvar_rune.no.hash
+_tests.parse_gvars	.list	test.property.t	_test.parse_gvar_rune.no.hash	_test.parse_gvar_rune.bs.h
 
 _test.parse_gvar_rune.no.hash	.closure	_test.parse_gvar_rune.no.hash_c
 _test.parse_gvar_rune.no.hash_label	.string	qq{x\\t.rune\\t#\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
 _test.parse_gvar_rune.no.hash_input	.string	x\t.rune\t#\n
+
+_test.parse_gvar_rune.bs.h	.closure	_test.parse_gvar_rune.bs.h_c
+_test.parse_gvar_rune.bs.h_label	.string	qq{x\\t.rune\\t\\h\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
+_test.parse_gvar_rune.bs.h_input	.string	x\t.rune\t\\h\n
 
 -- §subsection String Code Expressions
 
@@ -1342,6 +1346,33 @@ _test.parse_gvar_rune.no.hash_k_c	.expr
 parser.err.t	.tygvar
 test.true	.gvar
 err	.larg	parser.err.t
+	.enter	test.true
+
+-- §subsubsection §gs{qq{x\\t.rune\\t\\h\\n} =~ gsdl.ags.codeitem.gvars.parser}
+
+_test.parse_gvar_rune.bs.h_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+_test.parse_gvar_rune.bs.h_k_c	.subcode
+test.property.label	.gvar
+_test.parse_gvar_rune.bs.h_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.gvars.parser	.gvar
+_test.parse_gvar_rune.bs.h_input	.gvar
+list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
+k	.closure	_test.parse_gvar_rune.bs.h_k_c
+test	.apply	parser.test.assert.passes	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.gvars.parser	_test.parse_gvar_rune.bs.h_input	k
+	.app	_test.parse_gvar_rune.bs.h_label	test
+	.enter	test.property.label
+
+_test.parse_gvar_rune.bs.h_k_c	.expr
+list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+test.true	.gvar
+gvs	.larg	list.t	gsdl.ags.codeitem.gvar.t
 	.enter	test.true
 
 -- §subsection String Code Expressions
