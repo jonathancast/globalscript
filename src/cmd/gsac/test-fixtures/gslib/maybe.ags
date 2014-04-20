@@ -4,7 +4,7 @@
 
 	.code
 
-# §section Constructors
+-- §section Constructors
 
 _maybe.just_c	.expr
 α	.tyarg	*
