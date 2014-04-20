@@ -56,6 +56,8 @@ gsdl.ags.codeitem.gvar.fmtgs	.closure	_gsdl.ags.codeitem.gvar.fmtgs_c
 
 gsdl.ags.codeitem.gvar.gvar	.closure	_gsdl.ags.codeitem.gvar.gvar_c
 
+gsdl.ags.codeitem.body.print	.closure	_gsdl.ags.codeitem.body.print_c
+
 gsdl.ags.codeitem.expr	.closure	_gsdl.ags.codeitem.expr_c
 gsdl.ags.codeitem.forcecont	.closure	_gsdl.ags.codeitem.forcecont_c
 gsdl.ags.codeitem.impprog	.closure	_gsdl.ags.codeitem.impprog_c
@@ -1291,6 +1293,15 @@ res	.constr	gsdl.ags.codeitem.gvar.prim.u	gvar	0	pos	1	nm
 	.coerce	gsdl.ags.codeitem.gvar.t.in
 	.lift
 	.yield	res
+
+-- §section §gs{gsdl.ags.codeitem.body.print}
+
+_gsdl.ags.codeitem.body.print_c	.expr
+gsdl.ags.codeitem.body.t	.tygvar
+diff.list.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+b	.larg	gsdl.ags.codeitem.body.t
+	.undef	diff.list.t	rune.t
 
 -- §section §gs{gsdl.ags.codeitem.t} Constructors
 
