@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -70,7 +70,7 @@ rune.print	.gvar
 string.fmtgs	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 _test.parse.comment_input	.gvar
-k	.alloc	_test.parse.comment_k_c
+k	.closure	_test.parse.comment_k_c
 test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.whitespace	_test.parse.comment_input	k
 	.app	_test.parse.comment_label	test
 	.enter	test.property.label
@@ -95,7 +95,7 @@ rune.print	.gvar
 string.fmtgs	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 _test.parse.dash.dash.comment_input	.gvar
-k	.alloc	_test.parse.dash.dash.comment_k_c
+k	.closure	_test.parse.dash.dash.comment_k_c
 test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.whitespace	_test.parse.dash.dash.comment_input	k
 	.app	_test.parse.dash.dash.comment_label	test
 	.enter	test.property.label
@@ -119,7 +119,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.syntax.id	.gvar
 _test.parse.two.components_input	.gvar
-k	.alloc	_test.parse.two.components_k_c
+k	.closure	_test.parse.two.components_k_c
 test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.id	_test.parse.two.components_input	k
 	.app	_test.parse.two.components_label	test
 	.enter	test.property.label
@@ -147,7 +147,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.syntax.id	.gvar
 _test.parse.digit.in.alphanum_input	.gvar
-k	.alloc	_test.parse.digit.in.alphanum_k_c
+k	.closure	_test.parse.digit.in.alphanum_k_c
 test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.id	_test.parse.digit.in.alphanum_input	k
 	.app	_test.parse.digit.in.alphanum_label	test
 	.enter	test.property.label
@@ -175,7 +175,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.syntax.id	.gvar
 _test.parse.qualified.op_input	.gvar
-k	.alloc	_test.parse.qualified.op_k_c
+k	.closure	_test.parse.qualified.op_k_c
 test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.id	_test.parse.qualified.op_input	k
 	.app	_test.parse.qualified.op_label	test
 	.enter	test.property.label
@@ -203,7 +203,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.syntax.var	.gvar
 _test.parse.var_input	.gvar
-k	.alloc	_test.parse.var_k_c
+k	.closure	_test.parse.var_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.var	_test.parse.var_input	k
 	.app	_test.parse.var_label	test
 	.enter	test.property.label
@@ -227,7 +227,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.syntax.var	.gvar
 _test.parse.var.qualified_input	.gvar
-k	.alloc	_test.parse.var.qualified_k_c
+k	.closure	_test.parse.var.qualified_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.var	_test.parse.var.qualified_input	k
 	.app	_test.parse.var.qualified_label	test
 	.enter	test.property.label
@@ -251,7 +251,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.syntax.var	.gvar
 _test.parse.var.op_input	.gvar
-k	.alloc	_test.parse.var.op_k_c
+k	.closure	_test.parse.var.op_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.var	_test.parse.var.op_input	k
 	.app	_test.parse.var.op_label	test
 	.enter	test.property.label
@@ -275,7 +275,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.syntax.var	.gvar
 _test.parse.var.underbarred_input	.gvar
-k	.alloc	_test.parse.var.underbarred_k_c
+k	.closure	_test.parse.var.underbarred_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.var	_test.parse.var.underbarred_input	k
 	.app	_test.parse.var.underbarred_label	test
 	.enter	test.property.label
@@ -299,7 +299,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.syntax.stringliteral	.gvar
 _test.parse.stringliteral_input	.gvar
-k	.alloc	_test.parse.stringliteral_k_c
+k	.closure	_test.parse.stringliteral_k_c
 test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.stringliteral	_test.parse.stringliteral_input	k
 	.app	_test.parse.stringliteral_label	test
 	.enter	test.property.label
