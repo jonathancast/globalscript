@@ -173,7 +173,11 @@ _test.parse_ubcasecont_input	.string	_rune.≡.k1.0\t.ubcasecont\n\t.enter\tbool
 
 _test.parse_gvars	.closure	_test.parse_gvars_c
 _test.parse_gvars_label	.string	Global\sValue\sVariable\sDeclarations
-_tests.parse_gvars	.list	test.property.t
+_tests.parse_gvars	.list	test.property.t	_test.parse_gvar_rune.no.hash
+
+_test.parse_gvar_rune.no.hash	.closure	_test.parse_gvar_rune.no.hash_c
+_test.parse_gvar_rune.no.hash_label	.string	qq{x\\t.rune\\t#\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
+_test.parse_gvar_rune.no.hash_input	.string	x\t.rune\t#\n
 
 -- §subsection String Code Expressions
 
@@ -1310,6 +1314,35 @@ _tests.parse_gvars	.gvar
 t	.apply	test.all	|	_tests.parse_gvars
 	.app	_test.parse_gvars_label	t
 	.enter	test.property.label
+
+-- §subsubsection §gs{qq{x\\t.rune\\t#\\n} =~ gsdl.ags.codeitem.gvars.parser}
+
+_test.parse_gvar_rune.no.hash_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+_test.parse_gvar_rune.no.hash_k_c	.subcode
+test.property.label	.gvar
+_test.parse_gvar_rune.no.hash_label	.gvar
+parser.test.assert.fails	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+list.fmtgs.byDefault	.gvar
+gsdl.ags.codeitem.gvar.fmtgs	.gvar
+gsdl.ags.codeitem.gvars.parser	.gvar
+_test.parse_gvar_rune.no.hash_input	.gvar
+list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
+list.gvar.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.gvar.t	|	gsdl.ags.codeitem.gvar.fmtgs
+k	.closure	_test.parse_gvar_rune.no.hash_k_c
+test	.apply	parser.test.assert.fails	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	list.gvar.fmtgs	gsdl.ags.codeitem.gvars.parser	_test.parse_gvar_rune.no.hash_input	k
+	.app	_test.parse_gvar_rune.no.hash_label	test
+	.enter	test.property.label
+
+_test.parse_gvar_rune.no.hash_k_c	.expr
+parser.err.t	.tygvar
+test.true	.gvar
+err	.larg	parser.err.t
+	.enter	test.true
 
 -- §subsection String Code Expressions
 
