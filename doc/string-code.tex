@@ -742,7 +742,7 @@ y	.lifted	x
 This binds \stringcode{y} to the image of \stringcode{x} under the unit of the lifting monad.
 
 \subsection{\stringcode{.cast}}
-\new{0.5}{in imperative block statements, a \stringcode{.lift} had to be put out in a \stringcode{.closure}.}
+\new{0.5}{in imperative block statements, a \stringcode{.coerce} had to be put out in a \stringcode{.closure}.}
 \unimpl{This is un-supported in imperative block statements as yet.}
 
 \begin{verbatim}
@@ -750,6 +750,16 @@ y	.cast	x	cof	tyx0	...	tyxn-1
 \end{verbatim}
 
 This binds \stringcode{x} to the image of \stringcode{x} under the application of the coercion \stringcode{cof} to the type variables \stringcode{tyx$_0$, $\ldots$, tyx$_{n-1}$}.
+
+\subsection{\stringcode{.apply}}
+\new{0.5}{in imperative block statements, a \stringcode{.app} had to be put out in a \stringcode{.closure}.}
+\unimpl{This is un-supported in imperative block statements as yet.}
+
+\begin{verbatim}
+y	.cast	f	tyx0	...	tyxn-1	|	x0	...	xm-1
+\end{verbatim}
+
+This binds \stringcode{y} to the image of \stringcode{f} a type arguments \stringcode{tyx$_0$ $\ldots$ tyx$_{n-1}$} and value arguments \stringcode{x$_0$ $\ldots$ x$_{m-1}$}.
 
 \section{Value Allocations}
 \label{value_alloc}
@@ -949,43 +959,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-int
-gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, char **fields, long n)
-{
-    static gsinterned_string gssymapply;
-
-    if (gssymceq(p->directive, gssymapply, gssymcodeop, ".apply")) {
-        STORE_VALUE_ALLOC_OP_LABEL(".apply");
-        if (n < 3)
-            gsfatal("%P: Missing function on .undefined", p->pos)
-        ;
-        p->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
-        for (i = 3; i < n && strcmp(fields[i], "|"); i++)
-            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-        if (i < n) {
-            p->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
-            i++;
-        }
-        for (; i < n; i++)
-            p->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
-        ;
-    } else {
-        return 0;
-    }
-    return 1;
-}
-
-#define NO_LABEL_ON_CONT() \
-    do { \
-        if (*fields[0]) \
-            gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno) \
-        ; else \
-            parsedline->label = 0 \
-        ; \
-    } while (0)
-
-static
 int
 gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
