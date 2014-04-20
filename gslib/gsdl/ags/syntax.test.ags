@@ -6,15 +6,11 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse.comment	_test.parse.dash.dash.comment	_test.parse.two.components	_test.parse.digit.in.alphanum	_test.parse.qualified.op	_test.parse.var	_test.parse.var.qualified	_test.parse.var.op	_test.parse.var.underbarred	_test.parse.stringliteral
+_tests	.list	test.property.t	_test.parse.comment	_test.parse.two.components	_test.parse.digit.in.alphanum	_test.parse.qualified.op	_test.parse.var	_test.parse.var.qualified	_test.parse.var.op	_test.parse.var.underbarred	_test.parse.stringliteral
 
 _test.parse.comment	.closure	_test.parse.comment_c
-_test.parse.comment_label	.string	qq{\\n#\sComment\\n}\s=~\swhitespace
-_test.parse.comment_input	.string	\n#\sComment\n
-
-_test.parse.dash.dash.comment	.closure	_test.parse.dash.dash.comment_c
-_test.parse.dash.dash.comment_label	.string	qq{\\n--\sComment\\n}\s=~\swhitespace
-_test.parse.dash.dash.comment_input	.string	\n--\sComment\n
+_test.parse.comment_label	.string	qq{\\n--\sComment\\n}\s=~\swhitespace
+_test.parse.comment_input	.string	\n--\sComment\n
 
 _test.parse.two.components	.closure	_test.parse.two.components_c
 _test.parse.two.components_label	.string	qq{fmtgs.prec}\s=~\ssyntax.id
@@ -56,7 +52,7 @@ _tests	.gvar
 	.app	_tests
 	.enter	test.all
 
--- §section §gs{qq{\\n# Comment\\n} =~ whitespace}
+-- §section §gs{qq{\\n-- Comment\\n} =~ whitespace}
 
 _test.parse.comment_c	.expr
 rune.t	.tygvar
@@ -76,31 +72,6 @@ test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune
 	.enter	test.property.label
 
 _test.parse.comment_k_c	.expr
-string.t	.tygvar
-test.true	.gvar
-s	.larg	string.t
-	.enter	test.true
-
--- §section §gs{qq{\\n-- Comment\\n} =~ whitespace}
-
-_test.parse.dash.dash.comment_c	.expr
-rune.t	.tygvar
-string.t	.tygvar
-_test.parse.dash.dash.comment_k_c	.subcode
-test.property.label	.gvar
-_test.parse.dash.dash.comment_label	.gvar
-parser.test.assert.passes	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-string.fmtgs	.gvar
-gsdl.ags.syntax.whitespace	.gvar
-_test.parse.dash.dash.comment_input	.gvar
-k	.closure	_test.parse.dash.dash.comment_k_c
-test	.apply	parser.test.assert.passes	rune.t	string.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.whitespace	_test.parse.dash.dash.comment_input	k
-	.app	_test.parse.dash.dash.comment_label	test
-	.enter	test.property.label
-
-_test.parse.dash.dash.comment_k_c	.expr
 string.t	.tygvar
 test.true	.gvar
 s	.larg	string.t
