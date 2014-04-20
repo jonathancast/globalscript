@@ -443,6 +443,16 @@ _gsdl.ags.syntax.stringliteral_re	.gvar
 
 	.type
 
+-- §section §gs{gsdl.ags.syntax.features.t}
+
+gsdl.ags.syntax.features.t	.tyexpr
+gsdl.ags.syntax.features.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.ags.syntax.features.prim.u
+
+gsdl.ags.syntax.features.prim.u	.tyexpr
+	.typroduct
+
 -- §section §gs{gsdl.ags.syntax.var}
 
 _gsdl.ags.syntax.var_components.p_ty	.tyexpr
