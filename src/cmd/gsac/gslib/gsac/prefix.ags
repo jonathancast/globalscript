@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.5
+#calculus: gsdl.string-code 0.6
 
 	.prefix
 
@@ -159,6 +159,7 @@ ibio.file.name.t	.tygvar
 _gsac.prefix.file.load_if_eif_c	.subcode
 _gsac.prefix.file.load_if_body_c	.subcode
 fn	.fv	ibio.file.name.t
+	.lift
 eif	.bind	.closure	_gsac.prefix.file.load_if_eif_c
 	.body	.closure	_gsac.prefix.file.load_if_body_c
 
@@ -277,6 +278,7 @@ _gsac.prefix.file.load_body_left_write_c	.subcode
 _gsac.prefix.file.load_body_left_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	parser.err.t
+	.lift
 	.bind	.closure	_gsac.prefix.file.load_body_left_write_c
 	.body	.closure	_gsac.prefix.file.load_body_left_body_c
 
