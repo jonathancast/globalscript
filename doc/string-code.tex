@@ -867,6 +867,17 @@ This declares the result of the block statement to be the result of executing th
 As with bind generators, the allocation operator can be any specified in section \ref{thunk_alloc},
 although since it will need to be of imperative type, not all allocations will be useful.\unimpl{Only \stringcode{.closure} is currently implemented.}
 
+\section{Evaluation Contexts}
+\label{cont_push}
+
+\subsection{\stringcode{.lift}}
+
+\begin{verbatim}
+	.lift
+\end{verbatim}
+
+This corresponds to the evaluation context \<\lfloor\bullet\rfloor\>, which returns the image of the following expression under the unit of the lifting monad.
+
 \chapter{Types}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -964,19 +975,9 @@ Interpolations aren't supported inside classes yet but they will be.
 int
 gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymlift, gssymcoerce, gssymapp, gssymforce, gssymstrict, gssymubanalyze;
+    static gsinterned_string gssymcoerce, gssymapp, gssymforce, gssymstrict, gssymubanalyze;
 
-    int i;
-
-    if (gssymceq(parsedline->directive, gssymlift, gssymcodeop, ".lift")) {
-        if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
-        else
-            parsedline->label = 0;
-        if (n > 2)
-            gsfatal("%s:%d: Too many arguments to .lift", pos->real_filename, pos->real_lineno)
-        ;
-    } else if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
+    if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
         if (n < 3)
             gsfatal("%s:%d: Missing coercion to apply");
         parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
