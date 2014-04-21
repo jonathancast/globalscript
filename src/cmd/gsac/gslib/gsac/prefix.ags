@@ -143,6 +143,7 @@ ibio.file.name.t	.tygvar
 _gsac.prefix.file.load_if_c	.subcode
 _gsac.prefix.file.load_pragmas.pos_c	.subcode
 _gsac.prefix.file.load_pos_c	.subcode
+_gsac.prefix.file.load_fs_c	.subcode
 _gsac.prefix.file.load_s_c	.subcode
 _gsac.prefix.file.load_body_c	.subcode
 eo	.larg	ibio.prim.oport	rune.t
@@ -151,6 +152,7 @@ fn	.larg	ibio.file.name.t
 if	.bind	.closure	_gsac.prefix.file.load_if_c
 pragmas.pos	.bind	.closure	_gsac.prefix.file.load_pragmas.pos_c
 pos	.closure	_gsac.prefix.file.load_pos_c
+fs	.closure	_gsac.prefix.file.load_fs_c
 s	.bind	.closure	_gsac.prefix.file.load_s_c
 	.body	.closure	_gsac.prefix.file.load_body_c
 
@@ -209,6 +211,10 @@ pragmas.pos	.fv	_gsdl.pragma.read_res.ty
 pos	.lfield	pos	pragmas.pos
 	.enter	pos
 
+_gsac.prefix.file.load_fs_c	.expr
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
+	.undef	gsdl.ags.syntax.features.t
+
 _gsac.prefix.file.load_s_c	.expr
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
@@ -231,7 +237,8 @@ ibio.file.name.t	.tygvar
 list.t	.tygvar
 gsdl.ags.file.t	.tygvar
 parser.err.t	.tygvar
-parser.pos.t	.tygvar	-- Temp
+parser.pos.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
 _gsac.prefix.file.load_body_k	.subcode
 either.t.out	.cogvar
 parser.parse	.gvar
@@ -241,9 +248,10 @@ gsdl.ags.file.parser	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 isags	.fv	bool.t
 fn	.fv	ibio.file.name.t
-s	.fv	list.t	rune.t
 pos	.fv	parser.pos.t
-fp	.apply	gsdl.ags.file.parser	|	isags
+fs	.fv	gsdl.ags.syntax.features.t
+s	.fv	list.t	rune.t
+fp	.apply	gsdl.ags.file.parser	|	fs	isags
 	.force	_gsac.prefix.file.load_body_k
 	.coerce	either.t.out	parser.err.t	gsdl.ags.file.t
 	.app	parser.rune.advance	rune.print	pos	fp	s

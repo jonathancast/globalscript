@@ -40,6 +40,7 @@ _tests	.gvar
 _test.parser.nil_c	.expr
 rune.t	.tygvar
 gsdl.ags.file.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parser.nil_k0_c	.subcode
 test.property.label	.gvar
 _test.parser.nil_label	.gvar
@@ -52,7 +53,8 @@ bool.false	.gvar
 list.nil	.gvar
 nil	.apply	list.nil	rune.t
 k0	.alloc	_test.parser.nil_k0_c
-fp	.apply	gsdl.ags.file.parser	|	bool.false
+fs	.undefined	gsdl.ags.syntax.features.t
+fp	.apply	gsdl.ags.file.parser	|	fs	bool.false
 test	.apply	parser.test.assert.fails	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	gsdl.ags.file.fmtgs	fp	nil	k0
 	.app	_test.parser.nil_label	test
 	.enter	test.property.label
@@ -68,6 +70,7 @@ err	.larg	parser.err.t
 _test.parser.empty.prefix_c	.expr
 rune.t	.tygvar
 gsdl.ags.file.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parser.empty.prefix_k0_c	.subcode
 test.property.label	.gvar
 _test.parser.empty.prefix_label	.gvar
@@ -78,7 +81,8 @@ gsdl.ags.file.parser	.gvar
 bool.false	.gvar
 _test.parser.empty.prefix_input	.gvar
 k0	.alloc	_test.parser.empty.prefix_k0_c
-fp	.apply	gsdl.ags.file.parser	|	bool.false
+fs	.undefined	gsdl.ags.syntax.features.t
+fp	.apply	gsdl.ags.file.parser	|	fs	bool.false
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	fp	_test.parser.empty.prefix_input	k0
 	.app	_test.parser.empty.prefix_label	test
 	.enter	test.property.label
@@ -147,6 +151,7 @@ test1	.apply	test.property.∧	|	cs.test	test2
 _test.parser.empty.doc_c	.expr
 rune.t	.tygvar
 gsdl.ags.file.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parser.empty.doc_k0_c	.subcode
 test.property.label	.gvar
 _test.parser.empty.doc_label	.gvar
@@ -157,7 +162,8 @@ gsdl.ags.file.parser	.gvar
 bool.false	.gvar
 _test.parser.empty.doc_input	.gvar
 k0	.alloc	_test.parser.empty.doc_k0_c
-fp	.apply	gsdl.ags.file.parser	|	bool.false
+fs	.undefined	gsdl.ags.syntax.features.t
+fp	.apply	gsdl.ags.file.parser	|	fs	bool.false
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	fp	_test.parser.empty.doc_input	k0
 	.app	_test.parser.empty.doc_label	test
 	.enter	test.property.label
