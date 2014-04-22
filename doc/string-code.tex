@@ -8,6 +8,8 @@
 
 \usepackage[utf8]{inputenc}
 
+\usepackage{amssymb}
+
 \newcommand\sequent\vdash
 \newcommand\bs{$\backslash$}
 
@@ -878,6 +880,14 @@ although since it will need to be of imperative type, not all allocations will b
 
 This corresponds to the evaluation context \<\lfloor\bullet\rfloor\>, which returns the image of the following expression under the unit of the lifting monad.
 
+\subsection{\stringcode{.coerce}}
+
+\begin{verbatim}
+	.coerce	cof	tyx0	...	tyxn-1
+\end{verbatim}
+This corresponds to the evaluation context \<\bullet\;"\!\rhd\;cof (\hskwd{type} tyx_0) \ldots (\hskwd{type} tyx_{n-1})\>,
+which returns the image of the following expression under the given coercion.
+
 \chapter{Types}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -975,16 +985,9 @@ Interpolations aren't supported inside classes yet but they will be.
 int
 gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymcoerce, gssymapp, gssymforce, gssymstrict, gssymubanalyze;
+    static gsinterned_string gssymapp, gssymforce, gssymstrict, gssymubanalyze;
 
-    if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
-        if (n < 3)
-            gsfatal("%s:%d: Missing coercion to apply");
-        parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
-        for (i = 1; 2+i < n; i++) {
-            parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i]);
-        }
-    } else if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".app")) {
+    if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".app")) {
         if (*fields[0])
             gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
         else
