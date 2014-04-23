@@ -42,7 +42,8 @@ gsdl.ags.syntax.keywords	.list	string.t	_gsdl.ags.syntax.keywords_0
 _gsdl.ags.syntax.keywords_0	.string	|
 
 gsdl.ags.syntax.rune.literal	.closure	_gsdl.ags.syntax.rune.literal_c
-gsdl.ags.syntax.rune.literal.re	.regex	[^\\\s\n\t#]|\\[\\hnst]
+gsdl.ags.syntax.rune.literal.re.hash.special	.regex	[^\\\s\n\t#]|\\[\\hnst]
+gsdl.ags.syntax.rune.literal.re.hash.normal	.regex	[^\\\s\n\t]|\\[\\nst]
 
 gsdl.ags.syntax.stringliteral	.closure	_gsdl.ags.syntax.stringliteral_c
 _gsdl.ags.syntax.stringliteral_re	.regex	[^\s\t\n][^\s\t\n]*
@@ -424,12 +425,30 @@ s		.fkarg	0	string.t
 -- §section §gs{gsdl.ags.syntax.rune.literal}
 
 _gsdl.ags.syntax.rune.literal_c	.expr
+gsdl.ags.syntax.features.t	.tygvar
+_gsdl.ags.syntax.rune.literal_k	.subcode
+bool.t.out	.cogvar
+fs	.larg	gsdl.ags.syntax.features.t
+hn	.lfield	hash.normal	fs
+	.force	_gsdl.ags.syntax.rune.literal_k
+	.coerce	bool.t.out
+	.enter	hn
+
+_gsdl.ags.syntax.rune.literal_k	.forcecont
+bool.prim.u	.tygvar
 rune.t	.tygvar
 parser.match	.gvar
 rune.compare	.gvar
-gsdl.ags.syntax.rune.literal.re	.gvar
-	.app	rune.compare	gsdl.ags.syntax.rune.literal.re
-	.enter	parser.match	rune.t
+gsdl.ags.syntax.rune.literal.re.hash.special	.gvar
+gsdl.ags.syntax.rune.literal.re.hash.normal	.gvar
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.app	rune.compare	gsdl.ags.syntax.rune.literal.re.hash.special
+			.enter	parser.match	rune.t
+		.case	true
+			.app	rune.compare	gsdl.ags.syntax.rune.literal.re.hash.normal
+			.enter	parser.match	rune.t
 
 -- §section §gs{gsdl.ags.syntax.stringliteral}
 

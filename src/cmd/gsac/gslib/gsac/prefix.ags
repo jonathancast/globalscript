@@ -325,6 +325,7 @@ bool.t.out	.cogvar
 string.≡	.gvar
 _gsac.prefix.file.load_body_cv_0.2.s	.gvar
 either.right	.gvar
+bool.false	.gvar
 v	.fv	string.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
@@ -334,7 +335,7 @@ b0	.karg	bool.prim.u
 			.app	v	_gsac.prefix.file.load_body_cv_0.2.s
 			.enter	string.≡
 		.case	true
-fs			.undefined	gsdl.ags.syntax.features.t
+fs			.lrecord	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 			.app	fs
 			.enter	either.right	string.t	gsdl.ags.syntax.features.t
 

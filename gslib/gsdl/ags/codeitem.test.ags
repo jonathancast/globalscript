@@ -173,15 +173,23 @@ _test.parse_ubcasecont_input	.string	_rune.≡.k1.0\t.ubcasecont\n\t.enter\tbool
 
 _test.parse_gvars	.closure	_test.parse_gvars_c
 _test.parse_gvars_label	.string	Global\sValue\sVariable\sDeclarations
-_tests.parse_gvars	.list	test.property.t	_test.parse_gvar_rune.no.hash	_test.parse_gvar_rune.bs.h
+_tests.parse_gvars	.list	test.property.t	_test.parse_gvar_rune.no.hash	_test.parse_gvar_rune.bs.h	_test.parse_gvar_0.2.rune.hash	_test.parse_gvar_0.2.rune.no.bs.h
 
 _test.parse_gvar_rune.no.hash	.closure	_test.parse_gvar_rune.no.hash_c
 _test.parse_gvar_rune.no.hash_label	.string	qq{x\\t.rune\\t#\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
 _test.parse_gvar_rune.no.hash_input	.string	x\t.rune\t#\n
 
 _test.parse_gvar_rune.bs.h	.closure	_test.parse_gvar_rune.bs.h_c
-_test.parse_gvar_rune.bs.h_label	.string	qq{x\\t.rune\\t\\h\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
+_test.parse_gvar_rune.bs.h_label	.string	qq{x\\t.rune\\t\\\\h\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
 _test.parse_gvar_rune.bs.h_input	.string	x\t.rune\t\\h\n
+
+_test.parse_gvar_0.2.rune.hash	.closure	_test.parse_gvar_0.2.rune.hash_c
+_test.parse_gvar_0.2.rune.hash_label	.string	qq{x\\t.rune\\t#\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
+_test.parse_gvar_0.2.rune.hash_input	.string	x\t.rune\t#\n
+
+_test.parse_gvar_0.2.rune.no.bs.h	.closure	_test.parse_gvar_0.2.rune.no.bs.h_c
+_test.parse_gvar_0.2.rune.no.bs.h_label	.string	qq{x\\t.rune\\t\\\\h\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
+_test.parse_gvar_0.2.rune.no.bs.h_input	.string	x\t.rune\t\\h\n
 
 -- §subsection String Code Expressions
 
@@ -728,7 +736,7 @@ expected			.apply	list.singleton	gsdl.ags.codeitem.gvar.t	|	expected.0
 _test.parse_expr.rune_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
-gsdl.ags.syntax.features.t	.tygvar	-- Temp
+gsdl.ags.syntax.features.t	.tygvar
 _test.parse_expr.rune_k_c	.subcode
 test.property.label	.gvar
 _test.parse_expr.rune_label	.gvar
@@ -736,9 +744,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.rune_input	.gvar
 k	.closure	_test.parse_expr.rune_k_c
-fs	.undefined	gsdl.ags.syntax.features.t
+fs	.lrecord	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.rune_input	k
 	.app	_test.parse_expr.rune_label	test
@@ -1406,7 +1415,7 @@ _test.parse_gvar_rune.no.hash_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
-gsdl.ags.syntax.features.t	.tygvar	-- Temp
+gsdl.ags.syntax.features.t	.tygvar
 _test.parse_gvar_rune.no.hash_k_c	.subcode
 test.property.label	.gvar
 _test.parse_gvar_rune.no.hash_label	.gvar
@@ -1416,11 +1425,12 @@ rune.print	.gvar
 list.fmtgs.byDefault	.gvar
 gsdl.ags.codeitem.gvar.fmtgs	.gvar
 gsdl.ags.codeitem.gvars.parser	.gvar
+bool.false	.gvar
 _test.parse_gvar_rune.no.hash_input	.gvar
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 list.gvar.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.gvar.t	|	gsdl.ags.codeitem.gvar.fmtgs
 k	.closure	_test.parse_gvar_rune.no.hash_k_c
-fs	.undefined	gsdl.ags.syntax.features.t
+fs	.lrecord	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 gvs.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
 test	.apply	parser.test.assert.fails	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	list.gvar.fmtgs	gvs.p	_test.parse_gvar_rune.no.hash_input	k
 	.app	_test.parse_gvar_rune.no.hash_label	test
@@ -1438,7 +1448,7 @@ _test.parse_gvar_rune.bs.h_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
-gsdl.ags.syntax.features.t	.tygvar	-- Temp
+gsdl.ags.syntax.features.t	.tygvar
 _test.parse_gvar_rune.bs.h_k_c	.subcode
 test.property.label	.gvar
 _test.parse_gvar_rune.bs.h_label	.gvar
@@ -1446,10 +1456,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.gvars.parser	.gvar
+bool.false	.gvar
 _test.parse_gvar_rune.bs.h_input	.gvar
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 k	.closure	_test.parse_gvar_rune.bs.h_k_c
-fs	.undefined	gsdl.ags.syntax.features.t
+fs	.lrecord	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 gvs.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	gvs.p	_test.parse_gvar_rune.bs.h_input	k
 	.app	_test.parse_gvar_rune.bs.h_label	test
@@ -1460,6 +1471,70 @@ list.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
 test.true	.gvar
 gvs	.larg	list.t	gsdl.ags.codeitem.gvar.t
+	.enter	test.true
+
+-- §subsubsection §gs{qq{x\\t.rune\\t#\\n} =~ gsdl.ags.codeitem.gvars.parser} (version 0.2)
+
+_test.parse_gvar_0.2.rune.hash_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_test.parse_gvar_0.2.rune.hash_k_c	.subcode
+test.property.label	.gvar
+_test.parse_gvar_0.2.rune.hash_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.gvars.parser	.gvar
+bool.true	.gvar
+_test.parse_gvar_0.2.rune.hash_input	.gvar
+list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
+k	.closure	_test.parse_gvar_0.2.rune.hash_k_c
+fs	.lrecord	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+gvs.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	gvs.p	_test.parse_gvar_0.2.rune.hash_input	k
+	.app	_test.parse_gvar_0.2.rune.hash_label	test
+	.enter	test.property.label
+
+_test.parse_gvar_0.2.rune.hash_k_c	.expr
+list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+test.true	.gvar
+gvs	.larg	list.t	gsdl.ags.codeitem.gvar.t
+	.enter	test.true
+
+-- §subsubsection §gs{qq{x\\t.rune\\t\\h\\n} =~ gsdl.ags.codeitem.gvars.parser} (version 0.2)
+
+_test.parse_gvar_0.2.rune.no.bs.h_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_test.parse_gvar_0.2.rune.no.bs.h_k_c	.subcode
+test.property.label	.gvar
+_test.parse_gvar_0.2.rune.no.bs.h_label	.gvar
+parser.test.assert.fails	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+list.fmtgs.byDefault	.gvar
+gsdl.ags.codeitem.gvar.fmtgs	.gvar
+gsdl.ags.codeitem.gvars.parser	.gvar
+bool.true	.gvar
+_test.parse_gvar_0.2.rune.no.bs.h_input	.gvar
+list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
+k	.closure	_test.parse_gvar_0.2.rune.no.bs.h_k_c
+list.gvar.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.gvar.t	|	gsdl.ags.codeitem.gvar.fmtgs
+fs	.lrecord	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+gvs.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
+test	.apply	parser.test.assert.fails	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	list.gvar.fmtgs	gvs.p	_test.parse_gvar_0.2.rune.no.bs.h_input	k
+	.app	_test.parse_gvar_0.2.rune.no.bs.h_label	test
+	.enter	test.property.label
+
+_test.parse_gvar_0.2.rune.no.bs.h_k_c	.expr
+parser.err.t	.tygvar
+test.true	.gvar
+err	.larg	parser.err.t
 	.enter	test.true
 
 -- §subsection String Code Expressions

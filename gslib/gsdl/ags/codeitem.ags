@@ -1215,6 +1215,7 @@ pos	.undefined	gsdl.sourcepos.t
 	.enter	gsdl.ags.codeitem.gvar.gvar
 
 _gsdl.ags.codeitem.gvars.parser_rune.p_c	.expr
+gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
 string.t	.tygvar
@@ -1232,10 +1233,12 @@ _gsdl.ags.codeitem.gvars.parser_rune.p_rune.re	.gvar
 gsdl.ags.syntax.rune.literal	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
+fs	.fv	gsdl.ags.syntax.features.t
 f	.closure	_gsdl.ags.codeitem.gvars.parser_rune.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 rune.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.gvars.parser_rune.p_rune.re
-lit.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.rune.literal
+rune.list.p	.apply	gsdl.ags.syntax.rune.literal	|	fs
+lit.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	rune.list.p
 lit.p1	.apply	parser.*>	rune.t	string.t	string.t	|	rune.p	lit.p2
 lit.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	lit.p1
 p	.apply	parser.lift3	rune.t	parser.pos.t	string.t	string.t	gsdl.ags.codeitem.gvar.t	|	f	pos.get	gsdl.ags.syntax.id	lit.p
