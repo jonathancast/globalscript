@@ -11,7 +11,7 @@ _tests	.list	test.property.t	_test.parse	_test.eq
 -- §section Parsers
 
 _test.parse	.closure	_test.parse_c
-_tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_strictcont.items	_test.parse_impprog.items	_test.parse_ubcasecont.items	_test.parse_gvars	_test.parse_exprs
+_tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_strictcont.items	_test.parse_impprog.items	_test.parse_ubcasecont.items	_test.parse_gvars	_test.parse_allocs	_test.parse_exprs
 
 -- §subsection Code Segments
 
@@ -190,6 +190,13 @@ _test.parse_gvar_0.2.rune.hash_input	.string	x\t.rune\t#\n
 _test.parse_gvar_0.2.rune.no.bs.h	.closure	_test.parse_gvar_0.2.rune.no.bs.h_c
 _test.parse_gvar_0.2.rune.no.bs.h_label	.string	qq{x\\t.rune\\t\\\\h\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
 _test.parse_gvar_0.2.rune.no.bs.h_input	.string	x\t.rune\t\\h\n
+
+-- §subsection Expression Generators
+
+_test.parse_allocs	.closure	_test.parse_allocs_c
+_test.parse_allocs_label	.string	Expression\sGenerators
+
+_tests.parse_allocs	.list	test.property.t
 
 -- §subsection String Code Expressions
 
@@ -1536,6 +1543,17 @@ parser.err.t	.tygvar
 test.true	.gvar
 err	.larg	parser.err.t
 	.enter	test.true
+	
+-- §subsection Expression Generators
+
+_test.parse_allocs_c	.expr
+test.property.label	.gvar
+_test.parse_allocs_label	.gvar
+test.all	.gvar
+_tests.parse_allocs	.gvar
+test	.apply	test.all	|	_tests.parse_allocs
+	.app	_test.parse_allocs_label	test
+	.enter	test.property.label
 
 -- §subsection String Code Expressions
 
