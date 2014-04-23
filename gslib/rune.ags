@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.1
+#calculus: gsdl.string-code 0.2
 
 	.prefix
 
@@ -334,7 +334,7 @@ sp	.rune	\s
 
 _rune.number.sign_c	.expr
 rune.t.in	.cogvar
-hs	.rune	\h
+hs	.rune	#
 	.coerce	rune.t.in
 	.lift
 	.yield	hs
