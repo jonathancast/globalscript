@@ -451,7 +451,8 @@ gsdl.ags.syntax.features.prim.u	.tygvar
 	.tyref	gsdl.ags.syntax.features.prim.u
 
 gsdl.ags.syntax.features.prim.u	.tyexpr
-	.typroduct
+bool.t	.tygvar
+	.typroduct	hash.normal	bool.t
 
 -- §section §gs{gsdl.ags.syntax.var}
 
