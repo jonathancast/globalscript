@@ -345,12 +345,13 @@ string.t	.tygvar
 gsdl.ags.syntax.features.t	.tygvar
 either.t	.tygvar	-- Temp
 either.right	.gvar
+bool.true	.gvar
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
 			.undef	either.t	string.t	gsdl.ags.syntax.features.t
 		.case	true
-fs			.undefined	gsdl.ags.syntax.features.t
+fs			.lrecord	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 			.app	fs
 			.enter	either.right	string.t	gsdl.ags.syntax.features.t
 
