@@ -888,6 +888,14 @@ This corresponds to the evaluation context \<\lfloor\bullet\rfloor\>, which retu
 This corresponds to the evaluation context \<\bullet\;"\!\rhd\;cof (\hskwd{type} tyx_0) \ldots (\hskwd{type} tyx_{n-1})\>,
 which returns the image of the following expression under the given coercion.
 
+\subsection{\stringcode{.app}}
+
+\begin{verbatim}
+	.app	x0	...	xn-1
+\end{verbatim}
+This corresponds to the evalution context \<\bullet\;x_0\;\ldots\;x_n{-1}\>,
+which returns the image of the given arguments under the following expression.
+
 \chapter{Types}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -985,20 +993,9 @@ Interpolations aren't supported inside classes yet but they will be.
 int
 gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymapp, gssymforce, gssymstrict, gssymubanalyze;
+    static gsinterned_string gssymforce, gssymstrict, gssymubanalyze;
 
-    if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".app")) {
-        if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
-        else
-            parsedline->label = 0;
-        if (n < 3)
-            gswarning("%s:%d: Nullary applications don't do anything", pos->real_filename, pos->real_lineno)
-        ;
-        for (i = 2; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
-        ;
-    } else if (gssymceq(parsedline->directive, gssymforce, gssymcodeop, ".force")) {
+    if (gssymceq(parsedline->directive, gssymforce, gssymcodeop, ".force")) {
         if (*fields[0])
             gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
         else
