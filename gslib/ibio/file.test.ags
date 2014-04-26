@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.1
+#calculus: gsdl.string-code 0.2
 
 	.document
 
@@ -21,7 +21,7 @@ _test.fmtgs.foo_fn.s	.string	./foo
 _test.fmtgs.foo_expected	.string	fn<./foo>
 
 _test.exts.of.qual.fn	.closure	_test.exts.of.qual.fn_c
-_test.exts.of.qual.fn_label	.string	\hexts\s(components.get\sfn<foo/bar.gs>)
+_test.exts.of.qual.fn_label	.string	#exts\s(components.get\sfn<foo/bar.gs>)
 _test.exts.of.qual.fn_fn.s	.string	foo/bar.gs
 _test.exts.of.qual.fn_expected	.list	string.t	_test.exts.of.qual.fn_expected_bar.s
 _test.exts.of.qual.fn_expected_bar.s	.string	gs
