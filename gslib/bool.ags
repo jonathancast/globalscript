@@ -27,11 +27,26 @@ bool.fmtgs.list	.closure	_bool.fmtgs.list_c
 
 _bool.elim_c	.expr
 bool.t	.tygvar
+_bool.elim_k	.subcode
+bool.t.out	.cogvar
 β	.tyarg	*
 e	.larg	β
 t	.larg	β
 b	.larg	bool.t
-	.undef	β
+	.force	_bool.elim_k
+	.coerce	bool.t.out
+	.enter	b
+
+_bool.elim_k	.forcecont
+bool.prim.u	.tygvar
+β	.tyfv	*
+e	.fv	β
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.enter	e
+		.case	true
+			.undef	β
 
 -- §section Constructors
 
