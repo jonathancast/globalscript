@@ -1566,6 +1566,7 @@ _tests.parse_exprs	.gvar
 -- §subsubsection §gs{qq{\\t.force\\t_foo_k\\n\\t.enter\\tfoo\\n} =~ expr.parser}
 
 _test.parse_expr.force_c	.expr
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 _test.parse_expr.force_k_c	.subcode
@@ -1577,7 +1578,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.force_input	.gvar
 k	.closure	_test.parse_expr.force_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.force_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.force_input	k
 	.app	_test.parse_expr.force_label	test
 	.enter	test.property.label
 
@@ -1616,6 +1619,7 @@ e		.fkarg	2	gsdl.ags.codeitem.expr.t
 -- §subsubsection §gs{qq{\\t.strict\\t_foo_k\\n\\t.enter\\tfoo\\n} =~ expr.parser}
 
 _test.parse_expr.strict_c	.expr
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 _test.parse_expr.strict_k_c	.subcode
@@ -1627,7 +1631,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.strict_input	.gvar
 k	.closure	_test.parse_expr.strict_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.strict_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.strict_input	k
 	.app	_test.parse_expr.strict_label	test
 	.enter	test.property.label
 
@@ -1642,6 +1648,7 @@ ci	.larg	gsdl.ags.codeitem.expr.t
 _test.parse_expr.coerce_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parse_expr.coerce_k_c	.subcode
 test.property.label	.gvar
 _test.parse_expr.coerce_label	.gvar
@@ -1651,7 +1658,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.coerce_input	.gvar
 k	.closure	_test.parse_expr.coerce_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.coerce_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.coerce_input	k
 	.app	_test.parse_expr.coerce_label	test
 	.enter	test.property.label
 
@@ -1694,6 +1703,7 @@ e		.fkarg	3	gsdl.ags.codeitem.expr.t
 _test.parse_expr.app_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parse_expr.app_k_c	.subcode
 test.property.label	.gvar
 _test.parse_expr.app_label	.gvar
@@ -1703,7 +1713,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.app_input	.gvar
 k	.closure	_test.parse_expr.app_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.app_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.app_input	k
 	.app	_test.parse_expr.app_label	test
 	.enter	test.property.label
 
@@ -1750,6 +1762,7 @@ list.string.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
 _test.parse_expr.ubanalyze_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parse_expr.ubanalyze_k_c	.subcode
 test.property.label	.gvar
 _test.parse_expr.ubanalyze_label	.gvar
@@ -1759,7 +1772,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.ubanalyze_input	.gvar
 k	.closure	_test.parse_expr.ubanalyze_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.ubanalyze_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.ubanalyze_input	k
 	.app	_test.parse_expr.ubanalyze_label	test
 	.enter	test.property.label
 
@@ -1774,6 +1789,7 @@ actual	.larg	gsdl.ags.codeitem.expr.t
 _test.parse_expr.enter_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parse_expr.enter_k_c	.subcode
 test.property.label	.gvar
 _test.parse_expr.enter_label	.gvar
@@ -1783,7 +1799,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.enter_input	.gvar
 k	.closure	_test.parse_expr.enter_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.enter_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.enter_input	k
 	.app	_test.parse_expr.enter_label	test
 	.enter	test.property.label
 
@@ -1809,6 +1827,7 @@ expected	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.parse_expr.enter_k_foo.
 _test.parse_expr.analyze_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parse_expr.analyze_k_c	.subcode
 test.property.label	.gvar
 _test.parse_expr.analyze_label	.gvar
@@ -1818,7 +1837,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.analyze_input	.gvar
 k	.closure	_test.parse_expr.analyze_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.analyze_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.analyze_input	k
 	.app	_test.parse_expr.analyze_label	test
 	.enter	test.property.label
 
@@ -1833,6 +1854,7 @@ e	.larg	gsdl.ags.codeitem.expr.t
 _test.parse_expr.analyze.fkarg_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parse_expr.analyze.fkarg_k_c	.subcode
 test.property.label	.gvar
 _test.parse_expr.analyze.fkarg_label	.gvar
@@ -1842,7 +1864,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.analyze.fkarg_input	.gvar
 k	.closure	_test.parse_expr.analyze.fkarg_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.analyze.fkarg_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.analyze.fkarg_input	k
 	.app	_test.parse_expr.analyze.fkarg_label	test
 	.enter	test.property.label
 
@@ -1857,6 +1881,7 @@ e	.larg	gsdl.ags.codeitem.expr.t
 _test.parse_expr.gsanalyze.apply_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parse_expr.gsanalyze.apply_k_c	.subcode
 test.property.label	.gvar
 _test.parse_expr.gsanalyze.apply_label	.gvar
@@ -1866,7 +1891,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.gsanalyze.apply_input	.gvar
 k	.closure	_test.parse_expr.gsanalyze.apply_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.gsanalyze.apply_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.gsanalyze.apply_input	k
 	.app	_test.parse_expr.gsanalyze.apply_label	test
 	.enter	test.property.label
 
@@ -1881,6 +1908,7 @@ e	.larg	gsdl.ags.codeitem.expr.t
 _test.parse_expr.ubprim_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parse_expr.ubprim_k_c	.subcode
 test.property.label	.gvar
 _test.parse_expr.ubprim_label	.gvar
@@ -1890,7 +1918,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.ubprim_input	.gvar
 k	.closure	_test.parse_expr.ubprim_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.ubprim_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.ubprim_input	k
 	.app	_test.parse_expr.ubprim_label	test
 	.enter	test.property.label
 
@@ -1905,6 +1935,7 @@ e	.larg	gsdl.ags.codeitem.expr.t
 _test.parse_expr.lprim_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
 _test.parse_expr.lprim_k_c	.subcode
 test.property.label	.gvar
 _test.parse_expr.lprim_label	.gvar
@@ -1914,7 +1945,9 @@ rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 _test.parse_expr.lprim_input	.gvar
 k	.closure	_test.parse_expr.lprim_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.parser	_test.parse_expr.lprim_input	k
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.lprim_input	k
 	.app	_test.parse_expr.lprim_label	test
 	.enter	test.property.label
 
