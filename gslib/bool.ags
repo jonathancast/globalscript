@@ -4,6 +4,8 @@
 
 	.data
 
+bool.elim	.closure	_bool.elim_c
+
 bool.true	.closure	_bool.true.c
 bool.false	.closure	_bool.false.c
 
@@ -20,6 +22,16 @@ _bool.fmtgs_true.s	.string	true
 bool.fmtgs.list	.closure	_bool.fmtgs.list_c
 
 	.code
+
+-- §section §gs{bool.elim}
+
+_bool.elim_c	.expr
+bool.t	.tygvar
+β	.tyarg	*
+e	.larg	β
+t	.larg	β
+b	.larg	bool.t
+	.undef	β
 
 -- §section Constructors
 
