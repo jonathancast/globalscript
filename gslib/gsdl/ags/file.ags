@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -154,7 +154,7 @@ ds0	.karg	list.prim.u	gsdl.ags.dataitem.t
 		.case	:
 d0		.fkarg	0	gsdl.ags.dataitem.t
 ds1		.fkarg	1	list.t	gsdl.ags.dataitem.t
-d0.s			.alloc	_gsdl.ags.file.print_dataitems_d0.s_c
+d0.s			.closure	_gsdl.ags.file.print_dataitems_d0.s_c
 			.app	rune.new.line	d0.s
 			.enter	list.:	rune.t
 		.case	nil
@@ -227,7 +227,7 @@ nm		.fkarg	1	maybe.t	gsdl.var.t
 co		.fkarg	2	gsdl.var.t
 ty		.fkarg	3	maybe.t	gsdl.var.t
 nm.s			.apply	maybe.maybe	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	nm
-ty.s.print			.alloc	_gsdl.ags.file.print_dataitems_:_closure_ty.s.print_c
+ty.s.print			.closure	_gsdl.ags.file.print_dataitems_:_closure_ty.s.print_c
 ty.s			.apply	maybe.maybe	gsdl.var.t	diff.list.rune.ty	|	nil	ty.s.print	ty
 co.s			.apply	gsdl.ags.syntax.var.print	|	co
 s0.4			.apply	list.:	rune.t	|	rune.new.line	s1
@@ -313,7 +313,7 @@ gsdl.ags.codeitem.print	.gvar
 c0	.arg	gsdl.ags.codeitem.t
 cs1	.arg	list.t	gsdl.ags.codeitem.t
 tys.s	.arg	string.t
-s2	.alloc	_gsdl.ags.file.print_codeitems_s2_c
+s2	.closure	_gsdl.ags.file.print_codeitems_s2_c
 s1	.apply	gsdl.ags.codeitem.print	|	c0	s2
 	.app	rune.new.line	s1
 	.enter	list.:	rune.t
@@ -444,7 +444,7 @@ gsdl.ags.coercionitem.print	.gvar
 file0	.arg	gsdl.ags.file.prim.u
 co0	.arg	gsdl.ags.coercionitem.t
 cos	.arg	list.t	gsdl.ags.coercionitem.t
-s1	.alloc	_gsdl.ags.file.print_coercionitems_s1_c
+s1	.closure	_gsdl.ags.file.print_coercionitems_s1_c
 s0	.apply	gsdl.ags.coercionitem.print	|	co0	s1
 	.app	rune.new.line	s0
 	.enter	list.:	rune.t
@@ -501,7 +501,7 @@ _codeitems_ty	.tylet	list.t	gsdl.ags.codeitem.t
 _typeitems_ty	.tylet	list.t	gsdl.ags.typeitem.t
 _coercionitems_ty	.tylet	list.t	gsdl.ags.coercionitem.t
 isags	.larg	bool.t
-f	.alloc	_gsdl.ags.file.parser_f_c
+f	.closure	_gsdl.ags.file.parser_f_c
 das.p	.apply	gsdl.ags.dataitem.segment.parser	|	isags
 cs.p	.apply	gsdl.ags.codeitem.segment.parser	|	fs
 	.app	f	gsdl.ags.file.filetype.parser	das.p	cs.p	gsdl.ags.typeitem.segment.parser	gsdl.ags.coercionitem.segment.parser
