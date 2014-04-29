@@ -41,12 +41,13 @@ _bool.elim_k	.forcecont
 bool.prim.u	.tygvar
 β	.tyfv	*
 e	.fv	β
+t	.fv	β
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
 			.enter	e
 		.case	true
-			.undef	β
+			.enter	t
 
 -- §section Constructors
 
