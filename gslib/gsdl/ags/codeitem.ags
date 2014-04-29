@@ -79,7 +79,8 @@ gsdl.ags.codeitem.arg.lift	.closure	_gsdl.ags.codeitem.arg.lift_c
 gsdl.ags.codeitem.arg.pos	.closure	_gsdl.ags.codeitem.arg.pos_c
 
 gsdl.ags.codeitem.allocs.parser	.closure	_gsdl.ags.codeitem.allocs.parser_c
-_gsdl.ags.codeitem.allocs.parser_alloc.p_alloc.re	.regex	.alloc
+_gsdl.ags.codeitem.allocs.parser_closure.p_alloc.re	.regex	.alloc
+_gsdl.ags.codeitem.allocs.parser_closure.p_closure.re	.regex	.closure
 _gsdl.ags.codeitem.allocs.parser_apply.p_apply.kw.re	.regex	.apply
 _gsdl.ags.codeitem.allocs.parser_constr.p_kw.re	.regex	.constr
 _gsdl.ags.codeitem.allocs.parser_field.p_field.re	.regex	.field
@@ -1626,7 +1627,7 @@ _gsdl.ags.codeitem.allocs.parser_c	.expr
 gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
-_gsdl.ags.codeitem.allocs.parser_alloc.p_c	.subcode
+_gsdl.ags.codeitem.allocs.parser_closure.p_c	.subcode
 _gsdl.ags.codeitem.allocs.parser_apply.p_c	.subcode
 _gsdl.ags.codeitem.allocs.parser_constr.p_c	.subcode
 _gsdl.ags.codeitem.allocs.parser_field.p_c	.subcode
@@ -1637,7 +1638,7 @@ _gsdl.ags.codeitem.allocs.parser_undefined.p_c	.subcode
 parser.many	.gvar
 parser.<|>	.gvar
 fs	.larg	gsdl.ags.syntax.features.t
-alloc.p	.closure	_gsdl.ags.codeitem.allocs.parser_alloc.p_c
+closure.p	.closure	_gsdl.ags.codeitem.allocs.parser_closure.p_c
 apply.p	.closure	_gsdl.ags.codeitem.allocs.parser_apply.p_c
 constr.p	.closure	_gsdl.ags.codeitem.allocs.parser_constr.p_c
 field.p	.closure	_gsdl.ags.codeitem.allocs.parser_field.p_c
@@ -1651,16 +1652,18 @@ p4	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	impprim.p	p5
 p3	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	field.p	p4
 p2	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	constr.p	p3
 p1	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	apply.p	p2
-p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	alloc.p	p1
+p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.alloc.t	|	closure.p	p1
 	.app	p
 	.enter	parser.many	rune.t	gsdl.ags.codeitem.alloc.t
 
-_gsdl.ags.codeitem.allocs.parser_alloc.p_c	.expr
+_gsdl.ags.codeitem.allocs.parser_closure.p_c	.expr
+gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 string.t	.tygvar
 parser.pos.t	.tygvar
-_gsdl.ags.codeitem.allocs.parser_alloc.p_f_c	.subcode
+regex.t	.tygvar
+_gsdl.ags.codeitem.allocs.parser_closure.p_f_c	.subcode
 parser.<*	.gvar
 parser.lift3	.gvar
 parser.pos.get	.gvar
@@ -1669,20 +1672,27 @@ parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
 rune.compare	.gvar
-_gsdl.ags.codeitem.allocs.parser_alloc.p_alloc.re	.gvar
+bool.elim	.gvar
+_gsdl.ags.codeitem.allocs.parser_closure.p_alloc.re	.gvar
+_gsdl.ags.codeitem.allocs.parser_closure.p_closure.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
-f	.closure	_gsdl.ags.codeitem.allocs.parser_alloc.p_f_c
+bool.false	.gvar	-- Temp
+fs	.fv	gsdl.ags.syntax.features.t
+regex.rune.ty	.tylet	regex.t	rune.t
+f	.closure	_gsdl.ags.codeitem.allocs.parser_closure.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
-alloc.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.allocs.parser_alloc.p_alloc.re
+fs.closure	.lfield	closure	fs
+closure.re	.apply	bool.elim	regex.rune.ty	|	_gsdl.ags.codeitem.allocs.parser_closure.p_alloc.re	_gsdl.ags.codeitem.allocs.parser_closure.p_closure.re	fs.closure
+closure.p	.apply	parser.match	rune.t	|	rune.compare	closure.re
 codenm.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-codenm.p1	.apply	parser.*>	rune.t	string.t	string.t	|	alloc.p	codenm.p2
+codenm.p1	.apply	parser.*>	rune.t	string.t	string.t	|	closure.p	codenm.p2
 codenm.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	codenm.p1
 p	.apply	parser.lift3	rune.t	parser.pos.t	string.t	string.t	gsdl.ags.codeitem.alloc.t	|	f	pos.get	gsdl.ags.syntax.id	codenm.p
 	.app	p	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.codeitem.alloc.t	string.t
 
-_gsdl.ags.codeitem.allocs.parser_alloc.p_f_c	.expr
+_gsdl.ags.codeitem.allocs.parser_closure.p_f_c	.expr
 parser.pos.t	.tygvar
 string.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar	-- Temp
