@@ -471,7 +471,7 @@ gsdl.ags.syntax.features.prim.u	.tygvar
 
 gsdl.ags.syntax.features.prim.u	.tyexpr
 bool.t	.tygvar
-	.typroduct	hash.normal	bool.t
+	.typroduct	closure	bool.t	hash.normal	bool.t
 
 -- §section §gs{gsdl.ags.syntax.var}
 
