@@ -11,7 +11,7 @@ _tests	.list	test.property.t	_test.parse	_test.eq
 -- §section Parsers
 
 _test.parse	.closure	_test.parse_c
-_tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_strictcont.items	_test.parse_impprog.items	_test.parse_ubcasecont.items	_test.parse_gvars	_test.parse_allocs	_test.parse_exprs
+_tests.parse	.list	test.property.t	_test.parse_segments	_test.parse_expr.items	_test.parse_forcecont.items	_test.parse_strictcont.items	_test.parse_impprog.items	_test.parse_ubcasecont.items	_test.parse_gvars	_test.parse_allocs	_test.parse_impgens	_test.parse_exprs
 
 -- §subsection Code Segments
 
@@ -213,6 +213,13 @@ _test.parse_alloc_0.3.no.alloc_input	.string	x\t.alloc\t_x_c\n
 _test.parse_alloc_0.3.closure	.closure	_test.parse_alloc_0.3.closure_c
 _test.parse_alloc_0.3.closure_label	.string	qq{x\\t.closure\\t_x_c\\n}\s=~\sgsdl.ags.codeitem.allocs.parser\s0.3
 _test.parse_alloc_0.3.closure_input	.string	x\t.closure\t_x_c\n
+
+-- §subsection Imperative Generators
+
+_test.parse_impgens	.closure	_test.parse_impgens_c
+_test.parse_impgens_label	.string	Imperative\sGenerators
+
+_tests.parse_impgens	.list	test.property.t
 
 -- §subsection String Code Expressions
 
@@ -1716,6 +1723,17 @@ gsdl.ags.codeitem.alloc.t	.tygvar
 test.true	.gvar
 err	.larg	list.t	gsdl.ags.codeitem.alloc.t
 	.enter	test.true
+
+-- §subsection Imperative Generators
+
+_test.parse_impgens_c	.expr
+test.property.label	.gvar
+_test.parse_impgens_label	.gvar
+test.all	.gvar
+_tests.parse_impgens	.gvar
+test	.apply	test.all	|	_tests.parse_impgens
+	.app	_test.parse_impgens_label	test
+	.enter	test.property.label
 
 -- §subsection String Code Expressions
 
