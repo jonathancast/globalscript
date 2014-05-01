@@ -912,6 +912,19 @@ which must be a \stringcode{.forcecont}.
 This corresponds to the evaluation context denoted by the code item labeled by \stringcode{k},
 which must be a \stringcode{.strictcont}.
 
+\subsection{\stringcode{.ubanalyze}}
+
+\begin{verbatim}
+	.ubanalyze	c0	k0	...	cn-1	kn-1
+\end{verbatim}
+This corresponds to an evaluation context of the form
+\begin{haskell}
+\hskwd{analyze}\;\bullet.\;\hskwd{case}\;c_0\;x_0.\;e_0\ldots\hskwd{case}\;c_{n-1}\;x_{n-1}.\;e_{n-1}
+\end{haskell},
+where the scrutinee has un-boxed sum type or lifted un-boxed sum type,
+the constructors are the arguments \stringcode{c$_0$, $\ldots$, c$_{n-1}$},
+and the corresponding cases are given by the code items labeled by \stringcode{k$_0$, $\ldots$, k$_{n-1}$}.
+
 \chapter{Types}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -1006,35 +1019,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-int
-gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymubanalyze;
-
-    if (gssymceq(parsedline->directive, gssymubanalyze, gssymcodeop, ".ubanalyze")) {
-        if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
-        else
-            parsedline->label = 0;
-        for (i = 2; i < n; i += 2) {
-            if (i + 1 >= n)
-                gsfatal("%s:%d: missing code lable on final continuation to .ubanalyze", pos->real_filename, pos->real_lineno)
-            ;
-            parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i]);
-            parsedline->arguments[i + 1 - 2] = gsintern_string(gssymcodelable, fields[i + 1]);
-        }
-    } else {
-        return 0;
-    }
-    return 1;
-}
-
-static void gsparse_case(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, gsinterned_string, char *, char **);
-static void gsparse_default(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, char **);
-
-static void gsparse_check_label_on_terminal_op(gsparsedfile *, struct gsparsedline *, char **);
-
-static
 int
 gsparse_code_terminal_expr_op(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, struct gsparsedline *parsedline, char **fields, long n)
 {
