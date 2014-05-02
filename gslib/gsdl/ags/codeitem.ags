@@ -430,6 +430,7 @@ r	.record	fvs	fvs	gvars	gvs	karg	ka	tygvars	tygvs
 -- §subsection §ags{.impprog}
 
 _gsdl.ags.codeitem.parser_impprog.p_c	.expr
+gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 parser.pos.t	.tygvar
 string.t	.tygvar
@@ -450,6 +451,7 @@ _gsdl.ags.codeitem.parser_impprog.p_impprog.re	.gvar
 parser.<*	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
+fs	.fv	gsdl.ags.syntax.features.t
 f	.closure	_gsdl.ags.codeitem.parser_impprog.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 impprog.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.parser_impprog.p_impprog.re
@@ -478,6 +480,7 @@ body	.larg	_gsdl.ags.codeitem.prim.u_impprog_body_ty
 	.undef	gsdl.ags.codeitem.t
 
 _gsdl.ags.codeitem.parser_impprog.p_decls.p_c	.expr
+gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
@@ -492,12 +495,13 @@ gsdl.ags.codeitem.subcodes.parser	.gvar
 gsdl.ags.codeitem.tyfvs.parser	.gvar
 gsdl.ags.codeitem.fvs.parser	.gvar
 gsdl.ags.codeitem.impgens.parser	.gvar
+fs	.fv	gsdl.ags.syntax.features.t
 list.string.ty	.tylet	list.t	string.t
 list.tyfv.ty	.tylet	list.t	gsdl.ags.codeitem.tyfv.t
 list.fv.ty	.tylet	list.t	gsdl.ags.codeitem.fv.t
 list.bind.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
 f	.closure	_gsdl.ags.codeitem.parser_impprog.p_decls.p_f_c
-impgens.p	.apply	gsdl.ags.codeitem.impgens.parser
+impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
 	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.tyfvs.parser	gsdl.ags.codeitem.fvs.parser	impgens.p
 	.enter	parser.lift5	rune.t	list.string.ty	list.string.ty	list.tyfv.ty	list.fv.ty	list.bind.ty	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
 
@@ -2071,10 +2075,12 @@ a	.larg	gsdl.ags.codeitem.alloc.t
 -- §subsection §gs{gsdl.ags.codeitem.impgens.parser}
 
 _gsdl.ags.codeitem.impgens.parser_c	.expr
+gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.codeitem.impgen.t	.tygvar
 _gsdl.ags.codeitem.impgens.parser_bind.p_c	.subcode
 parser.many	.gvar
+fs	.larg	gsdl.ags.syntax.features.t
 bind.p	.closure	_gsdl.ags.codeitem.impgens.parser_bind.p_c
 p	.apply	bind.p
 	.app	p
