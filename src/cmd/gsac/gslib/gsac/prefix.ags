@@ -335,7 +335,7 @@ b0	.karg	bool.prim.u
 			.app	v	_gsac.prefix.file.load_body_cv_0.2.s
 			.enter	string.≡
 		.case	true
-fs			.lrecord	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs			.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 			.app	fs
 			.enter	either.right	string.t	gsdl.ags.syntax.features.t
 
@@ -352,7 +352,7 @@ b0	.karg	bool.prim.u
 		.case	false
 			.undef	either.t	string.t	gsdl.ags.syntax.features.t
 		.case	true
-fs			.lrecord	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs			.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 			.app	fs
 			.enter	either.right	string.t	gsdl.ags.syntax.features.t
 
