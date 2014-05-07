@@ -98,6 +98,8 @@ _gsdl.ags.codeitem.impgens.parser_bind.closure.p_bind.closure.re	.regex	.bind.cl
 
 gsdl.ags.codeitem.impgen.fmtgs	.closure	_gsdl.ags.codeitem.impgen.fmtgs_c
 
+gsdl.ags.codeitem.alloc.rhs.parser	.closure	_gsdl.ags.codeitem.alloc.rhs.parser_c
+
 gsdl.ags.codeitem.arg.≡	.closure	_gsdl.ags.codeitem.arg.≡_c
 
 gsdl.ags.codeitem.arg.fmtgs	.closure	_gsdl.ags.codeitem.arg.fmtgs_c
@@ -2155,6 +2157,16 @@ gsdl.ags.codeitem.impgen.t	.tygvar
 fmtgs.printer.t	.tygvar	-- Temp
 g	.larg	gsdl.ags.codeitem.impgen.t
 	.undef	fmtgs.printer.t
+
+-- §section §gs{gsdl.ags.codeitem.alloc.rhs.parser}
+
+_gsdl.ags.codeitem.alloc.rhs.parser_c	.expr
+gsdl.ags.syntax.features.t	.tygvar
+rune.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+parser.fail	.gvar	-- Temp
+fs	.larg	gsdl.ags.syntax.features.t
+	.enter	parser.fail	rune.t	gsdl.ags.codeitem.alloc.rhs.t
 
 -- §section §gs{gsdl.ags.codeitem.arg.≡}
 
