@@ -534,7 +534,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.tygvar_input	.gvar
 k	.closure	_test.parse_expr.tygvar_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.tygvar_input	k
 	.app	_test.parse_expr.tygvar_label	test
@@ -604,7 +604,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.subcode_input	.gvar
 k	.closure	_test.parse_expr.subcode_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.subcode_input	k
 	.app	_test.parse_expr.subcode_label	test
@@ -668,7 +668,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.cogvar_input	.gvar
 k	.closure	_test.parse_expr.cogvar_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.cogvar_input	k
 	.app	_test.parse_expr.cogvar_label	test
@@ -732,7 +732,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.gvar_input	.gvar
 k	.closure	_test.parse_expr.gvar_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.gvar_input	k
 	.app	_test.parse_expr.gvar_label	test
@@ -801,7 +801,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.rune_input	.gvar
 k	.closure	_test.parse_expr.rune_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.rune_input	k
 	.app	_test.parse_expr.rune_label	test
@@ -829,7 +829,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.larg_input	.gvar
 k	.closure	_test.parse_expr.larg_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.larg_input	k
 	.app	_test.parse_expr.larg_label	test
@@ -901,7 +901,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.alloc_input	.gvar
 k	.closure	_test.parse_expr.alloc_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.alloc_input	k
 	.app	_test.parse_expr.alloc_label	test
@@ -929,7 +929,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.impprim_input	.gvar
 k	.closure	_test.parse_expr.impprim_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.impprim_input	k
 	.app	_test.parse_expr.impprim_label	test
@@ -957,7 +957,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.impprim.args_input	.gvar
 k	.closure	_test.parse_expr.impprim.args_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.impprim.args_input	k
 	.app	_test.parse_expr.impprim.args_label	test
@@ -985,7 +985,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.undefined_input	.gvar
 k	.closure	_test.parse_expr.undefined_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.undefined_input	k
 	.app	_test.parse_expr.undefined_label	test
@@ -1013,7 +1013,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.field_input	.gvar
 k	.closure	_test.parse_expr.field_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.field_input	k
 	.app	_test.parse_expr.field_label	test
@@ -1041,7 +1041,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.record_input	.gvar
 k	.closure	_test.parse_expr.record_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.record_input	k
 	.app	_test.parse_expr.record_label	test
@@ -1069,7 +1069,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.prim_input	.gvar
 k	.closure	_test.parse_expr.prim_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.prim_input	k
 	.app	_test.parse_expr.prim_label	test
@@ -1097,7 +1097,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.prim.tyargs_input	.gvar
 k	.closure	_test.parse_expr.prim.tyargs_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.prim.tyargs_input	k
 	.app	_test.parse_expr.prim.tyargs_label	test
@@ -1125,7 +1125,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.prim.args_input	.gvar
 k	.closure	_test.parse_expr.prim.args_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.prim.args_input	k
 	.app	_test.parse_expr.prim.args_label	test
@@ -1389,7 +1389,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_impprog_input	.gvar
 k	.closure	_test.parse_impprog_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_impprog_input	k
 	.app	_test.parse_impprog_label	test
@@ -1417,7 +1417,7 @@ gsdl.ags.codeitem.parser	.gvar
 bool.false	.gvar
 _test.parse_impprog.bind_input	.gvar
 k	.closure	_test.parse_impprog.bind_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_impprog.bind_input	k
 	.app	_test.parse_impprog.bind_label	test
@@ -1446,7 +1446,7 @@ bool.true	.gvar
 bool.false	.gvar
 _test.parse_impprog.0.4_input	.gvar
 k	.closure	_test.parse_impprog.0.4_k_c
-fs	.lrecord	bind.closure.one.word	bool.true	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.true	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_impprog.0.4_input	k
 	.app	_test.parse_impprog.0.4_label	test
@@ -1525,7 +1525,7 @@ _test.parse_gvar_rune.no.hash_input	.gvar
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 list.gvar.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.gvar.t	|	gsdl.ags.codeitem.gvar.fmtgs
 k	.closure	_test.parse_gvar_rune.no.hash_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 gvs.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
 test	.apply	parser.test.assert.fails	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	list.gvar.fmtgs	gvs.p	_test.parse_gvar_rune.no.hash_input	k
 	.app	_test.parse_gvar_rune.no.hash_label	test
@@ -1555,7 +1555,7 @@ bool.false	.gvar
 _test.parse_gvar_rune.bs.h_input	.gvar
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 k	.closure	_test.parse_gvar_rune.bs.h_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 gvs.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	gvs.p	_test.parse_gvar_rune.bs.h_input	k
 	.app	_test.parse_gvar_rune.bs.h_label	test
@@ -1587,7 +1587,7 @@ bool.true	.gvar
 _test.parse_gvar_0.2.rune.hash_input	.gvar
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 k	.closure	_test.parse_gvar_0.2.rune.hash_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 gvs.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	gvs.p	_test.parse_gvar_0.2.rune.hash_input	k
 	.app	_test.parse_gvar_0.2.rune.hash_label	test
@@ -1622,7 +1622,7 @@ _test.parse_gvar_0.2.rune.no.bs.h_input	.gvar
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 k	.closure	_test.parse_gvar_0.2.rune.no.bs.h_k_c
 list.gvar.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.gvar.t	|	gsdl.ags.codeitem.gvar.fmtgs
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 gvs.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
 test	.apply	parser.test.assert.fails	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	list.gvar.fmtgs	gvs.p	_test.parse_gvar_0.2.rune.no.bs.h_input	k
 	.app	_test.parse_gvar_0.2.rune.no.bs.h_label	test
@@ -1664,7 +1664,7 @@ bool.true	.gvar
 _test.parse_alloc_0.2.alloc_input	.gvar
 list.alloc.ty	.tylet	list.t	gsdl.ags.codeitem.alloc.t
 k	.closure	_test.parse_alloc_0.2.alloc_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 allocs.p	.apply	gsdl.ags.codeitem.allocs.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.alloc.ty	|	parser.rune.advance	rune.print	allocs.p	_test.parse_alloc_0.2.alloc_input	k
 	.app	_test.parse_alloc_0.2.alloc_label	test
@@ -1699,7 +1699,7 @@ _test.parse_alloc_0.2.no.closure_input	.gvar
 list.alloc.ty	.tylet	list.t	gsdl.ags.codeitem.alloc.t
 k	.closure	_test.parse_alloc_0.2.no.closure_k_c
 list.alloc.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.alloc.t	|	gsdl.ags.codeitem.alloc.fmtgs
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 allocs.p	.apply	gsdl.ags.codeitem.allocs.parser	|	fs
 test	.apply	parser.test.assert.fails	rune.t	list.alloc.ty	|	parser.rune.advance	rune.print	list.alloc.fmtgs	allocs.p	_test.parse_alloc_0.2.no.closure_input	k
 	.app	_test.parse_alloc_0.2.no.closure_label	test
@@ -1733,7 +1733,7 @@ _test.parse_alloc_0.3.no.alloc_input	.gvar
 list.alloc.ty	.tylet	list.t	gsdl.ags.codeitem.alloc.t
 k	.closure	_test.parse_alloc_0.3.no.alloc_k_c
 list.alloc.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.alloc.t	|	gsdl.ags.codeitem.alloc.fmtgs
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 allocs.p	.apply	gsdl.ags.codeitem.allocs.parser	|	fs
 test	.apply	parser.test.assert.fails	rune.t	list.alloc.ty	|	parser.rune.advance	rune.print	list.alloc.fmtgs	allocs.p	_test.parse_alloc_0.3.no.alloc_input	k
 	.app	_test.parse_alloc_0.3.no.alloc_label	test
@@ -1764,7 +1764,7 @@ bool.true	.gvar
 _test.parse_alloc_0.3.closure_input	.gvar
 list.alloc.ty	.tylet	list.t	gsdl.ags.codeitem.alloc.t
 k	.closure	_test.parse_alloc_0.3.closure_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	 bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	 bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 allocs.p	.apply	gsdl.ags.codeitem.allocs.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.alloc.ty	|	parser.rune.advance	rune.print	allocs.p	_test.parse_alloc_0.3.closure_input	k
 	.app	_test.parse_alloc_0.3.closure_label	test
@@ -1807,7 +1807,7 @@ bool.true	.gvar
 _test.parse_impgens_0.3.bind_input	.gvar
 list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
 k	.closure	_test.parse_impgens_0.3.bind_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	 bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	 bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.impgen.ty	|	parser.rune.advance	rune.print	impgens.p	_test.parse_impgens_0.3.bind_input	k
 	.app	_test.parse_impgens_0.3.bind_label	test
@@ -1842,7 +1842,7 @@ _test.parse_impgens_0.3.no.bind.closure_input	.gvar
 list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
 k	.closure	_test.parse_impgens_0.3.no.bind.closure_k_c
 list.impgen.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.impgen.t	|	gsdl.ags.codeitem.impgen.fmtgs
-fs	.lrecord	bind.closure.one.word	bool.false	closure	 bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	 bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
 test	.apply	parser.test.assert.fails	rune.t	list.impgen.ty	|	parser.rune.advance	rune.print	list.impgen.fmtgs	impgens.p	_test.parse_impgens_0.3.no.bind.closure_input	k
 	.app	_test.parse_impgens_0.3.no.bind.closure_label	test
@@ -1871,11 +1871,12 @@ list.fmtgs.byDefault	.gvar
 gsdl.ags.codeitem.impgen.fmtgs	.gvar
 gsdl.ags.codeitem.impgens.parser	.gvar
 bool.true	.gvar
+bool.false	.gvar
 _test.parse_impgens_0.4.no.bind_input	.gvar
 list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
 k	.closure	_test.parse_impgens_0.4.no.bind_k_c
 list.impgen.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.impgen.t	|	gsdl.ags.codeitem.impgen.fmtgs
-fs	.lrecord	bind.closure.one.word	bool.true	closure	 bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.true	bind.closure.two.words	 bool.false	closure	 bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
 test	.apply	parser.test.assert.fails	rune.t	list.impgen.ty	|	parser.rune.advance	rune.print	list.impgen.fmtgs	impgens.p	_test.parse_impgens_0.4.no.bind_input	k
 	.app	_test.parse_impgens_0.4.no.bind_label	test
@@ -1902,10 +1903,11 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.impgens.parser	.gvar
 bool.true	.gvar
+bool.false	.gvar
 _test.parse_impgens_0.4.bind.closure_input	.gvar
 list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
 k	.closure	_test.parse_impgens_0.4.bind.closure_k_c
-fs	.lrecord	bind.closure.one.word	bool.true	closure	 bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.true	bind.closure.two.words	 bool.false	closure	 bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.impgen.ty	|	parser.rune.advance	rune.print	impgens.p	_test.parse_impgens_0.4.bind.closure_input	k
 	.app	_test.parse_impgens_0.4.bind.closure_label	test
@@ -2228,7 +2230,7 @@ gsdl.ags.codeitem.expr.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.analyze.fkarg_input	.gvar
 k	.closure	_test.parse_expr.analyze.fkarg_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.analyze.fkarg_input	k
 	.app	_test.parse_expr.analyze.fkarg_label	test
@@ -2256,7 +2258,7 @@ gsdl.ags.codeitem.expr.parser	.gvar
 bool.false	.gvar
 _test.parse_expr.gsanalyze.apply_input	.gvar
 k	.closure	_test.parse_expr.gsanalyze.apply_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	closure	bool.false	hash.normal	bool.false	|	gsdl.ags.syntax.features.t
 expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.gsanalyze.apply_input	k
 	.app	_test.parse_expr.gsanalyze.apply_label	test
