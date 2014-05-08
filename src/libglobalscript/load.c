@@ -46,7 +46,7 @@ gsglobal_gslib_dir()
         gsfatal("Error reading $GLOBALSCRIPT: %r")
     ;
     if (n >= FILE_NAME_SIZE_LIMIT) {
-        globalscript[n - 1] = 0;
+        globalscript[FILE_NAME_SIZE_LIMIT - 1] = 0;
         gsfatal("%s:%d: $GLOBALSCRIPT too large (only read %s)", __FILE__, __LINE__, globalscript);
     }
     if (gsbio_device_iclose(chan) < 0)
