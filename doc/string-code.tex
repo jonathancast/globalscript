@@ -936,6 +936,14 @@ and the corresponding cases are given by the code items labeled by \stringcode{k
 
 This allocates and returns the least element of the type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}, which must be a lifted type.
 
+\subsection{\stringcode{.yield}}
+
+\begin{verbatim}
+	.yield	x	tyx0	...	tyxn-1
+\end{verbatim}
+
+This returns the value of \stringcode{x} applied to the type arguments \stringcode{tyx$_0$ $\ldots$ tyx$_{n-1}$}.
+
 \chapter{Types}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -1033,18 +1041,9 @@ Interpolations aren't supported inside classes yet but they will be.
 int
 gsparse_code_terminal_expr_op(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymyield, gssymenter, gssymubprim, gssymlprim, gsssymanalyze, gsssymdanalyze;
+    static gsinterned_string gssymenter, gssymubprim, gssymlprim, gsssymanalyze, gsssymdanalyze;
 
-    if (gssymceq(parsedline->directive, gssymyield, gssymcodeop, ".yield")) {
-        gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
-        if (n < 3)
-            gsfatal("%s:%d: Missing argument to .yield", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
-        for (i = 3; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-    } else if (gssymceq(parsedline->directive, gssymenter, gssymcodeop, ".enter")) {
+    if (gssymceq(parsedline->directive, gssymenter, gssymcodeop, ".enter")) {
         gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
         if (n < 3)
             gsfatal("%s:%d: Missing argument to .enter", pos->real_filename, pos->real_lineno)
