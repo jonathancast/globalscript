@@ -162,6 +162,8 @@ ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables o
 
 echo '# Version 0.2 and up:'
 
+SHOULD_DISABLE_STRING_CODE_0_1=1
+
 ok_diff_fail '-- # is a regular character --' ./$O.test-gsi undef-hash-operator.ags
 ok_grep_errors '-- \h is un-supported --' 'string-invalid-h-escape.ags:7: Unknown escape \\h' ./$O.test-gsi string-invalid-h-escape.ags
 
