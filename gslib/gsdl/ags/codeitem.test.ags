@@ -150,7 +150,7 @@ _test.parse_strictcont_input	.string	_foo_k\t.strictcont\nx0\t.karg\tx.t\n\t.ent
 -- §subsection Imperative Block Statements
 
 _test.parse_impprog.items	.closure	_test.parse_impprog.items_c
-_tests.parse_impprog.items	.list	test.property.t	_test.parse_impprog	_test.parse_impprog.bind	_test.parse_impprog.0.4
+_tests.parse_impprog.items	.list	test.property.t	_test.parse_impprog	_test.parse_impprog.bind	_test.parse_impprog.0.4	_test.parse_impprog.0.5
 
 _test.parse_impprog	.closure	_test.parse_impprog_c
 _test.parse_impprog_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body\\t_foo_body_c\\n}\s=~\sparser
@@ -161,8 +161,12 @@ _test.parse_impprog.bind_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bin
 _test.parse_impprog.bind_input	.string	_foo_c\t.impprog\tfoo\tm\nx\t.bind\t_foo_x_c\n\t.body\t_foo_body_c\n
 
 _test.parse_impprog.0.4	.closure	_test.parse_impprog.0.4_c
-_test.parse_impprog.0.4_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body.closure\\t_foo_body_c\\n}\s=~\sparser
+_test.parse_impprog.0.4_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body.closure\\t_foo_body_c\\n}\s=~\sparser\s0.4
 _test.parse_impprog.0.4_input	.string	_foo_c\t.impprog\tfoo\tm\n\t.body.closure\t_foo_body_c\n
+
+_test.parse_impprog.0.5	.closure	_test.parse_impprog.0.5_c
+_test.parse_impprog.0.5_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body\\t.closure\\t_foo_body_c\\n}\s=~\sparser\s0.5
+_test.parse_impprog.0.5_input	.string	_foo_c\t.impprog\tfoo\tm\n\t.body\t.closure\t_foo_body_c\n
 
 -- §subsection §ags{.ubcasecont} Code Items
 
@@ -1457,6 +1461,35 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.a
 	.enter	test.property.label
 
 _test.parse_impprog.0.4_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+test.true	.gvar
+ci	.larg	gsdl.ags.codeitem.t
+	.enter	test.true
+
+-- §subsubsection §gs{qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body\\t.closure\\t_foo_body_c\\n} =~ parser 0.5}
+
+_test.parse_impprog.0.5_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_test.parse_impprog.0.5_k_c	.subcode
+test.property.label	.gvar
+_test.parse_impprog.0.5_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+bool.true	.gvar
+bool.false	.gvar
+_test.parse_impprog.0.5_input	.gvar
+k	.closure	_test.parse_impprog.0.5_k_c
+fs	.lrecord	bind.closure.one.word	bool.true	bind.closure.two.words	 bool.true	closure	bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_impprog.0.5_input	k
+	.app	_test.parse_impprog.0.5_label	test
+	.enter	test.property.label
+
+_test.parse_impprog.0.5_k_c	.expr
 gsdl.ags.codeitem.t	.tygvar
 test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t

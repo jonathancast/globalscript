@@ -12,8 +12,9 @@ _gsdl.ags.codeitem.parser_expr.p_expr.re	.regex	.expr
 _gsdl.ags.codeitem.parser_expr.p_decls.p	.closure	_gsdl.ags.codeitem.parser_expr.p_decls.p_c
 _gsdl.ags.codeitem.parser_forcecont.p_forcecont.re	.regex	.forcecont
 _gsdl.ags.codeitem.parser_impprog.p_impprog.re	.regex	.impprog
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_body.re	.regex	.body
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_body.closure.re	.regex	.body.closure
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.re	.regex	.body
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.closure.re	.regex	.body.closure
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_body.re	.regex	.body
 _gsdl.ags.codeitem.parser_strictcont.p_strictcont.re	.regex	.strictcont
 _gsdl.ags.codeitem.parser_ubcasecont.p_ubcasecont.re	.regex	.ubcasecont
 
@@ -528,19 +529,28 @@ binds	.larg	list.t	gsdl.ags.codeitem.impgen.t
 
 _gsdl.ags.codeitem.parser_impprog.p_body.p_c	.expr
 gsdl.ags.syntax.features.t	.tygvar
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_c	.subcode
+parser.t	.tygvar
+rune.t	.tygvar
+_gsdl.ags.codeitem.prim.u_impprog_body_ty	.tygvar
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_c	.subcode
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_c	.subcode
+bool.elim	.gvar
 fs	.fv	gsdl.ags.syntax.features.t
-body.closure.p	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_c
-	.enter	body.closure.p
+parser.body.ty	.tylet	parser.t	rune.t	_gsdl.ags.codeitem.prim.u_impprog_body_ty
+body.closure.one.word.p	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_c
+body.closure.two.words.p	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_c
+fs.bind.closure.two.words	.lfield	bind.closure.two.words	fs
+	.app	body.closure.one.word.p	body.closure.two.words.p	fs.bind.closure.two.words
+	.enter	bool.elim	parser.body.ty
 
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_c	.expr
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_c	.expr
 gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 _gsdl.ags.codeitem.prim.u_impprog_body_ty	.tygvar
 string.t	.tygvar
 parser.pos.t	.tygvar
 regex.t	.tygvar
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_f_c	.subcode
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_f_c	.subcode
 parser.<*	.gvar
 parser.lift2	.gvar
 parser.pos.get	.gvar
@@ -549,17 +559,17 @@ gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 bool.elim	.gvar
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_body.re	.gvar
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_body.closure.re	.gvar
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.re	.gvar
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.closure.re	.gvar
 gsdl.ags.syntax.id	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
 regex.rune.ty	.tylet	regex.t	rune.t
 fs	.fv	gsdl.ags.syntax.features.t
-f	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_f_c
+f	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 fs.bind.closure.one.word	.lfield	bind.closure.one.word	fs
-body.closure.re	.apply	bool.elim	regex.rune.ty	|	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_body.re	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_body.closure.re	fs.bind.closure.one.word
+body.closure.re	.apply	bool.elim	regex.rune.ty	|	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.re	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.closure.re	fs.bind.closure.one.word
 body.closure.p	.apply	parser.match	rune.t	|	rune.compare	body.closure.re
 code.p3	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 code.p2	.apply	parser.*>	rune.t	string.t	string.t	|	body.closure.p	code.p3
@@ -568,12 +578,53 @@ p	.apply	parser.lift2	rune.t	parser.pos.t	string.t	_gsdl.ags.codeitem.prim.u_imp
 	.app	p	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	_gsdl.ags.codeitem.prim.u_impprog_body_ty	string.t
 
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.p_f_c	.expr
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_f_c	.expr
 parser.pos.t	.tygvar
 string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_impprog_body_ty	.tygvar	-- Temp
 pos	.larg	parser.pos.t
 code	.larg	string.t
+	.undef	_gsdl.ags.codeitem.prim.u_impprog_body_ty
+
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_c	.expr
+gsdl.ags.syntax.features.t	.tygvar
+rune.t	.tygvar
+_gsdl.ags.codeitem.prim.u_impprog_body_ty	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_f_c	.subcode
+parser.<*	.gvar
+parser.lift2	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_body.re	.gvar
+gsdl.ags.codeitem.alloc.rhs.parser	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.fail	.gvar	-- Temp
+fs	.fv	gsdl.ags.syntax.features.t
+f	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+bind.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_body.re
+rhs.p3	.apply	gsdl.ags.codeitem.alloc.rhs.parser	|	fs
+rhs.p2	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.alloc.rhs.t	|	gsdl.ags.syntax.columnsep	rhs.p3
+rhs.p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.alloc.rhs.t	|	bind.p	rhs.p2
+rhs.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.alloc.rhs.t	|	gsdl.ags.syntax.columnsep	rhs.p1
+p	.apply	parser.lift2	rune.t	parser.pos.t	gsdl.ags.codeitem.alloc.rhs.t	_gsdl.ags.codeitem.prim.u_impprog_body_ty	|	f	pos.get	rhs.p
+	.app	p	gsdl.ags.syntax.whitespace
+	.enter	parser.<*	rune.t	_gsdl.ags.codeitem.prim.u_impprog_body_ty	string.t
+
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+_gsdl.ags.codeitem.prim.u_impprog_body_ty	.tygvar	-- Temp
+pos0	.larg	parser.pos.t
+rhs	.larg	gsdl.ags.codeitem.alloc.rhs.t
 	.undef	_gsdl.ags.codeitem.prim.u_impprog_body_ty
 
 -- §subsection §ags{.strictcont}
