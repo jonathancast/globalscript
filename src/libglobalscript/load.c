@@ -303,7 +303,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     }
     if (!calculus_version) gsfatal("%s: Missing #calculus pragma", pos.real_filename);
     if (!strcmp(calculus_version, "0.1")) {
-        static should_disable_string_code_0_1, should_disable_string_code_0_1_initialized;
+        static int should_disable_string_code_0_1, should_disable_string_code_0_1_initialized;
 
         if (!should_disable_string_code_0_1_initialized) {
             struct uxio_ichannel *chan;
