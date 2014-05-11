@@ -652,17 +652,17 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                     return;
                 }
 
-                subexpr = subexprs[pinstr->args[0]];
+                subexpr = subexprs[ACE_BODY_CLOSURE_CODE(pinstr)];
 
-                cl = gsreserveheap(sizeof(*cl) + pinstr->args[1] * sizeof(gsvalue));
+                cl = gsreserveheap(sizeof(*cl) + ACE_BODY_CLOSURE_NUMFVS(pinstr) * sizeof(gsvalue));
 
                 memset(&cl->hp.lock, 0, sizeof(cl->hp.lock));
                 cl->hp.pos = pinstr->pos;
                 cl->hp.type = gsclosure;
                 cl->cl.code = subexpr;
-                cl->cl.numfvs = pinstr->args[1];
-                for (i = 0; i < pinstr->args[1]; i++)
-                    cl->cl.fvs[i] = regs[pinstr->args[2 + i]]
+                cl->cl.numfvs = ACE_BODY_CLOSURE_NUMFVS(pinstr);
+                for (i = 0; i < ACE_BODY_CLOSURE_NUMFVS(pinstr); i++)
+                    cl->cl.fvs[i] = regs[ACE_BODY_CLOSURE_FV(pinstr, i)]
                 ;
                 rhss[nstatements] = (gsvalue)cl;
                 poss[nstatements] = pinstr->pos;
@@ -673,8 +673,6 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: %d opcodes", pinstr->instr);
                 return;
         }
-        pinstr = GS_NEXT_BYTECODE(pinstr, 2 + pinstr->args[1]);
-        pin = pinstr;
     }
 
 got_statements:
