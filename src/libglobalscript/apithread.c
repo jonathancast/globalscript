@@ -1,4 +1,4 @@
-/* §source.file Stat interface */
+/* §source.file API */
 
 #include <u.h>
 #include <libc.h>
