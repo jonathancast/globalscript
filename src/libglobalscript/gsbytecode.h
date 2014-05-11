@@ -171,7 +171,7 @@ enum {
 #define ACE_BIND_FV(ip, i) ((ip)->args[2+(i)])
 #define ACE_BIND_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_BIND_NUMFVS(ip))
 
-#define ACE_BODY_SIZE(nfvs) GS_SIZE_BYTECODE(2 + nfvs)
+#define ACE_BODY_CLOSURE_SIZE(nfvs) GS_SIZE_BYTECODE(2 + nfvs)
 #define ACE_BODY_CODE(ip) ((ip)->args[0])
 #define ACE_BODY_NUMFVS(ip) ((ip)->args[1])
 #define ACE_BODY_FV(ip, i) ((ip)->args[2+(i)])

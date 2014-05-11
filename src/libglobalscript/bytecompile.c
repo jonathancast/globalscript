@@ -986,7 +986,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             gsfatal("%P: Cannot find type of %y", (*pp)->pos, (*pp)->arguments[0])
         ;
 
-        pcl->size += ACE_BODY_SIZE(cty->numfvs);
+        pcl->size += ACE_BODY_CLOSURE_SIZE(cty->numfvs);
     } else if (
         (pcl->features & gsstring_code_bind_closure_two_words)
             ?
@@ -1002,7 +1002,7 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             gsfatal("%P: Cannot find type of %y", (*pp)->pos, (*pp)->arguments[1])
         ;
 
-        pcl->size += ACE_BODY_SIZE(cty->numfvs);
+        pcl->size += ACE_BODY_CLOSURE_SIZE(cty->numfvs);
     } else {
         return 0;
     }
