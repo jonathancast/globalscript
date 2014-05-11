@@ -1003,6 +1003,14 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
         ;
 
         pcl->size += ACE_BODY_CLOSURE_SIZE(cty->numfvs);
+    } else if (
+        (pcl->features & gsstring_code_bind_closure_two_words)
+            ?
+                gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
+                && gssymceq((*pp)->arguments[0], gssymopundefined, gssymcodeop, ".undefined")
+            : 0
+    ) {
+        pcl->size += ACE_BODY_UNDEFINED_SIZE();
     } else {
         return 0;
     }
