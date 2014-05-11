@@ -1300,7 +1300,9 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
 int
 gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *p, int offset, char **fields, long n)
 {
-    static gsinterned_string gssymclosure, gssymalloc;
+    static gsinterned_string gssymclosure, gssymalloc, gssymundefined;
+
+    int i;
 
     gsinterned_string directive = offset == 0
         ? p->directive
@@ -1320,6 +1322,14 @@ gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gspa
         if (n > offset + 3)
             gsfatal("%s:%d: Too many arguments to %y", pos->real_filename, pos->real_lineno, directive)
         ;
+    } else if (gssymceq(directive, gssymundefined, gssymcodeop, ".undefined")) {
+        if (offset == 0) STORE_ALLOC_OP_LABEL(".undefined");
+        if (n < offset + 3)
+            gsfatal("%P: Missing type on .undefined", p->pos)
+        ;
+        for (i = offset + 2; i < n; i++)
+            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
     } else {
         return 0;
     }
@@ -1330,7 +1340,7 @@ static
 int
 gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, char **fields, long n)
 {
-    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
+    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymlifted, gssymcast, gssymapply;
 
     int i;
 
@@ -1478,14 +1488,6 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
         p->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
         if (n > 4)
             gsfatal("%P: Too many arguments to %y", p->pos, p->directive)
-        ;
-    } else if (gssymceq(p->directive, gssymundefined, gssymcodeop, ".undefined")) {
-        STORE_ALLOC_OP_LABEL(".undefined");
-        if (n < 3)
-            gsfatal("%P: Missing type on .undefined", p->pos)
-        ;
-        for (i = 2; i < n; i++)
-            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
     } else if (gssymceq(p->directive, gssymlifted, gssymcodeop, ".lifted")) {
         STORE_ALLOC_OP_LABEL(".lifted");
