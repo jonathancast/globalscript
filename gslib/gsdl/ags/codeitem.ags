@@ -3584,14 +3584,6 @@ list.arg.ty	.tylet	list.t	gsdl.ags.codeitem.arg.t
 list.tygvar.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tygvar.t
 	.typroduct	args	list.arg.ty	tygvars	list.tygvar.ty
 
-_gsdl.ags.codeitem.prim.u_impprog_body_ty	.tyabstract	*
-_gsdl.ags.codeitem.prim.u_impprog_body_u	.tygvar
-	.tylift
-	.tyref	_gsdl.ags.codeitem.prim.u_impprog_body_u
-
-_gsdl.ags.codeitem.prim.u_impprog_body_u	.tyexpr
-	.tysum
-
 _gsdl.ags.codeitem.prim.u_strictcont_decls_ty	.tyexpr
 _gsdl.ags.codeitem.prim.u_strictcont_decls_u	.tygvar
 	.tylift
