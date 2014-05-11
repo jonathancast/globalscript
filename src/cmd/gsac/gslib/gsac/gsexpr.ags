@@ -1689,7 +1689,8 @@ ds			.apply	diff.list.<>	gsdl.ags.dataitem.t	|	gs.r.ds	b.r.ds
 b.r.pem			.lfield	prim.emitted	b.r
 r.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
 r.b.gs			.undefined	list.t	gsdl.ags.codeitem.impgen.t
-r.b.b			.undefined	gsdl.ags.codeitem.impbody.t
+b.r.res			.lfield	res	b.r
+r.b.b			.lrecord	rhs	b.r.res	|	gsdl.ags.codeitem.impbody.t
 r.b			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res_body.impprog	|	ps	pn	r.b.gs	r.b.b
 r			.lrecord	args	r.as	body	r.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 b.r.tyem			.lfield	ty.emitted	b.r
