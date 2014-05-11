@@ -104,6 +104,8 @@ _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re	.regex	.closure
 
 gsdl.ags.codeitem.alloc.rhs.pos	.closure	_gsdl.ags.codeitem.alloc.rhs.pos_c
 
+gsdl.ags.codeitem.alloc.rhs.undefined	.closure	_gsdl.ags.codeitem.alloc.rhs.undefined_c
+
 gsdl.ags.codeitem.arg.≡	.closure	_gsdl.ags.codeitem.arg.≡_c
 
 gsdl.ags.codeitem.arg.fmtgs	.closure	_gsdl.ags.codeitem.arg.fmtgs_c
@@ -2323,6 +2325,22 @@ gsdl.sourcepos.t	.tygvar	-- Temp
 rhs0	.karg	gsdl.ags.codeitem.alloc.rhs.prim.u
 	.undef	gsdl.sourcepos.t
 
+-- §section §gs{gsdl.ags.codeitem.alloc.rhs.t}
+
+_gsdl.ags.codeitem.alloc.rhs.undefined_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.prim.u	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+tyx	.larg	gsdl.var.t
+tyas	.larg	list.t	gsdl.var.t
+res	.constr	gsdl.ags.codeitem.alloc.rhs.prim.u	undefined	0	pos	1	tyx	2	tyas
+	.coerce	gsdl.ags.codeitem.alloc.rhs.t.in
+	.lift
+	.yield	res
+
 -- §section §gs{gsdl.ags.codeitem.arg.≡}
 
 _gsdl.ags.codeitem.arg.≡_c	.expr
@@ -3743,7 +3761,15 @@ gsdl.ags.codeitem.alloc.rhs.prim.u	.tygvar
 	.tyref	gsdl.ags.codeitem.alloc.rhs.prim.u
 
 gsdl.ags.codeitem.alloc.rhs.prim.u	.tyexpr
-	.tysum
+_gsdl.ags.codeitem.alloc.rhs.prim.u_undefined_ty	.tygvar
+	.tysum	undefined	_gsdl.ags.codeitem.alloc.rhs.prim.u_undefined_ty
+
+_gsdl.ags.codeitem.alloc.rhs.prim.u_undefined_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
+list.var.ty	.tylet	list.t	gsdl.var.t
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	list.var.ty
 
 -- §section §gs{gsdl.ags.codeitem.gvar.t}
 
