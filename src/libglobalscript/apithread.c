@@ -4,6 +4,7 @@
 #include <libc.h>
 #include <libglobalscript.h>
 
+#include "gsheap.h"
 #include "gsbytecode.h"
 #include "api.h"
 #include "gsproc.h"
@@ -665,6 +666,18 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                     cl->cl.fvs[i] = regs[ACE_BODY_CLOSURE_FV(pinstr, i)]
                 ;
                 rhss[nstatements] = (gsvalue)cl;
+                poss[nstatements] = pinstr->pos;
+                nstatements++;
+                goto got_statements;
+            }
+            case gsbc_op_body_undefined: {
+                struct gserror *err;
+
+                err = gsreserveerrors(sizeof(*err));
+                err->pos = pinstr->pos;
+                err->type = gserror_undefined;
+
+                rhss[nstatements] = (gsvalue)err;
                 poss[nstatements] = pinstr->pos;
                 nstatements++;
                 goto got_statements;
