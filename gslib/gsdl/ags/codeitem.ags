@@ -102,6 +102,8 @@ gsdl.ags.codeitem.alloc.rhs.parser	.closure	_gsdl.ags.codeitem.alloc.rhs.parser_
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_alloc.re	.regex	.alloc
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re	.regex	.closure
 
+gsdl.ags.codeitem.alloc.rhs.print	.closure	_gsdl.ags.codeitem.alloc.rhs.print_c
+
 gsdl.ags.codeitem.alloc.rhs.pos	.closure	_gsdl.ags.codeitem.alloc.rhs.pos_c
 
 gsdl.ags.codeitem.alloc.rhs.undefined	.closure	_gsdl.ags.codeitem.alloc.rhs.undefined_c
@@ -2307,6 +2309,15 @@ string.t	.tygvar
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
 cn	.larg	string.t
 	.undef	gsdl.ags.codeitem.alloc.rhs.t
+
+-- §section §gs{gsdl.ags.codeitem.alloc.rhs.print}
+
+_gsdl.ags.codeitem.alloc.rhs.print_c	.expr
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+diff.list.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+rhs	.larg	gsdl.ags.codeitem.alloc.rhs.t
+	.undef	diff.list.t	rune.t
 
 -- §section §gs{gsdl.ags.codeitem.alloc.rhs.pos}
 
