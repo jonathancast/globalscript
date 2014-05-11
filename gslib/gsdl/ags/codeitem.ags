@@ -59,6 +59,7 @@ gsdl.ags.codeitem.gvar.fmtgs	.closure	_gsdl.ags.codeitem.gvar.fmtgs_c
 gsdl.ags.codeitem.gvar.gvar	.closure	_gsdl.ags.codeitem.gvar.gvar_c
 
 gsdl.ags.codeitem.impbody.print	.closure	_gsdl.ags.codeitem.impbody.print_c
+_gsdl.ags.codeitem.impbody.print_body.s	.string	\t.body\t
 
 gsdl.ags.codeitem.expr	.closure	_gsdl.ags.codeitem.expr_c
 gsdl.ags.codeitem.forcecont	.closure	_gsdl.ags.codeitem.forcecont_c
@@ -1417,11 +1418,17 @@ diff.list.t	.tygvar	-- Temp
 diff.list.<>	.gvar
 gsdl.ags.sourcepos.print	.gvar
 gsdl.ags.codeitem.alloc.rhs.pos	.gvar
+diff.list.prepend	.gvar
+_gsdl.ags.codeitem.impbody.print_body.s	.gvar
+gsdl.ags.codeitem.alloc.rhs.print	.gvar
 b	.larg	gsdl.ags.codeitem.impbody.t
 b.rhs	.lfield	rhs	b
 pos	.apply	gsdl.ags.codeitem.alloc.rhs.pos	|	b.rhs
 pos.s	.apply	gsdl.ags.sourcepos.print	|	pos
-s1	.undefined	diff.list.t	rune.t
+rhs.s	.apply	gsdl.ags.codeitem.alloc.rhs.print	|	b.rhs
+s3	.undefined	diff.list.t	rune.t
+s2	.apply	diff.list.<>	rune.t	|	rhs.s	s3
+s1	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.codeitem.impbody.print_body.s	s2
 	.app	pos.s	s1
 	.enter	diff.list.<>	rune.t
 
