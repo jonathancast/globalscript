@@ -722,6 +722,7 @@ gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase
             case gsbc_op_ubprim:
             case gsbc_op_lprim:
             case gsbc_op_body_closure:
+            case gsbc_op_body_undefined:
                 return 0;
             default:
                 gsstring_builder_print(err, UNIMPL("%P: Skip instruction %d"), ip->pos, ip->instr);
