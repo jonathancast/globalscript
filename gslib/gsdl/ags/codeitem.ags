@@ -2321,9 +2321,17 @@ rhs	.larg	gsdl.ags.codeitem.alloc.rhs.t
 
 _gsdl.ags.codeitem.alloc.rhs.pos_k	.forcecont
 gsdl.ags.codeitem.alloc.rhs.prim.u	.tygvar
-gsdl.sourcepos.t	.tygvar	-- Temp
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
 rhs0	.karg	gsdl.ags.codeitem.alloc.rhs.prim.u
-	.undef	gsdl.sourcepos.t
+	.analyze	rhs0	undefined
+		.case	undefined
+pos		.fkarg	0	gsdl.sourcepos.t
+tyf		.fkarg	1	gsdl.var.t
+tyas		.fkarg	2	list.t	gsdl.var.t
+			.enter	pos
+	-- > :: gsdl.sourcepos.t
 
 -- §section §gs{gsdl.ags.codeitem.alloc.rhs.t}
 
