@@ -140,10 +140,17 @@ ok_diff '-- analyze with default and two constructor cases --' ./$O.test-gsi ana
 
 ok_grep_errors '-- analyze on un-boxed sum with mis-matched free type variables --' './test-fixtures/ubanalyze-excess-type-variable.ags:18: Mis-matched number of free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
 
-ok_grep_errors '-- analyze on un-boxed sum with mis-matched number of free variables --' './test-fixtures/ubanalyze-mismatched-free-variable-number.ags:19: Mis-matched number of free variables' ./$O.test-gsi ubanalyze-mismatched-free-variable-number.ags
-ok_grep_errors '-- analyze on un-boxed sum with mis-matched names of free variables --' './test-fixtures/ubanalyze-mismatched-free-variable-name.ags:21: Mis-matched free variable' ./$O.test-gsi ubanalyze-mismatched-free-variable-name.ags
+echo '# Version 0.2 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_1=1
+
+ok_diff_fail '-- # is a regular character --' ./$O.test-gsi undef-hash-operator.ags
+ok_grep_errors '-- \h is un-supported --' 'string-invalid-h-escape.ags:7: Unknown escape \\h' ./$O.test-gsi string-invalid-h-escape.ags
 
 ok_diff '-- analyze on un-boxed sums --' ./$O.test-gsi analyze-unboxed-free-variable.ags
+
+ok_grep_errors '-- analyze on un-boxed sum with mis-matched number of free variables --' './test-fixtures/ubanalyze-mismatched-free-variable-number.ags:19: Mis-matched number of free variables' ./$O.test-gsi ubanalyze-mismatched-free-variable-number.ags
+ok_grep_errors '-- analyze on un-boxed sum with mis-matched names of free variables --' './test-fixtures/ubanalyze-mismatched-free-variable-name.ags:21: Mis-matched free variable' ./$O.test-gsi ubanalyze-mismatched-free-variable-name.ags
 
 ok_grep_errors '-- analyze on existential types with failing occurs check --' './test-fixtures/analyze-failing-occurs-check.ags:23: .exkarg-bound type variable α free in type of .case body' ./$O.test-gsi analyze-failing-occurs-check.ags
 ok_diff_fail '-- analyze on existential types --' ./$O.test-gsi analyze-existential-type.ags
@@ -159,13 +166,6 @@ ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
 ok_diff '-- trivial use of alloc --' ./$O.test-gsexec simple-alloc-api.ags
 
 ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-fixtures/invalid-fv.ags:15: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags
-
-echo '# Version 0.2 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_1=1
-
-ok_diff_fail '-- # is a regular character --' ./$O.test-gsi undef-hash-operator.ags
-ok_grep_errors '-- \h is un-supported --' 'string-invalid-h-escape.ags:7: Unknown escape \\h' ./$O.test-gsi string-invalid-h-escape.ags
 
 echo '# Version 0.3 and up:'
 
