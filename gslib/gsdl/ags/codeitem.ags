@@ -1422,12 +1422,14 @@ gsdl.ags.codeitem.alloc.rhs.pos	.gvar
 diff.list.prepend	.gvar
 _gsdl.ags.codeitem.impbody.print_body.s	.gvar
 gsdl.ags.codeitem.alloc.rhs.print	.gvar
+diff.list.singleton	.gvar
+rune.new.line	.gvar
 b	.larg	gsdl.ags.codeitem.impbody.t
 b.rhs	.lfield	rhs	b
 pos	.apply	gsdl.ags.codeitem.alloc.rhs.pos	|	b.rhs
 pos.s	.apply	gsdl.ags.sourcepos.print	|	pos
 rhs.s	.apply	gsdl.ags.codeitem.alloc.rhs.print	|	b.rhs
-s3	.undefined	diff.list.t	rune.t
+s3	.apply	diff.list.singleton	rune.t	|	rune.new.line
 s2	.apply	diff.list.<>	rune.t	|	rhs.s	s3
 s1	.apply	diff.list.prepend	rune.t	|	_gsdl.ags.codeitem.impbody.print_body.s	s2
 	.app	pos.s	s1
