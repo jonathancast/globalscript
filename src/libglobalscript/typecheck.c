@@ -2181,7 +2181,7 @@ static struct gstype *gsbc_typecheck_alloc_rhs(struct gsparsedline *, int, struc
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymundefined, gssymlifted, gssymcast, gssymapply;
+    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymlifted, gssymcast, gssymapply;
 
     int i;
     struct gstype *alloc_type;
@@ -2461,21 +2461,6 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         pcl->regs[pcl->nregs] = p->label;
         pcl->regtypes[pcl->nregs] = fieldtype;
         pcl->nregs++;
-    } else if (gssymceq(p->directive, gssymundefined, gssymcodeop, ".undefined")) {
-        struct gstype *type, *tyarg;
-
-        CHECK_NUM_REGS(pcl->nregs);
-
-        gsargcheck(p, 0, "Type");
-        type = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[0])];
-        for (i = 1; i < p->numarguments; i++) {
-            tyarg = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
-            type = gstype_apply(p->pos, type, tyarg);
-        }
-        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
-        pcl->regs[pcl->nregs] = p->label;
-        pcl->regtypes[pcl->nregs] = type;
-        pcl->nregs++;
     } else if (gssymceq(p->directive, gssymlifted, gssymcodeop, ".lifted")) {
         struct gstype *target_type;
 
@@ -2576,8 +2561,9 @@ static void gsbc_check_api_free_variable_decls(struct gsbc_typecheck_code_or_api
 struct gstype *
 gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl)
 {
-    static gsinterned_string gssymclosure, gssymalloc;
+    static gsinterned_string gssymclosure, gssymalloc, gssymundefined;
 
+    int i;
     struct gstype *type;
 
     gsinterned_string directive = offset == 0 ? p->directive : p->arguments[offset - 1];
@@ -2602,6 +2588,16 @@ gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typeche
 
         gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
         gsbc_typecheck_check_boxed(p->pos, type);
+    } else if (gssymceq(directive, gssymundefined, gssymcodeop, ".undefined")) {
+        struct gstype *tyarg;
+
+        gsargcheck(p, offset + 0, "Type");
+        type = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[offset + 0])];
+        for (i = offset + 1; i < p->numarguments; i++) {
+            tyarg = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
+            type = gstype_apply(p->pos, type, tyarg);
+        }
+        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
     } else {
         return 0;
     }
