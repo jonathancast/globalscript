@@ -2815,6 +2815,19 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
 
         pcode = ACE_BODY_CLOSURE_SKIP(pcode);
         cl.pout = (uchar *)pcode;
+    } else if (
+        (features & gsstring_code_bind_closure_two_words)
+            ?
+                gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
+                && gssymceq(p->arguments[0], gssymopundefined, gssymcodeop, ".undefined")
+            : 0
+    ) {
+        pcode = (struct gsbc *)cl.pout;
+
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_body_undefined;
+
+        cl.pout = ACE_BODY_UNDEFINED_SKIP(pcode);
     } else {
         gsfatal(UNIMPL("%P: API op %y"), p->pos, p->directive);
     }
