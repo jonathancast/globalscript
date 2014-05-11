@@ -2149,6 +2149,7 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 	-- > :: either.t	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
 
 _gsac.gsexpr.body.compileToGenRHS_missing_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
@@ -2160,6 +2161,8 @@ either.t	.tygvar	-- Temp
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.nil	.gvar
+gsdl.ags.codeitem.alloc.rhs.undefined	.gvar
+pos1	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -2171,7 +2174,10 @@ cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
 cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem1			.lfield	prim.emitted	ty.r
-r			.undefined	gsdl.ags.codeitem.alloc.rhs.t
+ty.r.res			.lfield	res	ty.r
+ty.r.res.tyf			.lfield	tyfun	ty.r.res
+ty.r.res.tyas			.lfield	typeargs	ty.r.res
+r			.apply	gsdl.ags.codeitem.alloc.rhs.undefined	|	pos1	ty.r.res.tyf	ty.r.res.tyas
 tyem1			.lfield	emitted	ty.r
 tysvs1			.lfield	subvars	ty.r
 tygvs			.lfield	tygvars	ty.r
