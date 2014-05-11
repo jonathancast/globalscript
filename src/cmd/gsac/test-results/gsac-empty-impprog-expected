@@ -1,0 +1,44 @@
+#calculus: gsdl.string-code 0.6
+
+	.document
+
+	.data
+
+	.line	./test-fixtures/empty-impprog.cgs 3 1
+	.closure	_ep_c	_ep_ty
+
+	.code
+
+	.line	./test-fixtures/empty-impprog.cgs 3 1
+_ep_c	.impprog	ibio.prim	ibio
+_ep_0	.tygvar
+	.lift
+	.line	./test-fixtures/empty-impprog.cgs 3 2
+	.line	./test-fixtures/empty-impprog.cgs 3 20
+	.body	.undefined	_ep_0
+
+	.type
+
+	.line	./test-fixtures/empty-impprog.cgs 3 20
+_ep_0	.tyexpr
+_ep_0_0	.tyextimpprim	ibio.prim	ibio	u?^
+_ep_0_1	.tygvar
+	.tylift
+	.tyref	_ep_0_0	_ep_0_1
+
+	.line	./test-fixtures/empty-impprog.cgs 3 20
+_ep_0_1	.tyexpr
+	.tylift
+	.typroduct
+
+	.line	./test-fixtures/empty-impprog.cgs 3 1
+_ep_ty	.tyexpr
+_ep_ty_0	.tyextimpprim	ibio.prim	ibio	u?^
+_ep_ty_1	.tygvar
+	.tylift
+	.tyref	_ep_ty_0	_ep_ty_1
+
+	.line	./test-fixtures/empty-impprog.cgs 3 7
+_ep_ty_1	.tyexpr
+	.tylift
+	.typroduct

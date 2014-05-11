@@ -41,3 +41,5 @@ ok_gsac '-- gsac: Lambda-terms with bodies --' gsac-lambda-body ./test-fixtures/
 
 ok_gsac '-- gsac: Type signatures --' gsac-type-sig ./test-fixtures/type-sig.cgs
 ok_gsac '-- gsac: either.t type signatures --' gsac-either-type-sig ./test-fixtures/either-type-sig.cgs
+
+ok_gsac '-- gsac: Block statements --' gsac-empty-impprog ./test-fixtures/empty-impprog.cgs
