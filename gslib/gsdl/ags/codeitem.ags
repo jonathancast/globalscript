@@ -1408,10 +1408,18 @@ res	.constr	gsdl.ags.codeitem.gvar.prim.u	gvar	0	pos	1	nm
 
 _gsdl.ags.codeitem.impbody.print_c	.expr
 gsdl.ags.codeitem.impbody.t	.tygvar
+rune.t	.tygvar
 diff.list.t	.tygvar	-- Temp
-rune.t	.tygvar	-- Temp
+diff.list.<>	.gvar
+gsdl.ags.sourcepos.print	.gvar
+gsdl.ags.codeitem.alloc.rhs.pos	.gvar
 b	.larg	gsdl.ags.codeitem.impbody.t
-	.undef	diff.list.t	rune.t
+b.rhs	.lfield	rhs	b
+pos	.apply	gsdl.ags.codeitem.alloc.rhs.pos	|	b.rhs
+pos.s	.apply	gsdl.ags.sourcepos.print	|	pos
+s1	.undefined	diff.list.t	rune.t
+	.app	pos.s	s1
+	.enter	diff.list.<>	rune.t
 
 -- §section §gs{gsdl.ags.codeitem.t} Constructors
 
