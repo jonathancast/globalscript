@@ -670,7 +670,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 goto got_statements;
             }
             default:
-                api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: %d opcodes", pinstr->instr);
+                api_abend_unimpl(thread, __FILE__, __LINE__, "%P: api_unpack_block_statement: %d opcodes", pinstr->pos, pinstr->instr);
                 return;
         }
     }
