@@ -3715,7 +3715,8 @@ gsdl.ags.codeitem.impbody.u	.tygvar
 	.tyref	gsdl.ags.codeitem.impbody.u
 
 gsdl.ags.codeitem.impbody.u	.tyexpr
-	.typroduct
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+	.typroduct	rhs	gsdl.ags.codeitem.alloc.rhs.t
 
 -- §section §gs{gsdl.ags.codeitem.alloc.rhs.t}
 
