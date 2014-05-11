@@ -1288,13 +1288,13 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
 
 /* ↓ Only parse ops legal in a .impprog */
 int
-gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *parsedline, int offset, char **fields, long n)
+gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *p, int offset, char **fields, long n)
 {
     static gsinterned_string gssymclosure, gssymalloc;
 
     gsinterned_string directive = offset == 0
-        ? parsedline->directive
-        : (parsedline->arguments[offset - 1 + 2 - 2] = gsintern_string(gssymcodeop, fields[offset - 1 + 2]))
+        ? p->directive
+        : (p->arguments[offset - 1 + 2 - 2] = gsintern_string(gssymcodeop, fields[offset - 1 + 2]))
     ;
 
     if (
@@ -1304,16 +1304,16 @@ gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gspa
     ) {
         if (offset == 0) {
             if (*fields[0])
-                parsedline->label = gsintern_string(gssymdatalable, fields[0])
+                p->label = gsintern_string(gssymdatalable, fields[0])
             ; else {
                 gswarning("%s:%d: Missing label on %y makes it a no-op", pos->real_filename, pos->real_lineno, directive);
-                parsedline->label = 0;
+                p->label = 0;
             }
         }
         if (n < offset + 3)
             gsfatal("%s:%d: Missing subexpression on %y", pos->real_filename, pos->real_lineno, directive)
         ;
-        parsedline->arguments[offset + 2 - 2] = gsintern_string(gssymcodelable, fields[offset + 2]);
+        p->arguments[offset + 2 - 2] = gsintern_string(gssymcodelable, fields[offset + 2]);
         if (n > offset + 3)
             gsfatal("%s:%d: Too many arguments to %y", pos->real_filename, pos->real_lineno, directive)
         ;
