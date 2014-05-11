@@ -34,7 +34,7 @@ enum {
     gsbc_op_lprim,
     gsbc_op_unknown_lprim,
     gsbc_op_bind,
-    gsbc_op_body,
+    gsbc_op_body_closure,
 };
 
 #define GS_NTH_ARG_OFFSET(n) (offsetof(struct gsbc, args) + n)
@@ -172,10 +172,10 @@ enum {
 #define ACE_BIND_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_BIND_NUMFVS(ip))
 
 #define ACE_BODY_CLOSURE_SIZE(nfvs) GS_SIZE_BYTECODE(2 + nfvs)
-#define ACE_BODY_CODE(ip) ((ip)->args[0])
-#define ACE_BODY_NUMFVS(ip) ((ip)->args[1])
-#define ACE_BODY_FV(ip, i) ((ip)->args[2+(i)])
-#define ACE_BODY_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_BODY_NUMFVS(ip))
+#define ACE_BODY_CLOSURE_CODE(ip) ((ip)->args[0])
+#define ACE_BODY_CLOSURE_NUMFVS(ip) ((ip)->args[1])
+#define ACE_BODY_CLOSURE_FV(ip, i) ((ip)->args[2+(i)])
+#define ACE_BODY_CLOSURE_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_BODY_CLOSURE_NUMFVS(ip))
 
 #define ACE_BODY_UNDEFINED_SIZE() GS_SIZE_BYTECODE(0)
 

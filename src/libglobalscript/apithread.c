@@ -643,7 +643,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 pin = ACE_BIND_SKIP(pinstr);
                 continue;
             }
-            case gsbc_op_body: {
+            case gsbc_op_body_closure: {
                 struct gsbco *subexpr;
                 struct gsclosure *cl;
 

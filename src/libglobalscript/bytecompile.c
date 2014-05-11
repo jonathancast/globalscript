@@ -2768,21 +2768,21 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
         creg = gsbc_find_register(p, cl.subexprs, cl.nsubexprs, p->arguments[0]);
 
         pcode->pos = p->pos;
-        pcode->instr = gsbc_op_body;
-        ACE_BODY_CODE(pcode) = (uchar)creg;
+        pcode->instr = gsbc_op_body_closure;
+        ACE_BODY_CLOSURE_CODE(pcode) = (uchar)creg;
 
         if (!(cty = cl.subexpr_types[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
         ;
-        ACE_BODY_NUMFVS(pcode) = (uchar)cty->numfvs;
+        ACE_BODY_CLOSURE_NUMFVS(pcode) = (uchar)cty->numfvs;
         for (i = 0; i < cty->numfvs; i++) {
             int regarg;
 
             regarg = gsbc_find_register(p, cl.regs, cl.nregs, cty->fvs[i]);
-            ACE_BODY_FV(pcode, i) = (uchar)regarg;
+            ACE_BODY_CLOSURE_FV(pcode, i) = (uchar)regarg;
         }
 
-        pcode = ACE_BODY_SKIP(pcode);
+        pcode = ACE_BODY_CLOSURE_SKIP(pcode);
         cl.pout = (uchar *)pcode;
     } else if (
         (features & gsstring_code_bind_closure_two_words)
@@ -2799,21 +2799,21 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
         creg = gsbc_find_register(p, cl.subexprs, cl.nsubexprs, p->arguments[1]);
 
         pcode->pos = p->pos;
-        pcode->instr = gsbc_op_body;
-        ACE_BODY_CODE(pcode) = (uchar)creg;
+        pcode->instr = gsbc_op_body_closure;
+        ACE_BODY_CLOSURE_CODE(pcode) = (uchar)creg;
 
         if (!(cty = cl.subexpr_types[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1])
         ;
-        ACE_BODY_NUMFVS(pcode) = (uchar)cty->numfvs;
+        ACE_BODY_CLOSURE_NUMFVS(pcode) = (uchar)cty->numfvs;
         for (i = 0; i < cty->numfvs; i++) {
             int regarg;
 
             regarg = gsbc_find_register(p, cl.regs, cl.nregs, cty->fvs[i]);
-            ACE_BODY_FV(pcode, i) = (uchar)regarg;
+            ACE_BODY_CLOSURE_FV(pcode, i) = (uchar)regarg;
         }
 
-        pcode = ACE_BODY_SKIP(pcode);
+        pcode = ACE_BODY_CLOSURE_SKIP(pcode);
         cl.pout = (uchar *)pcode;
     } else {
         gsfatal(UNIMPL("%P: API op %y"), p->pos, p->directive);
