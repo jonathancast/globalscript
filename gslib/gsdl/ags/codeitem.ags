@@ -2310,8 +2310,17 @@ cn	.larg	string.t
 
 _gsdl.ags.codeitem.alloc.rhs.pos_c	.expr
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar
-gsdl.sourcepos.t	.tygvar	-- Temp
+_gsdl.ags.codeitem.alloc.rhs.pos_k	.subcode
+gsdl.ags.codeitem.alloc.rhs.t.out	.cogvar
 rhs	.larg	gsdl.ags.codeitem.alloc.rhs.t
+	.force	_gsdl.ags.codeitem.alloc.rhs.pos_k
+	.coerce	gsdl.ags.codeitem.alloc.rhs.t.out
+	.enter	rhs
+
+_gsdl.ags.codeitem.alloc.rhs.pos_k	.forcecont
+gsdl.ags.codeitem.alloc.rhs.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar	-- Temp
+rhs0	.karg	gsdl.ags.codeitem.alloc.rhs.prim.u
 	.undef	gsdl.sourcepos.t
 
 -- §section §gs{gsdl.ags.codeitem.arg.≡}
