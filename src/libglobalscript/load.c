@@ -1286,6 +1286,16 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
     return 1;
 }
 
+#define STORE_ALLOC_OP_LABEL(op) \
+    do { \
+        if (*fields[0]) \
+            p->label = gsintern_string(gssymdatalable, fields[0]) \
+        ; else { \
+            gswarning("%P: Missing label on %s makes it a no-op", p->pos, op); \
+            p->label = 0; \
+        } \
+    } while (0)
+
 /* ↓ Only parse ops legal in a .impprog */
 int
 gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *p, int offset, char **fields, long n)
@@ -1322,16 +1332,6 @@ gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gspa
     }
     return 1;
 }
-
-#define STORE_VALUE_ALLOC_OP_LABEL(op) \
-    do { \
-        if (*fields[0]) \
-            p->label = gsintern_string(gssymdatalable, fields[0]) \
-        ; else { \
-            gswarning("%P: Missing label on %s makes it a no-op", p->pos, op); \
-            p->label = 0; \
-        } \
-    } while (0)
 
 static
 int
@@ -1401,7 +1401,7 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
             p->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i]);
         }
     } else if (gssymceq(p->directive, gssymconstr, gssymcodeop, ".constr")) {
-        STORE_VALUE_ALLOC_OP_LABEL(".constr");
+        STORE_ALLOC_OP_LABEL(".constr");
         if (n < 3)
             gsfatal("%P: Missing type on .constr", p->pos)
         ;
@@ -1422,7 +1422,7 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
             }
         }
     } else if (gssymceq(p->directive, gssymexconstr, gssymcodeop, ".exconstr")) {
-        STORE_VALUE_ALLOC_OP_LABEL(".exconstr");
+        STORE_ALLOC_OP_LABEL(".exconstr");
         if (n < 3)
             gsfatal("%P: Missing type on .constr", p->pos)
         ;
@@ -1474,7 +1474,7 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
         gssymceq(p->directive, gssymfield, gssymcodeop, ".field")
         || gssymceq(p->directive, gssymlfield, gssymcodeop, ".lfield")
     ) {
-        STORE_VALUE_ALLOC_OP_LABEL(p->directive->name);
+        STORE_ALLOC_OP_LABEL(p->directive->name);
         if (n < 3)
             gsfatal("%P: Missing field on %y", p->pos, p->directive)
         ;
@@ -1487,7 +1487,7 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
             gsfatal("%P: Too many arguments to %y", p->pos, p->directive)
         ;
     } else if (gssymceq(p->directive, gssymundefined, gssymcodeop, ".undefined")) {
-        STORE_VALUE_ALLOC_OP_LABEL(".undefined");
+        STORE_ALLOC_OP_LABEL(".undefined");
         if (n < 3)
             gsfatal("%P: Missing type on .undefined", p->pos)
         ;
@@ -1495,19 +1495,19 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
             p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
     } else if (gssymceq(p->directive, gssymlifted, gssymcodeop, ".lifted")) {
-        STORE_VALUE_ALLOC_OP_LABEL(".lifted");
+        STORE_ALLOC_OP_LABEL(".lifted");
         if (n < 3) gsfatal("%P: Missing target of lifting", p->pos);
         p->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
         if (n > 3) gsfatal("%P: Too many arguments to .lifted", p->pos);
     } else if (gssymceq(p->directive, gssymcast, gssymcodeop, ".cast")) {
-        STORE_VALUE_ALLOC_OP_LABEL(".cast");
+        STORE_ALLOC_OP_LABEL(".cast");
         if (n < 3) gsfatal("%P: Missing target of coercion", p->pos);
         p->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
         if (n < 4) gsfatal("%P: Missing coercion", p->pos);
         p->arguments[3 - 2] = gsintern_string(gssymcoercionlable, fields[3]);
         for (i = 4; i < n; i++) p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
     } else if (gssymceq(p->directive, gssymapply, gssymcodeop, ".apply")) {
-        STORE_VALUE_ALLOC_OP_LABEL(".apply");
+        STORE_ALLOC_OP_LABEL(".apply");
         if (n < 3)
             gsfatal("%P: Missing function on .undefined", p->pos)
         ;
