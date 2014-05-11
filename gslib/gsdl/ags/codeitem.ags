@@ -102,6 +102,8 @@ gsdl.ags.codeitem.alloc.rhs.parser	.closure	_gsdl.ags.codeitem.alloc.rhs.parser_
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_alloc.re	.regex	.alloc
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re	.regex	.closure
 
+gsdl.ags.codeitem.alloc.rhs.pos	.closure	_gsdl.ags.codeitem.alloc.rhs.pos_c
+
 gsdl.ags.codeitem.arg.≡	.closure	_gsdl.ags.codeitem.arg.≡_c
 
 gsdl.ags.codeitem.arg.fmtgs	.closure	_gsdl.ags.codeitem.arg.fmtgs_c
@@ -2295,6 +2297,14 @@ string.t	.tygvar
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
 cn	.larg	string.t
 	.undef	gsdl.ags.codeitem.alloc.rhs.t
+
+-- §section §gs{gsdl.ags.codeitem.alloc.rhs.pos}
+
+_gsdl.ags.codeitem.alloc.rhs.pos_c	.expr
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+gsdl.sourcepos.t	.tygvar	-- Temp
+rhs	.larg	gsdl.ags.codeitem.alloc.rhs.t
+	.undef	gsdl.sourcepos.t
 
 -- §section §gs{gsdl.ags.codeitem.arg.≡}
 
