@@ -1312,14 +1312,7 @@ gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gspa
             ?gssymceq(directive, gssymclosure, gssymcodeop, ".closure")
             : gssymceq(directive, gssymalloc, gssymcodeop, ".alloc")
     ) {
-        if (offset == 0) {
-            if (*fields[0])
-                p->label = gsintern_string(gssymdatalable, fields[0])
-            ; else {
-                gswarning("%s:%d: Missing label on %y makes it a no-op", pos->real_filename, pos->real_lineno, directive);
-                p->label = 0;
-            }
-        }
+        if (offset == 0) STORE_ALLOC_OP_LABEL(directive->name);
         if (n < offset + 3)
             gsfatal("%s:%d: Missing subexpression on %y", pos->real_filename, pos->real_lineno, directive)
         ;
