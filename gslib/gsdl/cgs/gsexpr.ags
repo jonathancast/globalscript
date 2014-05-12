@@ -1075,6 +1075,11 @@ gsdl.cgs.gsexpr.cast.source.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.cgs.gsexpr.cast.source.t
 
+gsdl.cgs.gsexpr.generator.t.out	.tycoercion
+gsdl.cgs.gsexpr.generator.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gsexpr.generator.t
+
 gsdl.cgs.gsexpr.body.t.in	.tycoercion
 gsdl.cgs.gsexpr.body.t	.tygvar
 	.tydefinition gsdl.cgs.gsexpr.body.t
