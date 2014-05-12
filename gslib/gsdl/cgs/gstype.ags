@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -70,7 +70,7 @@ _gsdl.cgs.gstype.parser.fun_k_c	.subcode
 parser.>>=	.gvar
 parser.pos.get	.gvar
 pos.get	.apply	parser.pos.get	rune.t
-k	.alloc	_gsdl.cgs.gstype.parser.fun_k_c
+k	.closure	_gsdl.cgs.gstype.parser.fun_k_c
 	.app	pos.get	k
 	.enter	parser.>>=	rune.t	parser.pos.t	gsdl.cgs.gstype.t
 
@@ -82,7 +82,7 @@ _gsdl.cgs.gstype.parser.fun_k1_c	.subcode
 parser.>>=	.gvar
 gsdl.cgs.gstype.parser.app	.gvar
 pos0	.larg	parser.pos.t
-k1	.alloc	_gsdl.cgs.gstype.parser.fun_k1_c
+k1	.closure	_gsdl.cgs.gstype.parser.fun_k1_c
 	.app	gsdl.cgs.gstype.parser.app	k1
 	.enter	parser.>>=	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t
 
@@ -103,7 +103,7 @@ parser.fail	.gvar	-- Temp
 pos0	.fv	parser.pos.t
 ty0	.larg	gsdl.cgs.gstype.t
 un.ty0	.apply	parser.unit	rune.t	gsdl.cgs.gstype.t	|	ty0
-f	.alloc	_gsdl.cgs.gstype.parser.fun_f_c
+f	.closure	_gsdl.cgs.gstype.parser.fun_f_c
 arr.p	.apply	gsdl.cgs.syntax.keywordOp	|	_gsdl.cgs.gstype.parser.fun_arr.re
 fun.p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	arr.p	gsdl.cgs.gstype.parser.fun
 fun.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t	|	f	fun.p1
@@ -164,9 +164,9 @@ _gsdl.cgs.gstype.parser.arg_var.p_c	.subcode
 _gsdl.cgs.gstype.parser.arg_prod.p_c	.subcode
 _gsdl.cgs.gstype.parser.arg_lift.p_c	.subcode
 parser.<|>	.gvar
-var.p	.alloc	_gsdl.cgs.gstype.parser.arg_var.p_c
-prod.p	.alloc	_gsdl.cgs.gstype.parser.arg_prod.p_c
-lift.p	.alloc	_gsdl.cgs.gstype.parser.arg_lift.p_c
+var.p	.closure	_gsdl.cgs.gstype.parser.arg_var.p_c
+prod.p	.closure	_gsdl.cgs.gstype.parser.arg_prod.p_c
+lift.p	.closure	_gsdl.cgs.gstype.parser.arg_lift.p_c
 p1	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	prod.p	lift.p
 	.app	var.p	p1
 	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
@@ -183,7 +183,7 @@ _gsdl.cgs.gstype.parser.arg_var.p_f_c	.subcode
 parser.lift2	.gvar
 parser.pos.get	.gvar
 gsdl.cgs.syntax.var.parser	.gvar
-f	.alloc	_gsdl.cgs.gstype.parser.arg_var.p_f_c
+f	.closure	_gsdl.cgs.gstype.parser.arg_var.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 	.app	f	pos.get	gsdl.cgs.syntax.var.parser
 	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.var.t	gsdl.cgs.gstype.t
