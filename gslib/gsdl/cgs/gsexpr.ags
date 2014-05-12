@@ -678,13 +678,16 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar	-- Temp
 gsdl.cgs.symbol.t	.tygvar	-- Temp
+gsdl.cgs.gstype.freevars	.gvar
 g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
 	.analyze	g0	undef
 		.case	undef
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 ty		.fkarg	2	gsdl.cgs.gstype.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+			.app	ty
+			.enter	gsdl.cgs.gstype.freevars
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gsexpr.generator.t} Constructors
 
