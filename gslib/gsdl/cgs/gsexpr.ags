@@ -657,9 +657,18 @@ ty	.larg	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gsexpr.generator.freevars_c	.expr
 gsdl.cgs.gsexpr.generator.t	.tygvar
+_gsdl.cgs.gsexpr.generator.freevars_k	.subcode
+gsdl.cgs.gsexpr.generator.t.out	.cogvar
+g	.larg	gsdl.cgs.gsexpr.generator.t
+	.force	_gsdl.cgs.gsexpr.generator.freevars_k
+	.coerce	gsdl.cgs.gsexpr.generator.t.out
+	.enter	g
+
+_gsdl.cgs.gsexpr.generator.freevars_k	.forcecont
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
 ordered.set.t	.tygvar	-- Temp
 gsdl.cgs.symbol.t	.tygvar	-- Temp
-g	.larg	gsdl.cgs.gsexpr.generator.t
+g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
 	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gsexpr.body.parser}
