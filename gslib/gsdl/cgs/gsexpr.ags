@@ -615,8 +615,43 @@ e	.larg	gsdl.cgs.gsexpr.t
 _gsdl.cgs.gsexpr.generator.imp.parser_c	.expr
 rune.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_c	.subcode
+undef.p	.closure	_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_c
+	.enter	undef.p
+
+_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_f_c	.subcode
+parser.lift3	.gvar
+parser.pos.get	.gvar
+gsdl.cgs.syntax.var.parser	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.oftype	.gvar
+parser.<*	.gvar
+gsdl.cgs.gstype.parser	.gvar
+gsdl.cgs.syntax.semi	.gvar
 parser.fail	.gvar	-- Temp
-	.enter	parser.fail	rune.t	gsdl.cgs.gsexpr.generator.t
+f	.closure	_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+ty.p1	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	gsdl.cgs.gstype.parser	gsdl.cgs.syntax.semi
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	ty.p1
+	.app	f	pos.get	gsdl.cgs.syntax.var.parser	ty.p
+	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	gsdl.cgs.gstype.t	gsdl.cgs.gsexpr.generator.t
+
+_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+pos0	.larg	parser.pos.t
+v	.larg	gsdl.var.t
+ty	.larg	gsdl.cgs.gstype.t
+	.undef	gsdl.cgs.gsexpr.generator.t
 
 -- §section §gs{gsdl.cgs.gsexpr.generator.freevars}
 
