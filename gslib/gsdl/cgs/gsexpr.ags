@@ -28,6 +28,8 @@ gsdl.cgs.gsexpr.generator.imp.parser	.closure	_gsdl.cgs.gsexpr.generator.imp.par
 
 gsdl.cgs.gsexpr.generator.freevars	.closure	_gsdl.cgs.gsexpr.generator.freevars_c
 
+gsdl.cgs.gsexpr.generator.undef	.closure	_gsdl.cgs.gsexpr.generator.undef_c
+
 gsdl.cgs.gsexpr.body.parser	.closure	_gsdl.cgs.gsexpr.body.parser_c	_gsdl.cgs.gsexpr.body.parser_ty
 
 gsdl.cgs.gsexpr.body.freevars	.closure	_gsdl.cgs.gsexpr.body.freevars_c	_gsdl.cgs.gsexpr.body.freevars_ty
@@ -671,6 +673,22 @@ gsdl.cgs.symbol.t	.tygvar	-- Temp
 g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
 	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
+-- §section §gs{gsdl.cgs.gsexpr.generator.t} Constructors
+
+_gsdl.cgs.gsexpr.generator.undef_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
+gsdl.cgs.gsexpr.generator.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+v	.larg	gsdl.var.t
+ty	.larg	gsdl.cgs.gstype.t
+res	.constr	gsdl.cgs.gsexpr.generator.prim.u	undef	0	pos	1	v	2	ty
+	.coerce	gsdl.cgs.gsexpr.generator.t.in
+	.lift
+	.yield	res
+
 -- §section §gs{gsdl.cgs.gsexpr.body.parser}
 
 _gsdl.cgs.gsexpr.body.parser_c	.expr
@@ -961,7 +979,14 @@ gsdl.cgs.gsexpr.generator.prim.u	.tygvar
 	.tyref	gsdl.cgs.gsexpr.generator.prim.u
 
 gsdl.cgs.gsexpr.generator.prim.u	.tyexpr
-	.tysum
+_gsdl.cgs.gsexpr.generator.prim.u_undef_ty	.tygvar
+	.tysum	undef	_gsdl.cgs.gsexpr.generator.prim.u_undef_ty
+
+_gsdl.cgs.gsexpr.generator.prim.u_undef_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.cgs.gstype.t
 
 -- §section §gs{gsdl.cgs.gsexpr.body.t}
 
