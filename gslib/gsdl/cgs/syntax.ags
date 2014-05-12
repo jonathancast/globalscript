@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -109,7 +109,7 @@ id_p0	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.gsid_re
 id_p1.1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_id.cont.char.re
 id_p1	.apply	parser.neg.lookahead	rune.t	string.t	|	id_p1.1
 id_p	.apply	parser.<*	rune.t	string.t	record.empty	|	id_p0	id_p1
-k	.alloc	_gsdl.cgs.syntax.var.component.alphanum.parser_k_c
+k	.closure	_gsdl.cgs.syntax.var.component.alphanum.parser_k_c
 	.app	id_p	k
 	.enter	parser.>>=	rune.t	string.t	gsdl.var.component.t
 
