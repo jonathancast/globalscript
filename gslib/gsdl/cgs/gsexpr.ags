@@ -650,10 +650,15 @@ parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.undef	.gvar
+gsdl.sourcepos	.gvar
 pos0	.larg	parser.pos.t
 v	.larg	gsdl.var.t
 ty	.larg	gsdl.cgs.gstype.t
-	.undef	gsdl.cgs.gsexpr.generator.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+	.app	pos	v	ty
+	.enter	gsdl.cgs.gsexpr.generator.undef
 
 -- §section §gs{gsdl.cgs.gsexpr.generator.freevars}
 
