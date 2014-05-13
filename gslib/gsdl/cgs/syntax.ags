@@ -12,6 +12,8 @@ gsdl.cgs.syntax.var.print	.closure	_gsdl.cgs.syntax.var.print_c
 _gsdl.cgs.syntax.var.print_basevar_components.print	.closure	_gsdl.cgs.syntax.var.print_basevar_components.print_c	_gsdl.cgs.syntax.var.print_components.print_ty
 
 gsdl.cgs.syntax.parens	.closure	_gsdl.cgs.syntax.parens_c
+_gsdl.cgs.syntax.parens_lparen.re	.regex	(
+_gsdl.cgs.syntax.parens_rparen.re	.regex	)
 
 gsdl.cgs.syntax.lexeme	.closure	_gsdl.cgs.syntax.lexeme_c
 
@@ -241,10 +243,24 @@ s1			.apply	list.<>	rune.t	|	c0.s	cs1.s
 _gsdl.cgs.syntax.parens_c	.expr
 parser.t	.tygvar
 rune.t	.tygvar
+string.t	.tygvar
+parser.*>	.gvar
+gsdl.cgs.syntax.lexeme	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.parens_lparen.re	.gvar
+_gsdl.cgs.syntax.parens_rparen.re	.gvar
+parser.<*	.gvar
 parser.fail	.gvar	-- Temp
 α	.tyarg	*
 p	.larg	parser.t	rune.t	α
-	.enter	parser.fail	rune.t	α
+lparen.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.parens_lparen.re
+lparen.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	lparen.p1
+rparen.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.parens_rparen.re
+rparen.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	rparen.p1
+p1	.apply	parser.<*	rune.t	α	string.t	|	p	rparen.p
+	.app	lparen.p	p1
+	.enter	parser.*>	rune.t	string.t	α
 
 -- §section §gs{gsdl.cgs.syntax.lexeme}
 
