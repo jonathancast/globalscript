@@ -459,13 +459,55 @@ _gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_c	.expr
 gsdl.cgs.gsexpr.generator.t	.tygvar
 _gsac.gsexpr.annotate_impfor_right_right_right_z_ty	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_k	.subcode
+gsdl.cgs.gsexpr.generator.t.out	.cogvar
 g	.larg	gsdl.cgs.gsexpr.generator.t
 k	.larg	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
 env	.larg	gsdl.cgs.typeenv.t
-	.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+	.force	_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_k
+	.coerce	gsdl.cgs.gsexpr.generator.t.out
+	.enter	g
+
+_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_undef_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.annotate	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
+	.analyze	g0	undef
+		.case	undef
+pos1		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+ty		.fkarg	2	gsdl.cgs.gstype.t
+			.force	_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_undef_k
+			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
+			.app	pos1	env	ty
+			.enter	gsac.gstype.annotate
+	-- > :: either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+
+_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_undef_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+		.case	right
+ty.r		.fkarg	0	_gsac.gstype.annotate_res.ty
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 
 _gsac.gsexpr.annotate_impfor_right_right_right_body.annotate_c	.expr
 gsdl.sourcepos.t	.tygvar
