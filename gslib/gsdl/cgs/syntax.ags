@@ -11,6 +11,8 @@ gsdl.cgs.syntax.var.component.alphanum.parser	.closure	_gsdl.cgs.syntax.var.comp
 gsdl.cgs.syntax.var.print	.closure	_gsdl.cgs.syntax.var.print_c
 _gsdl.cgs.syntax.var.print_basevar_components.print	.closure	_gsdl.cgs.syntax.var.print_basevar_components.print_c	_gsdl.cgs.syntax.var.print_components.print_ty
 
+gsdl.cgs.syntax.parens	.closure	_gsdl.cgs.syntax.parens_c
+
 gsdl.cgs.syntax.lexeme	.closure	_gsdl.cgs.syntax.lexeme_c
 
 gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
@@ -233,6 +235,16 @@ s1			.apply	list.<>	rune.t	|	c0.s	cs1.s
 			.enter	list.:	rune.t
 		.case	nil
 			.enter	list.nil	rune.t
+
+-- §section §gs{gsdl.cgs.syntax.parens}
+
+_gsdl.cgs.syntax.parens_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+parser.fail	.gvar	-- Temp
+α	.tyarg	*
+p	.larg	parser.t	rune.t	α
+	.enter	parser.fail	rune.t	α
 
 -- §section §gs{gsdl.cgs.syntax.lexeme}
 
