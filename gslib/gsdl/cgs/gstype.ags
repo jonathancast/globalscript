@@ -164,10 +164,14 @@ _gsdl.cgs.gstype.parser.arg_var.p_c	.subcode
 _gsdl.cgs.gstype.parser.arg_prod.p_c	.subcode
 _gsdl.cgs.gstype.parser.arg_lift.p_c	.subcode
 parser.<|>	.gvar
+gsdl.cgs.syntax.parens	.gvar
+gsdl.cgs.gstype.parser	.gvar
 var.p	.closure	_gsdl.cgs.gstype.parser.arg_var.p_c
 prod.p	.closure	_gsdl.cgs.gstype.parser.arg_prod.p_c
 lift.p	.closure	_gsdl.cgs.gstype.parser.arg_lift.p_c
-p1	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	prod.p	lift.p
+parens.p	.apply	gsdl.cgs.syntax.parens	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.parser
+p2	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	lift.p	parens.p
+p1	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	prod.p	p2
 	.app	var.p	p1
 	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
 
