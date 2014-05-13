@@ -35,6 +35,10 @@ ok_diff_fail '-- undefined entry points (.tyextabstype in .expr type) --' ./$O.t
 
 ok_diff_fail '-- undefined entry points (cast into .tyextabstype type) --' ./$O.test-gsi undef-cast-tyextabstype.ags
 
+echo '# Version 0.2 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_1=1
+
 ok_diff '-- empty record values --' ./$O.test-gsi empty-record.ags
 ok_diff '-- empty record expressions --' ./$O.test-gsi empty-record-expr.ags
 ok_diff '-- empty lifted record expressions --' ./$O.test-gsi empty-lrecord-expr.ags
@@ -83,10 +87,6 @@ ok_grep_errors '-- an abstract type is different from its definition --' './test
 ok_diff_fail '-- undefined abstract type expressions --' ./$O.test-gsi undef-abs-type-expr.ags
 ok_grep_errors '-- an abstract type is different from its definition (in expressions) --' './test-fixtures/invalid-abs-type-expr.ags:15: I don''t think' ./$O.test-gsi invalid-abs-type-expr.ags
 
-echo '# Version 0.2 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_1=1
-
 ok_grep_errors '-- an abstract type is different from its definition (in generators) --' './test-fixtures/invalid-abs-type-gen.ags:15: I don''t think' ./$O.test-gsi invalid-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators --' ./$O.test-gsi undef-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators with type arguments --' ./$O.test-gsi undef-abs-type-gen-tyargs.ags
@@ -96,7 +96,6 @@ ok_diff_fail '-- force undefined values of abstract types --' ./$O.test-gsi forc
 ok_diff_fail '-- force with free variable in continuation --' ./$O.test-gsi force-with-fv.ags
 ok_diff_fail '-- force with free type variable in continuation --' ./$O.test-gsi force-with-type-fv.ags
 ok_diff_fail '-- force with free type variable and variable in continuation --' ./$O.test-gsi force-with-fv-and-type-fv.ags
-
 
 ok_diff '-- rune literals --' ./$O.test-gsi rune-literal.ags
 ok_diff '-- two-byte rune literals --' ./$O.test-gsi two-byte-rune-literal.ags
