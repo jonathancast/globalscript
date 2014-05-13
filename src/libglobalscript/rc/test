@@ -83,6 +83,10 @@ ok_grep_errors '-- an abstract type is different from its definition --' './test
 ok_diff_fail '-- undefined abstract type expressions --' ./$O.test-gsi undef-abs-type-expr.ags
 ok_grep_errors '-- an abstract type is different from its definition (in expressions) --' './test-fixtures/invalid-abs-type-expr.ags:15: I don''t think' ./$O.test-gsi invalid-abs-type-expr.ags
 
+echo '# Version 0.2 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_1=1
+
 ok_grep_errors '-- an abstract type is different from its definition (in generators) --' './test-fixtures/invalid-abs-type-gen.ags:15: I don''t think' ./$O.test-gsi invalid-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators --' ./$O.test-gsi undef-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators with type arguments --' ./$O.test-gsi undef-abs-type-gen-tyargs.ags
@@ -93,6 +97,7 @@ ok_diff_fail '-- force with free variable in continuation --' ./$O.test-gsi forc
 ok_diff_fail '-- force with free type variable in continuation --' ./$O.test-gsi force-with-type-fv.ags
 ok_diff_fail '-- force with free type variable and variable in continuation --' ./$O.test-gsi force-with-fv-and-type-fv.ags
 
+
 ok_diff '-- rune literals --' ./$O.test-gsi rune-literal.ags
 ok_diff '-- two-byte rune literals --' ./$O.test-gsi two-byte-rune-literal.ags
 ok_diff '-- three-byte rune literals --' ./$O.test-gsi three-byte-rune-literal.ags
@@ -102,6 +107,8 @@ ok_diff '-- constructors with existential type arguments --' ./$O.test-gsi const
 ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 
+ok_diff_fail '-- # is a regular character --' ./$O.test-gsi undef-hash-operator.ags
+ok_grep_errors '-- \h is un-supported --' 'string-invalid-h-escape.ags:7: Unknown escape \\h' ./$O.test-gsi string-invalid-h-escape.ags
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 
 ok_diff '-- non-empty records in expressions --' ./$O.test-gsi record-literal-gen.ags
@@ -139,13 +146,6 @@ ok_diff '-- analyze with default --' ./$O.test-gsi analyze-default.ags
 ok_diff '-- analyze with default and two constructor cases --' ./$O.test-gsi analyze-default-two-constrs.ags
 
 ok_grep_errors '-- analyze on un-boxed sum with mis-matched free type variables --' './test-fixtures/ubanalyze-excess-type-variable.ags:18: Mis-matched number of free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
-
-echo '# Version 0.2 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_1=1
-
-ok_diff_fail '-- # is a regular character --' ./$O.test-gsi undef-hash-operator.ags
-ok_grep_errors '-- \h is un-supported --' 'string-invalid-h-escape.ags:7: Unknown escape \\h' ./$O.test-gsi string-invalid-h-escape.ags
 
 ok_diff '-- analyze on un-boxed sums --' ./$O.test-gsi analyze-unboxed-free-variable.ags
 
