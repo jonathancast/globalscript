@@ -47,6 +47,7 @@ _gsac.prefix.file.load_body_calculus.s	.string	calculus
 _gsac.prefix.file.load_body_cv_string.code.s	.string	gsdl.string-code
 _gsac.prefix.file.load_body_cv_0.1.s	.string	0.1
 _gsac.prefix.file.load_body_cv_0.2.s	.string	0.2
+_gsac.prefix.file.load_body_cv_0.6.s	.string	0.6
 _gsac.prefix.file.load_body_left_write_nl.s	.string	\n
 
 gsac.prefix.file.boundvars	.closure	_gsac.prefix.file.boundvars_c
@@ -340,6 +341,31 @@ fs			.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	bool.false
 			.enter	either.right	string.t	gsdl.ags.syntax.features.t
 
 _gsac.prefix.file.load_body_cv_just_:_true_0.2_k	.forcecont
+string.t	.tygvar
+bool.prim.u	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.prefix.file.load_body_cv_just_:_true_0.6_k	.subcode
+bool.t.out	.cogvar
+string.≡	.gvar
+_gsac.prefix.file.load_body_cv_0.6.s	.gvar
+either.right	.gvar
+bool.false	.gvar
+bool.true	.gvar
+v	.fv	string.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.force	_gsac.prefix.file.load_body_cv_just_:_true_0.6_k
+			.coerce	bool.t.out
+			.app	v	_gsac.prefix.file.load_body_cv_0.6.s
+			.enter	string.≡
+		.case	true
+fs			.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+			.app	fs
+			.enter	either.right	string.t	gsdl.ags.syntax.features.t
+
+_gsac.prefix.file.load_body_cv_just_:_true_0.6_k	.forcecont
 bool.prim.u	.tygvar
 string.t	.tygvar
 gsdl.ags.syntax.features.t	.tygvar
@@ -352,7 +378,7 @@ b0	.karg	bool.prim.u
 		.case	false
 			.undef	either.t	string.t	gsdl.ags.syntax.features.t
 		.case	true
-fs			.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	bool.false	closure	bool.false	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
+fs			.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	bool.true	closure	bool.true	hash.normal	bool.true	|	gsdl.ags.syntax.features.t
 			.app	fs
 			.enter	either.right	string.t	gsdl.ags.syntax.features.t
 
