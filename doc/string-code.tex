@@ -988,6 +988,21 @@ and the type of the whole application should be lifted.
 \end{itemize}
 The different primitive instructions correspond to this breakdown.
 
+\subsection{\stringcode{.analyze}}
+
+This isn't really a 'terminal' operator, but it's legal only where we allow terminal operators.
+
+\begin{verbatim}
+	.analyze	x	c0	...	cn-1
+\end{verbatim}
+
+This branches on \stringcode{x}, which must be of (un-lifted) sum type with constructors \stringcode{c$_0$, $\ldots$, c$_{n-1}$}.
+The constructors must be given in unibetical order by printed name, as used in the source code.
+\stringcode{x} may  not have empty sum type.
+
+The \stringcode{.analyze} statement must be followed by a sequence of \stringcode{case} ops (see section \ref{case}),
+in order, one per constructor, defining the behavior for the various branches.
+
 \chapter{Types}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -1085,26 +1100,9 @@ Interpolations aren't supported inside classes yet but they will be.
 int
 gsparse_code_terminal_expr_op(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gsssymanalyze, gsssymdanalyze;
+    static gsinterned_string gsssymdanalyze;
 
-    if (gssymceq(parsedline->directive, gsssymanalyze, gssymcodeop, ".analyze")) {
-        struct gsparsedline *p;
-        int constrnum;
-
-        gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
-        if (n < 3)
-            gsfatal("%s:%d: Missing scrutinee on .analyze", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
-        if (n < 4)
-            gsfatal("%s:%d: No constructors in .analyze (use .eanalyze for eliminating empty sums)", pos->real_filename, pos->real_lineno);
-        for (i = 3; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i])
-        ;
-        p = parsedline;
-        for (constrnum = 0; 3 + constrnum < n; constrnum++) {
-            gsparse_case(pos, parsedfile, chan, parsedline->arguments[1 + constrnum], line, fields);
-        }
-    } else if (gssymceq(parsedline->directive, gsssymdanalyze, gssymcodeop, ".danalyze")) {
+    if (gssymceq(parsedline->directive, gsssymdanalyze, gssymcodeop, ".danalyze")) {
         struct gsparsedline *p;
         int constrnum;
 
