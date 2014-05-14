@@ -17,8 +17,13 @@ ok_grep_errors '-- invalid calculus version --' 'invalid-calculus-version.ags:1:
 
 # §section Version 0.1 and up:
 
-ok_diff_fail '-- source-style comments --' ./$O.test-gsi undef-new-comments.ags
 ok_grep_errors '-- # is illegal --' 'illegal-hash-character.ags:7:16: Illegal old-style # comment' ./$O.test-gsi illegal-hash-character.ags
+
+echo '# Version 0.2 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_1=1
+
+ok_diff_fail '-- source-style comments --' ./$O.test-gsi undef-new-comments.ags
 
 ok_diff_fail '-- undefined entry points --' ./$O.test-gsi undef.ags
 ok_diff_fail '-- undefined empty record values --' ./$O.test-gsi undef-empty-record.ags
@@ -34,10 +39,6 @@ ok_diff_fail '-- undefined entry points (lifted .tyextelimprim in .expr type) --
 ok_diff_fail '-- undefined entry points (.tyextabstype in .expr type) --' ./$O.test-gsi undef-expr-tyextabstype.ags
 
 ok_diff_fail '-- undefined entry points (cast into .tyextabstype type) --' ./$O.test-gsi undef-cast-tyextabstype.ags
-
-echo '# Version 0.2 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_1=1
 
 ok_diff '-- empty record values --' ./$O.test-gsi empty-record.ags
 ok_diff '-- empty record expressions --' ./$O.test-gsi empty-record-expr.ags
