@@ -4,19 +4,19 @@
 
 	.data
 
-	.closure	_epcode
+	.closure	_ep_c
 
-_tests	.list	test.property.t	_test.nil.eq.nil	_test.singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.compare.singleton.singleton	_test.fmtgs.nil	_test.map.nil	_test.map.:	_test.reverse.nil	_test.reverse.cons
+_tests	.list	test.property.t	_test_nil.eq.nil	_test_singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.compare.singleton.singleton	_test.fmtgs.nil	_test.map.nil	_test.map.:	_test.reverse.nil	_test.reverse.cons
 
-_test.nil.eq.nil	.closure	_test.nil.eq.nil.c
-_test.nil.eq.nil.label	.string	nil\s≡\snil
-_test.nil.eq.nil.test.succ	.string	nil\s≡\snil
-_test.nil.eq.nil.test.fail	.string	nil\s≠\snil
+_test_nil.eq.nil	.closure	_test_nil.eq.nil_c
+_test_nil.eq.nil_label	.string	nil\s≡\snil
+_test_nil.eq.nil_test.succ	.string	nil\s≡\snil
+_test_nil.eq.nil_test.fail	.string	nil\s≠\snil
 
-_test.singleton.eq.singleton	.closure	_test.singleton.eq.singleton.c
-_test.singleton.eq.singleton.label	.string	[false]\s≡\s[false]
-_test.singleton.eq.singleton.test.fail	.string	[false]\s≠\s[false]
-_test.singleton.eq.singleton.test.succ	.string	[false]\s≡\s[false]
+_test_singleton.eq.singleton	.closure	_test_singleton.eq.singleton_c
+_test_singleton.eq.singleton_label	.string	[false]\s≡\s[false]
+_test_singleton.eq.singleton_test.fail	.string	[false]\s≠\s[false]
+_test_singleton.eq.singleton_test.succ	.string	[false]\s≡\s[false]
 
 _test.singleton.eq.nil	.closure	_test.singleton.eq.nil_c
 _test.singleton.eq.nil_label	.string	[false]\s≠\snil
@@ -57,7 +57,7 @@ _fixture.list.bool.fmtgs	.closure	_fixture.list.bool.fmtgs_c
 
 	.code
 
-_epcode	.expr
+_ep_c	.expr
 test.all	.gvar
 _tests	.gvar
 	.app	_tests
@@ -65,36 +65,36 @@ _tests	.gvar
 
 -- §section §gs{nil ≡ nil}
 
-_test.nil.eq.nil.c	.expr
+_test_nil.eq.nil_c	.expr
 bool.t	.tygvar
 test.property.label	.gvar
-_test.nil.eq.nil.label	.gvar
+_test_nil.eq.nil_label	.gvar
 test.assert	.gvar
-_test.nil.eq.nil.test.fail	.gvar
-_test.nil.eq.nil.test.succ	.gvar
+_test_nil.eq.nil_test.fail	.gvar
+_test_nil.eq.nil_test.succ	.gvar
 list.≡	.gvar
 bool.≡	.gvar
 _fixture.nil	.gvar
 eq	.apply	list.≡ bool.t	|	bool.≡ _fixture.nil	_fixture.nil
-test	.apply	test.assert	|	_test.nil.eq.nil.test.fail	_test.nil.eq.nil.test.succ	eq
-	.app	_test.nil.eq.nil.label	test
+test	.apply	test.assert	|	_test_nil.eq.nil_test.fail	_test_nil.eq.nil_test.succ	eq
+	.app	_test_nil.eq.nil_label	test
 	.enter	test.property.label
 
 -- §section §gs{[false] ≡ [false]}
 
-_test.singleton.eq.singleton.c	.expr
+_test_singleton.eq.singleton_c	.expr
 bool.t	.tygvar
 test.property.label	.gvar
-_test.singleton.eq.singleton.label	.gvar
+_test_singleton.eq.singleton_label	.gvar
 test.assert	.gvar
-_test.singleton.eq.singleton.test.fail	.gvar
-_test.singleton.eq.singleton.test.succ	.gvar
+_test_singleton.eq.singleton_test.fail	.gvar
+_test_singleton.eq.singleton_test.succ	.gvar
 list.≡	.gvar
 bool.≡	.gvar
 _fixture.singleton.false	.gvar
 eq	.apply	list.≡	bool.t	|	bool.≡	_fixture.singleton.false	_fixture.singleton.false
-test	.apply	test.assert	|	_test.singleton.eq.singleton.test.fail	_test.singleton.eq.singleton.test.succ	eq
-	.app	_test.singleton.eq.singleton.label	test
+test	.apply	test.assert	|	_test_singleton.eq.singleton_test.fail	_test_singleton.eq.singleton_test.succ	eq
+	.app	_test_singleton.eq.singleton_label	test
 	.enter	test.property.label
 
 -- §section §gs{[false] ≠ nil}
