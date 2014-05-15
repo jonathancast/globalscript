@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -71,7 +71,7 @@ _test.false.eq.false.test_eq.c	.subcode
 test.assert	.gvar
 _test.false.eq.false.fail	.gvar
 _test.false.eq.false.succ	.gvar
-eq	.alloc	_test.false.eq.false.test_eq.c
+eq	.closure	_test.false.eq.false.test_eq.c
 	.app	_test.false.eq.false.fail	_test.false.eq.false.succ	eq
 	.enter	test.assert
 
@@ -95,7 +95,7 @@ _test.false.eq.true_test_eq_c	.subcode
 test.deny	.gvar
 _test.false.eq.true_test_false	.gvar
 _test.false.eq.true_test_true	.gvar
-eq	.alloc	_test.false.eq.true_test_eq_c
+eq	.closure	_test.false.eq.true_test_eq_c
 	.app	_test.false.eq.true_test_false	_test.false.eq.true_test_true	eq
 	.enter	test.deny
 
@@ -120,7 +120,7 @@ _test.true.eq.false_test_eq_c	.subcode
 test.deny	.gvar
 _test.true.eq.false_test_false	.gvar
 _test.true.eq.false_test_true	.gvar
-eq	.alloc	_test.true.eq.false_test_eq_c
+eq	.closure	_test.true.eq.false_test_eq_c
 	.app	_test.true.eq.false_test_false	_test.true.eq.false_test_true	eq
 	.enter	test.deny
 
@@ -145,7 +145,7 @@ _test.true.eq.true_test_eq_c	.subcode
 test.assert	.gvar
 _test.true.eq.true_test_false	.gvar
 _test.true.eq.true_test_true	.gvar
-eq	.alloc	_test.true.eq.true_test_eq_c
+eq	.closure	_test.true.eq.true_test_eq_c
 	.app	_test.true.eq.true_test_false	_test.true.eq.true_test_true	eq
 	.enter	test.assert
 
@@ -203,7 +203,7 @@ _test.true.∧.true.test._b.c	.subcode
 test.assert	.gvar
 _test.true.∧.true.test.fail	.gvar
 _test.true.∧.true.test.success	.gvar
-b	.alloc	_test.true.∧.true.test._b.c
+b	.closure	_test.true.∧.true.test._b.c
 	.app	_test.true.∧.true.test.fail	_test.true.∧.true.test.success	b
 	.enter	test.assert
 
@@ -227,7 +227,7 @@ _test.false.∧.false_b_c	.subcode
 test.deny	.gvar
 _test.false.∧.false_false	.gvar
 _test.false.∧.false_true	.gvar
-b	.alloc	_test.false.∧.false_b_c
+b	.closure	_test.false.∧.false_b_c
 	.app	_test.false.∧.false_false	_test.false.∧.false_true	b
 	.enter	test.deny
 
