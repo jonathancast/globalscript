@@ -103,8 +103,6 @@ ok_diff '-- constructors with existential type arguments --' ./$O.test-gsi const
 ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 
-ok_diff_fail '-- # is a regular character --' ./$O.test-gsi undef-hash-operator.ags
-ok_grep_errors '-- \h is un-supported --' 'string-invalid-h-escape.ags:7: Unknown escape \\h' ./$O.test-gsi string-invalid-h-escape.ags
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 
 ok_diff '-- non-empty records in expressions --' ./$O.test-gsi record-literal-gen.ags
