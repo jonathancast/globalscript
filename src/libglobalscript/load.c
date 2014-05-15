@@ -436,19 +436,19 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
 
             if (!strcmp(version, "0.2")) {
                 *pcalculus_version = "0.2";
-                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_bind_one_word;
+                *pfeatures = gsstring_code_bind_one_word;
             } else if (!strcmp(version, "0.3")) {
                 *pcalculus_version = "0.3";
-                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc | gsstring_code_bind_one_word;
+                *pfeatures = gsstring_code_closure_not_alloc | gsstring_code_bind_one_word;
             } else if (!strcmp(version, "0.4")) {
                 *pcalculus_version = "0.4";
-                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc | gsstring_code_bind_closure_one_word;
+                *pfeatures = gsstring_code_closure_not_alloc | gsstring_code_bind_closure_one_word;
             } else if (!strcmp(version, "0.5")) {
                 *pcalculus_version = "0.5";
-                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc | gsstring_code_bind_closure_two_words;
+                *pfeatures = gsstring_code_closure_not_alloc | gsstring_code_bind_closure_two_words;
             } else if (!strcmp(version, "0.6")) {
                 *pcalculus_version = "0.6";
-                *pfeatures = gsstring_code_hash_is_normal | gsstring_code_closure_not_alloc | gsstring_code_bind_closure_two_words | gsstring_code_impprogs_are_boxing;
+                *pfeatures = gsstring_code_closure_not_alloc | gsstring_code_bind_closure_two_words | gsstring_code_impprogs_are_boxing;
             } else {
                 gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
             }
@@ -3197,8 +3197,8 @@ gsclosefile(struct uxio_ichannel *chan, int pid)
     return gsbio_device_iclose(chan);
 }
 
-#define IS_HASH_COMMENT (!(features & gsstring_code_hash_is_normal) && *p == '#')
-#define IS_COMMENT (IS_HASH_COMMENT || (p[0] == '-' && p[1] && p[1] == '-' && p[2] && isspace(p[2])))
+#define IS_HASH_COMMENT 0
+#define IS_COMMENT (p[0] == '-' && p[1] && p[1] == '-' && p[2] && isspace(p[2]))
 
 long
 gsac_tokenize(char *file, int lineno, uint features, char *line, char **fields, long maxfields)
@@ -3226,16 +3226,13 @@ gsac_tokenize(char *file, int lineno, uint features, char *line, char **fields, 
         ;
         if (*p && !IS_COMMENT) {
             *pfield++ = p;
-            while (*p && !isspace(*p) && !IS_HASH_COMMENT)
+            while (*p && !isspace(*p))
                 p++
             ;
-            if (*p && !IS_HASH_COMMENT) *p++ = 0;
+            if (*p) *p++ = 0;
             numfields++;
         }
     }
-    if (IS_HASH_COMMENT)
-        gsfatal("%s:%d:%d: Illegal old-style # comment", file, lineno, p - line + 1)
-    ;
     if (*p) *p++ = 0;
     return label_present || numfields ? numfields + 1 : 0;
 }
