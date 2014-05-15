@@ -229,10 +229,6 @@ gsbc_parse_rune_literal(struct gspos pos, uint features, char *s, gsvalue *pv)
             case 's':
                 *pv = ' ';
                 break;
-            case 'h':
-                if (features & gsstring_code_hash_escapes) *pv = '#';
-                else gsfatal("%P: Unknown escape \\h", pos);
-                break;
             case 't':
                 *pv = '\t';
                 break;
