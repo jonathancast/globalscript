@@ -1003,6 +1003,24 @@ The constructors must be given in unibetical order by printed name, as used in t
 The \stringcode{.analyze} statement must be followed by a sequence of \stringcode{case} ops (see section \ref{case}),
 in order, one per constructor, defining the behavior for the various branches.
 
+\subsection{\stringcode{.danalyze}}
+
+This isn't really a 'terminal' operator, but it's legal only where we allow terminal operators.
+
+\begin{verbatim}
+	.danalyze	x	c0	...	cn-1
+\end{verbatim}
+
+This branches on \stringcode{x}, which must be of (un-lifted) sum type which has constructors \stringcode{c$_0$, $\ldots$, c$_{n-1}$},
+among others.
+The constructors must be given in unibetical order by printed name, as used in the source code.
+There must be at least one constructor listed, but the type of \stringcode{x} may have other constructors not listed.
+In that case, if \stringcode{x} is the image of one of those constructors, evaluation will proceed with the default case.
+
+The \stringcode{.analyze} statement must be followed by a \stringcode{default} op (see section \ref{default}),
+then a sequence of \stringcode{case} ops (see section \ref{case}),
+in order, one per constructor, defining the behavior for the various branches.
+
 \chapter{Types}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -1097,38 +1115,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-int
-gsparse_code_terminal_expr_op(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gsssymdanalyze;
-
-    if (gssymceq(parsedline->directive, gsssymdanalyze, gssymcodeop, ".danalyze")) {
-        struct gsparsedline *p;
-        int constrnum;
-
-        gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
-        if (n < 3)
-            gsfatal("%s:%d: Missing scrutinee on .danalyze", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
-        if (n < 4)
-            gsfatal("%s:%d: Huh.  No constructors in .danalyze.  Why not just go to the default directly?", pos->real_filename, pos->real_lineno)
-        ;
-        for (i = 3; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i])
-        ;
-        p = parsedline;
-        gsparse_default(pos, parsedfile, chan, line, fields);
-        for (constrnum = 0; 3 + constrnum < n; constrnum++) {
-            gsparse_case(pos, parsedfile, chan, parsedline->arguments[1 + constrnum], line, fields);
-        }
-    } else {
-        return 0;
-    }
-    return 1;
-}
-
-static
 void
 gsparse_case(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, gsinterned_string constr, char *line, char **fields)
 {
