@@ -15,10 +15,6 @@ ok_grep_errors '-- missing calculus --' 'missing-calculus.ags: Missing #calculus
 ok_grep_errors '-- invalid calculus --' 'invalid-calculus.ags:1: Unknown calculus' ./$O.test-gsi invalid-calculus.ags
 ok_grep_errors '-- invalid calculus version --' 'invalid-calculus-version.ags:1: Unsupported calculus version' ./$O.test-gsi invalid-calculus-version.ags
 
-# §section Version 0.1 and up:
-
-ok_grep_errors '-- # is illegal --' 'illegal-hash-character.ags:7:16: Illegal old-style # comment' ./$O.test-gsi illegal-hash-character.ags
-
 echo '# Version 0.2 and up:'
 
 SHOULD_DISABLE_STRING_CODE_0_1=1

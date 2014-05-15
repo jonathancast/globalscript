@@ -434,10 +434,7 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
             if (*s != '\n') gsfatal("%s:%d: Junk after calculus version", pos.real_filename, pos.real_lineno);
             *s++ = 0;
 
-            if (!strcmp(version, "0.1")) {
-                *pcalculus_version = "0.1";
-                *pfeatures = gsstring_code_hash_escapes | gsstring_code_bind_one_word;
-            } else if (!strcmp(version, "0.2")) {
+            if (!strcmp(version, "0.2")) {
                 *pcalculus_version = "0.2";
                 *pfeatures = gsstring_code_hash_is_normal | gsstring_code_bind_one_word;
             } else if (!strcmp(version, "0.3")) {
