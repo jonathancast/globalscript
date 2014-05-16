@@ -6,7 +6,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_nil.eq.nil	_test_singleton.eq.singleton _test.singleton.eq.nil	_test.nil.eq.singleton	_test.compare.singleton.singleton	_test.fmtgs.nil	_test.map.nil	_test.map.:	_test.reverse.nil	_test.reverse.cons
+_tests	.list	test.property.t	_test_nil.eq.nil	_test_singleton.eq.singleton _test_singleton.eq.nil	_test_nil.eq.singleton	_test_compare.singleton.singleton	_test_fmtgs.nil	_test_map.nil	_test_map.:	_test_reverse.nil	_test_reverse.cons
 
 _test_nil.eq.nil	.closure	_test_nil.eq.nil_c
 _test_nil.eq.nil_label	.string	nil\s≡\snil
@@ -18,38 +18,38 @@ _test_singleton.eq.singleton_label	.string	[false]\s≡\s[false]
 _test_singleton.eq.singleton_test.fail	.string	[false]\s≠\s[false]
 _test_singleton.eq.singleton_test.succ	.string	[false]\s≡\s[false]
 
-_test.singleton.eq.nil	.closure	_test.singleton.eq.nil_c
+_test_singleton.eq.nil	.closure	_test.singleton.eq.nil_c
 _test.singleton.eq.nil_label	.string	[false]\s≠\snil
 _test.singleton.eq.nil_test_succ	.string	[false]\s≠\snil
 _test.singleton.eq.nil_test_fail	.string	[false]\s≡\snil
 
-_test.nil.eq.singleton	.closure	_test.nil.eq.singleton_c
+_test_nil.eq.singleton	.closure	_test.nil.eq.singleton_c
 _test.nil.eq.singleton_label	.string	nil\s≠\s[false]
 _test.nil.eq.singleton_test_succ	.string	nil\s≠\s[false]
 _test.nil.eq.singleton_test_fail	.string	nil\s≡\s[false]
 
-_test.compare.singleton.singleton	.closure	_test.compare.singleton.singleton_c
+_test_compare.singleton.singleton	.closure	_test.compare.singleton.singleton_c
 _test.compare.singleton.singleton_label	.string	list.compare\s[false]\s[false]
 
-_test.fmtgs.nil	.closure	_test.fmtgs.nil_c
+_test_fmtgs.nil	.closure	_test.fmtgs.nil_c
 _test.fmtgs.nil_label	.string	list.fmtgs\snil\s≡\sqq{[]}
 _test.fmtgs.nil_test_expected	.string	[]
 _test.fmtgs.nil_test_fail	.string	list.fmtgs\snil\s≠\sqq{[]}
 _test.fmtgs.nil_test_succ	.string	list.fmtgs\snil\s≡\sqq{[]}
 
-_test.map.nil	.closure	_test.map.nil_c
+_test_map.nil	.closure	_test.map.nil_c
 _test.map.nil_label	.string	map\sf\snil
 
-_test.map.:	.closure	_test.map.:_c
+_test_map.:	.closure	_test.map.:_c
 _test.map.:_label	.string	map\sf\s(_:_)
 
-_test.reverse.nil	.closure	_test.reverse.nil_c
+_test_reverse.nil	.closure	_test.reverse.nil_c
 _test.reverse.nil_label	.string	reverse\snil
 
-_test.reverse.cons	.closure	_test.reverse.cons_c
+_test_reverse.cons	.closure	_test.reverse.cons_c
 _test.reverse.cons_label	.string	reverse\s:
 
-_fixture.nil	.closure	_fixture.nil.c
+_fixture_nil	.closure	_fixture.nil.c
 _fixture.singleton.false	.closure	_fixture.singleton.false.c
 
 _fixture.list.bool.≡	.closure	_fixture.list.bool.≡_c
@@ -74,8 +74,8 @@ _test_nil.eq.nil_test.fail	.gvar
 _test_nil.eq.nil_test.succ	.gvar
 list.≡	.gvar
 bool.≡	.gvar
-_fixture.nil	.gvar
-eq	.apply	list.≡ bool.t	|	bool.≡ _fixture.nil	_fixture.nil
+_fixture_nil	.gvar
+eq	.apply	list.≡ bool.t	|	bool.≡ _fixture_nil	_fixture_nil
 test	.apply	test.assert	|	_test_nil.eq.nil_test.fail	_test_nil.eq.nil_test.succ	eq
 	.app	_test_nil.eq.nil_label	test
 	.enter	test.property.label
@@ -109,8 +109,8 @@ _test.singleton.eq.nil_test_fail	.gvar
 list.≡	.gvar
 bool.≡	.gvar
 _fixture.singleton.false	.gvar
-_fixture.nil	.gvar
-eq	.apply	list.≡	bool.t	|	bool.≡	_fixture.singleton.false	_fixture.nil
+_fixture_nil	.gvar
+eq	.apply	list.≡	bool.t	|	bool.≡	_fixture.singleton.false	_fixture_nil
 test	.apply	test.deny	|	_test.singleton.eq.nil_test_succ	_test.singleton.eq.nil_test_fail	eq
 	.app	_test.singleton.eq.nil_label	test
 	.enter	test.property.label
@@ -126,9 +126,9 @@ _test.nil.eq.singleton_test_succ	.gvar
 _test.nil.eq.singleton_test_fail	.gvar
 list.≡	.gvar
 bool.≡	.gvar
-_fixture.nil	.gvar
+_fixture_nil	.gvar
 _fixture.singleton.false	.gvar
-eq	.apply	list.≡	bool.t	|	bool.≡	_fixture.nil	_fixture.singleton.false
+eq	.apply	list.≡	bool.t	|	bool.≡	_fixture_nil	_fixture.singleton.false
 test	.apply	test.deny	|	_test.nil.eq.singleton_test_succ	_test.nil.eq.singleton_test_fail	eq
 	.app	_test.nil.eq.singleton_label	test
 	.enter	test.property.label
@@ -166,7 +166,7 @@ _test.fmtgs.nil_test_succ	.gvar
 list.fmtgs	.gvar
 list.fmtgs.byDefault	.gvar
 bool.fmtgs	.gvar
-_fixture.nil	.gvar
+_fixture_nil	.gvar
 fmtgs.prec.app	.gvar
 list.nil	.gvar
 list.≡	.gvar
@@ -174,7 +174,7 @@ rune.≡	.gvar
 _test.fmtgs.nil_test_expected	.gvar
 p0	.apply	list.fmtgs.byDefault	bool.t	|	bool.fmtgs
 snil	.apply	list.nil	rune.t
-s0	.apply	list.fmtgs	bool.t	|	p0	_fixture.nil	fmtgs.prec.app	snil
+s0	.apply	list.fmtgs	bool.t	|	p0	_fixture_nil	fmtgs.prec.app	snil
 eq	.apply	list.≡	rune.t	|	rune.≡	s0	_test.fmtgs.nil_test_expected
 test	.apply	test.assert	|	_test.fmtgs.nil_test_fail	_test.fmtgs.nil_test_succ	eq
 	.app	_test.fmtgs.nil_label	test
@@ -190,12 +190,12 @@ _test.map.nil_label	.gvar
 test.assert.eq	.gvar
 _fixture.list.bool.≡	.gvar
 _fixture.list.bool.fmtgs	.gvar
-_fixture.nil	.gvar
+_fixture_nil	.gvar
 list.map	.gvar
 bool.not	.gvar
 list.ty	.tylet	list.t	bool.t
-actual	.apply	list.map	bool.t	bool.t	|	bool.not	_fixture.nil
-test	.apply	test.assert.eq	list.ty	|	_fixture.list.bool.≡	_fixture.list.bool.fmtgs	actual	_fixture.nil
+actual	.apply	list.map	bool.t	bool.t	|	bool.not	_fixture_nil
+test	.apply	test.assert.eq	list.ty	|	_fixture.list.bool.≡	_fixture.list.bool.fmtgs	actual	_fixture_nil
 	.app	_test.map.nil_label	test
 	.enter	test.property.label
 
@@ -214,10 +214,10 @@ bool.not	.gvar
 _fixture.singleton.false	.gvar
 list.:	.gvar
 bool.true	.gvar
-_fixture.nil	.gvar
+_fixture_nil	.gvar
 list.ty	.tylet	list.t	bool.t
 actual	.apply	list.map	bool.t	bool.t	|	bool.not	_fixture.singleton.false
-expected	.apply	list.:	bool.t	|	bool.true	_fixture.nil
+expected	.apply	list.:	bool.t	|	bool.true	_fixture_nil
 test	.apply	test.assert.eq	list.ty	|	_fixture.list.bool.≡	_fixture.list.bool.fmtgs	actual	expected
 	.app	_test.map.:_label	test
 	.enter	test.property.label
@@ -233,10 +233,10 @@ test.assert.eq	.gvar
 _fixture.list.bool.≡	.gvar
 _fixture.list.bool.fmtgs	.gvar
 list.reverse	.gvar
-_fixture.nil	.gvar
+_fixture_nil	.gvar
 list.bool	.tylet	list.t	bool.t
-actual	.apply	list.reverse	bool.t	|	_fixture.nil
-test	.apply	test.assert.eq	list.bool	|	_fixture.list.bool.≡	_fixture.list.bool.fmtgs	actual	_fixture.nil
+actual	.apply	list.reverse	bool.t	|	_fixture_nil
+test	.apply	test.assert.eq	list.bool	|	_fixture.list.bool.≡	_fixture.list.bool.fmtgs	actual	_fixture_nil
 	.app	_test.reverse.nil_label	test
 	.enter	test.property.label
 
@@ -278,8 +278,8 @@ _fixture.singleton.false.c	.expr
 bool.t	.tygvar
 list.:	.gvar
 bool.false	.gvar
-_fixture.nil	.gvar
-	.app	bool.false	_fixture.nil
+_fixture_nil	.gvar
+	.app	bool.false	_fixture_nil
 	.enter	list.:	bool.t
 
 _fixture.list.bool.≡_c	.expr
