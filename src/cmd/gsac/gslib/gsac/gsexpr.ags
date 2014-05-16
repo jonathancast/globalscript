@@ -2338,6 +2338,7 @@ tysvs	.larg	list.t	gsdl.var.t
 	.enter	xn
 
 _gsac.gsexpr.compile.mapM_k	.forcecont
+_gsac.gsexpr.compile.mapM_f_ty	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
@@ -2352,13 +2353,17 @@ gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	-- Temp
+_gsac.gsexpr.compile.mapM_:_k	.subcode
+either.t.out	.cogvar
 either.right	.gvar
 diff.list.nil	.gvar
 list.nil	.gvar
 α	.tyfv	*
 β	.tyfv	*
+res.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	β
 list.β.ty	.tylet	list.t	β
 res.list.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.β.ty
+f	.fv	_gsac.gsexpr.compile.mapM_f_ty	α	β
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
@@ -2367,7 +2372,10 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.undef	either.t	string.t	res.list.β.ty
+			.force	_gsac.gsexpr.compile.mapM_:_k
+			.coerce	either.t.out	string.t	res.β.ty
+			.app	x0	tyem	pem	tysvs
+			.enter	f
 		.case	nil
 cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
 cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
@@ -2378,6 +2386,19 @@ tis			.apply	diff.list.nil	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	nil.β	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	typeitems	tis	|	_gsac.gsexpr.compile.m_res.ty	list.β.ty
 			.app	res
 			.enter	either.right	string.t	res.list.β.ty
+
+_gsac.gsexpr.compile.mapM_:_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+list.t	.tygvar
+either.t	.tygvar	-- Temp
+β	.tyfv	*
+res.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	β
+list.β.ty	.tylet	list.t	β
+res.list.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.β.ty
+e0	.karg	either.prim.u	string.t	res.β.ty
+			.undef	either.t	string.t	res.list.β.ty
 
 -- §section Helper Functions
 
