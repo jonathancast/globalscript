@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -182,7 +182,7 @@ xn1_0	.karg	t
 		.case	:
 x1		.fkarg	0	α
 xn2		.fkarg	1	list.t	 α
-y			.alloc	_list.foldr1_rec
+y			.closure	_list.foldr1_rec
 			.app	x0	y
 			.enter	f
 		.case	nil
@@ -229,8 +229,8 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-y0			.alloc	_list.map_y0_c
-ys1			.alloc	_list.map_ys1_c
+y0			.closure	_list.map_y0_c
+ys1			.closure	_list.map_ys1_c
 			.app	y0	ys1
 			.enter	list.:	β
 		.case	nil
@@ -434,7 +434,7 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-z1			.alloc	_list.foldl_k1_z1_c
+z1			.closure	_list.foldl_k1_z1_c
 			.app	f	z1	xn1
 			.enter	list.foldl	α	β
 		.case	nil
@@ -470,7 +470,7 @@ list.foldl	.gvar
 list.nil	.gvar
 α	.tyarg	*
 list.α	.tylet	list.t	α
-fcons	.alloc	_list.reverse_fcons_c
+fcons	.closure	_list.reverse_fcons_c
 nil	.apply	list.nil	α
 	.app	fcons	nil
 	.enter	list.foldl	α	list.α
@@ -491,7 +491,7 @@ _list.singleton_n_c	.subcode
 list.:	.gvar
 α	.tyarg	*
 x	.larg	α
-n	.alloc	_list.singleton_n_c
+n	.closure	_list.singleton_n_c
 	.app	x	n
 	.enter	list.:	α
 
@@ -527,7 +527,7 @@ xn0	.karg	t
 	.case	:
 x0	.fkarg	0	α
 xn1	.fkarg	1	list.t	α
-ys1	.alloc	_list.<>.code.rec
+ys1	.closure	_list.<>.code.rec
 ys2	.constr	t	:	0	x0	1	ys1
 	.coerce	list.t.in	α
 	.lift
@@ -761,8 +761,8 @@ xn1		.fkarg	1	list.t	α
 				.case	:
 y				.fkarg	0	α
 ys1				.fkarg	1	list.t	α
-b0					.alloc	_list.≡.cmp
-b1					.alloc	_list.≡.rec
+b0					.closure	_list.≡.cmp
+b1					.closure	_list.≡.rec
 					.app	b0	b1
 					.enter	bool.∧
 				.case	nil
@@ -990,7 +990,7 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-f			.alloc	_list.fmtgs.byDefault_:_f_c
+f			.closure	_list.fmtgs.byDefault_:_f_c
 xn.dss			.apply	list.map	α	diff.list.ty	|	f	xn
 xn.ds			.apply	diff.list.concat	rune.t	|	xn.dss
 ds2			.apply	diff.list.fromlist	rune.t	|	_list.fmtgs.byDefault_:_suffix.s
