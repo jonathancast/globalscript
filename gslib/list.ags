@@ -4,8 +4,8 @@
 
 	.data
 
-list.nil	.closure	_list.nil.c
-list.:	.closure	_list.:.c
+list.nil	.closure	_list.nil_c
+list.:	.closure	_list.:_c
 
 list.null	.closure	_list.null_c
 
@@ -19,7 +19,7 @@ list.foldl	.closure	_list.foldl_c	_list.foldl_ty
 list.reverse	.closure	_list.reverse_c
 
 list.singleton	.closure	_list.singleton_c
-list.<>	.closure	_list.<>.code	_list.<>.ty
+list.<>	.closure	_list.<>_c	_list.<>_ty
 
 list.drop	.closure	_list.drop_c
 _list.drop_worker	.closure	_list.drop_worker_c	_list.drop_worker_ty
@@ -44,7 +44,7 @@ _list.fmtgs.byDefault_nil.s	.string	[]
 
 -- §section Constructors
 
-_list.nil.c	.expr
+_list.nil_c	.expr
 list.prim.u	.tygvar
 list.t.in	.cogvar
 α	.tyarg	*
@@ -54,7 +54,7 @@ c	.constr	t	nil
 	.lift
 	.yield	c
 
-_list.:.c	.expr
+_list.:_c	.expr
 list.t	.tygvar
 list.prim.u	.tygvar
 list.t.in	.cogvar
@@ -503,7 +503,7 @@ list.nil	.gvar
 
 -- §section §gs{list.<>}
 
-_list.<>.code	.expr
+_list.<>_c	.expr
 list.t	.tygvar
 _list.<>.code.cont	.subcode
 list.t.out	.cogvar
@@ -1182,7 +1182,7 @@ _list.foldl_f_ty	.tyexpr
 
 -- §section §gs{list.<>}
 
-_list.<>.ty	.tyexpr
+_list.<>_ty	.tyexpr
 list.t	.tygvar
 α	.tyforall	*
 	.tylift
