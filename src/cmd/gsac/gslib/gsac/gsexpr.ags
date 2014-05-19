@@ -499,6 +499,7 @@ ty		.fkarg	2	gsdl.cgs.gstype.t
 _gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_undef_k	.forcecont
 _gsac.gsexpr.annotate_impfor_right_right_right_z_ty	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -512,6 +513,7 @@ gsac.gskind.check	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 k	.fv	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
 env	.fv	gsdl.cgs.typeenv.t
+pos1	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
@@ -530,6 +532,7 @@ ty.r.ki			.lfield	gskind	ty.r
 _gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_undef_right_k	.forcecont
 _gsac.gsexpr.annotate_impfor_right_right_right_z_ty	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
@@ -543,6 +546,7 @@ either.t.out	.cogvar
 gsdl.cgs.typeenv.var.insert	.gvar
 k	.fv	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
 env	.fv	gsdl.cgs.typeenv.t
+pos1	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
 ty.r.ty	.fv	gsdl.cgs.gstype.t
 ty.r.ki	.fv	gsdl.cgs.gskind.t
@@ -560,6 +564,9 @@ env1			.apply	gsdl.cgs.typeenv.var.insert	|	v	ty.r.ty	ty.r.ki	env
 			.enter	k
 
 _gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_undef_right_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar
@@ -567,6 +574,10 @@ either.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 either.right	.gvar
 list.:	.gvar
+gsdl.cgs.gsexpr.generator.undef	.gvar
+pos1	.fv	gsdl.sourcepos.t
+v	.fv	gsdl.var.t
+ty.r.ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -575,7 +586,7 @@ err		.fkarg	0	string.t
 		.case	right
 k.r		.fkarg	0	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 b			.lfield	body	k.r
-g0			.undefined	gsdl.cgs.gsexpr.generator.t
+g0			.apply	gsdl.cgs.gsexpr.generator.undef	|	pos1	v	ty.r.ty
 k.r.gs			.lfield	gens	k.r
 gs			.apply	list.:	gsdl.cgs.gsexpr.generator.t	|	g0	k.r.gs
 res.ty			.lfield	res.ty	k.r
