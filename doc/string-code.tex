@@ -1021,15 +1021,20 @@ The \stringcode{.analyze} statement must be followed by a \stringcode{default} o
 then a sequence of \stringcode{case} ops (see section \ref{case}),
 in order, one per constructor, defining the behavior for the various branches.
 
-\section{\stringcode{.case}}
+\section{\stringcode{.case} and \stringcode{.default}}
 \label{case}
 
 \begin{verbatim}
 	.case	c
 	ops
 \end{verbatim}
+or
+\begin{verbatim}
+	.default
+	ops
+\end{verbatim}
 
-This defines a specific case.
+This defines a specific case, or the default case of a \stringcode{.danalyze}.
 
 The contents of a \stringcode{.case} will be:
 \begin{itemize}
@@ -1057,8 +1062,7 @@ The contents of a \stringcode{.case} will be:
         And, finally,
     \item A terminal operator (section \ref{terminal_op}).
 \end{itemize}
-
-
+A \stringcode{.default} will have the same contents, but with the arguments and type lets omitted.
 
 \chapter{Types}
 
@@ -1154,50 +1158,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-void
-gsparse_default(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields)
-{
-    static gsinterned_string gssymdefault;
-
-    struct gsparsedline *parsedline;
-    long n;
-
-    if ((n = gsgrabline(pos, chan, line, fields)) < 0)
-        gsfatal("%s:%d: Error in reading line: %r", pos->real_filename, pos->real_lineno)
-    ; else if (n == 0)
-        gsfatal("%s:%d: EOF when looking for .default", pos->real_filename, pos->real_lineno - 1)
-    ;
-    parsedline = gsparsed_file_addline(pos, parsedfile, n);
-
-    parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
-
-    if (!gssymceq(parsedline->directive, gssymdefault, gssymcodeop, ".default"))
-        gsfatal("%s:%d: Expecting .default", pos->real_filename, pos->real_lineno)
-    ;
-
-    if (*fields[0]) gsfatal("%s:%d: Labels illegal on .default");
-    else parsedline->label = 0;
-
-    if (n > 2) gsfatal("%s:%d: Too many arguments to .default", pos->real_filename, pos->real_lineno);
-
-    while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
-        parsedline = gsparsed_file_addline(pos, parsedfile, n);
-
-        parsedline->directive = gsintern_string(gssymcodeop, fields[1]);
-
-        if (gsparse_thunk_alloc_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_value_alloc_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_cont_push_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_code_terminal_expr_op(pos, parsedfile, chan, line, parsedline, fields, n)) {
-            return;
-        } else {
-            gsfatal(UNIMPL("%s:%d: Unimplemented .default op %y"), pos->real_filename, pos->real_lineno, parsedline->directive);
-        }
-    }
-    gsfatal(UNIMPL(".danalyze: parse .default"));
-}
-
-static
 int
 gsparse_cont_type_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
