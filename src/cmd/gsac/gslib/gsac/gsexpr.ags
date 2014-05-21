@@ -2449,17 +2449,72 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	
 			.enter	either.right	string.t	res.list.β.ty
 
 _gsac.gsexpr.compile.mapM_:_k	.forcecont
+_gsac.gsexpr.compile.mapM_f_ty	.tygvar
+list.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.compile.mapM_:_right_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.compile.mapM	.gvar
+α	.tyfv	*
+β	.tyfv	*
+res.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	β
+list.β.ty	.tylet	list.t	β
+res.list.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.β.ty
+f	.fv	_gsac.gsexpr.compile.mapM_f_ty	α	β
+xn1	.fv	list.t	α
+e0	.karg	either.prim.u	string.t	res.β.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	res.list.β.ty
+		.case	right
+ry		.fkarg	0	_gsac.gsexpr.compile.m_res.ty	β
+ry.tyem			.lfield	ty.emitted	ry
+ry.pem			.lfield	prim.emitted	ry
+ry.tysvs			.lfield	ty.subvars	ry
+			.force	_gsac.gsexpr.compile.mapM_:_right_k
+			.coerce	either.t.out	string.t	res.list.β.ty
+			.app	f	xn1	ry.tyem	ry.pem	ry.tysvs
+			.enter	gsac.gsexpr.compile.mapM	α	β
+
+_gsac.gsexpr.compile.mapM_:_right_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compile.m_res.ty	.tygvar
 list.t	.tygvar
 either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.codeitem.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+gsdl.ags.dataitem.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
+either.right	.gvar
 β	.tyfv	*
-res.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	β
 list.β.ty	.tylet	list.t	β
 res.list.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.β.ty
-e0	.karg	either.prim.u	string.t	res.β.ty
+e0	.karg	either.prim.u	string.t	res.list.β.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	res.list.β.ty
+		.case	right
+rys		.fkarg	0	_gsac.gsexpr.compile.m_res.ty	list.β.ty
+cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+ds			.undefined	diff.list.t	gsdl.ags.dataitem.t
+pem			.lfield	prim.emitted	rys
+ys1			.undefined	list.t	β
+tyem			.lfield	ty.emitted	rys
+tysvs			.lfield	ty.subvars	rys
+tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tis			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	ys1	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	typeitems	tis	|	_gsac.gsexpr.compile.m_res.ty	list.β.ty
+			.app	res
+			.enter	either.right	string.t	res.list.β.ty
 
 -- §section Helper Functions
 
