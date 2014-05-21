@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -79,7 +79,7 @@ _test.4.eq.4_c	.expr
 _test.4.eq.4_test_c	.subcode
 test.property.label	.gvar
 _test.4.eq.4_label	.gvar
-test	.alloc	_test.4.eq.4_test_c
+test	.closure	_test.4.eq.4_test_c
 	.app	_test.4.eq.4_label	test
 	.enter	test.property.label
 
@@ -88,7 +88,7 @@ _test.4.eq.4_test_eq_c	.subcode
 test.assert	.gvar
 _test.4.eq.4_test_fail	.gvar
 _test.4.eq.4_test_succ	.gvar
-eq	.alloc	_test.4.eq.4_test_eq_c
+eq	.closure	_test.4.eq.4_test_eq_c
 	.app	_test.4.eq.4_test_fail	_test.4.eq.4_test_succ	eq
 	.enter	test.assert
 
@@ -104,7 +104,7 @@ _test.4.eq.0_c	.expr
 _test.4.eq.0_test_c	.subcode
 test.property.label	.gvar
 _test.4.eq.0_label	.gvar
-test	.alloc	_test.4.eq.0_test_c
+test	.closure	_test.4.eq.0_test_c
 	.app	_test.4.eq.0_label	test
 	.enter	test.property.label
 
@@ -113,7 +113,7 @@ _test.4.eq.0_test_eq_c	.subcode
 test.deny	.gvar
 _test.4.eq.0_test_succ	.gvar
 _test.4.eq.0_test_fail	.gvar
-eq	.alloc	_test.4.eq.0_test_eq_c
+eq	.closure	_test.4.eq.0_test_eq_c
 	.app	_test.4.eq.0_test_succ	_test.4.eq.0_test_fail	eq
 	.enter	test.deny
 
@@ -138,7 +138,7 @@ _test.0.lt.4_test_lt_c	.subcode
 test.assert	.gvar
 _test.0.lt.4_test_fail	.gvar
 _test.0.lt.4_test_succ	.gvar
-lt	.alloc	_test.0.lt.4_test_lt_c
+lt	.closure	_test.0.lt.4_test_lt_c
 	.app	_test.0.lt.4_test_fail	_test.0.lt.4_test_succ	lt
 	.enter	test.assert
 
@@ -163,7 +163,7 @@ _test.4.lt.0_test_lt_c	.subcode
 test.deny	.gvar
 _test.4.lt.0_test_succ	.gvar
 _test.4.lt.0_test_fail	.gvar
-lt	.alloc	_test.4.lt.0_test_lt_c
+lt	.closure	_test.4.lt.0_test_lt_c
 	.app	_test.4.lt.0_test_succ	_test.4.lt.0_test_fail	lt
 	.enter	test.deny
 
@@ -213,7 +213,7 @@ _test_2.plus.3_c	.expr
 _test_2.plus.3_test_c	.subcode
 test.property.label	.gvar
 _test_2.plus.3_label	.gvar
-test	.alloc	_test_2.plus.3_test_c
+test	.closure	_test_2.plus.3_test_c
 	.app	_test_2.plus.3_label	test
 	.enter	test.property.label
 
@@ -224,7 +224,7 @@ test.assert.eq	.gvar
 natural.≡	.gvar
 natural.fmtgs	.gvar
 natural.5	.gvar
-actual	.alloc	_test_2.plus.3_test_actual_c
+actual	.closure	_test_2.plus.3_test_actual_c
 	.app	natural.≡	natural.fmtgs	actual	natural.5
 	.enter	test.assert.eq	natural.t
 
@@ -295,8 +295,8 @@ test.property.∧	.gvar
 qm0	.karg	_test.2.div.3_test_qm0_ty
 q	.field	0	qm0
 m	.field	1	qm0
-quot	.alloc	_test.2.div.3_test_quot_c
-mod	.alloc	_test.2.div.3_test_mod_c
+quot	.closure	_test.2.div.3_test_quot_c
+mod	.closure	_test.2.div.3_test_mod_c
 	.app	quot	mod
 	.enter	test.property.∧
 
@@ -307,7 +307,7 @@ test.assert	.gvar
 _test.2.div.3_test_quot_fail	.gvar
 _test.2.div.3_test_quot_succ	.gvar
 q	.fv	natural.t
-eq	.alloc	_test.2.div.3_test_quot_eq_c
+eq	.closure	_test.2.div.3_test_quot_eq_c
 	.app	_test.2.div.3_test_quot_fail	_test.2.div.3_test_quot_succ	eq
 	.enter	test.assert
 
@@ -326,7 +326,7 @@ test.assert	.gvar
 _test.2.div.3_test_mod_fail	.gvar
 _test.2.div.3_test_mod_succ	.gvar
 m	.fv	natural.t
-eq	.alloc	_test.2.div.3_test_mod_eq_c
+eq	.closure	_test.2.div.3_test_mod_eq_c
 	.app	_test.2.div.3_test_mod_fail	_test.2.div.3_test_mod_succ	eq
 	.enter	test.assert
 
@@ -354,7 +354,7 @@ test.assert.eq	.gvar
 string.≡	.gvar
 string.fmtgs	.gvar
 _test.fmtdecimal.0_test_expected	.gvar
-0.s	.alloc	_test.fmtdecimal.0_test_0.s_c
+0.s	.closure	_test.fmtdecimal.0_test_0.s_c
 	.app	string.≡ string.fmtgs	0.s	_test.fmtdecimal.0_test_expected
 	.enter	test.assert.eq	string.t
 
@@ -368,7 +368,7 @@ _test.fmtdecimal.11_c	.expr
 _test.fmtdecimal.11_test_c	.subcode
 test.property.label	.gvar
 _test.fmtdecimal.11_label	.gvar
-test	.alloc	_test.fmtdecimal.11_test_c
+test	.closure	_test.fmtdecimal.11_test_c
 	.app	_test.fmtdecimal.11_label	test
 	.enter	test.property.label
 
@@ -379,7 +379,7 @@ test.assert.eq	.gvar
 string.≡	.gvar
 string.fmtgs	.gvar
 _test.fmtdecimal.11_test_expected	.gvar
-11.s	.alloc	_test.fmtdecimal.11_test_11.s_c
+11.s	.closure	_test.fmtdecimal.11_test_11.s_c
 	.app	string.≡	string.fmtgs	11.s	_test.fmtdecimal.11_test_expected
 	.enter	test.assert.eq	string.t
 

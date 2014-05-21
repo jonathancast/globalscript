@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -196,7 +196,7 @@ rune.right.curly	.gvar
 α	.tyarg	*
 fmt	.larg	fmtgs.t	α
 s	.larg	ordered.set.t	α
-vs.ds	.alloc	_ordered.set.fmtgs_vs.ds_c
+vs.ds	.closure	_ordered.set.fmtgs_vs.ds_c
 ds2	.apply	diff.list.singleton	rune.t	|	rune.right.curly
 ds1	.apply	diff.list.<>	rune.t	|	vs.ds	ds2
 ds	.apply	diff.list.:	rune.t	|	rune.left.curly	ds1
@@ -239,7 +239,7 @@ vs0	.karg	list.prim.u	α
 		.case	:
 v0		.fkarg	0	α
 vs0		.fkarg	1	list.t	α
-f			.alloc	_ordered.set.fmtgs_vs.ds_f_c
+f			.closure	_ordered.set.fmtgs_vs.ds_f_c
 vs0.l			.lifted	vs0
 vs0.cl			.cast	vs0.l	list.t.in	α
 dss			.apply	list.map	α	diff.list.rune.ty	|	f	vs0.cl

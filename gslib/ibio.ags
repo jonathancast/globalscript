@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -141,7 +141,7 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-eys			.alloc	_ibio.mapM.prim_eys_c
+eys			.closure	_ibio.mapM.prim_eys_c
 			.enter	eys
 		.case	nil
 nil			.apply	list.nil	β
@@ -229,7 +229,7 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-e			.alloc	_ibio.mapM0.prim_k_:_e_c
+e			.closure	_ibio.mapM0.prim_k_:_e_c
 			.enter	e
 		.case	nil
 			.lift
@@ -313,7 +313,7 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-res			.alloc	_ibio.foldM.prim_:_res
+res			.closure	_ibio.foldM.prim_:_res
 			.enter	res
 		.case	nil
 			.lift
