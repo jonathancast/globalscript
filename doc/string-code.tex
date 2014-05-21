@@ -624,6 +624,18 @@ t	.tyarg	ki
 
 This declares \stringcode{t} to be a type variable with kind \stringcode{ki}  (see section \ref{kinds}).
 
+\section{Type Continuation Arguments}
+\label{cont_type_arg}
+
+\subsection{\stringcode{.exkarg}}
+
+\begin{verbatim}
+t	.exkarg	ki
+\end{verbatim}
+
+This declares that the argument to the continuation has an existential quantifier,
+with quantified type variable \stringcode{t} of kind \stringcode{ki}  (see section \ref{kinds}).
+
 \section{Value Arguments}
 \label{value_arg}
 
@@ -1157,33 +1169,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-int
-gsparse_cont_type_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymexkarg;
-
-    if (gssymceq(parsedline->directive, gssymexkarg, gssymcodeop, ".exkarg")) {
-        if (*fields[0]) {
-            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-        } else {
-            gswarning("%P: Missing label on .exkarg", parsedline->pos);
-            parsedline->label = 0;
-        }
-        if (n < 3)
-            gsfatal("%P: Missing kind on .exkarg", parsedline->pos)
-        ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
-        if (n > 4)
-            gsfatal("%P: Too many arguments to .exkarg", parsedline->pos)
-        ;
-    } else {
-        return 0;
-    }
-
-    return 1;
-}
-
-static
 int
 gsparse_field_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
