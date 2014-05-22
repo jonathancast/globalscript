@@ -673,6 +673,20 @@ x	.karg	tyf	tyx0	...	tyxn-1
 
 This declares \stringcode{x} to be the continuation's argument, of type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}.
 
+\section{(Un-boxed Product) Continuation Arguments}
+\label{field_cont_arg}
+
+This declares the (single) value argument to a continuation for a boxed type.
+
+\subsection{\stringcode{.karg}}
+
+\begin{verbatim}
+x	.fkarg	f	tyf	tyx0	...	tyxn-1
+\end{verbatim}
+
+This declares \stringcode{x} to be the field \stringcode{f} of the continuation's (un-boxed product) argument,
+of type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}.
+
 \section{Local Type Definitions}
 \label{code_type_let}
 
@@ -1169,37 +1183,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-int
-gsparse_field_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymfkarg;
-
-    int i;
-
-    if (gssymceq(parsedline->directive, gssymfkarg, gssymcodeop, ".fkarg")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-        else
-            gsfatal("%P: Missing label on .fkarg", parsedline->pos);
-        if (n < 3)
-            gsfatal("%P: Missing field name on .fkarg", parsedline->pos);
-        parsedline->arguments[2 - 2] = gsintern_string(gssymfieldlable, fields[2]);
-        if (n < 4)
-            gsfatal("%P: Missing type on .fkarg", parsedline->pos);
-        for (i = 3; i < n; i++)
-            parsedline->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-    } else {
-        return 0;
-    }
-
-    return 1;
-}
-
-static long gsparse_type_ops(struct gsparse_input_pos *, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields);
-static long gsparse_coerce_ops(struct gsparse_input_pos *, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields);
-
-static
 long
 gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
