@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -61,9 +61,9 @@ scc.≡	.apply	graph.scc.≡	_fixtures.val.t	|	_fixtures.val.compare
 list.scc.≡	.apply	list.≡	scc.ty	|	scc.≡
 scc.fmtgs	.apply	graph.scc.fmtgs	_fixtures.val.t	|	_fixtures.val.fmtgs
 list.scc.fmtgs	.apply	list.fmtgs.byDefault	scc.ty	|	scc.fmtgs
-val.deps	.alloc	_test_tsort_single.elem_val.deps_c
+val.deps	.closure	_test_tsort_single.elem_val.deps_c
 val0	.lrecord	key	natural.0	val	bool.true	|	_fixtures.val.t
-val.look	.alloc	_test_tsort_single.elem_val.look_c
+val.look	.closure	_test_tsort_single.elem_val.look_c
 ks	.apply	list.singleton	natural.t	|	natural.0
 actual	.apply	graph.tsort	natural.t	_fixtures.val.t	|	natural.compare	val.deps	val.look	ks
 scc0	.apply	graph.scc.nonrecursive	_fixtures.val.t	|	val0
@@ -140,10 +140,10 @@ scc.≡	.apply	graph.scc.≡	_fixtures.val.t	|	_fixtures.val.compare
 list.scc.≡	.apply	list.≡	scc.ty	|	scc.≡
 scc.fmtgs	.apply	graph.scc.fmtgs	_fixtures.val.t	|	_fixtures.val.fmtgs
 list.scc.fmtgs	.apply	list.fmtgs.byDefault	scc.ty	|	scc.fmtgs
-val.deps	.alloc	_test_tsort_two.elems_val.deps_c
+val.deps	.closure	_test_tsort_two.elems_val.deps_c
 val0	.lrecord	key	natural.0	val	bool.true	|	_fixtures.val.t
 val1	.lrecord	key	natural.1	val	bool.false	|	_fixtures.val.t
-val.look	.alloc	_test_tsort_two.elems_val.look_c
+val.look	.closure	_test_tsort_two.elems_val.look_c
 ks1	.apply	list.singleton	natural.t	|	natural.1
 ks	.apply	list.:	natural.t	|	natural.0	ks1
 actual	.apply	graph.tsort	natural.t	_fixtures.val.t	|	natural.compare	val.deps	val.look	ks
@@ -247,10 +247,10 @@ scc.≡	.apply	graph.scc.≡	_fixtures.val.t	|	_fixtures.val.compare
 list.scc.≡	.apply	list.≡	scc.ty	|	scc.≡
 scc.fmtgs	.apply	graph.scc.fmtgs	_fixtures.val.t	|	_fixtures.val.fmtgs
 list.scc.fmtgs	.apply	list.fmtgs.byDefault	scc.ty	|	scc.fmtgs
-val.deps	.alloc	_test_tsort_dependency_val.deps_c
+val.deps	.closure	_test_tsort_dependency_val.deps_c
 val0	.lrecord	key	natural.0	val	bool.true	|	_fixtures.val.t
 val1	.lrecord	key	natural.1	val	bool.false	|	_fixtures.val.t
-val.look	.alloc	_test_tsort_dependency_val.look_c
+val.look	.closure	_test_tsort_dependency_val.look_c
 ks1	.apply	list.singleton	natural.t	|	natural.1
 ks	.apply	list.:	natural.t	|	natural.0	ks1
 actual	.apply	graph.tsort	natural.t	_fixtures.val.t	|	natural.compare	val.deps	val.look	ks
