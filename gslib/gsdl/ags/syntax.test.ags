@@ -6,7 +6,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.parse.comment	_test.parse.two.components	_test.parse.digit.in.alphanum	_test.parse.qualified.op	_test.parse.var	_test.parse.var.qualified	_test.parse.var.op	_test.parse.var.underbarred	_test.parse.stringliteral
+_tests	.list	test.property.t	_test.parse.comment	_test.parse.two.components	_test.parse.digit.in.alphanum	_test.parse.qualified.op	_test.parse.stringliteral
 
 _test.parse.comment	.closure	_test.parse.comment_c
 _test.parse.comment_label	.string	qq{\\n--\sComment\\n}\s=~\swhitespace
@@ -23,22 +23,6 @@ _test.parse.digit.in.alphanum_input	.string	p0
 _test.parse.qualified.op	.closure	_test.parse.qualified.op_c
 _test.parse.qualified.op_label	.string	qq{m.<>}\s=~\ssyntax.id
 _test.parse.qualified.op_input	.string	m.<>
-
-_test.parse.var	.closure	_test.parse.var_c
-_test.parse.var_label	.string	qq{ibio}\s=~\ssyntax.var
-_test.parse.var_input	.string	ibio
-
-_test.parse.var.qualified	.closure	_test.parse.var.qualified_c
-_test.parse.var.qualified_label	.string	qq{ibio.dir}\s=~\ssyntax.var
-_test.parse.var.qualified_input	.string	ibio.dir
-
-_test.parse.var.op	.closure	_test.parse.var.op_c
-_test.parse.var.op_label	.string	qq{ibio.≡}\s=~\ssyntax.var
-_test.parse.var.op_input	.string	ibio.≡
-
-_test.parse.var.underbarred	.closure	_test.parse.var.underbarred_c
-_test.parse.var.underbarred_label	.string	qq{_ibio.mapM.prim_ty}\s=~\ssyntax.var
-_test.parse.var.underbarred_input	.string	_ibio.mapM.prim_ty
 
 _test.parse.stringliteral	.closure	_test.parse.stringliteral_c
 _test.parse.stringliteral_label	.string	qq{just}\s=~\sstringliteral
@@ -160,102 +144,6 @@ _test.parse.qualified.op_input	.gvar
 actual	.larg	string.t
 	.app	string.≡	string.fmtgs	actual	_test.parse.qualified.op_input
 	.enter	test.assert.eq	string.t
-
--- §section §gs{qq{ibio} =~ var}
-
-_test.parse.var_c	.expr
-rune.t	.tygvar
-gsdl.var.t	.tygvar
-_test.parse.var_k_c	.subcode
-test.property.label	.gvar
-_test.parse.var_label	.gvar
-parser.test.assert.passes	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-gsdl.ags.syntax.var	.gvar
-_test.parse.var_input	.gvar
-k	.closure	_test.parse.var_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.var	_test.parse.var_input	k
-	.app	_test.parse.var_label	test
-	.enter	test.property.label
-
-_test.parse.var_k_c	.expr
-gsdl.var.t	.tygvar
-test.true	.gvar
-v	.larg	gsdl.var.t
-	.enter	test.true
-
--- §section §gs{qq{ibio.dir} =~ var}
-
-_test.parse.var.qualified_c	.expr
-rune.t	.tygvar
-gsdl.var.t	.tygvar
-_test.parse.var.qualified_k_c	.subcode
-test.property.label	.gvar
-_test.parse.var.qualified_label	.gvar
-parser.test.assert.passes	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-gsdl.ags.syntax.var	.gvar
-_test.parse.var.qualified_input	.gvar
-k	.closure	_test.parse.var.qualified_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.var	_test.parse.var.qualified_input	k
-	.app	_test.parse.var.qualified_label	test
-	.enter	test.property.label
-
-_test.parse.var.qualified_k_c	.expr
-gsdl.var.t	.tygvar
-test.true	.gvar
-v	.larg	gsdl.var.t
-	.enter	test.true
-
--- §section §gs{qq{ibio.≡} =~ var}
-
-_test.parse.var.op_c	.expr
-rune.t	.tygvar
-gsdl.var.t	.tygvar
-_test.parse.var.op_k_c	.subcode
-test.property.label	.gvar
-_test.parse.var.op_label	.gvar
-parser.test.assert.passes	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-gsdl.ags.syntax.var	.gvar
-_test.parse.var.op_input	.gvar
-k	.closure	_test.parse.var.op_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.var	_test.parse.var.op_input	k
-	.app	_test.parse.var.op_label	test
-	.enter	test.property.label
-
-_test.parse.var.op_k_c	.expr
-gsdl.var.t	.tygvar
-test.true	.gvar
-v	.larg	gsdl.var.t
-	.enter	test.true
-
--- §section §gs{qq{_ibio.mapM.prim_ty} =~ var}
-
-_test.parse.var.underbarred_c	.expr
-rune.t	.tygvar
-gsdl.var.t	.tygvar
-_test.parse.var.underbarred_k_c	.subcode
-test.property.label	.gvar
-_test.parse.var.underbarred_label	.gvar
-parser.test.assert.passes	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-gsdl.ags.syntax.var	.gvar
-_test.parse.var.underbarred_input	.gvar
-k	.closure	_test.parse.var.underbarred_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.ags.syntax.var	_test.parse.var.underbarred_input	k
-	.app	_test.parse.var.underbarred_label	test
-	.enter	test.property.label
-
-_test.parse.var.underbarred_k_c	.expr
-gsdl.var.t	.tygvar
-test.true	.gvar
-v	.larg	gsdl.var.t
-	.enter	test.true
 
 -- §section §gs{qq{just} =~ stringliteral}
 

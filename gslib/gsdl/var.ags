@@ -4,6 +4,16 @@
 
 	.data
 
+gsdl.var.parser	.closure	_gsdl.var.parser_c
+_gsdl.var.parser_base.p	.closure	_gsdl.var.parser_base.p_c
+_gsdl.var.parser_components.p	.closure	_gsdl.var.parser_components.p_c	_gsdl.var.parser_components.p_ty
+_gsdl.var.parser_dot.re	.regex	\.
+_gsdl.var.parser_component.p	.closure	_gsdl.var.parser_component.p_c
+_gsdl.var.parser_alphanum.re	.regex	[a-zα-ω][a-z0-9A-Z]*
+_gsdl.var.parser_symbolic.re	.regex	[:≡≠]
+_gsdl.var.parser_underbar.p	.closure	_gsdl.var.parser_underbar.p_c
+_gsdl.var.parser_underbar.p_underbar.re	.regex	_
+
 gsdl.var.components.get	.closure	_gsdl.var.components.get_c
 
 gsdl.var.<>	.closure	_gsdl.var.<>_c
@@ -33,6 +43,139 @@ gsdl.var.component.numeric	.closure	_gsdl.var.component.numeric_c
 gsdl.var.component.symbolic	.closure	_gsdl.var.component.symbolic_c
 
 	.code
+
+-- §section §gs{gsdl.var.parser}
+
+_gsdl.var.parser_c	.expr
+rune.t	.tygvar
+gsdl.var.t	.tygvar
+parser.<|>	.gvar
+_gsdl.var.parser_base.p	.gvar
+_gsdl.var.parser_underbar.p	.gvar
+	.app	_gsdl.var.parser_base.p	_gsdl.var.parser_underbar.p
+	.enter	parser.<|>	rune.t	gsdl.var.t
+
+_gsdl.var.parser_base.p_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.var.t	.tygvar
+parser.map	.gvar
+gsdl.var.basevar	.gvar
+_gsdl.var.parser_components.p	.gvar
+list.component.ty	.tylet	list.t	gsdl.var.component.t
+	.app	gsdl.var.basevar	_gsdl.var.parser_components.p
+	.enter	parser.map	rune.t	list.component.ty	gsdl.var.t
+
+_gsdl.var.parser_components.p_c	.expr
+rune.t	.tygvar
+gsdl.var.component.t	.tygvar
+list.t	.tygvar
+_gsdl.var.parser_components.p_k_c	.subcode
+parser.>>=	.gvar
+_gsdl.var.parser_component.p	.gvar
+list.component.ty	.tylet	list.t	gsdl.var.component.t
+k	.closure	_gsdl.var.parser_components.p_k_c
+	.app	_gsdl.var.parser_component.p	k
+	.enter	parser.>>=	rune.t	gsdl.var.component.t	list.component.ty
+
+_gsdl.var.parser_components.p_k_c	.expr
+gsdl.var.component.t	.tygvar
+_gsdl.var.parser_components.p_k_k	.subcode
+gsdl.var.component.t.out	.cogvar
+c0	.larg	gsdl.var.component.t
+	.force	_gsdl.var.parser_components.p_k_k
+	.coerce	gsdl.var.component.t.out
+	.enter	c0
+
+_gsdl.var.parser_components.p_k_k	.forcecont
+gsdl.var.component.prim.u	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+string.t	.tygvar
+natural.t	.tygvar
+gsdl.var.component.t.in	.cogvar
+parser.<|>	.gvar
+parser.unit	.gvar
+list.singleton	.gvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.var.parser_dot.re	.gvar
+parser.map	.gvar
+list.:	.gvar
+_gsdl.var.parser_components.p	.gvar
+parser.fail	.gvar	-- Temp
+list.component.ty	.tylet	list.t	gsdl.var.component.t
+c0.0	.karg	gsdl.var.component.prim.u
+c0.l	.lifted	c0.0
+c0.cl	.cast	c0.l	gsdl.var.component.t.in
+singleton.c0	.apply	list.singleton	gsdl.var.component.t	|	c0.cl
+singleton.p	.apply	parser.unit	rune.t	list.component.ty	|	singleton.c0
+dot.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.var.parser_dot.re
+cons.c0	.apply	list.:	gsdl.var.component.t	|	c0.cl
+loop.p1	.apply	parser.map	rune.t	list.component.ty	list.component.ty	|	cons.c0	_gsdl.var.parser_components.p
+loop.p	.apply	parser.*>	rune.t	string.t	list.component.ty	|	dot.p	loop.p1
+	.analyze	c0.0	alphanum	numeric	symbolic
+		.case	alphanum
+s		.fkarg	0	string.t
+			.app	singleton.p	loop.p
+			.enter	parser.<|>	rune.t	list.component.ty
+		.case	numeric
+n		.fkarg	0	natural.t
+			.enter	parser.fail	rune.t	list.component.ty
+		.case	symbolic
+s		.fkarg	0	string.t
+			.enter	singleton.p
+
+_gsdl.var.parser_component.p_c	.expr
+rune.t	.tygvar
+gsdl.var.component.t	.tygvar
+string.t	.tygvar
+parser.<|>	.gvar
+parser.map	.gvar
+gsdl.var.component.alphanum	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.var.parser_alphanum.re	.gvar
+gsdl.var.component.symbolic	.gvar
+_gsdl.var.parser_symbolic.re	.gvar
+parser.fail	.gvar	-- Temp
+alphanum.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.var.parser_alphanum.re
+alphanum.p	.apply	parser.map	rune.t	string.t	gsdl.var.component.t	|	gsdl.var.component.alphanum	alphanum.p1
+symbolic.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.var.parser_symbolic.re
+symbolic.p	.apply	parser.map	rune.t	string.t	gsdl.var.component.t	|	gsdl.var.component.symbolic	symbolic.p1
+	.app	alphanum.p	symbolic.p
+	.enter	parser.<|>	rune.t	gsdl.var.component.t
+
+_gsdl.var.parser_underbar.p_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.var.t	.tygvar
+string.t	.tygvar
+parser.map	.gvar
+gsdl.var.constructed	.gvar
+natural.1	.gvar
+parser.lift2	.gvar
+list.:	.gvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.var.parser_underbar.p_underbar.re	.gvar
+_gsdl.var.parser_base.p	.gvar
+parser.many	.gvar
+parser.fail	.gvar	-- Temp
+list.var.ty	.tylet	list.t	gsdl.var.t
+f	.apply	gsdl.var.constructed	|	natural.1
+cons	.apply	list.:	gsdl.var.t
+underbar.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.var.parser_underbar.p_underbar.re
+var.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	underbar.p	_gsdl.var.parser_base.p
+vars.p2	.apply	parser.many	rune.t	gsdl.var.t	|	var.p
+vars.p1	.apply	parser.lift2	rune.t	gsdl.var.t	list.var.ty	list.var.ty	|	cons	var.p	vars.p2
+vars.p	.apply	parser.lift2	rune.t	gsdl.var.t	list.var.ty	list.var.ty	|	cons	var.p	vars.p1
+	.app	f	vars.p
+	.enter	parser.map	rune.t	list.var.ty	gsdl.var.t
 
 -- §section §gs{gsdl.var.components.get}
 
@@ -700,6 +843,16 @@ natural.t	.tygvar
 _gsdl.var.component.prim.u_symbolic_ty	.tyexpr
 string.t	.tygvar
 	.tyubproduct	0	string.t
+
+-- §section §gs{gsdl.var.parser}
+
+_gsdl.var.parser_components.p_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+list.component.ty	.tylet	list.t	gsdl.var.component.t
+	.tyref	parser.t	rune.t	list.component.ty
 
 -- §section §gs{gsdl.var.subvars}
 
