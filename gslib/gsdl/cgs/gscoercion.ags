@@ -262,15 +262,22 @@ maybe.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 bool.t	.tygvar	-- Temp
+bool.false	.gvar
 gsdl.var.≡	.gvar
 gsdl.cgs.gscoercion.≡	.gvar
 co0.0	.fv	gsdl.cgs.gscoercion.prim.u
 co1.0	.karg	gsdl.cgs.gscoercion.prim.u
 	.analyze	co0.0	appty	defn	pos
 		.case	appty
-cof		.fkarg	0	gsdl.cgs.gscoercion.t
-tya		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	bool.t
+cof0		.fkarg	0	gsdl.cgs.gscoercion.t
+tya0		.fkarg	1	gsdl.cgs.gstype.t
+			.danalyze	co1.0	appty
+				.default
+					.enter	bool.false
+				.case	appty
+cof1				.fkarg	0	gsdl.cgs.gscoercion.t
+tya1				.fkarg	1	gsdl.cgs.gstype.t
+					.undef	bool.t
 		.case	defn
 tyc0		.fkarg	0	gsdl.var.t
 mbki0		.fkarg	1	maybe.t	gsdl.cgs.gskind.t
