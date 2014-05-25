@@ -267,7 +267,7 @@ gstype_get_definition(struct gspos pos, struct gsfile_symtable *symtable, struct
     char ty_buf[0x100];
 
     if (gstypes_eprint_type(ty_buf, ty_buf + sizeof(ty_buf), ty) >= ty_buf + sizeof(ty_buf)) {
-        gsfatal_unimpl(__FILE__, __LINE__, "buffer overflow printing type %P", ty->pos);
+        gsfatal(UNIMPL("buffer overflow printing type %P"), ty->pos);
         return 0;
     }
 
@@ -289,7 +289,7 @@ gstype_get_definition(struct gspos pos, struct gsfile_symtable *symtable, struct
             return 0
         ;
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "I don't think %s is an abstract type", ty_buf);
+        gsfatal(UNIMPL("I don't think %s is an abstract type"), ty_buf);
         return 0;
     }
 }

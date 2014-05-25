@@ -27,7 +27,7 @@ ibio_main_thread_alloc_data(struct gspos entrypos, int argc, char **argv)
     res = gs_sys_global_block_suballoc(&ibio_thread_data_info, sizeof(struct ibio_thread_data));
 
     if (argc > sizeof(gsargv) / sizeof(*gsargv))
-        gsfatal_unimpl(__FILE__, __LINE__, "Need to dynamically allocate gsargv")
+        gsfatal(UNIMPL("Need to dynamically allocate gsargv"))
     ;
     for (i = 0; i < argc; i++)
         gsargv[i] = gscstringtogsstring(entrypos, argv[i])

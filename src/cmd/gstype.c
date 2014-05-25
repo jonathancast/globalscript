@@ -70,7 +70,7 @@ gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
                 }
                 default:
                     ace_down();
-                    gsfatal_unimpl(__FILE__, __LINE__, "gsrun: st = %d", st);
+                    gsfatal(UNIMPL("gsrun: st = %d"), st);
             }
         } else {
             st = GS_SLOW_EVALUATE(pos, s);
@@ -129,7 +129,7 @@ gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
                 }
                 default:
                     ace_down();
-                    gsfatal_unimpl(__FILE__, __LINE__, "gsrun: st = %d", st);
+                    gsfatal(UNIMPL("gsrun: st = %d"), st);
             }
         }
     } while (1);

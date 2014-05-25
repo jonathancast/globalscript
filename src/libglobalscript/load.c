@@ -645,7 +645,7 @@ gsparse_code_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
         ;
         return gsparse_imp_ops(pos, parsedfile, parsedline, chan, line, fields);
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: code directive %s", pos->real_filename, pos->real_lineno, fields[1]);
+        gsfatal(UNIMPL("%P: code directive %s"), pos, fields[1]);
     }
 
     gsfatal("%s:%d: gsparse_code_item next", __FILE__, __LINE__);
@@ -1411,7 +1411,7 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
         ;
         p->arguments[3 - 2] = gsintern_string(gssymconstrlable, fields[3]);
         if (n == 5)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsparse_value_alloc_op(.constr with simple argument)", p->pos)
+            gsfatal(UNIMPL("%P: gsparse_value_alloc_op(.constr with simple argument)"), p->pos)
         ; else {
             if (n % 2)
                 gsfatal("%P: Odd number of arguments to .constr when expecting field/value pairs", p->pos)
@@ -3314,9 +3314,9 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
                 if (heap[i])
                     *pentry = heap[i];
                 else
-                    gsfatal_unimpl(__FILE__, __LINE__, "%s: Entry point: couldn't find in any SCC");
+                    gsfatal(UNIMPL("%y: Entry point: couldn't find in any SCC"), parsedfile->name);
                 if (items[i].v->label) {
-                    gsfatal_unimpl(__FILE__, __LINE__, "%P: set *ptype", items[i].v->pos);
+                    gsfatal(UNIMPL("%P: set *ptype"), items[i].v->pos);
                 } else
                     /* Don't have to save §c{*ptype} in this case, because we handle that while doing the initial type-checking */
                 ;
