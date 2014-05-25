@@ -1091,6 +1091,19 @@ A \stringcode{.default} will have the same contents, but with the arguments and 
 
 \chapter{Types}
 
+\section{\stringcode{.tyexpr}}
+
+\begin{verbatim}
+ty	.tyexpr	ki
+\end{verbatim}
+
+The kind (see section \ref{kinds}) is optional.
+This defines a type synonym \stringcode{ty}, of kind \stringcode{ki} if that is present.
+The arity of the synonym is determined by the number of \stringcode{.tylambda} declarations following the \stringcode{.tyexpr},
+and the definition is given by the type expression following the \stringcode{.tyexpr}.
+
+\chapter{Notes on the Type System (Semi-Obsolete)}
+
 Free variables are handled by having type $\lambda$ nodes, and allowing
 \begin{verbatim}
 tv	.tylet	tf	x	y	z
@@ -1188,29 +1201,7 @@ gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
 {
     static gsinterned_string gssymtyintrprim, gssymtyelimprim;
 
-    struct gsparsedline *parsedline;
-
-    parsedline = gsparsed_file_addline(pos, parsedfile, numfields);
-    parsedfile->types->numitems++;
-
-    if (*fields[0])
-        parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-    else
-        gsfatal("%s:%d: Missing type label", pos->real_filename, pos->real_lineno);
-
-    gssymtable_add_type_item(symtable, parsedline->label, parsedfile, parsedfile->last_seg, parsedline);
-
-    parsedline->directive = gsintern_string(gssymtypedirective, fields[1]);
-
-    if (gssymeq(parsedline->directive, gssymtypedirective, ".tyexpr")) {
-        if (numfields > 2 + 0)
-            parsedline->arguments[0] = gsintern_string(gssymkindexpr, fields[2 + 0])
-        ;
-        if (numfields > 2 + 1)
-            gsfatal("%s:%d: Too many arguments to .tyexpr", pos->real_filename, pos->real_lineno)
-        ;
-        return gsparse_type_ops(pos, parsedfile, parsedline, chan, line, fields);
-    } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tydefinedprim")) {
+    if (gssymeq(parsedline->directive, gssymtypedirective, ".tydefinedprim")) {
         if (numfields < 2 + 1)
             gsfatal("%s:%d: Missing primitive group name", pos->real_filename, pos->real_lineno);
         parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);
