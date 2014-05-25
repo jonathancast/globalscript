@@ -2089,7 +2089,7 @@ static long gsparse_coerce_ops(struct gsparse_input_pos *, gsparsedfile *parsedf
 long
 gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymtyintrprim, gssymtyelimprim;
+    static gsinterned_string gssymtyexpr, gssymtyintrprim, gssymtyelimprim;
 
     struct gsparsedline *parsedline;
 
@@ -2105,7 +2105,7 @@ gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
 
     parsedline->directive = gsintern_string(gssymtypedirective, fields[1]);
 
-    if (gssymeq(parsedline->directive, gssymtypedirective, ".tyexpr")) {
+    if (gssymceq(parsedline->directive, gssymtyexpr, gssymtypedirective, ".tyexpr")) {
         if (numfields > 2 + 0)
             parsedline->arguments[0] = gsintern_string(gssymkindexpr, fields[2 + 0])
         ;
@@ -2511,7 +2511,9 @@ gsparse_coercion_global_var_op(struct gsparse_input_pos *pos, struct gsparsedlin
 int
 gsparse_coercion_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    if (gssymeq(parsedline->directive, gssymcoercionop, ".tylambda")) {
+    static gsinterned_string gssymtylambda;
+
+    if (gssymceq(parsedline->directive, gssymtylambda, gssymcoercionop, ".tylambda")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0])
         ; else
