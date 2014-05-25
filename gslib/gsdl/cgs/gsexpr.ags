@@ -554,12 +554,13 @@ bool.prim.u	.tygvar
 bool.t	.tygvar	-- Temp
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0	.subcode
 gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
+bool.false	.gvar
 so0	.fv	gsdl.cgs.gsexpr.cast.source.t
 so1	.fv	gsdl.cgs.gsexpr.cast.source.t
 b0	.karg	bool.prim.u	-- Are coercions equal?
 	.analyze	b0	false	true
 		.case	false
-			.undef	bool.t
+			.enter	bool.false
 		.case	true
 			.force	_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0
 			.coerce	gsdl.cgs.gsexpr.cast.source.t.out
