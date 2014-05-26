@@ -136,6 +136,7 @@ natural.t	.tygvar
 parser.t	.tygvar	-- Temp
 rune.t	.tygvar	-- Temp
 _gsdl.var.parser_base.p_k_:_nil_alphanum_k	.subcode
+_gsdl.var.parser_base.p_k_:_nil_symbolic_k	.subcode
 bool.t.out	.cogvar
 list.elem	.gvar
 string.≡   	.gvar
@@ -154,10 +155,28 @@ n		.fkarg	0	natural.t
 			.undef	parser.t	rune.t	gsdl.var.t
 		.case	symbolic
 s		.fkarg	0	string.t
-			.undef	parser.t	rune.t	gsdl.var.t
+			.force	_gsdl.var.parser_base.p_k_:_nil_symbolic_k
+			.coerce	bool.t.out
+			.app	string.≡        s      gsdl.syntax.keywords
+			.enter	list.elem	string.t
 	-- > :: parser.t	rune.t	gsdl.var.t
 
 _gsdl.var.parser_base.p_k_:_nil_alphanum_k	.forcecont
+gsdl.var.t	.tygvar
+bool.prim.u	.tygvar
+rune.t	.tygvar
+parser.t	.tygvar	-- Temp
+parser.unit	.gvar
+v	.fv	gsdl.var.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.app	v
+			.enter	parser.unit	rune.t	gsdl.var.t
+		.case	true
+			.undef	parser.t	rune.t	gsdl.var.t
+
+_gsdl.var.parser_base.p_k_:_nil_symbolic_k	.forcecont
 gsdl.var.t	.tygvar
 bool.prim.u	.tygvar
 rune.t	.tygvar
