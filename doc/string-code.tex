@@ -1091,7 +1091,9 @@ A \stringcode{.default} will have the same contents, but with the arguments and 
 
 \chapter{Types}
 
-\section{\stringcode{.tyexpr}}
+\section{Type Items}
+
+\subsection{\stringcode{.tyexpr}}
 
 \begin{verbatim}
 ty	.tyexpr	ki
@@ -1100,7 +1102,22 @@ ty	.tyexpr	ki
 The kind (see section \ref{kinds}) is optional.
 This defines a type synonym \stringcode{ty}, of kind \stringcode{ki} if that is present.
 The arity of the synonym is determined by the number of \stringcode{.tylambda} declarations following the \stringcode{.tyexpr},
-and the definition is given by the type expression following the \stringcode{.tyexpr}.
+and the definition is given by the type expression following the \stringcode{.tyexpr} (see section \ref{type_ops}).
+
+\subsection{\stringcode{.tydefinedprim}}
+
+\begin{verbatim}
+ty	.tydefinedprim	ps	pn	ki
+\end{verbatim}
+
+This declares \stringcode{ty} as a name for the primtype \stringcode{pn} from primset \stringcode{ps}, of kind \stringcode{ki} (see section \ref{kinds}).
+
+A `defined' primitive type is one that has an explicit denotation as part of the Global Script semantics,
+and can be implemented in  language-independent way on any Turing-complete machine.
+As such, they are part of every GSPC-based language,
+which means this declaration is only allowed for primsets that are known to the current implementation.
+It is illegal to supply an incorrect kind signature as part of such a declaration,
+or to mention a non-existent primset or primtype in the declaration.
 
 \chapter{Notes on the Type System (Semi-Obsolete)}
 
@@ -1201,18 +1218,7 @@ gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
 {
     static gsinterned_string gssymtyintrprim, gssymtyelimprim;
 
-    if (gssymeq(parsedline->directive, gssymtypedirective, ".tydefinedprim")) {
-        if (numfields < 2 + 1)
-            gsfatal("%s:%d: Missing primitive group name", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);
-        if (numfields < 2 + 2)
-            gsfatal("%s:%d: Missing primitive type relative name", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2 + 1]);
-        if (numfields < 2 + 3)
-            gsfatal("%s:%d: Missing kind on primitive type", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
-        return 0;
-    } else if (gssymceq(parsedline->directive, gssymtyintrprim, gssymtypedirective, ".tyintrprim")) {
+    if (gssymceq(parsedline->directive, gssymtyintrprim, gssymtypedirective, ".tyintrprim")) {
         if (numfields < 2 + 1)
             gsfatal("%s:%d: Missing primitive group name", pos->real_filename, pos->real_lineno);
         parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);
