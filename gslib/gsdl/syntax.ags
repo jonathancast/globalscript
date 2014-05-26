@@ -1,0 +1,10 @@
+#calculus: gsdl.string-code 0.6
+
+	.prefix
+
+	.data
+
+gsdl.syntax.keywords	.list	string.t	_gsdl.syntax.keywords_gsfor.s	_gsdl.syntax.keywords_gsλ.s	_gsdl.syntax.keywords_arr.s
+_gsdl.syntax.keywords_gsfor.s	.string	for
+_gsdl.syntax.keywords_gsλ.s	.string	λ
+_gsdl.syntax.keywords_arr.s	.string	→

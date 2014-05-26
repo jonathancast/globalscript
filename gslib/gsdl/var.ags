@@ -62,12 +62,115 @@ rune.t	.tygvar
 list.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.var.t	.tygvar
-parser.map	.gvar
-gsdl.var.basevar	.gvar
+_gsdl.var.parser_base.p_k_c	.subcode
+parser.>>=	.gvar
 _gsdl.var.parser_components.p	.gvar
 list.component.ty	.tylet	list.t	gsdl.var.component.t
-	.app	gsdl.var.basevar	_gsdl.var.parser_components.p
-	.enter	parser.map	rune.t	list.component.ty	gsdl.var.t
+k	.closure	_gsdl.var.parser_base.p_k_c
+	.app	_gsdl.var.parser_components.p	k
+	.enter	parser.>>=	rune.t	list.component.ty	gsdl.var.t
+
+_gsdl.var.parser_base.p_k_c	.expr
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+_gsdl.var.parser_base.p_k_k	.subcode
+list.t.out	.cogvar
+cs	.larg	list.t	gsdl.var.component.t
+	.force	_gsdl.var.parser_base.p_k_k
+	.coerce	list.t.out	gsdl.var.component.t
+	.enter	cs
+
+_gsdl.var.parser_base.p_k_k	.forcecont
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+list.prim.u	.tygvar
+rune.t	.tygvar	-- Temp
+gsdl.var.t	.tygvar	-- Temp
+parser.t	.tygvar	-- Temp
+_gsdl.var.parser_base.p_k_:_k	.subcode
+list.t.out	.cogvar
+parser.fail	.gvar	-- Temp
+cs	.fv	list.t	gsdl.var.component.t
+cs0	.karg	list.prim.u	gsdl.var.component.t
+	.analyze	cs0	:	nil
+		.case	:
+c0		.fkarg	0	gsdl.var.component.t
+cs1		.fkarg	1	list.t	gsdl.var.component.t
+			.force	_gsdl.var.parser_base.p_k_:_k
+			.coerce	list.t.out	gsdl.var.component.t
+			.enter	cs1
+		.case	nil
+			.undef	parser.t	rune.t	gsdl.var.t
+
+_gsdl.var.parser_base.p_k_:_k	.forcecont
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+list.prim.u	.tygvar
+rune.t	.tygvar
+gsdl.var.t	.tygvar
+_gsdl.var.parser_base.p_k_:_nil_k	.subcode
+gsdl.var.component.t.out	.cogvar
+parser.unit	.gvar
+gsdl.var.basevar	.gvar
+parser.fail	.gvar	-- Temp
+cs	.fv	list.t	gsdl.var.component.t
+c0	.fv	gsdl.var.component.t
+cs1.0	.karg	list.prim.u	gsdl.var.component.t
+v	.apply	gsdl.var.basevar	|	cs
+	.analyze	cs1.0	:	nil
+		.case	:
+c1		.fkarg	0	gsdl.var.component.t
+cs2		.fkarg	1	list.t	gsdl.var.component.t
+			.app	v
+			.enter	parser.unit	rune.t	gsdl.var.t
+		.case	nil
+			.force	_gsdl.var.parser_base.p_k_:_nil_k
+			.coerce	gsdl.var.component.t.out
+			.enter	c0
+
+_gsdl.var.parser_base.p_k_:_nil_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.var.component.prim.u	.tygvar
+string.t	.tygvar
+natural.t	.tygvar
+parser.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+_gsdl.var.parser_base.p_k_:_nil_alphanum_k	.subcode
+bool.t.out	.cogvar
+list.elem	.gvar
+string.≡   	.gvar
+gsdl.syntax.keywords	.gvar
+v	.fv	gsdl.var.t
+c0.0	.karg	gsdl.var.component.prim.u
+	.analyze	c0.0	alphanum	numeric	symbolic
+		.case	alphanum
+s		.fkarg	0	string.t
+			.force	_gsdl.var.parser_base.p_k_:_nil_alphanum_k
+			.coerce	bool.t.out
+			.app	string.≡        s      gsdl.syntax.keywords
+			.enter	list.elem	string.t
+		.case	numeric
+n		.fkarg	0	natural.t
+			.undef	parser.t	rune.t	gsdl.var.t
+		.case	symbolic
+s		.fkarg	0	string.t
+			.undef	parser.t	rune.t	gsdl.var.t
+	-- > :: parser.t	rune.t	gsdl.var.t
+
+_gsdl.var.parser_base.p_k_:_nil_alphanum_k	.forcecont
+gsdl.var.t	.tygvar
+bool.prim.u	.tygvar
+rune.t	.tygvar
+parser.t	.tygvar	-- Temp
+parser.unit	.gvar
+v	.fv	gsdl.var.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.app	v
+			.enter	parser.unit	rune.t	gsdl.var.t
+		.case	true
+			.undef	parser.t	rune.t	gsdl.var.t
 
 _gsdl.var.parser_components.p_c	.expr
 rune.t	.tygvar
