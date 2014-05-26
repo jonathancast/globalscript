@@ -14,8 +14,6 @@ _gsdl.var.parser_symbolic.re	.regex	[:≡≠<>]
 _gsdl.var.parser_underbar.p	.closure	_gsdl.var.parser_underbar.p_c
 _gsdl.var.parser_underbar.p_underbar.re	.regex	_
 
-_gsdl.var.parser_component.p_alphanum.cont.char.re	.regex	[a-z]
-
 gsdl.var.components.get	.closure	_gsdl.var.components.get_c
 
 gsdl.var.<>	.closure	_gsdl.var.<>_c
@@ -266,13 +264,13 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.var.parser_alphanum.re	.gvar
 parser.neg.lookahead	.gvar
-_gsdl.var.parser_component.p_alphanum.cont.char.re	.gvar
+gsdl.syntax.alphanum.cont.char.re	.gvar
 gsdl.var.component.symbolic	.gvar
 _gsdl.var.parser_symbolic.re	.gvar
 parser.fail	.gvar	-- Temp
 alphanum.p1.1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.var.parser_alphanum.re
 alphanum.p1	.apply	parser.map	rune.t	string.t	gsdl.var.component.t	|	gsdl.var.component.alphanum	alphanum.p1.1
-alphanum.p2.1	.apply	parser.match    rune.t  |       rune.compare    _gsdl.var.parser_component.p_alphanum.cont.char.re
+alphanum.p2.1	.apply	parser.match    rune.t  |       rune.compare    gsdl.syntax.alphanum.cont.char.re
 alphanum.p2	.apply	parser.neg.lookahead    rune.t  string.t        |      alphanum.p2.1
 alphanum.p	.apply	parser.<*	rune.t	gsdl.var.component.t	record.empty	|	alphanum.p1	alphanum.p2
 symbolic.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.var.parser_symbolic.re

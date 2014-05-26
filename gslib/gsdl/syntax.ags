@@ -10,3 +10,5 @@ _gsdl.syntax.keywords_gsλ.s	.string	λ
 _gsdl.syntax.keywords_arr.s	.string	→
 _gsdl.syntax.keywords_oftype.s	.string	::
 _gsdl.syntax.keywords_at.s	.string	@
+
+gsdl.syntax.alphanum.cont.char.re	.regex	[a-z]
