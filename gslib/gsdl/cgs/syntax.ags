@@ -19,7 +19,7 @@ gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
 _gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
 
 gsdl.cgs.syntax.gsid	.closure	_gsdl.cgs.syntax.gsid_c
-_gsdl.cgs.syntax.gsid_re	.regex	[a-z]§*	_gsdl.cgs.syntax_id.cont.char.re
+_gsdl.cgs.syntax.gsid_re	.regex	[a-z]§*	gsdl.syntax.alphanum.cont.char.re
 
 _gsdl.cgs.syntax_id.cont.char.re	.regex	[a-z]	
 
