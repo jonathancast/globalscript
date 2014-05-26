@@ -3220,7 +3220,7 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
             struct gskind *primtypekind;
 
             if (stacksize >= MAX_NUM_REGISTERS)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Stack overflow in internal primtype; max 0x%x", pos, MAX_NUM_REGISTERS)
+                gsfatal(UNIMPL("%P: Stack overflow in internal primtype; max 0x%x"), pos, MAX_NUM_REGISTERS)
             ;
 
             if (!*s) gsfatal("%P: Can't parse %s: missing primset argument to \"impprim", pos, buf);
@@ -3386,7 +3386,7 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
             struct gstype *ty;
 
             if (stacksize >= MAX_NUM_REGISTERS)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Stack overflow in internal primtype; max 0x%x", pos, MAX_NUM_REGISTERS)
+                gsfatal(UNIMPL("%P: Stack overflow in internal primtype; max 0x%x"), pos, MAX_NUM_REGISTERS)
             ;
 
             ty = 0;
@@ -4209,7 +4209,7 @@ gstypes_type_check_coercion_item(struct gsfile_symtable *symtable, struct gsbc_i
         type = gsbc_typecheck_coercion_expr(symtable, &pseg, gsinput_next_line(&pseg, pcoercion));
         gssymtable_set_coercion_type(symtable, pcoercion->label, type);
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_type_check_coercion_item(%s)", pcoercion->pos, pcoercion->directive->name);
+        gsfatal(UNIMPL("%P: gstypes_type_check_coercion_item(%s)"), pcoercion->pos, pcoercion->directive->name);
     }
 }
 
@@ -4270,7 +4270,7 @@ gsbc_typecheck_coercion_expr(struct gsfile_symtable *symtable, struct gsparsedfi
             struct gstype_abstract *abstype;
 
             if (nregs >= MAX_NUM_REGISTERS)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
+                gsfatal(UNIMPL("%P: Register overflow"), p->pos)
             ;
             if (regtype > rttygvar)
                 gsfatal("%P: Too late to add type globals", p->pos)
@@ -4371,7 +4371,7 @@ have_type:
             source = dest;
             dest = tmp;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_coercion_expr(cont %s)", p->pos, p->directive->name);
+            gsfatal(UNIMPL("%P: gsbc_typecheck_coercion_expr(cont %s)"), p->pos, p->directive->name);
         }
     }
 
