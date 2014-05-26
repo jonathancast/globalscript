@@ -2404,6 +2404,8 @@ gsparse_type_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedli
 long
 gsparse_coercion_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
+    static gsinterned_string gssymtycoercion;
+
     struct gsparsedline *parsedline;
 
     parsedline = gsparsed_file_addline(pos, parsedfile, numfields);
@@ -2419,7 +2421,7 @@ gsparse_coercion_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, s
 
     parsedline->directive = gsintern_string(gssymcoerciondirective, fields[1]);
 
-    if (gssymeq(parsedline->directive, gssymcoerciondirective, ".tycoercion")) {
+    if (gssymceq(parsedline->directive, gssymtycoercion, gssymcoerciondirective, ".tycoercion")) {
         if (numfields > 2 + 0)
             gsfatal("%s:%d: Too many arguments to .tycoercion", pos->real_filename, pos->real_lineno)
         ;
@@ -2439,6 +2441,8 @@ static int gsparse_coercion_arg_op(struct gsparse_input_pos *, struct gsparsedli
 long
 gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
+    static gsinterned_string gssymtyinvert, gssymtydefinition;
+
     struct gsparsedline *parsedline;
     int i;
     long n;
@@ -2450,20 +2454,20 @@ gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, stru
 
         if (gsparse_coercion_global_var_op(pos, parsedline, fields, n)) {
         } else if (gsparse_coercion_arg_op(pos, parsedline, fields, n)) {
-        } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tyinvert")) {
+        } else if (gssymceq(parsedline->directive, gssymtyinvert, gssymcoercionop, ".tyinvert")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuations");
             else
                 parsedline->label = 0;
             if (n > 2)
                 gsfatal("%s:%d: Too many arguments to .tyinvert");
-        } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tydefinition")) {
+        } else if (gssymceq(parsedline->directive, gssymtydefinition, gssymcoercionop, ".tydefinition")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal op");
             else
                 parsedline->label = 0;
             if (n < 2 + 1)
-                gsfatal("%s:%d: Missing abstract type to cast to");
+                gsfatal("%s:%d: Missing abstract type to cast to", pos->real_filename, pos->real_lineno);
             parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2 + 0]);
             for (i = 0; 2 + i < n; i++)
                 parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2 + i]);
@@ -2485,14 +2489,16 @@ gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, stru
 int
 gsparse_coercion_global_var_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    if (gssymeq(parsedline->directive, gssymcoercionop, ".tygvar")) {
+    static gsinterned_string gssymtygvar, gssymtyextabstype;
+
+    if (gssymceq(parsedline->directive, gssymtygvar, gssymcoercionop, ".tygvar")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0]);
         else
             gsfatal("%s:%d: Labels required on .tygvar", pos->real_filename, pos->real_lineno);
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .tygvar", pos->real_filename, pos->real_lineno);
-    } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tyextabstype")) {
+    } else if (gssymceq(parsedline->directive, gssymtyextabstype, gssymcoercionop, ".tyextabstype")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0])
         ; else
