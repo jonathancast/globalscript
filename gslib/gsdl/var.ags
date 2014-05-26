@@ -10,7 +10,7 @@ _gsdl.var.parser_components.p	.closure	_gsdl.var.parser_components.p_c	_gsdl.var
 _gsdl.var.parser_dot.re	.regex	\.
 _gsdl.var.parser_component.p	.closure	_gsdl.var.parser_component.p_c
 _gsdl.var.parser_alphanum.re	.regex	[a-zα-ω][a-z0-9A-Z]*
-_gsdl.var.parser_symbolic.re	.regex	[:≡≠<>]
+_gsdl.var.parser_symbolic.re	.regex	§	gsdl.syntax.symbolic.cont.char.re
 _gsdl.var.parser_underbar.p	.closure	_gsdl.var.parser_underbar.p_c
 _gsdl.var.parser_underbar.p_underbar.re	.regex	_
 
