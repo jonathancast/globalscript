@@ -3528,7 +3528,11 @@ msg				.fkarg	0	list.t	rune.t
 					.undef	parser.prim.t	s	α
 				.case	lookahead
 p1.1				.fkarg	0	parser.prim.t	s	rec.ty
-					.undef	parser.prim.t	s	α
+p0.l					.lifted	p0
+p0.b					.cast	p0.l	parser.prim.t.in	s	α
+p2					.apply	parser.prim.unit.plus	s	rec.ty	|	p0.b	p1.1
+					.app	p2
+					.yield	parser.prim.lookahead	s	α
 				.case	pos.get
 k				.fkarg	0	_parser.prim.u_pos.get_0_ty	s	α
 k1					.closure	_parser.prim.<|>_w_symbol_pos.get_k1_c
