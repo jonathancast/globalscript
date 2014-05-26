@@ -23,7 +23,7 @@ _gsdl.cgs.syntax.gsid_re	.regex	[a-z]§*	_gsdl.cgs.syntax_id.cont.char.re
 
 _gsdl.cgs.syntax_id.cont.char.re	.regex	[a-z]	
 
-_gsdl.cgs.syntax_op.cont.char.re	.regex	[]	
+_gsdl.cgs.syntax_op.cont.char.re	.regex	[]
 
 gsdl.cgs.syntax.dot	.closure	_gsdl.cgs.syntax.dot_c
 _gsdl.cgs.syntax.dot_re	.regex	.
