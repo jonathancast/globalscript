@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -43,7 +43,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.cgs.gsexpr.parser	.gvar
 _test_parse_gsexpr_expr.heavy.cast_input	.gvar
-k	.alloc	_test_parse_gsexpr_expr.heavy.cast_k_c
+k	.closure	_test_parse_gsexpr_expr.heavy.cast_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gsexpr.t	|	parser.rune.advance	rune.print	gsdl.cgs.gsexpr.parser	_test_parse_gsexpr_expr.heavy.cast_input	k
 	.app	_test_parse_gsexpr_expr.heavy.cast_label	test
 	.enter	test.property.label
@@ -98,7 +98,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.cgs.gsexpr.parser	.gvar
 _test_parse_gsexpr_lambda_input	.gvar
-k	.alloc	_test_parse_gsexpr_lambda_k_c
+k	.closure	_test_parse_gsexpr_lambda_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gsexpr.t	|	parser.rune.advance	rune.print	gsdl.cgs.gsexpr.parser	_test_parse_gsexpr_lambda_input	k
 	.app	_test_parse_gsexpr_lambda_label	test
 	.enter	test.property.label

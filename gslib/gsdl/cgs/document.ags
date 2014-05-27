@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -46,18 +46,18 @@ parser.*>	.gvar
 gsdl.cgs.syntax.oftype	.gvar
 gsdl.cgs.gstype.parser.fun	.gvar
 gsdl.cgs.syntax.semi	.gvar
-f	.alloc	_gsdl.cgs.document.parser_f_c
+f	.closure	_gsdl.cgs.document.parser_f_c
 pos.get	.apply	parser.pos.get	rune.t
 typesig.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
 -- §paragraph{Expression, no type signature}
-expr.f	.alloc	_gsdl.cgs.document.parser_expr.f_c
+expr.f	.closure	_gsdl.cgs.document.parser_expr.f_c
 expr.p	.apply	parser.map	rune.t	gsdl.cgs.gsexpr.t	_gsdl.cgs.document.parser_ety_ty	|	expr.f	gsdl.cgs.gsexpr.parser
 -- §paragraph{Expression and type signature}
-expr.sig.f	.alloc	_gsdl.cgs.document.parser_expr.sig.f_c
+expr.sig.f	.closure	_gsdl.cgs.document.parser_expr.sig.f_c
 expr.sig.p1	.apply	gsdl.cgs.gsexpr.parser.cast	|	gsdl.cgs.syntax.branch.l	gsdl.cgs.syntax.assoc.any
 expr.sig.p	.apply	parser.lift2	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gstype.t	_gsdl.cgs.document.parser_ety_ty	|	expr.sig.f	expr.sig.p1	typesig.p
 -- §paragraph{No expression, just type signature}
-noexpr.f	.alloc	_gsdl.cgs.document.parser_noexpr.f_c
+noexpr.f	.closure	_gsdl.cgs.document.parser_noexpr.f_c
 noexpr.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	_gsdl.cgs.document.parser_ety_ty	|	noexpr.f	typesig.p
 -- §par
 ep.p1.1	.apply	parser.<|>	rune.t	_gsdl.cgs.document.parser_ety_ty	|	expr.sig.p	noexpr.p

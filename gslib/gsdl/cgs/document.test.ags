@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -157,7 +157,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.cgs.document.parser	.gvar
 _test.parse.empty.document_input	.gvar
-k	.alloc	_test.parse.empty.document_k_c
+k	.closure	_test.parse.empty.document_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.document.t	|	parser.rune.advance	rune.print	gsdl.cgs.document.parser	_test.parse.empty.document_input	k
 	.app	_test.parse.empty.document_label	test
 	.enter	test.property.label
@@ -199,7 +199,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.cgs.document.parser	.gvar
 _test.parse.expr.document_input	.gvar
-k	.alloc	_test.parse.expr.document_k_c
+k	.closure	_test.parse.expr.document_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.document.t	|	parser.rune.advance	rune.print	gsdl.cgs.document.parser	_test.parse.expr.document_input	k
 	.app	_test.parse.expr.document_label	test
 	.enter	test.property.label
@@ -261,7 +261,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.cgs.document.parser	.gvar
 _test.parse.typesig.document_input	.gvar
-k	.alloc	_test.parse.typesig.document_k_c
+k	.closure	_test.parse.typesig.document_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.document.t	|	parser.rune.advance	rune.print	gsdl.cgs.document.parser	_test.parse.typesig.document_input	k
 	.app	_test.parse.typesig.document_label	test
 	.enter	test.property.label
