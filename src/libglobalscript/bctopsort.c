@@ -437,18 +437,19 @@ static
 void
 gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymforcecont, gssymstrictcont, gssymubcasecont, gssymtygvar, gssymtyextabstype, gssymtyextelimprim, gssymtyarg, gssymtyfv, gssymtylet, gssymcogvar;
+    static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymimpprog;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim, gssymtyarg, gssymtyfv, gssymtylet, gssymcogvar, gssymgvar, gssymsubcode;
 
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
 
     pseg = item.pseg;
     if (
-        gssymeq(item.v->directive, gssymcodedirective, ".expr")
+        gssymceq(item.v->directive, gssymexpr, gssymcodedirective, ".expr")
         || gssymceq(item.v->directive, gssymforcecont, gssymcodedirective, ".forcecont")
         || gssymceq(item.v->directive, gssymstrictcont, gssymcodedirective, ".strictcont")
         || gssymceq(item.v->directive, gssymubcasecont, gssymcodedirective, ".ubcasecont")
-        || gssymeq(item.v->directive, gssymcodedirective, ".impprog")
+        || gssymceq(item.v->directive, gssymimpprog, gssymcodedirective, ".impprog")
     ) {
         for (p = gsinput_next_line(&pseg, item.v); ; p = gsinput_next_line(&pseg, p)) {
             if (
@@ -468,11 +469,11 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
                 struct gsbc_item global;
                 global = gssymtable_lookup(p->pos, symtable, p->label);
                 gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
-            } else if (gssymeq(p->directive, gssymcodeop, ".gvar")) {
+            } else if (gssymceq(p->directive, gssymgvar, gssymcodeop, ".gvar")) {
                 struct gsbc_item global;
                 global = gssymtable_lookup(p->pos, symtable, p->label);
                 gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
-            } else if (gssymeq(p->directive, gssymcodeop, ".subcode")) {
+            } else if (gssymceq(p->directive, gssymsubcode, gssymcodeop, ".subcode")) {
                 struct gsbc_item subcode;
                 subcode = gssymtable_lookup(p->pos, symtable, p->label);
                 gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, subcode, pend, pc);
@@ -571,6 +572,8 @@ static
 void
 gsbc_top_sort_subitems_of_coercion_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
+    static gsinterned_string gssymtycoercion;
+
     gsinterned_string directive;
     struct gsparsedfile_segment *pseg;
     struct gsparsedline *pcoercion;
@@ -578,7 +581,7 @@ gsbc_top_sort_subitems_of_coercion_item(struct gsfile_symtable *symtable, struct
     pseg = item.pseg;
     pcoercion = item.v;
     directive = pcoercion->directive;
-    if (gssymeq(directive, gssymcoerciondirective, ".tycoercion")) {
+    if (gssymceq(directive, gssymtycoercion, gssymcoerciondirective, ".tycoercion")) {
         gsbc_top_sort_subitems_of_type_or_coercion_expr(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc, &pseg, gsinput_next_line(&pseg, pcoercion), gssymcoercionop);
         return;
     } else {
