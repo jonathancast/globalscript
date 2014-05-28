@@ -806,7 +806,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         ;
         kind = gssymtable_get_type_expr_kind(symtable, pdata->arguments[0]);
         if (!kind)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", pdata->pos, pdata->arguments[0]->name)
+            gsfatal(UNIMPL("%P: couldn't find kind of '%s'"), pdata->pos, pdata->arguments[0]->name)
         ;
         gstypes_kind_check_fail(pdata->pos, kind, gskind_lifted_kind());
     } else if (gssymceq(pdata->directive, gssymclosure, gssymdatadirective, ".closure")) {
@@ -815,7 +815,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         gsargcheck(pdata, 0, "code");
         code_type = gssymtable_get_code_type(symtable, pdata->arguments[0]);
         if (!code_type)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Cannot find type of code item %s", pdata->pos, pdata->arguments[0]->name)
+            gsfatal(UNIMPL("%P: Cannot find type of code item %s"), pdata->pos, pdata->arguments[0]->name)
         ;
         if (code_type->numftyvs)
             gsfatal("%P: Code for a global data item cannot have free type variables", pdata->pos)
@@ -912,7 +912,7 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
         type = gsbc_typecheck_api_expr(pcode->pos, symtable, items[i].file->features, &pseg, gsinput_next_line(&pseg, pcode), pcode->arguments[0], pcode->arguments[1]);
         gssymtable_set_code_type(symtable, pcode->label, type);
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_type_check_code_item(%s)", pcode->pos, pcode->directive->name);
+        gsfatal(UNIMPL("%P: gstypes_type_check_code_item(%s)"), pcode->pos, pcode->directive->name);
     }
 }
 
@@ -1100,7 +1100,7 @@ gsbc_typecheck_force_cont(struct gsfile_symtable *symtable, uint features, struc
         p = gsinput_next_line(ppseg, p)
     ;
     if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)))
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_force_cont(%y)", p->pos, p->directive)
+        gsfatal(UNIMPL("%P: gsbc_typecheck_force_cont(%y)"), p->pos, p->directive)
     ;
 
     while (cl.stacksize)
@@ -1236,7 +1236,7 @@ gsbc_typecheck_ubcase_cont(struct gsfile_symtable *symtable, uint features, stru
         p = gsinput_next_line(ppseg, p)
     ;
     if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, &p, ppseg, &cl)))
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_ubcase_cont(%y)", p->pos, p->directive)
+        gsfatal(UNIMPL("%P: gsbc_typecheck_ubcase_cont(%y)"), p->pos, p->directive)
     ;
 
     while (cl.stacksize)
