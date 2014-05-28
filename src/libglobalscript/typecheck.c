@@ -1274,7 +1274,7 @@ gsbc_typecheck_code_type_gvar_op(struct gsfile_symtable *symtable, struct gspars
         ;
         pcl->tyregkinds[pcl->nregs] = gssymtable_get_type_expr_kind(symtable, p->label);
         if (!pcl->tyregkinds[pcl->nregs])
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find kind of '%s'", p->pos, p->label->name)
+            gsfatal(UNIMPL("%P: couldn't find kind of '%s'"), p->pos, p->label->name)
         ;
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymtyextabstype, gssymcodeop, ".tyextabstype")) {
@@ -2012,7 +2012,7 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, str
         *pp = gsinput_next_line(ppseg, *pp)
     ;
     if (!(calculated_type = gsbc_typecheck_expr_terminal_op(symtable, pp, ppseg, pcl)))
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_typecheck_case(%y)", (*pp)->pos, (*pp)->directive)
+        gsfatal(UNIMPL("%P: gsbc_typecheck_case(%y)"), (*pp)->pos, (*pp)->directive)
     ;
 
     while (pcl->stacksize > saved_stacksize)
@@ -2927,7 +2927,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, uint
                 calculated_type = gstypes_compile_lift(pos, calculated_type)
             ;
         } else {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Ensure imp block statement has unlifted type", pos);
+            gsfatal(UNIMPL("%P: Ensure imp block statement has unlifted type"), pos);
         }
     }
 
@@ -3185,7 +3185,7 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
     int i;
 
     if (strecpy(buf, buf + sizeof(buf), s) >= buf + sizeof(buf))
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Buffer overflow copying type: %s", pos, s)
+        gsfatal(UNIMPL("%P: Buffer overflow copying type: %s"), pos, s)
     ;
 
     s = gsbc_typecheck_compile_prim_type_skip_ws(buf);
@@ -3199,7 +3199,7 @@ gsbc_typecheck_compile_prim_type(struct gspos pos, struct gsfile_symtable *symta
 
         if (!strcmp("λ", tok)) {
             if (nvars >= MAX_NUM_REGISTERS)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Too many λs in internal primtype; max 0x%x", pos, MAX_NUM_REGISTERS)
+                gsfatal(UNIMPL("%P: Too many λs in internal primtype; max 0x%x"), pos, MAX_NUM_REGISTERS)
             ;
 
             if (!*s) gsfatal("%P: Can't parse %s: missing type var argument to λ", pos, buf);
