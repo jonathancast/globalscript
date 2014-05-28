@@ -2089,7 +2089,7 @@ static long gsparse_coerce_ops(struct gsparse_input_pos *, gsparsedfile *parsedf
 long
 gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymtyexpr, gssymtyintrprim, gssymtyelimprim;
+    static gsinterned_string gssymtyexpr, gssymtydefinedprim, gssymtyintrprim, gssymtyelimprim, gssymtyimpprim, gssymtyabstract;
 
     struct gsparsedline *parsedline;
 
@@ -2113,7 +2113,7 @@ gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
             gsfatal("%s:%d: Too many arguments to .tyexpr", pos->real_filename, pos->real_lineno)
         ;
         return gsparse_type_ops(pos, parsedfile, parsedline, chan, line, fields);
-    } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tydefinedprim")) {
+    } else if (gssymceq(parsedline->directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")) {
         if (numfields < 2 + 1)
             gsfatal("%s:%d: Missing primitive group name", pos->real_filename, pos->real_lineno);
         parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);
@@ -2146,7 +2146,7 @@ gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
             gsfatal("%s:%d: Missing kind on primitive type", pos->real_filename, pos->real_lineno);
         parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
         return 0;
-    } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tyimpprim")) {
+    } else if (gssymceq(parsedline->directive, gssymtyimpprim, gssymtypedirective, ".tyimpprim")) {
         if (numfields < 2 + 1)
             gsfatal("%s:%d: Mising primitive group name", pos->real_filename, pos->real_lineno);
         parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);
@@ -2157,18 +2157,7 @@ gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
             gsfatal("%s:%d: Missing kind on primitive type", pos->real_filename, pos->real_lineno);
         parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
         return 0;
-    } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tyelimprim")) {
-        if (numfields < 2 + 1)
-            gsfatal("%s:%d: Mising primitive group name", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);
-        if (numfields < 2 + 2)
-            gsfatal("%s:%d: Missing primitive type relative name", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2 + 1]);
-        if (numfields < 2 + 3)
-            gsfatal("%s:%d: Missing kind on primitive type", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
-        return 0;
-    } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tyabstract")) {
+    } else if (gssymceq(parsedline->directive, gssymtyabstract, gssymtypedirective, ".tyabstract")) {
         if (numfields < 2 + 1)
             gsfatal("%s:%d: Missing kind on .tyabstract", pos->real_filename, pos->real_lineno);
         parsedline->arguments[0] = gsintern_string(gssymkindexpr, fields[2 + 0]);
@@ -2380,7 +2369,9 @@ gsparse_type_global_var_op(struct gsparse_input_pos *pos, struct gsparsedline *p
 int
 gsparse_type_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    if (gssymeq(parsedline->directive, gssymtypeop, ".tylambda")) {
+    static gsinterned_string gssymtylambda;
+
+    if (gssymceq(parsedline->directive, gssymtylambda, gssymtypeop, ".tylambda")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymtypelable, fields[0])
         ; else
