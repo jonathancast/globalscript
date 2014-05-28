@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -52,7 +52,7 @@ gsdl.ags.file.parser	.gvar
 bool.false	.gvar
 list.nil	.gvar
 nil	.apply	list.nil	rune.t
-k0	.alloc	_test.parser.nil_k0_c
+k0	.closure	_test.parser.nil_k0_c
 fs	.undefined	gsdl.ags.syntax.features.t
 fp	.apply	gsdl.ags.file.parser	|	fs	bool.false
 test	.apply	parser.test.assert.fails	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	gsdl.ags.file.fmtgs	fp	nil	k0
@@ -80,7 +80,7 @@ rune.print	.gvar
 gsdl.ags.file.parser	.gvar
 bool.false	.gvar
 _test.parser.empty.prefix_input	.gvar
-k0	.alloc	_test.parser.empty.prefix_k0_c
+k0	.closure	_test.parser.empty.prefix_k0_c
 fs	.undefined	gsdl.ags.syntax.features.t
 fp	.apply	gsdl.ags.file.parser	|	fs	bool.false
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	fp	_test.parser.empty.prefix_input	k0
@@ -161,7 +161,7 @@ rune.print	.gvar
 gsdl.ags.file.parser	.gvar
 bool.false	.gvar
 _test.parser.empty.doc_input	.gvar
-k0	.alloc	_test.parser.empty.doc_k0_c
+k0	.closure	_test.parser.empty.doc_k0_c
 fs	.undefined	gsdl.ags.syntax.features.t
 fp	.apply	gsdl.ags.file.parser	|	fs	bool.false
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	fp	_test.parser.empty.doc_input	k0

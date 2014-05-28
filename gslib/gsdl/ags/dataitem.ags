@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -65,9 +65,9 @@ _gsdl.ags.dataitem.parser_list.p_c	.subcode
 _gsdl.ags.dataitem.parser_string.p_c	.subcode
 parser.<|>	.gvar
 isags	.larg	bool.t
-closure.p	.alloc	_gsdl.ags.dataitem.parser_closure.p_c
-list.p	.alloc	_gsdl.ags.dataitem.parser_list.p_c
-string.p	.alloc	_gsdl.ags.dataitem.parser_string.p_c
+closure.p	.closure	_gsdl.ags.dataitem.parser_closure.p_c
+list.p	.closure	_gsdl.ags.dataitem.parser_list.p_c
+string.p	.closure	_gsdl.ags.dataitem.parser_string.p_c
 p	.apply	parser.<|>	rune.t	gsdl.ags.dataitem.t	|	list.p	string.p
 	.app	closure.p	p
 	.enter	parser.<|>	rune.t	gsdl.ags.dataitem.t
@@ -97,7 +97,7 @@ parser.<*	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
 mb.var.ty	.tylet	maybe.t	gsdl.var.t
-f	.alloc	_gsdl.ags.dataitem.parser_closure.p_f_c
+f	.closure	_gsdl.ags.dataitem.parser_closure.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 nm.p	.apply	parser.optional	rune.t	gsdl.var.t	|	gsdl.var.parser
 co.p1.h	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.dataitem.parser_closure.p_closure.re
@@ -162,7 +162,7 @@ isags0	.karg	bool.prim.u
 			.enter	parser.fail	rune.t	gsdl.ags.dataitem.t
 		.case	true
 pos.get			.apply	parser.pos.get	rune.t
-f			.alloc	_gsdl.ags.dataitem.parser_list.p_true_f_c
+f			.closure	_gsdl.ags.dataitem.parser_list.p_true_f_c
 list.p			.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.dataitem.parser_list.p_list.re
 ty.p2			.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 ty.p1			.apply	parser.*>	rune.t	string.t	string.t	|	list.p	ty.p2
@@ -217,7 +217,7 @@ isags0	.karg	bool.prim.u
 		.case	false
 			.enter	parser.fail	rune.t	gsdl.ags.dataitem.t
 		.case	true
-f			.alloc	_gsdl.ags.dataitem.parser_string.p_f_c
+f			.closure	_gsdl.ags.dataitem.parser_string.p_f_c
 pos.get			.apply	parser.pos.get	rune.t
 string.p			.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.dataitem.parser_string.p_string.re
 s.p3			.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.stringliteral	gsdl.ags.syntax.whitespace
