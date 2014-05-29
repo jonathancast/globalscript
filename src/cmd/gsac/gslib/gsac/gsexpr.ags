@@ -2269,12 +2269,12 @@ _gsac.gsexpr.generator.imp.compile_undef_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
+_gsac.gsexpr.generator.imp.compile_res.ty	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 either.t	.tygvar	-- Temp
-_gsac.gsexpr.generator.imp.compile_res.ty	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
 gsdl.ags.codeitem.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
-gsdl.ags.dataitem.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
 gsdl.var.t	.tygvar	-- Temp
@@ -2283,6 +2283,7 @@ ordered.set.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar	 -- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
+diff.list.nil	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -2292,7 +2293,7 @@ err		.fkarg	0	string.t
 ty.r		.fkarg	0	_gsac.gstype.compileToApp_res.ty
 cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
-ds			.undefined	diff.list.t	gsdl.ags.dataitem.t
+ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 r			.undefined	_gsac.gsexpr.generator.imp.compile_res_res.ty
 tyem			.undefined	ordered.set.t	gsdl.var.t
