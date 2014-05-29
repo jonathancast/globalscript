@@ -423,6 +423,7 @@ The contents of a \stringcode{.ubcasecont} code item will be:
 \end{itemize}
 
 \section{\stringcode{.impprog}}
+\label{impprog}
 
 \begin{verbatim}
 label	.impprog	primset	primtype
@@ -1145,6 +1146,22 @@ As such, any implementation to which its primset is unknown can treat it as an e
 However, interpreters that do know the primset will reject library definitions with invalid primtype declarations in that primset,
 or with incorrect kinds on known primtypes.
 
+\subsection{\stringcode{.tyimpprim}}
+
+\begin{verbatim}
+ty	.tyimpprim	ps	pn	ki
+\end{verbatim}
+
+This declares \stringcode{ty} as a name for the imperative primtype \stringcode{pn} from primset \stringcode{ps}, of kind \stringcode{ki} (see section \ref{kinds}).
+
+An `imperative' primitive type is an introduction primtype with the special syntax \stringcode{.impprog} (see section \ref{impprog})
+(or \<\hskwd{for} @m x \gets e_0. e_1\> at the Core level),
+which allows for the creation and execution of sequential-execution block statements.
+However, any implementation to which its primset is unknown can still treat it as a singleton type.\future{We plan to add a special syntax for unit, as well, which \emph{can} be branched on;
+at that point, \stringcode{m $\alpha$} will need to be treated as $1 + \alpha$.}
+However, interpreters that do know the primset will reject library definitions with invalid primtype declarations in that primset,
+or with incorrect kinds on known primtypes.
+
 \chapter{Notes on the Type System (Semi-Obsolete)}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -1242,29 +1259,7 @@ Interpolations aren't supported inside classes yet but they will be.
 long
 gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    if (gssymeq(parsedline->directive, gssymtypedirective, ".tyimpprim")) {
-        if (numfields < 2 + 1)
-            gsfatal("%s:%d: Mising primitive group name", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);
-        if (numfields < 2 + 2)
-            gsfatal("%s:%d: Missing primitive type relative name", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2 + 1]);
-        if (numfields < 2 + 3)
-            gsfatal("%s:%d: Missing kind on primitive type", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
-        return 0;
-    } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tyelimprim")) {
-        if (numfields < 2 + 1)
-            gsfatal("%s:%d: Mising primitive group name", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);
-        if (numfields < 2 + 2)
-            gsfatal("%s:%d: Missing primitive type relative name", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2 + 1]);
-        if (numfields < 2 + 3)
-            gsfatal("%s:%d: Missing kind on primitive type", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
-        return 0;
-    } else if (gssymeq(parsedline->directive, gssymtypedirective, ".tyabstract")) {
+    if (gssymeq(parsedline->directive, gssymtypedirective, ".tyabstract")) {
         if (numfields < 2 + 1)
             gsfatal("%s:%d: Missing kind on .tyabstract", pos->real_filename, pos->real_lineno);
         parsedline->arguments[0] = gsintern_string(gssymkindexpr, fields[2 + 0]);
