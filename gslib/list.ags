@@ -155,8 +155,7 @@ _list.foldr1_k2	.subcode
 list.t.out	.cogvar
 α	.tyfv	*
 f	.fv	_list.foldr1_ft	α
-t	.tylet	list.prim.u	α
-xn0	.karg	t
+xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
 x0		.fkarg	0	α
