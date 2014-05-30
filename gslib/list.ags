@@ -179,7 +179,7 @@ xn1_0	.karg	list.prim.u	α
 	.analyze	xn1_0	:	nil
 		.case	:
 x1		.fkarg	0	α
-xn2		.fkarg	1	list.t	 α
+xn2		.fkarg	1	list.t	α
 y			.closure	_list.foldr1_rec
 			.app	x0	y
 			.enter	f
