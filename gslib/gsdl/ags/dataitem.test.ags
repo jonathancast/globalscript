@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -175,7 +175,7 @@ bool.false	.gvar
 list.nil	.gvar
 datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
 nil	.apply	list.nil	rune.t
-k	.alloc	_test.parse.missing.gsdata.segment_k_c
+k	.closure	_test.parse.missing.gsdata.segment_k_c
 ds	.apply	gsdl.ags.dataitem.segment.parser	|	bool.false
 test	.apply	parser.test.assert.passes	rune.t	datasegment_ty	|	parser.rune.advance	rune.print	ds	nil	k
 	.app	_test.parse.missing.gsdata.segment_label	test
@@ -216,7 +216,7 @@ gsdl.ags.dataitem.segment.parser	.gvar
 bool.false	.gvar
 _test.parse.empty.gsdata.segment_input	.gvar
 datasegment_ty	.tylet	list.t	gsdl.ags.dataitem.t
-k	.alloc	_test.parse.empty.gsdata.segment_k_c
+k	.closure	_test.parse.empty.gsdata.segment_k_c
 ds	.apply	gsdl.ags.dataitem.segment.parser	|	bool.false
 test	.apply	parser.test.assert.passes	rune.t	datasegment_ty	|	parser.rune.advance	rune.print	ds	_test.parse.empty.gsdata.segment_input	k
 	.app	_test.parse.empty.gsdata.segment_label	test
@@ -255,7 +255,7 @@ rune.print	.gvar
 gsdl.ags.dataitem.parser	.gvar
 bool.false	.gvar
 _test.parse.closure_input	.gvar
-k	.alloc	_test.parse.closure_k_c
+k	.closure	_test.parse.closure_k_c
 ds	.apply	gsdl.ags.dataitem.parser	|	bool.false
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.advance	rune.print	ds	_test.parse.closure_input	k
 	.app	_test.parse.closure_label	test
@@ -296,7 +296,7 @@ rune.print	.gvar
 gsdl.ags.dataitem.parser	.gvar
 bool.false	.gvar
 _test.parse.closure.nolabel_input	.gvar
-k	.alloc	_test.parse.closure.nolabel_k_c
+k	.closure	_test.parse.closure.nolabel_k_c
 di	.apply	gsdl.ags.dataitem.parser	|	bool.false
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.advance	rune.print	di	_test.parse.closure.nolabel_input	k
 	.app	_test.parse.closure.nolabel_label	test
@@ -334,7 +334,7 @@ rune.print	.gvar
 gsdl.ags.dataitem.parser	.gvar
 bool.false	.gvar
 _test.parse.closure.typesig_input	.gvar
-k	.alloc	_test.parse.closure.typesig_k_c
+k	.closure	_test.parse.closure.typesig_k_c
 ds	.apply	gsdl.ags.dataitem.parser	|	bool.false
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.advance	rune.print	ds	_test.parse.closure.typesig_input	k
 	.app	_test.parse.closure.typesig_label	test
@@ -374,7 +374,7 @@ rune.print	.gvar
 gsdl.ags.dataitem.parser	.gvar
 bool.true	.gvar
 _test.parse.list_input	.gvar
-k	.alloc	_test.parse.list_k_c
+k	.closure	_test.parse.list_k_c
 ds	.apply	gsdl.ags.dataitem.parser	|	bool.true
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.dataitem.t	|	parser.rune.advance	rune.print	ds	_test.parse.list_input	k
 	.app	_test.parse.list_label	test

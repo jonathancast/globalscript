@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -143,7 +143,7 @@ rune.print	.gvar
 gsdl.ags.typeitem.segment.parser	.gvar
 _test.parse_segment.empty_input	.gvar
 typesegment_ty	.tylet	list.t	gsdl.ags.typeitem.t
-k	.alloc	_test.parse_segment.empty_k_c
+k	.closure	_test.parse_segment.empty_k_c
 test	.apply	parser.test.assert.passes	rune.t	typesegment_ty	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.segment.parser	_test.parse_segment.empty_input	k
 	.app	_test.parse_segment.empty_label	test
 	.enter	test.property.label
@@ -178,7 +178,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.gskind.parser	.gvar
 _test.parse.kind.u_input	.gvar
-k	.alloc	_test.parse.kind.u_k_c
+k	.closure	_test.parse.kind.u_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.gskind.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.gskind.parser	_test.parse.kind.u_input	k
 	.app	_test.parse.kind.u_label	test
 	.enter	test.property.label
@@ -202,7 +202,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.gskind.parser	.gvar
 _test.parse.kind.unk_input	.gvar
-k	.alloc	_test.parse.kind.unk_k_c
+k	.closure	_test.parse.kind.unk_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.gskind.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.gskind.parser	_test.parse.kind.unk_input	k
 	.app	_test.parse.kind.unk_label	test
 	.enter	test.property.label
@@ -226,7 +226,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.gskind.parser	.gvar
 _test.parse.kind.exp_input	.gvar
-k	.alloc	_test.parse.kind.exp_k_c
+k	.closure	_test.parse.kind.exp_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.gskind.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.gskind.parser	_test.parse.kind.exp_input	k
 	.app	_test.parse.kind.exp_label	test
 	.enter	test.property.label
@@ -293,7 +293,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
 _test.parse_tyabstract_input	.gvar
-k	.alloc	_test.parse_tyabstract_k_c
+k	.closure	_test.parse_tyabstract_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyabstract_input	k
 	.app	_test.parse_tyabstract_label	test
 	.enter	test.property.label
@@ -343,7 +343,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
 _test.parse_tyexpr_input	.gvar
-k	.alloc	_test.parse_tyexpr_k_c
+k	.closure	_test.parse_tyexpr_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyexpr_input	k
 	.app	_test.parse_tyexpr_label	test
 	.enter	test.property.label
@@ -376,7 +376,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
 _test.parse_tyexpr.tylet_input	.gvar
-k	.alloc	_test.parse_tyexpr.tylet_k_c
+k	.closure	_test.parse_tyexpr.tylet_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyexpr.tylet_input	k
 	.app	_test.parse_tyexpr.tylet_label	test
 	.enter	test.property.label
@@ -400,7 +400,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
 _test.parse_tyexpr.tyforall_input	.gvar
-k	.alloc	_test.parse_tyexpr.tyforall_k_c
+k	.closure	_test.parse_tyexpr.tyforall_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyexpr.tyforall_input	k
 	.app	_test.parse_tyexpr.tyforall_label	test
 	.enter	test.property.label
@@ -424,7 +424,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.expr.parser	.gvar
 _test.parse_tyexpr.tyfun_input	.gvar
-k	.alloc	_test.parse_tyexpr.tyfun_k_c
+k	.closure	_test.parse_tyexpr.tyfun_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.expr.parser	_test.parse_tyexpr.tyfun_input	k
 	.app	_test.parse_tyexpr.tyfun_label	test
 	.enter	test.property.label
@@ -448,7 +448,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.expr.parser	.gvar
 _test.parse_tyexpr.typroduct_input	.gvar
-k	.alloc	_test.parse_tyexpr.typroduct_k_c
+k	.closure	_test.parse_tyexpr.typroduct_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.expr.parser	_test.parse_tyexpr.typroduct_input	k
 	.app	_test.parse_tyexpr.typroduct_label	test
 	.enter	test.property.label
@@ -472,7 +472,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.expr.parser	.gvar
 _test.parse_tyexpr.tyubsum_input	.gvar
-k	.alloc	_test.parse_tyexpr.tyubsum_k_c
+k	.closure	_test.parse_tyexpr.tyubsum_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.expr.parser	_test.parse_tyexpr.tyubsum_input	k
 	.app	_test.parse_tyexpr.tyubsum_label	test
 	.enter	test.property.label
@@ -496,7 +496,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
 _test.parse_tydefinedprim_input	.gvar
-k	.alloc	_test.parse_tydefinedprim_k_c
+k	.closure	_test.parse_tydefinedprim_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tydefinedprim_input	k
 	.app	_test.parse_tydefinedprim_label	test
 	.enter	test.property.label
@@ -529,7 +529,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
 _test.parse_tyelimprim_input	.gvar
-k	.alloc	_test.parse_tyelimprim_k_c
+k	.closure	_test.parse_tyelimprim_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyelimprim_input	k
 	.app	_test.parse_tyelimprim_label	test
 	.enter	test.property.label
@@ -562,7 +562,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
 _test.parse_tyimpprim_input	.gvar
-k	.alloc	_test.parse_tyimpprim_k_c
+k	.closure	_test.parse_tyimpprim_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyimpprim_input	k
 	.app	_test.parse_tyimpprim_label	test
 	.enter	test.property.label
@@ -595,7 +595,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.typeitem.parser	.gvar
 _test.parse_tyintrprim_input	.gvar
-k	.alloc	_test.parse_tyintrprim_k_c
+k	.closure	_test.parse_tyintrprim_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.typeitem.t	|	parser.rune.advance	rune.print	gsdl.ags.typeitem.parser	_test.parse_tyintrprim_input	k
 	.app	_test.parse_tyintrprim_label	test
 	.enter	test.property.label

@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -43,7 +43,7 @@ rune.print	.gvar
 gsdl.ags.coercionitem.segment.parser	.gvar
 _test.parse_segment.empty_input	.gvar
 coercionsegment_ty	.tylet	list.t	gsdl.ags.coercionitem.t
-k	.alloc	_test.parse_segment.empty_k_c
+k	.closure	_test.parse_segment.empty_k_c
 test	.apply	parser.test.assert.passes	rune.t	coercionsegment_ty	|	parser.rune.advance	rune.print	gsdl.ags.coercionitem.segment.parser	_test.parse_segment.empty_input	k
 	.app	_test.parse_segment.empty_label	test
 	.enter	test.property.label
@@ -78,7 +78,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.coercionitem.parser	.gvar
 _test.parse_tycoercion.tydefinition_input	.gvar
-k	.alloc	_test.parse_tycoercion.tydefinition_k_c
+k	.closure	_test.parse_tycoercion.tydefinition_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.coercionitem.t	|	parser.rune.advance	rune.print	gsdl.ags.coercionitem.parser	_test.parse_tycoercion.tydefinition_input	k
 	.app	_test.parse_tycoercion.tydefinition_label	test
 	.enter	test.property.label
@@ -102,7 +102,7 @@ parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.coercionitem.parser	.gvar
 _test.parse_tycoercion.tylambda_input	.gvar
-k	.alloc	_test.parse_tycoercion.tylambda_k_c
+k	.closure	_test.parse_tycoercion.tylambda_k_c
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.coercionitem.t	|	parser.rune.advance	rune.print	gsdl.ags.coercionitem.parser	_test.parse_tycoercion.tylambda_input	k
 	.app	_test.parse_tycoercion.tylambda_label	test
 	.enter	test.property.label
