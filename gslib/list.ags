@@ -175,8 +175,7 @@ _list.foldr1_rec	.subcode
 f	.fv	_list.foldr1_ft	α
 x0	.fv	α
 xn1	.fv	list.t	α
-t	.tylet	list.prim.u	α
-xn1_0	.karg	t
+xn1_0	.karg	list.prim.u	α
 	.analyze	xn1_0	:	nil
 		.case	:
 x1		.fkarg	0	α
