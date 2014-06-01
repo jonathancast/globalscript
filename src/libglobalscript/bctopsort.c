@@ -149,23 +149,23 @@ static
 struct gsparsedline *
 gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtyexists, gssymtyfun, gssymoptyubsum, gssymoptyproduct, gssymoptyubproduct;
+    static gsinterned_string gssymtyforall, gssymtyexists, gssymtylift, gssymtylet, gssymtyfun, gssymtyref, gssymtysum, gssymoptyubsum, gssymoptyproduct, gssymoptyubproduct;
 
     for (;;) {
         if (
             gssymeq(p->directive, gssymtypeop, ".tygvar")
             || gssymeq(p->directive, gssymtypeop, ".tyextabstype")
             || gssymeq(p->directive, gssymtypeop, ".tylambda")
-            || gssymeq(p->directive, gssymtypeop, ".tyforall")
+            || gssymceq(p->directive, gssymtyforall, gssymtypeop, ".tyforall")
             || gssymceq(p->directive, gssymtyexists, gssymtypeop, ".tyexists")
-            || gssymeq(p->directive, gssymtypeop, ".tylift")
-            || gssymeq(p->directive, gssymtypeop, ".tylet")
+            || gssymceq(p->directive, gssymtylift, gssymtypeop, ".tylift")
+            || gssymceq(p->directive, gssymtylet, gssymtypeop, ".tylet")
             || gssymceq(p->directive, gssymtyfun, gssymtypeop, ".tyfun")
         )
             p = gsinput_next_line(ppseg, p);
         else if (
-            gssymeq(p->directive, gssymtypeop, ".tyref")
-            || gssymeq(p->directive, gssymtypeop, ".tysum")
+            gssymceq(p->directive, gssymtyref, gssymtypeop, ".tyref")
+            || gssymceq(p->directive, gssymtysum, gssymtypeop, ".tysum")
             || gssymceq(p->directive, gssymoptyubsum, gssymtypeop, ".tyubsum")
             || gssymceq(p->directive, gssymoptyproduct, gssymtypeop, ".typroduct")
             || gssymceq(p->directive, gssymoptyubproduct, gssymtypeop, ".tyubproduct")
