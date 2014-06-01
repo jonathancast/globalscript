@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -56,9 +56,9 @@ test.assert.fails	.gvar
 test.property.true	.gvar
 _test.assert.fails.true_msg	.gvar
 true	.apply	test.property.true	|	_test.assert.fails.true_msg
-k0	.alloc	_test.assert.fails.true_k0_c
+k0	.closure	_test.assert.fails.true_k0_c
 assert	.apply	test.assert.fails	|	true	k0
-k1	.alloc	_test.assert.fails.true_k1_c
+k1	.closure	_test.assert.fails.true_k1_c
 test	.apply	test.assert.fails	|	assert	k1
 	.app	_test.assert.fails.true_label	test
 	.enter	test.property.label
