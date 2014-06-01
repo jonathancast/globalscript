@@ -405,7 +405,7 @@ gsdl.ags.codeitem.karg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 _gsdl.ags.codeitem.prim.u_forcecont_decls_ty	.tygvar
 _gsdl.ags.codeitem.parser_forcecont.p_decls.p_f_c	.subcode
-parser.lift9	.gvar
+parser.lift10	.gvar
 gsdl.ags.codeitem.tygvars.parser	.gvar
 gsdl.ags.codeitem.subcodes.parser	.gvar
 gsdl.ags.codeitem.cogvars.parser	.gvar
@@ -426,8 +426,8 @@ list.alloc.ty	.tylet	list.t	gsdl.ags.codeitem.alloc.t
 f	.closure	_gsdl.ags.codeitem.parser_forcecont.p_decls.p_f_c
 gvars.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
 allocs.p	.apply	gsdl.ags.codeitem.allocs.parser	|	fs
-	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.cogvars.parser	gvars.p	gsdl.ags.codeitem.tyfvs.parser	gsdl.ags.codeitem.tylets.parser	gsdl.ags.codeitem.fvs.parser	gsdl.ags.codeitem.karg.parser	allocs.p
-	.enter	parser.lift9	rune.t	list.string.ty	list.string.ty	list.string.ty	list.gvar.ty	list.tyfv.ty	list.tylet.ty	list.fv.ty	gsdl.ags.codeitem.karg.t	list.alloc.ty	_gsdl.ags.codeitem.prim.u_forcecont_decls_ty
+	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.cogvars.parser	gvars.p	gsdl.ags.codeitem.tyfvs.parser	gsdl.ags.codeitem.tylets.parser	gsdl.ags.codeitem.fvs.parser	gsdl.ags.codeitem.tylets.parser	gsdl.ags.codeitem.karg.parser	allocs.p
+	.enter	parser.lift10	rune.t	list.string.ty	list.string.ty	list.string.ty	list.gvar.ty	list.tyfv.ty	list.tylet.ty	list.fv.ty	list.tylet.ty	gsdl.ags.codeitem.karg.t	list.alloc.ty	_gsdl.ags.codeitem.prim.u_forcecont_decls_ty
 
 _gsdl.ags.codeitem.parser_forcecont.p_decls.p_f_c	.expr
 list.t	.tygvar
@@ -443,8 +443,9 @@ scs	.larg	list.t	string.t
 cogvs	.larg	list.t	string.t
 gvs	.larg	list.t	gsdl.ags.codeitem.gvar.t
 tyfvs	.larg	list.t	gsdl.ags.codeitem.tyfv.t
-tylets	.larg	list.t	gsdl.ags.codeitem.tylet.t
+fvtylets	.larg	list.t	gsdl.ags.codeitem.tylet.t
 fvs	.larg	list.t	gsdl.ags.codeitem.fv.t
+extylets	.larg	list.t	gsdl.ags.codeitem.tylet.t
 ka	.larg	gsdl.ags.codeitem.karg.t
 as	.larg	list.t	gsdl.ags.codeitem.alloc.t
 r	.record	fvs	fvs	gvars	gvs	karg	ka	tygvars	tygvs
