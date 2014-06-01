@@ -515,8 +515,8 @@ ys	.larg	list.t	α
 _list.<>.code.cont	.forcecont
 list.t	.tygvar
 list.prim.u	.tygvar
-_list.<>.code.rec	.subcode
 list.t.in	.cogvar
+list.<>	.gvar
 α	.tyfv	*
 ys	.fv	list.t	α
 t	.tylet	list.prim.u	α
@@ -525,22 +525,13 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-ys1			.closure	_list.<>.code.rec
+ys1			.apply	list.<>	α	|	xn1	ys
 ys2			.constr	t	:	0	x0	1	ys1
 			.coerce	list.t.in	α
 			.lift
 			.yield	ys2
 		.case	nil
 			.enter	ys
-
-_list.<>.code.rec	.expr
-list.t	.tygvar
-list.<>	.gvar
-α	.tyfv	*
-xn1	.fv	list.t	α
-ys	.fv	list.t	α
-	.app	xn1	ys
-	.enter	list.<>	α
 
 -- §section §gs{list.drop}
 
