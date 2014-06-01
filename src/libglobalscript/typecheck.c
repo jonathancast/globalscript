@@ -387,7 +387,7 @@ gstypes_kind_check_simple(struct gspos pos, struct gskind *kyactual)
         case gskind_exponential:
             gsfatal("%P: Not enough arguments; kind is %s", pos, actual_name);
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_kind_check_simple(actual = %s)", pos, actual_name);
+            gsfatal(UNIMPL("%P: gstypes_kind_check_simple(actual = %s)"), pos, actual_name);
     }
 }
 
@@ -507,7 +507,7 @@ gstypes_process_type_signatures(struct gsfile_symtable *symtable, struct gsbc_it
             case gssymcoercionlable:
                 break;
             default:
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_process_data_type_signature(type = %d)", items[i].v->pos, items[i].type);
+                gsfatal(UNIMPL("%P: gstypes_process_data_type_signature(type = %d)"), items[i].v->pos, items[i].type);
         }
     }
 }
@@ -641,7 +641,7 @@ gstypes_type_check_item(struct gsfile_symtable *symtable, struct gsbc_item *item
             gstypes_type_check_coercion_item(symtable, items, types, kinds, n, i);
             return;
         default:
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_kind_check_scc(type = %d)", items[i].v->pos, items[i].type);
+            gsfatal(UNIMPL("%P: gstypes_kind_check_scc(type = %d)"), items[i].v->pos, items[i].type);
     }
 }
 
@@ -671,7 +671,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             fields[numfields].name = pdata->arguments[j];
             fields[numfields].type = gssymtable_get_data_type(symtable, pdata->arguments[j + 1]);
             if (!fields[numfields].type)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Can't find type of field value %s", pdata->pos, pdata->arguments[j + 1]->name)
+                gsfatal(UNIMPL("%P: Can't find type of field value %s"), pdata->pos, pdata->arguments[j + 1]->name)
             ;
             numfields++;
         }
@@ -801,13 +801,9 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
         gsargcheck(pdata, 0, "type");
         type = gssymtable_get_type(symtable, pdata->arguments[0]);
-        if (!type)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: couldn't find type '%s'", pdata->pos, pdata->arguments[0]->name)
-        ;
+        if (!type) gsfatal(UNIMPL("%P: couldn't find type '%s'"), pdata->pos, pdata->arguments[0]->name);
         kind = gssymtable_get_type_expr_kind(symtable, pdata->arguments[0]);
-        if (!kind)
-            gsfatal(UNIMPL("%P: couldn't find kind of '%s'"), pdata->pos, pdata->arguments[0]->name)
-        ;
+        if (!kind) gsfatal(UNIMPL("%P: couldn't find kind of '%s'"), pdata->pos, pdata->arguments[0]->name);
         gstypes_kind_check_fail(pdata->pos, kind, gskind_lifted_kind());
     } else if (gssymceq(pdata->directive, gssymclosure, gssymdatadirective, ".closure")) {
         struct gsbc_code_item_type *code_type;
