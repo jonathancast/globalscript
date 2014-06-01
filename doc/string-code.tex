@@ -1105,6 +1105,15 @@ This defines a type synonym \stringcode{ty}, of kind \stringcode{ki} if that is 
 The arity of the synonym is determined by the number of \stringcode{.tylambda} declarations following the \stringcode{.tyexpr},
 and the definition is given by the type expression following the \stringcode{.tyexpr} (see section \ref{type_ops}).
 
+\subsection{\stringcode{.tyabstract}}
+
+\begin{verbatim}
+ty	.tyabstract	ki
+\end{verbatim}
+
+This defines a type constant \stringcode{ty} of kind \stringcode{ki} (see section \ref{kinds}),
+defined by the type expression following the \stringcode{.tyabstract} (see section \ref{type_ops}).
+
 \subsection{\stringcode{.tydefinedprim}}
 
 \begin{verbatim}
@@ -1256,29 +1265,6 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-long
-gsparse_type_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
-{
-    if (gssymeq(parsedline->directive, gssymtypedirective, ".tyabstract")) {
-        if (numfields < 2 + 1)
-            gsfatal("%s:%d: Missing kind on .tyabstract", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[0] = gsintern_string(gssymkindexpr, fields[2 + 0]);
-        if (numfields > 2 + 1)
-            gsfatal("%s:%d: Too many arguments to .tyabstract", pos->real_filename, pos->real_lineno);
-        return gsparse_type_ops(pos, parsedfile, parsedline, chan, line, fields);
-    } else {
-        gsfatal(UNIMPL("%s:%d: Unimplemented type directive %s"), pos->real_filename, pos->real_lineno, fields[1]);
-    }
-
-    gsfatal("%s:%d: gsparse_type_item next", __FILE__, __LINE__);
-
-    return -1;
-}
-
-static int gsparse_type_global_var_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
-static int gsparse_type_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
-
-static
 long
 gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
