@@ -6,7 +6,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_nil.eq.nil	_test_singleton.eq.singleton _test_singleton.eq.nil	_test_nil.eq.singleton	_test_compare.singleton.singleton	_test_fmtgs.nil	_test_map.nil	_test_map.:	_test_reverse.nil	_test_reverse.cons
+_ep_tests	.list	test.property.t	_test_nil.eq.nil	_test_singleton.eq.singleton _test_singleton.eq.nil	_test_nil.eq.singleton	_test_compare.singleton.singleton	_test_fmtgs.nil	_test_map.nil	_test_map.:	_test_reverse.nil	_test_reverse.cons
 
 _test_nil.eq.nil	.closure	_test_nil.eq.nil_c
 _test_nil.eq.nil_label	.string	nil\s≡\snil
@@ -59,8 +59,8 @@ _fixture_list.bool.fmtgs	.closure	_fixture.list.bool.fmtgs_c
 
 _ep_c	.expr
 test.all	.gvar
-_tests	.gvar
-	.app	_tests
+_ep_tests	.gvar
+	.app	_ep_tests
 	.enter	test.all
 
 -- §section §gs{nil ≡ nil}
