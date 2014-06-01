@@ -520,18 +520,18 @@ list.t.in	.cogvar
 α	.tyfv	*
 ys	.fv	list.t	α
 t	.tylet	list.prim.u	α
-xn0	.karg	t
+xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
-	.case	:
-x0	.fkarg	0	α
-xn1	.fkarg	1	list.t	α
-ys1	.closure	_list.<>.code.rec
-ys2	.constr	t	:	0	x0	1	ys1
-	.coerce	list.t.in	α
-	.lift
-	.yield	ys2
-	.case	nil
-	.enter	ys
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+ys1			.closure	_list.<>.code.rec
+ys2			.constr	t	:	0	x0	1	ys1
+			.coerce	list.t.in	α
+			.lift
+			.yield	ys2
+		.case	nil
+			.enter	ys
 
 _list.<>.code.rec	.expr
 list.t	.tygvar
