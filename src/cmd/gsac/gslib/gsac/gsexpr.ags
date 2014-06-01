@@ -2177,7 +2177,7 @@ ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 gs		.fkarg	2	list.t	gsdl.ags.codeitem.impgen.t
 b		.fkarg	3	gsdl.ags.codeitem.impbody.t
-ds			.lrecord	args	r0.args	tygvars	ds.tygvs	|	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
+ds			.lrecord	args	r0.args	gens	gs	tygvars	ds.tygvs	|	_gsdl.ags.codeitem.prim.u_impprog_decls_ty
 			.app	pos	x	ps	pn	ds	b
 			.yield	gsdl.ags.codeitem.impprog
 	-- > :: gsdl.ags.codeitem.t
