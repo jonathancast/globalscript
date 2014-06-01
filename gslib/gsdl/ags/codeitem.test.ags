@@ -181,7 +181,11 @@ _test.parse_ubcasecont_input	.string	_rune.≡.k1.0\t.ubcasecont\n\t.enter\tbool
 
 _test.parse_gvars	.closure	_test.parse_gvars_c
 _test.parse_gvars_label	.string	Global\sValue\sVariable\sDeclarations
-_tests.parse_gvars	.list	test.property.t
+_tests.parse_gvars	.list	test.property.t	_test.parse_gvars_minus.gvar
+
+_test.parse_gvars_minus.gvar	.closure	_test.parse_gvars_minus.gvar_c
+_test.parse_gvars_minus.gvar_label	.string	qq{natural.prim.-\\t.gvar\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
+_test.parse_gvars_minus.gvar_input	.string	natural.prim.-\t.gvar\n
 
 -- §subsection Expression Generators
 
@@ -757,7 +761,7 @@ list.fmtgs.byDefault	.gvar
 gsdl.ags.codeitem.gvar.fmtgs	.gvar
 list.singleton	.gvar
 gsdl.ags.codeitem.gvar.gvar	.gvar
-_test.parse_expr.gvar_k_gvars.expected.0_bar.s	.gvar
+_fixtures_bar.v	.gvar
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 ci0	.karg	gsdl.ags.codeitem.prim.u
 	.danalyze	ci0	expr
@@ -772,7 +776,7 @@ e		.fkarg	3	gsdl.ags.codeitem.expr.t
 gvars			.lfield	gvars	ds
 gvars.≡			.apply	list.≡	gsdl.ags.codeitem.gvar.t	|	gsdl.ags.codeitem.gvar.≡
 gvars.fmtgs			.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.gvar.t	|	gsdl.ags.codeitem.gvar.fmtgs
-expected.0			.apply	gsdl.ags.codeitem.gvar.gvar	|	pos	_test.parse_expr.gvar_k_gvars.expected.0_bar.s
+expected.0			.apply	gsdl.ags.codeitem.gvar.gvar	|	pos	_fixtures_bar.v
 expected			.apply	list.singleton	gsdl.ags.codeitem.gvar.t	|	expected.0
 			.app	gvars.≡	gvars.fmtgs	gvars	expected
 			.enter	test.assert.eq	list.gvar.ty
@@ -1524,6 +1528,36 @@ _tests.parse_gvars	.gvar
 t	.apply	test.all	|	_tests.parse_gvars
 	.app	_test.parse_gvars_label	t
 	.enter	test.property.label
+
+_test.parse_gvars_minus.gvar_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_test.parse_gvars_minus.gvar_k_c	.subcode
+test.property.label	.gvar
+_test.parse_gvars_minus.gvar_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.gvars.parser	.gvar
+bool.false	.gvar
+bool.true	.gvar
+_test.parse_gvars_minus.gvar_input	.gvar
+list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
+k	.closure	_test.parse_gvars_minus.gvar_k_c
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.true	closure	bool.true	|	gsdl.ags.syntax.features.t
+gvars.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	gvars.p	_test.parse_gvars_minus.gvar_input	k
+	.app	_test.parse_gvars_minus.gvar_label	test
+	.enter	test.property.label
+
+_test.parse_gvars_minus.gvar_k_c	.expr
+list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+test.true	.gvar
+err	.larg	list.t	gsdl.ags.codeitem.gvar.t
+	.enter	test.true
 	
 -- §subsection Expression Generators
 
@@ -2403,7 +2437,7 @@ gsdl.ags.codeitem.expr.enter	.gvar
 _test.eq_codeitem.expr.diff.gvars_bar.s	.gvar
 list.:	.gvar
 gsdl.ags.codeitem.gvar.gvar	.gvar
-_test.eq_codeitem.expr.diff.gvars_foo.s	.gvar
+_fixtures_foo.v	.gvar
 pos	.undefined	gsdl.sourcepos.t
 args.nil	.apply	list.nil	gsdl.ags.codeitem.arg.t
 allocs.nil	.apply	list.nil	gsdl.ags.codeitem.alloc.t
@@ -2413,7 +2447,7 @@ tygvs.nil	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 decls0	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars.nil	subcodes	nil	tygvars	tygvs.nil	|	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 exp	.apply	gsdl.ags.codeitem.expr.enter	|	pos	_test.eq_codeitem.expr.diff.gvars_bar.s	nil
 ci0	.apply	gsdl.ags.codeitem.expr	|	pos	_fixtures_foo.c.v decls0	exp
-gvar0	.apply	gsdl.ags.codeitem.gvar.gvar	|	pos	_test.eq_codeitem.expr.diff.gvars_foo.s
+gvar0	.apply	gsdl.ags.codeitem.gvar.gvar	|	pos	_fixtures_foo.v
 gvars1	.apply	list.:	gsdl.ags.codeitem.gvar.t	|	gvar0	gvars.nil
 decls1	.lrecord	allocs	allocs.nil	args	args.nil	cogvars	nil	gvars	gvars1	subcodes	nil	tygvars	tygvs.nil	|	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 ci1	.apply	gsdl.ags.codeitem.expr	|	pos	_fixtures_foo.c.v decls1	exp

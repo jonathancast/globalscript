@@ -1283,12 +1283,13 @@ p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.gvar.t	|	gvar.p	rune.p
 
 _gsdl.ags.codeitem.gvars.parser_gvar.p_c	.expr
 rune.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
+string.t	.tygvar
 _gsdl.ags.codeitem.gvars.parser_gvar.p_f_c	.subcode
 parser.map	.gvar
 parser.<*	.gvar
-gsdl.ags.syntax.id	.gvar
+gsdl.var.parser	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -1299,15 +1300,15 @@ f	.closure	_gsdl.ags.codeitem.gvars.parser_gvar.p_f_c
 gvar.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.gvars.parser_gvar.p_gvar.re
 p2	.apply	parser.*>	rune.t	string.t	string.t	|	gvar.p	gsdl.ags.syntax.whitespace
 p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	p2
-p	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	p1
+p	.apply	parser.<*	rune.t	gsdl.var.t	string.t	|	gsdl.var.parser	p1
 	.app	f	p
-	.enter	parser.map	rune.t	string.t	gsdl.ags.codeitem.gvar.t
+	.enter	parser.map	rune.t	gsdl.var.t	gsdl.ags.codeitem.gvar.t
 
 _gsdl.ags.codeitem.gvars.parser_gvar.p_f_c	.expr
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar	-- Temp
 gsdl.ags.codeitem.gvar.gvar	.gvar
-nm	.larg	string.t
+nm	.larg	gsdl.var.t
 pos	.undefined	gsdl.sourcepos.t
 	.app	pos	nm
 	.enter	gsdl.ags.codeitem.gvar.gvar
@@ -1378,23 +1379,23 @@ gv0.0	.karg	gsdl.ags.codeitem.gvar.prim.u
 _gsdl.ags.codeitem.gvar.≡_k1	.forcecont
 gsdl.ags.codeitem.gvar.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 bool.t	.tygvar	-- Temp
-string.≡	.gvar
+gsdl.var.≡	.gvar
 gv0.0	.fv	gsdl.ags.codeitem.gvar.prim.u
 gv1.0	.karg	gsdl.ags.codeitem.gvar.prim.u
 	.analyze	gv0.0	gvar
 		.case	gvar
 pos0		.fkarg	0	gsdl.sourcepos.t
-nm0		.fkarg	1	string.t
+nm0		.fkarg	1	gsdl.var.t
 			.danalyze	gv1.0	gvar
 				.default
 					.undef	bool.t
 				.case	gvar
 pos1				.fkarg	0	gsdl.sourcepos.t
-nm1				.fkarg	1	string.t
+nm1				.fkarg	1	gsdl.var.t
 					.app	nm0	nm1
-					.enter	string.≡
+					.enter	gsdl.var.≡
 	-- > :: bool.t
 
 -- §section §gs{gsdl.ags.codeitem.gvar.fmtgs}
@@ -1409,11 +1410,11 @@ gv	.larg	gsdl.ags.codeitem.gvar.t
 
 _gsdl.ags.codeitem.gvar.gvar_c	.expr
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.gvar.prim.u	.tygvar
 gsdl.ags.codeitem.gvar.t.in	.cogvar
 pos	.larg	gsdl.sourcepos.t
-nm	.larg	string.t
+nm	.larg	gsdl.var.t
 res	.constr	gsdl.ags.codeitem.gvar.prim.u	gvar	0	pos	1	nm
 	.coerce	gsdl.ags.codeitem.gvar.t.in
 	.lift
@@ -3872,8 +3873,8 @@ _gsdl.ags.codeitem.gvar.prim.u_gvar_ty	.tygvar
 
 _gsdl.ags.codeitem.gvar.prim.u_gvar_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
-	.tyubproduct	0	gsdl.sourcepos.t	1	string.t
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t
 
 -- §section §gs{gsdl.ags.codeitem.fv.t}
 
