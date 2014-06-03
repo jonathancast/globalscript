@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -125,7 +125,7 @@ _ibio.lex.char_res_c	.subcode
 s	.tyarg	*
 eq	.larg	_ibio.lex.receiver.char_eq_ty	s
 c	.larg	s
-res	.alloc	_ibio.lex.char_res_c
+res	.closure	_ibio.lex.char_res_c
 	.enter	res
 
 _ibio.lex.char_res_c	.expr
@@ -222,7 +222,7 @@ ibio.lex.lexeme.t	.tygvar
 _ibio.lex.pred_res_c	.subcode
 s	.tyarg	*
 pred	.larg	_ibio.lex.receiver.pred_pred_ty	s
-res	.alloc	_ibio.lex.pred_res_c
+res	.closure	_ibio.lex.pred_res_c
 	.enter	res
 
 _ibio.lex.pred_res_c	.expr
@@ -314,7 +314,7 @@ _ibio.lex.lexeme.unit_res_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
 x	.larg	α
-res	.alloc	_ibio.lex.lexeme.unit_res_c
+res	.closure	_ibio.lex.lexeme.unit_res_c
 	.enter	res
 
 _ibio.lex.lexeme.unit_res_c	.expr
@@ -342,7 +342,7 @@ s	.tyarg	*
 f_ty	.tylet	_ibio.lex.lexeme.<*>_f_ty	α	β
 lf	.larg	ibio.lex.lexeme.t	s	f_ty
 lx	.larg	ibio.lex.lexeme.t	s	α
-res	.alloc	_ibio.lex.lexeme.<*>_res_c
+res	.closure	_ibio.lex.lexeme.<*>_res_c
 	.enter	res
 
 _ibio.lex.lexeme.<*>_res_c	.expr
@@ -361,7 +361,7 @@ lx	.fv	ibio.lex.lexeme.t	s	α
 ek	.larg	γ
 sk	.larg	_ibio.lex.lexeme.t_k.ty	s	β	γ
 ip	.larg	ibio.prim.iptr.t	s
-sk1	.alloc	_ibio.lex.lexeme.<*>_sk1_c
+sk1	.closure	_ibio.lex.lexeme.<*>_sk1_c
 	.app	ek	sk1	ip
 	.enter	lf	γ
 
@@ -380,7 +380,7 @@ sk	.fv	_ibio.lex.lexeme.t_k.ty	s	β	γ
 ek	.fv	γ
 f	.larg	_ibio.lex.lexeme.<*>_f_ty	α	β
 ip1	.larg	ibio.prim.iptr.t	s
-sk2	.alloc	_ibio.lex.lexeme.<*>_sk2_c
+sk2	.closure	_ibio.lex.lexeme.<*>_sk2_c
 	.app	ek	sk2	ip1
 	.enter	lx	γ
 
@@ -409,7 +409,7 @@ s	.tyarg	*
 α	.tyarg	*
 l0	.larg	ibio.lex.lexeme.t	s	α
 l1	.larg	ibio.lex.lexeme.t	s	α
-res	.alloc	_ibio.lex.<|>_res_c
+res	.closure	_ibio.lex.<|>_res_c
 	.enter	res
 
 _ibio.lex.<|>_res_c	.expr
@@ -443,8 +443,8 @@ res.ty	.tylet	list.t	α
 r.ty	.tylet	_ibio.lex.lexer.t_res.t	s	res.ty
 l	.larg	ibio.lex.lexeme.t	s	α
 ip	.larg	ibio.prim.iptr.t	s
-nilk	.alloc	_ibio.lex.many_nilk_c
-consk	.alloc	_ibio.lex.many_consk_c
+nilk	.closure	_ibio.lex.many_nilk_c
+consk	.closure	_ibio.lex.many_consk_c
 	.app	nilk	consk	ip
 	.enter	l	r.ty
 
@@ -472,7 +472,7 @@ l	.fv	ibio.lex.lexeme.t	s	α
 x	.larg	α
 ip1	.larg	ibio.prim.iptr.t	s
 r0	.apply	ibio.lex.many	s	α	|	l	ip1
-xn0	.alloc	_ibio.lex.many_consk_xn0_c
+xn0	.closure	_ibio.lex.many_consk_xn0_c
 xn1	.apply	list.:	α	|	x	xn0
 ip2	.undefined	ibio.prim.iptr.t	s
 r	.record	0	xn1	1	ip2
@@ -513,7 +513,7 @@ s	.tyarg	*
 rec	.larg	ibio.lex.receiver.t	s	α
 i	.larg	ibio.prim.iport	s
 ip	.bind	_ibio.lex.receive_ip_c
-x	.alloc	_ibio.lex.receive_x_c
+x	.closure	_ibio.lex.receive_x_c
 	.body	_ibio.lex.receive_body_c
 
 _ibio.lex.receive_ip_c	.expr
@@ -602,7 +602,7 @@ ibio.lex.pred	.gvar
 s	.tyarg	*
 pred	.larg	_ibio.lex.receiver.pred_pred_ty	s
 lex	.apply	ibio.lex.pred	s	|	pred
-acc	.alloc	_ibio.lex.receiver.pred_acc_c
+acc	.closure	_ibio.lex.receiver.pred_acc_c
 res	.record	0	lex	1	acc
 	.lift
 	.yield	res
@@ -617,7 +617,7 @@ ibio.acceptor.prim.symbol.bind	.gvar
 s	.tyfv	*
 pred	.fv	_ibio.lex.receiver.pred_pred_ty	s
 k	.larg	ibio.acceptor.prim.kt	s	s	record.empty
-k1	.alloc	_ibio.lex.receiver.pred_acc_k1_c
+k1	.closure	_ibio.lex.receiver.pred_acc_k1_c
 eofk	.undefined	ibio.acceptor.prim.t	s	record.empty
 	.app	k1	eofk
 	.enter	ibio.acceptor.prim.symbol.bind	s	record.empty
@@ -666,7 +666,7 @@ s	.tyarg	*
 eq	.larg	_ibio.lex.receiver.char_eq_ty	s
 c	.larg	s
 lex	.apply	ibio.lex.char	s	|	eq	c
-acc	.alloc	_ibio.lex.receiver.char_acc_c
+acc	.closure	_ibio.lex.receiver.char_acc_c
 res	.record	0	lex	1	acc
 	.lift
 	.yield	res
@@ -682,7 +682,7 @@ s	.tyfv	*
 eq	.fv	_ibio.lex.receiver.char_eq_ty	s
 c	.fv	s
 k	.larg	ibio.acceptor.prim.kt	s	s	record.empty
-sym.k1	.alloc	_ibio.lex.receiver.char_acc_sym.k1_c
+sym.k1	.closure	_ibio.lex.receiver.char_acc_sym.k1_c
 eof.k1	.apply	ibio.acceptor.prim.fail	s	record.empty
 	.app	sym.k1	eof.k1
 	.enter	ibio.acceptor.prim.symbol.bind	s	record.empty
@@ -760,7 +760,7 @@ s	.tyarg	*
 α	.tyarg	*
 x	.larg	α
 lex	.apply	ibio.lex.lexeme.unit	s	α	|	x
-acc	.alloc	_ibio.lex.receiver.lexeme.unit_acc_c
+acc	.closure	_ibio.lex.receiver.lexeme.unit_acc_c
 r	.record	0	lex	1	acc
 	.lift
 	.yield	r
@@ -796,7 +796,7 @@ lx	.lfield	0	rx
 lex	.apply	ibio.lex.lexeme.<*>	s	α	β	|	lf	lx
 af	.lfield	1	rf
 ax	.lfield	1	rx
-acc	.alloc	_ibio.lex.receiver.lexeme.<*>_acc_c
+acc	.closure	_ibio.lex.receiver.lexeme.<*>_acc_c
 res	.record	0	lex	1	acc
 	.lift
 	.yield	res
@@ -814,7 +814,7 @@ f.ty	.tylet	_ibio.lex.lexeme.<*>_f_ty	α	β
 af	.fv	ibio.acceptor.prim.cont.t	s	f.ty	record.empty
 ax	.fv	ibio.acceptor.prim.cont.t	s	α	record.empty
 k	.larg	ibio.acceptor.prim.kt	s	β	record.empty
-k1	.alloc	_ibio.lex.receiver.lexeme.<*>_acc_k1_c
+k1	.closure	_ibio.lex.receiver.lexeme.<*>_acc_k1_c
 	.app	k1
 	.enter	af
 
@@ -830,7 +830,7 @@ s	.tyfv	*
 ax	.fv	ibio.acceptor.prim.cont.t	s	α	record.empty
 k	.fv	ibio.acceptor.prim.kt	s	β	record.empty
 f	.larg	_ibio.lex.lexeme.<*>_f_ty	α	β
-k2	.alloc	_ibio.lex.receiver.lexeme.<*>_acc_k2_c
+k2	.closure	_ibio.lex.receiver.lexeme.<*>_acc_k2_c
 	.app	k2
 	.enter	ax
 
@@ -884,7 +884,7 @@ r1	.larg	ibio.lex.receiver.lexeme.t	s	α
 l0	.lfield	0	r0
 l1	.lfield	0	r1
 lex	.apply	ibio.lex.<|>	s	α	|	l0	l1
-acc	.alloc	_ibio.lex.receiver.<|>_acc_c
+acc	.closure	_ibio.lex.receiver.<|>_acc_c
 res	.record	0	lex	1	acc
 	.lift
 	.yield	res

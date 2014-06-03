@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -118,7 +118,7 @@ _ibio.file.stat.prim_st_c	.subcode
 _ibio.file.stat.prim_body_c	.subcode
 fn	.larg	ibio.file.name.t
 pst	.bind	_ibio.file.stat.prim_pst_c
-st	.alloc	_ibio.file.stat.prim_st_c
+st	.closure	_ibio.file.stat.prim_st_c
 	.body	_ibio.file.stat.prim_body_c
 
 _ibio.file.stat.prim_pst_c	.expr
@@ -126,7 +126,7 @@ ibio.file.name.t	.tygvar
 _ibio.file.stat.prim_pst_s_c	.subcode
 ibio.prim.file.stat	.gvar
 fn	.fv	ibio.file.name.t
-s	.alloc	_ibio.file.stat.prim_pst_s_c
+s	.closure	_ibio.file.stat.prim_pst_s_c
 	.app	s
 	.yield	ibio.prim.file.stat
 
@@ -160,7 +160,7 @@ _ibio.file.isdir_id_c	.subcode
 _ibio.file.isdir_body_c	.subcode
 fn	.larg	ibio.file.name.t
 st	.bind	_ibio.file.isdir_st
-id	.alloc	_ibio.file.isdir_id_c
+id	.closure	_ibio.file.isdir_id_c
 	.body	_ibio.file.isdir_body_c
 
 _ibio.file.isdir_st	.expr
@@ -199,7 +199,7 @@ ibio.file.name.out	.gvar
 _ibio.file.name.components.get_worker	.gvar
 fn	.larg	ibio.file.name.t
 fn0	.apply	ibio.file.name.out	|	fn
-k	.alloc	_ibio.file.name.components.get_k_c
+k	.closure	_ibio.file.name.components.get_k_c
 	.app	fn0	k
 	.yield	_ibio.file.name.components.get_worker
 
@@ -268,11 +268,11 @@ fn1	.fv	list.t	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-k1			.alloc	_ibio.file.name.components.get_worker_:_false_k1_c
+k1			.closure	_ibio.file.name.components.get_worker_:_false_k1_c
 			.app	fn1	k1
 			.yield	_ibio.file.name.components.get_worker
 		.case	true
-k1			.alloc	_ibio.file.name.components.get_worker_:_true_k1_c
+k1			.closure	_ibio.file.name.components.get_worker_:_true_k1_c
 			.app	fn1	k1
 			.yield	_ibio.file.name.components.get_worker
 
@@ -373,7 +373,7 @@ _ibio.file.name.extension.set_id_c	.subcode
 ibio.file.name.with	.gvar
 _ibio.file.name.extension.set_worker	.gvar
 ext	.larg	list.t	rune.t
-id	.alloc	_ibio.file.name.extension.set_id_c
+id	.closure	_ibio.file.name.extension.set_id_c
 w	.apply	_ibio.file.name.extension.set_worker	|	ext	id	id
 	.app	w
 	.enter	ibio.file.name.with
@@ -448,8 +448,8 @@ b0	.karg	bool.prim.u
 			.app	c	_dot
 			.enter	rune.≡
 		.case	true	-- §gs{c ≡ r{/}}
-pre0.1			.alloc	_ibio.file.name.extension.set_worker_pre0.1_c
-id			.alloc	_ibio.file.name.extension.set_worker_id_c
+pre0.1			.closure	_ibio.file.name.extension.set_worker_pre0.1_c
+id			.closure	_ibio.file.name.extension.set_worker_id_c
 			.app	ext	pre0.1	id	s1
 			.enter	_ibio.file.name.extension.set_worker
 
@@ -470,12 +470,12 @@ s1	.fv	list.t	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false	-- §gs{c ≠ r/./}
-pre1.1			.alloc	_ibio.file.name.extension.set_worker_pre1.1_c
+pre1.1			.closure	_ibio.file.name.extension.set_worker_pre1.1_c
 			.app	ext	pre.0	pre1.1	s1
 			.enter	_ibio.file.name.extension.set_worker
 		.case	true	-- §gs{c ≡ r/./}
-pre0.1			.alloc	_ibio.file.name.extension.set_worker_pre0.1_c
-id			.alloc	_ibio.file.name.extension.set_worker_id_c
+pre0.1			.closure	_ibio.file.name.extension.set_worker_pre0.1_c
+id			.closure	_ibio.file.name.extension.set_worker_id_c
 			.app	ext	pre0.1	id	s1
 			.enter	_ibio.file.name.extension.set_worker
 
