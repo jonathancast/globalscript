@@ -149,13 +149,13 @@ static
 struct gsparsedline *
 gstype_section_skip_type_expr(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
 {
-    static gsinterned_string gssymtyforall, gssymtyexists, gssymtylift, gssymtylet, gssymtyfun, gssymtyref, gssymtysum, gssymoptyubsum, gssymoptyproduct, gssymoptyubproduct;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtylambda, gssymtyforall, gssymtyexists, gssymtylift, gssymtylet, gssymtyfun, gssymtyref, gssymtysum, gssymoptyubsum, gssymoptyproduct, gssymoptyubproduct;
 
     for (;;) {
         if (
-            gssymeq(p->directive, gssymtypeop, ".tygvar")
-            || gssymeq(p->directive, gssymtypeop, ".tyextabstype")
-            || gssymeq(p->directive, gssymtypeop, ".tylambda")
+            gssymceq(p->directive, gssymtygvar, gssymtypeop, ".tygvar")
+            || gssymceq(p->directive, gssymtyextabstype, gssymtypeop, ".tyextabstype")
+            || gssymceq(p->directive, gssymtylambda, gssymtypeop, ".tylambda")
             || gssymceq(p->directive, gssymtyforall, gssymtypeop, ".tyforall")
             || gssymceq(p->directive, gssymtyexists, gssymtypeop, ".tyexists")
             || gssymceq(p->directive, gssymtylift, gssymtypeop, ".tylift")
