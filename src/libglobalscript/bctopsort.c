@@ -140,7 +140,7 @@ gstype_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparsedlin
     } else if (gssymceq(type->directive, gssymtydefinedprim, gssymtypedirective, ".tydefinedprim")) {
         return gsinput_next_line(ppseg, type);
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstype_section_next_item(%s)", type->pos, type->directive->name);
+        gsfatal(UNIMPL("%P: gstype_section_next_item(%s)"), type->pos, type->directive->name);
     }
     return 0;
 }
@@ -188,7 +188,7 @@ gscoercion_section_next_item(struct gsparsedfile_segment **ppseg, struct gsparse
     if (gssymceq(coercion->directive, gssymtycoercion, gssymcoerciondirective, ".tycoercion")) {
         return gscoercion_section_skip_coercion_expr(ppseg, gsinput_next_line(ppseg, coercion));
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: gscoercion_section_next_item(%y)", coercion->pos, coercion->directive);
+        gsfatal(UNIMPL("%P: gscoercion_section_next_item(%y)"), coercion->pos, coercion->directive);
     }
     return 0;
 }
@@ -213,7 +213,7 @@ gscoercion_section_skip_coercion_expr(struct gsparsedfile_segment **ppseg, struc
         )
             return gsinput_next_line(ppseg, p);
         else
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: gscoercion_section_skip_coercion_expr(%y)", p->pos, p->directive);
+            gsfatal(UNIMPL("%P: gscoercion_section_skip_coercion_expr(%y)"), p->pos, p->directive);
     }
 
     return 0;

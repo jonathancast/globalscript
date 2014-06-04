@@ -243,7 +243,7 @@ gstypes_calculate_kind(struct gstype *type)
                 case gskind_lifted:
                     gsfatal_bad_type(type->pos.file, type->pos.lineno, type, "Wrong kind: Expected ^, got *");
                 default:
-                    gsfatal_unimpl(__FILE__, __LINE__, "%P: 'function' kind (node = %d)", type->pos, funkind->node);
+                    gsfatal(UNIMPL("%P: 'function' kind (node = %d)"), type->pos, funkind->node);
             }
         }
         case gstype_sum: {

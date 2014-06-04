@@ -323,7 +323,7 @@ gsprint_unboxed(gsvalue prog)
         }
         default:
             ace_down();
-            gsfatal_unimpl(__FILE__, __LINE__, "gsprint_unboxed");
+            gsfatal(UNIMPL("gsprint_unboxed"));
             return -1;
     }
 }
