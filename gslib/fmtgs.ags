@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -79,7 +79,7 @@ fs.pr	.larg	list.t	fmtgs.record.field.printer.t
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 diff.list.rune.<>	.apply	diff.list.<>	rune.t
 ds2	.apply	diff.list.fromlist	rune.t	|	_fmtgs.record_suffix.s
-fs.f	.alloc	_fmtgs.record_fs.f_c
+fs.f	.closure	_fmtgs.record_fs.f_c
 fs.ds	.apply	list.map	fmtgs.record.field.printer.t	diff.list.rune.ty	|	fs.f	fs.pr
 ds1	.apply	list.foldr	diff.list.rune.ty	diff.list.rune.ty	|	diff.list.rune.<>	ds2	fs.ds
 ds	.apply	diff.list.prepend	rune.t	|	_fmtgs.record_prefix.s	ds1

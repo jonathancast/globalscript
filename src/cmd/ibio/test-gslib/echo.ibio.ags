@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -24,7 +24,7 @@ i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry.as
-s	.alloc	_real.entry.s
+s	.closure	_real.entry.s
 	.body	_real.entry.body
 
 _real.entry.as	.expr
@@ -74,7 +74,7 @@ as0	.karg	as0.ty
 	.case	:
 a0	.fkarg	0	_string.ty
 as1	.fkarg	1	list.t	_string.ty
-s2	.alloc	_cat.args.c.1.s2
+s2	.closure	_cat.args.c.1.s2
 	.app	a0	s2
 	.enter	list.<>	rune.t
 	.case	nil
@@ -115,8 +115,8 @@ as0	.karg	as0.ty
 	.case	:
 a0	.fkarg	0	_string.ty
 as1	.fkarg	1	list.t	_string.ty
-s0	.alloc	_cat.args.w.c.1.1
-s1	.alloc	_cat.args.w.c.1.2
+s0	.closure	_cat.args.w.c.1.1
+s1	.closure	_cat.args.w.c.1.2
 s2	.constr	t	:	0	_sp	1	s1
 	.coerce	list.t.in	rune.t
 	.lift

@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -25,7 +25,7 @@ i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
-parsed.args	.alloc	_real.entry_parsed.args_c
+parsed.args	.closure	_real.entry_parsed.args_c
 	.body	_real.entry_body_c
 
 _real.entry_args_c	.expr
@@ -135,7 +135,7 @@ ibio.mapM0.prim	.gvar
 dirn	.fv	ibio.file.name.t
 o	.fv	ibio.prim.oport	rune.t
 ds	.fv	list.t	ibio.dir.t
-process.file	.alloc	_print.targets.in.dir_body_process.file_c
+process.file	.closure	_print.targets.in.dir_body_process.file_c
 	.app	process.file	ds
 	.enter	ibio.mapM0.prim	ibio.dir.t	record.empty
 

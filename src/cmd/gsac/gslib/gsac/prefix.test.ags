@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -1001,7 +1001,7 @@ _test.typecheck_gsabstype.kind_c	.expr
 _test.typecheck_gsabstype.kind_test_c	.subcode
 test.property.label	.gvar
 _test.typecheck_gsabstype.kind_label	.gvar
-test	.alloc	_test.typecheck_gsabstype.kind_test_c
+test	.closure	_test.typecheck_gsabstype.kind_test_c
 	.app	_test.typecheck_gsabstype.kind_label	test
 	.enter	test.property.label
 
@@ -1082,7 +1082,7 @@ _test.typecheck_gsabstype.defn_c	.expr
 _test.typecheck_gsabstype.defn_test_c	.subcode
 test.property.label	.gvar
 _test.typecheck_gsabstype.defn_label	.gvar
-test	.alloc	_test.typecheck_gsabstype.defn_test_c
+test	.closure	_test.typecheck_gsabstype.defn_test_c
 	.app	_test.typecheck_gsabstype.defn_label	test
 	.enter	test.property.label
 
@@ -1178,7 +1178,7 @@ _test.typecheck_gsabstype.tylambda.defn_c	.expr
 _test.typecheck_gsabstype.tylambda.defn_test_c	.subcode
 test.property.label	.gvar
 _test.typecheck_gsabstype.tylambda.defn_label	.gvar
-test	.alloc	_test.typecheck_gsabstype.tylambda.defn_test_c
+test	.closure	_test.typecheck_gsabstype.tylambda.defn_test_c
 	.app	_test.typecheck_gsabstype.tylambda.defn_label	test
 	.enter	test.property.label
 
@@ -1277,7 +1277,7 @@ _test.typecheck_elimprim_c	.expr
 _test.typecheck_elimprim_test_c	.subcode
 test.property.label	.gvar
 _test.typecheck_elimprim_label	.gvar
-test	.alloc	_test.typecheck_elimprim_test_c
+test	.closure	_test.typecheck_elimprim_test_c
 	.app	_test.typecheck_elimprim_label	test
 	.enter	test.property.label
 
@@ -1369,7 +1369,7 @@ _test.upconvert_product_c	.expr
 _test.upconvert_product_test_c	.subcode
 test.property.label	.gvar
 _test.upconvert_product_label	.gvar
-test	.alloc	_test.upconvert_product_test_c
+test	.closure	_test.upconvert_product_test_c
 	.app	_test.upconvert_product_label	test
 	.enter	test.property.label
 
@@ -1421,7 +1421,7 @@ _test.upconvert_lift_c	.expr
 _test.upconvert_lift_test_c	.subcode
 test.property.label	.gvar
 _test.upconvert_lift_label	.gvar
-test	.alloc	_test.upconvert_lift_test_c
+test	.closure	_test.upconvert_lift_test_c
 	.app	_test.upconvert_lift_label	test
 	.enter	test.property.label
 
@@ -1477,7 +1477,7 @@ _test.upconvert_fun_c	.expr
 _test.upconvert_fun_test_c	.subcode
 test.property.label	.gvar
 _test.upconvert_fun_label	.gvar
-test	.alloc	_test.upconvert_fun_test_c
+test	.closure	_test.upconvert_fun_test_c
 	.app	_test.upconvert_fun_label	test
 	.enter	test.property.label
 

@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -49,7 +49,7 @@ i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 args	.bind	_real.entry_args_c
-parsed.args	.alloc	_real.entry_parsed.args_c
+parsed.args	.closure	_real.entry_parsed.args_c
 pr1	.bind	_real.entry_pr1_c
 	.body	_real.entry_body_c
 
@@ -254,7 +254,7 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 prefixen	.larg	list.t	_prefix.t
 fn	.larg	ibio.file.name.t
-cgs.fn	.alloc	_print.deps_cgs.fn_c
+cgs.fn	.closure	_print.deps_cgs.fn_c
 cgs	.bind	_print.deps_cgs_c
 	.body	_print.deps_body_c
 
@@ -338,7 +338,7 @@ fvs0	.karg	list.prim.u	gsdl.cgs.symbol.t
 		.case	:
 fv0		.fkarg	0	gsdl.cgs.symbol.t
 fvs1		.fkarg	1	list.t	gsdl.cgs.symbol.t
-res			.alloc	_print.deps_body_w_:_res_c
+res			.closure	_print.deps_body_w_:_res_c
 			.enter	res
 		.case	nil
 			.lift
@@ -368,7 +368,7 @@ pr	.fv	list.t	_prefix.t
 ds	.fv	ordered.set.t	ibio.file.name.t
 fv0	.fv	gsdl.cgs.symbol.t
 fvs1	.fv	list.t	gsdl.cgs.symbol.t
-cs	.alloc	_print.deps_body_w_:_res_cs_c
+cs	.closure	_print.deps_body_w_:_res_cs_c
 pr1	.bind	_print.deps_body_w_:_res_pr1_c
 nds	.bind	_print.deps_body_w_:_res_nds_c
 	.body	_print.deps_body_w_:_res_body_c
@@ -460,7 +460,7 @@ p0	.karg	_prefix.prim.u
 	.analyze	p0	dir	file	loaded.dir
 		.case	dir
 dirn		.fkarg	0	ibio.file.name.t
-res			.alloc	_prefix.expand_dir_res_c
+res			.closure	_prefix.expand_dir_res_c
 			.enter	res
 		.case	file
 fn		.fkarg	0	ibio.file.name.t
@@ -795,8 +795,8 @@ ibio.prim.unit	.gvar
 res.ty	.tylet	list.t	_prefix.t	-- Temp
 dirn	.fv	ibio.file.name.t
 ds1	.fv	list.t	ibio.dir.t
-topr	.alloc	_prefix.readdir_body_topr_c
-pred	.alloc	_prefix.readdir_body_pred_c
+topr	.closure	_prefix.readdir_body_topr_c
+pred	.closure	_prefix.readdir_body_pred_c
 ds	.apply	list.filter	ibio.dir.t	|	pred	ds1
 res	.apply	list.map	ibio.dir.t	_prefix.t	|	topr	ds
 	.lift
@@ -1113,7 +1113,7 @@ fn	.fv	ibio.file.name.t
 b0	.karg	bool.prim.u	-- Have we emitted this dependency already?
 	.analyze	b0	false	true
 		.case	false
-res			.alloc	_process.var_file_:_true_false_res_c
+res			.closure	_process.var_file_:_true_false_res_c
 			.enter	res
 		.case	true
 			.lift
