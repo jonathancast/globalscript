@@ -268,7 +268,7 @@ The contents of a \stringcode{.expr} code item will be:
 \begin{itemize}
     \item A list of the items (global variables) this expression depends on, comprised of:
         \begin{itemize}
-            \item A sequence of global type variable declarations (section \ref{code_type_gvar});
+            \item A sequence of global type variable declarations (section \ref{type_gvar});
             \item A sequence of sub-code declarations (section \ref{subcode});
             \item A sequence of global coercion variable declarations (section \ref{coercion_gvar}); and
             \item A sequence of global object variable declarations (section \ref{value_gvar}).
@@ -276,13 +276,13 @@ The contents of a \stringcode{.expr} code item will be:
     \item A list of the (non-global) free variables of this expression, comprised of:
         \begin{itemize}
             \item A sequence of free type variable declarations (section \ref{type_fv});
-            \item A sequence of type lets using the free type variables decared above (section \ref{code_type_let});
+            \item A sequence of type lets using the free type variables decared above (section \ref{type_let});
             \item A sequence of free object variable declarations (section \ref{value_fv}), using the type variables declared above;
         \end{itemize}
     \item A sequence, intermixed in the appropriate order, of:
         \begin{itemize}
             \item Type argument declarations (section \ref{code_type_arg});
-            \item Type lets using the type arguments declared above (and other type variables in scope at this point) (section \ref{code_type_let}); and
+            \item Type lets using the type arguments declared above (and other type variables in scope at this point) (section \ref{type_let}); and
             \item Object argument declarations, using the type variables declared above (section \ref{value_arg}).
         \end{itemize}
     \item A list of local declarations within this expression,
@@ -310,7 +310,7 @@ The contents of a \stringcode{.forcecont} code item will be:
 \begin{itemize}
     \item A list of the items (global variables) this evaluation context depends on, comprised of:
         \begin{itemize}
-            \item A sequence of global type variable declarations (section \ref{code_type_gvar});
+            \item A sequence of global type variable declarations (section \ref{type_gvar});
             \item A sequence of sub-code declarations (section \ref{subcode});
             \item A sequence of global coercion variable declarations (section \ref{coercion_gvar}); and
             \item A sequence of global object variable declarations (section \ref{value_gvar}).
@@ -318,10 +318,10 @@ The contents of a \stringcode{.forcecont} code item will be:
     \item A list of the (non-global) free variables of this evaluation context, comprised of:
         \begin{itemize}
             \item A sequence of free type variable declarations (section \ref{type_fv});
-            \item A sequence of type lets using the free type variables decared above (section \ref{code_type_let});
+            \item A sequence of type lets using the free type variables decared above (section \ref{type_let});
             \item A sequence of free object variable declarations (section \ref{value_fv}), using the type variables declared above;
         \end{itemize}
-    \item A further sequence of type lets (section \ref{code_type_let}).
+    \item A further sequence of type lets (section \ref{type_let}).
     \item A single continuation argument (section \ref{cont_arg}).
     \item A list of local declarations within this evaluation context,
         intermixed in the appropriate order,\future{We plan to support recursion, at which point the only restriction will be that forward references will have to be to variables with type signatures.}
@@ -348,7 +348,7 @@ The contents of a \stringcode{.strictcont} code item will be:
 \begin{itemize}
     \item A list of the items (global variables) this evaluation context depends on, comprised of:
         \begin{itemize}
-            \item A sequence of global type variable declarations (section \ref{code_type_gvar});
+            \item A sequence of global type variable declarations (section \ref{type_gvar});
             \item A sequence of sub-code declarations (section \ref{subcode});
             \item A sequence of global coercion variable declarations (section \ref{coercion_gvar}); and
             \item A sequence of global object variable declarations (section \ref{value_gvar}).
@@ -356,10 +356,10 @@ The contents of a \stringcode{.strictcont} code item will be:
     \item A list of the (non-global) free variables of this evaluation context, comprised of:
         \begin{itemize}
             \item A sequence of free type variable declarations (section \ref{type_fv});
-            \item A sequence of type lets using the free type variables decared above (section \ref{code_type_let});\unimpl{This hasn't been implemented yet (\stringcode{.strictcont}s are little used); yell if you need it.}
+            \item A sequence of type lets using the free type variables decared above (section \ref{type_let});\unimpl{This hasn't been implemented yet (\stringcode{.strictcont}s are little used); yell if you need it.}
             \item A sequence of free object variable declarations (section \ref{value_fv}), using the type variables declared above;
         \end{itemize}
-    \item A further sequence of type lets (section \ref{code_type_let}).
+    \item A further sequence of type lets (section \ref{type_let}).
     \item A single continuation argument (section \ref{cont_arg}).
     \item A list of local declarations within this evaluation context,
         intermixed in the appropriate order,\future{We plan to support recursion, at which point the only restriction will be that forward references will have to be to variables with type signatures.}
@@ -393,7 +393,7 @@ The contents of a \stringcode{.ubcasecont} code item will be:
 \begin{itemize}
     \item A list of the items (global variables) this evaluation context depends on, comprised of:
         \begin{itemize}
-            \item A sequence of global type variable declarations (section \ref{code_type_gvar});
+            \item A sequence of global type variable declarations (section \ref{type_gvar});
             \item A sequence of sub-code declarations (section \ref{subcode});
             \item A sequence of global coercion variable declarations (section \ref{coercion_gvar}); and
             \item A sequence of global object variable declarations (section \ref{value_gvar}).
@@ -401,10 +401,10 @@ The contents of a \stringcode{.ubcasecont} code item will be:
     \item A list of the (non-global) free variables of this evaluation context, comprised of:
         \begin{itemize}
             \item A sequence of free type variable declarations (section \ref{type_fv});
-            \item A sequence of type lets using the free type variables decared above (section \ref{code_type_let});\unimpl{This hasn't been implemented yet; yell if you need it.}
+            \item A sequence of type lets using the free type variables decared above (section \ref{type_let});\unimpl{This hasn't been implemented yet; yell if you need it.}
             \item A sequence of free object variable declarations (section \ref{value_fv}), using the type variables declared above;
         \end{itemize}
-    \item A further sequence of type lets (section \ref{code_type_let}).
+    \item A further sequence of type lets (section \ref{type_let}).
     \item A continuation argument, declared either as
         \begin{itemize}
             \item A single continuation argument (section \ref{cont_arg}), or
@@ -442,7 +442,7 @@ The contents of an \stringcode{.impprog} code item will be:
 \begin{itemize}
     \item A list of the items (global variables) this evaluation context depends on, comprised of:
         \begin{itemize}
-            \item A sequence of global type variable declarations (section \ref{code_type_gvar});
+            \item A sequence of global type variable declarations (section \ref{type_gvar});
             \item A sequence of sub-code declarations (section \ref{subcode});
             \item A sequence of global coercion variable declarations (section \ref{coercion_gvar});\unimpl{This isn't implemented yet, since no implemented generator or body form would support it yet} and
             \item A sequence of global object variable declarations (section \ref{value_gvar}).\unimpl{This isn't implemented yet, since no implemented generator or body form would support it yet}
@@ -450,14 +450,14 @@ The contents of an \stringcode{.impprog} code item will be:
     \item A list of the (non-global) free variables of this evaluation context, comprised of:
         \begin{itemize}
             \item A sequence of free type variable declarations (section \ref{type_fv});
-            \item A sequence of type lets using the free type variables decared above (section \ref{code_type_let});\unimpl{This hasn't been implemented yet; yell if you need it.}
+            \item A sequence of type lets using the free type variables decared above (section \ref{type_let});\unimpl{This hasn't been implemented yet; yell if you need it.}
             \item A sequence of free object variable declarations (section \ref{value_fv}), using the type variables declared above;
         \end{itemize}
-    \item A further sequence of type lets (section \ref{code_type_let}).\unimpl{This hasn't been implemented yet, either.}
+    \item A further sequence of type lets (section \ref{type_let}).\unimpl{This hasn't been implemented yet, either.}
     \item A sequence, intermixed in the appropriate order,\unimpl{The arbitrary inter-mixing isn't supported yet; currently, the sequence must be type arguments, then type lets, then value arguments.} of:
         \begin{itemize}
             \item Type argument declarations (section \ref{code_type_arg});
-            \item Type lets using the type arguments declared above (and other type variables in scope at this point) (section \ref{code_type_let}); and
+            \item Type lets using the type arguments declared above (and other type variables in scope at this point) (section \ref{type_let}); and
             \item Object argument declarations, using the type variables declared above (section \ref{value_arg}).
         \end{itemize}
     \item A list of local declarations within this evaluation context,
@@ -473,42 +473,6 @@ The contents of an \stringcode{.impprog} code item will be:
         And, finally,
     \item A body expression (section \ref{body}).
 \end{itemize}
-
-\section{Global Type Variables}
-\label{code_type_gvar}
-
-These are type variables with definitions that are global in scope,
-as opposed to `free' type variables, which are defined (actually, lambda-bound) in an intermediate enclosing scope.
-
-\subsection{\stringcode{.tygvar}}
-
-\begin{verbatim}
-t	.tygvar
-\end{verbatim}
-
-This declares (a dependency on) the global type variable \stringcode{t},
-which is any type label defined at the top level, either a type synonym or an abstract type (= type constant).
-
-\subsection{\stringcode{.tyextabstype}}
-
-\begin{verbatim}
-t	.tyextabstype	ki
-\end{verbatim}
-
-This declares \stringcode{t} to be specifically the type constant \stringcode{t},
-which must have kind \stringcode{ki} (see section \ref{kinds}).
-This construct allows the string compiler to produce output files that are relatively independent of each other.
-
-\subsection{\stringcode{.tyextelimprim}}
-
-\begin{verbatim}
-t	.tyextelimprim	ps	pn	ki
-\end{verbatim}
-
-This declares \stringcode{t} to be the elimination primitive type \stringcode{pn} from primitive set \stringcode{ps},
-with kinds \stringcode{ki} (see section \ref{kinds}).
-This isn't really an external dependency;
-it's more a kind of type literal, that simplifies the implementation of the string compiler.
 
 \section{Sub-Code Items}
 \label{subcode}
@@ -687,23 +651,6 @@ x	.fkarg	f	tyf	tyx0	...	tyxn-1
 
 This declares \stringcode{x} to be the field \stringcode{f} of the continuation's (un-boxed product) argument,
 of type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}.
-
-\section{Local Type Definitions}
-\label{code_type_let}
-
-These allow for location type variable definitions,
-mainly for cases where a complex type expression is need but the syntax requires a simple variable.
-
-\subsection{\stringcode{.tylet}}
-
-\begin{verbatim}
-t	.tylet	tyf	tyx_0	...	tyx_n
-\end{verbatim}
-
-This defines \stringcode{t} to be the result of applying \stringcode{tyf} to the type variables \stringcode{tyx\_0} $\ldots$ \stringcode{tyx\_n}.
-
-Technically, this only allows type applications to be named;
-more complicated type expressions can be dealt with via lambda-lifting.
 
 \section{Thunk (Closure) Allocations}
 \label{thunk_alloc}
@@ -1070,7 +1017,7 @@ The contents of a \stringcode{.case} will be:
         \end{itemize}
     \item A sequence of:
         \begin{itemize}
-            \item Type lets using the type arguments declared above (and other type variables in scope at this point) (section \ref{code_type_let}).
+            \item Type lets using the type arguments declared above (and other type variables in scope at this point) (section \ref{type_let}).
         \end{itemize}
     \item A continuation argument, declared either as
         \begin{itemize}
@@ -1170,6 +1117,73 @@ However, any implementation to which its primset is unknown can still treat it a
 at that point, \stringcode{m $\alpha$} will need to be treated as $1 + \alpha$.}
 However, interpreters that do know the primset will reject library definitions with invalid primtype declarations in that primset,
 or with incorrect kinds on known primtypes.
+
+\section{Type Expressions}
+\label{type_ops}
+
+A type expression, the body of a \stringcode{.tyexpr} or a \stringcode{.tyabstract}, consists of
+\begin{itemize}
+    \item A sequence of type global variable declarations (see section \ref{type_gvar}),
+    \item A sequence of type arguments (see section \ref{type_arg}),
+    \item A sequence of universal quantifiers (see section \ref{type_forall}),
+    \item A sequence of existential quantifiers (see section \ref{type_exists}),
+    \item A sequence of type lets (see section \ref{type_let}),
+    \item A sequence of type contexts (see section \ref{type_context}), and finally
+    \item A terminal type (see section \ref{type_terminal}).
+\end{itemize}
+
+\section{Global Type Variables}
+\label{type_gvar}
+
+These are type variables with definitions that are global in scope,
+as opposed to `free' type variables, which are defined (actually, lambda-bound) in an intermediate enclosing scope.
+
+\subsection{\stringcode{.tygvar}}
+
+\begin{verbatim}
+t	.tygvar
+\end{verbatim}
+
+This declares (a dependency on) the global type variable \stringcode{t},
+which is any type label defined at the top level, either a type synonym or an abstract type (= type constant).
+
+\subsection{\stringcode{.tyextabstype}}
+
+\begin{verbatim}
+t	.tyextabstype	ki
+\end{verbatim}
+
+This declares \stringcode{t} to be specifically the type constant \stringcode{t},
+which must have kind \stringcode{ki} (see section \ref{kinds}).
+This construct allows the string compiler to produce output files that are relatively independent of each other.
+
+\subsection{\stringcode{.tyextelimprim}}
+
+\begin{verbatim}
+t	.tyextelimprim	ps	pn	ki
+\end{verbatim}
+
+This declares \stringcode{t} to be the elimination primitive type \stringcode{pn} from primitive set \stringcode{ps},
+with kinds \stringcode{ki} (see section \ref{kinds}).
+This isn't really an external dependency;
+it's more a kind of type literal, that simplifies the implementation of the string compiler.
+
+\section{Local Type Definitions}
+\label{type_let}
+
+These allow for location type variable definitions,
+mainly for cases where a complex type expression is need but the syntax requires a simple variable.
+
+\subsection{\stringcode{.tylet}}
+
+\begin{verbatim}
+t	.tylet	tyf	tyx_0	...	tyx_n
+\end{verbatim}
+
+This defines \stringcode{t} to be the result of applying \stringcode{tyf} to the type variables \stringcode{tyx\_0} $\ldots$ \stringcode{tyx\_n}.
+
+Technically, this only allows type applications to be named;
+more complicated type expressions can be dealt with via lambda-lifting.
 
 \chapter{Notes on the Type System (Semi-Obsolete)}
 
@@ -1279,9 +1293,7 @@ gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
 
         parsedline->directive = gsintern_string(gssymtypeop, fields[1]);
 
-        if (gsparse_type_global_var_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_type_arg_op(pos, parsedline, fields, n)) {
-        } else if (gssymceq(parsedline->directive, gssymtyforall, gssymtypeop, ".tyforall")) {
+        if (gssymceq(parsedline->directive, gssymtyforall, gssymtypeop, ".tyforall")) {
             if (*fields[0])
                 parsedline->label = gsintern_string(gssymtypelable, fields[0]);
             else
