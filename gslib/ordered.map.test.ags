@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -175,8 +175,8 @@ empty	.apply	ordered.map.empty	natural.t	bool.t
 map0	.apply	ordered.map.insert	natural.t	bool.t	|	natural.compare	natural.1	bool.true	empty
 map1	.apply	ordered.map.insert	natural.t	bool.t	|	natural.compare	natural.2	bool.false	empty
 union	.apply	ordered.map.∪	natural.t	bool.t	|	natural.compare	map0	map1
-test0	.alloc	_test.branch.union.branch_test0_c
-test1	.alloc	_test.branch.union.branch_test1_c
+test0	.closure	_test.branch.union.branch_test0_c
+test1	.closure	_test.branch.union.branch_test1_c
 tests	.apply	test.property.∧	|	test0	test1
 	.app	_test.branch.union.branch_label	tests
 	.enter	test.property.label
@@ -257,8 +257,8 @@ empty	.apply	ordered.map.empty	natural.t	bool.t
 map0	.apply	ordered.map.insert	natural.t	bool.t	|	natural.compare	natural.2	bool.true	empty
 map1	.apply	ordered.map.insert	natural.t	bool.t	|	natural.compare	natural.1	bool.false	empty
 union	.apply	ordered.map.∪	natural.t	bool.t	|	natural.compare	map0	map1
-test0	.alloc	_test.branch.union.branch.gt_test0_c
-test1	.alloc	_test.branch.union.branch.gt_test1_c
+test0	.closure	_test.branch.union.branch.gt_test0_c
+test1	.closure	_test.branch.union.branch.gt_test1_c
 tests	.apply	test.property.∧	|	test0	test1
 	.app	_test.branch.union.branch.gt_label	tests
 	.enter	test.property.label

@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -33,7 +33,7 @@ _test.length.nil_c	.expr
 _test.length.nil_test_c	.subcode
 test.property.label	.gvar
 _test.length.nil_label	.gvar
-test	.alloc	_test.length.nil_test_c
+test	.closure	_test.length.nil_test_c
 	.app	_test.length.nil_label	test
 	.enter	test.property.label
 
@@ -44,7 +44,7 @@ test.assert.eq	.gvar
 natural.≡	.gvar
 natural.fmtgs	.gvar
 natural.0	.gvar
-actual	.alloc	_test.length.nil_test_actual_c
+actual	.closure	_test.length.nil_test_actual_c
 	.app	natural.≡	natural.fmtgs	actual	natural.0
 	.enter	test.assert.eq	natural.t
 
@@ -61,7 +61,7 @@ _test.length.singleton_c	.expr
 _test.length.singleton_test_c	.subcode
 test.property.label	.gvar
 _test.length.singleton_label	.gvar
-test	.alloc	_test.length.singleton_test_c
+test	.closure	_test.length.singleton_test_c
 	.app	_test.length.singleton_label	test
 	.enter	test.property.label
 
@@ -72,7 +72,7 @@ test.assert.eq	.gvar
 natural.≡	.gvar
 natural.fmtgs	.gvar
 _1	.gvar
-actual	.alloc	_test.length.singleton_test_actual_c
+actual	.closure	_test.length.singleton_test_actual_c
 	.app	natural.≡ natural.fmtgs	actual	_1
 	.enter	test.assert.eq	natural.t
 

@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -42,7 +42,7 @@ deps	.larg	graph.dependencies.t	k	v
 look	.larg	graph.lookup.t	k	v
 ks	.larg	list.t	k
 kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
-k	.alloc	_graph.tsort_k_c
+k	.closure	_graph.tsort_k_c
 pre	.apply	ordered.map.empty	k	natural.t
 emitted	.apply	ordered.set.empty	k
 unassigned	.apply	list.nil	kv.ty
@@ -256,7 +256,7 @@ kv.ty	.tylet	_graph.tsort_key.value.ty	k	v
 unassigned	.larg	list.t	kv.ty
 maybe.group	.larg	list.t	k
 kv0	.lrecord	0	k0	1	v0	|	kv.ty
-cont1	.alloc	_graph.tsort_item_cont1_c
+cont1	.closure	_graph.tsort_item_cont1_c
 n1	.prim	natural.prim	+	_natural.prim.+_ty	|	n	1
 n.l	.lifted	n
 n.cl	.cast	n.l	natural.t.in
@@ -488,7 +488,7 @@ mbg1	.fv	list.t	k
 pop	.karg	_graph.tsort_item_cont1_:_pop.unassigned_res.u	k	v
 ks0	.field	0	pop
 scc0	.apply	_graph.tsort_item_cont1_:_eq_scc0_w	k	v	|	ord	deps	ks0
-ks0.ks.f	.alloc	_graph.tsort_item_cont1_:_eq_ks0.ks.f_c
+ks0.ks.f	.closure	_graph.tsort_item_cont1_:_eq_ks0.ks.f_c
 ks0.ks	.apply	list.map	kv.ty	k	|	ks0.ks.f	ks0
 ks0.set	.apply	ordered.set.fromlist	k	|	ord	ks0.ks
 emitted1	.apply	ordered.set.union	k	|	ord	ks0.set	em
@@ -580,7 +580,7 @@ ks1.0	.karg	list.prim.u	kv.ty
 		.default
 			.undef	scc.ty	-- TODO: Group keys so popped into SCC; emit SCC
 		.case	nil
-eq			.alloc	_graph.tsort_item_cont1_:_eq_scc0_w_:_eq_c
+eq			.closure	_graph.tsort_item_cont1_:_eq_scc0_w_:_eq_c
 k0			.lfield	0	kv0
 v0			.lfield	1	kv0
 ds0			.apply	deps	|	v0
@@ -818,7 +818,7 @@ mb0	.karg	maybe.prim.u	v
 	.analyze	mb0	just	nothing
 		.case	just
 v		.fkarg	0	v
-cont1			.alloc	_graph.tsort_subitems_:_false_nothing_just_cont1_c
+cont1			.closure	_graph.tsort_subitems_:_false_nothing_just_cont1_c
 			.app	ord	deps	look	k0	v	cont1	n	pre	em	unassigned	maybe.group
 			.enter	_graph.tsort_item	k	v
 		.case	nothing

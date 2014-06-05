@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -73,7 +73,7 @@ e		.fkarg	0	α
 			.undef	either.t	α	β1
 		.case	right
 x		.fkarg	0	β0
-y			.alloc	_either.map_y_c
+y			.closure	_either.map_y_c
 			.app	y
 			.enter	either.right	α	β1
 

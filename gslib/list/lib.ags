@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.prefix
 
@@ -16,7 +16,7 @@ list.foldl	.gvar
 natural.0	.gvar
 α	.tyarg	*
 xn	.larg	list.t	α
-plus.1	.alloc	_list.lib.length_plus.1_c
+plus.1	.closure	_list.lib.length_plus.1_c
 	.app	plus.1	natural.0	xn
 	.enter	list.foldl	α	natural.t
 
