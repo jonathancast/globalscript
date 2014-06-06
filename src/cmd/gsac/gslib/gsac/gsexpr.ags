@@ -2885,14 +2885,6 @@ _gsac.gsexpr.compile.m_res.ty	.tygvar
 gsdl.ags.codeitem.impgen.t	.tygvar
 	.tyref	_gsac.gsexpr.compile.m_res.ty	gsdl.ags.codeitem.impgen.t
 
-_gsac.gsexpr.generator.imp.compile_res_res.ty	.tyexpr
-_gsac.gsexpr.generator.imp.compile_res_res.u	.tygvar
-	.tylift
-	.tyref	_gsac.gsexpr.generator.imp.compile_res_res.u
-
-_gsac.gsexpr.generator.imp.compile_res_res.u	.tyexpr
-	.typroduct
-
 -- §section §gs{gsac.gsexpr.body.compileToGenRHS}
 
 _gsac.gsexpr.body.compileToGenRHS_ty	.tyexpr
