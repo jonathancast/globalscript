@@ -184,7 +184,7 @@ gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
                 exits("unimpl");
             default:
                 ace_down();
-                gsfatal_unimpl(__FILE__, __LINE__, "gsrun: st = %d", st);
+                gsfatal(UNIMPL("gsrun: st = %d"), st);
         }
     } while (1);
 
@@ -218,13 +218,13 @@ gsprint(struct gspos pos, gsvalue prog)
                     return 0;
                 } else {
                     ace_down();
-                    gsfatal_unimpl(__FILE__, __LINE__, "gsprint(heap; nfvs = %d, ncfvs = %d, ncargs = %d)", nfvs, ncfvs, ncargs);
+                    gsfatal(UNIMPL("gsprint(heap; nfvs = %d, ncfvs = %d, ncargs = %d)"), nfvs, ncfvs, ncargs);
                     return -1;
                 }
             }
             default:
                 ace_down();
-                gsfatal_unimpl(__FILE__, __LINE__, "gsprint(heap; type = %d)", hp->type);
+                gsfatal(UNIMPL("gsprint(heap; type = %d)"), hp->type);
                 return -1;
         }
     } else if (gsisrecord_block(block)) {
@@ -261,7 +261,7 @@ gsprint(struct gspos pos, gsvalue prog)
         return 0;
     } else {
         ace_down();
-        gsfatal_unimpl(__FILE__, __LINE__, "gsprint(%s)", block->class->description);
+        gsfatal(UNIMPL("gsprint(%s)"), block->class->description);
         return -1;
     }
 }
@@ -290,7 +290,7 @@ gsprint_error(gsvalue prog)
         print("%s\n", buf);
     } else {
         ace_down();
-        gsfatal_unimpl(__FILE__, __LINE__, "gsprint_error(%s)", block->class->description);
+        gsfatal(UNIMPL("gsprint_error(%s)"), block->class->description);
     }
 }
 
