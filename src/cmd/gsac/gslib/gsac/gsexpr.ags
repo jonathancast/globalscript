@@ -2496,6 +2496,7 @@ ry		.fkarg	0	_gsac.gsexpr.compile.m_res.ty	β
 ry.ds			.lfield	dataitems	ry
 ry.tyem			.lfield	ty.emitted	ry
 ry.pem			.lfield	prim.emitted	ry
+y			.lfield	res	ry
 ry.tysvs			.lfield	ty.subvars	ry
 ry.tygvs			.lfield	tygvars	ry
 			.force	_gsac.gsexpr.compile.mapM_:_right_k
@@ -2517,10 +2518,12 @@ gsdl.ags.coercionitem.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.<>	.gvar
+list.:	.gvar
 β	.tyfv	*
 list.β.ty	.tylet	list.t	β
 res.list.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.β.ty
 ry.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
+y	.fv	β
 ry.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 e0	.karg	either.prim.u	string.t	res.list.β.ty
 	.analyze	e0	left	right
@@ -2534,7 +2537,8 @@ cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 rys.ds			.lfield	dataitems	rys
 ds			.apply	diff.list.<>	gsdl.ags.dataitem.t	|	ry.ds	rys.ds
 pem			.lfield	prim.emitted	rys
-ys1			.undefined	list.t	β
+ys			.lfield	res	rys
+ys1			.apply	list.:	β	|	y	ys
 tyem			.lfield	ty.emitted	rys
 tysvs			.lfield	ty.subvars	rys
 rys.tygvs			.lfield	tygvars	rys
