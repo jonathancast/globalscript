@@ -50,6 +50,7 @@ _gsdl.ags.codeitem.cogvars.parser_cogvar.kw.re	.regex	.cogvar
 
 gsdl.ags.codeitem.gvars.parser	.closure	_gsdl.ags.codeitem.gvars.parser_c
 _gsdl.ags.codeitem.gvars.parser_gvar.p_gvar.re	.regex	.gvar
+_gsdl.ags.codeitem.gvars.parser_natural.p_natural.re	.regex	.natural
 _gsdl.ags.codeitem.gvars.parser_rune.p_rune.re	.regex	.rune
 
 gsdl.ags.codeitem.gvar.≡	.closure	_gsdl.ags.codeitem.gvar.≡_c
@@ -1277,13 +1278,16 @@ gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
 _gsdl.ags.codeitem.gvars.parser_gvar.p_c	.subcode
+_gsdl.ags.codeitem.gvars.parser_natural.p_c	.subcode
 _gsdl.ags.codeitem.gvars.parser_rune.p_c	.subcode
 parser.many	.gvar
 parser.<|>	.gvar
 fs	.larg	gsdl.ags.syntax.features.t
 gvar.p	.closure	_gsdl.ags.codeitem.gvars.parser_gvar.p_c
+natural.p	.closure	_gsdl.ags.codeitem.gvars.parser_natural.p_c
 rune.p	.closure	_gsdl.ags.codeitem.gvars.parser_rune.p_c
-p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.gvar.t	|	gvar.p	rune.p
+p1	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.gvar.t	|	natural.p	rune.p
+p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.gvar.t	|	gvar.p	p1
 	.app	p
 	.enter	parser.many	rune.t	gsdl.ags.codeitem.gvar.t
 
@@ -1318,6 +1322,46 @@ nm	.larg	gsdl.var.t
 pos	.undefined	gsdl.sourcepos.t
 	.app	pos	nm
 	.enter	gsdl.ags.codeitem.gvar.gvar
+
+_gsdl.ags.codeitem.gvars.parser_natural.p_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+natural.t	.tygvar
+_gsdl.ags.codeitem.gvars.parser_natural.p_f_c	.subcode
+parser.<*	.gvar
+parser.lift3	.gvar
+parser.pos.get	.gvar
+gsdl.var.parser	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.gvars.parser_natural.p_natural.re	.gvar
+parser.string.decimal	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.fail	.gvar	-- Temp
+f	.closure	_gsdl.ags.codeitem.gvars.parser_natural.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+natural.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.gvars.parser_natural.p_natural.re
+n.p2	.apply	parser.*>	rune.t	string.t	natural.t	|	gsdl.ags.syntax.columnsep	parser.string.decimal
+n.p1	.apply	parser.*>	rune.t	string.t	natural.t	|	natural.p	n.p2
+n.p	.apply	parser.*>	rune.t	string.t	natural.t	|	gsdl.ags.syntax.columnsep	n.p1
+p	.apply	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	natural.t	gsdl.ags.codeitem.gvar.t	|	f	pos.get	gsdl.var.parser	n.p
+	.app	p	gsdl.ags.syntax.whitespace
+	.enter	parser.<*	rune.t	gsdl.ags.codeitem.gvar.t	string.t
+
+_gsdl.ags.codeitem.gvars.parser_natural.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+natural.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
+pos0	.larg	parser.pos.t
+v	.larg	gsdl.var.t
+n	.larg	natural.t
+	.undef	gsdl.ags.codeitem.gvar.t
 
 _gsdl.ags.codeitem.gvars.parser_rune.p_c	.expr
 gsdl.ags.syntax.features.t	.tygvar

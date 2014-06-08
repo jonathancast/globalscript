@@ -181,11 +181,15 @@ _test.parse_ubcasecont_input	.string	_rune.≡.k1.0\t.ubcasecont\n\t.enter\tbool
 
 _test.parse_gvars	.closure	_test.parse_gvars_c
 _test.parse_gvars_label	.string	Global\sValue\sVariable\sDeclarations
-_tests.parse_gvars	.list	test.property.t	_test.parse_gvars_minus.gvar
+_tests.parse_gvars	.list	test.property.t	_test.parse_gvars_minus.gvar	_test.parse_gvars_natural
 
 _test.parse_gvars_minus.gvar	.closure	_test.parse_gvars_minus.gvar_c
 _test.parse_gvars_minus.gvar_label	.string	qq{natural.prim.-\\t.gvar\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
 _test.parse_gvars_minus.gvar_input	.string	natural.prim.-\t.gvar\n
+
+_test.parse_gvars_natural	.closure	_test.parse_gvars_natural_c
+_test.parse_gvars_natural_label	.string	qq{1\\t.natural\\t1\\n}\s=~\sgsdl.ags.codeitem.gvars.parser
+_test.parse_gvars_natural_input	.string	1\t.natural\t1\n
 
 -- §subsection Expression Generators
 
@@ -1529,6 +1533,8 @@ t	.apply	test.all	|	_tests.parse_gvars
 	.app	_test.parse_gvars_label	t
 	.enter	test.property.label
 
+-- §subsubsection §gs{qq{natural.prim.-\\t.gvar\\n} =~ gsdl.ags.codeitem.gvars.parser}
+
 _test.parse_gvars_minus.gvar_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
@@ -1553,6 +1559,38 @@ test	.apply	parser.test.assert.passes	rune.t	list.gvar.ty	|	parser.rune.advance	
 	.enter	test.property.label
 
 _test.parse_gvars_minus.gvar_k_c	.expr
+list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+test.true	.gvar
+err	.larg	list.t	gsdl.ags.codeitem.gvar.t
+	.enter	test.true
+
+-- §subsubsection §gs{qq{1\\t.natural\\t1\\n} =~ gsdl.ags.codeitem.gvars.parser}
+
+_test.parse_gvars_natural_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_test.parse_gvars_natural_k_c	.subcode
+test.property.label	.gvar
+_test.parse_gvars_natural_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.gvars.parser	.gvar
+bool.false	.gvar
+bool.true	.gvar
+_test.parse_gvars_natural_input	.gvar
+list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
+k	.closure	_test.parse_gvars_natural_k_c
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.true	closure	bool.true	|	gsdl.ags.syntax.features.t
+gvars.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	gvars.p	_test.parse_gvars_natural_input	k
+	.app	_test.parse_gvars_natural_label	test
+	.enter	test.property.label
+
+_test.parse_gvars_natural_k_c	.expr
 list.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
 test.true	.gvar
