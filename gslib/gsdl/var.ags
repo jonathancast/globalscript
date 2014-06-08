@@ -139,6 +139,7 @@ bool.t.out	.cogvar
 list.elem	.gvar
 string.≡   	.gvar
 gsdl.syntax.keywords	.gvar
+parser.unit	.gvar
 v	.fv	gsdl.var.t
 c0.0	.karg	gsdl.var.component.prim.u
 	.analyze	c0.0	alphanum	numeric	symbolic
@@ -150,7 +151,8 @@ s		.fkarg	0	string.t
 			.enter	list.elem	string.t
 		.case	numeric
 n		.fkarg	0	natural.t
-			.undef	parser.t	rune.t	gsdl.var.t
+			.app	v
+			.enter	parser.unit	rune.t	gsdl.var.t
 		.case	symbolic
 s		.fkarg	0	string.t
 			.force	_gsdl.var.parser_base.p_k_:_nil_symbolic_k
@@ -247,7 +249,8 @@ s		.fkarg	0	string.t
 			.enter	parser.<|>	rune.t	list.component.ty
 		.case	numeric
 n		.fkarg	0	natural.t
-			.enter	parser.fail	rune.t	list.component.ty
+			.app	singleton.p	loop.p
+			.enter	parser.<|>	rune.t	list.component.ty
 		.case	symbolic
 s		.fkarg	0	string.t
 			.enter	singleton.p
@@ -257,6 +260,7 @@ rune.t	.tygvar
 gsdl.var.component.t	.tygvar
 record.empty	.tygvar
 string.t	.tygvar
+natural.t	.tygvar
 parser.<|>	.gvar
 parser.<*	.gvar
 parser.map	.gvar
@@ -269,6 +273,9 @@ gsdl.syntax.alphanum.cont.char.re	.gvar
 gsdl.var.component.symbolic	.gvar
 _gsdl.var.parser_symbolic.re	.gvar
 gsdl.syntax.symbolic.cont.char.re	.gvar
+gsdl.var.component.numeric	.gvar
+parser.string.decimal	.gvar
+parser.string.digit	.gvar
 parser.fail	.gvar	-- Temp
 alphanum.p1.1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.var.parser_alphanum.re
 alphanum.p1	.apply	parser.map	rune.t	string.t	gsdl.var.component.t	|	gsdl.var.component.alphanum	alphanum.p1.1
@@ -280,7 +287,11 @@ symbolic.p1	.apply	parser.map	rune.t	string.t	gsdl.var.component.t	|	gsdl.var.co
 symbolic.p2.1	.apply	parser.match	rune.t	|	rune.compare	gsdl.syntax.symbolic.cont.char.re
 symbolic.p2	.apply	parser.neg.lookahead	rune.t	string.t	|	symbolic.p2.1
 symbolic.p	.apply	parser.<*	rune.t	gsdl.var.component.t	record.empty	|	symbolic.p1	symbolic.p2
-	.app	alphanum.p	symbolic.p
+numeric.p1	.apply	parser.map	rune.t	natural.t	gsdl.var.component.t	|	gsdl.var.component.numeric	parser.string.decimal
+numeric.p2	.apply	parser.neg.lookahead	rune.t	string.t	|	parser.string.digit
+numeric.p	.apply	parser.<*	rune.t	gsdl.var.component.t	record.empty	|	numeric.p1	numeric.p2
+p1	.apply	parser.<|>	rune.t	gsdl.var.component.t	|	symbolic.p	numeric.p
+	.app	alphanum.p	p1
 	.enter	parser.<|>	rune.t	gsdl.var.component.t
 
 _gsdl.var.parser_underbar.p_c	.expr
