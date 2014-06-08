@@ -21,6 +21,8 @@ list.reverse	.closure	_list.reverse_c
 list.singleton	.closure	_list.singleton_c
 list.<>	.closure	_list.<>_c	_list.<>_ty
 
+list.concat	.closure	_list.concat_c
+
 list.drop	.closure	_list.drop_c
 _list.drop_worker	.closure	_list.drop_worker_c	_list.drop_worker_ty
 
@@ -532,6 +534,20 @@ ys2			.constr	t	:	0	x0	1	ys1
 			.yield	ys2
 		.case	nil
 			.enter	ys
+
+-- §section §gs{list.concat}
+
+_list.concat_c	.expr
+list.t	.tygvar
+list.foldr	.gvar
+list.<>	.gvar
+list.nil	.gvar
+α	.tyarg	*
+list.α.ty	.tylet	list.t	α
+<>	.apply	list.<>	α
+nil	.apply	list.nil	α
+	.app	<>	nil
+	.enter	list.foldr	list.α.ty	list.α.ty
 
 -- §section §gs{list.drop}
 
