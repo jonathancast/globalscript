@@ -493,6 +493,7 @@ void
 gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
     static gsinterned_string gssymtyexpr, gssymtyabstract, gssymtydefinedprim, gssymtyintrprim, gssymtyelimprim, gssymtyimpprim;
+    static gsinterned_string gssymtyextimpprim;
 
     gsinterned_string directive;
     struct gsparsedfile_segment *pseg;
@@ -517,7 +518,7 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
                 gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
             } else if (
                 gssymeq(p->directive, gssymtypeop, ".tyextelimprim")
-                || gssymeq(p->directive, gssymtypeop, ".tyextimpprim")
+                || gssymceq(p->directive, gssymtyextimpprim, gssymtypeop, ".tyextimpprim")
             ) {
                 /* skipped */
             } else {
@@ -587,7 +588,7 @@ static
 void
 gsbc_top_sort_subitems_of_coercion_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
-    static gsinterned_string gssymtycoercion;
+    static gsinterned_string gssymtycoercion, gssymtygvar, gssymtyextabstype, gssymtyextelimprim, gssymtyextimpprim;
 
     gsinterned_string directive;
     struct gsparsedfile_segment *pseg;
@@ -599,17 +600,17 @@ gsbc_top_sort_subitems_of_coercion_item(struct gsfile_symtable *symtable, struct
     if (gssymceq(directive, gssymtycoercion, gssymcoerciondirective, ".tycoercion")) {
         struct gsparsedline *p = gsinput_next_line(&pseg, pcoercion);
         for (; ; p = gsinput_next_line(&pseg, p)) {
-            if (gssymeq(p->directive, gssymcoercionop, ".tygvar")) {
+            if (gssymceq(p->directive, gssymtygvar, gssymcoercionop, ".tygvar")) {
                 struct gsbc_item global;
                 global = gssymtable_lookup(p->pos, symtable, p->label);
                 gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
-            } else if (gssymeq(p->directive, gssymcoercionop, ".tyextabstype")) {
+            } else if (gssymceq(p->directive, gssymtyextabstype, gssymcoercionop, ".tyextabstype")) {
                 struct gsbc_item global;
                 global = gssymtable_lookup(p->pos, symtable, p->label);
                 gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
             } else if (
-                gssymeq(p->directive, gssymcoercionop, ".tyextelimprim")
-                || gssymeq(p->directive, gssymcoercionop, ".tyextimpprim")
+                gssymceq(p->directive, gssymtyextelimprim, gssymcoercionop, ".tyextelimprim")
+                || gssymceq(p->directive, gssymtyextimpprim, gssymcoercionop, ".tyextimpprim")
             ) {
                 /* skipped */
             } else {
