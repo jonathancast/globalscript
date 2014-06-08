@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -25,10 +25,10 @@ i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 as	.bind	_real.entry_as_c
-dfn	.alloc	_real.entry_dfn_c
+dfn	.closure	_real.entry_dfn_c
 id	.bind	_real.entry_id_c
 ds	.bind	_real.entry_ds_c
-n	.alloc	_real.entry_n_c
+n	.closure	_real.entry_n_c
 	.body	_real.entry_body_c
 
 _real.entry_as_c	.expr
@@ -130,7 +130,7 @@ _real.entry_body_n.s_c	.subcode
 ibio.prim.write	.gvar
 o	.fv	ibio.prim.oport	rune.t
 n	.fv	natural.t
-n.s	.alloc	_real.entry_body_n.s_c
+n.s	.closure	_real.entry_body_n.s_c
 	.app	o	n.s
 	.yield	ibio.prim.write	rune.t
 

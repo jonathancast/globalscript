@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -22,7 +22,7 @@ i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 ip	.bind	_ep_ip_c
-s	.alloc	_ep_s_c
+s	.closure	_ep_s_c
 	.body	_ep_body_c
 
 _ep_ip_c	.expr
@@ -31,7 +31,7 @@ rune.t	.tygvar
 _ep_ip_os_c	.subcode
 ibio.prim.read	.gvar
 i	.fv	ibio.prim.iport	rune.t
-os	.alloc	_ep_ip_os_c
+os	.closure	_ep_ip_os_c
 	.app	i	os
 	.yield	ibio.prim.read	rune.t
 
@@ -41,8 +41,8 @@ record.empty	.tygvar
 _ep_ip_os_sym_c	.subcode
 _ep_ip_os_sym_k	.subcode
 ibio.acceptor.optional.prim	.gvar
-sym	.alloc	_ep_ip_os_sym_c
-k	.alloc	_ep_ip_os_sym_k
+sym	.closure	_ep_ip_os_sym_c
+k	.closure	_ep_ip_os_sym_k
 	.app	sym	k
 	.enter	ibio.acceptor.optional.prim	rune.t	rune.t	record.empty
 

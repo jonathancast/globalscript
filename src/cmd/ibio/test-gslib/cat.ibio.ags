@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -59,7 +59,7 @@ as0	.karg	list.prim.u	string.ty
 a0		.fkarg	0	list.t	rune.t
 as1		.fkarg	1	list.t	string.ty
 fn			.apply	ibio.file.name.in	|	a0
-res			.alloc	_ep_if_res_c
+res			.closure	_ep_if_res_c
 			.enter	res
 		.case	nil
 			.lift
