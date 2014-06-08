@@ -11,6 +11,11 @@ _parser.string.quotes_loop_ws.re	.regex	[\s\t][\s\t]*
 parser.string.quote	.closure	_parser.string.quote_c
 _parser.string.quote_re	.regex	[^'\s\n\t][^'\s\n\t]*
 
+parser.string.decimal	.closure	_parser.string.decimal_c
+
+parser.string.digit	.closure	_parser.string.digit_c
+_parser.string.digit_re	.regex	[0-9]
+
 	.code
 
 -- §section §gs{parser.string.quotes}
@@ -69,6 +74,46 @@ parser.match	.gvar
 rune.compare	.gvar
 _parser.string.quote_re	.gvar
 	.app	rune.compare	_parser.string.quote_re
+	.enter	parser.match	rune.t
+
+-- §section §gs{parser.string.decimal}
+
+_parser.string.decimal_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+natural.t	.tygvar
+list.t	.tygvar
+_parser.string.decimal_f_c	.subcode
+parser.map	.gvar
+parser.lift2	.gvar
+list.<>	.gvar
+list.concat	.gvar
+parser.many	.gvar
+parser.string.digit	.gvar
+list.string.ty	.tylet	list.t	string.t
+f	.closure	_parser.string.decimal_f_c
+digits.p2	.apply	parser.many	rune.t	string.t	|	parser.string.digit
+concat	.apply	list.concat	rune.t
+digits.p1	.apply	parser.map	rune.t	list.string.ty	string.t	|	concat	digits.p2
+<>	.apply	list.<>	rune.t
+digits.p	.apply	parser.lift2	rune.t	string.t	string.t	string.t	|	<>	parser.string.digit	digits.p1
+	.app	f	digits.p
+	.enter	parser.map	rune.t	string.t	natural.t
+
+_parser.string.decimal_f_c	.expr
+string.t	.tygvar
+natural.t	.tygvar	-- Temp
+ds	.larg	string.t
+	.undef	natural.t
+
+-- §section §gs{parser.string.digit}
+
+_parser.string.digit_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_parser.string.digit_re	.gvar
+	.app	rune.compare	_parser.string.digit_re
 	.enter	parser.match	rune.t
 
 	.type
