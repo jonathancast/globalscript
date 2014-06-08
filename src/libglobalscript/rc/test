@@ -61,6 +61,9 @@ ok_diff_fail '-- over-saturated application of lambda with undefined body --' ./
 
 ok_diff_fail '-- lambda with type arguments mixed with value arguments --' ./$O.test-gsi lambda-with-type-args-mixed-in.ags
 
+ok_grep_errors '-- .tyapp of monomorphic expression --' 'tyapp-monomorphic.ags:15: Can''t instantiate' ./$O.test-gsi tyapp-monomorphic.ags
+ok_diff_fail '-- .tyapp of polymorphic expression --' ./$O.test-gsi tyapp-polymorphic.ags
+
 ok_grep_errors '-- a .tylet (of  type synonym) must have enough arguments --' 'unsaturated-tylet.ags:14: Not enough arguments to _foo_ty' ./$O.test-gsi unsaturated-tylet.ags
 
 ok_grep_errors '-- incorrect kind signatures on .tyexprs --' 'tyexpr-wrong-kind-sig.ags:12: Incorrect kind: Expected ''\*''; got ''u''' ./$O.test-gsi tyexpr-wrong-kind-sig.ags

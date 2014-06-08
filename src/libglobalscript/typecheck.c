@@ -2660,12 +2660,15 @@ gsbc_find_field_in_product(struct gspos pos, struct gstype_product *prod, gsinte
     return 0;
 }
 
-static gsinterned_string gssymoplift, gssymopcoerce, gssymopforce, gssymopstrict, gssymopubanalyze, gssymopapp;
+static gsinterned_string gssymoplift, gssymoptyapp, gssymopcoerce, gssymopforce, gssymopstrict, gssymopubanalyze, gssymopapp;
 
 int
 gsbc_typecheck_cast_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
 {
-    if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
+    if (
+        gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
+        || gssymceq(p->directive, gssymoptyapp, gssymcodeop, ".tyapp")
+    ) {
         if (pcl->stacksize >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many evaluation contexts", p->pos)
         ;
@@ -2704,6 +2707,14 @@ gsbc_typecheck_cont(struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct 
     if (p->directive == gssymoplift) {
         gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(*pcalculated_type), gskind_unlifted_kind());
         *pcalculated_type = gstypes_compile_lift(p->pos, *pcalculated_type);
+    } else if (p->directive == gssymoptyapp) {
+        for (i = 0; i < p->numarguments; i++) {
+            int regarg;
+
+            regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            if (!pcl->tyregs[regarg]) gsfatal("%P: %y doesn't seem to be a type register", p->pos, p->arguments[i]);
+            *pcalculated_type = gstype_instantiate(p->pos, *pcalculated_type, pcl->tyregs[regarg]);
+        }
     } else if (p->directive == gssymopcoerce) {
         int coercionreg;
         struct gstype *src_type, *dest_type;

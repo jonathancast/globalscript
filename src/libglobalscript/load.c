@@ -1533,7 +1533,9 @@ static
 int
 gsparse_cast_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymlift;
+    static gsinterned_string gssymlift, gssymtyapp;
+
+    int i;
 
     if (gssymceq(parsedline->directive, gssymlift, gssymcodeop, ".lift")) {
         if (*fields[0])
@@ -1543,6 +1545,12 @@ gsparse_cast_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, 
         if (n > 2)
             gsfatal("%s:%d: Too many arguments to .lift", pos->real_filename, pos->real_lineno)
         ;
+    } else if (gssymceq(parsedline->directive, gssymtyapp, gssymcodeop, ".tyapp")) {
+        if (*fields[0])
+            gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
+        else
+            parsedline->label = 0;
+        for (i = 0; 2 + i < n; i++) parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2 + i]);
     } else {
         return 0;
     }

@@ -346,7 +346,7 @@ static gsinterned_string gssymoparg, gssymoplarg, gssymopexkarg, gssymopkarg, gs
 /* Allocation */
 static gsinterned_string gssymopclosure, gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymoplrecord, gssymopfield, gssymoplfield, gssymopundefined, gssymoplifted, gssymopcast, gssymopapply, gssymopimpprim;
 /* Continuations */
-static gsinterned_string gssymoplift, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze;
+static gsinterned_string gssymoplift, gssymoptyapp, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze;
 /* Terminals */
 static gsinterned_string gssymopyield, gssymopenter, gssymopubprim, gssymoplprim, gssymopundef;
 /* Branching */
@@ -832,7 +832,10 @@ gsbc_bytecode_size_cast_op(struct gsparsedline *p, struct gsbc_bytecode_size_cod
 {
     int i;
 
-    if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
+    if (
+        gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
+        || gssymceq(p->directive, gssymoptyapp, gssymcodeop, ".tyapp")
+    ) {
         /* no effect on representation */
     } else {
         return 0;
@@ -2369,7 +2372,10 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
 int
 gsbc_byte_compile_cast_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    if (gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")) {
+    if (
+        gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
+        || gssymceq(p->directive, gssymoptyapp, gssymcodeop, ".tyapp")
+    ) {
         /* no effect on representation */
     } else {
         return 0;

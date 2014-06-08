@@ -1,0 +1,20 @@
+#calculus: gsdl.string-code 0.2
+
+	.document
+
+	.data
+
+	.closure	_ep_c
+f	.closure	_f_c
+
+	.code
+
+_ep_c	.expr
+bool.t	.tygvar
+f	.gvar
+	.tyapp	bool.t
+	.enter	f
+
+_f_c	.expr
+α	.tyarg	*
+	.undef	α
