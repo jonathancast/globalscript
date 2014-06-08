@@ -737,11 +737,12 @@ rune.t	.tygvar
 parser.pos.t	.tygvar
 string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty	.tygvar
+gsdl.ags.codeitem.karg.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 _gsdl.ags.codeitem.parser_ubcasecont.p_f_c	.subcode
 _gsdl.ags.codeitem.parser_ubcasecont.p_decls.p_c	.subcode
-parser.lift4	.gvar
+parser.lift5	.gvar
 parser.pos.get	.gvar
 parser.<*	.gvar
 gsdl.ags.syntax.id	.gvar
@@ -751,6 +752,9 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.codeitem.parser_ubcasecont.p_ubcasecont.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
+parser.<|>	.gvar
+gsdl.ags.codeitem.fkargs.parser	.gvar
+gsdl.ags.codeitem.karg.parser	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 parser.fail	.gvar	-- Temp
 fs	.fv	gsdl.ags.syntax.features.t
@@ -761,19 +765,22 @@ nm.p2	.apply	parser.*>	rune.t	string.t	string.t	|	ubcasecont.p	gsdl.ags.syntax.w
 nm.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	nm.p2
 nm.p	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	nm.p1
 decls.p	.closure	_gsdl.ags.codeitem.parser_ubcasecont.p_decls.p_c
+karg.p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.karg.t	|	gsdl.ags.codeitem.fkargs.parser	gsdl.ags.codeitem.karg.parser
 expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
-	.app	f	pos.get	nm.p	decls.p	expr.p
-	.enter	parser.lift4	rune.t	parser.pos.t	string.t	_gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.t
+	.app	f	pos.get	nm.p	decls.p	karg.p	expr.p
+	.enter	parser.lift5	rune.t	parser.pos.t	string.t	_gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty	gsdl.ags.codeitem.karg.t	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.t
 
 _gsdl.ags.codeitem.parser_ubcasecont.p_f_c	.expr
 parser.pos.t	.tygvar
 string.t	.tygvar
 _gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty	.tygvar
+gsdl.ags.codeitem.karg.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar	-- Temp
 pos	.larg	parser.pos.t
 nm	.larg	string.t
 decls	.larg	_gsdl.ags.codeitem.prim.u_ubcasecont_decls_ty
+ka	.larg	gsdl.ags.codeitem.karg.t
 e	.larg	gsdl.ags.codeitem.expr.t
 	.undef	gsdl.ags.codeitem.t
 
