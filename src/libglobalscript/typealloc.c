@@ -1317,9 +1317,7 @@ gskind_compile(struct gspos pos, gsinterned_string ki)
                 stack[stacksize++] = gskind_unlifted_kind();
                 break;
             case '*':
-                if (stacksize >= MAX_STACK_SIZE)
-                    gsfatal_unimpl(__FILE__, __LINE__, "stack overflow")
-                ;
+                if (stacksize >= MAX_STACK_SIZE) gsfatal(UNIMPL("stack overflow"));
                 stack[stacksize++] = gskind_lifted_kind();
                 break;
             case '^':
@@ -1331,7 +1329,7 @@ gskind_compile(struct gspos pos, gsinterned_string ki)
                 stack[stacksize++] = gskind_exponential_kind(base, exp);
                 break;
             default:
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: gskind_compile(%s)", pos, p);
+                gsfatal(UNIMPL("%P: gskind_compile(%s)"), pos, p);
         }
     }
 

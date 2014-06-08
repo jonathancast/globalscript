@@ -384,7 +384,7 @@ api_at_termination(api_termination_callback *cb)
 {
     lock(&api_at_termination_queue_lock);
     if (api_at_termination_queue_length >= API_TERMINATION_QUEUE_LENGTH)
-        gsfatal_unimpl(__FILE__, __LINE__, "API Termination Queue overflow")
+        gsfatal(UNIMPL("API Termination Queue overflow"))
     ;
     api_at_termination_queue[api_at_termination_queue_length++] = cb;
     unlock(&api_at_termination_queue_lock);

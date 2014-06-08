@@ -73,7 +73,7 @@ again:
             } else if (!strcmp(prim->primset->name, "natural.prim") && !strcmp(prim->primname->name, "natural")) {
                 gsprog_type.type = gsprog_type_natural;
             } else {
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: %P: Cannot print primitive %s %y", pos, type->pos, prim->primset->name, prim->primname);
+                gsfatal(UNIMPL("%P: %P: Cannot print primitive %s %y"), pos, type->pos, prim->primset->name, prim->primname);
             }
             break;
         }

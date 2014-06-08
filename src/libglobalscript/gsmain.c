@@ -70,9 +70,7 @@ gsmain(int argc, char **argv)
     docfilename = 0;
     exits("no-document");
 have_document:
-    if (!gsentrypoint)
-        gsfatal_unimpl(__FILE__, __LINE__, "Do not in fact have a document; check gsaddfile")
-    ;
+    if (!gsentrypoint) gsfatal(UNIMPL("Do not in fact have a document; check gsaddfile"));
     gscheck_program(docfilename, symtable, gsentrypos, gsentrytype);
     gstat_initialize(docfilename);
     gsstatprint("Before garbage collection: %dMB used\n", gs_sys_memory_allocated_size() / 0x400 / 0x400);
