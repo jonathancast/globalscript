@@ -922,7 +922,7 @@ again:
                     ace_thread_enter_closure(ip->pos, thread, hp, stats);
                     return;
                 } else {
-                    gsstatprint("%P: Allocating a new thread to avoid stack overflow\n", ip->pos);
+                    gsstatprint("%P: %P: Allocating a new thread to avoid stack overflow\n", thread->cureval->cont.pos, ip->pos);
                     stats->num_blocks_on_new_stack++;
                     st = ace_start_evaluation(ip->pos, hp);
                     break;
