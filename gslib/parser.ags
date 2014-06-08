@@ -2573,9 +2573,10 @@ r	.tyfv	*
 f	.fv	_parser.>>=_k_ty	s	α	β
 k	.fv	_parser.t_k_ty	s	β	r
 x	.larg	α
-fx	.apply	f	|	x
 	.app	k
-	.enter	fx	r
+	.tyapp	r
+	.app	x
+	.enter	f
 
 -- §section §gs{parser.neg.lookahead}
 
