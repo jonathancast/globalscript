@@ -302,26 +302,26 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         return 0;
     }
     if (!calculus_version) gsfatal("%s: Missing #calculus pragma", pos.real_filename);
-    if (!strcmp(calculus_version, "0.1")) {
-        static int should_disable_string_code_0_1, should_disable_string_code_0_1_initialized;
+    if (!strcmp(calculus_version, "0.2")) {
+        static int should_disable_string_code_0_2, should_disable_string_code_0_2_initialized;
 
-        if (!should_disable_string_code_0_1_initialized) {
+        if (!should_disable_string_code_0_2_initialized) {
             struct uxio_ichannel *chan;
             char buf[0x10];
             long n;
-            if (!(chan = gsbio_envvar_iopen("SHOULD_DISABLE_STRING_CODE_0_1"))) {
-                should_disable_string_code_0_1_initialized = 1;
+            if (!(chan = gsbio_envvar_iopen("SHOULD_DISABLE_STRING_CODE_0_2"))) {
+                should_disable_string_code_0_2_initialized = 1;
                 goto decided_on_disabling;
             }
             if ((n = gsbio_get_contents(chan, buf, 0x10)) < 0)
-                gsfatal("Error reading $SHOULD_DISABLE_STRING_CODE_0_1: %r")
+                gsfatal("Error reading $SHOULD_DISABLE_STRING_CODE_0_2: %r")
             ;
-            should_disable_string_code_0_1 = n > 0;
-            should_disable_string_code_0_1_initialized = 1;
-            if (gsbio_device_iclose(chan) < 0) gsfatal("Could not close $SHOULD_DISABLE_STRING_CODE_0_1 fd: %r");
+            should_disable_string_code_0_2 = n > 0;
+            should_disable_string_code_0_2_initialized = 1;
+            if (gsbio_device_iclose(chan) < 0) gsfatal("Could not close $SHOULD_DISABLE_STRING_CODE_0_2 fd: %r");
         }
     decided_on_disabling:
-        if (should_disable_string_code_0_1) gsfatal("%s: Illegally old calculus string code 0.1", pos.real_filename);
+        if (should_disable_string_code_0_2) gsfatal("%s: Illegally old calculus string code 0.2", pos.real_filename);
     }
     if ((parsedfile = gsparsed_file_alloc(filename, relname, type, features)) < 0) {
         gsfatal("%s:%d: Cannot allocate input file: %r", pos.real_filename, pos.real_lineno);
