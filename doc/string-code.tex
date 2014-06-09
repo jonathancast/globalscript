@@ -1179,6 +1179,9 @@ t	.tyforall	ki
 
 This translates to a universal quantifier for the type variable \stringcode{t} of kind \stringcode{ki} (see section \ref{kinds}).
 
+\section{Existential Quantifiers}
+\label{type_exists}
+
 \subsection{\stringcode{.tyexists}}
 
 \begin{verbatim}
@@ -1203,6 +1206,17 @@ This defines \stringcode{t} to be the result of applying \stringcode{tyf} to the
 
 Technically, this only allows type applications to be named;
 more complicated type expressions can be dealt with via lambda-lifting.
+
+\section{Type Environments}
+\label{type_context}
+
+\subsection{\stringcode{.tylift}}
+
+\begin{verbatim}
+	.tylift
+\end{verbatim}
+
+This represents the type environment \<\lfloor\bullet\rfloor\>, which maps the following type to its image under the lifting monad.
 
 \chapter{Notes on the Type System (Semi-Obsolete)}
 
@@ -1301,17 +1315,10 @@ Interpolations aren't supported inside classes yet but they will be.
 long
 gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
-    static gsinterned_string gssymtylet, gssymtylift, gssymtyfun, gssymtyref, gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
+    static gsinterned_string gssymtyfun, gssymtyref, gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
 
     while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
-        if (gssymceq(parsedline->directive, gssymtylift, gssymtypeop, ".tylift")) {
-            if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
-            else
-                parsedline->label = 0;
-            if (n > 2)
-                gsfatal("%s:%d: Too many arguments to .tylift", pos->real_filename, pos->real_lineno);
-        } else if (gssymceq(parsedline->directive, gssymtyfun, gssymtypeop, ".tyfun")) {
+        if (gssymceq(parsedline->directive, gssymtyfun, gssymtypeop, ".tyfun")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
             else
