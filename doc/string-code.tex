@@ -51,7 +51,7 @@ Every string code file must begin with the syntax, followed by  blank line:
 \begin{verbatim}
 #calculus: gsdl.string-code 0.6
 \end{verbatim}
-Older versions are also supported: versions 0.2 through 0.5.
+Older versions are also supported: versions 0.3 through 0.5.
 This document specifieds version 0.6, but it has notes on the changes from earlier versions.
 
 Next after this is the declaration
@@ -658,7 +658,6 @@ of type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}.
 These are actually just the allocations that are supported in both expressions and in imperative block statements.
 
 \subsection{\stringcode{.closure}}
-\new{0.3}{this construct was called \stringcode{.alloc}.}
 
 \begin{verbatim}
 label	.closure	<code label>
@@ -1279,7 +1278,7 @@ label	.impprog	primset	primtype
 \end{verbatim}
 That is followed by global variables, free variables, and arguments as for an \verb+.expr+.
 
-`Let' generators get compiled to\new{0.3}{this was called \stringcode{.alloc}.}
+`Let' generators get compiled to
 \begin{verbatim}
 var	.closure	code-label
 \end{verbatim}
