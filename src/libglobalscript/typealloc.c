@@ -724,7 +724,7 @@ gstypes_compile_ubproduct(struct gspos pos, int nfields, ...)
     int i;
 
     if (nfields > MAX_NUM_REGISTERS)
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Products with more than 0x%x fields", pos, MAX_NUM_REGISTERS)
+        gsfatal(UNIMPL("%P: Products with more than 0x%x fields"), pos, MAX_NUM_REGISTERS)
     ;
 
     va_start(arg, nfields);
@@ -920,7 +920,7 @@ gstype_instantiate(struct gspos pos, struct gstype *fun, struct gstype *arg)
         default: {
             char buf[0x100];
             if (gstypes_eprint_type(buf, buf + sizeof(buf), fun) >= buf + sizeof(buf))
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: supply (node = %d)", fun->pos, fun->node);
+                gsfatal(UNIMPL("%P: supply (node = %d)"), fun->pos, fun->node)
             ;
             gsfatal("%P: Can't instantiate %s (%P), which isn't a polymorphic type", pos, buf, fun->pos);
         }
@@ -968,7 +968,7 @@ gstypes_subst(struct gspos pos, struct gstype *type, gsinterned_string varname, 
             varno = 0;
             while (gstypes_is_ftyvar(nvar, type1) || gstypes_is_ftyvar(nvar, type)) {
                 if (seprint(buf, buf + sizeof(buf), "%s:%d", lambda->var->name, varno) >= buf + sizeof(buf))
-                    gsfatal_unimpl(__FILE__, __LINE__, "Buffer overflow printing %s:%d", lambda->var->name, varno)
+                    gsfatal(UNIMPL("Buffer overflow printing %s:%d"), lambda->var->name, varno)
                 ;
                 nvar = gsintern_string(gssymtypelable, buf);
             }
@@ -1305,15 +1305,11 @@ gskind_compile(struct gspos pos, gsinterned_string ki)
     for (p = ki->name; *p; p++) {
         switch (*p) {
             case '?':
-                if (stacksize >= MAX_STACK_SIZE)
-                    gsfatal_unimpl(__FILE__, __LINE__, "stack overflow")
-                ;
+                if (stacksize >= MAX_STACK_SIZE) gsfatal(UNIMPL("stack overflow"));
                 stack[stacksize++] = gskind_unknown_kind();
                 break;
             case 'u':
-                if (stacksize >= MAX_STACK_SIZE)
-                    gsfatal_unimpl(__FILE__, __LINE__, "stack overflow")
-                ;
+                if (stacksize >= MAX_STACK_SIZE) gsfatal(UNIMPL("stack overflow"));
                 stack[stacksize++] = gskind_unlifted_kind();
                 break;
             case '*':
