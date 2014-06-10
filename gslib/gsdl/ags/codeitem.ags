@@ -102,6 +102,8 @@ gsdl.ags.codeitem.impgen.print	.closure	_gsdl.ags.codeitem.impgen.print_c
 
 gsdl.ags.codeitem.impgen.fmtgs	.closure	_gsdl.ags.codeitem.impgen.fmtgs_c
 
+gsdl.ags.codeitem.impgen.alloc	.closure	_gsdl.ags.codeitem.impgen.alloc_c
+
 gsdl.ags.codeitem.alloc.rhs.parser	.closure	_gsdl.ags.codeitem.alloc.rhs.parser_c
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_alloc.re	.regex	.alloc
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re	.regex	.closure
@@ -2367,6 +2369,18 @@ fmtgs.printer.t	.tygvar	-- Temp
 g	.larg	gsdl.ags.codeitem.impgen.t
 	.undef	fmtgs.printer.t
 
+-- §section §gs{gsdl.ags.codeitem.impgen.t} Constructors
+
+_gsdl.ags.codeitem.impgen.alloc_c	.expr
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+gsdl.ags.codeitem.impgen.prim.u	.tygvar
+gsdl.ags.codeitem.impgen.t.in	.cogvar
+rhs	.larg	gsdl.ags.codeitem.alloc.rhs.t
+res	.constr	gsdl.ags.codeitem.impgen.prim.u	alloc	0	rhs
+	.coerce	gsdl.ags.codeitem.impgen.t.in
+	.lift
+	.yield	res
+
 -- §section §gs{gsdl.ags.codeitem.alloc.rhs.parser}
 
 _gsdl.ags.codeitem.alloc.rhs.parser_c	.expr
@@ -3905,7 +3919,12 @@ gsdl.ags.codeitem.impgen.prim.u	.tygvar
 	.tyref	gsdl.ags.codeitem.impgen.prim.u
 
 gsdl.ags.codeitem.impgen.prim.u	.tyexpr
-	.typroduct
+_gsdl.ags.codeitem.impgen.prim.u_alloc_ty	.tygvar
+	.tysum	alloc	_gsdl.ags.codeitem.impgen.prim.u_alloc_ty
+
+_gsdl.ags.codeitem.impgen.prim.u_alloc_ty	.tyexpr
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+	.tyubproduct	0	gsdl.ags.codeitem.alloc.rhs.t
 
 -- §section §gs{gsdl.ags.codeitem.impbody.t}
 
