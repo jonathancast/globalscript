@@ -6,7 +6,7 @@
 
 parser.parse	.closure	_parser.parse_c
 _parser.parse_work	.closure	_parser.parse_work_c	_parser.parse_work_ty
-_parser.parse_work_lookahead	.closure	_parser.parse_work_lookahead_c	_parser.parse_work_lookahead_ty
+_parser.parse_work_lookahead_w	.closure	_parser.parse_work_lookahead_w_c	_parser.parse_work_lookahead_w_ty
 _parser.parse_work_symbol_:_unexpected_prefix.s	.string	Un-expected\s
 _parser.parse_work_expecting	.closure	_parser.parse_work_expecting_c	_parser.parse_work_expecting_ty
 parser.exec	.closure	_parser.exec_c
@@ -143,15 +143,17 @@ parser.prim.t	.tygvar
 _parser.prim.u_pos.get_0_ty	.tygvar
 _parser.prim.u_symbol_0_ty	.tygvar
 either.t	.tygvar
+_parser.parse_work_lookahead_k	.subcode
 _parser.parse_work_symbol_k	.subcode
 _parser.parse_work_unit.plus_k	.subcode
 list.t.out	.cogvar
+parser.prim.t.out	.cogvar
 either.left	.gvar
 parser.err.simple.failure	.gvar
 list.null	.gvar
 parser.err.message.failure	.gvar
 _parser.parse_work	.gvar
-_parser.parse_work_lookahead	.gvar
+_parser.parse_work_lookahead_w	.gvar
 s	.tyfv	*
 α	.tyfv	*
 adv	.fv	parser.advance.t	s
@@ -174,9 +176,10 @@ mf			.apply	parser.err.message.failure	|	pos	eof	msg
 			.enter	either.left	parser.err.t	α
 		.case	lookahead
 p1		.fkarg	0	parser.prim.t	s	rec.ty
-p2			.apply	_parser.parse_work_lookahead	s	α	|	p1	s
-			.app	adv	pr	pos	p2	s
-			.enter	_parser.parse_work	s	α
+			.force	_parser.parse_work_lookahead_k
+			.coerce	parser.prim.t.out	s	α
+			.app	p1	s
+			.enter	_parser.parse_work_lookahead_w	s	α
 		.case	pos.get
 k		.fkarg	0	_parser.prim.u_pos.get_0_ty	s	α
 p1			.apply	k	|	pos
@@ -195,6 +198,26 @@ p1		.fkarg	1	parser.prim.t	s	α
 			.coerce	list.t.out	s
 			.enter	s
 	-- > :: either.t	parser.err.t	α
+
+_parser.parse_work_lookahead_k	.forcecont
+parser.advance.t	.tygvar
+print.t	.tygvar
+parser.prim.u	.tygvar
+parser.pos.t	.tygvar
+list.t	.tygvar
+parser.prim.t.in	.cogvar
+_parser.parse_work	.gvar
+s	.tyfv	*
+α	.tyfv	*
+adv	.fv	parser.advance.t	s
+pr	.fv	print.t	s
+pos	.fv	parser.pos.t
+s	.fv	list.t	s
+p2.u	.karg	parser.prim.u	s	α
+p2.l	.lifted	p2.u
+p2	.cast		p2.l	parser.prim.t.in	s	α
+	.app	adv	pr	pos	p2	s
+	.enter	_parser.parse_work	s	α
 
 _parser.parse_work_symbol_k	.forcecont
 parser.advance.t	.tygvar
@@ -323,36 +346,36 @@ s1		.fkarg	1	list.t	s
 			.app	x
 			.enter	either.right	parser.err.t	α
 
-_parser.parse_work_lookahead_c	.expr
+_parser.parse_work_lookahead_w_c	.expr
 parser.advance.t	.tygvar
 print.t	.tygvar
 parser.pos.t	.tygvar
 parser.prim.t	.tygvar
 list.t	.tygvar
-_parser.parse_work_lookahead_k	.subcode
+_parser.parse_work_lookahead_w_k	.subcode
 parser.prim.t.out	.cogvar
 s	.tyarg	*
 α	.tyarg	*
 rec.ty	.tylet	parser.prim.t	s	α
 p	.larg	parser.prim.t	s	rec.ty
 s	.larg	list.t	s
-	.force	_parser.parse_work_lookahead_k
+	.force	_parser.parse_work_lookahead_w_k
 	.coerce	parser.prim.t.out	s	rec.ty
 	.enter	p
 
-_parser.parse_work_lookahead_k	.forcecont
+_parser.parse_work_lookahead_w_k	.forcecont
 parser.prim.u	.tygvar
 parser.prim.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 _parser.prim.u_pos.get_0_ty	.tygvar
 _parser.prim.u_symbol_0_ty	.tygvar
-_parser.parse_work_lookahead_symbol_k	.subcode
-_parser.parse_work_lookahead_unit.plus_kx	.subcode
+_parser.parse_work_lookahead_w_symbol_k	.subcode
+_parser.parse_work_lookahead_w_unit.plus_kx	.subcode
 list.t.out	.cogvar
 parser.prim.t.out	.cogvar
 parser.prim.fail	.gvar
-_parser.parse_work_lookahead	.gvar
+_parser.parse_work_lookahead_w	.gvar
 s	.tyfv	*
 α	.tyfv	*
 s	.fv	list.t	s
@@ -374,27 +397,27 @@ k		.fkarg	0	_parser.prim.u_pos.get_0_ty	s	rec.ty
 		.case	symbol
 sk		.fkarg	0	_parser.prim.u_symbol_0_ty	s	rec.ty
 ek		.fkarg	1	parser.prim.t	s	rec.ty
-			.force	_parser.parse_work_lookahead_symbol_k
+			.force	_parser.parse_work_lookahead_w_symbol_k
 			.coerce	list.t.out	s
 			.enter	s
 		.case	unit.plus
 x		.fkarg	0	rec.ty
 p1		.fkarg	1	parser.prim.t	s	rec.ty
-			.force	_parser.parse_work_lookahead_unit.plus_kx
+			.force	_parser.parse_work_lookahead_w_unit.plus_kx
 			.coerce	parser.prim.t.out	s	α
 			.enter	x
 	-- > :: parser.prim.t	s	α
 
-_parser.parse_work_lookahead_symbol_k	.forcecont
+_parser.parse_work_lookahead_w_symbol_k	.forcecont
 _parser.prim.u_symbol_0_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 parser.prim.t	.tygvar
-_parser.parse_work_lookahead_symbol_:_k	.subcode
+_parser.parse_work_lookahead_w_symbol_:_k	.subcode
 either.t.out	.cogvar
 list.t.in	.cogvar
-_parser.parse_work_lookahead	.gvar
+_parser.parse_work_lookahead_w	.gvar
 s	.tyfv	*
 α	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	α
@@ -407,7 +430,7 @@ s0	.karg	list.prim.u	s
 		.case	:
 c		.fkarg	0	s
 s1		.fkarg	1	list.t	s
-			.force	_parser.parse_work_lookahead_symbol_:_k
+			.force	_parser.parse_work_lookahead_w_symbol_:_k
 			.coerce	either.t.out	list.string.ty	parser.ty
 			.app	c
 			.enter	sk
@@ -415,14 +438,14 @@ s1		.fkarg	1	list.t	s
 s0.l			.lifted	s0
 s0.cl			.cast	s0.l	list.t.in	s
 			.app	ek	s0.cl
-			.enter	_parser.parse_work_lookahead	s	α
+			.enter	_parser.parse_work_lookahead_w	s	α
 
-_parser.parse_work_lookahead_symbol_:_k	.forcecont
+_parser.parse_work_lookahead_w_symbol_:_k	.forcecont
 either.prim.u	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 parser.prim.t	.tygvar
-_parser.parse_work_lookahead	.gvar
+_parser.parse_work_lookahead_w	.gvar
 s	.tyfv	*
 α	.tyfv	*
 s1	.fv	list.t	s
@@ -437,27 +460,27 @@ exp		.fkarg	0	list.t	string.t
 		.case	right
 p0.1		.fkarg	0	parser.prim.t	s	rec.ty
 			.app	p0.1	s1
-			.enter	_parser.parse_work_lookahead	s	α
+			.enter	_parser.parse_work_lookahead_w	s	α
 
-_parser.parse_work_lookahead_unit.plus_kx	.forcecont
+_parser.parse_work_lookahead_w_unit.plus_kx	.forcecont
 list.t	.tygvar
 parser.prim.t	.tygvar
 parser.prim.u	.tygvar
-_parser.parse_work_lookahead_unit.plus_kp2	.subcode
+_parser.parse_work_lookahead_w_unit.plus_kp2	.subcode
 parser.prim.t.out	.cogvar
-_parser.parse_work_lookahead	.gvar
+_parser.parse_work_lookahead_w	.gvar
 s	.tyfv	*
 α	.tyfv	*
 rec.ty	.tylet	parser.prim.t	s	α
 s	.fv	list.t	s
 p1	.fv	parser.prim.t	s	rec.ty
 x0	.karg	parser.prim.u	s	α
-	.force	_parser.parse_work_lookahead_unit.plus_kp2
+	.force	_parser.parse_work_lookahead_w_unit.plus_kp2
 	.coerce	parser.prim.t.out	s	α
 	.app	p1	s
-	.enter	_parser.parse_work_lookahead	s	α
+	.enter	_parser.parse_work_lookahead_w	s	α
 
-_parser.parse_work_lookahead_unit.plus_kp2	.forcecont
+_parser.parse_work_lookahead_w_unit.plus_kp2	.forcecont
 parser.prim.u	.tygvar
 _parser.prim.<|>_w	.gvar
 s	.tyfv	*
@@ -4464,7 +4487,7 @@ s	.tyforall	*
 	.tyfun	list.t	s
 	.tyref	either.t	parser.err.t	α
 
-_parser.parse_work_lookahead_ty	.tyexpr
+_parser.parse_work_lookahead_w_ty	.tyexpr
 parser.advance.t	.tygvar
 print.t	.tygvar
 parser.pos.t	.tygvar
