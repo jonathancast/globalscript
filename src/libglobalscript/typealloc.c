@@ -468,12 +468,8 @@ gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, st
         struct gskind *kind;
         struct gstype_abstract *abstype;
 
-        if (cl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
-        ;
-        if (cl->regclass > regglobal)
-            gsfatal("%P: Too late to add type globals", p->pos)
-        ;
+        if (cl->nregs >= MAX_NUM_REGISTERS) gsfatal(UNIMPL("%P: Register overflow"), p->pos);
+        if (cl->regclass > regglobal) gsfatal("%P: Too late to add type globals", p->pos);
         cl->regclass = regglobal;
         cl->regs[cl->nregs] = p->label;
         cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
@@ -503,9 +499,7 @@ gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, st
         struct gskind *kind;
         enum gsprim_type_group group;
 
-        if (cl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
-        ;
+        if (cl->nregs >= MAX_NUM_REGISTERS) gsfatal(UNIMPL("%P: Register overflow"), p->pos);
         if (cl->regclass > regglobal)
             gsfatal("%P: Too late to add type globals", p->pos)
         ;
@@ -623,7 +617,7 @@ gstypes_compile_sum(struct gspos pos, int nconstrs, ...)
     int i;
 
     if (nconstrs > MAX_NUM_REGISTERS)
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Sums with more than 0x%x constructors", pos, MAX_NUM_REGISTERS)
+        gsfatal(UNIMPL("%P: Sums with more than 0x%x constructors"), pos, MAX_NUM_REGISTERS)
     ;
 
     va_start(arg, nconstrs);
@@ -684,12 +678,12 @@ gstypes_compile_product(struct gspos pos, int nfields, ...)
     int i;
 
     if (nfields > MAX_NUM_REGISTERS)
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Products with more than 0x%x fields", pos, MAX_NUM_REGISTERS)
+        gsfatal(UNIMPL("%P: Products with more than 0x%x fields"), pos, MAX_NUM_REGISTERS)
     ;
 
     va_start(arg, nfields);
     for (i = 0; i < nfields; i++) {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Copy fields out of gstypes_compile_product arguments", pos);
+        gsfatal(UNIMPL("%P: Copy fields out of gstypes_compile_product arguments"), pos);
     }
     va_end(arg);
 
