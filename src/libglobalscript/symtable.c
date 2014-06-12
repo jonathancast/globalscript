@@ -5,18 +5,6 @@
 #include <libglobalscript.h>
 #include "gsinputfile.h"
 
-/* §section Symbol Equality */
-
-int
-gssymeq(gsinterned_string sy0, gssymboltype ty, char *str)
-{
-    gsinterned_string sy1;
-
-    sy1 = gsintern_string(ty, str);
-
-    return sy0 == sy1;
-}
-
 /* §section Interning Symbols */
 
 static ulong gshash_string(gssymboltype, char *);

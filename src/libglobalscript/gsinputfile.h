@@ -22,10 +22,6 @@ typedef enum {
 
 gsfiletype gsaddfile(char *, struct gsfile_symtable **, struct gspos *, gsvalue *, struct gstype **);
 
-/* Deprecated */
-int gssymeq(gsinterned_string, gssymboltype, char*);
-
-/* Caching version */
 #define gssymceq(sa, se, st, sn) (se ? (sa) == se : (sa) == (se = gsintern_string((st), (sn))))
 
 struct gsparsedfile_segment {
