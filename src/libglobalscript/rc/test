@@ -118,6 +118,10 @@ ok_grep_errors '-- natural number literals: negative number --' './test-fixtures
 
 ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
 
+echo '# Version 0.3 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_2=1
+
 ok_diff '-- regex literals --' ./$O.test-gsi regex-literal.ags
 ok_diff '-- regex character class --' ./$O.test-gsi regex-class.ags
 ok_diff '-- regex negated character class --' ./$O.test-gsi regex-neg-class.ags
@@ -156,10 +160,6 @@ ok_grep_errors '-- block statements with mis-typed bodies --' './test-fixtures/m
 ok_grep_errors '-- undefined block statement API entry points --' './test-fixtures/undef-block-api.ags:17: undefined' ./$O.test-gsexec undef-block-api.ags
 ok_grep_errors '-- block statement API entry points with mis-typed binds --' './test-fixtures/mistyped-bind-api.ags:13: I don''t think' ./$O.test-gsexec mistyped-bind-api.ags
 ok_grep_errors '-- block statement API entry points with undefined binds --' './test-fixtures/undef-bind-api.ags:19: undefined' ./$O.test-gsexec undef-bind-api.ags
-
-echo '# Version 0.3 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_2=1
 
 ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
 ok_diff '-- trivial use of .closure --' ./$O.test-gsexec simple-closure-api.ags
