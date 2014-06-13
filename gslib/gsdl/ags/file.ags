@@ -190,7 +190,7 @@ diff.list.nil	.gvar
 _gsdl.ags.file.print_dataitems	.gvar
 gsdl.ags.sourcepos.print	.gvar
 list.<>	.gvar
-maybe.maybe	.gvar
+maybe.elim	.gvar
 gsdl.ags.syntax.var.print	.gvar
 _gsdl.ags.file.print_dataitems_:_cast_cast.s	.gvar
 list.:	.gvar
@@ -210,7 +210,7 @@ pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	gsdl.var.t
 x		.fkarg	2	gsdl.var.t
 co		.fkarg	3	gsdl.var.t
-nm.s			.apply	maybe.maybe	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	nm
+nm.s			.apply	maybe.elim	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	nm
 x.s			.apply	gsdl.ags.syntax.var.print	|	x
 co.s			.apply	gsdl.ags.syntax.var.print	|	co
 s0.5			.apply	list.:	rune.t	|	rune.new.line	s1
@@ -226,9 +226,9 @@ pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	gsdl.var.t
 co		.fkarg	2	gsdl.var.t
 ty		.fkarg	3	maybe.t	gsdl.var.t
-nm.s			.apply	maybe.maybe	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	nm
+nm.s			.apply	maybe.elim	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	nm
 ty.s.print			.closure	_gsdl.ags.file.print_dataitems_:_closure_ty.s.print_c
-ty.s			.apply	maybe.maybe	gsdl.var.t	diff.list.rune.ty	|	nil	ty.s.print	ty
+ty.s			.apply	maybe.elim	gsdl.var.t	diff.list.rune.ty	|	nil	ty.s.print	ty
 co.s			.apply	gsdl.ags.syntax.var.print	|	co
 s0.4			.apply	list.:	rune.t	|	rune.new.line	s1
 s0.3			.apply	ty.s	|	s0.4
@@ -241,7 +241,7 @@ s0			.apply	nm.s	|	s0.1
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	gsdl.var.t
 ty		.fkarg	2	gsdl.var.t
-nm.s			.apply	maybe.maybe	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	nm
+nm.s			.apply	maybe.elim	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	nm
 ty.s			.apply	gsdl.ags.syntax.var.print	|	ty
 s0.3			.apply	list.:	rune.t	|	rune.new.line	s1
 s0.2			.apply	ty.s	|	s0.3

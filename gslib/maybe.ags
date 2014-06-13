@@ -8,7 +8,7 @@ maybe.nothing	.closure	_maybe.nothing_c
 maybe.just	.closure	_maybe.just_c
 
 maybe.fromJust	.closure	_maybe.fromJust_c
-maybe.maybe	.closure	_maybe.maybe_c
+maybe.elim	.closure	_maybe.elim_c
 
 maybe.≡	.closure	_maybe.≡_c
 
@@ -66,29 +66,29 @@ x1		.fkarg	0	α
 		.case	nothing
 			.enter	x
 
--- §section §gs{maybe.maybe}
+-- §section §gs{maybe.elim}
 
-_maybe.maybe_c	.expr
-_maybe.maybe_sk_ty	.tygvar
+_maybe.elim_c	.expr
+_maybe.elim_sk_ty	.tygvar
 maybe.t	.tygvar
-_maybe.maybe_k	.subcode
+_maybe.elim_k	.subcode
 maybe.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
 fk	.larg	β
-sk	.larg	_maybe.maybe_sk_ty	α	β
+sk	.larg	_maybe.elim_sk_ty	α	β
 mb	.larg	maybe.t	α
-	.force	_maybe.maybe_k
+	.force	_maybe.elim_k
 	.coerce	maybe.t.out	α
 	.enter	mb
 
-_maybe.maybe_k	.forcecont
-_maybe.maybe_sk_ty	.tygvar
+_maybe.elim_k	.forcecont
+_maybe.elim_sk_ty	.tygvar
 maybe.prim.u	.tygvar
 α	.tyfv	*
 β	.tyfv	*
 fk	.fv	β
-sk	.fv	_maybe.maybe_sk_ty	α	β
+sk	.fv	_maybe.elim_sk_ty	α	β
 mb0	.karg	maybe.prim.u	α
 	.analyze	mb0	just	nothing
 		.case	just
@@ -221,9 +221,9 @@ _maybe.prim.u_just_ty	.tyexpr
 _maybe.prim.u_nothing_ty	.tyexpr
 	.tyubproduct
 
--- §section §gs{maybe.maybe}
+-- §section §gs{maybe.elim}
 
-_maybe.maybe_sk_ty	.tyexpr
+_maybe.elim_sk_ty	.tyexpr
 α	.tylambda	*
 β	.tylambda	*
 	.tylift

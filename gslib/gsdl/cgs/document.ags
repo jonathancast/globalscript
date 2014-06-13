@@ -139,7 +139,7 @@ gsdl.cgs.symbol.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
-maybe.maybe	.gvar
+maybe.elim	.gvar
 ordered.set.empty	.gvar
 gsdl.cgs.gstype.freevars	.gvar
 gsdl.cgs.gsexpr.freevars	.gvar
@@ -147,9 +147,9 @@ res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 doc0	.karg	gsdl.cgs.document.prim.u
 empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 mb.ty	.field	gstype doc0
-ty.fvs	.apply	maybe.maybe	gsdl.cgs.gstype.t	res.ty	|	empty	gsdl.cgs.gstype.freevars	mb.ty
+ty.fvs	.apply	maybe.elim	gsdl.cgs.gstype.t	res.ty	|	empty	gsdl.cgs.gstype.freevars	mb.ty
 mb.e	.field	expr	doc0
-e.fvs	.apply	maybe.maybe	gsdl.cgs.gsexpr.t	res.ty	|	empty	gsdl.cgs.gsexpr.freevars	mb.e
+e.fvs	.apply	maybe.elim	gsdl.cgs.gsexpr.t	res.ty	|	empty	gsdl.cgs.gsexpr.freevars	mb.e
 	.app	gsdl.cgs.symbol.compare	e.fvs	ty.fvs
 	.enter	ordered.set.union	gsdl.cgs.symbol.t
 
