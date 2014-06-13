@@ -2372,11 +2372,14 @@ g	.larg	gsdl.ags.codeitem.impgen.t
 -- §section §gs{gsdl.ags.codeitem.impgen.t} Constructors
 
 _gsdl.ags.codeitem.impgen.alloc_c	.expr
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar
 gsdl.ags.codeitem.impgen.prim.u	.tygvar
 gsdl.ags.codeitem.impgen.t.in	.cogvar
+mbv	.larg	maybe.t	gsdl.var.t
 rhs	.larg	gsdl.ags.codeitem.alloc.rhs.t
-res	.constr	gsdl.ags.codeitem.impgen.prim.u	alloc	0	rhs
+res	.constr	gsdl.ags.codeitem.impgen.prim.u	alloc	0	mbv	1	rhs
 	.coerce	gsdl.ags.codeitem.impgen.t.in
 	.lift
 	.yield	res
@@ -3923,8 +3926,11 @@ _gsdl.ags.codeitem.impgen.prim.u_alloc_ty	.tygvar
 	.tysum	alloc	_gsdl.ags.codeitem.impgen.prim.u_alloc_ty
 
 _gsdl.ags.codeitem.impgen.prim.u_alloc_ty	.tyexpr
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar
-	.tyubproduct	0	gsdl.ags.codeitem.alloc.rhs.t
+maybe.var.ty	.tylet	maybe.t	gsdl.var.t
+	.tyubproduct	0	maybe.var.ty	1	gsdl.ags.codeitem.alloc.rhs.t
 
 -- §section §gs{gsdl.ags.codeitem.impbody.t}
 

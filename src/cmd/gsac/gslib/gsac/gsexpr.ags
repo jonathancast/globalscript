@@ -2267,6 +2267,7 @@ ty		.fkarg	2	gsdl.cgs.gstype.t
 	-- > :: either.t	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
 
 _gsac.gsexpr.generator.imp.compile_undef_k	.forcecont
+gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
@@ -2278,13 +2279,14 @@ gsdl.ags.codeitem.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
-gsdl.var.t	.tygvar	-- Temp
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
 ordered.set.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.nil	.gvar
 gsdl.ags.codeitem.impgen.alloc	.gvar
+maybe.just	.gvar
+v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -2296,8 +2298,9 @@ cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+just.v			.apply	maybe.just	gsdl.var.t	|	v
 r.rhs			.undefined	gsdl.ags.codeitem.alloc.rhs.t
-r			.apply	gsdl.ags.codeitem.impgen.alloc	|	r.rhs
+r			.apply	gsdl.ags.codeitem.impgen.alloc	|	just.v	r.rhs
 tyem			.undefined	ordered.set.t	gsdl.var.t
 tysvs			.lfield	subvars	ty.r
 tygvs			.lfield	tygvars	ty.r
