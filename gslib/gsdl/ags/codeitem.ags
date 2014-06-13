@@ -2356,10 +2356,31 @@ g	.larg	gsdl.ags.codeitem.impgen.t
 
 _gsdl.ags.codeitem.impgen.print_k	.forcecont
 gsdl.ags.codeitem.impgen.prim.u	.tygvar
-diff.list.t	.tygvar	-- Temp
-rune.t	.tygvar	-- Temp
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar
+diff.list.<>	.gvar
+maybe.elim	.gvar
+diff.list.nil	.gvar
+gsdl.ags.syntax.var.print	.gvar
+diff.list.:	.gvar
+rune.tab	.gvar
+gsdl.ags.codeitem.alloc.rhs.print	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
 g0	.karg	gsdl.ags.codeitem.impgen.prim.u
-	.undef	diff.list.t	rune.t
+	.analyze	g0	alloc
+		.case	alloc
+mbv		.fkarg	0	maybe.t	gsdl.var.t
+rhs		.fkarg	1	gsdl.ags.codeitem.alloc.rhs.t
+nil			.apply	diff.list.nil	rune.t
+mbv.s			.apply	maybe.elim	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	mbv
+s2			.apply	gsdl.ags.codeitem.alloc.rhs.print	|	rhs
+s1			.apply	diff.list.:	rune.t	|	rune.tab	s2
+			.app	mbv.s	s1
+			.enter	diff.list.<>	rune.t
+	-- > :: diff.list.t	rune.t
 
 -- §section §gs{gsdl.ags.codeitem.impgen.fmtgs}
 
