@@ -749,11 +749,10 @@ _list.≡.k1	.forcecont
 list.prim.u	.tygvar
 list.t	.tygvar
 _list.≡.arg.ty	.tygvar
-_list.≡.cmp	.subcode
-_list.≡.rec	.subcode
+_list.≡_:_:_k	.subcode
+bool.t.out	.cogvar
 bool.true	.gvar
 bool.false	.gvar
-bool.∧	.gvar
 α	.tyfv	*
 c	.fv	_list.≡.arg.ty	α
 xn0	.fv	list.prim.u	α
@@ -766,10 +765,10 @@ xn1		.fkarg	1	list.t	α
 				.case	:
 y				.fkarg	0	α
 ys1				.fkarg	1	list.t	α
-b0					.closure	_list.≡.cmp
-b1					.closure	_list.≡.rec
-					.app	b0	b1
-					.enter	bool.∧
+					.force	_list.≡_:_:_k
+					.coerce	bool.t.out
+					.app	x	y
+					.enter	c
 				.case	nil
 					.enter	bool.false
 		.case	nil
@@ -781,25 +780,23 @@ ys1				.fkarg	1	list.t	α
 				.case	nil
 					.enter	bool.true
 
-_list.≡.cmp	.expr
-_list.≡.arg.ty	.tygvar
-α	.tyfv	*
-c	.fv	_list.≡.arg.ty	α
-x	.fv	α
-y	.fv	α
-	.app	x	y
-	.enter	c
-
-_list.≡.rec	.expr
+_list.≡_:_:_k	.forcecont
 list.t	.tygvar
 _list.≡.arg.ty	.tygvar
+bool.prim.u	.tygvar
+bool.false	.gvar
 list.≡	.gvar
 α	.tyfv	*
 c	.fv	_list.≡.arg.ty	α
 xn1	.fv	list.t	α
 ys1	.fv	list.t	α
-	.app	c	xn1	ys1
-	.enter	list.≡	α
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.enter	bool.false
+		.case	true
+			.app	c	xn1	ys1
+			.enter	list.≡	α
 
 -- §section §gs{list.compare}
 
