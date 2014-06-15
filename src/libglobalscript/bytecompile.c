@@ -2724,7 +2724,7 @@ gsbc_byte_compile_default(struct gsparsedfile_segment **ppseg, struct gsparsedli
         *pp = gsinput_next_line(ppseg, *pp)
     ;
     if (!gsbc_byte_compile_terminal_code_op(ppseg, pp, pcl)) {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Un-implemented .default code op %y", (*pp)->pos, (*pp)->directive);
+        gsfatal(UNIMPL("%P: Un-implemented .default code op %y"), (*pp)->pos, (*pp)->directive);
     }
 }
 

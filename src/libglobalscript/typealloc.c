@@ -51,7 +51,7 @@ gstypes_compile_types(struct gsfile_symtable *symtable, struct gsbc_item *items,
             case gssymcoercionlable:
                 break;
             default:
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_types(type = %d)", item.v->pos, item.type);
+                gsfatal(UNIMPL("%P: gstypes_compile_types(type = %d)"), item.v->pos, item.type);
         }
     }
 }
@@ -152,7 +152,7 @@ gstypes_compile_type_definitions(struct gsfile_symtable *symtable, struct gsbc_i
                         defns[i] = 0;
                         continue;
                     } else {
-                        gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_type_definitions(%s)", item.v->pos, item.v->directive->name);
+                        gsfatal(UNIMPL("%P: gstypes_compile_type_definitions(%s)"), item.v->pos, item.v->directive->name);
                     }
                 }
                 gssymtable_set_abstype(symtable, item.v->label, defns[i]);
@@ -162,7 +162,7 @@ gstypes_compile_type_definitions(struct gsfile_symtable *symtable, struct gsbc_i
             case gssymcoercionlable:
                 break;
             default:
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: gstypes_compile_types(type = %d)", item.v->pos, item.type);
+                gsfatal(UNIMPL("%P: gstypes_compile_types(type = %d)"), item.v->pos, item.type);
         }
     }
 }
@@ -222,12 +222,8 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         struct gskind *kind;
         struct gstype_lambda *lambda;
 
-        if (cl->nregs >= MAX_NUM_REGISTERS)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
-            ;
-        if (cl->regclass > regarg)
-            gsfatal("%P: Too late to add type arguments", p->pos)
-        ;
+        if (cl->nregs >= MAX_NUM_REGISTERS) gsfatal(UNIMPL("%P: Register overflow"), p->pos);
+        if (cl->regclass > regarg) gsfatal("%P: Too late to add type arguments", p->pos);
         cl->regclass = regarg;
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
