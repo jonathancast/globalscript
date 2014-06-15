@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -10,7 +10,7 @@
 
 _entry.c	.expr
 _entry.head.c	.subcode
-x	.alloc	_entry.head.c
+x	.closure	_entry.head.c
 	.enter	x
 
 _entry.head.c	.expr

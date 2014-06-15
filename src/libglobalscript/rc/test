@@ -67,6 +67,10 @@ ok_grep_errors '-- a .tylet (of  type synonym) must have enough arguments --' 'u
 ok_grep_errors '-- incorrect kind signatures on .tyexprs --' 'tyexpr-wrong-kind-sig.ags:12: Incorrect kind: Expected ''\*''; got ''u''' ./$O.test-gsi tyexpr-wrong-kind-sig.ags
 ok_diff_fail '-- kind signatures on .tyexprs --' ./$O.test-gsi tyexpr-kind-sig.ags
 
+echo '# Version 0.3 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_2=1
+
 ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
 ok_grep_errors '-- a let can be mis-typed --' './test-fixtures/mistyped-let.ags:7: I don''t think' ./$O.test-gsi mistyped-let.ags
 ok_diff_fail '-- let with undefined FV --' ./$O.test-gsi undef-free-var.ags
@@ -105,10 +109,6 @@ ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
-
-echo '# Version 0.3 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_2=1
 
 ok_diff '-- non-empty records in expressions --' ./$O.test-gsi record-literal-gen.ags
 ok_grep_errors '-- empty records with non-empty signatures in expressions --' './test-fixtures/record-empty-non-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi record-empty-non-empty-sig.ags
@@ -165,9 +165,6 @@ ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
 ok_diff '-- trivial use of .closure --' ./$O.test-gsexec simple-closure-api.ags
 
 ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-fixtures/invalid-fv.ags:15: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags
-
-ok_diff_fail '-- .closure can be used for closures --' ./$O.test-gsi undef-closure-in-expr.ags
-ok_grep_errors '-- .alloc cannot be used in expressions --' 'illegal-alloc-in-expr.ags:13: Unimplemented code op .alloc' ./$O.test-gsi illegal-alloc-in-expr.ags
 
 echo '# Version 0.4 and up:'
 
