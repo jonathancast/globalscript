@@ -489,7 +489,8 @@ g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
 		.case	undef
 pos1		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
-ty		.fkarg	2	gsdl.cgs.gstype.t
+pos2		.fkarg	2	gsdl.sourcepos.t
+ty		.fkarg	3	gsdl.cgs.gstype.t
 			.force	_gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_undef_k
 			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
 			.app	pos1	env	ty
@@ -515,6 +516,7 @@ k	.fv	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
 env	.fv	gsdl.cgs.typeenv.t
 pos1	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
+pos2	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -548,6 +550,7 @@ k	.fv	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
 env	.fv	gsdl.cgs.typeenv.t
 pos1	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
+pos2	.fv	gsdl.sourcepos.t
 ty.r.ty	.fv	gsdl.cgs.gstype.t
 ty.r.ki	.fv	gsdl.cgs.gskind.t
 e0	.karg	either.prim.u	string.t	record.empty
@@ -577,6 +580,7 @@ list.:	.gvar
 gsdl.cgs.gsexpr.generator.undef	.gvar
 pos1	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
+pos2	.fv	gsdl.sourcepos.t
 ty.r.ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 	.analyze	e0	left	right
@@ -586,7 +590,7 @@ err		.fkarg	0	string.t
 		.case	right
 k.r		.fkarg	0	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 b			.lfield	body	k.r
-g0			.apply	gsdl.cgs.gsexpr.generator.undef	|	pos1	v	ty.r.ty
+g0			.apply	gsdl.cgs.gsexpr.generator.undef	|	pos1	v	pos2	ty.r.ty
 k.r.gs			.lfield	gens	k.r
 gs			.apply	list.:	gsdl.cgs.gsexpr.generator.t	|	g0	k.r.gs
 res.ty			.lfield	res.ty	k.r
@@ -2259,10 +2263,11 @@ gen0	.karg	gsdl.cgs.gsexpr.generator.prim.u
 		.case	undef
 pos1		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
-ty		.fkarg	2	gsdl.cgs.gstype.t
+pos2		.fkarg	2	gsdl.sourcepos.t
+ty		.fkarg	3	gsdl.cgs.gstype.t
 			.force	_gsac.gsexpr.generator.imp.compile_undef_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToApp_res.ty
-			.app	pos1	ty	tyem	pem	tysvs
+			.app	pos2	ty	tyem	pem	tysvs
 			.enter	gsac.gstype.compileToApp
 	-- > :: either.t	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
 
