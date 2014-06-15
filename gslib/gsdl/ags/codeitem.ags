@@ -2369,7 +2369,9 @@ diff.list.nil	.gvar
 gsdl.ags.syntax.var.print	.gvar
 diff.list.:	.gvar
 rune.tab	.gvar
+diff.list.snoc	.gvar
 gsdl.ags.codeitem.alloc.rhs.print	.gvar
+rune.new.line	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 g0	.karg	gsdl.ags.codeitem.impgen.prim.u
 	.analyze	g0	alloc
@@ -2380,7 +2382,8 @@ pos	.apply	gsdl.ags.codeitem.alloc.rhs.pos	|	rhs
 pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
 nil			.apply	diff.list.nil	rune.t
 mbv.s			.apply	maybe.elim	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	mbv
-s2			.apply	gsdl.ags.codeitem.alloc.rhs.print	|	rhs
+rhs.s			.apply	gsdl.ags.codeitem.alloc.rhs.print	|	rhs
+s2			.apply	diff.list.snoc	rune.t	|	rhs.s	rune.new.line
 s1			.apply	diff.list.:	rune.t	|	rune.tab	s2
 s0			.apply	diff.list.<>	rune.t	|	mbv.s	s1
 			.app	pos.s	s0
