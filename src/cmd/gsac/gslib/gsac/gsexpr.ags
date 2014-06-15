@@ -2293,7 +2293,7 @@ diff.list.nil	.gvar
 gsdl.ags.codeitem.impgen.alloc	.gvar
 maybe.just	.gvar
 gsdl.ags.codeitem.alloc.rhs.undefined	.gvar
-pos1	.fv	gsdl.sourcepos.t
+pos2	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
 	.analyze	e0	left	right
@@ -2310,7 +2310,7 @@ just.v			.apply	maybe.just	gsdl.var.t	|	v
 ty.r.r			.lfield	res	ty.r
 ty.r.tyf			.lfield	tyfun	ty.r.r
 ty.r.tyas			.lfield	typeargs	ty.r.r
-r.rhs			.apply	gsdl.ags.codeitem.alloc.rhs.undefined	|	pos1	ty.r.tyf	ty.r.tyas
+r.rhs			.apply	gsdl.ags.codeitem.alloc.rhs.undefined	|	pos2	ty.r.tyf	ty.r.tyas
 r			.apply	gsdl.ags.codeitem.impgen.alloc	|	just.v	r.rhs
 tyem			.undefined	ordered.set.t	gsdl.var.t
 tysvs			.lfield	subvars	ty.r
