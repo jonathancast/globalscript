@@ -964,6 +964,7 @@ again:
             ace_failure_thread(thread, (struct gsimplementation_failure *)prog);
             return;
         case gstyenosys:
+        case gstyeoothreads:
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "%r");
             return;
         default:
