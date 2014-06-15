@@ -1237,6 +1237,14 @@ which defines a function type from \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}
 
 This represents the type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}.
 
+\subsection{\stringcode{.tysum}}
+
+\begin{verbatim}
+	.tysum	f0	ty0	...	fn-1	tyn-1
+\end{verbatim}
+
+This represents the boxed un-lifted sum \<"\prod\left\langle\overline{f_i ty_i;}_{i=0}^{n-1}\right\rangle\>.
+
 \chapter{Notes on the Type System (Semi-Obsolete)}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -1334,22 +1342,10 @@ Interpolations aren't supported inside classes yet but they will be.
 long
 gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
-    static gsinterned_string gssymtysum, gssymtyubsum, gssymtyproduct, gssymtyubproduct;
+    static gsinterned_string gssymtyubsum, gssymtyproduct, gssymtyubproduct;
 
     while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
-        if (gssymceq(parsedline->directive, gssymtysum, gssymtypeop, ".tysum")) {
-            if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on terminal ops", pos->real_filename, pos->real_lineno);
-            else
-                parsedline->label = 0;
-            if (n % 2)
-                gsfatal("%s:%d: Can't have odd number of arguments to .tysum", pos->real_filename, pos->real_lineno);
-            for (i = 0; 2 + i < n; i += 2) {
-                parsedline->arguments[i] = gsintern_string(gssymconstrlable, fields[2 + i]);
-                parsedline->arguments[i + 1] = gsintern_string(gssymtypelable, fields[2 + i + 1]);
-            }
-            return 0;
-        } else if (gssymceq(parsedline->directive, gssymtyubsum, gssymtypeop, ".tyubsum")) {
+        if (gssymceq(parsedline->directive, gssymtyubsum, gssymtypeop, ".tyubsum")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops", pos->real_filename, pos->real_lineno);
             else
