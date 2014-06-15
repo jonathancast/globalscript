@@ -245,12 +245,8 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
     } else if (gssymceq(p->directive, gssymtyforall, gssymtypeop, ".tyforall")) {
         struct gskind *kind;
 
-        if (cl->nregs >= MAX_NUM_REGISTERS)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
-            ;
-        if (cl->regclass > regforall)
-            gsfatal("%P: Too late to add forall arguments", p->pos)
-        ;
+        if (cl->nregs >= MAX_NUM_REGISTERS) gsfatal(UNIMPL("%P: Register overflow"), p->pos);
+        if (cl->regclass > regforall) gsfatal("%P: Too late to add forall arguments", p->pos);
         cl->regclass = regforall;
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
@@ -263,12 +259,8 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
     } else if (gssymceq(p->directive, gssymtyexists, gssymtypeop, ".tyexists")) {
         struct gskind *kind;
 
-        if (cl->nregs >= MAX_NUM_REGISTERS)
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
-            ;
-        if (cl->regclass > regexists)
-            gsfatal("%P: Too late to add forall arguments", p->pos)
-        ;
+        if (cl->nregs >= MAX_NUM_REGISTERS) gsfatal(UNIMPL("%P: Register overflow"), p->pos);
+        if (cl->regclass > regexists) gsfatal("%P: Too late to add forall arguments", p->pos);
         cl->regclass = regexists;
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "kind");
@@ -281,12 +273,8 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
     } else if (gssymceq(p->directive, gssymtylet, gssymtypeop, ".tylet")) {
         struct gstype *reg;
 
-        if (cl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
-        ;
-        if (cl->regclass > reglet)
-            gsfatal("%P: Too late to add lets", p->pos)
-        ;
+        if (cl->nregs >= MAX_NUM_REGISTERS) gsfatal(UNIMPL("%P: Register overflow"), p->pos);
+        if (cl->regclass > reglet) gsfatal("%P: Too late to add lets", p->pos);
         cl->regclass = reglet;
         cl->regs[cl->nregs] = p->label;
         gsargcheck(p, 0, "base");
@@ -340,7 +328,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         nconstrs = p->numarguments / 2;
 
         if (nconstrs > MAX_NUM_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: sums with more than 0x%x constructors", p->pos, MAX_NUM_REGISTERS)
+            gsfatal(UNIMPL("%P: sums with more than 0x%x constructors"), p->pos, MAX_NUM_REGISTERS)
         ;
 
         for (i = 0; i < p->numarguments; i += 2) {
@@ -366,7 +354,7 @@ gstype_compile_type_ops_worker(struct gstype_compile_type_ops_closure *cl, struc
         nconstrs = p->numarguments / 2;
 
         if (nconstrs > MAX_NUM_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: sums with more than 0x%x constructors", p->pos, MAX_NUM_REGISTERS)
+            gsfatal(UNIMPL("%P: sums with more than 0x%x constructors"), p->pos, MAX_NUM_REGISTERS)
         ;
 
         for (i = 0; i < p->numarguments; i += 2) {
@@ -438,12 +426,8 @@ gstype_compile_type_global_var_op(struct gstype_compile_type_ops_closure *cl, st
     if (gssymceq(p->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
         int i;
 
-        if (cl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: Register overflow", p->pos)
-        ;
-        if (cl->regclass > regglobal)
-            gsfatal("%P: Too late to add type globals", p->pos)
-        ;
+        if (cl->nregs >= MAX_NUM_REGISTERS) gsfatal(UNIMPL("%P: Register overflow"), p->pos);
+        if (cl->regclass > regglobal) gsfatal("%P: Too late to add type globals", p->pos);
         cl->regclass = regglobal;
         cl->regs[cl->nregs] = p->label;
         cl->regvalues[cl->nregs] = gssymtable_get_type(cl->symtable, p->label);
