@@ -1245,6 +1245,14 @@ This represents the type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}.
 
 This represents the boxed un-lifted sum \<"\prod\left\langle\overline{f_i ty_i;}_{i=0}^{n-1}\right\rangle\>.
 
+\subsection{\stringcode{.tyubsum}}
+
+\begin{verbatim}
+	.tyubsum	f0	ty0	...	fn-1	tyn-1
+\end{verbatim}
+
+This represents the un-boxed un-lifted sum \<"u\prod\left\langle\overline{f_i ty_i;}_{i=0}^{n-1}\right\rangle\>.
+
 \chapter{Notes on the Type System (Semi-Obsolete)}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -1342,22 +1350,10 @@ Interpolations aren't supported inside classes yet but they will be.
 long
 gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
-    static gsinterned_string gssymtyubsum, gssymtyproduct, gssymtyubproduct;
+    static gsinterned_string gssymtyproduct, gssymtyubproduct;
 
     while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
-        if (gssymceq(parsedline->directive, gssymtyubsum, gssymtypeop, ".tyubsum")) {
-            if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on terminal ops", pos->real_filename, pos->real_lineno);
-            else
-                parsedline->label = 0;
-            if (n % 2)
-                gsfatal("%s:%d: Can't have odd number of arguments to .tyubsum", pos->real_filename, pos->real_lineno);
-            for (i = 0; 2 + i < n; i += 2) {
-                parsedline->arguments[i] = gsintern_string(gssymconstrlable, fields[2 + i]);
-                parsedline->arguments[i + 1] = gsintern_string(gssymtypelable, fields[2 + i + 1]);
-            }
-            return 0;
-        } else if (gssymceq(parsedline->directive, gssymtyproduct, gssymtypeop, ".typroduct")) {
+        if (gssymceq(parsedline->directive, gssymtyproduct, gssymtypeop, ".typroduct")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal ops", pos->real_filename, pos->real_lineno);
             else
@@ -1386,61 +1382,6 @@ gsparse_type_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct
             gsfatal(UNIMPL("%s:%d: Unimplemented type op %s"), pos->real_filename, pos->real_lineno, fields[1]);
         }
     }
-    if (n < 0)
-        gsfatal("%s:%d: Error in reading type line: %r", pos->real_filename, pos->real_lineno);
-    else
-        gsfatal("%P: EOF in middle of reading type expression", typedirective->pos);
-
-    return -1;
-}
-
-int
-gsparse_type_global_var_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim, gssymtyextimpprim;
-
-    if (gssymceq(parsedline->directive, gssymtygvar, gssymtypeop, ".tygvar")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-        else
-            gsfatal("%s:%d: Labels required on .tygvar", pos->real_filename, pos->real_lineno);
-        if (n > 2)
-            gsfatal("%s:%d: Too many arguments to .tygvar", pos->real_filename, pos->real_lineno);
-    } else if (gssymceq(parsedline->directive, gssymtyextabstype, gssymtypeop, ".tyextabstype")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymtypelable, fields[0])
-        ; else
-            gsfatal("%s:%d: Labels required on .tyextabstype", pos->real_filename, pos->real_lineno)
-        ;
-        if (n < 3) gsfatal("%s:%d: Missing kind on .tyextabstype", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
-        if (n > 3) gsfatal("%s:%d: Too many arguments to .tyextabstype", pos->real_filename, pos->real_lineno);
-    } else if (
-        gssymceq(parsedline->directive, gssymtyextelimprim, gssymtypeop, ".tyextelimprim")
-        || gssymceq(parsedline->directive, gssymtyextimpprim, gssymtypeop, ".tyextimpprim")
-    ) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymtypelable, fields[0])
-        ; else
-            gsfatal("%s:%d: Labels required on %y", pos->real_filename, pos->real_lineno, parsedline->directive)
-        ;
-        if (n < 3)
-            gsfatal("%s:%d: Missing primitive set name", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[0] = gsintern_string(gssymprimsetlable, fields[2 + 0]);
-        if (n < 4)
-            gsfatal("%s:%d: Missing primitive type name", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2 + 1]);
-        if (n < 5)
-            gsfatal("%s:%d: Missing kind on primitive type", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2] = gsintern_string(gssymkindexpr, fields[2 + 2]);
-        if (n > 5)
-            gsfatal("%s:%d: Too many arguments to %y; expected primset, primname, and kind", pos->real_filename, pos->real_lineno, parsedline->directive)
-        ;
-    } else {
-        return 0;
-    }
-
-    return 1;
 }
 
 int
@@ -1467,24 +1408,10 @@ gsparse_type_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedli
     return 1;
 }
 
-static
 long
 gsparse_coercion_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
     struct gsparsedline *parsedline;
-
-    parsedline = gsparsed_file_addline(pos, parsedfile, numfields);
-    parsedfile->coercions->numitems++;
-
-    if (*fields[0])
-        parsedline->label = gsintern_string(gssymcoercionlable, fields[0])
-    ; else
-        gsfatal("%s:%d: Missing type label", pos->real_filename, pos->real_lineno)
-    ;
-
-    gssymtable_add_coercion_item(symtable, parsedline->label, parsedfile, parsedfile->last_seg, parsedline);
-
-    parsedline->directive = gsintern_string(gssymcoerciondirective, fields[1]);
 
     if (gssymeq(parsedline->directive, gssymcoerciondirective, ".tycoercion")) {
         if (numfields > 2 + 0)
@@ -1500,21 +1427,10 @@ gsparse_coercion_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, s
     return -1;
 }
 
-static int gsparse_coercion_global_var_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
-static int gsparse_coercion_arg_op(struct gsparse_input_pos *, struct gsparsedline *, char **, long);
-
 long
 gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
-    struct gsparsedline *parsedline;
-    int i;
-    long n;
-
     while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
-        parsedline = gsparsed_file_addline(pos, parsedfile, n);
-
-        parsedline->directive = gsintern_string(gssymcoercionop, fields[1]);
-
         if (gsparse_coercion_global_var_op(pos, parsedline, fields, n)) {
         } else if (gsparse_coercion_arg_op(pos, parsedline, fields, n)) {
         } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tyinvert")) {
@@ -1597,69 +1513,6 @@ gsparse_coercion_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *pars
     }
 
     return 1;
-}
-
-/* Loader */
-
-static
-void
-gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gsbc_scc *pscc, struct gspos *pentrypos, gsvalue *pentry, struct gstype **ptype)
-{
-    struct gsbc_scc *p;
-    struct gsbc_item items[MAX_ITEMS_PER_SCC];
-    struct gstype *types[MAX_ITEMS_PER_SCC], *defns[MAX_ITEMS_PER_SCC];
-    struct gskind *kinds[MAX_ITEMS_PER_SCC];
-    gsvalue heap[MAX_ITEMS_PER_SCC];
-    struct gsbco *bcos[MAX_ITEMS_PER_SCC];
-    int n, i;
-
-    n = 0;
-
-    for (p = pscc; p; p = p->next_item) {
-        if (n >= MAX_ITEMS_PER_SCC)
-            gsfatal("%P: Too many items in this SCC; max 0x%x", p->item.v->pos, MAX_ITEMS_PER_SCC)
-        ;
-        items[n++] = p->item;
-    }
-
-    /* §section Type-checking */
-
-    gstypes_process_type_declarations(symtable, items, kinds, n);
-    gstypes_compile_types(symtable, items, types, n);
-    gstypes_compile_type_definitions(symtable, items, defns, n);
-    gstypes_kind_check_scc(symtable, items, types, defns, kinds, n);
-    gstypes_process_type_signatures(symtable, items, ptype, n);
-    gstypes_type_check_scc(symtable, items, types, kinds, ptype, n);
-
-    /* §section Byte-compilation */
-
-    gsbc_alloc_data_for_scc(symtable, items, heap, n);
-    gsbc_alloc_code_for_scc(symtable, items, bcos, n);
-    gsbc_bytecompile_scc(symtable, items, heap, bcos, n);
-
-    if (pentry) {
-        for (i = 0; i < n; i++) {
-            if (
-                items[i].type == gssymdatalable
-                && items[i].v == GSDATA_SECTION_FIRST_ITEM(parsedfile->data)
-            ) {
-                *pentrypos = items[i].v->pos;
-                if (heap[i])
-                    *pentry = heap[i];
-                else
-                    gsfatal_unimpl(__FILE__, __LINE__, "%s: Entry point: couldn't find in any SCC");
-                if (items[i].v->label) {
-                    gsfatal_unimpl(__FILE__, __LINE__, "%P: set *ptype", items[i].v->pos);
-                } else
-                    /* Don't have to save §c{*ptype} in this case, because we handle that while doing the initial type-checking */
-                ;
-                goto have_entry;
-            }
-        }
-        gsfatal("%s: Couldn't find entry point", parsedfile->name->name);
-    have_entry:
-        ;
-    }
 }
 \end{verbatim}
 
