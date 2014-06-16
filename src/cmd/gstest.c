@@ -87,7 +87,8 @@ gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
         st = test_evaluate(errbuf, errbuf + sizeof(errbuf), pos, prog);
         switch (st) {
             case test_impl_err:
-                fprint(2, "Error in gstest: %s\n", errbuf);
+                fprint(2, "%s: Implementation Limitation\n", doc);
+                test_print(pos, 1, prog, 1);
                 ace_down();
                 exits("unimpl");
             case test_prog_err:
@@ -197,7 +198,22 @@ test_evaluate_constr(char *err, char *eerr, struct gsconstr *constr)
             st = test_evaluate(err, eerr, args->c.pos, args->arguments[0]);
             switch (st) {
                 case test_impl_err:
-                case test_prog_err:
+                case test_prog_err: {
+                    enum test_state st1 = test_evaluate(err, eerr, args->c.pos, args->arguments[1]);
+                    switch (st1) {
+                        case test_impl_err:
+                        case test_prog_err:
+                        case test_running:
+                            return st1;
+                        case test_succeeded:
+                        case test_failed:
+                            return st;
+                        default:
+                            seprint(err, eerr, UNIMPL_NL("test_evaluate_constr: ∧: st1 = %d"), st1);
+                            return test_impl_err;
+                    }
+                    break;
+                }
                 case test_running:
                     return st;
                 case test_succeeded:
@@ -284,6 +300,14 @@ test_print(struct gspos pos, int depth, gsvalue v, int print_if_trivial)
                     ace_down();
                     exits("unimpl");
             }
+            break;
+        }
+        case gstyimplerr: {
+            char *s;
+
+            s = gsimplementation_failure_format(err, err + sizeof(err), (struct gsimplementation_failure *)v);
+            test_indent(depth);
+            fprint(2, "%s\n", err);
             break;
         }
         default:
