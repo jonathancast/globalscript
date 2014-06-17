@@ -6,11 +6,10 @@ void gsadd_global_gslib(gsinterned_string, struct gsfile_symtable **);
 void gsadddir(char *, struct gsfile_symtable **);
 
 enum {
-    gsstring_code_closure_not_alloc = 1,
-    gsstring_code_bind_one_word = 2,
-    gsstring_code_bind_closure_one_word = 4,
-    gsstring_code_bind_closure_two_words = 8,
-    gsstring_code_impprogs_are_boxing = 0x10,
+    gsstring_code_bind_one_word = 1,
+    gsstring_code_bind_closure_one_word = 2,
+    gsstring_code_bind_closure_two_words = 4,
+    gsstring_code_impprogs_are_boxing = 8,
 };
 
 typedef enum {

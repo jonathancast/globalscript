@@ -2557,18 +2557,14 @@ static void gsbc_check_api_free_variable_decls(struct gsbc_typecheck_code_or_api
 struct gstype *
 gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl)
 {
-    static gsinterned_string gssymclosure, gssymalloc, gssymundefined;
+    static gsinterned_string gssymclosure, gssymundefined;
 
     int i;
     struct gstype *type;
 
     gsinterned_string directive = offset == 0 ? p->directive : p->arguments[offset - 1];
 
-    if (
-        pcl->features & gsstring_code_closure_not_alloc
-            ? gssymceq(directive, gssymclosure, gssymcodeop, ".closure")
-            : gssymceq(directive, gssymalloc, gssymcodeop, ".alloc")
-    ) {
+    if (gssymceq(directive, gssymclosure, gssymcodeop, ".closure")) {
         int creg = 0;
         struct gsbc_code_item_type *cty;
 

@@ -344,7 +344,7 @@ static gsinterned_string gssymopsubcode, gssymopcogvar, gssymopgvar, gssymoprune
 /* Data arguments */
 static gsinterned_string gssymoparg, gssymoplarg, gssymopexkarg, gssymopkarg, gssymopfkarg;
 /* Allocation */
-static gsinterned_string gssymopclosure, gssymopalloc, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymoplrecord, gssymopfield, gssymoplfield, gssymopundefined, gssymoplifted, gssymopcast, gssymopapply, gssymopimpprim;
+static gsinterned_string gssymopclosure, gssymopprim, gssymopconstr, gssymopexconstr, gssymoprecord, gssymoplrecord, gssymopfield, gssymoplfield, gssymopundefined, gssymoplifted, gssymopcast, gssymopapply, gssymopimpprim;
 /* Continuations */
 static gsinterned_string gssymoplift, gssymoptyapp, gssymopcoerce, gssymopapp, gssymopforce, gssymopstrict, gssymopubanalyze;
 /* Terminals */
@@ -660,11 +660,7 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
 {
     int i;
 
-    if (
-        (pcl->features & gsstring_code_closure_not_alloc)
-            ? gssymceq(p->directive, gssymopclosure, gssymcodeop, ".closure")
-            : gssymceq(p->directive, gssymopalloc, gssymcodeop, ".alloc")
-    ) {
+    if (gssymceq(p->directive, gssymopclosure, gssymcodeop, ".closure")) {
         int creg;
         struct gsbc_code_item_type *cty;
 
@@ -1969,11 +1965,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
     struct gsbc *pcode;
     int i, j;
 
-    if (
-        (pcl->features & gsstring_code_closure_not_alloc)
-            ? gssymceq(p->directive, gssymopclosure, gssymcodeop, ".closure")
-            : gssymceq(p->directive, gssymopalloc, gssymcodeop, ".alloc")
-    ) {
+    if (gssymceq(p->directive, gssymopclosure, gssymcodeop, ".closure")) {
         int creg = 0;
         struct gsbc_code_item_type *ctype;
 

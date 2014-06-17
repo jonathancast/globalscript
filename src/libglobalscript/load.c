@@ -434,21 +434,18 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
             if (*s != '\n') gsfatal("%s:%d: Junk after calculus version", pos.real_filename, pos.real_lineno);
             *s++ = 0;
 
-            if (!strcmp(version, "0.2")) {
-                *pcalculus_version = "0.2";
-                *pfeatures = gsstring_code_bind_one_word;
-            } else if (!strcmp(version, "0.3")) {
+            if (!strcmp(version, "0.3")) {
                 *pcalculus_version = "0.3";
-                *pfeatures = gsstring_code_closure_not_alloc | gsstring_code_bind_one_word;
+                *pfeatures = gsstring_code_bind_one_word;
             } else if (!strcmp(version, "0.4")) {
                 *pcalculus_version = "0.4";
-                *pfeatures = gsstring_code_closure_not_alloc | gsstring_code_bind_closure_one_word;
+                *pfeatures = gsstring_code_bind_closure_one_word;
             } else if (!strcmp(version, "0.5")) {
                 *pcalculus_version = "0.5";
-                *pfeatures = gsstring_code_closure_not_alloc | gsstring_code_bind_closure_two_words;
+                *pfeatures = gsstring_code_bind_closure_two_words;
             } else if (!strcmp(version, "0.6")) {
                 *pcalculus_version = "0.6";
-                *pfeatures = gsstring_code_closure_not_alloc | gsstring_code_bind_closure_two_words | gsstring_code_impprogs_are_boxing;
+                *pfeatures = gsstring_code_bind_closure_two_words | gsstring_code_impprogs_are_boxing;
             } else {
                 gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
             }
@@ -1297,7 +1294,7 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
 int
 gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *p, int offset, char **fields, long n)
 {
-    static gsinterned_string gssymclosure, gssymalloc, gssymundefined;
+    static gsinterned_string gssymclosure, gssymundefined;
 
     int i;
 
@@ -1306,11 +1303,7 @@ gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gspa
         : (p->arguments[offset - 1 + 2 - 2] = gsintern_string(gssymcodeop, fields[offset - 1 + 2]))
     ;
 
-    if (
-        (features & gsstring_code_closure_not_alloc)
-            ?gssymceq(directive, gssymclosure, gssymcodeop, ".closure")
-            : gssymceq(directive, gssymalloc, gssymcodeop, ".alloc")
-    ) {
+    if (gssymceq(directive, gssymclosure, gssymcodeop, ".closure")) {
         if (offset == 0) STORE_ALLOC_OP_LABEL(directive->name);
         if (n < offset + 3)
             gsfatal("%s:%d: Missing subexpression on %y", pos->real_filename, pos->real_lineno, directive)
