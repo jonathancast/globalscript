@@ -15,7 +15,9 @@ ok_grep_errors '-- missing calculus --' 'missing-calculus.ags: Missing #calculus
 ok_grep_errors '-- invalid calculus --' 'invalid-calculus.ags:1: Unknown calculus' ./$O.test-gsi invalid-calculus.ags
 ok_grep_errors '-- invalid calculus version --' 'invalid-calculus-version.ags:1: Unsupported calculus version' ./$O.test-gsi invalid-calculus-version.ags
 
-echo '# Version 0.2 and up:'
+echo '# Version 0.3 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_2=1
 
 ok_diff_fail '-- source-style comments --' ./$O.test-gsi undef-new-comments.ags
 
@@ -66,10 +68,6 @@ ok_grep_errors '-- a .tylet (of  type synonym) must have enough arguments --' 'u
 
 ok_grep_errors '-- incorrect kind signatures on .tyexprs --' 'tyexpr-wrong-kind-sig.ags:12: Incorrect kind: Expected ''\*''; got ''u''' ./$O.test-gsi tyexpr-wrong-kind-sig.ags
 ok_diff_fail '-- kind signatures on .tyexprs --' ./$O.test-gsi tyexpr-kind-sig.ags
-
-echo '# Version 0.3 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_2=1
 
 ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
 ok_grep_errors '-- a let can be mis-typed --' './test-fixtures/mistyped-let.ags:7: I don''t think' ./$O.test-gsi mistyped-let.ags

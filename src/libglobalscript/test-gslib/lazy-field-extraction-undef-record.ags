@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -10,7 +10,7 @@
 
 _ep_c	.expr
 _ep_r_c	.subcode
-r	.alloc	_ep_r_c
+r	.closure	_ep_r_c
 y	.lfield	1	r
 	.enter	y
 

@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.2
+#calculus: gsdl.string-code 0.3
 
 	.document
 
@@ -14,7 +14,7 @@ _ep_c	.expr
 _ep_f_c	.subcode
 _x	.gvar
 _y	.gvar
-f	.alloc	_ep_f_c
+f	.closure	_ep_f_c
 	.app	_x	_y
 	.enter	f
 
@@ -22,7 +22,7 @@ _ep_f_c	.expr
 rune.t	.tygvar
 _ep_f1_c	.subcode
 x	.larg	rune.t
-f1	.alloc	_ep_f1_c
+f1	.closure	_ep_f1_c
 	.enter	f1
 
 _ep_f1_c	.expr
