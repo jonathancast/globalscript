@@ -551,7 +551,7 @@ gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecod
             gsfatal("Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         if (pcl->size % sizeof(gsvalue))
-            gsfatal_unimpl(__FILE__, __LINE__, "%p: File format error: we're at a .rune generator but our location isn't gsvalue-aligned", p->pos)
+            gsfatal(UNIMPL("%p: File format error: we're at a .rune generator but our location isn't gsvalue-aligned"), p->pos)
         ;
         gsbc_bytecode_size_check_natural_fits_in_one_word(p->pos, p->arguments[0]);
         pcl->size += sizeof(gsvalue);
@@ -1082,7 +1082,7 @@ gsbc_bytecompile_scc(struct gsfile_symtable *symtable, struct gsbc_item *items, 
                 gsbc_bytecompile_code_item(symtable, items[i].file->features, &pseg, items[i].v, bcos, i, n);
                 break;
             default:
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: gsbc_bytecompile_scc(type = %d)", items[i].v->pos, items[i].type);
+                gsfatal(UNIMPL("%P: gsbc_bytecompile_scc(type = %d)"), items[i].v->pos, items[i].type);
         }
     }
 }
@@ -1110,7 +1110,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
             ;
             fields->fields[j / 2] = gssymtable_get_data(symtable, p->arguments[j + 1]);
             if (!fields->fields[j / 2])
-                gsfatal_unimpl(__FILE__, __LINE__, "%P: can't find data value %s", p->pos, p->arguments[j + 1]->name)
+                gsfatal(UNIMPL("%P: can't find data value %y"), p->pos, p->arguments[j + 1])
             ;
         }
     } else if (gssymceq(p->directive, gssymconstr, gssymdatadirective, ".constr")) {
@@ -1167,7 +1167,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
             tail = (gsvalue)((uchar*)tail + sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue));
         }
         if (p->numarguments >= 2) {
-            gsfatal_unimpl(__FILE__, __LINE__, "%P: .string with provided tail", p->pos);
+            gsfatal(UNIMPL("%P: .string with provided tail"), p->pos);
         } else {
             struct gsconstr_args *gsnil;
 
@@ -1515,7 +1515,7 @@ gsbc_bytecompile_code_item(struct gsfile_symtable *symtable, uint features, stru
         bcos[i]->pos = p->pos;
         gsbc_byte_compile_api_ops(symtable, features, ppseg, gsinput_next_line(ppseg, p), bcos[i]);
     } else {
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: code directive %y", p->pos, p->directive);
+        gsfatal(UNIMPL("%P: code directive %y"), p->pos, p->directive);
     }
 }
 
