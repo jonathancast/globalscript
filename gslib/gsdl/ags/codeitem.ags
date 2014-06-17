@@ -105,7 +105,6 @@ gsdl.ags.codeitem.impgen.fmtgs	.closure	_gsdl.ags.codeitem.impgen.fmtgs_c
 gsdl.ags.codeitem.impgen.alloc	.closure	_gsdl.ags.codeitem.impgen.alloc_c
 
 gsdl.ags.codeitem.alloc.rhs.parser	.closure	_gsdl.ags.codeitem.alloc.rhs.parser_c
-_gsdl.ags.codeitem.alloc.rhs.parser_closure.p_alloc.re	.regex	.alloc
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re	.regex	.closure
 
 gsdl.ags.codeitem.alloc.rhs.print	.closure	_gsdl.ags.codeitem.alloc.rhs.print_c
@@ -2435,8 +2434,6 @@ parser.map	.gvar
 parser.*>	.gvar
 parser.match	.gvar
 rune.compare	.gvar
-bool.elim	.gvar
-_gsdl.ags.codeitem.alloc.rhs.parser_closure.p_alloc.re	.gvar
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 gsdl.ags.syntax.id	.gvar
@@ -2444,9 +2441,7 @@ parser.fail	.gvar	-- Temp
 fs	.fv	gsdl.ags.syntax.features.t
 regex.rune.ty	.tylet	regex.t	rune.t
 f	.closure	_gsdl.ags.codeitem.alloc.rhs.parser_closure.p_f_c
-fs.closure	.lfield	closure	fs
-closure.re	.apply	bool.elim	regex.rune.ty	|	_gsdl.ags.codeitem.alloc.rhs.parser_closure.p_alloc.re	_gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re	fs.closure
-closure.p	.apply	parser.match	rune.t	|	rune.compare	closure.re
+closure.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re
 p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 p1	.apply	parser.*>	rune.t	string.t	string.t	|	closure.p	p2
 	.app	f	p1
