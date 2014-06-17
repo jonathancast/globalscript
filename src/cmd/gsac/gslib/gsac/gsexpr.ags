@@ -2509,6 +2509,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	res.list.β.ty
 		.case	right
 ry		.fkarg	0	_gsac.gsexpr.compile.m_res.ty	β
+ry.cs			.lfield	codeitems	ry
 ry.ds			.lfield	dataitems	ry
 ry.tyem			.lfield	ty.emitted	ry
 ry.pem			.lfield	prim.emitted	ry
@@ -2522,6 +2523,7 @@ ry.tygvs			.lfield	tygvars	ry
 
 _gsac.gsexpr.compile.mapM_:_right_k	.forcecont
 diff.list.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 either.prim.u	.tygvar
@@ -2529,7 +2531,6 @@ string.t	.tygvar
 _gsac.gsexpr.compile.m_res.ty	.tygvar
 list.t	.tygvar
 either.t	.tygvar	-- Temp
-gsdl.ags.codeitem.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
@@ -2538,6 +2539,7 @@ list.:	.gvar
 β	.tyfv	*
 list.β.ty	.tylet	list.t	β
 res.list.β.ty	.tylet	_gsac.gsexpr.compile.m_res.ty	list.β.ty
+ry.cs	.fv	diff.list.t	gsdl.ags.codeitem.t
 ry.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
 y	.fv	β
 ry.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
@@ -2548,7 +2550,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	res.list.β.ty
 		.case	right
 rys		.fkarg	0	_gsac.gsexpr.compile.m_res.ty	list.β.ty
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+rys.cs			.lfield	codeitems	rys
+cs			.apply	diff.list.<>	gsdl.ags.codeitem.t	|	ry.cs	rys.cs
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 rys.ds			.lfield	dataitems	rys
 ds			.apply	diff.list.<>	gsdl.ags.dataitem.t	|	ry.ds	rys.ds
