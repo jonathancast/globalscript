@@ -92,7 +92,8 @@ gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
                 ace_down();
                 exits("unimpl");
             case test_prog_err:
-                fprint(2, "%s\n", errbuf);
+                fprint(2, "%s: Program Error:\n", doc);
+                test_print(pos, 1, prog, 1);
                 ace_down();
                 exits("test err");
             case test_running:
@@ -300,6 +301,14 @@ test_print(struct gspos pos, int depth, gsvalue v, int print_if_trivial)
                     ace_down();
                     exits("unimpl");
             }
+            break;
+        }
+        case gstyerr: {
+            char *s;
+
+            s = gserror_format(err, err + sizeof(err), (struct gserror *)v);
+            test_indent(depth);
+            fprint(2, "%s\n", err);
             break;
         }
         case gstyimplerr: {
