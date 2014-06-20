@@ -2516,6 +2516,7 @@ ry.pem			.lfield	prim.emitted	ry
 y			.lfield	res	ry
 ry.tysvs			.lfield	ty.subvars	ry
 ry.tygvs			.lfield	tygvars	ry
+ry.tis			.lfield	typeitems	ry
 			.force	_gsac.gsexpr.compile.mapM_:_right_k
 			.coerce	either.t.out	string.t	res.list.β.ty
 			.app	f	xn1	ry.tyem	ry.pem	ry.tysvs
@@ -2526,13 +2527,13 @@ diff.list.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compile.m_res.ty	.tygvar
 list.t	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
-gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.<>	.gvar
 list.:	.gvar
@@ -2543,6 +2544,7 @@ ry.cs	.fv	diff.list.t	gsdl.ags.codeitem.t
 ry.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
 y	.fv	β
 ry.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+ry.tis	.fv	diff.list.t	gsdl.ags.typeitem.t
 e0	.karg	either.prim.u	string.t	res.list.β.ty
 	.analyze	e0	left	right
 		.case	left
@@ -2562,7 +2564,8 @@ tyem			.lfield	ty.emitted	rys
 tysvs			.lfield	ty.subvars	rys
 rys.tygvs			.lfield	tygvars	rys
 tygvs			.apply	diff.list.<>	gsdl.ags.typeitem.decls.tygvar.t	|	ry.tygvs	rys.tygvs
-tis			.undefined	diff.list.t	gsdl.ags.typeitem.t
+rys.tis			.lfield	typeitems	rys
+tis			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	ry.tis	rys.tis
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	ys1	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	typeitems	tis	|	_gsac.gsexpr.compile.m_res.ty	list.β.ty
 			.app	res
 			.enter	either.right	string.t	res.list.β.ty
