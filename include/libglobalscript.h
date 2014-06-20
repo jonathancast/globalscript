@@ -22,8 +22,6 @@ int gsdebug;
 void gsfatal(char *err, ...);
 void gswarning(char *err, ...);
 
-void gsfatal_unimpl(char *, int, char *, ...);
-
 void gswerrstr_unimpl(char *, int, char *, ...);
 
 void gsassert(char *srcfile, int srcline, int passed, char *err, ...);

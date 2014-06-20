@@ -57,23 +57,6 @@ gsassert(char *srcfile, int srcline, int success, char *err, ...)
 }
 
 void
-gsfatal_unimpl(char *file, int lineno, char *err, ...)
-{
-    char buf[0x100];
-    va_list arg;
-
-    va_start(arg, err);
-    vseprint(buf, buf+sizeof buf, err, arg);
-    va_end(arg);
-
-    if (gsdebug)
-        gsfatal("%s:%d: %s next", file, lineno, buf)
-    ; else
-        gsfatal("Panic: Un-implemented operation in release build: %s", buf)
-    ;
-}
-
-void
 gswerrstr_unimpl(char *file, int lineno, char *err, ...)
 {
     char buf[0x100];
