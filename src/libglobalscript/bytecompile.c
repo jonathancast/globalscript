@@ -481,7 +481,7 @@ gsbc_bytecode_size_code_subcode_op(struct gsfile_symtable *symtable, struct gspa
 {
     if (gssymceq(p->directive, gssymopsubcode, gssymcodeop, ".subcode")) {
         if (pcl->ncodes >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many sub-expressions; max 0x%x", MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many sub-expressions; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         if (pcl->size % sizeof(struct gsbco *))
             gsfatal("%s:%d: %s:%d: File format error: we're at a .subcode generator but our location isn't struct gsbco *-aligned",
@@ -525,7 +525,7 @@ gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecod
 {
     if (gssymceq(p->directive, gssymopgvar, gssymcodeop, ".gvar")) {
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         if (pcl->size % sizeof(gsvalue))
             gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't gsvalue-aligned",
@@ -567,12 +567,12 @@ gsbc_bytecode_size_data_fv_code_op(struct gsparsedline *p, struct gsbc_bytecode_
 {
     if (gssymceq(p->directive, gssymopfv, gssymcodeop, ".fv")) {
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         pcl->nregs++;
     } else if (gssymceq(p->directive, gssymopefv, gssymcodeop, ".efv")) {
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         pcl->size += ACE_EFV_SIZE();
         pcl->nregs++;
@@ -636,7 +636,7 @@ gsbc_bytecode_size_arg_code_op(struct gsparsedline *p, struct gsbc_bytecode_size
         || gssymceq(p->directive, gssymoplarg, gssymcodeop, ".larg")
     ) {
         if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal_bad_input(p, "Too many registers; max 0x%x", MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         pcl->nregs++;
     } else {
