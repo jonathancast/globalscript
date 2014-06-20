@@ -54,7 +54,7 @@ gsheapeval(struct gspos pos, gsvalue val)
             break;
         default:
             gsheap_unlock(hp);
-            gswerrstr_unimpl(__FILE__, __LINE__, "%P: gsheapeval(%x; state = %d)", pos, val, res);
+            werrstr(UNIMPL("%P: gsheapeval(%x; state = %d)"), pos, val, res);
             res = gstyenosys;
             break;
     }
@@ -98,7 +98,7 @@ gsheapstate(struct gspos pos, struct gsheap_item *hp)
                     return gstywhnf;
                 default:
                     gswarning("%s:%d: %P: Evalling something else", __FILE__, __LINE__, pos);
-                    gswerrstr_unimpl(__FILE__, __LINE__, "%P: gsheapeval(closure %x; tag = %d)", pos, hp, code->tag);
+                    werrstr(UNIMPL("%P: gsheapeval(closure %x; tag = %d)"), pos, hp, code->tag);
                     return gstyenosys;
             }
             break;
@@ -110,7 +110,7 @@ gsheapstate(struct gspos pos, struct gsheap_item *hp)
         case gsindirection:
             return gstyindir;
         default:
-            gswerrstr_unimpl(__FILE__, __LINE__, "%P: gsheapeval(%x; type = %d)", pos, hp, hp->type);
+            werrstr(UNIMPL("%P: gsheapeval(%x; type = %d)"), pos, hp, hp->type);
             return gstyenosys;
     }
 }

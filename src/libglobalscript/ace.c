@@ -1487,7 +1487,7 @@ ace_start_evaluation(struct gspos pos, struct gsheap_item *hp)
     lock(&ace_thread_queue->lock);
     if (ace_thread_queue->num_active_threads >= NUM_ACE_THREADS) {
         unlock(&ace_thread_queue->lock);
-        gswerrstr_unimpl(__FILE__, __LINE__, "oothreads");
+        werrstr("oothreads");
         return gstyeoothreads;
     } else {
         thread->tid = ace_thread_queue->num_active_threads;
