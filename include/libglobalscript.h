@@ -22,8 +22,6 @@ int gsdebug;
 void gsfatal(char *err, ...);
 void gswarning(char *err, ...);
 
-void gswerrstr_unimpl(char *, int, char *, ...);
-
 void gsassert(char *srcfile, int srcline, int passed, char *err, ...);
 
 #define UNIMPL(s) "%s:%d: " s " next", __FILE__, __LINE__
