@@ -127,7 +127,7 @@ gsinput_next_line(struct gsparsedfile_segment **ppseg, struct gsparsedline *p)
     pres = (struct gsparsedline *)((uchar*)p + sizeof(*p) + p->numarguments * sizeof(gsinterned_string));
 
     if ((uchar*)pres >= (uchar*)(*ppseg)->extent)
-        gsfatal_unimpl(__FILE__, __LINE__, "%P: Next line when changing segments", p->pos);
+        gsfatal(UNIMPL("%P: Next line when changing segments"), p->pos);
 
     return pres;
 }

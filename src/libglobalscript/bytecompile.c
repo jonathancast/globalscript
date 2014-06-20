@@ -56,7 +56,7 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
 
     for (s = 0; s < gsbc_num_heap_sections; s++) {
         if (total_size[s] > BLOCK_SIZE)
-            gsfatal_unimpl(__FILE__, __LINE__, "%s:%d: Total size too large for section %d; 0x%x > 0x%x", s, total_size[s], BLOCK_SIZE)
+            gsfatal(UNIMPL("Total size too large for section %d; 0x%x > 0x%x"), s, total_size[s], BLOCK_SIZE)
         ;
     }
 
@@ -542,7 +542,7 @@ gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecod
             gsfatal("Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         if (pcl->size % sizeof(gsvalue))
-            gsfatal_unimpl(__FILE__, __LINE__, "%p: File format error: we're at a .rune generator but our location isn't gsvalue-aligned", p->pos)
+            gsfatal(UNIMPL("%P: File format error: we're at a .rune generator but our location isn't gsvalue-aligned"), p->pos)
         ;
         pcl->size += sizeof(gsvalue);
         pcl->nregs++;
@@ -551,7 +551,7 @@ gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecod
             gsfatal("Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         if (pcl->size % sizeof(gsvalue))
-            gsfatal(UNIMPL("%p: File format error: we're at a .rune generator but our location isn't gsvalue-aligned"), p->pos)
+            gsfatal(UNIMPL("%P: File format error: we're at a .rune generator but our location isn't gsvalue-aligned"), p->pos)
         ;
         gsbc_bytecode_size_check_natural_fits_in_one_word(p->pos, p->arguments[0]);
         pcl->size += sizeof(gsvalue);
