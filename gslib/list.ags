@@ -217,8 +217,7 @@ _list.map_k	.forcecont
 _list.map_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
-_list.map_y0_c	.subcode
-_list.map_ys1_c	.subcode
+list.map	.gvar
 list.:	.gvar
 list.nil	.gvar
 α	.tyfv	*
@@ -229,32 +228,12 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-y0			.closure	_list.map_y0_c
-ys1			.closure	_list.map_ys1_c
+y0			.apply	f	|	x0
+ys1			.apply	list.map	α	β	|	f	xn1
 			.app	y0	ys1
 			.enter	list.:	β
 		.case	nil
 			.enter	list.nil	β
-
-_list.map_y0_c	.expr
-_list.map_f_ty	.tygvar
-α	.tyfv	*
-β	.tyfv	*
-f	.fv	_list.map_f_ty	α	β
-x0	.fv	α
-	.app	x0
-	.enter	f
-
-_list.map_ys1_c	.expr
-_list.map_f_ty	.tygvar
-list.t	.tygvar
-list.map	.gvar
-α	.tyfv	*
-β	.tyfv	*
-f	.fv	_list.map_f_ty	α	β
-xn1	.fv	list.t	α
-	.app	f	xn1
-	.enter	list.map	α	β
 
 -- §section §gs{list.filter}
 
