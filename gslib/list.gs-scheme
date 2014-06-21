@@ -21,4 +21,15 @@ module 'list ∝ 〈
       = list.foldl f (for (!'z0 ∝ z) f z0 x) xn
       = for (!'z0 ∝ z) list.foldl f (f z0 x) xn -- Since §gs{list.fold} is strict in §gs{z}
     ;
+
+    list.reverse nil = nil;
+    list.reverse (list.singleton 'x) = list.singleton x;
+    list.reverse (list.<> 'xn.0 'xn.1) = list.<> (list.reverse xn.1) (list.reverse xn.0);
+
+    list.reverse = id ∘ list.reverse
+      = list.foldr list.: list.nil ∘ list.reverse
+      = list.foldr (flip (flip list.:)) list.nil ∘ list.reverse
+      = list.foldr (flip (strict (flip list.:))) list.nil ∘ list.reverse -- Since the accumulator is defined whenever it's used
+      = list.foldl (flip list.:) list.nil
+    ;
 〉
