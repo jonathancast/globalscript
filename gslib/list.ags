@@ -759,7 +759,7 @@ _list.compare_k1	.forcecont
 order.total.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
-order.total.ord.t	.tygvar
+order.total.ord.t	.tygvar	-- Temp
 _list.compare_:_:_k	.subcode
 order.total.ord.t.out	.cogvar
 order.total.ord.lt	.gvar
@@ -795,7 +795,6 @@ _list.compare_:_:_k	.forcecont
 order.total.t	.tygvar
 list.t	.tygvar
 order.total.ord.prim.u	.tygvar
-order.total.ord.t	.tygvar
 list.compare	.gvar
 order.total.ord.gt	.gvar
 order.total.ord.lt	.gvar
