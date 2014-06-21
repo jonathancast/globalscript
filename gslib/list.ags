@@ -10,7 +10,7 @@ list.:	.closure	_list.:_c
 list.null	.closure	_list.null_c
 
 list.foldr	.closure	_list.foldr_c	_list.foldr_ty
-list.foldr1	.closure	_list.foldr1_code	_list.foldr1_ty
+list.foldr1	.closure	_list.foldr1_c	_list.foldr1_ty
 list.map	.closure	_list.map_c	_list.map_ty
 list.filter	.closure	_list.filter_c	_list.filter_ty
 list.filterMap	.closure	_list.filterMap_c	_list.filterMap_ty
@@ -136,7 +136,7 @@ z1			.apply	list.foldr	α	β	|	f	z	xn1
 
 -- §section §gs{list.foldr1}
 
-_list.foldr1_code	.expr
+_list.foldr1_c	.expr
 list.t	.tygvar
 _list.foldr1_ft	.tygvar
 _list.foldr1_k1	.subcode
