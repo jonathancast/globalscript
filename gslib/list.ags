@@ -421,19 +421,13 @@ x	.larg	α
 -- §section §gs{list.singleton}
 
 _list.singleton_c	.expr
-_list.singleton_n_c	.subcode
 list.:	.gvar
+list.nil	.gvar
 α	.tyarg	*
 x	.larg	α
-n	.closure	_list.singleton_n_c
+n	.apply	list.nil	α
 	.app	x	n
 	.enter	list.:	α
-
-_list.singleton_n_c	.expr
-list.t	.tygvar
-list.nil	.gvar
-α	.tyfv	*
-	.enter	list.nil	α
 
 -- §section §gs{list.<>}
 
