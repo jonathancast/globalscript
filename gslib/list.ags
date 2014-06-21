@@ -379,7 +379,6 @@ _list.foldl_k1	.forcecont
 _list.foldl_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
-_list.foldl_k1_z1_c	.subcode
 list.foldl	.gvar
 α	.tyfv	*
 β	.tyfv	*
@@ -390,21 +389,11 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-z1			.closure	_list.foldl_k1_z1_c
+z1			.apply	f	|	z	x0
 			.app	f	z1	xn1
 			.enter	list.foldl	α	β
 		.case	nil
 			.enter	z
-
-_list.foldl_k1_z1_c	.expr
-_list.foldl_f_ty	.tygvar
-α	.tyfv	*
-β	.tyfv	*
-f	.fv	_list.foldl_f_ty	α	β
-z	.fv	β
-x0	.fv	α
-	.app	z	x0
-	.enter	f
 
 -- §section §gs{list.reverse}
 
