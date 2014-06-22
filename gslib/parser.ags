@@ -3495,7 +3495,9 @@ ek				.fkarg	1	parser.prim.t	s	α
 				.case	unit.plus
 x				.fkarg	0	α
 p1.1				.fkarg	1	parser.prim.t	s	α
-					.undef	parser.prim.t	s	α
+					.coerce	parser.prim.t.in	s	α
+					.lift
+					.yield	p1
 			-- > :: parser.prim.t	s	α
 		.case	lookahead
 p0.1		.fkarg	0	parser.prim.t	s	rec.ty
