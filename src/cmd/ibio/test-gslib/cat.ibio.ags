@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.3
+#calculus: gsdl.string-code 0.4
 
 	.document
 
@@ -20,10 +20,10 @@ _ep_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
-as	.bind	_ep_as_c
-if	.bind	_ep_if_c
-s	.bind	_ep_s_c
-	.body	_ep_body_c
+as	.bind.closure	_ep_as_c
+if	.bind.closure	_ep_if_c
+s	.bind.closure	_ep_s_c
+	.body.closure	_ep_body_c
 
 _ep_as_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -71,8 +71,8 @@ ibio.file.name.t	.tygvar
 _ep_if_res_ei_c	.subcode
 _ep_if_res_body	.subcode
 fn	.fv	ibio.file.name.t
-ei	.bind	_ep_if_res_ei_c
-	.body	_ep_if_res_body
+ei	.bind.closure	_ep_if_res_ei_c
+	.body.closure	_ep_if_res_body
 
 _ep_if_res_ei_c	.expr
 ibio.file.name.t	.tygvar
