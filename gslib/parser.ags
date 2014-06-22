@@ -3125,167 +3125,403 @@ _parser.match_c	.expr
 order.total.t	.tygvar
 regex.t	.tygvar
 parser.t	.tygvar
+_parser.t_k_ty	.tygvar
 list.t	.tygvar
-parser.<*>	.gvar
+list.prim.u	.tygvar
+list.t.in	.cogvar
 _parser.match_worker	.gvar
-parser.unit	.gvar
 list.nil	.gvar
 s	.tyarg	*
-res.ty	.tylet	list.t	s
+list.s.ty	.tylet	list.t	s
+regex.s.ty	.tylet	regex.t	s
+list.prim.u.regex.s.ty	.tylet	list.prim.u	regex.s.ty
 cmp	.larg	order.total.t	s
 re	.larg	regex.t	s
-w	.apply	_parser.match_worker	s	|	cmp	re
-nil	.apply	list.nil	s
-nil.p	.apply	parser.unit	s	res.ty	|	nil
-	.app	w	nil.p
-	.enter	parser.<*>	s	res.ty	res.ty
+β	.tyarg	*
+k	.larg	_parser.t_k_ty	s	list.s.ty	β
+nil	.apply	list.nil	regex.s.ty
+s.re.0	.constr	list.prim.u.regex.s.ty	:	0	re	1	nil
+s.re.l	.lifted	s.re.0
+s.re	.cast	s.re.l	list.t.in	regex.s.ty
+	.app	cmp	s.re	k
+	.yield	_parser.match_worker	s	β
 
 _parser.match_worker_c	.expr
 order.total.t	.tygvar
+list.t	.tygvar
 regex.t	.tygvar
+_parser.t_k_ty	.tygvar
 _parser.match_worker_k	.subcode
-regex.t.out	.cogvar
+list.t.out	.cogvar
 s	.tyarg	*
-cmp	.larg	order.total.t	s
-re	.larg	regex.t	s
+β	.tyarg	*
+regex.s.ty	.tylet	regex.t	s
+list.s.ty	.tylet	list.t	s
+cmp	.arg	order.total.t	s
+res	.arg	list.t	regex.s.ty
+k	.arg	_parser.t_k_ty	s	list.s.ty	β
 	.force	_parser.match_worker_k
-	.coerce	regex.t.out	s
-	.enter	re
+	.coerce	list.t.out	regex.s.ty
+	.enter	res
 
 _parser.match_worker_k	.forcecont
 order.total.t	.tygvar
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+list.prim.u	.tygvar
+regex.t	.tygvar
+parser.prim.t	.tygvar	-- Temp
+_parser.match_worker_:_k	.subcode
+regex.t.out	.cogvar
+list.nil	.gvar
+s	.tyfv	*
+β	.tyfv	*
+list.s.ty	.tylet	list.t	s
+regex.s.ty	.tylet	regex.t	s
+cmp	.fv	order.total.t	s
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
+res0	.karg	list.prim.u	regex.s.ty
+	.analyze	res0	:	nil
+		.case	:
+re		.fkarg	0	regex.t	s
+res1		.fkarg	1	list.t	regex.s.ty
+			.force	_parser.match_worker_:_k
+			.coerce	regex.t.out	s
+			.enter	re
+		.case	nil
+nil			.apply	list.nil	s
+		.app	nil
+		.enter	k
+
+_parser.match_worker_:_k	.forcecont
+order.total.t	.tygvar
+list.t	.tygvar
+regex.t	.tygvar
+_parser.t_k_ty	.tygvar
 regex.prim.u	.tygvar
 regex.class.t	.tygvar
-regex.t	.tygvar
-parser.t	.tygvar
-_parser.match_worker_res_ty	.tygvar
-_parser.match_worker_id_c	.subcode
-_parser.match_worker_neg.class_pred_c	.subcode
-_parser.match_worker_co_c	.subcode
-_parser.match_worker_symbol_pred_c	.subcode
-_parser.match_worker_class	.gvar
-parser.symbol.matching.bool	.gvar
-parser.map	.gvar
-parser.unit	.gvar
-parser.fail	.gvar
-parser.lift2	.gvar
+parser.prim.u	.tygvar
+list.prim.u	.tygvar
+parser.prim.t	.tygvar	-- Temp
+_parser.match_worker_class_sk_c	.subcode
+_parser.match_worker_neg.class_sk_c	.subcode
+_parser.match_worker_symbol_sk_c	.subcode
+parser.prim.t.in	.cogvar
+list.t.in	.cogvar
+regex.t.in	.cogvar
+parser.prim.fail.msg	.gvar
+_parser.symbol_msg	.gvar
+parser.prim.fail	.gvar
 _parser.match_worker	.gvar
-parser.<|>	.gvar
-list.:	.gvar
+parser.prim.<|>	.gvar
+list.nil	.gvar
 s	.tyfv	*
+β	.tyfv	*
+parser.prim.s.β.ty	.tylet	parser.prim.u	s	β
+regex.s.ty	.tylet	regex.t	s
+list.s.ty	.tylet	list.t	s
+list.u.regex.s.ty	.tylet	list.prim.u	regex.s.ty
 cmp	.fv	order.total.t	s
-re	.fv	regex.t	s
-res_ty	.tylet	_parser.match_worker_res_ty	s
+res1	.fv	list.t	regex.s.ty
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
 re0	.karg	regex.prim.u	s
+fail.sym	.apply	parser.prim.fail.msg	s	β	|	_parser.symbol_msg
 	.analyze	re0	class	empty	neg.class	null	product	star	sum	symbol
 		.case	class
 cl		.fkarg	0	regex.class.t	s
-cons			.apply	list.:	s
-pred			.apply	_parser.match_worker_class	s	|	cmp	cl
-sym			.apply	parser.symbol.matching.bool	s	|	pred
-			.app	cons	sym
-			.enter	parser.map	s	s	res_ty
+sk			.closure	_parser.match_worker_class_sk_c
+p0			.constr	parser.prim.s.β.ty	symbol	0	sk	1	fail.sym
+			.coerce	parser.prim.t.in	s	β
+			.lift
+			.yield	p0
 		.case	empty
-id			.closure	_parser.match_worker_id_c
-			.app	id
-			.enter	parser.unit	s	res_ty
+			.app	cmp	res1	k
+			.yield	_parser.match_worker	s	β
 		.case	neg.class
 cl		.fkarg	0	regex.class.t	s
-cons			.apply	list.:	s
-pred			.closure	_parser.match_worker_neg.class_pred_c
-sym			.apply	parser.symbol.matching.bool	s	|	pred
-			.app	cons	sym
-			.enter	parser.map	s	s	res_ty
+sk			.closure	_parser.match_worker_neg.class_sk_c
+p0			.constr	parser.prim.s.β.ty	symbol	0	sk	1	fail.sym
+			.coerce	parser.prim.t.in	s	β
+			.lift
+			.yield	p0
 		.case	null
-			.enter	parser.fail	s	res_ty
+			.enter	parser.prim.fail	s	β
 		.case	product
 re0.0		.fkarg	0	regex.t	s
 re0.1		.fkarg	1	regex.t	s
-co			.closure	_parser.match_worker_co_c
-p0			.apply	_parser.match_worker	s	|	cmp	re0.0
-p1			.apply	_parser.match_worker	s	|	cmp	re0.1
-			.app	co	p0	p1
-			.enter	parser.lift2	s	res_ty	res_ty	res_ty
+res2.0			.constr	list.u.regex.s.ty	:	0	re0.1	1	res1
+res2.l			.lifted	res2.0
+res2			.cast	res2.l	list.t.in	regex.s.ty
+res3.0			.constr	list.u.regex.s.ty	:	0	re0.0	1	res2
+res3.l			.lifted	res3.0
+res3			.cast	res3.l	list.t.in	regex.s.ty
+			.app	cmp	res3	k
+			.yield	_parser.match_worker	s	β
 		.case	star
 re0.0		.fkarg	0	regex.t	s
-co			.closure	_parser.match_worker_co_c
-id			.closure	_parser.match_worker_id_c
-p0			.apply	parser.unit	s	res_ty	|	id
-p1.0			.apply	_parser.match_worker	s	|	cmp	re0.0
-p1.1			.apply	_parser.match_worker	s	|	cmp	re
-p1			.apply	parser.lift2	s	res_ty	res_ty	res_ty	|	co	p1.0	p1.1
+p0			.apply	_parser.match_worker	s	β	|	cmp	res1	k
+re0.l			.lifted	re0
+re0.cl			.cast	re0.l	regex.t.in	s
+res2.0			.constr	list.u.regex.s.ty	:	0	re0.cl	1	res1
+res2.l			.lifted	res2.0
+res2			.cast	res2.l	list.t.in	regex.s.ty
+res3.0			.constr	list.u.regex.s.ty	:	0	re0.0	1	res2
+res3.l			.lifted	res3.0
+res3			.cast	res3.l	list.t.in	regex.s.ty
+p1			.apply	_parser.match_worker	s	β	|	cmp	res3	k
 			.app	p0	p1
-			.enter	parser.<|>	s	res_ty
+			.enter	parser.prim.<|>	s	β
 		.case	sum
 re0.0		.fkarg	0	regex.t	s
 re0.1		.fkarg	1	regex.t	s
-p0			.apply	_parser.match_worker	s	|	cmp	re0.0
-p1			.apply	_parser.match_worker	s	|	cmp	re0.1
+res2.0.0			.constr	list.u.regex.s.ty	:	0	re0.0	1	res1
+res2.0.l			.lifted	res2.0.0
+res2.0			.cast	res2.0.l	list.t.in	regex.s.ty
+p0			.apply	_parser.match_worker	s	β	|	cmp	res2.0	k
+res2.1.0			.constr	list.u.regex.s.ty	:	0	re0.1	1	res1
+res2.1.l			.lifted	res2.1.0
+res2.1			.cast	res2.1.l	list.t.in	regex.s.ty
+p1			.apply	_parser.match_worker	s	β	|	cmp	res2.1	k
 			.app	p0	p1
-			.enter	parser.<|>	s	res_ty
+			.enter	parser.prim.<|>	s	β
 		.case	symbol
 c		.fkarg	0	s
-cons			.apply	list.:	s
-pred			.closure	_parser.match_worker_symbol_pred_c
-sym			.apply	parser.symbol.matching.bool	s	|	pred
-			.app	cons	sym
-			.enter	parser.map	s	s	res_ty
+sk			.closure	_parser.match_worker_symbol_sk_c
+p0			.constr	parser.prim.s.β.ty	symbol	0	sk	1	fail.sym
+			.coerce	parser.prim.t.in	s	β
+			.lift
+			.yield	p0
 	-- > :: parser.t	s	res_ty
 
-_parser.match_worker_id_c	.expr
-list.t	.tygvar
-s	.tyfv	*
-s	.larg	list.t	s
-	.enter	s
-
-_parser.match_worker_neg.class_pred_c	.expr
+_parser.match_worker_class_sk_c	.expr
 order.total.t	.tygvar
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+regex.t	.tygvar
 regex.class.t	.tygvar
-bool.not	.gvar
+_parser.match_worker_class_sk_k	.subcode
+bool.t.out	.cogvar
 _parser.match_worker_class	.gvar
 s	.tyfv	*
+β	.tyfv	*
+list.s.ty	.tylet	list.t	s
+regex.s.ty	.tylet	regex.t	s
 cmp	.fv	order.total.t	s
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
+res1	.fv	list.t	regex.s.ty
 cl	.fv	regex.class.t	s
-c	.larg	s
-b	.apply	_parser.match_worker_class	s	|	cmp	cl	c
-	.app	b
-	.enter	bool.not
+s	.larg	s
+	.force	_parser.match_worker_class_sk_k
+	.coerce	bool.t.out
+	.app	cmp	cl	s
+	.enter	_parser.match_worker_class	s
 
-_parser.match_worker_co_c	.expr
-_parser.match_worker_res_ty	.tygvar
-list.t	.tygvar
-s	.tyfv	*
-res_ty	.tylet	_parser.match_worker_res_ty	s
-f0	.larg	res_ty
-f1	.larg	res_ty
-s	.larg	list.t	s
-f1.s	.apply	f1	|	s
-	.app	f1.s
-	.enter	f0
-
-_parser.match_worker_symbol_pred_c	.expr
+_parser.match_worker_class_sk_k	.forcecont
 order.total.t	.tygvar
-_parser.match_worker_symbol_pred_k	.subcode
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+regex.t	.tygvar
+bool.prim.u	.tygvar
+string.t	.tygvar
+parser.prim.t	.tygvar
+either.t	.tygvar	-- Temp
+_parser.match_worker_class_sk_true_k1_c	.subcode
+either.left	.gvar
+list.nil	.gvar
+either.right	.gvar
+_parser.match_worker	.gvar
+s	.tyfv	*
+β	.tyfv	*
+list.s.ty	.tylet	list.t	s
+regex.s.ty	.tylet	regex.t	s
+list.string.ty	.tylet	list.t	string.t
+parser.prim.s.β.ty	.tylet	parser.prim.t	s	β
+cmp	.fv	order.total.t	s
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
+res1	.fv	list.t	regex.s.ty
+s	.fv	s
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+nil			.apply	list.nil	string.t
+			.app	nil
+			.enter	either.left	list.string.ty	parser.prim.s.β.ty
+		.case	true
+k1			.closure	_parser.match_worker_class_sk_true_k1_c
+p1			.apply	_parser.match_worker	s	β	|	cmp	res1	k1
+			.app	p1
+			.enter	either.right	list.string.ty	parser.prim.s.β.ty
+
+_parser.match_worker_class_sk_true_k1_c	.expr
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+list.prim.u	.tygvar
+list.t.in	.cogvar
+s	.tyfv	*
+β	.tyfv	*
+list.s.ty	.tylet	list.t	s
+list.u.s.ty	.tylet	list.prim.u	s
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
+s	.fv	s
+ss	.larg	list.t	s
+ss1.0	.constr	list.u.s.ty	:	0	s	1	ss
+ss1.l	.lifted	ss1.0
+ss1	.cast	ss1.l	list.t.in	s
+	.app	ss1
+	.enter	k
+
+_parser.match_worker_neg.class_sk_c	.expr
+order.total.t	.tygvar
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+regex.t	.tygvar
+regex.class.t	.tygvar
+_parser.match_worker_neg.class_sk_k	.subcode
+bool.t.out	.cogvar
+_parser.match_worker_class	.gvar
+s	.tyfv	*
+β	.tyfv	*
+list.s.ty	.tylet	list.t	s
+regex.s.ty	.tylet	regex.t	s
+cmp	.fv	order.total.t	s
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
+res1	.fv	list.t	regex.s.ty
+cl	.fv	regex.class.t	s
+s	.larg	s
+	.force	_parser.match_worker_neg.class_sk_k
+	.coerce	bool.t.out
+	.app	cmp	cl	s
+	.enter	_parser.match_worker_class	s
+
+_parser.match_worker_neg.class_sk_k	.forcecont
+order.total.t	.tygvar
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+regex.t	.tygvar
+bool.prim.u	.tygvar
+string.t	.tygvar
+parser.prim.t	.tygvar
+either.t	.tygvar	-- Temp
+_parser.match_worker_neg.class_sk_false_k1_c	.subcode
+either.left	.gvar
+list.nil	.gvar
+either.right	.gvar
+_parser.match_worker	.gvar
+s	.tyfv	*
+β	.tyfv	*
+list.s.ty	.tylet	list.t	s
+regex.s.ty	.tylet	regex.t	s
+list.string.ty	.tylet	list.t	string.t
+parser.prim.s.β.ty	.tylet	parser.prim.t	s	β
+cmp	.fv	order.total.t	s
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
+res1	.fv	list.t	regex.s.ty
+s	.fv	s
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+k1			.closure	_parser.match_worker_neg.class_sk_false_k1_c
+p1			.apply	_parser.match_worker	s	β	|	cmp	res1	k1
+			.app	p1
+			.enter	either.right	list.string.ty	parser.prim.s.β.ty
+		.case	true
+nil			.apply	list.nil	string.t
+			.app	nil
+			.enter	either.left	list.string.ty	parser.prim.s.β.ty
+
+_parser.match_worker_neg.class_sk_false_k1_c	.expr
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+list.prim.u	.tygvar
+list.t.in	.cogvar
+s	.tyfv	*
+β	.tyfv	*
+list.s.ty	.tylet	list.t	s
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
+s	.fv	s
+ss	.larg	list.t	s
+list.u.s.ty	.tylet	list.prim.u	s
+ss1.0	.constr	list.u.s.ty	:	0	s	1	ss
+ss1.l	.lifted	ss1.0
+ss1	.cast	ss1.l	list.t.in	s
+	.app	ss1
+	.enter	k
+
+_parser.match_worker_symbol_sk_c	.expr
+order.total.t	.tygvar
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+regex.t	.tygvar
+_parser.match_worker_symbol_sk_k	.subcode
 order.total.ord.t.out	.cogvar
 s	.tyfv	*
+β	.tyfv	*
+list.s.ty	.tylet	list.t	s
+regex.s.ty	.tylet	regex.t	s
 cmp	.fv	order.total.t	s
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
+res1	.fv	list.t	regex.s.ty
 c	.fv	s
-c1	.larg	s
-	.force	_parser.match_worker_symbol_pred_k
+s	.larg	s
+	.force	_parser.match_worker_symbol_sk_k
 	.coerce	order.total.ord.t.out
-	.app	c	c1
+	.app	c	s
 	.enter	cmp
 
-_parser.match_worker_symbol_pred_k	.forcecont
+_parser.match_worker_symbol_sk_k	.forcecont
+order.total.t	.tygvar
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+regex.t	.tygvar
 order.total.ord.prim.u	.tygvar
-bool.false	.gvar
-bool.true	.gvar
+string.t	.tygvar
+parser.prim.t	.tygvar
+either.t	.tygvar	-- Temp
+_parser.match_worker_symbol_sk_eq_k1_c	.subcode
+either.left	.gvar
+list.nil	.gvar
+either.right	.gvar
+_parser.match_worker	.gvar
+s	.tyfv	*
+β	.tyfv	*
+list.s.ty	.tylet	list.t	s
+regex.s.ty	.tylet	regex.t	s
+list.string.ty	.tylet	list.t	string.t
+parser.prim.s.β.ty	.tylet	parser.prim.t	s	β
+cmp	.fv	order.total.t	s
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
+res1	.fv	list.t	regex.s.ty
+s	.fv	s
 o0	.karg	order.total.ord.prim.u
 	.danalyze	o0	eq
 		.default
-			.enter	bool.false
+nil			.undefined	list.t	string.t	-- > .apply	list.nil	string.t
+			.app	nil
+			.enter	either.left	list.string.ty	parser.prim.s.β.ty
 		.case	eq
-			.enter	bool.true
+k1			.closure	_parser.match_worker_symbol_sk_eq_k1_c
+p1			.apply	_parser.match_worker	s	β	|	cmp	res1	k1
+			.app	p1
+			.enter	either.right	list.string.ty	parser.prim.s.β.ty
+
+_parser.match_worker_symbol_sk_eq_k1_c	.expr
+list.t	.tygvar
+_parser.t_k_ty	.tygvar
+list.prim.u	.tygvar
+parser.prim.t	.tygvar	-- Temp
+list.t.in	.cogvar
+s	.tyfv	*
+β	.tyfv	*
+list.s.ty	.tylet	list.t	s
+list.u.s.ty	.tylet	list.prim.u	s
+k	.fv	_parser.t_k_ty	s	list.s.ty	β
+s	.fv	s
+ss	.larg	list.t	s
+ss1.0	.constr	list.u.s.ty	:	0	s	1	ss
+ss1.l	.lifted	ss1.0
+ss1	.cast	ss1.l	list.t.in	s
+	.app	ss1
+	.enter	k
 
 _parser.match_worker_class_c	.expr
 order.total.t	.tygvar
@@ -4813,23 +5049,18 @@ res.ty	.tylet	list.t	α
 
 _parser.match_worker_ty	.tyexpr
 order.total.t	.tygvar
-regex.t	.tygvar
-parser.t	.tygvar
-_parser.match_worker_res_ty	.tygvar
-s	.tyforall	*
-res_ty	.tylet	_parser.match_worker_res_ty	s
-	.tylift
-	.tyfun	order.total.t	s
-	.tylift
-	.tyfun	regex.t	s
-	.tyref	parser.t	s	res_ty
-
-_parser.match_worker_res_ty	.tyexpr
 list.t	.tygvar
-s	.tylambda	*
-	.tylift
-	.tyfun	list.t	s
-	.tyref	list.t	s
+regex.t	.tygvar
+_parser.t_k_ty	.tygvar
+parser.prim.t	.tygvar
+s	.tyforall	*
+β	.tyforall	*
+regex.s.ty	.tylet	regex.t	s
+list.s.ty	.tylet	list.t	s
+	.tyfun	order.total.t	s
+	.tyfun	list.t	regex.s.ty
+	.tyfun	_parser.t_k_ty	s	list.s.ty	β
+	.tyref	parser.prim.t	s	β
 
 _parser.match_worker_class_ty	.tyexpr
 order.total.t	.tygvar
