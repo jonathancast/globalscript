@@ -2315,7 +2315,7 @@ r			.apply	gsdl.ags.codeitem.impgen.alloc	|	just.v	r.rhs
 tyem			.undefined	ordered.set.t	gsdl.var.t
 tysvs			.lfield	subvars	ty.r
 tygvs			.lfield	tygvars	ty.r
-tis			.undefined	diff.list.t	gsdl.ags.typeitem.t
+tis			.lfield	typeitems	ty.r
 res			.lrecord	codeitems	cs 	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	r	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	typeitems	tis	|	_gsac.gsexpr.generator.imp.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
