@@ -89,7 +89,6 @@ int gsbc_item_eq(struct gsbc_item, struct gsbc_item);
 
 struct gsbc_code_item_type;
 
-void gsfatal_bad_input(struct gsparsedline *, char *, ...);
 void gsargcheck(struct gsparsedline *, ulong, char *, ...);
 
 #define MAX_ITEMS_PER_SCC 0x100
