@@ -3827,7 +3827,7 @@ rec.ty	.tylet	parser.prim.t	s	record.empty
 p0.0	.karg	parser.prim.u	s	record.empty
 	.analyze	p0.0	fail	fail.msg	lookahead	pos.get	symbol	unit.plus
 		.case	fail
-			.undef	parser.prim.t	s	α
+			.enter	p1
 		.case	fail.msg
 msg		.fkarg	0	list.t	rune.t
 			.enter	p1
