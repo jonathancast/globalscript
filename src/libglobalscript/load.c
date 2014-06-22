@@ -2732,14 +2732,7 @@ gssymtable_add_data_item(struct gsfile_symtable *symtable, gsinterned_string lab
 
     for (p = &symtable->dataitems; *p; p = &(*p)->next)
         if ((*p)->key == label)
-            gsfatal(
-                "%s:%d: Duplicate data item %s (duplicate of %s:%d)",
-                pdata->pos.file->name,
-                pdata->pos.lineno,
-                label->name,
-                (*p)->value->pos.file->name,
-                (*p)->value->pos.lineno
-            )
+            gsfatal("%P: Duplicate data item %s (duplicate of %P)", pdata->pos, label->name, (*p)->value->pos)
     ;
     *p = gs_sys_global_block_suballoc(&gssymtable_item_info, sizeof(**p));
     (*p)->key = label;
@@ -2756,14 +2749,7 @@ gssymtable_add_type_item(struct gsfile_symtable *symtable, gsinterned_string lab
 
     for (p = &symtable->typeitems; *p; p = &(*p)->next)
         if ((*p)->key == label)
-            gsfatal(
-                "%s:%d: Duplicate type item %s (duplicate of %s:%d)",
-                ptype->pos.file->name,
-                ptype->pos.lineno,
-                label->name,
-                (*p)->value->pos.file->name,
-                (*p)->value->pos.lineno
-            )
+            gsfatal("%P: Duplicate type item %s (duplicate of %P)", ptype->pos, label->name, (*p)->value->pos)
     ;
     *p = gs_sys_global_block_suballoc(&gssymtable_item_info, sizeof(**p));
     (*p)->key = label;
@@ -3140,7 +3126,8 @@ gssymtable_set_scc(struct gsfile_symtable *symtable, struct gsbc_item item, stru
 
     for (ppscc_item = &symtable->sccs; *ppscc_item; ppscc_item = &(*ppscc_item)->next) {
         if (gsbc_item_eq((*ppscc_item)->key, item))
-            gsfatal("%s:%d: Item already has SCC", item.v->pos.file->name, item.v->pos.lineno);
+            gsfatal("%P: Item already has SCC", item.v->pos)
+        ;
     }
 
     *ppscc_item = gs_sys_global_block_suballoc(&gsfile_symtable_scc_item_info, sizeof(**ppscc_item));
@@ -3262,7 +3249,7 @@ gsloadfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
             }
             return;
         default:
-            gsfatal("%s: Unknown file type %d in gsbytecompile", parsedfile->name->name, parsedfile->type);
+            gsfatal("%y: Unknown file type %d in gsbytecompile", parsedfile->name, parsedfile->type);
     }
 }
 
@@ -3321,7 +3308,7 @@ gsload_scc(gsparsedfile *parsedfile, struct gsfile_symtable *symtable, struct gs
                 goto have_entry;
             }
         }
-        gsfatal("%s: Couldn't find entry point", parsedfile->name->name);
+        gsfatal("%y: Couldn't find entry point", parsedfile->name);
     have_entry:
         ;
     }
