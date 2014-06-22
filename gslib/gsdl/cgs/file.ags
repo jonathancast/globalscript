@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.3
+#calculus: gsdl.string-code 0.4
 
 	.prefix
 
@@ -30,13 +30,13 @@ _gsdl.cgs.file.read_s_c	.subcode
 _gsdl.cgs.file.read_body_c	.subcode
 eo	.larg	ibio.prim.oport	rune.t
 fn	.larg	ibio.file.name.t
-i	.bind	_gsdl.cgs.file.read_i_c
-pragmas.pos	.bind	_gsdl.cgs.file.read_pragmas.pos_c
+i	.bind.closure	_gsdl.cgs.file.read_i_c
+pragmas.pos	.bind.closure	_gsdl.cgs.file.read_pragmas.pos_c
 pragmas	.closure	_gsdl.cgs.file.read_pragmas_c
 pos	.closure	_gsdl.cgs.file.read_pos_c
 parser	.closure	_gsdl.cgs.file.read_parser_c
-s	.bind	_gsdl.cgs.file.read_s_c
-	.body	_gsdl.cgs.file.read_body_c
+s	.bind.closure	_gsdl.cgs.file.read_s_c
+	.body.closure	_gsdl.cgs.file.read_body_c
 
 _gsdl.cgs.file.read_i_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
@@ -47,8 +47,8 @@ _gsdl.cgs.file.read_i_ei_c	.subcode
 _gsdl.cgs.file.read_i_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 fn	.fv	ibio.file.name.t
-ei	.bind	_gsdl.cgs.file.read_i_ei_c
-	.body	_gsdl.cgs.file.read_i_body_c
+ei	.bind.closure	_gsdl.cgs.file.read_i_ei_c
+	.body.closure	_gsdl.cgs.file.read_i_body_c
 
 _gsdl.cgs.file.read_i_ei_c	.expr
 ibio.file.name.t	.tygvar
@@ -89,8 +89,8 @@ _gsdl.cgs.file.read_i_body_0_res_print_c	.subcode
 _gsdl.cgs.file.read_i_body_0_res_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	string.t
-	.bind	_gsdl.cgs.file.read_i_body_0_res_print_c
-	.body	_gsdl.cgs.file.read_i_body_0_res_body_c
+	.bind.closure	_gsdl.cgs.file.read_i_body_0_res_print_c
+	.body.closure	_gsdl.cgs.file.read_i_body_0_res_body_c
 
 _gsdl.cgs.file.read_i_body_0_res_print_c	.expr
 ibio.prim.oport	.tygvar
@@ -264,8 +264,8 @@ _gsdl.cgs.file.read_body_left_res_print_c	.subcode
 _gsdl.cgs.file.read_body_left_res_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	parser.err.t
-	.bind	_gsdl.cgs.file.read_body_left_res_print_c
-	.body	_gsdl.cgs.file.read_body_left_res_body_c
+	.bind.closure	_gsdl.cgs.file.read_body_left_res_print_c
+	.body.closure	_gsdl.cgs.file.read_body_left_res_body_c
 
 _gsdl.cgs.file.read_body_left_res_print_c	.expr
 ibio.prim.oport	.tygvar
