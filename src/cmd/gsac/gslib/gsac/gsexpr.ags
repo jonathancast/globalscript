@@ -2279,10 +2279,10 @@ string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
 _gsac.gsexpr.generator.imp.compile_res.ty	.tygvar
 gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.coercionitem.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
@@ -2303,7 +2303,7 @@ err		.fkarg	0	string.t
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.compileToApp_res.ty
 cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 just.v			.apply	maybe.just	gsdl.var.t	|	v
