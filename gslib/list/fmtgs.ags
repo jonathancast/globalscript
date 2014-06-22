@@ -1,0 +1,112 @@
+#calculus: gsdl.string-code 0.6
+
+	.prefix
+
+	.data
+
+list.fmtgs	.closure	_list.fmtgs_c
+list.fmtgs.byDefault	.closure	_list.fmtgs.byDefault_c	_list.fmtgs.byDefault_ty
+_list.fmtgs.byDefault_:_prefix.s	.string	[\s
+_list.fmtgs.byDefault_:_suffix.s	.string	]
+_list.fmtgs.byDefault_:_f_comma.sp.s	.string	,\s
+_list.fmtgs.byDefault_nil.s	.string	[]
+
+	.code
+
+-- §section §gs{list.fmtgs}
+
+_list.fmtgs_c	.expr
+list.fmtgs.list.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+α	.tyarg	*
+p0	.larg	list.fmtgs.list.t	α
+xn	.larg	list.t	α
+	.app	xn
+	.enter	p0
+
+_list.fmtgs.byDefault_c	.expr
+fmtgs.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+_list.fmtgs.byDefault_k	.subcode
+list.t.out	.cogvar
+α	.tyarg	*
+p	.larg	fmtgs.t	α
+xn	.larg	list.t	α
+	.force	_list.fmtgs.byDefault_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.fmtgs.byDefault_k	.forcecont
+fmtgs.t	.tygvar
+list.t	.tygvar
+list.prim.u	.tygvar
+fmtgs.printer.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar
+_list.fmtgs.byDefault_:_f_c	.subcode
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.prepend	.gvar
+diff.list.<>	.gvar
+_list.fmtgs.byDefault_:_prefix.s	.gvar
+diff.list.concat	.gvar
+list.map	.gvar
+diff.list.fromlist	.gvar
+_list.fmtgs.byDefault_:_suffix.s	.gvar
+_list.fmtgs.byDefault_nil.s	.gvar
+α	.tyfv	*
+p	.fv	fmtgs.t	α
+xn	.fv	list.t	α
+diff.list.ty	.tylet	diff.list.t	rune.t
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+f			.closure	_list.fmtgs.byDefault_:_f_c
+xn.dss			.apply	list.map	α	diff.list.ty	|	f	xn
+xn.ds			.apply	diff.list.concat	rune.t	|	xn.dss
+ds2			.apply	diff.list.fromlist	rune.t	|	_list.fmtgs.byDefault_:_suffix.s
+ds1			.apply	diff.list.<>	rune.t	|	xn.ds	ds2
+ds			.apply	diff.list.prepend	rune.t	|	_list.fmtgs.byDefault_:_prefix.s	ds1
+			.app	fmtgs.prec.arg	ds
+			.enter	fmtgs.prec
+		.case	nil
+ds			.apply	diff.list.fromlist	rune.t	|	_list.fmtgs.byDefault_nil.s
+			.app	fmtgs.prec.arg	ds
+			.enter	fmtgs.prec
+
+_list.fmtgs.byDefault_:_f_c	.expr
+fmtgs.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar	-- Temp
+diff.list.postpend	.gvar
+fmtgs.prec.max	.gvar
+_list.fmtgs.byDefault_:_f_comma.sp.s	.gvar
+α	.tyfv	*
+p	.fv	fmtgs.t	α
+x	.larg	α
+x.ds	.apply	p	|	x	fmtgs.prec.max
+	.app	x.ds	_list.fmtgs.byDefault_:_f_comma.sp.s
+	.enter	diff.list.postpend	rune.t
+
+	.type
+
+-- §section §gs{list.fmtgs}
+
+list.fmtgs.list.t	.tyexpr
+fmtgs.t	.tygvar
+list.t	.tygvar
+α	.tylambda	*
+list.α	.tylet	list.t	α
+	.tyref	fmtgs.t	list.α
+
+_list.fmtgs.byDefault_ty	.tyexpr
+fmtgs.t	.tygvar
+list.fmtgs.list.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	fmtgs.t	α
+	.tyref	list.fmtgs.list.t	α

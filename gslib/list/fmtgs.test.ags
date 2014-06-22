@@ -1,0 +1,60 @@
+#calculus: gsdl.string-code 0.6
+
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+_ep_tests	.list	test.property.t	_test_fmtgs.nil
+
+_test_fmtgs.nil	.closure	_test.fmtgs.nil_c
+_test.fmtgs.nil_label	.string	list.fmtgs\snil\s≡\sqq{[]}
+_test.fmtgs.nil_test_expected	.string	[]
+_test.fmtgs.nil_test_fail	.string	list.fmtgs\snil\s≠\sqq{[]}
+_test.fmtgs.nil_test_succ	.string	list.fmtgs\snil\s≡\sqq{[]}
+
+_fixture_nil	.closure	_fixture_nil_c
+
+	.code
+
+_ep_c	.expr
+test.all	.gvar
+_ep_tests	.gvar
+	.app	_ep_tests
+	.enter	test.all
+
+-- §section §gs{fmtgs nil}
+
+_test.fmtgs.nil_c	.expr
+bool.t	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+test.property.label	.gvar
+_test.fmtgs.nil_label	.gvar
+test.assert	.gvar
+_test.fmtgs.nil_test_fail	.gvar
+_test.fmtgs.nil_test_succ	.gvar
+list.fmtgs	.gvar
+list.fmtgs.byDefault	.gvar
+bool.fmtgs	.gvar
+_fixture_nil	.gvar
+fmtgs.prec.app	.gvar
+list.nil	.gvar
+list.≡	.gvar
+rune.≡	.gvar
+_test.fmtgs.nil_test_expected	.gvar
+p0	.apply	list.fmtgs.byDefault	bool.t	|	bool.fmtgs
+snil	.apply	list.nil	rune.t
+s0	.apply	list.fmtgs	bool.t	|	p0	_fixture_nil	fmtgs.prec.app	snil
+eq	.apply	list.≡	rune.t	|	rune.≡	s0	_test.fmtgs.nil_test_expected
+test	.apply	test.assert	|	_test.fmtgs.nil_test_fail	_test.fmtgs.nil_test_succ	eq
+	.app	_test.fmtgs.nil_label	test
+	.enter	test.property.label
+
+-- §section Test fixtures
+
+_fixture_nil_c	.expr
+bool.t	.tygvar
+list.nil	.gvar
+	.enter	list.nil	bool.t
