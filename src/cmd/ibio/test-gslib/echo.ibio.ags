@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.3
+#calculus: gsdl.string-code 0.4
 
 	.document
 
@@ -23,9 +23,9 @@ _real.entry.body	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
-as	.bind	_real.entry.as
+as	.bind.closure	_real.entry.as
 s	.closure	_real.entry.s
-	.body	_real.entry.body
+	.body.closure	_real.entry.body
 
 _real.entry.as	.expr
 _get.args.type	.tygvar

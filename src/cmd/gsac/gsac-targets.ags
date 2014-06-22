@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.3
+#calculus: gsdl.string-code 0.4
 
 	.document
 
@@ -24,9 +24,9 @@ _real.entry_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
-args	.bind	_real.entry_args_c
+args	.bind.closure	_real.entry_args_c
 parsed.args	.closure	_real.entry_parsed.args_c
-	.body	_real.entry_body_c
+	.body.closure	_real.entry_body_c
 
 _real.entry_args_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -68,17 +68,17 @@ _print.targets.in.dir_ds_c	.subcode
 _print.targets.in.dir_body_c	.subcode
 o	.larg	ibio.prim.oport	rune.t
 dirn	.larg	ibio.file.name.t
-id	.bind	_print.targets.in.dir_id_c
-ds	.bind	_print.targets.in.dir_ds_c
-	.body	_print.targets.in.dir_body_c
+id	.bind.closure	_print.targets.in.dir_id_c
+ds	.bind.closure	_print.targets.in.dir_ds_c
+	.body.closure	_print.targets.in.dir_body_c
 
 _print.targets.in.dir_id_c	.impprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
 _print.targets.in.dir_id_eid_c	.subcode
 _print.targets.in.dir_id_body_c	.subcode
 dirn	.fv	ibio.file.name.t
-eid	.bind	_print.targets.in.dir_id_eid_c
-	.body	_print.targets.in.dir_id_body_c
+eid	.bind.closure	_print.targets.in.dir_id_eid_c
+	.body.closure	_print.targets.in.dir_id_body_c
 
 _print.targets.in.dir_id_eid_c	.expr
 ibio.file.name.t	.tygvar
