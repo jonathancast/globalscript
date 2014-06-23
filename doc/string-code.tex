@@ -1167,6 +1167,17 @@ with kinds \stringcode{ki} (see section \ref{kinds}).
 This isn't really an external dependency;
 it's more a kind of type literal, that simplifies the implementation of the string compiler.
 
+\section{Type Arguments}
+\label{type_arg}
+
+\subsection{\stringcode{.tylambda}}
+
+\begin{verbatim}
+t	.tylambda	ki
+\end{verbatim}
+
+This translates to a type parameter \stringcode{t} of kind \stringcode{ki} (see section \ref{kinds}).
+
 \section{Universal Quantifiers}
 \label{type_forall}
 
@@ -1363,47 +1374,15 @@ Interpolations aren't supported inside classes yet but they will be.
 \chapter{Source Code}
 
 \begin{verbatim}
-int
-gsparse_type_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    if (gssymeq(parsedline->directive, gssymtypeop, ".tylambda")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymtypelable, fields[0])
-        ; else
-            gsfatal("%s:%d: Labels required on .tylambda", pos->real_filename, pos->real_lineno)
-        ;
-        if (n < 3)
-            gsfatal("%s:%d: Missing kind on .tylambda", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
-        if (n > 3)
-            gsfatal("%s:%d: Too many arguments to .tylambda; I only know what the kind is", pos->real_filename, pos->real_lineno)
-        ;
-        return 1;
-    } else {
-        return 0;
-    }
-
-    return 1;
-}
-
 long
 gsparse_coercion_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    struct gsparsedline *parsedline;
-
     if (gssymeq(parsedline->directive, gssymcoerciondirective, ".tycoercion")) {
         if (numfields > 2 + 0)
             gsfatal("%s:%d: Too many arguments to .tycoercion", pos->real_filename, pos->real_lineno)
         ;
         return gsparse_coerce_ops(pos, parsedfile, parsedline, chan, line, fields);
-    } else {
-        gsfatal("%s:%d: %s:%d: Unimplemented coercion directive %s", __FILE__, __LINE__, pos->real_filename, pos->real_lineno, fields[1]);
     }
-
-    gsfatal("%s:%d: gsparse_coercion_item next", __FILE__, __LINE__);
-
-    return -1;
 }
 
 long
