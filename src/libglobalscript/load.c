@@ -2682,14 +2682,7 @@ gsappend_items(struct gsfile_symtable_item **dest0, struct gsfile_symtable_item 
     for (src = src0; src; src = src->next) {
         for (dest = dest0; *dest; dest = &(*dest)->next) {
             if (src->key == (*dest)->key) {
-                gsfatal("%s:%d: Duplicate %s item %s (duplicate of %s:%d)",
-                    src->value->pos.file->name,
-                    src->value->pos.lineno,
-                    type,
-                    src->key->name,
-                    (*dest)->value->pos.file->name,
-                    (*dest)->value->pos.lineno
-                );
+                gsfatal("%P: Duplicate %s item %y (duplicate of %P)", src->value->pos, type, src->key, (*dest)->value->pos);
             }
         }
         *dest = gs_sys_global_block_suballoc(&gssymtable_item_info, sizeof(**dest));
@@ -2708,14 +2701,7 @@ gssymtable_add_code_item(struct gsfile_symtable *symtable, gsinterned_string lab
 
     for (p = &symtable->codeitems; *p; p = &(*p)->next)
         if ((*p)->key == label)
-            gsfatal(
-                "%s:%d: Duplicate code item %s (duplicate of %s:%d)",
-                pcode->pos.file->name,
-                pcode->pos.lineno,
-                label->name,
-                (*p)->value->pos.file->name,
-                (*p)->value->pos.lineno
-            )
+            gsfatal("%P: Duplicate code item %y (duplicate of %P)", pcode->pos, label, (*p)->value->pos)
     ;
     *p = gs_sys_global_block_suballoc(&gssymtable_item_info, sizeof(**p));
     (*p)->key = label;

@@ -74,7 +74,7 @@ gstypes_process_type_declarations(struct gsfile_symtable *symtable, struct gsbc_
             case gssymcoercionlable:
                 break;
             default:
-                gsfatal("%s:%d: %s:%d: gstypes_process_type_declarations(type = %d) next", __FILE__, __LINE__, item.v->pos.file->name, item.v->pos.lineno, item.type);
+                gsfatal(UNIMPL("%P: gstypes_process_type_declarations(type = %d)"), item.v->pos, item.type);
         }
     }
 }
