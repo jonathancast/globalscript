@@ -17,8 +17,6 @@ ok_grep_errors '-- invalid calculus version --' 'invalid-calculus-version.ags:1:
 
 echo '# Version 0.3 and up:'
 
-SHOULD_DISABLE_STRING_CODE_0_2=1
-
 ok_diff_fail '-- source-style comments --' ./$O.test-gsi undef-new-comments.ags
 
 ok_diff_fail '-- undefined entry points --' ./$O.test-gsi undef.ags
@@ -165,6 +163,8 @@ ok_diff '-- trivial use of .closure --' ./$O.test-gsexec simple-closure-api.ags
 ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-fixtures/invalid-fv.ags:15: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags
 
 echo '# Version 0.4 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_3=1
 
 ok_grep_errors '-- .body.closure in .impprogs --' 'undef-body-closure-in-impprog.ags:17: undefined' ./$O.test-gsexec undef-body-closure-in-impprog.ags
 ok_grep_errors '-- .bind.closure in .impprogs --' 'undef-bind-closure-in-impprog.ags:19: undefined' ./$O.test-gsexec undef-bind-closure-in-impprog.ags
