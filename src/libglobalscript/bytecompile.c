@@ -2053,7 +2053,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
 
             prim = gsprims_lookup_prim(prims, p->arguments[2]->name);
 
-            SETUP_PCODE(gsbc_op_eprim);
+            SETUP_PCODE(gsbc_op_api_prim);
             ACE_IMPPRIM_INDEX(pcode) = prim->index;
 
             /* §paragraph{Skipping type arguments} */
@@ -2072,7 +2072,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
 
             pcl->pout = ACE_IMPPRIM_SKIP(pcode);
         } else {
-            SETUP_PCODE(gsbc_op_unknown_eprim);
+            SETUP_PCODE(gsbc_op_unknown_api_prim);
             pcl->pout = GS_NEXT_BYTECODE(pcode, 0);
         }
         pcl->nregs++;

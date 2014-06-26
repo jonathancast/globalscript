@@ -70,8 +70,8 @@ static void ace_instr_alloc_lfield(struct ace_thread *);
 static void ace_instr_alloc_undef(struct ace_thread *);
 static void ace_instr_copy_alias(struct ace_thread *);
 static void ace_instr_alloc_apply(struct ace_thread *);
-static void ace_instr_alloc_unknown_eprim(struct ace_thread *);
-static void ace_instr_alloc_eprim(struct ace_thread *);
+static void ace_instr_alloc_unknown_api_prim(struct ace_thread *);
+static void ace_instr_alloc_api_prim(struct ace_thread *);
 static void ace_instr_push_app(struct ace_thread *);
 static void ace_instr_push_force(struct ace_thread *);
 static void ace_instr_push_strict(struct ace_thread *);
@@ -152,11 +152,11 @@ ace_thread_pool_main(void *p)
                 case gsbc_op_apply:
                     ace_instr_alloc_apply(thread);
                     break;
-                case gsbc_op_unknown_eprim:
-                    ace_instr_alloc_unknown_eprim(thread);
+                case gsbc_op_unknown_api_prim:
+                    ace_instr_alloc_unknown_api_prim(thread);
                     break;
-                case gsbc_op_eprim:
-                    ace_instr_alloc_eprim(thread);
+                case gsbc_op_api_prim:
+                    ace_instr_alloc_api_prim(thread);
                     break;
                 case gsbc_op_app:
                     ace_instr_push_app(thread);
@@ -644,7 +644,7 @@ ace_instr_alloc_apply(struct ace_thread *thread)
 
 static
 void
-ace_instr_alloc_unknown_eprim(struct ace_thread *thread)
+ace_instr_alloc_unknown_api_prim(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gseprim *prim;
@@ -669,7 +669,7 @@ ace_instr_alloc_unknown_eprim(struct ace_thread *thread)
 
 static
 void
-ace_instr_alloc_eprim(struct ace_thread *thread)
+ace_instr_alloc_api_prim(struct ace_thread *thread)
 {
     struct gsbc *ip;
     struct gseprim *prim;
