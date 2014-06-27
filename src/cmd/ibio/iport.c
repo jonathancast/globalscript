@@ -395,10 +395,10 @@ ibio_read_process_main(void *p)
                     runnable = 0;
                     break;
                 case gstywhnf: {
-                    struct gsconstr_args *constr;
+                    struct gsconstr *constr;
 
-                    constr = (struct gsconstr_args *)iport->reading;
-                    switch (constr->constrnum) {
+                    constr = (struct gsconstr *)iport->reading;
+                    switch (constr->a.constrnum) {
                         case ibio_acceptor_fail:
                             iport->reading = 0;
                             pos = 0;
@@ -409,23 +409,23 @@ ibio_read_process_main(void *p)
                         case ibio_acceptor_symbol_bind: {
                             gsvalue symk, eofk;
 
-                            symk = constr->arguments[0];
-                            eofk = constr->arguments[1];
+                            symk = constr->a.arguments[0];
+                            eofk = constr->a.arguments[1];
                             seg = ibio_channel_segment_containing(pos);
 
                             if (pos < seg->extent) {
-                                iport->reading = gsapply(constr->c.pos, constr->arguments[0], *pos);
+                                iport->reading = gsapply(constr->pos, constr->a.arguments[0], *pos);
                                 if (pos + 1 < seg->extent) {
-                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->c.pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: can advance within segment");
+                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: can advance within segment");
                                     active = 0;
                                 } else if (seg->next) {
-                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->c.pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: have next segment to advance to");
+                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: have next segment to advance to");
                                     active = 0;
                                 } else if (seg->extent < ibio_channel_segment_limit(seg)) {
                                     pos++;
                                     unlock(&seg->lock);
                                 } else {
-                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->c.pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: cannot advance within segment");
+                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: cannot advance within segment");
                                     active = 0;
                                 }
                             } else if (seg->next) {
@@ -447,10 +447,10 @@ ibio_read_process_main(void *p)
                                     }
                                     *pos++ = sym;
                                     seg->extent = pos;
-                                    iport->reading = gsapply(constr->c.pos, symk, sym);
+                                    iport->reading = gsapply(constr->pos, symk, sym);
                                     unlock(&seg->lock);
                                 } else {
-                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->c.pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: not enough data in buffer to read a symbol");
+                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: not enough data in buffer to read a symbol");
                                     active = 0;
                                 }
                             } else {
@@ -458,7 +458,7 @@ ibio_read_process_main(void *p)
 
                                 n = iport->uxio->refill(iport->uxio, iport->fd, iport->buf, (uchar*)iport->bufextent - (uchar*)iport->buf);
                                 if (n < 0) {
-                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->c.pos, iport, seg, pos, "ibio_read_process_main: read failed: %r");
+                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: read failed: %r");
                                     active = 0;
                                     goto failed;
                                 }
@@ -484,10 +484,10 @@ ibio_read_process_main(void *p)
                         }
                         case ibio_acceptor_unit_plus:
                             iport->position = pos;
-                            iport->reading = constr->arguments[1];
+                            iport->reading = constr->a.arguments[1];
                             break;
                         default:
-                            api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: constr = %d", constr->constrnum);
+                            api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: constr = %d", constr->a.constrnum);
                             ibio_shutdown_iport(iport, pos);
                             active = 0;
                             break;

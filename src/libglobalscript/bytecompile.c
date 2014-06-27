@@ -101,9 +101,9 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
     } else if (gssymceq(p->directive, gssymconstr, gssymdatadirective, ".constr")) {
         *psection = gsbc_constrs;
         if (p->numarguments == 3) {
-            *psize = sizeof(struct gsconstr_args) + sizeof(gsvalue);
+            *psize = sizeof(struct gsconstr) + sizeof(gsvalue);
         } else {
-            *psize = sizeof(struct gsconstr_args) + (p->numarguments / 2) * sizeof(gsvalue);
+            *psize = sizeof(struct gsconstr) + (p->numarguments / 2) * sizeof(gsvalue);
         }
     } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
         char *eos;
@@ -130,9 +130,9 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
             eos = gsbc_parse_rune_literal(p->pos, item.file->features, eos, &v);
             len++;
         }
-        size = len * (sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue));
+        size = len * (sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
         if (p->numarguments < 2)
-            size += sizeof(struct gsconstr_args)
+            size += sizeof(struct gsconstr)
         ;
         *psize = size;
     } else if (gssymceq(p->directive, gssymlist, gssymdatadirective, ".list")) {
@@ -140,7 +140,7 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
             gsfatal(UNIMPL("%P: Dotted .lists"), p->pos)
         ;
         *psection = gsbc_constrs;
-        *psize = p->numarguments * (sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr_args);
+        *psize = p->numarguments * (sizeof(struct gsconstr) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr);
     } else if (gssymceq(p->directive, gssymregex, gssymdatadirective, ".regex")) {
         int interp;
         char *eos;
@@ -148,22 +148,22 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
         gsvalue v;
 
         interp = 1;
-        size = sizeof(struct gsconstr_args) + 2*sizeof(gsvalue) + sizeof(struct gsconstr_args); /* sum + null */
+        size = sizeof(struct gsconstr) + 2*sizeof(gsvalue) + sizeof(struct gsconstr); /* sum + null */
         eos = p->arguments[0]->name;
 
-        if (*eos == '|') size += sizeof(struct gsconstr_args);
+        if (*eos == '|') size += sizeof(struct gsconstr);
         while (*eos) {
             if (*eos == '|') {
-                size += sizeof(struct gsconstr_args) + 2*sizeof(gsvalue);
+                size += sizeof(struct gsconstr) + 2*sizeof(gsvalue);
                 eos++;
-                if (!*eos || *eos == '|') size += sizeof(struct gsconstr_args);
+                if (!*eos || *eos == '|') size += sizeof(struct gsconstr);
             } else {
                 if (*eos == '[') {
                     eos++;
-                    size += sizeof(struct gsconstr_args) + sizeof(gsvalue);
+                    size += sizeof(struct gsconstr) + sizeof(gsvalue);
                     if (*eos == '^') eos++;
 
-                    if (*eos == ']') size += sizeof(struct gsconstr_args);
+                    if (*eos == ']') size += sizeof(struct gsconstr);
                     else while (*eos != ']') {
                         eos = gsbc_parse_rune_literal(p->pos, item.file->features, eos, &v);
                         if (!*eos)
@@ -172,11 +172,11 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
                             eos++;
                             if (!*eos) gsfatal(UNIMPL("%P: %s: Character classes"), p->pos, eos);
                             eos = gsbc_parse_rune_literal(p->pos, item.file->features, eos, &v);
-                            size += sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue);
+                            size += sizeof(struct gsconstr) + 2 * sizeof(gsvalue);
                         } else {
-                            size += sizeof(struct gsconstr_args) + sizeof(gsvalue);
+                            size += sizeof(struct gsconstr) + sizeof(gsvalue);
                         }
-                        if (*eos != ']') size += sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue);
+                        if (*eos != ']') size += sizeof(struct gsconstr) + 2 * sizeof(gsvalue);
                     }
                     eos++;
                 } else if (eos[0] == '\xc2' && eos[1] == '\xa7') { /* \§ */
@@ -185,13 +185,13 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
                     interp++;
                 } else {
                     eos = gsbc_parse_rune_literal(p->pos, item.file->features, eos, &v);
-                    size += sizeof(struct gsconstr_args) + 1 * sizeof(gsvalue);
+                    size += sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
                 }
                 if (*eos == '*') {
-                    size += sizeof(struct gsconstr_args) + sizeof(gsvalue);
+                    size += sizeof(struct gsconstr) + sizeof(gsvalue);
                     eos++;
                 }
-                if (*eos && *eos != '|') size += sizeof(struct gsconstr_args) + 2*sizeof(gsvalue);
+                if (*eos && *eos != '|') size += sizeof(struct gsconstr) + 2*sizeof(gsvalue);
             }
         }
 
@@ -1115,29 +1115,29 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
         }
     } else if (gssymceq(p->directive, gssymconstr, gssymdatadirective, ".constr")) {
         struct gstype_sum *sum;
-        struct gsconstr_args *constr;
+        struct gsconstr *constr;
         int j;
 
         sum = (struct gstype_sum *)gssymtable_get_type(symtable, p->arguments[0]);
 
-        constr = (struct gsconstr_args *)heap[i];
-        constr->c.pos = p->pos;
-        constr->c.type = gsconstr_args;
+        constr = (struct gsconstr *)heap[i];
+        constr->pos = p->pos;
+        constr->type = gsconstr_args;
         for (j = 0; j < sum->numconstrs; j++) {
             if (p->arguments[1] == sum->constrs[j].name) {
-                constr->constrnum = j;
+                constr->a.constrnum = j;
                 goto have_constr;
             }
         }
         gsfatal("%P: Sum type %y has no constructor %y", p->pos, p->arguments[0], p->arguments[1]);
     have_constr:
         if (p->numarguments == 3) {
-            constr->numargs = 1;
-            constr->arguments[0] = gssymtable_get_data(symtable, p->arguments[2]);
+            constr->a.numargs = 1;
+            constr->a.arguments[0] = gssymtable_get_data(symtable, p->arguments[2]);
         } else {
-            constr->numargs = (p->numarguments - 2) / 2;
+            constr->a.numargs = (p->numarguments - 2) / 2;
             for (j = 0; 2+j < p->numarguments; j += 2) {
-                constr->arguments[j / 2] = gssymtable_get_data(symtable, p->arguments[2+j+1]);
+                constr->a.arguments[j / 2] = gssymtable_get_data(symtable, p->arguments[2+j+1]);
             }
         }
     } else if (gssymceq(p->directive, gssymrune, gssymdatadirective, ".rune")) {
@@ -1150,37 +1150,37 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
         tail = heap[i];
         pptail = 0;
         while (*eos) {
-            struct gsconstr_args *cons;
+            struct gsconstr *cons;
 
-            cons = (struct gsconstr_args *)tail;
+            cons = (struct gsconstr *)tail;
 
             if (pptail)
                 *pptail = tail
             ;
-            cons->c.pos = p->pos;
-            cons->c.type = gsconstr_args;
-            cons->constrnum = 0;
-            cons->numargs = 2;
-            eos = gsbc_parse_rune_literal(p->pos, features, eos, &cons->arguments[0]);
-            pptail = &cons->arguments[1];
+            cons->pos = p->pos;
+            cons->type = gsconstr_args;
+            cons->a.constrnum = 0;
+            cons->a.numargs = 2;
+            eos = gsbc_parse_rune_literal(p->pos, features, eos, &cons->a.arguments[0]);
+            pptail = &cons->a.arguments[1];
 
-            tail = (gsvalue)((uchar*)tail + sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue));
+            tail = (gsvalue)((uchar*)tail + sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
         }
         if (p->numarguments >= 2) {
             gsfatal(UNIMPL("%P: .string with provided tail"), p->pos);
         } else {
-            struct gsconstr_args *gsnil;
+            struct gsconstr *gsnil;
 
-            gsnil = (struct gsconstr_args *)tail;
+            gsnil = (struct gsconstr *)tail;
 
             if (pptail)
                 *pptail = tail
             ;
 
-            gsnil->c.pos = p->pos;
-            gsnil->c.type = gsconstr_args;
-            gsnil->constrnum = 1;
-            gsnil->numargs = 0;
+            gsnil->pos = p->pos;
+            gsnil->type = gsconstr_args;
+            gsnil->a.constrnum = 1;
+            gsnil->a.numargs = 0;
         }
     } else if (gssymceq(p->directive, gssymlist, gssymdatadirective, ".list")) {
         gsvalue tail, *pptail;
@@ -1189,39 +1189,39 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
         tail = heap[i];
         pptail = 0;
         for (j = 1; j < p->numarguments && p->arguments[j]->type != gssymseparator; j++) {
-            struct gsconstr_args *cons;
+            struct gsconstr *cons;
 
-            cons = (struct gsconstr_args *)tail;
+            cons = (struct gsconstr *)tail;
             if (pptail)
                 *pptail = tail
             ;
 
-            cons->c.pos = p->pos;
-            cons->c.type = gsconstr_args;
-            cons->constrnum = 0;
-            cons->numargs = 2;
-            cons->arguments[0] = gssymtable_get_data(symtable, p->arguments[j]);
-            if (!cons->arguments[0])
+            cons->pos = p->pos;
+            cons->type = gsconstr_args;
+            cons->a.constrnum = 0;
+            cons->a.numargs = 2;
+            cons->a.arguments[0] = gssymtable_get_data(symtable, p->arguments[j]);
+            if (!cons->a.arguments[0])
                 gsfatal(UNIMPL("%P: Cannot find address of data item %y"), p->pos, p->arguments[j])
             ;
-            pptail = &cons->arguments[1];
-            tail = (gsvalue)((uchar*)tail + sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue));
+            pptail = &cons->a.arguments[1];
+            tail = (gsvalue)((uchar*)tail + sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
         }
         if (j < p->numarguments)
             gsfatal(UNIMPL("%P: Dotted .lists next"), p->pos)
         ; else {
-            struct gsconstr_args *gsnil;
+            struct gsconstr *gsnil;
 
-            gsnil = (struct gsconstr_args *)tail;
+            gsnil = (struct gsconstr *)tail;
 
             if (pptail)
                 *pptail = tail
             ;
 
-            gsnil->c.pos = p->pos;
-            gsnil->c.type = gsconstr_args;
-            gsnil->constrnum = 1;
-            gsnil->numargs = 0;
+            gsnil->pos = p->pos;
+            gsnil->type = gsconstr_args;
+            gsnil->a.constrnum = 1;
+            gsnil->a.numargs = 0;
         }
     } else if (gssymceq(p->directive, gssymregex, gssymdatadirective, ".regex")) {
         static gsinterned_string gssymtyregex, gssymtyrune, gssymconstrsymbol, gssymconstrclass, gssymconstrnegclass, gssymconstrstar, gssymconstrsum, gssymconstrproduct, gssymconstrempty, gssymconstrnull;
@@ -1231,7 +1231,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
         int interp;
         char *eos;
         void *pout;
-        struct gsconstr_args *reco, *resum;
+        struct gsconstr *reco, *resum;
         gsvalue term, *pfactor, *paddend;
 
         if (!gssymtyregex) gssymtyregex = gsintern_string(gssymtypelable, "regex.t");
@@ -1271,45 +1271,45 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
         eos = p->arguments[0]->name;
         pout = (void*)heap[i];
 
-        resum = (struct gsconstr_args *)pout;
-        resum->c.pos = p->pos;
-        resum->c.type = gsconstr_args;
-        resum->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsum);
-        resum->numargs = 2;
+        resum = (struct gsconstr *)pout;
+        resum->pos = p->pos;
+        resum->type = gsconstr_args;
+        resum->a.constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsum);
+        resum->a.numargs = 2;
         pout = (uchar*)resum + sizeof(*resum) + 2*sizeof(gsvalue);
 
-        reco = (struct gsconstr_args *)pout;
-        resum->arguments[0] = (gsvalue)reco;
-        reco->c.pos = p->pos;
-        reco->c.type = gsconstr_args;
-        reco->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrnull);
-        reco->numargs = 0;
+        reco = (struct gsconstr *)pout;
+        resum->a.arguments[0] = (gsvalue)reco;
+        reco->pos = p->pos;
+        reco->type = gsconstr_args;
+        reco->a.constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrnull);
+        reco->a.numargs = 0;
         pout = (uchar*)reco + sizeof(*reco);
 
         term = 0;
         pfactor = &term;
 
-        paddend = &resum->arguments[1];
+        paddend = &resum->a.arguments[1];
 
         while (*eos) {
             if (*eos == '|') {
-                resum = (struct gsconstr_args *)pout;
-                resum->c.pos = p->pos;
-                resum->c.type = gsconstr_args;
-                resum->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsum);
-                resum->numargs = 2;
+                resum = (struct gsconstr *)pout;
+                resum->pos = p->pos;
+                resum->type = gsconstr_args;
+                resum->a.constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsum);
+                resum->a.numargs = 2;
                 pout = (uchar*)resum + sizeof(*resum) + 2*sizeof(gsvalue);
 
                 if (term) {
-                    resum->arguments[0] = term;
+                    resum->a.arguments[0] = term;
                 } else {
-                    reco = (struct gsconstr_args *)pout;
-                    reco->c.pos = p->pos;
-                    reco->c.type = gsconstr_args;
-                    reco->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrempty);
-                    reco->numargs = 0;
+                    reco = (struct gsconstr *)pout;
+                    reco->pos = p->pos;
+                    reco->type = gsconstr_args;
+                    reco->a.constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrempty);
+                    reco->a.numargs = 0;
                     pout = (uchar*)reco + sizeof(*reco);
-                    resum->arguments[0] = (gsvalue)reco;
+                    resum->a.arguments[0] = (gsvalue)reco;
                 }
                 term = 0;
                 pfactor = &term;
@@ -1318,22 +1318,22 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
 
                 eos++;
                 if (*eos) {
-                    paddend = &resum->arguments[1];
+                    paddend = &resum->a.arguments[1];
                 } else {
-                    reco = (struct gsconstr_args *)pout;
-                    reco->c.pos = p->pos;
-                    reco->c.type = gsconstr_args;
-                    reco->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrempty);
-                    reco->numargs = 0;
+                    reco = (struct gsconstr *)pout;
+                    reco->pos = p->pos;
+                    reco->type = gsconstr_args;
+                    reco->a.constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrempty);
+                    reco->a.numargs = 0;
                     pout = (uchar*)reco + sizeof(*reco);
-                    resum->arguments[1] = (gsvalue)reco;
+                    resum->a.arguments[1] = (gsvalue)reco;
                 }
             } else {
                 gsvalue re;
 
                 if (*eos == '[') {
                     gsvalue *pclass;
-                    struct gsconstr_args *cl;
+                    struct gsconstr *cl;
                     gsvalue c0, c1;
                     int negated;
 
@@ -1342,24 +1342,24 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
                     negated = *eos == '^';
                     if (negated) eos++;
 
-                    reco = (struct gsconstr_args *)pout;
-                    reco->c.pos = p->pos;
-                    reco->c.type = gsconstr_args;
-                    reco->constrnum = negated
+                    reco = (struct gsconstr *)pout;
+                    reco->pos = p->pos;
+                    reco->type = gsconstr_args;
+                    reco->a.constrnum = negated
                         ? gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrnegclass)
                         : gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrclass)
                     ;
-                    reco->numargs = 1;
-                    pclass = &reco->arguments[0];
-                    pout = (uchar*)reco + sizeof(struct gsconstr_args) + 1 * sizeof(gsvalue);
+                    reco->a.numargs = 1;
+                    pclass = &reco->a.arguments[0];
+                    pout = (uchar*)reco + sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
 
                     if (*eos == ']') {
-                        cl = (struct gsconstr_args *)pout;
-                        cl->c.pos = p->pos;
-                        cl->c.type = gsconstr_args;
-                        cl->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrempty);
-                        cl->numargs = 0;
-                        pout = (uchar*)cl + sizeof(struct gsconstr_args);
+                        cl = (struct gsconstr *)pout;
+                        cl->pos = p->pos;
+                        cl->type = gsconstr_args;
+                        cl->a.constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrempty);
+                        cl->a.numargs = 0;
+                        pout = (uchar*)cl + sizeof(struct gsconstr);
                         *pclass = (gsvalue)cl;
                     } else while (*eos != ']') {
                         if (!*eos) gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
@@ -1371,34 +1371,34 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
                             else if (*eos == ']') gsfatal(UNIMPL("%P: Un-expected end of class in character class"), p->pos);
                             eos = gsbc_parse_rune_literal(p->pos, features, eos, &c1);
 
-                            cl = (struct gsconstr_args *)pout;
-                            cl->c.pos = p->pos;
-                            cl->c.type = gsconstr_args;
-                            cl->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrrange);
-                            cl->numargs = 2;
-                            cl->arguments[0] = c0;
-                            cl->arguments[1] = c1;
-                            pout = (uchar*)cl + sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue);
+                            cl = (struct gsconstr *)pout;
+                            cl->pos = p->pos;
+                            cl->type = gsconstr_args;
+                            cl->a.constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrrange);
+                            cl->a.numargs = 2;
+                            cl->a.arguments[0] = c0;
+                            cl->a.arguments[1] = c1;
+                            pout = (uchar*)cl + sizeof(struct gsconstr) + 2 * sizeof(gsvalue);
                         } else {
-                            cl = (struct gsconstr_args *)pout;
-                            cl->c.pos = p->pos;
-                            cl->c.type = gsconstr_args;
-                            cl->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrsymbol);
-                            cl->numargs = 1;
-                            cl->arguments[0] = c0;
-                            pout = (uchar*)cl + sizeof(struct gsconstr_args) + sizeof(gsvalue);
+                            cl = (struct gsconstr *)pout;
+                            cl->pos = p->pos;
+                            cl->type = gsconstr_args;
+                            cl->a.constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrsymbol);
+                            cl->a.numargs = 1;
+                            cl->a.arguments[0] = c0;
+                            pout = (uchar*)cl + sizeof(struct gsconstr) + sizeof(gsvalue);
                         }
                         if (*eos != ']') {
-                            struct gsconstr_args *sum;
+                            struct gsconstr *sum;
 
-                            sum = (struct gsconstr_args *)pout;
-                            sum->c.pos = p->pos;
-                            sum->c.type = gsconstr_args;
-                            sum->constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrsum);
-                            sum->numargs = 2;
-                            sum->arguments[0] = (gsvalue)cl;
+                            sum = (struct gsconstr *)pout;
+                            sum->pos = p->pos;
+                            sum->type = gsconstr_args;
+                            sum->a.constrnum = gstypes_find_constr_in_sum(cltype->pos, gssymtyclass, clsum, gssymconstrsum);
+                            sum->a.numargs = 2;
+                            sum->a.arguments[0] = (gsvalue)cl;
                             *pclass = (gsvalue)sum;
-                            pclass = &sum->arguments[1];
+                            pclass = &sum->a.arguments[1];
                             pout = (uchar*)sum + sizeof(*sum) + 2*sizeof(gsvalue);
                         } else {
                             *pclass = (gsvalue)cl;
@@ -1415,25 +1415,25 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
                     gsvalue c;
 
                     eos = gsbc_parse_rune_literal(p->pos, features, eos, &c);
-                    reco = (struct gsconstr_args *)pout;
-                    reco->c.pos = p->pos;
-                    reco->c.type = gsconstr_args;
-                    reco->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsymbol);
-                    reco->numargs = 1;
-                    reco->arguments[0] = c;
-                    pout = (uchar*)reco + sizeof(struct gsconstr_args) + 1 * sizeof(gsvalue);
+                    reco = (struct gsconstr *)pout;
+                    reco->pos = p->pos;
+                    reco->type = gsconstr_args;
+                    reco->a.constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrsymbol);
+                    reco->a.numargs = 1;
+                    reco->a.arguments[0] = c;
+                    pout = (uchar*)reco + sizeof(struct gsconstr) + 1 * sizeof(gsvalue);
                     re = (gsvalue)reco;
                 }
 
                 if (*eos == '*') {
-                    struct gsconstr_args *st;
+                    struct gsconstr *st;
 
-                    st = (struct gsconstr_args *)pout;
-                    st->c.pos = p->pos;
-                    st->c.type = gsconstr_args;
-                    st->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrstar);
-                    st->numargs = 1;
-                    st->arguments[0] = re;
+                    st = (struct gsconstr *)pout;
+                    st->pos = p->pos;
+                    st->type = gsconstr_args;
+                    st->a.constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrstar);
+                    st->a.numargs = 1;
+                    st->a.arguments[0] = re;
                     pout = (uchar*)st + sizeof(*st) + sizeof(gsvalue);
 
                     eos++;
@@ -1442,16 +1442,16 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
                 }
 
                 if (*eos && *eos != '|') {
-                    struct gsconstr_args *pr;
+                    struct gsconstr *pr;
 
-                    pr = (struct gsconstr_args *)pout;
-                    pr->c.pos = p->pos;
-                    pr->c.type = gsconstr_args;
-                    pr->constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrproduct);
-                    pr->numargs = 2;
-                    pr->arguments[0] = re;
+                    pr = (struct gsconstr *)pout;
+                    pr->pos = p->pos;
+                    pr->type = gsconstr_args;
+                    pr->a.constrnum = gstypes_find_constr_in_sum(type->pos, gssymtyregex, sum, gssymconstrproduct);
+                    pr->a.numargs = 2;
+                    pr->a.arguments[0] = re;
                     *pfactor = (gsvalue)pr;
-                    pfactor = &pr->arguments[1];
+                    pfactor = &pr->a.arguments[1];
                     pout = (uchar*)pr + sizeof(*pr) + 2*sizeof(gsvalue);
                 } else {
                     *pfactor = (gsvalue)re;

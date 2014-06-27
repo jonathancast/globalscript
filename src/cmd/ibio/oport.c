@@ -519,13 +519,13 @@ ibio_write_process_main(void *p)
                     break;
                 }
                 case gstywhnf: {
-                    struct gsconstr_args *list;
+                    struct gsconstr *list;
 
-                    list = (struct gsconstr_args *)oport->writing;
-                    switch (list->constrnum) {
+                    list = (struct gsconstr *)oport->writing;
+                    switch (list->a.constrnum) {
                         case 0: { /* §gs{:} */
-                            oport->writing_symbol = list->arguments[0];
-                            oport->writing = list->arguments[1];
+                            oport->writing_symbol = list->a.arguments[0];
+                            oport->writing = list->a.arguments[1];
                             break;
                         }
                         case 1: { /* §gs{nil} */

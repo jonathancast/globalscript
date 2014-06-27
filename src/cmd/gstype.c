@@ -83,14 +83,12 @@ gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
                     break;
                 case gstywhnf: {
                     struct gsconstr *constr;
-                    struct gsconstr_args *args;
 
                     constr = (struct gsconstr *)s;
-                    args = (struct gsconstr_args *)constr;
-                    switch (args->constrnum) {
+                    switch (constr->a.constrnum) {
                         case 0: { /* §gs{:} */
-                            c = args->arguments[0];
-                            s = args->arguments[1];
+                            c = constr->a.arguments[0];
+                            s = constr->a.arguments[1];
                             break;
                         }
                         case 1: { /* §gs{nil} */
@@ -105,7 +103,7 @@ gsrun(char *doc, struct gspos pos, gsvalue prog, int argc, char **argv)
                         }
                         default:
                             ace_down();
-                            gsfatal(UNIMPL("%P: gsrun: constrnum = %d"), constr->pos, args->constrnum);
+                            gsfatal(UNIMPL("%P: gsrun: constrnum = %d"), constr->pos, constr->a.constrnum);
                     }
                     break;
                 }

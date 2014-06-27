@@ -1056,11 +1056,6 @@ gsisconstr_block(struct gs_blockdesc *p)
     return p->class == &gsconstrs_alloc_info.descr;
 }
 
-struct gsconstr_gcforward {
-    struct gsconstr c;
-    struct gsconstr *dest;
-};
-
 static
 gsvalue
 gsconstrsgc(struct gsstringbuilder *err, gsvalue v)
@@ -1072,31 +1067,23 @@ gsconstrsgc(struct gsstringbuilder *err, gsvalue v)
     constr = (struct gsconstr *)v;
     switch (constr->type) {
         case gsconstr_args: {
-            struct gsconstr_args *args, *newargs;
-            struct gsconstr_gcforward *fwd;
+            newconstr = gsreserveconstrs(sizeof(*newconstr) + constr->a.numargs * sizeof(gsvalue));
 
-            args = (struct gsconstr_args *)constr;
-
-            newconstr = gsreserveconstrs(sizeof(*newargs) + args->numargs * sizeof(gsvalue));
-            newargs = (struct gsconstr_args *)newconstr;
-
-            memcpy(newconstr, constr, sizeof(*newargs) + args->numargs * sizeof(gsvalue));
+            memcpy(newconstr, constr, sizeof(*newconstr) + constr->a.numargs * sizeof(gsvalue));
 
             constr->type = gsconstr_gcforward;
-            fwd = (struct gsconstr_gcforward *)constr;
-            fwd->dest = newconstr;
+            constr->f.dest = newconstr;
 
             if (gs_gc_trace_pos(err, &newconstr->pos) < 0) return 0;
 
-            for (i = 0; i < newargs->numargs; i++)
-                if (GS_GC_TRACE(err, &newargs->arguments[i]) < 0) return 0
+            for (i = 0; i < newconstr->a.numargs; i++)
+                if (GS_GC_TRACE(err, &newconstr->a.arguments[i]) < 0) return 0
             ;
 
             break;
         }
         case gsconstr_gcforward: {
-            struct gsconstr_gcforward *fwd = (struct gsconstr_gcforward *)constr;
-            return (gsvalue)fwd->dest;
+            return (gsvalue)constr->f.dest;
         }
         default:
             gsstring_builder_print(err, UNIMPL("%P: gsconstrsgc: type = %d"), constr->pos, constr->type);

@@ -38,16 +38,16 @@ gsconstr(struct gspos pos, int constrnum, int numargs, ...)
 gsvalue
 gsconstrv(struct gspos pos, int constrnum, int numargs, gsvalue *args)
 {
-    struct gsconstr_args *res;
+    struct gsconstr *res;
     int i;
 
-    res = gsreserveconstrs(sizeof(*res));
-    res->c.pos = pos;
-    res->c.type = gsconstr_args;
-    res->constrnum = constrnum;
-    res->numargs = numargs;
+    res = gsreserveconstrs(sizeof(*res) + numargs * sizeof(gsvalue));
+    res->pos = pos;
+    res->type = gsconstr_args;
+    res->a.constrnum = constrnum;
+    res->a.numargs = numargs;
 
-    for (i = 0; i < numargs; i++) res->arguments[i] = args[i];
+    for (i = 0; i < numargs; i++) res->a.arguments[i] = args[i];
 
     return (gsvalue)res;
 }
@@ -155,28 +155,28 @@ gsvalue
 gsarraytolist(struct gspos pos, int n, gsvalue *p)
 {
     gsvalue res;
-    struct gsconstr_args *c;
+    struct gsconstr *c;
     int i;
 
-    c = gsreserveconstrs(n * (sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr_args));
+    c = gsreserveconstrs(n * (sizeof(struct gsconstr) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr));
     res = (gsvalue)c;
 
     for (i = 0; i < n; i++) {
-        struct gsconstr_args *cnext;
+        struct gsconstr *cnext;
 
-        c->c.pos = pos;
-        c->c.type = gsconstr_args;
-        c->constrnum = 0;
-        c->numargs = 2;
-        c->arguments[0] = p[i];
-        cnext = (struct gsconstr_args *)((uchar*)c + sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue));
-        c->arguments[1] = (gsvalue)cnext;
+        c->pos = pos;
+        c->type = gsconstr_args;
+        c->a.constrnum = 0;
+        c->a.numargs = 2;
+        c->a.arguments[0] = p[i];
+        cnext = (struct gsconstr *)((uchar*)c + sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
+        c->a.arguments[1] = (gsvalue)cnext;
         c = cnext;
     }
-    c->c.pos = pos;
-    c->c.type = gsconstr_args;
-    c->constrnum = 1;
-    c->numargs = 0;
+    c->pos = pos;
+    c->type = gsconstr_args;
+    c->a.constrnum = 1;
+    c->a.numargs = 0;
 
     return res;
 }

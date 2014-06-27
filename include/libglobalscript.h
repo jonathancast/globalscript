@@ -392,13 +392,16 @@ struct gsconstr {
         gsconstr_args,
         gsconstr_gcforward,
     } type;
-};
-
-struct gsconstr_args {
-    struct gsconstr c;
-    int constrnum;
-    int numargs;
-    gsvalue arguments[];
+    union {
+        struct {
+            int constrnum;
+            int numargs;
+            gsvalue arguments[];
+        } a;
+        struct {
+            struct gsconstr *dest;
+        } f;
+    };
 };
 
 struct gseprim {

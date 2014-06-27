@@ -131,29 +131,29 @@ gscstringtogsstring(struct gspos pos, char *s)
 {
     char err[0x100];
     gsvalue res;
-    struct gsconstr_args *c;
+    struct gsconstr *c;
 
-    c = gsreserveconstrs(utflen(s) * (sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr_args));
+    c = gsreserveconstrs(utflen(s) * (sizeof(struct gsconstr) + 2 * sizeof(gsvalue)) + sizeof(struct gsconstr));
     res = (gsvalue)c;
 
     while (*s) {
-        struct gsconstr_args *cnext;
+        struct gsconstr *cnext;
 
-        c->c.pos = pos;
-        c->c.type = gsconstr_args;
-        c->constrnum = 0;
-        c->numargs = 2;
-        if (!(s = gschartorune(s, &c->arguments[0], err, err + sizeof(err))))
+        c->pos = pos;
+        c->type = gsconstr_args;
+        c->a.constrnum = 0;
+        c->a.numargs = 2;
+        if (!(s = gschartorune(s, &c->a.arguments[0], err, err + sizeof(err))))
             gsfatal("%P: gscstringtogsstring: gschartorune failed: %s", pos, err)
         ;
-        cnext = (struct gsconstr_args *)((uchar*)c + sizeof(struct gsconstr_args) + 2 * sizeof(gsvalue));
-        c->arguments[1] = (gsvalue)cnext;
+        cnext = (struct gsconstr *)((uchar*)c + sizeof(struct gsconstr) + 2 * sizeof(gsvalue));
+        c->a.arguments[1] = (gsvalue)cnext;
         c = cnext;
     }
-    c->c.pos = pos;
-    c->c.type = gsconstr_args;
-    c->constrnum = 1;
-    c->numargs = 0;
+    c->pos = pos;
+    c->type = gsconstr_args;
+    c->a.constrnum = 1;
+    c->a.numargs = 0;
 
     return res;
 }

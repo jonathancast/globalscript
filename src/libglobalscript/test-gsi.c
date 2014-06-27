@@ -245,16 +245,17 @@ gsprint(struct gspos pos, gsvalue prog)
         print("〉\n");
         return 0;
     } else if (gsisconstr_block(block)) {
-        struct gsconstr_args *constr;
+        struct gsconstr *constr;
         int i;
 
-        constr = (struct gsconstr_args *)prog;
+        constr = (struct gsconstr *)prog;
         if (gsprog_type.type != gsprog_type_sum)
-            gsfatal("%P: %P: Got a construct, but not expecting to print a sum", pos, constr->c.pos)
+            gsfatal("%P: %P: Got a construct, but not expecting to print a sum", pos, constr->pos)
         ;
 
-        print("%y", gsprog_type.sum.constrs[constr->constrnum]);
-        for (i = 0; i < constr->numargs; i++)
+        gswarning("%s:%d: constr->type = %d, constr->a.constrnum = %d", __FILE__, __LINE__, constr->type, constr->a.constrnum);
+        print("%y", gsprog_type.sum.constrs[constr->a.constrnum]);
+        for (i = 0; i < constr->a.numargs; i++)
             print(" <expr>")
         ;
         print("\n");

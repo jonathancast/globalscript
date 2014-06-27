@@ -503,18 +503,18 @@ void
 ace_instr_alloc_constr(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsconstr_args *constr;
+    struct gsconstr *constr;
     int i;
 
     ip = thread->st.running.ip;
 
     constr = gsreserveconstrs(sizeof(*constr) + ACE_CONSTR_NUMARGS(ip) * sizeof(gsvalue));
-    constr->c.pos = ip->pos;
-    constr->c.type = gsconstr_args;
-    constr->constrnum = ACE_CONSTR_CONSTRNUM(ip);
-    constr->numargs = ACE_CONSTR_NUMARGS(ip);
+    constr->pos = ip->pos;
+    constr->type = gsconstr_args;
+    constr->a.constrnum = ACE_CONSTR_CONSTRNUM(ip);
+    constr->a.numargs = ACE_CONSTR_NUMARGS(ip);
     for (i = 0; i < ACE_CONSTR_NUMARGS(ip); i++)
-        constr->arguments[i] = thread->regs[ACE_CONSTR_ARG(ip, i)]
+        constr->a.arguments[i] = thread->regs[ACE_CONSTR_ARG(ip, i)]
     ;
 
     if (thread->nregs >= MAX_NUM_REGISTERS) {
@@ -810,23 +810,23 @@ void
 ace_instr_perform_analyze(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsconstr_args *constr;
+    struct gsconstr *constr;
     struct gsbc **cases;
 
     int i;
 
     ip = thread->st.running.ip;
 
-    constr = (struct gsconstr_args *)thread->regs[ACE_ANALYZE_SCRUTINEE(ip)];
+    constr = (struct gsconstr *)thread->regs[ACE_ANALYZE_SCRUTINEE(ip)];
     cases = ACE_ANALYZE_CASES(ip);
 
-    thread->st.running.ip = ip = cases[constr->constrnum];
-    for (i = 0; i < constr->numargs; i++) {
+    thread->st.running.ip = ip = cases[constr->a.constrnum];
+    for (i = 0; i < constr->a.numargs; i++) {
         if (thread->nregs >= MAX_NUM_REGISTERS) {
             ace_poison_thread(thread, ip->pos, "Register overflow");
             return;
         }
-        thread->regs[thread->nregs++] = constr->arguments[i];
+        thread->regs[thread->nregs++] = constr->a.arguments[i];
     }
 
     return;
@@ -837,7 +837,7 @@ void
 ace_instr_perform_danalyze(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsconstr_args *constr;
+    struct gsconstr *constr;
     struct gsbc **cases;
     int casenum;
 
@@ -845,12 +845,12 @@ ace_instr_perform_danalyze(struct ace_thread *thread)
 
     ip = thread->st.running.ip;
 
-    constr = (struct gsconstr_args *)thread->regs[ACE_DANALYZE_SCRUTINEE(ip)];
+    constr = (struct gsconstr *)thread->regs[ACE_DANALYZE_SCRUTINEE(ip)];
     cases = ACE_DANALYZE_CASES(ip);
 
     casenum = 0;
     for (i = 0; i < ACE_DANALYZE_NUMCONSTRS(ip); i++) {
-        if (ACE_DANALYZE_CONSTR(ip, i) == constr->constrnum) {
+        if (ACE_DANALYZE_CONSTR(ip, i) == constr->a.constrnum) {
             casenum = 1 + i;
             break;
         }
@@ -858,12 +858,12 @@ ace_instr_perform_danalyze(struct ace_thread *thread)
 
     thread->st.running.ip = ip = cases[casenum];
     if (casenum > 0) {
-        for (i = 0; i < constr->numargs; i++) {
+        for (i = 0; i < constr->a.numargs; i++) {
             if (thread->nregs >= MAX_NUM_REGISTERS) {
                 ace_poison_thread(thread, ip->pos, "Register overflow");
                 return;
             }
-            thread->regs[thread->nregs++] = constr->arguments[i];
+            thread->regs[thread->nregs++] = constr->a.arguments[i];
         }
     }
 
