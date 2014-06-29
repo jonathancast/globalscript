@@ -321,12 +321,7 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, type, pend, pc);
         }
         if (item.v->numarguments > 2)
-            gsfatal("%s:%d: Panic: data item %s:%s has more than two arguments; I don't know what to do!",
-                __FILE__,
-                __LINE__,
-                item.file->name->name,
-                item.v->label->name
-            )
+            gsfatal(UNIMPL("%P: Too many arguments to .closure"), item.v->pos)
         ;
     } else if (gssymceq(directive, gssymrecord, gssymdatadirective, ".record")) {
         struct gsbc_item fieldvalue;
@@ -429,7 +424,7 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
         co = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[1]);
         gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, co, pend, pc);
     } else {
-        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(data item; directive = %s) next", __FILE__, __LINE__, item.v->pos.file->name, item.v->pos.lineno, item.v->directive->name);
+        gsfatal(UNIMPL("%P: gsbc_subtop_sort(data item; directive = %y)"), item.v->pos, item.v->directive);
     }
 }
 
@@ -482,10 +477,10 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
             }
         }
     } else {
-        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, item.v->pos.file->name, item.v->pos.lineno, item.v->directive->name);
+        gsfatal(UNIMPL("%P: gsbc_subtop_sort(directive = %y)"), item.v->pos, item.v->directive);
     }
 
-    gsfatal("%s:%d: gsbc_subtop_sort_code_item next", __FILE__, __LINE__);
+    gsfatal(UNIMPL("gsbc_subtop_sort_code_item"));
 }
 
 static
@@ -618,10 +613,10 @@ gsbc_top_sort_subitems_of_coercion_item(struct gsfile_symtable *symtable, struct
             }
         }
     } else {
-        gsfatal("%s:%d: %s:%d: gsbc_subtop_sort(directive = %s) next", __FILE__, __LINE__, pcoercion->pos.file->name, pcoercion->pos.lineno, pcoercion->directive->name);
+        gsfatal(UNIMPL("%P: gsbc_subtop_sort(directive = %y)"), pcoercion->pos, pcoercion->directive);
     }
 
-    gsfatal("%s:%d: %s:%d: gsbc_subtop_sort_type_item next", __FILE__, __LINE__, pcoercion->pos.file->name, pcoercion->pos.lineno);
+    gsfatal(UNIMPL("%P: gsbc_subtop_sort_type_item"), pcoercion->pos);
 }
 
 static int gsbc_item_hash_lookup(struct gsbc_item_hash *, struct gsbc_item, union gsbc_item_hash_value*);
