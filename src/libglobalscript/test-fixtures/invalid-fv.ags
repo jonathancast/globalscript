@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.3
+#calculus: gsdl.string-code 0.4
 
 	.document
 
@@ -11,8 +11,8 @@
 _ep_c	.impprog	test.sequence	m
 _ep_x_c	.subcode
 _ep_body_c	.subcode
-x	.bind	_ep_x_c
-	.body	_ep_body_c
+x	.bind.closure	_ep_x_c
+	.body.closure	_ep_body_c
 
 _ep_x_c	.expr
 sequence.unit.ty	.tygvar
