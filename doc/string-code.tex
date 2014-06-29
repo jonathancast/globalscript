@@ -1280,6 +1280,22 @@ This represents the boxed un-lifted product \<"\prod\left\langle\overline{f_i ::
 
 This represents the un-boxed un-lifted product \<"u\prod\left\langle\overline{f_i :: ty_i;}_{i=0}^{n-1}\right\rangle\>.
 
+\chapter{Coercion Items}
+
+\section{\stringcode{.tycoercion}}
+
+\begin{verbatim}
+co	.tycoercion
+\end{verbatim}
+This binds \stringcode{co} to the coercion defined by the following code, which consists of:
+
+\begin{itemize}
+    \item A sequence of type global variable declarations (see section \ref{type_gvar}),
+    \item A sequence of type arguments (see section \ref{type_arg}),
+    \item A sequence of coercion contexts (see section \ref{coercion_context}), and finally
+    \item A terminal coercion (see section \ref{coercion_terminal}).
+\end{itemize}
+
 \chapter{Notes on the Type System (Semi-Obsolete)}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -1375,23 +1391,10 @@ Interpolations aren't supported inside classes yet but they will be.
 
 \begin{verbatim}
 long
-gsparse_coercion_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
-{
-    if (gssymeq(parsedline->directive, gssymcoerciondirective, ".tycoercion")) {
-        if (numfields > 2 + 0)
-            gsfatal("%s:%d: Too many arguments to .tycoercion", pos->real_filename, pos->real_lineno)
-        ;
-        return gsparse_coerce_ops(pos, parsedfile, parsedline, chan, line, fields);
-    }
-}
-
-long
 gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
     while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
-        if (gsparse_coercion_global_var_op(pos, parsedline, fields, n)) {
-        } else if (gsparse_coercion_arg_op(pos, parsedline, fields, n)) {
-        } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tyinvert")) {
+        if (gssymeq(parsedline->directive, gssymcoercionop, ".tyinvert")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on continuations");
             else
@@ -1413,64 +1416,6 @@ gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, stru
             gsfatal("%s:%d: %s:%d: Unimplemented coercion op %s", __FILE__, __LINE__, pos->real_filename, pos->real_lineno, fields[1]);
         }
     }
-    if (n < 0)
-        gsfatal("%s:%d: Error in reading type line: %r", pos->real_filename, pos->real_lineno)
-    ;
-    else
-        gsfatal("%P: EOF in middle of reading type expression", typedirective->pos)
-    ;
-
-    return -1;
-}
-
-int
-gsparse_coercion_global_var_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    if (gssymeq(parsedline->directive, gssymcoercionop, ".tygvar")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymtypelable, fields[0]);
-        else
-            gsfatal("%s:%d: Labels required on .tygvar", pos->real_filename, pos->real_lineno);
-        if (n > 2)
-            gsfatal("%s:%d: Too many arguments to .tygvar", pos->real_filename, pos->real_lineno);
-    } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tyextabstype")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymtypelable, fields[0])
-        ; else
-            gsfatal("%s:%d: Labels required on .tyextabstype", pos->real_filename, pos->real_lineno)
-        ;
-        if (n < 3) gsfatal("%s:%d: Missing kind on .tyextabstype", pos->real_filename, pos->real_lineno);
-        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
-        if (n > 3) gsfatal("%s:%d: Too many arguments to .tyextabstype", pos->real_filename, pos->real_lineno);
-    } else {
-        return 0;
-    }
-
-    return 1;
-}
-
-int
-gsparse_coercion_arg_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
-{
-    if (gssymeq(parsedline->directive, gssymcoercionop, ".tylambda")) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymtypelable, fields[0])
-        ; else
-            gsfatal("%s:%d: Labels required on .tylambda", pos->real_filename, pos->real_lineno)
-        ;
-        if (n < 3)
-            gsfatal("%s:%d: Missing kind on .tylambda", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymkindexpr, fields[2]);
-        if (n > 3)
-            gsfatal("%s:%d: Too many arguments to .tylambda; I only know what the kind is", pos->real_filename, pos->real_lineno)
-        ;
-        return 1;
-    } else {
-        return 0;
-    }
-
-    return 1;
 }
 \end{verbatim}
 
