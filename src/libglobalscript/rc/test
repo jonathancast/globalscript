@@ -71,6 +71,10 @@ ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
 ok_grep_errors '-- a let can be mis-typed --' './test-fixtures/mistyped-let.ags:7: I don''t think' ./$O.test-gsi mistyped-let.ags
 ok_diff_fail '-- let with undefined FV --' ./$O.test-gsi undef-free-var.ags
 
+echo '# Version 0.4 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_3=1
+
 ok_diff_fail '-- alloc undefined with .undefined --' ./$O.test-gsi undef-op.ags
 
 ok_diff '-- alloc application --' ./$O.test-gsi apply-op.ags
@@ -117,10 +121,6 @@ ok_grep_errors '-- natural number literals: letters --' './test-fixtures/natural
 ok_grep_errors '-- natural number literals: negative number --' './test-fixtures/natural-literal-negative.ags:12: Invalid character ''-'' in natural number literal' ./$O.test-gsi natural-literal-negative.ags
 
 ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
-
-echo '# Version 0.4 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_3=1
 
 ok_diff '-- regex literals --' ./$O.test-gsi regex-literal.ags
 ok_diff '-- regex character class --' ./$O.test-gsi regex-class.ags
