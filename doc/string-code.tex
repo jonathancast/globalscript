@@ -1296,6 +1296,16 @@ This binds \stringcode{co} to the coercion defined by the following code, which 
     \item A terminal coercion (see section \ref{coercion_terminal}).
 \end{itemize}
 
+\section{Coercion Contexts}
+\label{coercion_context}
+
+\subsection{\stringcode{.tyinvert}}
+
+\begin{verbatim}
+	.tyinvert
+\end{verbatim}
+This builds a coercion which is the inverse of the following coercion expression.
+
 \chapter{Notes on the Type System (Semi-Obsolete)}
 
 Free variables are handled by having type $\lambda$ nodes, and allowing
@@ -1394,14 +1404,7 @@ long
 gsparse_coerce_ops(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struct gsparsedline *typedirective, struct uxio_ichannel *chan, char *line, char **fields)
 {
     while ((n = gsgrabline(pos, chan, line, fields)) > 0) {
-        if (gssymeq(parsedline->directive, gssymcoercionop, ".tyinvert")) {
-            if (*fields[0])
-                gsfatal("%s:%d: Labels illegal on continuations");
-            else
-                parsedline->label = 0;
-            if (n > 2)
-                gsfatal("%s:%d: Too many arguments to .tyinvert");
-        } else if (gssymeq(parsedline->directive, gssymcoercionop, ".tydefinition")) {
+        if (gssymeq(parsedline->directive, gssymcoercionop, ".tydefinition")) {
             if (*fields[0])
                 gsfatal("%s:%d: Labels illegal on terminal op");
             else
