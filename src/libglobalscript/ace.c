@@ -1499,7 +1499,6 @@ ace_start_evaluation(struct gspos pos, struct gsheap_item *hp)
 }
 
 /* ↓ Used to add a closure (necessarily a §ccode{struct gsheap_item *}) to a thread.
-   Currently, sets §ccode{thread->base}, but this is the place to change to push update frames.
    Assume there is enough room for an update frame: it's the caller's responsibility to create a new thread when we're low on stack space.
 */
 int
