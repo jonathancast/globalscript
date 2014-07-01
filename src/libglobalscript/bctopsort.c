@@ -281,7 +281,7 @@ gsbc_topsort_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preor
             gsbc_top_sort_subitems_of_coercion_item(symtable, preorders, unassigned_items, maybe_group_items, item, pend, pc);
             break;
         default:
-            gsfatal("%s:%d: %s: gsbc_subtop_sort(type = %d) next", __FILE__, __LINE__, item.file->name->name, item.type);
+            gsfatal(UNIMPL("%y: gsbc_subtop_sort(type = %d)"), item.file->name, item.type);
     }
     if (
         maybe_group_items->size > 0

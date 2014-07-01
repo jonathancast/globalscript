@@ -484,11 +484,7 @@ gsbc_bytecode_size_code_subcode_op(struct gsfile_symtable *symtable, struct gspa
             gsfatal("%P: Too many sub-expressions; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         if (pcl->size % sizeof(struct gsbco *))
-            gsfatal("%s:%d: %s:%d: File format error: we're at a .subcode generator but our location isn't struct gsbco *-aligned",
-                __FILE__, __LINE__,
-                p->pos.file->name,
-                p->pos.lineno
-            )
+            gsfatal(UNIMPL("%P: File format error: we're at a .subcode generator but our location isn't struct gsbco *-aligned"), p->pos)
         ;
         pcl->size += sizeof(struct gsbco *);
         pcl->codenames[pcl->ncodes] = p->label;
@@ -528,12 +524,7 @@ gsbc_bytecode_size_data_gvar_code_op(struct gsparsedline *p, struct gsbc_bytecod
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
         if (pcl->size % sizeof(gsvalue))
-            gsfatal("%s:%d: %s:%d: File format error: we're at a .gvar generator but our location isn't gsvalue-aligned",
-                __FILE__,
-                __LINE__,
-                p->pos.file->name,
-                p->pos.lineno
-            )
+            gsfatal(UNIMPL("%P: File format error: we're at a .gvar generator but our location isn't gsvalue-aligned"), p->pos)
         ;
         pcl->size += sizeof(gsvalue);
         pcl->nregs++;
