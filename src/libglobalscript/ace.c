@@ -1111,6 +1111,8 @@ ace_error_thread(struct ace_thread *thread, struct gserror *err)
     struct gsbc_cont_update *update;
     struct gsindirection *in;
 
+    if (thread->state == ace_thread_finished) return;
+
     for (update = thread->cureval; update; update = update->next) {
         hp = update->dest;
 
@@ -1157,6 +1159,8 @@ ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *e
     struct gsbc_cont_update *update;
     struct gsheap_item *hp;
     struct gsindirection *in;
+
+    if (thread->state == ace_thread_finished) return;
 
     for (update = thread->cureval; update; update = update->next) {
         hp = update->dest;
@@ -1434,9 +1438,16 @@ static
 void
 ace_remove_thread(struct ace_thread *thread)
 {
+    if (thread->state == ace_thread_finished) return;
     thread->state = ace_thread_finished;
     lock(&ace_thread_queue->lock);
+    if (ace_thread_queue->num_active_threads < thread->tid) {
+        gswarning("%s:%d: Can't shutdown thread #%d properly; only have %d threads total!", __FILE__, __LINE__, thread->tid, ace_thread_queue->num_active_threads);
+        unlock(&ace_thread_queue->lock);
+        return;
+    }
     ace_thread_queue->num_active_threads--;
+    if (ace_thread_queue->num_active_threads < 0) gswarning("%s:%d: Got %d threads!", __FILE__, __LINE__, ace_thread_queue->num_active_threads);
     if (ace_thread_queue->num_active_threads > thread->tid) {
         int last_tid, cur_tid;
 
@@ -1551,10 +1562,7 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
 
             fun = app->app.fun;
             pos = hp->pos;
-            if (!ace_push_appv(pos, thread, app->app.numargs, app->app.arguments)) {
-                ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating app continuation"));
-                return -1;
-            }
+            if (!ace_push_appv(pos, thread, app->app.numargs, app->app.arguments)) return -1;
 
             app->hp.type = gseval;
             app->update = updatecont;

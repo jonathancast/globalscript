@@ -51,11 +51,8 @@ ace_push_appv(struct gspos pos, struct ace_thread *thread, int numargs, gsvalue 
     struct gsbc_cont_app *appcont;
 
     cont = ace_stack_alloc(thread, pos, sizeof(struct gsbc_cont_app) + numargs * sizeof(gsvalue));
+    if (!cont) return 0;
     appcont = (struct gsbc_cont_app *)cont;
-    if (!cont) {
-        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating app continuation"));
-        return 0;
-    }
 
     cont->node = gsbc_cont_app;
     cont->pos = pos;
@@ -89,6 +86,7 @@ ace_push_ubanalyzev(struct gspos pos, struct ace_thread *thread, int numconts, s
     return ubanalyze;
 }
 
+/* Shuts down the thread if anything goes wrong */
 struct gsbc_cont *
 ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
 {
