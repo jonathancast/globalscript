@@ -51,7 +51,7 @@ Every string code file must begin with the syntax, followed by  blank line:
 \begin{verbatim}
 #calculus: gsdl.string-code 0.6
 \end{verbatim}
-Older versions are also supported: versions 0.3 through 0.5.
+Older versions are also supported: versions 0.4 and 0.5.
 This document specifieds version 0.6, but it has notes on the changes from earlier versions.
 
 Next after this is the declaration
@@ -812,7 +812,6 @@ This binds \stringcode{x} to the field \stringcode{f} of \stringcode{r}, which m
 These are used in imperative block statements to execute sub-programs and name their results.
 
 \subsection{\stringcode{.bind}}
-\old{0.4}{\stringcode{.bind} meant what is now written \stringcode{.bind	.closure}.}
 \new{0.5}{these were combined into one token; e.g., what is now written \stringcode{.bind	.closure} was \stringcode{.bind.closure}.}
 
 \begin{verbatim}
@@ -830,7 +829,6 @@ These are similar to bind generators (section \ref{bind}), but they define the l
 The result of these sub-programs is returned directly from the block statement, rather than being captured and used inside it.
 
 \subsection{\stringcode{.body}}
-\old{0.4}{\stringcode{.body} meant wah is now written \stringcode{.body	.closure}.}
 \new{0.5}{these were combined into one token; e.g., what is now written \stringcode{.body	.closure} was \stringcode{.body.closure}.}
 
 \begin{verbatim}
@@ -1381,11 +1379,11 @@ That is followed by global variables, free variables, and arguments as for an \v
 \begin{verbatim}
 var	.closure	code-label
 \end{verbatim}
-`Bind' generators get compiled to\new{0.4}{this was just \stringcode{.bind}.} \new{0.5}{this was one token, \stringcode{.bind.closure}.}
+`Bind' generators get compiled to\new{0.5}{this was one token, \stringcode{.bind.closure}.}
 \begin{verbatim}
 var	.bind	.closure	code-label
 \end{verbatim}
-The body gets compiled to\new{0.4}{this was just \stringcode{.body}.} \new{0.5}{this was one token, \stringcode{.body.closure}.}
+The body gets compiled to\new{0.5}{this was one token, \stringcode{.body.closure}.}
 \begin{verbatim}
 	.body	.closure	code-label
 \end{verbatim}
