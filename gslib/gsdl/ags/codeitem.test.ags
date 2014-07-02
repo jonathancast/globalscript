@@ -153,12 +153,12 @@ _test.parse_impprog.items	.closure	_test.parse_impprog.items_c
 _tests.parse_impprog.items	.list	test.property.t	_test.parse_impprog	_test.parse_impprog.bind	_test.parse_impprog.0.4	_test.parse_impprog.0.5
 
 _test.parse_impprog	.closure	_test.parse_impprog_c
-_test.parse_impprog_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body\\t_foo_body_c\\n}\s=~\sparser
-_test.parse_impprog_input	.string	_foo_c\t.impprog\tfoo\tm\n\t.body\t_foo_body_c\n
+_test.parse_impprog_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body.closure\\t_foo_body_c\\n}\s=~\sparser
+_test.parse_impprog_input	.string	_foo_c\t.impprog\tfoo\tm\n\t.body.closure\t_foo_body_c\n
 
 _test.parse_impprog.bind	.closure	_test.parse_impprog.bind_c
-_test.parse_impprog.bind_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bind\\t_foo_x_c\\n\\t.body\\t_foo_body_c\\n}\s=~\sparser
-_test.parse_impprog.bind_input	.string	_foo_c\t.impprog\tfoo\tm\nx\t.bind\t_foo_x_c\n\t.body\t_foo_body_c\n
+_test.parse_impprog.bind_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bind.closure\\t_foo_x_c\\n\\t.body.closure\\t_foo_body_c\\n}\s=~\sparser
+_test.parse_impprog.bind_input	.string	_foo_c\t.impprog\tfoo\tm\nx\t.bind.closure\t_foo_x_c\n\t.body.closure\t_foo_body_c\n
 
 _test.parse_impprog.0.4	.closure	_test.parse_impprog.0.4_c
 _test.parse_impprog.0.4_label	.string	qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body.closure\\t_foo_body_c\\n}\s=~\sparser\s0.4
@@ -207,19 +207,7 @@ _test.parse_alloc_closure_input	.string	x\t.closure\t_x_c\n
 _test.parse_impgens	.closure	_test.parse_impgens_c
 _test.parse_impgens_label	.string	Imperative\sGenerators
 
-_tests.parse_impgens	.list	test.property.t	_test.parse_impgens_0.3.bind	_test.parse_impgens_0.3.no.bind.closure	_test.parse_impgens_0.4.no.bind	_test.parse_impgens_0.4.bind.closure	_test.parse_impgens_0.5.bind.closure.two.words
-
-_test.parse_impgens_0.3.bind	.closure	_test.parse_impgens_0.3.bind_c
-_test.parse_impgens_0.3.bind_label	.string	qq{x\\t.bind\\t_x_c\\n}\s=~\sgsdl.ags.codeitem.impgens.parser\s0.3
-_test.parse_impgens_0.3.bind_input	.string	x\t.bind\t_x_c\n
-
-_test.parse_impgens_0.3.no.bind.closure	.closure	_test.parse_impgens_0.3.no.bind.closure_c
-_test.parse_impgens_0.3.no.bind.closure_label	.string	qq{x\\t.bind.closure\\t_x_c\\n}\s=~\sgsdl.ags.codeitem.impgens.parser\s0.3
-_test.parse_impgens_0.3.no.bind.closure_input	.string	x\t.bind.closure\t_x_c\n
-
-_test.parse_impgens_0.4.no.bind	.closure	_test.parse_impgens_0.4.no.bind_c
-_test.parse_impgens_0.4.no.bind_label	.string	qq{x\\t.bind\\t_x_c\\n}\s=~\sgsdl.ags.codeitem.impgens.parser\s0.4
-_test.parse_impgens_0.4.no.bind_input	.string	x\t.bind\t_x_c\n
+_tests.parse_impgens	.list	test.property.t	_test.parse_impgens_0.4.bind.closure	_test.parse_impgens_0.5.bind.closure.two.words
 
 _test.parse_impgens_0.4.bind.closure	.closure	_test.parse_impgens_0.4.bind.closure_c
 _test.parse_impgens_0.4.bind.closure_label	.string	qq{x\\t.bind.closure\\t_x_c\\n}\s=~\sgsdl.ags.codeitem.impgens.parser\s0.4
@@ -1361,7 +1349,7 @@ _tests.parse_impprog.items	.gvar
 	.app	_tests.parse_impprog.items
 	.enter	test.all
 
--- §subsubsection §gs{qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body\\t_foo_body_c\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.impprog\\tfoo\\tm\\n\\t.body.closure\\t_foo_body_c\\n} =~ parser}
 
 _test.parse_impprog_c	.expr
 rune.t	.tygvar
@@ -1389,7 +1377,7 @@ test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
 	.enter	test.true
 
--- §subsubsection §gs{qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bind\\t_foo_x_c\\n\\t.body\\t_foo_body_c\\n} =~ parser}
+-- §subsubsection §gs{qq{_foo_c\\t.impprog\\tfoo\\tm\\nx\\t.bind.closure\\t_foo_x_c\\n\\t.body.closure\\t_foo_body_c\\n} =~ parser}
 
 _test.parse_impprog.bind_c	.expr
 rune.t	.tygvar
@@ -1639,107 +1627,7 @@ test	.apply	test.all	|	_tests.parse_impgens
 	.app	_test.parse_impgens_label	test
 	.enter	test.property.label
 
--- §subsubsection Use §stringcode{.bind} before 0.4
-
-_test.parse_impgens_0.3.bind_c	.expr
-rune.t	.tygvar
-list.t	.tygvar
-gsdl.ags.codeitem.impgen.t	.tygvar
-gsdl.ags.syntax.features.t	.tygvar
-_test.parse_impgens_0.3.bind_k_c	.subcode
-test.property.label	.gvar
-_test.parse_impgens_0.3.bind_label	.gvar
-parser.test.assert.passes	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-gsdl.ags.codeitem.impgens.parser	.gvar
-bool.false	.gvar
-bool.true	.gvar
-_test.parse_impgens_0.3.bind_input	.gvar
-list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
-k	.closure	_test.parse_impgens_0.3.bind_k_c
-fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	|	gsdl.ags.syntax.features.t
-impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
-test	.apply	parser.test.assert.passes	rune.t	list.impgen.ty	|	parser.rune.advance	rune.print	impgens.p	_test.parse_impgens_0.3.bind_input	k
-	.app	_test.parse_impgens_0.3.bind_label	test
-	.enter	test.property.label
-
-_test.parse_impgens_0.3.bind_k_c	.expr
-list.t	.tygvar
-gsdl.ags.codeitem.impgen.t	.tygvar
-test.true	.gvar
-err	.larg	list.t	gsdl.ags.codeitem.impgen.t
-	.enter	test.true
-
--- §subsubsection No §stringcode{.bind.closure} before 0.4
-
-_test.parse_impgens_0.3.no.bind.closure_c	.expr
-rune.t	.tygvar
-list.t	.tygvar
-gsdl.ags.codeitem.impgen.t	.tygvar
-gsdl.ags.syntax.features.t	.tygvar
-_test.parse_impgens_0.3.no.bind.closure_k_c	.subcode
-test.property.label	.gvar
-_test.parse_impgens_0.3.no.bind.closure_label	.gvar
-parser.test.assert.fails	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-list.fmtgs.byDefault	.gvar
-gsdl.ags.codeitem.impgen.fmtgs	.gvar
-gsdl.ags.codeitem.impgens.parser	.gvar
-bool.false	.gvar
-bool.true	.gvar
-_test.parse_impgens_0.3.no.bind.closure_input	.gvar
-list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
-k	.closure	_test.parse_impgens_0.3.no.bind.closure_k_c
-list.impgen.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.impgen.t	|	gsdl.ags.codeitem.impgen.fmtgs
-fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	 bool.false	|	gsdl.ags.syntax.features.t
-impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
-test	.apply	parser.test.assert.fails	rune.t	list.impgen.ty	|	parser.rune.advance	rune.print	list.impgen.fmtgs	impgens.p	_test.parse_impgens_0.3.no.bind.closure_input	k
-	.app	_test.parse_impgens_0.3.no.bind.closure_label	test
-	.enter	test.property.label
-
-_test.parse_impgens_0.3.no.bind.closure_k_c	.expr
-parser.err.t	.tygvar
-test.true	.gvar
-err	.larg	parser.err.t
-	.enter	test.true
-
--- §subsubsection No §stringcode{.bind} starting with 0.4
-
-_test.parse_impgens_0.4.no.bind_c	.expr
-rune.t	.tygvar
-list.t	.tygvar
-gsdl.ags.codeitem.impgen.t	.tygvar
-gsdl.ags.syntax.features.t	.tygvar
-_test.parse_impgens_0.4.no.bind_k_c	.subcode
-test.property.label	.gvar
-_test.parse_impgens_0.4.no.bind_label	.gvar
-parser.test.assert.fails	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-list.fmtgs.byDefault	.gvar
-gsdl.ags.codeitem.impgen.fmtgs	.gvar
-gsdl.ags.codeitem.impgens.parser	.gvar
-bool.true	.gvar
-bool.false	.gvar
-_test.parse_impgens_0.4.no.bind_input	.gvar
-list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
-k	.closure	_test.parse_impgens_0.4.no.bind_k_c
-list.impgen.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.impgen.t	|	gsdl.ags.codeitem.impgen.fmtgs
-fs	.lrecord	bind.closure.one.word	bool.true	bind.closure.two.words	 bool.false	|	gsdl.ags.syntax.features.t
-impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
-test	.apply	parser.test.assert.fails	rune.t	list.impgen.ty	|	parser.rune.advance	rune.print	list.impgen.fmtgs	impgens.p	_test.parse_impgens_0.4.no.bind_input	k
-	.app	_test.parse_impgens_0.4.no.bind_label	test
-	.enter	test.property.label
-
-_test.parse_impgens_0.4.no.bind_k_c	.expr
-parser.err.t	.tygvar
-test.true	.gvar
-err	.larg	parser.err.t
-	.enter	test.true
-
--- §section Use §gs{.bind.closure} starting in 0.4
+-- §section Use §gs{.bind.closure} in 0.4
 
 _test.parse_impgens_0.4.bind.closure_c	.expr
 rune.t	.tygvar

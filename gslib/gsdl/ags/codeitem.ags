@@ -12,7 +12,6 @@ _gsdl.ags.codeitem.parser_expr.p_expr.re	.regex	.expr
 _gsdl.ags.codeitem.parser_expr.p_decls.p	.closure	_gsdl.ags.codeitem.parser_expr.p_decls.p_c
 _gsdl.ags.codeitem.parser_forcecont.p_forcecont.re	.regex	.forcecont
 _gsdl.ags.codeitem.parser_impprog.p_impprog.re	.regex	.impprog
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.re	.regex	.body
 _gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.closure.re	.regex	.body.closure
 _gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_body.re	.regex	.body
 _gsdl.ags.codeitem.parser_strictcont.p_strictcont.re	.regex	.strictcont
@@ -94,7 +93,6 @@ _gsdl.ags.codeitem.allocs.parser_undefined.p_undefined.re	.regex	.undefined
 gsdl.ags.codeitem.alloc.fmtgs	.closure	_gsdl.ags.codeitem.alloc.fmtgs_c
 
 gsdl.ags.codeitem.impgens.parser	.closure	_gsdl.ags.codeitem.impgens.parser_c
-_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_bind.re	.regex	.bind
 _gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_bind.closure.re	.regex	.bind.closure
 _gsdl.ags.codeitem.impgens.parser_bind.two.words.p_bind.re	.regex	.bind
 
@@ -578,7 +576,6 @@ gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 bool.elim	.gvar
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.re	.gvar
 _gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.closure.re	.gvar
 gsdl.ags.syntax.id	.gvar
 gsdl.ags.syntax.whitespace	.gvar
@@ -587,9 +584,7 @@ regex.rune.ty	.tylet	regex.t	rune.t
 fs	.fv	gsdl.ags.syntax.features.t
 f	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
-fs.bind.closure.one.word	.lfield	bind.closure.one.word	fs
-body.closure.re	.apply	bool.elim	regex.rune.ty	|	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.re	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.closure.re	fs.bind.closure.one.word
-body.closure.p	.apply	parser.match	rune.t	|	rune.compare	body.closure.re
+body.closure.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.closure.re
 code.p3	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 code.p2	.apply	parser.*>	rune.t	string.t	string.t	|	body.closure.p	code.p3
 code.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	code.p2
@@ -2269,7 +2264,6 @@ gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 bool.elim	.gvar
-_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_bind.re	.gvar
 _gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_bind.closure.re	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
@@ -2279,9 +2273,7 @@ fs	.fv	gsdl.ags.syntax.features.t
 f	.closure	_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 nm.p	.apply	parser.optional	rune.t	string.t	|	gsdl.ags.syntax.id
-fs.bind.closure.one.word	.lfield	bind.closure.one.word	fs
-bind.closure.re	.apply	bool.elim	regex.rune.ty	|	_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_bind.re	_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_bind.closure.re	fs.bind.closure.one.word
-bind.closure.p	.apply	parser.match	rune.t	|	rune.compare	bind.closure.re
+bind.closure.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_bind.closure.re
 code.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 code.p1	.apply	parser.*>	rune.t	string.t	string.t	|	bind.closure.p	code.p2
 code.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	code.p1
