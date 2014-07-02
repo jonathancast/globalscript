@@ -549,7 +549,7 @@ This means that free type variables will be treated as lambda-bound regardless o
 t	.tyfv	ki
 \end{verbatim}
 
-This declares \stringcode{t} to be a free type variable of kind \stringcode{ki} (see section \ref{kinds}).
+This declares \stringcode{t} to be a free type variable of kind \stringcode{ki} (see chapter \ref{kinds}).
 
 \section{Free Variables}
 \label{value_fv}
@@ -587,7 +587,7 @@ These are abstractions over type variables.
 t	.tyarg	ki
 \end{verbatim}
 
-This declares \stringcode{t} to be a type variable with kind \stringcode{ki}  (see section \ref{kinds}).
+This declares \stringcode{t} to be a type variable with kind \stringcode{ki}  (see chapter \ref{kinds}).
 
 \section{Type Continuation Arguments}
 \label{cont_type_arg}
@@ -599,7 +599,7 @@ t	.exkarg	ki
 \end{verbatim}
 
 This declares that the argument to the continuation has an existential quantifier,
-with quantified type variable \stringcode{t} of kind \stringcode{ki}  (see section \ref{kinds}).
+with quantified type variable \stringcode{t} of kind \stringcode{ki}  (see chapter \ref{kinds}).
 
 \section{Value Arguments}
 \label{value_arg}
@@ -1044,7 +1044,7 @@ A \stringcode{.default} will have the same contents, but with the arguments and 
 ty	.tyexpr	ki
 \end{verbatim}
 
-The kind (see section \ref{kinds}) is optional.
+The kind (see chapter \ref{kinds}) is optional.
 This defines a type synonym \stringcode{ty}, of kind \stringcode{ki} if that is present.
 The arity of the synonym is determined by the number of \stringcode{.tylambda} declarations following the \stringcode{.tyexpr},
 and the definition is given by the type expression following the \stringcode{.tyexpr} (see section \ref{type_ops}).
@@ -1055,7 +1055,7 @@ and the definition is given by the type expression following the \stringcode{.ty
 ty	.tyabstract	ki
 \end{verbatim}
 
-This defines a type constant \stringcode{ty} of kind \stringcode{ki} (see section \ref{kinds}),
+This defines a type constant \stringcode{ty} of kind \stringcode{ki} (see chapter \ref{kinds}),
 defined by the type expression following the \stringcode{.tyabstract} (see section \ref{type_ops}).
 
 \subsection{\stringcode{.tydefinedprim}}
@@ -1064,7 +1064,7 @@ defined by the type expression following the \stringcode{.tyabstract} (see secti
 ty	.tydefinedprim	ps	pn	ki
 \end{verbatim}
 
-This declares \stringcode{ty} as a name for the primtype \stringcode{pn} from primset \stringcode{ps}, of kind \stringcode{ki} (see section \ref{kinds}).
+This declares \stringcode{ty} as a name for the primtype \stringcode{pn} from primset \stringcode{ps}, of kind \stringcode{ki} (see chapter \ref{kinds}).
 
 A `defined' primitive type is one that has an explicit denotation as part of the Global Script semantics,
 and can be implemented in  language-independent way on any Turing-complete machine.
@@ -1079,7 +1079,7 @@ or to mention a non-existent primset or primtype in the declaration.
 ty	.tyintrprim	ps	pn	ki
 \end{verbatim}
 
-This declares \stringcode{ty} as a name for the introduction primtype \stringcode{pn} from primset \stringcode{ps}, of kind \stringcode{ki} (see section \ref{kinds}).
+This declares \stringcode{ty} as a name for the introduction primtype \stringcode{pn} from primset \stringcode{ps}, of kind \stringcode{ki} (see chapter \ref{kinds}).
 
 An `introduction' primitive type is one that has only primitives for building objects of the type, and none for eliminating them.
 As such, any implementation to which its primset is unknown can treat it as a singleton type.
@@ -1092,7 +1092,7 @@ or with incorrect kinds on known primtypes.
 ty	.tyelimprim	ps	pn	ki
 \end{verbatim}
 
-This declares \stringcode{ty} as a name for the elimination primtype \stringcode{pn} from primset \stringcode{ps}, of kind \stringcode{ki} (see section \ref{kinds}).
+This declares \stringcode{ty} as a name for the elimination primtype \stringcode{pn} from primset \stringcode{ps}, of kind \stringcode{ki} (see chapter \ref{kinds}).
 
 An `elimination' primitive type is one that has only primitives objects of the type as arguments, and none for introducing them.
 As such, any implementation to which its primset is unknown can treat it as an empty type.
@@ -1105,7 +1105,7 @@ or with incorrect kinds on known primtypes.
 ty	.tyimpprim	ps	pn	ki
 \end{verbatim}
 
-This declares \stringcode{ty} as a name for the imperative primtype \stringcode{pn} from primset \stringcode{ps}, of kind \stringcode{ki} (see section \ref{kinds}).
+This declares \stringcode{ty} as a name for the imperative primtype \stringcode{pn} from primset \stringcode{ps}, of kind \stringcode{ki} (see chapter \ref{kinds}).
 
 An `imperative' primitive type is an introduction primtype with the special syntax \stringcode{.impprog} (see section \ref{impprog})
 (or \<\hskwd{for} @m x \gets e_0. e_1\> at the Core level),
@@ -1151,7 +1151,7 @@ t	.tyextabstype	ki
 \end{verbatim}
 
 This declares \stringcode{t} to be specifically the type constant \stringcode{t},
-which must have kind \stringcode{ki} (see section \ref{kinds}).
+which must have kind \stringcode{ki} (see chapter \ref{kinds}).
 This construct allows the string compiler to produce output files that are relatively independent of each other.
 
 \subsection{\stringcode{.tyextelimprim}}
@@ -1161,7 +1161,7 @@ t	.tyextelimprim	ps	pn	ki
 \end{verbatim}
 
 This declares \stringcode{t} to be the elimination primitive type \stringcode{pn} from primitive set \stringcode{ps},
-with kinds \stringcode{ki} (see section \ref{kinds}).
+with kind \stringcode{ki} (see chapter \ref{kinds}).
 This isn't really an external dependency;
 it's more a kind of type literal, that simplifies the implementation of the string compiler.
 
@@ -1174,7 +1174,7 @@ it's more a kind of type literal, that simplifies the implementation of the stri
 t	.tylambda	ki
 \end{verbatim}
 
-This translates to a type parameter \stringcode{t} of kind \stringcode{ki} (see section \ref{kinds}).
+This translates to a type parameter \stringcode{t} of kind \stringcode{ki} (see chapter \ref{kinds}).
 
 \section{Universal Quantifiers}
 \label{type_forall}
@@ -1185,7 +1185,7 @@ This translates to a type parameter \stringcode{t} of kind \stringcode{ki} (see 
 t	.tyforall	ki
 \end{verbatim}
 
-This translates to a universal quantifier for the type variable \stringcode{t} of kind \stringcode{ki} (see section \ref{kinds}).
+This translates to a universal quantifier for the type variable \stringcode{t} of kind \stringcode{ki} (see chapter \ref{kinds}).
 
 \section{Existential Quantifiers}
 \label{type_exists}
@@ -1196,7 +1196,7 @@ This translates to a universal quantifier for the type variable \stringcode{t} o
 t	.tyexists	ki
 \end{verbatim}
 
-This translates to an existential quantifier for the type variable \stringcode{t} of kind \stringcode{ki} (see section \ref{kinds}).
+This translates to an existential quantifier for the type variable \stringcode{t} of kind \stringcode{ki} (see chapter \ref{kinds}).
 
 \section{Local Type Definitions}
 \label{type_let}
@@ -1333,6 +1333,17 @@ In both cases, the argument is declared in the type item using \verb+.tylambda+:
 \begin{verbatim}
 t	.tylambda	*
 \end{verbatim}
+
+\chapter{Kinds}
+\label{kinds}
+
+Kinds in string code are written in one token, in reverse polish notation.
+The operators are \stringcode{u}, an atom which denotes the kind of unlifted types,
+\stringcode{*}, an atom which denotes the kind of lifted types,
+and \stringcode{$\hat{\,}$}, a binary operator which denotes the exponential.
+\stringcode{$\kappa_0$$\kappa_1$$\hat{\,}$} is the kind of type functions from kind \stringcode{$\kappa_1$} to kind \stringcode{$\kappa_0$}.
+Kinds of functions of multiple arguments can be written very simply:
+\stringcode{$\kappa_r$$\kappa_0$$\hat{\,}$$\ldots$$\kappa_{n-1}$$\hat{\,}$}.
 
 \chapter{API Block Statements}
 
