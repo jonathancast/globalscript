@@ -15,7 +15,9 @@ ok_grep_errors '-- missing calculus --' 'missing-calculus.ags: Missing #calculus
 ok_grep_errors '-- invalid calculus --' 'invalid-calculus.ags:1: Unknown calculus' ./$O.test-gsi invalid-calculus.ags
 ok_grep_errors '-- invalid calculus version --' 'invalid-calculus-version.ags:1: Unsupported calculus version' ./$O.test-gsi invalid-calculus-version.ags
 
-echo '# Version 0.3 and up:'
+echo '# Version 0.4 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_3=1
 
 ok_diff_fail '-- source-style comments --' ./$O.test-gsi undef-new-comments.ags
 
@@ -70,10 +72,6 @@ ok_diff_fail '-- kind signatures on .tyexprs --' ./$O.test-gsi tyexpr-kind-sig.a
 ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
 ok_grep_errors '-- a let can be mis-typed --' './test-fixtures/mistyped-let.ags:7: I don''t think' ./$O.test-gsi mistyped-let.ags
 ok_diff_fail '-- let with undefined FV --' ./$O.test-gsi undef-free-var.ags
-
-echo '# Version 0.4 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_3=1
 
 ok_diff_fail '-- alloc undefined with .undefined --' ./$O.test-gsi undef-op.ags
 
