@@ -1394,8 +1394,8 @@ We have interpolation support in string code regex literals.
 To use, put \stringcode{§} (with no name) in the literal
 and then follow the literal with the variable to use for each interpolation:
 \begin{verbatim}
-foo.re .regex §|§ _foo.re_long.expression.1.re _foo_re_long.expression.2.re
-_foo.re_long.expression.1.re .regex long|complicated\sexpression
+foo.re .regex §|§ _foo.re_long.expr.1.re _foo_re_long.expr.2.re
+_foo.re_long.expr.1.re .regex long|complicated\sexpression
 ...
 \end{verbatim}
 
