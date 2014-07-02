@@ -302,26 +302,26 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         return 0;
     }
     if (!calculus_version) gsfatal("%s: Missing #calculus pragma", pos.real_filename);
-    if (!strcmp(calculus_version, "0.3")) {
-        static int should_disable_string_code_0_3, should_disable_string_code_0_3_initialized;
+    if (!strcmp(calculus_version, "0.4")) {
+        static int should_disable_string_code_0_4, should_disable_string_code_0_4_initialized;
 
-        if (!should_disable_string_code_0_3_initialized) {
+        if (!should_disable_string_code_0_4_initialized) {
             struct uxio_ichannel *chan;
             char buf[0x10];
             long n;
-            if (!(chan = gsbio_envvar_iopen("SHOULD_DISABLE_STRING_CODE_0_3"))) {
-                should_disable_string_code_0_3_initialized = 1;
+            if (!(chan = gsbio_envvar_iopen("SHOULD_DISABLE_STRING_CODE_0_4"))) {
+                should_disable_string_code_0_4_initialized = 1;
                 goto decided_on_disabling;
             }
             if ((n = gsbio_get_contents(chan, buf, 0x10)) < 0)
-                gsfatal("Error reading $SHOULD_DISABLE_STRING_CODE_0_3: %r")
+                gsfatal("Error reading $SHOULD_DISABLE_STRING_CODE_0_4: %r")
             ;
-            should_disable_string_code_0_3 = n > 0;
-            should_disable_string_code_0_3_initialized = 1;
-            if (gsbio_device_iclose(chan) < 0) gsfatal("Could not close $SHOULD_DISABLE_STRING_CODE_0_3 fd: %r");
+            should_disable_string_code_0_4 = n > 0;
+            should_disable_string_code_0_4_initialized = 1;
+            if (gsbio_device_iclose(chan) < 0) gsfatal("Could not close $SHOULD_DISABLE_STRING_CODE_0_4 fd: %r");
         }
     decided_on_disabling:
-        if (should_disable_string_code_0_3) gsfatal("%s: Illegally old calculus string code 0.3", pos.real_filename);
+        if (should_disable_string_code_0_4) gsfatal("%s: Illegally old calculus string code 0.4", pos.real_filename);
     }
     if ((parsedfile = gsparsed_file_alloc(filename, relname, type, features)) < 0) {
         gsfatal("%s:%d: Cannot allocate input file: %r", pos.real_filename, pos.real_lineno);
@@ -434,10 +434,7 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
             if (*s != '\n') gsfatal("%s:%d: Junk after calculus version", pos.real_filename, pos.real_lineno);
             *s++ = 0;
 
-            if (!strcmp(version, "0.3")) {
-                *pcalculus_version = "0.3";
-                *pfeatures = gsstring_code_bind_one_word;
-            } else if (!strcmp(version, "0.4")) {
+            if (!strcmp(version, "0.4")) {
                 *pcalculus_version = "0.4";
                 *pfeatures = gsstring_code_bind_closure_one_word;
             } else if (!strcmp(version, "0.5")) {
@@ -1687,8 +1684,6 @@ gsparse_bind_op(uint features, struct gsparse_input_pos *pos, struct gsparsedlin
     if (
         (features & gsstring_code_bind_closure_one_word)
             ? gssymceq(parsedline->directive, gssymbindclosure, gssymcodeop, ".bind.closure")
-        : (features & gsstring_code_bind_one_word)
-            ? gssymceq(parsedline->directive, gssymbind, gssymcodeop, ".bind")
         : 0
     ) {
         if (*fields[0])
@@ -1732,8 +1727,6 @@ gsparse_body_op(uint features, struct gsparse_input_pos *pos, struct gsparsedlin
     if (
         (features & gsstring_code_bind_closure_one_word)
             ? gssymceq(parsedline->directive, gssymbodyclosure, gssymcodeop, ".body.closure")
-        : (features & gsstring_code_bind_one_word)
-            ? gssymceq(parsedline->directive, gssymbody, gssymcodeop, ".body")
         : 0
     ) {
         if (*fields[0])

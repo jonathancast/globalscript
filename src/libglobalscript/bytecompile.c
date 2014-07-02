@@ -769,8 +769,6 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
     } else if (
         (pcl->features & gsstring_code_bind_closure_one_word)
             ? gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
-        : (pcl->features & gsstring_code_bind_one_word)
-            ? gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
         : 0
     ) {
         int creg;
@@ -960,8 +958,6 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
     } else if (
         (pcl->features & gsstring_code_bind_closure_one_word)
             ? gssymceq((*pp)->directive, gssymopbodyclosure, gssymcodeop, ".body.closure")
-        : (pcl->features & gsstring_code_bind_one_word)
-            ? gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
         : 0
     ) {
         int creg;
@@ -2273,8 +2269,6 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
     if (
         (pcl->features & gsstring_code_bind_closure_one_word)
             ? gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
-        : (pcl->features & gsstring_code_bind_one_word)
-            ? gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
         : 0
     ) {
         struct gsbc *pcode;
@@ -2741,8 +2735,6 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
     if (
         (features & gsstring_code_bind_closure_one_word)
             ? gssymceq(p->directive, gssymopbodyclosure, gssymcodeop, ".body.closure")
-        : (features & gsstring_code_bind_one_word)
-            ? gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
         : 0
     ) {
         int creg = 0;

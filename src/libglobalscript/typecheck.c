@@ -2966,8 +2966,6 @@ gsbc_typecheck_bind_op(struct gsfile_symtable *symtable, struct gsparsedline *p,
     if (
         (pcl->features & gsstring_code_bind_closure_one_word)
             ? gssymceq(p->directive, gssymbindclosure, gssymcodeop, ".bind.closure")
-        : (pcl->features & gsstring_code_bind_one_word)
-            ? gssymceq(p->directive, gssymbind, gssymcodeop, ".bind")
         : 0
     ) {
         int creg = 0;
@@ -3024,8 +3022,6 @@ gsbc_typecheck_body_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api
     if (
         (pcl->features & gsstring_code_bind_closure_one_word)
             ? gssymceq(p->directive, gssymbodyclosure, gssymcodeop, ".body.closure")
-        : (pcl->features & gsstring_code_bind_one_word)
-            ? gssymceq(p->directive, gssymbody, gssymcodeop, ".body")
         : 0
     ) {
         int creg = 0;
