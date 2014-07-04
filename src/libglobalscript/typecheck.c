@@ -2172,7 +2172,7 @@ static struct gstype *gsbc_find_field_in_product(struct gspos, struct gstype_pro
 
 struct gsbc_typecheck_impprog_closure;
 
-static struct gstype *gsbc_typecheck_alloc_rhs(struct gsparsedline *, int, struct gsbc_typecheck_code_or_api_expr_closure *, struct gsbc_typecheck_impprog_closure *);
+static struct gstype *gsbc_typecheck_alloc_rhs(struct gsparsedline *, int, struct gsbc_typecheck_code_or_api_expr_closure *, struct gsbc_typecheck_impprog_closure *, int);
 
 int
 gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl)
@@ -2182,7 +2182,7 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
     int i;
     struct gstype *alloc_type;
 
-    if (alloc_type = gsbc_typecheck_alloc_rhs(p, 0, pcl, 0)) {
+    if (alloc_type = gsbc_typecheck_alloc_rhs(p, 0, pcl, 0, 1)) {
         CHECK_NUM_REGS(pcl->nregs);
 
         pcl->regs[pcl->nregs] = p->label;
@@ -2555,7 +2555,7 @@ struct gsbc_typecheck_impprog_closure {
 static void gsbc_check_api_free_variable_decls(struct gsbc_typecheck_code_or_api_expr_closure *, struct gsparsedline *, gsinterned_string, struct gsbc_code_item_type *, int *);
 
 struct gstype *
-gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl)
+gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl, int isalloc)
 {
     static gsinterned_string gssymclosure, gssymundefined;
 
@@ -2578,7 +2578,7 @@ gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typeche
         if (pimpcl) gsbc_check_api_free_variable_decls(pcl, p, p->arguments[offset + 0], cty, pimpcl->bind_bound);
         type = cty->result_type;
 
-        gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
+        if (isalloc) gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
         gsbc_typecheck_check_boxed(p->pos, type);
     } else if (gssymceq(directive, gssymundefined, gssymcodeop, ".undefined")) {
         struct gstype *tyarg;
@@ -2998,7 +2998,7 @@ gsbc_typecheck_bind_op(struct gsfile_symtable *symtable, struct gsparsedline *p,
 
         gsargcheck(p, 0, "sub-op");
 
-        if (!(rhs_type = gsbc_typecheck_alloc_rhs(p, 1, pcl, pimpcl)))
+        if (!(rhs_type = gsbc_typecheck_alloc_rhs(p, 1, pcl, pimpcl, 0)))
             gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y\t%y)"), p->pos, p->directive, p->arguments[0])
         ;
 
@@ -3049,7 +3049,7 @@ gsbc_typecheck_body_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api
 
         gsargcheck(p, 0, "sub-op");
 
-        if (!(calculated_type = gsbc_typecheck_alloc_rhs(p, 1, pcl, pimpcl)))
+        if (!(calculated_type = gsbc_typecheck_alloc_rhs(p, 1, pcl, pimpcl, 0)))
             gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y\t%y)"), p->pos, p->directive, p->arguments[0])
         ;
 
