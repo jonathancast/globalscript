@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.4
+#calculus: gsdl.string-code 0.5
 
 	.document
 
@@ -48,10 +48,10 @@ _real.entry_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
-args	.bind.closure	_real.entry_args_c
+args	.bind	.closure	_real.entry_args_c
 parsed.args	.closure	_real.entry_parsed.args_c
-pr1	.bind.closure	_real.entry_pr1_c
-	.body.closure	_real.entry_body_c
+pr1	.bind	.closure	_real.entry_pr1_c
+	.body	.closure	_real.entry_body_c
 
 _real.entry_args_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -198,8 +198,8 @@ ibio.file.name.t	.tygvar
 _prefix.parse_isd_c	.subcode
 _prefix.parse_body_c	.subcode
 fn	.larg	ibio.file.name.t
-isd	.bind.closure	_prefix.parse_isd_c
-	.body.closure	_prefix.parse_body_c
+isd	.bind	.closure	_prefix.parse_isd_c
+	.body	.closure	_prefix.parse_body_c
 
 _prefix.parse_isd_c	.expr
 ibio.file.name.t	.tygvar
@@ -255,8 +255,8 @@ eo	.larg	ibio.prim.oport	rune.t
 prefixen	.larg	list.t	_prefix.t
 fn	.larg	ibio.file.name.t
 cgs.fn	.closure	_print.deps_cgs.fn_c
-cgs	.bind.closure	_print.deps_cgs_c
-	.body.closure	_print.deps_body_c
+cgs	.bind	.closure	_print.deps_cgs_c
+	.body	.closure	_print.deps_body_c
 
 _print.deps_cgs.fn_c	.expr
 ibio.file.name.t	.tygvar
@@ -369,9 +369,9 @@ ds	.fv	ordered.set.t	ibio.file.name.t
 fv0	.fv	gsdl.cgs.symbol.t
 fvs1	.fv	list.t	gsdl.cgs.symbol.t
 cs	.closure	_print.deps_body_w_:_res_cs_c
-pr1	.bind.closure	_print.deps_body_w_:_res_pr1_c
-nds	.bind.closure	_print.deps_body_w_:_res_nds_c
-	.body.closure	_print.deps_body_w_:_res_body_c
+pr1	.bind	.closure	_print.deps_body_w_:_res_pr1_c
+nds	.bind	.closure	_print.deps_body_w_:_res_nds_c
+	.body	.closure	_print.deps_body_w_:_res_body_c
 
 _print.deps_body_w_:_res_cs_c	.expr
 gsdl.cgs.symbol.t	.tygvar
@@ -483,9 +483,9 @@ _prefix.expand_dir_res_dcs2_c	.subcode
 _prefix.expand_dir_res_body_c	.subcode
 cs	.fv	list.t	gsdl.var.component.t
 dirn	.fv	ibio.file.name.t
-dcs1	.bind.closure	_prefix.expand_dir_res_dcs1_c
-dcs2	.bind.closure	_prefix.expand_dir_res_dcs2_c
-	.body.closure	_prefix.expand_dir_res_body_c
+dcs1	.bind	.closure	_prefix.expand_dir_res_dcs1_c
+dcs2	.bind	.closure	_prefix.expand_dir_res_dcs2_c
+	.body	.closure	_prefix.expand_dir_res_body_c
 
 _prefix.expand_dir_res_dcs1_c	.expr
 ibio.file.name.t	.tygvar
@@ -533,8 +533,8 @@ _prefix.expand_loaded.dir_body_c	.subcode
 cs	.larg	list.t	gsdl.var.component.t
 dirn	.larg	ibio.file.name.t
 dcs	.larg	list.t	_prefix.t
-dcs1	.bind.closure	_prefix.expand_loaded.dir_dcs1_c
-	.body.closure	_prefix.expand_loaded.dir_body_c
+dcs1	.bind	.closure	_prefix.expand_loaded.dir_dcs1_c
+	.body	.closure	_prefix.expand_loaded.dir_body_c
 
 _prefix.expand_loaded.dir_dcs1_c	.expr
 list.t	.tygvar
@@ -727,17 +727,17 @@ _prefix.readdir_id_c	.subcode
 _prefix.readdir_ds1_c	.subcode
 _prefix.readdir_body_c	.subcode
 dirn	.larg	ibio.file.name.t
-id	.bind.closure	_prefix.readdir_id_c
-ds1	.bind.closure	_prefix.readdir_ds1_c
-	.body.closure	_prefix.readdir_body_c
+id	.bind	.closure	_prefix.readdir_id_c
+ds1	.bind	.closure	_prefix.readdir_ds1_c
+	.body	.closure	_prefix.readdir_body_c
 
 _prefix.readdir_id_c	.impprog	ibio.prim	ibio
 ibio.file.name.t	.tygvar
 _prefix.readdir_id_eid_c	.subcode
 _prefix.readdir_id_body_c	.subcode
 dirn	.fv	ibio.file.name.t
-eid	.bind.closure	_prefix.readdir_id_eid_c
-	.body.closure	_prefix.readdir_id_body_c
+eid	.bind	.closure	_prefix.readdir_id_eid_c
+	.body	.closure	_prefix.readdir_id_body_c
 
 _prefix.readdir_id_eid_c	.expr
 ibio.file.name.t	.tygvar
@@ -1131,8 +1131,8 @@ o	.fv	ibio.prim.oport	rune.t
 ds	.fv	ordered.set.t	ibio.file.name.t
 gsac.fn	.fv	ibio.file.name.t
 fn	.fv	ibio.file.name.t
-	.bind.closure	_process.var_file_:_true_false_res_emit_c
-	.body.closure	_process.var_file_:_true_false_res_body_c
+	.bind	.closure	_process.var_file_:_true_false_res_emit_c
+	.body	.closure	_process.var_file_:_true_false_res_body_c
 
 _process.var_file_:_true_false_res_emit_c	.expr
 ibio.prim.oport	.tygvar

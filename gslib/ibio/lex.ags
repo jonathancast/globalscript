@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.4
+#calculus: gsdl.string-code 0.5
 
 	.prefix
 
@@ -512,9 +512,9 @@ s	.tyarg	*
 α	.tyarg	*
 rec	.larg	ibio.lex.receiver.t	s	α
 i	.larg	ibio.prim.iport	s
-ip	.bind.closure	_ibio.lex.receive_ip_c
+ip	.bind	.closure	_ibio.lex.receive_ip_c
 x	.closure	_ibio.lex.receive_x_c
-	.body.closure	_ibio.lex.receive_body_c
+	.body	.closure	_ibio.lex.receive_body_c
 
 _ibio.lex.receive_ip_c	.expr
 ibio.lex.receiver.t	.tygvar
