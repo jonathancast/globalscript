@@ -229,7 +229,8 @@ label	.regex	re	arg*
 
 This binds \stringcode{label} to a \emph{lifted, boxed, cast} regex literal of type \<regex.t rune.t\>.
 The byte-compiler will expand this definition to a tree of constructor literals;
-the character \stringcode{§} can be used to insert another data item, taken from the \stringcode{arg} list, into the generated tree.
+the character § can be used to insert another data item, taken from the \stringcode{arg} list, into the generated tree.
+% ↑ NB: LaTeX doesn't have a fixed-width §, so don't mark it up as string code.
 
 \section{\stringcode{.undefined}}
 
@@ -638,7 +639,7 @@ x	.karg	tyf	tyx0	...	tyxn-1
 
 This declares \stringcode{x} to be the continuation's argument, of type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}.
 
-\section{(Un-boxed Product) Continuation Arguments}
+\section{(Un-boxed) Continuation Arguments}
 \label{field_cont_arg}
 
 This declares the (single) value argument to a continuation for a boxed type.
@@ -673,13 +674,13 @@ Legally, the label can be omitted with a warning (since allocation operations ar
 \unimpl{This is un-supported in imperative block statements as yet.}
 
 \begin{verbatim}
-x	.impprim	primset	primtype	prim	type	tyx0	...	tyxn-1	|	x0	...	xn-1
+x	.impprim	primset	primtype	prim	ty	tyx0	...	tyxn-1	|	x0	...	xn-1
 \end{verbatim}
 
 This defines \stringcode{x} to be the image of \stringcode{prim}, from \stringcode{primset},
 at type arguments \stringcode{tyx$_0$, $\ldots$, tyx$_{n-1}$}
 and value arguments \stringcode{x$_0$, $\ldots$, x$_{n-1}$}.
-\stringcode{type} should be a type synonym that expands to the actual, polymorphic, type of \stringcode{prim};
+\stringcode{ty} should be a type synonym that expands to the actual, polymorphic, type of \stringcode{prim};
 for primsets known to the interpreter, it will be checked against the actual type,
 and for primsets unknown to the interpreter,
 it will be blindly believed and used to type-check the arguments and assign a type to \stringcode{x}.
@@ -848,14 +849,14 @@ although since it will need to be of imperative type, not all allocations will b
 	.lift
 \end{verbatim}
 
-This corresponds to the evaluation context \<\lfloor\bullet\rfloor\>, which returns the image of the following expression under the unit of the lifting monad.
+Corresponds to the evaluation context \<\lfloor\bullet\rfloor\>, which returns the image of the following expression under the unit of the lifting monad.
 
 \subsection{\stringcode{.coerce}}
 
 \begin{verbatim}
 	.coerce	cof	tyx0	...	tyxn-1
 \end{verbatim}
-This corresponds to the evaluation context \<\bullet\;"\!\rhd\;cof (\hskwd{type} tyx_0) \ldots (\hskwd{type} tyx_{n-1})\>,
+Corresponds to the evaluation context \<\bullet\;"\!\rhd\;cof (\hskwd{type} tyx_0) \ldots (\hskwd{type} tyx_{n-1})\>,
 which returns the image of the following expression under the given coercion.
 
 \subsection{\stringcode{.app}}
@@ -863,7 +864,7 @@ which returns the image of the following expression under the given coercion.
 \begin{verbatim}
 	.app	x0	...	xn-1
 \end{verbatim}
-This corresponds to the evalution context \<\bullet\;x_0\;\ldots\;x_n{-1}\>,
+Corresponds to the evalution context \<\bullet\;x_0\;\ldots\;x_n{-1}\>,
 which returns the image of the given arguments under the following expression.
 
 \subsection{\stringcode{.force}}
@@ -871,7 +872,7 @@ which returns the image of the given arguments under the following expression.
 \begin{verbatim}
 	.force	k
 \end{verbatim}
-This corresponds to the evaluation context denoted by the code item labeled by \stringcode{k},
+Corresponds to the evaluation context denoted by the code item labeled by \stringcode{k},
 which must be a \stringcode{.forcecont}.
 
 \subsection{\stringcode{.strict}}
@@ -879,7 +880,7 @@ which must be a \stringcode{.forcecont}.
 \begin{verbatim}
 	.strict	k
 \end{verbatim}
-This corresponds to the evaluation context denoted by the code item labeled by \stringcode{k},
+Corresponds to the evaluation context denoted by the code item labeled by \stringcode{k},
 which must be a \stringcode{.strictcont}.
 
 \subsection{\stringcode{.ubanalyze}}
@@ -887,7 +888,7 @@ which must be a \stringcode{.strictcont}.
 \begin{verbatim}
 	.ubanalyze	c0	k0	...	cn-1	kn-1
 \end{verbatim}
-This corresponds to an evaluation context of the form
+Corresponds to an evaluation context of the form
 \begin{haskell}
 \hskwd{analyze}\;\bullet.\;\hskwd{case}\;c_0\;x_0.\;e_0\ldots\hskwd{case}\;c_{n-1}\;x_{n-1}.\;e_{n-1}
 \end{haskell},
@@ -904,7 +905,7 @@ and the corresponding cases are given by the code items labeled by \stringcode{k
 	.undef	tyf	tyx0	...	tyxn-1
 \end{verbatim}
 
-This allocates and returns the least element of the type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}, which must be a lifted type.
+This allocates and returns the least element of type \stringcode{tyf tyx$_0$ $\ldots$ tyx$_{n-1}$}, which must be a lifted type.
 
 \subsection{\stringcode{.yield}}
 
@@ -993,6 +994,7 @@ in order, one per constructor, defining the behavior for the various branches.
 
 \section{\stringcode{.case} and \stringcode{.default}}
 \label{case}
+\label{default}
 
 \begin{verbatim}
 	.case	c
@@ -1402,13 +1404,9 @@ The body gets compiled to\new{0.5}{this was one token, \stringcode{.body.closure
 \chapter{\stringcode{.regex} Literals}\agsonly{Regex literals are only supported for simplifying hand-written string code, for bootstrapping.}
 
 We have interpolation support in string code regex literals.
-To use, put \stringcode{§} (with no name) in the literal
-and then follow the literal with the variable to use for each interpolation:
-\begin{verbatim}
-foo.re .regex §|§ _foo.re_long.expr.1.re _foo_re_long.expr.2.re
-_foo.re_long.expr.1.re .regex long|complicated\sexpression
-...
-\end{verbatim}
+To use, put § (with no name) in the literal%
+% ↑ NB: LaTeX doesn't have a fixed-width §, so don't mark it up as string code
+and then follow the literal with the variable to use for each interpolation.
 
 You can interpolate any top-level data item, not just \stringcode{.regex} literals.
 
