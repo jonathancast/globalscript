@@ -3509,7 +3509,7 @@ s	.fv	s
 o0	.karg	order.total.ord.prim.u
 	.danalyze	o0	eq
 		.default
-nil			.undefined	list.t	string.t	-- > .apply	list.nil	string.t
+nil			.apply	list.nil	string.t
 			.app	nil
 			.enter	either.left	list.string.ty	parser.prim.s.β.ty
 		.case	eq
