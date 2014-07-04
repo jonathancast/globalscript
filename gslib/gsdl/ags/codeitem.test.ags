@@ -207,7 +207,7 @@ _test.parse_alloc_closure_input	.string	x\t.closure\t_x_c\n
 _test.parse_impgens	.closure	_test.parse_impgens_c
 _test.parse_impgens_label	.string	Imperative\sGenerators
 
-_tests.parse_impgens	.list	test.property.t	_test.parse_impgens_0.4.bind.closure	_test.parse_impgens_0.5.bind.closure.two.words
+_tests.parse_impgens	.list	test.property.t	_test.parse_impgens_0.4.bind.closure	_test.parse_impgens_0.5.bind.closure.two.words	_test.parse_impgens_bind.closure.no.label
 
 _test.parse_impgens_0.4.bind.closure	.closure	_test.parse_impgens_0.4.bind.closure_c
 _test.parse_impgens_0.4.bind.closure_label	.string	qq{x\\t.bind.closure\\t_x_c\\n}\s=~\sgsdl.ags.codeitem.impgens.parser\s0.4
@@ -216,6 +216,10 @@ _test.parse_impgens_0.4.bind.closure_input	.string	x\t.bind.closure\t_x_c\n
 _test.parse_impgens_0.5.bind.closure.two.words	.closure	_test.parse_impgens_0.5.bind.closure.two.words_c
 _test.parse_impgens_0.5.bind.closure.two.words_label	.string	qq{x\\t.bind\\t.closure\\t_x_c\\n}\s=~\sgsdl.ags.codeitem.impgens.parser\s0.5
 _test.parse_impgens_0.5.bind.closure.two.words_input	.string	x\t.bind\t.closure\t_x_c\n
+
+_test.parse_impgens_bind.closure.no.label	.closure	_test.parse_impgens_bind.closure.no.label_c
+_test.parse_impgens_bind.closure.no.label_label	.string	qq{\\t.bind\\t.closure\\t_x_c\\n}\s=~\sgsdl.ags.codeitem.impgens.parser\s0.5
+_test.parse_impgens_bind.closure.no.label_input	.string	\t.bind\t.closure\t_x_c\n
 
 -- §subsection String Code Expressions
 
@@ -1684,6 +1688,38 @@ test	.apply	parser.test.assert.passes	rune.t	list.impgen.ty	|	parser.rune.advanc
 	.enter	test.property.label
 
 _test.parse_impgens_0.5.bind.closure.two.words_k_c	.expr
+list.t	.tygvar
+gsdl.ags.codeitem.impgen.t	.tygvar
+test.true	.gvar
+err	.larg	list.t	gsdl.ags.codeitem.impgen.t
+	.enter	test.true
+
+-- §section §gs{.bind	.closure} is legal with no label
+
+_test.parse_impgens_bind.closure.no.label_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.impgen.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_test.parse_impgens_bind.closure.no.label_k_c	.subcode
+test.property.label	.gvar
+_test.parse_impgens_bind.closure.no.label_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.impgens.parser	.gvar
+bool.false	.gvar
+bool.true	.gvar
+_test.parse_impgens_bind.closure.no.label_input	.gvar
+list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
+k	.closure	_test.parse_impgens_bind.closure.no.label_k_c
+fs	.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	bool.true	|	gsdl.ags.syntax.features.t
+impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	list.impgen.ty	|	parser.rune.advance	rune.print	impgens.p	_test.parse_impgens_bind.closure.no.label_input	k
+	.app	_test.parse_impgens_bind.closure.no.label_label	test
+	.enter	test.property.label
+
+_test.parse_impgens_bind.closure.no.label_k_c	.expr
 list.t	.tygvar
 gsdl.ags.codeitem.impgen.t	.tygvar
 test.true	.gvar
