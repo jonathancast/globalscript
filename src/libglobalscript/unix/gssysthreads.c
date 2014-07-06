@@ -68,7 +68,7 @@ gscreate_thread_pool(void (*fn)(void *), void *arg, ulong sz)
     gs_sys_num_procs++;
     unlock(&gs_allocator_lock);
 
-    if ((pid = clone(gsthread_pool_main, top_of_stack, CLONE_VM | SIGCHLD, pool_descr)) < 0) {
+    if ((pid = clone(gsthread_pool_main, top_of_stack, CLONE_VM | CLONE_FILES | SIGCHLD, pool_descr)) < 0) {
         lock(&gs_allocator_lock);
         gs_sys_num_procs--;
         unlock(&gs_allocator_lock);
