@@ -85,6 +85,8 @@ static void ibio_read_thread_main(void *);
 static gs_sys_gc_post_callback ibio_read_thread_cleanup;
 static gs_sys_gc_failure_callback ibio_read_thread_gc_failure_cleanup;
 
+/* §section Reading from a file (read process) */
+
 int
 ibio_read_threads_init(char *err, char *eerr)
 {
@@ -118,27 +120,6 @@ ibio_read_threads_init(char *err, char *eerr)
     return readpid;
 }
 
-static
-void
-ibio_read_thread_main(void *p)
-{
-    int have_clients, have_threads;
-
-    do {
-        gs_sys_gc_allow_collection(0);
-
-        lock(&ibio_read_thread_queue->lock);
-        have_clients = ibio_read_thread_queue->refcount > 0;
-        have_threads = ibio_read_thread_queue->numthreads > 0;
-        unlock(&ibio_read_thread_queue->lock);
-
-        sleep(1);
-    } while (have_clients || have_threads);
-
-    ace_down();
-}
-
-static
 int
 ibio_read_thread_cleanup(struct gsstringbuilder *err)
 {
@@ -171,6 +152,16 @@ ibio_read_thread_cleanup(struct gsstringbuilder *err)
                 if (ibio_iptr_trace(err, &iport->position) < 0) return -1;
                 iport->channel->last_accessed_seg = 0;
             }
+
+            if (iport->nextsym) {
+                if (ibio_iptr_live(iport->nextsym)) {
+                    iport->nextsym = ibio_iptr_lookup_forward(iport->nextsym);
+                } else {
+                    if (ibio_iptr_trace(err, &iport->nextsym) < 0) return -1;
+                }
+                iport->nextseg = ibio_channel_segment_lookup_forward(iport->nextseg);
+            }
+
             if (iport->reading_thread) iport->reading_thread = api_thread_gc_forward(iport->reading_thread);
         }
     }
@@ -190,6 +181,340 @@ ibio_read_thread_gc_failure_cleanup()
             if (iport->reading_thread) iport->reading_thread = api_thread_gc_forward(iport->reading_thread);
         }
     }
+}
+
+static void ibio_iport_unlink_from_thread(struct api_thread *, struct ibio_iport *);
+
+static void ibio_shutdown_iport(struct ibio_iport *, gsvalue *);
+static void ibio_shutdown_iport_on_read_symbol_unimpl(char *, int, struct gspos, struct ibio_iport *, struct ibio_channel_segment *, gsvalue *, char *, ...);
+
+static
+void
+ibio_read_thread_main(void *p)
+{
+    int tid, i;
+    int have_clients, have_threads;
+    int any_runnable;
+    struct ibio_iport *iport;
+    vlong total_time_reading;
+
+    any_runnable = have_clients = have_threads = 1;
+
+    total_time_reading = 0;
+
+    for (tid = 0; have_clients || have_threads; tid = (tid + 1) % IBIO_NUM_READ_THREADS) {
+        struct gsstringbuilder *err;
+        int gcres;
+
+        if (tid == 0) {
+            if (!any_runnable) sleep(1);
+            any_runnable = 0;
+        }
+
+        err = gsreserve_string_builder();
+        gcres = gs_sys_gc_allow_collection(err);
+        if (gcres < 0 || gs_sys_memory_exhausted()) {
+            lock(&ibio_read_thread_queue->lock);
+            for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
+                if ((iport = ibio_read_thread_queue->iports[i]) && iport->active) {
+                    struct gsstringbuilder *msg;
+                    struct gspos gspos;
+
+                    lock(&iport->lock);
+
+                    msg = gsreserve_string_builder();
+                    if (gcres < 0) {
+                        gsstring_builder_print(msg, UNIMPL("GC failed: %s"), err->start);
+                    } else {
+                        gsstring_builder_print(msg, UNIMPL("Out of memory"));
+                    }
+                    gsfinish_string_builder(msg);
+
+                    gspos.file = gsintern_string(gssymfilename, __FILE__);
+                    gspos.lineno = __LINE__;
+
+                    if (iport->reading) api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "%s", msg->start);
+                    iport->channel->error = (gsvalue)gsunimpl(__FILE__, __LINE__, gspos, "%s", msg->start);
+                    ibio_shutdown_iport(iport, iport->position);
+
+                    unlock(&iport->lock);
+                 }
+            }
+            unlock(&ibio_read_thread_queue->lock);
+        }
+        gsfinish_string_builder(err);
+
+        lock(&ibio_read_thread_queue->lock);
+        iport = ibio_read_thread_queue->iports[tid];
+        unlock(&ibio_read_thread_queue->lock);
+
+        if (iport) {
+            int active, runnable;
+
+            lock(&iport->lock);
+            active = iport->active || iport->reading;
+            runnable = !!iport->reading;
+
+            if (!active) {
+                if (iport->fd > 2)
+                    close(iport->fd)
+                ;
+                unlock(&iport->lock);
+
+                lock(&ibio_read_thread_queue->lock);
+                ibio_read_thread_queue->iports[tid] = 0;
+                ibio_read_thread_queue->numthreads--;
+                unlock(&ibio_read_thread_queue->lock);
+
+                lock(&iport->lock);
+                runnable = 0;
+            } else if (iport->nextsym && iport->nextseg && iport->nextsym >= ibio_channel_segment_limit(iport->nextseg)) {
+                struct ibio_channel_segment *newseg;
+
+                lock(&iport->nextseg->lock);
+                lock(&iport->channel->lock);
+                if (
+                    iport->waiting_to_read
+                    || api_thread_terminating(iport->reading_thread)
+                    || iport->channel->last_accessed_seg == iport->nextseg
+                    || !iport->channel->last_accessed_seg
+                ) {
+                    unlock(&iport->channel->lock);
+                    newseg = ibio_alloc_channel_segment(iport->channel);
+                    iport->nextseg->next = newseg;
+                    unlock(&iport->nextseg->lock);
+                    iport->nextsym = newseg->items;
+                    unlock(&newseg->lock);
+                    iport->nextseg = newseg;
+                } else {
+                    unlock(&iport->channel->lock);
+                    unlock(&iport->nextseg->lock);
+                    runnable = 0;
+                }
+            } else if (iport->reading) {
+                gstypecode st;
+
+                if (!iport->nextsym) {
+                    iport->nextsym = iport->position;
+                    iport->nextseg = ibio_channel_segment_containing(iport->nextsym);
+                    unlock(&iport->nextseg->lock);
+                }
+                st = GS_SLOW_EVALUATE(iport->reading_at, iport->reading);
+                switch (st) {
+                    case gstystack:
+                        runnable = 0;
+                        break;
+                    case gstywhnf: {
+                        struct gsconstr *constr;
+
+                        constr = (struct gsconstr *)iport->reading;
+                        switch (constr->a.constrnum) {
+                            case ibio_acceptor_fail:
+                                iport->reading = 0;
+                                iport->nextsym = 0;
+                                iport->nextseg = 0;
+                                ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+                                if (gsflag_stat_collection) total_time_reading += nsec() - iport->start_time_reading;
+                                break;
+                            case ibio_acceptor_symbol_bind: {
+                                gsvalue symk, eofk;
+
+                                symk = constr->a.arguments[0];
+                                eofk = constr->a.arguments[1];
+                                iport->nextseg = ibio_channel_segment_containing(iport->nextsym);
+
+                                if (iport->nextsym < iport->nextseg->extent) {
+                                    iport->reading = gsapply(constr->pos, constr->a.arguments[0], *iport->nextsym);
+                                    if (iport->nextsym + 1 < iport->nextseg->extent) {
+                                        ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, iport->nextseg, iport->nextsym, "ibio_read_process_main: symbol.bind: can advance within segment");
+                                        active = runnable = 0;
+                                    } else if (iport->nextseg->next) {
+                                        ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, iport->nextseg, iport->nextsym, "ibio_read_process_main: symbol.bind: have next segment to advance to");
+                                        active = runnable = 0;
+                                    } else if (iport->nextseg->extent < ibio_channel_segment_limit(iport->nextseg)) {
+                                        iport->nextsym++;
+                                        unlock(&iport->nextseg->lock);
+                                    } else {
+                                        ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, iport->nextseg, iport->nextsym, "ibio_read_process_main: symbol.bind: cannot advance within segment");
+                                        active = runnable = 0;
+                                    }
+                                } else if (iport->nextseg->next) {
+                                    struct ibio_channel_segment *nextseg = iport->nextseg->next;
+                                    iport->nextsym = nextseg->items;
+                                    unlock(&iport->nextseg->lock);
+                                    iport->nextseg = nextseg;
+
+                                    iport->reading = eofk;
+                                } else if (iport->bufstart < iport->bufend) {
+                                    if (iport->external->canread(iport->external, iport->bufstart, iport->bufend)) {
+                                        gsvalue sym;
+                                        char err[0x100];
+
+                                        iport->bufstart = iport->external->readsym(iport->external, err, err + sizeof(err), iport->bufstart, iport->bufend, &sym);
+                                        if (!iport->bufstart) {
+                                            api_thread_post(iport->reading_thread, "input decoding error: %s", err);
+                                            ibio_shutdown_iport(iport, iport->nextsym);
+                                            active = runnable = 0;
+                                            goto failed;
+                                        }
+                                        *iport->nextsym++ = sym;
+                                        iport->nextseg->extent = iport->nextsym;
+                                        iport->reading = gsapply(constr->pos, symk, sym);
+                                        unlock(&iport->nextseg->lock);
+                                    } else {
+                                        ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, iport->nextseg, iport->nextsym, "ibio_read_process_main: symbol.bind: not enough data in buffer to read a symbol");
+                                        active = runnable = 0;
+                                    }
+                                } else {
+                                    long n;
+
+                                    n = iport->uxio->refill(iport->uxio, iport->fd, iport->buf, (uchar*)iport->bufextent - (uchar*)iport->buf);
+                                    if (n < 0) {
+                                        ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, iport->nextseg, iport->nextsym, "ibio_read_process_main: read failed: %r");
+                                        active = runnable = 0;
+                                        goto failed;
+                                    }
+                                    iport->bufstart = iport->buf;
+                                    iport->bufend = (uchar*)iport->buf + n;
+                                    if (n == 0) {
+                                        struct ibio_channel_segment *newseg;
+
+                                        newseg = ibio_alloc_channel_segment(iport->channel);
+                                        iport->nextseg->next = newseg;
+                                        iport->nextsym = newseg->items;
+                                        unlock(&newseg->lock);
+                                        unlock(&iport->nextseg->lock);
+                                        iport->nextseg = newseg;
+
+                                        iport->reading = eofk;
+                                    } else {
+                                        /* Loop and try again with the filled buffer */
+                                        unlock(&iport->nextseg->lock);
+                                    }
+                                }
+                            failed:
+                                break;
+                            }
+                            case ibio_acceptor_unit_plus:
+                                iport->position = iport->nextsym;
+                                iport->reading = constr->a.arguments[1];
+                                break;
+                            default:
+                                api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: constr = %d", constr->a.constrnum);
+                                ibio_shutdown_iport(iport, iport->nextsym);
+                                active = runnable = 0;
+                                break;
+                        }
+                        break;
+                    }
+                    case gstyindir:
+                        iport->reading = GS_REMOVE_INDIRECTION(iport->reading_at, iport->reading);
+                        break;
+                    case gstyerr: {
+                        struct gserror *err;
+                        char buf[0x100];
+
+                        err = (struct gserror *)iport->reading;
+                        gserror_format(buf, buf + sizeof(buf), err);
+                        api_thread_post(iport->reading_thread, "acceptor error: %s", buf);
+                        lock(&iport->channel->lock);
+                        iport->channel->error = (gsvalue)gserror(err->pos, "acceptor error: %s", buf);
+                        unlock(&iport->channel->lock);
+
+                        ibio_shutdown_iport(iport, iport->nextsym);
+                        active = runnable = 0;
+                        break;
+                    }
+                    case gstyimplerr: {
+                        struct gsimplementation_failure *err;
+                        char buf[0x100];
+
+                        err = (struct gsimplementation_failure *)iport->reading;
+                        gsimplementation_failure_format(buf, buf + sizeof(buf), err);
+                        api_thread_post(iport->reading_thread, "unimplemented acceptor: %s", buf);
+                        lock(&iport->channel->lock);
+                        iport->channel->error = (gsvalue)err;
+                        unlock(&iport->channel->lock);
+
+                        ibio_shutdown_iport(iport, iport->nextsym);
+                        active = runnable = 0;
+                        break;
+                    }
+                    default:
+                        api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: st = %d", st);
+                        ibio_shutdown_iport(iport, iport->nextsym);
+                        active = runnable = 0;
+                        break;
+                }
+            }
+            unlock(&iport->lock);
+            any_runnable = any_runnable || runnable;
+        }
+
+        lock(&ibio_read_thread_queue->lock);
+        have_clients = ibio_read_thread_queue->refcount > 0;
+        have_threads = ibio_read_thread_queue->numthreads > 0;
+        unlock(&ibio_read_thread_queue->lock);
+    }
+
+    gsstatprint("Total wallclock time in input: %llds %lldms\n", total_time_reading / 1000 / 1000 / 1000, (total_time_reading / 1000 / 1000) % 1000);
+
+    ace_down();
+}
+
+void
+ibio_shutdown_iport_on_read_symbol_unimpl(char *file, int lineno, struct gspos gspos, struct ibio_iport *iport, struct ibio_channel_segment *seg, gsvalue *pos, char *fmt, ...)
+{
+    struct gsstringbuilder *msg;
+    va_list arg;
+
+    unlock(&seg->lock);
+
+    msg = gsreserve_string_builder();
+    va_start(arg, fmt);
+    gsstring_builder_vprint(msg, fmt, arg);
+    va_end(arg);
+    gsfinish_string_builder(msg);
+
+    api_thread_post_unimpl(iport->reading_thread, file, lineno, "%s", msg->start);
+    lock(&iport->channel->lock);
+    iport->channel->error = (gsvalue)gsunimpl(file, lineno, gspos, "%s", msg->start);
+    unlock(&iport->channel->lock);
+    ibio_shutdown_iport(iport, pos);
+}
+
+void
+ibio_shutdown_iport(struct ibio_iport *iport, gsvalue *pos)
+{
+    iport->active = 0;
+    if (iport->reading) ibio_iport_unlink_from_thread(iport->reading_thread, iport);
+    iport->reading = 0;
+}
+
+struct ibio_thread_to_iport_link {
+    struct ibio_thread_to_iport_link *next;
+    struct ibio_iport *iport;
+};
+
+void
+ibio_iport_unlink_from_thread(struct api_thread *thread, struct ibio_iport *iport)
+{
+    struct ibio_thread_data *data;
+    struct ibio_thread_to_iport_link **p;
+
+    api_take_thread(thread);
+
+    data = api_thread_client_data(thread);
+    for (p = &data->reading_from_iport; *p; p = &(*p)->next) {
+        if ((*p)->iport == iport) {
+            *p = (*p)->next;
+            api_release_thread(thread);
+            return;
+        }
+    }
+
+    gswarning("%s:%d: Thread %p not actually associated to iport %p", __FILE__, __LINE__, thread, iport);
+    api_release_thread(thread);
 }
 
 static
@@ -229,22 +554,13 @@ static struct ibio_iport *ibio_alloc_iport(void);
 
 static void ibio_setup_iport_read_buffer(struct ibio_iport *);
 
-struct ibio_read_process_args {
-    struct ibio_iport *iport;
-};
-
-static void ibio_read_process_main(void *);
-
 gsvalue
 ibio_iport_fdopen(int fd, struct ibio_uxio *uxio, struct ibio_external_io *external, char *err, char *eerr)
 {
     struct ibio_iport *res;
-    struct ibio_read_process_args args;
-    int readpid;
+    int i, tid;
 
     res = ibio_alloc_iport();
-
-    args.iport = res;
 
     res->fd = fd;
     res->uxio = uxio;
@@ -253,46 +569,11 @@ ibio_iport_fdopen(int fd, struct ibio_uxio *uxio, struct ibio_external_io *exter
 
     unlock(&res->lock);
 
-    ace_up();
-
-    /* Create read process tied to res */
-    if ((readpid = gscreate_thread_pool(ibio_read_process_main, &args, sizeof(args))) < 0) {
-        seprint(err, eerr, "Couldn't create IBIO read process: %r");
-        return 0;
-    }
-
-    return (gsvalue)res;
-}
-
-/* §section Reading from a file (read process) */
-
-static void ibio_iport_unlink_from_thread(struct api_thread *, struct ibio_iport *);
-
-static void ibio_shutdown_iport(struct ibio_iport *, gsvalue *);
-static void ibio_shutdown_iport_on_read_symbol_unimpl(char *, int, struct gspos, struct ibio_iport *, struct ibio_channel_segment *, gsvalue *, char *, ...);
-
-static
-void
-ibio_read_process_main(void *p)
-{
-    struct ibio_read_process_args *args;
-    int i;
-    int tid;
-    int active, runnable;
-    struct ibio_iport *iport;
-    struct ibio_channel_segment *seg;
-    gsvalue *pos;
-    vlong total_time_reading;
-
-    args = (struct ibio_read_process_args *)p;
-
-    iport = args->iport;
-
     tid = -1;
     lock(&ibio_read_thread_queue->lock);
     for (i = 0; i < IBIO_NUM_READ_THREADS; i++)
         if (!ibio_read_thread_queue->iports[i]) {
-            ibio_read_thread_queue->iports[i] = iport;
+            ibio_read_thread_queue->iports[i] = res;
             tid = i;
             ibio_read_thread_queue->numthreads++;
             break;
@@ -300,291 +581,14 @@ ibio_read_process_main(void *p)
     ;
     unlock(&ibio_read_thread_queue->lock);
 
-    lock(&iport->lock);
+    lock(&res->lock);
     if (tid < 0) {
         gswarning("%s:%d: ibio_read_process_main: out of read threads", __FILE__, __LINE__);
-        iport->active = 0;
-        unlock(&iport->lock);
-        ace_down();
-        return;
+        res->active = 0;
     }
-    unlock(&iport->lock);
+    unlock(&res->lock);
 
-    seg = 0;
-    pos = 0;
-    total_time_reading = 0;
-    do {
-        struct gsstringbuilder *err;
-        int gcres;
-
-        lock(&iport->lock);
-        active = iport->active || iport->reading;
-        runnable = !!iport->reading;
-
-        err = gsreserve_string_builder();
-        gcres = 0;
-        if (gs_sys_gc_want_collection()) {
-            if ((gcres = gs_sys_wait_for_collection_to_finish(err)) < 0) {
-                gsfinish_string_builder(err);
-                gswarning("GC failed: %s", err->start);
-                err = gsreserve_string_builder();
-            }
-
-            if (iport->forward)
-                iport = iport->forward
-            ; else {
-                gsstring_builder_print(err, "iport not traced in GC");
-                gcres = -1;
-            }
-            if (pos) pos = ibio_iptr_lookup_forward(pos);
-            if (seg) seg = ibio_channel_segment_lookup_forward(seg);
-
-            gs_sys_gc_done_with_collection();
-        }
-        gsfinish_string_builder(err);
-        if (active && (gcres < 0 || gs_sys_memory_exhausted())) {
-            struct gsstringbuilder *msg;
-            struct gspos gspos;
-
-            msg = gsreserve_string_builder();
-            if (gcres < 0) {
-                gsstring_builder_print(msg, UNIMPL("GC failed: %s"), err->start);
-            } else {
-                gsstring_builder_print(msg, UNIMPL("Out of memory"));
-            }
-            gsfinish_string_builder(msg);
-
-            gspos.file = gsintern_string(gssymfilename, __FILE__);
-            gspos.lineno = __LINE__;
-
-            if (iport->reading) api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "%s", msg->start);
-            iport->channel->error = (gsvalue)gsunimpl(__FILE__, __LINE__, gspos, "%s", msg->start);
-            ibio_shutdown_iport(iport, iport->position);
-            active = 0;
-        }
-        if (pos && seg && pos >= ibio_channel_segment_limit(seg)) {
-            struct ibio_channel_segment *newseg;
-
-            lock(&seg->lock);
-            lock(&iport->channel->lock);
-            if (
-                iport->waiting_to_read
-                || api_thread_terminating(iport->reading_thread)
-                || iport->channel->last_accessed_seg == seg
-                || !iport->channel->last_accessed_seg
-            ) {
-                unlock(&iport->channel->lock);
-                newseg = ibio_alloc_channel_segment(iport->channel);
-                seg->next = newseg;
-                unlock(&seg->lock);
-                pos = newseg->items;
-                unlock(&newseg->lock);
-                seg = newseg;
-            } else {
-                unlock(&iport->channel->lock);
-                unlock(&seg->lock);
-                runnable = 0;
-            }
-        } else if (iport->reading) {
-            gstypecode st;
-
-            if (!pos) pos = iport->position;
-            st = GS_SLOW_EVALUATE(iport->reading_at, iport->reading);
-            switch (st) {
-                case gstystack:
-                    runnable = 0;
-                    break;
-                case gstywhnf: {
-                    struct gsconstr *constr;
-
-                    constr = (struct gsconstr *)iport->reading;
-                    switch (constr->a.constrnum) {
-                        case ibio_acceptor_fail:
-                            iport->reading = 0;
-                            pos = 0;
-                            seg = 0;
-                            ibio_iport_unlink_from_thread(iport->reading_thread, iport);
-                            if (gsflag_stat_collection) total_time_reading += nsec() - iport->start_time_reading;
-                            break;
-                        case ibio_acceptor_symbol_bind: {
-                            gsvalue symk, eofk;
-
-                            symk = constr->a.arguments[0];
-                            eofk = constr->a.arguments[1];
-                            seg = ibio_channel_segment_containing(pos);
-
-                            if (pos < seg->extent) {
-                                iport->reading = gsapply(constr->pos, constr->a.arguments[0], *pos);
-                                if (pos + 1 < seg->extent) {
-                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: can advance within segment");
-                                    active = 0;
-                                } else if (seg->next) {
-                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: have next segment to advance to");
-                                    active = 0;
-                                } else if (seg->extent < ibio_channel_segment_limit(seg)) {
-                                    pos++;
-                                    unlock(&seg->lock);
-                                } else {
-                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: cannot advance within segment");
-                                    active = 0;
-                                }
-                            } else if (seg->next) {
-                                pos = seg->next->items;
-                                unlock(&seg->lock);
-
-                                iport->reading = eofk;
-                            } else if (iport->bufstart < iport->bufend) {
-                                if (iport->external->canread(iport->external, iport->bufstart, iport->bufend)) {
-                                    gsvalue sym;
-                                    char err[0x100];
-
-                                    iport->bufstart = iport->external->readsym(iport->external, err, err + sizeof(err), iport->bufstart, iport->bufend, &sym);
-                                    if (!iport->bufstart) {
-                                        api_thread_post(iport->reading_thread, "input decoding error: %s", err);
-                                        ibio_shutdown_iport(iport, pos);
-                                        active = 0;
-                                        goto failed;
-                                    }
-                                    *pos++ = sym;
-                                    seg->extent = pos;
-                                    iport->reading = gsapply(constr->pos, symk, sym);
-                                    unlock(&seg->lock);
-                                } else {
-                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: symbol.bind: not enough data in buffer to read a symbol");
-                                    active = 0;
-                                }
-                            } else {
-                                long n;
-
-                                n = iport->uxio->refill(iport->uxio, iport->fd, iport->buf, (uchar*)iport->bufextent - (uchar*)iport->buf);
-                                if (n < 0) {
-                                    ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, seg, pos, "ibio_read_process_main: read failed: %r");
-                                    active = 0;
-                                    goto failed;
-                                }
-                                iport->bufstart = iport->buf;
-                                iport->bufend = (uchar*)iport->buf + n;
-                                if (n == 0) {
-                                    struct ibio_channel_segment *newseg;
-
-                                    newseg = ibio_alloc_channel_segment(iport->channel);
-                                    seg->next = newseg;
-                                    pos = newseg->items;
-                                    unlock(&newseg->lock);
-                                    unlock(&seg->lock);
-
-                                    iport->reading = eofk;
-                                } else {
-                                    /* Loop and try again with the filled buffer */
-                                    unlock(&seg->lock);
-                                }
-                            }
-                        failed:
-                            break;
-                        }
-                        case ibio_acceptor_unit_plus:
-                            iport->position = pos;
-                            iport->reading = constr->a.arguments[1];
-                            break;
-                        default:
-                            api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: constr = %d", constr->a.constrnum);
-                            ibio_shutdown_iport(iport, pos);
-                            active = 0;
-                            break;
-                    }
-                    break;
-                }
-                case gstyindir:
-                    iport->reading = GS_REMOVE_INDIRECTION(iport->reading_at, iport->reading);
-                    break;
-                case gstyerr: {
-                    struct gserror *err;
-                    char buf[0x100];
-
-                    err = (struct gserror *)iport->reading;
-                    gserror_format(buf, buf + sizeof(buf), err);
-                    api_thread_post(iport->reading_thread, "acceptor error: %s", buf);
-                    lock(&iport->channel->lock);
-                    iport->channel->error = (gsvalue)gserror(err->pos, "acceptor error: %s", buf);
-                    unlock(&iport->channel->lock);
-
-                    ibio_shutdown_iport(iport, pos);
-                    active = 0;
-                    break;
-                }
-                case gstyimplerr: {
-                    struct gsimplementation_failure *err;
-                    char buf[0x100];
-
-                    err = (struct gsimplementation_failure *)iport->reading;
-                    gsimplementation_failure_format(buf, buf + sizeof(buf), err);
-                    api_thread_post(iport->reading_thread, "unimplemented acceptor: %s", buf);
-                    lock(&iport->channel->lock);
-                    iport->channel->error = (gsvalue)err;
-                    unlock(&iport->channel->lock);
-
-                    ibio_shutdown_iport(iport, pos);
-                    active = 0;
-                    break;
-                }
-                default:
-                    api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: st = %d", st);
-                    ibio_shutdown_iport(iport, pos);
-                    active = 0;
-                    break;
-            }
-        }
-        unlock(&iport->lock);
-        if (active && !runnable)
-            sleep(1)
-        ;
-    } while (active);
-
-    if (iport->fd > 2)
-        close(iport->fd)
-    ;
-    lock(&ibio_read_thread_queue->lock);
-    for (i = 0; i < IBIO_NUM_READ_THREADS; i++)
-        if (ibio_read_thread_queue->iports[i] == iport)
-            ibio_read_thread_queue->iports[i] = 0
-    ;
-    ibio_read_thread_queue->numthreads--;
-    unlock(&ibio_read_thread_queue->lock);
-
-    gsstatprint("Total wallclock time in input: %llds %lldms\n", total_time_reading / 1000 / 1000 / 1000, (total_time_reading / 1000 / 1000) % 1000);
-
-    ace_down();
-}
-
-static
-void
-ibio_shutdown_iport_on_read_symbol_unimpl(char *file, int lineno, struct gspos gspos, struct ibio_iport *iport, struct ibio_channel_segment *seg, gsvalue *pos, char *fmt, ...)
-{
-    struct gsstringbuilder *msg;
-    va_list arg;
-
-    unlock(&seg->lock);
-
-    msg = gsreserve_string_builder();
-    va_start(arg, fmt);
-    gsstring_builder_vprint(msg, fmt, arg);
-    va_end(arg);
-    gsfinish_string_builder(msg);
-
-    api_thread_post_unimpl(iport->reading_thread, file, lineno, "%s", msg->start);
-    lock(&iport->channel->lock);
-    iport->channel->error = (gsvalue)gsunimpl(file, lineno, gspos, "%s", msg->start);
-    unlock(&iport->channel->lock);
-    ibio_shutdown_iport(iport, pos);
-}
-
-static
-void
-ibio_shutdown_iport(struct ibio_iport *iport, gsvalue *pos)
-{
-    iport->active = 0;
-    if (iport->reading) ibio_iport_unlink_from_thread(iport->reading_thread, iport);
-    iport->reading = 0;
+    return (gsvalue)res;
 }
 
 /* §section Reading (from API thread) */
@@ -993,11 +997,6 @@ ibio_prim_iptr_next_wait_for_seg_gcevacuate(struct gsstringbuilder *err, struct 
 
 /* §section Associating list of current reads to thread */
 
-struct ibio_thread_to_iport_link {
-    struct ibio_thread_to_iport_link *next;
-    struct ibio_iport *iport;
-};
-
 static struct gs_sys_global_block_suballoc_info ibio_thread_to_iport_link_info = {
     /* descr = */ {
         /* evaluator = */ gswhnfeval,
@@ -1021,28 +1020,6 @@ ibio_iport_link_to_thread(struct api_thread *thread, struct ibio_iport *iport)
     link->next = data->reading_from_iport;
     link->iport = iport;
     data->reading_from_iport = link;
-}
-
-static
-void
-ibio_iport_unlink_from_thread(struct api_thread *thread, struct ibio_iport *iport)
-{
-    struct ibio_thread_data *data;
-    struct ibio_thread_to_iport_link **p;
-
-    api_take_thread(thread);
-
-    data = api_thread_client_data(thread);
-    for (p = &data->reading_from_iport; *p; p = &(*p)->next) {
-        if ((*p)->iport == iport) {
-            *p = (*p)->next;
-            api_release_thread(thread);
-            return;
-        }
-    }
-
-    gswarning("%s:%d: Thread %p not actually associated to iport %p", __FILE__, __LINE__, thread, iport);
-    api_release_thread(thread);
 }
 
 int
@@ -1113,6 +1090,8 @@ ibio_alloc_iport()
     seg = ibio_alloc_channel_segment(res->channel);
 
     res->position = seg->items;
+    res->nextsym = 0;
+    res->nextseg = 0;
     lock(&res->channel->lock);
     res->channel->last_accessed_seg = seg;
     unlock(&res->channel->lock);

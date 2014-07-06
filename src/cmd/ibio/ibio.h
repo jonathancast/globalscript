@@ -143,10 +143,16 @@ struct ibio_iport {
     Lock lock;
     int active;
     struct ibio_channel *channel;
+    /* This is the position just after the last §emph{accepted} symbol */
     gsvalue *position;
+    /* Position of the read call, current acceptor state, and thread that scheduled the current read */
     struct gspos reading_at;
     gsvalue reading;
     struct api_thread *reading_thread;
+    /* Position of next symbol to feed into the acceptor, and segment it's in (0 when not reading) */
+    gsvalue *nextsym;
+    struct ibio_channel_segment *nextseg;
+
     struct ibio_iport_read_blocker *waiting_to_read, **waiting_to_read_end;
     vlong start_time_reading;
     struct ibio_iport *forward;
