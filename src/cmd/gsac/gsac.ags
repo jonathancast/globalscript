@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.4
+#calculus: gsdl.string-code 0.5
 
 	.document
 
@@ -52,16 +52,16 @@ _real.entry_send.output_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
-args	.bind.closure	_real.entry_args_c
-parsed.args	.bind.closure	_real.entry_parsed.args_c	-- §gs{《 §gsinf{List of prefix arguments}, §gsinf{List of CUT arguments}, 》}
+args	.bind	.closure	_real.entry_args_c
+parsed.args	.bind	.closure	_real.entry_parsed.args_c	-- §gs{《 §gsinf{List of prefix arguments}, §gsinf{List of CUT arguments}, 》}
 prefix.files	.closure	_real.entry_prefix.files_c
 cut.files	.closure	_real.entry_cut.files_c
-cut	.bind.closure	_real.entry_cut_c
+cut	.bind	.closure	_real.entry_cut_c
 cut.fvs	.closure	_real.entry_cut.fvs_c
-prefix.loaded	.bind.closure	_real.entry_prefix.loaded_c
-env	.bind.closure	_real.entry_env_c
-output	.bind.closure	_real.entry_output_c
-	.body.closure	_real.entry_send.output_c
+prefix.loaded	.bind	.closure	_real.entry_prefix.loaded_c
+env	.bind	.closure	_real.entry_env_c
+output	.bind	.closure	_real.entry_output_c
+	.body	.closure	_real.entry_send.output_c
 
 _real.entry_args_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -292,8 +292,8 @@ _real.entry_prefix.loaded_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 prefix.files	.fv	list.t	ibio.file.name.t
 cut.fvs	.fv	list.t	gsdl.cgs.symbol.t
-init	.bind.closure	_real.entry_prefix.loaded_init_c
-	.body.closure	_real.entry_prefix.loaded_body_c
+init	.bind	.closure	_real.entry_prefix.loaded_init_c
+	.body	.closure	_real.entry_prefix.loaded_body_c
 
 _real.entry_prefix.loaded_init_c	.expr
 list.t	.tygvar
@@ -364,8 +364,8 @@ _prefix.init_:_body_body_c	.subcode
 prn	.fv	list.t	_real.entry_prefix_ty
 fn0	.fv	ibio.file.name.t
 fns1	.fv	list.t	ibio.file.name.t
-isd	.bind.closure	_prefix.init_:_body_isd_c
-	.body.closure	_prefix.init_:_body_body_c
+isd	.bind	.closure	_prefix.init_:_body_isd_c
+	.body	.closure	_prefix.init_:_body_body_c
 
 _prefix.init_:_body_isd_c	.expr
 ibio.file.name.t	.tygvar
@@ -446,8 +446,8 @@ eo	.fv	ibio.prim.oport	rune.t
 prn	.fv	list.t	_real.entry_prefix_ty
 v0	.fv	gsdl.cgs.symbol.t
 vs1	.fv	list.t	gsdl.cgs.symbol.t
-prn1	.bind.closure	_prefix.load_body_prn1_c
-	.body.closure	_prefix.load_body_body_c
+prn1	.bind	.closure	_prefix.load_body_prn1_c
+	.body	.closure	_prefix.load_body_body_c
 
 _prefix.load_body_prn1_c	.expr
 ibio.prim.oport	.tygvar
@@ -811,8 +811,8 @@ pr0	.larg	_real.entry_prefix_ty
 prn1	.larg	list.t	_real.entry_prefix_ty
 fn	.larg	ibio.file.name.t
 txe0	.larg	string.t
-r	.bind.closure	_bad.file.name_err_c
-	.body.closure	_bad.file.name_body_c
+r	.bind	.closure	_bad.file.name_err_c
+	.body	.closure	_bad.file.name_body_c
 
 -- §paragraph{Print warning about skipping file}
 _bad.file.name_err_c	.expr
@@ -874,10 +874,10 @@ prn1	.larg	list.t	_real.entry_prefix_ty
 files1	.larg	list.t	_prefix.load.var_w_file_ty
 fn	.larg	ibio.file.name.t
 isags	.larg	bool.t
-file.parsed	.bind.closure	_prefix.load.file_file.parsed_c
+file.parsed	.bind	.closure	_prefix.load.file_file.parsed_c
 pr0.1	.closure	_prefix.load.file_pr0.1_c
-prn3	.bind.closure	_prefix.load.file_prn3_c
-	.body.closure	_prefix.load.file_body_c
+prn3	.bind	.closure	_prefix.load.file_prn3_c
+	.body	.closure	_prefix.load.file_body_c
 
 -- §paragraph{Read in the actual file}
 _prefix.load.file_file.parsed_c	.expr
@@ -1005,9 +1005,9 @@ pr0	.fv	_real.entry_prefix_ty
 prn1	.fv	list.t	_real.entry_prefix_ty
 file0	.fv	_prefix.load.var_w_file_ty
 files1	.fv	list.t	_prefix.load.var_w_file_ty
-if	.bind.closure	_prefix.load.var_w_false_:_true_res_if_c
-dirs	.bind.closure	_prefix.load.var_w_false_:_true_res_dirs_c
-	.body.closure	_prefix.load.var_w_false_:_true_res_body_c
+if	.bind	.closure	_prefix.load.var_w_false_:_true_res_if_c
+dirs	.bind	.closure	_prefix.load.var_w_false_:_true_res_dirs_c
+	.body	.closure	_prefix.load.var_w_false_:_true_res_body_c
 
 -- §paragraph{Open directory}
 _prefix.load.var_w_false_:_true_res_if_c	.impprog	ibio.prim	ibio
@@ -1015,8 +1015,8 @@ _prefix.load.var_w_file_ty	.tygvar
 _prefix.load.var_w_false_:_true_res_if_eif_c	.subcode
 _prefix.load.var_w_false_:_true_res_if_body_c	.subcode
 file0	.fv	_prefix.load.var_w_file_ty
-eif	.bind.closure	_prefix.load.var_w_false_:_true_res_if_eif_c
-	.body.closure	_prefix.load.var_w_false_:_true_res_if_body_c
+eif	.bind	.closure	_prefix.load.var_w_false_:_true_res_if_eif_c
+	.body	.closure	_prefix.load.var_w_false_:_true_res_if_body_c
 
 _prefix.load.var_w_false_:_true_res_if_eif_c	.expr
 _prefix.load.var_w_file_ty	.tygvar
@@ -1304,8 +1304,8 @@ eo	.fv	ibio.prim.oport	rune.t
 v	.fv	gsdl.cgs.symbol.t
 pr0	.fv	_real.entry_prefix_ty
 prn1	.fv	list.t	_real.entry_prefix_ty
-prn2	.bind.closure	_prefix.load.var_w_false_nil_res_prn2_c
-	.body.closure	_prefix.load.var_w_false_nil_res_body_c
+prn2	.bind	.closure	_prefix.load.var_w_false_nil_res_prn2_c
+	.body	.closure	_prefix.load.var_w_false_nil_res_body_c
 
 -- §paragraph{Recurse on §gs{prn1}, returning the tail of §gs{_prefix.load.var_w}'s result}
 _prefix.load.var_w_false_nil_res_prn2_c	.expr
@@ -1397,8 +1397,8 @@ _real.entry_env_left_res_we_c	.subcode
 _real.entry_env_left_res_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	string.t
-we	.bind.closure	_real.entry_env_left_res_we_c
-	.body.closure	_real.entry_env_left_res_body_c
+we	.bind	.closure	_real.entry_env_left_res_we_c
+	.body	.closure	_real.entry_env_left_res_body_c
 
 _real.entry_env_left_res_we_c	.expr
 ibio.prim.oport	.tygvar
@@ -1620,8 +1620,8 @@ _real.entry_output_k1_nil_doc_res_print_c	.subcode
 _real.entry_output_k1_nil_doc_res_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	string.t
-	.bind.closure	_real.entry_output_k1_nil_doc_res_print_c
-	.body.closure	_real.entry_output_k1_nil_doc_res_body_c
+	.bind	.closure	_real.entry_output_k1_nil_doc_res_print_c
+	.body	.closure	_real.entry_output_k1_nil_doc_res_body_c
 
 _real.entry_output_k1_nil_doc_res_print_c	.expr
 ibio.prim.oport	.tygvar

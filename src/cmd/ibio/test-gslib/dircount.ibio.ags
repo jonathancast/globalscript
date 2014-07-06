@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.4
+#calculus: gsdl.string-code 0.5
 
 	.document
 
@@ -24,12 +24,12 @@ _real.entry_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
-as	.bind.closure	_real.entry_as_c
+as	.bind	.closure	_real.entry_as_c
 dfn	.closure	_real.entry_dfn_c
-id	.bind.closure	_real.entry_id_c
-ds	.bind.closure	_real.entry_ds_c
+id	.bind	.closure	_real.entry_id_c
+ds	.bind	.closure	_real.entry_ds_c
 n	.closure	_real.entry_n_c
-	.body.closure	_real.entry_body_c
+	.body	.closure	_real.entry_body_c
 
 _real.entry_as_c	.expr
 ibio.prim.env.args.get	.gvar
@@ -68,8 +68,8 @@ ibio.file.name.t	.tygvar
 _real.entry_id_edi_c	.subcode
 _real.entry_id_body_c	.subcode
 dfn	.fv	ibio.file.name.t
-edi	.bind.closure	_real.entry_id_edi_c
-	.body.closure	_real.entry_id_body_c
+edi	.bind	.closure	_real.entry_id_edi_c
+	.body	.closure	_real.entry_id_body_c
 
 _real.entry_id_edi_c	.expr
 ibio.file.name.t	.tygvar
