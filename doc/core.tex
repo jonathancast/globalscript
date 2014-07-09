@@ -8,6 +8,8 @@
 
 \newcommand\defn[1]{\emph{#1}}
 
+\newcommand\todo[1]{\textbf{TODO: }#1 End TODO}
+
 \newcommand\for{\hskwd{for}}
 \newcommand\type{\hskwd{type}}
 \newcommand\abstype{\hskwd{abstype}}
@@ -57,6 +59,18 @@ document ::=
     | <expr>? :: <type>; <gen>*
 ;
 \end{verbatim}
+
+The actual syntax for generators is complicated by the rule that a lambda-like keyword may not be the left-hand operand of an infix operator,
+which includes the \<::\> in the document syntax.
+\todo{Explain that rule.}
+
+In any case, the type, or the type of the expression, must be a simple, lifted, boxed type;
+if the expression is supplied, its value is the value of the document;
+otherwise, the value of the document is the least element of the given type.
+
+If both the expression and the type are given, the expression must of course actually be of the declared type;
+otherwise, the value of the document will be the least element of the given type,
+and the implementation will make a best effort to report the discrepancy when the document is evaluated.
 
 \chapter{Type System}
 
@@ -375,256 +389,6 @@ I'm unsure yet how big a problem that is.
 I suspect that `\<x\> is evaluated' is probably only useful in cases where we know what type \<x\> has anyway.
 
 \chapter{Source Code}
-
-\section{document.ags}
-
-\begin{verbatim}
-#calculus: gsdl.string-code 0.5
-
-	.prefix
-
-	.data
-
-gsdl.cgs.document.parser	.closure	_gsdl.cgs.document.parser_c
-
-gsdl.cgs.document.freevars	.closure	_gsdl.cgs.document.freevars_c
-
-gsdl.cgs.document.≡	.closure	_gsdl.cgs.document.≡_c
-
-gsdl.cgs.document.fmtgs	.closure	_gsdl.cgs.document.fmtgs_c
-_gsdl.cgs.document.fmtgs_prefix	.string	〈\s
-_gsdl.cgs.document.fmtgs_expr.s	.string	'expr\s∝\s
-_gsdl.cgs.document.fmtgs_gstype.s	.string	'gstype\s∝\s
-_gsdl.cgs.document.fmtgs_semi.space	.string	;\s
-_gsdl.cgs.document.fmtgs_suffix	.string	〉
-
-	.code
-
--- §section §gs{gsdl.cgs.document.parser}
-
-_gsdl.cgs.document.parser_c	.expr
-rune.t	.tygvar
-parser.pos.t	.tygvar
-_gsdl.cgs.document.parser_ety_ty	.tygvar
-gsdl.cgs.document.t	.tygvar
-string.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-_gsdl.cgs.document.parser_f_c	.subcode
-_gsdl.cgs.document.parser_expr.f_c	.subcode
-_gsdl.cgs.document.parser_expr.sig.f_c	.subcode
-_gsdl.cgs.document.parser_noexpr.f_c	.subcode
-parser.lift2	.gvar
-parser.pos.get	.gvar
-parser.<*	.gvar
-parser.<|>	.gvar
-parser.map	.gvar
-gsdl.cgs.gsexpr.parser	.gvar
-gsdl.cgs.gsexpr.parser.cast	.gvar
-gsdl.cgs.syntax.branch.l	.gvar
-gsdl.cgs.syntax.assoc.any	.gvar
-parser.*>	.gvar
-gsdl.cgs.syntax.oftype	.gvar
-gsdl.cgs.gstype.parser.fun	.gvar
-gsdl.cgs.syntax.semi	.gvar
-f	.closure	_gsdl.cgs.document.parser_f_c
-pos.get	.apply	parser.pos.get	rune.t
-typesig.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
--- §paragraph{Expression, no type signature}
-expr.f	.closure	_gsdl.cgs.document.parser_expr.f_c
-expr.p	.apply	parser.map	rune.t	gsdl.cgs.gsexpr.t	_gsdl.cgs.document.parser_ety_ty	|	expr.f	gsdl.cgs.gsexpr.parser
--- §paragraph{Expression and type signature}
-expr.sig.f	.closure	_gsdl.cgs.document.parser_expr.sig.f_c
-expr.sig.p1	.apply	gsdl.cgs.gsexpr.parser.cast	|	gsdl.cgs.syntax.branch.l	gsdl.cgs.syntax.assoc.any
-expr.sig.p	.apply	parser.lift2	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gstype.t	_gsdl.cgs.document.parser_ety_ty	|	expr.sig.f	expr.sig.p1	typesig.p
--- §paragraph{No expression, just type signature}
-noexpr.f	.closure	_gsdl.cgs.document.parser_noexpr.f_c
-noexpr.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	_gsdl.cgs.document.parser_ety_ty	|	noexpr.f	typesig.p
--- §par
-ep.p1.1	.apply	parser.<|>	rune.t	_gsdl.cgs.document.parser_ety_ty	|	expr.sig.p	noexpr.p
-ep.p1	.apply	parser.<|>	rune.t	_gsdl.cgs.document.parser_ety_ty	|	expr.p	ep.p1.1
-ep.p	.apply	parser.<*	rune.t	_gsdl.cgs.document.parser_ety_ty	string.t	|	ep.p1	gsdl.cgs.syntax.semi
-	.app	f	pos.get	ep.p
-	.enter	parser.lift2	rune.t	parser.pos.t	_gsdl.cgs.document.parser_ety_ty	gsdl.cgs.document.t
-
-_gsdl.cgs.document.parser_f_c	.expr
-parser.pos.t	.tygvar
-_gsdl.cgs.document.parser_ety_ty	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-gsdl.cgs.document.prim.u	.tygvar
-maybe.just	.gvar
-gsdl.sourcepos	.gvar
-pos0	.larg	parser.pos.t
-ety	.larg	_gsdl.cgs.document.parser_ety_ty
-pos1	.undefined	parser.pos.t
-mbe	.lfield	0	ety
-mbty	.lfield	1	ety
-pos	.apply	gsdl.sourcepos	|	pos0	pos1
-r	.record	expr	mbe	gstype	mbty	pos	pos	|	gsdl.cgs.document.prim.u
-	.lift
-	.yield	r
-
-_gsdl.cgs.document.parser_expr.f_c	.expr
-gsdl.cgs.gsexpr.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-_gsdl.cgs.document.parser_ety_u	.tygvar
-maybe.just	.gvar
-maybe.nothing	.gvar
-e	.larg	gsdl.cgs.gsexpr.t
-just.e	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e
-nothing	.apply	maybe.nothing	gsdl.cgs.gstype.t
-r	.record	0	just.e	1	nothing	|	_gsdl.cgs.document.parser_ety_u
-	.lift
-	.yield	r
-
-_gsdl.cgs.document.parser_expr.sig.f_c	.expr
-gsdl.cgs.gsexpr.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-_gsdl.cgs.document.parser_ety_u	.tygvar
-maybe.just	.gvar
-e	.larg	gsdl.cgs.gsexpr.t
-ty	.larg	gsdl.cgs.gstype.t
-just.e	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e
-just.ty	.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
-r	.record	0	just.e	1	just.ty	|	_gsdl.cgs.document.parser_ety_u
-	.lift
-	.yield	r
-
-_gsdl.cgs.document.parser_noexpr.f_c	.expr
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-_gsdl.cgs.document.parser_ety_u	.tygvar
-maybe.nothing	.gvar
-maybe.just	.gvar
-ty	.larg	gsdl.cgs.gstype.t
-nothing	.apply	maybe.nothing	gsdl.cgs.gsexpr.t
-just.ty	.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
-r	.record	0	nothing	1	just.ty	|	_gsdl.cgs.document.parser_ety_u
-	.lift
-	.yield	r
-
--- §section §gs{gsdl.cgs.document.freevars}
-
-_gsdl.cgs.document.freevars_c	.expr
-gsdl.cgs.document.t	.tygvar
-_gsdl.cgs.document.freevars_k	.subcode
-doc	.larg	gsdl.cgs.document.t
-	.force	_gsdl.cgs.document.freevars_k
-	.enter	doc
-
-_gsdl.cgs.document.freevars_k	.forcecont
-gsdl.cgs.document.prim.u	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-ordered.set.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-ordered.set.union	.gvar
-gsdl.cgs.symbol.compare	.gvar
-maybe.elim	.gvar
-ordered.set.empty	.gvar
-gsdl.cgs.gstype.freevars	.gvar
-gsdl.cgs.gsexpr.freevars	.gvar
-res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
-doc0	.karg	gsdl.cgs.document.prim.u
-empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-mb.ty	.field	gstype doc0
-ty.fvs	.apply	maybe.elim	gsdl.cgs.gstype.t	res.ty	|	empty	gsdl.cgs.gstype.freevars	mb.ty
-mb.e	.field	expr	doc0
-e.fvs	.apply	maybe.elim	gsdl.cgs.gsexpr.t	res.ty	|	empty	gsdl.cgs.gsexpr.freevars	mb.e
-	.app	gsdl.cgs.symbol.compare	e.fvs	ty.fvs
-	.enter	ordered.set.union	gsdl.cgs.symbol.t
-
--- §section §gs{gsdl.cgs.document.≡}
-
-_gsdl.cgs.document.≡_c	.expr
-gsdl.cgs.document.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-bool.∧	.gvar
-maybe.≡	.gvar
-gsdl.cgs.gsexpr.≡	.gvar
-gsdl.cgs.gstype.≡	.gvar
-doc0	.larg	gsdl.cgs.document.t
-doc1	.larg	gsdl.cgs.document.t
-mb.e0	.lfield	expr	doc0
-mb.e1	.lfield	expr	doc1
-mb.ty0	.lfield	gstype	doc0
-mb.ty1	.lfield	gstype	doc1
-e.eq	.apply	maybe.≡	gsdl.cgs.gsexpr.t	|	gsdl.cgs.gsexpr.≡	mb.e0	mb.e1
-ty.eq	.apply	maybe.≡	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.≡	mb.ty0	mb.ty1
-	.app	e.eq	ty.eq
-	.enter	bool.∧
-
--- §section §gs{gsdl.cgs.document.fmtgs}
-
-_gsdl.cgs.document.fmtgs_c	.expr
-gsdl.cgs.document.t	.tygvar
-rune.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-fmtgs.prec	.gvar
-fmtgs.prec.arg	.gvar
-diff.list.prepend	.gvar
-_gsdl.cgs.document.fmtgs_prefix	.gvar
-_gsdl.cgs.document.fmtgs_expr.s	.gvar
-_gsdl.cgs.document.fmtgs_gstype.s	.gvar
-diff.list.<>	.gvar
-maybe.fmtgs	.gvar
-gsdl.cgs.gsexpr.fmtgs	.gvar
-fmtgs.prec.app	.gvar
-_gsdl.cgs.document.fmtgs_semi.space	.gvar
-gsdl.cgs.gstype.fmtgs	.gvar
-diff.list.fromlist	.gvar
-_gsdl.cgs.document.fmtgs_suffix	.gvar
-doc	.larg	gsdl.cgs.document.t
-mb.e	.lfield	expr	doc
-mb.e.s	.apply	maybe.fmtgs	gsdl.cgs.gsexpr.t	|	gsdl.cgs.gsexpr.fmtgs	mb.e	fmtgs.prec.app
-mb.ty	.lfield	gstype	doc
-mb.ty.s	.apply	maybe.fmtgs	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.fmtgs	mb.ty	fmtgs.prec.app
-ds7	.apply	diff.list.fromlist	rune.t	|	_gsdl.cgs.document.fmtgs_suffix
-ds6	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_semi.space	ds7
-ds5	.apply	diff.list.<>	rune.t	|	mb.ty.s	ds6
-ds4	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_gstype.s	ds5
-ds3	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_semi.space	ds4
-ds2	.apply	diff.list.<>	rune.t	|	mb.e.s	ds3
-ds1	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_expr.s	ds2
-ds	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_prefix	ds1
-	.app	fmtgs.prec.arg	ds
-	.enter	fmtgs.prec
-
-	.type
-
--- §section §gs{gsdl.cgs.document.t}
-
-gsdl.cgs.document.t	.tyexpr
-gsdl.cgs.document.prim.u	.tygvar
-	.tylift
-	.tyref	gsdl.cgs.document.prim.u
-
-gsdl.cgs.document.prim.u	.tyexpr
-maybe.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-_expr_ty	.tylet	maybe.t	gsdl.cgs.gsexpr.t
-gstype_ty	.tylet	maybe.t	gsdl.cgs.gstype.t
-	.typroduct	expr	_expr_ty	gstype gstype_ty	pos	gsdl.sourcepos.t
-
--- §section §gs{gsdl.cgs.document.parser}
-
-_gsdl.cgs.document.parser_ety_ty	.tyexpr
-_gsdl.cgs.document.parser_ety_u	.tygvar
-	.tylift
-	.tyref	_gsdl.cgs.document.parser_ety_u
-
-_gsdl.cgs.document.parser_ety_u	.tyexpr
-maybe.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-maybe.gsexpr.ty	.tylet	maybe.t	gsdl.cgs.gsexpr.t
-maybe.gstype.ty	.tylet	maybe.t	gsdl.cgs.gstype.t
-	.typroduct	0	maybe.gsexpr.ty	1	maybe.gstype.ty
-\end{verbatim}
 
 \section{file.ags}
 
