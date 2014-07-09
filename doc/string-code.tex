@@ -33,24 +33,14 @@
 
 \tableofcontents
 
-\chapter{Organization of a Program}
+\chapter{Code Organization}
 
-Global Script programs are organized into a \emph{prefix},
-contained in some number of \emph{prefix files},
- and a \emph{document}, contained in a single \emph{document file}.
-Essentially, prefix files contain library code, whereas document files contain code specific to a single program.
-At the source level, each prefix file consists of a single \emph{prefix generator};
-a document file consists of an expression
---- the program's entry point or `\ccode{main}' ---
-and an optional $\hskwd{where}$ clause.
-For various reasons, string code syntax flattens both prefix and document files out into a sequence of \emph{items}.
-
-\chapter{Layout of a String Code File}
-
-Every string code file must begin with the syntax, followed by  blank line:
+Every string code file must begin with this syntax, followed by  blank line:
 \begin{verbatim}
 #calculus: gsdl.string-code 0.6
 \end{verbatim}
+`Calculus' means syntax + static semantics + denotational semantics + calculation laws,
+but effectively in this case it just indicates syntax (string code, as opposed to core or source-leve) and language version.
 Older versions are also supported: versions 0.4 and 0.5.
 This document specifieds version 0.6, but it has notes on the changes from earlier versions.
 
@@ -62,34 +52,47 @@ or
 \begin{verbatim}
 	.prefix
 \end{verbatim}
-declaring whether this particular file is a prefix or document file.
+declaring whether this particular file is a \emph{prefix} or \emph{document file}.
+Global Script programs are organized into a \emph{prefix}, contained in some number of prefix files,
+ and a \emph{document}, contained in a single document file.
+Essentially, prefix files contain library code, whereas document files contain code specific to a single program.
 
 \section{Sections}
 
-String code files are divided into \emph{sections}:
-the data section, begun by the line
-\begin{verbatim}
-	.data
-\end{verbatim}
-containing declarations of the file's data items;
-the code section, begun by the line
-\begin{verbatim}
-	.code
-\end{verbatim}
-containing auxiliary \emph{code items} which are part of the definition of the data items;
-the type section, begun by the line
-\begin{verbatim}
-	.type
-\end{verbatim}
-containing declarations of the file's type items;
-and the coercion section, begun by the line
-\begin{verbatim}
-	.coercion
-\end{verbatim}
-containing declarations of the file's coercion items.
+At the source level, each prefix file consists of a single \emph{prefix generator};
+a document file consists of an expression
+--- the program's entry point or `\ccode{main}' ---
+and an optional $\hskwd{where}$ clause.
+For various reasons, string code syntax flattens both prefix and document files out into a sequence of \emph{items},
+organized into 4 \emph{sections}:
+\begin{itemize}
+  \item the data section, begun by the line
+    \begin{verbatim}
+    	.data
+    \end{verbatim}
+    and containing the file's data items;
+
+  \item the code section, begun by the line
+    \begin{verbatim}
+    	.code
+    \end{verbatim}
+    and containing auxiliary \emph{code items} which are part of the definition of the data items;
+
+  \item the type section, begun by the line
+    \begin{verbatim}
+    	.type
+    \end{verbatim}
+    and containing the file's type items; and
+
+  \item the coercion section, begun by the line
+    \begin{verbatim}
+    	.coercion
+    \end{verbatim}
+    containing the file's coercion items.
+\end{itemize}
 
 Sections should normally be included in the above order;
-it is illegal to include multiple sections with the same name.
+it is illegal to include a section multiple times.
 
 \section{Lexical Syntax}
 
@@ -103,16 +106,16 @@ it is illegal to include multiple sections with the same name.
         \agsonly{String literals are only supported for simplifying hand-written string code, for bootstrapping.}
         \future{We will add a syntax for writing arbitrary UTF coding units using ASCII characters.}
 
-    \item If a line begins with whitespace, field 0 of that line is the empty string;
+    \item Lines consisting exclusively of whitespace and/or comments are ignored.
+
+    \item If any other line begins with whitespace, field 0 of that line is the empty string;
         any run of linear whitespace is equivalent to a single space and whitespace at the end of the line is ignored,
         so empty fields are not possible except for field 0.
-
-    \item Lines consisting exclusively of whitespace and/or comments are ignored.
 
     \item In general, field 0 of any line will be referred to as the \emph{label};
         field 1 will be variously referred to as the \emph{directive} or the \emph{op}.
         Labels of width 0 will be referred to as \emph{missing};
-        labels may be required or forbidden, depending on the op.
+        labels may be required or forbidden, depending on the op (labels are always required before directives).
         Any non-blank non-comment line must contain a field 1;
         additional fields may be required or permitted depending on the directive or op;
         they will be referred to as the \emph{arguments}.
