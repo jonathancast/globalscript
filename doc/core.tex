@@ -374,4 +374,5128 @@ so we lose the static `this is evaluated' information;
 I'm unsure yet how big a problem that is.
 I suspect that `\<x\> is evaluated' is probably only useful in cases where we know what type \<x\> has anyway.
 
+\chapter{Source Code}
+
+\section{document.ags}
+
+\begin{verbatim}
+#calculus: gsdl.string-code 0.5
+
+	.prefix
+
+	.data
+
+gsdl.cgs.document.parser	.closure	_gsdl.cgs.document.parser_c
+
+gsdl.cgs.document.freevars	.closure	_gsdl.cgs.document.freevars_c
+
+gsdl.cgs.document.≡	.closure	_gsdl.cgs.document.≡_c
+
+gsdl.cgs.document.fmtgs	.closure	_gsdl.cgs.document.fmtgs_c
+_gsdl.cgs.document.fmtgs_prefix	.string	〈\s
+_gsdl.cgs.document.fmtgs_expr.s	.string	'expr\s∝\s
+_gsdl.cgs.document.fmtgs_gstype.s	.string	'gstype\s∝\s
+_gsdl.cgs.document.fmtgs_semi.space	.string	;\s
+_gsdl.cgs.document.fmtgs_suffix	.string	〉
+
+	.code
+
+-- §section §gs{gsdl.cgs.document.parser}
+
+_gsdl.cgs.document.parser_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+_gsdl.cgs.document.parser_ety_ty	.tygvar
+gsdl.cgs.document.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.document.parser_f_c	.subcode
+_gsdl.cgs.document.parser_expr.f_c	.subcode
+_gsdl.cgs.document.parser_expr.sig.f_c	.subcode
+_gsdl.cgs.document.parser_noexpr.f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
+parser.<*	.gvar
+parser.<|>	.gvar
+parser.map	.gvar
+gsdl.cgs.gsexpr.parser	.gvar
+gsdl.cgs.gsexpr.parser.cast	.gvar
+gsdl.cgs.syntax.branch.l	.gvar
+gsdl.cgs.syntax.assoc.any	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.oftype	.gvar
+gsdl.cgs.gstype.parser.fun	.gvar
+gsdl.cgs.syntax.semi	.gvar
+f	.closure	_gsdl.cgs.document.parser_f_c
+pos.get	.apply	parser.pos.get	rune.t
+typesig.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
+-- §paragraph{Expression, no type signature}
+expr.f	.closure	_gsdl.cgs.document.parser_expr.f_c
+expr.p	.apply	parser.map	rune.t	gsdl.cgs.gsexpr.t	_gsdl.cgs.document.parser_ety_ty	|	expr.f	gsdl.cgs.gsexpr.parser
+-- §paragraph{Expression and type signature}
+expr.sig.f	.closure	_gsdl.cgs.document.parser_expr.sig.f_c
+expr.sig.p1	.apply	gsdl.cgs.gsexpr.parser.cast	|	gsdl.cgs.syntax.branch.l	gsdl.cgs.syntax.assoc.any
+expr.sig.p	.apply	parser.lift2	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gstype.t	_gsdl.cgs.document.parser_ety_ty	|	expr.sig.f	expr.sig.p1	typesig.p
+-- §paragraph{No expression, just type signature}
+noexpr.f	.closure	_gsdl.cgs.document.parser_noexpr.f_c
+noexpr.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	_gsdl.cgs.document.parser_ety_ty	|	noexpr.f	typesig.p
+-- §par
+ep.p1.1	.apply	parser.<|>	rune.t	_gsdl.cgs.document.parser_ety_ty	|	expr.sig.p	noexpr.p
+ep.p1	.apply	parser.<|>	rune.t	_gsdl.cgs.document.parser_ety_ty	|	expr.p	ep.p1.1
+ep.p	.apply	parser.<*	rune.t	_gsdl.cgs.document.parser_ety_ty	string.t	|	ep.p1	gsdl.cgs.syntax.semi
+	.app	f	pos.get	ep.p
+	.enter	parser.lift2	rune.t	parser.pos.t	_gsdl.cgs.document.parser_ety_ty	gsdl.cgs.document.t
+
+_gsdl.cgs.document.parser_f_c	.expr
+parser.pos.t	.tygvar
+_gsdl.cgs.document.parser_ety_ty	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.document.prim.u	.tygvar
+maybe.just	.gvar
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
+ety	.larg	_gsdl.cgs.document.parser_ety_ty
+pos1	.undefined	parser.pos.t
+mbe	.lfield	0	ety
+mbty	.lfield	1	ety
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+r	.record	expr	mbe	gstype	mbty	pos	pos	|	gsdl.cgs.document.prim.u
+	.lift
+	.yield	r
+
+_gsdl.cgs.document.parser_expr.f_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.document.parser_ety_u	.tygvar
+maybe.just	.gvar
+maybe.nothing	.gvar
+e	.larg	gsdl.cgs.gsexpr.t
+just.e	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e
+nothing	.apply	maybe.nothing	gsdl.cgs.gstype.t
+r	.record	0	just.e	1	nothing	|	_gsdl.cgs.document.parser_ety_u
+	.lift
+	.yield	r
+
+_gsdl.cgs.document.parser_expr.sig.f_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.document.parser_ety_u	.tygvar
+maybe.just	.gvar
+e	.larg	gsdl.cgs.gsexpr.t
+ty	.larg	gsdl.cgs.gstype.t
+just.e	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e
+just.ty	.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
+r	.record	0	just.e	1	just.ty	|	_gsdl.cgs.document.parser_ety_u
+	.lift
+	.yield	r
+
+_gsdl.cgs.document.parser_noexpr.f_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.document.parser_ety_u	.tygvar
+maybe.nothing	.gvar
+maybe.just	.gvar
+ty	.larg	gsdl.cgs.gstype.t
+nothing	.apply	maybe.nothing	gsdl.cgs.gsexpr.t
+just.ty	.apply	maybe.just	gsdl.cgs.gstype.t	|	ty
+r	.record	0	nothing	1	just.ty	|	_gsdl.cgs.document.parser_ety_u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.document.freevars}
+
+_gsdl.cgs.document.freevars_c	.expr
+gsdl.cgs.document.t	.tygvar
+_gsdl.cgs.document.freevars_k	.subcode
+doc	.larg	gsdl.cgs.document.t
+	.force	_gsdl.cgs.document.freevars_k
+	.enter	doc
+
+_gsdl.cgs.document.freevars_k	.forcecont
+gsdl.cgs.document.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+ordered.set.union	.gvar
+gsdl.cgs.symbol.compare	.gvar
+maybe.elim	.gvar
+ordered.set.empty	.gvar
+gsdl.cgs.gstype.freevars	.gvar
+gsdl.cgs.gsexpr.freevars	.gvar
+res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+doc0	.karg	gsdl.cgs.document.prim.u
+empty	.apply	ordered.set.empty	gsdl.cgs.symbol.t
+mb.ty	.field	gstype doc0
+ty.fvs	.apply	maybe.elim	gsdl.cgs.gstype.t	res.ty	|	empty	gsdl.cgs.gstype.freevars	mb.ty
+mb.e	.field	expr	doc0
+e.fvs	.apply	maybe.elim	gsdl.cgs.gsexpr.t	res.ty	|	empty	gsdl.cgs.gsexpr.freevars	mb.e
+	.app	gsdl.cgs.symbol.compare	e.fvs	ty.fvs
+	.enter	ordered.set.union	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.document.≡}
+
+_gsdl.cgs.document.≡_c	.expr
+gsdl.cgs.document.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+bool.∧	.gvar
+maybe.≡	.gvar
+gsdl.cgs.gsexpr.≡	.gvar
+gsdl.cgs.gstype.≡	.gvar
+doc0	.larg	gsdl.cgs.document.t
+doc1	.larg	gsdl.cgs.document.t
+mb.e0	.lfield	expr	doc0
+mb.e1	.lfield	expr	doc1
+mb.ty0	.lfield	gstype	doc0
+mb.ty1	.lfield	gstype	doc1
+e.eq	.apply	maybe.≡	gsdl.cgs.gsexpr.t	|	gsdl.cgs.gsexpr.≡	mb.e0	mb.e1
+ty.eq	.apply	maybe.≡	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.≡	mb.ty0	mb.ty1
+	.app	e.eq	ty.eq
+	.enter	bool.∧
+
+-- §section §gs{gsdl.cgs.document.fmtgs}
+
+_gsdl.cgs.document.fmtgs_c	.expr
+gsdl.cgs.document.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.prepend	.gvar
+_gsdl.cgs.document.fmtgs_prefix	.gvar
+_gsdl.cgs.document.fmtgs_expr.s	.gvar
+_gsdl.cgs.document.fmtgs_gstype.s	.gvar
+diff.list.<>	.gvar
+maybe.fmtgs	.gvar
+gsdl.cgs.gsexpr.fmtgs	.gvar
+fmtgs.prec.app	.gvar
+_gsdl.cgs.document.fmtgs_semi.space	.gvar
+gsdl.cgs.gstype.fmtgs	.gvar
+diff.list.fromlist	.gvar
+_gsdl.cgs.document.fmtgs_suffix	.gvar
+doc	.larg	gsdl.cgs.document.t
+mb.e	.lfield	expr	doc
+mb.e.s	.apply	maybe.fmtgs	gsdl.cgs.gsexpr.t	|	gsdl.cgs.gsexpr.fmtgs	mb.e	fmtgs.prec.app
+mb.ty	.lfield	gstype	doc
+mb.ty.s	.apply	maybe.fmtgs	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.fmtgs	mb.ty	fmtgs.prec.app
+ds7	.apply	diff.list.fromlist	rune.t	|	_gsdl.cgs.document.fmtgs_suffix
+ds6	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_semi.space	ds7
+ds5	.apply	diff.list.<>	rune.t	|	mb.ty.s	ds6
+ds4	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_gstype.s	ds5
+ds3	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_semi.space	ds4
+ds2	.apply	diff.list.<>	rune.t	|	mb.e.s	ds3
+ds1	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_expr.s	ds2
+ds	.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.document.fmtgs_prefix	ds1
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
+
+	.type
+
+-- §section §gs{gsdl.cgs.document.t}
+
+gsdl.cgs.document.t	.tyexpr
+gsdl.cgs.document.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.document.prim.u
+
+gsdl.cgs.document.prim.u	.tyexpr
+maybe.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+_expr_ty	.tylet	maybe.t	gsdl.cgs.gsexpr.t
+gstype_ty	.tylet	maybe.t	gsdl.cgs.gstype.t
+	.typroduct	expr	_expr_ty	gstype gstype_ty	pos	gsdl.sourcepos.t
+
+-- §section §gs{gsdl.cgs.document.parser}
+
+_gsdl.cgs.document.parser_ety_ty	.tyexpr
+_gsdl.cgs.document.parser_ety_u	.tygvar
+	.tylift
+	.tyref	_gsdl.cgs.document.parser_ety_u
+
+_gsdl.cgs.document.parser_ety_u	.tyexpr
+maybe.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+maybe.gsexpr.ty	.tylet	maybe.t	gsdl.cgs.gsexpr.t
+maybe.gstype.ty	.tylet	maybe.t	gsdl.cgs.gstype.t
+	.typroduct	0	maybe.gsexpr.ty	1	maybe.gstype.ty
+\end{verbatim}
+
+\section{file.ags}
+
+\begin{verbatim}
+#calculus: gsdl.string-code 0.5
+
+	.prefix
+
+	.data
+
+gsdl.cgs.file.read	.closure	_gsdl.cgs.file.read_c
+_gsdl.cgs.file.read_i_body_0_res_print_msg_suffix.s	.string	\n
+_gsdl.cgs.file.read_parser_document.s	.string	document
+_gsdl.cgs.file.read_parser_no.typepragma.msg	.string	No\s#type:\sprefix\sor\s#type:\sdocument\spragma
+
+gsdl.cgs.file.freevars	.closure	_gsdl.cgs.file.freevars_c
+
+gsdl.cgs.file.document	.closure	_gsdl.cgs.file.document_c
+
+	.code
+
+-- §section §gs{gsdl.cgs.file.read}
+
+_gsdl.cgs.file.read_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+_gsdl.cgs.file.read_i_c	.subcode
+_gsdl.cgs.file.read_pragmas.pos_c	.subcode
+_gsdl.cgs.file.read_pragmas_c	.subcode
+_gsdl.cgs.file.read_pos_c	.subcode
+_gsdl.cgs.file.read_parser_c	.subcode
+_gsdl.cgs.file.read_s_c	.subcode
+_gsdl.cgs.file.read_body_c	.subcode
+eo	.larg	ibio.prim.oport	rune.t
+fn	.larg	ibio.file.name.t
+i	.bind	.closure	_gsdl.cgs.file.read_i_c
+pragmas.pos	.bind	.closure	_gsdl.cgs.file.read_pragmas.pos_c
+pragmas	.closure	_gsdl.cgs.file.read_pragmas_c
+pos	.closure	_gsdl.cgs.file.read_pos_c
+parser	.closure	_gsdl.cgs.file.read_parser_c
+s	.bind	.closure	_gsdl.cgs.file.read_s_c
+	.body	.closure	_gsdl.cgs.file.read_body_c
+
+_gsdl.cgs.file.read_i_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+ibio.prim.t	.tygvar
+_gsdl.cgs.file.read_i_ei_c	.subcode
+_gsdl.cgs.file.read_i_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+fn	.fv	ibio.file.name.t
+ei	.bind	.closure	_gsdl.cgs.file.read_i_ei_c
+	.body	.closure	_gsdl.cgs.file.read_i_body_c
+
+_gsdl.cgs.file.read_i_ei_c	.expr
+ibio.file.name.t	.tygvar
+rune.t	.tygvar
+ibio.file.read.open.prim	.gvar
+ibio.rune.external.io	.gvar
+fn	.fv	ibio.file.name.t
+	.app	ibio.rune.external.io	fn
+	.enter	ibio.file.read.open.prim	rune.t
+
+_gsdl.cgs.file.read_i_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_ibio.prim.file.read.open_res.ty	.tygvar
+string.t	.tygvar
+ibio.prim.iport	.tygvar
+_gsdl.cgs.file.read_i_body_0_res_c	.subcode
+ibio.prim.unit	.gvar
+res.ty	.tylet	ibio.prim.iport	rune.t
+eo	.fv	ibio.prim.oport	rune.t
+ei	.efv	_ibio.prim.file.read.open_res.ty	rune.t
+	.analyze	ei	0	1
+		.case	0
+err		.karg	string.t
+res			.closure	_gsdl.cgs.file.read_i_body_0_res_c
+			.enter	res
+		.case	1
+i		.karg	ibio.prim.iport	rune.t
+			.lift
+			.app	i
+			.yield	ibio.prim.unit	res.ty
+
+_gsdl.cgs.file.read_i_body_0_res_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.file.read_i_body_0_res_print_c	.subcode
+_gsdl.cgs.file.read_i_body_0_res_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	string.t
+	.bind	.closure	_gsdl.cgs.file.read_i_body_0_res_print_c
+	.body	.closure	_gsdl.cgs.file.read_i_body_0_res_body_c
+
+_gsdl.cgs.file.read_i_body_0_res_print_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+ibio.prim.write	.gvar
+list.<>	.gvar
+_gsdl.cgs.file.read_i_body_0_res_print_msg_suffix.s	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	string.t
+msg	.apply	list.<>	rune.t	|	err	_gsdl.cgs.file.read_i_body_0_res_print_msg_suffix.s
+	.app	eo	msg
+	.yield	ibio.prim.write	rune.t
+
+_gsdl.cgs.file.read_i_body_0_res_body_c	.expr
+ibio.prim.t	.tygvar	-- Temp
+ibio.prim.iport	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+res.ty	.tylet	ibio.prim.iport	rune.t	-- Temp
+	.undef	ibio.prim.t	res.ty
+
+_gsdl.cgs.file.read_pragmas.pos_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+ibio.prim.iport	.tygvar
+gsdl.pragma.read	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+fn	.fv	ibio.file.name.t
+i	.efv	ibio.prim.iport	rune.t
+	.app	eo	fn	i
+	.enter	gsdl.pragma.read
+
+_gsdl.cgs.file.read_pragmas_c	.expr
+_gsdl.pragma.read_res.ty	.tygvar
+pragmas.pos	.fv	_gsdl.pragma.read_res.ty
+ps	.lfield	pragmas	pragmas.pos
+	.enter	ps
+
+_gsdl.cgs.file.read_pos_c	.expr
+_gsdl.pragma.read_res.ty	.tygvar
+pragmas.pos	.fv	_gsdl.pragma.read_res.ty
+pos	.lfield	pos	pragmas.pos
+	.enter	pos
+
+_gsdl.cgs.file.read_parser_c	.expr
+ibio.file.name.t	.tygvar
+ordered.map.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+gsdl.pragma.t	.tygvar
+_gsdl.cgs.file.read_parser_k	.subcode
+maybe.t.out	.cogvar
+gsdl.pragma.gstype.get	.gvar
+fn	.fv	ibio.file.name.t
+pragmas	.fv	ordered.map.t	string.t	gsdl.pragma.t
+	.force	_gsdl.cgs.file.read_parser_k
+	.coerce	maybe.t.out	string.t
+	.app	fn	pragmas
+	.enter	gsdl.pragma.gstype.get
+
+_gsdl.cgs.file.read_parser_k	.forcecont
+maybe.prim.u	.tygvar
+string.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+_gsdl.cgs.file.read_parser_k1	.subcode
+bool.t.out	.cogvar
+string.≡	.gvar
+_gsdl.cgs.file.read_parser_document.s	.gvar
+parser.fail.msg	.gvar
+_gsdl.cgs.file.read_parser_no.typepragma.msg	.gvar
+mb0	.karg	maybe.prim.u	string.t
+	.analyze	mb0	just	nothing
+		.case	just
+ty		.fkarg	0	string.t
+			.force	_gsdl.cgs.file.read_parser_k1
+			.coerce	bool.t.out
+			.app	ty	_gsdl.cgs.file.read_parser_document.s
+			.enter	string.≡
+		.case	nothing
+			.app	_gsdl.cgs.file.read_parser_no.typepragma.msg
+			.enter	parser.fail.msg	rune.t	gsdl.cgs.file.t
+
+_gsdl.cgs.file.read_parser_k1	.forcecont
+bool.prim.u	.tygvar
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+string.t	.tygvar
+parser.map	.gvar
+gsdl.cgs.file.document	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.ws	.gvar
+gsdl.cgs.document.parser	.gvar
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	parser.t	rune.t	gsdl.cgs.file.t
+		.case	true
+parser			.apply	parser.*>	rune.t	string.t	gsdl.cgs.document.t	|	gsdl.cgs.syntax.ws	gsdl.cgs.document.parser
+			.app	gsdl.cgs.file.document	parser
+			.enter	parser.map	rune.t	gsdl.cgs.document.t	gsdl.cgs.file.t
+
+_gsdl.cgs.file.read_s_c	.expr
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+ibio.lex.receive	.gvar
+ibio.lex.receiver.many	.gvar
+ibio.lex.receiver.symbol	.gvar
+i	.efv	ibio.prim.iport	rune.t
+res.ty	.tylet	list.t	rune.t
+sym	.apply	ibio.lex.receiver.symbol	rune.t
+ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
+	.app	ms	i
+	.enter	ibio.lex.receive	rune.t	res.ty
+
+_gsdl.cgs.file.read_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+parser.pos.t	.tygvar
+parser.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+list.t	.tygvar
+either.t	.tygvar
+parser.err.t	.tygvar
+_gsdl.cgs.file.read_body_k	.subcode
+either.t.out	.cogvar
+parser.parse	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+pos	.fv	parser.pos.t
+parser	.fv	parser.t	rune.t	gsdl.cgs.file.t
+s	.fv	list.t	rune.t
+	.force	_gsdl.cgs.file.read_body_k
+	.coerce	either.t.out	parser.err.t	gsdl.cgs.file.t
+	.app	parser.rune.advance	rune.print	pos	parser	s
+	.enter	parser.parse	rune.t	gsdl.cgs.file.t
+
+_gsdl.cgs.file.read_body_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+either.prim.u	.tygvar
+parser.err.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+ibio.prim.t	.tygvar
+_gsdl.cgs.file.read_body_left_res_c	.subcode
+ibio.prim.unit	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+ef0	.karg	either.prim.u	parser.err.t	gsdl.cgs.file.t
+	.analyze	ef0	left	right
+		.case	left
+err		.fkarg	0	parser.err.t
+res			.closure	_gsdl.cgs.file.read_body_left_res_c
+			.enter	res
+		.case	right
+file		.fkarg	0	gsdl.cgs.file.t
+			.lift
+			.app	file
+			.yield	ibio.prim.unit	gsdl.cgs.file.t
+
+_gsdl.cgs.file.read_body_left_res_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+parser.err.t	.tygvar
+_gsdl.cgs.file.read_body_left_res_print_c	.subcode
+_gsdl.cgs.file.read_body_left_res_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	parser.err.t
+	.bind	.closure	_gsdl.cgs.file.read_body_left_res_print_c
+	.body	.closure	_gsdl.cgs.file.read_body_left_res_body_c
+
+_gsdl.cgs.file.read_body_left_res_print_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+parser.err.t	.tygvar
+ibio.prim.write	.gvar
+string.fmtline	.gvar
+parser.err.fmt	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	parser.err.t
+s1	.apply	parser.err.fmt	|	err
+s2	.apply	string.fmtline	|	s1
+	.app	eo	s2
+	.yield	ibio.prim.write	rune.t
+
+_gsdl.cgs.file.read_body_left_res_body_c	.expr
+ibio.prim.t	.tygvar
+gsdl.cgs.file.t	.tygvar
+	.undef	ibio.prim.t	gsdl.cgs.file.t
+
+-- §section §gs{gsdl.cgs.file.freevars}
+
+_gsdl.cgs.file.freevars_c	.expr
+gsdl.cgs.file.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+_gsdl.cgs.file.freevars_k	.subcode
+gsdl.cgs.file.t.out	.cogvar
+file	.larg	gsdl.cgs.file.t
+	.force	_gsdl.cgs.file.freevars_k
+	.coerce	gsdl.cgs.file.t.out
+	.enter	file
+
+_gsdl.cgs.file.freevars_k	.forcecont
+gsdl.cgs.file.prim.u	.tygvar
+gsdl.cgs.document.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+gsdl.cgs.document.freevars	.gvar
+file.0	.karg	gsdl.cgs.file.prim.u
+	.analyze	file.0	document
+		.case	document
+doc		.fkarg	0	gsdl.cgs.document.t
+			.app	doc
+			.enter	gsdl.cgs.document.freevars
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.file.document.t} Constructors
+
+_gsdl.cgs.file.document_c	.expr
+gsdl.cgs.document.t	.tygvar
+gsdl.cgs.file.prim.u	.tygvar
+gsdl.cgs.file.t.in	.cogvar
+d	.larg	gsdl.cgs.document.t
+c	.constr	gsdl.cgs.file.prim.u	document	0	d
+	.coerce	gsdl.cgs.file.t.in
+	.lift
+	.yield	c
+
+	.type
+
+-- §section §gs{gsdl.cgs.file.t}
+
+gsdl.cgs.file.t	.tyabstract	*
+gsdl.cgs.file.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.file.prim.u
+
+gsdl.cgs.file.prim.u	.tyexpr
+_gsdl.cgs.file.prim.u_document_ty	.tygvar
+	.tysum	document	_gsdl.cgs.file.prim.u_document_ty
+
+_gsdl.cgs.file.prim.u_document_ty	.tyexpr
+gsdl.cgs.document.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.document.t
+
+-- §section §gs{gsdl.cgs.pragma.line}
+
+_gsdl.cgs.pragma.line_cons_res.ty	.tyexpr
+rune.t	.tygvar
+list.t	.tygvar
+	.tylift
+	.tyfun	rune.t
+	.tylift
+	.tyfun	list.t	rune.t
+	.tyref	list.t	rune.t
+
+_gsdl.cgs.pragma.line_cons.hash_res.ty	.tyexpr
+list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	list.t	rune.t
+	.tyref	list.t	rune.t
+
+	.coercion
+
+gsdl.cgs.file.t.in	.tycoercion
+gsdl.cgs.file.t	.tygvar
+	.tydefinition	gsdl.cgs.file.t
+
+gsdl.cgs.file.t.out	.tycoercion
+gsdl.cgs.file.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.file.t
+\end{verbatim}
+
+\section{gscoercion.ags}
+
+\begin{verbatim}
+#calculus: gsdl.string-code 0.6
+
+	.prefix
+
+	.data
+
+gsdl.cgs.gscoercion.parser.app	.closure	_gsdl.cgs.gscoercion.parser.app_c	_gsdl.cgs.gscoercion.parser.app_ty
+_gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.regex	defn
+
+gsdl.cgs.gscoercion.freevars	.closure	_gsdl.cgs.gscoercion.freevars_c	_gsdl.cgs.gscoercion.freevars_ty
+
+gsdl.cgs.gscoercion.gstype.substty	.closure	_gsdl.cgs.gscoercion.gstype.substty_c	_gsdl.cgs.gscoercion.gstype.substty_ty
+
+gsdl.cgs.gscoercion.≡	.closure	_gsdl.cgs.gscoercion.≡_c	_gsdl.cgs.gscoercion.≡_ty
+
+gsdl.cgs.gscoercion.fmtgs	.closure	_gsdl.cgs.gscoercion.fmtgs_c
+
+gsdl.cgs.gscoercion.pos	.closure	_gsdl.cgs.gscoercion.pos_c
+gsdl.cgs.gscoercion.defn	.closure	_gsdl.cgs.gscoercion.defn_c
+gsdl.cgs.gscoercion.appty	.closure	_gsdl.cgs.gscoercion.appty_c
+
+gsdl.cgs.gscoercion.gstype.forall	.closure	_gsdl.cgs.gscoercion.gstype.forall_c
+gsdl.cgs.gscoercion.gstype.iso	.closure	_gsdl.cgs.gscoercion.gstype.iso_c
+
+	.code
+
+-- §section §gs{gsdl.cgs.gscoercion.parser.app}
+
+_gsdl.cgs.gscoercion.parser.app_c	.expr
+_gsdl.cgs.gscoercion.parser.app_defn.p_c	.subcode
+defn.p	.closure	_gsdl.cgs.gscoercion.parser.app_defn.p_c
+	.enter	defn.p
+
+_gsdl.cgs.gscoercion.parser.app_defn.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gscoercion.parser.app_defn.p_f_c	.subcode
+parser.lift3	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.var.parser	.gvar
+gsdl.cgs.syntax.core.keyword	.gvar
+_gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.gvar
+parser.many	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
+parser.fail	.gvar	-- Temp
+list.gstype.ty	.tylet	list.t	gsdl.cgs.gstype.t
+f	.closure	_gsdl.cgs.gscoercion.parser.app_defn.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+defn.p	.apply	gsdl.cgs.syntax.core.keyword	|	_gsdl.cgs.gscoercion.parser.app_defn.p_defn.re
+tyc.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	defn.p	gsdl.cgs.syntax.var.parser
+tyas.p	.apply	parser.many	rune.t	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.parser.arg
+	.app	f	pos.get	tyc.p	tyas.p
+	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	list.gstype.ty	gsdl.cgs.gscoercion.t
+
+_gsdl.cgs.gscoercion.parser.app_defn.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gscoercion.pos	.gvar
+gsdl.sourcepos	.gvar
+list.foldl	.gvar
+gsdl.cgs.gscoercion.appty	.gvar
+gsdl.cgs.gscoercion.defn	.gvar
+maybe.nothing	.gvar
+pos0	.larg	parser.pos.t
+tyc	.larg	gsdl.var.t
+tyas	.larg	list.t	gsdl.cgs.gstype.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+nothing	.apply	maybe.nothing	gsdl.cgs.gskind.t
+co2	.apply	gsdl.cgs.gscoercion.defn	|	tyc	nothing
+co1	.apply	list.foldl	gsdl.cgs.gstype.t	gsdl.cgs.gscoercion.t	|	gsdl.cgs.gscoercion.appty	co2	tyas
+	.app	pos	co1
+	.enter	gsdl.cgs.gscoercion.pos
+
+-- §section §gs{gsdl.cgs.gscoercion.freevars}
+
+_gsdl.cgs.gscoercion.freevars_c	.expr
+gsdl.cgs.gscoercion.t	.tygvar
+_gsdl.cgs.gscoercion.freevars_k	.subcode
+gsdl.cgs.gscoercion.t.out	.cogvar
+co	.larg	gsdl.cgs.gscoercion.t
+	.force	_gsdl.cgs.gscoercion.freevars_k
+	.coerce	gsdl.cgs.gscoercion.t.out
+	.enter	co
+
+_gsdl.cgs.gscoercion.freevars_k	.forcecont
+gsdl.cgs.gscoercion.prim.u	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+ordered.set.union	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.gscoercion.freevars	.gvar
+gsdl.cgs.gstype.freevars	.gvar
+ordered.set.singleton	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
+co0	.karg	gsdl.cgs.gscoercion.prim.u
+	.analyze	co0	appty	defn	pos
+		.case	appty
+cof		.fkarg	0	gsdl.cgs.gscoercion.t
+tya		.fkarg	1	gsdl.cgs.gstype.t
+cof.fvs			.apply	gsdl.cgs.gscoercion.freevars	|	cof
+tya.fvs			.apply	gsdl.cgs.gstype.freevars	|	tya
+			.app	gsdl.cgs.symbol.compare	cof.fvs	tya.fvs
+			.enter	ordered.set.union	gsdl.cgs.symbol.t
+		.case	defn
+v		.fkarg	0	gsdl.var.t
+mbki		.fkarg	1	maybe.t	gsdl.cgs.gskind.t
+sym			.apply	gsdl.cgs.symbol.tyvar	|	v
+			.app	gsdl.cgs.symbol.compare	sym
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+c1		.fkarg	1	gsdl.cgs.gscoercion.t
+			.app	c1
+			.enter	gsdl.cgs.gscoercion.freevars
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.gscoercion.gstype.substty}
+
+_gsdl.cgs.gscoercion.gstype.substty_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+_gsdl.cgs.gscoercion.gstype.substty_k	.subcode
+gsdl.cgs.gscoercion.gstype.t.out	.cogvar
+v	.larg	gsdl.var.t
+ty	.larg	gsdl.cgs.gstype.t
+cty	.larg	gsdl.cgs.gscoercion.gstype.t
+	.force	_gsdl.cgs.gscoercion.gstype.substty_k
+	.coerce	gsdl.cgs.gscoercion.gstype.t.out
+	.enter	cty
+
+_gsdl.cgs.gscoercion.gstype.substty_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+_gsdl.cgs.gscoercion.gstype.substty_forall_k	.subcode
+bool.t.out	.cogvar
+gsdl.var.≡	.gvar
+gsdl.cgs.gscoercion.gstype.iso	.gvar
+gsdl.cgs.gstype.substty	.gvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+cty0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
+	.analyze	cty0	forall	iso
+		.case	forall
+v1		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
+cty1		.fkarg	2	gsdl.cgs.gscoercion.gstype.t
+			.force	_gsdl.cgs.gscoercion.gstype.substty_forall_k
+			.coerce	bool.t.out
+			.app	v	v1
+			.enter	gsdl.var.≡
+		.case	iso
+ty0		.fkarg	0	gsdl.cgs.gstype.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+y.ty0			.apply	gsdl.cgs.gstype.substty	|	v	ty	ty0
+y.ty1			.apply	gsdl.cgs.gstype.substty	|	v	ty	ty1
+			.app	y.ty0	y.ty1
+			.enter	gsdl.cgs.gscoercion.gstype.iso
+	-- > :: gsdl.cgs.gscoercion.gstype.t
+
+_gsdl.cgs.gscoercion.gstype.substty_forall_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+bool.prim.u	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+_gsdl.cgs.gscoercion.gstype.substty_forall_false_k	.subcode
+bool.t.out	.cogvar
+ordered.set.elem	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
+gsdl.cgs.gstype.freevars	.gvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+v1	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+cty1	.fv	gsdl.cgs.gscoercion.gstype.t
+b0	.karg	bool.prim.u	-- §gs{v ≡ v1}
+	.analyze	b0	false	true
+		.case	false
+v1.sym			.apply	gsdl.cgs.symbol.tyvar	|	v1
+ty.fvs			.apply	gsdl.cgs.gstype.freevars	|	ty
+			.force	_gsdl.cgs.gscoercion.gstype.substty_forall_false_k
+			.coerce	bool.t.out
+			.app	gsdl.cgs.symbol.compare	v1.sym	ty.fvs
+			.enter	ordered.set.elem	gsdl.cgs.symbol.t
+		.case	true
+			.undef	gsdl.cgs.gscoercion.gstype.t
+
+_gsdl.cgs.gscoercion.gstype.substty_forall_false_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+bool.prim.u	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar	-- Temp
+gsdl.cgs.gscoercion.gstype.forall	.gvar
+gsdl.cgs.gscoercion.gstype.substty	.gvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+v1	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+cty1	.fv	gsdl.cgs.gscoercion.gstype.t
+b0	.karg	bool.prim.u	-- §gs{v1 ∈ fvs(ty)}
+	.analyze	b0	false	true
+		.case	false
+y.cty1			.apply	gsdl.cgs.gscoercion.gstype.substty	|	v	ty	cty1
+			.app	v1	ki	y.cty1
+			.enter	gsdl.cgs.gscoercion.gstype.forall
+		.case	true
+			.undef	gsdl.cgs.gscoercion.gstype.t
+
+-- §section §gs{gsdl.cgs.gscoercion.≡}
+
+_gsdl.cgs.gscoercion.≡_c	.expr
+gsdl.cgs.gscoercion.t	.tygvar
+_gsdl.cgs.gscoercion.≡_k0	.subcode
+gsdl.cgs.gscoercion.t.out	.cogvar
+co0	.larg	gsdl.cgs.gscoercion.t
+co1	.larg	gsdl.cgs.gscoercion.t
+	.force	_gsdl.cgs.gscoercion.≡_k0
+	.coerce	gsdl.cgs.gscoercion.t.out
+	.enter	co0
+
+_gsdl.cgs.gscoercion.≡_k0	.forcecont
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gscoercion.prim.u	.tygvar
+_gsdl.cgs.gscoercion.≡_k1	.subcode
+gsdl.cgs.gscoercion.t.out	.cogvar
+co1	.fv	gsdl.cgs.gscoercion.t
+co0.0	.karg	gsdl.cgs.gscoercion.prim.u
+	.force	_gsdl.cgs.gscoercion.≡_k1
+	.coerce	gsdl.cgs.gscoercion.t.out
+	.enter	co1
+
+_gsdl.cgs.gscoercion.≡_k1	.forcecont
+gsdl.cgs.gscoercion.prim.u	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+bool.t	.tygvar	-- Temp
+bool.false	.gvar
+gsdl.var.≡	.gvar
+gsdl.cgs.gscoercion.≡	.gvar
+co0.0	.fv	gsdl.cgs.gscoercion.prim.u
+co1.0	.karg	gsdl.cgs.gscoercion.prim.u
+	.analyze	co0.0	appty	defn	pos
+		.case	appty
+cof0		.fkarg	0	gsdl.cgs.gscoercion.t
+tya0		.fkarg	1	gsdl.cgs.gstype.t
+			.danalyze	co1.0	appty
+				.default
+					.enter	bool.false
+				.case	appty
+cof1				.fkarg	0	gsdl.cgs.gscoercion.t
+tya1				.fkarg	1	gsdl.cgs.gstype.t
+					.undef	bool.t
+		.case	defn
+tyc0		.fkarg	0	gsdl.var.t
+mbki0		.fkarg	1	maybe.t	gsdl.cgs.gskind.t
+			.danalyze	co1.0	defn
+				.default
+					.undef	bool.t
+				.case	defn
+tyc1				.fkarg	0	gsdl.var.t
+mbk1				.fkarg	1	maybe.t	gsdl.cgs.gskind.t
+					.app	tyc0	tyc1
+					.enter	gsdl.var.≡
+		.case	pos
+pos0		.fkarg	0	gsdl.sourcepos.t
+co0.1		.fkarg	1	gsdl.cgs.gscoercion.t
+			.danalyze	co1.0	pos
+				.default
+					.undef	bool.t
+				.case	pos
+pos1				.fkarg	0	gsdl.sourcepos.t
+co1.1				.fkarg	1	gsdl.cgs.gscoercion.t
+					.app	co0.1	co1.1
+					.enter	gsdl.cgs.gscoercion.≡
+	-- > :: bool.t
+
+-- §section §gs{gsdl.cgs.gscoercion.fmtgs}
+
+_gsdl.cgs.gscoercion.fmtgs_c	.expr
+gsdl.cgs.gscoercion.t	.tygvar
+fmtgs.printer.t	.tygvar	-- Temp
+co	.larg	gsdl.cgs.gscoercion.t
+	.undef	fmtgs.printer.t
+
+-- §section §gs{gsdl.cgs.gscoercion.t} constructors
+
+_gsdl.cgs.gscoercion.pos_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gscoercion.prim.u	.tygvar
+gsdl.cgs.gscoercion.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+co	.larg	gsdl.cgs.gscoercion.t
+res	.constr	gsdl.cgs.gscoercion.prim.u	pos	0	pos	1	co
+	.coerce	gsdl.cgs.gscoercion.t.in
+	.lift
+	.yield	res
+
+_gsdl.cgs.gscoercion.defn_c	.expr
+gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gscoercion.prim.u	.tygvar
+gsdl.cgs.gscoercion.t.in	.cogvar
+tyc	.larg	gsdl.var.t
+mbki	.larg	maybe.t	gsdl.cgs.gskind.t
+res	.constr	gsdl.cgs.gscoercion.prim.u	defn	0	tyc	1	mbki
+	.coerce	gsdl.cgs.gscoercion.t.in
+	.lift
+	.yield	res
+
+_gsdl.cgs.gscoercion.appty_c	.expr
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.prim.u	.tygvar
+gsdl.cgs.gscoercion.t.in	.cogvar
+cof	.larg	gsdl.cgs.gscoercion.t
+tya	.larg	gsdl.cgs.gstype.t
+res	.constr	gsdl.cgs.gscoercion.prim.u	appty	0	cof	1	tya
+	.coerce	gsdl.cgs.gscoercion.t.in
+	.lift
+	.yield	res
+
+-- §section §gs{gsdl.cgs.gscoercion.gstype.t} Constructors
+
+_gsdl.cgs.gscoercion.gstype.forall_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
+gsdl.cgs.gscoercion.gstype.t.in	.cogvar
+v	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+ty	.larg	gsdl.cgs.gscoercion.gstype.t
+res	.constr	gsdl.cgs.gscoercion.gstype.prim.u	forall	0	v	1	ki	2	ty
+	.coerce	gsdl.cgs.gscoercion.gstype.t.in
+	.lift
+	.yield	res
+
+_gsdl.cgs.gscoercion.gstype.iso_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
+gsdl.cgs.gscoercion.gstype.t.in	.cogvar
+ty0	.larg	gsdl.cgs.gstype.t
+ty1	.larg	gsdl.cgs.gstype.t
+res	.constr	gsdl.cgs.gscoercion.gstype.prim.u	iso	0	ty0	1	ty1
+	.coerce	gsdl.cgs.gscoercion.gstype.t.in
+	.lift
+	.yield	res
+
+	.type
+
+-- §section §gs{gsdl.cgs.gscoercion.t}
+
+gsdl.cgs.gscoercion.t	.tyabstract	*
+gsdl.cgs.gscoercion.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gscoercion.prim.u
+
+gsdl.cgs.gscoercion.prim.u	.tyexpr
+_gsdl.cgs.gscoercion.prim.u_appty_ty	.tygvar
+_gsdl.cgs.gscoercion.prim.u_defn_ty	.tygvar
+_gsdl.cgs.gscoercion.prim.u_pos_ty	.tygvar
+	.tysum	appty	_gsdl.cgs.gscoercion.prim.u_appty_ty	defn	_gsdl.cgs.gscoercion.prim.u_defn_ty	pos	_gsdl.cgs.gscoercion.prim.u_pos_ty
+
+_gsdl.cgs.gscoercion.prim.u_appty_ty	.tyexpr
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gscoercion.t	1	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gscoercion.prim.u_defn_ty	.tyexpr
+gsdl.var.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+maybe.gskind.ty	.tylet	maybe.t	gsdl.cgs.gskind.t
+	.tyubproduct	0	gsdl.var.t	1	maybe.gskind.ty
+
+_gsdl.cgs.gscoercion.prim.u_pos_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gscoercion.t
+
+-- §section §gs{gsdl.cgs.gscoercion.gstype.t}
+
+gsdl.cgs.gscoercion.gstype.t	.tyabstract	*
+gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gscoercion.gstype.prim.u
+
+gsdl.cgs.gscoercion.gstype.prim.u	.tyexpr
+_gsdl.cgs.gscoercion.gstype.prim.u_forall_ty	.tygvar
+_gsdl.cgs.gscoercion.gstype.prim.u_iso_ty	.tygvar
+	.tysum	forall	_gsdl.cgs.gscoercion.gstype.prim.u_forall_ty	iso	_gsdl.cgs.gscoercion.gstype.prim.u_iso_ty
+
+_gsdl.cgs.gscoercion.gstype.prim.u_forall_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.var.t	1	gsdl.cgs.gskind.t	2	gsdl.cgs.gscoercion.gstype.t
+
+_gsdl.cgs.gscoercion.gstype.prim.u_iso_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gstype.t	1	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gscoercion.parser.app}
+
+_gsdl.cgs.gscoercion.parser.app_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gscoercion.t
+
+-- §section §gs{gsdl.cgs.gscoercion.freevars}
+
+_gsdl.cgs.gscoercion.freevars_ty	.tyexpr
+gsdl.cgs.gscoercion.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gscoercion.t
+	.tyref	ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.gscoercion.gstype.substty}
+
+_gsdl.cgs.gscoercion.gstype.substty_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.gscoercion.gstype.t
+	.tyref	gsdl.cgs.gscoercion.gstype.t
+
+-- §section §gs{gsdl.cgs.gscoercion.≡}
+
+_gsdl.cgs.gscoercion.≡_ty	.tyexpr
+gsdl.cgs.gscoercion.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gscoercion.t
+	.tylift
+	.tyfun	gsdl.cgs.gscoercion.t
+	.tyref	bool.t
+
+	.coercion
+
+gsdl.cgs.gscoercion.t.in	.tycoercion
+gsdl.cgs.gscoercion.t	.tygvar
+	.tydefinition	gsdl.cgs.gscoercion.t
+
+gsdl.cgs.gscoercion.t.out	.tycoercion
+gsdl.cgs.gscoercion.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gscoercion.t
+
+gsdl.cgs.gscoercion.gstype.t.in	.tycoercion
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+	.tydefinition	gsdl.cgs.gscoercion.gstype.t
+
+gsdl.cgs.gscoercion.gstype.t.out	.tycoercion
+gsdl.cgs.gscoercion.gstype.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gscoercion.gstype.t
+\end{verbatim}
+
+\section{gsexpr.ags}
+
+\begin{verbatim}
+#calculus: gsdl.string-code 0.6
+
+	.prefix
+
+	.data
+
+gsdl.cgs.gsexpr.parser	.closure	_gsdl.cgs.gsexpr.parser_c	_gsdl.cgs.gsexpr.parser_ty
+
+gsdl.cgs.gsexpr.parser.cast	.closure	_gsdl.cgs.gsexpr.parser.cast_c	_gsdl.cgs.gsexpr.parser.cast_ty
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re	.regex	⊲
+
+gsdl.cgs.gsexpr.parser.app.or.lambda	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_c	_gsdl.cgs.gsexpr.parser.app.or.lambda_ty
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_gsλ.re	.regex	λ
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_gsfor.re	.regex	for
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_at.re	.regex	@
+
+gsdl.cgs.gsexpr.parser.arg	.closure	_gsdl.cgs.gsexpr.parser.arg_c	_gsdl.cgs.gsexpr.parser.arg_ty
+_gsdl.cgs.gsexpr.parser.arg_lift.p_lbrack.re	.regex	⌊
+_gsdl.cgs.gsexpr.parser.arg_lift.p_rbrack.re	.regex	⌋
+
+gsdl.cgs.gsexpr.freevars	.closure	_gsdl.cgs.gsexpr.freevars_c	_gsdl.cgs.gsexpr.freevars_ty
+
+gsdl.cgs.gsexpr.≡	.closure	_gsdl.cgs.gsexpr.≡_c	_gsdl.cgs.gsexpr.≡_ty
+
+gsdl.cgs.gsexpr.fmtgs	.closure	_gsdl.cgs.gsexpr.fmtgs_c
+
+gsdl.cgs.gsexpr.generator.imp.parser	.closure	_gsdl.cgs.gsexpr.generator.imp.parser_c
+
+gsdl.cgs.gsexpr.generator.freevars	.closure	_gsdl.cgs.gsexpr.generator.freevars_c
+
+gsdl.cgs.gsexpr.generator.undef	.closure	_gsdl.cgs.gsexpr.generator.undef_c
+
+gsdl.cgs.gsexpr.body.parser	.closure	_gsdl.cgs.gsexpr.body.parser_c	_gsdl.cgs.gsexpr.body.parser_ty
+
+gsdl.cgs.gsexpr.body.freevars	.closure	_gsdl.cgs.gsexpr.body.freevars_c	_gsdl.cgs.gsexpr.body.freevars_ty
+
+gsdl.cgs.gsexpr.pos	.closure	_gsdl.cgs.gsexpr.pos_c
+gsdl.cgs.gsexpr.expr.heavy.cast	.closure	_gsdl.cgs.gsexpr.expr.heavy.cast_c
+gsdl.cgs.gsexpr.impfor	.closure	_gsdl.cgs.gsexpr.impfor_c
+gsdl.cgs.gsexpr.lambda	.closure	_gsdl.cgs.gsexpr.lambda_c
+gsdl.cgs.gsexpr.lift	.closure	_gsdl.cgs.gsexpr.lift_c
+
+gsdl.cgs.gsexpr.cast.source.missing	.closure	_gsdl.cgs.gsexpr.cast.source.missing_c
+gsdl.cgs.gsexpr.cast.source.typesig	.closure	_gsdl.cgs.gsexpr.cast.source.typesig_c
+gsdl.cgs.gsexpr.cast.source.expr	.closure	_gsdl.cgs.gsexpr.cast.source.expr_c
+
+gsdl.cgs.gsexpr.body.expr	.closure	_gsdl.cgs.gsexpr.body.expr_c
+gsdl.cgs.gsexpr.body.missing	.closure	_gsdl.cgs.gsexpr.body.missing_c
+
+	.code
+
+-- §section §gs{gsdl.cgs.gsexpr.parser}
+
+_gsdl.cgs.gsexpr.parser_c	.expr
+gsdl.cgs.gsexpr.parser.cast	.gvar
+gsdl.cgs.syntax.branch.r	.gvar
+gsdl.cgs.syntax.assoc.any	.gvar
+	.app	gsdl.cgs.syntax.branch.r	gsdl.cgs.syntax.assoc.any
+	.enter	gsdl.cgs.gsexpr.parser.cast
+
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.cast}
+
+_gsdl.cgs.gsexpr.parser.cast_c	.expr
+gsdl.cgs.syntax.branch.t	.tygvar
+gsdl.cgs.syntax.assoc.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c	.subcode
+_gsdl.cgs.gsexpr.parser.cast_right.assoc_c	.subcode
+parser.<|>	.gvar
+gsdl.cgs.gsexpr.parser.app.or.lambda	.gvar
+t	.larg	gsdl.cgs.syntax.branch.t
+a	.larg	gsdl.cgs.syntax.assoc.t
+expr.heavy.cast	.closure	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c
+right.assoc	.closure	_gsdl.cgs.gsexpr.parser.cast_right.assoc_c
+app.or.lambda	.apply	gsdl.cgs.gsexpr.parser.app.or.lambda	|	t
+	.app	right.assoc	app.or.lambda
+	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.cast_right.assoc_c	.expr
+gsdl.cgs.syntax.assoc.t	.tygvar
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.parser.cast_right.assoc_k	.subcode
+gsdl.cgs.syntax.assoc.t.out	.cogvar
+a	.fv	gsdl.cgs.syntax.assoc.t
+expr.heavy.cast	.fv	parser.t	rune.t	gsdl.cgs.gsexpr.t
+	.force	_gsdl.cgs.gsexpr.parser.cast_right.assoc_k
+	.coerce	gsdl.cgs.syntax.assoc.t.out
+	.enter	a
+
+_gsdl.cgs.gsexpr.parser.cast_right.assoc_k	.forcecont
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.syntax.assoc.prim.u	.tygvar
+parser.fail	.gvar
+expr.heavy.cast	.fv	parser.t	rune.t	gsdl.cgs.gsexpr.t
+a0	.karg	gsdl.cgs.syntax.assoc.prim.u
+	.danalyze	a0	left
+		.default
+			.enter	expr.heavy.cast
+		.case	left
+			.enter	parser.fail	rune.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_c	.expr
+gsdl.cgs.syntax.branch.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+parser.pos.t	.tygvar
+string.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_f_c	.subcode
+parser.lift3	.gvar
+gsdl.cgs.gscoercion.parser.app	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.core.keywordOp	.gvar
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re	.gvar
+parser.<|>	.gvar
+parser.map	.gvar
+gsdl.cgs.gsexpr.cast.source.missing	.gvar
+parser.lift2	.gvar
+gsdl.sourcepos	.gvar
+parser.pos.get	.gvar
+gsdl.cgs.gsexpr.cast.source.expr	.gvar
+gsdl.cgs.gsexpr.parser.cast	.gvar
+gsdl.cgs.syntax.assoc.right	.gvar
+parser.fail	.gvar	-- Temp
+t	.fv	gsdl.cgs.syntax.branch.t
+f	.closure	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_f_c
+ld.p	.apply	gsdl.cgs.syntax.core.keywordOp	|	_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re
+pos.get	.apply	parser.pos.get	rune.t
+expr.left.p1	.apply	parser.lift2	rune.t	parser.pos.t	parser.pos.t	gsdl.sourcepos.t	|	gsdl.sourcepos	pos.get	pos.get
+expr.left.p	.apply	parser.map	rune.t	gsdl.sourcepos.t	gsdl.cgs.gsexpr.cast.source.t	|	gsdl.cgs.gsexpr.cast.source.missing	expr.left.p1
+expr.right.p1	.apply	gsdl.cgs.gsexpr.parser.cast	|	t	gsdl.cgs.syntax.assoc.right
+expr.right.p	.apply	parser.map	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gsexpr.cast.source.t	|	gsdl.cgs.gsexpr.cast.source.expr	expr.right.p1
+expr.p1	.apply	parser.<|>	rune.t	gsdl.cgs.gsexpr.cast.source.t	|	expr.left.p	expr.right.p
+expr.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.cast.source.t	|	ld.p	expr.p1
+	.app	f	pos.get	gsdl.cgs.gscoercion.parser.app	expr.p
+	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.cgs.gscoercion.t	gsdl.cgs.gsexpr.cast.source.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.cgs.gsexpr.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gsexpr.expr.heavy.cast	.gvar
+pos0	.larg	parser.pos.t
+co	.larg	gsdl.cgs.gscoercion.t
+so	.larg	gsdl.cgs.gsexpr.cast.source.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	so
+	.app	pos	e1
+	.enter	gsdl.cgs.gsexpr.pos
+
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.app.or.lambda}
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_c	.expr
+gsdl.cgs.syntax.branch.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c	.subcode
+gsdl.cgs.gsexpr.parser.arg	.gvar
+parser.<|>	.gvar
+t	.larg	gsdl.cgs.syntax.branch.t
+mb.lambda	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c
+	.app	gsdl.cgs.gsexpr.parser.arg	mb.lambda
+	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c	.expr
+gsdl.cgs.syntax.branch.t	.tygvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_k	.subcode
+gsdl.cgs.syntax.branch.t.out	.cogvar
+t	.fv	gsdl.cgs.syntax.branch.t
+	.force	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_k
+	.coerce	gsdl.cgs.syntax.branch.t.out
+	.enter	t
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_k	.forcecont
+gsdl.cgs.syntax.branch.prim.u	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_c	.subcode
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_c	.subcode
+parser.fail	.gvar
+parser.<|>	.gvar
+t0	.karg	gsdl.cgs.syntax.branch.prim.u
+	.analyze	t0	l	r
+		.case	l
+			.enter	parser.fail	rune.t	gsdl.cgs.gsexpr.t
+		.case	r
+impfor			.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_c
+lambda			.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_c
+			.app	impfor	lambda
+			.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_f_c	.subcode
+parser.lift4	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.keyword	.gvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_gsfor.re	.gvar
+gsdl.cgs.syntax.keywordOp	.gvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_at.re	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
+parser.many	.gvar
+gsdl.cgs.gsexpr.generator.imp.parser	.gvar
+gsdl.cgs.syntax.dot	.gvar
+gsdl.cgs.gsexpr.body.parser	.gvar
+parser.fail	.gvar	-- Temp
+list.gen.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
+f	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_f_c
+pos.get	.apply	parser.pos.get	rune.t
+gsfor.p	.apply	gsdl.cgs.syntax.keyword	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_gsfor.re
+at.p	.apply	gsdl.cgs.syntax.keywordOp	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_at.re	-- > keywordOp m/@/
+ty.p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	at.p	gsdl.cgs.gstype.parser.arg
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsfor.p	ty.p1
+gens.p	.apply	parser.many	rune.t	gsdl.cgs.gsexpr.generator.t	|	gsdl.cgs.gsexpr.generator.imp.parser
+body.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.body.t	|	gsdl.cgs.syntax.dot	gsdl.cgs.gsexpr.body.parser
+	.app	f	pos.get	ty.p	gens.p	body.p
+	.enter	parser.lift4	rune.t	parser.pos.t	gsdl.cgs.gstype.t	list.gen.ty	gsdl.cgs.gsexpr.body.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gsexpr.impfor	.gvar
+pos0	.larg	parser.pos.t
+m	.larg	gsdl.cgs.gstype.t
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+b	.larg	gsdl.cgs.gsexpr.body.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e1	.apply	gsdl.cgs.gsexpr.impfor	|	m	gs	b
+	.app	pos	e1
+	.enter	gsdl.cgs.gsexpr.pos
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_f_c	.subcode
+parser.lift4	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.keyword	.gvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_gsλ.re	.gvar
+gsdl.cgs.syntax.var.parser	.gvar
+gsdl.cgs.syntax.oftype	.gvar
+gsdl.cgs.gstype.parser.fun	.gvar
+gsdl.cgs.syntax.dot	.gvar
+gsdl.cgs.gsexpr.body.parser	.gvar
+parser.fail	.gvar	-- Temp
+f	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_f_c
+pos.get	.apply	parser.pos.get	rune.t
+gsλ.p	.apply	gsdl.cgs.syntax.keyword	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_gsλ.re
+v.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsλ.p	gsdl.cgs.syntax.var.parser
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
+b.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.body.t	|	gsdl.cgs.syntax.dot	gsdl.cgs.gsexpr.body.parser
+	.app	f	pos.get	v.p	ty.p	b.p
+	.enter	parser.lift4	rune.t	parser.pos.t	gsdl.var.t	gsdl.cgs.gstype.t	gsdl.cgs.gsexpr.body.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.gsexpr.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gsexpr.lambda	.gvar
+pos0	.larg	parser.pos.t
+v	.larg	gsdl.var.t
+ty	.larg	gsdl.cgs.gstype.t
+b	.larg	gsdl.cgs.gsexpr.body.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e	.apply	gsdl.cgs.gsexpr.lambda	|	v	ty	b
+	.app	pos	e
+	.enter	gsdl.cgs.gsexpr.pos
+
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.arg}
+
+_gsdl.cgs.gsexpr.parser.arg_c	.expr
+_gsdl.cgs.gsexpr.parser.arg_lift.p_c	.subcode
+lift.p	.closure	_gsdl.cgs.gsexpr.parser.arg_lift.p_c
+	.enter	lift.p
+
+_gsdl.cgs.gsexpr.parser.arg_lift.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gsexpr.parser.arg_lift.p_f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.lexeme	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.gsexpr.parser.arg_lift.p_lbrack.re	.gvar
+parser.<*	.gvar
+gsdl.cgs.gsexpr.parser	.gvar
+_gsdl.cgs.gsexpr.parser.arg_lift.p_rbrack.re	.gvar
+parser.fail	.gvar	-- Temp
+f	.closure	_gsdl.cgs.gsexpr.parser.arg_lift.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+lf.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gsexpr.parser.arg_lift.p_lbrack.re
+lf.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	lf.p1
+rf.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gsexpr.parser.arg_lift.p_rbrack.re
+rf.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	rf.p1	-- > lexeme m/⌋/
+arg.p1	.apply	parser.<*	rune.t	gsdl.cgs.gsexpr.t	string.t	|	gsdl.cgs.gsexpr.parser	rf.p
+arg.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.t	|	lf.p	arg.p1
+	.app	f	pos.get	arg.p
+	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.arg_lift.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gsexpr.lift	.gvar
+pos0	.larg	parser.pos.t
+e	.larg	gsdl.cgs.gsexpr.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e1	.apply	gsdl.cgs.gsexpr.lift	|	e
+	.app	pos	e1
+	.enter	gsdl.cgs.gsexpr.pos
+
+-- §section §gs{gsdl.cgs.gsexpr.freevars}
+
+_gsdl.cgs.gsexpr.freevars_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.freevars_k	.subcode
+gsdl.cgs.gsexpr.t.out	.cogvar
+e	.larg	gsdl.cgs.gsexpr.t
+	.force	_gsdl.cgs.gsexpr.freevars_k
+	.coerce	gsdl.cgs.gsexpr.t.out
+	.enter	e
+
+_gsdl.cgs.gsexpr.freevars_k	.forcecont
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+either.t	.tygvar	-- Temp
+_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.subcode
+ordered.set.union	.gvar
+gsdl.cgs.symbol.compare	.gvar
+ordered.set.empty	.gvar
+gsdl.cgs.gscoercion.freevars	.gvar
+gsdl.cgs.gstype.freevars	.gvar
+list.foldl	.gvar
+list.map	.gvar
+gsdl.cgs.gsexpr.generator.freevars	.gvar
+gsdl.cgs.gsexpr.body.freevars	.gvar
+ordered.set.difference	.gvar
+ordered.set.singleton	.gvar
+gsdl.cgs.symbol.var	.gvar
+gsdl.cgs.gsexpr.freevars	.gvar
+set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+e0	.karg	gsdl.cgs.gsexpr.prim.u
+union.symbol	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
+empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
+	.analyze	e0	expr.heavy.cast	impfor	lambda	lift	pos
+		.case	expr.heavy.cast
+co		.fkarg	0	gsdl.cgs.gscoercion.t
+so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
+co.fvs			.apply	gsdl.cgs.gscoercion.freevars	|	co
+so.fvs			.closure	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c
+			.app	gsdl.cgs.symbol.compare	co.fvs	so.fvs
+			.enter	ordered.set.union	gsdl.cgs.symbol.t
+		.case	impfor
+m		.fkarg	0	gsdl.cgs.gstype.t
+gs		.fkarg	1	list.t	gsdl.cgs.gsexpr.generator.t
+b		.fkarg	2	gsdl.cgs.gsexpr.body.t
+m.fvs			.apply	gsdl.cgs.gstype.freevars	|	m
+gs.fvss			.apply	list.map	gsdl.cgs.gsexpr.generator.t	set.symbol.ty	|	gsdl.cgs.gsexpr.generator.freevars	gs
+gs.fvs			.apply	list.foldl	set.symbol.ty	set.symbol.ty	|	union.symbol	empty.symbol	gs.fvss
+b.fvs			.apply	gsdl.cgs.gsexpr.body.freevars	|	b
+fvs1			.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	gs.fvs	b.fvs
+			.app	gsdl.cgs.symbol.compare	m.fvs	fvs1
+			.enter	ordered.set.union	gsdl.cgs.symbol.t
+		.case	lambda
+v		.fkarg	0	gsdl.var.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+b		.fkarg	2	gsdl.cgs.gsexpr.body.t
+ty.fvs			.apply	gsdl.cgs.gstype.freevars	|	ty
+b.fvs			.apply	gsdl.cgs.gsexpr.body.freevars	|	b
+v.sym			.apply	gsdl.cgs.symbol.var	|	v
+v.bvs			.apply	ordered.set.singleton	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	v.sym
+e.fvs			.apply	ordered.set.difference	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	b.fvs	v.bvs
+			.app	gsdl.cgs.symbol.compare	ty.fvs	e.fvs
+			.enter	ordered.set.union	gsdl.cgs.symbol.t
+		.case	lift
+e1		.fkarg	0	gsdl.cgs.gsexpr.t
+			.app	e1
+			.enter	gsdl.cgs.gsexpr.freevars
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+e1		.fkarg	1	gsdl.cgs.gsexpr.t
+			.app	e1
+			.enter	gsdl.cgs.gsexpr.freevars
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
+
+_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.expr
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_k	.subcode
+gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
+so	.fv	gsdl.cgs.gsexpr.cast.source.t
+	.force	_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_k
+	.coerce	gsdl.cgs.gsexpr.cast.source.t.out
+	.enter	so
+
+_gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_k	.forcecont
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.freevars	.gvar
+ordered.set.empty	.gvar
+so0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
+	.analyze	so0	expr	missing	typesig
+		.case	expr
+e		.fkarg	0	gsdl.cgs.gsexpr.t
+			.app	e
+			.enter	gsdl.cgs.gsexpr.freevars
+		.case	missing
+pos		.fkarg	0	gsdl.sourcepos.t
+			.enter	ordered.set.empty	gsdl.cgs.symbol.t
+		.case	typesig
+pos		.fkarg	0	gsdl.sourcepos.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.gsexpr.≡}
+
+_gsdl.cgs.gsexpr.≡_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.≡_k0	.subcode
+gsdl.cgs.gsexpr.t.out	.cogvar
+e0	.larg	gsdl.cgs.gsexpr.t
+e1	.larg	gsdl.cgs.gsexpr.t
+	.force	_gsdl.cgs.gsexpr.≡_k0
+	.coerce	gsdl.cgs.gsexpr.t.out
+	.enter	e0
+
+_gsdl.cgs.gsexpr.≡_k0	.forcecont
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.prim.u	.tygvar
+_gsdl.cgs.gsexpr.≡_k1	.subcode
+gsdl.cgs.gsexpr.t.out	.cogvar
+e1	.fv	gsdl.cgs.gsexpr.t
+e0.0	.karg	gsdl.cgs.gsexpr.prim.u
+	.force	_gsdl.cgs.gsexpr.≡_k1
+	.coerce	gsdl.cgs.gsexpr.t.out
+	.enter	e1
+
+_gsdl.cgs.gsexpr.≡_k1	.forcecont
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+bool.t	.tygvar	-- Temp
+_gsdl.cgs.gsexpr.≡_expr.heavy.cast_k	.subcode
+bool.t.out	.cogvar
+gsdl.cgs.gscoercion.≡	.gvar
+gsdl.cgs.gsexpr.≡	.gvar
+e0.0	.fv	gsdl.cgs.gsexpr.prim.u
+e1.0	.karg	gsdl.cgs.gsexpr.prim.u
+	.analyze	e0.0	expr.heavy.cast	impfor	lambda	lift	pos
+		.case	expr.heavy.cast
+co0		.fkarg	0	gsdl.cgs.gscoercion.t
+so0		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
+			.danalyze	e1.0	expr.heavy.cast
+				.default
+					.undef	bool.t
+				.case	expr.heavy.cast
+co1				.fkarg	0	gsdl.cgs.gscoercion.t
+so1				.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
+					.force	_gsdl.cgs.gsexpr.≡_expr.heavy.cast_k
+					.coerce	bool.t.out
+					.app	co0	co1
+					.enter	gsdl.cgs.gscoercion.≡
+		.case	impfor
+m		.fkarg	0	gsdl.cgs.gstype.t
+gs		.fkarg	1	list.t	gsdl.cgs.gsexpr.generator.t
+b		.fkarg	2	gsdl.cgs.gsexpr.body.t
+			.undef	bool.t
+		.case	lambda
+v0		.fkarg	0	gsdl.var.t
+ty0		.fkarg	1	gsdl.cgs.gstype.t
+b0		.fkarg	2	gsdl.cgs.gsexpr.body.t
+			.undef	bool.t
+		.case	lift
+e0.1		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	bool.t
+		.case	pos
+pos0		.fkarg	0	gsdl.sourcepos.t
+e0.1		.fkarg	1	gsdl.cgs.gsexpr.t
+			.danalyze	e1.0	pos
+				.default
+					.undef	bool.t
+				.case	pos
+pos1				.fkarg	0	gsdl.sourcepos.t
+e1.1				.fkarg	1	gsdl.cgs.gsexpr.t
+					.app	e0.1	e1.1
+					.enter	gsdl.cgs.gsexpr.≡
+	-- > :: bool.t
+
+_gsdl.cgs.gsexpr.≡_expr.heavy.cast_k	.forcecont
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+bool.prim.u	.tygvar
+bool.t	.tygvar	-- Temp
+_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0	.subcode
+gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
+bool.false	.gvar
+so0	.fv	gsdl.cgs.gsexpr.cast.source.t
+so1	.fv	gsdl.cgs.gsexpr.cast.source.t
+b0	.karg	bool.prim.u	-- Are coercions equal?
+	.analyze	b0	false	true
+		.case	false
+			.enter	bool.false
+		.case	true
+			.force	_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0
+			.coerce	gsdl.cgs.gsexpr.cast.source.t.out
+			.enter	so0
+
+_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k0	.forcecont
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+bool.t	.tygvar	-- Temp
+_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k1	.subcode
+gsdl.cgs.gsexpr.cast.source.t.out	.cogvar
+so1	.fv	gsdl.cgs.gsexpr.cast.source.t
+so0.0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
+	.force	_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k1
+	.coerce	gsdl.cgs.gsexpr.cast.source.t.out
+	.enter	so1
+
+_gsdl.cgs.gsexpr.≡_expr.heavy.cast_true_k1	.forcecont
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+bool.t	.tygvar	-- Temp
+bool.true	.gvar
+so0.0	.fv	gsdl.cgs.gsexpr.cast.source.prim.u
+so1.0	.karg	gsdl.cgs.gsexpr.cast.source.prim.u
+	.analyze	so0.0	expr	missing	typesig
+		.case	expr
+e0		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	bool.t
+		.case	missing
+pos0		.fkarg	0	gsdl.sourcepos.t
+			.danalyze	so1.0	missing
+				.default
+					.undef	bool.t
+				.case	missing
+pos1				.fkarg	0	gsdl.sourcepos.t
+					.enter	bool.true
+		.case	typesig
+pos0		.fkarg	0	gsdl.sourcepos.t
+ty0		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	bool.t
+		-- > :: bool.t
+
+-- §section §gs{gsdl.cgs.gsexpr.fmtgs}
+
+_gsdl.cgs.gsexpr.fmtgs_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+fmtgs.printer.t	.tygvar	-- Temp
+e	.larg	gsdl.cgs.gsexpr.t
+	.undef	fmtgs.printer.t
+
+-- §section §gs{gsdl.cgs.gsexpr.generator.imp.parser}
+
+_gsdl.cgs.gsexpr.generator.imp.parser_c	.expr
+rune.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_c	.subcode
+undef.p	.closure	_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_c
+	.enter	undef.p
+
+_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_f_c	.subcode
+parser.lift4	.gvar
+parser.pos.get	.gvar
+gsdl.cgs.syntax.var.parser	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.oftype	.gvar
+parser.<*	.gvar
+gsdl.cgs.gstype.parser	.gvar
+gsdl.cgs.syntax.semi	.gvar
+parser.fail	.gvar	-- Temp
+f	.closure	_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+ty.p1	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	gsdl.cgs.gstype.parser	gsdl.cgs.syntax.semi
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	ty.p1
+	.app	f	pos.get	gsdl.cgs.syntax.var.parser	pos.get	ty.p
+	.enter	parser.lift4	rune.t	parser.pos.t	gsdl.var.t	parser.pos.t	gsdl.cgs.gstype.t	gsdl.cgs.gsexpr.generator.t
+
+_gsdl.cgs.gsexpr.generator.imp.parser_undef.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.undef	.gvar
+gsdl.sourcepos	.gvar
+pos0.0	.larg	parser.pos.t
+v	.larg	gsdl.var.t
+pos1.0	.larg	parser.pos.t
+ty	.larg	gsdl.cgs.gstype.t
+pos0.1	.undefined	parser.pos.t
+pos0	.apply	gsdl.sourcepos	|	pos0.0	pos0.1
+pos1	.apply	gsdl.sourcepos	|	pos1.0	pos0.1
+	.app	pos0	v	pos1	ty
+	.enter	gsdl.cgs.gsexpr.generator.undef
+
+-- §section §gs{gsdl.cgs.gsexpr.generator.freevars}
+
+_gsdl.cgs.gsexpr.generator.freevars_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
+_gsdl.cgs.gsexpr.generator.freevars_k	.subcode
+gsdl.cgs.gsexpr.generator.t.out	.cogvar
+g	.larg	gsdl.cgs.gsexpr.generator.t
+	.force	_gsdl.cgs.gsexpr.generator.freevars_k
+	.coerce	gsdl.cgs.gsexpr.generator.t.out
+	.enter	g
+
+_gsdl.cgs.gsexpr.generator.freevars_k	.forcecont
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+gsdl.cgs.gstype.freevars	.gvar
+g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
+	.analyze	g0	undef
+		.case	undef
+pos0		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+pos1		.fkarg	2	gsdl.sourcepos.t
+ty		.fkarg	3	gsdl.cgs.gstype.t
+			.app	ty
+			.enter	gsdl.cgs.gstype.freevars
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.gsexpr.generator.t} Constructors
+
+_gsdl.cgs.gsexpr.generator.undef_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
+gsdl.cgs.gsexpr.generator.t.in	.cogvar
+pos0	.larg	gsdl.sourcepos.t
+v	.larg	gsdl.var.t
+pos1	.larg	gsdl.sourcepos.t
+ty	.larg	gsdl.cgs.gstype.t
+res	.constr	gsdl.cgs.gsexpr.generator.prim.u	undef	0	pos0	1	v	2	pos1	3	ty
+	.coerce	gsdl.cgs.gsexpr.generator.t.in
+	.lift
+	.yield	res
+
+-- §section §gs{gsdl.cgs.gsexpr.body.parser}
+
+_gsdl.cgs.gsexpr.body.parser_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+_gsdl.cgs.gsexpr.body.parser_expr.p_c	.subcode
+_gsdl.cgs.gsexpr.body.parser_missing.p_c	.subcode
+parser.<|>	.gvar
+expr.p	.closure	_gsdl.cgs.gsexpr.body.parser_expr.p_c
+missing.p	.closure	_gsdl.cgs.gsexpr.body.parser_missing.p_c
+	.app	expr.p	missing.p
+	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.body.t
+
+_gsdl.cgs.gsexpr.body.parser_expr.p_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+parser.map	.gvar
+gsdl.cgs.gsexpr.body.expr	.gvar
+gsdl.cgs.gsexpr.parser	.gvar
+	.app	gsdl.cgs.gsexpr.body.expr	gsdl.cgs.gsexpr.parser
+	.enter	parser.map	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gsexpr.body.t
+
+_gsdl.cgs.gsexpr.body.parser_missing.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gsexpr.body.parser_missing.p_f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.oftype	.gvar
+gsdl.cgs.gstype.parser.fun	.gvar
+parser.fail	.gvar	-- Temp
+f	.closure	_gsdl.cgs.gsexpr.body.parser_missing.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
+	.app	f	pos.get	ty.p
+	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.cgs.gstype.t	gsdl.cgs.gsexpr.body.t
+
+_gsdl.cgs.gsexpr.body.parser_missing.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.body.missing	.gvar
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
+ty	.larg	gsdl.cgs.gstype.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+	.app	pos	ty
+	.enter	gsdl.cgs.gsexpr.body.missing
+
+-- §section §gs{gsdl.cgs.gsexpr.body.freevars}
+
+_gsdl.cgs.gsexpr.body.freevars_c	.expr
+gsdl.cgs.gsexpr.body.t	.tygvar
+_gsdl.cgs.gsexpr.body.freevars_k	.subcode
+gsdl.cgs.gsexpr.body.t.out	.cogvar
+b	.larg	gsdl.cgs.gsexpr.body.t
+	.force	_gsdl.cgs.gsexpr.body.freevars_k
+	.coerce	gsdl.cgs.gsexpr.body.t.out
+	.enter	b
+
+_gsdl.cgs.gsexpr.body.freevars_k	.forcecont
+gsdl.cgs.gsexpr.body.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.freevars	.gvar
+gsdl.cgs.gstype.freevars	.gvar
+b0	.karg	gsdl.cgs.gsexpr.body.prim.u
+	.analyze	b0	expr	missing
+		.case	expr
+e		.fkarg	0	gsdl.cgs.gsexpr.t
+			.app	e
+			.enter	gsdl.cgs.gsexpr.freevars
+		.case	missing
+pos1		.fkarg	0	gsdl.sourcepos.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+			.app	ty
+			.enter	gsdl.cgs.gstype.freevars
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.gsexpr.t} constructors
+
+_gsdl.cgs.gsexpr.pos_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+e	.larg	gsdl.cgs.gsexpr.t
+res	.constr	gsdl.cgs.gsexpr.prim.u	pos	0	pos	1	e
+	.coerce	gsdl.cgs.gsexpr.t.in
+	.lift
+	.yield	res
+
+_gsdl.cgs.gsexpr.expr.heavy.cast_c	.expr
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t.in	.cogvar
+co	.larg	gsdl.cgs.gscoercion.t
+so	.larg	gsdl.cgs.gsexpr.cast.source.t
+res	.constr	gsdl.cgs.gsexpr.prim.u	expr.heavy.cast	0	co	1	so
+	.coerce	gsdl.cgs.gsexpr.t.in
+	.lift
+	.yield	res
+
+_gsdl.cgs.gsexpr.impfor_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t.in	.cogvar
+m	.larg	gsdl.cgs.gstype.t
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+b	.larg	gsdl.cgs.gsexpr.body.t
+res	.constr	gsdl.cgs.gsexpr.prim.u	impfor	0	m	1	gs	2	b
+	.coerce	gsdl.cgs.gsexpr.t.in
+	.lift
+	.yield	res
+
+_gsdl.cgs.gsexpr.lambda_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t.in	.cogvar
+v	.larg	gsdl.var.t
+ty	.larg	gsdl.cgs.gstype.t
+b	.larg	gsdl.cgs.gsexpr.body.t
+res	.constr	gsdl.cgs.gsexpr.prim.u	lambda	0	v	1	ty	2	b
+	.coerce	gsdl.cgs.gsexpr.t.in
+	.lift
+	.yield	res
+
+_gsdl.cgs.gsexpr.lift_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t.in	.cogvar
+e	.larg	gsdl.cgs.gsexpr.t
+res	.constr	gsdl.cgs.gsexpr.prim.u	lift	0	e
+	.coerce	gsdl.cgs.gsexpr.t.in
+	.lift
+	.yield	res
+
+-- §gs{gsdl.cgs.gsexpr.cast.source.t} constructors
+
+_gsdl.cgs.gsexpr.cast.source.missing_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+gsdl.cgs.gsexpr.cast.source.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+res	.constr	gsdl.cgs.gsexpr.cast.source.prim.u	missing	0	pos
+	.coerce	gsdl.cgs.gsexpr.cast.source.t.in
+	.lift
+	.yield	res
+
+_gsdl.cgs.gsexpr.cast.source.typesig_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+gsdl.cgs.gsexpr.cast.source.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+ty	.larg	gsdl.cgs.gstype.t
+res	.constr	gsdl.cgs.gsexpr.cast.source.prim.u	typesig	0	pos	1	ty
+	.coerce	gsdl.cgs.gsexpr.cast.source.t.in
+	.lift
+	.yield	res
+
+_gsdl.cgs.gsexpr.cast.source.expr_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+gsdl.cgs.gsexpr.cast.source.t.in	.cogvar
+e	.larg	gsdl.cgs.gsexpr.t
+res	.constr	gsdl.cgs.gsexpr.cast.source.prim.u	expr	0	e
+	.coerce	gsdl.cgs.gsexpr.cast.source.t.in
+	.lift
+	.yield	res
+
+-- §section §gs{gsdl.cgs.gsexpr.body.t} Constructors
+
+_gsdl.cgs.gsexpr.body.expr_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.body.prim.u	.tygvar
+gsdl.cgs.gsexpr.body.t.in	.cogvar
+e	.larg	gsdl.cgs.gsexpr.t
+res	.constr	gsdl.cgs.gsexpr.body.prim.u	expr	0	e
+	.coerce	gsdl.cgs.gsexpr.body.t.in
+	.lift
+	.yield	res
+
+_gsdl.cgs.gsexpr.body.missing_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.body.prim.u	.tygvar
+gsdl.cgs.gsexpr.body.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+ty	.larg	gsdl.cgs.gstype.t
+res	.constr	gsdl.cgs.gsexpr.body.prim.u	missing	0	pos	1	ty
+	.coerce	gsdl.cgs.gsexpr.body.t.in
+	.lift
+	.yield	res
+
+	.type
+
+-- §section §gs{gsdl.cgs.gsexpr.t}
+
+gsdl.cgs.gsexpr.t	.tyabstract	*
+gsdl.cgs.gsexpr.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gsexpr.prim.u
+
+gsdl.cgs.gsexpr.prim.u	.tyexpr
+_gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	.tygvar
+_gsdl.cgs.gsexpr.prim.u_impfor_ty	.tygvar
+_gsdl.cgs.gsexpr.prim.u_lambda_ty	.tygvar
+_gsdl.cgs.gsexpr.prim.u_lift_ty	.tygvar
+_gsdl.cgs.gsexpr.prim.u_pos_ty	.tygvar
+	.tysum	expr.heavy.cast	_gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	impfor	_gsdl.cgs.gsexpr.prim.u_impfor_ty	lambda	_gsdl.cgs.gsexpr.prim.u_lambda_ty	lift	_gsdl.cgs.gsexpr.prim.u_lift_ty	pos	_gsdl.cgs.gsexpr.prim.u_pos_ty
+
+_gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	.tyexpr
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gscoercion.t	1	gsdl.cgs.gsexpr.cast.source.t
+
+_gsdl.cgs.gsexpr.prim.u_impfor_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+list.gen.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
+	.tyubproduct	0	gsdl.cgs.gstype.t	1	list.gen.ty	2	gsdl.cgs.gsexpr.body.t
+
+_gsdl.cgs.gsexpr.prim.u_lambda_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+	.tyubproduct	0	gsdl.var.t	1	gsdl.cgs.gstype.t	2	gsdl.cgs.gsexpr.body.t
+
+_gsdl.cgs.gsexpr.prim.u_lift_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.prim.u_pos_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gsexpr.t
+
+-- §subsection §gs{gsdl.cgs.gsexpr.cast.source.t}
+
+gsdl.cgs.gsexpr.cast.source.t	.tyabstract	*
+gsdl.cgs.gsexpr.cast.source.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gsexpr.cast.source.prim.u
+
+gsdl.cgs.gsexpr.cast.source.prim.u	.tyexpr
+_gsdl.cgs.gsexpr.cast.source.prim.u_expr_ty	.tygvar
+_gsdl.cgs.gsexpr.cast.source.prim.u_missing_ty	.tygvar
+_gsdl.cgs.gsexpr.cast.source.prim.u_typesig_ty	.tygvar
+	.tysum	expr	_gsdl.cgs.gsexpr.cast.source.prim.u_expr_ty	missing	_gsdl.cgs.gsexpr.cast.source.prim.u_missing_ty	typesig	_gsdl.cgs.gsexpr.cast.source.prim.u_typesig_ty
+
+_gsdl.cgs.gsexpr.cast.source.prim.u_expr_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.cast.source.prim.u_missing_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t
+
+_gsdl.cgs.gsexpr.cast.source.prim.u_typesig_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gsexpr.generator.t}
+
+gsdl.cgs.gsexpr.generator.t	.tyabstract	*
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gsexpr.generator.prim.u
+
+gsdl.cgs.gsexpr.generator.prim.u	.tyexpr
+_gsdl.cgs.gsexpr.generator.prim.u_undef_ty	.tygvar
+	.tysum	undef	_gsdl.cgs.gsexpr.generator.prim.u_undef_ty
+
+_gsdl.cgs.gsexpr.generator.prim.u_undef_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.sourcepos.t	3	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gsexpr.body.t}
+
+gsdl.cgs.gsexpr.body.t	.tyabstract	*
+gsdl.cgs.gsexpr.body.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gsexpr.body.prim.u
+
+gsdl.cgs.gsexpr.body.prim.u	.tyexpr
+_gsdl.cgs.gsexpr.body.prim.u_expr_ty	.tygvar
+_gsdl.cgs.gsexpr.body.prim.u_missing_ty	.tygvar
+	.tysum	expr	_gsdl.cgs.gsexpr.body.prim.u_expr_ty	missing	_gsdl.cgs.gsexpr.body.prim.u_missing_ty
+
+_gsdl.cgs.gsexpr.body.prim.u_expr_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.body.prim.u_missing_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gsexpr.parser}
+
+_gsdl.cgs.gsexpr.parser_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
+
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.cast}
+
+_gsdl.cgs.gsexpr.parser.cast_ty	.tyexpr
+gsdl.cgs.syntax.branch.t	.tygvar
+gsdl.cgs.syntax.assoc.t	.tygvar
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.syntax.branch.t
+	.tylift
+	.tyfun	gsdl.cgs.syntax.assoc.t
+	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
+
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.app.or.lambda}
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_ty	.tyexpr
+gsdl.cgs.syntax.branch.t	.tygvar
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.syntax.branch.t
+	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
+
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.arg}
+
+_gsdl.cgs.gsexpr.parser.arg_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
+
+-- §section §gs{gsdl.cgs.gsexpr.freevars}
+
+_gsdl.cgs.gsexpr.freevars_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tyref	ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.gsexpr.≡}
+
+_gsdl.cgs.gsexpr.≡_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tyref	bool.t
+
+-- §section §gs{gsdl.cgs.gsexpr.body.parser}
+
+_gsdl.cgs.gsexpr.body.parser_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.body.t
+
+-- §section §gs{gsdl.cgs.gsexpr.body.freevars}
+
+_gsdl.cgs.gsexpr.body.freevars_ty	.tyexpr
+gsdl.cgs.gsexpr.body.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.body.t
+	.tyref	ordered.set.t	gsdl.cgs.symbol.t
+
+	.coercion
+
+gsdl.cgs.gsexpr.t.in	.tycoercion
+gsdl.cgs.gsexpr.t	.tygvar
+	.tydefinition	gsdl.cgs.gsexpr.t
+
+gsdl.cgs.gsexpr.t.out	.tycoercion
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gsexpr.t
+
+gsdl.cgs.gsexpr.cast.source.t.in	.tycoercion
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+	.tydefinition	gsdl.cgs.gsexpr.cast.source.t
+
+gsdl.cgs.gsexpr.cast.source.t.out	.tycoercion
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gsexpr.cast.source.t
+
+gsdl.cgs.gsexpr.generator.t.in	.tycoercion
+gsdl.cgs.gsexpr.generator.t	.tygvar
+	.tydefinition	gsdl.cgs.gsexpr.generator.t
+
+gsdl.cgs.gsexpr.generator.t.out	.tycoercion
+gsdl.cgs.gsexpr.generator.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gsexpr.generator.t
+
+gsdl.cgs.gsexpr.body.t.in	.tycoercion
+gsdl.cgs.gsexpr.body.t	.tygvar
+	.tydefinition gsdl.cgs.gsexpr.body.t
+
+gsdl.cgs.gsexpr.body.t.out	.tycoercion
+gsdl.cgs.gsexpr.body.t	.tygvar
+	.tyinvert
+	.tydefinition gsdl.cgs.gsexpr.body.t
+\end{verbatim}
+
+\section{gskind.ags}
+
+\begin{verbatim}
+#calculus: gsdl.string-code 0.5
+
+	.prefix
+
+	.data
+
+gsdl.cgs.gskind.≡	.closure	_gsdl.cgs.gskind.≡_c	_gsdl.cgs.gskind.≡_ty
+
+gsdl.cgs.gskind.fmtgs	.closure	_gsdl.cgs.gskind.fmtgs_c
+_gsdl.cgs.gskind.fmtgs_lifted_lifted.s	.string	lifted
+_gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s	.string	unlifted
+
+gsdl.cgs.gskind.unlifted	.closure	_gsdl.cgs.gskind.unlifted_c
+gsdl.cgs.gskind.lifted	.closure	_gsdl.cgs.gskind.lifted_c
+gsdl.cgs.gskind.unknown	.closure	_gsdl.cgs.gskind.unknown_c
+gsdl.cgs.gskind.exp	.closure	_gsdl.cgs.gskind.exp_c
+
+	.code
+
+-- §section §gs{gsdl.cgs.gskind.≡}
+
+_gsdl.cgs.gskind.≡_c	.expr
+gsdl.cgs.gskind.t	.tygvar
+_gsdl.cgs.gskind.≡_k0	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+ki0	.larg	gsdl.cgs.gskind.t
+ki1	.larg	gsdl.cgs.gskind.t
+	.force	_gsdl.cgs.gskind.≡_k0
+	.coerce	gsdl.cgs.gskind.t.out
+	.enter	ki0
+
+_gsdl.cgs.gskind.≡_k0	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gskind.prim.u	.tygvar
+_gsdl.cgs.gskind.≡_k1	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+ki1	.fv	gsdl.cgs.gskind.t
+ki0.0	.karg	gsdl.cgs.gskind.prim.u
+	.force	_gsdl.cgs.gskind.≡_k1
+	.coerce	gsdl.cgs.gskind.t.out
+	.enter	ki1
+
+_gsdl.cgs.gskind.≡_k1	.forcecont
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+bool.t	.tygvar	-- Temp
+bool.∧	.gvar
+gsdl.cgs.gskind.≡	.gvar
+bool.false	.gvar
+bool.true	.gvar
+ki0.0	.fv	gsdl.cgs.gskind.prim.u
+ki1.0	.karg	gsdl.cgs.gskind.prim.u
+	.analyze	ki0.0	exp	lifted	unknown	unlifted
+		.case	exp
+ki0.b		.fkarg	0	gsdl.cgs.gskind.t
+ki0.e		.fkarg	1	gsdl.cgs.gskind.t
+			.danalyze	ki1.0	exp
+				.default
+					.undef	bool.t
+				.case	exp
+ki1.b				.fkarg	0	gsdl.cgs.gskind.t
+ki1.e				.fkarg	1	gsdl.cgs.gskind.t
+kib.eq					.apply	gsdl.cgs.gskind.≡	|	ki0.b	ki1.b
+kie.eq					.apply	gsdl.cgs.gskind.≡	|	ki0.e	ki1.e
+					.app	kib.eq	kie.eq
+					.enter	bool.∧
+		.case	lifted
+			.danalyze	ki1.0	lifted
+				.default
+					.enter	bool.false
+				.case	lifted
+					.enter	bool.true
+		.case	unknown
+			.danalyze	ki1.0	unknown
+				.default
+					.undef	bool.t
+				.case	unknown
+					.enter	bool.true
+		.case	unlifted
+			.danalyze	ki1.0	unlifted
+				.default
+					.undef	bool.t
+				.case	unlifted
+					.enter	bool.true
+	-- > :: bool.t
+
+-- §section §gs{gsdl.cgs.gskind.fmtgs}
+
+_gsdl.cgs.gskind.fmtgs_c	.expr
+gsdl.cgs.gskind.t	.tygvar
+_gsdl.cgs.gskind.fmtgs_k	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+ki	.larg	gsdl.cgs.gskind.t
+	.force	_gsdl.cgs.gskind.fmtgs_k
+	.coerce	gsdl.cgs.gskind.t.out
+	.enter	ki
+
+_gsdl.cgs.gskind.fmtgs_k	.forcecont
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+fmtgs.printer.t	.tygvar	-- Temp
+fmtgs.var	.gvar
+_gsdl.cgs.gskind.fmtgs_lifted_lifted.s	.gvar
+_gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s	.gvar
+ki0	.karg	gsdl.cgs.gskind.prim.u
+	.analyze	ki0	exp	lifted	unknown	unlifted
+		.case	exp
+ki.b		.fkarg	0	gsdl.cgs.gskind.t
+ki.e		.fkarg	1	gsdl.cgs.gskind.t
+			.undef	fmtgs.printer.t
+		.case	lifted
+			.app	_gsdl.cgs.gskind.fmtgs_lifted_lifted.s
+			.enter	fmtgs.var
+		.case	unknown
+			.undef	fmtgs.printer.t
+		.case	unlifted
+			.app	_gsdl.cgs.gskind.fmtgs_unlifted_unlifted.s
+			.enter	fmtgs.var
+	-- > :: fmtgs.printer.t
+
+-- §section Constructors
+
+_gsdl.cgs.gskind.unlifted_c	.expr
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t.in	.cogvar
+c	.constr	gsdl.cgs.gskind.prim.u	unlifted
+	.coerce	gsdl.cgs.gskind.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gskind.lifted_c	.expr
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t.in	.cogvar
+c	.constr	gsdl.cgs.gskind.prim.u	lifted
+	.coerce	gsdl.cgs.gskind.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gskind.unknown_c	.expr
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t.in	.cogvar
+c	.constr	gsdl.cgs.gskind.prim.u	unknown
+	.coerce	gsdl.cgs.gskind.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gskind.exp_c	.expr
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t.in	.cogvar
+ki.b	.larg	gsdl.cgs.gskind.t
+ki.e	.larg	gsdl.cgs.gskind.t
+c	.constr	gsdl.cgs.gskind.prim.u	exp	0	ki.b	1	ki.e
+	.coerce	gsdl.cgs.gskind.t.in
+	.lift
+	.yield	c
+
+	.type
+
+-- §section §gs{gsdl.cgs.gskind.t}
+
+gsdl.cgs.gskind.t	.tyabstract	*
+gsdl.cgs.gskind.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gskind.prim.u
+
+gsdl.cgs.gskind.prim.u	.tyexpr
+_gsdl.cgs.gskind.prim.u_exp_ty	.tygvar
+record.unboxed.empty	.tygvar
+	.tysum	exp	_gsdl.cgs.gskind.prim.u_exp_ty	lifted	record.unboxed.empty	unknown	record.unboxed.empty	unlifted	record.unboxed.empty
+
+_gsdl.cgs.gskind.prim.u_exp_ty	.tyexpr
+gsdl.cgs.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gskind.t	1	gsdl.cgs.gskind.t
+
+-- §section §gs{gsdl.cgs.gskind.≡}
+
+_gsdl.cgs.gskind.≡_ty	.tyexpr
+gsdl.cgs.gskind.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gskind.t
+	.tylift
+	.tyfun	gsdl.cgs.gskind.t
+	.tyref	bool.t
+
+	.coercion
+
+gsdl.cgs.gskind.t.in	.tycoercion
+gsdl.cgs.gskind.t	.tygvar
+	.tydefinition	gsdl.cgs.gskind.t
+
+gsdl.cgs.gskind.t.out	.tycoercion
+gsdl.cgs.gskind.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gskind.t
+\end{verbatim}
+
+\section{gstype.ags}
+
+\begin{verbatim}
+#calculus: gsdl.string-code 0.6
+
+	.prefix
+
+	.data
+
+gsdl.cgs.gstype.parser	.closure	_gsdl.cgs.gstype.parser_c	_gsdl.cgs.gstype.parser_ty
+
+gsdl.cgs.gstype.parser.fun	.closure	_gsdl.cgs.gstype.parser.fun_c	_gsdl.cgs.gstype.parser.fun_ty
+_gsdl.cgs.gstype.parser.fun_arr.re	.regex	→
+
+gsdl.cgs.gstype.parser.app	.closure	_gsdl.cgs.gstype.parser.app_c	_gsdl.cgs.gstype.parser.app_ty
+_gsdl.cgs.gstype.parser.app_k	.closure	_gsdl.cgs.gstype.parser.app_k_c	_gsdl.cgs.gstype.parser.app_k_ty
+
+gsdl.cgs.gstype.parser.arg	.closure	_gsdl.cgs.gstype.parser.arg_c	_gsdl.cgs.gstype.parser.arg_ty
+_gsdl.cgs.gstype.parser.arg_pi.re	.regex	"Π〈
+_gsdl.cgs.gstype.parser.arg_lift.p_lb.re	.regex	⌊
+_gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.regex	⌋
+
+gsdl.cgs.gstype.print	.closure	_gsdl.cgs.gstype.print_c
+_gsdl.cgs.gstype.print_w	.closure	_gsdl.cgs.gstype.print_w_c	_gsdl.cgs.gstype.print_w_ty
+
+gsdl.cgs.gstype.freevars	.closure	_gsdl.cgs.gstype.freevars_c	_gsdl.cgs.gstype.freevars_ty
+
+gsdl.cgs.gstype.substty	.closure	_gsdl.cgs.gstype.substty_c	_gsdl.cgs.gstype.substty_ty
+
+gsdl.cgs.gstype.constr.substty	.closure	_gsdl.cgs.gstype.constr.substty_c	_gsdl.cgs.gstype.constr.substty_ty
+
+gsdl.cgs.gstype.≡	.closure	_gsdl.cgs.gstype.≡_c	_gsdl.cgs.gstype.≡_ty
+
+gsdl.cgs.gstype.fmtgs	.closure	_gsdl.cgs.gstype.fmtgs_c
+_gsdl.cgs.gstype.fmtgs_product.s	.string	product
+
+gsdl.cgs.gstype.abstype	.closure	_gsdl.cgs.gstype.abstype_c
+gsdl.cgs.gstype.var	.closure	_gsdl.cgs.gstype.var_c
+gsdl.cgs.gstype.lift	.closure	_gsdl.cgs.gstype.lift_c
+gsdl.cgs.gstype.product	.closure	_gsdl.cgs.gstype.product_c
+gsdl.cgs.gstype.sum	.closure	_gsdl.cgs.gstype.sum_c
+gsdl.cgs.gstype.definedprim	.closure	_gsdl.cgs.gstype.definedprim_c
+gsdl.cgs.gstype.elimprim	.closure	_gsdl.cgs.gstype.elimprim_c
+gsdl.cgs.gstype.impprim	.closure	_gsdl.cgs.gstype.impprim_c
+gsdl.cgs.gstype.app	.closure	_gsdl.cgs.gstype.app_c
+gsdl.cgs.gstype.pos	.closure	_gsdl.cgs.gstype.pos_c
+gsdl.cgs.gstype.fun	.closure	_gsdl.cgs.gstype.fun_c
+
+gsdl.cgs.gstype.field.parser	.closure	_gsdl.cgs.gstype.field.parser_c
+
+gsdl.cgs.gstype.field.freevars	.closure	_gsdl.cgs.gstype.field.freevars_c
+
+gsdl.cgs.gstype.field.name.compare	.closure	_gsdl.cgs.gstype.field.name.compare_c
+
+gsdl.cgs.gstype.field.fmtgs	.closure	_gsdl.cgs.gstype.field.fmtgs_c	_gsdl.cgs.gstype.field.fmtgs_ty
+gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
+
+	.code
+
+-- §section §gs{gsdl.cgs.gstype.parser}
+
+_gsdl.cgs.gstype.parser_c	.expr
+gsdl.cgs.gstype.parser.fun	.gvar
+	.enter	gsdl.cgs.gstype.parser.fun
+
+-- §section §gs{gsdl.cgs.gstype.parser.fun}
+
+_gsdl.cgs.gstype.parser.fun_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.parser.fun_k_c	.subcode
+parser.>>=	.gvar
+parser.pos.get	.gvar
+pos.get	.apply	parser.pos.get	rune.t
+k	.closure	_gsdl.cgs.gstype.parser.fun_k_c
+	.app	pos.get	k
+	.enter	parser.>>=	rune.t	parser.pos.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.fun_k_c	.expr
+parser.pos.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.parser.fun_k1_c	.subcode
+parser.>>=	.gvar
+gsdl.cgs.gstype.parser.app	.gvar
+pos0	.larg	parser.pos.t
+k1	.closure	_gsdl.cgs.gstype.parser.fun_k1_c
+	.app	gsdl.cgs.gstype.parser.app	k1
+	.enter	parser.>>=	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.fun_k1_c	.expr
+parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gstype.parser.fun_f_c	.subcode
+parser.unit	.gvar
+parser.<|>	.gvar
+parser.map	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.keywordOp	.gvar
+_gsdl.cgs.gstype.parser.fun_arr.re	.gvar
+gsdl.cgs.gstype.parser.fun	.gvar
+parser.fail	.gvar	-- Temp
+pos0	.fv	parser.pos.t
+ty0	.larg	gsdl.cgs.gstype.t
+un.ty0	.apply	parser.unit	rune.t	gsdl.cgs.gstype.t	|	ty0
+f	.closure	_gsdl.cgs.gstype.parser.fun_f_c
+arr.p	.apply	gsdl.cgs.syntax.keywordOp	|	_gsdl.cgs.gstype.parser.fun_arr.re
+fun.p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	arr.p	gsdl.cgs.gstype.parser.fun
+fun.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t	|	f	fun.p1
+	.app	un.ty0	fun.p
+	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.fun_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gstype.fun	.gvar
+pos0	.fv	parser.pos.t
+ty0	.fv	gsdl.cgs.gstype.t
+ty1	.larg	gsdl.cgs.gstype.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+tye	.apply	gsdl.cgs.gstype.fun	|	ty0	ty1
+	.app	pos	tye
+	.enter	gsdl.cgs.gstype.pos
+
+-- §section §gs{gsdl.cgs.gstype.parser.app}
+
+_gsdl.cgs.gstype.parser.app_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+parser.>>=	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
+_gsdl.cgs.gstype.parser.app_k	.gvar
+	.app	gsdl.cgs.gstype.parser.arg	_gsdl.cgs.gstype.parser.app_k
+	.enter	parser.>>=	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.app_k_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+rune.t	.tygvar	-- Temp
+parser.<|>	.gvar
+parser.unit	.gvar
+parser.>>=	.gvar
+parser.map	.gvar
+gsdl.cgs.gstype.app	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
+_gsdl.cgs.gstype.parser.app_k	.gvar
+parser.fail	.gvar	-- Temp
+tyf	.larg	gsdl.cgs.gstype.t
+p0	.apply	parser.unit	rune.t	gsdl.cgs.gstype.t	|	tyf
+f	.apply	gsdl.cgs.gstype.app	|	tyf
+p1.0	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t	|	f	gsdl.cgs.gstype.parser.arg
+p1	.apply	parser.>>=	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t	|	p1.0	_gsdl.cgs.gstype.parser.app_k
+	.app	p0	p1
+	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gstype.parser.arg}
+
+_gsdl.cgs.gstype.parser.arg_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.parser.arg_var.p_c	.subcode
+_gsdl.cgs.gstype.parser.arg_prod.p_c	.subcode
+_gsdl.cgs.gstype.parser.arg_lift.p_c	.subcode
+parser.<|>	.gvar
+gsdl.cgs.syntax.parens	.gvar
+gsdl.cgs.gstype.parser	.gvar
+var.p	.closure	_gsdl.cgs.gstype.parser.arg_var.p_c
+prod.p	.closure	_gsdl.cgs.gstype.parser.arg_prod.p_c
+lift.p	.closure	_gsdl.cgs.gstype.parser.arg_lift.p_c
+parens.p	.apply	gsdl.cgs.syntax.parens	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.parser
+p2	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	lift.p	parens.p
+p1	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	prod.p	p2
+	.app	var.p	p1
+	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
+
+-- > for (
+-- >     'v ← cgs.syntax.var
+-- > ) [| var v |]
+_gsdl.cgs.gstype.parser.arg_var.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.parser.arg_var.p_f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
+gsdl.cgs.syntax.var.parser	.gvar
+f	.closure	_gsdl.cgs.gstype.parser.arg_var.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+	.app	f	pos.get	gsdl.cgs.syntax.var.parser
+	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.var.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.arg_var.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gstype.var	.gvar
+pos0	.larg	parser.pos.t
+v	.larg	gsdl.var.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e1	.apply	gsdl.cgs.gstype.var	|	v
+	.app	pos	e1
+	.enter	gsdl.cgs.gstype.pos
+
+-- > for (
+-- >     'fs ← m/"Π〈/ *> cgs.syntax.ws *> many field.parser <* cgs.syntax.rbracket;
+-- > ) [| product fs |]
+_gsdl.cgs.gstype.parser.arg_prod.p_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+parser.map	.gvar
+gsdl.cgs.gstype.product	.gvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.gstype.parser.arg_pi.re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+parser.many	.gvar
+gsdl.cgs.gstype.field.parser	.gvar
+parser.<*	.gvar
+gsdl.cgs.syntax.rbracket	.gvar
+list.field.t	.tylet	list.t	gsdl.cgs.gstype.field.t
+pi_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_pi.re
+mfp	.apply	parser.many	rune.t	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.parser
+fs_p2	.apply	parser.<*	rune.t	list.field.t	string.t	|	mfp	gsdl.cgs.syntax.rbracket
+fs_p1	.apply	parser.*>	rune.t	string.t	list.field.t	|	gsdl.cgs.syntax.ws	fs_p2
+fs_p	.apply	parser.*>	rune.t	string.t	list.field.t	|	pi_p	fs_p1
+	.app	gsdl.cgs.gstype.product	fs_p
+	.enter	parser.map	rune.t	list.field.t	gsdl.cgs.gstype.t
+
+-- > for (
+-- >     'ty ← m/⌊/ *> cgs.syntax.ws *> gsdl.cgs.gstype.parser <* m/⌋/ <* cgs.syntax.ws;
+-- > ) [| lift ty |]
+_gsdl.cgs.gstype.parser.arg_lift.p_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+parser.map	.gvar
+gsdl.cgs.gstype.lift	.gvar
+parser.*>	.gvar
+parser.match	.gvar
+_gsdl.cgs.gstype.parser.arg_lift.p_lb.re	.gvar
+rune.compare	.gvar
+gsdl.cgs.syntax.ws	.gvar
+parser.<*	.gvar
+gsdl.cgs.gstype.parser	.gvar
+_gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.gvar
+parser.fail	.gvar	-- Temp
+lb_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_lift.p_lb.re
+rb_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_lift.p_rb.re
+ty_p3	.apply	parser.<*	rune.t	string.t	string.t	|	rb_p	gsdl.cgs.syntax.ws
+ty_p2	.apply	parser.<*	rune.t	gsdl.cgs.gstype.t	string.t	|	gsdl.cgs.gstype.parser	ty_p3
+ty_p1	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.ws	ty_p2
+ty_p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	lb_p	ty_p1
+	.app	gsdl.cgs.gstype.lift	ty_p
+	.enter	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gstype.print}
+
+_gsdl.cgs.gstype.print_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+rune.t	.tygvar
+_gsdl.cgs.gstype.print_w	.gvar
+list.nil	.gvar
+ty	.larg	gsdl.cgs.gstype.t
+nil.s	.apply	list.nil	rune.t
+	.app	ty	nil.s
+	.enter	_gsdl.cgs.gstype.print_w
+
+_gsdl.cgs.gstype.print_w_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.print_w_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.gstype.print_w_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsdl.cgs.gstype.print_w_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+diff.list.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
+		.case	abstype
+v		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
+			.undef	diff.list.t	rune.t
+		.case	app
+tyf		.fkarg	0	gsdl.cgs.gstype.t
+tyx		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	diff.list.t	rune.t
+		.case	definedprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	diff.list.t	rune.t
+		.case	elimprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	diff.list.t	rune.t
+		.case	fun
+tya		.fkarg	0	gsdl.cgs.gstype.t
+tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	diff.list.t	rune.t
+		.case	impprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	diff.list.t	rune.t
+		.case	lift
+ty1		.fkarg	0	gsdl.cgs.gstype.t
+			.undef	diff.list.t	rune.t
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	diff.list.t	rune.t
+		.case	product
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.undef	diff.list.t	rune.t
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	diff.list.t	rune.t
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	diff.list.t	rune.t
+	-- > :: diff.list.t	rune.t
+
+-- §section §gs{gsdl.cgs.gstype.freevars}
+
+_gsdl.cgs.gstype.freevars_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.freevars_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.gstype.freevars_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsdl.cgs.gstype.freevars_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+ordered.set.singleton	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.symbol.abstyvar	.gvar
+gsdl.cgs.gstype.freevars	.gvar
+list.foldr	.gvar
+ordered.set.union	.gvar
+ordered.set.empty	.gvar
+list.map	.gvar
+gsdl.cgs.gstype.field.freevars	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
+res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
+		.case	abstype
+tyc		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
+sym			.apply	gsdl.cgs.symbol.abstyvar	|	tyc
+			.app	gsdl.cgs.symbol.compare	sym
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
+		.case	app
+tyf		.fkarg	0	gsdl.cgs.gstype.t
+tyx		.fkarg	1	gsdl.cgs.gstype.t
+fvs.tyf			.apply	gsdl.cgs.gstype.freevars	|	tyf
+fvs.tyx			.apply	gsdl.cgs.gstype.freevars	|	tyx
+			.app	gsdl.cgs.symbol.compare	fvs.tyf	fvs.tyx
+			.enter	ordered.set.union	gsdl.cgs.symbol.t
+		.case	definedprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
+		.case	elimprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
+		.case	fun
+tya		.fkarg	0	gsdl.cgs.gstype.t
+tyr		.fkarg	1	gsdl.cgs.gstype.t
+fvs.tya			.apply	gsdl.cgs.gstype.freevars	|	tya
+fvs.tyr			.apply	gsdl.cgs.gstype.freevars	|	tyr
+			.app	gsdl.cgs.symbol.compare	fvs.tya	fvs.tyr
+			.enter	ordered.set.union	gsdl.cgs.symbol.t
+		.case	impprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
+		.case	lift
+ty1		.fkarg	0	gsdl.cgs.gstype.t
+			.app	ty1
+			.enter	gsdl.cgs.gstype.freevars
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+			.app	ty1
+			.enter	gsdl.cgs.gstype.freevars
+		.case	product
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+un			.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
+empty			.apply	ordered.set.empty	gsdl.cgs.symbol.t
+fvss			.apply	list.map	gsdl.cgs.gstype.field.t	res.ty	|	gsdl.cgs.gstype.field.freevars	fs
+			.app	un	empty	fvss
+			.enter	list.foldr	res.ty	res.ty
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
+		.case	var
+v		.fkarg	0	gsdl.var.t
+sym			.apply	gsdl.cgs.symbol.tyvar	|	v
+			.app	gsdl.cgs.symbol.compare	sym
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.gstype.substty}
+
+_gsdl.cgs.gstype.substty_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.substty_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+v	.larg	gsdl.var.t
+ty0	.larg	gsdl.cgs.gstype.t
+ty1	.larg	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.gstype.substty_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty1
+
+_gsdl.cgs.gstype.substty_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+_gsdl.cgs.gstype.substty_var_k	.subcode
+gsdl.cgs.gstype.t.in	.cogvar
+bool.t.out	.cogvar
+gsdl.cgs.gstype.app	.gvar
+gsdl.cgs.gstype.substty	.gvar
+gsdl.cgs.gstype.fun	.gvar
+gsdl.cgs.gstype.lift	.gvar
+gsdl.cgs.gstype.pos	.gvar
+gsdl.cgs.gstype.sum	.gvar
+list.map	.gvar
+gsdl.cgs.gstype.constr.substty	.gvar
+gsdl.var.≡	.gvar
+v	.fv	gsdl.var.t
+ty0	.fv	gsdl.cgs.gstype.t
+ty1.0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	ty1.0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
+		.case	abstype
+tyc		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
+			.coerce	gsdl.cgs.gstype.t.in
+			.lift
+			.yield	ty1.0
+		.case	app
+tyf		.fkarg	0	gsdl.cgs.gstype.t
+tyx		.fkarg	1	gsdl.cgs.gstype.t
+y.tyf			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyf
+y.tyx			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyx
+			.app	y.tyf	y.tyx
+			.enter	gsdl.cgs.gstype.app
+		.case	definedprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	gsdl.cgs.gstype.t
+		.case	elimprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.coerce	gsdl.cgs.gstype.t.in
+			.lift
+			.yield	ty1.0
+		.case	fun
+tya		.fkarg	0	gsdl.cgs.gstype.t
+tyr		.fkarg	1	gsdl.cgs.gstype.t
+y.tya			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tya
+y.tyr			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyr
+			.app	y.tya	y.tyr
+			.enter	gsdl.cgs.gstype.fun
+		.case	impprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.coerce	gsdl.cgs.gstype.t.in
+			.lift
+			.yield	ty1.0
+		.case	lift
+ty1.1		.fkarg	0	gsdl.cgs.gstype.t
+ty1.2			.apply	gsdl.cgs.gstype.substty	|	v	ty0	ty1.1
+			.app	ty1.2
+			.enter	gsdl.cgs.gstype.lift
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+ty1.1		.fkarg	1	gsdl.cgs.gstype.t
+ty1.2			.apply	gsdl.cgs.gstype.substty	|	v	ty0	ty1.1
+			.app	pos	ty1.2
+			.enter	gsdl.cgs.gstype.pos
+		.case	product
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.undef	gsdl.cgs.gstype.t
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+constr.substty			.apply	gsdl.cgs.gstype.constr.substty	|	v	ty0
+cs1			.apply	list.map	gsdl.cgs.gstype.constr.t	gsdl.cgs.gstype.constr.t	|	constr.substty	cs
+			.app	cs1
+			.enter	gsdl.cgs.gstype.sum
+		.case	var
+v1		.fkarg	0	gsdl.var.t
+			.force	_gsdl.cgs.gstype.substty_var_k
+			.coerce	bool.t.out
+			.app	v	v1
+			.enter	gsdl.var.≡
+	-- > :: gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.substty_var_k	.forcecont
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+bool.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+ty0	.fv	gsdl.cgs.gstype.t
+ty1.0	.fv	gsdl.cgs.gstype.prim.u
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.coerce	gsdl.cgs.gstype.t.in
+			.lift
+			.yield	ty1.0
+		.case	true
+			.enter	ty0
+
+-- §section §gs{gsdl.cgs.gstype.constr.substty}
+
+_gsdl.cgs.gstype.constr.substty_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+v	.larg	gsdl.var.t
+ty0	.larg	gsdl.cgs.gstype.t
+co	.larg	gsdl.cgs.gstype.constr.t
+	.undef	gsdl.cgs.gstype.constr.t
+
+-- §section §gs{gsdl.cgs.gstype.≡}
+
+_gsdl.cgs.gstype.≡_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.≡_k0	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+ty0	.larg	gsdl.cgs.gstype.t
+ty1	.larg	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.gstype.≡_k0
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty0
+
+_gsdl.cgs.gstype.≡_k0	.forcecont
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+_gsdl.cgs.gstype.≡_k1	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+ty1	.fv	gsdl.cgs.gstype.t
+ty0.0	.karg	gsdl.cgs.gstype.prim.u
+	.force	_gsdl.cgs.gstype.≡_k1
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty1
+
+_gsdl.cgs.gstype.≡_k1	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+bool.t	.tygvar	-- Temp
+bool.false	.gvar
+gsdl.cgs.gstype.≡	.gvar
+bool.true	.gvar
+ty0.0	.fv	gsdl.cgs.gstype.prim.u
+ty1.0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	ty0.0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
+		.case	abstype
+tyc0		.fkarg	0	gsdl.var.t
+ki0		.fkarg	1	gsdl.cgs.gskind.t
+			.undef	bool.t
+		.case	app
+tyf		.fkarg	0	gsdl.cgs.gstype.t
+tyx		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	bool.t
+		.case	definedprim
+ps0		.fkarg	0	gsdl.var.t
+pn0		.fkarg	1	gsdl.var.t
+ki0		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	bool.t
+		.case	elimprim
+ps0		.fkarg	0	gsdl.var.t
+pn0		.fkarg	1	gsdl.var.t
+ki0		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	bool.t
+		.case	fun
+tya		.fkarg	0	gsdl.cgs.gstype.t
+tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	bool.t
+		.case	impprim
+ps0		.fkarg	0	gsdl.var.t
+pn0		.fkarg	1	gsdl.var.t
+ki0		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	bool.t
+		.case	lift
+ty0.1		.fkarg	0	gsdl.cgs.gstype.t
+			.danalyze	ty1.0	lift
+				.default
+					.enter	bool.false
+				.case	lift
+ty1.1				.fkarg	0	gsdl.cgs.gstype.t
+					.app	ty0.1	ty1.1
+					.enter	gsdl.cgs.gstype.≡
+		.case	pos
+pos0		.fkarg	0	gsdl.sourcepos.t
+ty0.1		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	bool.t
+		.case	product
+fs0.1		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.danalyze	ty1.0	product
+				.default
+					.undef	bool.t
+				.case	product
+fs1.1				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+					.enter	bool.true
+		.case	sum
+cs0		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	bool.t
+		.case	var
+v0		.fkarg	0	gsdl.var.t
+			.undef	bool.t
+	-- > :: bool.t
+
+-- §section §gs{gsdl.cgs.gstype.fmtgs}
+
+_gsdl.cgs.gstype.fmtgs_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.fmtgs_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
+ty	.larg	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.gstype.fmtgs_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsdl.cgs.gstype.fmtgs_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+fmtgs.printer.t	.tygvar	-- Temp
+fmtgs.prec	.gvar
+fmtgs.prec.app	.gvar
+diff.list.prepend	.gvar
+_gsdl.cgs.gstype.fmtgs_product.s	.gvar
+diff.list.:	.gvar
+rune.space	.gvar
+list.fmtgs	.gvar
+gsdl.cgs.gstype.field.fmtgs.list	.gvar
+fmtgs.prec.arg	.gvar
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	var
+		.case	abstype
+tyc		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
+			.undef	fmtgs.printer.t
+		.case	app
+tyf		.fkarg	0	gsdl.cgs.gstype.t
+tyx		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	fmtgs.printer.t
+		.case	definedprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	fmtgs.printer.t
+		.case	elimprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	fmtgs.printer.t
+		.case	fun
+tya		.fkarg	0	gsdl.cgs.gstype.t
+tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	fmtgs.printer.t
+		.case	impprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	fmtgs.printer.t
+		.case	lift
+ty1		.fkarg	0	gsdl.cgs.gstype.t
+			.undef	fmtgs.printer.t
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	fmtgs.printer.t
+		.case	product
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+s2			.apply	list.fmtgs	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.fmtgs.list	fs	fmtgs.prec.arg
+s1			.apply	diff.list.:	rune.t	|	rune.space	s2
+ds			.apply	diff.list.prepend	rune.t	|	_gsdl.cgs.gstype.fmtgs_product.s	s1
+			.app	fmtgs.prec.app	ds
+			.enter	fmtgs.prec
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	fmtgs.printer.t
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	fmtgs.printer.t
+	-- > :: fmtgs.printer.t
+
+-- §section §gs{gstype} Constructors
+
+_gsdl.cgs.gstype.abstype_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+v	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+c	.constr	gsdl.cgs.gstype.prim.u	abstype	0	v	1	ki
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.var_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+v	.larg	gsdl.var.t
+c	.constr	gsdl.cgs.gstype.prim.u	var	0	v
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.lift_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+ty	.larg	gsdl.cgs.gstype.t
+c	.constr	gsdl.cgs.gstype.prim.u	lift	0	ty
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.product_c	.expr
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+fields	.larg	list.t	gsdl.cgs.gstype.field.t
+c	.constr	gsdl.cgs.gstype.prim.u	product	0	fields
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.sum_c	.expr
+list.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+constrs	.larg	list.t	gsdl.cgs.gstype.constr.t
+c	.constr	gsdl.cgs.gstype.prim.u	sum	0	constrs
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.definedprim_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+pn	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+c	.constr	gsdl.cgs.gstype.prim.u	definedprim	0	pn	1	ps	2	ki
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.elimprim_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+pn	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+c	.constr	gsdl.cgs.gstype.prim.u	elimprim	0	pn	1	ps	2	ki
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.impprim_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+pn	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+c	.constr	gsdl.cgs.gstype.prim.u	impprim	0	pn	1	ps	2	ki
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.app_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+tyf	.larg	gsdl.cgs.gstype.t
+tyx	.larg	gsdl.cgs.gstype.t
+c	.constr	gsdl.cgs.gstype.prim.u	app	0	tyf	1	tyx
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.pos_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+ty	.larg	gsdl.cgs.gstype.t
+c	.constr	gsdl.cgs.gstype.prim.u	pos	0	pos	1	ty
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.gstype.fun_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+tya	.larg	gsdl.cgs.gstype.t
+tyr	.larg	gsdl.cgs.gstype.t
+c	.constr	gsdl.cgs.gstype.prim.u	fun	0	tya	1	tyr
+	.coerce	gsdl.cgs.gstype.t.in
+	.lift
+	.yield	c
+
+-- §section §gs{gsdl.cgs.gstype.field.parser}
+
+_gsdl.cgs.gstype.field.parser_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+parser.fail	.gvar
+	.enter	parser.fail	rune.t	gsdl.cgs.gstype.field.t
+
+-- §section §gs{gsdl.cgs.gstype.field.freevars}
+
+_gsdl.cgs.gstype.field.freevars_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+f	.larg	gsdl.cgs.gstype.field.t
+	.undef	ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.gstype.field.name.compare}
+
+_gsdl.cgs.gstype.field.name.compare_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+order.total.ord.t	.tygvar	-- Temp
+f0	.larg	gsdl.cgs.gstype.field.t
+f1	.larg	gsdl.cgs.gstype.field.t
+	.undef	order.total.ord.t
+
+-- §section §gs{gsdl.cgs.gstype.field.fmtgs}
+
+_gsdl.cgs.gstype.field.fmtgs_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+rune.t	.tygvar
+fmtgs.prec	.gvar
+fmtgs.prec.arg	.gvar
+diff.list.nil	.gvar
+f0	.larg	gsdl.cgs.gstype.field.t
+ds	.apply	diff.list.nil	rune.t
+	.app	fmtgs.prec.arg	ds
+	.enter	fmtgs.prec
+
+-- §section §gs{gsdl.cgs.gstype.field.fmtgs.list}
+
+_gsdl.cgs.gstype.field.fmtgs.list_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+list.fmtgs.byDefault	.gvar
+gsdl.cgs.gstype.field.fmtgs	.gvar
+	.app	gsdl.cgs.gstype.field.fmtgs
+	.enter	list.fmtgs.byDefault	gsdl.cgs.gstype.field.t
+
+	.type
+
+-- §section §gs{gsdl.cgs.gstype.t}
+
+gsdl.cgs.gstype.t	.tyabstract	*
+gsdl.cgs.gstype.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gstype.prim.u
+
+gsdl.cgs.gstype.prim.u	.tyexpr
+_gsdl.cgs.gstype.prim.u_abstype_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_app_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_definedprim_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_elimprim_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_fun_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_impprim_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_lift_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_pos_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_product_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_sum_ty	.tygvar
+_gsdl.cgs.gstype.prim.u_var_ty	.tygvar
+	.tysum	abstype	_gsdl.cgs.gstype.prim.u_abstype_ty	app	_gsdl.cgs.gstype.prim.u_app_ty	definedprim	_gsdl.cgs.gstype.prim.u_definedprim_ty	elimprim	_gsdl.cgs.gstype.prim.u_elimprim_ty	fun	_gsdl.cgs.gstype.prim.u_fun_ty	impprim	_gsdl.cgs.gstype.prim.u_impprim_ty	lift	_gsdl.cgs.gstype.prim.u_lift_ty	pos	_gsdl.cgs.gstype.prim.u_pos_ty	product	_gsdl.cgs.gstype.prim.u_product_ty	sum	_gsdl.cgs.gstype.prim.u_sum_ty	var	_gsdl.cgs.gstype.prim.u_var_ty
+
+_gsdl.cgs.gstype.prim.u_abstype_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.var.t	1	gsdl.cgs.gskind.t
+
+_gsdl.cgs.gstype.prim.u_app_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gstype.t	1	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.prim.u_definedprim_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.var.t	1	gsdl.var.t	2	gsdl.cgs.gskind.t
+
+_gsdl.cgs.gstype.prim.u_elimprim_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.var.t	1	gsdl.var.t	2	gsdl.cgs.gskind.t
+
+_gsdl.cgs.gstype.prim.u_fun_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gstype.t	1	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.prim.u_impprim_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.var.t	1	gsdl.var.t	2	gsdl.cgs.gskind.t
+
+_gsdl.cgs.gstype.prim.u_lift_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.prim.u_pos_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.prim.u_product_ty	.tyexpr
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+0_ty	.tylet	list.t	gsdl.cgs.gstype.field.t
+	.tyubproduct	0	0_ty
+
+_gsdl.cgs.gstype.prim.u_sum_ty	.tyexpr
+list.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+_0_ty	.tylet	list.t	gsdl.cgs.gstype.constr.t
+	.tyubproduct	0	_0_ty
+
+_gsdl.cgs.gstype.prim.u_var_ty	.tyexpr
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
+
+-- §section §gs{gsdl.cgs.gstype.field.t}
+
+gsdl.cgs.gstype.field.t	.tyabstract	*
+gsdl.cgs.gstype.field.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gstype.field.prim.u
+
+gsdl.cgs.gstype.field.prim.u	.tyexpr
+	.tysum
+
+-- §section §gs{gsdl.cgs.gstype.constr.t}
+
+gsdl.cgs.gstype.constr.t	.tyabstract	*
+gsdl.cgs.gstype.constr.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gstype.constr.prim.u
+
+gsdl.cgs.gstype.constr.prim.u	.tyexpr
+	.tysum
+
+-- §section §gs{gsdl.cgs.gstype.parser}
+
+_gsdl.cgs.gstype.parser_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gstype.parser.fun}
+
+_gsdl.cgs.gstype.parser.fun_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gstype.parser.app}
+
+_gsdl.cgs.gstype.parser.app_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.app_k_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+parser.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gstype.parser.arg}
+
+_gsdl.cgs.gstype.parser.arg_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gstype.substty}
+
+_gsdl.cgs.gstype.substty_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.gstype.constr.substty}
+
+_gsdl.cgs.gstype.constr.substty_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.constr.t
+	.tyref	gsdl.cgs.gstype.constr.t
+
+-- §section §gs{gsdl.cgs.gstype.≡}
+
+_gsdl.cgs.gstype.≡_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+bool.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	bool.t
+
+-- §section §gs{gsdl.cgs.gstype.print}
+
+_gsdl.cgs.gstype.print_w_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	diff.list.t	rune.t
+
+-- §section §gs{gsdl.cgs.gstype.freevars}
+
+_gsdl.cgs.gstype.freevars_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tyref	ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.gstype.field.fmtgs}
+
+_gsdl.cgs.gstype.field.fmtgs_ty	.tyexpr
+fmtgs.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+	.tyref	fmtgs.t	gsdl.cgs.gstype.field.t
+
+	.coercion
+
+gsdl.cgs.gstype.t.in	.tycoercion
+gsdl.cgs.gstype.t	.tygvar
+	.tydefinition	gsdl.cgs.gstype.t
+
+gsdl.cgs.gstype.t.out	.tycoercion
+gsdl.cgs.gstype.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gstype.t
+\end{verbatim}
+
+\section{symbol.ags}
+
+\begin{verbatim}
+#calculus: gsdl.string-code 0.5
+
+	.prefix
+
+	.data
+
+gsdl.cgs.symbol.components.get	.closure	_gsdl.cgs.symbol.components.get_c
+
+gsdl.cgs.symbol.compare	.closure	_gsdl.cgs.symbol.compare_c
+
+gsdl.cgs.symbol.≡	.closure	_gsdl.cgs.symbol.≡_c
+
+gsdl.cgs.symbol.fmtgs	.closure	_gsdl.cgs.symbol.fmtgs_c
+_gsdl.cgs.symbol.fmtgs_tyvar.s	.string	tyvar
+
+gsdl.cgs.symbol.var	.closure	_gsdl.cgs.symbol.var_c
+gsdl.cgs.symbol.tyvar	.closure	_gsdl.cgs.symbol.tyvar_c
+gsdl.cgs.symbol.abstyvar	.closure	_gsdl.cgs.symbol.abstyvar_c
+
+	.code
+
+-- §section §gs{gsdl.cgs.symbol.components.get}
+
+_gsdl.cgs.symbol.components.get_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+_gsdl.cgs.symbol.components.get_k	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
+s	.larg	gsdl.cgs.symbol.t
+	.force	_gsdl.cgs.symbol.components.get_k
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s
+
+_gsdl.cgs.symbol.components.get_k	.forcecont
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar	-- Temp
+gsdl.var.component.t	.tygvar	-- Temp
+gsdl.var.components.get	.gvar
+s0	.karg	gsdl.cgs.symbol.prim.u
+	.analyze	s0	abstyvar	tyvar	var
+		.case	abstyvar
+v		.fkarg	0	gsdl.var.t
+			.undef	list.t	gsdl.var.component.t
+		.case	tyvar
+v		.fkarg	0	gsdl.var.t
+			.app	v
+			.enter	gsdl.var.components.get
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	list.t	gsdl.var.component.t
+	-- > :: list.t	gsdl.var.component.t
+
+-- §section §gs{gsdl.cgs.symbol.compare}
+
+_gsdl.cgs.symbol.compare_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+_gsdl.cgs.symbol.compare_k0	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
+s0	.larg	gsdl.cgs.symbol.t
+s1	.larg	gsdl.cgs.symbol.t
+	.force	_gsdl.cgs.symbol.compare_k0
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s0
+
+_gsdl.cgs.symbol.compare_k0	.forcecont
+gsdl.cgs.symbol.t	.tygvar
+gsdl.cgs.symbol.prim.u	.tygvar
+_gsdl.cgs.symbol.compare_k1	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
+s1	.fv	gsdl.cgs.symbol.t
+s0.0	.karg	gsdl.cgs.symbol.prim.u
+	.force	_gsdl.cgs.symbol.compare_k1
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s1
+
+_gsdl.cgs.symbol.compare_k1	.forcecont
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.var.t	.tygvar
+order.total.ord.t	.tygvar	-- Temp
+gsdl.var.compare	.gvar
+order.total.ord.lt	.gvar
+order.total.ord.gt	.gvar
+s0.0	.fv	gsdl.cgs.symbol.prim.u
+s1.0	.karg	gsdl.cgs.symbol.prim.u
+	.analyze	s0.0	abstyvar	tyvar	var
+		.case	abstyvar
+v0		.fkarg	0	gsdl.var.t
+			.analyze	s1.0	abstyvar	tyvar	var
+				.case	abstyvar
+v1				.fkarg	0	gsdl.var.t
+					.app	v0	v1
+					.enter	gsdl.var.compare
+				.case	tyvar
+v1				.fkarg	0	gsdl.var.t
+					.enter	order.total.ord.lt
+				.case	var
+v1				.fkarg	0	gsdl.var.t
+					.enter	order.total.ord.lt
+		.case	tyvar
+v0		.fkarg	0	gsdl.var.t
+			.analyze	s1.0	abstyvar	tyvar	var
+				.case	abstyvar
+v1				.fkarg	0	gsdl.var.t
+					.enter	order.total.ord.gt
+				.case	tyvar
+v1				.fkarg	0	gsdl.var.t
+					.app	v0	v1
+					.enter	gsdl.var.compare
+				.case	var
+v1				.fkarg	0	gsdl.var.t
+					.undef	order.total.ord.t
+		.case	var
+v0		.fkarg	0	gsdl.var.t
+			.analyze	s1.0	abstyvar	tyvar	var
+				.case	abstyvar
+v1				.fkarg	0	gsdl.var.t
+					.undef	order.total.ord.t
+				.case	tyvar
+v1				.fkarg	0	gsdl.var.t
+					.enter	order.total.ord.gt
+				.case	var
+v1				.fkarg	0	gsdl.var.t
+					.undef	order.total.ord.t
+	-- > :: order.total.ord.t
+
+-- §section §gs{gsdl.cgs.symbol.≡}
+
+_gsdl.cgs.symbol.≡_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+_gsdl.cgs.symbol.≡_k0	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
+s0	.larg	gsdl.cgs.symbol.t
+s1	.larg	gsdl.cgs.symbol.t
+	.force	_gsdl.cgs.symbol.≡_k0
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s0
+
+_gsdl.cgs.symbol.≡_k0	.forcecont
+gsdl.cgs.symbol.t	.tygvar
+gsdl.cgs.symbol.prim.u	.tygvar
+_gsdl.cgs.symbol.≡_k1	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
+s1	.fv	gsdl.cgs.symbol.t
+s0.0	.karg	gsdl.cgs.symbol.prim.u
+	.force	_gsdl.cgs.symbol.≡_k1
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s1
+
+_gsdl.cgs.symbol.≡_k1	.forcecont
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.var.t	.tygvar
+bool.t	.tygvar	-- Temp
+gsdl.var.≡	.gvar
+s0.0	.fv	gsdl.cgs.symbol.prim.u
+s1.0	.karg	gsdl.cgs.symbol.prim.u
+	.analyze	s0.0	abstyvar	tyvar	var
+		.case	abstyvar
+v0		.fkarg	0	gsdl.var.t
+			.undef	bool.t
+		.case	tyvar
+v0		.fkarg	0	gsdl.var.t
+			.danalyze	s1.0	tyvar
+				.default
+					.undef	bool.t
+				.case	tyvar
+v1				.fkarg	0	gsdl.var.t
+					.app	v0	v1
+					.enter	gsdl.var.≡
+		.case	var
+v0		.fkarg	0	gsdl.var.t
+			.undef	bool.t
+	-- > :: bool.t
+
+-- §section §gs{gsdl.cgs.symbol.fmtgs}
+
+_gsdl.cgs.symbol.fmtgs_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+_gsdl.cgs.symbol.fmtgs_k	.subcode
+gsdl.cgs.symbol.t.out	.cogvar
+s	.larg	gsdl.cgs.symbol.t
+	.force	_gsdl.cgs.symbol.fmtgs_k
+	.coerce	gsdl.cgs.symbol.t.out
+	.enter	s
+
+_gsdl.cgs.symbol.fmtgs_k	.forcecont
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.var.t	.tygvar
+fmtgs.printer.t	.tygvar	-- Temp
+fmtgs.app	.gvar
+fmtgs.var	.gvar
+_gsdl.cgs.symbol.fmtgs_tyvar.s	.gvar
+gsdl.var.fmtgs	.gvar
+s0	.karg	gsdl.cgs.symbol.prim.u
+	.analyze	s0	abstyvar	tyvar	var
+		.case	abstyvar
+v		.fkarg	0	gsdl.var.t
+			.undef	fmtgs.printer.t
+		.case	tyvar
+v		.fkarg	0	gsdl.var.t
+tyfvar.fmt			.apply	fmtgs.var	|	_gsdl.cgs.symbol.fmtgs_tyvar.s
+v.fmt			.apply	gsdl.var.fmtgs	|	v
+			.app	tyfvar.fmt	v.fmt
+			.enter	fmtgs.app
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	fmtgs.printer.t
+	-- > :: fmtgs.printer.t
+
+-- §section §gs{gsdl.cgs.symbol.t} Constructors
+
+_gsdl.cgs.symbol.var_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.cgs.symbol.t.in	.cogvar
+v	.arg	gsdl.var.t
+c	.constr	gsdl.cgs.symbol.prim.u	var	0	v
+	.coerce	gsdl.cgs.symbol.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.symbol.tyvar_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.cgs.symbol.t.in	.cogvar
+v	.arg	gsdl.var.t
+c	.constr	gsdl.cgs.symbol.prim.u	tyvar	0	v
+	.coerce	gsdl.cgs.symbol.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.symbol.abstyvar_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.symbol.prim.u	.tygvar
+gsdl.cgs.symbol.t.in	.cogvar
+v	.arg	gsdl.var.t
+c	.constr	gsdl.cgs.symbol.prim.u	abstyvar	0	v
+	.coerce	gsdl.cgs.symbol.t.in
+	.lift
+	.yield	c
+
+	.type
+
+-- §section §gs{gsdl.cgs.symbol.t}
+
+gsdl.cgs.symbol.t	.tyabstract	*
+gsdl.cgs.symbol.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.symbol.prim.u
+
+gsdl.cgs.symbol.prim.u	.tyexpr
+_gsdl.cgs.symbol.prim.u_abstyvar_ty	.tygvar
+_gsdl.cgs.symbol.prim.u_tyvar_ty	.tygvar
+_gsdl.cgs.symbol.prim.u_var_ty	.tygvar
+	.tysum	abstyvar	_gsdl.cgs.symbol.prim.u_abstyvar_ty	tyvar	_gsdl.cgs.symbol.prim.u_tyvar_ty	var	_gsdl.cgs.symbol.prim.u_var_ty
+
+_gsdl.cgs.symbol.prim.u_abstyvar_ty	.tyexpr
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
+
+_gsdl.cgs.symbol.prim.u_tyvar_ty	.tyexpr
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
+
+_gsdl.cgs.symbol.prim.u_var_ty	.tyexpr
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
+
+	.coercion
+
+gsdl.cgs.symbol.t.in	.tycoercion
+gsdl.cgs.symbol.t	.tygvar
+	.tydefinition	gsdl.cgs.symbol.t
+
+gsdl.cgs.symbol.t.out	.tycoercion
+gsdl.cgs.symbol.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.symbol.t
+\end{verbatim}
+
+\section{syntax.ags}
+
+\begin{verbatim}
+#calculus: gsdl.string-code 0.6
+
+	.prefix
+
+	.data
+
+gsdl.cgs.syntax.var.parser	.closure	_gsdl.cgs.syntax.var.parser_c
+
+gsdl.cgs.syntax.var.print	.closure	_gsdl.cgs.syntax.var.print_c
+_gsdl.cgs.syntax.var.print_basevar_components.print	.closure	_gsdl.cgs.syntax.var.print_basevar_components.print_c	_gsdl.cgs.syntax.var.print_components.print_ty
+
+gsdl.cgs.syntax.parens	.closure	_gsdl.cgs.syntax.parens_c
+_gsdl.cgs.syntax.parens_lparen.re	.regex	(
+_gsdl.cgs.syntax.parens_rparen.re	.regex	)
+
+gsdl.cgs.syntax.lexeme	.closure	_gsdl.cgs.syntax.lexeme_c
+
+gsdl.cgs.syntax.ws	.closure	_gsdl.cgs.syntax.ws_c
+_gsdl.cgs.syntax.ws_re	.regex	[\s\t\n]*
+
+gsdl.cgs.syntax.gsid	.closure	_gsdl.cgs.syntax.gsid_c
+_gsdl.cgs.syntax.gsid_re	.regex	[a-z]§*	gsdl.syntax.alphanum.cont.char.re
+
+gsdl.cgs.syntax.dot	.closure	_gsdl.cgs.syntax.dot_c
+_gsdl.cgs.syntax.dot_re	.regex	.
+
+gsdl.cgs.syntax.oftype	.closure	_gsdl.cgs.syntax.oftype_c
+_gsdl.cgs.syntax.oftype_re	.regex	::
+
+gsdl.cgs.syntax.rbracket	.closure	_gsdl.cgs.syntax.rbracket_c
+_gsdl.cgs.syntax.rbracket_re	.regex	〉
+
+gsdl.cgs.syntax.semi	.closure	_gsdl.cgs.syntax.semi_c
+_gsdl.cgs.syntax.semi_re	.regex	;
+
+gsdl.cgs.syntax.keyword	.closure	_gsdl.cgs.syntax.keyword_c
+gsdl.cgs.syntax.core.keyword	.closure	_gsdl.cgs.syntax.core.keyword_c
+
+gsdl.cgs.syntax.keywordOp	.closure	_gsdl.cgs.syntax.keywordOp_c
+gsdl.cgs.syntax.core.keywordOp	.closure	_gsdl.cgs.syntax.core.keywordOp_c
+
+_gsdl.cgs.syntax_dq.re	.regex	"
+
+gsdl.cgs.syntax.var.component.print	.closure	_gsdl.cgs.syntax.var.component.print_c
+
+gsdl.cgs.syntax.branch.l	.closure	_gsdl.cgs.syntax.branch.l_c
+gsdl.cgs.syntax.branch.r	.closure	_gsdl.cgs.syntax.branch.r_c
+
+gsdl.cgs.syntax.assoc.any	.closure	_gsdl.cgs.syntax.assoc.any_c
+gsdl.cgs.syntax.assoc.right	.closure	_gsdl.cgs.syntax.assoc.right_c
+
+	.code
+
+-- §section §gs{gsdl.cgs.syntax.var.parser}
+
+_gsdl.cgs.syntax.var.parser_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.syntax.lexeme	.gvar
+gsdl.var.parser	.gvar
+	.app	gsdl.var.parser
+	.enter	gsdl.cgs.syntax.lexeme	gsdl.var.t
+
+-- §section §gs{gsdl.cgs.syntax.var.print}
+
+_gsdl.cgs.syntax.var.print_c	.expr
+gsdl.var.t	.tygvar
+_gsdl.cgs.syntax.var.print_k	.subcode
+gsdl.var.t.out	.cogvar
+v	.larg	gsdl.var.t
+	.force	_gsdl.cgs.syntax.var.print_k
+	.coerce	gsdl.var.t.out
+	.enter	v
+
+_gsdl.cgs.syntax.var.print_k	.forcecont
+gsdl.var.prim.u	.tygvar
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+natural.t	.tygvar
+gsdl.var.t	.tygvar
+string.t	.tygvar	-- Temp
+_gsdl.cgs.syntax.var.print_basevar_k	.subcode
+list.t.out	.cogvar
+v0	.karg	gsdl.var.prim.u
+	.analyze	v0	basevar	constructed
+		.case	basevar
+cs		.fkarg	0	list.t	gsdl.var.component.t
+			.force	_gsdl.cgs.syntax.var.print_basevar_k
+			.coerce	list.t.out	gsdl.var.component.t
+			.enter	cs
+		.case	constructed
+d		.fkarg	0	natural.t
+cs		.fkarg	1	list.t	gsdl.var.t
+			.undef	string.t
+	-- > :: string.t
+
+_gsdl.cgs.syntax.var.print_basevar_k	.forcecont
+list.prim.u	.tygvar
+gsdl.var.component.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar	-- Temp
+list.<>	.gvar
+gsdl.cgs.syntax.var.component.print	.gvar
+_gsdl.cgs.syntax.var.print_basevar_components.print	.gvar
+cs0	.karg	list.prim.u	gsdl.var.component.t
+	.analyze	cs0	:	nil
+		.case	:
+c0		.fkarg	0	gsdl.var.component.t
+cs1		.fkarg	1	list.t	gsdl.var.component.t
+c.s			.apply	gsdl.cgs.syntax.var.component.print	|	c0
+cs.s			.apply	_gsdl.cgs.syntax.var.print_basevar_components.print	|	cs1
+			.app	c.s	cs.s
+			.enter	list.<>	rune.t
+		.case	nil
+			.undef	string.t
+
+_gsdl.cgs.syntax.var.print_basevar_components.print_c	.expr
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+string.t	.tygvar	-- Temp
+_gsdl.cgs.syntax.var.print_basevar_components.print_k	.subcode
+list.t.out	.cogvar
+cs	.larg	list.t	gsdl.var.component.t
+	.force	_gsdl.cgs.syntax.var.print_basevar_components.print_k
+	.coerce	list.t.out	gsdl.var.component.t
+	.enter	cs
+
+_gsdl.cgs.syntax.var.print_basevar_components.print_k	.forcecont
+list.prim.u	.tygvar
+gsdl.var.component.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar	-- Temp
+list.:	.gvar
+rune.dot	.gvar
+list.<>	.gvar
+gsdl.cgs.syntax.var.component.print	.gvar
+_gsdl.cgs.syntax.var.print_basevar_components.print	.gvar
+list.nil	.gvar
+cs0	.karg	list.prim.u	gsdl.var.component.t
+	.analyze	cs0	:	nil
+		.case	:
+c0		.fkarg	0	gsdl.var.component.t
+cs1		.fkarg	1	list.t	gsdl.var.component.t
+c0.s			.apply	gsdl.cgs.syntax.var.component.print	|	c0
+cs1.s			.apply	_gsdl.cgs.syntax.var.print_basevar_components.print	|	cs1
+s1			.apply	list.<>	rune.t	|	c0.s	cs1.s
+			.app	rune.dot	s1
+			.enter	list.:	rune.t
+		.case	nil
+			.enter	list.nil	rune.t
+
+-- §section §gs{gsdl.cgs.syntax.parens}
+
+_gsdl.cgs.syntax.parens_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+parser.*>	.gvar
+gsdl.cgs.syntax.lexeme	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.parens_lparen.re	.gvar
+_gsdl.cgs.syntax.parens_rparen.re	.gvar
+parser.<*	.gvar
+parser.fail	.gvar	-- Temp
+α	.tyarg	*
+p	.larg	parser.t	rune.t	α
+lparen.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.parens_lparen.re
+lparen.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	lparen.p1
+rparen.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.parens_rparen.re
+rparen.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	rparen.p1
+p1	.apply	parser.<*	rune.t	α	string.t	|	p	rparen.p
+	.app	lparen.p	p1
+	.enter	parser.*>	rune.t	string.t	α
+
+-- §section §gs{gsdl.cgs.syntax.lexeme}
+
+_gsdl.cgs.syntax.lexeme_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+parser.<*	.gvar
+gsdl.cgs.syntax.ws	.gvar
+α	.tyarg	*
+p	.larg	parser.t	rune.t	α
+	.app	p	gsdl.cgs.syntax.ws
+	.enter	parser.<*	rune.t	α	string.t
+
+-- §section §gs{gsdl.cgs.syntax.ws}
+
+_gsdl.cgs.syntax.ws_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.ws_re	.gvar
+	.app	rune.compare	_gsdl.cgs.syntax.ws_re
+	.enter	parser.match	rune.t
+
+-- §section §gs{gsdl.cgs.syntax.gsid}
+
+_gsdl.cgs.syntax.gsid_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.gsid_re	.gvar
+	.app	rune.compare	_gsdl.cgs.syntax.gsid_re
+	.enter	parser.match	rune.t
+
+-- §section §gs{gsdl.cgs.syntax.dot}
+
+_gsdl.cgs.syntax.dot_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+parser.<*	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.dot_re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.dot_re
+	.app	m	gsdl.cgs.syntax.ws
+	.enter	parser.<*	rune.t	string.t	string.t
+
+-- §section §gs{gsdl.cgs.syntax.oftype}
+
+_gsdl.cgs.syntax.oftype_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+parser.<*	.gvar
+gsdl.cgs.syntax.ws	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.oftype_re	.gvar
+p0	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.oftype_re
+	.app	p0	gsdl.cgs.syntax.ws
+	.enter	parser.<*	rune.t	string.t	string.t
+
+-- §section §gs{gsdl.cgs.syntax.rbracket}
+
+_gsdl.cgs.syntax.rbracket_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+parser.<*	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.rbracket_re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.rbracket_re
+	.app	m	gsdl.cgs.syntax.ws
+	.enter	parser.<*	rune.t	string.t	string.t
+
+-- §section §gs{gsdl.cgs.syntax.rbracket}
+
+_gsdl.cgs.syntax.semi_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+parser.<*	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.semi_re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.semi_re
+	.app	m	gsdl.cgs.syntax.ws
+	.enter	parser.<*	rune.t	string.t	string.t
+
+-- §section §gs{gsdl.cgs.syntax.keyword}
+
+_gsdl.cgs.syntax.keyword_c	.expr
+regex.t	.tygvar
+rune.t	.tygvar
+maybe.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+parser.*>	.gvar
+parser.optional	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax_dq.re	.gvar
+parser.<*	.gvar
+parser.neg.lookahead	.gvar
+gsdl.syntax.alphanum.cont.char.re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+parser.fail	.gvar	-- Temp
+maybe.string.ty	.tylet	maybe.t	string.t
+kw	.larg	regex.t	rune.t
+dq.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_dq.re
+mb.dq.p	.apply	parser.optional	rune.t	string.t	|	dq.p
+p1	.apply	parser.match	rune.t	|	rune.compare	kw
+idc.p	.apply	parser.match	rune.t	|	rune.compare	gsdl.syntax.alphanum.cont.char.re
+p2.1	.apply	parser.neg.lookahead	rune.t	string.t	|	idc.p
+p2	.apply	parser.*>	rune.t	record.empty	string.t	|	p2.1	gsdl.cgs.syntax.ws
+p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
+	.app	mb.dq.p	p
+	.enter	parser.*>	rune.t	maybe.string.ty	string.t
+
+-- §section §gs{gsdl.cgs.syntax.core.keyword}
+
+_gsdl.cgs.syntax.core.keyword_c	.expr
+regex.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax_dq.re	.gvar
+parser.<*	.gvar
+parser.neg.lookahead	.gvar
+gsdl.syntax.alphanum.cont.char.re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+parser.fail	.gvar	-- Temp
+kw	.larg	regex.t	rune.t
+dq.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_dq.re
+p1	.apply	parser.match	rune.t	|	rune.compare	kw
+idc.p	.apply	parser.match	rune.t	|	rune.compare	gsdl.syntax.alphanum.cont.char.re
+p2.1	.apply	parser.neg.lookahead	rune.t	string.t	|	idc.p
+p2	.apply	parser.*>	rune.t	record.empty	string.t	|	p2.1	gsdl.cgs.syntax.ws
+p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
+	.app	dq.p	p
+	.enter	parser.*>	rune.t	string.t	string.t
+
+-- §section §gs{gsdl.cgs.syntax.keywordOp}
+
+_gsdl.cgs.syntax.keywordOp_c	.expr
+regex.t	.tygvar
+rune.t	.tygvar
+maybe.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+parser.*>	.gvar
+parser.optional	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax_dq.re	.gvar
+parser.<*	.gvar
+parser.neg.lookahead	.gvar
+gsdl.syntax.symbolic.cont.char.re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+parser.fail	.gvar	-- Temp
+maybe.string.ty	.tylet	maybe.t	string.t
+kw	.larg	regex.t	rune.t
+dq.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_dq.re
+dq.p	.apply	parser.optional	rune.t	string.t	|	dq.p1
+p1	.apply	parser.match	rune.t	|	rune.compare	kw
+opc.p	.apply	parser.match	rune.t	|	rune.compare	gsdl.syntax.symbolic.cont.char.re
+p2.1	.apply	parser.neg.lookahead	rune.t	string.t	|	opc.p
+p2	.apply	parser.*>	rune.t	record.empty	string.t	|	p2.1	gsdl.cgs.syntax.ws
+p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
+	.app	dq.p	p
+	.enter	parser.*>	rune.t	maybe.string.ty	string.t
+
+-- §section §gs{gsdl.cgs.syntax.core.keywordOp}
+
+_gsdl.cgs.syntax.core.keywordOp_c	.expr
+regex.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax_dq.re	.gvar
+parser.<*	.gvar
+parser.neg.lookahead	.gvar
+gsdl.syntax.symbolic.cont.char.re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+parser.fail	.gvar	-- Temp
+kw	.larg	regex.t	rune.t
+dq.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax_dq.re
+p1	.apply	parser.match	rune.t	|	rune.compare	kw
+opc.p	.apply	parser.match	rune.t	|	rune.compare	gsdl.syntax.symbolic.cont.char.re
+p2.1	.apply	parser.neg.lookahead	rune.t	string.t	|	opc.p
+p2	.apply	parser.*>	rune.t	record.empty	string.t	|	p2.1	gsdl.cgs.syntax.ws
+p	.apply	parser.<*	rune.t	string.t	string.t	|	p1	p2
+	.app	dq.p	p
+	.enter	parser.*>	rune.t	string.t	string.t
+
+-- §section §gs{gsdl.cgs.syntax.var.component.print}
+
+_gsdl.cgs.syntax.var.component.print_c	.expr
+gsdl.var.component.t	.tygvar
+_gsdl.cgs.syntax.var.component.print_k	.subcode
+gsdl.var.component.t.out	.cogvar
+c	.larg	gsdl.var.component.t
+	.force	_gsdl.cgs.syntax.var.component.print_k
+	.coerce	gsdl.var.component.t.out
+	.enter	c
+
+_gsdl.cgs.syntax.var.component.print_k	.forcecont
+gsdl.var.component.prim.u	.tygvar
+string.t	.tygvar
+natural.t	.tygvar
+c0	.karg	gsdl.var.component.prim.u
+	.analyze	c0	alphanum	numeric	symbolic
+		.case	alphanum
+s		.fkarg	0	string.t
+			.enter	s
+		.case	numeric
+n		.fkarg	0	natural.t
+			.undef	string.t
+		.case	symbolic
+s		.fkarg	0	string.t
+			.undef	string.t
+	-- > :: string.t
+
+-- §section §gs{gsdl.cgs.syntax.branch.t} Constructors
+
+_gsdl.cgs.syntax.branch.l_c	.expr
+gsdl.cgs.syntax.branch.prim.u	.tygvar
+gsdl.cgs.syntax.branch.t.in	.cogvar
+c	.constr	gsdl.cgs.syntax.branch.prim.u	l
+	.coerce	gsdl.cgs.syntax.branch.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.syntax.branch.r_c	.expr
+gsdl.cgs.syntax.branch.prim.u	.tygvar
+gsdl.cgs.syntax.branch.t.in	.cogvar
+c	.constr	gsdl.cgs.syntax.branch.prim.u	r
+	.coerce	gsdl.cgs.syntax.branch.t.in
+	.lift
+	.yield	c
+
+-- §section §gs{gsdl.cgs.syntax.assoc.t} Constructors
+
+_gsdl.cgs.syntax.assoc.any_c	.expr
+gsdl.cgs.syntax.assoc.prim.u	.tygvar
+gsdl.cgs.syntax.assoc.t.in	.cogvar
+c	.constr	gsdl.cgs.syntax.assoc.prim.u	any
+	.coerce	gsdl.cgs.syntax.assoc.t.in
+	.lift
+	.yield	c
+
+_gsdl.cgs.syntax.assoc.right_c	.expr
+gsdl.cgs.syntax.assoc.prim.u	.tygvar
+gsdl.cgs.syntax.assoc.t.in	.cogvar
+c	.constr	gsdl.cgs.syntax.assoc.prim.u	right
+	.coerce	gsdl.cgs.syntax.assoc.t.in
+	.lift
+	.yield	c
+
+	.type
+
+-- §section §gs{gsdl.cgs.syntax.branch.t}
+
+gsdl.cgs.syntax.branch.t	.tyabstract	*
+gsdl.cgs.syntax.branch.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.syntax.branch.prim.u
+
+gsdl.cgs.syntax.branch.prim.u	.tyexpr
+record.unboxed.empty	.tygvar
+	.tysum	l	record.unboxed.empty	r	record.unboxed.empty
+
+-- §section §gs{gsdl.cgs.syntax.assoc.t}
+
+gsdl.cgs.syntax.assoc.t	.tyabstract	*
+gsdl.cgs.syntax.assoc.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.syntax.assoc.prim.u
+
+gsdl.cgs.syntax.assoc.prim.u	.tyexpr
+record.unboxed.empty	.tygvar
+	.tysum	any	record.unboxed.empty	left	record.unboxed.empty	right	record.unboxed.empty
+
+-- §section §gs{gsdl.cgs.syntax.var.print}
+
+_gsdl.cgs.syntax.var.print_components.print_ty	.tyexpr
+list.t	.tygvar
+gsdl.var.component.t	.tygvar
+string.t	.tygvar
+	.tylift
+	.tyfun	list.t	gsdl.var.component.t
+	.tyref	string.t
+
+	.coercion
+
+gsdl.cgs.syntax.branch.t.in	.tycoercion
+gsdl.cgs.syntax.branch.t	.tygvar
+	.tydefinition	gsdl.cgs.syntax.branch.t
+
+gsdl.cgs.syntax.branch.t.out	.tycoercion
+gsdl.cgs.syntax.branch.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.syntax.branch.t
+
+gsdl.cgs.syntax.assoc.t.in	.tycoercion
+gsdl.cgs.syntax.assoc.t	.tygvar
+	.tydefinition	gsdl.cgs.syntax.assoc.t
+
+gsdl.cgs.syntax.assoc.t.out	.tycoercion
+gsdl.cgs.syntax.assoc.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.syntax.assoc.t
+\end{verbatim}
+
+\section{typeenv.ags}
+
+\begin{verbatim}
+#calculus: gsdl.string-code 0.6
+
+	.prefix
+
+	.data
+
+gsdl.cgs.typeenv.gskind.get	.closure	_gsdl.cgs.typeenv.gskind.get_c
+
+gsdl.cgs.typeenv.typeexpansion.get	.closure	_gsdl.cgs.typeenv.typeexpansion.get_c
+
+gsdl.cgs.typeenv.typedefinition.get	.closure	_gsdl.cgs.typeenv.typedefinition.get_c
+
+gsdl.cgs.typeenv.tyvar.elem	.closure	_gsdl.cgs.typeenv.tyvar.elem_c
+
+gsdl.cgs.typeenv.empty	.closure	_gsdl.cgs.typeenv.empty_c
+
+gsdl.cgs.typeenv.gsabstypenm.insert	.closure	_gsdl.cgs.typeenv.gsabstypenm.insert_c
+gsdl.cgs.typeenv.definedprim.insert	.closure	_gsdl.cgs.typeenv.definedprim.insert_c
+gsdl.cgs.typeenv.elimprim.insert	.closure	_gsdl.cgs.typeenv.elimprim.insert_c
+gsdl.cgs.typeenv.impprim.insert	.closure	_gsdl.cgs.typeenv.impprim.insert_c
+gsdl.cgs.typeenv.tyvar.insert	.closure	_gsdl.cgs.typeenv.tyvar.insert_c
+gsdl.cgs.typeenv.typefun.insert	.closure	_gsdl.cgs.typeenv.typefun.insert_c
+
+gsdl.cgs.typeenv.gsabstypedefn.insert	.closure	_gsdl.cgs.typeenv.gsabstypedefn.insert_c
+
+gsdl.cgs.typeenv.var.insert	.closure	_gsdl.cgs.typeenv.var.insert_c
+
+gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
+
+gsdl.cgs.typeenv.typeexpansion.app	.closure	_gsdl.cgs.typeenv.typeexpansion.app_c
+
+gsdl.cgs.typeenv.typeexpansion.substty	.closure	_gsdl.cgs.typeenv.typeexpansion.substty_c	_gsdl.cgs.typeenv.typeexpansion.substty_ty
+
+gsdl.cgs.typeenv.typeexpansion.togstype	.closure	_gsdl.cgs.typeenv.typeexpansion.togstype_c
+
+	.code
+
+-- §section §gs{gsdl.cgs.typeenv.gskind.get}
+
+_gsdl.cgs.typeenv.gskind.get_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.gskind.get_k	.subcode
+v	.larg	gsdl.var.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.gskind.get_k
+	.enter	env
+
+_gsdl.cgs.typeenv.gskind.get_k	.forcecont
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+ordered.map.get	.gvar
+gsdl.var.compare	.gvar
+v	.fv	gsdl.var.t
+env0	.karg	gsdl.cgs.typeenv.u
+kis	.field	kinds	env0
+	.app	gsdl.var.compare	v	kis
+	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.gskind.t
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.get}
+
+_gsdl.cgs.typeenv.typeexpansion.get_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.get_k	.subcode
+v	.larg	gsdl.var.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.typeexpansion.get_k
+	.enter	env
+
+_gsdl.cgs.typeenv.typeexpansion.get_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+ordered.map.get	.gvar
+gsdl.var.compare	.gvar
+v	.fv	gsdl.var.t
+env0	.karg	gsdl.cgs.typeenv.u
+exps	.field	typeexpansions	env0
+	.app	gsdl.var.compare	v	exps
+	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
+
+-- §section §gs{gsdl.cgs.typeenv.typedefinition.get}
+
+_gsdl.cgs.typeenv.typedefinition.get_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.typedefinition.get_k	.subcode
+v	.larg	gsdl.var.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.typedefinition.get_k
+	.enter	env
+
+_gsdl.cgs.typeenv.typedefinition.get_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+ordered.map.get	.gvar
+gsdl.var.compare	.gvar
+v	.fv	gsdl.var.t
+env0	.karg	gsdl.cgs.typeenv.u
+tyds	.field	typedefinitions	env0
+	.app	gsdl.var.compare	v	tyds
+	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t
+
+-- §section §gs{gsdl.cgs.typeenv.tyvar.elem}
+
+_gsdl.cgs.typeenv.tyvar.elem_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+bool.t	.tygvar	-- Temp
+ordered.map.elem	.gvar
+gsdl.var.compare	.gvar
+v	.larg	gsdl.var.t
+env	.larg	gsdl.cgs.typeenv.t
+kis	.lfield	kinds	env
+	.app	gsdl.var.compare	v	kis
+	.enter	ordered.map.elem	gsdl.var.t	gsdl.cgs.gskind.t
+
+-- §section §gs{gsdl.cgs.typeenv.empty}
+
+_gsdl.cgs.typeenv.empty_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+ordered.map.empty	.gvar
+kis	.apply	ordered.map.empty	gsdl.var.t	gsdl.cgs.gskind.t
+es	.apply	ordered.map.empty	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
+tyds	.apply	ordered.map.empty	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t
+r	.record	kinds	kis	typedefinitions	tyds	typeexpansions	es	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.gsabstypenm.insert}
+
+_gsdl.cgs.typeenv.gsabstypenm.insert_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.gsabstypenm.insert_k	.subcode
+v	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.gsabstypenm.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.gsabstypenm.insert_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+list.nil	.gvar
+gsdl.cgs.gstype.abstype	.gvar
+v	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+env0	.karg	gsdl.cgs.typeenv.u
+kis0	.field	kinds	env0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
+tyds	.field	typedefinitions	env0
+e.ls	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e.ty	.apply	gsdl.cgs.gstype.abstype	|	v	ki
+e	.lrecord	0	e.ls	1	e.ty	|	gsdl.cgs.typeenv.typeexpansion.t
+es0	.field	typeexpansions	env0
+es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
+r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.definedprim.insert}
+
+_gsdl.cgs.typeenv.definedprim.insert_c	.expr
+gsdl.var.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.definedprim.insert_k	.subcode
+v	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+pn	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.definedprim.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.definedprim.insert_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+list.nil	.gvar
+gsdl.cgs.gstype.definedprim	.gvar
+v	.fv	gsdl.var.t
+pn	.fv	gsdl.var.t
+ps	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+env0	.karg	gsdl.cgs.typeenv.u
+kis0	.field	kinds	env0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
+tyds	.field	typedefinitions	env0
+nil	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+ety	.apply	gsdl.cgs.gstype.definedprim	|	ps	pn	ki
+e	.lrecord	0	nil	1	ety	|	gsdl.cgs.typeenv.typeexpansion.t
+es0	.field	typeexpansions	env0
+es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
+r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.elimprim.insert}
+
+_gsdl.cgs.typeenv.elimprim.insert_c	.expr
+gsdl.var.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.elimprim.insert_k	.subcode
+v	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+pn	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.elimprim.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.elimprim.insert_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+list.nil	.gvar
+gsdl.cgs.gstype.elimprim	.gvar
+v	.fv	gsdl.var.t
+ps	.fv	gsdl.var.t
+pn	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+env0	.karg	gsdl.cgs.typeenv.u
+kis0	.field	kinds	env0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
+tyds	.field	typedefinitions	env0
+nil	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+ety	.apply	gsdl.cgs.gstype.elimprim	|	ps	pn	ki
+e	.lrecord	0	nil	1	ety	|	gsdl.cgs.typeenv.typeexpansion.t
+es0	.field	typeexpansions	env0
+es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
+r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.impprim.insert}
+
+_gsdl.cgs.typeenv.impprim.insert_c	.expr
+gsdl.var.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.impprim.insert_k	.subcode
+v	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+pn	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.impprim.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.impprim.insert_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+list.nil	.gvar
+gsdl.cgs.gstype.impprim	.gvar
+v	.fv	gsdl.var.t
+ps	.fv	gsdl.var.t
+pn	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+env0	.karg	gsdl.cgs.typeenv.u
+kis0	.field	kinds	env0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
+tyds	.field	typedefinitions	env0
+nil	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e.ty	.apply	gsdl.cgs.gstype.impprim	|	ps	pn	ki
+e	.lrecord	0	nil	1	e.ty	|	gsdl.cgs.typeenv.typeexpansion.t
+es0	.field	typeexpansions	env0
+es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
+r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.tyvar.insert}
+
+_gsdl.cgs.typeenv.tyvar.insert_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.tyvar.insert_k	.subcode
+v	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.tyvar.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.tyvar.insert_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+list.nil	.gvar
+gsdl.cgs.gstype.var	.gvar
+v	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+env0	.karg	gsdl.cgs.typeenv.u
+kis0	.field	kinds	env0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
+tyds	.field	typedefinitions	env0
+nil	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e.ty	.apply	gsdl.cgs.gstype.var	|	v
+e	.lrecord	0	nil	1	e.ty	|	gsdl.cgs.typeenv.typeexpansion.t
+tyes0	.field	typeexpansions	env0
+tyes1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	tyes0
+r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	tyes1	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.typefun.insert}
+
+_gsdl.cgs.typeenv.typefun.insert_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.typefun.insert_k	.subcode
+v	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+as	.larg	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e.ty	.larg	gsdl.cgs.gstype.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.typefun.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.typefun.insert_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+list.nil	.gvar
+gsdl.cgs.gstype.var	.gvar
+v	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+as	.fv	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e.ty	.fv	gsdl.cgs.gstype.t
+env0	.karg	gsdl.cgs.typeenv.u
+kis0	.field	kinds	env0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
+tyds	.field	typedefinitions	env0
+e	.lrecord	0	as	1	e.ty	|	gsdl.cgs.typeenv.typeexpansion.t
+tyes0	.field	typeexpansions	env0
+tyes1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	tyes0
+r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	tyes1	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.gsabstypedefn.insert}
+
+_gsdl.cgs.typeenv.gsabstypedefn.insert_c	.expr
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.gsabstypedefn.insert_k	.subcode
+v	.larg	gsdl.var.t
+as	.larg	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e	.larg	gsdl.cgs.gstype.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.gsabstypedefn.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.gsabstypedefn.insert_k	.forcecont
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+v	.fv	gsdl.var.t
+as	.fv	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e	.fv	gsdl.cgs.gstype.t
+env0	.karg	gsdl.cgs.typeenv.u
+kis	.field	kinds	env0
+dfn	.lrecord	tyargs	as	tybody	e	|	gsdl.cgs.typeenv.typedefinition.t
+tyds	.field	typedefinitions	env0
+tyds1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t	|	gsdl.var.compare	v	dfn	tyds
+tyes	.field	typeexpansions	env0
+r	.record	kinds	kis	typedefinitions	tyds1	typeexpansions	tyes	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.var.insert}
+
+_gsdl.cgs.typeenv.var.insert_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.var.insert_k	.subcode
+v	.larg	gsdl.var.t
+ty	.larg	gsdl.cgs.gstype.t
+ki	.larg	gsdl.cgs.gskind.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.var.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.var.insert_k	.forcecont
+gsdl.cgs.typeenv.u	.tygvar
+env0	.karg	gsdl.cgs.typeenv.u
+kis	.field	kinds	env0
+tyds	.field	typedefinitions	env0
+tyes	.field	typeexpansions	env0
+r	.record	kinds	kis	typedefinitions	tyds	typeexpansions	tyes	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.overlay}
+
+_gsdl.cgs.typeenv.overlay_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.overlay_k0	.subcode
+env0	.larg	gsdl.cgs.typeenv.t
+env1	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.overlay_k0
+	.enter	env0
+
+_gsdl.cgs.typeenv.overlay_k0	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+_gsdl.cgs.typeenv.overlay_k1	.subcode
+env1	.fv	gsdl.cgs.typeenv.t
+env0.0	.karg	gsdl.cgs.typeenv.u
+	.force	_gsdl.cgs.typeenv.overlay_k1
+	.enter	env1
+
+_gsdl.cgs.typeenv.overlay_k1	.forcecont
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+ordered.map.∪	.gvar
+gsdl.var.compare	.gvar
+env0.0	.fv	gsdl.cgs.typeenv.u
+env1.0	.karg	gsdl.cgs.typeenv.u
+kis0	.field	kinds	env0.0
+kis1	.field	kinds	env1.0
+kis2	.apply	ordered.map.∪	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	kis0	kis1
+tyds0	.field	typedefinitions	env0.0
+tyds1	.field	typedefinitions	env1.0
+tyds2	.apply	ordered.map.∪	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t	|	gsdl.var.compare	tyds0	tyds1
+es0	.field	typeexpansions	env0.0
+es1	.field	typeexpansions	env1.0
+es2	.apply	ordered.map.∪	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	es0	es1
+r	.record	kinds	kis2	typedefinitions	tyds2	typeexpansions	es2	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.app}
+
+_gsdl.cgs.typeenv.typeexpansion.app_c	.expr
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.app_k	.subcode
+tyf	.larg	gsdl.cgs.typeenv.typeexpansion.t
+tya	.larg	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.typeenv.typeexpansion.app_k
+	.enter	tyf
+
+_gsdl.cgs.typeenv.typeexpansion.app_k	.forcecont
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.app_k1	.subcode
+list.t.out	.cogvar
+tya	.fv	gsdl.cgs.gstype.t
+tyf0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
+tyls	.field	0	tyf0
+e	.field	1	tyf0
+	.force	_gsdl.cgs.typeenv.typeexpansion.app_k1
+	.coerce	list.t.out	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.enter	tyls
+
+_gsdl.cgs.typeenv.typeexpansion.app_k1	.forcecont
+gsdl.cgs.gstype.t	.tygvar
+list.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.substty	.gvar
+list.nil	.gvar
+gsdl.cgs.gstype.app	.gvar
+tya	.fv	gsdl.cgs.gstype.t
+e	.fv	gsdl.cgs.gstype.t
+tyls0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.analyze	tyls0	:	nil
+		.case	:
+l0		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+ls1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+v			.lfield	0	l0
+etyf1			.lrecord	0	ls1	1	e	|	gsdl.cgs.typeenv.typeexpansion.t
+			.app	v	tya	etyf1
+			.enter	gsdl.cgs.typeenv.typeexpansion.substty
+		.case	nil
+ls1			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e1			.apply	gsdl.cgs.gstype.app	|	e	tya
+r			.record	0	ls1	1	e1	|	gsdl.cgs.typeenv.typeexpansion.prim.u
+			.lift
+			.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.substty}
+
+_gsdl.cgs.typeenv.typeexpansion.substty_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.substty_k	.subcode
+v	.larg	gsdl.var.t
+ty	.larg	gsdl.cgs.gstype.t
+tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
+	.force	_gsdl.cgs.typeenv.typeexpansion.substty_k
+	.enter	tye
+
+_gsdl.cgs.typeenv.typeexpansion.substty_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.substty_k1	.subcode
+list.t.out	.cogvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+tye0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
+tyls	.field	0	tye0
+e	.field	1	tye0
+	.force	_gsdl.cgs.typeenv.typeexpansion.substty_k1
+	.coerce	list.t.out	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.enter	tyls
+
+_gsdl.cgs.typeenv.typeexpansion.substty_k1	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar	-- Temp
+list.nil	.gvar
+gsdl.cgs.gstype.substty	.gvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+e	.fv	gsdl.cgs.gstype.t
+tyls0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.analyze	tyls0	:	nil
+		.case	:
+tyl0		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+tyls1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+			.undef	gsdl.cgs.typeenv.typeexpansion.t
+		.case	nil
+nil			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e1			.apply	gsdl.cgs.gstype.substty	|	v	ty	e
+r			.record	0	nil	1	e1	|	gsdl.cgs.typeenv.typeexpansion.prim.u
+			.lift
+			.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.togstype}
+
+_gsdl.cgs.typeenv.typeexpansion.togstype_c	.expr
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.togstype_k	.subcode
+tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
+	.force	_gsdl.cgs.typeenv.typeexpansion.togstype_k
+	.enter	tye
+
+_gsdl.cgs.typeenv.typeexpansion.togstype_k	.forcecont
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.togstype_k1	.subcode
+list.t.out	.cogvar
+tye0	.karg	gsdl.cgs.typeenv.typeexpansion.prim.u
+tyls	.field	0	tye0
+e	.field	1	tye0
+	.force	_gsdl.cgs.typeenv.typeexpansion.togstype_k1
+	.coerce	list.t.out	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.enter	tyls
+
+_gsdl.cgs.typeenv.typeexpansion.togstype_k1	.forcecont
+gsdl.cgs.gstype.t	.tygvar
+list.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+either.t	.tygvar	-- Temp
+either.right	.gvar
+e	.fv	gsdl.cgs.gstype.t
+tyls0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.analyze	tyls0	:	nil
+		.case	:
+tyl0		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+tyls1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
+		.case	nil
+			.app	e
+			.enter	either.right	string.t	gsdl.cgs.gstype.t
+
+	.type
+
+-- §section §gs{gsdl.cgs.typeenv.t}
+
+gsdl.cgs.typeenv.t	.tyexpr
+gsdl.cgs.typeenv.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.typeenv.u
+
+gsdl.cgs.typeenv.u	.tyexpr
+ordered.map.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+kinds_ty	.tylet	ordered.map.t	gsdl.var.t	gsdl.cgs.gskind.t
+_typedefinitions_ty	.tylet	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t
+typeexpansions_ty	.tylet	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
+	.typroduct	kinds	kinds_ty	typedefinitions	_typedefinitions_ty	typeexpansions	typeexpansions_ty
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.t}
+
+gsdl.cgs.typeenv.typeexpansion.t	.tyexpr	*
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.typeenv.typeexpansion.prim.u
+
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tyexpr
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.tylambda.ty	.tylet	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.typroduct	0	list.tylambda.ty	1	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.tylambda.t}
+
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tyexpr
+gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u
+
+gsdl.cgs.typeenv.typeexpansion.tylambda.prim.u	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+	.typroduct	0	gsdl.var.t	1	gsdl.cgs.gskind.t
+
+-- §section §gs{gsdl.cgs.typeenv.typedefinition.t}
+
+gsdl.cgs.typeenv.typedefinition.t	.tyexpr
+gsdl.cgs.typeenv.typedefinition.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.typeenv.typedefinition.u
+
+gsdl.cgs.typeenv.typedefinition.u	.tyexpr
+list.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+list.tylambda.ty	.tylet	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.typroduct	tyargs	list.tylambda.ty	tybody	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.substty}
+
+_gsdl.cgs.typeenv.typeexpansion.substty_ty	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+	.tylift
+	.tyfun	gsdl.var.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.typeexpansion.t
+	.tyref	gsdl.cgs.typeenv.typeexpansion.t
+\end{verbatim}
+
 \end{document}
