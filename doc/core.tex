@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 \title{Global Script Core Specification}
 \author{Jonathan Cast\\\texttt{<jcast@globalscript.org>}}
 
@@ -47,7 +47,7 @@
 
 \tableofcontents
 
-\section{Files}
+\chapter{Files}
 
 A prefix file is a sequence of generators; a document is an expression, semi-colon terminated, followed by a sequence of generators.
 
@@ -58,9 +58,9 @@ document ::=
 ;
 \end{verbatim}
 
-\section{Type System}
+\chapter{Type System}
 
-\subsection{Basic Type Forms}
+\section{Basic Type Forms}
 
 \begin{itemize}
     \item \defn{Primitive types} form the basis of the type system, and
@@ -84,7 +84,7 @@ There are two other wrinkles in the type system:
     \item \defn{Abstract types} introduce new types distinct from exiting types.
 \end{itemize}
 
-\subsection{Classifications of Types}
+\section{Classifications of Types}
 
 \paragraph{Pointed vs.~Un-pointed}
 A type is \defn{pointed} if it has a representation for non-termination, and \defn{un-pointed} otherwise.
@@ -134,7 +134,7 @@ where the boxed vs. un-boxed terminology determines the number of registers that
 the number of indirections in the representation of a value.
 No Core variable may have (what Core considers) an un-boxed type.
 
-\subsection{Primitive Types}
+\section{Primitive Types}
 
 Primitive types are always boxed\footnote{
     A client is free to use pointer tagging to pack values of a primitive type into a machine word,
@@ -183,7 +183,7 @@ This Global Script implementation splits primitive types into four forms:
         \end{itemize}
 \end{itemize}
 
-\subsection{Sum and Product Types}
+\section{Sum and Product Types}
 
 Sum and product types are formed from indexed collections of Core types (indexed by Global Script variable names).
 They are somewhat un-usual in that each indexed collection \<\{\tau_v\}_{v\in\mathcal{V}}\> corresponds to four distinct (anonymous) Core types.
@@ -303,7 +303,7 @@ For such a collection \<\{\tau_v\}_{v\in\mathcal{V}}\> there are thus eight poss
         This is compiled exactly the same way as the un-lifted un-boxed version.
 \end{itemize}
 
-\subsection{Function Types}
+\section{Function Types}
 
 Un-lifted function types have the form
 \begin{haskell} \tau_0 \rightarrow \tau_1 \end{haskell}
@@ -337,7 +337,7 @@ right number of arguments $\rightarrow$ pass them in;
 too few arguments $\rightarrow$ build partial application in the heap'
 logic to Core.
 
-\subsection{Type Synonyms and Abstract Types}
+\section{Type Synonyms and Abstract Types}
 
 Type synonyms can be defined by
 \begin{haskell} \type t \overline{\alpha_i} = \tau[\overline{\alpha_i}]; \end{haskell}
