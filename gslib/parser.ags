@@ -39,6 +39,8 @@ parser.<|>	.closure	_parser.<|>_c
 parser.optional	.closure	_parser.optional_c
 parser.many	.closure	_parser.many_c	_parser.many_ty
 
+parser.mapM	.closure	_parser.mapM_c	_parser.mapM_ty
+
 parser.symbol	.closure	_parser.symbol_c
 _parser.symbol_msg	.string	Un-expected\sEOF;\sexpected\ssymbol
 parser.symbol.matching.bool	.closure	_parser.symbol.matching.bool_c
@@ -2924,6 +2926,23 @@ p1.k	.karg	parser.prim.u	s	r
 	.app	p0.k	p1.k
 	.yield	_parser.prim.<|>_w	s	r
 
+-- §section §gs{parser.mapM}
+
+_parser.mapM_c	.expr
+_parser.mapM_f_ty	.tygvar
+list.t	.tygvar
+_parser.t_k_ty	.tygvar
+parser.prim.t	.tygvar	-- Temp
+s	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+f	.larg	_parser.mapM_f_ty	s	α	β
+xn	.larg	list.t	α
+r	.tyarg	*
+list.β.ty	.tylet	list.t	β
+k	.larg	_parser.t_k_ty	s	list.β.ty	r
+	.undef	parser.prim.t	s	r
+
 -- §section §gs{parser.symbol}
 
 _parser.symbol_c	.expr
@@ -5055,6 +5074,31 @@ res.ty	.tylet	list.t	α
 	.tylift
 	.tyfun	parser.t	s	α
 	.tyref	parser.t	s	res.ty
+
+-- §section §gs{parser.mapM}
+
+_parser.mapM_ty	.tyexpr
+_parser.mapM_f_ty	.tygvar
+list.t	.tygvar
+parser.t	.tygvar
+s	.tyforall	*
+α	.tyforall	*
+β	.tyforall	*
+list.β.ty	.tylet	list.t	β
+	.tylift
+	.tyfun	_parser.mapM_f_ty	s	α	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	parser.t	s	list.β.ty
+
+_parser.mapM_f_ty	.tyexpr
+parser.t	.tygvar
+s	.tylambda	*
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	parser.t	s	β
 
 -- §section §gs{parser.match}
 
