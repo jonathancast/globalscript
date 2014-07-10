@@ -41,7 +41,7 @@ Every string code file must begin with this syntax, followed by  blank line:
 \end{verbatim}
 `Calculus' means syntax + static semantics + denotational semantics + calculation laws,
 but effectively in this case it just indicates syntax (string code, as opposed to core or source-leve) and language version.
-Older versions are also supported: versions 0.4 and 0.5.
+One older versions is also supported: version 0.5.
 This document specifieds version 0.6, but it has notes on the changes from earlier versions.
 
 Next after this is the declaration
@@ -673,7 +673,6 @@ this construct binds \stringcode{label} to the expression defined by \stringcode
 Legally, the label can be omitted with a warning (since allocation operations are side-effect-free).
 
 \subsection{\stringcode{.impprim}}
-\new{0.5}{in imperative block statements, this had to be put out in a \stringcode{.closure} and the result returned.}
 \unimpl{This is un-supported in imperative block statements as yet.}
 
 \begin{verbatim}
@@ -691,7 +690,6 @@ The result type must be an appliction of \stringcode{primtype} from the same pri
 which must be an imperative primitive type.
 
 \subsection{\stringcode{.lfield}}
-\new{0.5}{in imperative block statements, this had to be put out in a \stringcode{.closure} and the result returned.}
 \unimpl{This is un-supported in imperative block statements as yet.}
 
 \begin{verbatim}
@@ -701,8 +699,7 @@ x	.lfield	f	r
 This binds \stringcode{x} to the field \stringcode{f} of \stringcode{r}, which must be a lifted record with a field \stringcode{f}, which must in turn have lifted type.
 
 \subsection{\stringcode{.undefined}}
-\new{0.5}{in imperative block statements, a \stringcode{.undef} had to be put out in a \stringcode{.closure}.}
-\unimpl{This is un-supported in imperative block statements as yet.}
+\unimpl{This is un-supported in \stringcode{.bind} statements in imperative block statements as yet.}
 
 \begin{verbatim}
 x	.undefined	tyf	tyx0	...	tyxn-1
@@ -712,7 +709,6 @@ This binds \stringcode{x} to the `undefined' value of type \stringcode{tyf tyx$_
 which must be a lifted type.
 
 \subsection{\stringcode{.lifted}}
-\new{0.5}{in imperative block statements, a \stringcode{.lift} had to be put out in a \stringcode{.closure}.}
 \unimpl{This is un-supported in imperative block statements as yet.}
 
 \begin{verbatim}
@@ -722,7 +718,6 @@ y	.lifted	x
 This binds \stringcode{y} to the image of \stringcode{x} under the unit of the lifting monad.
 
 \subsection{\stringcode{.cast}}
-\new{0.5}{in imperative block statements, a \stringcode{.coerce} had to be put out in a \stringcode{.closure}.}
 \unimpl{This is un-supported in imperative block statements as yet.}
 
 \begin{verbatim}
@@ -732,7 +727,6 @@ y	.cast	x	cof	tyx0	...	tyxn-1
 This binds \stringcode{x} to the image of \stringcode{x} under the application of the coercion \stringcode{cof} to the type variables \stringcode{tyx$_0$, $\ldots$, tyx$_{n-1}$}.
 
 \subsection{\stringcode{.apply}}
-\new{0.5}{in imperative block statements, a \stringcode{.app} had to be put out in a \stringcode{.closure}.}
 \unimpl{This is un-supported in imperative block statements as yet.}
 
 \begin{verbatim}
@@ -816,7 +810,6 @@ This binds \stringcode{x} to the field \stringcode{f} of \stringcode{r}, which m
 These are used in imperative block statements to execute sub-programs and name their results.
 
 \subsection{\stringcode{.bind}}
-\new{0.5}{these were combined into one token; e.g., what is now written \stringcode{.bind	.closure} was \stringcode{.bind.closure}.}
 
 \begin{verbatim}
 x	.bind	<alloc op>
@@ -833,7 +826,6 @@ These are similar to bind generators (section \ref{bind}), but they define the l
 The result of these sub-programs is returned directly from the block statement, rather than being captured and used inside it.
 
 \subsection{\stringcode{.body}}
-\new{0.5}{these were combined into one token; e.g., what is now written \stringcode{.body	.closure} was \stringcode{.body.closure}.}
 
 \begin{verbatim}
 	.body	<alloc op>
@@ -1395,11 +1387,11 @@ That is followed by global variables, free variables, and arguments as for an \v
 \begin{verbatim}
 var	.closure	code-label
 \end{verbatim}
-`Bind' generators get compiled to\new{0.5}{this was one token, \stringcode{.bind.closure}.}
+`Bind' generators get compiled to
 \begin{verbatim}
 var	.bind	.closure	code-label
 \end{verbatim}
-The body gets compiled to\new{0.5}{this was one token, \stringcode{.body.closure}.}
+The body gets compiled to
 \begin{verbatim}
 	.body	.closure	code-label
 \end{verbatim}
