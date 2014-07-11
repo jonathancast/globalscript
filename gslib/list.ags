@@ -562,11 +562,11 @@ xn1		.fkarg	1	list.t	α
 _list.≡_c	.expr
 bool.t	.tygvar
 list.t	.tygvar
-_list.≡.arg.ty	.tygvar
+_list.≡_arg_ty	.tygvar
 _list.≡.k0	.subcode
 list.t.out	.cogvar
 α	.tyarg	*
-at	.tylet	_list.≡.arg.ty	α
+at	.tylet	_list.≡_arg_ty	α
 c	.larg	at
 xn	.larg	list.t	α
 ys	.larg	list.t	α
@@ -578,11 +578,11 @@ _list.≡.k0	.forcecont
 bool.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
-_list.≡.arg.ty	.tygvar
+_list.≡_arg_ty	.tygvar
 _list.≡.k1	.subcode
 list.t.out	.cogvar
 α	.tyfv	*
-c	.fv	_list.≡.arg.ty	α
+c	.fv	_list.≡_arg_ty	α
 ys	.fv	list.t	α
 t	.tylet	list.prim.u	α
 xn0	.karg	t
@@ -593,13 +593,13 @@ xn0	.karg	t
 _list.≡.k1	.forcecont
 list.prim.u	.tygvar
 list.t	.tygvar
-_list.≡.arg.ty	.tygvar
+_list.≡_arg_ty	.tygvar
 _list.≡_:_:_k	.subcode
 bool.t.out	.cogvar
 bool.true	.gvar
 bool.false	.gvar
 α	.tyfv	*
-c	.fv	_list.≡.arg.ty	α
+c	.fv	_list.≡_arg_ty	α
 xn0	.fv	list.prim.u	α
 ys0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
@@ -627,12 +627,12 @@ ys1				.fkarg	1	list.t	α
 
 _list.≡_:_:_k	.forcecont
 list.t	.tygvar
-_list.≡.arg.ty	.tygvar
+_list.≡_arg_ty	.tygvar
 bool.prim.u	.tygvar
 bool.false	.gvar
 list.≡	.gvar
 α	.tyfv	*
-c	.fv	_list.≡.arg.ty	α
+c	.fv	_list.≡_arg_ty	α
 xn1	.fv	list.t	α
 ys1	.fv	list.t	α
 b0	.karg	bool.prim.u
@@ -1001,9 +1001,9 @@ list.t	.tygvar
 _list.≡_ty	.tyexpr
 bool.t	.tygvar
 list.t	.tygvar
-_list.≡.arg.ty	.tygvar
+_list.≡_arg_ty	.tygvar
 α	.tyforall	*
-at	.tylet	_list.≡.arg.ty	α
+at	.tylet	_list.≡_arg_ty	α
 	.tylift
 	.tyfun	at
 	.tylift
@@ -1012,7 +1012,7 @@ at	.tylet	_list.≡.arg.ty	α
 	.tyfun	list.t	α
 	.tyref	bool.t
 
-_list.≡.arg.ty	.tyexpr
+_list.≡_arg_ty	.tyexpr
 bool.t	.tygvar
 α	.tylambda	*
 	.tylift
