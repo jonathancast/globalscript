@@ -2932,7 +2932,8 @@ _parser.mapM_c	.expr
 _parser.mapM_f_ty	.tygvar
 list.t	.tygvar
 _parser.t_k_ty	.tygvar
-parser.prim.t	.tygvar	-- Temp
+_parser.mapM_k	.subcode
+list.t.out	.cogvar
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
@@ -2941,7 +2942,44 @@ xn	.larg	list.t	α
 r	.tyarg	*
 list.β.ty	.tylet	list.t	β
 k	.larg	_parser.t_k_ty	s	list.β.ty	r
-	.undef	parser.prim.t	s	r
+	.force	_parser.mapM_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_parser.mapM_k	.forcecont
+_parser.mapM_f_ty	.tygvar
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+list.prim.u	.tygvar
+parser.prim.t	.tygvar	-- Temp
+_parser.mapM_:_ky_c	.subcode
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+list.β.ty	.tylet	list.t	β
+f	.fv	_parser.mapM_f_ty	s	α	β
+k	.fv	_parser.t_k_ty	s	list.β.ty	r
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+ky			.closure	_parser.mapM_:_ky_c
+			.app	ky
+			.tyapp	r
+			.app	x
+			.enter	f
+		.case	nil
+			.undef	parser.prim.t	s	r
+
+_parser.mapM_:_ky_c	.expr
+parser.prim.t	.tygvar	-- Temp
+s	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+y	.larg	β
+			.undef	parser.prim.t	s	r
 
 -- §section §gs{parser.symbol}
 
