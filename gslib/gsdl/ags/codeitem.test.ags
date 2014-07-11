@@ -224,7 +224,7 @@ _test.parse_impgens_bind.closure.no.label_input	.string	\t.bind\t.closure\t_x_c\
 -- §subsection String Code Expressions
 
 _test.parse_exprs	.closure	_test.parse_exprs_c
-_tests.parse_exprs	.list	test.property.t	_test.parse_expr.force	_test.parse_expr.strict	_test.parse_expr.coerce	_test.parse_expr.app	_test.parse_expr.ubanalyze	_test.parse_expr.enter	_test.parse_expr.analyze	_test.parse_expr.analyze.fkarg	_test.parse_expr.gsanalyze.apply	_test.parse_expr.ubprim	_test.parse_expr.lprim
+_tests.parse_exprs	.list	test.property.t	_test.parse_expr.force	_test.parse_expr.strict	_test.parse_expr.coerce	_test.parse_expr.app	_test.parse_expr.ubanalyze	_test.parse_expr.enter	_test.parse_expr.analyze	_test.parse_expr.analyze.excess.cases	_test.parse_expr.analyze.fkarg	_test.parse_expr.gsanalyze.apply	_test.parse_expr.ubprim	_test.parse_expr.lprim
 
 _test.parse_expr.force	.closure	_test.parse_expr.force_c
 _test.parse_expr.force_label	.string	qq{\\t.force\\t_foo_k\\n\\t.enter\\tfoo\\n}\s=~\sexpr.parser
@@ -261,6 +261,10 @@ _test.parse_expr.enter_k_foo.s	.string	foo
 _test.parse_expr.analyze	.closure	_test.parse_expr.analyze_c
 _test.parse_expr.analyze_label	.string	qq{\\t.analyze\\tfoo\\tbar\\n\\t.case\\tbar\\n\\t.enter\\tbaz\\n}\s=~\sexpr.parser
 _test.parse_expr.analyze_input	.string	\t.analyze\tfoo\tbar\n\t.case\tbar\n\t.enter\tbaz\n
+
+_test.parse_expr.analyze.excess.cases	.closure	_test.parse_expr.analyze.excess.cases_c
+_test.parse_expr.analyze.excess.cases_label	.string	qq{\\t.analyze\\tfoo\\tbar\\n\\t.case\\tbar\\n\\t.enter\\tbaz\\n\\t.case\\tbaz\\n\\t.enter\\tqux\\n}\s=~\sexpr.parser
+_test.parse_expr.analyze.excess.cases_input	.string	\t.analyze\tfoo\tbar\n\t.case\tbar\n\t.enter\tbaz\n\t.case\tbaz\n\t.enter\tqux\n
 
 _test.parse_expr.analyze.fkarg	.closure	_test.parse_expr.analyze.fkarg_c
 _test.parse_expr.analyze.fkarg_label	.string	qq{\\t.analyze\\tfoo\\tbar\\n\\t.case\\tbar\\nx\\t.fkarg\\t0\\tx.t\\tα\\n\\t.enter\\tbaz\\n}\s=~\sexpr.parser
@@ -2018,6 +2022,34 @@ _test.parse_expr.analyze_k_c	.expr
 gsdl.ags.codeitem.expr.t	.tygvar
 test.true	.gvar
 e	.larg	gsdl.ags.codeitem.expr.t
+	.enter	test.true
+
+-- §subsubsection §gs{qq{\\t.analyze\\tfoo\\n} =~ expr.parser} --- too many cases
+
+_test.parse_expr.analyze.excess.cases_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
+_test.parse_expr.analyze.excess.cases_k_c	.subcode
+test.property.label	.gvar
+_test.parse_expr.analyze.excess.cases_label	.gvar
+parser.test.assert.fails	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.expr.fmtgs	.gvar
+gsdl.ags.codeitem.expr.parser	.gvar
+_test.parse_expr.analyze.excess.cases_input	.gvar
+k	.closure	_test.parse_expr.analyze.excess.cases_k_c
+fs	.undefined	gsdl.ags.syntax.features.t
+expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
+test	.apply	parser.test.assert.fails	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	gsdl.ags.codeitem.expr.fmtgs	expr.p	_test.parse_expr.analyze.excess.cases_input	k
+	.app	_test.parse_expr.analyze.excess.cases_label	test
+	.enter	test.property.label
+
+_test.parse_expr.analyze.excess.cases_k_c	.expr
+parser.err.t	.tygvar
+test.true	.gvar
+e	.larg	parser.err.t
 	.enter	test.true
 
 -- §subsubsection §gs{qq{\\t.analyze\\tfoo\\n\\t.case\\nx\\t.fkarg\\t0\\tx.t\\n} =~ expr.parser}
