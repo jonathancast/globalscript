@@ -2953,6 +2953,7 @@ list.t	.tygvar
 list.prim.u	.tygvar
 parser.prim.t	.tygvar	-- Temp
 _parser.mapM_:_ky_c	.subcode
+list.nil	.gvar
 s	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
@@ -2971,15 +2972,46 @@ ky			.closure	_parser.mapM_:_ky_c
 			.app	x
 			.enter	f
 		.case	nil
-			.undef	parser.prim.t	s	r
+nil			.apply	list.nil	β
+			.app	nil
+			.enter	k
 
 _parser.mapM_:_ky_c	.expr
+_parser.mapM_f_ty	.tygvar
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
+_parser.mapM_:_kys1_c	.subcode
+parser.mapM	.gvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+r	.tyfv	*
+list.β.ty	.tylet	list.t	β
+f	.fv	_parser.mapM_f_ty	s	α	β
+k	.fv	_parser.t_k_ty	s	list.β.ty	r
+xn1	.fv	list.t	α
+y	.larg	β
+kys1	.closure	_parser.mapM_:_kys1_c
+	.app	kys1
+	.tyapp	r
+	.app	f	xn1
+	.enter	parser.mapM	s	α	β
+
+_parser.mapM_:_kys1_c	.expr
+_parser.t_k_ty	.tygvar
+list.t	.tygvar
 parser.prim.t	.tygvar	-- Temp
+list.:	.gvar
 s	.tyfv	*
 β	.tyfv	*
 r	.tyfv	*
-y	.larg	β
-			.undef	parser.prim.t	s	r
+list.β.ty	.tylet	list.t	β
+k	.fv	_parser.t_k_ty	s	list.β.ty	r
+y	.fv	β
+ys1	.larg	list.t	β
+ys	.apply	list.:	β	|	y	ys1
+	.app	ys
+	.enter	k
 
 -- §section §gs{parser.symbol}
 
