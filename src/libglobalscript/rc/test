@@ -2,8 +2,6 @@
 
 . $GLOBALSCRIPT/bin/test-fns
 
-SHOULD_DISABLE_STRING_CODE_0_3=1
-
 ok_grep_errors '-- non-existent source file --' 'no-such-file.ags: Could not load' ./$O.test-gsi no-such-file.ags
 
 ok_grep_errors '-- invalid type op --' 'invalid-type-op.ags:12: Unimplemented type op' ./$O.test-gsi invalid-type-op.ags
@@ -165,6 +163,8 @@ ok_diff '-- trivial use of .closure --' ./$O.test-gsexec simple-closure-api.ags
 ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-fixtures/invalid-fv.ags:15: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags
 
 echo '# Version 0.5 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_4=1
 
 ok_grep_errors '-- .body	.closure in .impprogs --' 'undef-body-closure-two-tokens-in-impprog.ags:17: undefined' ./$O.test-gsexec undef-body-closure-two-tokens-in-impprog.ags
 ok_grep_errors '-- .bind	.closure in .impprogs --' 'undef-bind-closure-two-tokens-in-impprog.ags:19: undefined' ./$O.test-gsexec undef-bind-closure-two-tokens-in-impprog.ags
