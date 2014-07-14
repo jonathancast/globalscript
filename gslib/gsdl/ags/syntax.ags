@@ -5,8 +5,11 @@
 	.data
 
 gsdl.ags.syntax.whitespace	.closure	_gsdl.ags.syntax.whitespace_c
-_gsdl.ags.syntax.whitespace_re	.regex	\n§*	_gsdl.ags.syntax.whitespace_re_blank
-_gsdl.ags.syntax.whitespace_re_blank	.regex	\n|\t*--[\s][^\n]*\n
+
+_gsdl.ags.syntax.whitespace_re	.regex	§§*	_gsdl.ags.syntax.whitespace_re_eol	_gsdl.ags.syntax.whitespace_re_blank
+_gsdl.ags.syntax.whitespace_re_eol	.regex	\n|\t§	_gsdl.ags.syntax.whitespace_re_maybe.comment
+_gsdl.ags.syntax.whitespace_re_blank	.regex	\t*§	_gsdl.ags.syntax.whitespace_re_maybe.comment
+_gsdl.ags.syntax.whitespace_re_maybe.comment	.regex	\n|--[\s][^\n]*\n
 
 gsdl.ags.syntax.columnsep	.closure	_gsdl.ags.syntax.columnsep_c
 _gsdl.ags.syntax.columnsep_re	.regex	[\s\t]\t*
