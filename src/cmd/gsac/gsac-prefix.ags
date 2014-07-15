@@ -1,0 +1,178 @@
+#calculus: gsdl.string-code 0.6
+
+	.document
+
+	.data
+
+	.cast	_ep_x	_ep_co
+_ep_x	.closure	_ep_x_c
+_ep_stdin.s	.string	/dev/stdin
+_ep_stdin.fn	.closure	_ep_stdin.fn_c
+
+	.code
+
+
+_ep_x_c	.impprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+ibio.prim.oport	.tygvar
+_ep_x_pragmas.pos_c	.subcode
+_ep_x_body_c	.subcode
+i	.larg	ibio.prim.iport	rune.t
+o	.larg	ibio.prim.oport	rune.t
+eo	.larg	ibio.prim.oport	rune.t
+	.lift
+pragmas.pos	.bind	.closure	_ep_x_pragmas.pos_c
+	.body	.closure	_ep_x_body_c
+
+_ep_x_pragmas.pos_c	.expr
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+ibio.prim.oport	.tygvar
+gsdl.pragma.read	.gvar
+_ep_stdin.fn	.gvar
+i	.fv	ibio.prim.iport	rune.t
+eo	.fv	ibio.prim.oport	rune.t
+	.app	eo	_ep_stdin.fn	i
+	.enter	gsdl.pragma.read
+
+_ep_x_body_c	.expr
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+_gsdl.pragma.read_res.ty	.tygvar
+string.t	.tygvar
+gsdl.pragma.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_ep_x_body_cv_k	.subcode
+_ep_x_body_k	.subcode
+maybe.t.out	.cogvar
+either.t.out	.cogvar
+ordered.map.get	.gvar
+string.compare	.gvar
+_gsac.prefix.file.load_body_calculus.s	.gvar
+i	.fv	ibio.prim.iport	rune.t
+pragmas.pos	.fv	_gsdl.pragma.read_res.ty
+pragmas	.lfield	pragmas	pragmas.pos
+pos	.lfield	pos	pragmas.pos
+	.force	_ep_x_body_k
+	.coerce	either.t.out	string.t	gsdl.ags.syntax.features.t
+	.force	_ep_x_body_cv_k
+	.coerce	maybe.t.out	gsdl.pragma.t
+	.app	string.compare	_gsac.prefix.file.load_body_calculus.s	pragmas
+	.enter	ordered.map.get	string.t	gsdl.pragma.t
+
+_ep_x_body_cv_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.pragma.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
+either.right	.gvar
+bool.false	.gvar
+bool.true	.gvar
+mb0	.karg	maybe.prim.u	gsdl.pragma.t
+	.analyze	mb0	just	nothing
+		.case	just
+pr		.fkarg	0	gsdl.pragma.t
+fs			.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	bool.true	|	gsdl.ags.syntax.features.t
+			.app	fs
+			.enter	either.right	string.t	gsdl.ags.syntax.features.t
+		.case	nothing
+			.undef	either.t	string.t	gsdl.ags.syntax.features.t
+
+_ep_x_body_k	.forcecont
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+parser.pos.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+record.empty	.tygvar	-- Temp
+_ep_x_body_res_c	.subcode
+i	.fv	ibio.prim.iport	rune.t
+pos	.fv	parser.pos.t
+e0	.karg	either.prim.u	string.t	gsdl.ags.syntax.features.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	ibio.prim.t	record.empty
+		.case	right
+fs		.fkarg	0	gsdl.ags.syntax.features.t
+res			.closure	_ep_x_body_res_c
+			.enter	res
+
+_ep_x_body_res_c	.impprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_ep_x_body_res_s_c	.subcode
+_ep_x_body_res_body_c	.subcode
+i	.fv	ibio.prim.iport	rune.t
+pos	.fv	parser.pos.t
+fs	.fv	gsdl.ags.syntax.features.t
+	.lift
+s	.bind	.closure	_ep_x_body_res_s_c
+	.body	.closure	_ep_x_body_res_body_c
+
+_ep_x_body_res_s_c	.expr
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+list.t	.tygvar
+ibio.lex.receive	.gvar
+ibio.lex.receiver.many	.gvar
+ibio.lex.receiver.symbol	.gvar
+i	.fv	ibio.prim.iport	rune.t
+res.ty	.tylet	list.t	rune.t
+sym	.apply	ibio.lex.receiver.symbol	rune.t
+ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
+	.app	ms	i
+	.enter	ibio.lex.receive	rune.t	res.ty
+
+_ep_x_body_res_body_c	.expr
+parser.pos.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+list.t	.tygvar
+rune.t	.tygvar
+gsdl.ags.file.t	.tygvar
+parser.err.t	.tygvar
+_gsac.prefix.file.load_body_res_body_k	.subcode
+either.t.out	.cogvar
+parser.parse	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.file.parser	.gvar
+bool.true	.gvar
+pos	.fv	parser.pos.t
+fs	.fv	gsdl.ags.syntax.features.t
+s	.fv	list.t	rune.t
+fp	.apply	gsdl.ags.file.parser	|	fs	bool.true
+	.force	_gsac.prefix.file.load_body_res_body_k
+	.coerce	either.t.out	parser.err.t	gsdl.ags.file.t
+	.app	parser.rune.advance	rune.print	pos	fp	s
+	.enter	parser.parse	rune.t	gsdl.ags.file.t
+
+_gsac.prefix.file.load_body_res_body_k	.forcecont
+either.prim.u	.tygvar
+parser.err.t	.tygvar
+gsdl.ags.file.t	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+record.empty	.tygvar	-- Temp
+e0	.karg	either.prim.u	parser.err.t	gsdl.ags.file.t
+	.undef	ibio.prim.t	record.empty
+
+_ep_stdin.fn_c	.expr
+ibio.file.name.in	.gvar
+_ep_stdin.s	.gvar
+	.app	_ep_stdin.s
+	.enter	ibio.file.name.in
+
+	.coercion
+
+_ep_co	.tycoercion
+ibio.m	.tygvar
+rune.t	.tygvar
+record.empty	.tygvar
+	.tydefinition	ibio.m	rune.t	rune.t	record.empty
