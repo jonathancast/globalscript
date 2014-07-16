@@ -433,7 +433,7 @@ void
 gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsbc_item_hash *preorders, struct gsbc_item_stack *unassigned_items, struct gsbc_item_stack *maybe_group_items, struct gsbc_item item, struct gsbc_scc ***pend, ulong *pc)
 {
     static gsinterned_string gssymexpr, gssymforcecont, gssymstrictcont, gssymubcasecont, gssymimpprog;
-    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim, gssymtyarg, gssymtyfv, gssymtylet, gssymcogvar, gssymgvar, gssymsubcode;
+    static gsinterned_string gssymtygvar, gssymtyextabstype, gssymtyextelimprim, gssymtyarg, gssymtyfv, gssymtylet, gssymcogvar, gssymgvar, gssymnatural, gssymsubcode;
 
     struct gsparsedline *p;
     struct gsparsedfile_segment *pseg;
@@ -468,6 +468,7 @@ gsbc_top_sort_subitems_of_code_item(struct gsfile_symtable *symtable, struct gsb
                 struct gsbc_item global;
                 global = gssymtable_lookup(p->pos, symtable, p->label);
                 gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, global, pend, pc);
+            } else if (gssymceq(p->directive, gssymnatural, gssymcodeop, ".natural")) {
             } else if (gssymceq(p->directive, gssymsubcode, gssymcodeop, ".subcode")) {
                 struct gsbc_item subcode;
                 subcode = gssymtable_lookup(p->pos, symtable, p->label);
