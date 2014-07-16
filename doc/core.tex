@@ -4885,4 +4885,56 @@ gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 	.tyref	gsdl.cgs.typeenv.typeexpansion.t
 \end{verbatim}
 
+\chapter{Random snippets from work}
+
+\begin{verbatim}
+Core constructs:
+
+* Variable
+* for x = e₀. e₁
+* for rec x_i = e_i. e_n
+* for ⌊x⌋ ∝ e₀. e₁
+* e₀ e₁
+* λ x :: τ. e
+* λ (type t :: κ). e
+* analyze x. case c_i x_i. e_i case _. e_n
+* e (type τ)
+* "Π〈 x_i = e_i; 〉
+* "constr τ c e
+* ⌊e⌋
+* e "⊳ co
+
+Variables:
+
+-------- (x :: τ ∈ Γ)
+ Γ ⊢ x :: τ
+
+Bindings:
+
+ Γ ⊢ τ simple   Γ ⊢ e₀ :: τ   Γ, x :: τ ⊢ e1 :: τ'
+---------------------------------
+                   Γ ⊢ for x = e₀. e1 :: τ'
+
+ Γ ⊢ τ simple   Γ ⊢ e₀ :: τ   Γ, x :: τ ⊢ e1 :: τ'
+---------------------------------
+                   Γ ⊢ for x :: τ = e₀. e1 :: τ'
+
+Recursion:
+
+We say that a definition x₀ :: τ₀ = e₀ depends on a definition x₁ :: τ₁ = e₁ if and only if x₁ is a free variable of τ₀ or e₀.
+
+We say that an expression is in recursive form with respect to the set of variables E if and only if:
+  * It is of lifted type;
+  * It contains none of the variables in E free;
+  * It is of the form "Π〈 §overline{x_i = e_i;}_{i=0}^{n-1} 〉,
+      where each of the e_i is in recursive form with respect to E;
+  * It is of the form "constr τ c e, where e is in recursive form with respect to E;
+  * It is of the form λ x :: τ. e, where e is in recursive form with respect to E \ {x};
+  * It is of the form for x = e₀. e₁, where e₀ is in recursive form with respect to E and e₁ is in recursive form with respect to E \ {x} (and similarly for the other binding forms).
+
+Recursion is only valid if every strongly-connected component of the dependency graph under the above definition satisfies three conditions:
+ * The dependency graph of the component must become acyclic if all dependency edges pointing to variables with type signatures and abstract types with kind signatures are erased.
+ * The dependency graph of the component must become acyclic (independent of the previous condition) if all dependency edges pointing to variables whose definitions are in recursive form with respect to the 
+\end{verbatim}
+
 \end{document}
