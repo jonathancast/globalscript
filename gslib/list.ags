@@ -791,9 +791,9 @@ b0	.karg	bool.prim.u
 list.t	.tyabstract	**^
 list.prim.u	.tygvar
 α	.tylambda	*
-_body	.tylet	list.prim.u	α
+list.prim.u.α	.tylet	list.prim.u	α
 	.tylift
-	.tyref	_body
+	.tyref	list.prim.u.α
 
 list.prim.u	.tyexpr
 _cons_type	.tygvar
