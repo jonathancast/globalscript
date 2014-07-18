@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.4
+#calculus: gsdl.string-code 0.5
 
 	.document
 
@@ -10,8 +10,8 @@
 
 _epcode	.impprog	test.sequence	m
 _real.entry.0	.subcode
-as	.bind.closure	_real.entry.0
-	.body.closure	_real.entry.body
+as	.bind	.closure	_real.entry.0
+	.body	.closure	_real.entry.body
 
 _real.entry.0	.expr
 _empty.record	.tygvar
