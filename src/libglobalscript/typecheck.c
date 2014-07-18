@@ -3053,6 +3053,8 @@ gsbc_typecheck_body_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api
             gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y\t%y)"), p->pos, p->directive, p->arguments[0])
         ;
 
+        gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, pimpcl->primsetname, pimpcl->prim, pimpcl->nbinds == 0 ? &pimpcl->first_rhs_lifted : 0);
+
         return calculated_type;
     }
 
