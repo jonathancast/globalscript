@@ -69,6 +69,7 @@ gsdl.ags.typeitem.expr.parser	.closure	_gsdl.ags.typeitem.expr.parser_c	_gsdl.ag
 _gsdl.ags.typeitem.expr.parser_tyfun.p_tyfun.re	.regex	.tyfun
 _gsdl.ags.typeitem.expr.parser_tylift.p_tylift.re	.regex	.tylift
 _gsdl.ags.typeitem.expr.parser_typroduct.p_typroduct.re	.regex	.typroduct
+_gsdl.ags.typeitem.expr.parser_tyubproduct.p_tyubproduct.re	.regex	.tyubproduct
 _gsdl.ags.typeitem.expr.parser_tyref.p_tyref.re	.regex	.tyref
 _gsdl.ags.typeitem.expr.parser_tysum.p_tysum.re	.regex	.tysum
 _gsdl.ags.typeitem.expr.parser_tyubsum.p_tyubsum.re	.regex	.tyubsum
@@ -1283,6 +1284,7 @@ gsdl.ags.typeitem.expr.t	.tygvar
 _gsdl.ags.typeitem.expr.parser_tyfun.p_c	.subcode
 _gsdl.ags.typeitem.expr.parser_tylift.p_c	.subcode
 _gsdl.ags.typeitem.expr.parser_typroduct.p_c	.subcode
+_gsdl.ags.typeitem.expr.parser_tyubproduct.p_c	.subcode
 _gsdl.ags.typeitem.expr.parser_tyref.p_c	.subcode
 _gsdl.ags.typeitem.expr.parser_tysum.p_c	.subcode
 _gsdl.ags.typeitem.expr.parser_tyubsum.p_c	.subcode
@@ -1291,10 +1293,12 @@ tyfun.p	.closure	_gsdl.ags.typeitem.expr.parser_tyfun.p_c
 tylift.p	.closure	_gsdl.ags.typeitem.expr.parser_tylift.p_c
 tyref.p	.closure	_gsdl.ags.typeitem.expr.parser_tyref.p_c
 typroduct.p	.closure	_gsdl.ags.typeitem.expr.parser_typroduct.p_c
+tyubproduct.p	.closure	_gsdl.ags.typeitem.expr.parser_tyubproduct.p_c
 tysum.p	.closure	_gsdl.ags.typeitem.expr.parser_tysum.p_c
 tyubsum.p	.closure	_gsdl.ags.typeitem.expr.parser_tyubsum.p_c
-p4	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	tysum.p	tyubsum.p
-p3	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	tyref.p	p4
+p5	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	tysum.p	tyubsum.p
+p4	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	tyref.p	p5
+p3	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	tyubproduct.p	p4
 p2	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	typroduct.p	p3
 p1	.apply	parser.<|>	rune.t	gsdl.ags.typeitem.expr.t	|	tylift.p	p2
 	.app	tyfun.p	p1
@@ -1436,6 +1440,58 @@ fs	.larg	list.t	gsdl.ags.typeitem.field.t
 	.undef	gsdl.ags.typeitem.expr.t
 
 _gsdl.ags.typeitem.expr.parser_typroduct.p_field.f_c	.expr
+string.t	.tygvar
+gsdl.ags.typeitem.field.t	.tygvar	-- Temp
+nm	.larg	string.t
+ty	.larg	string.t
+	.undef	gsdl.ags.typeitem.field.t
+
+_gsdl.ags.typeitem.expr.parser_tyubproduct.p_c	.expr
+rune.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.field.t	.tygvar
+_gsdl.ags.typeitem.expr.parser_tyubproduct.p_f_c	.subcode
+_gsdl.ags.typeitem.expr.parser_tyubproduct.p_field.f_c	.subcode
+parser.<*	.gvar
+parser.lift2	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.typeitem.expr.parser_tyubproduct.p_tyubproduct.re	.gvar
+parser.many	.gvar
+gsdl.ags.syntax.id	.gvar
+gsdl.ags.syntax.whitespace	.gvar
+parser.fail	.gvar	-- Temp
+list.field.ty	.tylet	list.t	gsdl.ags.typeitem.field.t
+f	.closure	_gsdl.ags.typeitem.expr.parser_tyubproduct.p_f_c	
+pos.get	.apply	parser.pos.get	rune.t
+typroduct.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.expr.parser_tyubproduct.p_tyubproduct.re
+field.f	.closure	_gsdl.ags.typeitem.expr.parser_tyubproduct.p_field.f_c
+field.nm.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+field.ty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
+field.p	.apply	parser.lift2	rune.t	string.t	string.t	gsdl.ags.typeitem.field.t	|	field.f	field.nm.p	field.ty.p
+fields.p2	.apply	parser.many	rune.t	gsdl.ags.typeitem.field.t	|	field.p
+fields.p1	.apply	parser.*>	rune.t	string.t	list.field.ty	|	typroduct.p	fields.p2
+fields.p	.apply	parser.*>	rune.t	string.t	list.field.ty	|	gsdl.ags.syntax.columnsep	fields.p1
+p	.apply	parser.lift2	rune.t	parser.pos.t	list.field.ty	gsdl.ags.typeitem.expr.t	|	f	pos.get	fields.p
+	.app	p	gsdl.ags.syntax.whitespace
+	.enter	parser.<*	rune.t	gsdl.ags.typeitem.expr.t	string.t
+
+_gsdl.ags.typeitem.expr.parser_tyubproduct.p_f_c	.expr
+parser.pos.t	.tygvar
+list.t	.tygvar
+gsdl.ags.typeitem.field.t	.tygvar
+gsdl.ags.typeitem.expr.t	.tygvar
+'pos	.larg	parser.pos.t
+fs	.larg	list.t	gsdl.ags.typeitem.field.t
+	.undef	gsdl.ags.typeitem.expr.t
+
+_gsdl.ags.typeitem.expr.parser_tyubproduct.p_field.f_c	.expr
 string.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar	-- Temp
 nm	.larg	string.t
