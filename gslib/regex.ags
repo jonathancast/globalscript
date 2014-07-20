@@ -4,9 +4,175 @@
 
 	.data
 
+regex.compile	.closure	_regex.compile_c
+_regex.compile_w	.closure	_regex.compile_w_c	_regex.compile_w_ty
+
+regex.nfa.insert.immediate.transition	.closure	_regex.nfa.insert.immediate.transition_c
+regex.nfa.transition.empty	.closure	_regex.nfa.transition.empty_c
+
+regex.nfa.state.compare	.closure	_regex.nfa.state.compare_c
+
+regex.nfa.state.initial	.closure	_regex.nfa.state.initial_c
+regex.nfa.state.accepting	.closure	_regex.nfa.state.accepting_c
+
 regex.empty	.closure	_regex.empty_c
 
 	.code
+
+-- §section §gs{regex.compile}
+
+_regex.compile_c	.expr
+regex.t	.tygvar
+regex.nfa.state.t	.tygvar
+regex.nfa.transition.t	.tygvar
+_regex.compile_k	.subcode
+_regex.compile_w	.gvar
+0	.natural	0
+1	.natural	1
+ordered.map.empty	.gvar
+2	.natural	2
+s	.tyarg	*
+re	.larg	regex.t	s
+transition.s.ty	.tylet	regex.nfa.transition.t	s
+empty	.apply	ordered.map.empty	regex.nfa.state.t	transition.s.ty
+	.force	_regex.compile_k
+	.app	re	0	1	empty	2
+	.yield	_regex.compile_w	s
+
+_regex.compile_k	.forcecont
+_regex.compile_w_res.u	.tygvar
+s	.tyfv	*
+r0	.karg	_regex.compile_w_res.u	s
+nfa	.field	nfa	r0
+	.enter	nfa
+
+_regex.compile_w_c	.expr
+regex.t	.tygvar
+natural.prim.u	.tygvar
+regex.nfa.t	.tygvar
+_regex.compile_w_k	.subcode
+regex.t.out	.cogvar
+s	.tyarg	*
+re	.arg	regex.t	s
+s0	.arg	natural.prim.u
+s1	.arg	natural.prim.u
+nfa	.arg	regex.nfa.t	s
+c	.arg	natural.prim.u
+	.force	_regex.compile_w_k
+	.coerce	regex.t.out	s
+	.enter	re
+
+_regex.compile_w_k	.forcecont
+natural.prim.u	.tygvar
+regex.nfa.t	.tygvar
+regex.prim.u	.tygvar
+regex.class.t	.tygvar
+regex.t	.tygvar
+_regex.compile_w_res.u	.tygvar
+_regex.compile_w_res.t	.tygvar	-- Temp
+natural.t.in	.cogvar
+regex.nfa.insert.immediate.transition	.gvar
+s	.tyfv	*
+s0	.fv	natural.prim.u
+s1	.fv	natural.prim.u
+nfa	.fv	regex.nfa.t	s
+re0	.karg	regex.prim.u	s
+s0.l	.lifted	s0
+s0.cl	.cast	s0.l	natural.t.in
+s1.l	.lifted	s1
+s1.cl	.cast	s1.l	natural.t.in
+	.analyze	re0	class	empty	neg.class	null	product	star	sum	symbol
+		.case	class
+cl		.fkarg	0	regex.class.t	s
+			.undef	_regex.compile_w_res.t	s
+		.case	empty
+r.nfa			.apply	regex.nfa.insert.immediate.transition	s	|	s0.cl	s1.cl	nfa
+r			.record	nfa	r.nfa	|	_regex.compile_w_res.u	s
+			.lift
+			.yield	r
+		.case	neg.class
+cl		.fkarg	0	regex.class.t	s
+			.undef	_regex.compile_w_res.t	s
+		.case	null
+			.undef	_regex.compile_w_res.t	s
+		.case	product
+re1		.fkarg	0	regex.t	s
+re2		.fkarg	1	regex.t	s
+			.undef	_regex.compile_w_res.t	s
+		.case	star
+re1		.fkarg	0	regex.t	s
+			.undef	_regex.compile_w_res.t	s
+		.case	sum
+re1		.fkarg	0	regex.t	s
+re2		.fkarg	1	regex.t	s
+			.undef	_regex.compile_w_res.t	s
+		.case	symbol
+s		.fkarg	0	s
+			.undef	_regex.compile_w_res.t	s
+	-- > :: _regex.compile_w_res.t	s
+
+-- §section NFA Transitions
+
+_regex.nfa.insert.immediate.transition_c	.expr
+regex.nfa.state.t	.tygvar
+regex.nfa.transition.t	.tygvar
+_regex.nfa.insert.immediate.transition_f_c	.subcode
+ordered.map.modifyWithDefault	.gvar
+regex.nfa.state.compare	.gvar
+regex.nfa.transition.empty	.gvar
+s	.tyarg	*
+s0	.larg	regex.nfa.state.t
+s1	.larg	regex.nfa.state.t
+transition.s.ty	.tylet	regex.nfa.transition.t	s
+empty	.apply	regex.nfa.transition.empty	s
+f	.closure	_regex.nfa.insert.immediate.transition_f_c
+	.app	regex.nfa.state.compare	s0	empty	f
+	.enter	ordered.map.modifyWithDefault	regex.nfa.state.t	transition.s.ty
+
+_regex.nfa.insert.immediate.transition_f_c	.expr
+regex.nfa.state.t	.tygvar
+regex.nfa.transition.t	.tygvar
+regex.nfa.transition.u	.tygvar
+ordered.set.insert	.gvar
+regex.nfa.state.compare	.gvar
+s	.tyfv	*
+s1	.fv	regex.nfa.state.t
+t	.larg	regex.nfa.transition.t	s
+sts0	.lfield	immediate	t
+sts1	.apply	ordered.set.insert	regex.nfa.state.t	|	regex.nfa.state.compare	s1	sts0
+t1.0	.record	immediate	sts1	|	regex.nfa.transition.u	s
+	.lift
+	.yield	t1.0
+
+_regex.nfa.transition.empty_c	.expr
+regex.nfa.state.t	.tygvar
+regex.nfa.transition.u	.tygvar
+ordered.set.empty	.gvar
+s	.tyarg	*
+empty	.apply	ordered.set.empty	regex.nfa.state.t
+r	.record	immediate	empty	|	regex.nfa.transition.u	s
+	.lift
+	.yield	r
+
+-- §section NFA States
+
+_regex.nfa.state.compare_c	.expr
+natural.compare	.gvar
+	.enter	natural.compare
+
+_regex.nfa.state.initial_c	.expr
+natural.t.in	.cogvar
+0	.natural	0
+	.coerce	natural.t.in
+	.lift
+	.yield	0
+
+_regex.nfa.state.accepting_c	.expr
+natural.t.in	.cogvar
+1	.natural	1
+	.coerce	natural.t.in
+	.lift
+	.yield	1
 
 -- §section Constructors
 
@@ -117,6 +283,60 @@ class_ty	.tylet	regex.class.t	s
 _regex.class.prim.u_symbol_ty	.tyexpr
 s	.tylambda	*
 	.tyubproduct	0	s
+
+-- §section §gs{regex.nfa.t}
+
+regex.nfa.t	.tyexpr
+ordered.map.t	.tygvar
+regex.nfa.state.t	.tygvar
+regex.nfa.transition.t	.tygvar
+s	.tylambda	*
+transition.s.ty	.tylet	regex.nfa.transition.t	s
+	.tyref	ordered.map.t	regex.nfa.state.t	transition.s.ty
+
+regex.nfa.state.t	.tyexpr
+natural.t	.tygvar
+	.tyref	natural.t
+
+regex.nfa.transition.t	.tyexpr
+regex.nfa.transition.u	.tygvar
+s	.tylambda	*
+	.tylift
+	.tyref	regex.nfa.transition.u	s
+
+regex.nfa.transition.u	.tyexpr
+ordered.set.t	.tygvar
+regex.nfa.state.t	.tygvar
+s	.tylambda	*
+set.state.ty	.tylet	ordered.set.t	regex.nfa.state.t
+	.typroduct	immediate	set.state.ty
+
+-- §section §gs{regex.compile}
+
+_regex.compile_w_ty	.tyexpr
+regex.t	.tygvar
+natural.prim.u	.tygvar
+regex.nfa.t	.tygvar
+_regex.compile_w_res.t	.tygvar
+s	.tyforall	*
+	.tyfun	regex.t	s
+	.tyfun	natural.prim.u
+	.tyfun	natural.prim.u
+	.tyfun	regex.nfa.t	s
+	.tyfun	natural.prim.u
+	.tyref	_regex.compile_w_res.t	s
+
+_regex.compile_w_res.t	.tyexpr
+_regex.compile_w_res.u	.tygvar
+s	.tylambda	*
+	.tylift
+	.tyref	_regex.compile_w_res.u	s
+
+_regex.compile_w_res.u	.tyexpr
+regex.nfa.t	.tygvar
+s	.tylambda	*
+nfa.s.ty	.tylet	regex.nfa.t	s
+	.typroduct	nfa	nfa.s.ty
 
 	.coercion
 
