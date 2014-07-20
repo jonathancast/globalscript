@@ -120,6 +120,8 @@ _ordered.map.modifyWithDefault_c	.expr
 order.total.t	.tygvar
 _ordered.map.modifyWithDefault_f_ty	.tygvar
 ordered.map.t	.tygvar
+_ordered.map.modifyWithDefault_k	.subcode
+ordered.map.t.out	.cogvar
 k	.tyarg	*
 v	.tyarg	*
 cmp	.larg	order.total.t	k
@@ -127,7 +129,35 @@ k	.larg	k
 v	.larg	v
 f	.larg	_ordered.map.modifyWithDefault_f_ty	v
 map	.larg	ordered.map.t	k	v
-	.undef	ordered.map.t	k	v
+	.force	_ordered.map.modifyWithDefault_k
+	.coerce	ordered.map.t.out	k	v
+	.enter	map
+
+_ordered.map.modifyWithDefault_k	.forcecont
+ordered.map.prim.u	.tygvar
+_ordered.map.modifyWithDefault_f_ty	.tygvar
+ordered.map.t	.tygvar	-- Temp
+ordered.map.prim.branch	.gvar
+ordered.map.empty	.gvar
+k	.tyfv	*
+v	.tyfv	*
+k	.fv	k
+v	.fv	v
+f	.fv	_ordered.map.modifyWithDefault_f_ty	v
+m0	.karg	ordered.map.prim.u	k	v
+	.analyze	m0	branch	empty
+		.case	branch
+k0		.fkarg	0	k
+v0		.fkarg	1	v
+l		.fkarg	2	ordered.map.t	k	v
+r		.fkarg	3	ordered.map.t	k	v
+			.undef	ordered.map.t	k	v
+		.case	empty
+fv			.apply	f	|	v
+empty			.apply	ordered.map.empty	k	v
+			.app	k	fv	empty	empty
+			.enter	ordered.map.prim.branch	k	v
+	-- > :: ordered.map.t	k	v
 
 -- §section §gs{ordered.map.elem}
 
