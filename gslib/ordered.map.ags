@@ -11,6 +11,7 @@
 
 ordered.map.empty	.closure	_ordered.map.empty_c
 ordered.map.insert	.closure	_ordered.map.insert_c	_ordered.map.insert_ty
+ordered.map.modifyWithDefault	.closure	_ordered.map.modifyWithDefault_c	_ordered.map.modifyWithDefault_ty
 ordered.map.elem	.closure	_ordered.map.elem_c	_ordered.map.elem_ty
 ordered.map.get	.closure	_ordered.map.get_c	_ordered.map.get_ty
 ordered.map.∪	.closure	_ordered.map.∪_c	_ordered.map.∪_ty
@@ -112,6 +113,21 @@ map.r1			.apply	ordered.map.insert	k	v	|	cmp	k	v	map.r
 map.l1			.apply	ordered.map.insert	k	v	|	cmp	k	v	map.l
 			.app	k1	v1	map.l1	map.r
 			.enter	ordered.map.prim.branch	k	v
+
+-- §section §gs{ordered.map.modifyWithDefault}
+
+_ordered.map.modifyWithDefault_c	.expr
+order.total.t	.tygvar
+_ordered.map.modifyWithDefault_f_ty	.tygvar
+ordered.map.t	.tygvar
+k	.tyarg	*
+v	.tyarg	*
+cmp	.larg	order.total.t	k
+k	.larg	k
+v	.larg	v
+f	.larg	_ordered.map.modifyWithDefault_f_ty	v
+map	.larg	ordered.map.t	k	v
+	.undef	ordered.map.t	k	v
 
 -- §section §gs{ordered.map.elem}
 
@@ -627,6 +643,32 @@ v	.tyforall	*
 	.tylift
 	.tyfun	ordered.map.t	k	v
 	.tyref	ordered.map.t	k	v
+
+-- §section §gs{ordered.map.modifyWithDefault}
+
+_ordered.map.modifyWithDefault_ty	.tyexpr
+order.total.t	.tygvar
+_ordered.map.modifyWithDefault_f_ty	.tygvar
+ordered.map.t	.tygvar
+k	.tyforall	*
+v	.tyforall	*
+	.tylift
+	.tyfun	order.total.t	k
+	.tylift
+	.tyfun	k
+	.tylift
+	.tyfun	v
+	.tylift
+	.tyfun	_ordered.map.modifyWithDefault_f_ty	v
+	.tylift
+	.tyfun	ordered.map.t	k	v
+	.tyref	ordered.map.t	k	v
+
+_ordered.map.modifyWithDefault_f_ty	.tyexpr
+v	.tylambda	*
+	.tylift
+	.tyfun	v
+	.tyref	v
 
 -- §section §gs{ordered.map.elem}
 
