@@ -118,6 +118,10 @@ ok_grep_errors '-- natural number literals: negative number --' './test-fixtures
 
 ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
 
+echo '# Version 0.5 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_4=1
+
 ok_diff '-- regex literals --' ./$O.test-gsi regex-literal.ags
 ok_diff '-- regex character class --' ./$O.test-gsi regex-class.ags
 ok_diff '-- regex negated character class --' ./$O.test-gsi regex-neg-class.ags
@@ -149,10 +153,6 @@ ok_grep_errors '-- analyze on un-boxed sum with mis-matched names of free variab
 
 ok_grep_errors '-- analyze on existential types with failing occurs check --' './test-fixtures/analyze-failing-occurs-check.ags:23: .exkarg-bound type variable α free in type of .case body' ./$O.test-gsi analyze-failing-occurs-check.ags
 ok_diff_fail '-- analyze on existential types --' ./$O.test-gsi analyze-existential-type.ags
-
-echo '# Version 0.5 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_4=1
 
 ok_grep_errors '-- undefined API entry points --' './test-fixtures/undef-api.ags:7: undefined' ./$O.test-gsexec undef-api.ags
 ok_grep_errors '-- undefined expression API entry points --' './test-fixtures/undef-expr-api.ags:13: undefined' ./$O.test-gsexec undef-expr-api.ags
