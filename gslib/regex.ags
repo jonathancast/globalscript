@@ -70,12 +70,15 @@ regex.class.t	.tygvar
 regex.t	.tygvar
 _regex.compile_w_res.u	.tygvar
 _regex.compile_w_res.t	.tygvar	-- Temp
+_regex.compile_w_sum_k	.subcode
 natural.t.in	.cogvar
 regex.nfa.insert.immediate.transition	.gvar
+_regex.compile_w	.gvar
 s	.tyfv	*
 s0	.fv	natural.prim.u
 s1	.fv	natural.prim.u
 nfa	.fv	regex.nfa.t	s
+c	.fv	natural.prim.u
 re0	.karg	regex.prim.u	s
 s0.l	.lifted	s0
 s0.cl	.cast	s0.l	natural.t.in
@@ -87,14 +90,16 @@ cl		.fkarg	0	regex.class.t	s
 			.undef	_regex.compile_w_res.t	s
 		.case	empty
 r.nfa			.apply	regex.nfa.insert.immediate.transition	s	|	s0.cl	s1.cl	nfa
-r			.record	nfa	r.nfa	|	_regex.compile_w_res.u	s
+r			.record	counter	c	nfa	r.nfa	|	_regex.compile_w_res.u	s
 			.lift
 			.yield	r
 		.case	neg.class
 cl		.fkarg	0	regex.class.t	s
 			.undef	_regex.compile_w_res.t	s
 		.case	null
-			.undef	_regex.compile_w_res.t	s
+r			.record	counter	c	nfa	nfa	|	_regex.compile_w_res.u	s
+			.lift
+			.yield	r
 		.case	product
 re1		.fkarg	0	regex.t	s
 re2		.fkarg	1	regex.t	s
@@ -105,11 +110,28 @@ re1		.fkarg	0	regex.t	s
 		.case	sum
 re1		.fkarg	0	regex.t	s
 re2		.fkarg	1	regex.t	s
-			.undef	_regex.compile_w_res.t	s
+			.force	_regex.compile_w_sum_k
+			.app	re1	s0	s1	nfa	c
+			.yield	_regex.compile_w	s
 		.case	symbol
 s		.fkarg	0	s
 			.undef	_regex.compile_w_res.t	s
 	-- > :: _regex.compile_w_res.t	s
+
+_regex.compile_w_sum_k	.forcecont
+natural.prim.u	.tygvar
+regex.t	.tygvar
+_regex.compile_w_res.u	.tygvar
+_regex.compile_w	.gvar
+s	.tyfv	*
+s0	.fv	natural.prim.u
+s1	.fv	natural.prim.u
+re2	.fv	regex.t	s
+r0	.karg	_regex.compile_w_res.u	s
+nfa1	.field	nfa	r0
+c1	.field	counter	r0
+	.app	re2	s0	s1	nfa1	c1
+	.yield	_regex.compile_w	s
 
 -- §section NFA Transitions
 
@@ -352,10 +374,11 @@ s	.tylambda	*
 	.tyref	_regex.compile_w_res.u	s
 
 _regex.compile_w_res.u	.tyexpr
+natural.prim.u	.tygvar
 regex.nfa.t	.tygvar
 s	.tylambda	*
 nfa.s.ty	.tylet	regex.nfa.t	s
-	.typroduct	nfa	nfa.s.ty
+	.typroduct	counter	natural.prim.u	nfa	nfa.s.ty
 
 	.coercion
 
