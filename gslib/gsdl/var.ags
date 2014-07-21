@@ -875,6 +875,7 @@ string.t	.tygvar
 natural.t	.tygvar
 order.total.ord.t	.tygvar	-- Temp
 string.compare	.gvar
+order.total.ord.lt	.gvar
 order.total.ord.gt	.gvar
 c0.0	.fv	gsdl.var.component.prim.u
 c1.0	.karg	gsdl.var.component.prim.u
@@ -891,7 +892,7 @@ n1				.fkarg	0	natural.t
 					.undef	order.total.ord.t
 				.case	symbolic
 s1				.fkarg	0	string.t
-					.undef	order.total.ord.t
+					.enter	order.total.ord.lt
 		.case	numeric
 n0		.fkarg	0	natural.t
 			.undef	order.total.ord.t
