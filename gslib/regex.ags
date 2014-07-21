@@ -140,17 +140,22 @@ s1	.fv	regex.nfa.state.t
 t	.larg	regex.nfa.transition.t	s
 sts0	.lfield	immediate	t
 sts1	.apply	ordered.set.insert	regex.nfa.state.t	|	regex.nfa.state.compare	s1	sts0
-t1.0	.record	immediate	sts1	|	regex.nfa.transition.u	s
+inps	.lfield	with.input	t
+t1.0	.record	immediate	sts1	with.input	inps	|	regex.nfa.transition.u	s
 	.lift
 	.yield	t1.0
 
 _regex.nfa.transition.empty_c	.expr
 regex.nfa.state.t	.tygvar
+regex.nfa.transition.with.input.t	.tygvar
 regex.nfa.transition.u	.tygvar
 ordered.set.empty	.gvar
+list.nil	.gvar
 s	.tyarg	*
+with.input.s.ty	.tylet	regex.nfa.transition.with.input.t	s
 empty	.apply	ordered.set.empty	regex.nfa.state.t
-r	.record	immediate	empty	|	regex.nfa.transition.u	s
+nil	.apply	list.nil	with.input.s.ty
+r	.record	immediate	empty	with.input	nil	|	regex.nfa.transition.u	s
 	.lift
 	.yield	r
 
@@ -307,9 +312,13 @@ s	.tylambda	*
 regex.nfa.transition.u	.tyexpr
 ordered.set.t	.tygvar
 regex.nfa.state.t	.tygvar
+list.t	.tygvar
+regex.nfa.transition.with.input.t	.tygvar
 s	.tylambda	*
 set.state.ty	.tylet	ordered.set.t	regex.nfa.state.t
-	.typroduct	immediate	set.state.ty
+with.input.s.ty	.tylet	regex.nfa.transition.with.input.t	s
+list.with.input.s.ty	.tylet	list.t	with.input.s.ty
+	.typroduct	immediate	set.state.ty	with.input	list.with.input.s.ty
 
 regex.nfa.transition.with.input.t	.tyabstract	**^
 regex.nfa.transition.with.input.prim.u	.tygvar
