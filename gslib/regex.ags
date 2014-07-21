@@ -311,6 +311,16 @@ s	.tylambda	*
 set.state.ty	.tylet	ordered.set.t	regex.nfa.state.t
 	.typroduct	immediate	set.state.ty
 
+regex.nfa.transition.with.input.t	.tyabstract	**^
+regex.nfa.transition.with.input.prim.u	.tygvar
+s	.tylambda	*
+	.tylift
+	.tyref	regex.nfa.transition.with.input.prim.u	s
+
+regex.nfa.transition.with.input.prim.u	.tyexpr
+s	.tylambda	*
+	.tysum
+
 -- §section §gs{regex.compile}
 
 _regex.compile_w_ty	.tyexpr
