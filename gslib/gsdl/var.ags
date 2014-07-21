@@ -906,7 +906,8 @@ n1				.fkarg	0	natural.t
 					.undef	order.total.ord.t
 				.case	symbolic
 s1				.fkarg	0	string.t
-					.undef	order.total.ord.t
+					.app	s0	s1
+					.enter	string.compare
 	-- > :: order.total.ord.t
 
 -- §section §gs{gsdl.var.component.t} Constructors
