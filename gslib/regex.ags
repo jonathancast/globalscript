@@ -437,3 +437,9 @@ regex.class.t	.tygvar
 s	.tylambda	*
 	.tyinvert
 	.tydefinition	regex.class.t	s
+
+regex.nfa.transition.with.input.t.out	.tycoercion
+regex.nfa.transition.with.input.t	.tygvar
+s	.tylambda	*
+	.tyinvert
+	.tydefinition	regex.nfa.transition.with.input.t	s
