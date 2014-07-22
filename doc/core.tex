@@ -3,12 +3,15 @@
 \author{Jonathan Cast\\\texttt{<jcast@globalscript.org>}}
 
 \usepackage{latexsym}
+\usepackage{bussproofs}
 
 \usepackage{haskell}
 
 \newcommand\defn[1]{\emph{#1}}
 
 \newcommand\todo[1]{\textbf{TODO: }#1 End TODO}
+
+\hscommand\sequent{\vdash}
 
 \newcommand\for{\hskwd{for}}
 \newcommand\type{\hskwd{type}}
@@ -42,6 +45,12 @@
 
 \newcommand\crdefn{\crkwd{defn}}
 \newcommand\crinvert{\crkwd{invert}}
+
+\newcommand\rcast{\crkwd{\rhd}}
+\newcommand\lcast{\crkwd{\lhd}}
+
+\hscommand\kind[3]{#1 \vdash #2 :: #3}
+\hscommand\cotype[3]{#1 \vdash #2 :: #3}
 
 \begin{document}
 
@@ -388,506 +397,48 @@ so we lose the static `this is evaluated' information;
 I'm unsure yet how big a problem that is.
 I suspect that `\<x\> is evaluated' is probably only useful in cases where we know what type \<x\> has anyway.
 
+\chapter{Coercions}
+
+A coercion represents a legal representation-preserving cast from one type to another.
+A coercion can be applied to an expression using the form \<e \rcast co\> or \<co \lcast e\>,
+which have equal precedence but opposite associativity.
+
+Coercion variables have their own namespace.
+
+Coercion types are considered normal types, of kind \<\crkwd{co}\>;
+the judgment form for coercions is thus \<\cotype\Gamma{co}\tau\>.
+
+In addition to the standard rules about type synonyms, polymorphic types, etc., the following base types are allowed for coercions:
+\begin{itemize}
+    \item \<\Gamma\sequent \tau_0\cong\tau_1 :: \crkwd{co}\> - isomorphism; \<\tau_0\> and \<\tau_1\>,
+        which must have the same kind,
+        have exactly the same set of representations.
+\end{itemize}
+
+\section{Definition Coercions}
+
+\begin{prooftree}
+    \AxiomC{\<\abstype\;t\;\overline{\alpha_i}_{i=0}^{n-1}=\tau[\overline{\alpha_i}_{i=0}^{n-1}]\in\Gamma\>}
+    \UnaryInfC{
+        \<\cotype\Gamma{\crdefn\;t}{\forall\;\overline{\beta_i}_{i=0}^{n-1}.\;\tau[\overline{\beta_i}_{i=0}^{n-1}]\cong{}t\;\overline{\beta_i}_{i=0}^{n-1}}\>
+    }
+\end{prooftree}
+
+A definition coercion, \<\crdefn t\>, represents a cast from the definition of the abstract type \<t\>, which must be in scope, to \<t\>.
+Any arguments following a definition coercion are automatically parsed as type arguments, for convenience.
+
+\section{Type Applications}
+
+\begin{prooftree}
+    \AxiomC{\<\cotype\Gamma{co}{\forall\;\alpha :: \kappa.\;\tau_0[\alpha]}\>}
+    \AxiomC{\<\kind\Gamma{\tau_1}\kappa\>}
+    \BinaryInfC{\<\cotype\Gamma{co\;(\type\;\tau_1)}{\tau_0[\tau_1]}\>}
+\end{prooftree}
+
+\<\tau_1\> should be either a type argument or a type application (by implicit composition).
+This construct allows a polymorphic coercion to be used at a specific monomorphic type.
+
 \chapter{Source Code}
-
-\section{gscoercion.ags}
-
-\begin{verbatim}
-#calculus: gsdl.string-code 0.6
-
-	.prefix
-
-	.data
-
-gsdl.cgs.gscoercion.parser.app	.closure	_gsdl.cgs.gscoercion.parser.app_c	_gsdl.cgs.gscoercion.parser.app_ty
-_gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.regex	defn
-
-gsdl.cgs.gscoercion.freevars	.closure	_gsdl.cgs.gscoercion.freevars_c	_gsdl.cgs.gscoercion.freevars_ty
-
-gsdl.cgs.gscoercion.gstype.substty	.closure	_gsdl.cgs.gscoercion.gstype.substty_c	_gsdl.cgs.gscoercion.gstype.substty_ty
-
-gsdl.cgs.gscoercion.≡	.closure	_gsdl.cgs.gscoercion.≡_c	_gsdl.cgs.gscoercion.≡_ty
-
-gsdl.cgs.gscoercion.fmtgs	.closure	_gsdl.cgs.gscoercion.fmtgs_c
-
-gsdl.cgs.gscoercion.pos	.closure	_gsdl.cgs.gscoercion.pos_c
-gsdl.cgs.gscoercion.defn	.closure	_gsdl.cgs.gscoercion.defn_c
-gsdl.cgs.gscoercion.appty	.closure	_gsdl.cgs.gscoercion.appty_c
-
-gsdl.cgs.gscoercion.gstype.forall	.closure	_gsdl.cgs.gscoercion.gstype.forall_c
-gsdl.cgs.gscoercion.gstype.iso	.closure	_gsdl.cgs.gscoercion.gstype.iso_c
-
-	.code
-
--- §section §gs{gsdl.cgs.gscoercion.parser.app}
-
-_gsdl.cgs.gscoercion.parser.app_c	.expr
-_gsdl.cgs.gscoercion.parser.app_defn.p_c	.subcode
-defn.p	.closure	_gsdl.cgs.gscoercion.parser.app_defn.p_c
-	.enter	defn.p
-
-_gsdl.cgs.gscoercion.parser.app_defn.p_c	.expr
-rune.t	.tygvar
-parser.pos.t	.tygvar
-gsdl.var.t	.tygvar
-list.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gscoercion.t	.tygvar
-string.t	.tygvar
-_gsdl.cgs.gscoercion.parser.app_defn.p_f_c	.subcode
-parser.lift3	.gvar
-parser.pos.get	.gvar
-parser.*>	.gvar
-gsdl.cgs.syntax.var.parser	.gvar
-gsdl.cgs.syntax.core.keyword	.gvar
-_gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.gvar
-parser.many	.gvar
-gsdl.cgs.gstype.parser.arg	.gvar
-parser.fail	.gvar	-- Temp
-list.gstype.ty	.tylet	list.t	gsdl.cgs.gstype.t
-f	.closure	_gsdl.cgs.gscoercion.parser.app_defn.p_f_c
-pos.get	.apply	parser.pos.get	rune.t
-defn.p	.apply	gsdl.cgs.syntax.core.keyword	|	_gsdl.cgs.gscoercion.parser.app_defn.p_defn.re
-tyc.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	defn.p	gsdl.cgs.syntax.var.parser
-tyas.p	.apply	parser.many	rune.t	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.parser.arg
-	.app	f	pos.get	tyc.p	tyas.p
-	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	list.gstype.ty	gsdl.cgs.gscoercion.t
-
-_gsdl.cgs.gscoercion.parser.app_defn.p_f_c	.expr
-parser.pos.t	.tygvar
-gsdl.var.t	.tygvar
-list.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gscoercion.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-gsdl.cgs.gscoercion.pos	.gvar
-gsdl.sourcepos	.gvar
-list.foldl	.gvar
-gsdl.cgs.gscoercion.appty	.gvar
-gsdl.cgs.gscoercion.defn	.gvar
-maybe.nothing	.gvar
-pos0	.larg	parser.pos.t
-tyc	.larg	gsdl.var.t
-tyas	.larg	list.t	gsdl.cgs.gstype.t
-pos1	.undefined	parser.pos.t
-pos	.apply	gsdl.sourcepos	|	pos0	pos1
-nothing	.apply	maybe.nothing	gsdl.cgs.gskind.t
-co2	.apply	gsdl.cgs.gscoercion.defn	|	tyc	nothing
-co1	.apply	list.foldl	gsdl.cgs.gstype.t	gsdl.cgs.gscoercion.t	|	gsdl.cgs.gscoercion.appty	co2	tyas
-	.app	pos	co1
-	.enter	gsdl.cgs.gscoercion.pos
-
--- §section §gs{gsdl.cgs.gscoercion.freevars}
-
-_gsdl.cgs.gscoercion.freevars_c	.expr
-gsdl.cgs.gscoercion.t	.tygvar
-_gsdl.cgs.gscoercion.freevars_k	.subcode
-gsdl.cgs.gscoercion.t.out	.cogvar
-co	.larg	gsdl.cgs.gscoercion.t
-	.force	_gsdl.cgs.gscoercion.freevars_k
-	.coerce	gsdl.cgs.gscoercion.t.out
-	.enter	co
-
-_gsdl.cgs.gscoercion.freevars_k	.forcecont
-gsdl.cgs.gscoercion.prim.u	.tygvar
-gsdl.cgs.gscoercion.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-gsdl.var.t	.tygvar
-maybe.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-ordered.set.t	.tygvar	-- Temp
-ordered.set.union	.gvar
-gsdl.cgs.symbol.compare	.gvar
-gsdl.cgs.gscoercion.freevars	.gvar
-gsdl.cgs.gstype.freevars	.gvar
-ordered.set.singleton	.gvar
-gsdl.cgs.symbol.tyvar	.gvar
-co0	.karg	gsdl.cgs.gscoercion.prim.u
-	.analyze	co0	appty	defn	pos
-		.case	appty
-cof		.fkarg	0	gsdl.cgs.gscoercion.t
-tya		.fkarg	1	gsdl.cgs.gstype.t
-cof.fvs			.apply	gsdl.cgs.gscoercion.freevars	|	cof
-tya.fvs			.apply	gsdl.cgs.gstype.freevars	|	tya
-			.app	gsdl.cgs.symbol.compare	cof.fvs	tya.fvs
-			.enter	ordered.set.union	gsdl.cgs.symbol.t
-		.case	defn
-v		.fkarg	0	gsdl.var.t
-mbki		.fkarg	1	maybe.t	gsdl.cgs.gskind.t
-sym			.apply	gsdl.cgs.symbol.tyvar	|	v
-			.app	gsdl.cgs.symbol.compare	sym
-			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
-		.case	pos
-pos		.fkarg	0	gsdl.sourcepos.t
-c1		.fkarg	1	gsdl.cgs.gscoercion.t
-			.app	c1
-			.enter	gsdl.cgs.gscoercion.freevars
-	-- > :: ordered.set.t	gsdl.cgs.symbol.t
-
--- §section §gs{gsdl.cgs.gscoercion.gstype.substty}
-
-_gsdl.cgs.gscoercion.gstype.substty_c	.expr
-gsdl.var.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gscoercion.gstype.t	.tygvar
-_gsdl.cgs.gscoercion.gstype.substty_k	.subcode
-gsdl.cgs.gscoercion.gstype.t.out	.cogvar
-v	.larg	gsdl.var.t
-ty	.larg	gsdl.cgs.gstype.t
-cty	.larg	gsdl.cgs.gscoercion.gstype.t
-	.force	_gsdl.cgs.gscoercion.gstype.substty_k
-	.coerce	gsdl.cgs.gscoercion.gstype.t.out
-	.enter	cty
-
-_gsdl.cgs.gscoercion.gstype.substty_k	.forcecont
-gsdl.var.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-gsdl.cgs.gscoercion.gstype.t	.tygvar
-_gsdl.cgs.gscoercion.gstype.substty_forall_k	.subcode
-bool.t.out	.cogvar
-gsdl.var.≡	.gvar
-gsdl.cgs.gscoercion.gstype.iso	.gvar
-gsdl.cgs.gstype.substty	.gvar
-v	.fv	gsdl.var.t
-ty	.fv	gsdl.cgs.gstype.t
-cty0	.karg	gsdl.cgs.gscoercion.gstype.prim.u
-	.analyze	cty0	forall	iso
-		.case	forall
-v1		.fkarg	0	gsdl.var.t
-ki		.fkarg	1	gsdl.cgs.gskind.t
-cty1		.fkarg	2	gsdl.cgs.gscoercion.gstype.t
-			.force	_gsdl.cgs.gscoercion.gstype.substty_forall_k
-			.coerce	bool.t.out
-			.app	v	v1
-			.enter	gsdl.var.≡
-		.case	iso
-ty0		.fkarg	0	gsdl.cgs.gstype.t
-ty1		.fkarg	1	gsdl.cgs.gstype.t
-y.ty0			.apply	gsdl.cgs.gstype.substty	|	v	ty	ty0
-y.ty1			.apply	gsdl.cgs.gstype.substty	|	v	ty	ty1
-			.app	y.ty0	y.ty1
-			.enter	gsdl.cgs.gscoercion.gstype.iso
-	-- > :: gsdl.cgs.gscoercion.gstype.t
-
-_gsdl.cgs.gscoercion.gstype.substty_forall_k	.forcecont
-gsdl.var.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-gsdl.cgs.gscoercion.gstype.t	.tygvar
-bool.prim.u	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-_gsdl.cgs.gscoercion.gstype.substty_forall_false_k	.subcode
-bool.t.out	.cogvar
-ordered.set.elem	.gvar
-gsdl.cgs.symbol.compare	.gvar
-gsdl.cgs.symbol.tyvar	.gvar
-gsdl.cgs.gstype.freevars	.gvar
-v	.fv	gsdl.var.t
-ty	.fv	gsdl.cgs.gstype.t
-v1	.fv	gsdl.var.t
-ki	.fv	gsdl.cgs.gskind.t
-cty1	.fv	gsdl.cgs.gscoercion.gstype.t
-b0	.karg	bool.prim.u	-- §gs{v ≡ v1}
-	.analyze	b0	false	true
-		.case	false
-v1.sym			.apply	gsdl.cgs.symbol.tyvar	|	v1
-ty.fvs			.apply	gsdl.cgs.gstype.freevars	|	ty
-			.force	_gsdl.cgs.gscoercion.gstype.substty_forall_false_k
-			.coerce	bool.t.out
-			.app	gsdl.cgs.symbol.compare	v1.sym	ty.fvs
-			.enter	ordered.set.elem	gsdl.cgs.symbol.t
-		.case	true
-			.undef	gsdl.cgs.gscoercion.gstype.t
-
-_gsdl.cgs.gscoercion.gstype.substty_forall_false_k	.forcecont
-gsdl.var.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-bool.prim.u	.tygvar
-gsdl.cgs.gscoercion.gstype.t	.tygvar	-- Temp
-gsdl.cgs.gscoercion.gstype.forall	.gvar
-gsdl.cgs.gscoercion.gstype.substty	.gvar
-v	.fv	gsdl.var.t
-ty	.fv	gsdl.cgs.gstype.t
-v1	.fv	gsdl.var.t
-ki	.fv	gsdl.cgs.gskind.t
-cty1	.fv	gsdl.cgs.gscoercion.gstype.t
-b0	.karg	bool.prim.u	-- §gs{v1 ∈ fvs(ty)}
-	.analyze	b0	false	true
-		.case	false
-y.cty1			.apply	gsdl.cgs.gscoercion.gstype.substty	|	v	ty	cty1
-			.app	v1	ki	y.cty1
-			.enter	gsdl.cgs.gscoercion.gstype.forall
-		.case	true
-			.undef	gsdl.cgs.gscoercion.gstype.t
-
--- §section §gs{gsdl.cgs.gscoercion.≡}
-
-_gsdl.cgs.gscoercion.≡_c	.expr
-gsdl.cgs.gscoercion.t	.tygvar
-_gsdl.cgs.gscoercion.≡_k0	.subcode
-gsdl.cgs.gscoercion.t.out	.cogvar
-co0	.larg	gsdl.cgs.gscoercion.t
-co1	.larg	gsdl.cgs.gscoercion.t
-	.force	_gsdl.cgs.gscoercion.≡_k0
-	.coerce	gsdl.cgs.gscoercion.t.out
-	.enter	co0
-
-_gsdl.cgs.gscoercion.≡_k0	.forcecont
-gsdl.cgs.gscoercion.t	.tygvar
-gsdl.cgs.gscoercion.prim.u	.tygvar
-_gsdl.cgs.gscoercion.≡_k1	.subcode
-gsdl.cgs.gscoercion.t.out	.cogvar
-co1	.fv	gsdl.cgs.gscoercion.t
-co0.0	.karg	gsdl.cgs.gscoercion.prim.u
-	.force	_gsdl.cgs.gscoercion.≡_k1
-	.coerce	gsdl.cgs.gscoercion.t.out
-	.enter	co1
-
-_gsdl.cgs.gscoercion.≡_k1	.forcecont
-gsdl.cgs.gscoercion.prim.u	.tygvar
-gsdl.cgs.gscoercion.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.var.t	.tygvar
-maybe.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-bool.t	.tygvar	-- Temp
-bool.false	.gvar
-gsdl.var.≡	.gvar
-gsdl.cgs.gscoercion.≡	.gvar
-co0.0	.fv	gsdl.cgs.gscoercion.prim.u
-co1.0	.karg	gsdl.cgs.gscoercion.prim.u
-	.analyze	co0.0	appty	defn	pos
-		.case	appty
-cof0		.fkarg	0	gsdl.cgs.gscoercion.t
-tya0		.fkarg	1	gsdl.cgs.gstype.t
-			.danalyze	co1.0	appty
-				.default
-					.enter	bool.false
-				.case	appty
-cof1				.fkarg	0	gsdl.cgs.gscoercion.t
-tya1				.fkarg	1	gsdl.cgs.gstype.t
-					.undef	bool.t
-		.case	defn
-tyc0		.fkarg	0	gsdl.var.t
-mbki0		.fkarg	1	maybe.t	gsdl.cgs.gskind.t
-			.danalyze	co1.0	defn
-				.default
-					.undef	bool.t
-				.case	defn
-tyc1				.fkarg	0	gsdl.var.t
-mbk1				.fkarg	1	maybe.t	gsdl.cgs.gskind.t
-					.app	tyc0	tyc1
-					.enter	gsdl.var.≡
-		.case	pos
-pos0		.fkarg	0	gsdl.sourcepos.t
-co0.1		.fkarg	1	gsdl.cgs.gscoercion.t
-			.danalyze	co1.0	pos
-				.default
-					.undef	bool.t
-				.case	pos
-pos1				.fkarg	0	gsdl.sourcepos.t
-co1.1				.fkarg	1	gsdl.cgs.gscoercion.t
-					.app	co0.1	co1.1
-					.enter	gsdl.cgs.gscoercion.≡
-	-- > :: bool.t
-
--- §section §gs{gsdl.cgs.gscoercion.fmtgs}
-
-_gsdl.cgs.gscoercion.fmtgs_c	.expr
-gsdl.cgs.gscoercion.t	.tygvar
-fmtgs.printer.t	.tygvar	-- Temp
-co	.larg	gsdl.cgs.gscoercion.t
-	.undef	fmtgs.printer.t
-
--- §section §gs{gsdl.cgs.gscoercion.t} constructors
-
-_gsdl.cgs.gscoercion.pos_c	.expr
-gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gscoercion.t	.tygvar
-gsdl.cgs.gscoercion.prim.u	.tygvar
-gsdl.cgs.gscoercion.t.in	.cogvar
-pos	.larg	gsdl.sourcepos.t
-co	.larg	gsdl.cgs.gscoercion.t
-res	.constr	gsdl.cgs.gscoercion.prim.u	pos	0	pos	1	co
-	.coerce	gsdl.cgs.gscoercion.t.in
-	.lift
-	.yield	res
-
-_gsdl.cgs.gscoercion.defn_c	.expr
-gsdl.var.t	.tygvar
-maybe.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-gsdl.cgs.gscoercion.prim.u	.tygvar
-gsdl.cgs.gscoercion.t.in	.cogvar
-tyc	.larg	gsdl.var.t
-mbki	.larg	maybe.t	gsdl.cgs.gskind.t
-res	.constr	gsdl.cgs.gscoercion.prim.u	defn	0	tyc	1	mbki
-	.coerce	gsdl.cgs.gscoercion.t.in
-	.lift
-	.yield	res
-
-_gsdl.cgs.gscoercion.appty_c	.expr
-gsdl.cgs.gscoercion.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gscoercion.prim.u	.tygvar
-gsdl.cgs.gscoercion.t.in	.cogvar
-cof	.larg	gsdl.cgs.gscoercion.t
-tya	.larg	gsdl.cgs.gstype.t
-res	.constr	gsdl.cgs.gscoercion.prim.u	appty	0	cof	1	tya
-	.coerce	gsdl.cgs.gscoercion.t.in
-	.lift
-	.yield	res
-
--- §section §gs{gsdl.cgs.gscoercion.gstype.t} Constructors
-
-_gsdl.cgs.gscoercion.gstype.forall_c	.expr
-gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-gsdl.cgs.gscoercion.gstype.t	.tygvar
-gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
-gsdl.cgs.gscoercion.gstype.t.in	.cogvar
-v	.larg	gsdl.var.t
-ki	.larg	gsdl.cgs.gskind.t
-ty	.larg	gsdl.cgs.gscoercion.gstype.t
-res	.constr	gsdl.cgs.gscoercion.gstype.prim.u	forall	0	v	1	ki	2	ty
-	.coerce	gsdl.cgs.gscoercion.gstype.t.in
-	.lift
-	.yield	res
-
-_gsdl.cgs.gscoercion.gstype.iso_c	.expr
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
-gsdl.cgs.gscoercion.gstype.t.in	.cogvar
-ty0	.larg	gsdl.cgs.gstype.t
-ty1	.larg	gsdl.cgs.gstype.t
-res	.constr	gsdl.cgs.gscoercion.gstype.prim.u	iso	0	ty0	1	ty1
-	.coerce	gsdl.cgs.gscoercion.gstype.t.in
-	.lift
-	.yield	res
-
-	.type
-
--- §section §gs{gsdl.cgs.gscoercion.t}
-
-gsdl.cgs.gscoercion.t	.tyabstract	*
-gsdl.cgs.gscoercion.prim.u	.tygvar
-	.tylift
-	.tyref	gsdl.cgs.gscoercion.prim.u
-
-gsdl.cgs.gscoercion.prim.u	.tyexpr
-_gsdl.cgs.gscoercion.prim.u_appty_ty	.tygvar
-_gsdl.cgs.gscoercion.prim.u_defn_ty	.tygvar
-_gsdl.cgs.gscoercion.prim.u_pos_ty	.tygvar
-	.tysum	appty	_gsdl.cgs.gscoercion.prim.u_appty_ty	defn	_gsdl.cgs.gscoercion.prim.u_defn_ty	pos	_gsdl.cgs.gscoercion.prim.u_pos_ty
-
-_gsdl.cgs.gscoercion.prim.u_appty_ty	.tyexpr
-gsdl.cgs.gscoercion.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-	.tyubproduct	0	gsdl.cgs.gscoercion.t	1	gsdl.cgs.gstype.t
-
-_gsdl.cgs.gscoercion.prim.u_defn_ty	.tyexpr
-gsdl.var.t	.tygvar
-maybe.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-maybe.gskind.ty	.tylet	maybe.t	gsdl.cgs.gskind.t
-	.tyubproduct	0	gsdl.var.t	1	maybe.gskind.ty
-
-_gsdl.cgs.gscoercion.prim.u_pos_ty	.tyexpr
-gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gscoercion.t	.tygvar
-	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gscoercion.t
-
--- §section §gs{gsdl.cgs.gscoercion.gstype.t}
-
-gsdl.cgs.gscoercion.gstype.t	.tyabstract	*
-gsdl.cgs.gscoercion.gstype.prim.u	.tygvar
-	.tylift
-	.tyref	gsdl.cgs.gscoercion.gstype.prim.u
-
-gsdl.cgs.gscoercion.gstype.prim.u	.tyexpr
-_gsdl.cgs.gscoercion.gstype.prim.u_forall_ty	.tygvar
-_gsdl.cgs.gscoercion.gstype.prim.u_iso_ty	.tygvar
-	.tysum	forall	_gsdl.cgs.gscoercion.gstype.prim.u_forall_ty	iso	_gsdl.cgs.gscoercion.gstype.prim.u_iso_ty
-
-_gsdl.cgs.gscoercion.gstype.prim.u_forall_ty	.tyexpr
-gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-gsdl.cgs.gscoercion.gstype.t	.tygvar
-	.tyubproduct	0	gsdl.var.t	1	gsdl.cgs.gskind.t	2	gsdl.cgs.gscoercion.gstype.t
-
-_gsdl.cgs.gscoercion.gstype.prim.u_iso_ty	.tyexpr
-gsdl.cgs.gstype.t	.tygvar
-	.tyubproduct	0	gsdl.cgs.gstype.t	1	gsdl.cgs.gstype.t
-
--- §section §gs{gsdl.cgs.gscoercion.parser.app}
-
-_gsdl.cgs.gscoercion.parser.app_ty	.tyexpr
-parser.t	.tygvar
-rune.t	.tygvar
-gsdl.cgs.gscoercion.t	.tygvar
-	.tyref	parser.t	rune.t	gsdl.cgs.gscoercion.t
-
--- §section §gs{gsdl.cgs.gscoercion.freevars}
-
-_gsdl.cgs.gscoercion.freevars_ty	.tyexpr
-gsdl.cgs.gscoercion.t	.tygvar
-ordered.set.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-	.tylift
-	.tyfun	gsdl.cgs.gscoercion.t
-	.tyref	ordered.set.t	gsdl.cgs.symbol.t
-
--- §section §gs{gsdl.cgs.gscoercion.gstype.substty}
-
-_gsdl.cgs.gscoercion.gstype.substty_ty	.tyexpr
-gsdl.var.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gscoercion.gstype.t	.tygvar
-	.tylift
-	.tyfun	gsdl.var.t
-	.tylift
-	.tyfun	gsdl.cgs.gstype.t
-	.tylift
-	.tyfun	gsdl.cgs.gscoercion.gstype.t
-	.tyref	gsdl.cgs.gscoercion.gstype.t
-
--- §section §gs{gsdl.cgs.gscoercion.≡}
-
-_gsdl.cgs.gscoercion.≡_ty	.tyexpr
-gsdl.cgs.gscoercion.t	.tygvar
-bool.t	.tygvar
-	.tylift
-	.tyfun	gsdl.cgs.gscoercion.t
-	.tylift
-	.tyfun	gsdl.cgs.gscoercion.t
-	.tyref	bool.t
-
-	.coercion
-
-gsdl.cgs.gscoercion.t.in	.tycoercion
-gsdl.cgs.gscoercion.t	.tygvar
-	.tydefinition	gsdl.cgs.gscoercion.t
-
-gsdl.cgs.gscoercion.t.out	.tycoercion
-gsdl.cgs.gscoercion.t	.tygvar
-	.tyinvert
-	.tydefinition	gsdl.cgs.gscoercion.t
-
-gsdl.cgs.gscoercion.gstype.t.in	.tycoercion
-gsdl.cgs.gscoercion.gstype.t	.tygvar
-	.tydefinition	gsdl.cgs.gscoercion.gstype.t
-
-gsdl.cgs.gscoercion.gstype.t.out	.tycoercion
-gsdl.cgs.gscoercion.gstype.t	.tygvar
-	.tyinvert
-	.tydefinition	gsdl.cgs.gscoercion.gstype.t
-\end{verbatim}
 
 \section{gsexpr.ags}
 
