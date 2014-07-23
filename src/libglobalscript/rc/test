@@ -104,6 +104,10 @@ ok_diff '-- constructors with existential type arguments --' ./$O.test-gsi const
 ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 
+echo '# Version 0.5 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_4=1
+
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 
 ok_diff '-- non-empty records in expressions --' ./$O.test-gsi record-literal-gen.ags
@@ -117,10 +121,6 @@ ok_grep_errors '-- natural number literals: letters --' './test-fixtures/natural
 ok_grep_errors '-- natural number literals: negative number --' './test-fixtures/natural-literal-negative.ags:12: Invalid character ''-'' in natural number literal' ./$O.test-gsi natural-literal-negative.ags
 
 ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
-
-echo '# Version 0.5 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_4=1
 
 ok_diff '-- regex literals --' ./$O.test-gsi regex-literal.ags
 ok_diff '-- regex character class --' ./$O.test-gsi regex-class.ags
