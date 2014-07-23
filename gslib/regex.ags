@@ -8,11 +8,13 @@ regex.compile	.closure	_regex.compile_c
 _regex.compile_w	.closure	_regex.compile_w_c	_regex.compile_w_ty
 
 regex.nfa.insert.class.transition	.closure	_regex.nfa.insert.class.transition_c
+regex.nfa.insert.neg.class.transition	.closure	_regex.nfa.insert.neg.class.transition_c
 regex.nfa.insert.symbol.transition	.closure	_regex.nfa.insert.symbol.transition_c
 regex.nfa.insert.immediate.transition	.closure	_regex.nfa.insert.immediate.transition_c
 regex.nfa.transition.empty	.closure	_regex.nfa.transition.empty_c
 
 regex.nfa.transition.with.input.class	.closure	_regex.nfa.transition.with.input.class_c
+regex.nfa.transition.with.input.neg.class	.closure	_regex.nfa.transition.with.input.neg.class_c
 regex.nfa.transition.with.input.symbol	.closure	_regex.nfa.transition.with.input.symbol_c
 
 regex.nfa.state.compare	.closure	_regex.nfa.state.compare_c
@@ -81,6 +83,7 @@ _regex.compile_w_sum_k	.subcode
 natural.t.in	.cogvar
 regex.nfa.insert.class.transition	.gvar
 regex.nfa.insert.immediate.transition	.gvar
+regex.nfa.insert.neg.class.transition	.gvar
 _regex.compile_w	.gvar
 1	.natural	1
 regex.nfa.insert.symbol.transition	.gvar
@@ -108,7 +111,10 @@ r			.record	counter	c	nfa	r.nfa	|	_regex.compile_w_res.u	s
 			.yield	r
 		.case	neg.class
 cl		.fkarg	0	regex.class.t	s
-			.undef	_regex.compile_w_res.t	s
+r.nfa			.apply	regex.nfa.insert.neg.class.transition	s	|	s0.cl	cl	s1.cl	nfa
+r			.record	counter	c	nfa	r.nfa	|	_regex.compile_w_res.u	s
+			.lift
+			.yield	r
 		.case	null
 r			.record	counter	c	nfa	nfa	|	_regex.compile_w_res.u	s
 			.lift
@@ -215,6 +221,45 @@ r	.record	immediate	imm	with.input	r.inps	|	regex.nfa.transition.u	s
 	.lift
 	.yield	r
 
+_regex.nfa.insert.neg.class.transition_c	.expr
+regex.nfa.state.t	.tygvar
+regex.class.t	.tygvar
+regex.nfa.transition.t	.tygvar
+_regex.nfa.insert.neg.class.transition_f_c	.subcode
+ordered.map.modifyWithDefault	.gvar
+regex.nfa.state.compare	.gvar
+regex.nfa.transition.empty	.gvar
+s	.tyarg	*
+s0	.larg	regex.nfa.state.t
+cl	.larg	regex.class.t	s
+s1	.larg	regex.nfa.state.t
+transition.s.ty	.tylet	regex.nfa.transition.t	s
+empty	.apply	regex.nfa.transition.empty	s
+f	.closure	_regex.nfa.insert.neg.class.transition_f_c
+	.app	regex.nfa.state.compare	s0	empty	f
+	.enter	ordered.map.modifyWithDefault	regex.nfa.state.t	transition.s.ty
+
+_regex.nfa.insert.neg.class.transition_f_c	.expr
+regex.class.t	.tygvar
+regex.nfa.state.t	.tygvar
+regex.nfa.transition.t	.tygvar
+regex.nfa.transition.with.input.t	.tygvar
+regex.nfa.transition.u	.tygvar
+list.:	.gvar
+regex.nfa.transition.with.input.neg.class	.gvar
+s	.tyfv	*
+cl	.fv	regex.class.t	s
+s1	.fv	regex.nfa.state.t
+t	.larg	regex.nfa.transition.t	s
+with.input.s.ty	.tylet	regex.nfa.transition.with.input.t	s
+imm	.lfield	immediate	t
+inp0	.apply	regex.nfa.transition.with.input.neg.class	s	|	cl	s1
+t.inps	.lfield	with.input	t
+r.inps	.apply	list.:	with.input.s.ty	|	inp0	t.inps
+r	.record	immediate	imm	with.input	r.inps	|	regex.nfa.transition.u	s
+	.lift
+	.yield	r
+
 _regex.nfa.insert.symbol.transition_c	.expr
 regex.nfa.state.t	.tygvar
 regex.nfa.transition.t	.tygvar
@@ -308,6 +353,20 @@ cl	.larg	regex.class.t	s
 s1	.larg	regex.nfa.state.t
 with.input.s.u	.tylet	regex.nfa.transition.with.input.prim.u	s
 r	.constr	with.input.s.u	class	0	cl	1	s1
+	.coerce	regex.nfa.transition.with.input.t.in	s
+	.lift
+	.yield	r
+
+_regex.nfa.transition.with.input.neg.class_c	.expr
+regex.class.t	.tygvar
+regex.nfa.state.t	.tygvar
+regex.nfa.transition.with.input.prim.u	.tygvar
+regex.nfa.transition.with.input.t.in	.cogvar
+s	.tyarg	*
+cl	.larg	regex.class.t	s
+s1	.larg	regex.nfa.state.t
+with.input.s.u	.tylet	regex.nfa.transition.with.input.prim.u	s
+r	.constr	with.input.s.u	neg.class	0	cl	1	s1
 	.coerce	regex.nfa.transition.with.input.t.in	s
 	.lift
 	.yield	r
@@ -495,13 +554,22 @@ s	.tylambda	*
 
 regex.nfa.transition.with.input.prim.u	.tyexpr
 _regex.nfa.transition.with.input.prim.u_class_ty	.tygvar
+_regex.nfa.transition.with.input.prim.u_neg.class_ty	.tygvar
 _regex.nfa.transition.with.input.prim.u_symbol_ty	.tygvar
 s	.tylambda	*
 class.ty	.tylet	_regex.nfa.transition.with.input.prim.u_class_ty	s
+neg.class.ty	.tylet	_regex.nfa.transition.with.input.prim.u_neg.class_ty	s
 symbol.ty	.tylet	_regex.nfa.transition.with.input.prim.u_symbol_ty	s
-	.tysum	class	class.ty	symbol	symbol.ty
+	.tysum	class	class.ty	neg.class	neg.class.ty	symbol	symbol.ty
 
 _regex.nfa.transition.with.input.prim.u_class_ty	.tyexpr
+regex.class.t	.tygvar
+regex.nfa.state.t	.tygvar
+s	.tylambda	*
+class.s.ty	.tylet	regex.class.t	s
+	.tyubproduct	0	class.s.ty	1	regex.nfa.state.t
+
+_regex.nfa.transition.with.input.prim.u_neg.class_ty	.tyexpr
 regex.class.t	.tygvar
 regex.nfa.state.t	.tygvar
 s	.tylambda	*
