@@ -664,6 +664,7 @@ gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 rune.t	.tygvar
 test.property.label	.gvar
@@ -704,7 +705,8 @@ ep.ty.v	.apply	gsdl.var.constructed	|	natural.1	ep.ty.v.cs
 nothing	.apply	maybe.nothing	gsdl.ags.typeitem.gskind.t
 tyas	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
 tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
-ti.ds	.lrecord	tyargs	tyas	tygvars	tygvs	|	gsdl.ags.typeitem.decls.t
+tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
+ti.ds	.lrecord	tyargs	tyas	tygvars	tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 foo.t.v.c0	.apply	gsdl.var.component.alphanum	|	_test.print_tyexpr_foo.s
 foo.t.v.c1	.apply	gsdl.var.component.alphanum	|	_test.print_tyexpr_t.s
 foo.t.v.cs1	.apply	list.singleton	gsdl.var.component.t	|	foo.t.v.c1
@@ -729,6 +731,7 @@ gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 rune.t	.tygvar
 test.property.label	.gvar
@@ -777,7 +780,8 @@ foo.t.v.cs	.apply	list.:	gsdl.var.component.t	|	foo.t.v.c0	foo.t.v.cs1
 foo.t.v	.apply	gsdl.var.basevar	|	foo.t.v.cs
 foo.t.tygv	.apply	gsdl.ags.typeitem.decls.tygvar.tyextabstype	|	foo.t.v	gsdl.ags.typeitem.gskind.lifted
 tygvs	.apply	list.singleton	gsdl.ags.typeitem.decls.tygvar.t	|	foo.t.tygv
-ti.ds	.lrecord	tyargs	tyas	tygvars	tygvs	|	gsdl.ags.typeitem.decls.t
+tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
+ti.ds	.lrecord	tyargs	tyas	tygvars	tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 ti.e.args	.apply	list.nil	gsdl.var.t
 ti.e	.apply	gsdl.ags.typeitem.expr.tyref	|	foo.t.v	ti.e.args
 ti	.apply	gsdl.ags.typeitem.tyexpr	|	ti.pos	ep.ty.v	nothing	ti.ds	ti.e
@@ -797,6 +801,7 @@ gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 rune.t	.tygvar
 test.property.label	.gvar
@@ -844,7 +849,8 @@ foo.t.v.cs	.apply	list.:	gsdl.var.component.t	|	foo.t.v.c0	foo.t.v.cs1
 foo.t.v	.apply	gsdl.var.basevar	|	foo.t.v.cs
 foo.t.tygv	.apply	gsdl.ags.typeitem.decls.tygvar.tygvar	|	foo.t.v
 tygvs	.apply	list.singleton	gsdl.ags.typeitem.decls.tygvar.t	|	foo.t.tygv
-ti.ds	.lrecord	tyargs	tyas	tygvars	tygvs	|	gsdl.ags.typeitem.decls.t
+tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
+ti.ds	.lrecord	tyargs	tyas	tygvars	tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 ti.e.args	.apply	list.nil	gsdl.var.t
 ti.e	.apply	gsdl.ags.typeitem.expr.tyref	|	foo.t.v	ti.e.args
 ti	.apply	gsdl.ags.typeitem.tyexpr	|	ti.pos	ep.ty.v	nothing	ti.ds	ti.e
@@ -895,6 +901,7 @@ _test.decls.fmtgs_c	.expr
 string.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 rune.t	.tygvar
 test.property.label	.gvar
@@ -908,7 +915,8 @@ fmtgs.prec.arg	.gvar
 _test.decls.fmtgs_expected	.gvar
 tyas	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
 tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
-ds	.lrecord	tyargs	tyas	tygvars	tygvs	|	gsdl.ags.typeitem.decls.t
+tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
+ds	.lrecord	tyargs	tyas	tygvars	tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 nil.s	.apply	list.nil	rune.t
 actual	.apply	gsdl.ags.typeitem.decls.fmtgs	|	ds	fmtgs.prec.arg	nil.s
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.decls.fmtgs_expected

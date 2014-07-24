@@ -319,6 +319,7 @@ gsdl.ags.file.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.sourcepos.t	.tygvar	-- Temp
 gsdl.ags.typeitem.gskind.t	.tygvar	-- Temp
@@ -355,7 +356,8 @@ x.v.cs	.apply	list.singleton	gsdl.var.component.t	|	x.v.c0
 x.v	.apply	gsdl.var.basevar	|	x.v.cs
 x.tygv	.apply	gsdl.ags.typeitem.decls.tygvar.tygvar	|	x.v
 y.tabs.tygvs	.apply	list.singleton	gsdl.ags.typeitem.decls.tygvar.t	|	x.tygv
-y.tyabs.ds	.lrecord	tyargs	tyas	tygvars	y.tabs.tygvs	|	gsdl.ags.typeitem.decls.t
+tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
+y.tyabs.ds	.lrecord	tyargs	tyas	tygvars	y.tabs.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 y.tyabs.dfn	.undefined	gsdl.ags.typeitem.expr.t
 y.tyabs	.apply	gsdl.ags.typeitem.tyabstract	|	pos	y.v	y.tyabs.ki	y.tyabs.ds	y.tyabs.dfn
 tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	y.tyabs
@@ -442,6 +444,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 test.property.label	.gvar
@@ -475,7 +478,8 @@ v.c0	.apply	gsdl.var.component.alphanum	|	_test_items_gsabstype.defn_x.s
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
 v	.apply	gsdl.var.basevar	|	v.cs
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
-decls	.lrecord	tyargs	tyas	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
+tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
+decls	.lrecord	tyargs	tyas	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 expr.fields	.apply	list.nil	gsdl.ags.typeitem.field.t
 expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr.fields
 expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
@@ -728,6 +732,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 test.property.label	.gvar
@@ -770,7 +775,8 @@ cos	.apply	list.nil	gsdl.ags.coercionitem.t
 ds	.apply	list.nil	gsdl.ags.dataitem.t
 decls.tyargs	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
-decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
+tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
+decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 tye1.fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 tye1	.apply	gsdl.ags.typeitem.expr.product	|	tye1.fs
 tye	.apply	gsdl.ags.typeitem.expr.lift	|	tye1
@@ -1093,6 +1099,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 _test.typecheck_gsabstype.defn_test_k	.subcode
@@ -1117,7 +1124,8 @@ v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
 v	.apply	gsdl.var.basevar	|	v.cs
 decls.tyargs	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
-decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
+tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
+decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 expr1.fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr1.fs
 expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
@@ -1189,6 +1197,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.var.t	.tygvar
 _test.typecheck_gsabstype.tylambda.defn_test_k	.subcode
@@ -1217,7 +1226,8 @@ v	.apply	gsdl.var.basevar	|	v.cs
 decls.tyarg.0	.lrecord	0	pos	1	α	2	gsdl.ags.typeitem.gskind.lifted	|	gsdl.ags.typeitem.decls.tyarg.t
 decls.tyargs	.apply	list.singleton	gsdl.ags.typeitem.decls.tyarg.t	|	decls.tyarg.0
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
-decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	|	gsdl.ags.typeitem.decls.t
+tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
+decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 as	.apply	list.nil	gsdl.var.t
 expr	.apply	gsdl.ags.typeitem.expr.tyref	|	α	as
 pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
