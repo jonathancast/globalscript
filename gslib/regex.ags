@@ -78,6 +78,7 @@ regex.t	.tygvar
 _regex.compile_w_res.u	.tygvar
 _natural.prim.+_ty	.tygvar
 _regex.compile_w_res.t	.tygvar	-- Temp
+_regex.compile_w_product_k	.subcode
 _regex.compile_w_star_k	.subcode
 _regex.compile_w_sum_k	.subcode
 natural.t.in	.cogvar
@@ -122,7 +123,10 @@ r			.record	counter	c	nfa	nfa	|	_regex.compile_w_res.u	s
 		.case	product
 re1		.fkarg	0	regex.t	s
 re2		.fkarg	1	regex.t	s
-			.undef	_regex.compile_w_res.t	s
+c1			.prim	natural.prim	+	_natural.prim.+_ty	|	c	1
+			.force	_regex.compile_w_product_k
+			.app	re1	s0	c	nfa	c1
+			.yield	_regex.compile_w	s
 		.case	star
 re1		.fkarg	0	regex.t	s
 c1			.prim	natural.prim	+	_natural.prim.+_ty	|	c	1
@@ -142,6 +146,21 @@ r			.record	counter	c	nfa	r.nfa	|	_regex.compile_w_res.u	s
 			.lift
 			.yield	r
 	-- > :: _regex.compile_w_res.t	s
+
+_regex.compile_w_product_k	.forcecont
+regex.t	.tygvar
+natural.prim.u	.tygvar
+_regex.compile_w_res.u	.tygvar
+_regex.compile_w	.gvar
+s	.tyfv	*
+s1	.fv	natural.prim.u
+c	.fv	natural.prim.u
+re2	.fv	regex.t	s
+r0	.karg	_regex.compile_w_res.u	s
+c2	.field	counter	r0
+nfa1	.field	nfa	r0
+	.app	re2	c	s1	nfa1	c2
+	.yield	_regex.compile_w	s
 
 _regex.compile_w_star_k	.forcecont
 regex.nfa.state.t	.tygvar
