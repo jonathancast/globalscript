@@ -692,7 +692,8 @@ gsdl.cgs.typeenv.typeexpansion.tylet.prim.u	.tygvar
 	.tyref	gsdl.cgs.typeenv.typeexpansion.tylet.prim.u
 
 gsdl.cgs.typeenv.typeexpansion.tylet.prim.u	.tyexpr
-	.typroduct
+gsdl.var.t	.tygvar
+	.typroduct	tyfun	gsdl.var.t
 
 -- §section §gs{gsdl.cgs.typeenv.typedefinition.t}
 
