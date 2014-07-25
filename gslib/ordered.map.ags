@@ -190,7 +190,9 @@ fv0			.apply	f	|	v0
 			.app	k	fv0	l	r
 			.enter	ordered.map.prim.branch	k	v
 		.case	gt
-			.undef	ordered.map.t	k	v
+r1			.apply	ordered.map.modifyWithDefault	k	v	|	cmp	k	v	f	r
+			.app	k0	v0	l	r1
+			.enter	ordered.map.prim.branch	k	v
 		.case	lt
 l1			.apply	ordered.map.modifyWithDefault	k	v	|	cmp	k	v	f	l
 			.app	k0	v0	l1	r
