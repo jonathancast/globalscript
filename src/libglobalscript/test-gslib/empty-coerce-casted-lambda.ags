@@ -1,0 +1,30 @@
+#calculus: gsdl.string-code 0.4
+
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+bool.t	.tygvar
+_ep_t.in	.cogvar
+	.coerce	_ep_t.in
+x	.larg	bool.t
+	.undef	bool.t
+
+	.type
+
+_ep_t	.tyabstract	*
+bool.t	.tygvar
+	.tylift
+	.tyfun	bool.t
+	.tyref	bool.t
+
+	.coercion
+
+_ep_t.in	.tycoercion
+_ep_t	.tygvar
+	.tydefinition	_ep_t

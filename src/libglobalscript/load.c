@@ -1526,11 +1526,18 @@ static
 int
 gsparse_cast_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymlift, gssymtyapp;
+    static gsinterned_string gssymcoerce, gssymlift, gssymtyapp;
 
     int i;
 
-    if (gssymceq(parsedline->directive, gssymlift, gssymcodeop, ".lift")) {
+    if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
+        if (n < 3)
+            gsfatal("%s:%d: Missing coercion to apply");
+        parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
+        for (i = 1; 2+i < n; i++) {
+            parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i]);
+        }
+    } else if (gssymceq(parsedline->directive, gssymlift, gssymcodeop, ".lift")) {
         if (*fields[0])
             gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
         else
@@ -1554,18 +1561,11 @@ static
 int
 gsparse_cont_push_op(struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymcoerce, gssymapp, gssymforce, gssymstrict, gssymubanalyze;
+    static gsinterned_string gssymapp, gssymforce, gssymstrict, gssymubanalyze;
 
     int i;
 
-    if (gssymceq(parsedline->directive, gssymcoerce, gssymcodeop, ".coerce")) {
-        if (n < 3)
-            gsfatal("%s:%d: Missing coercion to apply");
-        parsedline->arguments[0] = gsintern_string(gssymcoercionlable, fields[2+0]);
-        for (i = 1; 2+i < n; i++) {
-            parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i]);
-        }
-    } else if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".app")) {
+    if (gssymceq(parsedline->directive, gssymapp, gssymcodeop, ".app")) {
         if (*fields[0])
             gsfatal("%s:%d: Labels illegal on continuation ops", pos->real_filename, pos->real_lineno);
         else

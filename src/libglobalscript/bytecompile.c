@@ -818,7 +818,8 @@ gsbc_bytecode_size_cast_op(struct gsparsedline *p, struct gsbc_bytecode_size_cod
     int i;
 
     if (
-        gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
+        gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")
+        || gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
         || gssymceq(p->directive, gssymoptyapp, gssymcodeop, ".tyapp")
     ) {
         /* no effect on representation */
@@ -833,9 +834,7 @@ gsbc_bytecode_size_cont_push_op(struct gsparsedline *p, struct gsbc_bytecode_siz
 {
     int i;
 
-    if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
-        /* no effect on representation */
-    } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
+    if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
         pcl->size += ACE_APP_SIZE(p->numarguments);
     } else if (gssymceq(p->directive, gssymopforce, gssymcodeop, ".force")) {
         int creg;
@@ -2350,7 +2349,8 @@ int
 gsbc_byte_compile_cast_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
     if (
-        gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
+        gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")
+        || gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
         || gssymceq(p->directive, gssymoptyapp, gssymcodeop, ".tyapp")
     ) {
         /* no effect on representation */
@@ -2366,9 +2366,7 @@ gsbc_byte_compile_cont_push_op(struct gsparsedline *p, struct gsbc_byte_compile_
     struct gsbc *pcode;
     int i;
 
-    if (gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")) {
-        /* no effect on representation */
-    } else if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
+    if (gssymceq(p->directive, gssymopapp, gssymcodeop, ".app")) {
         pcode = (struct gsbc *)pcl->pout;
         pcode->pos = p->pos;
         pcode->instr = gsbc_op_app;

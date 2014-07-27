@@ -53,6 +53,7 @@ ok_diff_fail '-- strict with undefined continuation --' ./$O.test-gsi strict-und
 ok_diff '-- lambdas with undefined bodies --' ./$O.test-gsi empty-lambda.ags
 ok_diff '-- lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lifted-lambda.ags
 ok_diff '-- .lift-lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lift-lifted-lambda.ags
+ok_diff '-- .coerce-casted lambdas with undefined bodies --' ./$O.test-gsi empty-coerce-casted-lambda.ags
 ok_diff_fail '-- applying lambdas with undefined bodies --' ./$O.test-gsi apply-empty-lambda.ags
 ok_diff '-- partial application of lambda with undefined body --' ./$O.test-gsi partial-apply-empty-lambda.ags
 ok_diff_fail '-- over-saturated application of lambda with undefined body --' ./$O.test-gsi over-apply-empty-lamda.ags
