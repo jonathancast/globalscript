@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.5
+#calculus: gsdl.string-code 0.6
 
 	.prefix
 
@@ -160,6 +160,7 @@ _ibio.mapM.prim_eys_body_c	.subcode
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 x0	.fv	α
 xn1	.fv	list.t	α
+	.lift
 y	.bind	.closure	_ibio.mapM.prim_eys_y_c
 ys1	.bind	.closure	_ibio.mapM.prim_eys_ys1_c
 	.body	.closure	_ibio.mapM.prim_eys_body_c
@@ -246,6 +247,7 @@ _ibio.mapM0.prim_k_:_e_body_c	.subcode
 f	.fv	_ibio.mapM.prim_f_ty	α	β
 x0	.fv	α
 xn1	.fv	list.t	α
+	.lift
 	.bind	.closure	_ibio.mapM0.prim_k_:_e_head_c
 	.body	.closure	_ibio.mapM0.prim_k_:_e_body_c
 
@@ -331,6 +333,7 @@ f	.fv	_ibio.foldM.prim_f_ty	α	β
 z0	.fv	β
 x0	.fv	α
 xn1	.fv	list.t	α
+	.lift
 z1	.bind	.closure	_ibio.foldM.prim_:_res_z1_c
 	.body	.closure	_ibio.foldM.prim_:_res_body_c
 
