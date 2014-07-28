@@ -18,6 +18,7 @@ cd $GLOBALSCRIPT/src/libtest &&
     cd ../../libglobalscript &&
     mk -f mkfile.core-source integration-test &&
     cd ../cmd/mdl &&
-    mk -f mkfile.interpreted integration-test && mk -f mkfile.interpreted install &&
+    mk -f mkfile.ags-source integration-test && mk -f mkfile.ags-source install &&
+    mk -f mkfile.core-source integration-test && mk -f mkfile.core-source install &&
     cd ../gscr &&
     mk -f mkfile.interpreted integration-test && mk -f mkfile.interpreted install

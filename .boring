@@ -26,6 +26,7 @@ bin/gsac-deps$
 bin/gsac$
 \.toc$
 \.stats$
+bin/mdltype2c$
 bin/mdl2clib$
 bin/gscr$
 bin/gscr-deps$

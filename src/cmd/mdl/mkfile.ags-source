@@ -1,0 +1,17 @@
+< $GLOBALSCRIPT/src/mkhdr
+
+all:V:
+	true
+
+test:V: all
+	test-gslib ./gslib
+	$GLOBALSCRIPT/bin/gslint ./gslib ./mdltype2c.ags
+
+integration-test:V: all test
+	./rc/test-interpreted-ags
+
+install:V: all test $GLOBALSCRIPT/bin/mdltype2c
+
+$GLOBALSCRIPT/bin/mdltype2c: mdltype2c.rc all test
+	cp mdltype2c.rc $GLOBALSCRIPT/bin/mdltype2c
+	chmod a+x $GLOBALSCRIPT/bin/mdltype2c

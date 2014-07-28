@@ -14,6 +14,6 @@ cd $GLOBALSCRIPT/src/libtest &&
     cd ../gsac &&
     mk -f mkfile.interpreted install && mk -f mkfile.interpreted effect &&
     cd ../mdl &&
-    mk -f mkfile.interpreted install &&
+    mk -f mkfile.ags-source install && mk -f mkfile.core-source install &&
     cd ../gscr &&
     mk -f mkfile.interpreted install

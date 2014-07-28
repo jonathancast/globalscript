@@ -1,0 +1,22 @@
+#calculus: gsdl.string-code 0.6
+
+	.document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+ibio.prim.oport	.tygvar
+record.empty	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+ibio.m.in	.cogvar
+	.coerce	ibio.m.in	rune.t	rune.t	record.empty
+i	.larg	ibio.prim.iport	rune.t
+o	.larg	ibio.prim.oport	rune.t
+eo	.larg	ibio.prim.oport	rune.t
+	.undef	ibio.prim.t	record.empty
