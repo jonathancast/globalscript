@@ -467,6 +467,13 @@ ibio.prim.t	.tygvar
 
 	.coercion
 
+ibio.m.in	.tycoercion
+ibio.m	.tygvar
+ι	.tylambda	*
+ο	.tylambda	*
+α	.tylambda	*
+	.tydefinition	ibio.m	ι	ο	α
+
 ibio.out	.tycoercion
 ibio.m	.tygvar
 ι	.tylambda	*
