@@ -2713,6 +2713,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
     gsbc_byte_compile_code_or_api_op_closure_init(pbco, &cl, features);
     while (gsbc_byte_compile_type_gvar_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_subcode_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_byte_compile_coercion_gvar_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_type_fv_code_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_type_arg_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_byte_compile_data_fv_code_op(p, &cl)) p = gsinput_next_line(ppseg, p);
