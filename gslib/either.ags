@@ -194,14 +194,48 @@ ys			.apply	list.:	β	|	y0	ys1
 _either.foldM_c	.expr
 _either.foldM_f_ty	.tygvar
 list.t	.tygvar
-either.t	.tygvar	-- Temp
+_either.foldM_k	.subcode
 e	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
 f	.larg	_either.foldM_f_ty	e	α	β
 z	.larg	β
 xn	.larg	list.t	α
-	.undef	either.t	e	β
+	.strict	_either.foldM_k
+	.enter	z
+
+_either.foldM_k	.strictcont
+list.t	.tygvar
+_either.foldM_k1	.subcode
+list.t.out	.cogvar
+e	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+xn	.fv	list.t	α
+z0	.karg	β
+	.force	_either.foldM_k1
+	.coerce	list.t.out	α
+	.enter	xn
+
+_either.foldM_k1	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+either.t	.tygvar	-- Temp
+either.right	.gvar
+list.nil	.gvar
+e	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+z0	.fv	β
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	either.t	e	β
+		.case	nil
+			.app	z0
+			.enter	either.right	e	β
 
 	.type
 
