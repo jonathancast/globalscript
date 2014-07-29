@@ -12,6 +12,8 @@ either.unit	.closure	_either.unit_c
 
 either.mapM	.closure	_either.mapM_c	_either.mapM_ty
 
+either.foldM	.closure	_either.foldM_c	_either.foldM_ty
+
 	.code
 
 -- §section Constructors
@@ -187,6 +189,20 @@ ys			.apply	list.:	β	|	y0	ys1
 			.app	ys
 			.enter	either.right	e	list.β.ty
 
+-- §section §gs{either.foldM}
+
+_either.foldM_c	.expr
+_either.foldM_f_ty	.tygvar
+list.t	.tygvar
+either.t	.tygvar	-- Temp
+e	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+f	.larg	_either.foldM_f_ty	e	α	β
+z	.larg	β
+xn	.larg	list.t	α
+	.undef	either.t	e	β
+
 	.type
 
 -- §section §gs{either.t}
@@ -251,6 +267,34 @@ either.t	.tygvar
 e	.tylambda	*
 α	.tylambda	*
 β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	either.t	e	β
+
+-- §section §gs{either.foldM}
+
+_either.foldM_ty	.tyexpr
+_either.foldM_f_ty	.tygvar
+list.t	.tygvar
+either.t	.tygvar
+e	.tyforall	*
+α	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	_either.foldM_f_ty	e	α	β
+	.tylift
+	.tyfun	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	either.t	e	β
+
+_either.foldM_f_ty	.tyexpr
+either.t	.tygvar
+e	.tylambda	*
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	β
 	.tylift
 	.tyfun	α
 	.tyref	either.t	e	β
