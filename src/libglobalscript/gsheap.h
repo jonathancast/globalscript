@@ -76,6 +76,8 @@ gstypecode gsheapstate(struct gspos, struct gsheap_item *);
 
 void *gsreserveerrors(ulong);
 
+struct gserror *gsundefined(struct gspos);
+
 void gspoison(struct gsheap_item *, struct gspos, char *, ...);
 void gspoison_unimpl(struct gsheap_item *, char *, int, struct gspos, char *, ...);
 

@@ -314,6 +314,18 @@ gsreserveerrors(ulong sz)
     return gs_sys_global_block_suballoc(&gserrors_info, MAX(sizeof(struct gserror_forward), sz));
 }
 
+struct gserror *
+gsundefined(struct gspos pos)
+{
+    struct gserror *res;
+
+    res = gsreserveerrors(sizeof(*res));
+    res->pos = pos;
+    res->type = gserror_undefined;
+
+    return res;
+}
+
 static
 gstypecode gserrorseval(struct gspos pos, gsvalue val)
 {

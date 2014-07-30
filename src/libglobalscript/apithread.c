@@ -671,13 +671,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 goto got_statements;
             }
             case gsbc_op_body_undefined: {
-                struct gserror *err;
-
-                err = gsreserveerrors(sizeof(*err));
-                err->pos = pinstr->pos;
-                err->type = gserror_undefined;
-
-                rhss[nstatements] = (gsvalue)err;
+                rhss[nstatements] = (gsvalue)gsundefined(pinstr->pos);
                 poss[nstatements] = pinstr->pos;
                 nstatements++;
                 goto got_statements;

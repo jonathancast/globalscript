@@ -592,15 +592,10 @@ void
 ace_instr_alloc_undef(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gserror *err;
 
     ip = thread->st.running.ip;
 
-    err = gsreserveerrors(sizeof(*err));
-    err->pos = ip->pos;
-    err->type = gserror_undefined;
-
-    thread->regs[thread->nregs] = (gsvalue)err;
+    thread->regs[thread->nregs] = (gsvalue)gsundefined(ip->pos);
     thread->nregs++;
     thread->st.running.ip = ACE_UNDEFINED_SKIP(ip);
     return;
@@ -875,15 +870,10 @@ void
 ace_instr_return_undef(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gserror *err;
 
     ip = thread->st.running.ip;
 
-    err = gsreserveerrors(sizeof(*err));
-    err->pos = ip->pos;
-    err->type = gserror_undefined;
-
-    ace_error_thread(thread, err);
+    ace_error_thread(thread, gsundefined(ip->pos));
 }
 
 static int ace_thread_enter_closure(struct gspos, struct ace_thread *, struct gsheap_item *, struct ace_thread_pool_stats *);
