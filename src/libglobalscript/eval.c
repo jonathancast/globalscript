@@ -689,6 +689,9 @@ gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase
             case gsbc_op_bind_closure:
                 pin = ACE_BIND_CLOSURE_SKIP(ip);
                 break;
+            case gsbc_op_bind_apply:
+                pin = ACE_BIND_APPLY_SKIP(ip);
+                break;
             case gsbc_op_app:
                 pin = ACE_APP_SKIP(ip);
                 break;

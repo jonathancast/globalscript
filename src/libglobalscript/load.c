@@ -1320,7 +1320,7 @@ gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gspa
         for (i = offset + 2; i < n; i++)
             p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
-    } else if (gssymceq(p->directive, gssymapply, gssymcodeop, ".apply")) {
+    } else if (gssymceq(directive, gssymapply, gssymcodeop, ".apply")) {
         if (offset == 0) STORE_ALLOC_OP_LABEL(".apply");
         if (n < offset + 3)
             gsfatal("%P: Missing function on .undefined", p->pos)

@@ -34,6 +34,7 @@ enum {
     gsbc_op_lprim,
     gsbc_op_unknown_lprim,
     gsbc_op_bind_closure,
+    gsbc_op_bind_apply,
     gsbc_op_body_closure,
     gsbc_op_body_undefined,
 };
@@ -171,6 +172,12 @@ enum {
 #define ACE_BIND_CLOSURE_NUMFVS(ip) ((ip)->args[1])
 #define ACE_BIND_CLOSURE_FV(ip, i) ((ip)->args[2+(i)])
 #define ACE_BIND_CLOSURE_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_BIND_CLOSURE_NUMFVS(ip))
+
+#define ACE_BIND_APPLY_SIZE(nargs) GS_SIZE_BYTECODE(2 + (nargs))
+#define ACE_BIND_APPLY_FUN(ip) ((ip)->args[0])
+#define ACE_BIND_APPLY_NUM_ARGS(ip) ((ip)->args[1])
+#define ACE_BIND_APPLY_ARG(ip, n) ((ip)->args[2 + (n)])
+#define ACE_BIND_APPLY_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_APPLY_NUM_ARGS(ip))
 
 #define ACE_BODY_CLOSURE_SIZE(nfvs) GS_SIZE_BYTECODE(2 + nfvs)
 #define ACE_BODY_CLOSURE_CODE(ip) ((ip)->args[0])

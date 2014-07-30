@@ -806,6 +806,23 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
         ;
 
         pcl->size += ACE_BIND_CLOSURE_SIZE(cty->numfvs);
+    } else if (
+        (pcl->features & gsstring_code_bind_closure_two_words)
+            ?
+                gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+                && gssymceq(p->arguments[0], gssymopapply, gssymcodeop, ".apply")
+            : 0
+    ) {
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->nregs++;
+
+        /* Skip type arguments */
+        for (i = 2; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+        if (i < p->numarguments) i++;
+
+        pcl->size += ACE_BIND_APPLY_SIZE(p->numarguments - i);
     } else {
         return 0;
     }
@@ -2305,7 +2322,7 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
         (pcl->features & gsstring_code_bind_closure_two_words)
             ?
                 gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
-                && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".clousre")
+                && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".closure")
             : 0
     ) {
         struct gsbc *pcode;
@@ -2339,6 +2356,51 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
 
         pcode = ACE_BIND_CLOSURE_SKIP(pcode);
         pcl->pout = (uchar *)pcode;
+    } else if (
+        (pcl->features & gsstring_code_bind_closure_two_words)
+            ?
+                gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+                && gssymceq(p->arguments[0], gssymopapply, gssymcodeop, ".apply")
+            : 0
+    ) {
+        struct gsbc *pcode;
+        struct gstype *type, *tyarg;
+        int first_arg;
+
+        pcode = (struct gsbc *)pcl->pout;
+
+        SETUP_PCODE(gsbc_op_bind_apply);
+
+        ACE_APPLY_FUN(pcode) = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1]);
+
+        type = pcl->regtypes[ACE_BIND_APPLY_FUN(pcode)];
+        if (!type) gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0]);
+
+        for (i = 2; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++) {
+            tyarg = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[i])];
+            type = gstype_instantiate(p->pos, type, tyarg);
+        }
+        if (i < p->numarguments) i++;
+        first_arg = i;
+        ACE_BIND_APPLY_NUM_ARGS(pcode) = p->numarguments - first_arg;
+        for (; i < p->numarguments; i++) {
+            struct gstype_fun *fun;
+            int regarg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+
+            ACE_BIND_APPLY_ARG(pcode, i - first_arg) = regarg;
+            tyarg = pcl->regtypes[regarg];
+            if (type->node == gstype_lift) {
+                struct gstype_lift *lift = (struct gstype_lift *)type;
+                type = lift->arg;
+            }
+            if (type->node != gstype_fun)
+                gsfatal("%P: Function not of function type", p->pos)
+            ;
+            fun = (struct gstype_fun *)type;
+            type = fun->tyres;
+        }
+
+        pcl->pout = ACE_BIND_APPLY_SKIP(pcode);
     } else {
         return 0;
     }

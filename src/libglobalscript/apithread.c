@@ -666,6 +666,23 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 pin = ACE_BIND_CLOSURE_SKIP(pinstr);
                 continue;
             }
+            case gsbc_op_bind_apply: {
+                gsvalue fun, args[MAX_NUM_REGISTERS];
+
+                fun = regs[ACE_BIND_APPLY_FUN(pinstr)];
+                for (i = 0; i < ACE_BIND_APPLY_NUM_ARGS(pinstr); i++) args[i] = regs[ACE_BIND_APPLY_ARG(pinstr, i)];
+
+                rhss[nstatements] = gsnapplyv(pinstr->pos, fun, ACE_BIND_APPLY_NUM_ARGS(pinstr), args);
+                poss[nstatements] = pinstr->pos;
+                lhss[nstatements] = api_alloc_promise();
+                regs[nregs] = (gsvalue)lhss[nstatements];
+
+                nstatements++;
+                nregs++;
+
+                pin = ACE_BIND_APPLY_SKIP(pinstr);
+                continue;
+            }
             case gsbc_op_body_closure: {
                 struct gsbco *subexpr;
                 struct gsclosure *cl;
