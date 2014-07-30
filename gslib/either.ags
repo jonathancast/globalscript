@@ -205,12 +205,14 @@ xn	.larg	list.t	α
 	.enter	z
 
 _either.foldM_k	.strictcont
+_either.foldM_f_ty	.tygvar
 list.t	.tygvar
 _either.foldM_k1	.subcode
 list.t.out	.cogvar
 e	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
+f	.fv	_either.foldM_f_ty	e	α	β
 xn	.fv	list.t	α
 z0	.karg	β
 	.force	_either.foldM_k1
@@ -218,24 +220,38 @@ z0	.karg	β
 	.enter	xn
 
 _either.foldM_k1	.forcecont
+_either.foldM_f_ty	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
-either.t	.tygvar	-- Temp
+_either.foldM_:_k	.subcode
+either.t.out	.cogvar
 either.right	.gvar
 list.nil	.gvar
 e	.tyfv	*
 α	.tyfv	*
 β	.tyfv	*
+f	.fv	_either.foldM_f_ty	e	α	β
 z0	.fv	β
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.undef	either.t	e	β
+			.force	_either.foldM_:_k
+			.coerce	either.t.out	e	β
+			.app	z0	x0
+			.enter	f
 		.case	nil
 			.app	z0
 			.enter	either.right	e	β
+
+_either.foldM_:_k	.forcecont
+either.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+e	.tyfv	*
+β	.tyfv	*
+e0	.karg	either.prim.u	e	β
+			.undef	either.t	e	β
 
 	.type
 
