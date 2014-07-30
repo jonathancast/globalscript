@@ -784,7 +784,7 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
         ;
 
-        pcl->size += ACE_BIND_SIZE(cty->numfvs);
+        pcl->size += ACE_BIND_CLOSURE_SIZE(cty->numfvs);
     } else if (
         (pcl->features & gsstring_code_bind_closure_two_words)
             ?
@@ -805,7 +805,7 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1])
         ;
 
-        pcl->size += ACE_BIND_SIZE(cty->numfvs);
+        pcl->size += ACE_BIND_CLOSURE_SIZE(cty->numfvs);
     } else {
         return 0;
     }
@@ -2287,19 +2287,19 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
         creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[0]);
 
         pcode->pos = p->pos;
-        pcode->instr = gsbc_op_bind;
-        ACE_BIND_CODE(pcode) = (uchar)creg;
+        pcode->instr = gsbc_op_bind_closure;
+        ACE_BIND_CLOSURE_CODE(pcode) = (uchar)creg;
 
         if (!(cty = pcl->subexpr_types[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
         ;
 
-        ACE_BIND_NUMFVS(pcode) = (uchar)cty->numfvs;
+        ACE_BIND_CLOSURE_NUMFVS(pcode) = (uchar)cty->numfvs;
         for (i = 0; i < cty->numfvs; i++)
-            ACE_BIND_FV(pcode, i) = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i])
+            ACE_BIND_CLOSURE_FV(pcode, i) = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i])
         ;
 
-        pcode = ACE_BIND_SKIP(pcode);
+        pcode = ACE_BIND_CLOSURE_SKIP(pcode);
         pcl->pout = (uchar *)pcode;
     } else if (
         (pcl->features & gsstring_code_bind_closure_two_words)
@@ -2325,19 +2325,19 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
         creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[1]);
 
         pcode->pos = p->pos;
-        pcode->instr = gsbc_op_bind;
-        ACE_BIND_CODE(pcode) = (uchar)creg;
+        pcode->instr = gsbc_op_bind_closure;
+        ACE_BIND_CLOSURE_CODE(pcode) = (uchar)creg;
 
         if (!(cty = pcl->subexpr_types[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1])
         ;
 
-        ACE_BIND_NUMFVS(pcode) = (uchar)cty->numfvs;
+        ACE_BIND_CLOSURE_NUMFVS(pcode) = (uchar)cty->numfvs;
         for (i = 0; i < cty->numfvs; i++)
-            ACE_BIND_FV(pcode, i) = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i])
+            ACE_BIND_CLOSURE_FV(pcode, i) = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i])
         ;
 
-        pcode = ACE_BIND_SKIP(pcode);
+        pcode = ACE_BIND_CLOSURE_SKIP(pcode);
         pcl->pout = (uchar *)pcode;
     } else {
         return 0;
