@@ -540,6 +540,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
     void *pin;
     struct gsbco *code;
     struct gsbco **psubexpr;
+    gsvalue *pglobal;
     struct gsbc *pinstr;
     struct gsbco *subexprs[MAX_NUM_REGISTERS];
 
@@ -564,8 +565,13 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
     }
 
     for (i = 0; i < code->numglobals; i++) {
-        api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: get global variable");
-        return;
+        if (nregs >= MAX_NUM_REGISTERS) {
+            api_abend_unimpl(thread, __FILE__, __LINE__, "%P: Too many registers", cl->hp.pos);
+            return;
+        }
+        pglobal = (gsvalue *)pin;
+        regs[nregs++] = *pglobal++;
+        pin = pglobal;
     }
 
     for (i = 0; i < code->numfvs; i++)

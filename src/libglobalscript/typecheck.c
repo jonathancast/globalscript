@@ -2897,6 +2897,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, uint
     while (gsbc_typecheck_code_type_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_subcode_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_coercion_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
+    while (gsbc_typecheck_data_gvar_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_fv_op(symtable, p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_arg_op(p, &cl)) p = gsinput_next_line(ppseg, p);
     while (gsbc_typecheck_code_type_let_op(p, &cl)) p = gsinput_next_line(ppseg, p);
