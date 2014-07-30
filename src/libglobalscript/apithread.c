@@ -624,6 +624,16 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 pin = ACE_UNDEFINED_SKIP(pinstr);
                 continue;
             }
+            case gsbc_op_apply: {
+                gsvalue fun, args[MAX_NUM_REGISTERS];
+
+                fun = regs[ACE_APPLY_FUN(pinstr)];
+                for (i = 0; i < ACE_APPLY_NUM_ARGS(pinstr); i++) args[i] = regs[ACE_APPLY_ARG(pinstr, i)];
+                regs[nregs++] = gsnapplyv(pinstr->pos, fun, ACE_APPLY_NUM_ARGS(pinstr), args);
+
+                pin = ACE_APPLY_SKIP(pinstr);
+                continue;
+            }
             case gsbc_op_bind_closure: {
                 struct gsbco *subexpr;
                 struct gsclosure *cl;

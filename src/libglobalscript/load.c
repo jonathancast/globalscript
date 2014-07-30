@@ -1294,7 +1294,7 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
 int
 gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *p, int offset, char **fields, long n)
 {
-    static gsinterned_string gssymclosure, gssymundefined;
+    static gsinterned_string gssymclosure, gssymundefined, gssymapply;
 
     int i;
 
@@ -1320,6 +1320,22 @@ gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gspa
         for (i = offset + 2; i < n; i++)
             p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
+    } else if (gssymceq(p->directive, gssymapply, gssymcodeop, ".apply")) {
+        if (offset == 0) STORE_ALLOC_OP_LABEL(".apply");
+        if (n < offset + 3)
+            gsfatal("%P: Missing function on .undefined", p->pos)
+        ;
+        p->arguments[offset + 2 - 2] = gsintern_string(gssymdatalable, fields[offset + 2]);
+        for (i = offset + 3; i < n && strcmp(fields[i], "|"); i++)
+            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
+        ;
+        if (i < n) {
+            p->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
+            i++;
+        }
+        for (; i < n; i++)
+            p->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
+        ;
     } else {
         return 0;
     }
@@ -1330,7 +1346,7 @@ static
 int
 gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, char **fields, long n)
 {
-    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymlifted, gssymcast, gssymapply;
+    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymlifted, gssymcast;
 
     int i;
 
@@ -1491,22 +1507,6 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
         if (n < 4) gsfatal("%P: Missing coercion", p->pos);
         p->arguments[3 - 2] = gsintern_string(gssymcoercionlable, fields[3]);
         for (i = 4; i < n; i++) p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
-    } else if (gssymceq(p->directive, gssymapply, gssymcodeop, ".apply")) {
-        STORE_ALLOC_OP_LABEL(".apply");
-        if (n < 3)
-            gsfatal("%P: Missing function on .undefined", p->pos)
-        ;
-        p->arguments[2 - 2] = gsintern_string(gssymdatalable, fields[2]);
-        for (i = 3; i < n && strcmp(fields[i], "|"); i++)
-            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
-        ;
-        if (i < n) {
-            p->arguments[i - 2] = gsintern_string(gssymseparator, fields[i]);
-            i++;
-        }
-        for (; i < n; i++)
-            p->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
-        ;
     } else {
         return 0;
     }
