@@ -2,3 +2,5 @@
 
 . $GLOBALSCRIPT/bin/globalscript
 . test-fns
+
+ok_grep_script_errors '-- mdltype2c: Empty file --' type-empty-file '/dev/stdin:\$: Un-expected EOF' ibio ./gslib ./mdltype2c.ags < /dev/null

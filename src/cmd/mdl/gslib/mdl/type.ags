@@ -1,0 +1,27 @@
+#calculus: gsdl.string-code 0.6
+
+	.prefix
+
+	.data
+
+mdl.type.parser	.closure	_mdl.type.parser_c
+
+	.code
+
+_mdl.type.parser_c	.expr
+rune.t	.tygvar
+mdl.type.t	.tygvar
+parser.fail	.gvar	-- Temp
+	.enter	parser.fail	rune.t	mdl.type.t
+
+	.type
+
+-- §section §gs{mdl.type.t}
+
+mdl.type.t	.tyabstract	*
+mdl.type.prim.u	.tygvar
+	.tylift
+	.tyref	mdl.type.prim.u
+
+mdl.type.prim.u	.tyexpr
+	.tysum

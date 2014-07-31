@@ -5,7 +5,6 @@ all:V:
 
 test:V: all
 	test-gslib ./gslib
-	$GLOBALSCRIPT/bin/gslint ./gslib ./mdltype2c.ags
 
 integration-test:V: all test
 	./rc/test-interpreted-ags

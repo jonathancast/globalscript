@@ -1,0 +1,20 @@
+#calculus: gsdl.string-code 0.6
+
+	.prefix
+
+	.data
+
+mdl.syntax.whitespace	.closure	_mdl.syntax.whitespace_c
+_mdl.syntax.whitespace_ws.re	.regex	\s*
+
+	.code
+
+-- §section §gs{mdl.syntax.whitespace}
+
+_mdl.syntax.whitespace_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_mdl.syntax.whitespace_ws.re	.gvar
+	.app	rune.compare	_mdl.syntax.whitespace_ws.re
+	.enter	parser.match	rune.t

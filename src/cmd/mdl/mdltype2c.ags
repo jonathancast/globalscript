@@ -5,18 +5,98 @@
 	.data
 
 	.closure	_ep_c
+_ep_body_left_res_nl.s	.string	\n
+_ep_stdin.s	.string	/dev/stdin
 
 	.code
 
-_ep_c	.expr
+_ep_c	.impprog	ibio.prim	ibio
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
 ibio.prim.oport	.tygvar
+list.t	.tygvar
+mdl.type.t	.tygvar
+string.t	.tygvar
 record.empty	.tygvar
-ibio.prim.t	.tygvar	-- Temp
+parser.pos.t	.tygvar	-- Temp
+_ep_body_c	.subcode
 ibio.m.in	.cogvar
+parser.parse	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+parser.pos.initial	.gvar
+ibio.file.name.in	.gvar
+_ep_stdin.s	.gvar
+parser.*>	.gvar
+mdl.syntax.whitespace	.gvar
+mdl.type.parser	.gvar
+ibio.lex.receive	.gvar
+ibio.lex.receiver.many	.gvar
+ibio.lex.receiver.symbol	.gvar
+list.rune.ty	.tylet	list.t	rune.t
 	.coerce	ibio.m.in	rune.t	rune.t	record.empty
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
-	.undef	ibio.prim.t	record.empty
+	.lift
+stdin.fn	.apply	ibio.file.name.in	|	_ep_stdin.s
+pos	.apply	parser.pos.initial	|	stdin.fn
+p	.apply	parser.*>	rune.t	string.t	mdl.type.t	|	mdl.syntax.whitespace	mdl.type.parser
+sym	.apply	ibio.lex.receiver.symbol	rune.t
+ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
+s	.bind	.apply	ibio.lex.receive	rune.t	list.rune.ty	|	ms	i
+ety	.apply	parser.parse	rune.t	mdl.type.t	|	parser.rune.advance	rune.print	pos	p	s
+	.body	.closure	_ep_body_c
+
+_ep_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+either.t	.tygvar
+parser.err.t	.tygvar
+mdl.type.t	.tygvar
+_ep_body_k	.subcode
+either.t.out	.cogvar
+eo	.fv	ibio.prim.oport	rune.t
+ety	.fv	either.t	parser.err.t	mdl.type.t
+	.force	_ep_body_k
+	.coerce	either.t.out	parser.err.t	mdl.type.t
+	.enter	ety
+
+_ep_body_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+either.prim.u	.tygvar
+parser.err.t	.tygvar
+mdl.type.t	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+record.empty	.tygvar	-- Temp
+_ep_body_left_res_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+e0	.karg	either.prim.u	parser.err.t	mdl.type.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	parser.err.t
+res			.closure	_ep_body_left_res_c
+			.enter	res
+		.case	right
+ty		.fkarg	0	mdl.type.t
+			.undef	ibio.prim.t	record.empty
+
+_ep_body_left_res_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+parser.err.t	.tygvar
+list.t	.tygvar	-- Temp
+ibio.prim.t	.tygvar	-- Temp
+record.empty	.tygvar	-- Temp
+ibio.prim.write	.gvar
+list.<>	.gvar
+parser.err.fmt	.gvar
+_ep_body_left_res_nl.s	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	parser.err.t
+	.lift
+s1	.apply	parser.err.fmt	|	err
+err.s	.apply	list.<>	rune.t	|	s1	_ep_body_left_res_nl.s
+	.bind	.apply	ibio.prim.write	rune.t	|	eo	err.s
+	.body	.undefined	ibio.prim.t	record.empty
