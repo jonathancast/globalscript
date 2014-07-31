@@ -4,24 +4,24 @@
 
 	.data
 
-mdl.type.parser	.closure	_mdl.type.parser_c
+mdl.type.decl.parser	.closure	_mdl.type.decl.parser_c
 
 	.code
 
-_mdl.type.parser_c	.expr
+_mdl.type.decl.parser_c	.expr
 rune.t	.tygvar
-mdl.type.t	.tygvar
+mdl.type.decl.t	.tygvar
 parser.fail	.gvar	-- Temp
-	.enter	parser.fail	rune.t	mdl.type.t
+	.enter	parser.fail	rune.t	mdl.type.decl.t
 
 	.type
 
--- §section §gs{mdl.type.t}
+-- §section §gs{mdl.type.decl.t}
 
-mdl.type.t	.tyabstract	*
-mdl.type.prim.u	.tygvar
+mdl.type.decl.t	.tyabstract	*
+mdl.type.decl.prim.u	.tygvar
 	.tylift
-	.tyref	mdl.type.prim.u
+	.tyref	mdl.type.decl.prim.u
 
-mdl.type.prim.u	.tyexpr
+mdl.type.decl.prim.u	.tyexpr
 	.tysum

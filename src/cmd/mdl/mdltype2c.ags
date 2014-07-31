@@ -15,7 +15,7 @@ ibio.prim.iport	.tygvar
 rune.t	.tygvar
 ibio.prim.oport	.tygvar
 list.t	.tygvar
-mdl.type.t	.tygvar
+mdl.type.decl.t	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 parser.pos.t	.tygvar	-- Temp
@@ -29,7 +29,7 @@ ibio.file.name.in	.gvar
 _ep_stdin.s	.gvar
 parser.*>	.gvar
 mdl.syntax.whitespace	.gvar
-mdl.type.parser	.gvar
+mdl.type.decl.parser	.gvar
 ibio.lex.receive	.gvar
 ibio.lex.receiver.many	.gvar
 ibio.lex.receiver.symbol	.gvar
@@ -41,11 +41,11 @@ eo	.larg	ibio.prim.oport	rune.t
 	.lift
 stdin.fn	.apply	ibio.file.name.in	|	_ep_stdin.s
 pos	.apply	parser.pos.initial	|	stdin.fn
-p	.apply	parser.*>	rune.t	string.t	mdl.type.t	|	mdl.syntax.whitespace	mdl.type.parser
+p	.apply	parser.*>	rune.t	string.t	mdl.type.decl.t	|	mdl.syntax.whitespace	mdl.type.decl.parser
 sym	.apply	ibio.lex.receiver.symbol	rune.t
 ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
 s	.bind	.apply	ibio.lex.receive	rune.t	list.rune.ty	|	ms	i
-ety	.apply	parser.parse	rune.t	mdl.type.t	|	parser.rune.advance	rune.print	pos	p	s
+ety	.apply	parser.parse	rune.t	mdl.type.decl.t	|	parser.rune.advance	rune.print	pos	p	s
 	.body	.closure	_ep_body_c
 
 _ep_body_c	.expr
@@ -53,13 +53,13 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 either.t	.tygvar
 parser.err.t	.tygvar
-mdl.type.t	.tygvar
+mdl.type.decl.t	.tygvar
 _ep_body_k	.subcode
 either.t.out	.cogvar
 eo	.fv	ibio.prim.oport	rune.t
-ety	.fv	either.t	parser.err.t	mdl.type.t
+ety	.fv	either.t	parser.err.t	mdl.type.decl.t
 	.force	_ep_body_k
-	.coerce	either.t.out	parser.err.t	mdl.type.t
+	.coerce	either.t.out	parser.err.t	mdl.type.decl.t
 	.enter	ety
 
 _ep_body_k	.forcecont
@@ -67,19 +67,19 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 either.prim.u	.tygvar
 parser.err.t	.tygvar
-mdl.type.t	.tygvar
+mdl.type.decl.t	.tygvar
 ibio.prim.t	.tygvar	-- Temp
 record.empty	.tygvar	-- Temp
 _ep_body_left_res_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
-e0	.karg	either.prim.u	parser.err.t	mdl.type.t
+e0	.karg	either.prim.u	parser.err.t	mdl.type.decl.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	parser.err.t
 res			.closure	_ep_body_left_res_c
 			.enter	res
 		.case	right
-ty		.fkarg	0	mdl.type.t
+ty		.fkarg	0	mdl.type.decl.t
 			.undef	ibio.prim.t	record.empty
 
 _ep_body_left_res_c	.impprog	ibio.prim	ibio
