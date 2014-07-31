@@ -2400,6 +2400,8 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
             type = fun->tyres;
         }
 
+        ADD_LABEL_TO_REGS();
+
         pcl->pout = ACE_BIND_APPLY_SKIP(pcode);
     } else {
         return 0;
