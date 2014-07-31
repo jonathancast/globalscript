@@ -2783,6 +2783,7 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
 
     while (
         gsbc_byte_compile_cast_op(p, &cl)
+        || gsbc_byte_compile_type_let_code_op(p, &cl)
         || gsbc_byte_compile_arg_code_op(p, &cl)
     )
         p = gsinput_next_line(ppseg, p)
