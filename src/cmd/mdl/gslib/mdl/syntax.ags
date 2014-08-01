@@ -5,7 +5,7 @@
 	.data
 
 mdl.syntax.whitespace	.closure	_mdl.syntax.whitespace_c
-_mdl.syntax.whitespace_ws.re	.regex	\s*
+_mdl.syntax.whitespace_ws.re	.regex	[\s\n]*
 
 mdl.syntax.keyword	.closure	_mdl.syntax.keyword_c
 
