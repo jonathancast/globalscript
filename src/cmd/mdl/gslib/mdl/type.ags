@@ -8,6 +8,8 @@ mdl.type.decl.parser	.closure	_mdl.type.decl.parser_c
 _mdl.type.decl.parser_interpreted.stackframe_interpreted.re	.regex	interpreted
 _mdl.type.decl.parser_interpreted.stackframe_stackframe.re	.regex	stackframe
 
+mdl.type.decl.interpreted.stackframe	.closure	_mdl.type.decl.interpreted.stackframe_c
+
 	.code
 
 _mdl.type.decl.parser_c	.expr
@@ -53,10 +55,26 @@ _mdl.type.decl.parser_interpreted.stackframe_f_c	.expr
 string.t	.tygvar
 list.t	.tygvar
 mdl.type.field.decl.t	.tygvar
-mdl.type.decl.t	.tygvar	-- Temp
+mdl.type.decl.interpreted.stackframe	.gvar
 l	.larg	string.t
 fs	.larg	list.t	mdl.type.field.decl.t
-	.undef	mdl.type.decl.t
+	.app	l	fs
+	.enter	mdl.type.decl.interpreted.stackframe
+
+-- §section §gs{mdl.type.decl.t} constructors
+
+_mdl.type.decl.interpreted.stackframe_c	.expr
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+mdl.type.decl.prim.u	.tygvar
+mdl.type.decl.t.in	.cogvar
+l	.larg	string.t
+fs	.larg	list.t	mdl.type.field.decl.t
+res	.constr	mdl.type.decl.prim.u	interpreted.stackframe	0	l	1	fs
+	.coerce	mdl.type.decl.t.in
+	.lift
+	.yield	res
 
 	.type
 
@@ -68,7 +86,15 @@ mdl.type.decl.prim.u	.tygvar
 	.tyref	mdl.type.decl.prim.u
 
 mdl.type.decl.prim.u	.tyexpr
-	.tysum
+_mdl.type.decl.prim.u_interpreted.stackframe_ty	.tygvar
+	.tysum	interpreted.stackframe	_mdl.type.decl.prim.u_interpreted.stackframe_ty
+
+_mdl.type.decl.prim.u_interpreted.stackframe_ty	.tyexpr
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+list.field.ty	.tylet	list.t	mdl.type.field.decl.t
+	.tyubproduct	0	string.t	1	list.field.ty
 
 -- §section §gs{mdl.type.field.decl.t}
 
@@ -81,6 +107,10 @@ mdl.type.field.decl.prim.u	.tyexpr
 	.typroduct
 
 	.coercion
+
+mdl.type.decl.t.in	.tycoercion
+mdl.type.decl.t	.tygvar
+	.tydefinition	mdl.type.decl.t
 
 mdl.type.decl.t.out	.tycoercion
 mdl.type.decl.t	.tygvar
