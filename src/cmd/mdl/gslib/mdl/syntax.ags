@@ -18,6 +18,9 @@ mdl.syntax.id.cont.char.re	.regex	[a-z]
 mdl.syntax.keywords	.list	string.t	_mdl.syntax.keywords_interpreted.s
 _mdl.syntax.keywords_interpreted.s	.string	interpreted
 
+mdl.syntax.braces	.closure	_mdl.syntax.braces_c
+_mdl.syntax.braces_lbrace.re	.regex	{
+
 	.code
 
 -- §section §gs{mdl.syntax.whitespace}
@@ -116,3 +119,24 @@ unit.id			.apply	parser.unit	rune.t	string.t	|	id
 			.enter	parser.*>	rune.t	string.t	string.t
 		.case	true
 			.enter	parser.fail	rune.t	string.t
+
+-- §section §gs{mdl.syntax.braces}
+
+_mdl.syntax.braces_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_mdl.syntax.braces_lbrace.re	.gvar
+mdl.syntax.whitespace	.gvar
+parser.fail	.gvar	-- Temp
+α	.tyarg	*
+p	.larg	parser.t	rune.t	α
+lbrace.p	.apply	parser.match	rune.t	|	rune.compare	_mdl.syntax.braces_lbrace.re
+p2	.apply	parser.fail	rune.t	α
+p1	.apply	parser.*>	rune.t	string.t	α	|	mdl.syntax.whitespace	p2
+	.app	lbrace.p	p1
+	.enter	parser.*>	rune.t	string.t	α
+
