@@ -7,6 +7,13 @@
 mdl.syntax.whitespace	.closure	_mdl.syntax.whitespace_c
 _mdl.syntax.whitespace_ws.re	.regex	\s*
 
+mdl.syntax.keyword	.closure	_mdl.syntax.keyword_c
+
+mdl.syntax.id.cont.char.re	.regex	[a-z]
+
+mdl.syntax.keywords	.list	string.t	_mdl.syntax.keywords_interpreted.s
+_mdl.syntax.keywords_interpreted.s	.string	interpreted
+
 	.code
 
 -- §section §gs{mdl.syntax.whitespace}
@@ -18,3 +25,26 @@ rune.compare	.gvar
 _mdl.syntax.whitespace_ws.re	.gvar
 	.app	rune.compare	_mdl.syntax.whitespace_ws.re
 	.enter	parser.match	rune.t
+
+-- §section §gs{mdl.syntax.keyword}
+
+_mdl.syntax.keyword_c	.expr
+regex.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+parser.<*	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+parser.*>	.gvar
+parser.neg.lookahead	.gvar
+mdl.syntax.id.cont.char.re	.gvar
+mdl.syntax.whitespace	.gvar
+parser.fail	.gvar	-- Temp
+re	.larg	regex.t	rune.t
+re.p	.apply	parser.match	rune.t	|	rune.compare	re
+p1.2	.apply	parser.match	rune.t	|	rune.compare	mdl.syntax.id.cont.char.re
+p1.1	.apply	parser.neg.lookahead	rune.t	string.t	|	p1.2
+p1	.apply	parser.*>	rune.t	record.empty	string.t	|	p1.1	mdl.syntax.whitespace
+	.app	re.p	p1
+	.enter	parser.<*	rune.t	string.t	string.t
