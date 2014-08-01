@@ -20,6 +20,7 @@ _mdl.syntax.keywords_interpreted.s	.string	interpreted
 
 mdl.syntax.braces	.closure	_mdl.syntax.braces_c
 _mdl.syntax.braces_lbrace.re	.regex	{
+_mdl.syntax.braces_rbrace.re	.regex	}
 
 	.code
 
@@ -130,12 +131,16 @@ parser.*>	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _mdl.syntax.braces_lbrace.re	.gvar
+_mdl.syntax.braces_rbrace.re	.gvar
 mdl.syntax.whitespace	.gvar
+parser.<*	.gvar
 parser.fail	.gvar	-- Temp
 α	.tyarg	*
 p	.larg	parser.t	rune.t	α
 lbrace.p	.apply	parser.match	rune.t	|	rune.compare	_mdl.syntax.braces_lbrace.re
-p2	.apply	parser.fail	rune.t	α
+rbrace.p	.apply	parser.match	rune.t	|	rune.compare	_mdl.syntax.braces_rbrace.re
+p3	.apply	parser.*>	rune.t	string.t	string.t	|	rbrace.p	mdl.syntax.whitespace
+p2	.apply	parser.<*	rune.t	α	string.t	|	p	p3
 p1	.apply	parser.*>	rune.t	string.t	α	|	mdl.syntax.whitespace	p2
 	.app	lbrace.p	p1
 	.enter	parser.*>	rune.t	string.t	α
