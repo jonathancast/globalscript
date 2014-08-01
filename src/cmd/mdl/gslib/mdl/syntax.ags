@@ -15,8 +15,9 @@ _mdl.syntax.id_re	.regex	§§*	mdl.syntax.id.init.char.re	mdl.syntax.id.cont.cha
 mdl.syntax.id.init.char.re	.regex	[a-z]
 mdl.syntax.id.cont.char.re	.regex	[a-z]
 
-mdl.syntax.keywords	.list	string.t	_mdl.syntax.keywords_interpreted.s
+mdl.syntax.keywords	.list	string.t	_mdl.syntax.keywords_interpreted.s	_mdl.syntax.keywords_stackframe.s
 _mdl.syntax.keywords_interpreted.s	.string	interpreted
+_mdl.syntax.keywords_stackframe.s	.string	stackframe
 
 mdl.syntax.semi	.closure	_mdl.syntax.semi_c
 _mdl.syntax.semi_semi.re	.regex	;

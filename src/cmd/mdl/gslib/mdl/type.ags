@@ -5,14 +5,58 @@
 	.data
 
 mdl.type.decl.parser	.closure	_mdl.type.decl.parser_c
+_mdl.type.decl.parser_interpreted.stackframe_interpreted.re	.regex	interpreted
+_mdl.type.decl.parser_interpreted.stackframe_stackframe.re	.regex	stackframe
 
 	.code
 
 _mdl.type.decl.parser_c	.expr
 rune.t	.tygvar
 mdl.type.decl.t	.tygvar
+_mdl.type.decl.parser_interpreted.stackframe_c	.subcode
+interpreted.stackframe	.closure	_mdl.type.decl.parser_interpreted.stackframe_c
+	.enter	interpreted.stackframe
+
+_mdl.type.decl.parser_interpreted.stackframe_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+mdl.type.decl.t	.tygvar
+string.t	.tygvar
+_mdl.type.decl.parser_interpreted.stackframe_f_c	.subcode
+parser.lift2	.gvar
+parser.*>	.gvar
+mdl.syntax.keyword	.gvar
+_mdl.type.decl.parser_interpreted.stackframe_interpreted.re	.gvar
+_mdl.type.decl.parser_interpreted.stackframe_stackframe.re	.gvar
+mdl.syntax.id	.gvar
+parser.<*	.gvar
+mdl.syntax.braces	.gvar
+parser.many	.gvar
+mdl.syntax.semi	.gvar
 parser.fail	.gvar	-- Temp
-	.enter	parser.fail	rune.t	mdl.type.decl.t
+list.field.ty	.tylet	list.t	mdl.type.field.decl.t
+f	.closure	_mdl.type.decl.parser_interpreted.stackframe_f_c
+interpreted.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.stackframe_interpreted.re
+stackframe.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.stackframe_stackframe.re
+label.p1	.apply	parser.*>	rune.t	string.t	string.t	|	stackframe.p	mdl.syntax.id
+label.p	.apply	parser.*>	rune.t	string.t	string.t	|	interpreted.p	label.p1
+fields.p2.1	.apply	parser.fail	rune.t	mdl.type.field.decl.t	-- > field.decl.parser
+fields.p2	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	fields.p2.1
+fields.p1	.apply	mdl.syntax.braces	list.field.ty	|	fields.p2
+fields.p	.apply	parser.<*	rune.t	list.field.ty	string.t	|	fields.p1	mdl.syntax.semi
+	.app	f	label.p	fields.p
+	.enter	parser.lift2	rune.t	string.t	list.field.ty	mdl.type.decl.t
+
+_mdl.type.decl.parser_interpreted.stackframe_f_c	.expr
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+mdl.type.decl.t	.tygvar	-- Temp
+l	.larg	string.t
+fs	.larg	list.t	mdl.type.field.decl.t
+	.undef	mdl.type.decl.t
 
 	.type
 
@@ -25,3 +69,13 @@ mdl.type.decl.prim.u	.tygvar
 
 mdl.type.decl.prim.u	.tyexpr
 	.tysum
+
+-- §section §gs{mdl.type.field.decl.t}
+
+mdl.type.field.decl.t	.tyexpr
+mdl.type.field.decl.prim.u	.tygvar
+	.tylift
+	.tyref	mdl.type.field.decl.prim.u
+
+mdl.type.field.decl.prim.u	.tyexpr
+	.typroduct
