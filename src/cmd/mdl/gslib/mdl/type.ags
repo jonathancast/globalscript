@@ -79,3 +79,10 @@ mdl.type.field.decl.prim.u	.tygvar
 
 mdl.type.field.decl.prim.u	.tyexpr
 	.typroduct
+
+	.coercion
+
+mdl.type.decl.t.out	.tycoercion
+mdl.type.decl.t	.tygvar
+	.tyinvert
+	.tydefinition	mdl.type.decl.t

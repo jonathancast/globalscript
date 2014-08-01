@@ -1,0 +1,26 @@
+#calculus: gsdl.string-code 0.6
+
+	.prefix
+
+	.data
+
+mdl.hack.compiler.type.decl.compile	.closure	_mdl.hack.compiler.type.decl.compile_c
+
+	.code
+
+-- §section §gs{mdl.hack.compiler.type.decl.compile}
+
+_mdl.hack.compiler.type.decl.compile_c	.expr
+mdl.type.decl.t	.tygvar
+_mdl.hack.compiler.type.decl.compile_k	.subcode
+mdl.type.decl.t.out	.cogvar
+ty	.larg	mdl.type.decl.t
+	.force	_mdl.hack.compiler.type.decl.compile_k
+	.coerce	mdl.type.decl.t.out
+	.enter	ty
+
+_mdl.hack.compiler.type.decl.compile_k	.forcecont
+mdl.type.decl.prim.u	.tygvar
+string.t	.tygvar	-- Temp
+ty0	.karg	mdl.type.decl.prim.u
+	.undef	string.t
