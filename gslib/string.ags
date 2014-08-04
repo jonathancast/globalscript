@@ -6,6 +6,8 @@
 
 string.fmtline	.closure	_string.fmtline_c	_string.fmtline_ty
 
+string.toupper	.closure	_string.toupper_c	_string.toupper_ty
+
 string.empty	.closure	_string.empty_c
 
 string.≡	.closure	_string.≡_c
@@ -14,6 +16,15 @@ string.compare	.closure	_string.compare_c
 string.fmtgs	.closure	_string.fmtgs_c
 
 	.code
+
+-- §section §gs{string.toupper}
+
+_string.toupper_c	.expr
+string.t	.tygvar
+s	.larg	string.t
+	.undef	string.t
+
+-- §section Other functions
 
 _string.empty_c	.expr
 rune.t	.tygvar
@@ -138,3 +149,11 @@ rune.t	.tygvar
 	.tylift
 	.tyfun	list.t	rune.t
 	.tyref	list.t	rune.t
+
+-- §section §gs{string.toupper}
+
+_string.toupper_ty	.tyexpr
+string.t	.tygvar
+	.tylift
+	.tyfun	string.t
+	.tyref	string.t
