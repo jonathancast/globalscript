@@ -15,13 +15,16 @@ static struct gsregistered_primtype rune_prim_types[] = {
 };
 
 static gsprim_handler rune_prim_handle_advance;
+static gsprim_handler rune_prim_handle_diff;
 
 enum {
     rune_prim_advance,
+    rune_prim_diff,
 };
 
 static gsprim_handler *rune_prim_exec[] = {
     rune_prim_handle_advance,
+    rune_prim_handle_diff,
 };
 
 static gsubprim_handler rune_prim_handle_lt, rune_prim_handle_eq, rune_prim_handle_gt;
@@ -47,6 +50,7 @@ static struct gsregistered_prim rune_prim_operations[] = {
     { "eq", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "rune.prim.rune rune.prim.rune \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", rune_prim_ub_eq, },
     { "gt", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "rune.prim.rune rune.prim.rune \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", rune_prim_ub_gt, },
     { "advance", __FILE__, __LINE__, gsprim_operation, 0, "rune.prim.rune natural.prim.u rune.prim.rune → →", rune_prim_advance, },
+    { "diff", __FILE__, __LINE__, gsprim_operation, 0, "rune.prim.rune rune.prim.rune natural.prim.u → →", rune_prim_diff, },
     { 0, },
 };
 
@@ -121,6 +125,33 @@ rune_prim_handle_advance(struct ace_thread *thread, struct gspos pos, int nargs,
     }
 
     *res = r + n;
+    *res |= GS_MAX_PTR;
+
+    return 1;
+}
+
+int
+rune_prim_handle_diff(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args, gsvalue *res)
+{
+    gsvalue r0, r1;
+
+    r0 = args[0];
+    r1 = args[1];
+
+    if (!(r0 & (GS_MAX_PTR >> 1))) r0 &= ~GS_MAX_PTR;
+    if (!(r1 & (GS_MAX_PTR >> 1))) r1 &= ~GS_MAX_PTR;
+
+    if (r0 >= 0x80 || r1 >= 0x80) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "rune_prim_handle_advance: argument outside of ASCII range");
+        return 0;
+    }
+
+    if (r0 < r1) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "rune_prim_handle_advance: result negative");
+        return 0;
+    }
+
+    *res = r0 - r1;
     *res |= GS_MAX_PTR;
 
     return 1;

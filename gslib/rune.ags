@@ -354,10 +354,35 @@ r1	.prim	rune.prim	advance	_rune.prim.advance_ty	|	r0	n0
 
 _rune.diff_c	.expr
 rune.t	.tygvar
-natural.t	.tygvar	-- Temp
+_rune.diff_k0	.subcode
+rune.t.out	.cogvar
 r0	.larg	rune.t
 r1	.larg	rune.t
-	.undef	natural.t
+	.force	_rune.diff_k0
+	.coerce	rune.t.out
+	.enter	r0
+
+_rune.diff_k0	.forcecont
+rune.t	.tygvar
+rune.prim.rune	.tygvar
+_rune.diff_k1	.subcode
+rune.t.out	.cogvar
+r1	.fv	rune.t
+r0.0	.karg	rune.prim.rune
+	.force	_rune.diff_k1
+	.coerce	rune.t.out
+	.enter	r1
+
+_rune.diff_k1	.forcecont
+rune.prim.rune	.tygvar
+_rune.prim.diff_ty	.tygvar
+natural.t.in	.cogvar
+r0.0	.fv	rune.prim.rune
+r1.0	.karg	rune.prim.rune
+n	.prim	rune.prim	diff	_rune.prim.diff_ty	|	r0.0	r1.0
+	.coerce	natural.t.in
+	.lift
+	.yield	n
 
 -- §section Random data
 
@@ -592,6 +617,13 @@ natural.prim.u	.tygvar
 	.tyfun	rune.prim.rune
 	.tyfun	natural.prim.u
 	.tyref	rune.prim.rune
+
+_rune.prim.diff_ty	.tyexpr
+rune.prim.rune	.tygvar
+natural.prim.u	.tygvar
+	.tyfun	rune.prim.rune
+	.tyfun	rune.prim.rune
+	.tyref	natural.prim.u
 
 	.coercion
 
