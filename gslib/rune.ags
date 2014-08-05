@@ -42,6 +42,7 @@ rune.left.curly	.closure	_rune.left.curly_c
 rune.right.curly	.closure	_rune.right.curly_c
 rune.single.quote	.closure	_rune.single.quote_c
 rune.query	.closure	_rune.query_c
+rune.capital.latin.letter.a	.closure	_rune.capital.latin.letter.a_c
 rune.latin.letter.a	.closure	_rune.latin.letter.a_c
 rune.latin.letter.c	.closure	_rune.latin.letter.c_c
 rune.latin.letter.g	.closure	_rune.latin.letter.g_c
@@ -446,6 +447,13 @@ qu	.rune	?
 	.coerce	rune.t.in
 	.lift
 	.yield	qu
+
+_rune.capital.latin.letter.a_c	.expr
+rune.t.in	.cogvar
+cA	.rune	A
+	.coerce	rune.t.in
+	.lift
+	.yield	cA
 
 _rune.latin.letter.a_c	.expr
 rune.t.in	.cogvar
