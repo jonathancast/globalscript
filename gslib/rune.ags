@@ -9,6 +9,8 @@ rune.compare	.closure	_rune.compare_c
 
 rune.≠	.closure	_rune.≠_c
 
+rune.≤	.closure	_rune.≤_c
+
 rune.print	.closure	_rune.print_c
 
 rune.fmtgs	.closure	_rune.fmtgs_c
@@ -162,6 +164,47 @@ r1	.larg	rune.t
 b	.apply	rune.≡	|	r0	r1
 	.app	b
 	.enter	bool.not
+
+-- §section §gs{rune.≤}
+
+_rune.≤_c	.expr
+rune.t	.tygvar
+_rune.≤_k0	.subcode
+rune.t.out	.cogvar
+r0	.larg	rune.t
+r1	.larg	rune.t
+	.force	_rune.≤_k0
+	.coerce	rune.t.out
+	.enter	r0
+
+_rune.≤_k0	.forcecont
+rune.t	.tygvar
+rune.prim.rune	.tygvar
+_rune.≤_k1	.subcode
+rune.t.out	.cogvar
+r1	.fv	rune.t
+r0.0	.karg	rune.prim.rune
+	.force	_rune.≤_k1
+	.coerce	rune.t.out
+	.enter	r1
+
+_rune.≤_k1	.forcecont
+rune.prim.rune	.tygvar
+_rune.prim.gt_ty	.tygvar
+_rune.≤_≯_k	.subcode
+_rune.≤_>_k	.subcode
+r0.0	.fv	rune.prim.rune
+r1.0	.karg	rune.prim.rune
+	.ubanalyze	0	_rune.≤_≯_k	1	_rune.≤_>_k
+	.ubprim	rune.prim	gt	_rune.prim.gt_ty	|	r0.0	r1.0
+
+_rune.≤_≯_k	.ubcasecont
+bool.true	.gvar
+	.enter	bool.true
+
+_rune.≤_>_k	.ubcasecont
+bool.t	.tygvar	-- Temp
+	.undef	bool.t
 
 -- §section §gs{rune.print}
 
