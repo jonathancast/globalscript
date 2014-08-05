@@ -50,10 +50,44 @@ s1		.fkarg	1	string.t
 			.undef	string.t
 
 _string.toupper_:_k	.forcecont
+rune.t	.tygvar
 bool.prim.u	.tygvar
 string.t	.tygvar	-- Temp
+_string.toupper_:_ltz_k	.subcode
+bool.t.out	.cogvar
+rune.≤	.gvar
+rune.latin.letter.a	.gvar
+c0	.fv	rune.t
 b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
 			.undef	string.t
+		.case	true
+			.force	_string.toupper_:_ltz_k
+			.coerce	bool.t.out
+			.app	rune.latin.letter.a	c0
+			.enter	rune.≤
+
+_string.toupper_:_ltz_k	.forcecont
+rune.t	.tygvar
+bool.prim.u	.tygvar
+string.t	.tygvar	-- Temp
+list.:	.gvar
+rune.advance	.gvar
+rune.capital.latin.letter.a	.gvar
+rune.diff	.gvar
+rune.latin.letter.a	.gvar
+c0	.fv	rune.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	string.t
+		.case	true
+d			.apply	rune.diff	|	c0	rune.latin.letter.a
+c1			.apply	rune.advance	|	rune.capital.latin.letter.a	d
+s2			.undefined	string.t
+			.app	c1	s2
+			.enter	list.:	rune.t
 
 -- §section Other functions
 
