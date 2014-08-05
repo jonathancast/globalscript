@@ -21,8 +21,39 @@ string.fmtgs	.closure	_string.fmtgs_c
 
 _string.toupper_c	.expr
 string.t	.tygvar
+rune.t	.tygvar
+_string.toupper_k	.subcode
+list.t.out	.cogvar
 s	.larg	string.t
-	.undef	string.t
+	.force	_string.toupper_k
+	.coerce	list.t.out	rune.t
+	.enter	s
+
+_string.toupper_k	.forcecont
+list.prim.u	.tygvar
+rune.t	.tygvar
+string.t	.tygvar	-- Temp
+_string.toupper_:_k	.subcode
+bool.t.out	.cogvar
+rune.≤	.gvar
+rune.latin.letter.z	.gvar
+s0	.karg	list.prim.u	rune.t
+	.analyze	s0	:	nil
+		.case	:
+c0		.fkarg	0	rune.t
+s1		.fkarg	1	string.t
+			.force	_string.toupper_:_k
+			.coerce	bool.t.out
+			.app	c0	rune.latin.letter.z
+			.enter	rune.≤
+		.case	nil
+			.undef	string.t
+
+_string.toupper_:_k	.forcecont
+bool.prim.u	.tygvar
+string.t	.tygvar	-- Temp
+b0	.karg	bool.prim.u
+			.undef	string.t
 
 -- §section Other functions
 
