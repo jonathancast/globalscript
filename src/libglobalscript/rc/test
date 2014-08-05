@@ -96,6 +96,10 @@ ok_diff_fail '-- force with free variable in continuation --' ./$O.test-gsi forc
 ok_diff_fail '-- force with free type variable in continuation --' ./$O.test-gsi force-with-type-fv.ags
 ok_diff_fail '-- force with free type variable and variable in continuation --' ./$O.test-gsi force-with-fv-and-type-fv.ags
 
+echo '# Version 0.5 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_4=1
+
 ok_diff '-- rune literals --' ./$O.test-gsi rune-literal.ags
 ok_diff '-- two-byte rune literals --' ./$O.test-gsi two-byte-rune-literal.ags
 ok_diff '-- three-byte rune literals --' ./$O.test-gsi three-byte-rune-literal.ags
@@ -104,10 +108,6 @@ ok_diff '-- constructors with arguments --' ./$O.test-gsi constructor-args.ags
 ok_diff '-- constructors with existential type arguments --' ./$O.test-gsi constructor-existential-types.ags
 ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
-
-echo '# Version 0.5 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_4=1
 
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 
