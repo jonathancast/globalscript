@@ -27,6 +27,8 @@ rune.advance	.closure	_rune.advance_c
 
 rune.prim.advance	.closure	_rune.prim.advance_c
 
+rune.diff	.closure	_rune.diff_c
+
 rune.new.line	.closure	_rune.new.line_c
 rune.backslash	.closure	_rune.backslash_c
 rune.tab	.closure	_rune.tab_c
@@ -347,6 +349,15 @@ r0	.arg	rune.prim.rune
 n0	.arg	natural.prim.u
 r1	.prim	rune.prim	advance	_rune.prim.advance_ty	|	r0	n0
 	.yield	r1
+
+-- §section §gs{rune.diff}
+
+_rune.diff_c	.expr
+rune.t	.tygvar
+natural.t	.tygvar	-- Temp
+r0	.larg	rune.t
+r1	.larg	rune.t
+	.undef	natural.t
 
 -- §section Random data
 
