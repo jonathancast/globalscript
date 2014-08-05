@@ -46,6 +46,7 @@ rune.latin.letter.n	.closure	_rune.latin.letter.n_c
 rune.latin.letter.u	.closure	_rune.latin.letter.u_c
 rune.latin.letter.x	.closure	_rune.latin.letter.x_c
 rune.latin.letter.y	.closure	_rune.latin.letter.y_c
+rune.latin.letter.z	.closure	_rune.latin.letter.z_c
 rune.underscore	.closure	_rune.underscore_c
 
 	.code
@@ -450,6 +451,13 @@ y	.rune	y
 	.coerce	rune.t.in
 	.lift
 	.yield	y
+
+_rune.latin.letter.z_c	.expr
+rune.t.in	.cogvar
+z	.rune	z
+	.coerce	rune.t.in
+	.lift
+	.yield	z
 
 _rune.underscore_c	.expr
 rune.t.in	.cogvar
