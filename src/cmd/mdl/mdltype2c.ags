@@ -56,6 +56,7 @@ parser.err.t	.tygvar
 mdl.type.decl.t	.tygvar
 _ep_body_k	.subcode
 either.t.out	.cogvar
+o	.fv	ibio.prim.oport	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 ety	.fv	either.t	parser.err.t	mdl.type.decl.t
 	.force	_ep_body_k
@@ -68,9 +69,11 @@ rune.t	.tygvar
 either.prim.u	.tygvar
 parser.err.t	.tygvar
 mdl.type.decl.t	.tygvar
-ibio.prim.t	.tygvar	-- Temp
-record.empty	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
 _ep_body_left_res_c	.subcode
+ibio.prim.write	.gvar
+mdl.hack.compiler.type.decl.compile	.gvar
+o	.fv	ibio.prim.oport	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 e0	.karg	either.prim.u	parser.err.t	mdl.type.decl.t
 	.analyze	e0	left	right
@@ -80,7 +83,10 @@ res			.closure	_ep_body_left_res_c
 			.enter	res
 		.case	right
 ty		.fkarg	0	mdl.type.decl.t
-			.undef	ibio.prim.t	record.empty
+s			.apply	mdl.hack.compiler.type.decl.compile	|	ty
+			.lift
+			.app	o	s
+			.yield	ibio.prim.write	rune.t
 
 _ep_body_left_res_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar

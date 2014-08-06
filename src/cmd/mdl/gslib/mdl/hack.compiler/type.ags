@@ -6,6 +6,33 @@
 
 mdl.hack.compiler.type.decl.compile	.closure	_mdl.hack.compiler.type.decl.compile_c
 
+mdl.hack.compiler.type.header.s	.string	Header\sfile:\n\n
+mdl.hack.compile.type.toprow.s	.string	/*\s↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓\s*/\n
+mdl.hack.compile.type.auto.generated.s	.string	/*\sAuto-generated\sby\smdltype2c\s*/\n/*\sDo\snot\schange\sif\sWest\sBaiýan\sNaval\sIntelligence\sknows\swhere\syou\slive\s*/\n\n
+mdl.hack.compile.type.bottomrow.s	.string	/*\s↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\s*/\n
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.string	struct\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.string	_cont\s{\n\s\s\s\sstruct\sace_cont\scont;\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.footer.s	.string	};\n\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_macro.header.s	.string	#define\sACE_STACK_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s	.string	_PUSH(pcont,\sa_pos,\sthread,\s
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s1	.string	badreturn)\sdo\s{\s\\\n\s\s\s\sif\s(!((pcont)\s=\sace_thread_stack_push(thread,\sa_pos,\ssizeof(struct\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.badreturn.s	.string	)\sbadreturn;\s\\\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.s	.string	\s\s\s\s(pcont)->st.type\s=\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.suffix.s	.string	;\s\\\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.pos.s	.string	\s\s\s\s(pcont)->st.pos\s=\sa_pos;\s\\\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.footer.s	.string	}\swhile\s(0)\n\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.mid.s	.string	_BOTTOM(pcont)\s((void\s*)((char*)(pcont)\s+\ssizeof(struct\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.suffix.s	.string	))\n\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_source.evac.s	.string	In\sacestack.c,\sin\sace_stack_gcevacuate:\n\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.s	.string	\s\s\s\s\s\s\s\s\s\s\s\scase\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s	.string	:\s{\n\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\sstruct\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s1	.string	\s*
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s2	.string	\s=\s(struct\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s3	.string	\s*)cont;\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	.string	\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\sp\s=\sACE_STACK_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	.string	_BOTTOM(cont);\n\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\scontinue;\n\s\s\s\s\s\s\s\s\s\s\s\s}\n\n
+
 	.code
 
 -- §section §gs{mdl.hack.compiler.type.decl.compile}
@@ -21,6 +48,166 @@ ty	.larg	mdl.type.decl.t
 
 _mdl.hack.compiler.type.decl.compile_k	.forcecont
 mdl.type.decl.prim.u	.tygvar
-string.t	.tygvar	-- Temp
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+rune.t	.tygvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_c	.subcode
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_c	.subcode
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_list.sizes.f_c	.subcode
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_c	.subcode
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_c	.subcode
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_c	.subcode
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_c	.subcode
+list.<>	.gvar
+mdl.hack.compiler.type.header.s	.gvar
+mdl.hack.compile.type.toprow.s	.gvar
+mdl.hack.compile.type.auto.generated.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.gvar
+list.concat	.gvar
+list.map	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.footer.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_macro.header.s	.gvar
+string.toupper	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s1	.gvar
+list.:	.gvar
+rune.right.paren	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.badreturn.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.suffix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.pos.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.footer.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.mid.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.suffix.s	.gvar
+mdl.hack.compile.type.bottomrow.s	.gvar
+rune.new.line	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_source.evac.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s1	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s2	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s3	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	.gvar
 ty0	.karg	mdl.type.decl.prim.u
+	.analyze	ty0	interpreted.stackframe
+		.case	interpreted.stackframe
+id		.fkarg	0	string.t
+fs		.fkarg	1	list.t	mdl.type.field.decl.t
+field.f			.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_c
+fs.fields.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	field.f	fs
+fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
+id.uc			.apply	string.toupper	|	id
+pushargs.f			.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_c
+fs.pushargs.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	pushargs.f	fs
+fs.pushargs.s			.apply	list.concat	rune.t	|	fs.pushargs.ss
+list.sizes.f			.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_list.sizes.f_c
+fs.list.sizes.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	list.sizes.f	fs
+fs.list.sizes.s			.apply	list.concat	rune.t	|	fs.list.sizes.ss
+push.sets.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_c
+fs.push.sets.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	push.sets.f	fs
+fs.push.sets.s			.apply	list.concat	rune.t	|	fs.push.sets.ss
+extracts.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_c
+fs.extracts.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	extracts.f	fs
+fs.extracts.s			.apply	list.concat	rune.t	|	fs.extracts.ss
+sizes.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_c
+fs.sizes.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	sizes.f	fs
+fs.sizes.s			.apply	list.concat	rune.t	|	fs.sizes.ss
+evacs.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_c
+fs.evacs.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	evacs.f	fs
+fs.evacs.s			.apply	list.concat	rune.t	|	fs.sizes.ss
+s48			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	mdl.hack.compile.type.bottomrow.s
+s47			.apply	list.<>	rune.t	|	id.uc	s48
+s46			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	s47
+s45			.apply	list.<>	rune.t	|	fs.evacs.s	s46
+s44			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s3	s45
+s43			.apply	list.<>	rune.t	|	id	s44
+s42			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s2	s43
+s41			.apply	list.<>	rune.t	|	id	s42
+s40			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s1	s41
+s39			.apply	list.<>	rune.t	|	id	s40
+s38			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s	s39
+s37			.apply	list.<>	rune.t	|	id	s38
+s36			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.s	s37
+s35			.apply	list.<>	rune.t	|	mdl.hack.compile.type.auto.generated.s	s36
+s34			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s35
+s33			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_source.evac.s	s34
+s32			.apply	list.:	rune.t	|	rune.new.line	s33
+s31			.apply	list.<>	rune.t	|	mdl.hack.compile.type.bottomrow.s	s32
+s30			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.suffix.s	s31
+s29			.apply	list.<>	rune.t	|	fs.sizes.s	s30
+s28			.apply	list.:	rune.t	|	rune.right.paren	s29
+s27			.apply	list.<>	rune.t	|	id	s28
+s26			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.mid.s	s27
+s25			.apply	list.<>	rune.t	|	id.uc	s26
+s24			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_macro.header.s	s25
+s23			.apply	list.<>	rune.t	|	fs.extracts.s	s24
+s22			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.footer.s	s23
+s21			.apply	list.<>	rune.t	|	fs.push.sets.s	s22
+s20			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.pos.s	s21
+s19			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.suffix.s	s20
+s18			.apply	list.<>	rune.t	|	id	s19
+s17			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.s	s18
+s16			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.badreturn.s	s17
+s15			.apply	list.<>	rune.t	|	fs.list.sizes.s	s16
+s14			.apply	list.:	rune.t	|	rune.right.paren	s15
+s13			.apply	list.<>	rune.t	|	id	s14
+s12			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s1	s13
+s11			.apply	list.<>	rune.t	|	fs.pushargs.s	s12
+s10			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s	s11
+s9			.apply	list.<>	rune.t	|	id.uc	s10
+s8			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_macro.header.s	s9
+s7			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.footer.s	s8
+s6			.apply	list.<>	rune.t	|	fs.fields.s	s7
+s5			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	s6
+s4			.apply	list.<>	rune.t	|	id	s5
+s3			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	s4
+s2			.apply	list.<>	rune.t	|	mdl.hack.compile.type.auto.generated.s	s3
+s1			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s2
+			.app	mdl.hack.compiler.type.header.s	s1
+			.enter	list.<>	rune.t
+	-- > :: string.t
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_c	.expr
+mdl.type.field.decl.t	.tygvar
+string.t	.tygvar	-- Temp
+f	.larg	mdl.type.field.decl.t
+	.undef	string.t
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_c	.expr
+mdl.type.field.decl.t	.tygvar
+string.t	.tygvar	-- Temp
+f	.larg	mdl.type.field.decl.t
+	.undef	string.t
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_list.sizes.f_c	.expr
+mdl.type.field.decl.t	.tygvar
+string.t	.tygvar	-- Temp
+f	.larg	mdl.type.field.decl.t
+	.undef	string.t
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_c	.expr
+mdl.type.field.decl.t	.tygvar
+string.t	.tygvar	-- Temp
+f	.larg	mdl.type.field.decl.t
+	.undef	string.t
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_c	.expr
+mdl.type.field.decl.t	.tygvar
+string.t	.tygvar	-- Temp
+f	.larg	mdl.type.field.decl.t
+	.undef	string.t
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_c	.expr
+mdl.type.field.decl.t	.tygvar
+string.t	.tygvar	-- Temp
+f	.larg	mdl.type.field.decl.t
+	.undef	string.t
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_c	.expr
+mdl.type.field.decl.t	.tygvar
+string.t	.tygvar	-- Temp
+f	.larg	mdl.type.field.decl.t
 	.undef	string.t
