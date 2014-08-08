@@ -2385,10 +2385,10 @@ gsdl.ags.typeitem.decls.tylet.u	.tygvar
 	.tyref	gsdl.ags.typeitem.decls.tylet.u
 
 gsdl.ags.typeitem.decls.tylet.u	.tyexpr
-list.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 list.var.ty	.tylet	list.t	gsdl.var.t
-	.typroduct	tyargs	list.var.ty	tyfun	gsdl.var.t
+	.typroduct	name	gsdl.var.t	tyargs	list.var.ty	tyfun	gsdl.var.t
 
 -- §section §gs{gsdl.ags.typeitem.expr.t}
 
