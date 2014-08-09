@@ -252,13 +252,6 @@ ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segm
 
     if (seg->forward) {
         *pnewseg = newseg = seg->forward;
-
-        if (evacuate_everything) {
-            gsstring_builder_print(err, UNIMPL("Copy rest of segment"));
-            return -1;
-        }
-
-        return 0;
     } else {
         void *buf;
 
@@ -273,19 +266,19 @@ ibio_channel_segment_trace(struct gsstringbuilder *err, struct ibio_channel_segm
 
         if (ibio_channel_trace(err, &newseg->channel) < 0) return -1;
 
-        if (evacuate_everything) {
-            for (tmpiptr = newseg->items; tmpiptr < newseg->beginning; tmpiptr++)
-                if (GS_GC_TRACE(err, tmpiptr) < 0) return -1
-            ;
-            newseg->beginning = newseg->items;
-        }
-
         if (newseg->next && gs_sys_block_in_gc_from_space(newseg->next)) {
             if (ibio_channel_segment_trace(err, newseg->next, &newseg->next, 1) < 0) return -1;
         }
-
-        return 0;
     }
+
+    if (evacuate_everything) {
+        for (tmpiptr = newseg->items; tmpiptr < newseg->beginning; tmpiptr++)
+            if (GS_GC_TRACE(err, tmpiptr) < 0) return -1
+        ;
+        newseg->beginning = newseg->items;
+    }
+
+    return 0;
 }
 
 static
