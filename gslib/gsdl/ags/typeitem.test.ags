@@ -43,8 +43,8 @@ _test.parse_tyexpr_label	.string	qq{ibio.dir.u\\t.tyexpr\\n\\t.tyref\\tα\\n}\s=
 _test.parse_tyexpr_input	.string	ibio.dir.u\t.tyexpr\n\t.tyref\tα\n
 
 _test.parse_tyexpr.tylet	.closure	_test.parse_tyexpr.tylet_c
-_test.parse_tyexpr.tylet_label	.string	qq{ibio.dir.u\\t.tyexpr\\n_string.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser
-_test.parse_tyexpr.tylet_input	.string	ibio.dir.u\t.tyexpr\n_string.ty\t.tylet\tlist.t\trune.t\n\t.tyref\tα\n
+_test.parse_tyexpr.tylet_label	.string	qq{ibio.dir.u\\t.tyexpr\\nstring.ty\\t.tylet\\tlist.t\\trune.t\\n\\t.tyref\\tα\\n}\s=~\sparser
+_test.parse_tyexpr.tylet_input	.string	ibio.dir.u\t.tyexpr\nstring.ty\t.tylet\tlist.t\trune.t\n\t.tyref\tα\n
 
 _test.parse_tyexpr.tyforall	.closure	_test.parse_tyexpr.tyforall_c
 _test.parse_tyexpr.tyforall_label	.string	qq{_ibio.mapM.prim_ty\\t.tyexpr\\nα\\t.tyforall\\t*\\n\\t.tyref\\tibio.prim.t\\tres.ty\\n}\s=~\sparser

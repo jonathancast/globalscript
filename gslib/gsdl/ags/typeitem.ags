@@ -681,7 +681,7 @@ tylets.tyf.p1	.apply	parser.*>	rune.t	string.t	string.t	|	tylet.p	tylets.tyf.p2
 tylets.tyf.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	tylets.tyf.p1
 tylets.tyas.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tylets.tyas.p	.apply	parser.many	rune.t	string.t	|	tylets.tyas.p1
-tylets.p1.1	.apply	parser.lift4	rune.t	parser.pos.t	string.t	string.t	list.string.ty	gsdl.ags.typeitem.decls.tylet.t	|	tylets.f	pos.get	gsdl.ags.syntax.id	tylets.tyf.p	tylets.tyas.p
+tylets.p1.1	.apply	parser.lift4	rune.t	parser.pos.t	gsdl.var.t	string.t	list.string.ty	gsdl.ags.typeitem.decls.tylet.t	|	tylets.f	pos.get	gsdl.var.parser	tylets.tyf.p	tylets.tyas.p
 tylets.p1	.apply	parser.<*	rune.t	gsdl.ags.typeitem.decls.tylet.t	string.t	|	tylets.p1.1	gsdl.ags.syntax.whitespace
 tylets.p	.apply	parser.many	rune.t	gsdl.ags.typeitem.decls.tylet.t	|	tylets.p1
 -- §section Put it together
@@ -730,11 +730,12 @@ ki	.larg	gsdl.ags.typeitem.gskind.t
 
 _gsdl.ags.typeitem.decls.parser_tylets.f_c	.expr
 parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
 pos	.larg	parser.pos.t
-nm	.larg	string.t
+nm	.larg	gsdl.var.t
 tyf	.larg	string.t
 tyas	.larg	list.t	string.t
 	.undef	gsdl.ags.typeitem.decls.tylet.t
