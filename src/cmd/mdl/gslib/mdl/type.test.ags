@@ -6,7 +6,7 @@
 
 	.closure	_ep_c
 
-_ep_tests	.list	test.property.t	_test_parse.interpreted.stackframe	_test_parse.field.decl
+_ep_tests	.list	test.property.t	_test_parse.interpreted.stackframe	_test_parse.field.decl	_test_parse.list
 
 _test_parse.interpreted.stackframe	.closure	_test_parse.interpreted.stackframe_c
 _test_parse.interpreted.stackframe_label	.string	qq{interpreted\sstackframe\sempty\s{\\n};\\n}\s=~\sdecl.parser
@@ -15,6 +15,10 @@ _test_parse.interpreted.stackframe_input	.string	interpreted\sstackframe\sempty\
 _test_parse.field.decl	.closure	_test_parse.field.decl_c
 _test_parse.field.decl_label	.string	qq{conts\s::\sbco;\\n}\s=~\sfield.decl.parser
 _test_parse.field.decl_input	.string	conts\s::\sbco;\n
+
+_test_parse.list	.closure	_test_parse.list_c
+_test_parse.list_label	.string	qq{list[bco]}\s=~\sparser
+_test_parse.list_input	.string	list[bco]
 
 	.code
 
@@ -70,4 +74,28 @@ _test_parse.field.decl_k_c	.expr
 mdl.type.field.decl.t	.tygvar
 test.true	.gvar
 d	.larg	mdl.type.field.decl.t
+	.enter	test.true
+
+-- §section §gs{qq{list[bco]} =~ parser}
+
+_test_parse.list_c	.expr
+rune.t	.tygvar
+mdl.type.t	.tygvar
+_test_parse.list_k_c	.subcode
+test.property.label	.gvar
+_test_parse.list_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+mdl.type.parser	.gvar
+_test_parse.list_input	.gvar
+k	.closure	_test_parse.list_k_c
+test	.apply	parser.test.assert.passes	rune.t	mdl.type.t	|	parser.rune.advance	rune.print	mdl.type.parser	_test_parse.list_input	k
+	.app	_test_parse.list_label	test
+	.enter	test.property.label
+
+_test_parse.list_k_c	.expr
+mdl.type.t	.tygvar
+test.true	.gvar
+d	.larg	mdl.type.t
 	.enter	test.true
