@@ -27,9 +27,9 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.suffix.s	.str
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_source.evac.s	.string	In\sacestack.c,\sin\sace_stack_gcevacuate:\n\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.s	.string	\s\s\s\s\s\s\s\s\s\s\s\scase\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s	.string	:\s{\n\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\sstruct\sace_stack_
-_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s1	.string	\s*
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s1	.string	_cont\s*
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s2	.string	\s=\s(struct\sace_stack_
-_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s3	.string	\s*)cont;\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s3	.string	_cont\s*)cont;\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	.string	\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\sp\s=\sACE_STACK_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	.string	_BOTTOM(cont);\n\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\scontinue;\n\s\s\s\s\s\s\s\s\s\s\s\s}\n\n
 

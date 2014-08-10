@@ -25,7 +25,7 @@ In acestack.c, in ace_stack_gcevacuate:
 /* Do not change if West Baiýan Naval Intelligence knows where you live */
 
             case ace_stack_empty: {
-                struct ace_stack_empty *empty = (struct ace_stack_empty *)cont;
+                struct ace_stack_empty_cont *empty = (struct ace_stack_empty_cont *)cont;
                 p = ACE_STACK_EMPTY_BOTTOM(cont);
                 continue;
             }
