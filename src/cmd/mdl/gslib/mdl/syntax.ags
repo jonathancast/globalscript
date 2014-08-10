@@ -22,6 +22,10 @@ _mdl.syntax.keywords_stackframe.s	.string	stackframe
 mdl.syntax.semi	.closure	_mdl.syntax.semi_c
 _mdl.syntax.semi_semi.re	.regex	;
 
+mdl.syntax.brackets	.closure	_mdl.syntax.brackets_c
+_mdl.syntax.brackets_lbracket.re	.regex	\[
+_mdl.syntax.brackets_rbracket.re	.regex	\]
+
 mdl.syntax.braces	.closure	_mdl.syntax.braces_c
 _mdl.syntax.braces_lbrace.re	.regex	{
 _mdl.syntax.braces_rbrace.re	.regex	}
@@ -141,6 +145,29 @@ mdl.syntax.whitespace	.gvar
 semi.p	.apply	parser.match	rune.t	|	rune.compare	_mdl.syntax.semi_semi.re
 	.app	semi.p	mdl.syntax.whitespace
 	.enter	parser.*>	rune.t	string.t	string.t
+
+-- §section §gs{mdl.syntax.brackets}
+
+_mdl.syntax.brackets_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_mdl.syntax.brackets_lbracket.re	.gvar
+_mdl.syntax.brackets_rbracket.re	.gvar
+mdl.syntax.whitespace	.gvar
+parser.<*	.gvar
+α	.tyarg	*
+p	.larg	parser.t	rune.t	α
+lbrace.p	.apply	parser.match	rune.t	|	rune.compare	_mdl.syntax.brackets_lbracket.re
+rbrace.p	.apply	parser.match	rune.t	|	rune.compare	_mdl.syntax.brackets_rbracket.re
+p3	.apply	parser.*>	rune.t	string.t	string.t	|	rbrace.p	mdl.syntax.whitespace
+p2	.apply	parser.<*	rune.t	α	string.t	|	p	p3
+p1	.apply	parser.*>	rune.t	string.t	α	|	mdl.syntax.whitespace	p2
+	.app	lbrace.p	p1
+	.enter	parser.*>	rune.t	string.t	α
 
 -- §section §gs{mdl.syntax.braces}
 
