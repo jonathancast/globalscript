@@ -16,6 +16,8 @@ _mdl.type.parser_hack.list_list.re	.regex	list
 
 mdl.type.decl.interpreted.stackframe	.closure	_mdl.type.decl.interpreted.stackframe_c
 
+mdl.type.list	.closure	_mdl.type.list_c
+
 	.code
 
 _mdl.type.decl.parser_c	.expr
@@ -159,8 +161,10 @@ p	.apply	parser.*>	rune.t	string.t	mdl.type.t	|	list.p	p1
 
 _mdl.type.parser_hack.list_f_c	.expr
 mdl.type.t	.tygvar
+mdl.type.list	.gvar
 ty	.larg	mdl.type.t
-	.undef	mdl.type.t
+	.app	ty
+	.enter	mdl.type.list
 
 -- §section §gs{mdl.type.decl.t} constructors
 
@@ -174,6 +178,18 @@ l	.larg	string.t
 fs	.larg	list.t	mdl.type.field.decl.t
 res	.constr	mdl.type.decl.prim.u	interpreted.stackframe	0	l	1	fs
 	.coerce	mdl.type.decl.t.in
+	.lift
+	.yield	res
+
+-- §section §gs{mdl.type.t} constructors
+
+_mdl.type.list_c	.expr
+mdl.type.t	.tygvar
+mdl.type.prim.u	.tygvar
+mdl.type.t.in	.cogvar
+ty	.larg	mdl.type.t
+res	.constr	mdl.type.prim.u	list	0	ty
+	.coerce	mdl.type.t.in
 	.lift
 	.yield	res
 
@@ -216,7 +232,12 @@ mdl.type.prim.u	.tygvar
 	.tyref	mdl.type.prim.u
 
 mdl.type.prim.u	.tyexpr
-	.tysum
+_mdl.type.prim.u_list_ty	.tygvar
+	.tysum	list	_mdl.type.prim.u_list_ty
+
+_mdl.type.prim.u_list_ty	.tyexpr
+mdl.type.t	.tygvar
+	.tyubproduct	0	mdl.type.t
 
 -- §section §gs{mdl.type.parser}
 
@@ -236,6 +257,10 @@ mdl.type.decl.t.out	.tycoercion
 mdl.type.decl.t	.tygvar
 	.tyinvert
 	.tydefinition	mdl.type.decl.t
+
+mdl.type.t.in	.tycoercion
+mdl.type.t	.tygvar
+	.tydefinition	mdl.type.t
 
 mdl.type.t.out	.tycoercion
 mdl.type.t	.tygvar
