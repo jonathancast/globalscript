@@ -26,6 +26,9 @@ mdl.syntax.braces	.closure	_mdl.syntax.braces_c
 _mdl.syntax.braces_lbrace.re	.regex	{
 _mdl.syntax.braces_rbrace.re	.regex	}
 
+mdl.syntax.oftype	.closure	_mdl.syntax.oftype_c
+_mdl.syntax.oftype_oftype.re	.regex	::
+
 	.code
 
 -- §section §gs{mdl.syntax.whitespace}
@@ -162,3 +165,17 @@ p1	.apply	parser.*>	rune.t	string.t	α	|	mdl.syntax.whitespace	p2
 	.app	lbrace.p	p1
 	.enter	parser.*>	rune.t	string.t	α
 
+-- §section §gs{mdl.syntax.oftype}
+
+_mdl.syntax.oftype_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_mdl.syntax.oftype_oftype.re	.gvar
+mdl.syntax.whitespace	.gvar
+parser.fail	.gvar	-- Temp
+oftype.p	.apply	parser.match	rune.t	|	rune.compare	_mdl.syntax.oftype_oftype.re
+	.app	oftype.p	mdl.syntax.whitespace
+	.enter	parser.*>	rune.t	string.t	string.t

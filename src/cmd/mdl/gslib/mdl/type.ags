@@ -10,6 +10,9 @@ _mdl.type.decl.parser_interpreted.stackframe_stackframe.re	.regex	stackframe
 
 mdl.type.field.decl.parser	.closure	_mdl.type.field.decl.parser_c
 
+mdl.type.parser	.closure	_mdl.type.parser_c	_mdl.type.parser_ty
+_mdl.type.parser_hack.bco_bco.re	.regex	bco
+
 mdl.type.decl.interpreted.stackframe	.closure	_mdl.type.decl.interpreted.stackframe_c
 
 	.code
@@ -67,9 +70,63 @@ fs	.larg	list.t	mdl.type.field.decl.t
 
 _mdl.type.field.decl.parser_c	.expr
 rune.t	.tygvar
+string.t	.tygvar
+mdl.type.t	.tygvar
 mdl.type.field.decl.t	.tygvar
+_mdl.type.field.decl.parser_f_c	.subcode
+parser.lift2	.gvar
+mdl.syntax.id	.gvar
+parser.*>	.gvar
+mdl.syntax.oftype	.gvar
+parser.<*	.gvar
+mdl.type.parser	.gvar
+mdl.syntax.whitespace	.gvar
+mdl.syntax.semi	.gvar
 parser.fail	.gvar	-- Temp
-	.enter	parser.fail	rune.t	mdl.type.field.decl.t
+f	.closure	_mdl.type.field.decl.parser_f_c
+type.p2	.apply	parser.*>	rune.t	string.t	string.t	|	mdl.syntax.whitespace	mdl.syntax.semi
+type.p1	.apply	parser.<*	rune.t	mdl.type.t	string.t	|	mdl.type.parser	type.p2
+type.p	.apply	parser.*>	rune.t	string.t	mdl.type.t	|	mdl.syntax.oftype	type.p1
+	.app	f	mdl.syntax.id	type.p
+	.enter	parser.lift2	rune.t	string.t	mdl.type.t	mdl.type.field.decl.t
+
+_mdl.type.field.decl.parser_f_c	.expr
+string.t	.tygvar
+mdl.type.t	.tygvar
+mdl.type.field.decl.t	.tygvar	-- Temp
+nm	.larg	string.t
+ty	.larg	mdl.type.t
+	.undef	mdl.type.field.decl.t
+
+-- §section §gs{mdl.type.parser}
+
+_mdl.type.parser_c	.expr
+rune.t	.tygvar
+mdl.type.t	.tygvar
+_mdl.type.parser_hack.bco_c	.subcode
+hack.bco	.closure	_mdl.type.parser_hack.bco_c
+	.enter	hack.bco
+
+_mdl.type.parser_hack.bco_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+mdl.type.t	.tygvar
+_mdl.type.parser_hack.bco_f_c	.subcode
+parser.map	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_mdl.type.parser_hack.bco_bco.re	.gvar
+parser.fail	.gvar	-- Temp
+bco.p	.apply	parser.match	rune.t	|	rune.compare	_mdl.type.parser_hack.bco_bco.re
+f	.closure	_mdl.type.parser_hack.bco_f_c
+	.app	f	bco.p
+	.enter	parser.map	rune.t	string.t	mdl.type.t
+
+_mdl.type.parser_hack.bco_f_c	.expr
+string.t	.tygvar
+mdl.type.t	.tygvar	-- Temp
+v	.larg	string.t
+	.undef	mdl.type.t
 
 -- §section §gs{mdl.type.decl.t} constructors
 
@@ -115,6 +172,24 @@ mdl.type.field.decl.prim.u	.tygvar
 
 mdl.type.field.decl.prim.u	.tyexpr
 	.typroduct
+
+-- §section §gs{mdl.type.t}
+
+mdl.type.t	.tyabstract	*
+mdl.type.prim.u	.tygvar
+	.tylift
+	.tyref	mdl.type.prim.u
+
+mdl.type.prim.u	.tyexpr
+	.tysum
+
+-- §section §gs{mdl.type.parser}
+
+_mdl.type.parser_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+mdl.type.t	.tygvar
+	.tyref	parser.t	rune.t	mdl.type.t
 
 	.coercion
 
