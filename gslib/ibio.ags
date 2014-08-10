@@ -392,14 +392,12 @@ ibio.dir.u	.tygvar
 
 ibio.dir.u	.tyexpr
 time.t	.tygvar
-list.t	.tygvar
-rune.t	.tygvar
+string.t	.tygvar
 natural.t	.tygvar
 bool.t	.tygvar
 ibio.file.name.t	.tygvar
 integer.t	.tygvar
-_string.ty	.tylet	list.t	rune.t
-	.typroduct	atime	time.t	gid	_string.ty	length	natural.t	mode.append.only	bool.t	mode.directory	bool.t	mode.exclusive	bool.t	mode.group.execute	bool.t	mode.group.read	bool.t	mode.group.write	bool.t	mode.other.execute	bool.t	mode.other.read	bool.t	mode.other.write	bool.t	mode.owner.execute	bool.t	mode.owner.read	bool.t	mode.owner.write	bool.t	mode.unix.dev	bool.t	mode.unix.link	bool.t	mode.unix.pipe	bool.t	mode.unix.socket	bool.t	mtime	time.t	muid	_string.ty	name	ibio.file.name.t	qid.path	integer.t	srvdev	natural.t	srvtype	natural.t	uid	_string.ty	vers	natural.t
+	.typroduct	atime	time.t	gid	string.t	length	natural.t	mode.append.only	bool.t	mode.directory	bool.t	mode.exclusive	bool.t	mode.group.execute	bool.t	mode.group.read	bool.t	mode.group.write	bool.t	mode.other.execute	bool.t	mode.other.read	bool.t	mode.other.write	bool.t	mode.owner.execute	bool.t	mode.owner.read	bool.t	mode.owner.write	bool.t	mode.unix.dev	bool.t	mode.unix.link	bool.t	mode.unix.pipe	bool.t	mode.unix.socket	bool.t	mtime	time.t	muid	string.t	name	ibio.file.name.t	qid.path	integer.t	srvdev	natural.t	srvtype	natural.t	uid	string.t	vers	natural.t
 
 -- §section §gs{ibio.mapM.prim}
 
