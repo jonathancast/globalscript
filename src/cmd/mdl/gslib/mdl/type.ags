@@ -8,6 +8,8 @@ mdl.type.decl.parser	.closure	_mdl.type.decl.parser_c
 _mdl.type.decl.parser_interpreted.stackframe_interpreted.re	.regex	interpreted
 _mdl.type.decl.parser_interpreted.stackframe_stackframe.re	.regex	stackframe
 
+mdl.type.field.decl.parser	.closure	_mdl.type.field.decl.parser_c
+
 mdl.type.decl.interpreted.stackframe	.closure	_mdl.type.decl.interpreted.stackframe_c
 
 	.code
@@ -36,6 +38,7 @@ mdl.syntax.id	.gvar
 parser.<*	.gvar
 mdl.syntax.braces	.gvar
 parser.many	.gvar
+mdl.type.field.decl.parser	.gvar
 mdl.syntax.semi	.gvar
 parser.fail	.gvar	-- Temp
 list.field.ty	.tylet	list.t	mdl.type.field.decl.t
@@ -44,8 +47,7 @@ interpreted.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.stac
 stackframe.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.stackframe_stackframe.re
 label.p1	.apply	parser.*>	rune.t	string.t	string.t	|	stackframe.p	mdl.syntax.id
 label.p	.apply	parser.*>	rune.t	string.t	string.t	|	interpreted.p	label.p1
-fields.p2.1	.apply	parser.fail	rune.t	mdl.type.field.decl.t	-- > field.decl.parser
-fields.p2	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	fields.p2.1
+fields.p2	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	mdl.type.field.decl.parser
 fields.p1	.apply	mdl.syntax.braces	list.field.ty	|	fields.p2
 fields.p	.apply	parser.<*	rune.t	list.field.ty	string.t	|	fields.p1	mdl.syntax.semi
 	.app	f	label.p	fields.p
@@ -60,6 +62,14 @@ l	.larg	string.t
 fs	.larg	list.t	mdl.type.field.decl.t
 	.app	l	fs
 	.enter	mdl.type.decl.interpreted.stackframe
+
+-- §section §gs{mdl.type.field.decl.parser}
+
+_mdl.type.field.decl.parser_c	.expr
+rune.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+parser.fail	.gvar	-- Temp
+	.enter	parser.fail	rune.t	mdl.type.field.decl.t
 
 -- §section §gs{mdl.type.decl.t} constructors
 
