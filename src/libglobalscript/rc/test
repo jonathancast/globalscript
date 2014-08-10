@@ -78,6 +78,10 @@ ok_diff '-- alloc application --' ./$O.test-gsi apply-op.ags
 
 ok_diff_fail '-- lifted generators --' ./$O.test-gsi lifted-gen.ags
 
+echo '# Version 0.5 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_4=1
+
 ok_grep_errors '-- abstract types with too few lambdas in definition --' './test-fixtures/mis-kinded-abs-type.ags:16: Incorrect kind: ' ./$O.test-gsi mis-kinded-abs-type.ags
 
 ok_diff_fail '-- undefined values of abstract types --' ./$O.test-gsi undef-abs-type.ags
@@ -89,10 +93,6 @@ ok_grep_errors '-- an abstract type is different from its definition (in express
 ok_grep_errors '-- an abstract type is different from its definition (in generators) --' './test-fixtures/invalid-abs-type-gen.ags:15: I don''t think' ./$O.test-gsi invalid-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators --' ./$O.test-gsi undef-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators with type arguments --' ./$O.test-gsi undef-abs-type-gen-tyargs.ags
-
-echo '# Version 0.5 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_4=1
 
 ok_diff_fail '-- force undefined values of abstract types --' ./$O.test-gsi force-undef-abs-type.ags
 
