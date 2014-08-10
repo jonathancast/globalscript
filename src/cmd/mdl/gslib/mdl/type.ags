@@ -94,10 +94,12 @@ type.p	.apply	parser.*>	rune.t	string.t	mdl.type.t	|	mdl.syntax.oftype	type.p1
 _mdl.type.field.decl.parser_f_c	.expr
 string.t	.tygvar
 mdl.type.t	.tygvar
-mdl.type.field.decl.t	.tygvar	-- Temp
+mdl.type.field.decl.prim.u	.tygvar
 nm	.larg	string.t
 ty	.larg	mdl.type.t
-	.undef	mdl.type.field.decl.t
+res	.record	gstype	ty	|	mdl.type.field.decl.prim.u
+	.lift
+	.yield	res
 
 -- §section §gs{mdl.type.parser}
 
