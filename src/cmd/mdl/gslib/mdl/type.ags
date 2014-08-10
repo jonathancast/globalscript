@@ -234,3 +234,8 @@ mdl.type.decl.t.out	.tycoercion
 mdl.type.decl.t	.tygvar
 	.tyinvert
 	.tydefinition	mdl.type.decl.t
+
+mdl.type.t.out	.tycoercion
+mdl.type.t	.tygvar
+	.tyinvert
+	.tydefinition	mdl.type.t
