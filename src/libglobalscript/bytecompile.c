@@ -241,6 +241,8 @@ gsbc_parse_rune_literal(struct gspos pos, uint features, char *s, gsvalue *pv)
             case '?':
             case '\\':
             case '|':
+            case '[':
+            case ']':
                 *pv = s[1];
                 break;
             default:
