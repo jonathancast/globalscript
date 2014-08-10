@@ -203,7 +203,8 @@ mdl.type.field.decl.prim.u	.tygvar
 	.tyref	mdl.type.field.decl.prim.u
 
 mdl.type.field.decl.prim.u	.tyexpr
-	.typroduct
+mdl.type.t	.tygvar
+	.typroduct	gstype	mdl.type.t
 
 -- §section §gs{mdl.type.t}
 
