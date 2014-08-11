@@ -99,7 +99,7 @@ mdl.type.t	.tygvar
 mdl.type.field.decl.prim.u	.tygvar
 nm	.larg	string.t
 ty	.larg	mdl.type.t
-res	.record	gstype	ty	|	mdl.type.field.decl.prim.u
+res	.record	gstype	ty	name	nm	|	mdl.type.field.decl.prim.u
 	.lift
 	.yield	res
 
@@ -222,7 +222,8 @@ mdl.type.field.decl.prim.u	.tygvar
 
 mdl.type.field.decl.prim.u	.tyexpr
 mdl.type.t	.tygvar
-	.typroduct	gstype	mdl.type.t
+string.t	.tygvar
+	.typroduct	gstype	mdl.type.t	name	string.t
 
 -- §section §gs{mdl.type.t}
 
