@@ -208,8 +208,8 @@ bool.true	.gvar
 	.enter	bool.true
 
 _rune.≤_>_k	.ubcasecont
-bool.t	.tygvar	-- Temp
-	.undef	bool.t
+bool.false	.gvar
+	.enter	bool.false
 
 -- §section §gs{rune.print}
 
