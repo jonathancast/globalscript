@@ -33,6 +33,8 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s3	.string	
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	.string	\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\sp\s=\sACE_STACK_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	.string	_BOTTOM(cont);\n\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\scontinue;\n\s\s\s\s\s\s\s\s\s\s\s\s}\n\n
 
+_mdl.hack.compiler.type_singular	.closure	_mdl.hack.compiler.type_singular_c	_mdl.hack.compiler.type_singular_ty
+
 	.code
 
 -- §section §gs{mdl.hack.compiler.type.decl.compile}
@@ -211,3 +213,80 @@ mdl.type.field.decl.t	.tygvar
 string.t	.tygvar	-- Temp
 f	.larg	mdl.type.field.decl.t
 	.undef	string.t
+
+-- §section §gs{_mdl.hack.compiler.type_singular}
+
+_mdl.hack.compiler.type_singular_c	.expr
+string.t	.tygvar
+rune.t	.tygvar
+_mdl.hack.compiler.type_singular_k0	.subcode
+list.t.out	.cogvar
+s	.larg	string.t
+	.force	_mdl.hack.compiler.type_singular_k0
+	.coerce	list.t.out	rune.t
+	.enter	s
+
+_mdl.hack.compiler.type_singular_k0	.forcecont
+list.prim.u	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+_mdl.hack.compiler.type_singular_k1	.subcode
+list.t.out	.cogvar
+s0	.karg	list.prim.u	rune.t
+	.analyze	s0	:	nil
+		.case	:
+c0		.fkarg	0	rune.t
+s1		.fkarg	1	string.t
+			.force	_mdl.hack.compiler.type_singular_k1
+			.coerce	list.t.out	rune.t
+			.enter	s1
+		.case	nil
+			.undef	string.t
+
+_mdl.hack.compiler.type_singular_k1	.forcecont
+rune.t	.tygvar
+list.prim.u	.tygvar
+string.t	.tygvar
+_mdl.hack.compiler.type_singular_nil_k	.subcode
+bool.t.out	.cogvar
+list.:	.gvar
+_mdl.hack.compiler.type_singular	.gvar
+rune.≡	.gvar
+rune.latin.letter.s	.gvar
+c0	.fv	rune.t
+s1	.fv	string.t
+s1.0	.karg	list.prim.u	rune.t
+	.analyze	s1.0	:	nil
+		.case	:
+c1		.fkarg	0	rune.t
+s2		.fkarg	1	string.t
+s3			.apply	_mdl.hack.compiler.type_singular	|	s1
+			.app	c0	s3
+			.enter	list.:	rune.t
+		.case	nil
+			.force	_mdl.hack.compiler.type_singular_nil_k
+			.coerce	bool.t.out
+			.app	c0	rune.latin.letter.s
+			.enter	rune.≡
+
+_mdl.hack.compiler.type_singular_nil_k	.forcecont
+bool.prim.u	.tygvar
+rune.t	.tygvar
+string.t	.tygvar	-- Temp
+list.nil	.gvar
+b0	.karg	bool.prim.u	-- c0 ≡ r/s/?
+	.analyze	b0	false	true
+		.case	false
+			.undef	string.t
+		.case	true
+			.enter	list.nil	rune.t
+
+	.type
+
+-- §section §gs{_mdl.hack.compiler.type_singular}
+
+_mdl.hack.compiler.type_singular_ty	.tyexpr
+string.t	.tygvar
+	.tylift
+	.tyfun	string.t
+	.tyref	string.t
