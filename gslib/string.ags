@@ -82,10 +82,12 @@ rune.latin.letter.a	.gvar
 string.toupper	.gvar
 c0	.fv	rune.t
 s1	.fv	string.t
-b0	.karg	bool.prim.u
+b0	.karg	bool.prim.u	-- c0 ≥ r/a/?
 	.analyze	b0	false	true
 		.case	false
-			.undef	string.t
+s2			.apply	string.toupper	|	s1
+			.app	c0	s2
+			.enter	list.:	rune.t
 		.case	true
 d			.apply	rune.diff	|	c0	rune.latin.letter.a
 c1			.apply	rune.advance	|	rune.capital.latin.letter.a	d
