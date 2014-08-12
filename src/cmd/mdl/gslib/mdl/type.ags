@@ -16,6 +16,7 @@ _mdl.type.parser_hack.list_list.re	.regex	list
 
 mdl.type.decl.interpreted.stackframe	.closure	_mdl.type.decl.interpreted.stackframe_c
 
+mdl.type.bco	.closure	_mdl.type.bco_c
 mdl.type.list	.closure	_mdl.type.list_c
 
 	.code
@@ -133,9 +134,9 @@ f	.closure	_mdl.type.parser_hack.bco_f_c
 
 _mdl.type.parser_hack.bco_f_c	.expr
 string.t	.tygvar
-mdl.type.t	.tygvar	-- Temp
+mdl.type.bco	.gvar
 v	.larg	string.t
-	.undef	mdl.type.t
+	.enter	mdl.type.bco
 
 _mdl.type.parser_hack.list_c	.expr
 rune.t	.tygvar
@@ -182,6 +183,14 @@ res	.constr	mdl.type.decl.prim.u	interpreted.stackframe	0	l	1	fs
 	.yield	res
 
 -- §section §gs{mdl.type.t} constructors
+
+_mdl.type.bco_c	.expr
+mdl.type.prim.u	.tygvar
+mdl.type.t.in	.cogvar
+res	.constr	mdl.type.prim.u	bco
+	.coerce	mdl.type.t.in
+	.lift
+	.yield	res
 
 _mdl.type.list_c	.expr
 mdl.type.t	.tygvar
@@ -233,8 +242,9 @@ mdl.type.prim.u	.tygvar
 	.tyref	mdl.type.prim.u
 
 mdl.type.prim.u	.tyexpr
+record.unboxed.empty	.tygvar
 _mdl.type.prim.u_list_ty	.tygvar
-	.tysum	list	_mdl.type.prim.u_list_ty
+	.tysum	bco	record.unboxed.empty	list	_mdl.type.prim.u_list_ty
 
 _mdl.type.prim.u_list_ty	.tyexpr
 mdl.type.t	.tygvar
