@@ -37,6 +37,7 @@ rune.number.sign	.closure	_rune.number.sign_c
 rune.colon	.closure	_rune.colon_c
 rune.dot	.closure	_rune.dot_c
 rune.star	.closure	_rune.star_c
+rune.plus	.closure	_rune.plus_c
 rune.caret	.closure	_rune.caret_c
 rune.left.paren	.closure	_rune.left.paren_c
 rune.right.paren	.closure	_rune.right.paren_c
@@ -443,6 +444,13 @@ star	.rune	*
 	.coerce	rune.t.in
 	.lift
 	.yield	star
+
+_rune.plus_c	.expr
+rune.t.in	.cogvar
+plus	.rune	+
+	.coerce	rune.t.in
+	.lift
+	.yield	plus
 
 _rune.caret_c	.expr
 rune.t.in	.cogvar
