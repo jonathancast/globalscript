@@ -425,19 +425,58 @@ xn	.larg	list.t	α
 	.enter	z
 
 _list.scanl_k	.strictcont
+_list.foldl_f_ty	.tygvar
 list.t	.tygvar
 _list.scanl_zs_c	.subcode
 list.:	.gvar
+α	.tyfv	*
 β	.tyfv	*
+f	.fv	_list.foldl_f_ty	α	β
+xn	.fv	list.t	α
 z0	.karg	β
 zs	.closure	_list.scanl_zs_c
 	.app	z0	zs
 	.enter	list.:	β
 
 _list.scanl_zs_c	.expr
+_list.foldl_f_ty	.tygvar
+list.t	.tygvar
+_list.scanl_zs_k	.subcode
+list.t.out	.cogvar
+α	.tyfv	*
+β	.tyfv	*
+f	.fv	_list.foldl_f_ty	α	β
+xn	.fv	list.t	α
+z0	.fv	β
+	.force	_list.scanl_zs_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.scanl_zs_k	.forcecont
+_list.foldl_f_ty	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+_list.scanl_zs_:_k	.subcode
+α	.tyfv	*
+β	.tyfv	*
+f	.fv	_list.foldl_f_ty	α	β
+z0	.fv	β
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.strict	_list.scanl_zs_:_k
+			.app	z0	x0
+			.enter	f
+		.case	nil
+			.undef	list.t	β
+
+_list.scanl_zs_:_k	.strictcont
 list.t	.tygvar
 β	.tyfv	*
-	.undef	list.t	β
+z1	.karg	β
+			.undef	list.t	β
 
 -- §section §gs{list.singleton}
 
