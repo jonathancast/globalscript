@@ -582,6 +582,7 @@ list.prim.u	.tygvar
 list.t	.tygvar
 list.:	.gvar
 list.byZip.map2	.gvar
+list.nil	.gvar
 α0	.tyfv	*
 α1	.tyfv	*
 β	.tyfv	*
@@ -601,7 +602,7 @@ ys1					.apply	list.byZip.map2	α0	α1	β	|	f	xn0.1	xn1.1
 					.app	y0	ys1
 					.enter	list.:	β
 				.case	nil
-					.undef	list.t	β
+					.enter	list.nil	β
 		.case	nil
 			.undef	list.t	β
 
