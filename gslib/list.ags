@@ -18,6 +18,8 @@ list.filterMap	.closure	_list.filterMap_c	_list.filterMap_ty
 list.foldl	.closure	_list.foldl_c	_list.foldl_ty
 list.reverse	.closure	_list.reverse_c
 
+list.scanl	.closure	_list.scanl_c	_list.scanl_ty
+
 list.singleton	.closure	_list.singleton_c
 list.<>	.closure	_list.<>_c	_list.<>_ty
 
@@ -407,6 +409,18 @@ xn	.larg	list.t	α
 x	.larg	α
 	.app	x	xn
 	.enter	list.:	α
+
+-- §section §gs{list.scanl}
+
+_list.scanl_c	.expr
+_list.foldl_f_ty	.tygvar
+list.t	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+f	.larg	_list.foldl_f_ty	α	β
+z	.larg	β
+xn	.larg	list.t	α
+	.undef	list.t	β
 
 -- §section §gs{list.singleton}
 
@@ -946,6 +960,21 @@ _list.foldl_f_ty	.tyexpr
 	.tylift
 	.tyfun	α
 	.tyref	β
+
+-- §section §gs{list.scanl}
+
+_list.scanl_ty	.tyexpr
+_list.foldl_f_ty	.tygvar
+list.t	.tygvar
+α	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	_list.foldl_f_ty	α	β
+	.tylift
+	.tyfun	β
+	.tylift
+	.tyfun	list.t	α
+	.tyref	list.t	β
 
 -- §section §gs{list.<>}
 
