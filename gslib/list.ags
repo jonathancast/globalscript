@@ -415,11 +415,28 @@ x	.larg	α
 _list.scanl_c	.expr
 _list.foldl_f_ty	.tygvar
 list.t	.tygvar
+_list.scanl_k	.subcode
 α	.tyarg	*
 β	.tyarg	*
 f	.larg	_list.foldl_f_ty	α	β
 z	.larg	β
 xn	.larg	list.t	α
+	.strict	_list.scanl_k
+	.enter	z
+
+_list.scanl_k	.strictcont
+list.t	.tygvar
+_list.scanl_zs_c	.subcode
+list.:	.gvar
+β	.tyfv	*
+z0	.karg	β
+zs	.closure	_list.scanl_zs_c
+	.app	z0	zs
+	.enter	list.:	β
+
+_list.scanl_zs_c	.expr
+list.t	.tygvar
+β	.tyfv	*
 	.undef	list.t	β
 
 -- §section §gs{list.singleton}
