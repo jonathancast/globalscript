@@ -473,10 +473,16 @@ xn1		.fkarg	1	list.t	α
 			.undef	list.t	β
 
 _list.scanl_zs_:_k	.strictcont
+_list.foldl_f_ty	.tygvar
 list.t	.tygvar
+list.scanl	.gvar
+α	.tyfv	*
 β	.tyfv	*
+f	.fv	_list.foldl_f_ty	α	β
+xn1	.fv	list.t	α
 z1	.karg	β
-			.undef	list.t	β
+	.app	f	z1	xn1
+	.enter	list.scanl	α	β
 
 -- §section §gs{list.singleton}
 
