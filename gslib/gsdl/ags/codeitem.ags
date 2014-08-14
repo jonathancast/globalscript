@@ -696,31 +696,38 @@ e	.larg	gsdl.ags.codeitem.expr.t
 	.undef	gsdl.ags.codeitem.t
 
 _gsdl.ags.codeitem.parser_strictcont.p_decls.p_c	.expr
+gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.ags.codeitem.tyfv.t	.tygvar
 gsdl.ags.codeitem.fv.t	.tygvar
 gsdl.ags.codeitem.karg.t	.tygvar
 _gsdl.ags.codeitem.prim.u_strictcont_decls_ty	.tygvar
 _gsdl.ags.codeitem.parser_strictcont.p_decls.p_f_c	.subcode
-parser.lift6	.gvar
+parser.lift7	.gvar
 gsdl.ags.codeitem.tygvars.parser	.gvar
 gsdl.ags.codeitem.subcodes.parser	.gvar
 gsdl.ags.codeitem.tyfvs.parser	.gvar
 gsdl.ags.codeitem.cogvars.parser	.gvar
+gsdl.ags.codeitem.gvars.parser	.gvar
 gsdl.ags.codeitem.fvs.parser	.gvar
 gsdl.ags.codeitem.karg.parser	.gvar
 list.string.ty	.tylet	list.t	string.t
+list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 list.tyfv.ty	.tylet	list.t	gsdl.ags.codeitem.tyfv.t
 list.fv.ty	.tylet	list.t	gsdl.ags.codeitem.fv.t
+fs	.fv	gsdl.ags.syntax.features.t
 f	.closure	_gsdl.ags.codeitem.parser_strictcont.p_decls.p_f_c
-	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.cogvars.parser	gsdl.ags.codeitem.tyfvs.parser	gsdl.ags.codeitem.fvs.parser	gsdl.ags.codeitem.karg.parser
-	.enter	parser.lift6	rune.t	list.string.ty	list.string.ty	list.string.ty	list.tyfv.ty	list.fv.ty	gsdl.ags.codeitem.karg.t	_gsdl.ags.codeitem.prim.u_strictcont_decls_ty
+gvars.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
+	.app	f	gsdl.ags.codeitem.tygvars.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.cogvars.parser	gvars.p	gsdl.ags.codeitem.tyfvs.parser	gsdl.ags.codeitem.fvs.parser	gsdl.ags.codeitem.karg.parser
+	.enter	parser.lift7	rune.t	list.string.ty	list.string.ty	list.string.ty	list.gvar.ty	list.tyfv.ty	list.fv.ty	gsdl.ags.codeitem.karg.t	_gsdl.ags.codeitem.prim.u_strictcont_decls_ty
 
 _gsdl.ags.codeitem.parser_strictcont.p_decls.p_f_c	.expr
 list.t	.tygvar
 string.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.ags.codeitem.tyfv.t	.tygvar
 gsdl.ags.codeitem.fv.t	.tygvar
 gsdl.ags.codeitem.karg.t	.tygvar
@@ -728,6 +735,7 @@ _gsdl.ags.codeitem.prim.u_strictcont_decls_ty	.tygvar	-- Temp
 tygvs	.larg	list.t	string.t
 codes	.larg	list.t	string.t
 cogvs	.larg	list.t	string.t
+gvs	.larg	list.t	gsdl.ags.codeitem.gvar.t
 tyfvs	.larg	list.t	gsdl.ags.codeitem.tyfv.t
 fvs	.larg	list.t	gsdl.ags.codeitem.fv.t
 karg	.larg	gsdl.ags.codeitem.karg.t
