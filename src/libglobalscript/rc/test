@@ -50,6 +50,10 @@ ok_diff_fail '-- force with undefined continuation --' ./$O.test-gsi force-undef
 ok_diff_fail '-- strict bind undefined value --' ./$O.test-gsi strict-undef.ags
 ok_diff_fail '-- strict with undefined continuation --' ./$O.test-gsi strict-undef-cont.ags
 
+echo '# Version 0.5 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_4=1
+
 ok_diff '-- lambdas with undefined bodies --' ./$O.test-gsi empty-lambda.ags
 ok_diff '-- lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lifted-lambda.ags
 ok_diff '-- .lift-lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lift-lifted-lambda.ags
@@ -57,10 +61,6 @@ ok_diff '-- .coerce-casted lambdas with undefined bodies --' ./$O.test-gsi empty
 ok_diff_fail '-- applying lambdas with undefined bodies --' ./$O.test-gsi apply-empty-lambda.ags
 ok_diff '-- partial application of lambda with undefined body --' ./$O.test-gsi partial-apply-empty-lambda.ags
 ok_diff_fail '-- over-saturated application of lambda with undefined body --' ./$O.test-gsi over-apply-empty-lamda.ags
-
-echo '# Version 0.5 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_4=1
 
 ok_diff_fail '-- lambda with type arguments mixed with value arguments --' ./$O.test-gsi lambda-with-type-args-mixed-in.ags
 
