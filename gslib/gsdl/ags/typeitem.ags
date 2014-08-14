@@ -732,12 +732,14 @@ _gsdl.ags.typeitem.decls.parser_tylets.f_c	.expr
 parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
-gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tylet.u	.tygvar
 pos	.larg	parser.pos.t
 nm	.larg	gsdl.var.t
 tyf	.larg	gsdl.var.t
 tyas	.larg	list.t	gsdl.var.t
-	.undef	gsdl.ags.typeitem.decls.tylet.t
+r	.record	name	nm	tyargs	tyas	tyfun	tyf	|	gsdl.ags.typeitem.decls.tylet.u
+	.lift
+	.yield	r
 
 -- §section §gs{gsdl.ags.typeitem.decls.print}
 
