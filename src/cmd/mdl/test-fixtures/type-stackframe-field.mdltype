@@ -1,0 +1,3 @@
+interpreted stackframe one_field {
+    conts :: list[bco];
+};

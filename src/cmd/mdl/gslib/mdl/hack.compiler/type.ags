@@ -13,16 +13,33 @@ mdl.hack.compile.type.bottomrow.s	.string	/*\s↑↑↑↑↑↑↑↑↑↑↑�
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.string	struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.string	_cont\s{\n\s\s\s\sstruct\sace_cont\scont;\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_list_int.s	.string	\s\s\s\sint\snum
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.footer.s	.string	};\n\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_macro.header.s	.string	#define\sACE_STACK_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s	.string	_PUSH(pcont,\sa_pos,\sthread,\s
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_list_mid.s	.string	,\styp
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_list_mid.s1	.string	,\s
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s1	.string	badreturn)\sdo\s{\s\\\n\s\s\s\sif\s(!((pcont)\s=\sace_thread_stack_push(thread,\sa_pos,\ssizeof(struct\sace_stack_
-_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.badreturn.s	.string	)\sbadreturn;\s\\\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.badreturn.s	.string	)))\sbadreturn;\s\\\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.s	.string	\s\s\s\s(pcont)->st.type\s=\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.suffix.s	.string	;\s\\\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.pos.s	.string	\s\s\s\s(pcont)->st.pos\s=\sa_pos;\s\\\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_prefix.s	.string	\s\s\s\s(pcont)->num
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s	.string	\s=\s(n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s1	.string	);\s\\\n\s\s\s\sfor\s(i\s=\s0;\si\s<\s(n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s2	.string	);\si++)\sACE_STACK_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s3	.string	(*(pcont),\si)\s=\s(typ
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_suffix.s	.string	);\s\\\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.footer.s	.string	}\swhile\s(0)\n\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_prefix.s	.string	#define\sACE_STACK_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s	.string	(cont,\si)\s(*(
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s1	.string	*)((char*)&(cont)\s+\ssizeof(struct\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s2	.string	\s+\s(i)\s*\ssizeof(
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_suffix.s	.string	)))\n\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.mid.s	.string	_BOTTOM(pcont)\s((void\s*)((char*)(pcont)\s+\ssizeof(struct\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_prefix.s	.string	\s+\s((pcont)->num
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_mid.s	.string	)\s*\ssizeof(
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_suffix.s	.string	)
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.suffix.s	.string	))\n\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_source.evac.s	.string	In\sacestack.c,\sin\sace_stack_gcevacuate:\n\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.s	.string	\s\s\s\s\s\s\s\s\s\s\s\scase\sace_stack_
@@ -30,10 +47,27 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s	.string	:
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s1	.string	_cont\s*
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s2	.string	\s=\s(struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s3	.string	_cont\s*)cont;\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_prefix.s	.string	\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\sfor\s(i\s=\s0;\si\s<\s
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_mid.s	.string	->num
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_mid.s1	.string	;\si++)\n\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_suffix.s	.string	\n\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s;\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_item.s_prefix.s	.string	ACE_STACK_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_item.s_mid.s	.string	(*
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_item.s_suffix.s	.string	,\si)
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	.string	\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\sp\s=\sACE_STACK_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	.string	_BOTTOM(cont);\n\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\scontinue;\n\s\s\s\s\s\s\s\s\s\s\s\s}\n\n
 
+mdl.hack.compiler.type.size.expr	.closure	_mdl.hack.compiler.type.size.expr_c
+_mdl.hack.compiler.type.size.expr_bco_bco.size.s	.string	sizeof(struct\sgsbco\s*)
+
 _mdl.hack.compiler.type_singular	.closure	_mdl.hack.compiler.type_singular_c	_mdl.hack.compiler.type_singular_ty
+
+mdl.hack.compiler.type.ctype	.closure	_mdl.hack.compiler.type.ctype_c
+_mdl.hack.compiler.type.ctype_bco_bco.s	.string	struct\sgsbco\s*
+
+_mdl.hack.compiler.type_evac	.closure	_mdl.hack.compiler.type_evac_c
+_mdl.hack.compiler.type_evac_bco_prefix.s	.string	if\s(gs_gc_trace_bco(err,\s&
+_mdl.hack.compiler.type_evac_bco_suffix.s	.string	)\s<\s0)\sreturn\s-1
 
 	.code
 
@@ -72,6 +106,7 @@ list.map	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.footer.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_macro.header.s	.gvar
 string.toupper	.gvar
+list.scanl	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s1	.gvar
 list.:	.gvar
@@ -81,6 +116,8 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.s	.gva
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.suffix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.pos.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.footer.s	.gvar
+list.byZip.map2	.gvar
+list.nil	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.mid.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.suffix.s	.gvar
 mdl.hack.compile.type.bottomrow.s	.gvar
@@ -111,15 +148,18 @@ fs.list.sizes.s			.apply	list.concat	rune.t	|	fs.list.sizes.ss
 push.sets.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_c
 fs.push.sets.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	push.sets.f	fs
 fs.push.sets.s			.apply	list.concat	rune.t	|	fs.push.sets.ss
-extracts.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_c
-fs.extracts.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	extracts.f	fs
-fs.extracts.s			.apply	list.concat	rune.t	|	fs.extracts.ss
 sizes.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_c
 fs.sizes.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	sizes.f	fs
+string.<>			.apply	list.<>	rune.t
+string.nil			.apply	list.nil	rune.t
+fs.sizes.prev.ss			.apply	list.scanl	string.t	string.t	|	string.<>	string.nil	fs.sizes.ss
 fs.sizes.s			.apply	list.concat	rune.t	|	fs.sizes.ss
+extracts.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_c
+fs.extracts.ss			.apply	list.byZip.map2	string.t	mdl.type.field.decl.t	string.t	|	extracts.f	fs.sizes.prev.ss	fs
+fs.extracts.s			.apply	list.concat	rune.t	|	fs.extracts.ss
 evacs.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_c
 fs.evacs.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	evacs.f	fs
-fs.evacs.s			.apply	list.concat	rune.t	|	fs.sizes.ss
+fs.evacs.s			.apply	list.concat	rune.t	|	fs.evacs.ss
 s48			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	mdl.hack.compile.type.bottomrow.s
 s47			.apply	list.<>	rune.t	|	id.uc	s48
 s46			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	s47
@@ -174,45 +214,360 @@ s1			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s2
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_c	.expr
 mdl.type.field.decl.t	.tygvar
-string.t	.tygvar	-- Temp
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_k	.subcode
+mdl.type.t.out	.cogvar
 f	.larg	mdl.type.field.decl.t
-	.undef	string.t
+f.nm	.lfield	name	f
+f.ty	.lfield	gstype	f
+	.force	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_k
+	.coerce	mdl.type.t.out
+	.enter	f.ty
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_k	.forcecont
+string.t	.tygvar
+mdl.type.prim.u	.tygvar
+mdl.type.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_list_int.s	.gvar
+list.:	.gvar
+rune.semi	.gvar
+list.singleton	.gvar
+rune.new.line	.gvar
+f.nm	.fv	string.t
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	list
+		.case	bco
+			.undef	string.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+s2			.apply	list.singleton	rune.t	|	rune.new.line
+s1			.apply	list.:	rune.t	|	rune.semi	s2
+s			.apply	list.<>	rune.t	|	f.nm	s1
+			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_list_int.s	s
+			.enter	list.<>	rune.t
+	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_c	.expr
 mdl.type.field.decl.t	.tygvar
-string.t	.tygvar	-- Temp
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_k	.subcode
+mdl.type.t.out	.cogvar
 f	.larg	mdl.type.field.decl.t
-	.undef	string.t
+f.nm	.lfield	name	f
+f.ty	.lfield	gstype	f
+	.force	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_k
+	.coerce	mdl.type.t.out
+	.enter	f.ty
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_k	.forcecont
+string.t	.tygvar
+mdl.type.prim.u	.tygvar
+mdl.type.t	.tygvar
+rune.t	.tygvar
+list.:	.gvar
+rune.latin.letter.n	.gvar
+list.<>	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_list_mid.s	.gvar
+_mdl.hack.compiler.type_singular	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_list_mid.s1	.gvar
+f.nm	.fv	string.t
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	list
+		.case	bco
+			.undef	string.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+f.nm.sing			.apply	_mdl.hack.compiler.type_singular	|	f.nm
+s2			.apply	list.<>	rune.t	|	f.nm.sing	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_list_mid.s1
+s1			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_list_mid.s	s2
+s			.apply	list.<>	rune.t	|	f.nm	s1
+			.app	rune.latin.letter.n	s
+			.enter	list.:	rune.t
+	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_list.sizes.f_c	.expr
 mdl.type.field.decl.t	.tygvar
-string.t	.tygvar	-- Temp
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_list.sizes.f_k	.subcode
+mdl.type.t.out	.cogvar
 f	.larg	mdl.type.field.decl.t
-	.undef	string.t
+f.nm	.lfield	name	f
+f.ty	.lfield	gstype	f
+	.force	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_list.sizes.f_k
+	.coerce	mdl.type.t.out
+	.enter	f.ty
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_list.sizes.f_k	.forcecont
+string.t	.tygvar
+mdl.type.prim.u	.tygvar
+mdl.type.t	.tygvar
+rune.t	.tygvar
+list.:	.gvar
+rune.space	.gvar
+rune.plus	.gvar
+rune.left.paren	.gvar
+rune.latin.letter.n	.gvar
+list.<>	.gvar
+rune.right.paren	.gvar
+rune.star	.gvar
+mdl.hack.compiler.type.size.expr	.gvar
+list.nil	.gvar
+f.nm	.fv	string.t
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	list
+		.case	bco
+			.undef	string.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+s10			.apply	list.nil	rune.t
+s9			.apply	mdl.hack.compiler.type.size.expr	|	ty1	s10
+s8			.apply	list.:	rune.t	|	rune.space	s9
+s7			.apply	list.:	rune.t	|	rune.star	s8
+s6			.apply	list.:	rune.t	|	rune.space	s7
+s5			.apply	list.:	rune.t	|	rune.right.paren	s6
+s4			.apply	list.<>	rune.t	|	f.nm	s5
+s3			.apply	list.:	rune.t	|	rune.latin.letter.n	s4
+s2			.apply	list.:	rune.t	|	rune.left.paren	s3
+s1			.apply	list.:	rune.t	|	rune.space	s2
+s			.apply	list.:	rune.t	|	rune.plus	s1
+			.app	rune.space	s
+			.enter	list.:	rune.t
+	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_c	.expr
+string.t	.tygvar
 mdl.type.field.decl.t	.tygvar
-string.t	.tygvar	-- Temp
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_k	.subcode
+mdl.type.t.out	.cogvar
+id.uc	.fv	string.t
 f	.larg	mdl.type.field.decl.t
-	.undef	string.t
+f.nm	.lfield	name	f
+f.ty	.lfield	gstype	f
+	.force	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_k
+	.coerce	mdl.type.t.out
+	.enter	f.ty
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_k	.forcecont
+string.t	.tygvar
+mdl.type.prim.u	.tygvar
+mdl.type.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_prefix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s1	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s2	.gvar
+list.:	.gvar
+rune.underscore	.gvar
+string.toupper	.gvar
+_mdl.hack.compiler.type_singular	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s3	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_suffix.s	.gvar
+id.uc	.fv	string.t
+f.nm	.fv	string.t
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	list
+		.case	bco
+			.undef	string.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+f.nm.sing			.apply	_mdl.hack.compiler.type_singular	|	f.nm
+f.nm.sing.uc			.apply	string.toupper	|	f.nm.sing
+s10			.apply	list.<>	rune.t	|	f.nm.sing	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_suffix.s
+s9			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s3	s10
+s8			.apply	list.<>	rune.t	|	f.nm.sing.uc	s9
+s7			.apply	list.:	rune.t	|	rune.underscore	s8
+s6			.apply	list.<>	rune.t	|	id.uc	s7
+s5			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s2	s6
+s4			.apply	list.<>	rune.t	|	f.nm	s5
+s3			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s1	s4
+s2			.apply	list.<>	rune.t	|	f.nm	s3
+s1			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s	s2
+s			.apply	list.<>	rune.t	|	f.nm	s1
+			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_prefix.s	s
+			.enter	list.<>	rune.t
+	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_c	.expr
+string.t	.tygvar
 mdl.type.field.decl.t	.tygvar
-string.t	.tygvar	-- Temp
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_k	.subcode
+mdl.type.t.out	.cogvar
+id	.fv	string.t
+id.uc	.fv	string.t
+prev.sizes	.larg	string.t
 f	.larg	mdl.type.field.decl.t
-	.undef	string.t
+f.nm	.lfield	name	f
+f.ty	.lfield	gstype	f
+	.force	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_k
+	.coerce	mdl.type.t.out
+	.enter	f.ty
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_k	.forcecont
+string.t	.tygvar
+mdl.type.prim.u	.tygvar
+mdl.type.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_prefix.s	.gvar
+list.:	.gvar
+rune.underscore	.gvar
+string.toupper	.gvar
+_mdl.hack.compiler.type_singular	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s	.gvar
+mdl.hack.compiler.type.ctype	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s1	.gvar
+rune.right.paren	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s2	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_suffix.s	.gvar
+id	.fv	string.t
+id.uc	.fv	string.t
+prev.sizes	.fv	string.t
+f.nm	.fv	string.t
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	list
+		.case	bco
+			.undef	string.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+f.nm.sing			.apply	_mdl.hack.compiler.type_singular	|	f.nm
+f.nm.sing.uc			.apply	string.toupper	|	f.nm.sing
+ty1.c.s			.apply	mdl.hack.compiler.type.ctype	|	ty1
+s10			.apply	list.<>	rune.t	|	ty1.c.s	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_suffix.s
+s9			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s2	s10
+s8			.apply	list.<>	rune.t	|	prev.sizes	s9
+s7			.apply	list.:	rune.t	|	rune.right.paren	s8
+s6			.apply	list.<>	rune.t	|	id	s7
+s5			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s1	s6
+s4			.apply	list.<>	rune.t	|	ty1.c.s	s5
+s3			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s	s4
+s2			.apply	list.<>	rune.t	|	f.nm.sing.uc	s3
+s1			.apply	list.:	rune.t	|	rune.underscore	s2
+s			.apply	list.<>	rune.t	|	id.uc	s1
+			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_prefix.s	s
+			.enter	list.<>	rune.t
+	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_c	.expr
 mdl.type.field.decl.t	.tygvar
-string.t	.tygvar	-- Temp
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_k	.subcode
+mdl.type.t.out	.cogvar
 f	.larg	mdl.type.field.decl.t
-	.undef	string.t
+f.nm	.lfield	name	f
+f.ty	.lfield	gstype	f
+	.force	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_k
+	.coerce	mdl.type.t.out
+	.enter	f.ty
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_k	.forcecont
+string.t	.tygvar
+mdl.type.prim.u	.tygvar
+mdl.type.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_prefix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_mid.s	.gvar
+mdl.hack.compiler.type.ctype	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_suffix.s	.gvar
+f.nm	.fv	string.t
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	list
+		.case	bco
+			.undef	string.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+ty1.c.s			.apply	mdl.hack.compiler.type.ctype	|	ty1
+s2			.apply	list.<>	rune.t	|	ty1.c.s	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_suffix.s
+s1			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_mid.s	s2
+s			.apply	list.<>	rune.t	|	f.nm	s1
+			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_prefix.s	s
+			.enter	list.<>	rune.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_c	.expr
+string.t	.tygvar
 mdl.type.field.decl.t	.tygvar
-string.t	.tygvar	-- Temp
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_k	.subcode
+mdl.type.t.out	.cogvar
+id	.fv	string.t
+id.uc	.fv	string.t
 f	.larg	mdl.type.field.decl.t
-	.undef	string.t
+f.nm	.lfield	name	f
+f.ty	.lfield	gstype	f
+	.force	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_k
+	.coerce	mdl.type.t.out
+	.enter	f.ty
+
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_k	.forcecont
+string.t	.tygvar
+mdl.type.prim.u	.tygvar
+mdl.type.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_prefix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_mid.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_mid.s1	.gvar
+_mdl.hack.compiler.type_evac	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_item.s_prefix.s	.gvar
+list.:	.gvar
+rune.underscore	.gvar
+string.toupper	.gvar
+_mdl.hack.compiler.type_singular	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_item.s_mid.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_item.s_suffix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_suffix.s	.gvar
+id	.fv	string.t
+id.uc	.fv	string.t
+f.nm	.fv	string.t
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	list
+		.case	bco
+			.undef	string.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+f.nm.sing			.apply	_mdl.hack.compiler.type_singular	|	f.nm
+f.nm.sing.uc			.apply	string.toupper	|	f.nm.sing
+item.s5			.apply	list.<>	rune.t	|	id	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_item.s_suffix.s
+item.s4			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_item.s_mid.s	item.s5
+item.s3			.apply	list.<>	rune.t	|	f.nm.sing.uc	item.s4
+item.s2			.apply	list.:	rune.t	|	rune.underscore	item.s3
+item.s1			.apply	list.<>	rune.t	|	id.uc	item.s2
+item.s			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_item.s_prefix.s	item.s1
+item.evac.s			.apply	_mdl.hack.compiler.type_evac	|	ty1	item.s
+s4			.apply	list.<>	rune.t	|	item.evac.s	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_suffix.s
+s3			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_mid.s1	s4
+s2			.apply	list.<>	rune.t	|	f.nm	s3
+s1			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_mid.s	s2
+s			.apply	list.<>	rune.t	|	id	s1
+			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_prefix.s	s
+			.enter	list.<>	rune.t
+	-- > :: string.t
+
+-- §section §gs{mdl.hack.compiler.type.size.expr}
+
+_mdl.hack.compiler.type.size.expr_c	.expr
+mdl.type.t	.tygvar
+_mdl.hack.compiler.type.size.expr_k	.subcode
+mdl.type.t.out	.cogvar
+ty	.larg	mdl.type.t
+	.force	_mdl.hack.compiler.type.size.expr_k
+	.coerce	mdl.type.t.out
+	.enter	ty
+
+_mdl.hack.compiler.type.size.expr_k	.forcecont
+mdl.type.prim.u	.tygvar
+mdl.type.t	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar	-- Temp
+diff.list.fromlist	.gvar
+_mdl.hack.compiler.type.size.expr_bco_bco.size.s	.gvar
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	list
+		.case	bco
+			.app	_mdl.hack.compiler.type.size.expr_bco_bco.size.s
+			.enter	diff.list.fromlist	rune.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+			.undef	diff.list.t	rune.t
+	-- > :: diff.list.t	rune.t
 
 -- §section §gs{_mdl.hack.compiler.type_singular}
 
@@ -280,6 +635,64 @@ b0	.karg	bool.prim.u	-- c0 ≡ r/s/?
 			.undef	string.t
 		.case	true
 			.enter	list.nil	rune.t
+
+-- §section §gs{mdl.hack.compiler.type.ctype}
+
+_mdl.hack.compiler.type.ctype_c	.expr
+mdl.type.t	.tygvar
+_mdl.hack.compiler.type.ctype_k	.subcode
+mdl.type.t.out	.cogvar
+ty	.larg	mdl.type.t
+	.force	_mdl.hack.compiler.type.ctype_k
+	.coerce	mdl.type.t.out
+	.enter	ty
+
+_mdl.hack.compiler.type.ctype_k	.forcecont
+mdl.type.prim.u	.tygvar
+mdl.type.t	.tygvar
+string.t	.tygvar	-- Temp
+_mdl.hack.compiler.type.ctype_bco_bco.s	.gvar
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	list
+		.case	bco
+			.enter	_mdl.hack.compiler.type.ctype_bco_bco.s
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+			.undef	string.t
+	-- > :: string.t
+
+-- §section §gs{_mdl.hack.compiler.type_evac}
+
+_mdl.hack.compiler.type_evac_c	.expr
+mdl.type.t	.tygvar
+string.t	.tygvar
+_mdl.hack.compiler.type_evac_k	.subcode
+mdl.type.t.out	.cogvar
+ty	.larg	mdl.type.t
+x.s	.larg	string.t
+	.force	_mdl.hack.compiler.type_evac_k
+	.coerce	mdl.type.t.out
+	.enter	ty
+
+_mdl.hack.compiler.type_evac_k	.forcecont
+string.t	.tygvar
+mdl.type.prim.u	.tygvar
+mdl.type.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_mdl.hack.compiler.type_evac_bco_prefix.s	.gvar
+_mdl.hack.compiler.type_evac_bco_suffix.s	.gvar
+x.s	.fv	string.t
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	list
+		.case	bco
+s			.apply	list.<>	rune.t	|	x.s	_mdl.hack.compiler.type_evac_bco_suffix.s
+			.app	_mdl.hack.compiler.type_evac_bco_prefix.s	s
+			.enter	list.<>	rune.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+			.undef	string.t
+	-- > :: string.t
 
 	.type
 

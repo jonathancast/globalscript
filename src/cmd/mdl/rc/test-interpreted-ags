@@ -5,3 +5,4 @@
 
 ok_grep_script_errors '-- mdltype2c: Empty file --' type-empty-file '/dev/stdin:\$: Un-expected EOF' ibio ./gslib ./mdltype2c.ags < /dev/null
 ok_diff_script '-- mdltype2c: Empty stack frame --' type-empty-stackframe ibio ./gslib ./mdltype2c.ags < ./test-fixtures/empty-stackframe.mdltype
+ok_diff_script '-- mdltype2c: Field in stack frame --' type-stackframe-field ibio ./gslib ./mdltype2c.ags < ./test-fixtures/type-stackframe-field.mdltype
