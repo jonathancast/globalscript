@@ -12,6 +12,7 @@ mdl.type.field.decl.parser	.closure	_mdl.type.field.decl.parser_c
 
 mdl.type.parser	.closure	_mdl.type.parser_c	_mdl.type.parser_ty
 _mdl.type.parser_hack.bco_bco.re	.regex	bco
+_mdl.type.parser_hack.gsvalue_gsvalue.re	.regex	gsvalue
 _mdl.type.parser_hack.list_list.re	.regex	list
 
 mdl.type.decl.interpreted.stackframe	.closure	_mdl.type.decl.interpreted.stackframe_c
@@ -111,11 +112,14 @@ _mdl.type.parser_c	.expr
 rune.t	.tygvar
 mdl.type.t	.tygvar
 _mdl.type.parser_hack.bco_c	.subcode
+_mdl.type.parser_hack.gsvalue_c	.subcode
 _mdl.type.parser_hack.list_c	.subcode
 parser.<|>	.gvar
 hack.bco	.closure	_mdl.type.parser_hack.bco_c
+hack.gsvalue	.closure	_mdl.type.parser_hack.gsvalue_c
 hack.list	.closure	_mdl.type.parser_hack.list_c
-	.app	hack.bco	hack.list
+p	.apply	parser.<|>	rune.t	mdl.type.t	|	hack.gsvalue	hack.list
+	.app	hack.bco	p
 	.enter	parser.<|>	rune.t	mdl.type.t
 
 _mdl.type.parser_hack.bco_c	.expr
@@ -138,6 +142,27 @@ string.t	.tygvar
 mdl.type.bco	.gvar
 v	.larg	string.t
 	.enter	mdl.type.bco
+
+_mdl.type.parser_hack.gsvalue_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+mdl.type.t	.tygvar
+_mdl.type.parser_hack.gsvalue_f_c	.subcode
+parser.map	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_mdl.type.parser_hack.gsvalue_gsvalue.re	.gvar
+parser.fail	.gvar	-- Temp
+gsvalue.p	.apply	parser.match	rune.t	|	rune.compare	_mdl.type.parser_hack.gsvalue_gsvalue.re
+f	.closure	_mdl.type.parser_hack.gsvalue_f_c
+	.app	f	gsvalue.p
+	.enter	parser.map	rune.t	string.t	mdl.type.t
+
+_mdl.type.parser_hack.gsvalue_f_c	.expr
+string.t	.tygvar
+mdl.type.gsvalue	.gvar
+v	.larg	string.t
+	.enter	mdl.type.gsvalue
 
 _mdl.type.parser_hack.list_c	.expr
 rune.t	.tygvar

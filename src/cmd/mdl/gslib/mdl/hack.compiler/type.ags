@@ -59,15 +59,19 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	.stri
 
 mdl.hack.compiler.type.size.expr	.closure	_mdl.hack.compiler.type.size.expr_c
 _mdl.hack.compiler.type.size.expr_bco_bco.size.s	.string	sizeof(struct\sgsbco\s*)
+_mdl.hack.compiler.type.size.expr_gsvalue_gsvalue.size.s	.string	sizeof(gsvalue)
 
 _mdl.hack.compiler.type_singular	.closure	_mdl.hack.compiler.type_singular_c	_mdl.hack.compiler.type_singular_ty
 
 mdl.hack.compiler.type.ctype	.closure	_mdl.hack.compiler.type.ctype_c
 _mdl.hack.compiler.type.ctype_bco_bco.s	.string	struct\sgsbco\s*
+_mdl.hack.compiler.type.ctype_gsvalue_gsvalue.s	.string	gsvalue
 
 _mdl.hack.compiler.type_evac	.closure	_mdl.hack.compiler.type_evac_c
 _mdl.hack.compiler.type_evac_bco_prefix.s	.string	if\s(gs_gc_trace_bco(err,\s&
 _mdl.hack.compiler.type_evac_bco_suffix.s	.string	)\s<\s0)\sreturn\s-1
+_mdl.hack.compiler.type_evac_gsvalue_prefix.s	.string	if\s(GS_GC_TRACE(err,\s&
+_mdl.hack.compiler.type_evac_gsvalue_suffix.s	.string	)\s<\s0)\sreturn\s-1
 
 	.code
 
@@ -573,13 +577,15 @@ rune.t	.tygvar
 diff.list.t	.tygvar	-- Temp
 diff.list.fromlist	.gvar
 _mdl.hack.compiler.type.size.expr_bco_bco.size.s	.gvar
+_mdl.hack.compiler.type.size.expr_gsvalue_gsvalue.size.s	.gvar
 ty0	.karg	mdl.type.prim.u
 	.analyze	ty0	bco	gsvalue	list
 		.case	bco
 			.app	_mdl.hack.compiler.type.size.expr_bco_bco.size.s
 			.enter	diff.list.fromlist	rune.t
 		.case	gsvalue
-			.undef	diff.list.t	rune.t
+			.app	_mdl.hack.compiler.type.size.expr_gsvalue_gsvalue.size.s
+			.enter	diff.list.fromlist	rune.t
 		.case	list
 ty1		.fkarg	0	mdl.type.t
 			.undef	diff.list.t	rune.t
@@ -668,12 +674,13 @@ mdl.type.prim.u	.tygvar
 mdl.type.t	.tygvar
 string.t	.tygvar	-- Temp
 _mdl.hack.compiler.type.ctype_bco_bco.s	.gvar
+_mdl.hack.compiler.type.ctype_gsvalue_gsvalue.s	.gvar
 ty0	.karg	mdl.type.prim.u
 	.analyze	ty0	bco	gsvalue	list
 		.case	bco
 			.enter	_mdl.hack.compiler.type.ctype_bco_bco.s
 		.case	gsvalue
-			.undef	string.t
+			.enter	_mdl.hack.compiler.type.ctype_gsvalue_gsvalue.s
 		.case	list
 ty1		.fkarg	0	mdl.type.t
 			.undef	string.t
@@ -700,6 +707,8 @@ rune.t	.tygvar
 list.<>	.gvar
 _mdl.hack.compiler.type_evac_bco_prefix.s	.gvar
 _mdl.hack.compiler.type_evac_bco_suffix.s	.gvar
+_mdl.hack.compiler.type_evac_gsvalue_prefix.s	.gvar
+_mdl.hack.compiler.type_evac_gsvalue_suffix.s	.gvar
 x.s	.fv	string.t
 ty0	.karg	mdl.type.prim.u
 	.analyze	ty0	bco	gsvalue	list
@@ -708,7 +717,9 @@ s			.apply	list.<>	rune.t	|	x.s	_mdl.hack.compiler.type_evac_bco_suffix.s
 			.app	_mdl.hack.compiler.type_evac_bco_prefix.s	s
 			.enter	list.<>	rune.t
 		.case	gsvalue
-			.undef	string.t
+s			.apply	list.<>	rune.t	|	x.s	_mdl.hack.compiler.type_evac_gsvalue_suffix.s
+			.app	_mdl.hack.compiler.type_evac_gsvalue_prefix.s	s
+			.enter	list.<>	rune.t
 		.case	list
 ty1		.fkarg	0	mdl.type.t
 			.undef	string.t
