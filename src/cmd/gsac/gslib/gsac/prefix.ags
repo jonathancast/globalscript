@@ -2920,6 +2920,7 @@ gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.cgs.gskind.t	.tygvar	-- Temp
+either.left	.gvar
 either.right	.gvar
 gsdl.cgs.typeenv.typefun.insert	.gvar
 list.nil	.gvar
@@ -2929,7 +2930,8 @@ e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.typeenv.t
 		.case	right
 tyy		.fkarg	0	gsdl.cgs.gstype.t
 ki			.undefined	gsdl.cgs.gskind.t
