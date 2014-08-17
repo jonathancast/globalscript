@@ -34,16 +34,16 @@ ok_diff_fail '-- undefined entry points (.tyextabstype in .expr type) --' ./$O.t
 
 ok_diff_fail '-- undefined entry points (cast into .tyextabstype type) --' ./$O.test-gsi undef-cast-tyextabstype.ags
 
+echo '# Version 0.5 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_4=1
+
 ok_diff '-- empty record values --' ./$O.test-gsi empty-record.ags
 ok_diff '-- empty record expressions --' ./$O.test-gsi empty-record-expr.ags
 ok_diff '-- empty lifted record expressions --' ./$O.test-gsi empty-lrecord-expr.ags
 ok_diff '-- field extractions --' ./$O.test-gsi field-extraction.ags
 ok_diff_fail '-- lazy field extractions --' ./$O.test-gsi lazy-field-extraction.ags
 ok_diff_fail '-- lazy field extraction from undefined record --' ./$O.test-gsi lazy-field-extraction-undef-record.ags
-
-echo '# Version 0.5 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_4=1
 
 ok_diff_fail '-- enter undefined polymorphic value --' ./$O.test-gsi enter-polymorphic-undef.ags
 ok_diff '-- yield polymorphic empty lambda --' ./$O.test-gsi yield-polymorphic-empty-lambda.ags
