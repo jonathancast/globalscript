@@ -5,6 +5,9 @@
 	.data
 
 mdl.type.decl.parser	.closure	_mdl.type.decl.parser_c
+_mdl.type.decl.parser_api.prim.blocking_api.re	.regex	api
+_mdl.type.decl.parser_api.prim.blocking_prim.re	.regex	prim
+_mdl.type.decl.parser_api.prim.blocking_blocking.re	.regex	blocking
 _mdl.type.decl.parser_interpreted.stackframe_interpreted.re	.regex	interpreted
 _mdl.type.decl.parser_interpreted.stackframe_stackframe.re	.regex	stackframe
 
@@ -26,9 +29,57 @@ mdl.type.list	.closure	_mdl.type.list_c
 _mdl.type.decl.parser_c	.expr
 rune.t	.tygvar
 mdl.type.decl.t	.tygvar
+_mdl.type.decl.parser_api.prim.blocking_c	.subcode
 _mdl.type.decl.parser_interpreted.stackframe_c	.subcode
+parser.<|>	.gvar
+api.prim.blocking	.closure	_mdl.type.decl.parser_api.prim.blocking_c
 interpreted.stackframe	.closure	_mdl.type.decl.parser_interpreted.stackframe_c
-	.enter	interpreted.stackframe
+	.app	api.prim.blocking	interpreted.stackframe
+	.enter	parser.<|>	rune.t	mdl.type.decl.t
+
+_mdl.type.decl.parser_api.prim.blocking_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+mdl.type.decl.t	.tygvar
+_mdl.type.decl.parser_api.prim.blocking_f_c	.subcode
+parser.lift2	.gvar
+parser.*>	.gvar
+mdl.syntax.keyword	.gvar
+_mdl.type.decl.parser_api.prim.blocking_api.re	.gvar
+_mdl.type.decl.parser_api.prim.blocking_prim.re	.gvar
+_mdl.type.decl.parser_api.prim.blocking_blocking.re	.gvar
+mdl.syntax.id	.gvar
+parser.<*	.gvar
+mdl.syntax.braces	.gvar
+parser.many	.gvar
+
+mdl.syntax.semi	.gvar
+parser.fail	.gvar	-- Temp
+list.field.ty	.tylet	list.t	mdl.type.field.decl.t
+f	.closure	_mdl.type.decl.parser_api.prim.blocking_f_c
+api.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_api.prim.blocking_api.re
+prim.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_api.prim.blocking_prim.re
+blocking.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_api.prim.blocking_blocking.re
+label.p2	.apply	parser.*>	rune.t	string.t	string.t	|	blocking.p	mdl.syntax.id
+label.p1	.apply	parser.*>	rune.t	string.t	string.t	|	prim.p	label.p2
+label.p	.apply	parser.*>	rune.t	string.t	string.t	|	api.p	label.p1
+fields.p3	.apply	parser.fail	rune.t	mdl.type.field.decl.t
+fields.p2	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	fields.p3
+fields.p1	.apply	mdl.syntax.braces	list.field.ty	|	fields.p2
+fields.p	.apply	parser.<*	rune.t	list.field.ty	string.t	|	fields.p1	mdl.syntax.semi
+	.app	f	label.p	fields.p
+	.enter	parser.lift2	rune.t	string.t	list.field.ty	mdl.type.decl.t
+
+_mdl.type.decl.parser_api.prim.blocking_f_c	.expr
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+mdl.type.decl.t	.tygvar	-- Temp
+lbl	.larg	string.t
+fs	.larg	list.t	mdl.type.field.decl.t
+	.undef	mdl.type.decl.t
 
 _mdl.type.decl.parser_interpreted.stackframe_c	.expr
 rune.t	.tygvar

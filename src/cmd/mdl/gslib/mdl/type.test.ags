@@ -6,11 +6,15 @@
 
 	.closure	_ep_c
 
-_ep_tests	.list	test.property.t	_test_parse.interpreted.stackframe	_test_parse.field.decl	_test_parse.list
+_ep_tests	.list	test.property.t	_test_parse.interpreted.stackframe	_test_parse.api.prim	_test_parse.field.decl	_test_parse.list
 
 _test_parse.interpreted.stackframe	.closure	_test_parse.interpreted.stackframe_c
 _test_parse.interpreted.stackframe_label	.string	qq{interpreted\sstackframe\sempty\s{\\n};\\n}\s=~\sdecl.parser
 _test_parse.interpreted.stackframe_input	.string	interpreted\sstackframe\sempty\s{\n};\n
+
+_test_parse.api.prim	.closure	_test_parse.api.prim_c
+_test_parse.api.prim_label	.string	qq{api\sprim\sblocking\sempty\s{\\n};\\n}\s=~\sdecl.parser
+_test_parse.api.prim_input	.string	api\sprim\sblocking\sempty\s{\n};\n
 
 _test_parse.field.decl	.closure	_test_parse.field.decl_c
 _test_parse.field.decl_label	.string	qq{conts\s::\sbco;\\n}\s=~\sfield.decl.parser
@@ -47,6 +51,30 @@ test	.apply	parser.test.assert.passes	rune.t	mdl.type.decl.t	|	parser.rune.advan
 	.enter	test.property.label
 
 _test_parse.interpreted.stackframe_k_c	.expr
+mdl.type.decl.t	.tygvar
+test.true	.gvar
+d	.larg	mdl.type.decl.t
+	.enter	test.true
+
+-- §section §gs{qq{api prim blocking empty {\n};\n} =~ decl.parser}
+
+_test_parse.api.prim_c	.expr
+rune.t	.tygvar
+mdl.type.decl.t	.tygvar
+_test_parse.api.prim_k_c	.subcode
+test.property.label	.gvar
+_test_parse.api.prim_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+mdl.type.decl.parser	.gvar
+_test_parse.api.prim_input	.gvar
+k	.closure	_test_parse.api.prim_k_c
+test	.apply	parser.test.assert.passes	rune.t	mdl.type.decl.t	|	parser.rune.advance	rune.print	mdl.type.decl.parser	_test_parse.api.prim_input	k
+	.app	_test_parse.api.prim_label	test
+	.enter	test.property.label
+
+_test_parse.api.prim_k_c	.expr
 mdl.type.decl.t	.tygvar
 test.true	.gvar
 d	.larg	mdl.type.decl.t
