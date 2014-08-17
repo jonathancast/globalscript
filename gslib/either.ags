@@ -249,7 +249,7 @@ _either.foldM_:_k	.forcecont
 _either.foldM_f_ty	.tygvar
 list.t	.tygvar
 either.prim.u	.tygvar
-either.t	.tygvar	-- Temp
+either.left	.gvar
 either.foldM	.gvar
 e	.tyfv	*
 α	.tyfv	*
@@ -260,7 +260,8 @@ e0	.karg	either.prim.u	e	β
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	e
-			.undef	either.t	e	β
+			.app	err
+			.enter	either.left	e	β
 		.case	right
 z1		.fkarg	0	β
 			.app	f	z1	xn1
