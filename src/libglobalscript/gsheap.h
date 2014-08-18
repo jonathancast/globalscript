@@ -1,6 +1,6 @@
 /* §section Continuations */
 
-struct gsbc_cont {
+struct ace_cont {
     enum {
         gsbc_cont_update,
         gsbc_cont_app,
@@ -12,33 +12,33 @@ struct gsbc_cont {
 };
 
 struct gsbc_cont_update {
-    struct gsbc_cont cont;
+    struct ace_cont cont;
     struct gsheap_item *dest;
     struct gsbc_cont_update *next;
 };
 
 struct gsbc_cont_app {
-    struct gsbc_cont cont;
+    struct ace_cont cont;
     int numargs;
     gsvalue arguments[];
 };
 
 struct gsbc_cont_force {
-    struct gsbc_cont cont;
+    struct ace_cont cont;
     struct gsbco *code;
     int numfvs;
     gsvalue fvs[];
 };
 
 struct gsbc_cont_strict {
-    struct gsbc_cont cont;
+    struct ace_cont cont;
     struct gsbco *code;
     int numfvs;
     gsvalue fvs[];
 };
 
 struct ace_stack_ubanalyze_cont {
-    struct gsbc_cont cont;
+    struct ace_cont cont;
     int numconts;
     struct gsbco **conts;
     int numfvs;
@@ -47,7 +47,7 @@ struct ace_stack_ubanalyze_cont {
 
 /* §section ACE Stack manipulations */
 
-struct gsbc_cont *ace_stack_alloc(struct ace_thread *, struct gspos, ulong); /* Deprecated */
+struct ace_cont *ace_stack_alloc(struct ace_thread *, struct gspos, ulong); /* Deprecated */
 
 #define ACE_UBANALYZE_STACK_SIZE(nconts, nfvs) (sizeof(struct ace_stack_ubanalyze_cont) + nconts * sizeof(struct gsbco *) + nfvs * sizeof(gsvalue))
 
@@ -56,7 +56,7 @@ struct gsbc_cont_app *ace_push_app(struct gspos, struct ace_thread *, int, ...);
 struct gsbc_cont_app *ace_push_appv(struct gspos, struct ace_thread *, int, gsvalue *);
 struct ace_stack_ubanalyze_cont *ace_push_ubanalyzev(struct gspos, struct ace_thread *, int, struct gsbco **, int, gsvalue *);
 
-struct gsbc_cont *ace_stack_top(struct ace_thread *);
+struct ace_cont *ace_stack_top(struct ace_thread *);
 
 void ace_pop_update(struct ace_thread *);
 

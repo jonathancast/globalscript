@@ -725,7 +725,7 @@ void
 ace_instr_push_force(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsbc_cont *cont;
+    struct ace_cont *cont;
     struct gsbc_cont_force *force;
     int i;
 
@@ -752,7 +752,7 @@ void
 ace_instr_push_strict(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsbc_cont *cont;
+    struct ace_cont *cont;
     struct gsbc_cont_strict *strict;
     int i;
 
@@ -1027,7 +1027,7 @@ gsprim_return(struct ace_thread *thread, struct gspos pos, gsvalue v)
 int
 gsprim_return_ubsum(struct ace_thread *thread, struct gspos pos, int constr, int nargs, ...)
 {
-    struct gsbc_cont *cont;
+    struct ace_cont *cont;
     struct ace_stack_ubanalyze_cont *ubanalyze;
     struct gsbc *ip;
     va_list arg;
@@ -1167,16 +1167,16 @@ ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *e
 
 static void *ace_set_registers_from_closure(struct ace_thread *, struct gsclosure *);
 
-static int ace_return_to_update(struct ace_thread *, struct gsbc_cont *, gsvalue);
-static void ace_return_to_app(struct ace_thread *, struct gsbc_cont *, gsvalue);
-static void ace_return_to_force(struct ace_thread *, struct gsbc_cont *, gsvalue);
-static void ace_return_to_strict(struct ace_thread *, struct gsbc_cont *, gsvalue);
+static int ace_return_to_update(struct ace_thread *, struct ace_cont *, gsvalue);
+static void ace_return_to_app(struct ace_thread *, struct ace_cont *, gsvalue);
+static void ace_return_to_force(struct ace_thread *, struct ace_cont *, gsvalue);
+static void ace_return_to_strict(struct ace_thread *, struct ace_cont *, gsvalue);
 
 static
 void
 ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
 {
-    struct gsbc_cont *cont;
+    struct ace_cont *cont;
 
 again:
     cont = ace_stack_top(thread);
@@ -1203,7 +1203,7 @@ again:
 }
 
 int
-ace_return_to_update(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
+ace_return_to_update(struct ace_thread *thread, struct ace_cont *cont, gsvalue v)
 {
     struct gsbc_cont_update *update;
     struct gsheap_item *hp;
@@ -1229,7 +1229,7 @@ ace_return_to_update(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue 
 
 static
 void
-ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
+ace_return_to_app(struct ace_thread *thread, struct ace_cont *cont, gsvalue v)
 {
     int i;
     struct gs_blockdesc *block;
@@ -1354,7 +1354,7 @@ ace_return_to_app(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
 
 static
 void
-ace_return_to_force(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
+ace_return_to_force(struct ace_thread *thread, struct ace_cont *cont, gsvalue v)
 {
     struct gsbc_cont_force *force;
     void *ip;
@@ -1390,7 +1390,7 @@ ace_return_to_force(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v
 
 static
 void
-ace_return_to_strict(struct ace_thread *thread, struct gsbc_cont *cont, gsvalue v)
+ace_return_to_strict(struct ace_thread *thread, struct ace_cont *cont, gsvalue v)
 {
     struct gsbc_cont_strict *strict;
     void *ip;

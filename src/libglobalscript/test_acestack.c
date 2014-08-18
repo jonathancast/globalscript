@@ -24,7 +24,7 @@ void
 TEST_ERASE_BOTTOM_OF_STACK()
 {
     struct ace_thread *thread;
-    struct gsbc_cont *top;
+    struct ace_cont *top;
     struct gsbc_cont_update *bottom_update, *top_update;
     gsvalue bottom_gsv, top_gsv, gctemp;
     struct gsbc_cont_app *app;

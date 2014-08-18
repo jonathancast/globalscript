@@ -8,7 +8,7 @@
 struct gsbc_cont_update *
 ace_push_update(struct gspos pos, struct ace_thread *thread, struct gsheap_item *hp)
 {
-    struct gsbc_cont *cont;
+    struct ace_cont *cont;
     struct gsbc_cont_update *updatecont;
     struct gsindirection *in;
 
@@ -47,7 +47,7 @@ struct gsbc_cont_app *
 ace_push_appv(struct gspos pos, struct ace_thread *thread, int numargs, gsvalue *arguments)
 {
     int i;
-    struct gsbc_cont *cont;
+    struct ace_cont *cont;
     struct gsbc_cont_app *appcont;
 
     cont = ace_stack_alloc(thread, pos, sizeof(struct gsbc_cont_app) + numargs * sizeof(gsvalue));
@@ -65,7 +65,7 @@ ace_push_appv(struct gspos pos, struct ace_thread *thread, int numargs, gsvalue 
 struct ace_stack_ubanalyze_cont *
 ace_push_ubanalyzev(struct gspos pos, struct ace_thread *thread, int numconts, struct gsbco **conts, int numfvs, gsvalue *fvs)
 {
-    struct gsbc_cont *cont;
+    struct ace_cont *cont;
     struct ace_stack_ubanalyze_cont *ubanalyze;
     int i;
 
@@ -87,7 +87,7 @@ ace_push_ubanalyzev(struct gspos pos, struct ace_thread *thread, int numconts, s
 }
 
 /* Shuts down the thread if anything goes wrong */
-struct gsbc_cont *
+struct ace_cont *
 ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
 {
     void *newtop;
@@ -105,14 +105,14 @@ ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
 
     thread->stacktop = newtop;
 
-    return (struct gsbc_cont *)newtop;
+    return (struct ace_cont *)newtop;
 }
 
-struct gsbc_cont *
+struct ace_cont *
 ace_stack_top(struct ace_thread *thread)
 {
     if ((uchar*)thread->stacktop < (uchar*)thread->stackbot)
-        return (struct gsbc_cont *)thread->stacktop
+        return (struct ace_cont *)thread->stacktop
     ; else
         return 0
     ;
@@ -144,7 +144,7 @@ ace_stack_gcevacuate(struct gsstringbuilder *err, struct ace_thread *thread, str
     thread->gc_evacuated_stackbot = base;
 
     for (p = top; (uchar*)p < (uchar*)base; ) {
-        struct gsbc_cont *cont = (struct gsbc_cont *)p;
+        struct ace_cont *cont = (struct ace_cont *)p;
 
         if (gs_gc_trace_pos(err, &cont->pos) < 0) return -1;
 
