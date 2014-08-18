@@ -31,15 +31,18 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_mid.s3	.string	(*(pcont),\si)\s=\s(typ
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_suffix.s	.string	);\s\\\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.footer.s	.string	}\swhile\s(0)\n\n
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts_cont.s	.string	(cont)
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_prefix.s	.string	#define\sACE_STACK_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s	.string	(cont,\si)\s(*(
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s1	.string	*)((char*)&(cont)\s+\ssizeof(struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_mid.s2	.string	\s+\s(i)\s*\ssizeof(
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_suffix.s	.string	)))\n\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.mid.s	.string	_BOTTOM(pcont)\s((void\s*)((char*)(pcont)\s+\ssizeof(struct\sace_stack_
-_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_prefix.s	.string	\s+\s((pcont)->num
-_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_mid.s	.string	)\s*\ssizeof(
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_prefix.s	.string	\s+\s
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_mid.s	.string	.num
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_mid.s1	.string	\s*\ssizeof(
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_suffix.s	.string	)
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom_pcont.s	.string	(*(pcont))
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.suffix.s	.string	))\n\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_source.evac.s	.string	In\sacestack.c,\sin\sace_stack_gcevacuate:\n\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.s	.string	\s\s\s\s\s\s\s\s\s\s\s\scase\sace_stack_
@@ -122,7 +125,9 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.pos.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.footer.s	.gvar
 list.byZip.map2	.gvar
 list.nil	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts_cont.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.mid.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom_pcont.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.suffix.s	.gvar
 mdl.hack.compile.type.bottomrow.s	.gvar
 rune.new.line	.gvar
@@ -153,14 +158,17 @@ push.sets.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackfram
 fs.push.sets.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	push.sets.f	fs
 fs.push.sets.s			.apply	list.concat	rune.t	|	fs.push.sets.ss
 sizes.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_c
-fs.sizes.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	sizes.f	fs
+extracts.sizes.f			.apply	sizes.f	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts_cont.s
+extracts.fs.sizes.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	extracts.sizes.f	fs
 string.<>			.apply	list.<>	rune.t
 string.nil			.apply	list.nil	rune.t
-fs.sizes.prev.ss			.apply	list.scanl	string.t	string.t	|	string.<>	string.nil	fs.sizes.ss
-fs.sizes.s			.apply	list.concat	rune.t	|	fs.sizes.ss
+extracts.fs.sizes.prev.ss			.apply	list.scanl	string.t	string.t	|	string.<>	string.nil	extracts.fs.sizes.ss
 extracts.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_c
-fs.extracts.ss			.apply	list.byZip.map2	string.t	mdl.type.field.decl.t	string.t	|	extracts.f	fs.sizes.prev.ss	fs
+fs.extracts.ss			.apply	list.byZip.map2	string.t	mdl.type.field.decl.t	string.t	|	extracts.f	extracts.fs.sizes.prev.ss	fs
 fs.extracts.s			.apply	list.concat	rune.t	|	fs.extracts.ss
+bottom.sizes.f			.apply	sizes.f	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom_pcont.s
+bottom.fs.sizes.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	bottom.sizes.f	fs
+bottom.fs.sizes.s			.apply	list.concat	rune.t	|	bottom.fs.sizes.ss
 evacs.f		.closure	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_c
 fs.evacs.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	evacs.f	fs
 fs.evacs.s			.apply	list.concat	rune.t	|	fs.evacs.ss
@@ -183,7 +191,7 @@ s33			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.s
 s32			.apply	list.:	rune.t	|	rune.new.line	s33
 s31			.apply	list.<>	rune.t	|	mdl.hack.compile.type.bottomrow.s	s32
 s30			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.suffix.s	s31
-s29			.apply	list.<>	rune.t	|	fs.sizes.s	s30
+s29			.apply	list.<>	rune.t	|	bottom.fs.sizes.s	s30
 s28			.apply	list.:	rune.t	|	rune.right.paren	s29
 s27			.apply	list.<>	rune.t	|	id	s28
 s26			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_bottom.mid.s	s27
@@ -462,9 +470,11 @@ s			.apply	list.<>	rune.t	|	id.uc	s1
 	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_c	.expr
+string.t	.tygvar
 mdl.type.field.decl.t	.tygvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_k	.subcode
 mdl.type.t.out	.cogvar
+x	.larg	string.t
 f	.larg	mdl.type.field.decl.t
 f.nm	.lfield	name	f
 f.ty	.lfield	gstype	f
@@ -480,8 +490,10 @@ rune.t	.tygvar
 list.<>	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_prefix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_mid.s	.gvar
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_mid.s1	.gvar
 mdl.hack.compiler.type.ctype	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_suffix.s	.gvar
+x	.fv	string.t
 f.nm	.fv	string.t
 ty0	.karg	mdl.type.prim.u
 	.analyze	ty0	bco	gsvalue	list
@@ -492,9 +504,11 @@ ty0	.karg	mdl.type.prim.u
 		.case	list
 ty1		.fkarg	0	mdl.type.t
 ty1.c.s			.apply	mdl.hack.compiler.type.ctype	|	ty1
-s2			.apply	list.<>	rune.t	|	ty1.c.s	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_suffix.s
+s4			.apply	list.<>	rune.t	|	ty1.c.s	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_suffix.s
+s3			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_mid.s1	s4
+s2			.apply	list.<>	rune.t	|	f.nm	s3
 s1			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_mid.s	s2
-s			.apply	list.<>	rune.t	|	f.nm	s1
+s			.apply	list.<>	rune.t	|	x	s1
 			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_prefix.s	s
 			.enter	list.<>	rune.t
 

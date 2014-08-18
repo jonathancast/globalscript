@@ -19,7 +19,7 @@ struct ace_stack_one_field_cont {
 
 #define ACE_STACK_ONE_FIELD_CONT(cont, i) (*(struct gsbco **)((char*)&(cont) + sizeof(struct ace_stack_one_field) + (i) * sizeof(struct gsbco *)))
 
-#define ACE_STACK_ONE_FIELD_BOTTOM(pcont) ((void *)((char*)(pcont) + sizeof(struct ace_stack_one_field) + ((pcont)->numconts) * sizeof(struct gsbco *)))
+#define ACE_STACK_ONE_FIELD_BOTTOM(pcont) ((void *)((char*)(pcont) + sizeof(struct ace_stack_one_field) + (*(pcont)).numconts * sizeof(struct gsbco *)))
 
 /* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 
