@@ -10,7 +10,7 @@ struct ace_stack_one_field_cont {
 };
 
 #define ACE_STACK_ONE_FIELD_PUSH(pcont, a_pos, thread, nfvs, typfv, badreturn) do { \
-    if (!((pcont) = (struct ace_stack_one_field_cont *)ace_thread_stack_push(thread, a_pos, sizeof(struct ace_stack_one_field_cont) + (nfvs) * sizeof(gsvalue)))) badreturn; \
+    if (!((pcont) = (struct ace_stack_one_field_cont *)ace_stack_alloc(thread, a_pos, sizeof(struct ace_stack_one_field_cont) + (nfvs) * sizeof(gsvalue)))) badreturn; \
     (pcont)->st.type = ace_stack_one_field_cont; \
     (pcont)->st.pos = a_pos; \
     (pcont)->numfvs = (nfvs); \

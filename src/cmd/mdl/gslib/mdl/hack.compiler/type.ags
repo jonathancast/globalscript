@@ -20,7 +20,7 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s	.string	_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_list_mid.s	.string	,\styp
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_list_mid.s1	.string	,\s
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s1	.string	badreturn)\sdo\s{\s\\\n\s\s\s\sif\s(!((pcont)\s=\s(struct\sace_stack_
-_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s2	.string	_cont\s*)ace_thread_stack_push(thread,\sa_pos,\ssizeof(struct\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s2	.string	_cont\s*)ace_stack_alloc(thread,\sa_pos,\ssizeof(struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s3	.string	_cont)
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.badreturn.s	.string	)))\sbadreturn;\s\\\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.s	.string	\s\s\s\s(pcont)->st.type\s=\sace_stack_
