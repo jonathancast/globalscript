@@ -26,7 +26,7 @@ In acestack.c, in ace_stack_gcevacuate:
 
             case ace_stack_empty_cont: {
                 struct ace_stack_empty_cont *empty = (struct ace_stack_empty_cont *)cont;
-                p = ACE_STACK_EMPTY_BOTTOM(cont);
+                p = ACE_STACK_EMPTY_BOTTOM(empty);
                 continue;
             }
 

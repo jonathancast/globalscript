@@ -34,7 +34,7 @@ In acestack.c, in ace_stack_gcevacuate:
                 for (i = 0; i < one_field->numfvs; i++)
                     if (GS_GC_TRACE(err, &ACE_STACK_ONE_FIELD_FV(*one_field, i)) < 0) return -1
                 ;
-                p = ACE_STACK_ONE_FIELD_BOTTOM(cont);
+                p = ACE_STACK_ONE_FIELD_BOTTOM(one_field);
                 continue;
             }
 
