@@ -1028,15 +1028,15 @@ int
 gsprim_return_ubsum(struct ace_thread *thread, struct gspos pos, int constr, int nargs, ...)
 {
     struct gsbc_cont *cont;
-    struct gsbc_cont_ubanalyze *ubanalyze;
+    struct ace_stack_ubanalyze_cont *ubanalyze;
     struct gsbc *ip;
     va_list arg;
     int i;
 
     cont = thread->stacktop;
-    ubanalyze = (struct gsbc_cont_ubanalyze *)cont;
+    ubanalyze = (struct ace_stack_ubanalyze_cont *)cont;
 
-    if (cont->node != gsbc_cont_ubanalyze) {
+    if (cont->node != ace_stack_ubanalyze_cont) {
         ace_poison_thread(thread, pos, "gsubprim_return: top of stack is a %d not a ubanalyze", cont->node);
         return 0;
     }

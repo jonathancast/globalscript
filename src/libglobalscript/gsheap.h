@@ -6,7 +6,7 @@ struct gsbc_cont {
         gsbc_cont_app,
         gsbc_cont_force,
         gsbc_cont_strict,
-        gsbc_cont_ubanalyze,
+        ace_stack_ubanalyze_cont,
     } node;
     struct gspos pos;
 };
@@ -37,7 +37,7 @@ struct gsbc_cont_strict {
     gsvalue fvs[];
 };
 
-struct gsbc_cont_ubanalyze {
+struct ace_stack_ubanalyze_cont {
     struct gsbc_cont cont;
     int numconts;
     struct gsbco **conts;
@@ -49,12 +49,12 @@ struct gsbc_cont_ubanalyze {
 
 struct gsbc_cont *ace_stack_alloc(struct ace_thread *, struct gspos, ulong); /* Deprecated */
 
-#define ACE_UBANALYZE_STACK_SIZE(nconts, nfvs) (sizeof(struct gsbc_cont_ubanalyze) + nconts * sizeof(struct gsbco *) + nfvs * sizeof(gsvalue))
+#define ACE_UBANALYZE_STACK_SIZE(nconts, nfvs) (sizeof(struct ace_stack_ubanalyze_cont) + nconts * sizeof(struct gsbco *) + nfvs * sizeof(gsvalue))
 
 struct gsbc_cont_update *ace_push_update(struct gspos, struct ace_thread *, struct gsheap_item *);
 struct gsbc_cont_app *ace_push_app(struct gspos, struct ace_thread *, int, ...);
 struct gsbc_cont_app *ace_push_appv(struct gspos, struct ace_thread *, int, gsvalue *);
-struct gsbc_cont_ubanalyze *ace_push_ubanalyzev(struct gspos, struct ace_thread *, int, struct gsbco **, int, gsvalue *);
+struct ace_stack_ubanalyze_cont *ace_push_ubanalyzev(struct gspos, struct ace_thread *, int, struct gsbco **, int, gsvalue *);
 
 struct gsbc_cont *ace_stack_top(struct ace_thread *);
 
