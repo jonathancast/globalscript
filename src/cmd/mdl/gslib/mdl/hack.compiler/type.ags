@@ -23,7 +23,7 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s1	.string	
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s2	.string	_cont\s*)ace_stack_alloc(thread,\sa_pos,\ssizeof(struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.mid.s3	.string	_cont)
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.badreturn.s	.string	)))\sbadreturn;\s\\\n
-_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.s	.string	\s\s\s\s(pcont)->cont.type\s=\sace_stack_
+_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.s	.string	\s\s\s\s(pcont)->cont.node\s=\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.type.suffix.s	.string	_cont;\s\\\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.set.pos.s	.string	\s\s\s\s(pcont)->cont.pos\s=\sa_pos;\s\\\n
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_prefix.s	.string	\s\s\s\s(pcont)->num
