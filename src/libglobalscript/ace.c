@@ -779,20 +779,16 @@ void
 ace_instr_push_ubanalyze(struct ace_thread *thread)
 {
     struct gsbc *ip;
-    struct gsbco *conts[MAX_NUM_REGISTERS];
-    gsvalue fvs[MAX_NUM_REGISTERS];
+    struct ace_stack_ubanalyze_cont *pcont;
     int i;
 
     ip = thread->st.running.ip;
 
-    for (i = 0; i < ACE_UBANALYZE_NUMCONTS(ip); i++)
-        conts[i] = thread->subexprs[ACE_UBANALYZE_CONT(ip, i)]
-    ;
-    for (i = 0; i < ACE_UBANALYZE_NUMFVS(ip); i++)
-        fvs[i] = thread->regs[ACE_UBANALYZE_FV(ip, i)]
-    ;
-
-    if (!ace_push_ubanalyzev(ip->pos, thread, ACE_UBANALYZE_NUMCONTS(ip), conts, ACE_UBANALYZE_NUMFVS(ip), fvs)) return;
+    ACE_STACK_UBANALYZE_PUSH(pcont, ip->pos, thread,
+        ACE_UBANALYZE_NUMCONTS(ip), thread->subexprs[ACE_UBANALYZE_CONT(ip, i)],
+        ACE_UBANALYZE_NUMFVS(ip), thread->regs[ACE_UBANALYZE_FV(ip, i)],
+        return
+    );
 
     thread->st.running.ip = ACE_UBANALYZE_SKIP(ip);
     return;
@@ -1041,13 +1037,13 @@ gsprim_return_ubsum(struct ace_thread *thread, struct gspos pos, int constr, int
         return 0;
     }
 
-    ip = ace_set_registers_from_bco(thread, ubanalyze->conts[constr]);
+    ip = ace_set_registers_from_bco(thread, ACE_STACK_UBANALYZE_CONT(*ubanalyze, constr));
     if (!ip) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "Too many registers");
         return 0;
     }
     for (i = 0; i < ubanalyze->numfvs; i++)
-        thread->regs[thread->nregs++] = ubanalyze->fvs[i]
+        thread->regs[thread->nregs++] = ACE_STACK_UBANALYZE_FV(*ubanalyze, i)
     ;
     va_start(arg, nargs);
     for (i = 0; i < nargs; i++)
@@ -1055,9 +1051,9 @@ gsprim_return_ubsum(struct ace_thread *thread, struct gspos pos, int constr, int
     ;
     va_end(arg);
 
-    thread->st.running.bco = ubanalyze->conts[constr];
+    thread->st.running.bco = ACE_STACK_UBANALYZE_CONT(*ubanalyze, constr);
     thread->st.running.ip = ip;
-    thread->stacktop = (uchar*)thread->stacktop + ACE_UBANALYZE_STACK_SIZE(ubanalyze->numconts, ubanalyze->numfvs);
+    thread->stacktop = ACE_STACK_UBANALYZE_BOTTOM(ubanalyze);
     return 1;
 }
 
