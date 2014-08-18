@@ -10,8 +10,8 @@ struct ace_stack_empty_cont {
 
 #define ACE_STACK_EMPTY_PUSH(pcont, a_pos, thread, badreturn) do { \
     if (!((pcont) = (struct ace_stack_empty_cont *)ace_stack_alloc(thread, a_pos, sizeof(struct ace_stack_empty_cont)))) badreturn; \
-    (pcont)->st.type = ace_stack_empty_cont; \
-    (pcont)->st.pos = a_pos; \
+    (pcont)->cont.type = ace_stack_empty_cont; \
+    (pcont)->cont.pos = a_pos; \
 } while (0)
 
 #define ACE_STACK_EMPTY_BOTTOM(pcont) ((void *)((char*)(pcont) + sizeof(struct ace_stack_empty_cont)))

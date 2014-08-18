@@ -11,8 +11,8 @@ struct ace_stack_one_field_cont {
 
 #define ACE_STACK_ONE_FIELD_PUSH(pcont, a_pos, thread, nconts, typcont, badreturn) do { \
     if (!((pcont) = (struct ace_stack_one_field_cont *)ace_stack_alloc(thread, a_pos, sizeof(struct ace_stack_one_field_cont) + (nconts) * sizeof(struct gsbco *)))) badreturn; \
-    (pcont)->st.type = ace_stack_one_field_cont; \
-    (pcont)->st.pos = a_pos; \
+    (pcont)->cont.type = ace_stack_one_field_cont; \
+    (pcont)->cont.pos = a_pos; \
     (pcont)->numconts = (nconts); \
     for (i = 0; i < (nconts); i++) ACE_STACK_ONE_FIELD_CONT(*(pcont), i) = (typcont); \
 } while (0)
