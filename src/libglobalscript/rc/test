@@ -2,6 +2,8 @@
 
 . $GLOBALSCRIPT/bin/test-fns
 
+SHOULD_DISABLE_STRING_CODE_0_4=1
+
 ok_grep_errors '-- non-existent source file --' 'no-such-file.ags: Could not load' ./$O.test-gsi no-such-file.ags
 
 ok_grep_errors '-- invalid type op --' 'invalid-type-op.ags:12: Unimplemented type op' ./$O.test-gsi invalid-type-op.ags
@@ -16,8 +18,6 @@ ok_grep_errors '-- invalid calculus --' 'invalid-calculus.ags:1: Unknown calculu
 ok_grep_errors '-- invalid calculus version --' 'invalid-calculus-version.ags:1: Unsupported calculus version' ./$O.test-gsi invalid-calculus-version.ags
 
 echo '# Version 0.5 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_4=1
 
 ok_diff_fail '-- source-style comments --' ./$O.test-gsi undef-new-comments.ags
 
