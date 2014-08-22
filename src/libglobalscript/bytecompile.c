@@ -354,7 +354,7 @@ static gsinterned_string gssymopyield, gssymopenter, gssymopubprim, gssymoplprim
 /* Branching */
 static gsinterned_string gssymopanalyze, gssymopdanalyze, gssymopcase, gssymopdefault;
 /* API */
-static gsinterned_string gssymopbindclosure, gssymopbind, gssymopbodyclosure, gssymopbody;
+static gsinterned_string gssymopbind, gssymopbody;
 
 static
 int
@@ -769,30 +769,8 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
 
         pcl->size += ACE_APPLY_SIZE(p->numarguments - i);
     } else if (
-        (pcl->features & gsstring_code_bind_closure_one_word)
-            ? gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
-        : 0
-    ) {
-        int creg;
-        struct gsbc_code_item_type *cty;
-
-        if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-        ;
-        pcl->nregs++;
-
-        creg = gsbc_find_register(p, pcl->codenames, pcl->ncodes, p->arguments[0]);
-        if (!(cty = pcl->codetypes[creg]))
-            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
-        ;
-
-        pcl->size += ACE_BIND_CLOSURE_SIZE(cty->numfvs);
-    } else if (
-        (pcl->features & gsstring_code_bind_closure_two_words)
-            ?
-                gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
-                && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".closure")
-            : 0
+        gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+        && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".closure")
     ) {
         int creg;
         struct gsbc_code_item_type *cty;
@@ -809,11 +787,8 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
 
         pcl->size += ACE_BIND_CLOSURE_SIZE(cty->numfvs);
     } else if (
-        (pcl->features & gsstring_code_bind_closure_two_words)
-            ?
-                gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
-                && gssymceq(p->arguments[0], gssymopapply, gssymcodeop, ".apply")
-            : 0
+        gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+        && gssymceq(p->arguments[0], gssymopapply, gssymcodeop, ".apply")
     ) {
         if (pcl->nregs >= MAX_NUM_REGISTERS)
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
@@ -974,25 +949,8 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
             pcl->nregs = nregs;
         }
     } else if (
-        (pcl->features & gsstring_code_bind_closure_one_word)
-            ? gssymceq((*pp)->directive, gssymopbodyclosure, gssymcodeop, ".body.closure")
-        : 0
-    ) {
-        int creg;
-        struct gsbc_code_item_type *cty;
-
-        creg = gsbc_find_register(*pp, pcl->codenames, pcl->ncodes, (*pp)->arguments[0]);
-        if (!(cty = pcl->codetypes[creg]))
-            gsfatal("%P: Cannot find type of %y", (*pp)->pos, (*pp)->arguments[0])
-        ;
-
-        pcl->size += ACE_BODY_CLOSURE_SIZE(cty->numfvs);
-    } else if (
-        (pcl->features & gsstring_code_bind_closure_two_words)
-            ?
-                gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
-                && gssymceq((*pp)->arguments[0], gssymopclosure, gssymcodeop, ".closure")
-            : 0
+        gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
+        && gssymceq((*pp)->arguments[0], gssymopclosure, gssymcodeop, ".closure")
     ) {
         int creg;
         struct gsbc_code_item_type *cty;
@@ -1004,11 +962,8 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
 
         pcl->size += ACE_BODY_CLOSURE_SIZE(cty->numfvs);
     } else if (
-        (pcl->features & gsstring_code_bind_closure_two_words)
-            ?
-                gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
-                && gssymceq((*pp)->arguments[0], gssymopundefined, gssymcodeop, ".undefined")
-            : 0
+        gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
+        && gssymceq((*pp)->arguments[0], gssymopundefined, gssymcodeop, ".undefined")
     ) {
         pcl->size += ACE_BODY_UNDEFINED_SIZE();
     } else {
@@ -2285,47 +2240,8 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
     int i;
 
     if (
-        (pcl->features & gsstring_code_bind_closure_one_word)
-            ? gssymceq(p->directive, gssymopbindclosure, gssymcodeop, ".bind.closure")
-        : 0
-    ) {
-        struct gsbc *pcode;
-        int creg = 0;
-        struct gsbc_code_item_type *cty;
-
-        pcode = (struct gsbc *)pcl->pout;
-
-        if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-        ;
-
-        pcl->regs[pcl->nregs] = p->label;
-
-        pcl->nregs++;
-
-        creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[0]);
-
-        pcode->pos = p->pos;
-        pcode->instr = gsbc_op_bind_closure;
-        ACE_BIND_CLOSURE_CODE(pcode) = (uchar)creg;
-
-        if (!(cty = pcl->subexpr_types[creg]))
-            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
-        ;
-
-        ACE_BIND_CLOSURE_NUMFVS(pcode) = (uchar)cty->numfvs;
-        for (i = 0; i < cty->numfvs; i++)
-            ACE_BIND_CLOSURE_FV(pcode, i) = gsbc_find_register(p, pcl->regs, pcl->nregs, cty->fvs[i])
-        ;
-
-        pcode = ACE_BIND_CLOSURE_SKIP(pcode);
-        pcl->pout = (uchar *)pcode;
-    } else if (
-        (pcl->features & gsstring_code_bind_closure_two_words)
-            ?
-                gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
-                && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".closure")
-            : 0
+        gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+        && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".closure")
     ) {
         struct gsbc *pcode;
         int creg = 0;
@@ -2359,11 +2275,8 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
         pcode = ACE_BIND_CLOSURE_SKIP(pcode);
         pcl->pout = (uchar *)pcode;
     } else if (
-        (pcl->features & gsstring_code_bind_closure_two_words)
-            ?
-                gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
-                && gssymceq(p->arguments[0], gssymopapply, gssymcodeop, ".apply")
-            : 0
+        gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
+        && gssymceq(p->arguments[0], gssymopapply, gssymcodeop, ".apply")
     ) {
         struct gsbc *pcode;
         struct gstype *type, *tyarg;
@@ -2800,40 +2713,8 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
         p = gsinput_next_line(ppseg, p)
     ;
     if (
-        (features & gsstring_code_bind_closure_one_word)
-            ? gssymceq(p->directive, gssymopbodyclosure, gssymcodeop, ".body.closure")
-        : 0
-    ) {
-        int creg = 0;
-        struct gsbc_code_item_type *cty;
-
-        pcode = (struct gsbc *)cl.pout;
-
-        creg = gsbc_find_register(p, cl.subexprs, cl.nsubexprs, p->arguments[0]);
-
-        pcode->pos = p->pos;
-        pcode->instr = gsbc_op_body_closure;
-        ACE_BODY_CLOSURE_CODE(pcode) = (uchar)creg;
-
-        if (!(cty = cl.subexpr_types[creg]))
-            gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[0])
-        ;
-        ACE_BODY_CLOSURE_NUMFVS(pcode) = (uchar)cty->numfvs;
-        for (i = 0; i < cty->numfvs; i++) {
-            int regarg;
-
-            regarg = gsbc_find_register(p, cl.regs, cl.nregs, cty->fvs[i]);
-            ACE_BODY_CLOSURE_FV(pcode, i) = (uchar)regarg;
-        }
-
-        pcode = ACE_BODY_CLOSURE_SKIP(pcode);
-        cl.pout = (uchar *)pcode;
-    } else if (
-        (features & gsstring_code_bind_closure_two_words)
-            ? 
-                gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
-                && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".closure")
-            : 0
+        gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
+        && gssymceq(p->arguments[0], gssymopclosure, gssymcodeop, ".closure")
     ) {
         int creg = 0;
         struct gsbc_code_item_type *cty;
@@ -2860,11 +2741,8 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
         pcode = ACE_BODY_CLOSURE_SKIP(pcode);
         cl.pout = (uchar *)pcode;
     } else if (
-        (features & gsstring_code_bind_closure_two_words)
-            ?
-                gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
-                && gssymceq(p->arguments[0], gssymopundefined, gssymcodeop, ".undefined")
-            : 0
+        gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
+        && gssymceq(p->arguments[0], gssymopundefined, gssymcodeop, ".undefined")
     ) {
         pcode = (struct gsbc *)cl.pout;
 

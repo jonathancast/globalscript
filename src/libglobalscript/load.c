@@ -434,15 +434,12 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
             if (*s != '\n') gsfatal("%s:%d: Junk after calculus version", pos.real_filename, pos.real_lineno);
             *s++ = 0;
 
-            if (!strcmp(version, "0.4")) {
-                *pcalculus_version = "0.4";
-                *pfeatures = gsstring_code_bind_closure_one_word;
-            } else if (!strcmp(version, "0.5")) {
+            if (!strcmp(version, "0.5")) {
                 *pcalculus_version = "0.5";
-                *pfeatures = gsstring_code_bind_closure_two_words;
+                *pfeatures = 0;
             } else if (!strcmp(version, "0.6")) {
                 *pcalculus_version = "0.6";
-                *pfeatures = gsstring_code_bind_closure_two_words | gsstring_code_impprogs_are_boxing;
+                *pfeatures = gsstring_code_impprogs_are_boxing;
             } else {
                 gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
             }
@@ -1690,29 +1687,9 @@ err:
 int
 gsparse_bind_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymbindclosure, gssymbind;
+    static gsinterned_string gssymbind;
 
-    if (
-        (features & gsstring_code_bind_closure_one_word)
-            ? gssymceq(parsedline->directive, gssymbindclosure, gssymcodeop, ".bind.closure")
-        : 0
-    ) {
-        if (*fields[0])
-            parsedline->label = gsintern_string(gssymdatalable, fields[0]);
-        else
-            parsedline->label = 0;
-        if (n < 3)
-            gsfatal("%s:%d: Missing code label", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-        if (n > 3)
-            gsfatal("%s:%d: Too many arguments to %y", pos->real_filename, pos->real_lineno, parsedline->directive)
-        ;
-    } else if (
-        (features & gsstring_code_bind_closure_two_words)
-            ? gssymceq(parsedline->directive, gssymbind, gssymcodeop, ".bind")
-            : 0
-    ) {
+    if (gssymceq(parsedline->directive, gssymbind, gssymcodeop, ".bind")) {
         if (*fields[0])
             parsedline->label = gsintern_string(gssymdatalable, fields[0])
         ; else
@@ -1733,29 +1710,9 @@ gsparse_bind_op(uint features, struct gsparse_input_pos *pos, struct gsparsedlin
 int
 gsparse_body_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *parsedline, char **fields, long n)
 {
-    static gsinterned_string gssymbodyclosure, gssymbody;
+    static gsinterned_string gssymbody;
 
-    if (
-        (features & gsstring_code_bind_closure_one_word)
-            ? gssymceq(parsedline->directive, gssymbodyclosure, gssymcodeop, ".body.closure")
-        : 0
-    ) {
-        if (*fields[0])
-            gsfatal("%s:%d: Labels illegal on terminal ops", pos->real_filename, pos->real_lineno);
-        else
-            parsedline->label = 0;
-        if (n < 3)
-            gsfatal("%s:%d: Missing code label", pos->real_filename, pos->real_lineno)
-        ;
-        parsedline->arguments[2 - 2] = gsintern_string(gssymcodelable, fields[2]);
-        if (n > 3)
-            gsfatal("%s:%d: Too many arguments to %y", pos->real_filename, pos->real_lineno, parsedline->directive)
-        ;
-    } else if (
-        (features & gsstring_code_bind_closure_two_words)
-            ? gssymceq(parsedline->directive, gssymbody, gssymcodeop, ".body")
-            : 0
-    ) {
+    if (gssymceq(parsedline->directive, gssymbody, gssymcodeop, ".body")) {
         if (n < 3)
             gsfatal("%s:%d: Missing sub-op on .body", pos->real_filename, pos->real_lineno)
         ;

@@ -2957,39 +2957,9 @@ gsbc_setup_code_impprog_closure(struct gsbc_typecheck_impprog_closure *pimpcl, g
 int
 gsbc_typecheck_bind_op(struct gsfile_symtable *symtable, struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl)
 {
-    static gsinterned_string gssymbindclosure, gssymbind;
+    static gsinterned_string gssymbind;
 
-    if (
-        (pcl->features & gsstring_code_bind_closure_one_word)
-            ? gssymceq(p->directive, gssymbindclosure, gssymcodeop, ".bind.closure")
-        : 0
-    ) {
-        int creg = 0;
-        struct gsbc_code_item_type *cty;
-
-        if (pcl->nregs >= MAX_NUM_REGISTERS)
-            gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
-        ;
-
-        gsargcheck(p, 0, "code");
-        creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
-        cty = gsbc_typecheck_copy_code_item_type(pcl->codetypes[creg]);
-
-        gsbc_typecheck_free_type_variables(pcl, p, cty);
-        gsbc_typecheck_free_variables(pcl, p, cty);
-        gsbc_check_api_free_variable_decls(pcl, p, p->arguments[0], cty, pimpcl->bind_bound);
-
-        pimpcl->bind_bound[pcl->nregs] = 1;
-        pcl->regs[pcl->nregs] = p->label;
-        pcl->regtypes[pcl->nregs] = gsbc_typecheck_check_api_statement_type(p->pos, cty->result_type, pimpcl->primsetname, pimpcl->prim, pimpcl->nbinds == 0 ? &pimpcl->first_rhs_lifted : 0);
-
-        pcl->nregs++;
-        pimpcl->nbinds++;
-    } else if (
-        (pcl->features & gsstring_code_bind_closure_two_words)
-            ? gssymceq(p->directive, gssymbind, gssymcodeop, ".bind")
-            : 0
-    ) {
+    if (gssymceq(p->directive, gssymbind, gssymcodeop, ".bind")) {
         struct gstype *rhs_type;
 
         gsargcheck(p, 0, "sub-op");
@@ -3013,34 +2983,9 @@ gsbc_typecheck_bind_op(struct gsfile_symtable *symtable, struct gsparsedline *p,
 struct gstype *
 gsbc_typecheck_body_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl)
 {
-    static gsinterned_string gssymbodyclosure, gssymbody;
+    static gsinterned_string gssymbody;
 
-    if (
-        (pcl->features & gsstring_code_bind_closure_one_word)
-            ? gssymceq(p->directive, gssymbodyclosure, gssymcodeop, ".body.closure")
-        : 0
-    ) {
-        int creg = 0;
-        struct gsbc_code_item_type *cty;
-        struct gstype *calculated_type;
-
-        gsargcheck(p, 0, "code");
-        creg = gsbc_find_register(p, pcl->coderegs, pcl->ncodes, p->arguments[0]);
-        cty = gsbc_typecheck_copy_code_item_type(pcl->codetypes[creg]);
-
-        gsbc_typecheck_free_type_variables(pcl, p, cty);
-        gsbc_typecheck_free_variables(pcl, p, cty);
-        gsbc_check_api_free_variable_decls(pcl, p, p->arguments[0], cty, pimpcl->bind_bound);
-        calculated_type = cty->result_type;
-
-        gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, pimpcl->primsetname, pimpcl->prim, pimpcl->nbinds == 0 ? &pimpcl->first_rhs_lifted : 0);
-
-        return calculated_type;
-    } else if (
-        (pcl->features & gsstring_code_bind_closure_two_words)
-            ? gssymceq(p->directive, gssymbody, gssymcodeop, ".body")
-            : 0
-    ) {
+    if (gssymceq(p->directive, gssymbody, gssymcodeop, ".body")) {
         struct gstype *calculated_type;
 
         gsargcheck(p, 0, "sub-op");
