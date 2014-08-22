@@ -313,8 +313,7 @@ gsdl.ags.syntax.features.prim.u	.tygvar
 	.tyref	gsdl.ags.syntax.features.prim.u
 
 gsdl.ags.syntax.features.prim.u	.tyexpr
-bool.t	.tygvar
-	.typroduct	bind.closure.one.word	bool.t	bind.closure.two.words	 bool.t
+	.typroduct
 
 -- §section §gs{gsdl.ags.syntax.var.print}
 

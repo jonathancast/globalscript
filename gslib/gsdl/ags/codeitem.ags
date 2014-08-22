@@ -12,8 +12,7 @@ _gsdl.ags.codeitem.parser_expr.p_expr.re	.regex	.expr
 _gsdl.ags.codeitem.parser_expr.p_decls.p	.closure	_gsdl.ags.codeitem.parser_expr.p_decls.p_c
 _gsdl.ags.codeitem.parser_forcecont.p_forcecont.re	.regex	.forcecont
 _gsdl.ags.codeitem.parser_impprog.p_impprog.re	.regex	.impprog
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.closure.re	.regex	.body.closure
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_body.re	.regex	.body
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.re	.regex	.body
 _gsdl.ags.codeitem.parser_strictcont.p_strictcont.re	.regex	.strictcont
 _gsdl.ags.codeitem.parser_ubcasecont.p_ubcasecont.re	.regex	.ubcasecont
 
@@ -94,7 +93,6 @@ _gsdl.ags.codeitem.allocs.parser_undefined.p_undefined.re	.regex	.undefined
 gsdl.ags.codeitem.alloc.fmtgs	.closure	_gsdl.ags.codeitem.alloc.fmtgs_c
 
 gsdl.ags.codeitem.impgens.parser	.closure	_gsdl.ags.codeitem.impgens.parser_c
-_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_bind.closure.re	.regex	.bind.closure
 _gsdl.ags.codeitem.impgens.parser_bind.two.words.p_bind.re	.regex	.bind
 
 gsdl.ags.codeitem.impgen.print	.closure	_gsdl.ags.codeitem.impgen.print_c
@@ -552,69 +550,13 @@ binds	.larg	list.t	gsdl.ags.codeitem.impgen.t
 
 _gsdl.ags.codeitem.parser_impprog.p_body.p_c	.expr
 gsdl.ags.syntax.features.t	.tygvar
-parser.t	.tygvar
-rune.t	.tygvar
-gsdl.ags.codeitem.impbody.t	.tygvar
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_c	.subcode
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_c	.subcode
-bool.elim	.gvar
-fs	.fv	gsdl.ags.syntax.features.t
-parser.body.ty	.tylet	parser.t	rune.t	gsdl.ags.codeitem.impbody.t
-body.closure.one.word.p	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_c
-body.closure.two.words.p	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_c
-fs.bind.closure.two.words	.lfield	bind.closure.two.words	fs
-	.app	body.closure.one.word.p	body.closure.two.words.p	fs.bind.closure.two.words
-	.enter	bool.elim	parser.body.ty
-
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_c	.expr
-gsdl.ags.syntax.features.t	.tygvar
-rune.t	.tygvar
-gsdl.ags.codeitem.impbody.t	.tygvar
-string.t	.tygvar
-parser.pos.t	.tygvar
-regex.t	.tygvar
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_f_c	.subcode
-parser.<*	.gvar
-parser.lift2	.gvar
-parser.pos.get	.gvar
-parser.*>	.gvar
-gsdl.ags.syntax.columnsep	.gvar
-parser.match	.gvar
-rune.compare	.gvar
-bool.elim	.gvar
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.closure.re	.gvar
-gsdl.ags.syntax.id	.gvar
-gsdl.ags.syntax.whitespace	.gvar
-parser.fail	.gvar	-- Temp
-regex.rune.ty	.tylet	regex.t	rune.t
-fs	.fv	gsdl.ags.syntax.features.t
-f	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_f_c
-pos.get	.apply	parser.pos.get	rune.t
-body.closure.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_body.closure.re
-code.p3	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-code.p2	.apply	parser.*>	rune.t	string.t	string.t	|	body.closure.p	code.p3
-code.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	code.p2
-p	.apply	parser.lift2	rune.t	parser.pos.t	string.t	gsdl.ags.codeitem.impbody.t	|	f	pos.get	code.p1
-	.app	p	gsdl.ags.syntax.whitespace
-	.enter	parser.<*	rune.t	gsdl.ags.codeitem.impbody.t	string.t
-
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.one.word.p_f_c	.expr
-parser.pos.t	.tygvar
-string.t	.tygvar
-gsdl.ags.codeitem.impbody.t	.tygvar	-- Temp
-pos	.larg	parser.pos.t
-code	.larg	string.t
-	.undef	gsdl.ags.codeitem.impbody.t
-
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_c	.expr
-gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.codeitem.impbody.t	.tygvar
 string.t	.tygvar
 parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_f_c	.subcode
+_gsdl.ags.codeitem.parser_impprog.p_body.p_f_c	.subcode
 parser.<*	.gvar
 parser.lift2	.gvar
 parser.pos.get	.gvar
@@ -622,14 +564,14 @@ parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
 rune.compare	.gvar
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_body.re	.gvar
+_gsdl.ags.codeitem.parser_impprog.p_body.p_body.re	.gvar
 gsdl.ags.codeitem.alloc.rhs.parser	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
 fs	.fv	gsdl.ags.syntax.features.t
-f	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_f_c
+f	.closure	_gsdl.ags.codeitem.parser_impprog.p_body.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
-bind.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_body.re
+bind.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.parser_impprog.p_body.p_body.re
 rhs.p3	.apply	gsdl.ags.codeitem.alloc.rhs.parser	|	fs
 rhs.p2	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.alloc.rhs.t	|	gsdl.ags.syntax.columnsep	rhs.p3
 rhs.p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.alloc.rhs.t	|	bind.p	rhs.p2
@@ -638,7 +580,7 @@ p	.apply	parser.lift2	rune.t	parser.pos.t	gsdl.ags.codeitem.alloc.rhs.t	gsdl.ags
 	.app	p	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.codeitem.impbody.t	string.t
 
-_gsdl.ags.codeitem.parser_impprog.p_body.p_body.closure.two.words.p_f_c	.expr
+_gsdl.ags.codeitem.parser_impprog.p_body.p_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar
@@ -2292,64 +2234,12 @@ gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 gsdl.ags.codeitem.impgen.t	.tygvar
 parser.t	.tygvar
-_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_c	.subcode
 _gsdl.ags.codeitem.impgens.parser_bind.two.words.p_c	.subcode
 parser.many	.gvar
-bool.elim	.gvar
 fs	.larg	gsdl.ags.syntax.features.t
-parser.impgen.ty	.tylet	parser.t	rune.t	gsdl.ags.codeitem.impgen.t
-bind.closure.one.word.p	.closure	_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_c
 bind.two.words.p	.closure	_gsdl.ags.codeitem.impgens.parser_bind.two.words.p_c
-fs.bind.closure.two.words	.lfield	bind.closure.two.words	fs
-p	.apply	bool.elim	parser.impgen.ty	|	bind.closure.one.word.p	bind.two.words.p	fs.bind.closure.two.words
-	.app	p
+	.app	bind.two.words.p
 	.enter	parser.many	rune.t	gsdl.ags.codeitem.impgen.t
-
-_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_c	.expr
-gsdl.ags.syntax.features.t	.tygvar
-rune.t	.tygvar
-gsdl.ags.codeitem.impgen.t	.tygvar
-string.t	.tygvar
-parser.pos.t	.tygvar
-maybe.t	.tygvar
-regex.t	.tygvar
-_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_f_c	.subcode
-parser.<*	.gvar
-parser.lift3	.gvar
-parser.pos.get	.gvar
-parser.optional	.gvar
-gsdl.ags.syntax.id	.gvar
-parser.*>	.gvar
-gsdl.ags.syntax.columnsep	.gvar
-parser.match	.gvar
-rune.compare	.gvar
-bool.elim	.gvar
-_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_bind.closure.re	.gvar
-gsdl.ags.syntax.whitespace	.gvar
-parser.fail	.gvar	-- Temp
-mb.string.ty	.tylet	maybe.t	string.t
-regex.rune.ty	.tylet	regex.t	rune.t
-fs	.fv	gsdl.ags.syntax.features.t
-f	.closure	_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_f_c
-pos.get	.apply	parser.pos.get	rune.t
-nm.p	.apply	parser.optional	rune.t	string.t	|	gsdl.ags.syntax.id
-bind.closure.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_bind.closure.re
-code.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-code.p1	.apply	parser.*>	rune.t	string.t	string.t	|	bind.closure.p	code.p2
-code.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	code.p1
-p	.apply	parser.lift3	rune.t	parser.pos.t	mb.string.ty	string.t	gsdl.ags.codeitem.impgen.t	|	f	pos.get	nm.p	code.p
-	.app	p	gsdl.ags.syntax.whitespace
-	.enter	parser.<*	rune.t	gsdl.ags.codeitem.impgen.t	string.t
-
-_gsdl.ags.codeitem.impgens.parser_bind.closure.one.word.p_f_c	.expr
-parser.pos.t	.tygvar
-maybe.t	.tygvar
-string.t	.tygvar
-gsdl.ags.codeitem.impgen.t	.tygvar	-- Temp
-pos	.larg	parser.pos.t
-nm	.larg	maybe.t	string.t
-code	.larg	string.t
-	.undef	gsdl.ags.codeitem.impgen.t
 
 _gsdl.ags.codeitem.impgens.parser_bind.two.words.p_c	.expr
 gsdl.ags.syntax.features.t	.tygvar
