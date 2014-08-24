@@ -148,7 +148,11 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s2	.gvar
 ty0	.karg	mdl.type.decl.prim.u
-	.analyze	ty0	interpreted.stackframe
+	.analyze	ty0	api.prim.blocking	interpreted.stackframe
+		.case	api.prim.blocking
+id		.fkarg	0	string.t
+fs		.fkarg	1	list.t	mdl.type.field.decl.t
+			.undef	string.t
 		.case	interpreted.stackframe
 id		.fkarg	0	string.t
 fs		.fkarg	1	list.t	mdl.type.field.decl.t
