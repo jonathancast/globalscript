@@ -693,9 +693,10 @@ gsdl.cgs.typeenv.typeexpansion.tylet.prim.u	.tygvar
 
 gsdl.cgs.typeenv.typeexpansion.tylet.prim.u	.tyexpr
 gsdl.var.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 list.t	.tygvar
 list.var.ty	.tylet	list.t	gsdl.var.t
-	.typroduct	name	gsdl.var.t	tyargs	list.var.ty	tyfun	gsdl.var.t
+	.typroduct	name	gsdl.var.t	pos	gsdl.sourcepos.t	tyargs	list.var.ty	tyfun	gsdl.var.t
 
 -- §section §gs{gsdl.cgs.typeenv.typedefinition.t}
 

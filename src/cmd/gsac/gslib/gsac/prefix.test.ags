@@ -1350,7 +1350,7 @@ decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 γ.cs	.apply	list.singleton	gsdl.var.component.t	|	γ.c0
 γ	.apply	gsdl.var.basevar	|	γ.cs
 tyas	.apply	list.singleton	gsdl.var.t	|	β
-decls.tylet.0	.lrecord	name	γ	tyargs	tyas	tyfun	α	|	gsdl.ags.typeitem.decls.tylet.t
+decls.tylet.0	.lrecord	name	γ	pos	pos	tyargs	tyas	tyfun	α	|	gsdl.ags.typeitem.decls.tylet.t
 decls.tylets	.apply	list.singleton	gsdl.ags.typeitem.decls.tylet.t	|	decls.tylet.0
 decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	tylets	decls.tylets	|	gsdl.ags.typeitem.decls.t
 as	.apply	list.nil	gsdl.var.t

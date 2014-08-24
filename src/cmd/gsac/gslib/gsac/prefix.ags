@@ -2827,9 +2827,10 @@ gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylet.prim.u	.tygvar
 l	.larg	gsdl.ags.typeitem.decls.tylet.t
 l.nm	.lfield	name	l
+l.pos	.lfield	pos	l
 l.as	.lfield	tyargs	l
 l.tyf	.lfield	tyfun	l
-r	.record	name	l.nm	tyargs	l.as	tyfun	l.tyf	|	gsdl.cgs.typeenv.typeexpansion.tylet.prim.u
+r	.record	name	l.nm	pos	l.pos	tyargs	l.as	tyfun	l.tyf	|	gsdl.cgs.typeenv.typeexpansion.tylet.prim.u
 	.lift
 	.yield	r
 
@@ -2876,12 +2877,13 @@ gsac.prefix.typeapp.upconvert	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 tyl	.larg	gsdl.cgs.typeenv.typeexpansion.tylet.t
+pos1	.lfield	pos	tyl
 tyx	.lfield	name	tyl
 tyf	.lfield	tyfun	tyl
 tyas	.lfield	tyargs	tyl
 	.force	_gsac.prefix.tylet.typecheck_k
 	.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
-	.app	pos	env	tyf	tyas
+	.app	pos1	env	tyf	tyas
 	.enter	gsac.prefix.typeapp.upconvert
 
 _gsac.prefix.tylet.typecheck_k	.forcecont
