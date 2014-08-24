@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.5
+#calculus: gsdl.string-code 0.6
 
 	.prefix
 
@@ -30,6 +30,7 @@ _gsdl.cgs.file.read_s_c	.subcode
 _gsdl.cgs.file.read_body_c	.subcode
 eo	.larg	ibio.prim.oport	rune.t
 fn	.larg	ibio.file.name.t
+	.lift
 i	.bind	.closure	_gsdl.cgs.file.read_i_c
 pragmas.pos	.bind	.closure	_gsdl.cgs.file.read_pragmas.pos_c
 pragmas	.closure	_gsdl.cgs.file.read_pragmas_c
@@ -89,6 +90,7 @@ _gsdl.cgs.file.read_i_body_0_res_print_c	.subcode
 _gsdl.cgs.file.read_i_body_0_res_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	string.t
+	.lift
 	.bind	.closure	_gsdl.cgs.file.read_i_body_0_res_print_c
 	.body	.closure	_gsdl.cgs.file.read_i_body_0_res_body_c
 
@@ -264,6 +266,7 @@ _gsdl.cgs.file.read_body_left_res_print_c	.subcode
 _gsdl.cgs.file.read_body_left_res_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	parser.err.t
+	.lift
 	.bind	.closure	_gsdl.cgs.file.read_body_left_res_print_c
 	.body	.closure	_gsdl.cgs.file.read_body_left_res_body_c
 

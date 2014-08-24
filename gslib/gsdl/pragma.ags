@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.5
+#calculus: gsdl.string-code 0.6
 
 	.prefix
 
@@ -200,6 +200,7 @@ _gsdl.pragma.read_insert_k2_left_print_c	.subcode
 _gsdl.pragma.read_insert_k2_left_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 err	.fv	parser.err.t
+	.lift
 	.bind	.closure	_gsdl.pragma.read_insert_k2_left_print_c
 	.body	.closure	_gsdl.pragma.read_insert_k2_left_body_c
 

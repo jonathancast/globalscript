@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.5
+#calculus: gsdl.string-code 0.6
 
 	.prefix
 
@@ -117,6 +117,7 @@ _ibio.file.stat.prim_pst_c	.subcode
 _ibio.file.stat.prim_st_c	.subcode
 _ibio.file.stat.prim_body_c	.subcode
 fn	.larg	ibio.file.name.t
+	.lift
 pst	.bind	.closure	_ibio.file.stat.prim_pst_c
 st	.closure	_ibio.file.stat.prim_st_c
 	.body	.closure	_ibio.file.stat.prim_body_c
@@ -159,6 +160,7 @@ _ibio.file.isdir_st	.subcode
 _ibio.file.isdir_id_c	.subcode
 _ibio.file.isdir_body_c	.subcode
 fn	.larg	ibio.file.name.t
+	.lift
 st	.bind	.closure	_ibio.file.isdir_st
 id	.closure	_ibio.file.isdir_id_c
 	.body	.closure	_ibio.file.isdir_body_c
