@@ -2213,6 +2213,7 @@ gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_right_k	.subcode
 either.t.out	.cogvar
+either.left	.gvar
 gsac.prefix.gstype.upconvert	.gvar
 pos	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
@@ -2222,7 +2223,8 @@ e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.typeenv.t
 		.case	right
 env2		.fkarg	0	gsdl.cgs.typeenv.t
 			.force	_gsac.prefix.item.typecheck_typeconstitem_gsabstypedefn_right_k
