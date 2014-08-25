@@ -7,6 +7,7 @@
 maybe.nothing	.closure	_maybe.nothing_c
 maybe.just	.closure	_maybe.just_c
 
+maybe.map	.closure	_maybe.map_c
 maybe.fromJust	.closure	_maybe.fromJust_c
 maybe.elim	.closure	_maybe.elim_c
 
@@ -40,6 +41,17 @@ j	.constr	res.u	just	0	x
 	.coerce	maybe.t.in	α
 	.lift
 	.yield	j
+
+-- §section §gs{maybe.map}
+
+_maybe.map_c	.expr
+_maybe.map_f_ty	.tygvar
+maybe.t	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+f	.larg	_maybe.map_f_ty	α	β
+mb	.larg	maybe.t	α
+	.undef	maybe.t	β
 
 -- §section §gs{maybe.fromJust}
 
@@ -220,6 +232,15 @@ _maybe.prim.u_just_ty	.tyexpr
 
 _maybe.prim.u_nothing_ty	.tyexpr
 	.tyubproduct
+
+-- §section §gs{maybe.map}
+
+_maybe.map_f_ty	.tyexpr
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	β
 
 -- §section §gs{maybe.elim}
 
