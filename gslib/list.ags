@@ -756,6 +756,7 @@ list.t	.tygvar
 order.total.ord.t	.tygvar	-- Temp
 _list.compare_:_:_k	.subcode
 order.total.ord.t.out	.cogvar
+order.total.ord.gt	.gvar
 order.total.ord.lt	.gvar
 order.total.ord.eq	.gvar
 α	.tyfv	*
@@ -775,7 +776,7 @@ xn1.1				.fkarg	1	list.t	α
 					.app	x0	x1
 					.enter	cmp
 				.case	nil
-					.undef	order.total.ord.t
+					.enter	order.total.ord.gt
 		.case	nil
 			.analyze	xn1.0	:	nil
 				.case	:
