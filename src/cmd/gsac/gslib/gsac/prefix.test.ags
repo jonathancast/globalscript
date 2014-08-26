@@ -327,6 +327,7 @@ gsdl.var.component.t	.tygvar
 gsdl.ags.file.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
+gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
@@ -360,13 +361,14 @@ y.v.cs	.apply	list.singleton	gsdl.var.component.t	|	y.v.c0
 y.v	.apply	gsdl.var.basevar	|	y.v.cs
 y.tyabs.ki	.undefined	gsdl.ags.typeitem.gskind.t
 tyas	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
+tyfas	.apply	list.nil	gsdl.ags.typeitem.decls.tyforall.t
 x.v.c0	.apply	gsdl.var.component.alphanum	|	_test_file.interface.freevars_gsabstype_x.s
 x.v.cs	.apply	list.singleton	gsdl.var.component.t	|	x.v.c0
 x.v	.apply	gsdl.var.basevar	|	x.v.cs
 x.tygv	.apply	gsdl.ags.typeitem.decls.tygvar.tygvar	|	x.v
 y.tabs.tygvs	.apply	list.singleton	gsdl.ags.typeitem.decls.tygvar.t	|	x.tygv
 tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
-y.tyabs.ds	.lrecord	tyargs	tyas	tygvars	y.tabs.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
+y.tyabs.ds	.lrecord	tyargs	tyas	tyforalls	tyfas	tygvars	y.tabs.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 y.tyabs.dfn	.undefined	gsdl.ags.typeitem.expr.t
 y.tyabs	.apply	gsdl.ags.typeitem.tyabstract	|	pos	y.v	y.tyabs.ki	y.tyabs.ds	y.tyabs.dfn
 tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	y.tyabs
@@ -452,6 +454,7 @@ gsac.prefix.item.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
+gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
@@ -483,12 +486,13 @@ list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
 list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
 tyas	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
+tyfas	.apply	list.nil	gsdl.ags.typeitem.decls.tyforall.t
 v.c0	.apply	gsdl.var.component.alphanum	|	_test_items_gsabstype.defn_x.s
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
 v	.apply	gsdl.var.basevar	|	v.cs
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
-decls	.lrecord	tyargs	tyas	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
+decls	.lrecord	tyargs	tyas	tyforalls	tyfas	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 expr.fields	.apply	list.nil	gsdl.ags.typeitem.field.t
 expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr.fields
 expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
@@ -740,6 +744,7 @@ gsdl.ags.file.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
+gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
@@ -783,9 +788,10 @@ cs	.apply	list.nil	gsdl.ags.codeitem.t
 cos	.apply	list.nil	gsdl.ags.coercionitem.t
 ds	.apply	list.nil	gsdl.ags.dataitem.t
 decls.tyargs	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
+decls.tyfas	.apply	list.nil	gsdl.ags.typeitem.decls.tyforall.t
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
-decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
+decls	.lrecord	tyargs	decls.tyargs	tyforalls	decls.tyfas	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 tye1.fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 tye1	.apply	gsdl.ags.typeitem.expr.product	|	tye1.fs
 tye	.apply	gsdl.ags.typeitem.expr.lift	|	tye1
@@ -1107,6 +1113,7 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
+gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
@@ -1132,9 +1139,10 @@ v.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype.defn_test_ty
 v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
 v	.apply	gsdl.var.basevar	|	v.cs
 decls.tyargs	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
+decls.tyfas	.apply	list.nil	gsdl.ags.typeitem.decls.tyforall.t
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
-decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
+decls	.lrecord	tyargs	decls.tyargs	tyforalls	decls.tyfas	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 expr1.fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr1.fs
 expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
@@ -1205,6 +1213,7 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
+gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
@@ -1234,9 +1243,10 @@ v	.apply	gsdl.var.basevar	|	v.cs
 α	.apply	gsdl.var.basevar	|	α.cs
 decls.tyarg.0	.lrecord	0	pos	1	α	2	gsdl.ags.typeitem.gskind.lifted	|	gsdl.ags.typeitem.decls.tyarg.t
 decls.tyargs	.apply	list.singleton	gsdl.ags.typeitem.decls.tyarg.t	|	decls.tyarg.0
+decls.tyfas	.apply	list.nil	gsdl.ags.typeitem.decls.tyforall.t
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
-decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
+decls	.lrecord	tyargs	decls.tyargs	tyforalls	decls.tyfas	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 as	.apply	list.nil	gsdl.var.t
 expr	.apply	gsdl.ags.typeitem.expr.tyref	|	α	as
 pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
@@ -1306,6 +1316,7 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
+gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
@@ -1345,6 +1356,7 @@ decls.tyarg.0	.lrecord	0	pos	1	α	2	exp	|	gsdl.ags.typeitem.decls.tyarg.t
 decls.tyarg.1	.lrecord	0	pos	1	β	2	gsdl.ags.typeitem.gskind.lifted	|	gsdl.ags.typeitem.decls.tyarg.t
 decls.tyargs.1	.apply	list.singleton	gsdl.ags.typeitem.decls.tyarg.t	|	decls.tyarg.1
 decls.tyargs	.apply	list.:	gsdl.ags.typeitem.decls.tyarg.t	|	decls.tyarg.0	decls.tyargs.1
+decls.tyfas	.apply	list.nil	gsdl.ags.typeitem.decls.tyforall.t
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 γ.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype.tylet.defn_test_γ.s
 γ.cs	.apply	list.singleton	gsdl.var.component.t	|	γ.c0
@@ -1352,7 +1364,7 @@ decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tyas	.apply	list.singleton	gsdl.var.t	|	β
 decls.tylet.0	.lrecord	name	γ	pos	pos	tyargs	tyas	tyfun	α	|	gsdl.ags.typeitem.decls.tylet.t
 decls.tylets	.apply	list.singleton	gsdl.ags.typeitem.decls.tylet.t	|	decls.tylet.0
-decls	.lrecord	tyargs	decls.tyargs	tygvars	decls.tygvs	tylets	decls.tylets	|	gsdl.ags.typeitem.decls.t
+decls	.lrecord	tyargs	decls.tyargs	tyforalls	decls.tyfas	tygvars	decls.tygvs	tylets	decls.tylets	|	gsdl.ags.typeitem.decls.t
 as	.apply	list.nil	gsdl.var.t
 expr	.apply	gsdl.ags.typeitem.expr.tyref	|	γ	as
 pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty

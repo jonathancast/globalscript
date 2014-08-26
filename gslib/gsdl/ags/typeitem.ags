@@ -699,7 +699,7 @@ tygvs	.larg	list.t	gsdl.ags.typeitem.decls.tygvar.t
 tyargs	.larg	list.t	gsdl.ags.typeitem.decls.tyarg.t
 tyforalls	.larg	list.t	gsdl.ags.typeitem.decls.tyforall.t
 tylets	.larg	list.t	gsdl.ags.typeitem.decls.tylet.t
-r	.record	tyargs	tyargs	tygvars	tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.u
+r	.record	tyargs	tyargs	tyforalls	tyforalls	tygvars	tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.u
 	.lift
 	.yield	r
 
@@ -2325,12 +2325,14 @@ gsdl.ags.typeitem.decls.u	.tygvar
 gsdl.ags.typeitem.decls.u	.tyexpr
 list.t	.tygvar
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar
+gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 _tyargs_ty	.tylet	list.t	gsdl.ags.typeitem.decls.tyarg.t
+_tyforalls_ty	.tylet	list.t	gsdl.ags.typeitem.decls.tyforall.t
 _tygvars_ty	.tylet	list.t	gsdl.ags.typeitem.decls.tygvar.t
 list.tylet.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tylet.t
-	.typroduct	tyargs	_tyargs_ty	tygvars	_tygvars_ty	tylets	list.tylet.ty
+	.typroduct	tyargs	_tyargs_ty	tyforalls	_tyforalls_ty	tygvars	_tygvars_ty	tylets	list.tylet.ty
 
 -- §section §gs{gsdl.ags.typeitem.decls.tygvar.t}
 

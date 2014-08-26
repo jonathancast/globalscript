@@ -1687,6 +1687,7 @@ diff.list.t	.tygvar
 either.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tyarg.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tyforall.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.:	.gvar
@@ -1704,10 +1705,11 @@ err		.fkarg	0	string.t
 res1		.fkarg	0	_gsac.gstype.compile_res.ty
 nothing			.apply	maybe.nothing	gsdl.ags.typeitem.gskind.t
 tyas			.undefined	list.t	gsdl.ags.typeitem.decls.tyarg.t	-- Calculate from §gs{#fvs res1}
+tyfas			.undefined	list.t	gsdl.ags.typeitem.decls.tyforall.t	-- This is interesting
 tygvs.d			.lfield	tygvars	res1
 tygvs			.apply	diff.list.tolist	gsdl.ags.typeitem.decls.tygvar.t	|	tygvs.d
 tylets			.undefined	list.t	gsdl.ags.typeitem.decls.tylet.t	-- Kicked out by compileToVar
-ds			.lrecord	tyargs	tyas	tygvars	tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
+ds			.lrecord	tyargs	tyas	tyforalls	tyfas	tygvars	tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 tye0.0			.lfield	res	res1
 tye0			.apply	gsdl.ags.typeitem.tyexpr	|	pos	nm0	nothing	ds	tye0.0
 tyes1			.lfield	typeitems	res1
@@ -1850,7 +1852,7 @@ either.t	.tygvar	-- Temp
 ordered.set.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
-diff.list.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.:	.gvar
@@ -1877,10 +1879,11 @@ r.res			.lrecord	tyfun	v	typeargs	tyas	|	_gsac.gstype.compileToApp_res_res.ty
 tye0.tyas			.undefined	list.t	gsdl.ags.typeitem.decls.tyarg.t	-- Calculate from res.tyfvs
 res.tyes			.lfield	typeitems	res
 tye0.ki			.apply	maybe.nothing	gsdl.ags.typeitem.gskind.t
+tye0.tyfas			.undefined	list.t	gsdl.ags.typeitem.decls.tyforall.t	-- Hmm . . .
 res.tygvs			.lfield	tygvars	res
 tye0.tygvs			.apply	diff.list.tolist	gsdl.ags.typeitem.decls.tygvar.t	|	res.tygvs
 tye0.tylets			.undefined	list.t	gsdl.ags.typeitem.decls.tylet.t	-- Kicked out by compileToVar
-tye0.ds			.lrecord	tyargs	tye0.tyas	tygvars	tye0.tygvs	tylets	tye0.tylets	|	gsdl.ags.typeitem.decls.t
+tye0.ds			.lrecord	tyargs	tye0.tyas	tyforalls	tye0.tyfas	tygvars	tye0.tygvs	tylets	tye0.tylets	|	gsdl.ags.typeitem.decls.t
 ref.e			.lfield	res	res
 tygv0			.apply	gsdl.ags.typeitem.decls.tygvar.tygvar	|	v
 tygvs			.apply	diff.list.singleton	gsdl.ags.typeitem.decls.tygvar.t	|	tygv0
