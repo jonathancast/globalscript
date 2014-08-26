@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.5
+#calculus: gsdl.string-code 0.6
 
 	.document
 
@@ -20,6 +20,7 @@ _ep_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
+	.lift
 as	.bind	.closure	_ep_as_c
 if	.bind	.closure	_ep_if_c
 s	.bind	.closure	_ep_s_c
@@ -71,6 +72,7 @@ ibio.file.name.t	.tygvar
 _ep_if_res_ei_c	.subcode
 _ep_if_res_body	.subcode
 fn	.fv	ibio.file.name.t
+	.lift
 ei	.bind	.closure	_ep_if_res_ei_c
 	.body	.closure	_ep_if_res_body
 

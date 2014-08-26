@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.5
+#calculus: gsdl.string-code 0.6
 
 	.document
 
@@ -24,6 +24,7 @@ _real.entry_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
+	.lift
 args	.bind	.closure	_real.entry_args_c
 parsed.args	.closure	_real.entry_parsed.args_c
 	.body	.closure	_real.entry_body_c
@@ -68,6 +69,7 @@ _print.targets.in.dir_ds_c	.subcode
 _print.targets.in.dir_body_c	.subcode
 o	.larg	ibio.prim.oport	rune.t
 dirn	.larg	ibio.file.name.t
+	.lift
 id	.bind	.closure	_print.targets.in.dir_id_c
 ds	.bind	.closure	_print.targets.in.dir_ds_c
 	.body	.closure	_print.targets.in.dir_body_c
