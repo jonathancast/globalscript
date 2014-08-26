@@ -1787,12 +1787,14 @@ tyy.exp			.apply	list.foldl	gsdl.cgs.gstype.t	gsdl.cgs.typeenv.typeexpansion.t	|
 _gsac.prefix.gstype.field.upconvert_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-gsdl.cgs.gstype.field.t	.tygvar	-- Temp
+string.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+either.right	.gvar
 env	.larg	gsdl.cgs.typeenv.t
 f	.larg	gsdl.ags.typeitem.field.t
-	.undef	either.t	string.t	gsdl.cgs.gstype.field.t
+f.cgs	.undefined	gsdl.cgs.gstype.field.t	-- TODO: We've nothing to compile atm
+	.app	f.cgs
+	.enter	either.right	string.t	gsdl.cgs.gstype.field.t
 
 -- §section §gs{gsac.prefix.gstype.constr.upconvert}
 
