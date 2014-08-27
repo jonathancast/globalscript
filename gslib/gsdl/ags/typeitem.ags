@@ -2388,7 +2388,8 @@ gsdl.ags.typeitem.decls.tyforall.u	.tygvar
 	.tyref	gsdl.ags.typeitem.decls.tyforall.u
 
 gsdl.ags.typeitem.decls.tyforall.u	.tyexpr
-	.typroduct
+gsdl.var.t	.tygvar
+	.typroduct	0	gsdl.var.t
 
 -- §section §gs{gsdl.ags.typeitem.decls.tylet.t}
 
