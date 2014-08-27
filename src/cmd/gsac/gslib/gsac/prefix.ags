@@ -1039,12 +1039,10 @@ gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
 ordered.map.insert	.gvar
 gsdl.var.compare	.gvar
 gsac.prefix.typefnitem.typefun	.gvar
 maybe.just	.gvar
-gsac.prefix.gskind.upconvert	.gvar
 ts0	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
 pos	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
@@ -1054,9 +1052,8 @@ mbki0	.karg	maybe.prim.u	gsdl.ags.typeitem.gskind.t
 	.analyze	mbki0	just	nothing
 		.case	just
 ki		.fkarg	0	gsdl.ags.typeitem.gskind.t
-ki.cgs			.apply	gsac.prefix.gskind.upconvert	|	ki
-just.ki.cgs			.apply	maybe.just	gsdl.cgs.gskind.t	|	ki.cgs
-ti			.apply	gsac.prefix.typefnitem.typefun	|	pos	v	just.ki.cgs	ds	dfn
+just.ki			.apply	maybe.just	gsdl.ags.typeitem.gskind.t	|	ki
+ti			.apply	gsac.prefix.typefnitem.typefun	|	pos	v	just.ki	ds	dfn
 			.app	gsdl.var.compare	v	ti	ts0
 			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typefnitem.t
 		.case	nothing
@@ -1921,6 +1918,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 maybe.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	-- Temp
@@ -1960,7 +1958,7 @@ ki		.fkarg	4	gsdl.cgs.gskind.t
 		.case	typefun
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
-mbki		.fkarg	2	maybe.t	gsdl.cgs.gskind.t
+mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.app	v
@@ -2034,6 +2032,7 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 maybe.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
@@ -2072,7 +2071,7 @@ ki		.fkarg	4	gsdl.cgs.gskind.t
 		.case	typefun
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
-mbki		.fkarg	2	maybe.t	gsdl.cgs.gskind.t
+mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
 tygvs			.lfield	tygvars	ds
@@ -2275,6 +2274,7 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 maybe.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
@@ -2334,7 +2334,7 @@ env1			.apply	gsdl.cgs.typeenv.impprim.insert	|	v	ps	pn	ki	gsdl.cgs.typeenv.empt
 		.case	typefun
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
-mbki		.fkarg	2	maybe.t	gsdl.cgs.gskind.t
+mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
 tyas			.lfield	tyargs	ds
@@ -2349,20 +2349,23 @@ env1			.apply	list.foldl	gsdl.cgs.typeenv.typeexpansion.tylambda.t	gsdl.cgs.type
 _gsac.prefix.item.typecheck_typefnitem_typefun_k	.forcecont
 gsdl.var.t	.tygvar
 maybe.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	-- Temp
 either.left	.gvar
 either.right	.gvar
 gsdl.cgs.typeenv.typefun.insert	.gvar
+maybe.map	.gvar
+gsac.prefix.gskind.upconvert	.gvar
 gsdl.cgs.typeenv.empty	.gvar
 v	.fv	gsdl.var.t
-mbki	.fv	maybe.t	gsdl.cgs.gskind.t
+mbki	.fv	maybe.t	gsdl.ags.typeitem.gskind.t
 tyas.cgs	.fv	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
 	.analyze	e0	left	right
@@ -2372,7 +2375,8 @@ err		.fkarg	0	string.t
 			.enter	either.left	string.t	gsdl.cgs.typeenv.t
 		.case	right
 cty		.fkarg	0	gsdl.cgs.gstype.t
-env1			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	mbki	tyas.cgs	cty	gsdl.cgs.typeenv.empty
+mbki.cgs			.apply	maybe.map	gsdl.ags.typeitem.gskind.t	gsdl.cgs.gskind.t	|	gsac.prefix.gskind.upconvert	mbki
+env1			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	mbki.cgs	tyas.cgs	cty	gsdl.cgs.typeenv.empty
 			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
@@ -2608,6 +2612,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 maybe.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 bool.t	.tygvar	-- Temp
@@ -2706,7 +2711,7 @@ b1					.apply	bool.∧	|	ps.eq	b2
 		.case	typefun
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
-mbki		.fkarg	2	maybe.t	gsdl.cgs.gskind.t
+mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.undef	bool.t
@@ -2746,6 +2751,7 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 maybe.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 fmtgs.printer.t	.tygvar	-- Temp
@@ -2805,7 +2811,7 @@ ki		.fkarg	4	gsdl.cgs.gskind.t
 		.case	typefun
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
-mbki		.fkarg	2	maybe.t	gsdl.cgs.gskind.t
+mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
 			.undef	fmtgs.printer.t
@@ -3039,14 +3045,14 @@ _gsac.prefix.typefnitem.typefun_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 maybe.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 gsac.prefix.typefnitem.prim.u	.tygvar
 gsac.prefix.typefnitem.t.in	.cogvar
 pos	.larg	gsdl.sourcepos.t
 v	.larg	gsdl.var.t
-mbki	.larg	maybe.t	gsdl.cgs.gskind.t
+mbki	.larg	maybe.t	gsdl.ags.typeitem.gskind.t
 ds	.larg	gsdl.ags.typeitem.decls.t
 e	.larg	gsdl.ags.typeitem.expr.t
 c	.constr	gsac.prefix.typefnitem.prim.u	typefun	0	pos	1	v	2	mbki	3	ds	4	e
@@ -3135,10 +3141,10 @@ _gsac.prefix.typefnitem.prim.u_typefun_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-maybe.kind.ty	.tylet	maybe.t	gsdl.cgs.gskind.t
+maybe.kind.ty	.tylet	maybe.t	gsdl.ags.typeitem.gskind.t
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	maybe.kind.ty	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
 
 -- §section §gs{gsac.prefix.typeconstitem.t}
