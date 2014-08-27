@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.5
+#calculus: gsdl.string-code 0.6
 
 	.document
 
@@ -21,6 +21,7 @@ _ep_body_c	.subcode
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
+	.lift
 ip	.bind	.closure	_ep_ip_c
 s	.closure	_ep_s_c
 	.body	.closure	_ep_body_c
