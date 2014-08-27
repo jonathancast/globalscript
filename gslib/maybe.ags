@@ -47,11 +47,33 @@ j	.constr	res.u	just	0	x
 _maybe.map_c	.expr
 _maybe.map_f_ty	.tygvar
 maybe.t	.tygvar
+_maybe.map_k	.subcode
+maybe.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
 f	.larg	_maybe.map_f_ty	α	β
 mb	.larg	maybe.t	α
-	.undef	maybe.t	β
+	.force	_maybe.map_k
+	.coerce	maybe.t.out	α
+	.enter	mb
+
+_maybe.map_k	.forcecont
+_maybe.map_f_ty	.tygvar
+maybe.prim.u	.tygvar
+maybe.t	.tygvar	-- Temp
+maybe.just	.gvar
+α	.tyfv	*
+β	.tyfv	*
+f	.fv	_maybe.map_f_ty	α	β
+mb0	.karg	maybe.prim.u	α
+	.analyze	mb0	just	nothing
+		.case	just
+x		.fkarg	0	α
+y			.apply	f	|	x
+			.app	y
+			.yield	maybe.just	β
+		.case	nothing
+			.undef	maybe.t	β
 
 -- §section §gs{maybe.fromJust}
 
