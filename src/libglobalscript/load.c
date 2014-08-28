@@ -636,7 +636,7 @@ gsparse_code_item(struct gsparse_input_pos *pos, gsparsedfile *parsedfile, struc
         ;
         return gsparse_imp_ops(pos, parsedfile, parsedline, chan, line, fields);
     } else {
-        gsfatal(UNIMPL("%P: code directive %s"), pos, fields[1]);
+        gsfatal(UNIMPL("%s:%d: code directive %s"), pos->real_filename, pos->real_lineno, fields[1]);
     }
 
     gsfatal("%s:%d: gsparse_code_item next", __FILE__, __LINE__);
