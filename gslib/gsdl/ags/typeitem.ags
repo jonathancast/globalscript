@@ -721,11 +721,13 @@ _gsdl.ags.typeitem.decls.parser_tyforalls.f_c	.expr
 parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
-gsdl.ags.typeitem.decls.tyforall.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tyforall.u	.tygvar
 pos	.larg	parser.pos.t
 nm	.larg	gsdl.var.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
-	.undef	gsdl.ags.typeitem.decls.tyforall.t
+res	.record	0	nm	|	gsdl.ags.typeitem.decls.tyforall.u
+	.lift
+	.yield	res
 
 _gsdl.ags.typeitem.decls.parser_tylets.f_c	.expr
 parser.pos.t	.tygvar
