@@ -614,7 +614,9 @@ list.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar	-- Temp
+_gsdl.cgs.typeenv.typeexpansion.substty_:_k	.subcode
+bool.t.out	.cogvar
+gsdl.var.≡	.gvar
 list.nil	.gvar
 gsdl.cgs.gstype.substty	.gvar
 v	.fv	gsdl.var.t
@@ -625,13 +627,79 @@ tyls0	.karg	list.prim.u	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 		.case	:
 tyl0		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 tyls1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
-			.undef	gsdl.cgs.typeenv.typeexpansion.t
+tyl0.nm			.lfield	0	tyl0
+			.force	_gsdl.cgs.typeenv.typeexpansion.substty_:_k
+			.coerce	bool.t.out
+			.app	v	tyl0.nm
+			.enter	gsdl.var.≡
 		.case	nil
 nil			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 e1			.apply	gsdl.cgs.gstype.substty	|	v	ty	e
 r			.record	0	nil	1	e1	|	gsdl.cgs.typeenv.typeexpansion.prim.u
 			.lift
 			.yield	r
+
+_gsdl.cgs.typeenv.typeexpansion.substty_:_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+list.t	.tygvar
+bool.prim.u	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar	-- Temp
+_gsdl.cgs.typeenv.typeexpansion.substty_:_false_k	.subcode
+bool.t.out	.cogvar
+ordered.set.elem	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.symbol.tyvar	.gvar
+gsdl.cgs.gstype.freevars	.gvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+tyl0	.fv	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+tyls1	.fv	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e	.fv	gsdl.cgs.gstype.t
+tyl0.nm	.fv	gsdl.var.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+tyl0.nm.sym			.apply	gsdl.cgs.symbol.tyvar	|	tyl0.nm
+ty.fvs			.apply	gsdl.cgs.gstype.freevars	|	ty
+			.force	_gsdl.cgs.typeenv.typeexpansion.substty_:_false_k
+			.coerce	bool.t.out
+			.app	gsdl.cgs.symbol.compare	tyl0.nm.sym	ty.fvs
+			.enter	ordered.set.elem	gsdl.cgs.symbol.t
+		.case	true
+			.undef	gsdl.cgs.typeenv.typeexpansion.t
+
+_gsdl.cgs.typeenv.typeexpansion.substty_:_false_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+list.t	.tygvar
+bool.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+list.:	.gvar
+gsdl.cgs.typeenv.typeexpansion.substty	.gvar
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
+tyl0	.fv	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+tyls1	.fv	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+e	.fv	gsdl.cgs.gstype.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+tye1			.lrecord	0	tyls1	1	e	|	gsdl.cgs.typeenv.typeexpansion.t
+y1			.apply	gsdl.cgs.typeenv.typeexpansion.substty	|	v	ty	tye1
+y.tyls1			.lfield	0	y1
+y.tyls			.apply	list.:	gsdl.cgs.typeenv.typeexpansion.tylambda.t	|	tyl0	y.tyls1
+y.e			.undefined	gsdl.cgs.gstype.t
+r			.record	0	y.tyls	1	y.e	|	gsdl.cgs.typeenv.typeexpansion.prim.u
+			.lift
+			.yield	r
+		.case	true
+			.undef	gsdl.cgs.typeenv.typeexpansion.t
 
 -- §section §gs{gsdl.cgs.typeenv.typeexpansion.togstype}
 
