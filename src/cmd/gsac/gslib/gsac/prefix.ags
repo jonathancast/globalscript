@@ -52,7 +52,8 @@ _gsac.prefix.file.load_body_left_write_nl.s	.string	\n
 gsac.prefix.file.boundvars	.closure	_gsac.prefix.file.boundvars_c
 
 gsac.prefix.file.interface.freevars	.closure	_gsac.prefix.file.interface.freevars_c
-_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w	.closure	_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w_c	_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w_ty
+_gsac.prefix.file.interface.freevars_decls.fvs	.closure	_gsac.prefix.file.interface.freevars_decls.fvs_c
+_gsac.prefix.file.interface.freevars_tygvar.fvs	.closure	_gsac.prefix.file.interface.freevars_tygvar.fvs_c
 
 gsac.prefix.file.add	.closure	_gsac.prefix.file.add_c
 
@@ -674,7 +675,7 @@ gsdl.ags.typeitem.expr.t	.tygvar
 maybe.t	.tygvar
 ordered.set.t	.tygvar	-- Temp
 gsdl.cgs.symbol.t	.tygvar	-- Temp
-_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_k	.subcode
+_gsac.prefix.file.interface.freevars_decls.fvs	.gvar
 ordered.set.empty	.gvar	-- Temp
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.analyze	ti0	tyabstract	tydefinedprim	tyelimprim	tyexpr	tyimpprim	tyintrprim
@@ -684,8 +685,8 @@ v		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
-			.force	_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_k
-			.enter	ds
+			.app	ds
+			.enter	_gsac.prefix.file.interface.freevars_decls.fvs
 		.case	tydefinedprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -723,64 +724,45 @@ ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 			.enter	ordered.set.empty	gsdl.cgs.symbol.t
 	-- > ordered.set.empty	gsdl.cgs.symbol.t :: ordered.set.t	gsdl.cgs.symbol.t
 
-_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_k	.forcecont
-gsdl.ags.typeitem.decls.u	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w	.gvar
-ordered.set.empty	.gvar
-ds0	.karg	gsdl.ags.typeitem.decls.u
-empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-tygvs	.field	tygvars	ds0
-	.app	empty.symbol	tygvs
-	.enter	_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w
-
-_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w_c	.expr
+_gsac.prefix.file.interface.freevars_decls.fvs_c	.expr
+gsdl.ags.typeitem.decls.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
-list.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
-_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w_k	.subcode
 list.t.out	.cogvar
-s	.larg	ordered.set.t	gsdl.cgs.symbol.t
-tygvs	.larg	list.t	gsdl.ags.typeitem.decls.tygvar.t
-	.force	_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w_k
-	.coerce	list.t.out	gsdl.ags.typeitem.decls.tygvar.t
-	.enter	tygvs
+list.foldl	.gvar
+ordered.set.union	.gvar
+gsdl.cgs.symbol.compare	.gvar
+ordered.set.empty	.gvar
+list.map	.gvar
+_gsac.prefix.file.interface.freevars_tygvar.fvs	.gvar
+ds	.larg	gsdl.ags.typeitem.decls.t
+set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+union.symbol	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
+empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
+tygvs	.lfield	tygvars	ds
+tygvs.fvss	.apply	list.map	gsdl.ags.typeitem.decls.tygvar.t	set.symbol.ty	|	_gsac.prefix.file.interface.freevars_tygvar.fvs	tygvs
+	.app	union.symbol	empty.symbol	tygvs.fvss
+	.enter	list.foldl	set.symbol.ty	set.symbol.ty
 
-_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w_k	.forcecont
-ordered.set.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-list.prim.u	.tygvar
+_gsac.prefix.file.interface.freevars_tygvar.fvs_c	.expr
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
-list.t	.tygvar
-_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w_:_k	.subcode
+_gsac.prefix.file.interface.freevars_tygvar.fvs_k	.subcode
 gsdl.ags.typeitem.decls.tygvar.t.out	.cogvar
-s	.fv	ordered.set.t	gsdl.cgs.symbol.t
-tygvs0	.karg	list.prim.u	gsdl.ags.typeitem.decls.tygvar.t
-	.analyze	tygvs0	:	nil
-		.case	:
-tygv0		.fkarg	0	gsdl.ags.typeitem.decls.tygvar.t
-tygvs1		.fkarg	1	list.t	gsdl.ags.typeitem.decls.tygvar.t
-			.force	_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w_:_k
-			.coerce	gsdl.ags.typeitem.decls.tygvar.t.out
-			.enter	tygv0
-		.case	nil
-			.enter	s
+tygv	.larg	gsdl.ags.typeitem.decls.tygvar.t
+	.force	_gsac.prefix.file.interface.freevars_tygvar.fvs_k
+	.coerce	gsdl.ags.typeitem.decls.tygvar.t.out
+	.enter	tygv
 
-_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w_:_k	.forcecont
-ordered.set.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-list.t	.tygvar
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+_gsac.prefix.file.interface.freevars_tygvar.fvs_k	.forcecont
 gsdl.ags.typeitem.decls.tygvar.prim.u	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
-_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w	.gvar
-ordered.set.insert	.gvar
+gsdl.cgs.symbol.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+ordered.set.singleton	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
-s	.fv	ordered.set.t	gsdl.cgs.symbol.t
-tygvs1	.fv	list.t	gsdl.ags.typeitem.decls.tygvar.t
 tygv0.0	.karg	gsdl.ags.typeitem.decls.tygvar.prim.u
 	.analyze	tygv0.0	tyextabstype	tyextelimprim	tyextimpprim	tygvar
 		.case	tyextabstype
@@ -802,9 +784,8 @@ ki		.fkarg	3	gsdl.ags.typeitem.gskind.t
 		.case	tygvar
 v		.fkarg	0	gsdl.var.t
 sy			.apply	gsdl.cgs.symbol.tyvar	|	v
-s1			.apply	ordered.set.insert	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	sy	s
-			.app	s1	tygvs1
-			.enter	_gsac.prefix.file.interface.freevars_tys.fvss.f_tyabstract_w
+			.app	gsdl.cgs.symbol.compare	sy
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
 	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
 -- §section §gs{gsac.prefix.file.add}
