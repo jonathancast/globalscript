@@ -246,15 +246,8 @@ bool.prim.u	.tygvar
 	.tyref	bool.prim.u
 
 bool.prim.u	.tyexpr
-_false.arg.ty	.tygvar
-_true.arg.ty	.tygvar
-	.tysum	false	_false.arg.ty	true	_true.arg.ty
-
-_false.arg.ty	.tyexpr
-	.tyubproduct
-
-_true.arg.ty	.tyexpr
-	.tyubproduct
+record.unboxed.empty	.tygvar
+	.tysum	false	record.unboxed.empty	true	record.unboxed.empty
 
 _bool.fmtgs_ty	.tyexpr
 fmtgs.t	.tygvar
