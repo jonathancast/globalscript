@@ -2,8 +2,6 @@
 
 . $GLOBALSCRIPT/bin/test-fns
 
-SHOULD_DISABLE_STRING_CODE_0_4=1
-
 ok_grep_errors '-- non-existent source file --' 'no-such-file.ags: Could not load' ./$O.test-gsi no-such-file.ags
 
 ok_grep_errors '-- invalid type op --' 'invalid-type-op.ags:12: Unimplemented type op' ./$O.test-gsi invalid-type-op.ags
@@ -171,6 +169,8 @@ ok_grep_errors '-- single-token .body.closure illegal in .impprogs --' 'illegal-
 ok_grep_errors '-- single-token .bind.closure illegal in .impprogs --' 'illegal-bind-closure-in-impprog.ags:14: Unimplemented imp op .bind' ./$O.test-gsexec illegal-bind-closure-in-impprog.ags
 
 ok_grep_errors '-- .body	.undefined in .impprogs --' 'body-undefined.ags:13: undefined' ./$O.test-gsexec body-undefined.ags
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
 
 echo '# Version 0.6 and up:'
 
