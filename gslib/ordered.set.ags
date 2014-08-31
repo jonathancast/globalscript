@@ -534,7 +534,7 @@ l2			.lfield	0	l2.r2
 r2			.lfield	1	l2.r2
 l3			.apply	ordered.set.difference	α	|	cmp	l2	l1
 r3			.apply	ordered.set.difference	α	|	cmp	r2	r1
-			.app	cmp	l3	r3
+			.app	l3	r3
 			.enter	_ordered.set_prim.concat	α
 		.case	empty
 			.coerce	ordered.set.t.in	α
@@ -545,12 +545,10 @@ r3			.apply	ordered.set.difference	α	|	cmp	r2	r1
 -- §section §gs{_ordered.set_prim.concat}
 
 _ordered.set_prim.concat_c	.expr
-order.total.t	.tygvar
 ordered.set.t	.tygvar
 _ordered.set_prim.concat_k	.subcode
 ordered.set.t.out	.cogvar
 α	.tyarg	*
-cmp	.larg	order.total.t	α
 l	.larg	ordered.set.t	α
 r	.larg	ordered.set.t	α
 	.force	_ordered.set_prim.concat_k
@@ -580,16 +578,23 @@ l0.sr		.fkarg	2	ordered.set.t	α
 _ordered.set_prim.concat_branch_k	.forcecont
 ordered.set.prim.u	.tygvar
 ordered.set.t	.tygvar
+order.total.ord.t.out	.cogvar
 ordered.set.t.in	.cogvar
+ordered.set.prim.branch	.gvar
 α	.tyfv	*
 l0	.fv	ordered.set.prim.u	α
+l0.x	.fv	α
+l0.sl	.fv	ordered.set.t	α
 r0	.karg	ordered.set.prim.u	α
 	.analyze	r0	branch	empty
 		.case	branch
 r0.x		.fkarg	0	α
 r0.sl		.fkarg	1	ordered.set.t	α
 r0.sr		.fkarg	2	ordered.set.t	α
-			.undef	ordered.set.t	α
+m			.undefined	ordered.set.t	α	-- > l0.sr `concat` r0.sl
+l1			.apply	ordered.set.prim.branch	α	|	l0.x	l0.sl	m
+			.app	r0.x	l1	r0.sr
+			.yield	ordered.set.prim.branch	α
 		.case	empty
 			.coerce	ordered.set.t.in	α
 			.lift
