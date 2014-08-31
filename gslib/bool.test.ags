@@ -5,7 +5,7 @@
 	.data
 
 	.closure	_ep_c
-_tests	.list	test.property.t	_test_≡_false.false	_test_≡_false.true	_test_≡_true.false	_test_≡_true.true	_test_compare_false.false	_test_not_false	_test_∧_true.true	_test.false.∧.false
+_ep_tests	.list	test.property.t	_test_≡_false.false	_test_≡_false.true	_test_≡_true.false	_test_≡_true.true	_test_compare_false.false	_test_not_false	_test_∧_true.true	_test_∧_false.false
 
 _test_≡_false.false	.closure	_test_≡_false.false_c
 _test_≡_false.false_label	.string	false\s≡\sfalse
@@ -43,18 +43,18 @@ _test_∧_true.true_test	.closure	_test_∧_true.true_test_c
 _test_∧_true.true_test_fail	.string	true\s∧\strue\sis\sfalse
 _test_∧_true.true_test_success	.string	true\s∧\strue\sis\strue
 
-_test.false.∧.false	.closure	_test.false.∧.false_c
-_test.false.∧.false_label	.string	false\s∧\sfalse\sis\sfalse
-_test.false.∧.false_test	.closure	_test.false.∧.false_test_c
-_test.false.∧.false_false	.string	false\s∧\sfalse\sis\sfalse
-_test.false.∧.false_true	.string	false\s∧\sfalse\sis\strue
+_test_∧_false.false	.closure	_test_∧_false.false_c
+_test_∧_false.false_label	.string	false\s∧\sfalse\sis\sfalse
+_test_∧_false.false_test	.closure	_test_∧_false.false_test_c
+_test_∧_false.false_false	.string	false\s∧\sfalse\sis\sfalse
+_test_∧_false.false_true	.string	false\s∧\sfalse\sis\strue
 
 	.code
 
 _ep_c	.expr
 test.all	.gvar
-_tests	.gvar
-	.app	_tests
+_ep_tests	.gvar
+	.app	_ep_tests
 	.enter	test.all
 
 -- §section §gs{false ≡ false}
@@ -215,23 +215,23 @@ bool.true	.gvar
 
 -- §section §gs{false ∧ false}
 
-_test.false.∧.false_c	.expr
+_test_∧_false.false_c	.expr
 test.property.label	.gvar
-_test.false.∧.false_label	.gvar
-_test.false.∧.false_test	.gvar
-	.app	_test.false.∧.false_label	_test.false.∧.false_test
+_test_∧_false.false_label	.gvar
+_test_∧_false.false_test	.gvar
+	.app	_test_∧_false.false_label	_test_∧_false.false_test
 	.enter	test.property.label
 
-_test.false.∧.false_test_c	.expr
-_test.false.∧.false_b_c	.subcode
+_test_∧_false.false_test_c	.expr
+_test_∧_false.false_b_c	.subcode
 test.deny	.gvar
-_test.false.∧.false_false	.gvar
-_test.false.∧.false_true	.gvar
-b	.closure	_test.false.∧.false_b_c
-	.app	_test.false.∧.false_false	_test.false.∧.false_true	b
+_test_∧_false.false_false	.gvar
+_test_∧_false.false_true	.gvar
+b	.closure	_test_∧_false.false_b_c
+	.app	_test_∧_false.false_false	_test_∧_false.false_true	b
 	.enter	test.deny
 
-_test.false.∧.false_b_c	.expr
+_test_∧_false.false_b_c	.expr
 bool.∧	.gvar
 bool.false	.gvar
 	.app	bool.false	bool.false
