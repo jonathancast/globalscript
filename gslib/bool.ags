@@ -6,14 +6,14 @@
 
 bool.elim	.closure	_bool.elim_c
 
-bool.true	.closure	_bool.true.c
-bool.false	.closure	_bool.false.c
+bool.true	.closure	_bool.true_c
+bool.false	.closure	_bool.false_c
 
-bool.≡	.closure	_bool.≡.c
+bool.≡	.closure	_bool.≡_c
 bool.compare	.closure	_bool.compare_c
 
 bool.not	.closure	_bool.not_c
-bool.∧	.closure	_bool.∧.c
+bool.∧	.closure	_bool.∧_c
 bool.∨	.closure	_bool.∨_c
 
 bool.fmtgs	.closure	_bool.fmtgs_c	_bool.fmtgs_ty
@@ -51,7 +51,7 @@ b0	.karg	bool.prim.u
 
 -- §section Constructors
 
-_bool.true.c	.expr
+_bool.true_c	.expr
 bool.prim.u	.tygvar
 bool.t.in	.cogvar
 c	.constr	bool.prim.u	true
@@ -59,7 +59,7 @@ c	.constr	bool.prim.u	true
 	.lift
 	.yield	c
 
-_bool.false.c	.expr
+_bool.false_c	.expr
 bool.prim.u	.tygvar
 bool.t.in	.cogvar
 c	.constr	bool.prim.u	false
@@ -69,17 +69,17 @@ c	.constr	bool.prim.u	false
 
 -- §section §gs{bool.≡}
 
-_bool.≡.c	.expr
+_bool.≡_c	.expr
 bool.t	.tygvar
-_bool.≡.k0	.subcode
+_bool.≡_k0	.subcode
 bool.t.out	.cogvar
 a	.larg	bool.t
 b	.larg	bool.t
-	.force	_bool.≡.k0
+	.force	_bool.≡_k0
 	.coerce	bool.t.out
 	.enter	a
 
-_bool.≡.k0	.forcecont
+_bool.≡_k0	.forcecont
 bool.t	.tygvar
 bool.prim.u	.tygvar
 bool.not	.gvar
@@ -160,17 +160,17 @@ b0	.karg	bool.prim.u
 
 -- §section §gs{bool.∧}
 
-_bool.∧.c	.expr
+_bool.∧_c	.expr
 bool.t	.tygvar
-_bool.∧.k	.subcode
+_bool.∧_k	.subcode
 bool.t.out	.cogvar
 b0	.larg	bool.t
 b1	.larg	bool.t
-	.force	_bool.∧.k
+	.force	_bool.∧_k
 	.coerce	bool.t.out
 	.enter	b0
 
-_bool.∧.k	.forcecont
+_bool.∧_k	.forcecont
 bool.t	.tygvar
 bool.prim.u	.tygvar
 bool.false	.gvar
