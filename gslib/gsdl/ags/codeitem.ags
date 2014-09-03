@@ -1578,18 +1578,35 @@ rune.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 record.empty	.tygvar
+gsdl.ags.codeitem.tylet.t	.tygvar
 _gsdl.ags.codeitem.args.parser_arg.p_c	.subcode
 _gsdl.ags.codeitem.args.parser_lift.p_c	.subcode
+_gsdl.ags.codeitem.args.parser_tylet.f_c	.subcode
 parser.<*	.gvar
-parser.many	.gvar
 parser.<|>	.gvar
+parser.unit	.gvar
+list.nil	.gvar
+parser.lift2	.gvar
+list.:	.gvar
+parser.many	.gvar
+parser.map	.gvar
+gsdl.ags.codeitem.tylet.parser	.gvar
 parser.neg.lookahead	.gvar
 parser.fail	.gvar	-- Temp
 list.arg.ty	.tylet	list.t	gsdl.ags.codeitem.arg.t
 arg.p	.closure	_gsdl.ags.codeitem.args.parser_arg.p_c
 lift.p	.closure	_gsdl.ags.codeitem.args.parser_lift.p_c
-any.arg.p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.arg.t	|	arg.p	lift.p
-args.p	.apply	parser.many	rune.t	gsdl.ags.codeitem.arg.t	|	any.arg.p
+tylet.f	.closure	_gsdl.ags.codeitem.args.parser_tylet.f_c
+tylet.p	.apply	parser.map	rune.t	gsdl.ags.codeitem.tylet.t	gsdl.ags.codeitem.arg.t	|	tylet.f	gsdl.ags.codeitem.tylet.parser
+nil.args	.apply	list.nil	gsdl.ags.codeitem.arg.t
+unit.nil.p	.apply	parser.unit	rune.t	list.arg.ty	|	nil.args
+cons.arg	.apply	list.:	gsdl.ags.codeitem.arg.t
+real.arg.p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.arg.t	|	arg.p	lift.p
+any.arg.p1	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.arg.t	|	lift.p	tylet.p
+any.arg.p	.apply	parser.<|>	rune.t	gsdl.ags.codeitem.arg.t	|	arg.p	any.arg.p1
+args.p1.1	.apply	parser.many	rune.t	gsdl.ags.codeitem.arg.t	|	any.arg.p
+args.p1	.apply	parser.lift2	rune.t	gsdl.ags.codeitem.arg.t	list.arg.ty	list.arg.ty	|	cons.arg	real.arg.p	args.p1.1
+args.p	.apply	parser.<|>	rune.t	list.arg.ty	|	unit.nil.p	args.p1
 neg.lift.p	.apply	parser.neg.lookahead	rune.t	gsdl.ags.codeitem.arg.t	|	lift.p
 	.app	args.p	neg.lift.p
 	.enter	parser.<*	rune.t	list.arg.ty	record.empty
@@ -1686,6 +1703,12 @@ p1	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.arg.t	|	lift.kw.p	p2
 p	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.arg.t	|	gsdl.ags.syntax.columnsep	p1
 	.app	p	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.codeitem.arg.t	string.t
+
+_gsdl.ags.codeitem.args.parser_tylet.f_c	.expr
+gsdl.ags.codeitem.tylet.t	.tygvar
+gsdl.ags.codeitem.arg.t	.tygvar	-- Temp
+tyl	.larg	gsdl.ags.codeitem.tylet.t
+	.undef	gsdl.ags.codeitem.arg.t
 
 -- §section §gs{gsdl.ags.codeitem.arg.print}
 
