@@ -38,6 +38,7 @@ gsdl.ags.codeitem.tyargs.parser	.closure	_gsdl.ags.codeitem.tyargs.parser_c
 _gsdl.ags.codeitem.tyargs.parser_tyarg.re	.regex	.tyarg
 
 gsdl.ags.codeitem.tylets.parser	.closure	_gsdl.ags.codeitem.tylets.parser_c
+gsdl.ags.codeitem.tylet.parser	.closure	_gsdl.ags.codeitem.tylet.parser_c
 _gsdl.ags.codeitem.tylets.parser_tylet.re	.regex	.tylet
 
 gsdl.ags.codeitem.subcodes.parser	.closure	_gsdl.ags.codeitem.subcodes.parser_c
@@ -1159,11 +1160,20 @@ ki	.larg	gsdl.ags.typeitem.gskind.t
 _gsdl.ags.codeitem.tylets.parser_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.tylet.t	.tygvar
+parser.many	.gvar
+gsdl.ags.codeitem.tylet.parser	.gvar
+	.app	gsdl.ags.codeitem.tylet.parser
+	.enter	parser.many	rune.t	gsdl.ags.codeitem.tylet.t
+
+-- §section §gs{gsdl.ags.codeitem.tylet.parser}
+
+_gsdl.ags.codeitem.tylet.parser_c	.expr
+rune.t	.tygvar
 parser.pos.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
-_gsdl.ags.codeitem.tylets.parser_f_c	.subcode
-parser.many	.gvar
+gsdl.ags.codeitem.tylet.t	.tygvar
+_gsdl.ags.codeitem.tylet.parser_f_c	.subcode
 parser.lift4	.gvar
 parser.pos.get	.gvar
 gsdl.ags.syntax.id	.gvar
@@ -1173,10 +1183,11 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.codeitem.tylets.parser_tylet.re	.gvar
 parser.<*	.gvar
+parser.many	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
 list.string.ty	.tylet	list.t	string.t
-f	.closure	_gsdl.ags.codeitem.tylets.parser_f_c
+f	.closure	_gsdl.ags.codeitem.tylet.parser_f_c
 pos.get	.apply	parser.pos.get	rune.t
 tylet.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.tylets.parser_tylet.re
 tyf.p2	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
@@ -1185,11 +1196,10 @@ tyf.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	tyf.
 tyas.p1.1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tyas.p1	.apply	parser.many	rune.t	string.t	|	tyas.p1.1
 tyas.p	.apply	parser.<*	rune.t	list.string.ty	string.t	|	tyas.p1	gsdl.ags.syntax.whitespace
-p	.apply	parser.lift4	rune.t	parser.pos.t	string.t	string.t	list.string.ty	gsdl.ags.codeitem.tylet.t	|	f	pos.get	gsdl.ags.syntax.id	tyf.p	tyas.p
-	.app	p
-	.enter	parser.many	rune.t	gsdl.ags.codeitem.tylet.t
+	.app	f	pos.get	gsdl.ags.syntax.id	tyf.p	tyas.p
+	.enter	parser.lift4	rune.t	parser.pos.t	string.t	string.t	list.string.ty	gsdl.ags.codeitem.tylet.t
 
-_gsdl.ags.codeitem.tylets.parser_f_c	.expr
+_gsdl.ags.codeitem.tylet.parser_f_c	.expr
 parser.pos.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
