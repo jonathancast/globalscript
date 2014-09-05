@@ -69,13 +69,11 @@ either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 gsdl.ags.syntax.features.t	.tygvar	-- Temp
 either.right	.gvar
-bool.false	.gvar
-bool.true	.gvar
 mb0	.karg	maybe.prim.u	gsdl.pragma.t
 	.analyze	mb0	just	nothing
 		.case	just
 pr		.fkarg	0	gsdl.pragma.t
-fs			.lrecord	bind.closure.one.word	bool.false	bind.closure.two.words	bool.true	|	gsdl.ags.syntax.features.t
+fs			.lrecord	|	gsdl.ags.syntax.features.t
 			.app	fs
 			.enter	either.right	string.t	gsdl.ags.syntax.features.t
 		.case	nothing
