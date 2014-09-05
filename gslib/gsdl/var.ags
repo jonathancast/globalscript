@@ -621,6 +621,7 @@ _gsdl.var.compare_basevar_constructed_:_k	.forcecont
 order.total.ord.prim.u	.tygvar
 order.total.ord.t	.tygvar
 order.total.ord.t.in	.cogvar
+order.total.ord.lt	.gvar
 o0	.karg	order.total.ord.prim.u
 	.danalyze	o0	eq
 		.default
@@ -628,7 +629,7 @@ o0	.karg	order.total.ord.prim.u
 			.lift
 			.yield	o0
 		.case	eq
-			.undef	order.total.ord.t
+			.enter	order.total.ord.lt
 
 _gsdl.var.compare_constructed_basevar_k	.forcecont
 gsdl.var.prim.u	.tygvar
