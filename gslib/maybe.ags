@@ -245,8 +245,8 @@ maybe.prim.u	.tyexpr
 _maybe.prim.u_just_ty	.tygvar
 _maybe.prim.u_nothing_ty	.tygvar
 α	.tylambda	*
-just_ty	.tylet	_maybe.prim.u_just_ty	α
-	.tysum	just	just_ty	nothing	_maybe.prim.u_nothing_ty
+just.ty	.tylet	_maybe.prim.u_just_ty	α
+	.tysum	just	just.ty	nothing	_maybe.prim.u_nothing_ty
 
 _maybe.prim.u_just_ty	.tyexpr
 α	.tylambda	*
