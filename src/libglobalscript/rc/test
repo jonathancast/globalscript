@@ -161,6 +161,10 @@ ok_grep_errors '-- block statement API entry points with undefined binds --' './
 ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
 ok_diff '-- trivial use of .closure --' ./$O.test-gsexec simple-closure-api.ags
 
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
+
 ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-fixtures/invalid-fv.ags:15: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags
 
 ok_grep_errors '-- .body	.closure in .impprogs --' 'undef-body-closure-two-tokens-in-impprog.ags:17: undefined' ./$O.test-gsexec undef-body-closure-two-tokens-in-impprog.ags
@@ -169,9 +173,5 @@ ok_grep_errors '-- single-token .body.closure illegal in .impprogs --' 'illegal-
 ok_grep_errors '-- single-token .bind.closure illegal in .impprogs --' 'illegal-bind-closure-in-impprog.ags:14: Unimplemented imp op .bind' ./$O.test-gsexec illegal-bind-closure-in-impprog.ags
 
 ok_grep_errors '-- .body	.undefined in .impprogs --' 'body-undefined.ags:13: undefined' ./$O.test-gsexec body-undefined.ags
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
-
-echo '# Version 0.6 and up:'
 
 ok_grep_errors '-- .impprogs are un-lifted, by default --' 'lift-impprog.ags:18: undefined' ./$O.test-gsexec lift-impprog.ags
