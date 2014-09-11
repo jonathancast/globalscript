@@ -26,6 +26,7 @@ parser.lift8	.closure	_parser.lift8_c
 parser.lift9	.closure	_parser.lift9_c
 parser.lift10	.closure	_parser.lift10_c
 
+parser.join	.closure	_parser.join_c
 parser.>>=	.closure	_parser.>>=_c
 
 parser.neg.lookahead	.closure	_parser.neg.lookahead_c
@@ -2571,6 +2572,33 @@ x9	.larg	α9
 y	.apply	f	|	x0	x1	x2	x3	x4	x5	x6	x7	x8	x9
 	.app	y
 	.enter	k
+
+-- §section §gs{parser.join}
+
+_parser.join_c	.expr
+parser.t	.tygvar
+_parser.t_k_ty	.tygvar
+_parser.join_k1_c	.subcode
+s	.tyarg	*
+α	.tyarg	*
+parser.α.ty	.tylet	parser.t	s	α
+pp	.larg	parser.t	s	parser.α.ty
+r	.tyarg	*
+k	.larg	_parser.t_k_ty	s	α	r
+k1	.closure	_parser.join_k1_c
+	.app	k1
+	.enter	pp	r
+
+_parser.join_k1_c	.expr
+_parser.t_k_ty	.tygvar
+parser.t	.tygvar
+s	.tyfv	*
+α	.tyfv	*
+r	.tyfv	*
+k	.fv	_parser.t_k_ty	s	α	r
+p	.larg	parser.t	s	α
+	.app	k
+	.enter	p	r
 
 -- §section §gs{parser.>>=}
 
