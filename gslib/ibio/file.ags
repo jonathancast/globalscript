@@ -31,8 +31,6 @@ ibio.file.name.fmtgs	.closure	_ibio.file.name.fmtgs_c
 _ibio.file.name.fmtgs_prefix	.string	fn<
 _ibio.file.name.fmtgs_suffix	.string	>
 
-_dot	.closure	_dot_c
-
 	.code
 
 -- §section §gs{ibio.file.name.in}
@@ -303,7 +301,7 @@ _ibio.file.name.components.get_worker_:_false_k1_nil_k	.subcode
 bool.t.out	.cogvar
 list.:	.gvar
 rune.≡	.gvar
-_dot	.gvar
+rune.dot	.gvar
 k	.fv	_ibio.file.name.components.get_worker_cont.ty
 c	.fv	rune.t
 ds	.fv	list.t	string.t
@@ -321,7 +319,7 @@ ds2			.apply	list.:	string.t	|	ds2.0	ds1
 		.case	nil
 			.force	_ibio.file.name.components.get_worker_:_false_k1_nil_k
 			.coerce	bool.t.out
-			.app	c	_dot
+			.app	c	rune.dot
 			.enter	rune.≡
 
 _ibio.file.name.components.get_worker_:_false_k1_nil_k	.forcecont	-- In the basename
@@ -434,7 +432,7 @@ _ibio.file.name.extension.set_worker_pre0.1_c	.subcode
 _ibio.file.name.extension.set_worker_id_c	.subcode
 bool.t.out	.cogvar
 rune.≡	.gvar
-_dot	.gvar
+rune.dot	.gvar
 _ibio.file.name.extension.set_worker	.gvar
 ext	.fv	list.t	rune.t
 pre.0	.fv	_ibio.file.name.extension.set_worker_f_ty
@@ -446,7 +444,7 @@ b0	.karg	bool.prim.u
 		.case	false	-- §gs{c ≠ r{/}}
 			.force	_ibio.file.name.extension.set_worker_k2
 			.coerce	bool.t.out
-			.app	c	_dot
+			.app	c	rune.dot
 			.enter	rune.≡
 		.case	true	-- §gs{c ≡ r{/}}
 pre0.1			.closure	_ibio.file.name.extension.set_worker_pre0.1_c
@@ -641,15 +639,6 @@ s1	.apply	list.foldr	diff.string.ty	diff.string.ty	|	<>	s2	s1s
 ds	.apply	diff.list.prepend	rune.t	|	_ibio.file.name.fmtgs_prefix	s1
 	.app	fmtgs.prec.arg	ds
 	.enter	fmtgs.prec
-
--- §section Random data
-
-_dot_c	.expr
-rune.t.in	.cogvar
-do	.rune	.
-	.coerce	rune.t.in
-	.lift
-	.yield	do
 
 	.type
 
