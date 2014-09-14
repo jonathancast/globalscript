@@ -31,7 +31,6 @@ ibio.file.name.fmtgs	.closure	_ibio.file.name.fmtgs_c
 _ibio.file.name.fmtgs_prefix	.string	fn<
 _ibio.file.name.fmtgs_suffix	.string	>
 
-_slash	.closure	_slash_c
 _dot	.closure	_dot_c
 
 	.code
@@ -237,7 +236,7 @@ string.t	.tygvar
 _ibio.file.name.components.get_worker_:_k	.subcode
 bool.t.out	.cogvar
 rune.≡	.gvar
-_slash	.gvar
+rune.forwardslash	.gvar
 list.nil	.gvar
 k	.fv	_ibio.file.name.components.get_worker_cont.ty
 fn0	.karg	list.prim.u	rune.t
@@ -247,7 +246,7 @@ c		.fkarg	0	rune.t
 fn1		.fkarg	1	list.t	rune.t
 			.force	_ibio.file.name.components.get_worker_:_k
 			.coerce	bool.t.out
-			.app	c	_slash
+			.app	c	rune.forwardslash
 			.enter	rune.≡
 		.case	nil
 ds			.apply	list.nil	string.t
@@ -408,7 +407,7 @@ list.prim.u	.tygvar
 _ibio.file.name.extension.set_worker_k1	.subcode
 bool.t.out	.cogvar
 rune.≡	.gvar
-_slash	.gvar
+rune.forwardslash	.gvar
 ext	.fv	list.t	rune.t
 pre.0	.fv	_ibio.file.name.extension.set_worker_f_ty
 pre.1	.fv	_ibio.file.name.extension.set_worker_f_ty
@@ -419,7 +418,7 @@ c		.fkarg	0	rune.t
 s1		.fkarg	1	list.t	rune.t
 			.force	_ibio.file.name.extension.set_worker_k1
 			.coerce	bool.t.out
-			.app	c	_slash
+			.app	c	rune.forwardslash
 			.enter	rune.≡
 		.case	nil
 			.app	ext
@@ -566,7 +565,7 @@ bool.t.out	.cogvar
 _ibio.file.name.</>_worker	.gvar
 list.:	.gvar
 rune.≡	.gvar
-_slash	.gvar
+rune.forwardslash	.gvar
 c	.fv	rune.t
 dn1	.fv	list.t	rune.t
 fn	.fv	list.t	rune.t
@@ -581,7 +580,7 @@ fn1			.apply	_ibio.file.name.</>_worker	|	dn1	fn
 		.case	nil
 			.force	_ibio.file.name.</>_worker_k1_nil_k
 			.coerce	bool.t.out
-			.app	c	_slash
+			.app	c	rune.forwardslash
 			.enter	rune.≡
 
 _ibio.file.name.</>_worker_k1_nil_k	.forcecont
@@ -589,17 +588,17 @@ rune.t	.tygvar
 list.t	.tygvar
 bool.prim.u	.tygvar
 list.:	.gvar
-_slash	.gvar
+rune.forwardslash	.gvar
 c	.fv	rune.t
 fn	.fv	list.t	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-fn1			.apply	list.:	rune.t	|	_slash	fn
+fn1			.apply	list.:	rune.t	|	rune.forwardslash	fn
 			.app	c	fn1
 			.enter	list.:	rune.t
 		.case	true
-			.app	_slash	fn
+			.app	rune.forwardslash	fn
 			.enter	list.:	rune.t
 
 -- §section §gs{ibio.file.name.compare}
@@ -644,13 +643,6 @@ ds	.apply	diff.list.prepend	rune.t	|	_ibio.file.name.fmtgs_prefix	s1
 	.enter	fmtgs.prec
 
 -- §section Random data
-
-_slash_c	.expr
-rune.t.in	.cogvar
-sl	.rune	/
-	.coerce	rune.t.in
-	.lift
-	.yield	sl
 
 _dot_c	.expr
 rune.t.in	.cogvar
