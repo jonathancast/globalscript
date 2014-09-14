@@ -30,6 +30,7 @@ rune.prim.advance	.closure	_rune.prim.advance_c
 rune.diff	.closure	_rune.diff_c
 
 rune.new.line	.closure	_rune.new.line_c
+rune.forwardslash	.closure	_rune.forwardslash_c
 rune.backslash	.closure	_rune.backslash_c
 rune.tab	.closure	_rune.tab_c
 rune.space	.closure	_rune.space_c
@@ -395,6 +396,13 @@ nl	.rune	\n
 	.coerce	rune.t.in
 	.lift
 	.yield	nl
+
+_rune.forwardslash_c	.expr
+rune.t.in	.cogvar
+fs	.rune	/
+	.coerce	rune.t.in
+	.lift
+	.yield	fs
 
 _rune.backslash_c	.expr
 rune.t.in	.cogvar
