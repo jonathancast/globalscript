@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.5
+#calculus: gsdl.string-code 0.6
 
 	.document
 
@@ -10,6 +10,7 @@
 
 _epcode	.impprog	test.sequence	m
 _epcode.body	.subcode
+	.lift
 	.body	.closure	_epcode.body
 
 _epcode.body	.expr

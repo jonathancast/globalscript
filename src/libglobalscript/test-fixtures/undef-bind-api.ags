@@ -1,4 +1,4 @@
-#calculus: gsdl.string-code 0.5
+#calculus: gsdl.string-code 0.6
 
 	.document
 
@@ -11,6 +11,7 @@
 _epcode	.impprog	test.sequence	m
 _real.entry.0	.subcode
 _real.entry.body	.subcode
+	.lift
 as	.bind	.closure	_real.entry.0
 	.body	.closure	_real.entry.body
 
