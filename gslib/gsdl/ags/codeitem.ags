@@ -67,6 +67,7 @@ gsdl.ags.codeitem.impprog	.closure	_gsdl.ags.codeitem.impprog_c
 
 gsdl.ags.codeitem.fvs.parser	.closure	_gsdl.ags.codeitem.fvs.parser_c
 _gsdl.ags.codeitem.fvs.parser_fv.kw.re	.regex	.fv
+_gsdl.ags.codeitem.fvs.parser_efv.kw.re	.regex	.efv
 
 gsdl.ags.codeitem.args.parser	.closure	_gsdl.ags.codeitem.args.parser_c
 _gsdl.ags.codeitem.args.parser_arg.p_arg.kw.re	.regex	.arg
@@ -1546,41 +1547,53 @@ _gsdl.ags.codeitem.fvs.parser_c	.expr
 rune.t	.tygvar
 gsdl.ags.codeitem.fv.t	.tygvar
 string.t	.tygvar
+bool.t	.tygvar
 list.t	.tygvar
 _gsdl.ags.codeitem.fvs.parser_f_c	.subcode
 parser.many	.gvar
 parser.<*	.gvar
-parser.lift3	.gvar
+parser.lift4	.gvar
 gsdl.ags.syntax.id	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
+parser.<|>	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.codeitem.fvs.parser_fv.kw.re	.gvar
+parser.unit	.gvar
+bool.false	.gvar
+_gsdl.ags.codeitem.fvs.parser_efv.kw.re	.gvar
+bool.true	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
 list.string.ty	.tylet	list.t	string.t
 f	.closure	_gsdl.ags.codeitem.fvs.parser_f_c
 fv.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.fvs.parser_fv.kw.re
-nm.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	fv.kw.p
-nm.p	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	nm.p1
+unit.false.p	.apply	parser.unit	rune.t	bool.t	|	bool.false
+e.p1.1	.apply	parser.*>	rune.t	string.t	bool.t	|	fv.kw.p	unit.false.p
+efv.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.fvs.parser_efv.kw.re
+unit.true.p	.apply	parser.unit	rune.t	bool.t	|	bool.true
+e.p1.2	.apply	parser.*>	rune.t	string.t	bool.t	|	efv.kw.p	unit.true.p
+e.p1	.apply	parser.<|>	rune.t	bool.t	|	e.p1.1	e.p1.2
+e.p	.apply	parser.*>	rune.t	string.t	bool.t	|	gsdl.ags.syntax.columnsep	e.p1
 ty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tyas.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 tyas.p	.apply	parser.many	rune.t	string.t	|	tyas.p1
-fv.p1	.apply	parser.lift3	rune.t	string.t	string.t	list.string.ty	gsdl.ags.codeitem.fv.t	|	f	nm.p	ty.p	tyas.p
+fv.p1	.apply	parser.lift4	rune.t	string.t	bool.t	string.t	list.string.ty	gsdl.ags.codeitem.fv.t	|	f	gsdl.ags.syntax.id	e.p	ty.p	tyas.p
 fv.p	.apply	parser.<*	rune.t	gsdl.ags.codeitem.fv.t	string.t	|	fv.p1	gsdl.ags.syntax.whitespace
 	.app	fv.p
 	.enter	parser.many	rune.t	gsdl.ags.codeitem.fv.t
 
 _gsdl.ags.codeitem.fvs.parser_f_c	.expr
 string.t	.tygvar
+bool.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.fv.prim.u	.tygvar
-bool.true	.gvar	-- Temp
 nm	.larg	string.t
+e	.larg	bool.t
 ty	.larg	string.t
 tyas	.larg	list.t	string.t
-r	.record	gstype	ty	indir	bool.true	name	nm	tyargs	tyas	|	gsdl.ags.codeitem.fv.prim.u
+r	.record	gstype	ty	indir	e	name	nm	tyargs	tyas	|	gsdl.ags.codeitem.fv.prim.u
 	.lift
 	.yield	r
 
