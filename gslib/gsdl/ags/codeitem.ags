@@ -1575,10 +1575,12 @@ fv.p	.apply	parser.<*	rune.t	gsdl.ags.codeitem.fv.t	string.t	|	fv.p1	gsdl.ags.sy
 _gsdl.ags.codeitem.fvs.parser_f_c	.expr
 string.t	.tygvar
 list.t	.tygvar
+gsdl.ags.codeitem.fv.prim.u	.tygvar
+bool.true	.gvar	-- Temp
 nm	.larg	string.t
 ty	.larg	string.t
 tyas	.larg	list.t	string.t
-r	.record	gstype	ty	name	nm	tyargs	tyas
+r	.record	gstype	ty	indir	bool.true	name	nm	tyargs	tyas	|	gsdl.ags.codeitem.fv.prim.u
 	.lift
 	.yield	r
 
@@ -4201,9 +4203,10 @@ gsdl.ags.codeitem.fv.prim.u	.tygvar
 
 gsdl.ags.codeitem.fv.prim.u	.tyexpr
 string.t	.tygvar
+bool.t	.tygvar
 list.t	.tygvar
 list.string.t	.tylet	list.t	string.t
-	.typroduct	gstype	string.t	name	string.t	tyargs	list.string.t
+	.typroduct	gstype	string.t	indir	bool.t	name	string.t	tyargs	list.string.t
 
 -- §section §gs{gsdl.ags.codeitem.karg.t}
 
