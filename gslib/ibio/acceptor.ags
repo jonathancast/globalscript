@@ -463,18 +463,18 @@ _ibio.acceptor.prim.t_fail_arg_ty	.tygvar
 _ibio.acceptor.prim.t_unit.plus_arg_ty	.tygvar
 s	.tylambda	*
 α	.tylambda	*
-symbol.bind_arg_ty	.tylet	_ibio.acceptor.prim.t_symbol.bind_arg_ty	s	α
-unit.plus_arg_ty	.tylet	_ibio.acceptor.prim.t_unit.plus_arg_ty	s	α
-	.tysum	fail	_ibio.acceptor.prim.t_fail_arg_ty	symbol.bind	symbol.bind_arg_ty	unit.plus	unit.plus_arg_ty
+symbol.bind.s.α.ty	.tylet	_ibio.acceptor.prim.t_symbol.bind_arg_ty	s	α
+unit.plus.s.α.ty	.tylet	_ibio.acceptor.prim.t_unit.plus_arg_ty	s	α
+	.tysum	fail	_ibio.acceptor.prim.t_fail_arg_ty	symbol.bind	symbol.bind.s.α.ty	unit.plus	unit.plus.s.α.ty
 
 _ibio.acceptor.prim.t_symbol.bind_arg_ty	.tyexpr
 _ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	.tygvar
 ibio.acceptor.prim.t	.tygvar
 s	.tylambda	*
 α	.tylambda	*
-0_arg_ty	.tylet	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	α
-1_arg_ty	.tylet	ibio.acceptor.prim.t	s	α
-	.tyubproduct	0	0_arg_ty	1	1_arg_ty
+0.arg.ty	.tylet	_ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	s	α
+1.arg.ty	.tylet	ibio.acceptor.prim.t	s	α
+	.tyubproduct	0	0.arg.ty	1	1.arg.ty
 
 _ibio.acceptor.prim.t_symbol.bind_arg_0_arg_ty	.tyexpr
 ibio.acceptor.prim.t	.tygvar
