@@ -2200,10 +2200,12 @@ string.t	.tygvar
 parser.pos.t	.tygvar
 list.t	.tygvar
 _gsdl.ags.codeitem.alloc.prim.u_record_field.ty	.tygvar
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
 _gsdl.ags.codeitem.allocs.parser_record.p_f_c	.subcode
 _gsdl.ags.codeitem.allocs.parser_record.p_fields.f_c	.subcode
 parser.<*	.gvar
-parser.lift3	.gvar
+parser.lift4	.gvar
 parser.pos.get	.gvar
 gsdl.ags.syntax.id	.gvar
 parser.*>	.gvar
@@ -2213,9 +2215,13 @@ rune.compare	.gvar
 _gsdl.ags.codeitem.allocs.parser_record.p_record.re	.gvar
 parser.many	.gvar
 parser.lift2	.gvar
+parser.optional	.gvar
+gsdl.ags.syntax.separator	.gvar
+gsdl.var.parser	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
 list.fields.ty	.tylet	list.t	_gsdl.ags.codeitem.alloc.prim.u_record_field.ty
+maybe.var.ty	.tylet	maybe.t	gsdl.var.t
 f	.closure	_gsdl.ags.codeitem.allocs.parser_record.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 record.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.allocs.parser_record.p_record.re
@@ -2226,7 +2232,11 @@ fields.p2.1	.apply	parser.lift2	rune.t	string.t	string.t	_gsdl.ags.codeitem.allo
 fields.p2	.apply	parser.many	rune.t	_gsdl.ags.codeitem.alloc.prim.u_record_field.ty	|	fields.p2.1
 fields.p1	.apply	parser.*>	rune.t	string.t	list.fields.ty	|	record.p	fields.p2
 fields.p	.apply	parser.*>	rune.t	string.t	list.fields.ty	|	gsdl.ags.syntax.columnsep	fields.p1
-p	.apply	parser.lift3	rune.t	parser.pos.t	string.t	list.fields.ty	gsdl.ags.codeitem.alloc.t	|	f	pos.get	gsdl.ags.syntax.id	fields.p
+tysig.p1.2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+tysig.p1.1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.separator	tysig.p1.2
+tysig.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	tysig.p1.1
+tysig.p	.apply	parser.optional	rune.t	gsdl.var.t	|	tysig.p1
+p	.apply	parser.lift4	rune.t	parser.pos.t	string.t	list.fields.ty	maybe.var.ty	gsdl.ags.codeitem.alloc.t	|	f	pos.get	gsdl.ags.syntax.id	fields.p	tysig.p
 	.app	p	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.codeitem.alloc.t	string.t
 
@@ -2235,10 +2245,13 @@ parser.pos.t	.tygvar
 string.t	.tygvar
 list.t	.tygvar
 _gsdl.ags.codeitem.alloc.prim.u_record_field.ty	.tygvar
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar	-- Temp
 pos	.larg	parser.pos.t
 nm	.larg	string.t
 fs	.larg	list.t	_gsdl.ags.codeitem.alloc.prim.u_record_field.ty
+mbty	.larg	maybe.t	gsdl.var.t
 	.undef	gsdl.ags.codeitem.alloc.t
 
 _gsdl.ags.codeitem.allocs.parser_record.p_fields.f_c	.expr

@@ -25,7 +25,7 @@ _test.parse_segment.empty_input	.string	\t.code\n
 -- §subsection §ags{.expr} Code Items
 
 _test.parse_expr.items	.closure	_test.parse_expr.items_c
-_tests.parse_expr.items	.list	test.property.t	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.rune	_test.parse_expr.larg	_test.parse_expr.alloc	_test.parse_expr.impprim	_test.parse_expr.impprim.args	_test.parse_expr.undefined	_test.parse_expr.field	_test.parse_expr.record	_test.parse_expr.prim	_test.parse_expr.prim.tyargs	_test.parse_expr.prim.args
+_tests.parse_expr.items	.list	test.property.t	_test.parse_expr	_test.parse_expr.tygvar	_test.parse_expr.subcode	_test.parse_expr.cogvar	_test.parse_expr.gvar	_test.parse_expr.rune	_test.parse_expr.larg	_test.parse_expr.alloc	_test.parse_expr.impprim	_test.parse_expr.impprim.args	_test.parse_expr.undefined	_test.parse_expr.field	_test.parse_expr.record	_test.parse_expr.record.typesig	_test.parse_expr.prim	_test.parse_expr.prim.tyargs	_test.parse_expr.prim.args
 
 _test.parse_expr	.closure	_test.parse_expr_c
 _test.parse_expr_label	.string	qq{_foo_c\\t.expr\\n\\t.enter\\tbar\\n}\s=~\sparser
@@ -92,6 +92,10 @@ _test.parse_expr.field_input	.string	_foo_c\t.expr\nx.bar\t.field\tbar.t\tx\n\t.
 _test.parse_expr.record	.closure	_test.parse_expr.record_c
 _test.parse_expr.record_label	.string	qq{_foo_c\\t.expr\\nx\\t.record\\tf\\tx.f\\n\\t.enter\\tbaz\\n}\s=~\sparser
 _test.parse_expr.record_input	.string	_foo_c\t.expr\nx\t.record\tf\tx.f\n\t.enter\tbaz\n
+
+_test.parse_expr.record.typesig	.closure	_test.parse_expr.record.typesig_c
+_test.parse_expr.record.typesig_label	.string	qq{_foo_c\\t.expr\\nx\\t.record\\tf\\tx.f\\t|\\tx.t\\n\\t.enter\\tbaz\\n}\s=~\sparser
+_test.parse_expr.record.typesig_input	.string	_foo_c\t.expr\nx\t.record\tf\tx.f\t|\tx.t\n\t.enter\tbaz\n
 
 _test.parse_expr.prim	.closure	_test.parse_expr.prim_c
 _test.parse_expr.prim_label	.string	qq{_foo_c\\t.expr\\nx\\t.prim\\tset\\tf\\tty\\n\\t.enter\\tbaz\\n}\s=~\sparser
@@ -1016,6 +1020,33 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.a
 	.enter	test.property.label
 
 _test.parse_expr.record_k_c	.expr
+gsdl.ags.codeitem.t	.tygvar
+test.true	.gvar
+ci	.larg	gsdl.ags.codeitem.t
+	.enter	test.true
+
+-- §subsubsection §gs{qq{_foo_c\\t.expr\\nx\\t.record\\tf\\tx.f\\t|\\tx.t\\n\\t.enter\\tbaz\\n} =~ parser}
+
+_test.parse_expr.record.typesig_c	.expr
+rune.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar	-- Temp
+_test.parse_expr.record.typesig_k_c	.subcode
+test.property.label	.gvar
+_test.parse_expr.record.typesig_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.parser	.gvar
+_test.parse_expr.record.typesig_input	.gvar
+k	.closure	_test.parse_expr.record.typesig_k_c
+fs	.lrecord	|	gsdl.ags.syntax.features.t
+ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.record.typesig_input	k
+	.app	_test.parse_expr.record.typesig_label	test
+	.enter	test.property.label
+
+_test.parse_expr.record.typesig_k_c	.expr
 gsdl.ags.codeitem.t	.tygvar
 test.true	.gvar
 ci	.larg	gsdl.ags.codeitem.t
