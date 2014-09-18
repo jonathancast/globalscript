@@ -491,8 +491,8 @@ _ibio.acceptor.prim.t_unit.plus_arg_ty	.tyexpr
 ibio.acceptor.prim.t	.tygvar
 s	.tylambda	*
 α	.tylambda	*
-1_arg_ty	.tylet	ibio.acceptor.prim.t	s	α
-	.tyubproduct	0	α	1	1_arg_ty
+acceptor.prim.s.α	.tylet	ibio.acceptor.prim.t	s	α
+	.tyubproduct	0	α	1	acceptor.prim.s.α
 
 -- §section §gs{ibio.acceptor.many}
 
