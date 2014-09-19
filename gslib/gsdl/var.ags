@@ -891,7 +891,7 @@ s1				.fkarg	0	string.t
 					.enter	string.compare
 				.case	numeric
 n1				.fkarg	0	natural.t
-					.undef	order.total.ord.t
+					.enter	order.total.ord.lt
 				.case	symbolic
 s1				.fkarg	0	string.t
 					.enter	order.total.ord.lt
