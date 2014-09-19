@@ -897,7 +897,16 @@ s1				.fkarg	0	string.t
 					.enter	order.total.ord.lt
 		.case	numeric
 n0		.fkarg	0	natural.t
-			.undef	order.total.ord.t
+			.analyze	c1.0	alphanum	numeric	symbolic
+				.case	alphanum
+s1				.fkarg	0	string.t
+					.enter	order.total.ord.gt
+				.case	numeric
+n1				.fkarg	0	natural.t
+					.undef	order.total.ord.t
+				.case	symbolic
+s1				.fkarg	0	string.t
+					.undef	order.total.ord.t
 		.case	symbolic
 s0		.fkarg	0	string.t
 			.analyze	c1.0	alphanum	numeric	symbolic
