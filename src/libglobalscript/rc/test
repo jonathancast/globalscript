@@ -143,6 +143,10 @@ ok_diff '-- analyze with default and two constructor cases --' ./$O.test-gsi ana
 
 ok_grep_errors '-- analyze on un-boxed sum with mis-matched free type variables --' './test-fixtures/ubanalyze-excess-type-variable.ags:18: Mis-matched number of free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
 
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
+
 ok_diff '-- analyze on un-boxed sums --' ./$O.test-gsi analyze-unboxed-free-variable.ags
 
 ok_grep_errors '-- analyze on un-boxed sum with mis-matched number of free variables --' './test-fixtures/ubanalyze-mismatched-free-variable-number.ags:19: Mis-matched number of free variables' ./$O.test-gsi ubanalyze-mismatched-free-variable-number.ags
@@ -150,10 +154,6 @@ ok_grep_errors '-- analyze on un-boxed sum with mis-matched names of free variab
 
 ok_grep_errors '-- analyze on existential types with failing occurs check --' './test-fixtures/analyze-failing-occurs-check.ags:23: .exkarg-bound type variable α free in type of .case body' ./$O.test-gsi analyze-failing-occurs-check.ags
 ok_diff_fail '-- analyze on existential types --' ./$O.test-gsi analyze-existential-type.ags
-
-echo '# Version 0.6 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_grep_errors '-- undefined API entry points --' './test-fixtures/undef-api.ags:7: undefined' ./$O.test-gsexec undef-api.ags
 ok_grep_errors '-- undefined expression API entry points --' './test-fixtures/undef-expr-api.ags:13: undefined' ./$O.test-gsexec undef-expr-api.ags
