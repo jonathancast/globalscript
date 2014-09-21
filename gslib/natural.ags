@@ -7,6 +7,7 @@
 natural.from.prim	.closure	_natural.from.prim_c
 
 natural.+	.closure	_natural.+_c
+natural.*	.closure	_natural.*_c
 natural.divMod	.closure	_natural.divMod_c
 
 natural.≡	.closure	_natural.≡_c
@@ -17,6 +18,7 @@ natural.compare	.closure	_natural.compare_c
 
 natural.prim.+	.closure	_natural.prim.+_c
 natural.prim.-	.closure	_natural.prim.-_c
+natural.prim.*	.closure	_natural.prim.*_c
 natural.prim.divMod	.closure	_natural.prim.divMod_c
 
 natural.prim.≡	.closure	_natural.prim.≡_c
@@ -82,6 +84,40 @@ n1_0	.karg	natural.prim.u
 	.lift
 	.app	n0_0	n1_0
 	.yield	natural.prim.+
+
+-- §section §gs{natural.*}
+
+_natural.*_c	.expr
+natural.t	.tygvar
+_natural.*_k0	.subcode
+natural.t.out	.cogvar
+n0	.larg	natural.t
+n1	.larg	natural.t
+	.force	_natural.*_k0
+	.coerce	natural.t.out
+	.enter	n0
+
+_natural.*_k0	.forcecont
+natural.t	.tygvar
+natural.prim.u	.tygvar
+_natural.*_k1	.subcode
+natural.t.out	.cogvar
+n1	.fv	natural.t
+n0.0	.karg	natural.prim.u
+	.force	_natural.*_k1
+	.coerce	natural.t.out
+	.enter	n1
+
+_natural.*_k1	.forcecont
+natural.prim.u	.tygvar
+natural.t.in	.cogvar
+natural.prim.*	.gvar
+n0.0	.fv	natural.prim.u
+n1.0	.karg	natural.prim.u
+	.coerce	natural.t.in
+	.lift
+	.app	n0.0	n1.0
+	.yield	natural.prim.*
 
 -- §section §gs{natural.divMod}
 
@@ -354,6 +390,14 @@ n0	.arg	natural.prim.u
 n1	.arg	natural.prim.u
 	.ubprim	natural.prim	-	_natural.prim.-_ty	|	n0	n1
 
+_natural.prim.*_c	.expr
+natural.prim.u	.tygvar
+_natural.prim.*_ty	.tygvar
+n0	.arg	natural.prim.u
+n1	.arg	natural.prim.u
+n2	.prim	natural.prim	*	_natural.prim.*_ty	|	n0	n1
+	.yield	n2
+
 _natural.prim.divMod_c	.expr
 natural.prim.u	.tygvar
 _natural.prim.divMod_ty	.tygvar
@@ -591,6 +635,12 @@ record.unboxed.empty	.tygvar
 	.tyfun	natural.prim.u
 	.tyfun	natural.prim.u
 	.tyubsum	0	record.unboxed.empty	1	natural.prim.u
+
+_natural.prim.*_ty	.tyexpr
+natural.prim.u	.tygvar
+	.tyfun	natural.prim.u
+	.tyfun	natural.prim.u
+	.tyref	natural.prim.u
 
 _natural.prim.divMod_ty	.tyexpr
 natural.prim.u	.tygvar

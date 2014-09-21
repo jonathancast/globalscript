@@ -6,7 +6,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0	_test.4.gt.0	_test.compare.4.4	_test_2.plus.3	_test.1.div.0	_test.2.div.3	_test.fmtdecimal.0	_test.fmtdecimal.11
+_tests	.list	test.property.t	_test.4.eq.4	_test.4.eq.0	_test.0.lt.4	_test.4.lt.0	_test.4.gt.0	_test.compare.4.4	_test_2.plus.3	_test.1.div.0	_test.2.div.3	_test_*	_test.fmtdecimal.0	_test.fmtdecimal.11
 
 _test.4.eq.4	.closure	_test.4.eq.4_c
 _test.4.eq.4_label	.string	4\s≡\s4
@@ -55,6 +55,12 @@ _test.2.div.3_test_quot_fail	.string	2\s`div`\s3≠0
 _test.2.div.3_test_quot_succ	.string	2\s`div`\s3≡0
 _test.2.div.3_test_mod_fail	.string	2\s`mod`\s3≠2
 _test.2.div.3_test_mod_succ	.string	2\s`mod`\s3≡2
+
+_test_*	.closure	_test_*_c
+_test_*_label	.string	natural.*
+_test_*_0.2_label	.string	0\s*\s2
+_test_*_1.2_label	.string	1\s*\s2
+_test_*_2.2_label	.string	2\s*\s2
 
 _test.fmtdecimal.0	.closure	_test.fmtdecimal.0_c
 _test.fmtdecimal.0_label	.string	fmtdecimal\s0
@@ -337,6 +343,38 @@ natural.2	.gvar
 m	.fv	natural.t
 	.app	m	natural.2
 	.enter	natural.≡
+
+-- §section §gs{natural.*}
+
+_test_*_c	.expr
+natural.t	.tygvar
+test.property.label	.gvar
+_test_*_label	.gvar
+test.property.∧	.gvar
+_test_*_0.2_label	.gvar
+test.assert.eq	.gvar
+natural.≡	.gvar
+natural.fmtgs	.gvar
+natural.*	.gvar
+natural.0	.gvar
+natural.2	.gvar
+_test_*_1.2_label	.gvar
+natural.1	.gvar
+_test_*_2.2_label	.gvar
+natural.4	.gvar
+0.2	.apply	natural.*	|	natural.0	natural.2
+0.2.t1	.apply	test.assert.eq	natural.t	|	natural.≡	natural.fmtgs	0.2	natural.0
+0.2.t	.apply	test.property.label	|	_test_*_0.2_label	0.2.t1
+1.2	.apply	natural.*	|	natural.1	natural.2
+1.2.t1	.apply	test.assert.eq	natural.t	|	natural.≡	natural.fmtgs	1.2	natural.2
+1.2.t	.apply	test.property.label	|	_test_*_1.2_label	1.2.t1
+2.2	.apply	natural.*	|	natural.2	natural.2
+2.2.t1	.apply	test.assert.eq	natural.t	|	natural.≡	natural.fmtgs	2.2	natural.4
+2.2.t	.apply	test.property.label	|	_test_*_2.2_label	2.2.t1
+test1	.apply	test.property.∧	|	1.2.t	2.2.t
+test	.apply	test.property.∧	|	0.2.t	test1
+	.app	_test_*_label	test
+	.enter	test.property.label
 
 -- §section §gs{natural.fmtdecimal 0}
 

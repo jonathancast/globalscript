@@ -14,12 +14,14 @@ static struct gsregistered_primtype natural_prim_types[] = {
 
 enum {
     natural_prim_plus,
+    natural_prim_times,
 };
 
-static gsprim_handler natural_prim_handle_plus;
+static gsprim_handler natural_prim_handle_plus, natural_prim_handle_times;
 
 static gsprim_handler *natural_prim_exec[] = {
     natural_prim_handle_plus,
+    natural_prim_handle_times,
 };
 
 enum {
@@ -49,6 +51,7 @@ static struct gsregistered_prim natural_prim_operations[] = {
     /* name, file, line, group, apitype, type, index, */
     { "+", __FILE__, __LINE__, gsprim_operation, 0, "natural.prim.u natural.prim.u natural.prim.u → →", natural_prim_plus, },
     { "-", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 natural.prim.u \"uΣ〈 0 1 〉 → →", natural_prim_ub_minus, },
+    { "*", __FILE__, __LINE__, gsprim_operation, 0, "natural.prim.u natural.prim.u natural.prim.u → →", natural_prim_times, },
     { "divMod", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 natural.prim.u natural.prim.u \"uΠ〈 0 1 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_divMod, },
 
     { "≡", __FILE__, __LINE__, gsprim_operation_unboxed, 0, "natural.prim.u natural.prim.u \"uΠ〈 〉 \"uΠ〈 〉 \"uΣ〈 0 1 〉 → →", natural_prim_ub_eq, },
@@ -92,6 +95,39 @@ natural_prim_handle_plus(struct ace_thread *thread, struct gspos pos, int nargs,
     sum |= GS_MAX_PTR;
 
     *pres = sum;
+    return 1;
+}
+
+static
+int
+natural_prim_handle_times(struct ace_thread *thread, struct gspos pos, int nargs, gsvalue *args, gsvalue *pres)
+{
+    gsvalue factor0, factor1, product;
+
+    factor0 = args[0];
+    factor1 = args[1];
+    if (IS_PTR(factor0) || IS_PTR(factor1))
+        return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_times: bignums")
+    ;
+
+    factor0 &= ~GS_MAX_PTR;
+    factor1 &= ~GS_MAX_PTR;
+
+    if (factor0 > 0 && factor1 > 0) {
+        uint log0 = 0, log1 = 0;
+
+        while (factor0 > (1 << log0)) log0++;
+        while (factor1 > (1 << log1)) log1++;
+
+        if (log0 + log1 >= sizeof(gsvalue) * 8 - 1)
+          return gsprim_unimpl(thread, __FILE__, __LINE__, pos, "natural_prim_handle_times: result is a bignum")
+        ;
+    }
+
+    product = factor0 * factor1;
+    product |= GS_MAX_PTR;
+
+    *pres = product;
     return 1;
 }
 
