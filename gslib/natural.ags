@@ -36,6 +36,7 @@ natural.3	.closure	_natural.3_c
 natural.4	.closure	_natural.4_c
 natural.5	.closure	_natural.5_c
 natural.9	.closure	_natural.9_c
+natural.10	.closure	_natural.10_c
 natural.11	.closure	_natural.11_c
 
 	.code
@@ -589,6 +590,13 @@ natural.t.in	.cogvar
 	.coerce	natural.t.in
 	.lift
 	.yield	9
+
+_natural.10_c	.expr
+natural.t.in	.cogvar
+10	.natural	10
+	.coerce	natural.t.in
+	.lift
+	.yield	10
 
 _natural.11_c	.expr
 natural.t.in	.cogvar
