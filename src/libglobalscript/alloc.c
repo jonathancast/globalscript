@@ -387,7 +387,8 @@ gs_sys_block_alloc(registered_block_class cl)
     }
 
     blocks[i] = gs_sys_block_allocated;
-    pres = i < LAST_BLOCK_INDEX ? BLOCK_AT_INDEX(i) : 0;
+    if (i >= LAST_BLOCK_INDEX) gswarning(UNIMPL("Warning: about to return %p as a block, which we think is illegally larg"), BLOCK_AT_INDEX(i));
+    pres = BLOCK_AT_INDEX(i);
     pres->class = cl;
 
     unlock(&gs_allocator_lock);
