@@ -62,20 +62,14 @@ s	.tyfv	*
 
 _ibio.acceptor.symbol.prim_c	.expr
 ibio.acceptor.prim.kt	.tygvar
-_ibio.acceptor.symbol.prim_f_c	.subcode
 ibio.acceptor.prim.symbol.bind	.gvar
+ibio.acceptor.prim.fail	.gvar
 s	.tyarg	*
 β	.tyarg	*
 k	.larg	ibio.acceptor.prim.kt	s	s	β
-f	.closure	_ibio.acceptor.symbol.prim_f_c
+f	.apply	ibio.acceptor.prim.fail	s	β
 	.app	k	f
 	.enter	ibio.acceptor.prim.symbol.bind	s	β
-
-_ibio.acceptor.symbol.prim_f_c	.expr
-ibio.acceptor.prim.fail	.gvar
-s	.tyfv	*
-β	.tyfv	*
-	.enter	ibio.acceptor.prim.fail	s	β
 
 -- §section §gs{ibio.acceptor.optional}
 
