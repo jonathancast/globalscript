@@ -237,42 +237,19 @@ _ibio.acceptor.many.void.prim_c	.expr
 ibio.acceptor.prim.cont.t	.tygvar
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
-_ibio.acceptor.many.void.prim_nr_c	.subcode
-_ibio.acceptor.many.void.prim_cr_c	.subcode
+_ibio.acceptor.many.void.prim_cr_k0_c	.subcode
 ibio.acceptor.prim.<|>	.gvar
+record.empty	.gvar
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
 p	.larg	ibio.acceptor.prim.cont.t	s	α	β
 k	.larg	ibio.acceptor.prim.kt	s	record.empty	β
-nr	.closure	_ibio.acceptor.many.void.prim_nr_c
-cr	.closure	_ibio.acceptor.many.void.prim_cr_c
+nr	.apply	k	|	record.empty
+k0	.closure	_ibio.acceptor.many.void.prim_cr_k0_c
+cr	.apply	p	|	k0
 	.app	nr	cr
 	.enter	ibio.acceptor.prim.<|>	s	β
-
-_ibio.acceptor.many.void.prim_nr_c	.expr
-ibio.acceptor.prim.kt	.tygvar
-record.empty	.tygvar
-record.empty	.gvar
-s	.tyfv	*
-β	.tyfv	*
-k	.fv	ibio.acceptor.prim.kt	s	record.empty	β
-	.app	record.empty
-	.enter	k
-
-_ibio.acceptor.many.void.prim_cr_c	.expr
-ibio.acceptor.prim.cont.t	.tygvar
-ibio.acceptor.prim.kt	.tygvar
-record.empty	.tygvar
-_ibio.acceptor.many.void.prim_cr_k0_c	.subcode
-s	.tyfv	*
-α	.tyfv	*
-β	.tyfv	*
-p	.fv	ibio.acceptor.prim.cont.t	s	α	β
-k	.fv	ibio.acceptor.prim.kt	s	record.empty	β
-k0	.closure	_ibio.acceptor.many.void.prim_cr_k0_c
-	.app	k0
-	.enter	p
 
 _ibio.acceptor.many.void.prim_cr_k0_c	.expr
 ibio.acceptor.prim.cont.t	.tygvar
