@@ -60,6 +60,12 @@ static int ace_find_thread(struct ace_thread_pool_stats *, int, struct ace_threa
 static void ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
 
+static int ace_exec_efv(struct ace_thread *);
+static int ace_exec_alloc(struct ace_thread *);
+static int ace_exec_push(struct ace_thread *);
+static int ace_exec_branch(struct ace_thread *);
+static int ace_exec_terminal(struct ace_thread *);
+
 static void ace_instr_extract_efv(struct ace_thread *);
 static void ace_instr_alloc_closure(struct ace_thread *);
 static void ace_instr_prim(struct ace_thread *);
@@ -120,80 +126,87 @@ ace_thread_pool_main(void *p)
         if (thread && thread->state == ace_thread_running) num_timeslots++;
         instr_start_time = gsflag_stat_collection ? nsec() : 0;
         if (thread) while (thread->state == ace_thread_running && nwork++ < 0x1000) {
-            num_instrs++;
-            switch (thread->st.running.ip->instr) {
-                case gsbc_op_efv:
-                    ace_instr_extract_efv(thread);
-                    break;
-                case gsbc_op_closure:
-                    ace_instr_alloc_closure(thread);
-                    break;
-                case gsbc_op_prim:
-                    ace_instr_prim(thread);
-                    break;
-                case gsbc_op_constr:
-                    ace_instr_alloc_constr(thread);
-                    break;
-                case gsbc_op_record:
-                    ace_instr_alloc_record(thread);
-                    break;
-                case gsbc_op_field:
-                    ace_instr_extract_field(thread);
-                    break;
-                case gsbc_op_lfield:
-                    ace_instr_alloc_lfield(thread);
-                    break;
-                case gsbc_op_undefined:
-                    ace_instr_alloc_undef(thread);
-                    break;
-                case gsbc_op_alias:
-                    ace_instr_copy_alias(thread);
-                    break;
-                case gsbc_op_apply:
-                    ace_instr_alloc_apply(thread);
-                    break;
-                case gsbc_op_unknown_api_prim:
-                    ace_instr_alloc_unknown_api_prim(thread);
-                    break;
-                case gsbc_op_api_prim:
-                    ace_instr_alloc_api_prim(thread);
-                    break;
-                case gsbc_op_app:
-                    ace_instr_push_app(thread);
-                    break;
-                case gsbc_op_force:
-                    ace_instr_push_force(thread);
-                    break;
-                case gsbc_op_strict:
-                    ace_instr_push_strict(thread);
-                    break;
-                case gsbc_op_ubanalzye:
-                    ace_instr_push_ubanalyze(thread);
-                    break;
-                case gsbc_op_analyze:
-                    ace_instr_perform_analyze(thread);
-                    break;
-                case gsbc_op_danalyze:
-                    ace_instr_perform_danalyze(thread);
-                    break;
-                case gsbc_op_undef:
-                    ace_instr_return_undef(thread);
-                    break;
-                case gsbc_op_enter:
-                    ace_instr_enter(thread, &stats);
-                    break;
-                case gsbc_op_yield:
-                    ace_instr_yield(thread);
-                    break;
-                case gsbc_op_ubprim:
-                    ace_instr_ubprim(thread);
-                    break;
-                case gsbc_op_lprim:
-                    ace_instr_lprim(thread);
-                    break;
-                default:
-                    ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "run instruction %d", thread->st.running.ip->instr);
-                    break;
+            if (ace_exec_efv(thread)) num_instrs++;
+            else if (ace_exec_alloc(thread)) num_instrs++;
+            else if (ace_exec_push(thread)) num_instrs++;
+            else if (ace_exec_branch(thread)) num_instrs++;
+            else if (ace_exec_terminal(thread)) num_instrs++;
+            else {
+                num_instrs++;
+                switch (thread->st.running.ip->instr) {
+                    case gsbc_op_efv:
+                        ace_instr_extract_efv(thread);
+                        break;
+                    case gsbc_op_closure:
+                        ace_instr_alloc_closure(thread);
+                        break;
+                    case gsbc_op_prim:
+                        ace_instr_prim(thread);
+                        break;
+                    case gsbc_op_constr:
+                        ace_instr_alloc_constr(thread);
+                        break;
+                    case gsbc_op_record:
+                        ace_instr_alloc_record(thread);
+                        break;
+                    case gsbc_op_field:
+                        ace_instr_extract_field(thread);
+                        break;
+                    case gsbc_op_lfield:
+                        ace_instr_alloc_lfield(thread);
+                        break;
+                    case gsbc_op_undefined:
+                        ace_instr_alloc_undef(thread);
+                        break;
+                    case gsbc_op_alias:
+                        ace_instr_copy_alias(thread);
+                        break;
+                    case gsbc_op_apply:
+                        ace_instr_alloc_apply(thread);
+                        break;
+                    case gsbc_op_unknown_api_prim:
+                        ace_instr_alloc_unknown_api_prim(thread);
+                        break;
+                    case gsbc_op_api_prim:
+                        ace_instr_alloc_api_prim(thread);
+                        break;
+                    case gsbc_op_app:
+                        ace_instr_push_app(thread);
+                        break;
+                    case gsbc_op_force:
+                        ace_instr_push_force(thread);
+                        break;
+                    case gsbc_op_strict:
+                        ace_instr_push_strict(thread);
+                        break;
+                    case gsbc_op_ubanalzye:
+                        ace_instr_push_ubanalyze(thread);
+                        break;
+                    case gsbc_op_analyze:
+                        ace_instr_perform_analyze(thread);
+                        break;
+                    case gsbc_op_danalyze:
+                        ace_instr_perform_danalyze(thread);
+                        break;
+                    case gsbc_op_undef:
+                        ace_instr_return_undef(thread);
+                        break;
+                    case gsbc_op_enter:
+                        ace_instr_enter(thread, &stats);
+                        break;
+                    case gsbc_op_yield:
+                        ace_instr_yield(thread);
+                        break;
+                    case gsbc_op_ubprim:
+                        ace_instr_ubprim(thread);
+                        break;
+                    case gsbc_op_lprim:
+                        ace_instr_lprim(thread);
+                        break;
+                    default:
+                        ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "run instruction %d", thread->st.running.ip->instr);
+                        break;
+                }
             }
         }
         if (gsflag_stat_collection) instr_time += nsec() - instr_start_time;
@@ -396,6 +409,15 @@ ace_thread_cleanup(struct gsstringbuilder *err)
     return 0;
 }
 
+int
+ace_exec_efv(struct ace_thread *thread)
+{
+    switch (thread->st.running.ip->instr) {
+        default:
+            return 0;
+    }
+}
+
 static
 void
 ace_instr_extract_efv(struct ace_thread *thread)
@@ -427,6 +449,15 @@ again:
 
     thread->st.running.ip = ACE_EFV_SKIP(ip);
     return;
+}
+
+int
+ace_exec_alloc(struct ace_thread *thread)
+{
+    switch (thread->st.running.ip->instr) {
+        default:
+            return 0;
+    }
 }
 
 void
@@ -696,6 +727,15 @@ ace_instr_alloc_api_prim(struct ace_thread *thread)
     return;
 }
 
+int
+ace_exec_push(struct ace_thread *thread)
+{
+    switch (thread->st.running.ip->instr) {
+        default:
+            return 0;
+    }
+}
+
 static
 void
 ace_instr_push_app(struct ace_thread *thread)
@@ -794,6 +834,15 @@ ace_instr_push_ubanalyze(struct ace_thread *thread)
     return;
 }
 
+int
+ace_exec_branch(struct ace_thread *thread)
+{
+    switch (thread->st.running.ip->instr) {
+        default:
+            return 0;
+    }
+}
+
 static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
 
 static
@@ -859,6 +908,15 @@ ace_instr_perform_danalyze(struct ace_thread *thread)
     }
 
     return;
+}
+
+int
+ace_exec_terminal(struct ace_thread *thread)
+{
+    switch (thread->st.running.ip->instr) {
+        default:
+            return 0;
+    }
 }
 
 static
