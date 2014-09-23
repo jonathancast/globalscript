@@ -209,40 +209,40 @@ ibio_read_thread_main(void *p)
         if (tid == 0) {
             if (!any_runnable) sleep(1);
             any_runnable = 0;
-        }
 
-        err = gsreserve_string_builder();
-        gcres = gs_sys_gc_allow_collection(err);
-        if (gcres < 0 || gs_sys_memory_exhausted()) {
-            lock(&ibio_read_thread_queue->lock);
-            for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
-                if ((iport = ibio_read_thread_queue->iports[i]) && iport->active) {
-                    struct gsstringbuilder *msg;
-                    struct gspos gspos;
+            err = gsreserve_string_builder();
+            gcres = gs_sys_gc_allow_collection(err);
+            if (gcres < 0 || gs_sys_memory_exhausted()) {
+                lock(&ibio_read_thread_queue->lock);
+                for (i = 0; i < IBIO_NUM_READ_THREADS; i++) {
+                    if ((iport = ibio_read_thread_queue->iports[i]) && iport->active) {
+                        struct gsstringbuilder *msg;
+                        struct gspos gspos;
 
-                    lock(&iport->lock);
+                        lock(&iport->lock);
 
-                    msg = gsreserve_string_builder();
-                    if (gcres < 0) {
-                        gsstring_builder_print(msg, UNIMPL("GC failed: %s"), err->start);
-                    } else {
-                        gsstring_builder_print(msg, UNIMPL("Out of memory"));
-                    }
-                    gsfinish_string_builder(msg);
+                        msg = gsreserve_string_builder();
+                        if (gcres < 0) {
+                            gsstring_builder_print(msg, UNIMPL("GC failed: %s"), err->start);
+                        } else {
+                            gsstring_builder_print(msg, UNIMPL("Out of memory"));
+                        }
+                        gsfinish_string_builder(msg);
 
-                    gspos.file = gsintern_string(gssymfilename, __FILE__);
-                    gspos.lineno = __LINE__;
+                        gspos.file = gsintern_string(gssymfilename, __FILE__);
+                        gspos.lineno = __LINE__;
 
-                    if (iport->reading) api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "%s", msg->start);
-                    iport->channel->error = (gsvalue)gsunimpl(__FILE__, __LINE__, gspos, "%s", msg->start);
-                    ibio_shutdown_iport(iport, iport->position);
+                        if (iport->reading) api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "%s", msg->start);
+                        iport->channel->error = (gsvalue)gsunimpl(__FILE__, __LINE__, gspos, "%s", msg->start);
+                        ibio_shutdown_iport(iport, iport->position);
 
-                    unlock(&iport->lock);
-                 }
+                        unlock(&iport->lock);
+                     }
+                }
+                unlock(&ibio_read_thread_queue->lock);
             }
-            unlock(&ibio_read_thread_queue->lock);
+            gsfinish_string_builder(err);
         }
-        gsfinish_string_builder(err);
 
         lock(&ibio_read_thread_queue->lock);
         iport = ibio_read_thread_queue->iports[tid];
