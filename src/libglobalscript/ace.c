@@ -124,14 +124,14 @@ ace_thread_pool_main(void *p)
         nwork = 0;
         if (thread && thread->state == ace_thread_running) num_timeslots++;
         instr_start_time = gsflag_stat_collection ? nsec() : 0;
-        if (thread) while (thread->state == ace_thread_running && nwork++ < 0x1000) {
-            if (ace_exec_efv(thread)) num_instrs++;
-            else if (ace_exec_alloc(thread)) num_instrs++;
-            else if (ace_exec_push(thread)) num_instrs++;
-            else if (ace_exec_branch(thread)) num_instrs++;
-            else if (ace_exec_terminal(thread)) num_instrs++;
+        if (thread) while (thread->state == ace_thread_running && nwork < 0x1000) {
+            if (ace_exec_efv(thread)) nwork++, num_instrs++;
+            else if (ace_exec_alloc(thread)) nwork++, num_instrs++;
+            else if (ace_exec_push(thread)) nwork++, num_instrs++;
+            else if (ace_exec_branch(thread)) nwork++, num_instrs++;
+            else if (ace_exec_terminal(thread)) nwork++, num_instrs++;
             else {
-                num_instrs++;
+                nwork++, num_instrs++;
                 switch (thread->st.running.ip->instr) {
                     case gsbc_op_closure:
                         ace_instr_alloc_closure(thread);
