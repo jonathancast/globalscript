@@ -66,10 +66,6 @@ static int ace_exec_push(struct ace_thread *);
 static int ace_exec_branch(struct ace_thread *);
 static int ace_exec_terminal(struct ace_thread *);
 
-static void ace_instr_push_app(struct ace_thread *);
-static void ace_instr_push_force(struct ace_thread *);
-static void ace_instr_push_strict(struct ace_thread *);
-static void ace_instr_push_ubanalyze(struct ace_thread *);
 static void ace_instr_perform_analyze(struct ace_thread *);
 static void ace_instr_perform_danalyze(struct ace_thread *);
 static void ace_instr_return_undef(struct ace_thread *);
@@ -122,18 +118,6 @@ ace_thread_pool_main(void *p)
             else {
                 nwork++, num_instrs++;
                 switch (thread->st.running.ip->instr) {
-                    case gsbc_op_app:
-                        ace_instr_push_app(thread);
-                        break;
-                    case gsbc_op_force:
-                        ace_instr_push_force(thread);
-                        break;
-                    case gsbc_op_strict:
-                        ace_instr_push_strict(thread);
-                        break;
-                    case gsbc_op_ubanalzye:
-                        ace_instr_push_ubanalyze(thread);
-                        break;
                     case gsbc_op_analyze:
                         ace_instr_perform_analyze(thread);
                         break;
@@ -729,10 +713,27 @@ ace_instr_alloc_api_prim(struct ace_thread *thread)
     return;
 }
 
+static void ace_instr_push_app(struct ace_thread *);
+static void ace_instr_push_force(struct ace_thread *);
+static void ace_instr_push_strict(struct ace_thread *);
+static void ace_instr_push_ubanalyze(struct ace_thread *);
+
 int
 ace_exec_push(struct ace_thread *thread)
 {
     switch (thread->st.running.ip->instr) {
+        case gsbc_op_app:
+            ace_instr_push_app(thread);
+            return 1;
+        case gsbc_op_force:
+            ace_instr_push_force(thread);
+            return 1;
+        case gsbc_op_strict:
+            ace_instr_push_strict(thread);
+            return 1;
+        case gsbc_op_ubanalzye:
+            ace_instr_push_ubanalyze(thread);
+            return 1;
         default:
             return 0;
     }
