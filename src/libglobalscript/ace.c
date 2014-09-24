@@ -66,7 +66,6 @@ static int ace_exec_push(struct ace_thread *);
 static int ace_exec_branch(struct ace_thread *);
 static int ace_exec_terminal(struct ace_thread *);
 
-static void ace_instr_extract_efv(struct ace_thread *);
 static void ace_instr_alloc_closure(struct ace_thread *);
 static void ace_instr_prim(struct ace_thread *);
 static void ace_instr_alloc_constr(struct ace_thread *);
@@ -134,9 +133,6 @@ ace_thread_pool_main(void *p)
             else {
                 num_instrs++;
                 switch (thread->st.running.ip->instr) {
-                    case gsbc_op_efv:
-                        ace_instr_extract_efv(thread);
-                        break;
                     case gsbc_op_closure:
                         ace_instr_alloc_closure(thread);
                         break;
@@ -409,10 +405,15 @@ ace_thread_cleanup(struct gsstringbuilder *err)
     return 0;
 }
 
+static void ace_instr_extract_efv(struct ace_thread *);
+
 int
 ace_exec_efv(struct ace_thread *thread)
 {
     switch (thread->st.running.ip->instr) {
+        case gsbc_op_efv:
+            ace_instr_extract_efv(thread);
+            return 1;
         default:
             return 0;
     }
