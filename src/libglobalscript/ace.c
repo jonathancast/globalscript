@@ -66,17 +66,6 @@ static int ace_exec_push(struct ace_thread *);
 static int ace_exec_branch(struct ace_thread *);
 static int ace_exec_terminal(struct ace_thread *);
 
-static void ace_instr_alloc_closure(struct ace_thread *);
-static void ace_instr_prim(struct ace_thread *);
-static void ace_instr_alloc_constr(struct ace_thread *);
-static void ace_instr_alloc_record(struct ace_thread *);
-static void ace_instr_extract_field(struct ace_thread *);
-static void ace_instr_alloc_lfield(struct ace_thread *);
-static void ace_instr_alloc_undef(struct ace_thread *);
-static void ace_instr_copy_alias(struct ace_thread *);
-static void ace_instr_alloc_apply(struct ace_thread *);
-static void ace_instr_alloc_unknown_api_prim(struct ace_thread *);
-static void ace_instr_alloc_api_prim(struct ace_thread *);
 static void ace_instr_push_app(struct ace_thread *);
 static void ace_instr_push_force(struct ace_thread *);
 static void ace_instr_push_strict(struct ace_thread *);
@@ -133,39 +122,6 @@ ace_thread_pool_main(void *p)
             else {
                 nwork++, num_instrs++;
                 switch (thread->st.running.ip->instr) {
-                    case gsbc_op_closure:
-                        ace_instr_alloc_closure(thread);
-                        break;
-                    case gsbc_op_prim:
-                        ace_instr_prim(thread);
-                        break;
-                    case gsbc_op_constr:
-                        ace_instr_alloc_constr(thread);
-                        break;
-                    case gsbc_op_record:
-                        ace_instr_alloc_record(thread);
-                        break;
-                    case gsbc_op_field:
-                        ace_instr_extract_field(thread);
-                        break;
-                    case gsbc_op_lfield:
-                        ace_instr_alloc_lfield(thread);
-                        break;
-                    case gsbc_op_undefined:
-                        ace_instr_alloc_undef(thread);
-                        break;
-                    case gsbc_op_alias:
-                        ace_instr_copy_alias(thread);
-                        break;
-                    case gsbc_op_apply:
-                        ace_instr_alloc_apply(thread);
-                        break;
-                    case gsbc_op_unknown_api_prim:
-                        ace_instr_alloc_unknown_api_prim(thread);
-                        break;
-                    case gsbc_op_api_prim:
-                        ace_instr_alloc_api_prim(thread);
-                        break;
                     case gsbc_op_app:
                         ace_instr_push_app(thread);
                         break;
@@ -452,10 +408,55 @@ again:
     return;
 }
 
+static void ace_instr_alloc_closure(struct ace_thread *);
+static void ace_instr_prim(struct ace_thread *);
+static void ace_instr_alloc_constr(struct ace_thread *);
+static void ace_instr_alloc_record(struct ace_thread *);
+static void ace_instr_extract_field(struct ace_thread *);
+static void ace_instr_alloc_lfield(struct ace_thread *);
+static void ace_instr_alloc_undef(struct ace_thread *);
+static void ace_instr_copy_alias(struct ace_thread *);
+static void ace_instr_alloc_apply(struct ace_thread *);
+static void ace_instr_alloc_unknown_api_prim(struct ace_thread *);
+static void ace_instr_alloc_api_prim(struct ace_thread *);
+
 int
 ace_exec_alloc(struct ace_thread *thread)
 {
     switch (thread->st.running.ip->instr) {
+        case gsbc_op_closure:
+            ace_instr_alloc_closure(thread);
+            return 1;
+        case gsbc_op_prim:
+            ace_instr_prim(thread);
+            return 1;
+        case gsbc_op_constr:
+            ace_instr_alloc_constr(thread);
+            return 1;
+        case gsbc_op_record:
+            ace_instr_alloc_record(thread);
+            return 1;
+        case gsbc_op_field:
+            ace_instr_extract_field(thread);
+            return 1;
+        case gsbc_op_lfield:
+            ace_instr_alloc_lfield(thread);
+            return 1;
+        case gsbc_op_undefined:
+            ace_instr_alloc_undef(thread);
+            return 1;
+        case gsbc_op_alias:
+            ace_instr_copy_alias(thread);
+            return 1;
+        case gsbc_op_apply:
+            ace_instr_alloc_apply(thread);
+            return 1;
+        case gsbc_op_unknown_api_prim:
+            ace_instr_alloc_unknown_api_prim(thread);
+            return 1;
+        case gsbc_op_api_prim:
+            ace_instr_alloc_api_prim(thread);
+            return 1;
         default:
             return 0;
     }
