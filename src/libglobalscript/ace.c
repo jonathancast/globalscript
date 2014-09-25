@@ -109,9 +109,10 @@ ace_thread_pool_main(void *p)
         instr_start_time = gsflag_stat_collection ? nsec() : 0;
         if (thread) while (thread->state == ace_thread_running && nwork < 0x1000) {
             while (ace_exec_efv(thread)) nwork++, num_instrs++;
+        in_branch:
             while (ace_exec_alloc(thread)) nwork++, num_instrs++;
             while (ace_exec_push(thread)) nwork++, num_instrs++;
-            if (ace_exec_branch(thread)) nwork++, num_instrs++;
+            if (ace_exec_branch(thread)) { nwork++, num_instrs++; goto in_branch; }
             else if (ace_exec_terminal(thread)) nwork++, num_instrs++;
             else {
                 nwork++, num_instrs++;
