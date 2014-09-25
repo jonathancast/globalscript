@@ -108,14 +108,7 @@ ace_thread_pool_main(void *p)
             while (ace_exec_push(thread)) nwork++, num_instrs++;
             if (ace_exec_branch(thread)) { nwork++, num_instrs++; goto in_branch; }
             else if (ace_exec_terminal(thread, &stats)) nwork++, num_instrs++;
-            else {
-                nwork++, num_instrs++;
-                switch (thread->st.running.ip->instr) {
-                    default:
-                        ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "run instruction %d", thread->st.running.ip->instr);
-                        break;
-                }
-            }
+            else ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "run instruction %d", thread->st.running.ip->instr);
         }
         if (gsflag_stat_collection) instr_time += nsec() - instr_start_time;
         if (thread && thread->state == ace_thread_running) num_completed_timeslots++;
