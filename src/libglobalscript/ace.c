@@ -66,8 +66,6 @@ static int ace_exec_push(struct ace_thread *);
 static int ace_exec_branch(struct ace_thread *);
 static int ace_exec_terminal(struct ace_thread *);
 
-static void ace_instr_perform_analyze(struct ace_thread *);
-static void ace_instr_perform_danalyze(struct ace_thread *);
 static void ace_instr_return_undef(struct ace_thread *);
 static void ace_instr_enter(struct ace_thread *, struct ace_thread_pool_stats *);
 static void ace_instr_yield(struct ace_thread *);
@@ -118,12 +116,6 @@ ace_thread_pool_main(void *p)
             else {
                 nwork++, num_instrs++;
                 switch (thread->st.running.ip->instr) {
-                    case gsbc_op_analyze:
-                        ace_instr_perform_analyze(thread);
-                        break;
-                    case gsbc_op_danalyze:
-                        ace_instr_perform_danalyze(thread);
-                        break;
                     case gsbc_op_undef:
                         ace_instr_return_undef(thread);
                         break;
@@ -837,10 +829,19 @@ ace_instr_push_ubanalyze(struct ace_thread *thread)
     return;
 }
 
+static void ace_instr_perform_analyze(struct ace_thread *);
+static void ace_instr_perform_danalyze(struct ace_thread *);
+
 int
 ace_exec_branch(struct ace_thread *thread)
 {
     switch (thread->st.running.ip->instr) {
+        case gsbc_op_analyze:
+            ace_instr_perform_analyze(thread);
+            return 1;
+        case gsbc_op_danalyze:
+            ace_instr_perform_danalyze(thread);
+            return 1;
         default:
             return 0;
     }
