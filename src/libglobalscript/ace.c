@@ -64,13 +64,7 @@ static int ace_exec_efv(struct ace_thread *);
 static int ace_exec_alloc(struct ace_thread *);
 static int ace_exec_push(struct ace_thread *);
 static int ace_exec_branch(struct ace_thread *);
-static int ace_exec_terminal(struct ace_thread *);
-
-static void ace_instr_return_undef(struct ace_thread *);
-static void ace_instr_enter(struct ace_thread *, struct ace_thread_pool_stats *);
-static void ace_instr_yield(struct ace_thread *);
-static void ace_instr_ubprim(struct ace_thread *);
-static void ace_instr_lprim(struct ace_thread *);
+static int ace_exec_terminal(struct ace_thread *, struct ace_thread_pool_stats *);
 
 struct ace_thread_pool_stats {
     vlong numthreads_total, num_blocked, num_blocked_threads, num_blocks_on_function, num_blocks_on_new_stack, num_blocks_on_existing_thread;
@@ -113,25 +107,10 @@ ace_thread_pool_main(void *p)
             while (ace_exec_alloc(thread)) nwork++, num_instrs++;
             while (ace_exec_push(thread)) nwork++, num_instrs++;
             if (ace_exec_branch(thread)) { nwork++, num_instrs++; goto in_branch; }
-            else if (ace_exec_terminal(thread)) nwork++, num_instrs++;
+            else if (ace_exec_terminal(thread, &stats)) nwork++, num_instrs++;
             else {
                 nwork++, num_instrs++;
                 switch (thread->st.running.ip->instr) {
-                    case gsbc_op_undef:
-                        ace_instr_return_undef(thread);
-                        break;
-                    case gsbc_op_enter:
-                        ace_instr_enter(thread, &stats);
-                        break;
-                    case gsbc_op_yield:
-                        ace_instr_yield(thread);
-                        break;
-                    case gsbc_op_ubprim:
-                        ace_instr_ubprim(thread);
-                        break;
-                    case gsbc_op_lprim:
-                        ace_instr_lprim(thread);
-                        break;
                     default:
                         ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "run instruction %d", thread->st.running.ip->instr);
                         break;
@@ -915,10 +894,31 @@ ace_instr_perform_danalyze(struct ace_thread *thread)
     return;
 }
 
+static void ace_instr_return_undef(struct ace_thread *);
+static void ace_instr_enter(struct ace_thread *, struct ace_thread_pool_stats *);
+static void ace_instr_yield(struct ace_thread *);
+static void ace_instr_ubprim(struct ace_thread *);
+static void ace_instr_lprim(struct ace_thread *);
+
 int
-ace_exec_terminal(struct ace_thread *thread)
+ace_exec_terminal(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
 {
     switch (thread->st.running.ip->instr) {
+        case gsbc_op_undef:
+            ace_instr_return_undef(thread);
+            return 1;
+        case gsbc_op_enter:
+            ace_instr_enter(thread, stats);
+            return 1;
+        case gsbc_op_yield:
+            ace_instr_yield(thread);
+            return 1;
+        case gsbc_op_ubprim:
+            ace_instr_ubprim(thread);
+            return 1;
+        case gsbc_op_lprim:
+            ace_instr_lprim(thread);
+            return 1;
         default:
             return 0;
     }
