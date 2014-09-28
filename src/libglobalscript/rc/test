@@ -134,6 +134,10 @@ ok_diff '-- regex sums --' ./$O.test-gsi regex-sum.ags
 ok_diff '-- regex sums with empty left-hand operands --' ./$O.test-gsi regex-sum-empty-left-operand.ags
 ok_diff '-- regex sums with empty right-hand operands --' ./$O.test-gsi regex-sum-empty-right-operand.ags
 
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
+
 ok_diff '-- constructors in expressions --' ./$O.test-gsi constr-in-expr.ags
 
 ok_diff '-- analyze on boxed sums --' ./$O.test-gsi analyze-constructor.ags
@@ -142,10 +146,6 @@ ok_diff '-- analyze with default --' ./$O.test-gsi analyze-default.ags
 ok_diff '-- analyze with default and two constructor cases --' ./$O.test-gsi analyze-default-two-constrs.ags
 
 ok_grep_errors '-- analyze on un-boxed sum with mis-matched free type variables --' './test-fixtures/ubanalyze-excess-type-variable.ags:18: Mis-matched number of free type variables' ./$O.test-gsi ubanalyze-excess-type-variable.ags
-
-echo '# Version 0.6 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_diff '-- analyze on un-boxed sums --' ./$O.test-gsi analyze-unboxed-free-variable.ags
 
