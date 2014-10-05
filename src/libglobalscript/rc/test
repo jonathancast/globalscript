@@ -119,6 +119,10 @@ ok_grep_errors '-- natural number literals: negative number --' './test-fixtures
 
 ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
 
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
+
 ok_diff '-- regex literals --' ./$O.test-gsi regex-literal.ags
 ok_diff '-- regex character class --' ./$O.test-gsi regex-class.ags
 ok_diff '-- regex negated character class --' ./$O.test-gsi regex-neg-class.ags
@@ -133,10 +137,6 @@ ok_diff '-- regex interpolations --' ./$O.test-gsi regex-interp.ags
 ok_diff '-- regex sums --' ./$O.test-gsi regex-sum.ags
 ok_diff '-- regex sums with empty left-hand operands --' ./$O.test-gsi regex-sum-empty-left-operand.ags
 ok_diff '-- regex sums with empty right-hand operands --' ./$O.test-gsi regex-sum-empty-right-operand.ags
-
-echo '# Version 0.6 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_diff '-- constructors in expressions --' ./$O.test-gsi constr-in-expr.ags
 
