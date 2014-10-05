@@ -1887,9 +1887,7 @@ gsbc_byte_compile_arg_code_op(struct gsparsedline *p, struct gsbc_byte_compile_c
         }
         ADD_LABEL_TO_REGS_WITH_TYPE(type);
 
-        if (p->directive == gssymoparg || p->directive == gssymoplarg )
-            pcl->nargs++
-        ;
+        pcl->nargs++;
         if (p->directive == gssymopfkarg) {
             if (pcl->nfields > 0) {
                 if (pcl->fields[pcl->nfields - 1] == p->arguments[0])
@@ -2568,7 +2566,7 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
         pcl->pout = (uchar*)pcases + nconstrs * sizeof(struct gsbc *);
 
         for (i = 0; i < nconstrs; i++) {
-            int nregs, ntyregs;
+            int nargs, nregs, ntyregs;
 
             *pp = gsinput_next_line(ppseg, *pp);
             if (!gssymceq((*pp)->directive, gssymopcase, gssymcodeop, ".case"))
@@ -2576,16 +2574,19 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
             ;
 
             pcases[i] = (struct gsbc *)pcl->pout;
+            nargs = pcl->nargs;
             nregs = pcl->nregs;
             ntyregs = pcl->ntyregs;
             pcl->nfields = 0;
             gsbc_byte_compile_case(ppseg, pp, pcl);
+            pcl->nargs = nargs;
             pcl->nregs = nregs;
             pcl->ntyregs = ntyregs;
         }
     } else if (gssymceq((*pp)->directive, gssymopdanalyze, gssymcodeop, ".danalyze")) {
         int nconstrs;
         int reg;
+        int nargs;
         int nregs;
         int prevconstr;
         struct gstype *type;
@@ -2616,9 +2617,11 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
         ;
 
         pcases[0] = (struct gsbc *)pcl->pout;
+        nargs = pcl->nargs;
         nregs = pcl->nregs;
         pcl->nfields = 0;
         gsbc_byte_compile_default(ppseg, pp, pcl);
+        pcl->nargs = nargs;
         pcl->nregs = nregs;
 
         prevconstr = -1;
@@ -2631,9 +2634,11 @@ gsbc_byte_compile_terminal_code_op(struct gsparsedfile_segment **ppseg, struct g
             ACE_DANALYZE_CONSTR(pcode, i) = gsbc_typecheck_find_constr((*pp)->pos, prevconstr, sum, (*pp)->arguments[0]);
 
             pcases[1 + i] = (struct gsbc *)pcl->pout;
+            nargs = pcl->nargs;
             nregs = pcl->nregs;
             pcl->nfields = 0;
             gsbc_byte_compile_case(ppseg, pp, pcl);
+            pcl->nargs = nargs;
             pcl->nregs = nregs;
 
             prevconstr = ACE_DANALYZE_CONSTR(pcode, i);
