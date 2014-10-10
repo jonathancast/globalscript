@@ -60,16 +60,33 @@ static int ace_find_thread(struct ace_thread_pool_stats *, int, struct ace_threa
 static void ace_return(struct ace_thread *, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
 
-static int ace_exec_efv(struct ace_thread *);
-static int ace_exec_alloc(struct ace_thread *);
-static int ace_exec_push(struct ace_thread *);
-static int ace_exec_branch(struct ace_thread *);
-static int ace_exec_terminal(struct ace_thread *, struct ace_thread_pool_stats *);
+struct ace_eval_state;
+
+static int ace_exec_efv(struct ace_thread *, struct ace_eval_state *);
+static int ace_exec_alloc(struct ace_thread *, struct ace_eval_state *);
+static int ace_exec_push(struct ace_thread *, struct ace_eval_state *);
+static int ace_exec_branch(struct ace_thread *, struct ace_eval_state *);
+static int ace_exec_terminal(struct ace_thread *, struct ace_eval_state *, struct ace_thread_pool_stats *);
 
 struct ace_thread_pool_stats {
     vlong numthreads_total, num_blocked, num_blocked_threads, num_blocks_on_function, num_blocks_on_new_stack, num_blocks_on_existing_thread;
     vlong gc_time, checking_thread_time;
 };
+
+struct ace_eval_state {
+    struct gsbc *ip;
+    int nregs, nsubexprs;
+    struct gsbco *subexprs[MAX_NUM_REGISTERS];
+    gsvalue regs[MAX_NUM_REGISTERS];
+};
+
+static int ace_set_registers_from_bco(struct ace_thread *, struct ace_eval_state *, struct gsbco *);
+static int ace_set_registers_from_fvs(struct ace_thread *, struct ace_eval_state *, struct gsbco *);
+static int ace_pop_continuation(struct ace_thread *, struct ace_eval_state *);
+
+#define ACE_THREAD_RUNNABLE(thread) ((thread)->state == ace_thread_entering_bco || (thread)->state == ace_thread_returning)
+
+static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
 
 static
 void
@@ -87,6 +104,7 @@ ace_thread_pool_main(void *p)
     tid = 0;
     for (;;) {
         struct ace_thread *thread;
+        struct ace_eval_state st;
         outer_loops++;
 
         finding_thread_start_time = gsflag_stat_collection ? nsec() : 0;
@@ -99,17 +117,37 @@ ace_thread_pool_main(void *p)
         }
 
         nwork = 0;
-        if (thread && thread->state == ace_thread_running) num_timeslots++;
+        if (thread && ACE_THREAD_RUNNABLE(thread)) num_timeslots++;
         instr_start_time = gsflag_stat_collection ? nsec() : 0;
-        if (thread) while (thread->state == ace_thread_running && nwork < 0x1000) {
-            while (ace_exec_efv(thread)) nwork++, num_instrs++;
+        if (thread) while (ACE_THREAD_RUNNABLE(thread) && nwork < 0x1000) {
+            switch (thread->state) {
+                case ace_thread_entering_bco:
+                    if (!ace_set_registers_from_bco(thread, &st, thread->st.entering_bco.bco)) goto failure;
+                    if (!ace_set_registers_from_fvs(thread, &st, thread->st.entering_bco.bco)) goto failure;
+                    thread->state = ace_thread_running;
+                    break;
+                case ace_thread_returning:
+                    if (!ace_pop_continuation(thread, &st)) goto failure;
+                    break;
+                default: {
+                    struct gspos pos;
+                    pos.file = gsintern_string(gssymfilename, __FILE__); pos.lineno = __LINE__; pos.columnno = 0;
+
+                    ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "ace_thread_pool_main: state %d", thread->state);
+                    break;
+                }
+            }
+            while (thread->state == ace_thread_running && ace_exec_efv(thread, &st)) nwork++, num_instrs++;
         in_branch:
-            while (ace_exec_alloc(thread)) nwork++, num_instrs++;
-            while (ace_exec_push(thread)) nwork++, num_instrs++;
-            if (ace_exec_branch(thread)) { nwork++, num_instrs++; goto in_branch; }
-            else if (ace_exec_terminal(thread, &stats)) nwork++, num_instrs++;
-            else ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "run instruction %d", thread->st.running.ip->instr);
+            while (thread->state == ace_thread_running && ace_exec_alloc(thread, &st)) nwork++, num_instrs++;
+            while (thread->state == ace_thread_running && ace_exec_push(thread, &st)) nwork++, num_instrs++;
+            if (thread->state == ace_thread_running) {
+                if (ace_exec_branch(thread, &st)) { nwork++, num_instrs++; if (thread->state == ace_thread_running) goto in_branch; }
+                else if (ace_exec_terminal(thread, &st, &stats)) nwork++, num_instrs++;
+                else ace_thread_unimpl(thread, __FILE__, __LINE__, st.ip->pos, "run instruction %d", st.ip->instr);
+            }
         }
+    failure:
         if (gsflag_stat_collection) instr_time += nsec() - instr_start_time;
         if (thread && thread->state == ace_thread_running) num_completed_timeslots++;
         if (thread && thread->state == ace_thread_blocked) num_blocked_timeslots++;
@@ -192,9 +230,12 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
         stats->numthreads_total++;
         lock(&thread->lock);
         switch (thread->state) {
+            case ace_thread_entering_bco:
+            case ace_thread_returning:
+                break;
             case ace_thread_lprim_blocked: {
                 thread->st.lprim_blocked.on->resume(thread, thread->st.lprim_blocked.at, thread->st.lprim_blocked.on);
-                if (thread->state != ace_thread_running) {
+                if (!ACE_THREAD_RUNNABLE(thread)) {
                     unlock(&thread->lock);
                     thread = 0;
                 }
@@ -240,23 +281,25 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
                         ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter (st = %d)", st);
                         break;
                 }
-                if (thread->state != ace_thread_running) {
+                if (!ACE_THREAD_RUNNABLE(thread)) {
                     unlock(&thread->lock);
                     thread = 0;
                 }
                 break;
             }
-            case ace_thread_running:
-                break;
             case ace_thread_finished:
                 unlock(&thread->lock);
                 thread = 0;
                 break;
-            default:
-                ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.running.ip->pos, "ace_thread_pool_main: state %d", thread->state);
+            default: {
+                struct gspos pos;
+                pos.file = gsintern_string(gssymfilename, __FILE__); pos.lineno = __LINE__; pos.columnno = 0;
+
+                ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "ace_thread_pool_main: state %d", thread->state);
                 unlock(&thread->lock);
                 thread = 0;
                 break;
+            }
         }
         if (gsflag_stat_collection) stats->checking_thread_time += nsec() - checking_thread_start_time;
     }
@@ -264,6 +307,345 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
     *pthread = thread;
 
     return 0;
+}
+
+#define ACE_EVAL_STATE_ADD_REGISTER(st, pos, v, error_return) \
+    do { \
+        if ((st)->nregs >= MAX_NUM_REGISTERS) { \
+            ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, (pos), "register overflow")); \
+            error_return; \
+        } \
+        (st)->regs[(st)->nregs++] = (v); \
+    } while (0)
+
+int
+ace_set_registers_from_bco(struct ace_thread *thread, struct ace_eval_state *st, struct gsbco *code)
+{
+    void *ip;
+    int i;
+
+    st->nregs = st->nsubexprs = 0;
+
+    ip = (uchar*)code + sizeof(*code);
+    if ((uintptr)ip % sizeof(struct gsbco *))
+        ip = (uchar*)ip + sizeof(struct gsbco *) - (uintptr)ip % sizeof(struct gsbco *)
+    ;
+    for (i = 0; i < code->numsubexprs; i++) {
+        if (st->nsubexprs >= MAX_NUM_REGISTERS) {
+          ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, code->pos, "register overflow"));
+          return 0;
+        }
+        st->subexprs[st->nsubexprs++] = *(struct gsbco **)ip;
+        ip = (struct gsbco **)ip + 1;
+    }
+    if ((uintptr)ip % sizeof(gsvalue))
+        ip = (uchar*)ip + sizeof(gsvalue) - (uintptr)ip % sizeof(gsvalue)
+    ;
+    for (i = 0; i < code->numglobals; i++) {
+        ACE_EVAL_STATE_ADD_REGISTER(st, code->pos, *(gsvalue *)ip, return 0);
+        ip = (gsvalue*)ip + 1;
+    }
+
+    st->ip = ip;
+
+    return 1;
+}
+
+int
+ace_set_registers_from_fvs(struct ace_thread *thread, struct ace_eval_state *st, struct gsbco *code)
+{
+    int numfvs;
+    gsvalue *fvs;
+    int i;
+
+    numfvs = code->numfvs + code->numargs;
+
+    if (numfvs > ((uchar*)thread->stacktop - (uchar*)thread->stacklimit) / sizeof(gsvalue)) {
+        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, code->pos, "ace_set_registers_from_fvs: no room for fvs"));
+        return 0;
+    }
+
+    fvs = (gsvalue*)((uchar*)thread->stacktop - numfvs * sizeof(gsvalue));
+
+    for (i = 0; i < numfvs; i++) ACE_EVAL_STATE_ADD_REGISTER(st, code->pos, fvs[i], return 0);
+
+    return 1;
+}
+
+/* §ccode{ace_return_to_update} (only) returns the address of the next continuation to return to;
+   the others set §ccode{thread->stacktop} to it */
+static void *ace_return_to_update(struct ace_thread *, struct ace_cont *);
+static int ace_return_to_app(struct ace_thread *, struct ace_eval_state *, struct ace_cont *);
+static int ace_return_to_force(struct ace_thread *, struct ace_eval_state *, struct ace_cont *);
+static int ace_return_to_strict(struct ace_thread *, struct ace_eval_state *, struct ace_cont *);
+static int ace_return_to_ubanalyze(struct ace_thread *, struct ace_eval_state *, struct ace_cont *);
+
+int
+ace_pop_continuation(struct ace_thread *thread, struct ace_eval_state *st)
+{
+    struct ace_cont *cont;
+
+    cont = ace_stack_top(thread);
+
+again:
+    switch (cont->node) {
+        case gsbc_cont_update:
+            if (cont = ace_return_to_update(thread, cont)) {
+                goto again;
+            } else {
+                return 0;
+            }
+        case gsbc_cont_app:
+            return ace_return_to_app(thread, st, cont);
+        case gsbc_cont_force:
+            return ace_return_to_force(thread, st, cont);
+        case gsbc_cont_strict:
+            return ace_return_to_strict(thread, st, cont);
+        case ace_stack_ubanalyze_cont:
+            return ace_return_to_ubanalyze(thread, st, cont);
+        default:
+            ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Return to %d continuations", cont->node);
+            return 0;
+    }
+}
+
+#define ACE_THREAD_GET_ARGS(args, thread, numargs, error_return) \
+    do { \
+        if ((uchar*)(thread)->stacktop - (uchar*)(thread)->stacklimit < (numargs) * sizeof(gsvalue)) { \
+            ace_thread_unimpl((thread), __FILE__, __LINE__, (cont)->pos, "not enough room on stack for result"); \
+            error_return; \
+        } \
+        (args) = (gsvalue*)((uchar*)(thread)->stacktop - (numargs) * sizeof(gsvalue)); \
+    } while (0)
+
+static void ace_remove_thread(struct ace_thread *);
+
+void *
+ace_return_to_update(struct ace_thread *thread, struct ace_cont *cont)
+{
+    struct gsbc_cont_update *update;
+    gsvalue *res;
+    struct gsheap_item *hp;
+    struct gsindirection *in;
+
+    ACE_THREAD_GET_ARGS(res, thread, 1, return 0);
+
+    update = (struct gsbc_cont_update *)cont;
+    hp = update->dest;
+
+    lock(&hp->lock);
+    hp->type = gsindirection;
+    in = (struct gsindirection *)hp;
+    in->dest = *res;
+    unlock(&hp->lock);
+
+    if (update->next) {
+        /* Don't set stacktop here, so the result is available for the next return function; just walk the stack for now */
+        thread->cureval = update->next;
+        return (uchar*)update + sizeof(struct gsbc_cont_update);
+    } else {
+        ace_remove_thread(thread);
+        return 0;
+    }
+}
+
+int
+ace_return_to_app(struct ace_thread *thread, struct ace_eval_state *st, struct ace_cont *cont)
+{
+    int i;
+    gsvalue *fn;
+    struct gs_blockdesc *block;
+    struct gsheap_item *fun;
+    struct gsclosure *cl;
+    struct gsbc_cont_app *app;
+    int needed_args;
+
+    ACE_THREAD_GET_ARGS(fn, thread, 1, return 0);
+
+    app = (struct gsbc_cont_app *)cont;
+
+    block = BLOCK_CONTAINING(*fn);
+
+    if (!gsisheap_block(block)) {
+        ace_poison_thread(thread, cont->pos, "Applied function is a %s not a closure", block->class->description);
+        return 0;
+    }
+
+    fun = (struct gsheap_item *)*fn;
+
+    if (fun->type != gsclosure) {
+        ace_poison_thread(thread, cont->pos, "Applied function %P is not a closure", fun->pos);
+        return 0;
+    }
+
+    cl = (struct gsclosure *)fun;
+    needed_args = cl->cl.code->numargs - (cl->cl.numfvs - cl->cl.code->numfvs);
+
+    if (app->numargs < needed_args) {
+        struct gsheap_item *res;
+        struct gsclosure *clres;
+
+        res = gsreserveheap(sizeof (struct gsclosure) + (cl->cl.numfvs + app->numargs) * sizeof(gsvalue));
+        clres = (struct gsclosure *)res;
+
+        res->pos = cont->pos;
+        memset(&res->lock, 0, sizeof(res->lock));
+        res->type = gsclosure;
+        clres->cl.code = cl->cl.code;
+        clres->cl.numfvs = cl->cl.numfvs + app->numargs;
+        for (i = 0; i < cl->cl.numfvs; i++)
+            clres->cl.fvs[i] = cl->cl.fvs[i]
+        ;
+        for (i = cl->cl.numfvs; i < cl->cl.numfvs + app->numargs; i++)
+            clres->cl.fvs[i] = app->arguments[i - cl->cl.numfvs]
+        ;
+        thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
+
+        ace_return(thread, cont->pos, (gsvalue)res);
+        return 1;
+    } else {
+        int i;
+
+        switch (cl->cl.code->tag) {
+            case gsbc_expr: {
+                void *bot_of_app_cont, *newstacktop;
+
+                if (!ace_set_registers_from_bco(thread, st, cl->cl.code)) {
+                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+                    return 0;
+                }
+
+                for (i = 0; i < cl->cl.numfvs; i++) ACE_EVAL_STATE_ADD_REGISTER(st, cl->hp.pos, cl->cl.fvs[i], return 0);
+
+                for (i = 0; i < needed_args; i++) {
+                    if (st->nregs >= MAX_NUM_REGISTERS) {
+                        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
+                        return 0;
+                    }
+                    st->regs[st->nregs++] = app->arguments[i];
+                }
+
+                bot_of_app_cont = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
+
+                if (i < app->numargs) {
+                    struct gsbc_cont_app *newapp;
+
+                    newstacktop = (uchar*)bot_of_app_cont - sizeof(struct gsbc_cont_app) - (app->numargs - i) * sizeof(gsvalue);
+                    newapp = (struct gsbc_cont_app *)newstacktop;
+                    /* §ccode{newapp} has to be initialized from highest address to lowest */
+                    newapp->numargs = app->numargs - i;
+                    newapp->cont.pos = app->cont.pos;
+                    newapp->cont.node = gsbc_cont_app;
+                } else {
+                    newstacktop = bot_of_app_cont;
+                }
+
+                thread->stacktop = newstacktop;
+                thread->state = ace_thread_running;
+                return 1;
+            }
+            case gsbc_impprog: {
+                struct gsheap_item *hpres;
+                struct gsclosure *res;
+
+                hpres = gsreserveheap(sizeof(*res) + (cl->cl.numfvs + app->numargs) * sizeof(gsvalue));
+                res = (struct gsclosure *)hpres;
+
+                memset(&hpres->lock, 0, sizeof(hpres->lock));
+                hpres->pos = cont->pos;
+                hpres->type = gsclosure;
+                res->cl.code = cl->cl.code;
+                res->cl.numfvs = cl->cl.numfvs + app->numargs;
+                for (i = 0; i < cl->cl.numfvs; i++)
+                    res->cl.fvs[i] = cl->cl.fvs[i]
+                ;
+                for (i = 0; i < app->numargs; i++)
+                    res->cl.fvs[cl->cl.numfvs + i] = app->arguments[i]
+                ;
+
+                thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
+                ace_return(thread, cont->pos, (gsvalue)res);
+                return 1;
+            }
+            default:
+                ace_thread_unimpl(thread, __FILE__, __LINE__, fun->pos, "Apply code blocks of type %d", cl->cl.code->tag);
+                return 0;
+        }
+    }
+}
+
+int
+ace_return_to_force(struct ace_thread *thread, struct ace_eval_state *st, struct ace_cont *cont)
+{
+    struct gsbc_cont_force *force;
+    gsvalue *arg;
+    int i;
+
+    ACE_THREAD_GET_ARGS(arg, thread, 1, return 0);
+
+    force = (struct gsbc_cont_force *)cont;
+
+    if (!ace_set_registers_from_bco(thread, st, force->code)) return 0;
+    for (i = 0; i < force->numfvs; i++) ACE_EVAL_STATE_ADD_REGISTER(st, cont->pos, force->fvs[i], return 0);
+    ACE_EVAL_STATE_ADD_REGISTER(st, cont->pos, *arg, return 0);
+
+    thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_force) + force->numfvs * sizeof(gsvalue);
+    thread->state = ace_thread_running;
+
+    return 1;
+}
+
+int
+ace_return_to_strict(struct ace_thread *thread, struct ace_eval_state *st, struct ace_cont *cont)
+{
+    struct gsbc_cont_strict *strict;
+    gsvalue *arg;
+    int i;
+
+    ACE_THREAD_GET_ARGS(arg, thread, 1, return 0);
+
+    strict = (struct gsbc_cont_strict *)cont;
+
+    if (!ace_set_registers_from_bco(thread, st, strict->code)) return 0;
+    for (i = 0; i < strict->numfvs; i++) ACE_EVAL_STATE_ADD_REGISTER(st, cont->pos, strict->fvs[i], return 0);
+    ACE_EVAL_STATE_ADD_REGISTER(st, cont->pos, *arg, return 0);
+
+    thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_strict) + strict->numfvs * sizeof(gsvalue);
+    thread->state = ace_thread_running;
+
+    return 1;
+}
+
+int
+ace_return_to_ubanalyze(struct ace_thread *thread, struct ace_eval_state *st, struct ace_cont *cont)
+{
+    struct ace_stack_ubanalyze_cont *ubanalyze;
+    struct gsbco *code;
+    int *pconstr;
+    gsvalue *args;
+    int i;
+
+    pconstr = (int*)((uchar*)thread->stacktop - sizeof(gsvalue));
+
+    ubanalyze = (struct ace_stack_ubanalyze_cont *)cont;
+
+    if (*pconstr >= ubanalyze->numconts) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "ace_return_to_ubanalyze: constr number too larg: %d > %d", (int)*pconstr, ubanalyze->numconts);
+        return 0;
+    }
+
+    code = ACE_STACK_UBANALYZE_CONT(*ubanalyze, *pconstr);
+
+    ACE_THREAD_GET_ARGS(args, thread, 1 + code->numargs, return 0);
+
+    if (!ace_set_registers_from_bco(thread, st, code)) return 0;
+    for (i = 0; i < ubanalyze->numfvs; i++) ACE_EVAL_STATE_ADD_REGISTER(st, cont->pos, ACE_STACK_UBANALYZE_FV(*ubanalyze, i), return 0);
+    for (i = 0; i < code->numargs; i++) ACE_EVAL_STATE_ADD_REGISTER(st, cont->pos, args[i], return 0);
+
+    thread->stacktop = ACE_STACK_UBANALYZE_BOTTOM(ubanalyze);
+    thread->state = ace_thread_running;
+
+    return 1;
 }
 
 int
@@ -310,101 +692,100 @@ ace_thread_cleanup(struct gsstringbuilder *err)
     return 0;
 }
 
-static void ace_instr_extract_efv(struct ace_thread *);
+static void ace_instr_extract_efv(struct ace_thread *, struct ace_eval_state *);
 
 int
-ace_exec_efv(struct ace_thread *thread)
+ace_exec_efv(struct ace_thread *thread, struct ace_eval_state *st)
 {
-    switch (thread->st.running.ip->instr) {
+    switch (st->ip->instr) {
         case gsbc_op_efv:
-            ace_instr_extract_efv(thread);
+            ace_instr_extract_efv(thread, st);
             return 1;
         default:
             return 0;
     }
 }
 
-static
 void
-ace_instr_extract_efv(struct ace_thread *thread)
+ace_instr_extract_efv(struct ace_thread *thread, struct ace_eval_state *eval)
 {
     struct gsbc *ip;
     gstypecode st;
     int nreg;
 
-    ip = thread->st.running.ip;
+    ip = eval->ip;
 
     nreg = ACE_EFV_REGNUM(ip);
 
 again:
-    st = GS_SLOW_EVALUATE(ip->pos, thread->regs[nreg]);
+    st = GS_SLOW_EVALUATE(ip->pos, eval->regs[nreg]);
 
     switch (st) {
         case gstywhnf:
             break;
         case gstyindir:
-            thread->regs[nreg] = GS_REMOVE_INDIRECTION(ip->pos, thread->regs[nreg]);
+            eval->regs[nreg] = GS_REMOVE_INDIRECTION(ip->pos, eval->regs[nreg]);
             goto again;
         case gstyimplerr:
-            ace_failure_thread(thread, (struct gsimplementation_failure *)thread->regs[nreg]);
+            ace_failure_thread(thread, (struct gsimplementation_failure *)eval->regs[nreg]);
             return;
         default:
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "ace_extract_efv: st = %d", st);
             return;
     }
 
-    thread->st.running.ip = ACE_EFV_SKIP(ip);
+    eval->ip = ACE_EFV_SKIP(ip);
     return;
 }
 
-static void ace_instr_alloc_closure(struct ace_thread *);
-static void ace_instr_prim(struct ace_thread *);
-static void ace_instr_alloc_constr(struct ace_thread *);
-static void ace_instr_alloc_record(struct ace_thread *);
-static void ace_instr_extract_field(struct ace_thread *);
-static void ace_instr_alloc_lfield(struct ace_thread *);
-static void ace_instr_alloc_undef(struct ace_thread *);
-static void ace_instr_copy_alias(struct ace_thread *);
-static void ace_instr_alloc_apply(struct ace_thread *);
-static void ace_instr_alloc_unknown_api_prim(struct ace_thread *);
-static void ace_instr_alloc_api_prim(struct ace_thread *);
+static void ace_instr_alloc_closure(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_prim(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_alloc_constr(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_alloc_record(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_extract_field(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_alloc_lfield(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_alloc_undef(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_copy_alias(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_alloc_apply(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_alloc_unknown_api_prim(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_alloc_api_prim(struct ace_thread *, struct ace_eval_state *);
 
 int
-ace_exec_alloc(struct ace_thread *thread)
+ace_exec_alloc(struct ace_thread *thread, struct ace_eval_state *st)
 {
-    switch (thread->st.running.ip->instr) {
+    switch (st->ip->instr) {
         case gsbc_op_closure:
-            ace_instr_alloc_closure(thread);
+            ace_instr_alloc_closure(thread, st);
             return 1;
         case gsbc_op_prim:
-            ace_instr_prim(thread);
+            ace_instr_prim(thread, st);
             return 1;
         case gsbc_op_constr:
-            ace_instr_alloc_constr(thread);
+            ace_instr_alloc_constr(thread, st);
             return 1;
         case gsbc_op_record:
-            ace_instr_alloc_record(thread);
+            ace_instr_alloc_record(thread, st);
             return 1;
         case gsbc_op_field:
-            ace_instr_extract_field(thread);
+            ace_instr_extract_field(thread, st);
             return 1;
         case gsbc_op_lfield:
-            ace_instr_alloc_lfield(thread);
+            ace_instr_alloc_lfield(thread, st);
             return 1;
         case gsbc_op_undefined:
-            ace_instr_alloc_undef(thread);
+            ace_instr_alloc_undef(thread, st);
             return 1;
         case gsbc_op_alias:
-            ace_instr_copy_alias(thread);
+            ace_instr_copy_alias(thread, st);
             return 1;
         case gsbc_op_apply:
-            ace_instr_alloc_apply(thread);
+            ace_instr_alloc_apply(thread, st);
             return 1;
         case gsbc_op_unknown_api_prim:
-            ace_instr_alloc_unknown_api_prim(thread);
+            ace_instr_alloc_unknown_api_prim(thread, st);
             return 1;
         case gsbc_op_api_prim:
-            ace_instr_alloc_api_prim(thread);
+            ace_instr_alloc_api_prim(thread, st);
             return 1;
         default:
             return 0;
@@ -412,14 +793,14 @@ ace_exec_alloc(struct ace_thread *thread)
 }
 
 void
-ace_instr_alloc_closure(struct ace_thread *thread)
+ace_instr_alloc_closure(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gsheap_item *hp;
     struct gsclosure *cl;
     int i;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     hp = gsreserveheap(sizeof(struct gsclosure) + ACE_CLOSURE_NUMFVS(ip) * sizeof(gsvalue));
     cl = (struct gsclosure *)hp;
@@ -427,36 +808,34 @@ ace_instr_alloc_closure(struct ace_thread *thread)
     memset(&hp->lock, 0, sizeof(hp->lock));
     hp->pos = ip->pos;
     hp->type = gsclosure;
-    if (ACE_CLOSURE_CODE(ip) > thread->nsubexprs) {
+    if (ACE_CLOSURE_CODE(ip) > st->nsubexprs) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".closure subexpr out of range");
         return;
     }
-    cl->cl.code = thread->subexprs[ACE_CLOSURE_CODE(ip)];
+    cl->cl.code = st->subexprs[ACE_CLOSURE_CODE(ip)];
     cl->cl.numfvs = ACE_CLOSURE_NUMFVS(ip);
     if (cl->cl.numfvs > 0x100) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".closure with too many free variables", cl->cl.numfvs);
         return;
     }
     for (i = 0; i < ACE_CLOSURE_NUMFVS(ip); i++) {
-        if (ACE_CLOSURE_FV(ip, i) > thread->nregs) {
+        if (ACE_CLOSURE_FV(ip, i) > st->nregs) {
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".closure free variable out of range");
             return;
         }
-        cl->cl.fvs[i] = thread->regs[ACE_CLOSURE_FV(ip, i)];
+        cl->cl.fvs[i] = st->regs[ACE_CLOSURE_FV(ip, i)];
     }
-    if (thread->nregs >= MAX_NUM_REGISTERS) {
+    if (st->nregs >= MAX_NUM_REGISTERS) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Register overflow in .closure");
         return;
     }
-    thread->regs[thread->nregs] = (gsvalue)hp;
-    thread->nregs++;
-    thread->st.running.ip = ACE_CLOSURE_SKIP(ip);
+    st->regs[st->nregs++] = (gsvalue)hp;
+    st->ip = ACE_CLOSURE_SKIP(ip);
     return;
 }
 
-static
 void
-ace_instr_prim(struct ace_thread *thread)
+ace_instr_prim(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gsregistered_primset *prims;
@@ -464,31 +843,28 @@ ace_instr_prim(struct ace_thread *thread)
     int i;
     int res;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     for (i = 0; i < ACE_PRIM_NARGS(ip); i++)
-        args[i] = thread->regs[ACE_PRIM_ARG(ip, i)]
+        args[i] = st->regs[ACE_PRIM_ARG(ip, i)]
     ;
     prims = gsprims_lookup_prim_set_by_index(ACE_PRIM_PRIMSET_INDEX(ip));
 
-    res = prims->exec_table[ACE_PRIM_INDEX(ip)](thread, ip->pos, ACE_PRIM_NARGS(ip), args, &thread->regs[thread->nregs++]);
+    res = prims->exec_table[ACE_PRIM_INDEX(ip)](thread, ip->pos, ACE_PRIM_NARGS(ip), args, &st->regs[st->nregs++]);
 
-    if (res)
-        thread->st.running.ip = ACE_PRIM_SKIP(ip)
-    ;
+    if (res) st->ip = ACE_PRIM_SKIP(ip);
 
     return;
 }
 
-static
 void
-ace_instr_alloc_constr(struct ace_thread *thread)
+ace_instr_alloc_constr(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gsconstr *constr;
     int i;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     constr = gsreserveconstrs(sizeof(*constr) + ACE_CONSTR_NUMARGS(ip) * sizeof(gsvalue));
     constr->pos = ip->pos;
@@ -496,30 +872,29 @@ ace_instr_alloc_constr(struct ace_thread *thread)
     constr->a.constrnum = ACE_CONSTR_CONSTRNUM(ip);
     constr->a.numargs = ACE_CONSTR_NUMARGS(ip);
     for (i = 0; i < ACE_CONSTR_NUMARGS(ip); i++)
-        constr->a.arguments[i] = thread->regs[ACE_CONSTR_ARG(ip, i)]
+        constr->a.arguments[i] = st->regs[ACE_CONSTR_ARG(ip, i)]
     ;
 
-    if (thread->nregs >= MAX_NUM_REGISTERS) {
+    if (st->nregs >= MAX_NUM_REGISTERS) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
         return;
     }
-    thread->regs[thread->nregs++] = (gsvalue)constr;
+    st->regs[st->nregs++] = (gsvalue)constr;
 
-    thread->st.running.ip = ACE_CONSTR_SKIP(ip);
+    st->ip = ACE_CONSTR_SKIP(ip);
 
     return;
 }
 
-static
 void
-ace_instr_alloc_record(struct ace_thread *thread)
+ace_instr_alloc_record(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gsrecord *record;
     struct gsrecord_fields *fields;
     int j;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     record = gsreserverecords(sizeof(*fields) + ip->args[0] * sizeof(gsvalue));
     fields = (struct gsrecord_fields *)record;
@@ -527,106 +902,95 @@ ace_instr_alloc_record(struct ace_thread *thread)
     record->type = gsrecord_fields;
     fields->numfields = ACE_RECORD_NUMFIELDS(ip);
     for (j = 0; j < ip->args[0]; j++)
-        fields->fields[j] = thread->regs[ACE_RECORD_FIELD(ip, j)]
+        fields->fields[j] = st->regs[ACE_RECORD_FIELD(ip, j)]
     ;
 
-    if (thread->nregs >= MAX_NUM_REGISTERS) {
+    if (st->nregs >= MAX_NUM_REGISTERS) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
         return;
     }
-    thread->regs[thread->nregs] = (gsvalue)record;
-    thread->nregs++;
-    thread->st.running.ip = ACE_RECORD_SKIP(ip);
+    st->regs[st->nregs++] = (gsvalue)record;
+    st->ip = ACE_RECORD_SKIP(ip);
     return;
 }
 
-static
 void
-ace_instr_extract_field(struct ace_thread *thread)
+ace_instr_extract_field(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gsrecord_fields *record;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
-    record = (struct gsrecord_fields *)thread->regs[ACE_FIELD_RECORD(ip)];
-    thread->regs[thread->nregs] = record->fields[ACE_FIELD_FIELD(ip)];
-    thread->nregs++;
-    thread->st.running.ip = ACE_FIELD_SKIP(ip);
+    record = (struct gsrecord_fields *)st->regs[ACE_FIELD_RECORD(ip)];
+    st->regs[st->nregs++] = record->fields[ACE_FIELD_FIELD(ip)];
+    st->ip = ACE_FIELD_SKIP(ip);
     return;
 }
 
-static
 void
-ace_instr_alloc_lfield(struct ace_thread *thread)
+ace_instr_alloc_lfield(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
-    thread->regs[thread->nregs++] = gslfield(ip->pos, ACE_LFIELD_FIELD(ip), thread->regs[ACE_LFIELD_RECORD(ip)]);
-    thread->st.running.ip = ACE_LFIELD_SKIP(ip);
+    st->regs[st->nregs++] = gslfield(ip->pos, ACE_LFIELD_FIELD(ip), st->regs[ACE_LFIELD_RECORD(ip)]);
+    st->ip = ACE_LFIELD_SKIP(ip);
     return;
 }
 
-static
 void
-ace_instr_alloc_undef(struct ace_thread *thread)
+ace_instr_alloc_undef(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
-    thread->regs[thread->nregs] = (gsvalue)gsundefined(ip->pos);
-    thread->nregs++;
-    thread->st.running.ip = ACE_UNDEFINED_SKIP(ip);
+    st->regs[st->nregs++] = (gsvalue)gsundefined(ip->pos);
+    st->ip = ACE_UNDEFINED_SKIP(ip);
     return;
 }
 
-static
 void
-ace_instr_copy_alias(struct ace_thread *thread)
+ace_instr_copy_alias(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
-    thread->regs[thread->nregs] = thread->regs[ACE_ALIAS_SOURCE(ip)];
-    thread->nregs++;
-    thread->st.running.ip = ACE_ALIAS_SKIP(ip);
+    st->regs[st->nregs++] = st->regs[ACE_ALIAS_SOURCE(ip)];
+    st->ip = ACE_ALIAS_SKIP(ip);
     return;
 }
 
-static
 void
-ace_instr_alloc_apply(struct ace_thread *thread)
+ace_instr_alloc_apply(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     gsvalue fun, args[MAX_NUM_REGISTERS];
     int i;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
-    fun = thread->regs[ACE_APPLY_FUN(ip)];
+    fun = st->regs[ACE_APPLY_FUN(ip)];
 
     for (i = 0; i < ACE_APPLY_NUM_ARGS(ip); i++)
-        args[i] = thread->regs[ACE_APPLY_ARG(ip, i)];
+        args[i] = st->regs[ACE_APPLY_ARG(ip, i)]
     ;
 
-    thread->regs[thread->nregs] = gsnapplyv(ip->pos, fun, ACE_APPLY_NUM_ARGS(ip), args);
-    thread->nregs++;
-    thread->st.running.ip = ACE_APPLY_SKIP(ip);
+    st->regs[st->nregs++] = gsnapplyv(ip->pos, fun, ACE_APPLY_NUM_ARGS(ip), args);
+    st->ip = ACE_APPLY_SKIP(ip);
     return;
 }
 
-static
 void
-ace_instr_alloc_unknown_api_prim(struct ace_thread *thread)
+ace_instr_alloc_unknown_api_prim(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gseprim *prim;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     prim = gsreserveeprims(sizeof(*prim));
     prim->pos = ip->pos;
@@ -634,25 +998,23 @@ ace_instr_alloc_unknown_api_prim(struct ace_thread *thread)
     prim->p.numargs = 0;
     prim->p.index = -1;
 
-    if (thread->nregs >= MAX_NUM_REGISTERS) {
+    if (st->nregs >= MAX_NUM_REGISTERS) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
         return;
     }
-    thread->regs[thread->nregs] = (gsvalue)prim;
-    thread->nregs++;
-    thread->st.running.ip = GS_NEXT_BYTECODE(ip, 0);
+    st->regs[st->nregs++] = (gsvalue)prim;
+    st->ip = GS_NEXT_BYTECODE(ip, 0);
     return;
 }
 
-static
 void
-ace_instr_alloc_api_prim(struct ace_thread *thread)
+ace_instr_alloc_api_prim(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gseprim *prim;
     int j;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     prim = gsreserveeprims(sizeof(*prim) + ACE_IMPPRIM_NUMARGS(ip) * sizeof(gsvalue));
     prim->pos = ip->pos;
@@ -660,84 +1022,81 @@ ace_instr_alloc_api_prim(struct ace_thread *thread)
     prim->p.numargs = ACE_IMPPRIM_NUMARGS(ip);
     prim->p.index = ACE_IMPPRIM_INDEX(ip);
     for (j = 0; j < ACE_IMPPRIM_NUMARGS(ip); j++) {
-        if (ACE_IMPPRIM_ARG(ip, j) >= thread->nregs) {
+        if (ACE_IMPPRIM_ARG(ip, j) >= st->nregs) {
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
             return;
         }
-        prim->p.arguments[j] = thread->regs[ACE_IMPPRIM_ARG(ip, j)];
+        prim->p.arguments[j] = st->regs[ACE_IMPPRIM_ARG(ip, j)];
     }
 
-    if (thread->nregs >= MAX_NUM_REGISTERS) {
+    if (st->nregs >= MAX_NUM_REGISTERS) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
         return;
     }
-    thread->regs[thread->nregs] = (gsvalue)prim;
-    thread->nregs++;
-    thread->st.running.ip = ACE_IMPPRIM_SKIP(ip);
+    st->regs[st->nregs++] = (gsvalue)prim;
+    st->ip = ACE_IMPPRIM_SKIP(ip);
 
     return;
 }
 
-static void ace_instr_push_app(struct ace_thread *);
-static void ace_instr_push_force(struct ace_thread *);
-static void ace_instr_push_strict(struct ace_thread *);
-static void ace_instr_push_ubanalyze(struct ace_thread *);
+static void ace_instr_push_app(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_push_force(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_push_strict(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_push_ubanalyze(struct ace_thread *, struct ace_eval_state *);
 
 int
-ace_exec_push(struct ace_thread *thread)
+ace_exec_push(struct ace_thread *thread, struct ace_eval_state *st)
 {
-    switch (thread->st.running.ip->instr) {
+    switch (st->ip->instr) {
         case gsbc_op_app:
-            ace_instr_push_app(thread);
+            ace_instr_push_app(thread, st);
             return 1;
         case gsbc_op_force:
-            ace_instr_push_force(thread);
+            ace_instr_push_force(thread, st);
             return 1;
         case gsbc_op_strict:
-            ace_instr_push_strict(thread);
+            ace_instr_push_strict(thread, st);
             return 1;
         case gsbc_op_ubanalzye:
-            ace_instr_push_ubanalyze(thread);
+            ace_instr_push_ubanalyze(thread, st);
             return 1;
         default:
             return 0;
     }
 }
 
-static
 void
-ace_instr_push_app(struct ace_thread *thread)
+ace_instr_push_app(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     gsvalue args[MAX_NUM_REGISTERS];
     int j;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     for (j = 0; j < ACE_APP_NUMARGS(ip); j++) {
-        if (ACE_APP_ARG(ip, j) >= thread->nregs) {
-            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".app argument too large: arg #%d is %d (%d registers to this point)", j, ACE_APP_ARG(ip, j), thread->nregs);
+        if (ACE_APP_ARG(ip, j) >= st->nregs) {
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".app argument too large: arg #%d is %d (%d registers to this point)", j, ACE_APP_ARG(ip, j), st->nregs);
             return;
         }
-        args[j] = thread->regs[ACE_APP_ARG(ip, j)];
+        args[j] = st->regs[ACE_APP_ARG(ip, j)];
     }
 
     if (!ace_push_appv(ip->pos, thread, ACE_APP_NUMARGS(ip), args)) return;
 
-    thread->st.running.ip = ACE_APP_SKIP(ip);
+    st->ip = ACE_APP_SKIP(ip);
     return;
 }
 
-static
 void
-ace_instr_push_force(struct ace_thread *thread)
+ace_instr_push_force(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct ace_cont *cont;
     struct gsbc_cont_force *force;
     int i;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont_force) + ACE_FORCE_NUMFVS(ip) * sizeof(gsvalue));
     force = (struct gsbc_cont_force *)cont;
@@ -745,26 +1104,25 @@ ace_instr_push_force(struct ace_thread *thread)
 
     cont->node = gsbc_cont_force;
     cont->pos = ip->pos;
-    force->code = thread->subexprs[ACE_FORCE_CONT(ip)];
+    force->code = st->subexprs[ACE_FORCE_CONT(ip)];
     force->numfvs = ACE_FORCE_NUMFVS(ip);
     for (i = 0; i < ACE_FORCE_NUMFVS(ip); i++) {
-        force->fvs[i] = thread->regs[ACE_FORCE_FV(ip, i)];
+        force->fvs[i] = st->regs[ACE_FORCE_FV(ip, i)];
     }
 
-    thread->st.running.ip = ACE_FORCE_SKIP(ip);
+    st->ip = ACE_FORCE_SKIP(ip);
     return;
 }
 
-static
 void
-ace_instr_push_strict(struct ace_thread *thread)
+ace_instr_push_strict(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct ace_cont *cont;
     struct gsbc_cont_strict *strict;
     int i;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     cont = ace_stack_alloc(thread, ip->pos, sizeof(struct gsbc_cont_strict) + ACE_STRICT_NUMFVS(ip) * sizeof(gsvalue));
     strict = (struct gsbc_cont_strict *)cont;
@@ -772,59 +1130,55 @@ ace_instr_push_strict(struct ace_thread *thread)
 
     cont->node = gsbc_cont_strict;
     cont->pos = ip->pos;
-    strict->code = thread->subexprs[ACE_STRICT_CONT(ip)];
+    strict->code = st->subexprs[ACE_STRICT_CONT(ip)];
     strict->numfvs = ACE_STRICT_NUMFVS(ip);
     for (i = 0; i < ACE_STRICT_NUMFVS(ip); i++)
-        strict->fvs[i] = thread->regs[ACE_STRICT_FV(ip, i)]
+        strict->fvs[i] = st->regs[ACE_STRICT_FV(ip, i)]
     ;
 
-    thread->st.running.ip = ACE_STRICT_SKIP(ip);
+    st->ip = ACE_STRICT_SKIP(ip);
     return;
 }
 
-static
 void
-ace_instr_push_ubanalyze(struct ace_thread *thread)
+ace_instr_push_ubanalyze(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct ace_stack_ubanalyze_cont *pcont;
     int i;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     ACE_STACK_UBANALYZE_PUSH(pcont, ip->pos, thread,
-        ACE_UBANALYZE_NUMCONTS(ip), thread->subexprs[ACE_UBANALYZE_CONT(ip, i)],
-        ACE_UBANALYZE_NUMFVS(ip), thread->regs[ACE_UBANALYZE_FV(ip, i)],
+        ACE_UBANALYZE_NUMCONTS(ip), st->subexprs[ACE_UBANALYZE_CONT(ip, i)],
+        ACE_UBANALYZE_NUMFVS(ip), st->regs[ACE_UBANALYZE_FV(ip, i)],
         return
     );
 
-    thread->st.running.ip = ACE_UBANALYZE_SKIP(ip);
+    st->ip = ACE_UBANALYZE_SKIP(ip);
     return;
 }
 
-static void ace_instr_perform_analyze(struct ace_thread *);
-static void ace_instr_perform_danalyze(struct ace_thread *);
+static void ace_instr_perform_analyze(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_perform_danalyze(struct ace_thread *, struct ace_eval_state *);
 
 int
-ace_exec_branch(struct ace_thread *thread)
+ace_exec_branch(struct ace_thread *thread, struct ace_eval_state *st)
 {
-    switch (thread->st.running.ip->instr) {
+    switch (st->ip->instr) {
         case gsbc_op_analyze:
-            ace_instr_perform_analyze(thread);
+            ace_instr_perform_analyze(thread, st);
             return 1;
         case gsbc_op_danalyze:
-            ace_instr_perform_danalyze(thread);
+            ace_instr_perform_danalyze(thread, st);
             return 1;
         default:
             return 0;
     }
 }
 
-static void ace_poison_thread(struct ace_thread *, struct gspos, char *, ...);
-
-static
 void
-ace_instr_perform_analyze(struct ace_thread *thread)
+ace_instr_perform_analyze(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gsconstr *constr;
@@ -832,26 +1186,25 @@ ace_instr_perform_analyze(struct ace_thread *thread)
 
     int i;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
-    constr = (struct gsconstr *)thread->regs[ACE_ANALYZE_SCRUTINEE(ip)];
+    constr = (struct gsconstr *)st->regs[ACE_ANALYZE_SCRUTINEE(ip)];
     cases = ACE_ANALYZE_CASES(ip);
 
-    thread->st.running.ip = ip = cases[constr->a.constrnum];
+    st->ip = ip = cases[constr->a.constrnum];
     for (i = 0; i < constr->a.numargs; i++) {
-        if (thread->nregs >= MAX_NUM_REGISTERS) {
+        if (st->nregs >= MAX_NUM_REGISTERS) {
             ace_poison_thread(thread, ip->pos, "Register overflow");
             return;
         }
-        thread->regs[thread->nregs++] = constr->a.arguments[i];
+        st->regs[st->nregs++] = constr->a.arguments[i];
     }
 
     return;
 }
 
-static
 void
-ace_instr_perform_danalyze(struct ace_thread *thread)
+ace_instr_perform_danalyze(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gsconstr *constr;
@@ -860,9 +1213,9 @@ ace_instr_perform_danalyze(struct ace_thread *thread)
 
     int i;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
-    constr = (struct gsconstr *)thread->regs[ACE_DANALYZE_SCRUTINEE(ip)];
+    constr = (struct gsconstr *)st->regs[ACE_DANALYZE_SCRUTINEE(ip)];
     cases = ACE_DANALYZE_CASES(ip);
 
     casenum = 0;
@@ -873,79 +1226,77 @@ ace_instr_perform_danalyze(struct ace_thread *thread)
         }
     }
 
-    thread->st.running.ip = ip = cases[casenum];
+    st->ip = ip = cases[casenum];
     if (casenum > 0) {
         for (i = 0; i < constr->a.numargs; i++) {
-            if (thread->nregs >= MAX_NUM_REGISTERS) {
+            if (st->nregs >= MAX_NUM_REGISTERS) {
                 ace_poison_thread(thread, ip->pos, "Register overflow");
                 return;
             }
-            thread->regs[thread->nregs++] = constr->a.arguments[i];
+            st->regs[st->nregs++] = constr->a.arguments[i];
         }
     }
 
     return;
 }
 
-static void ace_instr_return_undef(struct ace_thread *);
-static void ace_instr_enter(struct ace_thread *, struct ace_thread_pool_stats *);
-static void ace_instr_yield(struct ace_thread *);
-static void ace_instr_ubprim(struct ace_thread *);
-static void ace_instr_lprim(struct ace_thread *);
+static void ace_instr_return_undef(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_enter(struct ace_thread *, struct ace_eval_state *, struct ace_thread_pool_stats *);
+static void ace_instr_yield(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_ubprim(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_lprim(struct ace_thread *, struct ace_eval_state *);
 
 int
-ace_exec_terminal(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
+ace_exec_terminal(struct ace_thread *thread, struct ace_eval_state *st, struct ace_thread_pool_stats *stats)
 {
-    switch (thread->st.running.ip->instr) {
+    switch (st->ip->instr) {
         case gsbc_op_undef:
-            ace_instr_return_undef(thread);
+            ace_instr_return_undef(thread, st);
             return 1;
         case gsbc_op_enter:
-            ace_instr_enter(thread, stats);
+            ace_instr_enter(thread, st, stats);
             return 1;
         case gsbc_op_yield:
-            ace_instr_yield(thread);
+            ace_instr_yield(thread, st);
             return 1;
         case gsbc_op_ubprim:
-            ace_instr_ubprim(thread);
+            ace_instr_ubprim(thread, st);
             return 1;
         case gsbc_op_lprim:
-            ace_instr_lprim(thread);
+            ace_instr_lprim(thread, st);
             return 1;
         default:
             return 0;
     }
 }
 
-static
 void
-ace_instr_return_undef(struct ace_thread *thread)
+ace_instr_return_undef(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     ace_error_thread(thread, gsundefined(ip->pos));
 }
 
 static int ace_thread_enter_closure(struct gspos, struct ace_thread *, struct gsheap_item *, struct ace_thread_pool_stats *);
 
-static
 void
-ace_instr_enter(struct ace_thread *thread, struct ace_thread_pool_stats *stats)
+ace_instr_enter(struct ace_thread *thread, struct ace_eval_state *eval, struct ace_thread_pool_stats *stats)
 {
     struct gsbc *ip;
     gstypecode st;
     gsvalue prog;
 
-    ip = thread->st.running.ip;
+    ip = eval->ip;
 
-    if (ACE_ENTER_ARG(ip) >= thread->nregs) {
+    if (ACE_ENTER_ARG(ip) >= eval->nregs) {
         ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ACE_ENTER_ARG(ip));
         return;
     }
 
-    prog = thread->regs[ACE_ENTER_ARG(ip)];
+    prog = eval->regs[ACE_ENTER_ARG(ip)];
 
 again:
     if (!IS_PTR(prog)) {
@@ -964,16 +1315,32 @@ again:
                     ace_thread_enter_closure(ip->pos, thread, hp, stats);
                     return;
                 } else {
+                    gsheap_unlock(hp);
+                    ace_poison_thread(thread, ip->pos, UNIMPL("ace_instr_enter: gsheap_item: gstythunk: no room"));
+                    gswarning("%s:%d: %P", __FILE__, __LINE__, ip->pos);
+                    return;
                     gsstatprint("%P: %P: Allocating a new thread to avoid stack overflow\n", thread->cureval->cont.pos, ip->pos);
                     stats->num_blocks_on_new_stack++;
                     st = ace_start_evaluation(ip->pos, hp);
                     break;
                 }
             case gstystack:
+                gsheap_unlock(hp);
+                ace_poison_thread(thread, ip->pos, UNIMPL("ace_instr_enter: gsheap_item: gstystack"));
+                gswarning("%s:%d: %P", __FILE__, __LINE__, ip->pos);
+                return;
                 stats->num_blocks_on_existing_thread++;
             case gstywhnf:
+                gsheap_unlock(hp);
+                break;
             case gstyindir:
+                gsheap_unlock(hp);
+                break;
             case gstyenosys:
+                gsheap_unlock(hp);
+                ace_poison_thread(thread, ip->pos, UNIMPL("ace_instr_enter: gsheap_item: gstyenosys"));
+                gswarning("%s:%d: %P", __FILE__, __LINE__, ip->pos);
+                return;
                 gsheap_unlock(hp);
                 break;
             default:
@@ -1017,57 +1384,53 @@ again:
 
 static
 void
-ace_instr_yield(struct ace_thread *thread)
+ace_instr_yield(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
-    if (ACE_YIELD_ARG(ip) >= thread->nregs) {
+    if (ACE_YIELD_ARG(ip) >= st->nregs) {
         ace_poison_thread(thread, ip->pos, "Register #%d not allocated", (int)ACE_YIELD_ARG(ip));
         return;
     }
 
-    ace_return(thread, ip->pos, thread->regs[ACE_YIELD_ARG(ip)]);
+    ace_return(thread, ip->pos, st->regs[ACE_YIELD_ARG(ip)]);
 }
 
-static
 void
-ace_instr_ubprim(struct ace_thread *thread)
+ace_instr_ubprim(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gsregistered_primset *prims;
     gsvalue args[MAX_NUM_REGISTERS];
     int i;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     for (i = 0; i < ACE_UBPRIM_NARGS(ip); i++)
-        args[i] = thread->regs[ACE_UBPRIM_ARG(ip, i)]
+        args[i] = st->regs[ACE_UBPRIM_ARG(ip, i)]
     ;
     prims = gsprims_lookup_prim_set_by_index(ACE_UBPRIM_PRIMSET_INDEX(ip));
     prims->ubexec_table[ACE_UBPRIM_INDEX(ip)](thread, ip->pos, ACE_UBPRIM_NARGS(ip), args);
 }
 
-static
 void
-ace_instr_lprim(struct ace_thread *thread)
+ace_instr_lprim(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gsregistered_primset *prims;
     gsvalue args[MAX_NUM_REGISTERS];
     int i;
 
-    ip = thread->st.running.ip;
+    ip = st->ip;
 
     for (i = 0; i < ACE_LPRIM_NARGS(ip); i++)
-        args[i] = thread->regs[ACE_LPRIM_ARG(ip, i)]
+        args[i] = st->regs[ACE_LPRIM_ARG(ip, i)]
     ;
     prims = gsprims_lookup_prim_set_by_index(ACE_LPRIM_PRIMSET_INDEX(ip));
     prims->lexec_table[ACE_LPRIM_INDEX(ip)](thread, ip->pos, ACE_LPRIM_NARGS(ip), args);
 }
-
-static void *ace_set_registers_from_bco(struct ace_thread *, struct gsbco *);
 
 int
 gsprim_return(struct ace_thread *thread, struct gspos pos, gsvalue v)
@@ -1079,37 +1442,28 @@ gsprim_return(struct ace_thread *thread, struct gspos pos, gsvalue v)
 int
 gsprim_return_ubsum(struct ace_thread *thread, struct gspos pos, int constr, int nargs, ...)
 {
-    struct ace_cont *cont;
-    struct ace_stack_ubanalyze_cont *ubanalyze;
-    struct gsbc *ip;
     va_list arg;
+    int *pconstr;
+    gsvalue *args;
     int i;
 
-    cont = thread->stacktop;
-    ubanalyze = (struct ace_stack_ubanalyze_cont *)cont;
-
-    if (cont->node != ace_stack_ubanalyze_cont) {
-        ace_poison_thread(thread, pos, "gsubprim_return: top of stack is a %d not a ubanalyze", cont->node);
+    if (((uchar*)thread->stacktop - (uchar*)thread->stacklimit) < nargs * sizeof(gsvalue)) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "gsprim_return_ubsum: no space for result on stack");
         return 0;
     }
 
-    ip = ace_set_registers_from_bco(thread, ACE_STACK_UBANALYZE_CONT(*ubanalyze, constr));
-    if (!ip) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "Too many registers");
-        return 0;
-    }
-    for (i = 0; i < ubanalyze->numfvs; i++)
-        thread->regs[thread->nregs++] = ACE_STACK_UBANALYZE_FV(*ubanalyze, i)
-    ;
+    pconstr = (int*)((uchar*)thread->stacktop - sizeof(gsvalue));
+    args = (gsvalue*)((uchar*)pconstr - nargs * sizeof(gsvalue));
+
+    *pconstr = constr;
+
     va_start(arg, nargs);
-    for (i = 0; i < nargs; i++)
-        thread->regs[thread->nregs++] = va_arg(arg, gsvalue)
-    ;
+    for (i = 0; i < nargs; i++) args[i] = va_arg(arg, gsvalue);
     va_end(arg);
 
-    thread->st.running.bco = ACE_STACK_UBANALYZE_CONT(*ubanalyze, constr);
-    thread->st.running.ip = ip;
-    thread->stacktop = ACE_STACK_UBANALYZE_BOTTOM(ubanalyze);
+    thread->state = ace_thread_returning;
+    thread->st.returning.from = pos;
+
     return 1;
 }
 
@@ -1142,8 +1496,6 @@ gsprim_block(struct ace_thread *thread, struct gspos pos, struct gslprim_blockin
     thread->st.lprim_blocked.on = blocking;
     return 0;
 }
-
-static void ace_remove_thread(struct ace_thread *);
 
 static
 void
@@ -1217,263 +1569,23 @@ ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *e
     ace_remove_thread(thread);
 }
 
-static void *ace_set_registers_from_closure(struct ace_thread *, struct gsclosure *);
-
-static int ace_return_to_update(struct ace_thread *, struct ace_cont *, gsvalue);
-static void ace_return_to_app(struct ace_thread *, struct ace_cont *, gsvalue);
-static void ace_return_to_force(struct ace_thread *, struct ace_cont *, gsvalue);
-static void ace_return_to_strict(struct ace_thread *, struct ace_cont *, gsvalue);
-
-static
 void
 ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
 {
-    struct ace_cont *cont;
+    gsvalue *ret;
 
-again:
-    cont = ace_stack_top(thread);
-    switch (cont->node) {
-        case gsbc_cont_update:
-            if (ace_return_to_update(thread, cont, v)) {
-                goto again;
-            } else {
-                return;
-            }
-        case gsbc_cont_app:
-            ace_return_to_app(thread, cont, v);
-            return;
-        case gsbc_cont_force:
-            ace_return_to_force(thread, cont, v);
-            return;
-        case gsbc_cont_strict:
-            ace_return_to_strict(thread, cont, v);
-            return;
-        default:
-            ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Return to %d continuations", cont->node);
-            return;
-    }
-}
-
-int
-ace_return_to_update(struct ace_thread *thread, struct ace_cont *cont, gsvalue v)
-{
-    struct gsbc_cont_update *update;
-    struct gsheap_item *hp;
-    struct gsindirection *in;
-
-    update = (struct gsbc_cont_update *)cont;
-    hp = update->dest;
-
-    lock(&hp->lock);
-    hp->type = gsindirection;
-    in = (struct gsindirection *)hp;
-    in->dest = v;
-    unlock(&hp->lock);
-
-    if (update->next) {
-        ace_pop_update(thread);
-        return 1;
-    } else {
-        ace_remove_thread(thread);
-        return 0;
-    }
-}
-
-static
-void
-ace_return_to_app(struct ace_thread *thread, struct ace_cont *cont, gsvalue v)
-{
-    int i;
-    struct gs_blockdesc *block;
-    struct gsheap_item *fun;
-    struct gsclosure *cl;
-    struct gsbc_cont_app *app;
-    int needed_args;
-
-    app = (struct gsbc_cont_app *)cont;
-
-    block = BLOCK_CONTAINING(v);
-
-    if (!gsisheap_block(block)) {
-        ace_poison_thread(thread, cont->pos, "Applied function is a %s not a closure", block->class->description);
+    if (((uchar*)thread->stacktop - (uchar*)thread->stacklimit) < sizeof(gsvalue)) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, srcpos, "ace_return: no space for result on stack");
         return;
     }
 
-    fun = (struct gsheap_item *)v;
+    ret = (gsvalue*)((uchar*)thread->stacktop - sizeof(gsvalue));
 
-    if (fun->type != gsclosure) {
-        ace_poison_thread(thread, cont->pos, "Applied function %P is not a closure", fun->pos);
-        return;
-    }
+    thread->state = ace_thread_returning;
+    thread->st.returning.from = srcpos;
+    *ret = v;
 
-    cl = (struct gsclosure *)fun;
-    needed_args = cl->cl.code->numargs - (cl->cl.numfvs - cl->cl.code->numfvs);
-
-    if (app->numargs < needed_args) {
-        struct gsheap_item *res;
-        struct gsclosure *clres;
-
-        res = gsreserveheap(sizeof (struct gsclosure) + (cl->cl.numfvs + app->numargs) * sizeof(gsvalue));
-        clres = (struct gsclosure *)res;
-
-        res->pos = cont->pos;
-        memset(&res->lock, 0, sizeof(res->lock));
-        res->type = gsclosure;
-        clres->cl.code = cl->cl.code;
-        clres->cl.numfvs = cl->cl.numfvs + app->numargs;
-        for (i = 0; i < cl->cl.numfvs; i++)
-            clres->cl.fvs[i] = cl->cl.fvs[i]
-        ;
-        for (i = cl->cl.numfvs; i < cl->cl.numfvs + app->numargs; i++)
-            clres->cl.fvs[i] = app->arguments[i - cl->cl.numfvs]
-        ;
-        thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
-
-        ace_return(thread, cont->pos, (gsvalue)res);
-        return;
-    } else {
-        int i;
-        void *ip;
-
-        switch (cl->cl.code->tag) {
-            case gsbc_expr: {
-                void *bot_of_app_cont, *newstacktop;
-
-                ip = ace_set_registers_from_closure(thread, cl);
-                if (!ip) {
-                    ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-                    return;
-                }
-
-                for (i = 0; i < needed_args; i++) {
-                    if (thread->nregs >= MAX_NUM_REGISTERS) {
-                        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-                        return;
-                    }
-                    thread->regs[thread->nregs] = app->arguments[i];
-                    thread->nregs++;
-                }
-
-                bot_of_app_cont = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
-
-                if (i < app->numargs) {
-                    struct gsbc_cont_app *newapp;
-
-                    newstacktop = (uchar*)bot_of_app_cont - sizeof(struct gsbc_cont_app) - (app->numargs - i) * sizeof(gsvalue);
-                    newapp = (struct gsbc_cont_app *)newstacktop;
-                    /* §ccode{newapp} has to be initialized from highest address to lowest */
-                    newapp->numargs = app->numargs - i;
-                    newapp->cont.pos = app->cont.pos;
-                    newapp->cont.node = gsbc_cont_app;
-                } else {
-                    newstacktop = bot_of_app_cont;
-                }
-
-                thread->stacktop = newstacktop;
-                thread->state = ace_thread_running;
-                thread->st.running.bco = cl->cl.code;
-                thread->st.running.ip = (struct gsbc *)ip;
-                break;
-            }
-            case gsbc_impprog: {
-                struct gsheap_item *hpres;
-                struct gsclosure *res;
-
-                hpres = gsreserveheap(sizeof(*res) + (cl->cl.numfvs + app->numargs) * sizeof(gsvalue));
-                res = (struct gsclosure *)hpres;
-
-                memset(&hpres->lock, 0, sizeof(hpres->lock));
-                hpres->pos = cont->pos;
-                hpres->type = gsclosure;
-                res->cl.code = cl->cl.code;
-                res->cl.numfvs = cl->cl.numfvs + app->numargs;
-                for (i = 0; i < cl->cl.numfvs; i++)
-                    res->cl.fvs[i] = cl->cl.fvs[i]
-                ;
-                for (i = 0; i < app->numargs; i++)
-                    res->cl.fvs[cl->cl.numfvs + i] = app->arguments[i]
-                ;
-
-                thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
-                return ace_return(thread, cont->pos, (gsvalue)res);
-            }
-            default:
-                ace_thread_unimpl(thread, __FILE__, __LINE__, fun->pos, "Apply code blocks of type %d", cl->cl.code->tag);
-                return;
-        }
-    }
-}
-
-static
-void
-ace_return_to_force(struct ace_thread *thread, struct ace_cont *cont, gsvalue v)
-{
-    struct gsbc_cont_force *force;
-    void *ip;
-    int i;
-
-    force = (struct gsbc_cont_force *)cont;
-
-    ip = ace_set_registers_from_bco(thread, force->code);
-    if (!ip) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-        return;
-    }
-
-    for (i = 0; i < force->numfvs; i++) {
-        if (thread->nregs >= MAX_NUM_REGISTERS) {
-            ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-            return;
-        }
-        thread->regs[thread->nregs++] = force->fvs[i];
-    }
-
-    if (thread->nregs >= MAX_NUM_REGISTERS) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-        return;
-    }
-    thread->regs[thread->nregs++] = v;
-
-    thread->state = ace_thread_running;
-    thread->st.running.bco = force->code;
-    thread->st.running.ip = (struct gsbc *)ip;
-    thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_force) + force->numfvs * sizeof(gsvalue);
-}
-
-static
-void
-ace_return_to_strict(struct ace_thread *thread, struct ace_cont *cont, gsvalue v)
-{
-    struct gsbc_cont_strict *strict;
-    void *ip;
-    int i;
-
-    strict = (struct gsbc_cont_strict *)cont;
-
-    ip = ace_set_registers_from_bco(thread, strict->code);
-    if (!ip) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-        return;
-    }
-
-    for (i = 0; i < strict->numfvs; i++) {
-        if (thread->nregs >= MAX_NUM_REGISTERS) {
-            ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-            return;
-        }
-        thread->regs[thread->nregs++] = strict->fvs[i];
-    }
-
-    if (thread->nregs >= MAX_NUM_REGISTERS) {
-        ace_thread_unimpl(thread, __FILE__, __LINE__, cont->pos, "Too many registers");
-        return;
-    }
-    thread->regs[thread->nregs++] = v;
-
-    thread->state = ace_thread_running;
-    thread->st.running.bco = strict->code;
-    thread->st.running.ip = (struct gsbc *)ip;
-    thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_strict) + strict->numfvs * sizeof(gsvalue);
+    return;
 }
 
 static
@@ -1482,6 +1594,7 @@ ace_remove_thread(struct ace_thread *thread)
 {
     if (thread->state == ace_thread_finished) return;
     thread->state = ace_thread_finished;
+    if (thread->tid < 0) return;
     lock(&ace_thread_queue->lock);
     if (ace_thread_queue->num_active_threads < thread->tid) {
         gswarning("%s:%d: Can't shutdown thread #%d properly; only have %d threads total!", __FILE__, __LINE__, thread->tid, ace_thread_queue->num_active_threads);
@@ -1551,6 +1664,8 @@ ace_start_evaluation(struct gspos pos, struct gsheap_item *hp)
     }
 }
 
+static int ace_set_args_from_closure(struct ace_thread *, struct gsclosure *, int, gsvalue *);
+
 /* ↓ Used to add a closure (necessarily a §ccode{struct gsheap_item *}) to a thread.
    Assume there is enough room for an update frame: it's the caller's responsibility to create a new thread when we're low on stack space.
 */
@@ -1564,22 +1679,15 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
     switch (hp->type) {
         case gsclosure: {
             struct gsclosure *cl;
-            struct gsbc *instr;
 
             cl = (struct gsclosure *)hp;
 
             switch (cl->cl.code->tag) {
                 case gsbc_expr: {
-                    instr = (struct gsbc *)ace_set_registers_from_closure(thread, cl);
+                    if (!ace_set_args_from_closure(thread, cl, 0, 0)) return -1;
 
-                    if (!instr) {
-                        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->cl.code->pos, "Too many registers"));
-                        return -1;
-                    }
-
-                    thread->state = ace_thread_running;
-                    thread->st.running.bco = cl->cl.code;
-                    thread->st.running.ip = instr;
+                    thread->state = ace_thread_entering_bco;
+                    thread->st.entering_bco.bco = cl->cl.code;
 
                     cl->hp.type = gseval;
                     cl->update = updatecont;
@@ -1589,7 +1697,7 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
                 }
                 default:
                     gsheap_unlock(hp);
-                    ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "ace_start_evaluation(%d)", cl->cl.code->tag));
+                    ace_poison_thread(thread, pos, UNIMPL("ace_start_evaluation(%d)"), cl->cl.code->tag);
                     return -1;
             }
 
@@ -1620,64 +1728,32 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
         }
         default:
             gsheap_unlock(hp);
-            ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "ace_start_evaluation(type = %d)", hp->type));
+            ace_poison_thread(thread, pos, UNIMPL("ace_start_evaluation(type = %d)"), hp->type);
             return -1;
     }
 }
 
-static
-void *
-ace_set_registers_from_closure(struct ace_thread *thread, struct gsclosure *cl)
+int
+ace_set_args_from_closure(struct ace_thread *thread, struct gsclosure *cl, int numargs, gsvalue *args)
 {
-    void *ip;
+    int num_total_args;
+    gsvalue *saved_args;
     int i;
 
-    ip = ace_set_registers_from_bco(thread, cl->cl.code);
-    if (!ip) return 0;
-    for (i = 0; i < cl->cl.numfvs; i++) {
-        if (thread->nregs >= MAX_NUM_REGISTERS)
-            return 0
-        ;
-        thread->regs[thread->nregs] = cl->cl.fvs[i];
-        thread->nregs++;
-    }
-    return ip;
-}
+    num_total_args = cl->cl.numfvs + numargs;
 
-static
-void *
-ace_set_registers_from_bco(struct ace_thread *thread, struct gsbco *code)
-{
-    void *ip;
-    int i;
-
-    thread->nregs = 0;
-    thread->nsubexprs = 0;
-
-    ip = (uchar*)code + sizeof(*code);
-    if ((uintptr)ip % sizeof(struct gsbco *))
-        ip = (uchar*)ip + sizeof(struct gsbco *) - (uintptr)ip % sizeof(struct gsbco *)
-    ;
-    for (i = 0; i < code->numsubexprs; i++) {
-        if (thread->nsubexprs >= MAX_NUM_REGISTERS)
-            return 0
-        ;
-        thread->subexprs[thread->nsubexprs] = *(struct gsbco **)ip;
-        thread->nsubexprs++;
-        ip = (struct gsbco **)ip + 1;
+    if (num_total_args > ((uchar*)thread->stacktop - (uchar*)thread->stacklimit) / sizeof(gsvalue)) {
+        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->hp.pos, "ace_set_args_from_closure: not enough room for args"));
+        return 0;
     }
-    if ((uintptr)ip % sizeof(gsvalue))
-        ip = (uchar*)ip + sizeof(gsvalue) - (uintptr)ip % sizeof(gsvalue)
-    ;
-    for (i = 0; i < code->numglobals; i++) {
-        if (thread->nregs >= MAX_NUM_REGISTERS)
-            return 0
-        ;
-        thread->regs[thread->nregs] = *(gsvalue *)ip;
-        thread->nregs++;
-        ip = (gsvalue*)ip + 1;
-    }
-    return ip;
+
+    saved_args = (gsvalue*)((uchar*)thread->stacktop - num_total_args * sizeof(gsvalue));
+
+    /* Note: globals, then free vars, then args; so first the fvs from the closure then any additional arguments */
+    for (i = 0; i < cl->cl.numfvs; i++) saved_args[i] = cl->cl.fvs[i];
+    for (; i < num_total_args; i++) saved_args[i] = args[i - cl->cl.numfvs];
+
+    return 1;
 }
 
 #define ACE_STACK_ARENA_SIZE (sizeof(gsvalue) * 0x400)
@@ -1709,6 +1785,7 @@ ace_thread_alloc()
     thread->stacktop = stackbot;
     thread->stacklimit = (uchar*)thread + sizeof(*thread);
     thread->cureval = 0;
+    thread->tid = -1;
 
     return thread;
 }
@@ -1754,6 +1831,7 @@ ace_thread_gccopy(struct gsstringbuilder *err, struct ace_thread *thread)
     struct ace_thread *newthread;
     void *stackbase, *stackbot, *stacklimit;
     struct gsbc_cont_update *update;
+    ulong returnvaluesize;
     ulong stacksize;
 
     gs_sys_aligned_block_suballoc(&ace_thread_info, &stackbase, &stackbot);
@@ -1762,8 +1840,40 @@ ace_thread_gccopy(struct gsstringbuilder *err, struct ace_thread *thread)
 
     memcpy(newthread, thread, sizeof(*thread));
 
+    returnvaluesize = 0;
+    if (thread->state == ace_thread_entering_bco) {
+        returnvaluesize = (thread->st.entering_bco.bco->numfvs + thread->st.entering_bco.bco->numargs) * sizeof(gsvalue);
+    } else if (thread->state == ace_thread_returning) {
+        struct ace_cont *cont = (struct ace_cont *)thread->stacktop;
+
+        switch (cont->node) {
+            case gsbc_cont_update:
+            case gsbc_cont_app:
+            case gsbc_cont_force:
+            case gsbc_cont_strict:
+                returnvaluesize = sizeof(gsvalue);
+                break;
+            case ace_stack_ubanalyze_cont: {
+                struct ace_stack_ubanalyze_cont *ubanalyze;
+                /* TODO: Change to use ACE_STACK_UBANALYZE_ARGS_SIZE */
+                int *pconstr;
+
+                ubanalyze = (struct ace_stack_ubanalyze_cont *)cont;
+                pconstr = (int*)((uchar*)thread->stacktop - sizeof(gsvalue));
+
+                returnvaluesize = (1 + ACE_STACK_UBANALYZE_CONT(*cont, *pconstr)->numargs) * sizeof(gsvalue);
+
+                break;
+            }
+            default:
+                gsstring_builder_print(err, UNIMPL("ace_thread_gccopy: copy return values: node = %d"), cont->node);
+                return 0;
+        }
+    }
+
     stacksize = (uchar*)thread->stackbot - (uchar*)thread->stacktop;
-    if (stacksize > (uchar*)stackbot - (uchar*)stacklimit) {
+
+    if (returnvaluesize + stacksize > (uchar*)stackbot - (uchar*)stacklimit) {
         gsstring_builder_print(err, UNIMPL("ace_eval_gc_trace: no room for new stack"));
         return 0;
     }
@@ -1771,7 +1881,7 @@ ace_thread_gccopy(struct gsstringbuilder *err, struct ace_thread *thread)
     newthread->stackbot = stackbot;
     newthread->stacktop = (uchar*)stackbot - stacksize;
     newthread->stacklimit = stacklimit;
-    memcpy(newthread->stacktop, thread->stacktop, stacksize);
+    memcpy((uchar*)newthread->stacktop - returnvaluesize, (uchar*)thread->stacktop - returnvaluesize, returnvaluesize + stacksize);
     newthread->gc_evacuated_stackbot = newthread->stacktop;
 
     /* ↓ §ccode{(uchar*)newthread->stackbot - (uchar*)thread->cureval = (uchar*)thread->stackbot - (uchar*)thread->cureval} */
@@ -1794,22 +1904,49 @@ ace_thread_gcevacuate(struct gsstringbuilder *err, struct ace_thread *thread)
     int i;
 
     switch (thread->state) {
-        case ace_thread_running: {
-            void *oldbco, *newip;
+        case ace_thread_entering_bco: {
+            gsvalue *fvs;
+            int numfvs;
 
-            oldbco = thread->st.running.bco;
-            if (thread->st.running.bco && gs_sys_block_in_gc_from_space(thread->st.running.bco) && gs_gc_trace_bco(err, &thread->st.running.bco) < 0) return -1;
-            newip = (uchar*)thread->st.running.bco + ((uchar*)thread->st.running.ip - (uchar*)oldbco);
-            thread->st.running.ip = (struct gsbc *)newip;
+            if (thread->st.entering_bco.bco && gs_sys_block_in_gc_from_space(thread->st.entering_bco.bco) && gs_gc_trace_bco(err, &thread->st.entering_bco.bco) < 0) return -1;
 
-            for (i = 0; i < thread->nsubexprs; i++)
-                if (gs_gc_trace_bco(err, &thread->subexprs[i]) < 0) return -1
-            ;
+            numfvs = thread->st.entering_bco.bco->numfvs + thread->st.entering_bco.bco->numargs;
+            fvs = (gsvalue*)((uchar*)thread->stacktop - numfvs * sizeof(gsvalue));
+            for (i = 0; i < numfvs; i++) if (GS_GC_TRACE(err, fvs + i) < 0) return -1;
 
-            for (i = 0; i < thread->nregs; i++)
-                if (GS_GC_TRACE(err, &thread->regs[i]) < 0) return -1
-            ;
+            break;
+        }
+        case ace_thread_returning: {
+            struct ace_cont *cont;
 
+            cont = (struct ace_cont *)thread->stacktop;
+            if (gs_gc_trace_pos(err, &thread->st.returning.from) < 0) return -1;
+
+            switch (cont->node) {
+                case gsbc_cont_update:
+                case gsbc_cont_app:
+                case gsbc_cont_force: {
+                    gsvalue *ret;
+
+                    ret = (gsvalue*)((uchar*)thread->stacktop - sizeof(gsvalue));
+                    if (GS_GC_TRACE(err, ret) < 0) return -1;
+
+                    break;
+                }
+                case ace_stack_ubanalyze_cont: {
+                    struct ace_stack_ubanalyze_cont *ubanalyze = (struct ace_stack_ubanalyze_cont *)cont;
+
+                    for (i = 0; i < ACE_STACK_UBANALYZE_NUMARGS(thread, ubanalyze); i++)
+                        if (GS_GC_TRACE(err, ACE_STACK_UBANALYZE_ARGS(thread, ubanalyze) + i) < 0)
+                            return -1
+                    ;
+
+                    break;
+                }
+                default:
+                    gsstring_builder_print(err, UNIMPL("%P: ace_eval_gc_trace: evacuate: ace_thread_returning to: %d"), cont->pos, cont->node);
+                    return -1;
+            }
             break;
         }
         case ace_thread_blocked:

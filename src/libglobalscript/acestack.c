@@ -15,10 +15,14 @@ ace_push_update(struct gspos pos, struct ace_thread *thread, struct gsheap_item 
     cont = ace_stack_alloc(thread, hp->pos, sizeof(struct gsbc_cont_update));
     updatecont = (struct gsbc_cont_update *)cont;
     if (!cont) {
+        struct gsimplementation_failure *err;
+
+        err = gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating update continuation");
         hp->type = gsindirection;
         in = (struct gsindirection *)hp;
-        in->dest = (gsvalue)gsunimpl(__FILE__, __LINE__, pos, "Out of stack space allocating update continuation");
+        in->dest = (gsvalue)err;
         gsheap_unlock(hp);
+        ace_failure_thread(thread, err);
         return 0;
     }
     cont->node = gsbc_cont_update;
@@ -243,6 +247,48 @@ ace_stack_post_gc_consolidate(struct gsstringbuilder *err, struct ace_thread *th
             if (sz) memmove(dest, srctop, sz);
         }
         src = (uchar*)src - sz;
+    }
+
+    if (thread->state == ace_thread_entering_bco) {
+        int numfvs;
+        void *srcret, *destret;
+
+        numfvs = thread->st.entering_bco.bco->numfvs + thread->st.entering_bco.bco->numargs;
+        srcret = (uchar*)src - numfvs * sizeof(gsvalue);
+        destret = (uchar*)dest - numfvs * sizeof(gsvalue);
+
+        memmove(destret, srcret, numfvs * sizeof(gsvalue));
+    } else if (thread->state == ace_thread_returning) {
+        struct ace_cont *cont = (struct ace_cont *)thread->stacktop;
+
+        switch (cont->node) {
+            case gsbc_cont_update:
+            case gsbc_cont_app:
+            case gsbc_cont_force: {
+                void *srcret, *destret;
+
+                srcret = (uchar*)src - sizeof(gsvalue);
+                destret = (uchar*)dest - sizeof(gsvalue);
+
+                memmove(destret, srcret, sizeof(gsvalue));
+
+                break;
+            }
+            case ace_stack_ubanalyze_cont: {
+                struct ace_stack_ubanalyze_cont *ubanalyze = (struct ace_stack_ubanalyze_cont *)cont;
+                void *srcret, *destret;
+
+                srcret = (uchar*)src - ACE_STACK_UBANALYZE_ARGS_SIZE(thread, ubanalyze);
+                destret = (uchar*)dest - ACE_STACK_UBANALYZE_ARGS_SIZE(thread, ubanalyze);
+
+                memmove(destret, srcret, ACE_STACK_UBANALYZE_ARGS_SIZE(thread, ubanalyze));
+
+                break;
+            }
+            default:
+                gsstring_builder_print(err, UNIMPL("%P: Move result: node = %d"), cont->pos, cont->node);
+                return -1;
+        }
     }
 
     thread->cureval = downupdate;

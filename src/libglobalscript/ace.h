@@ -22,6 +22,8 @@ struct ace_thread {
     int tid;
     struct gsbc_cont_update *cureval;
     enum {
+        ace_thread_entering_bco,
+        ace_thread_returning,
         ace_thread_running,
         ace_thread_blocked,
         ace_thread_lprim_blocked,
@@ -31,23 +33,22 @@ struct ace_thread {
     union {
         struct {
             struct gsbco *bco;
-            struct gsbc *ip;
-        } running;
+        } entering_bco;
         struct {
-            gsvalue on;
+            struct gspos from;
+        } returning;
+        struct {
             struct gspos at;
+            gsvalue on;
         } blocked;
         struct {
-            struct gslprim_blocking *on;
             struct gspos at;
+            struct gslprim_blocking *on;
         } lprim_blocked;
         struct {
             struct ace_thread *dest;
         } forward;
     } st;
-    int nregs, nsubexprs;
-    struct gsbco *subexprs[MAX_NUM_REGISTERS];
-    gsvalue regs[MAX_NUM_REGISTERS];
     void *stacklimit, *stacktop, *stackbot;
     void *gc_evacuated_stackbot;
 };

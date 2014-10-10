@@ -74,6 +74,13 @@ struct ace_stack_ubanalyze_cont {
 
 /* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 
+/* TODO: Move to mdl */
+
+#define ACE_STACK_UBANALYZE_CONSTR(thread, cont) (*(int*)((uchar*)(thread)->stacktop - sizeof(gsvalue)))
+#define ACE_STACK_UBANALYZE_NUMARGS(thread, cont) (ACE_STACK_UBANALYZE_CONT(*(cont), ACE_STACK_UBANALYZE_CONSTR(thread, cont))->numargs)
+#define ACE_STACK_UBANALYZE_ARGS_SIZE(thread, cont) ((1 + ACE_STACK_UBANALYZE_NUMARGS(thread, cont)) * sizeof(gsvalue))
+#define ACE_STACK_UBANALYZE_ARGS(thread, cont) ((gsvalue*)((uchar*)(thread)->stacktop - ACE_STACK_UBANALYZE_ARGS_SIZE(thread, cont)))
+
 /* §section ACE Stack manipulations */
 
 struct ace_cont *ace_stack_alloc(struct ace_thread *, struct gspos, ulong); /* Deprecated */

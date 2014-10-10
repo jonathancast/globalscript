@@ -36,6 +36,7 @@ TEST_ERASE_BOTTOM_OF_STACK()
     test_fixture_update(thread, &bottom_update, &bottom_gsv);
     app = ace_push_app(HERE, thread, 2, gserror(HERE, "First argument"), gserror(HERE, "Second argument"));
     test_fixture_update(thread, &top_update, &top_gsv);
+    thread->state = ace_thread_returning;
 
     err = gsreserve_string_builder();
 
