@@ -107,6 +107,10 @@ ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
+
 ok_diff '-- non-empty records in expressions --' ./$O.test-gsi record-literal-gen.ags
 ok_grep_errors '-- empty records with non-empty signatures in expressions --' './test-fixtures/record-empty-non-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi record-empty-non-empty-sig.ags
 ok_grep_errors '-- non-empty records with empty signatures in expressions --' './test-fixtures/non-empty-record-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi non-empty-record-empty-sig.ags
@@ -118,10 +122,6 @@ ok_grep_errors '-- natural number literals: letters --' './test-fixtures/natural
 ok_grep_errors '-- natural number literals: negative number --' './test-fixtures/natural-literal-negative.ags:12: Invalid character ''-'' in natural number literal' ./$O.test-gsi natural-literal-negative.ags
 
 ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
-
-echo '# Version 0.6 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_diff '-- regex literals --' ./$O.test-gsi regex-literal.ags
 ok_diff '-- regex character class --' ./$O.test-gsi regex-class.ags
