@@ -55,7 +55,7 @@ mdl.syntax.id	.gvar
 parser.<*	.gvar
 mdl.syntax.braces	.gvar
 parser.many	.gvar
-
+mdl.type.field.decl.parser	.gvar
 mdl.syntax.semi	.gvar
 parser.fail	.gvar	-- Temp
 list.field.ty	.tylet	list.t	mdl.type.field.decl.t
@@ -66,8 +66,7 @@ blocking.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_api.prim.blocking_b
 label.p2	.apply	parser.*>	rune.t	string.t	string.t	|	blocking.p	mdl.syntax.id
 label.p1	.apply	parser.*>	rune.t	string.t	string.t	|	prim.p	label.p2
 label.p	.apply	parser.*>	rune.t	string.t	string.t	|	api.p	label.p1
-fields.p3	.apply	parser.fail	rune.t	mdl.type.field.decl.t
-fields.p2	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	fields.p3
+fields.p2	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	mdl.type.field.decl.parser
 fields.p1	.apply	mdl.syntax.braces	list.field.ty	|	fields.p2
 fields.p	.apply	parser.<*	rune.t	list.field.ty	string.t	|	fields.p1	mdl.syntax.semi
 	.app	f	label.p	fields.p
