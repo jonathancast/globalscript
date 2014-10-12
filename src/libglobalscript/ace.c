@@ -1311,7 +1311,7 @@ again:
         st = gsheapstate(ip->pos, hp);
         switch (st) {
             case gstythunk:
-                if ((uchar*)thread->stacktop - (uchar*)thread->stacklimit >= 0x100 * sizeof(gsvalue)) {
+                if ((uchar*)thread->stacktop - (uchar*)thread->stacklimit >= 4 * sizeof(struct gsbc_cont_update)) {
                     ace_thread_enter_closure(ip->pos, thread, hp, stats);
                     return;
                 } else {
