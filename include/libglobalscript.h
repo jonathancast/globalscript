@@ -428,11 +428,11 @@ struct ace_thread;
 
 typedef int gsprim_handler(struct ace_thread *, struct gspos, int, gsvalue *, gsvalue *);
 typedef int gsubprim_handler(struct ace_thread *, struct gspos, int, gsvalue *);
-typedef int gslprim_handler(struct ace_thread *, struct gspos, int, gsvalue *);
+typedef int gslprim_handler(struct ace_thread *, struct ace_thread **, struct gspos, int, gsvalue *);
 
 struct gslprim_blocking;
 
-typedef int gslprim_resumption_handler(struct ace_thread *, struct gspos, struct gslprim_blocking *);
+typedef int gslprim_resumption_handler(struct ace_thread *, struct ace_thread **, struct gspos, struct gslprim_blocking *);
 typedef struct gslprim_blocking *gslprim_gccopy_handler(struct gsstringbuilder *, struct gslprim_blocking *);
 typedef int gslprim_gcevacuate_handler(struct gsstringbuilder *, struct gslprim_blocking *);
 
@@ -450,7 +450,7 @@ int gslprim_blocking_trace(struct gsstringbuilder *, struct gslprim_blocking **)
 /* §ags{.lprim} and §ags{.ubprim} handlers must finish by returning a call to one of these functions: */
 int gsprim_unimpl(struct ace_thread *, char *, int, struct gspos, char *, ...);
 int gsprim_error(struct ace_thread *, struct gserror *);
-int gsprim_return(struct ace_thread *, struct gspos, gsvalue);
+int gsprim_return(struct ace_thread *, struct ace_thread **, struct gspos, gsvalue);
 int gsprim_return_ubsum(struct ace_thread *, struct gspos, int, int, ...);
 int gsprim_block(struct ace_thread *, struct gspos, struct gslprim_blocking *);
 

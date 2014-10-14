@@ -57,7 +57,7 @@ struct ace_thread_pool_stats;
 
 static int ace_find_thread(struct ace_thread_pool_stats *, int, struct ace_thread **);
 
-static void ace_return(struct ace_thread *, struct gspos, gsvalue);
+static void ace_return(struct ace_thread *, struct ace_thread **, struct gspos, gsvalue);
 static void ace_error_thread(struct ace_thread *, struct gserror *);
 
 struct ace_eval_state;
@@ -66,7 +66,7 @@ static int ace_exec_efv(struct ace_thread *, struct ace_eval_state *);
 static int ace_exec_alloc(struct ace_thread *, struct ace_eval_state *);
 static int ace_exec_push(struct ace_thread *, struct ace_eval_state *);
 static int ace_exec_branch(struct ace_thread *, struct ace_eval_state *);
-static int ace_exec_terminal(struct ace_thread *, struct ace_eval_state *, struct ace_thread_pool_stats *);
+static int ace_exec_terminal(struct ace_thread *, struct ace_thread **, struct ace_eval_state *, struct ace_thread_pool_stats *);
 
 struct ace_thread_pool_stats {
     vlong numthreads_total, num_blocked, num_blocked_threads, num_blocks_on_function, num_blocks_on_new_stack, num_blocks_on_existing_thread;
@@ -82,7 +82,7 @@ struct ace_eval_state {
 
 static int ace_set_registers_from_bco(struct ace_thread *, struct ace_eval_state *, struct gsbco *);
 static int ace_set_registers_from_fvs(struct ace_thread *, struct ace_eval_state *, struct gsbco *);
-static int ace_pop_continuation(struct ace_thread *, struct ace_eval_state *);
+static int ace_pop_continuation(struct ace_thread *, struct ace_thread **, struct ace_eval_state *);
 
 #define ACE_THREAD_RUNNABLE(thread) ((thread)->state == ace_thread_entering_bco || (thread)->state == ace_thread_returning)
 
@@ -127,7 +127,7 @@ ace_thread_pool_main(void *p)
                     thread->state = ace_thread_running;
                     break;
                 case ace_thread_returning:
-                    if (!ace_pop_continuation(thread, &st)) goto failure;
+                    if (!ace_pop_continuation(thread, &thread, &st)) goto failure;
                     break;
                 default: {
                     struct gspos pos;
@@ -143,7 +143,7 @@ ace_thread_pool_main(void *p)
             while (thread->state == ace_thread_running && ace_exec_push(thread, &st)) nwork++, num_instrs++;
             if (thread->state == ace_thread_running) {
                 if (ace_exec_branch(thread, &st)) { nwork++, num_instrs++; if (thread->state == ace_thread_running) goto in_branch; }
-                else if (ace_exec_terminal(thread, &st, &stats)) nwork++, num_instrs++;
+                else if (ace_exec_terminal(thread, &thread, &st, &stats)) nwork++, num_instrs++;
                 else ace_thread_unimpl(thread, __FILE__, __LINE__, st.ip->pos, "run instruction %d", st.ip->instr);
             }
         }
@@ -234,7 +234,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
             case ace_thread_returning:
                 break;
             case ace_thread_lprim_blocked: {
-                thread->st.lprim_blocked.on->resume(thread, thread->st.lprim_blocked.at, thread->st.lprim_blocked.on);
+                thread->st.lprim_blocked.on->resume(thread, &thread, thread->st.lprim_blocked.at, thread->st.lprim_blocked.on);
                 if (!ACE_THREAD_RUNNABLE(thread)) {
                     unlock(&thread->lock);
                     thread = 0;
@@ -258,7 +258,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
                         goto again;
                         break;
                     case gstywhnf: {
-                        ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
+                        ace_return(thread, &thread, thread->st.blocked.at, thread->st.blocked.on);
                         break;
                     }
                     case gstyerr: {
@@ -270,7 +270,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
                         break;
                     }
                     case gstyunboxed: {
-                        ace_return(thread, thread->st.blocked.at, thread->st.blocked.on);
+                        ace_return(thread, &thread, thread->st.blocked.at, thread->st.blocked.on);
                         break;
                     }
                     case gstyeoothreads: {
@@ -375,13 +375,13 @@ ace_set_registers_from_fvs(struct ace_thread *thread, struct ace_eval_state *st,
 /* §ccode{ace_return_to_update} (only) returns the address of the next continuation to return to;
    the others set §ccode{thread->stacktop} to it */
 static void *ace_return_to_update(struct ace_thread *, struct ace_cont *);
-static int ace_return_to_app(struct ace_thread *, struct ace_eval_state *, struct ace_cont *);
+static int ace_return_to_app(struct ace_thread *, struct ace_thread **, struct ace_eval_state *, struct ace_cont *);
 static int ace_return_to_force(struct ace_thread *, struct ace_eval_state *, struct ace_cont *);
 static int ace_return_to_strict(struct ace_thread *, struct ace_eval_state *, struct ace_cont *);
 static int ace_return_to_ubanalyze(struct ace_thread *, struct ace_eval_state *, struct ace_cont *);
 
 int
-ace_pop_continuation(struct ace_thread *thread, struct ace_eval_state *st)
+ace_pop_continuation(struct ace_thread *thread, struct ace_thread **pthread, struct ace_eval_state *st)
 {
     struct ace_cont *cont;
 
@@ -396,7 +396,7 @@ again:
                 return 0;
             }
         case gsbc_cont_app:
-            return ace_return_to_app(thread, st, cont);
+            return ace_return_to_app(thread, pthread, st, cont);
         case gsbc_cont_force:
             return ace_return_to_force(thread, st, cont);
         case gsbc_cont_strict:
@@ -450,7 +450,7 @@ ace_return_to_update(struct ace_thread *thread, struct ace_cont *cont)
 }
 
 int
-ace_return_to_app(struct ace_thread *thread, struct ace_eval_state *st, struct ace_cont *cont)
+ace_return_to_app(struct ace_thread *thread, struct ace_thread **pthread, struct ace_eval_state *st, struct ace_cont *cont)
 {
     int i;
     gsvalue *fn;
@@ -501,7 +501,7 @@ ace_return_to_app(struct ace_thread *thread, struct ace_eval_state *st, struct a
         ;
         thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
 
-        ace_return(thread, cont->pos, (gsvalue)res);
+        ace_return(thread, pthread, cont->pos, (gsvalue)res);
         return 1;
     } else {
         int i;
@@ -564,7 +564,7 @@ ace_return_to_app(struct ace_thread *thread, struct ace_eval_state *st, struct a
                 ;
 
                 thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
-                ace_return(thread, cont->pos, (gsvalue)res);
+                ace_return(thread, pthread, cont->pos, (gsvalue)res);
                 return 1;
             }
             default:
@@ -1241,29 +1241,29 @@ ace_instr_perform_danalyze(struct ace_thread *thread, struct ace_eval_state *st)
 }
 
 static void ace_instr_return_undef(struct ace_thread *, struct ace_eval_state *);
-static void ace_instr_enter(struct ace_thread *, struct ace_eval_state *, struct ace_thread_pool_stats *);
-static void ace_instr_yield(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_enter(struct ace_thread *, struct ace_thread **, struct ace_eval_state *, struct ace_thread_pool_stats *);
+static void ace_instr_yield(struct ace_thread *, struct ace_thread **, struct ace_eval_state *);
 static void ace_instr_ubprim(struct ace_thread *, struct ace_eval_state *);
-static void ace_instr_lprim(struct ace_thread *, struct ace_eval_state *);
+static void ace_instr_lprim(struct ace_thread *, struct ace_thread **, struct ace_eval_state *);
 
 int
-ace_exec_terminal(struct ace_thread *thread, struct ace_eval_state *st, struct ace_thread_pool_stats *stats)
+ace_exec_terminal(struct ace_thread *thread, struct ace_thread **pthread, struct ace_eval_state *st, struct ace_thread_pool_stats *stats)
 {
     switch (st->ip->instr) {
         case gsbc_op_undef:
             ace_instr_return_undef(thread, st);
             return 1;
         case gsbc_op_enter:
-            ace_instr_enter(thread, st, stats);
+            ace_instr_enter(thread, pthread, st, stats);
             return 1;
         case gsbc_op_yield:
-            ace_instr_yield(thread, st);
+            ace_instr_yield(thread, pthread, st);
             return 1;
         case gsbc_op_ubprim:
             ace_instr_ubprim(thread, st);
             return 1;
         case gsbc_op_lprim:
-            ace_instr_lprim(thread, st);
+            ace_instr_lprim(thread, pthread, st);
             return 1;
         default:
             return 0;
@@ -1283,7 +1283,7 @@ ace_instr_return_undef(struct ace_thread *thread, struct ace_eval_state *st)
 static int ace_thread_enter_closure(struct gspos, struct ace_thread *, struct gsheap_item *, struct ace_thread_pool_stats *);
 
 void
-ace_instr_enter(struct ace_thread *thread, struct ace_eval_state *eval, struct ace_thread_pool_stats *stats)
+ace_instr_enter(struct ace_thread *thread, struct ace_thread **pthread, struct ace_eval_state *eval, struct ace_thread_pool_stats *stats)
 {
     struct gsbc *ip;
     gstypecode st;
@@ -1300,7 +1300,7 @@ ace_instr_enter(struct ace_thread *thread, struct ace_eval_state *eval, struct a
 
 again:
     if (!IS_PTR(prog)) {
-        ace_return(thread, ip->pos, prog);
+        ace_return(thread, pthread, ip->pos, prog);
         return;
     }
     if (gsisheap_block(BLOCK_CONTAINING(prog))) {
@@ -1364,7 +1364,7 @@ again:
             prog = GS_REMOVE_INDIRECTION(ip->pos, prog);
             goto again;
         case gstywhnf:
-            ace_return(thread, ip->pos, prog);
+            ace_return(thread, pthread, ip->pos, prog);
             return;
         case gstyerr:
             ace_error_thread(thread, (struct gserror*)prog);
@@ -1384,7 +1384,7 @@ again:
 
 static
 void
-ace_instr_yield(struct ace_thread *thread, struct ace_eval_state *st)
+ace_instr_yield(struct ace_thread *thread, struct ace_thread **pthread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
 
@@ -1395,7 +1395,7 @@ ace_instr_yield(struct ace_thread *thread, struct ace_eval_state *st)
         return;
     }
 
-    ace_return(thread, ip->pos, st->regs[ACE_YIELD_ARG(ip)]);
+    ace_return(thread, pthread, ip->pos, st->regs[ACE_YIELD_ARG(ip)]);
 }
 
 void
@@ -1416,7 +1416,7 @@ ace_instr_ubprim(struct ace_thread *thread, struct ace_eval_state *st)
 }
 
 void
-ace_instr_lprim(struct ace_thread *thread, struct ace_eval_state *st)
+ace_instr_lprim(struct ace_thread *thread, struct ace_thread **pthread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
     struct gsregistered_primset *prims;
@@ -1429,13 +1429,13 @@ ace_instr_lprim(struct ace_thread *thread, struct ace_eval_state *st)
         args[i] = st->regs[ACE_LPRIM_ARG(ip, i)]
     ;
     prims = gsprims_lookup_prim_set_by_index(ACE_LPRIM_PRIMSET_INDEX(ip));
-    prims->lexec_table[ACE_LPRIM_INDEX(ip)](thread, ip->pos, ACE_LPRIM_NARGS(ip), args);
+    prims->lexec_table[ACE_LPRIM_INDEX(ip)](thread, pthread, ip->pos, ACE_LPRIM_NARGS(ip), args);
 }
 
 int
-gsprim_return(struct ace_thread *thread, struct gspos pos, gsvalue v)
+gsprim_return(struct ace_thread *thread, struct ace_thread **pthread, struct gspos pos, gsvalue v)
 {
-    ace_return(thread, pos, v);
+    ace_return(thread, pthread, pos, v);
     return 1;
 }
 
@@ -1570,7 +1570,7 @@ ace_failure_thread(struct ace_thread *thread, struct gsimplementation_failure *e
 }
 
 void
-ace_return(struct ace_thread *thread, struct gspos srcpos, gsvalue v)
+ace_return(struct ace_thread *thread, struct ace_thread **pthread, struct gspos srcpos, gsvalue v)
 {
     gsvalue *ret;
 
