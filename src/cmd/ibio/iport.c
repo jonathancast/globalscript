@@ -399,6 +399,7 @@ ibio_read_thread_main(void *p)
                             case ibio_acceptor_unit_plus:
                                 iport->position = iport->nextsym;
                                 iport->reading = constr->a.arguments[1];
+                                GS_SLOW_EVALUATE(iport->reading_at, iport->reading);
                                 break;
                             default:
                                 api_thread_post_unimpl(iport->reading_thread, __FILE__, __LINE__, "ibio_read_process_main: constr = %d", constr->a.constrnum);
