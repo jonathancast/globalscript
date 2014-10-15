@@ -392,6 +392,7 @@ ibio_read_thread_main(void *p)
                                         unlock(&iport->nextseg->lock);
                                     }
                                 }
+                                GS_SLOW_EVALUATE(iport->reading_at, iport->reading);
                             failed:
                                 break;
                             }
