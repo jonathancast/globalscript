@@ -912,17 +912,23 @@ a1r	.apply	a1	|	k
 
 _ibio.lex.receiver.many_c	.expr
 ibio.lex.receiver.lexeme.t	.tygvar
-ibio.lex.lexer.t	.tygvar
-list.t	.tygvar
+_ibio.lex.receiver.many_k	.subcode
+s	.tyarg	*
+α	.tyarg	*
+p	.larg	ibio.lex.receiver.lexeme.t	s	α
+	.force	_ibio.lex.receiver.many_k
+	.enter	p
+
+_ibio.lex.receiver.many_k	.forcecont
+ibio.lex.receiver.lexeme.u	.tygvar
 record.empty	.tygvar
 ibio.lex.many	.gvar
 ibio.acceptor.many.void.prim	.gvar
-s	.tyarg	*
-α	.tyarg	*
-res.ty	.tylet	list.t	α
-p	.larg	ibio.lex.receiver.lexeme.t	s	α
-p.lex	.lfield	0	p
-p.acc	.lfield	1	p
+s	.tyfv	*
+α	.tyfv	*
+p0	.karg	ibio.lex.receiver.lexeme.u	s	α
+p.lex	.field	0	p0
+p.acc	.field	1	p0
 lex	.apply	ibio.lex.many	s	α	|	p.lex
 acc	.apply	ibio.acceptor.many.void.prim	s	α	record.empty	|	p.acc
 r	.record	0	lex	1	acc
