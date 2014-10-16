@@ -47,6 +47,7 @@ rune.right.curly	.closure	_rune.right.curly_c
 rune.single.quote	.closure	_rune.single.quote_c
 rune.query	.closure	_rune.query_c
 rune.semi	.closure	_rune.semi_c
+rune.0	.closure	_rune.0_c
 rune.capital.latin.letter.a	.closure	_rune.capital.latin.letter.a_c
 rune.latin.letter.a	.closure	_rune.latin.letter.a_c
 rune.latin.letter.c	.closure	_rune.latin.letter.c_c
@@ -508,6 +509,13 @@ sm	.rune	;
 	.coerce	rune.t.in
 	.lift
 	.yield	sm
+
+_rune.0_c	.expr
+rune.t.in	.cogvar
+0	.rune	0
+	.coerce	rune.t.in
+	.lift
+	.yield	0
 
 _rune.capital.latin.letter.a_c	.expr
 rune.t.in	.cogvar
