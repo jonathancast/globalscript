@@ -102,9 +102,30 @@ digits.p	.apply	parser.lift2	rune.t	string.t	string.t	string.t	|	<>	parser.strin
 
 _parser.string.decimal_f_c	.expr
 string.t	.tygvar
-natural.t	.tygvar	-- Temp
+rune.t	.tygvar
+natural.t	.tygvar
+_parser.string.decimal_f_f_c	.subcode
+list.foldl	.gvar
+natural.0	.gvar
 ds	.larg	string.t
-	.undef	natural.t
+f	.closure	_parser.string.decimal_f_f_c
+	.app	f	natural.0	ds
+	.enter	list.foldl	rune.t	natural.t
+
+_parser.string.decimal_f_f_c	.expr
+natural.t	.tygvar
+rune.t	.tygvar
+natural.+	.gvar
+natural.*	.gvar
+natural.10	.gvar
+rune.diff	.gvar
+rune.0	.gvar
+n	.larg	natural.t
+c	.larg	rune.t
+n10	.apply	natural.*	|	n	natural.10
+c.n	.apply	rune.diff	|	c	rune.0
+	.app	n10	c.n
+	.enter	natural.+
 
 -- §section §gs{parser.string.digit}
 
