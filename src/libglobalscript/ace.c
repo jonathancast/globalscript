@@ -1681,9 +1681,15 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
                 case gsbc_expr: {
                     gsvalue *saved_args;
 
+                    if (cl->cl.numfvs != cl->cl.code->numfvs + cl->cl.code->numargs) {
+                        int num_actual_args = cl->cl.numfvs, numfvs = cl->cl.code->numfvs, numargs = cl->cl.code->numargs;
+                        gsheap_unlock(hp);
+                        ace_poison_thread(thread, pos, UNIMPL("%P: closure has %d fvs, but %P: code requires %d fvs and %d args; hence closure is no thunk"), cl->hp.pos, num_actual_args, cl->cl.code->pos, numfvs, numargs);
+                        return -1;
+                    }
                     if (cl->cl.numfvs > ((uchar*)thread->stacktop - (uchar*)thread->stacklimit) / sizeof(gsvalue)) {
                         gsheap_unlock(hp);
-                        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->hp.pos, "ace_set_args_from_closure: not enough room for args"));
+                        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, pos, "ace_set_args_from_closure: not enough room for args"));
                         return -1;
                     }
 
