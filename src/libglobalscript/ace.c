@@ -1311,14 +1311,10 @@ again:
         st = gsheapstate(ip->pos, hp);
         switch (st) {
             case gstythunk:
-                if ((uchar*)thread->stacktop - (uchar*)thread->stacklimit >= 4 * sizeof(struct gsbc_cont_update)) {
+                if ((uchar*)thread->stacktop - (uchar*)thread->stacklimit >= 0x100 * sizeof(struct gsbc_cont_update)) {
                     ace_thread_enter_closure(ip->pos, thread, hp, stats);
                     return;
                 } else {
-                    gsheap_unlock(hp);
-                    ace_poison_thread(thread, ip->pos, UNIMPL("ace_instr_enter: gsheap_item: gstythunk: no room"));
-                    gswarning("%s:%d: %P", __FILE__, __LINE__, ip->pos);
-                    return;
                     gsstatprint("%P: %P: Allocating a new thread to avoid stack overflow\n", thread->cureval->cont.pos, ip->pos);
                     stats->num_blocks_on_new_stack++;
                     st = ace_start_evaluation(ip->pos, hp);
