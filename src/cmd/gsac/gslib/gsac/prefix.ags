@@ -1567,7 +1567,7 @@ list.cgs.constr.ty	.tylet	list.t	gsdl.cgs.gstype.constr.t
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.ags.typeitem.expr.prim.u
-	.analyze	e0	fun	lift	pos	product	sum	tyref
+	.analyze	e0	fun	lift	pos	product	sum	tyref	ubproduct
 		.case	fun
 tyf		.fkarg	0	gsdl.var.t
 tyas		.fkarg	1	list.t	gsdl.var.t
@@ -1606,6 +1606,9 @@ tyf		.fkarg	0	gsdl.var.t
 tyas		.fkarg	1	list.t	gsdl.var.t
 			.app	pos	env	tyf	tyas
 			.enter	gsac.prefix.typeapp.upconvert
+		.case	ubproduct
+fs		.fkarg	0	list.t	gsdl.ags.typeitem.field.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
 	-- > :: either.t	string.t	gsdl.cgs.gstype.t
 
 _gsac.prefix.gstype.upconvert_fun_k	.forcecont
