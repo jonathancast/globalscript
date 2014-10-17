@@ -1660,8 +1660,6 @@ ace_start_evaluation(struct gspos pos, struct gsheap_item *hp)
     }
 }
 
-static int ace_set_args_from_closure(struct ace_thread *, struct gsclosure *, int, gsvalue *);
-
 /* ↓ Used to add a closure (necessarily a §ccode{struct gsheap_item *}) to a thread.
    Assume there is enough room for an update frame: it's the caller's responsibility to create a new thread when we're low on stack space.
 */
@@ -1669,6 +1667,7 @@ int
 ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsheap_item *hp, struct ace_thread_pool_stats *stats)
 {
     struct gsbc_cont_update *updatecont;
+    int i;
 
     if (!(updatecont = ace_push_update(pos, thread, hp))) return -1;
 
@@ -1680,7 +1679,17 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
 
             switch (cl->cl.code->tag) {
                 case gsbc_expr: {
-                    if (!ace_set_args_from_closure(thread, cl, 0, 0)) return -1;
+                    gsvalue *saved_args;
+
+                    if (cl->cl.numfvs > ((uchar*)thread->stacktop - (uchar*)thread->stacklimit) / sizeof(gsvalue)) {
+                        gsheap_unlock(hp);
+                        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->hp.pos, "ace_set_args_from_closure: not enough room for args"));
+                        return -1;
+                    }
+
+                    saved_args = (gsvalue*)((uchar*)thread->stacktop - cl->cl.numfvs * sizeof(gsvalue));
+
+                    for (i = 0; i < cl->cl.numfvs; i++) saved_args[i] = cl->cl.fvs[i];
 
                     thread->state = ace_thread_entering_bco;
                     thread->st.entering_bco.bco = cl->cl.code;
@@ -1727,29 +1736,6 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
             ace_poison_thread(thread, pos, UNIMPL("ace_start_evaluation(type = %d)"), hp->type);
             return -1;
     }
-}
-
-int
-ace_set_args_from_closure(struct ace_thread *thread, struct gsclosure *cl, int numargs, gsvalue *args)
-{
-    int num_total_args;
-    gsvalue *saved_args;
-    int i;
-
-    num_total_args = cl->cl.numfvs + numargs;
-
-    if (num_total_args > ((uchar*)thread->stacktop - (uchar*)thread->stacklimit) / sizeof(gsvalue)) {
-        ace_failure_thread(thread, gsunimpl(__FILE__, __LINE__, cl->hp.pos, "ace_set_args_from_closure: not enough room for args"));
-        return 0;
-    }
-
-    saved_args = (gsvalue*)((uchar*)thread->stacktop - num_total_args * sizeof(gsvalue));
-
-    /* Note: globals, then free vars, then args; so first the fvs from the closure then any additional arguments */
-    for (i = 0; i < cl->cl.numfvs; i++) saved_args[i] = cl->cl.fvs[i];
-    for (; i < num_total_args; i++) saved_args[i] = args[i - cl->cl.numfvs];
-
-    return 1;
 }
 
 #define ACE_STACK_ARENA_SIZE (sizeof(gsvalue) * 0x400)
