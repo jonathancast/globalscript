@@ -96,6 +96,10 @@ ok_diff_fail '-- force with free variable in continuation --' ./$O.test-gsi forc
 ok_diff_fail '-- force with free type variable in continuation --' ./$O.test-gsi force-with-type-fv.ags
 ok_diff_fail '-- force with free type variable and variable in continuation --' ./$O.test-gsi force-with-fv-and-type-fv.ags
 
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
+
 ok_diff '-- rune literals --' ./$O.test-gsi rune-literal.ags
 ok_diff '-- two-byte rune literals --' ./$O.test-gsi two-byte-rune-literal.ags
 ok_diff '-- three-byte rune literals --' ./$O.test-gsi three-byte-rune-literal.ags
@@ -106,10 +110,6 @@ ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
-
-echo '# Version 0.6 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_diff '-- non-empty records in expressions --' ./$O.test-gsi record-literal-gen.ags
 ok_grep_errors '-- empty records with non-empty signatures in expressions --' './test-fixtures/record-empty-non-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi record-empty-non-empty-sig.ags
