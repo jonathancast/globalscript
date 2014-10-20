@@ -104,6 +104,7 @@ string.t	.tygvar
 list.t	.tygvar
 mdl.type.field.decl.t	.tygvar
 rune.t	.tygvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_c	.subcode
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_c	.subcode
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_c	.subcode
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_list.sizes.f_c	.subcode
@@ -159,7 +160,11 @@ ty0	.karg	mdl.type.decl.prim.u
 		.case	api.prim.blocking
 id		.fkarg	0	string.t
 fs		.fkarg	1	list.t	mdl.type.field.decl.t
-s8			.undefined	string.t
+s9			.undefined	string.t
+field.f			.closure	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_c
+fs.fields.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	field.f	fs
+fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
+s8			.apply	list.<>	rune.t	|	fs.fields.s	s9
 s7			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_inherit.s	s8
 s6			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_struct.suffix.s	s7
 s5			.apply	list.<>	rune.t	|	id	s6
@@ -255,6 +260,13 @@ s1			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s2
 			.app	mdl.hack.compiler.type.header.s	s1
 			.enter	list.<>	rune.t
 	-- > :: string.t
+
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_c	.expr
+mdl.type.field.decl.t	.tygvar
+list.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+f	.larg	mdl.type.field.decl.t
+	.undef	list.t	rune.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_c	.expr
 mdl.type.field.decl.t	.tygvar
