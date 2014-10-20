@@ -77,9 +77,11 @@ string.t	.tygvar
 list.t	.tygvar
 mdl.type.field.decl.t	.tygvar
 mdl.type.decl.t	.tygvar	-- Temp
-lbl	.larg	string.t
+mdl.type.decl.api.prim.blocking	.gvar
+l	.larg	string.t
 fs	.larg	list.t	mdl.type.field.decl.t
-	.undef	mdl.type.decl.t
+	.app	l	fs
+	.enter	mdl.type.decl.api.prim.blocking
 
 _mdl.type.decl.parser_interpreted.stackframe_c	.expr
 rune.t	.tygvar
