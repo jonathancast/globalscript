@@ -167,11 +167,14 @@ mdl.type.t	.tygvar
 _mdl.type.parser_hack.bco_c	.subcode
 _mdl.type.parser_hack.gsvalue_c	.subcode
 _mdl.type.parser_hack.list_c	.subcode
+_mdl.type.parser_value_c	.subcode
 parser.<|>	.gvar
 hack.bco	.closure	_mdl.type.parser_hack.bco_c
 hack.gsvalue	.closure	_mdl.type.parser_hack.gsvalue_c
 hack.list	.closure	_mdl.type.parser_hack.list_c
-p	.apply	parser.<|>	rune.t	mdl.type.t	|	hack.gsvalue	hack.list
+value	.closure	_mdl.type.parser_value_c
+p1	.apply	parser.<|>	rune.t	mdl.type.t	|	hack.list	value
+p	.apply	parser.<|>	rune.t	mdl.type.t	|	hack.gsvalue	p1
 	.app	hack.bco	p
 	.enter	parser.<|>	rune.t	mdl.type.t
 
@@ -245,6 +248,12 @@ mdl.type.list	.gvar
 ty	.larg	mdl.type.t
 	.app	ty
 	.enter	mdl.type.list
+
+_mdl.type.parser_value_c	.expr
+rune.t	.tygvar	-- Temp
+mdl.type.t	.tygvar	-- Temp
+parser.fail	.gvar	-- Temp
+	.enter	parser.fail	rune.t	mdl.type.t
 
 -- §section §gs{mdl.type.decl.t} constructors
 
