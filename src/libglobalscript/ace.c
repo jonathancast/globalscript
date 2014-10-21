@@ -1334,10 +1334,6 @@ again:
                 break;
             case gstyenosys:
                 gsheap_unlock(hp);
-                ace_poison_thread(thread, ip->pos, UNIMPL("ace_instr_enter: gsheap_item: gstyenosys"));
-                gswarning("%s:%d: %P", __FILE__, __LINE__, ip->pos);
-                return;
-                gsheap_unlock(hp);
                 break;
             default:
                 ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter heap items of state %d", st);
