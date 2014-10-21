@@ -183,7 +183,7 @@ gsstring_expand_hash_table()
 
     newnumbuckets = 2*gsstring_num_buckets;
 
-    if (newnumbuckets * sizeof(*new_hash) > BLOCK_SIZE)
+    if (sizeof(struct gs_blockdesc) + newnumbuckets * sizeof(*new_hash) > BLOCK_SIZE)
         gsfatal("%s:%d: Out of memory for intern hash", __FILE__, __LINE__)
     ;
 
