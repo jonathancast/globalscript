@@ -17,6 +17,7 @@ mdl.type.parser	.closure	_mdl.type.parser_c	_mdl.type.parser_ty
 _mdl.type.parser_hack.bco_bco.re	.regex	bco
 _mdl.type.parser_hack.gsvalue_gsvalue.re	.regex	gsvalue
 _mdl.type.parser_hack.list_list.re	.regex	list
+_mdl.type.parser_value_value.re	.regex	value
 
 mdl.type.decl.interpreted.stackframe	.closure	_mdl.type.decl.interpreted.stackframe_c
 mdl.type.decl.api.prim.blocking	.closure	_mdl.type.decl.api.prim.blocking_c
@@ -250,10 +251,36 @@ ty	.larg	mdl.type.t
 	.enter	mdl.type.list
 
 _mdl.type.parser_value_c	.expr
-rune.t	.tygvar	-- Temp
-mdl.type.t	.tygvar	-- Temp
+rune.t	.tygvar
+string.t	.tygvar
+mdl.type.t	.tygvar
+record.empty	.tygvar
+_mdl.type.parser_value_f_c	.subcode
+parser.map	.gvar
+parser.*>	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_mdl.type.parser_value_value.re	.gvar
+parser.neg.lookahead	.gvar
+mdl.syntax.id.cont.char.re	.gvar
+mdl.syntax.whitespace	.gvar
+mdl.syntax.id	.gvar
 parser.fail	.gvar	-- Temp
-	.enter	parser.fail	rune.t	mdl.type.t
+f	.closure	_mdl.type.parser_value_f_c
+value.p	.apply	parser.match	rune.t	|	rune.compare	_mdl.type.parser_value_value.re
+p2	.apply	parser.*>	rune.t	string.t	string.t	|	mdl.syntax.whitespace	mdl.syntax.id
+id.cont.p	.apply	parser.match	rune.t	|	rune.compare	mdl.syntax.id.cont.char.re
+neg.id.cont.p	.apply	parser.neg.lookahead	rune.t	string.t	|	id.cont.p
+p1	.apply	parser.*>	rune.t	record.empty	string.t	|	neg.id.cont.p	p2
+p	.apply	parser.*>	rune.t	string.t	string.t	|	value.p	p1
+	.app	f	p
+	.enter	parser.map	rune.t	string.t	mdl.type.t
+
+_mdl.type.parser_value_f_c	.expr
+string.t	.tygvar
+mdl.type.t	.tygvar	-- Temp
+v	.larg	string.t
+	.undef	mdl.type.t
 
 -- §section §gs{mdl.type.decl.t} constructors
 
