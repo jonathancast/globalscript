@@ -25,6 +25,7 @@ mdl.type.decl.api.prim.blocking	.closure	_mdl.type.decl.api.prim.blocking_c
 mdl.type.bco	.closure	_mdl.type.bco_c
 mdl.type.gsvalue	.closure	_mdl.type.gsvalue_c
 mdl.type.list	.closure	_mdl.type.list_c
+mdl.type.value	.closure	_mdl.type.value_c
 
 	.code
 
@@ -338,6 +339,16 @@ res	.constr	mdl.type.prim.u	list	0	ty
 	.lift
 	.yield	res
 
+_mdl.type.value_c	.expr
+string.t	.tygvar
+mdl.type.prim.u	.tygvar
+mdl.type.t.in	.cogvar
+nm	.larg	string.t
+res	.constr	mdl.type.prim.u	value	0	nm
+	.coerce	mdl.type.t.in
+	.lift
+	.yield	res
+
 	.type
 
 -- §section §gs{mdl.type.decl.t}
@@ -388,11 +399,16 @@ mdl.type.prim.u	.tygvar
 mdl.type.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
 _mdl.type.prim.u_list_ty	.tygvar
-	.tysum	bco	record.unboxed.empty	gsvalue	record.unboxed.empty	list	_mdl.type.prim.u_list_ty
+_mdl.type.prim.u_value_ty	.tygvar
+	.tysum	bco	record.unboxed.empty	gsvalue	record.unboxed.empty	list	_mdl.type.prim.u_list_ty	value	_mdl.type.prim.u_value_ty
 
 _mdl.type.prim.u_list_ty	.tyexpr
 mdl.type.t	.tygvar
 	.tyubproduct	0	mdl.type.t
+
+_mdl.type.prim.u_value_ty	.tyexpr
+string.t	.tygvar
+	.tyubproduct	0	string.t
 
 -- §section §gs{mdl.type.parser}
 

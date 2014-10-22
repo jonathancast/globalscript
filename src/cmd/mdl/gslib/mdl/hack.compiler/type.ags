@@ -302,7 +302,7 @@ list.singleton	.gvar
 rune.new.line	.gvar
 f.nm	.fv	string.t
 ty0	.karg	mdl.type.prim.u
-	.analyze	ty0	bco	gsvalue	list
+	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 			.undef	string.t
 		.case	gsvalue
@@ -314,6 +314,9 @@ s1			.apply	list.:	rune.t	|	rune.semi	s2
 s			.apply	list.<>	rune.t	|	f.nm	s1
 			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_list_int.s	s
 			.enter	list.<>	rune.t
+		.case	value
+nm		.fkarg	0	string.t
+			.undef	string.t
 	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_c	.expr
@@ -340,7 +343,7 @@ _mdl.hack.compiler.type_singular	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_list_mid.s1	.gvar
 f.nm	.fv	string.t
 ty0	.karg	mdl.type.prim.u
-	.analyze	ty0	bco	gsvalue	list
+	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 			.undef	string.t
 		.case	gsvalue
@@ -353,6 +356,9 @@ s1			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.st
 s			.apply	list.<>	rune.t	|	f.nm	s1
 			.app	rune.latin.letter.n	s
 			.enter	list.:	rune.t
+		.case	value
+nm		.fkarg	0	string.t
+			.undef	string.t
 	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_list.sizes.f_c	.expr
@@ -383,7 +389,7 @@ mdl.hack.compiler.type.size.expr	.gvar
 list.nil	.gvar
 f.nm	.fv	string.t
 ty0	.karg	mdl.type.prim.u
-	.analyze	ty0	bco	gsvalue	list
+	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 			.undef	string.t
 		.case	gsvalue
@@ -403,6 +409,9 @@ s1			.apply	list.:	rune.t	|	rune.space	s2
 s			.apply	list.:	rune.t	|	rune.plus	s1
 			.app	rune.space	s
 			.enter	list.:	rune.t
+		.case	value
+nm		.fkarg	0	string.t
+			.undef	string.t
 	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_c	.expr
@@ -437,7 +446,7 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_suf
 id.uc	.fv	string.t
 f.nm	.fv	string.t
 ty0	.karg	mdl.type.prim.u
-	.analyze	ty0	bco	gsvalue	list
+	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 			.undef	string.t
 		.case	gsvalue
@@ -459,6 +468,9 @@ s1			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.st
 s			.apply	list.<>	rune.t	|	f.nm	s1
 			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_list_prefix.s	s
 			.enter	list.<>	rune.t
+		.case	value
+nm		.fkarg	0	string.t
+			.undef	string.t
 	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_c	.expr
@@ -498,7 +510,7 @@ id.uc	.fv	string.t
 prev.sizes	.fv	string.t
 f.nm	.fv	string.t
 ty0	.karg	mdl.type.prim.u
-	.analyze	ty0	bco	gsvalue	list
+	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 			.undef	string.t
 		.case	gsvalue
@@ -521,6 +533,9 @@ s1			.apply	list.:	rune.t	|	rune.underscore	s2
 s			.apply	list.<>	rune.t	|	id.uc	s1
 			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_list_prefix.s	s
 			.enter	list.<>	rune.t
+		.case	value
+nm		.fkarg	0	string.t
+			.undef	string.t
 	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_c	.expr
@@ -550,7 +565,7 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_suffix.
 x	.fv	string.t
 f.nm	.fv	string.t
 ty0	.karg	mdl.type.prim.u
-	.analyze	ty0	bco	gsvalue	list
+	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 			.undef	string.t
 		.case	gsvalue
@@ -565,6 +580,10 @@ s1			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.st
 s			.apply	list.<>	rune.t	|	x	s1
 			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_list_prefix.s	s
 			.enter	list.<>	rune.t
+		.case	value
+nm		.fkarg	0	string.t
+			.undef	string.t
+	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_c	.expr
 string.t	.tygvar
@@ -602,7 +621,7 @@ id	.fv	string.t
 id.uc	.fv	string.t
 f.nm	.fv	string.t
 ty0	.karg	mdl.type.prim.u
-	.analyze	ty0	bco	gsvalue	list
+	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 			.undef	string.t
 		.case	gsvalue
@@ -625,6 +644,9 @@ s1			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_interpreted.st
 s			.apply	list.<>	rune.t	|	id	s1
 			.app	_mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_list_prefix.s	s
 			.enter	list.<>	rune.t
+		.case	value
+nm		.fkarg	0	string.t
+			.undef	string.t
 	-- > :: string.t
 
 -- §section §gs{mdl.hack.compiler.type.size.expr}
@@ -642,12 +664,13 @@ _mdl.hack.compiler.type.size.expr_k	.forcecont
 mdl.type.prim.u	.tygvar
 mdl.type.t	.tygvar
 rune.t	.tygvar
+string.t	.tygvar
 diff.list.t	.tygvar	-- Temp
 diff.list.fromlist	.gvar
 _mdl.hack.compiler.type.size.expr_bco_bco.size.s	.gvar
 _mdl.hack.compiler.type.size.expr_gsvalue_gsvalue.size.s	.gvar
 ty0	.karg	mdl.type.prim.u
-	.analyze	ty0	bco	gsvalue	list
+	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 			.app	_mdl.hack.compiler.type.size.expr_bco_bco.size.s
 			.enter	diff.list.fromlist	rune.t
@@ -656,6 +679,9 @@ ty0	.karg	mdl.type.prim.u
 			.enter	diff.list.fromlist	rune.t
 		.case	list
 ty1		.fkarg	0	mdl.type.t
+			.undef	diff.list.t	rune.t
+		.case	value
+nm		.fkarg	0	string.t
 			.undef	diff.list.t	rune.t
 	-- > :: diff.list.t	rune.t
 
@@ -744,13 +770,16 @@ string.t	.tygvar	-- Temp
 _mdl.hack.compiler.type.ctype_bco_bco.s	.gvar
 _mdl.hack.compiler.type.ctype_gsvalue_gsvalue.s	.gvar
 ty0	.karg	mdl.type.prim.u
-	.analyze	ty0	bco	gsvalue	list
+	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 			.enter	_mdl.hack.compiler.type.ctype_bco_bco.s
 		.case	gsvalue
 			.enter	_mdl.hack.compiler.type.ctype_gsvalue_gsvalue.s
 		.case	list
 ty1		.fkarg	0	mdl.type.t
+			.undef	string.t
+		.case	value
+nm		.fkarg	0	string.t
 			.undef	string.t
 	-- > :: string.t
 
@@ -779,7 +808,7 @@ _mdl.hack.compiler.type_evac_gsvalue_prefix.s	.gvar
 _mdl.hack.compiler.type_evac_gsvalue_suffix.s	.gvar
 x.s	.fv	string.t
 ty0	.karg	mdl.type.prim.u
-	.analyze	ty0	bco	gsvalue	list
+	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 s			.apply	list.<>	rune.t	|	x.s	_mdl.hack.compiler.type_evac_bco_suffix.s
 			.app	_mdl.hack.compiler.type_evac_bco_prefix.s	s
@@ -790,6 +819,9 @@ s			.apply	list.<>	rune.t	|	x.s	_mdl.hack.compiler.type_evac_gsvalue_suffix.s
 			.enter	list.<>	rune.t
 		.case	list
 ty1		.fkarg	0	mdl.type.t
+			.undef	string.t
+		.case	value
+nm		.fkarg	0	string.t
 			.undef	string.t
 	-- > :: string.t
 
