@@ -14,6 +14,8 @@ mdl.hack.compile.type.bottomrow.s	.string	/*\s↑↑↑↑↑↑↑↑↑↑↑�
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_struct.s	.string	struct\s
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_struct.suffix.s	.string	_blocking\s{\n
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_inherit.s	.string	\s\s\s\sstruct\sapi_prim_blocking\sbl;\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_value_prefix.s	.string	\s\s\s\sstruct\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_value_suffix.s	.string	;\n
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.string	struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.string	_cont\s{\n\s\s\s\sstruct\sace_cont\scont;\n
@@ -266,17 +268,40 @@ mdl.type.field.decl.t	.tygvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_k	.subcode
 mdl.type.t.out	.cogvar
 f	.larg	mdl.type.field.decl.t
+f.nm	.lfield	name	f
 f.ty	.lfield	gstype	f
 	.force	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_k
 	.coerce	mdl.type.t.out
 	.enter	f.ty
 
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_k	.forcecont
+string.t	.tygvar
 mdl.type.prim.u	.tygvar
-list.t	.tygvar	-- Temp
-rune.t	.tygvar	-- Temp
+mdl.type.t	.tygvar
+rune.t	.tygvar
+list.<>	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_value_prefix.s	.gvar
+list.:	.gvar
+rune.space	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_value_suffix.s	.gvar
+f.nm	.fv	string.t
 ty0	.karg	mdl.type.prim.u
-	.undef	list.t	rune.t
+	.analyze	ty0	bco	gsvalue	list	value
+		.case	bco
+			.undef	string.t
+		.case	gsvalue
+			.undef	string.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+			.undef	string.t
+		.case	value
+nm		.fkarg	0	string.t
+s2			.apply	list.<>	rune.t	|	f.nm	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_value_suffix.s
+s1			.apply	list.:	rune.t	|	rune.space	s2
+s			.apply	list.<>	rune.t	|	nm	s1
+			.app	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_value_prefix.s	s
+			.enter	list.<>	rune.t
+	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_c	.expr
 mdl.type.field.decl.t	.tygvar
