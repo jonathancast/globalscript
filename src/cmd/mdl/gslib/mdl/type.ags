@@ -280,8 +280,10 @@ p	.apply	parser.*>	rune.t	string.t	string.t	|	value.p	p1
 _mdl.type.parser_value_f_c	.expr
 string.t	.tygvar
 mdl.type.t	.tygvar	-- Temp
+mdl.type.value	.gvar
 v	.larg	string.t
-	.undef	mdl.type.t
+	.app	v
+	.enter	mdl.type.value
 
 -- §section §gs{mdl.type.decl.t} constructors
 
