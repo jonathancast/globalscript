@@ -111,7 +111,6 @@ list.t	.tygvar
 mdl.type.field.decl.t	.tygvar
 rune.t	.tygvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_c	.subcode
-_mdl.hack.compiler.type.decl.compile_api.prim.blocking_fs.proto.s_c	.subcode
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_c	.subcode
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_pushargs.f_c	.subcode
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_list.sizes.f_c	.subcode
@@ -174,9 +173,7 @@ fs		.fkarg	1	list.t	mdl.type.field.decl.t
 field.f			.closure	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_c
 fs.fields.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	field.f	fs
 fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
-fs.proto.s			.closure	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_fs.proto.s_c
-s16			.undefined	string.t
-s15			.apply	list.<>	rune.t	|	fs.proto.s	s16
+s15			.undefined	string.t
 s14			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.mid1.s	s15
 s13			.apply	list.<>	rune.t	|	id	s14
 s12			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.mid.s	s13
@@ -319,30 +316,6 @@ s			.apply	list.<>	rune.t	|	nm	s1
 			.app	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_value_prefix.s	s
 			.enter	list.<>	rune.t
 	-- > :: string.t
-
-_mdl.hack.compiler.type.decl.compile_api.prim.blocking_fs.proto.s_c	.expr
-list.t	.tygvar
-mdl.type.field.decl.t	.tygvar
-_mdl.hack.compiler.type.decl.compile_api.prim.blocking_fs.proto.s_k	.subcode
-list.t.out	.cogvar
-fs	.fv	list.t	mdl.type.field.decl.t
-	.force	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_fs.proto.s_k
-	.coerce	list.t.out	mdl.type.field.decl.t
-	.enter	fs
-
-_mdl.hack.compiler.type.decl.compile_api.prim.blocking_fs.proto.s_k	.forcecont
-list.prim.u	.tygvar
-mdl.type.field.decl.t	.tygvar
-list.t	.tygvar
-string.t	.tygvar	-- Temp
-fs0	.karg	list.prim.u	mdl.type.field.decl.t
-	.analyze	fs0	:	nil
-		.case	:
-f0		.fkarg	0	mdl.type.field.decl.t
-fs1		.fkarg	1	list.t	mdl.type.field.decl.t
-			.undef	string.t
-		.case	nil
-			.undef	string.t
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_field.f_c	.expr
 mdl.type.field.decl.t	.tygvar
