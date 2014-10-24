@@ -19,7 +19,7 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_value_suffix.s	.s
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_struct.suffix.s	.string	};\n\n
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.prefix.s	.string	static\sstruct\s
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.mid.s	.string	_blocking\s*
-_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.mid1.s	.string	_blocking_alloc(
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.suffix.s	.string	_blocking_alloc(
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.string	struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.string	_cont\s{\n\s\s\s\sstruct\sace_cont\scont;\n
@@ -128,7 +128,7 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_inherit.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_struct.suffix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.prefix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.mid.s	.gvar
-_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.mid1.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.suffix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.gvar
 list.concat	.gvar
@@ -174,7 +174,7 @@ field.f			.closure	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.
 fs.fields.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	field.f	fs
 fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
 s15			.undefined	string.t
-s14			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.mid1.s	s15
+s14			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.suffix.s	s15
 s13			.apply	list.<>	rune.t	|	id	s14
 s12			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.mid.s	s13
 s11			.apply	list.<>	rune.t	|	id	s12
