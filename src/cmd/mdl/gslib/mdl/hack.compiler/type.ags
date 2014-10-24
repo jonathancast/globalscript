@@ -33,6 +33,11 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid1.s	.string
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid2.s	.string	_blocking\s*
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid3.s	.string	;\n\n\s\s\s\sres\s=\sapi_blocking_alloc(\n\s\s\s\s\s\s\s\ssizeof(struct\s
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid4.s	.string	_blocking),\n\s\s\s\s\s\s\s\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid5.s	.string	_blocking_gccopy,\n\s\s\s\s\s\s\s\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid6.s	.string	_blocking_gcevacuate,\n\s\s\s\s\s\s\s\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid7.s	.string	_blocking_gccleanup\n\s\s\s\s);\n\s\s\s\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid8.s	.string	\s=\s(struct\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid9.s	.string	_blocking\s*)res;\n\s\s\s\smemset((uchar*)
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.string	struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.string	_cont\s{\n\s\s\s\sstruct\sace_cont\scont;\n
@@ -156,6 +161,11 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid1.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid2.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid3.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid4.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid5.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid6.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid7.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid8.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid9.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.gvar
 list.concat	.gvar
@@ -199,7 +209,17 @@ fs		.fkarg	1	list.t	mdl.type.field.decl.t
 field.f			.closure	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_c
 fs.fields.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	field.f	fs
 fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
-s42			.undefined	string.t
+s52			.undefined	string.t
+s51			.apply	list.<>	rune.t	|	id	s52
+s50			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid9.s	s51
+s49			.apply	list.<>	rune.t	|	id	s50
+s48			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid8.s	s49
+s47			.apply	list.<>	rune.t	|	id	s48
+s46			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid7.s	s47
+s45			.apply	list.<>	rune.t	|	id	s46
+s44			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid6.s	s45
+s43			.apply	list.<>	rune.t	|	id	s44
+s42			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid5.s	s43
 s41			.apply	list.<>	rune.t	|	id	s42
 s40			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid4.s	s41
 s39			.apply	list.<>	rune.t	|	id	s40
