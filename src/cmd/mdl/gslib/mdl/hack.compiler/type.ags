@@ -22,6 +22,12 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.prefix.s	.str
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.mid.s	.string	_blocking\s*
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.suffix.s	.string	_blocking_alloc(void);\n\n
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.proto.prefix.s	.string	static\sapi_prim_blocking_gccopy\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.proto.suffix.s	.string	_blocking_gccopy;\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.proto.prefix.s	.string	static\sapi_prim_blocking_gcevacuate\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.proto.suffix.s	.string	_blocking_gcevacuate;\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.proto.prefix.s	.string	static\sapi_prim_blocking_gccleanup\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.proto.suffix.s	.string	_blocking_gccleanup;\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.prefix.s	.string	struct\s
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.string	struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.string	_cont\s{\n\s\s\s\sstruct\sace_cont\scont;\n
@@ -134,6 +140,12 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.proto.suffix.s	.gva
 mdl.hack.compile.type.bottomrow.s	.gvar
 mdl.hack.compiler.type.source.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.proto.prefix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.proto.suffix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.proto.prefix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.proto.suffix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.proto.prefix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.proto.suffix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.prefix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.gvar
 list.concat	.gvar
@@ -177,7 +189,17 @@ fs		.fkarg	1	list.t	mdl.type.field.decl.t
 field.f			.closure	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_c
 fs.fields.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	field.f	fs
 fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
-s21			.undefined	string.t
+s31			.undefined	string.t
+s30			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.prefix.s	s31
+s29			.apply	list.:	rune.t	|	rune.new.line	s30
+s28			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.proto.suffix.s	s29
+s27			.apply	list.<>	rune.t	|	id	s28
+s26			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.proto.prefix.s	s27
+s25			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.proto.suffix.s	s26
+s24			.apply	list.<>	rune.t	|	id	s25
+s23			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.proto.prefix.s	s24
+s22			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.proto.suffix.s	s23
+s21			.apply	list.<>	rune.t	|	id	s22
 s20			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.proto.prefix.s	s21
 s19			.apply	list.<>	rune.t	|	mdl.hack.compile.type.auto.generated.s	s20
 s18			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s19
