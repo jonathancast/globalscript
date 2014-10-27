@@ -41,6 +41,9 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid9.s	.string
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid10.s	.string	\s+\ssizeof(struct\sapi_prim_blocking),\s0,\ssizeof(struct\s
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid11.s	.string	_blocking)\s-\ssizeof(struct\sapi_prim_blocking));\n\n\s\s\s\sreturn\s
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.suffix.s	.string	;\n}\n\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.prefix.s	.string	struct\sapi_prim_blocking\s*\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid.s	.string	_blocking_gccopy(struct\sgsstringbuilder\s*err,\sstruct\sapi_prim_blocking\s*blocking)\n{\n\s\s\s\sstruct\sapi_prim_blocking\s*newblocking;\n\s\s\s\sstruct\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid1.s	.string	_blocking\s*
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.string	struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.string	_cont\s{\n\s\s\s\sstruct\sace_cont\scont;\n
@@ -172,6 +175,9 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid9.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid10.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid11.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.suffix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.prefix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid1.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.gvar
 list.concat	.gvar
@@ -215,7 +221,13 @@ fs		.fkarg	1	list.t	mdl.type.field.decl.t
 field.f			.closure	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_c
 fs.fields.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	field.f	fs
 fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
-s57			.undefined	string.t
+s63			.undefined	string.t
+s62			.apply	list.<>	rune.t	|	id	s63
+s61			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid1.s	s62
+s60			.apply	list.<>	rune.t	|	id	s61
+s59			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid.s	s60
+s58			.apply	list.<>	rune.t	|	id	s59
+s57			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.prefix.s	s58
 s56			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.suffix.s	s57
 s55			.apply	list.<>	rune.t	|	id	s56
 s54			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_alloc.defn.mid11.s	s55
