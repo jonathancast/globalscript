@@ -1,0 +1,3 @@
+api prim blocking field {
+    fn :: value ibio_gsstring_eval;
+};
