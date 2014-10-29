@@ -64,6 +64,9 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.evac.f_value_prefix
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.evac.f_value_mid.s	.string	_evacuate(err,\s&
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.evac.f_value_mid1.s	.string	->
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.evac.f_value_suffix.s	.string	)\s<\s0)\sreturn\s-1;\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.suffix.s	.string	\s\s\s\sreturn\s0;\n}\n\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.defn.prefix.s	.string	void\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.defn.suffix.s	.string	_blocking_gccleanup(struct\sapi_prim_blocking\s*blocking)\n{\n}\n\n
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.string	struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.string	_cont\s{\n\s\s\s\sstruct\sace_cont\scont;\n
@@ -215,6 +218,9 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid1.s	.gva
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid2.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid3.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid4.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.suffix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.defn.prefix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.defn.suffix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.gvar
 list.concat	.gvar
@@ -261,7 +267,10 @@ fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
 field.evac.f			.closure	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.evac.f_c
 fs.evacs.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	field.evac.f	fs
 fs.evacs.s			.apply	list.concat	rune.t	|	fs.evacs.ss
-s94			.undefined	string.t
+s97			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.defn.suffix.s	mdl.hack.compile.type.bottomrow.s
+s96			.apply	list.<>	rune.t	|	id	s97
+s95			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_cleanup.defn.prefix.s	s96
+s94			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.suffix.s	s95
 s93			.apply	list.<>	rune.t	|	fs.evacs.s	s94
 s92			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid4.s	s93
 s91			.apply	list.<>	rune.t	|	id	s92
