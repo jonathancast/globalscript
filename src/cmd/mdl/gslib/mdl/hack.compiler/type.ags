@@ -54,6 +54,12 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid8.s	.string	
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid9.s	.string	\s+\ssizeof(struct\sapi_prim_blocking),\s(uchar*)
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid10.s	.string	\s+\ssizeof(struct\sapi_prim_blocking),\ssizeof(struct\s
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.suffix.s	.string	_blocking)\s-\ssizeof(struct\sapi_prim_blocking));\n\n\s\s\s\sreturn\snewblocking;\n}\n\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.prefix.s	.string	int\n
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid.s	.string	_blocking_gcevacuate(struct\sgsstringbuilder\s*err,\sstruct\sapi_prim_blocking\s*pblocking)\n{\n\s\s\s\sstruct\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid1.s	.string	_blocking\s*
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid2.s	.string	;\n\n\s\s\s\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid3.s	.string	\s=\s(struct\s
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid4.s	.string	_blocking\s*)pblocking;\n\n
 
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.string	struct\sace_stack_
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.string	_cont\s{\n\s\s\s\sstruct\sace_cont\scont;\n
@@ -198,6 +204,12 @@ _mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid8.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid9.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid10.s	.gvar
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.suffix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.prefix.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid1.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid2.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid3.s	.gvar
+_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid4.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.prefix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_struct.stack.inherit.s	.gvar
 list.concat	.gvar
@@ -241,7 +253,18 @@ fs		.fkarg	1	list.t	mdl.type.field.decl.t
 field.f			.closure	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_c
 fs.fields.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	field.f	fs
 fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
-s82			.undefined	string.t
+s93			.undefined	string.t
+s92			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid4.s	s93
+s91			.apply	list.<>	rune.t	|	id	s92
+s90			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid3.s	s91
+s89			.apply	list.<>	rune.t	|	id	s90
+s88			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid2.s	s89
+s87			.apply	list.<>	rune.t	|	id	s88
+s86			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid1.s	s87
+s85			.apply	list.<>	rune.t	|	id	s86
+s84			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.mid.s	s85
+s83			.apply	list.<>	rune.t	|	id	s84
+s82			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_evacuate.defn.prefix.s	s83
 s81			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.suffix.s	s82
 s80			.apply	list.<>	rune.t	|	id	s81
 s79			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_api.prim.blocking_copy.defn.mid10.s	s80
