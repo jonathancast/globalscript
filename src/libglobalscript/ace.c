@@ -70,7 +70,7 @@ static int ace_exec_terminal(struct ace_thread *, struct ace_thread **, struct a
 
 struct ace_thread_pool_stats {
     vlong numthreads_total, num_blocked, num_blocked_threads, num_blocks_on_function, num_blocks_on_new_stack, num_blocks_on_existing_thread;
-    vlong gc_time, checking_thread_time;
+    vlong gc_time, checking_thread_time, time_lprim_blocked, time_thunk_blocked;
 };
 
 struct ace_eval_state {
@@ -100,7 +100,7 @@ ace_thread_pool_main(void *p)
 
     outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = num_timeslots = num_completed_timeslots = num_blocked_timeslots = num_finished_timeslots = stats.num_blocks_on_function = stats.num_blocks_on_new_stack = stats.num_blocks_on_existing_thread = 0;
     start_time = nsec();
-    finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = waiting_for_thread_time = waiting_for_thread_start_time = 0;
+    finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = waiting_for_thread_time = waiting_for_thread_start_time = stats.time_lprim_blocked = stats.time_thunk_blocked = 0;
     tid = 0;
     for (;;) {
         struct ace_thread *thread;
@@ -202,6 +202,8 @@ no_clients:
             (double)stats.num_blocks_on_existing_thread / num_timeslots * 100
         );
         gsstatprint("Time waiting for a thread: %llds %lldms\n", waiting_for_thread_time / 1000 / 1000 / 1000, (waiting_for_thread_time / 1000 / 1000) % 1000);
+        gsstatprint("Time blocked on lprims: %llds %lldms\n", stats.time_lprim_blocked / 1000 / 1000 / 1000, (stats.time_lprim_blocked / 1000 / 1000) % 1000);
+        gsstatprint("Time blocked on evals: %llds %lldms\n", stats.time_thunk_blocked / 1000 / 1000 / 1000, (stats.time_thunk_blocked / 1000 / 1000) % 1000);
     }
 }
 
@@ -235,6 +237,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
                 break;
             case ace_thread_lprim_blocked: {
                 thread->st.lprim_blocked.on->resume(thread, &thread, thread->st.lprim_blocked.at, thread->st.lprim_blocked.on);
+                if (thread->state != ace_thread_lprim_blocked) stats->time_lprim_blocked += nsec() - thread->blocked_time;
                 if (!ACE_THREAD_RUNNABLE(thread)) {
                     unlock(&thread->lock);
                     thread = 0;
@@ -281,6 +284,7 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
                         ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter (st = %d)", st);
                         break;
                 }
+                if (thread->state != ace_thread_blocked) stats->time_thunk_blocked += nsec() - thread->blocked_time;
                 if (!ACE_THREAD_RUNNABLE(thread)) {
                     unlock(&thread->lock);
                     thread = 0;
@@ -1349,6 +1353,7 @@ again:
         case gstyblocked:
             gsstatprint("%P: Blocking on a %s\n", ip->pos, CLASS_OF_BLOCK_CONTAINING(prog)->description);
             thread->state = ace_thread_blocked;
+            thread->blocked_time = nsec();
             thread->st.blocked.on = prog;
             thread->st.blocked.at = ip->pos;
             return;
@@ -1484,6 +1489,7 @@ int
 gsprim_block(struct ace_thread *thread, struct gspos pos, struct gslprim_blocking *blocking)
 {
     thread->state = ace_thread_lprim_blocked;
+    thread->blocked_time = nsec();
     thread->st.lprim_blocked.at = pos;
     thread->st.lprim_blocked.on = blocking;
     return 0;
@@ -1726,6 +1732,7 @@ ace_thread_enter_closure(struct gspos pos, struct ace_thread *thread, struct gsh
             gsheap_unlock(hp);
 
             thread->state = ace_thread_blocked;
+            thread->blocked_time = nsec();
             thread->st.blocked.on = fun;
             thread->st.blocked.at = pos;
 

@@ -196,11 +196,11 @@ ibio_read_thread_main(void *p)
     int have_clients, have_threads;
     int any_runnable;
     struct ibio_iport *iport;
-    vlong total_time_reading;
+    vlong total_time_reading, num_reads;
 
     any_runnable = have_clients = have_threads = 1;
 
-    total_time_reading = 0;
+    total_time_reading = num_reads = 0;
 
     for (tid = 0; have_clients || have_threads; tid = (tid + 1) % IBIO_NUM_READ_THREADS) {
         struct gsstringbuilder *err;
@@ -368,6 +368,7 @@ ibio_read_thread_main(void *p)
                                 } else {
                                     long n;
 
+                                    num_reads++;
                                     n = iport->uxio->refill(iport->uxio, iport->fd, iport->buf, (uchar*)iport->bufextent - (uchar*)iport->buf);
                                     if (n < 0) {
                                         ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, iport->nextseg, iport->nextsym, "ibio_read_process_main: read failed: %r");
@@ -459,6 +460,7 @@ ibio_read_thread_main(void *p)
         unlock(&ibio_read_thread_queue->lock);
     }
 
+    gsstatprint("# Reads: %lld\n", num_reads);
     gsstatprint("Total wallclock time in input: %llds %lldms\n", total_time_reading / 1000 / 1000 / 1000, (total_time_reading / 1000 / 1000) % 1000);
 
     ace_down();

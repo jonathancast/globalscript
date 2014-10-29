@@ -51,6 +51,7 @@ struct ace_thread {
     } st;
     void *stacklimit, *stacktop, *stackbot;
     void *gc_evacuated_stackbot;
+    vlong blocked_time;
 };
 
 void ace_failure_thread(struct ace_thread *, struct gsimplementation_failure *);
