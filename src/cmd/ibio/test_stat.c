@@ -19,7 +19,7 @@ test_stat()
 void
 TEST_FILE_STAT_BLOCKING_GCCOPY()
 {
-    struct api_prim_blocking *stat, *newstat;
+    struct ibio_file_stat_blocking *stat, *newstat;
     struct gsstringbuilder *err;
 
     stat = ibio_file_stat_blocking_alloc();
@@ -34,7 +34,7 @@ TEST_FILE_STAT_BLOCKING_GCCOPY()
     gsfinish_string_builder(err);
 
     err = gsreserve_string_builder();
-    newstat = stat->gccopy(err, stat);
+    newstat = (struct ibio_file_stat_blocking *)((struct api_prim_blocking *)stat)->gccopy(err, (struct api_prim_blocking *)stat);
     gsfinish_string_builder(err);
 
     ok(__FILE__, __LINE__, !!newstat, "ibio_prim_iptr_deref_blocking_gccopy failed: %s", err->start);

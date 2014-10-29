@@ -23,8 +23,8 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, stru
     if (blocking = *pblocking) {
         file_stat_blocking = (struct ibio_file_stat_blocking *)blocking;
     } else {
-        blocking = *pblocking = ibio_file_stat_blocking_alloc();
-        file_stat_blocking = (struct ibio_file_stat_blocking *)blocking;
+        file_stat_blocking = ibio_file_stat_blocking_alloc();
+        blocking = *pblocking = (struct api_prim_blocking *)file_stat_blocking;
         ibio_gsstring_eval_start(&file_stat_blocking->fn, stat->p.arguments[0]);
     }
     for (;;) {
@@ -64,7 +64,7 @@ static api_prim_blocking_gccopy ibio_file_stat_blocking_gccopy;
 static api_prim_blocking_gcevacuate ibio_file_stat_blocking_gcevacuate;
 static api_prim_blocking_gccleanup ibio_file_stat_blocking_gccleanup;
 
-struct api_prim_blocking *
+struct ibio_file_stat_blocking *
 ibio_file_stat_blocking_alloc()
 {
     struct api_prim_blocking *res;
@@ -79,7 +79,7 @@ ibio_file_stat_blocking_alloc()
     stat = (struct ibio_file_stat_blocking *)res;
     memset(&stat->fn, 0, sizeof(stat->fn));
 
-    return res;
+    return stat;
 }
 
 static
@@ -89,10 +89,10 @@ ibio_file_stat_blocking_gccopy(struct gsstringbuilder *err, struct api_prim_bloc
     struct api_prim_blocking *newblocking;
     struct ibio_file_stat_blocking *stat, *newstat;
 
-    newblocking = ibio_file_stat_blocking_alloc();
-
     stat = (struct ibio_file_stat_blocking *)blocking;
-    newstat = (struct ibio_file_stat_blocking *)newblocking;
+
+    newstat = ibio_file_stat_blocking_alloc();
+    newblocking = (struct api_prim_blocking *)newstat;
 
     memcpy((uchar*)newstat + sizeof(struct api_prim_blocking), (uchar*)stat + sizeof(struct api_prim_blocking), sizeof(struct ibio_file_stat_blocking) - sizeof(struct api_prim_blocking));
 
