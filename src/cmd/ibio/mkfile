@@ -20,7 +20,6 @@ OFILES=\
 TEST_OFILES=\
 	test.$O \
 	test_iport.$O \
-	test_stat.$O \
 	$SYSTEM/test.$O \
 
 TESTED_OFILES=\
@@ -47,14 +46,14 @@ channel.$O: ibio.h
 iport.$O: ibio.h iport.h
 oport.$O: ibio.h
 external.$O: ibio.h
-stat.$O: ibio.h stat.h
+stat.$O: ibio.h
 file.$O: ibio.h
 gsstringeval.$O: ibio.h
 unix/uxio.$O: ibio.h
 
 test.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h $SYSTEM/test_systemtests.h
 test_iport.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h ibio.h iport.h
-test_stat.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h ibio.h stat.h
+test_stat.$O: $GLOBALSCRIPT/include/libtest.h test_tests.h ibio.h
 unix/test.$O: unix/test_systemtests.h
 
 test:V: $O.test
