@@ -276,6 +276,10 @@ ace_find_thread(struct ace_thread_pool_stats *stats, int tid, struct ace_thread 
                         ace_return(thread, &thread, thread->st.blocked.at, thread->st.blocked.on);
                         break;
                     }
+                    case gstyenosys: {
+                        ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter: unimplemented: %r");
+                        break;
+                    }
                     case gstyeoothreads: {
                         ace_thread_unimpl(thread, __FILE__, __LINE__, thread->st.blocked.at, ".enter: out of threads");
                         break;
