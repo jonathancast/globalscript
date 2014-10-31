@@ -53,6 +53,8 @@ gsdl.cgs.gstype.field.name.compare	.closure	_gsdl.cgs.gstype.field.name.compare_
 gsdl.cgs.gstype.field.fmtgs	.closure	_gsdl.cgs.gstype.field.fmtgs_c	_gsdl.cgs.gstype.field.fmtgs_ty
 gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
+gsdl.cgs.gstype.field.≡	.closure	_gsdl.cgs.gstype.field.≡_c
+
 	.code
 
 -- §section §gs{gsdl.cgs.gstype.parser}
@@ -950,6 +952,15 @@ list.fmtgs.byDefault	.gvar
 gsdl.cgs.gstype.field.fmtgs	.gvar
 	.app	gsdl.cgs.gstype.field.fmtgs
 	.enter	list.fmtgs.byDefault	gsdl.cgs.gstype.field.t
+
+-- §section §gs{gsdl.cgs.gstype.field.≡}
+
+_gsdl.cgs.gstype.field.≡_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+bool.t	.tygvar	-- Temp
+f0	.larg	gsdl.cgs.gstype.field.t
+f1	.larg	gsdl.cgs.gstype.field.t
+	.undef	bool.t
 
 	.type
 
