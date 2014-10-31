@@ -618,6 +618,8 @@ bool.t	.tygvar	-- Temp
 bool.false	.gvar
 gsdl.cgs.gstype.≡	.gvar
 bool.true	.gvar
+list.≡	.gvar
+gsdl.cgs.gstype.field.≡	.gvar
 ty0.0	.fv	gsdl.cgs.gstype.prim.u
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0.0	abstype	app	definedprim	elimprim	fun	impprim	lift	pos	product	sum	ubproduct	var
@@ -673,8 +675,14 @@ fs1.1				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 cs0		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 			.undef	bool.t
 		.case	ubproduct
-fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
-			.undef	bool.t
+fs0.1		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.danalyze	ty1.0	ubproduct
+				.default
+					.undef	bool.t
+				.case	ubproduct
+fs1.1				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+					.app	gsdl.cgs.gstype.field.≡	fs0.1	fs1.1
+					.enter	list.≡	gsdl.cgs.gstype.field.t
 		.case	var
 v0		.fkarg	0	gsdl.var.t
 			.undef	bool.t
