@@ -10,6 +10,8 @@ _mdl.type.decl.parser_api.prim.blocking_prim.re	.regex	prim
 _mdl.type.decl.parser_api.prim.blocking_blocking.re	.regex	blocking
 _mdl.type.decl.parser_interpreted.stackframe_interpreted.re	.regex	interpreted
 _mdl.type.decl.parser_interpreted.stackframe_stackframe.re	.regex	stackframe
+_mdl.type.decl.parser_lprim.blocking_lprim.re	.regex	lprim
+_mdl.type.decl.parser_lprim.blocking_blocking.re	.regex	blocking
 
 mdl.type.field.decl.parser	.closure	_mdl.type.field.decl.parser_c
 
@@ -34,10 +36,13 @@ rune.t	.tygvar
 mdl.type.decl.t	.tygvar
 _mdl.type.decl.parser_api.prim.blocking_c	.subcode
 _mdl.type.decl.parser_interpreted.stackframe_c	.subcode
+_mdl.type.decl.parser_lprim.blocking_c	.subcode
 parser.<|>	.gvar
 api.prim.blocking	.closure	_mdl.type.decl.parser_api.prim.blocking_c
+lprim.blocking	.closure	_mdl.type.decl.parser_lprim.blocking_c
 interpreted.stackframe	.closure	_mdl.type.decl.parser_interpreted.stackframe_c
-	.app	api.prim.blocking	interpreted.stackframe
+p	.apply	parser.<|>	rune.t	mdl.type.decl.t	|	interpreted.stackframe	lprim.blocking
+	.app	api.prim.blocking	p
 	.enter	parser.<|>	rune.t	mdl.type.decl.t
 
 _mdl.type.decl.parser_api.prim.blocking_c	.expr
@@ -126,6 +131,46 @@ l	.larg	string.t
 fs	.larg	list.t	mdl.type.field.decl.t
 	.app	l	fs
 	.enter	mdl.type.decl.interpreted.stackframe
+
+_mdl.type.decl.parser_lprim.blocking_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+mdl.type.decl.t	.tygvar
+_mdl.type.decl.parser_lprim.blocking_f_c	.subcode
+parser.lift2	.gvar
+parser.*>	.gvar
+mdl.syntax.keyword	.gvar
+_mdl.type.decl.parser_lprim.blocking_lprim.re	.gvar
+_mdl.type.decl.parser_lprim.blocking_blocking.re	.gvar
+mdl.syntax.id	.gvar
+parser.<*	.gvar
+mdl.syntax.braces	.gvar
+parser.many	.gvar
+mdl.type.field.decl.parser	.gvar
+mdl.syntax.semi	.gvar
+parser.fail	.gvar	-- Temp
+list.field.ty	.tylet	list.t	mdl.type.field.decl.t
+f	.closure	_mdl.type.decl.parser_lprim.blocking_f_c
+lprim.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_lprim.blocking_lprim.re
+blocking.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_lprim.blocking_blocking.re
+label.p1	.apply	parser.*>	rune.t	string.t	string.t	|	blocking.p	mdl.syntax.id
+label.p	.apply	parser.*>	rune.t	string.t	string.t	|	lprim.p	label.p1
+fields.p2	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	mdl.type.field.decl.parser
+fields.p1	.apply	mdl.syntax.braces	list.field.ty	|	fields.p2
+fields.p	.apply	parser.<*	rune.t	list.field.ty	string.t	|	fields.p1	mdl.syntax.semi
+	.app	f	label.p	fields.p
+	.enter	parser.lift2	rune.t	string.t	list.field.ty	mdl.type.decl.t
+
+_mdl.type.decl.parser_lprim.blocking_f_c	.expr
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+mdl.type.decl.t	.tygvar
+nm	.larg	string.t
+fs	.larg	list.t	mdl.type.field.decl.t
+	.undef	mdl.type.decl.t
 
 -- §section §gs{mdl.type.field.decl.parser}
 
