@@ -1494,10 +1494,10 @@ gsac.prefix.typefnitem.intrprim.insert	.gvar
 _fixtures_foo.bar.v	.gvar
 _fixtures_foo.v	.gvar
 _fixtures_bar.v	.gvar
-gsdl.cgs.gskind.unlifted	.gvar
+gsdl.ags.typeitem.gskind.unlifted	.gvar
 gsac.prefix.empty	.gvar
 pos	.undefined	gsdl.sourcepos.t
-pr	.apply	gsac.prefix.typefnitem.intrprim.insert	|	pos	_fixtures_foo.bar.v	_fixtures_foo.v	_fixtures_bar.v	gsdl.cgs.gskind.unlifted	gsac.prefix.empty
+pr	.apply	gsac.prefix.typefnitem.intrprim.insert	|	pos	_fixtures_foo.bar.v	_fixtures_foo.v	_fixtures_bar.v	gsdl.ags.typeitem.gskind.unlifted	gsac.prefix.empty
 	.force	_test.typecheck_intrprim_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
 	.app	gsdl.cgs.typeenv.empty	pr

@@ -1349,14 +1349,14 @@ r	.record	typeconstants	tycs	typefunctions	tyfs1	|	gsac.prefix.prim.u
 _gsac.prefix.typefnitem.intrprim.insert_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsac.prefix.t	.tygvar
 _gsac.prefix.typefnitem.intrprim.insert_k	.subcode
 pos	.larg	gsdl.sourcepos.t
 v	.larg	gsdl.var.t
 ps	.larg	gsdl.var.t
 pn	.larg	gsdl.var.t
-ki	.larg	gsdl.cgs.gskind.t
+ki	.larg	gsdl.ags.typeitem.gskind.t
 pr	.larg	gsac.prefix.t
 	.force	_gsac.prefix.typefnitem.intrprim.insert_k
 	.enter	pr
@@ -1364,7 +1364,7 @@ pr	.larg	gsac.prefix.t
 _gsac.prefix.typefnitem.intrprim.insert_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsac.prefix.prim.u	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 ordered.map.insert	.gvar
@@ -1374,7 +1374,7 @@ pos	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
 ps	.fv	gsdl.var.t
 pn	.fv	gsdl.var.t
-ki	.fv	gsdl.cgs.gskind.t
+ki	.fv	gsdl.ags.typeitem.gskind.t
 pr0	.karg	gsac.prefix.prim.u
 tycs	.field	typeconstants	pr0
 ti	.apply	gsac.prefix.typefnitem.intrprim	|	pos	v	ps	pn	ki
@@ -2066,7 +2066,7 @@ pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
-ki		.fkarg	4	gsdl.cgs.gskind.t
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 			.app	v
 			.yield	gsdl.cgs.symbol.tyvar
 		.case	typefun
@@ -2187,7 +2187,7 @@ pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
-ki		.fkarg	4	gsdl.cgs.gskind.t
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 			.enter	list.nil	gsdl.cgs.symbol.t
 		.case	typefun
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -2415,6 +2415,7 @@ gsdl.cgs.typeenv.elimprim.insert	.gvar
 gsdl.cgs.typeenv.gsabstypenm.insert	.gvar
 gsdl.cgs.typeenv.impprim.insert	.gvar
 gsdl.cgs.typeenv.intrprim.insert	.gvar
+gsac.prefix.gskind.upconvert	.gvar
 either.foldM	.gvar
 gsac.prefix.tylet.typecheck	.gvar
 list.foldl	.gvar
@@ -2466,8 +2467,9 @@ pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
-ki		.fkarg	4	gsdl.cgs.gskind.t
-env1			.apply	gsdl.cgs.typeenv.intrprim.insert	|	v	ps	pn	ki	gsdl.cgs.typeenv.empty
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
+ki.cgs			.apply	gsac.prefix.gskind.upconvert	|	ki
+env1			.apply	gsdl.cgs.typeenv.intrprim.insert	|	v	ps	pn	ki.cgs	gsdl.cgs.typeenv.empty
 			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 		.case	typefun
@@ -2907,7 +2909,7 @@ pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
-ki		.fkarg	4	gsdl.cgs.gskind.t
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 			.undef	bool.t
 		.case	typefun
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -3014,7 +3016,7 @@ pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
-ki		.fkarg	4	gsdl.cgs.gskind.t
+ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
 			.undef	fmtgs.printer.t
 		.case	typefun
 pos		.fkarg	0	gsdl.sourcepos.t
@@ -3264,14 +3266,14 @@ c	.constr	gsac.prefix.typefnitem.prim.u	elimprim	0	pos	1	v	2	ps	3	pn	4	ki
 _gsac.prefix.typefnitem.intrprim_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
+gsdl.ags.typeitem.gskind.t	.tygvar
 gsac.prefix.typefnitem.prim.u	.tygvar
 gsac.prefix.typefnitem.t.in	.cogvar
 pos	.larg	gsdl.sourcepos.t
 v	.larg	gsdl.var.t
 ps	.larg	gsdl.var.t
 pn	.larg	gsdl.var.t
-ki	.larg	gsdl.cgs.gskind.t
+ki	.larg	gsdl.ags.typeitem.gskind.t
 c	.constr	gsac.prefix.typefnitem.prim.u	intrprim	0	pos	1	v	2	ps	3	pn	4	ki
 	.coerce	gsac.prefix.typefnitem.t.in
 	.lift
@@ -3393,8 +3395,8 @@ gsdl.cgs.gskind.t	.tygvar
 _gsac.prefix.typefnitem.prim.u_intrprim_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.var.t	3	gsdl.var.t	4	gsdl.cgs.gskind.t
+gsdl.ags.typeitem.gskind.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.var.t	3	gsdl.var.t	4	gsdl.ags.typeitem.gskind.t
 
 _gsac.prefix.typefnitem.prim.u_typefun_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
