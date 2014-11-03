@@ -1500,9 +1500,16 @@ parser.pos.t	.tygvar
 list.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
-'pos	.larg	parser.pos.t
+gsdl.ags.typeitem.expr.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.ags.typeitem.expr.ubproduct	.gvar
+pos0	.larg	parser.pos.t
 fs	.larg	list.t	gsdl.ags.typeitem.field.t
-	.undef	gsdl.ags.typeitem.expr.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e	.apply	gsdl.ags.typeitem.expr.ubproduct	|	fs
+	.app	pos	e
+	.yield	gsdl.ags.typeitem.expr.pos
 
 _gsdl.ags.typeitem.expr.parser_tyubproduct.p_field.f_c	.expr
 string.t	.tygvar
