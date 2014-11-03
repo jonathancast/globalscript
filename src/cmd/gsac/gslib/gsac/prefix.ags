@@ -2414,6 +2414,7 @@ gsdl.cgs.typeenv.empty	.gvar
 gsdl.cgs.typeenv.elimprim.insert	.gvar
 gsdl.cgs.typeenv.gsabstypenm.insert	.gvar
 gsdl.cgs.typeenv.impprim.insert	.gvar
+gsdl.cgs.typeenv.intrprim.insert	.gvar
 either.foldM	.gvar
 gsac.prefix.tylet.typecheck	.gvar
 list.foldl	.gvar
@@ -2466,7 +2467,9 @@ v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.cgs.gskind.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+env1			.apply	gsdl.cgs.typeenv.intrprim.insert	|	v	ps	pn	ki	gsdl.cgs.typeenv.empty
+			.app	env1
+			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 		.case	typefun
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
