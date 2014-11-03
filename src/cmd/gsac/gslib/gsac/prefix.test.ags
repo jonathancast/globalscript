@@ -119,25 +119,21 @@ _tests.typecheck	.list	test.property.t	_test.typecheck_gsabstype.kind	_test.type
 
 _test.typecheck_gsabstype.kind	.closure	_test.typecheck_gsabstype.kind_c
 _test.typecheck_gsabstype.kind_label	.string	prefix.typecheck\scan\sreturn\skinds
-_test.typecheck_gsabstype.kind_test_ty.s	.string	ty
 _test.typecheck_gsabstype.kind_test_left_prefix.s	.string	prefix.typecheck\sfailed:\s
 _test.typecheck_gsabstype.kind_test_right_nothing_failed.s	.string	gskind.get\sfailed
 
 _test.typecheck_gsabstype.defn	.closure	_test.typecheck_gsabstype.defn_c
 _test.typecheck_gsabstype.defn_label	.string	prefix.typecheck\scan\sreturn\sdefinitions
-_test.typecheck_gsabstype.defn_test_ty.s	.string	ty
 _test.typecheck_gsabstype.defn_test_left_prefix.s	.string	prefix.typecheck\sfailed:\s
 _test.typecheck_gsabstype.defn_test_right_nothing_failed.s	.string	typedefinition.get\sfailed
 
 _test.typecheck_gsabstype.tylambda.defn	.closure	_test.typecheck_gsabstype.tylambda.defn_c
 _test.typecheck_gsabstype.tylambda.defn_label	.string	prefix.typecheck\shandles\s.tylambdas\sin\s.tyabstypes\scorrectly
-_test.typecheck_gsabstype.tylambda.defn_test_ty.s	.string	ty
 _test.typecheck_gsabstype.tylambda.defn_test_left_prefix.s	.string	prefix.typecheck\sfailed:\s
 _test.typecheck_gsabstype.tylambda.defn_test_right_nothing_failed.s	.string	typedefinition.get\sfailed
 
 _test.typecheck_gsabstype.tylet.defn	.closure	_test.typecheck_gsabstype.tylet.defn_c
 _test.typecheck_gsabstype.tylet.defn_label	.string	prefix.typecheck\shandles\s.tylets\sin\s.tyabstracts\scorrectly
-_test.typecheck_gsabstype.tylet.defn_test_ty.s	.string	ty
 _test.typecheck_gsabstype.tylet.defn_test_left_prefix.s	.string	prefix.typecheck\sfailed:\s
 _test.typecheck_gsabstype.tylet.defn_test_right_nothing_failed.s	.string	typedefinition.get\sfailed
 
@@ -148,7 +144,6 @@ _test.typecheck_elimprim_test_bar.s	.string	bar
 
 _test.typecheck_tyexpr.tyforall	.closure	_test.typecheck_tyexpr.tyforall_c
 _test.typecheck_tyexpr.tyforall_label	.string	prefix.typecheck\shandles\s.tyforalls\sin\s.tyexprs\scorrectly
-_test.typecheck_tyexpr.tyforall_test_ty.s	.string	ty
 _test.typecheck_tyexpr.tyforall_test_left_prefix.s	.string	prefix.typecheck\sfailed:\s
 
 _test.upconvert	.closure	_test.upconvert_c
@@ -178,6 +173,9 @@ _fixtures_set.symbol.fmtgs	.closure	_fixtures_set.symbol.fmtgs_c
 
 _fixtures.filenm	.closure	_fixtures.filenm_c
 _fixtures.filenm_s	.string	./foo.cgs
+
+_fixtures_ty.v	.closure	_fixtures_ty.v_c
+_fixtures_ty.s	.string	ty
 
 _fixtures_α.v	.closure	_fixtures_α.v_c
 _fixtures_α.s	.string	α
@@ -1053,17 +1051,11 @@ gsdl.cgs.typeenv.empty	.gvar
 gsac.prefix.typefnitem.gsabstype.insert	.gvar
 natural.1	.gvar
 _fixtures.filenm	.gvar
-gsdl.var.basevar	.gvar
-list.singleton	.gvar
-gsdl.var.component.alphanum	.gvar
-_test.typecheck_gsabstype.kind_test_ty.s	.gvar
+_fixtures_ty.v	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 gsac.prefix.empty	.gvar
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
-v.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype.kind_test_ty.s
-v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
-v	.apply	gsdl.var.basevar	|	v.cs
-pr	.apply	gsac.prefix.typefnitem.gsabstype.insert	|	pos	v	gsdl.cgs.gskind.lifted	gsac.prefix.empty
+pr	.apply	gsac.prefix.typefnitem.gsabstype.insert	|	pos	_fixtures_ty.v	gsdl.cgs.gskind.lifted	gsac.prefix.empty
 	.force	_test.typecheck_gsabstype.kind_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
 	.app	gsdl.cgs.typeenv.empty	pr
@@ -1082,7 +1074,7 @@ test.property.false	.gvar
 list.<>	.gvar
 _test.typecheck_gsabstype.kind_test_left_prefix.s	.gvar
 gsdl.cgs.typeenv.gskind.get	.gvar
-v	.fv	gsdl.var.t
+_fixtures_ty.v	.gvar
 eenv0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	eenv0	left	right
 		.case	left
@@ -1094,7 +1086,7 @@ msg			.apply	list.<>	rune.t	|	_test.typecheck_gsabstype.kind_test_left_prefix.s	
 env		.fkarg	0	gsdl.cgs.typeenv.t
 			.force	_test.typecheck_gsabstype.kind_test_right_k
 			.coerce	maybe.t.out	gsdl.cgs.gskind.t
-			.app	v	env
+			.app	_fixtures_ty.v	env
 			.enter	gsdl.cgs.typeenv.gskind.get
 
 _test.typecheck_gsabstype.kind_test_right_k	.forcecont
@@ -1140,19 +1132,13 @@ gsdl.cgs.typeenv.empty	.gvar
 gsac.prefix.typeconstitem.gsabstype.insert	.gvar
 natural.1	.gvar
 _fixtures.filenm	.gvar
-gsdl.var.basevar	.gvar
-list.singleton	.gvar
-gsdl.var.component.alphanum	.gvar
-_test.typecheck_gsabstype.defn_test_ty.s	.gvar
+_fixtures_ty.v	.gvar
 gsdl.ags.typeitem.gskind.lifted	.gvar
 gsdl.ags.typeitem.expr.product	.gvar
 list.nil	.gvar
 gsdl.ags.typeitem.expr.lift	.gvar
 gsac.prefix.empty	.gvar
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
-v.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype.defn_test_ty.s
-v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
-v	.apply	gsdl.var.basevar	|	v.cs
 decls.tyargs	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
 decls.tyfas	.apply	list.nil	gsdl.ags.typeitem.decls.tyforall.t
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
@@ -1161,7 +1147,7 @@ decls	.lrecord	tyargs	decls.tyargs	tyforalls	decls.tyfas	tygvars	decls.tygvs	tyl
 expr1.fs	.apply	list.nil	gsdl.ags.typeitem.field.t
 expr1	.apply	gsdl.ags.typeitem.expr.product	|	expr1.fs
 expr	.apply	gsdl.ags.typeitem.expr.lift	|	expr1
-pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
+pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	_fixtures_ty.v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
 	.force	_test.typecheck_gsabstype.defn_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
 	.app	gsdl.cgs.typeenv.empty	pr
@@ -1181,7 +1167,7 @@ test.property.false	.gvar
 list.<>	.gvar
 gsdl.cgs.typeenv.typedefinition.get	.gvar
 _test.typecheck_gsabstype.defn_test_left_prefix.s	.gvar
-v	.fv	gsdl.var.t
+_fixtures_ty.v	.gvar
 e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	e0	left	right
 		.case	left
@@ -1193,7 +1179,7 @@ msg			.apply	list.<>	rune.t	|	_test.typecheck_gsabstype.defn_test_left_prefix.s	
 env		.fkarg	0	gsdl.cgs.typeenv.t
 			.force	_test.typecheck_gsabstype.defn_test_right_k
 			.coerce	maybe.t.out	gsdl.cgs.typeenv.typedefinition.t
-			.app	v	env
+			.app	_fixtures_ty.v	env
 			.enter	gsdl.cgs.typeenv.typedefinition.get
 
 _test.typecheck_gsabstype.defn_test_right_k	.forcecont
@@ -1240,19 +1226,14 @@ gsdl.cgs.typeenv.empty	.gvar
 gsac.prefix.typeconstitem.gsabstype.insert	.gvar
 natural.1	.gvar
 _fixtures.filenm	.gvar
-gsdl.var.basevar	.gvar
+_fixtures_ty.v	.gvar
 list.singleton	.gvar
 _fixtures_α.v	.gvar
-gsdl.var.component.alphanum	.gvar
-_test.typecheck_gsabstype.tylambda.defn_test_ty.s	.gvar
 gsdl.ags.typeitem.gskind.lifted	.gvar
 list.nil	.gvar
 gsdl.ags.typeitem.expr.tyref	.gvar
 gsac.prefix.empty	.gvar
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
-v.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype.tylambda.defn_test_ty.s
-v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
-v	.apply	gsdl.var.basevar	|	v.cs
 decls.tyarg.0	.lrecord	0	pos	1	_fixtures_α.v	2	gsdl.ags.typeitem.gskind.lifted	|	gsdl.ags.typeitem.decls.tyarg.t
 decls.tyargs	.apply	list.singleton	gsdl.ags.typeitem.decls.tyarg.t	|	decls.tyarg.0
 decls.tyfas	.apply	list.nil	gsdl.ags.typeitem.decls.tyforall.t
@@ -1261,7 +1242,7 @@ tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
 decls	.lrecord	tyargs	decls.tyargs	tyforalls	decls.tyfas	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 as	.apply	list.nil	gsdl.var.t
 expr	.apply	gsdl.ags.typeitem.expr.tyref	|	_fixtures_α.v	as
-pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
+pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	_fixtures_ty.v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
 	.force	_test.typecheck_gsabstype.tylambda.defn_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
 	.app	gsdl.cgs.typeenv.empty	pr
@@ -1281,7 +1262,7 @@ test.property.false	.gvar
 list.<>	.gvar
 gsdl.cgs.typeenv.typedefinition.get	.gvar
 _test.typecheck_gsabstype.tylambda.defn_test_left_prefix.s	.gvar
-v	.fv	gsdl.var.t
+_fixtures_ty.v	.gvar
 e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	e0	left	right
 		.case	left
@@ -1293,7 +1274,7 @@ msg			.apply	list.<>	rune.t	|	_test.typecheck_gsabstype.tylambda.defn_test_left_
 env		.fkarg	0	gsdl.cgs.typeenv.t
 			.force	_test.typecheck_gsabstype.tylambda.defn_test_right_k
 			.coerce	maybe.t.out	gsdl.cgs.typeenv.typedefinition.t
-			.app	v	env
+			.app	_fixtures_ty.v	env
 			.enter	gsdl.cgs.typeenv.typedefinition.get
 
 _test.typecheck_gsabstype.tylambda.defn_test_right_k	.forcecont
@@ -1340,9 +1321,7 @@ gsdl.cgs.typeenv.empty	.gvar
 gsac.prefix.typeconstitem.gsabstype.insert	.gvar
 natural.1	.gvar
 _fixtures.filenm	.gvar
-gsdl.var.basevar	.gvar
-gsdl.var.component.alphanum	.gvar
-_test.typecheck_gsabstype.tylet.defn_test_ty.s	.gvar
+_fixtures_ty.v	.gvar
 _fixtures_α.v	.gvar
 list.:	.gvar
 list.singleton	.gvar
@@ -1354,9 +1333,6 @@ _fixtures_γ.v	.gvar
 gsdl.ags.typeitem.expr.tyref	.gvar
 gsac.prefix.empty	.gvar
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
-v.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype.tylet.defn_test_ty.s
-v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
-v	.apply	gsdl.var.basevar	|	v.cs
 exp	.apply	gsdl.ags.typeitem.gskind.exp	|	gsdl.ags.typeitem.gskind.lifted	gsdl.ags.typeitem.gskind.lifted
 decls.tyarg.0	.lrecord	0	pos	1	_fixtures_α.v	2	exp	|	gsdl.ags.typeitem.decls.tyarg.t
 decls.tyarg.1	.lrecord	0	pos	1	_fixtures_β.v	2	gsdl.ags.typeitem.gskind.lifted	|	gsdl.ags.typeitem.decls.tyarg.t
@@ -1370,7 +1346,7 @@ decls.tylets	.apply	list.singleton	gsdl.ags.typeitem.decls.tylet.t	|	decls.tylet
 decls	.lrecord	tyargs	decls.tyargs	tyforalls	decls.tyfas	tygvars	decls.tygvs	tylets	decls.tylets	|	gsdl.ags.typeitem.decls.t
 as	.apply	list.nil	gsdl.var.t
 expr	.apply	gsdl.ags.typeitem.expr.tyref	|	_fixtures_γ.v	as
-pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
+pr	.apply	gsac.prefix.typeconstitem.gsabstype.insert	|	pos	_fixtures_ty.v	gsdl.ags.typeitem.gskind.lifted	decls	expr	gsac.prefix.empty
 	.force	_test.typecheck_gsabstype.tylet.defn_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
 	.app	gsdl.cgs.typeenv.empty	pr
@@ -1390,7 +1366,7 @@ test.property.false	.gvar
 list.<>	.gvar
 gsdl.cgs.typeenv.typedefinition.get	.gvar
 _test.typecheck_gsabstype.tylet.defn_test_left_prefix.s	.gvar
-v	.fv	gsdl.var.t
+_fixtures_ty.v	.gvar
 e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	e0	left	right
 		.case	left
@@ -1402,7 +1378,7 @@ msg			.apply	list.<>	rune.t	|	_test.typecheck_gsabstype.tylet.defn_test_left_pre
 env		.fkarg	0	gsdl.cgs.typeenv.t
 			.force	_test.typecheck_gsabstype.tylet.defn_test_right_k
 			.coerce	maybe.t.out	gsdl.cgs.typeenv.typedefinition.t
-			.app	v	env
+			.app	_fixtures_ty.v	env
 			.enter	gsdl.cgs.typeenv.typedefinition.get
 
 _test.typecheck_gsabstype.tylet.defn_test_right_k	.forcecont
@@ -1531,20 +1507,15 @@ gsdl.cgs.typeenv.empty	.gvar
 gsac.prefix.typefnitem.typefun.insert	.gvar
 natural.1	.gvar
 _fixtures.filenm	.gvar
-_fixtures_α.v	.gvar
-gsdl.var.basevar	.gvar
+_fixtures_ty.v	.gvar
 list.singleton	.gvar
-gsdl.var.component.alphanum	.gvar
-_test.typecheck_tyexpr.tyforall_test_ty.s	.gvar
+_fixtures_α.v	.gvar
 maybe.just	.gvar
 gsdl.ags.typeitem.gskind.lifted	.gvar
 list.nil	.gvar
 gsdl.ags.typeitem.expr.tyref	.gvar
 gsac.prefix.empty	.gvar
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
-v.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_tyexpr.tyforall_test_ty.s
-v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
-v	.apply	gsdl.var.basevar	|	v.cs
 just.lifted	.apply	maybe.just	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.typeitem.gskind.lifted
 decls.tyargs	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
 decls.tyforalls.0	.lrecord	0	_fixtures_α.v	|	gsdl.ags.typeitem.decls.tyforall.t	-- >	0	_fixtures_α.v	1	gsdl.ags.typeitem.gskind.lifted
@@ -1554,7 +1525,7 @@ tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t
 decls	.lrecord	tyargs	decls.tyargs	tyforalls	decls.tyforalls	tygvars	decls.tygvs	tylets	tylets	|	gsdl.ags.typeitem.decls.t
 as	.apply	list.nil	gsdl.var.t
 expr	.apply	gsdl.ags.typeitem.expr.tyref	|	_fixtures_α.v	as
-pr	.apply	gsac.prefix.typefnitem.typefun.insert	|	pos	v	just.lifted	decls	expr	gsac.prefix.empty
+pr	.apply	gsac.prefix.typefnitem.typefun.insert	|	pos	_fixtures_ty.v	just.lifted	decls	expr	gsac.prefix.empty
 	.force	_test.typecheck_tyexpr.tyforall_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
 	.app	gsdl.cgs.typeenv.empty	pr
@@ -1573,7 +1544,6 @@ test.property.false	.gvar
 list.<>	.gvar
 _test.typecheck_tyexpr.tyforall_test_left_prefix.s	.gvar
 test.true	.gvar
-v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	e0	left	right
 		.case	left
@@ -1889,6 +1859,17 @@ ibio.file.name.in	.gvar
 _fixtures.filenm_s	.gvar
 	.app	_fixtures.filenm_s
 	.enter	ibio.file.name.in
+
+_fixtures_ty.v_c	.expr
+gsdl.var.component.t	.tygvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_fixtures_ty.s	.gvar
+c0	.apply	gsdl.var.component.alphanum	|	_fixtures_ty.s
+cs	.apply	list.singleton	gsdl.var.component.t	|	c0
+	.app	cs
+	.enter	gsdl.var.basevar
 
 _fixtures_α.v_c	.expr
 gsdl.var.component.t	.tygvar
