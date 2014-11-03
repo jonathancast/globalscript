@@ -138,7 +138,6 @@ _test.typecheck_gsabstype.tylambda.defn_test_right_nothing_failed.s	.string	type
 _test.typecheck_gsabstype.tylet.defn	.closure	_test.typecheck_gsabstype.tylet.defn_c
 _test.typecheck_gsabstype.tylet.defn_label	.string	prefix.typecheck\shandles\s.tylets\sin\s.tyabstracts\scorrectly
 _test.typecheck_gsabstype.tylet.defn_test_ty.s	.string	ty
-_test.typecheck_gsabstype.tylet.defn_test_β.s	.string	β
 _test.typecheck_gsabstype.tylet.defn_test_γ.s	.string	γ
 _test.typecheck_gsabstype.tylet.defn_test_left_prefix.s	.string	prefix.typecheck\sfailed:\s
 _test.typecheck_gsabstype.tylet.defn_test_right_nothing_failed.s	.string	typedefinition.get\sfailed
@@ -183,6 +182,9 @@ _fixtures.filenm_s	.string	./foo.cgs
 
 _fixtures_α.v	.closure	_fixtures_α.v_c
 _fixtures_α.s	.string	α
+
+_fixtures_β.v	.closure	_fixtures_β.v_c
+_fixtures_β.s	.string	β
 
 	.code
 
@@ -1337,15 +1339,15 @@ gsac.prefix.typeconstitem.gsabstype.insert	.gvar
 natural.1	.gvar
 _fixtures.filenm	.gvar
 _fixtures_α.v	.gvar
-gsdl.var.basevar	.gvar
 list.:	.gvar
 list.singleton	.gvar
-gsdl.var.component.alphanum	.gvar
 _test.typecheck_gsabstype.tylet.defn_test_ty.s	.gvar
 gsdl.ags.typeitem.gskind.exp	.gvar
 gsdl.ags.typeitem.gskind.lifted	.gvar
-_test.typecheck_gsabstype.tylet.defn_test_β.s	.gvar
+_fixtures_β.v	.gvar
 list.nil	.gvar
+gsdl.var.basevar	.gvar
+gsdl.var.component.alphanum	.gvar
 _test.typecheck_gsabstype.tylet.defn_test_γ.s	.gvar
 gsdl.ags.typeitem.expr.tyref	.gvar
 gsac.prefix.empty	.gvar
@@ -1355,10 +1357,7 @@ v.cs	.apply	list.singleton	gsdl.var.component.t	|	v.c0
 v	.apply	gsdl.var.basevar	|	v.cs
 exp	.apply	gsdl.ags.typeitem.gskind.exp	|	gsdl.ags.typeitem.gskind.lifted	gsdl.ags.typeitem.gskind.lifted
 decls.tyarg.0	.lrecord	0	pos	1	_fixtures_α.v	2	exp	|	gsdl.ags.typeitem.decls.tyarg.t
-β.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype.tylet.defn_test_β.s
-β.cs	.apply	list.singleton	gsdl.var.component.t	|	β.c0
-β	.apply	gsdl.var.basevar	|	β.cs
-decls.tyarg.1	.lrecord	0	pos	1	β	2	gsdl.ags.typeitem.gskind.lifted	|	gsdl.ags.typeitem.decls.tyarg.t
+decls.tyarg.1	.lrecord	0	pos	1	_fixtures_β.v	2	gsdl.ags.typeitem.gskind.lifted	|	gsdl.ags.typeitem.decls.tyarg.t
 decls.tyargs.1	.apply	list.singleton	gsdl.ags.typeitem.decls.tyarg.t	|	decls.tyarg.1
 decls.tyargs	.apply	list.:	gsdl.ags.typeitem.decls.tyarg.t	|	decls.tyarg.0	decls.tyargs.1
 decls.tyfas	.apply	list.nil	gsdl.ags.typeitem.decls.tyforall.t
@@ -1366,7 +1365,7 @@ decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 γ.c0	.apply	gsdl.var.component.alphanum	|	_test.typecheck_gsabstype.tylet.defn_test_γ.s
 γ.cs	.apply	list.singleton	gsdl.var.component.t	|	γ.c0
 γ	.apply	gsdl.var.basevar	|	γ.cs
-tyas	.apply	list.singleton	gsdl.var.t	|	β
+tyas	.apply	list.singleton	gsdl.var.t	|	_fixtures_β.v
 decls.tylet.0	.lrecord	name	γ	pos	pos	tyargs	tyas	tyfun	_fixtures_α.v	|	gsdl.ags.typeitem.decls.tylet.t
 decls.tylets	.apply	list.singleton	gsdl.ags.typeitem.decls.tylet.t	|	decls.tylet.0
 decls	.lrecord	tyargs	decls.tyargs	tyforalls	decls.tyfas	tygvars	decls.tygvs	tylets	decls.tylets	|	gsdl.ags.typeitem.decls.t
@@ -1899,6 +1898,17 @@ list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
 _fixtures_α.s	.gvar
 c0	.apply	gsdl.var.component.alphanum	|	_fixtures_α.s
+cs	.apply	list.singleton	gsdl.var.component.t	|	c0
+	.app	cs
+	.enter	gsdl.var.basevar
+
+_fixtures_β.v_c	.expr
+gsdl.var.component.t	.tygvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_fixtures_β.s	.gvar
+c0	.apply	gsdl.var.component.alphanum	|	_fixtures_β.s
 cs	.apply	list.singleton	gsdl.var.component.t	|	c0
 	.app	cs
 	.enter	gsdl.var.basevar
