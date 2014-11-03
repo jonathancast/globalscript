@@ -88,7 +88,7 @@ _test_item.deps_defn.tygvar_x.s	.string	x
 _test_file.add	.closure	_test_file.add_c
 _test_file.add_label	.string	file.add
 
-_tests_file.add	.list	test.property.t	_test_file.add_gsdocument	_test_file.add_gsabstype	_test_file.add_definedprim	_test_file.add_elimprim	_test_file.add_impprim
+_tests_file.add	.list	test.property.t	_test_file.add_gsdocument	_test_file.add_gsabstype	_test_file.add_definedprim	_test_file.add_elimprim	_test_file.add_impprim	_test_file.add_intrprim
 
 _test_file.add_gsdocument	.closure	_test_file.add_gsdocument_c
 _test_file.add_gsdocument_label	.string	file.add\signores\sdocuments
@@ -104,6 +104,9 @@ _test_file.add_definedprim_bar.s	.string	bar
 
 _test_file.add_elimprim	.closure	_test_file.add_elimprim_c
 _test_file.add_elimprim_label	.string	file.add\scan\sreturn\san\selimprim
+
+_test_file.add_intrprim	.closure	_test_file.add_intrprim_c
+_test_file.add_intrprim_label	.string	file.add\scan\sreturn\san\sintrprim
 
 _test_file.add_impprim	.closure	_test_file.add_impprim_c
 _test_file.add_impprim_label	.string	file.add\scan\sreturn\san\simpprim
@@ -955,6 +958,58 @@ expected.0	.apply	gsac.prefix.item.typefnitem	|	tyfn
 expected	.apply	list.singleton	gsac.prefix.item.t	|	expected.0
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
 	.app	_test_file.add_elimprim_label	test
+	.enter	test.property.label
+
+-- §subsection §gs{file.add} can return an intrprim
+
+_test_file.add_intrprim_c	.expr
+list.t	.tygvar
+gsac.prefix.item.t	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+gsdl.ags.file.t	.tygvar
+gsdl.sourcepos.t	.tygvar	-- Temp
+test.property.label	.gvar
+_test_file.add_intrprim_label	.gvar
+test.assert.eq	.gvar
+list.≡	.gvar
+gsac.prefix.item.≡	.gvar
+list.fmtgs.byDefault	.gvar
+gsac.prefix.item.fmtgs	.gvar
+gsac.prefix.items	.gvar
+gsac.prefix.file.add	.gvar
+list.nil	.gvar
+gsdl.ags.file.filetype.gsprefix	.gvar
+list.singleton	.gvar
+gsdl.ags.typeitem.tyintrprim	.gvar
+gsdl.ags.typeitem.gskind.unlifted	.gvar
+gsac.prefix.empty	.gvar
+gsac.prefix.item.typefnitem	.gvar
+gsac.prefix.typefnitem.intrprim	.gvar
+natural.1	.gvar
+_fixtures.filenm	.gvar
+_fixtures_foo.bar.v	.gvar
+_fixtures_foo.v	.gvar
+_fixtures_bar.v	.gvar
+list.item.ty	.tylet	list.t	gsac.prefix.item.t
+list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
+list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
+cs	.apply	list.nil	gsdl.ags.codeitem.t
+cos	.apply	list.nil	gsdl.ags.coercionitem.t
+ds	.apply	list.nil	gsdl.ags.dataitem.t
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
+ti	.apply	gsdl.ags.typeitem.tyintrprim	|	pos	_fixtures_foo.bar.v	_fixtures_foo.v	_fixtures_bar.v	gsdl.ags.typeitem.gskind.unlifted
+tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	ti
+inprfx	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
+pr	.apply	gsac.prefix.file.add	|	inprfx	gsac.prefix.empty
+actual	.apply	gsac.prefix.items	|	pr
+tyfn	.apply	gsac.prefix.typefnitem.intrprim	|	pos	_fixtures_foo.bar.v	_fixtures_foo.v	_fixtures_bar.v	gsdl.ags.typeitem.gskind.unlifted
+expected.0	.apply	gsac.prefix.item.typefnitem	|	tyfn
+expected	.apply	list.singleton	gsac.prefix.item.t	|	expected.0
+test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
+	.app	_test_file.add_intrprim_label	test
 	.enter	test.property.label
 
 -- §subsection §gs{file.add} can return an impprim

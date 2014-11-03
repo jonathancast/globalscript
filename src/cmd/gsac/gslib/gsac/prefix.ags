@@ -957,6 +957,7 @@ gsac.prefix.gskind.upconvert	.gvar
 gsac.prefix.typefnitem.definedprim	.gvar
 gsac.prefix.typefnitem.elimprim	.gvar
 gsac.prefix.typefnitem.impprim	.gvar
+gsac.prefix.typefnitem.intrprim	.gvar
 ts0	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
 ti0	.karg	gsdl.ags.typeitem.prim.u
 	.analyze	ti0	tyabstract	tydefinedprim	tyelimprim	tyexpr	tyimpprim	tyintrprim
@@ -1011,11 +1012,13 @@ ti			.apply	gsac.prefix.typefnitem.impprim	|	pos	v	ps	pn	cgs.ki
 			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typefnitem.t
 		.case	tyintrprim
 pos		.fkarg	0	gsdl.sourcepos.t
-nm		.fkarg	1	gsdl.var.t
+v		.fkarg	1	gsdl.var.t
 ps		.fkarg	2	gsdl.var.t
 pn		.fkarg	3	gsdl.var.t
 ki		.fkarg	4	gsdl.ags.typeitem.gskind.t
-			.enter	ts0	-- TODO
+ti			.apply	gsac.prefix.typefnitem.intrprim	|	pos	v	ps	pn	ki
+			.app	gsdl.var.compare	v	ti	ts0
+			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typefnitem.t
 	-- > ts0 :: ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
 
 _gsac.prefix.file.add_tyfs.add_tyexpr_k	.forcecont
