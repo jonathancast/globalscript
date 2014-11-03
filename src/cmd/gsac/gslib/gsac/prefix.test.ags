@@ -104,8 +104,6 @@ _test_file.add_definedprim_bar.s	.string	bar
 
 _test_file.add_elimprim	.closure	_test_file.add_elimprim_c
 _test_file.add_elimprim_label	.string	file.add\scan\sreturn\san\selimprim
-_test_file.add_elimprim_foo.s	.string	foo
-_test_file.add_elimprim_bar.s	.string	bar
 
 _test_file.add_impprim	.closure	_test_file.add_impprim_c
 _test_file.add_impprim_label	.string	file.add\scan\sreturn\san\simpprim
@@ -190,6 +188,16 @@ _fixtures_β.s	.string	β
 
 _fixtures_γ.v	.closure	_fixtures_γ.v_c
 _fixtures_γ.s	.string	γ
+
+_fixtures_foo.bar.v	.closure	_fixtures_foo.bar.v_c
+
+_fixtures_foo.v	.closure	_fixtures_foo.v_c
+_fixtures_foo.c	.closure	_fixtures_foo.c_c
+_fixtures_foo.c_foo.s	.string	foo
+
+_fixtures_bar.v	.closure	_fixtures_bar.v_c
+_fixtures_bar.c	.closure	_fixtures_bar.c_c
+_fixtures_bar.c_bar.s	.string	bar
 
 	.code
 
@@ -902,7 +910,6 @@ gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-gsdl.var.component.t	.tygvar
 gsdl.ags.file.t	.tygvar
 gsdl.sourcepos.t	.tygvar	-- Temp
 test.property.label	.gvar
@@ -918,11 +925,6 @@ list.nil	.gvar
 gsdl.ags.file.filetype.gsprefix	.gvar
 list.singleton	.gvar
 gsdl.ags.typeitem.tyelimprim	.gvar
-gsdl.var.basevar	.gvar
-list.:	.gvar
-gsdl.var.component.alphanum	.gvar
-_test_file.add_elimprim_foo.s	.gvar
-_test_file.add_elimprim_bar.s	.gvar
 gsdl.ags.typeitem.gskind.unlifted	.gvar
 gsac.prefix.empty	.gvar
 gsac.prefix.item.typefnitem	.gvar
@@ -930,6 +932,9 @@ gsac.prefix.typefnitem.elimprim	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
 natural.1	.gvar
 _fixtures.filenm	.gvar
+_fixtures_foo.bar.v	.gvar
+_fixtures_foo.v	.gvar
+_fixtures_bar.v	.gvar
 list.item.ty	.tylet	list.t	gsac.prefix.item.t
 list.item.≡	.apply	list.≡	gsac.prefix.item.t	|	gsac.prefix.item.≡
 list.item.fmtgs	.apply	list.fmtgs.byDefault	gsac.prefix.item.t	|	gsac.prefix.item.fmtgs
@@ -937,21 +942,12 @@ cs	.apply	list.nil	gsdl.ags.codeitem.t
 cos	.apply	list.nil	gsdl.ags.coercionitem.t
 ds	.apply	list.nil	gsdl.ags.dataitem.t
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
-foo.c	.apply	gsdl.var.component.alphanum	|	_test_file.add_elimprim_foo.s
-bar.c	.apply	gsdl.var.component.alphanum	|	_test_file.add_elimprim_bar.s
-v.cs1	.apply	list.singleton	gsdl.var.component.t	|	bar.c
-v.cs	.apply	list.:	gsdl.var.component.t	|	foo.c	v.cs1
-v	.apply	gsdl.var.basevar	|	v.cs
-foo.cs	.apply	list.singleton	gsdl.var.component.t	|	foo.c
-foo	.apply	gsdl.var.basevar	|	foo.cs
-bar.cs	.apply	list.singleton	gsdl.var.component.t	|	bar.c
-bar	.apply	gsdl.var.basevar	|	bar.cs
-ti	.apply	gsdl.ags.typeitem.tyelimprim	|	pos	v	foo	bar	gsdl.ags.typeitem.gskind.unlifted
+ti	.apply	gsdl.ags.typeitem.tyelimprim	|	pos	_fixtures_foo.bar.v	_fixtures_foo.v	_fixtures_bar.v	gsdl.ags.typeitem.gskind.unlifted
 tys	.apply	list.singleton	gsdl.ags.typeitem.t	|	ti
 inprfx	.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsprefix	typesection	tys	|	gsdl.ags.file.t
 pr	.apply	gsac.prefix.file.add	|	inprfx	gsac.prefix.empty
 actual	.apply	gsac.prefix.items	|	pr
-tyfn	.apply	gsac.prefix.typefnitem.elimprim	|	pos	v	foo	bar	gsdl.cgs.gskind.unlifted
+tyfn	.apply	gsac.prefix.typefnitem.elimprim	|	pos	_fixtures_foo.bar.v	_fixtures_foo.v	_fixtures_bar.v	gsdl.cgs.gskind.unlifted
 expected.0	.apply	gsac.prefix.item.typefnitem	|	tyfn
 expected	.apply	list.singleton	gsac.prefix.item.t	|	expected.0
 test	.apply	test.assert.eq	list.item.ty	|	list.item.≡	list.item.fmtgs	actual	expected
@@ -1423,25 +1419,13 @@ either.t.out	.cogvar
 gsac.prefix.typecheck	.gvar
 gsdl.cgs.typeenv.empty	.gvar
 gsac.prefix.typefnitem.elimprim.insert	.gvar
-gsdl.var.basevar	.gvar
-list.:	.gvar
-gsdl.var.component.alphanum	.gvar
-_test.typecheck_elimprim_test_foo.s	.gvar
-list.singleton	.gvar
-_test.typecheck_elimprim_test_bar.s	.gvar
+_fixtures_foo.bar.v	.gvar
+_fixtures_foo.v	.gvar
+_fixtures_bar.v	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
 gsac.prefix.empty	.gvar
 pos	.undefined	gsdl.sourcepos.t
-foo.c	.apply	gsdl.var.component.alphanum	|	_test.typecheck_elimprim_test_foo.s
-bar.c	.apply	gsdl.var.component.alphanum	|	_test.typecheck_elimprim_test_bar.s
-v.cs1	.apply	list.singleton	gsdl.var.component.t	|	bar.c
-v.cs	.apply	list.:	gsdl.var.component.t	|	foo.c	v.cs1
-v	.apply	gsdl.var.basevar	|	v.cs
-foo.cs	.apply	list.singleton	gsdl.var.component.t	|	foo.c
-foo	.apply	gsdl.var.basevar	|	foo.cs
-bar.cs	.apply	list.singleton	gsdl.var.component.t	|	bar.c
-bar	.apply	gsdl.var.basevar	|	bar.cs
-pr	.apply	gsac.prefix.typefnitem.elimprim.insert	|	pos	v	foo	bar	gsdl.cgs.gskind.unlifted	gsac.prefix.empty
+pr	.apply	gsac.prefix.typefnitem.elimprim.insert	|	pos	_fixtures_foo.bar.v	_fixtures_foo.v	_fixtures_bar.v	gsdl.cgs.gskind.unlifted	gsac.prefix.empty
 	.force	_test.typecheck_elimprim_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
 	.app	gsdl.cgs.typeenv.empty	pr
@@ -1457,7 +1441,7 @@ test.property.t	.tygvar	-- Temp
 _test.typecheck_elimprim_test_right_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.typeenv.typeexpansion.get	.gvar
-v	.fv	gsdl.var.t
+_fixtures_foo.bar.v	.gvar
 e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
 	.analyze	e0	left	right
 		.case	left
@@ -1467,7 +1451,7 @@ err		.fkarg	0	string.t
 env		.fkarg	0	gsdl.cgs.typeenv.t
 			.force	_test.typecheck_elimprim_test_right_k
 			.coerce	maybe.t.out	gsdl.cgs.typeenv.typeexpansion.t
-			.app	v	env
+			.app	_fixtures_foo.bar.v	env
 			.enter	gsdl.cgs.typeenv.typeexpansion.get
 
 _test.typecheck_elimprim_test_right_k	.forcecont
@@ -2014,6 +1998,48 @@ c0	.apply	gsdl.var.component.alphanum	|	_fixtures_γ.s
 cs	.apply	list.singleton	gsdl.var.component.t	|	c0
 	.app	cs
 	.enter	gsdl.var.basevar
+
+_fixtures_foo.bar.v_c	.expr
+gsdl.var.component.t	.tygvar
+gsdl.var.basevar	.gvar
+list.:	.gvar
+_fixtures_foo.c	.gvar
+list.singleton	.gvar
+_fixtures_bar.c	.gvar
+cs1	.apply	list.singleton	gsdl.var.component.t	|	_fixtures_bar.c
+cs	.apply	list.:	gsdl.var.component.t	|	_fixtures_foo.c	cs1
+	.app	cs
+	.enter	gsdl.var.basevar
+
+_fixtures_foo.v_c	.expr
+gsdl.var.component.t	.tygvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+_fixtures_foo.c	.gvar
+cs	.apply	list.singleton	gsdl.var.component.t	|	_fixtures_foo.c
+	.app	cs
+	.enter	gsdl.var.basevar
+
+_fixtures_foo.c_c	.expr
+gsdl.var.component.alphanum	.gvar
+_fixtures_foo.c_foo.s	.gvar
+	.app	_fixtures_foo.c_foo.s
+	.enter	gsdl.var.component.alphanum
+
+_fixtures_bar.v_c	.expr
+gsdl.var.component.t	.tygvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+_fixtures_bar.c	.gvar
+cs	.apply	list.singleton	gsdl.var.component.t	|	_fixtures_bar.c
+	.app	cs
+	.enter	gsdl.var.basevar
+
+_fixtures_bar.c_c	.expr
+gsdl.var.component.alphanum	.gvar
+_fixtures_bar.c_bar.s	.gvar
+	.app	_fixtures_bar.c_bar.s
+	.enter	gsdl.var.component.alphanum
 
 	.type
 
