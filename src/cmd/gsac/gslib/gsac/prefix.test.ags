@@ -113,7 +113,7 @@ _test_file.add_impprim_bar.s	.string	bar
 _test.typecheck	.closure	_test.typecheck_c
 _test.typecheck_label	.string	prefix.typecheck
 
-_tests.typecheck	.list	test.property.t	_test.typecheck_gsabstype.kind	_test.typecheck_gsabstype.defn	_test.typecheck_gsabstype.tylambda.defn	_test.typecheck_gsabstype.tylet.defn	_test.typecheck_elimprim	_test.typecheck_tyexpr.tyforall	_test.typecheck_tyexpr.tylet
+_tests.typecheck	.list	test.property.t	_test.typecheck_gsabstype.kind	_test.typecheck_gsabstype.defn	_test.typecheck_gsabstype.tylambda.defn	_test.typecheck_gsabstype.tylet.defn	_test.typecheck_elimprim	_test.typecheck_intrprim	_test.typecheck_tyexpr.tyforall	_test.typecheck_tyexpr.tylet
 
 _test.typecheck_gsabstype.kind	.closure	_test.typecheck_gsabstype.kind_c
 _test.typecheck_gsabstype.kind_label	.string	prefix.typecheck\scan\sreturn\skinds
@@ -139,6 +139,9 @@ _test.typecheck_elimprim	.closure	_test.typecheck_elimprim_c
 _test.typecheck_elimprim_label	.string	prefix.typecheck\scan\sreturn\selimprim\sexpansions
 _test.typecheck_elimprim_test_foo.s	.string	foo
 _test.typecheck_elimprim_test_bar.s	.string	bar
+
+_test.typecheck_intrprim	.closure	_test.typecheck_intrprim_c
+_test.typecheck_intrprim_label	.string	prefix.typecheck\scan\sreturn\sintrprim\sexpansions
 
 _test.typecheck_tyexpr.tyforall	.closure	_test.typecheck_tyexpr.tyforall_c
 _test.typecheck_tyexpr.tyforall_label	.string	prefix.typecheck\shandles\s.tyforalls\sin\s.tyexprs\scorrectly
@@ -1455,6 +1458,75 @@ env		.fkarg	0	gsdl.cgs.typeenv.t
 			.enter	gsdl.cgs.typeenv.typeexpansion.get
 
 _test.typecheck_elimprim_test_right_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+test.property.t	.tygvar	-- Temp
+test.true	.gvar
+mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
+	.analyze	mb0	just	nothing
+		.case	just
+exp		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
+			.enter	test.true
+		.case	nothing
+			.undef	test.property.t
+
+-- §subsection §gs{prefix.typecheck} can return intrprim expansions
+
+_test.typecheck_intrprim_c	.expr
+_test.typecheck_intrprim_test_c	.subcode
+test.property.label	.gvar
+_test.typecheck_intrprim_label	.gvar
+test	.closure	_test.typecheck_intrprim_test_c
+	.app	_test.typecheck_intrprim_label	test
+	.enter	test.property.label
+
+_test.typecheck_intrprim_test_c	.expr
+gsdl.var.component.t	.tygvar
+
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.sourcepos.t	.tygvar	-- Temp
+_test.typecheck_intrprim_test_k	.subcode
+either.t.out	.cogvar
+gsac.prefix.typecheck	.gvar
+gsdl.cgs.typeenv.empty	.gvar
+gsac.prefix.typefnitem.intrprim.insert	.gvar
+_fixtures_foo.bar.v	.gvar
+_fixtures_foo.v	.gvar
+_fixtures_bar.v	.gvar
+gsdl.cgs.gskind.unlifted	.gvar
+gsac.prefix.empty	.gvar
+pos	.undefined	gsdl.sourcepos.t
+pr	.apply	gsac.prefix.typefnitem.intrprim.insert	|	pos	_fixtures_foo.bar.v	_fixtures_foo.v	_fixtures_bar.v	gsdl.cgs.gskind.unlifted	gsac.prefix.empty
+	.force	_test.typecheck_intrprim_test_k
+	.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
+	.app	gsdl.cgs.typeenv.empty	pr
+	.enter	gsac.prefix.typecheck
+
+_test.typecheck_intrprim_test_k	.forcecont
+gsdl.var.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+test.property.t	.tygvar	-- Temp
+_test.typecheck_intrprim_test_right_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.get	.gvar
+_fixtures_foo.bar.v	.gvar
+e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	test.property.t
+		.case	right
+env		.fkarg	0	gsdl.cgs.typeenv.t
+			.force	_test.typecheck_intrprim_test_right_k
+			.coerce	maybe.t.out	gsdl.cgs.typeenv.typeexpansion.t
+			.app	_fixtures_foo.bar.v	env
+			.enter	gsdl.cgs.typeenv.typeexpansion.get
+
+_test.typecheck_intrprim_test_right_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 test.property.t	.tygvar	-- Temp
