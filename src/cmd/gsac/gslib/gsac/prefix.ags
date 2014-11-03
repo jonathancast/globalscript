@@ -1862,9 +1862,12 @@ gsdl.ags.typeitem.constr.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 gsdl.cgs.gstype.constr.t	.tygvar	-- Temp
+either.right	.gvar
 env	.larg	gsdl.cgs.typeenv.t
 c	.larg	gsdl.ags.typeitem.constr.t
-	.undef	either.t	string.t	gsdl.cgs.gstype.constr.t
+c1	.undefined	gsdl.cgs.gstype.constr.t
+	.app	c1
+	.enter	either.right	string.t	gsdl.cgs.gstype.constr.t
 
 -- §section §gs{gsac.prefix.typeenv.gstype.get}
 
