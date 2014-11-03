@@ -57,6 +57,8 @@ gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
 gsdl.cgs.gstype.field.≡	.closure	_gsdl.cgs.gstype.field.≡_c
 
+gsdl.cgs.gstype.constr.≡	.closure	_gsdl.cgs.gstype.constr.≡_c
+
 	.code
 
 -- §section §gs{gsdl.cgs.gstype.parser}
@@ -1034,6 +1036,15 @@ gsdl.cgs.gstype.field.t	.tygvar
 bool.t	.tygvar	-- Temp
 f0	.larg	gsdl.cgs.gstype.field.t
 f1	.larg	gsdl.cgs.gstype.field.t
+	.undef	bool.t
+
+-- §section §gs{gsdl.cgs.gstype.constr.≡}
+
+_gsdl.cgs.gstype.constr.≡_c	.expr
+gsdl.cgs.gstype.constr.t	.tygvar
+bool.t	.tygvar	-- Temp
+c0	.larg	gsdl.cgs.gstype.constr.t
+c1	.larg	gsdl.cgs.gstype.constr.t
 	.undef	bool.t
 
 	.type
