@@ -171,7 +171,7 @@ y0		.fkarg	0	β
 _either.mapM_:_right_k	.forcecont
 either.prim.u	.tygvar
 list.t	.tygvar
-either.t	.tygvar	-- Temp
+either.left	.gvar
 either.right	.gvar
 list.:	.gvar
 e	.tyfv	*
@@ -182,7 +182,8 @@ e0	.karg	either.prim.u	e	list.β.ty
 	.analyze	e0	left	right
 		.case	left
 e		.fkarg	0	e
-			.undef	either.t	e	list.β.ty
+			.app	e
+			.enter	either.left	e	list.β.ty
 		.case	right
 ys1		.fkarg	0	list.t	β
 ys			.apply	list.:	β	|	y0	ys1
