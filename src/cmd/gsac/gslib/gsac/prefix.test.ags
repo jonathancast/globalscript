@@ -158,13 +158,16 @@ _test.typecheck_tyexpr.tylet_test_right_nothing_failed.s	.string	typeexpansion.g
 _test.upconvert	.closure	_test.upconvert_c
 _test.upconvert_label	.string	gstype.upconvert
 
-_tests.upconvert	.list	test.property.t	_test.upconvert_product	_test.upconvert_ubproduct	_test.upconvert_lift	_test.upconvert_fun	_test.upconvert_constr
+_tests.upconvert	.list	test.property.t	_test.upconvert_product	_test.upconvert_ubproduct	_test.upconvert_ubsum	_test.upconvert_lift	_test.upconvert_fun	_test.upconvert_constr
 
 _test.upconvert_product	.closure	_test.upconvert_product_c
 _test.upconvert_product_label	.string	gstype.upconvert\s(product\s_)
 
 _test.upconvert_ubproduct	.closure	_test.upconvert_ubproduct_c
 _test.upconvert_ubproduct_label	.string	gstype.upconvert\s(ubproduct\s_)
+
+_test.upconvert_ubsum	.closure	_test.upconvert_ubsum_c
+_test.upconvert_ubsum_label	.string	gstype.upconvert\s(ubsum\s_)
 
 _test.upconvert_lift	.closure	_test.upconvert_lift_c
 _test.upconvert_lift_label	.string	gstype.upconvert\s(lift\s_)
@@ -1889,6 +1892,58 @@ err		.fkarg	0	string.t
 ctya		.fkarg	0	gsdl.cgs.gstype.t
 ctye.fs			.apply	list.nil	gsdl.cgs.gstype.field.t
 ctye			.apply	gsdl.cgs.gstype.ubproduct	|	ctye.fs
+			.app	gsdl.cgs.gstype.≡	gsdl.cgs.gstype.fmtgs	ctya	ctye
+			.enter	test.assert.eq	gsdl.cgs.gstype.t
+
+-- §subsection §gs{gstype.upconvert (ubsum _)}
+
+_test.upconvert_ubsum_c	.expr
+_test.upconvert_ubsum_test_c	.subcode
+test.property.label	.gvar
+_test.upconvert_ubsum_label	.gvar
+test	.closure	_test.upconvert_ubsum_test_c
+	.app	_test.upconvert_ubsum_label	test
+	.enter	test.property.label
+
+_test.upconvert_ubsum_test_c	.expr
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.ags.typeitem.field.t	.tygvar
+gsdl.sourcepos.t	.tygvar	-- Temp
+_test.upconvert_ubsum_test_k	.subcode
+either.t.out	.cogvar
+gsac.prefix.gstype.upconvert	.gvar
+gsdl.cgs.typeenv.empty	.gvar
+gsdl.ags.typeitem.expr.ubsum	.gvar
+list.nil	.gvar
+pos	.undefined	gsdl.sourcepos.t
+fs	.apply	list.nil	gsdl.ags.typeitem.field.t
+ty	.apply	gsdl.ags.typeitem.expr.ubsum	|	fs
+	.force	_test.upconvert_ubsum_test_k
+	.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
+	.app	pos	gsdl.cgs.typeenv.empty	ty
+	.enter	gsac.prefix.gstype.upconvert
+
+_test.upconvert_ubsum_test_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+test.property.t	.tygvar	-- Temp
+test.assert.eq	.gvar
+gsdl.cgs.gstype.≡	.gvar
+gsdl.cgs.gstype.fmtgs	.gvar
+gsdl.cgs.gstype.ubsum	.gvar
+list.nil	.gvar
+e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	test.property.t
+		.case	right
+ctya		.fkarg	0	gsdl.cgs.gstype.t
+ctye.fs			.apply	list.nil	gsdl.cgs.gstype.constr.t
+ctye			.apply	gsdl.cgs.gstype.ubsum	|	ctye.fs
 			.app	gsdl.cgs.gstype.≡	gsdl.cgs.gstype.fmtgs	ctya	ctye
 			.enter	test.assert.eq	gsdl.cgs.gstype.t
 

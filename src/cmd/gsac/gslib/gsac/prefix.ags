@@ -1600,6 +1600,7 @@ _gsac.prefix.gstype.upconvert_lift_k	.subcode
 _gsac.prefix.gstype.upconvert_product_k	.subcode
 _gsac.prefix.gstype.upconvert_sum_k	.subcode
 _gsac.prefix.gstype.upconvert_ubproduct_k	.subcode
+_gsac.prefix.gstype.upconvert_ubsum_k	.subcode
 maybe.t.out	.cogvar
 either.t.out	.cogvar
 gsac.prefix.typeapp.upconvert	.gvar
@@ -1661,7 +1662,11 @@ field.upconvert			.apply	gsac.prefix.gstype.field.upconvert	|	env
 			.enter	either.mapM	string.t	gsdl.ags.typeitem.field.t	gsdl.cgs.gstype.field.t
 		.case	ubsum
 cs		.fkarg	0	list.t	gsdl.ags.typeitem.constr.t
-			.undef	either.t	string.t	gsdl.cgs.gstype.t
+constr.upconvert			.apply	gsac.prefix.gstype.constr.upconvert	|	env
+			.force	_gsac.prefix.gstype.upconvert_ubsum_k
+			.coerce	either.t.out	string.t	list.cgs.constr.ty
+			.app	constr.upconvert	cs
+			.enter	either.mapM	string.t	gsdl.ags.typeitem.constr.t	gsdl.cgs.gstype.constr.t
 	-- > :: either.t	string.t	gsdl.cgs.gstype.t
 
 _gsac.prefix.gstype.upconvert_fun_k	.forcecont
@@ -1793,6 +1798,27 @@ err		.fkarg	0	string.t
 		.case	right
 fs1		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 ty1			.apply	gsdl.cgs.gstype.ubproduct	|	fs1
+			.app	ty1
+			.enter	either.right	string.t	gsdl.cgs.gstype.t
+
+_gsac.prefix.gstype.upconvert_ubsum_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	-- Temp
+either.right	.gvar
+gsdl.cgs.gstype.ubsum	.gvar
+list.cgs.constr.ty	.tylet	list.t	gsdl.cgs.gstype.constr.t
+e0	.karg	either.prim.u	string.t	list.cgs.constr.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.t
+		.case	right
+cs1		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+ty1			.apply	gsdl.cgs.gstype.ubsum	|	cs1
 			.app	ty1
 			.enter	either.right	string.t	gsdl.cgs.gstype.t
 
