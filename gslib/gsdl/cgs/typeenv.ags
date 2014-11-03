@@ -17,6 +17,7 @@ gsdl.cgs.typeenv.empty	.closure	_gsdl.cgs.typeenv.empty_c
 gsdl.cgs.typeenv.gsabstypenm.insert	.closure	_gsdl.cgs.typeenv.gsabstypenm.insert_c
 gsdl.cgs.typeenv.definedprim.insert	.closure	_gsdl.cgs.typeenv.definedprim.insert_c
 gsdl.cgs.typeenv.elimprim.insert	.closure	_gsdl.cgs.typeenv.elimprim.insert_c
+gsdl.cgs.typeenv.intrprim.insert	.closure	_gsdl.cgs.typeenv.intrprim.insert_c
 gsdl.cgs.typeenv.impprim.insert	.closure	_gsdl.cgs.typeenv.impprim.insert_c
 gsdl.cgs.typeenv.tyvar.insert	.closure	_gsdl.cgs.typeenv.tyvar.insert_c
 gsdl.cgs.typeenv.typefun.insert	.closure	_gsdl.cgs.typeenv.typefun.insert_c
@@ -252,6 +253,49 @@ kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v
 tyds	.field	typedefinitions	env0
 nil	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 ety	.apply	gsdl.cgs.gstype.elimprim	|	ps	pn	ki
+e	.lrecord	0	nil	1	ety	|	gsdl.cgs.typeenv.typeexpansion.t
+es0	.field	typeexpansions	env0
+es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
+r	.record	kinds	kis1	typedefinitions	tyds	typeexpansions	es1	|	gsdl.cgs.typeenv.u
+	.lift
+	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.intrprim.insert}
+
+_gsdl.cgs.typeenv.intrprim.insert_c	.expr
+gsdl.var.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.intrprim.insert_k	.subcode
+v	.larg	gsdl.var.t
+ps	.larg	gsdl.var.t
+pn	.larg	gsdl.var.t
+ki	.larg	gsdl.cgs.gskind.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.intrprim.insert_k
+	.enter	env
+
+_gsdl.cgs.typeenv.intrprim.insert_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
+list.nil	.gvar
+gsdl.cgs.gstype.intrprim	.gvar
+v	.fv	gsdl.var.t
+ps	.fv	gsdl.var.t
+pn	.fv	gsdl.var.t
+ki	.fv	gsdl.cgs.gskind.t
+env0	.karg	gsdl.cgs.typeenv.u
+kis0	.field	kinds	env0
+kis1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	kis0
+tyds	.field	typedefinitions	env0
+nil	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+ety	.apply	gsdl.cgs.gstype.intrprim	|	ps	pn	ki
 e	.lrecord	0	nil	1	ety	|	gsdl.cgs.typeenv.typeexpansion.t
 es0	.field	typeexpansions	env0
 es1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	v	e	es0
