@@ -89,7 +89,7 @@ list.field.res.ty	.tylet	list.t	_gsac.gstype.field.annotate_res.ty
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	var
+	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.cgs.gskind.t
@@ -152,6 +152,9 @@ cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	ubproduct
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
+		.case	ubsum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	var
 v		.fkarg	0	gsdl.var.t
@@ -903,7 +906,7 @@ tye0.l	.lifted	tye0
 tye0.cl	.cast	tye0.l	gsdl.cgs.gstype.t.in
 	.danalyze	tya0	pos
 		.default
-			.analyze	tye0	abstype	app	definedprim	elimprim	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	var
+			.analyze	tye0	abstype	app	definedprim	elimprim	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
 				.case	abstype
 tyce				.fkarg	0	gsdl.var.t
 tykie				.fkarg	1	gsdl.cgs.gskind.t
@@ -1028,6 +1031,9 @@ cse				.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 					.undef	either.t	string.t	record.empty
 				.case	ubproduct
 fs				.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+					.undef	either.t	string.t	record.empty
+				.case	ubsum
+cs				.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 					.undef	either.t	string.t	record.empty
 				.case	var
 ve				.fkarg	0	gsdl.var.t
@@ -1297,7 +1303,7 @@ ty0	.larg	gsdl.cgs.gstype.prim.u
 em	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 gvs	.larg	list.t	gsdl.var.t
-	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	var
+	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.cgs.gskind.t
@@ -1369,6 +1375,9 @@ cs.s			.apply	list.sort	gsdl.cgs.gstype.constr.t	|	gsac.gstype.constr.compare	cs
 			.enter	gsac.gstype.compile.mapM	gsdl.cgs.gstype.constr.t	_gsac.gstype.constr.compile_res.ty
 		.case	ubproduct
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+		.case	ubsum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	var
 v		.fkarg	0	gsdl.var.t
