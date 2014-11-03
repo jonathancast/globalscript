@@ -1248,7 +1248,11 @@ kie0		.fkarg	1	gsdl.ags.typeitem.gskind.t
 		.case	unknown
 			.undef	bool.t
 		.case	unlifted
-			.undef	bool.t
+			.danalyze	ki1.0	unlifted
+				.default
+					.undef	bool.t
+				.case	unlifted
+					.enter	bool.true
 	-- > :: bool.t
 
 -- §section §gs{gsdl.ags.typeitem.gskind.fmtgs}
