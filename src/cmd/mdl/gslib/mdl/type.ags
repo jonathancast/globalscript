@@ -23,6 +23,7 @@ _mdl.type.parser_value_value.re	.regex	value
 
 mdl.type.decl.interpreted.stackframe	.closure	_mdl.type.decl.interpreted.stackframe_c
 mdl.type.decl.api.prim.blocking	.closure	_mdl.type.decl.api.prim.blocking_c
+mdl.type.decl.lprim.blocking	.closure	_mdl.type.decl.lprim.blocking_c
 
 mdl.type.bco	.closure	_mdl.type.bco_c
 mdl.type.gsvalue	.closure	_mdl.type.gsvalue_c
@@ -358,6 +359,19 @@ res	.constr	mdl.type.decl.prim.u	api.prim.blocking	0	l	1	fs
 	.lift
 	.yield	res
 
+_mdl.type.decl.lprim.blocking_c	.expr
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+mdl.type.decl.prim.u	.tygvar
+mdl.type.decl.t.in	.cogvar
+l	.larg	string.t
+fs	.larg	list.t	mdl.type.field.decl.t
+res	.constr	mdl.type.decl.prim.u	lprim.blocking	0	l	1	fs
+	.coerce	mdl.type.decl.t.in
+	.lift
+	.yield	res
+
 -- §section §gs{mdl.type.t} constructors
 
 _mdl.type.bco_c	.expr
@@ -408,7 +422,8 @@ mdl.type.decl.prim.u	.tygvar
 mdl.type.decl.prim.u	.tyexpr
 _mdl.type.decl.prim.u_api.prim.blocking_ty	.tygvar
 _mdl.type.decl.prim.u_interpreted.stackframe_ty	.tygvar
-	.tysum	api.prim.blocking	_mdl.type.decl.prim.u_api.prim.blocking_ty	interpreted.stackframe	_mdl.type.decl.prim.u_interpreted.stackframe_ty
+_mdl.type.decl.prim.u_lprim.blocking_ty	.tygvar
+	.tysum	api.prim.blocking	_mdl.type.decl.prim.u_api.prim.blocking_ty	interpreted.stackframe	_mdl.type.decl.prim.u_interpreted.stackframe_ty	lprim.blocking	_mdl.type.decl.prim.u_lprim.blocking_ty
 
 _mdl.type.decl.prim.u_api.prim.blocking_ty	.tyexpr
 string.t	.tygvar
@@ -418,6 +433,13 @@ list.field.ty	.tylet	list.t	mdl.type.field.decl.t
 	.tyubproduct	0	string.t	1	list.field.ty
 
 _mdl.type.decl.prim.u_interpreted.stackframe_ty	.tyexpr
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+list.field.ty	.tylet	list.t	mdl.type.field.decl.t
+	.tyubproduct	0	string.t	1	list.field.ty
+
+_mdl.type.decl.prim.u_lprim.blocking_ty	.tyexpr
 string.t	.tygvar
 list.t	.tygvar
 mdl.type.field.decl.t	.tygvar

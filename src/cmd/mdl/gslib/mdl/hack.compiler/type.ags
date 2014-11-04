@@ -257,7 +257,7 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s2	.gvar
 ty0	.karg	mdl.type.decl.prim.u
-	.analyze	ty0	api.prim.blocking	interpreted.stackframe
+	.analyze	ty0	api.prim.blocking	interpreted.stackframe	lprim.blocking
 		.case	api.prim.blocking
 id		.fkarg	0	string.t
 fs		.fkarg	1	list.t	mdl.type.field.decl.t
@@ -451,6 +451,10 @@ s2			.apply	list.<>	rune.t	|	mdl.hack.compile.type.auto.generated.s	s3
 s1			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s2
 			.app	mdl.hack.compiler.type.header.s	s1
 			.enter	list.<>	rune.t
+		.case	lprim.blocking
+id		.fkarg	0	string.t
+fs		.fkarg	1	list.t	mdl.type.field.decl.t
+			.undef	string.t
 	-- > :: string.t
 
 _mdl.hack.compiler.type.decl.compile_api.prim.blocking_field.f_c	.expr
