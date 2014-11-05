@@ -68,6 +68,10 @@ ok_grep_errors '-- a .tylet (of  type synonym) must have enough arguments --' 'u
 ok_grep_errors '-- incorrect kind signatures on .tyexprs --' 'tyexpr-wrong-kind-sig.ags:12: Incorrect kind: Expected ''\*''; got ''u''' ./$O.test-gsi tyexpr-wrong-kind-sig.ags
 ok_diff_fail '-- kind signatures on .tyexprs --' ./$O.test-gsi tyexpr-kind-sig.ags
 
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
+
 ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
 ok_grep_errors '-- a let can be mis-typed --' './test-fixtures/mistyped-let.ags:7: I don''t think' ./$O.test-gsi mistyped-let.ags
 ok_diff_fail '-- let with undefined FV --' ./$O.test-gsi undef-free-var.ags
@@ -75,10 +79,6 @@ ok_diff_fail '-- let with undefined FV --' ./$O.test-gsi undef-free-var.ags
 ok_diff_fail '-- alloc undefined with .undefined --' ./$O.test-gsi undef-op.ags
 
 ok_diff '-- alloc application --' ./$O.test-gsi apply-op.ags
-
-echo '# Version 0.6 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_diff_fail '-- lifted generators --' ./$O.test-gsi lifted-gen.ags
 
