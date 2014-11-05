@@ -169,9 +169,11 @@ string.t	.tygvar
 list.t	.tygvar
 mdl.type.field.decl.t	.tygvar
 mdl.type.decl.t	.tygvar
+mdl.type.decl.lprim.blocking	.gvar
 nm	.larg	string.t
 fs	.larg	list.t	mdl.type.field.decl.t
-	.undef	mdl.type.decl.t
+	.app	nm	fs
+	.enter	mdl.type.decl.lprim.blocking
 
 -- §section §gs{mdl.type.field.decl.parser}
 
