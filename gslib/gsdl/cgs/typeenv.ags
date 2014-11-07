@@ -27,6 +27,7 @@ gsdl.cgs.typeenv.gsabstypedefn.insert	.closure	_gsdl.cgs.typeenv.gsabstypedefn.i
 gsdl.cgs.typeenv.var.insert	.closure	_gsdl.cgs.typeenv.var.insert_c
 
 gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
+_gsdl.cgs.typeenv.overlay_w	.closure	_gsdl.cgs.typeenv.overlay_w_c
 
 gsdl.cgs.typeenv.typeexpansion.app	.closure	_gsdl.cgs.typeenv.typeexpansion.app_c
 
@@ -548,14 +549,22 @@ env0.0	.karg	gsdl.cgs.typeenv.u
 
 _gsdl.cgs.typeenv.overlay_k1	.forcecont
 gsdl.cgs.typeenv.u	.tygvar
+_gsdl.cgs.typeenv.overlay_w	.gvar
+env0.0	.fv	gsdl.cgs.typeenv.u
+env1.0	.karg	gsdl.cgs.typeenv.u
+	.app	env0.0	env1.0
+	.yield	_gsdl.cgs.typeenv.overlay_w
+
+_gsdl.cgs.typeenv.overlay_w_c	.expr
+gsdl.cgs.typeenv.u	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 ordered.map.∪	.gvar
 gsdl.var.compare	.gvar
-env0.0	.fv	gsdl.cgs.typeenv.u
-env1.0	.karg	gsdl.cgs.typeenv.u
+env0.0	.arg	gsdl.cgs.typeenv.u
+env1.0	.arg	gsdl.cgs.typeenv.u
 kis0	.field	kinds	env0.0
 kis1	.field	kinds	env1.0
 kis2	.apply	ordered.map.∪	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	kis0	kis1
