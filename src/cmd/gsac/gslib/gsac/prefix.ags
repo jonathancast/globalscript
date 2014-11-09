@@ -709,7 +709,8 @@ v		.fkarg	1	gsdl.var.t
 mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 e		.fkarg	4	gsdl.ags.typeitem.expr.t
-			.enter	ordered.set.empty	gsdl.cgs.symbol.t
+			.app	ds
+			.enter	_gsac.prefix.file.interface.freevars_decls.fvs
 		.case	tyimpprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
