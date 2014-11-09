@@ -476,7 +476,7 @@ ki		.fkarg	0	gsdl.cgs.gskind.t
 			.app	gsdl.var.compare	v	ki	kis0
 			.enter	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t
 		.case	nothing
-			.undef	ordered.map.t	gsdl.var.t	gsdl.cgs.gskind.t
+			.enter	kis0
 
 -- §section §gs{gsdl.cgs.typeenv.gsabstypedefn.insert}
 
