@@ -608,6 +608,7 @@ gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+_gsdl.cgs.typeenv.overlay_w_k2	.subcode
 ordered.map.∪	.gvar
 gsdl.var.compare	.gvar
 env0.0	.fv	gsdl.cgs.typeenv.u
@@ -616,7 +617,20 @@ tyds2	.fv	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t
 kis2	.karg	ordered.map.t	gsdl.var.t	gsdl.cgs.gskind.t
 es0	.field	typeexpansions	env0.0
 es1	.field	typeexpansions	env1.0
-es2	.apply	ordered.map.∪	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t	|	gsdl.var.compare	es0	es1
+	.strict	_gsdl.cgs.typeenv.overlay_w_k2
+	.app	gsdl.var.compare	es0	es1
+	.enter	ordered.map.∪	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
+
+_gsdl.cgs.typeenv.overlay_w_k2	.strictcont
+ordered.map.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+tyds2	.fv	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t
+kis2	.fv	ordered.map.t	gsdl.var.t	gsdl.cgs.gskind.t
+es2	.karg	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
 r	.record	kinds	kis2	typedefinitions	tyds2	typeexpansions	es2	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
