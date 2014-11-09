@@ -34,13 +34,6 @@ ok_diff_fail '-- undefined entry points (.tyextabstype in .expr type) --' ./$O.t
 
 ok_diff_fail '-- undefined entry points (cast into .tyextabstype type) --' ./$O.test-gsi undef-cast-tyextabstype.ags
 
-ok_diff '-- empty record values --' ./$O.test-gsi empty-record.ags
-ok_diff '-- empty record expressions --' ./$O.test-gsi empty-record-expr.ags
-ok_diff '-- empty lifted record expressions --' ./$O.test-gsi empty-lrecord-expr.ags
-ok_diff '-- field extractions --' ./$O.test-gsi field-extraction.ags
-ok_diff_fail '-- lazy field extractions --' ./$O.test-gsi lazy-field-extraction.ags
-ok_diff_fail '-- lazy field extraction from undefined record --' ./$O.test-gsi lazy-field-extraction-undef-record.ags
-
 ok_diff_fail '-- enter undefined polymorphic value --' ./$O.test-gsi enter-polymorphic-undef.ags
 ok_diff '-- yield polymorphic empty lambda --' ./$O.test-gsi yield-polymorphic-empty-lambda.ags
 
@@ -109,13 +102,20 @@ ok_diff '-- constructors with existential type arguments --' ./$O.test-gsi const
 ok_diff '-- string literals --' ./$O.test-gsi string-literal.ags
 ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 
+ok_diff '-- empty record values --' ./$O.test-gsi empty-record.ags
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
 
+ok_diff '-- empty records in expressions --' ./$O.test-gsi empty-record-expr.ags
+ok_diff '-- empty lifted records in expressions --' ./$O.test-gsi empty-lrecord-expr.ags
 ok_diff '-- non-empty records in expressions --' ./$O.test-gsi record-literal-gen.ags
 ok_grep_errors '-- empty records with non-empty signatures in expressions --' './test-fixtures/record-empty-non-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi record-empty-non-empty-sig.ags
 ok_grep_errors '-- non-empty records with empty signatures in expressions --' './test-fixtures/non-empty-record-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi non-empty-record-empty-sig.ags
 ok_diff '-- records with type signatures in expressions --' ./$O.test-gsi record-type-sig.ags
 ok_diff '-- records with type signatures with type arguments in expressions --' ./$O.test-gsi record-type-sig-args.ags
+
+ok_diff '-- field extractions --' ./$O.test-gsi field-extraction.ags
+ok_diff_fail '-- lazy field extractions --' ./$O.test-gsi lazy-field-extraction.ags
+ok_diff_fail '-- lazy field extraction from undefined record --' ./$O.test-gsi lazy-field-extraction-undef-record.ags
 
 ok_diff '-- natural number literals --' ./$O.test-gsi natural-literal.ags
 ok_grep_errors '-- natural number literals: letters --' './test-fixtures/natural-literal-letter.ags:12: Invalid character ''x'' in natural number literal' ./$O.test-gsi natural-literal-letter.ags
