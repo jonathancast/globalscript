@@ -104,13 +104,15 @@ ok_diff '-- runes in expressions --' ./$O.test-gsi rune-literal-in-expr.ags
 
 ok_diff '-- empty record values --' ./$O.test-gsi empty-record.ags
 ok_diff '-- non-empty records --' ./$O.test-gsi record-literal.ags
+ok_grep_errors '-- empty records with non-empty signatures --' './test-fixtures/record-empty-non-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi record-empty-non-empty-sig.ags
+ok_diff '-- records with type signatures --' ./$O.test-gsi record-type-sig.ags
 
 ok_diff '-- empty records in expressions --' ./$O.test-gsi empty-record-expr.ags
 ok_diff '-- empty lifted records in expressions --' ./$O.test-gsi empty-lrecord-expr.ags
 ok_diff '-- non-empty records in expressions --' ./$O.test-gsi record-literal-gen.ags
-ok_grep_errors '-- empty records with non-empty signatures in expressions --' './test-fixtures/record-empty-non-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi record-empty-non-empty-sig.ags
+ok_grep_errors '-- empty records with non-empty signatures in expressions --' './test-fixtures/record-empty-non-empty-sig-expr.ags:[0-9]+: I don''t think' ./$O.test-gsi record-empty-non-empty-sig-expr.ags
 ok_grep_errors '-- non-empty records with empty signatures in expressions --' './test-fixtures/non-empty-record-empty-sig.ags:[0-9]+: I don''t think' ./$O.test-gsi non-empty-record-empty-sig.ags
-ok_diff '-- records with type signatures in expressions --' ./$O.test-gsi record-type-sig.ags
+ok_diff '-- records with type signatures in expressions --' ./$O.test-gsi record-type-sig-expr.ags
 ok_diff '-- records with type signatures with type arguments in expressions --' ./$O.test-gsi record-type-sig-args.ags
 
 ok_diff '-- field extractions --' ./$O.test-gsi field-extraction.ags

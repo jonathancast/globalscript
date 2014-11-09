@@ -4,7 +4,15 @@
 
 	.data
 
-	.record	|	_record.u
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.expr
+_record.u	.tygvar
+r	.record	|	_record.u
+	.lift
+	.yield	r
 
 	.type
 

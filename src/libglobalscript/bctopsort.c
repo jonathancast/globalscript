@@ -324,12 +324,19 @@ gsbc_top_sort_subitems_of_data_item(struct gsfile_symtable *symtable, struct gsb
             gsfatal(UNIMPL("%P: Too many arguments to .closure"), item.v->pos)
         ;
     } else if (gssymceq(directive, gssymrecord, gssymdatadirective, ".record")) {
-        struct gsbc_item fieldvalue;
+        struct gsbc_item fieldvalue, type;
         int i;
 
-        for (i = 0; i < item.v->numarguments; i += 2) {
+        for (i = 0; i < item.v->numarguments && item.v->arguments[i]->type != gssymseparator; i += 2) {
             fieldvalue = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[i + 1]);
             gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, fieldvalue, pend, pc);
+        }
+        if (i < item.v->numarguments) {
+            i++;
+            for (; i < item.v->numarguments; i++) {
+                type = gssymtable_lookup(item.v->pos, symtable, item.v->arguments[i]);
+                gsbc_topsort_outgoing_edge(symtable, preorders, unassigned_items, maybe_group_items, type, pend, pc);
+            }
         }
     } else if (gssymceq(directive, gssymconstr, gssymdatadirective, ".constr")) {
         struct gsbc_item type;

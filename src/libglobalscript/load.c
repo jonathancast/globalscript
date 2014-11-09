@@ -487,9 +487,15 @@ gsparse_data_item(struct gsparse_input_pos *pos, int is_ags, gsparsedfile *parse
         if (numfields % 2)
             gsfatal("%s:%d: Odd number of arguments to .record", pos->real_filename, pos->real_lineno)
         ;
-        for (i = 0; numfields > 2 + i; i+= 2) {
+        for (i = 0; numfields > 2 + i && strcmp(fields[2+i], "|"); i += 2) {
             parsedline->arguments[i] = gsintern_string(gssymfieldlable, fields[2+i]);
             parsedline->arguments[i+1] = gsintern_string(gssymdatalable, fields[2+i+1]);
+        }
+        if (numfields > 2 + i) {
+            parsedline->arguments[i] = gsintern_string(gssymseparator, fields[2+i]);
+            i++;
+            if (numfields <= 2 + i) gsfatal("%s:%d: Missing type signature", pos->real_filename, pos->real_lineno);
+            for (; numfields > 2 + i; i++) parsedline->arguments[i++] = gsintern_string(gssymtypelable, fields[2+i]);
         }
     } else if (gssymceq(parsedline->directive, gssymconstr, gssymdatadirective, ".constr")) {
         if (numfields < 2+1)

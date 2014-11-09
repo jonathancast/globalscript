@@ -1059,9 +1059,8 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
         record = (struct gsrecord *)fields;
         record->pos = p->pos;
         record->type = gsrecord_fields;
-        fields->numfields = p->numarguments / 2;
 
-        for (j = 0; j < p->numarguments; j += 2) {
+        for (j = 0; j < p->numarguments && p->arguments[j]->type != gssymseparator; j += 2) {
             if (j > 0 && strcmp(p->arguments[j - 2]->name, p->arguments[j]->name) > 0)
                 gsfatal("%P: field %s should come after %s", p->pos, p->arguments[j - 2]->name, p->arguments[j]->name)
             ;
@@ -1073,6 +1072,7 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
                 gsfatal(UNIMPL("%P: can't find data value %y"), p->pos, p->arguments[j + 1])
             ;
         }
+        fields->numfields = j / 2;
     } else if (gssymceq(p->directive, gssymconstr, gssymdatadirective, ".constr")) {
         struct gstype_sum *sum;
         struct gsconstr *constr;

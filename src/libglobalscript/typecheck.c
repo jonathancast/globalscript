@@ -519,11 +519,29 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
     static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymclosure, gssymcast;
 
     struct gsparsedline *pdata;
+    int i;
 
     pdata = item.v;
 
     if (gssymceq(pdata->directive, gssymrecord, gssymdatadirective, ".record")) {
-        return;
+        struct gstype *type;
+
+        for (i = 0; i < pdata->numarguments && pdata->arguments[i]->type != gssymseparator; i++);
+        if (i >= pdata->numarguments) return;
+
+        i++;
+        if (i >= pdata->numarguments) gsfatal("%P: Missing type signature on .record", pdata->pos);
+        type = gssymtable_get_type(symtable, pdata->arguments[i]);
+        if (!type) gsfatal("%P: Couldn't find type %y", pdata->pos, pdata->arguments[i]);
+
+        for (i++; i < pdata->numarguments; i++) {
+            gsfatal(UNIMPL("%P: Type signature with type arguments on .record"), pdata->pos);
+        }
+        if (pdata->label)
+            gssymtable_set_data_type(symtable, pdata->label, type)
+        ; else if (pentrytype)
+            *pentrytype = type
+        ;
     } else if (
         gssymceq(pdata->directive, gssymrune, gssymdatadirective, ".rune")
         || gssymceq(pdata->directive, gssymstring, gssymdatadirective, ".string")
@@ -551,9 +569,7 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
 
         gsargcheck(pdata, 0, "type");
         type = gssymtable_get_type(symtable, pdata->arguments[0]);
-        if (!type)
-            gsfatal("%P: Couldn't find type %s", pdata->pos, pdata->arguments[0])
-        ;
+        if (!type) gsfatal("%P: Couldn't find type %y", pdata->pos, pdata->arguments[0]);
         if (pdata->label)
             gssymtable_set_data_type(symtable, pdata->label, type)
         ; else if (pentrytype)
@@ -664,7 +680,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         int numfields;
 
         numfields = 0;
-        for (j = 0; j < pdata->numarguments; j += 2) {
+        for (j = 0; j < pdata->numarguments && pdata->arguments[j]->type != gssymseparator; j += 2) {
             if (numfields >= MAX_NUM_REGISTERS)
                 gsfatal("%P: Too many fields (max 0x%x)", pdata->pos, MAX_NUM_REGISTERS)
             ;
@@ -678,11 +694,23 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
         type = gstypes_compile_productv(pdata->pos, numfields, fields);
 
-        if (pdata->label)
-            gssymtable_set_data_type(symtable, pdata->label, type)
-        ; else if (pentrytype)
-            *pentrytype = type
-        ;
+        if (j < pdata->numarguments) {
+            struct gstype *expected_type;
+
+            if (pdata->label)
+                expected_type = gssymtable_get_data_type(symtable, pdata->label)
+            ; else if (pentrytype)
+                expected_type = *pentrytype
+            ;
+            if (!expected_type) gsfatal(UNIMPL("%P: Couldn't find declared type of %s"), pdata->pos, pdata->label ? pdata->label->name : "entry point");
+            gstypes_type_check_type_fail(pdata->pos, type, expected_type);
+        } else {
+            if (pdata->label)
+                gssymtable_set_data_type(symtable, pdata->label, type)
+            ; else if (pentrytype)
+                *pentrytype = type
+            ;
+        }
     } else if (gssymceq(pdata->directive, gssymconstr, gssymdatadirective, ".constr")) {
         struct gstype *type;
         struct gstype_sum *sum;
@@ -691,9 +719,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
 
         gsargcheck(pdata, 0, "type");
         type = gssymtable_get_type(symtable, pdata->arguments[0]);
-        if (!type)
-            gsfatal("%P: Couldn't find type %s", pdata->pos, pdata->arguments[0])
-        ;
+        if (!type) gsfatal("%P: Couldn't find type %y", pdata->pos, pdata->arguments[0]);
         if (type->node != gstype_sum)
             gsfatal("%P: Type argument to .constr must be a sum type (not an abstract type)", pdata->pos)
         ;

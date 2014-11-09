@@ -4,17 +4,11 @@
 
 	.data
 
-	.closure	_ep_c
-
-	.code
-
-_ep_c	.expr
-_record.u	.tygvar
+	.record	bar	_y	foo	_x	|	_record.u
 _y	.rune	y
 _x	.rune	x
-r	.record	bar	_y	foo	_x	|	_record.u
-	.lift
-	.yield	r
+
+	.code
 
 	.type
 
