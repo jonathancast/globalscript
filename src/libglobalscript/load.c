@@ -495,7 +495,7 @@ gsparse_data_item(struct gsparse_input_pos *pos, int is_ags, gsparsedfile *parse
             parsedline->arguments[i] = gsintern_string(gssymseparator, fields[2+i]);
             i++;
             if (numfields <= 2 + i) gsfatal("%s:%d: Missing type signature", pos->real_filename, pos->real_lineno);
-            for (; numfields > 2 + i; i++) parsedline->arguments[i++] = gsintern_string(gssymtypelable, fields[2+i]);
+            for (; numfields > 2 + i; i++) parsedline->arguments[i] = gsintern_string(gssymtypelable, fields[2+i]);
         }
     } else if (gssymceq(parsedline->directive, gssymconstr, gssymdatadirective, ".constr")) {
         if (numfields < 2+1)
