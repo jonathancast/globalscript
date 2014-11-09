@@ -948,7 +948,6 @@ maybe.t	.tygvar
 ordered.map.t	.tygvar	-- Temp
 gsac.prefix.typefnitem.t	.tygvar	-- Temp
 gsdl.cgs.gskind.t	.tygvar	-- Temp
-_gsac.prefix.file.add_tyfs.add_tyexpr_k	.subcode
 maybe.t.out	.cogvar
 ordered.map.insert	.gvar
 gsdl.var.compare	.gvar
@@ -956,6 +955,7 @@ gsac.prefix.typefnitem.gsabstypenm	.gvar
 gsac.prefix.gskind.upconvert	.gvar
 gsac.prefix.typefnitem.definedprim	.gvar
 gsac.prefix.typefnitem.elimprim	.gvar
+gsac.prefix.typefnitem.typefun	.gvar
 gsac.prefix.typefnitem.impprim	.gvar
 gsac.prefix.typefnitem.intrprim	.gvar
 ts0	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
@@ -997,9 +997,9 @@ v		.fkarg	1	gsdl.var.t
 mbki		.fkarg	2	maybe.t	gsdl.ags.typeitem.gskind.t
 ds		.fkarg	3	gsdl.ags.typeitem.decls.t
 dfn		.fkarg	4	gsdl.ags.typeitem.expr.t
-			.force	_gsac.prefix.file.add_tyfs.add_tyexpr_k
-			.coerce	maybe.t.out	gsdl.ags.typeitem.gskind.t
-			.enter	mbki
+ti			.apply	gsac.prefix.typefnitem.typefun	|	pos	v	mbki	ds	dfn
+			.app	gsdl.var.compare	v	ti	ts0
+			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typefnitem.t
 		.case	tyimpprim
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -1020,35 +1020,6 @@ ti			.apply	gsac.prefix.typefnitem.intrprim	|	pos	v	ps	pn	ki
 			.app	gsdl.var.compare	v	ti	ts0
 			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typefnitem.t
 	-- > ts0 :: ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
-
-_gsac.prefix.file.add_tyfs.add_tyexpr_k	.forcecont
-ordered.map.t	.tygvar
-gsdl.var.t	.tygvar
-gsac.prefix.typefnitem.t	.tygvar
-gsdl.sourcepos.t	.tygvar
-gsdl.ags.typeitem.decls.t	.tygvar
-gsdl.ags.typeitem.expr.t	.tygvar
-maybe.prim.u	.tygvar
-gsdl.ags.typeitem.gskind.t	.tygvar
-ordered.map.insert	.gvar
-gsdl.var.compare	.gvar
-gsac.prefix.typefnitem.typefun	.gvar
-maybe.just	.gvar
-ts0	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.typefnitem.t
-pos	.fv	gsdl.sourcepos.t
-v	.fv	gsdl.var.t
-ds	.fv	gsdl.ags.typeitem.decls.t
-dfn	.fv	gsdl.ags.typeitem.expr.t
-mbki0	.karg	maybe.prim.u	gsdl.ags.typeitem.gskind.t
-	.analyze	mbki0	just	nothing
-		.case	just
-ki		.fkarg	0	gsdl.ags.typeitem.gskind.t
-just.ki			.apply	maybe.just	gsdl.ags.typeitem.gskind.t	|	ki
-ti			.apply	gsac.prefix.typefnitem.typefun	|	pos	v	just.ki	ds	dfn
-			.app	gsdl.var.compare	v	ti	ts0
-			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.typefnitem.t
-		.case	nothing
-			.enter	ts0	-- TODO
 
 -- §section §gs{gsac.prefix.typecheck}
 
