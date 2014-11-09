@@ -1375,7 +1375,7 @@ again:
             return;
         case gstyenosys:
         case gstyeoothreads:
-            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "%r");
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "evalling %P: out of threads", thread->cureval->dest->pos);
             return;
         default:
             ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".enter (st = %d)", st);
