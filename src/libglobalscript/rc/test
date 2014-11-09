@@ -58,6 +58,10 @@ ok_diff_fail '-- applying lambdas with undefined bodies --' ./$O.test-gsi apply-
 ok_diff '-- partial application of lambda with undefined body --' ./$O.test-gsi partial-apply-empty-lambda.ags
 ok_diff_fail '-- over-saturated application of lambda with undefined body --' ./$O.test-gsi over-apply-empty-lamda.ags
 
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
+
 ok_diff_fail '-- lambda with type arguments mixed with value arguments --' ./$O.test-gsi lambda-with-type-args-mixed-in.ags
 
 ok_grep_errors '-- .tyapp of monomorphic expression --' 'tyapp-monomorphic.ags:15: Can''t instantiate' ./$O.test-gsi tyapp-monomorphic.ags
@@ -67,10 +71,6 @@ ok_grep_errors '-- a .tylet (of  type synonym) must have enough arguments --' 'u
 
 ok_grep_errors '-- incorrect kind signatures on .tyexprs --' 'tyexpr-wrong-kind-sig.ags:12: Incorrect kind: Expected ''\*''; got ''u''' ./$O.test-gsi tyexpr-wrong-kind-sig.ags
 ok_diff_fail '-- kind signatures on .tyexprs --' ./$O.test-gsi tyexpr-kind-sig.ags
-
-echo '# Version 0.6 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
 ok_grep_errors '-- a let can be mis-typed --' './test-fixtures/mistyped-let.ags:7: I don''t think' ./$O.test-gsi mistyped-let.ags
