@@ -1094,27 +1094,40 @@ list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
 list.t	.tygvar
-_gsac.prefix.typecheck_sccs.typecheck_w	.gvar
-gsdl.cgs.typeenv.empty	.gvar
+_gsac.prefix.typecheck_k1	.subcode
 scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
 env	.fv	gsdl.cgs.typeenv.t
 sccs0	.karg	list.prim.u	scc.item.ty
-	.app	env	gsdl.cgs.typeenv.empty	sccs0
+	.force	_gsac.prefix.typecheck_k1
+	.enter	env
+
+_gsac.prefix.typecheck_k1	.forcecont
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsac.prefix.item.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+_gsac.prefix.typecheck_sccs.typecheck_w	.gvar
+_gsdl.cgs.typeenv.empty_u	.gvar
+scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
+sccs0	.fv	list.prim.u	scc.item.ty
+env0	.karg	gsdl.cgs.typeenv.u
+	.app	env0	_gsdl.cgs.typeenv.empty_u	sccs0
 	.yield	_gsac.prefix.typecheck_sccs.typecheck_w
 
 _gsac.prefix.typecheck_sccs.typecheck_w_c	.expr
-gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 _gsac.prefix.typecheck_sccs.typecheck_w_:_k	.subcode
 graph.scc.t.out	.cogvar
 either.right	.gvar
 scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
-env	.arg	gsdl.cgs.typeenv.t
-enva	.arg	gsdl.cgs.typeenv.t
+env	.arg	gsdl.cgs.typeenv.u
+enva	.arg	gsdl.cgs.typeenv.u
 sccs0	.arg	list.prim.u	scc.item.ty
 	.analyze	sccs0	:	nil
 		.case	:
@@ -1124,49 +1137,53 @@ sccs1		.fkarg	1	list.t	scc.item.ty
 			.coerce	graph.scc.t.out	gsac.prefix.item.t
 			.enter	scc0
 		.case	nil
-			.app	enva
+enva.l			.lifted	enva
+			.app	enva.l
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.typecheck_sccs.typecheck_w_:_k	.forcecont
-gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
 list.t	.tygvar
 graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
 graph.scc.prim.u	.tygvar
 gsac.prefix.item.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
 _gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_k	.subcode
 either.t.out	.cogvar
 gsac.prefix.item.typecheck	.gvar
 scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
-env	.fv	gsdl.cgs.typeenv.t
-enva	.fv	gsdl.cgs.typeenv.t
+env	.fv	gsdl.cgs.typeenv.u
+enva	.fv	gsdl.cgs.typeenv.u
 sccs1	.fv	list.t	scc.item.ty
 scc0.0	.karg	graph.scc.prim.u	gsac.prefix.item.t
 	.analyze	scc0.0	nonrecursive
 		.case	nonrecursive
 it		.fkarg	0	gsac.prefix.item.t
+env.l			.lifted	env
 			.force	_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_k
 			.coerce	either.t.out	string.t	gsdl.cgs.typeenv.t
-			.app	env	it
+			.app	env.l	it
 			.enter	gsac.prefix.item.typecheck
 	-- > :: either.t	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_k	.forcecont
-gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
 list.t	.tygvar
 graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k	.subcode
 list.t.out	.cogvar
 either.left	.gvar
 scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
-env	.fv	gsdl.cgs.typeenv.t
-enva	.fv	gsdl.cgs.typeenv.t
+env	.fv	gsdl.cgs.typeenv.u
+enva	.fv	gsdl.cgs.typeenv.u
 sccs1	.fv	list.t	scc.item.ty
 e0	.karg	either.prim.u	string.t	gsdl.cgs.typeenv.t	-- Type environment induced by §gs{it}
 	.analyze	e0	left	right
@@ -1181,19 +1198,62 @@ env0		.fkarg	0	gsdl.cgs.typeenv.t
 			.enter	sccs1
 
 _gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k	.forcecont
+gsdl.cgs.typeenv.u	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
-_gsac.prefix.typecheck_sccs.typecheck_w	.gvar
-gsdl.cgs.typeenv.overlay	.gvar
+_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k1	.subcode
 scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
-env	.fv	gsdl.cgs.typeenv.t
-enva	.fv	gsdl.cgs.typeenv.t
+env	.fv	gsdl.cgs.typeenv.u
+enva	.fv	gsdl.cgs.typeenv.u
 env0	.fv	gsdl.cgs.typeenv.t
 sccs1.0	.karg	list.prim.u	scc.item.ty
-env1	.apply	gsdl.cgs.typeenv.overlay	|	env0	env
-enva1	.apply	gsdl.cgs.typeenv.overlay	|	env0	enva
+	.force	_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k1
+	.enter	env0
+
+_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k1	.forcecont
+gsdl.cgs.typeenv.u	.tygvar
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsac.prefix.item.t	.tygvar
+_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k2	.subcode
+_gsdl.cgs.typeenv.overlay_w	.gvar
+scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
+env	.fv	gsdl.cgs.typeenv.u
+enva	.fv	gsdl.cgs.typeenv.u
+sccs1.0	.fv	list.prim.u	scc.item.ty
+env0.0	.karg	gsdl.cgs.typeenv.u
+	.force	_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k2
+	.app	env0.0	env
+	.yield	_gsdl.cgs.typeenv.overlay_w
+
+_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k2	.forcecont
+gsdl.cgs.typeenv.u	.tygvar
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsac.prefix.item.t	.tygvar
+_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k3	.subcode
+_gsdl.cgs.typeenv.overlay_w	.gvar
+scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
+enva	.fv	gsdl.cgs.typeenv.u
+sccs1.0	.fv	list.prim.u	scc.item.ty
+env0.0	.fv	gsdl.cgs.typeenv.u
+env1	.karg	gsdl.cgs.typeenv.u
+	.force	_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k3
+	.app	env0.0	enva
+	.yield	_gsdl.cgs.typeenv.overlay_w
+
+_gsac.prefix.typecheck_sccs.typecheck_w_:_nonrecursive_right_k3	.forcecont
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsac.prefix.item.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+_gsac.prefix.typecheck_sccs.typecheck_w	.gvar
+scc.item.ty	.tylet	graph.scc.t	gsac.prefix.item.t
+sccs1.0	.fv	list.prim.u	scc.item.ty
+env1	.fv	gsdl.cgs.typeenv.u
+enva1	.karg	gsdl.cgs.typeenv.u
 	.app	env1	enva1	sccs1.0
 	.yield	_gsac.prefix.typecheck_sccs.typecheck_w
 
@@ -3492,15 +3552,16 @@ gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 -- §section §gs{gsac.prefix.typecheck}
 
 _gsac.prefix.typecheck_sccs.typecheck_w_ty	.tyexpr
-gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsac.prefix.item.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 scc.ty	.tylet	graph.scc.t	gsac.prefix.item.t
-	.tyfun	gsdl.cgs.typeenv.t	-- Type environment to work in
-	.tyfun	gsdl.cgs.typeenv.t	-- Accumulator
+	.tyfun	gsdl.cgs.typeenv.u	-- Type environment to work in
+	.tyfun	gsdl.cgs.typeenv.u	-- Accumulator
 	.tyfun	list.prim.u	scc.ty
 	.tyref	either.t	string.t	gsdl.cgs.typeenv.t
 
