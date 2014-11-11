@@ -8,7 +8,8 @@ mdl.type.decl.parser	.closure	_mdl.type.decl.parser_c
 _mdl.type.decl.parser_api.prim.blocking_api.re	.regex	api
 _mdl.type.decl.parser_api.prim.blocking_prim.re	.regex	prim
 _mdl.type.decl.parser_api.prim.blocking_blocking.re	.regex	blocking
-_mdl.type.decl.parser_heap_heap.re	.regex	heap
+_mdl.type.decl.parser_interpreted.heap_interpreted.re	.regex	interpreted
+_mdl.type.decl.parser_interpreted.heap_heap.re	.regex	heap
 _mdl.type.decl.parser_interpreted.stackframe_interpreted.re	.regex	interpreted
 _mdl.type.decl.parser_interpreted.stackframe_stackframe.re	.regex	stackframe
 _mdl.type.decl.parser_lprim.blocking_lprim.re	.regex	lprim
@@ -37,16 +38,16 @@ _mdl.type.decl.parser_c	.expr
 rune.t	.tygvar
 mdl.type.decl.t	.tygvar
 _mdl.type.decl.parser_api.prim.blocking_c	.subcode
-_mdl.type.decl.parser_heap_c	.subcode
+_mdl.type.decl.parser_interpreted.heap_c	.subcode
 _mdl.type.decl.parser_interpreted.stackframe_c	.subcode
 _mdl.type.decl.parser_lprim.blocking_c	.subcode
 parser.<|>	.gvar
 api.prim.blocking	.closure	_mdl.type.decl.parser_api.prim.blocking_c
 lprim.blocking	.closure	_mdl.type.decl.parser_lprim.blocking_c
-heap	.closure	_mdl.type.decl.parser_heap_c
+interpreted.heap	.closure	_mdl.type.decl.parser_interpreted.heap_c
 interpreted.stackframe	.closure	_mdl.type.decl.parser_interpreted.stackframe_c
 p1	.apply	parser.<|>	rune.t	mdl.type.decl.t	|	interpreted.stackframe	lprim.blocking
-p	.apply	parser.<|>	rune.t	mdl.type.decl.t	|	heap	p1
+p	.apply	parser.<|>	rune.t	mdl.type.decl.t	|	interpreted.heap	p1
 	.app	api.prim.blocking	p
 	.enter	parser.<|>	rune.t	mdl.type.decl.t
 
@@ -95,7 +96,7 @@ fs	.larg	list.t	mdl.type.field.decl.t
 	.app	l	fs
 	.enter	mdl.type.decl.api.prim.blocking
 
-_mdl.type.decl.parser_heap_c	.expr
+_mdl.type.decl.parser_interpreted.heap_c	.expr
 rune.t	.tygvar
 string.t	.tygvar
 mdl.type.decl.t	.tygvar
@@ -104,12 +105,15 @@ _mdl.type.decl.parser_heap_f_c	.subcode
 parser.lift2	.gvar
 parser.*>	.gvar
 mdl.syntax.keyword	.gvar
-_mdl.type.decl.parser_heap_heap.re	.gvar
+_mdl.type.decl.parser_interpreted.heap_interpreted.re	.gvar
+_mdl.type.decl.parser_interpreted.heap_heap.re	.gvar
 parser.fail	.gvar	-- Temp
 f	.closure	_mdl.type.decl.parser_heap_f_c
-heap.kw.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_heap_heap.re
-label.p1	.apply	parser.fail	rune.t	string.t
-label.p	.apply	parser.*>	rune.t	string.t	string.t	|	heap.kw.p	label.p1
+interpreted.kw.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.heap_interpreted.re
+heap.kw.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.heap_heap.re
+label.p2	.apply	parser.fail	rune.t	string.t
+label.p1	.apply	parser.*>	rune.t	string.t	string.t	|	heap.kw.p	label.p2
+label.p	.apply	parser.*>	rune.t	string.t	string.t	|	interpreted.kw.p	label.p1
 fields.p	.apply	parser.fail	rune.t	_mdl.type.decl.parser_heap_fields_ty
 	.app	f	label.p	fields.p
 	.enter	parser.lift2	rune.t	string.t	_mdl.type.decl.parser_heap_fields_ty	mdl.type.decl.t
