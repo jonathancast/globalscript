@@ -1,0 +1,17 @@
+#calculus: gsdl.string-code 0.6
+
+	.document
+
+	.data
+
+	.line	./test-fixtures/empty-list-list-doc.cgs 3 1
+	.undefined	_ep_ty
+
+	.type
+
+	.line	./test-fixtures/empty-list-list-doc.cgs 3 1
+_ep_ty	.tyexpr
+list.t	.tyextabstype	**^
+bool.t	.tyextabstype	*
+_ep_ty_0	.tylet	list.t	bool.t
+	.tyref	list.t	_ep_ty_0

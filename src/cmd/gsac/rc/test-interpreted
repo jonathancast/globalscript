@@ -29,6 +29,7 @@ fn ok_gsac {
 ok_gsac '-- gsac: Empty document --' gsac-empty-doc ./test-fixtures/empty-doc.cgs
 ok_gsac '-- gsac: Empty bool.t document --' gsac-empty-bool-doc ./test-fixtures/empty-bool-doc.cgs
 ok_gsac '-- gsac: Empty list.t document --' gsac-empty-list-doc ./test-fixtures/empty-list-doc.cgs
+ok_gsac '-- gsac: Empty list.t list.t document --' gsac-empty-list-list-doc ./test-fixtures/empty-list-list-doc.cgs
 ok_gsac '-- gsac: Empty either.t document --' gsac-empty-either-doc ./test-fixtures/empty-either-doc.cgs
 ok_gsac '-- gsac: Empty either.t 〈〉 document --' gsac-empty-either-record-doc ./test-fixtures/empty-either-record-doc.cgs
 

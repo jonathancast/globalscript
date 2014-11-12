@@ -2412,12 +2412,14 @@ gvs	.larg	list.t	gsdl.var.t
 	.enter	gsac.gstype.compileToApp
 
 _gsac.gstype.compileToVar_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gstype.compileToVar_res.ty	.tygvar	-- Temp
 _gsac.gstype.compileToVar_right_k	.subcode
+pos	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToApp_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -2429,11 +2431,13 @@ r		.fkarg	0	_gsac.gstype.compileToApp_res.ty	-- §gs{compileToApp} result
 			.enter	r
 
 _gsac.gstype.compileToVar_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 _gsac.gstype.compile.m_res.u	.tygvar
 _gsac.gstype.compileToApp_res_res.ty	.tygvar
 gsdl.var.t	.tygvar
 _gsac.gstype.compileToVar_right_k1	.subcode
 list.t.out	.cogvar
+pos	.fv	gsdl.sourcepos.t
 r0	.karg	_gsac.gstype.compile.m_res.u	_gsac.gstype.compileToApp_res_res.ty
 r0.res	.field	res	r0
 tyas	.lfield	typeargs	r0.res
@@ -2442,6 +2446,7 @@ tyas	.lfield	typeargs	r0.res
 	.enter	tyas
 
 _gsac.gstype.compileToVar_right_k1	.forcecont
+gsdl.sourcepos.t	.tygvar
 _gsac.gstype.compile.m_res.u	.tygvar
 _gsac.gstype.compileToApp_res_res.ty	.tygvar
 list.prim.u	.tygvar
@@ -2450,29 +2455,76 @@ list.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+_gsac.gstype.compileToVar_right_:_k	.subcode
+list.t.out	.cogvar
 either.right	.gvar
+pos	.fv	gsdl.sourcepos.t
 r0	.fv	_gsac.gstype.compile.m_res.u	_gsac.gstype.compileToApp_res_res.ty
 tyas0	.karg	list.prim.u	gsdl.var.t
+r.em	.field	emitted	r0
+r.pem	.field	prim.emitted	r0
+r0.res	.field	res	r0
+r.tyf	.lfield	tyfun	r0.res
+r.gvs	.field	subvars	r0
+r.tyfvs	.field	tyfvs	r0
+r.tygvs	.field	tygvars	r0
+r.tyls	.field	tylets	r0
+r.tyes	.field	typeitems	r0
 	.analyze	tyas0	:	nil
 		.case	:
 a0		.fkarg	0	gsdl.var.t
 as1		.fkarg	1	list.t	gsdl.var.t
-			-- If §gs{compileToApp} does return arguments, we need to emit an extra §ags{.tylet} and return the label on that
-			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
+			.force	_gsac.gstype.compileToVar_right_:_k
+			.coerce	list.t.out	gsdl.var.t
+			.enter	r.gvs
 		.case	nil
 			-- If §gs{compileToApp} does not return arguments, just return its ‘function’ inline
-r.em			.field	emitted	r0
-r.pem			.field	prim.emitted	r0
-r.gvs			.field	subvars	r0
-r.tyes			.field	typeitems	r0
-r.tyfvs			.field	tyfvs	r0
-r.tygvs			.field	tygvars	r0
-r0.res			.field	res	r0
-r.tyf			.lfield	tyfun	r0.res
-r.tyls			.field	tylets	r0
 res			.lrecord	emitted	r.em	prim.emitted	r.pem	res	r.tyf	subvars	r.gvs	tyfvs	r.tyfvs	tygvars	r.tygvs	tylets	r.tyls	typeitems	r.tyes	|	_gsac.gstype.compileToVar_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.compileToVar_res.ty
+
+_gsac.gstype.compileToVar_right_:_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+diff.list.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
+list.prim.u	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+list.t.in	.cogvar
+either.right	.gvar
+diff.list.snoc	.gvar
+pos	.fv	gsdl.sourcepos.t
+tyas0	.fv	list.prim.u	gsdl.var.t
+r.em	.fv	ordered.set.t	gsdl.var.t
+r.pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+r.tyfvs	.fv	diff.list.t	gsdl.var.t
+r.tyf	.fv	gsdl.var.t
+r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+r.tyls	.fv	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
+r.tyes	.fv	diff.list.t	gsdl.ags.typeitem.t
+gvs0	.karg	list.prim.u	gsdl.var.t
+	.analyze	gvs0	:	nil
+		.case	:
+gv0		.fkarg	0	gsdl.var.t
+gvs1		.fkarg	1	list.t	gsdl.var.t
+			-- If §gs{compileToApp} does return arguments, we need to emit an extra §ags{.tylet} and return the label on that
+tyas0.l			.lifted	tyas0
+tyas0.cl			.cast	tyas0.l	list.t.in	gsdl.var.t
+tyl1			.lrecord	name	gv0	pos	pos	tyargs	tyas0.cl	tyfun	r.tyf	|	gsdl.ags.typeitem.decls.tylet.t
+tyls			.apply	diff.list.snoc	gsdl.ags.typeitem.decls.tylet.t	|	r.tyls	tyl1
+res			.lrecord	emitted	r.em	prim.emitted	r.pem	res	gv0	subvars	gvs1	tyfvs	r.tyfvs	tygvars	r.tygvs	tylets	tyls	typeitems	r.tyes	|	_gsac.gstype.compileToVar_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.compileToVar_res.ty
+		.case	nil
+			.undef	either.t	string.t	_gsac.gstype.compileToVar_res.ty
 
 -- ↓ Not really a case of §gs{compileToVar}, but just a utility function used in a couple of places
 _gsac.gstype.compileToVar_gsabstype_c	.expr
