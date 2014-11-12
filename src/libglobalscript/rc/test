@@ -34,6 +34,10 @@ ok_diff_fail '-- undefined entry points (.tyextabstype in .expr type) --' ./$O.t
 
 ok_diff_fail '-- undefined entry points (cast into .tyextabstype type) --' ./$O.test-gsi undef-cast-tyextabstype.ags
 
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
+
 ok_diff_fail '-- enter undefined polymorphic value --' ./$O.test-gsi enter-polymorphic-undef.ags
 ok_diff '-- yield polymorphic empty lambda --' ./$O.test-gsi yield-polymorphic-empty-lambda.ags
 
@@ -42,10 +46,6 @@ ok_diff_fail '-- force with undefined continuation --' ./$O.test-gsi force-undef
 
 ok_diff_fail '-- strict bind undefined value --' ./$O.test-gsi strict-undef.ags
 ok_diff_fail '-- strict with undefined continuation --' ./$O.test-gsi strict-undef-cont.ags
-
-echo '# Version 0.6 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_diff '-- lambdas with undefined bodies --' ./$O.test-gsi empty-lambda.ags
 ok_diff '-- lifted lambdas with undefined bodies --' ./$O.test-gsi empty-lifted-lambda.ags
