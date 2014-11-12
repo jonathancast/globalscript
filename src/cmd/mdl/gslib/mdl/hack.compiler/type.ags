@@ -454,7 +454,8 @@ s1			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s2
 		.case	lprim.blocking
 id		.fkarg	0	string.t
 fs		.fkarg	1	list.t	mdl.type.field.decl.t
-s2			.undefined	string.t
+s3			.undefined	string.t
+s2			.apply	list.<>	rune.t	|	mdl.hack.compile.type.auto.generated.s	s3
 s1			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s2
 			.app	mdl.hack.compiler.type.header.s	s1
 			.enter	list.<>	rune.t
