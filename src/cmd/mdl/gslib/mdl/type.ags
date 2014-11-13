@@ -108,13 +108,19 @@ mdl.syntax.keyword	.gvar
 _mdl.type.decl.parser_interpreted.heap_interpreted.re	.gvar
 _mdl.type.decl.parser_interpreted.heap_heap.re	.gvar
 mdl.syntax.id	.gvar
+parser.<*	.gvar
+mdl.syntax.braces	.gvar
+
+mdl.syntax.semi	.gvar
 parser.fail	.gvar	-- Temp
 f	.closure	_mdl.type.decl.parser_heap_f_c
 interpreted.kw.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.heap_interpreted.re
 heap.kw.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.heap_heap.re
 label.p1	.apply	parser.*>	rune.t	string.t	string.t	|	heap.kw.p	mdl.syntax.id
 label.p	.apply	parser.*>	rune.t	string.t	string.t	|	interpreted.kw.p	label.p1
-fields.p	.apply	parser.fail	rune.t	_mdl.type.decl.parser_heap_fields_ty
+fields.p2	.apply	parser.fail	rune.t	_mdl.type.decl.parser_heap_fields_ty
+fields.p1	.apply	mdl.syntax.braces	_mdl.type.decl.parser_heap_fields_ty	|	fields.p2
+fields.p	.apply	parser.<*	rune.t	_mdl.type.decl.parser_heap_fields_ty	string.t	|	fields.p1	mdl.syntax.semi
 	.app	f	label.p	fields.p
 	.enter	parser.lift2	rune.t	string.t	_mdl.type.decl.parser_heap_fields_ty	mdl.type.decl.t
 
