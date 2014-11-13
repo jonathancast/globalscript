@@ -122,6 +122,8 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	.strin
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	.string	_BOTTOM(
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s2	.string	);\n\s\s\s\s\s\s\s\s\s\s\s\s\s\s\s\scontinue;\n\s\s\s\s\s\s\s\s\s\s\s\s}\n\n
 
+_mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.prefix.s	.string	struct\s
+
 mdl.hack.compiler.type.size.expr	.closure	_mdl.hack.compiler.type.size.expr_c
 _mdl.hack.compiler.type.size.expr_bco_bco.size.s	.string	sizeof(struct\sgsbco\s*)
 _mdl.hack.compiler.type.size.expr_gsvalue_gsvalue.size.s	.string	sizeof(gsvalue)
@@ -256,6 +258,7 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.mid.s3	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s1	.gvar
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s2	.gvar
+_mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.prefix.s	.gvar
 ty0	.karg	mdl.type.decl.prim.u
 	.analyze	ty0	api.prim.blocking	interpreted.stackframe	lprim.blocking
 		.case	api.prim.blocking
@@ -454,7 +457,8 @@ s1			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s2
 		.case	lprim.blocking
 id		.fkarg	0	string.t
 fs		.fkarg	1	list.t	mdl.type.field.decl.t
-s3			.undefined	string.t
+s4			.undefined	string.t
+s3			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.prefix.s	s4
 s2			.apply	list.<>	rune.t	|	mdl.hack.compile.type.auto.generated.s	s3
 s1			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s2
 			.app	mdl.hack.compiler.type.header.s	s1
