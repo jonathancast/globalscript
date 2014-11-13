@@ -25,6 +25,10 @@ ok_diff_fail '-- undefined expressions --' ./$O.test-gsi undef-expr.ags
 
 ok_diff_fail '-- undefined entry points (declared position) --' ./$O.test-gsi undef-declared-line-column-pos.ags
 
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
+
 ok_diff_fail '-- undefined entry points (.tyextabstype type) --' ./$O.test-gsi undef-tyextabstype.ags
 ok_diff_fail '-- undefined entry points (lifted .tyextelimprim type) --' ./$O.test-gsi undef-tyextelimprim.ags
 ok_diff_fail '-- undefined entry points (lifted .tyextimpprim type) --' ./$O.test-gsi undef-tyextimpprim.ags
@@ -33,10 +37,6 @@ ok_diff_fail '-- undefined entry points (lifted .tyextelimprim in .expr type) --
 ok_diff_fail '-- undefined entry points (.tyextabstype in .expr type) --' ./$O.test-gsi undef-expr-tyextabstype.ags
 
 ok_diff_fail '-- undefined entry points (cast into .tyextabstype type) --' ./$O.test-gsi undef-cast-tyextabstype.ags
-
-echo '# Version 0.6 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_diff_fail '-- enter undefined polymorphic value --' ./$O.test-gsi enter-polymorphic-undef.ags
 ok_diff '-- yield polymorphic empty lambda --' ./$O.test-gsi yield-polymorphic-empty-lambda.ags
