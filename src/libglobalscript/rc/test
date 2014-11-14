@@ -15,7 +15,9 @@ ok_grep_errors '-- missing calculus --' 'missing-calculus.ags: Missing #calculus
 ok_grep_errors '-- invalid calculus --' 'invalid-calculus.ags:1: Unknown calculus' ./$O.test-gsi invalid-calculus.ags
 ok_grep_errors '-- invalid calculus version --' 'invalid-calculus-version.ags:1: Unsupported calculus version' ./$O.test-gsi invalid-calculus-version.ags
 
-echo '# Version 0.5 and up:'
+echo '# Version 0.6 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_diff_fail '-- source-style comments --' ./$O.test-gsi undef-new-comments.ags
 
@@ -24,10 +26,6 @@ ok_diff_fail '-- undefined empty record values --' ./$O.test-gsi undef-empty-rec
 ok_diff_fail '-- undefined expressions --' ./$O.test-gsi undef-expr.ags
 
 ok_diff_fail '-- undefined entry points (declared position) --' ./$O.test-gsi undef-declared-line-column-pos.ags
-
-echo '# Version 0.6 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_5=1
 
 ok_diff_fail '-- undefined entry points (.tyextabstype type) --' ./$O.test-gsi undef-tyextabstype.ags
 ok_diff_fail '-- undefined entry points (lifted .tyextelimprim type) --' ./$O.test-gsi undef-tyextelimprim.ags
