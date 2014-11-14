@@ -4053,10 +4053,12 @@ list.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.impgen.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 list.arg.ty	.tylet	list.t	gsdl.ags.codeitem.arg.t
 list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
 list.tygvar.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tygvar.t
-	.typroduct	args	list.arg.ty	gens	list.impgen.ty	tygvars	list.tygvar.ty
+list.tylet.ty	.tylet	list.t	gsdl.ags.typeitem.decls.tylet.t
+	.typroduct	args	list.arg.ty	gens	list.impgen.ty	tygvars	list.tygvar.ty	tylets	list.tylet.ty
 
 _gsdl.ags.codeitem.prim.u_strictcont_decls_ty	.tyexpr
 _gsdl.ags.codeitem.prim.u_strictcont_decls_u	.tygvar
