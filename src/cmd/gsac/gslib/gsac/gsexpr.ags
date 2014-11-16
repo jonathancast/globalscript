@@ -510,6 +510,7 @@ either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_undef_right_k	.subcode
 either.t.out	.cogvar
+either.left	.gvar
 gsac.gskind.check	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 k	.fv	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
@@ -521,7 +522,8 @@ e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+			.app	err
+			.enter	either.left	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.annotate_res.ty
 ty.r.ty			.lfield	gstype	ty.r
@@ -575,6 +577,7 @@ string.t	.tygvar
 _gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+either.left	.gvar
 either.right	.gvar
 list.:	.gvar
 gsdl.cgs.gsexpr.generator.undef	.gvar
@@ -586,7 +589,8 @@ e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+			.app	err
+			.enter	either.left	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 		.case	right
 k.r		.fkarg	0	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 b			.lfield	body	k.r
@@ -681,6 +685,7 @@ _gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.t	.tygvar	-- Temp
 gsdl.cgs.gskind.t	.tygvar	-- Temp
+either.left	.gvar
 either.right	.gvar
 gsdl.cgs.gsexpr.impfor	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
@@ -690,7 +695,8 @@ e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+			.app	err
+			.enter	either.left	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 r0		.fkarg	0	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 r0.gs			.lfield	gens	r0
