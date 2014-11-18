@@ -938,7 +938,7 @@ gstypes_type_check_code_item(struct gsfile_symtable *symtable, struct gsbc_item 
     }
 }
 
-static struct gstype *gsbc_typecheck_check_api_statement_type(struct gspos, struct gstype *, gsinterned_string, gsinterned_string);
+static struct gstype *gsbc_typecheck_check_api_statement_type(struct gspos, struct gstype *, gsinterned_string, gsinterned_string, int);
 
 static struct gs_sys_global_block_suballoc_info gsbc_code_type_info = {
     /* descr = */ {
@@ -2337,7 +2337,7 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
         }
 
         pcl->regs[pcl->nregs] = p->label;
-        gsbc_typecheck_check_api_statement_type(p->pos, type, p->arguments[0], p->arguments[1]);
+        gsbc_typecheck_check_api_statement_type(p->pos, type, p->arguments[0], p->arguments[1], 0);
         pcl->regtypes[pcl->nregs] = type;
         pcl->nregs++;
     } else if (
@@ -2980,7 +2980,7 @@ gsbc_typecheck_bind_op(struct gsfile_symtable *symtable, struct gsparsedline *p,
 
         pimpcl->bind_bound[pcl->nregs] = 1;
         pcl->regs[pcl->nregs] = p->label;
-        pcl->regtypes[pcl->nregs] = gsbc_typecheck_check_api_statement_type(p->pos, rhs_type, pimpcl->primsetname, pimpcl->prim);
+        pcl->regtypes[pcl->nregs] = gsbc_typecheck_check_api_statement_type(p->pos, rhs_type, pimpcl->primsetname, pimpcl->prim, 0);
 
         pcl->nregs++;
         pimpcl->nbinds++;
@@ -3004,15 +3004,7 @@ gsbc_typecheck_body_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api
             gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y\t%y)"), p->pos, p->directive, p->arguments[0])
         ;
 
-        gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, pimpcl->primsetname, pimpcl->prim);
-
-        /* This is the type of the whole §ags{.impprog}, except that the RHS type may be lifted but the §ags{.impprog} is always un-lifted */
-        if (calculated_type->node == gstype_lift) {
-            struct gstype_lift *lift = (struct gstype_lift *)calculated_type;
-            calculated_type = lift->arg;
-        }
-
-        return calculated_type;
+        return gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, pimpcl->primsetname, pimpcl->prim, 1);
     }
 
     return 0;
@@ -3551,7 +3543,7 @@ gsbc_check_api_free_variable_decls(struct gsbc_typecheck_code_or_api_expr_closur
 }
 
 struct gstype *
-gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsinterned_string primsetname, gsinterned_string primname)
+gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsinterned_string primsetname, gsinterned_string primname, int return_whole_type)
 {
     char buf[0x100];
     struct gstype *res;
@@ -3575,7 +3567,7 @@ gsbc_typecheck_check_api_statement_type(struct gspos pos, struct gstype *ty, gsi
         struct gstype_app *app;
 
         app = (struct gstype_app *)ty;
-        res = app->arg;
+        res = return_whole_type ? ty : app->arg;
 
         ty = app->fun;
         while (ty->node == gstype_app) {
