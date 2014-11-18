@@ -2941,12 +2941,6 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, uint
         gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y)"), p->pos, p->directive)
     ;
 
-    /* §ags{.impprog}s are un-lifted by construction, so make sure §ccode{gsbc_typecheck_body_op} doesn't force us into a lifted type */
-    if (calculated_type->node == gstype_lift) {
-        struct gstype_lift *lift = (struct gstype_lift *)calculated_type;
-        calculated_type = lift->arg;
-    }
-
     while (cl.stacksize) {
         p = cl.stack[--cl.stacksize];
         if (!(
@@ -3012,6 +3006,12 @@ gsbc_typecheck_body_op(struct gsparsedline *p, struct gsbc_typecheck_code_or_api
         ;
 
         gsbc_typecheck_check_api_statement_type(p->pos, calculated_type, pimpcl->primsetname, pimpcl->prim, pimpcl->nbinds == 0 ? &pimpcl->first_rhs_lifted : 0);
+
+        /* This is the type of the whole §ags{.impprog}, except that the RHS type may be lifted but the §ags{.impprog} is always un-lifted */
+        if (calculated_type->node == gstype_lift) {
+            struct gstype_lift *lift = (struct gstype_lift *)calculated_type;
+            calculated_type = lift->arg;
+        }
 
         return calculated_type;
     }
