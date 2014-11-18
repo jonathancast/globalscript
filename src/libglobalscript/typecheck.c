@@ -695,7 +695,7 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
         type = gstypes_compile_productv(pdata->pos, numfields, fields);
 
         if (j < pdata->numarguments) {
-            struct gstype *expected_type;
+            struct gstype *expected_type = 0;
 
             if (pdata->label)
                 expected_type = gssymtable_get_data_type(symtable, pdata->label)
@@ -2941,19 +2941,10 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, uint
         gsfatal(UNIMPL("%P: gsbc_typecheck_api_expr(%y)"), p->pos, p->directive)
     ;
 
-    if (features & gsstring_code_impprogs_are_boxing) {
-        if (calculated_type->node == gstype_lift) {
-            struct gstype_lift *lift = (struct gstype_lift *)calculated_type;
-            calculated_type = lift->arg;
-        }
-    } else {
-        if (impcl.first_rhs_lifted) {
-            if (calculated_type->node != gstype_lift)
-                calculated_type = gstypes_compile_lift(pos, calculated_type)
-            ;
-        } else {
-            gsfatal(UNIMPL("%P: Ensure imp block statement has unlifted type"), pos);
-        }
+    /* §ags{.impprog}s are un-lifted by construction, so make sure §ccode{gsbc_typecheck_body_op} doesn't force us into a lifted type */
+    if (calculated_type->node == gstype_lift) {
+        struct gstype_lift *lift = (struct gstype_lift *)calculated_type;
+        calculated_type = lift->arg;
     }
 
     while (cl.stacksize) {

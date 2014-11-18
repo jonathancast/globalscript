@@ -6,7 +6,7 @@ void gsadd_global_gslib(gsinterned_string, struct gsfile_symtable **);
 void gsadddir(char *, struct gsfile_symtable **);
 
 enum {
-    gsstring_code_impprogs_are_boxing = 1,
+    gsstring_code_unused_feature = 1,
 };
 
 typedef enum {

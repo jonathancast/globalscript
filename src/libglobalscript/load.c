@@ -434,12 +434,9 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
             if (*s != '\n') gsfatal("%s:%d: Junk after calculus version", pos.real_filename, pos.real_lineno);
             *s++ = 0;
 
-            if (!strcmp(version, "0.5")) {
-                *pcalculus_version = "0.5";
-                *pfeatures = 0;
-            } else if (!strcmp(version, "0.6")) {
+            if (!strcmp(version, "0.6")) {
                 *pcalculus_version = "0.6";
-                *pfeatures = gsstring_code_impprogs_are_boxing;
+                *pfeatures = 0;
             } else {
                 gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
             }
