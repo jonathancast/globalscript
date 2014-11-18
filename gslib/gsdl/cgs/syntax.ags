@@ -54,10 +54,13 @@ gsdl.cgs.syntax.assoc.right	.closure	_gsdl.cgs.syntax.assoc.right_c
 -- §section §gs{gsdl.cgs.syntax.var.parser}
 
 _gsdl.cgs.syntax.var.parser_c	.expr
+natural.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.syntax.lexeme	.gvar
 gsdl.var.parser	.gvar
-	.app	gsdl.var.parser
+n	.larg	natural.t
+var.p	.apply	gsdl.var.parser	|	n
+	.app	var.p
 	.enter	gsdl.cgs.syntax.lexeme	gsdl.var.t
 
 -- §section §gs{gsdl.cgs.syntax.var.print}

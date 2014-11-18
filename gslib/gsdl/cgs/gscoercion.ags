@@ -44,6 +44,7 @@ parser.lift3	.gvar
 parser.pos.get	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.var.parser	.gvar
+natural.0	.gvar
 gsdl.cgs.syntax.core.keyword	.gvar
 _gsdl.cgs.gscoercion.parser.app_defn.p_defn.re	.gvar
 parser.many	.gvar
@@ -53,7 +54,8 @@ list.gstype.ty	.tylet	list.t	gsdl.cgs.gstype.t
 f	.closure	_gsdl.cgs.gscoercion.parser.app_defn.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 defn.p	.apply	gsdl.cgs.syntax.core.keyword	|	_gsdl.cgs.gscoercion.parser.app_defn.p_defn.re
-tyc.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	defn.p	gsdl.cgs.syntax.var.parser
+var.p	.apply	gsdl.cgs.syntax.var.parser	|	natural.0
+tyc.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	defn.p	var.p
 tyas.p	.apply	parser.many	rune.t	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.parser.arg
 	.app	f	pos.get	tyc.p	tyas.p
 	.enter	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	list.gstype.ty	gsdl.cgs.gscoercion.t

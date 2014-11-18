@@ -47,11 +47,13 @@ gsdl.var.component.symbolic	.closure	_gsdl.var.component.symbolic_c
 -- §section §gs{gsdl.var.parser}
 
 _gsdl.var.parser_c	.expr
+natural.t	.tygvar
 rune.t	.tygvar
 gsdl.var.t	.tygvar
 parser.<|>	.gvar
 _gsdl.var.parser_base.p	.gvar
 _gsdl.var.parser_underbar.p	.gvar
+n	.larg	natural.t
 	.app	_gsdl.var.parser_base.p	_gsdl.var.parser_underbar.p
 	.enter	parser.<|>	rune.t	gsdl.var.t
 

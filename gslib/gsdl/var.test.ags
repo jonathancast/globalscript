@@ -81,9 +81,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.var.parser	.gvar
+natural.0	.gvar
 _test_parse.var_input	.gvar
 k	.closure	_test_parse.var_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.var.parser	_test_parse.var_input	k
+var.p	.apply	gsdl.var.parser	|	natural.0
+test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	var.p	_test_parse.var_input	k
 	.app	_test_parse.var_label	test
 	.enter	test.property.label
 
@@ -105,9 +107,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.var.parser	.gvar
+natural.0	.gvar
 _test_parse.var.qualified_input	.gvar
 k	.closure	_test_parse.var.qualified_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.var.parser	_test_parse.var.qualified_input	k
+var.p	.apply	gsdl.var.parser	|	natural.0
+test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	var.p	_test_parse.var.qualified_input	k
 	.app	_test_parse.var.qualified_label	test
 	.enter	test.property.label
 
@@ -129,9 +133,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.var.parser	.gvar
+natural.0	.gvar
 _test_parse.var.op_input	.gvar
 k	.closure	_test_parse.var.op_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.var.parser	_test_parse.var.op_input	k
+var.p	.apply	gsdl.var.parser	|	natural.0
+test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	var.p	_test_parse.var.op_input	k
 	.app	_test_parse.var.op_label	test
 	.enter	test.property.label
 
@@ -153,9 +159,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.var.parser	.gvar
+natural.0	.gvar
 _test_parse.var.num_input	.gvar
 k	.closure	_test_parse.var.num_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.var.parser	_test_parse.var.num_input	k
+var.p	.apply	gsdl.var.parser	|	natural.0
+test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	var.p	_test_parse.var.num_input	k
 	.app	_test_parse.var.num_label	test
 	.enter	test.property.label
 
@@ -177,9 +185,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 _test_parse.var.underbarred_input	.gvar
 k	.closure	_test_parse.var.underbarred_k_c
-test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	gsdl.var.parser	_test_parse.var.underbarred_input	k
+var.p	.apply	gsdl.var.parser	|	natural.1
+test	.apply	parser.test.assert.passes	rune.t	gsdl.var.t	|	parser.rune.advance	rune.print	var.p	_test_parse.var.underbarred_input	k
 	.app	_test_parse.var.underbarred_label	test
 	.enter	test.property.label
 

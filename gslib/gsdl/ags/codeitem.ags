@@ -236,6 +236,7 @@ parser.lift4	.gvar
 parser.pos.get	.gvar
 parser.<*	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -251,7 +252,8 @@ pos.get	.apply	parser.pos.get	rune.t
 expr.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.parser_expr.p_expr.re
 nm.p2	.apply	parser.*>	rune.t	string.t	string.t	|	expr.kw.p	gsdl.ags.syntax.whitespace
 nm.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	nm.p2
-nm.p	.apply	parser.<*	rune.t	gsdl.var.t	string.t	|	gsdl.var.parser	nm.p1
+var.p	.apply	gsdl.var.parser	|	natural.1
+nm.p	.apply	parser.<*	rune.t	gsdl.var.t	string.t	|	var.p	nm.p1
 decls.p	.apply	_gsdl.ags.codeitem.parser_expr.p_decls.p	|	fs
 expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
 	.app	f	pos.get	nm.p	decls.p	expr.p
@@ -1300,6 +1302,7 @@ _gsdl.ags.codeitem.gvars.parser_gvar.p_f_c	.subcode
 parser.map	.gvar
 parser.<*	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -1310,7 +1313,8 @@ f	.closure	_gsdl.ags.codeitem.gvars.parser_gvar.p_f_c
 gvar.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.gvars.parser_gvar.p_gvar.re
 p2	.apply	parser.*>	rune.t	string.t	string.t	|	gvar.p	gsdl.ags.syntax.whitespace
 p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	p2
-p	.apply	parser.<*	rune.t	gsdl.var.t	string.t	|	gsdl.var.parser	p1
+var.p	.apply	gsdl.var.parser	|	natural.1
+p	.apply	parser.<*	rune.t	gsdl.var.t	string.t	|	var.p	p1
 	.app	f	p
 	.enter	parser.map	rune.t	gsdl.var.t	gsdl.ags.codeitem.gvar.t
 
@@ -1335,6 +1339,7 @@ parser.<*	.gvar
 parser.lift3	.gvar
 parser.pos.get	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -1346,10 +1351,11 @@ parser.fail	.gvar	-- Temp
 f	.closure	_gsdl.ags.codeitem.gvars.parser_natural.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 natural.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.gvars.parser_natural.p_natural.re
+var.p	.apply	gsdl.var.parser	|	natural.1
 n.p2	.apply	parser.*>	rune.t	string.t	natural.t	|	gsdl.ags.syntax.columnsep	parser.string.decimal
 n.p1	.apply	parser.*>	rune.t	string.t	natural.t	|	natural.p	n.p2
 n.p	.apply	parser.*>	rune.t	string.t	natural.t	|	gsdl.ags.syntax.columnsep	n.p1
-p	.apply	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	natural.t	gsdl.ags.codeitem.gvar.t	|	f	pos.get	gsdl.var.parser	n.p
+p	.apply	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	natural.t	gsdl.ags.codeitem.gvar.t	|	f	pos.get	var.p	n.p
 	.app	p	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.codeitem.gvar.t	string.t
 
@@ -1654,6 +1660,7 @@ _gsdl.ags.codeitem.args.parser_arg.p_f_c	.subcode
 parser.<*	.gvar
 parser.lift4	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.<|>	.gvar
@@ -1676,10 +1683,11 @@ true.p	.apply	parser.unit	rune.t	bool.t	|	bool.true
 arg.lifted.p1.2	.apply	parser.*>	rune.t	string.t	bool.t	|	larg.kw.p	true.p
 arg.lifted.p1	.apply	parser.<|>	rune.t	bool.t	|	arg.lifted.p1.1	arg.lifted.p1.2
 arg.lifted.p	.apply	parser.*>	rune.t	string.t	bool.t	|	gsdl.ags.syntax.columnsep	arg.lifted.p1
-arg.ty.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
-arg.tyarg.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+var.p	.apply	gsdl.var.parser	|	natural.1
+arg.ty.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
+arg.tyarg.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 arg.tyargs.p	.apply	parser.many	rune.t	gsdl.var.t	|	arg.tyarg.p
-arg.p1	.apply	parser.lift4	rune.t	gsdl.var.t	bool.t	gsdl.var.t	list.var.ty	gsdl.ags.codeitem.arg.t	|	f	gsdl.var.parser	arg.lifted.p	arg.ty.p	arg.tyargs.p
+arg.p1	.apply	parser.lift4	rune.t	gsdl.var.t	bool.t	gsdl.var.t	list.var.ty	gsdl.ags.codeitem.arg.t	|	f	var.p	arg.lifted.p	arg.ty.p	arg.tyargs.p
 	.app	arg.p1	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.codeitem.arg.t	string.t
 
@@ -2090,6 +2098,7 @@ _gsdl.ags.codeitem.allocs.parser_impprim.p_f_c	.subcode
 parser.<*	.gvar
 parser.lift7	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -2104,22 +2113,23 @@ parser.fail	.gvar	-- Temp
 list.var.ty	.tylet	list.t	gsdl.var.t
 f	.closure	_gsdl.ags.codeitem.allocs.parser_impprim.p_f_c
 impprim.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.allocs.parser_impprim.p_impprim.kw.re
-primset.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+var.p	.apply	gsdl.var.parser	|	natural.1
+primset.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 primset.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	impprim.kw.p	primset.p2
 primset.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	primset.p1
-primty.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
-primnm.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
-ty.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
-tyas.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+primty.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
+primnm.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
+tyas.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 tyas.p	.apply	parser.many	rune.t	gsdl.var.t	|	tyas.p1
 as.p1.nil	.undefined	list.t	gsdl.var.t	-- > nil
 as.p1	.apply	parser.unit	rune.t	list.var.ty	|	as.p1.nil
-as.p2.2.1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+as.p2.2.1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 as.p2.2	.apply	parser.many	rune.t	gsdl.var.t	|	as.p2.2.1
 as.p2.1	.apply	parser.*>	rune.t	string.t	list.var.ty	|	gsdl.ags.syntax.separator	as.p2.2
 as.p2	.apply	parser.*>	rune.t	string.t	list.var.ty	|	gsdl.ags.syntax.columnsep	as.p2.1
 as.p	.apply	parser.<|>	rune.t	list.var.ty	|	as.p1	as.p2
-p	.apply	parser.lift7	rune.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	list.var.ty	list.var.ty	gsdl.ags.codeitem.alloc.t	|	f	gsdl.var.parser	primset.p	primty.p	primnm.p	ty.p	tyas.p	as.p
+p	.apply	parser.lift7	rune.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	gsdl.var.t	list.var.ty	list.var.ty	gsdl.ags.codeitem.alloc.t	|	f	var.p	primset.p	primty.p	primnm.p	ty.p	tyas.p	as.p
 	.app	p	gsdl.ags.syntax.whitespace
 	.enter	parser.<*	rune.t	gsdl.ags.codeitem.alloc.t	string.t
 
@@ -2157,6 +2167,7 @@ parser.<|>	.gvar
 gsdl.ags.syntax.separator	.gvar
 parser.many	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.unit	.gvar
 list.nil	.gvar
 gsdl.ags.syntax.whitespace	.gvar
@@ -2171,7 +2182,8 @@ primset.p1	.apply	parser.*>	rune.t	string.t	string.t	|	prim.p	primset.p2
 primset.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	primset.p1
 primnm.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 ty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-tyas.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+var.p	.apply	gsdl.var.parser	|	natural.1
+tyas.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 tyas.p	.apply	parser.many	rune.t	gsdl.var.t	|	tyas.p1
 as.p4	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 as.p3	.apply	parser.many	rune.t	string.t	|	as.p4
@@ -2224,6 +2236,7 @@ parser.lift2	.gvar
 parser.optional	.gvar
 gsdl.ags.syntax.separator	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
 list.fields.ty	.tylet	list.t	_gsdl.ags.codeitem.alloc.prim.u_record_field.ty
@@ -2238,7 +2251,8 @@ fields.p2.1	.apply	parser.lift2	rune.t	string.t	string.t	_gsdl.ags.codeitem.allo
 fields.p2	.apply	parser.many	rune.t	_gsdl.ags.codeitem.alloc.prim.u_record_field.ty	|	fields.p2.1
 fields.p1	.apply	parser.*>	rune.t	string.t	list.fields.ty	|	record.p	fields.p2
 fields.p	.apply	parser.*>	rune.t	string.t	list.fields.ty	|	gsdl.ags.syntax.columnsep	fields.p1
-tysig.p1.2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+var.p	.apply	gsdl.var.parser	|	natural.1
+tysig.p1.2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 tysig.p1.1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.separator	tysig.p1.2
 tysig.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	tysig.p1.1
 tysig.p	.apply	parser.optional	rune.t	gsdl.var.t	|	tysig.p1
@@ -2351,6 +2365,7 @@ parser.lift3	.gvar
 parser.pos.get	.gvar
 parser.optional	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -2363,7 +2378,8 @@ fs	.fv	gsdl.ags.syntax.features.t
 maybe.var.ty	.tylet	maybe.t	gsdl.var.t
 f	.closure	_gsdl.ags.codeitem.impgens.parser_bind.two.words.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
-v.p	.apply	parser.optional	rune.t	gsdl.var.t	|	gsdl.var.parser
+var.p	.apply	gsdl.var.parser	|	natural.1
+v.p	.apply	parser.optional	rune.t	gsdl.var.t	|	var.p
 bind.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.impgens.parser_bind.two.words.p_bind.re
 rhs.p3	.apply	gsdl.ags.codeitem.alloc.rhs.parser	|	fs
 rhs.p2	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.alloc.rhs.t	|	gsdl.ags.syntax.columnsep	rhs.p3
@@ -2399,6 +2415,7 @@ parser.lift3	.gvar
 parser.pos.get	.gvar
 parser.optional	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 gsdl.ags.codeitem.alloc.rhs.parser	.gvar
@@ -2407,7 +2424,8 @@ fs	.fv	gsdl.ags.syntax.features.t
 maybe.var.ty	.tylet	maybe.t	gsdl.var.t
 f	.closure	_gsdl.ags.codeitem.impgens.parser_let.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
-v.p	.apply	parser.optional	rune.t	gsdl.var.t	|	gsdl.var.parser
+var.p	.apply	gsdl.var.parser	|	natural.1
+v.p	.apply	parser.optional	rune.t	gsdl.var.t	|	var.p
 rhs.p1	.apply	gsdl.ags.codeitem.alloc.rhs.parser	|	fs
 rhs.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.alloc.rhs.t	|	gsdl.ags.syntax.columnsep	rhs.p1
 p	.apply	parser.lift3	rune.t	parser.pos.t	maybe.var.ty	gsdl.ags.codeitem.alloc.rhs.t	gsdl.ags.codeitem.impgen.t	|	f	pos.get	v.p	rhs.p
@@ -3314,6 +3332,7 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.codeitem.expr.parser_lprim.p_lprim.kw.re	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.many	.gvar
 parser.<|>	.gvar
 gsdl.ags.syntax.separator	.gvar
@@ -3322,15 +3341,16 @@ parser.fail	.gvar	-- Temp
 list.var.ty	.tylet	list.t	gsdl.var.t
 f	.closure	_gsdl.ags.codeitem.expr.parser_lprim.p_f_c
 lprim.kw.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.expr.parser_lprim.p_lprim.kw.re
-primset.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+var.p	.apply	gsdl.var.parser	|	natural.1
+primset.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 primset.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	lprim.kw.p	primset.p2
 primset.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	primset.p1
-primnm.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
-ty.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
-tyas.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+primnm.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
+tyas.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 tyas.p	.apply	parser.many	rune.t	gsdl.var.t	|	tyas.p1
 as.p1	.apply	parser.fail	rune.t	list.var.ty	-- > unit nil
-as.p2.2.1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+as.p2.2.1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 as.p2.2	.apply	parser.many	rune.t	gsdl.var.t	|	as.p2.2.1
 as.p2.1	.apply	parser.*>	rune.t	string.t	list.var.ty	|	gsdl.ags.syntax.separator	as.p2.2
 as.p2	.apply	parser.*>	rune.t	string.t	list.var.ty	|	gsdl.ags.syntax.columnsep	as.p2.1
@@ -3467,6 +3487,7 @@ _gsdl.ags.codeitem.expr.parser_ubprim.p_uprim.re	.gvar
 gsdl.ags.syntax.id	.gvar
 parser.many	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.<|>	.gvar
 gsdl.ags.syntax.separator		.gvar
 gsdl.ags.syntax.whitespace	.gvar
@@ -3481,7 +3502,8 @@ primset.p1	.apply	parser.*>	rune.t	string.t	string.t	|	uprim.p	primset.p2
 primset.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	primset.p1
 prim.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 ty.p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-tyas.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+var.p	.apply	gsdl.var.parser	|	natural.1
+tyas.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 tyas.p	.apply	parser.many	rune.t	gsdl.var.t	|	tyas.p1
 as.p4	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
 as.p3	.apply	parser.many	rune.t	string.t	|	as.p4
@@ -3565,6 +3587,7 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.codeitem.expr.parser_yield.p_yield.re	.gvar
 gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.<*	.gvar
 parser.many	.gvar
 gsdl.ags.syntax.id	.gvar
@@ -3573,7 +3596,8 @@ list.string.ty	.tylet	list.t	string.t
 f	.closure	_gsdl.ags.codeitem.expr.parser_yield.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 yield.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.expr.parser_yield.p_yield.re
-v.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	gsdl.var.parser
+var.p	.apply	gsdl.var.parser	|	natural.1
+v.p2	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
 v.p1	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	yield.p	v.p2
 v.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	v.p1
 tyas.p1.1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
