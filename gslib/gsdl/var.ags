@@ -54,7 +54,8 @@ parser.<|>	.gvar
 _gsdl.var.parser_base.p	.gvar
 _gsdl.var.parser_underbar.p	.gvar
 n	.larg	natural.t
-	.app	_gsdl.var.parser_base.p	_gsdl.var.parser_underbar.p
+underbar.p	.apply	_gsdl.var.parser_underbar.p	|	n
+	.app	_gsdl.var.parser_base.p	underbar.p
 	.enter	parser.<|>	rune.t	gsdl.var.t
 
 _gsdl.var.parser_base.p_c	.expr
@@ -297,6 +298,34 @@ p1	.apply	parser.<|>	rune.t	gsdl.var.component.t	|	symbolic.p	numeric.p
 	.enter	parser.<|>	rune.t	gsdl.var.component.t
 
 _gsdl.var.parser_underbar.p_c	.expr
+natural.t	.tygvar
+_gsdl.var.parser_underbar.p_k	.subcode
+natural.t.out	.cogvar
+parser.fail	.gvar	-- Temp
+n	.larg	natural.t
+	.force	_gsdl.var.parser_underbar.p_k
+	.coerce	natural.t.out
+	.enter	n
+
+_gsdl.var.parser_underbar.p_k	.forcecont
+natural.prim.u	.tygvar
+_gsdl.var.parser_underbar.p_k0	.subcode
+_gsdl.var.parser_underbar.p_k1	.subcode
+natural.prim.-	.gvar
+1	.natural	1
+n0	.karg	natural.prim.u
+	.ubanalyze	0	_gsdl.var.parser_underbar.p_k0	1	_gsdl.var.parser_underbar.p_k1
+	.app	n0	1
+	.yield	natural.prim.-
+
+_gsdl.var.parser_underbar.p_k0	.ubcasecont
+rune.t	.tygvar
+gsdl.var.t	.tygvar
+parser.fail	.gvar
+	.enter	parser.fail	rune.t	gsdl.var.t
+
+_gsdl.var.parser_underbar.p_k1	.ubcasecont
+natural.prim.u	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
 gsdl.var.t	.tygvar
@@ -312,8 +341,8 @@ rune.compare	.gvar
 _gsdl.var.parser_underbar.p_underbar.re	.gvar
 _gsdl.var.parser_base.p	.gvar
 parser.many	.gvar
-parser.fail	.gvar	-- Temp
 list.var.ty	.tylet	list.t	gsdl.var.t
+n1	.karg	natural.prim.u
 f	.apply	gsdl.var.constructed	|	natural.1
 cons	.apply	list.:	gsdl.var.t
 underbar.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.var.parser_underbar.p_underbar.re

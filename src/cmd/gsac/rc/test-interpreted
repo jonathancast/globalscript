@@ -33,6 +33,7 @@ ok_gsac '-- gsac: Empty list.t list.t document --' gsac-empty-list-list-doc ./te
 ok_gsac '-- gsac: Empty either.t document --' gsac-empty-either-doc ./test-fixtures/empty-either-doc.cgs
 ok_gsac '-- gsac: Empty either.t 〈〉 document --' gsac-empty-either-record-doc ./test-fixtures/empty-either-record-doc.cgs
 
+ok_grep_script_errors '-- gsac: Empty document w/ illegal syntax for type variable --' gsac-empty-doc-illegal-type-var './test-fixtures/empty-doc-illegal-type-var.cgs:3:4: Un-expected _' ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/empty-doc-illegal-type-var.cgs
 ok_grep_script_errors '-- gsac: Empty document w/ unknown type variable --' gsac-empty-doc-unkn-type-var './test-fixtures/empty-doc-unkn-type-var.cgs:3:4: Unknown type variable' ibio ./gslib ./gsac.ags -l ./test-fixtures/gslib ./test-fixtures/empty-doc-unkn-type-var.cgs
 
 ok_gsac '-- gsac: Expressions with no type signature --' gsac-cast-defn ./test-fixtures/cast-defn.cgs
