@@ -485,7 +485,13 @@ gsac.gstype.annotate	.gvar
 k	.fv	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
 env	.fv	gsdl.cgs.typeenv.t
 g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
-	.analyze	g0	undef
+	.analyze	g0	typesyn	undef
+		.case	typesyn
+pos0		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+pos1		.fkarg	2	gsdl.sourcepos.t
+ty		.fkarg	3	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 		.case	undef
 pos1		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -2298,7 +2304,13 @@ tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
 gen0	.karg	gsdl.cgs.gsexpr.generator.prim.u
-	.analyze	gen0	undef
+	.analyze	gen0	typesyn	undef
+		.case	typesyn
+pos0		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+pos1		.fkarg	2	gsdl.sourcepos.t
+ty		.fkarg	3	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
 		.case	undef
 pos1		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
