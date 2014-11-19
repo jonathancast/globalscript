@@ -169,6 +169,7 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_push.sets.f_c	.subco
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_extracts.f_c	.subcode
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_sizes.f_c	.subcode
 _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_evacs.f_c	.subcode
+_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_c	.subcode
 list.<>	.gvar
 mdl.hack.compiler.type.header.s	.gvar
 mdl.hack.compile.type.toprow.s	.gvar
@@ -459,7 +460,11 @@ s1			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s2
 		.case	lprim.blocking
 id		.fkarg	0	string.t
 fs		.fkarg	1	list.t	mdl.type.field.decl.t
-s6			.undefined	string.t
+fs.fields.f			.closure	_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_c
+fs.fields.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	fs.fields.f	fs
+fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
+s7			.undefined	string.t
+s6			.apply	list.<>	rune.t	|	fs.fields.s	s7
 s5			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.mid.s	s6
 s4			.apply	list.<>	rune.t	|	id	s5
 s3			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.prefix.s	s4
@@ -924,6 +929,12 @@ s			.apply	list.<>	rune.t	|	id	s1
 nm		.fkarg	0	string.t
 			.undef	string.t
 	-- > :: string.t
+
+_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_c	.expr
+mdl.type.field.decl.t	.tygvar
+string.t	.tygvar
+f	.larg	mdl.type.field.decl.t
+	.undef	string.t
 
 -- §section §gs{mdl.hack.compiler.type.size.expr}
 
