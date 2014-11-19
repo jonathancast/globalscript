@@ -28,6 +28,8 @@ gsdl.cgs.gsexpr.generator.imp.parser	.closure	_gsdl.cgs.gsexpr.generator.imp.par
 
 gsdl.cgs.gsexpr.generator.freevars	.closure	_gsdl.cgs.gsexpr.generator.freevars_c
 
+gsdl.cgs.gsexpr.generator.≡	.closure	_gsdl.cgs.gsexpr.generator.≡_c
+
 gsdl.cgs.gsexpr.generator.undef	.closure	_gsdl.cgs.gsexpr.generator.undef_c
 gsdl.cgs.gsexpr.generator.typesyn	.closure	_gsdl.cgs.gsexpr.generator.typesyn_c
 
@@ -703,6 +705,15 @@ ty		.fkarg	3	gsdl.cgs.gstype.t
 			.app	ty
 			.enter	gsdl.cgs.gstype.freevars
 	-- > :: ordered.set.t	gsdl.cgs.symbol.t
+
+-- §section §gs{gsdl.cgs.gsexpr.generator.≡}
+
+_gsdl.cgs.gsexpr.generator.≡_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
+bool.t	.tygvar	-- Temp
+g0	.larg	gsdl.cgs.gsexpr.generator.t
+g1	.larg	gsdl.cgs.gsexpr.generator.t
+	.undef	bool.t
 
 -- §section §gs{gsdl.cgs.gsexpr.generator.t} Constructors
 
