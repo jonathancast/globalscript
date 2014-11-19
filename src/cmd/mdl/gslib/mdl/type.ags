@@ -114,6 +114,8 @@ mdl.syntax.id	.gvar
 parser.<*	.gvar
 mdl.syntax.braces	.gvar
 parser.map	.gvar
+parser.many	.gvar
+mdl.type.field.decl.parser	.gvar
 
 mdl.syntax.semi	.gvar
 parser.fail	.gvar	-- Temp
@@ -124,7 +126,7 @@ heap.kw.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.heap_hea
 label.p1	.apply	parser.*>	rune.t	string.t	string.t	|	heap.kw.p	mdl.syntax.id
 label.p	.apply	parser.*>	rune.t	string.t	string.t	|	interpreted.kw.p	label.p1
 fields.f	.closure	_mdl.type.decl.parser_interpreted.heap_fields.f_c
-fields.p2.1	.apply	parser.fail	rune.t	list.field.ty
+fields.p2.1	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	mdl.type.field.decl.parser
 fields.p2	.apply	parser.map	rune.t	list.field.ty	_mdl.type.decl.parser_heap_fields_ty	|	fields.f	fields.p2.1
 fields.p1	.apply	mdl.syntax.braces	_mdl.type.decl.parser_heap_fields_ty	|	fields.p2
 fields.p	.apply	parser.<*	rune.t	_mdl.type.decl.parser_heap_fields_ty	string.t	|	fields.p1	mdl.syntax.semi
