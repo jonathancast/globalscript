@@ -160,19 +160,26 @@ _gsdl.cgs.document.≡_c	.expr
 gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 bool.∧	.gvar
 maybe.≡	.gvar
 gsdl.cgs.gsexpr.≡	.gvar
 gsdl.cgs.gstype.≡	.gvar
+list.≡	.gvar
+gsdl.cgs.gsexpr.generator.≡	.gvar
 doc0	.larg	gsdl.cgs.document.t
 doc1	.larg	gsdl.cgs.document.t
 mb.e0	.lfield	expr	doc0
 mb.e1	.lfield	expr	doc1
 mb.ty0	.lfield	gstype	doc0
 mb.ty1	.lfield	gstype	doc1
+gs0	.lfield	gens	doc0
+gs1	.lfield	gens	doc1
 e.eq	.apply	maybe.≡	gsdl.cgs.gsexpr.t	|	gsdl.cgs.gsexpr.≡	mb.e0	mb.e1
 ty.eq	.apply	maybe.≡	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.≡	mb.ty0	mb.ty1
-	.app	e.eq	ty.eq
+gs.eq	.apply	list.≡	gsdl.cgs.gsexpr.generator.t	|	gsdl.cgs.gsexpr.generator.≡	gs0	gs1
+b1	.apply	bool.∧	|	ty.eq	gs.eq
+	.app	e.eq	b1
 	.enter	bool.∧
 
 -- §section §gs{gsdl.cgs.document.fmtgs}
