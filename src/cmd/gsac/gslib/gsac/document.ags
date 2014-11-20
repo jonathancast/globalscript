@@ -325,6 +325,8 @@ gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+list.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 _gsac.document.annotate_just_right_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.annotate	.gvar
@@ -345,9 +347,10 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 			.app	pos	env	ty
 			.enter	gsac.gstype.annotate
 		.case	nothing
+gs1			.undefined	list.t	gsdl.cgs.gsexpr.generator.t
 mbe1			.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e.r.expr
 mbty1			.apply	maybe.just	gsdl.cgs.gstype.t	|	e.r.ty
-doc1			.lrecord	expr	mbe1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
+doc1			.lrecord	expr	mbe1	gens	gs1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
 			.app	doc1
 			.enter	either.right	string.t	gsdl.cgs.document.t
 
@@ -422,6 +425,8 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 record.empty	.tygvar
+list.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 either.left	.gvar
 either.right	.gvar
 maybe.just	.gvar
@@ -436,9 +441,10 @@ err		.fkarg	0	string.t
 			.enter	either.left	string.t	gsdl.cgs.document.t
 		.case	right
 r		.fkarg	0	record.empty
+gs1			.undefined	list.t	gsdl.cgs.gsexpr.generator.t
 mbe1			.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e.r.expr
 mbty1			.apply	maybe.just	gsdl.cgs.gstype.t	|	e.r.ty
-doc1			.lrecord	expr	mbe1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
+doc1			.lrecord	expr	mbe1	gens	gs1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
 			.app	doc1
 			.enter	either.right	string.t	gsdl.cgs.document.t
 
@@ -506,6 +512,8 @@ string.t	.tygvar
 record.empty	.tygvar
 gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 either.right	.gvar
 maybe.nothing	.gvar
 maybe.just	.gvar
@@ -518,9 +526,10 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.cgs.document.t
 		.case	right
 r		.fkarg	0	record.empty
+gs1			.undefined	list.t	gsdl.cgs.gsexpr.generator.t
 nothing			.apply	maybe.nothing	gsdl.cgs.gsexpr.t
 mbty			.apply	maybe.just	gsdl.cgs.gstype.t	|	ty.r.ty
 pos			.lfield	pos	doc
-res			.lrecord	expr	nothing	gstype	mbty	pos	pos
+res			.lrecord	expr	nothing	gens	gs1	gstype	mbty	pos	pos	|	gsdl.cgs.document.t
 			.app	res
 			.enter	either.right	string.t	gsdl.cgs.document.t

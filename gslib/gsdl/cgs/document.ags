@@ -69,17 +69,18 @@ ep.p	.apply	parser.<*	rune.t	_gsdl.cgs.document.parser_ety_ty	string.t	|	ep.p1	g
 _gsdl.cgs.document.parser_f_c	.expr
 parser.pos.t	.tygvar
 _gsdl.cgs.document.parser_ety_ty	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.document.prim.u	.tygvar
-maybe.just	.gvar
+list.nil	.gvar
 gsdl.sourcepos	.gvar
 pos0	.larg	parser.pos.t
 ety	.larg	_gsdl.cgs.document.parser_ety_ty
+gs	.apply	list.nil	gsdl.cgs.gsexpr.generator.t
 pos1	.undefined	parser.pos.t
 mbe	.lfield	0	ety
 mbty	.lfield	1	ety
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-r	.record	expr	mbe	gstype	mbty	pos	pos	|	gsdl.cgs.document.prim.u
+r	.record	expr	mbe	gens	gs	gstype	mbty	pos	pos	|	gsdl.cgs.document.prim.u
 	.lift
 	.yield	r
 
@@ -223,11 +224,14 @@ gsdl.cgs.document.prim.u	.tygvar
 gsdl.cgs.document.prim.u	.tyexpr
 maybe.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 _expr_ty	.tylet	maybe.t	gsdl.cgs.gsexpr.t
+list.gen.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
 gstype_ty	.tylet	maybe.t	gsdl.cgs.gstype.t
-	.typroduct	expr	_expr_ty	gstype gstype_ty	pos	gsdl.sourcepos.t
+	.typroduct	expr	_expr_ty	gens	list.gen.ty	gstype gstype_ty	pos	gsdl.sourcepos.t
 
 -- §section §gs{gsdl.cgs.document.parser}
 

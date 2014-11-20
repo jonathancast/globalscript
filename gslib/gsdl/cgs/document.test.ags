@@ -52,8 +52,10 @@ _tests	.gvar
 
 _test.eq.gstype.nothing.just_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.document.t	.tygvar
 test.property.label	.gvar
 _test.eq.gstype.nothing.just_label	.gvar
 test.deny	.gvar
@@ -67,13 +69,14 @@ maybe.just	.gvar
 gsdl.cgs.gstype.product	.gvar
 list.nil	.gvar
 nothing.gsexpr	.apply	maybe.nothing	gsdl.cgs.gsexpr.t
+nil.gs	.apply	list.nil	gsdl.cgs.gsexpr.generator.t
 nothing	.apply	maybe.nothing	gsdl.cgs.gstype.t
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
-doc0	.lrecord	expr	nothing.gsexpr	gstype	nothing	pos	pos
+doc0	.lrecord	expr	nothing.gsexpr	gens	nil.gs	gstype	nothing	pos	pos	|	gsdl.cgs.document.t
 nil	.apply	list.nil	gsdl.cgs.gstype.field.t
 empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
 just.empty.prod	.apply	maybe.just	gsdl.cgs.gstype.t	|	empty.prod
-doc1	.lrecord	expr	nothing.gsexpr	gstype	just.empty.prod	pos	pos
+doc1	.lrecord	expr	nothing.gsexpr	gens	nil.gs	gstype	just.empty.prod	pos	pos	|	gsdl.cgs.document.t
 b	.apply	gsdl.cgs.document.≡	|	doc0	doc1
 test	.apply	test.deny	|	_test.eq.gstype.nothing.just_false	_test.eq.gstype.nothing.just_true	b
 	.app	_test.eq.gstype.nothing.just_label	test
@@ -83,8 +86,10 @@ test	.apply	test.deny	|	_test.eq.gstype.nothing.just_false	_test.eq.gstype.nothi
 
 _test.eq.expr.nothing.just_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.document.t	.tygvar
 test.property.label	.gvar
 _test.eq.expr.nothing.just_label	.gvar
 test.deny	.gvar
@@ -100,10 +105,11 @@ list.nil	.gvar
 nothing.gsexpr	.apply	maybe.nothing	gsdl.cgs.gsexpr.t
 nothing.gstype	.apply	maybe.nothing	gsdl.cgs.gstype.t
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
-doc0	.lrecord	expr	nothing.gsexpr	gstype	nothing.gstype	pos	pos
+nil.gs	.apply	list.nil	gsdl.cgs.gsexpr.generator.t
+doc0	.lrecord	expr	nothing.gsexpr	gens	nil.gs	gstype	nothing.gstype	pos	pos	|	gsdl.cgs.document.t
 e	.undefined	gsdl.cgs.gsexpr.t
 just.e	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e
-doc1	.lrecord	expr	just.e	gstype	nothing.gstype	pos	pos
+doc1	.lrecord	expr	just.e	gens	nil.gs	gstype	nothing.gstype	pos	pos	|	gsdl.cgs.document.t
 b	.apply	gsdl.cgs.document.≡	|	doc0	doc1
 test	.apply	test.deny	|	_test.eq.expr.nothing.just_false	_test.eq.expr.nothing.just_true	b
 	.app	_test.eq.expr.nothing.just_label	test
@@ -114,6 +120,7 @@ test	.apply	test.deny	|	_test.eq.expr.nothing.just_false	_test.eq.expr.nothing.j
 _test.fmtgs_c	.expr
 string.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.document.t	.tygvar
@@ -133,11 +140,12 @@ parser.test.assert.fixtures.sample.file.name	.gvar
 fmtgs.prec.app	.gvar
 _test.fmtgs_expected	.gvar
 nothing	.apply	maybe.nothing	gsdl.cgs.gsexpr.t
+nil.gs	.apply	list.nil	gsdl.cgs.gsexpr.generator.t
 nil	.apply	list.nil	gsdl.cgs.gstype.field.t
 empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
 just.empty.prod	.apply	maybe.just	gsdl.cgs.gstype.t	|	empty.prod
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
-doc	.lrecord	expr	nothing	gstype	just.empty.prod	pos	pos	|	gsdl.cgs.document.t
+doc	.lrecord	expr	nothing	gens	nil.gs	gstype	just.empty.prod	pos	pos	|	gsdl.cgs.document.t
 snil	.apply	list.nil	rune.t
 actual	.apply	gsdl.cgs.document.fmtgs	|	doc	fmtgs.prec.app	snil
 test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs_expected
@@ -165,6 +173,7 @@ test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.document.t	|	parser.rune.a
 _test.parse.empty.document_k_c	.expr
 gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 test.assert.eq	.gvar
@@ -178,11 +187,12 @@ natural.1	.gvar
 parser.test.assert.fixtures.sample.file.name	.gvar
 actual	.larg	gsdl.cgs.document.t
 nothing	.apply	maybe.nothing	gsdl.cgs.gsexpr.t
+nil.gs	.apply	list.nil	gsdl.cgs.gsexpr.generator.t
 nil	.apply	list.nil	gsdl.cgs.gstype.field.t
 empty.prod	.apply	gsdl.cgs.gstype.product	|	nil
 just.empty.prod	.apply	maybe.just	gsdl.cgs.gstype.t	|	empty.prod
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
-expected	.lrecord	expr	nothing	gstype	just.empty.prod	pos	pos	|	gsdl.cgs.document.t
+expected	.lrecord	expr	nothing	gens	nil.gs	gstype	just.empty.prod	pos	pos	|	gsdl.cgs.document.t
 	.app	gsdl.cgs.document.≡	gsdl.cgs.document.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.cgs.document.t
 
@@ -210,6 +220,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 test.assert.eq	.gvar
 gsdl.cgs.document.≡	.gvar
@@ -228,6 +239,7 @@ _test.parse.expr.document_bool.s	.gvar
 list.singleton	.gvar
 _test.parse.expr.document_t.s	.gvar
 gsdl.cgs.gsexpr.cast.source.missing	.gvar
+list.nil	.gvar
 maybe.nothing	.gvar
 actual	.larg	gsdl.cgs.document.t
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name	|	gsdl.sourcepos.t
@@ -243,8 +255,9 @@ ee	.apply	gsdl.cgs.gsexpr.cast.source.missing	|	pos
 cast1	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	co	ee
 cast	.apply	gsdl.cgs.gsexpr.pos	|	pos	cast1
 just.cast	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	cast
+nil.gs	.apply	list.nil	gsdl.cgs.gsexpr.generator.t
 gstype.nothing	.apply	maybe.nothing	gsdl.cgs.gstype.t
-expected	.lrecord	expr	just.cast	gstype	gstype.nothing	pos	pos	|	gsdl.cgs.document.t
+expected	.lrecord	expr	just.cast	gens	nil.gs	gstype	gstype.nothing	pos	pos	|	gsdl.cgs.document.t
 	.app	gsdl.cgs.document.≡	gsdl.cgs.document.fmtgs	actual	expected
 	.enter	test.assert.eq	gsdl.cgs.document.t
 
@@ -281,6 +294,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 gsdl.var.component.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 test.property.label	.gvar
@@ -300,6 +314,7 @@ gsdl.var.component.alphanum	.gvar
 _test.freevars.expr.document_t.s	.gvar
 maybe.nothing	.gvar
 gsdl.cgs.gsexpr.cast.source.missing	.gvar
+list.nil	.gvar
 ordered.set.singleton	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
@@ -315,8 +330,9 @@ pos	.undefined	gsdl.sourcepos.t
 e.so	.apply	gsdl.cgs.gsexpr.cast.source.missing	|	pos
 e	.apply	gsdl.cgs.gsexpr.expr.heavy.cast	|	e.co	e.so
 just.e	.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e
+nil.gs	.apply	list.nil	gsdl.cgs.gsexpr.generator.t
 nothing.ty	.apply	maybe.nothing	gsdl.cgs.gstype.t
-doc	.lrecord	expr	just.e	gstype	nothing.ty	pos	pos	|	gsdl.cgs.document.t
+doc	.lrecord	expr	just.e	gens	nil.gs	gstype	nothing.ty	pos	pos	|	gsdl.cgs.document.t
 actual	.apply	gsdl.cgs.document.freevars	|	doc
 sym	.apply	gsdl.cgs.symbol.tyvar	|	v
 expected	.apply	ordered.set.singleton	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	sym
