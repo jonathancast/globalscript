@@ -685,6 +685,7 @@ _gsdl.cgs.gsexpr.generator.freevars_k	.forcecont
 gsdl.cgs.gsexpr.generator.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar	-- Temp
 gsdl.cgs.symbol.t	.tygvar	-- Temp
@@ -695,7 +696,7 @@ g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
 pos0		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 pos1		.fkarg	2	gsdl.sourcepos.t
-ty		.fkarg	3	gsdl.cgs.gstype.t
+ty		.fkarg	3	gsdl.cgs.typeenv.typeexpansion.t
 			.undef	ordered.set.t	gsdl.cgs.symbol.t
 		.case	undef
 pos0		.fkarg	0	gsdl.sourcepos.t
@@ -735,14 +736,14 @@ res	.constr	gsdl.cgs.gsexpr.generator.prim.u	undef	0	pos0	1	v	2	pos1	3	ty
 _gsdl.cgs.gsexpr.generator.typesyn_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 gsdl.cgs.gsexpr.generator.prim.u	.tygvar
 gsdl.cgs.gsexpr.generator.t.in	.cogvar
 pos0	.larg	gsdl.sourcepos.t
 v	.larg	gsdl.var.t
 pos1	.larg	gsdl.sourcepos.t
-ty	.larg	gsdl.cgs.gstype.t
-res	.constr	gsdl.cgs.gsexpr.generator.prim.u	typesyn	0	pos0	1	v	2	pos1	3	ty
+tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
+res	.constr	gsdl.cgs.gsexpr.generator.prim.u	typesyn	0	pos0	1	v	2	pos1	3	tye
 	.coerce	gsdl.cgs.gsexpr.generator.t.in
 	.lift
 	.yield	res
@@ -1044,8 +1045,8 @@ _gsdl.cgs.gsexpr.generator.prim.u_undef_ty	.tygvar
 _gsdl.cgs.gsexpr.generator.prim.u_typesyn_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.sourcepos.t	3	gsdl.cgs.gstype.t
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.sourcepos.t	3	gsdl.cgs.typeenv.typeexpansion.t
 
 _gsdl.cgs.gsexpr.generator.prim.u_undef_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
