@@ -666,11 +666,17 @@ parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.typesyn	.gvar
+gsdl.sourcepos	.gvar
 pos0.0	.larg	parser.pos.t
 v	.larg	gsdl.var.t
 pos1.0	.larg	parser.pos.t
 tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
-	.undef	gsdl.cgs.gsexpr.generator.t
+pos.1	.undefined	parser.pos.t
+pos0	.apply	gsdl.sourcepos	|	pos0.0	pos.1
+pos1	.apply	gsdl.sourcepos	|	pos1.0	pos.1
+	.app	pos0	v	pos1	tye
+	.enter	gsdl.cgs.gsexpr.generator.typesyn
 
 -- §section §gs{gsdl.cgs.gsexpr.generator.imp.parser}
 
