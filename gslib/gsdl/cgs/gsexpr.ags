@@ -765,9 +765,18 @@ ty		.fkarg	3	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gsexpr.generator.≡_c	.expr
 gsdl.cgs.gsexpr.generator.t	.tygvar
-bool.t	.tygvar	-- Temp
+_gsdl.cgs.gsexpr.generator.≡_k0	.subcode
+gsdl.cgs.gsexpr.generator.t.out	.cogvar
 g0	.larg	gsdl.cgs.gsexpr.generator.t
 g1	.larg	gsdl.cgs.gsexpr.generator.t
+	.force	_gsdl.cgs.gsexpr.generator.≡_k0
+	.coerce	gsdl.cgs.gsexpr.generator.t.out
+	.enter	g0
+
+_gsdl.cgs.gsexpr.generator.≡_k0	.forcecont
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
+bool.t	.tygvar	-- Temp
+g0.0	.karg	gsdl.cgs.gsexpr.generator.prim.u
 	.undef	bool.t
 
 -- §section §gs{gsdl.cgs.gsexpr.generator.t} Constructors
