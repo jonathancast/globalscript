@@ -645,6 +645,7 @@ list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
 bool.t	.tygvar	-- Temp
+gsdl.cgs.gstype.t.in	.cogvar
 bool.false	.gvar
 gsdl.cgs.gstype.≡	.gvar
 bool.true	.gvar
@@ -698,7 +699,10 @@ ty1.1				.fkarg	0	gsdl.cgs.gstype.t
 		.case	pos
 pos0		.fkarg	0	gsdl.sourcepos.t
 ty0.1		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	bool.t
+ty1.0.l			.lifted	ty1.0
+ty1.0.cl			.cast	ty1.0.l	gsdl.cgs.gstype.t.in
+			.app	ty0.1	ty1.0.cl
+			.enter	gsdl.cgs.gstype.≡
 		.case	product
 fs0.1		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.danalyze	ty1.0	product
