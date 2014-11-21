@@ -33,6 +33,8 @@ gsdl.cgs.typeenv.var.insert	.closure	_gsdl.cgs.typeenv.var.insert_c
 gsdl.cgs.typeenv.overlay	.closure	_gsdl.cgs.typeenv.overlay_c
 _gsdl.cgs.typeenv.overlay_w	.closure	_gsdl.cgs.typeenv.overlay_w_c
 
+gsdl.cgs.typeenv.typeexpansion.parser	.closure	_gsdl.cgs.typeenv.typeexpansion.parser_c
+
 gsdl.cgs.typeenv.typeexpansion.app	.closure	_gsdl.cgs.typeenv.typeexpansion.app_c
 
 gsdl.cgs.typeenv.typeexpansion.substty	.closure	_gsdl.cgs.typeenv.typeexpansion.substty_c	_gsdl.cgs.typeenv.typeexpansion.substty_ty
@@ -634,6 +636,14 @@ es2	.karg	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
 r	.record	kinds	kis2	typedefinitions	tyds2	typeexpansions	es2	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.parser}
+
+_gsdl.cgs.typeenv.typeexpansion.parser_c	.expr
+rune.t	.tygvar	-- Temp
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar	-- Temp
+parser.fail	.gvar	-- Temp
+	.enter	parser.fail	rune.t	gsdl.cgs.typeenv.typeexpansion.t
 
 -- §section §gs{gsdl.cgs.typeenv.typeexpansion.app}
 
