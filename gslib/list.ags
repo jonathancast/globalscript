@@ -874,25 +874,20 @@ list.prim.u.α	.tylet	list.prim.u	α
 	.tyref	list.prim.u.α
 
 list.prim.u	.tyexpr
-_cons_type	.tygvar
-_nil_type	.tygvar
+_list.prim.u_cons_ty	.tygvar
+_list.prim.u_nil_ty	.tygvar
 α	.tylambda	*
-_cons_type_α	.tylet	_cons_type	α
-_nil_type_α	.tylet	_nil_type	α
-	.tysum	:	_cons_type_α	nil	_nil_type_α
+_cons_ty_α	.tylet	_list.prim.u_cons_ty	α
+_nil_ty_α	.tylet	_list.prim.u_nil_ty	α
+	.tysum	:	_cons_ty_α	nil	_nil_ty_α
 
-_cons_type	.tyexpr
-_tail_type	.tygvar
-α	.tylambda	*
-_list_α	.tylet	_tail_type	α
-	.tyubproduct	0	α	1	_list_α
-
-_tail_type	.tyexpr
+_list.prim.u_cons_ty	.tyexpr
 list.t	.tygvar
 α	.tylambda	*
-	.tyref	list.t	α
+_list_α	.tylet	list.t	α
+	.tyubproduct	0	α	1	_list_α	
 
-_nil_type	.tyexpr
+_list.prim.u_nil_ty	.tyexpr
 α	.tylambda	*
 	.tyubproduct
 
