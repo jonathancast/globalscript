@@ -780,10 +780,53 @@ g1	.larg	gsdl.cgs.gsexpr.generator.t
 	.enter	g0
 
 _gsdl.cgs.gsexpr.generator.≡_k0	.forcecont
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.generator.prim.u	.tygvar
-bool.t	.tygvar	-- Temp
+_gsdl.cgs.gsexpr.generator.≡_k1	.subcode
+gsdl.cgs.gsexpr.generator.t.out	.cogvar
+g1	.fv	gsdl.cgs.gsexpr.generator.t
 g0.0	.karg	gsdl.cgs.gsexpr.generator.prim.u
-	.undef	bool.t
+	.force	_gsdl.cgs.gsexpr.generator.≡_k1
+	.coerce	gsdl.cgs.gsexpr.generator.t.out
+	.enter	g1
+
+_gsdl.cgs.gsexpr.generator.≡_k1	.forcecont
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+bool.t	.tygvar	-- Temp
+bool.∧	.gvar
+gsdl.var.≡	.gvar
+gsdl.cgs.typeenv.typeexpansion.≡	.gvar
+g0.0	.fv	gsdl.cgs.gsexpr.generator.prim.u
+g1.0	.karg	gsdl.cgs.gsexpr.generator.prim.u
+	.analyze	g0.0	typesyn	undef
+		.case	typesyn
+pos0.0	.fkarg	0	gsdl.sourcepos.t
+nm0		.fkarg	1	gsdl.var.t
+pos0.1		.fkarg	2	gsdl.sourcepos.t
+tye0		.fkarg	3	gsdl.cgs.typeenv.typeexpansion.t
+			.danalyze	g1.0	typesyn
+				.default
+					.undef	bool.t
+				.case	typesyn
+pos1.0			.fkarg	0	gsdl.sourcepos.t
+nm1				.fkarg	1	gsdl.var.t
+pos1.1				.fkarg	2	gsdl.sourcepos.t
+tye1				.fkarg	3	gsdl.cgs.typeenv.typeexpansion.t
+nm.eq					.apply	gsdl.var.≡	|	nm0	nm1
+tye.eq					.apply	gsdl.cgs.typeenv.typeexpansion.≡	|	tye0	tye1
+					.app	nm.eq	tye.eq
+					.enter	bool.∧
+		.case	undef
+pos0		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+pos1		.fkarg	2	gsdl.sourcepos.t
+ty		.fkarg	3	gsdl.cgs.gstype.t
+			.undef	bool.t
+	-- > :: bool.t
 
 -- §section §gs{gsdl.cgs.gsexpr.generator.t} Constructors
 
