@@ -652,6 +652,7 @@ bool.true	.gvar
 list.≡	.gvar
 gsdl.cgs.gstype.field.≡	.gvar
 gsdl.cgs.gstype.constr.≡	.gvar
+gsdl.var.≡	.gvar
 ty0.0	.fv	gsdl.cgs.gstype.prim.u
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0.0	abstype	app	definedprim	elimprim	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
@@ -734,7 +735,13 @@ cs1				.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 					.enter	list.≡	gsdl.cgs.gstype.constr.t
 		.case	var
 v0		.fkarg	0	gsdl.var.t
-			.undef	bool.t
+			.danalyze	ty1.0	var
+				.default
+					.undef	bool.t
+				.case	var
+v1				.fkarg	0	gsdl.var.t
+					.app	v0	v1
+					.enter	gsdl.var.≡
 	-- > :: bool.t
 
 -- §section §gs{gsdl.cgs.gstype.fmtgs}
