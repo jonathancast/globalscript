@@ -6,7 +6,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.eq.expr.nothing.just	_test.fmtgs	_test.parse.empty.document	_test.parse.expr.document	_test.parse.typesig.document	_test.freevars.expr.document
+_tests	.list	test.property.t	_test.eq.gstype.nothing.just	_test.eq.expr.nothing.just	_test.fmtgs	_test.parse.empty.document	_test.parse.expr.document	_test.parse.typesig.document	_test.parse.gens.document	_test.freevars.expr.document
 
 _test.eq.gstype.nothing.just	.closure	_test.eq.gstype.nothing.just_c
 _test.eq.gstype.nothing.just_label	.string	〈\s'gstype\s∝\snothing;\s〉\s≡\s〈\s'gstype\s∝\sjust\s(product\s[]);\s〉
@@ -35,6 +35,11 @@ _test.parse.expr.document_t.s	.string	t
 _test.parse.typesig.document	.closure	_test.parse.typesig.document_c
 _test.parse.typesig.document_label	.string	parse\sdocument.parser\sqq{"defn\sbool.t\s"⊲\s::\sbool.t;}
 _test.parse.typesig.document_input	.string	"defn\sbool.t\s"⊲\s::\sbool.t;
+
+_test.parse.gens.document	.closure	_test.parse.gens.document_c
+_test.parse.gens.document_label	.string	parse\sdocument.parser\sqq{::\st;\\ntype\st\s=\s"Π〈〉;\\n}
+_test.parse.gens.document_input	.string	::\st;\ntype\st\s=\s"Π〈〉;\n
+_test.parse.gens.document_t.s	.string	t
 
 _test.freevars.expr.document	.closure	_test.freevars.expr.document_c
 _test.freevars.expr.document_label	.string	freevars\s〈\s'expr\s∝\sjust\s_;\s〉
@@ -284,6 +289,66 @@ gsdl.cgs.document.t	.tygvar
 test.true	.gvar
 actual	.larg	gsdl.cgs.document.t
 	.enter	test.true
+
+-- §section §gs{parse qq{:: t;\\ntype t = "Π〈〉;\\n}}
+
+_test.parse.gens.document_c	.expr
+rune.t	.tygvar
+gsdl.cgs.document.t	.tygvar
+_test.parse.gens.document_k_c	.subcode
+test.property.label	.gvar
+_test.parse.gens.document_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.cgs.document.parser	.gvar
+_test.parse.gens.document_input	.gvar
+k	.closure	_test.parse.gens.document_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.document.t	|	parser.rune.advance	rune.print	gsdl.cgs.document.parser	_test.parse.gens.document_input	k
+	.app	_test.parse.gens.document_label	test
+	.enter	test.property.label
+
+_test.parse.gens.document_k_c	.expr
+gsdl.cgs.document.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.var.component.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+test.assert.eq	.gvar
+gsdl.cgs.document.≡	.gvar
+gsdl.cgs.document.fmtgs	.gvar
+maybe.nothing	.gvar
+gsdl.cgs.gsexpr.generator.typesyn	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_test.parse.gens.document_t.s	.gvar
+gsdl.cgs.gstype.product	.gvar
+maybe.just	.gvar
+gsdl.cgs.gstype.var	.gvar
+list.nil	.gvar
+natural.1	.gvar
+parser.test.assert.fixtures.sample.file.name	.gvar
+actual	.larg	gsdl.cgs.document.t
+nothing	.apply	maybe.nothing	gsdl.cgs.gsexpr.t
+nil.fs	.apply	list.nil	gsdl.cgs.gstype.field.t
+empty.prod	.apply	gsdl.cgs.gstype.product	|	nil.fs
+t.c0	.apply	gsdl.var.component.alphanum	|	_test.parse.gens.document_t.s
+t.cs	.apply	list.singleton	gsdl.var.component.t	|	t.c0
+t.v	.apply	gsdl.var.basevar	|	t.cs
+v.t.v	.apply	gsdl.cgs.gstype.var	|	t.v
+just.v.t.v	.apply	maybe.just	gsdl.cgs.gstype.t	|	v.t.v
+pos	.lrecord	0.col	natural.1	0.line	natural.1	file	parser.test.assert.fixtures.sample.file.name
+nil.tyl	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+tye	.lrecord	0	nil.tyl	1	empty.prod	|	gsdl.cgs.typeenv.typeexpansion.t
+g1	.apply	gsdl.cgs.gsexpr.generator.typesyn	|	pos	t.v	pos	tye
+gs	.apply	list.singleton	gsdl.cgs.gsexpr.generator.t	|	g1
+expected	.lrecord	expr	nothing	gens	gs	gstype	just.v.t.v	pos	pos	|	gsdl.cgs.document.t
+	.app	gsdl.cgs.document.≡	gsdl.cgs.document.fmtgs	actual	expected
+	.enter	test.assert.eq	gsdl.cgs.document.t
 
 -- §section §gs{freevars 〈 'expr ∝ just _; 〉}
 

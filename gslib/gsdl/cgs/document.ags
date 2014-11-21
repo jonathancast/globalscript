@@ -25,6 +25,8 @@ _gsdl.cgs.document.parser_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
 _gsdl.cgs.document.parser_ety_ty	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
@@ -33,12 +35,13 @@ _gsdl.cgs.document.parser_f_c	.subcode
 _gsdl.cgs.document.parser_expr.f_c	.subcode
 _gsdl.cgs.document.parser_expr.sig.f_c	.subcode
 _gsdl.cgs.document.parser_noexpr.f_c	.subcode
-parser.lift2	.gvar
+parser.lift3	.gvar
 parser.pos.get	.gvar
 parser.<*	.gvar
 parser.<|>	.gvar
 parser.map	.gvar
 gsdl.cgs.gsexpr.parser	.gvar
+parser.lift2	.gvar
 gsdl.cgs.gsexpr.parser.cast	.gvar
 gsdl.cgs.syntax.branch.l	.gvar
 gsdl.cgs.syntax.assoc.any	.gvar
@@ -46,6 +49,9 @@ parser.*>	.gvar
 gsdl.cgs.syntax.oftype	.gvar
 gsdl.cgs.gstype.parser.fun	.gvar
 gsdl.cgs.syntax.semi	.gvar
+parser.many	.gvar
+gsdl.cgs.gsexpr.generator.doc.parser	.gvar
+list.gen.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
 f	.closure	_gsdl.cgs.document.parser_f_c
 pos.get	.apply	parser.pos.get	rune.t
 typesig.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser.fun
@@ -59,23 +65,26 @@ expr.sig.p	.apply	parser.lift2	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gstype.t	_gsdl.
 -- §paragraph{No expression, just type signature}
 noexpr.f	.closure	_gsdl.cgs.document.parser_noexpr.f_c
 noexpr.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	_gsdl.cgs.document.parser_ety_ty	|	noexpr.f	typesig.p
--- §par
+-- §paragraph{Add them together}
 ep.p1.1	.apply	parser.<|>	rune.t	_gsdl.cgs.document.parser_ety_ty	|	expr.sig.p	noexpr.p
 ep.p1	.apply	parser.<|>	rune.t	_gsdl.cgs.document.parser_ety_ty	|	expr.p	ep.p1.1
 ep.p	.apply	parser.<*	rune.t	_gsdl.cgs.document.parser_ety_ty	string.t	|	ep.p1	gsdl.cgs.syntax.semi
-	.app	f	pos.get	ep.p
-	.enter	parser.lift2	rune.t	parser.pos.t	_gsdl.cgs.document.parser_ety_ty	gsdl.cgs.document.t
+-- §paragraph{Generators}
+gens.p	.apply	parser.many	rune.t	gsdl.cgs.gsexpr.generator.t	|	gsdl.cgs.gsexpr.generator.doc.parser
+	.app	f	pos.get	ep.p	gens.p
+	.enter	parser.lift3	rune.t	parser.pos.t	_gsdl.cgs.document.parser_ety_ty	list.gen.ty	gsdl.cgs.document.t
 
 _gsdl.cgs.document.parser_f_c	.expr
 parser.pos.t	.tygvar
 _gsdl.cgs.document.parser_ety_ty	.tygvar
+list.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.document.prim.u	.tygvar
 list.nil	.gvar
 gsdl.sourcepos	.gvar
 pos0	.larg	parser.pos.t
 ety	.larg	_gsdl.cgs.document.parser_ety_ty
-gs	.apply	list.nil	gsdl.cgs.gsexpr.generator.t
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
 pos1	.undefined	parser.pos.t
 mbe	.lfield	0	ety
 mbty	.lfield	1	ety
