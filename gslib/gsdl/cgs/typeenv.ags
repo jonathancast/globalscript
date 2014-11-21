@@ -41,6 +41,10 @@ gsdl.cgs.typeenv.typeexpansion.substty	.closure	_gsdl.cgs.typeenv.typeexpansion.
 
 gsdl.cgs.typeenv.typeexpansion.togstype	.closure	_gsdl.cgs.typeenv.typeexpansion.togstype_c
 
+gsdl.cgs.typeenv.typeexpansion.≡	.closure	_gsdl.cgs.typeenv.typeexpansion.≡_c
+
+gsdl.cgs.typeenv.typeexpansion.tylambda.≡	.closure	_gsdl.cgs.typeenv.typeexpansion.tylambda.≡_c
+
 	.code
 
 -- §section §gs{gsdl.cgs.typeenv.gskind.get}
@@ -872,6 +876,36 @@ tyls1		.fkarg	1	list.t	gsdl.cgs.typeenv.typeexpansion.tylambda.t
 		.case	nil
 			.app	e
 			.enter	either.right	string.t	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.≡}
+
+_gsdl.cgs.typeenv.typeexpansion.≡_c	.expr
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+bool.t	.tygvar	-- Temp
+bool.∧	.gvar
+list.≡	.gvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.≡	.gvar
+gsdl.cgs.gstype.≡	.gvar
+tye0	.larg	gsdl.cgs.typeenv.typeexpansion.t
+tye1	.larg	gsdl.cgs.typeenv.typeexpansion.t
+tyls0	.lfield	0	tye0
+tyls1	.lfield	0	tye1
+tyls.eq	.apply	list.≡	gsdl.cgs.typeenv.typeexpansion.tylambda.t	|	gsdl.cgs.typeenv.typeexpansion.tylambda.≡	tyls0	tyls1
+ty0	.lfield	1	tye0
+ty1	.lfield	1	tye1
+ty.eq	.apply	gsdl.cgs.gstype.≡	|	ty0	ty1
+	.app	tyls.eq	ty.eq
+	.enter	bool.∧
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.tylambda.≡}
+
+_gsdl.cgs.typeenv.typeexpansion.tylambda.≡_c	.expr
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+bool.t	.tygvar	-- Temp
+tyl0	.larg	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+tyl1	.larg	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+	.undef	bool.t
 
 	.type
 
