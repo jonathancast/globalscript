@@ -24,6 +24,9 @@ gsdl.cgs.gsexpr.≡	.closure	_gsdl.cgs.gsexpr.≡_c	_gsdl.cgs.gsexpr.≡_ty
 
 gsdl.cgs.gsexpr.fmtgs	.closure	_gsdl.cgs.gsexpr.fmtgs_c
 
+gsdl.cgs.gsexpr.generator.doc.parser	.closure	_gsdl.cgs.gsexpr.generator.doc.parser_c
+_gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_type.re	.regex	type
+
 gsdl.cgs.gsexpr.generator.imp.parser	.closure	_gsdl.cgs.gsexpr.generator.imp.parser_c
 
 gsdl.cgs.gsexpr.generator.freevars	.closure	_gsdl.cgs.gsexpr.generator.freevars_c
@@ -617,6 +620,57 @@ gsdl.cgs.gsexpr.t	.tygvar
 fmtgs.printer.t	.tygvar	-- Temp
 e	.larg	gsdl.cgs.gsexpr.t
 	.undef	fmtgs.printer.t
+
+-- §section §gs{gsdl.cgs.gsexpr.generator.doc.parser}
+
+_gsdl.cgs.gsexpr.generator.doc.parser_c	.expr
+rune.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+_gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_c	.subcode
+typesyn.p	.closure	_gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_c
+	.enter	typesyn.p
+
+_gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+_gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_f_c	.subcode
+parser.<*	.gvar
+parser.lift4	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.keyword	.gvar
+_gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_type.re	.gvar
+gsdl.cgs.syntax.var.parser	.gvar
+natural.0	.gvar
+gsdl.cgs.syntax.equals	.gvar
+
+gsdl.cgs.typeenv.typeexpansion.parser	.gvar
+gsdl.cgs.syntax.semi	.gvar
+parser.fail	.gvar	-- Temp
+f	.closure	_gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+type.p	.apply	gsdl.cgs.syntax.keyword	|	_gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_type.re
+var.p	.apply	gsdl.cgs.syntax.var.parser	|	natural.0
+nm.p	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	type.p	var.p
+pos1.p	.apply	parser.*>	rune.t	string.t	parser.pos.t	|	gsdl.cgs.syntax.equals	pos.get
+p	.apply	parser.lift4	rune.t	parser.pos.t	gsdl.var.t	parser.pos.t	gsdl.cgs.typeenv.typeexpansion.t	gsdl.cgs.gsexpr.generator.t	|	f	pos.get	nm.p	pos1.p	gsdl.cgs.typeenv.typeexpansion.parser
+	.app	p	gsdl.cgs.syntax.semi
+	.enter	parser.<*	rune.t	gsdl.cgs.gsexpr.generator.t	string.t
+
+_gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+pos0.0	.larg	parser.pos.t
+v	.larg	gsdl.var.t
+pos1.0	.larg	parser.pos.t
+tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
+	.undef	gsdl.cgs.gsexpr.generator.t
 
 -- §section §gs{gsdl.cgs.gsexpr.generator.imp.parser}
 

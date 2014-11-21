@@ -6,7 +6,7 @@
 
 	.closure	_epcode
 
-_tests	.list	test.property.t	_test_parse_gsexpr_expr.heavy.cast	_test_parse_gsexpr_lambda	_test_freevars_expr.heavy.cast
+_tests	.list	test.property.t	_test_parse_gsexpr_expr.heavy.cast	_test_parse_gsexpr_lambda	_test_parse_generator.doc_type	_test_freevars_expr.heavy.cast
 
 _test_parse_gsexpr_expr.heavy.cast	.closure	_test_parse_gsexpr_expr.heavy.cast_c
 _test_parse_gsexpr_expr.heavy.cast_label	.string	parse\sgsexpr.parser\sqq{"defn\sbool.t\s"⊲}
@@ -17,6 +17,10 @@ _test_parse_gsexpr_expr.heavy.cast_t.s	.string	t
 _test_parse_gsexpr_lambda	.closure	_test_parse_gsexpr_lambda_c
 _test_parse_gsexpr_lambda_label	.string	parse\sgsexpr.parser\sqq{λ\sx\s::\st.\s::\st}
 _test_parse_gsexpr_lambda_input	.string	λ\sx\s::t.\s::\st
+
+_test_parse_generator.doc_type	.closure	_test_parse_generator.doc_type_c
+_test_parse_generator.doc_type_label	.string	parse\sgenerator.doc.parser\sqq{type\st\s=\s"Π〈〉;}
+_test_parse_generator.doc_type_input	.string	type\st\s=\s"Π〈〉;
 
 _test_freevars_expr.heavy.cast	.closure	_test_freevars_expr.heavy.cast_c
 _test_freevars_expr.heavy.cast_label	.string	freevars\s(expr.heavy.cast\s_)
@@ -107,6 +111,30 @@ _test_parse_gsexpr_lambda_k_c	.expr
 gsdl.cgs.gsexpr.t	.tygvar
 test.true	.gvar
 e	.larg	gsdl.cgs.gsexpr.t
+	.enter	test.true
+
+-- §section §gs{parse generator.doc.parser qq{type t = "Π〈〉;}}
+
+_test_parse_generator.doc_type_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+_test_parse_generator.doc_type_k_c	.subcode
+test.property.label	.gvar
+_test_parse_generator.doc_type_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.cgs.gsexpr.generator.doc.parser	.gvar
+_test_parse_generator.doc_type_input	.gvar
+k	.closure	_test_parse_generator.doc_type_k_c
+test	.apply	parser.test.assert.passes	rune.t	gsdl.cgs.gsexpr.generator.t	|	parser.rune.advance	rune.print	gsdl.cgs.gsexpr.generator.doc.parser	_test_parse_generator.doc_type_input	k
+	.app	_test_parse_generator.doc_type_label	test
+	.enter	test.property.label
+
+_test_parse_generator.doc_type_k_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
+test.true	.gvar
+e	.larg	gsdl.cgs.gsexpr.generator.t
 	.enter	test.true
 
 -- §section §gs{freevars (expr.heavy.cast _)}
