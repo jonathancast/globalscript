@@ -640,10 +640,22 @@ r	.record	kinds	kis2	typedefinitions	tyds2	typeexpansions	es2	|	gsdl.cgs.typeenv
 -- §section §gs{gsdl.cgs.typeenv.typeexpansion.parser}
 
 _gsdl.cgs.typeenv.typeexpansion.parser_c	.expr
-rune.t	.tygvar	-- Temp
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar	-- Temp
+rune.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.parser_ty.f_c	.subcode
+parser.map	.gvar
+gsdl.cgs.gstype.parser	.gvar
 parser.fail	.gvar	-- Temp
-	.enter	parser.fail	rune.t	gsdl.cgs.typeenv.typeexpansion.t
+ty.f	.closure	_gsdl.cgs.typeenv.typeexpansion.parser_ty.f_c
+ty.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.typeenv.typeexpansion.t	|	ty.f	gsdl.cgs.gstype.parser
+	.enter	ty.p
+
+_gsdl.cgs.typeenv.typeexpansion.parser_ty.f_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar	-- Temp
+ty	.larg	gsdl.cgs.gstype.t
+	.undef	gsdl.cgs.typeenv.typeexpansion.t
 
 -- §section §gs{gsdl.cgs.typeenv.typeexpansion.app}
 
