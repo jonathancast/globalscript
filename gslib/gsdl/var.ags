@@ -168,8 +168,8 @@ _gsdl.var.parser_base.p_k_:_nil_alphanum_k	.forcecont
 gsdl.var.t	.tygvar
 bool.prim.u	.tygvar
 rune.t	.tygvar
-parser.t	.tygvar	-- Temp
 parser.unit	.gvar
+parser.fail	.gvar
 v	.fv	gsdl.var.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
@@ -177,7 +177,7 @@ b0	.karg	bool.prim.u
 			.app	v
 			.enter	parser.unit	rune.t	gsdl.var.t
 		.case	true
-			.undef	parser.t	rune.t	gsdl.var.t
+			.enter	parser.fail	rune.t	gsdl.var.t
 
 _gsdl.var.parser_base.p_k_:_nil_symbolic_k	.forcecont
 gsdl.var.t	.tygvar
