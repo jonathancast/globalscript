@@ -657,9 +657,14 @@ ty.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.typeenv.typeexpansion.t
 
 _gsdl.cgs.typeenv.typeexpansion.parser_ty.f_c	.expr
 gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar	-- Temp
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.prim.u	.tygvar
+list.nil	.gvar
 ty	.larg	gsdl.cgs.gstype.t
-	.undef	gsdl.cgs.typeenv.typeexpansion.t
+nil	.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+res	.record	0	nil	1	ty	|	gsdl.cgs.typeenv.typeexpansion.prim.u
+	.lift
+	.yield	res
 
 -- §section §gs{gsdl.cgs.typeenv.typeexpansion.app}
 
