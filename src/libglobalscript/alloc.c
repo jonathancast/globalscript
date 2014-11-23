@@ -403,6 +403,8 @@ gs_sys_block_alloc(registered_block_class cl)
         ; \
     } while (0)
 
+#define MAX_FREE_MEMORY_AMOUNT ((ulong)(BLOCK_SIZE - sizeof(struct gs_blockdesc)))
+
 void *
 gs_sys_block_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulong align)
 {
@@ -417,6 +419,11 @@ gs_sys_block_suballoc(registered_block_class cl, void **pnursury, ulong sz, ulon
         nursury_block = BLOCK_CONTAINING(*pnursury);
     }
 
+    if (sz > MAX_FREE_MEMORY_AMOUNT) {
+        /* Uh-oh!  About to allocate too much memory! */
+        gswarning("Allocating %ulx bytes out of a %s block, but only have %ulx bytes available in a whole block", sz, cl->description, MAX_FREE_MEMORY_AMOUNT);
+        return 0;
+    }
     if ((uchar*)*pnursury + sz > (uchar*)END_OF_BLOCK(nursury_block)) {
         nursury_block = gs_sys_block_alloc(cl);
         *pnursury = START_OF_BLOCK(nursury_block);
