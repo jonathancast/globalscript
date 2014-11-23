@@ -550,11 +550,30 @@ nil	.apply	list.nil	α
 _list.>>=_c	.expr
 list.t	.tygvar
 _list.>>=_f_ty	.tygvar
+_list.>>=_k	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
 xn	.larg	list.t	α
 f	.larg	_list.>>=_f_ty	α	β
-	.undef	list.t	β
+	.force	_list.>>=_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.>>=_k	.forcecont
+list.prim.u	.tygvar
+list.t	.tygvar
+list.nil	.gvar
+α	.tyfv	*
+β	.tyfv	*
+xn0	.karg	list.prim.u	α
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	list.t	β
+		.case	nil
+			.enter	list.nil	β
 
 -- §section §gs{list.byZip.map2}
 
