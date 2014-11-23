@@ -591,12 +591,13 @@ struct gsbco_forward {
     struct gsbco *dest;
 };
 
-static int gs_gc_trace_bco_instrs(struct gsstringbuilder *, void *, void *, void *);
+static int gs_gc_trace_bco_instrs(struct gsstringbuilder *, void *, void *, void *, void *);
 
 int
 gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
 {
     struct gsbco *bco, *newbco;
+    void *enewbco;
     struct gsbco_forward *fwd;
     void *pin;
     gsvalue gctemp;
@@ -611,6 +612,7 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
     }
 
     newbco = gsreservebytecode(bco->size);
+    enewbco = (uchar*)newbco + bco->size;
     memcpy(newbco, bco, bco->size);
 
     if (bco->size < sizeof(struct gsbco_forward)) {
@@ -625,27 +627,44 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
 
     pin = (uchar*)newbco + sizeof(struct gsbco);
 
+    if (newbco->numsubexprs > 0x100) {
+      gsstring_builder_print(err, "%P: claims to have %ux subcodes, which is impossible", newbco->pos, newbco->numsubexprs);
+      return -1;
+    }
     for (i = 0; i < newbco->numsubexprs; i++) {
         struct gsbco **psubcode = (struct gsbco **)pin;
+        if ((uchar*)psubcode >= (uchar*)enewbco) {
+            gsstring_builder_print(err, "%P: ran out of bco after %ux of %ux subcodes, which is impossible", newbco->pos, i, newbco->numsubexprs);
+        }
         if (gs_gc_trace_bco(err, psubcode) < 0) return -1;
         pin = psubcode + 1;
     }
 
+    if (newbco->numglobals > 0x100) {
+      gsstring_builder_print(err, "%P: claims to have %ux global variables, which is impossible", newbco->pos, newbco->numglobals);
+      return -1;
+    }
     for (i = 0; i < newbco->numglobals; i++) {
         gsvalue *pglobal = (gsvalue *)pin;
+        if ((uchar*)pglobal >= (uchar*)enewbco) {
+            gsstring_builder_print(err, "%P: ran out of bco after %ux of %ux global variables, which is impossible", newbco->pos, i, newbco->numglobals);
+        }
         if (GS_GC_TRACE(err, pglobal) < 0) return -1;
         pin = pglobal + 1;
     }
 
-    if (gs_gc_trace_bco_instrs(err, bco, newbco, pin) < 0) return -1;
+    if ((uchar*)pin + sizeof(struct gsbc) > (uchar*)enewbco) {
+        gsstring_builder_print(err, "%P: ran out of bco before first instruction, which is impossible", newbco->pos);
+        return -1;
+    }
+    if (gs_gc_trace_bco_instrs(err, bco, newbco, enewbco, pin) < 0) return -1;
 
     *ppbco = newbco;
     return 0;
 }
 
-static
 int
-gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase, void *pin)
+gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase, void *enewbase, void *pin)
 {
     int i;
 
@@ -711,12 +730,23 @@ gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase
                 pcases = ACE_ANALYZE_CASES(ip);
                 pcases[0] = (void*)((uchar*)newbase + ((uchar*)pcases[0] - (uchar*)oldbase));
                 ncases = (struct gsbc **)pcases[0] - pcases;
+                if (ncases >= 0x100) {
+                    gsstring_builder_print(err, "%P: appears to have %ux cases, which is impossible", ip->pos, ncases);
+                }
                 for (i = 1; i < ncases; i++)
                     pcases[i] = (void*)((uchar*)newbase + ((uchar*)pcases[i] - (uchar*)oldbase))
                 ;
-                for (i = 0; i < ncases; i++)
-                    if (gs_gc_trace_bco_instrs(err, oldbase, newbase, pcases[i]) < 0) return -1
-                ;
+                for (i = 0; i < ncases; i++) {
+                    if ((uchar*)pcases[i] < (uchar*)ip) {
+                        gsstring_builder_print(err, "%P: case %d is below the .analyze instruction, which is impossible", ip->pos, i);
+                        return -1;
+                    }
+                    if ((uchar*)pcases[i] + sizeof(struct gsbc) > (uchar*)enewbase) {
+                        gsstring_builder_print(err, "%P: ran out of bco before first instruction, of case %d, which is impossible", ip->pos, i);
+                        return -1;
+                    }
+                    if (gs_gc_trace_bco_instrs(err, oldbase, newbase, enewbase, pcases[i]) < 0) return -1;
+                }
                 return 0;
             }
             case gsbc_op_danalyze: {
@@ -728,7 +758,15 @@ gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase
 
                 for (i = 0; i < ncases + 1; i++) {
                     pcases[i] = (void*)((uchar*)newbase + ((uchar*)pcases[i] - (uchar*)oldbase));
-                    if (gs_gc_trace_bco_instrs(err, oldbase, newbase, pcases[i]) < 0) return -1;
+                    if ((uchar*)pcases[i] < (uchar*)ip) {
+                        gsstring_builder_print(err, "%P: case %d is below the .analyze instruction, which is impossible", ip->pos, i);
+                        return -1;
+                    }
+                    if ((uchar*)pcases[i] + sizeof(struct gsbc) > (uchar*)enewbase) {
+                        gsstring_builder_print(err, "%P: ran out of bco before first instruction, of case %d, which is impossible", ip->pos, i);
+                        return -1;
+                    }
+                    if (gs_gc_trace_bco_instrs(err, oldbase, newbase, enewbase, pcases[i]) < 0) return -1;
                 }
             }
             case gsbc_op_undef:
@@ -742,6 +780,10 @@ gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase
             default:
                 gsstring_builder_print(err, UNIMPL("%P: Skip instruction %d"), ip->pos, ip->instr);
                 return -1;
+        }
+        if ((uchar*)pin + sizeof(struct gsbc) > (uchar*)enewbase) {
+            gsstring_builder_print(err, "%P: ran out of bco before next instruction, which is impossible", ip->pos);
+            return -1;
         }
     }
 }
