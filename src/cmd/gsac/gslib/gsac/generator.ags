@@ -5,6 +5,7 @@
 	.data
 
 gsac.generator.doc.annotate	.closure	_gsac.generator.doc.annotate_c
+_gsac.generator.doc.annotate_w	.closure	_gsac.generator.doc.annotate_w_c	_gsac.generator.doc.annotate_w_ty
 
 gsac.generator.items	.closure	_gsac.generator.items_c
 
@@ -54,15 +55,53 @@ sym	.larg	gsdl.cgs.symbol.t
 	.undef	maybe.t	gsac.generator.item.t
 
 _gsac.generator.doc.annotate_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsac.generator.item.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-gsdl.cgs.typeenv.t	.tygvar	-- Temp
+_gsac.generator.doc.annotate_k1	.subcode
 scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
-e0	.karg	list.prim.u	scc.item.ty
-	.undef	either.t	string.t	gsdl.cgs.typeenv.t
+env	.fv	gsdl.cgs.typeenv.t
+sccs0	.karg	list.prim.u	scc.item.ty
+	.force	_gsac.generator.doc.annotate_k1
+	.enter	env
+
+_gsac.generator.doc.annotate_k1	.forcecont
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsac.generator.item.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+_gsac.generator.doc.annotate_w	.gvar
+_gsdl.cgs.typeenv.empty_u	.gvar
+scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
+sccs0	.fv	list.prim.u	scc.item.ty
+env0	.karg	gsdl.cgs.typeenv.u
+	.app	env0	_gsdl.cgs.typeenv.empty_u	sccs0
+	.yield	_gsac.generator.doc.annotate_w
+
+_gsac.generator.doc.annotate_w_c	.expr
+gsdl.cgs.typeenv.u	.tygvar
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsac.generator.item.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+either.t	.tygvar	-- Temp
+either.right	.gvar
+env0	.arg	gsdl.cgs.typeenv.u
+env1	.arg	gsdl.cgs.typeenv.u
+scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
+sccs	.arg	list.prim.u	scc.item.ty
+	.analyze	sccs	:	nil
+		.case	:
+scc0		.fkarg	0	graph.scc.t	gsac.generator.item.t
+sccs1		.fkarg	1	list.t	scc.item.ty
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+		.case	nil
+env1.l			.lifted	env1
+			.app	env1.l
+			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
 -- §section §gs{gsac.generator.items}
 
@@ -101,3 +140,19 @@ gsac.generator.item.prim.u	.tygvar
 
 gsac.generator.item.prim.u	.tyexpr
 	.tysum
+
+-- §section §gs{gsac.generator.doc.annotate}
+
+_gsac.generator.doc.annotate_w_ty	.tyexpr
+gsdl.cgs.typeenv.u	.tygvar
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsac.generator.item.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
+	.tyfun	gsdl.cgs.typeenv.u
+	.tyfun	gsdl.cgs.typeenv.u
+	.tyfun	list.prim.u	scc.item.ty
+	.tyref	either.t	string.t	gsdl.cgs.typeenv.t
