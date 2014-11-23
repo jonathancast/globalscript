@@ -25,6 +25,8 @@ list.<>	.closure	_list.<>_c	_list.<>_ty
 
 list.concat	.closure	_list.concat_c
 
+list.>>=	.closure	_list.>>=_c	_list.>>=_ty
+
 list.byZip.map2	.closure	_list.byZip.map2_c	_list.byZip.map2_ty
 
 list.sort	.closure	_list.sort_c	_list.sort_ty
@@ -543,6 +545,17 @@ nil	.apply	list.nil	α
 	.app	<>	nil
 	.enter	list.foldr	list.α.ty	list.α.ty
 
+-- §section §gs{list.>>=}
+
+_list.>>=_c	.expr
+list.t	.tygvar
+_list.>>=_f_ty	.tygvar
+α	.tyarg	*
+β	.tyarg	*
+xn	.larg	list.t	α
+f	.larg	_list.>>=_f_ty	α	β
+	.undef	list.t	β
+
 -- §section §gs{list.byZip.map2}
 
 _list.byZip.map2_c	.expr
@@ -1045,6 +1058,27 @@ list.t	.tygvar
 	.tylift
 	.tyfun	list.t	α
 	.tyref	list.t	α
+
+-- §section §gs{list.>>=}
+
+_list.>>=_ty	.tyexpr
+list.t	.tygvar
+_list.>>=_f_ty	.tygvar
+α	.tyforall	*
+β	.tyforall	*
+	.tylift
+	.tyfun	list.t	α
+	.tylift
+	.tyfun	_list.>>=_f_ty	α	β
+	.tyref	list.t	β
+
+_list.>>=_f_ty	.tyexpr
+list.t	.tygvar
+α	.tylambda	*
+β	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	list.t	β
 
 -- §section §gs{list.byZip.map2}
 
