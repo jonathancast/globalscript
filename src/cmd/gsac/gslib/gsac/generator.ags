@@ -21,11 +21,47 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar
+gsac.generator.item.t	.tygvar
+graph.scc.t	.tygvar
+_gsac.generator.doc.annotate_get_c	.subcode
+_gsac.generator.doc.annotate_k	.subcode
+list.t.out	.cogvar
+graph.tsort	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsac.generator.item.deps	.gvar
+list.map	.gvar
+gsac.generator.item.name	.gvar
+list.>>=	.gvar
+gsac.generator.items	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
+get	.closure	_gsac.generator.doc.annotate_get_c
+items	.apply	list.>>=	gsdl.cgs.gsexpr.generator.t	gsac.generator.item.t	|	gs	gsac.generator.items
+syms	.apply	list.map	gsac.generator.item.t	gsdl.cgs.symbol.t	|	gsac.generator.item.name	items
+	.force	_gsac.generator.doc.annotate_k
+	.coerce	list.t.out	scc.item.ty
+	.app	gsdl.cgs.symbol.compare	gsac.generator.item.deps	get	syms
+	.enter	graph.tsort	gsdl.cgs.symbol.t	gsac.generator.item.t
+
+_gsac.generator.doc.annotate_get_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+maybe.t	.tygvar	-- Temp
+gsac.generator.item.t	.tygvar	-- Temp
+sym	.larg	gsdl.cgs.symbol.t
+	.undef	maybe.t	gsac.generator.item.t
+
+_gsac.generator.doc.annotate_k	.forcecont
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsac.generator.item.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+gsdl.cgs.typeenv.t	.tygvar	-- Temp
+scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
+e0	.karg	list.prim.u	scc.item.ty
 	.undef	either.t	string.t	gsdl.cgs.typeenv.t
 
 -- §section §gs{gsac.generator.items}
