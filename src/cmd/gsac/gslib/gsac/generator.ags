@@ -21,3 +21,5 @@ pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
 	.undef	either.t	string.t	gsdl.cgs.typeenv.t
+
+	.type
