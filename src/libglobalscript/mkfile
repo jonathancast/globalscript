@@ -104,6 +104,11 @@ test:V: $O.test
 
 integration-test:V: test test-rc
 
+TEST_GSAC_FILES=./test-fixtures/invalid-type-op-core-source.gsac
+
+./test-fixtures/invalid-type-op-core-source.gsac: ./test-fixtures/invalid-type-op-core-source.cgs
+	touch $target
+
 test-rc:V: rc/test $O.test-gsi $O.test-gsexec $TEST_GSAC_FILES
     ./rc/test
 
