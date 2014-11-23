@@ -17,4 +17,4 @@ _gsdl.syntax.keywords_pipe.s	.string	|
 
 gsdl.syntax.alphanum.cont.char.re	.regex	[a-z0-9A-Z]
 
-gsdl.syntax.symbolic.cont.char.re	.regex	[+*/:≡≠<>\-|≤∧∨]
+gsdl.syntax.symbolic.cont.char.re	.regex	[+*/:≡≠<>\-|≤∧∨=]
