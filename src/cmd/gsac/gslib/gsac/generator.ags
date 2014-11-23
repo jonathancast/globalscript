@@ -6,6 +6,8 @@
 
 gsac.generator.doc.annotate	.closure	_gsac.generator.doc.annotate_c
 
+gsac.generator.items	.closure	_gsac.generator.items_c
+
 gsac.generator.item.name	.closure	_gsac.generator.item.name_c
 
 gsac.generator.item.deps	.closure	_gsac.generator.item.deps_c
@@ -25,6 +27,15 @@ pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
 	.undef	either.t	string.t	gsdl.cgs.typeenv.t
+
+-- §section §gs{gsac.generator.items}
+
+_gsac.generator.items_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
+list.t	.tygvar	-- Temp
+gsac.generator.item.t	.tygvar	-- Temp
+g	.larg	gsdl.cgs.gsexpr.generator.t
+	.undef	list.t	gsac.generator.item.t
 
 -- §section §gs{gsac.generator.item.name}
 
