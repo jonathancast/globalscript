@@ -23,3 +23,13 @@ gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
 	.undef	either.t	string.t	gsdl.cgs.typeenv.t
 
 	.type
+
+-- §section §gs{gsac.generator.item.t}
+
+gsac.generator.item.t	.tyabstract	*
+gsac.generator.item.prim.u	.tygvar
+	.tylift
+	.tyref	gsac.generator.item.prim.u
+
+gsac.generator.item.prim.u	.tyexpr
+	.tysum
