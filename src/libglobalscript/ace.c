@@ -1920,7 +1920,8 @@ ace_thread_gcevacuate(struct gsstringbuilder *err, struct ace_thread *thread)
             switch (cont->node) {
                 case gsbc_cont_update:
                 case gsbc_cont_app:
-                case gsbc_cont_force: {
+                case gsbc_cont_force:
+                case gsbc_cont_strict: {
                     gsvalue *ret;
 
                     ret = (gsvalue*)((uchar*)thread->stacktop - sizeof(gsvalue));
