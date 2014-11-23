@@ -250,17 +250,17 @@ _gsac.document.annotate_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-_gsac.document.annotate_k	.subcode
+_gsac.document.annotate_right_k	.subcode
 maybe.t.out	.cogvar
 env	.larg	gsdl.cgs.typeenv.t
 doc	.larg	gsdl.cgs.document.t
 pos	.lfield	pos	doc
 mbexp	.lfield	expr	doc
-	.force	_gsac.document.annotate_k
+	.force	_gsac.document.annotate_right_k
 	.coerce	maybe.t.out	gsdl.cgs.gsexpr.t
 	.enter	mbexp
 
-_gsac.document.annotate_k	.forcecont
+_gsac.document.annotate_right_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 gsdl.sourcepos.t	.tygvar
@@ -269,8 +269,8 @@ gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-_gsac.document.annotate_just_k	.subcode
-_gsac.document.annotate_nothing_k	.subcode
+_gsac.document.annotate_right_just_k	.subcode
+_gsac.document.annotate_right_nothing_k	.subcode
 either.t.out	.cogvar
 maybe.t.out	.cogvar
 gsac.gsexpr.annotate	.gvar
@@ -282,23 +282,23 @@ gsty	.lfield	gstype	doc
 	.analyze	mbe0	just	nothing
 		.case	just
 e		.fkarg	0	gsdl.cgs.gsexpr.t
-			.force	_gsac.document.annotate_just_k
+			.force	_gsac.document.annotate_right_just_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.annotate_res.ty
 			.app	pos	env	e
 			.enter	gsac.gsexpr.annotate
 		.case	nothing
-			.force	_gsac.document.annotate_nothing_k
+			.force	_gsac.document.annotate_right_nothing_k
 			.coerce	maybe.t.out	gsdl.cgs.gstype.t
 			.enter	gsty
 
-_gsac.document.annotate_just_k	.forcecont
+_gsac.document.annotate_right_just_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-_gsac.document.annotate_just_right_k	.subcode
+_gsac.document.annotate_right_just_right_k	.subcode
 maybe.t.out	.cogvar
 either.left	.gvar
 env	.fv	gsdl.cgs.typeenv.t
@@ -312,11 +312,11 @@ err		.fkarg	0	string.t
 		.case	right
 e.r		.fkarg	0	_gsac.gsexpr.annotate_res.ty
 mbty			.lfield	gstype	doc
-			.force	_gsac.document.annotate_just_right_k
+			.force	_gsac.document.annotate_right_just_right_k
 			.coerce	maybe.t.out	gsdl.cgs.gstype.t
 			.enter	mbty
 
-_gsac.document.annotate_just_right_k	.forcecont
+_gsac.document.annotate_right_just_right_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
@@ -327,7 +327,7 @@ _gsac.gstype.annotate_res.ty	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 list.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
-_gsac.document.annotate_just_right_just_k	.subcode
+_gsac.document.annotate_right_just_right_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.annotate	.gvar
 either.right	.gvar
@@ -342,7 +342,7 @@ e.r.ty	.lfield	gstype	e.r
 	.analyze	mbty0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
-			.force	_gsac.document.annotate_just_right_just_k
+			.force	_gsac.document.annotate_right_just_right_just_k
 			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
 			.app	pos	env	ty
 			.enter	gsac.gstype.annotate
@@ -354,7 +354,7 @@ doc1			.lrecord	expr	mbe1	gens	gs1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
 			.app	doc1
 			.enter	either.right	string.t	gsdl.cgs.document.t
 
-_gsac.document.annotate_just_right_just_k	.forcecont
+_gsac.document.annotate_right_just_right_just_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
@@ -365,7 +365,7 @@ _gsac.gstype.annotate_res.ty	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.cgs.document.t	.tygvar	-- Temp
-_gsac.document.annotate_just_right_just_right_k	.subcode
+_gsac.document.annotate_right_just_right_just_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check	.gvar
 gsdl.cgs.gskind.lifted	.gvar
@@ -382,12 +382,12 @@ err		.fkarg	0	string.t
 ty.r		.fkarg	0	_gsac.gstype.annotate_res.ty
 ty.r.ty			.lfield	gstype	ty.r
 ky			.lfield	gskind	ty.r
-			.force	_gsac.document.annotate_just_right_just_right_k
+			.force	_gsac.document.annotate_right_just_right_just_right_k
 			.coerce	either.t.out	string.t	record.empty
 			.app	ky	gsdl.cgs.gskind.lifted
 			.enter	gsac.gskind.check
 
-_gsac.document.annotate_just_right_just_right_k	.forcecont
+_gsac.document.annotate_right_just_right_just_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
@@ -397,7 +397,7 @@ string.t	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.cgs.document.t	.tygvar	-- Temp
-_gsac.document.annotate_just_right_just_right_right_k	.subcode
+_gsac.document.annotate_right_just_right_just_right_right_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.check	.gvar
 pos	.fv	gsdl.sourcepos.t
@@ -412,12 +412,12 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.cgs.document.t
 		.case	right
 r		.fkarg	0	record.empty
-			.force	_gsac.document.annotate_just_right_just_right_right_k
+			.force	_gsac.document.annotate_right_just_right_just_right_right_k
 			.coerce	either.t.out	string.t	record.empty
 			.app	pos	env	e.r.ty	ty.r.ty
 			.enter	gsac.gstype.check
 
-_gsac.document.annotate_just_right_just_right_right_k	.forcecont
+_gsac.document.annotate_right_just_right_just_right_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -448,7 +448,7 @@ doc1			.lrecord	expr	mbe1	gens	gs1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
 			.app	doc1
 			.enter	either.right	string.t	gsdl.cgs.document.t
 
-_gsac.document.annotate_nothing_k	.forcecont
+_gsac.document.annotate_right_nothing_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 gsdl.sourcepos.t	.tygvar
@@ -457,7 +457,7 @@ gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-_gsac.document.annotate_nothing_just_k	.subcode
+_gsac.document.annotate_right_nothing_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.annotate	.gvar
 env	.fv	gsdl.cgs.typeenv.t
@@ -467,21 +467,21 @@ mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.cgs.gstype.t
-			.force	_gsac.document.annotate_nothing_just_k
+			.force	_gsac.document.annotate_right_nothing_just_k
 			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
 			.app	pos	env	ty
 			.enter	gsac.gstype.annotate
 		.case	nothing
 			.undef	either.t	string.t	gsdl.cgs.document.t
 
-_gsac.document.annotate_nothing_just_k	.forcecont
+_gsac.document.annotate_right_nothing_just_k	.forcecont
 gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 record.empty	.tygvar
-_gsac.document.annotate_nothing_just_right_k	.subcode
+_gsac.document.annotate_right_nothing_just_right_k	.subcode
 either.t.out	.cogvar
 either.left	.gvar
 gsac.gskind.check	.gvar
@@ -498,12 +498,12 @@ err		.fkarg	0	string.t
 ty.r		.fkarg	0	_gsac.gstype.annotate_res.ty
 ty.r.ty			.lfield	gstype	ty.r
 ty.r.ki			.lfield	gskind	ty.r
-			.force	_gsac.document.annotate_nothing_just_right_k
+			.force	_gsac.document.annotate_right_nothing_just_right_k
 			.coerce	either.t.out	string.t	record.empty
 			.app	ty.r.ki	gsdl.cgs.gskind.lifted
 			.enter	gsac.gskind.check
 
-_gsac.document.annotate_nothing_just_right_k	.forcecont
+_gsac.document.annotate_right_nothing_just_right_k	.forcecont
 gsdl.cgs.document.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
