@@ -4,5 +4,20 @@
 
 	.data
 
+gsac.generator.doc.annotate	.closure	_gsac.generator.doc.annotate_c
+
 	.code
 
+-- §section §gs{gsac.generator.doc.annotate}
+
+_gsac.generator.doc.annotate_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+	.undef	either.t	string.t	gsdl.cgs.typeenv.t
