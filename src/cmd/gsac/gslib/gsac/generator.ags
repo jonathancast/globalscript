@@ -7,11 +7,9 @@
 gsac.generator.doc.annotate	.closure	_gsac.generator.doc.annotate_c
 _gsac.generator.doc.annotate_w	.closure	_gsac.generator.doc.annotate_w_c	_gsac.generator.doc.annotate_w_ty
 
-gsac.generator.items	.closure	_gsac.generator.items_c
+gsac.generator.boundvar	.closure	_gsac.generator.boundvar_c
 
-gsac.generator.item.name	.closure	_gsac.generator.item.name_c
-
-gsac.generator.item.deps	.closure	_gsac.generator.item.deps_c
+gsac.generator.deps	.closure	_gsac.generator.deps_c
 
 	.code
 
@@ -23,58 +21,54 @@ gsdl.cgs.typeenv.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
-gsac.generator.item.t	.tygvar
 graph.scc.t	.tygvar
 _gsac.generator.doc.annotate_get_c	.subcode
 _gsac.generator.doc.annotate_k	.subcode
 list.t.out	.cogvar
 graph.tsort	.gvar
 gsdl.cgs.symbol.compare	.gvar
-gsac.generator.item.deps	.gvar
+gsac.generator.deps	.gvar
 list.map	.gvar
-gsac.generator.item.name	.gvar
-list.>>=	.gvar
-gsac.generator.items	.gvar
+gsac.generator.boundvar	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
-scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
+scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 get	.closure	_gsac.generator.doc.annotate_get_c
-items	.apply	list.>>=	gsdl.cgs.gsexpr.generator.t	gsac.generator.item.t	|	gs	gsac.generator.items
-syms	.apply	list.map	gsac.generator.item.t	gsdl.cgs.symbol.t	|	gsac.generator.item.name	items
+syms	.apply	list.map	gsdl.cgs.gsexpr.generator.t	gsdl.cgs.symbol.t	|	gsac.generator.boundvar	gs
 	.force	_gsac.generator.doc.annotate_k
-	.coerce	list.t.out	scc.item.ty
-	.app	gsdl.cgs.symbol.compare	gsac.generator.item.deps	get	syms
-	.enter	graph.tsort	gsdl.cgs.symbol.t	gsac.generator.item.t
+	.coerce	list.t.out	scc.gen.ty
+	.app	gsdl.cgs.symbol.compare	gsac.generator.deps	get	syms
+	.enter	graph.tsort	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
 
 _gsac.generator.doc.annotate_get_c	.expr
 gsdl.cgs.symbol.t	.tygvar
 maybe.t	.tygvar	-- Temp
-gsac.generator.item.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 sym	.larg	gsdl.cgs.symbol.t
-	.undef	maybe.t	gsac.generator.item.t
+	.undef	maybe.t	gsdl.cgs.gsexpr.generator.t
 
 _gsac.generator.doc.annotate_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
-gsac.generator.item.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 _gsac.generator.doc.annotate_k1	.subcode
-scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
+scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 env	.fv	gsdl.cgs.typeenv.t
-sccs0	.karg	list.prim.u	scc.item.ty
+sccs0	.karg	list.prim.u	scc.gen.ty
 	.force	_gsac.generator.doc.annotate_k1
 	.enter	env
 
 _gsac.generator.doc.annotate_k1	.forcecont
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
-gsac.generator.item.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
 _gsac.generator.doc.annotate_w	.gvar
 _gsdl.cgs.typeenv.empty_u	.gvar
-scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
-sccs0	.fv	list.prim.u	scc.item.ty
+scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+sccs0	.fv	list.prim.u	scc.gen.ty
 env0	.karg	gsdl.cgs.typeenv.u
 	.app	env0	_gsdl.cgs.typeenv.empty_u	sccs0
 	.yield	_gsac.generator.doc.annotate_w
@@ -83,7 +77,7 @@ _gsac.generator.doc.annotate_w_c	.expr
 gsdl.cgs.typeenv.u	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
-gsac.generator.item.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
@@ -91,55 +85,36 @@ either.t	.tygvar	-- Temp
 either.right	.gvar
 env0	.arg	gsdl.cgs.typeenv.u
 env1	.arg	gsdl.cgs.typeenv.u
-scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
-sccs	.arg	list.prim.u	scc.item.ty
+scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+sccs	.arg	list.prim.u	scc.gen.ty
 	.analyze	sccs	:	nil
 		.case	:
-scc0		.fkarg	0	graph.scc.t	gsac.generator.item.t
-sccs1		.fkarg	1	list.t	scc.item.ty
+scc0		.fkarg	0	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+sccs1		.fkarg	1	list.t	scc.gen.ty
 			.undef	either.t	string.t	gsdl.cgs.typeenv.t
 		.case	nil
 env1.l			.lifted	env1
 			.app	env1.l
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
--- §section §gs{gsac.generator.items}
+-- §section §gs{gsac.generator.boundvar}
 
-_gsac.generator.items_c	.expr
+_gsac.generator.boundvar_c	.expr
 gsdl.cgs.gsexpr.generator.t	.tygvar
-list.t	.tygvar	-- Temp
-gsac.generator.item.t	.tygvar	-- Temp
-g	.larg	gsdl.cgs.gsexpr.generator.t
-	.undef	list.t	gsac.generator.item.t
-
--- §section §gs{gsac.generator.item.name}
-
-_gsac.generator.item.name_c	.expr
-gsac.generator.item.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	-- Temp
-it	.larg	gsac.generator.item.t
+it	.larg	gsdl.cgs.gsexpr.generator.t
 	.undef	gsdl.cgs.symbol.t
 
--- §section §gs{gsac.generator.item.deps}
+-- §section §gs{gsac.generator.deps}
 
-_gsac.generator.item.deps_c	.expr
-gsac.generator.item.t	.tygvar
+_gsac.generator.deps_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
 list.t	.tygvar	-- Temp
 gsdl.cgs.symbol.t	.tygvar	-- Temp
-it	.larg	gsac.generator.item.t
+it	.larg	gsdl.cgs.gsexpr.generator.t
 	.undef	list.t	gsdl.cgs.symbol.t
 
 	.type
-
--- §section §gs{gsac.generator.item.t}
-
-gsac.generator.item.t	.tyabstract	*
-gsac.generator.item.prim.u	.tygvar
-	.tylift
-	.tyref	gsac.generator.item.prim.u
-
-gsac.generator.item.prim.u	.tyexpr
-	.tysum
 
 -- §section §gs{gsac.generator.doc.annotate}
 
@@ -147,12 +122,12 @@ _gsac.generator.doc.annotate_w_ty	.tyexpr
 gsdl.cgs.typeenv.u	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
-gsac.generator.item.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-scc.item.ty	.tylet	graph.scc.t	gsac.generator.item.t
+scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 	.tyfun	gsdl.cgs.typeenv.u
 	.tyfun	gsdl.cgs.typeenv.u
-	.tyfun	list.prim.u	scc.item.ty
+	.tyfun	list.prim.u	scc.gen.ty
 	.tyref	either.t	string.t	gsdl.cgs.typeenv.t
