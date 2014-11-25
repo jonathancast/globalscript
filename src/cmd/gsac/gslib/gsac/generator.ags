@@ -48,10 +48,13 @@ syms	.apply	list.map	gsdl.cgs.gsexpr.generator.t	gsdl.cgs.symbol.t	|	gsdl.cgs.gs
 
 _gsac.generator.doc.annotate_deps_c	.expr
 gsdl.cgs.gsexpr.generator.t	.tygvar
-list.t	.tygvar	-- Temp
-gsdl.cgs.symbol.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar
+ordered.set.tolist	.gvar
+gsdl.cgs.gsexpr.generator.freevars	.gvar
 g	.larg	gsdl.cgs.gsexpr.generator.t
-	.undef	list.t	gsdl.cgs.symbol.t
+fvs	.apply	gsdl.cgs.gsexpr.generator.freevars	|	g
+	.app	fvs
+	.enter	ordered.set.tolist	gsdl.cgs.symbol.t
 
 _gsac.generator.doc.annotate_gs.map.f_c	.expr
 gsdl.cgs.gsexpr.generator.t	.tygvar
