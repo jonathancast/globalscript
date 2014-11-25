@@ -7,8 +7,6 @@
 gsac.generator.doc.annotate	.closure	_gsac.generator.doc.annotate_c
 _gsac.generator.doc.annotate_w	.closure	_gsac.generator.doc.annotate_w_c	_gsac.generator.doc.annotate_w_ty
 
-gsac.generator.boundvar	.closure	_gsac.generator.boundvar_c
-
 gsac.generator.deps	.closure	_gsac.generator.deps_c
 
 	.code
@@ -33,7 +31,7 @@ gsac.generator.deps	.gvar
 list.foldr	.gvar
 ordered.map.empty	.gvar
 list.map	.gvar
-gsac.generator.boundvar	.gvar
+gsdl.cgs.gsexpr.generator.boundvar	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
@@ -43,7 +41,7 @@ gs.map.f	.closure	_gsac.generator.doc.annotate_gs.map.f_c
 empty	.apply	ordered.map.empty	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
 gs.map	.apply	list.foldr	gsdl.cgs.gsexpr.generator.t	map.symbol.gen.ty	|	gs.map.f	empty	gs
 get	.closure	_gsac.generator.doc.annotate_get_c
-syms	.apply	list.map	gsdl.cgs.gsexpr.generator.t	gsdl.cgs.symbol.t	|	gsac.generator.boundvar	gs
+syms	.apply	list.map	gsdl.cgs.gsexpr.generator.t	gsdl.cgs.symbol.t	|	gsdl.cgs.gsexpr.generator.boundvar	gs
 	.force	_gsac.generator.doc.annotate_k
 	.coerce	list.t.out	scc.gen.ty
 	.app	gsdl.cgs.symbol.compare	gsac.generator.deps	get	syms
@@ -55,10 +53,10 @@ ordered.map.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 ordered.map.insert	.gvar
 gsdl.cgs.symbol.compare	.gvar
-gsac.generator.boundvar	.gvar
+gsdl.cgs.gsexpr.generator.boundvar	.gvar
 g	.larg	gsdl.cgs.gsexpr.generator.t
 m	.larg	ordered.map.t	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
-g.sym	.apply	gsac.generator.boundvar	|	g
+g.sym	.apply	gsdl.cgs.gsexpr.generator.boundvar	|	g
 	.app	gsdl.cgs.symbol.compare	g.sym	g	m
 	.enter	ordered.map.insert gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
 
@@ -121,14 +119,6 @@ sccs1		.fkarg	1	list.t	scc.gen.ty
 env1.l			.lifted	env1
 			.app	env1.l
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
-
--- §section §gs{gsac.generator.boundvar}
-
-_gsac.generator.boundvar_c	.expr
-gsdl.cgs.gsexpr.generator.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar	-- Temp
-it	.larg	gsdl.cgs.gsexpr.generator.t
-	.undef	gsdl.cgs.symbol.t
 
 -- §section §gs{gsac.generator.deps}
 

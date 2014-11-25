@@ -29,6 +29,8 @@ _gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_type.re	.regex	type
 
 gsdl.cgs.gsexpr.generator.imp.parser	.closure	_gsdl.cgs.gsexpr.generator.imp.parser_c
 
+gsdl.cgs.gsexpr.generator.boundvar	.closure	_gsdl.cgs.gsexpr.generator.boundvar_c
+
 gsdl.cgs.gsexpr.generator.freevars	.closure	_gsdl.cgs.gsexpr.generator.freevars_c
 
 gsdl.cgs.gsexpr.generator.≡	.closure	_gsdl.cgs.gsexpr.generator.≡_c
@@ -729,6 +731,14 @@ pos0	.apply	gsdl.sourcepos	|	pos0.0	pos0.1
 pos1	.apply	gsdl.sourcepos	|	pos1.0	pos0.1
 	.app	pos0	v	pos1	ty
 	.enter	gsdl.cgs.gsexpr.generator.undef
+
+-- §section §gs{gsdl.cgs.gsexpr.generator.boundvar}
+
+_gsdl.cgs.gsexpr.generator.boundvar_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar -- Temp
+g	.larg	gsdl.cgs.gsexpr.generator.t
+	.undef	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gsexpr.generator.freevars}
 
