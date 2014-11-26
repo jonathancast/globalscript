@@ -725,9 +725,27 @@ r			.record	0	ls1	1	e1	|	gsdl.cgs.typeenv.typeexpansion.prim.u
 
 _gsdl.cgs.typeenv.typeexpansion.freevars_c	.expr
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
-ordered.set.t	.tygvar	-- Temp
-gsdl.cgs.symbol.t	.tygvar	-- Temp
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+_gsdl.cgs.typeenv.typeexpansion.freevars_f_c	.subcode
+list.foldr	.gvar
+gsdl.cgs.gstype.freevars	.gvar
 tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
+set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
+ls	.lfield	0	tye
+ty	.lfield	1	tye
+f	.closure	_gsdl.cgs.typeenv.typeexpansion.freevars_f_c
+ty.fvs	.apply	gsdl.cgs.gstype.freevars	|	ty
+	.app	f	ty.fvs	ls
+	.enter	list.foldr	gsdl.cgs.typeenv.typeexpansion.tylambda.t	set.symbol.ty
+
+_gsdl.cgs.typeenv.typeexpansion.freevars_f_c	.expr
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+tyl	.larg	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+fvs	.larg	ordered.set.t	gsdl.cgs.symbol.t
 	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.typeenv.typeexpansion.substty}
