@@ -37,6 +37,8 @@ gsdl.cgs.typeenv.typeexpansion.parser	.closure	_gsdl.cgs.typeenv.typeexpansion.p
 
 gsdl.cgs.typeenv.typeexpansion.app	.closure	_gsdl.cgs.typeenv.typeexpansion.app_c
 
+gsdl.cgs.typeenv.typeexpansion.freevars	.closure	_gsdl.cgs.typeenv.typeexpansion.freevars_c
+
 gsdl.cgs.typeenv.typeexpansion.substty	.closure	_gsdl.cgs.typeenv.typeexpansion.substty_c	_gsdl.cgs.typeenv.typeexpansion.substty_ty
 
 gsdl.cgs.typeenv.typeexpansion.togstype	.closure	_gsdl.cgs.typeenv.typeexpansion.togstype_c
@@ -718,6 +720,15 @@ e1			.apply	gsdl.cgs.gstype.app	|	e	tya
 r			.record	0	ls1	1	e1	|	gsdl.cgs.typeenv.typeexpansion.prim.u
 			.lift
 			.yield	r
+
+-- §section §gs{gsdl.cgs.typeenv.typeexpansion.freevars}
+
+_gsdl.cgs.typeenv.typeexpansion.freevars_c	.expr
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
+	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.typeenv.typeexpansion.substty}
 
