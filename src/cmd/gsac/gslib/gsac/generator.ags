@@ -122,7 +122,8 @@ gsdl.cgs.gsexpr.generator.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-either.t	.tygvar	-- Temp
+_gsac.generator.doc.annotate_w_:_k	.subcode
+graph.scc.t.out	.cogvar
 either.right	.gvar
 pos	.arg	gsdl.sourcepos.t
 env0	.arg	gsdl.cgs.typeenv.u
@@ -133,11 +134,50 @@ sccs	.arg	list.prim.u	scc.gen.ty
 		.case	:
 scc0		.fkarg	0	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 sccs1		.fkarg	1	list.t	scc.gen.ty
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+			.force	_gsac.generator.doc.annotate_w_:_k
+			.coerce	graph.scc.t.out	gsdl.cgs.gsexpr.generator.t
+			.enter	scc0
 		.case	nil
 env1.l			.lifted	env1
 			.app	env1.l
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
+
+_gsac.generator.doc.annotate_w_:_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+graph.scc.prim.u	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+string.t	.tygvar
+_gsac.generator.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+gsdl.cgs.typeenv.t	.tygvar	-- Temp
+_gsac.generator.doc.annotate_w_:_nonrecursive_k	.subcode
+either.t.out	.cogvar
+_gsdl.cgs.typeenv.overlay_w	.gvar
+gsac.generator.annotate	.gvar
+gsac.generator.annotate.context.doc	.gvar
+pos	.fv	gsdl.sourcepos.t
+env0	.fv	gsdl.cgs.typeenv.u
+env1	.fv	gsdl.cgs.typeenv.u
+scc0.0	.karg	graph.scc.prim.u	gsdl.cgs.gsexpr.generator.t
+env2	.apply	_gsdl.cgs.typeenv.overlay_w	|	env1	env0
+	.analyze	scc0.0	nonrecursive
+		.case	nonrecursive
+g		.fkarg	0	gsdl.cgs.gsexpr.generator.t
+			.force	_gsac.generator.doc.annotate_w_:_nonrecursive_k
+			.coerce	either.t.out	string.t	_gsac.generator.annotate_res.ty
+			.app	gsac.generator.annotate.context.doc	pos	env2	g
+			.enter	gsac.generator.annotate
+	-- > :: either.t	string.t	gsdl.cgs.typeenv.t
+
+_gsac.generator.doc.annotate_w_:_nonrecursive_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.generator.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+gsdl.cgs.typeenv.t	.tygvar	-- Temp
+g0	.karg	either.prim.u	string.t	_gsac.generator.annotate_res.ty
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
 
 -- §section §gs{gsac.generator.annotate}
 
