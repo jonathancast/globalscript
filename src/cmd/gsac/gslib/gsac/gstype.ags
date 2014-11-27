@@ -836,12 +836,38 @@ _gsac.gstype.typeexpansion.annotate_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gstype.typeexpansion.annotate_res.ty	.tygvar	-- Temp
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+_gsac.gstype.typeexpansion.annotate_w_ty	.tygvar
+_gsac.gstype.typeexpansion.annotate_tyl.annotate_c	.subcode
+_gsac.gstype.typeexpansion.annotate_tye.annotate_c	.subcode
+list.foldr	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
+tyl.annotate	.closure	_gsac.gstype.typeexpansion.annotate_tyl.annotate_c
+tye.annotate	.closure	_gsac.gstype.typeexpansion.annotate_tye.annotate_c
+tyls	.lfield	0	tye
+	.app	tyl.annotate	tye.annotate	tyls	env
+	.enter	list.foldr	gsdl.cgs.typeenv.typeexpansion.tylambda.t	_gsac.gstype.typeexpansion.annotate_w_ty
+
+_gsac.gstype.typeexpansion.annotate_tyl.annotate_c	.expr
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+_gsac.gstype.typeexpansion.annotate_w_ty	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gstype.typeexpansion.annotate_res.ty	.tygvar	-- Temp
+tyl	.larg	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+z	.larg	_gsac.gstype.typeexpansion.annotate_w_ty
+env	.larg	gsdl.cgs.typeenv.t
+	.undef	either.t	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
+
+_gsac.gstype.typeexpansion.annotate_tye.annotate_c	.expr
+gsdl.cgs.typeenv.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gstype.typeexpansion.annotate_res.ty	.tygvar	-- Temp
+env	.larg	gsdl.cgs.typeenv.t
 	.undef	either.t	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
 
 -- §section §gs{gsac.gstype.check}
@@ -3198,6 +3224,15 @@ _gsac.gstype.typeexpansion.annotate_res.u	.tygvar
 
 _gsac.gstype.typeexpansion.annotate_res.u	.tyexpr
 	.typroduct
+
+_gsac.gstype.typeexpansion.annotate_w_ty	.tyexpr
+gsdl.cgs.typeenv.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.typeexpansion.annotate_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tyref	either.t	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
 
 -- §section §gs{gsac.gstype.check}
 
