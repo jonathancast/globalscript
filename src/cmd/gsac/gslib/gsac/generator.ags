@@ -280,10 +280,19 @@ _gsac.generator.annotate_typesyn_right_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.typeexpansion.annotate_res.ty	.tygvar
+_gsac.generator.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-_gsac.generator.annotate_res.ty	.tygvar	-- Temp
+either.right	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
+		.case	right
+tye.r		.fkarg	0	_gsac.gstype.typeexpansion.annotate_res.ty
+res			.undefined	_gsac.generator.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.generator.annotate_res.ty
 
 -- §section §gs{gsac.generator.annotate.context.t} Constructors
 
