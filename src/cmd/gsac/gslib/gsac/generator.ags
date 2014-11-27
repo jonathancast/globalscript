@@ -9,6 +9,8 @@ _gsac.generator.doc.annotate_w	.closure	_gsac.generator.doc.annotate_w_c	_gsac.g
 
 gsac.generator.annotate	.closure	_gsac.generator.annotate_c	_gsac.generator.annotate_ty
 
+gsac.generator.annotate.context.doc	.closure	_gsac.generator.annotate.context.doc_c
+
 	.code
 
 -- §section §gs{gsac.generator.doc.annotate}
@@ -147,6 +149,16 @@ env	.larg	gsdl.cgs.typeenv.t
 g	.larg	gsdl.cgs.gsexpr.generator.t
 	.undef	either.t	string.t	_gsac.generator.annotate_res.ty
 
+-- §section §gs{gsac.generator.annotate.context.t} Constructors
+
+_gsac.generator.annotate.context.doc_c	.expr
+gsac.generator.annotate.context.prim.u	.tygvar
+gsac.generator.annotate.context.t.in	.cogvar
+res	.constr	gsac.generator.annotate.context.prim.u	doc
+	.coerce	gsac.generator.annotate.context.t.in
+	.lift
+	.yield	res
+
 	.type
 
 -- §section §gs{gsac.generator.annotate.context.t}
@@ -157,7 +169,8 @@ gsac.generator.annotate.context.prim.u	.tygvar
 	.tyref	gsac.generator.annotate.context.prim.u
 
 gsac.generator.annotate.context.prim.u	.tyexpr
-	.tysum
+record.unboxed.empty	.tygvar
+	.tysum	doc	record.unboxed.empty
 
 -- §section §gs{gsac.generator.doc.annotate}
 
@@ -202,3 +215,9 @@ _gsac.generator.annotate_res.u	.tygvar
 
 _gsac.generator.annotate_res.u	.tyexpr
 	.typroduct
+
+	.coercion
+
+gsac.generator.annotate.context.t.in	.tycoercion
+gsac.generator.annotate.context.t	.tygvar
+	.tydefinition	gsac.generator.annotate.context.t
