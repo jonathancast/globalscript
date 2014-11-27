@@ -146,14 +146,104 @@ gsac.generator.annotate.context.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.generator.annotate_res.ty	.tygvar	-- Temp
+_gsac.generator.annotate_kctxt	.subcode
+gsac.generator.annotate.context.t.out	.cogvar
 ctxt	.larg	gsac.generator.annotate.context.t
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 g	.larg	gsdl.cgs.gsexpr.generator.t
-	.undef	either.t	string.t	_gsac.generator.annotate_res.ty
+	.force	_gsac.generator.annotate_kctxt
+	.coerce	gsac.generator.annotate.context.t.out
+	.enter	ctxt
+
+_gsac.generator.annotate_kctxt	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsac.generator.annotate.context.prim.u	.tygvar
+_gsac.generator.annotate_kg	.subcode
+gsdl.cgs.gsexpr.generator.t.out	.cogvar
+env	.fv	gsdl.cgs.typeenv.t
+g	.fv	gsdl.cgs.gsexpr.generator.t
+ctxt0	.karg	gsac.generator.annotate.context.prim.u
+	.force	_gsac.generator.annotate_kg
+	.coerce	gsdl.cgs.gsexpr.generator.t.out
+	.enter	g
+
+_gsac.generator.annotate_kg	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsac.generator.annotate.context.prim.u	.tygvar
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.generator.annotate_res.ty	.tygvar	-- Temp
+_gsac.generator.annotate_typesyn_k	.subcode
+either.t.out	.cogvar
+either.right	.gvar
+record.empty	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+ctxt0	.fv	gsac.generator.annotate.context.prim.u
+g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
+	.analyze	g0	typesyn	undef
+		.case	typesyn
+pos0		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+pos1		.fkarg	2	gsdl.sourcepos.t
+tye		.fkarg	3	gsdl.cgs.typeenv.typeexpansion.t
+			.force	_gsac.generator.annotate_typesyn_k
+			.coerce	either.t.out	string.t	record.empty
+			.analyze	ctxt0	doc
+				.case	doc
+					.app	record.empty
+					.enter	either.right	string.t	record.empty
+		.case	undef
+pos0		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+pos1		.fkarg	2	gsdl.sourcepos.t
+ty		.fkarg	3	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
+	-- > :: either.t	string.t	_gsac.generator.annotate_res.ty
+
+_gsac.generator.annotate_typesyn_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+_gsac.gstype.typeexpansion.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.generator.annotate_res.ty	.tygvar	-- Temp
+_gsac.generator.annotate_typesyn_right_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.typeexpansion.annotate	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+pos1	.fv	gsdl.sourcepos.t
+tye	.fv	gsdl.cgs.typeenv.typeexpansion.t
+e0	.karg	either.prim.u	string.t	record.empty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
+		.case	right
+r		.fkarg	0	record.empty
+			.force	_gsac.generator.annotate_typesyn_right_k
+			.coerce	either.t.out	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
+			.app	pos1	env	tye
+			.enter	gsac.gstype.typeexpansion.annotate
+
+_gsac.generator.annotate_typesyn_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.typeexpansion.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.generator.annotate_res.ty	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
+			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
 
 -- §section §gs{gsac.generator.annotate.context.t} Constructors
 
@@ -228,4 +318,9 @@ _gsac.generator.annotate_res.u	.tyexpr
 
 gsac.generator.annotate.context.t.in	.tycoercion
 gsac.generator.annotate.context.t	.tygvar
+	.tydefinition	gsac.generator.annotate.context.t
+
+gsac.generator.annotate.context.t.out	.tycoercion
+gsac.generator.annotate.context.t	.tygvar
+	.tyinvert
 	.tydefinition	gsac.generator.annotate.context.t
