@@ -366,7 +366,8 @@ _gsac.generator.annotate_res.u	.tygvar
 	.tyref	_gsac.generator.annotate_res.u
 
 _gsac.generator.annotate_res.u	.tyexpr
-	.typroduct
+gsdl.cgs.typeenv.t	.tygvar
+	.typroduct	env	gsdl.cgs.typeenv.t
 
 	.coercion
 
