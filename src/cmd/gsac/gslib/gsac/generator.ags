@@ -131,6 +131,16 @@ env1.l			.lifted	env1
 
 	.type
 
+-- §section §gs{gsac.generator.annotate.context.t}
+
+gsac.generator.annotate.context.t	.tyabstract	*
+gsac.generator.annotate.context.prim.u	.tygvar
+	.tylift
+	.tyref	gsac.generator.annotate.context.prim.u
+
+gsac.generator.annotate.context.prim.u	.tyexpr
+	.tysum
+
 -- §section §gs{gsac.generator.doc.annotate}
 
 _gsac.generator.doc.annotate_w_ty	.tyexpr
