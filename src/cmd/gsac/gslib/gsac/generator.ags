@@ -153,20 +153,19 @@ either.t	.tygvar	-- Temp
 gsdl.cgs.typeenv.t	.tygvar	-- Temp
 _gsac.generator.doc.annotate_w_:_nonrecursive_k	.subcode
 either.t.out	.cogvar
-_gsdl.cgs.typeenv.overlay_w	.gvar
 gsac.generator.annotate	.gvar
 gsac.generator.annotate.context.doc	.gvar
 pos	.fv	gsdl.sourcepos.t
 env0	.fv	gsdl.cgs.typeenv.u
 env1	.fv	gsdl.cgs.typeenv.u
 scc0.0	.karg	graph.scc.prim.u	gsdl.cgs.gsexpr.generator.t
-env2	.apply	_gsdl.cgs.typeenv.overlay_w	|	env1	env0
+env0.l	.lifted	env0
 	.analyze	scc0.0	nonrecursive
 		.case	nonrecursive
 g		.fkarg	0	gsdl.cgs.gsexpr.generator.t
 			.force	_gsac.generator.doc.annotate_w_:_nonrecursive_k
 			.coerce	either.t.out	string.t	_gsac.generator.annotate_res.ty
-			.app	gsac.generator.annotate.context.doc	pos	env2	g
+			.app	gsac.generator.annotate.context.doc	pos	env0.l	g
 			.enter	gsac.generator.annotate
 	-- > :: either.t	string.t	gsdl.cgs.typeenv.t
 
