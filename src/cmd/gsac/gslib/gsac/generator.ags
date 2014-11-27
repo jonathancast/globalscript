@@ -85,18 +85,21 @@ sym	.larg	gsdl.cgs.symbol.t
 	.enter	ordered.map.get	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
 
 _gsac.generator.doc.annotate_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 _gsac.generator.doc.annotate_k1	.subcode
 scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 sccs0	.karg	list.prim.u	scc.gen.ty
 	.force	_gsac.generator.doc.annotate_k1
 	.enter	env
 
 _gsac.generator.doc.annotate_k1	.forcecont
+gsdl.sourcepos.t	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
@@ -104,12 +107,14 @@ gsdl.cgs.typeenv.u	.tygvar
 _gsac.generator.doc.annotate_w	.gvar
 _gsdl.cgs.typeenv.empty_u	.gvar
 scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+pos	.fv	gsdl.sourcepos.t
 sccs0	.fv	list.prim.u	scc.gen.ty
 env0	.karg	gsdl.cgs.typeenv.u
-	.app	env0	_gsdl.cgs.typeenv.empty_u	sccs0
+	.app	pos	env0	_gsdl.cgs.typeenv.empty_u	sccs0
 	.yield	_gsac.generator.doc.annotate_w
 
 _gsac.generator.doc.annotate_w_c	.expr
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
@@ -119,6 +124,7 @@ string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 either.t	.tygvar	-- Temp
 either.right	.gvar
+pos	.arg	gsdl.sourcepos.t
 env0	.arg	gsdl.cgs.typeenv.u
 env1	.arg	gsdl.cgs.typeenv.u
 scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
@@ -175,6 +181,7 @@ record.unboxed.empty	.tygvar
 -- §section §gs{gsac.generator.doc.annotate}
 
 _gsac.generator.doc.annotate_w_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
@@ -183,6 +190,7 @@ either.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+	.tyfun	gsdl.sourcepos.t
 	.tyfun	gsdl.cgs.typeenv.u
 	.tyfun	gsdl.cgs.typeenv.u
 	.tyfun	list.prim.u	scc.gen.ty
