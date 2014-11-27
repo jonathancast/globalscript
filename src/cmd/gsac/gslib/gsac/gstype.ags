@@ -12,6 +12,8 @@ gsac.gstype.fun.annotate	.closure	_gsac.gstype.fun.annotate_c	_gsac.gstype.fun.a
 
 gsac.gstype.field.annotate	.closure	_gsac.gstype.field.annotate_c	_gsac.gstype.field.annotate_ty
 
+gsac.gstype.typeexpansion.annotate	.closure	_gsac.gstype.typeexpansion.annotate_c
+
 gsac.gstype.check	.closure	_gsac.gstype.check_c	_gsac.gstype.check_ty
 _gsac.gstype.check_col.sp.s	.string	:\s
 _gsac.gstype.check_dont.think.s	.string	I\sdon't\sthink\s'
@@ -827,6 +829,20 @@ string.t	.tygvar	-- Temp
 record.empty	.tygvar	-- Temp
 f	.larg	gsdl.cgs.gstype.field.t
 	.undef	either.t	string.t	record.empty
+
+-- §section §gs{gsac.gstype.typeexpansion.annotate}
+
+_gsac.gstype.typeexpansion.annotate_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gstype.typeexpansion.annotate_res.ty	.tygvar	-- Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
+	.undef	either.t	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
 
 -- §section §gs{gsac.gstype.check}
 
@@ -3171,6 +3187,16 @@ _gsac.gstype.field.annotate_res.u	.tygvar
 	.tyref	_gsac.gstype.field.annotate_res.u
 
 _gsac.gstype.field.annotate_res.u	.tyexpr
+	.typroduct
+
+-- §section §gs{gsac.gstype.typeexpansion.annotate}
+
+_gsac.gstype.typeexpansion.annotate_res.ty	.tyexpr
+_gsac.gstype.typeexpansion.annotate_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gstype.typeexpansion.annotate_res.u
+
+_gsac.gstype.typeexpansion.annotate_res.u	.tyexpr
 	.typroduct
 
 -- §section §gs{gsac.gstype.check}
