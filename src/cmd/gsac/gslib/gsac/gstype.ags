@@ -844,9 +844,10 @@ list.foldr	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 tye	.larg	gsdl.cgs.typeenv.typeexpansion.t
+tyls	.lfield	0	tye
+ty	.lfield	1	tye
 tyl.annotate	.closure	_gsac.gstype.typeexpansion.annotate_tyl.annotate_c
 tye.annotate	.closure	_gsac.gstype.typeexpansion.annotate_tye.annotate_c
-tyls	.lfield	0	tye
 	.app	tyl.annotate	tye.annotate	tyls	env
 	.enter	list.foldr	gsdl.cgs.typeenv.typeexpansion.tylambda.t	_gsac.gstype.typeexpansion.annotate_w_ty
 
@@ -863,12 +864,39 @@ env	.larg	gsdl.cgs.typeenv.t
 	.undef	either.t	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
 
 _gsac.gstype.typeexpansion.annotate_tye.annotate_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gstype.typeexpansion.annotate_res.ty	.tygvar	-- Temp
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+_gsac.gstype.typeexpansion.annotate_tye.annotate_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.annotate	.gvar
+pos	.fv	gsdl.sourcepos.t
+ty	.fv	gsdl.cgs.gstype.t
 env	.larg	gsdl.cgs.typeenv.t
-	.undef	either.t	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
+	.force	_gsac.gstype.typeexpansion.annotate_tye.annotate_k
+	.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
+	.app	pos	env	ty
+	.enter	gsac.gstype.annotate
+
+_gsac.gstype.typeexpansion.annotate_tye.annotate_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+_gsac.gstype.typeexpansion.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+either.right	.gvar
+e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
+		.case	right
+ty.r		.fkarg	0	_gsac.gstype.annotate_res.ty
+res			.undefined	_gsac.gstype.typeexpansion.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
 
 -- §section §gs{gsac.gstype.check}
 
