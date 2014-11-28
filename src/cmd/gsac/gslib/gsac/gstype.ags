@@ -3252,7 +3252,8 @@ _gsac.gstype.typeexpansion.annotate_res.u	.tygvar
 
 _gsac.gstype.typeexpansion.annotate_res.u	.tyexpr
 gsdl.cgs.gskind.t	.tygvar
-	.typroduct	kind	gsdl.cgs.gskind.t
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+	.typroduct	kind	gsdl.cgs.gskind.t	typeexpansion	gsdl.cgs.typeenv.typeexpansion.t
 
 _gsac.gstype.typeexpansion.annotate_w_ty	.tyexpr
 gsdl.cgs.typeenv.t	.tygvar
