@@ -306,6 +306,7 @@ gsdl.cgs.typeenv.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.typeenv.typefun.insert	.gvar
 maybe.just	.gvar
+gsdl.cgs.typeenv.empty	.gvar
 v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
 	.analyze	e0	left	right
@@ -317,8 +318,7 @@ tye.r		.fkarg	0	_gsac.gstype.typeexpansion.annotate_res.ty
 r.ki			.lfield	kind	tye.r
 just.r.ki			.apply	maybe.just	gsdl.cgs.gskind.t	|	r.ki
 r.tye			.lfield	typeexpansion	tye.r
-env1			.undefined	gsdl.cgs.typeenv.t
-env			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	just.r.ki	r.tye	env1
+env			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	just.r.ki	r.tye	gsdl.cgs.typeenv.empty
 res			.lrecord	env	env	|	_gsac.generator.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.generator.annotate_res.ty
