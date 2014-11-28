@@ -2606,6 +2606,7 @@ string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 _gsac.prefix.item.typecheck_typefnitem_typefun_right_right_cty1.f_c	.subcode
 either.left	.gvar
 either.right	.gvar
@@ -2629,7 +2630,8 @@ cty		.fkarg	0	gsdl.cgs.gstype.t
 cty1.f			.closure	_gsac.prefix.item.typecheck_typefnitem_typefun_right_right_cty1.f_c
 cty1			.apply	list.foldr	gsdl.cgs.typeenv.typeexpansion.tyforall.t	gsdl.cgs.gstype.t	|	cty1.f	cty	tyfas.cgs
 mbki.cgs			.apply	maybe.map	gsdl.ags.typeitem.gskind.t	gsdl.cgs.gskind.t	|	gsac.prefix.gskind.upconvert	mbki
-env1			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	mbki.cgs	tyas.cgs	cty1	gsdl.cgs.typeenv.empty
+tye			.lrecord	0	tyas.cgs	1	cty1	|	gsdl.cgs.typeenv.typeexpansion.t
+env1			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	mbki.cgs	tye	gsdl.cgs.typeenv.empty
 			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
@@ -3231,6 +3233,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.t	.tygvar	-- Temp
 maybe.t	.tygvar	-- Temp
 gsdl.cgs.gskind.t	.tygvar	-- Temp
@@ -3250,7 +3253,8 @@ err		.fkarg	0	string.t
 tyy		.fkarg	0	gsdl.cgs.gstype.t
 mbki			.undefined	maybe.t	gsdl.cgs.gskind.t
 nil			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
-env1			.apply	gsdl.cgs.typeenv.typefun.insert	|	tyx	mbki	nil	tyy	env
+tye			.lrecord	0	nil	1	tyy	|	gsdl.cgs.typeenv.typeexpansion.t
+env1			.apply	gsdl.cgs.typeenv.typefun.insert	|	tyx	mbki	tye	env
 			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 
