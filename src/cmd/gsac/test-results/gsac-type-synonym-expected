@@ -1,0 +1,16 @@
+#calculus: gsdl.string-code 0.6
+
+	.document
+
+	.data
+
+	.line	./test-fixtures/type-synonyms.cgs 3 1
+	.undefined	_ep_ty
+
+	.type
+
+	.line	./test-fixtures/type-synonyms.cgs 3 1
+_ep_ty	.tyexpr
+	.line	./test-fixtures/type-synonyms.cgs 3 4
+	.tylift
+	.typroduct
