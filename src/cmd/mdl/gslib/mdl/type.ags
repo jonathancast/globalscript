@@ -23,6 +23,7 @@ _mdl.type.parser_hack.gsvalue_gsvalue.re	.regex	gsvalue
 _mdl.type.parser_hack.list_list.re	.regex	list
 _mdl.type.parser_value_value.re	.regex	value
 
+mdl.type.decl.interpreted.heap	.closure	_mdl.type.decl.interpreted.heap_c
 mdl.type.decl.interpreted.stackframe	.closure	_mdl.type.decl.interpreted.stackframe_c
 mdl.type.decl.api.prim.blocking	.closure	_mdl.type.decl.api.prim.blocking_c
 mdl.type.decl.lprim.blocking	.closure	_mdl.type.decl.lprim.blocking_c
@@ -392,6 +393,19 @@ v	.larg	string.t
 
 -- §section §gs{mdl.type.decl.t} constructors
 
+_mdl.type.decl.interpreted.heap_c	.expr
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+mdl.type.decl.prim.u	.tygvar
+mdl.type.decl.t.in	.cogvar
+l	.larg	string.t
+fs	.larg	list.t	mdl.type.field.decl.t
+res	.constr	mdl.type.decl.prim.u	interpreted.heap	0	l	1	fs
+	.coerce	mdl.type.decl.t.in
+	.lift
+	.yield	res
+
 _mdl.type.decl.interpreted.stackframe_c	.expr
 string.t	.tygvar
 list.t	.tygvar
@@ -480,11 +494,19 @@ mdl.type.decl.prim.u	.tygvar
 
 mdl.type.decl.prim.u	.tyexpr
 _mdl.type.decl.prim.u_api.prim.blocking_ty	.tygvar
+_mdl.type.decl.prim.u_interpreted.heap_ty	.tygvar
 _mdl.type.decl.prim.u_interpreted.stackframe_ty	.tygvar
 _mdl.type.decl.prim.u_lprim.blocking_ty	.tygvar
-	.tysum	api.prim.blocking	_mdl.type.decl.prim.u_api.prim.blocking_ty	interpreted.stackframe	_mdl.type.decl.prim.u_interpreted.stackframe_ty	lprim.blocking	_mdl.type.decl.prim.u_lprim.blocking_ty
+	.tysum	api.prim.blocking	_mdl.type.decl.prim.u_api.prim.blocking_ty	interpreted.heap	_mdl.type.decl.prim.u_interpreted.heap_ty	interpreted.stackframe	_mdl.type.decl.prim.u_interpreted.stackframe_ty	lprim.blocking	_mdl.type.decl.prim.u_lprim.blocking_ty
 
 _mdl.type.decl.prim.u_api.prim.blocking_ty	.tyexpr
+string.t	.tygvar
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+list.field.ty	.tylet	list.t	mdl.type.field.decl.t
+	.tyubproduct	0	string.t	1	list.field.ty
+
+_mdl.type.decl.prim.u_interpreted.heap_ty	.tyexpr
 string.t	.tygvar
 list.t	.tygvar
 mdl.type.field.decl.t	.tygvar

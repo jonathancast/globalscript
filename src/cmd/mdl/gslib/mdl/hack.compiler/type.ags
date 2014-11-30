@@ -265,7 +265,7 @@ _mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.prefix.s	.gvar
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.mid.s	.gvar
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.suffix.s	.gvar
 ty0	.karg	mdl.type.decl.prim.u
-	.analyze	ty0	api.prim.blocking	interpreted.stackframe	lprim.blocking
+	.analyze	ty0	api.prim.blocking	interpreted.heap	interpreted.stackframe	lprim.blocking
 		.case	api.prim.blocking
 id		.fkarg	0	string.t
 fs		.fkarg	1	list.t	mdl.type.field.decl.t
@@ -374,6 +374,10 @@ s2			.apply	list.:	rune.t	|	rune.new.line	s3
 s1			.apply	list.<>	rune.t	|	mdl.hack.compile.type.toprow.s	s2
 			.app	mdl.hack.compiler.type.header.s	s1
 			.enter	list.<>	rune.t
+		.case	interpreted.heap
+id		.fkarg	0	string.t
+fs		.fkarg	1	list.t	mdl.type.field.decl.t
+			.undef	string.t
 		.case	interpreted.stackframe
 id		.fkarg	0	string.t
 fs		.fkarg	1	list.t	mdl.type.field.decl.t
