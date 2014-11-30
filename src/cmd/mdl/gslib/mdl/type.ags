@@ -101,11 +101,11 @@ _mdl.type.decl.parser_interpreted.heap_c	.expr
 rune.t	.tygvar
 string.t	.tygvar
 mdl.type.decl.t	.tygvar
-_mdl.type.decl.parser_heap_fields_ty	.tygvar
+_mdl.type.decl.parser_heap_body_ty	.tygvar
 list.t	.tygvar
 mdl.type.field.decl.t	.tygvar
 _mdl.type.decl.parser_heap_f_c	.subcode
-_mdl.type.decl.parser_interpreted.heap_fields.f_c	.subcode
+_mdl.type.decl.parser_interpreted.heap_body.f_c	.subcode
 parser.lift2	.gvar
 parser.*>	.gvar
 mdl.syntax.keyword	.gvar
@@ -126,28 +126,28 @@ interpreted.kw.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.h
 heap.kw.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.heap_heap.re
 label.p1	.apply	parser.*>	rune.t	string.t	string.t	|	heap.kw.p	mdl.syntax.id
 label.p	.apply	parser.*>	rune.t	string.t	string.t	|	interpreted.kw.p	label.p1
-fields.f	.closure	_mdl.type.decl.parser_interpreted.heap_fields.f_c
-fields.p2.1	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	mdl.type.field.decl.parser
-fields.p2	.apply	parser.map	rune.t	list.field.ty	_mdl.type.decl.parser_heap_fields_ty	|	fields.f	fields.p2.1
-fields.p1	.apply	mdl.syntax.braces	_mdl.type.decl.parser_heap_fields_ty	|	fields.p2
-fields.p	.apply	parser.<*	rune.t	_mdl.type.decl.parser_heap_fields_ty	string.t	|	fields.p1	mdl.syntax.semi
-	.app	f	label.p	fields.p
-	.enter	parser.lift2	rune.t	string.t	_mdl.type.decl.parser_heap_fields_ty	mdl.type.decl.t
+body.f	.closure	_mdl.type.decl.parser_interpreted.heap_body.f_c
+fields.p	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	mdl.type.field.decl.parser
+body.p2	.apply	parser.map	rune.t	list.field.ty	_mdl.type.decl.parser_heap_body_ty	|	body.f	fields.p
+body.p1	.apply	mdl.syntax.braces	_mdl.type.decl.parser_heap_body_ty	|	body.p2
+body.p	.apply	parser.<*	rune.t	_mdl.type.decl.parser_heap_body_ty	string.t	|	body.p1	mdl.syntax.semi
+	.app	f	label.p	body.p
+	.enter	parser.lift2	rune.t	string.t	_mdl.type.decl.parser_heap_body_ty	mdl.type.decl.t
 
 _mdl.type.decl.parser_heap_f_c	.expr
 string.t	.tygvar
-_mdl.type.decl.parser_heap_fields_ty	.tygvar
+_mdl.type.decl.parser_heap_body_ty	.tygvar
 mdl.type.decl.t	.tygvar	-- Temp
 nm	.larg	string.t
-fs	.larg	_mdl.type.decl.parser_heap_fields_ty
+fs	.larg	_mdl.type.decl.parser_heap_body_ty
 	.undef	mdl.type.decl.t
 
-_mdl.type.decl.parser_interpreted.heap_fields.f_c	.expr
+_mdl.type.decl.parser_interpreted.heap_body.f_c	.expr
 list.t	.tygvar
 mdl.type.field.decl.t	.tygvar
-_mdl.type.decl.parser_heap_fields_ty	.tygvar	-- Temp
+_mdl.type.decl.parser_heap_body_ty	.tygvar	-- Temp
 fs	.larg	list.t	mdl.type.field.decl.t
-	.undef	_mdl.type.decl.parser_heap_fields_ty
+	.undef	_mdl.type.decl.parser_heap_body_ty
 
 _mdl.type.decl.parser_interpreted.stackframe_c	.expr
 rune.t	.tygvar
@@ -562,8 +562,12 @@ string.t	.tygvar
 
 -- §section §gs{mdl.type.decl.parser}
 
-_mdl.type.decl.parser_heap_fields_ty	.tyexpr
+_mdl.type.decl.parser_heap_body_ty	.tyexpr
+_mdl.type.decl.parser_heap_body_u	.tygvar
 	.tylift
+	.tyref	_mdl.type.decl.parser_heap_body_u
+
+_mdl.type.decl.parser_heap_body_u	.tyexpr
 	.typroduct
 
 -- §section §gs{mdl.type.parser}
