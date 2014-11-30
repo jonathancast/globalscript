@@ -314,9 +314,15 @@ e	.apply	gsdl.cgs.gsexpr.lambda	|	v	ty	b
 -- §subsection §gs{gsdl.cgs.gsexpr.parser.arg}
 
 _gsdl.cgs.gsexpr.parser.arg_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 _gsdl.cgs.gsexpr.parser.arg_lift.p_c	.subcode
+_gsdl.cgs.gsexpr.parser.arg_var.p_c	.subcode
+parser.<|>	.gvar
 lift.p	.closure	_gsdl.cgs.gsexpr.parser.arg_lift.p_c
-	.enter	lift.p
+var.p	.closure	_gsdl.cgs.gsexpr.parser.arg_var.p_c
+	.app	lift.p	var.p
+	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.parser.arg_lift.p_c	.expr
 rune.t	.tygvar
@@ -359,6 +365,31 @@ pos	.apply	gsdl.sourcepos	|	pos0	pos1
 e1	.apply	gsdl.cgs.gsexpr.lift	|	e
 	.app	pos	e1
 	.enter	gsdl.cgs.gsexpr.pos
+
+_gsdl.cgs.gsexpr.parser.arg_var.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.parser.arg_var.p_f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
+gsdl.cgs.syntax.var.parser	.gvar
+natural.0	.gvar
+parser.fail	.gvar	-- Temp
+f	.closure	_gsdl.cgs.gsexpr.parser.arg_var.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+var.p	.apply	gsdl.cgs.syntax.var.parser	|	natural.0
+	.app	f	pos.get	var.p
+	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.var.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.arg_var.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+pos0	.larg	parser.pos.t
+v	.larg	gsdl.var.t
+	.undef	gsdl.cgs.gsexpr.t
 
 -- §section §gs{gsdl.cgs.gsexpr.freevars}
 
