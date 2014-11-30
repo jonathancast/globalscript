@@ -4,6 +4,7 @@
     ⌊for @ibio.prim.m
             as :: list.t (list.t rune.t);
             parsed.args :: parsed.args.t; -- §sh{-r} — source relative to; §sh{-o} output relative to
+            srcdir :: ibio.file.name.t;
         . :: ibio.prim.t ⌊"Π〈〉⌋
     ⌋
 ⌋⌋⌋
