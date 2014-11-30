@@ -4,11 +4,12 @@
 
 	.data
 
-gsdl.syntax.keywords	.list	string.t	_gsdl.syntax.keywords_gsfor.s	_gsdl.syntax.keywords_gsλ.s	_gsdl.syntax.keywords_type.s	_gsdl.syntax.keywords_arr.s	_gsdl.syntax.keywords_oftype.s	_gsdl.syntax.keywords_at.s	_gsdl.syntax.keywords_comment.s	_gsdl.syntax.keywords_equals.s		_gsdl.syntax.keywords_pipe.s
+gsdl.syntax.keywords	.list	string.t	_gsdl.syntax.keywords_gsfor.s	_gsdl.syntax.keywords_gsλ.s	_gsdl.syntax.keywords_type.s	_gsdl.syntax.keywords_arr.s	_gsdl.syntax.keywords_from.s	_gsdl.syntax.keywords_oftype.s	_gsdl.syntax.keywords_at.s	_gsdl.syntax.keywords_comment.s	_gsdl.syntax.keywords_equals.s		_gsdl.syntax.keywords_pipe.s
 _gsdl.syntax.keywords_gsfor.s	.string	for
 _gsdl.syntax.keywords_gsλ.s	.string	λ
 _gsdl.syntax.keywords_type.s	.string	type
 _gsdl.syntax.keywords_arr.s	.string	→
+_gsdl.syntax.keywords_from.s	.string	←
 _gsdl.syntax.keywords_oftype.s	.string	::
 _gsdl.syntax.keywords_at.s	.string	@
 _gsdl.syntax.keywords_comment.s	.string	\-\-
