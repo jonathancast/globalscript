@@ -884,9 +884,12 @@ _gsac.gstype.typeexpansion.annotate_tye.annotate_k	.forcecont
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
+gsdl.cgs.typeenv.typeexpansion.tylambda.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 _gsac.gstype.typeexpansion.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 either.right	.gvar
+list.nil	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -894,7 +897,11 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.annotate_res.ty
-res			.undefined	_gsac.gstype.typeexpansion.annotate_res.ty
+ty.r.ki			.lfield	gskind	ty.r
+nil			.apply	list.nil	gsdl.cgs.typeenv.typeexpansion.tylambda.t
+ty.r.ty			.lfield	gstype	ty.r
+tye1			.lrecord	0	nil	1	ty.r.ty	|	gsdl.cgs.typeenv.typeexpansion.t
+res			.lrecord	kind	ty.r.ki	typeexpansion	tye1		|	_gsac.gstype.typeexpansion.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
 
