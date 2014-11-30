@@ -743,6 +743,9 @@ parser.optional	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.keywordOp	.gvar
 _gsdl.cgs.gsexpr.generator.imp.parser_bind.p_from.re	.gvar
+parser.<*	.gvar
+gsdl.cgs.gsexpr.parser	.gvar
+gsdl.cgs.syntax.semi	.gvar
 parser.fail	.gvar	-- Temp
 maybe.type.ty	.tylet	maybe.t	gsdl.cgs.gstype.t
 f	.closure	_gsdl.cgs.gsexpr.generator.imp.parser_bind.p_f_c
@@ -752,7 +755,7 @@ type.p1	.apply	parser.fail	rune.t	gsdl.cgs.gstype.t
 type.p	.apply	parser.optional	rune.t	gsdl.cgs.gstype.t	|	type.p1
 from.p	.apply	gsdl.cgs.syntax.keywordOp	|	_gsdl.cgs.gsexpr.generator.imp.parser_bind.p_from.re
 pos1.p	.apply	parser.*>	rune.t	string.t	parser.pos.t	|	from.p	pos.get
-expr.p	.apply	parser.fail	rune.t	gsdl.cgs.gsexpr.t
+expr.p	.apply	parser.<*	rune.t	gsdl.cgs.gsexpr.t	string.t	|	gsdl.cgs.gsexpr.parser	gsdl.cgs.syntax.semi
 	.app	f	pos.get	var.p	type.p	pos1.p	expr.p
 	.enter	parser.lift5	rune.t	parser.pos.t	gsdl.var.t	maybe.type.ty	parser.pos.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gsexpr.generator.t
 
