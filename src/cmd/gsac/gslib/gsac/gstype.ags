@@ -1977,6 +1977,8 @@ ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tyforall.t	.tygvar	-- Temp
 either.right	.gvar
+ordered.set.singleton	.gvar
+gsdl.var.compare	.gvar
 diff.list.:	.gvar
 gsdl.ags.typeitem.tyexpr	.gvar
 maybe.nothing	.gvar
@@ -1994,7 +1996,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.compileToApp_res.ty
 		.case	right
 res		.fkarg	0	_gsac.gstype.compile_res.ty
-em			.undefined	ordered.set.t	gsdl.var.t
+em			.apply	ordered.set.singleton	gsdl.var.t	|	gsdl.var.compare	v
 pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tyfvs			.lfield	tyfvs	res
 tyas			.apply	diff.list.tolist	gsdl.var.t	|	tyfvs
