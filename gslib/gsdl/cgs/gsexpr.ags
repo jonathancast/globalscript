@@ -1373,6 +1373,16 @@ bool.t	.tygvar
 	.tyfun	gsdl.cgs.gsexpr.t
 	.tyref	bool.t
 
+-- §section §gs{gsdl.cgs.gsexpr.arg.t}
+
+gsdl.cgs.gsexpr.arg.t	.tyabstract	*
+gsdl.cgs.gsexpr.arg.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gsexpr.arg.prim.u
+
+gsdl.cgs.gsexpr.arg.prim.u	.tyexpr
+	.tysum
+
 -- §section §gs{gsdl.cgs.gsexpr.body.parser}
 
 _gsdl.cgs.gsexpr.body.parser_ty	.tyexpr
