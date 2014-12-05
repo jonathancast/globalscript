@@ -14,9 +14,9 @@ _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_gsλ.re	.regex	λ
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_gsfor.re	.regex	for
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_at.re	.regex	@
 
-gsdl.cgs.gsexpr.parser.arg	.closure	_gsdl.cgs.gsexpr.parser.arg_c	_gsdl.cgs.gsexpr.parser.arg_ty
-_gsdl.cgs.gsexpr.parser.arg_lift.p_lbrack.re	.regex	⌊
-_gsdl.cgs.gsexpr.parser.arg_lift.p_rbrack.re	.regex	⌋
+gsdl.cgs.gsexpr.parser.atom	.closure	_gsdl.cgs.gsexpr.parser.atom_c	_gsdl.cgs.gsexpr.parser.atom_ty
+_gsdl.cgs.gsexpr.parser.atom_lift.p_lbrack.re	.regex	⌊
+_gsdl.cgs.gsexpr.parser.atom_lift.p_rbrack.re	.regex	⌋
 
 gsdl.cgs.gsexpr.freevars	.closure	_gsdl.cgs.gsexpr.freevars_c	_gsdl.cgs.gsexpr.freevars_ty
 
@@ -174,11 +174,11 @@ gsdl.cgs.syntax.branch.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c	.subcode
-gsdl.cgs.gsexpr.parser.arg	.gvar
+gsdl.cgs.gsexpr.parser.atom	.gvar
 parser.<|>	.gvar
 t	.larg	gsdl.cgs.syntax.branch.t
 mb.lambda	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c
-	.app	gsdl.cgs.gsexpr.parser.arg	mb.lambda
+	.app	gsdl.cgs.gsexpr.parser.atom	mb.lambda
 	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c	.expr
@@ -312,48 +312,48 @@ e	.apply	gsdl.cgs.gsexpr.lambda	|	v	ty	b
 	.app	pos	e
 	.enter	gsdl.cgs.gsexpr.pos
 
--- §subsection §gs{gsdl.cgs.gsexpr.parser.arg}
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.atom}
 
-_gsdl.cgs.gsexpr.parser.arg_c	.expr
+_gsdl.cgs.gsexpr.parser.atom_c	.expr
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-_gsdl.cgs.gsexpr.parser.arg_lift.p_c	.subcode
-_gsdl.cgs.gsexpr.parser.arg_var.p_c	.subcode
+_gsdl.cgs.gsexpr.parser.atom_lift.p_c	.subcode
+_gsdl.cgs.gsexpr.parser.atom_var.p_c	.subcode
 parser.<|>	.gvar
-lift.p	.closure	_gsdl.cgs.gsexpr.parser.arg_lift.p_c
-var.p	.closure	_gsdl.cgs.gsexpr.parser.arg_var.p_c
+lift.p	.closure	_gsdl.cgs.gsexpr.parser.atom_lift.p_c
+var.p	.closure	_gsdl.cgs.gsexpr.parser.atom_var.p_c
 	.app	lift.p	var.p
 	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
 
-_gsdl.cgs.gsexpr.parser.arg_lift.p_c	.expr
+_gsdl.cgs.gsexpr.parser.atom_lift.p_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
-_gsdl.cgs.gsexpr.parser.arg_lift.p_f_c	.subcode
+_gsdl.cgs.gsexpr.parser.atom_lift.p_f_c	.subcode
 parser.lift2	.gvar
 parser.pos.get	.gvar
 parser.*>	.gvar
 gsdl.cgs.syntax.lexeme	.gvar
 parser.match	.gvar
 rune.compare	.gvar
-_gsdl.cgs.gsexpr.parser.arg_lift.p_lbrack.re	.gvar
+_gsdl.cgs.gsexpr.parser.atom_lift.p_lbrack.re	.gvar
 parser.<*	.gvar
 gsdl.cgs.gsexpr.parser	.gvar
-_gsdl.cgs.gsexpr.parser.arg_lift.p_rbrack.re	.gvar
+_gsdl.cgs.gsexpr.parser.atom_lift.p_rbrack.re	.gvar
 parser.fail	.gvar	-- Temp
-f	.closure	_gsdl.cgs.gsexpr.parser.arg_lift.p_f_c
+f	.closure	_gsdl.cgs.gsexpr.parser.atom_lift.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
-lf.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gsexpr.parser.arg_lift.p_lbrack.re
+lf.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gsexpr.parser.atom_lift.p_lbrack.re
 lf.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	lf.p1
-rf.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gsexpr.parser.arg_lift.p_rbrack.re
+rf.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gsexpr.parser.atom_lift.p_rbrack.re
 rf.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	rf.p1	-- > lexeme m/⌋/
 arg.p1	.apply	parser.<*	rune.t	gsdl.cgs.gsexpr.t	string.t	|	gsdl.cgs.gsexpr.parser	rf.p
 arg.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gsexpr.t	|	lf.p	arg.p1
 	.app	f	pos.get	arg.p
 	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gsexpr.t
 
-_gsdl.cgs.gsexpr.parser.arg_lift.p_f_c	.expr
+_gsdl.cgs.gsexpr.parser.atom_lift.p_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gsexpr.pos	.gvar
@@ -367,24 +367,24 @@ e1	.apply	gsdl.cgs.gsexpr.lift	|	e
 	.app	pos	e1
 	.enter	gsdl.cgs.gsexpr.pos
 
-_gsdl.cgs.gsexpr.parser.arg_var.p_c	.expr
+_gsdl.cgs.gsexpr.parser.atom_var.p_c	.expr
 rune.t	.tygvar
 parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-_gsdl.cgs.gsexpr.parser.arg_var.p_f_c	.subcode
+_gsdl.cgs.gsexpr.parser.atom_var.p_f_c	.subcode
 parser.lift2	.gvar
 parser.pos.get	.gvar
 gsdl.cgs.syntax.var.parser	.gvar
 natural.0	.gvar
 parser.fail	.gvar	-- Temp
-f	.closure	_gsdl.cgs.gsexpr.parser.arg_var.p_f_c
+f	.closure	_gsdl.cgs.gsexpr.parser.atom_var.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 var.p	.apply	gsdl.cgs.syntax.var.parser	|	natural.0
 	.app	f	pos.get	var.p
 	.enter	parser.lift2	rune.t	parser.pos.t	gsdl.var.t	gsdl.cgs.gsexpr.t
 
-_gsdl.cgs.gsexpr.parser.arg_var.p_f_c	.expr
+_gsdl.cgs.gsexpr.parser.atom_var.p_f_c	.expr
 parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar	-- Temp
@@ -1344,9 +1344,9 @@ gsdl.cgs.gsexpr.t	.tygvar
 	.tyfun	gsdl.cgs.syntax.branch.t
 	.tyref	parser.t	rune.t	gsdl.cgs.gsexpr.t
 
--- §subsection §gs{gsdl.cgs.gsexpr.parser.arg}
+-- §subsection §gs{gsdl.cgs.gsexpr.parser.atom}
 
-_gsdl.cgs.gsexpr.parser.arg_ty	.tyexpr
+_gsdl.cgs.gsexpr.parser.atom_ty	.tyexpr
 parser.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
