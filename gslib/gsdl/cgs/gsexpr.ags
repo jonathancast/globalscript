@@ -10,6 +10,7 @@ gsdl.cgs.gsexpr.parser.cast	.closure	_gsdl.cgs.gsexpr.parser.cast_c	_gsdl.cgs.gs
 _gsdl.cgs.gsexpr.parser.cast_expr.heavy.cast_ld.re	.regex	⊲
 
 gsdl.cgs.gsexpr.parser.app.or.lambda	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_c	_gsdl.cgs.gsexpr.parser.app.or.lambda_ty
+_gsdl.cgs.gsexpr.parser.app.or.lambda_app_type.kw.re	.regex	type
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_lambda_gsλ.re	.regex	λ
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_gsfor.re	.regex	for
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_at.re	.regex	@
@@ -190,15 +191,35 @@ rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.arg.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
 parser.lift2	.gvar
 list.foldl	.gvar
 gsdl.cgs.gsexpr.app	.gvar
 gsdl.cgs.gsexpr.parser.atom	.gvar
 parser.many	.gvar
+parser.map	.gvar
+gsdl.cgs.gsexpr.arg.type	.gvar
+gsdl.cgs.syntax.parens	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.keyword	.gvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_app_type.kw.re	.gvar
+gsdl.cgs.gstype.app	.gvar
+gsdl.cgs.gstype.parser.arg	.gvar
 parser.fail	.gvar	-- Temp
 list.arg.ty	.tylet	list.t	gsdl.cgs.gsexpr.arg.t
+list.gstype.ty	.tylet	list.t	gsdl.cgs.gstype.t
 f	.apply	list.foldl	gsdl.cgs.gsexpr.arg.t	gsdl.cgs.gsexpr.t	|	gsdl.cgs.gsexpr.app
-arg.p	.apply	parser.fail	rune.t	gsdl.cgs.gsexpr.arg.t
+-- §paragraph{Type arguments}
+type.kw.p	.apply	gsdl.cgs.syntax.keyword	|	_gsdl.cgs.gsexpr.parser.app.or.lambda_app_type.kw.re
+arg.type.f	.apply	list.foldl	gsdl.cgs.gstype.t	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.app
+arg.type.p2.1.1	.apply	parser.many	rune.t	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.parser.arg
+arg.type.p2.1	.apply	parser.lift2	rune.t	gsdl.cgs.gstype.t	list.gstype.ty	gsdl.cgs.gstype.t	|	arg.type.f	gsdl.cgs.gstype.parser.arg	arg.type.p2.1.1
+arg.type.p2	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	type.kw.p	arg.type.p2.1
+arg.type.p1	.apply	gsdl.cgs.syntax.parens	gsdl.cgs.gstype.t	|	arg.type.p2
+arg.type.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gsexpr.arg.t	|	gsdl.cgs.gsexpr.arg.type	arg.type.p1
+-- §paragraph{Put it together}
+arg.p	.apply	arg.type.p
 args.p	.apply	parser.many	rune.t	gsdl.cgs.gsexpr.arg.t	|	arg.p
 	.app	f	gsdl.cgs.gsexpr.parser.atom	args.p
 	.enter	parser.lift2	rune.t	gsdl.cgs.gsexpr.t	list.arg.ty	gsdl.cgs.gsexpr.t
