@@ -50,6 +50,7 @@ gsdl.cgs.gsexpr.app	.closure	_gsdl.cgs.gsexpr.app_c
 gsdl.cgs.gsexpr.impfor	.closure	_gsdl.cgs.gsexpr.impfor_c
 gsdl.cgs.gsexpr.lambda	.closure	_gsdl.cgs.gsexpr.lambda_c
 gsdl.cgs.gsexpr.lift	.closure	_gsdl.cgs.gsexpr.lift_c
+gsdl.cgs.gsexpr.var	.closure	_gsdl.cgs.gsexpr.var_c
 
 gsdl.cgs.gsexpr.arg.expr	.closure	_gsdl.cgs.gsexpr.arg.expr_c
 gsdl.cgs.gsexpr.arg.type	.closure	_gsdl.cgs.gsexpr.arg.type_c
@@ -484,7 +485,7 @@ set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 union.symbol	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
 empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos
+	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos	var
 		.case	app
 f		.fkarg	0	gsdl.cgs.gsexpr.t
 a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
@@ -527,6 +528,9 @@ pos		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.app	e1
 			.enter	gsdl.cgs.gsexpr.freevars
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
 	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
 _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.expr
@@ -604,7 +608,7 @@ gsdl.cgs.gscoercion.≡	.gvar
 gsdl.cgs.gsexpr.≡	.gvar
 e0.0	.fv	gsdl.cgs.gsexpr.prim.u
 e1.0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0.0	app	expr.heavy.cast	impfor	lambda	lift	pos
+	.analyze	e0.0	app	expr.heavy.cast	impfor	lambda	lift	pos	var
 		.case	app
 f0		.fkarg	0	gsdl.cgs.gsexpr.t
 a0		.fkarg	1	gsdl.cgs.gsexpr.arg.t
@@ -646,6 +650,9 @@ pos1				.fkarg	0	gsdl.sourcepos.t
 e1.1				.fkarg	1	gsdl.cgs.gsexpr.t
 					.app	e0.1	e1.1
 					.enter	gsdl.cgs.gsexpr.≡
+		.case	var
+v0		.fkarg	0	gsdl.var.t
+			.undef	bool.t
 	-- > :: bool.t
 
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_k	.forcecont
@@ -1207,6 +1214,16 @@ res	.constr	gsdl.cgs.gsexpr.prim.u	lift	0	e
 	.lift
 	.yield	res
 
+_gsdl.cgs.gsexpr.var_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t.in	.cogvar
+v	.larg	gsdl.var.t
+res	.constr	gsdl.cgs.gsexpr.prim.u	var	0	v
+	.coerce	gsdl.cgs.gsexpr.t.in
+	.lift
+	.yield	res
+
 -- §gs{gsdl.cgs.gsexpr.arg.t} constructors
 
 _gsdl.cgs.gsexpr.arg.expr_c	.expr
@@ -1303,7 +1320,8 @@ _gsdl.cgs.gsexpr.prim.u_impfor_ty	.tygvar
 _gsdl.cgs.gsexpr.prim.u_lambda_ty	.tygvar
 _gsdl.cgs.gsexpr.prim.u_lift_ty	.tygvar
 _gsdl.cgs.gsexpr.prim.u_pos_ty	.tygvar
-	.tysum	app	_gsdl.cgs.gsexpr.prim.u_app_ty	expr.heavy.cast	_gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	impfor	_gsdl.cgs.gsexpr.prim.u_impfor_ty	lambda	_gsdl.cgs.gsexpr.prim.u_lambda_ty	lift	_gsdl.cgs.gsexpr.prim.u_lift_ty	pos	_gsdl.cgs.gsexpr.prim.u_pos_ty
+_gsdl.cgs.gsexpr.prim.u_var_ty	.tygvar
+	.tysum	app	_gsdl.cgs.gsexpr.prim.u_app_ty	expr.heavy.cast	_gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	impfor	_gsdl.cgs.gsexpr.prim.u_impfor_ty	lambda	_gsdl.cgs.gsexpr.prim.u_lambda_ty	lift	_gsdl.cgs.gsexpr.prim.u_lift_ty	pos	_gsdl.cgs.gsexpr.prim.u_pos_ty	var	_gsdl.cgs.gsexpr.prim.u_var_ty
 
 _gsdl.cgs.gsexpr.prim.u_app_ty	.tyexpr
 gsdl.cgs.gsexpr.t	.tygvar
@@ -1337,6 +1355,10 @@ _gsdl.cgs.gsexpr.prim.u_pos_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.prim.u_var_ty	.tyexpr
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.var.t
 
 -- §subsection §gs{gsdl.cgs.gsexpr.cast.source.t}
 

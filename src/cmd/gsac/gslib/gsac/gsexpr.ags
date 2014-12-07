@@ -88,7 +88,7 @@ gsac.gstype.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos
+	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos	var
 		.case	app
 f		.fkarg	0	gsdl.cgs.gsexpr.t
 a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
@@ -129,6 +129,9 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.coerce	either.t.out	string.t	_gsac.gsexpr.annotate_res.ty
 			.app	pos1	env	e1
 			.enter	gsac.gsexpr.annotate
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_expr.heavy.cast_k	.forcecont
@@ -1689,7 +1692,7 @@ tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tyvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos
+	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos	var
 		.case	app
 f		.fkarg	0	gsdl.cgs.gsexpr.t
 a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
@@ -1727,6 +1730,9 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	pos1	e1	tyem	pem	tyvs
 			.enter	gsac.gsexpr.compileToLambdaExpr
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToLambdaExpr_impfor_k	.forcecont
