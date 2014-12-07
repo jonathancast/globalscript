@@ -62,6 +62,8 @@ _gsac.gsexpr.annotate_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
 string.t	.tygvar
@@ -72,7 +74,6 @@ gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.var.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_expr.heavy.cast_k	.subcode
@@ -87,7 +88,11 @@ gsac.gstype.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0	expr.heavy.cast	impfor	lambda	lift	pos
+	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos
+		.case	app
+f		.fkarg	0	gsdl.cgs.gsexpr.t
+a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
@@ -1659,6 +1664,8 @@ ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -1667,7 +1674,6 @@ gsdl.cgs.gsexpr.body.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToImpprim_res.ty	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_impfor_k	.subcode
@@ -1683,7 +1689,11 @@ tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tyvs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0	expr.heavy.cast	impfor	lambda	lift	pos
+	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos
+		.case	app
+f		.fkarg	0	gsdl.cgs.gsexpr.t
+a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t

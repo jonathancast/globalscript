@@ -45,6 +45,7 @@ gsdl.cgs.gsexpr.body.freevars	.closure	_gsdl.cgs.gsexpr.body.freevars_c	_gsdl.cg
 
 gsdl.cgs.gsexpr.pos	.closure	_gsdl.cgs.gsexpr.pos_c
 gsdl.cgs.gsexpr.expr.heavy.cast	.closure	_gsdl.cgs.gsexpr.expr.heavy.cast_c
+gsdl.cgs.gsexpr.app	.closure	_gsdl.cgs.gsexpr.app_c
 gsdl.cgs.gsexpr.impfor	.closure	_gsdl.cgs.gsexpr.impfor_c
 gsdl.cgs.gsexpr.lambda	.closure	_gsdl.cgs.gsexpr.lambda_c
 gsdl.cgs.gsexpr.lift	.closure	_gsdl.cgs.gsexpr.lift_c
@@ -405,6 +406,8 @@ e	.larg	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.freevars_k	.forcecont
 gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
@@ -415,7 +418,6 @@ gsdl.cgs.gsexpr.body.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
 _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.subcode
 ordered.set.union	.gvar
@@ -435,7 +437,11 @@ set.symbol.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
 union.symbol	.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
 empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
-	.analyze	e0	expr.heavy.cast	impfor	lambda	lift	pos
+	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos
+		.case	app
+f		.fkarg	0	gsdl.cgs.gsexpr.t
+a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
@@ -534,6 +540,8 @@ e0.0	.karg	gsdl.cgs.gsexpr.prim.u
 
 _gsdl.cgs.gsexpr.≡_k1	.forcecont
 gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
 gsdl.cgs.gscoercion.t	.tygvar
 gsdl.cgs.gsexpr.cast.source.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -542,7 +550,6 @@ gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.body.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
 bool.t	.tygvar	-- Temp
 _gsdl.cgs.gsexpr.≡_expr.heavy.cast_k	.subcode
 bool.t.out	.cogvar
@@ -550,7 +557,11 @@ gsdl.cgs.gscoercion.≡	.gvar
 gsdl.cgs.gsexpr.≡	.gvar
 e0.0	.fv	gsdl.cgs.gsexpr.prim.u
 e1.0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0.0	expr.heavy.cast	impfor	lambda	lift	pos
+	.analyze	e0.0	app	expr.heavy.cast	impfor	lambda	lift	pos
+		.case	app
+f0		.fkarg	0	gsdl.cgs.gsexpr.t
+a0		.fkarg	1	gsdl.cgs.gsexpr.arg.t
+			.undef	bool.t
 		.case	expr.heavy.cast
 co0		.fkarg	0	gsdl.cgs.gscoercion.t
 so0		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
@@ -1098,6 +1109,18 @@ res	.constr	gsdl.cgs.gsexpr.prim.u	expr.heavy.cast	0	co	1	so
 	.lift
 	.yield	res
 
+_gsdl.cgs.gsexpr.app_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
+gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t.in	.cogvar
+f	.larg	gsdl.cgs.gsexpr.t
+a	.larg	gsdl.cgs.gsexpr.arg.t
+res	.constr	gsdl.cgs.gsexpr.prim.u	app	0	f	1	a
+	.coerce	gsdl.cgs.gsexpr.t.in
+	.lift
+	.yield	res
+
 _gsdl.cgs.gsexpr.impfor_c	.expr
 gsdl.cgs.gstype.t	.tygvar
 list.t	.tygvar
@@ -1205,12 +1228,18 @@ gsdl.cgs.gsexpr.prim.u	.tygvar
 	.tyref	gsdl.cgs.gsexpr.prim.u
 
 gsdl.cgs.gsexpr.prim.u	.tyexpr
+_gsdl.cgs.gsexpr.prim.u_app_ty	.tygvar
 _gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	.tygvar
 _gsdl.cgs.gsexpr.prim.u_impfor_ty	.tygvar
 _gsdl.cgs.gsexpr.prim.u_lambda_ty	.tygvar
 _gsdl.cgs.gsexpr.prim.u_lift_ty	.tygvar
 _gsdl.cgs.gsexpr.prim.u_pos_ty	.tygvar
-	.tysum	expr.heavy.cast	_gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	impfor	_gsdl.cgs.gsexpr.prim.u_impfor_ty	lambda	_gsdl.cgs.gsexpr.prim.u_lambda_ty	lift	_gsdl.cgs.gsexpr.prim.u_lift_ty	pos	_gsdl.cgs.gsexpr.prim.u_pos_ty
+	.tysum	app	_gsdl.cgs.gsexpr.prim.u_app_ty	expr.heavy.cast	_gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	impfor	_gsdl.cgs.gsexpr.prim.u_impfor_ty	lambda	_gsdl.cgs.gsexpr.prim.u_lambda_ty	lift	_gsdl.cgs.gsexpr.prim.u_lift_ty	pos	_gsdl.cgs.gsexpr.prim.u_pos_ty
+
+_gsdl.cgs.gsexpr.prim.u_app_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gsexpr.t	1	gsdl.cgs.gsexpr.arg.t
 
 _gsdl.cgs.gsexpr.prim.u_expr.heavy.cast_ty	.tyexpr
 gsdl.cgs.gscoercion.t	.tygvar
