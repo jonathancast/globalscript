@@ -199,6 +199,7 @@ list.foldl	.gvar
 gsdl.cgs.gsexpr.app	.gvar
 gsdl.cgs.gsexpr.parser.atom	.gvar
 parser.many	.gvar
+parser.<|>	.gvar
 parser.map	.gvar
 gsdl.cgs.gsexpr.arg.type	.gvar
 gsdl.cgs.syntax.parens	.gvar
@@ -207,6 +208,7 @@ gsdl.cgs.syntax.keyword	.gvar
 _gsdl.cgs.gsexpr.parser.app.or.lambda_app_type.kw.re	.gvar
 gsdl.cgs.gstype.app	.gvar
 gsdl.cgs.gstype.parser.arg	.gvar
+gsdl.cgs.gsexpr.arg.expr	.gvar
 parser.fail	.gvar	-- Temp
 list.arg.ty	.tylet	list.t	gsdl.cgs.gsexpr.arg.t
 list.gstype.ty	.tylet	list.t	gsdl.cgs.gstype.t
@@ -219,8 +221,10 @@ arg.type.p2.1	.apply	parser.lift2	rune.t	gsdl.cgs.gstype.t	list.gstype.ty	gsdl.c
 arg.type.p2	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	type.kw.p	arg.type.p2.1
 arg.type.p1	.apply	gsdl.cgs.syntax.parens	gsdl.cgs.gstype.t	|	arg.type.p2
 arg.type.p	.apply	parser.map	rune.t	gsdl.cgs.gstype.t	gsdl.cgs.gsexpr.arg.t	|	gsdl.cgs.gsexpr.arg.type	arg.type.p1
+-- §paragraph{Expression arguments}
+arg.expr.p	.apply	parser.map	rune.t	gsdl.cgs.gsexpr.t	gsdl.cgs.gsexpr.arg.t	|	gsdl.cgs.gsexpr.arg.expr	gsdl.cgs.gsexpr.parser.atom
 -- §paragraph{Put it together}
-arg.p	.apply	arg.type.p
+arg.p	.apply	parser.<|>	rune.t	gsdl.cgs.gsexpr.arg.t	|	arg.type.p	arg.expr.p
 args.p	.apply	parser.many	rune.t	gsdl.cgs.gsexpr.arg.t	|	arg.p
 	.app	f	gsdl.cgs.gsexpr.parser.atom	args.p
 	.enter	parser.lift2	rune.t	gsdl.cgs.gsexpr.t	list.arg.ty	gsdl.cgs.gsexpr.t
