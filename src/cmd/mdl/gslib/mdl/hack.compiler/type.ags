@@ -124,6 +124,7 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s2	.stri
 
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.prefix.s	.string	struct\s
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.mid.s	.string	_blocking\s{\n\s\s\s\sstruct\sgslprim_blocking\sgs;\n
+_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_gsvalue_prefix.s	.string	\s\s\s\s
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.suffix.s	.string	};\n\n
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_alloc.prefix.s	.string	static\svoid\s*
 
@@ -943,9 +944,36 @@ nm		.fkarg	0	string.t
 
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_c	.expr
 mdl.type.field.decl.t	.tygvar
-string.t	.tygvar
+_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_k	.subcode
+mdl.type.t.out	.cogvar
 f	.larg	mdl.type.field.decl.t
-	.undef	string.t
+f.ty	.lfield	gstype	f
+	.force	_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_k
+	.coerce	mdl.type.t.out
+	.enter	f.ty
+
+_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_k	.forcecont
+mdl.type.prim.u	.tygvar
+rune.t	.tygvar
+mdl.type.t	.tygvar
+string.t	.tygvar
+list.<>	.gvar
+_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_gsvalue_prefix.s	.gvar
+ty0	.karg	mdl.type.prim.u
+	.analyze	ty0	bco	gsvalue	list	value
+		.case	bco
+			.undef	string.t
+		.case	gsvalue
+s			.undefined	string.t
+			.app	_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_gsvalue_prefix.s	s
+			.enter	list.<>	rune.t
+		.case	list
+ty1		.fkarg	0	mdl.type.t
+			.undef	string.t
+		.case	value
+lbl		.fkarg	0	string.t
+			.undef	string.t
+	-- > :: string.t
 
 -- §section §gs{mdl.hack.compiler.type.size.expr}
 
