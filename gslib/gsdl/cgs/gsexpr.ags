@@ -174,13 +174,32 @@ _gsdl.cgs.gsexpr.parser.app.or.lambda_c	.expr
 gsdl.cgs.syntax.branch.t	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+_gsdl.cgs.gsexpr.parser.app.or.lambda_app_c	.subcode
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c	.subcode
-gsdl.cgs.gsexpr.parser.atom	.gvar
 parser.<|>	.gvar
 t	.larg	gsdl.cgs.syntax.branch.t
+app	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_app_c
 mb.lambda	.closure	_gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c
-	.app	gsdl.cgs.gsexpr.parser.atom	mb.lambda
+	.app	app	mb.lambda
 	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.app.or.lambda_app_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
+parser.lift2	.gvar
+list.foldl	.gvar
+gsdl.cgs.gsexpr.app	.gvar
+gsdl.cgs.gsexpr.parser.atom	.gvar
+parser.many	.gvar
+parser.fail	.gvar	-- Temp
+list.arg.ty	.tylet	list.t	gsdl.cgs.gsexpr.arg.t
+f	.apply	list.foldl	gsdl.cgs.gsexpr.arg.t	gsdl.cgs.gsexpr.t	|	gsdl.cgs.gsexpr.app
+arg.p	.apply	parser.fail	rune.t	gsdl.cgs.gsexpr.arg.t
+args.p	.apply	parser.many	rune.t	gsdl.cgs.gsexpr.arg.t	|	arg.p
+	.app	f	gsdl.cgs.gsexpr.parser.atom	args.p
+	.enter	parser.lift2	rune.t	gsdl.cgs.gsexpr.t	list.arg.ty	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_c	.expr
 gsdl.cgs.syntax.branch.t	.tygvar
