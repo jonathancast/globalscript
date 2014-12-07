@@ -138,9 +138,12 @@ _mdl.type.decl.parser_heap_f_c	.expr
 string.t	.tygvar
 _mdl.type.decl.parser_heap_body_ty	.tygvar
 mdl.type.decl.t	.tygvar	-- Temp
+mdl.type.decl.interpreted.heap	.gvar
 nm	.larg	string.t
-fs	.larg	_mdl.type.decl.parser_heap_body_ty
-	.undef	mdl.type.decl.t
+b	.larg	_mdl.type.decl.parser_heap_body_ty
+fs	.lfield	0	b
+	.app	nm	fs
+	.enter	mdl.type.decl.interpreted.heap
 
 _mdl.type.decl.parser_interpreted.heap_body.f_c	.expr
 list.t	.tygvar
@@ -568,7 +571,10 @@ _mdl.type.decl.parser_heap_body_u	.tygvar
 	.tyref	_mdl.type.decl.parser_heap_body_u
 
 _mdl.type.decl.parser_heap_body_u	.tyexpr
-	.typroduct
+list.t	.tygvar
+mdl.type.field.decl.t	.tygvar
+list.field.ty	.tylet	list.t	mdl.type.field.decl.t
+	.typroduct	0	list.field.ty
 
 -- §section §gs{mdl.type.parser}
 
