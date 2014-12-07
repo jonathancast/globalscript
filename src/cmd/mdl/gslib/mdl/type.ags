@@ -542,6 +542,16 @@ mdl.type.t	.tygvar
 string.t	.tygvar
 	.typroduct	gstype	mdl.type.t	name	string.t
 
+-- §section §gs{mdl.type.transition.decl.t}
+
+mdl.type.transition.decl.t	.tyexpr
+mdl.type.transition.decl.prim.u	.tygvar
+	.tylift
+	.tyref	mdl.type.transition.decl.prim.u
+
+mdl.type.transition.decl.prim.u	.tyexpr
+	.typroduct
+
 -- §section §gs{mdl.type.t}
 
 mdl.type.t	.tyabstract	*
