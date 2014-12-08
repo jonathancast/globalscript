@@ -231,18 +231,14 @@ gsdl.cgs.syntax.lexeme	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.cgs.gstype.parser.arg_pi.re	.gvar
-gsdl.cgs.syntax.ws	.gvar
+gsdl.cgs.syntax.angles	.gvar
 parser.many	.gvar
 gsdl.cgs.gstype.field.parser	.gvar
-parser.<*	.gvar
-gsdl.cgs.syntax.lbracket	.gvar
-gsdl.cgs.syntax.rbracket	.gvar
 list.field.t	.tylet	list.t	gsdl.cgs.gstype.field.t
 pi.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_pi.re
 pi.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	pi.p1
 mfp	.apply	parser.many	rune.t	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.parser
-fs.p2	.apply	parser.<*	rune.t	list.field.t	string.t	|	mfp	gsdl.cgs.syntax.rbracket
-fs.p1	.apply	parser.*>	rune.t	string.t	list.field.t	|	gsdl.cgs.syntax.lbracket	fs.p2
+fs.p1	.apply	gsdl.cgs.syntax.angles	list.field.t	|	mfp
 fs.p	.apply	parser.*>	rune.t	string.t	list.field.t	|	pi.p	fs.p1
 	.app	gsdl.cgs.gstype.product	fs.p
 	.enter	parser.map	rune.t	list.field.t	gsdl.cgs.gstype.t
