@@ -31,6 +31,8 @@ _gsdl.cgs.syntax.equals_re	.regex	=
 gsdl.cgs.syntax.oftype	.closure	_gsdl.cgs.syntax.oftype_c
 _gsdl.cgs.syntax.oftype_re	.regex	::
 
+gsdl.cgs.syntax.angles	.closure	_gsdl.cgs.syntax.angles_c
+
 gsdl.cgs.syntax.lbracket	.closure	_gsdl.cgs.syntax.lbracket_c
 _gsdl.cgs.syntax.lbracket_re	.regex	〈
 
@@ -258,6 +260,22 @@ _gsdl.cgs.syntax.oftype_re	.gvar
 p0	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.oftype_re
 	.app	p0	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
+
+-- §section §gs{gsdl.cgs.syntax.angles}
+
+_gsdl.cgs.syntax.angles_c	.expr
+parser.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+parser.*>	.gvar
+gsdl.cgs.syntax.lbracket	.gvar
+parser.<*	.gvar
+gsdl.cgs.syntax.rbracket	.gvar
+α	.tyarg	*
+p	.larg	parser.t	rune.t	α
+p1	.apply	parser.<*	rune.t	α	string.t	|	p	gsdl.cgs.syntax.rbracket
+	.app	gsdl.cgs.syntax.lbracket	p1
+	.enter	parser.*>	rune.t	string.t	α
 
 -- §section §gs{gsdl.cgs.syntax.lbracket}
 
