@@ -832,12 +832,18 @@ maybe.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.bind	.gvar
+gsdl.sourcepos	.gvar
 pos0.0	.larg	parser.pos.t
 v	.larg	gsdl.var.t
 mbty	.larg	maybe.t	gsdl.cgs.gstype.t
 pos1.0	.larg	parser.pos.t
 e	.larg	gsdl.cgs.gsexpr.t
-	.undef	gsdl.cgs.gsexpr.generator.t
+pos2	.undefined	parser.pos.t
+pos0	.apply	gsdl.sourcepos	|	pos0.0	pos2
+pos1	.apply	gsdl.sourcepos	|	pos1.0	pos2
+	.app	pos0	v	mbty	pos1	e
+	.enter	gsdl.cgs.gsexpr.generator.bind
 
 _gsdl.cgs.gsexpr.generator.imp.parser_undef.p_c	.expr
 rune.t	.tygvar
