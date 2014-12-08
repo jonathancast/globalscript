@@ -45,7 +45,7 @@ ok_gsac '-- gsac: Type signatures --' gsac-type-sig ./test-fixtures/type-sig.cgs
 ok_gsac '-- gsac: either.t type signatures --' gsac-either-type-sig ./test-fixtures/either-type-sig.cgs
 
 ok_gsac '-- gsac: Block statements --' gsac-empty-impprog ./test-fixtures/empty-impprog.cgs
-ok_gsac '-- gsac: Undefined variables --' gsac-undef-var-imp-for ./test-fixtures/undef-var-imp-for.cgs
-ok_gsac '-- gsac: Undefined list.t list.t variables --' gsac-undef-list-list-var-imp-for ./test-fixtures/undef-list-list-var-imp-for.cgs
+ok_gsac '-- gsac: Undefined variables in block statements --' gsac-undef-var-imp-for ./test-fixtures/undef-var-imp-for.cgs
+ok_gsac '-- gsac: Undefined list.t list.t variables in block statements --' gsac-undef-list-list-var-imp-for ./test-fixtures/undef-list-list-var-imp-for.cgs
 
 ok_gsac '-- gsac: Type synonyms --' gsac-type-synonym ./test-fixtures/type-synonyms.cgs
