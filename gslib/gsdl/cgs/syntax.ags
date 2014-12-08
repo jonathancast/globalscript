@@ -32,12 +32,8 @@ gsdl.cgs.syntax.oftype	.closure	_gsdl.cgs.syntax.oftype_c
 _gsdl.cgs.syntax.oftype_re	.regex	::
 
 gsdl.cgs.syntax.angles	.closure	_gsdl.cgs.syntax.angles_c
-
-gsdl.cgs.syntax.lbracket	.closure	_gsdl.cgs.syntax.lbracket_c
-_gsdl.cgs.syntax.lbracket_re	.regex	〈
-
-gsdl.cgs.syntax.rbracket	.closure	_gsdl.cgs.syntax.rbracket_c
-_gsdl.cgs.syntax.rbracket_re	.regex	〉
+_gsdl.cgs.syntax.angles_lbracket_re	.regex	〈
+_gsdl.cgs.syntax.angles_rbracket_re	.regex	〉
 
 gsdl.cgs.syntax.semi	.closure	_gsdl.cgs.syntax.semi_c
 _gsdl.cgs.syntax.semi_re	.regex	;
@@ -268,44 +264,23 @@ parser.t	.tygvar
 rune.t	.tygvar
 string.t	.tygvar
 parser.*>	.gvar
-gsdl.cgs.syntax.lbracket	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.angles_lbracket_re	.gvar
+gsdl.cgs.syntax.ws	.gvar
 parser.<*	.gvar
-gsdl.cgs.syntax.rbracket	.gvar
+_gsdl.cgs.syntax.angles_rbracket_re	.gvar
 α	.tyarg	*
 p	.larg	parser.t	rune.t	α
-p1	.apply	parser.<*	rune.t	α	string.t	|	p	gsdl.cgs.syntax.rbracket
-	.app	gsdl.cgs.syntax.lbracket	p1
+lbracket.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.angles_lbracket_re
+rbracket.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.angles_rbracket_re
+p3	.apply	parser.*>	rune.t	string.t	string.t	|	rbracket.p	gsdl.cgs.syntax.ws
+p2	.apply	parser.<*	rune.t	α	string.t	|	p	p3
+p1	.apply	parser.*>	rune.t	string.t	α	|	gsdl.cgs.syntax.ws	p2
+	.app	lbracket.p	p1
 	.enter	parser.*>	rune.t	string.t	α
 
--- §section §gs{gsdl.cgs.syntax.lbracket}
-
-_gsdl.cgs.syntax.lbracket_c	.expr
-rune.t	.tygvar
-string.t	.tygvar
-parser.<*	.gvar
-parser.match	.gvar
-rune.compare	.gvar
-_gsdl.cgs.syntax.lbracket_re	.gvar
-gsdl.cgs.syntax.ws	.gvar
-m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.lbracket_re
-	.app	m	gsdl.cgs.syntax.ws
-	.enter	parser.<*	rune.t	string.t	string.t
-
--- §section §gs{gsdl.cgs.syntax.rbracket}
-
-_gsdl.cgs.syntax.rbracket_c	.expr
-rune.t	.tygvar
-string.t	.tygvar
-parser.<*	.gvar
-parser.match	.gvar
-rune.compare	.gvar
-_gsdl.cgs.syntax.rbracket_re	.gvar
-gsdl.cgs.syntax.ws	.gvar
-m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.rbracket_re
-	.app	m	gsdl.cgs.syntax.ws
-	.enter	parser.<*	rune.t	string.t	string.t
-
--- §section §gs{gsdl.cgs.syntax.rbracket}
+-- §section §gs{gsdl.cgs.syntax.semi}
 
 _gsdl.cgs.syntax.semi_c	.expr
 rune.t	.tygvar
