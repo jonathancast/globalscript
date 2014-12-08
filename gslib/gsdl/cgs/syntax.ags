@@ -31,6 +31,9 @@ _gsdl.cgs.syntax.equals_re	.regex	=
 gsdl.cgs.syntax.oftype	.closure	_gsdl.cgs.syntax.oftype_c
 _gsdl.cgs.syntax.oftype_re	.regex	::
 
+gsdl.cgs.syntax.lbracket	.closure	_gsdl.cgs.syntax.lbracket_c
+_gsdl.cgs.syntax.lbracket_re	.regex	〈
+
 gsdl.cgs.syntax.rbracket	.closure	_gsdl.cgs.syntax.rbracket_c
 _gsdl.cgs.syntax.rbracket_re	.regex	〉
 
@@ -254,6 +257,20 @@ rune.compare	.gvar
 _gsdl.cgs.syntax.oftype_re	.gvar
 p0	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.oftype_re
 	.app	p0	gsdl.cgs.syntax.ws
+	.enter	parser.<*	rune.t	string.t	string.t
+
+-- §section §gs{gsdl.cgs.syntax.lbracket}
+
+_gsdl.cgs.syntax.lbracket_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+parser.<*	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.syntax.lbracket_re	.gvar
+gsdl.cgs.syntax.ws	.gvar
+m	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.syntax.lbracket_re
+	.app	m	gsdl.cgs.syntax.ws
 	.enter	parser.<*	rune.t	string.t	string.t
 
 -- §section §gs{gsdl.cgs.syntax.rbracket}

@@ -13,7 +13,7 @@ gsdl.cgs.gstype.parser.app	.closure	_gsdl.cgs.gstype.parser.app_c	_gsdl.cgs.gsty
 _gsdl.cgs.gstype.parser.app_k	.closure	_gsdl.cgs.gstype.parser.app_k_c	_gsdl.cgs.gstype.parser.app_k_ty
 
 gsdl.cgs.gstype.parser.arg	.closure	_gsdl.cgs.gstype.parser.arg_c	_gsdl.cgs.gstype.parser.arg_ty
-_gsdl.cgs.gstype.parser.arg_pi.re	.regex	"Π〈
+_gsdl.cgs.gstype.parser.arg_pi.re	.regex	"Π
 _gsdl.cgs.gstype.parser.arg_lift.p_lb.re	.regex	⌊
 _gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.regex	⌋
 
@@ -227,6 +227,7 @@ string.t	.tygvar
 parser.map	.gvar
 gsdl.cgs.gstype.product	.gvar
 parser.*>	.gvar
+gsdl.cgs.syntax.lexeme	.gvar
 parser.match	.gvar
 rune.compare	.gvar
 _gsdl.cgs.gstype.parser.arg_pi.re	.gvar
@@ -234,14 +235,16 @@ gsdl.cgs.syntax.ws	.gvar
 parser.many	.gvar
 gsdl.cgs.gstype.field.parser	.gvar
 parser.<*	.gvar
+gsdl.cgs.syntax.lbracket	.gvar
 gsdl.cgs.syntax.rbracket	.gvar
 list.field.t	.tylet	list.t	gsdl.cgs.gstype.field.t
-pi_p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_pi.re
+pi.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_pi.re
+pi.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	pi.p1
 mfp	.apply	parser.many	rune.t	gsdl.cgs.gstype.field.t	|	gsdl.cgs.gstype.field.parser
-fs_p2	.apply	parser.<*	rune.t	list.field.t	string.t	|	mfp	gsdl.cgs.syntax.rbracket
-fs_p1	.apply	parser.*>	rune.t	string.t	list.field.t	|	gsdl.cgs.syntax.ws	fs_p2
-fs_p	.apply	parser.*>	rune.t	string.t	list.field.t	|	pi_p	fs_p1
-	.app	gsdl.cgs.gstype.product	fs_p
+fs.p2	.apply	parser.<*	rune.t	list.field.t	string.t	|	mfp	gsdl.cgs.syntax.rbracket
+fs.p1	.apply	parser.*>	rune.t	string.t	list.field.t	|	gsdl.cgs.syntax.lbracket	fs.p2
+fs.p	.apply	parser.*>	rune.t	string.t	list.field.t	|	pi.p	fs.p1
+	.app	gsdl.cgs.gstype.product	fs.p
 	.enter	parser.map	rune.t	list.field.t	gsdl.cgs.gstype.t
 
 -- > for (
