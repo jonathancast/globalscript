@@ -482,8 +482,10 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.generator.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+maybe.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
@@ -494,7 +496,14 @@ gsac.gstype.annotate	.gvar
 k	.fv	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
 env	.fv	gsdl.cgs.typeenv.t
 g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
-	.analyze	g0	typesyn	undef
+	.analyze	g0	bind	typesyn	undef
+		.case	bind
+pos0		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+mbty		.fkarg	2	maybe.t	gsdl.cgs.gstype.t
+pos1		.fkarg	3	gsdl.sourcepos.t
+e		.fkarg	4	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 		.case	typesyn
 pos0		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -2309,8 +2318,10 @@ _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.generator.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+maybe.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
 either.t	.tygvar	-- Temp
@@ -2322,7 +2333,14 @@ tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
 gen0	.karg	gsdl.cgs.gsexpr.generator.prim.u
-	.analyze	gen0	typesyn	undef
+	.analyze	gen0	bind	typesyn	undef
+		.case	bind
+pos0		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+mbty		.fkarg	2	maybe.t	gsdl.cgs.gstype.t
+pos1		.fkarg	3	gsdl.sourcepos.t
+e		.fkarg	4	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
 		.case	typesyn
 pos0		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
