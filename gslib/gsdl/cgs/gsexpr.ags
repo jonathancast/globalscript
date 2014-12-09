@@ -515,6 +515,7 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	-- Temp
+_gsdl.cgs.gsexpr.freevars_app_a.fvs_c	.subcode
 _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.subcode
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
@@ -538,7 +539,7 @@ empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 f		.fkarg	0	gsdl.cgs.gsexpr.t
 a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
 f.fvs			.apply	gsdl.cgs.gsexpr.freevars	|	f
-a.fvs			.undefined	ordered.set.t	gsdl.cgs.symbol.t
+a.fvs			.closure	_gsdl.cgs.gsexpr.freevars_app_a.fvs_c
 			.app	gsdl.cgs.symbol.compare	f.fvs	a.fvs
 			.enter	ordered.set.union	gsdl.cgs.symbol.t
 		.case	expr.heavy.cast
@@ -584,6 +585,35 @@ v		.fkarg	0	gsdl.var.t
 v.sym			.apply	gsdl.cgs.symbol.var	|	v
 			.app	gsdl.cgs.symbol.compare	v.sym
 			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
+	-- > :: ordered.set.t	gsdl.cgs.symbol.t
+
+_gsdl.cgs.gsexpr.freevars_app_a.fvs_c	.expr
+gsdl.cgs.gsexpr.arg.t	.tygvar
+_gsdl.cgs.gsexpr.freevars_app_a.fvs_k	.subcode
+gsdl.cgs.gsexpr.arg.t.out	.cogvar
+a	.fv	gsdl.cgs.gsexpr.arg.t
+	.force	_gsdl.cgs.gsexpr.freevars_app_a.fvs_k
+	.coerce	gsdl.cgs.gsexpr.arg.t.out
+	.enter	a
+
+_gsdl.cgs.gsexpr.freevars_app_a.fvs_k	.forcecont
+gsdl.cgs.gsexpr.arg.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+gsdl.cgs.gstype.freevars	.gvar
+gsdl.cgs.gsexpr.freevars	.gvar
+a0	.karg	gsdl.cgs.gsexpr.arg.prim.u
+	.analyze	a0	expr	type
+		.case	expr
+e		.fkarg	0	gsdl.cgs.gsexpr.t
+			.app	e
+			.enter	gsdl.cgs.gsexpr.freevars
+		.case	type
+ty		.fkarg	0	gsdl.cgs.gstype.t
+			.app	ty
+			.enter	gsdl.cgs.gstype.freevars
 	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
 _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.expr
@@ -1678,6 +1708,11 @@ gsdl.cgs.gsexpr.t	.tygvar
 
 gsdl.cgs.gsexpr.arg.t.in	.tycoercion
 gsdl.cgs.gsexpr.arg.t	.tygvar
+	.tydefinition	gsdl.cgs.gsexpr.arg.t
+
+gsdl.cgs.gsexpr.arg.t.out	.tycoercion
+gsdl.cgs.gsexpr.arg.t	.tygvar
+	.tyinvert
 	.tydefinition	gsdl.cgs.gsexpr.arg.t
 
 gsdl.cgs.gsexpr.cast.source.t.in	.tycoercion
