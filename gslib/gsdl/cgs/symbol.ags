@@ -108,7 +108,7 @@ v1				.fkarg	0	gsdl.var.t
 					.enter	gsdl.var.compare
 				.case	var
 v1				.fkarg	0	gsdl.var.t
-					.undef	order.total.ord.t
+					.enter	order.total.ord.lt
 		.case	var
 v0		.fkarg	0	gsdl.var.t
 			.analyze	s1.0	abstyvar	tyvar	var
