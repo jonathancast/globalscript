@@ -605,6 +605,11 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
 
     bco = *ppbco;
 
+    if (CLASS_OF_BLOCK_CONTAINING(bco) != &gsbytecode_info.descr) {
+        gsstring_builder_print(err, UNIMPL("gs_gc_trace_bco: tracing bco pointer %p (*%p, in a %s), but doesn't point to bco block"), bco, ppbco, CLASS_OF_BLOCK_CONTAINING(ppbco)->description);
+        return -1;
+    }
+
     if (bco->tag == gsbc_gcforward) {
         fwd = (struct gsbco_forward *)bco;
         *ppbco = fwd->dest;
