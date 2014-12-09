@@ -18,6 +18,7 @@ _gsdl.cgs.gsexpr.parser.app.or.lambda_mb.lambda_r_impfor_at.re	.regex	@
 gsdl.cgs.gsexpr.parser.atom	.closure	_gsdl.cgs.gsexpr.parser.atom_c	_gsdl.cgs.gsexpr.parser.atom_ty
 _gsdl.cgs.gsexpr.parser.atom_lift.p_lbrack.re	.regex	⌊
 _gsdl.cgs.gsexpr.parser.atom_lift.p_rbrack.re	.regex	⌋
+_gsdl.cgs.gsexpr.parser.atom_structure.p_prod.kw.re	.regex	Π
 
 gsdl.cgs.gsexpr.freevars	.closure	_gsdl.cgs.gsexpr.freevars_c	_gsdl.cgs.gsexpr.freevars_ty
 
@@ -368,11 +369,14 @@ _gsdl.cgs.gsexpr.parser.atom_c	.expr
 rune.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 _gsdl.cgs.gsexpr.parser.atom_lift.p_c	.subcode
+_gsdl.cgs.gsexpr.parser.atom_structure.p_c	.subcode
 _gsdl.cgs.gsexpr.parser.atom_var.p_c	.subcode
 parser.<|>	.gvar
 lift.p	.closure	_gsdl.cgs.gsexpr.parser.atom_lift.p_c
+structure.p	.closure	_gsdl.cgs.gsexpr.parser.atom_structure.p_c
 var.p	.closure	_gsdl.cgs.gsexpr.parser.atom_var.p_c
-	.app	lift.p	var.p
+p	.apply	parser.<|>	rune.t	gsdl.cgs.gsexpr.t	|	structure.p	var.p
+	.app	lift.p	p
 	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.parser.atom_lift.p_c	.expr
@@ -416,6 +420,40 @@ pos	.apply	gsdl.sourcepos	|	pos0	pos1
 e1	.apply	gsdl.cgs.gsexpr.lift	|	e
 	.app	pos	e1
 	.enter	gsdl.cgs.gsexpr.pos
+
+_gsdl.cgs.gsexpr.parser.atom_structure.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gsexpr.parser.atom_structure.p_f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.core.keyword	.gvar
+_gsdl.cgs.gsexpr.parser.atom_structure.p_prod.kw.re	.gvar
+gsdl.cgs.syntax.angles	.gvar
+parser.fail	.gvar	-- Temp
+list.generator.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
+f	.closure	_gsdl.cgs.gsexpr.parser.atom_structure.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+prod.kw.p	.apply	gsdl.cgs.syntax.core.keyword	|	_gsdl.cgs.gsexpr.parser.atom_structure.p_prod.kw.re
+gs.p1.1	.apply	parser.fail	rune.t	list.generator.ty
+gs.p1	.apply	gsdl.cgs.syntax.angles	list.generator.ty	|	gs.p1.1
+gs.p	.apply	parser.*>	rune.t	string.t	list.generator.ty	|	prod.kw.p	gs.p1
+	.app	f	pos.get	gs.p
+	.enter	parser.lift2	rune.t	parser.pos.t	list.generator.ty	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.parser.atom_structure.p_f_c	.expr
+parser.pos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+pos0	.larg	parser.pos.t
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+	.undef	gsdl.cgs.gsexpr.t
 
 _gsdl.cgs.gsexpr.parser.atom_var.p_c	.expr
 rune.t	.tygvar
