@@ -47,7 +47,8 @@ v		.fkarg	0	gsdl.var.t
 			.enter	gsdl.var.components.get
 		.case	var
 v		.fkarg	0	gsdl.var.t
-			.undef	list.t	gsdl.var.component.t
+			.app	v
+			.enter	gsdl.var.components.get
 	-- > :: list.t	gsdl.var.component.t
 
 -- §section §gs{gsdl.cgs.symbol.compare}
