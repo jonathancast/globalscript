@@ -124,7 +124,7 @@ _mdl.hack.compiler.type.decl.compile_interpreted.stackframe_case.footer.s2	.stri
 
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.prefix.s	.string	struct\s
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.mid.s	.string	_blocking\s{\n\s\s\s\sstruct\sgslprim_blocking\sgs;\n
-_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_gsvalue_prefix.s	.string	\s\s\s\s
+_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_gsvalue_prefix.s	.string	\s\s\s\sgsvalue\s
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_struct.lprim.suffix.s	.string	};\n\n
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_alloc.prefix.s	.string	static\svoid\s*
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_alloc.suffix.s	.string	_blocking_alloc(void);\n\n
