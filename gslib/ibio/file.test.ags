@@ -4,7 +4,7 @@
 
 	.data
 
-	.closure	_epcode
+	.closure	_ep_c
 
 _tests	.list	test.property.t	_test.eq.foo.bar	_test.fmtgs.foo	_test.exts.of.qual.fn
 
@@ -28,7 +28,7 @@ _test.exts.of.qual.fn_expected_bar.s	.string	gs
 
 	.code
 
-_epcode	.expr
+_ep_c	.expr
 test.all	.gvar
 _tests	.gvar
 	.app	_tests
