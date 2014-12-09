@@ -581,7 +581,9 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.enter	gsdl.cgs.gsexpr.freevars
 		.case	var
 v		.fkarg	0	gsdl.var.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+v.sym			.apply	gsdl.cgs.symbol.var	|	v
+			.app	gsdl.cgs.symbol.compare	v.sym
+			.enter	ordered.set.singleton	gsdl.cgs.symbol.t
 	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
 _gsdl.cgs.gsexpr.freevars_expr.heavy.cast_so.fvs_c	.expr
