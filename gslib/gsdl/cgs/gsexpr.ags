@@ -435,12 +435,14 @@ parser.*>	.gvar
 gsdl.cgs.syntax.core.keyword	.gvar
 _gsdl.cgs.gsexpr.parser.atom_structure.p_prod.kw.re	.gvar
 gsdl.cgs.syntax.angles	.gvar
+parser.many	.gvar
 parser.fail	.gvar	-- Temp
 list.generator.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
 f	.closure	_gsdl.cgs.gsexpr.parser.atom_structure.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 prod.kw.p	.apply	gsdl.cgs.syntax.core.keyword	|	_gsdl.cgs.gsexpr.parser.atom_structure.p_prod.kw.re
-gs.p1.1	.apply	parser.fail	rune.t	list.generator.ty
+gs.p1.1.1	.apply	parser.fail	rune.t	gsdl.cgs.gsexpr.generator.t
+gs.p1.1	.apply	parser.many	rune.t	gsdl.cgs.gsexpr.generator.t	|	gs.p1.1.1
 gs.p1	.apply	gsdl.cgs.syntax.angles	list.generator.ty	|	gs.p1.1
 gs.p	.apply	parser.*>	rune.t	string.t	list.generator.ty	|	prod.kw.p	gs.p1
 	.app	f	pos.get	gs.p
