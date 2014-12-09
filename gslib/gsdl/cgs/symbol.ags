@@ -121,7 +121,8 @@ v1				.fkarg	0	gsdl.var.t
 					.enter	order.total.ord.gt
 				.case	var
 v1				.fkarg	0	gsdl.var.t
-					.undef	order.total.ord.t
+					.app	v0	v1
+					.enter	gsdl.var.compare
 	-- > :: order.total.ord.t
 
 -- §section §gs{gsdl.cgs.symbol.≡}
