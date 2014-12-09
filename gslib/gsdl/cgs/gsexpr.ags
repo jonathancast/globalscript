@@ -537,7 +537,10 @@ empty.symbol	.apply	ordered.set.empty	gsdl.cgs.symbol.t
 		.case	app
 f		.fkarg	0	gsdl.cgs.gsexpr.t
 a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+f.fvs			.apply	gsdl.cgs.gsexpr.freevars	|	f
+a.fvs			.undefined	ordered.set.t	gsdl.cgs.symbol.t
+			.app	gsdl.cgs.symbol.compare	f.fvs	a.fvs
+			.enter	ordered.set.union	gsdl.cgs.symbol.t
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
