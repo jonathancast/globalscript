@@ -997,6 +997,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	-- Temp
 gsdl.cgs.symbol.tyvar	.gvar
+gsdl.cgs.symbol.var	.gvar
 g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
 	.analyze	g0	bind	typesyn	undef
 		.case	bind
@@ -1018,7 +1019,8 @@ pos0		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	gsdl.var.t
 pos1		.fkarg	2	gsdl.sourcepos.t
 ty		.fkarg	3	gsdl.cgs.gstype.t
-			.undef  gsdl.cgs.symbol.t
+			.app	nm
+			.yield  gsdl.cgs.symbol.var
 	-- > :: gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gsexpr.generator.freevars}
