@@ -808,11 +808,14 @@ e	.larg	gsdl.cgs.gsexpr.t
 -- §section §gs{gsdl.cgs.gsexpr.generator.doc.parser}
 
 _gsdl.cgs.gsexpr.generator.doc.parser_c	.expr
-rune.t	.tygvar	-- Temp
-gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
+rune.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 _gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_c	.subcode
+parser.<|>	.gvar
+gsdl.cgs.gsexpr.generator.parser.undef	.gvar
 typesyn.p	.closure	_gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_c
-	.enter	typesyn.p
+	.app	typesyn.p	gsdl.cgs.gsexpr.generator.parser.undef
+	.enter	parser.<|>	rune.t	gsdl.cgs.gsexpr.generator.t
 
 _gsdl.cgs.gsexpr.generator.doc.parser_typesyn.p_c	.expr
 rune.t	.tygvar
