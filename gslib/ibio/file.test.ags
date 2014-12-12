@@ -6,7 +6,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_eq_foo_bar	_test_fmtgs_foo	_test.exts.of.qual.fn
+_tests	.list	test.property.t	_test_eq_foo_bar	_test_fmtgs_foo	_test_exts_of.qual.fn
 
 _test_eq_foo_bar	.closure	_test_eq_foo_bar_c
 _test_eq_foo_bar_label	.string	ibio.file.name.≡\sfn<./foo>\sfn<./bar>
@@ -20,11 +20,11 @@ _test_fmtgs_foo_label	.string	fmtgs\sfn<./foo>
 _test_fmtgs_foo_fn.s	.string	./foo
 _test_fmtgs_foo_expected	.string	fn<./foo>
 
-_test.exts.of.qual.fn	.closure	_test.exts.of.qual.fn_c
-_test.exts.of.qual.fn_label	.string	#exts\s(components.get\sfn<foo/bar.gs>)
-_test.exts.of.qual.fn_fn.s	.string	foo/bar.gs
-_test.exts.of.qual.fn_expected	.list	string.t	_test.exts.of.qual.fn_expected_bar.s
-_test.exts.of.qual.fn_expected_bar.s	.string	gs
+_test_exts_of.qual.fn	.closure	_test_exts_of.qual.fn_c
+_test_exts_of.qual.fn_label	.string	#exts\s(components.get\sfn<foo/bar.gs>)
+_test_exts_of.qual.fn_fn.s	.string	foo/bar.gs
+_test_exts_of.qual.fn_expected	.list	string.t	_test_exts_of.qual.fn_expected_bar.s
+_test_exts_of.qual.fn_expected_bar.s	.string	gs
 
 	.code
 
@@ -78,11 +78,11 @@ test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test_fmtgs
 
 -- §section §gs{#exts (components.get fn<foo/bar.gs>)}
 
-_test.exts.of.qual.fn_c	.expr
+_test_exts_of.qual.fn_c	.expr
 list.t	.tygvar
 string.t	.tygvar
 test.property.label	.gvar
-_test.exts.of.qual.fn_label	.gvar
+_test_exts_of.qual.fn_label	.gvar
 test.assert.eq	.gvar
 list.≡	.gvar
 string.≡	.gvar
@@ -90,14 +90,14 @@ list.fmtgs.byDefault	.gvar
 string.fmtgs	.gvar
 ibio.file.name.components.get	.gvar
 ibio.file.name.in	.gvar
-_test.exts.of.qual.fn_fn.s	.gvar
-_test.exts.of.qual.fn_expected	.gvar
+_test_exts_of.qual.fn_fn.s	.gvar
+_test_exts_of.qual.fn_expected	.gvar
 list.string.ty	.tylet	list.t	string.t
 list.string.≡	.apply	list.≡	string.t	|	string.≡
 list.string.fmtgs	.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
-fn	.apply	ibio.file.name.in	|	_test.exts.of.qual.fn_fn.s
+fn	.apply	ibio.file.name.in	|	_test_exts_of.qual.fn_fn.s
 cs	.apply	ibio.file.name.components.get	|	fn
 actual	.lfield	exts	cs
-test	.apply	test.assert.eq	list.string.ty	|	list.string.≡	list.string.fmtgs	actual	_test.exts.of.qual.fn_expected
-	.app	_test.exts.of.qual.fn_label	test
+test	.apply	test.assert.eq	list.string.ty	|	list.string.≡	list.string.fmtgs	actual	_test_exts_of.qual.fn_expected
+	.app	_test_exts_of.qual.fn_label	test
 	.enter	test.property.label
