@@ -6,12 +6,12 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_eq_foo_bar	_test_fmtgs_foo	_test_exts_of.qual.fn
+tests	.list	test.property.t	_test_eq_foo_bar	_test_fmtgs_foo	_test_exts_of.qual.fn
 
 _test_eq_foo_bar	.closure	_test_eq_foo_bar_c
 _test_eq_foo_bar_label	.string	ibio.file.name.≡\sfn<./foo>\sfn<./bar>
-_test_eq_foo_bar_false.msg	.string	fn<./foo>\s≠fn<./bar>
-_test_eq_foo_bar_true.msg	.string	fn<./foo>\s≡fn<./bar>
+_test_eq_foo_bar_false.msg	.string	fn<./foo>\s≠\sfn<./bar>
+_test_eq_foo_bar_true.msg	.string	fn<./foo>\s≡\sfn<./bar>
 _test_eq_foo_bar_foo.fn.s	.string	./foo
 _test_eq_foo_bar_bar.fn.s	.string	./bar
 
@@ -30,8 +30,8 @@ _test_exts_of.qual.fn_expected_bar.s	.string	gs
 
 _ep_c	.expr
 test.all	.gvar
-_tests	.gvar
-	.app	_tests
+tests	.gvar
+	.app	tests
 	.enter	test.all
 
 -- §section §gs{fn<./foo> ≡ fn<./bar>}
