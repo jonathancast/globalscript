@@ -367,11 +367,21 @@ ty		.fkarg	3	gsdl.cgs.gstype.t
 	-- > :: either.t	string.t	_gsac.generator.annotate_res.ty
 
 _gsac.generator.annotate_bind_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+maybe.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.generator.annotate_res.ty	.tygvar	-- Temp
+_gsac.generator.annotate_bind_right_k	.subcode
+maybe.t.out	.cogvar
+env	.fv	gsdl.cgs.typeenv.t
+mbty	.fv	maybe.t	gsdl.cgs.gstype.t
+pos1	.fv	gsdl.sourcepos.t
+e	.fv	gsdl.cgs.gsexpr.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
 	.analyze	e0	left	right
 		.case	left
@@ -379,6 +389,47 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
 		.case	right
 m.ty		.fkarg	0	gsdl.cgs.gstype.t
+			.force	_gsac.generator.annotate_bind_right_k
+			.coerce	maybe.t.out	gsdl.cgs.gstype.t
+			.enter	mbty
+
+_gsac.generator.annotate_bind_right_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.generator.annotate_res.ty	.tygvar	-- Temp
+_gsac.generator.annotate_bind_right_nothing_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.annotate	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+pos1	.fv	gsdl.sourcepos.t
+e	.fv	gsdl.cgs.gsexpr.t
+mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
+	.analyze	mbty0	just	nothing
+		.case	just
+v.ty		.fkarg	0	gsdl.cgs.gstype.t
+			-- ↑ Note: Expected type of §gs{v}, hence §emph{result} type where §gs{m.ty} is §emph{monad type}!
+			-- Hence type of §gs{e} is §gs{app m.ty ty}!
+			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
+		.case	nothing
+			-- Note: No type signature means we have no way to recover on type failure
+			.force	_gsac.generator.annotate_bind_right_nothing_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.annotate_res.ty
+			.app	pos1	env	e
+			.enter	gsac.gsexpr.annotate
+
+_gsac.generator.annotate_bind_right_nothing_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.generator.annotate_res.ty	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
 			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
 
 _gsac.generator.annotate_typesyn_k	.forcecont
