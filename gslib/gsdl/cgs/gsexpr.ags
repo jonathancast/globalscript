@@ -455,9 +455,15 @@ parser.pos.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.pos	.gvar
+gsdl.sourcepos	.gvar
 pos0	.larg	parser.pos.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
-	.undef	gsdl.cgs.gsexpr.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+e	.undefined	gsdl.cgs.gsexpr.t
+	.app	pos	e
+	.enter	gsdl.cgs.gsexpr.pos
 
 _gsdl.cgs.gsexpr.parser.atom_var.p_c	.expr
 rune.t	.tygvar
