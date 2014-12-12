@@ -6,7 +6,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_eq_foo_bar	_test.fmtgs.foo	_test.exts.of.qual.fn
+_tests	.list	test.property.t	_test_eq_foo_bar	_test_fmtgs_foo	_test.exts.of.qual.fn
 
 _test_eq_foo_bar	.closure	_test_eq_foo_bar_c
 _test_eq_foo_bar_label	.string	ibio.file.name.≡\sfn<./foo>\sfn<./bar>
@@ -15,10 +15,10 @@ _test_eq_foo_bar_true.msg	.string	fn<./foo>\s≡fn<./bar>
 _test_eq_foo_bar_foo.fn.s	.string	./foo
 _test_eq_foo_bar_bar.fn.s	.string	./bar
 
-_test.fmtgs.foo	.closure	_test.fmtgs.foo_c
-_test.fmtgs.foo_label	.string	fmtgs\sfn<./foo>
-_test.fmtgs.foo_fn.s	.string	./foo
-_test.fmtgs.foo_expected	.string	fn<./foo>
+_test_fmtgs_foo	.closure	_test_fmtgs_foo_c
+_test_fmtgs_foo_label	.string	fmtgs\sfn<./foo>
+_test_fmtgs_foo_fn.s	.string	./foo
+_test_fmtgs_foo_expected	.string	fn<./foo>
 
 _test.exts.of.qual.fn	.closure	_test.exts.of.qual.fn_c
 _test.exts.of.qual.fn_label	.string	#exts\s(components.get\sfn<foo/bar.gs>)
@@ -55,25 +55,25 @@ test	.apply	test.deny	|	_test_eq_foo_bar_false.msg	_test_eq_foo_bar_true.msg	eq
 
 -- §section §gs{fmtgs fn<./foo>}
 
-_test.fmtgs.foo_c	.expr
+_test_fmtgs_foo_c	.expr
 string.t	.tygvar
 rune.t	.tygvar
 test.property.label	.gvar
-_test.fmtgs.foo_label	.gvar
+_test_fmtgs_foo_label	.gvar
 test.assert.eq	.gvar
 string.≡	.gvar
 string.fmtgs	.gvar
 ibio.file.name.fmtgs	.gvar
 ibio.file.name.in	.gvar
-_test.fmtgs.foo_fn.s	.gvar
+_test_fmtgs_foo_fn.s	.gvar
 fmtgs.prec.app	.gvar
 list.nil	.gvar
-_test.fmtgs.foo_expected	.gvar
-fn	.apply	ibio.file.name.in	|	_test.fmtgs.foo_fn.s
+_test_fmtgs_foo_expected	.gvar
+fn	.apply	ibio.file.name.in	|	_test_fmtgs_foo_fn.s
 snil	.apply	list.nil	rune.t
 actual	.apply	ibio.file.name.fmtgs	|	fn	fmtgs.prec.app	snil
-test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test.fmtgs.foo_expected
-	.app	_test.fmtgs.foo_label	test
+test	.apply	test.assert.eq	string.t	|	string.≡	string.fmtgs	actual	_test_fmtgs_foo_expected
+	.app	_test_fmtgs_foo_label	test
 	.enter	test.property.label
 
 -- §section §gs{#exts (components.get fn<foo/bar.gs>)}
