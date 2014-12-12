@@ -10,6 +10,7 @@ _gsac.generator.doc.annotate_w	.closure	_gsac.generator.doc.annotate_w_c	_gsac.g
 gsac.generator.annotate	.closure	_gsac.generator.annotate_c	_gsac.generator.annotate_ty
 
 gsac.generator.annotate.context.doc	.closure	_gsac.generator.annotate.context.doc_c
+gsac.generator.annotate.context.impfor	.closure	_gsac.generator.annotate.context.impfor_c
 
 	.code
 
@@ -339,10 +340,14 @@ pos1		.fkarg	2	gsdl.sourcepos.t
 tye		.fkarg	3	gsdl.cgs.typeenv.typeexpansion.t
 			.force	_gsac.generator.annotate_typesyn_k
 			.coerce	either.t.out	string.t	record.empty
-			.analyze	ctxt0	doc
+			.analyze	ctxt0	doc	impfor
 				.case	doc
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
+				.case	impfor
+ty				.fkarg	0	gsdl.cgs.gstype.t
+					.undef	either.t	string.t	record.empty
+			-- > :: either.t	string.t	record.empty
 		.case	undef
 pos0		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -420,6 +425,16 @@ res	.constr	gsac.generator.annotate.context.prim.u	doc
 	.lift
 	.yield	res
 
+_gsac.generator.annotate.context.impfor_c	.expr
+gsdl.cgs.gstype.t	.tygvar
+gsac.generator.annotate.context.prim.u	.tygvar
+gsac.generator.annotate.context.t.in	.cogvar
+ty	.larg	gsdl.cgs.gstype.t
+res	.constr	gsac.generator.annotate.context.prim.u	impfor	0	ty
+	.coerce	gsac.generator.annotate.context.t.in
+	.lift
+	.yield	res
+
 	.type
 
 -- §section §gs{gsac.generator.annotate.context.t}
@@ -431,7 +446,12 @@ gsac.generator.annotate.context.prim.u	.tygvar
 
 gsac.generator.annotate.context.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
-	.tysum	doc	record.unboxed.empty
+_gsac.generator.annotate.context.prim.u_impfor_ty	.tygvar
+	.tysum	doc	record.unboxed.empty	impfor	_gsac.generator.annotate.context.prim.u_impfor_ty
+
+_gsac.generator.annotate.context.prim.u_impfor_ty	.tyexpr
+gsdl.cgs.gstype.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gstype.t
 
 -- §section §gs{gsac.generator.doc.annotate}
 
