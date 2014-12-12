@@ -318,6 +318,7 @@ string.t	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.generator.annotate_res.ty	.tygvar	-- Temp
+_gsac.generator.annotate_bind_k	.subcode
 _gsac.generator.annotate_typesyn_k	.subcode
 either.t.out	.cogvar
 either.right	.gvar
@@ -332,7 +333,15 @@ v		.fkarg	1	gsdl.var.t
 mbty		.fkarg	2	maybe.t	gsdl.cgs.gstype.t
 pos1		.fkarg	3	gsdl.sourcepos.t
 e		.fkarg	4	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
+			.force	_gsac.generator.annotate_bind_k
+			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
+			.analyze	ctxt0	doc	impfor
+				.case	doc
+					.undef	either.t	string.t	gsdl.cgs.gstype.t
+				.case	impfor
+m.ty				.fkarg	0	gsdl.cgs.gstype.t
+					.undef	either.t	string.t	gsdl.cgs.gstype.t
+			-- > :: either.t	string.t	gsdl.cgs.gstype.t
 		.case	typesyn
 pos0		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -355,6 +364,15 @@ pos1		.fkarg	2	gsdl.sourcepos.t
 ty		.fkarg	3	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
 	-- > :: either.t	string.t	_gsac.generator.annotate_res.ty
+
+_gsac.generator.annotate_bind_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.generator.annotate_res.ty	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
 
 _gsac.generator.annotate_typesyn_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
