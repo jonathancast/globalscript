@@ -458,11 +458,12 @@ gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.pos	.gvar
 gsdl.sourcepos	.gvar
+gsdl.cgs.gsexpr.structure	.gvar
 pos0	.larg	parser.pos.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
-e	.undefined	gsdl.cgs.gsexpr.t
+e	.apply	gsdl.cgs.gsexpr.structure	|	gs
 	.app	pos	e
 	.enter	gsdl.cgs.gsexpr.pos
 
