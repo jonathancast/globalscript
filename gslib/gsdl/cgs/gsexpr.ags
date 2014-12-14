@@ -592,7 +592,8 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.enter	gsdl.cgs.gsexpr.freevars
 		.case	structure
 gs		.fkarg	0	list.t	gsdl.cgs.gsexpr.generator.t
-gs.fvs			.undefined	ordered.set.t	gsdl.cgs.symbol.t
+gs.fvss			.apply	list.map	gsdl.cgs.gsexpr.generator.t	set.symbol.ty	|	gsdl.cgs.gsexpr.generator.freevars	gs
+gs.fvs			.apply	list.foldl	set.symbol.ty	set.symbol.ty	|	union.symbol	empty.symbol	gs.fvss
 gs.bvs			.undefined	ordered.set.t	gsdl.cgs.symbol.t
 			.app	gsdl.cgs.symbol.compare	gs.fvs	gs.bvs
 			.enter	ordered.set.difference	gsdl.cgs.symbol.t
