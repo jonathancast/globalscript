@@ -953,24 +953,27 @@ mdl.type.field.decl.t	.tygvar
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_k	.subcode
 mdl.type.t.out	.cogvar
 f	.larg	mdl.type.field.decl.t
+f.nm	.lfield	name	f
 f.ty	.lfield	gstype	f
 	.force	_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_k
 	.coerce	mdl.type.t.out
 	.enter	f.ty
 
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_k	.forcecont
+string.t	.tygvar
 mdl.type.prim.u	.tygvar
 rune.t	.tygvar
 mdl.type.t	.tygvar
-string.t	.tygvar
 list.<>	.gvar
 _mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_gsvalue_prefix.s	.gvar
+f.nm	.fv	string.t
 ty0	.karg	mdl.type.prim.u
 	.analyze	ty0	bco	gsvalue	list	value
 		.case	bco
 			.undef	string.t
 		.case	gsvalue
-s			.undefined	string.t
+s1			.undefined	string.t
+s			.apply	list.<>	rune.t	|	f.nm	s1
 			.app	_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_gsvalue_prefix.s	s
 			.enter	list.<>	rune.t
 		.case	list
