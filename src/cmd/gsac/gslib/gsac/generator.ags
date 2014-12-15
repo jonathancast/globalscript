@@ -470,7 +470,7 @@ _gsac.gstype.typeexpansion.annotate_res.ty	.tygvar
 _gsac.generator.annotate_res.ty	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	-- Temp
-gsdl.cgs.typeenv.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.typeenv.typefun.insert	.gvar
 maybe.just	.gvar
@@ -487,7 +487,8 @@ r.ki			.lfield	kind	tye.r
 just.r.ki			.apply	maybe.just	gsdl.cgs.gskind.t	|	r.ki
 r.tye			.lfield	typeexpansion	tye.r
 env			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	just.r.ki	r.tye	gsdl.cgs.typeenv.empty
-res			.lrecord	env	env	|	_gsac.generator.annotate_res.ty
+r.g			.undefined	gsdl.cgs.gsexpr.generator.t
+res			.lrecord	env	env	generator	r.g	|	_gsac.generator.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.generator.annotate_res.ty
 
@@ -574,7 +575,8 @@ _gsac.generator.annotate_res.u	.tygvar
 
 _gsac.generator.annotate_res.u	.tyexpr
 gsdl.cgs.typeenv.t	.tygvar
-	.typroduct	env	gsdl.cgs.typeenv.t
+gsdl.cgs.gsexpr.generator.t	.tygvar
+	.typroduct	env	gsdl.cgs.typeenv.t	generator	gsdl.cgs.gsexpr.generator.t
 
 	.coercion
 
