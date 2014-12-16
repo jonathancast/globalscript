@@ -477,7 +477,8 @@ fs		.fkarg	1	list.t	mdl.type.field.decl.t
 fs.fields.f			.closure	_mdl.hack.compiler.type.decl.compile_lprim.blocking_fs.fields.f_c
 fs.fields.ss			.apply	list.map	mdl.type.field.decl.t	string.t	|	fs.fields.f	fs
 fs.fields.s			.apply	list.concat	rune.t	|	fs.fields.ss
-s12			.undefined	string.t
+s13			.undefined	string.t
+s12			.apply	list.:	rune.t	|	rune.new.line	s13
 s11			.apply	list.<>	rune.t	|	mdl.hack.compile.type.bottomrow.s	s12
 s10			.apply	list.<>	rune.t	|	_mdl.hack.compiler.type.decl.compile_lprim.blocking_alloc.suffix.s	s11
 s9			.apply	list.<>	rune.t	|	id	s10
