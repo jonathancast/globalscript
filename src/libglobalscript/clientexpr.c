@@ -141,8 +141,8 @@ gsnapplyv(struct gspos pos, gsvalue fun, int n, gsvalue *args)
 
     app = (struct gsapplication *)res;
 
-    res->pos = pos;
     memset(&res->lock, 0, sizeof(res->lock));
+    res->pos = pos;
     res->type = gsapplication;
     app->app.fun = fun;
     app->app.numargs = n;

@@ -496,14 +496,12 @@ ace_return_to_app(struct ace_thread *thread, struct ace_thread **pthread, struct
         res = gsreserveheap(sizeof (struct gsclosure) + (cl->cl.numfvs + app->numargs) * sizeof(gsvalue));
         clres = (struct gsclosure *)res;
 
-        res->pos = cont->pos;
         memset(&res->lock, 0, sizeof(res->lock));
+        res->pos = cont->pos;
         res->type = gsclosure;
         clres->cl.code = cl->cl.code;
         clres->cl.numfvs = cl->cl.numfvs + app->numargs;
-        for (i = 0; i < cl->cl.numfvs; i++)
-            clres->cl.fvs[i] = cl->cl.fvs[i]
-        ;
+        for (i = 0; i < cl->cl.numfvs; i++) clres->cl.fvs[i] = cl->cl.fvs[i];
         for (i = cl->cl.numfvs; i < cl->cl.numfvs + app->numargs; i++)
             clres->cl.fvs[i] = app->arguments[i - cl->cl.numfvs]
         ;
@@ -564,12 +562,8 @@ ace_return_to_app(struct ace_thread *thread, struct ace_thread **pthread, struct
                 hpres->type = gsclosure;
                 res->cl.code = cl->cl.code;
                 res->cl.numfvs = cl->cl.numfvs + app->numargs;
-                for (i = 0; i < cl->cl.numfvs; i++)
-                    res->cl.fvs[i] = cl->cl.fvs[i]
-                ;
-                for (i = 0; i < app->numargs; i++)
-                    res->cl.fvs[cl->cl.numfvs + i] = app->arguments[i]
-                ;
+                for (i = 0; i < cl->cl.numfvs; i++) res->cl.fvs[i] = cl->cl.fvs[i];
+                for (i = 0; i < app->numargs; i++) res->cl.fvs[cl->cl.numfvs + i] = app->arguments[i];
 
                 thread->stacktop = (uchar*)cont + sizeof(struct gsbc_cont_app) + app->numargs * sizeof(gsvalue);
                 ace_return(thread, pthread, cont->pos, (gsvalue)res);

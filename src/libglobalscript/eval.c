@@ -212,11 +212,11 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             newcl = (struct gsclosure *)gsreserveheap(sz);
 
             memcpy(newcl, cl, sz);
-            memset(&newcl->hp.lock, 0, sizeof(newcl->hp.lock));
 
             cl->hp.type = gsgcforward;
             cl->gcfwd = (gsvalue)newcl;
 
+            memset(&newcl->hp.lock, 0, sizeof(newcl->hp.lock));
             if (gs_gc_trace_pos(err, &newcl->hp.pos) < 0) return 0;
             if (gs_gc_trace_bco(err, &newcl->cl.code) < 0) return 0;
 
@@ -235,11 +235,11 @@ gsheapgc(struct gsstringbuilder *err, gsvalue v)
             newapp = (struct gsapplication *)gsreserveheap(sizeof(*newapp) + app->app.numargs * sizeof(gsvalue));
 
             memcpy(newapp, app, sizeof(*newapp) + app->app.numargs * sizeof(gsvalue));
-            memset(&newapp->hp.lock, 0, sizeof(newapp->hp.lock));
 
             app->hp.type = gsgcforward;
             app->gcfwd = (gsvalue)newapp;
 
+            memset(&newapp->hp.lock, 0, sizeof(newapp->hp.lock));
             if (gs_gc_trace_pos(err, &newapp->hp.pos) < 0) return 0;
             if (GS_GC_TRACE(err, &newapp->app.fun) < 0) return 0;
 
@@ -606,7 +606,7 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
     bco = *ppbco;
 
     if (CLASS_OF_BLOCK_CONTAINING(bco) != &gsbytecode_info.descr) {
-        gsstring_builder_print(err, UNIMPL("gs_gc_trace_bco: tracing bco pointer %p (*%p, in a %s), but doesn't point to bco block"), bco, ppbco, CLASS_OF_BLOCK_CONTAINING(ppbco)->description);
+        gsstring_builder_print(err, UNIMPL("gs_gc_trace_bco: tracing bco pointer %p (*%p, in a %s), but doesn't point to bco block, but to a %s"), bco, ppbco, CLASS_OF_BLOCK_CONTAINING(ppbco)->description, CLASS_OF_BLOCK_CONTAINING(bco)->description);
         return -1;
     }
 
