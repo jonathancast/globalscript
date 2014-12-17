@@ -917,10 +917,22 @@ r1			.lrecord	expr	r1.e	gskind	ki	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
 _gsac.gsexpr.annotate_var_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+either.right	.gvar
 mb0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
+	.analyze	mb0	just	nothing
+		.case	just
+v.ty		.fkarg	0	gsdl.cgs.gstype.t
+e			.undefined	gsdl.cgs.gsexpr.t
+ki			.undefined	gsdl.cgs.gskind.t
+res			.lrecord	expr	e	gskind	ki	gstype	v.ty	|	_gsac.gsexpr.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
+		.case	nothing
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 
