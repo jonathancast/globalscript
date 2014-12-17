@@ -82,10 +82,13 @@ _gsac.gsexpr.annotate_impfor_k	.subcode
 _gsac.gsexpr.annotate_lambda_k	.subcode
 _gsac.gsexpr.annotate_lift_k	.subcode
 _gsac.gsexpr.annotate_pos_k	.subcode
+_gsac.gsexpr.annotate_var_k	.subcode
 either.t.out	.cogvar
+maybe.t.out	.cogvar
 gsac.gscoercion.annotate	.gvar
 gsac.gsexpr.annotate	.gvar
 gsac.gstype.annotate	.gvar
+gsdl.cgs.typeenv.gstype.get	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
@@ -138,7 +141,10 @@ gs		.fkarg	0	list.t	gsdl.cgs.gsexpr.generator.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	var
 v		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+			.force	_gsac.gsexpr.annotate_var_k
+			.coerce	maybe.t.out	gsdl.cgs.gstype.t
+			.app	v	env
+			.enter	gsdl.cgs.typeenv.gstype.get
 	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_app_k	.forcecont
@@ -907,6 +913,16 @@ ty			.lfield	gstype	r0
 r1			.lrecord	expr	r1.e	gskind	ki	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
 			.app	r1
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
+
+_gsac.gsexpr.annotate_var_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+mb0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+
 
 -- §section §gs{gsac.gsexpr.body.annotate}
 
