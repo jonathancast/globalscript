@@ -10,7 +10,7 @@ ibio.file.name.with	.closure	_ibio.file.name.with_c
 
 ibio.file.name.≡	.closure	_ibio.file.name.≡_c
 
-ibio.file.read.open.prim	.closure	_ibio.file.read.open.prim_c
+ibio.file.read.open.prim	.closure	_ibio.file.read.open.prim_c	_ibio.file.read.open.prim_ty
 
 ibio.file.stat.prim	.closure	_ibio.file.stat.prim_c
 
@@ -646,6 +646,22 @@ ibio.file.name.t	.tyabstract	*
 list.t	.tygvar
 rune.t	.tygvar
 	.tyref	list.t	rune.t
+
+-- §section §gs{ibio.file.read.open.prim}
+
+_ibio.file.read.open.prim_ty	.tyexpr	*
+ibio.prim.external.io.t	.tygvar
+ibio.file.name.t	.tygvar
+ibio.prim.m	.tygvar
+_ibio.prim.file.read.open_res.ty	.tygvar
+s	.tyforall	*
+res.ty	.tylet	_ibio.prim.file.read.open_res.ty	s
+	.tylift
+	.tyfun	ibio.prim.external.io.t	s
+	.tylift
+	.tyfun	ibio.file.name.t
+	.tylift
+	.tyref	ibio.prim.m	res.ty
 
 -- §section §gs{ibio.file.name.with}
 
