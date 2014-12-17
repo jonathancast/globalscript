@@ -148,11 +148,16 @@ env	.larg	gsdl.cgs.typeenv.t
 	.enter	env
 
 _gsdl.cgs.typeenv.gstype.get_k	.forcecont
+gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
-maybe.t	.tygvar	-- Temp
-gsdl.cgs.gstype.t	.tygvar	-- Temp
+gsdl.cgs.gstype.t	.tygvar
+ordered.map.get	.gvar
+gsdl.var.compare	.gvar
+v	.fv	gsdl.var.t
 env0	.karg	gsdl.cgs.typeenv.u
-	.undef	maybe.t	gsdl.cgs.gstype.t
+tys	.field	types	env0
+	.app	gsdl.var.compare	v	tys
+	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.gstype.t
 
 -- §section §gs{gsdl.cgs.typeenv.empty}
 
