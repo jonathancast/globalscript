@@ -606,7 +606,7 @@ gs_gc_trace_bco(struct gsstringbuilder *err, struct gsbco **ppbco)
     bco = *ppbco;
 
     if (CLASS_OF_BLOCK_CONTAINING(bco) != &gsbytecode_info.descr) {
-        gsstring_builder_print(err, UNIMPL("gs_gc_trace_bco: tracing bco pointer %p (*%p, in a %s), but doesn't point to bco block, but to a %s"), bco, ppbco, CLASS_OF_BLOCK_CONTAINING(ppbco)->description, CLASS_OF_BLOCK_CONTAINING(bco)->description);
+        gsstring_builder_print(err, "gs_gc_trace_bco: tracing bco pointer %p (*%p, in a %s), but doesn't point to bco block, but to a %s instead", bco, ppbco, CLASS_OF_BLOCK_CONTAINING(ppbco)->description, CLASS_OF_BLOCK_CONTAINING(bco)->description);
         return -1;
     }
 
