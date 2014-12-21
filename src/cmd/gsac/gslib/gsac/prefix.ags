@@ -3437,6 +3437,16 @@ _gsac.prefix.item.prim.u_typefnitem_ty	.tyexpr
 gsac.prefix.typefnitem.t	.tygvar
 	.tyubproduct	0	gsac.prefix.typefnitem.t
 
+-- §section §gs{gsac.prefix.dataitem.t}
+
+gsac.prefix.dataitem.t	.tyabstract	*
+gsac.prefix.dataitem.prim.u	.tygvar
+	.tylift
+	.tyref	gsac.prefix.dataitem.prim.u
+
+gsac.prefix.dataitem.prim.u	.tyexpr
+	.tysum
+
 -- §section §gs{gsac.prefix.typefnitem.t}
 
 gsac.prefix.typefnitem.t	.tyabstract	*
