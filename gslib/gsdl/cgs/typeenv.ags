@@ -609,21 +609,22 @@ env	.larg	gsdl.cgs.typeenv.t
 
 _gsdl.cgs.typeenv.var.insert_k	.forcecont
 gsdl.var.t	.tygvar
-gsdl.cgs.typeenv.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-ordered.map.t	.tygvar	-- Temp
-gsdl.cgs.gskind.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
 ordered.map.insert	.gvar
 gsdl.var.compare	.gvar
 v	.fv	gsdl.var.t
 ty	.fv	gsdl.cgs.gstype.t
+ki	.fv	gsdl.cgs.gskind.t
 env0	.karg	gsdl.cgs.typeenv.u
 kis	.field	kinds	env0
 tyds	.field	typedefinitions	env0
 tyes	.field	typeexpansions	env0
 tys	.field	types	env0
 tys1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gstype.t	|	gsdl.var.compare	v	ty	tys
-vks1	.undefined	ordered.map.t	gsdl.var.t	gsdl.cgs.gskind.t
+vks	.field	varkinds	env0
+vks1	.apply	ordered.map.insert	gsdl.var.t	gsdl.cgs.gskind.t	|	gsdl.var.compare	v	ki	vks
 r	.record	kinds	kis	typedefinitions	tyds	typeexpansions	tyes	types	tys1	varkinds	vks1	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
