@@ -731,6 +731,29 @@ tys1	.field	types	env1.0
 	.enter	ordered.map.∪	gsdl.var.t	gsdl.cgs.gstype.t
 
 _gsdl.cgs.typeenv.overlay_w_k3	.strictcont
+gsdl.cgs.typeenv.u	.tygvar
+ordered.map.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typedefinition.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.typeenv.overlay_w_k4	.subcode
+ordered.map.∪	.gvar
+gsdl.var.compare	.gvar
+env0.0	.fv	gsdl.cgs.typeenv.u
+env1.0	.fv	gsdl.cgs.typeenv.u
+tyds2	.fv	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t
+kis2	.fv	ordered.map.t	gsdl.var.t	gsdl.cgs.gskind.t
+es2	.fv	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
+tys2	.karg	ordered.map.t	gsdl.var.t	gsdl.cgs.gstype.t
+vks0	.field	varkinds	env0.0
+vks1	.field	varkinds	env1.0
+	.strict	_gsdl.cgs.typeenv.overlay_w_k4
+	.app	gsdl.var.compare	vks0	vks1
+	.enter	ordered.map.∪	gsdl.var.t	gsdl.cgs.gskind.t
+
+_gsdl.cgs.typeenv.overlay_w_k4	.strictcont
 ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typedefinition.t	.tygvar
@@ -741,8 +764,8 @@ gsdl.cgs.typeenv.u	.tygvar
 tyds2	.fv	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typedefinition.t
 kis2	.fv	ordered.map.t	gsdl.var.t	gsdl.cgs.gskind.t
 es2	.fv	ordered.map.t	gsdl.var.t	gsdl.cgs.typeenv.typeexpansion.t
-tys2	.karg	ordered.map.t	gsdl.var.t	gsdl.cgs.gstype.t
-vks2	.undefined	ordered.map.t	gsdl.var.t	gsdl.cgs.gskind.t
+tys2	.fv	ordered.map.t	gsdl.var.t	gsdl.cgs.gstype.t
+vks2	.karg	ordered.map.t	gsdl.var.t	gsdl.cgs.gskind.t
 r	.record	kinds	kis2	typedefinitions	tyds2	typeexpansions	es2	types	tys2	varkinds	vks2	|	gsdl.cgs.typeenv.u
 	.lift
 	.yield	r
