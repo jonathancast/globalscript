@@ -121,6 +121,7 @@ gsac.prefix.tyforall.typecheck	.closure	_gsac.prefix.tyforall.typecheck_c
 
 gsac.prefix.tylet.typecheck	.closure	_gsac.prefix.tylet.typecheck_c
 
+gsac.prefix.item.dataitem	.closure	_gsac.prefix.item.dataitem_c
 gsac.prefix.item.typeconstitem	.closure	_gsac.prefix.item.typeconstitem_c
 gsac.prefix.item.typefnitem	.closure	_gsac.prefix.item.typefnitem_c
 
@@ -2040,6 +2041,7 @@ it	.larg	gsac.prefix.item.t
 
 _gsac.prefix.item.name_k	.forcecont
 gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.dataitem.t	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	-- Temp
@@ -2048,7 +2050,10 @@ _gsac.prefix.item.name_typefnitem_k	.subcode
 gsac.prefix.typeconstitem.t.out	.cogvar
 gsac.prefix.typefnitem.t.out	.cogvar
 it0	.karg	gsac.prefix.item.prim.u
-	.analyze	it0	typeconstitem	typefnitem
+	.analyze	it0	dataitem	typeconstitem	typefnitem
+		.case	dataitem
+di		.fkarg	0	gsac.prefix.dataitem.t
+			.undef	gsdl.cgs.symbol.t
 		.case	typeconstitem
 ti		.fkarg	0	gsac.prefix.typeconstitem.t
 			.force	_gsac.prefix.item.name_typeconstitem_k
@@ -2156,6 +2161,7 @@ it	.larg	gsac.prefix.item.t
 
 _gsac.prefix.item.deps_k	.forcecont
 gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.dataitem.t	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 list.t	.tygvar	-- Temp
@@ -2165,7 +2171,10 @@ _gsac.prefix.item.deps_typefnitem_k	.subcode
 gsac.prefix.typeconstitem.t.out	.cogvar
 gsac.prefix.typefnitem.t.out	.cogvar
 it0	.karg	gsac.prefix.item.prim.u
-	.analyze	it0	typeconstitem	typefnitem
+	.analyze	it0	dataitem	typeconstitem	typefnitem
+		.case	dataitem
+di		.fkarg	0	gsac.prefix.dataitem.t
+			.undef	list.t	gsdl.cgs.symbol.t
 		.case	typeconstitem
 ti		.fkarg	0	gsac.prefix.typeconstitem.t
 			.force	_gsac.prefix.item.deps_typeconstitem_k
@@ -2322,6 +2331,7 @@ it	.larg	gsac.prefix.item.t
 _gsac.prefix.item.typecheck_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.dataitem.t	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 either.t	.tygvar	-- Temp
@@ -2332,7 +2342,10 @@ gsac.prefix.typeconstitem.t.out	.cogvar
 gsac.prefix.typefnitem.t.out	.cogvar
 env	.fv	gsdl.cgs.typeenv.t
 it0	.karg	gsac.prefix.item.prim.u
-	.analyze	it0	typeconstitem	typefnitem
+	.analyze	it0	dataitem	typeconstitem	typefnitem
+		.case	dataitem
+di		.fkarg	0	gsac.prefix.dataitem.t
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
 		.case	typeconstitem
 ti		.fkarg	0	gsac.prefix.typeconstitem.t
 			.force	_gsac.prefix.item.typecheck_typeconstitem_k
@@ -2667,6 +2680,7 @@ it0.0	.karg	gsac.prefix.item.prim.u
 
 _gsac.prefix.item.≡_k1	.forcecont
 gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.dataitem.t	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 bool.t	.tygvar	-- Temp
@@ -2675,7 +2689,10 @@ bool.false	.gvar
 gsac.prefix.typefnitem.≡	.gvar
 it0.0	.fv	gsac.prefix.item.prim.u
 it1.0	.karg	gsac.prefix.item.prim.u
-	.analyze	it0.0	typeconstitem	typefnitem
+	.analyze	it0.0	dataitem	typeconstitem	typefnitem
+		.case	dataitem
+di0		.fkarg	0	gsac.prefix.dataitem.t
+			.undef	bool.t
 		.case	typeconstitem
 ti0		.fkarg	0	gsac.prefix.typeconstitem.t
 			.danalyze	it1.0	typeconstitem
@@ -2709,6 +2726,7 @@ it	.larg	gsac.prefix.item.t
 
 _gsac.prefix.item.fmtgs_k	.forcecont
 gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.dataitem.t	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 fmtgs.printer.t	.tygvar	-- Temp
@@ -2719,7 +2737,10 @@ gsac.prefix.typeconstitem.fmtgs	.gvar
 _gsac.prefix.item.fmtgs_typefnitem_typefnitem.s	.gvar
 gsac.prefix.typefnitem.fmtgs	.gvar
 it0	.karg	gsac.prefix.item.prim.u
-	.analyze	it0	typeconstitem	typefnitem
+	.analyze	it0	dataitem	typeconstitem	typefnitem
+		.case	dataitem
+di		.fkarg	0	gsac.prefix.dataitem.t
+			.undef	fmtgs.printer.t
 		.case	typeconstitem
 ti		.fkarg	0	gsac.prefix.typeconstitem.t
 f.pr			.apply	fmtgs.var	|	_gsac.prefix.item.fmtgs_typeconstitem_typeconstitem.s
@@ -3260,6 +3281,16 @@ env1			.apply	gsdl.cgs.typeenv.typefun.insert	|	tyx	mbki	tye	env
 
 -- §section §gs{gsac.prefix.item.t} constructors
 
+_gsac.prefix.item.dataitem_c	.expr
+gsac.prefix.dataitem.t	.tygvar
+gsac.prefix.item.prim.u	.tygvar
+gsac.prefix.item.t.in	.cogvar
+di	.larg	gsac.prefix.dataitem.t
+c	.constr	gsac.prefix.item.prim.u	dataitem	0	di
+	.coerce	gsac.prefix.item.t.in
+	.lift
+	.yield	c
+
 _gsac.prefix.item.typeconstitem_c	.expr
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.item.prim.u	.tygvar
@@ -3425,9 +3456,14 @@ gsac.prefix.item.prim.u	.tygvar
 	.tyref	gsac.prefix.item.prim.u
 
 gsac.prefix.item.prim.u	.tyexpr
+_gsac.prefix.item.prim.u_dataitem_ty	.tygvar
 _gsac.prefix.item.prim.u_typeconstitem_ty	.tygvar
 _gsac.prefix.item.prim.u_typefnitem_ty	.tygvar
-	.tysum	typeconstitem	_gsac.prefix.item.prim.u_typeconstitem_ty	typefnitem	_gsac.prefix.item.prim.u_typefnitem_ty
+	.tysum	dataitem	_gsac.prefix.item.prim.u_dataitem_ty	typeconstitem	_gsac.prefix.item.prim.u_typeconstitem_ty	typefnitem	_gsac.prefix.item.prim.u_typefnitem_ty
+
+_gsac.prefix.item.prim.u_dataitem_ty	.tyexpr
+gsac.prefix.dataitem.t	.tygvar
+	.tyubproduct	0	gsac.prefix.dataitem.t
 
 _gsac.prefix.item.prim.u_typeconstitem_ty	.tyexpr
 gsac.prefix.typeconstitem.t	.tygvar
