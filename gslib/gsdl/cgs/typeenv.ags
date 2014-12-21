@@ -14,6 +14,8 @@ gsdl.cgs.typeenv.tyvar.elem	.closure	_gsdl.cgs.typeenv.tyvar.elem_c
 
 gsdl.cgs.typeenv.gstype.get	.closure	_gsdl.cgs.typeenv.gstype.get_c
 
+gsdl.cgs.typeenv.varkind.get	.closure	_gsdl.cgs.typeenv.varkind.get_c
+
 gsdl.cgs.typeenv.empty	.closure	_gsdl.cgs.typeenv.empty_c
 _gsdl.cgs.typeenv.empty_kis	.closure	_gsdl.cgs.typeenv.empty_kis_c
 _gsdl.cgs.typeenv.empty_tyds	.closure	_gsdl.cgs.typeenv.empty_tyds_c
@@ -158,6 +160,29 @@ env0	.karg	gsdl.cgs.typeenv.u
 tys	.field	types	env0
 	.app	gsdl.var.compare	v	tys
 	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.gstype.t
+
+-- §section §gs{gsdl.cgs.typeenv.varkind.get}
+
+_gsdl.cgs.typeenv.varkind.get_c	.expr
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+_gsdl.cgs.typeenv.varkind.get_k	.subcode
+v	.larg	gsdl.var.t
+env	.larg	gsdl.cgs.typeenv.t
+	.force	_gsdl.cgs.typeenv.varkind.get_k
+	.enter	env
+
+_gsdl.cgs.typeenv.varkind.get_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+ordered.map.get	.gvar
+gsdl.var.compare	.gvar
+v	.fv	gsdl.var.t
+env0	.karg	gsdl.cgs.typeenv.u
+vkis	.field	varkinds	env0
+	.app	gsdl.var.compare	v	vkis
+	.enter	ordered.map.get	gsdl.var.t	gsdl.cgs.gskind.t
 
 -- §section §gs{gsdl.cgs.typeenv.empty}
 
