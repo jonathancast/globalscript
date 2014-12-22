@@ -873,11 +873,43 @@ di	.larg	gsdl.ags.dataitem.t
 
 _gsac.prefix.file.add_gsprefix_tyds.add_k	.forcecont
 gsdl.ags.dataitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
 ordered.map.t	.tygvar	-- Temp
-gsdl.var.t	.tygvar	-- Temp
 gsac.prefix.dataitem.t	.tygvar	-- Temp
+_gsac.prefix.file.add_gsprefix_tyds.add_closure_k	.subcode
+maybe.t.out	.cogvar
 di0	.karg	gsdl.ags.dataitem.prim.u
-	.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+	.analyze	di0	cast	closure	undefined
+		.case	cast
+pos		.fkarg	0	gsdl.sourcepos.t
+mbv		.fkarg	1	maybe.t	gsdl.var.t
+sov		.fkarg	2	gsdl.var.t
+cov		.fkarg	3	gsdl.var.t
+			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+		.case	closure
+pos		.fkarg	0	gsdl.sourcepos.t
+mbv		.fkarg	1	maybe.t	gsdl.var.t
+c		.fkarg	2	gsdl.var.t
+mbty		.fkarg	3	maybe.t	gsdl.var.t
+			.force	_gsac.prefix.file.add_gsprefix_tyds.add_closure_k
+			.coerce	maybe.t.out	gsdl.var.t
+			.enter	mbv
+		.case	undefined
+pos		.fkarg	0	gsdl.sourcepos.t
+mbv		.fkarg	1	maybe.t	gsdl.var.t
+ty		.fkarg	2	gsdl.var.t
+			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+	-- > :: ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+
+_gsac.prefix.file.add_gsprefix_tyds.add_closure_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar	-- Temp
+gsac.prefix.dataitem.t	.tygvar	-- Temp
+mb0	.karg	maybe.prim.u	gsdl.var.t
+			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
 
 _gsac.prefix.file.add_gsprefix_tycs.add_c	.expr
 ordered.map.t	.tygvar
