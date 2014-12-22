@@ -904,16 +904,30 @@ ty		.fkarg	2	gsdl.var.t
 	-- > :: ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
 
 _gsac.prefix.file.add_gsprefix_tyds.add_closure_k	.forcecont
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
+maybe.prim.u	.tygvar
+ordered.map.t	.tygvar	-- Temp
+gsac.prefix.dataitem.t	.tygvar	-- Temp
+_gsac.prefix.file.add_gsprefix_tyds.add_closure_just_k	.subcode
+maybe.t.out	.cogvar
+mbty	.fv	maybe.t	gsdl.var.t
+mb0	.karg	maybe.prim.u	gsdl.var.t
+	.analyze	mb0	just	nothing
+		.case	just
+v		.fkarg	0	gsdl.var.t
+			.force	_gsac.prefix.file.add_gsprefix_tyds.add_closure_just_k
+			.coerce	maybe.t.out	gsdl.var.t
+			.enter	mbty
+		.case	nothing
+			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+
+_gsac.prefix.file.add_gsprefix_tyds.add_closure_just_k	.forcecont
 maybe.prim.u	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar	-- Temp
 gsac.prefix.dataitem.t	.tygvar	-- Temp
 mb0	.karg	maybe.prim.u	gsdl.var.t
-	.analyze	mb0	just	nothing
-		.case	just
-v		.fkarg	0	gsdl.var.t
-			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
-		.case	nothing
 			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
 
 _gsac.prefix.file.add_gsprefix_tycs.add_c	.expr
