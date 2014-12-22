@@ -920,28 +920,87 @@ r1			.lrecord	expr	r1.e	gskind	ki	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_var_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-string.t	.tygvar
-_gsac.gsexpr.annotate_res.ty	.tygvar
-gsdl.cgs.gskind.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar
 either.t	.tygvar	-- Temp
-either.right	.gvar
-gsdl.cgs.gsexpr.var	.gvar
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.annotate_var_just_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.varkind.get	.gvar
+env	.fv	gsdl.cgs.typeenv.t
 v	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mb0	just	nothing
 		.case	just
 v.ty		.fkarg	0	gsdl.cgs.gstype.t
-e			.apply	gsdl.cgs.gsexpr.var	|	v
-ki			.undefined	gsdl.cgs.gskind.t
-res			.lrecord	expr	e	gskind	ki	gstype	v.ty	|	_gsac.gsexpr.annotate_res.ty
-			.app	res
-			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
+			.force	_gsac.gsexpr.annotate_var_just_k
+			.coerce	maybe.t.out	gsdl.cgs.gskind.t
+			.app	v	env
+			.enter	gsdl.cgs.typeenv.varkind.get
 		.case	nothing
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
+_gsac.gsexpr.annotate_var_just_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.annotate_var_just_just_k	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+v	.fv	gsdl.var.t
+v.ty	.fv	gsdl.cgs.gstype.t
+mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
+	.analyze	mb0	just	nothing
+		.case	just
+v.ki		.fkarg	0	gsdl.cgs.gskind.t
+			.force	_gsac.gsexpr.annotate_var_just_just_k
+			.coerce	gsdl.cgs.gskind.t.out
+			.enter	v.ki
+		.case	nothing
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+
+_gsac.gsexpr.annotate_var_just_just_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t.in	.cogvar
+either.right	.gvar
+gsdl.cgs.gsexpr.var.lifted	.gvar
+v	.fv	gsdl.var.t
+v.ty	.fv	gsdl.cgs.gstype.t
+v.ki0	.karg	gsdl.cgs.gskind.prim.u
+v.ki0.l	.lifted	v.ki0
+v.ki0.cl	.cast	v.ki0.l	gsdl.cgs.gskind.t.in
+	.analyze	v.ki0	exp	lifted	unknown	unlifted
+		.case	exp
+kib		.fkarg	0	gsdl.cgs.gskind.t
+kie		.fkarg	1	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+		.case	lifted
+e			.apply	gsdl.cgs.gsexpr.var.lifted	|	v
+res			.lrecord	expr	e	gskind	v.ki0.cl	gstype	v.ty	|	_gsac.gsexpr.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
+		.case	unknown
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+		.case	unlifted
+e			.undefined	gsdl.cgs.gsexpr.t	-- > .apply	gsdl.cgs.gsexpr.var	|	v	-- Needs to be either §gs{var.lifted} or §gs{var.unlifted} (because they compile to different code)
+res			.lrecord	expr	e	gskind	v.ki0.cl	gstype	v.ty	|	_gsac.gsexpr.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 -- §section §gs{gsac.gsexpr.body.annotate}
 
