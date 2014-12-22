@@ -863,8 +863,20 @@ ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
 gsac.prefix.dataitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+_gsac.prefix.file.add_gsprefix_tyds.add_k	.subcode
+gsdl.ags.dataitem.t.out	.cogvar
 tyds0	.larg	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
 di	.larg	gsdl.ags.dataitem.t
+	.force	_gsac.prefix.file.add_gsprefix_tyds.add_k
+	.coerce	gsdl.ags.dataitem.t.out
+	.enter	di
+
+_gsac.prefix.file.add_gsprefix_tyds.add_k	.forcecont
+gsdl.ags.dataitem.prim.u	.tygvar
+ordered.map.t	.tygvar	-- Temp
+gsdl.var.t	.tygvar	-- Temp
+gsac.prefix.dataitem.t	.tygvar	-- Temp
+di0	.karg	gsdl.ags.dataitem.prim.u
 	.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
 
 _gsac.prefix.file.add_gsprefix_tycs.add_c	.expr
