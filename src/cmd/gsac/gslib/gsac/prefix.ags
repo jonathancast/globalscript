@@ -1302,12 +1302,12 @@ ki	.fv	gsdl.ags.typeitem.gskind.t
 ds	.fv	gsdl.ags.typeitem.decls.t
 dfn	.fv	gsdl.ags.typeitem.expr.t
 pr0	.karg	gsac.prefix.prim.u
-dis1	.undefined	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+dis	.field	dataitems	pr0
 absty	.apply	gsac.prefix.typeconstitem.gsabstypedefn	|	pos	v	ki	ds	dfn
 tycs0	.field	typeconstants	pr0
 tycs1	.apply	ordered.map.insert	gsdl.var.t	gsac.prefix.typeconstitem.t	|	gsdl.var.compare	v	absty	tycs0
 tyfs	.field	typefunctions	pr0
-res	.record	dataitems	dis1	typeconstants	tycs1	typefunctions	tyfs	|	gsac.prefix.prim.u
+res	.record	dataitems	dis	typeconstants	tycs1	typefunctions	tyfs	|	gsac.prefix.prim.u
 	.lift
 	.yield	res
 
