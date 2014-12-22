@@ -929,12 +929,17 @@ ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
 gsac.prefix.dataitem.t	.tygvar
 maybe.prim.u	.tygvar
+ordered.map.insert	.gvar
+gsdl.var.compare	.gvar
 tyds0	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+v	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.var.t
 	.analyze	mb0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.var.t
-			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+di			.undefined	gsac.prefix.dataitem.t
+			.app	gsdl.var.compare	v	di	tyds0
+			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.dataitem.t
 		.case	nothing
 			.enter	tyds0
 
