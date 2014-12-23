@@ -185,6 +185,7 @@ gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
 diff.list.t	.tygvar
+string.t	.tygvar
 _gsdl.ags.file.print_dataitems_:_closure_ty.s.print_c	.subcode
 diff.list.nil	.gvar
 _gsdl.ags.file.print_dataitems	.gvar
@@ -204,7 +205,7 @@ ds1	.fv	list.t	gsdl.ags.dataitem.t
 d0.0	.karg	gsdl.ags.dataitem.prim.u
 nil	.apply	diff.list.nil	rune.t
 s1	.apply	_gsdl.ags.file.print_dataitems	|	file0	ds1
-	.analyze	d0.0	cast	closure	undefined
+	.analyze	d0.0	cast	closure	string	undefined
 		.case	cast
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	gsdl.var.t
@@ -237,6 +238,11 @@ s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print_dataitems_:_closure_closure.
 s0			.apply	nm.s	|	s0.1
 			.app	pos	s0
 			.enter	gsdl.ags.sourcepos.print
+		.case	string
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	maybe.t	gsdl.var.t
+sv		.fkarg	2	string.t
+			.undef	string.t
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	gsdl.var.t
