@@ -201,12 +201,14 @@ bool.prim.u	.tygvar
 rune.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
 string.t	.tygvar
 _gsdl.ags.dataitem.parser_string.p_f_c	.subcode
 parser.fail	.gvar
 parser.lift3	.gvar
 parser.pos.get	.gvar
-gsdl.ags.syntax.id	.gvar
+gsdl.var.parser	.gvar
+natural.1	.gvar
 parser.*>	.gvar
 gsdl.ags.syntax.columnsep	.gvar
 parser.match	.gvar
@@ -222,20 +224,22 @@ isags0	.karg	bool.prim.u
 		.case	true
 f			.closure	_gsdl.ags.dataitem.parser_string.p_f_c
 pos.get			.apply	parser.pos.get	rune.t
+var.p	.apply	gsdl.var.parser	|	natural.1
 string.p			.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.dataitem.parser_string.p_string.re
 s.p3			.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.stringliteral	gsdl.ags.syntax.whitespace
 s.p2			.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	s.p3
 s.p1			.apply	parser.*>	rune.t	string.t	string.t	|	string.p	s.p2
 s.p			.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	s.p1
-			.app	f	pos.get	gsdl.ags.syntax.id	s.p
-			.enter	parser.lift3	rune.t	parser.pos.t	string.t	string.t	gsdl.ags.dataitem.t
+			.app	f	pos.get	var.p	s.p
+			.enter	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	string.t	gsdl.ags.dataitem.t
 
 _gsdl.ags.dataitem.parser_string.p_f_c	.expr
 parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
 string.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar	-- Temp
 pos	.larg	parser.pos.t
-nm	.larg	string.t
+nm	.larg	gsdl.var.t
 s	.larg	string.t
 	.undef	gsdl.ags.dataitem.t
 
