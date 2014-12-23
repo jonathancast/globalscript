@@ -238,10 +238,17 @@ parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 string.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar	-- Temp
-pos	.larg	parser.pos.t
+gsdl.ags.dataitem.string	.gvar
+gsdl.sourcepos	.gvar
+maybe.just	.gvar
+pos0	.larg	parser.pos.t
 nm	.larg	gsdl.var.t
 s	.larg	string.t
-	.undef	gsdl.ags.dataitem.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+just.nm	.apply	maybe.just	gsdl.var.t	|	nm
+	.app	pos	just.nm	s
+	.yield	gsdl.ags.dataitem.string
 
 -- §section §gs{gsdl.ags.dataitem.≡}
 
