@@ -2153,15 +2153,19 @@ gsac.prefix.dataitem.t	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	-- Temp
+_gsac.prefix.item.name_dataitem_k	.subcode
 _gsac.prefix.item.name_typeconstitem_k	.subcode
 _gsac.prefix.item.name_typefnitem_k	.subcode
+gsac.prefix.dataitem.t.out	.cogvar
 gsac.prefix.typeconstitem.t.out	.cogvar
 gsac.prefix.typefnitem.t.out	.cogvar
 it0	.karg	gsac.prefix.item.prim.u
 	.analyze	it0	dataitem	typeconstitem	typefnitem
 		.case	dataitem
 di		.fkarg	0	gsac.prefix.dataitem.t
-			.undef	gsdl.cgs.symbol.t
+			.force	_gsac.prefix.item.name_dataitem_k
+			.coerce	gsac.prefix.dataitem.t.out
+			.enter	di
 		.case	typeconstitem
 ti		.fkarg	0	gsac.prefix.typeconstitem.t
 			.force	_gsac.prefix.item.name_typeconstitem_k
@@ -2173,6 +2177,12 @@ ti		.fkarg	0	gsac.prefix.typefnitem.t
 			.coerce	gsac.prefix.typefnitem.t.out
 			.enter	ti
 	-- > :: gsdl.cgs.symbol.t
+
+_gsac.prefix.item.name_dataitem_k	.forcecont
+gsac.prefix.dataitem.prim.u	.tygvar
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+di0	.karg	gsac.prefix.dataitem.prim.u
+			.undef	gsdl.cgs.symbol.t
 
 _gsac.prefix.item.name_typeconstitem_k	.forcecont
 gsac.prefix.typeconstitem.prim.u	.tygvar
