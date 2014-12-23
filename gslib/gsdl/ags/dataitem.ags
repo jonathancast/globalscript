@@ -440,9 +440,9 @@ gsdl.var.t	.tygvar
 string.t	.tygvar
 gsdl.ags.dataitem.prim.u	.tygvar
 gsdl.ags.dataitem.t.in	.cogvar
-pos	.larg	gsdl.sourcepos.t
-nm	.larg	maybe.t	gsdl.var.t
-s	.larg	string.t
+pos	.arg	gsdl.sourcepos.t
+nm	.arg	maybe.t	gsdl.var.t
+s	.arg	string.t
 c	.constr	gsdl.ags.dataitem.prim.u	string	0	pos	1	nm	2	s
 	.coerce	gsdl.ags.dataitem.t.in
 	.lift
