@@ -125,6 +125,8 @@ gsac.prefix.item.dataitem	.closure	_gsac.prefix.item.dataitem_c
 gsac.prefix.item.typeconstitem	.closure	_gsac.prefix.item.typeconstitem_c
 gsac.prefix.item.typefnitem	.closure	_gsac.prefix.item.typefnitem_c
 
+gsac.prefix.dataitem.closure	.closure	_gsac.prefix.dataitem.closure_c
+
 gsac.prefix.typeconstitem.gsabstypedefn	.closure	_gsac.prefix.typeconstitem.gsabstypedefn_c
 
 gsac.prefix.typefnitem.gsabstypenm	.closure	_gsac.prefix.typefnitem.gsabstypenm_c
@@ -3429,6 +3431,22 @@ c	.constr	gsac.prefix.item.prim.u	typefnitem	0	ti
 	.lift
 	.yield	c
 
+-- §section §gs{gsac.prefix.dataitem.t} constructors
+
+_gsac.prefix.dataitem.closure_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsac.prefix.dataitem.prim.u	.tygvar
+gsac.prefix.dataitem.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+v	.larg	gsdl.var.t
+cl	.larg	gsdl.var.t
+ty	.larg	gsdl.var.t
+res	.constr	gsac.prefix.dataitem.prim.u	closure	0	pos	1	v	2	cl	3	ty
+	.coerce	gsac.prefix.dataitem.t.in
+	.lift
+	.yield	res
+
 -- §section §gs{gsac.prefix.typeconstitem.t}
 
 _gsac.prefix.typeconstitem.gsabstypedefn_c	.expr
@@ -3601,7 +3619,13 @@ gsac.prefix.dataitem.prim.u	.tygvar
 	.tyref	gsac.prefix.dataitem.prim.u
 
 gsac.prefix.dataitem.prim.u	.tyexpr
-	.tysum
+_gsac.prefix.dataitem.prim.u_closure_ty	.tygvar
+	.tysum	closure	_gsac.prefix.dataitem.prim.u_closure_ty
+
+_gsac.prefix.dataitem.prim.u_closure_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.var.t	3	gsdl.var.t
 
 -- §section §gs{gsac.prefix.typefnitem.t}
 
@@ -3771,6 +3795,10 @@ gsac.prefix.item.t.out	.tycoercion
 gsac.prefix.item.t	.tygvar
 	.tyinvert
 	.tydefinition	gsac.prefix.item.t
+
+gsac.prefix.dataitem.t.in	.tycoercion
+gsac.prefix.dataitem.t	.tygvar
+	.tydefinition	gsac.prefix.dataitem.t
 
 gsac.prefix.dataitem.t.out	.tycoercion
 gsac.prefix.dataitem.t	.tygvar
