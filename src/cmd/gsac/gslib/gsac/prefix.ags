@@ -902,7 +902,7 @@ mbty		.fkarg	3	maybe.t	gsdl.var.t
 pos		.fkarg	0	gsdl.sourcepos.t
 mbv		.fkarg	1	maybe.t	gsdl.var.t
 s		.fkarg	2	string.t
-			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+			.enter	tyds0
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t
 mbv		.fkarg	1	maybe.t	gsdl.var.t
