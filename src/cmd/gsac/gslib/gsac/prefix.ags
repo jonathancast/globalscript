@@ -3762,6 +3762,11 @@ gsac.prefix.item.t	.tygvar
 	.tyinvert
 	.tydefinition	gsac.prefix.item.t
 
+gsac.prefix.dataitem.t.out	.tycoercion
+gsac.prefix.dataitem.t	.tygvar
+	.tyinvert
+	.tydefinition	gsac.prefix.dataitem.t
+
 gsac.prefix.typeconstitem.t.in	.tycoercion
 gsac.prefix.typeconstitem.t	.tygvar
 	.tydefinition	gsac.prefix.typeconstitem.t
