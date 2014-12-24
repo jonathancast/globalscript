@@ -916,11 +916,14 @@ _gsac.prefix.file.add_gsprefix_tyds.add_closure_k	.forcecont
 ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
 gsac.prefix.dataitem.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 maybe.prim.u	.tygvar
 _gsac.prefix.file.add_gsprefix_tyds.add_closure_just_k	.subcode
 maybe.t.out	.cogvar
 tyds0	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+pos	.fv	gsdl.sourcepos.t
+c	.fv	gsdl.var.t
 mbty	.fv	maybe.t	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.var.t
 	.analyze	mb0	just	nothing
@@ -936,16 +939,20 @@ _gsac.prefix.file.add_gsprefix_tyds.add_closure_just_k	.forcecont
 ordered.map.t	.tygvar
 gsdl.var.t	.tygvar
 gsac.prefix.dataitem.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 maybe.prim.u	.tygvar
 ordered.map.insert	.gvar
 gsdl.var.compare	.gvar
+gsac.prefix.dataitem.closure	.gvar
 tyds0	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
+pos	.fv	gsdl.sourcepos.t
+c	.fv	gsdl.var.t
 v	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.var.t
 	.analyze	mb0	just	nothing
 		.case	just
 ty		.fkarg	0	gsdl.var.t
-di			.undefined	gsac.prefix.dataitem.t
+di			.apply	gsac.prefix.dataitem.closure	|	pos	v	c	ty
 			.app	gsdl.var.compare	v	di	tyds0
 			.enter	ordered.map.insert	gsdl.var.t	gsac.prefix.dataitem.t
 		.case	nothing
