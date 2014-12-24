@@ -2189,9 +2189,18 @@ ti		.fkarg	0	gsac.prefix.typefnitem.t
 
 _gsac.prefix.item.name_dataitem_k	.forcecont
 gsac.prefix.dataitem.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	-- Temp
 di0	.karg	gsac.prefix.dataitem.prim.u
+	.analyze	di0	closure
+		.case	closure
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+c		.fkarg	2	gsdl.var.t
+ty		.fkarg	3	gsdl.var.t
 			.undef	gsdl.cgs.symbol.t
+	-- > :: gsdl.cgs.symbol.t
 
 _gsac.prefix.item.name_typeconstitem_k	.forcecont
 gsac.prefix.typeconstitem.prim.u	.tygvar
