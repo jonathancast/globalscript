@@ -1689,6 +1689,11 @@ gsac.prefix.dataitem.t	.tygvar
 maybe.t	.tygvar	-- Temp
 gsac.prefix.item.t	.tygvar	-- Temp
 mb0	.karg	maybe.prim.u	gsac.prefix.dataitem.t
+	.analyze	mb0	just	nothing
+		.case	just
+di		.fkarg	0	gsac.prefix.dataitem.t
+			.undef	maybe.t	gsac.prefix.item.t
+		.case	nothing
 			.undef	maybe.t	gsac.prefix.item.t
 
 -- §section §gs{gsac.prefix.gskind.upconvert}
