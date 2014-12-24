@@ -1686,13 +1686,17 @@ it			.apply	gsac.prefix.item.typefnitem	|	ti
 _gsac.prefix.get_var_k	.forcecont
 maybe.prim.u	.tygvar
 gsac.prefix.dataitem.t	.tygvar
+gsac.prefix.item.t	.tygvar
 maybe.t	.tygvar	-- Temp
-gsac.prefix.item.t	.tygvar	-- Temp
+maybe.just	.gvar
+gsac.prefix.item.dataitem	.gvar
 mb0	.karg	maybe.prim.u	gsac.prefix.dataitem.t
 	.analyze	mb0	just	nothing
 		.case	just
 di		.fkarg	0	gsac.prefix.dataitem.t
-			.undef	maybe.t	gsac.prefix.item.t
+it			.apply	gsac.prefix.item.dataitem	|	di
+			.app	it
+			.yield	maybe.just	gsac.prefix.item.t
 		.case	nothing
 			.undef	maybe.t	gsac.prefix.item.t
 
