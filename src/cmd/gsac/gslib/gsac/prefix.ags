@@ -2548,12 +2548,18 @@ ti		.fkarg	0	gsac.prefix.typefnitem.t
 	-- > :: either.t	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.item.typecheck_dataitem_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
 gsac.prefix.dataitem.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 gsdl.cgs.typeenv.t	.tygvar	-- Temp
+_gsac.prefix.item.typecheck_dataitem_closure_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.get	.gvar
+env	.fv	gsdl.cgs.typeenv.t
 di0	.karg	gsac.prefix.dataitem.prim.u
 	.analyze	di0	closure
 		.case	closure
@@ -2561,8 +2567,70 @@ pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 c		.fkarg	2	gsdl.var.t
 tyl		.fkarg	3	gsdl.var.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+			.force	_gsac.prefix.item.typecheck_dataitem_closure_k
+			.coerce	maybe.t.out	gsdl.cgs.typeenv.typeexpansion.t
+			.app	tyl	env
+			.enter	gsdl.cgs.typeenv.typeexpansion.get
 	-- > :: either.t	string.t	gsdl.cgs.typeenv.t
+
+_gsac.prefix.item.typecheck_dataitem_closure_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	-- Temp
+gsdl.cgs.typeenv.t	.tygvar	-- Temp
+_gsac.prefix.item.typecheck_dataitem_closure_just_k	.subcode
+either.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.togstype	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+tyl	.fv	gsdl.var.t
+mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
+	.analyze	mb0	just	nothing
+		.case	just
+tye		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
+			.force	_gsac.prefix.item.typecheck_dataitem_closure_just_k
+			.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
+			.app	tye
+			.enter	gsdl.cgs.typeenv.typeexpansion.togstype
+		.case	nothing
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+
+_gsac.prefix.item.typecheck_dataitem_closure_just_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.var.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.prefix.item.typecheck_dataitem_closure_just_right_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.gskind.get	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+tyl	.fv	gsdl.var.t
+e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+		.case	right
+ty		.fkarg	0	gsdl.cgs.gstype.t
+			.force	_gsac.prefix.item.typecheck_dataitem_closure_just_right_k
+			.coerce	maybe.t.out	gsdl.cgs.gskind.t
+			.app	tyl	env
+			.enter	gsdl.cgs.typeenv.gskind.get
+
+_gsac.prefix.item.typecheck_dataitem_closure_just_right_k	.forcecont
+maybe.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+gsdl.cgs.typeenv.t	.tygvar	-- Temp
+mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.item.typecheck_typeconstitem_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
