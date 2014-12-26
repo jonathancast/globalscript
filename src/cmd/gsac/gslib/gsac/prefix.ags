@@ -2575,6 +2575,7 @@ tyl		.fkarg	3	gsdl.var.t
 
 _gsac.prefix.item.typecheck_dataitem_closure_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
@@ -2586,6 +2587,7 @@ _gsac.prefix.item.typecheck_dataitem_closure_just_k	.subcode
 either.t.out	.cogvar
 gsdl.cgs.typeenv.typeexpansion.togstype	.gvar
 env	.fv	gsdl.cgs.typeenv.t
+pos	.fv	gsdl.sourcepos.t
 tyl	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
 	.analyze	mb0	just	nothing
@@ -2600,6 +2602,7 @@ tye		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
 
 _gsac.prefix.item.typecheck_dataitem_closure_just_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -2610,6 +2613,7 @@ _gsac.prefix.item.typecheck_dataitem_closure_just_right_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.typeenv.gskind.get	.gvar
 env	.fv	gsdl.cgs.typeenv.t
+pos	.fv	gsdl.sourcepos.t
 tyl	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
 	.analyze	e0	left	right
@@ -2624,13 +2628,28 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 			.enter	gsdl.cgs.typeenv.gskind.get
 
 _gsac.prefix.item.typecheck_dataitem_closure_just_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+string.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+rune.t	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-gsdl.cgs.typeenv.t	.tygvar	-- Temp
+either.left	.gvar
+list.<>	.gvar
+gsdl.sourcepos.print	.gvar
+pos	.fv	gsdl.sourcepos.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
+	.analyze	mb0	just	nothing
+		.case	just
+ki		.fkarg	0	gsdl.cgs.gskind.t
 			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+		.case	nothing
+pos.s			.apply	gsdl.sourcepos.print	|	pos
+err1			.undefined	string.t
+err			.apply	list.<>	rune.t	|	pos.s	err1
+			.app	err
+			.enter	either.left	string.t	gsdl.cgs.typeenv.t
 
 _gsac.prefix.item.typecheck_typeconstitem_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
