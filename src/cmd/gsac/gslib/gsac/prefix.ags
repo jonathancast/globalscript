@@ -2588,6 +2588,7 @@ either.t.out	.cogvar
 gsdl.cgs.typeenv.typeexpansion.togstype	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 pos	.fv	gsdl.sourcepos.t
+v	.fv	gsdl.var.t
 tyl	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
 	.analyze	mb0	just	nothing
@@ -2614,6 +2615,7 @@ maybe.t.out	.cogvar
 gsdl.cgs.typeenv.gskind.get	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 pos	.fv	gsdl.sourcepos.t
+v	.fv	gsdl.var.t
 tyl	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
 	.analyze	e0	left	right
@@ -2629,21 +2631,29 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 
 _gsac.prefix.item.typecheck_dataitem_closure_just_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 rune.t	.tygvar
-either.t	.tygvar	-- Temp
+either.right	.gvar
+gsdl.cgs.typeenv.var.insert	.gvar
+gsdl.cgs.typeenv.empty	.gvar
 either.left	.gvar
 list.<>	.gvar
 gsdl.sourcepos.print	.gvar
 pos	.fv	gsdl.sourcepos.t
+v	.fv	gsdl.var.t
+ty	.fv	gsdl.cgs.gstype.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gskind.t
 	.analyze	mb0	just	nothing
 		.case	just
 ki		.fkarg	0	gsdl.cgs.gskind.t
-			.undef	either.t	string.t	gsdl.cgs.typeenv.t
+env0			.apply	gsdl.cgs.typeenv.var.insert	|	v	ty	ki	gsdl.cgs.typeenv.empty
+			.app	env0
+			.enter	either.right	string.t	gsdl.cgs.typeenv.t
 		.case	nothing
 pos.s			.apply	gsdl.sourcepos.print	|	pos
 err1			.undefined	string.t
