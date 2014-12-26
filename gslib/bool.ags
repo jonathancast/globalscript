@@ -249,7 +249,7 @@ bool.prim.u	.tyexpr
 record.unboxed.empty	.tygvar
 	.tysum	false	record.unboxed.empty	true	record.unboxed.empty
 
-_bool.fmtgs_ty	.tyexpr
+_bool.fmtgs_ty	.tyexpr	*
 fmtgs.t	.tygvar
 bool.t	.tygvar
 	.tyref	fmtgs.t	bool.t
