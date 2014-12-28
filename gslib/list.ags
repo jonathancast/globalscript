@@ -996,7 +996,7 @@ _list.map_f_ty	.tyexpr
 
 -- §section §gs{list.filter}
 
-_list.filter_ty	.tyexpr
+_list.filter_ty	.tyexpr	*
 _list.filter_pred_ty	.tygvar
 list.t	.tygvar
 α	.tyforall	*
@@ -1015,7 +1015,7 @@ bool.t	.tygvar
 
 -- §section §gs{list.filterMap}
 
-_list.filterMap_ty	.tyexpr
+_list.filterMap_ty	.tyexpr	*
 _list.filterMap_f_ty	.tygvar
 list.t	.tygvar
 α	.tyforall	*
@@ -1036,7 +1036,7 @@ maybe.t	.tygvar
 
 -- §section §gs{list.foldl}
 
-_list.foldl_ty	.tyexpr
+_list.foldl_ty	.tyexpr	*
 _list.foldl_f_ty	.tygvar
 list.t	.tygvar
 α	.tyforall	*
@@ -1107,7 +1107,7 @@ list.t	.tygvar
 
 -- §section §gs{list.byZip.map2}
 
-_list.byZip.map2_ty	.tyexpr
+_list.byZip.map2_ty	.tyexpr	*
 _list.byZip.map2_f_ty	.tygvar
 list.t	.tygvar
 α0	.tyforall	*
@@ -1170,7 +1170,7 @@ bool.t	.tygvar
 
 -- §section §gs{list.compare}
 
-_list.compare_ty	.tyexpr
+_list.compare_ty	.tyexpr	*
 order.total.t	.tygvar
 list.t	.tygvar
 α	.tyforall	*
@@ -1181,7 +1181,7 @@ arg.ty	.tylet	list.t	α
 
 -- §section §gs{list.elem}
 
-_list.elem_ty	.tyexpr
+_list.elem_ty	.tyexpr	*
 eq.t	.tygvar
 list.t	.tygvar
 bool.t	.tygvar

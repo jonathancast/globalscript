@@ -467,7 +467,7 @@ acceptor.prim.s.α	.tylet	ibio.acceptor.prim.t	s	α
 
 -- §section §gs{ibio.acceptor.many}
 
-_ibio.acceptor.many.prim_ty	.tyexpr
+_ibio.acceptor.many.prim_ty	.tyexpr	*
 ibio.acceptor.prim.cont.t	.tygvar
 ibio.acceptor.prim.kt	.tygvar
 list.t	.tygvar
@@ -484,7 +484,7 @@ res.ty	.tylet	list.t	α
 
 -- §section §gs{ibio.acceptor.many.void}
 
-_ibio.acceptor.many.void.prim_ty	.tyexpr
+_ibio.acceptor.many.void.prim_ty	.tyexpr	*
 ibio.acceptor.prim.cont.t	.tygvar
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
@@ -500,7 +500,7 @@ s	.tyforall	*
 
 -- §section §gs{ibio.acceptor.prim.<|>}
 
-_ibio.acceptor.prim.<|>_ty	.tyexpr
+_ibio.acceptor.prim.<|>_ty	.tyexpr	*
 ibio.acceptor.prim.t	.tygvar
 s	.tyforall	*
 β	.tyforall	*

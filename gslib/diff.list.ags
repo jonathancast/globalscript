@@ -210,7 +210,7 @@ list.t	.tygvar
 
 -- §section §gs{diff.list.replicate}
 
-_diff.list.replicate_w_ty	.tyexpr
+_diff.list.replicate_w_ty	.tyexpr	u
 natural.prim.u	.tygvar
 diff.list.t	.tygvar
 α	.tyforall	*

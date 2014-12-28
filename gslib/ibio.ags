@@ -378,7 +378,7 @@ rune.t	.tygvar
 	.tylift
 	.tyref	ibio.prim.m	α
 
-_ibio.dir.fromprim_ty	.tyexpr
+_ibio.dir.fromprim_ty	.tyexpr	*
 ibio.prim.dir.t	.tygvar
 ibio.dir.t	.tygvar
 	.tylift
@@ -401,7 +401,7 @@ integer.t	.tygvar
 
 -- §section §gs{ibio.mapM.prim}
 
-_ibio.mapM.prim_ty	.tyexpr
+_ibio.mapM.prim_ty	.tyexpr	*
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar
@@ -424,7 +424,7 @@ ibio.prim.t	.tygvar
 
 -- §section §gs{ibio.mapM0.prim}
 
-_ibio.mapM0.prim_ty	.tyexpr
+_ibio.mapM0.prim_ty	.tyexpr	*
 _ibio.mapM.prim_f_ty	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar
@@ -439,7 +439,7 @@ record.empty	.tygvar
 
 -- §section §gs{ibio.foldM.prim}
 
-_ibio.foldM.prim_ty	.tyexpr
+_ibio.foldM.prim_ty	.tyexpr	*
 _ibio.foldM.prim_f_ty	.tygvar
 list.t	.tygvar
 ibio.prim.t	.tygvar
