@@ -1352,14 +1352,16 @@ pr	.larg	gsac.prefix.t
 _gsac.prefix.items_k	.forcecont
 gsac.prefix.prim.u	.tygvar
 gsac.prefix.item.t	.tygvar
+gsdl.var.t	.tygvar
 gsac.prefix.typeconstitem.t	.tygvar
 gsac.prefix.typefnitem.t	.tygvar
-gsdl.var.t	.tygvar
+gsac.prefix.dataitem.t	.tygvar
 list.<>	.gvar
 list.map	.gvar
 gsac.prefix.item.typeconstitem	.gvar
 ordered.map.values	.gvar
 gsac.prefix.item.typefnitem	.gvar
+gsac.prefix.item.dataitem	.gvar
 pr0	.karg	gsac.prefix.prim.u
 tycs0	.field	typeconstants	pr0
 tycs	.apply	ordered.map.values	gsdl.var.t	gsac.prefix.typeconstitem.t	|	tycs0
@@ -1367,7 +1369,11 @@ its.tycs	.apply	list.map	gsac.prefix.typeconstitem.t	gsac.prefix.item.t	|	gsac.p
 tyfs0	.field	typefunctions	pr0
 tyfs	.apply	ordered.map.values	gsdl.var.t	gsac.prefix.typefnitem.t	|	tyfs0
 its.tyfs	.apply	list.map	gsac.prefix.typefnitem.t	gsac.prefix.item.t	|	gsac.prefix.item.typefnitem	tyfs
-	.app	its.tycs	its.tyfs
+ds0	.field	dataitems	pr0
+ds	.apply	ordered.map.values	gsdl.var.t	gsac.prefix.dataitem.t	|	ds0
+its.tyds	.apply	list.map	gsac.prefix.dataitem.t	gsac.prefix.item.t	|	gsac.prefix.item.dataitem	ds
+its1	.apply	list.<>	gsac.prefix.item.t	|	its.tyfs	its.tyds
+	.app	its.tycs	its1
 	.enter	list.<>	gsac.prefix.item.t
 
 -- §section §gs{gsac.prefix.typeconstitem.gsabstype.insert}
