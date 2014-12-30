@@ -931,7 +931,7 @@ _list.prim.u_nil_ty	.tyexpr
 
 -- §section §gs{list.foldr}
 
-_list.foldr_ty	.tyexpr
+_list.foldr_ty	.tyexpr	*
 _list.foldr_f_ty	.tygvar
 list.t	.tygvar
 α	.tyforall	*
@@ -955,7 +955,7 @@ _list.foldr_f_ty	.tyexpr
 
 -- §section §gs{list.foldr1}
 
-_list.foldr1_ty	.tyexpr
+_list.foldr1_ty	.tyexpr	*
 _list.foldr1_ft	.tygvar
 list.t	.tygvar
 α	.tyforall	*
@@ -976,7 +976,7 @@ _list.foldr1_ft	.tyexpr
 
 -- §section §gs{list.map}
 
-_list.map_ty	.tyexpr
+_list.map_ty	.tyexpr	*
 _list.map_f_ty	.tygvar
 list.t	.tygvar
 α	.tyforall	*
@@ -1060,7 +1060,7 @@ _list.foldl_f_ty	.tyexpr
 
 -- §section §gs{list.scanl}
 
-_list.scanl_ty	.tyexpr
+_list.scanl_ty	.tyexpr	*
 _list.foldl_f_ty	.tygvar
 list.t	.tygvar
 α	.tyforall	*
@@ -1075,7 +1075,7 @@ list.t	.tygvar
 
 -- §section §gs{list.<>}
 
-_list.<>_ty	.tyexpr
+_list.<>_ty	.tyexpr	*
 list.t	.tygvar
 α	.tyforall	*
 	.tylift
@@ -1086,7 +1086,7 @@ list.t	.tygvar
 
 -- §section §gs{list.>>=}
 
-_list.>>=_ty	.tyexpr
+_list.>>=_ty	.tyexpr	*
 list.t	.tygvar
 _list.>>=_f_ty	.tygvar
 α	.tyforall	*
@@ -1133,7 +1133,7 @@ _list.byZip.map2_f_ty	.tyexpr
 
 -- §section §gs{list.sort}
 
-_list.sort_ty	.tyexpr
+_list.sort_ty	.tyexpr	*
 order.total.t	.tygvar
 list.t	.tygvar
 α	.tyforall	*
@@ -1145,7 +1145,7 @@ list.t	.tygvar
 
 -- §section §gs{list.≡}
 
-_list.≡_ty	.tyexpr
+_list.≡_ty	.tyexpr	*
 bool.t	.tygvar
 list.t	.tygvar
 _list.≡_arg_ty	.tygvar

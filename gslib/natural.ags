@@ -619,9 +619,9 @@ natural.t	.tygvar
 	.tylift
 	.typroduct	0	natural.t	1	natural.t
 
--- §section §Gs{natural.fmtdecimal}
+-- §section §gs{natural.fmtdecimal}
 
-_natural.fmtdecimal_ty	.tyexpr
+_natural.fmtdecimal_ty	.tyexpr	*
 natural.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
