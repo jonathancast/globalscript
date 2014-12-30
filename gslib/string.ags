@@ -214,7 +214,7 @@ rune.t	.tygvar
 
 -- §section §gs{string.fmtline}
 
-_string.fmtline_ty	.tyexpr
+_string.fmtline_ty	.tyexpr	*
 list.t	.tygvar
 rune.t	.tygvar
 	.tylift
@@ -223,7 +223,7 @@ rune.t	.tygvar
 
 -- §section §gs{string.toupper}
 
-_string.toupper_ty	.tyexpr
+_string.toupper_ty	.tyexpr	*
 string.t	.tygvar
 	.tylift
 	.tyfun	string.t
