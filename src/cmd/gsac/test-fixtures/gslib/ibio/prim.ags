@@ -2,6 +2,17 @@
 
 	.prefix
 
+	.data
+
+ibio.prim.unit	.closure	_ibio.prim.unit_c	_ibio.prim.unit_ty
+
 	.type
 
 ibio.prim.m	.tyimpprim	ibio.prim	ibio	u?^
+
+_ibio.prim.unit_ty	.tyexpr	*
+α	.tyforall	*
+	.tylift
+	.tyfun	α
+	.tylift
+	.tyref	ibio.prim.m	α
