@@ -65,6 +65,7 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.tyforall.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.fun.annotate_res.ty	.tygvar
@@ -91,7 +92,7 @@ list.field.res.ty	.tylet	list.t	_gsac.gstype.field.annotate_res.ty
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
+	.analyze	ty0	abstype	app	definedprim	elimprim	forall	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.cgs.gskind.t
@@ -112,6 +113,10 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
+		.case	forall
+fa		.fkarg	0	gsdl.cgs.gstype.tyforall.t
+tyb		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
@@ -941,8 +946,9 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.var.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.tyforall.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 rune.t	.tygvar
@@ -983,7 +989,7 @@ tye0.l	.lifted	tye0
 tye0.cl	.cast	tye0.l	gsdl.cgs.gstype.t.in
 	.danalyze	tya0	pos
 		.default
-			.analyze	tye0	abstype	app	definedprim	elimprim	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
+			.analyze	tye0	abstype	app	definedprim	elimprim	forall	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
 				.case	abstype
 tyce				.fkarg	0	gsdl.var.t
 tykie				.fkarg	1	gsdl.cgs.gskind.t
@@ -1043,6 +1049,10 @@ pn.eq							.apply	gsdl.var.≡	|	pna	pne
 							.coerce	bool.t.out
 							.app	ps.eq	pn.eq
 							.enter	bool.∧
+				.case	forall
+fa				.fkarg	0	gsdl.cgs.gstype.tyforall.t
+tyb				.fkarg	1	gsdl.cgs.gstype.t
+					.undef	either.t	string.t	record.empty
 				.case	fun
 tyea				.fkarg	0	gsdl.cgs.gstype.t
 tyer				.fkarg	1	gsdl.cgs.gstype.t
@@ -1344,6 +1354,7 @@ _gsac.gstype.compileToVar_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
 gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.tyforall.t	.tygvar
 ordered.set.t	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
 list.t	.tygvar
@@ -1380,7 +1391,7 @@ ty0	.larg	gsdl.cgs.gstype.prim.u
 em	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 gvs	.larg	list.t	gsdl.var.t
-	.analyze	ty0	abstype	app	definedprim	elimprim	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
+	.analyze	ty0	abstype	app	definedprim	elimprim	forall	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.cgs.gskind.t
@@ -1405,6 +1416,10 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
+		.case	forall
+fa		.fkarg	0	gsdl.cgs.gstype.tyforall.t
+tyb		.fkarg	1	gsdl.cgs.gstype.t
 			.undef	either.t	string.t	_gsac.gstype.compile_res.ty
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
