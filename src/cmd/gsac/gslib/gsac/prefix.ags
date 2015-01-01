@@ -2929,13 +2929,13 @@ gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
-_gsac.prefix.item.typecheck_typefnitem_typefun_right_right_cty1.f_c	.subcode
 either.left	.gvar
 either.right	.gvar
 gsdl.cgs.typeenv.typefun.insert	.gvar
 maybe.map	.gvar
 gsac.prefix.gskind.upconvert	.gvar
 list.foldr	.gvar
+gsdl.cgs.gstype.forall	.gvar
 gsdl.cgs.typeenv.empty	.gvar
 v	.fv	gsdl.var.t
 mbki	.fv	maybe.t	gsdl.ags.typeitem.gskind.t
@@ -2949,20 +2949,12 @@ err		.fkarg	0	string.t
 			.enter	either.left	string.t	gsdl.cgs.typeenv.t
 		.case	right
 cty		.fkarg	0	gsdl.cgs.gstype.t
-cty1.f			.closure	_gsac.prefix.item.typecheck_typefnitem_typefun_right_right_cty1.f_c
-cty1			.apply	list.foldr	gsdl.cgs.gstype.tyforall.t	gsdl.cgs.gstype.t	|	cty1.f	cty	tyfas.cgs
+cty1			.apply	list.foldr	gsdl.cgs.gstype.tyforall.t	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.forall	cty	tyfas.cgs
 mbki.cgs			.apply	maybe.map	gsdl.ags.typeitem.gskind.t	gsdl.cgs.gskind.t	|	gsac.prefix.gskind.upconvert	mbki
 tye			.lrecord	0	tyas.cgs	1	cty1	|	gsdl.cgs.typeenv.typeexpansion.t
 env1			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	mbki.cgs	tye	gsdl.cgs.typeenv.empty
 			.app	env1
 			.enter	either.right	string.t	gsdl.cgs.typeenv.t
-
-_gsac.prefix.item.typecheck_typefnitem_typefun_right_right_cty1.f_c	.expr
-gsdl.cgs.gstype.tyforall.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
-fa	.larg	gsdl.cgs.gstype.tyforall.t
-b	.larg	gsdl.cgs.gstype.t
-	.undef	gsdl.cgs.gstype.t
 
 -- §section §gs{gsac.prefix.item.≡}
 
