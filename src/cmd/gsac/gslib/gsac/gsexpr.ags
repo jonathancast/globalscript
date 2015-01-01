@@ -238,6 +238,7 @@ f.r.ty0	.karg	gsdl.cgs.gstype.prim.u
 		.case	forall
 fa		.fkarg	0	gsdl.cgs.gstype.tyforall.t
 tyb		.fkarg	1	gsdl.cgs.gstype.t
+fa.v			.lfield	0	fa
 fa.ki			.lfield	1	fa
 			.force	_gsac.gsexpr.annotate_app_right_type_forall_k
 			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
@@ -245,6 +246,8 @@ fa.ki			.lfield	1	fa
 			.enter	gsac.gstype.annotate
 
 _gsac.gsexpr.annotate_app_right_type_forall_k	.forcecont
+gsdl.cgs.gstype.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -255,6 +258,8 @@ _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_app_right_type_forall_right_k	.subcode
 either.t.out	.cogvar
 gsac.gskind.check	.gvar
+tyb	.fv	gsdl.cgs.gstype.t
+fa.v	.fv	gsdl.var.t
 fa.ki	.fv	gsdl.cgs.gskind.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
@@ -263,6 +268,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 tya.r		.fkarg	0	_gsac.gstype.annotate_res.ty
+tya.r.ty			.lfield	gstype	tya.r
 tya.r.ki			.lfield	gskind	tya.r
 			.force	_gsac.gsexpr.annotate_app_right_type_forall_right_k
 			.coerce	either.t.out	string.t	record.empty
@@ -270,12 +276,20 @@ tya.r.ki			.lfield	gskind	tya.r
 			.enter	gsac.gskind.check
 
 _gsac.gsexpr.annotate_app_right_type_forall_right_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
 either.right	.gvar
+gsdl.cgs.gstype.substty	.gvar
+fa.v	.fv	gsdl.var.t
+tya.r.ty	.fv	gsdl.cgs.gstype.t
+tyb	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
@@ -283,7 +297,10 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 r		.fkarg	0	record.empty
-res			.undefined	_gsac.gsexpr.annotate_res.ty
+e			.undefined	gsdl.cgs.gsexpr.t
+ki			.undefined	gsdl.cgs.gskind.t
+ty			.apply	gsdl.cgs.gstype.substty	|	fa.v	tya.r.ty	tyb
+res			.lrecord	expr	e	gskind	ki	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
 
