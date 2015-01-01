@@ -7,6 +7,8 @@
 gsac.generator.doc.annotate	.closure	_gsac.generator.doc.annotate_c
 _gsac.generator.doc.annotate_w	.closure	_gsac.generator.doc.annotate_w_c	_gsac.generator.doc.annotate_w_ty
 
+gsac.generator.prefix.annotate	.closure	_gsac.generator.prefix.annotate_c
+
 gsac.generator.annotate	.closure	_gsac.generator.annotate_c	_gsac.generator.annotate_ty
 
 gsac.generator.annotate.context.doc	.closure	_gsac.generator.annotate.context.doc_c
@@ -273,6 +275,21 @@ env1.1	.fv	gsdl.cgs.typeenv.u
 sccs1.0	.karg	list.prim.u	scc.gen.ty
 	.app	pos	env0.1	env1.1	sccs1.0
 	.yield	_gsac.generator.doc.annotate_w
+
+-- §section §gs{gsac.generator.prefix.annotate}
+
+_gsac.generator.prefix.annotate_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.generator.prefix.annotate_res.ty	.tygvar	-- Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+	.undef	either.t	string.t	_gsac.generator.prefix.annotate_res.ty
 
 -- §section §gs{gsac.generator.annotate}
 
@@ -616,6 +633,16 @@ scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 	.tyfun	gsdl.cgs.typeenv.u
 	.tyfun	list.prim.u	scc.gen.ty
 	.tyref	either.t	string.t	gsdl.cgs.typeenv.t
+
+-- §section §gs{gsac.generator.prefix.annotate}
+
+_gsac.generator.prefix.annotate_res.ty	.tyexpr
+_gsac.generator.prefix.annotate_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.generator.prefix.annotate_res.u
+
+_gsac.generator.prefix.annotate_res.u	.tyexpr
+	.typroduct
 
 -- §section §gs{gsac.generator.annotate}
 
