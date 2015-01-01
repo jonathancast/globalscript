@@ -741,10 +741,13 @@ parser.pos.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.tyforall.u	.tygvar
-pos	.larg	parser.pos.t
+gsdl.sourcepos	.gvar
+pos0	.larg	parser.pos.t
 nm	.larg	gsdl.var.t
 ki	.larg	gsdl.ags.typeitem.gskind.t
-res	.record	0	nm	|	gsdl.ags.typeitem.decls.tyforall.u
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+res	.record	0	pos	1	nm	|	gsdl.ags.typeitem.decls.tyforall.u
 	.lift
 	.yield	res
 
@@ -2514,8 +2517,9 @@ gsdl.ags.typeitem.decls.tyforall.u	.tygvar
 	.tyref	gsdl.ags.typeitem.decls.tyforall.u
 
 gsdl.ags.typeitem.decls.tyforall.u	.tyexpr
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
-	.typroduct	0	gsdl.var.t
+	.typroduct	0	gsdl.sourcepos.t	1	gsdl.var.t
 
 -- §section §gs{gsdl.ags.typeitem.decls.tylet.t}
 

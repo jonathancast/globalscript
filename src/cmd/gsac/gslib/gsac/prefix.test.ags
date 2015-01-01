@@ -1637,7 +1637,7 @@ gsac.prefix.empty	.gvar
 pos	.lrecord	0.col	natural.1	0.line	natural.1	file	_fixtures.filenm	|	gsdl.sourcepos.t
 just.lifted	.apply	maybe.just	gsdl.ags.typeitem.gskind.t	|	gsdl.ags.typeitem.gskind.lifted
 decls.tyargs	.apply	list.nil	gsdl.ags.typeitem.decls.tyarg.t
-decls.tyforalls.0	.lrecord	0	_fixtures_α.v	|	gsdl.ags.typeitem.decls.tyforall.t	-- >	0	_fixtures_α.v	1	gsdl.ags.typeitem.gskind.lifted
+decls.tyforalls.0	.lrecord	0	pos	1	_fixtures_α.v	|	gsdl.ags.typeitem.decls.tyforall.t	-- >	0	_fixtures_α.v	1	gsdl.ags.typeitem.gskind.lifted
 decls.tyforalls	.apply	list.singleton	gsdl.ags.typeitem.decls.tyforall.t	|	decls.tyforalls.0
 decls.tygvs	.apply	list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tylets	.apply	list.nil	gsdl.ags.typeitem.decls.tylet.t

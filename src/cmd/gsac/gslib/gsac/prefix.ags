@@ -3469,7 +3469,7 @@ gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.cgs.gstype.tyforall.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar	-- Temp
 fa	.larg	gsdl.ags.typeitem.decls.tyforall.t
-v	.lfield	0	fa
+v	.lfield	1	fa
 ki.cgs	.undefined	gsdl.cgs.gskind.t
 r	.record	0	v	1	ki.cgs	|	gsdl.cgs.gstype.tyforall.prim.u
 	.lift
