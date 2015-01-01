@@ -3460,9 +3460,11 @@ _gsac.prefix.tyforall.upconvert_c	.expr
 gsdl.ags.typeitem.decls.tyforall.t	.tygvar
 gsdl.cgs.gstype.tyforall.prim.u	.tygvar
 gsdl.cgs.gskind.t	.tygvar	-- Temp
+gsac.prefix.gskind.upconvert	.gvar
 fa	.larg	gsdl.ags.typeitem.decls.tyforall.t
 v	.lfield	1	fa
-ki.cgs	.undefined	gsdl.cgs.gskind.t
+fa.ki	.lfield	2	fa
+ki.cgs	.apply	gsac.prefix.gskind.upconvert	|	fa.ki
 r	.record	0	v	1	ki.cgs	|	gsdl.cgs.gstype.tyforall.prim.u
 	.lift
 	.yield	r
