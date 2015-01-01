@@ -10,9 +10,8 @@ ibio.prim.unit	.closure	_ibio.prim.unit_c	_ibio.prim.unit_ty
 
 ibio.prim.m	.tyimpprim	ibio.prim	ibio	u?^
 
-_ibio.prim.unit_ty	.tyexpr	*
-α	.tyforall	*
-	.tylift
+_ibio.prim.unit_ty	.tyexpr	u
+ibio.prim.m	.tygvar
+α	.tyforall	?
 	.tyfun	α
-	.tylift
 	.tyref	ibio.prim.m	α
