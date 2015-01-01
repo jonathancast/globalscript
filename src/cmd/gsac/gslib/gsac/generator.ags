@@ -9,6 +9,8 @@ _gsac.generator.doc.annotate_w	.closure	_gsac.generator.doc.annotate_w_c	_gsac.g
 
 gsac.generator.prefix.annotate	.closure	_gsac.generator.prefix.annotate_c
 
+gsac.generator.deps	.closure	_gsac.generator.deps_c
+
 gsac.generator.annotate	.closure	_gsac.generator.annotate_c	_gsac.generator.annotate_ty
 
 gsac.generator.annotate.context.doc	.closure	_gsac.generator.annotate.context.doc_c
@@ -26,13 +28,13 @@ gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 ordered.map.t	.tygvar
 graph.scc.t	.tygvar
-_gsac.generator.doc.annotate_deps_c	.subcode
 _gsac.generator.doc.annotate_gs.map.f_c	.subcode
 _gsac.generator.doc.annotate_get_c	.subcode
 _gsac.generator.doc.annotate_k	.subcode
 list.t.out	.cogvar
 graph.tsort	.gvar
 gsdl.cgs.symbol.compare	.gvar
+gsac.generator.deps	.gvar
 list.foldr	.gvar
 ordered.map.empty	.gvar
 list.map	.gvar
@@ -42,7 +44,6 @@ env	.larg	gsdl.cgs.typeenv.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
 map.symbol.gen.ty	.tylet	ordered.map.t	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
 scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
-deps	.closure	_gsac.generator.doc.annotate_deps_c
 gs.map.f	.closure	_gsac.generator.doc.annotate_gs.map.f_c
 empty	.apply	ordered.map.empty	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
 gs.map	.apply	list.foldr	gsdl.cgs.gsexpr.generator.t	map.symbol.gen.ty	|	gs.map.f	empty	gs
@@ -50,18 +51,8 @@ get	.closure	_gsac.generator.doc.annotate_get_c
 syms	.apply	list.map	gsdl.cgs.gsexpr.generator.t	gsdl.cgs.symbol.t	|	gsdl.cgs.gsexpr.generator.boundvar	gs
 	.force	_gsac.generator.doc.annotate_k
 	.coerce	list.t.out	scc.gen.ty
-	.app	gsdl.cgs.symbol.compare	deps	get	syms
+	.app	gsdl.cgs.symbol.compare	gsac.generator.deps	get	syms
 	.enter	graph.tsort	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
-
-_gsac.generator.doc.annotate_deps_c	.expr
-gsdl.cgs.gsexpr.generator.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-ordered.set.tolist	.gvar
-gsdl.cgs.gsexpr.generator.freevars	.gvar
-g	.larg	gsdl.cgs.gsexpr.generator.t
-fvs	.apply	gsdl.cgs.gsexpr.generator.freevars	|	g
-	.app	fvs
-	.enter	ordered.set.tolist	gsdl.cgs.symbol.t
 
 _gsac.generator.doc.annotate_gs.map.f_c	.expr
 gsdl.cgs.gsexpr.generator.t	.tygvar
@@ -290,6 +281,18 @@ pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
 	.undef	either.t	string.t	_gsac.generator.prefix.annotate_res.ty
+
+-- §section §gs{gsac.generator.deps}
+
+_gsac.generator.deps_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ordered.set.tolist	.gvar
+gsdl.cgs.gsexpr.generator.freevars	.gvar
+g	.larg	gsdl.cgs.gsexpr.generator.t
+fvs	.apply	gsdl.cgs.gsexpr.generator.freevars	|	g
+	.app	fvs
+	.enter	ordered.set.tolist	gsdl.cgs.symbol.t
 
 -- §section §gs{gsac.generator.annotate}
 
