@@ -187,6 +187,7 @@ gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.annotate_app_right_expr_k	.subcode
 _gsac.gsexpr.annotate_app_right_type_k	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 pos	.fv	gsdl.sourcepos.t
@@ -196,13 +197,23 @@ a0	.karg	gsdl.cgs.gsexpr.arg.prim.u
 	.analyze	a0	expr	type
 		.case	expr
 ea		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+			.force	_gsac.gsexpr.annotate_app_right_expr_k
+			.coerce	gsdl.cgs.gstype.t.out
+			.enter	f.r.ty
 		.case	type
 tya		.fkarg	0	gsdl.cgs.gstype.t
 			.force	_gsac.gsexpr.annotate_app_right_type_k
 			.coerce	gsdl.cgs.gstype.t.out
 			.enter	f.r.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
+
+_gsac.gsexpr.annotate_app_right_expr_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+f.r.ty0	.karg	gsdl.cgs.gstype.prim.u
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_app_right_type_k	.forcecont
 gsdl.sourcepos.t	.tygvar
