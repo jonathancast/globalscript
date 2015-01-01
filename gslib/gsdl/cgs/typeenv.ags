@@ -1117,18 +1117,6 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 	.typroduct	0	gsdl.var.t	1	gsdl.cgs.gskind.t
 
--- §section §gs{gsdl.cgs.typeenv.typeexpansion.tyforall.t}
-
-gsdl.cgs.typeenv.typeexpansion.tyforall.t	.tyexpr
-gsdl.cgs.typeenv.typeexpansion.tyforall.prim.u	.tygvar
-	.tylift
-	.tyref	gsdl.cgs.typeenv.typeexpansion.tyforall.prim.u
-
-gsdl.cgs.typeenv.typeexpansion.tyforall.prim.u	.tyexpr
-gsdl.var.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar
-	.typroduct	0	gsdl.var.t	1	gsdl.cgs.gskind.t
-
 -- §section §gs{gsdl.cgs.typeenv.typeexpansion.tylet.t}
 
 gsdl.cgs.typeenv.typeexpansion.tylet.t	.tyexpr

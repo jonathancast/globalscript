@@ -1172,6 +1172,18 @@ gsdl.cgs.gstype.field.prim.u	.tygvar
 gsdl.cgs.gstype.field.prim.u	.tyexpr
 	.tysum
 
+-- §section §gs{gsdl.cgs.gstype.tyforall.t}
+
+gsdl.cgs.gstype.tyforall.t	.tyexpr
+gsdl.cgs.gstype.tyforall.prim.u	.tygvar
+	.tylift
+	.tyref	gsdl.cgs.gstype.tyforall.prim.u
+
+gsdl.cgs.gstype.tyforall.prim.u	.tyexpr
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+	.typroduct	0	gsdl.var.t	1	gsdl.cgs.gskind.t
+
 -- §section §gs{gsdl.cgs.gstype.constr.t}
 
 gsdl.cgs.gstype.constr.t	.tyabstract	*
