@@ -187,39 +187,23 @@ gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
-_gsac.gsexpr.annotate_app_right_expr_k	.subcode
-_gsac.gsexpr.annotate_app_right_type_k	.subcode
+_gsac.gsexpr.annotate_app_right_k1	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 f.r.ty	.fv	gsdl.cgs.gstype.t
 a0	.karg	gsdl.cgs.gsexpr.arg.prim.u
-	.analyze	a0	expr	type
-		.case	expr
-ea		.fkarg	0	gsdl.cgs.gsexpr.t
-			.force	_gsac.gsexpr.annotate_app_right_expr_k
-			.coerce	gsdl.cgs.gstype.t.out
-			.enter	f.r.ty
-		.case	type
-tya		.fkarg	0	gsdl.cgs.gstype.t
-			.force	_gsac.gsexpr.annotate_app_right_type_k
-			.coerce	gsdl.cgs.gstype.t.out
-			.enter	f.r.ty
-	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
+	.force	_gsac.gsexpr.annotate_app_right_k1
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	f.r.ty
 
-_gsac.gsexpr.annotate_app_right_expr_k	.forcecont
-gsdl.cgs.gstype.prim.u	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
-f.r.ty0	.karg	gsdl.cgs.gstype.prim.u
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
-
-_gsac.gsexpr.annotate_app_right_type_k	.forcecont
+_gsac.gsexpr.annotate_app_right_k1	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
-gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.arg.prim.u	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gstype.tyforall.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
@@ -230,20 +214,27 @@ either.t.out	.cogvar
 gsac.gstype.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
-tya	.fv	gsdl.cgs.gstype.t
+a0	.fv	gsdl.cgs.gsexpr.arg.prim.u
 f.r.ty0	.karg	gsdl.cgs.gstype.prim.u
-	.danalyze	f.r.ty0	forall
-		.default
+	.analyze	a0	expr	type
+		.case	expr
+ea		.fkarg	0	gsdl.cgs.gsexpr.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
-		.case	forall
-fa		.fkarg	0	gsdl.cgs.gstype.tyforall.t
-tyb		.fkarg	1	gsdl.cgs.gstype.t
-fa.v			.lfield	0	fa
-fa.ki			.lfield	1	fa
-			.force	_gsac.gsexpr.annotate_app_right_type_forall_k
-			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
-			.app	pos	env	tya
-			.enter	gsac.gstype.annotate
+		.case	type
+tya		.fkarg	0	gsdl.cgs.gstype.t
+			.danalyze	f.r.ty0	forall
+				.default
+					.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+				.case	forall
+fa				.fkarg	0	gsdl.cgs.gstype.tyforall.t
+tyb				.fkarg	1	gsdl.cgs.gstype.t
+fa.v					.lfield	0	fa
+fa.ki					.lfield	1	fa
+					.force	_gsac.gsexpr.annotate_app_right_type_forall_k
+					.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
+					.app	pos	env	tya
+					.enter	gsac.gstype.annotate
+	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_app_right_type_forall_k	.forcecont
 gsdl.cgs.gstype.t	.tygvar
