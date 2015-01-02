@@ -743,7 +743,10 @@ _gsac.generator.prefix.annotate_res.u	.tygvar
 	.tyref	_gsac.generator.prefix.annotate_res.u
 
 _gsac.generator.prefix.annotate_res.u	.tyexpr
-	.typroduct
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+list.generator.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
+	.typroduct	gens	list.generator.ty
 
 -- §section §gs{gsac.generator.annotate}
 
