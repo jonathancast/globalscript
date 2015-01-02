@@ -8,6 +8,7 @@ gsac.generator.doc.annotate	.closure	_gsac.generator.doc.annotate_c
 _gsac.generator.doc.annotate_w	.closure	_gsac.generator.doc.annotate_w_c	_gsac.generator.doc.annotate_w_ty
 
 gsac.generator.prefix.annotate	.closure	_gsac.generator.prefix.annotate_c
+_gsac.generator.prefix.annotate_w	.closure	_gsac.generator.prefix.annotate_w_c	_gsac.generator.prefix.annotate_w_ty
 
 gsac.generator.deps	.closure	_gsac.generator.deps_c
 
@@ -266,14 +267,48 @@ syms	.apply	list.map	gsdl.cgs.gsexpr.generator.t	gsdl.cgs.symbol.t	|	gsdl.cgs.gs
 	.enter	graph.tsort	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
 
 _gsac.generator.prefix.annotate_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+_gsac.generator.prefix.annotate_k1	.subcode
+scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+sccs0	.karg	list.prim.u	scc.gen.ty
+	.force	_gsac.generator.prefix.annotate_k1
+	.enter	env
+
+_gsac.generator.prefix.annotate_k1	.forcecont
+gsdl.sourcepos.t	.tygvar
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+_gsac.generator.prefix.annotate_w	.gvar
+_gsdl.cgs.typeenv.empty_u	.gvar
+scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+pos	.fv	gsdl.sourcepos.t
+sccs0	.fv	list.prim.u	scc.gen.ty
+env0	.karg	gsdl.cgs.typeenv.u
+	.app	pos	env0	_gsdl.cgs.typeenv.empty_u	sccs0
+	.yield	_gsac.generator.prefix.annotate_w
+
+_gsac.generator.prefix.annotate_w_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.generator.prefix.annotate_res.ty	.tygvar	-- Temp
+pos	.arg	gsdl.sourcepos.t
+env0	.arg	gsdl.cgs.typeenv.u
+env1	.arg	gsdl.cgs.typeenv.u
 scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
-sccs0	.karg	list.prim.u	scc.gen.ty
+sccs	.arg	list.prim.u	scc.gen.ty
 	.undef	either.t	string.t	_gsac.generator.prefix.annotate_res.ty
 
 -- §section §gs{gsac.generator.deps}
@@ -675,6 +710,22 @@ scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 	.tyref	either.t	string.t	gsdl.cgs.typeenv.t
 
 -- §section §gs{gsac.generator.prefix.annotate}
+
+_gsac.generator.prefix.annotate_w_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.u	.tygvar
+list.prim.u	.tygvar
+graph.scc.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+_gsac.generator.prefix.annotate_res.ty	.tygvar
+scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+	.tyfun	gsdl.sourcepos.t
+	.tyfun	gsdl.cgs.typeenv.u
+	.tyfun	gsdl.cgs.typeenv.u
+	.tyfun	list.prim.u	scc.gen.ty
+	.tyref	either.t	string.t	_gsac.generator.prefix.annotate_res.ty
 
 _gsac.generator.prefix.annotate_res.ty	.tyexpr
 _gsac.generator.prefix.annotate_res.u	.tygvar
