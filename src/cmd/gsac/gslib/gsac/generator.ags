@@ -11,6 +11,8 @@ gsac.generator.prefix.annotate	.closure	_gsac.generator.prefix.annotate_c
 
 gsac.generator.deps	.closure	_gsac.generator.deps_c
 
+gsac.generator.mkgetter	.closure	_gsac.generator.mkgetter_c
+
 gsac.generator.annotate	.closure	_gsac.generator.annotate_c	_gsac.generator.annotate_ty
 
 gsac.generator.annotate.context.doc	.closure	_gsac.generator.annotate.context.doc_c
@@ -26,57 +28,25 @@ gsdl.cgs.typeenv.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar
-ordered.map.t	.tygvar
 graph.scc.t	.tygvar
-_gsac.generator.doc.annotate_gs.map.f_c	.subcode
-_gsac.generator.doc.annotate_get_c	.subcode
 _gsac.generator.doc.annotate_k	.subcode
 list.t.out	.cogvar
 graph.tsort	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsac.generator.deps	.gvar
-list.foldr	.gvar
-ordered.map.empty	.gvar
+gsac.generator.mkgetter	.gvar
 list.map	.gvar
 gsdl.cgs.gsexpr.generator.boundvar	.gvar
 pos	.larg	gsdl.sourcepos.t
 env	.larg	gsdl.cgs.typeenv.t
 gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
-map.symbol.gen.ty	.tylet	ordered.map.t	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
 scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
-gs.map.f	.closure	_gsac.generator.doc.annotate_gs.map.f_c
-empty	.apply	ordered.map.empty	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
-gs.map	.apply	list.foldr	gsdl.cgs.gsexpr.generator.t	map.symbol.gen.ty	|	gs.map.f	empty	gs
-get	.closure	_gsac.generator.doc.annotate_get_c
+get	.apply	gsac.generator.mkgetter	|	gs
 syms	.apply	list.map	gsdl.cgs.gsexpr.generator.t	gsdl.cgs.symbol.t	|	gsdl.cgs.gsexpr.generator.boundvar	gs
 	.force	_gsac.generator.doc.annotate_k
 	.coerce	list.t.out	scc.gen.ty
 	.app	gsdl.cgs.symbol.compare	gsac.generator.deps	get	syms
 	.enter	graph.tsort	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
-
-_gsac.generator.doc.annotate_gs.map.f_c	.expr
-gsdl.cgs.gsexpr.generator.t	.tygvar
-ordered.map.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-ordered.map.insert	.gvar
-gsdl.cgs.symbol.compare	.gvar
-gsdl.cgs.gsexpr.generator.boundvar	.gvar
-g	.larg	gsdl.cgs.gsexpr.generator.t
-m	.larg	ordered.map.t	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
-g.sym	.apply	gsdl.cgs.gsexpr.generator.boundvar	|	g
-	.app	gsdl.cgs.symbol.compare	g.sym	g	m
-	.enter	ordered.map.insert gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
-
-_gsac.generator.doc.annotate_get_c	.expr
-ordered.map.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-gsdl.cgs.gsexpr.generator.t	.tygvar
-ordered.map.get	.gvar
-gsdl.cgs.symbol.compare	.gvar
-gs.map	.fv	ordered.map.t	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
-sym	.larg	gsdl.cgs.symbol.t
-	.app	gsdl.cgs.symbol.compare	sym	gs.map
-	.enter	ordered.map.get	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
 
 _gsac.generator.doc.annotate_k	.forcecont
 gsdl.sourcepos.t	.tygvar
@@ -293,6 +263,49 @@ g	.larg	gsdl.cgs.gsexpr.generator.t
 fvs	.apply	gsdl.cgs.gsexpr.generator.freevars	|	g
 	.app	fvs
 	.enter	ordered.set.tolist	gsdl.cgs.symbol.t
+
+-- §section §gs{gsac.generator.mkgetter}
+
+_gsac.generator.mkgetter_c	.expr
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+ordered.map.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+_gsac.generator.mkgetter_gs.map.f_c	.subcode
+_gsac.generator.mkgetter_res_c	.subcode
+list.foldr	.gvar
+ordered.map.empty	.gvar
+map.symbol.gen.ty	.tylet	ordered.map.t	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+gs.map.f	.closure	_gsac.generator.mkgetter_gs.map.f_c
+empty	.apply	ordered.map.empty	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
+gs.map	.apply	list.foldr	gsdl.cgs.gsexpr.generator.t	map.symbol.gen.ty	|	gs.map.f	empty	gs
+res	.closure	_gsac.generator.mkgetter_res_c
+	.enter	res
+
+_gsac.generator.mkgetter_gs.map.f_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
+ordered.map.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ordered.map.insert	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.gsexpr.generator.boundvar	.gvar
+g	.larg	gsdl.cgs.gsexpr.generator.t
+m	.larg	ordered.map.t	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
+g.sym	.apply	gsdl.cgs.gsexpr.generator.boundvar	|	g
+	.app	gsdl.cgs.symbol.compare	g.sym	g	m
+	.enter	ordered.map.insert gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
+
+_gsac.generator.mkgetter_res_c	.expr
+ordered.map.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+ordered.map.get	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gs.map	.fv	ordered.map.t	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
+sym	.larg	gsdl.cgs.symbol.t
+	.app	gsdl.cgs.symbol.compare	sym	gs.map
+	.enter	ordered.map.get	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t
 
 -- §section §gs{gsac.generator.annotate}
 
