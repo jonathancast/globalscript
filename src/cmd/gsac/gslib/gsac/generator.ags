@@ -301,15 +301,25 @@ gsdl.cgs.typeenv.u	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+_gsac.generator.prefix.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.generator.prefix.annotate_res.ty	.tygvar	-- Temp
+either.right	.gvar
 pos	.arg	gsdl.sourcepos.t
 env0	.arg	gsdl.cgs.typeenv.u
 env1	.arg	gsdl.cgs.typeenv.u
 scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 sccs	.arg	list.prim.u	scc.gen.ty
-	.undef	either.t	string.t	_gsac.generator.prefix.annotate_res.ty
+	.analyze	sccs	:	nil
+		.case	:
+scc0		.fkarg	0	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+sccs1		.fkarg	1	list.t	scc.gen.ty
+			.undef	either.t	string.t	_gsac.generator.prefix.annotate_res.ty
+		.case	nil
+res			.undefined	_gsac.generator.prefix.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.generator.prefix.annotate_res.ty
 
 -- §section §gs{gsac.generator.deps}
 
