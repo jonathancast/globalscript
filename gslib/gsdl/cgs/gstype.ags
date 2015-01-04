@@ -502,6 +502,7 @@ gsdl.sourcepos.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
+_gsdl.cgs.gstype.substty_forall_k	.subcode
 _gsdl.cgs.gstype.substty_var_k	.subcode
 gsdl.cgs.gstype.t.in	.cogvar
 bool.t.out	.cogvar
@@ -546,7 +547,11 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 		.case	forall
 fa		.fkarg	0	gsdl.cgs.gstype.tyforall.t
 tyb		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	gsdl.cgs.gstype.t
+fa.v			.lfield	0	fa
+			.force	_gsdl.cgs.gstype.substty_forall_k
+			.coerce	bool.t.out
+			.app	v	fa.v
+			.enter	gsdl.var.≡
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
@@ -599,6 +604,12 @@ v1		.fkarg	0	gsdl.var.t
 			.app	v	v1
 			.enter	gsdl.var.≡
 	-- > :: gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.substty_forall_k	.forcecont
+bool.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar	-- Temp
+b0	.karg	bool.prim.u
+			.undef	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.substty_var_k	.forcecont
 gsdl.cgs.gstype.t	.tygvar
