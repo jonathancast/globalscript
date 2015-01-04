@@ -606,8 +606,9 @@ v1		.fkarg	0	gsdl.var.t
 	-- > :: gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.substty_forall_k	.forcecont
-gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.tyforall.t	.tygvar
 bool.prim.u	.tygvar
 gsdl.cgs.symbol.t	.tygvar
 ordered.set.t	.tygvar	-- Temp
@@ -617,7 +618,10 @@ ordered.set.elem	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
 gsdl.cgs.gstype.freevars	.gvar
+v	.fv	gsdl.var.t
 ty0	.fv	gsdl.cgs.gstype.t
+fa	.fv	gsdl.cgs.gstype.tyforall.t
+tyb	.fv	gsdl.cgs.gstype.t
 fa.v	.fv	gsdl.var.t
 b0	.karg	bool.prim.u	-- §gs{v ≡ fa #0}
 	.analyze	b0	false	true
@@ -632,12 +636,22 @@ ty0.fvs			.apply	gsdl.cgs.gstype.freevars	|	ty0
 			.undef	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.substty_forall_false_k	.forcecont
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.tyforall.t	.tygvar
 bool.prim.u	.tygvar
-gsdl.cgs.gstype.t	.tygvar	-- Temp
+gsdl.cgs.gstype.forall	.gvar
+gsdl.cgs.gstype.substty	.gvar
+v	.fv	gsdl.var.t
+ty0	.fv	gsdl.cgs.gstype.t
+fa	.fv	gsdl.cgs.gstype.tyforall.t
+tyb	.fv	gsdl.cgs.gstype.t
 b0	.karg	bool.prim.u	-- §gs{fa #0 `elem` fvs ty0}
 	.analyze	b0	false	true
 		.case	false
-			.undef	gsdl.cgs.gstype.t
+tyb1			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyb
+			.app	fa	tyb1
+			.enter	gsdl.cgs.gstype.forall
 		.case	true
 			.undef	gsdl.cgs.gstype.t
 
