@@ -609,6 +609,10 @@ _gsdl.cgs.gstype.substty_forall_k	.forcecont
 bool.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar	-- Temp
 b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	gsdl.cgs.gstype.t
+		.case	true
 			.undef	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.substty_var_k	.forcecont
