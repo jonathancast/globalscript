@@ -168,6 +168,7 @@ _gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_app_right_k	.subcode
 gsdl.cgs.gsexpr.arg.t.out	.cogvar
+either.left	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 a	.fv	gsdl.cgs.gsexpr.arg.t
@@ -175,7 +176,8 @@ e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+			.app	err
+			.enter	either.left	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 f.r		.fkarg	0	_gsac.gsexpr.annotate_res.ty
 f.r.ty			.lfield	gstype	f.r
@@ -335,6 +337,7 @@ either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_app_right_type_forall_right_k	.subcode
 either.t.out	.cogvar
+either.left	.gvar
 gsac.gskind.check	.gvar
 tyb	.fv	gsdl.cgs.gstype.t
 fa.v	.fv	gsdl.var.t
@@ -343,7 +346,8 @@ e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+			.app	err
+			.enter	either.left	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 tya.r		.fkarg	0	_gsac.gstype.annotate_res.ty
 tya.r.ty			.lfield	gstype	tya.r
