@@ -1972,10 +1972,12 @@ _gsac.gsexpr.compileToLambdaExpr_impfor_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_lambda_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_lift_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_pos_k	.subcode
+_gsac.gsexpr.compileToLambdaExpr_structure_k_c	.subcode
 either.t.out	.cogvar
 gsac.gstype.compileToImpprim	.gvar
 gsac.gstype.compileToApp	.gvar
 gsac.gsexpr.compileToLambdaExpr	.gvar
+gsac.gsexpr.compileToVar	.gvar
 pos	.fv	gsdl.sourcepos.t
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -2021,7 +2023,9 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.enter	gsac.gsexpr.compileToLambdaExpr
 		.case	structure
 gs		.fkarg	0	list.t	gsdl.cgs.gsexpr.generator.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+k			.closure	_gsac.gsexpr.compileToLambdaExpr_structure_k_c
+			.app	pos	e0	k	tyem	pem	tyvs
+			.enter	gsac.gsexpr.compileToVar
 		.case	var
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
@@ -2358,6 +2362,21 @@ ts			.lfield	typeitems	r0
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	e	ty.emitted	emty	ty.subvars	svsty	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
+_gsac.gsexpr.compileToLambdaExpr_structure_k_c	.expr
+gsdl.var.t	.tygvar
+ordered.set.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+res.v	.larg	gsdl.var.t
+tyem	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tyvs	.larg	list.t	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 -- §section §gs{gsac.gsexpr.body.compileToLambdaExpr}
 
