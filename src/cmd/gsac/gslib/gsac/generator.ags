@@ -778,6 +778,16 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 	.typroduct	env	gsdl.cgs.typeenv.t	generator	gsdl.cgs.gsexpr.generator.t
 
+-- §section §gs{gsac.generator.varmap.t}
+
+gsac.generator.varmap.t	.tyabstract	*
+gsac.generator.varmap.prim.u	.tygvar
+	.tylift
+	.tyref	gsac.generator.varmap.prim.u
+
+gsac.generator.varmap.prim.u	.tyexpr
+	.tysum
+
 	.coercion
 
 gsac.generator.annotate.context.t.in	.tycoercion
