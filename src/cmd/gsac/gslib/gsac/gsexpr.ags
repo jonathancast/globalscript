@@ -1162,6 +1162,7 @@ either.t	.tygvar	-- Temp
 gsdl.cgs.gsexpr.t	.tygvar	-- Temp
 gsdl.cgs.gstype.t	.tygvar	-- Temp
 either.right	.gvar
+gsdl.cgs.gsexpr.structure	.gvar
 gsdl.cgs.gskind.unlifted	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.generator.prefix.annotate_res.ty
 	.analyze	e0	left	right
@@ -1170,7 +1171,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 gs.r		.fkarg	0	_gsac.generator.prefix.annotate_res.ty
-e			.undefined	gsdl.cgs.gsexpr.t
+gs.r.gs			.lfield	gens	gs.r
+e			.apply	gsdl.cgs.gsexpr.structure	|	gs.r.gs
 ty			.undefined	gsdl.cgs.gstype.t
 res			.lrecord	expr	e	gskind	gsdl.cgs.gskind.unlifted	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
 			.app	res
