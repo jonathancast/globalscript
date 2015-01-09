@@ -19,6 +19,8 @@ gsac.generator.annotate	.closure	_gsac.generator.annotate_c	_gsac.generator.anno
 gsac.generator.annotate.context.doc	.closure	_gsac.generator.annotate.context.doc_c
 gsac.generator.annotate.context.impfor	.closure	_gsac.generator.annotate.context.impfor_c
 
+gsac.generator.prefix.compileToExprGenerators	.closure	_gsac.generator.prefix.compileToExprGenerators_c
+
 	.code
 
 -- §section §gs{gsac.generator.doc.annotate}
@@ -683,6 +685,26 @@ res	.constr	gsac.generator.annotate.context.prim.u	impfor	0	ty
 	.lift
 	.yield	res
 
+-- §section §gs{gsac.generator.prefix.compileToExprGenerators}
+
+_gsac.generator.prefix.compileToExprGenerators_c	.expr
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+_gsac.generator.prefix.compileToExprGenerators_k_ty	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+k	.larg	_gsac.generator.prefix.compileToExprGenerators_k_ty
+tyem	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.larg	list.t	gsdl.var.t
+	.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
 	.type
 
 -- §section §gs{gsac.generator.annotate.context.t}
@@ -787,6 +809,17 @@ gsac.generator.varmap.prim.u	.tygvar
 
 gsac.generator.varmap.prim.u	.tyexpr
 	.tysum
+
+-- §section §gs{gsac.generator.prefix.compileToExprGenerators}
+
+_gsac.generator.prefix.compileToExprGenerators_k_ty	.tyexpr
+list.t	.tygvar
+gsac.generator.varmap.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
+	.tylift
+	.tyfun	list.t	gsac.generator.varmap.t
+	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 
 	.coercion
 
