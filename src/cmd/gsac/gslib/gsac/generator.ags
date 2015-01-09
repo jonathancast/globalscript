@@ -290,27 +290,32 @@ gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
 _gsac.generator.prefix.annotate_w	.gvar
 _gsdl.cgs.typeenv.empty_u	.gvar
+diff.list.nil	.gvar
 scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 pos	.fv	gsdl.sourcepos.t
 sccs0	.fv	list.prim.u	scc.gen.ty
 env0	.karg	gsdl.cgs.typeenv.u
-	.app	pos	env0	_gsdl.cgs.typeenv.empty_u	sccs0
+nil	.apply	diff.list.nil	gsdl.cgs.gsexpr.generator.t
+	.app	pos	env0	_gsdl.cgs.typeenv.empty_u	nil	sccs0
 	.yield	_gsac.generator.prefix.annotate_w
 
 _gsac.generator.prefix.annotate_w_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
+diff.list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
-gsdl.cgs.gsexpr.generator.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 _gsac.generator.prefix.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 either.right	.gvar
+diff.list.tolist	.gvar
 pos	.arg	gsdl.sourcepos.t
 env0	.arg	gsdl.cgs.typeenv.u
 env1	.arg	gsdl.cgs.typeenv.u
+gs	.arg	diff.list.t	gsdl.cgs.gsexpr.generator.t
 scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 sccs	.arg	list.prim.u	scc.gen.ty
 	.analyze	sccs	:	nil
@@ -319,7 +324,8 @@ scc0		.fkarg	0	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 sccs1		.fkarg	1	list.t	scc.gen.ty
 			.undef	either.t	string.t	_gsac.generator.prefix.annotate_res.ty
 		.case	nil
-res			.undefined	_gsac.generator.prefix.annotate_res.ty
+gs1			.apply	diff.list.tolist	gsdl.cgs.gsexpr.generator.t	|	gs
+res			.lrecord	gens	gs1	|	_gsac.generator.prefix.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.generator.prefix.annotate_res.ty
 
@@ -784,9 +790,10 @@ scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 _gsac.generator.prefix.annotate_w_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.u	.tygvar
+diff.list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 list.prim.u	.tygvar
 graph.scc.t	.tygvar
-gsdl.cgs.gsexpr.generator.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 _gsac.generator.prefix.annotate_res.ty	.tygvar
@@ -794,6 +801,7 @@ scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 	.tyfun	gsdl.sourcepos.t
 	.tyfun	gsdl.cgs.typeenv.u
 	.tyfun	gsdl.cgs.typeenv.u
+	.tyfun	diff.list.t	gsdl.cgs.gsexpr.generator.t	-- Generators already compiled
 	.tyfun	list.prim.u	scc.gen.ty
 	.tyref	either.t	string.t	_gsac.generator.prefix.annotate_res.ty
 
