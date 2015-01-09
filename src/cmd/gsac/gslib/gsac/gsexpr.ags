@@ -2607,16 +2607,78 @@ gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
+gsdl.cgs.gscoercion.t	.tygvar
+gsdl.cgs.gsexpr.cast.source.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.gsexpr.body.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileToVar_structure_k1_c	.subcode
+gsac.generator.prefix.compileToExprGenerators	.gvar
 pos	.larg	gsdl.sourcepos.t
 e0	.larg	gsdl.cgs.gsexpr.prim.u
 k	.larg	_gsac.gsexpr.compileToVar_k_ty
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
-	.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos	structure	var	var.lifted
+		.case	app
+f		.fkarg	0	gsdl.cgs.gsexpr.t
+a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	expr.heavy.cast
+co		.fkarg	0	gsdl.cgs.gscoercion.t
+so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	impfor
+m		.fkarg	0	gsdl.cgs.gstype.t
+gs		.fkarg	1	list.t	gsdl.cgs.gsexpr.generator.t
+b		.fkarg	2	gsdl.cgs.gsexpr.body.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	lambda
+x		.fkarg	0	gsdl.var.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+b		.fkarg	2	gsdl.cgs.gsexpr.body.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	lift
+e1		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	pos
+pos1		.fkarg	0	gsdl.sourcepos.t
+e1		.fkarg	1	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	structure
+gs		.fkarg	0	list.t	gsdl.cgs.gsexpr.generator.t
+k1			.closure	_gsac.gsexpr.compileToVar_structure_k1_c
+			.app	gs	k1	tyem	pem	tysvs
+			.enter	gsac.generator.prefix.compileToExprGenerators
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	var.lifted
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
+_gsac.gsexpr.compileToVar_structure_k1_c	.expr
+list.t	.tygvar
+gsac.generator.varmap.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+vs	.larg	list.t	gsac.generator.varmap.t
+tyem	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.larg	list.t	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 -- §section §gs{gsac.gsexpr.generator.imp.compile}
 
