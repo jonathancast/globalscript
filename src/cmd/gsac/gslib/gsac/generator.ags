@@ -695,11 +695,49 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+graph.scc.t	.tygvar
+gsac.generator.varmap.t	.tygvar
+_gsac.generator.prefix.compileToExprGenerators_f_c	.subcode
+list.t.out	.cogvar
+list.foldl	.gvar
+graph.tsort	.gvar
+gsdl.cgs.symbol.compare	.gvar
+gsac.generator.deps	.gvar
+gsac.generator.mkgetter	.gvar
+list.map	.gvar
+gsdl.cgs.gsexpr.generator.boundvar	.gvar
+list.nil	.gvar
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+k	.larg	_gsac.generator.prefix.compileToExprGenerators_k_ty
+tyem	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.larg	list.t	gsdl.var.t
+scc.gen.ty	.tylet	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+get	.apply	gsac.generator.mkgetter	|	gs
+syms	.apply	list.map	gsdl.cgs.gsexpr.generator.t	gsdl.cgs.symbol.t	|	gsdl.cgs.gsexpr.generator.boundvar	gs
+sccs	.apply	graph.tsort	gsdl.cgs.symbol.t	gsdl.cgs.gsexpr.generator.t	|	gsdl.cgs.symbol.compare	gsac.generator.deps	get	syms
+f	.closure	_gsac.generator.prefix.compileToExprGenerators_f_c
+nil	.apply	list.nil	gsac.generator.varmap.t
+	.app	f	k	sccs	nil	tyem	pem	tysvs
+	.enter	list.foldl	scc.gen.ty	_gsac.generator.prefix.compileToExprGenerators_k_ty
+
+_gsac.generator.prefix.compileToExprGenerators_f_c	.expr
+_gsac.generator.prefix.compileToExprGenerators_k_ty	.tygvar
+graph.scc.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+list.t	.tygvar
+gsac.generator.varmap.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
-gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
 k	.larg	_gsac.generator.prefix.compileToExprGenerators_k_ty
+scc	.larg	graph.scc.t	gsdl.cgs.gsexpr.generator.t
+vs	.larg	list.t	gsac.generator.varmap.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
