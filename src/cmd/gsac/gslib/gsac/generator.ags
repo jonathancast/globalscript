@@ -747,6 +747,7 @@ vs	.larg	list.t	gsac.generator.varmap.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
 	.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 	.type

@@ -114,9 +114,10 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 pos			.field	pos	doc0
 nothing			.apply	maybe.nothing	gsdl.var.t
 tyvs			.undefined	list.t	gsdl.var.t
+svs			.undefined	list.t	gsdl.var.t
 			.force	_gsac.document.compile_right_just_just_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToDataItem_res.ty
-			.app	pos	nothing	e	ty	set.empty	map.empty	tyvs
+			.app	pos	nothing	e	ty	set.empty	map.empty	tyvs	svs
 			.enter	gsac.gsexpr.compileToDataItem
 		.case	nothing
 			.undef	either.t	string.t	gsdl.ags.file.t
