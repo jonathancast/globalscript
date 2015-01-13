@@ -324,8 +324,9 @@ scc0		.fkarg	0	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 sccs1		.fkarg	1	list.t	scc.gen.ty
 			.undef	either.t	string.t	_gsac.generator.prefix.annotate_res.ty
 		.case	nil
+env1.l			.lifted	env1
 gs1			.apply	diff.list.tolist	gsdl.cgs.gsexpr.generator.t	|	gs
-res			.lrecord	gens	gs1	|	_gsac.generator.prefix.annotate_res.ty
+res			.lrecord	env	env1.l	gens	gs1	|	_gsac.generator.prefix.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.generator.prefix.annotate_res.ty
 
@@ -812,10 +813,11 @@ _gsac.generator.prefix.annotate_res.u	.tygvar
 	.tyref	_gsac.generator.prefix.annotate_res.u
 
 _gsac.generator.prefix.annotate_res.u	.tyexpr
+gsdl.cgs.typeenv.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.generator.t	.tygvar
 list.generator.ty	.tylet	list.t	gsdl.cgs.gsexpr.generator.t
-	.typroduct	gens	list.generator.ty
+	.typroduct	env	gsdl.cgs.typeenv.t	gens	list.generator.ty
 
 -- §section §gs{gsac.generator.annotate}
 
