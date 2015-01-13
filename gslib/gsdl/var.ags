@@ -16,6 +16,9 @@ _gsdl.var.parser_underbar.p_underbar.re	.regex	_
 
 gsdl.var.components.get	.closure	_gsdl.var.components.get_c	_gsdl.var.components.get_ty
 
+gsdl.var.vars	.closure	_gsdl.var.vars_c
+_gsdl.var.vars_w	.closure	_gsdl.var.vars_w_c	_gsdl.var.vars_w_ty
+
 gsdl.var.<>	.closure	_gsdl.var.<>_c
 
 gsdl.var.subvar	.closure	_gsdl.var.subvar_c
@@ -402,6 +405,22 @@ cs1		.fkarg	1	list.t	gsdl.var.t
 			.enter	gsdl.var.components.get
 		.case	nil
 			.undef	list.t	gsdl.var.component.t
+
+-- §section §gs{gsdl.var.vars}
+
+_gsdl.var.vars_c	.expr
+record.empty	.tygvar
+list.t	.tygvar	-- Temp
+gsdl.var.t	.tygvar	-- Temp
+r	.larg	record.empty
+	.undef	list.t	gsdl.var.t
+
+_gsdl.var.vars_w_c	.expr
+natural.t	.tygvar
+list.t	.tygvar	-- Temp
+gsdl.var.t	.tygvar	-- Temp
+n	.arg	natural.t
+	.undef	list.t	gsdl.var.t
 
 -- §section §gs{gsdl.var.<>}
 
@@ -1084,6 +1103,15 @@ gsdl.var.component.t	.tygvar
 	.tylift
 	.tyfun	gsdl.var.t
 	.tyref	list.t	gsdl.var.component.t
+
+-- §section §gs{gsdl.var.vars}
+
+_gsdl.var.vars_w_ty	.tyexpr
+natural.t	.tygvar
+list.t	.tygvar
+gsdl.var.t	.tygvar
+	.tyfun	natural.t
+	.tyref	list.t	gsdl.var.t
 
 -- §section §gs{gsdl.var.subvars}
 
