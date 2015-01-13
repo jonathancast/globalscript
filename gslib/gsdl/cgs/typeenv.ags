@@ -777,13 +777,14 @@ r	.record	kinds	kis2	typedefinitions	tyds2	typeexpansions	es2	types	tys2	varkind
 
 _gsdl.cgs.typeenv.to.fields_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
 list.t	.tygvar	-- Temp
-gsdl.cgs.gstype.field.t	.tygvar	-- Temp
+list.nil	.gvar
 env	.larg	gsdl.cgs.typeenv.t
 	-- TODO: Abstract type members
 	-- TODO: Type synonym members
 	-- TODO: Object members
-	.undef	list.t	gsdl.cgs.gstype.field.t
+	.enter	list.nil	gsdl.cgs.gstype.field.t
 
 -- §section §gs{gsdl.cgs.typeenv.typeexpansion.parser}
 
