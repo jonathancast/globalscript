@@ -1417,6 +1417,8 @@ gsac.gsexpr.compileToLambdaExpr	.gvar
 ordered.set.empty	.gvar
 ordered.map.empty	.gvar
 gsdl.var.subvars	.gvar
+_gsdl.var.vars_w	.gvar
+natural.0	.gvar
 gsac.gsexpr.cast.source.compileToGlobalVar	.gvar
 gsdl.var.subvar	.gvar
 gsdl.var.basevar	.gvar
@@ -1440,7 +1442,7 @@ v	.apply	maybe.fromJust	gsdl.var.t	|	_gsac.gsexpr.compileToDataItem_ep.v	mbv
 tyem1			.apply	ordered.set.empty	gsdl.var.t
 pem1			.apply	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
 tyvs1			.apply	gsdl.var.subvars	|	v
-svs1			.undefined	list.t	gsdl.var.t
+svs1			.apply	_gsdl.var.vars_w	|	natural.0
 			.force	_gsac.gsexpr.compileToDataItem_default_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	pos	e0.cl	tyem1	pem1	tyvs1	svs1
