@@ -417,10 +417,14 @@ r	.larg	record.empty
 
 _gsdl.var.vars_w_c	.expr
 natural.t	.tygvar
+gsdl.var.t	.tygvar
 list.t	.tygvar	-- Temp
-gsdl.var.t	.tygvar	-- Temp
+list.:	.gvar
 n	.arg	natural.t
-	.undef	list.t	gsdl.var.t
+v0	.undefined	gsdl.var.t
+vs1	.undefined	list.t	gsdl.var.t
+	.app	v0	vs1
+	.enter	list.:	gsdl.var.t
 
 -- §section §gs{gsdl.var.<>}
 
