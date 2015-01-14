@@ -220,10 +220,12 @@ _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
-_gsac.gsexpr.annotate_app_right_expr_k	.subcode
 _gsac.gsexpr.annotate_app_right_expr_fun_k	.subcode
+_gsac.gsexpr.annotate_app_right_expr_lift_k	.subcode
+_gsac.gsexpr.annotate_app_right_expr_k	.subcode
 _gsac.gsexpr.annotate_app_right_type_forall_k	.subcode
 either.t.out	.cogvar
+gsdl.cgs.gstype.t.out	.cogvar
 either.right	.gvar
 gsac.gstype.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
@@ -247,8 +249,9 @@ tyr				.fkarg	1	gsdl.cgs.gstype.t
 					.enter	gsac.gstype.annotate
 				.case	lift
 ty1				.fkarg	0	gsdl.cgs.gstype.t
-					-- Check that result type is lifted here
-					.undef	either.t	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
+					.force	_gsac.gsexpr.annotate_app_right_expr_lift_k
+					.coerce	gsdl.cgs.gstype.t.out
+					.enter	ty1
 		.case	type
 tya		.fkarg	0	gsdl.cgs.gstype.t
 			.danalyze	f.r.ty0	forall
@@ -286,6 +289,22 @@ ki			.lfield	gskind	tyr.r
 res			.lrecord	argtype	tya	tyres.kind	ki	|	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
+
+_gsac.gsexpr.annotate_app_right_expr_lift_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar	-- Temp
+ty1.0	.karg	gsdl.cgs.gstype.prim.u
+	.danalyze	ty1.0	fun
+		.default
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
+		.case	fun
+tya		.fkarg	0	gsdl.cgs.gstype.t
+tyr		.fkarg	1	gsdl.cgs.gstype.t
+			-- Check that result type is lifted here
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 
 _gsac.gsexpr.annotate_app_right_expr_k	.forcecont
 gsdl.sourcepos.t	.tygvar
