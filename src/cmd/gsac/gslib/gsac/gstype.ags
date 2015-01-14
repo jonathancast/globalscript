@@ -81,10 +81,12 @@ _gsac.gstype.annotate_lift_k	.subcode
 _gsac.gstype.annotate_pos_k	.subcode
 _gsac.gstype.annotate_product_k	.subcode
 _gsac.gstype.annotate_var_k	.subcode
+gsdl.cgs.gstype.t.in	.cogvar
 either.t.out	.cogvar
 maybe.t.out	.cogvar
 gsac.gstype.fun.annotate	.gvar
 gsac.gstype.annotate	.gvar
+either.right	.gvar
 either.mapM	.gvar
 gsac.gstype.field.annotate	.gvar
 gsdl.cgs.typeenv.gskind.get	.gvar
@@ -92,6 +94,8 @@ list.field.res.ty	.tylet	list.t	_gsac.gstype.field.annotate_res.ty
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
+ty0.l	.lifted	ty0
+ty0.cl	.cast	ty0.l	gsdl.cgs.gstype.t.in
 	.analyze	ty0	abstype	app	definedprim	elimprim	forall	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
@@ -129,7 +133,9 @@ tyr		.fkarg	1	gsdl.cgs.gstype.t
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
+res			.lrecord	gskind	ki	gstype	ty0.cl	|	_gsac.gstype.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
 		.case	intrprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
