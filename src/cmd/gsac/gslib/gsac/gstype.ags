@@ -100,7 +100,9 @@ ty0.cl	.cast	ty0.l	gsdl.cgs.gstype.t.in
 		.case	abstype
 tyc		.fkarg	0	gsdl.var.t
 ki		.fkarg	1	gsdl.cgs.gskind.t
-			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
+res			.lrecord	gskind	ki	gstype	ty0.cl	|	_gsac.gstype.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
