@@ -219,9 +219,9 @@ string.t	.tygvar
 _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-gsdl.cgs.gskind.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_app_right_expr_k	.subcode
+_gsac.gsexpr.annotate_app_right_expr_fun_k	.subcode
 _gsac.gsexpr.annotate_app_right_type_forall_k	.subcode
 either.t.out	.cogvar
 either.right	.gvar
@@ -241,10 +241,10 @@ ea		.fkarg	0	gsdl.cgs.gsexpr.t
 				.case	fun
 tya				.fkarg	0	gsdl.cgs.gstype.t
 tyr				.fkarg	1	gsdl.cgs.gstype.t
-ki					.undefined	gsdl.cgs.gskind.t
-res					.lrecord	argtype	tya	tyres.kind	ki	|	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
-					.app	res
-					.enter	either.right	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
+					.force	_gsac.gsexpr.annotate_app_right_expr_fun_k
+					.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
+					.app	pos	env	tyr
+					.enter	gsac.gstype.annotate
 				.case	lift
 ty1				.fkarg	0	gsdl.cgs.gstype.t
 					-- Check that result type is lifted here
@@ -263,7 +263,22 @@ fa.ki					.lfield	1	fa
 					.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
 					.app	pos	env	tya
 					.enter	gsac.gstype.annotate
-	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
+			-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
+
+_gsac.gsexpr.annotate_app_right_expr_fun_k	.forcecont
+gsdl.cgs.gstype.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
+gsdl.cgs.gskind.t	.tygvar	-- Temp
+either.right	.gvar
+tya	.fv	gsdl.cgs.gstype.t
+e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
+ki					.undefined	gsdl.cgs.gskind.t
+res					.lrecord	argtype	tya	tyres.kind	ki	|	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
+					.app	res
+					.enter	either.right	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 
 _gsac.gsexpr.annotate_app_right_expr_k	.forcecont
 gsdl.sourcepos.t	.tygvar
