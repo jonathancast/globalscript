@@ -247,6 +247,7 @@ res					.lrecord	argtype	tya	tyres.kind	ki	|	_gsac.gsexpr.annotate_app_expr_fun.
 					.enter	either.right	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 				.case	lift
 ty1				.fkarg	0	gsdl.cgs.gstype.t
+					-- Check that result type is lifted here
 					.undef	either.t	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 		.case	type
 tya		.fkarg	0	gsdl.cgs.gstype.t
@@ -295,6 +296,7 @@ tya			.lfield	argtype	tyf.r
 _gsac.gsexpr.annotate_app_right_expr_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -306,6 +308,7 @@ either.t.out	.cogvar
 gsac.gstype.check	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
+tyf.r	.fv	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 tya	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
 	.analyze	e0	left	right
@@ -321,11 +324,17 @@ ea.r.ty			.lfield	gstype	ea.r
 			.enter	gsac.gstype.check
 
 _gsac.gsexpr.annotate_app_right_expr_right_right_k	.forcecont
+_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
+gsdl.cgs.gstype.t	.tygvar	-- Temp
+either.right	.gvar
+tyf.r	.fv	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
@@ -333,7 +342,12 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 r		.fkarg	0	record.empty
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+e1			.undefined	gsdl.cgs.gsexpr.t
+ki			.lfield	tyres.kind	tyf.r
+tyres			.undefined	gsdl.cgs.gstype.t
+res			.lrecord	expr	e1	gskind	ki	gstype	tyres	|	_gsac.gsexpr.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_app_right_type_forall_k	.forcecont
 gsdl.cgs.gstype.t	.tygvar
