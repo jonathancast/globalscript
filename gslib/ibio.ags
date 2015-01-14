@@ -385,7 +385,7 @@ ibio.dir.t	.tygvar
 	.tyfun	ibio.prim.dir.t
 	.tyref	ibio.dir.t
 
-ibio.dir.t	.tyexpr
+ibio.dir.t	.tyexpr	*
 ibio.dir.u	.tygvar
 	.tylift
 	.tyref	ibio.dir.u
