@@ -219,6 +219,7 @@ string.t	.tygvar
 _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+gsdl.cgs.gskind.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_app_right_expr_k	.subcode
 _gsac.gsexpr.annotate_app_right_type_forall_k	.subcode
@@ -240,7 +241,8 @@ ea		.fkarg	0	gsdl.cgs.gsexpr.t
 				.case	fun
 tya				.fkarg	0	gsdl.cgs.gstype.t
 tyr				.fkarg	1	gsdl.cgs.gstype.t
-res					.lrecord	argtype	tya	|	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
+ki					.undefined	gsdl.cgs.gskind.t
+res					.lrecord	argtype	tya	tyres.kind	ki	|	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 					.app	res
 					.enter	either.right	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 				.case	lift
@@ -3234,7 +3236,8 @@ _gsac.gsexpr.annotate_app_expr_fun.type.check_res.u	.tygvar
 
 _gsac.gsexpr.annotate_app_expr_fun.type.check_res.u	.tyexpr
 gsdl.cgs.gstype.t	.tygvar
-	.typroduct	argtype	gsdl.cgs.gstype.t
+gsdl.cgs.gskind.t	.tygvar
+	.typroduct	argtype	gsdl.cgs.gstype.t	tyres.kind	gsdl.cgs.gskind.t
 
 _gsac.gsexpr.annotate_impfor_ensure.impprim_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
