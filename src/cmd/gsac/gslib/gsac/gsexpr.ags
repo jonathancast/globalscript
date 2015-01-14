@@ -790,10 +790,10 @@ gsdl.cgs.typeenv.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.generator.annotate_res.ty	.tygvar
-either.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty	.tygvar
 _gsac.gsexpr.annotate_impfor_right_right_right_gen.annotate_right_k	.subcode
 either.t.out	.cogvar
+either.left	.gvar
 gsdl.cgs.typeenv.overlay	.gvar
 k	.fv	_gsac.gsexpr.annotate_impfor_right_right_right_z_ty
 env	.fv	gsdl.cgs.typeenv.t
@@ -801,7 +801,8 @@ e0	.karg	either.prim.u	string.t	_gsac.generator.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
+			.app	err
+			.enter	either.left	string.t	_gsac.gsexpr.annotate_impfor_right_right_right_z_res.ty
 		.case	right
 g.r		.fkarg	0	_gsac.generator.annotate_res.ty
 g.r.env			.lfield	env	g.r
