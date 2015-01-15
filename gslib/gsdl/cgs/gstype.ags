@@ -688,8 +688,31 @@ co	.larg	gsdl.cgs.gstype.constr.t
 
 _gsdl.cgs.gstype.unpos_c	.expr
 gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.unpos_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
 ty	.larg	gsdl.cgs.gstype.t
-	.undef	gsdl.cgs.gstype.t
+	.force	_gsdl.cgs.gstype.unpos_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsdl.cgs.gstype.unpos_k	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
+gsdl.cgs.gstype.unpos	.gvar
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.danalyze	ty0	pos
+		.default
+			.coerce	gsdl.cgs.gstype.t.in
+			.lift
+			.yield	ty0
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+			.app	ty1
+			.enter	gsdl.cgs.gstype.unpos
+	-- > :: gsdl.cgs.gstype.t
 
 -- §section §gs{gsdl.cgs.gstype.≡}
 
