@@ -292,14 +292,17 @@ res			.lrecord	argtype	tya	tyres.kind	ki	|	_gsac.gsexpr.annotate_app_expr_fun.ty
 
 _gsac.gsexpr.annotate_app_right_expr_lift_k	.forcecont
 gsdl.cgs.gstype.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar	-- Temp
+either.left	.gvar
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
 	.danalyze	ty1.0	fun
 		.default
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
+err			.undefined	string.t
+			.app	err
+			.enter	either.left	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
