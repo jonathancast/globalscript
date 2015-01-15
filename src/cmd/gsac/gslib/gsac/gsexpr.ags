@@ -227,8 +227,8 @@ _gsac.gsexpr.annotate_app_right_expr_k	.subcode
 _gsac.gsexpr.annotate_app_right_type_forall_k	.subcode
 either.t.out	.cogvar
 gsdl.cgs.gstype.t.out	.cogvar
-either.right	.gvar
 gsac.gstype.annotate	.gvar
+gsdl.cgs.gstype.unpos	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 a0	.fv	gsdl.cgs.gsexpr.arg.prim.u
@@ -252,7 +252,8 @@ tyr				.fkarg	1	gsdl.cgs.gstype.t
 ty1				.fkarg	0	gsdl.cgs.gstype.t
 					.force	_gsac.gsexpr.annotate_app_right_expr_lift_k
 					.coerce	gsdl.cgs.gstype.t.out
-					.enter	ty1
+					.app	ty1
+					.enter	gsdl.cgs.gstype.unpos
 		.case	type
 tya		.fkarg	0	gsdl.cgs.gstype.t
 			.danalyze	f.r.ty0	forall
