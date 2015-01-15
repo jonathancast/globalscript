@@ -5,6 +5,7 @@
 	.data
 
 gsac.gsexpr.annotate	.closure	_gsac.gsexpr.annotate_c	_gsac.gsexpr.annotate_ty
+_gsac.gsexpr.annotate_app_right_expr_lift_default_err.mid.s	.string	:\sI\sdon't\sthink\s'
 _gsac.gsexpr.annotate_impfor_ensure.impprim	.closure	_gsac.gsexpr.annotate_impfor_ensure.impprim_c	_gsac.gsexpr.annotate_impfor_ensure.impprim_ty
 _gsac.gsexpr.annotate_impfor_rhsty.check	.closure	_gsac.gsexpr.annotate_impfor_rhsty.check_c	_gsac.gsexpr.annotate_impfor_rhsty.check_ty
 
@@ -291,16 +292,31 @@ res			.lrecord	argtype	tya	tyres.kind	ki	|	_gsac.gsexpr.annotate_app_expr_fun.ty
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 
 _gsac.gsexpr.annotate_app_right_expr_lift_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
+rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	-- Temp
+gsdl.cgs.gstype.t.in	.cogvar
 either.left	.gvar
+list.<>	.gvar
+gsdl.sourcepos.print	.gvar
+_gsac.gsexpr.annotate_app_right_expr_lift_default_err.mid.s	.gvar
+gsdl.cgs.gstype.print	.gvar
+pos	.fv	gsdl.sourcepos.t
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
 	.danalyze	ty1.0	fun
 		.default
-err			.undefined	string.t
+pos.s			.apply	gsdl.sourcepos.print	|	pos
+ty1.0.l			.lifted	ty1.0
+ty1.0.cl			.cast	ty1.0.l	gsdl.cgs.gstype.t.in
+ty1.s			.apply	gsdl.cgs.gstype.print	|	ty1.0.cl
+err3			.undefined	string.t
+err2			.apply	list.<>	rune.t	|	ty1.s	err3
+err1			.apply	list.<>	rune.t	|	_gsac.gsexpr.annotate_app_right_expr_lift_default_err.mid.s	err2
+err			.apply	list.<>	rune.t	|	pos.s	err1
 			.app	err
 			.enter	either.left	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 		.case	fun
