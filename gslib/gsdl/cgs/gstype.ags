@@ -268,14 +268,14 @@ rune.compare	.gvar
 _gsdl.cgs.gstype.parser.arg_sum.p_su.re	.gvar
 gsdl.cgs.syntax.angles	.gvar
 parser.many	.gvar
+gsdl.cgs.gstype.constr.parser	.gvar
 parser.fail	.gvar	-- Temp
 list.constr.ty	.tylet	list.t	gsdl.cgs.gstype.constr.t
 f	.closure	_gsdl.cgs.gstype.parser.arg_sum.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 su.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_sum.p_su.re
 su.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	su.p1
-cp	.apply	parser.fail	rune.t	gsdl.cgs.gstype.constr.t
-mcp	.apply	parser.many	rune.t	gsdl.cgs.gstype.constr.t	|	cp
+mcp	.apply	parser.many	rune.t	gsdl.cgs.gstype.constr.t	|	gsdl.cgs.gstype.constr.parser
 cs.p1	.apply	gsdl.cgs.syntax.angles	list.constr.ty	|	mcp
 cs.p	.apply	parser.*>	rune.t	string.t	list.constr.ty	|	su.p	cs.p1
 	.app	f	pos.get	cs.p
