@@ -874,9 +874,9 @@ _gsac.gstype.field.annotate_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
-record.empty	.tygvar	-- Temp
+_gsac.gstype.field.annotate_res.ty	.tygvar	-- Temp
 f	.larg	gsdl.cgs.gstype.field.t
-	.undef	either.t	string.t	record.empty
+	.undef	either.t	string.t	_gsac.gstype.field.annotate_res.ty
 
 -- §section §gs{gsac.gstype.typeexpansion.annotate}
 
