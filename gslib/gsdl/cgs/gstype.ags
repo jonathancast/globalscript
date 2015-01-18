@@ -449,6 +449,7 @@ ordered.set.union	.gvar
 ordered.set.empty	.gvar
 list.map	.gvar
 gsdl.cgs.gstype.field.freevars	.gvar
+gsdl.cgs.gstype.constr.freevars	.gvar
 gsdl.cgs.symbol.tyvar	.gvar
 res.ty	.tylet	ordered.set.t	gsdl.cgs.symbol.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
@@ -515,7 +516,11 @@ fvss			.apply	list.map	gsdl.cgs.gstype.field.t	res.ty	|	gsdl.cgs.gstype.field.fr
 			.enter	list.foldr	res.ty	res.ty
 		.case	sum
 cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+un			.apply	ordered.set.union	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare
+empty			.apply	ordered.set.empty	gsdl.cgs.symbol.t
+fvss			.apply	list.map	gsdl.cgs.gstype.constr.t	res.ty	|	gsdl.cgs.gstype.constr.freevars	cs
+			.app	un	empty	fvss
+			.enter	list.foldr	res.ty	res.ty
 		.case	ubproduct
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
 			.undef	ordered.set.t	gsdl.cgs.symbol.t
