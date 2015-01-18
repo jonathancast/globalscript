@@ -61,6 +61,8 @@ gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
 gsdl.cgs.gstype.field.≡	.closure	_gsdl.cgs.gstype.field.≡_c
 
+gsdl.cgs.gstype.constr.parser	.closure	_gsdl.cgs.gstype.constr.parser_c	_gsdl.cgs.gstype.constr.parser_ty
+
 gsdl.cgs.gstype.constr.freevars	.closure	_gsdl.cgs.gstype.constr.freevars_c
 
 gsdl.cgs.gstype.constr.≡	.closure	_gsdl.cgs.gstype.constr.≡_c
@@ -1236,6 +1238,14 @@ f0	.larg	gsdl.cgs.gstype.field.t
 f1	.larg	gsdl.cgs.gstype.field.t
 	.undef	bool.t
 
+-- §section §gs{gsdl.cgs.gstype.constr.parser}
+
+_gsdl.cgs.gstype.constr.parser_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+parser.fail	.gvar	-- Temp
+	.enter	parser.fail	rune.t	gsdl.cgs.gstype.constr.t
+
 -- §section §gs{gsdl.cgs.gstype.constr.freevars}
 
 _gsdl.cgs.gstype.constr.freevars_c	.expr
@@ -1500,6 +1510,14 @@ _gsdl.cgs.gstype.field.fmtgs_ty	.tyexpr
 fmtgs.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 	.tyref	fmtgs.t	gsdl.cgs.gstype.field.t
+
+-- §section §gs{gsdl.cgs.gstype.constr.parser}
+
+_gsdl.cgs.gstype.constr.parser_ty	.tyexpr
+parser.t	.tygvar
+rune.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+	.tyref	parser.t	rune.t	gsdl.cgs.gstype.constr.t
 
 	.coercion
 
