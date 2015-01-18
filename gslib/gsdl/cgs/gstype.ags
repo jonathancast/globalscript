@@ -218,9 +218,6 @@ e1	.apply	gsdl.cgs.gstype.var	|	v
 	.app	pos	e1
 	.enter	gsdl.cgs.gstype.pos
 
--- > for (
--- >     'fs ← m/"Π〈/ *> cgs.syntax.ws *> many field.parser <* cgs.syntax.rbracket;
--- > ) [| product fs |]
 _gsdl.cgs.gstype.parser.arg_prod.p_c	.expr
 rune.t	.tygvar
 list.t	.tygvar
