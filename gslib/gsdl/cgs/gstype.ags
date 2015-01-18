@@ -61,6 +61,8 @@ gsdl.cgs.gstype.field.fmtgs.list	.closure	_gsdl.cgs.gstype.field.fmtgs.list_c
 
 gsdl.cgs.gstype.field.≡	.closure	_gsdl.cgs.gstype.field.≡_c
 
+gsdl.cgs.gstype.constr.freevars	.closure	_gsdl.cgs.gstype.constr.freevars_c
+
 gsdl.cgs.gstype.constr.≡	.closure	_gsdl.cgs.gstype.constr.≡_c
 
 	.code
@@ -1228,6 +1230,15 @@ bool.t	.tygvar	-- Temp
 f0	.larg	gsdl.cgs.gstype.field.t
 f1	.larg	gsdl.cgs.gstype.field.t
 	.undef	bool.t
+
+-- §section §gs{gsdl.cgs.gstype.constr.freevars}
+
+_gsdl.cgs.gstype.constr.freevars_c	.expr
+gsdl.cgs.gstype.constr.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+c	.larg	gsdl.cgs.gstype.constr.t
+	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gstype.constr.≡}
 
