@@ -16,6 +16,7 @@ gsdl.cgs.gstype.parser.arg	.closure	_gsdl.cgs.gstype.parser.arg_c	_gsdl.cgs.gsty
 _gsdl.cgs.gstype.parser.arg_pi.re	.regex	"Π
 _gsdl.cgs.gstype.parser.arg_lift.p_lb.re	.regex	⌊
 _gsdl.cgs.gstype.parser.arg_lift.p_rb.re	.regex	⌋
+_gsdl.cgs.gstype.parser.arg_sum.p_su.re	.regex	"Σ
 
 gsdl.cgs.gstype.print	.closure	_gsdl.cgs.gstype.print_c
 _gsdl.cgs.gstype.print_w	.closure	_gsdl.cgs.gstype.print_w_c	_gsdl.cgs.gstype.print_w_ty
@@ -172,15 +173,18 @@ rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 _gsdl.cgs.gstype.parser.arg_var.p_c	.subcode
 _gsdl.cgs.gstype.parser.arg_prod.p_c	.subcode
+_gsdl.cgs.gstype.parser.arg_sum.p_c	.subcode
 _gsdl.cgs.gstype.parser.arg_lift.p_c	.subcode
 parser.<|>	.gvar
 gsdl.cgs.syntax.parens	.gvar
 gsdl.cgs.gstype.parser	.gvar
 var.p	.closure	_gsdl.cgs.gstype.parser.arg_var.p_c
 prod.p	.closure	_gsdl.cgs.gstype.parser.arg_prod.p_c
+sum.p	.closure	_gsdl.cgs.gstype.parser.arg_sum.p_c
 lift.p	.closure	_gsdl.cgs.gstype.parser.arg_lift.p_c
 parens.p	.apply	gsdl.cgs.syntax.parens	gsdl.cgs.gstype.t	|	gsdl.cgs.gstype.parser
-p2	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	lift.p	parens.p
+p3	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	lift.p	parens.p
+p2	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	sum.p	p3
 p1	.apply	parser.<|>	rune.t	gsdl.cgs.gstype.t	|	prod.p	p2
 	.app	var.p	p1
 	.enter	parser.<|>	rune.t	gsdl.cgs.gstype.t
@@ -242,6 +246,52 @@ fs.p1	.apply	gsdl.cgs.syntax.angles	list.field.t	|	mfp
 fs.p	.apply	parser.*>	rune.t	string.t	list.field.t	|	pi.p	fs.p1
 	.app	gsdl.cgs.gstype.product	fs.p
 	.enter	parser.map	rune.t	list.field.t	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.arg_sum.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+_gsdl.cgs.gstype.parser.arg_sum.p_f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.lexeme	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.cgs.gstype.parser.arg_sum.p_su.re	.gvar
+gsdl.cgs.syntax.angles	.gvar
+parser.many	.gvar
+parser.fail	.gvar	-- Temp
+list.constr.ty	.tylet	list.t	gsdl.cgs.gstype.constr.t
+f	.closure	_gsdl.cgs.gstype.parser.arg_sum.p_f_c
+pos.get	.apply	parser.pos.get	rune.t
+su.p1	.apply	parser.match	rune.t	|	rune.compare	_gsdl.cgs.gstype.parser.arg_sum.p_su.re
+su.p	.apply	gsdl.cgs.syntax.lexeme	string.t	|	su.p1
+cp	.apply	parser.fail	rune.t	gsdl.cgs.gstype.constr.t
+mcp	.apply	parser.many	rune.t	gsdl.cgs.gstype.constr.t	|	cp
+cs.p1	.apply	gsdl.cgs.syntax.angles	list.constr.ty	|	mcp
+cs.p	.apply	parser.*>	rune.t	string.t	list.constr.ty	|	su.p	cs.p1
+	.app	f	pos.get	cs.p
+	.enter	parser.lift2	rune.t	parser.pos.t	list.constr.ty	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.parser.arg_sum.p_f_c	.expr
+parser.pos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar	-- Temp
+gsdl.cgs.gstype.pos	.gvar
+gsdl.sourcepos	.gvar
+gsdl.cgs.gstype.sum	.gvar
+pos0	.larg	parser.pos.t
+cs	.larg	list.t	gsdl.cgs.gstype.constr.t
+pos1	.undefined	parser.pos.t
+pos	.apply	gsdl.sourcepos	|	pos0	pos1
+ty1	.apply	gsdl.cgs.gstype.sum	|	cs
+	.app	pos	ty1
+	.enter	gsdl.cgs.gstype.pos
 
 -- > for (
 -- >     'ty ← m/⌊/ *> cgs.syntax.ws *> gsdl.cgs.gstype.parser <* m/⌋/ <* cgs.syntax.ws;
