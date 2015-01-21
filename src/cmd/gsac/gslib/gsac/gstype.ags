@@ -1021,6 +1021,7 @@ gsdl.cgs.gstype.constr.t	.tygvar
 _gsac.gstype.gskind.get_app_k	.subcode
 gsdl.cgs.gskind.t.out	.cogvar
 gsac.gstype.gskind.get	.gvar
+gsdl.cgs.gskind.lifted	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	ty0	abstype	app	definedprim	elimprim	forall	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
@@ -1065,7 +1066,7 @@ ki		.fkarg	2	gsdl.cgs.gskind.t
 			.undef	gsdl.cgs.gskind.t
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
-			.undef	gsdl.cgs.gskind.t
+			.enter	gsdl.cgs.gskind.lifted
 		.case	pos
 pos		.fkarg	0	gsdl.sourcepos.t
 ty1		.fkarg	1	gsdl.cgs.gstype.t
