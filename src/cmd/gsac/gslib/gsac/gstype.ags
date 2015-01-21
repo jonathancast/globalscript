@@ -999,10 +999,105 @@ res			.lrecord	kind	ty.r.ki	typeexpansion	tye1		|	_gsac.gstype.typeexpansion.ann
 _gsac.gstype.gskind.get_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-gsdl.cgs.gskind.t	.tygvar	-- Temp
+_gsac.gstype.gskind.get_k	.subcode
+gsdl.cgs.gstype.t.out	.cogvar
 env	.larg	gsdl.cgs.typeenv.t
 ty	.larg	gsdl.cgs.gstype.t
-	.undef	gsdl.cgs.gskind.t
+	.force	_gsac.gstype.gskind.get_k
+	.coerce	gsdl.cgs.gstype.t.out
+	.enter	ty
+
+_gsac.gstype.gskind.get_k	.forcecont
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gstype.tyforall.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.constr.t	.tygvar
+_gsac.gstype.gskind.get_app_k	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+gsac.gstype.gskind.get	.gvar
+env	.fv	gsdl.cgs.typeenv.t
+ty0	.karg	gsdl.cgs.gstype.prim.u
+	.analyze	ty0	abstype	app	definedprim	elimprim	forall	fun	impprim	intrprim	lift	pos	product	sum	ubproduct	ubsum	var
+		.case	abstype
+c		.fkarg	0	gsdl.var.t
+ki		.fkarg	1	gsdl.cgs.gskind.t
+			.undef	gsdl.cgs.gskind.t
+		.case	app
+tyf		.fkarg	0	gsdl.cgs.gstype.t
+tya		.fkarg	1	gsdl.cgs.gstype.t
+			.force	_gsac.gstype.gskind.get_app_k
+			.coerce	gsdl.cgs.gskind.t.out
+			.app	env	tyf
+			.enter	gsac.gstype.gskind.get
+		.case	definedprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	gsdl.cgs.gskind.t
+		.case	elimprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	gsdl.cgs.gskind.t
+		.case	forall
+fa		.fkarg	0	gsdl.cgs.gstype.tyforall.t
+tyb		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	gsdl.cgs.gskind.t
+		.case	fun
+tya		.fkarg	0	gsdl.cgs.gstype.t
+tyr		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	gsdl.cgs.gskind.t
+		.case	impprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.enter	ki
+		.case	intrprim
+ps		.fkarg	0	gsdl.var.t
+pn		.fkarg	1	gsdl.var.t
+ki		.fkarg	2	gsdl.cgs.gskind.t
+			.undef	gsdl.cgs.gskind.t
+		.case	lift
+ty1		.fkarg	0	gsdl.cgs.gstype.t
+			.undef	gsdl.cgs.gskind.t
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+ty1		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	gsdl.cgs.gskind.t
+		.case	product
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.undef	gsdl.cgs.gskind.t
+		.case	sum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	gsdl.cgs.gskind.t
+		.case	ubproduct
+fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+			.undef	gsdl.cgs.gskind.t
+		.case	ubsum
+cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
+			.undef	gsdl.cgs.gskind.t
+		.case	var
+v		.fkarg	0	gsdl.var.t
+			.undef	gsdl.cgs.gskind.t
+	-- > :: gsdl.cgs.gskind.t
+
+_gsac.gstype.gskind.get_app_k	.forcecont
+gsdl.cgs.gskind.prim.u	.tygvar
+gsdl.cgs.gskind.t	.tygvar
+ki0	.karg	gsdl.cgs.gskind.prim.u
+	.danalyze	ki0	exp
+		.default
+			.undef	gsdl.cgs.gskind.t
+		.case	exp
+kib		.fkarg	0	gsdl.cgs.gskind.t
+kie		.fkarg	1	gsdl.cgs.gskind.t
+			.enter	kib
 
 -- §section §gs{gsac.gstype.check}
 
