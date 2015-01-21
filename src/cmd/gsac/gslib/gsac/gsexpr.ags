@@ -1280,12 +1280,12 @@ gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
+string.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
 _gsac.gsexpr.annotate_var_just_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.typeenv.varkind.get	.gvar
+either.left	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 v	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
@@ -1297,7 +1297,9 @@ v.ty		.fkarg	0	gsdl.cgs.gstype.t
 			.app	v	env
 			.enter	gsdl.cgs.typeenv.varkind.get
 		.case	nothing
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+err			.undefined	string.t
+			.app	err
+			.enter	either.left	string.t	_gsac.gsexpr.annotate_res.ty
 
 _gsac.gsexpr.annotate_var_just_k	.forcecont
 gsdl.var.t	.tygvar
