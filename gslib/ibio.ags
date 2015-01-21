@@ -9,7 +9,7 @@ ibio.from.either.prim	.closure	_ibio.from.either.prim_c
 ibio.dir.fromprim	.closure	_ibio.dir.fromprim_c	_ibio.dir.fromprim_ty
 
 ibio.rune.external.io	.closure	_ibio.rune.external.io_c
-ibio.dir.external.io	.closure	_ibio.dir.external.io_c
+ibio.dir.external.io	.closure	_ibio.dir.external.io_c	_ibio.dir.external.io_ty
 
 ibio.mapM.prim	.closure	_ibio.mapM.prim_c	_ibio.mapM.prim_ty
 ibio.mapM0.prim	.closure	_ibio.mapM0.prim_c	_ibio.mapM0.prim_ty
@@ -398,6 +398,14 @@ bool.t	.tygvar
 ibio.file.name.t	.tygvar
 integer.t	.tygvar
 	.typroduct	atime	time.t	gid	string.t	length	natural.t	mode.append.only	bool.t	mode.directory	bool.t	mode.exclusive	bool.t	mode.group.execute	bool.t	mode.group.read	bool.t	mode.group.write	bool.t	mode.other.execute	bool.t	mode.other.read	bool.t	mode.other.write	bool.t	mode.owner.execute	bool.t	mode.owner.read	bool.t	mode.owner.write	bool.t	mode.unix.dev	bool.t	mode.unix.link	bool.t	mode.unix.pipe	bool.t	mode.unix.socket	bool.t	mtime	time.t	muid	string.t	name	ibio.file.name.t	qid.path	integer.t	srvdev	natural.t	srvtype	natural.t	uid	string.t	vers	natural.t
+
+-- §section §gs{ibio.dir.external.io}
+
+_ibio.dir.external.io_ty	.tyexpr	*
+ibio.prim.external.io	.tygvar
+ibio.dir.t	.tygvar
+	.tylift
+	.tyref	ibio.prim.external.io	ibio.dir.t
 
 -- §section §gs{ibio.mapM.prim}
 
