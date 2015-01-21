@@ -1278,17 +1278,22 @@ res			.lrecord	expr	e	gskind	gsdl.cgs.gskind.unlifted	gstype	ty	|	_gsac.gsexpr.a
 
 _gsac.gsexpr.annotate_var_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
+rune.t	.tygvar
 _gsac.gsexpr.annotate_var_just_k	.subcode
 maybe.t.out	.cogvar
 gsdl.cgs.typeenv.varkind.get	.gvar
 either.left	.gvar
+list.<>	.gvar
+gsdl.sourcepos.print	.gvar
 env	.fv	gsdl.cgs.typeenv.t
+pos	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mb0	just	nothing
@@ -1299,7 +1304,9 @@ v.ty		.fkarg	0	gsdl.cgs.gstype.t
 			.app	v	env
 			.enter	gsdl.cgs.typeenv.varkind.get
 		.case	nothing
-err			.undefined	string.t
+pos.s			.apply	gsdl.sourcepos.print	|	pos
+err1			.undefined	string.t
+err			.apply	list.<>	rune.t	|	pos.s	err1
 			.app	err
 			.enter	either.left	string.t	_gsac.gsexpr.annotate_res.ty
 
