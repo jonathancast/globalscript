@@ -221,14 +221,15 @@ _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
-_gsac.gsexpr.annotate_app_right_expr_fun_k	.subcode
 _gsac.gsexpr.annotate_app_right_expr_lift_k	.subcode
 _gsac.gsexpr.annotate_app_right_expr_k	.subcode
 _gsac.gsexpr.annotate_app_right_type_forall_k	.subcode
 either.t.out	.cogvar
 gsdl.cgs.gstype.t.out	.cogvar
-gsac.gstype.annotate	.gvar
+either.right	.gvar
+gsac.gstype.gskind.get	.gvar
 gsdl.cgs.gstype.unpos	.gvar
+gsac.gstype.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 a0	.fv	gsdl.cgs.gsexpr.arg.prim.u
@@ -244,10 +245,10 @@ ea		.fkarg	0	gsdl.cgs.gsexpr.t
 				.case	fun
 tya				.fkarg	0	gsdl.cgs.gstype.t
 tyr				.fkarg	1	gsdl.cgs.gstype.t
-					.force	_gsac.gsexpr.annotate_app_right_expr_fun_k
-					.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
-					.app	pos	env	tyr
-					.enter	gsac.gstype.annotate
+tyr.ki					.apply	gsac.gstype.gskind.get	|	env	tyr
+res					.lrecord	argtype	tya	tyres.kind	tyr.ki	|	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
+					.app	res
+					.enter	either.right	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 				.case	lift
 ty1				.fkarg	0	gsdl.cgs.gstype.t
 					.force	_gsac.gsexpr.annotate_app_right_expr_lift_k
@@ -270,28 +271,6 @@ fa.ki					.lfield	1	fa
 					.enter	gsac.gstype.annotate
 			-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
 
-_gsac.gsexpr.annotate_app_right_expr_fun_k	.forcecont
-gsdl.cgs.gstype.t	.tygvar
-either.prim.u	.tygvar
-string.t	.tygvar
-_gsac.gstype.annotate_res.ty	.tygvar
-_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
-either.t	.tygvar	-- Temp
-gsdl.cgs.gskind.t	.tygvar	-- Temp
-either.right	.gvar
-tya	.fv	gsdl.cgs.gstype.t
-e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
-	.analyze	e0	left	right
-		.case	left
-err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
-		.case	right
-tyr.r		.fkarg	0	_gsac.gstype.annotate_res.ty
-ki			.lfield	gskind	tyr.r
-res			.lrecord	argtype	tya	tyres.kind	ki	|	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
-			.app	res
-			.enter	either.right	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
-
 _gsac.gsexpr.annotate_app_right_expr_lift_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
@@ -300,7 +279,7 @@ string.t	.tygvar
 _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 rune.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-_gsac.gstype.annotate_res.ty	.tygvar
+record.empty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_app_right_expr_lift_fun_k	.subcode
 gsdl.cgs.gstype.t.in	.cogvar
@@ -310,7 +289,9 @@ list.<>	.gvar
 gsdl.sourcepos.print	.gvar
 _gsac.gsexpr.annotate_app_right_expr_lift_default_err.mid.s	.gvar
 gsdl.cgs.gstype.print	.gvar
-gsac.gstype.annotate	.gvar
+gsac.gskind.check	.gvar
+gsac.gstype.gskind.get	.gvar
+gsdl.cgs.gskind.lifted	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 ty1.0	.karg	gsdl.cgs.gstype.prim.u
@@ -329,39 +310,14 @@ err			.apply	list.<>	rune.t	|	pos.s	err1
 		.case	fun
 tya		.fkarg	0	gsdl.cgs.gstype.t
 tyr		.fkarg	1	gsdl.cgs.gstype.t
+tyr.ki				.apply	gsac.gstype.gskind.get	|	env	tyr
 			.force	_gsac.gsexpr.annotate_app_right_expr_lift_fun_k
-			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
-			.app	pos	env	tyr
-			.enter	gsac.gstype.annotate
+			.coerce	either.t.out	string.t	record.empty
+			.app	tyr.ki	gsdl.cgs.gskind.lifted
+			.enter	gsac.gskind.check
 	-- > :: either.t	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 
 _gsac.gsexpr.annotate_app_right_expr_lift_fun_k	.forcecont
-gsdl.cgs.gstype.t	.tygvar
-either.prim.u	.tygvar
-string.t	.tygvar
-_gsac.gstype.annotate_res.ty	.tygvar
-record.empty	.tygvar
-either.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar	-- Temp
-_gsac.gsexpr.annotate_app_right_expr_lift_fun_right_k	.subcode
-either.t.out	.cogvar
-gsac.gskind.check	.gvar
-gsdl.cgs.gskind.lifted	.gvar
-tya	.fv	gsdl.cgs.gstype.t
-e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
-	.analyze	e0	left	right
-		.case	left
-err		.fkarg	0	string.t
-			.undef	either.t	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
-		.case	right
-tyr.r		.fkarg	0	_gsac.gstype.annotate_res.ty
-ki			.lfield	gskind	tyr.r
-			.force	_gsac.gsexpr.annotate_app_right_expr_lift_fun_right_k
-			.coerce	either.t.out	string.t	record.empty
-			.app	ki	gsdl.cgs.gskind.lifted
-			.enter	gsac.gskind.check
-
-_gsac.gsexpr.annotate_app_right_expr_lift_fun_right_k	.forcecont
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 either.prim.u	.tygvar
@@ -371,7 +327,7 @@ _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 either.right	.gvar
 tya	.fv	gsdl.cgs.gstype.t
-ki	.fv	gsdl.cgs.gskind.t
+tyr.ki	.fv	gsdl.cgs.gskind.t
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
@@ -379,7 +335,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 		.case	right
 r0		.fkarg	0	record.empty
-res			.lrecord	argtype	tya	tyres.kind	ki	|	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
+res			.lrecord	argtype	tya	tyres.kind	tyr.ki	|	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 
