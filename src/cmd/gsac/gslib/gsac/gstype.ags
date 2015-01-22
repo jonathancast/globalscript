@@ -1153,6 +1153,7 @@ _gsac.gstype.check_app_app_k	.subcode
 _gsac.gstype.check_elimprim_elimprim_k	.subcode
 _gsac.gstype.check_fun_fun_k	.subcode
 _gsac.gstype.check_impprim_impprim_k	.subcode
+_gsac.gstype.check_intrprim_intrprim_k	.subcode
 gsdl.cgs.gstype.t.in	.cogvar
 bool.t.out	.cogvar
 maybe.t.out	.cogvar
@@ -1274,10 +1275,22 @@ pn.eq							.apply	gsdl.var.≡	|	pna	pne
 							.app	ps.eq	pn.eq
 							.enter	bool.∧
 				.case	intrprim
-ps				.fkarg	0	gsdl.var.t
-pn				.fkarg	1	gsdl.var.t
-ki				.fkarg	2	gsdl.cgs.gskind.t
-					.undef	either.t	string.t	record.empty
+pse				.fkarg	0	gsdl.var.t
+pne				.fkarg	1	gsdl.var.t
+kie				.fkarg	2	gsdl.cgs.gskind.t
+					.danalyze	tya0	intrprim
+						.default
+							.undef	either.t	string.t	record.empty
+						.case	intrprim
+psa						.fkarg	0	gsdl.var.t
+pna						.fkarg	1	gsdl.var.t
+kia						.fkarg	2	gsdl.cgs.gskind.t
+ps.eq							.apply	gsdl.var.≡	|	psa	pse
+pn.eq							.apply	gsdl.var.≡	|	pna	pne
+							.force	_gsac.gstype.check_intrprim_intrprim_k
+							.coerce	bool.t.out
+							.app	ps.eq	pn.eq
+							.enter	bool.∧
 				.case	lift
 tye1				.fkarg	0	gsdl.cgs.gstype.t
 					.danalyze	tya0	lift
@@ -1448,6 +1461,42 @@ either.t	.tygvar	-- Temp
 either.right	.gvar
 record.empty	.gvar
 b0	.karg	bool.prim.u	-- Same kind?
+	.analyze	b0	false	true
+		.case	false
+			.undef	either.t	string.t	record.empty
+		.case	true
+			.app	record.empty
+			.enter	either.right	string.t	record.empty
+
+_gsac.gstype.check_intrprim_intrprim_k	.forcecont
+gsdl.cgs.gskind.t	.tygvar
+bool.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+record.empty	.tygvar	-- Temp
+_gsac.gstype.check_intrprim_intrprim_true_k	.subcode
+bool.t.out	.cogvar
+gsdl.cgs.gskind.≡	.gvar
+kia	.fv	gsdl.cgs.gskind.t
+kie	.fv	gsdl.cgs.gskind.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	either.t	string.t	record.empty
+		.case	true
+			.force	_gsac.gstype.check_intrprim_intrprim_true_k
+			.coerce	bool.t.out
+			.app	kia	kie
+			.enter	gsdl.cgs.gskind.≡
+
+_gsac.gstype.check_intrprim_intrprim_true_k	.forcecont
+bool.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	-- Temp
+either.right	.gvar
+record.empty	.gvar
+b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
 			.undef	either.t	string.t	record.empty
