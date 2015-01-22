@@ -699,13 +699,42 @@ nil			.apply	list.nil	α
 			.enter	ys
 
 _list.sort_w_:_f_c	.expr
+order.total.t	.tygvar
 list.t	.tygvar
 _list.sort_w_:_k_ty	.tygvar
+_list.sort_w_:_f_k	.subcode
+order.total.ord.t.out	.cogvar
 α	.tyfv	*
+cmp	.fv	order.total.t	α
+x0	.fv	α
 x1	.larg	α
 k	.larg	_list.sort_w_:_k_ty	α
 xn1.0	.larg	list.t	α
 xn1.1	.larg	list.t	α
+	.force	_list.sort_w_:_f_k
+	.coerce	order.total.ord.t.out
+	.app	x0	x1
+	.enter	cmp
+
+_list.sort_w_:_f_k	.forcecont
+_list.sort_w_:_k_ty	.tygvar
+list.t	.tygvar
+order.total.ord.prim.u	.tygvar
+list.:	.gvar
+α	.tyfv	*
+x1	.fv	α
+k	.fv	_list.sort_w_:_k_ty	α
+xn1.0	.fv	list.t	α
+xn1.1	.fv	list.t	α
+o0	.karg	order.total.ord.prim.u
+	.analyze	o0	eq	gt	lt
+		.case	eq
+			.undef	list.t	α
+		.case	gt
+xn1.0.1			.apply	list.:	α	|	x1	xn1.0
+			.app	xn1.0.1	xn1.1
+			.enter	k
+		.case	lt
 			.undef	list.t	α
 
 _list.sort_w_:_k_c	.expr
