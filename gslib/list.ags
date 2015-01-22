@@ -673,18 +673,56 @@ ys	.arg	list.t	α
 	.enter	xn
 
 _list.sort_w_k	.forcecont
+order.total.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
+_list.sort_w_:_k_ty	.tygvar
+_list.sort_w_:_f_c	.subcode
+_list.sort_w_:_k_c	.subcode
+list.foldr	.gvar
+list.nil	.gvar
 α	.tyfv	*
+k.α.ty	.tylet	_list.sort_w_:_k_ty	α
+cmp	.fv	order.total.t	α
 ys	.fv	list.t	α
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.undef	list.t	α
+f			.closure	_list.sort_w_:_f_c
+k			.closure	_list.sort_w_:_k_c
+nil			.apply	list.nil	α
+			.app	f	k	xn1	nil	nil
+			.enter	list.foldr	α	k.α.ty
 		.case	nil
 			.enter	ys
+
+_list.sort_w_:_f_c	.expr
+list.t	.tygvar
+_list.sort_w_:_k_ty	.tygvar
+α	.tyfv	*
+x1	.larg	α
+k	.larg	_list.sort_w_:_k_ty	α
+xn1.0	.larg	list.t	α
+xn1.1	.larg	list.t	α
+			.undef	list.t	α
+
+_list.sort_w_:_k_c	.expr
+order.total.t	.tygvar
+list.t	.tygvar
+_list.sort_w	.gvar
+list.:	.gvar
+α	.tyfv	*
+cmp	.fv	order.total.t	α
+ys	.fv	list.t	α
+x0	.fv	α
+xn1.0	.larg	list.t	α
+xn1.1	.larg	list.t	α
+ys2	.apply	_list.sort_w	α	|	cmp	xn1.1	ys
+ys1	.apply	list.:	α	|	x0	ys2
+	.app	cmp	xn1.0	ys1
+	.yield	_list.sort_w	α
 
 -- §section §gs{list.≡}
 
@@ -1153,6 +1191,15 @@ list.t	.tygvar
 α	.tyforall	*
 	.tyfun	order.total.t	α
 	.tyfun	list.t	α
+	.tyfun	list.t	α
+	.tyref	list.t	α
+
+_list.sort_w_:_k_ty	.tyexpr
+list.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	list.t	α
+	.tylift
 	.tyfun	list.t	α
 	.tyref	list.t	α
 
