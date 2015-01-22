@@ -29,7 +29,8 @@ list.>>=	.closure	_list.>>=_c	_list.>>=_ty
 
 list.byZip.map2	.closure	_list.byZip.map2_c	_list.byZip.map2_ty
 
-list.sort	.closure	_list.sort_c	_list.sort_ty
+list.sort	.closure	_list.sort_c
+_list.sort_w	.closure	_list.sort_w_c	_list.sort_w_ty
 
 list.≡	.closure	_list.≡_c	_list.≡_ty
 list.compare	.closure	_list.compare_c	_list.compare_ty
@@ -649,20 +650,33 @@ ys1					.apply	list.byZip.map2	α0	α1	β	|	f	xn0.1	xn1.1
 _list.sort_c	.expr
 order.total.t	.tygvar
 list.t	.tygvar
-_list.sort_k	.subcode
-list.t.out	.cogvar
+_list.sort_w	.gvar
+list.nil	.gvar
 α	.tyarg	*
 cmp	.larg	order.total.t	α
 xn	.larg	list.t	α
-	.force	_list.sort_k
+nil	.apply list.nil	α
+	.app	cmp	xn	nil
+	.yield	_list.sort_w	α
+
+_list.sort_w_c	.expr
+order.total.t	.tygvar
+list.t	.tygvar
+_list.sort_w_k	.subcode
+list.t.out	.cogvar
+α	.tyarg	*
+cmp	.arg	order.total.t	α
+xn	.arg	list.t	α
+ys	.arg	list.t	α
+	.force	_list.sort_w_k
 	.coerce	list.t.out	α
 	.enter	xn
 
-_list.sort_k	.forcecont
+_list.sort_w_k	.forcecont
 list.prim.u	.tygvar
 list.t	.tygvar
-list.nil	.gvar
 α	.tyfv	*
+ys	.fv	list.t	α
 xn0	.karg	list.prim.u	α
 	.analyze	xn0	:	nil
 		.case	:
@@ -670,7 +684,7 @@ x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
 			.undef	list.t	α
 		.case	nil
-			.enter	list.nil	α
+			.enter	ys
 
 -- §section §gs{list.≡}
 
@@ -1133,13 +1147,12 @@ _list.byZip.map2_f_ty	.tyexpr
 
 -- §section §gs{list.sort}
 
-_list.sort_ty	.tyexpr	*
+_list.sort_w_ty	.tyexpr	u
 order.total.t	.tygvar
 list.t	.tygvar
 α	.tyforall	*
-	.tylift
 	.tyfun	order.total.t	α
-	.tylift
+	.tyfun	list.t	α
 	.tyfun	list.t	α
 	.tyref	list.t	α
 
