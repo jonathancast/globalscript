@@ -1214,10 +1214,14 @@ f	.larg	gsdl.cgs.gstype.field.t
 
 _gsdl.cgs.gstype.field.name.compare_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
-order.total.ord.t	.tygvar	-- Temp
+gsdl.cgs.symbol.compare	.gvar
+gsdl.cgs.gstype.field.boundvar	.gvar
 f0	.larg	gsdl.cgs.gstype.field.t
 f1	.larg	gsdl.cgs.gstype.field.t
-	.undef	order.total.ord.t
+f0.nm	.apply	gsdl.cgs.gstype.field.boundvar	|	f0
+f1.nm	.apply	gsdl.cgs.gstype.field.boundvar	|	f1
+	.app	f0.nm	f1.nm
+	.enter	gsdl.cgs.symbol.compare
 
 -- §section §gs{gsdl.cgs.gstype.field.fmtgs}
 
