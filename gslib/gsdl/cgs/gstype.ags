@@ -52,6 +52,8 @@ gsdl.cgs.gstype.fun	.closure	_gsdl.cgs.gstype.fun_c
 
 gsdl.cgs.gstype.field.parser	.closure	_gsdl.cgs.gstype.field.parser_c
 
+gsdl.cgs.gstype.field.boundvar	.closure	_gsdl.cgs.gstype.field.boundvar_c
+
 gsdl.cgs.gstype.field.freevars	.closure	_gsdl.cgs.gstype.field.freevars_c
 
 gsdl.cgs.gstype.field.name.compare	.closure	_gsdl.cgs.gstype.field.name.compare_c
@@ -1190,6 +1192,14 @@ rune.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 parser.fail	.gvar
 	.enter	parser.fail	rune.t	gsdl.cgs.gstype.field.t
+
+-- §section §gs{gsdl.cgs.gstype.field.boundvar}
+
+_gsdl.cgs.gstype.field.boundvar_c	.expr
+gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+f	.larg	gsdl.cgs.gstype.field.t
+	.undef	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gstype.field.freevars}
 
